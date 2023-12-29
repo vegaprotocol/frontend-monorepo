@@ -16,11 +16,11 @@ def verify_data_grid(page: Page, data_test_id, expected_pattern):
     expect(
         page.locator(
             f'[data-testid^="tab-{data_test_id.lower()}"] >> .ag-center-cols-container .ag-row-first'
-        )
+        ).first
     ).to_be_visible()
     actual_text = page.locator(
         f'[data-testid^="tab-{data_test_id.lower()}"] >> .ag-center-cols-container .ag-row-first'
-    ).text_content()
+    ).first.text_content()
     lines = actual_text.strip().split("\n")
     for expected, actual in zip(expected_pattern, lines):
         # We are using regex so that we can run tests in different timezones.

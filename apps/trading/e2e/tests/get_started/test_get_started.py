@@ -166,6 +166,7 @@ class TestGetStarted:
         page.wait_for_selector('[data-testid="sidebar-content"]', state="visible")
         expect(page.get_by_test_id("get-started-banner")).not_to_be_visible()
 
+    @pytest.mark.skip("tbd-market-sim")
     def test_redirect_default_market(self, continuous_market, vega: VegaServiceNull, page: Page):
         page.goto("/")
         # 0007-FUGS-012

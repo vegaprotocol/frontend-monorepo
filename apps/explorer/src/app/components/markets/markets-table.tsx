@@ -29,7 +29,7 @@ export const MarketsTable = ({ data }: MarketsTableProps) => {
   const gridRef = useRef<AgGridReact>(null);
   useLayoutEffect(() => {
     const showColumnsOnDesktop = () => {
-      gridRef.current?.columnApi.setColumnsVisible(
+      gridRef.current?.api.setColumnsVisible(
         ['id', 'state', 'asset'],
         window.innerWidth > BREAKPOINT_MD
       );

@@ -7,6 +7,9 @@ import {
 import classNames from 'classnames';
 import type { ReactElement, ReactNode } from 'react';
 import { Children, isValidElement, useRef, useState } from 'react';
+import { VegaIcon } from '../icon/vega-icons/vega-icon';
+import { VegaIconNames } from '../icon/vega-icons/vega-icon-record';
+import { Popover } from '../popover/popover';
 export interface TabsProps extends TabsPrimitive.TabsProps {
   children: (ReactElement<TabProps> | null)[];
 }
@@ -18,12 +21,9 @@ export const Tabs = ({
   onValueChange,
   ...props
 }: TabsProps) => {
-  const [activeTab, setActiveTab] = useState<string | undefined>(() => {
-    if (defaultValue) {
-      return defaultValue;
-    }
-    return children.find((v) => v)?.props.id;
-  });
+  const [activeTab, setActiveTab] = useState<string | undefined>(
+    () => value || defaultValue || children.find((v) => v)?.props.id
+  );
 
   // Bunch of refs in order to detect wrapping in side the tabs so that we
   // can apply a bg color
@@ -42,8 +42,13 @@ export const Tabs = ({
     <TabsPrimitive.Root
       {...props}
       value={value || activeTab}
-      onValueChange={onValueChange || setActiveTab}
-      className="h-full grid grid-rows-[min-content_1fr]"
+      onValueChange={(value) => {
+        setActiveTab(value);
+        if (onValueChange) {
+          onValueChange(value);
+        }
+      }}
+      className="h-full grid grid-rows-[min-content_1fr] relative"
     >
       <div
         ref={wrapperRef}
@@ -87,7 +92,7 @@ export const Tabs = ({
         </TabsPrimitive.List>
         <div
           ref={menuRef}
-          className={classNames('flex-1 p-1', {
+          className={classNames('flex justify-end flex-1 p-1', {
             'bg-vega-clight-700 dark:bg-vega-cdark-700': wrapped,
           })}
         >
@@ -101,12 +106,26 @@ export const Tabs = ({
                 })}
               >
                 {child.props.menu}
+                {isValidElement(child.props.settings) && (
+                  <Popover
+                    align="end"
+                    trigger={
+                      <span className="flex items-center justify-center h-6 w-6">
+                        <VegaIcon name={VegaIconNames.COG} size={16} />
+                      </span>
+                    }
+                  >
+                    <div className="p-2 lg:p-4 lg:min-w-[290px] flex justify-end">
+                      {child.props.settings}
+                    </div>
+                  </Popover>
+                )}
               </TabsPrimitive.Content>
             );
           })}
         </div>
       </div>
-      <div className="h-full overflow-auto">
+      <div className="relative h-full overflow-auto">
         {Children.map(children, (child) => {
           if (!isValidElement(child) || child.props.hidden) return null;
           return (
@@ -134,6 +153,7 @@ interface TabProps {
   hidden?: boolean;
   overflowHidden?: boolean;
   menu?: ReactNode;
+  settings?: ReactNode;
 }
 
 export const Tab = ({ children, ...props }: TabProps) => {

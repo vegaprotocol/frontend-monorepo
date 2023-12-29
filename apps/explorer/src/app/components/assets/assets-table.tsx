@@ -24,7 +24,7 @@ export const AssetsTable = ({ data }: AssetsTableProps) => {
   const navigate = useNavigate();
   const ref = useRef<AgGridReact>(null);
   const showColumnsOnDesktop = () => {
-    ref.current?.columnApi.setColumnsVisible(
+    ref.current?.api.setColumnsVisible(
       ['id', 'type', 'status'],
       window.innerWidth > BREAKPOINT_MD
     );

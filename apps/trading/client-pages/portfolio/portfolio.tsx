@@ -5,14 +5,29 @@ import { titlefy } from '@vegaprotocol/utils';
 import { useIncompleteWithdrawals } from '@vegaprotocol/withdraws';
 import { Tab, LocalStoragePersistTabs as Tabs } from '@vegaprotocol/ui-toolkit';
 import { usePageTitleStore } from '../../stores';
-import { AccountsContainer } from '../../components/accounts-container';
+import {
+  AccountsContainer,
+  AccountsSettings,
+} from '../../components/accounts-container';
 import { DepositsContainer } from '../../components/deposits-container';
-import { FillsContainer } from '../../components/fills-container';
-import { FundingPaymentsContainer } from '../../components/funding-payments-container';
-import { PositionsContainer } from '../../components/positions-container';
+import {
+  FillsContainer,
+  FillsSettings,
+} from '../../components/fills-container';
+import {
+  FundingPaymentsContainer,
+  FundingPaymentsSettings,
+} from '../../components/funding-payments-container';
+import {
+  PositionsContainer,
+  PositionsSettings,
+} from '../../components/positions-container';
 import { PositionsMenu } from '../../components/positions-menu';
 import { WithdrawalsContainer } from '../../components/withdrawals-container';
-import { OrdersContainer } from '../../components/orders-container';
+import {
+  OrdersContainer,
+  OrdersSettings,
+} from '../../components/orders-container';
 import { LedgerContainer } from '../../components/ledger-container';
 import {
   ResizableGrid,
@@ -76,22 +91,27 @@ export const Portfolio = () => {
                 id="positions"
                 name={t('Positions')}
                 menu={<PositionsMenu />}
+                settings={<PositionsSettings />}
               >
                 <ErrorBoundary feature="portfolio-positions">
                   <PositionsContainer allKeys />
                 </ErrorBoundary>
               </Tab>
-              <Tab id="orders" name={t('Orders')}>
+              <Tab id="orders" name={t('Orders')} settings={<OrdersSettings />}>
                 <ErrorBoundary feature="portfolio-orders">
                   <OrdersContainer />
                 </ErrorBoundary>
               </Tab>
-              <Tab id="fills" name={t('Fills')}>
+              <Tab id="fills" name={t('Fills')} settings={<FillsSettings />}>
                 <ErrorBoundary feature="portfolio-fills">
                   <FillsContainer />
                 </ErrorBoundary>
               </Tab>
-              <Tab id="funding-payments" name={t('Funding payments')}>
+              <Tab
+                id="funding-payments"
+                name={t('Funding payments')}
+                settings={<FundingPaymentsSettings />}
+              >
                 <ErrorBoundary feature="portfolio-funding-payments">
                   <FundingPaymentsContainer />
                 </ErrorBoundary>
@@ -114,6 +134,7 @@ export const Portfolio = () => {
               <Tab
                 id="collateral"
                 name={t('Collateral')}
+                settings={<AccountsSettings />}
                 menu={<AccountsMenu />}
               >
                 <ErrorBoundary feature="portfolio-accounts">
