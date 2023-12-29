@@ -280,7 +280,7 @@ export const ActiveRewardCard = ({
             </div>
 
             <div className="flex flex-col gap-2 items-center text-center">
-              <span className="flex flex-col gap-1 text-2xl shrink-1 text-center">
+              <h3 className="flex flex-col gap-1 text-2xl shrink-1 text-center">
                 <span className="font-glitch">
                   {addDecimalsFormatNumber(
                     transferNode.transfer.amount,
@@ -292,7 +292,7 @@ export const ActiveRewardCard = ({
                 <span className="font-alpha">
                   {transferNode.transfer.asset?.symbol}
                 </span>
-              </span>
+              </h3>
               {
                 <Tooltip
                   description={t(
