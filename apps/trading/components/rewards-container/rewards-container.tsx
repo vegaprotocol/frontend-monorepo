@@ -130,7 +130,7 @@ export const RewardsContainer = () => {
   ]);
 
   return (
-    <div className="grid auto-rows-min gap-3">
+    <div className="flex flex-col w-full gap-3">
       <div className="grid auto-rows-min grid-cols-6 gap-3">
         {/* Always show reward information for vega */}
         <Card
