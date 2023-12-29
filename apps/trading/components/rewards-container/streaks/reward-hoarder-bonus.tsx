@@ -184,7 +184,7 @@ export const RewardHoarderBonus = ({
           <VegaIcon name={VegaIconNames.STREAK} />
           <span>
             {formatNumber(vestingDetails?.quantumBalance || 0)} {qUSD}{' '}
-            {userTierIndex >= 0 &&
+            {userTierIndex > 0 &&
               new BigNumber(
                 tiers[0].minimum_quantum_balance
               ).isLessThanOrEqualTo(vestingDetails?.quantumBalance || 0) &&

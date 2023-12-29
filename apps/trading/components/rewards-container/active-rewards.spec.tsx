@@ -107,7 +107,7 @@ describe('ActiveRewards', () => {
     expect(screen.getByText('Entity scope')).toBeInTheDocument();
     expect(screen.getByText('Average position')).toBeInTheDocument();
     expect(screen.getByText('Ends in')).toBeInTheDocument();
-    expect(screen.getByText('115,431 epochs')).toBeInTheDocument();
+    expect(screen.getByText('115431 epochs')).toBeInTheDocument();
     expect(screen.getByText('Assessed over')).toBeInTheDocument();
     expect(screen.getByText('1 epoch')).toBeInTheDocument();
   });

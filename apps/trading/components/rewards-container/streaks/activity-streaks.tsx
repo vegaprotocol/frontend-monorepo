@@ -207,7 +207,7 @@ export const ActivityStreak = ({
               {t('epochsStreak', '{{count}} epochs streak', {
                 count: streak?.activeFor || 0,
               })}{' '}
-              {userTierIndex >= 0 &&
+              {userTierIndex > 0 &&
                 new BigNumber(
                   tiers[0].minimum_activity_streak
                 ).isLessThanOrEqualTo(streak?.activeFor || 0) &&
