@@ -639,6 +639,7 @@ def test_fills_maker_fee_tooltip_discount_program(
     change_keys(page, vega_instance, MM_WALLET.name)
     page.get_by_test_id(FILLS).click()
     row = page.get_by_test_id(TAB_FILLS).locator(ROW_LOCATOR).first
+    # tbd - tooltip is not visible without this wait
     page.wait_for_timeout(1000)
     row.locator(COL_FEE).hover()
     expect(page.get_by_test_id(FEE_BREAKDOWN_TOOLTIP)).to_have_text(
@@ -677,6 +678,7 @@ def test_fills_taker_fee_tooltip_discount_program(
     page.goto(f"/#/markets/{market_id}")
     page.get_by_test_id(FILLS).click()
     row = page.get_by_test_id(TAB_FILLS).locator(ROW_LOCATOR).first
+    # tbd - tooltip is not visible without this wait
     page.wait_for_timeout(1000)
     row.locator(COL_FEE).hover()
     expect(page.get_by_test_id(FEE_BREAKDOWN_TOOLTIP)).to_have_text(
