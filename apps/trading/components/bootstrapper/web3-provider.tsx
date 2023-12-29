@@ -10,6 +10,8 @@ import { useEnvironment } from '@vegaprotocol/environment';
 import type { ReactNode } from 'react';
 import { useState } from 'react';
 import { useEffect } from 'react';
+import { useMarketsMapProvider } from '@vegaprotocol/markets';
+import { useAssetsMapProvider } from '@vegaprotocol/assets';
 
 export const Web3Provider = ({
   children,
@@ -23,6 +25,10 @@ export const Web3Provider = ({
   const { config, loading, error } = useEthereumConfig();
   const { ETHEREUM_PROVIDER_URL, ETH_LOCAL_PROVIDER_URL, ETH_WALLET_MNEMONIC } =
     useEnvironment();
+
+  // Query all markets and assets to ensure they are cached
+  useMarketsMapProvider();
+  useAssetsMapProvider();
 
   const connectors = useWeb3ConnectStore((store) => store.connectors);
   const initializeConnectors = useWeb3ConnectStore((store) => store.initialize);

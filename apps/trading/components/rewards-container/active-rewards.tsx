@@ -34,7 +34,15 @@ import {
 } from '@vegaprotocol/types';
 import { Card } from '../card/card';
 import { useMemo, useState } from 'react';
-import { useAssetDataProvider } from '@vegaprotocol/assets';
+import {
+  type AssetFieldsFragment,
+  useAssetDataProvider,
+  useAssetsMapProvider,
+} from '@vegaprotocol/assets';
+import {
+  type MarketFieldsFragment,
+  useMarketsMapProvider,
+} from '@vegaprotocol/markets';
 
 export type Filter = {
   searchTerm: string;
@@ -62,7 +70,14 @@ export const isActiveReward = (node: TransferNode, currentEpoch: number) => {
   return true;
 };
 
-export const applyFilter = (transfer: Transfer, filter: Filter) => {
+export const applyFilter = (
+  node: TransferNode & {
+    asset?: AssetFieldsFragment | null;
+    marketIds?: (MarketFieldsFragment | null)[];
+  },
+  filter: Filter
+) => {
+  const { transfer } = node;
   if (
     transfer.kind.__typename !== 'RecurringTransfer' ||
     !transfer.kind.dispatchStrategy?.dispatchMetric
@@ -78,7 +93,15 @@ export const applyFilter = (transfer: Transfer, filter: Filter) => {
       .includes(filter.searchTerm.toLowerCase()) ||
     EntityScopeLabelMapping[transfer.kind.dispatchStrategy.entityScope]
       .toLowerCase()
-      .includes(filter.searchTerm.toLowerCase())
+      .includes(filter.searchTerm.toLowerCase()) ||
+    node.asset?.name
+      .toLocaleLowerCase()
+      .includes(filter.searchTerm.toLowerCase()) ||
+    node.marketIds?.some((m) =>
+      m?.tradableInstrument?.instrument?.name
+        .toLocaleLowerCase()
+        .includes(filter.searchTerm.toLowerCase())
+    )
   ) {
     return true;
   }
@@ -97,9 +120,30 @@ export const ActiveRewards = ({ currentEpoch }: { currentEpoch: number }) => {
     searchTerm: '',
   });
 
+  const { data: assets } = useAssetsMapProvider();
+  const { data: markets } = useMarketsMapProvider();
+
   const transfers = activeRewardsData?.transfersConnection?.edges
     ?.map((e) => e?.node as TransferNode)
-    .filter((node) => isActiveReward(node, currentEpoch));
+    .filter((node) => isActiveReward(node, currentEpoch))
+    .map((node) => {
+      if (node.transfer.kind.__typename !== 'RecurringTransfer') {
+        return node;
+      }
+
+      const asset =
+        assets &&
+        assets[
+          node.transfer.kind.dispatchStrategy?.dispatchMetricAssetId || ''
+        ];
+
+      const marketIds =
+        node.transfer.kind.dispatchStrategy?.marketIdsInScope?.map(
+          (id) => markets && markets[id]
+        );
+
+      return { ...node, asset, marketIds };
+    });
 
   if (!transfers || !transfers.length) return null;
 
@@ -123,7 +167,7 @@ export const ActiveRewards = ({ currentEpoch }: { currentEpoch: number }) => {
         )}
         <div className="grid gap-x-8 gap-y-10 h-fit grid-cols-[repeat(auto-fill,_minmax(230px,_1fr))] md:grid-cols-[repeat(auto-fill,_minmax(230px,_1fr))] lg:grid-cols-[repeat(auto-fill,_minmax(320px,_1fr))] xl:grid-cols-[repeat(auto-fill,_minmax(343px,_1fr))] max-h-[40rem] overflow-auto">
           {transfers
-            .filter((n) => applyFilter(n.transfer, filter))
+            .filter((n) => applyFilter(n, filter))
             .map((node, i) => {
               const { transfer } = node;
               if (
