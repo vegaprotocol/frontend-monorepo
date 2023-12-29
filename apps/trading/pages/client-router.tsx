@@ -14,6 +14,7 @@ import { Withdraw } from '../client-pages/withdraw';
 import { Transfer } from '../client-pages/transfer';
 import { Fees } from '../client-pages/fees';
 import { Rewards } from '../client-pages/rewards';
+import { Teams } from '../client-pages/teams';
 import { Routes as AppRoutes } from '../lib/links';
 import { LayoutWithSky } from '../client-pages/referrals/layout';
 import { Referrals } from '../client-pages/referrals/referrals';
@@ -90,6 +91,12 @@ export const useRouterConfig = (): RouteObject[] => {
               element: <ReferralNotFound />,
             },
           ],
+        }
+      : undefined,
+    featureFlags.TEAM_COMPETITION
+      ? {
+          path: AppRoutes.TEAMS,
+          element: <Teams />,
         }
       : undefined,
     {
@@ -176,6 +183,7 @@ export const useRouterConfig = (): RouteObject[] => {
         },
       ],
     },
+
     {
       path: '*',
       element: <NotFound />,
