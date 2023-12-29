@@ -4,69 +4,59 @@ import classNames from 'classnames';
 import type { PartyVestingStats } from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
 import { formatNumber } from '@vegaprotocol/utils';
+import { safeProgress } from './activity-streaks';
+
+export const useGetUserTier = (
+  tiers: {
+    minimum_quantum_balance: string;
+    reward_multiplier: string;
+  }[],
+  progress?: number | string
+) => {
+  if (!progress) return 0;
+  if (!tiers || tiers.length === 0) return 0;
+
+  let userTier = 0;
+  let i = 0;
+  let minProgress = '0';
+  while (i < tiers.length && new BigNumber(minProgress).isLessThan(progress)) {
+    userTier = i;
+    i++;
+    minProgress = tiers[userTier].minimum_quantum_balance;
+  }
+
+  if (
+    i === tiers.length &&
+    new BigNumber(minProgress).isLessThanOrEqualTo(progress)
+  ) {
+    userTier = i;
+  }
+
+  if (userTier > tiers.length) {
+    userTier--;
+  }
+
+  return userTier;
+};
 
 export const RewardHoarderBonus = ({
   tiers,
   vestingDetails,
 }: {
-  tiers:
-    | never[]
-    | {
-        minimum_quantum_balance: string;
-        reward_multiplier: string;
-      }[];
+  tiers: {
+    minimum_quantum_balance: string;
+    reward_multiplier: string;
+  }[];
   vestingDetails?: PartyVestingStats | null;
 }) => {
   const t = useT();
 
-  const getUserTier = () => {
-    let userTier = 0,
-      i = 0;
-    if (!vestingDetails) return 0;
-    while (
-      i < tiers.length &&
-      new BigNumber(tiers[userTier].minimum_quantum_balance).isLessThan(
-        vestingDetails.quantumBalance
-      )
-    ) {
-      userTier = i;
-      i++;
-    }
+  const userTierIndex = useGetUserTier(tiers, vestingDetails?.quantumBalance);
 
-    if (
-      i === tiers.length &&
-      new BigNumber(
-        tiers[userTier].minimum_quantum_balance
-      ).isLessThanOrEqualTo(vestingDetails.quantumBalance)
-    ) {
-      userTier = i;
-    }
-
-    if (userTier > tiers.length) {
-      userTier--;
-    }
-
-    return userTier;
-  };
   if (!tiers || tiers.length === 0) return null;
-  const userTierIndex = getUserTier();
 
   // There is only value to compare to the tiers that covers all the user' rewards across all assets
   const qUSD = 'qUSD';
-
-  const safeProgress = (i: number) => {
-    if (i < userTierIndex) return 100;
-    if (i > userTierIndex) return 0;
-    if (!vestingDetails) return 0;
-    const progress = vestingDetails.quantumBalance;
-    const total = tiers[i].minimum_quantum_balance;
-    if (!total || total === '0') return 0;
-    if (new BigNumber(progress).isGreaterThan(total)) return 100;
-    return new BigNumber(progress)
-      .multipliedBy(100)
-      .dividedBy(total || 1)
-      .toNumber();
-  };
 
   const progressBarHeight = 'h-10';
 
@@ -174,7 +164,15 @@ export const RewardHoarderBonus = ({
                           userTierIndex % 6 === 0,
                       }
                     )}
-                    style={{ width: safeProgress(index) + '%' }}
+                    style={{
+                      width:
+                        safeProgress(
+                          index,
+                          userTierIndex,
+                          tiers[index].minimum_quantum_balance,
+                          vestingDetails?.quantumBalance
+                        ) + '%',
+                    }}
                   ></div>
                 </div>
               </div>

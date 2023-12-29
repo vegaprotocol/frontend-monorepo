@@ -4,64 +4,74 @@ import classNames from 'classnames';
 import BigNumber from 'bignumber.js';
 import type { PartyActivityStreak } from '@vegaprotocol/types';
 
+export const safeProgress = (
+  i: number,
+  userTierIndex: number,
+  total: number | string,
+  progress?: number | string
+) => {
+  if (i < userTierIndex) return 100;
+  if (i > userTierIndex) return 0;
+
+  if (!progress || !total) return 0;
+  if (new BigNumber(progress).isGreaterThan(total)) return 100;
+  return new BigNumber(progress)
+    .multipliedBy(100)
+    .dividedBy(total || 1)
+    .toNumber();
+};
+
+export const useGetUserTier = (
+  tiers: {
+    minimum_activity_streak: number;
+    reward_multiplier: string;
+    vesting_multiplier: string;
+  }[],
+  progress?: number
+) => {
+  if (!progress) return 0;
+  if (!tiers || tiers.length === 0) return 0;
+
+  let userTier = 0;
+  let i = 0;
+  while (
+    i < tiers.length &&
+    tiers[userTier].minimum_activity_streak < progress
+  ) {
+    userTier = i;
+    i++;
+  }
+
+  if (
+    i === tiers.length &&
+    tiers[userTier].minimum_activity_streak <= progress
+  ) {
+    userTier = i;
+  }
+
+  if (userTier > tiers.length) {
+    userTier--;
+  }
+
+  return userTier;
+};
+
 export const ActivityStreak = ({
   tiers,
   streak,
 }: {
-  tiers:
-    | never[]
-    | {
-        minimum_activity_streak: number;
-        reward_multiplier: string;
-        vesting_multiplier: string;
-      }[];
+  tiers: {
+    minimum_activity_streak: number;
+    reward_multiplier: string;
+    vesting_multiplier: string;
+  }[];
   streak?: PartyActivityStreak | null;
 }) => {
   const t = useT();
-
-  const getUserTier = () => {
-    if (!streak?.activeFor) return 0;
-    let userTier = 0,
-      i = 0;
-    while (
-      i < tiers.length &&
-      tiers[userTier].minimum_activity_streak < streak.activeFor
-    ) {
-      userTier = i;
-      i++;
-    }
-
-    if (
-      i === tiers.length &&
-      tiers[userTier].minimum_activity_streak <= streak.activeFor
-    ) {
-      userTier = i;
-    }
-
-    if (userTier > tiers.length) {
-      userTier--;
-    }
-
-    return userTier;
-  };
+  const userTierIndex = useGetUserTier(tiers, streak?.activeFor);
 
   if (!tiers || tiers.length === 0) return null;
 
-  const userTierIndex = getUserTier();
-
-  const safeProgress = (i: number) => {
-    if (i < userTierIndex) return 100;
-    if (i > userTierIndex) return 0;
-    if (!streak?.activeFor) return 0;
-    const progress = streak?.activeFor;
-    const total = tiers[i].minimum_activity_streak;
-    if (!total) return 0;
-    if (new BigNumber(progress).isGreaterThan(total)) return 100;
-    return new BigNumber(progress)
-      .multipliedBy(100)
-      .dividedBy(total || 1)
-      .toNumber();
-  };
   const progressBarHeight = 'h-10';
 
   return (
@@ -173,7 +183,15 @@ export const ActivityStreak = ({
                           userTierIndex % 6 === 0,
                       }
                     )}
-                    style={{ width: safeProgress(index) + '%' }}
+                    style={{
+                      width:
+                        safeProgress(
+                          index,
+                          userTierIndex,
+                          tiers[index].minimum_activity_streak,
+                          streak?.activeFor
+                        ) + '%',
+                    }}
                   ></div>
                 </div>
               </div>
