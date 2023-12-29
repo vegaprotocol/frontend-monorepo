@@ -368,6 +368,12 @@ export const compileFeatureFlags = (refresh = false): FeatureFlags => {
         process.env['NX_VOLUME_DISCOUNTS']
       ) as string
     ),
+    TEAM_COMPETITION: TRUTHY.includes(
+      windowOrDefault(
+        'NX_TEAM_COMPETITION',
+        process.env['NX_TEAM_COMPETITION']
+      ) as string
+    ),
   };
 
   const EXPLORER_FLAGS = {
