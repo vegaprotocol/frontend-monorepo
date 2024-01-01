@@ -74,7 +74,7 @@ def test_succession_line(vega: VegaServiceNull, page: Page):
     next_epoch(vega=vega)
 
     banner = page.get_by_test_id(market_banner)
-    expect(banner).to_be_attached()
+    page.wait_for_selector('[data-testid="market-banner"]', state="attached")
     expect(banner.get_by_text("This market has been succeeded")).to_be_visible()
 
 @pytest.mark.usefixtures("risk_accepted")
