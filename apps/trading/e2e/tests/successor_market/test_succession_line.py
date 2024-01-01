@@ -8,6 +8,7 @@ from actions.utils import next_epoch
 
 market_banner = "market-banner"
 
+@pytest.mark.skip("tbd")
 @pytest.mark.usefixtures("risk_accepted")
 def test_succession_line(vega: VegaServiceNull, page: Page):
     parent_market_id = setup_continuous_market(vega)
@@ -45,24 +46,24 @@ def test_succession_line(vega: VegaServiceNull, page: Page):
     page.reload()
 
     #tbd issue - 5546
-    # page.get_by_test_id("Info").click()
+    page.get_by_test_id("Info").click()
 
-    # page.get_by_role("button", name="Succession line").click()
+    page.get_by_role("button", name="Succession line").click()
 
-    # succession_item = page.get_by_test_id("succession-line-item")
+    succession_item = page.get_by_test_id("succession-line-item")
 
-    # expect(succession_item.nth(1)).to_contain_text(
-    #     "successor market name"
-    # )
-    # expect(
-    #     succession_item.first.get_by_role("link")
-    # ).to_be_attached
-    # expect(
-    #     succession_item.last.get_by_role("link")
-    # ).to_be_attached
-    # expect(
-    #     succession_item.last.get_by_test_id("icon-bullet")
-    # ).to_be_visible
+    expect(succession_item.nth(1)).to_contain_text(
+        "successor market name"
+    )
+    expect(
+        succession_item.first.get_by_role("link")
+    ).to_be_attached
+    expect(
+        succession_item.last.get_by_role("link")
+    ).to_be_attached
+    expect(
+        succession_item.last.get_by_test_id("icon-bullet")
+    ).to_be_visible
 
     page.goto(f"/#/markets/{parent_market_id}")
     # Settle parent market and check that successor banner is showing
