@@ -11,6 +11,7 @@ type TableColumnDefinition = {
   name: string;
   tooltip?: string;
   className?: string;
+  headerClassName?: string;
   testId?: string;
 };
 
@@ -41,13 +42,14 @@ export const Table = forwardRef<
     const header = (
       <thead className={classNames({ 'max-md:hidden': !noCollapse })}>
         <tr>
-          {columns.map(({ displayName, name, tooltip }) => (
+          {columns.map(({ displayName, name, tooltip, headerClassName }) => (
             <th
               key={name}
               col-id={name}
               className={classNames(
                 'px-5 py-3 text-xs  text-vega-clight-100 dark:text-vega-cdark-100 font-normal',
-                INNER_BORDER_STYLE
+                INNER_BORDER_STYLE,
+                headerClassName
               )}
             >
               <span className="flex flex-row items-center gap-2">

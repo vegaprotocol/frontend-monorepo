@@ -1,10 +1,4 @@
-import {
-  useState,
-  type ReactNode,
-  type ButtonHTMLAttributes,
-  type TdHTMLAttributes,
-  type ThHTMLAttributes,
-} from 'react';
+import { useState, type ReactNode, type ButtonHTMLAttributes } from 'react';
 import {
   TradingButton as Button,
   Indicator,
@@ -21,12 +15,14 @@ import {
 import classNames from 'classnames';
 import BigNumber from 'bignumber.js';
 import { useT } from '../../lib/use-t';
+import { Table } from '../../components/table';
+import { getDateFormat } from '@vegaprotocol/utils';
 
 export const Team = () => {
   const t = useT();
   const [showGames, setShowGames] = useState(true);
   return (
-    <div className="relative">
+    <div className="relative h-full overflow-y-auto">
       <div className="absolute top-0 left-0 w-full h-[40%] -z-10 bg-[40%_0px] bg-cover bg-no-repeat bg-local bg-[url(/cover.png)]">
         <div className="absolute top-o left-0 w-full h-full bg-gradient-to-t from-white dark:from-black to-transparent from-20% to-60%" />
       </div>
@@ -128,18 +124,44 @@ const ToggleButton = ({
 
 const Games = () => {
   return (
-    <div>
-      <Table />
-    </div>
+    <Table
+      columns={[
+        { name: 'rank', displayName: 'Rank' },
+        {
+          name: 'date',
+          displayName: 'Date',
+          headerClassName: 'hidden md:block',
+          className: 'hidden md:block',
+        },
+        { name: 'type', displayName: 'Type' },
+        { name: 'amount', displayName: 'Amount earned' },
+        {
+          name: 'teams',
+          displayName: 'No. of participants',
+          headerClassName: 'hidden md:block',
+          className: 'hidden md:block',
+        },
+        { name: 'status', displayName: 'Status' },
+      ]}
+      data={new Array(10).fill({
+        rank: 1,
+        date: getDateFormat().format(new Date()),
+        type: 'PnL',
+        amount: '100',
+        teams: '1',
+        status: (
+          <span className="flex items-center gap-2">
+            Live <Indicator variant={Intent.Success} />
+          </span>
+        ),
+      })}
+      noCollapse={true}
+    />
   );
 };
 
 const Members = () => {
-  return (
-    <div>
-      <Table />
-    </div>
-  );
+  return <div>TODO</div>;
 };
 
 const StatSection = ({ children }: { children: ReactNode }) => {
@@ -184,45 +206,6 @@ const Stat = ({
       </dt>
     </div>
   );
-};
-
-const Table = () => {
-  return (
-    <table className="w-full table-fixed border-separate border rounded-md border-spacing-0 border-vega-clight-500 dark:border-vega-cdark-500 bg-gradient-to-b from-vega-clight-800 dark:from-vega-cdark-800 to-transparent bg-white dark:bg-vega-cdark-900 text-sm text-left">
-      <thead>
-        <tr>
-          <Th>Rank</Th>
-          <Th>Date</Th>
-          <Th>Type</Th>
-          <Th>Amount earned</Th>
-          <Th>No. of participating teams</Th>
-          <Th>Status</Th>
-        </tr>
-      </thead>
-      <tbody>
-        {new Array(10).fill(
-          <tr>
-            <Td>5</Td>
-            <Td>01.05-07.2023</Td>
-            <Td>PNL (%)</Td>
-            <Td>10,000 $VEGA (10%)</Td>
-            <Td>200</Td>
-            <Td className="flex items-center gap-2">
-              Live <Indicator variant={Intent.Success} />
-            </Td>
-          </tr>
-        )}
-      </tbody>
-    </table>
-  );
-};
-
-const Th = (props: ThHTMLAttributes<HTMLTableHeaderCellElement>) => {
-  return <th {...props} className="px-5 py-3" />;
-};
-
-const Td = (props: TdHTMLAttributes<HTMLTableCellElement>) => {
-  return <td {...props} className={classNames('px-5 py-3', props.className)} />;
 };
 
 const JoinButton = ({ joined }: { joined: boolean }) => {
