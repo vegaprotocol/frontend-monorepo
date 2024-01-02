@@ -93,6 +93,7 @@ export const RewardsHistoryContainer = ({
 
 const defaultColDef = {
   flex: 1,
+  minWidth: 62,
   resizable: true,
   sortable: true,
 };
@@ -196,6 +197,7 @@ export const RewardHistoryTable = ({
         },
         sort: 'desc',
         pinned: 'left',
+        width: 150,
       },
       {
         field: 'infrastructureFees',

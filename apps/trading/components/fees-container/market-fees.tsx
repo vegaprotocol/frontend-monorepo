@@ -19,6 +19,7 @@ const useFeesTableColumnDefs = (): ColDef[] => {
           field: 'code',
           cellRenderer: 'MarketCodeCell',
           pinned: 'left',
+          width: 150,
         },
         {
           field: 'liquidityFee',
@@ -49,6 +50,7 @@ const useFeesTableColumnDefs = (): ColDef[] => {
 
 const feesTableDefaultColDef = {
   flex: 1,
+  minWidth: 62,
   resizable: true,
   sortable: true,
   suppressMovable: true,
