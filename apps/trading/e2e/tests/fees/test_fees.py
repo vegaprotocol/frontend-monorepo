@@ -439,8 +439,8 @@ def test_fees_page_discount_program_discount(
         expect(page.get_by_test_id(REQUIRED_EPOCHS_VALUE_0)).to_have_text("1")
         expect(page.get_by_test_id(REQUIRED_EPOCHS_VALUE_1)).to_have_text("2")
 
-    expect(page.get_by_test_id(your_tier)).to_be_visible()
-    expect(page.get_by_test_id(your_tier)).to_have_text("Your tier")
+    expect(page.get_by_test_id(your_tier).nth(1)).to_be_visible()
+    expect(page.get_by_test_id(your_tier).nth(1)).to_have_text("Your tier")
 
 
 @pytest.mark.parametrize(
