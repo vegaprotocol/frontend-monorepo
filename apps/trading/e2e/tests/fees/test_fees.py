@@ -27,8 +27,6 @@ MIN_VOLUME_VALUE_0 = "min-volume-value-0"
 MIN_VOLUME_VALUE_1 = "min-volume-value-1"
 MY_VOLUME_VALUE_0 = "my-volume-value-0"
 MY_VOLUME_VALUE_1 = "my-volume-value-1"
-YOUR_TIER_0 = "your-tier-0"
-YOUR_TIER_1 = "your-tier-1"
 ORDER_SIZE = "order-size"
 ORDER_PRICE = "order-price"
 DISCOUNT_PILL = "discount-pill"
@@ -406,10 +404,10 @@ def test_fees_page_referral_discount_program_referral_benefits(
 @pytest.mark.parametrize(
     "tier, discount_program, my_volume_test_id, my_volume_value, your_tier",
     [
-        (1, "volume", "my-volume-value-0", "103", "your-tier-0"),
-        (2, "volume", "my-volume-value-1", "206", "your-tier-1"),
-        (1, "referral", "my-volume-value-0", "103", "your-tier-0"),
-        (2, "referral", "my-volume-value-1", "206", "your-tier-1"),
+        (1, "volume", "my-volume-value-0", "103", "your-volume-tier-0"),
+        (2, "volume", "my-volume-value-1", "206", "your-volume-tier-1"),
+        (1, "referral", "my-volume-value-0", "103", "your-referral-tier-0"),
+        (2, "referral", "my-volume-value-1", "206", "your-referral-tier-1"),
     ],
 )
 @pytest.mark.usefixtures("risk_accepted", "auth", "market_ids")

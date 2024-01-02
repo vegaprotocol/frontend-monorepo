@@ -512,7 +512,9 @@ const VolumeTiers = ({
         ]}
         data={Array.from(tiers).map((tier, i) => {
           const isUserTier = tierIndex === i;
-          const indicator = isUserTier ? <YourTier /> : null;
+          const indicator = isUserTier ? (
+            <YourTier testId={`your-volume-tier-${i}`} />
+          ) : null;
           const tierIndicator = (
             <div className="flex justify-between">
               <span data-testid={`tier-value-${i}`}>{i + 1}</span>
@@ -616,7 +618,7 @@ const ReferralTiers = ({
           const requiredVolume = Number(tier.minimumRunningNotionalTakerVolume);
 
           const indicator = isUserTier ? (
-            <YourTier testId={`your-tier-${i}`} />
+            <YourTier testId={`your-referral-tier-${i}`} />
           ) : referralVolumeInWindow >= requiredVolume &&
             epochsInSet < tier.minimumEpochs ? (
             <span className="text-muted text-xs">
