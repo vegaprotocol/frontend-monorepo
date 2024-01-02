@@ -52,6 +52,7 @@ REQUIRED_EPOCHS_VALUE_1 = "required-epochs-value-1"
 FILLS = "Fills"
 TAB_FILLS = "tab-fills"
 FEE_BREAKDOWN_TOOLTIP = "fee-breakdown-tooltip"
+PINNED_ROW_LOCATOR = ".ag-pinned-left-cols-container .ag-row"
 ROW_LOCATOR = ".ag-center-cols-container .ag-row"
 # Col-Ids:
 COL_INSTRUMENT_CODE = '[col-id="market.tradableInstrument.instrument.code"]'
@@ -461,8 +462,9 @@ def test_fees_page_discount_program_fees_by_market(
         vega_instance, tier, discount_program, market_ids
     )
     page.goto("/#/fees")
+    pinned = page.locator(PINNED_ROW_LOCATOR)
     row = page.locator(ROW_LOCATOR)
-    expect(row.locator(COL_CODE)).to_have_text("BTC:DAI_2023Futr")
+    expect(pinned.locator(COL_CODE)).to_have_text("BTC:DAI_2023Futr")
     expect(row.locator(COL_FEE_AFTER_DISCOUNT)).to_have_text(fees_after_discount)
     expect(row.locator(COL_INFRA_FEE)).to_have_text("0.05%")
     expect(row.locator(COL_MAKER_FEE)).to_have_text("10%")
