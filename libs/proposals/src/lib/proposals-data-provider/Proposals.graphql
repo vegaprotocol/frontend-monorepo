@@ -441,6 +441,9 @@ fragment ProposalListFields on Proposal {
       ... on UpdateNetworkParameter {
         ...UpdateNetworkParameterFields
       }
+      ... on UpdateMarketState {
+        ...UpdateMarketStateFields
+      }
     }
   }
 }
@@ -477,6 +480,9 @@ fragment MarketViewProposalFields on Proposal {
       }
       ... on NewMarket {
         ...NewMarketSuccessorFields
+      }
+      ... on UpdateMarket {
+        ...UpdateMarketFields
       }
     }
   }

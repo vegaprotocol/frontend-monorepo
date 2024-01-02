@@ -57,6 +57,7 @@ describe('proposals data provider', () => {
         {
           ...delta,
           id: '2',
+          // @ts-ignore skipping unnecessary fields
           terms: { ...delta.terms, change: { __typename: 'UpdateMarket' } },
         },
         reload,

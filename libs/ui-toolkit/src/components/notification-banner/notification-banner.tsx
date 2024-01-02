@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import { toastIconMapping } from '../toast';
 import { Intent } from '../../utils/intent';
-import { Icon } from '../icon';
+import { Icon, VegaIcon, VegaIconNames } from '../icon';
 import type { HTMLAttributes } from 'react';
 
 export const SHORT = '!px-1 !py-1 min-h-fit';
@@ -23,8 +23,8 @@ export const NotificationBanner = ({
   return (
     <div
       className={classNames(
-        'flex items-center px-1 py-3 border-b min-h-[56px]',
-        'text-[12px] leading-[16px] font-normal',
+        'flex items-center border-b px-2',
+        'text-xs leading-tight font-normal',
         {
           'bg-vega-light-100 dark:bg-vega-dark-100 ': intent === Intent.None,
           'bg-vega-blue-300 dark:bg-vega-blue-700': intent === Intent.Primary,
@@ -72,15 +72,15 @@ export const NotificationBanner = ({
           })}
         />
       )}
-      <div className="grow">{children}</div>
+      <div className="grow py-2">{children}</div>
       {onClose ? (
         <button
           type="button"
           data-testid="notification-banner-close"
           onClick={onClose}
-          className="ml-2"
+          className="p-2 -mr-2 dark:text-white"
         >
-          <Icon name="cross" size={4} className="dark:text-white" />
+          <VegaIcon name={VegaIconNames.CROSS} size={14} />
         </button>
       ) : null}
     </div>

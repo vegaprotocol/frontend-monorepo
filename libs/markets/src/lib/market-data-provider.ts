@@ -120,8 +120,7 @@ export const marketTradingModeProvider = makeDerivedDataProvider<
   MarketDataQueryVariables
 >(
   [marketDataProvider],
-  (parts, variables, prevData) =>
-    (parts[0] as ReturnType<typeof getData>)?.marketTradingMode
+  (parts) => (parts[0] as ReturnType<typeof getData>)?.marketTradingMode
 );
 
 export const marketStateProvider = makeDerivedDataProvider<
@@ -130,8 +129,7 @@ export const marketStateProvider = makeDerivedDataProvider<
   MarketDataQueryVariables
 >(
   [marketDataProvider],
-  (parts, variables, prevData) =>
-    (parts[0] as ReturnType<typeof getData>)?.marketState
+  (parts) => (parts[0] as ReturnType<typeof getData>)?.marketState
 );
 
 export const fundingRateProvider = makeDerivedDataProvider<

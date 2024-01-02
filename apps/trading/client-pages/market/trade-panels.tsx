@@ -1,6 +1,7 @@
 import { type PinnedAsset } from '@vegaprotocol/accounts';
 import { type Market } from '@vegaprotocol/markets';
-import { OracleBanner } from '@vegaprotocol/markets';
+// TODO: handle oracle banner
+// import { OracleBanner } from '@vegaprotocol/markets';
 import { useState } from 'react';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import classNames from 'classnames';
@@ -11,23 +12,17 @@ import {
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../lib/use-t';
-import {
-  MarketSuccessorBanner,
-  MarketSuccessorProposalBanner,
-  MarketTerminationBanner,
-} from '../../components/market-banner';
+import { MarketBanner } from '../../components/market-banner';
 import { ErrorBoundary } from '../../components/error-boundary';
 import { type TradingView } from './trade-views';
 import { TradingViews } from './trade-views';
-import { useFeatureFlags } from '@vegaprotocol/environment';
 
 interface TradePanelsProps {
-  market: Market | null;
+  market: Market;
   pinnedAsset?: PinnedAsset;
 }
 
 export const TradePanels = ({ market, pinnedAsset }: TradePanelsProps) => {
-  const featureFlags = useFeatureFlags((state) => state.flags);
   const [view, setView] = useState<TradingView>('chart');
   const viewCfg = TradingViews[view];
 
@@ -76,14 +71,7 @@ export const TradePanels = ({ market, pinnedAsset }: TradePanelsProps) => {
   return (
     <div className="h-full grid grid-rows-[min-content_min-content_1fr_min-content]">
       <div>
-        {featureFlags.SUCCESSOR_MARKETS && (
-          <>
-            <MarketSuccessorBanner market={market} />
-            <MarketSuccessorProposalBanner marketId={market?.id} />
-          </>
-        )}
-        <MarketTerminationBanner market={market} />
-        <OracleBanner marketId={market?.id || ''} />
+        <MarketBanner market={market} />
       </div>
       <div>{renderMenu()}</div>
       <div className="h-full relative">

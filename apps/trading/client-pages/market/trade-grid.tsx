@@ -1,11 +1,10 @@
-import { memo } from 'react';
-import type { ReactNode } from 'react';
+import { memo, type ReactNode } from 'react';
 import { LayoutPriority } from 'allotment';
 import classNames from 'classnames';
 import AutoSizer from 'react-virtualized-auto-sizer';
-import type { PinnedAsset } from '@vegaprotocol/accounts';
-import { OracleBanner, useMarket } from '@vegaprotocol/markets';
-import type { Market } from '@vegaprotocol/markets';
+import { useFeatureFlags } from '@vegaprotocol/environment';
+import { type PinnedAsset } from '@vegaprotocol/accounts';
+import { type Market } from '@vegaprotocol/markets';
 import { Tab, LocalStoragePersistTabs as Tabs } from '@vegaprotocol/ui-toolkit';
 import {
   ResizableGrid,
@@ -13,31 +12,19 @@ import {
   usePaneLayout,
 } from '../../components/resizable-grid';
 import { TradingViews } from './trade-views';
-import {
-  MarketSuccessorBanner,
-  MarketSuccessorProposalBanner,
-  MarketTerminationBanner,
-} from '../../components/market-banner';
-import { useFeatureFlags } from '@vegaprotocol/environment';
 import { useT } from '../../lib/use-t';
 import { ErrorBoundary } from '../../components/error-boundary';
+import { MarketBanner } from '../../components/market-banner';
 
 interface TradeGridProps {
-  market: Market | null;
-  pinnedAsset?: PinnedAsset;
+  market: Market;
+  pinnedAsset?: PinnedAsset | undefined;
 }
 
 const MainGrid = memo(
-  ({
-    marketId,
-    pinnedAsset,
-  }: {
-    marketId: string;
-    pinnedAsset?: PinnedAsset;
-  }) => {
+  ({ market, pinnedAsset }: { market: Market; pinnedAsset?: PinnedAsset }) => {
     const featureFlags = useFeatureFlags((state) => state.flags);
     const t = useT();
-    const { data: market } = useMarket(marketId);
     const [sizes, handleOnLayoutChange] = usePaneLayout({ id: 'top' });
     const [sizesMiddle, handleOnMiddleLayoutChange] = usePaneLayout({
       id: 'middle-1',
@@ -65,17 +52,17 @@ const MainGrid = memo(
                     menu={<TradingViews.chart.menu />}
                   >
                     <ErrorBoundary feature="chart">
-                      <TradingViews.chart.component marketId={marketId} />
+                      <TradingViews.chart.component marketId={market.id} />
                     </ErrorBoundary>
                   </Tab>
                   <Tab id="depth" name={t('Depth')}>
                     <ErrorBoundary feature="depth">
-                      <TradingViews.depth.component marketId={marketId} />
+                      <TradingViews.depth.component marketId={market.id} />
                     </ErrorBoundary>
                   </Tab>
                   <Tab id="liquidity" name={t('Liquidity')}>
                     <ErrorBoundary feature="liquidity">
-                      <TradingViews.liquidity.component marketId={marketId} />
+                      <TradingViews.liquidity.component marketId={market.id} />
                     </ErrorBoundary>
                   </Tab>
                   {market &&
@@ -83,7 +70,7 @@ const MainGrid = memo(
                     'Perpetual' ? (
                     <Tab id="funding-history" name={t('Funding history')}>
                       <ErrorBoundary feature="funding-history">
-                        <TradingViews.funding.component marketId={marketId} />
+                        <TradingViews.funding.component marketId={market.id} />
                       </ErrorBoundary>
                     </Tab>
                   ) : null}
@@ -97,7 +84,7 @@ const MainGrid = memo(
                     >
                       <ErrorBoundary feature="funding-payments">
                         <TradingViews.fundingPayments.component
-                          marketId={marketId}
+                          marketId={market.id}
                         />
                       </ErrorBoundary>
                     </Tab>
@@ -113,7 +100,7 @@ const MainGrid = memo(
                 <Tabs storageKey="console-trade-grid-main-right">
                   <Tab id="orderbook" name={t('Orderbook')}>
                     <ErrorBoundary feature="orderbook">
-                      <TradingViews.orderbook.component marketId={marketId} />
+                      <TradingViews.orderbook.component marketId={market.id} />
                     </ErrorBoundary>
                   </Tab>
                   <Tab
@@ -122,7 +109,7 @@ const MainGrid = memo(
                     settings={<TradingViews.trades.settings />}
                   >
                     <ErrorBoundary feature="trades">
-                      <TradingViews.trades.component marketId={marketId} />
+                      <TradingViews.trades.component marketId={market.id} />
                     </ErrorBoundary>
                   </Tab>
                 </Tabs>
@@ -225,7 +212,6 @@ const MainGrid = memo(
 MainGrid.displayName = 'MainGrid';
 
 export const TradeGrid = ({ market, pinnedAsset }: TradeGridProps) => {
-  const featureFlags = useFeatureFlags((state) => state.flags);
   const wrapperClasses = classNames(
     'h-full grid',
     'grid-rows-[min-content_1fr]'
@@ -234,17 +220,10 @@ export const TradeGrid = ({ market, pinnedAsset }: TradeGridProps) => {
   return (
     <div className={wrapperClasses}>
       <div>
-        {featureFlags.SUCCESSOR_MARKETS && (
-          <>
-            <MarketSuccessorBanner market={market} />
-            <MarketSuccessorProposalBanner marketId={market?.id} />
-          </>
-        )}
-        <MarketTerminationBanner market={market} />
-        <OracleBanner marketId={market?.id || ''} />
+        <MarketBanner market={market} />
       </div>
       <div className="min-h-0 p-0.5">
-        <MainGrid marketId={market?.id || ''} pinnedAsset={pinnedAsset} />
+        <MainGrid market={market} pinnedAsset={pinnedAsset} />
       </div>
     </div>
   );
