@@ -28,7 +28,7 @@ export const Team = () => {
       </div>
       <div className="flex flex-col gap-4 lg:gap-6 container p-4 mx-auto">
         <header className="flex gap-2 lg:gap-4 pt-5 lg:pt-10">
-          <div className="rounded-full w-14 h-14 lg:w-[112px] lg:h-[112px] bg-vega-clight-700 dark:bg-vega-cdark-700 shrink-0" />
+          <TeamAvatar />
           <div className="flex flex-col items-start gap-1 lg:gap-3">
             <h1 className="calt text-2xl lg:text-3xl xl:text-5xl">
               Vega Maxis long team name here
@@ -55,7 +55,11 @@ export const Team = () => {
               tooltip={'My rewards paid description'}
             />
             <Stat
-              value={'10K'}
+              value={
+                <>
+                  10K<span className="ml-2 text-sm">$VEGA</span>
+                </>
+              }
               label={<PnlLabel value={'-100'} />}
               tooltip={'PnL description'}
             />
@@ -146,8 +150,16 @@ const Games = () => {
       data={new Array(10).fill({
         rank: 1,
         date: getDateFormat().format(new Date()),
-        type: 'PnL',
-        amount: '100',
+        type: (
+          <span>
+            PNL <span className="text-muted">(%)</span>
+          </span>
+        ),
+        amount: (
+          <span>
+            10,000 $VEGA <span className="text-muted">(10%)</span>
+          </span>
+        ),
         teams: '1',
         status: (
           <span className="flex items-center gap-2">
@@ -157,6 +169,13 @@ const Games = () => {
       })}
       noCollapse={true}
     />
+  );
+};
+
+const TeamAvatar = () => {
+  // TODO: add fallback avatars
+  return (
+    <div className="rounded-full w-14 h-14 lg:w-[112px] lg:h-[112px] bg-vega-clight-700 dark:bg-vega-cdark-700 shrink-0" />
   );
 };
 
