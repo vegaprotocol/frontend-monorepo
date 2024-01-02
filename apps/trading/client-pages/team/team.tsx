@@ -20,12 +20,14 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import classNames from 'classnames';
 import BigNumber from 'bignumber.js';
+import { useT } from '../../lib/use-t';
 
 export const Team = () => {
+  const t = useT();
   const [showGames, setShowGames] = useState(true);
   return (
     <div className="relative">
-      <div className="absolute top-0 left-0 w-full h-[40%] -z-10 bg-[40%_0px] bg-[length:1440px] bg-no-repeat bg-local bg-[url(/cover.png)]">
+      <div className="absolute top-0 left-0 w-full h-[40%] -z-10 bg-[40%_0px] bg-cover bg-no-repeat bg-local bg-[url(/cover.png)]">
         <div className="absolute top-o left-0 w-full h-full bg-gradient-to-t from-white dark:from-black to-transparent from-20% to-60%" />
       </div>
       <div className="flex flex-col gap-4 lg:gap-6 container p-4 mx-auto">
@@ -66,14 +68,26 @@ export const Team = () => {
         <StatSection>
           <dl>
             <dt className="text-muted text-sm">Favorite game</dt>
-            <dd>TODO:</dd>
+            <dd>
+              <Pill className="flex-inline items-center gap-2 bg-transparent text-sm">
+                <VegaIcon
+                  name={VegaIconNames.STAR}
+                  className="text-vega-yellow-400"
+                />{' '}
+                Maker fees played
+              </Pill>
+            </dd>
           </dl>
           <StatSectionSeparator />
           <dl>
             <dt className="text-muted text-sm">Last 5 game results</dt>
             <dd className="flex gap-1">
               {new Array(4).fill(null).map((_, i) => {
-                return <Pill key={i}>{i}Th</Pill>;
+                return (
+                  <Pill key={i} className="text-sm">
+                    {t('place', { count: i + 1, ordinal: true })}
+                  </Pill>
+                );
               })}
             </dd>
           </dl>
@@ -174,7 +188,7 @@ const Stat = ({
 
 const Table = () => {
   return (
-    <table className="w-full border-separate border rounded-md border-spacing-0 border-vega-clight-500 dark:border-vega-cdark-500 bg-gradient-to-b from-vega-clight-800 dark:from-vega-cdark-800 to-transparent bg-white dark:bg-vega-cdark-900 text-sm text-left">
+    <table className="w-full table-fixed border-separate border rounded-md border-spacing-0 border-vega-clight-500 dark:border-vega-cdark-500 bg-gradient-to-b from-vega-clight-800 dark:from-vega-cdark-800 to-transparent bg-white dark:bg-vega-cdark-900 text-sm text-left">
       <thead>
         <tr>
           <Th>Rank</Th>
@@ -215,11 +229,11 @@ const JoinButton = ({ joined }: { joined: boolean }) => {
   const [open, setOpen] = useState(false);
   if (joined) {
     return (
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-1">
         <Button intent={Intent.None} disabled={true}>
           <span className="flex items-center gap-2">
             Joined{' '}
-            <span className="text-vega-green">
+            <span className="text-vega-green-600 dark:text-vega-green">
               <VegaIcon name={VegaIconNames.TICK} />
             </span>
           </span>
@@ -229,7 +243,7 @@ const JoinButton = ({ joined }: { joined: boolean }) => {
           open={open}
           trigger={
             <TradingDropdownTrigger>
-              <button>
+              <button className="p-2">
                 <VegaIcon name={VegaIconNames.KEBAB} size={24} />
               </button>
             </TradingDropdownTrigger>
