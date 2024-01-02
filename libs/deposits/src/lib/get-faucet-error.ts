@@ -17,9 +17,12 @@ export const useGetFaucetError = (error: TxError | null, symbol?: string) => {
       'The faucet transaction was rejected by the connected Ethereum wallet'
     ),
   };
+  if (!error) {
+    return error;
+  }
   // render a customized failure message from the map above or fallback
   // to a non generic error message
-  return error && 'reason' in error && reasonMap[error.reason]
+  return 'reason' in error && reasonMap[error.reason]
     ? reasonMap[error.reason]
     : t('Faucet of {{symbol}} failed', { symbol: symbol || '' });
 };
