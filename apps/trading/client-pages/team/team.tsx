@@ -3,6 +3,12 @@ import {
   Indicator,
   Intent,
   Pill,
+  TradingDropdown,
+  TradingDropdownContent,
+  TradingDropdownItem,
+  TradingDropdownTrigger,
+  VegaIcon,
+  VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 import classNames from 'classnames';
 import {
@@ -23,7 +29,7 @@ export const Team = () => {
           <h1 className="calt text-2xl lg:text-3xl xl:text-5xl">
             Vega Maxis long team name here
           </h1>
-          <Button intent={Intent.Primary}>Join this team</Button>
+          <JoinButton joined={true} />
         </div>
       </header>
       <StatSection>
@@ -162,4 +168,36 @@ const Th = (props: ThHTMLAttributes<HTMLTableHeaderCellElement>) => {
 
 const Td = (props: TdHTMLAttributes<HTMLTableCellElement>) => {
   return <td {...props} className={classNames('px-5 py-3', props.className)} />;
+};
+
+const JoinButton = ({ joined }: { joined: boolean }) => {
+  const [open, setOpen] = useState(false);
+  if (joined) {
+    return (
+      <div className="flex items-center gap-4">
+        <Button intent={Intent.None} disabled={true}>
+          <span className="flex items-center gap-2">
+            Joined <VegaIcon name={VegaIconNames.TICK} />
+          </span>
+        </Button>
+        <TradingDropdown
+          onOpenChange={setOpen}
+          open={open}
+          trigger={
+            <TradingDropdownTrigger>
+              <button>
+                <VegaIcon name={VegaIconNames.KEBAB} size={24} />
+              </button>
+            </TradingDropdownTrigger>
+          }
+        >
+          <TradingDropdownContent>
+            <TradingDropdownItem>Leave team</TradingDropdownItem>
+          </TradingDropdownContent>
+        </TradingDropdown>
+      </div>
+    );
+  }
+
+  return <Button intent={Intent.Primary}>Join this team</Button>;
 };
