@@ -16,7 +16,7 @@ export const Routes = {
   REFERRALS: '/referrals',
   REFERRALS_APPLY_CODE: '/referrals/apply-code',
   REFERRALS_CREATE_CODE: '/referrals/create-code',
-  TEAM: '/team/:teamId',
+  TEAM: '/competitions/team/:teamId',
   FEES: '/fees',
   REWARDS: '/rewards',
 } as const;
