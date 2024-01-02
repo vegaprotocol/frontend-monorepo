@@ -49,7 +49,7 @@ export const CreateCodeForm = () => {
   return (
     <div
       data-testid="referral-create-code-form"
-      className="w-2/3 max-w-md mx-auto bg-vega-clight-800 dark:bg-vega-cdark-800 p-8 rounded-lg"
+      className="md:w-2/3 max-w-md mx-auto bg-vega-clight-800 dark:bg-vega-cdark-800 p-8 rounded-lg"
     >
       <h3 className="mb-4 text-2xl text-center calt">
         {t('Create a referral code')}

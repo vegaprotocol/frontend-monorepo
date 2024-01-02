@@ -14,7 +14,7 @@ import {
   useUpdateReferees,
 } from './hooks/use-referral';
 import classNames from 'classnames';
-import { Table } from './table';
+import { Table } from '../../components/table';
 import {
   addDecimalsFormatNumber,
   getDateFormat,
