@@ -160,6 +160,7 @@ def setup_market_with_reward_program(vega: VegaService, reward_programs, tier):
         asset_for_metric=tDAI_asset_id,
         metric=vega_protos.vega.DISPATCH_METRIC_MAKER_FEES_PAID,
         # lock_period= 5,
+        # TODO test lock period
         amount=100,
         factor=1.0,
     )
@@ -181,7 +182,17 @@ def setup_market_with_reward_program(vega: VegaService, reward_programs, tier):
     )
 
     vega.wait_for_total_catchup()
-    """  if tier == 1:
+    if tier == 1:
+        next_epoch(vega=vega)
+        vega.submit_order(
+            trading_key=PARTY_B.name,
+            market_id=tDAI_market,
+            order_type="TYPE_LIMIT",
+            time_in_force="TIME_IN_FORCE_GTC",
+            side="SIDE_BUY",
+            price=1,
+            volume=1,
+        )
         next_epoch(vega=vega)
         vega.submit_order(
             trading_key=PARTY_B.name,
@@ -199,9 +210,9 @@ def setup_market_with_reward_program(vega: VegaService, reward_programs, tier):
             side="SIDE_BUY",
             volume=1,
         )
-        vega.wait_for_total_catchup() """
-
-        #next_epoch(vega=vega)
+        vega.wait_for_total_catchup()
+        next_epoch(vega=vega)
+        next_epoch(vega=vega)
     return tDAI_market, tDAI_asset_id
 
 
@@ -231,7 +242,7 @@ ACTIVITY_STREAKS = """
 {
     "tiers": [
         {
-            "minimum_activity_streak": 1, 
+            "minimum_activity_streak": 2, 
             "reward_multiplier": "2.0", 
             "vesting_multiplier": "1.1"
         },
@@ -251,7 +262,7 @@ VESTING = """
             "reward_multiplier": "2"
         },
         {
-            "minimum_quantum_balance": "11666668",
+            "minimum_quantum_balance": "13000001",
             "reward_multiplier": "3"   
         }
     ]
@@ -262,12 +273,12 @@ VESTING = """
 @pytest.mark.parametrize(
     "reward_program, tier, total_rewards",
     [
-        #("activity", 0, "50.00 tDAI"),
-        #("hoarder", 0, "50.00 tDAI"),
-        #("combo", 0, "50.00 tDAI"),
-        ("activity", 1, "110.00 tDAI"),
-        #("hoarder", 1, "116.66666 tDAI"),
-        #("combo", 1, "125.00 tDAI"),
+        ("activity", 0, "50.00 tDAI"),
+        ("hoarder", 0, "50.00 tDAI"),
+        ("combo", 0, "50.00 tDAI"),
+        ("activity", 1, "116.66666 tDAI"),
+        ("hoarder", 1, "116.66666 tDAI"),
+        ("combo", 1, "130.00 tDAI"),
     ],
 )
 @pytest.mark.usefixtures("auth", "risk_accepted")
@@ -276,52 +287,13 @@ def test_network_reward_pot(
 ):
     vega, market_id, tDAI_asset_id = vega_instance
     next_epoch(vega=vega)
-   
+
     page.goto(f"/#/rewards")
-    if tier == 1:
-        page.pause()
-        next_epoch(vega=vega)
-        next_epoch(vega=vega)
-        vega.submit_order(
-            trading_key=PARTY_B.name,
-            market_id=market_id,
-            order_type="TYPE_MARKET",
-            time_in_force="TIME_IN_FORCE_IOC",
-            side="SIDE_BUY",
-            volume=1,
-        )
-        vega.submit_order(
-            trading_key=PARTY_D.name,
-            market_id=market_id,
-            order_type="TYPE_MARKET",
-            time_in_force="TIME_IN_FORCE_IOC",
-            side="SIDE_BUY",
-            volume=1,
-        )
-        vega.wait_for_total_catchup()
-        page.pause()
-        next_epoch(vega=vega)
-        page.pause()
-        next_epoch(vega=vega)
+
     change_keys(page, vega, PARTY_B.name)
-    page.pause()
-    
+
     expect(page.get_by_test_id("total-rewards")).to_have_text(total_rewards)
     # TODO Add test ID and Assert for locked,
-
-
-
-@pytest.mark.parametrize(
-    "reward_program",
-    [
-        ("activity"),
-        # ("hoarder"),
-        # ("combo"),
-    ],
-)
-@pytest.mark.usefixtures("auth", "risk_accepted")
-def test_vesting(vega_setup, vega: VegaService, page: Page):
-    expect()
 
 
 @pytest.mark.parametrize(
@@ -336,48 +308,29 @@ def test_vesting(vega_setup, vega: VegaService, page: Page):
     ],
 )
 @pytest.mark.usefixtures("auth", "risk_accepted")
-def test_reward_multiplier(reward_program, vega_instance: VegaService, page: Page, reward_multiplier, tier):
+def test_reward_multiplier(
+    reward_program, vega_instance: VegaService, page: Page, reward_multiplier, tier
+):
+    print("reward program: " + reward_program, " tier:", tier)
     vega, market_id, tDAI_asset_id = vega_instance
     page.goto(f"/#/rewards")
     change_keys(page, vega, PARTY_B.name)
+    page.pause()
     expect(page.get_by_test_id("combined-multipliers")).to_have_text(reward_multiplier)
-    #TODO add test ids and assert for individual multipliers
+    # TODO add test ids and assert for individual multipliers
+
 
 """ 
-@pytest.mark.parametrize(
-    "reward_program",
-    [
-        ("activity"),
-        # ("hoarder"),
-        # ("combo"),
-    ],
-)
+
 @pytest.mark.usefixtures("auth", "risk_accepted")
 def test_activity_streak(vega_setup, vega: VegaService, page: Page):
     expect()
 
 
-@pytest.mark.parametrize(
-    "reward_program",
-    [
-        ("activity"),
-        # ("hoarder"),
-        # ("combo"),
-    ],
-)
 @pytest.mark.usefixtures("auth", "risk_accepted")
 def test_hoarder_Bonus(vega_setup, vega: VegaService, page: Page):
     expect()
 
-
-@pytest.mark.parametrize(
-    "reward_program",
-    [
-        ("activity"),
-        # ("hoarder"),
-        # ("combo"),
-    ],
-)
 @pytest.mark.usefixtures("auth", "risk_accepted")
 def test_Rewards_history(vega_setup, vega: VegaService, page: Page):
     expect()
@@ -784,5 +737,9 @@ def test_redeem(vega_setup, vega: VegaService, page: Page):
 
 @pytest.mark.usefixtures("auth", "risk_accepted")
 def test_redeem(vega_setup, vega: VegaService, page: Page):
+    expect()
+
+@pytest.mark.usefixtures("auth", "risk_accepted")
+def test_vesting(vega_setup, vega: VegaService, page: Page):
     expect()
  """
