@@ -9,6 +9,18 @@ from actions.utils import next_epoch, change_keys
 from wallet_config import MM_WALLET, PARTY_A, PARTY_B, PARTY_C, PARTY_D
 from vega_sim.service import VegaService
 
+# region Constants 
+ACTIVITY = "activity"
+HOARDER = "hoarder"
+COMBO = "combo"
+
+REWARDS_URL = "/#/rewards"
+
+# test IDs
+COMBINED_MULTIPLIERS = "combined-multipliers"
+TOTAL_REWARDS = "total-rewards"
+
+# endregion
 
 @pytest.fixture(scope="module")
 def market_ids():
@@ -99,9 +111,9 @@ def vega_instance(
     """
 
     vega_tiers = {
-        "activity": (vega_activity_tier_0, vega_activity_tier_1),
-        "hoarder": (vega_hoarder_tier_0, vega_hoarder_tier_1),
-        "combo": (vega_combo_tier_0, vega_combo_tier_1),
+        ACTIVITY: (vega_activity_tier_0, vega_activity_tier_1),
+        HOARDER: (vega_hoarder_tier_0, vega_hoarder_tier_1),
+        COMBO: (vega_combo_tier_0, vega_combo_tier_1),
     }
 
     if reward_program not in vega_tiers or tier not in (0, 1):
@@ -128,7 +140,7 @@ def setup_market_with_reward_program(vega: VegaService, reward_programs, tier):
     vega.mint(key_name=PARTY_A.name, asset=tDAI_asset_id, amount=100000)
     vega.mint(key_name=PARTY_D.name, asset=tDAI_asset_id, amount=100000)
     next_epoch(vega=vega)
-    if "activity" in reward_programs:
+    if ACTIVITY in reward_programs:
         vega.update_network_parameter(
             proposal_key=MM_WALLET.name,
             parameter="rewards.activityStreak.benefitTiers",
@@ -137,7 +149,7 @@ def setup_market_with_reward_program(vega: VegaService, reward_programs, tier):
         print("update_network_parameter activity done")
         next_epoch(vega=vega)
 
-    if "hoarder" in reward_programs:
+    if HOARDER in reward_programs:
         vega.update_network_parameter(
             proposal_key=MM_WALLET.name,
             parameter="rewards.vesting.benefitTiers",
@@ -218,8 +230,8 @@ def setup_market_with_reward_program(vega: VegaService, reward_programs, tier):
 
 def set_market_reward_program(vega, reward_program, market_ids, tier):
     market_id_key = f"vega_{reward_program}"
-    if reward_program == "combo":
-        market_id_key = "combo"
+    if reward_program == COMBO:
+        market_id_key = COMBO
 
     market_id = market_ids.get(market_id_key, "default_id")
 
@@ -228,8 +240,8 @@ def set_market_reward_program(vega, reward_program, market_ids, tier):
         print(f"Market doesn't exist for {reward_program}. Setting up new market.")
 
         reward_programs = [reward_program]
-        if reward_program == "combo":
-            reward_programs = ["activity", "hoarder"]
+        if reward_program == COMBO:
+            reward_programs = [ACTIVITY, HOARDER]
 
         market_id = setup_market_with_reward_program(vega, reward_programs, tier)
         market_ids[market_id_key] = market_id
@@ -273,12 +285,12 @@ VESTING = """
 @pytest.mark.parametrize(
     "reward_program, tier, total_rewards",
     [
-        ("activity", 0, "50.00 tDAI"),
-        ("hoarder", 0, "50.00 tDAI"),
-        ("combo", 0, "50.00 tDAI"),
-        ("activity", 1, "116.66666 tDAI"),
-        ("hoarder", 1, "116.66666 tDAI"),
-        ("combo", 1, "130.00 tDAI"),
+        (ACTIVITY, 0, "50.00 tDAI"),
+        (HOARDER, 0, "50.00 tDAI"),
+        (COMBO, 0, "50.00 tDAI"),
+        (ACTIVITY, 1, "116.66666 tDAI"),
+        (HOARDER, 1, "116.66666 tDAI"),
+        (COMBO, 1, "130.00 tDAI"),
     ],
 )
 @pytest.mark.usefixtures("auth", "risk_accepted")
@@ -288,23 +300,23 @@ def test_network_reward_pot(
     vega, market_id, tDAI_asset_id = vega_instance
     next_epoch(vega=vega)
 
-    page.goto(f"/#/rewards")
+    page.goto(REWARDS_URL)
 
     change_keys(page, vega, PARTY_B.name)
 
-    expect(page.get_by_test_id("total-rewards")).to_have_text(total_rewards)
+    expect(page.get_by_test_id(TOTAL_REWARDS)).to_have_text(total_rewards)
     # TODO Add test ID and Assert for locked,
 
 
 @pytest.mark.parametrize(
     "reward_program, tier, reward_multiplier",
     [
-        ("activity", 0, "1x"),
-        ("hoarder", 0, "1x"),
-        ("combo", 0, "1x"),
-        ("activity", 1, "2x"),
-        ("hoarder", 1, "2x"),
-        ("combo", 1, "4x"),
+        (ACTIVITY, 0, "1x"),
+        (HOARDER, 0, "1x"),
+        (COMBO, 0, "1x"),
+        (ACTIVITY, 1, "2x"),
+        (HOARDER, 1, "2x"),
+        (COMBO, 1, "4x"),
     ],
 )
 @pytest.mark.usefixtures("auth", "risk_accepted")
@@ -313,13 +325,13 @@ def test_reward_multiplier(
 ):
     print("reward program: " + reward_program, " tier:", tier)
     vega, market_id, tDAI_asset_id = vega_instance
-    page.goto(f"/#/rewards")
+    page.goto(REWARDS_URL)
     change_keys(page, vega, PARTY_B.name)
-    page.pause()
-    expect(page.get_by_test_id("combined-multipliers")).to_have_text(reward_multiplier)
+    expect(page.get_by_test_id(COMBINED_MULTIPLIERS)).to_have_text(reward_multiplier)
     # TODO add test ids and assert for individual multipliers
 
 
+#TODO Add tests for below.
 """ 
 
 @pytest.mark.usefixtures("auth", "risk_accepted")
