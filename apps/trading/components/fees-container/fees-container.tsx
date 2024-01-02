@@ -486,7 +486,7 @@ const VolumeTiers = ({
       <SimpleTable
         className="bg-white dark:bg-vega-cdark-900"
         columns={[
-          { name: 'tier', displayName: t('Tier'), testId: 'tier-value' },
+          { name: 'tier', displayName: t('Tier'), testId: 'col-tier-value' },
           {
             name: 'discount',
             displayName: t('Discount'),
@@ -515,7 +515,7 @@ const VolumeTiers = ({
           const indicator = isUserTier ? <YourTier /> : null;
           const tierIndicator = (
             <div className="flex justify-between">
-              <span>{i + 1}</span>
+              <span data-testid={`tier-value-${i}`}>{i + 1}</span>
               <span className="md:hidden">{indicator}</span>
             </div>
           );
@@ -574,7 +574,7 @@ const ReferralTiers = ({
       <SimpleTable
         className="bg-white dark:bg-vega-cdark-900"
         columns={[
-          { name: 'tier', displayName: t('Tier'), testId: 'tier-value' },
+          { name: 'tier', displayName: t('Tier'), testId: 'col-tier-value' },
           {
             name: 'discount',
             displayName: t('Discount'),
@@ -626,7 +626,7 @@ const ReferralTiers = ({
 
           const tierIndicator = (
             <div className="flex justify-between">
-              <span>{i + 1}</span>
+              <span data-testid={`tier-value-${i}`}>{i + 1}</span>
               <span className="md:hidden">{indicator}</span>
             </div>
           );
