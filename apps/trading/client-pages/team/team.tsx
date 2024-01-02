@@ -11,14 +11,43 @@ import {
   VegaIcon,
   VegaIconNames,
   Tooltip,
+  Splash,
 } from '@vegaprotocol/ui-toolkit';
 import classNames from 'classnames';
 import BigNumber from 'bignumber.js';
 import { useT } from '../../lib/use-t';
 import { Table } from '../../components/table';
 import { getDateFormat } from '@vegaprotocol/utils';
+import { useTeam, type Team as TeamType, type TeamStats } from './use-team';
+import { useParams } from 'react-router-dom';
+import { useVegaWallet } from '@vegaprotocol/wallet';
 
 export const Team = () => {
+  const t = useT();
+  const { teamId } = useParams<{ teamId: string }>();
+  const { pubKey } = useVegaWallet();
+  const { team, stats, partyInTeam } = useTeam(teamId, pubKey || undefined);
+
+  if (!team) {
+    return (
+      <Splash>
+        <p>{t('Page not found')}</p>
+      </Splash>
+    );
+  }
+
+  return <TeamPage team={team} stats={stats} partyInTeam={partyInTeam} />;
+};
+
+export const TeamPage = ({
+  team,
+  stats,
+  partyInTeam,
+}: {
+  team: TeamType;
+  stats?: TeamStats;
+  partyInTeam: boolean;
+}) => {
   const t = useT();
   const [showGames, setShowGames] = useState(true);
   return (
@@ -31,9 +60,9 @@ export const Team = () => {
           <TeamAvatar />
           <div className="flex flex-col items-start gap-1 lg:gap-3">
             <h1 className="calt text-2xl lg:text-3xl xl:text-5xl">
-              Vega Maxis long team name here
+              {team.name}
             </h1>
-            <JoinButton joined={true} />
+            <JoinButton joined={partyInTeam} />
           </div>
         </header>
         <StatSection>
@@ -41,7 +70,7 @@ export const Team = () => {
             <Stat value={24} label={'Rank'} tooltip={'My rank description'} />
             <Stat value={486} label={'Members'} />
             <Stat
-              value={7}
+              value={stats ? stats.totalGamesPlayed : 0}
               label={'Total games'}
               tooltip={'My games description'}
             />

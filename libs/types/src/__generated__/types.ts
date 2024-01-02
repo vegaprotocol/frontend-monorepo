@@ -1135,6 +1135,15 @@ export type Erc20WithdrawalDetails = {
   receiverAddress: Scalars['String'];
 };
 
+/** EstimatedTransferFee Results of estimation of transfer fee and the fee discount */
+export type EstimatedTransferFee = {
+  __typename?: 'EstimatedTransferFee';
+  /** Discount applied to the fee. */
+  discount: Scalars['String'];
+  /** Estimated fee for the transfer. */
+  fee: Scalars['String'];
+};
+
 /**
  * Specifies a data source that derives its content from calling a read method
  * on an Ethereum contract.
@@ -1274,6 +1283,8 @@ export type Fees = {
   __typename?: 'Fees';
   /** The factors used to calculate the different fees */
   factors: FeeFactors;
+  /** Liquidity fee settings for the market describing how the fee was calculated */
+  liquidityFeeSettings?: Maybe<LiquidityFeeSettings>;
 };
 
 /** Fees that have been applied on a specific market/asset up to the given epoch. */
@@ -1476,6 +1487,39 @@ export type FutureProduct = {
   settlementAsset: Asset;
 };
 
+/** Game metrics for a given epoch */
+export type Game = {
+  __typename?: 'Game';
+  /** Entities that were rewarded during the epoch. */
+  entities: Array<GameEntity>;
+  /** Epoch during which the metrics were calculated. */
+  epoch: Scalars['Int'];
+  /** ID of the game. */
+  id: Scalars['ID'];
+  /** Number of participants that took part in the game during the epoch. */
+  numberOfParticipants: Scalars['Int'];
+};
+
+/** Edge type containing the game metrics and cursor information returned by a GameConnection */
+export type GameEdge = {
+  __typename?: 'GameEdge';
+  /** Cursor identifying the game */
+  cursor: Scalars['String'];
+  /** Game information and metrics. */
+  node: Game;
+};
+
+export type GameEntity = IndividualGameEntity | TeamGameEntity;
+
+/** Connection type for retrieving cursor-based paginated game information */
+export type GamesConnection = {
+  __typename?: 'GamesConnection';
+  /** Page of game edges for the connection */
+  edges?: Maybe<Array<Maybe<GameEdge>>>;
+  /** Current page information */
+  pageInfo?: Maybe<PageInfo>;
+};
+
 export type GovernanceTransferKind = OneOffGovernanceTransfer | RecurringGovernanceTransfer;
 
 export enum GovernanceTransferType {
@@ -1507,6 +1551,23 @@ export type IcebergOrder = {
   peakSize: Scalars['String'];
   /** Size of the order that is reserved and used to restore the iceberg's peak when it is refreshed */
   reservedRemaining: Scalars['String'];
+};
+
+/** Individual party participating in a game and their metrics */
+export type IndividualGameEntity = {
+  __typename?: 'IndividualGameEntity';
+  /** Party ID of the participant */
+  individual: Scalars['ID'];
+  /** The rank of the individual within the game. If the individual is in a team, then the rank of the individual in the team */
+  rank: Scalars['Int'];
+  /** The rewards earned by the individual during the epoch */
+  rewardEarned: Scalars['String'];
+  /** The reward metric applied to the game */
+  rewardMetric: Scalars['String'];
+  /** Total rewards earned by the individual during the game */
+  totalRewardsEarned: Scalars['String'];
+  /** The volume traded by the individual */
+  volume: Scalars['String'];
 };
 
 export enum IndividualScope {
@@ -1576,12 +1637,22 @@ export enum Interval {
   INTERVAL_I1H = 'INTERVAL_I1H',
   /** 1 minute interval */
   INTERVAL_I1M = 'INTERVAL_I1M',
+  /** 4 hour interval */
+  INTERVAL_I4H = 'INTERVAL_I4H',
   /** 5 minute interval */
   INTERVAL_I5M = 'INTERVAL_I5M',
   /** 6 hour interval */
   INTERVAL_I6H = 'INTERVAL_I6H',
+  /** 7 day interval */
+  INTERVAL_I7D = 'INTERVAL_I7D',
+  /** 8 hour interval */
+  INTERVAL_I8H = 'INTERVAL_I8H',
+  /** 12 hour interval */
+  INTERVAL_I12H = 'INTERVAL_I12H',
   /** 15 minute interval (default) */
-  INTERVAL_I15M = 'INTERVAL_I15M'
+  INTERVAL_I15M = 'INTERVAL_I15M',
+  /** 30 minute interval */
+  INTERVAL_I30M = 'INTERVAL_I30M'
 }
 
 /** A node's key rotation event */
@@ -1650,6 +1721,8 @@ export type LedgerEntryFilter = {
   FromAccountFilter?: InputMaybe<AccountFilter>;
   /** Used to set values for filtering receiver accounts. Party must be provided in this filter or from_account_filter, or both. */
   ToAccountFilter?: InputMaybe<AccountFilter>;
+  /** Optional transfer ID to filter by. If provided, all other filters are ignored. */
+  TransferId?: InputMaybe<Scalars['ID']>;
   /** List of transfer types that is used for filtering sender and receiver accounts. */
   TransferTypes?: InputMaybe<Array<InputMaybe<TransferType>>>;
 };
@@ -1672,6 +1745,37 @@ export type LiquidationPrice = {
   including_sell_orders: Scalars['String'];
   /** Liquidation price for current open volume ignoring any active orders */
   open_volume_only: Scalars['String'];
+};
+
+export type LiquidationStrategy = {
+  __typename?: 'LiquidationStrategy';
+  /** Specifies the fraction of its position the network will try to reduce its position by in a single disposal attempt. */
+  disposalFraction: Scalars['String'];
+  /** Specifies the interval, in seconds, at which point the network will try to unload its position. */
+  disposalTimeStep: Scalars['Int'];
+  /** Specifies the size of the position held by the network that it will try to dispose of in one attempt. */
+  fullDisposalSize: Scalars['Int'];
+  /** Specifies the maximum size by which the network can reduce its position as a fraction of the volume on the book. */
+  maxFractionConsumed: Scalars['String'];
+};
+
+export enum LiquidityFeeMethod {
+  /** Fee is set by the market to a constant value irrespective of any liquidity provider's nominated fee */
+  METHOD_CONSTANT = 'METHOD_CONSTANT',
+  /** Fee is smallest value of all bids, such that liquidity providers with nominated fees less than or equal to this value still have sufficient commitment to fulfil the market's target stake. */
+  METHOD_MARGINAL_COST = 'METHOD_MARGINAL_COST',
+  METHOD_UNSPECIFIED = 'METHOD_UNSPECIFIED',
+  /** Fee is the weighted average of all liquidity providers' nominated fees, weighted by their commitment */
+  METHOD_WEIGHTED_AVERAGE = 'METHOD_WEIGHTED_AVERAGE'
+}
+
+/** Market settings that describe how the liquidity fee is calculated */
+export type LiquidityFeeSettings = {
+  __typename?: 'LiquidityFeeSettings';
+  /** Constant liquidity fee used when using the constant fee method */
+  feeConstant?: Maybe<Scalars['String']>;
+  /** Method used to calculate the market's liquidity fee */
+  method: LiquidityFeeMethod;
 };
 
 /** Configuration of a market liquidity monitoring parameters */
@@ -1986,8 +2090,14 @@ export type MarginLevels = {
   initialLevel: Scalars['String'];
   /** Minimal margin for the position to be maintained in the network (unsigned integer) */
   maintenanceLevel: Scalars['String'];
+  /** Margin factor, only relevant for isolated margin mode, else 0 */
+  marginFactor: Scalars['String'];
+  /** Margin mode of the party, cross margin or isolated margin */
+  marginMode: MarginMode;
   /** Market in which the margin is required for this party */
   market: Market;
+  /** When in isolated margin, the required order margin level, otherwise, 0 */
+  orderMarginLevel: Scalars['String'];
   /** The party for this margin */
   party: Party;
   /** If the margin is between maintenance and search, the network will initiate a collateral search, expressed as unsigned integer */
@@ -2010,8 +2120,14 @@ export type MarginLevelsUpdate = {
   initialLevel: Scalars['String'];
   /** Minimal margin for the position to be maintained in the network (unsigned integer) */
   maintenanceLevel: Scalars['String'];
+  /** Margin factor, only relevant for isolated margin mode, else 0 */
+  marginFactor: Scalars['String'];
+  /** Margin mode of the party, cross margin or isolated margin */
+  marginMode: MarginMode;
   /** Market in which the margin is required for this party */
   marketId: Scalars['ID'];
+  /** When in isolated margin, the required order margin level, otherwise, 0 */
+  orderMarginLevel: Scalars['String'];
   /** The party for this margin */
   partyId: Scalars['ID'];
   /** If the margin is between maintenance and search, the network will initiate a collateral search (unsigned integer) */
@@ -2019,6 +2135,13 @@ export type MarginLevelsUpdate = {
   /** RFC3339Nano time from at which this margin level was relevant */
   timestamp: Scalars['Timestamp'];
 };
+
+export enum MarginMode {
+  /** Party is in cross margin mode */
+  MARGIN_MODE_CROSS_MARGIN = 'MARGIN_MODE_CROSS_MARGIN',
+  /** Party is in isolated margin mode */
+  MARGIN_MODE_ISOLATED_MARGIN = 'MARGIN_MODE_ISOLATED_MARGIN'
+}
 
 /** Represents a product & associated parameters that can be traded on Vega, has an associated OrderBook and Trade history */
 export type Market = {
@@ -2056,6 +2179,8 @@ export type Market = {
   insurancePoolFraction?: Maybe<Scalars['String']>;
   /** Linear slippage factor is used to cap the slippage component of maintainence margin - it is applied to the slippage volume */
   linearSlippageFactor: Scalars['String'];
+  /** Optional: Liquidation strategy for the market */
+  liquidationStrategy?: Maybe<LiquidationStrategy>;
   /** Liquidity monitoring parameters for the market */
   liquidityMonitoringParameters: LiquidityMonitoringParameters;
   /** The list of the liquidity provision commitments for this market */
@@ -2092,7 +2217,10 @@ export type Market = {
   priceMonitoringSettings: PriceMonitoringSettings;
   /** The proposal that initiated this market */
   proposal?: Maybe<Proposal>;
-  /** Quadratic slippage factor is used to cap the slippage component of maintainence margin - it is applied to the square of the slippage volume */
+  /**
+   * Quadratic slippage factor is used to cap the slippage component of maintainence margin - it is applied to the square of the slippage volume
+   * @deprecated This field will be removed in a future release
+   */
   quadraticSlippageFactor: Scalars['String'];
   /** Risk factors for the market */
   riskFactors?: Maybe<RiskFactor>;
@@ -2222,6 +2350,8 @@ export type MarketData = {
   midPrice: Scalars['String'];
   /** RFC3339Nano time indicating the next time positions will be marked to market */
   nextMarkToMarket: Scalars['String'];
+  /** RFC3339Nano time indicating the next time the network will attempt to close part of its position */
+  nextNetworkCloseout: Scalars['String'];
   /** The sum of the size of all positions greater than 0. */
   openInterest: Scalars['String'];
   /** A list of valid price ranges per associated trigger */
@@ -2485,6 +2615,10 @@ export type NewMarket = {
   instrument: InstrumentConfiguration;
   /** Linear slippage factor is used to cap the slippage component of maintenance margin - it is applied to the slippage volume */
   linearSlippageFactor: Scalars['String'];
+  /** Liquidation strategy for the market */
+  liquidationStrategy?: Maybe<LiquidationStrategy>;
+  /** Specifies how the liquidity fee for the market will be calculated */
+  liquidityFeeSettings?: Maybe<LiquidityFeeSettings>;
   /** Liquidity monitoring parameters */
   liquidityMonitoringParameters: LiquidityMonitoringParameters;
   /** Liquidity SLA Parameters */
@@ -2495,7 +2629,10 @@ export type NewMarket = {
   positionDecimalPlaces: Scalars['Int'];
   /** Price monitoring parameters */
   priceMonitoringParameters: PriceMonitoringParameters;
-  /** Quadratic slippage factor is used to cap the slippage component of maintenance margin - it is applied to the square of the slippage volume */
+  /**
+   * Quadratic slippage factor is used to cap the slippage component of maintenance margin - it is applied to the square of the slippage volume
+   * @deprecated This field will be removed in a future release
+   */
   quadraticSlippageFactor: Scalars['String'];
   /** New market risk configuration */
   riskParameters: RiskModel;
@@ -2510,6 +2647,8 @@ export type NewSpotMarket = {
   decimal_places: Scalars['Int'];
   /** New spot market instrument configuration */
   instrument: InstrumentConfiguration;
+  /** Specifies how the liquidity fee for the market will be calculated */
+  liquidityFeeSettings?: Maybe<LiquidityFeeSettings>;
   /** Specifies the liquidity provision SLA parameters */
   liquiditySLAParams: LiquiditySLAParameters;
   /** Optional spot market metadata tags */
@@ -3118,6 +3257,8 @@ export enum OrderRejectionReason {
   ORDER_ERROR_INVALID_TIME_IN_FORCE = 'ORDER_ERROR_INVALID_TIME_IN_FORCE',
   /** Invalid type */
   ORDER_ERROR_INVALID_TYPE = 'ORDER_ERROR_INVALID_TYPE',
+  /** Party has insufficient funds to cover for the order margin for the new or amended order */
+  ORDER_ERROR_ISOLATED_MARGIN_CHECK_FAILED = 'ORDER_ERROR_ISOLATED_MARGIN_CHECK_FAILED',
   /** Margin check failed - not enough available margin */
   ORDER_ERROR_MARGIN_CHECK_FAILED = 'ORDER_ERROR_MARGIN_CHECK_FAILED',
   /** Market is closed */
@@ -3138,6 +3279,8 @@ export enum OrderRejectionReason {
   ORDER_ERROR_OFFSET_MUST_BE_GREATER_THAN_ZERO = 'ORDER_ERROR_OFFSET_MUST_BE_GREATER_THAN_ZERO',
   /** Order is out of sequence */
   ORDER_ERROR_OUT_OF_SEQUENCE = 'ORDER_ERROR_OUT_OF_SEQUENCE',
+  /** Pegged orders are not allowed for a party in isolated margin mode */
+  ORDER_ERROR_PEGGED_ORDERS_NOT_ALLOWED_IN_ISOLATED_MARGIN_MODE = 'ORDER_ERROR_PEGGED_ORDERS_NOT_ALLOWED_IN_ISOLATED_MARGIN_MODE',
   /** A post-only order would produce an aggressive trade and thus it has been rejected */
   ORDER_ERROR_POST_ONLY_ORDER_WOULD_TRADE = 'ORDER_ERROR_POST_ONLY_ORDER_WOULD_TRADE',
   /** A reduce-ony order would not reduce the party's position and thus it has been rejected */
@@ -3482,7 +3625,9 @@ export type PartyrewardSummariesArgs = {
 export type PartyrewardsConnectionArgs = {
   assetId?: InputMaybe<Scalars['ID']>;
   fromEpoch?: InputMaybe<Scalars['Int']>;
+  gameId?: InputMaybe<Scalars['ID']>;
   pagination?: InputMaybe<Pagination>;
+  teamId?: InputMaybe<Scalars['ID']>;
   toEpoch?: InputMaybe<Scalars['Int']>;
 };
 
@@ -3504,8 +3649,12 @@ export type PartytradesConnectionArgs = {
 /** Represents a party on Vega, could be an ethereum wallet address in the future */
 export type PartytransfersConnectionArgs = {
   direction?: InputMaybe<TransferDirection>;
+  fromEpoch?: InputMaybe<Scalars['Int']>;
   isReward?: InputMaybe<Scalars['Boolean']>;
   pagination?: InputMaybe<Pagination>;
+  scope?: InputMaybe<TransferScope>;
+  status?: InputMaybe<TransferStatus>;
+  toEpoch?: InputMaybe<Scalars['Int']>;
 };
 
 
@@ -3662,6 +3811,12 @@ export type Perpetual = {
   dataSourceSpecForSettlementData: DataSourceSpec;
   /** Data source specification describing the data source for settlement schedule */
   dataSourceSpecForSettlementSchedule: DataSourceSpec;
+  /** Lower bound for the funding-rate such that the funding-rate will never be lower than this value */
+  fundingRateLowerBound: Scalars['String'];
+  /** Factor applied to funding-rates. This scales the impact that spot price deviations have on funding payments */
+  fundingRateScalingFactor: Scalars['String'];
+  /** Upper bound for the funding-rate such that the funding-rate will never be higher than this value */
+  fundingRateUpperBound: Scalars['String'];
   /** Continuously compounded interest rate used in funding rate calculation, in the range [-1, 1] */
   interestRate: Scalars['String'];
   /** Controls how much the upcoming funding payment liability contributes to party's margin, in the range [0, 1] */
@@ -3683,6 +3838,10 @@ export type PerpetualData = {
   fundingRate?: Maybe<Scalars['String']>;
   /** Time-weighted average price calculated from data points for this period from the internal data source. */
   internalTwap?: Maybe<Scalars['String']>;
+  /** Funding period sequence number */
+  seqNum: Scalars['Int'];
+  /** Time at which the funding period started */
+  startTime: Scalars['Timestamp'];
 };
 
 export type PerpetualProduct = {
@@ -3697,6 +3856,12 @@ export type PerpetualProduct = {
   dataSourceSpecForSettlementData: DataSourceDefinition;
   /** Data source specification describing the data source for settlement schedule */
   dataSourceSpecForSettlementSchedule: DataSourceDefinition;
+  /** Lower bound for the funding-rate such that the funding-rate will never be lower than this value */
+  fundingRateLowerBound: Scalars['String'];
+  /** Factor applied to funding-rates. This scales the impact that spot price deviations have on funding payments. */
+  fundingRateScalingFactor: Scalars['String'];
+  /** Upper bound for the funding-rate such that the funding-rate will never be higher than this value */
+  fundingRateUpperBound: Scalars['String'];
   /** Continuously compounded interest rate used in funding rate calculation, in the range [-1, 1] */
   interestRate: Scalars['String'];
   /** Controls how much the upcoming funding payment liability contributes to party's margin, in the range [0, 1] */
@@ -4310,6 +4475,14 @@ export type PubKey = {
   key?: Maybe<Scalars['String']>;
 };
 
+export type QuantumRewardsPerEpoch = {
+  __typename?: 'QuantumRewardsPerEpoch';
+  /** Epoch for which this information is valid. */
+  epoch: Scalars['Int'];
+  /** Total of rewards accumulated over the  epoch period expressed in quantum value. */
+  total_quantum_rewards: Scalars['String'];
+};
+
 /** Queries allow a caller to read data and filter data via GraphQL. */
 export type Query = {
   __typename?: 'Query';
@@ -4354,6 +4527,8 @@ export type Query = {
   estimateOrder: OrderEstimate;
   /** Return a margin range for the specified position and liquidation price range if available collateral is supplied */
   estimatePosition?: Maybe<PositionEstimate>;
+  /** Estimate transfer fee */
+  estimateTransferFee?: Maybe<EstimatedTransferFee>;
   /** Query for historic ethereum key rotations */
   ethereumKeyRotations: EthereumKeyRotationsConnection;
   /** Get fees statistics */
@@ -4369,6 +4544,8 @@ export type Query = {
   fundingPeriodDataPoints: FundingPeriodDataPointConnection;
   /** Funding periods for perpetual markets */
   fundingPeriods: FundingPeriodConnection;
+  /** Get a list of games and their metrics. */
+  games: GamesConnection;
   /** Get market data history for a specific market. If no dates are given, the latest snapshot will be returned. If only the start date is provided all history from the given date will be provided, and if only the end date is provided, all history from the start up to and including the end date will be provided. */
   getMarketDataHistoryConnectionByID?: Maybe<MarketDataConnection>;
   /** Query for historic key rotations */
@@ -4384,10 +4561,10 @@ export type Query = {
    * At least one party ID must be specified in the from or to account filter.
    *
    * Entries can be filtered by:
-   *   - the sending account (market ID, asset ID, account type)
-   *   - receiving account (market ID, asset ID, account type)
-   *   - sending AND receiving account
-   *   - transfer type either in addition to the above filters or as a standalone option
+   * - the sending account (market ID, asset ID, account type)
+   * - receiving account (market ID, asset ID, account type)
+   * - sending AND receiving account
+   * - transfer type either in addition to the above filters or as a standalone option
    *
    * Note: The date range is restricted to any 5 days.
    * If no start or end date is provided, only ledger entries from the last 5 days will be returned.
@@ -4432,7 +4609,7 @@ export type Query = {
   orderByReference: Order;
   /** Order versions (created via amendments if any) found by orderID */
   orderVersionsConnection?: Maybe<OrderConnection>;
-  /** List paid liquidity fees statistics */
+  /** List statistics about paid liquidity fees */
   paidLiquidityFees?: Maybe<PaidLiquidityFeesConnection>;
   /** One or more entities that are trading on the Vega network */
   partiesConnection?: Maybe<PartyConnection>;
@@ -4461,6 +4638,12 @@ export type Query = {
   stopOrders?: Maybe<StopOrderConnection>;
   /** List markets in a succession line */
   successorMarkets?: Maybe<SuccessorMarketConnection>;
+  /**
+   * List team members' statistics for a given team
+   * Get the statistics of all team members for a given team ID, or for a specific member by using party ID, over a number of epochs.
+   * If a team does not have at least the number of epochs worth of data, it is ignored.
+   */
+  teamMembersStatistics?: Maybe<TeamMembersStatisticsConnection>;
   /** List a referee's team history */
   teamRefereeHistory?: Maybe<TeamRefereeHistoryConnection>;
   /** List all referees for a team */
@@ -4473,10 +4656,18 @@ export type Query = {
    * If both team ID and party ID is provided, only the team ID will be used.
    */
   teams?: Maybe<TeamConnection>;
+  /**
+   * List teams statistics
+   * Get the statistics of all teams, or for a specific team by using team ID, over a number of epochs.
+   * If a team does not have at least the number of epochs worth of data, it is ignored.
+   */
+  teamsStatistics?: Maybe<TeamsStatisticsConnection>;
+  /** Get total transfer fee discount available */
+  totalTransferFeeDiscount?: Maybe<TotalTransferFeeDiscount>;
   /** Get a list of all trades and apply any given filters to the results */
   trades?: Maybe<TradeConnection>;
   /** Find a transfer using its ID */
-  transfer?: Maybe<Transfer>;
+  transfer?: Maybe<TransferNode>;
   /** Get a list of all transfers for a public key */
   transfersConnection?: Maybe<TransferConnection>;
   /** Get volume discount statistics */
@@ -4621,6 +4812,16 @@ export type QueryestimatePositionArgs = {
 
 
 /** Queries allow a caller to read data and filter data via GraphQL. */
+export type QueryestimateTransferFeeArgs = {
+  amount: Scalars['String'];
+  assetId: Scalars['String'];
+  fromAccount: Scalars['ID'];
+  fromAccountType: AccountType;
+  toAccount: Scalars['ID'];
+};
+
+
+/** Queries allow a caller to read data and filter data via GraphQL. */
 export type QueryethereumKeyRotationsArgs = {
   nodeId?: InputMaybe<Scalars['ID']>;
 };
@@ -4665,6 +4866,16 @@ export type QueryfundingPeriodDataPointsArgs = {
 export type QueryfundingPeriodsArgs = {
   dateRange?: InputMaybe<DateRange>;
   marketId: Scalars['ID'];
+  pagination?: InputMaybe<Pagination>;
+};
+
+
+/** Queries allow a caller to read data and filter data via GraphQL. */
+export type QuerygamesArgs = {
+  entityScope?: InputMaybe<EntityScope>;
+  epochFrom?: InputMaybe<Scalars['Int']>;
+  epochTo?: InputMaybe<Scalars['Int']>;
+  gameId?: InputMaybe<Scalars['ID']>;
   pagination?: InputMaybe<Pagination>;
 };
 
@@ -4893,6 +5104,15 @@ export type QuerysuccessorMarketsArgs = {
 
 
 /** Queries allow a caller to read data and filter data via GraphQL. */
+export type QueryteamMembersStatisticsArgs = {
+  aggregationEpochs?: InputMaybe<Scalars['Int']>;
+  pagination?: InputMaybe<Pagination>;
+  partyId?: InputMaybe<Scalars['ID']>;
+  teamId: Scalars['ID'];
+};
+
+
+/** Queries allow a caller to read data and filter data via GraphQL. */
 export type QueryteamRefereeHistoryArgs = {
   pagination?: InputMaybe<Pagination>;
   referee: Scalars['ID'];
@@ -4915,6 +5135,21 @@ export type QueryteamsArgs = {
 
 
 /** Queries allow a caller to read data and filter data via GraphQL. */
+export type QueryteamsStatisticsArgs = {
+  aggregationEpochs?: InputMaybe<Scalars['Int']>;
+  pagination?: InputMaybe<Pagination>;
+  teamId?: InputMaybe<Scalars['ID']>;
+};
+
+
+/** Queries allow a caller to read data and filter data via GraphQL. */
+export type QuerytotalTransferFeeDiscountArgs = {
+  assetId: Scalars['String'];
+  partyId: Scalars['String'];
+};
+
+
+/** Queries allow a caller to read data and filter data via GraphQL. */
 export type QuerytradesArgs = {
   dateRange?: InputMaybe<DateRange>;
   filter?: InputMaybe<TradesFilter>;
@@ -4931,9 +5166,13 @@ export type QuerytransferArgs = {
 /** Queries allow a caller to read data and filter data via GraphQL. */
 export type QuerytransfersConnectionArgs = {
   direction?: InputMaybe<TransferDirection>;
+  fromEpoch?: InputMaybe<Scalars['Int']>;
   isReward?: InputMaybe<Scalars['Boolean']>;
   pagination?: InputMaybe<Pagination>;
   partyId?: InputMaybe<Scalars['ID']>;
+  scope?: InputMaybe<TransferScope>;
+  status?: InputMaybe<TransferStatus>;
+  toEpoch?: InputMaybe<Scalars['Int']>;
 };
 
 
@@ -5150,18 +5389,27 @@ export type Reward = {
   asset: Asset;
   /** Epoch for which this reward was distributed */
   epoch: Epoch;
+  /** Optional game ID for rewards that are paid for participation in a game */
+  gameId?: Maybe<Scalars['ID']>;
   /** The epoch when the reward is released */
   lockedUntilEpoch: Epoch;
-  /** The market ID for which this reward is paid if any */
+  /**
+   * The market ID for which this reward is paid if any
+   * @deprecated Use gameId
+   */
   marketId: Scalars['ID'];
   /** Party receiving the reward */
   party: Party;
   /** Percentage out of the total distributed reward */
   percentageOfTotal: Scalars['String'];
+  /** Amount paid as a reward, expressed in asset's quantum unit */
+  quantumAmount: Scalars['String'];
   /** RFC3339Nano time when the rewards were received */
   receivedAt: Scalars['Timestamp'];
   /** The type of reward */
   rewardType: AccountType;
+  /** Optional team ID for rewards that are paid if the party is a member of a team, and for participation in a game. */
+  teamId?: Maybe<Scalars['ID']>;
 };
 
 /** Edge type containing the reward and cursor information returned by a RewardsConnection */
@@ -5515,6 +5763,10 @@ export type StopOrder = {
   partyId: Scalars['ID'];
   /** Optional rejection reason for an order */
   rejectionReason?: Maybe<StopOrderRejectionReason>;
+  /** Size override setting */
+  sizeOverrideSetting: StopOrderSizeOverrideSetting;
+  /** Size override value */
+  sizeOverrideValue?: Maybe<Scalars['String']>;
   /** Status of the stop order */
   status: StopOrderStatus;
   /** Order to submit when the stop order is triggered. */
@@ -5591,6 +5843,16 @@ export enum StopOrderRejectionReason {
   REJECTION_REASON_STOP_ORDER_NOT_CLOSING_THE_POSITION = 'REJECTION_REASON_STOP_ORDER_NOT_CLOSING_THE_POSITION',
   /** Trading is not allowed yet */
   REJECTION_REASON_TRADING_NOT_ALLOWED = 'REJECTION_REASON_TRADING_NOT_ALLOWED'
+}
+
+/** Stop order size override settings */
+export enum StopOrderSizeOverrideSetting {
+  /** No size override, the size within the contained normal order submission will be used */
+  SIZE_OVERRIDE_SETTING_NONE = 'SIZE_OVERRIDE_SETTING_NONE',
+  /** Use the total position of the trader */
+  SIZE_OVERRIDE_SETTING_POSITION = 'SIZE_OVERRIDE_SETTING_POSITION',
+  /** The size override has not been specified, this should never happen! */
+  SIZE_OVERRIDE_SETTING_UNSPECIFIED = 'SIZE_OVERRIDE_SETTING_UNSPECIFIED'
 }
 
 /** Valid stop order statuses, these determine several states for a stop order that cannot be expressed with other fields in StopOrder. */
@@ -5806,7 +6068,7 @@ export type TargetStakeParameters = {
 export type Team = {
   __typename?: 'Team';
   /** Link to an image of the team's avatar. */
-  avatarURL: Scalars['String'];
+  avatarUrl: Scalars['String'];
   /** Tells if a party can join the team or not. */
   closed: Scalars['Boolean'];
   /** Time in RFC3339Nano format when the team was created. */
@@ -5820,7 +6082,7 @@ export type Team = {
   /** Unique ID of the team. */
   teamId: Scalars['ID'];
   /** Link to the team's homepage. */
-  teamURL: Scalars['String'];
+  teamUrl: Scalars['String'];
 };
 
 /** Connection type for retrieving cursor-based paginated team data */
@@ -5839,6 +6101,67 @@ export type TeamEdge = {
   cursor: Scalars['String'];
   /** Team data */
   node: Team;
+};
+
+/** Team participating in a game and their metrics. */
+export type TeamGameEntity = {
+  __typename?: 'TeamGameEntity';
+  /** Rank of the team within the game. */
+  rank: Scalars['Int'];
+  /** Total rewards earned by the team during the epoch */
+  rewardEarned: Scalars['String'];
+  /** Reward metric applied to the game. */
+  rewardMetric: Scalars['String'];
+  /** Breakdown of the team members and their contributions to the total team metrics. */
+  team: TeamParticipation;
+  /** Total rewards earned by the team for the game */
+  totalRewardsEarned: Scalars['String'];
+  /** Total volume traded by the team */
+  volume: Scalars['String'];
+};
+
+/** Team member's statistics record containing the member's information. */
+export type TeamMemberStatistics = {
+  __typename?: 'TeamMemberStatistics';
+  /** List of games played over the requested epoch period. */
+  gamesPlayed: Array<Scalars['String']>;
+  /** Party ID the statistics are related to. */
+  partyId: Scalars['String'];
+  /** List of rewards over the requested epoch period, expressed in quantum value for each epoch */
+  quantumRewards: Array<QuantumRewardsPerEpoch>;
+  /** Total number of games played. */
+  totalGamesPlayed: Scalars['Int'];
+  /** Total of rewards accumulated over the requested epoch period, expressed in quantum value. */
+  totalQuantumRewards: Scalars['String'];
+  /** Total of volume accumulated over the requested epoch period, expressed in quantum value. */
+  totalQuantumVolume: Scalars['String'];
+};
+
+/** Edge type containing a team member statistics cursor and its associated statistics data */
+export type TeamMemberStatisticsEdge = {
+  __typename?: 'TeamMemberStatisticsEdge';
+  /** Cursor identifying the team data */
+  cursor: Scalars['String'];
+  /** Team member's statistics data */
+  node: TeamMemberStatistics;
+};
+
+/** Connection type for retrieving cursor-based paginated team member statistics data */
+export type TeamMembersStatisticsConnection = {
+  __typename?: 'TeamMembersStatisticsConnection';
+  /** Team members' statistics in this connection */
+  edges: Array<TeamMemberStatisticsEdge>;
+  /** Pagination information */
+  pageInfo: PageInfo;
+};
+
+/** Team participation information, i.e. the team ID and the metrics for each participating team member. */
+export type TeamParticipation = {
+  __typename?: 'TeamParticipation';
+  /** List of participating team members and their metrics. */
+  membersParticipating: Array<IndividualGameEntity>;
+  /** Team ID */
+  teamId: Scalars['ID'];
 };
 
 /** A team's referee info */
@@ -5901,10 +6224,52 @@ export type TeamRefereeHistoryEdge = {
   node: TeamRefereeHistory;
 };
 
+/** Team's statistics record containing the team information. */
+export type TeamStatistics = {
+  __typename?: 'TeamStatistics';
+  /** List of games played over the requested epoch period. */
+  gamesPlayed: Array<Scalars['String']>;
+  /** List of rewards over the requested epoch period, expressed in quantum value for each epoch */
+  quantumRewards: Array<QuantumRewardsPerEpoch>;
+  /** Team ID the statistics are related to. */
+  teamId: Scalars['String'];
+  /** Total of games played. */
+  totalGamesPlayed: Scalars['Int'];
+  /** Total of rewards accumulated over the requested epoch period, expressed in quantum value. */
+  totalQuantumRewards: Scalars['String'];
+  /** Total of volume accumulated over the requested epoch period, expressed in quantum value. */
+  totalQuantumVolume: Scalars['String'];
+};
+
+/** Edge type containing a team statistics cursor and its associated team's statistics data */
+export type TeamStatisticsEdge = {
+  __typename?: 'TeamStatisticsEdge';
+  /** Cursor identifying the team data */
+  cursor: Scalars['String'];
+  /** Team's statistics data */
+  node: TeamStatistics;
+};
+
+/** Connection type for retrieving cursor-based paginated team statistics data */
+export type TeamsStatisticsConnection = {
+  __typename?: 'TeamsStatisticsConnection';
+  /** Teams' statistics in this connection */
+  edges: Array<TeamStatisticsEdge>;
+  /** Pagination information */
+  pageInfo: PageInfo;
+};
+
 export type TimeUpdate = {
   __typename?: 'TimeUpdate';
   /** RFC3339Nano time of new block time */
   timestamp: Scalars['Timestamp'];
+};
+
+/** Returns total transfer fee discount available */
+export type TotalTransferFeeDiscount = {
+  __typename?: 'TotalTransferFeeDiscount';
+  /** Total per party per asset discount available. */
+  totalDiscount: Scalars['String'];
 };
 
 /** A tradable instrument is a combination of an instrument and a risk model */
@@ -6089,6 +6454,8 @@ export type Transfer = {
   from: Scalars['String'];
   /** The account type from which funds have been sent */
   fromAccountType: AccountType;
+  /** An optional game ID to filter for transfers that are made for rewarding participation in games */
+  gameId?: Maybe<Scalars['ID']>;
   /** ID of this transfer */
   id: Scalars['ID'];
   /** The type of transfer being made, i.e. a one-off or recurring transfer */
@@ -6172,6 +6539,14 @@ export type TransferResponses = {
   responses?: Maybe<Array<TransferResponse>>;
 };
 
+/** Defines the types of a dispatch strategy's scope the API can filter on. */
+export enum TransferScope {
+  /** Matches transfers that have dispatch strategy scope of individual set. */
+  SCOPE_INDIVIDUAL = 'SCOPE_INDIVIDUAL',
+  /** Matches transfers that have dispatch strategy scope of team set. */
+  SCOPE_TEAM = 'SCOPE_TEAM'
+}
+
 /** All the states a transfer can transition between */
 export enum TransferStatus {
   /** Indication of a transfer cancelled by the user */
@@ -6211,6 +6586,8 @@ export enum TransferType {
   TRANSFER_TYPE_INFRASTRUCTURE_FEE_DISTRIBUTE = 'TRANSFER_TYPE_INFRASTRUCTURE_FEE_DISTRIBUTE',
   /** Infrastructure fee paid from general account */
   TRANSFER_TYPE_INFRASTRUCTURE_FEE_PAY = 'TRANSFER_TYPE_INFRASTRUCTURE_FEE_PAY',
+  /** Funds moved from order margin account to margin account. */
+  TRANSFER_TYPE_ISOLATED_MARGIN_LOW = 'TRANSFER_TYPE_ISOLATED_MARGIN_LOW',
   /** Allocates liquidity fee earnings to each liquidity provider's network controlled liquidity fee account. */
   TRANSFER_TYPE_LIQUIDITY_FEE_ALLOCATE = 'TRANSFER_TYPE_LIQUIDITY_FEE_ALLOCATE',
   /** Liquidity fee received into general account */
@@ -6237,6 +6614,10 @@ export enum TransferType {
   TRANSFER_TYPE_MTM_LOSS = 'TRANSFER_TYPE_MTM_LOSS',
   /** Funds added to margin account after mark to market gain */
   TRANSFER_TYPE_MTM_WIN = 'TRANSFER_TYPE_MTM_WIN',
+  /** Funds released from order margin account to general. */
+  TRANSFER_TYPE_ORDER_MARGIN_HIGH = 'TRANSFER_TYPE_ORDER_MARGIN_HIGH',
+  /** Funds moved from general account to order margin account. */
+  TRANSFER_TYPE_ORDER_MARGIN_LOW = 'TRANSFER_TYPE_ORDER_MARGIN_LOW',
   /** Funds deducted from margin account after a perpetuals funding loss. */
   TRANSFER_TYPE_PERPETUALS_FUNDING_LOSS = 'TRANSFER_TYPE_PERPETUALS_FUNDING_LOSS',
   /** Funds added to margin account after a perpetuals funding gain. */
@@ -6310,6 +6691,7 @@ export type UpdateFutureProduct = {
 export type UpdateInstrumentConfiguration = {
   __typename?: 'UpdateInstrumentConfiguration';
   code: Scalars['String'];
+  name: Scalars['String'];
   product: UpdateProductConfiguration;
 };
 
@@ -6329,6 +6711,10 @@ export type UpdateMarketConfiguration = {
   instrument: UpdateInstrumentConfiguration;
   /** Linear slippage factor is used to cap the slippage component of maintenance margin - it is applied to the slippage volume. */
   linearSlippageFactor: Scalars['String'];
+  /** Liquidation strategy for the market */
+  liquidationStrategy?: Maybe<LiquidationStrategy>;
+  /** Specifies how the liquidity fee for the market will be calculated */
+  liquidityFeeSettings?: Maybe<LiquidityFeeSettings>;
   /** Liquidity monitoring parameters. */
   liquidityMonitoringParameters: LiquidityMonitoringParameters;
   /** Liquidity SLA Parameters. */
@@ -6337,7 +6723,10 @@ export type UpdateMarketConfiguration = {
   metadata?: Maybe<Array<Maybe<Scalars['String']>>>;
   /** Price monitoring parameters. */
   priceMonitoringParameters: PriceMonitoringParameters;
-  /** Quadratic slippage factor is used to cap the slippage component of maintenance margin - it is applied to the square of the slippage volume. */
+  /**
+   * Quadratic slippage factor is used to cap the slippage component of maintenance margin - it is applied to the square of the slippage volume.
+   * @deprecated This field will be removed in a future release
+   */
   quadraticSlippageFactor: Scalars['String'];
   /** Updated futures market risk model parameters. */
   riskParameters: UpdateMarketRiskParameters;
@@ -6383,6 +6772,12 @@ export type UpdatePerpetualProduct = {
   dataSourceSpecForSettlementData: DataSourceDefinition;
   /** Data source specification describing the data source for settlement schedule */
   dataSourceSpecForSettlementSchedule: DataSourceDefinition;
+  /** Lower bound for the funding-rate such that the funding-rate will never be lower than this value */
+  fundingRateLowerBound: Scalars['String'];
+  /** Factor applied to funding-rates. This scales the impact that spot price deviations have on funding payments. */
+  fundingRateScalingFactor: Scalars['String'];
+  /** Upper bound for the funding-rate such that the funding-rate will never be higher than this value */
+  fundingRateUpperBound: Scalars['String'];
   /** Continuously compounded interest rate used in funding rate calculation, in the range [-1, 1] */
   interestRate: Scalars['String'];
   /** Controls how much the upcoming funding payment liability contributes to party's margin, in the range [0, 1] */
@@ -6420,6 +6815,8 @@ export type UpdateSpotMarket = {
 
 export type UpdateSpotMarketConfiguration = {
   __typename?: 'UpdateSpotMarketConfiguration';
+  /** Specifies how the liquidity fee for the market will be calculated */
+  liquidityFeeSettings?: Maybe<LiquidityFeeSettings>;
   /** Specifies the liquidity provision SLA parameters */
   liquiditySLAParams: LiquiditySLAParameters;
   /** Optional spot market metadata tags */
