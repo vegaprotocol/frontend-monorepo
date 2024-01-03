@@ -402,14 +402,40 @@ def test_reward_history(
     )
 
 
+
+@pytest.mark.parametrize(
+    "reward_program, tier",
+    [
+        (ACTIVITY, 1),
+    ],
+)
+@pytest.mark.usefixtures("auth", "risk_accepted")
+def test_redeem(
+    reward_program, vega_instance: VegaService, page: Page, tier
+):
+    print("reward program: " + reward_program, " tier:", tier)
+    vega, market_id, tDAI_asset_id = vega_instance
+    page.goto(REWARDS_URL)
+    page.pause()
+    change_keys(page, vega, PARTY_B.name)
+    page.get_by_text("Redeem rewards").click()
+    #ToDO add test id for the available to withdraw value
+    available_to_withdraw = page.get_by_text("Available to withdraw this epoch").text_content()
+    page.pause()
+    option_value = page.locator(
+        '[data-testid="transfer-form"] [name="fromAccount"] option[value^="ACCOUNT_TYPE_VESTED_REWARDS"]'
+    ).first.get_attribute("value")
+
+    page.select_option(
+        '[data-testid="transfer-form"] [name="fromAccount"]', option_value
+    )
+    page.get_by_text("Use max").first.click()
+    expect(page.get_by_test_id("transfer-amount")).to_have_text(available_to_withdraw)
+
+
 #TODO Add tests for below.
-""" 
-@pytest.mark.usefixtures("auth", "risk_accepted")
-def test_redeem(vega_setup, vega: VegaService, page: Page):
-    expect()
-
-
-@pytest.mark.usefixtures("auth", "risk_accepted")
-def test_vesting(vega_setup, vega: VegaService, page: Page):
-    expect()
- """
+    """ 
+        @pytest.mark.usefixtures("auth", "risk_accepted")
+        def test_vesting(vega_setup, vega: VegaService, page: Page):
+            expect()
+    """
