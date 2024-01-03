@@ -57,7 +57,7 @@ export const TeamPage = ({
       </div>
       <div className="flex flex-col gap-4 lg:gap-6 container p-4 mx-auto">
         <header className="flex gap-2 lg:gap-4 pt-5 lg:pt-10">
-          <TeamAvatar />
+          <TeamAvatar imgUrl={team.avatarUrl} />
           <div className="flex flex-col items-start gap-1 lg:gap-3">
             <h1 className="calt text-2xl lg:text-3xl xl:text-5xl">
               {team.name}
@@ -201,10 +201,15 @@ const Games = () => {
   );
 };
 
-const TeamAvatar = () => {
+const TeamAvatar = ({ imgUrl }: { imgUrl: string }) => {
   // TODO: add fallback avatars
   return (
-    <div className="rounded-full w-14 h-14 lg:w-[112px] lg:h-[112px] bg-vega-clight-700 dark:bg-vega-cdark-700 shrink-0" />
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={imgUrl}
+      alt="Team avatar"
+      className="rounded-full w-14 h-14 lg:w-[112px] lg:h-[112px] bg-vega-clight-700 dark:bg-vega-cdark-700 shrink-0"
+    />
   );
 };
 
