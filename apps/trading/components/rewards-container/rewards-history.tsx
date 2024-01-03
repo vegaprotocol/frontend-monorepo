@@ -258,14 +258,6 @@ export const RewardHistoryTable = ({
     return colDefs;
   }, []);
 
-  if (!pubKey) {
-    return (
-      <div className="pt-4">
-        <p className="text-muted text-sm">{t('Not connected')}</p>
-      </div>
-    );
-  }
-
   return (
     <div>
       <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
