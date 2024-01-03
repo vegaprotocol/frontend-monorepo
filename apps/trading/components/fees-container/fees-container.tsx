@@ -38,7 +38,11 @@ export const FeesContainer = () => {
   const { data: markets, loading: marketsLoading } = useMarketList();
 
   const { data: programData, loading: programLoading } =
-    useDiscountProgramsQuery({ errorPolicy: 'ignore' });
+    useDiscountProgramsQuery({
+      errorPolicy: 'ignore',
+      fetchPolicy: 'cache-and-network',
+      pollInterval: 15000,
+    });
 
   const volumeDiscountWindowLength =
     programData?.currentVolumeDiscountProgram?.windowLength || 1;
@@ -49,6 +53,8 @@ export const FeesContainer = () => {
       partyId: pubKey || '',
     },
     skip: !pubKey,
+    fetchPolicy: 'cache-and-network',
+    pollInterval: 15000,
   });
 
   const previousEpoch = (Number(feesData?.epoch.id) || 0) - 1;
