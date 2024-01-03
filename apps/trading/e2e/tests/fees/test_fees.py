@@ -27,8 +27,6 @@ MIN_VOLUME_VALUE_0 = "min-volume-value-0"
 MIN_VOLUME_VALUE_1 = "min-volume-value-1"
 MY_VOLUME_VALUE_0 = "my-volume-value-0"
 MY_VOLUME_VALUE_1 = "my-volume-value-1"
-YOUR_TIER_0 = "your-tier-0"
-YOUR_TIER_1 = "your-tier-1"
 ORDER_SIZE = "order-size"
 ORDER_PRICE = "order-price"
 DISCOUNT_PILL = "discount-pill"
@@ -52,6 +50,7 @@ REQUIRED_EPOCHS_VALUE_1 = "required-epochs-value-1"
 FILLS = "Fills"
 TAB_FILLS = "tab-fills"
 FEE_BREAKDOWN_TOOLTIP = "fee-breakdown-tooltip"
+PINNED_ROW_LOCATOR = ".ag-pinned-left-cols-container .ag-row"
 ROW_LOCATOR = ".ag-center-cols-container .ag-row"
 # Col-Ids:
 COL_INSTRUMENT_CODE = '[col-id="market.tradableInstrument.instrument.code"]'
@@ -405,10 +404,10 @@ def test_fees_page_referral_discount_program_referral_benefits(
 @pytest.mark.parametrize(
     "tier, discount_program, my_volume_test_id, my_volume_value, your_tier",
     [
-        (1, "volume", "my-volume-value-0", "103", "your-tier-0"),
-        (2, "volume", "my-volume-value-1", "206", "your-tier-1"),
-        (1, "referral", "my-volume-value-0", "103", "your-tier-0"),
-        (2, "referral", "my-volume-value-1", "206", "your-tier-1"),
+        (1, "volume", "my-volume-value-0", "103", "your-volume-tier-0"),
+        (2, "volume", "my-volume-value-1", "206", "your-volume-tier-1"),
+        (1, "referral", "my-volume-value-0", "103", "your-referral-tier-0"),
+        (2, "referral", "my-volume-value-1", "206", "your-referral-tier-1"),
     ],
 )
 @pytest.mark.usefixtures("risk_accepted", "auth", "market_ids")
@@ -439,8 +438,8 @@ def test_fees_page_discount_program_discount(
         expect(page.get_by_test_id(REQUIRED_EPOCHS_VALUE_0)).to_have_text("1")
         expect(page.get_by_test_id(REQUIRED_EPOCHS_VALUE_1)).to_have_text("2")
 
-    expect(page.get_by_test_id(your_tier)).to_be_visible()
-    expect(page.get_by_test_id(your_tier)).to_have_text("Your tier")
+    expect(page.get_by_test_id(your_tier).nth(1)).to_be_visible()
+    expect(page.get_by_test_id(your_tier).nth(1)).to_have_text("Your tier")
 
 
 @pytest.mark.parametrize(
@@ -461,8 +460,9 @@ def test_fees_page_discount_program_fees_by_market(
         vega_instance, tier, discount_program, market_ids
     )
     page.goto("/#/fees")
+    pinned = page.locator(PINNED_ROW_LOCATOR)
     row = page.locator(ROW_LOCATOR)
-    expect(row.locator(COL_CODE)).to_have_text("BTC:DAI_2023Futr")
+    expect(pinned.locator(COL_CODE)).to_have_text("BTC:DAI_2023Futr")
     expect(row.locator(COL_FEE_AFTER_DISCOUNT)).to_have_text(fees_after_discount)
     expect(row.locator(COL_INFRA_FEE)).to_have_text("0.05%")
     expect(row.locator(COL_MAKER_FEE)).to_have_text("10%")
@@ -639,6 +639,8 @@ def test_fills_maker_fee_tooltip_discount_program(
     change_keys(page, vega_instance, MM_WALLET.name)
     page.get_by_test_id(FILLS).click()
     row = page.get_by_test_id(TAB_FILLS).locator(ROW_LOCATOR).first
+    # tbd - tooltip is not visible without this wait
+    page.wait_for_timeout(1000)
     row.locator(COL_FEE).hover()
     expect(page.get_by_test_id(FEE_BREAKDOWN_TOOLTIP)).to_have_text(
         f"If the market was activeFee revenue to be received by the maker, takers' fee discounts already applied.During continuous trading the maker pays no infrastructure and liquidity fees.Infrastructure fee0.00 tDAILiquidity fee0.00 tDAIMaker fee-{fee} tDAITotal fees-{fee} tDAI"
@@ -676,6 +678,8 @@ def test_fills_taker_fee_tooltip_discount_program(
     page.goto(f"/#/markets/{market_id}")
     page.get_by_test_id(FILLS).click()
     row = page.get_by_test_id(TAB_FILLS).locator(ROW_LOCATOR).first
+    # tbd - tooltip is not visible without this wait
+    page.wait_for_timeout(1000)
     row.locator(COL_FEE).hover()
     expect(page.get_by_test_id(FEE_BREAKDOWN_TOOLTIP)).to_have_text(
         f"If the market was activeFees to be paid by the taker; discounts are already applied.Infrastructure fee{infra_fee} tDAILiquidity fee0.00 tDAIMaker fee{maker_fee} tDAITotal fees{total_fee} tDAI"

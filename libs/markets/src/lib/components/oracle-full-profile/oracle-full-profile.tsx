@@ -9,7 +9,7 @@ import {
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
-import { useOracleStatuses } from '../oracle-banner/oracle-statuses';
+import { useOracleStatuses } from '../../hooks';
 import type { IconName } from '@blueprintjs/icons';
 import classNames from 'classnames';
 import { getLinkIcon, useVerifiedStatusIcon } from '../oracle-basic-profile';

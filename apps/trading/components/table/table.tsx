@@ -1,13 +1,17 @@
 import { Tooltip, VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import classNames from 'classnames';
 import { forwardRef, type ReactNode, type HTMLAttributes } from 'react';
-import { BORDER_COLOR, GRADIENT } from './constants';
+
+export const BORDER_COLOR = 'border-vega-clight-500 dark:border-vega-cdark-500';
+export const GRADIENT =
+  'bg-gradient-to-b from-vega-clight-800 dark:from-vega-cdark-800 to-transparent';
 
 type TableColumnDefinition = {
   displayName?: ReactNode;
   name: string;
   tooltip?: string;
   className?: string;
+  testId?: string;
 };
 
 type TableProps = {
@@ -42,7 +46,7 @@ export const Table = forwardRef<
               key={name}
               col-id={name}
               className={classNames(
-                'px-5 py-3 text-sm  text-vega-clight-100 dark:text-vega-cdark-100 font-normal',
+                'px-5 py-3 text-xs  text-vega-clight-100 dark:text-vega-cdark-100 font-normal',
                 INNER_BORDER_STYLE
               )}
             >
@@ -66,7 +70,7 @@ export const Table = forwardRef<
         ref={ref}
         className={classNames(
           'w-full',
-          'border-separate border rounded-md border-spacing-0',
+          'border-separate border rounded-md border-spacing-0 overflow-hidden',
           BORDER_COLOR,
           GRADIENT,
           className
@@ -82,10 +86,10 @@ export const Table = forwardRef<
                 'max-md:flex flex-col w-full': !noCollapse,
               })}
             >
-              {columns.map(({ name, displayName, className }, j) => (
+              {columns.map(({ name, displayName, className, testId }, j) => (
                 <td
                   className={classNames(
-                    'px-5 py-3 text-base',
+                    'px-5 py-3',
                     {
                       'max-md:flex max-md:flex-col max-md:justify-between':
                         !noCollapse,
@@ -110,7 +114,7 @@ export const Table = forwardRef<
                       {displayName}
                     </span>
                   )}
-                  <span>{d[name]}</span>
+                  <span data-testid={`${testId || name}-${i}`}>{d[name]}</span>
                 </td>
               ))}
             </tr>

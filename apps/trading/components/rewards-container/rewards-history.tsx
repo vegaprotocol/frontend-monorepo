@@ -93,6 +93,7 @@ export const RewardsHistoryContainer = ({
 
 const defaultColDef = {
   flex: 1,
+  minWidth: 62,
   resizable: true,
   sortable: true,
 };
@@ -195,6 +196,8 @@ export const RewardHistoryTable = ({
           return <StackedCell primary={value} secondary={data.asset.name} />;
         },
         sort: 'desc',
+        pinned: 'left',
+        width: 150,
       },
       {
         field: 'infrastructureFees',
@@ -265,7 +268,7 @@ export const RewardHistoryTable = ({
 
   return (
     <div>
-      <div className="mb-2 flex items-center justify-between gap-2">
+      <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
         <h4 className="text-muted flex items-center gap-2 text-sm">
           <label htmlFor="fromEpoch">{t('From epoch')}</label>
           <EpochInput
@@ -339,15 +342,17 @@ export const RewardHistoryTable = ({
           </TradingButton>
         </div>
       </div>
-      <AgGrid
-        columnDefs={columnDefs}
-        defaultColDef={defaultColDef}
-        rowData={rowData}
-        rowHeight={45}
-        domLayout="autoHeight"
-        // Show loading message without wiping out the current rows
-        overlayNoRowsTemplate={loading ? t('Loading...') : t('No rows')}
-      />
+      <div className="border rounded-lg md:rounded-sm overflow-hidden border-default">
+        <AgGrid
+          columnDefs={columnDefs}
+          defaultColDef={defaultColDef}
+          rowData={rowData}
+          rowHeight={45}
+          domLayout="autoHeight"
+          // Show loading message without wiping out the current rows
+          overlayNoRowsTemplate={loading ? t('Loading...') : t('No rows')}
+        />
+      </div>
     </div>
   );
 };

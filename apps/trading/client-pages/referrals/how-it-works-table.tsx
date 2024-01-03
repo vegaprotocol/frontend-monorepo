@@ -1,5 +1,5 @@
 import { useT } from '../../lib/use-t';
-import { Table } from './table';
+import { Table } from '../../components/table';
 
 export const HowItWorksTable = () => {
   const t = useT();

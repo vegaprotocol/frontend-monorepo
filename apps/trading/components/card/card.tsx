@@ -9,6 +9,7 @@ export const Card = ({
   loading = false,
   highlight = false,
   testId,
+  noBackgroundOnMobile = false,
 }: {
   children: ReactNode;
   title: string;
@@ -16,20 +17,33 @@ export const Card = ({
   loading?: boolean;
   highlight?: boolean;
   testId?: string;
+  noBackgroundOnMobile?: boolean;
 }) => {
   return (
     <div
       data-testid={testId}
       className={classNames(
-        'bg-vega-clight-800 dark:bg-vega-cdark-800 col-span-full p-0.5 lg:col-auto',
-        'rounded-lg',
+        'col-span-full lg:col-auto',
+        {
+          'rounded-lg bg-vega-clight-800 dark:bg-vega-cdark-800 p-0.5':
+            !noBackgroundOnMobile,
+          'mt-3 md:mt-0 md:rounded-lg md:bg-vega-clight-800 md:dark:bg-vega-cdark-800 md:p-0.5':
+            noBackgroundOnMobile,
+        },
         {
           'bg-rainbow': highlight,
         },
         className
       )}
     >
-      <div className="bg-vega-clight-800 dark:bg-vega-cdark-800 h-full w-full rounded p-4">
+      <div
+        className={classNames('h-full w-full', {
+          'bg-vega-clight-800 dark:bg-vega-cdark-800 rounded p-4':
+            !noBackgroundOnMobile,
+          'md:bg-vega-clight-800 md:dark:bg-vega-cdark-800 md:rounded md:p-4':
+            noBackgroundOnMobile,
+        })}
+      >
         <h2 className="mb-3">{title}</h2>
         {loading ? <CardLoader /> : children}
       </div>

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 import { addDecimalsFormatNumber, titlefy } from '@vegaprotocol/utils';
 import { useScreenDimensions } from '@vegaprotocol/react-helpers';
 import { useThrottledDataProvider } from '@vegaprotocol/data-provider';
@@ -72,17 +72,6 @@ export const MarketPage = () => {
     }
   }, [update, lastMarketId, data?.id]);
 
-  const pinnedAsset = data && getAsset(data);
-
-  const tradeView = useMemo(() => {
-    if (pinnedAsset) {
-      if (largeScreen) {
-        return <TradeGrid market={data} pinnedAsset={pinnedAsset} />;
-      }
-      return <TradePanels market={data} pinnedAsset={pinnedAsset} />;
-    }
-  }, [largeScreen, data, pinnedAsset]);
-
   if (loading) {
     return (
       <Splash>
@@ -118,6 +107,8 @@ export const MarketPage = () => {
     );
   }
 
+  const pinnedAsset = data && getAsset(data);
+
   return (
     <>
       <TitleUpdater
@@ -125,7 +116,11 @@ export const MarketPage = () => {
         marketName={data?.tradableInstrument.instrument.name}
         decimalPlaces={data?.decimalPlaces}
       />
-      {tradeView}
+      {largeScreen ? (
+        <TradeGrid market={data} pinnedAsset={pinnedAsset} />
+      ) : (
+        <TradePanels market={data} pinnedAsset={pinnedAsset} />
+      )}
     </>
   );
 };

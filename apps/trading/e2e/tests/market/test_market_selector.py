@@ -9,7 +9,6 @@ def test_market_selector(continuous_market, page: Page):
     page.get_by_test_id("header-title").click()
     # 6001-MARK-066
     expect(page.get_by_test_id("market-selector")).to_be_visible()
-
     # 6001-MARK-021
     # 6001-MARK-022
     # 6001-MARK-024
@@ -43,7 +42,6 @@ def test_market_selector_filter(continuous_market, page: Page):
     page.goto(f"/#/markets/{continuous_market}")
     page.get_by_test_id("header-title").click()
     # 6001-MARK-027
-
     page.get_by_test_id("product-Spot").click()
     expect(page.get_by_test_id("market-selector-list")).to_contain_text(
         "Spot markets coming soon."

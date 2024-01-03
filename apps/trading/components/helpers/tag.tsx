@@ -2,7 +2,15 @@ import type { HTMLAttributes } from 'react';
 import classNames from 'classnames';
 
 type TagProps = {
-  color?: 'yellow' | 'green' | 'blue' | 'purple' | 'pink' | 'orange' | 'none';
+  color?:
+    | 'yellow'
+    | 'green'
+    | 'blue'
+    | 'purple'
+    | 'pink'
+    | 'orange'
+    | 'red'
+    | 'none';
 };
 export const Tag = ({
   color = 'none',

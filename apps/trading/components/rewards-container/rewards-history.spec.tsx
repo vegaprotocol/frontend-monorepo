@@ -99,16 +99,25 @@ describe('RewardsHistoryTable', () => {
   it('renders table with accounts summed up by asset', () => {
     render(<RewardHistoryTable {...props} />);
 
-    const container = within(
+    const containerLeft = within(
+      document.querySelector('.ag-pinned-left-cols-container') as HTMLElement
+    );
+    const pinnedRows = containerLeft.getAllByRole('row');
+
+    const containerCenter = within(
       document.querySelector('.ag-center-cols-container') as HTMLElement
     );
-    const rows = container.getAllByRole('row');
+    const rows = containerCenter.getAllByRole('row');
     expect(rows).toHaveLength(
       Object.keys(groupBy(rewardSummaries, 'node.assetId')).length
     );
 
     let row = within(rows[0]);
-    let cells = row.getAllByRole('gridcell');
+    let pinnedRow = within(pinnedRows[0]);
+    let cells = [
+      ...pinnedRow.getAllByRole('gridcell'),
+      ...row.getAllByRole('gridcell'),
+    ];
 
     let assetCell = getCell(cells, 'asset.symbol');
     expect(assetCell.getByTestId('stack-cell-primary')).toHaveTextContent(
@@ -140,7 +149,11 @@ describe('RewardsHistoryTable', () => {
 
     // Second row
     row = within(rows[1]);
-    cells = row.getAllByRole('gridcell');
+    pinnedRow = within(pinnedRows[1]);
+    cells = [
+      ...pinnedRow.getAllByRole('gridcell'),
+      ...row.getAllByRole('gridcell'),
+    ];
 
     assetCell = getCell(cells, 'asset.symbol');
     expect(assetCell.getByTestId('stack-cell-primary')).toHaveTextContent(

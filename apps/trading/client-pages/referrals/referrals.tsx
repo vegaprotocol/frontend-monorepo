@@ -72,7 +72,7 @@ export const Referrals = () => {
       {showNav && <Nav />}
       <div
         className={classNames({
-          'py-16': showNav,
+          'py-8 lg:py-16': showNav,
           'h-[300px] relative': loading || error,
         })}
       >

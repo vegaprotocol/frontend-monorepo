@@ -8,6 +8,9 @@ import docker
 import http.server
 import sys
 from dotenv import load_dotenv
+
+from docker.models.containers import Container
+from docker.errors import APIError
 from contextlib import contextmanager
 from vega_sim.null_service import VegaServiceNull, Ports
 from playwright.sync_api import Browser, Page
@@ -100,12 +103,16 @@ def init_vega(request=None):
             container = docker_client.containers.run(
                 console_image_name, detach=True, ports={"80/tcp": vega.console_port}
             )
+
+            if not isinstance(container, Container):
+                raise Exception("container instance invalid")
+
             logger.info(
                 f"Container {container.id} started",
                 extra={"worker_id": os.environ.get("PYTEST_XDIST_WORKER")},
             )
             yield vega
-        except docker.errors.APIError as e:
+        except APIError as e:
             logger.info(f"Container creation failed.")
             logger.info(e)
             raise e

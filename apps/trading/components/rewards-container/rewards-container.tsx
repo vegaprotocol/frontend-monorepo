@@ -291,6 +291,7 @@ export const RewardsContainer = () => {
           title={t('Rewards history')}
           className="lg:col-span-full hidden md:block"
           loading={rewardsLoading}
+          noBackgroundOnMobile={true}
         >
           <RewardsHistoryContainer
             epoch={Number(epochData?.epoch.id)}
