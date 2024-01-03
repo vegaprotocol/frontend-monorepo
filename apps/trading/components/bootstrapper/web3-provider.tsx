@@ -6,12 +6,16 @@ import {
   useWeb3ConnectStore,
   createDefaultProvider,
 } from '@vegaprotocol/web3';
-import { useEnvironment } from '@vegaprotocol/environment';
+import {
+  AppFailure,
+  AppLoader,
+  useEnvironment,
+} from '@vegaprotocol/environment';
 import type { ReactNode } from 'react';
 import { useState } from 'react';
 import { useEffect } from 'react';
-import { useMarketsMapProvider } from '@vegaprotocol/markets';
-import { useAssetsMapProvider } from '@vegaprotocol/assets';
+import { DataLoader } from './data-loader';
+import { useT } from '../../lib/use-t';
 
 export const Web3Provider = ({
   children,
@@ -26,15 +30,13 @@ export const Web3Provider = ({
   const { ETHEREUM_PROVIDER_URL, ETH_LOCAL_PROVIDER_URL, ETH_WALLET_MNEMONIC } =
     useEnvironment();
 
-  // Query all markets and assets to ensure they are cached
-  useMarketsMapProvider();
-  useAssetsMapProvider();
-
   const connectors = useWeb3ConnectStore((store) => store.connectors);
   const initializeConnectors = useWeb3ConnectStore((store) => store.initialize);
   const [defaultProvider, setDefaultProvider] = useState<
     DefaultWeb3ProviderContextShape['provider'] | undefined
   >(undefined);
+
+  const t = useT();
 
   useEffect(() => {
     if (config?.chain_id) {
@@ -70,11 +72,21 @@ export const Web3Provider = ({
   }
 
   return (
-    <Web3ProviderInternal
-      connectors={connectors}
-      defaultProvider={defaultProvider}
+    <DataLoader
+      skeleton={<AppLoader />}
+      failure={
+        <AppFailure
+          title={t('Could not load market or asset data')}
+          error={error}
+        />
+      }
     >
-      <>{children}</>
-    </Web3ProviderInternal>
+      <Web3ProviderInternal
+        connectors={connectors}
+        defaultProvider={defaultProvider}
+      >
+        <>{children}</>
+      </Web3ProviderInternal>
+    </DataLoader>
   );
 };
