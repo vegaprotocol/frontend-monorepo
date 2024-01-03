@@ -154,7 +154,7 @@ describe('ActiveRewards', () => {
         asset: { symbol: 'XYZ' },
       } as Transfer;
       const filter = { searchTerm: 'average position' };
-      expect(applyFilter(transfer, filter)).toBeTruthy();
+      expect(applyFilter({ transfer }, filter)).toBeTruthy();
     });
 
     it('returns true when filter matches asset symbol', () => {
@@ -168,7 +168,7 @@ describe('ActiveRewards', () => {
         asset: { symbol: 'XYZ' },
       } as Transfer;
       const filter = { searchTerm: 'average position' };
-      expect(applyFilter(transfer, filter)).toBeTruthy();
+      expect(applyFilter({ transfer }, filter)).toBeTruthy();
     });
   });
 });
