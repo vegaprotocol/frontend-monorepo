@@ -403,7 +403,7 @@ export const RewardPot = ({
                   })}
                   <VegaIcon name={VegaIconNames.LOCK} size={12} />
                 </CardTableTH>
-                <CardTableTD>
+                <CardTableTD data-testid="locked-value">
                   {addDecimalsFormatNumberQuantum(
                     totalLocked.toString(),
                     rewardAsset.decimals,
@@ -417,7 +417,7 @@ export const RewardPot = ({
                     assetSymbol: rewardAsset.symbol,
                   })}
                 </CardTableTH>
-                <CardTableTD>
+                <CardTableTD data-testid="vesting-value">
                   {addDecimalsFormatNumberQuantum(
                     totalVesting.toString(),
                     rewardAsset.decimals,
@@ -429,7 +429,7 @@ export const RewardPot = ({
                 <CardTableTH>
                   {t('Available to withdraw this epoch')}
                 </CardTableTH>
-                <CardTableTD>
+                <CardTableTD data-testid="available-to-withdraw-value">
                   {addDecimalsFormatNumberQuantum(
                     totalVestedRewardsByRewardAsset.toString(),
                     rewardAsset.decimals,
@@ -448,6 +448,7 @@ export const RewardPot = ({
                     )
                   }
                   size="small"
+                  data-testid="redeem-rewards-button"
                 >
                   {t('Redeem rewards')}
                 </TradingButton>
@@ -482,12 +483,16 @@ export const Vesting = ({
       <CardTable>
         <tr>
           <CardTableTH>{t('Base rate')}</CardTableTH>
-          <CardTableTD>{baseRateFormatted}%</CardTableTD>
+          <CardTableTD data-testid="base-rate-value">
+            {baseRateFormatted}%
+          </CardTableTD>
         </tr>
         {pubKey && (
           <tr>
             <CardTableTH>{t('Vesting multiplier')}</CardTableTH>
-            <CardTableTD>{multiplier ? `${multiplier}x` : '-'}</CardTableTD>
+            <CardTableTD data-testid="vesting multiplier-value">
+              {multiplier ? `${multiplier}x` : '-'}
+            </CardTableTD>
           </tr>
         )}
       </CardTable>
@@ -527,13 +532,13 @@ export const Multipliers = ({
       <CardTable>
         <tr>
           <CardTableTH>{t('Streak reward multiplier')}</CardTableTH>
-          <CardTableTD>
+          <CardTableTD data-testid="streak-reward-multiplier-value">
             {streakMultiplier ? `${streakMultiplier}x` : '-'}
           </CardTableTD>
         </tr>
         <tr>
           <CardTableTH>{t('Hoarder reward multiplier')}</CardTableTH>
-          <CardTableTD>
+          <CardTableTD data-testid="hoarder-reward-multiplier-value">
             {hoarderMultiplier ? `${hoarderMultiplier}x` : '-'}
           </CardTableTD>
         </tr>

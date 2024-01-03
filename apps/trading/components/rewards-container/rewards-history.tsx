@@ -324,6 +324,7 @@ export const RewardHistoryTable = ({
             onClick={() => setIsParty(false)}
             size="extra-small"
             minimal={isParty}
+            data-testid="total-distributed-button"
           >
             {t('Total distributed')}
           </TradingButton>
@@ -332,6 +333,7 @@ export const RewardHistoryTable = ({
             size="extra-small"
             disabled={!pubKey}
             minimal={!isParty}
+            data-testid="earned-by-me-button"
           >
             {t('Earned by me')}
           </TradingButton>

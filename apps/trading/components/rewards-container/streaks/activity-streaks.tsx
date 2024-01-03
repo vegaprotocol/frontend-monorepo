@@ -203,7 +203,7 @@ export const ActivityStreak = ({
           <VegaIcon name={VegaIconNames.STREAK} />
 
           <span className="flex flex-col">
-            <span>
+            <span data-testid="epoch-streak">
               {t('epochsStreak', '{{count}} epochs streak', {
                 count: streak?.activeFor || 0,
               })}{' '}

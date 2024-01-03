@@ -182,7 +182,7 @@ export const RewardHoarderBonus = ({
 
         <div className="flex items-center gap-1">
           <VegaIcon name={VegaIconNames.STREAK} />
-          <span>
+          <span data-testid="hoarder-bonus-total-hoarded">
             {formatNumber(vestingDetails?.quantumBalance || 0)} {qUSD}{' '}
             {userTierIndex > 0 &&
               new BigNumber(
