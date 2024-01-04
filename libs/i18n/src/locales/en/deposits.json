@@ -27,7 +27,7 @@
   "The {{symbol}} faucet is not available at this time": "The {{symbol}} faucet is not available at this time",
   "The deposit cap is set when you approve an asset for use with this app. To increase this cap, approve {{assetSymbol}} again and choose a higher cap. Check the documentation for your Ethereum wallet app for details.": "The deposit cap is set when you approve an asset for use with this app. To increase this cap, approve {{assetSymbol}} again and choose a higher cap. Check the documentation for your Ethereum wallet app for details.",
   "The faucet transaction was rejected by the connected Ethereum wallet": "The faucet transaction was rejected by the connected Ethereum wallet",
-  "This app only works on {{chainId}}.": "This app only works on {{chainId}}.",
+  "This app only works on {{chainId}}. Switch your Ethereum wallet to the correct network.": "This app only works on {{chainId}}. Switch your Ethereum wallet to the correct network.",
   "To (Vega key)": "To (Vega key)",
   "To date, {{currentDeposit}} {{assetSymbol}} has been deposited from this Ethereum address, so you can deposit up to {{remainingDeposit}} {{assetSymbol}} more.": "To date, {{currentDeposit}} {{assetSymbol}} has been deposited from this Ethereum address, so you can deposit up to {{remainingDeposit}} {{assetSymbol}} more.",
   "Use maximum": "Use maximum",
