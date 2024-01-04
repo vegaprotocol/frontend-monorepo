@@ -60,7 +60,7 @@ const DeterministicOrderDetails = ({
   const o = data.orderByID;
   return (
     <div className={wrapperClasses}>
-      <div className="mb-12 lg:mb-0">
+      <div className="mb-0">
         <div className="relative block px-3 py-6 md:px-6 lg:-mr-7">
           <h2 className="text-3xl font-bold mb-4 display-5">
             <abbr title={tifFull[o.timeInForce]} className="bb-dotted mr-2">
@@ -89,9 +89,9 @@ const DeterministicOrderDetails = ({
               <span>{t('Reference')}</span>: {o.reference}
             </p>
           ) : null}
-          <div className="grid md:grid-cols-5 gap-x-6 mt-4">
-            <div className="mb-12 md:mb-0">
-              <h2 className="text-2xl font-bold text-dark mb-4">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-x-6 mt-4">
+            <div className="mb-6 md:mb-0">
+              <h2 className="text-2xl font-bold text-dark mb-0 md:mb-4">
                 {t('Status')}
               </h2>
               <h5 className="text-lg font-medium text-gray-500 mb-0 capitalize">
@@ -99,15 +99,17 @@ const DeterministicOrderDetails = ({
               </h5>
             </div>
 
-            <div className="mb-12 md:mb-0">
-              <h2 className="text-2xl font-bold text-dark mb-4">{t('Size')}</h2>
+            <div className="mb-6 md:mb-0">
+              <h2 className="text-2xl font-bold text-dark mb-0 md:mb-4">
+                {t('Size')}
+              </h2>
               <h5 className="text-lg font-medium text-gray-500 mb-0">
                 <SizeInMarket size={o.size} marketId={o.market.id} />
               </h5>
             </div>
 
-            <div className="">
-              <h2 className="text-2xl font-bold text-dark mb-4">
+            <div className="mb-6 md:mb-0">
+              <h2 className="text-2xl font-bold text-dark mb-0 md:mb-4">
                 {t('Version')}
               </h2>
               <h5 className="text-lg font-medium text-gray-500 mb-0">
@@ -115,8 +117,8 @@ const DeterministicOrderDetails = ({
               </h5>
             </div>
             {o.type ? (
-              <div className="">
-                <h2 className="text-2xl font-bold text-dark mb-4">
+              <div className="mb-6 md:mb-0">
+                <h2 className="text-2xl font-bold text-dark mb-0 md:mb-4">
                   {t('Type')}
                 </h2>
                 <h5 className="text-lg font-medium text-gray-500 mb-0">

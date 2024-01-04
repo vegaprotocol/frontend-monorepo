@@ -73,7 +73,7 @@ export const Layout = () => {
           <ProtocolUpgradeInProgressNotification />
         </div>
         <div className={fixedWidthClasses}>
-          <main className="p-4">
+          <main className="md:p-4">
             {!isHome && <BreadcrumbsContainer className="mb-4" />}
             <Outlet />
           </main>
