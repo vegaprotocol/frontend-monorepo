@@ -6,16 +6,10 @@ import {
   useWeb3ConnectStore,
   createDefaultProvider,
 } from '@vegaprotocol/web3';
-import {
-  AppFailure,
-  AppLoader,
-  useEnvironment,
-} from '@vegaprotocol/environment';
+import { useEnvironment } from '@vegaprotocol/environment';
 import type { ReactNode } from 'react';
 import { useState } from 'react';
 import { useEffect } from 'react';
-import { DataLoader } from './data-loader';
-import { useT } from '../../lib/use-t';
 
 export const Web3Provider = ({
   children,
@@ -35,8 +29,6 @@ export const Web3Provider = ({
   const [defaultProvider, setDefaultProvider] = useState<
     DefaultWeb3ProviderContextShape['provider'] | undefined
   >(undefined);
-
-  const t = useT();
 
   useEffect(() => {
     if (config?.chain_id) {
@@ -72,21 +64,11 @@ export const Web3Provider = ({
   }
 
   return (
-    <DataLoader
-      skeleton={<AppLoader />}
-      failure={
-        <AppFailure
-          title={t('Could not load market or asset data')}
-          error={error}
-        />
-      }
+    <Web3ProviderInternal
+      connectors={connectors}
+      defaultProvider={defaultProvider}
     >
-      <Web3ProviderInternal
-        connectors={connectors}
-        defaultProvider={defaultProvider}
-      >
-        <>{children}</>
-      </Web3ProviderInternal>
-    </DataLoader>
+      <>{children}</>
+    </Web3ProviderInternal>
   );
 };
