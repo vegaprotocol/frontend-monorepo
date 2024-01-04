@@ -50,7 +50,7 @@ export const useInjectedConnector = (onConnect: () => void) => {
         setStatus(Status.Connecting);
         if (connector instanceof InjectedConnector) {
           // extra step for injected connector - authorize wallet
-          await connector.connectWallet();
+          await connector.connectWallet(appChainId);
         }
         await connect(connector); // connect with keys
 
