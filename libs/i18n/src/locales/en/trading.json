@@ -370,6 +370,8 @@
   "{{reward}}x": "{{reward}}x",
   "Reward bonus": "Reward bonus",
   "Activity Streak": "Activity Streak",
+  "userActive": "{{active}} trader: {{count}} epochs so far",
+  "(Tier {{tier}} as of last epoch)": "(Tier {{tier}} as of last epoch)",
   "Team": "Team",
   "Ends in": "Ends in",
   "Assessed over": "Assessed over",

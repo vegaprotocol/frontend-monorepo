@@ -203,16 +203,21 @@ export const ActivityStreak = ({
           <VegaIcon name={VegaIconNames.STREAK} />
 
           <span className="flex flex-col">
-            <span data-testid="epoch-streak">
-              {t('epochsStreak', '{{count}} epochs streak', {
-                count: streak?.activeFor || 0,
-              })}{' '}
-              {userTierIndex > 0 &&
-                new BigNumber(
-                  tiers[0].minimum_activity_streak
-                ).isLessThanOrEqualTo(streak?.activeFor || 0) &&
-                t('(Tier {{tier}})', { tier: userTierIndex })}
-            </span>
+            {streak?.isActive && (
+              <span data-testid="epoch-streak">
+                {t('userActive', '{{active}} trader: {{count}} epochs so far', {
+                  active: streak?.isActive ? 'Active' : 'Inactive',
+                  count: streak?.activeFor || 0,
+                })}{' '}
+                {userTierIndex > 0 &&
+                  new BigNumber(
+                    tiers[0].minimum_activity_streak
+                  ).isLessThanOrEqualTo(streak?.activeFor || 0) &&
+                  t('(Tier {{tier}} as of last epoch)', {
+                    tier: userTierIndex,
+                  })}
+              </span>
+            )}
           </span>
         </div>
       </div>

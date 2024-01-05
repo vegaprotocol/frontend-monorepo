@@ -188,7 +188,7 @@ export const RewardHoarderBonus = ({
               new BigNumber(
                 tiers[0].minimum_quantum_balance
               ).isLessThanOrEqualTo(vestingDetails?.quantumBalance || 0) &&
-              t('(Tier {{tier}})', { tier: userTierIndex })}
+              t('(Tier {{tier}} as of last epoch)', { tier: userTierIndex })}
           </span>
         </div>
       </div>
