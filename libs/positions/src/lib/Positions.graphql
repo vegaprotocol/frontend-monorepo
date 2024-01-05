@@ -83,3 +83,23 @@ query EstimatePosition(
     }
   }
 }
+
+fragment MarginMode on PartyMarginMode {
+  marketId
+  partyId
+  marginMode
+  margin_factor
+  min_theoretical_margin_factor
+  max_theoretical_leverage
+  atEpoch
+}
+
+query MarginModes($partyId: ID!) {
+  partyMarginModes(partyId: $partyId) {
+    edges {
+      node {
+        ...MarginMode
+      }
+    }
+  }
+}

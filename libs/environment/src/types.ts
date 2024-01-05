@@ -19,6 +19,7 @@ export type FeatureFlags = z.infer<typeof featureFlagsSchema>;
 export type CosmicElevatorFlags = Pick<
   FeatureFlags,
   | 'ICEBERG_ORDERS'
+  | 'ISOLATED_MARGIN'
   | 'STOP_ORDERS'
   | 'SUCCESSOR_MARKETS'
   | 'PRODUCT_PERPETUALS'

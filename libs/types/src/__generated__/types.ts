@@ -1986,8 +1986,14 @@ export type MarginLevels = {
   initialLevel: Scalars['String'];
   /** Minimal margin for the position to be maintained in the network (unsigned integer) */
   maintenanceLevel: Scalars['String'];
+  /** Margin factor, only relevant for isolated margin mode, else 0 */
+  marginFactor: Scalars['String'];
+  /** Margin mode of the party, cross margin or isolated margin */
+  marginMode: MarginMode;
   /** Market in which the margin is required for this party */
   market: Market;
+  /** When in isolated margin, the required order margin level, otherwise, 0 */
+  orderMarginLevel: Scalars['String'];
   /** The party for this margin */
   party: Party;
   /** If the margin is between maintenance and search, the network will initiate a collateral search, expressed as unsigned integer */
@@ -2010,8 +2016,14 @@ export type MarginLevelsUpdate = {
   initialLevel: Scalars['String'];
   /** Minimal margin for the position to be maintained in the network (unsigned integer) */
   maintenanceLevel: Scalars['String'];
+  /** Margin factor, only relevant for isolated margin mode, else 0 */
+  marginFactor: Scalars['String'];
+  /** Margin mode of the party, cross margin or isolated margin */
+  marginMode: MarginMode;
   /** Market in which the margin is required for this party */
   marketId: Scalars['ID'];
+  /** When in isolated margin, the required order margin level, otherwise, 0 */
+  orderMarginLevel: Scalars['String'];
   /** The party for this margin */
   partyId: Scalars['ID'];
   /** If the margin is between maintenance and search, the network will initiate a collateral search (unsigned integer) */
@@ -2019,6 +2031,13 @@ export type MarginLevelsUpdate = {
   /** RFC3339Nano time from at which this margin level was relevant */
   timestamp: Scalars['Timestamp'];
 };
+
+export enum MarginMode {
+  /** Party is in cross margin mode */
+  MARGIN_MODE_CROSS_MARGIN = 'MARGIN_MODE_CROSS_MARGIN',
+  /** Party is in isolated margin mode */
+  MARGIN_MODE_ISOLATED_MARGIN = 'MARGIN_MODE_ISOLATED_MARGIN'
+}
 
 /** Represents a product & associated parameters that can be traded on Vega, has an associated OrderBook and Trade history */
 export type Market = {
@@ -3118,6 +3137,8 @@ export enum OrderRejectionReason {
   ORDER_ERROR_INVALID_TIME_IN_FORCE = 'ORDER_ERROR_INVALID_TIME_IN_FORCE',
   /** Invalid type */
   ORDER_ERROR_INVALID_TYPE = 'ORDER_ERROR_INVALID_TYPE',
+  /** Party has insufficient funds to cover for the order margin for the new or amended order */
+  ORDER_ERROR_ISOLATED_MARGIN_CHECK_FAILED = 'ORDER_ERROR_ISOLATED_MARGIN_CHECK_FAILED',
   /** Margin check failed - not enough available margin */
   ORDER_ERROR_MARGIN_CHECK_FAILED = 'ORDER_ERROR_MARGIN_CHECK_FAILED',
   /** Market is closed */
@@ -3138,6 +3159,8 @@ export enum OrderRejectionReason {
   ORDER_ERROR_OFFSET_MUST_BE_GREATER_THAN_ZERO = 'ORDER_ERROR_OFFSET_MUST_BE_GREATER_THAN_ZERO',
   /** Order is out of sequence */
   ORDER_ERROR_OUT_OF_SEQUENCE = 'ORDER_ERROR_OUT_OF_SEQUENCE',
+  /** Pegged orders are not allowed for a party in isolated margin mode */
+  ORDER_ERROR_PEGGED_ORDERS_NOT_ALLOWED_IN_ISOLATED_MARGIN_MODE = 'ORDER_ERROR_PEGGED_ORDERS_NOT_ALLOWED_IN_ISOLATED_MARGIN_MODE',
   /** A post-only order would produce an aggressive trade and thus it has been rejected */
   ORDER_ERROR_POST_ONLY_ORDER_WOULD_TRADE = 'ORDER_ERROR_POST_ONLY_ORDER_WOULD_TRADE',
   /** A reduce-ony order would not reduce the party's position and thus it has been rejected */
@@ -3584,6 +3607,41 @@ export type PartyLockedBalance = {
   balance: Scalars['String'];
   /** Epoch in which the funds will be moved to the vesting balance */
   untilEpoch: Scalars['Int'];
+};
+
+/** Margin mode selected for the given party and market. */
+export type PartyMarginMode = {
+  __typename?: 'PartyMarginMode';
+  /** Epoch at which the update happened. */
+  atEpoch: Scalars['Int'];
+  /** Selected margin mode. */
+  marginMode: MarginMode;
+  /** Margin factor for the market. Isolated mode only. */
+  margin_factor?: Maybe<Scalars['String']>;
+  /** Unique ID of the market. */
+  marketId: Scalars['ID'];
+  /** Maximum theoretical leverage for the market. Isolated mode only. */
+  max_theoretical_leverage?: Maybe<Scalars['String']>;
+  /** Minimum theoretical margin factor for the market. Isolated mode only. */
+  min_theoretical_margin_factor?: Maybe<Scalars['String']>;
+  /** Unique ID of the party. */
+  partyId: Scalars['ID'];
+};
+
+/** Edge type containing the deposit and cursor information returned by a PartyMarginModeConnection */
+export type PartyMarginModeEdge = {
+  __typename?: 'PartyMarginModeEdge';
+  cursor: Scalars['String'];
+  node: PartyMarginMode;
+};
+
+/** Connection type for retrieving cursor-based paginated party margin modes information */
+export type PartyMarginModesConnection = {
+  __typename?: 'PartyMarginModesConnection';
+  /** The party margin modes */
+  edges?: Maybe<Array<Maybe<PartyMarginModeEdge>>>;
+  /** The pagination information */
+  pageInfo?: Maybe<PageInfo>;
 };
 
 /**
@@ -4438,6 +4496,12 @@ export type Query = {
   partiesConnection?: Maybe<PartyConnection>;
   /** An entity that is trading on the Vega network */
   party?: Maybe<Party>;
+  /**
+   * List margin modes per party per market
+   *
+   * Get a list of all margin modes, or for a specific market ID, or party ID.
+   */
+  partyMarginModes?: Maybe<PartyMarginModesConnection>;
   /** Fetch all positions */
   positions?: Maybe<PositionConnection>;
   /** A governance proposal located by either its ID or reference. If both are set, ID is used. */
@@ -6213,6 +6277,8 @@ export enum TransferType {
   TRANSFER_TYPE_INFRASTRUCTURE_FEE_DISTRIBUTE = 'TRANSFER_TYPE_INFRASTRUCTURE_FEE_DISTRIBUTE',
   /** Infrastructure fee paid from general account */
   TRANSFER_TYPE_INFRASTRUCTURE_FEE_PAY = 'TRANSFER_TYPE_INFRASTRUCTURE_FEE_PAY',
+  /** Funds moved from order margin account to margin account. */
+  TRANSFER_TYPE_ISOLATED_MARGIN_LOW = 'TRANSFER_TYPE_ISOLATED_MARGIN_LOW',
   /** Allocates liquidity fee earnings to each liquidity provider's network controlled liquidity fee account. */
   TRANSFER_TYPE_LIQUIDITY_FEE_ALLOCATE = 'TRANSFER_TYPE_LIQUIDITY_FEE_ALLOCATE',
   /** Liquidity fee received into general account */
@@ -6239,6 +6305,10 @@ export enum TransferType {
   TRANSFER_TYPE_MTM_LOSS = 'TRANSFER_TYPE_MTM_LOSS',
   /** Funds added to margin account after mark to market gain */
   TRANSFER_TYPE_MTM_WIN = 'TRANSFER_TYPE_MTM_WIN',
+  /** Funds released from order margin account to general. */
+  TRANSFER_TYPE_ORDER_MARGIN_HIGH = 'TRANSFER_TYPE_ORDER_MARGIN_HIGH',
+  /** Funds moved from general account to order margin account. */
+  TRANSFER_TYPE_ORDER_MARGIN_LOW = 'TRANSFER_TYPE_ORDER_MARGIN_LOW',
   /** Funds deducted from margin account after a perpetuals funding loss. */
   TRANSFER_TYPE_PERPETUALS_FUNDING_LOSS = 'TRANSFER_TYPE_PERPETUALS_FUNDING_LOSS',
   /** Funds added to margin account after a perpetuals funding gain. */

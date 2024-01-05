@@ -130,6 +130,9 @@ const marginsFields: MarginFieldsFragment[] = [
     searchLevel: '0',
     initialLevel: '0',
     collateralReleaseLevel: '0',
+    marginFactor: '',
+    marginMode: Schema.MarginMode.MARGIN_MODE_CROSS_MARGIN,
+    orderMarginLevel: '',
     market: {
       __typename: 'Market',
       id: 'market-0',
@@ -145,6 +148,9 @@ const marginsFields: MarginFieldsFragment[] = [
     searchLevel: '0',
     initialLevel: '0',
     collateralReleaseLevel: '0',
+    marginFactor: '',
+    marginMode: Schema.MarginMode.MARGIN_MODE_CROSS_MARGIN,
+    orderMarginLevel: '',
     market: {
       __typename: 'Market',
       id: 'market-1',
@@ -160,6 +166,9 @@ const marginsFields: MarginFieldsFragment[] = [
     searchLevel: '0',
     initialLevel: '0',
     collateralReleaseLevel: '0',
+    marginFactor: '',
+    marginMode: Schema.MarginMode.MARGIN_MODE_CROSS_MARGIN,
+    orderMarginLevel: '',
     market: {
       __typename: 'Market',
       id: 'market-2',

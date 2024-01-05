@@ -13,6 +13,7 @@ import { AsyncRendererInline } from '@vegaprotocol/ui-toolkit';
 import { DealTicket } from './deal-ticket';
 import { useFeatureFlags } from '@vegaprotocol/environment';
 import { useT } from '../../use-t';
+import { MarginModeSelector } from './margin-mode-selector';
 
 interface DealTicketContainerProps {
   marketId: string;
@@ -51,21 +52,31 @@ export const DealTicketContainer = ({
       reload={reload}
     >
       {market && marketData ? (
-        featureFlags.STOP_ORDERS && showStopOrder ? (
-          <StopOrder
-            market={market}
-            marketPrice={marketPrice}
-            submit={(stopOrdersSubmission) => create({ stopOrdersSubmission })}
-          />
-        ) : (
-          <DealTicket
-            {...props}
-            market={market}
-            marketPrice={marketPrice}
-            marketData={marketData}
-            submit={(orderSubmission) => create({ orderSubmission })}
-          />
-        )
+        <>
+          {featureFlags.ISOLATED_MARGIN && (
+            <>
+              <MarginModeSelector marketId={marketId} />
+              <hr className="border-vega-clight-500 dark:border-vega-cdark-500 mb-4" />
+            </>
+          )}
+          {featureFlags.STOP_ORDERS && showStopOrder ? (
+            <StopOrder
+              market={market}
+              marketPrice={marketPrice}
+              submit={(stopOrdersSubmission) =>
+                create({ stopOrdersSubmission })
+              }
+            />
+          ) : (
+            <DealTicket
+              {...props}
+              market={market}
+              marketPrice={marketPrice}
+              marketData={marketData}
+              submit={(orderSubmission) => create({ orderSubmission })}
+            />
+          )}
+        </>
       ) : (
         <p>{t('Could not load market')}</p>
       )}

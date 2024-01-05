@@ -5,6 +5,7 @@ import {
 import { act, render, screen } from '@testing-library/react';
 import type { MarginFieldsFragment } from './__generated__/Margins';
 import type { AssetFieldsFragment } from '@vegaprotocol/assets';
+import { MarginMode } from '@vegaprotocol/types';
 
 const asset: AssetFieldsFragment = {
   id: 'assetId',
@@ -18,6 +19,9 @@ const margins: MarginFieldsFragment = {
   initialLevel: '800',
   searchLevel: '600',
   maintenanceLevel: '400',
+  marginFactor: '',
+  marginMode: MarginMode.MARGIN_MODE_CROSS_MARGIN,
+  orderMarginLevel: '',
   market: {
     id: 'marketId',
   },
