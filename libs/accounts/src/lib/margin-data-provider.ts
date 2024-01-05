@@ -40,6 +40,9 @@ const update = (
         searchLevel: delta.searchLevel,
         initialLevel: delta.initialLevel,
         collateralReleaseLevel: delta.collateralReleaseLevel,
+        marginFactor: delta.marginFactor,
+        marginMode: delta.marginMode,
+        orderMarginLevel: delta.orderMarginLevel,
         asset: {
           __typename: 'Asset',
           id: delta.asset,

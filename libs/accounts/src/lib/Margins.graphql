@@ -3,6 +3,9 @@ fragment MarginFields on MarginLevels {
   searchLevel
   initialLevel
   collateralReleaseLevel
+  marginFactor
+  marginMode
+  orderMarginLevel
   asset {
     id
   }
@@ -33,6 +36,9 @@ subscription MarginsSubscription($partyId: ID!) {
     searchLevel
     initialLevel
     collateralReleaseLevel
+    marginFactor
+    marginMode
+    orderMarginLevel
     timestamp
   }
 }
