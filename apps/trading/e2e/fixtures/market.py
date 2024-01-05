@@ -288,4 +288,6 @@ def market_exists(vega: VegaService, market_id: str):
         return False
     all_markets = vega.all_markets()
     market_ids = [market.id for market in all_markets]
+    print("Checking for market ID:", market_id)
+    print("Available market IDs:", market_ids)
     return market_id in market_ids
