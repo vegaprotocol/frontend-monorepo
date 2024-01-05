@@ -1,4 +1,5 @@
 import type { DiscountProgramsQuery, FeesQuery } from './__generated__/Fees';
+
 export const useReferralStats = (
   previousEpoch?: number,
   referralStats?: NonNullable<
