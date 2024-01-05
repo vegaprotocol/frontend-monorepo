@@ -28,6 +28,7 @@ export type FilterOption =
   | 'Delegate'
   | 'Ethereum Key Rotate Submission'
   | 'Issue Signatures'
+  | 'Join Team'
   | 'Key Rotate Submission'
   | 'Liquidity Provision Order'
   | 'Node Signature'
@@ -82,9 +83,17 @@ export const SecondaryFilterOptions: FilterOption[] = [
   'Validator Heartbeat',
 ];
 
+export const ReferralFilterOptions: FilterOption[] = [
+  'Join Team',
+  'Update Referral Set',
+  'Apply Referral Code',
+  'Create Referral Set',
+];
+
 export const AllFilterOptions: FilterOption[] = [
   ...PrimaryFilterOptions,
   ...SecondaryFilterOptions,
+  ...ReferralFilterOptions,
 ];
 
 export interface TxFilterProps {
@@ -140,7 +149,31 @@ export const TxsFilter = ({ filters, setFilters }: TxFilterProps) => {
         ))}
         <DropdownMenuSub>
           <DropdownMenuSubTrigger>
-            {t('More Types')}
+            {t('Referrals')}
+            <Icon name="chevron-right" />
+          </DropdownMenuSubTrigger>
+          <DropdownMenuSubContent>
+            {ReferralFilterOptions.map((f) => (
+              <DropdownMenuCheckboxItem
+                key={f}
+                checked={filters.has(f)}
+                onCheckedChange={(checked) => {
+                  // NOTE: These act like radio buttons until the API supports multiple filters
+                  setFilters(new Set([f]));
+                }}
+                id={`radio-${f}`}
+              >
+                {f}
+                <DropdownMenuItemIndicator>
+                  <Icon name="tick-circle" className="inline" />
+                </DropdownMenuItemIndicator>
+              </DropdownMenuCheckboxItem>
+            ))}
+          </DropdownMenuSubContent>
+        </DropdownMenuSub>
+        <DropdownMenuSub>
+          <DropdownMenuSubTrigger>
+            {t('Validators')}
             <Icon name="chevron-right" />
           </DropdownMenuSubTrigger>
           <DropdownMenuSubContent>

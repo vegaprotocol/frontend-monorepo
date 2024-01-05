@@ -48,6 +48,8 @@ const displayString: StringMap = {
   StopOrdersSubmission: 'Stop',
   StopOrdersCancellation: 'Cancel stop',
   'Stop Orders Cancellation': 'Cancel stop',
+  'Apply Referral Code': 'Referral',
+  'Create Referral Set': 'Create referral',
 };
 
 export function getLabelForStopOrderType(

@@ -28,6 +28,7 @@ import { TxProposal } from './tx-proposal';
 import { TxDetailsTransfer } from './tx-transfer';
 import { TxDetailsStopOrderSubmission } from './tx-stop-order-submission';
 import { TxDetailsLiquiditySubmission } from './tx-liquidity-submission';
+import { TxDetailsCreateReferralSet } from './tx-create-referral-set';
 
 interface TxDetailsWrapperProps {
   txData: BlockExplorerTransactionResult | undefined;
@@ -121,6 +122,8 @@ function getTransactionComponent(txData?: BlockExplorerTransactionResult) {
       return TxDetailsStopOrderSubmission;
     case 'Transfer Funds':
       return TxDetailsTransfer;
+    case 'Create Referral Set':
+      return TxDetailsCreateReferralSet;
     default:
       return TxDetailsGeneric;
   }
