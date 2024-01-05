@@ -33,6 +33,10 @@ import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
 import { RewardsHistoryContainer } from './rewards-history';
 import { useT } from '../../lib/use-t';
 import { useAssetsMapProvider } from '@vegaprotocol/assets';
+import { ActiveRewards } from './active-rewards';
+import { ActivityStreak } from './streaks/activity-streaks';
+import { RewardHoarderBonus } from './streaks/reward-hoarder-bonus';
+import classNames from 'classnames';
 
 const ASSETS_WITH_INCORRECT_VESTING_REWARD_DATA = [
   'bf1e88d19db4b3ca0d1d5bdb73718a01686b18cf731ca26adedf3c8b83802bba', // USDT mainnet
@@ -45,6 +49,7 @@ export const RewardsContainer = () => {
   const { params, loading: paramsLoading } = useNetworkParams([
     NetworkParams.reward_asset,
     NetworkParams.rewards_activityStreak_benefitTiers,
+    NetworkParams.rewards_vesting_benefitTiers,
     NetworkParams.rewards_vesting_baseRate,
   ]);
 
@@ -53,6 +58,14 @@ export const RewardsContainer = () => {
   const { data: assetMap } = useAssetsMapProvider();
 
   const { data: epochData } = useRewardsEpochQuery();
+
+  const { rewards_activityStreak_benefitTiers, rewards_vesting_benefitTiers } =
+    params || {};
+
+  const activityStreakBenefitTiers = JSON.parse(
+    rewards_activityStreak_benefitTiers
+  );
+  const vestingBenefitTiers = JSON.parse(rewards_vesting_benefitTiers);
 
   // No need to specify the fromEpoch as it will by default give you the last
   // Note activityStreak in query will fail
@@ -67,6 +80,9 @@ export const RewardsContainer = () => {
     // of sync for 10s if you happen to be on the page at the end of an epoch
     pollInterval: 10000,
   });
+
+  const partyActivityStreak = rewardsData?.party?.activityStreak;
+  const vestingDetails = rewardsData?.party?.vestingStats;
 
   if (!epochData?.epoch || !assetMap) return null;
 
@@ -114,74 +130,98 @@ export const RewardsContainer = () => {
   ]);
 
   return (
-    <div className="grid auto-rows-min grid-cols-6 gap-3">
-      {/* Always show reward information for vega */}
-      <Card
-        key={params.reward_asset}
-        title={t('Vega Reward pot')}
-        className="lg:col-span-3 xl:col-span-2"
-        loading={loading}
-        highlight={true}
-      >
-        <RewardPot
-          pubKey={pubKey}
-          accounts={accounts}
-          assetId={params.reward_asset}
-          vestingBalancesSummary={rewardsData?.party?.vestingBalancesSummary}
-        />
-      </Card>
-      <Card
-        title={t('Vesting')}
-        className="lg:col-span-3 xl:col-span-2"
-        loading={loading}
-      >
-        <Vesting
-          pubKey={pubKey}
-          baseRate={params.rewards_vesting_baseRate}
-          multiplier={
-            rewardsData?.party?.activityStreak?.rewardVestingMultiplier
-          }
-        />
-      </Card>
-      <Card
-        title={t('Rewards multipliers')}
-        className="lg:col-span-3 xl:col-span-2"
-        loading={loading}
-        highlight={true}
-      >
-        <Multipliers
-          pubKey={pubKey}
-          hoarderMultiplier={
-            rewardsData?.party?.vestingStats?.rewardBonusMultiplier
-          }
-          streakMultiplier={
-            rewardsData?.party?.activityStreak?.rewardDistributionMultiplier
-          }
-        />
-      </Card>
+    <div className="flex flex-col w-full gap-3">
+      <div className="grid auto-rows-min grid-cols-6 gap-3">
+        {/* Always show reward information for vega */}
+        <Card
+          key={params.reward_asset}
+          title={t('Vega Reward pot')}
+          className="lg:col-span-3 xl:col-span-2"
+          loading={loading}
+          highlight={true}
+        >
+          <RewardPot
+            pubKey={pubKey}
+            accounts={accounts}
+            assetId={params.reward_asset}
+            vestingBalancesSummary={rewardsData?.party?.vestingBalancesSummary}
+          />
+        </Card>
+        <Card
+          title={t('Vesting')}
+          className="lg:col-span-3 xl:col-span-2"
+          loading={loading}
+        >
+          <Vesting
+            pubKey={pubKey}
+            baseRate={params.rewards_vesting_baseRate}
+            multiplier={
+              rewardsData?.party?.activityStreak?.rewardVestingMultiplier
+            }
+          />
+        </Card>
+        <Card
+          title={t('Rewards multipliers')}
+          className="lg:col-span-3 xl:col-span-2"
+          loading={loading}
+          highlight={true}
+        >
+          <Multipliers
+            pubKey={pubKey}
+            hoarderMultiplier={
+              rewardsData?.party?.vestingStats?.rewardBonusMultiplier
+            }
+            streakMultiplier={
+              rewardsData?.party?.activityStreak?.rewardDistributionMultiplier
+            }
+          />
+        </Card>
 
-      {/* Show all other reward pots, most of the time users will not have other rewards */}
-      {assets
-        .filter((assetId) => assetId !== params.reward_asset)
-        .map((assetId) => {
-          const asset = assetMap ? assetMap[assetId] : null;
+        {/* Show all other reward pots, most of the time users will not have other rewards */}
+        {assets
+          .filter((assetId) => assetId !== params.reward_asset)
+          .map((assetId) => {
+            const asset = assetMap ? assetMap[assetId] : null;
 
-          if (!asset) return null;
+            if (!asset) return null;
 
-          // Following code is for mitigating an issue due to a core bug where locked and vesting
-          // balances were incorrectly increased for infrastructure rewards for USDT on mainnet
-          //
-          // We don't want to incorrectly show the wring locked/vesting values, but we DO want to
-          // show the user that they have rewards available to withdraw
-          if (ASSETS_WITH_INCORRECT_VESTING_REWARD_DATA.includes(asset.id)) {
-            const accountsForAsset = rewardAccountsAssetMap[asset.id];
-            const vestedAccount = accountsForAsset?.find(
-              (a) => a.type === AccountType.ACCOUNT_TYPE_VESTED_REWARDS
-            );
+            // Following code is for mitigating an issue due to a core bug where locked and vesting
+            // balances were incorrectly increased for infrastructure rewards for USDT on mainnet
+            //
+            // We don't want to incorrectly show the wring locked/vesting values, but we DO want to
+            // show the user that they have rewards available to withdraw
+            if (ASSETS_WITH_INCORRECT_VESTING_REWARD_DATA.includes(asset.id)) {
+              const accountsForAsset = rewardAccountsAssetMap[asset.id];
+              const vestedAccount = accountsForAsset?.find(
+                (a) => a.type === AccountType.ACCOUNT_TYPE_VESTED_REWARDS
+              );
 
-            // No vested rewards available to withdraw, so skip over USDT
-            if (!vestedAccount || Number(vestedAccount.balance) <= 0) {
-              return null;
+              // No vested rewards available to withdraw, so skip over USDT
+              if (!vestedAccount || Number(vestedAccount.balance) <= 0) {
+                return null;
+              }
+
+              return (
+                <Card
+                  key={assetId}
+                  title={t('{{assetSymbol}} Reward pot', {
+                    assetSymbol: asset.symbol,
+                  })}
+                  className="lg:col-span-3 xl:col-span-2"
+                  loading={loading}
+                >
+                  <RewardPot
+                    pubKey={pubKey}
+                    accounts={accounts}
+                    assetId={assetId}
+                    // Ensure that these values are shown as 0
+                    vestingBalancesSummary={{
+                      lockedBalances: [],
+                      vestingBalances: [],
+                    }}
+                  />
+                </Card>
+              );
             }
 
             return (
@@ -197,48 +237,69 @@ export const RewardsContainer = () => {
                   pubKey={pubKey}
                   accounts={accounts}
                   assetId={assetId}
-                  // Ensure that these values are shown as 0
-                  vestingBalancesSummary={{
-                    lockedBalances: [],
-                    vestingBalances: [],
-                  }}
+                  vestingBalancesSummary={
+                    rewardsData?.party?.vestingBalancesSummary
+                  }
                 />
               </Card>
             );
-          }
-
-          return (
-            <Card
-              key={assetId}
-              title={t('{{assetSymbol}} Reward pot', {
-                assetSymbol: asset.symbol,
-              })}
-              className="lg:col-span-3 xl:col-span-2"
-              loading={loading}
-            >
-              <RewardPot
-                pubKey={pubKey}
-                accounts={accounts}
-                assetId={assetId}
-                vestingBalancesSummary={
-                  rewardsData?.party?.vestingBalancesSummary
-                }
+          })}
+      </div>
+      <div className="grid auto-rows-min grid-cols-6 gap-3">
+        {pubKey && activityStreakBenefitTiers.tiers?.length > 0 && (
+          <Card
+            title={t('Activity Streak')}
+            className={classNames(
+              {
+                'lg:col-span-6 xl:col-span-3':
+                  activityStreakBenefitTiers.tiers.length <= 4,
+                'xl:col-span-6': activityStreakBenefitTiers.tiers.length > 4,
+              },
+              'hidden md:block'
+            )}
+          >
+            <span className="flex flex-col mr-8 pr-4">
+              <ActivityStreak
+                tiers={activityStreakBenefitTiers.tiers}
+                streak={partyActivityStreak}
               />
-            </Card>
-          );
-        })}
-      <Card
-        title={t('Rewards history')}
-        className="lg:col-span-full"
-        loading={rewardsLoading}
-        noBackgroundOnMobile={true}
-      >
-        <RewardsHistoryContainer
-          epoch={Number(epochData?.epoch.id)}
-          pubKey={pubKey}
-          assets={assetMap}
-        />
-      </Card>
+            </span>
+          </Card>
+        )}
+        {pubKey && vestingBenefitTiers.tiers?.length > 0 && (
+          <Card
+            title={t('Reward Hoarder Bonus')}
+            className={classNames(
+              {
+                'lg:col-span-6 xl:col-span-3':
+                  vestingBenefitTiers.tiers.length <= 4,
+                'xl:col-span-6': vestingBenefitTiers.tiers.length > 4,
+              },
+              'hidden md:block'
+            )}
+          >
+            <span className="flex flex-col mr-8 pr-4">
+              <RewardHoarderBonus
+                tiers={vestingBenefitTiers.tiers}
+                vestingDetails={vestingDetails}
+              />
+            </span>
+          </Card>
+        )}
+        <ActiveRewards currentEpoch={Number(epochData?.epoch.id)} />
+        <Card
+          title={t('Rewards history')}
+          className="lg:col-span-full hidden md:block"
+          loading={rewardsLoading}
+          noBackgroundOnMobile={true}
+        >
+          <RewardsHistoryContainer
+            epoch={Number(epochData?.epoch.id)}
+            pubKey={pubKey}
+            assets={assetMap}
+          />
+        </Card>
+      </div>
     </div>
   );
 };
@@ -343,7 +404,7 @@ export const RewardPot = ({
                   })}
                   <VegaIcon name={VegaIconNames.LOCK} size={12} />
                 </CardTableTH>
-                <CardTableTD>
+                <CardTableTD data-testid="locked-value">
                   {addDecimalsFormatNumberQuantum(
                     totalLocked.toString(),
                     rewardAsset.decimals,
@@ -357,7 +418,7 @@ export const RewardPot = ({
                     assetSymbol: rewardAsset.symbol,
                   })}
                 </CardTableTH>
-                <CardTableTD>
+                <CardTableTD data-testid="vesting-value">
                   {addDecimalsFormatNumberQuantum(
                     totalVesting.toString(),
                     rewardAsset.decimals,
@@ -369,7 +430,7 @@ export const RewardPot = ({
                 <CardTableTH>
                   {t('Available to withdraw this epoch')}
                 </CardTableTH>
-                <CardTableTD>
+                <CardTableTD data-testid="available-to-withdraw-value">
                   {addDecimalsFormatNumberQuantum(
                     totalVestedRewardsByRewardAsset.toString(),
                     rewardAsset.decimals,
@@ -388,6 +449,7 @@ export const RewardPot = ({
                     )
                   }
                   size="small"
+                  data-testid="redeem-rewards-button"
                 >
                   {t('Redeem rewards')}
                 </TradingButton>
@@ -422,12 +484,16 @@ export const Vesting = ({
       <CardTable>
         <tr>
           <CardTableTH>{t('Base rate')}</CardTableTH>
-          <CardTableTD>{baseRateFormatted}%</CardTableTD>
+          <CardTableTD data-testid="base-rate-value">
+            {baseRateFormatted}%
+          </CardTableTD>
         </tr>
         {pubKey && (
           <tr>
             <CardTableTH>{t('Vesting multiplier')}</CardTableTH>
-            <CardTableTD>{multiplier ? `${multiplier}x` : '-'}</CardTableTD>
+            <CardTableTD data-testid="vesting multiplier-value">
+              {multiplier ? `${multiplier}x` : '-'}
+            </CardTableTD>
           </tr>
         )}
       </CardTable>
@@ -467,13 +533,13 @@ export const Multipliers = ({
       <CardTable>
         <tr>
           <CardTableTH>{t('Streak reward multiplier')}</CardTableTH>
-          <CardTableTD>
+          <CardTableTD data-testid="streak-reward-multiplier-value">
             {streakMultiplier ? `${streakMultiplier}x` : '-'}
           </CardTableTD>
         </tr>
         <tr>
           <CardTableTH>{t('Hoarder reward multiplier')}</CardTableTH>
-          <CardTableTD>
+          <CardTableTD data-testid="hoarder-reward-multiplier-value">
             {hoarderMultiplier ? `${hoarderMultiplier}x` : '-'}
           </CardTableTD>
         </tr>

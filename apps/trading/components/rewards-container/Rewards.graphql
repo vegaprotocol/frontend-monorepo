@@ -2,14 +2,19 @@ query RewardsPage($partyId: ID!) {
   party(id: $partyId) {
     id
     vestingStats {
-      # AKA hoarder reward multiplier
       rewardBonusMultiplier
+      quantumBalance
+      epochSeq
     }
     activityStreak {
-      # vesting multiplier
-      rewardVestingMultiplier
-      # AKA streak multiplier
+      activeFor
+      isActive
+      inactiveFor
       rewardDistributionMultiplier
+      rewardVestingMultiplier
+      epoch
+      tradedVolume
+      openVolume
     }
     vestingBalancesSummary {
       epoch
@@ -31,6 +36,74 @@ query RewardsPage($partyId: ID!) {
         }
         balance
         untilEpoch
+      }
+    }
+  }
+}
+
+query ActiveRewards(
+  $isReward: Boolean
+  $partyId: ID
+  $direction: TransferDirection
+  $pagination: Pagination
+) {
+  transfersConnection(
+    partyId: $partyId
+    isReward: $isReward
+    direction: $direction
+    pagination: $pagination
+  ) {
+    edges {
+      node {
+        transfer {
+          amount
+          id
+          from
+          fromAccountType
+          to
+          toAccountType
+          asset {
+            id
+            symbol
+            decimals
+            name
+            quantum
+            status
+          }
+          reference
+          status
+          timestamp
+          kind {
+            ... on RecurringTransfer {
+              startEpoch
+              endEpoch
+              dispatchStrategy {
+                dispatchMetric
+                dispatchMetricAssetId
+                marketIdsInScope
+                entityScope
+                individualScope
+                teamScope
+                nTopPerformers
+                stakingRequirement
+                notionalTimeWeightedAveragePositionRequirement
+                windowLength
+                lockPeriod
+                distributionStrategy
+                rankTable {
+                  startRank
+                  shareRatio
+                }
+              }
+            }
+          }
+          reason
+        }
+        fees {
+          transferId
+          amount
+          epoch
+        }
       }
     }
   }
@@ -90,5 +163,20 @@ query RewardsHistory(
 query RewardsEpoch {
   epoch {
     id
+  }
+}
+
+query MarketForRewards($marketId: ID!) {
+  market(id: $marketId) {
+    tradableInstrument {
+      instrument {
+        id
+        name
+        code
+        metadata {
+          tags
+        }
+      }
+    }
   }
 }

@@ -12,6 +12,7 @@ import { VegaWalletProvider } from '@vegaprotocol/wallet';
 import type { ReactNode } from 'react';
 import { Web3Provider } from './web3-provider';
 import { useT } from '../../lib/use-t';
+import { DataLoader } from './data-loader';
 
 export const Bootstrapper = ({ children }: { children: ReactNode }) => {
   const t = useT();
@@ -52,28 +53,38 @@ export const Bootstrapper = ({ children }: { children: ReactNode }) => {
           />
         }
       >
-        <Web3Provider
+        <DataLoader
           skeleton={<AppLoader />}
           failure={
-            <AppFailure title={t('Could not configure web3 provider')} />
+            <AppFailure
+              title={t('Could not load market data or asset data')}
+              error={error}
+            />
           }
         >
-          <VegaWalletProvider
-            config={{
-              network: VEGA_ENV,
-              vegaUrl: VEGA_URL,
-              vegaWalletServiceUrl: VEGA_WALLET_URL,
-              links: {
-                explorer: VEGA_EXPLORER_URL,
-                concepts: DocsLinks.VEGA_WALLET_CONCEPTS_URL,
-                chromeExtensionUrl: CHROME_EXTENSION_URL,
-                mozillaExtensionUrl: MOZILLA_EXTENSION_URL,
-              },
-            }}
+          <Web3Provider
+            skeleton={<AppLoader />}
+            failure={
+              <AppFailure title={t('Could not configure web3 provider')} />
+            }
           >
-            {children}
-          </VegaWalletProvider>
-        </Web3Provider>
+            <VegaWalletProvider
+              config={{
+                network: VEGA_ENV,
+                vegaUrl: VEGA_URL,
+                vegaWalletServiceUrl: VEGA_WALLET_URL,
+                links: {
+                  explorer: VEGA_EXPLORER_URL,
+                  concepts: DocsLinks.VEGA_WALLET_CONCEPTS_URL,
+                  chromeExtensionUrl: CHROME_EXTENSION_URL,
+                  mozillaExtensionUrl: MOZILLA_EXTENSION_URL,
+                },
+              }}
+            >
+              {children}
+            </VegaWalletProvider>
+          </Web3Provider>
+        </DataLoader>
       </NodeGuard>
     </NetworkLoader>
   );

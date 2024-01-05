@@ -199,6 +199,12 @@ module.exports = {
       'AlphaLyrae, "Helvetica Neue", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
       { fontFeatureSettings: '"calt" 0, "liga" 0' },
     ],
+    glitch: [
+      'AlphaLyrae, monospace',
+      {
+        fontFeatureSettings: '"ss02" 1',
+      },
+    ],
   },
   keyframes: {
     rotate: {

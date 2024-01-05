@@ -558,7 +558,7 @@ const WarningCell = ({
     <div className="flex items-center justify-end">
       {showIcon && (
         <span className="mr-2 text-black dark:text-white">
-          <VegaIcon name={VegaIconNames.EXCLAIMATION_MARK} size={12} />
+          <VegaIcon name={VegaIconNames.EXCLAMATION_MARK} size={12} />
         </span>
       )}
       <span className="overflow-hidden text-ellipsis whitespace-nowrap">

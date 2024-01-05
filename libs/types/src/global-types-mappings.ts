@@ -1,9 +1,11 @@
 import type {
   ConditionOperator,
+  EntityScope,
   GovernanceTransferKind,
   GovernanceTransferType,
   PeggedReference,
   ProposalChange,
+  TransferStatus,
 } from './__generated__/types';
 import type { AccountType } from './__generated__/types';
 import type {
@@ -36,32 +38,33 @@ import type { ProductType, ProposalProductType } from './product';
 export const AccountTypeMapping: {
   [T in AccountType]: string;
 } = {
-  ACCOUNT_TYPE_BOND: 'Bond',
-  ACCOUNT_TYPE_EXTERNAL: 'External',
-  ACCOUNT_TYPE_FEES_INFRASTRUCTURE: 'Fees Infrastructure',
-  ACCOUNT_TYPE_FEES_LIQUIDITY: 'Fees Liquidity',
-  ACCOUNT_TYPE_FEES_MAKER: 'Fees Maker',
-  ACCOUNT_TYPE_GENERAL: 'General',
-  ACCOUNT_TYPE_GLOBAL_INSURANCE: 'Global Insurance',
-  ACCOUNT_TYPE_GLOBAL_REWARD: 'Global Reward',
-  ACCOUNT_TYPE_INSURANCE: 'Insurance',
-  ACCOUNT_TYPE_MARGIN: 'Margin',
-  ACCOUNT_TYPE_PENDING_TRANSFERS: 'Pending transfers',
-  ACCOUNT_TYPE_PENDING_FEE_REFERRAL_REWARD: 'Pending fee referral reward',
-  ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES: 'Reward LP received fees',
-  ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES: 'Reward Maker received fees',
-  ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS: 'Reward Market Proposers',
-  ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES: 'Reward Maker paid fees',
-  ACCOUNT_TYPE_SETTLEMENT: 'Settlement',
-  ACCOUNT_TYPE_HOLDING: 'Holding',
-  ACCOUNT_TYPE_LP_LIQUIDITY_FEES: 'LP Liquidity Fees',
-  ACCOUNT_TYPE_NETWORK_TREASURY: 'Network Treasury',
-  ACCOUNT_TYPE_REWARD_AVERAGE_POSITION: 'Reward Average Position',
-  ACCOUNT_TYPE_REWARD_RELATIVE_RETURN: 'Reward Relative Return',
-  ACCOUNT_TYPE_REWARD_RETURN_VOLATILITY: 'Reward Return Volatility',
-  ACCOUNT_TYPE_REWARD_VALIDATOR_RANKING: 'Reward Validator Ranking',
-  ACCOUNT_TYPE_VESTED_REWARDS: 'Vested Rewards',
-  ACCOUNT_TYPE_VESTING_REWARDS: 'Vesting Rewards',
+  ACCOUNT_TYPE_BOND: 'Bond account',
+  ACCOUNT_TYPE_EXTERNAL: 'External account',
+  ACCOUNT_TYPE_FEES_INFRASTRUCTURE: 'Infrastructure fees account',
+  ACCOUNT_TYPE_FEES_LIQUIDITY: 'Liquidity fees account',
+  ACCOUNT_TYPE_FEES_MAKER: 'Maker fees account',
+  ACCOUNT_TYPE_GENERAL: 'General account',
+  ACCOUNT_TYPE_GLOBAL_INSURANCE: 'Global insurance account',
+  ACCOUNT_TYPE_GLOBAL_REWARD: 'Global reward account',
+  ACCOUNT_TYPE_INSURANCE: 'Insurance account',
+  ACCOUNT_TYPE_MARGIN: 'Margin account',
+  ACCOUNT_TYPE_PENDING_TRANSFERS: 'Pending transfers account',
+  ACCOUNT_TYPE_PENDING_FEE_REFERRAL_REWARD:
+    'Pending fee referral reward account',
+  ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES: 'LP received fees reward account',
+  ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES: 'Maker received fees reward account',
+  ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS: 'Market proposers reward account',
+  ACCOUNT_TYPE_REWARD_AVERAGE_POSITION: 'Average position reward account',
+  ACCOUNT_TYPE_REWARD_RELATIVE_RETURN: 'Relative return reward account',
+  ACCOUNT_TYPE_REWARD_RETURN_VOLATILITY: 'Volatility return reward account',
+  ACCOUNT_TYPE_REWARD_VALIDATOR_RANKING: 'Validator ranking reward account',
+  ACCOUNT_TYPE_VESTED_REWARDS: 'Vested rewards account',
+  ACCOUNT_TYPE_VESTING_REWARDS: 'Vesting rewards account',
+  ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES: 'Maker fees paid account',
+  ACCOUNT_TYPE_SETTLEMENT: 'Settlement account',
+  ACCOUNT_TYPE_HOLDING: 'Holding account',
+  ACCOUNT_TYPE_LP_LIQUIDITY_FEES: 'LP liquidity fees account',
+  ACCOUNT_TYPE_NETWORK_TREASURY: 'Network treasury account',
 };
 
 /**
@@ -579,15 +582,34 @@ export const GovernanceTransferKindMapping: GovernanceTransferKindMap = {
 type DispatchMetricLabel = {
   [T in DispatchMetric]: string;
 };
+
 export const DispatchMetricLabels: DispatchMetricLabel = {
-  DISPATCH_METRIC_LP_FEES_RECEIVED: 'Liquidity Provision fees received',
+  DISPATCH_METRIC_LP_FEES_RECEIVED: 'Liquidity provision fees received',
   DISPATCH_METRIC_MAKER_FEES_PAID: 'Price maker fees paid',
   DISPATCH_METRIC_MAKER_FEES_RECEIVED: 'Price maker fees earned',
-  DISPATCH_METRIC_MARKET_VALUE: 'Total market Value',
+  DISPATCH_METRIC_MARKET_VALUE: 'Total market value',
   DISPATCH_METRIC_AVERAGE_POSITION: 'Average position',
   DISPATCH_METRIC_RELATIVE_RETURN: 'Relative return',
   DISPATCH_METRIC_RETURN_VOLATILITY: 'Return volatility',
   DISPATCH_METRIC_VALIDATOR_RANKING: 'Validator ranking',
+};
+
+export const DispatchMetricDescription: DispatchMetricLabel = {
+  DISPATCH_METRIC_LP_FEES_RECEIVED: 'Get rewards for providing liquidity.',
+  DISPATCH_METRIC_MAKER_FEES_PAID:
+    'Get rewards for taking prices off the order book and paying fees.',
+  DISPATCH_METRIC_MAKER_FEES_RECEIVED:
+    'Get rewards for making prices on the order book.',
+  DISPATCH_METRIC_MARKET_VALUE:
+    'Get rewards if a market you proposed attracts a high trading volume.',
+  DISPATCH_METRIC_AVERAGE_POSITION:
+    'Get rewards for having an open position that is consistently larger than that of other traders.',
+  DISPATCH_METRIC_RELATIVE_RETURN:
+    'Get rewards for having a high profit in relation to your position size.',
+  DISPATCH_METRIC_RETURN_VOLATILITY:
+    'Get rewards for having the least amount of variance in your returns while you have a position open during the rewards window.',
+  DISPATCH_METRIC_VALIDATOR_RANKING:
+    'Get rewards if you run a validator node with a high ranking score.',
 };
 
 export const PositionStatusMapping: {
@@ -597,6 +619,16 @@ export const PositionStatusMapping: {
   POSITION_STATUS_ORDERS_CLOSED: 'Maintained by network',
   POSITION_STATUS_UNSPECIFIED: 'Normal',
   POSITION_STATUS_DISTRESSED: 'Distressed',
+};
+
+export const TransferStatusMapping: {
+  [T in TransferStatus]: string;
+} = {
+  STATUS_DONE: 'Done',
+  STATUS_PENDING: 'Pending',
+  STATUS_REJECTED: 'Rejected',
+  STATUS_CANCELLED: 'Cancelled',
+  STATUS_STOPPED: 'Stopped',
 };
 
 export const ConditionOperatorMapping: { [C in ConditionOperator]: string } = {
@@ -630,6 +662,35 @@ export const ProposalProductTypeMapping: Record<ProposalProductType, string> = {
   SpotProduct: 'Spot',
   PerpetualProduct: 'Perpetual',
 };
+
+export const EntityScopeMapping: { [e in EntityScope]: string } = {
+  /** Rewards must be distributed directly to eligible parties */
+  ENTITY_SCOPE_INDIVIDUALS:
+    'Rewards must be distributed directly to eligible parties',
+  /** Rewards must be distributed directly to eligible teams, and then amongst team members */
+  ENTITY_SCOPE_TEAMS:
+    'Rewards must be distributed directly to eligible teams, and then amongst team members',
+};
+
+export const EntityScopeLabelMapping: { [e in EntityScope]: string } = {
+  /** Rewards must be distributed directly to eligible parties */
+  ENTITY_SCOPE_INDIVIDUALS: 'Individual',
+  /** Rewards must be distributed directly to eligible teams, and then amongst team members */
+  ENTITY_SCOPE_TEAMS: 'Team',
+};
+
+export enum DistributionStrategyMapping {
+  /** Rewards funded using the pro-rata strategy should be distributed pro-rata by each entity's reward metric scaled by any active multipliers that party has */
+  DISTRIBUTION_STRATEGY_PRO_RATA = 'Pro rata',
+  /** Rewards funded using the rank strategy */
+  DISTRIBUTION_STRATEGY_RANK = 'Strategy rank',
+}
+
+export enum DistributionStrategyDescriptionMapping {
+  DISTRIBUTION_STRATEGY_PRO_RATA = `Rewards funded using the pro-rata strategy should be distributed pro-rata by each entity's reward metric scaled by any active multipliers that party has`,
+  /** Rewards funded using the rank strategy */
+  DISTRIBUTION_STRATEGY_RANK = 'Rewards funded using the rank strategy',
+}
 
 export const ProposalProductTypeShortName: Record<ProposalProductType, string> =
   {
