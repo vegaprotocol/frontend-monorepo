@@ -6,7 +6,7 @@ from conftest import init_vega, init_page, auth_setup
 from fixtures.market import setup_continuous_market, market_exists
 from actions.utils import next_epoch, change_keys
 from wallet_config import MM_WALLET, PARTY_A, PARTY_B, PARTY_C, PARTY_D
-from vega_sim.service import VegaService
+from vega_sim.null_service import VegaServiceNull
 
 # region Constants
 ACTIVITY = "activity"
@@ -109,7 +109,7 @@ def vega_instance(
         return vega_combo_tier_0 if tier == 1 else vega_combo_tier_1
 
 
-def setup_market_with_reward_program(vega: VegaService, reward_programs, tier):
+def setup_market_with_reward_program(vega: VegaServiceNull, reward_programs, tier):
     print(f"Started setup_market_with_{reward_programs}_{tier}")
     tDAI_market = setup_continuous_market(vega)
     tDAI_asset_id = vega.find_asset_id(symbol="tDAI")
@@ -149,19 +149,6 @@ def setup_market_with_reward_program(vega: VegaService, reward_programs, tier):
         reference="reward",
         asset_for_metric=tDAI_asset_id,
         metric=vega_protos.vega.DISPATCH_METRIC_MAKER_FEES_PAID,
-        # lock_period= 5,
-        # TODO test lock period
-        amount=100,
-        factor=1.0,
-    )
-    vega.recurring_transfer(
-        from_key_name=PARTY_A.name,
-        from_account_type=vega_protos.vega.ACCOUNT_TYPE_GENERAL,
-        to_account_type=vega_protos.vega.ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES,
-        asset=tDAI_asset_id,
-        reference="reward",
-        asset_for_metric=tDAI_asset_id,
-        metric=vega_protos.vega.DISPATCH_METRIC_LP_FEES_RECEIVED,
         # lock_period= 5,
         # TODO test lock period
         amount=100,
@@ -244,7 +231,6 @@ def set_market_reward_program(vega, reward_program, market_ids, tier):
     market_id_key = f"vega_{reward_program}_tier_{tier}"
     if reward_program == COMBO:
         market_id_key = COMBO
-    print(f"market_id_key:'{market_id_key}")
     market_id = market_ids.get(market_id_key, "default_id")
 
     print(f"Checking if market exists: {market_id}")
@@ -260,7 +246,6 @@ def set_market_reward_program(vega, reward_program, market_ids, tier):
         market_id, _ = setup_market_with_reward_program(vega, reward_programs, tier)
         market_ids[market_id_key] = market_id
 
-    print(f"Using market ID: {market_id}")
     return market_id, market_ids
 
 
@@ -290,18 +275,18 @@ VESTING = """
 @pytest.mark.parametrize(
     "reward_program, tier, total_rewards",
     [
-        #(ACTIVITY, 0, "50.00 tDAI"),
-        #(HOARDER, 0, "50.00 tDAI"),
-        #(COMBO, 0, "50.00 tDAI"),
-        #(ACTIVITY, 1, "116.66666 tDAI"),
-        #(HOARDER, 1, "166.66666 tDAI "), #TODO do rewards get calculated differently for hoarder
-        (COMBO, 1, "183.33333 tDAI"), #TODO Test this solo
+        (ACTIVITY, 0, "50.00 tDAI"),
+        (HOARDER, 0, "50.00 tDAI"),
+        (COMBO, 0, "50.00 tDAI"),
+        (ACTIVITY, 1, "116.66666 tDAI"),
+        (HOARDER, 1, "166.66666 tDAI "),
+        (COMBO, 1, "183.33333 tDAI"),
     ],
 )
 @pytest.mark.usefixtures("auth", "risk_accepted", "market_ids")
 def test_network_reward_pot(
     reward_program,
-    vega_instance: VegaService,
+    vega_instance: VegaServiceNull,
     page: Page,
     total_rewards,
     tier,
@@ -314,9 +299,7 @@ def test_network_reward_pot(
     page.goto(REWARDS_URL)
     
     change_keys(page, vega_instance, PARTY_B.name)
-    page.pause()
     expect(page.get_by_test_id(TOTAL_REWARDS)).to_have_text(total_rewards)
-    # TODO Add test ID and Assert for locked,
 
 
 @pytest.mark.parametrize(
@@ -333,7 +316,7 @@ def test_network_reward_pot(
 @pytest.mark.usefixtures("auth", "risk_accepted", "market_ids")
 def test_reward_multiplier(
     reward_program,
-    vega_instance: VegaService,
+    vega_instance: VegaServiceNull,
     page: Page,
     reward_multiplier,
     streak_multiplier,
@@ -366,7 +349,7 @@ def test_reward_multiplier(
 @pytest.mark.usefixtures("auth", "risk_accepted", "market_ids")
 def test_activity_streak(
     reward_program,
-    vega_instance: VegaService,
+    vega_instance: VegaServiceNull,
     page: Page,
     epoch_streak,
     tier,
@@ -380,11 +363,11 @@ def test_activity_streak(
     change_keys(page, vega_instance, PARTY_B.name)
     if tier == 1:
         expect(page.get_by_test_id(EPOCH_STREAK)).to_have_text(
-            epoch_streak + " epochs streak (Tier 1)"
+            "Active trader: " + epoch_streak + " epochs so far (Tier 1 as of last epoch)"
         )
     else:
         expect(page.get_by_test_id(EPOCH_STREAK)).to_have_text(
-            epoch_streak + " epochs streak"
+            "Active trader: " + epoch_streak + " epochs so far "
         )
 
 
@@ -398,7 +381,7 @@ def test_activity_streak(
 @pytest.mark.usefixtures("auth", "risk_accepted", "market_ids")
 def test_hoarder_bonus(
     reward_program,
-    vega_instance: VegaService,
+    vega_instance: VegaServiceNull,
     page: Page,
     rewards_hoarded,
     tier,
@@ -429,7 +412,7 @@ def test_hoarder_bonus(
 @pytest.mark.usefixtures("auth", "risk_accepted", "market_ids")
 def test_reward_history(
     reward_program,
-    vega_instance: VegaService,
+    vega_instance: VegaServiceNull,
     page: Page,
     price_taking,
     total,
@@ -443,8 +426,7 @@ def test_reward_history(
     )
     page.goto(REWARDS_URL)
     change_keys(page, vega_instance, PARTY_B.name)
-    # TODO add test id
-    page.locator('[name="fromEpoch"]').fill("1")
+    page.get_by_test_id('fromEpoch').fill("1")
     expect((page.get_by_role(ROW).locator(PRICE_TAKING_COL_ID)).nth(1)).to_have_text(
         price_taking
     )
@@ -463,7 +445,7 @@ def test_reward_history(
 )
 @pytest.mark.usefixtures("auth", "risk_accepted", "market_ids")
 def test_redeem(
-    reward_program, vega_instance: VegaService, page: Page, tier, market_ids
+    reward_program, vega_instance: VegaServiceNull, page: Page, tier, market_ids
 ):
     print("reward program: " + reward_program, " tier:", tier)
     market_id, market_ids = set_market_reward_program(
@@ -471,12 +453,10 @@ def test_redeem(
     )
     page.goto(REWARDS_URL)
     change_keys(page, vega_instance, PARTY_B.name)
-    # TODO add test id
-    page.get_by_text("Redeem rewards").click()
+    page.get_by_test_id("redeem-rewards-button").click()
     available_to_withdraw = page.get_by_test_id(
         "available-to-withdraw-value"
     ).text_content()
-    # TODO add test ids
     option_value = page.locator(
         '[data-testid="transfer-form"] [name="fromAccount"] option[value^="ACCOUNT_TYPE_VESTED_REWARDS"]'
     ).first.get_attribute("value")
@@ -484,23 +464,6 @@ def test_redeem(
     page.select_option(
         '[data-testid="transfer-form"] [name="fromAccount"]', option_value
     )
-    # TODO add test ids
-    page.get_by_text("Use max").first.click()
+    
+    page.get_by_test_id("use-max-button").first.click()
     expect(page.get_by_test_id(TRANSFER_AMOUNT)).to_have_text(available_to_withdraw)
-
-@pytest.mark.usefixtures("auth", "risk_accepted")
-def test_vesting(
-    reward_program,
-    vega_instance: VegaService,
-    page: Page,
-    tier,
-    market_ids,
-):
-    print("reward program: " + reward_program, " tier:", tier)
-    market_id, market_ids = set_market_reward_program(
-        vega_instance, reward_program, market_ids, tier
-    )
-    page.goto(REWARDS_URL)
-    change_keys(page, vega_instance, PARTY_B.name)
-    page.pause()
-    expect()

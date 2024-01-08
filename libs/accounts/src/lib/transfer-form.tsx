@@ -438,6 +438,7 @@ export const TransferForm = ({
                 shouldValidate: true,
               })
             }
+            data-testid="use-max-button"
           >
             {t('Use max')}
           </button>
