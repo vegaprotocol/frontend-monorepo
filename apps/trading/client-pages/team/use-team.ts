@@ -20,9 +20,9 @@ export const useTeam = (teamId?: string, partyId?: string) => {
   const teamStatsEdge = data?.teamsStatistics?.edges.find(
     (e) => e.node.teamId === teamId
   );
-  const members = data?.teamReferees?.edges.filter(
-    (e) => e.node.teamId === teamId
-  );
+  const members = data?.teamReferees?.edges
+    .filter((e) => e.node.teamId === teamId)
+    .map((e) => e.node);
 
   return {
     data,
