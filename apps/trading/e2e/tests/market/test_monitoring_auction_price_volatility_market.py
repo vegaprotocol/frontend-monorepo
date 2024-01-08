@@ -68,11 +68,11 @@ def setup_market_monitoring_auction(vega: VegaServiceNull, simple_market):
     vega.wait_for_total_catchup()
 
     # add orders that change the price so that it goes beyond the limits of price monitoring
-    submit_order(vega, MM_WALLET.name, simple_market, "SIDE_SELL", 100, 110)
-    submit_order(vega, MM_WALLET2.name, simple_market, "SIDE_BUY", 100, 90)
-    submit_order(vega, MM_WALLET.name, simple_market, "SIDE_SELL", 100, 105)
-    submit_order(vega, MM_WALLET2.name, simple_market, "SIDE_BUY", 100, 95)
-    submit_order(vega, MM_WALLET2.name, simple_market, "SIDE_BUY", 1, 105)
+    submit_order(vega, MM_WALLET.name, simple_market, "SIDE_SELL", 100, 300)
+    submit_order(vega, MM_WALLET2.name, simple_market, "SIDE_BUY", 100, 290)
+    submit_order(vega, MM_WALLET.name, simple_market, "SIDE_SELL", 100, 305)
+    submit_order(vega, MM_WALLET2.name, simple_market, "SIDE_BUY", 100, 295)
+    submit_order(vega, MM_WALLET2.name, simple_market, "SIDE_BUY", 1, 305)
 
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
@@ -89,7 +89,6 @@ def test_market_monitoring_auction_price_volatility_limit_order(
     page.get_by_test_id("order-price").type("110")
     page.get_by_test_id("order-tif").select_option("Fill or Kill (FOK)")
     page.get_by_test_id("place-order").click()
-
     expect(page.get_by_test_id("deal-ticket-error-message-tif")).to_have_text(
         "This market is in auction due to high price volatility. Until the auction ends, you can only place GFA, GTT, or GTC limit orders."
     )
@@ -125,7 +124,7 @@ def test_market_monitoring_auction_price_volatility_market_order(
     page.get_by_test_id("order-size").type("1")
     # 7002-SORD-060
     page.get_by_test_id("place-order").click()
-
+    page.pause()
     expect(page.get_by_test_id("deal-ticket-error-message-tif")).to_have_text(
         "This market is in auction due to high price volatility. Until the auction ends, you can only place GFA, GTT, or GTC limit orders."
     )
