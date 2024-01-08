@@ -18,7 +18,12 @@ import BigNumber from 'bignumber.js';
 import { useT } from '../../lib/use-t';
 import { Table } from '../../components/table';
 import { getDateFormat } from '@vegaprotocol/utils';
-import { useTeam, type Team as TeamType, type TeamStats } from './use-team';
+import {
+  useTeam,
+  type Team as TeamType,
+  type TeamStats,
+  type Member,
+} from './use-team';
 import { useParams } from 'react-router-dom';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 
@@ -26,7 +31,10 @@ export const Team = () => {
   const t = useT();
   const { teamId } = useParams<{ teamId: string }>();
   const { pubKey } = useVegaWallet();
-  const { team, stats, partyInTeam } = useTeam(teamId, pubKey || undefined);
+  const { team, stats, partyInTeam, members } = useTeam(
+    teamId,
+    pubKey || undefined
+  );
 
   if (!team) {
     return (
@@ -36,17 +44,26 @@ export const Team = () => {
     );
   }
 
-  return <TeamPage team={team} stats={stats} partyInTeam={partyInTeam} />;
+  return (
+    <TeamPage
+      team={team}
+      stats={stats}
+      partyInTeam={partyInTeam}
+      members={members}
+    />
+  );
 };
 
 export const TeamPage = ({
   team,
   stats,
   partyInTeam,
+  members,
 }: {
   team: TeamType;
   stats?: TeamStats;
   partyInTeam: boolean;
+  members?: Member[];
 }) => {
   const t = useT();
   const [showGames, setShowGames] = useState(true);
@@ -133,7 +150,7 @@ export const TeamPage = ({
               Members (486)
             </ToggleButton>
           </div>
-          {showGames ? <Games /> : <Members />}
+          {showGames ? <Games /> : <Members members={members} />}
         </section>
       </div>
     </div>
@@ -213,8 +230,25 @@ const TeamAvatar = ({ imgUrl }: { imgUrl: string }) => {
   );
 };
 
-const Members = () => {
-  return <div>TODO</div>;
+const Members = ({ members }: { members?: Member[] }) => {
+  if (!members?.length) {
+    return <p>No members</p>;
+  }
+
+  return (
+    <Table
+      columns={[
+        { name: 'referee', displayName: 'Referee' },
+        {
+          name: 'joinedAt',
+          displayName: 'Joined at',
+        },
+        { name: 'joinedAtEpoch', displayName: 'Joined epoch' },
+      ]}
+      data={members}
+      noCollapse={true}
+    />
+  );
 };
 
 const StatSection = ({ children }: { children: ReactNode }) => {
