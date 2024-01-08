@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom';
 import * as PopoverPrimitive from '@radix-ui/react-popover';
 import { useState } from 'react';
 import { useT } from '../../lib/use-t';
+import classNames from 'classnames';
 
 /**
  * This is only rendered for the mobile navigation
@@ -30,7 +31,16 @@ export const NavHeader = () => {
       trigger={
         <h1 className="flex gap-1 sm:gap-2 md:gap-4 items-center text-default text-lg whitespace-nowrap xl:pr-4 xl:border-r border-default">
           {data ? data.tradableInstrument.instrument.code : t('Select market')}
-          <VegaIcon name={VegaIconNames.CHEVRON_DOWN} size={20} />
+          <span
+            className={classNames(
+              'transition-transform ease-in-out duration-300',
+              {
+                'rotate-180': open,
+              }
+            )}
+          >
+            <VegaIcon name={VegaIconNames.CHEVRON_DOWN} size={20} />
+          </span>
         </h1>
       }
     >
