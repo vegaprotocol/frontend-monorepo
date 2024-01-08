@@ -702,9 +702,6 @@ export const PriceMonitoringBoundsInfoPanel = ({
   const trigger = bounds?.trigger;
 
   if (!trigger) {
-    console.error(
-      `Could not find data for trigger ${triggerIndex} (market id: ${market.id})`
-    );
     return null;
   }
 
