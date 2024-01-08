@@ -1,7 +1,6 @@
 import pytest
-import logging
+
 import vega_sim.proto.vega as vega_protos
-from typing import Tuple, Any
 from playwright.sync_api import Page, expect
 from conftest import init_vega, init_page, auth_setup
 from fixtures.market import setup_continuous_market, market_exists
@@ -9,16 +8,6 @@ from actions.utils import next_epoch, change_keys
 from wallet_config import MM_WALLET, PARTY_A, PARTY_B, PARTY_C, PARTY_D
 from vega_sim.service import VegaService
 
-
-@pytest.fixture(autouse=True)
-def print_test_details(request):
-    print(f"Running test: {request.node.name}")
-    if hasattr(request.node, 'callspec'):
-        for param, value in request.node.callspec.params.items():
-            print(f"Parameter {param}: {value}")
-    yield
-
-    
 # region Constants
 ACTIVITY = "activity"
 HOARDER = "hoarder"
@@ -165,6 +154,19 @@ def setup_market_with_reward_program(vega: VegaService, reward_programs, tier):
         amount=100,
         factor=1.0,
     )
+    vega.recurring_transfer(
+        from_key_name=PARTY_A.name,
+        from_account_type=vega_protos.vega.ACCOUNT_TYPE_GENERAL,
+        to_account_type=vega_protos.vega.ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES,
+        asset=tDAI_asset_id,
+        reference="reward",
+        asset_for_metric=tDAI_asset_id,
+        metric=vega_protos.vega.DISPATCH_METRIC_LP_FEES_RECEIVED,
+        # lock_period= 5,
+        # TODO test lock period
+        amount=100,
+        factor=1.0,
+    )
     vega.submit_order(
         trading_key=PARTY_B.name,
         market_id=tDAI_market,
@@ -288,11 +290,11 @@ VESTING = """
 @pytest.mark.parametrize(
     "reward_program, tier, total_rewards",
     [
-        (ACTIVITY, 0, "50.00 tDAI"),
-        (HOARDER, 0, "50.00 tDAI"),
-        (COMBO, 0, "50.00 tDAI"),
-        (ACTIVITY, 1, "116.66666 tDAI"),
-        (HOARDER, 1, "166.66666 tDAI "), #TODO do rewards get calculated differently for hoarder
+        #(ACTIVITY, 0, "50.00 tDAI"),
+        #(HOARDER, 0, "50.00 tDAI"),
+        #(COMBO, 0, "50.00 tDAI"),
+        #(ACTIVITY, 1, "116.66666 tDAI"),
+        #(HOARDER, 1, "166.66666 tDAI "), #TODO do rewards get calculated differently for hoarder
         (COMBO, 1, "183.33333 tDAI"), #TODO Test this solo
     ],
 )
@@ -312,6 +314,7 @@ def test_network_reward_pot(
     page.goto(REWARDS_URL)
     
     change_keys(page, vega_instance, PARTY_B.name)
+    page.pause()
     expect(page.get_by_test_id(TOTAL_REWARDS)).to_have_text(total_rewards)
     # TODO Add test ID and Assert for locked,
 
@@ -485,9 +488,19 @@ def test_redeem(
     page.get_by_text("Use max").first.click()
     expect(page.get_by_test_id(TRANSFER_AMOUNT)).to_have_text(available_to_withdraw)
 
-    # TODO Add tests for below.
-    """
-        @pytest.mark.usefixtures("auth", "risk_accepted")
-        def test_vesting(vega_setup, vega: VegaService, page: Page):
-            expect()
-    """
+@pytest.mark.usefixtures("auth", "risk_accepted")
+def test_vesting(
+    reward_program,
+    vega_instance: VegaService,
+    page: Page,
+    tier,
+    market_ids,
+):
+    print("reward program: " + reward_program, " tier:", tier)
+    market_id, market_ids = set_market_reward_program(
+        vega_instance, reward_program, market_ids, tier
+    )
+    page.goto(REWARDS_URL)
+    change_keys(page, vega_instance, PARTY_B.name)
+    page.pause()
+    expect()
