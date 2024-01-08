@@ -426,7 +426,7 @@ def test_reward_history(
     )
     page.goto(REWARDS_URL)
     change_keys(page, vega_instance, PARTY_B.name)
-    page.get_by_test_id('fromEpoch').fill("1")
+    page.locator('[name="fromEpoch"]').fill("1")
     expect((page.get_by_role(ROW).locator(PRICE_TAKING_COL_ID)).nth(1)).to_have_text(
         price_taking
     )
