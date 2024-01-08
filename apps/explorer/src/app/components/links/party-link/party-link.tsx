@@ -60,7 +60,7 @@ const PartyLink = ({ id, truncate = false, ...props }: PartyLinkProps) => {
   }
 
   return (
-    <span className="whitespace-nowrap">
+    <span>
       {useName && <Icon size={4} name="cube" className="mr-2" />}
       <Link
         className="underline font-mono"
