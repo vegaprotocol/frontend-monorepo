@@ -48,53 +48,46 @@ export type FilterOption =
   | 'Vote on Proposal'
   | 'Withdraw';
 
-// Alphabetised list of transaction types to appear at the top level
-export const PrimaryFilterOptions: FilterOption[] = [
-  'Amend LiquidityProvision Order',
-  'Amend Order',
-  'Batch Market Instructions',
-  'Cancel LiquidityProvision Order',
-  'Cancel Order',
-  'Cancel Transfer Funds',
-  'Delegate',
-  'Liquidity Provision Order',
-  'Proposal',
-  'Stop Orders Submission',
-  'Stop Orders Cancellation',
-  'Submit Oracle Data',
-  'Submit Order',
-  'Transfer Funds',
-  'Undelegate',
-  'Vote on Proposal',
-  'Withdraw',
-];
+export const filterOptions: Record<string, FilterOption[]> = {
+  'Market Instructions': [
+    'Amend LiquidityProvision Order',
+    'Amend Order',
+    'Batch Market Instructions',
+    'Cancel LiquidityProvision Order',
+    'Cancel Order',
+    'Liquidity Provision Order',
+    'Stop Orders Submission',
+    'Stop Orders Cancellation',
+    'Submit Order',
+  ],
+  'Transfers and Withdrawals': [
+    'Transfer Funds',
+    'Cancel Transfer Funds',
+    'Withdraw',
+  ],
+  Governance: ['Delegate', 'Undelegate', 'Vote on Proposal', 'Proposal'],
+  Referrals: [
+    'Join Team',
+    'Update Referral Set',
+    'Apply Referral Code',
+    'Create Referral Set',
+  ],
+  'External Data': ['Chain Event', 'Submit Oracle Data'],
+  Validators: [
+    'Ethereum Key Rotate Submission',
+    'Issue Signatures',
+    'Key Rotate Submission',
+    'Node Signature',
+    'Node Vote',
+    'Protocol Upgrade',
+    'Register new Node',
+    'State Variable Proposal',
+    'Validator Heartbeat',
+  ],
+};
 
-// Alphabetised list of transaction types to nest under a 'More...' submenu
-export const SecondaryFilterOptions: FilterOption[] = [
-  'Chain Event',
-  'Ethereum Key Rotate Submission',
-  'Issue Signatures',
-  'Key Rotate Submission',
-  'Node Signature',
-  'Node Vote',
-  'Protocol Upgrade',
-  'Register new Node',
-  'State Variable Proposal',
-  'Validator Heartbeat',
-];
-
-export const ReferralFilterOptions: FilterOption[] = [
-  'Join Team',
-  'Update Referral Set',
-  'Apply Referral Code',
-  'Create Referral Set',
-];
-
-export const AllFilterOptions: FilterOption[] = [
-  ...PrimaryFilterOptions,
-  ...SecondaryFilterOptions,
-  ...ReferralFilterOptions,
-];
+export const AllFilterOptions: FilterOption[] =
+  Object.values(filterOptions).flat();
 
 export interface TxFilterProps {
   filters: Set<FilterOption>;
@@ -131,70 +124,33 @@ export const TxsFilter = ({ filters, setFilters }: TxFilterProps) => {
             <DropdownMenuSeparator />
           </>
         )}
-        {PrimaryFilterOptions.map((f) => (
-          <DropdownMenuCheckboxItem
-            key={f}
-            checked={filters.has(f)}
-            onCheckedChange={() => {
-              // NOTE: These act like radio buttons until the API supports multiple filters
-              setFilters(new Set([f]));
-            }}
-            id={`radio-${f}`}
-          >
-            {f}
-            <DropdownMenuItemIndicator>
-              <Icon name="tick-circle" />
-            </DropdownMenuItemIndicator>
-          </DropdownMenuCheckboxItem>
+
+        {Object.entries(filterOptions).map(([key, value]) => (
+          <DropdownMenuSub key={key}>
+            <DropdownMenuSubTrigger>
+              {t(key)}
+              <Icon name="chevron-right" />
+            </DropdownMenuSubTrigger>
+            <DropdownMenuSubContent>
+              {value.map((f) => (
+                <DropdownMenuCheckboxItem
+                  key={f}
+                  checked={filters.has(f)}
+                  onCheckedChange={(checked) => {
+                    // NOTE: These act like radio buttons until the API supports multiple filters
+                    setFilters(new Set([f]));
+                  }}
+                  id={`radio-${f}`}
+                >
+                  {f}
+                  <DropdownMenuItemIndicator>
+                    <Icon name="tick-circle" className="inline" />
+                  </DropdownMenuItemIndicator>
+                </DropdownMenuCheckboxItem>
+              ))}
+            </DropdownMenuSubContent>
+          </DropdownMenuSub>
         ))}
-        <DropdownMenuSub>
-          <DropdownMenuSubTrigger>
-            {t('Referrals')}
-            <Icon name="chevron-right" />
-          </DropdownMenuSubTrigger>
-          <DropdownMenuSubContent>
-            {ReferralFilterOptions.map((f) => (
-              <DropdownMenuCheckboxItem
-                key={f}
-                checked={filters.has(f)}
-                onCheckedChange={(checked) => {
-                  // NOTE: These act like radio buttons until the API supports multiple filters
-                  setFilters(new Set([f]));
-                }}
-                id={`radio-${f}`}
-              >
-                {f}
-                <DropdownMenuItemIndicator>
-                  <Icon name="tick-circle" className="inline" />
-                </DropdownMenuItemIndicator>
-              </DropdownMenuCheckboxItem>
-            ))}
-          </DropdownMenuSubContent>
-        </DropdownMenuSub>
-        <DropdownMenuSub>
-          <DropdownMenuSubTrigger>
-            {t('Validators')}
-            <Icon name="chevron-right" />
-          </DropdownMenuSubTrigger>
-          <DropdownMenuSubContent>
-            {SecondaryFilterOptions.map((f) => (
-              <DropdownMenuCheckboxItem
-                key={f}
-                checked={filters.has(f)}
-                onCheckedChange={(checked) => {
-                  // NOTE: These act like radio buttons until the API supports multiple filters
-                  setFilters(new Set([f]));
-                }}
-                id={`radio-${f}`}
-              >
-                {f}
-                <DropdownMenuItemIndicator>
-                  <Icon name="tick-circle" className="inline" />
-                </DropdownMenuItemIndicator>
-              </DropdownMenuCheckboxItem>
-            ))}
-          </DropdownMenuSubContent>
-        </DropdownMenuSub>
       </DropdownMenuContent>
     </DropdownMenu>
   );
