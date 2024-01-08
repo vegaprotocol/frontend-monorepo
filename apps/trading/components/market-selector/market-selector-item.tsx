@@ -97,7 +97,7 @@ const MarketData = ({
 
   return (
     <>
-      <div className="w-3/6" role="gridcell">
+      <div className="w-2/6 sm:w-3/6" role="gridcell">
         <h3 className="flex items-baseline">
           <span className="overflow-hidden text-xs md:text-sm lg:text-base text-ellipsis whitespace-nowrap">
             {market.tradableInstrument.instrument.code}
@@ -113,7 +113,7 @@ const MarketData = ({
         )}
       </div>
       <div
-        className="w-1/6 overflow-hidden text-xs lg:text-sm whitespace-nowrap text-ellipsis"
+        className="w-2/6 sm:w-1/6 overflow-hidden text-xs lg:text-sm whitespace-nowrap text-ellipsis"
         title={symbol}
         data-testid="market-selector-price"
         role="gridcell"
@@ -128,7 +128,7 @@ const MarketData = ({
       >
         {volume}
       </div>
-      <div className="hidden w-1/6 sm:flex justify-end" role="gridcell">
+      <div className="hidden sm:w-1/6 sm:flex justify-end" role="gridcell">
         {oneDayCandles && (
           <Sparkline
             width={64}
