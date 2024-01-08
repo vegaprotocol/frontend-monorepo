@@ -56,7 +56,6 @@ class TestPerpetuals:
     @pytest.mark.usefixtures("risk_accepted", "auth")
     def test_funding_payment_profit(self, perps_market, page: Page):
         page.goto(f"/#/markets/{perps_market}")
-        page.pause()
         page.get_by_test_id("Funding payments").click()
         row = page.locator(row_selector)
         expect(row.locator(col_amount)).to_have_text("9.00 tDAI")

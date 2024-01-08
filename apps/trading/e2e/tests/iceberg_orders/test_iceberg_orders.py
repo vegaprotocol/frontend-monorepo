@@ -70,7 +70,6 @@ def test_iceberg_open_order(continuous_market, vega: VegaServiceNull, page: Page
     expect(
         page.locator(".ag-center-cols-container .ag-row [col-id='size']").first
     ).to_have_text("-102")
-    page.pause()
     expect(
         page.locator(".ag-center-cols-container .ag-row [col-id='type'] ").first
     ).to_have_text("Limit (Iceberg)")
