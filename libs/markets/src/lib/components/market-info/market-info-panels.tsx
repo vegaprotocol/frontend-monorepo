@@ -698,10 +698,8 @@ export const PriceMonitoringBoundsInfoPanel = ({
 
   const quoteUnit = getQuoteName(market);
 
-  const trigger =
-    market.priceMonitoringSettings?.parameters?.triggers?.[triggerIndex];
-
   const bounds = data?.priceMonitoringBounds?.[triggerIndex];
+  const trigger = bounds?.trigger;
 
   if (!trigger) {
     console.error(
@@ -709,6 +707,7 @@ export const PriceMonitoringBoundsInfoPanel = ({
     );
     return null;
   }
+
   return (
     <>
       <div className="mb-2 grid grid-cols-2 text-sm">
