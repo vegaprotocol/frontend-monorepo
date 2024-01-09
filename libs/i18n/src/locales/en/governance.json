@@ -383,7 +383,7 @@
   "MoreMarketsInfo": "To see Explorer data on existing markets visit",
   "MoreNetParamsInfo": "To see Explorer data on network params visit",
   "MoreProposalsInfo": "To see Explorer data on proposals visit",
-  "multisigContractIncorrect": "is incorrectly configured. Validator and delegator rewards will be penalised until this is resolved.",
+  "multisigContractIncorrect": "was incorrectly configured as at the end of the last epoch so rewards were penalised. Validator and delegator rewards will continue to be penalised until this is resolved.",
   "multisigContractLink": "Ethereum Multisig Contract",
   "multisigPenalty": "Multisig penalty",
   "myPendingStake": "My pending stake",
