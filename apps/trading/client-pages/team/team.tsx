@@ -6,10 +6,6 @@ import {
   TradingButton as Button,
   Intent,
   Pill,
-  TradingDropdown,
-  TradingDropdownContent,
-  TradingDropdownItem,
-  TradingDropdownTrigger,
   VegaIcon,
   VegaIconNames,
   Tooltip,
@@ -71,7 +67,9 @@ export const TeamPage = ({
   members?: Member[];
   games?: TeamGame[];
 }) => {
+  const t = useT();
   const [showGames, setShowGames] = useState(true);
+
   return (
     <div className="relative h-full overflow-y-auto">
       <div className="absolute top-0 left-0 w-full h-[40%] -z-10 bg-[40%_0px] bg-cover bg-no-repeat bg-local bg-[url(/cover.png)]">
@@ -89,23 +87,23 @@ export const TeamPage = ({
         </header>
         <StatSection>
           <StatList>
-            <Stat value={members ? members.length : 0} label={'Members'} />
+            <Stat value={members ? members.length : 0} label={t('Members')} />
             <Stat
               value={stats ? stats.totalGamesPlayed : 0}
-              label={'Total games'}
-              tooltip={'My games description'}
+              label={t('Total games')}
+              tooltip={t('Total number of games this team has participated in')}
             />
           </StatList>
           <StatSectionSeparator />
           <StatList>
             <Stat
               value={stats ? stats.totalQuantumVolume : 0}
-              label={'Total volume'}
+              label={t('Total volume')}
             />
             <Stat
               value={stats ? stats.totalQuantumRewards : 0}
-              label={'Rewards paid'}
-              tooltip={'My rewards paid description'}
+              label={t('Rewards paid')}
+              tooltip={'Total amount of rewards paid out to this team in qUSD'}
             />
           </StatList>
         </StatSection>
@@ -120,13 +118,13 @@ export const TeamPage = ({
         <section>
           <div className="flex gap-4 lg:gap-8 mb-4 border-b border-default">
             <ToggleButton active={showGames} onClick={() => setShowGames(true)}>
-              Games ({games ? games.length : 0})
+              {t('Games ({{count}})', { count: games ? games.length : 0 })}
             </ToggleButton>
             <ToggleButton
               active={!showGames}
               onClick={() => setShowGames(false)}
             >
-              Members ({members ? members.length : 0})
+              {t('Members ({{count}})', { count: games ? games.length : 0 })}
             </ToggleButton>
           </div>
           {showGames ? <Games games={games} /> : <Members members={members} />}
@@ -152,29 +150,31 @@ const ToggleButton = ({
 };
 
 const Games = ({ games }: { games?: TeamGame[] }) => {
+  const t = useT();
+
   if (!games?.length) {
-    return <p>No games</p>;
+    return <p>{t('No games')}</p>;
   }
 
   return (
     <Table
       columns={[
-        { name: 'rank', displayName: 'Rank' },
+        { name: 'rank', displayName: t('Rank') },
         {
           name: 'epoch',
-          displayName: 'Epoch',
+          displayName: t('Epoch'),
           headerClassName: 'hidden md:block',
           className: 'hidden md:block',
         },
-        { name: 'type', displayName: 'Type' },
-        { name: 'amount', displayName: 'Amount earned' },
+        { name: 'type', displayName: t('Type') },
+        { name: 'amount', displayName: t('Amount earned') },
         {
           name: 'teams',
-          displayName: 'No. of participating teams',
+          displayName: t('No. of participating teams'),
           headerClassName: 'hidden md:block',
           className: 'hidden md:block',
         },
-        { name: 'status', displayName: 'Status' },
+        { name: 'status', displayName: t('Status') },
       ]}
       data={games.map((game) => ({
         rank: game.team.rank,
@@ -201,8 +201,10 @@ const TeamAvatar = ({ imgUrl }: { imgUrl: string }) => {
 };
 
 const Members = ({ members }: { members?: Member[] }) => {
+  const t = useT();
+
   if (!members?.length) {
-    return <p>No members</p>;
+    return <p>{t('No members')}</p>;
   }
 
   const data = orderBy(
@@ -219,10 +221,10 @@ const Members = ({ members }: { members?: Member[] }) => {
   return (
     <Table
       columns={[
-        { name: 'referee', displayName: 'Referee' },
+        { name: 'referee', displayName: t('Referee') },
         {
           name: 'joinedAt',
-          displayName: 'Joined at',
+          displayName: t('Joined at'),
         },
         { name: 'joinedAtEpoch', displayName: 'Joined epoch' },
         { name: 'explorerLink', displayName: '', className: 'text-right' },
@@ -238,11 +240,14 @@ const RefereeCell = ({ pubkey }: { pubkey: string }) => {
 };
 
 const RefereeLink = ({ pubkey }: { pubkey: string }) => {
+  const t = useT();
+
   const linkCreator = useLinks(DApp.Explorer);
   const link = linkCreator(EXPLORER_PARTIES.replace(':id', pubkey));
+
   return (
     <Link to={link} className="underline underline-offset-4">
-      View on explorer
+      {t('View on explorer')}
     </Link>
   );
 };
@@ -292,38 +297,22 @@ const Stat = ({
 };
 
 const JoinButton = ({ joined }: { joined: boolean }) => {
-  const [open, setOpen] = useState(false);
+  const t = useT();
+
   if (joined) {
     return (
-      <div className="flex items-center gap-1">
-        <Button intent={Intent.None} disabled={true}>
-          <span className="flex items-center gap-2">
-            Joined{' '}
-            <span className="text-vega-green-600 dark:text-vega-green">
-              <VegaIcon name={VegaIconNames.TICK} />
-            </span>
+      <Button intent={Intent.None} disabled={true}>
+        <span className="flex items-center gap-2">
+          {t('Joined')}{' '}
+          <span className="text-vega-green-600 dark:text-vega-green">
+            <VegaIcon name={VegaIconNames.TICK} />
           </span>
-        </Button>
-        <TradingDropdown
-          onOpenChange={setOpen}
-          open={open}
-          trigger={
-            <TradingDropdownTrigger>
-              <button className="p-2">
-                <VegaIcon name={VegaIconNames.KEBAB} size={24} />
-              </button>
-            </TradingDropdownTrigger>
-          }
-        >
-          <TradingDropdownContent>
-            <TradingDropdownItem>Leave team</TradingDropdownItem>
-          </TradingDropdownContent>
-        </TradingDropdown>
-      </div>
+        </span>
+      </Button>
     );
   }
 
-  return <Button intent={Intent.Primary}>Join this team</Button>;
+  return <Button intent={Intent.Primary}>{t('Join this team')}</Button>;
 };
 
 const LatestResults = ({ games }: { games: TeamGame[] }) => {
