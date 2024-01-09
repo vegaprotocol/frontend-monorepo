@@ -1,4 +1,5 @@
 import compact from 'lodash/compact';
+import orderBy from 'lodash/orderBy';
 import {
   useTeamQuery,
   type TeamFieldsFragment,
@@ -45,7 +46,7 @@ export const useTeam = (teamId?: string, partyId?: string) => {
       team: team as TeamEntity, // TS can't infer that all the game entities are teams
     };
   });
-  const games = compact(gamesWithTeam);
+  const games = orderBy(compact(gamesWithTeam), 'epoch', 'desc');
 
   return {
     data,
