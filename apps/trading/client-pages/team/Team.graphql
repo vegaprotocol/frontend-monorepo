@@ -28,6 +28,28 @@ fragment TeamRefereeFields on TeamReferee {
   joinedAtEpoch
 }
 
+fragment TeamEntity on TeamGameEntity {
+  rank
+  volume
+  rewardMetric
+  rewardEarned
+  totalRewardsEarned
+  team {
+    teamId
+  }
+}
+
+fragment TeamGameFields on Game {
+  id
+  epoch
+  numberOfParticipants
+  entities {
+    ... on TeamGameEntity {
+      ...TeamEntity
+    }
+  }
+}
+
 query Team($teamId: ID!, $partyId: ID) {
   teams(teamId: $teamId) {
     edges {
@@ -54,6 +76,13 @@ query Team($teamId: ID!, $partyId: ID) {
     edges {
       node {
         ...TeamRefereeFields
+      }
+    }
+  }
+  games(entityScope: ENTITY_SCOPE_TEAMS) {
+    edges {
+      node {
+        ...TeamGameFields
       }
     }
   }

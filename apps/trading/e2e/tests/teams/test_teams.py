@@ -20,9 +20,6 @@ def test_teams(vega: VegaServiceNull, page: Page):
     team = create_team(vega)
 
     next_epoch(vega)
-    # vega.wait_fn(1)
-    # vega.forward("10s")
-    # vega.wait_for_total_catchup()
 
     # would be better to derive the team id from the signature if possible but
     # vega.submit_transaction does not return anything
@@ -46,11 +43,6 @@ def test_teams(vega: VegaServiceNull, page: Page):
     vega.forward("10s")
     vega.wait_for_total_catchup()
 
-    print("========================================================")
-    print(f"teams: {teams}")
-    print(f"team_id: {team_id}")
-
-    page.goto(f"/#/competitions/team/{team_id}")
     expect(page.get_by_role('heading', level=1)).to_have_text(team.name)
     page.pause()
 

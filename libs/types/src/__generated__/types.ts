@@ -444,6 +444,31 @@ export type CandleEdge = {
   node: Candle;
 };
 
+export type CompositePriceConfiguration = {
+  __typename?: 'CompositePriceConfiguration';
+  /** Composite price calculation methodology */
+  CompositePriceType: CompositePriceType;
+  /** Staleness tolerance duration for each given price sources in the order mentioned above */
+  SourceStalenessTolerance: Array<Scalars['String']>;
+  /** Weights for each given price source, first entry is price from trade, then price from book, then first oracle, next oracle, etc. And last entry is for median price */
+  SourceWeights?: Maybe<Array<Scalars['String']>>;
+  /** Cash amount used in calculating mark price from the order book */
+  cashAmount: Scalars['String'];
+  /** Decay power used in calculating time weight for a given trade */
+  decayPower: Scalars['Int'];
+  /** Decay weight used in calculating time weight for a given trade */
+  decayWeight: Scalars['String'];
+};
+
+export enum CompositePriceType {
+  /** Composite price is set to the last trade (legacy) */
+  COMPOSITE_PRICE_TYPE_LAST_TRADE = 'COMPOSITE_PRICE_TYPE_LAST_TRADE',
+  /** Composite price is calculated as a median of the underlying price sources */
+  COMPOSITE_PRICE_TYPE_MEDIAN = 'COMPOSITE_PRICE_TYPE_MEDIAN',
+  /** Composite price is calculated as a weighted average of the underlying price sources */
+  COMPOSITE_PRICE_TYPE_WEIGHTED = 'COMPOSITE_PRICE_TYPE_WEIGHTED'
+}
+
 /** Condition describes the condition that must be validated by the data source engine */
 export type Condition = {
   __typename?: 'Condition';
@@ -2336,6 +2361,8 @@ export type MarketData = {
   liquidityProviderSla?: Maybe<Array<LiquidityProviderSLA>>;
   /** The mark price (an unsigned integer) */
   markPrice: Scalars['String'];
+  /** The methodology used for the calculation of the mark price */
+  markPriceType: CompositePriceType;
   /** Market of the associated mark price */
   market: Market;
   /** The market growth factor for the last market time window */
@@ -2623,6 +2650,8 @@ export type NewMarket = {
   liquidityMonitoringParameters: LiquidityMonitoringParameters;
   /** Liquidity SLA Parameters */
   liquiditySLAParameters?: Maybe<LiquiditySLAParameters>;
+  /** Configuration for mark price calculation for the market */
+  markPriceConfiguration: CompositePriceConfiguration;
   /** Metadata for this instrument, tags */
   metadata?: Maybe<Array<Scalars['String']>>;
   /** Decimal places for order sizes, sets what size the smallest order / position on the market can be */
@@ -2937,6 +2966,8 @@ export type ObservableMarketData = {
   liquidityProviderSla?: Maybe<Array<ObservableLiquidityProviderSLA>>;
   /** The mark price (an unsigned integer) */
   markPrice: Scalars['String'];
+  /** The methodology used to calculated mark price */
+  markPriceType: CompositePriceType;
   /** The market growth factor for the last market time window */
   marketGrowth: Scalars['String'];
   /** Market ID of the associated mark price */
@@ -3735,6 +3766,41 @@ export type PartyLockedBalance = {
   untilEpoch: Scalars['Int'];
 };
 
+/** Margin mode selected for the given party and market. */
+export type PartyMarginMode = {
+  __typename?: 'PartyMarginMode';
+  /** Epoch at which the update happened. */
+  atEpoch: Scalars['Int'];
+  /** Selected margin mode. */
+  marginMode: MarginMode;
+  /** Margin factor for the market. Isolated mode only. */
+  margin_factor?: Maybe<Scalars['String']>;
+  /** Unique ID of the market. */
+  marketId: Scalars['ID'];
+  /** Maximum theoretical leverage for the market. Isolated mode only. */
+  max_theoretical_leverage?: Maybe<Scalars['String']>;
+  /** Minimum theoretical margin factor for the market. Isolated mode only. */
+  min_theoretical_margin_factor?: Maybe<Scalars['String']>;
+  /** Unique ID of the party. */
+  partyId: Scalars['ID'];
+};
+
+/** Edge type containing the deposit and cursor information returned by a PartyMarginModeConnection */
+export type PartyMarginModeEdge = {
+  __typename?: 'PartyMarginModeEdge';
+  cursor: Scalars['String'];
+  node: PartyMarginMode;
+};
+
+/** Connection type for retrieving cursor-based paginated party margin modes information */
+export type PartyMarginModesConnection = {
+  __typename?: 'PartyMarginModesConnection';
+  /** The party margin modes */
+  edges?: Maybe<Array<Maybe<PartyMarginModeEdge>>>;
+  /** The pagination information */
+  pageInfo?: Maybe<PageInfo>;
+};
+
 /**
  * All staking information related to a Party.
  * Contains the current recognised balance by the network and
@@ -3817,6 +3883,8 @@ export type Perpetual = {
   fundingRateScalingFactor: Scalars['String'];
   /** Upper bound for the funding-rate such that the funding-rate will never be higher than this value */
   fundingRateUpperBound: Scalars['String'];
+  /** Optional configuration driving the index price calculation for perpetual product */
+  indexPriceConfig?: Maybe<CompositePriceConfiguration>;
   /** Continuously compounded interest rate used in funding rate calculation, in the range [-1, 1] */
   interestRate: Scalars['String'];
   /** Controls how much the upcoming funding payment liability contributes to party's margin, in the range [0, 1] */
@@ -3836,8 +3904,14 @@ export type PerpetualData = {
   fundingPayment?: Maybe<Scalars['String']>;
   /** Percentage difference between the time-weighted average price of the external and internal data point. */
   fundingRate?: Maybe<Scalars['String']>;
+  /** The index price used for external VWAP calculation */
+  indexPrice: Scalars['String'];
+  /** The methodology used to calculated index price for perps */
+  indexPriceType: CompositePriceType;
   /** Time-weighted average price calculated from data points for this period from the internal data source. */
   internalTwap?: Maybe<Scalars['String']>;
+  /** RFC3339Nano time indicating the next time index price will be calculated for perps where applicable */
+  nextIndexPriceCalc: Scalars['String'];
   /** Funding period sequence number */
   seqNum: Scalars['Int'];
   /** Time at which the funding period started */
@@ -4615,6 +4689,12 @@ export type Query = {
   partiesConnection?: Maybe<PartyConnection>;
   /** An entity that is trading on the Vega network */
   party?: Maybe<Party>;
+  /**
+   * List margin modes per party per market
+   *
+   * Get a list of all margin modes, or for a specific market ID, or party ID.
+   */
+  partyMarginModes?: Maybe<PartyMarginModesConnection>;
   /** Fetch all positions */
   positions?: Maybe<PositionConnection>;
   /** A governance proposal located by either its ID or reference. If both are set, ID is used. */
@@ -5021,6 +5101,14 @@ export type QuerypartiesConnectionArgs = {
 /** Queries allow a caller to read data and filter data via GraphQL. */
 export type QuerypartyArgs = {
   id: Scalars['ID'];
+};
+
+
+/** Queries allow a caller to read data and filter data via GraphQL. */
+export type QuerypartyMarginModesArgs = {
+  marketId?: InputMaybe<Scalars['ID']>;
+  pagination?: InputMaybe<Pagination>;
+  partyId?: InputMaybe<Scalars['ID']>;
 };
 
 
@@ -5837,6 +5925,8 @@ export enum StopOrderRejectionReason {
   REJECTION_REASON_MAX_STOP_ORDERS_PER_PARTY_REACHED = 'REJECTION_REASON_MAX_STOP_ORDERS_PER_PARTY_REACHED',
   /** Stop orders submission must be reduce only */
   REJECTION_REASON_MUST_BE_REDUCE_ONLY = 'REJECTION_REASON_MUST_BE_REDUCE_ONLY',
+  /** Stop orders are not allowed during the opening auction */
+  REJECTION_REASON_STOP_ORDER_NOT_ALLOWED_DURING_OPENING_AUCTION = 'REJECTION_REASON_STOP_ORDER_NOT_ALLOWED_DURING_OPENING_AUCTION',
   /** Stop orders are not allowed without a position */
   REJECTION_REASON_STOP_ORDER_NOT_ALLOWED_WITHOUT_A_POSITION = 'REJECTION_REASON_STOP_ORDER_NOT_ALLOWED_WITHOUT_A_POSITION',
   /** This stop order does not close the position */
@@ -6067,9 +6157,11 @@ export type TargetStakeParameters = {
 /** Team record containing the team information. */
 export type Team = {
   __typename?: 'Team';
+  /** List of public keys that are allowed to join the team. Only applicable to closed teams. */
+  allowList: Array<Scalars['String']>;
   /** Link to an image of the team's avatar. */
   avatarUrl: Scalars['String'];
-  /** Tells if a party can join the team or not. */
+  /** Whether or not the team is closed to new party members. When closed, only parties specified in the allow list can join the team. */
   closed: Scalars['Boolean'];
   /** Time in RFC3339Nano format when the team was created. */
   createdAt: Scalars['Timestamp'];
@@ -6719,6 +6811,8 @@ export type UpdateMarketConfiguration = {
   liquidityMonitoringParameters: LiquidityMonitoringParameters;
   /** Liquidity SLA Parameters. */
   liquiditySLAParameters?: Maybe<LiquiditySLAParameters>;
+  /** Configuration for mark price calculation for the market */
+  markPriceConfiguration?: Maybe<CompositePriceConfiguration>;
   /** Optional futures market metadata, tags. */
   metadata?: Maybe<Array<Maybe<Scalars['String']>>>;
   /** Price monitoring parameters. */
