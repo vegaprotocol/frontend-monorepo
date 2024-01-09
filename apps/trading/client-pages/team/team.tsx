@@ -76,7 +76,7 @@ export const TeamPage = ({
         <div className="absolute top-o left-0 w-full h-full bg-gradient-to-t from-white dark:from-vega-cdark-900 to-transparent from-20% to-60%" />
       </div>
       <div className="flex flex-col gap-4 lg:gap-6 container p-4 mx-auto">
-        <header className="flex gap-2 lg:gap-4 pt-5 lg:pt-10">
+        <header className="flex gap-3 lg:gap-4 pt-5 lg:pt-10">
           <TeamAvatar imgUrl={team.avatarUrl} />
           <div className="flex flex-col items-start gap-1 lg:gap-3">
             <h1 className="calt text-2xl lg:text-3xl xl:text-5xl">
@@ -93,9 +93,7 @@ export const TeamPage = ({
               label={t('Total games')}
               tooltip={t('Total number of games this team has participated in')}
             />
-          </StatList>
-          <StatSectionSeparator />
-          <StatList>
+            <StatSectionSeparator />
             <Stat
               value={stats ? stats.totalQuantumVolume : 0}
               label={t('Total volume')}
@@ -181,7 +179,7 @@ const TeamAvatar = ({ imgUrl }: { imgUrl: string }) => {
     <img
       src={imgUrl}
       alt="Team avatar"
-      className="rounded-full w-14 h-14 lg:w-[112px] lg:h-[112px] bg-vega-clight-700 dark:bg-vega-cdark-700 shrink-0"
+      className="rounded-full w-20 h-20 lg:w-[112px] lg:h-[112px] bg-vega-clight-700 dark:bg-vega-cdark-700 shrink-0"
     />
   );
 };
@@ -347,11 +345,15 @@ const StatSection = ({ children }: { children: ReactNode }) => {
 };
 
 const StatSectionSeparator = () => {
-  return <div className="hidden lg:block border-r border-default" />;
+  return <div className="hidden md:block border-r border-default" />;
 };
 
 const StatList = ({ children }: { children: ReactNode }) => {
-  return <dl className="flex gap-4 lg:gap-8">{children}</dl>;
+  return (
+    <dl className="grid grid-cols-[min-content_min-content] md:flex gap-4 md:gap-6 lg:gap-8 whitespace-nowrap">
+      {children}
+    </dl>
+  );
 };
 
 const Stat = ({
