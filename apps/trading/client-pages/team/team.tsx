@@ -212,8 +212,18 @@ const Members = ({ members }: { members?: Member[] }) => {
           name: 'joinedAt',
           displayName: t('Joined at'),
         },
-        { name: 'joinedAtEpoch', displayName: 'Joined epoch' },
-        { name: 'explorerLink', displayName: '', className: 'text-right' },
+        {
+          name: 'joinedAtEpoch',
+          displayName: t('Joined epoch'),
+          headerClassName: 'text-right',
+          className: 'text-right',
+        },
+        {
+          name: 'explorerLink',
+          displayName: '',
+          headerClassName: 'hidden md:block',
+          className: 'hidden md:block text-right',
+        },
       ]}
       data={data}
       noCollapse={true}
