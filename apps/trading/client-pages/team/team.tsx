@@ -107,7 +107,6 @@ export const TeamPage = ({
             />
           </StatList>
         </StatSection>
-
         {games && games.length ? (
           <StatSection>
             <FavoriteGame games={games} />
@@ -124,28 +123,15 @@ export const TeamPage = ({
               active={!showGames}
               onClick={() => setShowGames(false)}
             >
-              {t('Members ({{count}})', { count: games ? games.length : 0 })}
+              {t('Members ({{count}})', {
+                count: members ? members.length : 0,
+              })}
             </ToggleButton>
           </div>
           {showGames ? <Games games={games} /> : <Members members={members} />}
         </section>
       </div>
     </div>
-  );
-};
-
-const ToggleButton = ({
-  active,
-  ...props
-}: ButtonHTMLAttributes<HTMLButtonElement> & { active: boolean }) => {
-  return (
-    <button
-      {...props}
-      className={classNames('relative top-px uppercase border-b-2 py-4', {
-        'text-muted border-transparent': !active,
-        'border-vega-yellow': active,
-      })}
-    />
   );
 };
 
@@ -252,50 +238,6 @@ const RefereeLink = ({ pubkey }: { pubkey: string }) => {
   );
 };
 
-const StatSection = ({ children }: { children: ReactNode }) => {
-  return (
-    <section className="flex flex-col lg:flex-row gap-2 lg:gap-8">
-      {children}
-    </section>
-  );
-};
-
-const StatSectionSeparator = () => {
-  return <div className="hidden lg:block border-r border-default" />;
-};
-
-const StatList = ({ children }: { children: ReactNode }) => {
-  return <dl className="flex gap-4 lg:gap-8">{children}</dl>;
-};
-
-const Stat = ({
-  value,
-  label,
-  tooltip,
-}: {
-  value: ReactNode;
-  label: ReactNode;
-  tooltip?: string;
-}) => {
-  return (
-    <div>
-      <dd className="text-3xl lg:text-4xl">{value}</dd>
-      <dt className="text-sm text-muted">
-        {tooltip ? (
-          <Tooltip description={tooltip} underline={false}>
-            <span className="flex items-center gap-2">
-              {label}
-              <VegaIcon name={VegaIconNames.INFO} size={12} />
-            </span>
-          </Tooltip>
-        ) : (
-          label
-        )}
-      </dt>
-    </div>
-  );
-};
-
 const JoinButton = ({ joined }: { joined: boolean }) => {
   const t = useT();
 
@@ -368,5 +310,64 @@ const FavoriteGame = ({ games }: { games: TeamGame[] }) => {
         </Pill>
       </dd>
     </dl>
+  );
+};
+
+const ToggleButton = ({
+  active,
+  ...props
+}: ButtonHTMLAttributes<HTMLButtonElement> & { active: boolean }) => {
+  return (
+    <button
+      {...props}
+      className={classNames('relative top-px uppercase border-b-2 py-4', {
+        'text-muted border-transparent': !active,
+        'border-vega-yellow': active,
+      })}
+    />
+  );
+};
+
+const StatSection = ({ children }: { children: ReactNode }) => {
+  return (
+    <section className="flex flex-col lg:flex-row gap-2 lg:gap-8">
+      {children}
+    </section>
+  );
+};
+
+const StatSectionSeparator = () => {
+  return <div className="hidden lg:block border-r border-default" />;
+};
+
+const StatList = ({ children }: { children: ReactNode }) => {
+  return <dl className="flex gap-4 lg:gap-8">{children}</dl>;
+};
+
+const Stat = ({
+  value,
+  label,
+  tooltip,
+}: {
+  value: ReactNode;
+  label: ReactNode;
+  tooltip?: string;
+}) => {
+  return (
+    <div>
+      <dd className="text-3xl lg:text-4xl">{value}</dd>
+      <dt className="text-sm text-muted">
+        {tooltip ? (
+          <Tooltip description={tooltip} underline={false}>
+            <span className="flex items-center gap-2">
+              {label}
+              <VegaIcon name={VegaIconNames.INFO} size={12} />
+            </span>
+          </Tooltip>
+        ) : (
+          label
+        )}
+      </dt>
+    </div>
   );
 };
