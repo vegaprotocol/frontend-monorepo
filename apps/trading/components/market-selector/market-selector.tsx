@@ -182,10 +182,10 @@ const MarketList = ({
           'p-2 mx-2 border-b border-default text-xs text-secondary'
         )}
       >
-        <div className="w-2/6 sm:w-3/6" role="columnheader">
+        <div className="w-2/6" role="columnheader">
           {t('Name')}
         </div>
-        <div className="w-2/6 sm:w-1/6" role="columnheader">
+        <div className="w-2/6 text-right pr-4" role="columnheader">
           {t('Price')}
         </div>
         <div className="w-2/6 sm:w-1/6 text-right" role="columnheader">
