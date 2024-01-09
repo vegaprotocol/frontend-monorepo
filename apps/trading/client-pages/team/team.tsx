@@ -137,7 +137,7 @@ export const TeamPage = ({
         <section>
           <div className="flex gap-4 lg:gap-8 mb-4 border-b border-default">
             <ToggleButton active={showGames} onClick={() => setShowGames(true)}>
-              Games (7)
+              Games ({stats ? stats.gamesPlayed.length : 0})
             </ToggleButton>
             <ToggleButton
               active={!showGames}
@@ -146,7 +146,11 @@ export const TeamPage = ({
               Members ({members ? members.length : 0})
             </ToggleButton>
           </div>
-          {showGames ? <Games /> : <Members members={members} />}
+          {showGames ? (
+            <Games gameIds={stats?.gamesPlayed} />
+          ) : (
+            <Members members={members} />
+          )}
         </section>
       </div>
     </div>
@@ -168,7 +172,11 @@ const ToggleButton = ({
   );
 };
 
-const Games = () => {
+const Games = ({ gameIds }: { gameIds?: string[] }) => {
+  if (!gameIds?.length) {
+    return <p>No games</p>;
+  }
+
   return (
     <Table
       columns={[
@@ -189,7 +197,7 @@ const Games = () => {
         },
         { name: 'status', displayName: 'Status' },
       ]}
-      data={new Array(10).fill({
+      data={gameIds.map(() => ({
         rank: 1,
         date: getDateFormat().format(new Date()),
         type: (
@@ -208,7 +216,7 @@ const Games = () => {
             Live <Indicator variant={Intent.Success} />
           </span>
         ),
-      })}
+      }))}
       noCollapse={true}
     />
   );
