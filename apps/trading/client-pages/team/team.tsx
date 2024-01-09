@@ -1,4 +1,6 @@
 import { useState, type ReactNode, type ButtonHTMLAttributes } from 'react';
+import { Link, useParams } from 'react-router-dom';
+import orderBy from 'lodash/orderBy';
 import {
   TradingButton as Button,
   Indicator,
@@ -12,20 +14,21 @@ import {
   VegaIconNames,
   Tooltip,
   Splash,
+  truncateMiddle,
 } from '@vegaprotocol/ui-toolkit';
 import classNames from 'classnames';
 import BigNumber from 'bignumber.js';
 import { useT } from '../../lib/use-t';
 import { Table } from '../../components/table';
-import { getDateFormat } from '@vegaprotocol/utils';
+import { getDateFormat, getDateTimeFormat } from '@vegaprotocol/utils';
 import {
   useTeam,
   type Team as TeamType,
   type TeamStats,
   type Member,
 } from './use-team';
-import { useParams } from 'react-router-dom';
 import { useVegaWallet } from '@vegaprotocol/wallet';
+import { DApp, EXPLORER_PARTIES, useLinks } from '@vegaprotocol/environment';
 
 export const Team = () => {
   const t = useT();
@@ -147,7 +150,7 @@ export const TeamPage = ({
               active={!showGames}
               onClick={() => setShowGames(false)}
             >
-              Members (486)
+              Members ({members ? members.length : 0})
             </ToggleButton>
           </div>
           {showGames ? <Games /> : <Members members={members} />}
@@ -235,6 +238,17 @@ const Members = ({ members }: { members?: Member[] }) => {
     return <p>No members</p>;
   }
 
+  const data = orderBy(
+    members.map((m) => ({
+      referee: <RefereeCell pubkey={m.referee} />,
+      joinedAt: getDateTimeFormat().format(new Date(m.joinedAt)),
+      joinedAtEpoch: Number(m.joinedAtEpoch),
+      explorerLink: <RefereeLink pubkey={m.referee} />,
+    })),
+    'joinedAtEpoch',
+    'desc'
+  );
+
   return (
     <Table
       columns={[
@@ -244,10 +258,25 @@ const Members = ({ members }: { members?: Member[] }) => {
           displayName: 'Joined at',
         },
         { name: 'joinedAtEpoch', displayName: 'Joined epoch' },
+        { name: 'explorerLink', displayName: '', className: 'text-right' },
       ]}
-      data={members}
+      data={data}
       noCollapse={true}
     />
+  );
+};
+
+const RefereeCell = ({ pubkey }: { pubkey: string }) => {
+  return <span title={pubkey}>{truncateMiddle(pubkey)}</span>;
+};
+
+const RefereeLink = ({ pubkey }: { pubkey: string }) => {
+  const linkCreator = useLinks(DApp.Explorer);
+  const link = linkCreator(EXPLORER_PARTIES.replace(':id', pubkey));
+  return (
+    <Link to={link} className="underline underline-offset-4">
+      View on explorer
+    </Link>
   );
 };
 
