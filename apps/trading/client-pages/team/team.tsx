@@ -1,6 +1,7 @@
 import { useState, type ReactNode, type ButtonHTMLAttributes } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import orderBy from 'lodash/orderBy';
+import countBy from 'lodash/countBy';
 import {
   TradingButton as Button,
   Intent,
@@ -70,7 +71,6 @@ export const TeamPage = ({
   members?: Member[];
   games?: TeamGame[];
 }) => {
-  const t = useT();
   const [showGames, setShowGames] = useState(true);
   return (
     <div className="relative h-full overflow-y-auto">
@@ -109,33 +109,14 @@ export const TeamPage = ({
             />
           </StatList>
         </StatSection>
-        <StatSection>
-          <dl>
-            <dt className="text-muted text-sm">Favorite game</dt>
-            <dd>
-              <Pill className="flex-inline items-center gap-2 bg-transparent text-sm">
-                <VegaIcon
-                  name={VegaIconNames.STAR}
-                  className="text-vega-yellow-400"
-                />{' '}
-                Maker fees played
-              </Pill>
-            </dd>
-          </dl>
-          <StatSectionSeparator />
-          <dl>
-            <dt className="text-muted text-sm">Last 5 game results</dt>
-            <dd className="flex gap-1">
-              {new Array(4).fill(null).map((_, i) => {
-                return (
-                  <Pill key={i} className="text-sm">
-                    {t('place', { count: i + 1, ordinal: true })}
-                  </Pill>
-                );
-              })}
-            </dd>
-          </dl>
-        </StatSection>
+
+        {games && games.length ? (
+          <StatSection>
+            <FavoriteGame games={games} />
+            <StatSectionSeparator />
+            <LatestResults games={games} />
+          </StatSection>
+        ) : null}
         <section>
           <div className="flex gap-4 lg:gap-8 mb-4 border-b border-default">
             <ToggleButton active={showGames} onClick={() => setShowGames(true)}>
@@ -343,4 +324,60 @@ const JoinButton = ({ joined }: { joined: boolean }) => {
   }
 
   return <Button intent={Intent.Primary}>Join this team</Button>;
+};
+
+const LatestResults = ({ games }: { games: TeamGame[] }) => {
+  const t = useT();
+  const latestGames = games.slice(0, 5);
+
+  return (
+    <dl>
+      <dt className="text-muted text-sm">
+        {t('Last {{count}} game results', { count: latestGames.length })}
+      </dt>
+      <dd className="flex gap-1">
+        {latestGames.map((game) => {
+          return (
+            <Pill key={game.id} className="text-sm">
+              {t('place', { count: game.team.rank, ordinal: true })}
+            </Pill>
+          );
+        })}
+      </dd>
+    </dl>
+  );
+};
+
+const FavoriteGame = ({ games }: { games: TeamGame[] }) => {
+  const t = useT();
+
+  const rewardMetrics = games.map((game) => game.team.rewardMetric);
+  const count = countBy(rewardMetrics);
+
+  let favoriteMetric = '';
+  let mostOccurances = 0;
+
+  for (const key in count) {
+    if (count[key] > mostOccurances) {
+      favoriteMetric = key;
+      mostOccurances = count[key];
+    }
+  }
+
+  if (!favoriteMetric) return null;
+
+  return (
+    <dl>
+      <dt className="text-muted text-sm">{t('Favorite game')}</dt>
+      <dd>
+        <Pill className="flex-inline items-center gap-2 bg-transparent text-sm">
+          <VegaIcon
+            name={VegaIconNames.STAR}
+            className="text-vega-yellow-400"
+          />{' '}
+          {favoriteMetric}
+        </Pill>
+      </dd>
+    </dl>
+  );
 };
