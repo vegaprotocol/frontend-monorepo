@@ -17,7 +17,6 @@ import {
   truncateMiddle,
 } from '@vegaprotocol/ui-toolkit';
 import classNames from 'classnames';
-import BigNumber from 'bignumber.js';
 import { useT } from '../../lib/use-t';
 import { Table } from '../../components/table';
 import { getDateFormat, getDateTimeFormat } from '@vegaprotocol/utils';
@@ -88,7 +87,7 @@ export const TeamPage = ({
         <StatSection>
           <StatList>
             <Stat value={24} label={'Rank'} tooltip={'My rank description'} />
-            <Stat value={486} label={'Members'} />
+            <Stat value={members ? members.length : 0} label={'Members'} />
             <Stat
               value={stats ? stats.totalGamesPlayed : 0}
               label={'Total games'}
@@ -97,20 +96,14 @@ export const TeamPage = ({
           </StatList>
           <StatSectionSeparator />
           <StatList>
-            <Stat value={'4.76K'} label={'Total volume'} />
             <Stat
-              value={'15.2K'}
-              label={'Rewards paid'}
-              tooltip={'My rewards paid description'}
+              value={stats ? stats.totalQuantumVolume : 0}
+              label={'Total volume'}
             />
             <Stat
-              value={
-                <>
-                  10K<span className="ml-2 text-sm">$VEGA</span>
-                </>
-              }
-              label={<PnlLabel value={'-100'} />}
-              tooltip={'PnL description'}
+              value={stats ? stats.totalQuantumRewards : 0}
+              label={'Rewards paid'}
+              tooltip={'My rewards paid description'}
             />
           </StatList>
         </StatSection>
@@ -357,22 +350,4 @@ const JoinButton = ({ joined }: { joined: boolean }) => {
   }
 
   return <Button intent={Intent.Primary}>Join this team</Button>;
-};
-
-const PnlLabel = ({ value }: { value: string }) => {
-  const isUp = new BigNumber(value).isGreaterThan(0);
-  return (
-    <span>
-      PnL{' '}
-      <span
-        className={classNames({
-          'text-market-green-550 dark:text-market-green': isUp,
-          'text-market-red': !isUp,
-        })}
-      >
-        {isUp ? '+' : ''}
-        {value.toString()}%
-      </span>
-    </span>
-  );
 };
