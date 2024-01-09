@@ -14,6 +14,7 @@ import {
   VegaIconNames,
   type VegaIconSize,
   TradingInput,
+  TinyScroll,
 } from '@vegaprotocol/ui-toolkit';
 import { IconNames } from '@blueprintjs/icons';
 import {
@@ -149,47 +150,45 @@ export const ActiveRewards = ({ currentEpoch }: { currentEpoch: number }) => {
 
   return (
     <Card title={t('Active rewards')} className="lg:col-span-full">
-      <div className="">
-        {transfers.length > 1 && (
-          <TradingInput
-            onChange={(e) =>
-              setFilter((curr) => ({ ...curr, searchTerm: e.target.value }))
+      {transfers.length > 1 && (
+        <TradingInput
+          onChange={(e) =>
+            setFilter((curr) => ({ ...curr, searchTerm: e.target.value }))
+          }
+          value={filter.searchTerm}
+          type="text"
+          placeholder={t(
+            'Search by reward dispatch metric, entity scope or asset name'
+          )}
+          data-testid="search-term"
+          className="mb-4 w-20 mr-2"
+          prependElement={<VegaIcon name={VegaIconNames.SEARCH} />}
+        />
+      )}
+      <TinyScroll className="grid gap-x-8 gap-y-10 h-fit grid-cols-[repeat(auto-fill,_minmax(230px,_1fr))] md:grid-cols-[repeat(auto-fill,_minmax(230px,_1fr))] lg:grid-cols-[repeat(auto-fill,_minmax(320px,_1fr))] xl:grid-cols-[repeat(auto-fill,_minmax(335px,_1fr))] max-h-[40rem] overflow-auto pr-2">
+        {transfers
+          .filter((n) => applyFilter(n, filter))
+          .map((node, i) => {
+            const { transfer } = node;
+            if (
+              transfer.kind.__typename !== 'RecurringTransfer' ||
+              !transfer.kind.dispatchStrategy?.dispatchMetric
+            ) {
+              return null;
             }
-            value={filter.searchTerm}
-            type="text"
-            placeholder={t(
-              'Search by reward dispatch metric, entity scope or asset name'
-            )}
-            data-testid="search-term"
-            className="mb-4 w-20"
-            prependElement={<VegaIcon name={VegaIconNames.SEARCH} />}
-          />
-        )}
-        <div className="grid gap-x-8 gap-y-10 h-fit grid-cols-[repeat(auto-fill,_minmax(230px,_1fr))] md:grid-cols-[repeat(auto-fill,_minmax(230px,_1fr))] lg:grid-cols-[repeat(auto-fill,_minmax(320px,_1fr))] xl:grid-cols-[repeat(auto-fill,_minmax(343px,_1fr))] max-h-[40rem] overflow-auto">
-          {transfers
-            .filter((n) => applyFilter(n, filter))
-            .map((node, i) => {
-              const { transfer } = node;
-              if (
-                transfer.kind.__typename !== 'RecurringTransfer' ||
-                !transfer.kind.dispatchStrategy?.dispatchMetric
-              ) {
-                return null;
-              }
 
-              return (
-                node && (
-                  <ActiveRewardCard
-                    key={i}
-                    transferNode={node}
-                    kind={transfer.kind}
-                    currentEpoch={currentEpoch}
-                  />
-                )
-              );
-            })}
-        </div>
-      </div>
+            return (
+              node && (
+                <ActiveRewardCard
+                  key={i}
+                  transferNode={node}
+                  kind={transfer.kind}
+                  currentEpoch={currentEpoch}
+                />
+              )
+            );
+          })}
+      </TinyScroll>
     </Card>
   );
 };
