@@ -3,7 +3,6 @@ import { Link, useParams } from 'react-router-dom';
 import orderBy from 'lodash/orderBy';
 import {
   TradingButton as Button,
-  Indicator,
   Intent,
   Pill,
   TradingDropdown,
@@ -19,12 +18,13 @@ import {
 import classNames from 'classnames';
 import { useT } from '../../lib/use-t';
 import { Table } from '../../components/table';
-import { getDateFormat, getDateTimeFormat } from '@vegaprotocol/utils';
+import { getDateTimeFormat } from '@vegaprotocol/utils';
 import {
   useTeam,
   type Team as TeamType,
   type TeamStats,
   type Member,
+  type TeamGame,
 } from './use-team';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { DApp, EXPLORER_PARTIES, useLinks } from '@vegaprotocol/environment';
@@ -33,7 +33,7 @@ export const Team = () => {
   const t = useT();
   const { teamId } = useParams<{ teamId: string }>();
   const { pubKey } = useVegaWallet();
-  const { team, stats, partyInTeam, members } = useTeam(
+  const { team, stats, partyInTeam, members, games } = useTeam(
     teamId,
     pubKey || undefined
   );
@@ -52,6 +52,7 @@ export const Team = () => {
       stats={stats}
       partyInTeam={partyInTeam}
       members={members}
+      games={games}
     />
   );
 };
@@ -61,11 +62,13 @@ export const TeamPage = ({
   stats,
   partyInTeam,
   members,
+  games,
 }: {
   team: TeamType;
   stats?: TeamStats;
   partyInTeam: boolean;
   members?: Member[];
+  games?: TeamGame[];
 }) => {
   const t = useT();
   const [showGames, setShowGames] = useState(true);
@@ -86,7 +89,6 @@ export const TeamPage = ({
         </header>
         <StatSection>
           <StatList>
-            <Stat value={24} label={'Rank'} tooltip={'My rank description'} />
             <Stat value={members ? members.length : 0} label={'Members'} />
             <Stat
               value={stats ? stats.totalGamesPlayed : 0}
@@ -137,7 +139,7 @@ export const TeamPage = ({
         <section>
           <div className="flex gap-4 lg:gap-8 mb-4 border-b border-default">
             <ToggleButton active={showGames} onClick={() => setShowGames(true)}>
-              Games ({stats ? stats.gamesPlayed.length : 0})
+              Games ({games ? games.length : 0})
             </ToggleButton>
             <ToggleButton
               active={!showGames}
@@ -146,11 +148,7 @@ export const TeamPage = ({
               Members ({members ? members.length : 0})
             </ToggleButton>
           </div>
-          {showGames ? (
-            <Games gameIds={stats?.gamesPlayed} />
-          ) : (
-            <Members members={members} />
-          )}
+          {showGames ? <Games games={games} /> : <Members members={members} />}
         </section>
       </div>
     </div>
@@ -172,8 +170,8 @@ const ToggleButton = ({
   );
 };
 
-const Games = ({ gameIds }: { gameIds?: string[] }) => {
-  if (!gameIds?.length) {
+const Games = ({ games }: { games?: TeamGame[] }) => {
+  if (!games?.length) {
     return <p>No games</p>;
   }
 
@@ -182,8 +180,8 @@ const Games = ({ gameIds }: { gameIds?: string[] }) => {
       columns={[
         { name: 'rank', displayName: 'Rank' },
         {
-          name: 'date',
-          displayName: 'Date',
+          name: 'epoch',
+          displayName: 'Epoch',
           headerClassName: 'hidden md:block',
           className: 'hidden md:block',
         },
@@ -191,31 +189,18 @@ const Games = ({ gameIds }: { gameIds?: string[] }) => {
         { name: 'amount', displayName: 'Amount earned' },
         {
           name: 'teams',
-          displayName: 'No. of participants',
+          displayName: 'No. of participating teams',
           headerClassName: 'hidden md:block',
           className: 'hidden md:block',
         },
         { name: 'status', displayName: 'Status' },
       ]}
-      data={gameIds.map(() => ({
-        rank: 1,
-        date: getDateFormat().format(new Date()),
-        type: (
-          <span>
-            PNL <span className="text-muted">(%)</span>
-          </span>
-        ),
-        amount: (
-          <span>
-            10,000 $VEGA <span className="text-muted">(10%)</span>
-          </span>
-        ),
-        teams: '1',
-        status: (
-          <span className="flex items-center gap-2">
-            Live <Indicator variant={Intent.Success} />
-          </span>
-        ),
+      data={games.map((game) => ({
+        rank: game.team.rank,
+        epoch: game.epoch,
+        type: game.team.rewardMetric,
+        amount: game.team.totalRewardsEarned,
+        teams: game.numberOfParticipants,
       }))}
       noCollapse={true}
     />
