@@ -7,6 +7,7 @@ import {
   type TeamRefereeFieldsFragment,
   type TeamEntityFragment,
 } from './__generated__/Team';
+import { useVegaWallet } from '@vegaprotocol/wallet';
 
 export type Team = TeamFieldsFragment;
 export type TeamStats = TeamStatsFieldsFragment;
@@ -14,9 +15,11 @@ export type Member = TeamRefereeFieldsFragment;
 export type TeamEntity = TeamEntityFragment;
 export type TeamGame = ReturnType<typeof useTeam>['games'][number];
 
-export const useTeam = (teamId?: string, partyId?: string) => {
+export const useTeam = (teamId?: string) => {
+  const { pubKey } = useVegaWallet();
+
   const { data, loading, error } = useTeamQuery({
-    variables: { teamId: teamId || '', partyId },
+    variables: { teamId: teamId || '', partyId: pubKey },
     skip: !teamId,
   });
 

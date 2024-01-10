@@ -15,7 +15,7 @@ import {
 import classNames from 'classnames';
 import { useT } from '../../lib/use-t';
 import { Table } from '../../components/table';
-import { getDateTimeFormat } from '@vegaprotocol/utils';
+import { formatNumberRounded, getDateTimeFormat } from '@vegaprotocol/utils';
 import {
   useTeam,
   type Team as TeamType,
@@ -23,17 +23,13 @@ import {
   type Member,
   type TeamGame,
 } from './use-team';
-import { useVegaWallet } from '@vegaprotocol/wallet';
 import { DApp, EXPLORER_PARTIES, useLinks } from '@vegaprotocol/environment';
+import BigNumber from 'bignumber.js';
 
 export const Team = () => {
   const t = useT();
   const { teamId } = useParams<{ teamId: string }>();
-  const { pubKey } = useVegaWallet();
-  const { team, stats, partyInTeam, members, games } = useTeam(
-    teamId,
-    pubKey || undefined
-  );
+  const { team, stats, partyInTeam, members, games } = useTeam(teamId);
 
   if (!team) {
     return (
@@ -95,11 +91,21 @@ export const TeamPage = ({
             />
             <StatSectionSeparator />
             <Stat
-              value={stats ? stats.totalQuantumVolume : 0}
+              value={
+                stats
+                  ? formatNumberRounded(new BigNumber(stats.totalQuantumVolume))
+                  : 0
+              }
               label={t('Total volume')}
             />
             <Stat
-              value={stats ? stats.totalQuantumRewards : 0}
+              value={
+                stats
+                  ? formatNumberRounded(
+                      new BigNumber(stats.totalQuantumRewards)
+                    )
+                  : 0
+              }
               label={t('Rewards paid')}
               tooltip={'Total amount of rewards paid out to this team in qUSD'}
             />
