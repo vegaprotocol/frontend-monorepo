@@ -31,9 +31,7 @@ describe('OrderViewDialog', () => {
             liquidityFee: '0.001',
           },
         },
-        liquidityMonitoringParameters: {
-          triggeringRatio: '1',
-        },
+        liquidityMonitoringParameters: {},
         tradableInstrument: {
           __typename: 'TradableInstrument',
           instrument: {

@@ -47,9 +47,6 @@ export const MarketLiquiditySupplied = ({
   ]);
 
   const stakeToCcyVolume = params.market_liquidity_stakeToCcyVolume;
-  const triggeringRatio = Number(
-    params.market_liquidity_targetstake_triggering_ratio
-  );
 
   const variables = useMemo(
     () => ({
@@ -94,7 +91,6 @@ export const MarketLiquiditySupplied = ({
   const { percentage, status } = useCheckLiquidityStatus({
     suppliedStake: market?.suppliedStake || 0,
     targetStake: market?.targetStake || 0,
-    triggeringRatio,
   });
 
   const showMessage =

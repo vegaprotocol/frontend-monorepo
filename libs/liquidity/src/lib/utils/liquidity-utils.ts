@@ -121,11 +121,9 @@ export const getTargetStake = (
 export const useCheckLiquidityStatus = ({
   suppliedStake,
   targetStake,
-  triggeringRatio,
 }: {
   suppliedStake: string | number;
   targetStake: string | number;
-  triggeringRatio: string | number;
 }): {
   status: Intent;
   percentage: BigNumber;
@@ -142,21 +140,10 @@ export const useCheckLiquidityStatus = ({
       percentage,
     };
   }
-  if (new BigNumber(suppliedStake).gte(new BigNumber(targetStake))) {
+  if (new BigNumber(suppliedStake).gte(targetStake)) {
     // show a green status, e.g. "🟢 $13,666,999 liquidity supplied"
     return {
       status: Intent.Success,
-      percentage,
-    };
-    // ELSE IF supplied_stake > NETPARAM[market.liquidity.targetstake.triggering.ratio] * target_stake THEN
-  } else if (
-    new BigNumber(suppliedStake).gte(
-      new BigNumber(targetStake).multipliedBy(triggeringRatio)
-    )
-  ) {
-    // show an amber status, e.g. "🟠 $3,456,123 liquidity supplied"
-    return {
-      status: Intent.Warning,
       percentage,
     };
     // ELSE show a red status, e.g. "🔴 $600,002 liquidity supplied"

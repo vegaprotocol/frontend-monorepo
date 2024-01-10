@@ -42,13 +42,9 @@ export const LiquidityHeader = () => {
   const assetDecimalPlaces = asset?.decimals || 0;
   const symbol = asset?.symbol;
 
-  const triggeringRatio =
-    market?.liquidityMonitoringParameters.triggeringRatio || '1';
-
   const { percentage, status } = useCheckLiquidityStatus({
     suppliedStake: suppliedStake || 0,
     targetStake: targetStake || 0,
-    triggeringRatio,
   });
 
   const feesObject = feesPaidRes?.paidLiquidityFees?.edges?.find(

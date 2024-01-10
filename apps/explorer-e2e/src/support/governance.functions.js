@@ -113,7 +113,6 @@ function getSuccessorTxBody(parentMarketId) {
                 timeWindow: '3600',
                 scalingFactor: 10,
               },
-              triggeringRatio: '0.7',
               auctionExtension: '1',
             },
             logNormal: {

@@ -188,7 +188,6 @@ query MarketInfo($marketId: ID!) {
       long
     }
     liquidityMonitoringParameters {
-      triggeringRatio
       targetStakeParameters {
         timeWindow
         scalingFactor

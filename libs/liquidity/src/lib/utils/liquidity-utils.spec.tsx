@@ -124,27 +124,11 @@ describe('getChange', () => {
 });
 
 describe('useCheckLiquidityStatus', () => {
-  it('should return amber if liquidity is enough', () => {
-    const { result } = renderHook(() =>
-      useCheckLiquidityStatus({
-        suppliedStake: '60',
-        targetStake: '100',
-        triggeringRatio: '0.5',
-      })
-    );
-
-    expect(result.current).toEqual({
-      status: Intent.Warning,
-      percentage: new BigNumber('60'),
-    });
-  });
-
   it('should return red if liquidity is not enough', () => {
     const { result } = renderHook(() =>
       useCheckLiquidityStatus({
         suppliedStake: '60',
         targetStake: '100',
-        triggeringRatio: '1',
       })
     );
 
@@ -159,7 +143,6 @@ describe('useCheckLiquidityStatus', () => {
       useCheckLiquidityStatus({
         suppliedStake: '101',
         targetStake: '100',
-        triggeringRatio: '1',
       })
     );
 

@@ -110,7 +110,6 @@
             "timeWindow": "3600",
             "scalingFactor": 1
           },
-          "triggeringRatio": "0.7",
           "auctionExtension": "1"
         },
 

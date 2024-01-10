@@ -11,9 +11,7 @@ export function generateMarket(override?: PartialDeep<Market>): Market {
     positionDecimalPlaces: 1,
     tradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
     state: Schema.MarketState.STATE_ACTIVE,
-    liquidityMonitoringParameters: {
-      triggeringRatio: '1',
-    },
+    liquidityMonitoringParameters: {},
     marketTimestamps: {
       __typename: 'MarketTimestamps',
       close: '',

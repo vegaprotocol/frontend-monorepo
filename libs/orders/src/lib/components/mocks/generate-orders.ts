@@ -20,9 +20,6 @@ export const generateOrder = (partialOrder?: PartialDeep<Order>) => {
           makerFee: '0.1',
         },
       },
-      liquidityMonitoringParameters: {
-        triggeringRatio: '1',
-      },
       marketTimestamps: {
         __typename: 'MarketTimestamps',
         close: '',
