@@ -83,11 +83,6 @@ describe('LiquidityTable', () => {
       h.querySelector('[ref="eText"]')?.textContent?.trim()
     );
     const expectedHeaders = [
-      undefined,
-      undefined,
-      undefined,
-      undefined,
-      undefined,
       'Party',
       'Status',
       'Commitment ()',
