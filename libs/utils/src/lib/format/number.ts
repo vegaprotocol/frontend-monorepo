@@ -184,7 +184,10 @@ export const isNumeric = (
  * Format a number greater than 1 million with m for million, b for billion
  * and t for trillion
  */
-export const formatNumberRounded = (num: BigNumber) => {
+export const formatNumberRounded = (
+  num: BigNumber,
+  limit: '1e12' | '1e9' | '1e6' | '1e3' = '1e6'
+) => {
   let value = '';
 
   const format = (divisor: string) => {
@@ -194,15 +197,29 @@ export const formatNumberRounded = (num: BigNumber) => {
 
   if (num.isGreaterThan(new BigNumber('1e14'))) {
     value = '>100t';
-  } else if (num.isGreaterThanOrEqualTo(new BigNumber('1e12'))) {
+  } else if (
+    num.isGreaterThanOrEqualTo(limit) &&
+    num.isGreaterThanOrEqualTo(new BigNumber('1e12'))
+  ) {
     // Trillion
     value = `${format('1e12')}t`;
-  } else if (num.isGreaterThanOrEqualTo(new BigNumber('1e9'))) {
+  } else if (
+    num.isGreaterThanOrEqualTo(limit) &&
+    num.isGreaterThanOrEqualTo(new BigNumber('1e9'))
+  ) {
     // Billion
     value = `${format('1e9')}b`;
-  } else if (num.isGreaterThanOrEqualTo(new BigNumber('1e6'))) {
+  } else if (
+    num.isGreaterThanOrEqualTo(limit) &&
+    num.isGreaterThanOrEqualTo(new BigNumber('1e6'))
+  ) {
     // Million
     value = `${format('1e6')}m`;
+  } else if (
+    num.isGreaterThanOrEqualTo(limit) &&
+    num.isGreaterThanOrEqualTo(new BigNumber('1e3'))
+  ) {
+    value = `${format('1e3')}k`;
   } else {
     value = formatNumber(num);
   }
