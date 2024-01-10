@@ -93,7 +93,10 @@ export const TeamPage = ({
             <Stat
               value={
                 stats
-                  ? formatNumberRounded(new BigNumber(stats.totalQuantumVolume))
+                  ? formatNumberRounded(
+                      new BigNumber(stats.totalQuantumVolume),
+                      '1e3'
+                    )
                   : 0
               }
               label={t('Total volume')}
@@ -102,7 +105,8 @@ export const TeamPage = ({
               value={
                 stats
                   ? formatNumberRounded(
-                      new BigNumber(stats.totalQuantumRewards)
+                      new BigNumber(stats.totalQuantumRewards),
+                      '1e3'
                     )
                   : 0
               }
