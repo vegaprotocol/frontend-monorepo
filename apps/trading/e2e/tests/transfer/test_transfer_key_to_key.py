@@ -146,7 +146,7 @@ def test_transfer_vesting_below_minimum(
     vega.wait_fn(10)
     vega.wait_for_total_catchup()
 
-    page.get_by_text("Use max").first.click()
+    page.get_by_test_id("use-max-button").first.click()
     page.locator('[data-testid=transfer-form] [type="submit"]').click()
     wait_for_toast_confirmation(page)
     vega.forward("10s")

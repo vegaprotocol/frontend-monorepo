@@ -18,7 +18,7 @@ def setup_simple_market(
     custom_market_name=market_name,
     custom_asset_name="tDAI",
     custom_asset_symbol="tDAI",
-    custom_quantum=1
+    custom_quantum=1,
 ):
     for wallet in wallets:
         vega.create_key(wallet.name)
@@ -117,18 +117,30 @@ def setup_simple_successor_market(
     return market_id
 
 
-def setup_opening_auction_market(vega: VegaService, market_id: str = None, buy_orders=default_buy_orders, sell_orders=default_sell_orders, add_liquidity=True, **kwargs):
+def setup_opening_auction_market(
+    vega: VegaService,
+    market_id: str = None,
+    buy_orders=default_buy_orders,
+    sell_orders=default_sell_orders,
+    add_liquidity=True,
+    custom_market_name="BTC:DAI_2023",
+    custom_asset_name="tDAI",
+    custom_asset_symbol="tDAI",
+    **kwargs,
+):
     if not market_exists(vega, market_id):
-        market_id = setup_simple_market(vega, **kwargs)
+        market_id = setup_simple_market(
+            vega,
+            custom_market_name=custom_market_name,
+            custom_asset_name=custom_asset_name,
+            custom_asset_symbol=custom_asset_symbol,
+            **kwargs,
+        )
 
     if add_liquidity:
         submit_liquidity(vega, MM_WALLET.name, market_id)
-    submit_multiple_orders(
-        vega, MM_WALLET.name, market_id, "SIDE_SELL", sell_orders
-    )
-    submit_multiple_orders(
-        vega, MM_WALLET2.name, market_id, "SIDE_BUY", buy_orders
-    )
+    submit_multiple_orders(vega, MM_WALLET.name, market_id, "SIDE_SELL", sell_orders)
+    submit_multiple_orders(vega, MM_WALLET2.name, market_id, "SIDE_BUY", buy_orders)
 
     vega.forward("10s")
     vega.wait_fn(1)
@@ -146,13 +158,37 @@ def market_exists(vega: VegaService, market_id: str):
 
 
 # Add sell orders and buy orders to put on the book
-def setup_continuous_market(vega: VegaService, market_id: str = None, buy_orders=default_buy_orders, sell_orders=default_sell_orders, add_liquidity=True, **kwargs):
-    if not market_exists(vega, market_id) or buy_orders != default_buy_orders or sell_orders != default_sell_orders:
+def setup_continuous_market(
+    vega: VegaService,
+    market_id: str = None,
+    buy_orders=default_buy_orders,
+    sell_orders=default_sell_orders,
+    add_liquidity=True,
+    custom_market_name="BTC:DAI_2023",
+    custom_asset_name="tDAI",
+    custom_asset_symbol="tDAI",
+    **kwargs,
+):
+    if (
+        not market_exists(vega, market_id)
+        or buy_orders != default_buy_orders
+        or sell_orders != default_sell_orders
+    ):
         market_id = setup_opening_auction_market(
-            vega, market_id, buy_orders, sell_orders, add_liquidity, **kwargs)
+            vega,
+            market_id,
+            buy_orders,
+            sell_orders,
+            add_liquidity,
+            custom_market_name=custom_market_name,
+            custom_asset_name=custom_asset_name,
+            custom_asset_symbol=custom_asset_symbol,
+            **kwargs,
+        )
 
-    submit_order(vega, "Key 1", market_id, "SIDE_BUY",
-                 sell_orders[0][0], sell_orders[0][1])
+    submit_order(
+        vega, "Key 1", market_id, "SIDE_BUY", sell_orders[0][0], sell_orders[0][1]
+    )
 
     vega.forward("10s")
     vega.wait_fn(1)
@@ -250,6 +286,8 @@ def setup_perps_market(
 def market_exists(vega: VegaService, market_id: str):
     if market_id is None:
         return False
-    all_markets = vega.all_markets() 
+    all_markets = vega.all_markets()
     market_ids = [market.id for market in all_markets]
+    print("Checking for market ID:", market_id)
+    print("Available market IDs:", market_ids)
     return market_id in market_ids

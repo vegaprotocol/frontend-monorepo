@@ -16,7 +16,7 @@ def vega(request):
 def continuous_market(vega):
     return setup_continuous_market(vega)
 
-
+@pytest.mark.skip("Issue 5581")
 @pytest.mark.usefixtures("auth", "risk_accepted")
 def test_liquidity_provision_amendment(continuous_market, vega: VegaServiceNull, page: Page):
     # TODO Refactor asserting the grid

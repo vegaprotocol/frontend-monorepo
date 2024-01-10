@@ -262,6 +262,7 @@ export const MarketInfoAccordion = ({
                     <PriceMonitoringBoundsInfoPanel
                       market={market}
                       triggerIndex={triggerIndex}
+                      key={id}
                     />
                   }
                 />
