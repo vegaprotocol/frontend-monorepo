@@ -18,7 +18,7 @@ import {
   truncateMiddle,
 } from '@vegaprotocol/ui-toolkit';
 import type {
-  ColGroupDef,
+  ColDef,
   ITooltipParams,
   ValueFormatterParams,
 } from 'ag-grid-community';
@@ -60,10 +60,11 @@ const dateValueFormatter = ({ value }: { value?: string | null }) => {
   return getDateTimeFormat().format(new Date(value));
 };
 
-const defaultColDef = {
+const defaultColDef: ColDef = {
   resizable: true,
   sortable: true,
   tooltipComponent: TooltipCellComponent,
+  minWidth: 120,
 };
 
 export interface LiquidityTableProps
@@ -168,333 +169,300 @@ export const LiquidityTable = ({
       )}`;
     };
 
-    const defs: ColGroupDef[] = [
+    const defs: ColDef[] = [
       {
-        headerName: '',
-        children: [
-          {
-            headerName: t('Party'),
-            field: 'partyId',
-            headerTooltip: t(
-              'The public key of the party making this commitment.'
-            ),
-            cellRenderer: copyCellRenderer,
-          },
-        ],
+        headerName: t('Party'),
+        field: 'partyId',
+        headerTooltip: t('The public key of the party making this commitment.'),
+        cellRenderer: copyCellRenderer,
+        pinned: 'left',
       },
       {
-        headerName: t('Commitment details'),
-        marryChildren: true,
-        children: [
-          {
-            headerName: t('Status'),
-            headerTooltip: t('The current status of this liquidity provision.'),
-            field: 'status',
-            cellRenderer: ({
-              data,
-              value,
-            }: VegaICellRendererParams<LiquidityProvisionData, 'status'>) => {
-              if (!value) return value;
-              if (
-                data?.status === LiquidityProvisionStatus.STATUS_PENDING &&
-                (data?.currentCommitmentAmount || data?.currentFee)
-              ) {
-                return (
-                  <span className="text-warning">
-                    {t('Updating next epoch')}
-                  </span>
-                );
+        headerName: t('Status'),
+        headerTooltip: t('The current status of this liquidity provision.'),
+        field: 'status',
+        cellRenderer: ({
+          data,
+          value,
+        }: VegaICellRendererParams<LiquidityProvisionData, 'status'>) => {
+          if (!value) return value;
+          if (
+            data?.status === LiquidityProvisionStatus.STATUS_PENDING &&
+            (data?.currentCommitmentAmount || data?.currentFee)
+          ) {
+            return (
+              <span className="text-warning">{t('Updating next epoch')}</span>
+            );
+          }
+          return (
+            <span>
+              {
+                LiquidityProvisionStatusMapping[
+                  value as LiquidityProvisionStatus
+                ]
               }
-              return (
-                <span>
-                  {
-                    LiquidityProvisionStatusMapping[
-                      value as LiquidityProvisionStatus
-                    ]
-                  }
-                </span>
+            </span>
+          );
+        },
+      },
+      {
+        headerName: t(`Commitment ({{symbol}})`, { symbol }),
+        field: 'commitmentAmount',
+        type: 'rightAligned',
+        headerTooltip: t(
+          'The amount committed to the market by this liquidity provider.'
+        ),
+        cellRenderer: ({
+          data,
+          value,
+        }: VegaICellRendererParams<
+          LiquidityProvisionData,
+          'commitmentAmount'
+        >) => {
+          if (!value) return '-';
+          const currentCommitmentAmount = data?.currentCommitmentAmount;
+          const pendingCommitmentAmount = value;
+
+          const formattedPendingCommitmentAmount =
+            addDecimalsFormatNumberQuantum(
+              pendingCommitmentAmount,
+              assetDecimalPlaces ?? 0,
+              quantum ?? 0
+            );
+
+          if (
+            currentCommitmentAmount &&
+            currentCommitmentAmount !== pendingCommitmentAmount
+          ) {
+            const formattedCurrentCommitmentAmount =
+              addDecimalsFormatNumberQuantum(
+                currentCommitmentAmount,
+                assetDecimalPlaces ?? 0,
+                quantum ?? 0
               );
-            },
-          },
-          {
-            headerName: t(`Commitment ({{symbol}})`, { symbol }),
-            field: 'commitmentAmount',
-            type: 'rightAligned',
-            headerTooltip: t(
-              'The amount committed to the market by this liquidity provider.'
-            ),
-            cellRenderer: ({
-              data,
-              value,
-            }: VegaICellRendererParams<
-              LiquidityProvisionData,
-              'commitmentAmount'
-            >) => {
-              if (!value) return '-';
-              const currentCommitmentAmount = data?.currentCommitmentAmount;
-              const pendingCommitmentAmount = value;
 
-              const formattedPendingCommitmentAmount =
-                addDecimalsFormatNumberQuantum(
-                  pendingCommitmentAmount,
-                  assetDecimalPlaces ?? 0,
-                  quantum ?? 0
-                );
+            return (
+              <>
+                <span>{formattedCurrentCommitmentAmount}</span> (
+                <span className="text-warning">
+                  {formattedPendingCommitmentAmount}
+                </span>
+                )
+              </>
+            );
+          } else {
+            return formattedPendingCommitmentAmount;
+          }
+        },
+        tooltipValueGetter: assetDecimalsFormatter,
+      },
+      {
+        headerName: t('Obligation'),
+        field: 'commitmentAmount',
+        type: 'rightAligned',
+        headerTooltip: t(
+          `The liquidity provider's obligation to the market, calculated as the liquidity commitment amount multiplied by the value of the stake_to_ccy_volume network parameter to convert into units of liquidity volume.`
+        ),
+        cellRenderer: ({
+          data,
+          value,
+        }: VegaICellRendererParams<
+          LiquidityProvisionData,
+          'commitmentAmount'
+        >) => {
+          if (!value) return '-';
 
-              if (
-                currentCommitmentAmount &&
-                currentCommitmentAmount !== pendingCommitmentAmount
-              ) {
-                const formattedCurrentCommitmentAmount =
-                  addDecimalsFormatNumberQuantum(
-                    currentCommitmentAmount,
-                    assetDecimalPlaces ?? 0,
-                    quantum ?? 0
-                  );
-
-                return (
-                  <>
-                    <span>{formattedCurrentCommitmentAmount}</span> (
-                    <span className="text-warning">
-                      {formattedPendingCommitmentAmount}
-                    </span>
-                    )
-                  </>
-                );
-              } else {
-                return formattedPendingCommitmentAmount;
-              }
-            },
-            tooltipValueGetter: assetDecimalsFormatter,
-          },
-          {
-            headerName: t('Obligation'),
-            field: 'commitmentAmount',
-            type: 'rightAligned',
-            headerTooltip: t(
-              `The liquidity provider's obligation to the market, calculated as the liquidity commitment amount multiplied by the value of the stake_to_ccy_volume network parameter to convert into units of liquidity volume.`
-            ),
-            cellRenderer: ({
-              data,
-              value,
-            }: VegaICellRendererParams<
-              LiquidityProvisionData,
-              'commitmentAmount'
-            >) => {
-              if (!value) return '-';
-
-              const currentCommitmentAmount = data?.currentCommitmentAmount
-                ? new BigNumber(data?.currentCommitmentAmount)
-                    .times(Number(stakeToCcyVolume) || 1)
-                    .toString()
-                : undefined;
-
-              const pendingCommitmentAmount = new BigNumber(value)
+          const currentCommitmentAmount = data?.currentCommitmentAmount
+            ? new BigNumber(data?.currentCommitmentAmount)
                 .times(Number(stakeToCcyVolume) || 1)
-                .toString();
+                .toString()
+            : undefined;
 
-              const formattedPendingCommitmentAmount =
-                addDecimalsFormatNumberQuantum(
-                  pendingCommitmentAmount,
-                  assetDecimalPlaces ?? 0,
-                  quantum ?? 0
-                );
+          const pendingCommitmentAmount = new BigNumber(value)
+            .times(Number(stakeToCcyVolume) || 1)
+            .toString();
 
-              if (
-                currentCommitmentAmount &&
-                currentCommitmentAmount !== pendingCommitmentAmount
-              ) {
-                const formattedCurrentCommitmentAmount =
-                  addDecimalsFormatNumberQuantum(
-                    currentCommitmentAmount,
-                    assetDecimalPlaces ?? 0,
-                    quantum ?? 0
-                  );
+          const formattedPendingCommitmentAmount =
+            addDecimalsFormatNumberQuantum(
+              pendingCommitmentAmount,
+              assetDecimalPlaces ?? 0,
+              quantum ?? 0
+            );
 
-                return (
-                  <>
-                    <span>{formattedCurrentCommitmentAmount}</span> (
-                    <span className="text-warning">
-                      {formattedPendingCommitmentAmount}
-                    </span>
-                    )
-                  </>
-                );
-              } else {
-                return formattedPendingCommitmentAmount;
-              }
-            },
-            tooltipValueGetter: stakeToCcyVolumeFormatter,
-          },
-          {
-            headerName: t('Fee'),
-            headerTooltip: t(
-              'The fee percentage (per trade) proposed by each liquidity provider.'
-            ),
-            field: 'fee',
-            type: 'rightAligned',
-            cellRenderer: ({
-              data,
-              value,
-            }: VegaICellRendererParams<LiquidityProvisionData, 'fee'>) => {
-              if (!value) return '-';
-              const formattedPendingFee =
-                formatNumberPercentage(new BigNumber(value).times(100), 2) ||
-                '-';
-              if (data?.currentFee && data?.currentFee !== value) {
-                const formattedCurrentFee = formatNumberPercentage(
-                  new BigNumber(data.currentFee).times(100),
-                  2
-                );
-                return (
-                  <>
-                    <span>{formattedCurrentFee}</span> (
-                    <span className="text-warning">{formattedPendingFee}</span>)
-                  </>
-                );
-              }
-              return formattedPendingFee;
-            },
-          },
-          {
-            headerName: t('Adjusted stake'),
-            field: 'feeShare.virtualStake',
-            type: 'rightAligned',
-            headerTooltip: t(
-              'The effective stake of the liquidity provider, adjusted for length of commitment and impact on equity like share.'
-            ),
+          if (
+            currentCommitmentAmount &&
+            currentCommitmentAmount !== pendingCommitmentAmount
+          ) {
+            const formattedCurrentCommitmentAmount =
+              addDecimalsFormatNumberQuantum(
+                currentCommitmentAmount,
+                assetDecimalPlaces ?? 0,
+                quantum ?? 0
+              );
 
-            valueFormatter: assetDecimalsQuantumFormatter,
-            tooltipValueGetter: assetDecimalsFormatter,
-          },
-          {
-            headerName: t(`Share`),
-            field: 'feeShare.equityLikeShare',
-            type: 'rightAligned',
-            headerTooltip: t(
-              'The equity-like share of liquidity of the market used to determine allocation of LP fees. Calculated based on share of total liquidity, with a premium added for length of commitment.'
-            ),
-            valueFormatter: percentageFormatter,
-          },
-        ],
+            return (
+              <>
+                <span>{formattedCurrentCommitmentAmount}</span> (
+                <span className="text-warning">
+                  {formattedPendingCommitmentAmount}
+                </span>
+                )
+              </>
+            );
+          } else {
+            return formattedPendingCommitmentAmount;
+          }
+        },
+        tooltipValueGetter: stakeToCcyVolumeFormatter,
       },
       {
-        headerName: t('Live liquidity data'),
-        marryChildren: true,
-        children: [
-          {
-            headerName: t('Live supplied liquidity'),
-            field: 'balance',
-            type: 'rightAligned',
-            headerTooltip: t(
-              `The amount of liquidity volume supplied by the LP order in order to meet the obligation. If the obligation is already met in full by other limit orders from the same Vega key the LP order is not required and this value will be zero. Also note if the target stake for the market is less than the obligation the full value of the obligation may not be required.`
-            ),
-            valueFormatter: stakeToCcyVolumeQuantumFormatter,
-            tooltipValueGetter: stakeToCcyVolumeFormatter,
-          },
-          {
-            headerName: t('Fees accrued this epoch'),
-            field: 'earmarkedFees',
-            type: 'rightAligned',
-            headerTooltip: t(
-              `The liquidity fees accrued by each provider, which will be distributed at the end of the epoch after applying any penalties.`
-            ),
-            valueFormatter: assetDecimalsQuantumFormatter,
-            tooltipValueGetter: feesAccruedTooltip,
-            cellClassRules: {
-              'text-warning': ({ data }: { data: LiquidityProvisionData }) => {
-                if (!data.sla) return false;
-                return (
-                  new BigNumber(
-                    data.sla.currentEpochFractionOfTimeOnBook
-                  ).isLessThan(1) &&
-                  new BigNumber(
-                    data.sla.currentEpochFractionOfTimeOnBook
-                  ).isGreaterThan(data.commitmentMinTimeFraction)
-                );
-              },
-              'text-red-500': ({ data }: { data: LiquidityProvisionData }) => {
-                if (!data.sla) return false;
-                return new BigNumber(
-                  data.sla.currentEpochFractionOfTimeOnBook
-                ).isLessThan(data.commitmentMinTimeFraction);
-              },
-            },
-          },
-          {
-            headerName: t(`Live time on book`),
-            field: 'sla.currentEpochFractionOfTimeOnBook',
-            type: 'rightAligned',
-            headerTooltip: t('Current epoch fraction of time on the book.'),
-            valueFormatter: percentageFormatter,
-          },
-          {
-            headerName: t('Live liquidity score (%)'),
-            field: 'feeShare.averageScore',
-            type: 'rightAligned',
-            headerTooltip: t(
-              'The liquidity score of the provider, used to determine allocation of fees to the best performing LPs. Posting volume closer to the mid on both sides of the book will improve this score.'
-            ),
-            valueFormatter: percentageFormatter,
-          },
-        ],
+        headerName: t('Fee'),
+        headerTooltip: t(
+          'The fee percentage (per trade) proposed by each liquidity provider.'
+        ),
+        field: 'fee',
+        type: 'rightAligned',
+        cellRenderer: ({
+          data,
+          value,
+        }: VegaICellRendererParams<LiquidityProvisionData, 'fee'>) => {
+          if (!value) return '-';
+          const formattedPendingFee =
+            formatNumberPercentage(new BigNumber(value).times(100), 2) || '-';
+          if (data?.currentFee && data?.currentFee !== value) {
+            const formattedCurrentFee = formatNumberPercentage(
+              new BigNumber(data.currentFee).times(100),
+              2
+            );
+            return (
+              <>
+                <span>{formattedCurrentFee}</span> (
+                <span className="text-warning">{formattedPendingFee}</span>)
+              </>
+            );
+          }
+          return formattedPendingFee;
+        },
       },
       {
-        headerName: t('Last epoch SLA details'),
-        marryChildren: true,
-        children: [
-          {
-            headerName: t(`Last time on book`),
-            field: 'sla.lastEpochFractionOfTimeOnBook',
-            type: 'rightAligned',
-            headerTooltip: t(
-              'Fraction of time on the book at the end of the last epoch.'
-            ),
-            valueFormatter: percentageFormatter,
-          },
-          {
-            headerName: t(`Last fee penalty`),
-            field: 'sla.lastEpochFeePenalty',
-            type: 'rightAligned',
-            headerTooltip: t(
-              'Penalty applied on the fees a liquidity provider collected in the last epoch. This percentage increased if an LP did not meet the SLA, or if they met it but other LPs outscored them in the previous epoch.'
-            ),
-            valueFormatter: percentageFormatter,
-          },
-          {
-            headerName: t(`Last bond penalty`),
-            field: 'sla.lastEpochBondPenalty',
-            type: 'rightAligned',
-            headerTooltip: t(
-              `Penalty applied on a provider's bond penalty at the end of the last epoch. This percentage increased if an LP: had a shortfall and their bond needed to be used to cover it, did not meet the SLA, and/or reduced their commitment to the point that the market was below its target stake.`
-            ),
-            valueFormatter: percentageFormatter,
-          },
-        ],
+        headerName: t('Adjusted stake'),
+        field: 'feeShare.virtualStake',
+        type: 'rightAligned',
+        headerTooltip: t(
+          'The effective stake of the liquidity provider, adjusted for length of commitment and impact on equity like share.'
+        ),
+
+        valueFormatter: assetDecimalsQuantumFormatter,
+        tooltipValueGetter: assetDecimalsFormatter,
       },
       {
-        headerName: '',
-        marryChildren: true,
-        children: [
-          {
-            headerName: t('Created'),
-            headerTooltip: t(
-              'The date and time this liquidity provision was created.'
-            ),
-            field: 'createdAt',
-            type: 'rightAligned',
-            valueFormatter: dateValueFormatter,
+        headerName: t(`Share`),
+        field: 'feeShare.equityLikeShare',
+        type: 'rightAligned',
+        headerTooltip: t(
+          'The equity-like share of liquidity of the market used to determine allocation of LP fees. Calculated based on share of total liquidity, with a premium added for length of commitment.'
+        ),
+        valueFormatter: percentageFormatter,
+      },
+      {
+        headerName: t('Live supplied liquidity'),
+        field: 'balance',
+        type: 'rightAligned',
+        headerTooltip: t(
+          `The amount of liquidity volume supplied by the LP order in order to meet the obligation. If the obligation is already met in full by other limit orders from the same Vega key the LP order is not required and this value will be zero. Also note if the target stake for the market is less than the obligation the full value of the obligation may not be required.`
+        ),
+        valueFormatter: stakeToCcyVolumeQuantumFormatter,
+        tooltipValueGetter: stakeToCcyVolumeFormatter,
+      },
+      {
+        headerName: t('Fees accrued this epoch'),
+        field: 'earmarkedFees',
+        type: 'rightAligned',
+        headerTooltip: t(
+          `The liquidity fees accrued by each provider, which will be distributed at the end of the epoch after applying any penalties.`
+        ),
+        valueFormatter: assetDecimalsQuantumFormatter,
+        tooltipValueGetter: feesAccruedTooltip,
+        cellClassRules: {
+          'text-warning': ({ data }: { data: LiquidityProvisionData }) => {
+            if (!data.sla) return false;
+            return (
+              new BigNumber(
+                data.sla.currentEpochFractionOfTimeOnBook
+              ).isLessThan(1) &&
+              new BigNumber(
+                data.sla.currentEpochFractionOfTimeOnBook
+              ).isGreaterThan(data.commitmentMinTimeFraction)
+            );
           },
-          {
-            headerName: t('Updated'),
-            headerTooltip: t(
-              'The date and time this liquidity provision was last updated.'
-            ),
-            field: 'updatedAt',
-            type: 'rightAligned',
-            valueFormatter: dateValueFormatter,
+          'text-red-500': ({ data }: { data: LiquidityProvisionData }) => {
+            if (!data.sla) return false;
+            return new BigNumber(
+              data.sla.currentEpochFractionOfTimeOnBook
+            ).isLessThan(data.commitmentMinTimeFraction);
           },
-        ],
+        },
+      },
+      {
+        headerName: t(`Live time on book`),
+        field: 'sla.currentEpochFractionOfTimeOnBook',
+        type: 'rightAligned',
+        headerTooltip: t('Current epoch fraction of time on the book.'),
+        valueFormatter: percentageFormatter,
+      },
+      {
+        headerName: t('Live liquidity score (%)'),
+        field: 'feeShare.averageScore',
+        type: 'rightAligned',
+        headerTooltip: t(
+          'The liquidity score of the provider, used to determine allocation of fees to the best performing LPs. Posting volume closer to the mid on both sides of the book will improve this score.'
+        ),
+        valueFormatter: percentageFormatter,
+      },
+      {
+        headerName: t(`Last time on book`),
+        field: 'sla.lastEpochFractionOfTimeOnBook',
+        type: 'rightAligned',
+        headerTooltip: t(
+          'Fraction of time on the book at the end of the last epoch.'
+        ),
+        valueFormatter: percentageFormatter,
+      },
+      {
+        headerName: t(`Last fee penalty`),
+        field: 'sla.lastEpochFeePenalty',
+        type: 'rightAligned',
+        headerTooltip: t(
+          'Penalty applied on the fees a liquidity provider collected in the last epoch. This percentage increased if an LP did not meet the SLA, or if they met it but other LPs outscored them in the previous epoch.'
+        ),
+        valueFormatter: percentageFormatter,
+      },
+      {
+        headerName: t(`Last bond penalty`),
+        field: 'sla.lastEpochBondPenalty',
+        type: 'rightAligned',
+        headerTooltip: t(
+          `Penalty applied on a provider's bond penalty at the end of the last epoch. This percentage increased if an LP: had a shortfall and their bond needed to be used to cover it, did not meet the SLA, and/or reduced their commitment to the point that the market was below its target stake.`
+        ),
+        valueFormatter: percentageFormatter,
+      },
+      {
+        headerName: t('Created'),
+        headerTooltip: t(
+          'The date and time this liquidity provision was created.'
+        ),
+        field: 'createdAt',
+        type: 'rightAligned',
+        valueFormatter: dateValueFormatter,
+      },
+      {
+        headerName: t('Updated'),
+        headerTooltip: t(
+          'The date and time this liquidity provision was last updated.'
+        ),
+        field: 'updatedAt',
+        type: 'rightAligned',
+        valueFormatter: dateValueFormatter,
       },
     ];
     return defs;
