@@ -124,7 +124,6 @@ def test_market_monitoring_auction_price_volatility_market_order(
     page.get_by_test_id("order-size").type("1")
     # 7002-SORD-060
     page.get_by_test_id("place-order").click()
-    page.pause()
     expect(page.get_by_test_id("deal-ticket-error-message-tif")).to_have_text(
         "This market is in auction due to high price volatility. Until the auction ends, you can only place GFA, GTT, or GTC limit orders."
     )
