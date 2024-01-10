@@ -8,7 +8,7 @@ import docker
 import http.server
 import sys
 from dotenv import load_dotenv
-
+from playwright.sync_api import Error as PlaywrightError
 from docker.models.containers import Container
 from docker.errors import APIError
 from contextlib import contextmanager
@@ -274,3 +274,18 @@ def perps_market(vega, request):
     if hasattr(request, "param"):
         kwargs.update(request.param)
     return setup_perps_market(vega, **kwargs)
+
+
+@pytest.fixture(autouse=True)
+def retry_on_http_error(request):
+    retry_count = 3 
+    for i in range(retry_count):
+        try:
+            yield
+            return 
+        except requests.exceptions.HTTPError:
+            if i < retry_count - 1:
+                print(f"Retrying due to HTTPError (attempt {i+1}/{retry_count})")
+            else:
+                raise 
+

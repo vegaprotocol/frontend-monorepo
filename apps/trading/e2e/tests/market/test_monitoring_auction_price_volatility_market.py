@@ -64,7 +64,6 @@ def setup_market_monitoring_auction(vega: VegaServiceNull, simple_market):
     submit_order(vega, MM_WALLET.name, simple_market, "SIDE_SELL", 1, 1 + 0.1 / 2)
     submit_order(vega, MM_WALLET2.name, simple_market, "SIDE_SELL", 1, 1)
 
-    vega.forward("10s")
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
 
@@ -75,7 +74,6 @@ def setup_market_monitoring_auction(vega: VegaServiceNull, simple_market):
     submit_order(vega, MM_WALLET2.name, simple_market, "SIDE_BUY", 100, 95)
     submit_order(vega, MM_WALLET2.name, simple_market, "SIDE_BUY", 1, 105)
 
-    vega.forward("10s")
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
 
@@ -109,7 +107,6 @@ def test_market_monitoring_auction_price_volatility_limit_order(
     page.get_by_test_id("place-order").click()
 
     wait_for_toast_confirmation(page)
-    vega.forward("10s")
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
     page.get_by_test_id("All").click()

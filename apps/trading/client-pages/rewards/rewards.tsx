@@ -4,6 +4,7 @@ import { useT } from '../../lib/use-t';
 import { RewardsContainer } from '../../components/rewards-container';
 import { usePageTitleStore } from '../../stores';
 import { ErrorBoundary } from '../../components/error-boundary';
+import { TinyScroll } from '@vegaprotocol/ui-toolkit';
 
 export const Rewards = () => {
   const t = useT();
@@ -16,10 +17,10 @@ export const Rewards = () => {
   }, [updateTitle, title]);
   return (
     <ErrorBoundary feature="rewards">
-      <div className="container mx-auto p-4">
+      <TinyScroll className="p-4 max-h-full overflow-auto">
         <h1 className="px-4 pb-4 text-2xl">{title}</h1>
         <RewardsContainer />
-      </div>
+      </TinyScroll>
     </ErrorBoundary>
   );
 };
