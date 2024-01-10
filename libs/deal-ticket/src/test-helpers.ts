@@ -73,7 +73,6 @@ export function generateMarket(override?: PartialDeep<Market>): Market {
         __typename: 'Instrument',
       },
     },
-
     fees: {
       factors: {
         makerFee: '0.001',
