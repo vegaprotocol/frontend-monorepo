@@ -8,13 +8,13 @@ type Without<T, U> = { [P in Exclude<keyof T, keyof U>]?: never };
 type XOR<T, U> = T | U extends object
   ? (Without<T, U> & U) | (Without<U, T> & T)
   : T | U;
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable  @typescript-eslint/no-explicit-any */
 type OneOf<T extends any[]> = T extends [infer Only]
   ? Only
   : T extends [infer A, infer B, ...infer Rest]
   ? OneOf<[XOR<A, B>, ...Rest]>
   : never;
-/* eslint-enable @typescript-eslint/no-explicit-any */
+/* eslint-enable  @typescript-eslint/no-explicit-any */
 
 export interface paths {
   '/info': {

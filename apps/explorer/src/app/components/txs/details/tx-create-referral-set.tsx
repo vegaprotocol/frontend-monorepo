@@ -4,6 +4,7 @@ import type { TendermintBlocksResponse } from '../../../routes/blocks/tendermint
 import { TxDetailsShared } from './shared/tx-details-shared';
 import { TableCell, TableRow, TableWithTbody } from '../../table';
 import { txSignatureToDeterministicId } from '../lib/deterministic-ids';
+import { ReferralTeam } from './referrals/team';
 
 interface TxDetailsCreateReferralProps {
   txData: BlockExplorerTransactionResult | undefined;
@@ -23,15 +24,27 @@ export const TxDetailsCreateReferralSet = ({
     return <>{t('Awaiting Block Explorer transaction details')}</>;
   }
 
+  const id = txSignatureToDeterministicId(txData.signature.value);
+
   return (
-    <TableWithTbody className="mb-8" allowWrap={true}>
-      <TxDetailsShared txData={txData} pubKey={pubKey} blockData={blockData} />
-      <TableRow modifier="bordered">
-        <TableCell>{t('Set ID')}</TableCell>
-        <TableCell>
-          {txSignatureToDeterministicId(txData.signature.value)}
-        </TableCell>
-      </TableRow>
-    </TableWithTbody>
+    <div>
+      <TableWithTbody className="mb-8" allowWrap={true}>
+        <TxDetailsShared
+          txData={txData}
+          pubKey={pubKey}
+          blockData={blockData}
+        />
+        <TableRow modifier="bordered">
+          <TableCell>{t('Set ID')}</TableCell>
+          <TableCell>{id}</TableCell>
+        </TableRow>
+      </TableWithTbody>
+
+      <ReferralTeam
+        tx={txData.command.createReferralSet}
+        id={id}
+        creator={txData.submitter}
+      />
+    </div>
   );
 };
