@@ -1,5 +1,5 @@
 import type { RouteObject } from 'react-router-dom';
-import { Navigate, useRoutes } from 'react-router-dom';
+import { Navigate, Outlet, useRoutes } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
 import { Loader, Splash } from '@vegaprotocol/ui-toolkit';
 import { LayoutWithSidebar } from '../components/layouts';
@@ -32,6 +32,7 @@ import { useT } from '../lib/use-t';
 import { CompetitionsHome } from '../client-pages/competitions/competitions-home';
 import { CompetitionsTeams } from '../client-pages/competitions/competitions-teams';
 import { CompetitionsTeam } from '../client-pages/competitions/competitions-team';
+import { CreateTeam } from '../client-pages/create-team';
 
 // These must remain dynamically imported as pennant cannot be compiled by nextjs due to ESM
 // Using dynamic imports is a workaround for this until pennant is published as ESM
@@ -49,7 +50,7 @@ const NotFound = () => {
 
 export const useRouterConfig = (): RouteObject[] => {
   const featureFlags = useFeatureFlags((state) => state.flags);
-  return compact([
+  const routeConfig = compact([
     {
       index: true,
       element: <Home />,
@@ -112,6 +113,10 @@ export const useRouterConfig = (): RouteObject[] => {
                       element: <CompetitionsTeams />,
                     },
                   ],
+                },
+                {
+                  path: AppRoutes.COMPETITIONS_TEAM,
+                  element: <CreateTeam />,
                 },
                 // pages with blurred background
                 {
@@ -213,6 +218,8 @@ export const useRouterConfig = (): RouteObject[] => {
       element: <NotFound />,
     },
   ]);
+
+  return routeConfig;
 };
 
 export const ClientRouter = () => {
