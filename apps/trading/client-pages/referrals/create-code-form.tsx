@@ -1,8 +1,4 @@
-import {
-  useVegaWallet,
-  useVegaWalletDialogStore,
-  determineId,
-} from '@vegaprotocol/wallet';
+import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
 import { RainbowButton } from './buttons';
 import { useState } from 'react';
 import {
@@ -18,13 +14,13 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { DApp, TokenStaticLinks, useLinks } from '@vegaprotocol/environment';
-import { useStakeAvailable } from './hooks/use-stake-available';
 import { ABOUT_REFERRAL_DOCS_LINK } from './constants';
 import { useIsInReferralSet, useReferral } from './hooks/use-referral';
 import { useT } from '../../lib/use-t';
 import { Navigate } from 'react-router-dom';
 import { Routes } from '../../lib/links';
 import { useReferralProgram } from './hooks/use-referral-program';
+import { useCreateReferralSet } from '../../lib/hooks/use-create-referral-set';
 
 export const CreateCodeContainer = () => {
   const { pubKey } = useVegaWallet();
@@ -95,56 +91,24 @@ const CreateCodeDialog = ({
 }) => {
   const t = useT();
   const createLink = useLinks(DApp.Governance);
-  const { isReadOnly, pubKey, sendTx } = useVegaWallet();
+  const { pubKey } = useVegaWallet();
   const { refetch } = useReferral({ pubKey, role: 'referrer' });
-  const [err, setErr] = useState<string | null>(null);
-  const [code, setCode] = useState<string | null>(null);
-  const [status, setStatus] = useState<
-    'idle' | 'loading' | 'success' | 'error'
-  >('idle');
-
-  const { stakeAvailable: currentStakeAvailable, requiredStake } =
-    useStakeAvailable();
+  const {
+    err,
+    code,
+    status,
+    stakeAvailable: currentStakeAvailable,
+    requiredStake,
+    onSubmit,
+  } = useCreateReferralSet();
 
   const { details: programDetails } = useReferralProgram();
-
-  const onSubmit = () => {
-    if (isReadOnly || !pubKey) {
-      setErr('Not connected');
-    } else {
-      setErr(null);
-      setStatus('loading');
-      setCode(null);
-      sendTx(pubKey, {
-        createReferralSet: {
-          isTeam: false,
-        },
-      })
-        .then((res) => {
-          if (!res) {
-            setErr(`Invalid response: ${JSON.stringify(res)}`);
-            return;
-          }
-          const code = determineId(res.signature);
-          setCode(code);
-          setStatus('success');
-        })
-        .catch((err) => {
-          if (err.message.includes('user rejected')) {
-            setStatus('idle');
-            return;
-          }
-          setStatus('error');
-          setErr(err.message);
-        });
-    }
-  };
 
   const getButtonProps = () => {
     if (status === 'idle' || status === 'error') {
       return {
         children: t('Generate code'),
-        onClick: () => onSubmit(),
+        onClick: () => onSubmit({ createReferralSet: { isTeam: false } }),
       };
     }
 
@@ -240,7 +204,7 @@ const CreateCodeDialog = ({
         <TradingButton
           fill={true}
           intent={Intent.Primary}
-          onClick={() => onSubmit()}
+          onClick={() => onSubmit({ createReferralSet: { isTeam: false } })}
           {...getButtonProps()}
         >
           {t('Yes')}

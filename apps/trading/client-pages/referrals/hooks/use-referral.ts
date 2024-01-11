@@ -8,7 +8,7 @@ import type {
   ReferralSetsQueryVariables,
 } from './__generated__/ReferralSets';
 import { useReferralSetsQuery } from './__generated__/ReferralSets';
-import { useStakeAvailable } from './use-stake-available';
+import { useStakeAvailable } from '../../../lib/hooks/use-stake-available';
 
 export const DEFAULT_AGGREGATION_DAYS = 30;
 
