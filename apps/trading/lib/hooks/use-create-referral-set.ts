@@ -20,7 +20,7 @@ export const useCreateReferralSet = (opts?: {
     'idle' | 'loading' | 'success' | 'error'
   >('idle');
 
-  const { stakeAvailable, requiredStake } = useStakeAvailable();
+  const { stakeAvailable, requiredStake, isEligible } = useStakeAvailable();
 
   const onSubmit = (tx: CreateReferralSet) => {
     if (isReadOnly || !pubKey) {
@@ -58,5 +58,6 @@ export const useCreateReferralSet = (opts?: {
     stakeAvailable,
     requiredStake,
     onSubmit,
+    isEligible,
   };
 };

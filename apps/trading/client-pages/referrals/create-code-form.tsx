@@ -1,5 +1,5 @@
 import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
-import { RainbowButton } from './buttons';
+import { RainbowButton } from '../../components/rainbow-button';
 import { useState } from 'react';
 import {
   CopyWithTooltip,

@@ -1,6 +1,7 @@
 import {
   Intent,
   TextArea,
+  TradingAnchorButton,
   TradingButton,
   TradingCheckbox,
   TradingFormGroup,
@@ -9,10 +10,17 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../lib/use-t';
 import { Controller, useForm } from 'react-hook-form';
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import {
+  useVegaWallet,
+  type CreateReferralSet,
+  useVegaWalletDialogStore,
+} from '@vegaprotocol/wallet';
 import { useNavigate } from 'react-router-dom';
 import { Links } from '../../lib/links';
 import { useCreateReferralSet } from '../../lib/hooks/use-create-referral-set';
+import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
+import { DApp, TokenStaticLinks, useLinks } from '@vegaprotocol/environment';
+import { RainbowButton } from '../../components/rainbow-button';
 
 interface FormFields {
   name: string;
@@ -29,34 +37,91 @@ export const CreateTeam = () => {
   const t = useT();
 
   const { isReadOnly, pubKey } = useVegaWallet();
+  const openWalletDialog = useVegaWalletDialogStore(
+    (store) => store.openVegaWalletDialog
+  );
 
   return (
     <div className="relative h-full pt-5 overflow-y-auto">
       <div className="absolute top-0 left-0 w-full h-[40%] -z-10 bg-[40%_0px] bg-cover bg-no-repeat bg-local bg-[url(/cover.png)]">
         <div className="absolute top-o left-0 w-full h-full bg-gradient-to-t from-white dark:from-vega-cdark-900 to-transparent from-20% to-60%" />
       </div>
-      <div className="flex flex-col gap-4 lg:gap-6 container p-4 mx-auto">
-        <h1 className="calt text-2xl lg:text-3xl xl:text-5xl">
-          {t('Create a team')}
-        </h1>
-        {pubKey && !isReadOnly ? (
-          <CreateTeamPage />
-        ) : (
-          <p>!! Please connect your wallet</p>
-        )}
+      <div className="lg:gap-6 container p-4 mx-auto">
+        <div className=" flex flex-col gap-4 bg-vega-clight-800 dark:bg-vega-cdark-800 mx-auto md:w-2/3 max-w-md rounded-lg p-8">
+          <h1 className="calt text-2xl lg:text-3xl xl:text-5xl">
+            {t('Create a team')}
+          </h1>
+          {pubKey && !isReadOnly ? (
+            <CreateTeamFormContainer />
+          ) : (
+            <>
+              <p>
+                {t(
+                  'Create a team to participate in team based rewards as well as access the discount benefits of the current referral program.'
+                )}
+              </p>
+              <RainbowButton variant="border" onClick={openWalletDialog}>
+                {t('Connect wallet')}
+              </RainbowButton>
+            </>
+          )}
+        </div>
       </div>
     </div>
   );
 };
 
-export const CreateTeamPage = () => {
+const CreateTeamFormContainer = () => {
   const t = useT();
+  const createLink = useLinks(DApp.Governance);
   const navigate = useNavigate();
 
   // eslint-disable-next-line
-  const { err, code, status, onSubmit } = useCreateReferralSet({
-    onSuccess: (code) => navigate(Links.TEAM(code)),
-  });
+  const { err, code, status, isEligible, requiredStake, onSubmit } =
+    useCreateReferralSet({
+      onSuccess: (code) => navigate(Links.TEAM(code)),
+    });
+
+  if (!isEligible) {
+    return (
+      <div className="flex flex-col gap-4">
+        {requiredStake !== undefined && (
+          <p>
+            {t(
+              'You need at least {{requiredStake}} VEGA staked to generate a referral code and participate in the referral program.',
+              {
+                requiredStake: addDecimalsFormatNumber(
+                  requiredStake.toString(),
+                  18
+                ),
+              }
+            )}
+          </p>
+        )}
+        <TradingAnchorButton
+          href={createLink(TokenStaticLinks.ASSOCIATE)}
+          intent={Intent.Primary}
+          target="_blank"
+        >
+          {t('Stake some $VEGA now')}
+        </TradingAnchorButton>
+      </div>
+    );
+  }
+
+  return <CreateTeamForm onSubmit={onSubmit} status={status} err={err} />;
+};
+
+const CreateTeamForm = ({
+  status,
+  err,
+  onSubmit,
+}: {
+  status: ReturnType<typeof useCreateReferralSet>['status'];
+  err: ReturnType<typeof useCreateReferralSet>['err'];
+  onSubmit: (tx: CreateReferralSet) => void;
+}) => {
+  const t = useT();
 
   const {
     register,
@@ -83,7 +148,7 @@ export const CreateTeamPage = () => {
   };
 
   return (
-    <form className="max-w-screen-xs" onSubmit={handleSubmit(createTeam)}>
+    <form onSubmit={handleSubmit(createTeam)}>
       <TradingFormGroup label={t('Team name')} labelFor="name">
         <TradingInput {...register('name', { required: t('Required') })} />
         {errors.name?.message && (
@@ -169,7 +234,11 @@ export const CreateTeamPage = () => {
           )}
         </TradingFormGroup>
       )}
-      <TradingButton type="submit" intent={Intent.Info}>
+      <TradingButton
+        type="submit"
+        intent={Intent.Info}
+        disabled={status === 'loading'}
+      >
         {t('Create')}
       </TradingButton>
     </form>
