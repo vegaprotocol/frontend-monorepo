@@ -29,6 +29,7 @@ export const useColumnDefs = () => {
       {
         headerName: t('Market'),
         field: 'tradableInstrument.instrument.code',
+        pinned: true,
         cellRenderer: ({
           value,
           data,

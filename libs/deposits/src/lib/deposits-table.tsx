@@ -6,7 +6,7 @@ import {
   isNumeric,
 } from '@vegaprotocol/utils';
 import { type ColDef } from 'ag-grid-community';
-import { AgGrid } from '@vegaprotocol/datagrid';
+import { AgGrid, COL_DEFS } from '@vegaprotocol/datagrid';
 import {
   type VegaICellRendererParams,
   type VegaValueFormatterParams,
@@ -21,7 +21,7 @@ export const DepositsTable = (
 ) => {
   const columnDefs = useMemo<ColDef[]>(
     () => [
-      { headerName: 'Asset', field: 'asset.symbol' },
+      { headerName: 'Asset', field: 'asset.symbol', pinned: true },
       {
         headerName: 'Amount',
         field: 'amount',
@@ -74,5 +74,11 @@ export const DepositsTable = (
     ],
     []
   );
-  return <AgGrid columnDefs={columnDefs} {...props} />;
+  return (
+    <AgGrid
+      columnDefs={columnDefs}
+      defaultColDef={COL_DEFS.default}
+      {...props}
+    />
+  );
 };

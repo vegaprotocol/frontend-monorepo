@@ -23,7 +23,9 @@ import { AccountType } from '@vegaprotocol/types';
 const defaultColDef = {
   resizable: true,
   sortable: true,
+  minWidth: 100,
 };
+
 interface BreakdownTableProps extends AgGridReactProps {
   data: AccountFields[] | null;
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
@@ -32,12 +34,13 @@ interface BreakdownTableProps extends AgGridReactProps {
 const BreakdownTable = forwardRef<AgGridReact, BreakdownTableProps>(
   ({ data }, ref) => {
     const t = useT();
-    const coldefs = useMemo(() => {
+    const colDefs = useMemo(() => {
       const defs: ColDef[] = [
         {
           headerName: t('Market'),
           field: 'market.tradableInstrument.instrument.code',
-          minWidth: 200,
+          minWidth: 120,
+          pinned: true,
           sort: 'desc',
           cellRenderer: ({
             value,
@@ -141,7 +144,7 @@ const BreakdownTable = forwardRef<AgGridReact, BreakdownTableProps>(
         components={{ PriceCell, ProgressBarCell }}
         tooltipShowDelay={500}
         defaultColDef={defaultColDef}
-        columnDefs={coldefs}
+        columnDefs={colDefs}
         domLayout="autoHeight"
       />
     );

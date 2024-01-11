@@ -40,6 +40,7 @@ const defaultColDef = {
   resizable: true,
   sortable: true,
   filterParams: { buttons: ['reset'] },
+  minWidth: 100,
 };
 
 export type StopOrdersTableProps = TypedDataAgGrid<StopOrder> & {
@@ -61,6 +62,7 @@ export const StopOrdersTable = memo(
           field: 'market.tradableInstrument.instrument.code',
           cellRenderer: 'MarketNameCell',
           cellRendererParams: { idPath: 'market.id', onMarketClick },
+          pinned: true,
         },
         {
           headerName: t('Trigger'),

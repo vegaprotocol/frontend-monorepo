@@ -39,6 +39,7 @@ const defaultColDef = {
   resizable: true,
   sortable: true,
   filterParams: { buttons: ['reset'] },
+  minWidth: 100,
 };
 
 export type OrderListTableProps = TypedDataAgGrid<Order> & {
@@ -82,6 +83,7 @@ export const OrderListTable = memo<
             field: 'market.tradableInstrument.instrument.code',
             cellRenderer: 'MarketNameCell',
             cellRendererParams: { idPath: 'market.id', onMarketClick },
+            pinned: true,
           },
           {
             headerName: t('Filled'),
