@@ -53,7 +53,6 @@ export const createMarketFragment = (
         liquidityFee: '',
       },
     },
-    liquidityMonitoringParameters: {},
     tradableInstrument: {
       instrument: {
         id: '',
