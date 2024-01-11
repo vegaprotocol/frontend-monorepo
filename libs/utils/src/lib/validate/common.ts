@@ -29,11 +29,14 @@ export const useEthereumAddress = () => {
 };
 
 export const VEGA_ID_REGEX = /^[A-Fa-f0-9]{64}$/i;
+export const isValidVegaPublicKey = (value: string) => {
+  return VEGA_ID_REGEX.test(value);
+};
 export const useVegaPublicKey = () => {
   const t = useT();
   return useCallback(
     (value: string) => {
-      if (!VEGA_ID_REGEX.test(value)) {
+      if (!isValidVegaPublicKey(value)) {
         return t('Invalid Vega key');
       }
       return true;

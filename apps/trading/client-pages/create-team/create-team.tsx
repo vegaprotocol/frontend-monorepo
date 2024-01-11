@@ -18,7 +18,10 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { Links } from '../../lib/links';
 import { useCreateReferralSet } from '../../lib/hooks/use-create-referral-set';
-import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
+import {
+  addDecimalsFormatNumber,
+  isValidVegaPublicKey,
+} from '@vegaprotocol/utils';
 import { DApp, TokenStaticLinks, useLinks } from '@vegaprotocol/environment';
 import { RainbowButton } from '../../components/rainbow-button';
 
@@ -27,7 +30,7 @@ interface FormFields {
   url: string;
   avatarUrl: string;
   private: boolean;
-  allowList: boolean;
+  allowList: string;
 }
 
 const urlRegex =
@@ -47,7 +50,7 @@ export const CreateTeam = () => {
         <div className="absolute top-o left-0 w-full h-full bg-gradient-to-t from-white dark:from-vega-cdark-900 to-transparent from-20% to-60%" />
       </div>
       <div className="lg:gap-6 container p-4 mx-auto">
-        <div className=" flex flex-col gap-4 bg-vega-clight-800 dark:bg-vega-cdark-800 mx-auto md:w-2/3 max-w-md rounded-lg p-8">
+        <div className=" flex flex-col gap-4 bg-vega-clight-800 dark:bg-vega-cdark-800 mx-auto md:w-2/3 max-w-xl rounded-lg p-8">
           <h1 className="calt text-2xl lg:text-3xl xl:text-5xl">
             {t('Create a team')}
           </h1>
@@ -134,6 +137,7 @@ const CreateTeamForm = ({
   const isPrivate = watch('private');
 
   const createTeam = (fields: FormFields) => {
+    const publicKeys = parseAllowListText(fields.allowList);
     onSubmit({
       createReferralSet: {
         isTeam: true,
@@ -142,6 +146,7 @@ const CreateTeamForm = ({
           teamUrl: fields.url,
           avatarUrl: fields.avatarUrl,
           closed: fields.private,
+          allowList: publicKeys,
         },
       },
     });
@@ -166,7 +171,6 @@ const CreateTeamForm = ({
       >
         <TradingInput
           {...register('url', {
-            required: t('Required'),
             pattern: { value: urlRegex, message: t('Invalid URL') },
           })}
         />
@@ -183,8 +187,6 @@ const CreateTeamForm = ({
       >
         <TradingInput
           {...register('avatarUrl', {
-            required: t('Required'),
-
             pattern: {
               value: urlRegex,
               message: t('Invalid image URL'),
@@ -226,7 +228,20 @@ const CreateTeamForm = ({
             'Use a comma separated list to allow only specific public keys to join the team'
           )}
         >
-          <TextArea {...register('allowList', { required: t('Required') })} />
+          <TextArea
+            {...register('allowList', {
+              required: t('Required'),
+              validate: {
+                allowList: (value) => {
+                  const publicKeys = parseAllowListText(value);
+                  if (publicKeys.every((pk) => isValidVegaPublicKey(pk))) {
+                    return true;
+                  }
+                  return 'a key is invalid';
+                },
+              },
+            })}
+          />
           {errors.allowList?.message && (
             <TradingInputError forInput="avatarUrl">
               {errors.allowList.message}
@@ -243,4 +258,11 @@ const CreateTeamForm = ({
       </TradingButton>
     </form>
   );
+};
+
+const parseAllowListText = (str: string) => {
+  return str
+    .split(',')
+    .map((v) => v.trim())
+    .filter(Boolean);
 };
