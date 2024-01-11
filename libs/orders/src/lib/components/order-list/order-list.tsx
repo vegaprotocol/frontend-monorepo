@@ -84,6 +84,8 @@ export const OrderListTable = memo<
             cellRenderer: 'MarketNameCell',
             cellRendererParams: { idPath: 'market.id', onMarketClick },
             pinned: true,
+            width: 130,
+            resizable: true,
           },
           {
             headerName: t('Filled'),

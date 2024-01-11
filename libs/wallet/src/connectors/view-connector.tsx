@@ -34,7 +34,7 @@ export class ViewConnector implements VegaConnector {
     });
     return Promise.resolve([
       {
-        name: 'View only pubkey',
+        name: 'View only',
         publicKey: this.pubkey,
       },
     ]);
