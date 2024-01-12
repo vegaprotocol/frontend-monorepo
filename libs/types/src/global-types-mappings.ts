@@ -48,6 +48,7 @@ export const AccountTypeMapping: {
   ACCOUNT_TYPE_GLOBAL_REWARD: 'Global reward account',
   ACCOUNT_TYPE_INSURANCE: 'Insurance account',
   ACCOUNT_TYPE_MARGIN: 'Margin account',
+  ACCOUNT_TYPE_ORDER_MARGIN: 'Isolated margin account',
   ACCOUNT_TYPE_PENDING_TRANSFERS: 'Pending transfers account',
   ACCOUNT_TYPE_PENDING_FEE_REFERRAL_REWARD:
     'Pending fee referral reward account',
@@ -115,9 +116,14 @@ export const IntervalMapping: {
   INTERVAL_BLOCK: '1 block',
   INTERVAL_I15M: 'I15M',
   INTERVAL_I1D: 'I1D',
+  INTERVAL_I7D: 'I7D',
   INTERVAL_I1H: 'I1H',
+  INTERVAL_I4H: 'I4H',
+  INTERVAL_I8H: 'I8H',
+  INTERVAL_I12H: 'I12H',
   INTERVAL_I1M: 'I1M',
   INTERVAL_I5M: 'I5M',
+  INTERVAL_I30M: 'I30M',
   INTERVAL_I6H: 'I6H',
 };
 
@@ -176,6 +182,9 @@ export const DataSourceSpecStatusMapping: {
 export const OrderRejectionReasonMapping: {
   [T in OrderRejectionReason]: string;
 } = {
+  ORDER_ERROR_ISOLATED_MARGIN_CHECK_FAILED: 'Isolated margin check failed',
+  ORDER_ERROR_PEGGED_ORDERS_NOT_ALLOWED_IN_ISOLATED_MARGIN_MODE:
+    'Pegged orders not allowed in isolated margin mode',
   ORDER_ERROR_AMEND_FAILURE: 'Amend failure',
   ORDER_ERROR_BUY_CANNOT_REFERENCE_BEST_ASK_PRICE:
     'Buy cannot reference best ask price',
@@ -508,6 +517,9 @@ export const TransferTypeMapping: TransferTypeMap = {
   TRANSFER_TYPE_SLA_PERFORMANCE_BONUS_DISTRIBUTE:
     'SLA performance bonus distributed',
   TRANSFER_TYPE_SUCCESSOR_INSURANCE_FRACTION: 'Successor insurance fraction',
+  TRANSFER_TYPE_ISOLATED_MARGIN_LOW: 'Isolated margin low',
+  TRANSFER_TYPE_ORDER_MARGIN_LOW: 'Order margin low',
+  TRANSFER_TYPE_ORDER_MARGIN_HIGH: 'Order margin high',
 };
 
 export const DescriptionTransferTypeMapping: TransferTypeMap = {
@@ -549,6 +561,9 @@ export const DescriptionTransferTypeMapping: TransferTypeMap = {
   TRANSFER_TYPE_SLA_PERFORMANCE_BONUS_DISTRIBUTE:
     'SLA performance bonus distributed',
   TRANSFER_TYPE_SUCCESSOR_INSURANCE_FRACTION: 'Successor insurance fraction',
+  TRANSFER_TYPE_ISOLATED_MARGIN_LOW: 'Isolated margin low',
+  TRANSFER_TYPE_ORDER_MARGIN_LOW: 'Order margin low',
+  TRANSFER_TYPE_ORDER_MARGIN_HIGH: 'Order margin high',
 };
 
 /**
