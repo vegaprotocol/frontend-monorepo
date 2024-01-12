@@ -79,7 +79,7 @@ export class InjectedConnector implements VegaConnector {
   }
 
   onDisconnect(cb: () => void) {
-    window.vega.on('disconnect', () => {
+    window.vega.on('client.disconnect', () => {
       this.isConnected = false;
       cb();
     });
