@@ -36,7 +36,7 @@ jest.mock('@vegaprotocol/proposals', () => ({
 }));
 
 const renderComponent = (
-  proposal: ProposalQuery['proposal'],
+  proposal: Extract<ProposalQuery['proposal'], { __typename?: 'Proposal' }>,
   isListItem = true,
   mocks: MockedResponse[] = [],
   voteState?: VoteState
@@ -64,6 +64,7 @@ describe('Proposal header', () => {
   it('Renders New market proposal', () => {
     useFeatureFlags.setState({ flags: { SUCCESSOR_MARKETS: true } });
     renderComponent(
+      // @ts-ignore we aren't using batch yet
       generateProposal({
         rationale: {
           title: 'New some market',
@@ -102,6 +103,7 @@ describe('Proposal header', () => {
 
   it('Renders Update market proposal', () => {
     renderComponent(
+      // @ts-ignore we aren't using batch yet
       generateProposal({
         rationale: {
           title: 'New market id',
@@ -130,6 +132,7 @@ describe('Proposal header', () => {
 
   it('Renders New asset proposal - ERC20', () => {
     renderComponent(
+      // @ts-ignore we aren't using batch yet
       generateProposal({
         rationale: {
           title: 'New asset: Fake currency',
@@ -159,6 +162,7 @@ describe('Proposal header', () => {
 
   it('Renders New asset proposal - BuiltInAsset', () => {
     renderComponent(
+      // @ts-ignore we aren't using batch yet
       generateProposal({
         terms: {
           change: {
@@ -184,6 +188,7 @@ describe('Proposal header', () => {
 
   it('Renders Update network', () => {
     renderComponent(
+      // @ts-ignore we aren't using batch yet
       generateProposal({
         rationale: {
           title: 'Network parameter',
@@ -213,6 +218,7 @@ describe('Proposal header', () => {
 
   it('Renders Freeform proposal - short rationale', () => {
     renderComponent(
+      // @ts-ignore we aren't using batch yet
       generateProposal({
         id: 'short',
         rationale: {
@@ -234,6 +240,7 @@ describe('Proposal header', () => {
 
   it('Renders Freeform proposal - long rationale (105 chars) - listing', () => {
     renderComponent(
+      // @ts-ignore we aren't using batch yet
       generateProposal({
         id: 'long',
         rationale: {
@@ -259,6 +266,7 @@ describe('Proposal header', () => {
   // Remove once proposals have rationale and re-enable above tests
   it('Renders Freeform proposal - id for title', () => {
     renderComponent(
+      // @ts-ignore we aren't using batch yet
       generateProposal({
         id: 'freeform id',
         rationale: {
@@ -280,6 +288,7 @@ describe('Proposal header', () => {
 
   it('Renders asset change proposal header', () => {
     renderComponent(
+      // @ts-ignore we aren't using batch yet
       generateProposal({
         terms: {
           change: {
@@ -297,6 +306,7 @@ describe('Proposal header', () => {
 
   it("Renders unknown proposal if it's a different proposal type", () => {
     renderComponent(
+      // @ts-ignore we aren't using batch yet
       generateProposal({
         terms: {
           change: {
@@ -313,6 +323,7 @@ describe('Proposal header', () => {
 
   it('Renders proposal state: Enacted', () => {
     renderComponent(
+      // @ts-ignore we aren't using batch yet
       generateProposal({
         state: ProposalState.STATE_ENACTED,
         terms: {
@@ -325,6 +336,7 @@ describe('Proposal header', () => {
 
   it('Renders proposal state: Passed', () => {
     renderComponent(
+      // @ts-ignore we aren't using batch yet
       generateProposal({
         state: ProposalState.STATE_PASSED,
         terms: {
@@ -338,6 +350,7 @@ describe('Proposal header', () => {
 
   it('Renders proposal state: Waiting for node vote', () => {
     renderComponent(
+      // @ts-ignore we aren't using batch yet
       generateProposal({
         state: ProposalState.STATE_WAITING_FOR_NODE_VOTE,
         terms: {
@@ -352,6 +365,7 @@ describe('Proposal header', () => {
 
   it('Renders proposal state: Open', () => {
     renderComponent(
+      // @ts-ignore we aren't using batch yet
       generateProposal({
         state: ProposalState.STATE_OPEN,
         votes: {

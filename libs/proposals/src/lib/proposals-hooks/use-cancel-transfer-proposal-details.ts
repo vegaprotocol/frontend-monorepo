@@ -1,5 +1,8 @@
-import type { CancelTransferFieldsFragment } from '../proposals-data-provider';
-import { useCancelTransferDetailsQuery } from './__generated__/Proposal';
+import { type CancelTransferFieldsFragment } from '../proposals-data-provider';
+import {
+  useCancelTransferDetailsQuery,
+  type CancelTransferDetailsQuery,
+} from './__generated__/Proposal';
 
 export const useCancelTransferProposalDetails = (
   proposalId?: string | null
@@ -11,8 +14,13 @@ export const useCancelTransferProposalDetails = (
     skip: !proposalId || proposalId.length === 0,
   });
 
-  if (data?.proposal?.terms.change.__typename === 'CancelTransfer') {
-    return data?.proposal?.terms.change as CancelTransferFieldsFragment;
+  const proposal = data?.proposal as Extract<
+    CancelTransferDetailsQuery['proposal'],
+    { __typename?: 'Proposal' }
+  >;
+
+  if (proposal?.terms.change.__typename === 'CancelTransfer') {
+    return proposal?.terms.change as CancelTransferFieldsFragment;
   }
 
   return undefined;
