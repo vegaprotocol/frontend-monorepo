@@ -19,7 +19,7 @@ export type ProposalQueryVariables = Types.Exact<{
 }>;
 
 
-export type ProposalQuery = { __typename?: 'Query', proposal?: { __typename?: 'Proposal', id?: string | null, reference: string, state: Types.ProposalState, datetime: any, rejectionReason?: Types.ProposalRejectionReason | null, errorDetails?: string | null, rationale: { __typename?: 'ProposalRationale', title: string, description: string }, party: { __typename?: 'Party', id: string }, terms: { __typename?: 'ProposalTerms', closingDatetime: any, enactmentDatetime?: any | null, change: { __typename?: 'CancelTransfer' } | { __typename?: 'NewAsset', name: string, symbol: string, decimals: number, quantum: string, source: { __typename?: 'BuiltinAsset', maxFaucetAmountMint: string } | { __typename?: 'ERC20', contractAddress: string, lifetimeLimit: string, withdrawThreshold: string } } | { __typename?: 'NewFreeform' } | { __typename?: 'NewMarket', decimalPlaces: number, metadata?: Array<string> | null, positionDecimalPlaces: number, linearSlippageFactor: string, quadraticSlippageFactor: string, riskParameters: { __typename?: 'LogNormalRiskModel', riskAversionParameter: number, tau: number, params: { __typename?: 'LogNormalModelParams', mu: number, r: number, sigma: number } } | { __typename?: 'SimpleRiskModel', params: { __typename?: 'SimpleRiskModelParams', factorLong: number, factorShort: number } }, instrument: { __typename?: 'InstrumentConfiguration', name: string, code: string, product?: { __typename: 'FutureProduct', quoteName: string, settlementAsset: { __typename?: 'Asset', id: string, name: string, symbol: string, decimals: number, quantum: string }, dataSourceSpecBinding: { __typename?: 'DataSourceSpecToFutureBinding', settlementDataProperty: string, tradingTerminationProperty: string }, dataSourceSpecForSettlementData: { __typename?: 'DataSourceDefinition', sourceType: { __typename?: 'DataSourceDefinitionExternal', sourceType: { __typename?: 'DataSourceSpecConfiguration', signers?: Array<{ __typename?: 'Signer', signer: { __typename?: 'ETHAddress', address?: string | null } | { __typename?: 'PubKey', key?: string | null } }> | null, filters?: Array<{ __typename?: 'Filter', key: { __typename?: 'PropertyKey', name?: string | null, type: Types.PropertyKeyType }, conditions?: Array<{ __typename?: 'Condition', operator: Types.ConditionOperator, value?: string | null }> | null }> | null } | { __typename?: 'EthCallSpec' } } | { __typename?: 'DataSourceDefinitionInternal', sourceType: { __typename?: 'DataSourceSpecConfigurationTime', conditions: Array<{ __typename?: 'Condition', operator: Types.ConditionOperator, value?: string | null } | null> } | { __typename?: 'DataSourceSpecConfigurationTimeTrigger' } } } } | { __typename: 'PerpetualProduct', quoteName: string, settlementAsset: { __typename?: 'Asset', id: string, name: string, symbol: string, decimals: number, quantum: string } } | { __typename: 'SpotProduct' } | null }, priceMonitoringParameters: { __typename?: 'PriceMonitoringParameters', triggers?: Array<{ __typename?: 'PriceMonitoringTrigger', horizonSecs: number, probability: number, auctionExtensionSecs: number }> | null }, liquidityMonitoringParameters: { __typename?: 'LiquidityMonitoringParameters', targetStakeParameters: { __typename?: 'TargetStakeParameters', timeWindow: number, scalingFactor: number } } } | { __typename?: 'NewSpotMarket' } | { __typename?: 'NewTransfer' } | { __typename?: 'UpdateAsset', quantum: string, assetId: string, source: { __typename?: 'UpdateERC20', lifetimeLimit: string, withdrawThreshold: string } } | { __typename?: 'UpdateMarket', marketId: string, updateMarketConfiguration: { __typename?: 'UpdateMarketConfiguration', metadata?: Array<string | null> | null, instrument: { __typename?: 'UpdateInstrumentConfiguration', code: string, product: { __typename?: 'UpdateFutureProduct', quoteName: string, dataSourceSpecForSettlementData: { __typename?: 'DataSourceDefinition', sourceType: { __typename?: 'DataSourceDefinitionExternal', sourceType: { __typename?: 'DataSourceSpecConfiguration', signers?: Array<{ __typename?: 'Signer', signer: { __typename?: 'ETHAddress', address?: string | null } | { __typename?: 'PubKey', key?: string | null } }> | null, filters?: Array<{ __typename?: 'Filter', key: { __typename?: 'PropertyKey', name?: string | null, type: Types.PropertyKeyType }, conditions?: Array<{ __typename?: 'Condition', operator: Types.ConditionOperator, value?: string | null }> | null }> | null } | { __typename?: 'EthCallSpec' } } | { __typename?: 'DataSourceDefinitionInternal', sourceType: { __typename?: 'DataSourceSpecConfigurationTime', conditions: Array<{ __typename?: 'Condition', operator: Types.ConditionOperator, value?: string | null } | null> } | { __typename?: 'DataSourceSpecConfigurationTimeTrigger' } } }, dataSourceSpecBinding: { __typename?: 'DataSourceSpecToFutureBinding', settlementDataProperty: string, tradingTerminationProperty: string } } | { __typename?: 'UpdatePerpetualProduct', quoteName: string, dataSourceSpecForSettlementData: { __typename?: 'DataSourceDefinition', sourceType: { __typename?: 'DataSourceDefinitionExternal', sourceType: { __typename?: 'DataSourceSpecConfiguration', signers?: Array<{ __typename?: 'Signer', signer: { __typename?: 'ETHAddress', address?: string | null } | { __typename?: 'PubKey', key?: string | null } }> | null, filters?: Array<{ __typename?: 'Filter', key: { __typename?: 'PropertyKey', name?: string | null, type: Types.PropertyKeyType }, conditions?: Array<{ __typename?: 'Condition', operator: Types.ConditionOperator, value?: string | null }> | null }> | null } | { __typename?: 'EthCallSpec' } } | { __typename?: 'DataSourceDefinitionInternal', sourceType: { __typename?: 'DataSourceSpecConfigurationTime', conditions: Array<{ __typename?: 'Condition', operator: Types.ConditionOperator, value?: string | null } | null> } | { __typename?: 'DataSourceSpecConfigurationTimeTrigger' } } }, dataSourceSpecBinding: { __typename?: 'DataSourceSpecPerpetualBinding', settlementDataProperty: string, settlementScheduleProperty: string } } }, priceMonitoringParameters: { __typename?: 'PriceMonitoringParameters', triggers?: Array<{ __typename?: 'PriceMonitoringTrigger', horizonSecs: number, probability: number, auctionExtensionSecs: number }> | null }, liquidityMonitoringParameters: { __typename?: 'LiquidityMonitoringParameters', targetStakeParameters: { __typename?: 'TargetStakeParameters', timeWindow: number, scalingFactor: number } }, riskParameters: { __typename?: 'UpdateMarketLogNormalRiskModel', logNormal?: { __typename?: 'LogNormalRiskModel', riskAversionParameter: number, tau: number, params: { __typename?: 'LogNormalModelParams', r: number, sigma: number, mu: number } } | null } | { __typename?: 'UpdateMarketSimpleRiskModel', simple?: { __typename?: 'SimpleRiskModelParams', factorLong: number, factorShort: number } | null } } } | { __typename?: 'UpdateMarketState', updateType: Types.MarketUpdateType, price?: string | null, market: { __typename?: 'Market', decimalPlaces: number, id: string, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', name: string, code: string, product: { __typename: 'Future', quoteName: string } | { __typename: 'Perpetual', quoteName: string } | { __typename: 'Spot' } } } } } | { __typename?: 'UpdateNetworkParameter', networkParameter: { __typename?: 'NetworkParameter', key: string, value: string } } | { __typename?: 'UpdateReferralProgram', windowLength: number, endOfProgram: any, benefitTiers: Array<{ __typename?: 'BenefitTier', minimumEpochs: number, minimumRunningNotionalTakerVolume: string, referralDiscountFactor: string, referralRewardFactor: string }>, stakingTiers: Array<{ __typename?: 'StakingTier', minimumStakedTokens: string, referralRewardMultiplier: string }> } | { __typename?: 'UpdateSpotMarket' } | { __typename?: 'UpdateVolumeDiscountProgram', endOfProgramTimestamp: any, windowLength: number, benefitTiers: Array<{ __typename?: 'VolumeBenefitTier', minimumRunningNotionalTakerVolume: string, volumeDiscountFactor: string }> } }, votes: { __typename?: 'ProposalVotes', yes: { __typename?: 'ProposalVoteSide', totalTokens: string, totalNumber: string, totalEquityLikeShareWeight: string }, no: { __typename?: 'ProposalVoteSide', totalTokens: string, totalNumber: string, totalEquityLikeShareWeight: string } } } | null };
+export type ProposalQuery = { __typename?: 'Query', proposal?: { __typename?: 'BatchProposal' } | { __typename?: 'Proposal', id?: string | null, reference: string, state: Types.ProposalState, datetime: any, rejectionReason?: Types.ProposalRejectionReason | null, errorDetails?: string | null, rationale: { __typename?: 'ProposalRationale', title: string, description: string }, party: { __typename?: 'Party', id: string }, terms: { __typename?: 'ProposalTerms', closingDatetime: any, enactmentDatetime?: any | null, change: { __typename?: 'CancelTransfer' } | { __typename?: 'NewAsset', name: string, symbol: string, decimals: number, quantum: string, source: { __typename?: 'BuiltinAsset', maxFaucetAmountMint: string } | { __typename?: 'ERC20', contractAddress: string, lifetimeLimit: string, withdrawThreshold: string } } | { __typename?: 'NewFreeform' } | { __typename?: 'NewMarket', decimalPlaces: number, metadata?: Array<string> | null, positionDecimalPlaces: number, linearSlippageFactor: string, quadraticSlippageFactor: string, riskParameters: { __typename?: 'LogNormalRiskModel', riskAversionParameter: number, tau: number, params: { __typename?: 'LogNormalModelParams', mu: number, r: number, sigma: number } } | { __typename?: 'SimpleRiskModel', params: { __typename?: 'SimpleRiskModelParams', factorLong: number, factorShort: number } }, instrument: { __typename?: 'InstrumentConfiguration', name: string, code: string, product?: { __typename: 'FutureProduct', quoteName: string, settlementAsset: { __typename?: 'Asset', id: string, name: string, symbol: string, decimals: number, quantum: string }, dataSourceSpecBinding: { __typename?: 'DataSourceSpecToFutureBinding', settlementDataProperty: string, tradingTerminationProperty: string }, dataSourceSpecForSettlementData: { __typename?: 'DataSourceDefinition', sourceType: { __typename?: 'DataSourceDefinitionExternal', sourceType: { __typename?: 'DataSourceSpecConfiguration', signers?: Array<{ __typename?: 'Signer', signer: { __typename?: 'ETHAddress', address?: string | null } | { __typename?: 'PubKey', key?: string | null } }> | null, filters?: Array<{ __typename?: 'Filter', key: { __typename?: 'PropertyKey', name?: string | null, type: Types.PropertyKeyType }, conditions?: Array<{ __typename?: 'Condition', operator: Types.ConditionOperator, value?: string | null }> | null }> | null } | { __typename?: 'EthCallSpec' } } | { __typename?: 'DataSourceDefinitionInternal', sourceType: { __typename?: 'DataSourceSpecConfigurationTime', conditions: Array<{ __typename?: 'Condition', operator: Types.ConditionOperator, value?: string | null } | null> } | { __typename?: 'DataSourceSpecConfigurationTimeTrigger' } } } } | { __typename: 'PerpetualProduct', quoteName: string, settlementAsset: { __typename?: 'Asset', id: string, name: string, symbol: string, decimals: number, quantum: string } } | { __typename: 'SpotProduct' } | null }, priceMonitoringParameters: { __typename?: 'PriceMonitoringParameters', triggers?: Array<{ __typename?: 'PriceMonitoringTrigger', horizonSecs: number, probability: number, auctionExtensionSecs: number }> | null }, liquidityMonitoringParameters: { __typename?: 'LiquidityMonitoringParameters', targetStakeParameters: { __typename?: 'TargetStakeParameters', timeWindow: number, scalingFactor: number } } } | { __typename?: 'NewSpotMarket' } | { __typename?: 'NewTransfer' } | { __typename?: 'UpdateAsset', quantum: string, assetId: string, source: { __typename?: 'UpdateERC20', lifetimeLimit: string, withdrawThreshold: string } } | { __typename?: 'UpdateMarket', marketId: string, updateMarketConfiguration: { __typename?: 'UpdateMarketConfiguration', metadata?: Array<string | null> | null, instrument: { __typename?: 'UpdateInstrumentConfiguration', code: string, product: { __typename?: 'UpdateFutureProduct', quoteName: string, dataSourceSpecForSettlementData: { __typename?: 'DataSourceDefinition', sourceType: { __typename?: 'DataSourceDefinitionExternal', sourceType: { __typename?: 'DataSourceSpecConfiguration', signers?: Array<{ __typename?: 'Signer', signer: { __typename?: 'ETHAddress', address?: string | null } | { __typename?: 'PubKey', key?: string | null } }> | null, filters?: Array<{ __typename?: 'Filter', key: { __typename?: 'PropertyKey', name?: string | null, type: Types.PropertyKeyType }, conditions?: Array<{ __typename?: 'Condition', operator: Types.ConditionOperator, value?: string | null }> | null }> | null } | { __typename?: 'EthCallSpec' } } | { __typename?: 'DataSourceDefinitionInternal', sourceType: { __typename?: 'DataSourceSpecConfigurationTime', conditions: Array<{ __typename?: 'Condition', operator: Types.ConditionOperator, value?: string | null } | null> } | { __typename?: 'DataSourceSpecConfigurationTimeTrigger' } } }, dataSourceSpecBinding: { __typename?: 'DataSourceSpecToFutureBinding', settlementDataProperty: string, tradingTerminationProperty: string } } | { __typename?: 'UpdatePerpetualProduct', quoteName: string, dataSourceSpecForSettlementData: { __typename?: 'DataSourceDefinition', sourceType: { __typename?: 'DataSourceDefinitionExternal', sourceType: { __typename?: 'DataSourceSpecConfiguration', signers?: Array<{ __typename?: 'Signer', signer: { __typename?: 'ETHAddress', address?: string | null } | { __typename?: 'PubKey', key?: string | null } }> | null, filters?: Array<{ __typename?: 'Filter', key: { __typename?: 'PropertyKey', name?: string | null, type: Types.PropertyKeyType }, conditions?: Array<{ __typename?: 'Condition', operator: Types.ConditionOperator, value?: string | null }> | null }> | null } | { __typename?: 'EthCallSpec' } } | { __typename?: 'DataSourceDefinitionInternal', sourceType: { __typename?: 'DataSourceSpecConfigurationTime', conditions: Array<{ __typename?: 'Condition', operator: Types.ConditionOperator, value?: string | null } | null> } | { __typename?: 'DataSourceSpecConfigurationTimeTrigger' } } }, dataSourceSpecBinding: { __typename?: 'DataSourceSpecPerpetualBinding', settlementDataProperty: string, settlementScheduleProperty: string } } }, priceMonitoringParameters: { __typename?: 'PriceMonitoringParameters', triggers?: Array<{ __typename?: 'PriceMonitoringTrigger', horizonSecs: number, probability: number, auctionExtensionSecs: number }> | null }, liquidityMonitoringParameters: { __typename?: 'LiquidityMonitoringParameters', targetStakeParameters: { __typename?: 'TargetStakeParameters', timeWindow: number, scalingFactor: number } }, riskParameters: { __typename?: 'UpdateMarketLogNormalRiskModel', logNormal?: { __typename?: 'LogNormalRiskModel', riskAversionParameter: number, tau: number, params: { __typename?: 'LogNormalModelParams', r: number, sigma: number, mu: number } } | null } | { __typename?: 'UpdateMarketSimpleRiskModel', simple?: { __typename?: 'SimpleRiskModelParams', factorLong: number, factorShort: number } | null } } } | { __typename?: 'UpdateMarketState', updateType: Types.MarketUpdateType, price?: string | null, market: { __typename?: 'Market', decimalPlaces: number, id: string, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', name: string, code: string, product: { __typename: 'Future', quoteName: string } | { __typename: 'Perpetual', quoteName: string } | { __typename: 'Spot' } } } } } | { __typename?: 'UpdateNetworkParameter', networkParameter: { __typename?: 'NetworkParameter', key: string, value: string } } | { __typename?: 'UpdateReferralProgram', windowLength: number, endOfProgram: any, benefitTiers: Array<{ __typename?: 'BenefitTier', minimumEpochs: number, minimumRunningNotionalTakerVolume: string, referralDiscountFactor: string, referralRewardFactor: string }>, stakingTiers: Array<{ __typename?: 'StakingTier', minimumStakedTokens: string, referralRewardMultiplier: string }> } | { __typename?: 'UpdateSpotMarket' } | { __typename?: 'UpdateVolumeDiscountProgram', endOfProgramTimestamp: any, windowLength: number, benefitTiers: Array<{ __typename?: 'VolumeBenefitTier', minimumRunningNotionalTakerVolume: string, volumeDiscountFactor: string }> } }, votes: { __typename?: 'ProposalVotes', yes: { __typename?: 'ProposalVoteSide', totalTokens: string, totalNumber: string, totalEquityLikeShareWeight: string }, no: { __typename?: 'ProposalVoteSide', totalTokens: string, totalNumber: string, totalEquityLikeShareWeight: string } } } | null };
 
 export const NewMarketProductFieldFragmentDoc = gql`
     fragment NewMarketProductField on Proposal {
@@ -109,189 +109,65 @@ export const UpdateVolumeDiscountProgramFragmentDoc = gql`
 export const ProposalDocument = gql`
     query Proposal($proposalId: ID!, $includeNewMarketProductField: Boolean!, $includeUpdateMarketState: Boolean!, $includeUpdateReferralProgram: Boolean!) {
   proposal(id: $proposalId) {
-    id
-    rationale {
-      title
-      description
-    }
-    reference
-    state
-    datetime
-    rejectionReason
-    party {
+    ... on Proposal {
       id
-    }
-    errorDetails
-    ...NewMarketProductField @include(if: $includeNewMarketProductField)
-    ...UpdateMarketState @include(if: $includeUpdateMarketState)
-    ...UpdateReferralProgram @include(if: $includeUpdateReferralProgram)
-    ...UpdateVolumeDiscountProgram
-    terms {
-      closingDatetime
-      enactmentDatetime
-      change {
-        ... on NewMarket {
-          decimalPlaces
-          metadata
-          riskParameters {
-            ... on LogNormalRiskModel {
-              riskAversionParameter
-              tau
-              params {
-                mu
-                r
-                sigma
-              }
-            }
-            ... on SimpleRiskModel {
-              params {
-                factorLong
-                factorShort
-              }
-            }
-          }
-          instrument {
-            name
-            code
-            product {
-              ... on FutureProduct {
-                settlementAsset {
-                  id
-                  name
-                  symbol
-                  decimals
-                  quantum
-                }
-                quoteName
-                dataSourceSpecBinding {
-                  settlementDataProperty
-                  tradingTerminationProperty
-                }
-                dataSourceSpecForSettlementData {
-                  sourceType {
-                    ... on DataSourceDefinitionInternal {
-                      sourceType {
-                        ... on DataSourceSpecConfigurationTime {
-                          conditions {
-                            operator
-                            value
-                          }
-                        }
-                      }
-                    }
-                    ... on DataSourceDefinitionExternal {
-                      sourceType {
-                        ... on DataSourceSpecConfiguration {
-                          signers {
-                            signer {
-                              ... on PubKey {
-                                key
-                              }
-                              ... on ETHAddress {
-                                address
-                              }
-                            }
-                          }
-                          filters {
-                            key {
-                              name
-                              type
-                            }
-                            conditions {
-                              operator
-                              value
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
+      rationale {
+        title
+        description
+      }
+      reference
+      state
+      datetime
+      rejectionReason
+      party {
+        id
+      }
+      errorDetails
+      ...NewMarketProductField @include(if: $includeNewMarketProductField)
+      ...UpdateMarketState @include(if: $includeUpdateMarketState)
+      ...UpdateReferralProgram @include(if: $includeUpdateReferralProgram)
+      ...UpdateVolumeDiscountProgram
+      terms {
+        closingDatetime
+        enactmentDatetime
+        change {
+          ... on NewMarket {
+            decimalPlaces
+            metadata
+            riskParameters {
+              ... on LogNormalRiskModel {
+                riskAversionParameter
+                tau
+                params {
+                  mu
+                  r
+                  sigma
                 }
               }
-              ... on PerpetualProduct {
-                settlementAsset {
-                  id
-                  name
-                  symbol
-                  decimals
-                  quantum
+              ... on SimpleRiskModel {
+                params {
+                  factorLong
+                  factorShort
                 }
-                quoteName
               }
             }
-          }
-          priceMonitoringParameters {
-            triggers {
-              horizonSecs
-              probability
-              auctionExtensionSecs
-            }
-          }
-          liquidityMonitoringParameters {
-            targetStakeParameters {
-              timeWindow
-              scalingFactor
-            }
-          }
-          positionDecimalPlaces
-          linearSlippageFactor
-          quadraticSlippageFactor
-        }
-        ... on UpdateMarket {
-          marketId
-          updateMarketConfiguration {
             instrument {
+              name
               code
               product {
-                ... on UpdateFutureProduct {
-                  quoteName
-                  dataSourceSpecForSettlementData {
-                    sourceType {
-                      ... on DataSourceDefinitionInternal {
-                        sourceType {
-                          ... on DataSourceSpecConfigurationTime {
-                            conditions {
-                              operator
-                              value
-                            }
-                          }
-                        }
-                      }
-                      ... on DataSourceDefinitionExternal {
-                        sourceType {
-                          ... on DataSourceSpecConfiguration {
-                            signers {
-                              signer {
-                                ... on PubKey {
-                                  key
-                                }
-                                ... on ETHAddress {
-                                  address
-                                }
-                              }
-                            }
-                            filters {
-                              key {
-                                name
-                                type
-                              }
-                              conditions {
-                                operator
-                                value
-                              }
-                            }
-                          }
-                        }
-                      }
-                    }
+                ... on FutureProduct {
+                  settlementAsset {
+                    id
+                    name
+                    symbol
+                    decimals
+                    quantum
                   }
+                  quoteName
                   dataSourceSpecBinding {
                     settlementDataProperty
                     tradingTerminationProperty
                   }
-                }
-                ... on UpdatePerpetualProduct {
-                  quoteName
                   dataSourceSpecForSettlementData {
                     sourceType {
                       ... on DataSourceDefinitionInternal {
@@ -332,14 +208,19 @@ export const ProposalDocument = gql`
                       }
                     }
                   }
-                  dataSourceSpecBinding {
-                    settlementDataProperty
-                    settlementScheduleProperty
+                }
+                ... on PerpetualProduct {
+                  settlementAsset {
+                    id
+                    name
+                    symbol
+                    decimals
+                    quantum
                   }
+                  quoteName
                 }
               }
             }
-            metadata
             priceMonitoringParameters {
               triggers {
                 horizonSecs
@@ -353,71 +234,192 @@ export const ProposalDocument = gql`
                 scalingFactor
               }
             }
-            riskParameters {
-              ... on UpdateMarketSimpleRiskModel {
-                simple {
-                  factorLong
-                  factorShort
+            positionDecimalPlaces
+            linearSlippageFactor
+            quadraticSlippageFactor
+          }
+          ... on UpdateMarket {
+            marketId
+            updateMarketConfiguration {
+              instrument {
+                code
+                product {
+                  ... on UpdateFutureProduct {
+                    quoteName
+                    dataSourceSpecForSettlementData {
+                      sourceType {
+                        ... on DataSourceDefinitionInternal {
+                          sourceType {
+                            ... on DataSourceSpecConfigurationTime {
+                              conditions {
+                                operator
+                                value
+                              }
+                            }
+                          }
+                        }
+                        ... on DataSourceDefinitionExternal {
+                          sourceType {
+                            ... on DataSourceSpecConfiguration {
+                              signers {
+                                signer {
+                                  ... on PubKey {
+                                    key
+                                  }
+                                  ... on ETHAddress {
+                                    address
+                                  }
+                                }
+                              }
+                              filters {
+                                key {
+                                  name
+                                  type
+                                }
+                                conditions {
+                                  operator
+                                  value
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                    dataSourceSpecBinding {
+                      settlementDataProperty
+                      tradingTerminationProperty
+                    }
+                  }
+                  ... on UpdatePerpetualProduct {
+                    quoteName
+                    dataSourceSpecForSettlementData {
+                      sourceType {
+                        ... on DataSourceDefinitionInternal {
+                          sourceType {
+                            ... on DataSourceSpecConfigurationTime {
+                              conditions {
+                                operator
+                                value
+                              }
+                            }
+                          }
+                        }
+                        ... on DataSourceDefinitionExternal {
+                          sourceType {
+                            ... on DataSourceSpecConfiguration {
+                              signers {
+                                signer {
+                                  ... on PubKey {
+                                    key
+                                  }
+                                  ... on ETHAddress {
+                                    address
+                                  }
+                                }
+                              }
+                              filters {
+                                key {
+                                  name
+                                  type
+                                }
+                                conditions {
+                                  operator
+                                  value
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                    dataSourceSpecBinding {
+                      settlementDataProperty
+                      settlementScheduleProperty
+                    }
+                  }
                 }
               }
-              ... on UpdateMarketLogNormalRiskModel {
-                logNormal {
-                  riskAversionParameter
-                  tau
-                  params {
-                    r
-                    sigma
-                    mu
+              metadata
+              priceMonitoringParameters {
+                triggers {
+                  horizonSecs
+                  probability
+                  auctionExtensionSecs
+                }
+              }
+              liquidityMonitoringParameters {
+                targetStakeParameters {
+                  timeWindow
+                  scalingFactor
+                }
+              }
+              riskParameters {
+                ... on UpdateMarketSimpleRiskModel {
+                  simple {
+                    factorLong
+                    factorShort
+                  }
+                }
+                ... on UpdateMarketLogNormalRiskModel {
+                  logNormal {
+                    riskAversionParameter
+                    tau
+                    params {
+                      r
+                      sigma
+                      mu
+                    }
                   }
                 }
               }
             }
           }
-        }
-        ... on NewAsset {
-          name
-          symbol
-          decimals
-          quantum
-          source {
-            ... on BuiltinAsset {
-              maxFaucetAmountMint
-            }
-            ... on ERC20 {
-              contractAddress
-              lifetimeLimit
-              withdrawThreshold
+          ... on NewAsset {
+            name
+            symbol
+            decimals
+            quantum
+            source {
+              ... on BuiltinAsset {
+                maxFaucetAmountMint
+              }
+              ... on ERC20 {
+                contractAddress
+                lifetimeLimit
+                withdrawThreshold
+              }
             }
           }
-        }
-        ... on UpdateNetworkParameter {
-          networkParameter {
-            key
-            value
+          ... on UpdateNetworkParameter {
+            networkParameter {
+              key
+              value
+            }
           }
-        }
-        ... on UpdateAsset {
-          quantum
-          assetId
-          source {
-            ... on UpdateERC20 {
-              lifetimeLimit
-              withdrawThreshold
+          ... on UpdateAsset {
+            quantum
+            assetId
+            source {
+              ... on UpdateERC20 {
+                lifetimeLimit
+                withdrawThreshold
+              }
             }
           }
         }
       }
-    }
-    votes {
-      yes {
-        totalTokens
-        totalNumber
-        totalEquityLikeShareWeight
-      }
-      no {
-        totalTokens
-        totalNumber
-        totalEquityLikeShareWeight
+      votes {
+        yes {
+          totalTokens
+          totalNumber
+          totalEquityLikeShareWeight
+        }
+        no {
+          totalTokens
+          totalNumber
+          totalEquityLikeShareWeight
+        }
       }
     }
   }

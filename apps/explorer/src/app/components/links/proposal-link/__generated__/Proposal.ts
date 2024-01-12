@@ -8,16 +8,18 @@ export type ExplorerProposalQueryVariables = Types.Exact<{
 }>;
 
 
-export type ExplorerProposalQuery = { __typename?: 'Query', proposal?: { __typename?: 'Proposal', id?: string | null, rationale: { __typename?: 'ProposalRationale', title: string, description: string } } | null };
+export type ExplorerProposalQuery = { __typename?: 'Query', proposal?: { __typename?: 'BatchProposal' } | { __typename?: 'Proposal', id?: string | null, rationale: { __typename?: 'ProposalRationale', title: string, description: string } } | null };
 
 
 export const ExplorerProposalDocument = gql`
     query ExplorerProposal($id: ID!) {
   proposal(id: $id) {
-    id
-    rationale {
-      title
-      description
+    ... on Proposal {
+      id
+      rationale {
+        title
+        description
+      }
     }
   }
 }
