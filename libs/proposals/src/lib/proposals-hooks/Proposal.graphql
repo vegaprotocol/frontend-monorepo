@@ -39,22 +39,26 @@ subscription OnProposal {
 
 query ProposalOfMarket($marketId: ID!) {
   proposal(id: $marketId) {
-    id
-    terms {
-      enactmentDatetime
+    ... on Proposal {
+      id
+      terms {
+        enactmentDatetime
+      }
     }
   }
 }
 
 query SuccessorMarketProposalDetails($proposalId: ID!) {
   proposal(id: $proposalId) {
-    id
-    terms {
-      change {
-        ... on NewMarket {
-          successorConfiguration {
-            parentMarketId
-            insurancePoolFraction
+    ... on Proposal {
+      id
+      terms {
+        change {
+          ... on NewMarket {
+            successorConfiguration {
+              parentMarketId
+              insurancePoolFraction
+            }
           }
         }
       }
@@ -75,11 +79,13 @@ query InstrumentDetails($marketId: ID!) {
 
 query NewTransferDetails($proposalId: ID!) {
   proposal(id: $proposalId) {
-    id
-    terms {
-      change {
-        ... on NewTransfer {
-          ...NewTransferFields
+    ... on Proposal {
+      id
+      terms {
+        change {
+          ... on NewTransfer {
+            ...NewTransferFields
+          }
         }
       }
     }
@@ -88,11 +94,13 @@ query NewTransferDetails($proposalId: ID!) {
 
 query CancelTransferDetails($proposalId: ID!) {
   proposal(id: $proposalId) {
-    id
-    terms {
-      change {
-        ... on CancelTransfer {
-          ...CancelTransferFields
+    ... on Proposal {
+      id
+      terms {
+        change {
+          ... on CancelTransfer {
+            ...CancelTransferFields
+          }
         }
       }
     }

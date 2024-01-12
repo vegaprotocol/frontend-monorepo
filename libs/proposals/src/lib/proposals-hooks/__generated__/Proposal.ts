@@ -25,14 +25,14 @@ export type ProposalOfMarketQueryVariables = Types.Exact<{
 }>;
 
 
-export type ProposalOfMarketQuery = { __typename?: 'Query', proposal?: { __typename?: 'Proposal', id?: string | null, terms: { __typename?: 'ProposalTerms', enactmentDatetime?: any | null } } | null };
+export type ProposalOfMarketQuery = { __typename?: 'Query', proposal?: { __typename?: 'BatchProposal' } | { __typename?: 'Proposal', id?: string | null, terms: { __typename?: 'ProposalTerms', enactmentDatetime?: any | null } } | null };
 
 export type SuccessorMarketProposalDetailsQueryVariables = Types.Exact<{
   proposalId: Types.Scalars['ID'];
 }>;
 
 
-export type SuccessorMarketProposalDetailsQuery = { __typename?: 'Query', proposal?: { __typename?: 'Proposal', id?: string | null, terms: { __typename?: 'ProposalTerms', change: { __typename?: 'CancelTransfer' } | { __typename?: 'NewAsset' } | { __typename?: 'NewFreeform' } | { __typename?: 'NewMarket', successorConfiguration?: { __typename?: 'SuccessorConfiguration', parentMarketId: string, insurancePoolFraction: string } | null } | { __typename?: 'NewSpotMarket' } | { __typename?: 'NewTransfer' } | { __typename?: 'UpdateAsset' } | { __typename?: 'UpdateMarket' } | { __typename?: 'UpdateMarketState' } | { __typename?: 'UpdateNetworkParameter' } | { __typename?: 'UpdateReferralProgram' } | { __typename?: 'UpdateSpotMarket' } | { __typename?: 'UpdateVolumeDiscountProgram' } } } | null };
+export type SuccessorMarketProposalDetailsQuery = { __typename?: 'Query', proposal?: { __typename?: 'BatchProposal' } | { __typename?: 'Proposal', id?: string | null, terms: { __typename?: 'ProposalTerms', change: { __typename?: 'CancelTransfer' } | { __typename?: 'NewAsset' } | { __typename?: 'NewFreeform' } | { __typename?: 'NewMarket', successorConfiguration?: { __typename?: 'SuccessorConfiguration', parentMarketId: string, insurancePoolFraction: string } | null } | { __typename?: 'NewSpotMarket' } | { __typename?: 'NewTransfer' } | { __typename?: 'UpdateAsset' } | { __typename?: 'UpdateMarket' } | { __typename?: 'UpdateMarketState' } | { __typename?: 'UpdateNetworkParameter' } | { __typename?: 'UpdateReferralProgram' } | { __typename?: 'UpdateSpotMarket' } | { __typename?: 'UpdateVolumeDiscountProgram' } } } | null };
 
 export type InstrumentDetailsQueryVariables = Types.Exact<{
   marketId: Types.Scalars['ID'];
@@ -46,14 +46,14 @@ export type NewTransferDetailsQueryVariables = Types.Exact<{
 }>;
 
 
-export type NewTransferDetailsQuery = { __typename?: 'Query', proposal?: { __typename?: 'Proposal', id?: string | null, terms: { __typename?: 'ProposalTerms', change: { __typename?: 'CancelTransfer' } | { __typename?: 'NewAsset' } | { __typename?: 'NewFreeform' } | { __typename?: 'NewMarket' } | { __typename?: 'NewSpotMarket' } | { __typename?: 'NewTransfer', source: string, sourceType: Types.AccountType, destination: string, destinationType: Types.AccountType, fraction_of_balance: string, amount: string, transferType: Types.GovernanceTransferType, asset: { __typename?: 'Asset', id: string, symbol: string, decimals: number, quantum: string }, kind: { __typename: 'OneOffGovernanceTransfer', deliverOn?: any | null } | { __typename: 'RecurringGovernanceTransfer', startEpoch: number, endEpoch?: number | null } } | { __typename?: 'UpdateAsset' } | { __typename?: 'UpdateMarket' } | { __typename?: 'UpdateMarketState' } | { __typename?: 'UpdateNetworkParameter' } | { __typename?: 'UpdateReferralProgram' } | { __typename?: 'UpdateSpotMarket' } | { __typename?: 'UpdateVolumeDiscountProgram' } } } | null };
+export type NewTransferDetailsQuery = { __typename?: 'Query', proposal?: { __typename?: 'BatchProposal' } | { __typename?: 'Proposal', id?: string | null, terms: { __typename?: 'ProposalTerms', change: { __typename?: 'CancelTransfer' } | { __typename?: 'NewAsset' } | { __typename?: 'NewFreeform' } | { __typename?: 'NewMarket' } | { __typename?: 'NewSpotMarket' } | { __typename?: 'NewTransfer', source: string, sourceType: Types.AccountType, destination: string, destinationType: Types.AccountType, fraction_of_balance: string, amount: string, transferType: Types.GovernanceTransferType, asset: { __typename?: 'Asset', id: string, symbol: string, decimals: number, quantum: string }, kind: { __typename: 'OneOffGovernanceTransfer', deliverOn?: any | null } | { __typename: 'RecurringGovernanceTransfer', startEpoch: number, endEpoch?: number | null } } | { __typename?: 'UpdateAsset' } | { __typename?: 'UpdateMarket' } | { __typename?: 'UpdateMarketState' } | { __typename?: 'UpdateNetworkParameter' } | { __typename?: 'UpdateReferralProgram' } | { __typename?: 'UpdateSpotMarket' } | { __typename?: 'UpdateVolumeDiscountProgram' } } } | null };
 
 export type CancelTransferDetailsQueryVariables = Types.Exact<{
   proposalId: Types.Scalars['ID'];
 }>;
 
 
-export type CancelTransferDetailsQuery = { __typename?: 'Query', proposal?: { __typename?: 'Proposal', id?: string | null, terms: { __typename?: 'ProposalTerms', change: { __typename?: 'CancelTransfer', transferId: string } | { __typename?: 'NewAsset' } | { __typename?: 'NewFreeform' } | { __typename?: 'NewMarket' } | { __typename?: 'NewSpotMarket' } | { __typename?: 'NewTransfer' } | { __typename?: 'UpdateAsset' } | { __typename?: 'UpdateMarket' } | { __typename?: 'UpdateMarketState' } | { __typename?: 'UpdateNetworkParameter' } | { __typename?: 'UpdateReferralProgram' } | { __typename?: 'UpdateSpotMarket' } | { __typename?: 'UpdateVolumeDiscountProgram' } } } | null };
+export type CancelTransferDetailsQuery = { __typename?: 'Query', proposal?: { __typename?: 'BatchProposal' } | { __typename?: 'Proposal', id?: string | null, terms: { __typename?: 'ProposalTerms', change: { __typename?: 'CancelTransfer', transferId: string } | { __typename?: 'NewAsset' } | { __typename?: 'NewFreeform' } | { __typename?: 'NewMarket' } | { __typename?: 'NewSpotMarket' } | { __typename?: 'NewTransfer' } | { __typename?: 'UpdateAsset' } | { __typename?: 'UpdateMarket' } | { __typename?: 'UpdateMarketState' } | { __typename?: 'UpdateNetworkParameter' } | { __typename?: 'UpdateReferralProgram' } | { __typename?: 'UpdateSpotMarket' } | { __typename?: 'UpdateVolumeDiscountProgram' } } } | null };
 
 export const ProposalEventFieldsFragmentDoc = gql`
     fragment ProposalEventFields on Proposal {
@@ -146,9 +146,11 @@ export type OnProposalSubscriptionResult = Apollo.SubscriptionResult<OnProposalS
 export const ProposalOfMarketDocument = gql`
     query ProposalOfMarket($marketId: ID!) {
   proposal(id: $marketId) {
-    id
-    terms {
-      enactmentDatetime
+    ... on Proposal {
+      id
+      terms {
+        enactmentDatetime
+      }
     }
   }
 }
@@ -184,13 +186,15 @@ export type ProposalOfMarketQueryResult = Apollo.QueryResult<ProposalOfMarketQue
 export const SuccessorMarketProposalDetailsDocument = gql`
     query SuccessorMarketProposalDetails($proposalId: ID!) {
   proposal(id: $proposalId) {
-    id
-    terms {
-      change {
-        ... on NewMarket {
-          successorConfiguration {
-            parentMarketId
-            insurancePoolFraction
+    ... on Proposal {
+      id
+      terms {
+        change {
+          ... on NewMarket {
+            successorConfiguration {
+              parentMarketId
+              insurancePoolFraction
+            }
           }
         }
       }
@@ -269,11 +273,13 @@ export type InstrumentDetailsQueryResult = Apollo.QueryResult<InstrumentDetailsQ
 export const NewTransferDetailsDocument = gql`
     query NewTransferDetails($proposalId: ID!) {
   proposal(id: $proposalId) {
-    id
-    terms {
-      change {
-        ... on NewTransfer {
-          ...NewTransferFields
+    ... on Proposal {
+      id
+      terms {
+        change {
+          ... on NewTransfer {
+            ...NewTransferFields
+          }
         }
       }
     }
@@ -311,11 +317,13 @@ export type NewTransferDetailsQueryResult = Apollo.QueryResult<NewTransferDetail
 export const CancelTransferDetailsDocument = gql`
     query CancelTransferDetails($proposalId: ID!) {
   proposal(id: $proposalId) {
-    id
-    terms {
-      change {
-        ... on CancelTransfer {
-          ...CancelTransferFields
+    ... on Proposal {
+      id
+      terms {
+        change {
+          ... on CancelTransfer {
+            ...CancelTransferFields
+          }
         }
       }
     }
