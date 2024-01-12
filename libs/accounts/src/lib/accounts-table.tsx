@@ -256,8 +256,8 @@ export const AccountTable = ({
         colId: 'accounts-actions',
         field: 'asset.id',
         ...COL_DEFS.actions,
-        minWidth: showDepositButton ? 105 : COL_DEFS.actions.minWidth,
-        maxWidth: showDepositButton ? 105 : COL_DEFS.actions.maxWidth,
+        minWidth: showDepositButton ? 110 : COL_DEFS.actions.minWidth,
+        maxWidth: showDepositButton ? 110 : COL_DEFS.actions.maxWidth,
         cellRenderer: ({
           value: assetId,
           node,
