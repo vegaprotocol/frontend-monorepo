@@ -86,230 +86,65 @@ query Proposal(
   $includeUpdateReferralProgram: Boolean!
 ) {
   proposal(id: $proposalId) {
-    id
-    rationale {
-      title
-      description
-    }
-    reference
-    state
-    datetime
-    rejectionReason
-    party {
+    ... on Proposal {
       id
-    }
-    errorDetails
-    ...NewMarketProductField @include(if: $includeNewMarketProductField)
-    ...UpdateMarketState @include(if: $includeUpdateMarketState)
-    ...UpdateReferralProgram @include(if: $includeUpdateReferralProgram)
-    ...UpdateVolumeDiscountProgram
-    terms {
-      closingDatetime
-      enactmentDatetime
-      change {
-        ... on NewMarket {
-          decimalPlaces
-          metadata
-          riskParameters {
-            ... on LogNormalRiskModel {
-              riskAversionParameter
-              tau
-              params {
-                mu
-                r
-                sigma
-              }
-            }
-            ... on SimpleRiskModel {
-              params {
-                factorLong
-                factorShort
-              }
-            }
-          }
-          instrument {
-            name
-            code
-            product {
-              ... on FutureProduct {
-                settlementAsset {
-                  id
-                  name
-                  symbol
-                  decimals
-                  quantum
-                }
-                quoteName
-                dataSourceSpecBinding {
-                  settlementDataProperty
-                  tradingTerminationProperty
-                }
-                dataSourceSpecForSettlementData {
-                  sourceType {
-                    ... on DataSourceDefinitionInternal {
-                      sourceType {
-                        ... on DataSourceSpecConfigurationTime {
-                          conditions {
-                            operator
-                            value
-                          }
-                        }
-                      }
-                    }
-                    ... on DataSourceDefinitionExternal {
-                      sourceType {
-                        ... on DataSourceSpecConfiguration {
-                          signers {
-                            signer {
-                              ... on PubKey {
-                                key
-                              }
-                              ... on ETHAddress {
-                                address
-                              }
-                            }
-                          }
-                          filters {
-                            key {
-                              name
-                              type
-                            }
-                            conditions {
-                              operator
-                              value
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
+      rationale {
+        title
+        description
+      }
+      reference
+      state
+      datetime
+      rejectionReason
+      party {
+        id
+      }
+      errorDetails
+      ...NewMarketProductField @include(if: $includeNewMarketProductField)
+      ...UpdateMarketState @include(if: $includeUpdateMarketState)
+      ...UpdateReferralProgram @include(if: $includeUpdateReferralProgram)
+      ...UpdateVolumeDiscountProgram
+      terms {
+        closingDatetime
+        enactmentDatetime
+        change {
+          ... on NewMarket {
+            decimalPlaces
+            metadata
+            riskParameters {
+              ... on LogNormalRiskModel {
+                riskAversionParameter
+                tau
+                params {
+                  mu
+                  r
+                  sigma
                 }
               }
-              ... on PerpetualProduct {
-                settlementAsset {
-                  id
-                  name
-                  symbol
-                  decimals
-                  quantum
+              ... on SimpleRiskModel {
+                params {
+                  factorLong
+                  factorShort
                 }
-                quoteName
               }
             }
-          }
-          priceMonitoringParameters {
-            triggers {
-              horizonSecs
-              probability
-              auctionExtensionSecs
-            }
-          }
-          liquidityMonitoringParameters {
-            triggeringRatio
-            targetStakeParameters {
-              timeWindow
-              scalingFactor
-            }
-          }
-          positionDecimalPlaces
-          linearSlippageFactor
-          quadraticSlippageFactor
-        }
-        ... on UpdateMarket {
-          marketId
-          updateMarketConfiguration {
             instrument {
+              name
               code
               product {
-                ... on UpdateFutureProduct {
-                  quoteName
-                  dataSourceSpecForSettlementData {
-                    sourceType {
-                      ... on DataSourceDefinitionInternal {
-                        sourceType {
-                          ... on DataSourceSpecConfigurationTime {
-                            conditions {
-                              operator
-                              value
-                            }
-                          }
-                        }
-                      }
-                      ... on DataSourceDefinitionExternal {
-                        sourceType {
-                          ... on DataSourceSpecConfiguration {
-                            signers {
-                              signer {
-                                ... on PubKey {
-                                  key
-                                }
-                                ... on ETHAddress {
-                                  address
-                                }
-                              }
-                            }
-                            filters {
-                              key {
-                                name
-                                type
-                              }
-                              conditions {
-                                operator
-                                value
-                              }
-                            }
-                          }
-                        }
-                      }
-                    }
+                ... on FutureProduct {
+                  settlementAsset {
+                    id
+                    name
+                    symbol
+                    decimals
+                    quantum
                   }
-                  # dataSourceSpecForTradingTermination {
-                  #   sourceType {
-                  #     ... on DataSourceDefinitionInternal {
-                  #       sourceType {
-                  #         ... on DataSourceSpecConfigurationTime {
-                  #           conditions {
-                  #             operator
-                  #             value
-                  #           }
-                  #         }
-                  #       }
-                  #     }
-                  #     ... on DataSourceDefinitionExternal {
-                  #       sourceType {
-                  #         ... on DataSourceSpecConfiguration {
-                  #           signers {
-                  #             signer {
-                  #               ... on PubKey {
-                  #                 key
-                  #               }
-                  #               ... on ETHAddress {
-                  #                 address
-                  #               }
-                  #             }
-                  #           }
-                  #           filters {
-                  #             key {
-                  #               name
-                  #               type
-                  #             }
-                  #             conditions {
-                  #               operator
-                  #               value
-                  #             }
-                  #           }
-                  #         }
-                  #       }
-                  #     }
-                  #   }
-                  # }
+                  quoteName
                   dataSourceSpecBinding {
                     settlementDataProperty
                     tradingTerminationProperty
                   }
-                }
-                ... on UpdatePerpetualProduct {
-                  quoteName
                   dataSourceSpecForSettlementData {
                     sourceType {
                       ... on DataSourceDefinitionInternal {
@@ -350,14 +185,19 @@ query Proposal(
                       }
                     }
                   }
-                  dataSourceSpecBinding {
-                    settlementDataProperty
-                    settlementScheduleProperty
+                }
+                ... on PerpetualProduct {
+                  settlementAsset {
+                    id
+                    name
+                    symbol
+                    decimals
+                    quantum
                   }
+                  quoteName
                 }
               }
             }
-            metadata
             priceMonitoringParameters {
               triggers {
                 horizonSecs
@@ -372,71 +212,233 @@ query Proposal(
                 scalingFactor
               }
             }
-            riskParameters {
-              ... on UpdateMarketSimpleRiskModel {
-                simple {
-                  factorLong
-                  factorShort
+            positionDecimalPlaces
+            linearSlippageFactor
+            quadraticSlippageFactor
+          }
+          ... on UpdateMarket {
+            marketId
+            updateMarketConfiguration {
+              instrument {
+                code
+                product {
+                  ... on UpdateFutureProduct {
+                    quoteName
+                    dataSourceSpecForSettlementData {
+                      sourceType {
+                        ... on DataSourceDefinitionInternal {
+                          sourceType {
+                            ... on DataSourceSpecConfigurationTime {
+                              conditions {
+                                operator
+                                value
+                              }
+                            }
+                          }
+                        }
+                        ... on DataSourceDefinitionExternal {
+                          sourceType {
+                            ... on DataSourceSpecConfiguration {
+                              signers {
+                                signer {
+                                  ... on PubKey {
+                                    key
+                                  }
+                                  ... on ETHAddress {
+                                    address
+                                  }
+                                }
+                              }
+                              filters {
+                                key {
+                                  name
+                                  type
+                                }
+                                conditions {
+                                  operator
+                                  value
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                    # dataSourceSpecForTradingTermination {
+                    #   sourceType {
+                    #     ... on DataSourceDefinitionInternal {
+                    #       sourceType {
+                    #         ... on DataSourceSpecConfigurationTime {
+                    #           conditions {
+                    #             operator
+                    #             value
+                    #           }
+                    #         }
+                    #       }
+                    #     }
+                    #     ... on DataSourceDefinitionExternal {
+                    #       sourceType {
+                    #         ... on DataSourceSpecConfiguration {
+                    #           signers {
+                    #             signer {
+                    #               ... on PubKey {
+                    #                 key
+                    #               }
+                    #               ... on ETHAddress {
+                    #                 address
+                    #               }
+                    #             }
+                    #           }
+                    #           filters {
+                    #             key {
+                    #               name
+                    #               type
+                    #             }
+                    #             conditions {
+                    #               operator
+                    #               value
+                    #             }
+                    #           }
+                    #         }
+                    #       }
+                    #     }
+                    #   }
+                    # }
+                    dataSourceSpecBinding {
+                      settlementDataProperty
+                      tradingTerminationProperty
+                    }
+                  }
+                  ... on UpdatePerpetualProduct {
+                    quoteName
+                    dataSourceSpecForSettlementData {
+                      sourceType {
+                        ... on DataSourceDefinitionInternal {
+                          sourceType {
+                            ... on DataSourceSpecConfigurationTime {
+                              conditions {
+                                operator
+                                value
+                              }
+                            }
+                          }
+                        }
+                        ... on DataSourceDefinitionExternal {
+                          sourceType {
+                            ... on DataSourceSpecConfiguration {
+                              signers {
+                                signer {
+                                  ... on PubKey {
+                                    key
+                                  }
+                                  ... on ETHAddress {
+                                    address
+                                  }
+                                }
+                              }
+                              filters {
+                                key {
+                                  name
+                                  type
+                                }
+                                conditions {
+                                  operator
+                                  value
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                    dataSourceSpecBinding {
+                      settlementDataProperty
+                      settlementScheduleProperty
+                    }
+                  }
                 }
               }
-              ... on UpdateMarketLogNormalRiskModel {
-                logNormal {
-                  riskAversionParameter
-                  tau
-                  params {
-                    r
-                    sigma
-                    mu
+              metadata
+              priceMonitoringParameters {
+                triggers {
+                  horizonSecs
+                  probability
+                  auctionExtensionSecs
+                }
+              }
+              liquidityMonitoringParameters {
+                triggeringRatio
+                targetStakeParameters {
+                  timeWindow
+                  scalingFactor
+                }
+              }
+              riskParameters {
+                ... on UpdateMarketSimpleRiskModel {
+                  simple {
+                    factorLong
+                    factorShort
+                  }
+                }
+                ... on UpdateMarketLogNormalRiskModel {
+                  logNormal {
+                    riskAversionParameter
+                    tau
+                    params {
+                      r
+                      sigma
+                      mu
+                    }
                   }
                 }
               }
             }
           }
-        }
-        ... on NewAsset {
-          name
-          symbol
-          decimals
-          quantum
-          source {
-            ... on BuiltinAsset {
-              maxFaucetAmountMint
-            }
-            ... on ERC20 {
-              contractAddress
-              lifetimeLimit
-              withdrawThreshold
+          ... on NewAsset {
+            name
+            symbol
+            decimals
+            quantum
+            source {
+              ... on BuiltinAsset {
+                maxFaucetAmountMint
+              }
+              ... on ERC20 {
+                contractAddress
+                lifetimeLimit
+                withdrawThreshold
+              }
             }
           }
-        }
-        ... on UpdateNetworkParameter {
-          networkParameter {
-            key
-            value
+          ... on UpdateNetworkParameter {
+            networkParameter {
+              key
+              value
+            }
           }
-        }
-        ... on UpdateAsset {
-          quantum
-          assetId
-          source {
-            ... on UpdateERC20 {
-              lifetimeLimit
-              withdrawThreshold
+          ... on UpdateAsset {
+            quantum
+            assetId
+            source {
+              ... on UpdateERC20 {
+                lifetimeLimit
+                withdrawThreshold
+              }
             }
           }
         }
       }
-    }
-    votes {
-      yes {
-        totalTokens
-        totalNumber
-        totalEquityLikeShareWeight
-      }
-      no {
-        totalTokens
-        totalNumber
-        totalEquityLikeShareWeight
+      votes {
+        yes {
+          totalTokens
+          totalNumber
+          totalEquityLikeShareWeight
+        }
+        no {
+          totalTokens
+          totalNumber
+          totalEquityLikeShareWeight
+        }
       }
     }
   }
