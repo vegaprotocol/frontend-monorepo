@@ -19,12 +19,14 @@ import type { VoteState } from '../vote-details/use-user-vote';
 import { VoteBreakdown } from '../vote-breakdown';
 import { GovernanceTransferKindMapping } from '@vegaprotocol/types';
 
+type Proposal = Extract<ProposalQuery['proposal'], { __typename?: 'Proposal' }>;
+
 export const ProposalHeader = ({
   proposal,
   isListItem = true,
   voteState,
 }: {
-  proposal: ProposalQuery['proposal'];
+  proposal: Proposal;
   isListItem?: boolean;
   voteState?: VoteState | null;
 }) => {
@@ -40,7 +42,7 @@ export const ProposalHeader = ({
 
   const titleContent = shorten(title ?? '', 100);
 
-  const getAsset = (proposal: ProposalQuery['proposal']) => {
+  const getAsset = (proposal: Proposal) => {
     const terms = proposal?.terms;
     if (
       terms?.change.__typename === 'NewMarket' &&
