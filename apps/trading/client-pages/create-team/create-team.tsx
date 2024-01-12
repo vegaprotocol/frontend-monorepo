@@ -237,7 +237,7 @@ const CreateTeamForm = ({
                   if (publicKeys.every((pk) => isValidVegaPublicKey(pk))) {
                     return true;
                   }
-                  return 'a key is invalid';
+                  return t('Invalid public key found in allow list');
                 },
               },
             })}
