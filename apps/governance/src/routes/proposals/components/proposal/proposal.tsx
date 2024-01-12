@@ -30,7 +30,7 @@ import { useFeatureFlags } from '@vegaprotocol/environment';
 import { ProposalUpdateBenefitTiers } from '../proposal-update-benefit-tiers';
 
 export interface ProposalProps {
-  proposal: ProposalQuery['proposal'];
+  proposal: Extract<ProposalQuery['proposal'], { __typename?: 'Proposal' }>;
   networkParams: Partial<NetworkParamsResult>;
   marketData?: MarketInfo | null;
   parentMarketData?: MarketInfo | null;

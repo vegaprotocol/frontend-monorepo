@@ -18,12 +18,17 @@ export function getDate(
   data: ExplorerProposalStatusQuery | undefined,
   terms: Terms
 ): string {
+  const proposal = data?.proposal as Extract<
+    ExplorerProposalStatusQuery['proposal'],
+    { __typename?: 'Proposal' }
+  >;
+
   const DEFAULT = t('Unknown');
-  if (!data?.proposal?.state) {
+  if (!proposal?.state) {
     return DEFAULT;
   }
 
-  switch (data.proposal.state) {
+  switch (proposal.state) {
     case 'STATE_DECLINED':
       return `${t('Rejected on')}: ${format(terms.closingTimestamp, DEFAULT)}`;
     case 'STATE_ENACTED':
