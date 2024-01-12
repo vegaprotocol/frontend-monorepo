@@ -67,10 +67,10 @@ export const filterOptions: Record<string, FilterOption[]> = {
   ],
   Governance: ['Delegate', 'Undelegate', 'Vote on Proposal', 'Proposal'],
   Referrals: [
-    'Join Team',
-    'Update Referral Set',
     'Apply Referral Code',
     'Create Referral Set',
+    'Join Team',
+    'Update Referral Set',
   ],
   'External Data': ['Chain Event', 'Submit Oracle Data'],
   Validators: [

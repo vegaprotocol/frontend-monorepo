@@ -3,10 +3,9 @@ import type { BlockExplorerTransactionResult } from '../../../routes/types/block
 import type { TendermintBlocksResponse } from '../../../routes/blocks/tendermint-blocks-response';
 import { TxDetailsShared } from './shared/tx-details-shared';
 import { TableCell, TableRow, TableWithTbody } from '../../table';
-import { txSignatureToDeterministicId } from '../lib/deterministic-ids';
-import { ReferralTeam } from './referrals/team';
+import { ReferralCodeOwner } from './referrals/referral-code-owner';
 
-interface TxDetailsCreateReferralProps {
+interface TxDetailsApplyReferralCodeProps {
   txData: BlockExplorerTransactionResult | undefined;
   pubKey: string | undefined;
   blockData: TendermintBlocksResponse | undefined;
@@ -15,18 +14,16 @@ interface TxDetailsCreateReferralProps {
 /**
  * The signature can be turned in to an id with txSignatureToDeterministicId but
  */
-export const TxDetailsCreateReferralSet = ({
+export const TxDetailsApplyReferralCode = ({
   txData,
   pubKey,
   blockData,
-}: TxDetailsCreateReferralProps) => {
-  if (!txData || !txData.command.createReferralSet || !txData.signature) {
+}: TxDetailsApplyReferralCodeProps) => {
+  if (!txData || !txData.command.applyReferralCode || !txData.signature) {
     return <>{t('Awaiting Block Explorer transaction details')}</>;
   }
 
-  const id = txSignatureToDeterministicId(txData.signature.value);
-
-  const isTeam = txData.command.createReferralSet.isTeam || false;
+  const referralCode = txData.command.applyReferralCode.id;
 
   return (
     <div>
@@ -37,16 +34,14 @@ export const TxDetailsCreateReferralSet = ({
           blockData={blockData}
         />
         <TableRow modifier="bordered">
-          <TableCell>{isTeam ? t('Team ID') : t('Referral code')}</TableCell>
-          <TableCell>{id}</TableCell>
+          <TableCell>{t('Applied Code')}</TableCell>
+          <TableCell>{referralCode}</TableCell>
+        </TableRow>
+        <TableRow modifier="bordered">
+          <TableCell>{t('Referrer')}</TableCell>
+          <ReferralCodeOwner code={referralCode} />
         </TableRow>
       </TableWithTbody>
-
-      <ReferralTeam
-        tx={txData.command.createReferralSet}
-        id={id}
-        creator={txData.submitter}
-      />
     </div>
   );
 };

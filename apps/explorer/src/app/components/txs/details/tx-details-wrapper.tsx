@@ -29,6 +29,7 @@ import { TxDetailsTransfer } from './tx-transfer';
 import { TxDetailsStopOrderSubmission } from './tx-stop-order-submission';
 import { TxDetailsLiquiditySubmission } from './tx-liquidity-submission';
 import { TxDetailsCreateReferralSet } from './tx-create-referral-set';
+import { TxDetailsApplyReferralCode } from './tx-apply-referral-code';
 
 interface TxDetailsWrapperProps {
   txData: BlockExplorerTransactionResult | undefined;
@@ -124,6 +125,8 @@ function getTransactionComponent(txData?: BlockExplorerTransactionResult) {
       return TxDetailsTransfer;
     case 'Create Referral Set':
       return TxDetailsCreateReferralSet;
+    case 'Apply Referral Code':
+      return TxDetailsApplyReferralCode;
     default:
       return TxDetailsGeneric;
   }

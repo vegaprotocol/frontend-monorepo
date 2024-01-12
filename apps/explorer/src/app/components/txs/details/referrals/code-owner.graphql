@@ -1,0 +1,11 @@
+query ExplorerReferralCodeOwner($id: ID!) {
+  referralSets(id: $id) {
+    edges {
+      node {
+        createdAt
+        updatedAt
+        referrer
+      }
+    }
+  }
+}
