@@ -53,6 +53,7 @@ export const MarketsPage = () => {
                 size="extra-small"
                 data-testid="propose-new-market"
                 href={externalLink}
+                target="_blank"
               >
                 {t('Propose a new market')}
               </TradingAnchorButton>

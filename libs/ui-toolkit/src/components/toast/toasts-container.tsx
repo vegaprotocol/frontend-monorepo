@@ -92,7 +92,7 @@ export const ToastsContainer = ({
           className={classNames(
             'absolute right-0 top-[-38px] z-20 w-full',
             'transition-opacity',
-            'opacity-0 hover:!opacity-100 group-hover:opacity-50',
+            'sm:opacity-0 sm:hover:!opacity-100 sm:group-hover:opacity-50',
             {
               hidden: validToasts.length === 0,
             }
