@@ -1,14 +1,10 @@
 import { clearConfig, setConfig } from '../storage';
 import type { Transaction, VegaConnector } from './vega-connector';
 
-type VegaWalletEvent = 'disconnect';
+type VegaWalletEvent = 'client.disconnected';
 
 declare global {
   interface Vega {
-    /**
-     * @deprecated
-     */
-    getChainId: () => Promise<{ chainID: string }>;
     connectWallet: (args: { chainId: string }) => Promise<null>;
     disconnectWallet: () => Promise<void>;
     listKeys: () => Promise<{
@@ -59,13 +55,6 @@ export class InjectedConnector implements VegaConnector {
   chainId: string | null = null;
   description = 'Connects using the Vega wallet browser extension';
 
-  /**
-   * @deprecated
-   */
-  async getChainId() {
-    return window.vega.getChainId();
-  }
-
   async connectWallet(chainId: string) {
     this.chainId = chainId;
     try {
@@ -79,7 +68,7 @@ export class InjectedConnector implements VegaConnector {
   }
 
   onDisconnect(cb: () => void) {
-    window.vega.on('client.disconnect', () => {
+    window.vega.on('client.disconnected', () => {
       this.isConnected = false;
       cb();
     });

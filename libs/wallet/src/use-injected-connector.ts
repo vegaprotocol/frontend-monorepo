@@ -40,11 +40,13 @@ export const useInjectedConnector = (onConnect: () => void) => {
           connector.nodeAddress = new URL(vegaUrl).origin;
         }
 
-        setStatus(Status.GettingChainId);
-
-        const { chainID } = await connector.getChainId();
-        if (chainID !== appChainId) {
-          throw InjectedConnectorErrors.INVALID_CHAIN;
+        // check the chain id for snap connector
+        if (connector instanceof SnapConnector) {
+          setStatus(Status.GettingChainId);
+          const { chainID } = await connector.getChainId();
+          if (chainID !== appChainId) {
+            throw InjectedConnectorErrors.INVALID_CHAIN;
+          }
         }
 
         setStatus(Status.Connecting);
