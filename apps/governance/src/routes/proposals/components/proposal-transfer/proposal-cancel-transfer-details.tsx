@@ -12,7 +12,9 @@ import { SubHeading } from '../../../../components/heading';
 export const ProposalCancelTransferDetails = ({
   proposal,
 }: {
-  proposal: ProposalFieldsFragment | ProposalQuery['proposal'];
+  proposal:
+    | ProposalFieldsFragment
+    | Extract<ProposalQuery['proposal'], { __typename?: 'Proposal' }>;
 }) => {
   const { t } = useTranslation();
   const details = useCancelTransferProposalDetails(proposal?.id);

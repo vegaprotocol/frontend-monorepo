@@ -5,7 +5,10 @@ import { useUserVote } from '../vote-details/use-user-vote';
 import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
 
 interface ProposalsListItemProps {
-  proposal?: ProposalQuery['proposal'] | null;
+  proposal?: Extract<
+    ProposalQuery['proposal'],
+    { __typename?: 'Proposal' }
+  > | null;
 }
 
 export const ProposalsListItem = ({ proposal }: ProposalsListItemProps) => {

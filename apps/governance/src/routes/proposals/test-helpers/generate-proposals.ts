@@ -43,7 +43,9 @@ export function generateProtocolUpgradeProposal(
 }
 
 export function generateProposal(
-  override: PartialDeep<ProposalQuery['proposal']> = {}
+  override: PartialDeep<
+    Extract<ProposalQuery['proposal'], { __typename?: 'Proposal' }>
+  > = {}
 ): ProposalQuery['proposal'] {
   const defaultProposal: ProposalQuery['proposal'] = {
     __typename: 'Proposal',

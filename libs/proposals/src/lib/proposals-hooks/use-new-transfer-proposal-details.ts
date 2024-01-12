@@ -1,5 +1,8 @@
 import type { NewTransferFieldsFragment } from '../proposals-data-provider';
-import { useNewTransferDetailsQuery } from './__generated__/Proposal';
+import {
+  useNewTransferDetailsQuery,
+  type NewTransferDetailsQuery,
+} from './__generated__/Proposal';
 
 export const useNewTransferProposalDetails = (proposalId?: string | null) => {
   const { data } = useNewTransferDetailsQuery({
@@ -9,8 +12,13 @@ export const useNewTransferProposalDetails = (proposalId?: string | null) => {
     skip: !proposalId || proposalId.length === 0,
   });
 
-  if (data?.proposal?.terms.change.__typename === 'NewTransfer') {
-    return data?.proposal?.terms.change as NewTransferFieldsFragment;
+  const proposal = data?.proposal as Extract<
+    NewTransferDetailsQuery['proposal'],
+    { __typename?: 'Proposal' }
+  >;
+
+  if (proposal?.terms.change.__typename === 'NewTransfer') {
+    return proposal?.terms.change as NewTransferFieldsFragment;
   }
 
   return undefined;
