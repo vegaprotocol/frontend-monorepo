@@ -40,7 +40,7 @@ const getClassName = (
       'h-8': !subLabel && size === 'small',
       'px-3 text-sm': !subLabel && size === 'small',
       'h-6 px-2 text-xs': !subLabel && size === 'extra-small',
-      'px-4 text-base': !subLabel && size !== 'small',
+      'px-2 sm:px-4 text-base': !subLabel && size !== 'small',
       'flex-col items-center justify-center px-3 pt-2.5 pb-2': subLabel,
     },
     // colours
