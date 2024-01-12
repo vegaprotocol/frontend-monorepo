@@ -37,6 +37,7 @@ declare global {
     }>;
 
     on: (event: VegaWalletEvent, callback: () => void) => void;
+    isConnected: () => Promise<boolean>;
   }
 
   interface Window {
@@ -50,28 +51,46 @@ export const InjectedConnectorErrors = {
   INVALID_CHAIN: new Error('Invalid chain'),
 };
 
+const wait = (ms: number) =>
+  new Promise<boolean>((_, reject) => {
+    setTimeout(() => {
+      reject(false);
+    }, ms);
+  });
+
+const INJECTED_CONNECTOR_TIMEOUT = 500;
+
 export class InjectedConnector implements VegaConnector {
   isConnected = false;
   chainId: string | null = null;
   description = 'Connects using the Vega wallet browser extension';
+  alive: ReturnType<typeof setInterval> | undefined = undefined;
 
   async connectWallet(chainId: string) {
     this.chainId = chainId;
     try {
       await window.vega.connectWallet({ chainId });
       this.isConnected = true;
+      window.vega.on('client.disconnected', () => {
+        this.isConnected = false;
+      });
+
+      this.alive = setInterval(async () => {
+        try {
+          const connected = await Promise.race([
+            wait(INJECTED_CONNECTOR_TIMEOUT),
+            window.vega.isConnected(),
+          ]);
+          this.isConnected = connected;
+        } catch {
+          this.isConnected = false;
+        }
+      }, INJECTED_CONNECTOR_TIMEOUT * 2);
     } catch {
       throw new Error(
         `could not connect to the vega wallet on chain: ${chainId}`
       );
     }
-  }
-
-  onDisconnect(cb: () => void) {
-    window.vega.on('client.disconnected', () => {
-      this.isConnected = false;
-      cb();
-    });
   }
 
   async connect() {
@@ -85,19 +104,11 @@ export class InjectedConnector implements VegaConnector {
   }
 
   async isAlive() {
-    try {
-      const keys = await window.vega.listKeys();
-      if (keys.keys.length > 0) {
-        return true;
-      }
-    } catch (err) {
-      return false;
-    }
-
-    return false;
+    return this.isConnected;
   }
 
   disconnect() {
+    clearInterval(this.alive);
     clearConfig();
     return window.vega.disconnectWallet();
   }

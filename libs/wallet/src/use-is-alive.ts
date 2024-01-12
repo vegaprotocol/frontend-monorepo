@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { InjectedConnector, type VegaConnector } from '.';
+import { type VegaConnector } from '.';
 
 /**
  * Determines the interval for checking if wallet connection is alive.
@@ -17,21 +17,14 @@ export const useIsAlive = (
       return;
     }
 
-    if (connector instanceof InjectedConnector) {
-      connector.onDisconnect(() => {
-        setAlive(false);
+    const i = setInterval(() => {
+      connector.isAlive().then((isAlive) => {
+        if (alive !== isAlive) setAlive(isAlive);
       });
-      return () => {};
-    } else {
-      const i = setInterval(() => {
-        connector.isAlive().then((isAlive) => {
-          if (alive !== isAlive) setAlive(isAlive);
-        });
-      }, interval);
-      return () => {
-        clearInterval(i);
-      };
-    }
+    }, interval);
+    return () => {
+      clearInterval(i);
+    };
   }, [alive, connector, interval]);
 
   return alive;
