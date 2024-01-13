@@ -11,7 +11,10 @@ import { CollapsibleToggle } from '../../../../components/collapsible-toggle';
 import { SubHeading } from '../../../../components/heading';
 
 interface ProposalUpdateMarketStateProps {
-  proposal: ProposalQuery['proposal'];
+  proposal: Extract<
+    ProposalQuery['proposal'],
+    { __typename?: 'Proposal' }
+  > | null;
 }
 
 export const ProposalUpdateMarketState = ({

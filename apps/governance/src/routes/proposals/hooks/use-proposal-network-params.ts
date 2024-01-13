@@ -9,7 +9,9 @@ import type { ProposalQuery } from '../proposal/__generated__/Proposal';
 export const useProposalNetworkParams = ({
   proposal,
 }: {
-  proposal: ProposalFieldsFragment | ProposalQuery['proposal'];
+  proposal:
+    | ProposalFieldsFragment
+    | Extract<ProposalQuery['proposal'], { __typename?: 'Proposal' }>;
 }) => {
   const { params } = useNetworkParams([
     NetworkParams.governance_proposal_updateMarket_requiredMajority,

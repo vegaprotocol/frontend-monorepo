@@ -14,7 +14,10 @@ import { formatNumberPercentage } from '@vegaprotocol/utils';
 import BigNumber from 'bignumber.js';
 
 interface ProposalReferralProgramDetailsProps {
-  proposal: ProposalQuery['proposal'];
+  proposal: Extract<
+    ProposalQuery['proposal'],
+    { __typename?: 'Proposal' }
+  > | null;
 }
 
 export const formatVolumeDiscountFactor = (value: string) => {

@@ -20,7 +20,9 @@ export const CompactVotes = ({ number }: { number: BigNumber }) => (
 );
 
 interface VoteBreakdownProps {
-  proposal: ProposalFieldsFragment | ProposalQuery['proposal'];
+  proposal:
+    | ProposalFieldsFragment
+    | Extract<ProposalQuery['proposal'], { __typename?: 'Proposal' }>;
 }
 
 interface VoteProgressProps {

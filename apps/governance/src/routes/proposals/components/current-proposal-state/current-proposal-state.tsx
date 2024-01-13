@@ -9,7 +9,9 @@ import type { ProposalInfoLabelVariant } from '../proposal-info-label';
 export const CurrentProposalState = ({
   proposal,
 }: {
-  proposal: ProposalFieldsFragment | ProposalQuery['proposal'];
+  proposal:
+    | ProposalFieldsFragment
+    | Extract<ProposalQuery['proposal'], { __typename?: 'Proposal' }>;
 }) => {
   const { t } = useTranslation();
   let proposalStatus: ReactNode;
