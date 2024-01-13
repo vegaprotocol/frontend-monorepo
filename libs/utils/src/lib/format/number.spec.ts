@@ -12,6 +12,7 @@ import {
   quantumDecimalPlaces,
   toDecimal,
   toNumberParts,
+  formatNumberRounded,
 } from './number';
 
 describe('number utils', () => {
@@ -245,4 +246,31 @@ describe('getUnlimitedThreshold', () => {
       expect(getUnlimitedThreshold(decimals).toString()).toEqual(output);
     }
   );
+});
+
+describe('formatNumberRounded', () => {
+  it('rounds number with symbol', () => {
+    expect(formatNumberRounded(new BigNumber(1))).toBe('1');
+    expect(formatNumberRounded(new BigNumber(1_000))).toBe('1,000');
+    expect(formatNumberRounded(new BigNumber(1_000_000))).toBe('1m');
+    expect(formatNumberRounded(new BigNumber(1_000_000_000))).toBe('1b');
+    expect(formatNumberRounded(new BigNumber(1_000_000_000_000))).toBe('1t');
+  });
+
+  it('respects the limit parameter', () => {
+    expect(formatNumberRounded(new BigNumber(1_000), '1e3')).toBe('1k');
+    expect(formatNumberRounded(new BigNumber(1_000_000), '1e9')).toBe(
+      '1,000,000'
+    );
+    expect(formatNumberRounded(new BigNumber(9_999_999), '1e9')).toBe(
+      '9,999,999'
+    );
+    expect(formatNumberRounded(new BigNumber(1_000_000_000), '1e9')).toBe('1b');
+    expect(formatNumberRounded(new BigNumber(1_000_000_000), '1e12')).toBe(
+      '1,000,000,000'
+    );
+    expect(formatNumberRounded(new BigNumber(1_000_000_000_000), '1e9')).toBe(
+      '1t'
+    );
+  });
 });
