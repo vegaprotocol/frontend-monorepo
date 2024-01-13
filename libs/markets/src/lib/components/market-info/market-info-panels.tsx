@@ -65,7 +65,10 @@ import {
   useSuccessorMarketIdsQuery,
   useSuccessorMarketQuery,
 } from '../../__generated__';
-import { useSuccessorMarketProposalDetailsQuery } from '@vegaprotocol/proposals';
+import {
+  useSuccessorMarketProposalDetailsQuery,
+  type SuccessorMarketProposalDetailsQuery,
+} from '@vegaprotocol/proposals';
 import { getQuoteName, getAsset } from '../../market-utils';
 import classNames from 'classnames';
 import compact from 'lodash/compact';
@@ -206,6 +209,11 @@ export const KeyDetailsInfoPanel = ({
       skip: !featureFlags.SUCCESSOR_MARKETS || !market.proposal?.id,
     });
 
+  const successorProposal = successorProposalDetails?.proposal as Extract<
+    SuccessorMarketProposalDetailsQuery['proposal'],
+    { __typename?: 'Proposal' }
+  >;
+
   // The following queries are needed as the parent market could also have been a successor market.
   // Note: the parent market is only passed to this component if the successor markets flag is enabled,
   // so that check is not needed in the skip.
@@ -223,6 +231,10 @@ export const KeyDetailsInfoPanel = ({
       },
       skip: !parentMarket?.proposal?.id,
     });
+  const parentProposal = parentSuccessorProposalDetails?.proposal as Extract<
+    SuccessorMarketProposalDetailsQuery['proposal'],
+    { __typename?: 'Proposal' }
+  >;
 
   const assetDecimals = getAsset(market).decimals;
 
@@ -252,10 +264,9 @@ export const KeyDetailsInfoPanel = ({
                 parentMarketID:
                   parentMarketIdData?.market?.parentMarketID || '-',
                 insurancePoolFraction:
-                  (successorProposalDetails?.proposal?.terms.change
-                    .__typename === 'NewMarket' &&
-                    successorProposalDetails.proposal.terms.change
-                      .successorConfiguration?.insurancePoolFraction) ||
+                  (successorProposal.terms.change.__typename === 'NewMarket' &&
+                    successorProposal.terms.change.successorConfiguration
+                      ?.insurancePoolFraction) ||
                   '-',
                 status: market.state && MarketStateMapping[market.state],
                 tradingMode:
@@ -281,10 +292,9 @@ export const KeyDetailsInfoPanel = ({
             name: parentMarket?.tradableInstrument?.instrument?.name,
             parentMarketID: grandparentMarketIdData?.market?.parentMarketID,
             insurancePoolFraction:
-              parentSuccessorProposalDetails?.proposal?.terms.change
-                .__typename === 'NewMarket' &&
-              parentSuccessorProposalDetails.proposal.terms.change
-                .successorConfiguration?.insurancePoolFraction,
+              parentProposal?.terms.change.__typename === 'NewMarket' &&
+              parentProposal?.terms.change.successorConfiguration
+                ?.insurancePoolFraction,
             status:
               parentMarket?.state && MarketStateMapping[parentMarket.state],
             tradingMode:
@@ -798,7 +808,6 @@ export const EthOraclePanel = ({ sourceType }: { sourceType: EthCallSpec }) => {
           </div>
         </>
       )}
-
       <MarketInfoTable
         key="eth-call-spec"
         data={{
@@ -835,18 +844,17 @@ export const EthOraclePanel = ({ sourceType }: { sourceType: EthCallSpec }) => {
           <SyntaxHighlighter data={abis} />
         </AccordionPanel>
       </Accordion>
-
       <h3 className={header}>{t('Normalisers')}</h3>
       {sourceType.normalisers?.map((normaliser, i) => (
         <MarketInfoTable key={i} data={normaliser} />
       ))}
-      <h3 className={header}>{t('Filters')}</h3>
+      ?<h3 className={header}>{t('Filters')}</h3>
       <h3 className={header}>{t('Key')}</h3>
       {sourceType.filters?.map((filter, i) => (
         <>
           <MarketInfoTable key={i} data={filter.key} />
           <h3 className={header}>{t('Conditions')}</h3>
-          {filter.conditions?.map((condition, i) => (
+          {filter.conditions?.map((condition) => (
             <span>
               {ConditionOperatorMapping[condition.operator]} {condition.value}
             </span>
