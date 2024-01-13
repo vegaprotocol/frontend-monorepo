@@ -4,6 +4,7 @@ import {
   useSuccessorMarketProposalDetailsQuery,
   type SuccessorMarketProposalDetailsQuery,
 } from './__generated__/Proposal';
+import { type SingleProposal } from '../../types';
 
 export const useSuccessorMarketProposalDetails = (
   proposalId?: string | null
@@ -15,9 +16,8 @@ export const useSuccessorMarketProposalDetails = (
     skip: !proposalId || proposalId.length === 0,
   });
 
-  const proposal = data?.proposal as Extract<
-    SuccessorMarketProposalDetailsQuery['proposal'],
-    { __typename?: 'Proposal' }
+  const proposal = data?.proposal as SingleProposal<
+    SuccessorMarketProposalDetailsQuery['proposal']
   >;
 
   const successorDetails =

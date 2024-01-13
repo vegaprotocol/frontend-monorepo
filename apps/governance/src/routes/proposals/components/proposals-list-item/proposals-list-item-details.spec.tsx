@@ -1,7 +1,7 @@
 import { BrowserRouter as Router } from 'react-router-dom';
 import { AppStateProvider } from '../../../../contexts/app-state/app-state-provider';
 import { VegaWalletContext } from '@vegaprotocol/wallet';
-import type { MockedResponse } from '@apollo/client/testing';
+import { type MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
 import { render, screen } from '@testing-library/react';
 import { format } from 'date-fns';
@@ -18,10 +18,10 @@ import {
   lastWeek,
   nextWeek,
 } from '../../test-helpers/mocks';
-import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
+import { type Proposal } from '../../types';
 
 const renderComponent = (
-  proposal: Extract<ProposalQuery['proposal'], { __typename?: 'Proposal' }>,
+  proposal: Proposal,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   mocks: MockedResponse<any>[] = [networkParamsQueryMock]
 ) =>

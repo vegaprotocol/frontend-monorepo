@@ -17,8 +17,8 @@ import {
   lastMonth,
   nextMonth,
 } from '../../test-helpers/mocks';
-import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
-import type { ProtocolUpgradeProposalFieldsFragment } from '@vegaprotocol/proposals';
+import { type ProtocolUpgradeProposalFieldsFragment } from '@vegaprotocol/proposals';
+import { type Proposal } from '../../types';
 
 const openProposalClosesNextMonth = generateProposal({
   id: 'proposal1',
@@ -63,7 +63,7 @@ const closedProtocolUpgradeProposal = generateProtocolUpgradeProposal({
 });
 
 const renderComponent = (
-  proposals: Extract<ProposalQuery['proposal'], { __typename?: 'Proposal' }>[],
+  proposals: Proposal,
   protocolUpgradeProposals?: ProtocolUpgradeProposalFieldsFragment[]
 ) => (
   <Router>
