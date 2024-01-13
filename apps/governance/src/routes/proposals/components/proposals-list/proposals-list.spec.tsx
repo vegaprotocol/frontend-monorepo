@@ -63,7 +63,7 @@ const closedProtocolUpgradeProposal = generateProtocolUpgradeProposal({
 });
 
 const renderComponent = (
-  proposals: ProposalQuery['proposal'][],
+  proposals: Extract<ProposalQuery['proposal'], { __typename?: 'Proposal' }>[],
   protocolUpgradeProposals?: ProtocolUpgradeProposalFieldsFragment[]
 ) => (
   <Router>

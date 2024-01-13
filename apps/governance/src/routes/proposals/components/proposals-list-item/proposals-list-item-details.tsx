@@ -15,7 +15,9 @@ import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
 export const ProposalsListItemDetails = ({
   proposal,
 }: {
-  proposal: ProposalFieldsFragment | ProposalQuery['proposal'];
+  proposal:
+    | ProposalFieldsFragment
+    | Extract<ProposalQuery['proposal'], { __typename?: 'Proposal' }>;
 }) => {
   const { t } = useTranslation();
   const state = proposal?.state;
