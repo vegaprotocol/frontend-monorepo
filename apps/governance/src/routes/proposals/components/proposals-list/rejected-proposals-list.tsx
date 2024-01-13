@@ -3,9 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Heading } from '../../../../components/heading';
 import { ProposalsListItem } from '../proposals-list-item';
 import { ProposalsListFilter } from '../proposals-list-filter';
-import { type ProposalQuery } from '../../proposal/__generated__/Proposal';
-
-type Proposal = Extract<ProposalQuery['proposal'], { __typename?: 'Proposal' }>;
+import { type Proposal } from '../../types';
 
 interface ProposalsListProps {
   proposals: Proposal[];

@@ -31,7 +31,7 @@ import {
   orderByUpgradeBlockHeight,
 } from '../proposals/components/proposals-list/proposals-list';
 import { BigNumber } from '../../lib/bignumber';
-import type { ProposalQuery } from '../proposals/proposal/__generated__/Proposal';
+import { type Proposal } from '../proposals/types';
 
 const nodesToShow = 6;
 
@@ -39,7 +39,7 @@ const HomeProposals = ({
   proposals,
   protocolUpgradeProposals,
 }: {
-  proposals: Extract<ProposalQuery['proposal'], { __typename?: 'Proposal' }>[];
+  proposals: Proposal[];
   protocolUpgradeProposals: ProtocolUpgradeProposalFieldsFragment[];
 }) => {
   const { t } = useTranslation();

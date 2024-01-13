@@ -23,8 +23,8 @@ import { useFeatureFlags } from '@vegaprotocol/environment';
 import { BrowserRouter } from 'react-router-dom';
 import { VoteState } from '../vote-details/use-user-vote';
 import { useNewTransferProposalDetails } from '@vegaprotocol/proposals';
-import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
-import type { MockedResponse } from '@apollo/client/testing';
+import { type MockedResponse } from '@apollo/client/testing';
+import { type Proposal } from '../../types';
 
 jest.mock('@vegaprotocol/proposals', () => ({
   ...jest.requireActual('@vegaprotocol/proposals'),
@@ -36,7 +36,7 @@ jest.mock('@vegaprotocol/proposals', () => ({
 }));
 
 const renderComponent = (
-  proposal: Extract<ProposalQuery['proposal'], { __typename?: 'Proposal' }>,
+  proposal: Proposal,
   isListItem = true,
   mocks: MockedResponse[] = [],
   voteState?: VoteState

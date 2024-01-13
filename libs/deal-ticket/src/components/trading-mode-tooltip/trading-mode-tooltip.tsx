@@ -4,6 +4,7 @@ import classNames from 'classnames';
 import {
   useProposalOfMarketQuery,
   type ProposalOfMarketQuery,
+  type SingleProposal,
 } from '@vegaprotocol/proposals';
 import { DocsLinks } from '@vegaprotocol/environment';
 import { getDateTimeFormat } from '@vegaprotocol/utils';
@@ -40,9 +41,8 @@ export const TradingModeTooltip = ({
   });
 
   // We only fetch Proposals (and not BatchProposals)
-  const proposal = proposalData?.proposal as Extract<
-    ProposalOfMarketQuery['proposal'],
-    { __typename?: 'Proposal' }
+  const proposal = proposalData?.proposal as SingleProposal<
+    ProposalOfMarketQuery['proposal']
   >;
 
   if (!market || !marketData) {

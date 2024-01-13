@@ -1,23 +1,20 @@
+import { type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@vegaprotocol/ui-toolkit';
 import { differenceInHours, format, formatDistanceToNowStrict } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import { DATE_FORMAT_DETAILED } from '../../../../lib/date-formats';
-import type { ReactNode } from 'react';
 import {
   ProposalRejectionReasonMapping,
   ProposalState,
 } from '@vegaprotocol/types';
 import Routes from '../../../routes';
-import type { ProposalFieldsFragment } from '../../proposals/__generated__/Proposals';
-import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
+import { type Proposal } from '../../types';
 
 export const ProposalsListItemDetails = ({
   proposal,
 }: {
-  proposal:
-    | ProposalFieldsFragment
-    | Extract<ProposalQuery['proposal'], { __typename?: 'Proposal' }>;
+  proposal: Proposal;
 }) => {
   const { t } = useTranslation();
   const state = proposal?.state;

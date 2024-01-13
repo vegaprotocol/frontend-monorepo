@@ -2,8 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { Lozenge, VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import { shorten } from '@vegaprotocol/utils';
 import { Heading, SubHeading } from '../../../../components/heading';
-import type { ReactNode } from 'react';
-import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
+import { type ReactNode } from 'react';
 import { truncateMiddle } from '../../../../lib/truncate-middle';
 import { CurrentProposalState } from '../current-proposal-state';
 import { ProposalInfoLabel } from '../proposal-info-label';
@@ -15,11 +14,10 @@ import {
 import { useFeatureFlags } from '@vegaprotocol/environment';
 import Routes from '../../../routes';
 import { Link } from 'react-router-dom';
-import type { VoteState } from '../vote-details/use-user-vote';
+import { type VoteState } from '../vote-details/use-user-vote';
 import { VoteBreakdown } from '../vote-breakdown';
 import { GovernanceTransferKindMapping } from '@vegaprotocol/types';
-
-type Proposal = Extract<ProposalQuery['proposal'], { __typename?: 'Proposal' }>;
+import { type Proposal } from '../../types';
 
 export const ProposalHeader = ({
   proposal,

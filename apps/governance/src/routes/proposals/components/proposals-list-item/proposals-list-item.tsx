@@ -2,13 +2,10 @@ import { RoundedWrapper } from '@vegaprotocol/ui-toolkit';
 import { ProposalHeader } from '../proposal-detail-header/proposal-header';
 import { ProposalsListItemDetails } from './proposals-list-item-details';
 import { useUserVote } from '../vote-details/use-user-vote';
-import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
+import { type Proposal } from '../../types';
 
 interface ProposalsListItemProps {
-  proposal?: Extract<
-    ProposalQuery['proposal'],
-    { __typename?: 'Proposal' }
-  > | null;
+  proposal?: Proposal | null;
 }
 
 export const ProposalsListItem = ({ proposal }: ProposalsListItemProps) => {
