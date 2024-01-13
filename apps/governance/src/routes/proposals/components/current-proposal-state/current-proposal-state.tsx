@@ -1,18 +1,11 @@
 import { useTranslation } from 'react-i18next';
-import type { ProposalFieldsFragment } from '../../proposals/__generated__/Proposals';
-import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
 import { ProposalState } from '@vegaprotocol/types';
 import { ProposalInfoLabel } from '../proposal-info-label';
-import type { ReactNode } from 'react';
-import type { ProposalInfoLabelVariant } from '../proposal-info-label';
+import { type ReactNode } from 'react';
+import { type ProposalInfoLabelVariant } from '../proposal-info-label';
+import { type Proposal } from '../../types';
 
-export const CurrentProposalState = ({
-  proposal,
-}: {
-  proposal:
-    | ProposalFieldsFragment
-    | Extract<ProposalQuery['proposal'], { __typename?: 'Proposal' }>;
-}) => {
+export const CurrentProposalState = ({ proposal }: { proposal: Proposal }) => {
   const { t } = useTranslation();
   let proposalStatus: ReactNode;
   let variant = 'tertiary' as ProposalInfoLabelVariant;

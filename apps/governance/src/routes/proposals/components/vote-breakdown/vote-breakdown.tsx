@@ -1,3 +1,4 @@
+import { type ReactNode } from 'react';
 import classNames from 'classnames';
 import BigNumber from 'bignumber.js';
 import { useTranslation } from 'react-i18next';
@@ -5,10 +6,8 @@ import { useVoteInformation } from '../../hooks';
 import { Icon, Tooltip } from '@vegaprotocol/ui-toolkit';
 import { formatNumber } from '@vegaprotocol/utils';
 import { ProposalState } from '@vegaprotocol/types';
-import type { ReactNode } from 'react';
-import type { ProposalFieldsFragment } from '../../proposals/__generated__/Proposals';
-import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
 import { CompactNumber } from '@vegaprotocol/react-helpers';
+import { type Proposal } from '../../types';
 
 export const CompactVotes = ({ number }: { number: BigNumber }) => (
   <CompactNumber
@@ -20,9 +19,7 @@ export const CompactVotes = ({ number }: { number: BigNumber }) => (
 );
 
 interface VoteBreakdownProps {
-  proposal:
-    | ProposalFieldsFragment
-    | Extract<ProposalQuery['proposal'], { __typename?: 'Proposal' }>;
+  proposal: Proposal;
 }
 
 interface VoteProgressProps {

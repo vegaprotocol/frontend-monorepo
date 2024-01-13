@@ -14,15 +14,12 @@ export function format(date: string | undefined, def: string) {
   return new Date().toLocaleDateString() || def;
 }
 
-export function getDate(
-  data: ExplorerProposalStatusQuery | undefined,
-  terms: Terms
-): string {
-  const proposal = data?.proposal as Extract<
-    ExplorerProposalStatusQuery['proposal'],
-    { __typename?: 'Proposal' }
-  >;
+type Proposal = Extract<
+  ExplorerProposalStatusQuery['proposal'],
+  { __typename?: 'Proposal' }
+>;
 
+export function getDate(proposal: Proposal | undefined, terms: Terms): string {
   const DEFAULT = t('Unknown');
   if (!proposal?.state) {
     return DEFAULT;
@@ -67,9 +64,11 @@ export const ProposalDate = ({ terms, id }: ProposalDateProps) => {
     },
   });
 
+  const proposal = data?.proposal as Proposal;
+
   return (
     <Lozenge className="font-sans text-xs float-right">
-      {getDate(data, terms)}
+      {getDate(proposal, terms)}
     </Lozenge>
   );
 };

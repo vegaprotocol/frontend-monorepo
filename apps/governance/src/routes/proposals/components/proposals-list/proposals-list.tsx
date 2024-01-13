@@ -10,12 +10,10 @@ import Routes from '../../../routes';
 import { Button, Toggle } from '@vegaprotocol/ui-toolkit';
 import { Link } from 'react-router-dom';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
-import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
-import type { ProposalFieldsFragment } from '../../proposals/__generated__/Proposals';
-import type { ProtocolUpgradeProposalFieldsFragment } from '@vegaprotocol/proposals';
 import { ExternalLinks } from '@vegaprotocol/environment';
-
-type Proposal = Extract<ProposalQuery['proposal'], { __typename?: 'Proposal' }>;
+import { type ProposalFieldsFragment } from '../../proposals/__generated__/Proposals';
+import { type ProtocolUpgradeProposalFieldsFragment } from '@vegaprotocol/proposals';
+import { type Proposal } from '../../types';
 
 interface ProposalsListProps {
   proposals: Proposal[];
