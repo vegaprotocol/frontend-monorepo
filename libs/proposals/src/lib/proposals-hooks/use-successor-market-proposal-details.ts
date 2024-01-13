@@ -2,22 +2,28 @@ import omit from 'lodash/omit';
 import {
   useInstrumentDetailsQuery,
   useSuccessorMarketProposalDetailsQuery,
+  type SuccessorMarketProposalDetailsQuery,
 } from './__generated__/Proposal';
 
 export const useSuccessorMarketProposalDetails = (
   proposalId?: string | null
 ) => {
-  const { data: proposal } = useSuccessorMarketProposalDetailsQuery({
+  const { data } = useSuccessorMarketProposalDetailsQuery({
     variables: {
       proposalId: proposalId || '',
     },
     skip: !proposalId || proposalId.length === 0,
   });
 
+  const proposal = data?.proposal as Extract<
+    SuccessorMarketProposalDetailsQuery['proposal'],
+    { __typename?: 'Proposal' }
+  >;
+
   const successorDetails =
-    (proposal?.proposal &&
-      proposal.proposal?.terms.change.__typename === 'NewMarket' &&
-      proposal.proposal.terms.change.successorConfiguration) ||
+    (proposal &&
+      proposal?.terms.change.__typename === 'NewMarket' &&
+      proposal.terms.change.successorConfiguration) ||
     undefined;
 
   const { data: market } = useInstrumentDetailsQuery({
