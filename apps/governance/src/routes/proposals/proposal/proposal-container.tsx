@@ -247,7 +247,7 @@ export const ProposalContainer = () => {
     >
       {data?.proposal ? (
         <Proposal
-          proposal={data.proposal}
+          proposal={proposal}
           networkParams={networkParams}
           restData={restData}
           marketData={marketData}

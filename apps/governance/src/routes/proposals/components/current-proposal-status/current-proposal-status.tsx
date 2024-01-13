@@ -45,7 +45,9 @@ const WillPass = ({
 export const CurrentProposalStatus = ({
   proposal,
 }: {
-  proposal: ProposalFieldsFragment | ProposalQuery['proposal'];
+  proposal:
+    | ProposalFieldsFragment
+    | Extract<ProposalQuery['proposal'], { __typename?: 'Proposal' }>;
 }) => {
   const { willPassByTokenVote, majorityMet, participationMet } =
     useVoteInformation({

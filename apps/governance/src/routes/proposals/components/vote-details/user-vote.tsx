@@ -12,7 +12,9 @@ import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
 import type { VoteState } from './use-user-vote';
 
 interface UserVoteProps {
-  proposal: ProposalFieldsFragment | ProposalQuery['proposal'];
+  proposal:
+    | ProposalFieldsFragment
+    | Extract<ProposalQuery['proposal'], { __typename?: 'Proposal' }>;
   minVoterBalance: string | null | undefined;
   spamProtectionMinTokens: string | null | undefined;
   transaction: VegaTxState | null;

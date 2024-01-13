@@ -9,6 +9,8 @@ import { type PartialDeep } from 'type-fest';
 import { type ProposalQuery } from '../proposal/__generated__/Proposal';
 import { type ProtocolUpgradeProposalFieldsFragment } from '@vegaprotocol/proposals';
 
+type Proposal = Extract<ProposalQuery['proposal'], { __typename?: 'Proposal' }>;
+
 export function generateProtocolUpgradeProposal(
   override: PartialDeep<ProtocolUpgradeProposalFieldsFragment> = {}
 ): ProtocolUpgradeProposalFieldsFragment {
@@ -46,7 +48,7 @@ export function generateProposal(
   override: PartialDeep<
     Extract<ProposalQuery['proposal'], { __typename?: 'Proposal' }>
   > = {}
-): ProposalQuery['proposal'] {
+): Extract<ProposalQuery['proposal'], { __typename?: 'Proposal' }> {
   const defaultProposal: ProposalQuery['proposal'] = {
     __typename: 'Proposal',
     id: faker.datatype.uuid(),
@@ -94,15 +96,16 @@ export function generateProposal(
     },
   };
 
-  return mergeWith<
-    ProposalQuery['proposal'],
-    PartialDeep<ProposalQuery['proposal']>
-  >(defaultProposal, override, (objValue, srcValue) => {
-    if (!isArray(objValue)) {
-      return;
+  return mergeWith<Proposal, PartialDeep<Proposal>>(
+    defaultProposal,
+    override,
+    (objValue, srcValue) => {
+      if (!isArray(objValue)) {
+        return;
+      }
+      return srcValue;
     }
-    return srcValue;
-  });
+  );
 }
 
 type Vote = Pick<Schema.Vote, '__typename' | 'value' | 'party' | 'datetime'>;

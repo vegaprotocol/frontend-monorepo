@@ -9,7 +9,9 @@ import { addDecimal } from '@vegaprotocol/utils';
 export const useVoteInformation = ({
   proposal,
 }: {
-  proposal: ProposalFieldsFragment | ProposalQuery['proposal'];
+  proposal:
+    | ProposalFieldsFragment
+    | Extract<ProposalQuery['proposal'], { __typename?: 'Proposal' }>;
 }) => {
   const {
     appState: { totalSupply, decimals },

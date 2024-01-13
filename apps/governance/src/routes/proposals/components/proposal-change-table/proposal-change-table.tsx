@@ -10,7 +10,9 @@ import type { ProposalFieldsFragment } from '../../proposals/__generated__/Propo
 import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
 
 interface ProposalChangeTableProps {
-  proposal: ProposalFieldsFragment | ProposalQuery['proposal'];
+  proposal:
+    | ProposalFieldsFragment
+    | Extract<ProposalQuery['proposal'], { __typename?: 'Proposal' }>;
 }
 
 export const ProposalChangeTable = ({ proposal }: ProposalChangeTableProps) => {

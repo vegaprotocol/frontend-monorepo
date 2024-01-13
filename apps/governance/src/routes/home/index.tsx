@@ -39,7 +39,7 @@ const HomeProposals = ({
   proposals,
   protocolUpgradeProposals,
 }: {
-  proposals: ProposalQuery['proposal'][];
+  proposals: Extract<ProposalQuery['proposal'], { __typename?: 'Proposal' }>[];
   protocolUpgradeProposals: ProtocolUpgradeProposalFieldsFragment[];
 }) => {
   const { t } = useTranslation();

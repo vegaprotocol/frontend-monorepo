@@ -3,17 +3,19 @@ import { useTranslation } from 'react-i18next';
 import { Heading } from '../../../../components/heading';
 import { ProposalsListItem } from '../proposals-list-item';
 import { ProposalsListFilter } from '../proposals-list-filter';
-import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
+import { type ProposalQuery } from '../../proposal/__generated__/Proposal';
+
+type Proposal = Extract<ProposalQuery['proposal'], { __typename?: 'Proposal' }>;
 
 interface ProposalsListProps {
-  proposals: ProposalQuery['proposal'][];
+  proposals: Proposal[];
 }
 
 export const RejectedProposalsList = ({ proposals }: ProposalsListProps) => {
   const { t } = useTranslation();
   const [filterString, setFilterString] = useState('');
 
-  const filterPredicate = (p: ProposalQuery['proposal']) =>
+  const filterPredicate = (p: Proposal) =>
     p?.id?.includes(filterString) ||
     p?.party?.id?.toString().includes(filterString);
 

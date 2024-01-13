@@ -43,7 +43,10 @@ export const formatVolumeDiscountFactor = (value: string) => {
 };
 
 interface ProposalReferralProgramDetailsProps {
-  proposal: ProposalQuery['proposal'];
+  proposal: Extract<
+    ProposalQuery['proposal'],
+    { __typename?: 'Proposal' }
+  > | null;
 }
 
 /**

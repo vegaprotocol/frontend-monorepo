@@ -21,7 +21,7 @@ import {
 import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
 
 const renderComponent = (
-  proposal: ProposalQuery['proposal'],
+  proposal: Extract<ProposalQuery['proposal'], { __typename?: 'Proposal' }>,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   mocks: MockedResponse<any>[] = [networkParamsQueryMock]
 ) =>

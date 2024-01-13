@@ -16,7 +16,10 @@ import BigNumber from 'bignumber.js';
 import { useAppState } from '../../../../contexts/app-state/app-state-context';
 
 interface ProposalReferralProgramDetailsProps {
-  proposal: ProposalQuery['proposal'];
+  proposal: Extract<
+    ProposalQuery['proposal'],
+    { __typename?: 'Proposal' }
+  > | null;
 }
 
 export const formatEndOfProgramTimestamp = (value: string) => {

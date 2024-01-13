@@ -51,14 +51,16 @@ const vegaWalletConfig: VegaWalletConfig = {
   chainId: 'VEGA_CHAIN_ID',
 };
 
-const renderComponent = (proposal: ProposalQuery['proposal']) => {
+const renderComponent = (
+  proposal: Extract<ProposalQuery['proposal'], { __typename?: 'Proposal' }>
+) => {
   render(
     <MemoryRouter>
       <MockedProvider>
         <VegaWalletProvider config={vegaWalletConfig}>
           <Proposal
             restData={{}}
-            proposal={proposal as ProposalQuery['proposal']}
+            proposal={proposal}
             networkParams={mockNetworkParams}
           />
         </VegaWalletProvider>
