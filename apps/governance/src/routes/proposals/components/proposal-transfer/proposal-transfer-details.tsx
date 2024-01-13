@@ -25,7 +25,9 @@ import {
 export const ProposalTransferDetails = ({
   proposal,
 }: {
-  proposal: ProposalFieldsFragment | ProposalQuery['proposal'];
+  proposal:
+    | ProposalFieldsFragment
+    | Extract<ProposalQuery['proposal'], { __typename?: 'Proposal' }>;
 }) => {
   const { t } = useTranslation();
   const [show, setShow] = useState(false);

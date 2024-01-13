@@ -41,7 +41,7 @@ jest.mock('../../../../contexts/app-state/app-state-context', () => ({
 }));
 
 const renderComponent = (
-  proposal: ProposalQuery['proposal'],
+  proposal: Extract<ProposalQuery['proposal'], { __typename?: 'Proposal' }>,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   mocks: MockedResponse<any>[] = [networkParamsQueryMock]
 ) =>

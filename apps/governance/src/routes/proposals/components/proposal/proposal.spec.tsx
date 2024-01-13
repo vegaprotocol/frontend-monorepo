@@ -50,14 +50,16 @@ const vegaWalletConfig: VegaWalletConfig = {
   },
 };
 
-const renderComponent = (proposal: ProposalQuery['proposal']) => {
+const renderComponent = (
+  proposal: Extract<ProposalQuery['proposal'], { __typename?: 'Proposal' }>
+) => {
   render(
     <MemoryRouter>
       <MockedProvider>
         <VegaWalletProvider config={vegaWalletConfig}>
           <Proposal
             restData={{}}
-            proposal={proposal as ProposalQuery['proposal']}
+            proposal={proposal}
             networkParams={mockNetworkParams}
           />
         </VegaWalletProvider>
