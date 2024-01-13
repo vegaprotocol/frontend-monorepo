@@ -8,13 +8,15 @@ export type VegaIconSize = 8 | 10 | 12 | 13 | 14 | 16 | 18 | 20 | 24 | 28 | 32;
 export interface VegaIconProps {
   name: VegaIconNames;
   size?: VegaIconSize;
+  className?: string;
 }
 
-export const VegaIcon = ({ size = 16, name }: VegaIconProps) => {
+export const VegaIcon = ({ size = 16, name, className }: VegaIconProps) => {
   const effectiveClassName = classNames(
     'inline-block',
     'align-text-bottom',
-    'fill-current stroke-none'
+    'fill-current stroke-none',
+    className
   );
   const Element = VegaIconNameMap[name];
   return (
