@@ -68,6 +68,7 @@ import {
 import {
   useSuccessorMarketProposalDetailsQuery,
   type SuccessorMarketProposalDetailsQuery,
+  type SingleProposal,
 } from '@vegaprotocol/proposals';
 import { getQuoteName, getAsset } from '../../market-utils';
 import classNames from 'classnames';
@@ -209,10 +210,10 @@ export const KeyDetailsInfoPanel = ({
       skip: !featureFlags.SUCCESSOR_MARKETS || !market.proposal?.id,
     });
 
-  const successorProposal = successorProposalDetails?.proposal as Extract<
-    SuccessorMarketProposalDetailsQuery['proposal'],
-    { __typename?: 'Proposal' }
-  >;
+  const successorProposal =
+    successorProposalDetails?.proposal as SingleProposal<
+      SuccessorMarketProposalDetailsQuery['proposal']
+    >;
 
   // The following queries are needed as the parent market could also have been a successor market.
   // Note: the parent market is only passed to this component if the successor markets flag is enabled,
@@ -231,10 +232,10 @@ export const KeyDetailsInfoPanel = ({
       },
       skip: !parentMarket?.proposal?.id,
     });
-  const parentProposal = parentSuccessorProposalDetails?.proposal as Extract<
-    SuccessorMarketProposalDetailsQuery['proposal'],
-    { __typename?: 'Proposal' }
-  >;
+  const parentProposal =
+    parentSuccessorProposalDetails?.proposal as SingleProposal<
+      SuccessorMarketProposalDetailsQuery['proposal']
+    >;
 
   const assetDecimals = getAsset(market).decimals;
 

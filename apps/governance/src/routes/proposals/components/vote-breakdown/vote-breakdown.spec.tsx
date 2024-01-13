@@ -9,8 +9,7 @@ import {
   nextWeek,
 } from '../../test-helpers/mocks';
 import { CompactVotes, VoteBreakdown } from './vote-breakdown';
-import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
-import type { MockedResponse } from '@apollo/client/testing';
+import { type MockedResponse } from '@apollo/client/testing';
 import {
   generateNoVotes,
   generateProposal,
@@ -18,7 +17,8 @@ import {
 } from '../../test-helpers/generate-proposals';
 import { ProposalState } from '@vegaprotocol/types';
 import { BigNumber } from '../../../../lib/bignumber';
-import type { AppState } from '../../../../contexts/app-state/app-state-context';
+import { type AppState } from '../../../../contexts/app-state/app-state-context';
+import { type Proposal } from '../../types';
 
 const mockTotalSupply = new BigNumber(100);
 // Note - giving a fixedTokenValue of 1 means a ratio of 1:1 votes to tokens, making sums easier :)
@@ -41,7 +41,7 @@ jest.mock('../../../../contexts/app-state/app-state-context', () => ({
 }));
 
 const renderComponent = (
-  proposal: Extract<ProposalQuery['proposal'], { __typename?: 'Proposal' }>,
+  proposal: Proposal,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   mocks: MockedResponse<any>[] = [networkParamsQueryMock]
 ) =>

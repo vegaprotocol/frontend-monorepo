@@ -1,6 +1,4 @@
 import { useTranslation } from 'react-i18next';
-import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
-import type { ProposalFieldsFragment } from '../../proposals/__generated__/Proposals';
 import { useCancelTransferProposalDetails } from '@vegaprotocol/proposals';
 import {
   KeyValueTable,
@@ -8,13 +6,12 @@ import {
   RoundedWrapper,
 } from '@vegaprotocol/ui-toolkit';
 import { SubHeading } from '../../../../components/heading';
+import { type Proposal } from '../../types';
 
 export const ProposalCancelTransferDetails = ({
   proposal,
 }: {
-  proposal:
-    | ProposalFieldsFragment
-    | Extract<ProposalQuery['proposal'], { __typename?: 'Proposal' }>;
+  proposal: Proposal;
 }) => {
   const { t } = useTranslation();
   const details = useCancelTransferProposalDetails(proposal?.id);

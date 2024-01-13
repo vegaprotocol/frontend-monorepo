@@ -1,3 +1,4 @@
+import { type SingleProposal } from '../../types';
 import { type CancelTransferFieldsFragment } from '../proposals-data-provider';
 import {
   useCancelTransferDetailsQuery,
@@ -14,9 +15,8 @@ export const useCancelTransferProposalDetails = (
     skip: !proposalId || proposalId.length === 0,
   });
 
-  const proposal = data?.proposal as Extract<
-    CancelTransferDetailsQuery['proposal'],
-    { __typename?: 'Proposal' }
+  const proposal = data?.proposal as SingleProposal<
+    CancelTransferDetailsQuery['proposal']
   >;
 
   if (proposal?.terms.change.__typename === 'CancelTransfer') {

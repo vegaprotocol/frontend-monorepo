@@ -5,16 +5,13 @@ import { ProposalState } from '@vegaprotocol/types';
 import { ConnectToVega } from '../../../../components/connect-to-vega';
 import { VoteButtonsContainer } from './vote-buttons';
 import { SubHeading } from '../../../../components/heading';
-import type { VoteValue } from '@vegaprotocol/types';
-import type { DialogProps, VegaTxState } from '@vegaprotocol/proposals';
-import type { ProposalFieldsFragment } from '../../proposals/__generated__/Proposals';
-import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
-import type { VoteState } from './use-user-vote';
+import { type VoteValue } from '@vegaprotocol/types';
+import { type DialogProps, type VegaTxState } from '@vegaprotocol/proposals';
+import { type VoteState } from './use-user-vote';
+import { type Proposal } from '../../types';
 
 interface UserVoteProps {
-  proposal:
-    | ProposalFieldsFragment
-    | Extract<ProposalQuery['proposal'], { __typename?: 'Proposal' }>;
+  proposal: Proposal;
   minVoterBalance: string | null | undefined;
   spamProtectionMinTokens: string | null | undefined;
   transaction: VegaTxState | null;

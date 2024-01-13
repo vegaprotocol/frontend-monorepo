@@ -12,14 +12,13 @@ import { UserVote } from '../vote-details';
 import { ListAsset } from '../list-asset';
 import Routes from '../../../routes';
 import { ProposalMarketData } from '../proposal-market-data';
-import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
-import type { MarketInfo } from '@vegaprotocol/markets';
-import type { AssetQuery } from '@vegaprotocol/assets';
+import { type MarketInfo } from '@vegaprotocol/markets';
+import { type AssetQuery } from '@vegaprotocol/assets';
 import { removePaginationWrapper } from '@vegaprotocol/utils';
 import { ProposalState } from '@vegaprotocol/types';
 import { ProposalMarketChanges } from '../proposal-market-changes';
 import { ProposalUpdateMarketState } from '../proposal-update-market-state';
-import type { NetworkParamsResult } from '@vegaprotocol/network-parameters';
+import { type NetworkParamsResult } from '@vegaprotocol/network-parameters';
 import { useVoteSubmit } from '@vegaprotocol/proposals';
 import { useUserVote } from '../vote-details/use-user-vote';
 import {
@@ -28,9 +27,10 @@ import {
 } from '../proposal-transfer';
 import { useFeatureFlags } from '@vegaprotocol/environment';
 import { ProposalUpdateBenefitTiers } from '../proposal-update-benefit-tiers';
+import { type Proposal as IProposal } from '../../types';
 
 export interface ProposalProps {
-  proposal: Extract<ProposalQuery['proposal'], { __typename?: 'Proposal' }>;
+  proposal: IProposal;
   networkParams: Partial<NetworkParamsResult>;
   marketData?: MarketInfo | null;
   parentMarketData?: MarketInfo | null;

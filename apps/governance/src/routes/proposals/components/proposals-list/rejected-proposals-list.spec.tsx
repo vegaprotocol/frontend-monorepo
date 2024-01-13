@@ -12,9 +12,7 @@ import {
   nextWeek,
   lastMonth,
 } from '../../test-helpers/mocks';
-import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
-
-type Proposal = Extract<ProposalQuery['proposal'], { __typename?: 'Proposal' }>;
+import { type Proposal } from '../../types';
 
 const rejectedProposalClosesNextWeek = generateProposal({
   id: 'rejected1',

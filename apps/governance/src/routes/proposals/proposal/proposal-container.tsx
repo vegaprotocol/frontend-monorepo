@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 
 import { Proposal } from '../components/proposal';
 import { ProposalNotFound } from '../components/proposal-not-found';
-import { useProposalQuery, type ProposalQuery } from './__generated__/Proposal';
+import { useProposalQuery } from './__generated__/Proposal';
 import { useFetch } from '@vegaprotocol/react-helpers';
 import { ENV } from '../../../config';
 import { useDataProvider } from '@vegaprotocol/data-provider';
@@ -17,6 +17,7 @@ import {
 import { useParentMarketIdQuery } from '@vegaprotocol/markets';
 import { useFeatureFlags } from '@vegaprotocol/environment';
 import { useSuccessorMarketProposalDetails } from '@vegaprotocol/proposals';
+import { type Proposal as IProposal } from '../types';
 
 export const ProposalContainer = () => {
   const featureFlags = useFeatureFlags((state) => state.flags);
@@ -67,11 +68,7 @@ export const ProposalContainer = () => {
     skip: !params.proposalId,
   });
 
-  // We only fetch Proposals (and not BatchProposals)
-  const proposal = data?.proposal as Extract<
-    ProposalQuery['proposal'],
-    { __typename?: 'Proposal' }
-  >;
+  const proposal = data?.proposal as IProposal;
 
   const successor = useSuccessorMarketProposalDetails(params.proposalId);
 

@@ -2,17 +2,10 @@ import { useMemo } from 'react';
 import { useAppState } from '../../../contexts/app-state/app-state-context';
 import { BigNumber } from '../../../lib/bignumber';
 import { useProposalNetworkParams } from './use-proposal-network-params';
-import type { ProposalFieldsFragment } from '../proposals/__generated__/Proposals';
-import type { ProposalQuery } from '../proposal/__generated__/Proposal';
 import { addDecimal } from '@vegaprotocol/utils';
+import { type Proposal } from '../types';
 
-export const useVoteInformation = ({
-  proposal,
-}: {
-  proposal:
-    | ProposalFieldsFragment
-    | Extract<ProposalQuery['proposal'], { __typename?: 'Proposal' }>;
-}) => {
+export const useVoteInformation = ({ proposal }: { proposal: Proposal }) => {
   const {
     appState: { totalSupply, decimals },
   } = useAppState();

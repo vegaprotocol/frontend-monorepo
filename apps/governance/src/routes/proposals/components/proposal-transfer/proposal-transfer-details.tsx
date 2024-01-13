@@ -1,6 +1,4 @@
 import { useState } from 'react';
-import type { ProposalFieldsFragment } from '../../proposals/__generated__/Proposals';
-import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
 import { CollapsibleToggle } from '../../../../components/collapsible-toggle';
 import { SubHeading } from '../../../../components/heading';
 import { useTranslation } from 'react-i18next';
@@ -21,13 +19,12 @@ import {
   addDecimalsFormatNumberQuantum,
   formatDateWithLocalTimezone,
 } from '@vegaprotocol/utils';
+import { type Proposal } from '../../types';
 
 export const ProposalTransferDetails = ({
   proposal,
 }: {
-  proposal:
-    | ProposalFieldsFragment
-    | Extract<ProposalQuery['proposal'], { __typename?: 'Proposal' }>;
+  proposal: Proposal;
 }) => {
   const { t } = useTranslation();
   const [show, setShow] = useState(false);
