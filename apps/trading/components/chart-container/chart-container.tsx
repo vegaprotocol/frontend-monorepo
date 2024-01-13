@@ -1,5 +1,5 @@
 import invert from 'lodash/invert';
-import { type Interval } from '@vegaprotocol/types';
+import { Interval } from '@vegaprotocol/types';
 import {
   TradingViewContainer,
   ALLOWED_TRADINGVIEW_HOSTNAMES,
@@ -11,6 +11,7 @@ import {
 } from '@vegaprotocol/candles-chart';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { useChartSettings, STUDY_SIZE } from './use-chart-settings';
+import { SUPPORTED_INTERVALS, type SupportedInterval } from './constants';
 
 /**
  * Renders either the pennant chart or the tradingview chart
@@ -36,7 +37,7 @@ export const ChartContainer = ({ marketId }: { marketId: string }) => {
   const pennantChart = (
     <CandlesChartContainer
       marketId={marketId}
-      interval={toPennantInterval(interval)}
+      interval={toPennantInterval(interval as SupportedInterval)}
       chartType={chartType}
       overlays={overlays}
       studies={studies}
@@ -63,7 +64,7 @@ export const ChartContainer = ({ marketId }: { marketId: string }) => {
           libraryPath={CHARTING_LIBRARY_PATH}
           libraryHash={CHARTING_LIBRARY_HASH}
           marketId={marketId}
-          interval={toTradingViewResolution(interval)}
+          interval={toTradingViewResolution(interval as SupportedInterval)}
           studies={tradingViewStudies}
           onIntervalChange={(newInterval) => {
             setInterval(fromTradingViewResolution(newInterval));
@@ -83,7 +84,11 @@ export const ChartContainer = ({ marketId }: { marketId: string }) => {
   }
 };
 
-const toTradingViewResolution = (interval: Interval) => {
+const toTradingViewResolution = (interval: SupportedInterval) => {
+  if (!SUPPORTED_INTERVALS.includes(interval)) {
+    throw new Error(`interval ${interval} is not supported`);
+  }
+
   const resolution = TRADINGVIEW_INTERVAL_MAP[interval];
 
   if (!resolution) {
@@ -107,7 +112,11 @@ const fromTradingViewResolution = (resolution: string) => {
   return interval as Interval;
 };
 
-const toPennantInterval = (interval: Interval) => {
+const toPennantInterval = (interval: SupportedInterval) => {
+  if (!SUPPORTED_INTERVALS.includes(interval)) {
+    throw new Error(`interval ${interval} is not supported`);
+  }
+
   const pennantInterval = PENNANT_INTERVAL_MAP[interval];
 
   if (!pennantInterval) {
