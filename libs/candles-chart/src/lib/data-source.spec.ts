@@ -21,106 +21,107 @@ const returnDataMocks = (nodes: CandleFieldsFragment[]): CandlesQuery => {
   } as CandlesQuery;
 };
 
-const dataMocks: { [key in Schema.Interval]: Partial<CandleFieldsFragment>[] } =
-  {
-    [Schema.Interval.INTERVAL_I1M]: [
-      {
-        __typename: 'Candle',
-        periodStart: '2023-05-10T12:00:00Z',
-        lastUpdateInPeriod: '',
-        close: '10',
-        volume: '1',
-      },
-      {
-        __typename: 'Candle',
-        periodStart: '2023-05-10T12:05:00Z',
-        lastUpdateInPeriod: '',
-        close: '5',
-        volume: '2',
-      },
-    ],
-    [Schema.Interval.INTERVAL_I5M]: [
-      {
-        __typename: 'Candle',
-        periodStart: '2023-05-10T12:00:00Z',
-        lastUpdateInPeriod: '',
-        close: '10',
-        volume: '1',
-      },
-      {
-        __typename: 'Candle',
-        periodStart: '2023-05-10T12:25:00Z',
-        lastUpdateInPeriod: '',
-        close: '5',
-        volume: '2',
-      },
-    ],
-    [Schema.Interval.INTERVAL_I15M]: [
-      {
-        __typename: 'Candle',
-        periodStart: '2023-05-10T12:00:00Z',
-        lastUpdateInPeriod: '',
-        close: '10',
-        volume: '1',
-      },
-      {
-        __typename: 'Candle',
-        periodStart: '2023-05-10T13:15:00Z',
-        lastUpdateInPeriod: '',
-        close: '5',
-        volume: '2',
-      },
-    ],
-    [Schema.Interval.INTERVAL_I1H]: [
-      {
-        __typename: 'Candle',
-        periodStart: '2023-05-10T12:00:00Z',
-        lastUpdateInPeriod: '',
-        close: '10',
-        volume: '1',
-      },
-      {
-        __typename: 'Candle',
-        periodStart: '2023-05-10T17:00:00Z',
-        lastUpdateInPeriod: '',
-        close: '5',
-        volume: '2',
-      },
-    ],
-    [Schema.Interval.INTERVAL_I6H]: [
-      {
-        __typename: 'Candle',
-        periodStart: '2023-05-10T12:00:00Z',
-        lastUpdateInPeriod: '',
-        close: '10',
-        volume: '1',
-      },
-      {
-        __typename: 'Candle',
-        periodStart: '2023-05-11T18:00:00Z',
-        lastUpdateInPeriod: '',
-        close: '5',
-        volume: '2',
-      },
-    ],
-    [Schema.Interval.INTERVAL_I1D]: [
-      {
-        __typename: 'Candle',
-        periodStart: '2023-05-10T00:00:00Z',
-        lastUpdateInPeriod: '',
-        close: '10',
-        volume: '1',
-      },
-      {
-        __typename: 'Candle',
-        periodStart: '2023-05-15T00:00:00Z',
-        lastUpdateInPeriod: '',
-        close: '5',
-        volume: '2',
-      },
-    ],
-    [Schema.Interval.INTERVAL_BLOCK]: [],
-  };
+const dataMocks: {
+  [key in Schema.Interval]?: Partial<CandleFieldsFragment>[];
+} = {
+  [Schema.Interval.INTERVAL_I1M]: [
+    {
+      __typename: 'Candle',
+      periodStart: '2023-05-10T12:00:00Z',
+      lastUpdateInPeriod: '',
+      close: '10',
+      volume: '1',
+    },
+    {
+      __typename: 'Candle',
+      periodStart: '2023-05-10T12:05:00Z',
+      lastUpdateInPeriod: '',
+      close: '5',
+      volume: '2',
+    },
+  ],
+  [Schema.Interval.INTERVAL_I5M]: [
+    {
+      __typename: 'Candle',
+      periodStart: '2023-05-10T12:00:00Z',
+      lastUpdateInPeriod: '',
+      close: '10',
+      volume: '1',
+    },
+    {
+      __typename: 'Candle',
+      periodStart: '2023-05-10T12:25:00Z',
+      lastUpdateInPeriod: '',
+      close: '5',
+      volume: '2',
+    },
+  ],
+  [Schema.Interval.INTERVAL_I15M]: [
+    {
+      __typename: 'Candle',
+      periodStart: '2023-05-10T12:00:00Z',
+      lastUpdateInPeriod: '',
+      close: '10',
+      volume: '1',
+    },
+    {
+      __typename: 'Candle',
+      periodStart: '2023-05-10T13:15:00Z',
+      lastUpdateInPeriod: '',
+      close: '5',
+      volume: '2',
+    },
+  ],
+  [Schema.Interval.INTERVAL_I1H]: [
+    {
+      __typename: 'Candle',
+      periodStart: '2023-05-10T12:00:00Z',
+      lastUpdateInPeriod: '',
+      close: '10',
+      volume: '1',
+    },
+    {
+      __typename: 'Candle',
+      periodStart: '2023-05-10T17:00:00Z',
+      lastUpdateInPeriod: '',
+      close: '5',
+      volume: '2',
+    },
+  ],
+  [Schema.Interval.INTERVAL_I6H]: [
+    {
+      __typename: 'Candle',
+      periodStart: '2023-05-10T12:00:00Z',
+      lastUpdateInPeriod: '',
+      close: '10',
+      volume: '1',
+    },
+    {
+      __typename: 'Candle',
+      periodStart: '2023-05-11T18:00:00Z',
+      lastUpdateInPeriod: '',
+      close: '5',
+      volume: '2',
+    },
+  ],
+  [Schema.Interval.INTERVAL_I1D]: [
+    {
+      __typename: 'Candle',
+      periodStart: '2023-05-10T00:00:00Z',
+      lastUpdateInPeriod: '',
+      close: '10',
+      volume: '1',
+    },
+    {
+      __typename: 'Candle',
+      periodStart: '2023-05-15T00:00:00Z',
+      lastUpdateInPeriod: '',
+      close: '5',
+      volume: '2',
+    },
+  ],
+  [Schema.Interval.INTERVAL_BLOCK]: [],
+};
 
 describe('VegaDataSource', () => {
   const marketId = 'marketId';
