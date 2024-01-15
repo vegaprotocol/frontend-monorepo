@@ -17,6 +17,10 @@ export const Routes = {
   REFERRALS_APPLY_CODE: '/referrals/apply-code',
   REFERRALS_CREATE_CODE: '/referrals/create-code',
   TEAM: '/competitions/team/:teamId',
+  COMPETITIONS: '/competitions',
+  COMPETITIONS_TEAMS: '/competitions/teams',
+  COMPETITIONS_CREATE_TEAM: '/competitions/teams/create',
+  COMPETITIONS_TEAM: '/competitions/teams/:teamId',
   FEES: '/fees',
   REWARDS: '/rewards',
 } as const;
@@ -42,6 +46,11 @@ export const Links: ConsoleLinks = {
   REFERRALS_APPLY_CODE: () => Routes.REFERRALS_APPLY_CODE,
   REFERRALS_CREATE_CODE: () => Routes.REFERRALS_CREATE_CODE,
   TEAM: (teamId: string) => trimEnd(Routes.TEAM.replace(':teamId', teamId)),
+  COMPETITIONS: () => Routes.COMPETITIONS,
+  COMPETITIONS_TEAMS: () => Routes.COMPETITIONS_TEAMS,
+  COMPETITIONS_CREATE_TEAM: () => Routes.COMPETITIONS_CREATE_TEAM,
+  COMPETITIONS_TEAM: (teamId: string) =>
+    Routes.COMPETITIONS_TEAM.replace(':teamId', teamId),
   FEES: () => Routes.FEES,
   REWARDS: () => Routes.REWARDS,
 };
