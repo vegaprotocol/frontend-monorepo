@@ -116,7 +116,7 @@
   "Total fees": "Total fees",
   "Total margin available": "Total margin available",
   "TOTAL_MARGIN_AVAILABLE": "Total margin available = general {{assetSymbol}} balance ({{generalAccountBalance}} {{assetSymbol}}) + margin balance ({{marginAccountBalance}} {{assetSymbol}}) - maintenance level ({{marginMaintenance}} {{assetSymbol}}).",
-  "Trading terminated": "Trading terminated",
+  "No trading": "No trading",
   "Trailing percent offset cannot be higher than 99.9": "Trailing percent offset cannot be higher than 99.9",
   "Trailing percent offset cannot be lower than {{trailingPercentOffsetStep}}": "Trailing percent offset cannot be lower than {{trailingPercentOffsetStep}}",
   "Trailing percentage offset": "Trailing percentage offset",

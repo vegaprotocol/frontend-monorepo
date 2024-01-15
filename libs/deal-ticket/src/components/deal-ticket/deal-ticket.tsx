@@ -329,8 +329,9 @@ export const DealTicket = ({
 
     const marketTradingModeError = validateMarketTradingMode(
       marketTradingMode,
-      t('Trading terminated')
+      t('No trading')
     );
+
     if (marketTradingModeError !== true) {
       return {
         message: marketTradingModeError,
