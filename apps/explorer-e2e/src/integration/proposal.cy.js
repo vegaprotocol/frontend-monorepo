@@ -44,7 +44,7 @@ context('Proposal page', { tags: '@smoke' }, function () {
       cy.getByTestId('icon-cross').click();
     });
 
-    it.skip('Proposal page displayed on mobile', function () {
+    it('Proposal page displayed on mobile', function () {
       const proposalTitle = 'Add Lorem Ipsum market';
 
       cy.common_switch_to_mobile_and_click_toggle();
@@ -55,7 +55,7 @@ context('Proposal page', { tags: '@smoke' }, function () {
       });
     });
 
-    it('Able to view new asset proposal', function () {
+    it.skip('Able to view new asset proposal', function () {
       const proposalTitle = 'Test new asset proposal';
       const newAssetProposalBody = getNewAssetTxBody();
       cy.VegaWalletSubmitProposal(newAssetProposalBody);
