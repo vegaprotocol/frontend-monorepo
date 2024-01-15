@@ -26,7 +26,7 @@ import {
 } from '@vegaprotocol/web3';
 import { Web3Provider } from '@vegaprotocol/web3';
 import { VegaWalletDialogs } from './components/vega-wallet-dialogs';
-import { VegaWalletProvider } from '@vegaprotocol/wallet';
+import { VegaWalletProvider, useChainId } from '@vegaprotocol/wallet';
 import {
   useVegaTransactionManager,
   useVegaTransactionUpdater,
@@ -96,7 +96,9 @@ const cache: InMemoryCacheConfig = {
 const Web3Container = ({
   chainId,
 }: {
+  /** Ethereum chain id */
   chainId: number;
+  /** Ethereum provider url */
   providerUrl: string;
 }) => {
   const InitializeHandlers = () => {
@@ -123,6 +125,9 @@ const Web3Container = ({
     MOZILLA_EXTENSION_URL,
     VEGA_WALLET_URL,
   } = useEnvironment();
+
+  const vegaChainId = useChainId(VEGA_URL);
+
   useEffect(() => {
     if (chainId) {
       return initializeConnectors(
@@ -157,7 +162,8 @@ const Web3Container = ({
     !VEGA_EXPLORER_URL ||
     !DocsLinks ||
     !CHROME_EXTENSION_URL ||
-    !MOZILLA_EXTENSION_URL
+    !MOZILLA_EXTENSION_URL ||
+    !vegaChainId
   ) {
     return null;
   }
@@ -169,6 +175,7 @@ const Web3Container = ({
           config={{
             network: VEGA_ENV,
             vegaUrl: VEGA_URL,
+            chainId: vegaChainId,
             vegaWalletServiceUrl: VEGA_WALLET_URL,
             links: {
               explorer: VEGA_EXPLORER_URL,

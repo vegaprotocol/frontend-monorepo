@@ -44,7 +44,6 @@ import { isBrowserWalletInstalled } from '../utils';
 import { useIsWalletServiceRunning } from '../use-is-wallet-service-running';
 import { SnapStatus, useSnapStatus } from '../use-snap-status';
 import { useVegaWalletDialogStore } from './vega-wallet-dialog-store';
-import { useChainId } from './use-chain-id';
 import { useT } from '../use-t';
 import { Trans } from 'react-i18next';
 
@@ -65,7 +64,7 @@ export const VegaConnectDialog = ({
   contentOnly,
   onClose,
 }: VegaConnectDialogProps) => {
-  const { disconnect, acknowledgeNeeded } = useVegaWallet();
+  const { chainId, disconnect, acknowledgeNeeded } = useVegaWallet();
   const vegaWalletDialogOpen = useVegaWalletDialogStore(
     (store) => store.vegaWalletDialogOpen
   );
@@ -84,10 +83,6 @@ export const VegaConnectDialog = ({
     },
     [updateVegaWalletDialog, acknowledgeNeeded, disconnect]
   );
-
-  // Ensure we have a chain Id so we can compare with wallet chain id.
-  // This value will already be in the cache, if it failed the app wont render
-  const chainId = useChainId();
 
   const content = chainId && (
     <ConnectDialogContainer

@@ -16,6 +16,7 @@ const defaultConfig: VegaWalletConfig = {
     chromeExtensionUrl: 'chrome-link',
     mozillaExtensionUrl: 'mozilla-link',
   },
+  chainId: 'VEGA_CHAIN_ID',
 };
 
 const setup = (callback = jest.fn(), config?: Partial<VegaWalletConfig>) => {
@@ -46,20 +47,10 @@ describe('useInjectedConnector', () => {
     expect(result.current.status).toBe(Status.Error);
   });
 
-  it('errors if chain ids dont match', async () => {
-    mockBrowserWallet();
-    const { result } = setup();
-    await act(async () => {
-      result.current.connect(injected, '2'); // default mock chainId is '1'
-    });
-    expect(result.current.error?.message).toBe('Invalid chain');
-    expect(result.current.status).toBe(Status.Error);
-  });
-
   it('errors if connection throws', async () => {
     const callback = jest.fn();
     mockBrowserWallet({
-      getChainId: () => Promise.reject('failed'),
+      connectWallet: jest.fn().mockReturnValue(Promise.reject()),
     });
     const { result } = setup(callback);
 
@@ -67,7 +58,9 @@ describe('useInjectedConnector', () => {
       result.current.connect(injected, '1'); // default mock chainId is '1'
     });
     expect(result.current.status).toBe(Status.Error);
-    expect(result.current.error?.message).toBe('injected connection failed');
+    expect(result.current.error?.message).toBe(
+      'could not connect to the vega wallet on chain: 1'
+    );
   });
 
   it('connects', async () => {
@@ -78,7 +71,6 @@ describe('useInjectedConnector', () => {
     act(() => {
       result.current.connect(injected, '1'); // default mock chainId is '1'
     });
-    expect(result.current.status).toBe(Status.GettingChainId);
 
     await waitFor(() => {
       expect(vega.connectWallet).toHaveBeenCalled();

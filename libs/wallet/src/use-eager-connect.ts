@@ -7,7 +7,7 @@ import { useVegaWallet } from './use-vega-wallet';
 
 export function useEagerConnect(connectors: Connectors) {
   const [connecting, setConnecting] = useState(true);
-  const { vegaUrl, connect, acknowledgeNeeded } = useVegaWallet();
+  const { vegaUrl, chainId, connect, acknowledgeNeeded } = useVegaWallet();
 
   useEffect(() => {
     const attemptConnect = async () => {
@@ -33,7 +33,7 @@ export function useEagerConnect(connectors: Connectors) {
 
       try {
         if (connector instanceof InjectedConnector) {
-          await connector.connectWallet();
+          await connector.connectWallet(chainId);
           await connect(connector);
         } else if (connector instanceof SnapConnector) {
           connector.nodeAddress = new URL(vegaUrl).origin;
@@ -51,7 +51,7 @@ export function useEagerConnect(connectors: Connectors) {
     if (typeof window !== 'undefined') {
       attemptConnect();
     }
-  }, [connect, connectors, acknowledgeNeeded, vegaUrl]);
+  }, [connect, connectors, acknowledgeNeeded, vegaUrl, chainId]);
 
   return connecting;
 }

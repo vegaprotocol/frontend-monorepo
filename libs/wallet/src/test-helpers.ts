@@ -1,6 +1,5 @@
 export function mockBrowserWallet(overrides?: Partial<Vega>) {
   const vega: Vega = {
-    getChainId: jest.fn().mockReturnValue(Promise.resolve({ chainID: '1' })),
     connectWallet: jest.fn().mockReturnValue(Promise.resolve(null)),
     disconnectWallet: jest.fn().mockReturnValue(Promise.resolve()),
     listKeys: jest
@@ -14,6 +13,8 @@ export function mockBrowserWallet(overrides?: Partial<Vega>) {
       success: true,
       txHash: '0x123',
     }),
+    on: jest.fn(),
+    isConnected: jest.fn().mockRejectedValue(Promise.resolve(true)),
     ...overrides,
   };
   // @ts-ignore globalThis has no index signature

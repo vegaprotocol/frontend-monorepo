@@ -39,6 +39,7 @@ interface VegaWalletLinks {
 export interface VegaWalletConfig {
   network: Networks;
   vegaUrl: string;
+  chainId: string;
   vegaWalletServiceUrl: string;
   links: VegaWalletLinks;
   keepAlive?: number;
@@ -168,6 +169,7 @@ export const VegaWalletProvider = ({
   const contextValue = useMemo<VegaWalletContextShape>(() => {
     return {
       vegaUrl: config.vegaUrl,
+      chainId: config.chainId,
       vegaWalletServiceUrl: config.vegaWalletServiceUrl,
       network: config.network,
       links: {
