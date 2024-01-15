@@ -137,7 +137,6 @@ const ClosedMarketsDataGrid = ({
         headerName: t('Market'),
         field: 'code',
         cellRenderer: 'MarketCodeCell',
-        pinned: true,
         width: 150,
         resizable: true,
       },
