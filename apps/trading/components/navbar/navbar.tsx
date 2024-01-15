@@ -202,6 +202,13 @@ const NavbarMenu = ({ onClick }: { onClick: () => void }) => {
             {t('Portfolio')}
           </NavbarLink>
         </NavbarItem>
+        {featureFlags.TEAM_COMPETITION && (
+          <NavbarItem>
+            <NavbarLink to={Links.COMPETITIONS()} onClick={onClick}>
+              {t('Competitions')}
+            </NavbarLink>
+          </NavbarItem>
+        )}
         {featureFlags.REFERRALS && (
           <NavbarItem>
             <NavbarLink end={false} to={Links.REFERRALS()} onClick={onClick}>

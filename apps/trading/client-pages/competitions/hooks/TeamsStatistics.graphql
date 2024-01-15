@@ -1,0 +1,13 @@
+query TeamsStatistics($teamId: ID, $aggregationEpochs: Int) {
+  teamsStatistics(teamId: $teamId, aggregationEpochs: $aggregationEpochs) {
+    edges {
+      node {
+        teamId
+        totalQuantumVolume
+        totalQuantumRewards
+        totalGamesPlayed
+        gamesPlayed
+      }
+    }
+  }
+}

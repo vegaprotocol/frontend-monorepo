@@ -14,7 +14,6 @@ import { Withdraw } from '../client-pages/withdraw';
 import { Transfer } from '../client-pages/transfer';
 import { Fees } from '../client-pages/fees';
 import { Rewards } from '../client-pages/rewards';
-import { Team } from '../client-pages/team';
 import { Routes as AppRoutes } from '../lib/links';
 import { LayoutWithSky } from '../client-pages/referrals/layout';
 import { Referrals } from '../client-pages/referrals/referrals';
@@ -30,6 +29,8 @@ import { PortfolioSidebar } from '../client-pages/portfolio/portfolio-sidebar';
 import { LiquiditySidebar } from '../client-pages/liquidity/liquidity-sidebar';
 import { MarketsSidebar } from '../client-pages/markets/markets-sidebar';
 import { useT } from '../lib/use-t';
+import { CompetitionsHome } from '../client-pages/competitions/competitions-home';
+import { CompetitionsTeams } from '../client-pages/competitions/competitions-teams';
 
 // These must remain dynamically imported as pennant cannot be compiled by nextjs due to ESM
 // Using dynamic imports is a workaround for this until pennant is published as ESM
@@ -95,8 +96,20 @@ export const useRouterConfig = (): RouteObject[] => {
       : undefined,
     featureFlags.TEAM_COMPETITION
       ? {
-          path: AppRoutes.TEAM,
-          element: <Team />,
+          path: AppRoutes.COMPETITIONS,
+          element: <LayoutWithSidebar sidebar={<PortfolioSidebar />} />,
+          children: [
+            {
+              element: <LayoutWithSky />,
+              children: [
+                { index: true, element: <CompetitionsHome /> },
+                {
+                  path: AppRoutes.COMPETITIONS_TEAMS,
+                  element: <CompetitionsTeams />,
+                },
+              ],
+            },
+          ],
         }
       : undefined,
     {

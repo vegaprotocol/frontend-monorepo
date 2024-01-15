@@ -1,0 +1,12 @@
+query TeamReferees($teamId: ID!) {
+  teamReferees(teamId: $teamId) {
+    edges {
+      node {
+        teamId
+        referee
+        joinedAt
+        joinedAtEpoch
+      }
+    }
+  }
+}
