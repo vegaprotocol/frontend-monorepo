@@ -227,3 +227,13 @@ jobs:
           name: worker-logs
           path: ./logs/
           retention-days: 15
+      #----------------------------------------------
+      #  -----  upload logs  -----
+      #----------------------------------------------
+      - name: Upload market-sim-logs
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: market-sim-logs
+          path: /tmp/**
+          retention-days: 15
