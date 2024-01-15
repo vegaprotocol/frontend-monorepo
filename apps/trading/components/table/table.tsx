@@ -15,11 +15,17 @@ type TableColumnDefinition = {
   testId?: string;
 };
 
+type DataEntry = {
+  [key: TableColumnDefinition['name']]: ReactNode;
+  className?: string;
+};
+
 type TableProps = {
   columns: TableColumnDefinition[];
-  data: Record<TableColumnDefinition['name'] | 'className', React.ReactNode>[];
+  data: DataEntry[];
   noHeader?: boolean;
   noCollapse?: boolean;
+  onRowClick?: (index: number) => void;
 };
 
 const INNER_BORDER_STYLE = `border-b ${BORDER_COLOR}`;
@@ -35,6 +41,7 @@ export const Table = forwardRef<
       noHeader = false,
       noCollapse = false,
       className,
+      onRowClick,
       ...props
     },
     ref
@@ -81,12 +88,17 @@ export const Table = forwardRef<
       >
         {!noHeader && header}
         <tbody>
-          {data.map((d, i) => (
+          {data.map((dataEntry, i) => (
             <tr
               key={i}
-              className={classNames(d['className'] as string, {
+              className={classNames(dataEntry['className'] as string, {
                 'max-md:flex flex-col w-full': !noCollapse,
               })}
+              onClick={() => {
+                if (onRowClick) {
+                  onRowClick(i);
+                }
+              }}
             >
               {columns.map(({ name, displayName, className, testId }, j) => (
                 <td
@@ -116,7 +128,9 @@ export const Table = forwardRef<
                       {displayName}
                     </span>
                   )}
-                  <span data-testid={`${testId || name}-${i}`}>{d[name]}</span>
+                  <span data-testid={`${testId || name}-${i}`}>
+                    {dataEntry[name]}
+                  </span>
                 </td>
               ))}
             </tr>

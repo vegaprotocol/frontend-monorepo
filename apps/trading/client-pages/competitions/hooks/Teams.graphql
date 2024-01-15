@@ -1,0 +1,16 @@
+query Teams($teamId: ID, $partyId: ID) {
+  teams(teamId: $teamId, partyId: $partyId) {
+    edges {
+      node {
+        teamId
+        referrer
+        name
+        teamUrl
+        avatarUrl
+        createdAt
+        createdAtEpoch
+        closed
+      }
+    }
+  }
+}
