@@ -235,5 +235,5 @@ jobs:
         if: always()
         with:
           name: market-sim-logs
-          path: /tmp/**
+          path: /tmp/vega-sim-*
           retention-days: 15
