@@ -228,12 +228,23 @@ jobs:
           path: ./logs/
           retention-days: 15
       #----------------------------------------------
-      #  -----  upload logs  -----
+      #  -----  upload  market-sim logs  -----
       #----------------------------------------------
-      - name: Upload market-sim-logs
+      - name: Find Directory
+        id: find-dir
+        run: |
+          DIR=$(find /tmp -type d -regex ".*/vega-sim-[0-9]+$" -print -quit)
+          echo "::set-output name=dir::$DIR"
+
+      - name: Compress Files
+        if: steps.find-dir.outputs.dir
+        run: |
+          tar -czvf market-sim-logs.tar.gz -C ${{ steps.find-dir.outputs.dir }} .
+
+      - name: Upload Compressed market-sim-logs
         uses: actions/upload-artifact@v3
         if: always()
         with:
           name: market-sim-logs
-          path: /tmp/vega-sim-*
+          path: market-sim-logs.tar.gz
           retention-days: 15
