@@ -67,6 +67,7 @@ const defaultColDef = {
   sortable: true,
   tooltipComponent: TooltipCellComponent,
   comparator: accountValuesComparator,
+  minWidth: 150,
 };
 export interface GetRowsParams extends Omit<IGetRowsParams, 'successCallback'> {
   successCallback(rowsThisBlock: AccountFields[], lastRow?: number): void;
@@ -139,6 +140,8 @@ export const AccountTable = ({
       {
         headerName: t('Asset'),
         field: 'asset.symbol',
+        pinned: true,
+        minWidth: 75,
         headerTooltip: t(
           'Asset is the collateral that is deposited into the Vega protocol.'
         ),
@@ -253,8 +256,8 @@ export const AccountTable = ({
         colId: 'accounts-actions',
         field: 'asset.id',
         ...COL_DEFS.actions,
-        minWidth: showDepositButton ? 105 : COL_DEFS.actions.minWidth,
-        maxWidth: showDepositButton ? 105 : COL_DEFS.actions.maxWidth,
+        minWidth: showDepositButton ? 110 : COL_DEFS.actions.minWidth,
+        maxWidth: showDepositButton ? 110 : COL_DEFS.actions.maxWidth,
         cellRenderer: ({
           value: assetId,
           node,

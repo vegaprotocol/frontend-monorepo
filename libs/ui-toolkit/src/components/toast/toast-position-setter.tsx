@@ -5,15 +5,16 @@ import { ToastPosition, useToastsConfiguration, useToasts } from './use-toasts';
 import { useCallback } from 'react';
 import { Intent } from '../../utils/intent';
 import { useT } from '../../use-t';
+import { useScreenDimensions } from '@vegaprotocol/react-helpers';
 
 export const ToastPositionSetter = () => {
   const t = useT();
-  const setPostion = useToastsConfiguration((store) => store.setPosition);
+  const setPosition = useToastsConfiguration((store) => store.setPosition);
   const position = useToastsConfiguration((store) => store.position);
   const setToast = useToasts((store) => store.setToast);
   const handleChange = useCallback(
     (position: ToastPosition) => {
-      setPostion(position);
+      setPosition(position);
       setToast({
         id: 'test-toast',
         intent: Intent.Primary,
@@ -21,11 +22,49 @@ export const ToastPositionSetter = () => {
         onClose: () => useToasts.getState().remove('test-toast'),
       });
     },
-    [setToast, setPostion, t]
+    [setToast, setPosition, t]
   );
   const buttonCssClasses =
     'flex items-center px-1 py-1 relative rounded bg-vega-clight-400 dark:bg-vega-cdark-400';
   const activeIcon = 'fill-vega-clight-900 dark:fill-vega-cdark-900';
+
+  const { screenSize } = useScreenDimensions();
+
+  const isMobileScreen = screenSize === 'xs';
+
+  if (isMobileScreen) {
+    return (
+      <div className="flex justify-between">
+        <div className={classNames('grid grid-cols-1 grid-rows-2 gap-1')}>
+          <button
+            className={buttonCssClasses}
+            onClick={() => handleChange(ToastPosition.TopCenter)}
+          >
+            <Icon
+              className={classNames(
+                position === ToastPosition.TopCenter && activeIcon
+              )}
+              size={3}
+              name={IconNames.ARROW_UP}
+            />
+          </button>
+          <button
+            className={buttonCssClasses}
+            onClick={() => handleChange(ToastPosition.BottomCenter)}
+          >
+            <Icon
+              className={classNames(
+                position === ToastPosition.BottomCenter && activeIcon
+              )}
+              size={3}
+              name={IconNames.ARROW_DOWN}
+            />
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex justify-between">
       <div className={classNames('grid grid-cols-3 grid-rows-2 gap-1')}>

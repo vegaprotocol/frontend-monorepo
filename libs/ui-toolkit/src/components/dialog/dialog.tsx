@@ -85,19 +85,21 @@ export function Dialog({
                   <VegaIcon name={VegaIconNames.CROSS} size={24} />
                 </DialogPrimitives.Close>
               )}
-              <div className="flex gap-4 max-w-full">
-                {icon && <div className="fill-current">{icon}</div>}
-                <div data-testid="dialog-content" className="flex-1 max-w-full">
-                  {title && (
-                    <h1
-                      className="text-xl uppercase mb-4 pr-2"
-                      data-testid="dialog-title"
-                    >
-                      {title}
-                    </h1>
-                  )}
-                  <div>{children}</div>
-                </div>
+              <div data-testid="dialog-content" className="flex-1 max-w-full">
+                {title && (
+                  <span
+                    className="text-xl uppercase flex gap-4"
+                    data-testid="dialog-title"
+                  >
+                    {icon && (
+                      <span className="fill-current flex items-center">
+                        {icon}
+                      </span>
+                    )}
+                    {title}
+                  </span>
+                )}
+                <div>{children}</div>
               </div>
             </div>
           </div>

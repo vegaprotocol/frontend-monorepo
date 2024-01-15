@@ -29,6 +29,7 @@ export const useColumnDefs = () => {
         colId: 'market',
         headerName: t('Market'),
         field: 'terms.change.instrument.code',
+        pinned: true,
         cellStyle: { lineHeight: '14px' },
         cellRenderer: ({
           value,

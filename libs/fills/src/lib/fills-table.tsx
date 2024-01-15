@@ -48,6 +48,7 @@ export const FillsTable = forwardRef<AgGridReact, Props>(
           field: 'market.tradableInstrument.instrument.code',
           cellRenderer: 'MarketNameCell',
           cellRendererParams: { idPath: 'market.id', onMarketClick },
+          pinned: true,
         },
         {
           headerName: t('Size'),
@@ -143,6 +144,7 @@ export const FillsTable = forwardRef<AgGridReact, Props>(
       <AgGrid
         ref={ref}
         columnDefs={columnDefs}
+        defaultColDef={COL_DEFS.default}
         overlayNoRowsTemplate={t('No fills')}
         getRowId={({ data }) => data?.id}
         tooltipShowDelay={0}

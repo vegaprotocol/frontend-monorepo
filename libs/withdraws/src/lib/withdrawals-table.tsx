@@ -15,6 +15,7 @@ import {
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 import {
+  COL_DEFS,
   type TypedDataAgGrid,
   type VegaICellRendererParams,
   type VegaValueFormatterParams,
@@ -46,7 +47,7 @@ export const WithdrawalsTable = ({
 
   const columnDefs = useMemo<ColDef[]>(
     () => [
-      { headerName: t('Asset'), field: 'asset.symbol' },
+      { headerName: t('Asset'), field: 'asset.symbol', pinned: true },
       {
         headerName: t('Amount'),
         field: 'amount',
@@ -135,6 +136,7 @@ export const WithdrawalsTable = ({
     <AgGrid
       overlayNoRowsTemplate={t('No withdrawals')}
       columnDefs={columnDefs}
+      defaultColDef={COL_DEFS.default}
       components={{
         RecipientCell,
         StatusCell,

@@ -137,6 +137,8 @@ const ClosedMarketsDataGrid = ({
         headerName: t('Market'),
         field: 'code',
         cellRenderer: 'MarketCodeCell',
+        width: 150,
+        resizable: true,
       },
       {
         headerName: t('Status'),
@@ -280,6 +282,7 @@ const ClosedMarketsDataGrid = ({
   return (
     <AgGrid
       rowData={rowData}
+      defaultColDef={COL_DEFS.default}
       columnDefs={colDefs}
       getRowId={({ data }) => data.id}
       overlayNoRowsTemplate={error ? error.message : t('No markets')}
