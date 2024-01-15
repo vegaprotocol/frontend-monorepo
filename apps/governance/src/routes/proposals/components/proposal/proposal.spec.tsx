@@ -48,6 +48,7 @@ const vegaWalletConfig: VegaWalletConfig = {
     chromeExtensionUrl: 'chrome',
     mozillaExtensionUrl: 'mozilla',
   },
+  chainId: 'VEGA_CHAIN_ID',
 };
 
 const renderComponent = (proposal: ProposalQuery['proposal']) => {
