@@ -228,23 +228,25 @@ jobs:
           path: ./logs/
           retention-days: 15
       #----------------------------------------------
-      #  -----  upload  market-sim logs  -----
+      #  -----  upload market-sim logs  -----
       #----------------------------------------------
       - name: Find Directory
         id: find-dir
         run: |
           DIR=$(find /tmp -type d -regex ".*/vega-sim-[0-9]+$" -print -quit)
-          echo "::set-output name=dir::$DIR"
+          if [[ $DIR != "" ]]; then
+            echo "DIR=$DIR" >> $GITHUB_ENV
+          fi
 
       - name: Compress Files
-        if: steps.find-dir.outputs.dir
+        if: env.DIR
         run: |
-          tar -czvf market-sim-logs.tar.gz -C ${{ steps.find-dir.outputs.dir }} .
+          tar -czvf ${{ github.workspace }}/market-sim-logs.tar.gz -C $DIR .
 
       - name: Upload Compressed market-sim-logs
         uses: actions/upload-artifact@v3
-        if: always()
+        if: env.DIR
         with:
           name: market-sim-logs
-          path: market-sim-logs.tar.gz
+          path: ${{ github.workspace }}/market-sim-logs.tar.gz
           retention-days: 15
