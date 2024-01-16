@@ -37,7 +37,7 @@ declare global {
     }>;
 
     on: (event: VegaWalletEvent, callback: () => void) => void;
-    isConnected: () => Promise<boolean>;
+    isConnected?: () => Promise<boolean>;
   }
 
   interface Window {
@@ -79,9 +79,14 @@ export class InjectedConnector implements VegaConnector {
         try {
           const connected = await Promise.race([
             wait(INJECTED_CONNECTOR_TIMEOUT),
-            window.vega.isConnected(),
+            // `isConnected` is only available in the newer versions
+            // of the browser wallet
+            'isConnected' in window.vega &&
+            typeof window.vega.isConnected === 'function'
+              ? window.vega.isConnected()
+              : window.vega.listKeys(),
           ]);
-          this.isConnected = connected;
+          this.isConnected = Boolean(connected);
         } catch {
           this.isConnected = false;
         }
