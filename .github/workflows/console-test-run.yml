@@ -241,13 +241,24 @@ jobs:
           sleep 10  # Waits 10 seconds to ensure all folders are created
 
           echo "Searching for vega-sim-* folders in /tmp..."
-          find /tmp -mindepth 1 -type d -name 'vega-sim-*' -print 2>/dev/null
+          folders=$(find /tmp -mindepth 1 -type d -name 'vega-sim-*' -print 2>/dev/null)
+
+          if [ -z "$folders" ]; then
+            echo "No vega-sim-* folders found."
+            exit 0
+          fi
 
           echo "Moving vega-sim-* folders to $parent_dir"
-          find /tmp -mindepth 1 -type d -name 'vega-sim-*' ! -path "$parent_dir" -exec mv {} "$parent_dir/" \; 2>/dev/null
+          echo "$folders" | xargs -I {} mv {} "$parent_dir/"
 
-          echo "Zipping the parent directory..."
-          zip -r market-sim-logs.zip "$parent_dir" && echo "Zip file created successfully."
+          echo "Checking if $parent_dir is not empty..."
+          if [ "$(ls -A $parent_dir)" ]; then
+            echo "Zipping the parent directory..."
+            zip -r market-sim-logs.zip "$parent_dir" && echo "Zip file created successfully."
+          else
+            echo "$parent_dir is empty. No zip file created."
+            exit 0
+          fi
         shell: /usr/bin/bash -e {0}
 
       - name: Upload market-sim-logs
