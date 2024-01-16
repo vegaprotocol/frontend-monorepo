@@ -135,6 +135,14 @@ export const TradingView = ({
       if (state !== undefined) {
         // Load stored state
         widgetRef.current.load(state);
+
+        // Whatever was the last active chart will be loaded, so reset the current symbol for
+        // the market loaded on the page
+        widgetRef.current.setSymbol(
+          marketId,
+          interval as TVResolutionString,
+          noop
+        );
       } else {
         // No stored state, likely the first time using the TV chart,
         // show the volume study by default
@@ -160,6 +168,7 @@ export const TradingView = ({
     return () => {
       if (!widgetRef.current) return;
       widgetRef.current.remove();
+      widgetRef.current = undefined;
     };
   }, []);
 
