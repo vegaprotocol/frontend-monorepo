@@ -240,8 +240,10 @@ jobs:
           echo "Waiting for vega-sim-* folders to be created..."
           sleep 10  # Waits 10 seconds to ensure all folders are created
 
-          echo "Searching for vega-sim-* folders in /tmp..."
-          folders=$(find /tmp -mindepth 1 -type d -name 'vega-sim-*' -print 2>/dev/null)
+          echo "Before searching for vega-sim-* folders in /tmp..."
+          folders=$(find /tmp -mindepth 1 -type d -name 'vega-sim-*' -print) || echo "Find command failed with exit code $?"
+
+          echo "After searching for vega-sim-* folders in /tmp..."
 
           if [ -z "$folders" ]; then
             echo "No vega-sim-* folders found."
