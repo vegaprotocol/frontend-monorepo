@@ -234,9 +234,19 @@ jobs:
         if: always()
         run: |
           parent_dir="/tmp/market-sim-logs"
-          mkdir -p "$parent_dir"
-          find /tmp -type d -name 'vega-sim-*' -exec mv {} "$parent_dir/" \;
-          zip -r market-sim-logs.zip "$parent_dir"
+          mkdir -p "$parent_dir" && echo "Created parent directory at $parent_dir"
+
+          echo "Moving vega-sim-* folders to $parent_dir"
+          find /tmp -mindepth 1 -type d -name 'vega-sim-*' ! -path "$parent_dir" -exec mv -t "$parent_dir/" {} + 2>/dev/null
+
+          if compgen -G "$parent_dir/vega-sim-*" > /dev/null; then
+            echo "Folders found and moved, creating zip file."
+            zip -r market-sim-logs.zip "$parent_dir" && echo "Zip file created successfully."
+          else
+            echo "No vega-sim-* folders found to move. Exiting without creating zip file."
+            exit 0
+          fi
+        shell: /usr/bin/bash -e {0}
 
       - name: Upload market-sim-logs
         uses: actions/upload-artifact@v3
