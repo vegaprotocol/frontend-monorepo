@@ -232,12 +232,14 @@ jobs:
       #----------------------------------------------
       - name: Zip market-sim-logs
         uses: vimtor/action-zip@v1.1
+        if: always()
         with:
           files: /tmp/vega-sim-*
           dest: market-sim-logs.zip
           recursive: true
       - name: Upload market-sim-logs.zip
         uses: actions/upload-artifact@v3
+        if: always()
         with:
           name: market-sim-logs.zip
           path: market-sim-logs.zip
