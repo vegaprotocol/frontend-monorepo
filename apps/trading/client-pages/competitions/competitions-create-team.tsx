@@ -144,7 +144,6 @@ const CreateTeamForm = ({
   const isPrivate = watch('private');
 
   const createTeam = (fields: FormFields) => {
-    const publicKeys = parseAllowListText(fields.allowList);
     onSubmit({
       createReferralSet: {
         isTeam: true,
@@ -153,7 +152,7 @@ const CreateTeamForm = ({
           teamUrl: fields.url,
           avatarUrl: fields.avatarUrl,
           closed: fields.private,
-          allowList: publicKeys,
+          allowList: fields.private ? parseAllowListText(fields.allowList) : [],
         },
       },
     });

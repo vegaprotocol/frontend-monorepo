@@ -197,7 +197,7 @@ export const CompetitionsTeams = () => {
   return (
     <ErrorBoundary>
       <CompetitionsHeader title={t('Join a team')}>
-        <p className="text-lg mb-1">{t('Choose a team to get involved')}</p>x
+        <p className="text-lg mb-1">{t('Choose a team to get involved')}</p>
       </CompetitionsHeader>
 
       <div className="mb-6 flex justify-end">
