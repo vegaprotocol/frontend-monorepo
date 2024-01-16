@@ -303,6 +303,7 @@
   "Supplied stake": "Supplied stake",
   "Suspended due to price or liquidity monitoring trigger": "Suspended due to price or liquidity monitoring trigger",
   "Target stake": "Target stake",
+  "Team": "Team",
   "The amount of fees paid to liquidity providers across the whole market during the last epoch {{epoch}}.": "The amount of fees paid to liquidity providers across the whole market during the last epoch {{epoch}}.",
   "The commission is taken from the infrastructure fee, maker fee, and liquidity provider fee, not from the referee": "The commission is taken from the infrastructure fee, maker fee, and liquidity provider fee, not from the referee",
   "The external time weighted average price (TWAP) received from the data source defined in the data sourcing specification.": "The external time weighted average price (TWAP) received from the data source defined in the data sourcing specification.",

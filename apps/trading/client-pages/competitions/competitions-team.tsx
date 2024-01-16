@@ -26,10 +26,22 @@ import {
 import { DApp, EXPLORER_PARTIES, useLinks } from '@vegaprotocol/environment';
 import BigNumber from 'bignumber.js';
 import { TeamAvatar } from '../../components/competitions/team-avatar';
+import { usePageTitle } from '../../lib/hooks/use-page-title';
+import { ErrorBoundary } from '../../components/error-boundary';
 
 export const CompetitionsTeam = () => {
   const t = useT();
   const { teamId } = useParams<{ teamId: string }>();
+  usePageTitle([t('Competitions'), t('Team')]);
+  return (
+    <ErrorBoundary feature="team">
+      <TeamPageContainer teamId={teamId} />
+    </ErrorBoundary>
+  );
+};
+
+const TeamPageContainer = ({ teamId }: { teamId: string | undefined }) => {
+  const t = useT();
   const { team, stats, partyInTeam, members, games, loading } = useTeam(teamId);
 
   if (loading) {
@@ -59,7 +71,7 @@ export const CompetitionsTeam = () => {
   );
 };
 
-export const TeamPage = ({
+const TeamPage = ({
   team,
   stats,
   partyInTeam,

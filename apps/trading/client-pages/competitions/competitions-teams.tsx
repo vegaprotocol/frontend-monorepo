@@ -1,9 +1,7 @@
 import { ErrorBoundary } from '@sentry/react';
 import { CompetitionsHeader } from '../../components/competitions/competitions-header';
-import { usePageTitleStore } from '../../stores';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useT } from '../../lib/use-t';
-import { titlefy } from '@vegaprotocol/utils';
 import { useTeams } from './hooks/use-teams';
 import { CompetitionsLeaderboard } from '../../components/competitions/competitions-leaderboard';
 import {
@@ -12,15 +10,11 @@ import {
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
+import { usePageTitle } from '../../lib/hooks/use-page-title';
 
 export const CompetitionsTeams = () => {
   const t = useT();
-  const { updateTitle } = usePageTitleStore((store) => ({
-    updateTitle: store.updateTitle,
-  }));
-  useEffect(() => {
-    updateTitle(titlefy([t('Competitions'), t('Teams')]));
-  }, [updateTitle, t]);
+  usePageTitle([t('Competitions'), t('Teams')]);
 
   const { data: teamsData, loading: teamsLoading } = useTeams({
     sortByField: ['totalQuantumRewards'],
