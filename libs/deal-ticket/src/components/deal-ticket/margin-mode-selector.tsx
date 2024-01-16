@@ -15,6 +15,7 @@ import { useEffect, useState } from 'react';
 import { useT } from '../../use-t';
 import classnames from 'classnames';
 import { marketMarginDataProvider } from '@vegaprotocol/accounts';
+import { useMaxLeverage } from '@vegaprotocol/markets';
 
 const defaultLeverage = 10;
 interface MarginDialogProps {
@@ -87,6 +88,8 @@ const IsolatedMarginModeDialog = ({
   useEffect(() => {
     setLeverage(`${1 / Number(marginFactor)}`);
   }, [marginFactor]);
+  const { data: maxLeverage } = useMaxLeverage(marketId);
+  const max = maxLeverage || 100;
   const t = useT();
   return (
     <Dialog
@@ -131,7 +134,7 @@ const IsolatedMarginModeDialog = ({
             type="number"
             id="leverage-input"
             min={1}
-            max={100}
+            max={max}
             step={0.1}
             value={leverage}
             onChange={(e) => setLeverage(e.target.value)}
