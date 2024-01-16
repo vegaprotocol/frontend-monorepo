@@ -29,14 +29,6 @@ export type EstimatePositionQueryVariables = Types.Exact<{
 
 export type EstimatePositionQuery = { __typename?: 'Query', estimatePosition?: { __typename?: 'PositionEstimate', margin: { __typename?: 'MarginEstimate', worstCase: { __typename?: 'MarginLevels', maintenanceLevel: string, searchLevel: string, initialLevel: string, collateralReleaseLevel: string }, bestCase: { __typename?: 'MarginLevels', maintenanceLevel: string, searchLevel: string, initialLevel: string, collateralReleaseLevel: string } }, liquidation?: { __typename?: 'LiquidationEstimate', worstCase: { __typename?: 'LiquidationPrice', open_volume_only: string, including_buy_orders: string, including_sell_orders: string }, bestCase: { __typename?: 'LiquidationPrice', open_volume_only: string, including_buy_orders: string, including_sell_orders: string } } | null } | null };
 
-export type MarginModeFragment = { __typename?: 'PartyMarginMode', marketId: string, partyId: string, marginMode: Types.MarginMode, margin_factor?: string | null, min_theoretical_margin_factor?: string | null, max_theoretical_leverage?: string | null, atEpoch: number };
-
-export type MarginModesQueryVariables = Types.Exact<{
-  partyId: Types.Scalars['ID'];
-}>;
-
-
-export type MarginModesQuery = { __typename?: 'Query', partyMarginModes?: { __typename?: 'PartyMarginModesConnection', edges?: Array<{ __typename?: 'PartyMarginModeEdge', node: { __typename?: 'PartyMarginMode', marketId: string, partyId: string, marginMode: Types.MarginMode, margin_factor?: string | null, min_theoretical_margin_factor?: string | null, max_theoretical_leverage?: string | null, atEpoch: number } } | null> | null } | null };
 
 export const PositionFieldsFragmentDoc = gql`
     fragment PositionFields on Position {
@@ -53,17 +45,6 @@ export const PositionFieldsFragmentDoc = gql`
   party {
     id
   }
-}
-    `;
-export const MarginModeFragmentDoc = gql`
-    fragment MarginMode on PartyMarginMode {
-  marketId
-  partyId
-  marginMode
-  margin_factor
-  min_theoretical_margin_factor
-  max_theoretical_leverage
-  atEpoch
 }
     `;
 export const PositionsDocument = gql`
@@ -212,42 +193,3 @@ export function useEstimatePositionLazyQuery(baseOptions?: Apollo.LazyQueryHookO
 export type EstimatePositionQueryHookResult = ReturnType<typeof useEstimatePositionQuery>;
 export type EstimatePositionLazyQueryHookResult = ReturnType<typeof useEstimatePositionLazyQuery>;
 export type EstimatePositionQueryResult = Apollo.QueryResult<EstimatePositionQuery, EstimatePositionQueryVariables>;
-export const MarginModesDocument = gql`
-    query MarginModes($partyId: ID!) {
-  partyMarginModes(partyId: $partyId) {
-    edges {
-      node {
-        ...MarginMode
-      }
-    }
-  }
-}
-    ${MarginModeFragmentDoc}`;
-
-/**
- * __useMarginModesQuery__
- *
- * To run a query within a React component, call `useMarginModesQuery` and pass it any options that fit your needs.
- * When your component renders, `useMarginModesQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useMarginModesQuery({
- *   variables: {
- *      partyId: // value for 'partyId'
- *   },
- * });
- */
-export function useMarginModesQuery(baseOptions: Apollo.QueryHookOptions<MarginModesQuery, MarginModesQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<MarginModesQuery, MarginModesQueryVariables>(MarginModesDocument, options);
-      }
-export function useMarginModesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MarginModesQuery, MarginModesQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<MarginModesQuery, MarginModesQueryVariables>(MarginModesDocument, options);
-        }
-export type MarginModesQueryHookResult = ReturnType<typeof useMarginModesQuery>;
-export type MarginModesLazyQueryHookResult = ReturnType<typeof useMarginModesLazyQuery>;
-export type MarginModesQueryResult = Apollo.QueryResult<MarginModesQuery, MarginModesQueryVariables>;

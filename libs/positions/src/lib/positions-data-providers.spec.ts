@@ -174,13 +174,13 @@ const marketsData = [
 describe('getMetrics && rejoinPositionData', () => {
   it('returns positions metrics', () => {
     const positionsRejoined = rejoinPositionData(positions, marketsData);
-    const metrics = getMetrics(positionsRejoined, accounts || null, null, null);
+    const metrics = getMetrics(positionsRejoined, accounts || null, null);
     expect(metrics.length).toEqual(2);
   });
 
   it('calculates metrics', () => {
     const positionsRejoined = rejoinPositionData(positions, marketsData);
-    const metrics = getMetrics(positionsRejoined, accounts || null, null, null);
+    const metrics = getMetrics(positionsRejoined, accounts || null, null);
 
     expect(metrics[0].assetSymbol).toEqual('tDAI');
     expect(metrics[0].averageEntryPrice).toEqual('8993727');

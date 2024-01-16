@@ -1,5 +1,4 @@
 export * from './lib/__generated__/Positions';
-export * from './lib/margin-modes-provider';
 export * from './lib/positions-data-providers';
 export * from './lib/positions-table';
 export * from './lib/positions-manager';

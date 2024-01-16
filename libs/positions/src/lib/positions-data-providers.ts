@@ -26,7 +26,6 @@ import {
   type PositionsSubscriptionSubscription,
   type PositionsQueryVariables,
   type PositionsSubscriptionSubscriptionVariables,
-  type MarginModeFragment,
 } from './__generated__/Positions';
 import {
   AccountType,
@@ -36,10 +35,9 @@ import {
   type PositionStatus,
   type ProductType,
 } from '@vegaprotocol/types';
-import { marginModesDataProvider } from './margin-modes-provider';
 
 export interface Position {
-  marginMode: MarginModeFragment['marginMode'];
+  marginMode: MarginFieldsFragment['marginMode'];
   maintenanceLevel: MarginFieldsFragment['maintenanceLevel'] | undefined;
   assetId: string;
   assetSymbol: string;
@@ -72,7 +70,6 @@ export interface Position {
 export const getMetrics = (
   data: ReturnType<typeof rejoinPositionData> | null,
   accounts: Account[] | null,
-  marginModes: MarginModeFragment[] | null,
   margins: MarginFieldsFragment[] | null
 ): Position[] => {
   if (!data || !data?.length) {
@@ -101,9 +98,6 @@ export const getMetrics = (
         account.market?.id === market?.id &&
         account.type === AccountType.ACCOUNT_TYPE_ORDER_MARGIN
       );
-    });
-    const marginMode = marginModes?.find((marginMode) => {
-      return marginMode.marketId === market?.id;
     });
     const asset = getAsset(market);
     const generalAccount = accounts?.find(
@@ -141,21 +135,19 @@ export const getMetrics = (
     const totalBalance = marginAccountBalance
       .plus(generalAccountBalance)
       .plus(orderAccountBalance);
-    const mode =
-      margin?.marginMode ||
-      marginMode?.marginMode ||
-      MarginMode.MARGIN_MODE_CROSS_MARGIN;
-    const factor = margin?.marginFactor || marginMode?.margin_factor;
+    const marginMode =
+      margin?.marginMode || MarginMode.MARGIN_MODE_CROSS_MARGIN;
+    const marginFactor = margin?.marginFactor;
     const currentLeverage =
-      mode === MarginMode.MARGIN_MODE_ISOLATED_MARGIN
-        ? (factor && 1 / Number(factor)) || undefined
+      marginMode === MarginMode.MARGIN_MODE_ISOLATED_MARGIN
+        ? (marginFactor && 1 / Number(marginFactor)) || undefined
         : notional
         ? totalBalance.isEqualTo(0)
           ? 0
           : notional.dividedBy(totalBalance).toNumber()
         : undefined;
     metrics.push({
-      marginMode: mode,
+      marginMode,
       maintenanceLevel: margin?.maintenanceLevel,
       assetId: asset.id,
       assetSymbol: asset.symbol,
@@ -356,20 +348,15 @@ export const positionsMetricsProvider = makeDerivedDataProvider<
         marketIds: variables.marketIds,
       }),
     (callback, client, variables) =>
-      marginModesDataProvider(callback, client, {
-        partyId: firstOrSelf(variables.partyIds),
-      }),
-    (callback, client, variables) =>
       marginsDataProvider(callback, client, {
         partyId: firstOrSelf(variables.partyIds),
       }),
   ],
-  ([positions, accounts, marketsData, marginModes, margins], variables) => {
+  ([positions, accounts, marketsData, margins], variables) => {
     const positionsData = rejoinPositionData(positions, marketsData);
     const metrics = getMetrics(
       positionsData,
       accounts as Account[] | null,
-      marginModes,
       margins
     );
     return preparePositions(metrics, variables.showClosed);
