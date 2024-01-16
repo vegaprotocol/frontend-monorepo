@@ -314,7 +314,7 @@ describe('Closed', () => {
   });
 
   it('display market actions', async () => {
-    // Use market with a succcessor Id as the actions dropdown will optionally
+    // Use market with a successor Id as the actions dropdown will optionally
     // show a link to the successor market
     const marketsWithSuccessorAndParent = [
       {

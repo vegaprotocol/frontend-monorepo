@@ -174,9 +174,9 @@ def test_market_lifecycle(proposed_market, vega: VegaServiceNull, page: Page):
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
 
-    # market state should be changed to "Trading Terminated" because of the invalid oracle
+    # market state should be changed to "No trading" because of the invalid oracle
     expect(trading_mode).to_have_text("No trading")
-    expect(market_state).to_have_text("Trading Terminated")
+    expect(market_state).to_have_text("No trading")
 
     # settle market
     vega.submit_termination_and_settlement_data(
