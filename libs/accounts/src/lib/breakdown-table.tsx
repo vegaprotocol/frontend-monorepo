@@ -16,9 +16,7 @@ import { ProgressBarCell } from '@vegaprotocol/datagrid';
 import { AgGrid, PriceCell } from '@vegaprotocol/datagrid';
 import type { ColDef } from 'ag-grid-community';
 import { accountValuesComparator } from './accounts-table';
-import { MarginHealthChart } from './margin-health-chart';
 import { MarketNameCell } from '@vegaprotocol/datagrid';
-import { AccountType } from '@vegaprotocol/types';
 
 const defaultColDef = {
   resizable: true,
@@ -110,23 +108,6 @@ const BreakdownTable = forwardRef<AgGridReact, BreakdownTableProps>(
             return <ProgressBarCell valueFormatted={formattedData} />;
           },
           comparator: accountValuesComparator,
-        },
-        {
-          headerName: t('Margin health'),
-          field: 'market.id',
-          maxWidth: 500,
-          sortable: false,
-          cellRenderer: ({
-            data,
-          }: VegaICellRendererParams<AccountFields, 'market.id'>) =>
-            data?.market?.id &&
-            data.type === AccountType['ACCOUNT_TYPE_MARGIN'] &&
-            data?.asset.id ? (
-              <MarginHealthChart
-                marketId={data.market.id}
-                assetId={data.asset.id}
-              />
-            ) : null,
         },
       ];
       return defs;

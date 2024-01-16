@@ -80,6 +80,7 @@ export type AccountFilter = {
 
 /** The various account types in Vega (used by collateral) */
 export enum AccountType {
+  ACCOUNT_TYPE_ORDER_MARGIN = 'ACCOUNT_TYPE_ORDER_MARGIN',
   /** Bond - an account use to maintain liquidity commitments */
   ACCOUNT_TYPE_BOND = 'ACCOUNT_TYPE_BOND',
   /** External - an account use to refer to external account */

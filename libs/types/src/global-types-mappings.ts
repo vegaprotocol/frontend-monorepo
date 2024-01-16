@@ -38,6 +38,7 @@ import type { ProductType, ProposalProductType } from './product';
 export const AccountTypeMapping: {
   [T in AccountType]: string;
 } = {
+  ACCOUNT_TYPE_ORDER_MARGIN: 'Pending order margin',
   ACCOUNT_TYPE_BOND: 'Bond account',
   ACCOUNT_TYPE_EXTERNAL: 'External account',
   ACCOUNT_TYPE_FEES_INFRASTRUCTURE: 'Infrastructure fees account',

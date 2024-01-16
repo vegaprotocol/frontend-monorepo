@@ -4,14 +4,6 @@ import * as Types from '@vegaprotocol/types';
 import type { AccountFields } from './accounts-data-provider';
 import { getAccountData } from './accounts-data-provider';
 
-const marginHealthChartTestId = 'margin-health-chart';
-
-jest.mock('./margin-health-chart', () => ({
-  MarginHealthChart: () => {
-    return <div data-testid={marginHealthChartTestId}></div>;
-  },
-}));
-
 const singleRow = {
   __typename: 'AccountBalance',
   type: Types.AccountType.ACCOUNT_TYPE_MARGIN,
@@ -49,10 +41,10 @@ describe('BreakdownTable', () => {
       render(<BreakdownTable data={singleRowData} />);
     });
     const headers = await screen.findAllByRole('columnheader');
-    expect(headers).toHaveLength(4);
+    expect(headers).toHaveLength(3);
     expect(
       headers.map((h) => h.querySelector('[ref="eText"]')?.textContent?.trim())
-    ).toEqual(['Market', 'Account type', 'Balance', 'Margin health']);
+    ).toEqual(['Market', 'Account type', 'Balance']);
   });
 
   it('should apply correct formatting', async () => {
@@ -70,24 +62,6 @@ describe('BreakdownTable', () => {
     cells.slice(0, -1).forEach((cell, i) => {
       expect(cell).toHaveTextContent(expectedValues[i]);
     });
-    expect(screen.getByTestId(marginHealthChartTestId)).toBeInTheDocument();
-  });
-
-  it('displays margin health chart only for margin account', async () => {
-    await act(async () => {
-      render(
-        <BreakdownTable
-          data={[
-            {
-              ...singleRow,
-              type: Types.AccountType.ACCOUNT_TYPE_GENERAL,
-              market: null,
-            },
-          ]}
-        />
-      );
-    });
-    expect(screen.queryByTestId(marginHealthChartTestId)).toBeNull();
   });
 
   it('should get correct account data', () => {

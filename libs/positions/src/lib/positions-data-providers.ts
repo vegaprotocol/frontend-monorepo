@@ -1,8 +1,11 @@
 import isEqual from 'lodash/isEqual';
 import produce from 'immer';
-import BigNumber from 'bignumber.js';
 import sortBy from 'lodash/sortBy';
-import { type Account } from '@vegaprotocol/accounts';
+import {
+  marginsDataProvider,
+  type Account,
+  type MarginFieldsFragment,
+} from '@vegaprotocol/accounts';
 import { accountsDataProvider } from '@vegaprotocol/accounts';
 import { toBigNum, removePaginationWrapper } from '@vegaprotocol/utils';
 import {
@@ -23,16 +26,21 @@ import {
   type PositionsSubscriptionSubscription,
   type PositionsQueryVariables,
   type PositionsSubscriptionSubscriptionVariables,
+  type MarginModeFragment,
 } from './__generated__/Positions';
 import {
   AccountType,
+  MarginMode,
   MarketState,
   type MarketTradingMode,
   type PositionStatus,
   type ProductType,
 } from '@vegaprotocol/types';
+import { marginModesDataProvider } from './margin-modes-provider';
 
 export interface Position {
+  marginMode: MarginModeFragment['marginMode'];
+  maintenanceLevel: MarginFieldsFragment['maintenanceLevel'] | undefined;
   assetId: string;
   assetSymbol: string;
   averageEntryPrice: string;
@@ -41,6 +49,8 @@ export interface Position {
   quantum: string;
   lossSocializationAmount: string;
   marginAccountBalance: string;
+  orderAccountBalance: string;
+  generalAccountBalance: string;
   marketDecimalPlaces: number;
   marketId: string;
   marketCode: string;
@@ -61,7 +71,9 @@ export interface Position {
 
 export const getMetrics = (
   data: ReturnType<typeof rejoinPositionData> | null,
-  accounts: Account[] | null
+  accounts: Account[] | null,
+  marginModes: MarginModeFragment[] | null,
+  margins: MarginFieldsFragment[] | null
 ): Position[] => {
   if (!data || !data?.length) {
     return [];
@@ -75,8 +87,23 @@ export const getMetrics = (
     }
 
     const marketData = market?.data;
+    const margin = margins?.find((margin) => {
+      return margin.market?.id === market?.id;
+    });
     const marginAccount = accounts?.find((account) => {
-      return account.market?.id === market?.id;
+      return (
+        account.market?.id === market?.id &&
+        account.type === AccountType.ACCOUNT_TYPE_MARGIN
+      );
+    });
+    const orderAccount = accounts?.find((account) => {
+      return (
+        account.market?.id === market?.id &&
+        account.type === AccountType.ACCOUNT_TYPE_ORDER_MARGIN
+      );
+    });
+    const marginMode = marginModes?.find((marginMode) => {
+      return marginMode.marketId === market?.id;
     });
     const asset = getAsset(market);
     const generalAccount = accounts?.find(
@@ -93,6 +120,10 @@ export const getMetrics = (
       marginAccount?.balance ?? 0,
       asset.decimals
     );
+    const orderAccountBalance = toBigNum(
+      orderAccount?.balance ?? 0,
+      asset.decimals
+    );
     const generalAccountBalance = toBigNum(
       generalAccount?.balance ?? 0,
       asset.decimals
@@ -107,21 +138,35 @@ export const getMetrics = (
           : openVolume.multipliedBy(-1)
         ).multipliedBy(markPrice)
       : undefined;
-    const totalBalance = marginAccountBalance.plus(generalAccountBalance);
-    const currentLeverage = notional
-      ? totalBalance.isEqualTo(0)
-        ? new BigNumber(0)
-        : notional.dividedBy(totalBalance)
-      : undefined;
+    const totalBalance = marginAccountBalance
+      .plus(generalAccountBalance)
+      .plus(orderAccountBalance);
+    const mode =
+      margin?.marginMode ||
+      marginMode?.marginMode ||
+      MarginMode.MARGIN_MODE_CROSS_MARGIN;
+    const factor = margin?.marginFactor || marginMode?.margin_factor;
+    const currentLeverage =
+      mode === MarginMode.MARGIN_MODE_ISOLATED_MARGIN
+        ? (factor && 1 / Number(factor)) || undefined
+        : notional
+        ? totalBalance.isEqualTo(0)
+          ? 0
+          : notional.dividedBy(totalBalance).toNumber()
+        : undefined;
     metrics.push({
+      marginMode: mode,
+      maintenanceLevel: margin?.maintenanceLevel,
       assetId: asset.id,
       assetSymbol: asset.symbol,
       averageEntryPrice: position.averageEntryPrice,
-      currentLeverage: currentLeverage ? currentLeverage.toNumber() : undefined,
+      currentLeverage,
       assetDecimals: asset.decimals,
       quantum: asset.quantum,
       lossSocializationAmount: position.lossSocializationAmount || '0',
       marginAccountBalance: marginAccount?.balance ?? '0',
+      orderAccountBalance: orderAccount?.balance ?? '0',
+      generalAccountBalance: generalAccount?.balance ?? '0',
       marketDecimalPlaces,
       marketId: market.id,
       marketCode: market.tradableInstrument.instrument.code,
@@ -291,6 +336,9 @@ export const positionsMarketsProvider = makeDerivedDataProvider<
   ).sort();
 });
 
+const firstOrSelf = (partyIds: string | string[]) =>
+  Array.isArray(partyIds) ? partyIds[0] : partyIds;
+
 export const positionsMetricsProvider = makeDerivedDataProvider<
   Position[],
   Position[],
@@ -301,18 +349,29 @@ export const positionsMetricsProvider = makeDerivedDataProvider<
       positionsDataProvider(callback, client, { partyIds: variables.partyIds }),
     (callback, client, variables) =>
       accountsDataProvider(callback, client, {
-        partyId: Array.isArray(variables.partyIds)
-          ? variables.partyIds[0]
-          : variables.partyIds,
+        partyId: firstOrSelf(variables.partyIds),
       }),
     (callback, client, variables) =>
       allMarketsWithLiveDataProvider(callback, client, {
         marketIds: variables.marketIds,
       }),
+    (callback, client, variables) =>
+      marginModesDataProvider(callback, client, {
+        partyId: firstOrSelf(variables.partyIds),
+      }),
+    (callback, client, variables) =>
+      marginsDataProvider(callback, client, {
+        partyId: firstOrSelf(variables.partyIds),
+      }),
   ],
-  ([positions, accounts, marketsData], variables) => {
+  ([positions, accounts, marketsData, marginModes, margins], variables) => {
     const positionsData = rejoinPositionData(positions, marketsData);
-    const metrics = getMetrics(positionsData, accounts as Account[] | null);
+    const metrics = getMetrics(
+      positionsData,
+      accounts as Account[] | null,
+      marginModes,
+      margins
+    );
     return preparePositions(metrics, variables.showClosed);
   },
   (data, delta, previousData) =>

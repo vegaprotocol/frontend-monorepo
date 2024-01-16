@@ -181,6 +181,10 @@ const marginsFields: MarginFieldsFragment[] = [
 ];
 
 export const singleRow: Position = {
+  generalAccountBalance: '12345600',
+  maintenanceLevel: '12300000',
+  marginMode: Schema.MarginMode.MARGIN_MODE_CROSS_MARGIN,
+  orderAccountBalance: '0',
   partyId: 'partyId',
   assetId: 'asset-id',
   assetSymbol: 'BTC',
