@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { titlefy } from '@vegaprotocol/utils';
 import { usePageTitleStore } from '../../stores';
 
@@ -7,7 +7,12 @@ export const usePageTitle = (title: string | string[]) => {
     updateTitle: store.updateTitle,
   }));
 
+  const memotitle = useMemo(
+    () => titlefy(Array.isArray(title) ? title : [title]),
+    [title]
+  );
+
   useEffect(() => {
-    updateTitle(titlefy(Array.isArray(title) ? title : [title]));
-  }, [updateTitle, title]);
+    updateTitle(memotitle);
+  }, [updateTitle, memotitle]);
 };

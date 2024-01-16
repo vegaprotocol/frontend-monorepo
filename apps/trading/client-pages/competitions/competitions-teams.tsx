@@ -14,6 +14,7 @@ import { usePageTitle } from '../../lib/hooks/use-page-title';
 
 export const CompetitionsTeams = () => {
   const t = useT();
+
   usePageTitle([t('Competitions'), t('Teams')]);
 
   const { data: teamsData, loading: teamsLoading } = useTeams({
