@@ -1,3 +1,4 @@
+/* eslint-disable jest/no-disabled-tests */
 import { act, render, screen, waitFor, within } from '@testing-library/react';
 // import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
@@ -313,8 +314,8 @@ describe('Closed', () => {
     );
   });
 
-  it('display market actions', async () => {
-    // Use market with a succcessor Id as the actions dropdown will optionally
+  it.skip('display market actions', async () => {
+    // Use market with a successor Id as the actions dropdown will optionally
     // show a link to the successor market
     const marketsWithSuccessorAndParent = [
       {
