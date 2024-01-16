@@ -231,12 +231,15 @@ jobs:
       #  -----  upload market-sim logs  -----
       #----------------------------------------------
       - name: Zip market-sim-logs
-        uses: vimtor/action-zip@v1.1
+        run: |
+          files=$(find /tmp -name 'vega-sim-*')
+          if [ -z "$files" ]; then
+            echo "No files found to zip"
+          else
+            zip market-sim-logs.zip $files
+          fi
         if: always()
-        with:
-          files: /tmp/vega-sim-*
-          dest: market-sim-logs.zip
-          recursive: true
+
       - name: Upload market-sim-logs.zip
         uses: actions/upload-artifact@v3
         if: always()
