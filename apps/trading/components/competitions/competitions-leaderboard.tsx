@@ -6,6 +6,7 @@ import { useT } from '../../lib/use-t';
 import { Table } from '../table';
 import { Rank } from './graphics/rank';
 import { Links } from '../../lib/links';
+import { TeamAvatar } from './team-avatar';
 
 export const CompetitionsLeaderboard = ({
   data,
@@ -40,15 +41,8 @@ export const CompetitionsLeaderboard = ({
         if (rank === 2) rank = <Rank variant="silver" />;
         if (rank === 3) rank = <Rank variant="bronze" />;
 
-        // avatar TODO: Generated avatar if none provided
         const avatar = td.avatarUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            className="w-[30px] h-[30px]"
-            src={td.avatarUrl}
-            alt={td.name}
-            referrerPolicy="no-referrer"
-          />
+          <TeamAvatar imgUrl={td.avatarUrl} />
         ) : null;
 
         return {
