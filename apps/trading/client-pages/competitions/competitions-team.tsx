@@ -32,6 +32,17 @@ export const CompetitionsTeam = () => {
   const { teamId } = useParams<{ teamId: string }>();
   const { team, stats, partyInTeam, members, games } = useTeam(teamId);
 
+  // const team = {
+  //   teamId: '12345678909876543212345678765432345676543234567',
+  //   referrer: '12345678909876543212345678765432345676543234567',
+  //   name: 'The Kittens',
+  //   teamUrl: 'http://placekitten.com/g/200/300',
+  //   avatarUrl: 'http://placekitten.com/g/200/300',
+  //   createdAt: '2024-01-01',
+  //   createdAtEpoch: 123,
+  //   closed: true,
+  // };
+
   if (!team) {
     return (
       <Splash>
