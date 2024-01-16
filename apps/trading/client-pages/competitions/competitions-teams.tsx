@@ -32,10 +32,11 @@ export const CompetitionsTeams = () => {
   // const teamsData = [
   //   {
   //     referrer: '12345678909876543212345678765432345676543234567',
-  //     avatarUrl: 'http://placekitten.com/g/200/300',
+  //     avatarUrl: '',
   //     teamUrl: 'https://vega.xyz',
   //     closed: true,
-  //     teamId: '123',
+  //     teamId:
+  //       '8d81a2ba54c21cbb891e46a2a8debac508b33ee83e2d7c3b8a5bcd420753515e',
   //     name: 'cat lovers 2000',
   //     totalQuantumRewards: '1234567890',
   //     totalGamesPlayed: 12,
@@ -46,10 +47,11 @@ export const CompetitionsTeams = () => {
   //   },
   //   {
   //     referrer: '12345678909876543212345678765432345676543234567',
-  //     avatarUrl: 'http://placekitten.com/g/200/300',
+  //     avatarUrl: '',
   //     teamUrl: 'https://vega.xyz',
   //     closed: true,
-  //     teamId: '123',
+  //     teamId:
+  //       'afe0f77322c9bc9ebe36faa8b0d846617018b86db78f33cadbe09dc15c95f408',
   //     name: 'dog lovers 2000',
   //     totalQuantumRewards: '1234567890',
   //     totalGamesPlayed: 12,
@@ -60,10 +62,11 @@ export const CompetitionsTeams = () => {
   //   },
   //   {
   //     referrer: '12345678909876543212345678765432345676543234567',
-  //     avatarUrl: 'http://placekitten.com/g/200/300',
+  //     avatarUrl: '',
   //     teamUrl: 'https://vega.xyz',
   //     closed: true,
-  //     teamId: '123',
+  //     teamId:
+  //       '580e52a0ef7f706898c6e0a3a34a6f870ef2a49e191408a3e1ed2c0a92e6e588',
   //     name: 'we like vega',
   //     totalQuantumRewards: '1234567890',
   //     totalGamesPlayed: 12,
@@ -74,10 +77,11 @@ export const CompetitionsTeams = () => {
   //   },
   //   {
   //     referrer: '12345678909876543212345678765432345676543234567',
-  //     avatarUrl: 'http://placekitten.com/g/200/300',
+  //     avatarUrl: '',
   //     teamUrl: 'https://vega.xyz',
   //     closed: true,
-  //     teamId: '123',
+  //     teamId:
+  //       '38c49f91670f536ce5ab6609899780cfb6bb9dcfc6c79842cbc348325e10c10f',
   //     name: 'pure gold',
   //     totalQuantumRewards: '1234567890',
   //     totalGamesPlayed: 12,
@@ -88,10 +92,11 @@ export const CompetitionsTeams = () => {
   //   },
   //   {
   //     referrer: '12345678909876543212345678765432345676543234567',
-  //     avatarUrl: 'http://placekitten.com/g/200/300',
+  //     avatarUrl: '',
   //     teamUrl: 'https://vega.xyz',
   //     closed: true,
-  //     teamId: '123',
+  //     teamId:
+  //       'dfaaace4de83cab2443ebd7f75dc0d9a22a4f4a38f757b3adb5269aa930e0bdc',
   //     name: 'diamond hands',
   //     totalQuantumRewards: '1234567890',
   //     totalGamesPlayed: 12,
@@ -102,10 +107,11 @@ export const CompetitionsTeams = () => {
   //   },
   //   {
   //     referrer: '12345678909876543212345678765432345676543234567',
-  //     avatarUrl: 'http://placekitten.com/g/200/300',
+  //     avatarUrl: '',
   //     teamUrl: 'https://vega.xyz',
   //     closed: true,
-  //     teamId: '123',
+  //     teamId:
+  //       '1627a2ea10b07ed9cf08bfc7818bd76716493f5e6a5b5ffe4ed856ef34602a14',
   //     name: 'to the moon',
   //     totalQuantumRewards: '1234567890',
   //     totalGamesPlayed: 12,
@@ -116,10 +122,11 @@ export const CompetitionsTeams = () => {
   //   },
   //   {
   //     referrer: '12345678909876543212345678765432345676543234567',
-  //     avatarUrl: 'http://placekitten.com/g/200/300',
+  //     avatarUrl: '',
   //     teamUrl: 'https://vega.xyz',
   //     closed: true,
-  //     teamId: '123',
+  //     teamId:
+  //       'd21f7b04985e5b5f510a53ee61c4d77c100374eafeffd754b5296d386b7454da',
   //     name: 'beyond cats',
   //     totalQuantumRewards: '1234567890',
   //     totalGamesPlayed: 12,
@@ -130,10 +137,11 @@ export const CompetitionsTeams = () => {
   //   },
   //   {
   //     referrer: '12345678909876543212345678765432345676543234567',
-  //     avatarUrl: 'http://placekitten.com/g/200/300',
+  //     avatarUrl: '',
   //     teamUrl: 'https://vega.xyz',
   //     closed: true,
-  //     teamId: '123',
+  //     teamId:
+  //       'a40339f4cf31f4496e4d85ac7f56d5bbc9e257a337070fa361205c1f2fdaa0eb',
   //     name: 'cat lovers 2000',
   //     totalQuantumRewards: '1234567890',
   //     totalGamesPlayed: 12,
@@ -144,10 +152,11 @@ export const CompetitionsTeams = () => {
   //   },
   //   {
   //     referrer: '12345678909876543212345678765432345676543234567',
-  //     avatarUrl: 'http://placekitten.com/g/200/300',
+  //     avatarUrl: '',
   //     teamUrl: 'https://vega.xyz',
   //     closed: true,
-  //     teamId: '123',
+  //     teamId:
+  //       'af059e7508a302cce9523edcbde52bf7f2e876f34854c6274a83aec4045b9657',
   //     name: 'cat lovers 2000',
   //     totalQuantumRewards: '1234567890',
   //     totalGamesPlayed: 12,
@@ -158,10 +167,11 @@ export const CompetitionsTeams = () => {
   //   },
   //   {
   //     referrer: '12345678909876543212345678765432345676543234567',
-  //     avatarUrl: 'http://placekitten.com/g/200/300',
+  //     avatarUrl: '',
   //     teamUrl: 'https://vega.xyz',
   //     closed: true,
-  //     teamId: '123',
+  //     teamId:
+  //       '3f06f0e0ec863e686212d6b100f03122c9997f890d304f15f55215ac32334e6f',
   //     name: 'cat lovers 2000',
   //     totalQuantumRewards: '1234567890',
   //     totalGamesPlayed: 12,
@@ -172,10 +182,11 @@ export const CompetitionsTeams = () => {
   //   },
   //   {
   //     referrer: '12345678909876543212345678765432345676543234567',
-  //     avatarUrl: 'http://placekitten.com/g/200/300',
+  //     avatarUrl: '',
   //     teamUrl: 'https://vega.xyz',
   //     closed: true,
-  //     teamId: '123',
+  //     teamId:
+  //       '0fdc948a548ccd29001c2411629065bc5e248b6535b59b4b089f07a577074bf9',
   //     name: 'cat lovers 2000',
   //     totalQuantumRewards: '1234567890',
   //     totalGamesPlayed: 12,
