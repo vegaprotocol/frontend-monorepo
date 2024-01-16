@@ -28,7 +28,7 @@ export const CompetitionsAction = ({
   children?: ReactNode;
 }) => {
   return (
-    <Box>
+    <Box className="flex flex-col items-center gap-6 text-center">
       <DudeBadge variant={variant} />
       <h2 className="text-2xl">{title}</h2>
       {description && <p className="text-muted">{description}</p>}

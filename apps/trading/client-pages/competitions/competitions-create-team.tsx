@@ -26,6 +26,7 @@ import { DApp, TokenStaticLinks, useLinks } from '@vegaprotocol/environment';
 import { RainbowButton } from '../../components/rainbow-button';
 import { usePageTitle } from '../../lib/hooks/use-page-title';
 import { ErrorBoundary } from '../../components/error-boundary';
+import { Box } from '../../components/competitions/box';
 
 interface FormFields {
   name: string;
@@ -54,24 +55,26 @@ export const CompetitionsCreateTeam = () => {
           <div className="absolute top-o left-0 w-full h-full bg-gradient-to-t from-white dark:from-vega-cdark-900 to-transparent from-20% to-60%" />
         </div>
         <div className="lg:gap-6 container p-4 mx-auto">
-          <div className=" flex flex-col gap-4 bg-vega-clight-800 dark:bg-vega-cdark-800 mx-auto md:w-2/3 max-w-xl rounded-lg p-8">
-            <h1 className="calt text-2xl lg:text-3xl xl:text-5xl">
-              {t('Create a team')}
-            </h1>
-            {pubKey && !isReadOnly ? (
-              <CreateTeamFormContainer />
-            ) : (
-              <>
-                <p>
-                  {t(
-                    'Create a team to participate in team based rewards as well as access the discount benefits of the current referral program.'
-                  )}
-                </p>
-                <RainbowButton variant="border" onClick={openWalletDialog}>
-                  {t('Connect wallet')}
-                </RainbowButton>
-              </>
-            )}
+          <div className="mx-auto md:w-2/3 max-w-xl">
+            <Box className="flex flex-col gap-4">
+              <h1 className="calt text-2xl lg:text-3xl xl:text-5xl">
+                {t('Create a team')}
+              </h1>
+              {pubKey && !isReadOnly ? (
+                <CreateTeamFormContainer />
+              ) : (
+                <>
+                  <p>
+                    {t(
+                      'Create a team to participate in team based rewards as well as access the discount benefits of the current referral program.'
+                    )}
+                  </p>
+                  <RainbowButton variant="border" onClick={openWalletDialog}>
+                    {t('Connect wallet')}
+                  </RainbowButton>
+                </>
+              )}
+            </Box>
           </div>
         </div>
       </div>

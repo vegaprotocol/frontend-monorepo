@@ -13,7 +13,7 @@ export const Box = (props: HTMLAttributes<HTMLDivElement>) => {
         BORDER_COLOR,
         GRADIENT,
         'border rounded-lg',
-        'p-6 flex flex-col items-center gap-6 text-center',
+        'p-6',
         props.className
       )}
     />
