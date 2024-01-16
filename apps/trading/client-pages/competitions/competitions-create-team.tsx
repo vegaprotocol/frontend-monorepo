@@ -36,7 +36,7 @@ interface FormFields {
 const urlRegex =
   /^(https?:\/\/)?([a-zA-Z0-9.-]+(\.[a-zA-Z]{2,})+)(:[0-9]{1,5})?(\/[^\s]*)?$/;
 
-export const CreateTeam = () => {
+export const CompetitionsCreateTeam = () => {
   const t = useT();
 
   const { isReadOnly, pubKey } = useVegaWallet();
@@ -79,10 +79,9 @@ const CreateTeamFormContainer = () => {
   const createLink = useLinks(DApp.Governance);
   const navigate = useNavigate();
 
-  // eslint-disable-next-line
-  const { err, code, status, isEligible, requiredStake, onSubmit } =
+  const { err, status, isEligible, requiredStake, onSubmit } =
     useCreateReferralSet({
-      onSuccess: (code) => navigate(Links.TEAM(code)),
+      onSuccess: (code) => navigate(Links.COMPETITIONS_CREATE_TEAM(code)),
     });
 
   if (!isEligible) {
