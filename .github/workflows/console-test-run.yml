@@ -231,10 +231,11 @@ jobs:
       #  -----  upload market-sim logs  -----
       #----------------------------------------------
       - name: Prepare and Zip market-sim-logs
+        if: always()
         run: |
-          parent_dir="/tmp/market-sim-parent"
+          parent_dir="/tmp/market-sim-logs"
           mkdir -p "$parent_dir"
-          find /tmp -type d -name 'vega-sim-*' -exec mv {} "$parent_dir" \; 2>/dev/null
+          find /tmp -type d -name 'vega-sim-*' -exec mv {} "$parent_dir/" \;
           zip -r market-sim-logs.zip "$parent_dir"
 
       - name: Upload market-sim-logs
