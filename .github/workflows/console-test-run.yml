@@ -205,7 +205,7 @@ jobs:
       # run tests
       #----------------------------------------------
       - name: Run tests
-        run: CONSOLE_IMAGE_NAME=ci/trading:local poetry run pytest -k "test_get_started.py" -s
+        run: CONSOLE_IMAGE_NAME=ci/trading:local poetry run pytest -v -s --numprocesses 4 --dist loadfile --durations=15
         working-directory: apps/trading/e2e
       #----------------------------------------------
       # upload traces
