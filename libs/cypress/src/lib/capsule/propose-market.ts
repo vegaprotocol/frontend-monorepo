@@ -15,7 +15,6 @@ export async function proposeMarket(publicKey: string) {
   log('sending proposal tx');
   const proposalTx = createNewMarketProposal();
   const result = await sendVegaTx(publicKey, proposalTx);
-
   return result.result;
 }
 
@@ -119,6 +118,8 @@ function createNewMarketProposal(): ProposalSubmissionBody {
                 timeWindow: '3600',
                 scalingFactor: 10,
               },
+              // FIXME: workaround because of https://github.com/vegaprotocol/vega/issues/10343
+              triggeringRatio: '0.7',
               auctionExtension: '1',
             },
             logNormal: {

@@ -149,6 +149,8 @@ interface ProposalNewMarketTerms {
           timeWindow: string;
           scalingFactor: number;
         };
+        // FIXME: workaround because of https://github.com/vegaprotocol/vega/issues/10343
+        triggeringRatio: string;
         auctionExtension: string;
       };
       logNormal: LogNormal;
