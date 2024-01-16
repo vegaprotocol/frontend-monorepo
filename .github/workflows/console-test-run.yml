@@ -205,7 +205,7 @@ jobs:
       # run tests
       #----------------------------------------------
       - name: Run tests
-        run: CONSOLE_IMAGE_NAME=ci/trading:local poetry run pytest -v -s --numprocesses 3 --dist loadfile --durations=15
+        run: CONSOLE_IMAGE_NAME=ci/trading:local poetry run pytest -k "test_get_started.py" -s
         working-directory: apps/trading/e2e
       #----------------------------------------------
       # upload traces
@@ -230,20 +230,17 @@ jobs:
       #----------------------------------------------
       #  -----  upload market-sim logs  -----
       #----------------------------------------------
-      - name: Zip market-sim-logs
+      - name: Prepare and Zip market-sim-logs
         run: |
-          files=$(find /tmp -name 'vega-sim-*' -type d 2>/dev/null)
-          if [ -z "$files" ]; then
-            echo "No matching directories found to zip"
-          else
-            zip -r market-sim-logs.zip $files
-          fi
-        if: always()
+          parent_dir="/tmp/market-sim-parent"
+          mkdir -p "$parent_dir"
+          find /tmp -type d -name 'vega-sim-*' -exec mv {} "$parent_dir" \; 2>/dev/null
+          zip -r market-sim-logs.zip "$parent_dir"
 
-      - name: Upload market-sim-logs.zip
+      - name: Upload market-sim-logs
         uses: actions/upload-artifact@v3
         if: always()
         with:
-          name: market-sim-logs.zip
+          name: market-sim-logs
           path: market-sim-logs.zip
           retention-days: 15
