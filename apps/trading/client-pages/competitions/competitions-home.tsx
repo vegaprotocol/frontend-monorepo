@@ -3,7 +3,7 @@ import { titlefy } from '@vegaprotocol/utils';
 import { usePageTitleStore } from '../../stores';
 import { useT } from '../../lib/use-t';
 import { ErrorBoundary } from '@sentry/react';
-import { CompetitionsHeader } from '../../components/competitions/competitions-landing-banner';
+import { CompetitionsHeader } from '../../components/competitions/competitions-header';
 import { Intent, Loader, TradingButton } from '@vegaprotocol/ui-toolkit';
 
 import { useGames } from './hooks/use-games';
