@@ -19,7 +19,7 @@ export const ReferralCodeOwner = ({ code }: ReferralCodeOwnerProps) => {
   return (
     <TableCell>
       {loading && 'Loading...'}
-      {error && `Error fetching referrer: ${referrer}`}
+      {error && `Error fetching referrer: ${code}`}
       {referrer.length > 0 && <PartyLink id={referrer} />}
     </TableCell>
   );
