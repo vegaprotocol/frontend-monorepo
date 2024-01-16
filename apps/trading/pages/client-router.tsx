@@ -1,5 +1,5 @@
 import type { RouteObject } from 'react-router-dom';
-import { Navigate, Outlet, useRoutes } from 'react-router-dom';
+import { Navigate, useRoutes } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
 import { Loader, Splash } from '@vegaprotocol/ui-toolkit';
 import { LayoutWithSidebar } from '../components/layouts';
@@ -101,29 +101,25 @@ export const useRouterConfig = (): RouteObject[] => {
           path: AppRoutes.COMPETITIONS,
           element: <LayoutWithSidebar sidebar={<PortfolioSidebar />} />,
           children: [
+            // pages with planets and stars
             {
+              element: <LayoutWithSky />,
               children: [
-                // pages with planets and stars
+                { index: true, element: <CompetitionsHome /> },
                 {
-                  element: <LayoutWithSky />,
-                  children: [
-                    { index: true, element: <CompetitionsHome /> },
-                    {
-                      path: AppRoutes.COMPETITIONS_TEAMS,
-                      element: <CompetitionsTeams />,
-                    },
-                  ],
-                },
-                {
-                  path: AppRoutes.COMPETITIONS_TEAM,
-                  element: <CreateTeam />,
-                },
-                // pages with blurred background
-                {
-                  path: AppRoutes.COMPETITIONS_TEAM,
-                  element: <CompetitionsTeam />,
+                  path: AppRoutes.COMPETITIONS_TEAMS,
+                  element: <CompetitionsTeams />,
                 },
               ],
+            },
+            // pages with blurred background
+            {
+              path: AppRoutes.COMPETITIONS_CREATE_TEAM,
+              element: <CreateTeam />,
+            },
+            {
+              path: AppRoutes.COMPETITIONS_TEAM,
+              element: <CompetitionsTeam />,
             },
           ],
         }

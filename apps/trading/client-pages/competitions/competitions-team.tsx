@@ -30,18 +30,15 @@ import { TeamAvatar } from '../../components/competitions/team-avatar';
 export const CompetitionsTeam = () => {
   const t = useT();
   const { teamId } = useParams<{ teamId: string }>();
-  const { team, stats, partyInTeam, members, games } = useTeam(teamId);
+  const { team, stats, partyInTeam, members, games, loading } = useTeam(teamId);
 
-  // const team = {
-  //   teamId: '12345678909876543212345678765432345676543234567',
-  //   referrer: '12345678909876543212345678765432345676543234567',
-  //   name: 'The Kittens',
-  //   teamUrl: 'http://placekitten.com/g/200/300',
-  //   avatarUrl: 'http://placekitten.com/g/200/300',
-  //   createdAt: '2024-01-01',
-  //   createdAtEpoch: 123,
-  //   closed: true,
-  // };
+  if (loading) {
+    return (
+      <Splash>
+        <p>Loading...</p>
+      </Splash>
+    );
+  }
 
   if (!team) {
     return (
