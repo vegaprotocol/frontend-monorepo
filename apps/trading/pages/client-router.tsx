@@ -31,6 +31,7 @@ import { MarketsSidebar } from '../client-pages/markets/markets-sidebar';
 import { useT } from '../lib/use-t';
 import { CompetitionsHome } from '../client-pages/competitions/competitions-home';
 import { CompetitionsTeams } from '../client-pages/competitions/competitions-teams';
+import { CompetitionsTeam } from '../client-pages/competitions/competitions-team';
 
 // These must remain dynamically imported as pennant cannot be compiled by nextjs due to ESM
 // Using dynamic imports is a workaround for this until pennant is published as ESM
@@ -106,6 +107,10 @@ export const useRouterConfig = (): RouteObject[] => {
                 {
                   path: AppRoutes.COMPETITIONS_TEAMS,
                   element: <CompetitionsTeams />,
+                },
+                {
+                  path: AppRoutes.COMPETITIONS_TEAM,
+                  element: <CompetitionsTeam />,
                 },
               ],
             },
