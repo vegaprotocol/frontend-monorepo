@@ -11,7 +11,7 @@ import {
   useVegaTransactionStore,
 } from '@vegaprotocol/web3';
 import { Dialog } from '@vegaprotocol/ui-toolkit';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useT } from '../../use-t';
 import classnames from 'classnames';
 import { marketMarginDataProvider } from '@vegaprotocol/accounts';
@@ -84,6 +84,9 @@ const IsolatedMarginModeDialog = ({
   create,
 }: MarginDialogProps & { marginFactor: string }) => {
   const [leverage, setLeverage] = useState(`${1 / Number(marginFactor)}`);
+  useEffect(() => {
+    setLeverage(`${1 / Number(marginFactor)}`);
+  }, [marginFactor]);
   const t = useT();
   return (
     <Dialog
