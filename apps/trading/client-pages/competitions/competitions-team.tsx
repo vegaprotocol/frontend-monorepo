@@ -85,7 +85,7 @@ export const TeamPage = ({
       </div>
       <div className="flex flex-col gap-4 lg:gap-6 container p-4 mx-auto">
         <header className="flex gap-3 lg:gap-4 pt-5 lg:pt-10">
-          <TeamAvatar imgUrl={team.avatarUrl} />
+          <TeamAvatar teamId={team.teamId} imgUrl={team.avatarUrl} />
           <div className="flex flex-col items-start gap-1 lg:gap-3">
             <h1 className="calt text-2xl lg:text-3xl xl:text-5xl">
               {team.name}
