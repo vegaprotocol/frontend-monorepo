@@ -5,16 +5,25 @@ import {
   FormGroup,
 } from '@vegaprotocol/ui-toolkit';
 import { marginModeDataProvider } from '@vegaprotocol/positions';
-import { MarginMode, useVegaWallet } from '@vegaprotocol/wallet';
+import {
+  MarginMode,
+  type UpdateMarginModeBody,
+  isMarginModeUpdateTransaction,
+  useVegaWallet,
+} from '@vegaprotocol/wallet';
 import * as Types from '@vegaprotocol/types';
 import {
   type VegaTransactionStore,
   useVegaTransactionStore,
+  VegaTxStatus,
 } from '@vegaprotocol/web3';
 import { Dialog } from '@vegaprotocol/ui-toolkit';
 import { useState } from 'react';
 import { useT } from '../../use-t';
 import classnames from 'classnames';
+import { marketMarginDataProvider } from '@vegaprotocol/accounts';
+import last from 'lodash/last';
+import sortBy from 'lodash/sortBy';
 
 const defaultLeverage = 10;
 interface MarginDialogProps {
@@ -111,21 +120,8 @@ const IsolatedMarginModeDialog = ({
           )}
         </p>
       </div>
-      <FormGroup label={t('Leverage')} labelFor="leverage-input" compact>
-        <Input
-          type="number"
-          id="leverage-input"
-          min={1}
-          max={100}
-          step={0.1}
-          value={leverage}
-          onChange={(e) => setLeverage(e.target.value)}
-        />
-      </FormGroup>
-
-      <Button
-        className="w-full"
-        onClick={() => {
+      <form
+        onSubmit={() => {
           create({
             updateMarginMode: {
               market_id: marketId,
@@ -136,8 +132,21 @@ const IsolatedMarginModeDialog = ({
           onClose();
         }}
       >
-        {t('Confirm')}
-      </Button>
+        <FormGroup label={t('Leverage')} labelFor="leverage-input" compact>
+          <Input
+            type="number"
+            id="leverage-input"
+            min={1}
+            max={100}
+            step={0.1}
+            value={leverage}
+            onChange={(e) => setLeverage(e.target.value)}
+          />
+        </FormGroup>
+        <Button className="w-full" type="submit">
+          {t('Confirm')}
+        </Button>
+      </form>
     </Dialog>
   );
 };
@@ -146,15 +155,44 @@ export const MarginModeSelector = ({ marketId }: { marketId: string }) => {
   const t = useT();
   const [dialog, setDialog] = useState<'cross' | 'isolated' | ''>();
   const { pubKey: partyId, isReadOnly } = useVegaWallet();
-  const { data: marginMode } = useDataProvider({
-    dataProvider: marginModeDataProvider,
+  const { data: margin } = useDataProvider({
+    dataProvider: marketMarginDataProvider,
     variables: {
       partyId: partyId || '',
       marketId,
     },
     skip: !partyId,
   });
+  const { data: marginMode } = useDataProvider({
+    dataProvider: marginModeDataProvider,
+    variables: {
+      partyId: partyId || '',
+      marketId,
+    },
+    skip: !partyId || !!margin,
+  });
+  const tx = useVegaTransactionStore(
+    (state) =>
+      last(
+        sortBy(
+          state.transactions.filter(
+            (tx) =>
+              tx &&
+              tx.status === VegaTxStatus.Complete &&
+              isMarginModeUpdateTransaction(tx.body) &&
+              tx.body.updateMarginMode.market_id === marketId
+          ),
+          'updatedAt'
+        )
+      )?.body as UpdateMarginModeBody | undefined
+  );
   const create = useVegaTransactionStore((state) => state.create);
+  const mode =
+    margin?.marginMode || tx?.updateMarginMode.mode || marginMode?.marginMode;
+  const factor =
+    margin?.marginFactor ||
+    tx?.updateMarginMode.marginFactor ||
+    marginMode?.margin_factor;
   const disabled = isReadOnly;
   const onClose = () => setDialog(undefined);
   const enabledModeClassName = 'bg-vega-clight-500 dark:bg-vega-cdark-500';
@@ -167,26 +205,22 @@ export const MarginModeSelector = ({ marketId }: { marketId: string }) => {
           onClick={() => setDialog('cross')}
           className={classnames('rounded', {
             [enabledModeClassName]:
-              !marginMode ||
-              marginMode.marginMode ===
-                Types.MarginMode.MARGIN_MODE_CROSS_MARGIN,
+              !mode || mode === Types.MarginMode.MARGIN_MODE_CROSS_MARGIN,
           })}
         >
           {t('Cross')}
         </button>
         <button
           disabled={disabled}
-          onClick={() => setDialog('isolated')}
+          onClick={() => partyId && setDialog('isolated')}
           className={classnames('rounded', {
             [enabledModeClassName]:
-              marginMode?.marginMode ===
-              Types.MarginMode.MARGIN_MODE_ISOLATED_MARGIN,
+              mode === Types.MarginMode.MARGIN_MODE_ISOLATED_MARGIN,
           })}
         >
           {t('Isolated {{leverage}}x', {
-            leverage: marginMode?.margin_factor
-              ? 1 / Number(marginMode?.margin_factor)
-              : defaultLeverage,
+            leverage:
+              factor && factor !== '0' ? 1 / Number(factor) : defaultLeverage,
           })}
         </button>
       </div>
@@ -206,7 +240,7 @@ export const MarginModeSelector = ({ marketId }: { marketId: string }) => {
           onClose={onClose}
           marketId={marketId}
           create={create}
-          marginFactor={marginMode?.margin_factor || `${1 / defaultLeverage}`}
+          marginFactor={factor || `${1 / defaultLeverage}`}
         />
       )}
     </>

@@ -20,14 +20,20 @@ const update = (
   return produce(data || [], (draft) => {
     const { marketId } = delta;
     const index = draft.findIndex((node) => node.market.id === marketId);
+    const deltaData = {
+      maintenanceLevel: delta.maintenanceLevel,
+      searchLevel: delta.searchLevel,
+      initialLevel: delta.initialLevel,
+      collateralReleaseLevel: delta.collateralReleaseLevel,
+      marginFactor: delta.marginFactor,
+      marginMode: delta.marginMode,
+      orderMarginLevel: delta.orderMarginLevel,
+    };
     if (index !== -1) {
       const currNode = draft[index];
       draft[index] = {
         ...currNode,
-        maintenanceLevel: delta.maintenanceLevel,
-        searchLevel: delta.searchLevel,
-        initialLevel: delta.initialLevel,
-        collateralReleaseLevel: delta.collateralReleaseLevel,
+        ...deltaData,
       };
     } else {
       draft.unshift({
@@ -36,13 +42,7 @@ const update = (
           __typename: 'Market',
           id: delta.marketId,
         },
-        maintenanceLevel: delta.maintenanceLevel,
-        searchLevel: delta.searchLevel,
-        initialLevel: delta.initialLevel,
-        collateralReleaseLevel: delta.collateralReleaseLevel,
-        marginFactor: delta.marginFactor,
-        marginMode: delta.marginMode,
-        orderMarginLevel: delta.orderMarginLevel,
+        ...deltaData,
         asset: {
           __typename: 'Asset',
           id: delta.asset,

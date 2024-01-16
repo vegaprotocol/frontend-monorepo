@@ -464,7 +464,7 @@ const MarginModeDetails = ({ data }: { data: UpdateMarginMode }) => {
       <p>{market?.tradableInstrument.instrument.code}</p>
       {data.mode === MarginMode.MARGIN_MODE_CROSS_MARGIN
         ? t('Cross margin mode')
-        : t('Isolated margin mode {{leverage}}x', {
+        : t('Isolated margin mode, leverage: {{leverage}}x', {
             leverage: 1 / Number(data.marginFactor),
           })}
     </Panel>
