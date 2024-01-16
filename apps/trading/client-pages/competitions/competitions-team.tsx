@@ -22,11 +22,12 @@ import {
   type TeamStats,
   type Member,
   type TeamGame,
-} from './use-team';
+} from './hooks/use-team';
 import { DApp, EXPLORER_PARTIES, useLinks } from '@vegaprotocol/environment';
 import BigNumber from 'bignumber.js';
+import { TeamAvatar } from '../../components/competitions/team-avatar';
 
-export const Team = () => {
+export const CompetitionsTeam = () => {
   const t = useT();
   const { teamId } = useParams<{ teamId: string }>();
   const { team, stats, partyInTeam, members, games } = useTeam(teamId);
@@ -178,18 +179,6 @@ const Games = ({ games }: { games?: TeamGame[] }) => {
         teams: game.numberOfParticipants,
       }))}
       noCollapse={true}
-    />
-  );
-};
-
-const TeamAvatar = ({ imgUrl }: { imgUrl: string }) => {
-  // TODO: add fallback avatars
-  return (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img
-      src={imgUrl}
-      alt="Team avatar"
-      className="rounded-full w-20 h-20 lg:w-[112px] lg:h-[112px] bg-vega-clight-700 dark:bg-vega-cdark-700 shrink-0"
     />
   );
 };
