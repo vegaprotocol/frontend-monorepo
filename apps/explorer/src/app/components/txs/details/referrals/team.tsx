@@ -1,7 +1,9 @@
 import {
+  VegaIcon,
   Icon,
   KeyValueTable,
   KeyValueTableRow,
+  VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 import type { components } from '../../../../../types/explorer';
 import Hash from '../../../links/hash';
@@ -29,35 +31,43 @@ export const ReferralTeam = ({ tx, id, creator }: ReferralTeamProps) => {
 
   return (
     <section>
-      {tx.team.name && <h3>{tx.team.name}</h3>}
-      <KeyValueTable>
-        <KeyValueTableRow>
-          {t('Id')}
-          <Hash text={id} truncate={false} />
-        </KeyValueTableRow>
-        <KeyValueTableRow>
-          {t('Creator')}
-          <PartyLink id={creator} truncate={false} />
-        </KeyValueTableRow>
-        {tx.team.teamUrl && (
+      <div className="inline-block mr-2 leading-none">
+        <VegaIcon name={VegaIconNames.TEAM} />
+      </div>
+      {tx.team.name && (
+        <h3 className="inline-block leading-loose">{tx.team.name}</h3>
+      )}
+
+      <div className="min-w-fit max-w-2xl block">
+        <KeyValueTable>
           <KeyValueTableRow>
-            {t('Team URL')}
-            <Hash text={tx.team.teamUrl} truncate={false} />
+            {t('Id')}
+            <Hash text={id} truncate={false} />
           </KeyValueTableRow>
-        )}
-        {tx.team.avatarUrl && (
           <KeyValueTableRow>
-            {t('Avatar')}
-            <Hash text={tx.team.avatarUrl} truncate={false} />
+            {t('Creator')}
+            <PartyLink id={creator} truncate={false} />
           </KeyValueTableRow>
-        )}
-        <KeyValueTableRow>
-          {t('Open')}
-          <span data-testid={!tx.team.closed ? 'open-yes' : 'open-no'}>
-            {!tx.team.closed ? <Icon name="tick" /> : <Icon name="cross" />}
-          </span>
-        </KeyValueTableRow>
-      </KeyValueTable>
+          {tx.team.teamUrl && (
+            <KeyValueTableRow>
+              {t('Team URL')}
+              <Hash text={tx.team.teamUrl} truncate={false} />
+            </KeyValueTableRow>
+          )}
+          {tx.team.avatarUrl && (
+            <KeyValueTableRow>
+              {t('Avatar')}
+              <Hash text={tx.team.avatarUrl} truncate={false} />
+            </KeyValueTableRow>
+          )}
+          <KeyValueTableRow>
+            {t('Open')}
+            <span data-testid={!tx.team.closed ? 'open-yes' : 'open-no'}>
+              {!tx.team.closed ? <Icon name="tick" /> : <Icon name="cross" />}
+            </span>
+          </KeyValueTableRow>
+        </KeyValueTable>
+      </div>
     </section>
   );
 };
