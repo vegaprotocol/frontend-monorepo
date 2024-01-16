@@ -230,27 +230,27 @@ jobs:
       #----------------------------------------------
       #  -----  upload market-sim logs  -----
       #----------------------------------------------
-      - name: Find Directory
-        if: always()
+      - name: Find Parent Directory of vega-sim-* folders
+        id: find-parent-dir
         run: |
-          DIR=$(find /tmp -type d -name "vega-sim-*" -print -quit)
+          DIR=$(dirname $(find /tmp -type d -name "vega-sim-*" | head -n 1))
           if [[ -d "$DIR" ]]; then
-            echo "Found directory: $DIR"
+            echo "Found parent directory: $DIR"
             echo "DIR=$DIR" >> $GITHUB_ENV
           else
-            echo "Directory not found."
+            echo "Parent directory not found."
             exit 1
           fi
 
       - name: Compress Files
-        if: always()
+        if: env.DIR
         run: |
           tar -czvf ${{ github.workspace }}/market-sim-logs.tar.gz -C "$DIR" .
           echo "Compressed files at ${{ github.workspace }}/market-sim-logs.tar.gz"
 
       - name: Upload Compressed market-sim-logs
         uses: actions/upload-artifact@v3
-        if: always()
+        if: env.DIR
         with:
           name: market-sim-logs
           path: ${{ github.workspace }}/market-sim-logs.tar.gz
