@@ -101,13 +101,19 @@ export const useRouterConfig = (): RouteObject[] => {
           element: <LayoutWithSidebar sidebar={<PortfolioSidebar />} />,
           children: [
             {
-              element: <LayoutWithSky />,
               children: [
-                { index: true, element: <CompetitionsHome /> },
+                // pages with planets and stars
                 {
-                  path: AppRoutes.COMPETITIONS_TEAMS,
-                  element: <CompetitionsTeams />,
+                  element: <LayoutWithSky />,
+                  children: [
+                    { index: true, element: <CompetitionsHome /> },
+                    {
+                      path: AppRoutes.COMPETITIONS_TEAMS,
+                      element: <CompetitionsTeams />,
+                    },
+                  ],
                 },
+                // pages with blurred background
                 {
                   path: AppRoutes.COMPETITIONS_TEAM,
                   element: <CompetitionsTeam />,
