@@ -95,7 +95,6 @@ export const marketInfoQuery = (
         long: '0.008508132993273576',
       },
       liquidityMonitoringParameters: {
-        triggeringRatio: '0.7',
         targetStakeParameters: {
           timeWindow: 3600,
           scalingFactor: 10,

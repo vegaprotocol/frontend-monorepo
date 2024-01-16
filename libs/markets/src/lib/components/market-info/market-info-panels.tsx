@@ -745,7 +745,6 @@ export const LiquidityMonitoringParametersInfoPanel = ({
   parentMarket,
 }: MarketInfoProps) => {
   const marketData = {
-    triggeringRatio: market.liquidityMonitoringParameters.triggeringRatio,
     timeWindow:
       market.liquidityMonitoringParameters.targetStakeParameters.timeWindow,
     scalingFactor:
@@ -754,8 +753,6 @@ export const LiquidityMonitoringParametersInfoPanel = ({
 
   const parentMarketData = parentMarket
     ? {
-        triggeringRatio:
-          parentMarket.liquidityMonitoringParameters.triggeringRatio,
         timeWindow:
           parentMarket.liquidityMonitoringParameters.targetStakeParameters
             .timeWindow,

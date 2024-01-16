@@ -101,8 +101,6 @@ export const useTooltipMapping: () => Record<string, ReactNode> = () => {
     auctionExtensionSecs: t(
       'Auction extension duration in seconds, should the price breach its theoretical level over the specified horizon at the specified probability level.'
     ),
-
-    triggeringRatio: t('The triggering ratio for entering liquidity auction.'),
     timeWindow: t('The length of time over which open interest is measured.'),
     scalingFactor: t(
       'The scaling between the liquidity demand estimate, based on open interest and target stake.'

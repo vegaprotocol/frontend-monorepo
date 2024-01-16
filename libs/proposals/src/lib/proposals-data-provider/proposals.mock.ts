@@ -92,7 +92,6 @@ export const marketUpdateProposal: ProposalListFieldsFragment = {
           triggers: [],
         },
         liquidityMonitoringParameters: {
-          triggeringRatio: '0',
           targetStakeParameters: {
             scalingFactor: 0,
             timeWindow: 0,

@@ -134,7 +134,6 @@ fragment NewMarketFields on NewMarket {
   #     timeWindow
   #     scalingFactor
   #   }
-  #   triggeringRatio
   #   auctionExtensionSecs
   # }
   # linearSlippageFactor
@@ -299,7 +298,6 @@ fragment UpdateMarketFields on UpdateMarket {
         timeWindow
         scalingFactor
       }
-      triggeringRatio
       # auctionExtensionSecs
     }
     riskParameters {
