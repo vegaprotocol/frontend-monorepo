@@ -41,9 +41,14 @@ export const CompetitionsLeaderboard = ({
         if (rank === 2) rank = <Rank variant="silver" />;
         if (rank === 3) rank = <Rank variant="bronze" />;
 
-        const avatar = td.avatarUrl ? (
-          <TeamAvatar imgUrl={td.avatarUrl} size="small" />
-        ) : null;
+        const avatar = (
+          <TeamAvatar
+            teamId={td.teamId}
+            imgUrl={td.avatarUrl}
+            alt={td.name}
+            size="small"
+          />
+        );
 
         return {
           rank,
