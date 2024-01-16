@@ -22,14 +22,26 @@ import {
   type TeamStats,
   type Member,
   type TeamGame,
-} from './use-team';
+} from './hooks/use-team';
 import { DApp, EXPLORER_PARTIES, useLinks } from '@vegaprotocol/environment';
 import BigNumber from 'bignumber.js';
+import { TeamAvatar } from '../../components/competitions/team-avatar';
 
-export const Team = () => {
+export const CompetitionsTeam = () => {
   const t = useT();
   const { teamId } = useParams<{ teamId: string }>();
   const { team, stats, partyInTeam, members, games } = useTeam(teamId);
+
+  // const team = {
+  //   teamId: '12345678909876543212345678765432345676543234567',
+  //   referrer: '12345678909876543212345678765432345676543234567',
+  //   name: 'The Kittens',
+  //   teamUrl: 'http://placekitten.com/g/200/300',
+  //   avatarUrl: 'http://placekitten.com/g/200/300',
+  //   createdAt: '2024-01-01',
+  //   createdAtEpoch: 123,
+  //   closed: true,
+  // };
 
   if (!team) {
     return (
@@ -73,7 +85,7 @@ export const TeamPage = ({
       </div>
       <div className="flex flex-col gap-4 lg:gap-6 container p-4 mx-auto">
         <header className="flex gap-3 lg:gap-4 pt-5 lg:pt-10">
-          <TeamAvatar imgUrl={team.avatarUrl} />
+          <TeamAvatar teamId={team.teamId} imgUrl={team.avatarUrl} />
           <div className="flex flex-col items-start gap-1 lg:gap-3">
             <h1 className="calt text-2xl lg:text-3xl xl:text-5xl">
               {team.name}
@@ -178,18 +190,6 @@ const Games = ({ games }: { games?: TeamGame[] }) => {
         teams: game.numberOfParticipants,
       }))}
       noCollapse={true}
-    />
-  );
-};
-
-const TeamAvatar = ({ imgUrl }: { imgUrl: string }) => {
-  // TODO: add fallback avatars
-  return (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img
-      src={imgUrl}
-      alt="Team avatar"
-      className="rounded-full w-20 h-20 lg:w-[112px] lg:h-[112px] bg-vega-clight-700 dark:bg-vega-cdark-700 shrink-0"
     />
   );
 };
