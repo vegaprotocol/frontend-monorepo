@@ -33,7 +33,7 @@ export const TradingView = ({
   interval: ResolutionString;
   onIntervalChange: (interval: string) => void;
   onAutoSaveNeeded: OnAutoSaveNeededCallback;
-  state: object;
+  state: object | undefined;
 }) => {
   const { isMobile } = useScreenDimensions();
   const { theme } = useThemeSwitcher();
@@ -122,8 +122,8 @@ export const TradingView = ({
 
       widgetRef.current.subscribe('onAutoSaveNeeded', () => {
         if (!widgetRef.current) return;
-        widgetRef.current.save((state) => {
-          onAutoSaveNeeded(state);
+        widgetRef.current.save((newState) => {
+          onAutoSaveNeeded(newState);
         });
       });
 
@@ -132,7 +132,7 @@ export const TradingView = ({
       // Subscribe to interval changes so it can be persisted in chart settings
       activeChart.onIntervalChanged().subscribe(null, onIntervalChange);
 
-      if (state && Object.keys(state).length) {
+      if (state !== undefined) {
         // Load stored state
         widgetRef.current.load(state);
       } else {

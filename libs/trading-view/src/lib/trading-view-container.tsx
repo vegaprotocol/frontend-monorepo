@@ -19,7 +19,7 @@ export const TradingViewContainer = ({
   interval: ResolutionString;
   onIntervalChange: (interval: string) => void;
   onAutoSaveNeeded: OnAutoSaveNeededCallback;
-  state: object;
+  state: object | undefined;
 }) => {
   const t = useT();
   const scriptState = useScript(
