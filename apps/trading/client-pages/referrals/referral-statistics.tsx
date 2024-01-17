@@ -26,7 +26,7 @@ import {
 import { useReferralSetStatsQuery } from './hooks/__generated__/ReferralSetStats';
 import compact from 'lodash/compact';
 import { useReferralProgram } from './hooks/use-referral-program';
-import { useStakeAvailable } from './hooks/use-stake-available';
+import { useStakeAvailable } from '../../lib/hooks/use-stake-available';
 import sortBy from 'lodash/sortBy';
 import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useCurrentEpochInfoQuery } from './hooks/__generated__/Epoch';

@@ -1,5 +1,5 @@
 import { isRouteErrorResponse, useNavigate, useRouteError } from 'react-router';
-import { RainbowButton } from './buttons';
+import { RainbowButton } from '../../components/rainbow-button';
 import { AnimatedDudeWithWire } from './graphics/dude';
 import { LayoutWithSky } from './layout';
 import { Routes } from '../../lib/links';

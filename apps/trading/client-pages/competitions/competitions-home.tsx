@@ -1,6 +1,3 @@
-import { useEffect } from 'react';
-import { titlefy } from '@vegaprotocol/utils';
-import { usePageTitleStore } from '../../stores';
 import { useT } from '../../lib/use-t';
 import { ErrorBoundary } from '@sentry/react';
 import { CompetitionsHeader } from '../../components/competitions/competitions-header';
@@ -18,10 +15,13 @@ import { GamesContainer } from '../../components/competitions/games-container';
 import { CompetitionsLeaderboard } from '../../components/competitions/competitions-leaderboard';
 import { useTeams } from './hooks/use-teams';
 import take from 'lodash/take';
+import { usePageTitle } from '../../lib/hooks/use-page-title';
 
 export const CompetitionsHome = () => {
   const t = useT();
   const navigate = useNavigate();
+
+  usePageTitle(t('Competitions'));
 
   const { data: epochData } = useCurrentEpochInfoQuery();
   const currentEpoch = Number(epochData?.epoch.id);
@@ -35,13 +35,6 @@ export const CompetitionsHome = () => {
     sortByField: ['totalQuantumRewards'],
     order: 'desc',
   });
-
-  const { updateTitle } = usePageTitleStore((store) => ({
-    updateTitle: store.updateTitle,
-  }));
-  useEffect(() => {
-    updateTitle(titlefy([t('Competitions')]));
-  }, [updateTitle, t]);
 
   return (
     <ErrorBoundary>
@@ -86,7 +79,7 @@ export const CompetitionsHome = () => {
               intent={Intent.Primary}
               onClick={(e) => {
                 e.preventDefault();
-                navigate(Links.COMPETITIONS_CREATE_TEAM());
+                navigate(Links.COMPETITIONS_CREATE_TEAM_SOLO());
               }}
             >
               {t('Create a private team')}

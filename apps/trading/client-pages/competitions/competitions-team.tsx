@@ -26,22 +26,31 @@ import {
 import { DApp, EXPLORER_PARTIES, useLinks } from '@vegaprotocol/environment';
 import BigNumber from 'bignumber.js';
 import { TeamAvatar } from '../../components/competitions/team-avatar';
+import { usePageTitle } from '../../lib/hooks/use-page-title';
+import { ErrorBoundary } from '../../components/error-boundary';
 
 export const CompetitionsTeam = () => {
   const t = useT();
   const { teamId } = useParams<{ teamId: string }>();
-  const { team, stats, partyInTeam, members, games } = useTeam(teamId);
+  usePageTitle([t('Competitions'), t('Team')]);
+  return (
+    <ErrorBoundary feature="team">
+      <TeamPageContainer teamId={teamId} />
+    </ErrorBoundary>
+  );
+};
 
-  // const team = {
-  //   teamId: '12345678909876543212345678765432345676543234567',
-  //   referrer: '12345678909876543212345678765432345676543234567',
-  //   name: 'The Kittens',
-  //   teamUrl: 'http://placekitten.com/g/200/300',
-  //   avatarUrl: 'http://placekitten.com/g/200/300',
-  //   createdAt: '2024-01-01',
-  //   createdAtEpoch: 123,
-  //   closed: true,
-  // };
+const TeamPageContainer = ({ teamId }: { teamId: string | undefined }) => {
+  const t = useT();
+  const { team, stats, partyInTeam, members, games, loading } = useTeam(teamId);
+
+  if (loading) {
+    return (
+      <Splash>
+        <p>Loading...</p>
+      </Splash>
+    );
+  }
 
   if (!team) {
     return (
@@ -62,7 +71,7 @@ export const CompetitionsTeam = () => {
   );
 };
 
-export const TeamPage = ({
+const TeamPage = ({
   team,
   stats,
   partyInTeam,
@@ -79,7 +88,7 @@ export const TeamPage = ({
   const [showGames, setShowGames] = useState(true);
 
   return (
-    <div className="relative h-full overflow-y-auto">
+    <div className="relative h-full overflow-y-auto pt-5">
       <div className="absolute top-0 left-0 w-full h-[40%] -z-10 bg-[40%_0px] bg-cover bg-no-repeat bg-local bg-[url(/cover.png)]">
         <div className="absolute top-o left-0 w-full h-full bg-gradient-to-t from-white dark:from-vega-cdark-900 to-transparent from-20% to-60%" />
       </div>

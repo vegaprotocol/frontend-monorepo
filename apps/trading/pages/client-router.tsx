@@ -32,6 +32,7 @@ import { useT } from '../lib/use-t';
 import { CompetitionsHome } from '../client-pages/competitions/competitions-home';
 import { CompetitionsTeams } from '../client-pages/competitions/competitions-teams';
 import { CompetitionsTeam } from '../client-pages/competitions/competitions-team';
+import { CompetitionsCreateTeam } from '../client-pages/competitions/competitions-create-team';
 
 // These must remain dynamically imported as pennant cannot be compiled by nextjs due to ESM
 // Using dynamic imports is a workaround for this until pennant is published as ESM
@@ -49,7 +50,7 @@ const NotFound = () => {
 
 export const useRouterConfig = (): RouteObject[] => {
   const featureFlags = useFeatureFlags((state) => state.flags);
-  return compact([
+  const routeConfig = compact([
     {
       index: true,
       element: <Home />,
@@ -100,25 +101,25 @@ export const useRouterConfig = (): RouteObject[] => {
           path: AppRoutes.COMPETITIONS,
           element: <LayoutWithSidebar sidebar={<PortfolioSidebar />} />,
           children: [
+            // pages with planets and stars
             {
+              element: <LayoutWithSky />,
               children: [
-                // pages with planets and stars
+                { index: true, element: <CompetitionsHome /> },
                 {
-                  element: <LayoutWithSky />,
-                  children: [
-                    { index: true, element: <CompetitionsHome /> },
-                    {
-                      path: AppRoutes.COMPETITIONS_TEAMS,
-                      element: <CompetitionsTeams />,
-                    },
-                  ],
-                },
-                // pages with blurred background
-                {
-                  path: AppRoutes.COMPETITIONS_TEAM,
-                  element: <CompetitionsTeam />,
+                  path: AppRoutes.COMPETITIONS_TEAMS,
+                  element: <CompetitionsTeams />,
                 },
               ],
+            },
+            // pages with blurred background
+            {
+              path: AppRoutes.COMPETITIONS_CREATE_TEAM,
+              element: <CompetitionsCreateTeam />,
+            },
+            {
+              path: AppRoutes.COMPETITIONS_TEAM,
+              element: <CompetitionsTeam />,
             },
           ],
         }
@@ -213,6 +214,8 @@ export const useRouterConfig = (): RouteObject[] => {
       element: <NotFound />,
     },
   ]);
+
+  return routeConfig;
 };
 
 export const ClientRouter = () => {

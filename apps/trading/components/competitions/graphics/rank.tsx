@@ -29,8 +29,8 @@ export const Rank = ({
       <svg width="18" height="30" viewBox="0 0 18 30" fill="none">
         <defs>
           <linearGradient x1="0" y1="0" x2="100%" y2="100%" id="medal">
-            <stop offset="33%" stop-color="transparent" />
-            <stop offset="100%" stop-color="black" stop-opacity="50%" />
+            <stop offset="33%" stopColor="transparent" />
+            <stop offset="100%" stopColor="black" stopOpacity="50%" />
           </linearGradient>
           <clipPath id="shape">
             <path d="M2 2H4V4H2V2Z" />

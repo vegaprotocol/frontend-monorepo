@@ -11,7 +11,7 @@ import classNames from 'classnames';
 import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import type { ButtonHTMLAttributes, MouseEventHandler } from 'react';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { RainbowButton } from './buttons';
+import { RainbowButton } from '../../components/rainbow-button';
 import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
 import { useIsInReferralSet, useReferral } from './hooks/use-referral';
 import { Routes } from '../../lib/links';
