@@ -116,7 +116,7 @@ def test_wallet_transaction_rejected(continuous_market, page: Page):
     page.get_by_test_id(order_price).fill("120")
     page.route("**/*", handle_route_connection_rejected)
     page.get_by_test_id(place_order).click()
-    expect(page.get_by_test_id("toast-content")).to_have_text(
+    expect(page.get_by_test_id("toast-content").nth(0)).to_have_text(
         "Error occurredthe user rejected the wallet connection"
     )
 
