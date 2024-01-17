@@ -162,6 +162,8 @@ const NavbarMenu = ({ onClick }: { onClick: () => void }) => {
   const envNameMapping = useEnvNameMapping();
   const { VEGA_ENV, VEGA_NETWORKS, GITHUB_FEEDBACK_URL } = useEnvironment();
   const marketId = useGlobalStore((store) => store.marketId);
+  const GOVERNANCE_LINK = useLinks(DApp.Governance)();
+  const EXPLORER_LINK = useLinks(DApp.Explorer)();
 
   return (
     <div className="gap-3 lg:flex lg:h-full">
@@ -220,7 +222,7 @@ const NavbarMenu = ({ onClick }: { onClick: () => void }) => {
           </NavbarLink>
         </NavbarItem>
         <NavbarItem>
-          <NavbarLinkExternal to={useLinks(DApp.Governance)()}>
+          <NavbarLinkExternal to={GOVERNANCE_LINK}>
             {t('Governance')}
           </NavbarLinkExternal>
         </NavbarItem>
@@ -228,6 +230,13 @@ const NavbarMenu = ({ onClick }: { onClick: () => void }) => {
           <NavbarTrigger>{t('Resources')}</NavbarTrigger>
           <NavbarContent data-testid="navbar-content-resources">
             <ul className="lg:p-4">
+              {EXPLORER_LINK && (
+                <NavbarSubItem>
+                  <NavbarLinkExternal to={EXPLORER_LINK}>
+                    {t('Explorer')}
+                  </NavbarLinkExternal>
+                </NavbarSubItem>
+              )}
               {DocsLinks?.NEW_TO_VEGA && (
                 <NavbarSubItem>
                   <NavbarLinkExternal to={DocsLinks?.NEW_TO_VEGA}>
