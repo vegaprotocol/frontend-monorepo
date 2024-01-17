@@ -131,7 +131,7 @@ def test_terminated_market_no_settlement_date(page: Page, vega: VegaServiceNull)
     row_selector = page.locator(
         '[data-testid="tab-closed-markets"] .ag-center-cols-container .ag-row'
     ).first
-    expect(row_selector.locator('[col-id="state"]')).to_have_text("No trading")
+    expect(row_selector.locator('[col-id="state"]')).to_have_text("Trading Terminated")
     expect(row_selector.locator('[col-id="settlementDate"]')).to_have_text("Unknown")
 
     # TODO Create test for terminated market with settlement date in future

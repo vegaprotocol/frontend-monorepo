@@ -176,7 +176,7 @@ def test_market_lifecycle(proposed_market, vega: VegaServiceNull, page: Page):
 
     # market state should be changed to "No trading" because of the invalid oracle
     expect(trading_mode).to_have_text("No trading")
-    expect(market_state).to_have_text("No trading")
+    expect(market_state).to_have_text("Trading Terminated")
 
     # settle market
     vega.submit_termination_and_settlement_data(

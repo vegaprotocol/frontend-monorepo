@@ -73,7 +73,6 @@ def test_limit_order_new_trade_top_of_list(
 def test_price_copied_to_deal_ticket(continuous_market, page: Page):
     page.goto(f"/#/markets/{continuous_market}")
     page.get_by_test_id("Trades").click()
-    page.locator("[col-id=price]").last.click()
+    page.locator("[col-id=price]").nth(1).click()
     # 6005-THIS-007
-    page.reload()
     expect(page.get_by_test_id("order-price")).to_have_value("107.50000")
