@@ -105,21 +105,28 @@ const CreateCodeDialog = ({
   const { details: programDetails } = useReferralProgram();
 
   const getButtonProps = () => {
-    if (status === 'idle' || status === 'error') {
+    if (status === 'idle') {
       return {
         children: t('Generate code'),
         onClick: () => onSubmit({ createReferralSet: { isTeam: false } }),
       };
     }
 
-    if (status === 'loading') {
+    if (status === 'requested') {
       return {
         children: t('Confirm in wallet...'),
         disabled: true,
       };
     }
 
-    if (status === 'success') {
+    if (status === 'pending') {
+      return {
+        children: t('Waiting for transaction...'),
+        disabled: true,
+      };
+    }
+
+    if (status === 'confirmed') {
       return {
         children: t('Close'),
         intent: Intent.Success,
@@ -173,7 +180,10 @@ const CreateCodeDialog = ({
   if (!programDetails) {
     return (
       <div className="flex flex-col gap-4">
-        {(status === 'idle' || status === 'loading' || status === 'error') && (
+        {(status === 'idle' ||
+          status === 'requested' ||
+          status === 'pending' ||
+          err) && (
           <>
             {
               <p>
@@ -184,7 +194,7 @@ const CreateCodeDialog = ({
             }
           </>
         )}
-        {status === 'success' && code && (
+        {status === 'confirmed' && code && (
           <div className="flex items-center gap-2">
             <div className="flex-1 min-w-0 p-2 text-sm rounded bg-vega-clight-700 dark:bg-vega-cdark-700">
               <p className="overflow-hidden whitespace-nowrap text-ellipsis">
@@ -233,14 +243,17 @@ const CreateCodeDialog = ({
 
   return (
     <div className="flex flex-col gap-4">
-      {(status === 'idle' || status === 'loading' || status === 'error') && (
+      {(status === 'idle' ||
+        status === 'requested' ||
+        status === 'pending' ||
+        err) && (
         <p>
           {t(
             'Generate a referral code to share with your friends and access the commission benefits of the current program.'
           )}
         </p>
       )}
-      {status === 'success' && code && (
+      {status === 'confirmed' && code && (
         <div className="flex items-center gap-2">
           <div className="flex-1 min-w-0 p-2 text-sm rounded bg-vega-clight-700 dark:bg-vega-cdark-700">
             <p className="overflow-hidden whitespace-nowrap text-ellipsis">

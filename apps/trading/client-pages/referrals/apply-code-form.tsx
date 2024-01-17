@@ -5,17 +5,19 @@ import {
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
-import type { FieldValues } from 'react-hook-form';
 import { useForm } from 'react-hook-form';
 import classNames from 'classnames';
 import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import type { ButtonHTMLAttributes, MouseEventHandler } from 'react';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback } from 'react';
 import { RainbowButton } from '../../components/rainbow-button';
-import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
+import {
+  useSimpleTransaction,
+  useVegaWallet,
+  useVegaWalletDialogStore,
+} from '@vegaprotocol/wallet';
 import { useIsInReferralSet, useReferral } from './hooks/use-referral';
 import { Routes } from '../../lib/links';
-import { useTransactionEventSubscription } from '@vegaprotocol/web3';
 import { Statistics, useStats } from './referral-statistics';
 import { useReferralProgram } from './hooks/use-referral-program';
 import { ns, useT } from '../../lib/use-t';
@@ -73,6 +75,10 @@ export const ApplyCodeFormContainer = ({
   return <ApplyCodeForm onSuccess={onSuccess} />;
 };
 
+type FormFields = {
+  code: string;
+};
+
 export const ApplyCodeForm = ({ onSuccess }: { onSuccess?: () => void }) => {
   const t = useT();
   const program = useReferralProgram();
@@ -81,29 +87,45 @@ export const ApplyCodeForm = ({ onSuccess }: { onSuccess?: () => void }) => {
     (store) => store.openVegaWalletDialog
   );
 
-  const [status, setStatus] = useState<
-    'requested' | 'no-funds' | 'successful' | null
-  >(null);
-  const txHash = useRef<string | null>(null);
-  const { isReadOnly, pubKey, sendTx } = useVegaWallet();
+  const { isReadOnly, pubKey } = useVegaWallet();
   const { isEligible, requiredFunds } = useFundsAvailable();
 
   const currentRouteId = useGetCurrentRouteId();
   const setViews = useSidebar((s) => s.setViews);
 
+  const [params] = useSearchParams();
   const {
     register,
     handleSubmit,
     formState: { errors },
-    setValue,
     setError,
     watch,
-  } = useForm();
-  const [params] = useSearchParams();
+  } = useForm<FormFields>({
+    defaultValues: {
+      code: params.get('code') || '',
+    },
+  });
 
   const codeField = watch('code');
+
   const { data: previewData, loading: previewLoading } = useReferral({
     code: validateCode(codeField, t) ? codeField : undefined,
+  });
+
+  const { send, status } = useSimpleTransaction({
+    onSuccess: () => {
+      // go to main page when successfully applied
+      setTimeout(() => {
+        if (onSuccess) onSuccess();
+        navigate(Routes.REFERRALS);
+      }, RELOAD_DELAY);
+    },
+    onError: (msg) => {
+      setError('code', {
+        type: 'required',
+        message: msg,
+      });
+    },
   });
 
   /**
@@ -135,99 +157,55 @@ export const ApplyCodeForm = ({ onSuccess }: { onSuccess?: () => void }) => {
     return true;
   }, [codeField, previewData, previewLoading, t]);
 
-  useEffect(() => {
-    const code = params.get('code');
-    if (code) setValue('code', code);
-  }, [params, setValue]);
+  const noFunds = validateFundsAvailable() !== true ? true : false;
 
-  useEffect(() => {
-    const err = validateFundsAvailable();
-    if (err !== true) {
-      setStatus('no-funds');
-    } else {
-      setStatus(null);
-    }
-  }, [isEligible, validateFundsAvailable]);
-
-  const onSubmit = ({ code }: FieldValues) => {
+  const onSubmit = ({ code }: FormFields) => {
     if (isReadOnly || !pubKey || !code || code.length === 0) {
       return;
     }
 
-    setStatus('requested');
-
-    sendTx(pubKey, {
+    send({
       applyReferralCode: {
         id: code as string,
       },
-    })
-      .then((res) => {
-        if (!res) {
-          setError('code', {
-            type: 'required',
-            message: t('The transaction could not be sent'),
-          });
-        }
-        if (res) {
-          txHash.current = res.transactionHash.toLowerCase();
-        }
-      })
-      .catch((err) => {
-        if (err.message.includes('user rejected')) {
-          setStatus(null);
-        } else {
-          setStatus(null);
-          setError('code', {
-            type: 'required',
-            message:
-              err instanceof Error
-                ? err.message
-                : t('Your code has been rejected'),
-          });
-        }
-      });
-  };
+    });
 
-  useTransactionEventSubscription({
-    variables: { partyId: pubKey || '' },
-    skip: !pubKey,
-    fetchPolicy: 'no-cache',
-    onData: ({ data: result }) =>
-      result.data?.busEvents?.forEach((event) => {
-        if (event.event.__typename === 'TransactionResult') {
-          const hash = event.event.hash.toLowerCase();
-          if (txHash.current && txHash.current === hash) {
-            const err = event.event.error;
-            const status = event.event.status;
-            if (err) {
-              setStatus(null);
-              setError('code', {
-                type: 'required',
-                message: err,
-              });
-            }
-            if (status && !err) {
-              setStatus('successful');
-            }
-          }
-        }
-      }),
-  });
+    // sendTx(pubKey, {
+    //   applyReferralCode: {
+    //     id: code as string,
+    //   },
+    // })
+    //   .then((res) => {
+    //     if (!res) {
+    //       setError('code', {
+    //         type: 'required',
+    //         message: t('The transaction could not be sent'),
+    //       });
+    //     }
+    //     if (res) {
+    //       txHash.current = res.transactionHash.toLowerCase();
+    //     }
+    //   })
+    //   .catch((err) => {
+    //     if (err.message.includes('user rejected')) {
+    //       setStatus(null);
+    //     } else {
+    //       setStatus(null);
+    //       setError('code', {
+    //         type: 'required',
+    //         message:
+    //           err instanceof Error
+    //             ? err.message
+    //             : t('Your code has been rejected'),
+    //       });
+    //     }
+    //   });
+  };
 
   const { epochsValue, nextBenefitTierValue } = useStats({ program });
 
-  // go to main page when successfully applied
-  useEffect(() => {
-    if (status === 'successful') {
-      setTimeout(() => {
-        if (onSuccess) onSuccess();
-        navigate(Routes.REFERRALS);
-      }, RELOAD_DELAY);
-    }
-  }, [navigate, onSuccess, status]);
-
   // show "code applied" message when successfully applied
-  if (status === 'successful') {
+  if (status === 'confirmed') {
     return (
       <div className="mx-auto w-1/2">
         <h3 className="calt mb-5 flex flex-row items-center justify-center gap-2 text-center text-xl uppercase">
@@ -261,7 +239,7 @@ export const ApplyCodeForm = ({ onSuccess }: { onSuccess?: () => void }) => {
       };
     }
 
-    if (status === 'no-funds') {
+    if (noFunds) {
       return {
         disabled: false,
         children: t('Deposit funds'),
@@ -332,7 +310,7 @@ export const ApplyCodeForm = ({ onSuccess }: { onSuccess?: () => void }) => {
           </label>
           <RainbowButton variant="border" {...getButtonProps()} />
         </form>
-        {status === 'no-funds' ? (
+        {noFunds ? (
           <InputError intent="warning" className="overflow-auto break-words">
             <span>
               <SpamProtectionErr requiredFunds={requiredFunds?.toString()} />
