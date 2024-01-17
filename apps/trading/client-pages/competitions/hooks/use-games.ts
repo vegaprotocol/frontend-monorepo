@@ -19,6 +19,7 @@ export const useGames = ({
     variables: {
       isReward: true,
     },
+    fetchPolicy: 'cache-and-network',
   });
 
   const games = compact(data?.transfersConnection?.edges?.map((n) => n?.node))
