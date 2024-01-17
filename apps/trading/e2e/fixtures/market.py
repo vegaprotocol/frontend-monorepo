@@ -25,7 +25,7 @@ def setup_simple_market(
 
     vega.mint(
         MM_WALLET.name,
-        asset="VOTE",
+        asset=vega.find_asset_id(symbol="VOTE", enabled=True),
         amount=mint_amount,
     )
 
@@ -207,7 +207,7 @@ def setup_perps_market(
 
     vega.mint(
         MM_WALLET.name,
-        asset="VOTE",
+        asset=vega.find_asset_id(symbol="VOTE", enabled=True),
         amount=mint_amount,
     )
 

@@ -27,7 +27,7 @@ submit_stop_order = "place-order"
 stop_orders_tab = "Stop orders"
 row_table = "row"
 cancel = "cancel"
-market_name_col = '[col-id="market.tradableInstrument.instrument.code"]'
+market_name_col = '[data-testid="market-code"]'
 trigger_col = '[col-id="trigger"]'
 expiresAt_col = '[col-id="expiresAt"]'
 size_col = '[col-id="submission.size"]'

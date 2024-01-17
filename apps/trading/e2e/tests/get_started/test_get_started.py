@@ -77,7 +77,7 @@ class TestGetStarted:
 
         vega.mint(
             MM_WALLET.name,
-            asset="VOTE",
+            asset=vega.find_asset_id(symbol="VOTE", enabled=True),
             amount=mint_amount,
         )
 
@@ -105,6 +105,8 @@ class TestGetStarted:
 
         vega.wait_fn(1)
         vega.wait_for_total_catchup()
+        page.reload()
+
         # Assert step 2 complete
         expect(page.get_by_test_id("icon-tick")).to_have_count(2)
 

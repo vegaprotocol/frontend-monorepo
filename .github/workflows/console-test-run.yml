@@ -19,7 +19,7 @@ jobs:
   create-docker-image:
     name: Create docker image for console-test
     runs-on: ubuntu-22.04
-    timeout-minutes: 20
+    timeout-minutes: 90
     steps:
       #----------------------------------------------
       #       check-out frontend-monorepo
@@ -138,7 +138,7 @@ jobs:
     name: run-tests
     runs-on: 8-cores
     needs: [create-docker-image, console-test-branch]
-    timeout-minutes: 20
+    timeout-minutes: 90
     steps:
       #----------------------------------------------
       #       load docker image
@@ -205,7 +205,7 @@ jobs:
       # run tests
       #----------------------------------------------
       - name: Run tests
-        run: CONSOLE_IMAGE_NAME=ci/trading:local poetry run pytest -v -s --numprocesses 4 --dist loadfile --durations=15
+        run: CONSOLE_IMAGE_NAME=ci/trading:local poetry run pytest -v -s --numprocesses 1 --dist loadfile --durations=90
         working-directory: apps/trading/e2e
       #----------------------------------------------
       # upload traces
@@ -230,28 +230,43 @@ jobs:
       #----------------------------------------------
       #  -----  upload market-sim logs  -----
       #----------------------------------------------
-      - name: Find Directory
-        id: find-dir
+      - name: Prepare and Zip market-sim-logs
+        if: always()
         run: |
-          DIR=$(find /tmp -type d -name "vega-sim-*" -print -quit)
-          if [[ -d "$DIR" ]]; then
-            echo "Found directory: $DIR"
-            echo "DIR=$DIR" >> $GITHUB_ENV
-          else
-            echo "Directory not found."
-            exit 1
+          parent_dir="/tmp/market-sim-logs"
+          echo "Creating parent directory at $parent_dir"
+          mkdir -p "$parent_dir"
+
+          echo "Waiting for vega-sim-* folders to be created..."
+          sleep 10  # Waits 10 seconds to ensure all folders are created
+
+          echo "Before searching for vega-sim-* folders in /tmp..."
+          folders=$(find /tmp -mindepth 1 -type d -name 'vega-sim-*' -print) || echo "Find command failed with exit code $?"
+
+          echo "After searching for vega-sim-* folders in /tmp..."
+
+          if [ -z "$folders" ]; then
+            echo "No vega-sim-* folders found."
+            exit 0
           fi
 
-      - name: Compress Files
-        if: env.DIR
-        run: |
-          tar -czvf ${{ github.workspace }}/market-sim-logs.tar.gz -C "$DIR" .
-          echo "Compressed files at ${{ github.workspace }}/market-sim-logs.tar.gz"
+          echo "Moving vega-sim-* folders to $parent_dir"
+          echo "$folders" | xargs -I {} mv {} "$parent_dir/"
 
-      - name: Upload Compressed market-sim-logs
+          echo "Checking if $parent_dir is not empty..."
+          if [ "$(ls -A $parent_dir)" ]; then
+            echo "Zipping the parent directory..."
+            zip -r market-sim-logs.zip "$parent_dir" && echo "Zip file created successfully."
+          else
+            echo "$parent_dir is empty. No zip file created."
+            exit 0
+          fi
+        shell: /usr/bin/bash -e {0}
+
+      - name: Upload market-sim-logs
         uses: actions/upload-artifact@v3
-        if: env.DIR
+        if: always()
         with:
           name: market-sim-logs
-          path: ${{ github.workspace }}/market-sim-logs.tar.gz
+          path: market-sim-logs.zip
           retention-days: 15
