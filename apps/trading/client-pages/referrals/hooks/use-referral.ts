@@ -14,7 +14,7 @@ export const DEFAULT_AGGREGATION_DAYS = 30;
 
 export type Role = 'referrer' | 'referee';
 type UseReferralArgs = (
-  | { code: string }
+  | { code: string | undefined }
   | { pubKey: string | null; role: Role }
 ) & {
   aggregationEpochs?: number;

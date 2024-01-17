@@ -7,7 +7,6 @@ import {
   type TeamRefereeFieldsFragment,
   type TeamEntityFragment,
 } from './__generated__/Team';
-import { useVegaWallet } from '@vegaprotocol/wallet';
 
 export type Team = TeamFieldsFragment;
 export type TeamStats = TeamStatsFieldsFragment;
@@ -15,16 +14,18 @@ export type Member = TeamRefereeFieldsFragment;
 export type TeamEntity = TeamEntityFragment;
 export type TeamGame = ReturnType<typeof useTeam>['games'][number];
 
-export const useTeam = (teamId?: string) => {
-  const { pubKey } = useVegaWallet();
-
-  const { data, loading, error } = useTeamQuery({
-    variables: { teamId: teamId || '', partyId: pubKey },
+export const useTeam = (teamId?: string, partyId?: string) => {
+  const { data, loading, error, refetch } = useTeamQuery({
+    variables: { teamId: teamId || '', partyId },
     skip: !teamId,
+    fetchPolicy: 'cache-and-network',
   });
 
   const teamEdge = data?.teams?.edges.find((e) => e.node.teamId === teamId);
-  const partyTeamEdge = data?.partyTeams?.edges[0];
+  const partyTeam = data?.partyTeams?.edges?.length
+    ? data.partyTeams.edges[0].node
+    : undefined;
+
   const teamStatsEdge = data?.teamsStatistics?.edges.find(
     (e) => e.node.teamId === teamId
   );
@@ -49,16 +50,18 @@ export const useTeam = (teamId?: string) => {
       team: team as TeamEntity, // TS can't infer that all the game entities are teams
     };
   });
+
   const games = orderBy(compact(gamesWithTeam), 'epoch', 'desc');
 
   return {
     data,
     loading,
     error,
+    refetch,
     stats: teamStatsEdge?.node,
     team: teamEdge?.node,
     members,
     games,
-    partyInTeam: Boolean(partyTeamEdge),
+    partyTeam,
   };
 };
