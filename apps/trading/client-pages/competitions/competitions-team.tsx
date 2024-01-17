@@ -236,7 +236,7 @@ const Members = ({ members }: { members?: Member[] }) => {
         },
         {
           name: 'explorerLink',
-          displayName: '',
+          displayName: <span className="invisible">Actions</span>, // ensure header doesn't collapse
           headerClassName: 'hidden md:block',
           className: 'hidden md:block text-right',
         },
