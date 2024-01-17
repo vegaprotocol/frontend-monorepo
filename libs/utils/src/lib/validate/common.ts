@@ -29,11 +29,14 @@ export const useEthereumAddress = () => {
 };
 
 export const VEGA_ID_REGEX = /^[A-Fa-f0-9]{64}$/i;
+export const isValidVegaPublicKey = (value: string) => {
+  return VEGA_ID_REGEX.test(value);
+};
 export const useVegaPublicKey = () => {
   const t = useT();
   return useCallback(
     (value: string) => {
-      if (!VEGA_ID_REGEX.test(value)) {
+      if (!isValidVegaPublicKey(value)) {
         return t('Invalid Vega key');
       }
       return true;
@@ -87,6 +90,24 @@ export const useValidateJson = () => {
       } catch (e) {
         return t('Must be valid JSON');
       }
+    },
+    [t]
+  );
+};
+
+export const URL_REGEX =
+  /^(https?:\/\/)?([a-zA-Z0-9.-]+(\.[a-zA-Z]{2,})+)(:[0-9]{1,5})?(\/[^\s]*)?$/;
+const isValidUrl = (value: string) => {
+  return URL_REGEX.test(value);
+};
+export const useValidateUrl = () => {
+  const t = useT();
+  return useCallback(
+    (value: string) => {
+      if (!isValidUrl(value)) {
+        return t('Invalid URL');
+      }
+      return true;
     },
     [t]
   );

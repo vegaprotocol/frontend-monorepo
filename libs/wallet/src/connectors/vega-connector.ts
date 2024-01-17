@@ -445,6 +445,7 @@ export type CreateReferralSet = {
       teamUrl?: string;
       avatarUrl?: string;
       closed: boolean;
+      allowList: string[];
     };
   };
 };
