@@ -68,7 +68,7 @@ export const JoinTeam = ({
   );
 };
 
-const JoinButton = ({
+export const JoinButton = ({
   pubKey,
   isReadOnly,
   team,
