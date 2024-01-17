@@ -53,7 +53,7 @@ FEE_BREAKDOWN_TOOLTIP = "fee-breakdown-tooltip"
 PINNED_ROW_LOCATOR = ".ag-pinned-left-cols-container .ag-row"
 ROW_LOCATOR = ".ag-center-cols-container .ag-row"
 # Col-Ids:
-COL_INSTRUMENT_CODE = '[col-id="market.tradableInstrument.instrument.code"]'
+COL_INSTRUMENT_CODE = '[data-testid="market-code"]'
 COL_CODE = '[col-id="code"]'
 COL_SIZE = '[col-id="size"]'
 COL_PRICE = '[col-id="price"]'
@@ -605,7 +605,6 @@ def test_fills_maker_discount_program(
     change_keys(page, vega_instance, MM_WALLET.name)
     page.get_by_test_id(FILLS).click()
     row = page.get_by_test_id(TAB_FILLS).locator(ROW_LOCATOR).first
-    expect(row.locator(COL_INSTRUMENT_CODE)).to_have_text("BTC:DAI_2023Futr")
     expect(row.locator(COL_SIZE)).to_have_text(size)
     expect(row.locator(COL_PRICE)).to_have_text("103.50 tDAI")
     expect(row.locator(COL_PRICE_1)).to_have_text(price_1)

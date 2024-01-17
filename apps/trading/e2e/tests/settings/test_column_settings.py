@@ -23,7 +23,7 @@ def test_column_settings_is_visible(continuous_market, page: Page):
 @pytest.mark.usefixtures("page", "continuous_market", "auth", "risk_accepted")
 def test_can_reset_columns_state(continuous_market, page: Page):
     page.goto(f"/#/markets/all")
-    col_market = page.locator('[col-id="tradableInstrument.instrument.code"]').first
+    col_market = page.locator('[data-testid="market-code"]').first
     col_settlement_asset = page.locator('[col-id="tradableInstrument.instrument.product.settlementAsset.symbol"]').first
     col_market.drag_to(col_settlement_asset)
 
