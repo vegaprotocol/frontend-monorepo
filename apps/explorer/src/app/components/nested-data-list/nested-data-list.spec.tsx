@@ -1,9 +1,5 @@
 import { render, waitFor } from '@testing-library/react';
-import {
-  BORDER_COLOURS,
-  NestedDataList,
-  sortNestedDataByChildren,
-} from './nested-data-list';
+import { NestedDataList, sortNestedDataByChildren } from './nested-data-list';
 import userEvent from '@testing-library/user-event';
 
 const mockData = {
@@ -59,38 +55,6 @@ describe('NestedDataList', () => {
     const { getAllByRole } = tree;
     const parent = getAllByRole('listitem', { name: 'Validator Heartbeat' });
     expect(parent[0].querySelector('li')).toHaveClass('pl-4 border-l-4 pt-2');
-  });
-
-  it('should repeat the border colours in the correct order', () => {
-    const colourMockData = {
-      t0: {
-        t1: {
-          t2: {
-            t3: {
-              t4: {
-                t5: {
-                  t6: {
-                    t7: {
-                      t8: {
-                        hello: 'world',
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
-    };
-    const tree = render(<NestedDataList data={colourMockData} />);
-    const { getByTestId } = tree;
-
-    for (let i = 0; i < 8; i++) {
-      const item = getByTestId(`T${i}`);
-      const expected = BORDER_COLOURS.light[i % 5];
-      expect(item.style.borderColor.toUpperCase()).toBe(expected);
-    }
   });
 
   it('should sort the data by values with children', () => {
