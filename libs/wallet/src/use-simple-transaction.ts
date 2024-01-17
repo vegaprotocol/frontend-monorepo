@@ -39,6 +39,7 @@ export const useSimpleTransaction = (opts?: Options) => {
     }
 
     setStatus('requested');
+    setError(undefined);
 
     try {
       const res = await sendTx(pubKey, tx);
@@ -59,11 +60,13 @@ export const useSimpleTransaction = (opts?: Options) => {
           setStatus('idle');
         } else {
           setError(err.message);
+          setStatus('idle');
           opts?.onError?.(err.message);
         }
       } else {
         const msg = t('Wallet rejected transaction');
         setError(msg);
+        setStatus('idle');
         opts?.onError?.(msg);
       }
     }
@@ -100,6 +103,7 @@ export const useSimpleTransaction = (opts?: Options) => {
       } else {
         const msg = event?.error || t('Transaction was not successful');
         setError(msg);
+        setStatus('idle');
         opts?.onError?.(msg);
       }
     },
