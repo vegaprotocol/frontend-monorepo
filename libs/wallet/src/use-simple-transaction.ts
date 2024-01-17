@@ -6,11 +6,18 @@ import {
   type SimpleTransactionFieldsFragment,
 } from './__generated__/SimpleTransaction';
 import { useT } from './use-t';
+import { determineId } from './utils';
 
 export type Status = 'idle' | 'requested' | 'pending' | 'confirmed';
 
-type Options = {
-  onSuccess?: (hash: string) => void;
+export type Result = {
+  txHash: string;
+  signature: string;
+  id: string;
+};
+
+export type Options = {
+  onSuccess?: (result: Result) => void;
   onError?: (msg: string) => void;
 };
 
@@ -19,7 +26,7 @@ export const useSimpleTransaction = (opts?: Options) => {
   const { pubKey, isReadOnly, sendTx } = useVegaWallet();
 
   const [status, setStatus] = useState<Status>('idle');
-  const [txHash, setTxHash] = useState<string>();
+  const [result, setResult] = useState<Result>();
   const [error, setError] = useState<string>();
 
   const send = async (tx: Transaction) => {
@@ -41,7 +48,11 @@ export const useSimpleTransaction = (opts?: Options) => {
       }
 
       setStatus('pending');
-      setTxHash(res?.transactionHash.toLowerCase());
+      setResult({
+        txHash: res?.transactionHash.toLowerCase(),
+        signature: res.signature,
+        id: determineId(res.signature),
+      });
     } catch (err) {
       if (err instanceof Error) {
         if (err.message.includes('user rejected')) {
@@ -60,13 +71,17 @@ export const useSimpleTransaction = (opts?: Options) => {
 
   useSimpleTransactionSubscription({
     variables: { partyId: pubKey || '' },
-    skip: !pubKey,
+    skip: !pubKey || !result,
     fetchPolicy: 'no-cache',
-    onData: ({ data: result }) => {
-      const e = result.data?.busEvents?.find((event) => {
+    onData: ({ data }) => {
+      if (!result) {
+        throw new Error('simple transaction query started before result');
+      }
+
+      const e = data.data?.busEvents?.find((event) => {
         if (
           event.event.__typename === 'TransactionResult' &&
-          event.event.hash.toLowerCase() === txHash
+          event.event.hash.toLowerCase() === result?.txHash
         ) {
           return true;
         }
@@ -81,7 +96,7 @@ export const useSimpleTransaction = (opts?: Options) => {
 
       if (event.status && !event.error) {
         setStatus('confirmed');
-        opts?.onSuccess?.(event.hash);
+        opts?.onSuccess?.(result);
       } else {
         const msg = event?.error || t('Transaction was not successful');
         setError(msg);
@@ -91,7 +106,7 @@ export const useSimpleTransaction = (opts?: Options) => {
   });
 
   return {
-    txHash,
+    result,
     error,
     status,
     send,

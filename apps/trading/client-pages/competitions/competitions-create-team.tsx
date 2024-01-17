@@ -13,6 +13,7 @@ import {
 import {
   useVegaWallet,
   type CreateReferralSet,
+  type Status,
   useVegaWalletDialogStore,
 } from '@vegaprotocol/wallet';
 import {
@@ -97,7 +98,7 @@ const CreateTeamFormContainer = ({ isSolo }: { isSolo: boolean }) => {
       },
     });
 
-  if (status === 'success') {
+  if (status === 'confirmed') {
     return (
       <div className="flex flex-col items-start gap-2">
         <p className="text-sm">{t('Team creation transaction successful')}</p>
@@ -299,14 +300,27 @@ const CreateTeamForm = ({
         </TradingFormGroup>
       )}
       {err && <p className="text-danger text-xs mb-4 capitalize">{err}</p>}
-      <TradingButton
-        type="submit"
-        intent={Intent.Info}
-        disabled={status === 'loading'}
-      >
-        {status === 'loading' ? t('Confirm in wallet...') : t('Create')}
-      </TradingButton>
+      <SubmitButton status={status} />
     </form>
+  );
+};
+
+const SubmitButton = ({ status }: { status: Status }) => {
+  const t = useT();
+  const disabled = status === 'pending' || status === 'requested';
+
+  let text = t('Create');
+
+  if (status === 'requested') {
+    text = t('Confirm in wallet...');
+  } else if (status === 'pending') {
+    text = t('Awaiting transaction...');
+  }
+
+  return (
+    <TradingButton type="submit" intent={Intent.Info} disabled={disabled}>
+      {text}
+    </TradingButton>
   );
 };
 
