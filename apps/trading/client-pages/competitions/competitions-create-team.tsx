@@ -43,6 +43,7 @@ export const CompetitionsCreateTeam = () => {
   const [searchParams] = useSearchParams();
   const isSolo = Boolean(searchParams.get('solo'));
   const t = useT();
+
   usePageTitle(t('Create a team'));
 
   const { isReadOnly, pubKey } = useVegaWallet();
@@ -55,7 +56,7 @@ export const CompetitionsCreateTeam = () => {
       <LayoutWithGradient>
         <div className="mx-auto md:w-2/3 max-w-xl">
           <Box className="flex flex-col gap-4">
-            <h1 className="calt text-2xl lg:text-3xl xl:text-5xl">
+            <h1 className="calt text-2xl lg:text-3xl xl:text-4xl">
               {t('Create a team')}
             </h1>
             {pubKey && !isReadOnly ? (
