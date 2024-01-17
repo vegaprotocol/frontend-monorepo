@@ -15,7 +15,7 @@ import {
   StakeAvailableDocument,
   type StakeAvailableQueryVariables,
   type StakeAvailableQuery,
-} from './hooks/__generated__/StakeAvailable';
+} from '../../lib/hooks/__generated__/StakeAvailable';
 import {
   RefereesDocument,
   type RefereesQueryVariables,

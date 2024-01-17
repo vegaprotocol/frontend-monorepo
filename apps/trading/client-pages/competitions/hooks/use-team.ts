@@ -18,6 +18,7 @@ export const useTeam = (teamId?: string, partyId?: string) => {
   const { data, loading, error, refetch } = useTeamQuery({
     variables: { teamId: teamId || '', partyId },
     skip: !teamId,
+    fetchPolicy: 'cache-and-network',
   });
 
   const teamEdge = data?.teams?.edges.find((e) => e.node.teamId === teamId);

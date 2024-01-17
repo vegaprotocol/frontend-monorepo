@@ -7,4 +7,4 @@ export * from './provider';
 export * from './connect-dialog';
 export * from './utils';
 export * from './storage';
-export { useSimpleTransaction, Status } from './use-simple-transaction';
+export { useSimpleTransaction, type Status } from './use-simple-transaction';
