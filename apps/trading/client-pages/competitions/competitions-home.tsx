@@ -79,7 +79,7 @@ export const CompetitionsHome = () => {
               intent={Intent.Primary}
               onClick={(e) => {
                 e.preventDefault();
-                navigate(Links.COMPETITIONS_CREATE_TEAM());
+                navigate(Links.COMPETITIONS_CREATE_TEAM_SOLO());
               }}
             >
               {t('Create a private team')}

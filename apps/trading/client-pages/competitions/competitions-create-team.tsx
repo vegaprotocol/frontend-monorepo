@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Controller, useForm } from 'react-hook-form';
 import {
   Intent,
@@ -38,6 +38,8 @@ interface FormFields {
 }
 
 export const CompetitionsCreateTeam = () => {
+  const [searchParams] = useSearchParams();
+  const isSolo = Boolean(searchParams.get('solo'));
   const t = useT();
   usePageTitle(t('Create a team'));
 
@@ -59,7 +61,7 @@ export const CompetitionsCreateTeam = () => {
                 {t('Create a team')}
               </h1>
               {pubKey && !isReadOnly ? (
-                <CreateTeamFormContainer />
+                <CreateTeamFormContainer isSolo={isSolo} />
               ) : (
                 <>
                   <p>
@@ -80,7 +82,7 @@ export const CompetitionsCreateTeam = () => {
   );
 };
 
-const CreateTeamFormContainer = () => {
+const CreateTeamFormContainer = ({ isSolo }: { isSolo: boolean }) => {
   const t = useT();
   const createLink = useLinks(DApp.Governance);
   const navigate = useNavigate();
@@ -117,16 +119,25 @@ const CreateTeamFormContainer = () => {
     );
   }
 
-  return <CreateTeamForm onSubmit={onSubmit} status={status} err={err} />;
+  return (
+    <CreateTeamForm
+      onSubmit={onSubmit}
+      status={status}
+      err={err}
+      isSolo={isSolo}
+    />
+  );
 };
 
 const CreateTeamForm = ({
   status,
   err,
+  isSolo,
   onSubmit,
 }: {
   status: ReturnType<typeof useCreateReferralSet>['status'];
   err: ReturnType<typeof useCreateReferralSet>['err'];
+  isSolo: boolean;
   onSubmit: (tx: CreateReferralSet) => void;
 }) => {
   const t = useT();
@@ -137,7 +148,11 @@ const CreateTeamForm = ({
     control,
     watch,
     formState: { errors },
-  } = useForm<FormFields>();
+  } = useForm<FormFields>({
+    defaultValues: {
+      private: isSolo,
+    },
+  });
 
   const isPrivate = watch('private');
 
@@ -219,6 +234,7 @@ const CreateTeamForm = ({
                 onCheckedChange={(value) => {
                   field.onChange(value);
                 }}
+                disabled={isSolo}
               />
             );
           }}
@@ -235,6 +251,7 @@ const CreateTeamForm = ({
           <TextArea
             {...register('allowList', {
               required: t('Required'),
+              disabled: isSolo,
               validate: {
                 allowList: (value) => {
                   const publicKeys = parseAllowListText(value);
