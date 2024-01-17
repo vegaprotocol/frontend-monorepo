@@ -33,7 +33,9 @@ export const useTeams = ({
     data: teamsData,
     loading: teamsLoading,
     error: teamsError,
-  } = useTeamsQuery();
+  } = useTeamsQuery({
+    fetchPolicy: 'cache-and-network',
+  });
 
   const {
     data: statsData,
@@ -43,6 +45,7 @@ export const useTeams = ({
     variables: {
       aggregationEpochs,
     },
+    fetchPolicy: 'cache-and-network',
   });
 
   const teams = compact(teamsData?.teams?.edges).map((e) => e.node);

@@ -3,8 +3,6 @@ import { Link, useParams } from 'react-router-dom';
 import orderBy from 'lodash/orderBy';
 import countBy from 'lodash/countBy';
 import {
-  TradingButton as Button,
-  Intent,
   Pill,
   VegaIcon,
   VegaIconNames,
@@ -28,6 +26,8 @@ import BigNumber from 'bignumber.js';
 import { TeamAvatar } from '../../components/competitions/team-avatar';
 import { usePageTitle } from '../../lib/hooks/use-page-title';
 import { ErrorBoundary } from '../../components/error-boundary';
+import { useVegaWallet } from '@vegaprotocol/wallet';
+import { JoinTeam } from './join-team';
 
 export const CompetitionsTeam = () => {
   const t = useT();
@@ -42,7 +42,11 @@ export const CompetitionsTeam = () => {
 
 const TeamPageContainer = ({ teamId }: { teamId: string | undefined }) => {
   const t = useT();
-  const { team, stats, partyInTeam, members, games, loading } = useTeam(teamId);
+  const { pubKey } = useVegaWallet();
+  const { team, partyTeam, stats, members, games, loading, refetch } = useTeam(
+    teamId,
+    pubKey || undefined
+  );
 
   if (loading) {
     return (
@@ -63,26 +67,29 @@ const TeamPageContainer = ({ teamId }: { teamId: string | undefined }) => {
   return (
     <TeamPage
       team={team}
+      partyTeam={partyTeam}
       stats={stats}
-      partyInTeam={partyInTeam}
       members={members}
       games={games}
+      refetch={refetch}
     />
   );
 };
 
 const TeamPage = ({
   team,
+  partyTeam,
   stats,
-  partyInTeam,
   members,
   games,
+  refetch,
 }: {
   team: TeamType;
+  partyTeam?: TeamType;
   stats?: TeamStats;
-  partyInTeam: boolean;
   members?: Member[];
   games?: TeamGame[];
+  refetch: () => void;
 }) => {
   const t = useT();
   const [showGames, setShowGames] = useState(true);
@@ -99,7 +106,7 @@ const TeamPage = ({
             <h1 className="calt text-2xl lg:text-3xl xl:text-5xl">
               {team.name}
             </h1>
-            <JoinButton joined={partyInTeam} />
+            <JoinTeam team={team} partyTeam={partyTeam} refetch={refetch} />
           </div>
         </header>
         <StatSection>
@@ -263,25 +270,6 @@ const RefereeLink = ({ pubkey }: { pubkey: string }) => {
       {t('View on explorer')}
     </Link>
   );
-};
-
-const JoinButton = ({ joined }: { joined: boolean }) => {
-  const t = useT();
-
-  if (joined) {
-    return (
-      <Button intent={Intent.None} disabled={true}>
-        <span className="flex items-center gap-2">
-          {t('Joined')}{' '}
-          <span className="text-vega-green-600 dark:text-vega-green">
-            <VegaIcon name={VegaIconNames.TICK} />
-          </span>
-        </span>
-      </Button>
-    );
-  }
-
-  return <Button intent={Intent.Primary}>{t('Join this team')}</Button>;
 };
 
 const LatestResults = ({ games }: { games: TeamGame[] }) => {
