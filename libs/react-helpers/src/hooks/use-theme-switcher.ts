@@ -42,12 +42,7 @@ const getCurrentTheme = () => {
     return storedTheme;
   }
 
-  const theme =
-    isBrowser &&
-    typeof window.matchMedia === 'function' && // jest test environment matchMedia is undefined
-    window.matchMedia('(prefers-color-scheme: dark)').matches
-      ? Themes.DARK
-      : Themes.LIGHT;
+  const theme = Themes.DARK;
 
   setThemeClassName(theme);
   return theme;

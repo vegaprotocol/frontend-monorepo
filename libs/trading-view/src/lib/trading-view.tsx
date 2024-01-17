@@ -100,12 +100,12 @@ export const TradingView = ({
     },
 
     // No theme in deps to avoid full chart reload when the theme changes
-    // Instead the theme is changed programmitcally in a separate useEffect
+    // Instead the theme is changed programmatically in a separate useEffect
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [datafeed, marketId, language, libraryPath, isMobile]
   );
 
-  // Update the trading view theme every time the app theme updates, doen separately
+  // Update the trading view theme every time the app theme updates, done separately
   // to avoid full chart reload
   useEffect(() => {
     if (!widgetRef.current || !widgetRef.current._ready) return;
