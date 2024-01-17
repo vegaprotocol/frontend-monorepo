@@ -31,6 +31,10 @@ const Tx = () => {
     }
   }
 
+  if (!data || !data?.transaction) {
+    errorMessage = 'Transaction not found';
+  }
+
   return (
     <section>
       <PageHeader
@@ -49,7 +53,7 @@ const Tx = () => {
         <TxDetails
           className="mb-28"
           txData={data?.transaction}
-          pubKey={data?.transaction.submitter}
+          pubKey={data?.transaction?.submitter}
         />
       </RenderFetched>
     </section>

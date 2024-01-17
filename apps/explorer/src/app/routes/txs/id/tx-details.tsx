@@ -11,8 +11,8 @@ interface TxDetailsProps {
 export const txDetailsTruncateLength = 30;
 
 export const TxDetails = ({ txData, pubKey }: TxDetailsProps) => {
-  if (!txData) {
-    return <>{t('Awaiting Block Explorer transaction details')}</>;
+  if (!txData || !pubKey) {
+    return <>{t('Transaction could not be found')}</>;
   }
   return (
     <section className="mb-10" key={txData.hash}>
