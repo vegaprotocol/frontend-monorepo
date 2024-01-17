@@ -1,10 +1,6 @@
-import classNames from 'classnames';
+import { Box } from './box';
 import { type ComponentProps, type ReactElement, type ReactNode } from 'react';
 import { DudeBadge } from './graphics/dude-badge';
-
-export const BORDER_COLOR = 'border-vega-clight-500 dark:border-vega-cdark-500';
-export const GRADIENT =
-  'bg-gradient-to-b from-vega-clight-800 dark:from-vega-cdark-800 to-transparent';
 
 export const CompetitionsActionsContainer = ({
   children,
@@ -32,18 +28,11 @@ export const CompetitionsAction = ({
   children?: ReactNode;
 }) => {
   return (
-    <div
-      className={classNames(
-        BORDER_COLOR,
-        GRADIENT,
-        'border rounded-lg',
-        'p-6 flex flex-col items-center gap-6 text-center'
-      )}
-    >
+    <Box className="flex flex-col items-center gap-6 text-center">
       <DudeBadge variant={variant} />
       <h2 className="text-2xl">{title}</h2>
       {description && <p className="text-muted">{description}</p>}
       {actionElement}
-    </div>
+    </Box>
   );
 };
