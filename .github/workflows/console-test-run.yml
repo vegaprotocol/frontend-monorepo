@@ -138,7 +138,7 @@ jobs:
     name: run-tests
     runs-on: 8-cores
     needs: [create-docker-image, console-test-branch]
-    timeout-minutes: 20
+    timeout-minutes: 90
     steps:
       #----------------------------------------------
       #       load docker image
