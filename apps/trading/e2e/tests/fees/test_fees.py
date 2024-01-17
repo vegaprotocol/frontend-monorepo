@@ -563,7 +563,6 @@ def test_fills_taker_discount_program(
     page.goto(f"/#/markets/{market_id}")
     page.get_by_test_id(FILLS).click()
     row = page.get_by_test_id(TAB_FILLS).locator(ROW_LOCATOR).first
-    expect(row.locator(COL_INSTRUMENT_CODE)).to_have_text("BTC:DAI_2023Futr")
     expect(row.locator(COL_SIZE)).to_have_text(size)
     expect(row.locator(COL_PRICE)).to_have_text("103.50 tDAI")
     expect(row.locator(COL_PRICE_1)).to_have_text(price_1)

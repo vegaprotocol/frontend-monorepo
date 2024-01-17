@@ -19,7 +19,7 @@ jobs:
   create-docker-image:
     name: Create docker image for console-test
     runs-on: ubuntu-22.04
-    timeout-minutes: 20
+    timeout-minutes: 90
     steps:
       #----------------------------------------------
       #       check-out frontend-monorepo

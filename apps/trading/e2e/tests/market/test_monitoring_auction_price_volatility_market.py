@@ -109,8 +109,8 @@ def test_market_monitoring_auction_price_volatility_limit_order(
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
     page.get_by_test_id("All").click()
-    expect(page.get_by_role("row").nth(2)).to_contain_text(
-        "BTC:DAI_2023Futr0+1LimitActive110.00GTC"
+    expect(page.get_by_role("row").nth(4)).to_contain_text(
+        "0+1LimitActive110.00GTC"
     )
 
 

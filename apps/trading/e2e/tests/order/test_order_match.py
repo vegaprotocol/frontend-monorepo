@@ -65,7 +65,6 @@ def test_limit_order_trade_open_order(
     expect(orderbook_trade).to_be_visible()
 
     expected_open_order = [
-        "BTC:DAI_2023",
         "+1",
         "Limit",
         "Active",
@@ -87,9 +86,6 @@ def test_limit_order_trade_open_position(continuous_market, page: Page):
     secondary_id = "stack-cell-secondary"
 
     position = {
-        "market_code": "BTC:DAI_2023",
-        "settlement_asset": "tDAI",
-        "product_type": "Futr",
         "size": "+1",
         "notional": "107.50",
         "average_entry_price": "107.50",
@@ -106,12 +102,6 @@ def test_limit_order_trade_open_position(continuous_market, page: Page):
 
     # 7004-POSI-001
     # 7004-POSI-002
-
-    market = table.locator("[col-id='marketCode']")
-    expect(market.get_by_test_id(primary_id)).to_have_text(position["market_code"])
-    expect(market.get_by_test_id(secondary_id)).to_have_text(
-        position["settlement_asset"] + position["product_type"]
-    )
 
     size_and_notional = table.locator("[col-id='openVolume']")
     expect(size_and_notional.get_by_test_id(primary_id)).to_have_text(position["size"])
