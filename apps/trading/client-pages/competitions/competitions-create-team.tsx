@@ -28,6 +28,7 @@ import { RainbowButton } from '../../components/rainbow-button';
 import { usePageTitle } from '../../lib/hooks/use-page-title';
 import { ErrorBoundary } from '../../components/error-boundary';
 import { Box } from '../../components/competitions/box';
+import { LayoutWithGradient } from '../../components/layouts-inner';
 import { Links } from '../../lib/links';
 
 interface FormFields {
@@ -51,34 +52,29 @@ export const CompetitionsCreateTeam = () => {
 
   return (
     <ErrorBoundary feature="create-team">
-      <div className="relative h-full pt-5 overflow-y-auto">
-        <div className="absolute top-0 left-0 w-full h-[40%] -z-10 bg-[40%_0px] bg-cover bg-no-repeat bg-local bg-[url(/cover.png)]">
-          <div className="absolute top-o left-0 w-full h-full bg-gradient-to-t from-white dark:from-vega-cdark-900 to-transparent from-20% to-60%" />
+      <LayoutWithGradient>
+        <div className="mx-auto md:w-2/3 max-w-xl">
+          <Box className="flex flex-col gap-4">
+            <h1 className="calt text-2xl lg:text-3xl xl:text-5xl">
+              {t('Create a team')}
+            </h1>
+            {pubKey && !isReadOnly ? (
+              <CreateTeamFormContainer isSolo={isSolo} />
+            ) : (
+              <>
+                <p>
+                  {t(
+                    'Create a team to participate in team based rewards as well as access the discount benefits of the current referral program.'
+                  )}
+                </p>
+                <RainbowButton variant="border" onClick={openWalletDialog}>
+                  {t('Connect wallet')}
+                </RainbowButton>
+              </>
+            )}
+          </Box>
         </div>
-        <div className="lg:gap-6 container p-4 mx-auto">
-          <div className="mx-auto md:w-2/3 max-w-xl">
-            <Box className="flex flex-col gap-4">
-              <h1 className="calt text-2xl lg:text-3xl xl:text-5xl">
-                {t('Create a team')}
-              </h1>
-              {pubKey && !isReadOnly ? (
-                <CreateTeamFormContainer isSolo={isSolo} />
-              ) : (
-                <>
-                  <p>
-                    {t(
-                      'Create a team to participate in team based rewards as well as access the discount benefits of the current referral program.'
-                    )}
-                  </p>
-                  <RainbowButton variant="border" onClick={openWalletDialog}>
-                    {t('Connect wallet')}
-                  </RainbowButton>
-                </>
-              )}
-            </Box>
-          </div>
-        </div>
-      </div>
+      </LayoutWithGradient>
     </ErrorBoundary>
   );
 };
