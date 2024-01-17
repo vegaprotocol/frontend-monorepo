@@ -5,6 +5,7 @@ import {
   useSimpleTransactionSubscription,
   type SimpleTransactionFieldsFragment,
 } from './__generated__/SimpleTransaction';
+import { useT } from './use-t';
 
 export type Status = 'idle' | 'requested' | 'pending' | 'confirmed';
 
@@ -14,6 +15,7 @@ type Options = {
 };
 
 export const useSimpleTransaction = (opts?: Options) => {
+  const t = useT();
   const { pubKey, isReadOnly, sendTx } = useVegaWallet();
 
   const [status, setStatus] = useState<Status>('idle');
@@ -35,7 +37,7 @@ export const useSimpleTransaction = (opts?: Options) => {
       const res = await sendTx(pubKey, tx);
 
       if (!res) {
-        throw new Error('Transaction could not be sent');
+        throw new Error(t('Transaction could not be sent'));
       }
 
       setStatus('pending');
@@ -49,7 +51,7 @@ export const useSimpleTransaction = (opts?: Options) => {
           opts?.onError?.(err.message);
         }
       } else {
-        const msg = 'Wallet rejected transaction';
+        const msg = t('Wallet rejected transaction');
         setError(msg);
         opts?.onError?.(msg);
       }
@@ -81,7 +83,7 @@ export const useSimpleTransaction = (opts?: Options) => {
         setStatus('confirmed');
         opts?.onSuccess?.(event.hash);
       } else {
-        const msg = event?.error || 'Transaction was not successful';
+        const msg = event?.error || t('Transaction was not successful');
         setError(msg);
         opts?.onError?.(msg);
       }

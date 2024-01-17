@@ -48,6 +48,8 @@
   "Supported browsers": "Supported browsers",
   "The user rejected the wallet connection": "The user rejected the wallet connection",
   "To complete your wallet connection, set your wallet network in your app to \"{{appChainId}}\".": "To complete your wallet connection, set your wallet network in your app to \"{{appChainId}}\".",
+  "Transaction could not be sent": "Transaction could not be sent",
+  "Transaction was not successful": "Transaction was not successful",
   "Try again": "Try again",
   "Understand the risk": "Understand the risk",
   "Use the Desktop App/CLI": "Use the Desktop App/CLI",
@@ -57,6 +59,7 @@
   "Verifying chain": "Verifying chain",
   "View as party": "View as party",
   "VIEW AS VEGA USER": "VIEW AS VEGA USER",
+  "Wallet rejected transaction": "Wallet rejected transaction",
   "Wrong Network": "Wrong Network",
   "Wrong network": "Wrong network",
   "your browser": "your browser"
