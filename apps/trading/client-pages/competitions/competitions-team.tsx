@@ -11,6 +11,8 @@ import {
   Tooltip,
   Splash,
   truncateMiddle,
+  Dialog,
+  TradingButton,
 } from '@vegaprotocol/ui-toolkit';
 import classNames from 'classnames';
 import { useT } from '../../lib/use-t';
@@ -22,13 +24,17 @@ import {
   type TeamStats,
   type Member,
   type TeamGame,
-  type PartyStatus,
 } from './hooks/use-team';
 import { DApp, EXPLORER_PARTIES, useLinks } from '@vegaprotocol/environment';
 import BigNumber from 'bignumber.js';
 import { TeamAvatar } from '../../components/competitions/team-avatar';
 import { usePageTitle } from '../../lib/hooks/use-page-title';
 import { ErrorBoundary } from '../../components/error-boundary';
+import {
+  useSimpleTransaction,
+  useVegaWallet,
+  type Status,
+} from '@vegaprotocol/wallet';
 
 export const CompetitionsTeam = () => {
   const t = useT();
@@ -43,7 +49,11 @@ export const CompetitionsTeam = () => {
 
 const TeamPageContainer = ({ teamId }: { teamId: string | undefined }) => {
   const t = useT();
-  const { team, stats, partyStatus, members, games, loading } = useTeam(teamId);
+  const { pubKey } = useVegaWallet();
+  const { team, partyTeam, stats, members, games, loading, refetch } = useTeam(
+    teamId,
+    pubKey || undefined
+  );
 
   if (loading) {
     return (
@@ -64,26 +74,29 @@ const TeamPageContainer = ({ teamId }: { teamId: string | undefined }) => {
   return (
     <TeamPage
       team={team}
+      partyTeam={partyTeam}
       stats={stats}
-      partyStatus={partyStatus}
       members={members}
       games={games}
+      refetch={refetch}
     />
   );
 };
 
 const TeamPage = ({
   team,
+  partyTeam,
   stats,
-  partyStatus,
   members,
   games,
+  refetch,
 }: {
   team: TeamType;
+  partyTeam?: TeamType;
   stats?: TeamStats;
-  partyStatus: PartyStatus;
   members?: Member[];
   games?: TeamGame[];
+  refetch: () => void;
 }) => {
   const t = useT();
   const [showGames, setShowGames] = useState(true);
@@ -100,7 +113,7 @@ const TeamPage = ({
             <h1 className="calt text-2xl lg:text-3xl xl:text-5xl">
               {team.name}
             </h1>
-            <JoinButton joined={partyStatus !== undefined} />
+            <JoinButton team={team} partyTeam={partyTeam} refetch={refetch} />
           </div>
         </header>
         <StatSection>
@@ -266,11 +279,87 @@ const RefereeLink = ({ pubkey }: { pubkey: string }) => {
   );
 };
 
-const JoinButton = ({ joined }: { joined: boolean }) => {
-  const t = useT();
+type JoinType = 'switch' | 'join';
 
-  if (joined) {
-    return (
+const JoinButton = ({
+  team,
+  partyTeam,
+  refetch,
+}: {
+  team: TeamType;
+  partyTeam?: TeamType;
+  refetch: () => void;
+}) => {
+  const t = useT();
+  const { pubKey, isReadOnly } = useVegaWallet();
+  const { send, status } = useSimpleTransaction({
+    onSuccess: refetch,
+  });
+  const [confirmDialog, setConfirmDialog] = useState<JoinType>();
+
+  const joinTeam = () => {
+    send({
+      joinTeam: {
+        id: team.teamId,
+      },
+    });
+  };
+
+  let button = (
+    <Button onClick={() => setConfirmDialog('join')} intent={Intent.Primary}>
+      {t('Join this team')}
+    </Button>
+  );
+
+  if (!pubKey || isReadOnly) {
+    button = (
+      <Tooltip description="Connect your wallet to join the team">
+        <Button intent={Intent.Primary} disabled={true}>
+          {t('Join this team')}{' '}
+        </Button>
+      </Tooltip>
+    );
+  }
+  // Party is the creator of a team
+  else if (partyTeam && partyTeam.referrer === pubKey) {
+    // Party is the creator of THIS team
+    if (partyTeam.teamId === team.teamId) {
+      button = (
+        <Button intent={Intent.None} disabled={true}>
+          <span className="flex items-center gap-2">
+            {t('Owner')}{' '}
+            <span className="text-vega-green-600 dark:text-vega-green">
+              <VegaIcon name={VegaIconNames.TICK} />
+            </span>
+          </span>
+        </Button>
+      );
+    } else {
+      // Not creator of the team, but still can't switch because
+      // creators cannot leave their own team
+      button = (
+        <Tooltip description="As a team creator, you cannot switch teams">
+          <Button intent={Intent.Primary} disabled={true}>
+            {t('Switch team')}{' '}
+          </Button>
+        </Tooltip>
+      );
+    }
+  }
+  // Party is in a team, but not this one
+  else if (partyTeam && partyTeam.teamId !== team.teamId) {
+    button = (
+      <Button
+        onClick={() => setConfirmDialog('switch')}
+        intent={Intent.Primary}
+      >
+        {t('Switch team')}{' '}
+      </Button>
+    );
+  }
+  // Joined. Current party is already in this team
+  else if (partyTeam && partyTeam.teamId === team.teamId) {
+    button = (
       <Button intent={Intent.None} disabled={true}>
         <span className="flex items-center gap-2">
           {t('Joined')}{' '}
@@ -282,7 +371,72 @@ const JoinButton = ({ joined }: { joined: boolean }) => {
     );
   }
 
-  return <Button intent={Intent.Primary}>{t('Join this team')}</Button>;
+  return (
+    <>
+      {button}
+      <Dialog
+        open={confirmDialog !== undefined}
+        onChange={() => setConfirmDialog(undefined)}
+      >
+        {confirmDialog !== undefined && (
+          <DialogContent
+            type={confirmDialog}
+            status={status}
+            team={team}
+            onConfirm={joinTeam}
+            onCancel={() => setConfirmDialog(undefined)}
+          />
+        )}
+      </Dialog>
+    </>
+  );
+};
+
+const DialogContent = ({
+  type,
+  status,
+  team,
+  onConfirm,
+  onCancel,
+}: {
+  type: JoinType;
+  status: Status;
+  team: TeamType;
+  onConfirm: () => void;
+  onCancel: () => void;
+}) => {
+  if (status === 'requested') {
+    return <p>Confirm in wallet</p>;
+  }
+
+  if (status === 'pending') {
+    return <p>Waiting for transaction confirmation...</p>;
+  }
+
+  if (status === 'confirmed') {
+    return <p>Success</p>;
+  }
+
+  return (
+    <>
+      {type === 'switch' && (
+        <p className="mb-2">
+          Switching team will remove you from your current team
+        </p>
+      )}
+      {type === 'join' && (
+        <p className="mb-2">Are you sure you want to join team: {team.name}</p>
+      )}
+      <div className="flex gap-2">
+        <TradingButton onClick={onConfirm} intent={Intent.Success}>
+          Confirm
+        </TradingButton>
+        <TradingButton onClick={onCancel} intent={Intent.Danger}>
+          Cancel
+        </TradingButton>
+      </div>
+    </>
+  );
 };
 
 const LatestResults = ({ games }: { games: TeamGame[] }) => {

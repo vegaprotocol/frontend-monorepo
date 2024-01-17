@@ -437,6 +437,12 @@ export type ApplyReferralCode = {
   };
 };
 
+export type JoinTeam = {
+  joinTeam: {
+    id: string;
+  };
+};
+
 export type CreateReferralSet = {
   createReferralSet: {
     isTeam: boolean;
@@ -465,6 +471,7 @@ export type Transaction =
   | TransferBody
   | LiquidityProvisionSubmission
   | ApplyReferralCode
+  | JoinTeam
   | CreateReferralSet;
 
 export const isWithdrawTransaction = (

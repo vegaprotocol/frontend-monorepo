@@ -50,8 +50,15 @@ fragment TeamGameFields on Game {
   }
 }
 
-query Team($teamId: ID!) {
+query Team($teamId: ID!, $partyId: ID) {
   teams(teamId: $teamId) {
+    edges {
+      node {
+        ...TeamFields
+      }
+    }
+  }
+  partyTeams: teams(partyId: $partyId) {
     edges {
       node {
         ...TeamFields

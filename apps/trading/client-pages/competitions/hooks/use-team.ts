@@ -7,24 +7,24 @@ import {
   type TeamRefereeFieldsFragment,
   type TeamEntityFragment,
 } from './__generated__/Team';
-import { useVegaWallet } from '@vegaprotocol/wallet';
 
 export type Team = TeamFieldsFragment;
 export type TeamStats = TeamStatsFieldsFragment;
 export type Member = TeamRefereeFieldsFragment;
 export type TeamEntity = TeamEntityFragment;
 export type TeamGame = ReturnType<typeof useTeam>['games'][number];
-export type PartyStatus = 'member' | 'creator' | undefined;
 
-export const useTeam = (teamId?: string) => {
-  const { pubKey } = useVegaWallet();
-
-  const { data, loading, error } = useTeamQuery({
-    variables: { teamId: teamId || '' },
+export const useTeam = (teamId?: string, partyId?: string) => {
+  const { data, loading, error, refetch } = useTeamQuery({
+    variables: { teamId: teamId || '', partyId },
     skip: !teamId,
   });
 
   const teamEdge = data?.teams?.edges.find((e) => e.node.teamId === teamId);
+  const partyTeam = data?.partyTeams?.edges?.length
+    ? data.partyTeams.edges[0].node
+    : undefined;
+
   const teamStatsEdge = data?.teamsStatistics?.edges.find(
     (e) => e.node.teamId === teamId
   );
@@ -52,26 +52,15 @@ export const useTeam = (teamId?: string) => {
 
   const games = orderBy(compact(gamesWithTeam), 'epoch', 'desc');
 
-  const team = teamEdge?.node;
-
-  let partyStatus: PartyStatus;
-
-  if (team && members) {
-    if (team.referrer === pubKey) {
-      partyStatus = 'creator';
-    } else if (members.find((m) => m.referee === pubKey)) {
-      partyStatus = 'member';
-    }
-  }
-
   return {
     data,
     loading,
     error,
+    refetch,
     stats: teamStatsEdge?.node,
-    team,
+    team: teamEdge?.node,
     members,
     games,
-    partyStatus,
+    partyTeam,
   };
 };
