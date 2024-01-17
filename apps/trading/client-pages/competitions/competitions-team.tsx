@@ -22,6 +22,7 @@ import {
   type TeamStats,
   type Member,
   type TeamGame,
+  type PartyStatus,
 } from './hooks/use-team';
 import { DApp, EXPLORER_PARTIES, useLinks } from '@vegaprotocol/environment';
 import BigNumber from 'bignumber.js';
@@ -42,7 +43,7 @@ export const CompetitionsTeam = () => {
 
 const TeamPageContainer = ({ teamId }: { teamId: string | undefined }) => {
   const t = useT();
-  const { team, stats, partyInTeam, members, games, loading } = useTeam(teamId);
+  const { team, stats, partyStatus, members, games, loading } = useTeam(teamId);
 
   if (loading) {
     return (
@@ -64,7 +65,7 @@ const TeamPageContainer = ({ teamId }: { teamId: string | undefined }) => {
     <TeamPage
       team={team}
       stats={stats}
-      partyInTeam={partyInTeam}
+      partyStatus={partyStatus}
       members={members}
       games={games}
     />
@@ -74,13 +75,13 @@ const TeamPageContainer = ({ teamId }: { teamId: string | undefined }) => {
 const TeamPage = ({
   team,
   stats,
-  partyInTeam,
+  partyStatus,
   members,
   games,
 }: {
   team: TeamType;
   stats?: TeamStats;
-  partyInTeam: boolean;
+  partyStatus: PartyStatus;
   members?: Member[];
   games?: TeamGame[];
 }) => {
@@ -99,7 +100,7 @@ const TeamPage = ({
             <h1 className="calt text-2xl lg:text-3xl xl:text-5xl">
               {team.name}
             </h1>
-            <JoinButton joined={partyInTeam} />
+            <JoinButton joined={partyStatus !== undefined} />
           </div>
         </header>
         <StatSection>
