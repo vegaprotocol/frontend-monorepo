@@ -1,4 +1,4 @@
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { Controller, useForm } from 'react-hook-form';
 import {
   Intent,
@@ -21,13 +21,13 @@ import {
   URL_REGEX,
 } from '@vegaprotocol/utils';
 import { useT } from '../../lib/use-t';
-import { Links } from '../../lib/links';
 import { useCreateReferralSet } from '../../lib/hooks/use-create-referral-set';
 import { DApp, TokenStaticLinks, useLinks } from '@vegaprotocol/environment';
 import { RainbowButton } from '../../components/rainbow-button';
 import { usePageTitle } from '../../lib/hooks/use-page-title';
 import { ErrorBoundary } from '../../components/error-boundary';
 import { Box } from '../../components/competitions/box';
+import { Links } from '../../lib/links';
 
 interface FormFields {
   name: string;
@@ -85,12 +85,40 @@ export const CompetitionsCreateTeam = () => {
 const CreateTeamFormContainer = ({ isSolo }: { isSolo: boolean }) => {
   const t = useT();
   const createLink = useLinks(DApp.Governance);
-  const navigate = useNavigate();
 
-  const { err, status, isEligible, requiredStake, onSubmit } =
+  const { err, status, code, isEligible, requiredStake, onSubmit } =
     useCreateReferralSet({
-      onSuccess: (code) => navigate(Links.COMPETITIONS_CREATE_TEAM(code)),
+      onSuccess: (code) => {
+        // For some reason team creation takes a long time, too long even to make
+        // polling viable, so its not feasible to navigate to the team page
+        // after creation
+        //
+        // navigate(Links.COMPETITIONS_TEAM(code));
+      },
     });
+
+  if (status === 'success') {
+    return (
+      <div className="flex flex-col items-start gap-2">
+        <p className="text-sm">{t('Team creation transaction successful')}</p>
+        {code && (
+          <>
+            <p className="text-sm">
+              Your team ID is:{' '}
+              <span className="font-mono break-all">{code}</span>
+            </p>
+            <TradingAnchorButton
+              href={Links.COMPETITIONS_TEAM(code)}
+              intent={Intent.Info}
+              size="small"
+            >
+              {t('View team')}
+            </TradingAnchorButton>
+          </>
+        )}
+      </div>
+    );
+  }
 
   if (!isEligible) {
     return (
@@ -270,6 +298,7 @@ const CreateTeamForm = ({
           )}
         </TradingFormGroup>
       )}
+      {err && <p className="text-danger text-xs mb-4 capitalize">{err}</p>}
       <TradingButton
         type="submit"
         intent={Intent.Info}
