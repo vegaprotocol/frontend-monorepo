@@ -1,7 +1,6 @@
 import { type TransferNode } from '@vegaprotocol/types';
 import { ActiveRewardCard } from '../rewards-container/active-rewards';
 import { useT } from '../../lib/use-t';
-import { Splash } from '@vegaprotocol/ui-toolkit';
 
 export const GamesContainer = ({
   data,
@@ -11,9 +10,15 @@ export const GamesContainer = ({
   currentEpoch: number;
 }) => {
   const t = useT();
+
   if (!data || data.length === 0) {
-    return <Splash>{t('There are currently no games available.')}</Splash>;
+    return (
+      <p className="mb-6 text-muted">
+        {t('There are currently no games available.')}
+      </p>
+    );
   }
+
   return (
     <div className="mb-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {data.map((game, i) => {
