@@ -314,7 +314,7 @@ const SubmitButton = ({ status }: { status: Status }) => {
   if (status === 'requested') {
     text = t('Confirm in wallet...');
   } else if (status === 'pending') {
-    text = t('Awaiting transaction...');
+    text = t('Confirming transaction...');
   }
 
   return (

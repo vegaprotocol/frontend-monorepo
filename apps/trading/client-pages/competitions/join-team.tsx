@@ -58,6 +58,7 @@ export const JoinTeam = ({
             type={confirmDialog}
             status={status}
             team={team}
+            partyTeam={partyTeam}
             onConfirm={joinTeam}
             onCancel={() => setConfirmDialog(undefined)}
           />
@@ -84,9 +85,9 @@ const JoinButton = ({
 
   if (!pubKey || isReadOnly) {
     return (
-      <Tooltip description="Connect your wallet to join the team">
+      <Tooltip description={t('Connect your wallet to join the team')}>
         <Button intent={Intent.Primary} disabled={true}>
-          {t('Join this team')}{' '}
+          {t('Join team')}{' '}
         </Button>
       </Tooltip>
     );
@@ -141,7 +142,7 @@ const JoinButton = ({
 
   return (
     <Button onClick={() => onJoin('join')} intent={Intent.Primary}>
-      {t('Join this team')}
+      {t('Join team')}
     </Button>
   );
 };
@@ -150,45 +151,75 @@ const DialogContent = ({
   type,
   status,
   team,
+  partyTeam,
   onConfirm,
   onCancel,
 }: {
   type: JoinType;
   status: Status;
   team: Team;
+  partyTeam?: Team;
   onConfirm: () => void;
   onCancel: () => void;
 }) => {
+  const t = useT();
+
   if (status === 'requested') {
-    return <p>Confirm in wallet</p>;
+    return <p>{t('Confirm in wallet...')}</p>;
   }
 
   if (status === 'pending') {
-    return <p>Waiting for transaction confirmation...</p>;
+    return <p>{t('Confirming transaction...')}</p>;
   }
 
   if (status === 'confirmed') {
-    return <p>Success</p>;
+    if (type === 'switch') {
+      return (
+        <p>
+          {t(
+            'Team switch successful. You will switch team at the end of the epoch.'
+          )}
+        </p>
+      );
+    }
+
+    return <p>{t('Team joined')}</p>;
   }
 
   return (
-    <>
+    <div className="flex flex-col gap-4">
       {type === 'switch' && (
-        <p className="mb-2">
-          Switching team will remove you from your current team
-        </p>
+        <>
+          <h2 className="font-alpha text-xl">{t('Switch team')}</h2>
+          <p>
+            {t(
+              "Switching team will move you from '{{fromTeam}}' to '{{toTeam}}' at the end of the epoch. Are you sure?",
+              {
+                fromTeam: partyTeam?.name,
+                toTeam: team.name,
+              }
+            )}
+          </p>
+        </>
       )}
       {type === 'join' && (
-        <p className="mb-2">Are you sure you want to join team: {team.name}</p>
+        <>
+          <h2 className="font-alpha text-xl">{t('Join team')}</h2>
+          <p>
+            {t('Are you sure you want to join team: {{team}}', {
+              team: team.name,
+            })}
+          </p>
+        </>
       )}
-      <div className="flex gap-2">
+      <div className="flex justify-between gap-2">
         <Button onClick={onConfirm} intent={Intent.Success}>
-          Confirm
+          {t('Confirm')}
         </Button>
         <Button onClick={onCancel} intent={Intent.Danger}>
-          Cancel
+          {t('Cancel')}
         </Button>
       </div>
-    </>
+    </div>
   );
 };
