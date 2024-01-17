@@ -435,5 +435,11 @@
   "{{assetSymbol}} Reward pot": "{{assetSymbol}} Reward pot",
   "{{checkedAssets}} Assets": "{{checkedAssets}} Assets",
   "{{distance}} ago": "{{distance}} ago",
-  "{{instrumentCode}} liquidity provision": "{{instrumentCode}} liquidity provision"
+  "{{instrumentCode}} liquidity provision": "{{instrumentCode}} liquidity provision",
+  "(Tier {{tier}} as of last epoch)": "(Tier {{tier}} as of last epoch)",
+  "Team": "Team",
+  "Team name": "Team name",
+  "Ends in": "Ends in",
+  "Assessed over": "Assessed over",
+  "No rows": "No rows"
 }

@@ -43,7 +43,6 @@ export const CompetitionsCreateTeam = () => {
   const [searchParams] = useSearchParams();
   const isSolo = Boolean(searchParams.get('solo'));
   const t = useT();
-
   usePageTitle(t('Create a team'));
 
   const { isReadOnly, pubKey } = useVegaWallet();
