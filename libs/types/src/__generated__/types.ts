@@ -80,7 +80,6 @@ export type AccountFilter = {
 
 /** The various account types in Vega (used by collateral) */
 export enum AccountType {
-  ACCOUNT_TYPE_ORDER_MARGIN = 'ACCOUNT_TYPE_ORDER_MARGIN',
   /** Bond - an account use to maintain liquidity commitments */
   ACCOUNT_TYPE_BOND = 'ACCOUNT_TYPE_BOND',
   /** External - an account use to refer to external account */
@@ -114,6 +113,8 @@ export enum AccountType {
   ACCOUNT_TYPE_MARGIN = 'ACCOUNT_TYPE_MARGIN',
   /** Network treasury, per-asset treasury controlled by the network */
   ACCOUNT_TYPE_NETWORK_TREASURY = 'ACCOUNT_TYPE_NETWORK_TREASURY',
+  /** Per asset market account for party in isolated margin mode */
+  ACCOUNT_TYPE_ORDER_MARGIN = 'ACCOUNT_TYPE_ORDER_MARGIN',
   /** Holds pending rewards to be paid to the referrer of a party out of fees paid by the taker */
   ACCOUNT_TYPE_PENDING_FEE_REFERRAL_REWARD = 'ACCOUNT_TYPE_PENDING_FEE_REFERRAL_REWARD',
   /** PendingTransfers - a global account for the pending transfers pool */
