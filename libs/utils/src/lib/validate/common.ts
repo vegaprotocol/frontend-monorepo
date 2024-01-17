@@ -94,3 +94,21 @@ export const useValidateJson = () => {
     [t]
   );
 };
+
+export const URL_REGEX =
+  /^(https?:\/\/)?([a-zA-Z0-9.-]+(\.[a-zA-Z]{2,})+)(:[0-9]{1,5})?(\/[^\s]*)?$/;
+const isValidUrl = (value: string) => {
+  return URL_REGEX.test(value);
+};
+export const useValidateUrl = () => {
+  const t = useT();
+  return useCallback(
+    (value: string) => {
+      if (!isValidUrl(value)) {
+        return t('Invalid URL');
+      }
+      return true;
+    },
+    [t]
+  );
+};

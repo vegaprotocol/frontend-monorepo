@@ -18,6 +18,7 @@ import {
 import {
   addDecimalsFormatNumber,
   isValidVegaPublicKey,
+  URL_REGEX,
 } from '@vegaprotocol/utils';
 import { useT } from '../../lib/use-t';
 import { Links } from '../../lib/links';
@@ -35,9 +36,6 @@ interface FormFields {
   private: boolean;
   allowList: string;
 }
-
-const urlRegex =
-  /^(https?:\/\/)?([a-zA-Z0-9.-]+(\.[a-zA-Z]{2,})+)(:[0-9]{1,5})?(\/[^\s]*)?$/;
 
 export const CompetitionsCreateTeam = () => {
   const t = useT();
@@ -177,7 +175,7 @@ const CreateTeamForm = ({
       >
         <TradingInput
           {...register('url', {
-            pattern: { value: urlRegex, message: t('Invalid URL') },
+            pattern: { value: URL_REGEX, message: t('Invalid URL') },
           })}
         />
         {errors.url?.message && (
@@ -194,7 +192,7 @@ const CreateTeamForm = ({
         <TradingInput
           {...register('avatarUrl', {
             pattern: {
-              value: urlRegex,
+              value: URL_REGEX,
               message: t('Invalid image URL'),
             },
           })}
@@ -260,7 +258,7 @@ const CreateTeamForm = ({
         intent={Intent.Info}
         disabled={status === 'loading'}
       >
-        {t('Create')}
+        {status === 'loading' ? t('Confirm in wallet...') : t('Create')}
       </TradingButton>
     </form>
   );

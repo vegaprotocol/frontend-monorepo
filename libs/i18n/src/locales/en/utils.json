@@ -6,6 +6,7 @@
   "Expired on {{date}}": "Expired on {{date}}",
   "Invalid Ethereum address": "Invalid Ethereum address",
   "Invalid Vega key": "Invalid Vega key",
+  "Invalid URL": "Invalid URL",
   "Mark": "Mark",
   "Must be valid JSON": "Must be valid JSON",
   "Not time-based": "Not time-based",
