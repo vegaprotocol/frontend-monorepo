@@ -231,8 +231,6 @@ const Members = ({ members }: { members?: Member[] }) => {
         {
           name: 'joinedAtEpoch',
           displayName: t('Joined epoch'),
-          headerClassName: 'text-right',
-          className: 'text-right',
         },
         {
           name: 'explorerLink',
