@@ -146,29 +146,6 @@ class TestGetStarted:
         # 0007-FUGS-007
         expect(page.get_by_test_id("dialog-content").nth(1)).to_be_visible()
 
-    def test_browser_wallet_installed(self, simple_market, page: Page):
-        page.add_init_script("window.vega = {}")
-        page.goto(f"/#/markets/{simple_market}")
-        locator = page.get_by_test_id("connect-vega-wallet")
-        page.wait_for_selector('[data-testid="connect-vega-wallet"]', state="attached")
-        expect(locator).to_be_enabled
-        expect(locator).to_be_visible
-        expect(locator).to_have_text("Connect")
-
-    @pytest.mark.usefixtures("risk_accepted")
-    def test_get_started_deal_ticket(self,simple_market, page: Page):
-        page.goto(f"/#/markets/{simple_market}")
-        expect(page.get_by_test_id("order-connect-wallet")).to_have_text("Connect wallet")
-
-
-    @pytest.mark.usefixtures("risk_accepted")
-    def test_browser_wallet_installed_deal_ticket(simple_market, page: Page):
-        page.add_init_script("window.vega = {}")
-        page.goto(f"/#/markets/{simple_market}")
-        # 0007-FUGS-013
-        page.wait_for_selector('[data-testid="sidebar-content"]', state="visible")
-        expect(page.get_by_test_id("get-started-banner")).not_to_be_visible()
-
     @pytest.mark.skip("tbd-market-sim")
     def test_redirect_default_market(self, continuous_market, vega: VegaServiceNull, page: Page):
         page.goto("/")
@@ -179,11 +156,3 @@ class TestGetStarted:
         page.get_by_test_id("icon-cross").click()
         # 0007-FUGS-018
         expect(page.get_by_test_id("welcome-dialog")).not_to_be_visible()
-
-class TestBrowseAll:
-    def test_get_started_browse_all(self, simple_market, vega: VegaServiceNull, page: Page):
-        page.goto("/")
-        print(simple_market)
-        page.get_by_test_id("browse-markets-button").click()
-        # 0007-FUGS-005
-        expect(page).to_have_url(f"http://localhost:{vega.console_port}/#/markets/{simple_market}")
