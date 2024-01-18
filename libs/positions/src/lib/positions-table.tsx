@@ -96,8 +96,10 @@ const MarginChart = ({
   className,
 }: MarginChartProps) => {
   return (
-    <div className={classnames('relative w-52', className)}>
-      {markerLabel && <div className="mb-1">{markerLabel}</div>}
+    <div className={classnames('relative min-w-[208px]', className)}>
+      {markerLabel ? (
+        <div className="mb-1 whitespace-nowrap">{markerLabel}</div>
+      ) : null}
       <div
         className={classnames('flex relative h-2', {
           'dark:bg-vega-clight-800 bg-vega-cdark-800': other,
@@ -107,7 +109,7 @@ const MarginChart = ({
           style={{ width: `${width || 100}%` }}
           className="dark:bg-vega-clight-400 bg-vega-cdark-400"
         ></div>
-        {marker && (
+        {marker ? (
           <div
             className="absolute dark:border-t-vega-clight-400 border-t-vega-cdark-400 border-l-transparent border-r-transparent"
             style={{
@@ -118,11 +120,11 @@ const MarginChart = ({
               display: 'inline-block',
             }}
           ></div>
-        )}
+        ) : null}
       </div>
-      <div className="flex justify-between">
-        <div>{label}</div>
-        {other && <div className="text-right">{other}</div>}
+      <div className="flex flex-wrap justify-between whitespace-nowrap">
+        <div className={classnames({ 'mr-1': other })}>{label}</div>
+        {other ? <div className="text-right">{other}</div> : null}
       </div>
     </div>
   );
@@ -140,15 +142,14 @@ const PositionMargin = ({ data }: { data: Position }) => {
       : data.orderAccountBalance;
   const getWidth = (balance: string) =>
     BigNumber(balance).multipliedBy(100).dividedBy(max).toNumber();
+  const inCrossMode = data.marginMode === MarginMode.MARGIN_MODE_CROSS_MARGIN;
+  const hasOrderAccountBalance =
+    !inCrossMode && data.orderAccountBalance !== '0';
 
   return (
     <>
       <MarginChart
-        width={
-          data.marginMode === MarginMode.MARGIN_MODE_CROSS_MARGIN
-            ? getWidth(data.marginAccountBalance)
-            : undefined
-        }
+        width={inCrossMode ? getWidth(data.marginAccountBalance) : undefined}
         label={t('Margin: {{balance}}', {
           balance: addDecimalsFormatNumberQuantum(
             data.marginAccountBalance,
@@ -157,7 +158,7 @@ const PositionMargin = ({ data }: { data: Position }) => {
           ),
         })}
         other={
-          data.marginMode === MarginMode.MARGIN_MODE_CROSS_MARGIN
+          inCrossMode
             ? t('General account: {{balance}}', {
                 balance: addDecimalsFormatNumberQuantum(
                   data.generalAccountBalance,
@@ -167,7 +168,7 @@ const PositionMargin = ({ data }: { data: Position }) => {
               })
             : undefined
         }
-        className="mb-2"
+        className={classnames({ 'mb-2': hasOrderAccountBalance })}
         marker={
           data.maintenanceLevel ? getWidth(data.maintenanceLevel) : undefined
         }
@@ -182,8 +183,7 @@ const PositionMargin = ({ data }: { data: Position }) => {
           })
         }
       />
-      {data.marginMode === MarginMode.MARGIN_MODE_ISOLATED_MARGIN &&
-      data.orderAccountBalance !== '0' ? (
+      {hasOrderAccountBalance ? (
         <MarginChart
           width={getWidth(data.orderAccountBalance)}
           label={t('Order: {{balance}}', {
@@ -361,7 +361,14 @@ export const PositionsTable = ({
           const lev = data?.currentLeverage ? data.currentLeverage : 1;
           const leverage = formatNumber(Math.max(1, lev), 1);
           return (
-            <Tooltip description={data && <PositionMargin data={data} />}>
+            <Tooltip
+              description={
+                data &&
+                data.marginAccountBalance !== '0' && (
+                  <PositionMargin data={data} />
+                )
+              }
+            >
               <div>
                 <StackedCell
                   primary={margin}
