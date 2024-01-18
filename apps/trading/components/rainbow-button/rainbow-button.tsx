@@ -18,18 +18,16 @@ export const RainbowButton = ({
       {
         'px-5 py-3 text-white': variant === 'full',
         'p-[0.125rem]': variant === 'border',
-      }
+      },
+      className
     )}
     {...props}
   >
     <div
-      className={classNames(
-        {
-          'bg-vega-clight-800 dark:bg-vega-cdark-800 text-black dark:text-white px-5 py-3 rounded-[0.35rem] overflow-hidden':
-            variant === 'border',
-        },
-        className
-      )}
+      className={classNames({
+        'bg-vega-clight-800 dark:bg-vega-cdark-800 text-black dark:text-white px-5 py-3 rounded-[0.35rem] overflow-hidden':
+          variant === 'border',
+      })}
     >
       {children}
     </div>
