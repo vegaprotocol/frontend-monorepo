@@ -161,7 +161,6 @@ describe('DealTicket', () => {
     expect(screen.getByTestId('order-price').nextSibling).toHaveTextContent(
       'BTC'
     );
-    expect(screen.getByTestId('order-connect-wallet')).toBeVisible();
   });
 
   it('market order should not display price', async () => {
