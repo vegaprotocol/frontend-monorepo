@@ -122,6 +122,11 @@ export const CreateCodeForm = () => {
           </RainbowButton>
         </span>
       </Tooltip>
+      <p className="text-xs">
+        <Link className="underline" to={Links.COMPETITIONS()}>
+          {t('Go to competitions')}
+        </Link>
+      </p>
       <Dialog
         title={t('Create a referral code')}
         open={dialogOpen}
