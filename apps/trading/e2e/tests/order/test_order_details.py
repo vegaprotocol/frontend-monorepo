@@ -44,7 +44,7 @@ def verify_order_value(
         actual_text = element.text_content()
 
         if actual_text is None:
-          raise Exception(f"no text found for test_id {test_id}")
+            raise Exception(f"no text found for test_id {test_id}")
 
         assert re.match(
             expected_text, actual_text

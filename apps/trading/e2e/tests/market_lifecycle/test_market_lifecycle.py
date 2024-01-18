@@ -73,9 +73,6 @@ def test_market_lifecycle(proposed_market, vega: VegaServiceNull, page: Page):
     )
 
     # "wait" for market to be approved and enacted
-    vega.forward("60s")
-    vega.wait_fn(10)
-    vega.wait_for_total_catchup()
     next_epoch(vega=vega)
     # check that market is in pending state
     expect(trading_mode).to_have_text("Opening auction")
@@ -118,8 +115,7 @@ def test_market_lifecycle(proposed_market, vega: VegaServiceNull, page: Page):
     submit_order(vega, MM_WALLET.name, market_id, "SIDE_SELL", 1, 100)
     submit_order(vega, MM_WALLET2.name, market_id, "SIDE_BUY", 1, 100)
 
-    vega.forward("10s")
-    vega.wait_fn(1)
+    vega.wait_fn(2)
     vega.wait_for_total_catchup()
 
     # check market state is now active and trading mode is continuous
@@ -139,9 +135,7 @@ def test_market_lifecycle(proposed_market, vega: VegaServiceNull, page: Page):
             .get_by_test_id(f"update-state-banner-{market_id}")
     ).to_be_visible()
 
-    vega.forward("60s")
-    vega.wait_fn(1)
-    vega.wait_for_total_catchup()
+    next_epoch(vega=vega)
 
     expect(
         page.get_by_test_id("market-banner")
@@ -155,9 +149,7 @@ def test_market_lifecycle(proposed_market, vega: VegaServiceNull, page: Page):
         forward_time_to_enactment = False
     )
 
-    vega.forward("60s")
-    vega.wait_fn(1)
-    vega.wait_for_total_catchup()
+    next_epoch(vega=vega)
 
     expect(page.get_by_test_id("market-banner")).not_to_be_visible()
 
@@ -170,9 +162,7 @@ def test_market_lifecycle(proposed_market, vega: VegaServiceNull, page: Page):
         payload={"trading.terminated": "true"},
         key_name=GOVERNANCE_WALLET.name,
     )
-    vega.forward("60s")
-    vega.wait_fn(1)
-    vega.wait_for_total_catchup()
+    next_epoch(vega=vega)
 
     # market state should be changed to "No trading" because of the invalid oracle
     expect(trading_mode).to_have_text("No trading")
@@ -184,9 +174,7 @@ def test_market_lifecycle(proposed_market, vega: VegaServiceNull, page: Page):
         settlement_price=100,
         market_id=market_id,
     )
-    vega.forward("10s")
-    vega.wait_fn(1)
-    vega.wait_for_total_catchup()
+    next_epoch(vega=vega)
 
     # check market state is now settled
     expect(trading_mode).to_have_text("No trading")
