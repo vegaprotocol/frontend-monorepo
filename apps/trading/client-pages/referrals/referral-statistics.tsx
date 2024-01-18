@@ -1,5 +1,5 @@
 import minBy from 'lodash/minBy';
-import { CodeTile, StatTile } from './tile';
+import { CodeTile, StatTile, Tile } from './tile';
 import {
   VegaIcon,
   VegaIconNames,
@@ -28,13 +28,16 @@ import compact from 'lodash/compact';
 import { useReferralProgram } from './hooks/use-referral-program';
 import { useStakeAvailable } from '../../lib/hooks/use-stake-available';
 import sortBy from 'lodash/sortBy';
-import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import { useCurrentEpochInfoQuery } from './hooks/__generated__/Epoch';
 import BigNumber from 'bignumber.js';
 import { useT, ns } from '../../lib/use-t';
 import { Trans } from 'react-i18next';
 import { ApplyCodeForm, ApplyCodeFormContainer } from './apply-code-form';
 import { QUSDTooltip } from './qusd-tooltip';
+import { useTeam } from '../../lib/hooks/use-team';
+import { TeamAvatar } from 'apps/trading/components/competitions/team-avatar';
+import { TeamStats } from 'apps/trading/components/competitions/team-stats';
 
 export const ReferralStatistics = () => {
   const { pubKey } = useVegaWallet();
@@ -192,10 +195,7 @@ export const Statistics = ({
     nextBenefitTierEpochsValue,
   } = useStats({ data, program });
 
-  const isApplyCodePreview = useMemo(
-    () => data.referee === null,
-    [data.referee]
-  );
+  const isApplyCodePreview = data.referee === null;
 
   const { benefitTiers } = useReferralProgram();
 
@@ -328,23 +328,6 @@ export const Statistics = ({
     </StatTile>
   );
 
-  const referrerTiles = (
-    <>
-      <div className="grid grid-rows-1 gap-5 grid-cols-1 md:grid-cols-3">
-        {baseCommissionTile}
-        {stakingMultiplierTile}
-        {finalCommissionTile}
-      </div>
-
-      <div className="grid grid-rows-1 gap-5 grid-cols-1 sm:grid-cols-2 xl:grid-cols-4">
-        {codeTile}
-        {referrerVolumeTile}
-        {numberOfTradersTile}
-        {totalCommissionTile}
-      </div>
-    </>
-  );
-
   const currentBenefitTierTile = (
     <StatTile
       title={t('Current tier')}
@@ -416,8 +399,41 @@ export const Statistics = ({
     </StatTile>
   );
 
+  const eligibilityWarningOverlay = as === 'referee' && !isEligible && (
+    <div
+      data-testid="referral-eligibility-warning"
+      className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center w-1/2 lg:w-1/3"
+    >
+      <h2 className="text-2xl mb-2">{t('Referral code no longer valid')}</h2>
+      <p>
+        {t(
+          'Your referral code is no longer valid as the referrer no longer meets the minimum requirements. Apply a new code to continue receiving discounts.'
+        )}
+      </p>
+    </div>
+  );
+
+  const referrerTiles = (
+    <>
+      <Team teamId={data.code} />
+      <div className="grid grid-rows-1 gap-5 grid-cols-1 md:grid-cols-3">
+        {baseCommissionTile}
+        {stakingMultiplierTile}
+        {finalCommissionTile}
+      </div>
+
+      <div className="grid grid-rows-1 gap-5 grid-cols-1 sm:grid-cols-2 xl:grid-cols-4">
+        {codeTile}
+        {referrerVolumeTile}
+        {numberOfTradersTile}
+        {totalCommissionTile}
+      </div>
+    </>
+  );
+
   const refereeTiles = (
     <>
+      <Team teamId={data.code} />
       <div className="grid grid-rows-1 gap-5 grid-cols-1 md:grid-cols-3">
         {currentBenefitTierTile}
         {runningVolumeTile}
@@ -430,20 +446,6 @@ export const Statistics = ({
         {nextTierEpochsTile}
       </div>
     </>
-  );
-
-  const eligibilityWarning = as === 'referee' && !isEligible && (
-    <div
-      data-testid="referral-eligibility-warning"
-      className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center w-1/2 lg:w-1/3"
-    >
-      <h2 className="text-2xl mb-2">{t('Referral code no longer valid')}</h2>
-      <p>
-        {t(
-          'Your referral code is no longer valid as the referrer no longer meets the minimum requirements. Apply a new code to continue receiving discounts.'
-        )}
-      </p>
-    </div>
   );
 
   return (
@@ -460,8 +462,7 @@ export const Statistics = ({
         {as === 'referrer' && referrerTiles}
         {as === 'referee' && refereeTiles}
       </div>
-
-      {eligibilityWarning}
+      {eligibilityWarningOverlay}
     </div>
   );
 };
@@ -572,5 +573,21 @@ export const RefereesTable = ({
         </div>
       )}
     </>
+  );
+};
+
+const Team = ({ teamId }: { teamId?: string }) => {
+  const { team, games, members } = useTeam(teamId);
+
+  if (!team) return null;
+
+  return (
+    <Tile className="flex gap-3 lg:gap-4">
+      <TeamAvatar teamId={team.teamId} imgUrl={team.avatarUrl} />
+      <div className="flex flex-col items-start gap-1 lg:gap-3">
+        <h1 className="calt text-2xl lg:text-3xl xl:text-5xl">{team.name}</h1>
+        <TeamStats members={members} games={games} />
+      </div>
+    </Tile>
   );
 };
