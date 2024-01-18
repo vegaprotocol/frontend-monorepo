@@ -1,7 +1,7 @@
 import { isRouteErrorResponse, useNavigate, useRouteError } from 'react-router';
 import { RainbowButton } from '../../components/rainbow-button';
+import { LayoutWithSky } from '../../components/layouts-inner';
 import { AnimatedDudeWithWire } from './graphics/dude';
-import { LayoutWithSky } from './layout';
 import { Routes } from '../../lib/links';
 import { useT } from '../../lib/use-t';
 

@@ -1,10 +1,12 @@
 import classNames from 'classnames';
 import type { HTMLAttributes } from 'react';
-import { SKY_BACKGROUND } from './constants';
 import { Outlet } from 'react-router-dom';
 import { TinyScroll } from '@vegaprotocol/ui-toolkit';
 
-export const Layout = ({
+export const SKY_BACKGROUND =
+  'bg-[url(/sky-light.png)] dark:bg-[url(/sky-dark.png)] bg-[37%_0px] bg-[length:1440px] bg-no-repeat bg-local';
+
+const Layout = ({
   className,
   children,
   ...props
