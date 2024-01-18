@@ -198,6 +198,7 @@ export const ActiveRewards = ({ currentEpoch }: { currentEpoch: number }) => {
                   transferNode={node}
                   kind={transfer.kind}
                   currentEpoch={currentEpoch}
+                  allMarkets={markets || {}}
                 />
               )
             );
@@ -221,13 +222,7 @@ const StatusIndicator = ({
     switch (status) {
       case TransferStatus.STATUS_DONE:
         return { icon: IconNames.TICK_CIRCLE, intent: Intent.Success };
-      case TransferStatus.STATUS_CANCELLED:
-        return { icon: IconNames.MOON, intent: Intent.None };
-      case TransferStatus.STATUS_PENDING:
-        return { icon: IconNames.HELP, intent: Intent.Primary };
       case TransferStatus.STATUS_REJECTED:
-        return { icon: IconNames.ERROR, intent: Intent.Danger };
-      case TransferStatus.STATUS_STOPPED:
         return { icon: IconNames.ERROR, intent: Intent.Danger };
       default:
         return { icon: IconNames.HELP, intent: Intent.Primary };
@@ -267,6 +262,7 @@ export const ActiveRewardCard = ({
   transferNode,
   currentEpoch,
   kind,
+  allMarkets,
 }: {
   transferNode: TransferNode & {
     asset?: AssetFieldsFragment | null;
@@ -274,9 +270,9 @@ export const ActiveRewardCard = ({
   };
   currentEpoch: number;
   kind: RecurringTransfer;
+  allMarkets?: Record<string, MarketFieldsFragment | null>;
 }) => {
   const t = useT();
-  const { data: allMarkets } = useMarketsMapProvider();
 
   const { transfer } = transferNode;
   const { dispatchStrategy } = kind;
