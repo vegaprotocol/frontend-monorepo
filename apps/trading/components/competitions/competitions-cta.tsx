@@ -9,7 +9,10 @@ export const CompetitionsActionsContainer = ({
     | ReactElement<typeof CompetitionsAction>
     | Iterable<ReactElement<typeof CompetitionsAction>>;
 }) => (
-  <div className="grid grid-rows-3 grid-cols-1 md:grid-rows-1 md:grid-cols-3 gap-6 mb-12">
+  <div
+    className="grid grid-cols-1 md:grid-cols-3 grid-rows-4'
+ gap-6 mb-12"
+  >
     {children}
   </div>
 );
@@ -19,20 +22,20 @@ export const CompetitionsAction = ({
   title,
   description,
   actionElement,
-  children,
 }: {
   variant: ComponentProps<typeof DudeBadge>['variant'];
   title: string;
   description?: string;
   actionElement: ReactNode;
-  children?: ReactNode;
 }) => {
   return (
-    <Box className="flex flex-col items-center gap-6 text-center">
-      <DudeBadge variant={variant} />
+    <Box className="grid md:grid-rows-[subgrid] gap-6 row-span-4 text-center">
+      <div className="flex justify-center">
+        <DudeBadge variant={variant} />
+      </div>
       <h2 className="text-2xl">{title}</h2>
       {description && <p className="text-muted">{description}</p>}
-      {actionElement}
+      <div className="flex justify-center">{actionElement}</div>
     </Box>
   );
 };

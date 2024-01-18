@@ -9,6 +9,7 @@ import {
   Tooltip,
   Splash,
   truncateMiddle,
+  Loader,
 } from '@vegaprotocol/ui-toolkit';
 import classNames from 'classnames';
 import { useT } from '../../lib/use-t';
@@ -26,6 +27,7 @@ import BigNumber from 'bignumber.js';
 import { TeamAvatar } from '../../components/competitions/team-avatar';
 import { usePageTitle } from '../../lib/hooks/use-page-title';
 import { ErrorBoundary } from '../../components/error-boundary';
+import { LayoutWithGradient } from '../../components/layouts-inner';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { JoinTeam } from './join-team';
 
@@ -51,7 +53,7 @@ const TeamPageContainer = ({ teamId }: { teamId: string | undefined }) => {
   if (loading) {
     return (
       <Splash>
-        <p>Loading...</p>
+        <Loader />
       </Splash>
     );
   }
@@ -95,79 +97,69 @@ const TeamPage = ({
   const [showGames, setShowGames] = useState(true);
 
   return (
-    <div className="relative h-full overflow-y-auto pt-5">
-      <div className="absolute top-0 left-0 w-full h-[40%] -z-10 bg-[40%_0px] bg-cover bg-no-repeat bg-local bg-[url(/cover.png)]">
-        <div className="absolute top-o left-0 w-full h-full bg-gradient-to-t from-white dark:from-vega-cdark-900 to-transparent from-20% to-60%" />
-      </div>
-      <div className="flex flex-col gap-4 lg:gap-6 container p-4 mx-auto">
-        <header className="flex gap-3 lg:gap-4 pt-5 lg:pt-10">
-          <TeamAvatar teamId={team.teamId} imgUrl={team.avatarUrl} />
-          <div className="flex flex-col items-start gap-1 lg:gap-3">
-            <h1 className="calt text-2xl lg:text-3xl xl:text-5xl">
-              {team.name}
-            </h1>
-            <JoinTeam team={team} partyTeam={partyTeam} refetch={refetch} />
-          </div>
-        </header>
+    <LayoutWithGradient>
+      <header className="flex gap-3 lg:gap-4 pt-5 lg:pt-10">
+        <TeamAvatar teamId={team.teamId} imgUrl={team.avatarUrl} />
+        <div className="flex flex-col items-start gap-1 lg:gap-3">
+          <h1 className="calt text-2xl lg:text-3xl xl:text-5xl">{team.name}</h1>
+          <JoinTeam team={team} partyTeam={partyTeam} refetch={refetch} />
+        </div>
+      </header>
+      <StatSection>
+        <StatList>
+          <Stat value={members ? members.length : 0} label={t('Members')} />
+          <Stat
+            value={stats ? stats.totalGamesPlayed : 0}
+            label={t('Total games')}
+            tooltip={t('Total number of games this team has participated in')}
+          />
+          <StatSectionSeparator />
+          <Stat
+            value={
+              stats
+                ? formatNumberRounded(
+                    new BigNumber(stats.totalQuantumVolume),
+                    '1e3'
+                  )
+                : 0
+            }
+            label={t('Total volume')}
+          />
+          <Stat
+            value={
+              stats
+                ? formatNumberRounded(
+                    new BigNumber(stats.totalQuantumRewards),
+                    '1e3'
+                  )
+                : 0
+            }
+            label={t('Rewards paid')}
+            tooltip={'Total amount of rewards paid out to this team in qUSD'}
+          />
+        </StatList>
+      </StatSection>
+      {games && games.length ? (
         <StatSection>
-          <StatList>
-            <Stat value={members ? members.length : 0} label={t('Members')} />
-            <Stat
-              value={stats ? stats.totalGamesPlayed : 0}
-              label={t('Total games')}
-              tooltip={t('Total number of games this team has participated in')}
-            />
-            <StatSectionSeparator />
-            <Stat
-              value={
-                stats
-                  ? formatNumberRounded(
-                      new BigNumber(stats.totalQuantumVolume),
-                      '1e3'
-                    )
-                  : 0
-              }
-              label={t('Total volume')}
-            />
-            <Stat
-              value={
-                stats
-                  ? formatNumberRounded(
-                      new BigNumber(stats.totalQuantumRewards),
-                      '1e3'
-                    )
-                  : 0
-              }
-              label={t('Rewards paid')}
-              tooltip={'Total amount of rewards paid out to this team in qUSD'}
-            />
-          </StatList>
+          <FavoriteGame games={games} />
+          <StatSectionSeparator />
+          <LatestResults games={games} />
         </StatSection>
-        {games && games.length ? (
-          <StatSection>
-            <FavoriteGame games={games} />
-            <StatSectionSeparator />
-            <LatestResults games={games} />
-          </StatSection>
-        ) : null}
-        <section>
-          <div className="flex gap-4 lg:gap-8 mb-4 border-b border-default">
-            <ToggleButton active={showGames} onClick={() => setShowGames(true)}>
-              {t('Games ({{count}})', { count: games ? games.length : 0 })}
-            </ToggleButton>
-            <ToggleButton
-              active={!showGames}
-              onClick={() => setShowGames(false)}
-            >
-              {t('Members ({{count}})', {
-                count: members ? members.length : 0,
-              })}
-            </ToggleButton>
-          </div>
-          {showGames ? <Games games={games} /> : <Members members={members} />}
-        </section>
-      </div>
-    </div>
+      ) : null}
+      <section>
+        <div className="flex gap-4 lg:gap-8 mb-4 border-b border-default">
+          <ToggleButton active={showGames} onClick={() => setShowGames(true)}>
+            {t('Games ({{count}})', { count: games ? games.length : 0 })}
+          </ToggleButton>
+          <ToggleButton active={!showGames} onClick={() => setShowGames(false)}>
+            {t('Members ({{count}})', {
+              count: members ? members.length : 0,
+            })}
+          </ToggleButton>
+        </div>
+        {showGames ? <Games games={games} /> : <Members members={members} />}
+      </section>
+    </LayoutWithGradient>
   );
 };
 
@@ -239,12 +231,10 @@ const Members = ({ members }: { members?: Member[] }) => {
         {
           name: 'joinedAtEpoch',
           displayName: t('Joined epoch'),
-          headerClassName: 'text-right',
-          className: 'text-right',
         },
         {
           name: 'explorerLink',
-          displayName: '',
+          displayName: <span className="invisible">Actions</span>, // ensure header doesn't collapse
           headerClassName: 'hidden md:block',
           className: 'hidden md:block text-right',
         },
