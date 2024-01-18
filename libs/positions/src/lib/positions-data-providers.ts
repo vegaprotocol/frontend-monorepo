@@ -5,18 +5,22 @@ import {
   marginsDataProvider,
   type Account,
   type MarginFieldsFragment,
+  marketMarginDataProvider,
 } from '@vegaprotocol/accounts';
 import { accountsDataProvider } from '@vegaprotocol/accounts';
 import { toBigNum, removePaginationWrapper } from '@vegaprotocol/utils';
 import {
   makeDataProvider,
   makeDerivedDataProvider,
+  useDataProvider,
 } from '@vegaprotocol/data-provider';
 import {
   type MarketMaybeWithData,
   type MarketDataQueryVariables,
   allMarketsWithLiveDataProvider,
   getAsset,
+  marketInfoProvider,
+  type MarketInfo,
 } from '@vegaprotocol/markets';
 import {
   PositionsDocument,
@@ -369,3 +373,67 @@ export const positionsMetricsProvider = makeDerivedDataProvider<
       return !(previousRow && isEqual(previousRow, row));
     })
 );
+
+export const maxLeverageProvider = makeDerivedDataProvider<
+  number,
+  never,
+  { partyId: string; marketId: string }
+>(
+  [
+    (callback, client, { marketId }) =>
+      marketInfoProvider(callback, client, { marketId }),
+    (callback, client, { marketId, partyId }) =>
+      positionDataProvider(callback, client, { partyIds: partyId, marketId }),
+    marketMarginDataProvider,
+  ],
+  (parts) => {
+    const market: MarketInfo | null = parts[0];
+    const position: PositionFieldsFragment | null = parts[1];
+    const margin: MarginFieldsFragment | null = parts[2];
+    if (!market || !market?.riskFactors) {
+      return 1;
+    }
+    const maxLeverage =
+      1 /
+      (Math.max(
+        Number(market.riskFactors.long),
+        Number(market.riskFactors.short)
+      ) || 1);
+
+    if (
+      market &&
+      position?.openVolume &&
+      position?.openVolume !== '0' &&
+      margin
+    ) {
+      const asset = getAsset(market);
+      const { positionDecimalPlaces, decimalPlaces: marketDecimalPlaces } =
+        market;
+      const openVolume = toBigNum(
+        position.openVolume.replace(/^-/, ''),
+        positionDecimalPlaces
+      );
+      const averageEntryPrice = toBigNum(
+        position.averageEntryPrice,
+        marketDecimalPlaces
+      );
+      // https://github.com/vegaprotocol/specs/blob/nebula/protocol/0019-MCAL-margin_calculator.md#isolated-margin-mode
+      return Math.min(
+        averageEntryPrice
+          .multipliedBy(openVolume)
+          .dividedBy(toBigNum(margin.initialLevel, asset.decimals))
+          .toNumber(),
+        maxLeverage
+      );
+    }
+    return maxLeverage;
+  }
+);
+
+export const useMaxLeverage = (marketId: string, partyId?: string) => {
+  return useDataProvider({
+    dataProvider: maxLeverageProvider,
+    variables: { marketId, partyId: partyId || '' },
+    skip: !partyId,
+  });
+};

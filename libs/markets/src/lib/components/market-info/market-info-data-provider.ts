@@ -2,7 +2,6 @@ import {
   makeDataProvider,
   makeDerivedDataProvider,
   marketDataErrorPolicyGuard,
-  useDataProvider,
 } from '@vegaprotocol/data-provider';
 import {
   MarketInfoDocument,
@@ -52,26 +51,3 @@ export const marketInfoWithDataProvider = makeDerivedDataProvider<
     }
   );
 });
-
-export const maxLeverageProvider = makeDerivedDataProvider<
-  number,
-  never,
-  MarketInfoQueryVariables
->([marketInfoProvider], (parts) => {
-  const market: MarketInfo | null = parts[0];
-  return (
-    1 /
-    Math.max(
-      Number(market?.riskFactors?.long),
-      Number(market?.riskFactors?.short)
-    )
-  );
-});
-
-export const useMaxLeverage = (marketId?: string) => {
-  return useDataProvider({
-    dataProvider: maxLeverageProvider,
-    variables: { marketId: marketId || '' },
-    skip: !marketId,
-  });
-};

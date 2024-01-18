@@ -465,7 +465,7 @@ const MarginModeDetails = ({ data }: { data: UpdateMarginMode }) => {
       {data.mode === MarginMode.MARGIN_MODE_CROSS_MARGIN
         ? t('Cross margin mode')
         : t('Isolated margin mode, leverage: {{leverage}}x', {
-            leverage: 1 / Number(data.marginFactor),
+            leverage: (1 / Number(data.marginFactor)).toFixed(1),
           })}
     </Panel>
   );

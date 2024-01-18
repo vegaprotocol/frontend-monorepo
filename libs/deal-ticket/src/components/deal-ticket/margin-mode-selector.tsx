@@ -15,7 +15,7 @@ import { useEffect, useState } from 'react';
 import { useT } from '../../use-t';
 import classnames from 'classnames';
 import { marketMarginDataProvider } from '@vegaprotocol/accounts';
-import { useMaxLeverage } from '@vegaprotocol/markets';
+import { useMaxLeverage } from '@vegaprotocol/positions';
 
 const defaultLeverage = 10;
 interface MarginDialogProps {
@@ -81,15 +81,18 @@ const IsolatedMarginModeDialog = ({
   open,
   onClose,
   marketId,
+  partyId,
   marginFactor,
   create,
 }: MarginDialogProps & { marginFactor: string }) => {
-  const [leverage, setLeverage] = useState(`${1 / Number(marginFactor)}`);
+  const [leverage, setLeverage] = useState(
+    (1 / Number(marginFactor)).toFixed(1)
+  );
   useEffect(() => {
-    setLeverage(`${1 / Number(marginFactor)}`);
+    setLeverage((1 / Number(marginFactor)).toFixed(1));
   }, [marginFactor]);
-  const { data: maxLeverage } = useMaxLeverage(marketId);
-  const max = maxLeverage || 100;
+  const { data: maxLeverage } = useMaxLeverage(marketId, partyId);
+  const max = maxLeverage || 1;
   const t = useT();
   return (
     <Dialog
@@ -193,7 +196,9 @@ export const MarginModeSelector = ({ marketId }: { marketId: string }) => {
           })}
         >
           {t('Isolated {{leverage}}x', {
-            leverage: marginFactor ? 1 / Number(marginFactor) : defaultLeverage,
+            leverage: marginFactor
+              ? (1 / Number(marginFactor)).toFixed(1)
+              : defaultLeverage,
           })}
         </button>
       </div>
