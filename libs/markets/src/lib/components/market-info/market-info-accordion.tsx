@@ -152,7 +152,7 @@ export const MarketInfoAccordion = ({
                 <AccordionItem
                   key={id}
                   itemId={id}
-                  title={t('Insurance pool')}
+                  title={t('Liquidations')}
                   content={
                     <InsurancePoolInfoPanel market={market} account={a} />
                   }
