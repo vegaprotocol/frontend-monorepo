@@ -92,7 +92,9 @@ export const DepositForm = ({
   const maxSafe = useMaxSafe();
   const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
   const openDialog = useWeb3ConnectStore((store) => store.open);
-  const { isActive, account } = useWeb3React();
+  const { isActive, account, chainId } = useWeb3React();
+  const desiredChainId = useWeb3ConnectStore((store) => store.desiredChainId);
+  const invalidChain = isActive && chainId !== desiredChainId;
   const { pubKey, pubKeys: _pubKeys } = useVegaWallet();
   const [approveNotificationIntent, setApproveNotificationIntent] =
     useState<Intent>(Intent.Warning);
@@ -152,7 +154,20 @@ export const DepositForm = ({
   const approved =
     balances && balances.allowance.isGreaterThan(0) ? true : false;
 
-  return (
+  return invalidChain ? (
+    <div className="mb-2">
+      <Notification
+        intent={Intent.Danger}
+        testId="chain-error"
+        message={t(
+          'This app only works on {{chainId}}. Switch your Ethereum wallet to the correct network.',
+          {
+            chainId: getChainName(desiredChainId),
+          }
+        )}
+      />
+    </div>
+  ) : (
     <form
       onSubmit={handleSubmit(onSubmit)}
       noValidate={true}
@@ -417,7 +432,11 @@ export const DepositForm = ({
         intent={approveNotificationIntent}
         amount={amount}
       />
-      <FormButton approved={approved} selectedAsset={selectedAsset} />
+      <FormButton
+        approved={approved}
+        isActive={isActive}
+        selectedAsset={selectedAsset}
+      />
     </form>
   );
 };
@@ -425,35 +444,21 @@ export const DepositForm = ({
 interface FormButtonProps {
   approved: boolean;
   selectedAsset: AssetFieldsFragment | undefined;
+  isActive: boolean;
 }
 
-const FormButton = ({ approved, selectedAsset }: FormButtonProps) => {
+const FormButton = ({ approved, selectedAsset, isActive }: FormButtonProps) => {
   const t = useT();
-  const { isActive, chainId } = useWeb3React();
-  const desiredChainId = useWeb3ConnectStore((store) => store.desiredChainId);
-  const invalidChain = isActive && chainId !== desiredChainId;
+
   return (
-    <>
-      {invalidChain && (
-        <div className="mb-2">
-          <Notification
-            intent={Intent.Danger}
-            testId="chain-error"
-            message={t('This app only works on {{chainId}}.', {
-              chainId: getChainName(desiredChainId),
-            })}
-          />
-        </div>
-      )}
-      <TradingButton
-        type="submit"
-        data-testid="deposit-submit"
-        fill
-        disabled={!isActive || invalidChain}
-      >
-        {t('Deposit')}
-      </TradingButton>
-    </>
+    <TradingButton
+      type="submit"
+      data-testid="deposit-submit"
+      fill
+      disabled={!isActive}
+    >
+      {t('Deposit')}
+    </TradingButton>
   );
 };
 
