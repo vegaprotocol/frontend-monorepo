@@ -137,7 +137,6 @@ fragment NewMarketFields on NewMarket {
   #   auctionExtensionSecs
   # }
   # linearSlippageFactor
-  # quadraticSlippageFactor
   successorConfiguration {
     parentMarketId
   }

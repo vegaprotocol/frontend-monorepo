@@ -130,7 +130,6 @@ interface ProposalNewMarketTerms {
       decimalPlaces: string;
       positionDecimalPlaces: string;
       linearSlippageFactor: string;
-      quadraticSlippageFactor: string;
       instrument: {
         name: string;
         code: string;
@@ -167,7 +166,6 @@ interface ProposalUpdateMarketTerms {
     marketId: string;
     changes: {
       linearSlippageFactor: string;
-      quadraticSlippageFactor: string;
       instrument: {
         code: string;
         future: {

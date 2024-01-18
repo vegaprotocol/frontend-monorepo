@@ -551,7 +551,6 @@ export const MarginScalingFactorsPanel = ({
 }: MarketInfoProps) => {
   const data = {
     linearSlippageFactor: market.linearSlippageFactor,
-    quadraticSlippageFactor: market.quadraticSlippageFactor,
     searchLevel:
       market.tradableInstrument.marginCalculator?.scalingFactors.searchLevel,
     initialMargin:
@@ -564,7 +563,6 @@ export const MarginScalingFactorsPanel = ({
   const parentData = parentMarket
     ? {
         linearSlippageFactor: parentMarket?.linearSlippageFactor,
-        quadraticSlippageFactor: parentMarket?.quadraticSlippageFactor,
         searchLevel:
           parentMarket?.tradableInstrument.marginCalculator?.scalingFactors
             .searchLevel,

@@ -212,7 +212,6 @@ query Proposal(
           }
           positionDecimalPlaces
           linearSlippageFactor
-          quadraticSlippageFactor
         }
         ... on UpdateMarket {
           marketId

@@ -112,7 +112,6 @@ export function createNewMarketProposalTxBody(): ProposalSubmissionBody {
               performanceHysteresisEpochs: 2,
               slaCompetitionFactor: '0.1',
             },
-            quadraticSlippageFactor: '0',
             instrument: {
               name: 'Token test market',
               code: 'TEST.24h',
@@ -241,7 +240,6 @@ export function createSuccessorMarketProposalTxBody(
             decimalPlaces: '5',
             positionDecimalPlaces: '5',
             linearSlippageFactor: '0.001',
-            quadraticSlippageFactor: '0',
             liquiditySlaParameters: {
               priceRange: '0.5',
               commitmentMinTimeFraction: '0.1',

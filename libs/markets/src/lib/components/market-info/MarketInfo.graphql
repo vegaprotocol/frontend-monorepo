@@ -139,7 +139,6 @@ query MarketInfo($marketId: ID!) {
     state
     tradingMode
     linearSlippageFactor
-    quadraticSlippageFactor
     proposal {
       id
       rationale {
