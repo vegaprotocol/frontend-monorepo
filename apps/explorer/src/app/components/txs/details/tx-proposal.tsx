@@ -12,6 +12,8 @@ import { ProposalSignatureBundleNewAsset } from './proposal/signature-bundle-new
 import { ProposalSignatureBundleUpdateAsset } from './proposal/signature-bundle-update';
 import { MarketLink } from '../../links';
 import { formatNumber } from '@vegaprotocol/utils';
+import { TransferDetails } from './transfer/transfer-details';
+import { proposalToTransfer } from '../lib/proposal-to-transfer';
 
 export type Proposal = components['schemas']['v1ProposalSubmission'];
 export type ProposalTerms = components['schemas']['vegaProposalTerms'];
@@ -104,6 +106,12 @@ export const TxProposal = ({ txData, pubKey, blockData }: TxProposalProps) => {
     ? ProposalSignatureBundleNewAsset
     : ProposalSignatureBundleUpdateAsset;
 
+  let transfer, from;
+  if (proposal.terms?.newTransfer?.changes) {
+    transfer = proposalToTransfer(proposal.terms?.newTransfer.changes);
+    from = proposal.terms.newTransfer.changes.source;
+  }
+
   return (
     <>
       <TableWithTbody className="mb-8" allowWrap={true}>
@@ -149,13 +157,26 @@ export const TxProposal = ({ txData, pubKey, blockData }: TxProposalProps) => {
           </>
         ) : null}
       </TableWithTbody>
+
       <ProposalSummary
         id={deterministicId}
         rationale={proposal.rationale}
         terms={proposal?.terms}
       />
+
       {proposalRequiresSignatureBundle(proposal) && (
         <SignatureBundleComponent id={deterministicId} tx={tx} />
+      )}
+
+      {transfer && (
+        <div className="mt-8">
+          <TransferDetails
+            statusOnly={false}
+            transfer={transfer}
+            from={from || ''}
+            id={deterministicId}
+          />
+        </div>
       )}
     </>
   );

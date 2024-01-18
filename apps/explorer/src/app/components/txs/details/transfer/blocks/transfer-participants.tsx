@@ -111,7 +111,7 @@ export function TransferParticipants({
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 16 9"
-                className="fill-vega-light-100 dark:fill-black"
+                className="fill-white dark:fill-black"
               >
                 <path d="M0,0L8,9l8,-9Z" />
               </svg>
@@ -120,7 +120,7 @@ export function TransferParticipants({
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 16 9"
-                className="fill-vega-light-100 dark:fill-vega-dark-200"
+                className="fill-vega-light-200 dark:fill-vega-dark-200"
               >
                 <path d="M0,0L8,9l8,-9Z" />
               </svg>

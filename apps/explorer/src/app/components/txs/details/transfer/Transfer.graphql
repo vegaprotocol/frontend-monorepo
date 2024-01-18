@@ -1,0 +1,16 @@
+query ExplorerTransferVote($id: ID!) {
+  transfer(id: $id) {
+    reference
+    timestamp
+    status
+    reason
+    fromAccountType
+    from
+    to
+    toAccountType
+    asset {
+      id
+    }
+    amount
+  }
+}

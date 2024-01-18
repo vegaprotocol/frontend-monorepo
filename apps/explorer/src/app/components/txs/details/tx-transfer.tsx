@@ -60,7 +60,7 @@ export const TxDetailsTransfer = ({
   }
 
   const from = txData.submitter;
-
+  const id = txSignatureToDeterministicId(txData.signature.value);
   return (
     <>
       <TableWithTbody className="mb-8" allowWrap={true}>
@@ -70,9 +70,7 @@ export const TxDetailsTransfer = ({
         </TableRow>
         <TableRow modifier="bordered" data-testid="id">
           <TableCell {...sharedHeaderProps}>{t('Transfer ID')}</TableCell>
-          <TableCell>
-            {txSignatureToDeterministicId(txData.signature.value)}
-          </TableCell>
+          <TableCell>{id}</TableCell>
         </TableRow>
         <TxDetailsShared
           txData={txData}
@@ -105,7 +103,7 @@ export const TxDetailsTransfer = ({
           </TableRow>
         ) : null}
       </TableWithTbody>
-      <TransferDetails from={from} transfer={transfer} />
+      <TransferDetails from={from} transfer={transfer} id={id} />
     </>
   );
 };
