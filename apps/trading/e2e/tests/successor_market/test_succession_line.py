@@ -149,7 +149,5 @@ def provide_successor_liquidity(
     )
 
     submit_order(vega, "Key 1", market_id, "SIDE_BUY", 1, 110)
-
-    vega.forward("10s")
     vega.wait_fn(1)
     vega.wait_for_total_catchup()

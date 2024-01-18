@@ -11,7 +11,7 @@ def check_pnl_color_value(element, expected_color, expected_value):
     assert color == expected_color, f"Unexpected color: {color}"
     assert value == expected_value, f"Unexpected value: {value}"
 
-
+#TODO move this test to jest
 @pytest.mark.usefixtures("auth", "risk_accepted")
 def test_pnl(continuous_market, vega: VegaServiceNull, page: Page):
     page.set_viewport_size({"width": 1748, "height": 977})

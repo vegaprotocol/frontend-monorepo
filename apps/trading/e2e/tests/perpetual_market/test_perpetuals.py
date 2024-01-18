@@ -34,7 +34,6 @@ class TestPerpetuals:
             settlement_price=110,
             market_id=perps_market,
         )
-        vega.forward("10s")
         vega.wait_fn(1)
         vega.wait_for_total_catchup()
         submit_multiple_orders(
@@ -48,8 +47,7 @@ class TestPerpetuals:
             settlement_price=110,
             market_id=perps_market,
         )
-        vega.forward("10s")
-        vega.wait_fn(1)
+        vega.wait_fn(10)
         vega.wait_for_total_catchup()
         return perps_market
 
@@ -110,7 +108,6 @@ def test_perps_market_termination_proposed(page: Page, vega: VegaServiceNull):
         forward_time_to_enactment=False,
     )
 
-    vega.forward("10s")
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
     banner_text = page.get_by_test_id(
@@ -135,7 +132,6 @@ def test_perps_market_terminated(page: Page, vega: VegaServiceNull):
         approve_proposal=True,
         forward_time_to_enactment=True,
     )
-    vega.forward("10s")
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
 

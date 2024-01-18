@@ -144,5 +144,4 @@ def test_limit_order_trade_order_trade_away(continuous_market, page: Page):
     page.get_by_test_id("Orderbook").click()
     price_element = page.get_by_test_id("price-11000000").nth(1)
     # 6003-ORDB-010
-    print(price_element)
     expect(price_element).to_be_hidden()
