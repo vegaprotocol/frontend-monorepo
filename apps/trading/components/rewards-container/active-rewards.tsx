@@ -1,48 +1,46 @@
-import {
-  useActiveRewardsQuery,
-  useMarketForRewardsQuery,
-} from './__generated__/Rewards';
+import { useActiveRewardsQuery } from './__generated__/Rewards';
 import { useT } from '../../lib/use-t';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import classNames from 'classnames';
 import {
-  Icon,
   type IconName,
+  type VegaIconSize,
+  Icon,
   Intent,
   Tooltip,
   VegaIcon,
   VegaIconNames,
-  type VegaIconSize,
   TradingInput,
   TinyScroll,
 } from '@vegaprotocol/ui-toolkit';
 import { IconNames } from '@blueprintjs/icons';
 import {
+  type Maybe,
+  type Transfer,
+  type TransferNode,
+  type RecurringTransfer,
   DistributionStrategyDescriptionMapping,
   DistributionStrategyMapping,
   EntityScope,
   EntityScopeMapping,
-  type Maybe,
-  type Transfer,
-  type TransferNode,
   TransferStatus,
   TransferStatusMapping,
   DispatchMetric,
   DispatchMetricDescription,
   DispatchMetricLabels,
-  type RecurringTransfer,
   EntityScopeLabelMapping,
+  MarketState,
 } from '@vegaprotocol/types';
 import { Card } from '../card/card';
 import { useMemo, useState } from 'react';
 import {
   type AssetFieldsFragment,
-  useAssetDataProvider,
   useAssetsMapProvider,
 } from '@vegaprotocol/assets';
 import {
   type MarketFieldsFragment,
   useMarketsMapProvider,
+  getAsset,
 } from '@vegaprotocol/markets';
 
 export type Filter = {
@@ -74,7 +72,7 @@ export const isActiveReward = (node: TransferNode, currentEpoch: number) => {
 export const applyFilter = (
   node: TransferNode & {
     asset?: AssetFieldsFragment | null;
-    marketIds?: (MarketFieldsFragment | null)[];
+    markets?: (MarketFieldsFragment | null)[];
   },
   filter: Filter
 ) => {
@@ -85,6 +83,22 @@ export const applyFilter = (
   ) {
     return false;
   }
+
+  if (
+    node.markets?.some(
+      (m) =>
+        m?.state &&
+        [
+          MarketState.STATE_TRADING_TERMINATED,
+          MarketState.STATE_SETTLED,
+          MarketState.STATE_CANCELLED,
+          MarketState.STATE_CLOSED,
+        ].includes(m?.state)
+    )
+  ) {
+    return false;
+  }
+
   if (
     DispatchMetricLabels[transfer.kind.dispatchStrategy.dispatchMetric]
       .toLowerCase()
@@ -98,7 +112,7 @@ export const applyFilter = (
     node.asset?.name
       .toLocaleLowerCase()
       .includes(filter.searchTerm.toLowerCase()) ||
-    node.marketIds?.some((m) =>
+    node.markets?.some((m) =>
       m?.tradableInstrument?.instrument?.name
         .toLocaleLowerCase()
         .includes(filter.searchTerm.toLowerCase())
@@ -124,7 +138,7 @@ export const ActiveRewards = ({ currentEpoch }: { currentEpoch: number }) => {
   const { data: assets } = useAssetsMapProvider();
   const { data: markets } = useMarketsMapProvider();
 
-  const transfers = activeRewardsData?.transfersConnection?.edges
+  const enrichedTransfers = activeRewardsData?.transfersConnection?.edges
     ?.map((e) => e?.node as TransferNode)
     .filter((node) => isActiveReward(node, currentEpoch))
     .map((node) => {
@@ -138,19 +152,19 @@ export const ActiveRewards = ({ currentEpoch }: { currentEpoch: number }) => {
           node.transfer.kind.dispatchStrategy?.dispatchMetricAssetId || ''
         ];
 
-      const marketIds =
+      const marketsInScope =
         node.transfer.kind.dispatchStrategy?.marketIdsInScope?.map(
           (id) => markets && markets[id]
         );
 
-      return { ...node, asset, marketIds };
+      return { ...node, asset, markets: marketsInScope };
     });
 
-  if (!transfers || !transfers.length) return null;
+  if (!enrichedTransfers || !enrichedTransfers.length) return null;
 
   return (
     <Card title={t('Active rewards')} className="lg:col-span-full">
-      {transfers.length > 1 && (
+      {enrichedTransfers.length > 1 && (
         <TradingInput
           onChange={(e) =>
             setFilter((curr) => ({ ...curr, searchTerm: e.target.value }))
@@ -166,7 +180,7 @@ export const ActiveRewards = ({ currentEpoch }: { currentEpoch: number }) => {
         />
       )}
       <TinyScroll className="grid gap-x-8 gap-y-10 h-fit grid-cols-[repeat(auto-fill,_minmax(230px,_1fr))] md:grid-cols-[repeat(auto-fill,_minmax(230px,_1fr))] lg:grid-cols-[repeat(auto-fill,_minmax(320px,_1fr))] xl:grid-cols-[repeat(auto-fill,_minmax(335px,_1fr))] max-h-[40rem] overflow-auto pr-2">
-        {transfers
+        {enrichedTransfers
           .filter((n) => applyFilter(n, filter))
           .map((node, i) => {
             const { transfer } = node;
@@ -254,47 +268,78 @@ export const ActiveRewardCard = ({
   currentEpoch,
   kind,
 }: {
-  transferNode: TransferNode;
+  transferNode: TransferNode & {
+    asset?: AssetFieldsFragment | null;
+    markets?: (MarketFieldsFragment | null)[];
+  };
   currentEpoch: number;
   kind: RecurringTransfer;
 }) => {
   const t = useT();
+  const { data: allMarkets } = useMarketsMapProvider();
 
   const { transfer } = transferNode;
   const { dispatchStrategy } = kind;
-  const marketIds = dispatchStrategy?.marketIdsInScope;
 
-  const { data: marketNameData } = useMarketForRewardsQuery({
-    variables: {
-      marketId: marketIds ? marketIds[0] : '',
-    },
-  });
+  const marketIdsInScope = dispatchStrategy?.marketIdsInScope;
+  const firstMarketData = transferNode.markets?.[0];
 
-  const marketName = useMemo(() => {
-    if (marketNameData && marketIds && marketIds.length > 1) {
-      return 'Specific markets';
-    } else if (
-      marketNameData &&
-      marketIds &&
-      marketNameData &&
-      marketIds.length === 1
+  const specificMarkets = useMemo(() => {
+    if (
+      !firstMarketData ||
+      !marketIdsInScope ||
+      marketIdsInScope.length === 0
     ) {
-      return marketNameData?.market?.tradableInstrument?.instrument?.name || '';
+      return null;
     }
-    return '';
-  }, [marketIds, marketNameData]);
+    if (marketIdsInScope.length > 1) {
+      const marketNames =
+        allMarkets &&
+        marketIdsInScope
+          .map((id) => allMarkets[id]?.tradableInstrument?.instrument?.name)
+          .join(', ');
 
-  const { data: dispatchAsset } = useAssetDataProvider(
-    dispatchStrategy?.dispatchMetricAssetId || ''
-  );
+      return (
+        <Tooltip description={marketNames}>
+          <span>Specific markets</span>
+        </Tooltip>
+      );
+    }
+    return (
+      <span>{firstMarketData?.tradableInstrument?.instrument?.name || ''}</span>
+    );
+  }, [firstMarketData, marketIdsInScope, allMarkets]);
+
+  const dispatchAsset = transferNode.asset;
 
   if (!dispatchStrategy) {
     return null;
   }
 
-  const { gradientClassName, mainClassName } = getGradientClasses(
-    dispatchStrategy.dispatchMetric
+  // Gray out the cards that are related to suspended markets
+  const suspended = transferNode.markets?.some(
+    (m) =>
+      m?.state === MarketState.STATE_SUSPENDED ||
+      m?.state === MarketState.STATE_SUSPENDED_VIA_GOVERNANCE
   );
+  const assetInSuspendedMarket =
+    allMarkets &&
+    Object.values(allMarkets).some((m: MarketFieldsFragment | null) => {
+      if (m && getAsset(m).id === dispatchStrategy.dispatchMetricAssetId) {
+        return (
+          m?.state === MarketState.STATE_SUSPENDED ||
+          m?.state === MarketState.STATE_SUSPENDED_VIA_GOVERNANCE
+        );
+      }
+      return false;
+    });
+  const { gradientClassName, mainClassName } =
+    suspended || assetInSuspendedMarket
+      ? {
+          gradientClassName: 'from-vega-cdark-500 to-vega-clight-400',
+          mainClassName: 'from-vega-cdark-400 dark:from-vega-cdark-600 to-20%',
+        }
+      : getGradientClasses(dispatchStrategy.dispatchMetric);
 
   const entityScope = dispatchStrategy.entityScope;
   return (
@@ -373,8 +418,20 @@ export const ActiveRewardCard = ({
 
           <span className="border-[0.5px] border-gray-700" />
           <span>
-            {DispatchMetricLabels[dispatchStrategy.dispatchMetric]}
-            {marketName ? ` • ${marketName}` : ` • ${dispatchAsset?.name}`}
+            {DispatchMetricLabels[dispatchStrategy.dispatchMetric]} •{' '}
+            <Tooltip
+              underline={suspended}
+              description={
+                (suspended || assetInSuspendedMarket) &&
+                (specificMarkets
+                  ? t('Eligible market(s) currently suspended')
+                  : assetInSuspendedMarket
+                  ? t('Currently no markets eligible for reward')
+                  : '')
+              }
+            >
+              <span>{specificMarkets || dispatchAsset?.name}</span>
+            </Tooltip>
           </span>
 
           <div className="flex items-center gap-8 flex-wrap">
