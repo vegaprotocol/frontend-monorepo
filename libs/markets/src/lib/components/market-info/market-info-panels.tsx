@@ -177,7 +177,7 @@ export const InsurancePoolInfoPanel = ({
   return (
     <MarketInfoTable
       data={{
-        balance: account.balance,
+        insurancePoolBalance: account.balance,
       }}
       assetSymbol={asset.symbol}
       decimalPlaces={asset.decimals}
