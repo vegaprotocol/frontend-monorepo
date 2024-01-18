@@ -58,7 +58,7 @@ const wait = (ms: number) =>
     }, ms);
   });
 
-const INJECTED_CONNECTOR_TIMEOUT = 500;
+const INJECTED_CONNECTOR_TIMEOUT = 1000;
 
 export class InjectedConnector implements VegaConnector {
   isConnected = false;
