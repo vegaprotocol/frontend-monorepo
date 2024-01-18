@@ -18,6 +18,7 @@ import {
   getDataSourceSpecForTradingTermination,
   getSigners,
   MarginScalingFactorsPanel,
+  LiquidationStrategyInfoPanel,
 } from '@vegaprotocol/markets';
 import {
   Button,
@@ -267,6 +268,13 @@ export const ProposalMarketData = ({
               </>
             ))}
 
+            <h2 className={marketDataHeaderStyles}>
+              {t('Liquidation strategy')}
+            </h2>
+            <LiquidationStrategyInfoPanel
+              market={marketData}
+              parentMarket={parentMarketData}
+            />
             <h2 className={marketDataHeaderStyles}>
               {t('Liquidity monitoring parameters')}
             </h2>
