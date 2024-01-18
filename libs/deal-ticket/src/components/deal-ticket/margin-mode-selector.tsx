@@ -3,6 +3,7 @@ import {
   TradingButton as Button,
   TradingInput as Input,
   FormGroup,
+  LeverageSlider,
 } from '@vegaprotocol/ui-toolkit';
 import { MarginMode, useVegaWallet } from '@vegaprotocol/wallet';
 import * as Types from '@vegaprotocol/types';
@@ -86,13 +87,19 @@ const IsolatedMarginModeDialog = ({
   create,
 }: MarginDialogProps & { marginFactor: string }) => {
   const [leverage, setLeverage] = useState(
-    (1 / Number(marginFactor)).toFixed(1)
+    Number((1 / Number(marginFactor)).toFixed(1))
   );
-  useEffect(() => {
-    setLeverage((1 / Number(marginFactor)).toFixed(1));
-  }, [marginFactor]);
   const { data: maxLeverage } = useMaxLeverage(marketId, partyId);
-  const max = maxLeverage || 1;
+  const max = Math.floor((maxLeverage || 1) * 10) / 10;
+  useEffect(() => {
+    setLeverage(Number((1 / Number(marginFactor)).toFixed(1)));
+  }, [marginFactor]);
+  useEffect(() => {
+    if (maxLeverage && leverage > max) {
+      setLeverage(max);
+    }
+  }, [max, maxLeverage, leverage]);
+
   const t = useT();
   return (
     <Dialog
@@ -126,13 +133,21 @@ const IsolatedMarginModeDialog = ({
             updateMarginMode: {
               market_id: marketId,
               mode: MarginMode.MARGIN_MODE_ISOLATED_MARGIN,
-              marginFactor: `${1 / Number(leverage)}`,
+              marginFactor: `${1 / leverage}`,
             },
           });
           onClose();
         }}
       >
         <FormGroup label={t('Leverage')} labelFor="leverage-input" compact>
+          <div className="mb-2">
+            <LeverageSlider
+              max={max}
+              step={0.1}
+              value={[leverage]}
+              onValueChange={([value]) => setLeverage(value)}
+            />
+          </div>
           <Input
             type="number"
             id="leverage-input"
@@ -140,7 +155,7 @@ const IsolatedMarginModeDialog = ({
             max={max}
             step={0.1}
             value={leverage}
-            onChange={(e) => setLeverage(e.target.value)}
+            onChange={(e) => setLeverage(Number(e.target.value))}
           />
         </FormGroup>
         <Button className="w-full" type="submit">
