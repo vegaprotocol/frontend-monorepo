@@ -31,7 +31,7 @@ const WalletDisconnectAdditionalContent = () => {
           openVegaWalletDialog();
         }}
         size="small"
-        intent={Intent.None}
+        intent={Intent.Danger}
         icon={<VegaIcon name={VegaIconNames.ARROW_RIGHT} size={14} />}
       >
         <span className="whitespace-nowrap uppercase">{t('Connect')}</span>
