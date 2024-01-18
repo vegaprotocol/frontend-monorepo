@@ -21,7 +21,7 @@ import {
   type TeamStats,
   type Member,
   type TeamGame,
-} from './hooks/use-team';
+} from '../../lib/hooks/use-team';
 import { DApp, EXPLORER_PARTIES, useLinks } from '@vegaprotocol/environment';
 import BigNumber from 'bignumber.js';
 import { TeamAvatar } from '../../components/competitions/team-avatar';
