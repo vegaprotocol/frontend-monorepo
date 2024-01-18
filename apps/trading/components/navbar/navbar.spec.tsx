@@ -179,12 +179,12 @@ describe('Navbar', () => {
 
   it('renders the theme switcher', async () => {
     renderComponent();
-    await userEvent.click(screen.getByTestId('icon-sun'));
-    expect(screen.queryByTestId('icon-sun')).not.toBeInTheDocument();
-    expect(screen.getByTestId('icon-moon')).toBeInTheDocument();
-
     await userEvent.click(screen.getByTestId('icon-moon'));
     expect(screen.queryByTestId('icon-moon')).not.toBeInTheDocument();
     expect(screen.getByTestId('icon-sun')).toBeInTheDocument();
+
+    await userEvent.click(screen.getByTestId('icon-sun'));
+    expect(screen.queryByTestId('icon-sun')).not.toBeInTheDocument();
+    expect(screen.getByTestId('icon-moon')).toBeInTheDocument();
   });
 });
