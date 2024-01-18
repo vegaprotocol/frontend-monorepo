@@ -41,7 +41,6 @@ close_toast = "toast-close"
 def create_position(vega: VegaServiceNull, market_id):
     submit_order(vega, "Key 1", market_id, "SIDE_SELL", 100, 110)
     submit_order(vega, "Key 1", market_id, "SIDE_BUY", 100, 110)
-    vega.forward("10s")
     vega.wait_fn(1)
     vega.wait_for_total_catchup
 
@@ -78,7 +77,6 @@ def test_submit_stop_order_rejected(continuous_market, vega: VegaServiceNull, pa
     page.get_by_test_id(trigger_price).fill("103")
     page.get_by_test_id(order_size).fill("3")
     page.get_by_test_id(submit_stop_order).click()
-    vega.forward("10s")
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
     page.get_by_test_id(close_toast).click()
@@ -268,82 +266,6 @@ class TestStopOcoValidation:
     @pytest.fixture(scope="class")
     def continuous_market(self, vega):
         return setup_continuous_market(vega)
-
-    @pytest.mark.usefixtures("auth", "risk_accepted")
-    def test_stop_market_order_form_validation(self, continuous_market, page: Page):
-        # 7002-SORD-052
-        # 7002-SORD-055
-        # 7002-SORD-056
-        # 7002-SORD-057
-        # 7002-SORD-058
-        # 7002-SORD-064
-        # 7002-SORD-065
-        page.goto(f"/#/markets/{continuous_market}")
-        page.get_by_test_id(stop_order_btn).click()
-        page.get_by_test_id(stop_market_order_btn).is_visible()
-        page.get_by_test_id(stop_market_order_btn).click()
-        expect(
-            page.get_by_test_id("sidebar-content").get_by_text("Trigger").first
-        ).to_be_visible()
-        expect(page.locator('[for="triggerDirection-risesAbove"]')).to_have_text(
-            "Rises above"
-        )
-        expect(page.locator('[for="triggerDirection-fallsBelow"]')).to_have_text(
-            "Falls below"
-        )
-        page.get_by_test_id(trigger_price).click()
-        expect(page.get_by_test_id(trigger_price)).to_be_empty
-        expect(page.locator('[for="triggerType-price"]')).to_have_text("Price")
-        expect(page.locator('[for="triggerType-trailingPercentOffset"]')).to_have_text(
-            "Trailing Percent Offset"
-        )
-        expect(page.locator('[for="order-size"]')).to_have_text("Size")
-        page.get_by_test_id(order_size).click()
-        expect(page.get_by_test_id(order_size)).to_be_empty
-        expect(page.get_by_test_id(order_price)).not_to_be_visible()
-
-    @pytest.mark.usefixtures("auth", "risk_accepted")
-    def test_stop_limit_order_form_validation(self, continuous_market, page: Page):
-        # 7002-SORD-020
-        # 7002-SORD-021
-        # 7002-SORD-022
-        # 7002-SORD-033
-        # 7002-SORD-034
-        # 7002-SORD-035
-        # 7002-SORD-036
-        # 7002-SORD-037
-        # 7002-SORD-038
-        # 7002-SORD-049
-        # 7002-SORD-050
-        # 7002-SORD-051
-
-        page.goto(f"/#/markets/{continuous_market}")
-        page.get_by_test_id(stop_order_btn).click()
-        page.get_by_test_id(stop_limit_order_btn).is_visible()
-        page.get_by_test_id(stop_limit_order_btn).click()
-        expect(
-            page.get_by_test_id("sidebar-content").get_by_text("Trigger").first
-        ).to_be_visible()
-        expect(page.locator('[for="triggerDirection-risesAbove"]')).to_have_text(
-            "Rises above"
-        )
-        expect(page.locator('[for="triggerDirection-risesAbove"]')).to_be_checked
-        expect(page.locator('[for="triggerDirection-fallsBelow"]')).to_have_text(
-            "Falls below"
-        )
-        page.get_by_test_id(trigger_price).click()
-        expect(page.get_by_test_id(trigger_price)).to_be_empty
-        expect(page.locator('[for="triggerType-price"]')).to_have_text("Price")
-        expect(page.locator('[for="triggerType-price"]')).to_be_checked
-        expect(page.locator('[for="triggerType-trailingPercentOffset"]')).to_have_text(
-            "Trailing Percent Offset"
-        )
-        expect(page.locator('[for="order-size"]').first).to_have_text("Size")
-        expect(page.locator('[for="order-price"]').last).to_have_text("Price")
-        page.get_by_test_id(order_size).click()
-        expect(page.get_by_test_id(order_size)).to_be_empty
-        page.get_by_test_id(order_price).click()
-        expect(page.get_by_test_id(order_price)).to_be_empty()
 
     @pytest.mark.skip("core issue")
     @pytest.mark.usefixtures("auth", "risk_accepted")

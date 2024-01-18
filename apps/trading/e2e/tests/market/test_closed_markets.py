@@ -5,6 +5,7 @@ from vega_sim.null_service import VegaServiceNull
 from playwright.sync_api import Page, expect
 from fixtures.market import setup_continuous_market
 from conftest import init_vega
+from actions.utils import next_epoch
 
 
 @pytest.fixture(scope="class")
@@ -21,9 +22,7 @@ def create_settled_market(vega: VegaServiceNull):
         settlement_price=110,
         market_id=market_id,
     )
-    vega.forward("10s")
-    vega.wait_fn(10)
-    vega.wait_for_total_catchup()
+    next_epoch(vega=vega)
 
 
 class TestSettledMarket:
@@ -123,9 +122,7 @@ def test_terminated_market_no_settlement_date(page: Page, vega: VegaServiceNull)
         payload={"trading.terminated": "true"},
         key_name="FJMKnwfZdd48C8NqvYrG",
     )
-    vega.forward("60s")
-    vega.wait_fn(10)
-    vega.wait_for_total_catchup()
+    next_epoch(vega=vega)
     page.goto(f"/#/markets/all")
     page.get_by_test_id("Closed markets").click()
     row_selector = page.locator(

@@ -14,14 +14,17 @@ market_order = "order-type-Market"
 tif = "order-tif"
 expire = "expire"
 
+
 @pytest.fixture(scope="module")
 def vega(request):
     with init_vega(request) as vega:
         yield vega
 
+
 @pytest.fixture(scope="module")
 def continuous_market(vega):
     return setup_continuous_market(vega)
+
 
 @pytest.mark.usefixtures("auth", "risk_accepted")
 def test_limit_buy_order_GTT(continuous_market, vega: VegaServiceNull, page: Page):
@@ -42,31 +45,26 @@ def test_limit_buy_order_GTT(continuous_market, vega: VegaServiceNull, page: Pag
     )
     page.get_by_test_id(place_order).click()
     wait_for_toast_confirmation(page)
-    vega.forward("10s")
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
     page.get_by_test_id("All").click()
     # 7002-SORD-017
-    expect(page.get_by_role("row").nth(5)).to_contain_text(
-        "10+10LimitFilled120.00GTT:"
-    )
+    expect(page.get_by_role("row").nth(5)).to_contain_text("10+10LimitFilled120.00GTT:")
+
 
 @pytest.mark.usefixtures("auth", "risk_accepted")
 def test_limit_buy_order(continuous_market, vega: VegaServiceNull, page: Page):
     page.goto(f"/#/markets/{continuous_market}")
-    
     page.get_by_test_id(order_size).fill("10")
     page.get_by_test_id(order_price).fill("120")
     page.get_by_test_id(place_order).click()
     wait_for_toast_confirmation(page)
-    vega.forward("10s")
-    vega.wait_fn(1)
+    vega.wait_fn(2)
     vega.wait_for_total_catchup()
     page.get_by_test_id("All").click()
     # 7002-SORD-017
-    expect(page.get_by_role("row").nth(6)).to_contain_text(
-        "10+10LimitFilled120.00GTC"
-    )
+    expect(page.get_by_role("row").nth(6)).to_contain_text("10+10LimitFilled120.00GTC")
+
 
 @pytest.mark.usefixtures("auth", "risk_accepted")
 def test_limit_sell_order(continuous_market, vega: VegaServiceNull, page: Page):
@@ -84,13 +82,11 @@ def test_limit_sell_order(continuous_market, vega: VegaServiceNull, page: Page):
     )
     page.get_by_test_id(place_order).click()
     wait_for_toast_confirmation(page)
-    vega.forward("10s")
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
     page.get_by_test_id("All").click()
-    expect(page.get_by_role("row").nth(7)).to_contain_text(
-        "10-10LimitFilled100.00GFN"
-    )
+    expect(page.get_by_role("row").nth(7)).to_contain_text("10-10LimitFilled100.00GFN")
+
 
 @pytest.mark.usefixtures("auth", "risk_accepted")
 def test_market_sell_order(continuous_market, vega: VegaServiceNull, page: Page):
@@ -107,14 +103,12 @@ def test_market_sell_order(continuous_market, vega: VegaServiceNull, page: Page)
     )
     page.get_by_test_id(place_order).click()
     wait_for_toast_confirmation(page)
-    vega.forward("10s")
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
-    
+
     page.get_by_test_id("All").click()
-    expect(page.get_by_role("row").nth(8)).to_contain_text(
-        "10-10MarketFilled-IOC"
-    )
+    expect(page.get_by_role("row").nth(8)).to_contain_text("10-10MarketFilled-IOC")
+
 
 @pytest.mark.usefixtures("auth", "risk_accepted")
 def test_market_buy_order(continuous_market, vega: VegaServiceNull, page: Page):
@@ -124,13 +118,32 @@ def test_market_buy_order(continuous_market, vega: VegaServiceNull, page: Page):
     page.get_by_test_id(tif).select_option("Fill or Kill (FOK)")
     page.get_by_test_id(place_order).click()
     wait_for_toast_confirmation(page)
-    vega.forward("10s")
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
     page.get_by_test_id("All").click()
     # 7002-SORD-010
     # 0003-WTXN-012
     # 0003-WTXN-003
-    expect(page.get_by_role("row").nth(9)).to_contain_text(
-        "10+10MarketFilled-FOK"
-    )
+    expect(page.get_by_role("row").nth(9)).to_contain_text("10+10MarketFilled-FOK")
+
+@pytest.mark.usefixtures("risk_accepted")
+def test_sidebar_should_be_open_after_reload(continuous_market, page: Page):
+    page.goto(f"/#/markets/{continuous_market}")
+    expect(page.get_by_test_id("deal-ticket-form")).to_be_visible()
+    page.get_by_test_id("Order").click()
+    expect(page.get_by_test_id("deal-ticket-form")).not_to_be_visible()
+    page.reload()
+    expect(page.get_by_test_id("deal-ticket-form")).to_be_visible()
+
+@pytest.mark.skip("We currently can't approve wallet connection through Sim")
+@pytest.mark.usefixtures("risk_accepted")
+def test_connect_vega_wallet(continuous_market, page: Page):
+    page.goto(f"/#/markets/{continuous_market}")
+    page.get_by_test_id("order-price").fill("101")
+    page.get_by_test_id("order-connect-wallet").click()
+    expect(page.locator('[role="dialog"]')).to_be_visible()
+    page.get_by_test_id("connector-jsonRpc").click()
+    expect(page.get_by_test_id("wallet-dialog-title")).to_be_visible()
+    # TODO: accept wallet connection and assert wallet is connected.
+    expect(page.get_by_test_id("order-type-Limit")).to_be_checked()
+    expect(page.get_by_test_id("order-price")).to_have_value("101")
