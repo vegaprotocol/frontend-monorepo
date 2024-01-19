@@ -41,46 +41,57 @@ export function TransferRewards({ recurring }: TransferRewardsProps) {
     return null;
   }
 
+  // Destructure to make things a bit more readable
+  const {
+    assetForMetric,
+    entityScope,
+    individualScope,
+    teamScope,
+    distributionStrategy,
+    lockPeriod,
+    markets,
+    stakingRequirement,
+    windowLength,
+    notionalTimeWeightedAveragePositionRequirement,
+    rankTable,
+    nTopPerformers,
+  } = recurring.dispatchStrategy;
+
   return (
     <div className={wrapperClasses}>
-      <h2 className={headerClasses}>{t('Reward metrics')}</h2>
+      <h2 className={headerClasses}>{getRewardTitle(entityScope)}</h2>
       <ul className="relative block rounded-lg py-6 text-left p-6">
-        {recurring.dispatchStrategy.assetForMetric ? (
+        {assetForMetric ? (
           <li>
             <strong>{t('Asset')}</strong>:{' '}
-            <AssetLink assetId={recurring.dispatchStrategy.assetForMetric} />
+            <AssetLink assetId={assetForMetric} />
           </li>
         ) : null}
         <li>
           <strong>{t('Metric')}</strong>: {metricLabels[metric]}
         </li>
-        {recurring.dispatchStrategy.entityScope &&
-        entityScopeIcons[recurring.dispatchStrategy.entityScope] ? (
+        {entityScope && entityScopeIcons[entityScope] ? (
           <li>
             <strong>{t('Scope')}</strong>:{' '}
-            <VegaIcon
-              name={entityScopeIcons[recurring.dispatchStrategy.entityScope]}
-            />
+            <VegaIcon name={entityScopeIcons[entityScope]} />
+            {individualScope ? individualScopeLabels[individualScope] : null}
           </li>
         ) : null}
 
-        {recurring.dispatchStrategy.individualScope}
-        {recurring.dispatchStrategy.teamScope}
+        {teamScope}
+        {distributionStrategy}
 
-        {recurring.dispatchStrategy.lockPeriod &&
-        recurring.dispatchStrategy.lockPeriod !== '0' ? (
+        {lockPeriod && lockPeriod !== '0' ? (
           <li>
-            <strong>{t('Lock')}</strong>:{' '}
-            {recurring.dispatchStrategy.lockPeriod}
+            <strong>{t('Lock')}</strong>: {lockPeriod}
           </li>
         ) : null}
 
-        {recurring.dispatchStrategy.markets &&
-        recurring.dispatchStrategy.markets.length > 0 ? (
+        {markets && markets.length > 0 ? (
           <li>
             <strong>{t('Markets in scope')}</strong>:
             <ul>
-              {recurring.dispatchStrategy.markets.map((m) => (
+              {markets.map((m) => (
                 <li key={m}>
                   <MarketLink id={m} />
                 </li>
@@ -89,32 +100,52 @@ export function TransferRewards({ recurring }: TransferRewardsProps) {
           </li>
         ) : null}
 
-        {recurring.dispatchStrategy.stakingRequirement &&
-        recurring.dispatchStrategy.stakingRequirement !== '0' ? (
+        {stakingRequirement && stakingRequirement !== '0' ? (
           <li>
-            <strong>{t('Staking requirement')}</strong>:{' '}
-            {recurring.dispatchStrategy.stakingRequirement}
+            <strong>{t('Staking requirement')}</strong>: {stakingRequirement}
           </li>
         ) : null}
 
-        {recurring.dispatchStrategy.windowLength &&
-        recurring.dispatchStrategy.windowLength !== '0' ? (
+        {windowLength && windowLength !== '0' ? (
           <li>
             <strong>{t('Window length')}</strong>:{' '}
             {recurring.dispatchStrategy.windowLength}
           </li>
         ) : null}
 
-        {recurring.dispatchStrategy.rankTable &&
-        recurring.dispatchStrategy.rankTable.length > 0 ? (
+        {notionalTimeWeightedAveragePositionRequirement &&
+        notionalTimeWeightedAveragePositionRequirement !== '' ? (
           <li>
-            <strong>{t('Ranks')}</strong>:{' '}
-            {recurring.dispatchStrategy.rankTable.toString()}
+            <strong>
+              {t('notionalTimeWeightedAveragePositionRequirement')}
+            </strong>
+            : {notionalTimeWeightedAveragePositionRequirement}
+          </li>
+        ) : null}
+
+        {nTopPerformers && (
+          <li>
+            <strong>{t('Top performers')}</strong>: {nTopPerformers}
+          </li>
+        )}
+
+        {rankTable && rankTable.length > 0 ? (
+          <li>
+            <strong>{t('Ranks')}</strong>: {rankTable.toString()}
           </li>
         ) : null}
       </ul>
     </div>
   );
+}
+
+export function getRewardTitle(
+  scope?: components['schemas']['vegaEntityScope']
+) {
+  if (scope === 'ENTITY_SCOPE_TEAMS') {
+    return t('Game');
+  }
+  return t('Reward metrics');
 }
 
 interface TransferRecurringStrategyProps {
@@ -147,3 +178,14 @@ export function TransferRecurringStrategy({
     </>
   );
 }
+
+const individualScopeLabels: Record<
+  components['schemas']['vegaIndividualScope'],
+  string
+> = {
+  // Unspecified and All are not rendered
+  INDIVIDUAL_SCOPE_UNSPECIFIED: '',
+  INDIVIDUAL_SCOPE_ALL: '',
+  INDIVIDUAL_SCOPE_IN_TEAM: '(in team)',
+  INDIVIDUAL_SCOPE_NOT_IN_TEAM: '(not in team)',
+};
