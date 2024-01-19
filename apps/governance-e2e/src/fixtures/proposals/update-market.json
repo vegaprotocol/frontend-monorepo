@@ -1,5 +1,6 @@
 {
   "linearSlippageFactor": "0.001",
+  "quadraticSlippageFactor": "0.0",
   "instrument": {
     "code": "TEST.24h",
     "future": {

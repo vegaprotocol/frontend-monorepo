@@ -1729,6 +1729,8 @@ export interface components {
       readonly positionDecimalPlaces?: string;
       /** @description Price monitoring parameters. */
       readonly priceMonitoringParameters?: components['schemas']['vegaPriceMonitoringParameters'];
+      /** @description Quadratic slippage factor is used to cap the slippage component of maintenance margin - it is applied to the square of the slippage volume. */
+      readonly quadraticSlippageFactor?: string;
       /** @description Simple risk model parameters, valid only if MODEL_SIMPLE is selected. */
       readonly simple?: components['schemas']['vegaSimpleModelParams'];
       /** @description Successor configuration. If this proposal is meant to succeed a given market, then this should be set. */
@@ -2202,6 +2204,8 @@ export interface components {
       readonly metadata?: readonly string[];
       /** @description Price monitoring parameters. */
       readonly priceMonitoringParameters?: components['schemas']['vegaPriceMonitoringParameters'];
+      /** @description Quadratic slippage factor is used to cap the slippage component of maintenance margin - it is applied to the square of the slippage volume. */
+      readonly quadraticSlippageFactor?: string;
       /** @description Simple risk model parameters, valid only if MODEL_SIMPLE is selected. */
       readonly simple?: components['schemas']['vegaSimpleModelParams'];
     };

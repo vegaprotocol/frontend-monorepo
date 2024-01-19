@@ -130,7 +130,8 @@
         },
         "decimalPlaces": "1",
         "positionDecimalPlaces": "4",
-        "linearSlippageFactor": "0.001"
+        "linearSlippageFactor": "0.001",
+        "quadraticSlippageFactor": "0.0"
       }
     }
   }
