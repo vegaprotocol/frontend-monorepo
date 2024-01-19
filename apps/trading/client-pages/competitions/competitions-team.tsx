@@ -20,7 +20,7 @@ import { usePageTitle } from '../../lib/hooks/use-page-title';
 import { ErrorBoundary } from '../../components/error-boundary';
 import { LayoutWithGradient } from '../../components/layouts-inner';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { JoinTeam } from './join-team';
+import { JoinTeam } from './join-team-button';
 import { UpdateTeamButton } from './update-team-button';
 
 export const CompetitionsTeam = () => {

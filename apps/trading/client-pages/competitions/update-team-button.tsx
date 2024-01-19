@@ -9,6 +9,7 @@ export const UpdateTeamButton = ({ team }: { team: Team }) => {
   if (pubKey && !isReadOnly && pubKey === team.referrer) {
     return (
       <TradingAnchorButton
+        data-testid="update-team-button"
         href={Links.COMPETITIONS_UPDATE_TEAM(team.teamId)}
         intent={Intent.Info}
       />
