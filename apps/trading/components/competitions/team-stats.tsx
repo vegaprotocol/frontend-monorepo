@@ -1,3 +1,5 @@
+import { type ReactNode } from 'react';
+import BigNumber from 'bignumber.js';
 import countBy from 'lodash/countBy';
 import {
   Pill,
@@ -12,8 +14,6 @@ import {
   type TeamGame,
 } from '../../lib/hooks/use-team';
 import { useT } from '../../lib/use-t';
-import BigNumber from 'bignumber.js';
-import { ReactNode } from 'react';
 
 export const TeamStats = ({
   stats,

@@ -1,20 +1,17 @@
+import { useCallback, useLayoutEffect, useRef, useState } from 'react';
+import BigNumber from 'bignumber.js';
 import minBy from 'lodash/minBy';
-import { CodeTile, StatTile, Tile } from './tile';
+import sortBy from 'lodash/sortBy';
+import compact from 'lodash/compact';
+import { Trans } from 'react-i18next';
+import classNames from 'classnames';
 import {
   VegaIcon,
   VegaIconNames,
   truncateMiddle,
   TextChildrenTooltip as Tooltip,
 } from '@vegaprotocol/ui-toolkit';
-
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import {
-  DEFAULT_AGGREGATION_DAYS,
-  useReferral,
-  useUpdateReferees,
-} from './hooks/use-referral';
-import classNames from 'classnames';
-import { Table } from '../../components/table';
 import {
   addDecimalsFormatNumber,
   getDateFormat,
@@ -24,20 +21,22 @@ import {
   removePaginationWrapper,
 } from '@vegaprotocol/utils';
 import { useReferralSetStatsQuery } from './hooks/__generated__/ReferralSetStats';
-import compact from 'lodash/compact';
-import { useReferralProgram } from './hooks/use-referral-program';
 import { useStakeAvailable } from '../../lib/hooks/use-stake-available';
-import sortBy from 'lodash/sortBy';
-import { useCallback, useLayoutEffect, useRef, useState } from 'react';
-import { useCurrentEpochInfoQuery } from './hooks/__generated__/Epoch';
-import BigNumber from 'bignumber.js';
 import { useT, ns } from '../../lib/use-t';
-import { Trans } from 'react-i18next';
-import { ApplyCodeForm, ApplyCodeFormContainer } from './apply-code-form';
-import { QUSDTooltip } from './qusd-tooltip';
 import { useTeam } from '../../lib/hooks/use-team';
-import { TeamAvatar } from 'apps/trading/components/competitions/team-avatar';
-import { TeamStats } from 'apps/trading/components/competitions/team-stats';
+import { TeamAvatar } from '../../components/competitions/team-avatar';
+import { TeamStats } from '../../components/competitions/team-stats';
+import { Table } from '../../components/table';
+import {
+  DEFAULT_AGGREGATION_DAYS,
+  useReferral,
+  useUpdateReferees,
+} from './hooks/use-referral';
+import { ApplyCodeForm, ApplyCodeFormContainer } from './apply-code-form';
+import { useReferralProgram } from './hooks/use-referral-program';
+import { useCurrentEpochInfoQuery } from './hooks/__generated__/Epoch';
+import { QUSDTooltip } from './qusd-tooltip';
+import { CodeTile, StatTile, Tile } from './tile';
 
 export const ReferralStatistics = () => {
   const { pubKey } = useVegaWallet();
