@@ -12,7 +12,7 @@ import {
   type Status,
 } from '@vegaprotocol/wallet';
 import { useT } from '../../lib/use-t';
-import { type Team } from './hooks/use-team';
+import { type Team } from '../../lib/hooks/use-team';
 import { useState } from 'react';
 
 type JoinType = 'switch' | 'join';

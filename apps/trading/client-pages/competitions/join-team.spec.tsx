@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { JoinButton } from './join-team';
-import { type Team } from './hooks/use-team';
+import { type Team } from '../../lib/hooks/use-team';
 
 describe('JoinButton', () => {
   const teamA = {
