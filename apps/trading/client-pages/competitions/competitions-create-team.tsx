@@ -84,7 +84,7 @@ const CreateTeamFormContainer = ({ isSolo }: { isSolo: boolean }) => {
         {code && (
           <>
             <p className="text-sm">
-              Your team ID is:{' '}
+              {t('Your team ID is')}:{' '}
               <span className="font-mono break-all">{code}</span>
             </p>
             <TradingAnchorButton
