@@ -1,30 +1,21 @@
-import { useState, type ReactNode, type ButtonHTMLAttributes } from 'react';
+import { useState, type ButtonHTMLAttributes } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import orderBy from 'lodash/orderBy';
-import countBy from 'lodash/countBy';
-import {
-  Pill,
-  VegaIcon,
-  VegaIconNames,
-  Tooltip,
-  Splash,
-  truncateMiddle,
-  Loader,
-} from '@vegaprotocol/ui-toolkit';
+import { Splash, truncateMiddle, Loader } from '@vegaprotocol/ui-toolkit';
 import classNames from 'classnames';
 import { useT } from '../../lib/use-t';
 import { Table } from '../../components/table';
-import { formatNumberRounded, getDateTimeFormat } from '@vegaprotocol/utils';
+import { getDateTimeFormat } from '@vegaprotocol/utils';
 import {
   useTeam,
+  type TeamStats as ITeamStats,
   type Team as TeamType,
-  type TeamStats,
   type Member,
   type TeamGame,
-} from './hooks/use-team';
+} from '../../lib/hooks/use-team';
 import { DApp, EXPLORER_PARTIES, useLinks } from '@vegaprotocol/environment';
-import BigNumber from 'bignumber.js';
 import { TeamAvatar } from '../../components/competitions/team-avatar';
+import { TeamStats } from '../../components/competitions/team-stats';
 import { usePageTitle } from '../../lib/hooks/use-page-title';
 import { ErrorBoundary } from '../../components/error-boundary';
 import { LayoutWithGradient } from '../../components/layouts-inner';
@@ -88,7 +79,7 @@ const TeamPage = ({
 }: {
   team: TeamType;
   partyTeam?: TeamType;
-  stats?: TeamStats;
+  stats?: ITeamStats;
   members?: Member[];
   games?: TeamGame[];
   refetch: () => void;
@@ -105,47 +96,7 @@ const TeamPage = ({
           <JoinTeam team={team} partyTeam={partyTeam} refetch={refetch} />
         </div>
       </header>
-      <StatSection>
-        <StatList>
-          <Stat value={members ? members.length : 0} label={t('Members')} />
-          <Stat
-            value={stats ? stats.totalGamesPlayed : 0}
-            label={t('Total games')}
-            tooltip={t('Total number of games this team has participated in')}
-          />
-          <StatSectionSeparator />
-          <Stat
-            value={
-              stats
-                ? formatNumberRounded(
-                    new BigNumber(stats.totalQuantumVolume),
-                    '1e3'
-                  )
-                : 0
-            }
-            label={t('Total volume')}
-          />
-          <Stat
-            value={
-              stats
-                ? formatNumberRounded(
-                    new BigNumber(stats.totalQuantumRewards),
-                    '1e3'
-                  )
-                : 0
-            }
-            label={t('Rewards paid')}
-            tooltip={'Total amount of rewards paid out to this team in qUSD'}
-          />
-        </StatList>
-      </StatSection>
-      {games && games.length ? (
-        <StatSection>
-          <FavoriteGame games={games} />
-          <StatSectionSeparator />
-          <LatestResults games={games} />
-        </StatSection>
-      ) : null}
+      <TeamStats stats={stats} members={members} games={games} />
       <section>
         <div className="flex gap-4 lg:gap-8 mb-4 border-b border-default">
           <ToggleButton active={showGames} onClick={() => setShowGames(true)}>
@@ -262,62 +213,6 @@ const RefereeLink = ({ pubkey }: { pubkey: string }) => {
   );
 };
 
-const LatestResults = ({ games }: { games: TeamGame[] }) => {
-  const t = useT();
-  const latestGames = games.slice(0, 5);
-
-  return (
-    <dl>
-      <dt className="text-muted text-sm">
-        {t('Last {{count}} game results', { count: latestGames.length })}
-      </dt>
-      <dd className="flex gap-1">
-        {latestGames.map((game) => {
-          return (
-            <Pill key={game.id} className="text-sm">
-              {t('place', { count: game.team.rank, ordinal: true })}
-            </Pill>
-          );
-        })}
-      </dd>
-    </dl>
-  );
-};
-
-const FavoriteGame = ({ games }: { games: TeamGame[] }) => {
-  const t = useT();
-
-  const rewardMetrics = games.map((game) => game.team.rewardMetric);
-  const count = countBy(rewardMetrics);
-
-  let favoriteMetric = '';
-  let mostOccurances = 0;
-
-  for (const key in count) {
-    if (count[key] > mostOccurances) {
-      favoriteMetric = key;
-      mostOccurances = count[key];
-    }
-  }
-
-  if (!favoriteMetric) return null;
-
-  return (
-    <dl>
-      <dt className="text-muted text-sm">{t('Favorite game')}</dt>
-      <dd>
-        <Pill className="flex-inline items-center gap-2 bg-transparent text-sm">
-          <VegaIcon
-            name={VegaIconNames.STAR}
-            className="text-vega-yellow-400"
-          />{' '}
-          {favoriteMetric}
-        </Pill>
-      </dd>
-    </dl>
-  );
-};
-
 const ToggleButton = ({
   active,
   ...props
@@ -330,53 +225,5 @@ const ToggleButton = ({
         'border-vega-yellow': active,
       })}
     />
-  );
-};
-
-const StatSection = ({ children }: { children: ReactNode }) => {
-  return (
-    <section className="flex flex-col lg:flex-row gap-2 lg:gap-8">
-      {children}
-    </section>
-  );
-};
-
-const StatSectionSeparator = () => {
-  return <div className="hidden md:block border-r border-default" />;
-};
-
-const StatList = ({ children }: { children: ReactNode }) => {
-  return (
-    <dl className="grid grid-cols-[min-content_min-content] md:flex gap-4 md:gap-6 lg:gap-8 whitespace-nowrap">
-      {children}
-    </dl>
-  );
-};
-
-const Stat = ({
-  value,
-  label,
-  tooltip,
-}: {
-  value: ReactNode;
-  label: ReactNode;
-  tooltip?: string;
-}) => {
-  return (
-    <div>
-      <dd className="text-3xl lg:text-4xl">{value}</dd>
-      <dt className="text-sm text-muted">
-        {tooltip ? (
-          <Tooltip description={tooltip} underline={false}>
-            <span className="flex items-center gap-2">
-              {label}
-              <VegaIcon name={VegaIconNames.INFO} size={12} />
-            </span>
-          </Tooltip>
-        ) : (
-          label
-        )}
-      </dt>
-    </div>
   );
 };

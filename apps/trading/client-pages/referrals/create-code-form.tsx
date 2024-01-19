@@ -7,6 +7,7 @@ import {
   ExternalLink,
   InputError,
   Intent,
+  Tooltip,
   TradingAnchorButton,
   TradingButton,
   VegaIcon,
@@ -17,30 +18,24 @@ import { DApp, TokenStaticLinks, useLinks } from '@vegaprotocol/environment';
 import { ABOUT_REFERRAL_DOCS_LINK } from './constants';
 import { useIsInReferralSet, useReferral } from './hooks/use-referral';
 import { useT } from '../../lib/use-t';
-import { Navigate } from 'react-router-dom';
-import { Routes } from '../../lib/links';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { Links, Routes } from '../../lib/links';
 import { useReferralProgram } from './hooks/use-referral-program';
 import { useCreateReferralSet } from '../../lib/hooks/use-create-referral-set';
+import { Trans } from 'react-i18next';
 
 export const CreateCodeContainer = () => {
-  const { pubKey } = useVegaWallet();
+  const t = useT();
+  const { pubKey, isReadOnly } = useVegaWallet();
   const isInReferralSet = useIsInReferralSet(pubKey);
+  const openWalletDialog = useVegaWalletDialogStore(
+    (store) => store.openVegaWalletDialog
+  );
 
   // Navigate to the index page when already in the referral set.
   if (isInReferralSet) {
     return <Navigate to={Routes.REFERRALS} />;
   }
-
-  return <CreateCodeForm />;
-};
-
-export const CreateCodeForm = () => {
-  const t = useT();
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const openWalletDialog = useVegaWalletDialogStore(
-    (store) => store.openVegaWalletDialog
-  );
-  const { pubKey, isReadOnly } = useVegaWallet();
 
   return (
     <div
@@ -56,22 +51,82 @@ export const CreateCodeForm = () => {
         )}
       </p>
 
-      <div className="w-full flex flex-col">
-        <RainbowButton
-          variant="border"
-          disabled={isReadOnly}
-          onClick={() => {
-            if (pubKey) {
-              setDialogOpen(true);
-            } else {
-              openWalletDialog();
-            }
-          }}
-        >
-          {pubKey ? t('Create a referral code') : t('Connect wallet')}
-        </RainbowButton>
+      <div className="w-full flex flex-col gap-4 items-stretch">
+        {pubKey ? (
+          <CreateCodeForm />
+        ) : (
+          <RainbowButton
+            variant="border"
+            disabled={isReadOnly}
+            onClick={openWalletDialog}
+          >
+            {t('Connect wallet')}
+          </RainbowButton>
+        )}
       </div>
+    </div>
+  );
+};
 
+export const CreateCodeForm = () => {
+  const t = useT();
+  const navigate = useNavigate();
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const { isReadOnly } = useVegaWallet();
+
+  return (
+    <>
+      <Tooltip
+        description={t(
+          'Create a simple referral code to enjoy the referrer commission outlined in the current referral program'
+        )}
+      >
+        <span>
+          <RainbowButton
+            variant="border"
+            disabled={isReadOnly}
+            onClick={() => setDialogOpen(true)}
+            className="w-full"
+          >
+            {t('Create a referral code')}
+          </RainbowButton>
+        </span>
+      </Tooltip>
+      <Tooltip
+        description={
+          <Trans
+            i18nKey={
+              'Make your referral code a Team to compete in Competitions with your friends, appear in leaderboards on the <0>Competitions Homepage</0>, and earn rewards'
+            }
+            components={[
+              <Link
+                key="homepage-link"
+                to={Links.COMPETITIONS()}
+                className="underline"
+              >
+                Compeitionts Homepage
+              </Link>,
+            ]}
+          />
+        }
+      >
+        <span>
+          <RainbowButton
+            role="link"
+            variant="border"
+            disabled={isReadOnly}
+            onClick={() => navigate(Links.COMPETITIONS_CREATE_TEAM())}
+            className="w-full"
+          >
+            {t('Create a team')}
+          </RainbowButton>
+        </span>
+      </Tooltip>
+      <p className="text-xs">
+        <Link className="underline" to={Links.COMPETITIONS()}>
+          {t('Go to competitions')}
+        </Link>
+      </p>
       <Dialog
         title={t('Create a referral code')}
         open={dialogOpen}
@@ -80,7 +135,7 @@ export const CreateCodeForm = () => {
       >
         <CreateCodeDialog setDialogOpen={setDialogOpen} />
       </Dialog>
-    </div>
+    </>
   );
 };
 
