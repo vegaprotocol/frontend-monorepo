@@ -15,8 +15,11 @@ export const LeverageSlider = (
       className="relative flex items-center select-none touch-none h-10 pb-5 w-full"
     >
       <SliderPrimitive.Track className=" relative grow h-[4px]">
-        <span className="bg-vega-clight-500 dark:bg-vega-cdark-500 absolute left-2 right-2 top-0 bottom-0"></span>
-        <span className="block absolute top-[-2px] left-[8px] right-[8px]">
+        <span className="bg-vega-clight-700 dark:bg-vega-cdark-700 absolute left-2 right-2 top-0 bottom-0"></span>
+        <SliderPrimitive.Range className="absolute h-full">
+          <span className="absolute left-2 right-0 h-full bg-vega-clight-100 dark:bg-vega-cdark-100"></span>
+        </SliderPrimitive.Range>
+        <span className="block absolute top-[-3px] left-[8px] right-[8px]">
           {step &&
             new Array(Math.floor(props.max / step) + 1)
               .fill(null)
@@ -34,25 +37,24 @@ export const LeverageSlider = (
                   >
                     <span
                       className={classNames(
-                        'block w-[8px] h-[8px] border-[4px] rotate-45',
+                        'block w-[10px] h-[10px] rounded-full',
                         {
-                          'border-black dark:border-white bg-white dark:bg-white':
-                            !higherThanValue,
-                          'border-vega-clight-500 dark:border-vega-cdark-500 bg-vega-clight-500 dark:bg-vega-cdark-500':
+                          'bg-vega-clight-500 dark:bg-vega-cdark-500':
                             higherThanValue,
+                          'bg-vega-clight-50 dark:bg-vega-cdark-50':
+                            !higherThanValue,
                         }
                       )}
                     ></span>
-                    <span className="text-sm mt-1">{labelValue}x</span>
+                    <span className="text-xs font-alpha mt-1 text-vega-clight-100 dark:text-vega-cdark-100 ">
+                      {labelValue}x
+                    </span>
                   </span>
                 );
               })}
         </span>
-        <SliderPrimitive.Range className="absolute h-full">
-          <span className="absolute left-2 right-0 h-full bg-black dark:bg-white"></span>
-        </SliderPrimitive.Range>
       </SliderPrimitive.Track>
-      <SliderPrimitive.Thumb className="block w-[16px] h-[16px] border-[3px] border-black dark:border-white bg-white dark:bg-black rotate-45 focus-visible:outline-0" />
+      <SliderPrimitive.Thumb className="block w-[18px] h-[18px] border-[2px] rounded-full border-white dark:border-vega-cdark-900 bg-vega-clight-50 dark:bg-vega-cdark-50 focus-visible:outline-0" />
     </SliderPrimitive.Root>
   );
 };
