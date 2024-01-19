@@ -205,6 +205,11 @@ describe('VegaConnectDialog', () => {
     });
 
     it('handles user rejection', async () => {
+      // 0002-WCON-002
+      // 0002-WCON-005
+      // 0002-WCON-007
+      // 0002-WCON-015
+      // 0003-WTXN-007
       spyOnConnectWallet
         .mockClear()
         .mockImplementation(() =>
@@ -238,6 +243,10 @@ describe('VegaConnectDialog', () => {
     });
 
     it('handles an unknown error', async () => {
+      // 0003-WTXN-009
+      // 0003-WTXN-011
+      // 0002-WCON-016
+      // 0003-WTXN-008
       spyOnCheckCompat.mockClear().mockImplementation(() => {
         throw new Error('unknown error');
       });

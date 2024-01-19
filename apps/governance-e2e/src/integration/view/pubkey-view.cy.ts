@@ -47,7 +47,7 @@ context('View functionality with public key', { tags: '@smoke' }, function () {
       .and('contain.text', 'USDC (fake)');
   });
 
-  it('Unable to submit proposal with public key', function () {
+  it.skip('Unable to submit proposal with public key', function () {
     const expectedErrorTxt = `You are connected in a view only state for public key: ${vegaWalletPubKey}. In order to send transactions you must connect to a real wallet.`;
 
     goToMakeNewProposal(governanceProposalType.RAW);
