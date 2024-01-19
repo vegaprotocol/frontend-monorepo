@@ -142,7 +142,7 @@ const StatSectionSeparator = () => {
 
 const StatList = ({ children }: { children: ReactNode }) => {
   return (
-    <dl className="grid grid-cols-[min-content_min-content] md:flex gap-4 md:gap-6 lg:gap-8 whitespace-nowrap">
+    <dl className="grid grid-cols-2 md:flex gap-4 md:gap-6 lg:gap-8 whitespace-nowrap">
       {children}
     </dl>
   );

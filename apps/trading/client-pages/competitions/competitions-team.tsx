@@ -207,7 +207,7 @@ const RefereeLink = ({ pubkey }: { pubkey: string }) => {
   const link = linkCreator(EXPLORER_PARTIES.replace(':id', pubkey));
 
   return (
-    <Link to={link} className="underline underline-offset-4">
+    <Link to={link} target="_blank" className="underline underline-offset-4">
       {t('View on explorer')}
     </Link>
   );
