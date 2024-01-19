@@ -14,6 +14,7 @@ import {
   type TeamGame,
 } from '../../lib/hooks/use-team';
 import { useT } from '../../lib/use-t';
+import { DispatchMetricLabels, type DispatchMetric } from '@vegaprotocol/types';
 
 export const TeamStats = ({
   stats,
@@ -97,7 +98,9 @@ const LatestResults = ({ games }: { games: TeamGame[] }) => {
 const FavoriteGame = ({ games }: { games: TeamGame[] }) => {
   const t = useT();
 
-  const rewardMetrics = games.map((game) => game.team.rewardMetric);
+  const rewardMetrics = games.map(
+    (game) => game.team.rewardMetric as DispatchMetric
+  );
   const count = countBy(rewardMetrics);
 
   let favoriteMetric = '';
@@ -112,6 +115,10 @@ const FavoriteGame = ({ games }: { games: TeamGame[] }) => {
 
   if (!favoriteMetric) return null;
 
+  // rewardMetric is a string, should be typed as DispatchMetric
+  const favoriteMetricLabel =
+    DispatchMetricLabels[favoriteMetric as DispatchMetric];
+
   return (
     <dl>
       <dt className="text-muted text-sm">{t('Favorite game')}</dt>
@@ -121,7 +128,7 @@ const FavoriteGame = ({ games }: { games: TeamGame[] }) => {
             name={VegaIconNames.STAR}
             className="text-vega-yellow-400"
           />{' '}
-          {favoriteMetric}
+          {favoriteMetricLabel}
         </Pill>
       </dd>
     </dl>
