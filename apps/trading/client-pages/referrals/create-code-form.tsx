@@ -21,8 +21,8 @@ import { useT } from '../../lib/use-t';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { Links, Routes } from '../../lib/links';
 import { useReferralProgram } from './hooks/use-referral-program';
-import { useCreateReferralSet } from '../../lib/hooks/use-create-referral-set';
 import { Trans } from 'react-i18next';
+import { useReferralSetTransaction } from '../../lib/hooks/use-referral-set-transaction';
 
 export const CreateCodeContainer = () => {
   const t = useT();
@@ -155,7 +155,7 @@ const CreateCodeDialog = ({
     stakeAvailable: currentStakeAvailable,
     requiredStake,
     onSubmit,
-  } = useCreateReferralSet();
+  } = useReferralSetTransaction();
 
   const { details: programDetails } = useReferralProgram();
 
