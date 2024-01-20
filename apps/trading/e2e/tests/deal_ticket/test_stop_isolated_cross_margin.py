@@ -24,6 +24,8 @@ def test_isolated_margin(
     page.goto(f"/#/markets/{continuous_market}")
     expect(page.locator(margin_row).nth(1)
            ).to_have_text("874.21992Cross1.0x")
+    # tbd - tooltip is not visible without this wait
+    page.wait_for_timeout(1000)
     page.get_by_test_id(tab_positions).get_by_text("Cross").hover()
     expect(page.get_by_test_id(tooltip_content).nth(0)).to_have_text(
         "Liquidation: 582.81328Margin: 874.21992General account: 998,084.95183"
@@ -38,6 +40,8 @@ def test_isolated_margin(
         "ConfirmedYour transaction has been confirmedView in block explorerUpdate margin modeBTC:DAI_2023Isolated margin mode, leverage: 1.0x")
     expect(page.locator(margin_row).nth(1)
            ).to_have_text("11,109.99996Isolated1.0x")
+    # tbd - tooltip is not visible without this wait
+    page.wait_for_timeout(1000)
     page.get_by_test_id(tab_positions).get_by_text("Isolated").hover()
     expect(page.get_by_test_id(tooltip_content).nth(0)).to_have_text(
         "Liquidation: 583.62409Margin: 11,109.99996Order: 11,000.00"
