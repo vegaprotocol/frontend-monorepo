@@ -55,7 +55,10 @@ context('View functionality with public key', { tags: '@smoke' }, function () {
     cy.getByTestId('dialog-content')
       .first()
       .within(() => {
-        cy.get('h1').should('have.text', 'Transaction failed');
+        cy.getByTestId('[data-testid="dialog-title"]').should(
+          'have.text',
+          'Transaction failed'
+        );
         cy.getByTestId('Error').should('have.text', expectedErrorTxt);
       });
   });
