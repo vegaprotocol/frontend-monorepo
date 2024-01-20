@@ -130,6 +130,8 @@ interface ProposalNewMarketTerms {
       decimalPlaces: string;
       positionDecimalPlaces: string;
       linearSlippageFactor: string;
+      // FIXME: workaround because of https://github.com/vegaprotocol/vega/issues/10343
+      quadraticSlippageFactor: string;
       instrument: {
         name: string;
         code: string;
@@ -166,6 +168,8 @@ interface ProposalUpdateMarketTerms {
     marketId: string;
     changes: {
       linearSlippageFactor: string;
+      // FIXME: workaround because of https://github.com/vegaprotocol/vega/issues/10343
+      quadraticSlippageFactor: string;
       instrument: {
         code: string;
         future: {
