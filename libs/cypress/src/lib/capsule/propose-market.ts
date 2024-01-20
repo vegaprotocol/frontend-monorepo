@@ -35,6 +35,7 @@ function createNewMarketProposal(): ProposalSubmissionBody {
             decimalPlaces: '5',
             positionDecimalPlaces: '5',
             linearSlippageFactor: '0.001',
+            quadraticSlippageFactor: '0',
             instrument: {
               name: 'Test market 1',
               code: 'TEST.24h',
