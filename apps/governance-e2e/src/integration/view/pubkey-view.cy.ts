@@ -55,7 +55,7 @@ context('View functionality with public key', { tags: '@smoke' }, function () {
     cy.getByTestId('dialog-content')
       .first()
       .within(() => {
-        cy.getByTestId('[data-testid="dialog-title"]').should(
+        cy.getByTestId('dialog-title').should(
           'have.text',
           'Transaction failed'
         );
