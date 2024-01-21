@@ -18,12 +18,11 @@ def create_position(vega: VegaServiceNull, market_id):
 
 
 @pytest.mark.usefixtures("auth", "risk_accepted")
-def test_isolated_margin(
+def test_switch_cross_isolated_margin(
         continuous_market, vega: VegaServiceNull, page: Page):
     create_position(vega, continuous_market)
     page.goto(f"/#/markets/{continuous_market}")
-    expect(page.locator(margin_row).nth(1)
-           ).to_have_text("874.21992Cross1.0x")
+    expect(page.locator(margin_row).nth(1)).to_have_text("874.21992Cross1.0x")
     # tbd - tooltip is not visible without this wait
     page.wait_for_timeout(1000)
     page.get_by_test_id(tab_positions).get_by_text("Cross").hover()
@@ -46,3 +45,9 @@ def test_isolated_margin(
     expect(page.get_by_test_id(tooltip_content).nth(0)).to_have_text(
         "Liquidation: 583.62409Margin: 11,109.99996Order: 11,000.00"
     )
+    page.get_by_role("button", name="Cross").click()
+    page.get_by_role("button", name="Confirm").click()
+    wait_for_toast_confirmation(page)
+    next_epoch(vega=vega)
+    expect(page.locator(margin_row).nth(1)).to_have_text(
+        "22,109.99996Cross1.0x")
