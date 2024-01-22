@@ -22,6 +22,7 @@ const defaultColDef = {
   resizable: true,
   sortable: true,
   minWidth: 100,
+  flex: 1,
 };
 
 interface BreakdownTableProps extends AgGridReactProps {
