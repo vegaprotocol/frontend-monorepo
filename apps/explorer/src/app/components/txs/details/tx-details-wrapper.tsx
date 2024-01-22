@@ -28,6 +28,10 @@ import { TxProposal } from './tx-proposal';
 import { TxDetailsTransfer } from './tx-transfer';
 import { TxDetailsStopOrderSubmission } from './tx-stop-order-submission';
 import { TxDetailsLiquiditySubmission } from './tx-liquidity-submission';
+import { TxDetailsCreateReferralSet } from './tx-create-referral-set';
+import { TxDetailsApplyReferralCode } from './tx-apply-referral-code';
+import { TxDetailsUpdateReferralSet } from './tx-update-referral-set';
+import { TxDetailsJoinTeam } from './tx-join-team';
 
 interface TxDetailsWrapperProps {
   txData: BlockExplorerTransactionResult | undefined;
@@ -121,6 +125,14 @@ function getTransactionComponent(txData?: BlockExplorerTransactionResult) {
       return TxDetailsStopOrderSubmission;
     case 'Transfer Funds':
       return TxDetailsTransfer;
+    case 'Create Referral Set':
+      return TxDetailsCreateReferralSet;
+    case 'Update Referral Set':
+      return TxDetailsUpdateReferralSet;
+    case 'Apply Referral Code':
+      return TxDetailsApplyReferralCode;
+    case 'Join Team':
+      return TxDetailsJoinTeam;
     default:
       return TxDetailsGeneric;
   }
