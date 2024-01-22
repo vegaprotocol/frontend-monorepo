@@ -178,6 +178,11 @@ export const MarginModeSelector = ({ marketId }: { marketId: string }) => {
     },
     skip: !partyId,
   });
+  useEffect(() => {
+    if (!partyId) {
+      setDialog('');
+    }
+  }, [partyId]);
   const create = useVegaTransactionStore((state) => state.create);
   const marginMode = margin?.marginMode;
   const marginFactor =
@@ -193,7 +198,7 @@ export const MarginModeSelector = ({ marketId }: { marketId: string }) => {
       <div className="mb-4 grid h-8 leading-8 font-alpha text-xs grid-cols-2">
         <button
           disabled={disabled}
-          onClick={() => setDialog('cross')}
+          onClick={() => partyId && setDialog('cross')}
           className={classnames('rounded', {
             [enabledModeClassName]:
               !marginMode ||
