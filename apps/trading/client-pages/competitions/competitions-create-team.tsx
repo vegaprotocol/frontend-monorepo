@@ -296,7 +296,11 @@ const CreateTeamForm = ({
           )}
         </TradingFormGroup>
       )}
-      {err && <p className="text-danger text-xs mb-4 capitalize">{err}</p>}
+      {err && (
+        <p className="text-danger text-xs mb-4 first-letter:capitalize">
+          {err}
+        </p>
+      )}
       <SubmitButton status={status} />
     </form>
   );
