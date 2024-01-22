@@ -40,7 +40,8 @@ export const SliderTrack = ({
   className,
   ...props
 }: SliderTrackProps) => {
-  const defaultStyles = 'bg-black dark:bg-white relative grow h-[3px]';
+  const defaultStyles =
+    'bg-vega-clight-700 dark:bg-vega-cdark-700 relative grow h-[4px]';
   return (
     <SliderPrimitive.Track
       className={classNames(defaultStyles, className)}
@@ -52,7 +53,8 @@ export const SliderTrack = ({
 };
 
 export const SliderRange = ({ className, ...props }: SliderRangeProps) => {
-  const defaultStyles = 'absolute bg-blue h-full';
+  const defaultStyles =
+    'absolute bg-vega-clight-100 dark:bg-vega-cdark-100 h-full';
   return (
     <SliderPrimitive.Range
       className={classNames(defaultStyles, className)}
@@ -63,7 +65,7 @@ export const SliderRange = ({ className, ...props }: SliderRangeProps) => {
 
 export const SliderThumb = ({ className, ...props }: SliderThumbProps) => {
   const defaultStyles =
-    'block w-[20px] h-[20px] border-2 border-black dark:border-white bg-white dark:bg-black rounded-full';
+    'block w-[18px] h-[18px] border-[2px] rounded-full border-white dark:border-vega-cdark-900 bg-vega-clight-50 dark:bg-vega-cdark-50 focus-visible:outline-0';
   return (
     <SliderPrimitive.Thumb
       className={classNames(defaultStyles, className)}

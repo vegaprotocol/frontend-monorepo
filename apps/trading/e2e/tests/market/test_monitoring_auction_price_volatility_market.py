@@ -4,9 +4,14 @@ from vega_sim.null_service import VegaServiceNull
 from actions.vega import submit_order
 from fixtures.market import setup_simple_market
 from conftest import init_vega
-from actions.utils import wait_for_toast_confirmation
+from actions.utils import wait_for_toast_confirmation, change_keys
 from wallet_config import MM_WALLET, MM_WALLET2
 
+market_trading_mode = "market-trading-mode"
+market_state = "market-state"
+item_value = "item-value"
+
+COL_ID_FEE = ".ag-center-cols-container [col-id='fee'] .ag-cell-value"
 
 @pytest.fixture(scope="module")
 def vega(request):
@@ -133,3 +138,29 @@ def test_market_monitoring_auction_price_volatility_market_order(
         "This market is in auction due to high price volatility. Only limit orders are permitted when market is in auction."
     )
     expect(page.get_by_test_id("deal-ticket-error-message-type")).to_be_visible()
+
+@pytest.mark.usefixtures("risk_accepted", "auth", "setup_market_monitoring_auction")
+def test_market_price_volatility(
+    page: Page, simple_market, vega: VegaServiceNull
+):
+    page.goto(f"/#/markets/{simple_market}")
+    expect(
+        page.get_by_test_id(market_trading_mode).get_by_test_id(item_value)
+    ).to_have_text("Monitoring auction - price")
+    expect(page.get_by_test_id(market_state).get_by_test_id(item_value)).to_have_text(
+        "Suspended"
+    )
+
+@pytest.mark.usefixtures("risk_accepted", "auth", "setup_market_monitoring_auction")
+def test_auction_uncross_fees(simple_market, vega: VegaServiceNull, page: Page):
+    page.goto(f"/#/markets/{simple_market}")
+    change_keys(page, vega, "market_maker")
+    page.get_by_test_id("Fills").click()
+    row = page.locator('[row-index="3"]').nth(1)
+    expect(row.locator('[col-id="fee"]')).to_have_text("0.00 tDAI")
+    # tbd - tooltip is not visible without this wait
+    page.wait_for_timeout(1000)
+    row.locator('[col-id="fee"]').hover()
+    expect(page.get_by_test_id("fee-breakdown-tooltip")).to_have_text(
+        "If the market was suspendedDuring auction, half the infrastructure and liquidity fees will be paid.Infrastructure fee0.00 tDAILiquidity fee0.00 tDAIMaker fee0.00 tDAITotal fees0.00 tDAI"
+    )

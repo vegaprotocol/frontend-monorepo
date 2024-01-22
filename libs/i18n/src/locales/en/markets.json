@@ -30,6 +30,7 @@
   "How often the quality of liquidity supplied by each liquidity provider is evaluated and the fees arising from that period are earmarked for specific providers. This is a market parameter. ": "How often the quality of liquidity supplied by each liquidity provider is evaluated and the fees arising from that period are earmarked for specific providers. This is a market parameter. ",
   "Instrument": "Instrument",
   "Insurance pool": "Insurance pool",
+  "Insurance Pool Balance": "Insurance Pool Balance",
   "Internal conditions": "Internal conditions",
   "Invalid data source": "Invalid data source",
   "involvedInMarkets_one": "Involved in {{count}} market",
