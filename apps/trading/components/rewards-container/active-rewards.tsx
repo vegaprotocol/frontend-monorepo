@@ -85,21 +85,6 @@ export const applyFilter = (
   }
 
   if (
-    node.markets?.some(
-      (m) =>
-        m?.state &&
-        [
-          MarketState.STATE_TRADING_TERMINATED,
-          MarketState.STATE_SETTLED,
-          MarketState.STATE_CANCELLED,
-          MarketState.STATE_CLOSED,
-        ].includes(m?.state)
-    )
-  ) {
-    return false;
-  }
-
-  if (
     DispatchMetricLabels[transfer.kind.dispatchStrategy.dispatchMetric]
       .toLowerCase()
       .includes(filter.searchTerm.toLowerCase()) ||
@@ -312,12 +297,46 @@ export const ActiveRewardCard = ({
     return null;
   }
 
+  // Gray out/hide the cards that are related to not trading markets
+  const marketSettled = transferNode.markets?.some(
+    (m) =>
+      m?.state &&
+      [
+        MarketState.STATE_TRADING_TERMINATED,
+        MarketState.STATE_SETTLED,
+        MarketState.STATE_CANCELLED,
+        MarketState.STATE_CLOSED,
+      ].includes(m.state)
+  );
+
+  const assetInSettledMarket =
+    allMarkets &&
+    Object.values(allMarkets).some((m: MarketFieldsFragment | null) => {
+      if (m && getAsset(m).id === dispatchStrategy.dispatchMetricAssetId) {
+        return (
+          m?.state &&
+          [
+            MarketState.STATE_TRADING_TERMINATED,
+            MarketState.STATE_SETTLED,
+            MarketState.STATE_CANCELLED,
+            MarketState.STATE_CLOSED,
+          ].includes(m.state)
+        );
+      }
+      return false;
+    });
+
+  if (marketSettled) {
+    return null;
+  }
+
   // Gray out the cards that are related to suspended markets
   const suspended = transferNode.markets?.some(
     (m) =>
       m?.state === MarketState.STATE_SUSPENDED ||
       m?.state === MarketState.STATE_SUSPENDED_VIA_GOVERNANCE
   );
+
   const assetInSuspendedMarket =
     allMarkets &&
     Object.values(allMarkets).some((m: MarketFieldsFragment | null) => {
@@ -329,8 +348,10 @@ export const ActiveRewardCard = ({
       }
       return false;
     });
+
+  // Gray out the cards that are related to suspended markets
   const { gradientClassName, mainClassName } =
-    suspended || assetInSuspendedMarket
+    suspended || assetInSuspendedMarket || assetInSettledMarket
       ? {
           gradientClassName: 'from-vega-cdark-500 to-vega-clight-400',
           mainClassName: 'from-vega-cdark-400 dark:from-vega-cdark-600 to-20%',
