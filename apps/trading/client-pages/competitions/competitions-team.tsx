@@ -163,10 +163,9 @@ const Members = ({ members }: { members?: Member[] }) => {
 
   const data = orderBy(
     members.map((m) => ({
-      referee: <RefereeCell pubkey={m.referee} />,
+      referee: <RefereeLink pubkey={m.referee} />,
       joinedAt: getDateTimeFormat().format(new Date(m.joinedAt)),
       joinedAtEpoch: Number(m.joinedAtEpoch),
-      explorerLink: <RefereeLink pubkey={m.referee} />,
     })),
     'joinedAtEpoch',
     'desc'
@@ -184,12 +183,6 @@ const Members = ({ members }: { members?: Member[] }) => {
           name: 'joinedAtEpoch',
           displayName: t('Joined epoch'),
         },
-        {
-          name: 'explorerLink',
-          displayName: <span className="invisible">Actions</span>, // ensure header doesn't collapse
-          headerClassName: 'hidden md:block',
-          className: 'hidden md:block text-right',
-        },
       ]}
       data={data}
       noCollapse={true}
@@ -197,19 +190,13 @@ const Members = ({ members }: { members?: Member[] }) => {
   );
 };
 
-const RefereeCell = ({ pubkey }: { pubkey: string }) => {
-  return <span title={pubkey}>{truncateMiddle(pubkey)}</span>;
-};
-
 const RefereeLink = ({ pubkey }: { pubkey: string }) => {
-  const t = useT();
-
   const linkCreator = useLinks(DApp.Explorer);
   const link = linkCreator(EXPLORER_PARTIES.replace(':id', pubkey));
 
   return (
     <Link to={link} target="_blank" className="underline underline-offset-4">
-      {t('View on explorer')}
+      {truncateMiddle(pubkey)}
     </Link>
   );
 };
