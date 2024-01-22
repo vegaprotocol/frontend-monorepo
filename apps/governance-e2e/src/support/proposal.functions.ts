@@ -112,6 +112,7 @@ export function createNewMarketProposalTxBody(): ProposalSubmissionBody {
               performanceHysteresisEpochs: 2,
               slaCompetitionFactor: '0.1',
             },
+            // FIXME: workaround because of https://github.com/vegaprotocol/vega/issues/10343
             quadraticSlippageFactor: '0',
             instrument: {
               name: 'Token test market',
@@ -241,6 +242,7 @@ export function createSuccessorMarketProposalTxBody(
             decimalPlaces: '5',
             positionDecimalPlaces: '5',
             linearSlippageFactor: '0.001',
+            // FIXME: workaround because of https://github.com/vegaprotocol/vega/issues/10343
             quadraticSlippageFactor: '0',
             liquiditySlaParameters: {
               priceRange: '0.5',
