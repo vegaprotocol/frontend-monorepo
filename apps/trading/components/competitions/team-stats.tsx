@@ -80,7 +80,7 @@ const LatestResults = ({ games }: { games: TeamGame[] }) => {
   return (
     <dl className="flex flex-col gap-1">
       <dt className="text-muted text-sm">
-        {t('Last {{count}} game results', { count: latestGames.length })}
+        {t('gameCount', { count: latestGames.length })}
       </dt>
       <dd className="flex gap-1">
         {latestGames.map((game) => {
