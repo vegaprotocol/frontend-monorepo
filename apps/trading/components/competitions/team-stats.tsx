@@ -78,7 +78,7 @@ const LatestResults = ({ games }: { games: TeamGame[] }) => {
   const latestGames = games.slice(0, 5);
 
   return (
-    <dl>
+    <dl className="flex flex-col gap-1">
       <dt className="text-muted text-sm">
         {t('Last {{count}} game results', { count: latestGames.length })}
       </dt>
@@ -120,13 +120,13 @@ const FavoriteGame = ({ games }: { games: TeamGame[] }) => {
     DispatchMetricLabels[favoriteMetric as DispatchMetric];
 
   return (
-    <dl>
+    <dl className="flex flex-col gap-1">
       <dt className="text-muted text-sm">{t('Favorite game')}</dt>
       <dd>
-        <Pill className="flex-inline items-center gap-2 bg-transparent text-sm">
+        <Pill className="inline-flex items-center gap-1 bg-transparent text-sm">
           <VegaIcon
             name={VegaIconNames.STAR}
-            className="text-vega-yellow-400"
+            className="text-vega-yellow-400 relative top-[-1px]"
           />{' '}
           {favoriteMetricLabel}
         </Pill>
@@ -137,7 +137,7 @@ const FavoriteGame = ({ games }: { games: TeamGame[] }) => {
 
 const StatSection = ({ children }: { children: ReactNode }) => {
   return (
-    <section className="flex flex-col lg:flex-row gap-2 lg:gap-8">
+    <section className="flex flex-col lg:flex-row gap-4 lg:gap-8">
       {children}
     </section>
   );
