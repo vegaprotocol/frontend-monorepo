@@ -10,7 +10,7 @@ import {
   TradingAnchorButton,
 } from '@vegaprotocol/ui-toolkit';
 import { RainbowButton } from '../../components/rainbow-button';
-import { useTeam } from './hooks/use-team';
+import { useTeam } from '../../lib/hooks/use-team';
 import { Link, Navigate, useParams } from 'react-router-dom';
 import { Links } from '../../lib/links';
 

@@ -1,5 +1,5 @@
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { type Team } from './hooks/use-team';
+import { type Team } from '../../lib/hooks/use-team';
 import { Intent, TradingAnchorButton } from '@vegaprotocol/ui-toolkit';
 import { Links } from '../../lib/links';
 
