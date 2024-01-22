@@ -2,6 +2,7 @@ import { useState, type ButtonHTMLAttributes } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import orderBy from 'lodash/orderBy';
 import { Splash, truncateMiddle, Loader } from '@vegaprotocol/ui-toolkit';
+import { DispatchMetricLabels, type DispatchMetric } from '@vegaprotocol/types';
 import classNames from 'classnames';
 import { useT } from '../../lib/use-t';
 import { Table } from '../../components/table';
@@ -144,7 +145,7 @@ const Games = ({ games }: { games?: TeamGame[] }) => {
       data={games.map((game) => ({
         rank: game.team.rank,
         epoch: game.epoch,
-        type: game.team.rewardMetric,
+        type: DispatchMetricLabels[game.team.rewardMetric as DispatchMetric],
         amount: game.team.totalRewardsEarned,
         teams: game.numberOfParticipants,
       }))}
