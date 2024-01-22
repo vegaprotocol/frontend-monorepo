@@ -171,7 +171,6 @@ export const TxProposal = ({ txData, pubKey, blockData }: TxProposalProps) => {
       {transfer && (
         <div className="mt-8">
           <TransferDetails
-            statusOnly={false}
             transfer={transfer}
             from={from || ''}
             id={deterministicId}

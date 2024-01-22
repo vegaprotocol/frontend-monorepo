@@ -20,8 +20,6 @@ interface TransferDetailsProps {
   transfer: Transfer;
   from: string;
   id: string;
-  // If set, all blocks except the status one are hidden
-  statusOnly?: boolean;
 }
 
 /**
@@ -30,12 +28,7 @@ interface TransferDetailsProps {
  *
  * @param transfer A recurring transfer object
  */
-export function TransferDetails({
-  transfer,
-  from,
-  id,
-  statusOnly = false,
-}: TransferDetailsProps) {
+export function TransferDetails({ transfer, from, id }: TransferDetailsProps) {
   const recurring = transfer.recurring;
 
   // Currently all this is passed in to TransferStatus, but the extra details
@@ -50,17 +43,13 @@ export function TransferDetails({
 
   return (
     <div className="flex gap-5 flex-wrap">
-      {statusOnly ? null : (
-        <>
-          <TransferParticipants from={from} transfer={transfer} />
-          {recurring ? <TransferRepeat recurring={transfer.recurring} /> : null}
-          {recurring && recurring.dispatchStrategy ? (
-            <TransferRewards recurring={transfer.recurring} />
-          ) : null}
-        </>
-      )}
+      <TransferParticipants from={from} transfer={transfer} />
       {status ? (
         <TransferStatusView status={status} error={error} loading={loading} />
+      ) : null}
+      {recurring ? <TransferRepeat recurring={transfer.recurring} /> : null}
+      {recurring && recurring.dispatchStrategy ? (
+        <TransferRewards recurring={transfer.recurring} />
       ) : null}
     </div>
   );
