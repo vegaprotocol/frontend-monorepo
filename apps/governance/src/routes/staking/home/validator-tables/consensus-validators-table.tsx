@@ -185,6 +185,15 @@ export const ConsensusValidatorsTable = ({
           const { rawValidatorScore: previousEpochValidatorScore } =
             getLastEpochScoreAndPerformance(previousEpochData, id);
 
+          const overstakingPenalty = calculateOverallPenalty(
+            id,
+            allNodesInPreviousEpoch
+          );
+          const totalPenalty = calculateOverstakedPenalty(
+            id,
+            allNodesInPreviousEpoch
+          );
+
           return {
             id,
             [ValidatorFields.RANKING_INDEX]: stakedTotalRanking,
@@ -213,11 +222,11 @@ export const ConsensusValidatorsTable = ({
               2
             ),
             [ValidatorFields.OVERSTAKING_PENALTY]: formatNumberPercentage(
-              calculateOverstakedPenalty(id, allNodesInPreviousEpoch),
+              overstakingPenalty,
               2
             ),
             [ValidatorFields.TOTAL_PENALTIES]: formatNumberPercentage(
-              calculateOverallPenalty(id, allNodesInPreviousEpoch),
+              totalPenalty,
               2
             ),
             [ValidatorFields.PENDING_STAKE]: pendingStake,

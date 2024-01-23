@@ -5,6 +5,7 @@ import {
 import type { PreviousEpochQuery } from './__generated__/PreviousEpoch';
 import { BigNumber } from '../../lib/bignumber';
 import type { LastArrayElement } from 'type-fest';
+import isNull from 'lodash/isNull';
 
 type Node = NonNullable<
   LastArrayElement<
@@ -21,7 +22,10 @@ type Node = NonNullable<
  * @returns Theoretical stake score for given node based on the staked total
  * of all node of the same type (status)
  */
-const calculateTheoreticalStakeScore = (nodeId: string, nodes: Node[]) => {
+const calculateTheoreticalStakeScore = (
+  nodeId: string,
+  nodes: Node[]
+): BigNumber | null => {
   const node = nodes.find((n) => n.id === nodeId);
   if (!node) {
     return new BigNumber(0);
@@ -42,14 +46,25 @@ const calculateTheoreticalStakeScore = (nodeId: string, nodes: Node[]) => {
  * @param nodes A collection of all nodes - needed to calculate theoretical stake score
  * @returns %
  */
-export const calculateOverallPenalty = (nodeId: string, nodes: Node[]) => {
+export const calculateOverallPenalty = (
+  nodeId: string,
+  nodes: Node[]
+): BigNumber | null => {
   const node = nodes.find((n) => n.id === nodeId);
   const tts = calculateTheoreticalStakeScore(nodeId, nodes);
-  if (!node || tts.isZero()) {
+  if (
+    !node ||
+    isNull(tts) ||
+    !node.rewardScore ||
+    (node.rewardScore && isNull(node.rewardScore.validatorScore))
+  ) {
+    return null;
+  }
+  if (tts.isZero()) {
     return new BigNumber(0);
   }
   const penalty = new BigNumber(1)
-    .minus(new BigNumber(node.rewardScore?.validatorScore || 0).dividedBy(tts))
+    .minus(new BigNumber(node.rewardScore.validatorScore).dividedBy(tts))
     .times(100);
   return penalty.isLessThan(0) ? new BigNumber(0) : penalty;
 };
@@ -60,10 +75,21 @@ export const calculateOverallPenalty = (nodeId: string, nodes: Node[]) => {
  * @param nodes A collection of all nodes - needed to calculate theoretical stake score
  * @returns %
  */
-export const calculateOverstakedPenalty = (nodeId: string, nodes: Node[]) => {
+export const calculateOverstakedPenalty = (
+  nodeId: string,
+  nodes: Node[]
+): BigNumber | null => {
   const node = nodes.find((n) => n.id === nodeId);
   const tts = calculateTheoreticalStakeScore(nodeId, nodes);
-  if (!node || tts.isZero()) {
+  if (
+    !node ||
+    isNull(tts) ||
+    isNull(node.rewardScore) ||
+    (node.rewardScore && node.rewardScore.rawValidatorScore === null)
+  ) {
+    return null;
+  }
+  if (tts.isZero()) {
     return new BigNumber(0);
   }
   const penalty = new BigNumber(1)
@@ -78,7 +104,9 @@ export const calculateOverstakedPenalty = (nodeId: string, nodes: Node[]) => {
  * Calculates performance penalty based on the given performance score.
  * @returns %
  */
-export const calculatesPerformancePenalty = (performanceScore: string) => {
+export const calculatesPerformancePenalty = (
+  performanceScore: string
+): BigNumber => {
   const penalty = new BigNumber(1)
     .minus(new BigNumber(performanceScore))
     .times(100);
@@ -122,60 +150,6 @@ export const getPerformancePenalty = (performanceScore?: string) =>
       .times(100),
     2
   );
-
-export const getOverstakingPenalty = (
-  validatorScore: string | null | undefined,
-  stakeScore: string | null | undefined
-) => {
-  if (!validatorScore || !stakeScore) {
-    return '0%';
-  }
-
-  // avoid division by zero
-  if (
-    new BigNumber(validatorScore).isZero() ||
-    new BigNumber(stakeScore).isZero()
-  ) {
-    return '0%';
-  }
-
-  return formatNumberPercentage(
-    BigNumber.max(
-      new BigNumber(1)
-        .minus(
-          new BigNumber(validatorScore).dividedBy(new BigNumber(stakeScore))
-        )
-        .times(100),
-      new BigNumber(0)
-    ),
-    2
-  );
-};
-
-export const getTotalPenalties = (
-  rawValidatorScore: string | null | undefined,
-  performanceScore: string | undefined,
-  stakedOnNode: string,
-  totalStake: string
-) => {
-  const calc =
-    rawValidatorScore &&
-    performanceScore &&
-    new BigNumber(totalStake).isGreaterThan(0)
-      ? new BigNumber(1).minus(
-          new BigNumber(performanceScore)
-            .times(new BigNumber(rawValidatorScore))
-            .dividedBy(
-              new BigNumber(stakedOnNode).dividedBy(new BigNumber(totalStake))
-            )
-        )
-      : new BigNumber(0);
-
-  return formatNumberPercentage(
-    calc.isPositive() ? calc.times(100) : new BigNumber(0),
-    2
-  );
-};
 
 export const getStakePercentage = (total: BigNumber, stakedOnNode: BigNumber) =>
   total.isEqualTo(0) || stakedOnNode.isEqualTo(0)

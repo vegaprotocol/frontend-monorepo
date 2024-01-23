@@ -84,6 +84,14 @@ describe('number utils', () => {
     expect(formatNumberPercentage(v, d)).toStrictEqual(o);
   });
 
+  it('formatNumberPercentage returns "-" when value is null', () => {
+    expect(formatNumberPercentage(null)).toStrictEqual('-');
+  });
+
+  it('formatNumberPercentage returns "-" when value is undefined', () => {
+    expect(formatNumberPercentage(undefined)).toStrictEqual('-');
+  });
+
   describe('toNumberParts', () => {
     it.each([
       { v: null, d: 3, o: ['0', '000', '.'] },
