@@ -1,5 +1,11 @@
 import { useTranslation } from 'react-i18next';
-import { Lozenge, VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
+import {
+  CopyWithTooltip,
+  Lozenge,
+  Tooltip,
+  VegaIcon,
+  VegaIconNames,
+} from '@vegaprotocol/ui-toolkit';
 import { shorten } from '@vegaprotocol/utils';
 import { Heading, SubHeading } from '../../../../components/heading';
 import type { ReactNode } from 'react';
@@ -12,7 +18,12 @@ import {
   useNewTransferProposalDetails,
   useSuccessorMarketProposalDetails,
 } from '@vegaprotocol/proposals';
-import { useFeatureFlags } from '@vegaprotocol/environment';
+import {
+  CONSOLE_MARKET_PAGE,
+  DApp,
+  useFeatureFlags,
+  useLinks,
+} from '@vegaprotocol/environment';
 import Routes from '../../../routes';
 import { Link } from 'react-router-dom';
 import type { VoteState } from '../vote-details/use-user-vote';
@@ -31,6 +42,8 @@ export const ProposalHeader = ({
   const featureFlags = useFeatureFlags((state) => state.flags);
   const { t } = useTranslation();
   const change = proposal?.terms.change;
+
+  const consoleLink = useLinks(DApp.Console);
 
   let details: ReactNode;
   let proposalType = '';
@@ -106,8 +119,33 @@ export const ProposalHeader = ({
       fallbackTitle = t('UpdateMarketProposal');
       details = (
         <>
-          <span>{t('MarketChange')}:</span>{' '}
-          <span>{truncateMiddle(change.marketId)}</span>
+          <span>{t('UpdateToMarket')}:</span>{' '}
+          <span className="inline-flex items-start gap-2">
+            <span className="break-all">{change.marketId} </span>
+            <span className="inline-flex items-end gap-0">
+              <CopyWithTooltip
+                text={change.marketId}
+                description={t('copyToClipboard')}
+              >
+                <button className="inline-block px-1">
+                  <VegaIcon size={20} name={VegaIconNames.COPY} />
+                </button>
+              </CopyWithTooltip>
+              <Tooltip description={t('OpenInConsole')} align="center">
+                <button
+                  className="inline-block px-1"
+                  onClick={() => {
+                    const marketPageLink = consoleLink(
+                      CONSOLE_MARKET_PAGE.replace(':marketId', change.marketId)
+                    );
+                    window.open(marketPageLink, '_blank');
+                  }}
+                >
+                  <VegaIcon size={20} name={VegaIconNames.OPEN_EXTERNAL} />
+                </button>
+              </Tooltip>
+            </span>
+          </span>
         </>
       );
       break;
