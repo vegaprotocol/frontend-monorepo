@@ -98,6 +98,7 @@ describe('ActiveRewards', () => {
         transferNode={mockTransferNode}
         currentEpoch={1}
         kind={mockRecurringTransfer}
+        allMarkets={{}}
       />
     );
 
