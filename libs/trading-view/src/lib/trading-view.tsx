@@ -107,6 +107,7 @@ export const TradingView = ({
         backgroundColor: overrides['paneProperties.background'],
       },
       auto_save_delay: 1,
+      saved_data: state,
     };
 
     widgetRef.current = new window.TradingView.widget(widgetOptions);
@@ -114,40 +115,23 @@ export const TradingView = ({
     widgetRef.current.onChartReady(() => {
       if (!widgetRef.current) return;
 
-      // Set initial theme
-      widgetRef.current.changeTheme(theme).then(() => {
-        if (!widgetRef.current) return;
-        widgetRef.current.applyOverrides(getOverrides(theme));
-      });
-
-      widgetRef.current.subscribe('onAutoSaveNeeded', () => {
-        if (!widgetRef.current) return;
-        widgetRef.current.save((newState) => {
-          onAutoSaveNeeded(newState);
-        });
-      });
-
       const activeChart = widgetRef.current.activeChart();
+
+      if (!state) {
+        // If chart has loaded with no state, create a volume study
+        activeChart.createStudy('Volume');
+      }
 
       // Subscribe to interval changes so it can be persisted in chart settings
       activeChart.onIntervalChanged().subscribe(null, onIntervalChange);
+    });
 
-      if (state !== undefined) {
-        // Load stored state
-        widgetRef.current.load(state);
+    widgetRef.current.subscribe('onAutoSaveNeeded', () => {
+      if (!widgetRef.current) return;
 
-        // Whatever was the last active chart will be loaded, so reset the current symbol for
-        // the market loaded on the page
-        widgetRef.current.setSymbol(
-          marketId,
-          interval as TVResolutionString,
-          noop
-        );
-      } else {
-        // No stored state, likely the first time using the TV chart,
-        // show the volume study by default
-        activeChart.createStudy('Volume');
-      }
+      widgetRef.current.save((newState) => {
+        onAutoSaveNeeded(newState);
+      });
     });
   }, [
     state,
