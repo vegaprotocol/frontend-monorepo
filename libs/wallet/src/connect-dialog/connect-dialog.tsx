@@ -263,7 +263,7 @@ const ConnectorList = ({
             onClick={() => onSelect('injected')}
             title={
               <Trans
-                defaults="Vega Wallet <0>full featured<0>"
+                defaults="Vega Wallet <0>full featured</0>"
                 components={[<span className="text-xs">full featured</span>]}
               />
             }
@@ -276,7 +276,7 @@ const ConnectorList = ({
           <div>
             <h1 className="mb-1 text-lg">
               <Trans
-                defaults="Vega Wallet <0>full featured<0>"
+                defaults="Vega Wallet <0>full featured</0>"
                 components={[<span className="text-xs">full featured</span>]}
               />
             </h1>
