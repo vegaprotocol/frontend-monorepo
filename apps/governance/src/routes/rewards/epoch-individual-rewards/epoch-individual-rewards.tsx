@@ -10,7 +10,7 @@ import { EpochIndividualRewardsTable } from './epoch-individual-rewards-table';
 import { generateEpochIndividualRewardsList } from './generate-epoch-individual-rewards-list';
 import { calculateEpochOffset } from '../../../lib/epoch-pagination';
 import { useNetworkParam } from '@vegaprotocol/network-parameters';
-import { type ApolloError } from '@apollo/client';
+import { filterAcceptableGraphqlErrors } from '../../../lib/party';
 
 const EPOCHS_PAGE_SIZE = 10;
 
@@ -101,7 +101,7 @@ export const EpochIndividualRewards = ({
   }, [epochId, refetchData]);
 
   // Workarounds for the error handling of AsyncRenderer
-  const filteredErrors = filterExpectedErrors(error);
+  const filteredErrors = filterAcceptableGraphqlErrors(error);
   const filteredData = data || [];
 
   return (
@@ -144,23 +144,3 @@ export const EpochIndividualRewards = ({
     />
   );
 };
-
-/**
- * If a party has no accounts or data, then this GraphQL query believes it does not exist
- * Not having any rewards is a valid state, so we filter this error out.
- *
- * @param error ApolloError | undefined
- * @returns ApolloError | undefined
- */
-export function filterExpectedErrors(
-  error?: ApolloError
-): ApolloError | undefined {
-  // Currently the only error we expect is when a party has no accounts
-  if (error && error.graphQLErrors.length === 1) {
-    if (error.graphQLErrors[0].message === 'failed to get party for ID') {
-      return;
-    }
-  }
-
-  return error;
-}
