@@ -6,7 +6,7 @@ import { DispatchMetricLabels, type DispatchMetric } from '@vegaprotocol/types';
 import classNames from 'classnames';
 import { useT } from '../../lib/use-t';
 import { Table } from '../../components/table';
-import { getDateTimeFormat } from '@vegaprotocol/utils';
+import { formatNumber, getDateTimeFormat } from '@vegaprotocol/utils';
 import {
   useTeam,
   type TeamStats as ITeamStats,
@@ -145,7 +145,7 @@ const Games = ({ games }: { games?: TeamGame[] }) => {
         rank: game.team.rank,
         epoch: game.epoch,
         type: DispatchMetricLabels[game.team.rewardMetric as DispatchMetric],
-        amount: game.team.totalRewardsEarned,
+        amount: formatNumber(game.team.totalRewardsEarned),
         teams: game.numberOfParticipants,
       }))}
       noCollapse={true}
