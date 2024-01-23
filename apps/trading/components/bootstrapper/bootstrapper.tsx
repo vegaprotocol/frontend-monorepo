@@ -13,6 +13,7 @@ import type { ReactNode } from 'react';
 import { Web3Provider } from './web3-provider';
 import { useT } from '../../lib/use-t';
 import { DataLoader } from './data-loader';
+import { useChainId } from '@vegaprotocol/wallet';
 
 export const Bootstrapper = ({ children }: { children: ReactNode }) => {
   const t = useT();
@@ -26,13 +27,16 @@ export const Bootstrapper = ({ children }: { children: ReactNode }) => {
     CHROME_EXTENSION_URL,
   } = useEnvironment();
 
+  const chainId = useChainId(VEGA_URL);
+
   if (
     !VEGA_URL ||
     !VEGA_WALLET_URL ||
     !VEGA_EXPLORER_URL ||
     !CHROME_EXTENSION_URL ||
     !MOZILLA_EXTENSION_URL ||
-    !DocsLinks
+    !DocsLinks ||
+    !chainId
   ) {
     return <AppLoader />;
   }
@@ -72,6 +76,7 @@ export const Bootstrapper = ({ children }: { children: ReactNode }) => {
               config={{
                 network: VEGA_ENV,
                 vegaUrl: VEGA_URL,
+                chainId,
                 vegaWalletServiceUrl: VEGA_WALLET_URL,
                 links: {
                   explorer: VEGA_EXPLORER_URL,

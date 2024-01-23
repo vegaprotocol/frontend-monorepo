@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { useVegaWallet } from '../use-vega-wallet';
+
+export const MAX_FETCH_ATTEMPTS = 3;
 
 const cache: Record<string, string> = {};
 
@@ -18,16 +19,17 @@ const getNodeStatisticsUrl = (vegaUrl: string) => {
   }
 };
 
-export const useChainId = () => {
-  const { vegaUrl } = useVegaWallet();
-  const [chainId, setChainId] = useState<undefined | string>(cache[vegaUrl]);
-  const [fetchAttempt, setFetchAttempt] = useState(1);
+export const useChainId = (vegaUrl: string | undefined) => {
+  const [chainId, setChainId] = useState<undefined | string>(
+    vegaUrl ? cache[vegaUrl] : undefined
+  );
+  const [fetchAttempts, setFetchAttempts] = useState(1);
 
-  const statisticsUrl = getNodeStatisticsUrl(vegaUrl);
+  const statisticsUrl = vegaUrl ? getNodeStatisticsUrl(vegaUrl) : undefined;
 
   useEffect(() => {
     // abort when `/statistics` URL could not be determined
-    if (!statisticsUrl) return;
+    if (!statisticsUrl || !vegaUrl) return;
     let isCancelled = false;
     if (cache[vegaUrl]) {
       setChainId(cache[vegaUrl]);
@@ -42,16 +44,19 @@ export const useChainId = () => {
         if (!response?.statistics?.chainId) {
           throw new Error('statistics.chainId not present in fetched response');
         }
-        setChainId(response?.statistics?.chainId);
+
+        const chainId = response.statistics.chainId;
+        cache[vegaUrl] = chainId;
+        setChainId(chainId);
       })
       .catch(() => {
-        if (fetchAttempt < 3) {
-          setFetchAttempt((value) => (value += 1));
+        if (fetchAttempts < MAX_FETCH_ATTEMPTS) {
+          setFetchAttempts((value) => (value += 1));
         }
       });
     return () => {
       isCancelled = true;
     };
-  }, [fetchAttempt, statisticsUrl, vegaUrl]);
+  }, [fetchAttempts, statisticsUrl, vegaUrl]);
   return chainId;
 };

@@ -7,3 +7,4 @@ export * from './provider';
 export * from './connect-dialog';
 export * from './utils';
 export * from './storage';
+export * from './use-chain-id';

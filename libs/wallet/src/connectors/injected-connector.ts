@@ -1,10 +1,11 @@
 import { clearConfig, setConfig } from '../storage';
 import type { Transaction, VegaConnector } from './vega-connector';
 
+type VegaWalletEvent = 'client.disconnected';
+
 declare global {
   interface Vega {
-    getChainId: () => Promise<{ chainID: string }>;
-    connectWallet: () => Promise<null>;
+    connectWallet: (args: { chainId: string }) => Promise<null>;
     disconnectWallet: () => Promise<void>;
     listKeys: () => Promise<{
       keys: Array<{ name: string; publicKey: string }>;
@@ -34,6 +35,9 @@ declare global {
       };
       transactionHash: string;
     }>;
+
+    on: (event: VegaWalletEvent, callback: () => void) => void;
+    isConnected?: () => Promise<boolean>;
   }
 
   interface Window {
@@ -47,15 +51,60 @@ export const InjectedConnectorErrors = {
   INVALID_CHAIN: new Error('Invalid chain'),
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const wait = (ms: number) =>
+  new Promise<boolean>((_, reject) => {
+    setTimeout(() => {
+      reject(false);
+    }, ms);
+  });
+
+const INJECTED_CONNECTOR_TIMEOUT = 1000;
+
 export class InjectedConnector implements VegaConnector {
+  isConnected = false;
+  chainId: string | null = null;
   description = 'Connects using the Vega wallet browser extension';
+  alive: ReturnType<typeof setInterval> | undefined = undefined;
 
-  async getChainId() {
-    return window.vega.getChainId();
-  }
+  async connectWallet(chainId: string) {
+    this.chainId = chainId;
+    try {
+      await window.vega.connectWallet({ chainId });
+      this.isConnected = true;
+      window.vega.on('client.disconnected', () => {
+        this.isConnected = false;
+      });
 
-  connectWallet() {
-    return window.vega.connectWallet();
+      this.alive = setInterval(async () => {
+        try {
+          const connected = await Promise.race([
+            // FIXME: All of the `window.vega` initiated promises are `pending`
+            // while waiting for the user action when transaction is sent.
+            // (Probably due to the FIFO queue  of the `PortServer`?)
+            // Because of that we cannot `wait` here as while waiting for the
+            // user action in wallet this will `reject`. It'd be cool if the
+            // `window.vega` was not blocking the api calls.
+
+            // wait(INJECTED_CONNECTOR_TIMEOUT),
+
+            // `isConnected` is only available in the newer versions
+            // of the browser wallet
+            'isConnected' in window.vega &&
+            typeof window.vega.isConnected === 'function'
+              ? window.vega.isConnected()
+              : window.vega.listKeys(),
+          ]);
+          this.isConnected = Boolean(connected);
+        } catch {
+          this.isConnected = false;
+        }
+      }, INJECTED_CONNECTOR_TIMEOUT * 2);
+    } catch {
+      throw new Error(
+        `could not connect to the vega wallet on chain: ${chainId}`
+      );
+    }
   }
 
   async connect() {
@@ -69,19 +118,11 @@ export class InjectedConnector implements VegaConnector {
   }
 
   async isAlive() {
-    try {
-      const keys = await window.vega.listKeys();
-      if (keys.keys.length > 0) {
-        return true;
-      }
-    } catch (err) {
-      return false;
-    }
-
-    return false;
+    return this.isConnected;
   }
 
   disconnect() {
+    clearInterval(this.alive);
     clearConfig();
     return window.vega.disconnectWallet();
   }

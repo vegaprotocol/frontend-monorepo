@@ -13,6 +13,9 @@ export interface VegaWalletContextShape {
   /** Url of current connected node */
   vegaUrl: string;
 
+  /** Vega chain id */
+  chainId: string;
+
   /** Url of running wallet service */
   vegaWalletServiceUrl: string;
 
