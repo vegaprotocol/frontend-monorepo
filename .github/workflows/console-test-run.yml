@@ -19,7 +19,7 @@ jobs:
   create-docker-image:
     name: Create docker image for console-test
     runs-on: ubuntu-22.04
-    timeout-minutes: 90
+    timeout-minutes: 45
     steps:
       #----------------------------------------------
       #       check-out frontend-monorepo
@@ -138,7 +138,7 @@ jobs:
     name: run-tests
     runs-on: 8-cores
     needs: [create-docker-image, console-test-branch]
-    timeout-minutes: 90
+    timeout-minutes: 45
     steps:
       #----------------------------------------------
       #       load docker image
@@ -205,7 +205,7 @@ jobs:
       # run tests
       #----------------------------------------------
       - name: Run tests
-        run: CONSOLE_IMAGE_NAME=ci/trading:local poetry run pytest -v -s --numprocesses 2 --dist loadfile --durations=90
+        run: CONSOLE_IMAGE_NAME=ci/trading:local poetry run pytest -v -s --numprocesses 1 --dist loadfile --durations=45
         working-directory: apps/trading/e2e
       #----------------------------------------------
       # upload traces
