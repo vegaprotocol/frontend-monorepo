@@ -30,11 +30,16 @@ export const TeamStats = ({
     <>
       <StatSection>
         <StatList>
-          <Stat value={members ? members.length : 0} label={t('Members')} />
+          <Stat
+            value={members ? members.length : 0}
+            label={t('Members')}
+            valueTestId="members-count-stat"
+          />
           <Stat
             value={stats ? stats.totalGamesPlayed : 0}
             label={t('Total games')}
             tooltip={t('Total number of games this team has participated in')}
+            valueTestId="total-games-stat"
           />
           <StatSectionSeparator />
           <Stat
@@ -47,6 +52,7 @@ export const TeamStats = ({
                 : 0
             }
             label={t('Total volume')}
+            valueTestId="total-volume-stat"
           />
           <Stat
             value={
@@ -59,6 +65,7 @@ export const TeamStats = ({
             }
             label={t('Rewards paid')}
             tooltip={'Total amount of rewards paid out to this team in qUSD'}
+            valueTestId="rewards-paid-stat"
           />
         </StatList>
       </StatSection>
@@ -159,14 +166,18 @@ const Stat = ({
   value,
   label,
   tooltip,
+  valueTestId,
 }: {
   value: ReactNode;
   label: ReactNode;
   tooltip?: string;
+  valueTestId?: string;
 }) => {
   return (
     <div>
-      <dd className="text-3xl lg:text-4xl">{value}</dd>
+      <dd className="text-3xl lg:text-4xl" data-testid={valueTestId}>
+        {value}
+      </dd>
       <dt className="text-sm text-muted">
         {tooltip ? (
           <Tooltip description={tooltip} underline={false}>
