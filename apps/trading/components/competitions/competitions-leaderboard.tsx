@@ -30,7 +30,6 @@ export const CompetitionsLeaderboard = ({
         { name: 'team', displayName: t('Team') },
         { name: 'earned', displayName: t('Rewards earned') },
         { name: 'games', displayName: t('Total games') },
-        { name: 'members', displayName: t('No. of members') },
         { name: 'status', displayName: t('Status') },
         { name: 'volume', displayName: t('Volume') },
       ]}
@@ -63,11 +62,10 @@ export const CompetitionsLeaderboard = ({
           ),
           earned: num(td.totalQuantumRewards),
           games: num(td.totalGamesPlayed),
-          members: 0,
           status: td.closed ? t('Closed') : t('Open'),
           volume: num(td.totalQuantumVolume),
         };
       })}
-    ></Table>
+    />
   );
 };
