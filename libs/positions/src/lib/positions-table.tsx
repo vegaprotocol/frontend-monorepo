@@ -21,7 +21,6 @@ import {
   VegaIcon,
   VegaIconNames,
   Tooltip,
-  Lozenge,
 } from '@vegaprotocol/ui-toolkit';
 import {
   volumePrefix,
@@ -32,17 +31,14 @@ import {
 } from '@vegaprotocol/utils';
 import { type Position } from './positions-data-providers';
 import {
-  MarginMode,
   MarketTradingMode,
   PositionStatus,
   PositionStatusMapping,
 } from '@vegaprotocol/types';
-import { DocsLinks, useFeatureFlags } from '@vegaprotocol/environment';
+import { DocsLinks } from '@vegaprotocol/environment';
 import { PositionActionsDropdown } from './position-actions-dropdown';
 import { LiquidationPrice } from './liquidation-price';
 import { useT } from '../use-t';
-import classnames from 'classnames';
-import BigNumber from 'bignumber.js';
 
 interface Props extends TypedDataAgGrid<Position> {
   onClose?: (data: Position) => void;
@@ -78,126 +74,6 @@ const defaultColDef = {
   minWidth: 110,
 };
 
-interface MarginChartProps {
-  width?: number;
-  label: string;
-  other?: string;
-  marker?: number;
-  markerLabel?: string;
-  className?: string;
-}
-
-const MarginChart = ({
-  width,
-  label,
-  other,
-  marker,
-  markerLabel,
-  className,
-}: MarginChartProps) => {
-  return (
-    <div className={classnames('relative min-w-[208px]', className)}>
-      {markerLabel ? (
-        <div className="mb-1 whitespace-nowrap">{markerLabel}</div>
-      ) : null}
-      <div
-        className={classnames('flex relative h-2', {
-          'dark:bg-vega-clight-800 bg-vega-cdark-800': other,
-        })}
-      >
-        <div
-          style={{ width: `${width || 100}%` }}
-          className="dark:bg-vega-clight-400 bg-vega-cdark-400"
-        ></div>
-        {marker ? (
-          <div
-            className="absolute dark:border-t-vega-clight-400 border-t-vega-cdark-400 border-l-transparent border-r-transparent"
-            style={{
-              top: '-5px',
-              left: `${marker}%`,
-              borderWidth: '5px 5px 0px 5px',
-              transform: 'translateX(-5px)',
-              display: 'inline-block',
-            }}
-          ></div>
-        ) : null}
-      </div>
-      <div className="flex flex-wrap justify-between whitespace-nowrap">
-        <div className={classnames({ 'mr-1': other })}>{label}</div>
-        {other ? <div className="text-right">{other}</div> : null}
-      </div>
-    </div>
-  );
-};
-
-const PositionMargin = ({ data }: { data: Position }) => {
-  const t = useT();
-  const max =
-    data.marginMode === MarginMode.MARGIN_MODE_CROSS_MARGIN
-      ? (
-          BigInt(data.marginAccountBalance) + BigInt(data.generalAccountBalance)
-        ).toString()
-      : BigInt(data.marginAccountBalance) > BigInt(data.orderAccountBalance)
-      ? data.marginAccountBalance
-      : data.orderAccountBalance;
-  const getWidth = (balance: string) =>
-    BigNumber(balance).multipliedBy(100).dividedBy(max).toNumber();
-  const inCrossMode = data.marginMode === MarginMode.MARGIN_MODE_CROSS_MARGIN;
-  const hasOrderAccountBalance =
-    !inCrossMode && data.orderAccountBalance !== '0';
-
-  return (
-    <>
-      <MarginChart
-        width={inCrossMode ? getWidth(data.marginAccountBalance) : undefined}
-        label={t('Margin: {{balance}}', {
-          balance: addDecimalsFormatNumberQuantum(
-            data.marginAccountBalance,
-            data.assetDecimals,
-            data.quantum
-          ),
-        })}
-        other={
-          inCrossMode
-            ? t('General account: {{balance}}', {
-                balance: addDecimalsFormatNumberQuantum(
-                  data.generalAccountBalance,
-                  data.assetDecimals,
-                  data.quantum
-                ),
-              })
-            : undefined
-        }
-        className={classnames({ 'mb-2': hasOrderAccountBalance })}
-        marker={
-          data.maintenanceLevel ? getWidth(data.maintenanceLevel) : undefined
-        }
-        markerLabel={
-          data.maintenanceLevel &&
-          t('Liquidation: {{maintenanceLevel}}', {
-            maintenanceLevel: addDecimalsFormatNumberQuantum(
-              data.maintenanceLevel,
-              data.assetDecimals,
-              data.quantum
-            ),
-          })
-        }
-      />
-      {hasOrderAccountBalance ? (
-        <MarginChart
-          width={getWidth(data.orderAccountBalance)}
-          label={t('Order: {{balance}}', {
-            balance: addDecimalsFormatNumber(
-              data.orderAccountBalance,
-              data.assetDecimals
-            ),
-          })}
-        />
-      ) : null}
-    </>
-  );
-};
-
 export const PositionsTable = ({
   onClose,
   onMarketClick,
@@ -207,7 +83,6 @@ export const PositionsTable = ({
   pubKey,
   ...props
 }: Props) => {
-  const featureFlags = useFeatureFlags((state) => state.flags);
   const t = useT();
 
   const colDefs = useMemo<ColDef[]>(() => {
@@ -257,8 +132,7 @@ export const PositionsTable = ({
         cellClass: 'font-mono text-right',
         cellClassRules: signedNumberCssClassRules,
         filter: 'agNumberColumnFilter',
-        sortable: false,
-        filterValueGetter: ({ data }: { data: Position }) => {
+        valueGetter: ({ data }: { data: Position }) => {
           return data?.openVolume === undefined
             ? undefined
             : toBigNum(data?.openVolume, data.positionDecimalPlaces).toNumber();
@@ -335,8 +209,7 @@ export const PositionsTable = ({
         type: 'rightAligned',
         cellClass: 'font-mono text-right',
         filter: 'agNumberColumnFilter',
-        sortable: false,
-        filterValueGetter: ({ data }: VegaValueGetterParams<Position>) => {
+        valueGetter: ({ data }: VegaValueGetterParams<Position>) => {
           return !data
             ? undefined
             : toBigNum(
@@ -360,35 +233,7 @@ export const PositionsTable = ({
 
           const lev = data?.currentLeverage ? data.currentLeverage : 1;
           const leverage = formatNumber(Math.max(1, lev), 1);
-          return (
-            <Tooltip
-              description={
-                data &&
-                data.marginAccountBalance !== '0' && (
-                  <PositionMargin data={data} />
-                )
-              }
-            >
-              <div>
-                <StackedCell
-                  primary={margin}
-                  secondary={
-                    <>
-                      {featureFlags.ISOLATED_MARGIN && (
-                        <Lozenge className="mr-1">
-                          {data?.marginMode ===
-                          MarginMode.MARGIN_MODE_ISOLATED_MARGIN
-                            ? t('Isolated')
-                            : t('Cross')}
-                        </Lozenge>
-                      )}
-                      {leverage}x
-                    </>
-                  }
-                />
-              </div>
-            </Tooltip>
-          );
+          return <StackedCell primary={margin} secondary={leverage + 'x'} />;
         },
       },
       {
@@ -561,16 +406,7 @@ export const PositionsTable = ({
     return columnDefs.filter<ColDef>(
       (colDef: ColDef | null): colDef is ColDef => colDef !== null
     );
-  }, [
-    isReadOnly,
-    multipleKeys,
-    onClose,
-    onMarketClick,
-    pubKey,
-    pubKeys,
-    t,
-    featureFlags.ISOLATED_MARGIN,
-  ]);
+  }, [isReadOnly, multipleKeys, onClose, onMarketClick, pubKey, pubKeys, t]);
 
   return (
     <AgGrid

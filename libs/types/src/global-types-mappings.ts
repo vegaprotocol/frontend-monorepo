@@ -38,7 +38,6 @@ import type { ProductType, ProposalProductType } from './product';
 export const AccountTypeMapping: {
   [T in AccountType]: string;
 } = {
-  ACCOUNT_TYPE_ORDER_MARGIN: 'Per asset market account',
   ACCOUNT_TYPE_BOND: 'Bond account',
   ACCOUNT_TYPE_EXTERNAL: 'External account',
   ACCOUNT_TYPE_FEES_INFRASTRUCTURE: 'Infrastructure fees account',
@@ -212,8 +211,6 @@ export const OrderRejectionReasonMapping: {
   ORDER_ERROR_INVALID_SIZE: 'Invalid size',
   ORDER_ERROR_INVALID_TIME_IN_FORCE: 'Invalid time in force',
   ORDER_ERROR_INVALID_TYPE: 'Invalid type',
-  ORDER_ERROR_ISOLATED_MARGIN_CHECK_FAILED:
-    'Party has insufficient funds to cover for the order margin for the new or amended order',
   ORDER_ERROR_MARGIN_CHECK_FAILED: 'Margin check failed',
   ORDER_ERROR_MARKET_CLOSED: 'Market closed',
   ORDER_ERROR_MISSING_GENERAL_ACCOUNT: 'Missing general account',
@@ -224,8 +221,6 @@ export const OrderRejectionReasonMapping: {
   ORDER_ERROR_NOT_FOUND: 'Not found',
   ORDER_ERROR_OFFSET_MUST_BE_GREATER_OR_EQUAL_TO_ZERO:
     'Offset must be greater or equal to zero',
-  ORDER_ERROR_PEGGED_ORDERS_NOT_ALLOWED_IN_ISOLATED_MARGIN_MODE:
-    'Pegged orders are not allowed for a party in isolated margin mode',
   ORDER_ERROR_OFFSET_MUST_BE_GREATER_THAN_ZERO:
     'Offset must be greater than zero',
   ORDER_ERROR_OUT_OF_SEQUENCE: 'Out of sequence',
@@ -480,9 +475,6 @@ export const TransferTypeMapping: TransferTypeMap = {
   TRANSFER_TYPE_WIN: 'Final settlement gain',
   TRANSFER_TYPE_MTM_LOSS: 'Mark to market loss',
   TRANSFER_TYPE_MTM_WIN: 'Mark to market gain',
-  TRANSFER_TYPE_ORDER_MARGIN_HIGH: 'From order margin account to general',
-  TRANSFER_TYPE_ORDER_MARGIN_LOW:
-    'From general account to order margin account',
   TRANSFER_TYPE_MARGIN_LOW: 'Margin topped up',
   TRANSFER_TYPE_MARGIN_HIGH: 'Margin returned',
   TRANSFER_TYPE_MARGIN_CONFISCATED: 'Margin confiscated',
@@ -490,8 +482,6 @@ export const TransferTypeMapping: TransferTypeMap = {
   TRANSFER_TYPE_MAKER_FEE_RECEIVE: 'Maker fee received',
   TRANSFER_TYPE_INFRASTRUCTURE_FEE_PAY: 'Infrastructure fee paid',
   TRANSFER_TYPE_INFRASTRUCTURE_FEE_DISTRIBUTE: 'Infrastructure fee distributed',
-  TRANSFER_TYPE_ISOLATED_MARGIN_LOW:
-    'From order margin account to margin account',
   TRANSFER_TYPE_LIQUIDITY_FEE_PAY: 'Liquidity fee paid',
   TRANSFER_TYPE_LIQUIDITY_FEE_DISTRIBUTE: 'Liquidity fee received',
   TRANSFER_TYPE_BOND_LOW: 'Bond account funded',
@@ -525,10 +515,6 @@ export const DescriptionTransferTypeMapping: TransferTypeMap = {
   TRANSFER_TYPE_WIN: `Funds added to your general account after final settlement gain`,
   TRANSFER_TYPE_MTM_LOSS: `Funds deducted from your margin account after mark to market loss`,
   TRANSFER_TYPE_MTM_WIN: `Funds added to your margin account after mark to market gain`,
-  TRANSFER_TYPE_ORDER_MARGIN_HIGH:
-    'Funds released from order margin account to general',
-  TRANSFER_TYPE_ORDER_MARGIN_LOW:
-    'Funds moved from general account to order margin account',
   TRANSFER_TYPE_MARGIN_LOW: `Funds deducted from your general account to meet margin requirement`,
   TRANSFER_TYPE_MARGIN_HIGH: `Excess margin amount returned to your general account`,
   TRANSFER_TYPE_MARGIN_CONFISCATED: `Margin confiscated from your margin account to fulfil closeout`,
@@ -536,8 +522,6 @@ export const DescriptionTransferTypeMapping: TransferTypeMap = {
   TRANSFER_TYPE_MAKER_FEE_RECEIVE: `Maker fee received into your general account when your passive order was filled`,
   TRANSFER_TYPE_INFRASTRUCTURE_FEE_PAY: `Infrastructure fee paid from your general account when your order was filled`,
   TRANSFER_TYPE_INFRASTRUCTURE_FEE_DISTRIBUTE: `Infrastructure fee received: Infrastructure fee, paid by traders, received into your general account`,
-  TRANSFER_TYPE_ISOLATED_MARGIN_LOW:
-    'Funds moved from order margin account to margin account',
   TRANSFER_TYPE_LIQUIDITY_FEE_PAY: `Liquidity fee paid from your general account to market's liquidity providers`,
   TRANSFER_TYPE_LIQUIDITY_FEE_DISTRIBUTE: `Liquidity fee received into your general account from traders`,
   TRANSFER_TYPE_BOND_LOW: `Funds deducted from your general account to meet your required liquidity bond amount`,

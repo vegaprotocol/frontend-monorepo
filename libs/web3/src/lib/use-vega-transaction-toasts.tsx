@@ -7,7 +7,6 @@ import type {
   OrderSubmission,
   StopOrdersSubmission,
   StopOrderSetup,
-  UpdateMarginMode,
 } from '@vegaprotocol/wallet';
 import type {
   OrderTxUpdateFieldsFragment,
@@ -27,8 +26,6 @@ import {
   isStopOrdersSubmissionTransaction,
   isStopOrdersCancellationTransaction,
   isReferralRelatedTransaction,
-  isMarginModeUpdateTransaction,
-  MarginMode,
 } from '@vegaprotocol/wallet';
 import { useVegaTransactionStore } from './use-vega-transaction-store';
 import { VegaTxStatus } from './types';
@@ -166,7 +163,6 @@ const isClosePositionTransaction = (tx: VegaStoredTxState) => {
 };
 
 const isTransactionTypeSupported = (tx: VegaStoredTxState) => {
-  const marginModeUpdate = isMarginModeUpdateTransaction(tx.body);
   const withdraw = isWithdrawTransaction(tx.body);
   const submitOrder = isOrderSubmissionTransaction(tx.body);
   const cancelOrder = isOrderCancellationTransaction(tx.body);
@@ -177,7 +173,6 @@ const isTransactionTypeSupported = (tx: VegaStoredTxState) => {
   const transfer = isTransferTransaction(tx.body);
   const referral = isReferralRelatedTransaction(tx.body);
   return (
-    marginModeUpdate ||
     withdraw ||
     submitOrder ||
     cancelOrder ||
@@ -450,27 +445,6 @@ const CancelOrderDetails = ({
   );
 };
 
-const MarginModeDetails = ({ data }: { data: UpdateMarginMode }) => {
-  const t = useT();
-  const { data: markets } = useMarketsMapProvider();
-  const marketId = data.market_id;
-  const market = marketId && markets?.[marketId];
-  if (!market) {
-    return null;
-  }
-  return (
-    <Panel>
-      <h4>{t('Update margin mode')}</h4>
-      <p>{market?.tradableInstrument.instrument.code}</p>
-      {data.mode === MarginMode.MARGIN_MODE_CROSS_MARGIN
-        ? t('Cross margin mode')
-        : t('Isolated margin mode, leverage: {{leverage}}x', {
-            leverage: (1 / Number(data.marginFactor)).toFixed(1),
-          })}
-    </Panel>
-  );
-};
-
 const CancelStopOrderDetails = ({ stopOrderId }: { stopOrderId: string }) => {
   const t = useT();
   const formatTrigger = useFormatTrigger();
@@ -622,10 +596,6 @@ export const VegaTransactionDetails = ({ tx }: { tx: VegaStoredTxState }) => {
         order={tx.order}
       ></EditOrderDetails>
     );
-  }
-
-  if (isMarginModeUpdateTransaction(tx.body)) {
-    return <MarginModeDetails data={tx.body.updateMarginMode} />;
   }
 
   if (isClosePositionTransaction(tx)) {
