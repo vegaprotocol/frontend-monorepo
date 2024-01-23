@@ -140,12 +140,6 @@ const Games = ({ games }: { games?: TeamGame[] }) => {
           headerClassName: 'hidden md:block',
           className: 'hidden md:block',
         },
-        {
-          name: 'status',
-          displayName: t('Status'),
-          headerClassName: 'hidden md:block',
-          className: 'hidden md:block',
-        },
       ]}
       data={games.map((game) => ({
         rank: game.team.rank,
