@@ -451,7 +451,22 @@ export type CreateReferralSet = {
   };
 };
 
+export enum MarginMode {
+  MARGIN_MODE_CROSS_MARGIN = 1,
+  MARGIN_MODE_ISOLATED_MARGIN,
+}
+export interface UpdateMarginMode {
+  market_id: string;
+  mode: MarginMode;
+  marginFactor?: string;
+}
+
+export interface UpdateMarginModeBody {
+  updateMarginMode: UpdateMarginMode;
+}
+
 export type Transaction =
+  | UpdateMarginModeBody
   | StopOrdersSubmissionBody
   | StopOrdersCancellationBody
   | OrderSubmissionBody
@@ -467,6 +482,10 @@ export type Transaction =
   | LiquidityProvisionSubmission
   | ApplyReferralCode
   | CreateReferralSet;
+
+export const isMarginModeUpdateTransaction = (
+  transaction: Transaction
+): transaction is UpdateMarginModeBody => 'updateMarginMode' in transaction;
 
 export const isWithdrawTransaction = (
   transaction: Transaction

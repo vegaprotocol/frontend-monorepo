@@ -323,6 +323,9 @@ export const compileFeatureFlags = (refresh = false): FeatureFlags => {
     STOP_ORDERS: TRUTHY.includes(
       windowOrDefault('NX_STOP_ORDERS', process.env['NX_STOP_ORDERS']) as string
     ),
+    ISOLATED_MARGIN: TRUTHY.includes(
+      windowOrDefault('NX_STOP_ORDERS', process.env['NX_STOP_ORDERS']) as string
+    ),
     SUCCESSOR_MARKETS: TRUTHY.includes(
       windowOrDefault(
         'NX_SUCCESSOR_MARKETS',
