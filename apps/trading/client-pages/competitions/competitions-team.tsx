@@ -2,10 +2,11 @@ import { useState, type ButtonHTMLAttributes } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import orderBy from 'lodash/orderBy';
 import { Splash, truncateMiddle, Loader } from '@vegaprotocol/ui-toolkit';
+import { DispatchMetricLabels, type DispatchMetric } from '@vegaprotocol/types';
 import classNames from 'classnames';
 import { useT } from '../../lib/use-t';
 import { Table } from '../../components/table';
-import { getDateTimeFormat } from '@vegaprotocol/utils';
+import { formatNumber, getDateTimeFormat } from '@vegaprotocol/utils';
 import {
   useTeam,
   type TeamStats as ITeamStats,
@@ -139,13 +140,12 @@ const Games = ({ games }: { games?: TeamGame[] }) => {
           headerClassName: 'hidden md:block',
           className: 'hidden md:block',
         },
-        { name: 'status', displayName: t('Status') },
       ]}
       data={games.map((game) => ({
         rank: game.team.rank,
         epoch: game.epoch,
-        type: game.team.rewardMetric,
-        amount: game.team.totalRewardsEarned,
+        type: DispatchMetricLabels[game.team.rewardMetric as DispatchMetric],
+        amount: formatNumber(game.team.totalRewardsEarned),
         teams: game.numberOfParticipants,
       }))}
       noCollapse={true}
@@ -162,10 +162,9 @@ const Members = ({ members }: { members?: Member[] }) => {
 
   const data = orderBy(
     members.map((m) => ({
-      referee: <RefereeCell pubkey={m.referee} />,
+      referee: <RefereeLink pubkey={m.referee} />,
       joinedAt: getDateTimeFormat().format(new Date(m.joinedAt)),
       joinedAtEpoch: Number(m.joinedAtEpoch),
-      explorerLink: <RefereeLink pubkey={m.referee} />,
     })),
     'joinedAtEpoch',
     'desc'
@@ -183,12 +182,6 @@ const Members = ({ members }: { members?: Member[] }) => {
           name: 'joinedAtEpoch',
           displayName: t('Joined epoch'),
         },
-        {
-          name: 'explorerLink',
-          displayName: <span className="invisible">Actions</span>, // ensure header doesn't collapse
-          headerClassName: 'hidden md:block',
-          className: 'hidden md:block text-right',
-        },
       ]}
       data={data}
       noCollapse={true}
@@ -196,19 +189,13 @@ const Members = ({ members }: { members?: Member[] }) => {
   );
 };
 
-const RefereeCell = ({ pubkey }: { pubkey: string }) => {
-  return <span title={pubkey}>{truncateMiddle(pubkey)}</span>;
-};
-
 const RefereeLink = ({ pubkey }: { pubkey: string }) => {
-  const t = useT();
-
   const linkCreator = useLinks(DApp.Explorer);
   const link = linkCreator(EXPLORER_PARTIES.replace(':id', pubkey));
 
   return (
-    <Link to={link} className="underline underline-offset-4">
-      {t('View on explorer')}
+    <Link to={link} target="_blank" className="underline underline-offset-4">
+      {truncateMiddle(pubkey)}
     </Link>
   );
 };

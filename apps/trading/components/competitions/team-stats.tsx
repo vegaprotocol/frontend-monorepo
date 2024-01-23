@@ -14,6 +14,7 @@ import {
   type TeamGame,
 } from '../../lib/hooks/use-team';
 import { useT } from '../../lib/use-t';
+import { DispatchMetricLabels, type DispatchMetric } from '@vegaprotocol/types';
 
 export const TeamStats = ({
   stats,
@@ -77,9 +78,9 @@ const LatestResults = ({ games }: { games: TeamGame[] }) => {
   const latestGames = games.slice(0, 5);
 
   return (
-    <dl>
+    <dl className="flex flex-col gap-1">
       <dt className="text-muted text-sm">
-        {t('Last {{count}} game results', { count: latestGames.length })}
+        {t('gameCount', { count: latestGames.length })}
       </dt>
       <dd className="flex gap-1">
         {latestGames.map((game) => {
@@ -97,7 +98,9 @@ const LatestResults = ({ games }: { games: TeamGame[] }) => {
 const FavoriteGame = ({ games }: { games: TeamGame[] }) => {
   const t = useT();
 
-  const rewardMetrics = games.map((game) => game.team.rewardMetric);
+  const rewardMetrics = games.map(
+    (game) => game.team.rewardMetric as DispatchMetric
+  );
   const count = countBy(rewardMetrics);
 
   let favoriteMetric = '';
@@ -112,16 +115,20 @@ const FavoriteGame = ({ games }: { games: TeamGame[] }) => {
 
   if (!favoriteMetric) return null;
 
+  // rewardMetric is a string, should be typed as DispatchMetric
+  const favoriteMetricLabel =
+    DispatchMetricLabels[favoriteMetric as DispatchMetric];
+
   return (
-    <dl>
+    <dl className="flex flex-col gap-1">
       <dt className="text-muted text-sm">{t('Favorite game')}</dt>
       <dd>
-        <Pill className="flex-inline items-center gap-2 bg-transparent text-sm">
+        <Pill className="inline-flex items-center gap-1 bg-transparent text-sm">
           <VegaIcon
             name={VegaIconNames.STAR}
-            className="text-vega-yellow-400"
+            className="text-vega-yellow-400 relative top-[-1px]"
           />{' '}
-          {favoriteMetric}
+          {favoriteMetricLabel}
         </Pill>
       </dd>
     </dl>
@@ -130,7 +137,7 @@ const FavoriteGame = ({ games }: { games: TeamGame[] }) => {
 
 const StatSection = ({ children }: { children: ReactNode }) => {
   return (
-    <section className="flex flex-col lg:flex-row gap-2 lg:gap-8">
+    <section className="flex flex-col lg:flex-row gap-4 lg:gap-8">
       {children}
     </section>
   );
@@ -142,7 +149,7 @@ const StatSectionSeparator = () => {
 
 const StatList = ({ children }: { children: ReactNode }) => {
   return (
-    <dl className="grid grid-cols-[min-content_min-content] md:flex gap-4 md:gap-6 lg:gap-8 whitespace-nowrap">
+    <dl className="grid grid-cols-2 md:flex gap-4 md:gap-6 lg:gap-8 whitespace-nowrap">
       {children}
     </dl>
   );
