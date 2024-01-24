@@ -68,6 +68,7 @@ export const ChartMenu = () => {
         setChartlib(isPennant ? 'tradingview' : 'pennant');
       }}
       size="extra-small"
+      testId="chartlib-toggle-button"
     >
       {isPennant ? 'TradingView' : t('Vega chart')}
     </TradingButton>

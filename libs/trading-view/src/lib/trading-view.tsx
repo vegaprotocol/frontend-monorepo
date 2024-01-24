@@ -1,127 +1,167 @@
 import { useEffect, useRef } from 'react';
 import {
+  usePrevious,
   useScreenDimensions,
   useThemeSwitcher,
 } from '@vegaprotocol/react-helpers';
 import { useLanguage } from './use-t';
 import { useDatafeed } from './use-datafeed';
 import { type ResolutionString } from './constants';
+import {
+  type ChartingLibraryFeatureset,
+  type LanguageCode,
+  type ChartingLibraryWidgetOptions,
+  type IChartingLibraryWidget,
+  type ChartPropertiesOverrides,
+  type ResolutionString as TVResolutionString,
+} from '../charting-library';
 
-export type OnAutoSaveNeededCallback = (data: { studies: string[] }) => void;
+const noop = () => {};
+
+export type OnAutoSaveNeededCallback = (data: object) => void;
 
 export const TradingView = ({
   marketId,
   libraryPath,
   interval,
-  studies,
   onIntervalChange,
   onAutoSaveNeeded,
+  state,
 }: {
   marketId: string;
   libraryPath: string;
   interval: ResolutionString;
-  studies: string[];
   onIntervalChange: (interval: string) => void;
   onAutoSaveNeeded: OnAutoSaveNeededCallback;
+  state: object | undefined;
 }) => {
   const { isMobile } = useScreenDimensions();
   const { theme } = useThemeSwitcher();
   const language = useLanguage();
-  const chartContainerRef =
-    useRef<HTMLDivElement>() as React.MutableRefObject<HTMLInputElement>;
-  // Cant get types as charting_library is externally loaded
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const widgetRef = useRef<any>();
+  const chartContainerRef = useRef<HTMLDivElement>(null);
+  const widgetRef = useRef<IChartingLibraryWidget>();
 
   const datafeed = useDatafeed();
 
-  useEffect(
-    () => {
-      const disableOnSmallScreens = isMobile ? ['left_toolbar'] : [];
+  const prevMarketId = usePrevious(marketId);
+  const prevTheme = usePrevious(theme);
 
-      const overrides = getOverrides(theme);
-
-      const widgetOptions = {
-        symbol: marketId,
-        datafeed,
-        interval: interval,
-        container: chartContainerRef.current,
-        library_path: libraryPath,
-        custom_css_url: 'vega_styles.css',
-        // Trading view accepts just 'en' rather than 'en-US' which is what react-i18next provides
-        // https://www.tradingview.com/charting-library-docs/latest/core_concepts/Localization?_highlight=language#supported-languages
-        locale: language.split('-')[0],
-        enabled_features: ['tick_resolution'],
-        disabled_features: [
-          'header_symbol_search',
-          'header_compare',
-          'show_object_tree',
-          'timeframes_toolbar',
-          ...disableOnSmallScreens,
-        ],
-        fullscreen: false,
-        autosize: true,
-        theme,
-        overrides,
-        loading_screen: {
-          backgroundColor: overrides['paneProperties.background'],
-        },
-      };
-
-      // @ts-ignore parent component loads TradingView onto window obj
-      widgetRef.current = new window.TradingView.widget(widgetOptions);
-
-      widgetRef.current.onChartReady(() => {
-        widgetRef.current.applyOverrides(getOverrides(theme));
-
-        widgetRef.current.subscribe('onAutoSaveNeeded', () => {
-          const studies = widgetRef.current
-            .activeChart()
-            .getAllStudies()
-            .map((s: { id: string; name: string }) => s.name);
-          onAutoSaveNeeded({ studies });
-        });
-
-        const activeChart = widgetRef.current.activeChart();
-
-        // Show volume study by default, second bool arg adds it as a overlay on top of the chart
-        studies.forEach((study) => {
-          activeChart.createStudy(study);
-        });
-
-        // Subscribe to interval changes so it can be persisted in chart settings
-        activeChart.onIntervalChanged().subscribe(null, onIntervalChange);
-      });
-
-      return () => {
-        if (!widgetRef.current) return;
-        widgetRef.current.remove();
-      };
-    },
-
-    // No theme in deps to avoid full chart reload when the theme changes
-    // Instead the theme is changed programmatically in a separate useEffect
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [datafeed, marketId, language, libraryPath, isMobile]
-  );
-
-  // Update the trading view theme every time the app theme updates, done separately
-  // to avoid full chart reload
   useEffect(() => {
-    if (!widgetRef.current || !widgetRef.current._ready) return;
+    // Widget already created
+    if (widgetRef.current !== undefined) {
+      // Update the symbol if changed
+      if (marketId !== prevMarketId) {
+        widgetRef.current.setSymbol(
+          marketId,
+          (interval ? interval : '15') as TVResolutionString,
+          noop
+        );
+      }
 
-    // Calling changeTheme will reset the default dark/light background to the TV default
-    // so we need to re-apply the pane bg override. A promise is also required
-    // https://github.com/tradingview/charting_library/issues/6546#issuecomment-1139517908
-    widgetRef.current.changeTheme(theme).then(() => {
-      widgetRef.current.applyOverrides(getOverrides(theme));
+      // Update theme theme if changed
+      if (theme !== prevTheme) {
+        widgetRef.current.changeTheme(theme).then(() => {
+          if (!widgetRef.current) return;
+          widgetRef.current.applyOverrides(getOverrides(theme));
+        });
+      }
+
+      return;
+    }
+
+    if (!chartContainerRef.current) {
+      return;
+    }
+
+    // Create widget
+    const overrides = getOverrides(theme);
+
+    const disabledOnSmallScreens: ChartingLibraryFeatureset[] = isMobile
+      ? ['left_toolbar']
+      : [];
+    const disabledFeatures: ChartingLibraryFeatureset[] = [
+      'header_symbol_search',
+      'header_compare',
+      'show_object_tree',
+      'timeframes_toolbar',
+      ...disabledOnSmallScreens,
+    ];
+
+    const widgetOptions: ChartingLibraryWidgetOptions = {
+      symbol: marketId,
+      datafeed,
+      interval: interval as TVResolutionString,
+      container: chartContainerRef.current,
+      library_path: libraryPath,
+      custom_css_url: 'vega_styles.css',
+      // Trading view accepts just 'en' rather than 'en-US' which is what react-i18next provides
+      // https://www.tradingview.com/charting-library-docs/latest/core_concepts/Localization?_highlight=language#supported-languages
+      locale: language.split('-')[0] as LanguageCode,
+      enabled_features: ['tick_resolution'],
+      disabled_features: disabledFeatures,
+      fullscreen: false,
+      autosize: true,
+      theme,
+      overrides,
+      loading_screen: {
+        backgroundColor: overrides['paneProperties.background'],
+      },
+      auto_save_delay: 1,
+      saved_data: state,
+    };
+
+    widgetRef.current = new window.TradingView.widget(widgetOptions);
+
+    widgetRef.current.onChartReady(() => {
+      if (!widgetRef.current) return;
+
+      const activeChart = widgetRef.current.activeChart();
+
+      if (!state) {
+        // If chart has loaded with no state, create a volume study
+        activeChart.createStudy('Volume');
+      }
+
+      // Subscribe to interval changes so it can be persisted in chart settings
+      activeChart.onIntervalChanged().subscribe(null, onIntervalChange);
     });
-  }, [theme]);
+
+    widgetRef.current.subscribe('onAutoSaveNeeded', () => {
+      if (!widgetRef.current) return;
+
+      widgetRef.current.save((newState) => {
+        onAutoSaveNeeded(newState);
+      });
+    });
+  }, [
+    state,
+    datafeed,
+    interval,
+    prevTheme,
+    prevMarketId,
+    marketId,
+    theme,
+    language,
+    libraryPath,
+    isMobile,
+    onAutoSaveNeeded,
+    onIntervalChange,
+  ]);
+
+  useEffect(() => {
+    return () => {
+      if (!widgetRef.current) return;
+      widgetRef.current.remove();
+      widgetRef.current = undefined;
+    };
+  }, []);
 
   return <div ref={chartContainerRef} className="w-full h-full" />;
 };
 
-const getOverrides = (theme: 'dark' | 'light') => {
+const getOverrides = (
+  theme: 'dark' | 'light'
+): Partial<ChartPropertiesOverrides> => {
   return {
     // colors set here, trading view lets the user set a color
     'paneProperties.background': theme === 'dark' ? '#05060C' : '#fff',
