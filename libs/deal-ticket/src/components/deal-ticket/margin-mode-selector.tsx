@@ -5,6 +5,8 @@ import {
   TradingInput as Input,
   FormGroup,
   LeverageSlider,
+  Notification,
+  Intent,
 } from '@vegaprotocol/ui-toolkit';
 import { MarginMode, useVegaWallet } from '@vegaprotocol/wallet';
 import * as Types from '@vegaprotocol/types';
@@ -43,9 +45,15 @@ export const MarginChange = ({
   const t = useT();
   const { data: market } = useMarket(marketId);
   const asset = market && getAsset(market);
-  const { marginAccountBalance, orderMarginAccountBalance } =
-    useMarginAccountBalance(marketId);
-  const { accountBalance: generalAccountBalance } = useAccountBalance(marketId);
+  const {
+    marginAccountBalance,
+    orderMarginAccountBalance,
+    loading: marginAccountBalanceLoading,
+  } = useMarginAccountBalance(marketId);
+  const {
+    accountBalance: generalAccountBalance,
+    loading: generalAccountBalanceLoading,
+  } = useAccountBalance(asset?.id);
   const { openVolume, averageEntryPrice } = useOpenVolume(
     partyId,
     marketId
@@ -65,35 +73,35 @@ export const MarginChange = ({
         side: order.side,
       }))
     : [];
-  const skip = !orders?.length || openVolume === '0';
+  const skip =
+    (!orders?.length && openVolume === '0') ||
+    marginAccountBalanceLoading ||
+    generalAccountBalanceLoading;
   const estimateMargin = usePositionEstimate(
     {
-      generalAccountBalance,
-      marginAccountBalance,
+      generalAccountBalance: generalAccountBalance || '0',
+      marginAccountBalance: marginAccountBalance || '0',
       marginFactor,
       marginMode,
       averageEntryPrice,
       openVolume,
       marketId,
-      orderMarginAccountBalance,
+      orderMarginAccountBalance: orderMarginAccountBalance || '0',
       includeCollateralIncreaseInAvailableCollateral: true,
       orders,
     },
     skip
   );
-  const currentMargin =
-    BigInt(marginAccountBalance) + BigInt(orderMarginAccountBalance);
   if (
     !asset ||
-    !estimateMargin?.estimatePosition?.margin.worstCase.initialLevel ||
-    currentMargin.toString() === '0'
+    !estimateMargin?.estimatePosition?.collateralIncreaseEstimate.worstCase ||
+    estimateMargin.estimatePosition.collateralIncreaseEstimate.worstCase === '0'
   ) {
     return null;
   }
-  const initialLevel = BigInt(
-    estimateMargin.estimatePosition?.margin.worstCase.initialLevel
+  const diff = BigInt(
+    estimateMargin.estimatePosition.collateralIncreaseEstimate.worstCase
   );
-  const diff = initialLevel - currentMargin;
   if (!diff) {
     return null;
   }
@@ -145,15 +153,22 @@ export const MarginChange = ({
       );
     } else {
       marginChangeWarning = t(
-        'Changing to this margin mode and leverage will result in {{amount}} {{symbol}} will be moved from yur general account to fund the position.',
+        'Changing to this margin mode and leverage will result in {{amount}} {{symbol}} will be moved from your general account to fund the position.',
         interpolation
       );
     }
   }
   return (
-    <div>
-      <p>{positionWarning}</p>
-      <p>{marginChangeWarning}</p>
+    <div className="mb-2">
+      <Notification
+        intent={Intent.Warning}
+        message={
+          <>
+            <p>{positionWarning}</p>
+            <p>{marginChangeWarning}</p>
+          </>
+        }
+      />
     </div>
   );
 };
@@ -203,7 +218,7 @@ const CrossMarginModeDialog = ({
       <MarginChange
         marketId={marketId}
         partyId={partyId}
-        marginMode={MarginMode.MARGIN_MODE_CROSS_MARGIN}
+        marginMode={Types.MarginMode.MARGIN_MODE_CROSS_MARGIN}
         marginFactor="1"
       />
       <Button
@@ -307,7 +322,7 @@ const IsolatedMarginModeDialog = ({
         <MarginChange
           marketId={marketId}
           partyId={partyId}
-          marginMode={MarginMode.MARGIN_MODE_ISOLATED_MARGIN}
+          marginMode={Types.MarginMode.MARGIN_MODE_ISOLATED_MARGIN}
           marginFactor={`${1 / leverage}`}
         />
         <Button className="w-full" type="submit">

@@ -73,12 +73,18 @@ query EstimatePosition(
         searchLevel
         initialLevel
         collateralReleaseLevel
+        marginMode
+        marginFactor
+        orderMarginLevel
       }
       bestCase {
         maintenanceLevel
         searchLevel
         initialLevel
         collateralReleaseLevel
+        marginMode
+        marginFactor
+        orderMarginLevel
       }
     }
     collateralIncreaseEstimate {

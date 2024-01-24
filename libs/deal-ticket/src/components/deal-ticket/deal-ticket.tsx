@@ -178,7 +178,9 @@ export const DealTicket = ({
   } = useAccountBalance(asset.id);
 
   const balance = (
-    BigInt(marginAccountBalance) + BigInt(generalAccountBalance)
+    BigInt(marginAccountBalance) +
+    BigInt(generalAccountBalance) +
+    BigInt(orderMarginAccountBalance)
   ).toString();
 
   const { marketState, marketTradingMode } = marketData;
@@ -279,9 +281,9 @@ export const DealTicket = ({
       openVolume,
       averageEntryPrice,
       orders,
-      marginAccountBalance,
-      generalAccountBalance,
-      orderMarginAccountBalance,
+      marginAccountBalance: marginAccountBalance || '0',
+      generalAccountBalance: generalAccountBalance || '0',
+      orderMarginAccountBalance: orderMarginAccountBalance || '0',
       marginFactor: margin?.marginFactor || '1',
       marginMode:
         margin?.marginMode || Schema.MarginMode.MARGIN_MODE_CROSS_MARGIN,
@@ -337,7 +339,9 @@ export const DealTicket = ({
     }
 
     const hasNoBalance =
-      !BigInt(generalAccountBalance) && !BigInt(marginAccountBalance);
+      !BigInt(generalAccountBalance) &&
+      !BigInt(marginAccountBalance) &&
+      !BigInt(orderMarginAccountBalance);
     if (
       hasNoBalance &&
       !(loadingMarginAccountBalance || loadingGeneralAccountBalance)
@@ -367,6 +371,7 @@ export const DealTicket = ({
     marketTradingMode,
     generalAccountBalance,
     marginAccountBalance,
+    orderMarginAccountBalance,
     loadingMarginAccountBalance,
     loadingGeneralAccountBalance,
     pubKey,
@@ -725,10 +730,16 @@ export const DealTicket = ({
         asset={asset}
         marketTradingMode={marketData.marketTradingMode}
         balance={balance}
-        margin={
-          positionEstimate?.estimatePosition?.margin.bestCase.initialLevel ||
-          '0'
-        }
+        margin={(
+          BigInt(
+            positionEstimate?.estimatePosition?.margin.bestCase.initialLevel ||
+              '0'
+          ) +
+          BigInt(
+            positionEstimate?.estimatePosition?.margin.bestCase
+              .orderMarginLevel || '0'
+          )
+        ).toString()}
         isReadOnly={isReadOnly}
         pubKey={pubKey}
         onDeposit={onDeposit}
@@ -761,6 +772,7 @@ export const DealTicket = ({
         onMarketClick={onMarketClick}
         assetSymbol={asset.symbol}
         marginAccountBalance={marginAccountBalance}
+        orderMarginAccountBalance={orderMarginAccountBalance}
         generalAccountBalance={generalAccountBalance}
         positionEstimate={positionEstimate?.estimatePosition}
         market={market}
