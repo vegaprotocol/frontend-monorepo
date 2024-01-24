@@ -12,7 +12,6 @@ describe('LiquidationPrice', () => {
   const props = {
     marketId: 'market-id',
     openVolume: '100',
-    collateralAvailable: '1000',
     decimalPlaces: 2,
     averageEntryPrice: '100',
     generalAccountBalance: '100',
@@ -29,7 +28,12 @@ describe('LiquidationPrice', () => {
       variables: {
         marketId: props.marketId,
         openVolume: props.openVolume,
-        collateralAvailable: props.collateralAvailable,
+        averageEntryPrice: props.averageEntryPrice,
+        generalAccountBalance: props.generalAccountBalance,
+        marginAccountBalance: props.marginAccountBalance,
+        orderMarginAccountBalance: props.orderMarginAccountBalance,
+        marginMode: props.marginMode,
+        marginFactor: props.marginFactor,
       },
     },
     result: {

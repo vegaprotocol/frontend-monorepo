@@ -28,6 +28,7 @@ export const LiquidationPrice = ({
   className?: string;
 }) => {
   const t = useT();
+
   const { data: currentData, previousData } = useEstimatePositionQuery({
     variables: {
       marketId,
