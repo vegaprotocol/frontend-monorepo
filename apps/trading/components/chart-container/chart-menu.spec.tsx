@@ -27,11 +27,11 @@ describe('ChartMenu', () => {
 
     render(<ChartMenu />);
 
-    await userEvent.click(screen.getByRole('button', { name: 'Vega chart' }));
-    expect(useChartSettingsStore.getState().chartlib).toEqual('pennant');
-
-    await userEvent.click(screen.getByRole('button', { name: 'TradingView' }));
+    await userEvent.click(screen.getByTestId('chartlib-toggle-button'));
     expect(useChartSettingsStore.getState().chartlib).toEqual('tradingview');
+
+    await userEvent.click(screen.getByTestId('chartlib-toggle-button'));
+    expect(useChartSettingsStore.getState().chartlib).toEqual('pennant');
   });
 
   describe('tradingview', () => {
