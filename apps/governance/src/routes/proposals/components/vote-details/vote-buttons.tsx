@@ -18,6 +18,7 @@ import { ProposalMinRequirements, ProposalUserAction } from '../shared';
 import { VoteTransactionDialog } from './vote-transaction-dialog';
 import { useVoteButtonsQuery } from './__generated__/Stake';
 import type { DialogProps, VegaTxState } from '@vegaprotocol/proposals';
+import { filterAcceptableGraphqlErrors } from '../../../../lib/party';
 
 interface VoteButtonsContainerProps {
   voteState: VoteState | null;
@@ -42,8 +43,10 @@ export const VoteButtonsContainer = (props: VoteButtonsContainerProps) => {
     skip: !pubKey,
   });
 
+  const filteredErrors = filterAcceptableGraphqlErrors(error);
+
   return (
-    <AsyncRenderer loading={loading} error={error} data={data}>
+    <AsyncRenderer loading={loading} error={filteredErrors} data={data}>
       <VoteButtons
         {...props}
         currentStakeAvailable={toBigNum(
