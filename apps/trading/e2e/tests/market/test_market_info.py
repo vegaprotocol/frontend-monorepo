@@ -76,7 +76,7 @@ def test_market_info_market_volume(page: Page):
     page.get_by_test_id(market_title_test_id).get_by_text(
         "Market volume").click()
     fields = [
-        ["24 Hour Volume", "1"],
+        ["24 Hour Volume", "-"],
         ["Open Interest", "1"],
         ["Best Bid Volume", "99"],
         ["Best Offer Volume", "99"],
