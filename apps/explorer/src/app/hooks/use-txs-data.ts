@@ -31,14 +31,14 @@ export interface IUseTxsData {
 }
 
 export const useTxsData = ({
-  count = 25,
+  count = 50,
   before,
   after,
   filters,
   party,
 }: IUseTxsData) => {
   const [, setSearchParams] = useSearchParams();
-  let hasMoreTxs = true;
+  let hasMoreTxs = false;
   let txsData: BlockExplorerTransactionResult[] = [];
 
   const url = getTxsDataUrl({
@@ -60,8 +60,8 @@ export const useTxsData = ({
   }
 
   const nextPage = useCallback(() => {
-    const after = data?.transactions.at(-1)?.cursor || '';
-    const params: URLSearchParamsInit = { after };
+    const before = data?.transactions.at(-1)?.cursor || '';
+    const params: URLSearchParamsInit = { before };
     if (filters) {
       params.filters = Array.from(filters).join(',');
     }
@@ -69,8 +69,8 @@ export const useTxsData = ({
   }, [filters, data, setSearchParams]);
 
   const previousPage = useCallback(() => {
-    const before = data?.transactions[0]?.cursor || '';
-    const params: URLSearchParamsInit = { before };
+    const after = data?.transactions[0]?.cursor || '';
+    const params: URLSearchParamsInit = { after };
     if (filters && filters.size > 0 && filters.size === 1) {
       params.filters = Array.from(filters)[0];
     }

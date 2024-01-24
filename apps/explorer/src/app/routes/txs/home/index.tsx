@@ -51,9 +51,10 @@ export const TxsListFiltered = () => {
         refreshTxs={refreshTxs}
         nextPage={nextPage}
         previousPage={previousPage}
-        hasPreviousPage={true}
+        hasPreviousPage={hasMoreTxs}
         loading={loading}
         hasMoreTxs={hasMoreTxs}
+        isEmpty={txsData.length === 0}
       >
         <TxsFilter
           filters={filters}
@@ -70,7 +71,16 @@ export const TxsListFiltered = () => {
         txs={txsData}
         loadMoreTxs={nextPage}
         error={error}
-        className="mb-28 w-full min-w-[400px]"
+        className="mb-4 w-full min-w-[400px]"
+      />
+      <TxsListNavigation
+        refreshTxs={refreshTxs}
+        nextPage={nextPage}
+        previousPage={previousPage}
+        hasPreviousPage={hasMoreTxs}
+        loading={loading}
+        hasMoreTxs={hasMoreTxs}
+        isEmpty={txsData.length === 0}
       />
     </>
   );
