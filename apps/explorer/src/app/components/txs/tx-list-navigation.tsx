@@ -10,7 +10,7 @@ export interface TxListNavigationProps {
   loading?: boolean;
   hasPreviousPage: boolean;
   hasMoreTxs: boolean;
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }
 /**
  * Displays a list of transactions with filters and controls to navigate through the list.
@@ -35,7 +35,6 @@ export const TxsListNavigation = ({
           <Button
             className="mr-2"
             size="xs"
-            disabled={!hasPreviousPage || loading}
             onClick={() => {
               previousPage();
             }}
@@ -44,7 +43,6 @@ export const TxsListNavigation = ({
           </Button>
           <Button
             size="xs"
-            disabled={!hasMoreTxs}
             onClick={() => {
               nextPage();
             }}
