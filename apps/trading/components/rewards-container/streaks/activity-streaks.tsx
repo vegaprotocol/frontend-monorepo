@@ -3,6 +3,10 @@ import { useT } from '../../../lib/use-t';
 import classNames from 'classnames';
 import BigNumber from 'bignumber.js';
 import type { PartyActivityStreak } from '@vegaprotocol/types';
+import {
+  NetworkParams,
+  useNetworkParams,
+} from '@vegaprotocol/network-parameters';
 
 export const safeProgress = (
   i: number,
@@ -69,7 +73,9 @@ export const ActivityStreak = ({
 }) => {
   const t = useT();
   const userTierIndex = useGetUserTier(tiers, streak?.activeFor);
-
+  const { params } = useNetworkParams([
+    NetworkParams.rewards_activityStreak_inactivityLimit,
+  ]);
   if (!tiers || tiers.length === 0) return null;
 
   const progressBarHeight = 'h-10';
@@ -205,10 +211,25 @@ export const ActivityStreak = ({
           <span className="flex flex-col">
             {streak?.isActive && (
               <span data-testid="epoch-streak">
-                {t('userActive', '{{active}} trader: {{count}} epochs so far', {
-                  active: streak?.isActive ? 'Active' : 'Inactive',
-                  count: streak?.activeFor || 0,
-                })}{' '}
+                {streak?.isActive
+                  ? t(
+                      'userActive',
+                      '{{active}} trader: {{count}} epochs so far',
+                      {
+                        active: streak?.isActive ? 'Active' : 'Inactive',
+                        count: streak?.activeFor || 0,
+                      }
+                    )
+                  : t(
+                      'userActive',
+                      '{{active}} trader: {{count}} epochs so far, you will lose your streak in the {{remaining}} epochs!',
+                      {
+                        active: streak?.isActive ? 'Active' : 'Inactive',
+                        count: streak?.activeFor || 0,
+                        remaining:
+                          params.rewards_activityStreak_inactivityLimit,
+                      }
+                    )}{' '}
                 {userTierIndex > 0 &&
                   new BigNumber(
                     tiers[0].minimum_activity_streak

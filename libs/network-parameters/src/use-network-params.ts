@@ -9,6 +9,8 @@ export const NetworkParams = {
   blockchains_ethereumConfig: 'blockchains_ethereumConfig',
   reward_asset: 'reward_asset',
   rewards_activityStreak_benefitTiers: 'rewards_activityStreak_benefitTiers',
+  rewards_activityStreak_inactivityLimit:
+    'rewards_activityStreak_inactivityLimit',
   rewards_vesting_benefitTiers: 'rewards_vesting_benefitTiers',
   rewards_marketCreationQuantumMultiple:
     'rewards_marketCreationQuantumMultiple',
