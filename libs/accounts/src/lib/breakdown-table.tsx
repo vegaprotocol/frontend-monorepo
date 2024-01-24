@@ -38,7 +38,7 @@ const BreakdownTable = forwardRef<AgGridReact, BreakdownTableProps>(
         {
           headerName: t('Market'),
           field: 'market.tradableInstrument.instrument.code',
-          width: 90,
+          maxWidth: 150,
           pinned: true,
           sort: 'desc',
           cellRenderer: ({
