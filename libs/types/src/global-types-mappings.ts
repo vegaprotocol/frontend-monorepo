@@ -38,7 +38,6 @@ import type { ProductType, ProposalProductType } from './product';
 export const AccountTypeMapping: {
   [T in AccountType]: string;
 } = {
-  ACCOUNT_TYPE_ORDER_MARGIN: 'Per asset market account',
   ACCOUNT_TYPE_BOND: 'Bond account',
   ACCOUNT_TYPE_EXTERNAL: 'External account',
   ACCOUNT_TYPE_FEES_INFRASTRUCTURE: 'Infrastructure fees account',
@@ -49,7 +48,7 @@ export const AccountTypeMapping: {
   ACCOUNT_TYPE_GLOBAL_REWARD: 'Global reward account',
   ACCOUNT_TYPE_INSURANCE: 'Insurance account',
   ACCOUNT_TYPE_MARGIN: 'Margin account',
-  ACCOUNT_TYPE_ORDER_MARGIN: 'Isolated margin account',
+  ACCOUNT_TYPE_ORDER_MARGIN: 'Per asset market account',
   ACCOUNT_TYPE_PENDING_TRANSFERS: 'Pending transfers account',
   ACCOUNT_TYPE_PENDING_FEE_REFERRAL_REWARD:
     'Pending fee referral reward account',
@@ -183,9 +182,6 @@ export const DataSourceSpecStatusMapping: {
 export const OrderRejectionReasonMapping: {
   [T in OrderRejectionReason]: string;
 } = {
-  ORDER_ERROR_ISOLATED_MARGIN_CHECK_FAILED: 'Isolated margin check failed',
-  ORDER_ERROR_PEGGED_ORDERS_NOT_ALLOWED_IN_ISOLATED_MARGIN_MODE:
-    'Pegged orders not allowed in isolated margin mode',
   ORDER_ERROR_AMEND_FAILURE: 'Amend failure',
   ORDER_ERROR_BUY_CANNOT_REFERENCE_BEST_ASK_PRICE:
     'Buy cannot reference best ask price',
@@ -527,9 +523,6 @@ export const TransferTypeMapping: TransferTypeMap = {
   TRANSFER_TYPE_SLA_PERFORMANCE_BONUS_DISTRIBUTE:
     'SLA performance bonus distributed',
   TRANSFER_TYPE_SUCCESSOR_INSURANCE_FRACTION: 'Successor insurance fraction',
-  TRANSFER_TYPE_ISOLATED_MARGIN_LOW: 'Isolated margin low',
-  TRANSFER_TYPE_ORDER_MARGIN_LOW: 'Order margin low',
-  TRANSFER_TYPE_ORDER_MARGIN_HIGH: 'Order margin high',
 };
 
 export const DescriptionTransferTypeMapping: TransferTypeMap = {
@@ -577,9 +570,6 @@ export const DescriptionTransferTypeMapping: TransferTypeMap = {
   TRANSFER_TYPE_SLA_PERFORMANCE_BONUS_DISTRIBUTE:
     'SLA performance bonus distributed',
   TRANSFER_TYPE_SUCCESSOR_INSURANCE_FRACTION: 'Successor insurance fraction',
-  TRANSFER_TYPE_ISOLATED_MARGIN_LOW: 'Isolated margin low',
-  TRANSFER_TYPE_ORDER_MARGIN_LOW: 'Order margin low',
-  TRANSFER_TYPE_ORDER_MARGIN_HIGH: 'Order margin high',
 };
 
 /**
