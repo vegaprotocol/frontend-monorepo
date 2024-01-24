@@ -263,8 +263,11 @@ export const DealTicket = ({
     marketId: market.id,
     openVolume,
     orders,
-    collateralAvailable:
-      marginAccountBalance || generalAccountBalance ? balance : undefined,
+    marginAccountBalance: marginAccountBalance,
+    generalAccountBalance: generalAccountBalance,
+    orderMarginAccountBalance: '0', // TODO: Get real balance
+    marginMode: Schema.MarginMode.MARGIN_MODE_CROSS_MARGIN, // TODO: unhardcode this and get users margin mode for the market
+    averageEntryPrice: marketPrice || '0', // TODO: This assumes the order will be entirely filled at the current market price
     skip:
       !normalizedOrder ||
       (normalizedOrder.type !== Schema.OrderType.TYPE_MARKET &&
