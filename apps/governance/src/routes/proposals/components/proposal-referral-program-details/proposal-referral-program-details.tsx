@@ -1,5 +1,4 @@
 import { useTranslation } from 'react-i18next';
-import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
 import {
   KeyValueTable,
   KeyValueTableRow,
@@ -14,9 +13,10 @@ import {
 } from '@vegaprotocol/utils';
 import BigNumber from 'bignumber.js';
 import { useAppState } from '../../../../contexts/app-state/app-state-context';
+import { type Proposal } from '../../types';
 
 interface ProposalReferralProgramDetailsProps {
-  proposal: ProposalQuery['proposal'];
+  proposal: Proposal | null;
 }
 
 export const formatEndOfProgramTimestamp = (value: string) => {

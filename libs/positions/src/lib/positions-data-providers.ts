@@ -42,6 +42,7 @@ import {
 
 export interface Position {
   marginMode: MarginFieldsFragment['marginMode'];
+  marginFactor: MarginFieldsFragment['marginFactor'];
   maintenanceLevel: MarginFieldsFragment['maintenanceLevel'] | undefined;
   assetId: string;
   assetSymbol: string;
@@ -152,6 +153,7 @@ export const getMetrics = (
         : undefined;
     metrics.push({
       marginMode,
+      marginFactor: marginFactor || '0',
       maintenanceLevel: margin?.maintenanceLevel,
       assetId: asset.id,
       assetSymbol: asset.symbol,

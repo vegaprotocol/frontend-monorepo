@@ -1,7 +1,11 @@
-import { useExplorerProposalQuery } from './__generated__/Proposal';
+import {
+  useExplorerProposalQuery,
+  type ExplorerProposalQuery,
+} from './__generated__/Proposal';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 import { ENV } from '../../../config/env';
 import Hash from '../hash';
+
 export type ProposalLinkProps = {
   id: string;
   text?: string;
@@ -16,8 +20,13 @@ const ProposalLink = ({ id, text }: ProposalLinkProps) => {
     variables: { id },
   });
 
+  const proposal = data?.proposal as Extract<
+    ExplorerProposalQuery['proposal'],
+    { __typename?: 'Proposal' }
+  >;
+
   const base = ENV.dataSources.governanceUrl;
-  const label = data?.proposal?.rationale.title || id;
+  const label = proposal?.rationale.title || id;
 
   return (
     <ExternalLink href={`${base}/proposals/${id}`}>

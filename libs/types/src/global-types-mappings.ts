@@ -38,7 +38,6 @@ import type { ProductType, ProposalProductType } from './product';
 export const AccountTypeMapping: {
   [T in AccountType]: string;
 } = {
-  ACCOUNT_TYPE_ORDER_MARGIN: 'Per asset market account',
   ACCOUNT_TYPE_BOND: 'Bond account',
   ACCOUNT_TYPE_EXTERNAL: 'External account',
   ACCOUNT_TYPE_FEES_INFRASTRUCTURE: 'Infrastructure fees account',
@@ -49,6 +48,7 @@ export const AccountTypeMapping: {
   ACCOUNT_TYPE_GLOBAL_REWARD: 'Global reward account',
   ACCOUNT_TYPE_INSURANCE: 'Insurance account',
   ACCOUNT_TYPE_MARGIN: 'Margin account',
+  ACCOUNT_TYPE_ORDER_MARGIN: 'Per asset market account',
   ACCOUNT_TYPE_PENDING_TRANSFERS: 'Pending transfers account',
   ACCOUNT_TYPE_PENDING_FEE_REFERRAL_REWARD:
     'Pending fee referral reward account',
@@ -116,9 +116,14 @@ export const IntervalMapping: {
   INTERVAL_BLOCK: '1 block',
   INTERVAL_I15M: 'I15M',
   INTERVAL_I1D: 'I1D',
+  INTERVAL_I7D: 'I7D',
   INTERVAL_I1H: 'I1H',
+  INTERVAL_I4H: 'I4H',
+  INTERVAL_I8H: 'I8H',
+  INTERVAL_I12H: 'I12H',
   INTERVAL_I1M: 'I1M',
   INTERVAL_I5M: 'I5M',
+  INTERVAL_I30M: 'I30M',
   INTERVAL_I6H: 'I6H',
 };
 

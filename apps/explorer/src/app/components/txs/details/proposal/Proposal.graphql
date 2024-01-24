@@ -1,7 +1,9 @@
 query ExplorerProposalStatus($id: ID!) {
   proposal(id: $id) {
-    id
-    state
-    rejectionReason
+    ... on Proposal {
+      id
+      state
+      rejectionReason
+    }
   }
 }
