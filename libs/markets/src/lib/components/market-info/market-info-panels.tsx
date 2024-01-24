@@ -847,7 +847,7 @@ export const EthOraclePanel = ({ sourceType }: { sourceType: EthCallSpec }) => {
       {sourceType.normalisers?.map((normaliser, i) => (
         <MarketInfoTable key={i} data={normaliser} />
       ))}
-      ?<h3 className={header}>{t('Filters')}</h3>
+      <h3 className={header}>{t('Filters')}</h3>
       <h3 className={header}>{t('Key')}</h3>
       {sourceType.filters?.map((filter, i) => (
         <>
