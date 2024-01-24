@@ -22,8 +22,6 @@ export const TxsListNavigation = ({
   refreshTxs,
   nextPage,
   previousPage,
-  hasMoreTxs,
-  hasPreviousPage,
   children,
   isEmpty,
   loading = false,
