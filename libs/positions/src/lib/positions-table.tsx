@@ -410,7 +410,12 @@ export const PositionsTable = ({
                 className="block text-right grow"
                 marketId={data.marketId}
                 openVolume={data.openVolume}
-                collateralAvailable={data.totalBalance}
+                generalAccountBalance={data.generalAccountBalance}
+                marginAccountBalance={data.marginAccountBalance}
+                orderMarginAccountBalance={data.orderAccountBalance}
+                averageEntryPrice={data.averageEntryPrice}
+                marginFactor={data.marginFactor}
+                marginMode={data.marginMode}
                 decimalPlaces={data.marketDecimalPlaces}
               />
             </div>

@@ -6,6 +6,7 @@ import { EstimatePositionDocument } from './__generated__/Positions';
 import type { EstimatePositionQuery } from './__generated__/Positions';
 import { LiquidationPrice } from './liquidation-price';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
+import { MarginMode } from '@vegaprotocol/types';
 
 describe('LiquidationPrice', () => {
   const props = {
@@ -13,6 +14,12 @@ describe('LiquidationPrice', () => {
     openVolume: '100',
     collateralAvailable: '1000',
     decimalPlaces: 2,
+    averageEntryPrice: '100',
+    generalAccountBalance: '100',
+    marginAccountBalance: '100',
+    orderMarginAccountBalance: '100',
+    marginMode: MarginMode.MARGIN_MODE_CROSS_MARGIN,
+    marginFactor: '1',
   };
   const worstCaseOpenVolume = '200';
   const bestCaseOpenVolume = '100';

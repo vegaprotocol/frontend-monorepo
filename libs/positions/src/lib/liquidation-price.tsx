@@ -2,17 +2,28 @@ import { Tooltip } from '@vegaprotocol/ui-toolkit';
 import { useEstimatePositionQuery } from './__generated__/Positions';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { useT } from '../use-t';
+import { MarginMode } from '@vegaprotocol/types';
 
 export const LiquidationPrice = ({
   marketId,
   openVolume,
-  collateralAvailable,
+  averageEntryPrice,
+  generalAccountBalance,
+  marginAccountBalance,
+  orderMarginAccountBalance,
+  marginMode = MarginMode.MARGIN_MODE_CROSS_MARGIN,
+  marginFactor,
   decimalPlaces,
   className,
 }: {
   marketId: string;
   openVolume: string;
-  collateralAvailable: string;
+  averageEntryPrice: string;
+  generalAccountBalance: string;
+  marginAccountBalance: string;
+  orderMarginAccountBalance: string;
+  marginMode: MarginMode;
+  marginFactor: string;
   decimalPlaces: number;
   className?: string;
 }) => {
@@ -21,7 +32,12 @@ export const LiquidationPrice = ({
     variables: {
       marketId,
       openVolume,
-      collateralAvailable,
+      averageEntryPrice,
+      generalAccountBalance,
+      marginAccountBalance,
+      orderMarginAccountBalance,
+      marginMode,
+      marginFactor,
     },
     fetchPolicy: 'no-cache',
     skip: !openVolume || openVolume === '0',
