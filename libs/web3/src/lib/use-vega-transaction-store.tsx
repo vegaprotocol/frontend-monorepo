@@ -10,6 +10,7 @@ import {
   isStopOrdersSubmissionTransaction,
   isStopOrdersCancellationTransaction,
   determineId,
+  isMarginModeUpdateTransaction,
 } from '@vegaprotocol/wallet';
 
 import { create } from 'zustand';
@@ -58,7 +59,7 @@ export interface VegaTransactionStore {
 
 export const useVegaTransactionStore = create<VegaTransactionStore>()(
   subscribeWithSelector((set, get) => ({
-    transactions: [] as VegaStoredTxState[],
+    transactions: [] as (VegaStoredTxState | undefined)[],
     create: (body: Transaction, order?: OrderTxUpdateFieldsFragment) => {
       const transactions = get().transactions;
       const now = new Date();
@@ -205,16 +206,22 @@ export const useVegaTransactionStore = create<VegaTransactionStore>()(
               isStopOrdersCancellationTransaction(transaction.body);
             const isConfirmedStopOrderSubmission =
               isStopOrdersSubmissionTransaction(transaction.body);
+            const isConfirmedMarginModeTransaction =
+              isMarginModeUpdateTransaction(transaction.body);
 
             if (
-              (isConfirmedOrderCancellation ||
-                isConfirmedTransfer ||
-                isConfirmedStopOrderCancellation ||
-                isConfirmedStopOrderSubmission) &&
-              !transactionResult.error &&
-              transactionResult.status
+              isConfirmedOrderCancellation ||
+              isConfirmedTransfer ||
+              isConfirmedStopOrderCancellation ||
+              isConfirmedStopOrderSubmission ||
+              isConfirmedMarginModeTransaction
             ) {
-              transaction.status = VegaTxStatus.Complete;
+              if (transactionResult.error) {
+                transaction.status = VegaTxStatus.Error;
+                transaction.error = new Error(transactionResult.error);
+              } else if (transactionResult.status) {
+                transaction.status = VegaTxStatus.Complete;
+              }
             }
             transaction.dialogOpen = true;
             transaction.updatedAt = new Date();
