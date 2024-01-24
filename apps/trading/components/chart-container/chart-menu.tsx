@@ -18,7 +18,7 @@ import {
   TradingDropdownTrigger,
   Icon,
 } from '@vegaprotocol/ui-toolkit';
-import { Interval } from '@vegaprotocol/types';
+import { type Interval } from '@vegaprotocol/types';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { ALLOWED_TRADINGVIEW_HOSTNAMES } from '@vegaprotocol/trading-view';
 import { IconNames, type IconName } from '@blueprintjs/icons';

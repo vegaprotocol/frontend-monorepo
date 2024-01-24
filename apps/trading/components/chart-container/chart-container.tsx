@@ -1,5 +1,5 @@
 import invert from 'lodash/invert';
-import { Interval } from '@vegaprotocol/types';
+import { type Interval } from '@vegaprotocol/types';
 import {
   TradingViewContainer,
   ALLOWED_TRADINGVIEW_HOSTNAMES,
