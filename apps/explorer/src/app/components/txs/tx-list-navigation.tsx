@@ -11,6 +11,7 @@ export interface TxListNavigationProps {
   hasPreviousPage: boolean;
   hasMoreTxs: boolean;
   children?: React.ReactNode;
+  isEmpty?: boolean;
 }
 /**
  * Displays a list of transactions with filters and controls to navigate through the list.
@@ -24,6 +25,7 @@ export const TxsListNavigation = ({
   hasMoreTxs,
   hasPreviousPage,
   children,
+  isEmpty,
   loading = false,
 }: TxListNavigationProps) => {
   return (
@@ -43,6 +45,7 @@ export const TxsListNavigation = ({
           </Button>
           <Button
             size="xs"
+            disabled={isEmpty}
             onClick={() => {
               nextPage();
             }}
