@@ -16,6 +16,7 @@ type TradingButtonProps = {
   subLabel?: ReactNode;
   fill?: boolean;
   minimal?: boolean;
+  testId?: string;
 };
 
 const getClassName = (
@@ -120,6 +121,7 @@ export const TradingButton = forwardRef<
       className,
       subLabel,
       fill,
+      testId,
       ...props
     },
     ref
@@ -132,6 +134,7 @@ export const TradingButton = forwardRef<
         { size, subLabel, intent, fill, minimal },
         className
       )}
+      data-testid={testId}
       {...props}
     >
       <Content icon={icon} subLabel={subLabel} children={children} />
