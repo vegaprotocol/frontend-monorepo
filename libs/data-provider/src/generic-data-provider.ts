@@ -160,7 +160,7 @@ interface DataProviderParams<
   resetDelay?: number;
   pollInterval?: number;
   additionalContext?: Record<string, unknown>;
-  errorPolicy: ErrorPolicy;
+  errorPolicy?: ErrorPolicy;
   getQueryVariables?: (variables: Variables) => QueryVariables;
   getSubscriptionVariables?: (
     variables: Variables
@@ -196,7 +196,7 @@ function makeDataProviderInternal<
   fetchPolicy,
   resetDelay,
   additionalContext,
-  errorPolicy,
+  errorPolicy = 'none',
   getQueryVariables,
   getSubscriptionVariables,
   pollInterval,
