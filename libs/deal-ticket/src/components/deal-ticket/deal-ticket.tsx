@@ -58,8 +58,9 @@ import type {
 } from '@vegaprotocol/markets';
 import { MarginWarning } from '../deal-ticket-validation/margin-warning';
 import {
-  useMarketAccountBalance,
+  useMarginAccountBalance,
   useAccountBalance,
+  marginModeDataProvider,
 } from '@vegaprotocol/accounts';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { type OrderFormValues } from '../../hooks';
@@ -166,9 +167,10 @@ export const DealTicket = ({
 
   const asset = getAsset(market);
   const {
-    accountBalance: marginAccountBalance,
+    orderMarginAccountBalance,
+    marginAccountBalance,
     loading: loadingMarginAccountBalance,
-  } = useMarketAccountBalance(market.id);
+  } = useMarginAccountBalance(market.id);
 
   const {
     accountBalance: generalAccountBalance,
@@ -241,7 +243,19 @@ export const DealTicket = ({
     variables: { partyId: pubKey || '', marketId: market.id },
     skip: !pubKey,
   });
-  const openVolume = useOpenVolume(pubKey, market.id) ?? '0';
+  const { data: margin } = useDataProvider({
+    dataProvider: marginModeDataProvider,
+    variables: { partyId: pubKey || '', marketId: market.id },
+    skip: !pubKey,
+  });
+
+  const { openVolume, averageEntryPrice } = useOpenVolume(
+    pubKey,
+    market.id
+  ) || {
+    openVolume: '0',
+    averageEntryPrice: '0',
+  };
   const orders = activeOrders
     ? activeOrders.map<Schema.OrderInfo>((order) => ({
         isMarketOrder: order.type === Schema.OrderType.TYPE_MARKET,
@@ -259,21 +273,25 @@ export const DealTicket = ({
     });
   }
 
-  const positionEstimate = usePositionEstimate({
-    marketId: market.id,
-    openVolume,
-    orders,
-    marginAccountBalance: marginAccountBalance,
-    generalAccountBalance: generalAccountBalance,
-    orderMarginAccountBalance: '0', // TODO: Get real balance
-    marginMode: Schema.MarginMode.MARGIN_MODE_CROSS_MARGIN, // TODO: unhardcode this and get users margin mode for the market
-    averageEntryPrice: marketPrice || '0', // TODO: This assumes the order will be entirely filled at the current market price
-    skip:
-      !normalizedOrder ||
+  const positionEstimate = usePositionEstimate(
+    {
+      marketId: market.id,
+      openVolume,
+      averageEntryPrice,
+      orders,
+      marginAccountBalance,
+      generalAccountBalance,
+      orderMarginAccountBalance,
+      marginFactor: margin?.marginFactor || '1',
+      marginMode:
+        margin?.marginMode || Schema.MarginMode.MARGIN_MODE_CROSS_MARGIN,
+      includeCollateralIncreaseInAvailableCollateral: true,
+    },
+    !normalizedOrder ||
       (normalizedOrder.type !== Schema.OrderType.TYPE_MARKET &&
         (!normalizedOrder.price || normalizedOrder.price === '0')) ||
-      normalizedOrder.size === '0',
-  });
+      normalizedOrder.size === '0'
+  );
 
   const assetSymbol = getAsset(market).symbol;
 

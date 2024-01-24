@@ -137,14 +137,15 @@ const PositionMargin = ({ data }: { data: Position }) => {
       ? (
           BigInt(data.marginAccountBalance) + BigInt(data.generalAccountBalance)
         ).toString()
-      : BigInt(data.marginAccountBalance) > BigInt(data.orderAccountBalance)
+      : BigInt(data.marginAccountBalance) >
+        BigInt(data.orderMarginAccountBalance)
       ? data.marginAccountBalance
-      : data.orderAccountBalance;
+      : data.orderMarginAccountBalance;
   const getWidth = (balance: string) =>
     BigNumber(balance).multipliedBy(100).dividedBy(max).toNumber();
   const inCrossMode = data.marginMode === MarginMode.MARGIN_MODE_CROSS_MARGIN;
-  const hasOrderAccountBalance =
-    !inCrossMode && data.orderAccountBalance !== '0';
+  const hasOrderMarginAccountBalance =
+    !inCrossMode && data.orderMarginAccountBalance !== '0';
 
   return (
     <>
@@ -168,7 +169,7 @@ const PositionMargin = ({ data }: { data: Position }) => {
               })
             : undefined
         }
-        className={classnames({ 'mb-2': hasOrderAccountBalance })}
+        className={classnames({ 'mb-2': hasOrderMarginAccountBalance })}
         marker={
           data.maintenanceLevel ? getWidth(data.maintenanceLevel) : undefined
         }
@@ -183,12 +184,12 @@ const PositionMargin = ({ data }: { data: Position }) => {
           })
         }
       />
-      {hasOrderAccountBalance ? (
+      {hasOrderMarginAccountBalance ? (
         <MarginChart
-          width={getWidth(data.orderAccountBalance)}
+          width={getWidth(data.orderMarginAccountBalance)}
           label={t('Order: {{balance}}', {
             balance: addDecimalsFormatNumber(
-              data.orderAccountBalance,
+              data.orderMarginAccountBalance,
               data.assetDecimals
             ),
           })}
@@ -410,10 +411,10 @@ export const PositionsTable = ({
                 className="block text-right grow"
                 marketId={data.marketId}
                 openVolume={data.openVolume}
+                averageEntryPrice={data.openVolume}
                 generalAccountBalance={data.generalAccountBalance}
                 marginAccountBalance={data.marginAccountBalance}
-                orderMarginAccountBalance={data.orderAccountBalance}
-                averageEntryPrice={data.averageEntryPrice}
+                orderMarginAccountBalance={data.orderMarginAccountBalance}
                 marginFactor={data.marginFactor}
                 marginMode={data.marginMode}
                 decimalPlaces={data.marketDecimalPlaces}

@@ -41,24 +41,26 @@ subscription PositionsSubscription($partyId: ID!) {
 query EstimatePosition(
   $marketId: ID!
   $openVolume: String!
-  $orders: [OrderInfo!]
   $averageEntryPrice: String!
+  $orders: [OrderInfo!]
   $marginAccountBalance: String!
   $generalAccountBalance: String!
   $orderMarginAccountBalance: String!
   $marginMode: MarginMode!
   $marginFactor: String
+  $includeCollateralIncreaseInAvailableCollateral: Boolean
 ) {
   estimatePosition(
     marketId: $marketId
     openVolume: $openVolume
-    orders: $orders
     averageEntryPrice: $averageEntryPrice
+    orders: $orders
     marginAccountBalance: $marginAccountBalance
     generalAccountBalance: $generalAccountBalance
     orderMarginAccountBalance: $orderMarginAccountBalance
     marginMode: $marginMode
     marginFactor: $marginFactor
+    includeCollateralIncreaseInAvailableCollateral: $includeCollateralIncreaseInAvailableCollateral
     # Everywhere in the codebase we expect price values of the underlying to have the right
     # number of digits for formatting with market.decimalPlaces. By default the estimatePosition
     # query will return a full value requiring formatting using asset.decimals. For consistency
@@ -78,6 +80,10 @@ query EstimatePosition(
         initialLevel
         collateralReleaseLevel
       }
+    }
+    collateralIncreaseEstimate {
+      worstCase
+      bestCase
     }
     liquidation {
       worstCase {

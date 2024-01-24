@@ -52,7 +52,7 @@ export interface Position {
   quantum: string;
   lossSocializationAmount: string;
   marginAccountBalance: string;
-  orderAccountBalance: string;
+  orderMarginAccountBalance: string;
   generalAccountBalance: string;
   marketDecimalPlaces: number;
   marketId: string;
@@ -119,7 +119,7 @@ export const getMetrics = (
       marginAccount?.balance ?? 0,
       asset.decimals
     );
-    const orderAccountBalance = toBigNum(
+    const orderMarginAccountBalance = toBigNum(
       orderAccount?.balance ?? 0,
       asset.decimals
     );
@@ -139,10 +139,10 @@ export const getMetrics = (
       : undefined;
     const totalBalance = marginAccountBalance
       .plus(generalAccountBalance)
-      .plus(orderAccountBalance);
+      .plus(orderMarginAccountBalance);
     const marginMode =
       margin?.marginMode || MarginMode.MARGIN_MODE_CROSS_MARGIN;
-    const marginFactor = margin?.marginFactor;
+    const marginFactor = margin?.marginFactor || '1';
     const currentLeverage =
       marginMode === MarginMode.MARGIN_MODE_ISOLATED_MARGIN
         ? (marginFactor && 1 / Number(marginFactor)) || undefined
@@ -153,7 +153,7 @@ export const getMetrics = (
         : undefined;
     metrics.push({
       marginMode,
-      marginFactor: marginFactor || '0',
+      marginFactor,
       maintenanceLevel: margin?.maintenanceLevel,
       assetId: asset.id,
       assetSymbol: asset.symbol,
@@ -163,7 +163,7 @@ export const getMetrics = (
       quantum: asset.quantum,
       lossSocializationAmount: position.lossSocializationAmount || '0',
       marginAccountBalance: marginAccount?.balance ?? '0',
-      orderAccountBalance: orderAccount?.balance ?? '0',
+      orderMarginAccountBalance: orderAccount?.balance ?? '0',
       generalAccountBalance: generalAccount?.balance ?? '0',
       marketDecimalPlaces,
       marketId: market.id,
@@ -269,13 +269,26 @@ const positionDataProvider = makeDerivedDataProvider<
   }
 );
 
+export type OpenVolumeData = Pick<
+  PositionFieldsFragment,
+  'openVolume' | 'averageEntryPrice'
+>;
+
 export const openVolumeDataProvider = makeDerivedDataProvider<
-  string,
+  OpenVolumeData,
   never,
   PositionsQueryVariables & MarketDataQueryVariables
->(
-  [positionDataProvider],
-  (data) => (data[0] as PositionFieldsFragment | null)?.openVolume || null
+>([positionDataProvider], ([data], variables, previousData) =>
+  produce(previousData, (draft) => {
+    if (!data) {
+      return data;
+    }
+    const newData = {
+      openVolume: (data as PositionFieldsFragment).openVolume,
+      averageEntryPrice: (data as PositionFieldsFragment).averageEntryPrice,
+    };
+    return draft ? Object.assign(draft, newData) : newData;
+  })
 );
 
 export const rejoinPositionData = (
