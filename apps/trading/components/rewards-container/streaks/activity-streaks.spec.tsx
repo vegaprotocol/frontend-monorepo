@@ -1,6 +1,17 @@
 import { render, screen } from '@testing-library/react';
 import { ActivityStreak } from './activity-streaks';
 
+jest.mock('@vegaprotocol/network-parameters', () => ({
+  ...jest.requireActual('@vegaprotocol/network-parameters'),
+  useNetworkParams: jest.fn(() => ({
+    params: {
+      rewards_activityStreak_inactivityLimit: '3.00',
+    },
+    loading: false,
+    error: null,
+  })),
+}));
+
 describe('ActivityStreak', () => {
   it('renders null when streak is not active', () => {
     const tiers: {
