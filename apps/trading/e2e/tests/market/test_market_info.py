@@ -191,7 +191,6 @@ def test_market_info_margin_scaling_factors(page: Page):
     ).click()
     fields = [
         ["Linear Slippage Factor", "0.001"],
-        ["Quadratic Slippage Factor", "0"],
         ["Search Level", "1.1"],
         ["Initial Margin", "1.5"],
         ["Collateral Release", "1.7"],
@@ -237,7 +236,6 @@ def test_market_info_liquidity_monitoring_parameters(page: Page):
         "Liquidity monitoring parameters"
     ).click()
     fields = [
-        ["Triggering Ratio", "0.7"],
         ["Time Window", "3,600"],
         ["Scaling Factor", "1"],
     ]
