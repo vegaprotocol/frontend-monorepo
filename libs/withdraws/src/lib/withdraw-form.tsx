@@ -26,7 +26,9 @@ import { formatDistanceToNow } from 'date-fns';
 import { useForm, Controller, useWatch } from 'react-hook-form';
 import { WithdrawLimits } from './withdraw-limits';
 import {
+  ContractMethod,
   ETHEREUM_EAGER_CONNECT,
+  useGasPrice,
   useWeb3ConnectStore,
   useWeb3Disconnect,
 } from '@vegaprotocol/web3';
@@ -140,6 +142,8 @@ export const WithdrawForm = ({
 
   const amount = useWatch({ name: 'amount', control });
 
+  const gasPrice = useGasPrice(ContractMethod.WITHDRAW_ASSET);
+
   const onSubmit = async (fields: FormFields) => {
     if (!selectedAsset) {
       throw new Error('Asset not selected');
@@ -247,6 +251,7 @@ export const WithdrawForm = ({
               delay={delay}
               balance={balance}
               asset={selectedAsset}
+              gas={gasPrice}
             />
           </div>
         )}
