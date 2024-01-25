@@ -209,7 +209,7 @@ export const ActivityStreak = ({
           <VegaIcon name={VegaIconNames.STREAK} />
 
           <span className="flex flex-col">
-            {streak?.isActive && (
+            {
               <span data-testid="epoch-streak">
                 {streak?.isActive
                   ? t(
@@ -238,7 +238,7 @@ export const ActivityStreak = ({
                     tier: userTierIndex,
                   })}
               </span>
-            )}
+            }
           </span>
         </div>
       </div>
