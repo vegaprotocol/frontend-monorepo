@@ -3,7 +3,7 @@ import { ErrorBoundary } from '@sentry/react';
 import { CompetitionsHeader } from '../../components/competitions/competitions-header';
 import { Intent, Loader, TradingButton } from '@vegaprotocol/ui-toolkit';
 
-import { useGames } from './hooks/use-games';
+import { useGames } from '../../lib/hooks/use-games';
 import { useCurrentEpochInfoQuery } from '../referrals/hooks/__generated__/Epoch';
 import { Link, useNavigate } from 'react-router-dom';
 import { Links } from '../../lib/links';
@@ -13,7 +13,7 @@ import {
 } from '../../components/competitions/competitions-cta';
 import { GamesContainer } from '../../components/competitions/games-container';
 import { CompetitionsLeaderboard } from '../../components/competitions/competitions-leaderboard';
-import { useTeams } from './hooks/use-teams';
+import { useTeams } from '../../lib/hooks/use-teams';
 import take from 'lodash/take';
 import { usePageTitle } from '../../lib/hooks/use-page-title';
 

@@ -22,6 +22,7 @@ import { ErrorBoundary } from '../../components/error-boundary';
 import { LayoutWithGradient } from '../../components/layouts-inner';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { JoinTeam } from './join-team';
+import { UpdateTeamButton } from './update-team-button';
 
 export const CompetitionsTeam = () => {
   const t = useT();
@@ -95,6 +96,7 @@ const TeamPage = ({
         <div className="flex flex-col items-start gap-1 lg:gap-3">
           <h1 className="calt text-2xl lg:text-3xl xl:text-5xl">{team.name}</h1>
           <JoinTeam team={team} partyTeam={partyTeam} refetch={refetch} />
+          <UpdateTeamButton team={team} />
         </div>
       </header>
       <TeamStats stats={stats} members={members} games={games} />

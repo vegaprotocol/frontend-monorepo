@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import { getNumberFormat } from '@vegaprotocol/utils';
-import { type useTeams } from '../../client-pages/competitions/hooks/use-teams';
+import { type useTeams } from '../../lib/hooks/use-teams';
 import { useT } from '../../lib/use-t';
 import { Table } from '../table';
 import { Rank } from './graphics/rank';

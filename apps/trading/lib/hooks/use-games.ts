@@ -1,6 +1,6 @@
 import compact from 'lodash/compact';
-import { useActiveRewardsQuery } from '../../../components/rewards-container/__generated__/Rewards';
-import { isActiveReward } from '../../../components/rewards-container/active-rewards';
+import { useActiveRewardsQuery } from '../../components/rewards-container/__generated__/Rewards';
+import { isActiveReward } from '../../components/rewards-container/active-rewards';
 import { EntityScope, type TransferNode } from '@vegaprotocol/types';
 
 const isScopedToTeams = (node: TransferNode) =>
