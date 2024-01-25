@@ -221,7 +221,7 @@ export const ActivityStreak = ({
                       }
                     )
                   : t(
-                      'userActive',
+                      'userInactive',
                       '{{active}} trader: {{count}} epochs so far, you will lose your streak in {{remaining}} epochs!',
                       {
                         active: streak?.isActive ? 'Active' : 'Inactive',
