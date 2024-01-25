@@ -181,6 +181,7 @@ const marginsFields: MarginFieldsFragment[] = [
 ];
 
 export const singleRow: Position = {
+  marginFactor: '1',
   generalAccountBalance: '12345600',
   maintenanceLevel: '12300000',
   marginMode: Schema.MarginMode.MARGIN_MODE_CROSS_MARGIN,
