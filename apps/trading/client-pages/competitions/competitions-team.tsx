@@ -93,17 +93,30 @@ const TeamPage = ({
       <header className="flex gap-3 lg:gap-4 pt-5 lg:pt-10">
         <TeamAvatar teamId={team.teamId} imgUrl={team.avatarUrl} />
         <div className="flex flex-col items-start gap-1 lg:gap-3">
-          <h1 className="calt text-2xl lg:text-3xl xl:text-5xl">{team.name}</h1>
+          <h1
+            className="calt text-2xl lg:text-3xl xl:text-5xl"
+            data-testid="team-name"
+          >
+            {team.name}
+          </h1>
           <JoinTeam team={team} partyTeam={partyTeam} refetch={refetch} />
         </div>
       </header>
       <TeamStats stats={stats} members={members} games={games} />
       <section>
         <div className="flex gap-4 lg:gap-8 mb-4 border-b border-default">
-          <ToggleButton active={showGames} onClick={() => setShowGames(true)}>
+          <ToggleButton
+            active={showGames}
+            onClick={() => setShowGames(true)}
+            data-testid="games-toggle"
+          >
             {t('Games ({{count}})', { count: games ? games.length : 0 })}
           </ToggleButton>
-          <ToggleButton active={!showGames} onClick={() => setShowGames(false)}>
+          <ToggleButton
+            active={!showGames}
+            onClick={() => setShowGames(false)}
+            data-testid="members-toggle"
+          >
             {t('Members ({{count}})', {
               count: members ? members.length : 0,
             })}
