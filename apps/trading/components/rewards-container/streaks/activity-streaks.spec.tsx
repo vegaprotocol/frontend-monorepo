@@ -5,7 +5,7 @@ jest.mock('@vegaprotocol/network-parameters', () => ({
   ...jest.requireActual('@vegaprotocol/network-parameters'),
   useNetworkParams: jest.fn(() => ({
     params: {
-      rewards_activityStreak_inactivityLimit: '3.00',
+      rewards_activityStreak_inactivityLimit: '3',
     },
     loading: false,
     error: null,
