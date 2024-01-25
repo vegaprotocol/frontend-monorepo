@@ -3,6 +3,7 @@ import type {
   EntityScope,
   GovernanceTransferKind,
   GovernanceTransferType,
+  IndividualScope,
   PeggedReference,
   ProposalChange,
   TransferStatus,
@@ -698,6 +699,12 @@ export const EntityScopeLabelMapping: { [e in EntityScope]: string } = {
   ENTITY_SCOPE_INDIVIDUALS: 'Individual',
   /** Rewards must be distributed directly to eligible teams, and then amongst team members */
   ENTITY_SCOPE_TEAMS: 'Team',
+};
+
+export const IndividualScopeMapping: { [e in IndividualScope]: string } = {
+  INDIVIDUAL_SCOPE_ALL: 'All',
+  INDIVIDUAL_SCOPE_IN_TEAM: 'In team',
+  INDIVIDUAL_SCOPE_NOT_IN_TEAM: 'Not in team',
 };
 
 export enum DistributionStrategyMapping {
