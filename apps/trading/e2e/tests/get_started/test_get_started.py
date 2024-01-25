@@ -10,14 +10,17 @@ import logging
 
 logger = logging.getLogger()
 
+
 @pytest.fixture(scope="class")
 def vega():
     with init_vega() as vega:
         yield vega
 
+
 @pytest.fixture(scope="class")
 def simple_market(vega: VegaServiceNull):
     return setup_simple_market(vega)
+
 
 class TestGetStarted:
     def test_get_started_interactive(self, vega: VegaServiceNull, page: Page):
@@ -30,7 +33,8 @@ class TestGetStarted:
         expect(page.locator(".list-none")).to_contain_text(
             "1.Connect2.Deposit funds3.Open a position"
         )
-        DEFAULT_WALLET_NAME = "MarketSim"  # This is the default wallet name within VegaServiceNull and CANNOT be changed
+        # This is the default wallet name within VegaServiceNull and CANNOT be changed
+        DEFAULT_WALLET_NAME = "MarketSim"
 
         # Calling get_keypairs will internally call _load_tokens for the given wallet
         keypairs = vega.wallet.get_keypairs(DEFAULT_WALLET_NAME)
@@ -137,7 +141,8 @@ class TestGetStarted:
     def test_get_started_seen_already(self, simple_market, page: Page):
         page.goto(f"/#/markets/{simple_market}")
         get_started_locator = page.get_by_test_id("connect-vega-wallet")
-        page.wait_for_selector('[data-testid="connect-vega-wallet"]', state="attached")
+        page.wait_for_selector(
+            '[data-testid="connect-vega-wallet"]', state="attached")
         expect(get_started_locator).to_be_enabled
         expect(get_started_locator).to_be_visible
         # 0007-FUGS-015

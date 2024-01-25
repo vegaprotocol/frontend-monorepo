@@ -39,8 +39,7 @@ export const proposalsDataProvider = makeDataProvider<
    *
    * GQL Path: `terms.change.instrument.futureProduct.settlementAsset`
    */
-  errorPolicyGuard: (errors) =>
-    errors.every((e) => e.message.match(/failed to get asset for ID/)),
+  errorPolicy: 'all',
 });
 
 const ProposalTypeMap: Record<
