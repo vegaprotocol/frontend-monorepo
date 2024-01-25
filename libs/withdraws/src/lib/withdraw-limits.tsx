@@ -152,6 +152,12 @@ const GasPrice = ({
 
     return (
       <div className={classNames('flex flex-col items-end self-end')}>
+        <Tooltip description={t('The current gas price range')}>
+          <span>
+            {formatNumber(utils.formatUnits(basePrice, 'gwei'), 2)} -{' '}
+            {formatNumber(utils.formatUnits(maxPrice, 'gwei'), 2)} gwei / gas
+          </span>
+        </Tooltip>
         <Tooltip
           description={
             <div className="flex flex-col gap-1">
@@ -164,19 +170,25 @@ const GasPrice = ({
                 </span>
               )}
               <span>
-                {bEther} ETH - {mEther} ETH
+                {gas.toString()} gas &times;{' '}
+                {formatNumber(utils.formatUnits(basePrice, 'gwei'), 2)} gwei ={' '}
+                {bEther} ETH
+              </span>
+              <span>
+                {gas.toString()} gas &times;{' '}
+                {formatNumber(utils.formatUnits(maxPrice, 'gwei'), 2)} gwei ={' '}
+                {mEther} ETH
               </span>
             </div>
           }
         >
-          <span className={classNames(expensiveClassNames)}>
-            {formatNumber(bGwei, 0)} gwei
-            <span className="text-xs"> - {formatNumber(mGwei, 0)} gwei</span>
+          <span className={classNames(expensiveClassNames, 'text-xs')}>
+            {formatNumber(bGwei, 0)} - {formatNumber(mGwei, 0)} gwei
           </span>
         </Tooltip>
 
         <span className="text-muted text-xs">
-          ~{formatNumber(bQUSD, 2)} qUSD - ~{formatNumber(mQUSD, 2)} qUSD
+          ~{formatNumber(bQUSD, 2)} - {formatNumber(mQUSD, 2)} qUSD
         </span>
       </div>
     );
