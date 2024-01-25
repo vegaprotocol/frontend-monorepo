@@ -144,16 +144,22 @@ const Games = ({ games }: { games?: TeamGame[] }) => {
         {
           name: 'epoch',
           displayName: t('Epoch'),
-          headerClassName: 'hidden md:block',
-          className: 'hidden md:block',
+          headerClassName: 'hidden md:table-cell',
+          className: 'hidden md:table-cell',
         },
         { name: 'type', displayName: t('Type') },
         { name: 'amount', displayName: t('Amount earned') },
         {
-          name: 'teams',
+          name: 'participatingTeams',
           displayName: t('No. of participating teams'),
-          headerClassName: 'hidden md:block',
-          className: 'hidden md:block',
+          headerClassName: 'hidden md:table-cell',
+          className: 'hidden md:table-cell',
+        },
+        {
+          name: 'participatingMembers',
+          displayName: t('No. of participating members'),
+          headerClassName: 'hidden md:table-cell',
+          className: 'hidden md:table-cell',
         },
       ]}
       data={games.map((game) => ({
@@ -161,7 +167,8 @@ const Games = ({ games }: { games?: TeamGame[] }) => {
         epoch: game.epoch,
         type: DispatchMetricLabels[game.team.rewardMetric as DispatchMetric],
         amount: formatNumber(game.team.totalRewardsEarned),
-        teams: game.numberOfParticipants,
+        participatingTeams: game.entities.length,
+        participatingMembers: game.numberOfParticipants,
       }))}
       noCollapse={true}
     />

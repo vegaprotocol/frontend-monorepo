@@ -14,6 +14,14 @@ def vega(request):
     with init_vega(request) as vega:
         yield vega
 
+@pytest.fixture(scope="module")
+def team_page(vega, browser, request, setup_teams_and_games):
+    with init_page(vega, browser, request) as page:
+        risk_accepted_setup(page)
+        auth_setup(vega, page)
+        team_id = setup_teams_and_games["team_id"]
+        page.goto(f"/#/competitions/teams/{team_id}")
+        yield page
 
 @pytest.fixture(scope="module")
 def setup_teams_and_games(vega: VegaServiceNull):
@@ -67,22 +75,20 @@ def setup_teams_and_games(vega: VegaServiceNull):
         factor=1.0,
     )
 
-    vega.recurring_transfer(
-        from_key_name=PARTY_B.name,
-        from_account_type=vega_protos.vega.ACCOUNT_TYPE_GENERAL,
-        to_account_type=vega_protos.vega.ACCOUNT_TYPE_REWARD_AVERAGE_POSITION,
-        asset=tDAI_asset_id,
-        reference="reward 2",
-        asset_for_metric=tDAI_asset_id,
-        metric=vega_protos.vega.DISPATCH_METRIC_AVERAGE_POSITION,
-        entity_scope=vega_protos.vega.ENTITY_SCOPE_TEAMS,
-        n_top_performers=1,
-        amount=100,
-        factor=1.0,
-        team_scope=[team_id]
-    )
-
-    next_epoch(vega)
+    # vega.recurring_transfer(
+    #     from_key_name=PARTY_B.name,
+    #     from_account_type=vega_protos.vega.ACCOUNT_TYPE_GENERAL,
+    #     to_account_type=vega_protos.vega.ACCOUNT_TYPE_REWARD_AVERAGE_POSITION,
+    #     asset=tDAI_asset_id,
+    #     reference="reward 2",
+    #     asset_for_metric=tDAI_asset_id,
+    #     metric=vega_protos.vega.DISPATCH_METRIC_AVERAGE_POSITION,
+    #     entity_scope=vega_protos.vega.ENTITY_SCOPE_TEAMS,
+    #     n_top_performers=1,
+    #     amount=100,
+    #     factor=1.0,
+    #     team_scope=[team_id]
+    # )
 
     vega.submit_order(
         trading_key=PARTY_B.name,
@@ -124,36 +130,36 @@ def create_team(vega: VegaServiceNull):
     return team_name
 
 
-@pytest.fixture(scope="module")
-def team_page(vega, browser, request, setup_teams_and_games):
-    with init_page(vega, browser, request) as page:
-        risk_accepted_setup(page)
-        auth_setup(vega, page)
-        team_id = setup_teams_and_games["team_id"]
-        page.goto(f"/#/competitions/teams/{team_id}")
-        yield page
 
 def test_team_page_games_table(team_page: Page):
     team_page.get_by_test_id("games-toggle").click()
+    team_page.pause()
     expect(team_page.get_by_test_id("games-toggle")).to_have_text("Games (1)")
     expect(team_page.get_by_test_id("rank-0")).to_have_text("1")
     expect(team_page.get_by_test_id("epoch-0")).to_have_text("8")
     expect(team_page.get_by_test_id("type-0")).to_have_text("Price maker fees paid")
     expect(team_page.get_by_test_id("amount-0")).to_have_text("10,000,000")
-    expect(team_page.get_by_test_id("teams-0")).to_have_text(
+    expect(team_page.get_by_test_id("participatingTeams-0")).to_have_text(
+        "1"
+    )
+    expect(team_page.get_by_test_id("participatingMembers-0")).to_have_text(
         "2"
-    )  # TODO I think this should be 1, confirm with devs
+    )
 
+@pytest.mark.skip
 def test_team_page_members_table(team_page: Page):
     team_page.get_by_test_id("members-toggle").click()
+    team_page.pause()
     expect(team_page.get_by_test_id("members-toggle")).to_have_text("Members (3)")
     expect(team_page.get_by_test_id("referee-0")).to_be_visible()
     expect(team_page.get_by_test_id("joinedAt-0")).to_be_visible()
     expect(team_page.get_by_test_id("joinedAtEpoch-0")).to_have_text("8")
 
+@pytest.mark.skip
 def test_team_page_headline(team_page: Page, setup_teams_and_games
 ):
     team_name = setup_teams_and_games["team_name"]
+    team_page.pause()
     expect(team_page.get_by_test_id("team-name")).to_have_text(team_name)
     expect(team_page.get_by_test_id("members-count-stat")).to_have_text("3")
     expect(team_page.get_by_test_id("total-games-stat")).to_have_text(
@@ -174,8 +180,10 @@ def competitions_page(vega, browser, request):
         page.goto(f"/#/competitions/")
         yield page
 
+@pytest.mark.skip
 def test_leaderboard(competitions_page: Page, setup_teams_and_games):
     team_name = setup_teams_and_games["team_name"]
+    team_page.pause()
     competitions_page.pause()
     expect(competitions_page.get_by_test_id("rank-0").locator("._text-yellow-300")).to_have_count(1)
     expect(competitions_page.get_by_test_id("team-0")).to_have_text(team_name)

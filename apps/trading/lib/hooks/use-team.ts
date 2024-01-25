@@ -47,6 +47,7 @@ export const useTeam = (teamId?: string, partyId?: string) => {
       id: edge.node.id,
       epoch: edge.node.epoch,
       numberOfParticipants: edge.node.numberOfParticipants,
+      entities: edge.node.entities,
       team: team as TeamEntity, // TS can't infer that all the game entities are teams
     };
   });
