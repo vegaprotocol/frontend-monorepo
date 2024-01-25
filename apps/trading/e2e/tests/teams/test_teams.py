@@ -52,6 +52,7 @@ def setup_teams_and_games(vega: VegaServiceNull):
 
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
+
     vega.recurring_transfer(
         from_key_name=PARTY_A.name,
         from_account_type=vega_protos.vega.ACCOUNT_TYPE_GENERAL,
@@ -65,6 +66,24 @@ def setup_teams_and_games(vega: VegaServiceNull):
         amount=100,
         factor=1.0,
     )
+
+    vega.recurring_transfer(
+        from_key_name=PARTY_B.name,
+        from_account_type=vega_protos.vega.ACCOUNT_TYPE_GENERAL,
+        to_account_type=vega_protos.vega.ACCOUNT_TYPE_REWARD_AVERAGE_POSITION,
+        asset=tDAI_asset_id,
+        reference="reward 2",
+        asset_for_metric=tDAI_asset_id,
+        metric=vega_protos.vega.DISPATCH_METRIC_AVERAGE_POSITION,
+        entity_scope=vega_protos.vega.ENTITY_SCOPE_TEAMS,
+        n_top_performers=1,
+        amount=100,
+        factor=1.0,
+        team_scope=[team_id]
+    )
+
+    next_epoch(vega)
+
     vega.submit_order(
         trading_key=PARTY_B.name,
         market_id=tDAI_market,
@@ -81,6 +100,7 @@ def setup_teams_and_games(vega: VegaServiceNull):
         side="SIDE_BUY",
         volume=1,
     )
+
     next_epoch(vega=vega)
 
     return {
@@ -161,8 +181,8 @@ def test_leaderboard(competitions_page: Page, setup_teams_and_games):
     expect(competitions_page.get_by_test_id("team-0")).to_have_text(team_name)
     expect(competitions_page.get_by_test_id("earned-0")).to_have_text("-") #TODO I think this should be 100, confirm with dev
     expect(competitions_page.get_by_test_id("games-0")).to_have_text("-") #TODO I think this should be 1, confirm with dev
-    expect(competitions_page.get_by_test_id("status-0")).to_have_text("Open") 
+    expect(competitions_page.get_by_test_id("status-0")).to_have_text("Open")
     expect(competitions_page.get_by_test_id("volume-0")).to_have_text("-") #TODO I think this should be 10,000,000, confirm with dev
 
 #TODO def test_games(competitions_page: Page):
-    # TODO currently no games appear which i think is a bug
+#TODO currently no games appear which i think is a bug

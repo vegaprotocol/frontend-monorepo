@@ -12,6 +12,7 @@ import {
   VegaIconNames,
   TradingInput,
   TinyScroll,
+  truncateMiddle,
 } from '@vegaprotocol/ui-toolkit';
 import { IconNames } from '@blueprintjs/icons';
 import {
@@ -32,6 +33,7 @@ import {
   MarketState,
   type DispatchStrategy,
   IndividualScopeMapping,
+  IndividualScopeDescriptionMapping,
 } from '@vegaprotocol/types';
 import { Card } from '../card/card';
 import { useMemo, useState } from 'react';
@@ -552,11 +554,31 @@ const RewardEntityScope = ({
   const t = useT();
 
   if (dispatchStrategy.entityScope === EntityScope.ENTITY_SCOPE_TEAMS) {
-    if (dispatchStrategy.teamScope?.length) {
-      return <span>{t('Some teams')}</span>;
-    } else {
-      return <span>{t('All teams')}</span>;
-    }
+    return (
+      <Tooltip
+        description={
+          dispatchStrategy.teamScope?.length ? (
+            <div className="text-xs">
+              <p className="mb-1">{t('Eligible teams')}</p>
+              <ul>
+                {dispatchStrategy.teamScope.map((teamId) => {
+                  if (!teamId) return null;
+                  return <li key={teamId}>{truncateMiddle(teamId)}</li>;
+                })}
+              </ul>
+            </div>
+          ) : (
+            t('All teams are eligible')
+          )
+        }
+      >
+        <span>
+          {dispatchStrategy.teamScope?.length
+            ? t('Some teams')
+            : t('All teams')}
+        </span>
+      </Tooltip>
+    );
   }
 
   if (
@@ -564,7 +586,13 @@ const RewardEntityScope = ({
     dispatchStrategy.individualScope
   ) {
     return (
-      <div>{IndividualScopeMapping[dispatchStrategy.individualScope]}</div>
+      <Tooltip
+        description={
+          IndividualScopeDescriptionMapping[dispatchStrategy.individualScope]
+        }
+      >
+        <span>{IndividualScopeMapping[dispatchStrategy.individualScope]}</span>
+      </Tooltip>
     );
   }
 

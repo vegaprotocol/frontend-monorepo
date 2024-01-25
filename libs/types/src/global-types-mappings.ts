@@ -707,6 +707,14 @@ export const IndividualScopeMapping: { [e in IndividualScope]: string } = {
   INDIVIDUAL_SCOPE_NOT_IN_TEAM: 'Not in team',
 };
 
+export const IndividualScopeDescriptionMapping: {
+  [e in IndividualScope]: string;
+} = {
+  INDIVIDUAL_SCOPE_ALL: 'All parties are eligble',
+  INDIVIDUAL_SCOPE_IN_TEAM: 'Parties in teams are eligible',
+  INDIVIDUAL_SCOPE_NOT_IN_TEAM: 'Only parties not in teams are eligible',
+};
+
 export enum DistributionStrategyMapping {
   /** Rewards funded using the pro-rata strategy should be distributed pro-rata by each entity's reward metric scaled by any active multipliers that party has */
   DISTRIBUTION_STRATEGY_PRO_RATA = 'Pro rata',
