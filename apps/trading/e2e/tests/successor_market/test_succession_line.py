@@ -8,7 +8,7 @@ from actions.utils import next_epoch
 
 market_banner = "market-banner"
 
-@pytest.mark.skip("tbd")
+
 @pytest.mark.usefixtures("risk_accepted")
 def test_succession_line(vega: VegaServiceNull, page: Page):
     parent_market_id = setup_continuous_market(vega)
@@ -20,12 +20,14 @@ def test_succession_line(vega: VegaServiceNull, page: Page):
     expect(page.get_by_test_id(market_banner)).not_to_be_attached()
 
     successor_name = "successor market name"
-    successor_id = propose_successor(vega, parent_market_id, tdai_id, successor_name)
+    successor_id = propose_successor(
+        vega, parent_market_id, tdai_id, successor_name)
 
     # Check that the banner notifying about the successor proposal is shown
     banner = page.get_by_test_id(market_banner)
     expect(banner).to_be_attached()
-    expect(banner.get_by_text("A successor to this market has been proposed")).to_be_visible()
+    expect(banner.get_by_text(
+        "A successor to this market has been proposed")).to_be_visible()
 
     next_epoch(vega)
 
@@ -45,7 +47,6 @@ def test_succession_line(vega: VegaServiceNull, page: Page):
     # the succession line
     page.reload()
 
-    #tbd issue - 5546
     page.get_by_test_id("Info").click()
 
     page.get_by_role("button", name="Succession line").click()
@@ -78,6 +79,7 @@ def test_succession_line(vega: VegaServiceNull, page: Page):
     page.wait_for_selector('[data-testid="market-banner"]', state="attached")
     expect(banner.get_by_text("This market has been succeeded")).to_be_visible()
 
+
 @pytest.mark.usefixtures("risk_accepted")
 def test_banners(vega: VegaServiceNull, page: Page):
 
@@ -91,9 +93,9 @@ def test_banners(vega: VegaServiceNull, page: Page):
     expect(page.get_by_test_id(market_banner)).not_to_be_attached()
 
     vega.submit_termination_and_settlement_data(
-    settlement_key=GOVERNANCE_WALLET.name,
-    settlement_price=100,
-    market_id=parent_market_id,
+        settlement_key=GOVERNANCE_WALLET.name,
+        settlement_price=100,
+        market_id=parent_market_id,
     )
 
     successor_name = "successor market name"
@@ -108,7 +110,7 @@ def test_banners(vega: VegaServiceNull, page: Page):
     # Check that the banner notifying about the successor proposal and market has been settled are shown still after reload
     page.reload()
     expect(banner.get_by_text(banner_successor_text)).to_be_visible()
-    expect(banner.get_by_text("1/2")).to_be_visible() 
+    expect(banner.get_by_text("1/2")).to_be_visible()
     # Check that the banner notifying about the successor proposal is not visible after close those banners
     banner.get_by_test_id("icon-cross").click()
     expect(banner.get_by_text("This market has been settled")).to_be_visible()
@@ -119,7 +121,8 @@ def test_banners(vega: VegaServiceNull, page: Page):
     expect(page.get_by_test_id(market_banner)).not_to_be_attached()
     page.reload()
     expect(banner).to_be_attached()
-    expect(banner.get_by_text(banner_successor_text)).to_be_visible() 
+    expect(banner.get_by_text(banner_successor_text)).to_be_visible()
+
 
 def propose_successor(
     vega: VegaServiceNull, parent_market_id, tdai_id, market_name
@@ -136,6 +139,7 @@ def propose_successor(
         parent_market_insurance_pool_fraction=0.5,
     )
     return market_id
+
 
 def provide_successor_liquidity(
     vega: VegaServiceNull, market_id
