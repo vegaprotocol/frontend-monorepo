@@ -1,14 +1,15 @@
 import {
   useSimpleTransaction,
-  type CreateReferralSet,
   type Options,
+  type CreateReferralSet,
+  type UpdateReferralSet,
 } from '@vegaprotocol/wallet';
 import { useStakeAvailable } from './use-stake-available';
 
 /**
  * Manages state for creating a referral set or team
  */
-export const useCreateReferralSet = (opts?: Options) => {
+export const useReferralSetTransaction = (opts?: Options) => {
   const { stakeAvailable, requiredStake, isEligible } = useStakeAvailable();
 
   const { status, result, error, send } = useSimpleTransaction({
@@ -16,7 +17,7 @@ export const useCreateReferralSet = (opts?: Options) => {
     onError: opts?.onError,
   });
 
-  const onSubmit = (tx: CreateReferralSet) => {
+  const onSubmit = (tx: CreateReferralSet | UpdateReferralSet) => {
     send(tx);
   };
 

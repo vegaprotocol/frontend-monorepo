@@ -458,6 +458,20 @@ export type CreateReferralSet = {
   };
 };
 
+export type UpdateReferralSet = {
+  updateReferralSet: {
+    id: string;
+    isTeam: boolean;
+    team?: {
+      name: string;
+      teamUrl?: string;
+      avatarUrl?: string;
+      closed: boolean;
+      allowList: string[];
+    };
+  };
+};
+
 export enum MarginMode {
   MARGIN_MODE_CROSS_MARGIN = 1,
   MARGIN_MODE_ISOLATED_MARGIN,
@@ -489,7 +503,8 @@ export type Transaction =
   | LiquidityProvisionSubmission
   | ApplyReferralCode
   | JoinTeam
-  | CreateReferralSet;
+  | CreateReferralSet
+  | UpdateReferralSet;
 
 export const isMarginModeUpdateTransaction = (
   transaction: Transaction
