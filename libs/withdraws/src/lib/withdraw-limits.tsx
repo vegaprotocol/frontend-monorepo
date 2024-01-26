@@ -114,6 +114,40 @@ export const WithdrawLimits = ({
   );
 };
 
+enum EtherUnit {
+  wei = '0',
+  kwei = '3',
+  mwei = '6',
+  gwei = '9',
+  ether = '18',
+}
+
+const etherUnitMapping: Record<EtherUnit, string> = {
+  [EtherUnit.wei]: 'wei',
+  [EtherUnit.kwei]: 'kwei',
+  [EtherUnit.mwei]: 'mwei',
+  [EtherUnit.gwei]: 'gwei',
+  [EtherUnit.ether]: 'ETH',
+};
+
+const formatPrice = (
+  value: GasData['basePrice'] | GasData['maxPrice'],
+  decimals = 0,
+  forceUnit?: EtherUnit
+): [price: string, unit: EtherUnit] => {
+  // let idx = Math.ceil(value.toString().length / 3) - 1;
+  let idx = Math.max(
+    ...Object.values(EtherUnit)
+      .map((u, i) => [value.toString().length - Number(u), i])
+      .filter(([x, i]) => x > 0)
+      .map((_, i) => i)
+  );
+  if (idx < 0) idx = 0;
+
+  const unit = forceUnit || (Object.values(EtherUnit)[idx] as EtherUnit);
+  return [formatNumber(utils.formatUnits(value, unit), decimals), unit];
+};
+
 const GasPrice = ({
   gasPrice,
   amount,
@@ -128,12 +162,6 @@ const GasPrice = ({
     const { basePrice, maxPrice, gas } = gasPrice;
     const b = basePrice.mul(gas);
     const m = maxPrice.mul(gas);
-
-    const bGwei = utils.formatUnits(b, 'gwei');
-    const mGwei = utils.formatUnits(m, 'gwei');
-
-    const bEther = utils.formatUnits(b, 'ether');
-    const mEther = utils.formatUnits(m, 'ether');
 
     const bQUSD = toQUSD(b.toNumber(), wethQuantum);
     const mQUSD = toQUSD(m.toNumber(), wethQuantum);
@@ -150,12 +178,20 @@ const GasPrice = ({
         vQUSD.isLessThanOrEqualTo(mQUSD),
     };
 
+    const [bp, bpunit] = formatPrice(basePrice);
+    const [mp] = formatPrice(maxPrice, 0, bpunit);
+
+    const [gbp, gbpunit] = formatPrice(b);
+    const [gmp] = formatPrice(m, 0, gbpunit);
+
+    const [bEther] = formatPrice(b, 18, EtherUnit.ether);
+    const [mEther] = formatPrice(m, 18, EtherUnit.ether);
+
     return (
       <div className={classNames('flex flex-col items-end self-end')}>
         <Tooltip description={t('The current gas price range')}>
           <span>
-            {formatNumber(utils.formatUnits(basePrice, 'gwei'), 2)} -{' '}
-            {formatNumber(utils.formatUnits(maxPrice, 'gwei'), 2)} gwei / gas
+            {bp} - {mp} {etherUnitMapping[bpunit]} / gas
           </span>
         </Tooltip>
         <Tooltip
@@ -170,20 +206,18 @@ const GasPrice = ({
                 </span>
               )}
               <span>
-                {gas.toString()} gas &times;{' '}
-                {formatNumber(utils.formatUnits(basePrice, 'gwei'), 2)} gwei ={' '}
+                {gas.toString()} gas &times; {bp} {etherUnitMapping[bpunit]} ={' '}
                 {bEther} ETH
               </span>
               <span>
-                {gas.toString()} gas &times;{' '}
-                {formatNumber(utils.formatUnits(maxPrice, 'gwei'), 2)} gwei ={' '}
+                {gas.toString()} gas &times; {mp} {etherUnitMapping[bpunit]} ={' '}
                 {mEther} ETH
               </span>
             </div>
           }
         >
           <span className={classNames(expensiveClassNames, 'text-xs')}>
-            {formatNumber(bGwei, 0)} - {formatNumber(mGwei, 0)} gwei
+            {gbp} - {gmp} {etherUnitMapping[gbpunit]}
           </span>
         </Tooltip>
 

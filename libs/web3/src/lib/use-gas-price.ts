@@ -28,6 +28,38 @@ export type GasData = {
   gas: BigNumber;
 };
 
+type Provider = NonNullable<ReturnType<typeof useWeb3React>['provider']>;
+
+const retrieveGasData = async (
+  provider: Provider,
+  account: string,
+  contractAddress: string,
+  contractMethod: ContractMethod
+) => {
+  try {
+    const data = await provider.getFeeData();
+    const estGasAmount = await provider.estimateGas({
+      to: account,
+      from: contractAddress,
+      data: contractMethod,
+    });
+
+    if (data.lastBaseFeePerGas && data.maxFeePerGas) {
+      return {
+        basePrice: data.lastBaseFeePerGas,
+        maxPrice: data.maxFeePerGas,
+        gas: estGasAmount,
+      };
+    }
+  } catch (err) {
+    // NOOP - could not get the estimated gas or the fee data from
+    // the network. This could happen if there's an issue with transaction
+    // request parameters (e.g. to/from mismatch)
+  }
+
+  return undefined;
+};
+
 /**
  * Gets the "current" gas price from the ethereum network.
  * @returns gwei
@@ -41,41 +73,30 @@ export const useGasPrice = (
   const { config } = useEthereumConfig();
 
   useEffect(() => {
-    const estimate = async () => {
-      if (!provider || !config || !account) return;
+    if (!provider || !config || !account) return;
 
-      try {
-        const data = await provider.getFeeData();
-        const estGasAmount = await provider.estimateGas({
-          to: account,
-          from: config?.collateral_bridge_contract.address,
-          data: method,
-        });
-
-        if (data.lastBaseFeePerGas && data.maxFeePerGas) {
-          const fees: GasData = {
-            basePrice: data.lastBaseFeePerGas,
-            maxPrice: data.maxFeePerGas,
-            gas: estGasAmount,
-          };
-          setGas(fees);
+    const retrieve = async () => {
+      retrieveGasData(
+        provider,
+        account,
+        config.collateral_bridge_contract.address,
+        method
+      ).then((gasData) => {
+        if (gasData) {
+          setGas(gasData);
         }
-      } catch (err) {
-        // NOOP - could not get the estimated gas or the fee data from
-        // the network. This could happen if there's an issue with transaction
-        // request parameters (e.g. to/from mismatch)
-      }
+      });
     };
+    retrieve();
 
-    estimate();
-
-    // Gets another estimation in [interval] ms.
+    // Retrieves another estimation and prices in [interval] ms.
     let i: ReturnType<typeof setInterval>;
     if (interval > 0) {
       i = setInterval(() => {
-        estimate();
+        retrieve();
       }, interval);
     }
+
     return () => {
       if (i) clearInterval(i);
     };
