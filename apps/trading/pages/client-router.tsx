@@ -32,6 +32,7 @@ import { CompetitionsHome } from '../client-pages/competitions/competitions-home
 import { CompetitionsTeams } from '../client-pages/competitions/competitions-teams';
 import { CompetitionsTeam } from '../client-pages/competitions/competitions-team';
 import { CompetitionsCreateTeam } from '../client-pages/competitions/competitions-create-team';
+import { CompetitionsUpdateTeam } from '../client-pages/competitions/competitions-update-team';
 
 // These must remain dynamically imported as pennant cannot be compiled by nextjs due to ESM
 // Using dynamic imports is a workaround for this until pennant is published as ESM
@@ -113,12 +114,16 @@ export const useRouterConfig = (): RouteObject[] => {
             },
             // pages with blurred background
             {
+              path: AppRoutes.COMPETITIONS_TEAM,
+              element: <CompetitionsTeam />,
+            },
+            {
               path: AppRoutes.COMPETITIONS_CREATE_TEAM,
               element: <CompetitionsCreateTeam />,
             },
             {
-              path: AppRoutes.COMPETITIONS_TEAM,
-              element: <CompetitionsTeam />,
+              path: AppRoutes.COMPETITIONS_UPDATE_TEAM,
+              element: <CompetitionsUpdateTeam />,
             },
           ],
         }

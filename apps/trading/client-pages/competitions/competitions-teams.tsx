@@ -2,7 +2,7 @@ import { ErrorBoundary } from '@sentry/react';
 import { CompetitionsHeader } from '../../components/competitions/competitions-header';
 import { useRef, useState } from 'react';
 import { useT } from '../../lib/use-t';
-import { useTeams } from './hooks/use-teams';
+import { useTeams } from '../../lib/hooks/use-teams';
 import { CompetitionsLeaderboard } from '../../components/competitions/competitions-leaderboard';
 import {
   Input,
