@@ -65,7 +65,7 @@ const CrossMarginModeDialog = ({
         onClick={() => {
           create({
             updateMarginMode: {
-              market_id: marketId,
+              marketId,
               mode: MarginMode.MARGIN_MODE_CROSS_MARGIN,
             },
           });
@@ -131,7 +131,7 @@ const IsolatedMarginModeDialog = ({
         onSubmit={() => {
           create({
             updateMarginMode: {
-              market_id: marketId,
+              marketId,
               mode: MarginMode.MARGIN_MODE_ISOLATED_MARGIN,
               marginFactor: `${1 / leverage}`,
             },
