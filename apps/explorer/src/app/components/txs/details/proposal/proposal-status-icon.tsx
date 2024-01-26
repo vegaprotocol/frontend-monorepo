@@ -2,16 +2,7 @@ import { Icon, Tooltip } from '@vegaprotocol/ui-toolkit';
 import type { IconProps } from '@vegaprotocol/ui-toolkit';
 import { useExplorerProposalStatusQuery } from './__generated__/Proposal';
 import type { ExplorerProposalStatusQuery } from './__generated__/Proposal';
-import type * as Apollo from '@apollo/client';
-import type * as Types from '@vegaprotocol/types';
 import { t } from '@vegaprotocol/i18n';
-
-type ProposalQueryResult = Apollo.QueryResult<
-  ExplorerProposalStatusQuery,
-  Types.Exact<{
-    id: string;
-  }>
->;
 
 interface ProposalStatusIconProps {
   id: string;
@@ -29,29 +20,38 @@ type IconAndLabel = {
  * @param data a data result from useExplorerProposalStatusQuery
  * @returns Icon name
  */
-export function getIconAndLabelForStatus(
-  res: ProposalQueryResult
-): IconAndLabel {
+export function useIconAndLabelForStatus(id: string): IconAndLabel {
+  const { data, loading, error } = useExplorerProposalStatusQuery({
+    variables: {
+      id,
+    },
+  });
+
+  const proposal = data?.proposal as Extract<
+    ExplorerProposalStatusQuery['proposal'],
+    { __typename?: 'Proposal' }
+  >;
+
   const DEFAULT: IconAndLabel = {
     icon: 'error',
     label: t('Proposal state unknown'),
   };
 
-  if (res.loading) {
+  if (loading) {
     return {
       icon: 'more',
       label: t('Loading data'),
     };
   }
 
-  if (!res?.data?.proposal || res.error) {
+  if (!data?.proposal || error) {
     return {
       icon: 'error',
-      label: res.error?.message || DEFAULT.label,
+      label: error?.message || DEFAULT.label,
     };
   }
 
-  switch (res.data.proposal.state) {
+  switch (proposal.state) {
     case 'STATE_DECLINED':
       return {
         icon: 'stop',
@@ -99,13 +99,7 @@ export function getIconAndLabelForStatus(
 /**
  */
 export const ProposalStatusIcon = ({ id }: ProposalStatusIconProps) => {
-  const { icon, label } = getIconAndLabelForStatus(
-    useExplorerProposalStatusQuery({
-      variables: {
-        id,
-      },
-    })
-  );
+  const { icon, label } = useIconAndLabelForStatus(id);
 
   return (
     <div className="float-left mr-3">

@@ -29,6 +29,7 @@ export const assetsProvider = makeDataProvider<
 >({
   query: AssetsDocument,
   getData,
+  errorPolicy: 'all',
 });
 
 export const assetsMapProvider = makeDerivedDataProvider<

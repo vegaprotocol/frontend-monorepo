@@ -12,7 +12,7 @@ import {
   nextWeek,
   lastMonth,
 } from '../../test-helpers/mocks';
-import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
+import { type Proposal } from '../../types';
 
 const rejectedProposalClosesNextWeek = generateProposal({
   id: 'rejected1',
@@ -35,7 +35,7 @@ const rejectedProposalClosedLastMonth = generateProposal({
   },
 });
 
-const renderComponent = (proposals: ProposalQuery['proposal'][]) => (
+const renderComponent = (proposals: Proposal[]) => (
   <Router>
     <MockedProvider mocks={[networkParamsQueryMock]}>
       <AppStateProvider>

@@ -3,7 +3,11 @@ import { MockedProvider } from '@apollo/client/testing';
 import type { MockedResponse } from '@apollo/client/testing';
 import { render } from '@testing-library/react';
 import ProposalLink from './proposal-link';
-import { ExplorerProposalDocument } from './__generated__/Proposal';
+import {
+  ExplorerProposalDocument,
+  type ExplorerProposalQuery,
+  type ExplorerProposalQueryVariables,
+} from './__generated__/Proposal';
 import { GraphQLError } from 'graphql';
 
 function renderComponent(id: string, mocks: MockedResponse[]) {
@@ -23,7 +27,10 @@ describe('Proposal link component', () => {
   });
 
   it('Renders the ID on error', async () => {
-    const mock = {
+    const mock: MockedResponse<
+      ExplorerProposalQuery,
+      ExplorerProposalQueryVariables
+    > = {
       request: {
         query: ExplorerProposalDocument,
         variables: {
@@ -40,17 +47,22 @@ describe('Proposal link component', () => {
   });
 
   it('Renders the proposal title when the query returns a result', async () => {
-    const mock = {
+    const proposalId = '123';
+    const mock: MockedResponse<
+      ExplorerProposalQuery,
+      ExplorerProposalQueryVariables
+    > = {
       request: {
         query: ExplorerProposalDocument,
         variables: {
-          id: '123',
+          id: proposalId,
         },
       },
       result: {
         data: {
           proposal: {
-            id: '123',
+            __typename: 'Proposal',
+            id: proposalId,
             rationale: {
               title: 'test-title',
               description: 'test description',
@@ -60,13 +72,16 @@ describe('Proposal link component', () => {
       },
     };
 
-    const res = render(renderComponent('123', [mock]));
-    expect(res.getByText('123')).toBeInTheDocument();
+    const res = render(renderComponent(proposalId, [mock]));
+    expect(res.getByText(proposalId)).toBeInTheDocument();
     expect(await res.findByText('test-title')).toBeInTheDocument();
   });
 
   it('Leaves the proposal id when the market is not found', async () => {
-    const mock = {
+    const mock: MockedResponse<
+      ExplorerProposalQuery,
+      ExplorerProposalQueryVariables
+    > = {
       request: {
         query: ExplorerProposalDocument,
         variables: {

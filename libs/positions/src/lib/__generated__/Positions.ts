@@ -23,7 +23,12 @@ export type EstimatePositionQueryVariables = Types.Exact<{
   marketId: Types.Scalars['ID'];
   openVolume: Types.Scalars['String'];
   orders?: Types.InputMaybe<Array<Types.OrderInfo> | Types.OrderInfo>;
-  collateralAvailable?: Types.InputMaybe<Types.Scalars['String']>;
+  averageEntryPrice: Types.Scalars['String'];
+  marginAccountBalance: Types.Scalars['String'];
+  generalAccountBalance: Types.Scalars['String'];
+  orderMarginAccountBalance: Types.Scalars['String'];
+  marginMode: Types.MarginMode;
+  marginFactor?: Types.InputMaybe<Types.Scalars['String']>;
 }>;
 
 
@@ -124,12 +129,17 @@ export function usePositionsSubscriptionSubscription(baseOptions: Apollo.Subscri
 export type PositionsSubscriptionSubscriptionHookResult = ReturnType<typeof usePositionsSubscriptionSubscription>;
 export type PositionsSubscriptionSubscriptionResult = Apollo.SubscriptionResult<PositionsSubscriptionSubscription>;
 export const EstimatePositionDocument = gql`
-    query EstimatePosition($marketId: ID!, $openVolume: String!, $orders: [OrderInfo!], $collateralAvailable: String) {
+    query EstimatePosition($marketId: ID!, $openVolume: String!, $orders: [OrderInfo!], $averageEntryPrice: String!, $marginAccountBalance: String!, $generalAccountBalance: String!, $orderMarginAccountBalance: String!, $marginMode: MarginMode!, $marginFactor: String) {
   estimatePosition(
     marketId: $marketId
     openVolume: $openVolume
     orders: $orders
-    collateralAvailable: $collateralAvailable
+    averageEntryPrice: $averageEntryPrice
+    marginAccountBalance: $marginAccountBalance
+    generalAccountBalance: $generalAccountBalance
+    orderMarginAccountBalance: $orderMarginAccountBalance
+    marginMode: $marginMode
+    marginFactor: $marginFactor
     scaleLiquidationPriceToMarketDecimals: true
   ) {
     margin {
@@ -177,7 +187,12 @@ export const EstimatePositionDocument = gql`
  *      marketId: // value for 'marketId'
  *      openVolume: // value for 'openVolume'
  *      orders: // value for 'orders'
- *      collateralAvailable: // value for 'collateralAvailable'
+ *      averageEntryPrice: // value for 'averageEntryPrice'
+ *      marginAccountBalance: // value for 'marginAccountBalance'
+ *      generalAccountBalance: // value for 'generalAccountBalance'
+ *      orderMarginAccountBalance: // value for 'orderMarginAccountBalance'
+ *      marginMode: // value for 'marginMode'
+ *      marginFactor: // value for 'marginFactor'
  *   },
  * });
  */

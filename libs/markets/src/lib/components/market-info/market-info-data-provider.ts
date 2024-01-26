@@ -1,7 +1,6 @@
 import {
   makeDataProvider,
   makeDerivedDataProvider,
-  marketDataErrorPolicyGuard,
 } from '@vegaprotocol/data-provider';
 import {
   MarketInfoDocument,
@@ -33,7 +32,7 @@ export const marketInfoProvider = makeDataProvider<
 >({
   query: MarketInfoDocument,
   getData,
-  errorPolicyGuard: marketDataErrorPolicyGuard,
+  errorPolicy: 'all',
   pollInterval: 5000,
 });
 

@@ -1,13 +1,13 @@
 import { MemoryRouter } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
 import { VegaWalletProvider } from '@vegaprotocol/wallet';
-import type { VegaWalletConfig } from '@vegaprotocol/wallet';
+import { type VegaWalletConfig } from '@vegaprotocol/wallet';
 import { render, screen } from '@testing-library/react';
 import { generateProposal } from '../../test-helpers/generate-proposals';
 import { Proposal } from './proposal';
-import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
 import { ProposalState } from '@vegaprotocol/types';
 import { mockNetworkParams } from '../../test-helpers/mocks';
+import { type Proposal as IProposal } from '../../types';
 
 jest.mock('@vegaprotocol/network-parameters', () => ({
   ...jest.requireActual('@vegaprotocol/network-parameters'),
@@ -51,14 +51,14 @@ const vegaWalletConfig: VegaWalletConfig = {
   chainId: 'VEGA_CHAIN_ID',
 };
 
-const renderComponent = (proposal: ProposalQuery['proposal']) => {
+const renderComponent = (proposal: IProposal) => {
   render(
     <MemoryRouter>
       <MockedProvider>
         <VegaWalletProvider config={vegaWalletConfig}>
           <Proposal
             restData={{}}
-            proposal={proposal as ProposalQuery['proposal']}
+            proposal={proposal}
             networkParams={mockNetworkParams}
           />
         </VegaWalletProvider>

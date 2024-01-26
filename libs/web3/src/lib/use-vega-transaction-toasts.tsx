@@ -453,7 +453,7 @@ const CancelOrderDetails = ({
 const MarginModeDetails = ({ data }: { data: UpdateMarginMode }) => {
   const t = useT();
   const { data: markets } = useMarketsMapProvider();
-  const marketId = data.market_id;
+  const { marketId } = data;
   const market = marketId && markets?.[marketId];
   if (!market) {
     return null;

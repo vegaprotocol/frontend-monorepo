@@ -18,21 +18,13 @@ import {
   TradingDropdownTrigger,
   Icon,
 } from '@vegaprotocol/ui-toolkit';
-import { Interval } from '@vegaprotocol/types';
+import { type Interval } from '@vegaprotocol/types';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { ALLOWED_TRADINGVIEW_HOSTNAMES } from '@vegaprotocol/trading-view';
 import { IconNames, type IconName } from '@blueprintjs/icons';
 import { useChartSettings } from './use-chart-settings';
 import { useT } from '../../lib/use-t';
-
-const INTERVALS = [
-  Interval.INTERVAL_I1M,
-  Interval.INTERVAL_I5M,
-  Interval.INTERVAL_I15M,
-  Interval.INTERVAL_I1H,
-  Interval.INTERVAL_I6H,
-  Interval.INTERVAL_I1D,
-];
+import { SUPPORTED_INTERVALS } from './constants';
 
 const chartTypeIcon = new Map<ChartType, IconName>([
   [ChartType.AREA, IconNames.TIMELINE_AREA_CHART],
@@ -94,7 +86,7 @@ export const ChartMenu = () => {
               setInterval(value as Interval);
             }}
           >
-            {INTERVALS.map((timeInterval) => (
+            {SUPPORTED_INTERVALS.map((timeInterval) => (
               <TradingDropdownRadioItem
                 key={timeInterval}
                 inset
