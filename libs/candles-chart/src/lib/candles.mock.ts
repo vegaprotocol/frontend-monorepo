@@ -15,6 +15,10 @@ export const candlesQuery = (
       id: 'market-0',
       decimalPlaces: 5,
       positionDecimalPlaces: 0,
+      marketTimestamps: {
+        __typename: 'MarketTimestamps',
+        open: '2022-04-06T09:15:00Z',
+      },
       tradableInstrument: {
         instrument: {
           id: '',
