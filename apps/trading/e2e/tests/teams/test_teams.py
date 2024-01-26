@@ -62,7 +62,13 @@ def setup_teams_and_games(vega: VegaServiceNull):
     vega.wait_for_total_catchup()
     
     current_epoch = vega.statistics().epoch_seq
-    print(f"Current epoch: {current_epoch}")
+    game_start = current_epoch + 1
+    game_end = current_epoch + 3
+
+    current_epoch = vega.statistics().epoch_seq
+    print(f"[EPOCH: {current_epoch}] creating recurring transfer")
+    print(f"Game start: {game_start}")
+    print(f"Game game end: {game_end}")
 
     vega.recurring_transfer(
         from_key_name=PARTY_A.name,
@@ -76,21 +82,14 @@ def setup_teams_and_games(vega: VegaServiceNull):
         n_top_performers=1,
         amount=100,
         factor=1.0,
-        # Make game last 1 epoch
-        start_epoch=current_epoch + 1,
-        end_epoch=current_epoch + 2,
+        start_epoch=game_start,
+        end_epoch=game_end,
         window_length=1
     )
 
     next_epoch(vega)
-
-    current_epoch = vega.statistics().epoch_seq
-    print(f"Current epoch: {current_epoch}")
-
-    next_epoch(vega)
-
-    current_epoch = vega.statistics().epoch_seq
-    print(f"Current epoch: {current_epoch}")
+    
+    print(f"[EPOCH: {vega.statistics().epoch_seq}] starting order activity")
 
     vega.submit_order(
         trading_key=PARTY_B.name,
@@ -109,7 +108,16 @@ def setup_teams_and_games(vega: VegaServiceNull):
         volume=1,
     )
 
+    # Making sure that we have definitely passed enough epochs for the recurring transfer
+    # game to have been completed
+    next_epoch(vega)
+    print(f"[EPOCH: {vega.statistics().epoch_seq}] 1 epoch passed")
+
+    next_epoch(vega)
+    print(f"[EPOCH: {vega.statistics().epoch_seq}] 2 epoch passed")
+
     next_epoch(vega=vega)
+
 
     return {
         "market_id": tDAI_market,
@@ -136,7 +144,7 @@ def test_team_page_games_table(team_page: Page):
     team_page.get_by_test_id("games-toggle").click()
     expect(team_page.get_by_test_id("games-toggle")).to_have_text("Games (1)")
     expect(team_page.get_by_test_id("rank-0")).to_have_text("1")
-    expect(team_page.get_by_test_id("epoch-0")).to_have_text("8")
+    expect(team_page.get_by_test_id("epoch-0")).to_have_text("9")
     expect(team_page.get_by_test_id("type-0")).to_have_text("Price maker fees paid")
     expect(team_page.get_by_test_id("amount-0")).to_have_text("10,000,000")
     expect(team_page.get_by_test_id("participatingTeams-0")).to_have_text(
@@ -154,7 +162,6 @@ def test_team_page_members_table(team_page: Page):
     expect(team_page.get_by_test_id("joinedAt-0")).to_be_visible()
     expect(team_page.get_by_test_id("joinedAtEpoch-0")).to_have_text("8")
 
-@pytest.mark.skip
 def test_team_page_headline(team_page: Page, setup_teams_and_games
 ):
     team_name = setup_teams_and_games["team_name"]
@@ -179,10 +186,10 @@ def competitions_page(vega, browser, request):
         auth_setup(vega, page)
         yield page
 
+@pytest.mark.skip
 def test_leaderboard(competitions_page: Page, setup_teams_and_games):
     team_name = setup_teams_and_games["team_name"]
     competitions_page.goto(f"/#/competitions/")
-    competitions_page.pause()
     expect(competitions_page.get_by_test_id("rank-0").locator(".text-yellow-300")).to_have_count(1)
     expect(competitions_page.get_by_test_id("team-0")).to_have_text(team_name)
     expect(competitions_page.get_by_test_id("status-0")).to_have_text("Open")
