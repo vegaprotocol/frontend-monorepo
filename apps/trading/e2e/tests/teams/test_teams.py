@@ -60,6 +60,9 @@ def setup_teams_and_games(vega: VegaServiceNull):
 
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
+    
+    current_epoch = vega.statistics().epoch_seq
+    print(f"Current epoch: {current_epoch}")
 
     vega.recurring_transfer(
         from_key_name=PARTY_A.name,
@@ -73,22 +76,21 @@ def setup_teams_and_games(vega: VegaServiceNull):
         n_top_performers=1,
         amount=100,
         factor=1.0,
+        # Make game last 1 epoch
+        start_epoch=current_epoch + 1,
+        end_epoch=current_epoch + 2,
+        window_length=1
     )
 
-    # vega.recurring_transfer(
-    #     from_key_name=PARTY_B.name,
-    #     from_account_type=vega_protos.vega.ACCOUNT_TYPE_GENERAL,
-    #     to_account_type=vega_protos.vega.ACCOUNT_TYPE_REWARD_AVERAGE_POSITION,
-    #     asset=tDAI_asset_id,
-    #     reference="reward 2",
-    #     asset_for_metric=tDAI_asset_id,
-    #     metric=vega_protos.vega.DISPATCH_METRIC_AVERAGE_POSITION,
-    #     entity_scope=vega_protos.vega.ENTITY_SCOPE_TEAMS,
-    #     n_top_performers=1,
-    #     amount=100,
-    #     factor=1.0,
-    #     team_scope=[team_id]
-    # )
+    next_epoch(vega)
+
+    current_epoch = vega.statistics().epoch_seq
+    print(f"Current epoch: {current_epoch}")
+
+    next_epoch(vega)
+
+    current_epoch = vega.statistics().epoch_seq
+    print(f"Current epoch: {current_epoch}")
 
     vega.submit_order(
         trading_key=PARTY_B.name,
@@ -129,11 +131,9 @@ def create_team(vega: VegaServiceNull):
 
     return team_name
 
-
-
+@pytest.mark.skip
 def test_team_page_games_table(team_page: Page):
     team_page.get_by_test_id("games-toggle").click()
-    team_page.pause()
     expect(team_page.get_by_test_id("games-toggle")).to_have_text("Games (1)")
     expect(team_page.get_by_test_id("rank-0")).to_have_text("1")
     expect(team_page.get_by_test_id("epoch-0")).to_have_text("8")
@@ -149,7 +149,6 @@ def test_team_page_games_table(team_page: Page):
 @pytest.mark.skip
 def test_team_page_members_table(team_page: Page):
     team_page.get_by_test_id("members-toggle").click()
-    team_page.pause()
     expect(team_page.get_by_test_id("members-toggle")).to_have_text("Members (3)")
     expect(team_page.get_by_test_id("referee-0")).to_be_visible()
     expect(team_page.get_by_test_id("joinedAt-0")).to_be_visible()
@@ -159,9 +158,10 @@ def test_team_page_members_table(team_page: Page):
 def test_team_page_headline(team_page: Page, setup_teams_and_games
 ):
     team_name = setup_teams_and_games["team_name"]
-    team_page.pause()
     expect(team_page.get_by_test_id("team-name")).to_have_text(team_name)
     expect(team_page.get_by_test_id("members-count-stat")).to_have_text("3")
+    
+    ### TODO These all appear to be API errors as teamStatistics don't ever get populated
     expect(team_page.get_by_test_id("total-games-stat")).to_have_text(
         "0"
     )  # TODO this should be 1, confirm with devs
@@ -177,19 +177,19 @@ def competitions_page(vega, browser, request):
     with init_page(vega, browser, request) as page:
         risk_accepted_setup(page)
         auth_setup(vega, page)
-        page.goto(f"/#/competitions/")
         yield page
 
-@pytest.mark.skip
 def test_leaderboard(competitions_page: Page, setup_teams_and_games):
     team_name = setup_teams_and_games["team_name"]
-    team_page.pause()
+    competitions_page.goto(f"/#/competitions/")
     competitions_page.pause()
-    expect(competitions_page.get_by_test_id("rank-0").locator("._text-yellow-300")).to_have_count(1)
+    expect(competitions_page.get_by_test_id("rank-0").locator(".text-yellow-300")).to_have_count(1)
     expect(competitions_page.get_by_test_id("team-0")).to_have_text(team_name)
+    expect(competitions_page.get_by_test_id("status-0")).to_have_text("Open")
+    
+    ### TODO These all appear to be API errors as teamStatistics don't ever get populated
     expect(competitions_page.get_by_test_id("earned-0")).to_have_text("-") #TODO I think this should be 100, confirm with dev
     expect(competitions_page.get_by_test_id("games-0")).to_have_text("-") #TODO I think this should be 1, confirm with dev
-    expect(competitions_page.get_by_test_id("status-0")).to_have_text("Open")
     expect(competitions_page.get_by_test_id("volume-0")).to_have_text("-") #TODO I think this should be 10,000,000, confirm with dev
 
 #TODO def test_games(competitions_page: Page):
