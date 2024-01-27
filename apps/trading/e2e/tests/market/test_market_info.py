@@ -94,6 +94,7 @@ def test_market_info_insurance_pool(page: Page):
     validate_info_section(page, fields)
 
 
+@pytest.mark.skip("core issue #5681")
 def test_market_info_key_details(page: Page, vega: VegaServiceNull):
     # 6002-MDET-201
     page.get_by_test_id(market_title_test_id).get_by_text(
