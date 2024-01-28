@@ -157,6 +157,7 @@ interface ProposalNewMarketTerms {
       logNormal: LogNormal;
       successor?: Successor;
       liquiditySlaParameters: LiquiditySLAParameters;
+      liquidationStrategy: LiquidationStrategy;
     };
   };
   closingTimestamp: number;
@@ -361,6 +362,13 @@ interface Trigger {
 }
 
 interface LiquiditySLAParameters {
+  priceRange: string;
+  commitmentMinTimeFraction: string;
+  performanceHysteresisEpochs: number;
+  slaCompetitionFactor: string;
+}
+
+interface LiquidationStrategy {
   priceRange: string;
   commitmentMinTimeFraction: string;
   performanceHysteresisEpochs: number;

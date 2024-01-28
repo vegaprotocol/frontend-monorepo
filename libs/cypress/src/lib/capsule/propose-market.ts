@@ -137,6 +137,12 @@ function createNewMarketProposal(): ProposalSubmissionBody {
               performanceHysteresisEpochs: 2,
               slaCompetitionFactor: '0.75',
             },
+            liquidationStrategy: {
+              priceRange: '0',
+              commitmentMinTimeFraction: '0',
+              performanceHysteresisEpochs: 2,
+              slaCompetitionFactor: '0',
+            },
           },
         },
         closingTimestamp,
