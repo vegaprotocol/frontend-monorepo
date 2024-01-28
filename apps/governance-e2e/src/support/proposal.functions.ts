@@ -204,7 +204,7 @@ export function createNewMarketProposalTxBody(): ProposalSubmissionBody {
             liquidationStrategy: {
               priceRange: '0',
               commitmentMinTimeFraction: '0',
-              performanceHysteresisEpochs: 2,
+              performanceHysteresisEpochs: '0',
               slaCompetitionFactor: '0',
             },
             logNormal: {
@@ -350,7 +350,7 @@ export function createSuccessorMarketProposalTxBody(
             liquidationStrategy: {
               priceRange: '0',
               commitmentMinTimeFraction: '0',
-              performanceHysteresisEpochs: 2,
+              performanceHysteresisEpochs: '0',
               slaCompetitionFactor: '0',
             },
             logNormal: {

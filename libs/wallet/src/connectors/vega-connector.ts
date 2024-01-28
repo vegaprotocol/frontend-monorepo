@@ -371,7 +371,7 @@ interface LiquiditySLAParameters {
 interface LiquidationStrategy {
   priceRange: string;
   commitmentMinTimeFraction: string;
-  performanceHysteresisEpochs: number;
+  performanceHysteresisEpochs: string;
   slaCompetitionFactor: string;
 }
 
