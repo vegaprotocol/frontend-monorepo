@@ -202,10 +202,10 @@ export function createNewMarketProposalTxBody(): ProposalSubmissionBody {
               auctionExtension: '1',
             },
             liquidationStrategy: {
-              priceRange: '0',
-              commitmentMinTimeFraction: '0',
-              performanceHysteresisEpochs: '0',
-              slaCompetitionFactor: '0',
+              disposalFraction: '0',
+              disposalTimeStep: 0,
+              fullDisposalSize: 0,
+              maxFractionConsumed: '0',
             },
             logNormal: {
               tau: 0.0001140771161,
@@ -348,10 +348,10 @@ export function createSuccessorMarketProposalTxBody(
               auctionExtension: '1',
             },
             liquidationStrategy: {
-              priceRange: '0',
-              commitmentMinTimeFraction: '0',
-              performanceHysteresisEpochs: '0',
-              slaCompetitionFactor: '0',
+              disposalFraction: '0',
+              disposalTimeStep: 0,
+              fullDisposalSize: 0,
+              maxFractionConsumed: '0',
             },
             logNormal: {
               tau: 0.0001140771161,

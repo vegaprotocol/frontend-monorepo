@@ -369,10 +369,10 @@ interface LiquiditySLAParameters {
 }
 
 interface LiquidationStrategy {
-  priceRange: string;
-  commitmentMinTimeFraction: string;
-  performanceHysteresisEpochs: string;
-  slaCompetitionFactor: string;
+  disposalFraction: string;
+  disposalTimeStep: number;
+  fullDisposalSize: number;
+  maxFractionConsumed: string;
 }
 
 export interface ProposalSubmission {
