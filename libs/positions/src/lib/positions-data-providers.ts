@@ -67,6 +67,7 @@ export interface Position {
   realisedPNL: string;
   status: PositionStatus;
   totalBalance: string;
+  totalMarginAccountBalance: string;
   unrealisedPNL: string;
   updatedAt: string | null;
   productType: ProductType;
@@ -137,9 +138,11 @@ export const getMetrics = (
           : openVolume.multipliedBy(-1)
         ).multipliedBy(markPrice)
       : undefined;
-    const totalBalance = marginAccountBalance
-      .plus(generalAccountBalance)
-      .plus(orderMarginAccountBalance);
+    const totalMarginAccountBalance = marginAccountBalance.plus(
+      orderMarginAccountBalance
+    );
+    const totalBalance = totalMarginAccountBalance.plus(generalAccountBalance);
+
     const marginMode =
       margin?.marginMode || MarginMode.MARGIN_MODE_CROSS_MARGIN;
     const marginFactor = margin?.marginFactor || '1';
@@ -180,6 +183,9 @@ export const getMetrics = (
       realisedPNL: position.realisedPNL,
       status: position.positionStatus,
       totalBalance: totalBalance.multipliedBy(10 ** asset.decimals).toFixed(),
+      totalMarginAccountBalance: totalMarginAccountBalance
+        .multipliedBy(10 ** asset.decimals)
+        .toFixed(),
       unrealisedPNL: position.unrealisedPNL,
       updatedAt: position.updatedAt || null,
       productType: market?.tradableInstrument.instrument.product

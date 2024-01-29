@@ -107,7 +107,7 @@ export const MarginChange = ({
     return null;
   }
   let positionWarning = '';
-  if (orders?.length || openVolume) {
+  if (orders?.length && openVolume !== '0') {
     positionWarning = t(
       'youHaveOpenPositionAndOrders',
       'You have an existing position and open orders on this market.',

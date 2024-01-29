@@ -149,41 +149,43 @@ const PositionMargin = ({ data }: { data: Position }) => {
 
   return (
     <>
-      <MarginChart
-        width={inCrossMode ? getWidth(data.marginAccountBalance) : undefined}
-        label={t('Margin: {{balance}}', {
-          balance: addDecimalsFormatNumberQuantum(
-            data.marginAccountBalance,
-            data.assetDecimals,
-            data.quantum
-          ),
-        })}
-        other={
-          inCrossMode
-            ? t('General account: {{balance}}', {
-                balance: addDecimalsFormatNumberQuantum(
-                  data.generalAccountBalance,
-                  data.assetDecimals,
-                  data.quantum
-                ),
-              })
-            : undefined
-        }
-        className={classnames({ 'mb-2': hasOrderMarginAccountBalance })}
-        marker={
-          data.maintenanceLevel ? getWidth(data.maintenanceLevel) : undefined
-        }
-        markerLabel={
-          data.maintenanceLevel &&
-          t('Liquidation: {{maintenanceLevel}}', {
-            maintenanceLevel: addDecimalsFormatNumberQuantum(
-              data.maintenanceLevel,
+      {data.marginAccountBalance !== '0' && (
+        <MarginChart
+          width={inCrossMode ? getWidth(data.marginAccountBalance) : undefined}
+          label={t('Margin: {{balance}}', {
+            balance: addDecimalsFormatNumberQuantum(
+              data.marginAccountBalance,
               data.assetDecimals,
               data.quantum
             ),
-          })
-        }
-      />
+          })}
+          other={
+            inCrossMode
+              ? t('General account: {{balance}}', {
+                  balance: addDecimalsFormatNumberQuantum(
+                    data.generalAccountBalance,
+                    data.assetDecimals,
+                    data.quantum
+                  ),
+                })
+              : undefined
+          }
+          className={classnames({ 'mb-2': hasOrderMarginAccountBalance })}
+          marker={
+            data.maintenanceLevel ? getWidth(data.maintenanceLevel) : undefined
+          }
+          markerLabel={
+            data.maintenanceLevel &&
+            t('Liquidation: {{maintenanceLevel}}', {
+              maintenanceLevel: addDecimalsFormatNumberQuantum(
+                data.maintenanceLevel,
+                data.assetDecimals,
+                data.quantum
+              ),
+            })
+          }
+        />
+      )}
       {hasOrderMarginAccountBalance ? (
         <MarginChart
           width={getWidth(data.orderMarginAccountBalance)}
@@ -341,20 +343,16 @@ export const PositionsTable = ({
           return !data
             ? undefined
             : toBigNum(
-                data.marginAccountBalance,
+                data.totalMarginAccountBalance,
                 data.assetDecimals
               ).toNumber();
         },
         cellRenderer: ({ data }: VegaICellRendererParams<Position>) => {
-          if (
-            !data ||
-            !data.marginAccountBalance ||
-            !data.marketDecimalPlaces
-          ) {
+          if (!data || !data.totalMarginAccountBalance) {
             return null;
           }
           const margin = addDecimalsFormatNumberQuantum(
-            data.marginAccountBalance,
+            data.totalMarginAccountBalance,
             data.assetDecimals,
             data.quantum
           );
@@ -365,7 +363,7 @@ export const PositionsTable = ({
             <Tooltip
               description={
                 data &&
-                data.marginAccountBalance !== '0' && (
+                data.totalMarginAccountBalance !== '0' && (
                   <PositionMargin data={data} />
                 )
               }
