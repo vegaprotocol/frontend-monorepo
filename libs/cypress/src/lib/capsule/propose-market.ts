@@ -137,12 +137,6 @@ function createNewMarketProposal(): ProposalSubmissionBody {
               performanceHysteresisEpochs: 2,
               slaCompetitionFactor: '0.75',
             },
-            liquidationStrategy: {
-              disposalFraction: '0',
-              disposalTimeStep: 0,
-              fullDisposalSize: 0,
-              maxFractionConsumed: '0',
-            },
           },
         },
         closingTimestamp,

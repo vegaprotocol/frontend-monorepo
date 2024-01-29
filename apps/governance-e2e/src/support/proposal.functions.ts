@@ -201,12 +201,6 @@ export function createNewMarketProposalTxBody(): ProposalSubmissionBody {
               triggeringRatio: '0.7',
               auctionExtension: '1',
             },
-            liquidationStrategy: {
-              disposalFraction: '0',
-              disposalTimeStep: 0,
-              fullDisposalSize: 0,
-              maxFractionConsumed: '0',
-            },
             logNormal: {
               tau: 0.0001140771161,
               riskAversionParameter: 0.01,
@@ -346,12 +340,6 @@ export function createSuccessorMarketProposalTxBody(
               // FIXME: workaround because of https://github.com/vegaprotocol/vega/issues/10343
               triggeringRatio: '0.7',
               auctionExtension: '1',
-            },
-            liquidationStrategy: {
-              disposalFraction: '0',
-              disposalTimeStep: 0,
-              fullDisposalSize: 0,
-              maxFractionConsumed: '0',
             },
             logNormal: {
               tau: 0.0001140771161,

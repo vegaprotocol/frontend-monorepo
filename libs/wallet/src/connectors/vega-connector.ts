@@ -157,7 +157,6 @@ interface ProposalNewMarketTerms {
       logNormal: LogNormal;
       successor?: Successor;
       liquiditySlaParameters: LiquiditySLAParameters;
-      liquidationStrategy: LiquidationStrategy;
     };
   };
   closingTimestamp: number;
@@ -366,13 +365,6 @@ interface LiquiditySLAParameters {
   commitmentMinTimeFraction: string;
   performanceHysteresisEpochs: number;
   slaCompetitionFactor: string;
-}
-
-interface LiquidationStrategy {
-  disposalFraction: string;
-  disposalTimeStep: number;
-  fullDisposalSize: number;
-  maxFractionConsumed: string;
 }
 
 export interface ProposalSubmission {
