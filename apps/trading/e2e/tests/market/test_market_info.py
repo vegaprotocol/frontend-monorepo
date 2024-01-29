@@ -86,14 +86,27 @@ def test_market_info_market_volume(page: Page):
     validate_info_section(page, fields)
 
 
-def test_market_info_insurance_pool(page: Page):
-    # 6002-MDET-104
+def test_market_info_liquidation_strategy(page: Page):
     page.get_by_test_id(market_title_test_id).get_by_text(
-        "Insurance pool").click()
-    fields = [["Balance", "0.00 tDAI"]]
+        "Liquidation strategy").click()
+    fields = [
+        ["Disposal Fraction", "1"],
+        ["Disposal Time Step", "1"],
+        ["Full Disposal Size", "1,000,000,000"],
+        ["Max Fraction Consumed", "0.5"],
+    ]
     validate_info_section(page, fields)
 
 
+def test_market_info_liquidation(page: Page):
+    # 6002-MDET-104
+    page.get_by_test_id(market_title_test_id).get_by_text(
+        "Liquidations").click()
+    fields = [["Insurance Pool Balance", "0.00 tDAI"]]
+    validate_info_section(page, fields)
+
+
+@pytest.mark.skip("core issue #5681")
 def test_market_info_key_details(page: Page, vega: VegaServiceNull):
     # 6002-MDET-201
     page.get_by_test_id(market_title_test_id).get_by_text(

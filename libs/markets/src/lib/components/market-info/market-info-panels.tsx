@@ -749,6 +749,30 @@ export const PriceMonitoringBoundsInfoPanel = ({
   );
 };
 
+export const LiquidationStrategyInfoPanel = ({
+  market,
+  parentMarket,
+}: MarketInfoProps) => {
+  const marketData = {
+    disposalFraction: market.liquidationStrategy?.disposalFraction,
+    disposalTimeStep: market.liquidationStrategy?.disposalTimeStep,
+    fullDisposalSize: market.liquidationStrategy?.fullDisposalSize,
+    maxFractionConsumed: market.liquidationStrategy?.maxFractionConsumed,
+  };
+
+  const parentMarketData = parentMarket
+    ? {
+        disposalFraction: parentMarket.liquidationStrategy?.disposalFraction,
+        disposalTimeStep: parentMarket.liquidationStrategy?.disposalTimeStep,
+        fullDisposalSize: parentMarket.liquidationStrategy?.fullDisposalSize,
+        maxFractionConsumed:
+          parentMarket.liquidationStrategy?.maxFractionConsumed,
+      }
+    : undefined;
+
+  return <MarketInfoTable data={marketData} parentData={parentMarketData} />;
+};
+
 export const LiquidityMonitoringParametersInfoPanel = ({
   market,
   parentMarket,

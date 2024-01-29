@@ -27,6 +27,7 @@ import {
   InstrumentInfoPanel,
   InsurancePoolInfoPanel,
   KeyDetailsInfoPanel,
+  LiquidationStrategyInfoPanel,
   LiquidityInfoPanel,
   LiquidityMonitoringParametersInfoPanel,
   LiquidityPriceRangeInfoPanel,
@@ -151,7 +152,7 @@ export const MarketInfoAccordion = ({
                 <AccordionItem
                   key={id}
                   itemId={id}
-                  title={t('Insurance pool')}
+                  title={t('Liquidations')}
                   content={
                     <InsurancePoolInfoPanel market={market} account={a} />
                   }
@@ -269,6 +270,11 @@ export const MarketInfoAccordion = ({
               );
             }
           )}
+          <AccordionItem
+            itemId="liquidation-strategy"
+            title={t('Liquidation strategy')}
+            content={<LiquidationStrategyInfoPanel market={market} />}
+          />
           <AccordionItem
             itemId="liquidity-monitoring-parameters"
             title={t('Liquidity monitoring parameters')}
