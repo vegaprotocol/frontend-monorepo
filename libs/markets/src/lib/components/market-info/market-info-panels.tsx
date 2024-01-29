@@ -210,10 +210,15 @@ export const KeyDetailsInfoPanel = ({
       skip: !featureFlags.SUCCESSOR_MARKETS || !market.proposal?.id,
     });
 
-  const successorProposal =
-    successorProposalDetails?.proposal as SingleProposal<
-      SuccessorMarketProposalDetailsQuery['proposal']
-    >;
+  const successorProposal = successorProposalDetails?.proposal as
+    | SingleProposal<SuccessorMarketProposalDetailsQuery['proposal']>
+    | undefined;
+
+  const successorConfiguration =
+    successorProposal?.terms.change.__typename === 'NewMarket' &&
+    successorProposal.terms.change.successorConfiguration?.__typename ===
+      'SuccessorConfiguration' &&
+    successorProposal.terms.change.successorConfiguration;
 
   // The following queries are needed as the parent market could also have been a successor market.
   // Note: the parent market is only passed to this component if the successor markets flag is enabled,
@@ -232,10 +237,9 @@ export const KeyDetailsInfoPanel = ({
       },
       skip: !parentMarket?.proposal?.id,
     });
-  const parentProposal =
-    parentSuccessorProposalDetails?.proposal as SingleProposal<
-      SuccessorMarketProposalDetailsQuery['proposal']
-    >;
+  const parentProposal = parentSuccessorProposalDetails?.proposal as
+    | SingleProposal<SuccessorMarketProposalDetailsQuery['proposal']>
+    | undefined;
 
   const assetDecimals = getAsset(market).decimals;
 
@@ -259,16 +263,13 @@ export const KeyDetailsInfoPanel = ({
       </KeyValueTable>
       <MarketInfoTable
         data={
-          featureFlags.SUCCESSOR_MARKETS
+          featureFlags.SUCCESSOR_MARKETS && successorConfiguration
             ? {
                 name: market.tradableInstrument.instrument.name,
                 parentMarketID:
                   parentMarketIdData?.market?.parentMarketID || '-',
                 insurancePoolFraction:
-                  (successorProposal.terms.change.__typename === 'NewMarket' &&
-                    successorProposal.terms.change.successorConfiguration
-                      ?.insurancePoolFraction) ||
-                  '-',
+                  successorConfiguration.insurancePoolFraction || '-',
                 status: market.state && MarketStateMapping[market.state],
                 tradingMode:
                   market.tradingMode &&
