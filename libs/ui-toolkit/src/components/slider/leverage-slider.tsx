@@ -5,7 +5,9 @@ import classNames from 'classnames';
 export const LeverageSlider = (
   props: Omit<SliderProps, 'min' | 'max'> & Required<Pick<SliderProps, 'max'>>
 ) => {
-  const step = [2, 5, 10, 20, 25].find((step) => props.max / step <= 6);
+  const step = [2, 5, 10, 20, 25, 50, 100].find(
+    (step) => props.max / step <= 6
+  );
   const min = 1;
   const value = props.value?.[0] || props.defaultValue?.[0];
   return (

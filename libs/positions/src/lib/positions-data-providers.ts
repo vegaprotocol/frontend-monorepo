@@ -389,6 +389,31 @@ export const positionsMetricsProvider = makeDerivedDataProvider<
     })
 );
 
+const getMaxLeverage = (market: MarketInfo | null) => {
+  if (!market || !market?.riskFactors) {
+    return 1;
+  }
+  const maxLeverage =
+    1 /
+    (Math.max(
+      Number(market.riskFactors.long),
+      Number(market.riskFactors.short)
+    ) || 1);
+  return maxLeverage;
+};
+
+export const maxMarketLeverageProvider = makeDerivedDataProvider<
+  number,
+  never,
+  { marketId: string }
+>(
+  [
+    (callback, client, { marketId }) =>
+      marketInfoProvider(callback, client, { marketId }),
+  ],
+  (parts) => getMaxLeverage(parts[0])
+);
+
 export const maxLeverageProvider = makeDerivedDataProvider<
   number,
   never,
@@ -405,15 +430,7 @@ export const maxLeverageProvider = makeDerivedDataProvider<
     const market: MarketInfo | null = parts[0];
     const position: PositionFieldsFragment | null = parts[1];
     const margin: MarginFieldsFragment | null = parts[2];
-    if (!market || !market?.riskFactors) {
-      return 1;
-    }
-    const maxLeverage =
-      1 /
-      (Math.max(
-        Number(market.riskFactors.long),
-        Number(market.riskFactors.short)
-      ) || 1);
+    const maxLeverage = getMaxLeverage(market);
 
     if (
       market &&
@@ -445,10 +462,9 @@ export const maxLeverageProvider = makeDerivedDataProvider<
   }
 );
 
-export const useMaxLeverage = (marketId: string, partyId?: string) => {
+export const useMaxLeverage = (marketId: string, partyId: string | null) => {
   return useDataProvider({
-    dataProvider: maxLeverageProvider,
+    dataProvider: partyId ? maxLeverageProvider : maxMarketLeverageProvider,
     variables: { marketId, partyId: partyId || '' },
-    skip: !partyId,
   });
 };

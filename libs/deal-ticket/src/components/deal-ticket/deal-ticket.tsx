@@ -798,8 +798,20 @@ interface SummaryMessageProps {
 
 export const NoWalletWarning = ({
   isReadOnly,
-}: Pick<SummaryMessageProps, 'isReadOnly'>) => {
+  noWalletConnected,
+}: Pick<SummaryMessageProps, 'isReadOnly'> & {
+  noWalletConnected?: boolean;
+}) => {
   const t = useT();
+  if (noWalletConnected) {
+    return (
+      <div className="mb-2">
+        <InputError testId="deal-ticket-error-message-summary">
+          {t('You need a Vega wallet to start trading on this market')}
+        </InputError>
+      </div>
+    );
+  }
   if (isReadOnly) {
     return (
       <div className="mb-2">
