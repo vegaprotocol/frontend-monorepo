@@ -98,11 +98,11 @@ def test_market_info_liquidation_strategy(page: Page):
     validate_info_section(page, fields)
 
 
-def test_market_info_insurance_pool(page: Page):
+def test_market_info_liquidation(page: Page):
     # 6002-MDET-104
     page.get_by_test_id(market_title_test_id).get_by_text(
-        "Insurance pool").click()
-    fields = [["Balance", "0.00 tDAI"]]
+        "Liquidations").click()
+    fields = [["Insurance Pool Balance", "0.00 tDAI"]]
     validate_info_section(page, fields)
 
 
