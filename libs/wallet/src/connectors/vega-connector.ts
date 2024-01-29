@@ -456,7 +456,7 @@ export enum MarginMode {
   MARGIN_MODE_ISOLATED_MARGIN,
 }
 export interface UpdateMarginMode {
-  market_id: string;
+  marketId: string;
   mode: MarginMode;
   marginFactor?: string;
 }

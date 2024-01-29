@@ -26,7 +26,6 @@ def continuous_market(vega):
 @pytest.mark.usefixtures("auth", "risk_accepted")
 def test_should_display_info_and_button_for_deposit(continuous_market, page: Page):
     page.goto(f"/#/markets/{continuous_market}")
-    page.pause()
     page.get_by_test_id(order_size).fill("200000")
     page.get_by_test_id(order_price).fill("20")
     # 7002-SORD-060

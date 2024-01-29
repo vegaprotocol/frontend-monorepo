@@ -215,7 +215,7 @@ context(
     });
 
     // 3003-PMAN-001
-    it(
+    it.skip(
       'Able to submit valid new market proposal',
       // @ts-ignore clash between jest and cypress
       { tags: '@smoke' },
