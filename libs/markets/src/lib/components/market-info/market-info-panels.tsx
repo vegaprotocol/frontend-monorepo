@@ -246,7 +246,7 @@ export const KeyDetailsInfoPanel = ({
   return (
     <>
       <KeyValueTable>
-        <KeyValueTableRow noBorder>
+        <KeyValueTableRow noBorder className="text-xs">
           <div>{t('Market ID')}</div>
           <CopyWithTooltip text={market.id}>
             <button
