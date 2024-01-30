@@ -4,9 +4,9 @@ import type { TendermintBlocksResponse } from '../../../routes/blocks/tendermint
 import { TxDetailsShared } from './shared/tx-details-shared';
 import { TableCell, TableRow, TableWithTbody } from '../../table';
 import {
-  EthExplorerLink,
+  ExternalExplorerLink,
   EthExplorerLinkTypes,
-} from '../../links/eth-explorer-link/eth-explorer-link';
+} from '../../links/external-explorer-link/external-explorer-link';
 import { txSignatureToDeterministicId } from '../lib/deterministic-ids';
 import AssetBalance from '../../asset-balance/asset-balance';
 import { useScrollToLocation } from '../../../hooks/scroll-to-location';
@@ -57,7 +57,7 @@ export const TxDetailsWithdrawSubmission = ({
         <TableRow modifier="bordered">
           <TableCell>{t('Recipient')}</TableCell>
           <TableCell>
-            <EthExplorerLink
+            <ExternalExplorerLink
               id={w.ext.erc20.receiverAddress}
               type={EthExplorerLinkTypes.address}
             />

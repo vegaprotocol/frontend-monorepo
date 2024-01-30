@@ -1,18 +1,24 @@
 import { TableRow, TableCell, TableHeader } from '../../../components/table';
 import type { SourceType } from './oracle';
 import {
-  EthExplorerLink,
+  ExternalExplorerLink,
   EthExplorerLinkTypes,
-} from '../../../components/links/eth-explorer-link/eth-explorer-link';
+  getExternalChainLabel,
+} from '../../../components/links/external-explorer-link/external-explorer-link';
+import { t } from 'i18next';
 
 interface OracleDetailsEthSourceProps {
   sourceType: SourceType;
+  chain?: string;
 }
 /**
  * Given an Oracle that sources data from Ethereum, this component will render
  * a link to the smart contract and some basic details
  */
-export function OracleEthSource({ sourceType }: OracleDetailsEthSourceProps) {
+export function OracleEthSource({
+  sourceType,
+  chain = '1',
+}: OracleDetailsEthSourceProps) {
   if (
     sourceType.__typename !== 'DataSourceDefinitionExternal' ||
     sourceType.sourceType.__typename !== 'EthCallSpec'
@@ -26,11 +32,20 @@ export function OracleEthSource({ sourceType }: OracleDetailsEthSourceProps) {
     return null;
   }
 
+  const chainLabel = getExternalChainLabel(chain);
+
   return (
     <TableRow modifier="bordered">
-      <TableHeader scope="row">Ethereum Contract</TableHeader>
+      <TableHeader scope="row">
+        {chainLabel} {t('Contract')}
+      </TableHeader>
       <TableCell modifier="bordered">
-        <EthExplorerLink id={address} type={EthExplorerLinkTypes.address} />
+        <ExternalExplorerLink
+          chain={chain}
+          id={address}
+          type={EthExplorerLinkTypes.address}
+          code={true}
+        />
         <span className="mx-3">&rArr;</span>
         <code>{sourceType.sourceType.method}</code>
       </TableCell>

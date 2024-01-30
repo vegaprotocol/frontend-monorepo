@@ -8,9 +8,9 @@ import { useExplorerNodeVoteQuery } from './__generated__/Node-vote';
 import { PartyLink } from '../../links';
 import { Time } from '../../time';
 import {
-  EthExplorerLink,
+  ExternalExplorerLink,
   EthExplorerLinkTypes,
-} from '../../links/eth-explorer-link/eth-explorer-link';
+} from '../../links/external-explorer-link/external-explorer-link';
 
 interface TxDetailsNodeVoteProps {
   txData: BlockExplorerTransactionResult | undefined;
@@ -143,7 +143,7 @@ export function TxHash({ hash }: TxDetailsEthTxHashProps) {
     <TableRow modifier="bordered">
       <TableCell>Ethereum TX:</TableCell>
       <TableCell>
-        <EthExplorerLink id={hash} type={EthExplorerLinkTypes.tx} />
+        <ExternalExplorerLink id={hash} type={EthExplorerLinkTypes.tx} />
       </TableCell>
     </TableRow>
   );

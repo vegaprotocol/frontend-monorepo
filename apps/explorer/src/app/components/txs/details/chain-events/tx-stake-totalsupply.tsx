@@ -3,9 +3,9 @@ import { t } from '@vegaprotocol/i18n';
 import { TableRow, TableCell } from '../../../table';
 import type { components } from '../../../../../types/explorer';
 import {
-  EthExplorerLink,
+  ExternalExplorerLink,
   EthExplorerLinkTypes,
-} from '../../../links/eth-explorer-link/eth-explorer-link';
+} from '../../../links/external-explorer-link/external-explorer-link';
 
 interface TxDetailsChainEventStakeTotalSupplyProps {
   update: components['schemas']['vegaStakeTotalSupply'];
@@ -38,7 +38,7 @@ export const TxDetailsChainEventStakeTotalSupply = ({
       <TableRow modifier="bordered">
         <TableCell>{t('Source')}</TableCell>
         <TableCell>
-          <EthExplorerLink
+          <ExternalExplorerLink
             id={update.tokenAddress}
             type={EthExplorerLinkTypes.address}
           />

@@ -1,8 +1,8 @@
 import { PartyLink } from '../../../components/links';
 import {
-  EthExplorerLink,
+  ExternalExplorerLink,
   EthExplorerLinkTypes,
-} from '../../../components/links/eth-explorer-link/eth-explorer-link';
+} from '../../../components/links/external-explorer-link/external-explorer-link';
 import { TableRow, TableCell, TableHeader } from '../../../components/table';
 import { remove0x } from '@vegaprotocol/utils';
 
@@ -37,13 +37,15 @@ export function getAddressLink(signer: Signer) {
   }
 
   if (signer.__typename === 'ETHAddress') {
-    return <EthExplorerLink id={address} type={EthExplorerLinkTypes.address} />;
+    return (
+      <ExternalExplorerLink id={address} type={EthExplorerLinkTypes.address} />
+    );
   } else if (signer.__typename === 'PubKey' && address.length !== 64) {
     // This is a hack: some older oracles were submitted before proper checks stopped
     // ETH addresses being returned as Vega addresses
     // Hacky 0x prefixing as a bonus
     return (
-      <EthExplorerLink
+      <ExternalExplorerLink
         id={`0x${remove0x(address)}`}
         type={EthExplorerLinkTypes.address}
       />
@@ -61,7 +63,10 @@ interface OracleDetailsSignersProps {
 
 /**
  * Given an Oracle, this component will render either a link to Ethereum
- * or the Vega party depending on which type is specified
+ * or the Vega party depending on which type is specified.
+ *
+ * Note that this won't be shown for external contract calls as they do not
+ * have a signer in the same way.
  */
 export function OracleSigners({ sourceType }: OracleDetailsSignersProps) {
   if (sourceType.__typename !== 'DataSourceDefinitionExternal') {

@@ -1,9 +1,10 @@
 import { TableCell, TableRow } from '../../../table';
 import { t } from '@vegaprotocol/i18n';
 import {
-  EthExplorerLink,
+  ExternalExplorerLink,
   EthExplorerLinkTypes,
-} from '../../../links/eth-explorer-link/eth-explorer-link';
+  getExternalChainLabel,
+} from '../../../links/external-explorer-link/external-explorer-link';
 import type { components } from '../../../../../types/explorer';
 import { defaultAbiCoder, base64 } from 'ethers/lib/utils';
 import { BigNumber } from 'ethers';
@@ -44,10 +45,10 @@ export const TxDetailsContractCall = ({
     },
   });
 
-  if (!contractCall || !contractCall.result) {
+  if (!contractCall) {
     return null;
   }
-
+  const chainLabel = getExternalChainLabel(contractCall.sourceChainId);
   return (
     <>
       {contractCall.specId && (
@@ -64,9 +65,12 @@ export const TxDetailsContractCall = ({
       )}
       {contractCall.blockHeight && (
         <TableRow modifier="bordered">
-          <TableCell>{t('ETH block')}</TableCell>
           <TableCell>
-            <EthExplorerLink
+            {chainLabel} {t('block')}
+          </TableCell>
+          <TableCell>
+            <ExternalExplorerLink
+              chain={contractCall.sourceChainId}
               id={contractCall.blockHeight}
               type={EthExplorerLinkTypes.block}
             />
@@ -75,14 +79,24 @@ export const TxDetailsContractCall = ({
       )}
       {data?.oracleSpec?.dataSourceSpec && (
         <OracleEthSource
+          chain={contractCall.sourceChainId}
           sourceType={data.oracleSpec.dataSourceSpec.spec.data.sourceType}
         />
       )}
 
-      <TableRow modifier="bordered">
-        <TableCell>{t('Result')}</TableCell>
-        <TableCell>{decodeEthCallResult(contractCall.result)}</TableCell>
-      </TableRow>
+      {contractCall.error && (
+        <TableRow modifier="bordered">
+          <TableCell>{t('Call error')}</TableCell>
+          <TableCell>{contractCall.error}</TableCell>
+        </TableRow>
+      )}
+
+      {contractCall.result && (
+        <TableRow modifier="bordered">
+          <TableCell>{t('Result')}</TableCell>
+          <TableCell>{decodeEthCallResult(contractCall.result)}</TableCell>
+        </TableRow>
+      )}
     </>
   );
 };

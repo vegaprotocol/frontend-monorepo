@@ -6,9 +6,9 @@ import { TableRow, TableCell, TableWithTbody } from '../../table';
 
 import type { components } from '../../../../types/explorer';
 import {
-  EthExplorerLink,
+  ExternalExplorerLink,
   EthExplorerLinkTypes,
-} from '../../links/eth-explorer-link/eth-explorer-link';
+} from '../../links/external-explorer-link/external-explorer-link';
 import { NodeLink } from '../../links';
 
 type Command = components['schemas']['v1IssueSignatures'];
@@ -57,7 +57,7 @@ export const TxDetailsIssueSignatures = ({
         <TableRow modifier="bordered">
           <TableCell>{t('ETH key')}</TableCell>
           <TableCell>
-            <EthExplorerLink
+            <ExternalExplorerLink
               id={cmd.submitter}
               type={EthExplorerLinkTypes.address}
             />

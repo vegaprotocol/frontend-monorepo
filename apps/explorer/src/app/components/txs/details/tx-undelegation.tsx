@@ -8,7 +8,7 @@ import GovernanceAssetBalance from '../../asset-balance/governance-asset-balance
 import type { components } from '../../../../types/explorer';
 
 export const methodText: Record<
-  components['schemas']['UndelegateSubmissionMethod'],
+  components['schemas']['v1UndelegateSubmissionMethod'],
   string
 > = {
   METHOD_NOW: 'Immediate',
