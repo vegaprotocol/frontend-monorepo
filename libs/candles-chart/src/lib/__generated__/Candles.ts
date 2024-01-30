@@ -12,7 +12,7 @@ export type CandlesQueryVariables = Types.Exact<{
 }>;
 
 
-export type CandlesQuery = { __typename?: 'Query', market?: { __typename?: 'Market', id: string, decimalPlaces: number, positionDecimalPlaces: number, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', id: string, name: string, code: string } }, candlesConnection?: { __typename?: 'CandleDataConnection', edges?: Array<{ __typename?: 'CandleEdge', node: { __typename?: 'Candle', periodStart: any, lastUpdateInPeriod: any, high: string, low: string, open: string, close: string, volume: string } } | null> | null } | null } | null };
+export type CandlesQuery = { __typename?: 'Query', market?: { __typename?: 'Market', id: string, decimalPlaces: number, positionDecimalPlaces: number, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', id: string, name: string, code: string } }, marketTimestamps: { __typename?: 'MarketTimestamps', open: any }, candlesConnection?: { __typename?: 'CandleDataConnection', edges?: Array<{ __typename?: 'CandleEdge', node: { __typename?: 'Candle', periodStart: any, lastUpdateInPeriod: any, high: string, low: string, open: string, close: string, volume: string } } | null> | null } | null } | null };
 
 export type CandlesEventsSubscriptionVariables = Types.Exact<{
   marketId: Types.Scalars['ID'];
@@ -45,6 +45,9 @@ export const CandlesDocument = gql`
         name
         code
       }
+    }
+    marketTimestamps {
+      open
     }
     candlesConnection(interval: $interval, since: $since, pagination: {last: 5000}) {
       edges {
