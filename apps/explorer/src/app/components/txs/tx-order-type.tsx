@@ -1,7 +1,7 @@
 import { t } from '@vegaprotocol/i18n';
 import type { components } from '../../../types/explorer';
 import { VoteIcon } from '../vote-icon/vote-icon';
-import { ExternalChainIcon } from '../links/external-explorer-link/external-explorer-link';
+import { ExternalChainIcon } from '../links/external-explorer-link/external-chain-icon';
 
 interface TxOrderTypeProps {
   orderType: string;

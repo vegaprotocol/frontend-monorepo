@@ -1,4 +1,6 @@
 import Hash from '../hash';
+import { getExternalExplorerLink } from './external-chain';
+import { ExternalChainIcon } from './external-chain-icon';
 
 export enum EthExplorerLinkTypes {
   block = 'block',
@@ -9,6 +11,7 @@ export enum EthExplorerLinkTypes {
 export type ExternalExplorerLinkProps = Partial<typeof HTMLAnchorElement> & {
   id: string;
   type: EthExplorerLinkTypes;
+  // Defaults to Ethereum Mainnet, as chain support was added late
   chain?: string;
   code?: boolean;
 };
@@ -35,75 +38,4 @@ export const ExternalExplorerLink = ({
       <Hash text={id} />
     </a>
   );
-};
-
-export const SUPPORTED_CHAIN_IDS: string[] = ['1', '100', '42161', '11155111'];
-
-type ChainIdMapping = {
-  [K in typeof SUPPORTED_CHAIN_IDS[number]]: string;
-};
-
-export const SUPPORTED_CHAIN_LABELS: ChainIdMapping = {
-  '1': 'Ethereum',
-  '100': 'Gnosis',
-  '42161': 'Arbitrum',
-  '11155111': 'Sepolia',
-};
-
-export const SUPPORTED_CHAIN_ICON_URLS: ChainIdMapping = {
-  '1': '/assets/chain-eth-logo.svg',
-  '100': '/assets/chain-gno-logo.svg',
-  '42161': '/assets/chain-arb-logo.svg',
-  '11155111': '/assets/chain-eth-logo.svg',
-};
-
-export function getExternalExplorerLink(chainId: string, type: string) {
-  if (SUPPORTED_CHAIN_IDS.includes(chainId)) {
-    switch (chainId) {
-      case '1':
-        return 'https://etherscan.io';
-      case '100':
-        return 'https://gnosisscan.io';
-      case '42161':
-        return 'https://arbiscan.io';
-      case '11155111':
-        return 'https://sepolia.etherscan.io';
-      default:
-        return '#';
-    }
-  } else {
-    return '#';
-  }
-}
-
-export function getExternalChainLabel(chainId?: string) {
-  if (chainId && SUPPORTED_CHAIN_IDS.includes(chainId)) {
-    return SUPPORTED_CHAIN_LABELS[chainId];
-  } else {
-    return 'Custom Chain';
-  }
-}
-
-type ExternalChainIconProps = {
-  chainId?: string;
-};
-
-export const ExternalChainIcon = ({
-  chainId = '-1',
-}: ExternalChainIconProps) => {
-  if (SUPPORTED_CHAIN_IDS.includes(chainId)) {
-    const url = SUPPORTED_CHAIN_ICON_URLS[chainId];
-    const alt = SUPPORTED_CHAIN_LABELS[chainId];
-
-    return (
-      <img
-        src={url}
-        className="inline-block w-4 h-4 mr-1 dark:invert"
-        alt={alt}
-        title={alt}
-      />
-    );
-  } else {
-    return null;
-  }
 };

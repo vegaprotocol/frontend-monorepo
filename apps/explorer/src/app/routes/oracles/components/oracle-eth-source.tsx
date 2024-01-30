@@ -3,8 +3,8 @@ import type { SourceType } from './oracle';
 import {
   ExternalExplorerLink,
   EthExplorerLinkTypes,
-  getExternalChainLabel,
 } from '../../../components/links/external-explorer-link/external-explorer-link';
+import { getExternalChainLabel } from '../../../components/links/external-explorer-link/external-chain';
 import { t } from 'i18next';
 
 interface OracleDetailsEthSourceProps {

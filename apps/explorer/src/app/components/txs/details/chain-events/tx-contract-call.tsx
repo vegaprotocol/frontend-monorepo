@@ -3,8 +3,8 @@ import { t } from '@vegaprotocol/i18n';
 import {
   ExternalExplorerLink,
   EthExplorerLinkTypes,
-  getExternalChainLabel,
 } from '../../../links/external-explorer-link/external-explorer-link';
+import { getExternalChainLabel } from '../../../links/external-explorer-link/external-chain';
 import type { components } from '../../../../../types/explorer';
 import { defaultAbiCoder, base64 } from 'ethers/lib/utils';
 import { BigNumber } from 'ethers';
