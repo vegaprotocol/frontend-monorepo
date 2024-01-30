@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useWeb3React } from '@web3-react/core';
-
-import { type BigNumber } from 'ethers';
 import { useEthereumConfig } from './use-ethereum-config';
+import BigNumber from 'bignumber.js';
 
 const DEFAULT_INTERVAL = 15000; // 15 seconds
 
@@ -46,9 +45,10 @@ const retrieveGasData = async (
 
     if (data.lastBaseFeePerGas && data.maxFeePerGas) {
       return {
-        basePrice: data.lastBaseFeePerGas,
-        maxPrice: data.maxFeePerGas,
-        gas: estGasAmount,
+        // converts also form ethers BigNumber to "normal" BigNumber
+        basePrice: BigNumber(data.lastBaseFeePerGas.toString()),
+        maxPrice: BigNumber(data.maxFeePerGas.toString()),
+        gas: BigNumber(estGasAmount.toString()),
       };
     }
   } catch (err) {

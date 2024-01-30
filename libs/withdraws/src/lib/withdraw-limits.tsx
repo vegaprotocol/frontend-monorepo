@@ -10,8 +10,14 @@ import BigNumber from 'bignumber.js';
 import { formatDistanceToNow } from 'date-fns';
 import { useT } from './use-t';
 import { type GasData } from '@vegaprotocol/web3';
-import { formatNumber, removeDecimal, toQUSD } from '@vegaprotocol/utils';
-import { utils } from 'ethers';
+import {
+  asETH,
+  formatEther,
+  formatNumber,
+  removeDecimal,
+  toQUSD,
+  unitiseEther,
+} from '@vegaprotocol/utils';
 import classNames from 'classnames';
 
 interface WithdrawLimitsProps {
@@ -114,40 +120,6 @@ export const WithdrawLimits = ({
   );
 };
 
-enum EtherUnit {
-  wei = '0',
-  kwei = '3',
-  mwei = '6',
-  gwei = '9',
-  ether = '18',
-}
-
-const etherUnitMapping: Record<EtherUnit, string> = {
-  [EtherUnit.wei]: 'wei',
-  [EtherUnit.kwei]: 'kwei',
-  [EtherUnit.mwei]: 'mwei',
-  [EtherUnit.gwei]: 'gwei',
-  [EtherUnit.ether]: 'ETH',
-};
-
-const formatPrice = (
-  value: GasData['basePrice'] | GasData['maxPrice'],
-  decimals = 0,
-  forceUnit?: EtherUnit
-): [price: string, unit: EtherUnit] => {
-  // let idx = Math.ceil(value.toString().length / 3) - 1;
-  let idx = Math.max(
-    ...Object.values(EtherUnit)
-      .map((u, i) => [value.toString().length - Number(u), i])
-      .filter(([x, i]) => x > 0)
-      .map((_, i) => i)
-  );
-  if (idx < 0) idx = 0;
-
-  const unit = forceUnit || (Object.values(EtherUnit)[idx] as EtherUnit);
-  return [formatNumber(utils.formatUnits(value, unit), decimals), unit];
-};
-
 const GasPrice = ({
   gasPrice,
   amount,
@@ -159,39 +131,66 @@ const GasPrice = ({
   const { quantum: wethQuantum } = useWETH();
   const { value, quantum } = amount;
   if (gasPrice) {
-    const { basePrice, maxPrice, gas } = gasPrice;
-    const b = basePrice.mul(gas);
-    const m = maxPrice.mul(gas);
+    const {
+      basePrice: basePricePerGas,
+      maxPrice: maxPricePerGas,
+      gas,
+    } = gasPrice;
+    const basePrice = basePricePerGas.multipliedBy(gas);
+    const maxPrice = maxPricePerGas.multipliedBy(gas);
 
-    const bQUSD = toQUSD(b.toNumber(), wethQuantum);
-    const mQUSD = toQUSD(m.toNumber(), wethQuantum);
+    const basePriceQUSD = toQUSD(basePrice, wethQuantum);
+    const maxPriceQUSD = toQUSD(maxPrice, wethQuantum);
 
-    const vQUSD = toQUSD(value, quantum);
+    const withdrawalAmountQUSD = toQUSD(value, quantum);
 
     const isExpensive =
-      !vQUSD.isLessThanOrEqualTo(0) && vQUSD.isLessThanOrEqualTo(mQUSD);
+      !withdrawalAmountQUSD.isLessThanOrEqualTo(0) &&
+      withdrawalAmountQUSD.isLessThanOrEqualTo(maxPriceQUSD);
     const expensiveClassNames = {
-      'text-vega-red-500': isExpensive && vQUSD.isLessThanOrEqualTo(bQUSD),
+      'text-vega-red-500':
+        isExpensive && withdrawalAmountQUSD.isLessThanOrEqualTo(basePriceQUSD),
       'text-vega-orange-500':
         isExpensive &&
-        vQUSD.isGreaterThan(bQUSD) &&
-        vQUSD.isLessThanOrEqualTo(mQUSD),
+        withdrawalAmountQUSD.isGreaterThan(basePriceQUSD) &&
+        withdrawalAmountQUSD.isLessThanOrEqualTo(maxPriceQUSD),
     };
 
-    const [bp, bpunit] = formatPrice(basePrice);
-    const [mp] = formatPrice(maxPrice, 0, bpunit);
+    const uBasePricePerGas = unitiseEther(basePricePerGas);
+    const uMaxPricePerGas = unitiseEther(
+      maxPricePerGas,
+      uBasePricePerGas[1] // forces the same unit as min price
+    );
 
-    const [gbp, gbpunit] = formatPrice(b);
-    const [gmp] = formatPrice(m, 0, gbpunit);
+    const uBasePrice = unitiseEther(basePrice);
+    const uMaxPrice = unitiseEther(maxPrice, uBasePrice[1]);
 
-    const [bEther] = formatPrice(b, 18, EtherUnit.ether);
-    const [mEther] = formatPrice(m, 18, EtherUnit.ether);
+    let range = (
+      <span>
+        {formatEther(uBasePrice, 0, true)} - {formatEther(uMaxPrice)}
+      </span>
+    );
+    // displays range as ETH when it's greater that 1000000 gwei
+    if (uBasePrice[0].isGreaterThan(1e6)) {
+      range = (
+        <span className="flex flex-col font-mono md:text-[11px]">
+          <span>
+            {t('min')}: {asETH(basePrice)}
+          </span>
+          <span>
+            {t('max')}: {asETH(maxPrice)}
+          </span>
+        </span>
+      );
+    }
 
     return (
       <div className={classNames('flex flex-col items-end self-end')}>
         <Tooltip description={t('The current gas price range')}>
           <span>
-            {bp} - {mp} {etherUnitMapping[bpunit]} / gas
+            {/* base price per gas unit */}
+            {formatEther(uBasePricePerGas, 0, true)} -{' '}
+            {formatEther(uMaxPricePerGas)} / gas
           </span>
         </Tooltip>
         <Tooltip
@@ -202,27 +201,31 @@ const GasPrice = ({
                   {t(
                     "It seems that the current gas prices are exceeding the amount you're trying to withdraw"
                   )}{' '}
-                  <strong>(~{vQUSD.toFixed(2)} qUSD)</strong>.
+                  <strong>
+                    (~{formatNumber(withdrawalAmountQUSD, 2)} qUSD)
+                  </strong>
+                  .
                 </span>
               )}
               <span>
-                {gas.toString()} gas &times; {bp} {etherUnitMapping[bpunit]} ={' '}
-                {bEther} ETH
+                {formatNumber(gas)} gas &times; {asETH(basePricePerGas)} ={' '}
+                {asETH(basePrice)}
               </span>
               <span>
-                {gas.toString()} gas &times; {mp} {etherUnitMapping[bpunit]} ={' '}
-                {mEther} ETH
+                {formatNumber(gas)} gas &times; {asETH(maxPricePerGas)} ={' '}
+                {asETH(maxPrice)}
               </span>
             </div>
           }
         >
           <span className={classNames(expensiveClassNames, 'text-xs')}>
-            {gbp} - {gmp} {etherUnitMapping[gbpunit]}
+            {range}
           </span>
         </Tooltip>
 
         <span className="text-muted text-xs">
-          ~{formatNumber(bQUSD, 2)} - {formatNumber(mQUSD, 2)} qUSD
+          ~{formatNumber(basePriceQUSD, 2)} - {formatNumber(maxPriceQUSD, 2)}{' '}
+          qUSD
         </span>
       </div>
     );

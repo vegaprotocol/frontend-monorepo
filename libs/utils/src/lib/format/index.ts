@@ -4,3 +4,4 @@ export * from './range';
 export * from './size';
 export * from './strings';
 export * from './trigger';
+export * from './ether';
