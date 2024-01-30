@@ -195,6 +195,7 @@ export const singleRow: Position = {
   quantum: '0.1',
   lossSocializationAmount: '0',
   marginAccountBalance: '12345600',
+  totalMarginAccountBalance: '12345600',
   marketDecimalPlaces: 1,
   marketId: 'string',
   marketCode: 'ETHBTC.QM21',
