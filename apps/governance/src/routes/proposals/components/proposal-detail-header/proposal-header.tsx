@@ -133,18 +133,25 @@ const SingleProposalHeader = ({
       );
       break;
     }
+    // @ts-ignore updateType is definitely present for this proposal type
     case 'UpdateMarketState': {
       proposalType =
+        // @ts-ignore updateType is definitely present for this proposal type
         featureFlags.UPDATE_MARKET_STATE && change?.updateType
-          ? t(change.updateType)
+          ? // @ts-ignore types are fucked
+            t(change.updateType)
           : 'UpdateMarketState';
       fallbackTitle = t('UpdateMarketStateProposal');
       details = (
         <span>
           {featureFlags.UPDATE_MARKET_STATE &&
+          // @ts-ignore types are fucked
           change?.market?.id &&
+          // @ts-ignore types are fucked
           change.updateType ? (
             <>
+              {/*
+              // @ts-ignore types are fucked */}
               {t(change.updateType)}: {truncateMiddle(change.market.id)}
             </>
           ) : null}
@@ -273,7 +280,7 @@ const SingleProposalHeader = ({
       <div className="flex items-center justify-between gap-4 mb-6 text-sm">
         <div data-testid="proposal-type">
           <ProposalInfoLabel variant="secondary">
-            {t(`${proposalType}`)}
+            {t(proposalType)}
           </ProposalInfoLabel>
         </div>
 
@@ -322,7 +329,8 @@ const SingleProposalHeader = ({
         </div>
       )}
 
-      <VoteBreakdown proposal={proposal} />
+      {/* TODO: fix type cast */}
+      <VoteBreakdown proposal={proposal as Proposal} />
     </>
   );
 };

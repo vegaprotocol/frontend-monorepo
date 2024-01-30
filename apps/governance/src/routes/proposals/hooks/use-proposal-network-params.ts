@@ -3,12 +3,12 @@ import {
   useNetworkParams,
 } from '@vegaprotocol/network-parameters';
 import { BigNumber } from '../../../lib/bignumber';
-import { type SingleProposal } from '../types';
+import { type Proposal } from '../types';
 
 export const useProposalNetworkParams = ({
   proposal,
 }: {
-  proposal: SingleProposal;
+  proposal: Proposal;
 }) => {
   const { params } = useNetworkParams([
     NetworkParams.governance_proposal_updateMarket_requiredMajority,

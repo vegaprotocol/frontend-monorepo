@@ -17,7 +17,6 @@ export type BatchProposal = Extract<
   ProposalQuery['proposal'],
   { __typename?: 'BatchProposal' }
 >;
-export type SingleProposal = Proposal | BatchProposal;
 
 export type ListProposal = ProposalFieldsFragment;
 export type ListBatchProposal = BatchProposalFieldsFragment;
