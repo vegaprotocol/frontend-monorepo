@@ -8,7 +8,7 @@ import mergeWith from 'lodash/mergeWith';
 import { type PartialDeep } from 'type-fest';
 import { type ProposalQuery } from '../proposal/__generated__/Proposal';
 import { type ProtocolUpgradeProposalFieldsFragment } from '@vegaprotocol/proposals';
-import { type SingleProposal } from '../types';
+import { type Proposal } from '../types';
 
 export function generateProtocolUpgradeProposal(
   override: PartialDeep<ProtocolUpgradeProposalFieldsFragment> = {}
@@ -44,8 +44,8 @@ export function generateProtocolUpgradeProposal(
 }
 
 export function generateProposal(
-  override: PartialDeep<SingleProposal> = {}
-): SingleProposal {
+  override: PartialDeep<Proposal> = {}
+): Proposal {
   const defaultProposal: ProposalQuery['proposal'] = {
     __typename: 'Proposal',
     id: faker.datatype.uuid(),
@@ -93,7 +93,7 @@ export function generateProposal(
     },
   };
 
-  return mergeWith<SingleProposal, PartialDeep<SingleProposal>>(
+  return mergeWith<Proposal, PartialDeep<Proposal>>(
     defaultProposal,
     override,
     (objValue, srcValue) => {

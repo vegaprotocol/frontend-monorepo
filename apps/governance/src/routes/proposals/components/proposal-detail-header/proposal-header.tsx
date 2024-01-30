@@ -30,7 +30,6 @@ import { VoteBreakdown } from '../vote-breakdown';
 import { GovernanceTransferKindMapping } from '@vegaprotocol/types';
 import {
   type Proposal,
-  type SingleProposal,
   type ListProposal,
   type ListBatchProposal,
   type BatchProposal,
@@ -41,7 +40,7 @@ export const ProposalHeader = ({
   isListItem = true,
   voteState,
 }: {
-  proposal: SingleProposal | ListProposal | ListBatchProposal;
+  proposal: Proposal | BatchProposal | ListProposal | ListBatchProposal;
   isListItem?: boolean;
   voteState?: VoteState | null;
 }) => {
