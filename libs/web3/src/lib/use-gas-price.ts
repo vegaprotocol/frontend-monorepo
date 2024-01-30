@@ -62,7 +62,6 @@ const retrieveGasData = async (
 
 /**
  * Gets the "current" gas price from the ethereum network.
- * @returns gwei
  */
 export const useGasPrice = (
   method: ContractMethod,

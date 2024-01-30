@@ -26,9 +26,8 @@ import { formatDistanceToNow } from 'date-fns';
 import { useForm, Controller, useWatch } from 'react-hook-form';
 import { WithdrawLimits } from './withdraw-limits';
 import {
-  ContractMethod,
   ETHEREUM_EAGER_CONNECT,
-  useGasPrice,
+  type GasData,
   useWeb3ConnectStore,
   useWeb3Disconnect,
 } from '@vegaprotocol/web3';
@@ -58,6 +57,7 @@ export interface WithdrawFormProps {
   delay: number | undefined;
   onSelectAsset: (assetId: string) => void;
   submitWithdraw: (withdrawal: WithdrawalArgs) => void;
+  gasPrice?: GasData;
 }
 
 const WithdrawDelayNotification = ({
@@ -119,6 +119,7 @@ export const WithdrawForm = ({
   delay,
   onSelectAsset,
   submitWithdraw,
+  gasPrice,
 }: WithdrawFormProps) => {
   const t = useT();
   const ethereumAddress = useEthereumAddress();
@@ -141,8 +142,6 @@ export const WithdrawForm = ({
   });
 
   const amount = useWatch({ name: 'amount', control });
-
-  const gasPrice = useGasPrice(ContractMethod.WITHDRAW_ASSET);
 
   const onSubmit = async (fields: FormFields) => {
     if (!selectedAsset) {

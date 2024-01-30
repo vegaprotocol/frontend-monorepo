@@ -82,7 +82,7 @@ export const WithdrawLimits = ({
         'Estimated gas fee for the withdrawal transaction (refreshes each 15 seconds)'
       ),
       label: t('Gas fee'),
-      value: (
+      value: gas ? (
         <GasPrice
           gasPrice={gas}
           amount={{
@@ -90,6 +90,8 @@ export const WithdrawLimits = ({
             quantum: asset.quantum,
           }}
         />
+      ) : (
+        '-'
       ),
     },
   ];

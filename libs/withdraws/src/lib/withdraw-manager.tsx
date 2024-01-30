@@ -4,6 +4,7 @@ import { WithdrawForm } from './withdraw-form';
 import type { Asset } from '@vegaprotocol/assets';
 import type { AccountFieldsFragment } from '@vegaprotocol/accounts';
 import { useWithdrawAsset } from './use-withdraw-asset';
+import { ContractMethod, useGasPrice } from '@vegaprotocol/web3';
 
 export interface WithdrawManagerProps {
   assets: Asset[];
@@ -20,6 +21,8 @@ export const WithdrawManager = ({
 }: WithdrawManagerProps) => {
   const { asset, balance, min, threshold, delay, handleSelectAsset } =
     useWithdrawAsset(assets, accounts, assetId);
+  const gasPrice = useGasPrice(ContractMethod.WITHDRAW_ASSET);
+
   return (
     <WithdrawForm
       selectedAsset={asset}
@@ -30,6 +33,7 @@ export const WithdrawManager = ({
       submitWithdraw={submit}
       threshold={threshold}
       delay={delay}
+      gasPrice={gasPrice}
     />
   );
 };
