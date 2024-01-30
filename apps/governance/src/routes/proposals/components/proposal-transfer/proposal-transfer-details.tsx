@@ -19,12 +19,12 @@ import {
   addDecimalsFormatNumberQuantum,
   formatDateWithLocalTimezone,
 } from '@vegaprotocol/utils';
-import { type SingleProposal } from '../../types';
+import { type Proposal } from '../../types';
 
 export const ProposalTransferDetails = ({
   proposal,
 }: {
-  proposal: SingleProposal;
+  proposal: Proposal;
 }) => {
   const { t } = useTranslation();
   const [show, setShow] = useState(false);
