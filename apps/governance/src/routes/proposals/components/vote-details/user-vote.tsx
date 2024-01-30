@@ -8,10 +8,10 @@ import { SubHeading } from '../../../../components/heading';
 import { type VoteValue } from '@vegaprotocol/types';
 import { type DialogProps, type VegaTxState } from '@vegaprotocol/proposals';
 import { type VoteState } from './use-user-vote';
-import { type Proposal } from '../../types';
+import { type SingleProposal } from '../../types';
 
 interface UserVoteProps {
-  proposal: Proposal;
+  proposal: SingleProposal;
   minVoterBalance: string | null | undefined;
   spamProtectionMinTokens: string | null | undefined;
   transaction: VegaTxState | null;

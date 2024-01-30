@@ -11,7 +11,7 @@ import {
 } from '../proposal-referral-program-details';
 import { formatNumberPercentage } from '@vegaprotocol/utils';
 import BigNumber from 'bignumber.js';
-import { type Proposal } from '../../types';
+import { type UpdateNetworkParameterFragment } from '../../proposal/__generated__/Proposal';
 
 // These types are not generated as it's not known how dynamic these are
 type VestingBenefitTier = {
@@ -43,7 +43,7 @@ export const formatVolumeDiscountFactor = (value: string) => {
 };
 
 interface ProposalReferralProgramDetailsProps {
-  proposal: Proposal | null;
+  change: UpdateNetworkParameterFragment['terms']['change'] | null;
 }
 
 /**
@@ -55,17 +55,17 @@ interface ProposalReferralProgramDetailsProps {
  * It only renders known fields so that they can be formatted correctly.
  */
 export const ProposalUpdateBenefitTiers = ({
-  proposal,
+  change,
 }: ProposalReferralProgramDetailsProps) => {
   const { t } = useTranslation();
   if (
-    proposal?.terms?.change?.__typename !== 'UpdateNetworkParameter' ||
-    proposal?.terms?.change?.networkParameter.key.slice(-13) !== '.benefitTiers'
+    change?.__typename !== 'UpdateNetworkParameter' ||
+    change?.networkParameter.key.slice(-13) !== '.benefitTiers'
   ) {
     return null;
   }
 
-  const benefitTiersString = proposal?.terms?.change?.networkParameter.value;
+  const benefitTiersString = change?.networkParameter.value;
   const benefitTiers = getBenefitTiers(benefitTiersString);
 
   if (!benefitTiers) {

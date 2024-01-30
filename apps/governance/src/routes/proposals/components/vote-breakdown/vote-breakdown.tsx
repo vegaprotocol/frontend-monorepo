@@ -7,7 +7,7 @@ import { Icon, Tooltip } from '@vegaprotocol/ui-toolkit';
 import { formatNumber } from '@vegaprotocol/utils';
 import { ProposalState } from '@vegaprotocol/types';
 import { CompactNumber } from '@vegaprotocol/react-helpers';
-import { type Proposal } from '../../types';
+import { type Proposal, type BatchProposal } from '../../types';
 
 export const CompactVotes = ({ number }: { number: BigNumber }) => (
   <CompactNumber
@@ -19,7 +19,7 @@ export const CompactVotes = ({ number }: { number: BigNumber }) => (
 );
 
 interface VoteBreakdownProps {
-  proposal: Proposal;
+  proposal: Proposal | BatchProposal;
 }
 
 interface VoteProgressProps {
@@ -93,6 +93,18 @@ const Status = ({ reached, threshold, text, testId }: StatusProps) => {
 };
 
 export const VoteBreakdown = ({ proposal }: VoteBreakdownProps) => {
+  if (proposal.__typename === 'Proposal') {
+    return <VoteBreakdownSingeProposal proposal={proposal} />;
+  }
+
+  if (proposal.__typename === 'BatchProposal') {
+    return <div>TODO: Batch proposal</div>;
+  }
+
+  throw new Error('Invalid proposal');
+};
+
+const VoteBreakdownSingeProposal = ({ proposal }: { proposal: Proposal }) => {
   const {
     totalTokensPercentage,
     participationMet,

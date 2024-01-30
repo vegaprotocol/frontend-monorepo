@@ -1,3 +1,4 @@
+import compact from 'lodash/compact';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
@@ -31,7 +32,7 @@ import {
   orderByUpgradeBlockHeight,
 } from '../proposals/components/proposals-list/proposals-list';
 import { BigNumber } from '../../lib/bignumber';
-import { type Proposal } from '../proposals/types';
+import { type ListProposals } from '../proposals/types';
 
 const nodesToShow = 6;
 
@@ -39,7 +40,7 @@ const HomeProposals = ({
   proposals,
   protocolUpgradeProposals,
 }: {
-  proposals: Proposal[];
+  proposals: ListProposals;
   protocolUpgradeProposals: ProtocolUpgradeProposalFieldsFragment[];
 }) => {
   const { t } = useTranslation();
@@ -60,12 +61,9 @@ const HomeProposals = ({
           <ProtocolUpgradeProposalsListItem key={index} proposal={proposal} />
         ))}
 
-        {proposals.map(
-          (proposal) =>
-            proposal?.id && (
-              <ProposalsListItem key={proposal.id} proposal={proposal} />
-            )
-        )}
+        {compact(proposals).map((proposal) => {
+          return <ProposalsListItem key={proposal.id} proposal={proposal} />;
+        })}
       </ul>
 
       <div className="mt-6">
@@ -212,15 +210,18 @@ const GovernanceHome = ({ name }: RouteChildProps) => {
 
   useRefreshAfterEpoch(validatorsData?.epoch.timestamps.expiry, refetch);
 
-  const proposals = useMemo(
-    () =>
-      proposalsData
-        ? getNotRejectedProposals(
-            removePaginationWrapper(proposalsData.proposalsConnection?.edges)
+  const proposals = useMemo(() => {
+    if (!proposalsData?.proposalsConnection?.edges?.length) return [];
+    return proposalsData
+      ? getNotRejectedProposals(
+          compact(
+            proposalsData.proposalsConnection.edges.map(
+              (edge) => edge?.proposalNode
+            )
           )
-        : [],
-    [proposalsData]
-  );
+        )
+      : [];
+  }, [proposalsData]);
 
   const sortedProposals = useMemo(
     () => orderByDate(proposals).reverse(),

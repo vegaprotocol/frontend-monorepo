@@ -11,10 +11,10 @@ import {
 } from '../proposal-referral-program-details';
 import { formatNumberPercentage } from '@vegaprotocol/utils';
 import BigNumber from 'bignumber.js';
-import { type Proposal } from '../../types';
+import { type UpdateVolumeDiscountProgramFragment } from '../../proposal/__generated__/Proposal';
 
 interface ProposalReferralProgramDetailsProps {
-  proposal: Proposal | null;
+  change: UpdateVolumeDiscountProgramFragment['terms']['change'] | null;
 }
 
 export const formatVolumeDiscountFactor = (value: string) => {
@@ -22,16 +22,16 @@ export const formatVolumeDiscountFactor = (value: string) => {
 };
 
 export const ProposalVolumeDiscountProgramDetails = ({
-  proposal,
+  change,
 }: ProposalReferralProgramDetailsProps) => {
   const { t } = useTranslation();
-  if (proposal?.terms?.change?.__typename !== 'UpdateVolumeDiscountProgram') {
+  if (change?.__typename !== 'UpdateVolumeDiscountProgram') {
     return null;
   }
 
-  const benefitTiers = proposal?.terms?.change?.benefitTiers;
-  const windowLength = proposal?.terms?.change?.windowLength;
-  const endOfProgramTimestamp = proposal?.terms?.change?.endOfProgramTimestamp;
+  const benefitTiers = change.benefitTiers;
+  const windowLength = change?.windowLength;
+  const endOfProgramTimestamp = change?.endOfProgramTimestamp;
 
   if (!benefitTiers && !windowLength && !endOfProgramTimestamp) {
     return null;

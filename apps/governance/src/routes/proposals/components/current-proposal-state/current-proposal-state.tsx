@@ -3,9 +3,13 @@ import { ProposalState } from '@vegaprotocol/types';
 import { ProposalInfoLabel } from '../proposal-info-label';
 import { type ReactNode } from 'react';
 import { type ProposalInfoLabelVariant } from '../proposal-info-label';
-import { type Proposal } from '../../types';
+import { type SingleProposal } from '../../types';
 
-export const CurrentProposalState = ({ proposal }: { proposal: Proposal }) => {
+export const CurrentProposalState = ({
+  proposal,
+}: {
+  proposal: SingleProposal;
+}) => {
   const { t } = useTranslation();
   let proposalStatus: ReactNode;
   let variant = 'tertiary' as ProposalInfoLabelVariant;

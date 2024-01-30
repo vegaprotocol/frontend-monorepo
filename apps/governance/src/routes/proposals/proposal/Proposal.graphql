@@ -79,6 +79,19 @@ fragment UpdateVolumeDiscountProgram on Proposal {
   }
 }
 
+fragment UpdateNetworkParameter on Proposal {
+  terms {
+    change {
+      ... on UpdateNetworkParameter {
+        networkParameter {
+          key
+          value
+        }
+      }
+    }
+  }
+}
+
 query Proposal(
   $proposalId: ID!
   $includeNewMarketProductField: Boolean!
@@ -104,6 +117,7 @@ query Proposal(
       ...UpdateMarketState @include(if: $includeUpdateMarketState)
       ...UpdateReferralProgram @include(if: $includeUpdateReferralProgram)
       ...UpdateVolumeDiscountProgram
+      ...UpdateNetworkParameter
       terms {
         closingDatetime
         enactmentDatetime
@@ -407,12 +421,6 @@ query Proposal(
               }
             }
           }
-          ... on UpdateNetworkParameter {
-            networkParameter {
-              key
-              value
-            }
-          }
           ... on UpdateAsset {
             quantum
             assetId
@@ -425,6 +433,33 @@ query Proposal(
           }
         }
       }
+      votes {
+        yes {
+          totalTokens
+          totalNumber
+          totalEquityLikeShareWeight
+        }
+        no {
+          totalTokens
+          totalNumber
+          totalEquityLikeShareWeight
+        }
+      }
+    }
+    ... on BatchProposal {
+      id
+      rationale {
+        title
+        description
+      }
+      reference
+      state
+      datetime
+      rejectionReason
+      party {
+        id
+      }
+      errorDetails
       votes {
         yes {
           totalTokens

@@ -1,16 +1,17 @@
+import compact from 'lodash/compact';
 import { Callout, Intent, Splash } from '@vegaprotocol/ui-toolkit';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { SplashLoader } from '../../../components/splash-loader';
 import { RejectedProposalsList } from '../components/proposals-list';
-import type { ProposalFieldsFragment } from '../proposals/__generated__/Proposals';
+import { type ProposalFieldsFragment } from '../proposals/__generated__/Proposals';
 import { useProposalsQuery } from '../proposals/__generated__/Proposals';
-import { removePaginationWrapper } from '@vegaprotocol/utils';
 import flow from 'lodash/flow';
 import orderBy from 'lodash/orderBy';
 import { ProposalState } from '@vegaprotocol/types';
 import { useFeatureFlags } from '@vegaprotocol/environment';
+import { type ListProposals } from '../types';
 
 const orderByDate = (arr: ProposalFieldsFragment[]) =>
   orderBy(
@@ -22,7 +23,7 @@ const orderByDate = (arr: ProposalFieldsFragment[]) =>
     ['desc', 'desc']
   );
 
-export function getRejectedProposals(data?: ProposalFieldsFragment[] | null) {
+export function getRejectedProposals(data?: ListProposals | null) {
   return flow([
     (data) =>
       data.filter(
@@ -49,7 +50,7 @@ export const RejectedProposalsContainer = () => {
   const proposals = useMemo(
     () =>
       getRejectedProposals(
-        removePaginationWrapper(data?.proposalsConnection?.edges)
+        compact(data?.proposalsConnection?.edges?.map((e) => e?.proposalNode))
       ),
     [data]
   );

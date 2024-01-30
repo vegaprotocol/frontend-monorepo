@@ -9,12 +9,12 @@ import {
   ProposalState,
 } from '@vegaprotocol/types';
 import Routes from '../../../routes';
-import { type Proposal } from '../../types';
+import { type ListProposal } from '../../types';
 
 export const ProposalsListItemDetails = ({
   proposal,
 }: {
-  proposal: Proposal;
+  proposal: ListProposal;
 }) => {
   const { t } = useTranslation();
   const state = proposal?.state;

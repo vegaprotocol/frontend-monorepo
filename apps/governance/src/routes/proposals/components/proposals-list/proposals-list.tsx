@@ -11,19 +11,22 @@ import { Button, Toggle } from '@vegaprotocol/ui-toolkit';
 import { Link } from 'react-router-dom';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 import { ExternalLinks } from '@vegaprotocol/environment';
-import { type ProposalFieldsFragment } from '../../proposals/__generated__/Proposals';
 import { type ProtocolUpgradeProposalFieldsFragment } from '@vegaprotocol/proposals';
-import { type Proposal } from '../../types';
+import {
+  type ListBatchProposal,
+  type ListProposal,
+  type ListProposals,
+} from '../../types';
 
 interface ProposalsListProps {
-  proposals: Proposal[];
+  proposals: ListProposals;
   protocolUpgradeProposals: ProtocolUpgradeProposalFieldsFragment[];
   lastBlockHeight?: string;
 }
 
 interface SortedProposalsProps {
-  open: Proposal[];
-  closed: Proposal[];
+  open: ListProposals;
+  closed: ListProposals;
 }
 
 interface SortedProtocolUpgradeProposalsProps {
@@ -31,15 +34,27 @@ interface SortedProtocolUpgradeProposalsProps {
   closed: ProtocolUpgradeProposalFieldsFragment[];
 }
 
-export const orderByDate = (arr: Proposal[]) =>
+export const orderByDate = (arr: ListProposals) =>
   orderBy(
     arr,
     [
-      (p) =>
-        p?.terms?.enactmentDatetime
-          ? new Date(p?.terms?.enactmentDatetime).getTime()
-          : // has to be defaulted to 0 because new Date(null).getTime() -> NaN which is first when ordered
-            new Date(p?.terms?.closingDatetime || 0).getTime(),
+      (p) => {
+        if (p.__typename === 'BatchProposal') {
+          // TODO: this can/should probably be improved. The proposal API does not appear
+          // to align with the spec as every sub propobal has a different clsoing date. For
+          // now just using datetime which is the time at which the proposal is on the network
+          return new Date(p.datetime);
+        }
+
+        if (p.__typename === 'Proposal') {
+          return p?.terms?.enactmentDatetime
+            ? new Date(p?.terms?.enactmentDatetime).getTime()
+            : // has to be defaulted to 0 because new Date(null).getTime() -> NaN which is first when ordered
+              new Date(p?.terms?.closingDatetime || 0).getTime();
+        }
+
+        throw new Error('invalid proposal');
+      },
       (p) => new Date(p?.datetime).getTime(),
     ],
     ['asc', 'asc']
@@ -76,18 +91,23 @@ export const ProposalsList = ({
 
   const sortedProposals: SortedProposalsProps = useMemo(() => {
     const initialSorting = proposals.reduce(
-      (acc: SortedProposalsProps, proposal) => {
-        if (isFuture(new Date(proposal?.terms.closingDatetime))) {
-          acc.open.push(proposal);
+      (acc, proposal) => {
+        if (proposal.__typename === 'Proposal') {
+          if (isFuture(new Date(proposal?.terms.closingDatetime))) {
+            acc.open.push(proposal);
+          } else {
+            acc.closed.push(proposal);
+          }
+          return acc;
         } else {
-          acc.closed.push(proposal);
+          // TODO: handle batch
+          return acc;
         }
-        return acc;
       },
       {
         open: [],
         closed: [],
-      }
+      } as SortedProposalsProps
     );
     return {
       open:
@@ -121,7 +141,7 @@ export const ProposalsList = ({
       };
     }, [protocolUpgradeProposals, lastBlockHeight]);
 
-  const filterPredicate = (p: ProposalFieldsFragment | Proposal) =>
+  const filterPredicate = (p: ListProposal | ListBatchProposal) =>
     p?.id?.includes(filterString) ||
     p?.party?.id?.toString().includes(filterString);
 
