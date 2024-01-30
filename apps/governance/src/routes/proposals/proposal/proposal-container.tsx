@@ -13,18 +13,15 @@ import { useAssetQuery } from '@vegaprotocol/assets';
 import {
   NetworkParams,
   useNetworkParams,
+  type NetworkParamsResult,
 } from '@vegaprotocol/network-parameters';
 import { useParentMarketIdQuery } from '@vegaprotocol/markets';
 import { useFeatureFlags } from '@vegaprotocol/environment';
 import { useSuccessorMarketProposalDetails } from '@vegaprotocol/proposals';
-import { type Proposal as IProposal } from '../types';
+import { type BatchProposal, type Proposal as IProposal } from '../types';
 
 export const ProposalContainer = () => {
   const featureFlags = useFeatureFlags((state) => state.flags);
-  const [
-    mostRecentlyEnactedAssociatedMarketProposal,
-    setMostRecentlyEnactedAssociatedMarketProposal,
-  ] = useState(undefined);
   const params = useParams<{ proposalId: string }>();
 
   const {
@@ -68,10 +65,60 @@ export const ProposalContainer = () => {
     skip: !params.proposalId,
   });
 
-  const proposal = data?.proposal as IProposal;
+  const proposal = data?.proposal;
 
-  const successor = useSuccessorMarketProposalDetails(params.proposalId);
+  useEffect(() => {
+    const interval = setInterval(refetch, 2000);
+    return () => clearInterval(interval);
+  }, [refetch]);
 
+  if (proposal?.__typename === 'Proposal') {
+    return (
+      <AsyncRenderer
+        loading={Boolean(loading || networkParamsLoading || restLoading)}
+        error={error || networkParamsError || restError}
+        data={{
+          ...data,
+          ...networkParams,
+          ...(restData ? { restData } : {}),
+        }}
+      >
+        {data?.proposal ? (
+          <SingleProposalContainer
+            proposal={proposal}
+            networkParams={networkParams}
+            restData={restData}
+          />
+        ) : (
+          <ProposalNotFound />
+        )}
+      </AsyncRenderer>
+    );
+  }
+
+  if (proposal?.__typename === 'BatchProposal') {
+    return <BatchProposalContainer proposal={proposal} />;
+  }
+
+  throw new Error('invalid proposal');
+};
+
+export const SingleProposalContainer = ({
+  proposal,
+  networkParams,
+  restData,
+}: {
+  proposal: IProposal;
+  networkParams: Partial<NetworkParamsResult>;
+  restData: unknown;
+}) => {
+  const featureFlags = useFeatureFlags((store) => store.flags);
+  const [
+    mostRecentlyEnactedAssociatedMarketProposal,
+    setMostRecentlyEnactedAssociatedMarketProposal,
+  ] = useState(undefined);
+
+  const successor = useSuccessorMarketProposalDetails(proposal.id);
   const isSuccessor = !!successor?.parentMarketId || !!successor.code;
 
   const {
@@ -189,26 +236,17 @@ export const ProposalContainer = () => {
     }
   }, [
     previouslyEnactedMarketProposalsRestData,
-    params.proposalId,
     proposal?.terms.change.__typename,
     proposal?.terms.change,
   ]);
 
-  useEffect(() => {
-    const interval = setInterval(refetch, 2000);
-    return () => clearInterval(interval);
-  }, [refetch]);
-
   return (
     <AsyncRenderer
       loading={
-        loading ||
         marketLoading ||
         assetLoading ||
-        networkParamsLoading ||
         parentMarketIdLoading ||
         parentMarketLoading ||
-        (restLoading ? (restLoading as boolean) : false) ||
         (originalMarketProposalRestLoading
           ? (originalMarketProposalRestLoading as boolean)
           : false) ||
@@ -217,23 +255,17 @@ export const ProposalContainer = () => {
           : false)
       }
       error={
-        error ||
         marketError ||
         assetError ||
-        networkParamsError ||
         parentMarketIdError ||
         parentMarketError ||
-        restError ||
         originalMarketProposalRestError ||
         previouslyEnactedMarketProposalsRestError
       }
       data={{
-        ...data,
-        ...networkParams,
         ...(marketData ? { newMarketData: marketData } : {}),
         ...(parentMarketData ? { parentMarketData } : {}),
         ...(assetData ? { assetData } : {}),
-        ...(restData ? { restData } : {}),
         ...(originalMarketProposalRestData
           ? { originalMarketProposalRestData }
           : {}),
@@ -242,7 +274,7 @@ export const ProposalContainer = () => {
           : {}),
       }}
     >
-      {data?.proposal ? (
+      {proposal ? (
         <Proposal
           proposal={proposal}
           networkParams={networkParams}
@@ -260,4 +292,9 @@ export const ProposalContainer = () => {
       )}
     </AsyncRenderer>
   );
+};
+
+const BatchProposalContainer = ({ proposal }: { proposal: BatchProposal }) => {
+  // TODO: handle batch
+  return <div>Batch</div>;
 };

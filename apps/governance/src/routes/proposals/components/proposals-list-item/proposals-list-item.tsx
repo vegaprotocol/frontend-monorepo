@@ -2,22 +2,27 @@ import { RoundedWrapper } from '@vegaprotocol/ui-toolkit';
 import { ProposalHeader } from '../proposal-detail-header/proposal-header';
 import { ProposalsListItemDetails } from './proposals-list-item-details';
 import { useUserVote } from '../vote-details/use-user-vote';
-import { type Proposal } from '../../types';
+import { type ListProposal, type ListBatchProposal } from '../../types';
 
 interface ProposalsListItemProps {
-  proposal?: Proposal | null;
+  proposal?: ListProposal | ListBatchProposal;
 }
 
 export const ProposalsListItem = ({ proposal }: ProposalsListItemProps) => {
   const { voteState } = useUserVote(proposal?.id);
   if (!proposal || !proposal.id) return null;
 
-  return (
-    <li id={proposal.id} data-testid="proposals-list-item">
-      <RoundedWrapper paddingBottom={true} heightFull={true}>
-        <ProposalHeader proposal={proposal} voteState={voteState} />
-        <ProposalsListItemDetails proposal={proposal} />
-      </RoundedWrapper>
-    </li>
-  );
+  if (proposal.__typename === 'Proposal') {
+    return (
+      <li id={proposal.id} data-testid="proposals-list-item">
+        <RoundedWrapper paddingBottom={true} heightFull={true}>
+          <ProposalHeader proposal={proposal} voteState={voteState} />
+          <ProposalsListItemDetails proposal={proposal} />
+        </RoundedWrapper>
+      </li>
+    );
+  }
+
+  // TODO: handle batch proposals
+  return <div>I am a batch {proposal.id}</div>;
 };

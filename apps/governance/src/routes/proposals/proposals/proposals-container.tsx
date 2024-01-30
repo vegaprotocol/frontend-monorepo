@@ -1,31 +1,26 @@
 import flow from 'lodash/flow';
+import compact from 'lodash/compact';
 import { Callout, Intent, Splash } from '@vegaprotocol/ui-toolkit';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { SplashLoader } from '../../../components/splash-loader';
 import { ProposalsList } from '../components/proposals-list';
-import { getNodes, removePaginationWrapper } from '@vegaprotocol/utils';
+import { getNodes } from '@vegaprotocol/utils';
 import {
   ProposalState,
   ProtocolUpgradeProposalStatus,
 } from '@vegaprotocol/types';
 import { type NodeConnection, type NodeEdge } from '@vegaprotocol/utils';
-import {
-  useProposalsQuery,
-  type ProposalFieldsFragment,
-} from './__generated__/Proposals';
+import { useProposalsQuery } from './__generated__/Proposals';
 import { type ProtocolUpgradeProposalFieldsFragment } from '@vegaprotocol/proposals';
 import { useProtocolUpgradeProposalsQuery } from '@vegaprotocol/proposals';
 import { useFeatureFlags } from '@vegaprotocol/environment';
+import { type ListProposals } from '../types';
 
-export function getNotRejectedProposals(data?: ProposalFieldsFragment[]) {
-  return flow([
-    (data) =>
-      data.filter(
-        (p: ProposalFieldsFragment) => p?.state !== ProposalState.STATE_REJECTED
-      ),
-  ])(data);
+export function getNotRejectedProposals(data?: ListProposals) {
+  if (!data) return [];
+  return data.filter((p) => p.state !== ProposalState.STATE_REJECTED);
 }
 
 export function getNotRejectedProtocolUpgradeProposals<
@@ -69,7 +64,7 @@ export const ProposalsContainer = () => {
   const proposals = useMemo(
     () =>
       getNotRejectedProposals(
-        removePaginationWrapper(data?.proposalsConnection?.edges)
+        compact(data?.proposalsConnection?.edges?.map((e) => e?.proposalNode))
       ),
     [data]
   );

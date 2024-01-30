@@ -27,10 +27,10 @@ import {
 } from '../proposal-transfer';
 import { useFeatureFlags } from '@vegaprotocol/environment';
 import { ProposalUpdateBenefitTiers } from '../proposal-update-benefit-tiers';
-import { type Proposal as IProposal } from '../../types';
+import { type Proposal as IProposal, type BatchProposal } from '../../types';
 
 export interface ProposalProps {
-  proposal: IProposal;
+  proposal: IProposal | BatchProposal;
   networkParams: Partial<NetworkParamsResult>;
   marketData?: MarketInfo | null;
   parentMarketData?: MarketInfo | null;
@@ -43,7 +43,19 @@ export interface ProposalProps {
   mostRecentlyEnactedAssociatedMarketProposal?: any;
 }
 
-export const Proposal = ({
+export const Proposal = (props: ProposalProps) => {
+  if (props.proposal.__typename === 'Proposal') {
+    return <SingleProposal {...props} proposal={props.proposal} />;
+  }
+
+  if (props.proposal.__typename === 'BatchProposal') {
+    return <div>TODO: I am batch</div>;
+  }
+
+  throw new Error('Invalid proposal');
+};
+
+export const SingleProposal = ({
   proposal,
   networkParams,
   restData,
@@ -52,7 +64,7 @@ export const Proposal = ({
   assetData,
   originalMarketProposalRestData,
   mostRecentlyEnactedAssociatedMarketProposal,
-}: ProposalProps) => {
+}: ProposalProps & { proposal: IProposal }) => {
   const featureFlags = useFeatureFlags((state) => state.flags);
   const { t } = useTranslation();
   const { submit, Dialog, finalizedVote, transaction } = useVoteSubmit();
@@ -206,7 +218,7 @@ export const Proposal = ({
 
       {proposal.terms.change.__typename === 'UpdateMarketState' && (
         <div className="mb-4">
-          <ProposalUpdateMarketState proposal={proposal} />
+          <ProposalUpdateMarketState change={proposal.terms.change} />
         </div>
       )}
 
@@ -238,13 +250,15 @@ export const Proposal = ({
 
       {proposal.terms.change.__typename === 'UpdateReferralProgram' && (
         <div className="mb-4">
-          <ProposalReferralProgramDetails proposal={proposal} />
+          <ProposalReferralProgramDetails change={proposal.terms.change} />
         </div>
       )}
 
       {proposal.terms.change.__typename === 'UpdateVolumeDiscountProgram' && (
         <div className="mb-4">
-          <ProposalVolumeDiscountProgramDetails proposal={proposal} />
+          <ProposalVolumeDiscountProgramDetails
+            change={proposal.terms.change}
+          />
         </div>
       )}
 
@@ -252,7 +266,7 @@ export const Proposal = ({
         proposal.terms.change.networkParameter.key.slice(-13) ===
           '.benefitTiers' && (
           <div className="mb-4">
-            <ProposalUpdateBenefitTiers proposal={proposal} />
+            <ProposalUpdateBenefitTiers change={proposal.terms.change} />
           </div>
         )}
 

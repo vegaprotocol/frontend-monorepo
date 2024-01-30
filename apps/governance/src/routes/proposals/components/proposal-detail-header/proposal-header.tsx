@@ -28,14 +28,52 @@ import { Link } from 'react-router-dom';
 import { type VoteState } from '../vote-details/use-user-vote';
 import { VoteBreakdown } from '../vote-breakdown';
 import { GovernanceTransferKindMapping } from '@vegaprotocol/types';
-import { type Proposal } from '../../types';
+import {
+  type Proposal,
+  type SingleProposal,
+  type ListProposal,
+  type ListBatchProposal,
+  type BatchProposal,
+} from '../../types';
 
 export const ProposalHeader = ({
   proposal,
   isListItem = true,
   voteState,
 }: {
-  proposal: Proposal;
+  proposal: SingleProposal | ListProposal | ListBatchProposal;
+  isListItem?: boolean;
+  voteState?: VoteState | null;
+}) => {
+  if (proposal.__typename === 'Proposal') {
+    return (
+      <SingleProposalHeader
+        proposal={proposal}
+        isListItem={isListItem}
+        voteState={voteState}
+      />
+    );
+  }
+
+  if (proposal.__typename === 'BatchProposal') {
+    return (
+      <BatchProposalHeader
+        proposal={proposal}
+        isListItem={isListItem}
+        voteState={voteState}
+      />
+    );
+  }
+
+  throw new Error('invalid proposal type');
+};
+
+const SingleProposalHeader = ({
+  proposal,
+  isListItem,
+  voteState,
+}: {
+  proposal: Proposal | ListProposal;
   isListItem?: boolean;
   voteState?: VoteState | null;
 }) => {
@@ -53,7 +91,7 @@ export const ProposalHeader = ({
 
   const titleContent = shorten(title ?? '', 100);
 
-  const getAsset = (proposal: Proposal) => {
+  const getAsset = (proposal: Proposal | ListProposal) => {
     const terms = proposal?.terms;
     if (
       terms?.change.__typename === 'NewMarket' &&
@@ -287,6 +325,18 @@ export const ProposalHeader = ({
       <VoteBreakdown proposal={proposal} />
     </>
   );
+};
+
+const BatchProposalHeader = ({
+  proposal,
+  isListItem,
+  voteState,
+}: {
+  proposal: BatchProposal | ListBatchProposal;
+  isListItem?: boolean;
+  voteState?: VoteState | null;
+}) => {
+  return <div>TODO: handle batch header proposal</div>;
 };
 
 export const SuccessorCode = ({

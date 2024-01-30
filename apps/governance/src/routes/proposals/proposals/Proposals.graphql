@@ -167,6 +167,41 @@ fragment ProposalFields on Proposal {
   }
 }
 
+fragment BatchProposalFields on BatchProposal {
+  id
+  rationale {
+    title
+    description
+  }
+  reference
+  state
+  datetime
+  rejectionReason
+  party {
+    id
+  }
+  errorDetails
+  subProposals {
+    datetime
+    terms {
+      closingDatetime
+      enactmentDatetime
+    }
+  }
+  votes {
+    yes {
+      totalTokens
+      totalNumber
+      totalEquityLikeShareWeight
+    }
+    no {
+      totalTokens
+      totalNumber
+      totalEquityLikeShareWeight
+    }
+  }
+}
+
 query Proposals(
   $includeNewMarketProductFields: Boolean!
   $includeUpdateMarketStates: Boolean!
@@ -174,12 +209,17 @@ query Proposals(
 ) {
   proposalsConnection {
     edges {
-      node {
-        ...ProposalFields
-        ...NewMarketProductFields @include(if: $includeNewMarketProductFields)
-        ...UpdateMarketStates @include(if: $includeUpdateMarketStates)
-        ...UpdateReferralPrograms @include(if: $includeUpdateReferralPrograms)
-        ...UpdateVolumeDiscountPrograms
+      proposalNode {
+        ... on Proposal {
+          ...ProposalFields
+          ...NewMarketProductFields @include(if: $includeNewMarketProductFields)
+          ...UpdateMarketStates @include(if: $includeUpdateMarketStates)
+          ...UpdateReferralPrograms @include(if: $includeUpdateReferralPrograms)
+          ...UpdateVolumeDiscountPrograms
+        }
+        ... on BatchProposal {
+          ...BatchProposalFields
+        }
       }
     }
   }
