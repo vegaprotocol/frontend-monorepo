@@ -3,13 +3,9 @@ import { useAppState } from '../../../contexts/app-state/app-state-context';
 import { BigNumber } from '../../../lib/bignumber';
 import { useProposalNetworkParams } from './use-proposal-network-params';
 import { addDecimal } from '@vegaprotocol/utils';
-import { type SingleProposal } from '../types';
+import { type Proposal } from '../types';
 
-export const useVoteInformation = ({
-  proposal,
-}: {
-  proposal: SingleProposal;
-}) => {
+export const useVoteInformation = ({ proposal }: { proposal: Proposal }) => {
   const {
     appState: { totalSupply, decimals },
   } = useAppState();

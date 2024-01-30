@@ -3,12 +3,17 @@ import { ProposalState } from '@vegaprotocol/types';
 import { ProposalInfoLabel } from '../proposal-info-label';
 import { type ReactNode } from 'react';
 import { type ProposalInfoLabelVariant } from '../proposal-info-label';
-import { type SingleProposal } from '../../types';
+import {
+  type Proposal,
+  type BatchProposal,
+  type ListProposal,
+  type ListBatchProposal,
+} from '../../types';
 
 export const CurrentProposalState = ({
   proposal,
 }: {
-  proposal: SingleProposal;
+  proposal: Proposal | BatchProposal | ListProposal | ListBatchProposal;
 }) => {
   const { t } = useTranslation();
   let proposalStatus: ReactNode;
