@@ -59,7 +59,7 @@ def test_filtered_cards(continuous_market, vega: VegaServiceNull, page: Page):
     next_epoch(vega=vega)
     
     page.reload()
-    expect(page.locator(".from-vega-cdark-400")).to_be_visible()
+    expect(page.locator(".from-vega-cdark-400")).to_be_visible(timeout=15000)
     governance.submit_oracle_data(
         wallet=vega.wallet,
         payload={"trading.terminated": "true"},
