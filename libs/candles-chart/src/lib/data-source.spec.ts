@@ -13,6 +13,9 @@ const returnDataMocks = (nodes: CandleFieldsFragment[]): CandlesQuery => {
       market: {
         decimalPlaces: 1,
         positionDecimalPlaces: 1,
+        marketTimestamps: {
+          open: '2022-05-10T11:00:00Z',
+        },
         candlesConnection: {
           edges: nodes.map((node) => ({ node })),
         },
