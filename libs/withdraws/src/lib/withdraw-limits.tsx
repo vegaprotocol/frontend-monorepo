@@ -208,11 +208,11 @@ const GasPrice = ({
                 </span>
               )}
               <span>
-                {formatNumber(gas)} gas &times; {asETH(basePricePerGas)} ={' '}
-                {asETH(basePrice)}
+                {formatNumber(gas)} gas &times; {asETH(basePricePerGas)} <br />{' '}
+                = {asETH(basePrice)}
               </span>
               <span>
-                {formatNumber(gas)} gas &times; {asETH(maxPricePerGas)} ={' '}
+                {formatNumber(gas)} gas &times; {asETH(maxPricePerGas)} <br /> ={' '}
                 {asETH(maxPrice)}
               </span>
             </div>
