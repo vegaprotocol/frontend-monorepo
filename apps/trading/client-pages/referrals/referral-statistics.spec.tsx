@@ -1,6 +1,9 @@
 import { MockedProvider, type MockedResponse } from '@apollo/react-testing';
-import { render, waitFor } from '@testing-library/react';
-import { type VegaWalletContextShape } from '@vegaprotocol/wallet';
+import { render, screen, waitFor } from '@testing-library/react';
+import {
+  VegaWalletContext,
+  type VegaWalletContextShape,
+} from '@vegaprotocol/wallet';
 import { ReferralStatistics } from './referral-statistics';
 import {
   ReferralProgramDocument,
@@ -15,7 +18,7 @@ import {
   StakeAvailableDocument,
   type StakeAvailableQueryVariables,
   type StakeAvailableQuery,
-} from './hooks/__generated__/StakeAvailable';
+} from '../../lib/hooks/__generated__/StakeAvailable';
 import {
   RefereesDocument,
   type RefereesQueryVariables,
@@ -296,122 +299,99 @@ const refereesMock30: MockedResponse<RefereesQuery, RefereesQueryVariables> = {
   },
 };
 
-jest.mock('@vegaprotocol/wallet', () => {
-  return {
-    ...jest.requireActual('@vegaprotocol/wallet'),
-    useVegaWallet: () => {
-      const ctx: Partial<VegaWalletContextShape> = {
-        pubKey: MOCK_PUBKEY,
-      };
-      return ctx;
-    },
-  };
-});
-
 describe('ReferralStatistics', () => {
-  it('displays apply code when no data has been found for given pubkey', () => {
-    const { queryByTestId } = render(
+  const renderComponent = (mocks: MockedResponse[]) => {
+    const walletContext = {
+      pubKey: MOCK_PUBKEY,
+      isReadOnly: false,
+      sendTx: jest.fn(),
+    } as unknown as VegaWalletContextShape;
+
+    return render(
       <MemoryRouter>
-        <MockedProvider mocks={[]} showWarnings={false}>
-          <ReferralStatistics />
-        </MockedProvider>
+        <VegaWalletContext.Provider value={walletContext}>
+          <MockedProvider mocks={mocks} showWarnings={false}>
+            <ReferralStatistics />
+          </MockedProvider>
+        </VegaWalletContext.Provider>
       </MemoryRouter>
     );
+  };
 
-    expect(queryByTestId('referral-apply-code-form')).toBeInTheDocument();
+  it('displays apply code when no data has been found for given pubkey', () => {
+    renderComponent([]);
+    expect(
+      screen.queryByTestId('referral-apply-code-form')
+    ).toBeInTheDocument();
   });
 
   it('displays referrer stats when given pubkey is a referrer', async () => {
-    const { queryByTestId } = render(
-      <MemoryRouter>
-        <MockedProvider
-          mocks={[
-            programMock,
-            referralSetAsReferrerMock,
-            noReferralSetAsRefereeMock,
-            stakeAvailableMock,
-            refereesMock,
-            refereesMock30,
-          ]}
-          showWarnings={false}
-        >
-          <ReferralStatistics />
-        </MockedProvider>
-      </MemoryRouter>
-    );
+    renderComponent([
+      programMock,
+      referralSetAsReferrerMock,
+      noReferralSetAsRefereeMock,
+      stakeAvailableMock,
+      refereesMock,
+      refereesMock30,
+    ]);
 
     await waitFor(() => {
       expect(
-        queryByTestId('referral-create-code-form')
+        screen.queryByTestId('referral-create-code-form')
       ).not.toBeInTheDocument();
-      expect(queryByTestId('referral-statistics')).toBeInTheDocument();
-      expect(queryByTestId('referral-statistics')?.dataset.as).toEqual(
+      expect(screen.queryByTestId('referral-statistics')).toBeInTheDocument();
+      expect(screen.queryByTestId('referral-statistics')?.dataset.as).toEqual(
         'referrer'
       );
       // gets commision from 30 epochs query
-      expect(queryByTestId('total-commission-value')).toHaveTextContent(
+      expect(screen.queryByTestId('total-commission-value')).toHaveTextContent(
         '12,340'
       );
     });
   });
 
   it('displays referee stats when given pubkey is a referee', async () => {
-    const { queryByTestId } = render(
-      <MemoryRouter>
-        <MockedProvider
-          mocks={[
-            programMock,
-            noReferralSetAsReferrerMock,
-            referralSetAsRefereeMock,
-            stakeAvailableMock,
-            refereesMock,
-          ]}
-          showWarnings={false}
-        >
-          <ReferralStatistics />
-        </MockedProvider>
-      </MemoryRouter>
-    );
-
+    renderComponent([
+      programMock,
+      noReferralSetAsReferrerMock,
+      referralSetAsRefereeMock,
+      stakeAvailableMock,
+      refereesMock,
+    ]);
     await waitFor(() => {
       expect(
-        queryByTestId('referral-create-code-form')
+        screen.queryByTestId('referral-create-code-form')
       ).not.toBeInTheDocument();
-      expect(queryByTestId('referral-statistics')).toBeInTheDocument();
-      expect(queryByTestId('referral-statistics')?.dataset.as).toEqual(
+      expect(screen.queryByTestId('referral-statistics')).toBeInTheDocument();
+      expect(screen.queryByTestId('referral-statistics')?.dataset.as).toEqual(
         'referee'
       );
     });
   });
 
   it('displays eligibility warning when the set is no longer valid due to the referrers stake', async () => {
-    const { queryByTestId } = render(
-      <MemoryRouter>
-        <MockedProvider
-          mocks={[
-            programMock,
-            noReferralSetAsReferrerMock,
-            referralSetAsRefereeMock,
-            nonEligibleStakeAvailableMock,
-            refereesMock,
-          ]}
-          showWarnings={false}
-        >
-          <ReferralStatistics />
-        </MockedProvider>
-      </MemoryRouter>
-    );
+    renderComponent([
+      programMock,
+      noReferralSetAsReferrerMock,
+      referralSetAsRefereeMock,
+      nonEligibleStakeAvailableMock,
+      refereesMock,
+    ]);
 
     await waitFor(() => {
       expect(
-        queryByTestId('referral-create-code-form')
+        screen.queryByTestId('referral-create-code-form')
       ).not.toBeInTheDocument();
-      expect(queryByTestId('referral-statistics')).toBeInTheDocument();
-      expect(queryByTestId('referral-statistics')?.dataset.as).toEqual(
+      expect(screen.queryByTestId('referral-statistics')).toBeInTheDocument();
+      expect(screen.queryByTestId('referral-statistics')?.dataset.as).toEqual(
         'referee'
       );
-      expect(queryByTestId('referral-eligibility-warning')).toBeInTheDocument();
-      expect(queryByTestId('referral-apply-code-form')).toBeInTheDocument();
+      expect(
+        screen.queryByTestId('referral-eligibility-warning')
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByTestId('referral-apply-code-form')
+      ).toBeInTheDocument();
     });
   });
 });

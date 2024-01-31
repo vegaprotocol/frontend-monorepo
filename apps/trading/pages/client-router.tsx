@@ -2,8 +2,8 @@ import type { RouteObject } from 'react-router-dom';
 import { Navigate, useRoutes } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
 import { Loader, Splash } from '@vegaprotocol/ui-toolkit';
-import { LayoutWithSidebar } from '../components/layouts';
-import { LayoutCentered } from '../components/layouts/layout-centered';
+import { LayoutWithSidebar, LayoutCentered } from '../components/layouts';
+import { LayoutWithSky } from '../components/layouts-inner';
 import { Home } from '../client-pages/home';
 import { Liquidity } from '../client-pages/liquidity';
 import { MarketsPage } from '../client-pages/markets';
@@ -14,9 +14,7 @@ import { Withdraw } from '../client-pages/withdraw';
 import { Transfer } from '../client-pages/transfer';
 import { Fees } from '../client-pages/fees';
 import { Rewards } from '../client-pages/rewards';
-import { Teams } from '../client-pages/teams';
 import { Routes as AppRoutes } from '../lib/links';
-import { LayoutWithSky } from '../client-pages/referrals/layout';
 import { Referrals } from '../client-pages/referrals/referrals';
 import { ReferralStatistics } from '../client-pages/referrals/referral-statistics';
 import { ApplyCodeFormContainer } from '../client-pages/referrals/apply-code-form';
@@ -30,6 +28,11 @@ import { PortfolioSidebar } from '../client-pages/portfolio/portfolio-sidebar';
 import { LiquiditySidebar } from '../client-pages/liquidity/liquidity-sidebar';
 import { MarketsSidebar } from '../client-pages/markets/markets-sidebar';
 import { useT } from '../lib/use-t';
+import { CompetitionsHome } from '../client-pages/competitions/competitions-home';
+import { CompetitionsTeams } from '../client-pages/competitions/competitions-teams';
+import { CompetitionsTeam } from '../client-pages/competitions/competitions-team';
+import { CompetitionsCreateTeam } from '../client-pages/competitions/competitions-create-team';
+import { CompetitionsUpdateTeam } from '../client-pages/competitions/competitions-update-team';
 
 // These must remain dynamically imported as pennant cannot be compiled by nextjs due to ESM
 // Using dynamic imports is a workaround for this until pennant is published as ESM
@@ -47,7 +50,7 @@ const NotFound = () => {
 
 export const useRouterConfig = (): RouteObject[] => {
   const featureFlags = useFeatureFlags((state) => state.flags);
-  return compact([
+  const routeConfig = compact([
     {
       index: true,
       element: <Home />,
@@ -95,8 +98,34 @@ export const useRouterConfig = (): RouteObject[] => {
       : undefined,
     featureFlags.TEAM_COMPETITION
       ? {
-          path: AppRoutes.TEAMS,
-          element: <Teams />,
+          path: AppRoutes.COMPETITIONS,
+          element: <LayoutWithSidebar sidebar={<PortfolioSidebar />} />,
+          children: [
+            // pages with planets and stars
+            {
+              element: <LayoutWithSky />,
+              children: [
+                { index: true, element: <CompetitionsHome /> },
+                {
+                  path: AppRoutes.COMPETITIONS_TEAMS,
+                  element: <CompetitionsTeams />,
+                },
+              ],
+            },
+            // pages with blurred background
+            {
+              path: AppRoutes.COMPETITIONS_TEAM,
+              element: <CompetitionsTeam />,
+            },
+            {
+              path: AppRoutes.COMPETITIONS_CREATE_TEAM,
+              element: <CompetitionsCreateTeam />,
+            },
+            {
+              path: AppRoutes.COMPETITIONS_UPDATE_TEAM,
+              element: <CompetitionsUpdateTeam />,
+            },
+          ],
         }
       : undefined,
     {
@@ -189,6 +218,8 @@ export const useRouterConfig = (): RouteObject[] => {
       element: <NotFound />,
     },
   ]);
+
+  return routeConfig;
 };
 
 export const ClientRouter = () => {

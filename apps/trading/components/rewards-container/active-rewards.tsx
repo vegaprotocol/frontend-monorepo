@@ -12,6 +12,7 @@ import {
   VegaIconNames,
   TradingInput,
   TinyScroll,
+  truncateMiddle,
 } from '@vegaprotocol/ui-toolkit';
 import { IconNames } from '@blueprintjs/icons';
 import {
@@ -30,6 +31,9 @@ import {
   DispatchMetricLabels,
   EntityScopeLabelMapping,
   MarketState,
+  type DispatchStrategy,
+  IndividualScopeMapping,
+  IndividualScopeDescriptionMapping,
 } from '@vegaprotocol/types';
 import { Card } from '../card/card';
 import { useMemo, useState } from 'react';
@@ -308,6 +312,9 @@ export const ActiveRewardCard = ({
         MarketState.STATE_CLOSED,
       ].includes(m.state)
   );
+  if (marketSettled) {
+    return null;
+  }
 
   const assetInSettledMarket =
     allMarkets &&
@@ -325,10 +332,6 @@ export const ActiveRewardCard = ({
       }
       return false;
     });
-
-  if (marketSettled) {
-    return null;
-  }
 
   // Gray out the cards that are related to suspended markets
   const suspended = transferNode.markets?.some(
@@ -359,6 +362,7 @@ export const ActiveRewardCard = ({
       : getGradientClasses(dispatchStrategy.dispatchMetric);
 
   const entityScope = dispatchStrategy.entityScope;
+
   return (
     <div>
       <div
@@ -474,81 +478,125 @@ export const ActiveRewardCard = ({
               </span>
             }
           </div>
-
           {dispatchStrategy?.dispatchMetric && (
             <span className="text-muted text-sm h-[2rem]">
               {t(DispatchMetricDescription[dispatchStrategy?.dispatchMetric])}
             </span>
           )}
-
           <span className="border-[0.5px] border-gray-700" />
-
-          <div className="flex justify-between flex-wrap items-center gap-3 text-xs">
-            <span className="flex flex-col gap-1">
-              <span className="flex items-center gap-1 text-muted">
-                {t('Entity scope')}{' '}
-              </span>
-
-              <span className="flex items-center gap-1">
-                {kind.dispatchStrategy?.teamScope && (
-                  <Tooltip
-                    description={
-                      <span>{kind.dispatchStrategy?.teamScope}</span>
-                    }
-                  >
-                    <span className="flex items-center p-1 rounded-full border border-gray-600">
-                      {<VegaIcon name={VegaIconNames.TEAM} size={16} />}
-                    </span>
-                  </Tooltip>
-                )}
-                {kind.dispatchStrategy?.individualScope && (
-                  <Tooltip
-                    description={
-                      <span>{kind.dispatchStrategy?.individualScope}</span>
-                    }
-                  >
-                    <span className="flex items-center p-1 rounded-full border border-gray-600">
-                      {<VegaIcon name={VegaIconNames.MAN} size={16} />}
-                    </span>
-                  </Tooltip>
-                )}
-                {/* Shows transfer status */}
-                {/* <StatusIndicator
-                  status={transfer.status}
-                  reason={transfer.reason}
-                /> */}
-              </span>
-            </span>
-
-            <span className="flex flex-col gap-1">
-              <span className="flex items-center gap-1 text-muted">
-                {t('Staked VEGA')}{' '}
-              </span>
-              <span className="flex items-center gap-1">
-                {addDecimalsFormatNumber(
-                  kind.dispatchStrategy?.stakingRequirement || 0,
-                  transfer.asset?.decimals || 0
-                )}
-              </span>
-            </span>
-
-            <span className="flex flex-col gap-1">
-              <span className="flex items-center gap-1 text-muted">
-                {t('Average position')}{' '}
-              </span>
-              <span className="flex items-center gap-1">
-                {addDecimalsFormatNumber(
-                  kind.dispatchStrategy
-                    ?.notionalTimeWeightedAveragePositionRequirement || 0,
-                  transfer.asset?.decimals || 0
-                )}
-              </span>
-            </span>
-          </div>
+          {kind.dispatchStrategy && (
+            <RewardRequirements
+              dispatchStrategy={kind.dispatchStrategy}
+              assetDecimalPlaces={transfer.asset?.decimals}
+            />
+          )}
         </div>
       </div>
     </div>
   );
+};
+
+const RewardRequirements = ({
+  dispatchStrategy,
+  assetDecimalPlaces = 0,
+}: {
+  dispatchStrategy: DispatchStrategy;
+  assetDecimalPlaces: number | undefined;
+}) => {
+  const t = useT();
+
+  return (
+    <dl className="flex justify-between flex-wrap items-center gap-3 text-xs">
+      <div className="flex flex-col gap-1">
+        <dt className="flex items-center gap-1 text-muted">
+          {t('{{entity}} scope', {
+            entity: EntityScopeLabelMapping[dispatchStrategy.entityScope],
+          })}
+        </dt>
+        <dd className="flex items-center gap-1">
+          <RewardEntityScope dispatchStrategy={dispatchStrategy} />
+        </dd>
+      </div>
+
+      <div className="flex flex-col gap-1">
+        <dt className="flex items-center gap-1 text-muted">
+          {t('Staked VEGA')}
+        </dt>
+        <dd className="flex items-center gap-1">
+          {addDecimalsFormatNumber(
+            dispatchStrategy?.stakingRequirement || 0,
+            assetDecimalPlaces
+          )}
+        </dd>
+      </div>
+
+      <div className="flex flex-col gap-1">
+        <dt className="flex items-center gap-1 text-muted">
+          {t('Average position')}
+        </dt>
+        <dd className="flex items-center gap-1">
+          {addDecimalsFormatNumber(
+            dispatchStrategy?.notionalTimeWeightedAveragePositionRequirement ||
+              0,
+            assetDecimalPlaces
+          )}
+        </dd>
+      </div>
+    </dl>
+  );
+};
+
+const RewardEntityScope = ({
+  dispatchStrategy,
+}: {
+  dispatchStrategy: DispatchStrategy;
+}) => {
+  const t = useT();
+
+  if (dispatchStrategy.entityScope === EntityScope.ENTITY_SCOPE_TEAMS) {
+    return (
+      <Tooltip
+        description={
+          dispatchStrategy.teamScope?.length ? (
+            <div className="text-xs">
+              <p className="mb-1">{t('Eligible teams')}</p>
+              <ul>
+                {dispatchStrategy.teamScope.map((teamId) => {
+                  if (!teamId) return null;
+                  return <li key={teamId}>{truncateMiddle(teamId)}</li>;
+                })}
+              </ul>
+            </div>
+          ) : (
+            t('All teams are eligible')
+          )
+        }
+      >
+        <span>
+          {dispatchStrategy.teamScope?.length
+            ? t('Some teams')
+            : t('All teams')}
+        </span>
+      </Tooltip>
+    );
+  }
+
+  if (
+    dispatchStrategy.entityScope === EntityScope.ENTITY_SCOPE_INDIVIDUALS &&
+    dispatchStrategy.individualScope
+  ) {
+    return (
+      <Tooltip
+        description={
+          IndividualScopeDescriptionMapping[dispatchStrategy.individualScope]
+        }
+      >
+        <span>{IndividualScopeMapping[dispatchStrategy.individualScope]}</span>
+      </Tooltip>
+    );
+  }
+
+  return null;
 };
 
 const getGradientClasses = (d: DispatchMetric | undefined) => {
