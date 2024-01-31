@@ -16,6 +16,7 @@ export type TeamGameFieldsFragment = { __typename?: 'Game', id: string, epoch: n
 export type TeamQueryVariables = Types.Exact<{
   teamId: Types.Scalars['ID'];
   partyId?: Types.InputMaybe<Types.Scalars['ID']>;
+  aggregationEpochs?: Types.InputMaybe<Types.Scalars['Int']>;
 }>;
 
 
@@ -80,7 +81,7 @@ export const TeamGameFieldsFragmentDoc = gql`
 }
     ${TeamEntityFragmentDoc}`;
 export const TeamDocument = gql`
-    query Team($teamId: ID!, $partyId: ID) {
+    query Team($teamId: ID!, $partyId: ID, $aggregationEpochs: Int) {
   teams(teamId: $teamId) {
     edges {
       node {
@@ -95,7 +96,7 @@ export const TeamDocument = gql`
       }
     }
   }
-  teamsStatistics(teamId: $teamId) {
+  teamsStatistics(teamId: $teamId, aggregationEpochs: $aggregationEpochs) {
     edges {
       node {
         ...TeamStatsFields
@@ -136,6 +137,7 @@ ${TeamGameFieldsFragmentDoc}`;
  *   variables: {
  *      teamId: // value for 'teamId'
  *      partyId: // value for 'partyId'
+ *      aggregationEpochs: // value for 'aggregationEpochs'
  *   },
  * });
  */

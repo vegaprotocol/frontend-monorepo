@@ -22,7 +22,7 @@ type UseTeamsArgs = {
   order?: 'asc' | 'desc';
 };
 
-const DEFAULT_AGGREGATION_EPOCHS = 10;
+export const DEFAULT_AGGREGATION_EPOCHS = 10;
 
 export const useTeams = ({
   aggregationEpochs = DEFAULT_AGGREGATION_EPOCHS,

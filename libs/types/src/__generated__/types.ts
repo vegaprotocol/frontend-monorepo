@@ -1879,12 +1879,8 @@ export type LiquidityFeeSettings = {
 /** Configuration of a market liquidity monitoring parameters */
 export type LiquidityMonitoringParameters = {
   __typename?: 'LiquidityMonitoringParameters';
-  /** Specifies by how many seconds an auction should be extended if leaving the auction were to trigger a liquidity auction */
-  auctionExtensionSecs: Scalars['Int'];
   /** Specifies parameters related to target stake calculation */
   targetStakeParameters: TargetStakeParameters;
-  /** Specifies the triggering ratio for entering liquidity auction */
-  triggeringRatio: Scalars['String'];
 };
 
 /** A special order type for liquidity providers */
@@ -4002,10 +3998,10 @@ export type Perpetual = {
   fundingRateScalingFactor: Scalars['String'];
   /** Upper bound for the funding-rate such that the funding-rate will never be higher than this value */
   fundingRateUpperBound: Scalars['String'];
-  /** Optional configuration driving the index price calculation for perpetual product */
-  indexPriceConfig?: Maybe<CompositePriceConfiguration>;
   /** Continuously compounded interest rate used in funding rate calculation, in the range [-1, 1] */
   interestRate: Scalars['String'];
+  /** Optional configuration driving the internal composite price calculation for perpetual product */
+  internalCompositePriceConfig?: Maybe<CompositePriceConfiguration>;
   /** Controls how much the upcoming funding payment liability contributes to party's margin, in the range [0, 1] */
   marginFundingFactor: Scalars['String'];
   /** Quote name of the instrument */
@@ -4023,14 +4019,14 @@ export type PerpetualData = {
   fundingPayment?: Maybe<Scalars['String']>;
   /** Percentage difference between the time-weighted average price of the external and internal data point. */
   fundingRate?: Maybe<Scalars['String']>;
-  /** The index price used for external VWAP calculation */
-  indexPrice: Scalars['String'];
-  /** The methodology used to calculated index price for perps */
-  indexPriceType: CompositePriceType;
+  /** Internal composite price used as input to the internal VWAP */
+  internalCompositePrice: Scalars['String'];
+  /** The methodology used to calculated internal composite price for perpetual markets */
+  internalCompositePriceType: CompositePriceType;
   /** Time-weighted average price calculated from data points for this period from the internal data source. */
   internalTwap?: Maybe<Scalars['String']>;
-  /** RFC3339Nano time indicating the next time index price will be calculated for perps where applicable */
-  nextIndexPriceCalc: Scalars['String'];
+  /** RFC3339Nano time indicating the next time internal composite price will be calculated for perpetual markets, where applicable */
+  nextInternalCompositePriceCalc: Scalars['String'];
   /** Funding period sequence number */
   seqNum: Scalars['Int'];
   /** Time at which the funding period started */
@@ -5507,6 +5503,8 @@ export type ReferralSet = {
   id: Scalars['ID'];
   /** Party that created the set. */
   referrer: Scalars['ID'];
+  /** Current number of members in the referral set. */
+  totalMembers: Scalars['Int'];
   /** Timestamp as RFC3339Nano when the referral set was updated. */
   updatedAt: Scalars['Timestamp'];
 };
@@ -6333,6 +6331,8 @@ export type Team = {
   teamId: Scalars['ID'];
   /** Link to the team's homepage. */
   teamUrl: Scalars['String'];
+  /** Current number of members in the team. */
+  totalMembers: Scalars['Int'];
 };
 
 /** Connection type for retrieving cursor-based paginated team data */

@@ -46,7 +46,7 @@ export const TeamStats = ({
             value={
               stats
                 ? formatNumberRounded(
-                    new BigNumber(stats.totalQuantumVolume),
+                    new BigNumber(stats.totalQuantumVolume || 0),
                     '1e3'
                   )
                 : 0
@@ -58,12 +58,12 @@ export const TeamStats = ({
             value={
               stats
                 ? formatNumberRounded(
-                    new BigNumber(stats.totalQuantumRewards),
+                    new BigNumber(stats.totalQuantumRewards || 0),
                     '1e3'
                   )
                 : 0
             }
-            label={t('Rewards paid')}
+            label={t('Rewards paid out')}
             tooltip={'Total amount of rewards paid out to this team in qUSD'}
             valueTestId="rewards-paid-stat"
           />

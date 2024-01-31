@@ -60,10 +60,10 @@ def setup_teams_and_games(vega: VegaServiceNull):
 
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
-    
+
     current_epoch = vega.statistics().epoch_seq
     game_start = current_epoch + 1
-    game_end = current_epoch + 3
+    game_end = current_epoch + 11
 
     current_epoch = vega.statistics().epoch_seq
     print(f"[EPOCH: {current_epoch}] creating recurring transfer")
@@ -84,40 +84,37 @@ def setup_teams_and_games(vega: VegaServiceNull):
         factor=1.0,
         start_epoch=game_start,
         end_epoch=game_end,
-        window_length=1
+        window_length=10
     )
 
     next_epoch(vega)
-    
     print(f"[EPOCH: {vega.statistics().epoch_seq}] starting order activity")
 
-    vega.submit_order(
-        trading_key=PARTY_B.name,
-        market_id=tDAI_market,
-        order_type="TYPE_MARKET",
-        time_in_force="TIME_IN_FORCE_IOC",
-        side="SIDE_BUY",
-        volume=1,
-    )
-    vega.submit_order(
-        trading_key=PARTY_A.name,
-        market_id=tDAI_market,
-        order_type="TYPE_MARKET",
-        time_in_force="TIME_IN_FORCE_IOC",
-        side="SIDE_BUY",
-        volume=1,
-    )
+    # Team statistics will only return data when team has been active
+    # for DEFAULT_AGGREGATION_EPOCHS epochs
+    #
+    # https://vegaprotocol.slack.com/archives/C02KVKMAE82/p1706635625851769?thread_ts=1706631542.576449&cid=C02KVKMAE82
 
-    # Making sure that we have definitely passed enough epochs for the recurring transfer
-    # game to have been completed
-    next_epoch(vega)
-    print(f"[EPOCH: {vega.statistics().epoch_seq}] 1 epoch passed")
-
-    next_epoch(vega)
-    print(f"[EPOCH: {vega.statistics().epoch_seq}] 2 epoch passed")
-
-    next_epoch(vega=vega)
-
+    # Create trading activity for 10 epochs (which is the default)
+    for i in range(10):
+        vega.submit_order(
+            trading_key=PARTY_B.name,
+            market_id=tDAI_market,
+            order_type="TYPE_MARKET",
+            time_in_force="TIME_IN_FORCE_IOC",
+            side="SIDE_BUY",
+            volume=1,
+        )
+        vega.submit_order(
+            trading_key=PARTY_A.name,
+            market_id=tDAI_market,
+            order_type="TYPE_MARKET",
+            time_in_force="TIME_IN_FORCE_IOC",
+            side="SIDE_BUY",
+            volume=1,
+        )
+        next_epoch(vega)
+        print(f"[EPOCH: {vega.statistics().epoch_seq}] {i} epoch passed")
 
     return {
         "market_id": tDAI_market,
@@ -139,14 +136,13 @@ def create_team(vega: VegaServiceNull):
 
     return team_name
 
-@pytest.mark.skip
 def test_team_page_games_table(team_page: Page):
     team_page.get_by_test_id("games-toggle").click()
     expect(team_page.get_by_test_id("games-toggle")).to_have_text("Games (1)")
     expect(team_page.get_by_test_id("rank-0")).to_have_text("1")
-    expect(team_page.get_by_test_id("epoch-0")).to_have_text("9")
+    expect(team_page.get_by_test_id("epoch-0")).to_have_text("18")
     expect(team_page.get_by_test_id("type-0")).to_have_text("Price maker fees paid")
-    expect(team_page.get_by_test_id("amount-0")).to_have_text("10,000,000")
+    expect(team_page.get_by_test_id("amount-0")).to_have_text("100,000,000")
     expect(team_page.get_by_test_id("participatingTeams-0")).to_have_text(
         "1"
     )
@@ -154,7 +150,6 @@ def test_team_page_games_table(team_page: Page):
         "2"
     )
 
-@pytest.mark.skip
 def test_team_page_members_table(team_page: Page):
     team_page.get_by_test_id("members-toggle").click()
     expect(team_page.get_by_test_id("members-toggle")).to_have_text("Members (3)")
@@ -167,17 +162,19 @@ def test_team_page_headline(team_page: Page, setup_teams_and_games
     team_name = setup_teams_and_games["team_name"]
     expect(team_page.get_by_test_id("team-name")).to_have_text(team_name)
     expect(team_page.get_by_test_id("members-count-stat")).to_have_text("3")
-    
-    ### TODO These all appear to be API errors as teamStatistics don't ever get populated
+
     expect(team_page.get_by_test_id("total-games-stat")).to_have_text(
-        "0"
-    )  # TODO this should be 1, confirm with devs
+        "1"
+    )
+
+    # TODO this still seems wrong as its always 0
     expect(team_page.get_by_test_id("total-volume-stat")).to_have_text(
         "0"
-    )  # TODO this should be 10,000,000, confirm with devs
+    )
+
     expect(team_page.get_by_test_id("rewards-paid-stat")).to_have_text(
-        "0"
-    )  # TODO this should be 100, confirm with devs
+        "100m"
+    )
 
 @pytest.fixture(scope="module")
 def competitions_page(vega, browser, request):
@@ -186,18 +183,18 @@ def competitions_page(vega, browser, request):
         auth_setup(vega, page)
         yield page
 
-@pytest.mark.skip
 def test_leaderboard(competitions_page: Page, setup_teams_and_games):
     team_name = setup_teams_and_games["team_name"]
     competitions_page.goto(f"/#/competitions/")
     expect(competitions_page.get_by_test_id("rank-0").locator(".text-yellow-300")).to_have_count(1)
     expect(competitions_page.get_by_test_id("team-0")).to_have_text(team_name)
     expect(competitions_page.get_by_test_id("status-0")).to_have_text("Open")
-    
-    ### TODO These all appear to be API errors as teamStatistics don't ever get populated
-    expect(competitions_page.get_by_test_id("earned-0")).to_have_text("-") #TODO I think this should be 100, confirm with dev
-    expect(competitions_page.get_by_test_id("games-0")).to_have_text("-") #TODO I think this should be 1, confirm with dev
-    expect(competitions_page.get_by_test_id("volume-0")).to_have_text("-") #TODO I think this should be 10,000,000, confirm with dev
+
+    expect(competitions_page.get_by_test_id("earned-0")).to_have_text("100,000,000")
+    expect(competitions_page.get_by_test_id("games-0")).to_have_text("1")
+
+    # TODO  still odd that this is 0
+    expect(competitions_page.get_by_test_id("volume-0")).to_have_text("-")
 
 #TODO def test_games(competitions_page: Page):
 #TODO currently no games appear which i think is a bug

@@ -51,7 +51,7 @@ fragment TeamGameFields on Game {
   }
 }
 
-query Team($teamId: ID!, $partyId: ID) {
+query Team($teamId: ID!, $partyId: ID, $aggregationEpochs: Int) {
   teams(teamId: $teamId) {
     edges {
       node {
@@ -66,7 +66,7 @@ query Team($teamId: ID!, $partyId: ID) {
       }
     }
   }
-  teamsStatistics(teamId: $teamId) {
+  teamsStatistics(teamId: $teamId, aggregationEpochs: $aggregationEpochs) {
     edges {
       node {
         ...TeamStatsFields

@@ -413,7 +413,7 @@
   "myVolume_other": "My volume (last {{count}} epochs)",
   "numberEpochs": "{{count}} epochs",
   "numberEpochs_one": "{{count}} epoch",
-  "Rewards paid": "Rewards paid",
+  "Rewards paid out": "Rewards paid out",
   "{{reward}}x": "{{reward}}x",
   "userActive": "{{active}} trader: {{count}} epochs so far",
   "volumeLastEpochs": "Volume (last {{count}} epochs)",
