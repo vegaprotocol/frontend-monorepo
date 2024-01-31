@@ -76,6 +76,9 @@ export const ActivityStreak = ({
   const { params } = useNetworkParams([
     NetworkParams.rewards_activityStreak_inactivityLimit,
   ]);
+  const remaining = new BigNumber(params.rewards_activityStreak_inactivityLimit)
+    .minus(streak?.inactiveFor || 0)
+    .toNumber();
   if (!tiers || tiers.length === 0) return null;
 
   const progressBarHeight = 'h-10';
@@ -220,17 +223,22 @@ export const ActivityStreak = ({
                         count: streak.activeFor || 0,
                       }
                     )
-                  : t(
+                  : remaining > 0
+                  ? t(
                       'userInactive',
                       '{{active}} trader: {{count}} epochs so far, you will lose your streak in {{remaining}} epochs!',
                       {
                         active: 'Inactive',
                         count: streak.inactiveFor || 0,
-                        remaining: new BigNumber(
-                          params.rewards_activityStreak_inactivityLimit
-                        )
-                          .minus(streak.inactiveFor)
-                          .toNumber(),
+                        remaining,
+                      }
+                    )
+                  : t(
+                      'userActive',
+                      '{{active}} trader: {{count}} epochs so far',
+                      {
+                        active: 'Inactive',
+                        count: streak.inactiveFor || 0,
                       }
                     )}{' '}
                 {userTierIndex > 0 &&
