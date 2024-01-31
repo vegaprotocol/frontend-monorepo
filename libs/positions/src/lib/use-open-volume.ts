@@ -1,14 +1,17 @@
 import { useState, useCallback } from 'react';
-import { openVolumeDataProvider } from './positions-data-providers';
+import {
+  OpenVolumeData,
+  openVolumeDataProvider,
+} from './positions-data-providers';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 
 export const useOpenVolume = (
   partyId: string | null | undefined,
   marketId: string
 ) => {
-  const [openVolume, setOpenVolume] = useState<string | undefined>(undefined);
-  const update = useCallback(({ data }: { data: string | null }) => {
-    setOpenVolume(data ?? undefined);
+  const [openVolume, setOpenVolume] = useState<OpenVolumeData | null>(null);
+  const update = useCallback(({ data }: { data: OpenVolumeData | null }) => {
+    setOpenVolume(data);
     return true;
   }, []);
   useDataProvider({

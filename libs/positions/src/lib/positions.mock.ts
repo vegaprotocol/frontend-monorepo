@@ -181,11 +181,11 @@ const marginsFields: MarginFieldsFragment[] = [
 ];
 
 export const singleRow: Position = {
+  marginFactor: '1',
   generalAccountBalance: '12345600',
   maintenanceLevel: '12300000',
   marginMode: Schema.MarginMode.MARGIN_MODE_CROSS_MARGIN,
-  marginFactor: '1',
-  orderAccountBalance: '0',
+  orderMarginAccountBalance: '0',
   partyId: 'partyId',
   assetId: 'asset-id',
   assetSymbol: 'BTC',
@@ -195,6 +195,7 @@ export const singleRow: Position = {
   quantum: '0.1',
   lossSocializationAmount: '0',
   marginAccountBalance: '12345600',
+  totalMarginAccountBalance: '12345600',
   marketDecimalPlaces: 1,
   marketId: 'string',
   marketCode: 'ETHBTC.QM21',

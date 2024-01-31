@@ -8,7 +8,7 @@ export const DEDUCTION_FROM_COLLATERAL_TOOLTIP_TEXT =
   'To cover the required margin, this amount will be drawn from your general ({{assetSymbol}}) account.';
 
 export const TOTAL_MARGIN_AVAILABLE =
-  'Total margin available = general {{assetSymbol}} balance ({{generalAccountBalance}} {{assetSymbol}}) + margin balance ({{marginAccountBalance}} {{assetSymbol}}) - maintenance level ({{marginMaintenance}} {{assetSymbol}}).';
+  'Total margin available = general {{assetSymbol}} balance ({{generalAccountBalance}} {{assetSymbol}}) + margin balance ({{marginAccountBalance}} {{assetSymbol}}) + order margin balance ({{orderMarginAccountBalance}} {{assetSymbol}}) - maintenance level ({{marginMaintenance}} {{assetSymbol}}).';
 
 export const CONTRACTS_MARGIN_TOOLTIP_TEXT =
   'The number of contracts determines how many units of the futures contract to buy or sell. For example, this is similar to buying one share of a listed company. The value of 1 contract is equivalent to the price of the contract. For example, if the current price is $50, then one contract is worth $50.';

@@ -22,17 +22,18 @@ export type PositionsSubscriptionSubscription = { __typename?: 'Subscription', p
 export type EstimatePositionQueryVariables = Types.Exact<{
   marketId: Types.Scalars['ID'];
   openVolume: Types.Scalars['String'];
-  orders?: Types.InputMaybe<Array<Types.OrderInfo> | Types.OrderInfo>;
   averageEntryPrice: Types.Scalars['String'];
+  orders?: Types.InputMaybe<Array<Types.OrderInfo> | Types.OrderInfo>;
   marginAccountBalance: Types.Scalars['String'];
   generalAccountBalance: Types.Scalars['String'];
   orderMarginAccountBalance: Types.Scalars['String'];
   marginMode: Types.MarginMode;
   marginFactor?: Types.InputMaybe<Types.Scalars['String']>;
+  includeCollateralIncreaseInAvailableCollateral?: Types.InputMaybe<Types.Scalars['Boolean']>;
 }>;
 
 
-export type EstimatePositionQuery = { __typename?: 'Query', estimatePosition?: { __typename?: 'PositionEstimate', margin: { __typename?: 'MarginEstimate', worstCase: { __typename?: 'MarginLevels', maintenanceLevel: string, searchLevel: string, initialLevel: string, collateralReleaseLevel: string }, bestCase: { __typename?: 'MarginLevels', maintenanceLevel: string, searchLevel: string, initialLevel: string, collateralReleaseLevel: string } }, liquidation?: { __typename?: 'LiquidationEstimate', worstCase: { __typename?: 'LiquidationPrice', open_volume_only: string, including_buy_orders: string, including_sell_orders: string }, bestCase: { __typename?: 'LiquidationPrice', open_volume_only: string, including_buy_orders: string, including_sell_orders: string } } | null } | null };
+export type EstimatePositionQuery = { __typename?: 'Query', estimatePosition?: { __typename?: 'PositionEstimate', margin: { __typename?: 'MarginEstimate', worstCase: { __typename?: 'MarginLevels', maintenanceLevel: string, searchLevel: string, initialLevel: string, collateralReleaseLevel: string, marginMode: Types.MarginMode, marginFactor: string, orderMarginLevel: string }, bestCase: { __typename?: 'MarginLevels', maintenanceLevel: string, searchLevel: string, initialLevel: string, collateralReleaseLevel: string, marginMode: Types.MarginMode, marginFactor: string, orderMarginLevel: string } }, collateralIncreaseEstimate: { __typename?: 'CollateralIncreaseEstimate', worstCase: string, bestCase: string }, liquidation?: { __typename?: 'LiquidationEstimate', worstCase: { __typename?: 'LiquidationPrice', open_volume_only: string, including_buy_orders: string, including_sell_orders: string }, bestCase: { __typename?: 'LiquidationPrice', open_volume_only: string, including_buy_orders: string, including_sell_orders: string } } | null } | null };
 
 export const PositionFieldsFragmentDoc = gql`
     fragment PositionFields on Position {
@@ -129,17 +130,18 @@ export function usePositionsSubscriptionSubscription(baseOptions: Apollo.Subscri
 export type PositionsSubscriptionSubscriptionHookResult = ReturnType<typeof usePositionsSubscriptionSubscription>;
 export type PositionsSubscriptionSubscriptionResult = Apollo.SubscriptionResult<PositionsSubscriptionSubscription>;
 export const EstimatePositionDocument = gql`
-    query EstimatePosition($marketId: ID!, $openVolume: String!, $orders: [OrderInfo!], $averageEntryPrice: String!, $marginAccountBalance: String!, $generalAccountBalance: String!, $orderMarginAccountBalance: String!, $marginMode: MarginMode!, $marginFactor: String) {
+    query EstimatePosition($marketId: ID!, $openVolume: String!, $averageEntryPrice: String!, $orders: [OrderInfo!], $marginAccountBalance: String!, $generalAccountBalance: String!, $orderMarginAccountBalance: String!, $marginMode: MarginMode!, $marginFactor: String, $includeCollateralIncreaseInAvailableCollateral: Boolean) {
   estimatePosition(
     marketId: $marketId
     openVolume: $openVolume
-    orders: $orders
     averageEntryPrice: $averageEntryPrice
+    orders: $orders
     marginAccountBalance: $marginAccountBalance
     generalAccountBalance: $generalAccountBalance
     orderMarginAccountBalance: $orderMarginAccountBalance
     marginMode: $marginMode
     marginFactor: $marginFactor
+    includeCollateralIncreaseInAvailableCollateral: $includeCollateralIncreaseInAvailableCollateral
     scaleLiquidationPriceToMarketDecimals: true
   ) {
     margin {
@@ -148,13 +150,23 @@ export const EstimatePositionDocument = gql`
         searchLevel
         initialLevel
         collateralReleaseLevel
+        marginMode
+        marginFactor
+        orderMarginLevel
       }
       bestCase {
         maintenanceLevel
         searchLevel
         initialLevel
         collateralReleaseLevel
+        marginMode
+        marginFactor
+        orderMarginLevel
       }
+    }
+    collateralIncreaseEstimate {
+      worstCase
+      bestCase
     }
     liquidation {
       worstCase {
@@ -186,13 +198,14 @@ export const EstimatePositionDocument = gql`
  *   variables: {
  *      marketId: // value for 'marketId'
  *      openVolume: // value for 'openVolume'
- *      orders: // value for 'orders'
  *      averageEntryPrice: // value for 'averageEntryPrice'
+ *      orders: // value for 'orders'
  *      marginAccountBalance: // value for 'marginAccountBalance'
  *      generalAccountBalance: // value for 'generalAccountBalance'
  *      orderMarginAccountBalance: // value for 'orderMarginAccountBalance'
  *      marginMode: // value for 'marginMode'
  *      marginFactor: // value for 'marginFactor'
+ *      includeCollateralIncreaseInAvailableCollateral: // value for 'includeCollateralIncreaseInAvailableCollateral'
  *   },
  * });
  */

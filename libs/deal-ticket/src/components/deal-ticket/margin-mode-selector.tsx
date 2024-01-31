@@ -1,9 +1,12 @@
 import { useDataProvider } from '@vegaprotocol/data-provider';
+import * as Schema from '@vegaprotocol/types';
 import {
   TradingButton as Button,
   TradingInput as Input,
   FormGroup,
   LeverageSlider,
+  Notification,
+  Intent,
 } from '@vegaprotocol/ui-toolkit';
 import { MarginMode, useVegaWallet } from '@vegaprotocol/wallet';
 import * as Types from '@vegaprotocol/types';
@@ -15,15 +18,151 @@ import { Dialog } from '@vegaprotocol/ui-toolkit';
 import { useEffect, useState } from 'react';
 import { useT } from '../../use-t';
 import classnames from 'classnames';
-import { marketMarginDataProvider } from '@vegaprotocol/accounts';
-import { useMaxLeverage } from '@vegaprotocol/positions';
+import {
+  marginModeDataProvider,
+  useAccountBalance,
+  useMarginAccountBalance,
+} from '@vegaprotocol/accounts';
+import { useMaxLeverage, useOpenVolume } from '@vegaprotocol/positions';
+import { activeOrdersProvider } from '@vegaprotocol/orders';
+import { usePositionEstimate } from '../../hooks/use-position-estimate';
+import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
+import { getAsset, useMarket } from '@vegaprotocol/markets';
+import { NoWalletWarning } from './deal-ticket';
 
 const defaultLeverage = 10;
+
+export const MarginChange = ({
+  partyId,
+  marketId,
+  marginMode,
+  marginFactor,
+}: {
+  partyId: string | null;
+  marketId: string;
+  marginMode: Types.MarginMode;
+  marginFactor: string;
+}) => {
+  const t = useT();
+  const { data: market } = useMarket(marketId);
+  const asset = market && getAsset(market);
+  const {
+    marginAccountBalance,
+    orderMarginAccountBalance,
+    loading: marginAccountBalanceLoading,
+  } = useMarginAccountBalance(marketId);
+  const {
+    accountBalance: generalAccountBalance,
+    loading: generalAccountBalanceLoading,
+  } = useAccountBalance(asset?.id);
+  const { openVolume, averageEntryPrice } = useOpenVolume(
+    partyId,
+    marketId
+  ) || {
+    openVolume: '0',
+    averageEntryPrice: '0',
+  };
+  const { data: activeOrders } = useDataProvider({
+    dataProvider: activeOrdersProvider,
+    variables: { partyId: partyId || '', marketId },
+  });
+  const orders = activeOrders
+    ? activeOrders.map<Schema.OrderInfo>((order) => ({
+        isMarketOrder: order.type === Schema.OrderType.TYPE_MARKET,
+        price: order.price,
+        remaining: order.remaining,
+        side: order.side,
+      }))
+    : [];
+  const skip =
+    (!orders?.length && openVolume === '0') ||
+    marginAccountBalanceLoading ||
+    generalAccountBalanceLoading;
+  const estimateMargin = usePositionEstimate(
+    {
+      generalAccountBalance: generalAccountBalance || '0',
+      marginAccountBalance: marginAccountBalance || '0',
+      marginFactor,
+      marginMode,
+      averageEntryPrice,
+      openVolume,
+      marketId,
+      orderMarginAccountBalance: orderMarginAccountBalance || '0',
+      includeCollateralIncreaseInAvailableCollateral: true,
+      orders,
+    },
+    skip
+  );
+  if (
+    !asset ||
+    !estimateMargin?.estimatePosition?.collateralIncreaseEstimate.worstCase ||
+    estimateMargin.estimatePosition.collateralIncreaseEstimate.worstCase === '0'
+  ) {
+    return null;
+  }
+  const collateralIncreaseEstimate = BigInt(
+    estimateMargin.estimatePosition.collateralIncreaseEstimate.worstCase
+  );
+  if (!collateralIncreaseEstimate) {
+    return null;
+  }
+  let positionWarning = '';
+  if (orders?.length && openVolume !== '0') {
+    positionWarning = t(
+      'youHaveOpenPositionAndOrders',
+      'You have an existing position and open orders on this market.',
+      {
+        count: orders.length,
+      }
+    );
+  } else if (!orders?.length) {
+    positionWarning = t('You have an existing position on this market.');
+  } else {
+    positionWarning = t(
+      'youHaveOpenOrders',
+      'You have open orders on this market.',
+      {
+        count: orders.length,
+      }
+    );
+  }
+  let marginChangeWarning = '';
+  const amount = addDecimalsFormatNumber(
+    collateralIncreaseEstimate.toString(),
+    asset?.decimals
+  );
+  const { symbol } = asset;
+  const interpolation = { amount, symbol };
+  if (marginMode === Schema.MarginMode.MARGIN_MODE_CROSS_MARGIN) {
+    marginChangeWarning = t(
+      'Changing the margin mode will move {{amount}} {{symbol}} from your general account to fund the position.',
+      interpolation
+    );
+  } else {
+    marginChangeWarning = t(
+      'Changing the margin mode and leverage will move {{amount}} {{symbol}} from your general account to fund the position.',
+      interpolation
+    );
+  }
+  return (
+    <div className="mb-2">
+      <Notification
+        intent={Intent.Warning}
+        message={
+          <>
+            <p>{positionWarning}</p>
+            <p>{marginChangeWarning}</p>
+          </>
+        }
+      />
+    </div>
+  );
+};
+
 interface MarginDialogProps {
   open: boolean;
   onClose: () => void;
   marketId: string;
-  partyId: string;
   create: VegaTransactionStore['create'];
 }
 
@@ -33,6 +172,7 @@ const CrossMarginModeDialog = ({
   marketId,
   create,
 }: MarginDialogProps) => {
+  const { pubKey: partyId, isReadOnly } = useVegaWallet();
   const t = useT();
   return (
     <Dialog
@@ -60,15 +200,24 @@ const CrossMarginModeDialog = ({
           )}
         </p>
       </div>
+      <MarginChange
+        marketId={marketId}
+        partyId={partyId}
+        marginMode={Types.MarginMode.MARGIN_MODE_CROSS_MARGIN}
+        marginFactor="1"
+      />
+      <NoWalletWarning noWalletConnected={!partyId} isReadOnly={isReadOnly} />
       <Button
         className="w-full"
         onClick={() => {
-          create({
-            updateMarginMode: {
-              marketId,
-              mode: MarginMode.MARGIN_MODE_CROSS_MARGIN,
-            },
-          });
+          partyId &&
+            !isReadOnly &&
+            create({
+              updateMarginMode: {
+                marketId,
+                mode: MarginMode.MARGIN_MODE_CROSS_MARGIN,
+              },
+            });
           onClose();
         }}
       >
@@ -82,10 +231,10 @@ const IsolatedMarginModeDialog = ({
   open,
   onClose,
   marketId,
-  partyId,
   marginFactor,
   create,
 }: MarginDialogProps & { marginFactor: string }) => {
+  const { pubKey: partyId, isReadOnly } = useVegaWallet();
   const [leverage, setLeverage] = useState(
     Number((1 / Number(marginFactor)).toFixed(1))
   );
@@ -129,13 +278,15 @@ const IsolatedMarginModeDialog = ({
       </div>
       <form
         onSubmit={() => {
-          create({
-            updateMarginMode: {
-              marketId,
-              mode: MarginMode.MARGIN_MODE_ISOLATED_MARGIN,
-              marginFactor: `${1 / leverage}`,
-            },
-          });
+          partyId &&
+            !isReadOnly &&
+            create({
+              updateMarginMode: {
+                marketId,
+                mode: MarginMode.MARGIN_MODE_ISOLATED_MARGIN,
+                marginFactor: `${1 / leverage}`,
+              },
+            });
           onClose();
         }}
       >
@@ -144,7 +295,7 @@ const IsolatedMarginModeDialog = ({
             <LeverageSlider
               max={max}
               step={0.1}
-              value={[leverage]}
+              value={[leverage || 1]}
               onValueChange={([value]) => setLeverage(value)}
             />
           </div>
@@ -154,10 +305,17 @@ const IsolatedMarginModeDialog = ({
             min={1}
             max={max}
             step={0.1}
-            value={leverage}
+            value={leverage || ''}
             onChange={(e) => setLeverage(Number(e.target.value))}
           />
         </FormGroup>
+        <MarginChange
+          marketId={marketId}
+          partyId={partyId}
+          marginMode={Types.MarginMode.MARGIN_MODE_ISOLATED_MARGIN}
+          marginFactor={`${1 / leverage}`}
+        />
+        <NoWalletWarning noWalletConnected={!partyId} isReadOnly={isReadOnly} />
         <Button className="w-full" type="submit">
           {t('Confirm')}
         </Button>
@@ -169,27 +327,21 @@ const IsolatedMarginModeDialog = ({
 export const MarginModeSelector = ({ marketId }: { marketId: string }) => {
   const t = useT();
   const [dialog, setDialog] = useState<'cross' | 'isolated' | ''>();
-  const { pubKey: partyId, isReadOnly } = useVegaWallet();
+  const { pubKey: partyId } = useVegaWallet();
   const { data: margin } = useDataProvider({
-    dataProvider: marketMarginDataProvider,
+    dataProvider: marginModeDataProvider,
     variables: {
       partyId: partyId || '',
       marketId,
     },
     skip: !partyId,
   });
-  useEffect(() => {
-    if (!partyId) {
-      setDialog('');
-    }
-  }, [partyId]);
   const create = useVegaTransactionStore((state) => state.create);
   const marginMode = margin?.marginMode;
   const marginFactor =
     margin?.marginFactor && margin?.marginFactor !== '0'
       ? margin?.marginFactor
       : undefined;
-  const disabled = isReadOnly;
   const onClose = () => setDialog(undefined);
   const enabledModeClassName = 'bg-vega-clight-500 dark:bg-vega-cdark-500';
 
@@ -197,8 +349,8 @@ export const MarginModeSelector = ({ marketId }: { marketId: string }) => {
     <>
       <div className="mb-4 grid h-8 leading-8 font-alpha text-xs grid-cols-2">
         <button
-          disabled={disabled}
-          onClick={() => partyId && setDialog('cross')}
+          type="button"
+          onClick={() => setDialog('cross')}
           className={classnames('rounded', {
             [enabledModeClassName]:
               !marginMode ||
@@ -208,8 +360,8 @@ export const MarginModeSelector = ({ marketId }: { marketId: string }) => {
           {t('Cross')}
         </button>
         <button
-          disabled={disabled}
-          onClick={() => partyId && setDialog('isolated')}
+          type="button"
+          onClick={() => setDialog('isolated')}
           className={classnames('rounded', {
             [enabledModeClassName]:
               marginMode === Types.MarginMode.MARGIN_MODE_ISOLATED_MARGIN,
@@ -222,25 +374,23 @@ export const MarginModeSelector = ({ marketId }: { marketId: string }) => {
           })}
         </button>
       </div>
-      {partyId && (
+      {
         <CrossMarginModeDialog
-          partyId={partyId}
           open={dialog === 'cross'}
           onClose={onClose}
           marketId={marketId}
           create={create}
         />
-      )}
-      {partyId && (
+      }
+      {
         <IsolatedMarginModeDialog
-          partyId={partyId}
           open={dialog === 'isolated'}
           onClose={onClose}
           marketId={marketId}
           create={create}
           marginFactor={marginFactor || `${1 / defaultLeverage}`}
         />
-      )}
+      }
     </>
   );
 };

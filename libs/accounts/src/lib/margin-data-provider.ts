@@ -83,3 +83,25 @@ export const marketMarginDataProvider = makeDerivedDataProvider<
       (margin) => margin.market.id === marketId
     ) || null
 );
+
+export type MarginModeData = Pick<
+  MarginFieldsFragment,
+  'marginMode' | 'marginFactor'
+>;
+
+export const marginModeDataProvider = makeDerivedDataProvider<
+  MarginModeData,
+  never,
+  MarginsQueryVariables & { marketId: string }
+>([marketMarginDataProvider], ([data], variables, previousData) =>
+  produce(previousData, (draft) => {
+    if (!data) {
+      return data;
+    }
+    const newData = {
+      marginMode: (data as MarginFieldsFragment).marginMode,
+      marginFactor: (data as MarginFieldsFragment).marginFactor,
+    };
+    return draft ? Object.assign(draft, newData) : newData;
+  })
+);

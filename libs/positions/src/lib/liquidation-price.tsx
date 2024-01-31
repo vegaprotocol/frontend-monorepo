@@ -1,47 +1,35 @@
 import { Tooltip } from '@vegaprotocol/ui-toolkit';
-import { useEstimatePositionQuery } from './__generated__/Positions';
+import {
+  type EstimatePositionQueryVariables,
+  useEstimatePositionQuery,
+} from './__generated__/Positions';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { useT } from '../use-t';
-import { MarginMode } from '@vegaprotocol/types';
 
 export const LiquidationPrice = ({
-  marketId,
-  openVolume,
-  averageEntryPrice,
-  generalAccountBalance,
-  marginAccountBalance,
-  orderMarginAccountBalance,
-  marginMode = MarginMode.MARGIN_MODE_CROSS_MARGIN,
-  marginFactor,
   decimalPlaces,
   className,
-}: {
-  marketId: string;
-  openVolume: string;
-  averageEntryPrice: string;
-  generalAccountBalance: string;
-  marginAccountBalance: string;
-  orderMarginAccountBalance: string;
-  marginMode: MarginMode;
-  marginFactor: string;
+  ...variables
+}: Pick<
+  EstimatePositionQueryVariables,
+  | 'marketId'
+  | 'openVolume'
+  | 'orderMarginAccountBalance'
+  | 'generalAccountBalance'
+  | 'averageEntryPrice'
+  | 'marginAccountBalance'
+  | 'marginMode'
+  | 'marginFactor'
+> & {
   decimalPlaces: number;
   className?: string;
 }) => {
   const t = useT();
 
   const { data: currentData, previousData } = useEstimatePositionQuery({
-    variables: {
-      marketId,
-      openVolume,
-      averageEntryPrice,
-      generalAccountBalance,
-      marginAccountBalance,
-      orderMarginAccountBalance,
-      marginMode,
-      marginFactor,
-    },
+    variables,
     fetchPolicy: 'no-cache',
-    skip: !openVolume || openVolume === '0',
+    skip: !variables.openVolume || variables.openVolume === '0',
   });
 
   const data = currentData || previousData;
