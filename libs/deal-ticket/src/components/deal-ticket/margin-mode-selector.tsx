@@ -295,7 +295,7 @@ const IsolatedMarginModeDialog = ({
             <LeverageSlider
               max={max}
               step={0.1}
-              value={[leverage]}
+              value={[leverage || 1]}
               onValueChange={([value]) => setLeverage(value)}
             />
           </div>
@@ -305,7 +305,7 @@ const IsolatedMarginModeDialog = ({
             min={1}
             max={max}
             step={0.1}
-            value={leverage}
+            value={leverage || ''}
             onChange={(e) => setLeverage(Number(e.target.value))}
           />
         </FormGroup>

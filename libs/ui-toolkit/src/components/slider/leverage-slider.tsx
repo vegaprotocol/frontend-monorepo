@@ -30,6 +30,7 @@ export const LeverageSlider = (
                 const higherThanValue = value && labelValue > value;
                 return (
                   <span
+                    key={labelValue}
                     className="absolute flex flex-col items-center translate-x-[-50%]"
                     style={{
                       left: `${
