@@ -56,15 +56,16 @@ export const ProposalHeader = ({
 
   if (proposal.__typename === 'BatchProposal') {
     return (
-      <BatchProposalHeader
-        proposal={proposal}
-        isListItem={isListItem}
-        voteState={voteState}
-      />
+      // <BatchProposalHeader
+      //   proposal={proposal}
+      //   isListItem={isListItem}
+      //   voteState={voteState}
+      // />
+      <div>TODO: Header</div>
     );
   }
 
-  throw new Error('invalid proposal type');
+  return null;
 };
 
 const SingleProposalHeader = ({
@@ -112,9 +113,7 @@ const SingleProposalHeader = ({
       fallbackTitle = t('NewMarketProposal');
       details = (
         <>
-          {featureFlags.SUCCESSOR_MARKETS && (
-            <SuccessorCode proposalId={proposal?.id} />
-          )}
+          <SuccessorCode proposalId={proposal?.id} />
           <span>
             {t('Code')}: {change.instrument.code}.
           </span>{' '}
@@ -334,17 +333,17 @@ const SingleProposalHeader = ({
   );
 };
 
-const BatchProposalHeader = ({
-  proposal,
-  isListItem,
-  voteState,
-}: {
-  proposal: BatchProposal | ListBatchProposal;
-  isListItem?: boolean;
-  voteState?: VoteState | null;
-}) => {
-  return <div>TODO: handle batch header proposal</div>;
-};
+// const BatchProposalHeader = ({
+//   proposal,
+//   isListItem,
+//   voteState,
+// }: {
+//   proposal: BatchProposal | ListBatchProposal;
+//   isListItem?: boolean;
+//   voteState?: VoteState | null;
+// }) => {
+//   return <div>TODO: handle batch header proposal</div>;
+// };
 
 export const SuccessorCode = ({
   proposalId,

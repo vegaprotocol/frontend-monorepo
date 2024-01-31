@@ -1,6 +1,7 @@
 fragment NewMarketProductField on Proposal {
   terms {
     change {
+      __typename
       ... on NewMarket {
         instrument {
           product {
@@ -15,6 +16,7 @@ fragment NewMarketProductField on Proposal {
 fragment UpdateMarketState on Proposal {
   terms {
     change {
+      __typename
       ... on UpdateMarketState {
         updateType
         market {
@@ -46,6 +48,7 @@ fragment UpdateMarketState on Proposal {
 fragment UpdateReferralProgram on Proposal {
   terms {
     change {
+      __typename
       ... on UpdateReferralProgram {
         benefitTiers {
           minimumEpochs
@@ -67,6 +70,7 @@ fragment UpdateReferralProgram on Proposal {
 fragment UpdateVolumeDiscountProgram on Proposal {
   terms {
     change {
+      __typename
       ... on UpdateVolumeDiscountProgram {
         benefitTiers {
           minimumRunningNotionalTakerVolume
@@ -82,6 +86,7 @@ fragment UpdateVolumeDiscountProgram on Proposal {
 fragment UpdateNetworkParameter on Proposal {
   terms {
     change {
+      __typename
       ... on UpdateNetworkParameter {
         networkParameter {
           key
@@ -122,6 +127,7 @@ query Proposal(
         closingDatetime
         enactmentDatetime
         change {
+          __typename
           ... on NewMarket {
             decimalPlaces
             metadata
@@ -460,6 +466,16 @@ query Proposal(
         id
       }
       errorDetails
+      subProposals {
+        datetime
+        terms {
+          closingDatetime
+          enactmentDatetime
+          change {
+            __typename
+          }
+        }
+      }
       votes {
         yes {
           totalTokens
