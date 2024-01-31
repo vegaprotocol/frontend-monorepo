@@ -97,6 +97,7 @@ export const TeamForm = ({
   } = useForm<FormFields>({
     defaultValues: {
       private: isSolo,
+      allowList: '',
       ...defaultValues,
     },
   });
@@ -160,59 +161,67 @@ export const TeamForm = ({
           </TradingInputError>
         )}
       </TradingFormGroup>
-      <TradingFormGroup
-        label={t('Make team private')}
-        labelFor="private"
-        hideLabel={true}
-      >
-        <Controller
-          name="private"
-          control={control}
-          render={({ field }) => {
-            return (
-              <TradingCheckbox
-                label={t('Make team private')}
-                checked={field.value}
-                onCheckedChange={(value) => {
-                  field.onChange(value);
-                }}
-                disabled={isSolo}
+      {!isSolo && (
+        <>
+          <TradingFormGroup
+            label={t('Make team private')}
+            labelFor="private"
+            hideLabel={true}
+          >
+            <Controller
+              name="private"
+              control={control}
+              render={({ field }) => {
+                return (
+                  <TradingCheckbox
+                    label={t('Make team private')}
+                    checked={field.value}
+                    onCheckedChange={(value) => {
+                      field.onChange(value);
+                    }}
+                    disabled={isSolo}
+                  />
+                );
+              }}
+            />
+          </TradingFormGroup>
+          {isPrivate && (
+            <TradingFormGroup
+              label={t('Public key allow list')}
+              labelFor="allowList"
+              labelDescription={t(
+                'Use a comma separated list to allow only specific public keys to join the team'
+              )}
+            >
+              <TextArea
+                {...register('allowList', {
+                  required: t('Required'),
+                  disabled: isSolo,
+                  validate: {
+                    allowList: (value) => {
+                      const publicKeys = parseAllowListText(value);
+                      if (publicKeys.every((pk) => isValidVegaPublicKey(pk))) {
+                        return true;
+                      }
+                      return t('Invalid public key found in allow list');
+                    },
+                  },
+                })}
               />
-            );
-          }}
-        />
-      </TradingFormGroup>
-      {isPrivate && (
-        <TradingFormGroup
-          label={t('Public key allow list')}
-          labelFor="allowList"
-          labelDescription={t(
-            'Use a comma separated list to allow only specific public keys to join the team'
+              {errors.allowList?.message && (
+                <TradingInputError forInput="avatarUrl">
+                  {errors.allowList.message}
+                </TradingInputError>
+              )}
+            </TradingFormGroup>
           )}
-        >
-          <TextArea
-            {...register('allowList', {
-              required: t('Required'),
-              disabled: isSolo,
-              validate: {
-                allowList: (value) => {
-                  const publicKeys = parseAllowListText(value);
-                  if (publicKeys.every((pk) => isValidVegaPublicKey(pk))) {
-                    return true;
-                  }
-                  return t('Invalid public key found in allow list');
-                },
-              },
-            })}
-          />
-          {errors.allowList?.message && (
-            <TradingInputError forInput="avatarUrl">
-              {errors.allowList.message}
-            </TradingInputError>
-          )}
-        </TradingFormGroup>
+        </>
       )}
-      {err && <p className="text-danger text-xs mb-4 capitalize">{err}</p>}
+      {err && (
+        <p className="text-danger text-xs mb-4 first-letter:capitalize">
+          {err}
+        </p>
+      )}
       <SubmitButton type={type} status={status} />
     </form>
   );
