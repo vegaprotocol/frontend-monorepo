@@ -66,6 +66,7 @@ def test_stop_order_form_error_validation(shared_continuous_market, shared_page:
     )
 
 @pytest.mark.skip("core issue")
+@pytest.mark.xdist_group(name="shared_vega")
 def test_submit_stop_order_rejected(continuous_market, shared_vega: VegaServiceNull, shared_page: Page, shared_auth, shared_risk_accepted):
     shared_page.goto(f"/#/markets/{continuous_market}")
     shared_page.get_by_test_id(stop_orders_tab).click()
@@ -102,6 +103,7 @@ def test_submit_stop_order_rejected(continuous_market, shared_vega: VegaServiceN
     ).not_to_be_empty()
 
 @pytest.mark.skip("core issue")
+@pytest.mark.xdist_group(name="shared_vega")
 def test_submit_stop_market_order_triggered(
     continuous_market, shared_vega: VegaServiceNull, shared_page: Page, shared_auth, shared_risk_accepted
 ):
@@ -159,6 +161,7 @@ def test_submit_stop_market_order_triggered(
     ).not_to_be_empty()
 
 @pytest.mark.skip("core issue")
+@pytest.mark.xdist_group(name="shared_vega")
 @pytest.mark.usefixtures("auth", "risk_accepted")
 def test_submit_stop_limit_order_pending(
     continuous_market, vega: VegaServiceNull, page: Page
@@ -220,6 +223,7 @@ def test_submit_stop_limit_order_pending(
     ).not_to_be_empty()
 
 @pytest.mark.skip("core issue")
+@pytest.mark.xdist_group(name="shared_vega")
 @pytest.mark.usefixtures("auth", "risk_accepted")
 def test_submit_stop_limit_order_cancel(
     continuous_market, vega: VegaServiceNull, page: Page
@@ -265,6 +269,7 @@ class TestStopOcoValidation:
         return setup_continuous_market(vega) """
 
     @pytest.mark.skip("core issue")
+    @pytest.mark.xdist_group(name="shared_vega")
     @pytest.mark.usefixtures("auth", "risk_accepted")
     def test_maximum_number_of_active_stop_orders(
         self, continuous_market, vega: VegaServiceNull, page: Page

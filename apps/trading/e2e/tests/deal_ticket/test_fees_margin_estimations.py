@@ -12,6 +12,7 @@ market_trading_mode = "market-trading-mode"
 
 
 @pytest.mark.skip("tbd")
+@pytest.mark.xdist_group(name="test_margin_and_fees_estimations")
 @pytest.mark.usefixtures("auth", "risk_accepted")
 def test_margin_and_fees_estimations(continuous_market, vega: VegaServiceNull, page: Page):
     # setup continuous trading market with one user buy trade

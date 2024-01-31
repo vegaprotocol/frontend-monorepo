@@ -65,6 +65,7 @@ def test_iceberg_submit(continuous_market, shared_vega: VegaServiceNull, shared_
         ).to_have_text("Limit (Iceberg)")
 
 @pytest.mark.shared_vega
+@pytest.mark.xdist_group(name="shared_vega")
 def test_iceberg_open_order(continuous_market, shared_vega: VegaServiceNull, shared_page: Page, iceberg_key, shared_auth, shared_risk_accepted):
     shared_page.goto(f"/#/markets/{continuous_market}")
     change_keys(shared_page, shared_vega, iceberg_key.name)
