@@ -1,7 +1,11 @@
 import { useMemo } from 'react';
 import { parseISO, isValid, isAfter } from 'date-fns';
 import classNames from 'classnames';
-import { useProposalOfMarketQuery } from '@vegaprotocol/proposals';
+import {
+  useProposalOfMarketQuery,
+  type ProposalOfMarketQuery,
+  type SingleProposal,
+} from '@vegaprotocol/proposals';
 import { DocsLinks } from '@vegaprotocol/environment';
 import { getDateTimeFormat } from '@vegaprotocol/utils';
 import * as Schema from '@vegaprotocol/types';
@@ -36,12 +40,15 @@ export const TradingModeTooltip = ({
         marketTradingMode,
   });
 
+  // We only fetch Proposals (and not BatchProposals)
+  const proposal = proposalData?.proposal as SingleProposal<
+    ProposalOfMarketQuery['proposal']
+  >;
+
   if (!market || !marketData) {
     return null;
   }
-  const enactmentDate = parseISO(
-    proposalData?.proposal?.terms.enactmentDatetime
-  );
+  const enactmentDate = parseISO(proposal?.terms.enactmentDatetime);
 
   const compiledGrid =
     !skipGrid && compileGridData(t, market, marketData, onSelect);

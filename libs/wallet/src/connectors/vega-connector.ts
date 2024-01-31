@@ -439,6 +439,12 @@ export type ApplyReferralCode = {
   };
 };
 
+export type JoinTeam = {
+  joinTeam: {
+    id: string;
+  };
+};
+
 export type CreateReferralSet = {
   createReferralSet: {
     isTeam: boolean;
@@ -447,11 +453,41 @@ export type CreateReferralSet = {
       teamUrl?: string;
       avatarUrl?: string;
       closed: boolean;
+      allowList: string[];
     };
   };
 };
 
+export type UpdateReferralSet = {
+  updateReferralSet: {
+    id: string;
+    isTeam: boolean;
+    team?: {
+      name: string;
+      teamUrl?: string;
+      avatarUrl?: string;
+      closed: boolean;
+      allowList: string[];
+    };
+  };
+};
+
+export enum MarginMode {
+  MARGIN_MODE_CROSS_MARGIN = 1,
+  MARGIN_MODE_ISOLATED_MARGIN,
+}
+export interface UpdateMarginMode {
+  marketId: string;
+  mode: MarginMode;
+  marginFactor?: string;
+}
+
+export interface UpdateMarginModeBody {
+  updateMarginMode: UpdateMarginMode;
+}
+
 export type Transaction =
+  | UpdateMarginModeBody
   | StopOrdersSubmissionBody
   | StopOrdersCancellationBody
   | OrderSubmissionBody
@@ -466,7 +502,13 @@ export type Transaction =
   | TransferBody
   | LiquidityProvisionSubmission
   | ApplyReferralCode
-  | CreateReferralSet;
+  | JoinTeam
+  | CreateReferralSet
+  | UpdateReferralSet;
+
+export const isMarginModeUpdateTransaction = (
+  transaction: Transaction
+): transaction is UpdateMarginModeBody => 'updateMarginMode' in transaction;
 
 export const isWithdrawTransaction = (
   transaction: Transaction

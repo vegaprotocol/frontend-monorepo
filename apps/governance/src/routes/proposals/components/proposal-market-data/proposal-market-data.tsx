@@ -266,7 +266,6 @@ export const ProposalMarketData = ({
                 />
               </>
             ))}
-
             <h2 className={marketDataHeaderStyles}>
               {t('Liquidity monitoring parameters')}
             </h2>

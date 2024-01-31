@@ -36,16 +36,19 @@ def validate_info_section(page: Page, fields: [[str, str]]):
     for rowNumber, field in enumerate(fields):
         name, value = field
         expect(
-            page.get_by_test_id("key-value-table-row").nth(rowNumber).locator("dt")
+            page.get_by_test_id(
+                "key-value-table-row").nth(rowNumber).locator("dt")
         ).to_contain_text(name)
         expect(
-            page.get_by_test_id("key-value-table-row").nth(rowNumber).locator("dd")
+            page.get_by_test_id(
+                "key-value-table-row").nth(rowNumber).locator("dd")
         ).to_contain_text(value)
 
-@pytest.mark.skip("tbd-market-sim")
+
 def test_market_info_current_fees(page: Page):
     # 6002-MDET-101
-    page.get_by_test_id(market_title_test_id).get_by_text("Current fees").click()
+    page.get_by_test_id(market_title_test_id).get_by_text(
+        "Current fees").click()
     fields = [
         ["Maker Fee", "10%"],
         ["Infrastructure Fee", "0.05%"],
@@ -54,10 +57,11 @@ def test_market_info_current_fees(page: Page):
     ]
     validate_info_section(page, fields)
 
-@pytest.mark.skip("tbd-market-sim")
+
 def test_market_info_market_price(page: Page):
     # 6002-MDET-102
-    page.get_by_test_id(market_title_test_id).get_by_text("Market price").click()
+    page.get_by_test_id(market_title_test_id).get_by_text(
+        "Market price").click()
     fields = [
         ["Mark Price", "107.50"],
         ["Best Bid Price", "101.50"],
@@ -66,10 +70,11 @@ def test_market_info_market_price(page: Page):
     ]
     validate_info_section(page, fields)
 
-@pytest.mark.skip("tbd-market-sim")
+
 def test_market_info_market_volume(page: Page):
     # 6002-MDET-103
-    page.get_by_test_id(market_title_test_id).get_by_text("Market volume").click()
+    page.get_by_test_id(market_title_test_id).get_by_text(
+        "Market volume").click()
     fields = [
         ["24 Hour Volume", "-"],
         ["Open Interest", "1"],
@@ -80,17 +85,32 @@ def test_market_info_market_volume(page: Page):
     ]
     validate_info_section(page, fields)
 
-@pytest.mark.skip("tbd-market-sim")
-def test_market_info_insurance_pool(page: Page):
-    # 6002-MDET-104
-    page.get_by_test_id(market_title_test_id).get_by_text("Insurance pool").click()
-    fields = [["Balance", "0.00 tDAI"]]
+
+def test_market_info_liquidation_strategy(page: Page):
+    page.get_by_test_id(market_title_test_id).get_by_text(
+        "Liquidation strategy").click()
+    fields = [
+        ["Disposal Fraction", "1"],
+        ["Disposal Time Step", "1"],
+        ["Full Disposal Size", "1,000,000,000"],
+        ["Max Fraction Consumed", "0.5"],
+    ]
     validate_info_section(page, fields)
 
-@pytest.mark.skip("tbd-market-sim")
+
+def test_market_info_liquidation(page: Page):
+    # 6002-MDET-104
+    page.get_by_test_id(market_title_test_id).get_by_text(
+        "Liquidations").click()
+    fields = [["Insurance Pool Balance", "0.00 tDAI"]]
+    validate_info_section(page, fields)
+
+
+@pytest.mark.skip("core issue #5681")
 def test_market_info_key_details(page: Page, vega: VegaServiceNull):
     # 6002-MDET-201
-    page.get_by_test_id(market_title_test_id).get_by_text("Key details").click()
+    page.get_by_test_id(market_title_test_id).get_by_text(
+        "Key details").click()
     market_id = vega.find_market_id("BTC:DAI_2023")
     short_market_id = market_id[:6] + "…" + market_id[-4:]
     fields = [
@@ -106,7 +126,7 @@ def test_market_info_key_details(page: Page, vega: VegaServiceNull):
     ]
     validate_info_section(page, fields)
 
-@pytest.mark.skip("tbd-market-sim")
+
 def test_market_info_instrument(page: Page):
     # 6002-MDET-202
     page.get_by_test_id(market_title_test_id).get_by_text("Instrument").click()
@@ -121,7 +141,7 @@ def test_market_info_instrument(page: Page):
 
 # @pytest.mark.skip("oracle test to be fixed")
 
-@pytest.mark.skip("tbd-market-sim")
+
 def test_market_info_oracle(page: Page):
     # 6002-MDET-203
     page.get_by_test_id(market_title_test_id).get_by_text("Oracle").click()
@@ -135,10 +155,11 @@ def test_market_info_oracle(page: Page):
     #     "href", re.compile(rf'(\/oracles\/{vega.find_market_id("BTC:DAI_2023")})')
     # )
 
-@pytest.mark.skip("tbd-market-sim")
+
 def test_market_info_settlement_asset(page: Page, vega: VegaServiceNull):
     # 6002-MDET-206
-    page.get_by_test_id(market_title_test_id).get_by_text("Settlement asset").click()
+    page.get_by_test_id(market_title_test_id).get_by_text(
+        "Settlement asset").click()
     tdai_id = vega.find_asset_id("tDAI")
     tdai_id_short = tdai_id[:6] + "…" + tdai_id[-4:]
     fields = [
@@ -155,7 +176,7 @@ def test_market_info_settlement_asset(page: Page, vega: VegaServiceNull):
     ]
     validate_info_section(page, fields)
 
-@pytest.mark.skip("tbd-market-sim")
+
 def test_market_info_metadata(page: Page):
     # 6002-MDET-207
     page.get_by_test_id(market_title_test_id).get_by_text("Metadata").click()
@@ -164,7 +185,7 @@ def test_market_info_metadata(page: Page):
     ]
     validate_info_section(page, fields)
 
-@pytest.mark.skip("tbd-market-sim")
+
 def test_market_info_risk_model(page: Page):
     # 6002-MDET-208
     page.get_by_test_id(market_title_test_id).get_by_text("Risk model").click()
@@ -175,7 +196,7 @@ def test_market_info_risk_model(page: Page):
     ]
     validate_info_section(page, fields)
 
-@pytest.mark.skip("tbd-market-sim")
+
 def test_market_info_margin_scaling_factors(page: Page):
     # 6002-MDET-209
     page.get_by_test_id(market_title_test_id).get_by_text(
@@ -183,17 +204,17 @@ def test_market_info_margin_scaling_factors(page: Page):
     ).click()
     fields = [
         ["Linear Slippage Factor", "0.001"],
-        ["Quadratic Slippage Factor", "0"],
         ["Search Level", "1.1"],
         ["Initial Margin", "1.5"],
         ["Collateral Release", "1.7"],
     ]
     validate_info_section(page, fields)
 
-@pytest.mark.skip("tbd-market-sim")
+
 def test_market_info_risk_factors(page: Page):
     # 6002-MDET-210
-    page.get_by_test_id(market_title_test_id).get_by_text("Risk factors").click()
+    page.get_by_test_id(market_title_test_id).get_by_text(
+        "Risk factors").click()
     fields = [
         ["Long", "0.05153"],
         ["Short", "0.05422"],
@@ -204,7 +225,7 @@ def test_market_info_risk_factors(page: Page):
     ]
     validate_info_section(page, fields)
 
-@pytest.mark.skip("tbd-market-sim")
+
 def test_market_info_price_monitoring_bounds(page: Page):
     # 6002-MDET-211
     page.get_by_test_id(market_title_test_id).get_by_text(
@@ -213,27 +234,27 @@ def test_market_info_price_monitoring_bounds(page: Page):
     expect(page.locator("p.col-span-1").nth(0)).to_contain_text(
         "99.9999% probability price bounds"
     )
-    expect(page.locator("p.col-span-1").nth(1)).to_contain_text("Within 86,400 seconds")
+    expect(page.locator("p.col-span-1").nth(1)
+           ).to_contain_text("Within 86,400 seconds")
     fields = [
         ["Highest Price", "138.66685 BTC"],
         ["Lowest Price", "83.11038 BTC"],
     ]
     validate_info_section(page, fields)
 
-@pytest.mark.skip("tbd-market-sim")
+
 def test_market_info_liquidity_monitoring_parameters(page: Page):
     # 6002-MDET-212
     page.get_by_test_id(market_title_test_id).get_by_text(
         "Liquidity monitoring parameters"
     ).click()
     fields = [
-        ["Triggering Ratio", "0.7"],
         ["Time Window", "3,600"],
         ["Scaling Factor", "1"],
     ]
     validate_info_section(page, fields)
 
-@pytest.mark.skip("tbd-market-sim")
+
 # Liquidity resolves to 3 results
 def test_market_info_liquidit(page: Page):
     # 6002-MDET-213
@@ -246,7 +267,7 @@ def test_market_info_liquidit(page: Page):
     ]
     validate_info_section(page, fields)
 
-@pytest.mark.skip("tbd-market-sim")
+
 def test_market_info_liquidity_price_range(page: Page):
     # 6002-MDET-214
     page.get_by_test_id(market_title_test_id).get_by_text(
@@ -259,19 +280,22 @@ def test_market_info_liquidity_price_range(page: Page):
     ]
     validate_info_section(page, fields)
 
-@pytest.mark.skip("tbd-market-sim")
+
 def test_market_info_proposal(page: Page, vega: VegaServiceNull):
     # 6002-MDET-301
     page.get_by_test_id(market_title_test_id).get_by_text("Proposal").click()
     first_link = (
-        page.get_by_test_id("accordion-content").get_by_test_id("external-link").first
+        page.get_by_test_id(
+            "accordion-content").get_by_test_id("external-link").first
     )
     second_link = (
-        page.get_by_test_id("accordion-content").get_by_test_id("external-link").nth(1)
+        page.get_by_test_id(
+            "accordion-content").get_by_test_id("external-link").nth(1)
     )
     expect(first_link).to_have_text("View governance proposal")
     expect(first_link).to_have_attribute(
-        "href", re.compile(rf'(\/proposals\/{vega.find_market_id("BTC:DAI_2023")})')
+        "href", re.compile(
+            rf'(\/proposals\/{vega.find_market_id("BTC:DAI_2023")})')
     )
     expect(second_link).to_have_text("Propose a change to market")
 
@@ -280,13 +304,14 @@ def test_market_info_proposal(page: Page, vega: VegaServiceNull):
         "href", re.compile(r"(\/proposals\/propose\/update-market)")
     )
 
-    
-@pytest.mark.skip("tbd-market-sim")
+
 def test_market_info_succession_line(page: Page, vega: VegaServiceNull):
-    page.get_by_test_id(market_title_test_id).get_by_text("Succession line").click()
+    page.get_by_test_id(market_title_test_id).get_by_text(
+        "Succession line").click()
     market_id = vega.find_market_id("BTC:DAI_2023")
     succession_line = page.get_by_test_id("succession-line-item")
-    expect(succession_line.get_by_test_id("external-link")).to_have_text("BTC:DAI_2023")
+    expect(succession_line.get_by_test_id(
+        "external-link")).to_have_text("BTC:DAI_2023")
     expect(succession_line.get_by_test_id("external-link")).to_have_attribute(
         "href", re.compile(rf"(\/proposals\/{market_id})")
     )

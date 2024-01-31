@@ -105,7 +105,7 @@ describe('ActiveRewards', () => {
     expect(
       screen.getByText(/Liquidity provision fees received/i)
     ).toBeInTheDocument();
-    expect(screen.getByText('Entity scope')).toBeInTheDocument();
+    expect(screen.getByText('Individual scope')).toBeInTheDocument();
     expect(screen.getByText('Average position')).toBeInTheDocument();
     expect(screen.getByText('Ends in')).toBeInTheDocument();
     expect(screen.getByText('115431 epochs')).toBeInTheDocument();

@@ -22,11 +22,9 @@ import {
   type QueryOptions,
   type ApolloClient,
 } from '@apollo/client';
-import { ApolloError } from '@apollo/client';
-import type { GraphQLErrors } from '@apollo/client/errors';
+import { type ApolloError } from '@apollo/client';
 import { GraphQLError } from 'graphql';
 import { type Subscription, type Observable } from 'zen-observable-ts';
-import { waitFor } from '@testing-library/react';
 
 type Item = {
   cursor: string;
@@ -115,24 +113,6 @@ const paginatedSubscribe = makeDataProvider<
     append: defaultAppend,
     getPageInfo: (r) => r?.pageInfo ?? null,
   },
-});
-
-const mockErrorPolicyGuard: (errors: GraphQLErrors) => boolean = jest
-  .fn()
-  .mockImplementation(() => true);
-const errorGuardedSubscribe = makeDataProvider<
-  QueryData,
-  Data,
-  SubscriptionData,
-  Delta,
-  Variables
->({
-  query,
-  subscriptionQuery,
-  update,
-  getData,
-  getDelta,
-  errorPolicyGuard: mockErrorPolicyGuard,
 });
 
 const derivedSubscribe = makeDerivedDataProvider(
@@ -402,34 +382,6 @@ describe('data provider', () => {
     subscription.load && subscription.load();
     expect(clientQuery.mock.calls.length).toBe(clientQueryCallsLength);
 
-    subscription.unsubscribe();
-  });
-
-  it('should retry with ignore error policy if errorPolicyGuard returns true', async () => {
-    const subscription = errorGuardedSubscribe(callback, client, variables);
-    const graphQLError = new GraphQLError(
-      '',
-      undefined,
-      undefined,
-      undefined,
-      ['market', 'data'],
-      undefined,
-      {
-        type: 'Internal',
-      }
-    );
-    const graphQLErrors = [graphQLError];
-    const error = new ApolloError({ graphQLErrors });
-
-    await rejectQuery(error);
-    const data = generateData(0, 5);
-    await resolveQuery({
-      data,
-    });
-    expect(mockErrorPolicyGuard).toHaveBeenNthCalledWith(1, graphQLErrors);
-    await waitFor(() =>
-      expect(getData).toHaveBeenCalledWith({ data }, variables)
-    );
     subscription.unsubscribe();
   });
 });

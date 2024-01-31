@@ -28,7 +28,7 @@ export function isInternalSourceType(s: SourceType) {
 
 export function getExternalType(s: SourceType) {
   if (s.sourceType.__typename === 'EthCallSpec') {
-    return 'Ethereum Contract Call';
+    return 'Contract Call';
   } else {
     return 'External Data';
   }

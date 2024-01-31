@@ -6,24 +6,26 @@ import { EstimatePositionDocument } from './__generated__/Positions';
 import type { EstimatePositionQuery } from './__generated__/Positions';
 import { LiquidationPrice } from './liquidation-price';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
+import { MarginMode } from '@vegaprotocol/types';
 
 describe('LiquidationPrice', () => {
-  const props = {
+  const variables = {
     marketId: 'market-id',
     openVolume: '100',
-    collateralAvailable: '1000',
-    decimalPlaces: 2,
+    averageEntryPrice: '10',
+    marginAccountBalance: '500',
+    generalAccountBalance: '500',
+    orderMarginAccountBalance: '0',
+    marginMode: MarginMode.MARGIN_MODE_CROSS_MARGIN,
+    marginFactor: '1',
   };
+  const props = { ...variables, decimalPlaces: 2 };
   const worstCaseOpenVolume = '200';
   const bestCaseOpenVolume = '100';
   const mock: MockedResponse<EstimatePositionQuery> = {
     request: {
       query: EstimatePositionDocument,
-      variables: {
-        marketId: props.marketId,
-        openVolume: props.openVolume,
-        collateralAvailable: props.collateralAvailable,
-      },
+      variables,
     },
     result: {
       data: {
@@ -34,13 +36,23 @@ describe('LiquidationPrice', () => {
               searchLevel: '100',
               initialLevel: '100',
               collateralReleaseLevel: '100',
+              orderMarginLevel: '0',
+              marginFactor: '0',
+              marginMode: MarginMode.MARGIN_MODE_CROSS_MARGIN,
             },
             bestCase: {
               maintenanceLevel: '100',
               searchLevel: '100',
               initialLevel: '100',
               collateralReleaseLevel: '100',
+              orderMarginLevel: '0',
+              marginFactor: '0',
+              marginMode: MarginMode.MARGIN_MODE_CROSS_MARGIN,
             },
+          },
+          collateralIncreaseEstimate: {
+            bestCase: '0',
+            worstCase: '0',
           },
           liquidation: {
             worstCase: {

@@ -3,13 +3,12 @@ import {
   useNetworkParams,
 } from '@vegaprotocol/network-parameters';
 import { BigNumber } from '../../../lib/bignumber';
-import type { ProposalFieldsFragment } from '../proposals/__generated__/Proposals';
-import type { ProposalQuery } from '../proposal/__generated__/Proposal';
+import { type Proposal } from '../types';
 
 export const useProposalNetworkParams = ({
   proposal,
 }: {
-  proposal: ProposalFieldsFragment | ProposalQuery['proposal'];
+  proposal: Proposal;
 }) => {
   const { params } = useNetworkParams([
     NetworkParams.governance_proposal_updateMarket_requiredMajority,

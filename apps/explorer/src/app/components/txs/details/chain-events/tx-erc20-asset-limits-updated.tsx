@@ -3,9 +3,9 @@ import { TableRow, TableCell } from '../../../table';
 import type { components } from '../../../../../types/explorer';
 import { AssetLink } from '../../../links';
 import {
-  EthExplorerLink,
+  ExternalExplorerLink,
   EthExplorerLinkTypes,
-} from '../../../links/eth-explorer-link/eth-explorer-link';
+} from '../../../links/external-explorer-link/external-explorer-link';
 
 interface TxDetailsChainEventErc20AssetLimitsUpdatedProps {
   assetLimitsUpdated: components['schemas']['vegaERC20AssetLimitsUpdated'];
@@ -42,7 +42,7 @@ export const TxDetailsChainEventErc20AssetLimitsUpdated = ({
       <TableRow modifier="bordered">
         <TableCell>{t('ERC20 asset')}</TableCell>
         <TableCell>
-          <EthExplorerLink
+          <ExternalExplorerLink
             id={assetLimitsUpdated.sourceEthereumAddress}
             type={EthExplorerLinkTypes.address}
           />

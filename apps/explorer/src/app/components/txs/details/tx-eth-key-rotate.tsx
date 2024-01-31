@@ -5,9 +5,9 @@ import { TxDetailsShared } from './shared/tx-details-shared';
 import { TableCell, TableRow, TableWithTbody } from '../../table';
 import type { components } from '../../../../types/explorer';
 import {
-  EthExplorerLink,
+  ExternalExplorerLink,
   EthExplorerLinkTypes,
-} from '../../links/eth-explorer-link/eth-explorer-link';
+} from '../../links/external-explorer-link/external-explorer-link';
 import { BlockLink } from '../../links';
 
 type EthKeyRotate = components['schemas']['v1EthereumKeyRotateSubmission'];
@@ -46,7 +46,7 @@ export const TxDetailsEthKeyRotate = ({
         <TableRow modifier="bordered">
           <TableCell>{t('Old Address')}</TableCell>
           <TableCell>
-            <EthExplorerLink
+            <ExternalExplorerLink
               type={EthExplorerLinkTypes.address}
               id={k.currentAddress}
             />
@@ -57,7 +57,7 @@ export const TxDetailsEthKeyRotate = ({
         <TableRow modifier="bordered">
           <TableCell>{t('New Address')}</TableCell>
           <TableCell>
-            <EthExplorerLink
+            <ExternalExplorerLink
               type={EthExplorerLinkTypes.address}
               id={k.newAddress}
             />
@@ -68,7 +68,7 @@ export const TxDetailsEthKeyRotate = ({
         <TableRow modifier="bordered">
           <TableCell>{t('Submitter address')}</TableCell>
           <TableCell>
-            <EthExplorerLink
+            <ExternalExplorerLink
               type={EthExplorerLinkTypes.address}
               id={k.submitterAddress}
             />

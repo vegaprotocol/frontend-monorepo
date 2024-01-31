@@ -76,6 +76,7 @@ export const envSchema = z
 const COSMIC_ELEVATOR_FLAGS = {
   SUCCESSOR_MARKETS: z.optional(z.boolean()),
   STOP_ORDERS: z.optional(z.boolean()),
+  ISOLATED_MARGIN: z.optional(z.boolean()),
   ICEBERG_ORDERS: z.optional(z.boolean()),
   PRODUCT_PERPETUALS: z.optional(z.boolean()),
   METAMASK_SNAPS: z.optional(z.boolean()),

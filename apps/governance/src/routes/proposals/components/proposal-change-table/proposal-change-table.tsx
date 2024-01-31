@@ -6,11 +6,10 @@ import {
   KeyValueTableRow,
   RoundedWrapper,
 } from '@vegaprotocol/ui-toolkit';
-import type { ProposalFieldsFragment } from '../../proposals/__generated__/Proposals';
-import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
+import { type Proposal } from '../../types';
 
 interface ProposalChangeTableProps {
-  proposal: ProposalFieldsFragment | ProposalQuery['proposal'];
+  proposal: Proposal;
 }
 
 export const ProposalChangeTable = ({ proposal }: ProposalChangeTableProps) => {

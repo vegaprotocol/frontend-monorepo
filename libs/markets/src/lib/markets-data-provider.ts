@@ -1,4 +1,3 @@
-import { marketDataErrorPolicyGuard } from '@vegaprotocol/data-provider';
 import { makeDataProvider } from '@vegaprotocol/data-provider';
 import {
   MarketsDataDocument,
@@ -54,7 +53,7 @@ export const marketsDataProvider = makeDataProvider<
 >({
   query: MarketsDataDocument,
   getData,
-  errorPolicyGuard: marketDataErrorPolicyGuard,
+  errorPolicy: 'all',
 });
 
 type Variables = { marketIds: string[] };
@@ -73,7 +72,7 @@ export const marketsLiveDataProvider = makeDataProvider<
   getData,
   getDelta,
   update,
-  errorPolicyGuard: marketDataErrorPolicyGuard,
+  errorPolicy: 'all',
   getQueryVariables: () => ({}),
   getSubscriptionVariables: ({ marketIds }: Variables) =>
     marketIds.map((marketId) => ({ marketId })),

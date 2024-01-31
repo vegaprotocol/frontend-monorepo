@@ -42,6 +42,11 @@ export const OracleDetails = ({
   dataConnection,
 }: OracleDetailsProps) => {
   const sourceType = dataSource.dataSourceSpec.spec.data.sourceType;
+  const chain =
+    dataSource.dataSourceSpec.spec.data.sourceType.sourceType.__typename ===
+    'EthCallSpec'
+      ? dataSource.dataSourceSpec.spec.data.sourceType.sourceType.sourceChainId.toString()
+      : undefined;
 
   return (
     <div>
@@ -60,7 +65,7 @@ export const OracleDetails = ({
           </TableCell>
         </TableRow>
         <OracleSigners sourceType={sourceType} />
-        <OracleEthSource sourceType={sourceType} />
+        <OracleEthSource sourceType={sourceType} chain={chain} />
         <OracleMarkets id={id} />
         <TableRow modifier="bordered">
           <TableHeader scope="row">{t('Filter')}</TableHeader>

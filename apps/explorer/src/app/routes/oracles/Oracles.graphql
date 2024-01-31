@@ -78,6 +78,7 @@ fragment ExplorerOracleDataSource on OracleSpec {
                     }
                   }
                 }
+                sourceChainId
                 filters {
                   key {
                     name
@@ -118,6 +119,7 @@ fragment ExplorerOracleDataSource on OracleSpec {
                 address
                 requiredConfirmations
                 method
+                sourceChainId
                 filters {
                   key {
                     type

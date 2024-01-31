@@ -1,9 +1,5 @@
-import {
-  useVegaWallet,
-  useVegaWalletDialogStore,
-  determineId,
-} from '@vegaprotocol/wallet';
-import { RainbowButton } from './buttons';
+import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
+import { RainbowButton } from '../../components/rainbow-button';
 import { useState } from 'react';
 import {
   CopyWithTooltip,
@@ -11,6 +7,7 @@ import {
   ExternalLink,
   InputError,
   Intent,
+  Tooltip,
   TradingAnchorButton,
   TradingButton,
   VegaIcon,
@@ -18,33 +15,27 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { DApp, TokenStaticLinks, useLinks } from '@vegaprotocol/environment';
-import { useStakeAvailable } from './hooks/use-stake-available';
 import { ABOUT_REFERRAL_DOCS_LINK } from './constants';
 import { useIsInReferralSet, useReferral } from './hooks/use-referral';
 import { useT } from '../../lib/use-t';
-import { Navigate } from 'react-router-dom';
-import { Routes } from '../../lib/links';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { Links, Routes } from '../../lib/links';
 import { useReferralProgram } from './hooks/use-referral-program';
+import { useReferralSetTransaction } from '../../lib/hooks/use-referral-set-transaction';
+import { Trans } from 'react-i18next';
 
 export const CreateCodeContainer = () => {
-  const { pubKey } = useVegaWallet();
+  const t = useT();
+  const { pubKey, isReadOnly } = useVegaWallet();
   const isInReferralSet = useIsInReferralSet(pubKey);
+  const openWalletDialog = useVegaWalletDialogStore(
+    (store) => store.openVegaWalletDialog
+  );
 
   // Navigate to the index page when already in the referral set.
   if (isInReferralSet) {
     return <Navigate to={Routes.REFERRALS} />;
   }
-
-  return <CreateCodeForm />;
-};
-
-export const CreateCodeForm = () => {
-  const t = useT();
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const openWalletDialog = useVegaWalletDialogStore(
-    (store) => store.openVegaWalletDialog
-  );
-  const { pubKey, isReadOnly } = useVegaWallet();
 
   return (
     <div
@@ -60,22 +51,82 @@ export const CreateCodeForm = () => {
         )}
       </p>
 
-      <div className="w-full flex flex-col">
-        <RainbowButton
-          variant="border"
-          disabled={isReadOnly}
-          onClick={() => {
-            if (pubKey) {
-              setDialogOpen(true);
-            } else {
-              openWalletDialog();
-            }
-          }}
-        >
-          {pubKey ? t('Create a referral code') : t('Connect wallet')}
-        </RainbowButton>
+      <div className="w-full flex flex-col gap-4 items-stretch">
+        {pubKey ? (
+          <CreateCodeForm />
+        ) : (
+          <RainbowButton
+            variant="border"
+            disabled={isReadOnly}
+            onClick={openWalletDialog}
+          >
+            {t('Connect wallet')}
+          </RainbowButton>
+        )}
       </div>
+    </div>
+  );
+};
 
+export const CreateCodeForm = () => {
+  const t = useT();
+  const navigate = useNavigate();
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const { isReadOnly } = useVegaWallet();
+
+  return (
+    <>
+      <Tooltip
+        description={t(
+          'Create a simple referral code to enjoy the referrer commission outlined in the current referral program'
+        )}
+      >
+        <span>
+          <RainbowButton
+            variant="border"
+            disabled={isReadOnly}
+            onClick={() => setDialogOpen(true)}
+            className="w-full"
+          >
+            {t('Create a referral code')}
+          </RainbowButton>
+        </span>
+      </Tooltip>
+      <Tooltip
+        description={
+          <Trans
+            i18nKey={
+              'Make your referral code a Team to compete in Competitions with your friends, appear in leaderboards on the <0>Competitions Homepage</0>, and earn rewards'
+            }
+            components={[
+              <Link
+                key="homepage-link"
+                to={Links.COMPETITIONS()}
+                className="underline"
+              >
+                Compeitionts Homepage
+              </Link>,
+            ]}
+          />
+        }
+      >
+        <span>
+          <RainbowButton
+            role="link"
+            variant="border"
+            disabled={isReadOnly}
+            onClick={() => navigate(Links.COMPETITIONS_CREATE_TEAM())}
+            className="w-full"
+          >
+            {t('Create a team')}
+          </RainbowButton>
+        </span>
+      </Tooltip>
+      <p className="text-xs">
+        <Link className="underline" to={Links.COMPETITIONS()}>
+          {t('Go to competitions')}
+        </Link>
+      </p>
       <Dialog
         title={t('Create a referral code')}
         open={dialogOpen}
@@ -84,7 +135,7 @@ export const CreateCodeForm = () => {
       >
         <CreateCodeDialog setDialogOpen={setDialogOpen} />
       </Dialog>
-    </div>
+    </>
   );
 };
 
@@ -95,67 +146,42 @@ const CreateCodeDialog = ({
 }) => {
   const t = useT();
   const createLink = useLinks(DApp.Governance);
-  const { isReadOnly, pubKey, sendTx } = useVegaWallet();
+  const { pubKey } = useVegaWallet();
   const { refetch } = useReferral({ pubKey, role: 'referrer' });
-  const [err, setErr] = useState<string | null>(null);
-  const [code, setCode] = useState<string | null>(null);
-  const [status, setStatus] = useState<
-    'idle' | 'loading' | 'success' | 'error'
-  >('idle');
-
-  const { stakeAvailable: currentStakeAvailable, requiredStake } =
-    useStakeAvailable();
+  const {
+    err,
+    code,
+    status,
+    stakeAvailable: currentStakeAvailable,
+    requiredStake,
+    onSubmit,
+  } = useReferralSetTransaction();
 
   const { details: programDetails } = useReferralProgram();
 
-  const onSubmit = () => {
-    if (isReadOnly || !pubKey) {
-      setErr('Not connected');
-    } else {
-      setErr(null);
-      setStatus('loading');
-      setCode(null);
-      sendTx(pubKey, {
-        createReferralSet: {
-          isTeam: false,
-        },
-      })
-        .then((res) => {
-          if (!res) {
-            setErr(`Invalid response: ${JSON.stringify(res)}`);
-            return;
-          }
-          const code = determineId(res.signature);
-          setCode(code);
-          setStatus('success');
-        })
-        .catch((err) => {
-          if (err.message.includes('user rejected')) {
-            setStatus('idle');
-            return;
-          }
-          setStatus('error');
-          setErr(err.message);
-        });
-    }
-  };
-
   const getButtonProps = () => {
-    if (status === 'idle' || status === 'error') {
+    if (status === 'idle') {
       return {
         children: t('Generate code'),
-        onClick: () => onSubmit(),
+        onClick: () => onSubmit({ createReferralSet: { isTeam: false } }),
       };
     }
 
-    if (status === 'loading') {
+    if (status === 'requested') {
       return {
         children: t('Confirm in wallet...'),
         disabled: true,
       };
     }
 
-    if (status === 'success') {
+    if (status === 'pending') {
+      return {
+        children: t('Waiting for transaction...'),
+        disabled: true,
+      };
+    }
+
+    if (status === 'confirmed') {
       return {
         children: t('Close'),
         intent: Intent.Success,
@@ -209,7 +235,10 @@ const CreateCodeDialog = ({
   if (!programDetails) {
     return (
       <div className="flex flex-col gap-4">
-        {(status === 'idle' || status === 'loading' || status === 'error') && (
+        {(status === 'idle' ||
+          status === 'requested' ||
+          status === 'pending' ||
+          err) && (
           <>
             {
               <p>
@@ -220,7 +249,7 @@ const CreateCodeDialog = ({
             }
           </>
         )}
-        {status === 'success' && code && (
+        {status === 'confirmed' && code && (
           <div className="flex items-center gap-2">
             <div className="flex-1 min-w-0 p-2 text-sm rounded bg-vega-clight-700 dark:bg-vega-cdark-700">
               <p className="overflow-hidden whitespace-nowrap text-ellipsis">
@@ -240,7 +269,7 @@ const CreateCodeDialog = ({
         <TradingButton
           fill={true}
           intent={Intent.Primary}
-          onClick={() => onSubmit()}
+          onClick={() => onSubmit({ createReferralSet: { isTeam: false } })}
           {...getButtonProps()}
         >
           {t('Yes')}
@@ -269,14 +298,17 @@ const CreateCodeDialog = ({
 
   return (
     <div className="flex flex-col gap-4">
-      {(status === 'idle' || status === 'loading' || status === 'error') && (
+      {(status === 'idle' ||
+        status === 'requested' ||
+        status === 'pending' ||
+        err) && (
         <p>
           {t(
             'Generate a referral code to share with your friends and access the commission benefits of the current program.'
           )}
         </p>
       )}
-      {status === 'success' && code && (
+      {status === 'confirmed' && code && (
         <div className="flex items-center gap-2">
           <div className="flex-1 min-w-0 p-2 text-sm rounded bg-vega-clight-700 dark:bg-vega-cdark-700">
             <p className="overflow-hidden whitespace-nowrap text-ellipsis">

@@ -20,14 +20,20 @@ const update = (
   return produce(data || [], (draft) => {
     const { marketId } = delta;
     const index = draft.findIndex((node) => node.market.id === marketId);
+    const deltaData = {
+      maintenanceLevel: delta.maintenanceLevel,
+      searchLevel: delta.searchLevel,
+      initialLevel: delta.initialLevel,
+      collateralReleaseLevel: delta.collateralReleaseLevel,
+      marginFactor: delta.marginFactor,
+      marginMode: delta.marginMode,
+      orderMarginLevel: delta.orderMarginLevel,
+    };
     if (index !== -1) {
       const currNode = draft[index];
       draft[index] = {
         ...currNode,
-        maintenanceLevel: delta.maintenanceLevel,
-        searchLevel: delta.searchLevel,
-        initialLevel: delta.initialLevel,
-        collateralReleaseLevel: delta.collateralReleaseLevel,
+        ...deltaData,
       };
     } else {
       draft.unshift({
@@ -36,10 +42,7 @@ const update = (
           __typename: 'Market',
           id: delta.marketId,
         },
-        maintenanceLevel: delta.maintenanceLevel,
-        searchLevel: delta.searchLevel,
-        initialLevel: delta.initialLevel,
-        collateralReleaseLevel: delta.collateralReleaseLevel,
+        ...deltaData,
         asset: {
           __typename: 'Asset',
           id: delta.asset,
@@ -79,4 +82,26 @@ export const marketMarginDataProvider = makeDerivedDataProvider<
     (data[0] as MarginFieldsFragment[]).find(
       (margin) => margin.market.id === marketId
     ) || null
+);
+
+export type MarginModeData = Pick<
+  MarginFieldsFragment,
+  'marginMode' | 'marginFactor'
+>;
+
+export const marginModeDataProvider = makeDerivedDataProvider<
+  MarginModeData,
+  never,
+  MarginsQueryVariables & { marketId: string }
+>([marketMarginDataProvider], ([data], variables, previousData) =>
+  produce(previousData, (draft) => {
+    if (!data) {
+      return data;
+    }
+    const newData = {
+      marginMode: (data as MarginFieldsFragment).marginMode,
+      marginFactor: (data as MarginFieldsFragment).marginFactor,
+    };
+    return draft ? Object.assign(draft, newData) : newData;
+  })
 );
