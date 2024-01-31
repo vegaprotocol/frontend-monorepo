@@ -188,7 +188,7 @@ def keys(vega):
 def test_network_reward_pot(
     page: Page,
 ):
-    t(page.get_by_test_id(TOTAL_REWARDS)).to_have_text("166.66666 tDAI")
+    expect(page.get_by_test_id(TOTAL_REWARDS)).to_have_text("166.66666 tDAI")
 
 
 @pytest.mark.xdist_group(name="test_rewards_hoarder_tier_1")
