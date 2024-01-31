@@ -17,12 +17,40 @@ export const ProposalsListItem = ({ proposal }: ProposalsListItemProps) => {
       <li id={proposal.id} data-testid="proposals-list-item">
         <RoundedWrapper paddingBottom={true} heightFull={true}>
           <ProposalHeader proposal={proposal} voteState={voteState} />
-          <ProposalsListItemDetails proposal={proposal} />
+          <ProposalsListItemDetails
+            id={proposal.id}
+            type={proposal.terms.change.__typename}
+            state={proposal.state}
+            closingDatetime={proposal.terms.closingDatetime}
+            enactmentDatetime={proposal.terms.enactmentDatetime}
+            rejectionReason={proposal.rejectionReason}
+          />
         </RoundedWrapper>
       </li>
     );
   }
 
-  // TODO: handle batch proposals
-  return <div>I am a batch {proposal.id}</div>;
+  if (proposal.__typename === 'BatchProposal') {
+    if (!proposal.subProposals) return null;
+    const firstProposal = proposal.subProposals[0];
+    if (!firstProposal?.terms) return null;
+
+    return (
+      <li id={proposal.id} data-testid="proposals-list-item">
+        <RoundedWrapper paddingBottom={true} heightFull={true}>
+          <ProposalHeader proposal={proposal} voteState={voteState} />
+          <ProposalsListItemDetails
+            id={proposal.id}
+            type={firstProposal.terms.change.__typename}
+            state={proposal.state}
+            closingDatetime={firstProposal.terms.closingDatetime}
+            enactmentDatetime={firstProposal.terms.enactmentDatetime}
+            rejectionReason={proposal.rejectionReason}
+          />
+        </RoundedWrapper>
+      </li>
+    );
+  }
+
+  return null;
 };

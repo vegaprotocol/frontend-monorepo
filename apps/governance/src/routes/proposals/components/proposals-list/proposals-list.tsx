@@ -99,10 +99,27 @@ export const ProposalsList = ({
             acc.closed.push(proposal);
           }
           return acc;
-        } else {
-          // TODO: handle batch
+        }
+
+        if (proposal.__typename === 'BatchProposal') {
+          // All batch proposal sub proposals have the same close time so get the first one
+          const firstSubProposal = proposal.subProposals?.length
+            ? proposal.subProposals[0]
+            : undefined;
+
+          if (
+            firstSubProposal &&
+            isFuture(new Date(firstSubProposal.terms?.closingDatetime || 0))
+          ) {
+            acc.open.push(proposal);
+          } else {
+            acc.closed.push(proposal);
+          }
+
           return acc;
         }
+
+        return acc;
       },
       {
         open: [],

@@ -21,3 +21,7 @@ export type BatchProposal = Extract<
 export type ListProposal = ProposalFieldsFragment;
 export type ListBatchProposal = BatchProposalFieldsFragment;
 export type ListProposals = Array<ListProposal | ListBatchProposal>;
+
+export type ProposalType = NonNullable<
+  Proposal['terms']['change']['__typename']
+>;

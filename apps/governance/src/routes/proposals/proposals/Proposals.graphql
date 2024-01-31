@@ -1,6 +1,7 @@
 fragment NewMarketProductFields on Proposal {
   terms {
     change {
+      __typename
       ... on NewMarket {
         instrument {
           product {
@@ -15,6 +16,7 @@ fragment NewMarketProductFields on Proposal {
 fragment UpdateMarketStates on Proposal {
   terms {
     change {
+      __typename
       ... on UpdateMarketState {
         updateType
         market {
@@ -46,6 +48,7 @@ fragment UpdateMarketStates on Proposal {
 fragment UpdateReferralPrograms on Proposal {
   terms {
     change {
+      __typename
       ... on UpdateReferralProgram {
         benefitTiers {
           minimumEpochs
@@ -67,6 +70,7 @@ fragment UpdateReferralPrograms on Proposal {
 fragment UpdateVolumeDiscountPrograms on Proposal {
   terms {
     change {
+      __typename
       ... on UpdateVolumeDiscountProgram {
         benefitTiers {
           minimumRunningNotionalTakerVolume
@@ -97,6 +101,7 @@ fragment ProposalFields on Proposal {
     closingDatetime
     enactmentDatetime
     change {
+      __typename
       ... on NewMarket {
         instrument {
           name
@@ -186,6 +191,9 @@ fragment BatchProposalFields on BatchProposal {
     terms {
       closingDatetime
       enactmentDatetime
+      change {
+        __typename
+      }
     }
   }
   votes {
