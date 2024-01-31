@@ -439,6 +439,12 @@ export type ApplyReferralCode = {
   };
 };
 
+export type JoinTeam = {
+  joinTeam: {
+    id: string;
+  };
+};
+
 export type CreateReferralSet = {
   createReferralSet: {
     isTeam: boolean;
@@ -447,6 +453,21 @@ export type CreateReferralSet = {
       teamUrl?: string;
       avatarUrl?: string;
       closed: boolean;
+      allowList: string[];
+    };
+  };
+};
+
+export type UpdateReferralSet = {
+  updateReferralSet: {
+    id: string;
+    isTeam: boolean;
+    team?: {
+      name: string;
+      teamUrl?: string;
+      avatarUrl?: string;
+      closed: boolean;
+      allowList: string[];
     };
   };
 };
@@ -481,7 +502,9 @@ export type Transaction =
   | TransferBody
   | LiquidityProvisionSubmission
   | ApplyReferralCode
-  | CreateReferralSet;
+  | JoinTeam
+  | CreateReferralSet
+  | UpdateReferralSet;
 
 export const isMarginModeUpdateTransaction = (
   transaction: Transaction

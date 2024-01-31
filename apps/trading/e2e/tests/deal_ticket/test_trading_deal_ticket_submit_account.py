@@ -23,7 +23,6 @@ def continuous_market(vega):
     return setup_continuous_market(vega)
 
 
-@pytest.mark.skip("marked id issue #5681")
 @pytest.mark.usefixtures("auth", "risk_accepted")
 def test_should_display_info_and_button_for_deposit(continuous_market, page: Page):
     page.goto(f"/#/markets/{continuous_market}")

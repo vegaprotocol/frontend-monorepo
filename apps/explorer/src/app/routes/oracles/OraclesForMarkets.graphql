@@ -67,6 +67,7 @@ fragment ExplorerOracleDataSourceSpec on ExternalDataSourceSpec {
           sourceType {
             ... on EthCallSpec {
               address
+              sourceChainId
             }
             ... on DataSourceSpecConfiguration {
               signers {

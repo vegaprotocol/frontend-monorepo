@@ -3,9 +3,9 @@ import { TableRow, TableCell } from '../../../table';
 import type { components } from '../../../../../types/explorer';
 import { PartyLink } from '../../../links';
 import {
-  EthExplorerLink,
+  ExternalExplorerLink,
   EthExplorerLinkTypes,
-} from '../../../links/eth-explorer-link/eth-explorer-link';
+} from '../../../links/external-explorer-link/external-explorer-link';
 
 interface TxDetailsChainEventStakeDepositProps {
   deposit: components['schemas']['vegaStakeDeposited'];
@@ -39,7 +39,7 @@ export const TxDetailsChainEventStakeDeposit = ({
       <TableRow modifier="bordered">
         <TableCell>{t('Source')}</TableCell>
         <TableCell>
-          <EthExplorerLink
+          <ExternalExplorerLink
             id={deposit.ethereumAddress}
             type={EthExplorerLinkTypes.address}
           />

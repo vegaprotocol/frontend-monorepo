@@ -3,9 +3,9 @@ import { TableRow, TableCell } from '../../../table';
 import type { components } from '../../../../../types/explorer';
 import { AssetLink, PartyLink } from '../../../links';
 import {
-  EthExplorerLink,
+  ExternalExplorerLink,
   EthExplorerLinkTypes,
-} from '../../../links/eth-explorer-link/eth-explorer-link';
+} from '../../../links/external-explorer-link/external-explorer-link';
 
 interface TxDetailsChainEventProps {
   deposit: components['schemas']['vegaERC20Deposit'];
@@ -36,7 +36,7 @@ export const TxDetailsChainEventDeposit = ({
       <TableRow modifier="bordered">
         <TableCell>{t('Source')}</TableCell>
         <TableCell>
-          <EthExplorerLink
+          <ExternalExplorerLink
             id={deposit.sourceEthereumAddress}
             type={EthExplorerLinkTypes.address}
           />

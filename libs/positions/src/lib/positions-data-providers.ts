@@ -52,7 +52,7 @@ export interface Position {
   quantum: string;
   lossSocializationAmount: string;
   marginAccountBalance: string;
-  orderAccountBalance: string;
+  orderMarginAccountBalance: string;
   generalAccountBalance: string;
   marketDecimalPlaces: number;
   marketId: string;
@@ -67,6 +67,7 @@ export interface Position {
   realisedPNL: string;
   status: PositionStatus;
   totalBalance: string;
+  totalMarginAccountBalance: string;
   unrealisedPNL: string;
   updatedAt: string | null;
   productType: ProductType;
@@ -119,7 +120,7 @@ export const getMetrics = (
       marginAccount?.balance ?? 0,
       asset.decimals
     );
-    const orderAccountBalance = toBigNum(
+    const orderMarginAccountBalance = toBigNum(
       orderAccount?.balance ?? 0,
       asset.decimals
     );
@@ -137,12 +138,14 @@ export const getMetrics = (
           : openVolume.multipliedBy(-1)
         ).multipliedBy(markPrice)
       : undefined;
-    const totalBalance = marginAccountBalance
-      .plus(generalAccountBalance)
-      .plus(orderAccountBalance);
+    const totalMarginAccountBalance = marginAccountBalance.plus(
+      orderMarginAccountBalance
+    );
+    const totalBalance = totalMarginAccountBalance.plus(generalAccountBalance);
+
     const marginMode =
       margin?.marginMode || MarginMode.MARGIN_MODE_CROSS_MARGIN;
-    const marginFactor = margin?.marginFactor;
+    const marginFactor = margin?.marginFactor || '1';
     const currentLeverage =
       marginMode === MarginMode.MARGIN_MODE_ISOLATED_MARGIN
         ? (marginFactor && 1 / Number(marginFactor)) || undefined
@@ -153,7 +156,7 @@ export const getMetrics = (
         : undefined;
     metrics.push({
       marginMode,
-      marginFactor: marginFactor || '0',
+      marginFactor,
       maintenanceLevel: margin?.maintenanceLevel,
       assetId: asset.id,
       assetSymbol: asset.symbol,
@@ -163,7 +166,7 @@ export const getMetrics = (
       quantum: asset.quantum,
       lossSocializationAmount: position.lossSocializationAmount || '0',
       marginAccountBalance: marginAccount?.balance ?? '0',
-      orderAccountBalance: orderAccount?.balance ?? '0',
+      orderMarginAccountBalance: orderAccount?.balance ?? '0',
       generalAccountBalance: generalAccount?.balance ?? '0',
       marketDecimalPlaces,
       marketId: market.id,
@@ -180,6 +183,9 @@ export const getMetrics = (
       realisedPNL: position.realisedPNL,
       status: position.positionStatus,
       totalBalance: totalBalance.multipliedBy(10 ** asset.decimals).toFixed(),
+      totalMarginAccountBalance: totalMarginAccountBalance
+        .multipliedBy(10 ** asset.decimals)
+        .toFixed(),
       unrealisedPNL: position.unrealisedPNL,
       updatedAt: position.updatedAt || null,
       productType: market?.tradableInstrument.instrument.product
@@ -269,13 +275,26 @@ const positionDataProvider = makeDerivedDataProvider<
   }
 );
 
+export type OpenVolumeData = Pick<
+  PositionFieldsFragment,
+  'openVolume' | 'averageEntryPrice'
+>;
+
 export const openVolumeDataProvider = makeDerivedDataProvider<
-  string,
+  OpenVolumeData,
   never,
   PositionsQueryVariables & MarketDataQueryVariables
->(
-  [positionDataProvider],
-  (data) => (data[0] as PositionFieldsFragment | null)?.openVolume || null
+>([positionDataProvider], ([data], variables, previousData) =>
+  produce(previousData, (draft) => {
+    if (!data) {
+      return data;
+    }
+    const newData = {
+      openVolume: (data as PositionFieldsFragment).openVolume,
+      averageEntryPrice: (data as PositionFieldsFragment).averageEntryPrice,
+    };
+    return draft ? Object.assign(draft, newData) : newData;
+  })
 );
 
 export const rejoinPositionData = (
@@ -376,6 +395,31 @@ export const positionsMetricsProvider = makeDerivedDataProvider<
     })
 );
 
+const getMaxLeverage = (market: MarketInfo | null) => {
+  if (!market || !market?.riskFactors) {
+    return 1;
+  }
+  const maxLeverage =
+    1 /
+    (Math.max(
+      Number(market.riskFactors.long),
+      Number(market.riskFactors.short)
+    ) || 1);
+  return maxLeverage;
+};
+
+export const maxMarketLeverageProvider = makeDerivedDataProvider<
+  number,
+  never,
+  { marketId: string }
+>(
+  [
+    (callback, client, { marketId }) =>
+      marketInfoProvider(callback, client, { marketId }),
+  ],
+  (parts) => getMaxLeverage(parts[0])
+);
+
 export const maxLeverageProvider = makeDerivedDataProvider<
   number,
   never,
@@ -392,15 +436,7 @@ export const maxLeverageProvider = makeDerivedDataProvider<
     const market: MarketInfo | null = parts[0];
     const position: PositionFieldsFragment | null = parts[1];
     const margin: MarginFieldsFragment | null = parts[2];
-    if (!market || !market?.riskFactors) {
-      return 1;
-    }
-    const maxLeverage =
-      1 /
-      (Math.max(
-        Number(market.riskFactors.long),
-        Number(market.riskFactors.short)
-      ) || 1);
+    const maxLeverage = getMaxLeverage(market);
 
     if (
       market &&
@@ -432,10 +468,9 @@ export const maxLeverageProvider = makeDerivedDataProvider<
   }
 );
 
-export const useMaxLeverage = (marketId: string, partyId?: string) => {
+export const useMaxLeverage = (marketId: string, partyId: string | null) => {
   return useDataProvider({
-    dataProvider: maxLeverageProvider,
+    dataProvider: partyId ? maxLeverageProvider : maxMarketLeverageProvider,
     variables: { marketId, partyId: partyId || '' },
-    skip: !partyId,
   });
 };

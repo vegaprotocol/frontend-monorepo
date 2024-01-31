@@ -3,6 +3,10 @@ import { useT } from '../../../lib/use-t';
 import classNames from 'classnames';
 import BigNumber from 'bignumber.js';
 import type { PartyActivityStreak } from '@vegaprotocol/types';
+import {
+  NetworkParams,
+  useNetworkParams,
+} from '@vegaprotocol/network-parameters';
 
 export const safeProgress = (
   i: number,
@@ -69,7 +73,12 @@ export const ActivityStreak = ({
 }) => {
   const t = useT();
   const userTierIndex = useGetUserTier(tiers, streak?.activeFor);
-
+  const { params } = useNetworkParams([
+    NetworkParams.rewards_activityStreak_inactivityLimit,
+  ]);
+  const remaining = new BigNumber(params.rewards_activityStreak_inactivityLimit)
+    .minus(streak?.inactiveFor || 0)
+    .toNumber();
   if (!tiers || tiers.length === 0) return null;
 
   const progressBarHeight = 'h-10';
@@ -203,12 +212,35 @@ export const ActivityStreak = ({
           <VegaIcon name={VegaIconNames.STREAK} />
 
           <span className="flex flex-col">
-            {streak?.isActive && (
+            {streak && (
               <span data-testid="epoch-streak">
-                {t('userActive', '{{active}} trader: {{count}} epochs so far', {
-                  active: streak?.isActive ? 'Active' : 'Inactive',
-                  count: streak?.activeFor || 0,
-                })}{' '}
+                {streak.isActive
+                  ? t(
+                      'userActive',
+                      '{{active}} trader: {{count}} epochs so far',
+                      {
+                        active: 'Active',
+                        count: streak.activeFor || 0,
+                      }
+                    )
+                  : remaining > 0
+                  ? t(
+                      'userInactive',
+                      '{{active}} trader: {{count}} epochs so far, you will lose your streak in {{remaining}} epochs!',
+                      {
+                        active: 'Inactive',
+                        count: streak.inactiveFor || 0,
+                        remaining,
+                      }
+                    )
+                  : t(
+                      'userActive',
+                      '{{active}} trader: {{count}} epochs so far',
+                      {
+                        active: 'Inactive',
+                        count: streak.inactiveFor || 0,
+                      }
+                    )}{' '}
                 {userTierIndex > 0 &&
                   new BigNumber(
                     tiers[0].minimum_activity_streak

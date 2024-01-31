@@ -26,12 +26,25 @@ import {
 import classNames from 'classnames';
 import { useT, ns } from '../../use-t';
 import { Trans } from 'react-i18next';
-import type { DealTicketMarginDetailsProps } from './deal-ticket-fee-details';
+import type { Market } from '@vegaprotocol/markets';
 import { emptyValue } from './deal-ticket-fee-details';
+import type { EstimatePositionQuery } from '@vegaprotocol/positions';
+
+export interface DealTicketMarginDetailsProps {
+  generalAccountBalance?: string;
+  marginAccountBalance?: string;
+  orderMarginAccountBalance?: string;
+  market: Market;
+  onMarketClick?: (marketId: string, metaKey?: boolean) => void;
+  assetSymbol: string;
+  positionEstimate: EstimatePositionQuery['estimatePosition'];
+  side: Schema.Side;
+}
 
 export const DealTicketMarginDetails = ({
   marginAccountBalance,
   generalAccountBalance,
+  orderMarginAccountBalance,
   assetSymbol,
   market,
   onMarketClick,
@@ -48,31 +61,44 @@ export const DealTicketMarginDetails = ({
   });
   const liquidationEstimate = positionEstimate?.liquidation;
   const marginEstimate = positionEstimate?.margin;
+  const totalMarginAccountBalance =
+    BigInt(marginAccountBalance || '0') +
+    BigInt(orderMarginAccountBalance || '0');
   const totalBalance =
-    BigInt(generalAccountBalance || '0') + BigInt(marginAccountBalance || '0');
+    BigInt(generalAccountBalance || '0') + totalMarginAccountBalance;
   const asset = getAsset(market);
   const { decimals: assetDecimals, quantum } = asset;
   let marginRequiredBestCase: string | undefined = undefined;
   let marginRequiredWorstCase: string | undefined = undefined;
+  const marginEstimateBestCase =
+    BigInt(marginEstimate?.bestCase.initialLevel ?? 0) +
+    BigInt(marginEstimate?.bestCase.orderMarginLevel ?? 0);
+  const marginEstimateWorstCase =
+    BigInt(marginEstimate?.worstCase.initialLevel ?? 0) +
+    BigInt(marginEstimate?.worstCase.orderMarginLevel ?? 0);
   if (marginEstimate) {
     if (currentMargins) {
+      const currentMargin =
+        BigInt(currentMargins.initialLevel) +
+        BigInt(currentMargins.orderMarginLevel);
+
       marginRequiredBestCase = (
-        BigInt(marginEstimate.bestCase.initialLevel) -
-        BigInt(currentMargins.initialLevel)
+        marginEstimateBestCase - currentMargin
       ).toString();
       if (marginRequiredBestCase.startsWith('-')) {
         marginRequiredBestCase = '0';
       }
+
       marginRequiredWorstCase = (
-        BigInt(marginEstimate.worstCase.initialLevel) -
-        BigInt(currentMargins.initialLevel)
+        marginEstimateWorstCase - currentMargin
       ).toString();
+
       if (marginRequiredWorstCase.startsWith('-')) {
         marginRequiredWorstCase = '0';
       }
     } else {
-      marginRequiredBestCase = marginEstimate.bestCase.initialLevel;
-      marginRequiredWorstCase = marginEstimate.worstCase.initialLevel;
+      marginRequiredBestCase = marginEstimateBestCase.toString();
+      marginRequiredWorstCase = marginEstimateWorstCase.toString();
     }
   }
 
@@ -84,14 +110,12 @@ export const DealTicketMarginDetails = ({
 
   let deductionFromCollateral = null;
   let projectedMargin = null;
-  if (marginAccountBalance) {
+  if (totalMarginAccountBalance) {
     const deductionFromCollateralBestCase =
-      BigInt(marginEstimate?.bestCase.initialLevel ?? 0) -
-      BigInt(marginAccountBalance);
+      marginEstimateBestCase - totalMarginAccountBalance;
 
     const deductionFromCollateralWorstCase =
-      BigInt(marginEstimate?.worstCase.initialLevel ?? 0) -
-      BigInt(marginAccountBalance);
+      marginEstimateWorstCase - totalMarginAccountBalance;
 
     deductionFromCollateral = (
       <KeyValue
@@ -125,12 +149,12 @@ export const DealTicketMarginDetails = ({
       <KeyValue
         label={t('Projected margin')}
         value={formatRange(
-          marginEstimate?.bestCase.initialLevel,
-          marginEstimate?.worstCase.initialLevel,
+          marginEstimateBestCase.toString(),
+          marginEstimateWorstCase.toString(),
           assetDecimals
         )}
         formattedValue={formatValue(
-          marginEstimate?.worstCase.initialLevel,
+          marginEstimateWorstCase.toString(),
           assetDecimals,
           quantum
         )}
@@ -276,6 +300,11 @@ export const DealTicketMarginDetails = ({
                     assetDecimals,
                     quantum
                   ),
+                  orderMarginAccountBalance: formatValue(
+                    orderMarginAccountBalance,
+                    assetDecimals,
+                    quantum
+                  ),
                   marginMaintenance: formatValue(
                     currentMargins?.maintenanceLevel,
                     assetDecimals,
@@ -294,14 +323,17 @@ export const DealTicketMarginDetails = ({
                   ? () => setBreakdownDialog(true)
                   : undefined
               }
-              value={formatValue(marginAccountBalance, assetDecimals)}
+              value={formatValue(
+                totalMarginAccountBalance.toString(),
+                assetDecimals
+              )}
               symbol={assetSymbol}
               labelDescription={t(
                 'MARGIN_ACCOUNT_TOOLTIP_TEXT',
                 MARGIN_ACCOUNT_TOOLTIP_TEXT
               )}
               formattedValue={formatValue(
-                marginAccountBalance,
+                totalMarginAccountBalance.toString(),
                 assetDecimals,
                 quantum
               )}
