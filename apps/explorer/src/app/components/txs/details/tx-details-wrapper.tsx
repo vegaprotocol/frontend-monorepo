@@ -32,6 +32,7 @@ import { TxDetailsCreateReferralSet } from './tx-create-referral-set';
 import { TxDetailsApplyReferralCode } from './tx-apply-referral-code';
 import { TxDetailsUpdateReferralSet } from './tx-update-referral-set';
 import { TxDetailsJoinTeam } from './tx-join-team';
+import { TxDetailsUpdateMarginMode } from './tx-update-margin-mode';
 
 interface TxDetailsWrapperProps {
   txData: BlockExplorerTransactionResult | undefined;
@@ -133,6 +134,8 @@ function getTransactionComponent(txData?: BlockExplorerTransactionResult) {
       return TxDetailsApplyReferralCode;
     case 'Join Team':
       return TxDetailsJoinTeam;
+    case 'Update Margin Mode':
+      return TxDetailsUpdateMarginMode;
     default:
       return TxDetailsGeneric;
   }
