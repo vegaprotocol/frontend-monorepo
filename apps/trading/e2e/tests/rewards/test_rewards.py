@@ -290,7 +290,7 @@ def keys(vega):
     create_and_faucet_wallet(vega=vega, wallet=PARTY_D)
     return PARTY_A, PARTY_B, PARTY_C, PARTY_D
 
-@pytest.mark.xdist_group(name="test_rewards")
+
 @pytest.mark.parametrize(
     "reward_program, tier, total_rewards",
     [
@@ -302,6 +302,7 @@ def keys(vega):
         (COMBO, 1, "183.33333 tDAI"),
     ],
 )
+@pytest.mark.xdist_group(name="test_rewards")
 @pytest.mark.usefixtures("auth", "risk_accepted", "market_ids")
 def test_network_reward_pot(
     reward_program,
@@ -320,7 +321,6 @@ def test_network_reward_pot(
     expect(page.get_by_test_id(TOTAL_REWARDS)).to_have_text(total_rewards)
 
 
-@pytest.mark.xdist_group(name="test_rewards")
 @pytest.mark.parametrize(
     "reward_program, tier, reward_multiplier, streak_multiplier, hoarder_multiplier",
     [
@@ -332,6 +332,7 @@ def test_network_reward_pot(
         (COMBO, 1, "4x", "2x", "2x"),
     ],
 )
+@pytest.mark.xdist_group(name="test_rewards")
 @pytest.mark.usefixtures("auth", "risk_accepted", "market_ids")
 def test_reward_multiplier(
     reward_program,
@@ -358,7 +359,7 @@ def test_reward_multiplier(
     )
 
 
-@pytest.mark.xdist_group(name="test_rewards")
+
 @pytest.mark.parametrize(
     "reward_program, tier, epoch_streak",
     [
@@ -366,6 +367,7 @@ def test_reward_multiplier(
         (ACTIVITY, 1, "7"),
     ],
 )
+@pytest.mark.xdist_group(name="test_rewards")
 @pytest.mark.usefixtures("auth", "risk_accepted", "market_ids")
 def test_activity_streak(
     reward_program,
@@ -393,7 +395,6 @@ def test_activity_streak(
         )
 
 
-@pytest.mark.xdist_group(name="test_rewards")
 @pytest.mark.parametrize(
     "reward_program, tier, rewards_hoarded",
     [
@@ -401,6 +402,7 @@ def test_activity_streak(
         (HOARDER, 1, "16,666,666"),
     ],
 )
+@pytest.mark.xdist_group(name="test_rewards")
 @pytest.mark.usefixtures("auth", "risk_accepted", "market_ids")
 def test_hoarder_bonus(
     reward_program,
@@ -422,7 +424,7 @@ def test_hoarder_bonus(
     )
 
 
-@pytest.mark.xdist_group(name="test_rewards")
+
 @pytest.mark.parametrize(
     "reward_program, tier, price_taking, total, earned_by_me",
     [
@@ -434,6 +436,7 @@ def test_hoarder_bonus(
         (COMBO, 1, "299.99999100.00%", "299.99999", "183.33333"),
     ],
 )
+@pytest.mark.xdist_group(name="test_rewards")
 @pytest.mark.usefixtures("auth", "risk_accepted", "market_ids")
 def test_reward_history(
     reward_program,
@@ -462,13 +465,14 @@ def test_reward_history(
     )
 
 
-@pytest.mark.xdist_group(name="test_rewards")
+
 @pytest.mark.parametrize(
     "reward_program, tier",
     [
         (ACTIVITY, 1),
     ],
 )
+@pytest.mark.xdist_group(name="test_rewards")
 @pytest.mark.usefixtures("auth", "risk_accepted", "market_ids")
 def test_redeem(
     reward_program, vega_instance: VegaServiceNull, page: Page, tier, market_ids

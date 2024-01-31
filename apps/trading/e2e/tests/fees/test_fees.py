@@ -288,7 +288,7 @@ def set_market_volume_discount(vega, tier, discount_program, market_ids):
     return market_ids
 
 
-@pytest.mark.xdist_group(name="test_fees")
+
 @pytest.mark.parametrize(
     "tier, discount_program, expected_text",
     [
@@ -299,6 +299,7 @@ def set_market_volume_discount(vega, tier, discount_program, market_ids):
         (2, "combo", "6.432%-6.432%"),
     ],
 )
+@pytest.mark.xdist_group(name="test_fees")
 @pytest.mark.usefixtures("risk_accepted", "auth", "market_ids")
 def test_fees_page_discount_program_my_trading_fees(
     tier, expected_text, discount_program, vega_instance, page: Page, market_ids
@@ -317,7 +318,7 @@ def test_fees_page_discount_program_my_trading_fees(
     expect(page.get_by_test_id(LIQUIDITY_FEES)).to_have_text("Liquidity0%-0%")
 
 
-@pytest.mark.xdist_group(name="test_fees")
+
 @pytest.mark.parametrize(
     "tier, discount_program, volume_discount, total_discount, referral_discount",
     [
@@ -328,6 +329,7 @@ def test_fees_page_discount_program_my_trading_fees(
         (2, "combo", "Volume discount20%", "36%", "Referral discount20%"),
     ],
 )
+@pytest.mark.xdist_group(name="test_fees")
 @pytest.mark.usefixtures("risk_accepted", "auth", "market_ids")
 def test_fees_page_discount_program_total_discount(
     tier,
@@ -352,11 +354,12 @@ def test_fees_page_discount_program_total_discount(
     )
 
 
-@pytest.mark.xdist_group(name="test_fees")
+
 @pytest.mark.parametrize(
     "tier, discount_program, past_epochs_volume, required_for_next_tier",
     [(1, "volume", "103", "97"), (2, "volume", "206", "")],
 )
+@pytest.mark.xdist_group(name="test_fees")
 @pytest.mark.usefixtures("risk_accepted", "auth", "market_ids")
 def test_fees_page_volume_discount_program_my_current_volume(
     tier,
@@ -381,11 +384,12 @@ def test_fees_page_volume_discount_program_my_current_volume(
         expect(page.get_by_test_id(REQUIRED_FOR_NEXT_TIER)).not_to_be_visible()
 
 
-@pytest.mark.xdist_group(name="test_fees")
+
 @pytest.mark.parametrize(
     "tier, discount_program, notional_taker_volume, epochs_in_set",
     [(1, "referral", "103", "1"), (2, "referral", "207", "1")],
 )
+@pytest.mark.xdist_group(name="test_fees")
 @pytest.mark.usefixtures("risk_accepted", "auth", "market_ids")
 def test_fees_page_referral_discount_program_referral_benefits(
     tier,
@@ -406,7 +410,7 @@ def test_fees_page_referral_discount_program_referral_benefits(
     expect(page.get_by_test_id(EPOCHS_IN_REFERRAL_SET)).to_have_text(epochs_in_set)
 
 
-@pytest.mark.xdist_group(name="test_fees")
+
 @pytest.mark.parametrize(
     "tier, discount_program, my_volume_test_id, my_volume_value, your_tier",
     [
@@ -416,6 +420,7 @@ def test_fees_page_referral_discount_program_referral_benefits(
         (2, "referral", "my-volume-value-1", "206", "your-referral-tier-1"),
     ],
 )
+@pytest.mark.xdist_group(name="test_fees")
 @pytest.mark.usefixtures("risk_accepted", "auth", "market_ids")
 def test_fees_page_discount_program_discount(
     tier,
@@ -448,7 +453,7 @@ def test_fees_page_discount_program_discount(
     expect(page.get_by_test_id(your_tier).nth(1)).to_have_text("Your tier")
 
 
-@pytest.mark.xdist_group(name="test_fees")
+
 @pytest.mark.parametrize(
     "tier, discount_program, fees_after_discount",
     [
@@ -459,6 +464,7 @@ def test_fees_page_discount_program_discount(
         (2, "combo", "6.432%"),
     ],
 )
+@pytest.mark.xdist_group(name="test_fees")
 @pytest.mark.usefixtures("risk_accepted", "auth", "market_ids")
 def test_fees_page_discount_program_fees_by_market(
     tier, discount_program, fees_after_discount, vega_instance, page: Page, market_ids
@@ -477,7 +483,7 @@ def test_fees_page_discount_program_fees_by_market(
     expect(row.locator(COL_TOTAL_FEE)).to_have_text("10.05%")
 
 
-@pytest.mark.xdist_group(name="test_fees")
+
 @pytest.mark.parametrize(
     "tier, discount_program, discount, discount_value, total_fee",
     [
@@ -488,6 +494,7 @@ def test_fees_page_discount_program_fees_by_market(
         (2, "combo", "-36%", "-0.03618 tDAI", "0.06432 tDAI"),
     ],
 )
+@pytest.mark.xdist_group(name="test_fees")
 @pytest.mark.usefixtures("risk_accepted", "auth", "market_ids")
 def test_deal_ticket_discount_program(
     tier,
@@ -525,7 +532,7 @@ def test_deal_ticket_discount_program(
     expect(tooltip.get_by_test_id(TOTAL_FEE_VALUE)).to_have_text(total_fee)
 
 
-@pytest.mark.xdist_group(name="test_fees")
+
 @pytest.mark.parametrize(
     "tier, discount_program, fee, fee_discount, price_1, size",
     [
@@ -550,6 +557,7 @@ def test_deal_ticket_discount_program(
         (2, "combo", "10.6514 tDAI ", "7.48926 tDAI", "207.00 tDAI", "+2"),
     ],
 )
+@pytest.mark.xdist_group(name="test_fees")
 @pytest.mark.usefixtures("risk_accepted", "auth", "market_ids")
 def test_fills_taker_discount_program(
     tier,
@@ -580,7 +588,7 @@ def test_fills_taker_discount_program(
     expect(row.locator(COL_FEE_DISCOUNT)).to_have_text(fee_discount)
 
 
-@pytest.mark.xdist_group(name="test_fees")
+
 @pytest.mark.parametrize(
     "tier, discount_program, fee, fee_discount, size, price_1",
     [
@@ -591,6 +599,7 @@ def test_fills_taker_discount_program(
         (2, "combo", "-10.5984 tDAI ", "7.452 tDAI", "-2", "207.00 tDAI"),
     ],
 )
+@pytest.mark.xdist_group(name="test_fees")
 @pytest.mark.usefixtures("risk_accepted", "auth", "market_ids")
 def test_fills_maker_discount_program(
     tier,
@@ -622,7 +631,7 @@ def test_fills_maker_discount_program(
     expect(row.locator(COL_FEE_DISCOUNT)).to_have_text(fee_discount)
 
 
-@pytest.mark.xdist_group(name="test_fees")
+
 @pytest.mark.parametrize(
     "tier, discount_program, fee",
     [
@@ -633,6 +642,7 @@ def test_fills_maker_discount_program(
         (2, "combo", "10.5984"),
     ],
 )
+@pytest.mark.xdist_group(name="test_fees")
 @pytest.mark.usefixtures("risk_accepted", "auth", "market_ids")
 def test_fills_maker_fee_tooltip_discount_program(
     tier, discount_program, fee, vega_instance, page: Page, market_ids
@@ -656,7 +666,6 @@ def test_fills_maker_fee_tooltip_discount_program(
     )
 
 
-@pytest.mark.xdist_group(name="test_fees")
 @pytest.mark.parametrize(
     "tier, discount_program, maker_fee, total_fee, infra_fee",
     [
@@ -667,6 +676,7 @@ def test_fills_maker_fee_tooltip_discount_program(
         (2, "combo", "10.5984", "10.6514", "0.053"),
     ],
 )
+@pytest.mark.xdist_group(name="test_fees")
 @pytest.mark.usefixtures("risk_accepted", "auth", "market_ids")
 def test_fills_taker_fee_tooltip_discount_program(
     tier,
