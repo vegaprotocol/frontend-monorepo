@@ -100,8 +100,10 @@ const TeamPage = ({
           >
             {team.name}
           </h1>
-          <JoinTeam team={team} partyTeam={partyTeam} refetch={refetch} />
-          <UpdateTeamButton team={team} />
+          <div className="flex gap-2">
+            <JoinTeam team={team} partyTeam={partyTeam} refetch={refetch} />
+            <UpdateTeamButton team={team} />
+          </div>
         </div>
       </header>
       <TeamStats stats={stats} members={members} games={games} />
