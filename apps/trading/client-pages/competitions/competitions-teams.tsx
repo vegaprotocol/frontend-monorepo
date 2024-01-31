@@ -17,10 +17,7 @@ export const CompetitionsTeams = () => {
 
   usePageTitle([t('Competitions'), t('Teams')]);
 
-  const { data: teamsData, loading: teamsLoading } = useTeams({
-    sortByField: ['totalQuantumRewards'],
-    order: 'desc',
-  });
+  const { data: teamsData, loading: teamsLoading } = useTeams();
 
   const inputRef = useRef<HTMLInputElement>(null);
   const [filter, setFilter] = useState<string | null | undefined>(undefined);
