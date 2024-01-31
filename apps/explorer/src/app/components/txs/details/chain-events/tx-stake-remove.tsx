@@ -3,9 +3,9 @@ import { TableRow, TableCell } from '../../../table';
 import type { components } from '../../../../../types/explorer';
 import { PartyLink } from '../../../links';
 import {
-  EthExplorerLink,
+  ExternalExplorerLink,
   EthExplorerLinkTypes,
-} from '../../../links/eth-explorer-link/eth-explorer-link';
+} from '../../../links/external-explorer-link/external-explorer-link';
 
 interface TxDetailsChainEventStakeRemoveProps {
   remove: components['schemas']['vegaStakeRemoved'];
@@ -39,7 +39,7 @@ export const TxDetailsChainEventStakeRemove = ({
       <TableRow modifier="bordered">
         <TableCell>{t('Source')}</TableCell>
         <TableCell>
-          <EthExplorerLink
+          <ExternalExplorerLink
             id={remove.ethereumAddress}
             type={EthExplorerLinkTypes.address}
           />

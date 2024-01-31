@@ -1,6 +1,7 @@
 import { t } from '@vegaprotocol/i18n';
 import type { components } from '../../../types/explorer';
 import { VoteIcon } from '../vote-icon/vote-icon';
+import { ExternalChainIcon } from '../links/external-explorer-link/external-chain-icon';
 
 interface TxOrderTypeProps {
   orderType: string;
@@ -188,6 +189,9 @@ export function getLabelForChainEvent(
     }
     return t('Multisig update');
   } else if (chainEvent.contractCall) {
+    if (chainEvent.contractCall.error) {
+      return t('Call error');
+    }
     return t('Contract call');
   }
   return t('Chain Event');
@@ -257,6 +261,11 @@ export const TxOrderType = ({ orderType, command }: TxOrderTypeProps) => {
       data-testid="tx-type"
       className={`text-sm rounded-md leading-tight px-2 inline-block whitespace-nowrap ${colours}`}
     >
+      {command?.chainEvent && (
+        <ExternalChainIcon
+          chainId={command?.chainEvent?.contractCall?.sourceChainId}
+        />
+      )}
       {type}
     </div>
   );

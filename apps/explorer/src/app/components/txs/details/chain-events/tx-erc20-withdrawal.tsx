@@ -3,9 +3,9 @@ import { TableRow, TableCell } from '../../../table';
 import type { components } from '../../../../../types/explorer';
 import { AssetLink } from '../../../links';
 import {
-  EthExplorerLink,
+  ExternalExplorerLink,
   EthExplorerLinkTypes,
-} from '../../../links/eth-explorer-link/eth-explorer-link';
+} from '../../../links/external-explorer-link/external-explorer-link';
 
 interface TxDetailsChainEventWithdrawalProps {
   withdrawal: components['schemas']['vegaERC20Withdrawal'];
@@ -35,7 +35,7 @@ export const TxDetailsChainEventWithdrawal = ({
       <TableRow modifier="bordered">
         <TableCell>{t('Recipient')}</TableCell>
         <TableCell>
-          <EthExplorerLink
+          <ExternalExplorerLink
             id={withdrawal.targetEthereumAddress}
             type={EthExplorerLinkTypes.address}
           />

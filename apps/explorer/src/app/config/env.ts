@@ -14,7 +14,6 @@ export const ENV = {
     blockExplorerUrl: windowOrDefault('NX_BLOCK_EXPLORER'),
     tendermintUrl: windowOrDefault('NX_TENDERMINT_URL'),
     tendermintWebsocketUrl: windowOrDefault('NX_TENDERMINT_WEBSOCKET_URL'),
-    ethExplorerUrl: windowOrDefault('NX_ETHERSCAN_URL'),
     governanceUrl: windowOrDefault('NX_VEGA_GOVERNANCE_URL'),
     vegaRepoUrl: windowOrDefault('NX_VEGA_REPO_URL'),
   },
