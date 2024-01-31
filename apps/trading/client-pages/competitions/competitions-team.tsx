@@ -38,12 +38,11 @@ export const CompetitionsTeam = () => {
 const TeamPageContainer = ({ teamId }: { teamId: string | undefined }) => {
   const t = useT();
   const { pubKey } = useVegaWallet();
-  const { team, partyTeam, stats, members, games, loading, refetch } = useTeam(
-    teamId,
-    pubKey || undefined
-  );
+  const { data, team, partyTeam, stats, members, games, loading, refetch } =
+    useTeam(teamId, pubKey || undefined);
 
-  if (loading) {
+  // only show spinner on first load so when users join teams its smoother
+  if (!data && loading) {
     return (
       <Splash>
         <Loader />
@@ -186,7 +185,7 @@ const Members = ({ members }: { members?: Member[] }) => {
 
   const data = orderBy(
     members.map((m) => ({
-      referee: <RefereeLink pubkey={m.referee} />,
+      referee: <RefereeLink pubkey={m.referee} isCreator={m.isCreator} />,
       joinedAt: getDateTimeFormat().format(new Date(m.joinedAt)),
       joinedAtEpoch: Number(m.joinedAtEpoch),
     })),
@@ -213,14 +212,24 @@ const Members = ({ members }: { members?: Member[] }) => {
   );
 };
 
-const RefereeLink = ({ pubkey }: { pubkey: string }) => {
+const RefereeLink = ({
+  pubkey,
+  isCreator,
+}: {
+  pubkey: string;
+  isCreator: boolean;
+}) => {
+  const t = useT();
   const linkCreator = useLinks(DApp.Explorer);
   const link = linkCreator(EXPLORER_PARTIES.replace(':id', pubkey));
 
   return (
-    <Link to={link} target="_blank" className="underline underline-offset-4">
-      {truncateMiddle(pubkey)}
-    </Link>
+    <>
+      <Link to={link} target="_blank" className="underline underline-offset-4">
+        {truncateMiddle(pubkey)}
+      </Link>{' '}
+      <span className="text-muted text-xs">{isCreator ? t('Owner') : ''}</span>
+    </>
   );
 };
 
