@@ -109,12 +109,7 @@ export const TeamForm = ({
 
   return (
     <form onSubmit={handleSubmit(sendTransaction)}>
-      <input
-        type="hidden"
-        {...register('id', {
-          disabled: true,
-        })}
-      />
+      <input type="hidden" {...register('id')} />
       <TradingFormGroup label={t('Team name')} labelFor="name">
         <TradingInput {...register('name', { required: t('Required') })} />
         {errors.name?.message && (
