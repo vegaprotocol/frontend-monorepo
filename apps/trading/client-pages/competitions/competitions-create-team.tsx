@@ -125,7 +125,7 @@ const CreateTeamFormContainer = ({ isSolo }: { isSolo: boolean }) => {
       onSubmit={onSubmit}
       status={status}
       err={err}
-      isSolo={isSolo}
+      isCreatingSoloTeam={isSolo}
     />
   );
 };
