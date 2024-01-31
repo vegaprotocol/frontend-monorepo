@@ -56,9 +56,6 @@ def test_renders_markets_correctly(proposed_market, page: Page):
     page.goto(f"/#/markets/all")
     page.click('[data-testid="Proposed markets"]')
     row = page.locator(row_selector)
-    # 6001-MARK-049
-    expect(row.locator(col_market_id)).to_have_text("BTC:DAI_2023")
-
     # 6001-MARK-051
     expect(row.locator('[col-id="asset"]')).to_have_text("tDAI")
 

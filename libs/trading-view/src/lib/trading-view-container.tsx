@@ -9,17 +9,17 @@ export const TradingViewContainer = ({
   libraryHash,
   marketId,
   interval,
-  studies,
   onIntervalChange,
   onAutoSaveNeeded,
+  state,
 }: {
   libraryPath: string;
   libraryHash: string;
   marketId: string;
   interval: ResolutionString;
-  studies: string[];
   onIntervalChange: (interval: string) => void;
   onAutoSaveNeeded: OnAutoSaveNeededCallback;
+  state: object | undefined;
 }) => {
   const t = useT();
   const scriptState = useScript(
@@ -48,9 +48,9 @@ export const TradingViewContainer = ({
       libraryPath={libraryPath}
       marketId={marketId}
       interval={interval}
-      studies={studies}
       onIntervalChange={onIntervalChange}
       onAutoSaveNeeded={onAutoSaveNeeded}
+      state={state}
     />
   );
 };

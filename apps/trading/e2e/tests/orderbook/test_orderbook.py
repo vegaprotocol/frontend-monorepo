@@ -106,7 +106,6 @@ def test_orderbook_grid_content(setup_market, page: Page):
         matching_order[1],
     )
 
-    vega.forward("10s")
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
 
@@ -233,7 +232,6 @@ def test_orderbook_price_movement(setup_market, page: Page):
         matching_order_1[1],
     )
 
-    vega.forward("10s")
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
 
@@ -254,7 +252,6 @@ def test_orderbook_price_movement(setup_market, page: Page):
         matching_order_2[1],
     )
 
-    vega.forward("10s")
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
 

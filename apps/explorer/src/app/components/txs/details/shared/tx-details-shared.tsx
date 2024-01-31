@@ -27,7 +27,8 @@ export const sharedHeaderProps = {
   className: 'align-top',
 };
 
-const Labels: Record<BlockExplorerTransactionResult['type'], string> = {
+// The incoming type field is usually the right thing to show. Exceptions are listed here
+const LabelOverrides: Record<BlockExplorerTransactionResult['type'], string> = {
   'Stop Orders Submission': 'Stop Order',
   'Stop Orders Cancellation': 'Cancel Stop Order',
 };
@@ -50,7 +51,7 @@ export const TxDetailsShared = ({
   const time: string = blockData?.result.block.header.time || '';
   const height: string = blockData?.result.block.header.height || txData.block;
 
-  const type = Labels[txData.type] || txData.type;
+  const type = LabelOverrides[txData.type] || txData.type;
 
   return (
     <>

@@ -35,7 +35,6 @@ class TestIcebergOrdersValidations:
             "Awaiting confirmationPlease wait for your transaction to be confirmedView in block explorer"
         )
 
-        vega.forward("10s")
         vega.wait_fn(1)
         vega.wait_for_total_catchup()
         expect(page.get_by_test_id("toast-content")).to_have_text(
@@ -51,7 +50,6 @@ def test_iceberg_open_order(continuous_market, vega: VegaServiceNull, page: Page
     page.goto(f"/#/markets/{continuous_market}")
 
     submit_order(vega, "Key 1", continuous_market, "SIDE_SELL", 102, 101, 2, 1)
-    vega.forward("10s")
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
 
@@ -84,7 +82,6 @@ def test_iceberg_open_order(continuous_market, vega: VegaServiceNull, page: Page
 
     submit_order(vega, MM_WALLET2.name, continuous_market, "SIDE_BUY", 103, 101)
 
-    vega.forward("10s")
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
     expect(

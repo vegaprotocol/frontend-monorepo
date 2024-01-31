@@ -799,6 +799,8 @@
   "unsupportedVersion": "Looks like you're running an outdated version of GoWallet. You're running {{version}} but {{requiredVersion}} is required.",
   "UpdateAsset": "Update asset",
   "UpdateAssetProposal": "Update asset proposal",
+  "UpdateToMarket": "Update to market ID",
+  "OpenInConsole": "Open in Console",
   "UpdateMarket": "Update market",
   "UpdateMarketProposal": "Update market proposal",
   "UpdateMarketState": "Update market state",

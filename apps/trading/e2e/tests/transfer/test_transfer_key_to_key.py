@@ -50,7 +50,6 @@ def test_transfer_submit(continuous_market, vega: VegaServiceNull, page: Page):
 
     page.locator('[data-testid=transfer-form] [type="submit"]').click()
     wait_for_toast_confirmation(page)
-    vega.forward("10s")
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
     expected_confirmation_text = re.compile(
@@ -142,14 +141,12 @@ def test_transfer_vesting_below_minimum(
         asset=asset_id,
         amount=24.999999,
     )
-    vega.forward("10s")
     vega.wait_fn(10)
     vega.wait_for_total_catchup()
 
     page.get_by_test_id("use-max-button").first.click()
     page.locator('[data-testid=transfer-form] [type="submit"]').click()
     wait_for_toast_confirmation(page)
-    vega.forward("10s")
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
     expected_confirmation_text = re.compile(

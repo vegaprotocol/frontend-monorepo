@@ -22,8 +22,6 @@ def test_trade_match_table(opening_auction_market: str, vega: VegaServiceNull, p
         price=10e15,
         wait=False,
     )
-
-    vega.forward("10s")
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
 
@@ -34,7 +32,6 @@ def test_trade_match_table(opening_auction_market: str, vega: VegaServiceNull, p
         "SIDE_BUY",
         [[5, 110], [5, 105], [1, 50]],
     )
-    vega.forward("10s")
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
 
@@ -45,7 +42,6 @@ def test_trade_match_table(opening_auction_market: str, vega: VegaServiceNull, p
         "SIDE_SELL",
         [[5, 90], [5, 95], [1, 150]],
     )
-    vega.forward("60s")
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
 

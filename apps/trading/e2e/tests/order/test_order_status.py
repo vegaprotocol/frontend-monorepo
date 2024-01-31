@@ -257,46 +257,63 @@ def test_order_sorted(page: Page):
 
 def test_order_status_active(page: Page):
     # 7002-SORD-041
-    expect(page.get_by_test_id(order_tab)).to_contain_text(
-        "market-2Futr" + "0" + "-10" + "Limit" + "Active" + "150.00" + "GTC"
+    expect(page.locator('[row-index="2"]').first).to_contain_text(
+        "market-2Futr"
+    )
+    expect(page.locator('[row-index="2"]').nth(1)).to_contain_text(
+        "0" + "-10" + "Limit" + "Active" + "150.00" + "GTC"
     )
 
 
 def test_status_expired(page: Page):
     # 7002-SORD-042
-    expect(page.get_by_test_id(order_tab)).to_contain_text(
-        "market-3Futr" + "0" + "-10" + "Limit" + "Expired" + "120.00" + "GTT:"
+    expect(page.locator('[row-index="7"]').first).to_contain_text(
+        "market-3Futr"
+    )
+    expect(page.locator('[row-index="7"]').nth(1)).to_contain_text(
+        "0" + "-10" + "Limit" + "Expired" + "120.00" + "GTT:"
     )
 
 
 def test_order_status_Stopped(page: Page):
     # 7002-SORD-044
-    expect(page.get_by_test_id(order_tab)).to_contain_text(
-        "market-1Futr" + "0" + "-100" + "Limit" + "Stopped" + "130.00" + "IOC"
+    expect(page.locator('[row-index="12"]').first).to_contain_text(
+        "market-1Futr"
+    )
+    expect(page.locator('[row-index="12"]').nth(1)).to_contain_text(
+        "0" + "-100" + "Limit" + "Stopped" + "130.00" + "IOC"
     )
 
 
 def test_order_status_partially_filled(page: Page):
     # 7002-SORD-045
-    expect(page.get_by_test_id(order_tab)).to_contain_text(
-        "market-2Futr" + "99" + "+100" + "Limit" + "Partially Filled" + "104.00" + "IOC"
+    expect(page.locator('[row-index="8"]').first).to_contain_text(
+        "market-2Futr"
+    )
+    expect(page.locator('[row-index="8"]').nth(1)).to_contain_text(
+        "99" + "+100" + "Limit" + "Partially Filled" + "104.00" + "IOC"
     )
 
 
 def test_order_status_filled(page: Page):
     # 7002-SORD-046
     # 7003-MORD-020
-    expect(page.get_by_test_id(order_tab)).to_contain_text(
-        "market-1Futr" + "100" + "-100" + "Limit" + "Filled" + "88.00" + "GTC"
+    expect(page.locator('[row-index="11"]').first).to_contain_text(
+        "market-1Futr"
+    )
+    expect(page.locator('[row-index="11"]').nth(1)).to_contain_text(
+        "100" + "-100" + "Limit" + "Filled" + "88.00" + "GTC"
     )
 
 
 def test_order_status_rejected(page: Page):
     # 7002-SORD-047
     # 7003-MORD-018
-    expect(page.get_by_test_id(order_tab)).to_contain_text(
+    expect(page.locator('[row-index="9"]').first).to_contain_text(
         "market-1Futr"
-        + "0"
+    )
+    expect(page.locator('[row-index="9"]').nth(1)).to_contain_text(
+        "0"
         + "-10,000,000,000"
         + "Limit"
         + "Rejected: Margin check failed"
@@ -308,9 +325,11 @@ def test_order_status_rejected(page: Page):
 def test_order_status_parked(page: Page):
     #  7002-SORD-048
     #  7003-MORD-016
-    expect(page.get_by_test_id(order_tab)).to_contain_text(
+    expect(page.locator('[row-index="3"]').first).to_contain_text(
         "market-5Futr"
-        + "0"
+    )
+    expect(page.locator('[row-index="3"]').nth(1)).to_contain_text(
+        "0"
         + "-60"
         + "Ask + 15.00 Peg limit"
         + "Parked"
@@ -321,9 +340,11 @@ def test_order_status_parked(page: Page):
 
 def test_order_status_pegged_ask(page: Page):
     #  7003-MORD-016
-    expect(page.get_by_test_id(order_tab)).to_contain_text(
+    expect(page.locator('[row-index="4"]').first).to_contain_text(
         "market-4Futr"
-        + "0"
+    )
+    expect(page.locator('[row-index="4"]').nth(1)).to_contain_text(
+        "0"
         + "-60"
         + "Ask + 15.00 Peg limit"
         + "Active"
@@ -334,9 +355,11 @@ def test_order_status_pegged_ask(page: Page):
 
 def test_order_status_pegged_bid(page: Page):
     #  7003-MORD-016
-    expect(page.get_by_test_id(order_tab)).to_contain_text(
+    expect(page.locator('[row-index="5"]').first).to_contain_text(
         "market-4Futr"
-        + "0"
+    )
+    expect(page.locator('[row-index="5"]').nth(1)).to_contain_text(
+        "0"
         + "+40"
         + "Bid - 10.00 Peg limit"
         + "Active"
@@ -347,9 +370,11 @@ def test_order_status_pegged_bid(page: Page):
 
 def test_order_status_pegged_mid(page: Page):
     #  7003-MORD-016
-    expect(page.get_by_test_id(order_tab)).to_contain_text(
+    expect(page.locator('[row-index="6"]').first).to_contain_text(
         "market-4Futr"
-        + "0"
+    )
+    expect(page.locator('[row-index="6"]').nth(1)).to_contain_text(
+        "0"
         + "+20"
         + "Mid - 5.00 Peg limit"
         + "Active"
@@ -372,9 +397,11 @@ def test_order_amend_order(vega: VegaServiceNull, page: Page):
     vega.forward("10s")
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
-
-    expect(page.get_by_test_id(order_tab)).to_contain_text(
-        "market-2Futr" + "0" + "-15" + "Limit" + "Active" + "170.00" + "GTC"
+    expect(page.locator('[row-index="1"]').first).to_contain_text(
+        "market-2Futr"
+    )
+    expect(page.locator('[row-index="1"]').nth(1)).to_contain_text(
+        "0" + "-15" + "Limit" + "Active" + "170.00" + "GTC"
     )
 
 
@@ -389,9 +416,11 @@ def test_order_cancel_single_order(vega: VegaServiceNull, page: Page):
     vega.forward("10s")
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
-
-    expect(page.get_by_test_id(order_tab)).to_contain_text(
-        "market-3Futr" + "0" + "+10" + "Limit" + "Cancelled" + "60.00" + "GTC"
+    expect(page.locator('[row-index="0"]').first).to_contain_text(
+        "market-3Futr"
+    )
+    expect(page.locator('[row-index="0"]').nth(1)).to_contain_text(
+        "0" + "+10" + "Limit" + "Cancelled" + "60.00" + "GTC"
     )
 
 

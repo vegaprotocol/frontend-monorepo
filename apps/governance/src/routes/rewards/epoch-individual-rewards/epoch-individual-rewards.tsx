@@ -10,6 +10,7 @@ import { EpochIndividualRewardsTable } from './epoch-individual-rewards-table';
 import { generateEpochIndividualRewardsList } from './generate-epoch-individual-rewards-list';
 import { calculateEpochOffset } from '../../../lib/epoch-pagination';
 import { useNetworkParam } from '@vegaprotocol/network-parameters';
+import { filterAcceptableGraphqlErrors } from '../../../lib/party';
 
 const EPOCHS_PAGE_SIZE = 10;
 
@@ -99,17 +100,24 @@ export const EpochIndividualRewards = ({
     prevEpochIdRef.current = epochId;
   }, [epochId, refetchData]);
 
+  // Workarounds for the error handling of AsyncRenderer
+  const filteredErrors = filterAcceptableGraphqlErrors(error);
+  const filteredData = data || [];
+
   return (
     <AsyncRenderer
       loading={loading}
-      error={error}
-      data={data}
+      error={filteredErrors}
+      data={filteredData}
       render={() => (
         <div>
           <p data-testid="connected-vega-key" className="mb-10">
             {t('Connected Vega key')}:{' '}
             <span className="text-white">{pubKey}</span>
           </p>
+          {epochIndividualRewardSummaries.length === 0 && (
+            <p>{t('No rewards for key')}</p>
+          )}
           {epochIndividualRewardSummaries.map(
             (epochIndividualRewardSummary) => (
               <EpochIndividualRewardsTable
@@ -118,17 +126,19 @@ export const EpochIndividualRewards = ({
               />
             )
           )}
-          <Pagination
-            isLoading={loading}
-            hasPrevPage={page > 1}
-            hasNextPage={page < totalPages}
-            onBack={() => refetchData(page - 1)}
-            onNext={() => refetchData(page + 1)}
-            onFirst={() => refetchData(1)}
-            onLast={() => refetchData(totalPages)}
-          >
-            {t('Page')} {page}
-          </Pagination>
+          {epochIndividualRewardSummaries.length > 0 && (
+            <Pagination
+              isLoading={loading}
+              hasPrevPage={page > 1}
+              hasNextPage={page < totalPages}
+              onBack={() => refetchData(page - 1)}
+              onNext={() => refetchData(page + 1)}
+              onFirst={() => refetchData(1)}
+              onLast={() => refetchData(totalPages)}
+            >
+              {t('Page')} {page}
+            </Pagination>
+          )}
         </div>
       )}
     />

@@ -22,6 +22,7 @@ const defaultConfig: VegaWalletConfig = {
     chromeExtensionUrl: 'chrome-link',
     mozillaExtensionUrl: 'mozilla-link',
   },
+  chainId: 'VEGA_CHAIN_ID',
 };
 
 const setup = (config?: Partial<VegaWalletConfig>) => {
@@ -68,6 +69,7 @@ describe('VegaWalletProvider', () => {
     expect(result.current).toEqual({
       network: defaultConfig.network,
       vegaUrl: defaultConfig.vegaUrl,
+      chainId: defaultConfig.chainId,
       vegaWalletServiceUrl: defaultConfig.vegaWalletServiceUrl,
       acknowledgeNeeded: false,
       pubKey: null,

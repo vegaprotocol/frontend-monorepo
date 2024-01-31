@@ -1,10 +1,4 @@
-import {
-  waitFor,
-  fireEvent,
-  render,
-  screen,
-  act,
-} from '@testing-library/react';
+import { waitFor, fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import BigNumber from 'bignumber.js';
 import type { DepositFormProps } from './deposit-form';
@@ -89,7 +83,10 @@ describe('Deposit form', () => {
     render(<DepositForm {...props} />);
 
     // Assert default values (including) from/to provided by useVegaWallet and useWeb3React
-    expect(screen.getByText('From (Ethereum address)')).toBeInTheDocument();
+    // Wait for first value to show as form is rendered conditionally based on chainId
+    expect(
+      await screen.findByText('From (Ethereum address)')
+    ).toBeInTheDocument();
     expect(screen.getByTestId('ethereum-address')).toHaveTextContent(
       truncateMiddle(MOCK_ETH_ADDRESS)
     );
@@ -319,34 +316,40 @@ describe('Deposit form', () => {
 
   it('shows "View asset details" button when an asset is selected', async () => {
     render(<DepositForm {...props} selectedAsset={asset} />);
-    expect(await screen.getByTestId('view-asset-details')).toBeInTheDocument();
+    expect(await screen.findByTestId('view-asset-details')).toBeInTheDocument();
   });
 
   it('does not shows "View asset details" button when no asset is selected', async () => {
     render(<DepositForm {...props} />);
-    expect(await screen.queryAllByTestId('view-asset-details')).toHaveLength(0);
+    await waitFor(() => {
+      expect(screen.queryAllByTestId('view-asset-details')).toHaveLength(0);
+    });
   });
 
-  it('renders a connect button if Ethereum wallet is not connected', () => {
+  it('renders a connect button if Ethereum wallet is not connected', async () => {
     (useWeb3React as jest.Mock).mockReturnValue({
       isActive: false,
       account: '',
     });
+
     render(<DepositForm {...props} />);
 
-    expect(screen.getByRole('button', { name: 'Connect' })).toBeInTheDocument();
+    expect(
+      await screen.findByRole('button', { name: 'Connect' })
+    ).toBeInTheDocument();
     expect(
       screen.queryByLabelText('From (Ethereum address)')
     ).not.toBeInTheDocument();
   });
 
-  it('renders a disabled input if Ethereum wallet is connected', () => {
+  it('renders a disabled input if Ethereum wallet is connected', async () => {
     (useWeb3React as jest.Mock).mockReturnValue({
       isActive: true,
       account: MOCK_ETH_ADDRESS,
     });
     render(<DepositForm {...props} />);
 
+    expect(await screen.findByTestId('deposit-form')).toBeInTheDocument();
     expect(
       screen.queryByRole('button', { name: 'Connect' })
     ).not.toBeInTheDocument();
@@ -356,53 +359,56 @@ describe('Deposit form', () => {
     );
   });
 
-  it('prevents submission if you are on the wrong chain', () => {
+  it('prevents submission if you are on the wrong chain', async () => {
+    // Make mocks return a chain id mismatch
     (useWeb3React as jest.Mock).mockReturnValue({
       isActive: true,
       account: MOCK_ETH_ADDRESS,
       chainId: 1,
     });
-    (useWeb3ConnectStore as unknown as jest.Mock).mockImplementation(
+    (useWeb3ConnectStore as unknown as jest.Mock).mockImplementationOnce(
       // eslint-disable-next-line
       (selector: (result: ReturnType<typeof useWeb3ConnectStore>) => any) => {
         return selector({
           desiredChainId: 11155111,
           open: jest.fn(),
-          foo: 'asdf',
         });
       }
     );
     render(<DepositForm {...props} />);
-    expect(screen.getByTestId('chain-error')).toHaveTextContent(
+
+    expect(await screen.findByTestId('chain-error')).toHaveTextContent(
       /this app only works on/i
     );
+
+    expect(screen.queryByTestId('deposit-form')).not.toBeInTheDocument();
   });
 
   it('Remaining deposit allowance tooltip should be rendered', async () => {
     render(<DepositForm {...props} selectedAsset={asset} />);
-    await act(async () => {
-      await userEvent.hover(screen.getByText('Remaining deposit allowance'));
-    });
-    await waitFor(async () => {
-      await expect(
-        screen.getByRole('tooltip', {
-          name: /VEGA has a lifetime deposit limit of 20 asset-symbol per address/,
-        })
-      ).toBeInTheDocument();
-    });
+
+    expect(await screen.findByTestId('deposit-form')).toBeInTheDocument();
+
+    await userEvent.hover(screen.getByText('Remaining deposit allowance'));
+
+    expect(
+      await screen.findByRole('tooltip', {
+        name: /VEGA has a lifetime deposit limit of 20 asset-symbol per address/,
+      })
+    ).toBeInTheDocument();
   });
 
   it('Ethereum deposit cap tooltip should be rendered', async () => {
     render(<DepositForm {...props} selectedAsset={asset} />);
-    await act(async () => {
-      await userEvent.hover(screen.getByText('Ethereum deposit cap'));
-    });
-    await waitFor(async () => {
-      await expect(
-        screen.getByRole('tooltip', {
-          name: /The deposit cap is set when you approve an asset for use with this app/,
-        })
-      ).toBeInTheDocument();
-    });
+
+    expect(await screen.findByTestId('deposit-form')).toBeInTheDocument();
+
+    await userEvent.hover(screen.getByText('Ethereum deposit cap'));
+
+    expect(
+      await screen.findByRole('tooltip', {
+        name: /The deposit cap is set when you approve an asset for use with this app/,
+      })
+    ).toBeInTheDocument();
   });
 });
