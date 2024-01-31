@@ -5,13 +5,15 @@ import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
 export type TeamFieldsFragment = { __typename?: 'Team', teamId: string, referrer: string, name: string, teamUrl: string, avatarUrl: string, createdAt: any, createdAtEpoch: number, closed: boolean, allowList: Array<string> };
 
-export type TeamStatsFieldsFragment = { __typename?: 'TeamStatistics', teamId: string, totalQuantumVolume: string, totalQuantumRewards: string, totalGamesPlayed: number, gamesPlayed: Array<string>, quantumRewards: Array<{ __typename?: 'QuantumRewardsPerEpoch', epoch: number, total_quantum_rewards: string }> };
+export type TeamStatsFieldsFragment = { __typename?: 'TeamStatistics', teamId: string, totalQuantumVolume: string, totalQuantumRewards: string, totalGamesPlayed: number, gamesPlayed: Array<string>, quantumRewards: Array<{ __typename?: 'QuantumRewardsPerEpoch', epoch: number, totalQuantumRewards: string }> };
 
 export type TeamRefereeFieldsFragment = { __typename?: 'TeamReferee', teamId: string, referee: string, joinedAt: any, joinedAtEpoch: number };
 
 export type TeamEntityFragment = { __typename?: 'TeamGameEntity', rank: number, volume: string, rewardMetric: Types.DispatchMetric, rewardEarned: string, totalRewardsEarned: string, team: { __typename?: 'TeamParticipation', teamId: string } };
 
 export type TeamGameFieldsFragment = { __typename?: 'Game', id: string, epoch: number, numberOfParticipants: number, entities: Array<{ __typename?: 'IndividualGameEntity' } | { __typename?: 'TeamGameEntity', rank: number, volume: string, rewardMetric: Types.DispatchMetric, rewardEarned: string, totalRewardsEarned: string, team: { __typename?: 'TeamParticipation', teamId: string } }> };
+
+export type TeamMemberStatsFieldsFragment = { __typename?: 'TeamMemberStatistics', partyId: string, totalQuantumVolume: string, totalQuantumRewards: string, totalGamesPlayed: number };
 
 export type TeamQueryVariables = Types.Exact<{
   teamId: Types.Scalars['ID'];
@@ -20,7 +22,7 @@ export type TeamQueryVariables = Types.Exact<{
 }>;
 
 
-export type TeamQuery = { __typename?: 'Query', teams?: { __typename?: 'TeamConnection', edges: Array<{ __typename?: 'TeamEdge', node: { __typename?: 'Team', teamId: string, referrer: string, name: string, teamUrl: string, avatarUrl: string, createdAt: any, createdAtEpoch: number, closed: boolean, allowList: Array<string> } }> } | null, partyTeams?: { __typename?: 'TeamConnection', edges: Array<{ __typename?: 'TeamEdge', node: { __typename?: 'Team', teamId: string, referrer: string, name: string, teamUrl: string, avatarUrl: string, createdAt: any, createdAtEpoch: number, closed: boolean, allowList: Array<string> } }> } | null, teamsStatistics?: { __typename?: 'TeamsStatisticsConnection', edges: Array<{ __typename?: 'TeamStatisticsEdge', node: { __typename?: 'TeamStatistics', teamId: string, totalQuantumVolume: string, totalQuantumRewards: string, totalGamesPlayed: number, gamesPlayed: Array<string>, quantumRewards: Array<{ __typename?: 'QuantumRewardsPerEpoch', epoch: number, total_quantum_rewards: string }> } }> } | null, teamReferees?: { __typename?: 'TeamRefereeConnection', edges: Array<{ __typename?: 'TeamRefereeEdge', node: { __typename?: 'TeamReferee', teamId: string, referee: string, joinedAt: any, joinedAtEpoch: number } }> } | null, games: { __typename?: 'GamesConnection', edges?: Array<{ __typename?: 'GameEdge', node: { __typename?: 'Game', id: string, epoch: number, numberOfParticipants: number, entities: Array<{ __typename?: 'IndividualGameEntity' } | { __typename?: 'TeamGameEntity', rank: number, volume: string, rewardMetric: Types.DispatchMetric, rewardEarned: string, totalRewardsEarned: string, team: { __typename?: 'TeamParticipation', teamId: string } }> } } | null> | null } };
+export type TeamQuery = { __typename?: 'Query', teams?: { __typename?: 'TeamConnection', edges: Array<{ __typename?: 'TeamEdge', node: { __typename?: 'Team', teamId: string, referrer: string, name: string, teamUrl: string, avatarUrl: string, createdAt: any, createdAtEpoch: number, closed: boolean, allowList: Array<string> } }> } | null, partyTeams?: { __typename?: 'TeamConnection', edges: Array<{ __typename?: 'TeamEdge', node: { __typename?: 'Team', teamId: string, referrer: string, name: string, teamUrl: string, avatarUrl: string, createdAt: any, createdAtEpoch: number, closed: boolean, allowList: Array<string> } }> } | null, teamsStatistics?: { __typename?: 'TeamsStatisticsConnection', edges: Array<{ __typename?: 'TeamStatisticsEdge', node: { __typename?: 'TeamStatistics', teamId: string, totalQuantumVolume: string, totalQuantumRewards: string, totalGamesPlayed: number, gamesPlayed: Array<string>, quantumRewards: Array<{ __typename?: 'QuantumRewardsPerEpoch', epoch: number, totalQuantumRewards: string }> } }> } | null, teamReferees?: { __typename?: 'TeamRefereeConnection', edges: Array<{ __typename?: 'TeamRefereeEdge', node: { __typename?: 'TeamReferee', teamId: string, referee: string, joinedAt: any, joinedAtEpoch: number } }> } | null, games: { __typename?: 'GamesConnection', edges?: Array<{ __typename?: 'GameEdge', node: { __typename?: 'Game', id: string, epoch: number, numberOfParticipants: number, entities: Array<{ __typename?: 'IndividualGameEntity' } | { __typename?: 'TeamGameEntity', rank: number, volume: string, rewardMetric: Types.DispatchMetric, rewardEarned: string, totalRewardsEarned: string, team: { __typename?: 'TeamParticipation', teamId: string } }> } } | null> | null }, teamMembersStatistics?: { __typename?: 'TeamMembersStatisticsConnection', edges: Array<{ __typename?: 'TeamMemberStatisticsEdge', node: { __typename?: 'TeamMemberStatistics', partyId: string, totalQuantumVolume: string, totalQuantumRewards: string, totalGamesPlayed: number } }> } | null };
 
 export const TeamFieldsFragmentDoc = gql`
     fragment TeamFields on Team {
@@ -43,7 +45,7 @@ export const TeamStatsFieldsFragmentDoc = gql`
   totalGamesPlayed
   quantumRewards {
     epoch
-    total_quantum_rewards
+    totalQuantumRewards
   }
   gamesPlayed
 }
@@ -80,6 +82,14 @@ export const TeamGameFieldsFragmentDoc = gql`
   }
 }
     ${TeamEntityFragmentDoc}`;
+export const TeamMemberStatsFieldsFragmentDoc = gql`
+    fragment TeamMemberStatsFields on TeamMemberStatistics {
+  partyId
+  totalQuantumVolume
+  totalQuantumRewards
+  totalGamesPlayed
+}
+    `;
 export const TeamDocument = gql`
     query Team($teamId: ID!, $partyId: ID, $aggregationEpochs: Int) {
   teams(teamId: $teamId) {
@@ -117,11 +127,19 @@ export const TeamDocument = gql`
       }
     }
   }
+  teamMembersStatistics(teamId: $teamId, aggregationEpochs: $aggregationEpochs) {
+    edges {
+      node {
+        ...TeamMemberStatsFields
+      }
+    }
+  }
 }
     ${TeamFieldsFragmentDoc}
 ${TeamStatsFieldsFragmentDoc}
 ${TeamRefereeFieldsFragmentDoc}
-${TeamGameFieldsFragmentDoc}`;
+${TeamGameFieldsFragmentDoc}
+${TeamMemberStatsFieldsFragmentDoc}`;
 
 /**
  * __useTeamQuery__

@@ -4682,7 +4682,7 @@ export type QuantumRewardsPerEpoch = {
   /** Epoch for which this information is valid. */
   epoch: Scalars['Int'];
   /** Total of rewards accumulated over the  epoch period expressed in quantum value. */
-  total_quantum_rewards: Scalars['String'];
+  totalQuantumRewards: Scalars['String'];
 };
 
 /** Queries allow a caller to read data and filter data via GraphQL. */

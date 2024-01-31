@@ -186,6 +186,9 @@ const Members = ({ members }: { members?: Member[] }) => {
   const data = orderBy(
     members.map((m) => ({
       referee: <RefereeLink pubkey={m.referee} isCreator={m.isCreator} />,
+      rewards: formatNumber(m.totalQuantumRewards),
+      volume: formatNumber(m.totalQuantumVolume),
+      gamesPlayed: formatNumber(m.totalGamesPlayed),
       joinedAt: getDateTimeFormat().format(new Date(m.joinedAt)),
       joinedAtEpoch: Number(m.joinedAtEpoch),
     })),
@@ -196,7 +199,10 @@ const Members = ({ members }: { members?: Member[] }) => {
   return (
     <Table
       columns={[
-        { name: 'referee', displayName: t('Referee') },
+        { name: 'referee', displayName: t('Member ID') },
+        { name: 'rewards', displayName: t('Rewards earned') },
+        { name: 'volume', displayName: t('Total volume') },
+        { name: 'gamesPlayed', displayName: t('Games played') },
         {
           name: 'joinedAt',
           displayName: t('Joined at'),
