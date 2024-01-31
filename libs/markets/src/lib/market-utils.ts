@@ -113,6 +113,8 @@ export const filterAndSortClosedMarkets = (markets: MarketMaybeWithData[]) => {
     return [
       MarketState.STATE_SETTLED,
       MarketState.STATE_TRADING_TERMINATED,
+      MarketState.STATE_CLOSED,
+      MarketState.STATE_CANCELLED,
     ].includes(m.data?.marketState || m.state);
   });
 };
