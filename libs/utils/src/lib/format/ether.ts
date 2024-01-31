@@ -1,4 +1,3 @@
-// eslint-disable-next-line no-restricted-imports
 import { formatNumber, toBigNum } from './number';
 import type BigNumber from 'bignumber.js';
 
