@@ -25,9 +25,8 @@ export const useGames = ({
   const games = compact(data?.transfersConnection?.edges?.map((n) => n?.node))
     .map((n) => n as TransferNode)
     .filter((node) => {
-      const recurring = node.transfer.kind.__typename !== 'RecurringTransfer';
       const active = onlyActive ? isActiveReward(node, currentEpoch) : true;
-      return active && recurring && isScopedToTeams(node);
+      return active && isScopedToTeams(node);
     });
 
   return {

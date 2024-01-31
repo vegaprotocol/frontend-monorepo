@@ -7,6 +7,7 @@ import {
   type TeamRefereeFieldsFragment,
   type TeamEntityFragment,
 } from './__generated__/Team';
+import { DEFAULT_AGGREGATION_EPOCHS } from './use-teams';
 
 export type Team = TeamFieldsFragment;
 export type TeamStats = TeamStatsFieldsFragment;
@@ -16,7 +17,11 @@ export type TeamGame = ReturnType<typeof useTeam>['games'][number];
 
 export const useTeam = (teamId?: string, partyId?: string) => {
   const { data, loading, error, refetch } = useTeamQuery({
-    variables: { teamId: teamId || '', partyId },
+    variables: {
+      teamId: teamId || '',
+      partyId,
+      aggregationEpochs: DEFAULT_AGGREGATION_EPOCHS,
+    },
     skip: !teamId,
     fetchPolicy: 'cache-and-network',
   });
@@ -47,6 +52,7 @@ export const useTeam = (teamId?: string, partyId?: string) => {
       id: edge.node.id,
       epoch: edge.node.epoch,
       numberOfParticipants: edge.node.numberOfParticipants,
+      entities: edge.node.entities,
       team: team as TeamEntity, // TS can't infer that all the game entities are teams
     };
   });

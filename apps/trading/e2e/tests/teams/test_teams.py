@@ -14,6 +14,14 @@ def vega(request):
     with init_vega(request) as vega:
         yield vega
 
+@pytest.fixture(scope="module")
+def team_page(vega, browser, request, setup_teams_and_games):
+    with init_page(vega, browser, request) as page:
+        risk_accepted_setup(page)
+        auth_setup(vega, page)
+        team_id = setup_teams_and_games["team_id"]
+        page.goto(f"/#/competitions/teams/{team_id}")
+        yield page
 
 @pytest.fixture(scope="module")
 def setup_teams_and_games(vega: VegaServiceNull):
@@ -52,6 +60,16 @@ def setup_teams_and_games(vega: VegaServiceNull):
 
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
+
+    current_epoch = vega.statistics().epoch_seq
+    game_start = current_epoch + 1
+    game_end = current_epoch + 11
+
+    current_epoch = vega.statistics().epoch_seq
+    print(f"[EPOCH: {current_epoch}] creating recurring transfer")
+    print(f"Game start: {game_start}")
+    print(f"Game game end: {game_end}")
+
     vega.recurring_transfer(
         from_key_name=PARTY_A.name,
         from_account_type=vega_protos.vega.ACCOUNT_TYPE_GENERAL,
@@ -64,24 +82,39 @@ def setup_teams_and_games(vega: VegaServiceNull):
         n_top_performers=1,
         amount=100,
         factor=1.0,
+        start_epoch=game_start,
+        end_epoch=game_end,
+        window_length=10
     )
-    vega.submit_order(
-        trading_key=PARTY_B.name,
-        market_id=tDAI_market,
-        order_type="TYPE_MARKET",
-        time_in_force="TIME_IN_FORCE_IOC",
-        side="SIDE_BUY",
-        volume=1,
-    )
-    vega.submit_order(
-        trading_key=PARTY_A.name,
-        market_id=tDAI_market,
-        order_type="TYPE_MARKET",
-        time_in_force="TIME_IN_FORCE_IOC",
-        side="SIDE_BUY",
-        volume=1,
-    )
-    next_epoch(vega=vega)
+
+    next_epoch(vega)
+    print(f"[EPOCH: {vega.statistics().epoch_seq}] starting order activity")
+
+    # Team statistics will only return data when team has been active
+    # for DEFAULT_AGGREGATION_EPOCHS epochs
+    #
+    # https://vegaprotocol.slack.com/archives/C02KVKMAE82/p1706635625851769?thread_ts=1706631542.576449&cid=C02KVKMAE82
+
+    # Create trading activity for 10 epochs (which is the default)
+    for i in range(10):
+        vega.submit_order(
+            trading_key=PARTY_B.name,
+            market_id=tDAI_market,
+            order_type="TYPE_MARKET",
+            time_in_force="TIME_IN_FORCE_IOC",
+            side="SIDE_BUY",
+            volume=1,
+        )
+        vega.submit_order(
+            trading_key=PARTY_A.name,
+            market_id=tDAI_market,
+            order_type="TYPE_MARKET",
+            time_in_force="TIME_IN_FORCE_IOC",
+            side="SIDE_BUY",
+            volume=1,
+        )
+        next_epoch(vega)
+        print(f"[EPOCH: {vega.statistics().epoch_seq}] {i} epoch passed")
 
     return {
         "market_id": tDAI_market,
@@ -103,26 +136,19 @@ def create_team(vega: VegaServiceNull):
 
     return team_name
 
-
-@pytest.fixture(scope="module")
-def team_page(vega, browser, request, setup_teams_and_games):
-    with init_page(vega, browser, request) as page:
-        risk_accepted_setup(page)
-        auth_setup(vega, page)
-        team_id = setup_teams_and_games["team_id"]
-        page.goto(f"/#/competitions/teams/{team_id}")
-        yield page
-
 def test_team_page_games_table(team_page: Page):
     team_page.get_by_test_id("games-toggle").click()
     expect(team_page.get_by_test_id("games-toggle")).to_have_text("Games (1)")
     expect(team_page.get_by_test_id("rank-0")).to_have_text("1")
-    expect(team_page.get_by_test_id("epoch-0")).to_have_text("8")
+    expect(team_page.get_by_test_id("epoch-0")).to_have_text("18")
     expect(team_page.get_by_test_id("type-0")).to_have_text("Price maker fees paid")
-    expect(team_page.get_by_test_id("amount-0")).to_have_text("10,000,000")
-    expect(team_page.get_by_test_id("teams-0")).to_have_text(
+    expect(team_page.get_by_test_id("amount-0")).to_have_text("100,000,000")
+    expect(team_page.get_by_test_id("participatingTeams-0")).to_have_text(
+        "1"
+    )
+    expect(team_page.get_by_test_id("participatingMembers-0")).to_have_text(
         "2"
-    )  # TODO I think this should be 1, confirm with devs
+    )
 
 def test_team_page_members_table(team_page: Page):
     team_page.get_by_test_id("members-toggle").click()
@@ -136,33 +162,39 @@ def test_team_page_headline(team_page: Page, setup_teams_and_games
     team_name = setup_teams_and_games["team_name"]
     expect(team_page.get_by_test_id("team-name")).to_have_text(team_name)
     expect(team_page.get_by_test_id("members-count-stat")).to_have_text("3")
+
     expect(team_page.get_by_test_id("total-games-stat")).to_have_text(
-        "0"
-    )  # TODO this should be 1, confirm with devs
+        "1"
+    )
+
+    # TODO this still seems wrong as its always 0
     expect(team_page.get_by_test_id("total-volume-stat")).to_have_text(
         "0"
-    )  # TODO this should be 10,000,000, confirm with devs
+    )
+
     expect(team_page.get_by_test_id("rewards-paid-stat")).to_have_text(
-        "0"
-    )  # TODO this should be 100, confirm with devs
+        "100m"
+    )
 
 @pytest.fixture(scope="module")
 def competitions_page(vega, browser, request):
     with init_page(vega, browser, request) as page:
         risk_accepted_setup(page)
         auth_setup(vega, page)
-        page.goto(f"/#/competitions/")
         yield page
 
 def test_leaderboard(competitions_page: Page, setup_teams_and_games):
     team_name = setup_teams_and_games["team_name"]
-    competitions_page.pause()
-    expect(competitions_page.get_by_test_id("rank-0").locator("._text-yellow-300")).to_have_count(1)
+    competitions_page.goto(f"/#/competitions/")
+    expect(competitions_page.get_by_test_id("rank-0").locator(".text-yellow-300")).to_have_count(1)
     expect(competitions_page.get_by_test_id("team-0")).to_have_text(team_name)
-    expect(competitions_page.get_by_test_id("earned-0")).to_have_text("-") #TODO I think this should be 100, confirm with dev
-    expect(competitions_page.get_by_test_id("games-0")).to_have_text("-") #TODO I think this should be 1, confirm with dev
-    expect(competitions_page.get_by_test_id("status-0")).to_have_text("Open") 
-    expect(competitions_page.get_by_test_id("volume-0")).to_have_text("-") #TODO I think this should be 10,000,000, confirm with dev
+    expect(competitions_page.get_by_test_id("status-0")).to_have_text("Open")
+
+    expect(competitions_page.get_by_test_id("earned-0")).to_have_text("100,000,000")
+    expect(competitions_page.get_by_test_id("games-0")).to_have_text("1")
+
+    # TODO  still odd that this is 0
+    expect(competitions_page.get_by_test_id("volume-0")).to_have_text("-")
 
 #TODO def test_games(competitions_page: Page):
-    # TODO currently no games appear which i think is a bug
+#TODO currently no games appear which i think is a bug
