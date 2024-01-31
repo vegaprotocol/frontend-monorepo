@@ -28,7 +28,7 @@ def test_vesting(continuous_market, vega: VegaServiceNull, page: Page):
         reference="reward",
         asset_for_metric=tDAI_asset_id,
         metric=vega_protos.vega.DISPATCH_METRIC_MAKER_FEES_PAID,
-        lock_period=5,
+        lock_period=2,
         amount=100,
         factor=1.0,
     )
@@ -58,9 +58,6 @@ def test_vesting(continuous_market, vega: VegaServiceNull, page: Page):
     expect(page.get_by_test_id("locked-value")).to_have_text("50.00")
 
     # Proceed through the 5 epoch lock period
-    next_epoch(vega=vega)
-    next_epoch(vega=vega)
-    next_epoch(vega=vega)
     next_epoch(vega=vega)
     next_epoch(vega=vega)
     page.reload()

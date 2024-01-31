@@ -16,10 +16,12 @@ def create_position(vega: VegaServiceNull, market_id):
     vega.wait_fn(1)
     vega.wait_for_total_catchup
 
+
 @pytest.mark.xdist_group(name="test_isolated_cross_margin")
 @pytest.mark.usefixtures("auth", "risk_accepted")
 def test_switch_cross_isolated_margin(
-        continuous_market, vega: VegaServiceNull, page: Page):
+    continuous_market, vega: VegaServiceNull, page: Page
+):
     create_position(vega, continuous_market)
     page.goto(f"/#/markets/{continuous_market}")
     expect(page.locator(margin_row).nth(1)).to_have_text("874.21992Cross1.0x")
@@ -36,9 +38,9 @@ def test_switch_cross_isolated_margin(
     wait_for_toast_confirmation(page)
     next_epoch(vega=vega)
     expect(page.get_by_test_id("toast-content")).to_have_text(
-        "ConfirmedYour transaction has been confirmedView in block explorerUpdate margin modeBTC:DAI_2023Isolated margin mode, leverage: 1.0x")
-    expect(page.locator(margin_row).nth(1)
-           ).to_have_text("22,109.99996Isolated1.0x")
+        "ConfirmedYour transaction has been confirmedView in block explorerUpdate margin modeBTC:DAI_2023Isolated margin mode, leverage: 1.0x"
+    )
+    expect(page.locator(margin_row).nth(1)).to_have_text("22,109.99996Isolated1.0x")
     # tbd - tooltip is not visible without this wait
     page.wait_for_timeout(1000)
     page.get_by_test_id(tab_positions).get_by_text("Isolated").hover()
@@ -49,5 +51,4 @@ def test_switch_cross_isolated_margin(
     page.get_by_role("button", name="Confirm").click()
     wait_for_toast_confirmation(page)
     next_epoch(vega=vega)
-    expect(page.locator(margin_row).nth(1)).to_have_text(
-        "22,109.99996Cross1.0x")
+    expect(page.locator(margin_row).nth(1)).to_have_text("22,109.99996Cross1.0x")
