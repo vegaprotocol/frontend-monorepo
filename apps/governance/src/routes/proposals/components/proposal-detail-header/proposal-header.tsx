@@ -27,16 +27,9 @@ import Routes from '../../../routes';
 import { Link } from 'react-router-dom';
 import { type VoteState } from '../vote-details/use-user-vote';
 import { VoteBreakdown } from '../vote-breakdown';
-import {
-  GovernanceTransferKindMapping,
-  type ProposalChange,
-} from '@vegaprotocol/types';
-import {
-  type Proposal,
-  type BatchProposal,
-  type ProposalType,
-} from '../../types';
-import { ProposalTermsFieldsFragment } from '../../__generated__/Proposals';
+import { GovernanceTransferKindMapping } from '@vegaprotocol/types';
+import { type Proposal, type BatchProposal } from '../../types';
+import { type ProposalTermsFieldsFragment } from '../../__generated__/Proposals';
 
 export const ProposalHeader = ({
   proposal,
@@ -146,11 +139,28 @@ const ProposalTypeTags = ({
 
 const ProposalTypeTag = ({ terms }: { terms: ProposalTermsFieldsFragment }) => {
   const { t } = useTranslation();
-  return (
-    <ProposalInfoLabel variant="secondary">
-      {t(terms.change.__typename)}
-    </ProposalInfoLabel>
-  );
+
+  switch (terms.change.__typename) {
+    // Speical case for markets where we want to show the product type in the tag
+    case 'NewMarket': {
+      return (
+        <ProposalInfoLabel variant="secondary">
+          {t(
+            terms.change?.instrument?.product?.__typename
+              ? `NewMarket${terms.change.instrument.product.__typename}`
+              : 'NewMarket'
+          )}
+        </ProposalInfoLabel>
+      );
+    }
+    default: {
+      return (
+        <ProposalInfoLabel variant="secondary">
+          {t(terms.change.__typename)}
+        </ProposalInfoLabel>
+      );
+    }
+  }
 };
 
 const ProposalDetails = ({ proposal }: { proposal: Proposal }) => {
@@ -180,7 +190,6 @@ const SingleProposalHeader = ({
   const consoleLink = useLinks(DApp.Console);
 
   let details: ReactNode;
-  let proposalType = '';
   let fallbackTitle = '';
 
   const title = proposal?.rationale.title.trim();
@@ -201,9 +210,6 @@ const SingleProposalHeader = ({
 
   switch (change?.__typename) {
     case 'NewMarket': {
-      proposalType = change?.instrument?.product?.__typename
-        ? `NewMarket${change?.instrument?.product?.__typename}`
-        : 'NewMarket';
       details = (
         <>
           <SuccessorCode proposalId={proposal?.id} />
@@ -225,8 +231,6 @@ const SingleProposalHeader = ({
       break;
     }
     case 'UpdateMarketState': {
-      // @ts-ignore updateType is definitely present for this proposal type
-      proposalType = t(change.updateType);
       fallbackTitle = t('UpdateMarketStateProposal');
       details = (
         <span>
@@ -246,7 +250,6 @@ const SingleProposalHeader = ({
       break;
     }
     case 'UpdateMarket': {
-      proposalType = 'UpdateMarket';
       fallbackTitle = t('UpdateMarketProposal');
       details = (
         <>
@@ -282,17 +285,14 @@ const SingleProposalHeader = ({
       break;
     }
     case 'UpdateReferralProgram': {
-      proposalType = 'UpdateReferralProgram';
       fallbackTitle = t('UpdateReferralProgramProposal');
       break;
     }
     case 'UpdateVolumeDiscountProgram': {
-      proposalType = 'UpdateVolumeDiscountProgram';
       fallbackTitle = t('UpdateVolumeDiscountProgramProposal');
       break;
     }
     case 'NewAsset': {
-      proposalType = 'NewAsset';
       fallbackTitle = t('NewAssetProposal');
       details = (
         <>
@@ -314,7 +314,6 @@ const SingleProposalHeader = ({
       break;
     }
     case 'UpdateNetworkParameter': {
-      proposalType = 'NetworkParameter';
       fallbackTitle = t('NetworkParameterProposal');
       details = (
         <>
@@ -329,13 +328,11 @@ const SingleProposalHeader = ({
       break;
     }
     case 'NewFreeform': {
-      proposalType = 'Freeform';
       fallbackTitle = t('FreeformProposal');
       details = <span />;
       break;
     }
     case 'UpdateAsset': {
-      proposalType = 'UpdateAsset';
       fallbackTitle = t('UpdateAssetProposal');
       details = (
         <>
@@ -346,14 +343,12 @@ const SingleProposalHeader = ({
       break;
     }
     case 'NewTransfer':
-      proposalType = 'NewTransfer';
       fallbackTitle = t('NewTransferProposal');
       details = featureFlags.GOVERNANCE_TRANSFERS ? (
         <NewTransferSummary proposalId={proposal?.id} />
       ) : null;
       break;
     case 'CancelTransfer':
-      proposalType = 'CancelTransfer';
       fallbackTitle = t('CancelTransferProposal');
       details = featureFlags.GOVERNANCE_TRANSFERS ? (
         <CancelTransferSummary proposalId={proposal?.id} />
@@ -364,11 +359,6 @@ const SingleProposalHeader = ({
   return (
     <>
       <div className="flex items-center justify-between gap-4 mb-6 text-sm">
-        {/* <div data-testid="proposal-type"> */}
-        {/*   <ProposalInfoLabel variant="secondary"> */}
-        {/*     {t(proposalType)} */}
-        {/*   </ProposalInfoLabel> */}
-        {/* </div> */}
         <ProposalTypeTags proposal={proposal} />
 
         <div className="flex items-center gap-6">
