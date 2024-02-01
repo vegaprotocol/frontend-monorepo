@@ -6,6 +6,7 @@ import {
   addDecimal,
   formatNumber,
   toBigNum,
+  removeDecimal,
 } from '@vegaprotocol/utils';
 import { useT } from './use-t';
 import {
@@ -26,6 +27,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { AssetOption, Balance } from '@vegaprotocol/assets';
 import { AccountType, AccountTypeMapping } from '@vegaprotocol/types';
+import { useTransferFeeQuery } from './__generated__/TransferFee';
 
 interface FormFields {
   toVegaKey: string;
@@ -52,7 +54,6 @@ export interface TransferFormProps {
     asset: Asset;
   }>;
   assetId?: string;
-  feeFactor: string | null;
   minQuantumMultiple: string | null;
   submitTransfer: (transfer: Transfer) => void;
 }
@@ -62,7 +63,6 @@ export const TransferForm = ({
   pubKeys,
   isReadOnly,
   assetId: initialAssetId,
-  feeFactor,
   submitTransfer,
   accounts,
   minQuantumMultiple,
@@ -140,23 +140,29 @@ export const TransferForm = ({
   // Max amount given selected asset and from account
   const max = accountBalance ? new BigNumber(accountBalance) : new BigNumber(0);
 
+  const transferFeeQuery = useTransferFeeQuery({
+    variables: {
+      fromAccount: pubKey || '',
+      fromAccountType: accountType || AccountType.ACCOUNT_TYPE_GENERAL,
+      amount: (amount && asset && removeDecimal(amount, asset.decimals)) || '0',
+      assetId: asset?.id || '',
+      toAccount: selectedPubKey,
+    },
+    skip: !pubKey || !amount || !asset || !selectedPubKey || fromVested,
+  });
+  const transferFee = transferFeeQuery.loading
+    ? transferFeeQuery.data || transferFeeQuery.previousData
+    : transferFeeQuery.data;
   const transferAmount = useMemo(() => {
     if (!amount) return undefined;
-    if (includeFee && feeFactor) {
-      return new BigNumber(1).minus(feeFactor).times(amount).toString();
+    if (includeFee && transferFee?.estimateTransferFee) {
+      return new BigNumber(amount)
+        .minus(transferFee.estimateTransferFee.fee)
+        .plus(transferFee.estimateTransferFee.discount)
+        .toString();
     }
     return amount;
-  }, [amount, includeFee, feeFactor]);
-
-  const fee = useMemo(() => {
-    if (!transferAmount) return undefined;
-    if (includeFee) {
-      return new BigNumber(amount).minus(transferAmount).toString();
-    }
-    return (
-      feeFactor && new BigNumber(feeFactor).times(transferAmount).toString()
-    );
-  }, [amount, includeFee, transferAmount, feeFactor]);
+  }, [amount, includeFee, transferFee?.estimateTransferFee]);
 
   const onSubmit = useCallback(
     (fields: FormFields) => {
@@ -449,29 +455,33 @@ export const TransferForm = ({
           </TradingInputError>
         )}
       </TradingFormGroup>
-      <div className="mb-4">
-        <Tooltip
-          description={t(
-            `The fee will be taken from the amount you are transferring.`
-          )}
-        >
-          <div>
-            <TradingCheckbox
-              name="include-transfer-fee"
-              disabled={!transferAmount || fromVested}
-              label={t('Include transfer fee')}
-              checked={includeFee}
-              onCheckedChange={() => setIncludeFee((x) => !x)}
-            />
-          </div>
-        </Tooltip>
-      </div>
-      {transferAmount && fee && (
+      {fromVested ? null : (
+        <div className="mb-4">
+          <Tooltip
+            description={t(
+              `The fee will be taken from the amount you are transferring.`
+            )}
+          >
+            <div>
+              <TradingCheckbox
+                name="include-transfer-fee"
+                disabled={!transferAmount || fromVested}
+                label={t('Include transfer fee')}
+                checked={includeFee}
+                onCheckedChange={() => setIncludeFee((x) => !x)}
+              />
+            </div>
+          </Tooltip>
+        </div>
+      )}
+      {(transferFee?.estimateTransferFee || fromVested) && transferAmount && (
         <TransferFee
           amount={transferAmount}
           transferAmount={transferAmount}
-          feeFactor={feeFactor}
-          fee={fromVested ? '0' : fee}
+          fee={fromVested ? '0' : transferFee?.estimateTransferFee?.fee}
+          discount={
+            fromVested ? '0' : transferFee?.estimateTransferFee?.discount
+          }
           decimals={asset?.decimals}
         />
       )}
@@ -485,20 +495,19 @@ export const TransferForm = ({
 export const TransferFee = ({
   amount,
   transferAmount,
-  feeFactor,
   fee,
+  discount,
   decimals,
 }: {
   amount: string;
   transferAmount: string;
-  feeFactor: string | null;
   fee?: string;
+  discount?: string;
   decimals?: number;
 }) => {
   const t = useT();
-  if (!feeFactor || !amount || !transferAmount || !fee) return null;
+  if (!amount || !transferAmount || !fee) return null;
   if (
-    isNaN(Number(feeFactor)) ||
     isNaN(Number(amount)) ||
     isNaN(Number(transferAmount)) ||
     isNaN(Number(fee))
@@ -507,6 +516,7 @@ export const TransferFee = ({
   }
 
   const totalValue = new BigNumber(transferAmount).plus(fee).toString();
+  const feeFactor = new BigNumber(fee).dividedBy(amount).toFixed(2);
 
   return (
     <div className="mb-4 flex flex-col gap-2 text-xs">
@@ -524,6 +534,15 @@ export const TransferFee = ({
           {formatNumber(fee, decimals)}
         </div>
       </div>
+      {discount && discount !== '0' && (
+        <div className="flex flex-wrap items-center justify-between gap-1">
+          <div>{t('Discount')}</div>
+          <div data-testid="discount" className="text-muted">
+            {formatNumber(discount, decimals)}
+          </div>
+        </div>
+      )}
+
       <div className="flex flex-wrap items-center justify-between gap-1">
         <Tooltip
           description={t(

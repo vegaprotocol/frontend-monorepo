@@ -72,7 +72,6 @@ export const TransferContainer = ({ assetId }: { assetId?: string }) => {
         pubKeys={pubKeys ? pubKeys?.map((pk) => pk.publicKey) : null}
         isReadOnly={isReadOnly}
         assetId={assetId}
-        feeFactor={params.transfer_fee_factor}
         minQuantumMultiple={params.transfer_minTransferQuantumMultiple}
         submitTransfer={transfer}
         accounts={sortedAccounts}
