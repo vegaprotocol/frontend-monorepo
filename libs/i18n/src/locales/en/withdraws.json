@@ -47,5 +47,11 @@
   "Withdrawals of {{threshold}} {{symbol}} or more will be delayed for {{delay}}.": "Withdrawals of {{threshold}} {{symbol}} or more will be delayed for {{delay}}.",
   "Withdrawals ready": "Withdrawals ready",
   "You have no assets to withdraw": "You have no assets to withdraw",
-  "Your funds have been unlocked for withdrawal - <0>View in block explorer<0>": "Your funds have been unlocked for withdrawal - <0>View in block explorer<0>"
+  "Your funds have been unlocked for withdrawal - <0>View in block explorer<0>": "Your funds have been unlocked for withdrawal - <0>View in block explorer<0>",
+  "Gas fee": "Gas fee",
+  "Estimated gas fee for the withdrawal transaction (refreshes each 15 seconds)": "Estimated gas fee for the withdrawal transaction (refreshes each 15 seconds)",
+  "It seems that the current gas prices are exceeding the amount you're trying to withdraw": "It seems that the current gas prices are exceeding the amount you're trying to withdraw",
+  "The current gas price range": "The current gas price range",
+  "min": "min",
+  "max": "max"
 }

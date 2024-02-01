@@ -27,6 +27,7 @@ import { useForm, Controller, useWatch } from 'react-hook-form';
 import { WithdrawLimits } from './withdraw-limits';
 import {
   ETHEREUM_EAGER_CONNECT,
+  type GasData,
   useWeb3ConnectStore,
   useWeb3Disconnect,
 } from '@vegaprotocol/web3';
@@ -56,6 +57,7 @@ export interface WithdrawFormProps {
   delay: number | undefined;
   onSelectAsset: (assetId: string) => void;
   submitWithdraw: (withdrawal: WithdrawalArgs) => void;
+  gasPrice?: GasData;
 }
 
 const WithdrawDelayNotification = ({
@@ -117,6 +119,7 @@ export const WithdrawForm = ({
   delay,
   onSelectAsset,
   submitWithdraw,
+  gasPrice,
 }: WithdrawFormProps) => {
   const t = useT();
   const ethereumAddress = useEthereumAddress();
@@ -247,6 +250,7 @@ export const WithdrawForm = ({
               delay={delay}
               balance={balance}
               asset={selectedAsset}
+              gas={gasPrice}
             />
           </div>
         )}
