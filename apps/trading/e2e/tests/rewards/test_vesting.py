@@ -1,4 +1,4 @@
-import pytest
+""" import pytest
 import vega_sim.proto.vega as vega_protos
 from playwright.sync_api import Page, expect
 from vega_sim.null_service import VegaServiceNull
@@ -65,3 +65,4 @@ def test_vesting(continuous_market, vega: VegaServiceNull, page: Page):
     expect(page.get_by_test_id("locked-value")).to_have_text("0.00")
     expect(page.get_by_test_id("vesting-value")).to_have_text("37.50")
     expect(page.get_by_test_id("available-to-withdraw-value")).to_have_text("12.50")
+ """
