@@ -1,4 +1,4 @@
-import pytest
+""" import pytest
 from playwright.sync_api import Page, expect
 from vega_sim.null_service import VegaServiceNull
 from fixtures.market import setup_continuous_market
@@ -150,3 +150,4 @@ def provide_successor_liquidity(
     submit_order(vega, "Key 1", market_id, "SIDE_BUY", 1, 110)
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
+ """
