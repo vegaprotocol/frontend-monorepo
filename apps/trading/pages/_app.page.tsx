@@ -33,6 +33,7 @@ import { PartyActiveOrdersHandler } from './party-active-orders-handler';
 import { MaybeConnectEagerly } from './maybe-connect-eagerly';
 import { TransactionHandlers } from './transaction-handlers';
 import { useT } from '../lib/use-t';
+import { useScreenDimensions } from '@vegaprotocol/react-helpers';
 
 const Title = () => {
   const t = useT();
@@ -64,6 +65,8 @@ function AppBody({ Component }: AppProps) {
     'grid relative h-full z-0',
     'grid-rows-[repeat(3,min-content),minmax(0,1fr)]'
   );
+
+  const { isMobile } = useScreenDimensions();
   return (
     <div className="h-full overflow-hidden">
       <Head>
@@ -73,16 +76,18 @@ function AppBody({ Component }: AppProps) {
       <Title />
       <div className={gridClasses}>
         <AnnouncementBanner />
-        <Navbar theme={VEGA_ENV === Networks.TESTNET ? 'yellow' : 'system'}>
-          <Routes>
-            <Route
-              path={AppRoutes.MARKETS}
-              // render nothing for markets/all, otherwise markets/:marketId will match with markets/all
-              element={null}
-            />
-            <Route path={AppRoutes.MARKET} element={<NavHeader />} />
-          </Routes>
-        </Navbar>
+        <Navbar theme={VEGA_ENV === Networks.TESTNET ? 'yellow' : 'system'} />
+        <Routes>
+          <Route
+            path={AppRoutes.MARKETS}
+            // render nothing for markets/all, otherwise markets/:marketId will match with markets/all
+            element={null}
+          />
+          <Route
+            path={AppRoutes.MARKET}
+            element={isMobile ? <NavHeader /> : null}
+          />
+        </Routes>
         <div data-testid="banners">
           <ProtocolUpgradeProposalNotification
             mode={ProtocolUpgradeCountdownMode.IN_ESTIMATED_TIME_REMAINING}

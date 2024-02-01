@@ -34,13 +34,7 @@ import { supportedLngs } from '../../lib/i18n';
 type MenuState = 'wallet' | 'nav' | null;
 type Theme = 'system' | 'yellow';
 
-export const Navbar = ({
-  children,
-  theme = 'system',
-}: {
-  children?: ReactNode;
-  theme?: Theme;
-}) => {
+export const Navbar = ({ theme = 'system' }: { theme?: Theme }) => {
   const i18n = useI18n();
   const t = useT();
   // menu state for small screens
@@ -75,8 +69,6 @@ export const Navbar = ({
       >
         <VLogo className="w-4" />
       </NavLink>
-      {/* Left section */}
-      <div className="flex items-center lg:hidden">{children}</div>
       {/* Used to show header in nav on mobile */}
       <div className="hidden lg:block">
         <NavbarMenu onClick={() => setMenu(null)} />
