@@ -20,6 +20,7 @@ export type FilterOption =
   | 'Amend Order'
   | 'Apply Referral Code'
   | 'Batch Market Instructions'
+  | 'Batch Proposal'
   | 'Cancel LiquidityProvision Order'
   | 'Cancel Order'
   | 'Cancel Transfer Funds'
@@ -67,7 +68,13 @@ export const filterOptions: Record<string, FilterOption[]> = {
     'Cancel Transfer Funds',
     'Withdraw',
   ],
-  Governance: ['Delegate', 'Undelegate', 'Vote on Proposal', 'Proposal'],
+  Governance: [
+    'Batch Proposal',
+    'Delegate',
+    'Undelegate',
+    'Vote on Proposal',
+    'Proposal',
+  ],
   Referrals: [
     'Apply Referral Code',
     'Create Referral Set',

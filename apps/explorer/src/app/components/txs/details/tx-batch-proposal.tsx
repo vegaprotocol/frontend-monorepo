@@ -108,13 +108,11 @@ export const TxBatchProposal = ({
           </TableCell>
         </TableRow>
       </TableWithTbody>
-      {proposal && proposal.rationale && (
-        <ProposalSummary
-          id={deterministicId}
-          rationale={proposal?.rationale}
-          terms={proposal?.terms}
-        />
-      )}
+      <ProposalSummary
+        id={deterministicId}
+        rationale={proposal?.rationale}
+        terms={proposal?.terms}
+      />
     </>
   );
 };
