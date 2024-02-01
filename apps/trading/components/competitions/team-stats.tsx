@@ -15,6 +15,7 @@ import {
 } from '../../lib/hooks/use-team';
 import { useT } from '../../lib/use-t';
 import { DispatchMetricLabels, type DispatchMetric } from '@vegaprotocol/types';
+import classNames from 'classnames';
 
 export const TeamStats = ({
   stats,
@@ -102,7 +103,7 @@ const LatestResults = ({ games }: { games: TeamGame[] }) => {
   );
 };
 
-const FavoriteGame = ({ games }: { games: TeamGame[] }) => {
+export const FavoriteGame = ({ games }: { games: TeamGame[] }) => {
   const t = useT();
 
   const rewardMetrics = games.map(
@@ -142,7 +143,7 @@ const FavoriteGame = ({ games }: { games: TeamGame[] }) => {
   );
 };
 
-const StatSection = ({ children }: { children: ReactNode }) => {
+export const StatSection = ({ children }: { children: ReactNode }) => {
   return (
     <section className="flex flex-col lg:flex-row gap-4 lg:gap-8">
       {children}
@@ -150,11 +151,11 @@ const StatSection = ({ children }: { children: ReactNode }) => {
   );
 };
 
-const StatSectionSeparator = () => {
+export const StatSectionSeparator = () => {
   return <div className="hidden md:block border-r border-default" />;
 };
 
-const StatList = ({ children }: { children: ReactNode }) => {
+export const StatList = ({ children }: { children: ReactNode }) => {
   return (
     <dl className="grid grid-cols-2 md:flex gap-4 md:gap-6 lg:gap-8 whitespace-nowrap">
       {children}
@@ -162,19 +163,21 @@ const StatList = ({ children }: { children: ReactNode }) => {
   );
 };
 
-const Stat = ({
+export const Stat = ({
   value,
   label,
   tooltip,
   valueTestId,
+  className,
 }: {
   value: ReactNode;
   label: ReactNode;
   tooltip?: string;
   valueTestId?: string;
+  className?: classNames.Argument;
 }) => {
   return (
-    <div>
+    <div className={classNames(className)}>
       <dd className="text-3xl lg:text-4xl" data-testid={valueTestId}>
         {value}
       </dd>
