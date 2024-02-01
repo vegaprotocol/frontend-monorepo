@@ -103,7 +103,13 @@ const LatestResults = ({ games }: { games: TeamGame[] }) => {
   );
 };
 
-export const FavoriteGame = ({ games }: { games: TeamGame[] }) => {
+export const FavoriteGame = ({
+  games,
+  noLabel = false,
+}: {
+  games: TeamGame[];
+  noLabel?: boolean;
+}) => {
   const t = useT();
 
   const rewardMetrics = games.map(
@@ -129,7 +135,13 @@ export const FavoriteGame = ({ games }: { games: TeamGame[] }) => {
 
   return (
     <dl className="flex flex-col gap-1">
-      <dt className="text-muted text-sm">{t('Favorite game')}</dt>
+      <dt
+        className={classNames('text-muted text-sm', {
+          hidden: noLabel,
+        })}
+      >
+        {t('Favorite game')}
+      </dt>
       <dd>
         <Pill className="inline-flex items-center gap-1 bg-transparent text-sm">
           <VegaIcon

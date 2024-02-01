@@ -1,6 +1,6 @@
 import { type TeamGame, type TeamStats } from '../../lib/hooks/use-team';
 import { type TeamsFieldsFragment } from '../../lib/hooks/__generated__/Teams';
-import { TeamAvatar } from './team-avatar';
+import { TeamAvatar, getFallbackAvatar } from './team-avatar';
 import { FavoriteGame, Stat } from './team-stats';
 import { useI18n, useT } from '../../lib/use-t';
 import { formatNumberRounded } from '@vegaprotocol/utils';
@@ -71,13 +71,21 @@ export const TeamCard = ({
   //   const lastGames = MOCK_LAST_GAMES;
 
   return (
-    <Box className="flex flex-row items-start gap-12 lg:p-12">
-      <div className="flex flex-col gap-3 min-w-[80px] lg:min-w-[112px]">
+    <div
+      className={classNames(
+        'gap-6 grid grid-cols-1 grid-rows-1',
+        'md:grid-cols-3'
+      )}
+    >
+      <Box
+        backgroundImage={team.avatarUrl || getFallbackAvatar(team.teamId)}
+        className="flex flex-col items-center gap-3 min-w-[80px] lg:min-w-[112px]"
+      >
         <TeamAvatar teamId={team.teamId} imgUrl={team.avatarUrl} />
         <h1 className="calt lg:text-2xl" data-testid="team-name">
           {team.name}
         </h1>
-        {games && <FavoriteGame games={games} />}
+        {games && <FavoriteGame games={games} noLabel />}
         <TradingAnchorButton
           size="extra-small"
           intent={Intent.Primary}
@@ -86,15 +94,15 @@ export const TeamCard = ({
           {t('Profile')}
         </TradingAnchorButton>
         <UpdateTeamButton team={team} size="extra-small" />
-      </div>
+      </Box>
 
       {/** Tiles */}
 
-      <div className="w-full">
+      <Box className="w-full md:col-span-2">
         <div
           className={classNames(
             'grid gap-3 w-full mb-4',
-            'lg:grid-cols-4 lg:grid-rows-2',
+            // 'lg:grid-cols-3 lg:grid-rows-2',
             'md:grid-cols-3 md:grid-rows-2',
             'grid-cols-2 grid-rows-3'
           )}
@@ -145,14 +153,15 @@ export const TeamCard = ({
           />
         </div>
 
-        {lastGames.length > 0 && (
+        {
           <dl className="w-full pt-4 border-t border-vega-clight-700 dark:border-vega-cdark-700">
             <dt className="mb-1 text-sm text-muted">
               {t('Last {{games}} games result', {
-                replace: { games: lastGames.length },
+                replace: { games: lastGames.length || '' },
               })}
             </dt>
             <dd className="flex flex-row flex-wrap gap-2">
+              {lastGames.length === 0 && t('None available')}
               {lastGames.map((game, i) => (
                 <Tooltip
                   key={i}
@@ -165,9 +174,9 @@ export const TeamCard = ({
               ))}
             </dd>
           </dl>
-        )}
-      </div>
-    </Box>
+        }
+      </Box>
+    </div>
   );
 };
 
