@@ -30,7 +30,7 @@ export const BatchItem = ({ item }: BatchItemProps) => {
       </span>
     );
   } else if (item.newFreeform) {
-    return <span>{t('New freeform')}</span>;
+    return <span>{t('New freeform proposal')}</span>;
   } else if (item.newMarket) {
     return <span>{t('New market')}</span>;
   } else if (item.newSpotMarket) {
