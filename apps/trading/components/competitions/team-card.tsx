@@ -190,9 +190,9 @@ const RankLabel = ({ rank }: { rank: number }) => {
 
   const r = rank.toString();
   let suffix = 'th';
-  if (r.substring(r.length - 1) === '1') suffix = 'st';
-  if (r.substring(r.length - 1) === '2') suffix = 'nd';
-  if (r.substring(r.length - 1) === '3') suffix = 'rd';
+  if (r.substring(r.length - 1) === '1' && rank !== 11) suffix = 'st';
+  if (r.substring(r.length - 1) === '2' && rank !== 12) suffix = 'nd';
+  if (r.substring(r.length - 1) === '3' && rank !== 13) suffix = 'rd';
 
   return `${r}${suffix}`;
 };
