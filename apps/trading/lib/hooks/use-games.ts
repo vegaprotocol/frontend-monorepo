@@ -1,12 +1,23 @@
 import compact from 'lodash/compact';
 import { useActiveRewardsQuery } from '../../components/rewards-container/__generated__/Rewards';
 import { isActiveReward } from '../../components/rewards-container/active-rewards';
-import { EntityScope, type TransferNode } from '@vegaprotocol/types';
+import {
+  EntityScope,
+  IndividualScope,
+  type TransferNode,
+} from '@vegaprotocol/types';
 
 const isScopedToTeams = (node: TransferNode) =>
   node.transfer.kind.__typename === 'RecurringTransfer' &&
-  node.transfer.kind.dispatchStrategy?.entityScope ===
-    EntityScope.ENTITY_SCOPE_TEAMS;
+  // scoped to teams
+  (node.transfer.kind.dispatchStrategy?.entityScope ===
+    EntityScope.ENTITY_SCOPE_TEAMS ||
+    // or to individuals
+    (node.transfer.kind.dispatchStrategy?.entityScope ===
+      EntityScope.ENTITY_SCOPE_INDIVIDUALS &&
+      // but they have to be in a team
+      node.transfer.kind.dispatchStrategy.individualScope ===
+        IndividualScope.INDIVIDUAL_SCOPE_IN_TEAM));
 
 export const useGames = ({
   currentEpoch,
