@@ -115,9 +115,12 @@ export const TeamForm = ({
     <form onSubmit={handleSubmit(sendTransaction)}>
       <input type="hidden" {...register('id')} />
       <TradingFormGroup label={t('Team name')} labelFor="name">
-        <TradingInput {...register('name', { required: t('Required') })} />
+        <TradingInput
+          {...register('name', { required: t('Required') })}
+          data-testid="team-name-input"
+        />
         {errors.name?.message && (
-          <TradingInputError forInput="name">
+          <TradingInputError forInput="name" data-testid="team-name-error">
             {errors.name.message}
           </TradingInputError>
         )}
@@ -133,9 +136,10 @@ export const TeamForm = ({
           {...register('url', {
             pattern: { value: URL_REGEX, message: t('Invalid URL') },
           })}
+          data-testid="team-url-input"
         />
         {errors.url?.message && (
-          <TradingInputError forInput="url">
+          <TradingInputError forInput="url" data-testid="team-url-error">
             {errors.url.message}
           </TradingInputError>
         )}
@@ -152,9 +156,13 @@ export const TeamForm = ({
               message: t('Invalid image URL'),
             },
           })}
+          data-testid="avatar-url-input"
         />
         {errors.avatarUrl?.message && (
-          <TradingInputError forInput="avatarUrl">
+          <TradingInputError
+            forInput="avatarUrl"
+            data-testid="avatar-url-error"
+          >
             {errors.avatarUrl.message}
           </TradingInputError>
         )}
@@ -179,6 +187,7 @@ export const TeamForm = ({
                       onCheckedChange={(value) => {
                         field.onChange(value);
                       }}
+                      data-testid="team-private-checkbox"
                     />
                   );
                 }}
@@ -207,9 +216,13 @@ export const TeamForm = ({
                       },
                     },
                   })}
+                  data-testid="team-allow-list-textarea"
                 />
                 {errors.allowList?.message && (
-                  <TradingInputError forInput="avatarUrl">
+                  <TradingInputError
+                    forInput="avatarUrl"
+                    data-testid="team-allow-list-error"
+                  >
                     {errors.allowList.message}
                   </TradingInputError>
                 )}
@@ -284,7 +297,12 @@ const SubmitButton = ({
 
   return (
     <div className="flex gap-2 items-baseline">
-      <TradingButton type="submit" intent={Intent.Info} disabled={disabled}>
+      <TradingButton
+        type="submit"
+        intent={Intent.Info}
+        disabled={disabled}
+        data-testid="team-form-submit-button"
+      >
         {text}
       </TradingButton>
       {status === 'confirmed' && confirmed}
