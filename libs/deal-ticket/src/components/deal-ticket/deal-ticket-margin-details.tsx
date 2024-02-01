@@ -59,6 +59,9 @@ export const DealTicketMarginDetails = ({
     variables: { marketId: market.id, partyId: partyId || '' },
     skip: !partyId,
   });
+  const isInIsolatedMode =
+    positionEstimate?.margin.bestCase.marginMode ===
+    Schema.MarginMode.MARGIN_MODE_ISOLATED_MARGIN;
   const liquidationEstimate = positionEstimate?.liquidation;
   const marginEstimate = positionEstimate?.margin;
   const totalMarginAccountBalance =
@@ -70,18 +73,25 @@ export const DealTicketMarginDetails = ({
   const { decimals: assetDecimals, quantum } = asset;
   let marginRequiredBestCase: string | undefined = undefined;
   let marginRequiredWorstCase: string | undefined = undefined;
-  const marginEstimateBestCase =
-    BigInt(marginEstimate?.bestCase.initialLevel ?? 0) +
-    BigInt(marginEstimate?.bestCase.orderMarginLevel ?? 0);
-  const marginEstimateWorstCase =
-    BigInt(marginEstimate?.worstCase.initialLevel ?? 0) +
-    BigInt(marginEstimate?.worstCase.orderMarginLevel ?? 0);
-  if (marginEstimate) {
-    if (currentMargins) {
-      const currentMargin =
-        BigInt(currentMargins.initialLevel) +
-        BigInt(currentMargins.orderMarginLevel);
 
+  const collateralIncreaseEstimateBestCase = BigInt(
+    positionEstimate?.collateralIncreaseEstimate.bestCase ?? '0'
+  );
+  const collateralIncreaseEstimateWorstCase = BigInt(
+    positionEstimate?.collateralIncreaseEstimate.worstCase ?? '0'
+  );
+  const marginEstimateBestCase = isInIsolatedMode
+    ? totalMarginAccountBalance + collateralIncreaseEstimateBestCase
+    : BigInt(marginEstimate?.bestCase.initialLevel ?? 0);
+  const marginEstimateWorstCase = isInIsolatedMode
+    ? totalMarginAccountBalance + collateralIncreaseEstimateWorstCase
+    : BigInt(marginEstimate?.worstCase.initialLevel ?? 0);
+  if (isInIsolatedMode) {
+    marginRequiredBestCase = collateralIncreaseEstimateBestCase.toString();
+    marginRequiredWorstCase = collateralIncreaseEstimateWorstCase.toString();
+  } else if (marginEstimate) {
+    if (currentMargins) {
+      const currentMargin = BigInt(currentMargins.initialLevel);
       marginRequiredBestCase = (
         marginEstimateBestCase - currentMargin
       ).toString();
