@@ -71,18 +71,27 @@ const CreateTeamFormContainer = ({ isSolo }: { isSolo: boolean }) => {
 
   if (status === 'confirmed') {
     return (
-      <div className="flex flex-col items-start gap-2">
+      <div
+        className="flex flex-col items-start gap-2"
+        data-testid="team-creation-success-message"
+      >
         <p className="text-sm">{t('Team creation transaction successful')}</p>
         {code && (
           <>
             <p className="text-sm">
               Your team ID is:{' '}
-              <span className="font-mono break-all">{code}</span>
+              <span
+                className="font-mono break-all"
+                data-testid="team-id-display"
+              >
+                {code}
+              </span>
             </p>
             <TradingAnchorButton
               href={Links.COMPETITIONS_TEAM(code)}
               intent={Intent.Info}
               size="small"
+              data-testid="view-team-button"
             >
               {t('View team')}
             </TradingAnchorButton>

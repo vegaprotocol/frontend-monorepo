@@ -152,7 +152,11 @@ export const ActiveRewards = ({ currentEpoch }: { currentEpoch: number }) => {
   if (!enrichedTransfers || !enrichedTransfers.length) return null;
 
   return (
-    <Card title={t('Active rewards')} className="lg:col-span-full">
+    <Card
+      title={t('Active rewards')}
+      className="lg:col-span-full"
+      data-testid="active-rewards-card"
+    >
       {enrichedTransfers.length > 1 && (
         <TradingInput
           onChange={(e) =>
@@ -371,6 +375,7 @@ export const ActiveRewardCard = ({
           'rounded-lg',
           gradientClassName
         )}
+        data-testid="active-rewards-card"
       >
         <div
           className={classNames(
@@ -382,7 +387,7 @@ export const ActiveRewardCard = ({
             <div className="flex flex-col gap-2 items-center text-center">
               <EntityIcon transfer={transfer} />
               {entityScope && (
-                <span className="text-muted text-xs">
+                <span className="text-muted text-xs" data-testid="entity-scope">
                   {EntityScopeLabelMapping[entityScope] || t('Unspecified')}
                 </span>
               )}
@@ -390,7 +395,7 @@ export const ActiveRewardCard = ({
 
             <div className="flex flex-col gap-2 items-center text-center">
               <h3 className="flex flex-col gap-1 text-2xl shrink-1 text-center">
-                <span className="font-glitch">
+                <span className="font-glitch" data-testid="reward-value">
                   {addDecimalsFormatNumber(
                     transferNode.transfer.amount,
                     transferNode.transfer.asset?.decimals || 0,
@@ -411,7 +416,7 @@ export const ActiveRewardCard = ({
                   )}
                   underline={true}
                 >
-                  <span className="text-xs">
+                  <span className="text-xs" data-testid="distribution-strategy">
                     {
                       DistributionStrategyMapping[
                         dispatchStrategy.distributionStrategy
@@ -429,7 +434,10 @@ export const ActiveRewardCard = ({
                   'Number of epochs after distribution to delay vesting of rewards by'
                 )}
               />
-              <span className="text-muted text-xs whitespace-nowrap">
+              <span
+                className="text-muted text-xs whitespace-nowrap"
+                data-testid="locked-for"
+              >
                 {t('numberEpochs', '{{count}} epochs', {
                   count: kind.dispatchStrategy?.lockPeriod,
                 })}
@@ -438,7 +446,7 @@ export const ActiveRewardCard = ({
           </div>
 
           <span className="border-[0.5px] border-gray-700" />
-          <span>
+          <span data-testid="dispatch-metric-info">
             {DispatchMetricLabels[dispatchStrategy.dispatchMetric]} •{' '}
             <Tooltip
               underline={suspended}
@@ -458,8 +466,8 @@ export const ActiveRewardCard = ({
           <div className="flex items-center gap-8 flex-wrap">
             {kind.endEpoch && (
               <span className="flex flex-col">
-                <span className="text-muted text-xs">{t('Ends in')}</span>
-                <span>
+                <span className="text-muted text-xs">{t('Ends in')} </span>
+                <span data-testid="ends-in">
                   {t('numberEpochs', '{{count}} epochs', {
                     count: kind.endEpoch - currentEpoch,
                   })}
@@ -470,7 +478,7 @@ export const ActiveRewardCard = ({
             {
               <span className="flex flex-col">
                 <span className="text-muted text-xs">{t('Assessed over')}</span>
-                <span>
+                <span data-testid="assessed-over">
                   {t('numberEpochs', '{{count}} epochs', {
                     count: dispatchStrategy.windowLength,
                   })}
@@ -513,7 +521,7 @@ const RewardRequirements = ({
             entity: EntityScopeLabelMapping[dispatchStrategy.entityScope],
           })}
         </dt>
-        <dd className="flex items-center gap-1">
+        <dd className="flex items-center gap-1" data-testid="scope">
           <RewardEntityScope dispatchStrategy={dispatchStrategy} />
         </dd>
       </div>
@@ -522,7 +530,10 @@ const RewardRequirements = ({
         <dt className="flex items-center gap-1 text-muted">
           {t('Staked VEGA')}
         </dt>
-        <dd className="flex items-center gap-1">
+        <dd
+          className="flex items-center gap-1"
+          data-testid="staking-requirement"
+        >
           {addDecimalsFormatNumber(
             dispatchStrategy?.stakingRequirement || 0,
             assetDecimalPlaces
@@ -534,7 +545,7 @@ const RewardRequirements = ({
         <dt className="flex items-center gap-1 text-muted">
           {t('Average position')}
         </dt>
-        <dd className="flex items-center gap-1">
+        <dd className="flex items-center gap-1" data-testid="average-position">
           {addDecimalsFormatNumber(
             dispatchStrategy?.notionalTimeWeightedAveragePositionRequirement ||
               0,

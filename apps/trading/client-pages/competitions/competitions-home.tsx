@@ -60,6 +60,7 @@ export const CompetitionsHome = () => {
                 e.preventDefault();
                 navigate(Links.COMPETITIONS_CREATE_TEAM());
               }}
+              data-testid="create-public-team-button"
             >
               {t('Create a public team')}
             </TradingButton>
@@ -78,6 +79,7 @@ export const CompetitionsHome = () => {
                 e.preventDefault();
                 navigate(Links.COMPETITIONS_CREATE_TEAM_SOLO());
               }}
+              data-testid="create-private-team-button"
             >
               {t('Create a private team')}
             </TradingButton>
@@ -96,6 +98,7 @@ export const CompetitionsHome = () => {
                 e.preventDefault();
                 navigate(Links.COMPETITIONS_TEAMS());
               }}
+              data-testid="choose-team-button"
             >
               {t('Choose a team')}
             </TradingButton>
