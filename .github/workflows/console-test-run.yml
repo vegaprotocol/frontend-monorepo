@@ -19,7 +19,7 @@ jobs:
   create-docker-image:
     name: Create docker image for console-test
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 35
     steps:
       #----------------------------------------------
       #       check-out frontend-monorepo
@@ -205,7 +205,7 @@ jobs:
       # run tests
       #----------------------------------------------
       - name: Run tests
-        run: CONSOLE_IMAGE_NAME=ci/trading:local poetry run pytest -v --numprocesses 2 --dist loadgroup --durations=30
+        run: CONSOLE_IMAGE_NAME=ci/trading:local poetry run pytest -v --numprocesses 1 --dist loadgroup --durations=30
         working-directory: apps/trading/e2e
       #----------------------------------------------
       # upload traces
