@@ -3,7 +3,6 @@ import { type Market } from '@vegaprotocol/markets';
 // TODO: handle oracle banner
 // import { OracleBanner } from '@vegaprotocol/markets';
 import { useState } from 'react';
-import AutoSizer from 'react-virtualized-auto-sizer';
 import classNames from 'classnames';
 import {
   Popover,
@@ -23,10 +22,12 @@ interface TradePanelsProps {
 }
 
 export const TradePanels = ({ market, pinnedAsset }: TradePanelsProps) => {
-  const [view, setView] = useState<TradingView>('chart');
-  const viewCfg = TradingViews[view];
+  const [view1, setView1] = useState<TradingView>('chart');
+  const viewCfg1 = TradingViews[view1];
+  const [view2, setView2] = useState<TradingView>('positions');
+  const viewCfg2 = TradingViews[view2];
 
-  const renderView = () => {
+  const renderView = (view: TradingView) => {
     const Component = TradingViews[view].component;
 
     if (!Component) {
@@ -44,7 +45,8 @@ export const TradePanels = ({ market, pinnedAsset }: TradePanelsProps) => {
     );
   };
 
-  const renderMenu = () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const renderMenu = (viewCfg: any) => {
     if ('menu' in viewCfg || 'settings' in viewCfg) {
       return (
         <div className="flex items-center justify-end gap-1 p-1 bg-vega-clight-800 dark:bg-vega-cdark-800 border-b border-default">
@@ -69,56 +71,86 @@ export const TradePanels = ({ market, pinnedAsset }: TradePanelsProps) => {
   };
 
   return (
-    <div className="h-full grid grid-rows-[min-content_min-content_1fr_min-content]">
+    <div className="h-full flex flex-col lg:grid grid-rows-[min-content_min-content_1fr_min-content]">
       <div>
         <MarketBanner market={market} />
       </div>
-      <div>{renderMenu()}</div>
-      <div className="h-full relative">
-        <AutoSizer>
-          {({ width, height }) => (
-            <div style={{ width, height }} className="overflow-auto">
-              {renderView()}
-            </div>
-          )}
-        </AutoSizer>
-      </div>
-      <div className="flex flex-nowrap overflow-x-auto max-w-full border-t border-default">
-        {Object.keys(TradingViews)
-          // filter to control available views for the current market
-          // eg only perps should get the funding views
-          .filter((_key) => {
-            const key = _key as TradingView;
-            const perpOnlyViews = ['funding', 'fundingPayments'];
+      <div className="flex flex-col w-full overflow-hidden">
+        <div className="flex flex-nowrap overflow-x-auto max-w-full border-t border-default">
+          {['chart', 'orderbook', 'trades', 'liquidity', 'fundingPayments']
+            // filter to control available views for the current market
+            // e.g. only perpetuals should get the funding views
+            .filter((_key) => {
+              const key = _key as TradingView;
+              const perpOnlyViews = ['funding', 'fundingPayments'];
 
-            if (
-              market?.tradableInstrument.instrument.product.__typename ===
-              'Perpetual'
-            ) {
+              if (
+                market?.tradableInstrument.instrument.product.__typename ===
+                'Perpetual'
+              ) {
+                return true;
+              }
+
+              if (perpOnlyViews.includes(key)) {
+                return false;
+              }
+
               return true;
-            }
-
-            if (perpOnlyViews.includes(key)) {
-              return false;
-            }
-
-            return true;
-          })
-          .map((_key) => {
-            const key = _key as TradingView;
-            const isActive = view === key;
-            return (
-              <ViewButton
-                key={key}
-                view={key}
-                isActive={isActive}
-                onClick={() => {
-                  setView(key);
-                }}
-              />
-            );
-          })}
+            })
+            .map((_key) => {
+              const key = _key as TradingView;
+              const isActive = view1 === key;
+              return (
+                <ViewButton
+                  key={key}
+                  view={key}
+                  isActive={isActive}
+                  onClick={() => {
+                    setView1(key);
+                  }}
+                />
+              );
+            })}
+        </div>
+        <div className="h-[376px] sm:h-[460px] lg:h-full relative">
+          <div>{renderMenu(viewCfg1)}</div>
+          <div className="overflow-auto h-full">{renderView(view1)}</div>
+        </div>
       </div>
+
+      {
+        <div className="flex flex-col w-full grow">
+          <div className="flex flex-nowrap overflow-x-auto max-w-full border-t border-default">
+            {[
+              'positions',
+              'activeOrders',
+              'closedOrders',
+              'rejectedOrders',
+              'orders',
+              'stopOrders',
+              'collateral',
+              'fills',
+            ].map((_key) => {
+              const key = _key as TradingView;
+              const isActive = view2 === key;
+              return (
+                <ViewButton
+                  key={key}
+                  view={key}
+                  isActive={isActive}
+                  onClick={() => {
+                    setView2(key);
+                  }}
+                />
+              );
+            })}
+          </div>
+          <div className="relative grow">
+            <div className="flex flex-col">{renderMenu(viewCfg2)}</div>
+            <div className="overflow-auto h-full">{renderView(view2)}</div>
+          </div>
+        </div>
+      }
     </div>
   );
 };
@@ -157,7 +189,7 @@ const useViewLabel = (view: TradingView) => {
     depth: t('Depth'),
     liquidity: t('Liquidity'),
     funding: t('Funding'),
-    fundingPayments: t('Funding Payments'),
+    fundingPayments: t('Funding'),
     orderbook: t('Orderbook'),
     trades: t('Trades'),
     positions: t('Positions'),

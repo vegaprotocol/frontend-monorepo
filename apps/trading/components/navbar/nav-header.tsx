@@ -14,7 +14,8 @@ export const NavHeader = () => {
   const t = useT();
   const { marketId } = useParams();
   const { data } = useMarket(marketId);
-  const [open, setOpen] = useState(false);
+  const [openMarket, setOpenMarket] = useState(false);
+  const [openPrice, setOpenPrice] = useState(false);
 
   // Ensure that markets are kept cached so opening the list
   // shows all markets instantly
@@ -23,32 +24,64 @@ export const NavHeader = () => {
   if (!marketId) return null;
 
   return (
-    <FullScreenPopover
-      open={open}
-      onOpenChange={(x) => {
-        setOpen(x);
-      }}
-      trigger={
-        <h1 className="flex gap-1 sm:gap-2 md:gap-4 items-center text-default text-lg whitespace-nowrap xl:pr-4 xl:border-r border-default">
-          {data ? data.tradableInstrument.instrument.code : t('Select market')}
-          <span
-            className={classNames(
-              'transition-transform ease-in-out duration-300',
-              {
-                'rotate-180': open,
-              }
-            )}
-          >
-            <VegaIcon name={VegaIconNames.CHEVRON_DOWN} size={20} />
-          </span>
-        </h1>
-      }
-    >
-      <MarketSelector
-        currentMarketId={marketId}
-        onSelect={() => setOpen(false)}
-      />
-    </FullScreenPopover>
+    <div className="flex items-center gap-2">
+      <FullScreenPopover
+        open={openMarket}
+        onOpenChange={(x) => {
+          setOpenMarket(x);
+        }}
+        trigger={
+          <h1 className="flex gap-1 sm:gap-2 md:gap-4 items-center text-default text-sm md:text-lg whitespace-nowrap xl:pr-4 xl:border-r border-default">
+            {data
+              ? data.tradableInstrument.instrument.code
+              : t('Select market')}
+            <span
+              className={classNames(
+                'transition-transform ease-in-out duration-300',
+                {
+                  'rotate-180': openMarket,
+                }
+              )}
+            >
+              <VegaIcon name={VegaIconNames.CHEVRON_DOWN} size={12} />
+            </span>
+          </h1>
+        }
+      >
+        <MarketSelector
+          currentMarketId={marketId}
+          onSelect={() => setOpenMarket(false)}
+        />
+      </FullScreenPopover>
+      {/* // TODO MOBILE - price popover with market header content */}
+      <FullScreenPopover
+        open={openPrice}
+        onOpenChange={(x) => {
+          setOpenPrice(x);
+        }}
+        trigger={
+          <h1 className="flex gap-1 sm:gap-2 md:gap-4 items-center text-default text-xs md:text-md whitespace-nowrap xl:pr-4 xl:border-r border-default">
+            44,500
+            <span
+              className={classNames(
+                'transition-transform ease-in-out duration-300',
+                {
+                  'rotate-180': openPrice,
+                }
+              )}
+            >
+              <VegaIcon name={VegaIconNames.CHEVRON_DOWN} size={12} />
+            </span>
+          </h1>
+        }
+      >
+        <MarketSelector
+          currentMarketId={marketId}
+          onSelect={() => setOpenMarket(false)}
+        />
+        {/* <MarketHeader /> */}
+      </FullScreenPopover>
+    </div>
   );
 };
 
