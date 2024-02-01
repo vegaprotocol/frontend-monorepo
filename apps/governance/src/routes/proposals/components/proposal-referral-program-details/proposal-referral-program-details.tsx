@@ -13,10 +13,10 @@ import {
 } from '@vegaprotocol/utils';
 import BigNumber from 'bignumber.js';
 import { useAppState } from '../../../../contexts/app-state/app-state-context';
-import { type UpdateReferralProgramFragment } from '../../proposal/__generated__/Proposal';
+import { type UpdateReferralProgramsFragment } from '../../__generated__/Proposals';
 
 interface ProposalReferralProgramDetailsProps {
-  change: UpdateReferralProgramFragment['terms']['change'] | null;
+  change: UpdateReferralProgramsFragment | null;
 }
 
 export const formatEndOfProgramTimestamp = (value: string) => {

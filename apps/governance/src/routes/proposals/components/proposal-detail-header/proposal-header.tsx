@@ -27,20 +27,23 @@ import Routes from '../../../routes';
 import { Link } from 'react-router-dom';
 import { type VoteState } from '../vote-details/use-user-vote';
 import { VoteBreakdown } from '../vote-breakdown';
-import { GovernanceTransferKindMapping } from '@vegaprotocol/types';
+import {
+  GovernanceTransferKindMapping,
+  type ProposalChange,
+} from '@vegaprotocol/types';
 import {
   type Proposal,
-  type ListProposal,
-  type ListBatchProposal,
   type BatchProposal,
+  type ProposalType,
 } from '../../types';
+import { ProposalTermsFieldsFragment } from '../../__generated__/Proposals';
 
 export const ProposalHeader = ({
   proposal,
   isListItem = true,
   voteState,
 }: {
-  proposal: Proposal | BatchProposal | ListProposal | ListBatchProposal;
+  proposal: Proposal | BatchProposal;
   isListItem?: boolean;
   voteState?: VoteState | null;
 }) => {
@@ -55,17 +58,110 @@ export const ProposalHeader = ({
   }
 
   if (proposal.__typename === 'BatchProposal') {
+    return <BatchProposalHeader proposal={proposal} voteState={voteState} />;
+  }
+
+  return null;
+};
+
+const BatchProposalHeader = ({
+  proposal,
+  voteState,
+}: {
+  proposal: Proposal | BatchProposal;
+  voteState?: VoteState | null;
+}) => {
+  const { t } = useTranslation();
+
+  return (
+    <>
+      <div className="flex items-center justify-between gap-4 mb-6 text-sm">
+        <ProposalTypeTags proposal={proposal} />
+
+        <div className="flex items-center gap-6">
+          {(voteState === 'Yes' || voteState === 'No') && (
+            <div
+              className="flex items-center gap-2"
+              data-testid={`user-voted-${voteState.toLowerCase()}`}
+            >
+              <div data-testid="you-voted-icon">
+                <VegaIcon name={VegaIconNames.VOTE} size={24} />
+              </div>
+              <div>
+                {t('voted')}{' '}
+                <span className="uppercase">{t(`voteState_${voteState}`)}</span>
+              </div>
+            </div>
+          )}
+
+          <div data-testid="proposal-status">
+            <CurrentProposalState proposal={proposal} />
+          </div>
+        </div>
+      </div>
+
+      <div data-testid="proposal-title" className="break-all">
+        <header>
+          <SubHeading
+            title={proposal.rationale.title || t('Unknown proposal')}
+          />
+        </header>
+      </div>
+
+      {/* TODO: add proposal details */}
+      {/* <ProposalDetails proposal={proposal} /> */}
+
+      {/* TODO: fix type cast */}
+      <VoteBreakdown proposal={proposal as Proposal} />
+    </>
+  );
+};
+
+const ProposalTypeTags = ({
+  proposal,
+}: {
+  proposal: Proposal | BatchProposal;
+}) => {
+  if (proposal.__typename === 'Proposal') {
     return (
-      // <BatchProposalHeader
-      //   proposal={proposal}
-      //   isListItem={isListItem}
-      //   voteState={voteState}
-      // />
-      <div>TODO: Header</div>
+      <div data-testid="proposal-type">
+        <ProposalTypeTag terms={proposal.terms} />
+      </div>
+    );
+  }
+
+  if (proposal.__typename === 'BatchProposal') {
+    return (
+      <div data-testid="proposal-type" className="flex gap-1">
+        {proposal.subProposals?.map((subProposal) => {
+          if (!subProposal?.terms) return null;
+          return <ProposalTypeTag terms={subProposal.terms} />;
+        })}
+      </div>
     );
   }
 
   return null;
+};
+
+const ProposalTypeTag = ({ terms }: { terms: ProposalTermsFieldsFragment }) => {
+  const { t } = useTranslation();
+  return (
+    <ProposalInfoLabel variant="secondary">
+      {t(terms.change.__typename)}
+    </ProposalInfoLabel>
+  );
+};
+
+const ProposalDetails = ({ proposal }: { proposal: Proposal }) => {
+  return (
+    <div
+      data-testid="proposal-details"
+      className="break-words mb-6 text-vega-light-200"
+    >
+      TODO: The details
+    </div>
+  );
 };
 
 const SingleProposalHeader = ({
@@ -73,7 +169,7 @@ const SingleProposalHeader = ({
   isListItem,
   voteState,
 }: {
-  proposal: Proposal | ListProposal;
+  proposal: Proposal;
   isListItem?: boolean;
   voteState?: VoteState | null;
 }) => {
@@ -91,7 +187,7 @@ const SingleProposalHeader = ({
 
   const titleContent = shorten(title ?? '', 100);
 
-  const getAsset = (proposal: Proposal | ListProposal) => {
+  const getAsset = (proposal: Proposal) => {
     const terms = proposal?.terms;
     if (
       terms?.change.__typename === 'NewMarket' &&
@@ -105,12 +201,9 @@ const SingleProposalHeader = ({
 
   switch (change?.__typename) {
     case 'NewMarket': {
-      proposalType =
-        featureFlags.PRODUCT_PERPETUALS &&
-        change?.instrument?.product?.__typename
-          ? `NewMarket${change?.instrument?.product?.__typename}`
-          : 'NewMarket';
-      fallbackTitle = t('NewMarketProposal');
+      proposalType = change?.instrument?.product?.__typename
+        ? `NewMarket${change?.instrument?.product?.__typename}`
+        : 'NewMarket';
       details = (
         <>
           <SuccessorCode proposalId={proposal?.id} />
@@ -131,14 +224,9 @@ const SingleProposalHeader = ({
       );
       break;
     }
-    // @ts-ignore updateType is definitely present for this proposal type
     case 'UpdateMarketState': {
-      proposalType =
-        // @ts-ignore updateType is definitely present for this proposal type
-        featureFlags.UPDATE_MARKET_STATE && change?.updateType
-          ? // @ts-ignore types are fucked
-            t(change.updateType)
-          : 'UpdateMarketState';
+      // @ts-ignore updateType is definitely present for this proposal type
+      proposalType = t(change.updateType);
       fallbackTitle = t('UpdateMarketStateProposal');
       details = (
         <span>
@@ -276,11 +364,12 @@ const SingleProposalHeader = ({
   return (
     <>
       <div className="flex items-center justify-between gap-4 mb-6 text-sm">
-        <div data-testid="proposal-type">
-          <ProposalInfoLabel variant="secondary">
-            {t(proposalType)}
-          </ProposalInfoLabel>
-        </div>
+        {/* <div data-testid="proposal-type"> */}
+        {/*   <ProposalInfoLabel variant="secondary"> */}
+        {/*     {t(proposalType)} */}
+        {/*   </ProposalInfoLabel> */}
+        {/* </div> */}
+        <ProposalTypeTags proposal={proposal} />
 
         <div className="flex items-center gap-6">
           {(voteState === 'Yes' || voteState === 'No') && (

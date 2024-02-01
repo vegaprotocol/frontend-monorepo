@@ -11,7 +11,7 @@ import {
 } from '../proposal-referral-program-details';
 import { formatNumberPercentage } from '@vegaprotocol/utils';
 import BigNumber from 'bignumber.js';
-import { type UpdateNetworkParameterFragment } from '../../proposal/__generated__/Proposal';
+import { type IUpdateNetworkParameterFieldsFragment } from '../../__generated__/Proposals';
 
 // These types are not generated as it's not known how dynamic these are
 type VestingBenefitTier = {
@@ -43,7 +43,7 @@ export const formatVolumeDiscountFactor = (value: string) => {
 };
 
 interface ProposalReferralProgramDetailsProps {
-  change: UpdateNetworkParameterFragment['terms']['change'] | null;
+  change: IUpdateNetworkParameterFieldsFragment | null;
 }
 
 /**

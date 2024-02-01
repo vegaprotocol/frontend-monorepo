@@ -6,7 +6,7 @@ import isArray from 'lodash/isArray';
 import mergeWith from 'lodash/mergeWith';
 
 import { type PartialDeep } from 'type-fest';
-import { type ProposalQuery } from '../proposal/__generated__/Proposal';
+import { type ProposalQuery } from '../__generated__/Proposals';
 import { type ProtocolUpgradeProposalFieldsFragment } from '@vegaprotocol/proposals';
 import { type Proposal } from '../types';
 

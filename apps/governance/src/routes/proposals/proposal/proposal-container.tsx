@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 
 import { Proposal } from '../components/proposal';
 import { ProposalNotFound } from '../components/proposal-not-found';
-import { useProposalQuery } from './__generated__/Proposal';
+import { useProposalQuery } from '../__generated__/Proposals';
 import { useFetch } from '@vegaprotocol/react-helpers';
 import { ENV } from '../../../config';
 import { useDataProvider } from '@vegaprotocol/data-provider';
@@ -21,7 +21,6 @@ import { useSuccessorMarketProposalDetails } from '@vegaprotocol/proposals';
 import { type BatchProposal, type Proposal as IProposal } from '../types';
 
 export const ProposalContainer = () => {
-  const featureFlags = useFeatureFlags((state) => state.flags);
   const params = useParams<{ proposalId: string }>();
 
   const {
@@ -58,9 +57,6 @@ export const ProposalContainer = () => {
     errorPolicy: 'ignore',
     variables: {
       proposalId: params.proposalId || '',
-      includeNewMarketProductField: !!featureFlags.PRODUCT_PERPETUALS,
-      includeUpdateMarketState: !!featureFlags.UPDATE_MARKET_STATE,
-      includeUpdateReferralProgram: !!featureFlags.REFERRALS,
     },
     skip: !params.proposalId,
   });

@@ -16,7 +16,7 @@ import Routes from '../routes';
 import { ExternalLinks, useFeatureFlags } from '@vegaprotocol/environment';
 import { removePaginationWrapper } from '@vegaprotocol/utils';
 import { useNodesQuery } from '../staking/home/__generated__/Nodes';
-import { useProposalsQuery } from '../proposals/proposals/__generated__/Proposals';
+import { useProposalsQuery } from '../proposals/__generated__/Proposals';
 import {
   getNotRejectedProposals,
   getNotRejectedProtocolUpgradeProposals,
@@ -32,7 +32,7 @@ import {
   orderByUpgradeBlockHeight,
 } from '../proposals/components/proposals-list/proposals-list';
 import { BigNumber } from '../../lib/bignumber';
-import { type ListProposals } from '../proposals/types';
+import { type Proposal, type BatchProposal } from '../proposals/types';
 
 const nodesToShow = 6;
 
@@ -40,7 +40,7 @@ const HomeProposals = ({
   proposals,
   protocolUpgradeProposals,
 }: {
-  proposals: ListProposals;
+  proposals: Array<Proposal | BatchProposal>;
   protocolUpgradeProposals: ProtocolUpgradeProposalFieldsFragment[];
 }) => {
   const { t } = useTranslation();
@@ -173,7 +173,6 @@ export const ValidatorDetailsLink = ({
 };
 
 const GovernanceHome = ({ name }: RouteChildProps) => {
-  const featureFlags = useFeatureFlags((state) => state.flags);
   useDocumentTitle(name);
   const { t } = useTranslation();
   const {
@@ -184,11 +183,6 @@ const GovernanceHome = ({ name }: RouteChildProps) => {
     pollInterval: 5000,
     fetchPolicy: 'network-only',
     errorPolicy: 'ignore',
-    variables: {
-      includeNewMarketProductFields: !!featureFlags.PRODUCT_PERPETUALS,
-      includeUpdateMarketStates: !!featureFlags.UPDATE_MARKET_STATE,
-      includeUpdateReferralPrograms: !!featureFlags.REFERRALS,
-    },
   });
 
   const {

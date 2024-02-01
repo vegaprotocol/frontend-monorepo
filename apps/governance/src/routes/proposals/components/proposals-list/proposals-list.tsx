@@ -12,21 +12,19 @@ import { Link } from 'react-router-dom';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 import { ExternalLinks } from '@vegaprotocol/environment';
 import { type ProtocolUpgradeProposalFieldsFragment } from '@vegaprotocol/proposals';
-import {
-  type ListBatchProposal,
-  type ListProposal,
-  type ListProposals,
-} from '../../types';
+import { type BatchProposal, type Proposal } from '../../types';
+
+type Proposals = Array<Proposal | BatchProposal>;
 
 interface ProposalsListProps {
-  proposals: ListProposals;
+  proposals: Proposals;
   protocolUpgradeProposals: ProtocolUpgradeProposalFieldsFragment[];
   lastBlockHeight?: string;
 }
 
 interface SortedProposalsProps {
-  open: ListProposals;
-  closed: ListProposals;
+  open: Proposals;
+  closed: Proposals;
 }
 
 interface SortedProtocolUpgradeProposalsProps {
@@ -34,7 +32,7 @@ interface SortedProtocolUpgradeProposalsProps {
   closed: ProtocolUpgradeProposalFieldsFragment[];
 }
 
-export const orderByDate = (arr: ListProposals) =>
+export const orderByDate = (arr: Proposals) =>
   orderBy(
     arr,
     [
@@ -158,7 +156,7 @@ export const ProposalsList = ({
       };
     }, [protocolUpgradeProposals, lastBlockHeight]);
 
-  const filterPredicate = (p: ListProposal | ListBatchProposal) =>
+  const filterPredicate = (p: Proposal | BatchProposal) =>
     p?.id?.includes(filterString) ||
     p?.party?.id?.toString().includes(filterString);
 

@@ -11,10 +11,10 @@ import {
 } from '../proposal-referral-program-details';
 import { formatNumberPercentage } from '@vegaprotocol/utils';
 import BigNumber from 'bignumber.js';
-import { type UpdateVolumeDiscountProgramFragment } from '../../proposal/__generated__/Proposal';
+import { type UpdateVolumeDiscountProgramsFragment } from '../../__generated__/Proposals';
 
 interface ProposalReferralProgramDetailsProps {
-  change: UpdateVolumeDiscountProgramFragment['terms']['change'] | null;
+  change: UpdateVolumeDiscountProgramsFragment | null;
 }
 
 export const formatVolumeDiscountFactor = (value: string) => {

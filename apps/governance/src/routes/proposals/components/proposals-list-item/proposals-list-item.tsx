@@ -2,10 +2,10 @@ import { RoundedWrapper } from '@vegaprotocol/ui-toolkit';
 import { ProposalHeader } from '../proposal-detail-header/proposal-header';
 import { ProposalsListItemDetails } from './proposals-list-item-details';
 import { useUserVote } from '../vote-details/use-user-vote';
-import { type ListProposal, type ListBatchProposal } from '../../types';
+import { type Proposal, type BatchProposal } from '../../types';
 
 interface ProposalsListItemProps {
-  proposal?: ListProposal | ListBatchProposal;
+  proposal?: Proposal | BatchProposal;
 }
 
 export const ProposalsListItem = ({ proposal }: ProposalsListItemProps) => {

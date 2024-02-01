@@ -8,10 +8,10 @@ import { Row } from '@vegaprotocol/markets';
 import { useState } from 'react';
 import { CollapsibleToggle } from '../../../../components/collapsible-toggle';
 import { SubHeading } from '../../../../components/heading';
-import { type UpdateMarketStateFragment } from '../../proposal/__generated__/Proposal';
+import { type UpdateMarketStatesFragment } from '../../__generated__/Proposals';
 
 interface ProposalUpdateMarketStateProps {
-  change: UpdateMarketStateFragment['terms']['change'] | null;
+  change: UpdateMarketStatesFragment | null;
 }
 
 export const ProposalUpdateMarketState = ({
