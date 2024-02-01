@@ -1,5 +1,4 @@
 import { Tooltip } from '@vegaprotocol/ui-toolkit';
-import classnames from 'classnames';
 import type { ReactNode } from 'react';
 
 export interface KeyValuePros {
@@ -19,7 +18,6 @@ export const KeyValue = ({
   value,
   labelDescription,
   symbol,
-  indent,
   onClick,
   formattedValue,
 }: KeyValuePros) => {
@@ -43,10 +41,7 @@ export const KeyValue = ({
           : id
       }`}
       key={typeof label === 'string' ? label : 'value-dropdown'}
-      className={classnames(
-        'text-xs flex justify-between items-center gap-4 flex-wrap text-right',
-        { 'ml-2': indent }
-      )}
+      className="text-xs flex justify-between items-center gap-4 flex-wrap text-right"
     >
       <Tooltip description={labelDescription}>
         <div className="text-muted text-left">{label}</div>

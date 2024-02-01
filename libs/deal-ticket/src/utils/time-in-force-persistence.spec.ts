@@ -2,9 +2,9 @@ import { OrderTimeInForce } from '@vegaprotocol/types';
 import {
   isNonPersistentOrder,
   isPersistentOrder,
-} from './time-in-force-persistance';
+} from './time-in-force-persistence';
 
-it('isNonPeristentOrder', () => {
+it('isNonPersistentOrder', () => {
   expect(isNonPersistentOrder(OrderTimeInForce.TIME_IN_FORCE_FOK)).toBe(true);
   expect(isNonPersistentOrder(OrderTimeInForce.TIME_IN_FORCE_IOC)).toBe(true);
   expect(isNonPersistentOrder(OrderTimeInForce.TIME_IN_FORCE_GTC)).toBe(false);
@@ -13,7 +13,7 @@ it('isNonPeristentOrder', () => {
   expect(isNonPersistentOrder(OrderTimeInForce.TIME_IN_FORCE_GFN)).toBe(false);
 });
 
-it('isPeristentOrder', () => {
+it('isPersistentOrder', () => {
   expect(isPersistentOrder(OrderTimeInForce.TIME_IN_FORCE_FOK)).toBe(false);
   expect(isPersistentOrder(OrderTimeInForce.TIME_IN_FORCE_IOC)).toBe(false);
   expect(isPersistentOrder(OrderTimeInForce.TIME_IN_FORCE_GTC)).toBe(true);
