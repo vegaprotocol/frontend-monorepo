@@ -98,7 +98,7 @@ const UpdateTeamFormContainer = ({
       type={TransactionType.UpdateReferralSet}
       status={status}
       err={err}
-      isSolo={team.closed}
+      isCreatingSoloTeam={team.closed}
       onSubmit={onSubmit}
       defaultValues={defaultValues}
     />

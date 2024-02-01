@@ -31,10 +31,7 @@ export const CompetitionsHome = () => {
     currentEpoch,
   });
 
-  const { data: teamsData, loading: teamsLoading } = useTeams({
-    sortByField: ['totalQuantumRewards'],
-    order: 'desc',
-  });
+  const { data: teamsData, loading: teamsLoading } = useTeams();
 
   return (
     <ErrorBoundary>

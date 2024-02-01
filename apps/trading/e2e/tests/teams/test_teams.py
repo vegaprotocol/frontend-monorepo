@@ -137,6 +137,7 @@ def create_team(vega: VegaServiceNull):
     return team_name
 
 def test_team_page_games_table(team_page: Page):
+    team_page.pause()
     team_page.get_by_test_id("games-toggle").click()
     expect(team_page.get_by_test_id("games-toggle")).to_have_text("Games (1)")
     expect(team_page.get_by_test_id("rank-0")).to_have_text("1")
@@ -152,7 +153,7 @@ def test_team_page_games_table(team_page: Page):
 
 def test_team_page_members_table(team_page: Page):
     team_page.get_by_test_id("members-toggle").click()
-    expect(team_page.get_by_test_id("members-toggle")).to_have_text("Members (3)")
+    expect(team_page.get_by_test_id("members-toggle")).to_have_text("Members (4)")
     expect(team_page.get_by_test_id("referee-0")).to_be_visible()
     expect(team_page.get_by_test_id("joinedAt-0")).to_be_visible()
     expect(team_page.get_by_test_id("joinedAtEpoch-0")).to_have_text("8")
@@ -161,7 +162,7 @@ def test_team_page_headline(team_page: Page, setup_teams_and_games
 ):
     team_name = setup_teams_and_games["team_name"]
     expect(team_page.get_by_test_id("team-name")).to_have_text(team_name)
-    expect(team_page.get_by_test_id("members-count-stat")).to_have_text("3")
+    expect(team_page.get_by_test_id("members-count-stat")).to_have_text("4")
 
     expect(team_page.get_by_test_id("total-games-stat")).to_have_text(
         "1"

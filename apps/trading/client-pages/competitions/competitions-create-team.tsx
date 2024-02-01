@@ -31,7 +31,7 @@ export const CompetitionsCreateTeam = () => {
         <div className="mx-auto md:w-2/3 max-w-xl">
           <Box className="flex flex-col gap-4">
             <h1 className="calt text-2xl lg:text-3xl xl:text-4xl">
-              {t('Create a team')}
+              {isSolo ? t('Create solo team') : t('Create a team')}
             </h1>
             {pubKey && !isReadOnly ? (
               <CreateTeamFormContainer isSolo={isSolo} />
@@ -125,7 +125,7 @@ const CreateTeamFormContainer = ({ isSolo }: { isSolo: boolean }) => {
       onSubmit={onSubmit}
       status={status}
       err={err}
-      isSolo={isSolo}
+      isCreatingSoloTeam={isSolo}
     />
   );
 };

@@ -28,8 +28,8 @@ export type FormFields = {
 };
 
 export enum TransactionType {
-  CreateReferralSet,
-  UpdateReferralSet,
+  CreateReferralSet = 'CreateReferralSet',
+  UpdateReferralSet = 'UpdateReferralSet',
 }
 
 const prepareTransaction = (
@@ -75,14 +75,14 @@ export const TeamForm = ({
   type,
   status,
   err,
-  isSolo,
+  isCreatingSoloTeam,
   onSubmit,
   defaultValues,
 }: {
   type: TransactionType;
   status: ReturnType<typeof useReferralSetTransaction>['status'];
   err: ReturnType<typeof useReferralSetTransaction>['err'];
-  isSolo: boolean;
+  isCreatingSoloTeam: boolean;
   onSubmit: ReturnType<typeof useReferralSetTransaction>['onSubmit'];
   defaultValues?: FormFields;
 }) => {
@@ -96,7 +96,7 @@ export const TeamForm = ({
     formState: { errors },
   } = useForm<FormFields>({
     defaultValues: {
-      private: isSolo,
+      private: isCreatingSoloTeam,
       ...defaultValues,
     },
   });
@@ -109,12 +109,7 @@ export const TeamForm = ({
 
   return (
     <form onSubmit={handleSubmit(sendTransaction)}>
-      <input
-        type="hidden"
-        {...register('id', {
-          disabled: true,
-        })}
-      />
+      <input type="hidden" {...register('id')} />
       <TradingFormGroup label={t('Team name')} labelFor="name">
         <TradingInput {...register('name', { required: t('Required') })} />
         {errors.name?.message && (
@@ -160,59 +155,70 @@ export const TeamForm = ({
           </TradingInputError>
         )}
       </TradingFormGroup>
-      <TradingFormGroup
-        label={t('Make team private')}
-        labelFor="private"
-        hideLabel={true}
-      >
-        <Controller
-          name="private"
-          control={control}
-          render={({ field }) => {
-            return (
-              <TradingCheckbox
-                label={t('Make team private')}
-                checked={field.value}
-                onCheckedChange={(value) => {
-                  field.onChange(value);
+      {
+        // allow changing to private/public if editing, but don't show these options if making a solo team
+        (type === TransactionType.UpdateReferralSet || !isCreatingSoloTeam) && (
+          <>
+            <TradingFormGroup
+              label={t('Make team private')}
+              labelFor="private"
+              hideLabel={true}
+            >
+              <Controller
+                name="private"
+                control={control}
+                render={({ field }) => {
+                  return (
+                    <TradingCheckbox
+                      label={t('Make team private')}
+                      checked={field.value}
+                      onCheckedChange={(value) => {
+                        field.onChange(value);
+                      }}
+                    />
+                  );
                 }}
-                disabled={isSolo}
               />
-            );
-          }}
-        />
-      </TradingFormGroup>
-      {isPrivate && (
-        <TradingFormGroup
-          label={t('Public key allow list')}
-          labelFor="allowList"
-          labelDescription={t(
-            'Use a comma separated list to allow only specific public keys to join the team'
-          )}
-        >
-          <TextArea
-            {...register('allowList', {
-              required: t('Required'),
-              disabled: isSolo,
-              validate: {
-                allowList: (value) => {
-                  const publicKeys = parseAllowListText(value);
-                  if (publicKeys.every((pk) => isValidVegaPublicKey(pk))) {
-                    return true;
-                  }
-                  return t('Invalid public key found in allow list');
-                },
-              },
-            })}
-          />
-          {errors.allowList?.message && (
-            <TradingInputError forInput="avatarUrl">
-              {errors.allowList.message}
-            </TradingInputError>
-          )}
-        </TradingFormGroup>
+            </TradingFormGroup>
+            {isPrivate && (
+              <TradingFormGroup
+                label={t('Public key allow list')}
+                labelFor="allowList"
+                labelDescription={t(
+                  'Use a comma separated list to allow only specific public keys to join the team'
+                )}
+              >
+                <TextArea
+                  {...register('allowList', {
+                    required: t('Required'),
+                    validate: {
+                      allowList: (value) => {
+                        const publicKeys = parseAllowListText(value);
+                        if (
+                          publicKeys.every((pk) => isValidVegaPublicKey(pk))
+                        ) {
+                          return true;
+                        }
+                        return t('Invalid public key found in allow list');
+                      },
+                    },
+                  })}
+                />
+                {errors.allowList?.message && (
+                  <TradingInputError forInput="avatarUrl">
+                    {errors.allowList.message}
+                  </TradingInputError>
+                )}
+              </TradingFormGroup>
+            )}
+          </>
+        )
+      }
+      {err && (
+        <p className="text-danger text-xs mb-4 first-letter:capitalize">
+          {err}
+        </p>
       )}
-      {err && <p className="text-danger text-xs mb-4 capitalize">{err}</p>}
       <SubmitButton type={type} status={status} />
     </form>
   );
@@ -246,7 +252,7 @@ const SubmitButton = ({
   );
 };
 
-const parseAllowListText = (str: string) => {
+const parseAllowListText = (str: string = '') => {
   return str
     .split(',')
     .map((v) => v.trim())
