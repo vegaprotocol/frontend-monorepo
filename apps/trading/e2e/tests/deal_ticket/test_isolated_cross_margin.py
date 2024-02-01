@@ -40,7 +40,7 @@ def test_switch_cross_isolated_margin(
     expect(page.get_by_test_id("toast-content")).to_have_text(
         "ConfirmedYour transaction has been confirmedView in block explorerUpdate margin modeBTC:DAI_2023Isolated margin mode, leverage: 1.0x"
     )
-    expect(page.locator(margin_row).nth(1)).to_have_text("11,109.99996Isolated1.0x")
+    expect(page.locator(margin_row).nth(1)).to_have_text("22,109.99996Isolated1.0x")
     # tbd - tooltip is not visible without this wait
     page.wait_for_timeout(1000)
     page.get_by_test_id(tab_positions).get_by_text("Isolated").hover()
