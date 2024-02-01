@@ -6,6 +6,8 @@ import {
   TextArea,
   TradingButton,
   Intent,
+  VegaIcon,
+  VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 import { URL_REGEX, isValidVegaPublicKey } from '@vegaprotocol/utils';
 
@@ -17,6 +19,8 @@ import type {
   UpdateReferralSet,
   Status,
 } from '@vegaprotocol/wallet';
+import classNames from 'classnames';
+import { useLayoutEffect, useState } from 'react';
 
 export type FormFields = {
   id: string;
@@ -239,16 +243,52 @@ const SubmitButton = ({
     text = t('Update');
   }
 
+  let confirmedText = t('Created');
+  if (type === TransactionType.UpdateReferralSet) {
+    confirmedText = t('Updated');
+  }
+
   if (status === 'requested') {
     text = t('Confirm in wallet...');
   } else if (status === 'pending') {
     text = t('Confirming transaction...');
   }
 
+  const [showConfirmed, setShowConfirmed] = useState<boolean>(false);
+  useLayoutEffect(() => {
+    let to: ReturnType<typeof setTimeout>;
+    if (status === 'confirmed' && !showConfirmed) {
+      to = setTimeout(() => {
+        setShowConfirmed(true);
+      }, 100);
+    }
+    return () => {
+      clearTimeout(to);
+    };
+  }, [showConfirmed, status]);
+
+  const confirmed = (
+    <span
+      className={classNames('text-sm transition-opacity opacity-0', {
+        'opacity-100': showConfirmed,
+      })}
+    >
+      <VegaIcon
+        name={VegaIconNames.TICK}
+        size={18}
+        className="text-vega-green-500"
+      />{' '}
+      {confirmedText}
+    </span>
+  );
+
   return (
-    <TradingButton type="submit" intent={Intent.Info} disabled={disabled}>
-      {text}
-    </TradingButton>
+    <div className="flex gap-2 items-baseline">
+      <TradingButton type="submit" intent={Intent.Info} disabled={disabled}>
+        {text}
+      </TradingButton>
+      {status === 'confirmed' && confirmed}
+    </div>
   );
 };
 
