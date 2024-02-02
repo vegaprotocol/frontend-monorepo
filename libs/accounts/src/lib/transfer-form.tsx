@@ -15,7 +15,6 @@ import {
   TradingRichSelect,
   TradingSelect,
   Tooltip,
-  TradingCheckbox,
   TradingButton,
 } from '@vegaprotocol/ui-toolkit';
 import type { Transfer } from '@vegaprotocol/wallet';
@@ -135,32 +134,17 @@ export const TransferForm = ({
   const accountBalance =
     account && addDecimal(account.balance, account.asset.decimals);
 
-  const [includeFee, setIncludeFee] = useState(false);
-
   // Max amount given selected asset and from account
   const max = accountBalance ? new BigNumber(accountBalance) : new BigNumber(0);
 
-  const transferAmount = useMemo(() => {
-    if (!amount) return undefined;
-    if (includeFee && feeFactor) {
-      return new BigNumber(1).minus(feeFactor).times(amount).toString();
-    }
-    return amount;
-  }, [amount, includeFee, feeFactor]);
-
-  const fee = useMemo(() => {
-    if (!transferAmount) return undefined;
-    if (includeFee) {
-      return new BigNumber(amount).minus(transferAmount).toString();
-    }
-    return (
-      feeFactor && new BigNumber(feeFactor).times(transferAmount).toString()
-    );
-  }, [amount, includeFee, transferAmount, feeFactor]);
+  const fee = useMemo(
+    () => feeFactor && new BigNumber(feeFactor).times(amount).toString(),
+    [amount, feeFactor]
+  );
 
   const onSubmit = useCallback(
     (fields: FormFields) => {
-      if (!transferAmount) {
+      if (!amount) {
         throw new Error('Submitted transfer with no amount selected');
       }
 
@@ -173,7 +157,7 @@ export const TransferForm = ({
 
       const transfer = normalizeTransfer(
         fields.toVegaKey,
-        transferAmount,
+        amount,
         type,
         AccountType.ACCOUNT_TYPE_GENERAL, // field is readonly in the form
         {
@@ -183,7 +167,7 @@ export const TransferForm = ({
       );
       submitTransfer(transfer);
     },
-    [submitTransfer, transferAmount, assets]
+    [submitTransfer, amount, assets]
   );
 
   // reset for placeholder workaround https://github.com/radix-ui/primitives/issues/1569
@@ -279,7 +263,6 @@ export const TransferForm = ({
                   ) {
                     setValue('toVegaKey', pubKey);
                     setToVegaKeyMode('select');
-                    setIncludeFee(false);
                   }
                 }}
               >
@@ -449,27 +432,9 @@ export const TransferForm = ({
           </TradingInputError>
         )}
       </TradingFormGroup>
-      <div className="mb-4">
-        <Tooltip
-          description={t(
-            `The fee will be taken from the amount you are transferring.`
-          )}
-        >
-          <div>
-            <TradingCheckbox
-              name="include-transfer-fee"
-              disabled={!transferAmount || fromVested}
-              label={t('Include transfer fee')}
-              checked={includeFee}
-              onCheckedChange={() => setIncludeFee((x) => !x)}
-            />
-          </div>
-        </Tooltip>
-      </div>
-      {transferAmount && fee && (
+      {amount && fee && (
         <TransferFee
-          amount={transferAmount}
-          transferAmount={transferAmount}
+          amount={amount}
           feeFactor={feeFactor}
           fee={fromVested ? '0' : fee}
           decimals={asset?.decimals}
@@ -484,29 +449,22 @@ export const TransferForm = ({
 
 export const TransferFee = ({
   amount,
-  transferAmount,
   feeFactor,
   fee,
   decimals,
 }: {
   amount: string;
-  transferAmount: string;
   feeFactor: string | null;
   fee?: string;
   decimals?: number;
 }) => {
   const t = useT();
-  if (!feeFactor || !amount || !transferAmount || !fee) return null;
-  if (
-    isNaN(Number(feeFactor)) ||
-    isNaN(Number(amount)) ||
-    isNaN(Number(transferAmount)) ||
-    isNaN(Number(fee))
-  ) {
+  if (!feeFactor || !amount || !fee) return null;
+  if (isNaN(Number(feeFactor)) || isNaN(Number(amount)) || isNaN(Number(fee))) {
     return null;
   }
 
-  const totalValue = new BigNumber(transferAmount).plus(fee).toString();
+  const totalValue = new BigNumber(amount).plus(fee).toString();
 
   return (
     <div className="mb-4 flex flex-col gap-2 text-xs">
