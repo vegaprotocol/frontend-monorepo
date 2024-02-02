@@ -29,7 +29,7 @@ export const MobileMarketHeader = () => {
   if (!marketId) return null;
 
   return (
-    <div className="p-2 flex items-center gap-4 h-10 pr-1 border-b border-default bg-vega-clight-700 dark:bg-vega-cdark-700">
+    <div className="p-2 flex justify-between gap-2 items-center h-10 pr-1 border-b border-default bg-vega-clight-700 dark:bg-vega-cdark-700">
       <FullScreenPopover
         open={openMarket}
         onOpenChange={(x) => {
@@ -58,7 +58,6 @@ export const MobileMarketHeader = () => {
           onSelect={() => setOpenMarket(false)}
         />
       </FullScreenPopover>
-      {/* // TODO MOBILE - price popover with market header content */}
       <FullScreenPopover
         open={openPrice}
         onOpenChange={(x) => {
@@ -68,10 +67,12 @@ export const MobileMarketHeader = () => {
           <h1 className="flex gap-1 items-center text-sm md:text-md whitespace-nowrap xl:pr-4 xl:border-r border-default">
             {data && (
               <>
-                <Last24hPriceChange
-                  marketId={data.id}
-                  decimalPlaces={data.decimalPlaces}
-                />
+                <span className="text-xs">
+                  <Last24hPriceChange
+                    marketId={data.id}
+                    decimalPlaces={data.decimalPlaces}
+                  />
+                </span>
                 <MarketMarkPrice
                   marketId={data.id}
                   decimalPlaces={data.decimalPlaces}
