@@ -84,6 +84,7 @@ export const CompetitionsHome = () => {
                     e.preventDefault();
                     navigate(Links.COMPETITIONS_CREATE_TEAM());
                   }}
+                  data-testId="create-public-team-button"
                 >
                   {t('Create a public team')}
                 </TradingButton>
