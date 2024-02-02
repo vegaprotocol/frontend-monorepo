@@ -16,7 +16,7 @@ export const useVoteInformation = ({ proposal }: { proposal: Proposal }) => {
     requiredMajorityLP,
     requiredParticipationLP,
   } = useProposalNetworkParams({
-    proposal,
+    terms: proposal.terms,
   });
 
   const {

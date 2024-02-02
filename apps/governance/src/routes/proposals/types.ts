@@ -1,3 +1,4 @@
+import { type ProposalNode } from '@vegaprotocol/types';
 import {
   type BatchProposalFieldsFragment,
   type ProposalFieldsFragment,
@@ -11,6 +12,8 @@ import {
 export type Proposal = ProposalFieldsFragment;
 export type BatchProposal = BatchProposalFieldsFragment;
 
-export type ProposalType = NonNullable<
+export type ProposalChangeType = NonNullable<
   Proposal['terms']['change']['__typename']
 >;
+
+export type ProposalType = NonNullable<ProposalNode['__typename']>;

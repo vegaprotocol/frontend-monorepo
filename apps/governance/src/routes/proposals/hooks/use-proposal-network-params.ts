@@ -3,12 +3,12 @@ import {
   useNetworkParams,
 } from '@vegaprotocol/network-parameters';
 import { BigNumber } from '../../../lib/bignumber';
-import { type Proposal } from '../types';
+import { type ProposalTermsFieldsFragment } from '../__generated__/Proposals';
 
 export const useProposalNetworkParams = ({
-  proposal,
+  terms,
 }: {
-  proposal: Proposal;
+  terms: ProposalTermsFieldsFragment;
 }) => {
   const { params } = useNetworkParams([
     NetworkParams.governance_proposal_updateMarket_requiredMajority,
@@ -44,7 +44,7 @@ export const useProposalNetworkParams = ({
     return fallback;
   }
 
-  switch (proposal?.terms.change.__typename) {
+  switch (terms.change.__typename) {
     case 'UpdateMarket':
     case 'UpdateMarketState':
       return {

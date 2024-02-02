@@ -1,4 +1,3 @@
-import { type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@vegaprotocol/ui-toolkit';
 import { differenceInHours, format, formatDistanceToNowStrict } from 'date-fns';
@@ -24,7 +23,40 @@ export const ProposalsListItemDetails = ({
   type: ProposalType;
   state: ProposalState;
   closingDatetime: string;
-  enactmentDatetime: string;
+  enactmentDatetime?: string;
+  rejectionReason: ProposalRejectionReason | null | undefined;
+}) => {
+  const { t } = useTranslation();
+
+  return (
+    <div className="mt-4 items-start text-sm">
+      <div className="flex items-center gap-2 text-vega-light-300 mb-2">
+        <VoteStateText
+          type={type}
+          state={state}
+          enactmentDatetime={enactmentDatetime}
+          closingDatetime={closingDatetime}
+          rejectionReason={rejectionReason}
+        />
+      </div>
+      <Link to={`${Routes.PROPOSALS}/${id}`}>
+        <Button data-testid="view-proposal-btn">{t('viewDetails')}</Button>
+      </Link>
+    </div>
+  );
+};
+
+const VoteStateText = ({
+  type,
+  state,
+  closingDatetime,
+  enactmentDatetime,
+  rejectionReason,
+}: {
+  type: ProposalType;
+  state: ProposalState;
+  closingDatetime: string;
+  enactmentDatetime?: string;
   rejectionReason: ProposalRejectionReason | null | undefined;
 }) => {
   const { t } = useTranslation();
@@ -33,71 +65,73 @@ export const ProposalsListItemDetails = ({
     new Date()
   );
 
-  let voteDetails: ReactNode;
-  let voteStatus: ReactNode;
+  const props = {
+    'data-testid': 'vote-details',
+  };
 
   switch (state) {
     case ProposalState.STATE_ENACTED: {
-      voteDetails =
-        enactmentDatetime &&
-        t('enactedOn{{date}}', {
-          enactmentDate:
-            enactmentDatetime &&
-            format(new Date(enactmentDatetime), DATE_FORMAT_DETAILED),
-        });
-      break;
+      // TODO: handle batch proposal which might have many enactment times
+      return (
+        <p {...props}>
+          {t('enactedOn{{date}}', {
+            enactmentDate:
+              enactmentDatetime &&
+              format(new Date(enactmentDatetime), DATE_FORMAT_DETAILED),
+          })}
+        </p>
+      );
     }
     case ProposalState.STATE_PASSED: {
-      voteDetails =
-        type !== 'NewFreeform' &&
-        t('enactsOn{{date}}', {
-          enactmentDate:
-            enactmentDatetime &&
-            format(new Date(enactmentDatetime), DATE_FORMAT_DETAILED),
-        });
-      break;
+      // TODO: handle batch proposal which might have many enactment times
+      return (
+        <p {...props}>
+          {t('enactsOn{{date}}', {
+            enactmentDate:
+              enactmentDatetime &&
+              format(new Date(enactmentDatetime), DATE_FORMAT_DETAILED),
+          })}
+        </p>
+      );
     }
     case ProposalState.STATE_WAITING_FOR_NODE_VOTE: {
-      voteDetails =
-        type !== 'NewFreeform' &&
-        t('enactsOn{{date}}', {
-          enactmentDate:
-            enactmentDatetime &&
-            format(new Date(enactmentDatetime), DATE_FORMAT_DETAILED),
-        });
-      break;
+      // TODO: handle batch proposal which might have many enactment times
+      return (
+        <p {...props}>
+          {t('enactsOn{{date}}', {
+            enactmentDate:
+              enactmentDatetime &&
+              format(new Date(enactmentDatetime), DATE_FORMAT_DETAILED),
+          })}
+        </p>
+      );
     }
     case ProposalState.STATE_OPEN: {
-      voteDetails = (
-        <span className={nowToEnactmentInHours < 6 ? 'text-vega-orange' : ''}>
-          {formatDistanceToNowStrict(new Date(closingDatetime))}{' '}
-          {t('left to vote')}
-        </span>
+      return (
+        <p {...props}>
+          <span className={nowToEnactmentInHours < 6 ? 'text-vega-orange' : ''}>
+            {formatDistanceToNowStrict(new Date(closingDatetime))}{' '}
+            {t('left to vote')}
+          </span>
+        </p>
       );
-      break;
     }
     case ProposalState.STATE_DECLINED: {
-      voteDetails = <span>{t(state)}</span>;
-      break;
+      return <p {...props}>{t(state)}</p>;
     }
     case ProposalState.STATE_REJECTED: {
-      voteStatus = rejectionReason && (
-        <>{t(ProposalRejectionReasonMapping[rejectionReason])}</>
-      );
-      break;
+      const props = { 'data-testid': 'vote-status' };
+
+      if (rejectionReason) {
+        return (
+          <p {...props}>{t(ProposalRejectionReasonMapping[rejectionReason])}</p>
+        );
+      }
+
+      return <p {...props}>{t('Proposal rejected')}</p>;
+    }
+    default: {
+      return null;
     }
   }
-
-  return (
-    <div className="mt-4 items-start text-sm">
-      <div className="flex items-center gap-2 text-vega-light-300 mb-2">
-        {voteDetails && <span data-testid="vote-details">{voteDetails}</span>}
-        {voteDetails && voteStatus && <span>&middot;</span>}
-        {voteStatus && <span data-testid="vote-status">{voteStatus}</span>}
-      </div>
-      <Link to={`${Routes.PROPOSALS}/${id}`}>
-        <Button data-testid="view-proposal-btn">{t('viewDetails')}</Button>
-      </Link>
-    </div>
-  );
 };

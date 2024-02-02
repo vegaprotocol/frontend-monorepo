@@ -18,10 +18,6 @@ export const CompactVotes = ({ number }: { number: BigNumber }) => (
   />
 );
 
-interface VoteBreakdownProps {
-  proposal: Proposal | BatchProposal;
-}
-
 interface VoteProgressProps {
   percentageFor: BigNumber;
   colourfulBg?: boolean;
@@ -92,19 +88,28 @@ const Status = ({ reached, threshold, text, testId }: StatusProps) => {
   );
 };
 
-export const VoteBreakdown = ({ proposal }: VoteBreakdownProps) => {
+export const VoteBreakdown = ({
+  proposal,
+}: {
+  proposal: Proposal | BatchProposal;
+}) => {
   if (proposal.__typename === 'Proposal') {
-    return <VoteBreakdownSingeProposal proposal={proposal} />;
+    return <VoteBreakdownNormal proposal={proposal} />;
   }
 
   if (proposal.__typename === 'BatchProposal') {
-    return <div>TODO: Batch proposal</div>;
+    return <VoteBreakdownBatch proposal={proposal} />;
   }
 
-  throw new Error('Invalid proposal');
+  return null;
 };
 
-const VoteBreakdownSingeProposal = ({ proposal }: { proposal: Proposal }) => {
+const VoteBreakdownBatch = ({ proposal }: { proposal: BatchProposal }) => {
+  // TODO: show summarised vote information for all sub proposals
+  return <p>View proposal for more info</p>;
+};
+
+const VoteBreakdownNormal = ({ proposal }: { proposal: Proposal }) => {
   const {
     totalTokensPercentage,
     participationMet,

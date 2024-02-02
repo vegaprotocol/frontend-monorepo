@@ -24,7 +24,7 @@ fragment UpdateMarketStates on UpdateMarketState {
   price
 }
 
-fragment UpdateReferralPrograms  on UpdateReferralProgram {
+fragment UpdateReferralPrograms on UpdateReferralProgram {
   __typename
   benefitTiers {
     minimumEpochs
@@ -441,6 +441,12 @@ fragment BatchProposalFields on BatchProposal {
     id
   }
   errorDetails
+  batchTerms {
+    closingDatetime
+    changes {
+      enactmentDatetime
+    }
+  }
   subProposals {
     datetime
     terms {
@@ -465,6 +471,7 @@ query Proposals {
   proposalsConnection {
     edges {
       proposalNode {
+        __typename
         ... on Proposal {
           ...ProposalFields
         }
@@ -476,9 +483,7 @@ query Proposals {
   }
 }
 
-query Proposal(
-  $proposalId: ID!
-) {
+query Proposal($proposalId: ID!) {
   proposal(id: $proposalId) {
     ... on Proposal {
       ...ProposalFields
