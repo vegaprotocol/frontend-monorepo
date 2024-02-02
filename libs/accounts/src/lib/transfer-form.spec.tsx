@@ -97,11 +97,6 @@ describe('TransferForm', () => {
 
   it.each([
     {
-      targetText: 'Include transfer fee',
-      tooltipText:
-        'The fee will be taken from the amount you are transferring.',
-    },
-    {
       targetText: 'Transfer fee',
       tooltipText: /transfer\.fee\.factor/,
     },
@@ -276,9 +271,6 @@ describe('TransferForm', () => {
 
     const amountInput = screen.getByLabelText('Amount');
 
-    const checkbox = screen.getByTestId('include-transfer-fee');
-    expect(checkbox).not.toBeChecked();
-
     await userEvent.clear(amountInput);
     await userEvent.type(amountInput, '50');
 
@@ -288,10 +280,7 @@ describe('TransferForm', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Use max' }));
     expect(amountInput).toHaveValue('100.00');
 
-    // If transfering from a vested account 'include fees' checkbox should
-    // be disabled and fees should be 0
-    expect(checkbox).not.toBeChecked();
-    expect(checkbox).toBeDisabled();
+    // If transfering from a vested account  fees should be 0
     const expectedFee = '0';
     const total = new BigNumber(amount).plus(expectedFee).toFixed();
 
@@ -396,78 +385,7 @@ describe('TransferForm', () => {
       });
     });
   });
-
   describe('IncludeFeesCheckbox', () => {
-    it('validates fields and submits when checkbox is checked', async () => {
-      const mockSubmit = jest.fn();
-      renderComponent({ ...props, submitTransfer: mockSubmit });
-
-      // check current pubkey not shown
-      const keySelect = screen.getByLabelText<HTMLSelectElement>('To Vega key');
-      const pubKeyOptions = ['', pubKey, props.pubKeys[1]];
-      expect(keySelect.children).toHaveLength(pubKeyOptions.length);
-      expect(Array.from(keySelect.options).map((o) => o.value)).toEqual(
-        pubKeyOptions
-      );
-
-      await submit();
-      expect(await screen.findAllByText('Required')).toHaveLength(2); // pubkey set as default value
-
-      // Select a pubkey
-      await userEvent.selectOptions(
-        screen.getByLabelText('To Vega key'),
-        props.pubKeys[1]
-      );
-
-      // Select asset
-      await selectAsset(asset);
-
-      await userEvent.selectOptions(
-        screen.getByLabelText('From account'),
-        `${AccountType.ACCOUNT_TYPE_GENERAL}-${asset.id}`
-      );
-
-      const amountInput = screen.getByLabelText('Amount');
-      const checkbox = screen.getByTestId('include-transfer-fee');
-
-      // 1003-TRAN-022
-      expect(checkbox).not.toBeChecked();
-
-      await userEvent.clear(amountInput);
-      await userEvent.type(amountInput, amount);
-      await userEvent.click(checkbox);
-
-      expect(checkbox).toBeChecked();
-      const expectedFee = new BigNumber(amount)
-        .times(props.feeFactor)
-        .toFixed();
-      const expectedAmount = new BigNumber(amount).minus(expectedFee).toFixed();
-
-      // 1003-TRAN-020
-      expect(screen.getByTestId('transfer-fee')).toHaveTextContent(expectedFee);
-      expect(screen.getByTestId('transfer-amount')).toHaveTextContent(
-        expectedAmount
-      );
-      expect(screen.getByTestId('total-transfer-fee')).toHaveTextContent(
-        amount
-      );
-
-      await submit();
-
-      await waitFor(() => {
-        // 1003-TRAN-023
-        expect(mockSubmit).toHaveBeenCalledTimes(1);
-        expect(mockSubmit).toHaveBeenCalledWith({
-          fromAccountType: AccountType.ACCOUNT_TYPE_GENERAL,
-          toAccountType: AccountType.ACCOUNT_TYPE_GENERAL,
-          to: props.pubKeys[1],
-          asset: asset.id,
-          amount: removeDecimal(expectedAmount, asset.decimals),
-          oneOff: {},
-        });
-      });
-    });
-
     it('validates fields when checkbox is not checked', async () => {
       renderComponent(props);
 
@@ -497,11 +415,8 @@ describe('TransferForm', () => {
       );
 
       const amountInput = screen.getByLabelText('Amount');
-      const checkbox = screen.getByTestId('include-transfer-fee');
-      expect(checkbox).not.toBeChecked();
 
       await userEvent.type(amountInput, amount);
-      expect(checkbox).not.toBeChecked();
       const expectedFee = new BigNumber(amount)
         .times(props.feeFactor)
         .toFixed();
