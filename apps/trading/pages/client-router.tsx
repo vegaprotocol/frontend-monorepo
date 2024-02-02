@@ -23,7 +23,7 @@ import { NotFound as ReferralNotFound } from '../client-pages/referrals/error-bo
 import { compact } from 'lodash';
 import { useFeatureFlags } from '@vegaprotocol/environment';
 import { LiquidityHeader } from '../components/liquidity-header';
-import { MarketHeader } from '../components/market-header';
+import { MarketHeader, MobileMarketHeader } from '../components/market-header';
 import { PortfolioSidebar } from '../client-pages/portfolio/portfolio-sidebar';
 import { LiquiditySidebar } from '../client-pages/liquidity/liquidity-sidebar';
 import { MarketsSidebar } from '../client-pages/markets/markets-sidebar';
@@ -33,6 +33,7 @@ import { CompetitionsTeams } from '../client-pages/competitions/competitions-tea
 import { CompetitionsTeam } from '../client-pages/competitions/competitions-team';
 import { CompetitionsCreateTeam } from '../client-pages/competitions/competitions-create-team';
 import { CompetitionsUpdateTeam } from '../client-pages/competitions/competitions-update-team';
+import { useScreenDimensions } from '@vegaprotocol/react-helpers';
 
 // These must remain dynamically imported as pennant cannot be compiled by nextjs due to ESM
 // Using dynamic imports is a workaround for this until pennant is published as ESM
@@ -50,6 +51,8 @@ const NotFound = () => {
 
 export const useRouterConfig = (): RouteObject[] => {
   const featureFlags = useFeatureFlags((state) => state.flags);
+  const { isMobile } = useScreenDimensions();
+  const marketHeader = isMobile ? <MobileMarketHeader /> : <MarketHeader />;
   const routeConfig = compact([
     {
       index: true,
@@ -151,10 +154,7 @@ export const useRouterConfig = (): RouteObject[] => {
     {
       path: 'markets/*',
       element: (
-        <LayoutWithSidebar
-          header={<MarketHeader />}
-          sidebar={<MarketsSidebar />}
-        />
+        <LayoutWithSidebar header={marketHeader} sidebar={<MarketsSidebar />} />
       ),
       children: [
         {
