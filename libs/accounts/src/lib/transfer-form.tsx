@@ -16,14 +16,13 @@ import {
   TradingRichSelect,
   TradingSelect,
   Tooltip,
-  TradingCheckbox,
   TradingButton,
 } from '@vegaprotocol/ui-toolkit';
 import type { Transfer } from '@vegaprotocol/wallet';
 import { normalizeTransfer } from '@vegaprotocol/wallet';
 import BigNumber from 'bignumber.js';
 import type { ReactNode } from 'react';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { AssetOption, Balance } from '@vegaprotocol/assets';
 import { AccountType, AccountTypeMapping } from '@vegaprotocol/types';
@@ -135,8 +134,6 @@ export const TransferForm = ({
   const accountBalance =
     account && addDecimal(account.balance, account.asset.decimals);
 
-  const [includeFee, setIncludeFee] = useState(false);
-
   // Max amount given selected asset and from account
   const max = accountBalance ? new BigNumber(accountBalance) : new BigNumber(0);
 
@@ -153,20 +150,10 @@ export const TransferForm = ({
   const transferFee = transferFeeQuery.loading
     ? transferFeeQuery.data || transferFeeQuery.previousData
     : transferFeeQuery.data;
-  const transferAmount = useMemo(() => {
-    if (!amount) return undefined;
-    if (includeFee && transferFee?.estimateTransferFee) {
-      return new BigNumber(amount)
-        .minus(transferFee.estimateTransferFee.fee)
-        .plus(transferFee.estimateTransferFee.discount)
-        .toString();
-    }
-    return amount;
-  }, [amount, includeFee, transferFee?.estimateTransferFee]);
 
   const onSubmit = useCallback(
     (fields: FormFields) => {
-      if (!transferAmount) {
+      if (!amount) {
         throw new Error('Submitted transfer with no amount selected');
       }
 
@@ -179,7 +166,7 @@ export const TransferForm = ({
 
       const transfer = normalizeTransfer(
         fields.toVegaKey,
-        transferAmount,
+        amount,
         type,
         AccountType.ACCOUNT_TYPE_GENERAL, // field is readonly in the form
         {
@@ -189,7 +176,7 @@ export const TransferForm = ({
       );
       submitTransfer(transfer);
     },
-    [submitTransfer, transferAmount, assets]
+    [submitTransfer, amount, assets]
   );
 
   // reset for placeholder workaround https://github.com/radix-ui/primitives/issues/1569
@@ -285,7 +272,6 @@ export const TransferForm = ({
                   ) {
                     setValue('toVegaKey', pubKey);
                     setToVegaKeyMode('select');
-                    setIncludeFee(false);
                   }
                 }}
               >
@@ -455,29 +441,9 @@ export const TransferForm = ({
           </TradingInputError>
         )}
       </TradingFormGroup>
-      {fromVested ? null : (
-        <div className="mb-4">
-          <Tooltip
-            description={t(
-              `The fee will be taken from the amount you are transferring.`
-            )}
-          >
-            <div>
-              <TradingCheckbox
-                name="include-transfer-fee"
-                disabled={!transferAmount || fromVested}
-                label={t('Include transfer fee')}
-                checked={includeFee}
-                onCheckedChange={() => setIncludeFee((x) => !x)}
-              />
-            </div>
-          </Tooltip>
-        </div>
-      )}
-      {(transferFee?.estimateTransferFee || fromVested) && transferAmount && (
+      {(transferFee?.estimateTransferFee || fromVested) && amount && (
         <TransferFee
-          amount={transferAmount}
-          transferAmount={transferAmount}
+          amount={amount}
           fee={fromVested ? '0' : transferFee?.estimateTransferFee?.fee}
           discount={
             fromVested ? '0' : transferFee?.estimateTransferFee?.discount
@@ -494,28 +460,22 @@ export const TransferForm = ({
 
 export const TransferFee = ({
   amount,
-  transferAmount,
   fee,
   discount,
   decimals,
 }: {
   amount: string;
-  transferAmount: string;
   fee?: string;
   discount?: string;
   decimals?: number;
 }) => {
   const t = useT();
-  if (!amount || !transferAmount || !fee) return null;
-  if (
-    isNaN(Number(amount)) ||
-    isNaN(Number(transferAmount)) ||
-    isNaN(Number(fee))
-  ) {
+  if (!amount || !fee) return null;
+  if (isNaN(Number(amount)) || isNaN(Number(fee))) {
     return null;
   }
 
-  const totalValue = new BigNumber(transferAmount).plus(fee).toString();
+  const totalValue = new BigNumber(amount).plus(fee).toString();
   const feeFactor = new BigNumber(fee).dividedBy(amount).toFixed(2);
 
   return (
