@@ -71,6 +71,7 @@ export const MobileMarketHeader = () => {
                   <Last24hPriceChange
                     marketId={data.id}
                     decimalPlaces={data.decimalPlaces}
+                    hideZero={true}
                   />
                 </span>
                 <MarketMarkPrice

@@ -11,7 +11,6 @@ import { useCandles } from '../../hooks/use-candles';
 import BigNumber from 'bignumber.js';
 import classNames from 'classnames';
 import { useT } from '../../use-t';
-import { useScreenDimensions } from '@vegaprotocol/react-helpers';
 
 interface Props {
   marketId?: string;
@@ -19,15 +18,17 @@ interface Props {
   initialValue?: string[];
   isHeader?: boolean;
   noUpdate?: boolean;
+  // to render nothing instead of '-' when there is no price change
+  hideZero?: boolean;
 }
 
 export const Last24hPriceChange = ({
   marketId,
   decimalPlaces,
   initialValue,
+  hideZero,
 }: Props) => {
   const t = useT();
-  const { isMobile } = useScreenDimensions();
   const { oneDayCandles, error, fiveDaysCandles } = useCandles({
     marketId,
   });
@@ -36,8 +37,8 @@ export const Last24hPriceChange = ({
     fiveDaysCandles.length > 0 &&
     (!oneDayCandles || oneDayCandles?.length === 0)
   ) {
-    // if there is no change and no percentage, we don't show anything on mobile
-    if (isMobile) {
+    // render nothing instead of '-' when there is no price change
+    if (hideZero) {
       return null;
     }
     return (
@@ -67,8 +68,8 @@ export const Last24hPriceChange = ({
   const change = priceChange(candles);
   const changePercentage = priceChangePercentage(candles);
 
-  // if there is no change and no percentage, we don't show anything on mobile
-  if (!change && !changePercentage && isMobile) {
+  // render nothing instead of '-' when there is no price change
+  if (!change && !changePercentage && hideZero) {
     return null;
   }
 
