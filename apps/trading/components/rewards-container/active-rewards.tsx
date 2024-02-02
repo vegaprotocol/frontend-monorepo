@@ -309,23 +309,6 @@ export const ActiveRewardCard = ({
       ].includes(m.state)
   );
 
-  const assetInSettledMarket =
-    allMarkets &&
-    Object.values(allMarkets).some((m: MarketFieldsFragment | null) => {
-      if (m && getAsset(m).id === dispatchStrategy.dispatchMetricAssetId) {
-        return (
-          m?.state &&
-          [
-            MarketState.STATE_TRADING_TERMINATED,
-            MarketState.STATE_SETTLED,
-            MarketState.STATE_CANCELLED,
-            MarketState.STATE_CLOSED,
-          ].includes(m.state)
-        );
-      }
-      return false;
-    });
-
   if (marketSettled) {
     return null;
   }
@@ -351,7 +334,7 @@ export const ActiveRewardCard = ({
 
   // Gray out the cards that are related to suspended markets
   const { gradientClassName, mainClassName } =
-    suspended || assetInSuspendedMarket || assetInSettledMarket
+    suspended || assetInSuspendedMarket
       ? {
           gradientClassName: 'from-vega-cdark-500 to-vega-clight-400',
           mainClassName: 'from-vega-cdark-400 dark:from-vega-cdark-600 to-20%',
