@@ -6,7 +6,13 @@ import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
 import { MarketHeader, MobileMarketHeader } from '../market-header';
 import { useScreenDimensions } from '@vegaprotocol/react-helpers';
 
-export const LayoutWithSidebar = ({ sidebar }: { sidebar?: ReactNode }) => {
+export const LayoutWithSidebar = ({
+  header,
+  sidebar,
+}: {
+  header?: ReactNode;
+  sidebar?: ReactNode;
+}) => {
   const currentRouteId = useGetCurrentRouteId();
   const views = useSidebar((store) => store.views);
   const sidebarView = views[currentRouteId] || null;
@@ -22,6 +28,7 @@ export const LayoutWithSidebar = ({ sidebar }: { sidebar?: ReactNode }) => {
 
   return (
     <div className={gridClasses}>
+      {header && <div className="col-span-full">{header}</div>}
       <div className="col-span-full">
         {isMobile ? <MobileMarketHeader /> : <MarketHeader />}
       </div>
