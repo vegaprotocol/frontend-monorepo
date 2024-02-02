@@ -5,13 +5,13 @@ import {
   RoundedWrapper,
 } from '@vegaprotocol/ui-toolkit';
 import { Row } from '@vegaprotocol/markets';
-import type { ProposalQuery } from '../../proposal/__generated__/Proposal';
 import { useState } from 'react';
 import { CollapsibleToggle } from '../../../../components/collapsible-toggle';
 import { SubHeading } from '../../../../components/heading';
+import { type Proposal } from '../../types';
 
 interface ProposalUpdateMarketStateProps {
-  proposal: ProposalQuery['proposal'];
+  proposal: Proposal | null;
 }
 
 export const ProposalUpdateMarketState = ({

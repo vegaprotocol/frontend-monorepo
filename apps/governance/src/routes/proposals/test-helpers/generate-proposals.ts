@@ -8,6 +8,7 @@ import mergeWith from 'lodash/mergeWith';
 import { type PartialDeep } from 'type-fest';
 import { type ProposalQuery } from '../proposal/__generated__/Proposal';
 import { type ProtocolUpgradeProposalFieldsFragment } from '@vegaprotocol/proposals';
+import { type Proposal } from '../types';
 
 export function generateProtocolUpgradeProposal(
   override: PartialDeep<ProtocolUpgradeProposalFieldsFragment> = {}
@@ -43,8 +44,8 @@ export function generateProtocolUpgradeProposal(
 }
 
 export function generateProposal(
-  override: PartialDeep<ProposalQuery['proposal']> = {}
-): ProposalQuery['proposal'] {
+  override: PartialDeep<Proposal> = {}
+): Proposal {
   const defaultProposal: ProposalQuery['proposal'] = {
     __typename: 'Proposal',
     id: faker.datatype.uuid(),
@@ -92,15 +93,16 @@ export function generateProposal(
     },
   };
 
-  return mergeWith<
-    ProposalQuery['proposal'],
-    PartialDeep<ProposalQuery['proposal']>
-  >(defaultProposal, override, (objValue, srcValue) => {
-    if (!isArray(objValue)) {
-      return;
+  return mergeWith<Proposal, PartialDeep<Proposal>>(
+    defaultProposal,
+    override,
+    (objValue, srcValue) => {
+      if (!isArray(objValue)) {
+        return;
+      }
+      return srcValue;
     }
-    return srcValue;
-  });
+  );
 }
 
 type Vote = Pick<Schema.Vote, '__typename' | 'value' | 'party' | 'datetime'>;

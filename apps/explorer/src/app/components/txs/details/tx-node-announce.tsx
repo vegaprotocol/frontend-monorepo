@@ -6,9 +6,9 @@ import { TableRow, TableCell, TableWithTbody } from '../../table';
 
 import type { components } from '../../../../types/explorer';
 import {
-  EthExplorerLink,
+  ExternalExplorerLink,
   EthExplorerLinkTypes,
-} from '../../links/eth-explorer-link/eth-explorer-link';
+} from '../../links/external-explorer-link/external-explorer-link';
 import { PartyLink } from '../../links';
 import Hash from '../../links/hash';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
@@ -72,7 +72,7 @@ export const TxDetailsNodeAnnounce = ({
         <TableRow modifier="bordered">
           <TableCell>{t('Ethereum Address')}</TableCell>
           <TableCell>
-            <EthExplorerLink
+            <ExternalExplorerLink
               type={EthExplorerLinkTypes.address}
               id={cmd.ethereumAddress}
             />

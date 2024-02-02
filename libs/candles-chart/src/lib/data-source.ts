@@ -172,13 +172,30 @@ export class VegaDataSource implements DataSource {
         },
         fetchPolicy: 'no-cache',
       });
+
       if (data?.market?.candlesConnection?.edges) {
         const decimalPlaces = data.market.decimalPlaces;
         const positionDecimalPlaces = data.market.positionDecimalPlaces;
 
+        const openSince =
+          typeof data.market.marketTimestamps.open === 'string' &&
+          data.market.marketTimestamps.open.length > 0
+            ? new Date(data.market.marketTimestamps.open)
+            : // this should never happen, but just in case let's have it as
+              // Date(0) if the market data is incomplete for some reason
+              new Date(0);
+
+        if (this.from < openSince) {
+          // overwrite `from` if requested value is before the market's open date
+          this.from = openSince;
+        }
+
         const candles = data.market.candlesConnection.edges
           .map((edge) => edge?.node)
           .filter((node): node is CandleFieldsFragment => !!node)
+          .filter(
+            (node) => sinceMarketOpen(node, openSince) && !emptyCandle(node)
+          )
           .map((node) =>
             parseCandle(node, decimalPlaces, positionDecimalPlaces)
           )
@@ -326,3 +343,9 @@ function parseCandle(
     volume: Number(addDecimal(candle.volume, positionDecimalPlaces)),
   };
 }
+
+const sinceMarketOpen = (candle: CandleFieldsFragment, openSince: Date) =>
+  new Date(candle.periodStart) >= openSince;
+
+const emptyCandle = (candle: CandleFieldsFragment) =>
+  candle.high === '' && candle.low === '';

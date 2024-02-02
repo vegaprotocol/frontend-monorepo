@@ -14,16 +14,18 @@ export function format(date: string | undefined, def: string) {
   return new Date().toLocaleDateString() || def;
 }
 
-export function getDate(
-  data: ExplorerProposalStatusQuery | undefined,
-  terms: Terms
-): string {
+type Proposal = Extract<
+  ExplorerProposalStatusQuery['proposal'],
+  { __typename?: 'Proposal' }
+>;
+
+export function getDate(proposal: Proposal | undefined, terms: Terms): string {
   const DEFAULT = t('Unknown');
-  if (!data?.proposal?.state) {
+  if (!proposal?.state) {
     return DEFAULT;
   }
 
-  switch (data.proposal.state) {
+  switch (proposal.state) {
     case 'STATE_DECLINED':
       return `${t('Rejected on')}: ${format(terms.closingTimestamp, DEFAULT)}`;
     case 'STATE_ENACTED':
@@ -62,9 +64,11 @@ export const ProposalDate = ({ terms, id }: ProposalDateProps) => {
     },
   });
 
+  const proposal = data?.proposal as Proposal;
+
   return (
     <Lozenge className="font-sans text-xs float-right">
-      {getDate(data, terms)}
+      {getDate(proposal, terms)}
     </Lozenge>
   );
 };

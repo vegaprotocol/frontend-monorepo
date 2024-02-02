@@ -38,14 +38,14 @@ export function Dialog({
   );
   const wrapperClasses = classNames(
     // Dimensions
-    'max-w-[90vw] p-4 md:p-8',
+    'w-screen sm:max-w-[90vw] p-4 md:p-8',
     // Need to apply background and text colors again as content is rendered in a portal
     'dark:bg-black bg-white dark:text-white',
     getIntentBorder(intent),
     {
-      'w-[520px]': size === 'small',
-      'w-[680px]': size === 'medium',
-      'w-[720px] lg:w-[940px]': size === 'large',
+      'sm:w-[520px]': size === 'small',
+      'sm:w-[680px]': size === 'medium',
+      'sm:w-[720px] lg:w-[940px]': size === 'large',
     }
   );
 

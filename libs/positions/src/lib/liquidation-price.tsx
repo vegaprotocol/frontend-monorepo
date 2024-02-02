@@ -1,30 +1,35 @@
 import { Tooltip } from '@vegaprotocol/ui-toolkit';
-import { useEstimatePositionQuery } from './__generated__/Positions';
+import {
+  type EstimatePositionQueryVariables,
+  useEstimatePositionQuery,
+} from './__generated__/Positions';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { useT } from '../use-t';
 
 export const LiquidationPrice = ({
-  marketId,
-  openVolume,
-  collateralAvailable,
   decimalPlaces,
   className,
-}: {
-  marketId: string;
-  openVolume: string;
-  collateralAvailable: string;
+  ...variables
+}: Pick<
+  EstimatePositionQueryVariables,
+  | 'marketId'
+  | 'openVolume'
+  | 'orderMarginAccountBalance'
+  | 'generalAccountBalance'
+  | 'averageEntryPrice'
+  | 'marginAccountBalance'
+  | 'marginMode'
+  | 'marginFactor'
+> & {
   decimalPlaces: number;
   className?: string;
 }) => {
   const t = useT();
+
   const { data: currentData, previousData } = useEstimatePositionQuery({
-    variables: {
-      marketId,
-      openVolume,
-      collateralAvailable,
-    },
+    variables,
     fetchPolicy: 'no-cache',
-    skip: !openVolume || openVolume === '0',
+    skip: !variables.openVolume || variables.openVolume === '0',
   });
 
   const data = currentData || previousData;

@@ -44,6 +44,7 @@ export type FilterOption =
   | 'Transfer Funds'
   | 'Undelegate'
   | 'Update Referral Set'
+  | 'Update Margin Mode'
   | 'Validator Heartbeat'
   | 'Vote on Proposal'
   | 'Withdraw';
@@ -59,6 +60,7 @@ export const filterOptions: Record<string, FilterOption[]> = {
     'Stop Orders Submission',
     'Stop Orders Cancellation',
     'Submit Order',
+    'Update Margin Mode',
   ],
   'Transfers and Withdrawals': [
     'Transfer Funds',

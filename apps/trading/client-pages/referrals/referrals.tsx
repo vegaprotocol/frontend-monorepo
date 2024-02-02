@@ -13,11 +13,9 @@ import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useReferral } from './hooks/use-referral';
 import { REFERRAL_DOCS_LINK } from './constants';
 import classNames from 'classnames';
-import { usePageTitleStore } from '../../stores';
-import { useEffect } from 'react';
-import { titlefy } from '@vegaprotocol/utils';
 import { useT } from '../../lib/use-t';
 import { ErrorBoundary } from '../../components/error-boundary';
+import { usePageTitle } from '../../lib/hooks/use-page-title';
 
 const Nav = () => {
   const t = useT();
@@ -57,13 +55,7 @@ export const Referrals = () => {
   const loading = refereeLoading || referrerLoading;
   const showNav = !loading && !error && !referrer && !referee;
 
-  const { updateTitle } = usePageTitleStore((store) => ({
-    updateTitle: store.updateTitle,
-  }));
-
-  useEffect(() => {
-    updateTitle(titlefy([t('Referrals')]));
-  }, [updateTitle, t]);
+  usePageTitle(t('Referrals'));
 
   return (
     <ErrorBoundary feature="referrals">

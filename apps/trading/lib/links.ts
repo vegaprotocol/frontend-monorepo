@@ -16,7 +16,12 @@ export const Routes = {
   REFERRALS: '/referrals',
   REFERRALS_APPLY_CODE: '/referrals/apply-code',
   REFERRALS_CREATE_CODE: '/referrals/create-code',
-  TEAMS: '/teams',
+  COMPETITIONS: '/competitions',
+  COMPETITIONS_TEAMS: '/competitions/teams',
+  COMPETITIONS_TEAM: '/competitions/teams/:teamId',
+  COMPETITIONS_CREATE_TEAM: '/competitions/teams/create',
+  COMPETITIONS_CREATE_TEAM_SOLO: '/competitions/teams/create?solo=true',
+  COMPETITIONS_UPDATE_TEAM: '/competitions/teams/:teamId/update',
   FEES: '/fees',
   REWARDS: '/rewards',
 } as const;
@@ -41,7 +46,14 @@ export const Links: ConsoleLinks = {
   REFERRALS: () => Routes.REFERRALS,
   REFERRALS_APPLY_CODE: () => Routes.REFERRALS_APPLY_CODE,
   REFERRALS_CREATE_CODE: () => Routes.REFERRALS_CREATE_CODE,
-  TEAMS: () => Routes.TEAMS,
+  COMPETITIONS: () => Routes.COMPETITIONS,
+  COMPETITIONS_TEAMS: () => Routes.COMPETITIONS_TEAMS,
+  COMPETITIONS_TEAM: (teamId: string) =>
+    Routes.COMPETITIONS_TEAM.replace(':teamId', teamId),
+  COMPETITIONS_CREATE_TEAM: () => Routes.COMPETITIONS_CREATE_TEAM,
+  COMPETITIONS_CREATE_TEAM_SOLO: () => Routes.COMPETITIONS_CREATE_TEAM_SOLO,
+  COMPETITIONS_UPDATE_TEAM: (teamId: string) =>
+    Routes.COMPETITIONS_UPDATE_TEAM.replace(':teamId', teamId),
   FEES: () => Routes.FEES,
   REWARDS: () => Routes.REWARDS,
 };

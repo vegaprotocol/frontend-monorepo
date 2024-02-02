@@ -5,27 +5,15 @@ import {
 import { useEstimatePositionQuery } from '@vegaprotocol/positions';
 import { useEffect, useState } from 'react';
 
-interface PositionEstimateProps extends EstimatePositionQueryVariables {
-  skip: boolean;
-}
-
-export const usePositionEstimate = ({
-  marketId,
-  openVolume,
-  orders,
-  collateralAvailable,
-  skip,
-}: PositionEstimateProps) => {
+export const usePositionEstimate = (
+  variables: EstimatePositionQueryVariables,
+  skip: boolean
+) => {
   const [estimates, setEstimates] = useState<EstimatePositionQuery | undefined>(
     undefined
   );
   const { data } = useEstimatePositionQuery({
-    variables: {
-      marketId,
-      openVolume,
-      orders,
-      collateralAvailable,
-    },
+    variables,
     skip,
     fetchPolicy: 'no-cache',
   });

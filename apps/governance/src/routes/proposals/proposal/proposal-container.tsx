@@ -17,6 +17,7 @@ import {
 import { useParentMarketIdQuery } from '@vegaprotocol/markets';
 import { useFeatureFlags } from '@vegaprotocol/environment';
 import { useSuccessorMarketProposalDetails } from '@vegaprotocol/proposals';
+import { type Proposal as IProposal } from '../types';
 
 export const ProposalContainer = () => {
   const featureFlags = useFeatureFlags((state) => state.flags);
@@ -67,6 +68,8 @@ export const ProposalContainer = () => {
     skip: !params.proposalId,
   });
 
+  const proposal = data?.proposal as IProposal;
+
   const successor = useSuccessorMarketProposalDetails(params.proposalId);
 
   const isSuccessor = !!successor?.parentMarketId || !!successor.code;
@@ -79,12 +82,12 @@ export const ProposalContainer = () => {
     },
   } = useFetch(
     `${ENV.rest}governance?proposalId=${
-      data?.proposal?.terms.change.__typename === 'UpdateMarket' &&
-      data?.proposal.terms.change.marketId
+      proposal?.terms.change.__typename === 'UpdateMarket' &&
+      proposal.terms.change.marketId
     }`,
     undefined,
     true,
-    data?.proposal?.terms.change.__typename !== 'UpdateMarket'
+    proposal?.terms.change.__typename !== 'UpdateMarket'
   );
 
   const {
@@ -97,7 +100,7 @@ export const ProposalContainer = () => {
     `${ENV.rest}governances?proposalState=STATE_ENACTED&proposalType=TYPE_UPDATE_MARKET`,
     undefined,
     true,
-    data?.proposal?.terms.change.__typename !== 'UpdateMarket'
+    proposal?.terms.change.__typename !== 'UpdateMarket'
   );
 
   const {
@@ -108,8 +111,8 @@ export const ProposalContainer = () => {
     dataProvider: marketInfoProvider,
     skipUpdates: true,
     variables: {
-      marketId: data?.proposal?.id || '',
-      skip: !data?.proposal?.id,
+      marketId: proposal?.id || '',
+      skip: !proposal?.id,
     },
   });
 
@@ -148,23 +151,22 @@ export const ProposalContainer = () => {
     fetchPolicy: 'network-only',
     variables: {
       assetId:
-        (data?.proposal?.terms.change.__typename === 'NewAsset' &&
-          data?.proposal?.id) ||
-        (data?.proposal?.terms.change.__typename === 'UpdateAsset' &&
-          data.proposal.terms.change.assetId) ||
+        (proposal?.terms.change.__typename === 'NewAsset' && proposal?.id) ||
+        (proposal?.terms.change.__typename === 'UpdateAsset' &&
+          proposal.terms.change.assetId) ||
         '',
     },
     skip: !['NewAsset', 'UpdateAsset'].includes(
-      data?.proposal?.terms?.change?.__typename || ''
+      proposal?.terms?.change?.__typename || ''
     ),
   });
 
   useEffect(() => {
     if (
       previouslyEnactedMarketProposalsRestData &&
-      data?.proposal?.terms.change.__typename === 'UpdateMarket'
+      proposal?.terms.change.__typename === 'UpdateMarket'
     ) {
-      const change = data?.proposal?.terms?.change as { marketId: string };
+      const change = proposal?.terms?.change as { marketId: string };
 
       const filteredProposals =
         // @ts-ignore rest data is not typed
@@ -188,8 +190,8 @@ export const ProposalContainer = () => {
   }, [
     previouslyEnactedMarketProposalsRestData,
     params.proposalId,
-    data?.proposal?.terms.change.__typename,
-    data?.proposal?.terms.change,
+    proposal?.terms.change.__typename,
+    proposal?.terms.change,
   ]);
 
   useEffect(() => {
@@ -242,7 +244,7 @@ export const ProposalContainer = () => {
     >
       {data?.proposal ? (
         <Proposal
-          proposal={data.proposal}
+          proposal={proposal}
           networkParams={networkParams}
           restData={restData}
           marketData={marketData}

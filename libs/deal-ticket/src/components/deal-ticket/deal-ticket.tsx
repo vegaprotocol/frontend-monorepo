@@ -58,8 +58,9 @@ import type {
 } from '@vegaprotocol/markets';
 import { MarginWarning } from '../deal-ticket-validation/margin-warning';
 import {
-  useMarketAccountBalance,
+  useMarginAccountBalance,
   useAccountBalance,
+  marginModeDataProvider,
 } from '@vegaprotocol/accounts';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { type OrderFormValues } from '../../hooks';
@@ -166,9 +167,10 @@ export const DealTicket = ({
 
   const asset = getAsset(market);
   const {
-    accountBalance: marginAccountBalance,
+    orderMarginAccountBalance,
+    marginAccountBalance,
     loading: loadingMarginAccountBalance,
-  } = useMarketAccountBalance(market.id);
+  } = useMarginAccountBalance(market.id);
 
   const {
     accountBalance: generalAccountBalance,
@@ -176,7 +178,9 @@ export const DealTicket = ({
   } = useAccountBalance(asset.id);
 
   const balance = (
-    BigInt(marginAccountBalance) + BigInt(generalAccountBalance)
+    BigInt(marginAccountBalance) +
+    BigInt(generalAccountBalance) +
+    BigInt(orderMarginAccountBalance)
   ).toString();
 
   const { marketState, marketTradingMode } = marketData;
@@ -241,7 +245,19 @@ export const DealTicket = ({
     variables: { partyId: pubKey || '', marketId: market.id },
     skip: !pubKey,
   });
-  const openVolume = useOpenVolume(pubKey, market.id) ?? '0';
+  const { data: margin } = useDataProvider({
+    dataProvider: marginModeDataProvider,
+    variables: { partyId: pubKey || '', marketId: market.id },
+    skip: !pubKey,
+  });
+
+  const { openVolume, averageEntryPrice } = useOpenVolume(
+    pubKey,
+    market.id
+  ) || {
+    openVolume: '0',
+    averageEntryPrice: '0',
+  };
   const orders = activeOrders
     ? activeOrders.map<Schema.OrderInfo>((order) => ({
         isMarketOrder: order.type === Schema.OrderType.TYPE_MARKET,
@@ -259,18 +275,25 @@ export const DealTicket = ({
     });
   }
 
-  const positionEstimate = usePositionEstimate({
-    marketId: market.id,
-    openVolume,
-    orders,
-    collateralAvailable:
-      marginAccountBalance || generalAccountBalance ? balance : undefined,
-    skip:
-      !normalizedOrder ||
+  const positionEstimate = usePositionEstimate(
+    {
+      marketId: market.id,
+      openVolume,
+      averageEntryPrice,
+      orders,
+      marginAccountBalance: marginAccountBalance || '0',
+      generalAccountBalance: generalAccountBalance || '0',
+      orderMarginAccountBalance: orderMarginAccountBalance || '0',
+      marginFactor: margin?.marginFactor || '1',
+      marginMode:
+        margin?.marginMode || Schema.MarginMode.MARGIN_MODE_CROSS_MARGIN,
+      includeCollateralIncreaseInAvailableCollateral: true,
+    },
+    !normalizedOrder ||
       (normalizedOrder.type !== Schema.OrderType.TYPE_MARKET &&
         (!normalizedOrder.price || normalizedOrder.price === '0')) ||
-      normalizedOrder.size === '0',
-  });
+      normalizedOrder.size === '0'
+  );
 
   const assetSymbol = getAsset(market).symbol;
 
@@ -316,7 +339,9 @@ export const DealTicket = ({
     }
 
     const hasNoBalance =
-      !BigInt(generalAccountBalance) && !BigInt(marginAccountBalance);
+      !BigInt(generalAccountBalance) &&
+      !BigInt(marginAccountBalance) &&
+      !BigInt(orderMarginAccountBalance);
     if (
       hasNoBalance &&
       !(loadingMarginAccountBalance || loadingGeneralAccountBalance)
@@ -346,6 +371,7 @@ export const DealTicket = ({
     marketTradingMode,
     generalAccountBalance,
     marginAccountBalance,
+    orderMarginAccountBalance,
     loadingMarginAccountBalance,
     loadingGeneralAccountBalance,
     pubKey,
@@ -704,10 +730,16 @@ export const DealTicket = ({
         asset={asset}
         marketTradingMode={marketData.marketTradingMode}
         balance={balance}
-        margin={
-          positionEstimate?.estimatePosition?.margin.bestCase.initialLevel ||
-          '0'
-        }
+        margin={(
+          BigInt(
+            positionEstimate?.estimatePosition?.margin.bestCase.initialLevel ||
+              '0'
+          ) +
+          BigInt(
+            positionEstimate?.estimatePosition?.margin.bestCase
+              .orderMarginLevel || '0'
+          )
+        ).toString()}
         isReadOnly={isReadOnly}
         pubKey={pubKey}
         onDeposit={onDeposit}
@@ -740,6 +772,7 @@ export const DealTicket = ({
         onMarketClick={onMarketClick}
         assetSymbol={asset.symbol}
         marginAccountBalance={marginAccountBalance}
+        orderMarginAccountBalance={orderMarginAccountBalance}
         generalAccountBalance={generalAccountBalance}
         positionEstimate={positionEstimate?.estimatePosition}
         market={market}
@@ -765,8 +798,20 @@ interface SummaryMessageProps {
 
 export const NoWalletWarning = ({
   isReadOnly,
-}: Pick<SummaryMessageProps, 'isReadOnly'>) => {
+  noWalletConnected,
+}: Pick<SummaryMessageProps, 'isReadOnly'> & {
+  noWalletConnected?: boolean;
+}) => {
   const t = useT();
+  if (noWalletConnected) {
+    return (
+      <div className="mb-2">
+        <InputError testId="deal-ticket-error-message-summary">
+          {t('You need a Vega wallet to start trading on this market')}
+        </InputError>
+      </div>
+    );
+  }
   if (isReadOnly) {
     return (
       <div className="mb-2">

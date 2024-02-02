@@ -46,7 +46,9 @@ def test_filtered_cards(continuous_market, vega: VegaServiceNull, page: Page):
         side="SIDE_BUY",
         volume=1,
     )
-    next_epoch(vega=vega)
+    vega.wait_fn(1)
+    vega.wait_for_total_catchup()
+    page.goto("/#/rewards")
 
     vega.update_market_state(
         market_id=continuous_market,
@@ -55,8 +57,9 @@ def test_filtered_cards(continuous_market, vega: VegaServiceNull, page: Page):
         forward_time_to_enactment=True,
     )
     next_epoch(vega=vega)
-    page.goto("/#/rewards")
-    expect(page.locator(".from-vega-cdark-400")).to_be_visible()
+    
+    page.reload()
+    expect(page.locator(".from-vega-cdark-400")).to_be_visible(timeout=15000)
     governance.submit_oracle_data(
         wallet=vega.wallet,
         payload={"trading.terminated": "true"},

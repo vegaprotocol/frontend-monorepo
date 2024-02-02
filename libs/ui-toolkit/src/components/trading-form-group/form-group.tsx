@@ -43,7 +43,7 @@ export const TradingFormGroup = ({
         <label htmlFor={labelFor} className={labelClasses}>
           {label}
           {labelDescription && (
-            <div className="font-light mt-1">{labelDescription}</div>
+            <div className="font-light mt-1 text-muted">{labelDescription}</div>
           )}
         </label>
       )}

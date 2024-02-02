@@ -9,7 +9,6 @@ import type {
   ApolloQueryResult,
   QueryOptions,
 } from '@apollo/client';
-import type { GraphQLErrors } from '@apollo/client/errors';
 import type { Subscription } from 'zen-observable-ts';
 import isEqualWith from 'lodash/isEqualWith';
 import { isNotFoundGraphQLError } from './helpers';
@@ -161,7 +160,7 @@ interface DataProviderParams<
   resetDelay?: number;
   pollInterval?: number;
   additionalContext?: Record<string, unknown>;
-  errorPolicyGuard?: (graphqlErrors: GraphQLErrors) => boolean;
+  errorPolicy?: ErrorPolicy;
   getQueryVariables?: (variables: Variables) => QueryVariables;
   getSubscriptionVariables?: (
     variables: Variables
@@ -176,7 +175,7 @@ interface DataProviderParams<
  * @param fetchPolicy
  * @param resetDelay
  * @param additionalContext add property to the context of the query, ie. 'isEnlargedTimeout'
- * @param errorPolicyGuard indicate which gql errors can be tolerate
+ * @param errorPolicy Apollos error policy, will be used when querying
  * @returns subscribe function
  */
 function makeDataProviderInternal<
@@ -197,7 +196,7 @@ function makeDataProviderInternal<
   fetchPolicy,
   resetDelay,
   additionalContext,
-  errorPolicyGuard,
+  errorPolicy = 'none',
   getQueryVariables,
   getSubscriptionVariables,
   pollInterval,
@@ -331,20 +330,10 @@ function makeDataProviderInternal<
   const callQuery = (
     pagination?: Pagination,
     policy?: ErrorPolicy
-  ): Promise<ApolloQueryResult<QueryData>> =>
-    client
-      .query<QueryData>(getQueryOptions(pagination, policy))
-      .catch((err) => {
-        if (
-          err.graphQLErrors &&
-          errorPolicyGuard &&
-          errorPolicyGuard(err.graphQLErrors)
-        ) {
-          return callQuery(pagination, 'ignore');
-        } else {
-          throw err;
-        }
-      });
+  ): Promise<ApolloQueryResult<QueryData>> => {
+    const options = getQueryOptions(pagination, policy);
+    return client.query<QueryData>(options);
+  };
 
   const load = async () => {
     if (!pagination) {
@@ -364,7 +353,7 @@ function makeDataProviderInternal<
       }
     }
 
-    const res = await callQuery(paginationVariables);
+    const res = await callQuery(paginationVariables, errorPolicy);
 
     const insertionData = getData(res.data, variables);
     const insertionPageInfo = pagination.getPageInfo(res.data);
@@ -417,12 +406,14 @@ function makeDataProviderInternal<
     const paginationVariables = pagination
       ? { first: pagination.first }
       : undefined;
+
     if (pollInterval) {
-      callWatchQuery();
+      callWatchQuery(paginationVariables, errorPolicy);
       return;
     }
+
     try {
-      onNext(await callQuery(paginationVariables));
+      onNext(await callQuery(paginationVariables, errorPolicy));
     } catch (e) {
       onError(e as Error);
     } finally {

@@ -198,6 +198,12 @@ query MarketInfo($marketId: ID!) {
       performanceHysteresisEpochs
       slaCompetitionFactor
     }
+    liquidationStrategy {
+      disposalTimeStep
+      disposalFraction
+      fullDisposalSize
+      maxFractionConsumed
+    }
     tradableInstrument {
       instrument {
         id

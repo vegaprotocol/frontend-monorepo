@@ -1,19 +1,26 @@
 import isEqual from 'lodash/isEqual';
 import produce from 'immer';
-import BigNumber from 'bignumber.js';
 import sortBy from 'lodash/sortBy';
-import { type Account } from '@vegaprotocol/accounts';
+import {
+  marginsDataProvider,
+  type Account,
+  type MarginFieldsFragment,
+  marketMarginDataProvider,
+} from '@vegaprotocol/accounts';
 import { accountsDataProvider } from '@vegaprotocol/accounts';
 import { toBigNum, removePaginationWrapper } from '@vegaprotocol/utils';
 import {
   makeDataProvider,
   makeDerivedDataProvider,
+  useDataProvider,
 } from '@vegaprotocol/data-provider';
 import {
   type MarketMaybeWithData,
   type MarketDataQueryVariables,
   allMarketsWithLiveDataProvider,
   getAsset,
+  marketInfoProvider,
+  type MarketInfo,
 } from '@vegaprotocol/markets';
 import {
   PositionsDocument,
@@ -26,6 +33,7 @@ import {
 } from './__generated__/Positions';
 import {
   AccountType,
+  MarginMode,
   MarketState,
   type MarketTradingMode,
   type PositionStatus,
@@ -33,6 +41,9 @@ import {
 } from '@vegaprotocol/types';
 
 export interface Position {
+  marginMode: MarginFieldsFragment['marginMode'];
+  marginFactor: MarginFieldsFragment['marginFactor'];
+  maintenanceLevel: MarginFieldsFragment['maintenanceLevel'] | undefined;
   assetId: string;
   assetSymbol: string;
   averageEntryPrice: string;
@@ -41,6 +52,8 @@ export interface Position {
   quantum: string;
   lossSocializationAmount: string;
   marginAccountBalance: string;
+  orderMarginAccountBalance: string;
+  generalAccountBalance: string;
   marketDecimalPlaces: number;
   marketId: string;
   marketCode: string;
@@ -54,6 +67,7 @@ export interface Position {
   realisedPNL: string;
   status: PositionStatus;
   totalBalance: string;
+  totalMarginAccountBalance: string;
   unrealisedPNL: string;
   updatedAt: string | null;
   productType: ProductType;
@@ -61,7 +75,8 @@ export interface Position {
 
 export const getMetrics = (
   data: ReturnType<typeof rejoinPositionData> | null,
-  accounts: Account[] | null
+  accounts: Account[] | null,
+  margins: MarginFieldsFragment[] | null
 ): Position[] => {
   if (!data || !data?.length) {
     return [];
@@ -75,8 +90,20 @@ export const getMetrics = (
     }
 
     const marketData = market?.data;
+    const margin = margins?.find((margin) => {
+      return margin.market?.id === market?.id;
+    });
     const marginAccount = accounts?.find((account) => {
-      return account.market?.id === market?.id;
+      return (
+        account.market?.id === market?.id &&
+        account.type === AccountType.ACCOUNT_TYPE_MARGIN
+      );
+    });
+    const orderAccount = accounts?.find((account) => {
+      return (
+        account.market?.id === market?.id &&
+        account.type === AccountType.ACCOUNT_TYPE_ORDER_MARGIN
+      );
     });
     const asset = getAsset(market);
     const generalAccount = accounts?.find(
@@ -93,6 +120,10 @@ export const getMetrics = (
       marginAccount?.balance ?? 0,
       asset.decimals
     );
+    const orderMarginAccountBalance = toBigNum(
+      orderAccount?.balance ?? 0,
+      asset.decimals
+    );
     const generalAccountBalance = toBigNum(
       generalAccount?.balance ?? 0,
       asset.decimals
@@ -107,21 +138,36 @@ export const getMetrics = (
           : openVolume.multipliedBy(-1)
         ).multipliedBy(markPrice)
       : undefined;
-    const totalBalance = marginAccountBalance.plus(generalAccountBalance);
-    const currentLeverage = notional
-      ? totalBalance.isEqualTo(0)
-        ? new BigNumber(0)
-        : notional.dividedBy(totalBalance)
-      : undefined;
+    const totalMarginAccountBalance = marginAccountBalance.plus(
+      orderMarginAccountBalance
+    );
+    const totalBalance = totalMarginAccountBalance.plus(generalAccountBalance);
+
+    const marginMode =
+      margin?.marginMode || MarginMode.MARGIN_MODE_CROSS_MARGIN;
+    const marginFactor = margin?.marginFactor || '1';
+    const currentLeverage =
+      marginMode === MarginMode.MARGIN_MODE_ISOLATED_MARGIN
+        ? (marginFactor && 1 / Number(marginFactor)) || undefined
+        : notional
+        ? totalBalance.isEqualTo(0)
+          ? 0
+          : notional.dividedBy(totalBalance).toNumber()
+        : undefined;
     metrics.push({
+      marginMode,
+      marginFactor,
+      maintenanceLevel: margin?.maintenanceLevel,
       assetId: asset.id,
       assetSymbol: asset.symbol,
       averageEntryPrice: position.averageEntryPrice,
-      currentLeverage: currentLeverage ? currentLeverage.toNumber() : undefined,
+      currentLeverage,
       assetDecimals: asset.decimals,
       quantum: asset.quantum,
       lossSocializationAmount: position.lossSocializationAmount || '0',
       marginAccountBalance: marginAccount?.balance ?? '0',
+      orderMarginAccountBalance: orderAccount?.balance ?? '0',
+      generalAccountBalance: generalAccount?.balance ?? '0',
       marketDecimalPlaces,
       marketId: market.id,
       marketCode: market.tradableInstrument.instrument.code,
@@ -137,6 +183,9 @@ export const getMetrics = (
       realisedPNL: position.realisedPNL,
       status: position.positionStatus,
       totalBalance: totalBalance.multipliedBy(10 ** asset.decimals).toFixed(),
+      totalMarginAccountBalance: totalMarginAccountBalance
+        .multipliedBy(10 ** asset.decimals)
+        .toFixed(),
       unrealisedPNL: position.unrealisedPNL,
       updatedAt: position.updatedAt || null,
       productType: market?.tradableInstrument.instrument.product
@@ -226,13 +275,26 @@ const positionDataProvider = makeDerivedDataProvider<
   }
 );
 
+export type OpenVolumeData = Pick<
+  PositionFieldsFragment,
+  'openVolume' | 'averageEntryPrice'
+>;
+
 export const openVolumeDataProvider = makeDerivedDataProvider<
-  string,
+  OpenVolumeData,
   never,
   PositionsQueryVariables & MarketDataQueryVariables
->(
-  [positionDataProvider],
-  (data) => (data[0] as PositionFieldsFragment | null)?.openVolume || null
+>([positionDataProvider], ([data], variables, previousData) =>
+  produce(previousData, (draft) => {
+    if (!data) {
+      return data;
+    }
+    const newData = {
+      openVolume: (data as PositionFieldsFragment).openVolume,
+      averageEntryPrice: (data as PositionFieldsFragment).averageEntryPrice,
+    };
+    return draft ? Object.assign(draft, newData) : newData;
+  })
 );
 
 export const rejoinPositionData = (
@@ -291,6 +353,9 @@ export const positionsMarketsProvider = makeDerivedDataProvider<
   ).sort();
 });
 
+const firstOrSelf = (partyIds: string | string[]) =>
+  Array.isArray(partyIds) ? partyIds[0] : partyIds;
+
 export const positionsMetricsProvider = makeDerivedDataProvider<
   Position[],
   Position[],
@@ -301,18 +366,24 @@ export const positionsMetricsProvider = makeDerivedDataProvider<
       positionsDataProvider(callback, client, { partyIds: variables.partyIds }),
     (callback, client, variables) =>
       accountsDataProvider(callback, client, {
-        partyId: Array.isArray(variables.partyIds)
-          ? variables.partyIds[0]
-          : variables.partyIds,
+        partyId: firstOrSelf(variables.partyIds),
       }),
     (callback, client, variables) =>
       allMarketsWithLiveDataProvider(callback, client, {
         marketIds: variables.marketIds,
       }),
+    (callback, client, variables) =>
+      marginsDataProvider(callback, client, {
+        partyId: firstOrSelf(variables.partyIds),
+      }),
   ],
-  ([positions, accounts, marketsData], variables) => {
+  ([positions, accounts, marketsData, margins], variables) => {
     const positionsData = rejoinPositionData(positions, marketsData);
-    const metrics = getMetrics(positionsData, accounts as Account[] | null);
+    const metrics = getMetrics(
+      positionsData,
+      accounts as Account[] | null,
+      margins
+    );
     return preparePositions(metrics, variables.showClosed);
   },
   (data, delta, previousData) =>
@@ -323,3 +394,83 @@ export const positionsMetricsProvider = makeDerivedDataProvider<
       return !(previousRow && isEqual(previousRow, row));
     })
 );
+
+const getMaxLeverage = (market: MarketInfo | null) => {
+  if (!market || !market?.riskFactors) {
+    return 1;
+  }
+  const maxLeverage =
+    1 /
+    (Math.max(
+      Number(market.riskFactors.long),
+      Number(market.riskFactors.short)
+    ) || 1);
+  return maxLeverage;
+};
+
+export const maxMarketLeverageProvider = makeDerivedDataProvider<
+  number,
+  never,
+  { marketId: string }
+>(
+  [
+    (callback, client, { marketId }) =>
+      marketInfoProvider(callback, client, { marketId }),
+  ],
+  (parts) => getMaxLeverage(parts[0])
+);
+
+export const maxLeverageProvider = makeDerivedDataProvider<
+  number,
+  never,
+  { partyId: string; marketId: string }
+>(
+  [
+    (callback, client, { marketId }) =>
+      marketInfoProvider(callback, client, { marketId }),
+    (callback, client, { marketId, partyId }) =>
+      positionDataProvider(callback, client, { partyIds: partyId, marketId }),
+    marketMarginDataProvider,
+  ],
+  (parts) => {
+    const market: MarketInfo | null = parts[0];
+    const position: PositionFieldsFragment | null = parts[1];
+    const margin: MarginFieldsFragment | null = parts[2];
+    const maxLeverage = getMaxLeverage(market);
+
+    if (
+      market &&
+      position?.openVolume &&
+      position?.openVolume !== '0' &&
+      margin
+    ) {
+      const asset = getAsset(market);
+      const { positionDecimalPlaces, decimalPlaces: marketDecimalPlaces } =
+        market;
+      const openVolume = toBigNum(
+        position.openVolume.replace(/^-/, ''),
+        positionDecimalPlaces
+      );
+      const averageEntryPrice = toBigNum(
+        position.averageEntryPrice,
+        marketDecimalPlaces
+      );
+      // https://github.com/vegaprotocol/specs/blob/nebula/protocol/0019-MCAL-margin_calculator.md#isolated-margin-mode
+      return Math.min(
+        averageEntryPrice
+          .multipliedBy(openVolume)
+          .dividedBy(toBigNum(margin.initialLevel, asset.decimals))
+          .toNumber(),
+        maxLeverage
+      );
+    }
+    return maxLeverage;
+  }
+);
+
+export const useMaxLeverage = (marketId: string, partyId: string | null) => {
+  return useDataProvider({
+    dataProvider: partyId ? maxLeverageProvider : maxMarketLeverageProvider,
+    variables: { marketId, partyId: partyId || '' },
+  });
+};
