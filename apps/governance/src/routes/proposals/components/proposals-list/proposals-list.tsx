@@ -38,10 +38,9 @@ export const orderByDate = (arr: Proposals) =>
     [
       (p) => {
         if (p.__typename === 'BatchProposal') {
-          // TODO: this can/should probably be improved. The proposal API does not appear
-          // to align with the spec as every sub propobal has a different clsoing date. For
-          // now just using datetime which is the time at which the proposal is on the network
-          return new Date(p.datetime);
+          // Batch proposals can have different enactment dates, this could be improved by ordering
+          // by soonest enactment date in the batch
+          return new Date(p.batchTerms?.closingDatetime || p.datetime);
         }
 
         if (p.__typename === 'Proposal') {
@@ -100,14 +99,14 @@ export const ProposalsList = ({
         }
 
         if (proposal.__typename === 'BatchProposal') {
-          // All batch proposal sub proposals have the same close time so get the first one
-          const firstSubProposal = proposal.subProposals?.length
-            ? proposal.subProposals[0]
-            : undefined;
-
           if (
-            firstSubProposal &&
-            isFuture(new Date(firstSubProposal.terms?.closingDatetime || 0))
+            // this could be improved by sorting by soonest enactment date of all the
+            // sub proposals
+            isFuture(
+              new Date(
+                proposal.batchTerms?.closingDatetime || proposal.datetime
+              )
+            )
           ) {
             acc.open.push(proposal);
           } else {
