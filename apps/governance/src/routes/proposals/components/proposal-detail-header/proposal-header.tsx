@@ -8,7 +8,6 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { shorten } from '@vegaprotocol/utils';
 import { Heading, SubHeading } from '../../../../components/heading';
-import { type ReactNode } from 'react';
 import { truncateMiddle } from '../../../../lib/truncate-middle';
 import { CurrentProposalState } from '../current-proposal-state';
 import { ProposalInfoLabel } from '../proposal-info-label';
@@ -30,85 +29,6 @@ import { VoteBreakdown } from '../vote-breakdown';
 import { GovernanceTransferKindMapping } from '@vegaprotocol/types';
 import { type Proposal, type BatchProposal } from '../../types';
 import { type ProposalTermsFieldsFragment } from '../../__generated__/Proposals';
-
-export const ProposalHeader = ({
-  proposal,
-  isListItem = true,
-  voteState,
-}: {
-  proposal: Proposal | BatchProposal;
-  isListItem?: boolean;
-  voteState?: VoteState | null;
-}) => {
-  if (proposal.__typename === 'Proposal') {
-    return (
-      <SingleProposalHeader
-        proposal={proposal}
-        isListItem={isListItem}
-        voteState={voteState}
-      />
-    );
-  }
-
-  if (proposal.__typename === 'BatchProposal') {
-    return <BatchProposalHeader proposal={proposal} voteState={voteState} />;
-  }
-
-  return null;
-};
-
-const BatchProposalHeader = ({
-  proposal,
-  voteState,
-}: {
-  proposal: Proposal | BatchProposal;
-  voteState?: VoteState | null;
-}) => {
-  const { t } = useTranslation();
-
-  return (
-    <>
-      <div className="flex items-center justify-between gap-4 mb-6 text-sm">
-        <ProposalTypeTags proposal={proposal} />
-
-        <div className="flex items-center gap-6">
-          {(voteState === 'Yes' || voteState === 'No') && (
-            <div
-              className="flex items-center gap-2"
-              data-testid={`user-voted-${voteState.toLowerCase()}`}
-            >
-              <div data-testid="you-voted-icon">
-                <VegaIcon name={VegaIconNames.VOTE} size={24} />
-              </div>
-              <div>
-                {t('voted')}{' '}
-                <span className="uppercase">{t(`voteState_${voteState}`)}</span>
-              </div>
-            </div>
-          )}
-
-          <div data-testid="proposal-status">
-            <CurrentProposalState proposal={proposal} />
-          </div>
-        </div>
-      </div>
-
-      <div data-testid="proposal-title" className="break-all">
-        <header>
-          <SubHeading
-            title={proposal.rationale.title || t('Unknown proposal')}
-          />
-        </header>
-      </div>
-
-      {/* TODO: add proposal details */}
-      {/* <ProposalDetails proposal={proposal} /> */}
-
-      {/* TODO: fix type cast */}
-      <VoteBreakdown proposal={proposal as Proposal} />
-    </>
-  );
-};
 
 const ProposalTypeTags = ({
   proposal,
@@ -163,198 +83,216 @@ const ProposalTypeTag = ({ terms }: { terms: ProposalTermsFieldsFragment }) => {
   }
 };
 
-const ProposalDetails = ({ proposal }: { proposal: Proposal }) => {
+const ProposalDetails = ({
+  proposal,
+}: {
+  proposal: Proposal | BatchProposal;
+}) => {
+  const { t } = useTranslation();
+  const featureFlags = useFeatureFlags((store) => store.flags);
+  const consoleLink = useLinks(DApp.Console);
+
+  const renderDetails = (terms: ProposalTermsFieldsFragment) => {
+    switch (terms.change?.__typename) {
+      case 'NewMarket': {
+        const getAsset = (terms: ProposalTermsFieldsFragment) => {
+          if (
+            terms?.change.__typename === 'NewMarket' &&
+            (terms.change.instrument.product?.__typename === 'FutureProduct' ||
+              terms.change.instrument.product?.__typename ===
+                'PerpetualProduct')
+          ) {
+            return terms.change.instrument.product.settlementAsset;
+          }
+          return undefined;
+        };
+
+        return (
+          <>
+            <SuccessorCode proposalId={proposal?.id} />
+            <span>
+              {t('Code')}: {terms.change.instrument.code}.
+            </span>{' '}
+            {terms && getAsset(terms)?.symbol ? (
+              <>
+                <span className="font-semibold">{getAsset(terms)?.symbol}</span>{' '}
+                {t('settled future')}.
+              </>
+            ) : (
+              ''
+            )}
+          </>
+        );
+      }
+      case 'UpdateMarketState': {
+        // fallbackTitle = t('UpdateMarketStateProposal');
+        return (
+          <span>
+            {featureFlags.UPDATE_MARKET_STATE &&
+            terms.change?.market?.id &&
+            terms.change.updateType ? (
+              <>
+                {t(terms.change.updateType)}:{' '}
+                {truncateMiddle(terms.change.market.id)}
+              </>
+            ) : null}
+          </span>
+        );
+      }
+      case 'UpdateMarket': {
+        // fallbackTitle = t('UpdateMarketProposal');
+        return (
+          <>
+            <span>{t('UpdateToMarket')}:</span>{' '}
+            <span className="inline-flex items-start gap-2">
+              <span className="break-all">{terms.change.marketId} </span>
+              <span className="inline-flex items-end gap-0">
+                <CopyWithTooltip
+                  text={terms.change.marketId}
+                  description={t('copyToClipboard')}
+                >
+                  <button className="inline-block px-1">
+                    <VegaIcon size={20} name={VegaIconNames.COPY} />
+                  </button>
+                </CopyWithTooltip>
+                <Tooltip description={t('OpenInConsole')} align="center">
+                  <button
+                    className="inline-block px-1"
+                    onClick={() => {
+                      const marketPageLink = consoleLink(
+                        CONSOLE_MARKET_PAGE.replace(
+                          ':marketId',
+                          // @ts-ignore ts doesn't like this field even though its already a string above???
+                          terms.change.marketId
+                        )
+                      );
+                      window.open(marketPageLink, '_blank');
+                    }}
+                  >
+                    <VegaIcon size={20} name={VegaIconNames.OPEN_EXTERNAL} />
+                  </button>
+                </Tooltip>
+              </span>
+            </span>
+          </>
+        );
+      }
+      case 'UpdateReferralProgram': {
+        // fallbackTitle = t('UpdateReferralProgramProposal');
+        return null;
+      }
+      case 'UpdateVolumeDiscountProgram': {
+        // fallbackTitle = t('UpdateVolumeDiscountProgramProposal');
+        return null;
+      }
+      case 'NewAsset': {
+        // fallbackTitle = t('NewAssetProposal');
+        return (
+          <>
+            <span>{t('Symbol')}:</span>{' '}
+            <Lozenge>{terms.change.symbol}.</Lozenge>{' '}
+            {terms.change.source.__typename === 'ERC20' && (
+              <>
+                <span>{t('ERC20ContractAddress')}:</span>{' '}
+                <Lozenge>{terms.change.source.contractAddress}</Lozenge>
+              </>
+            )}{' '}
+            {terms.change.source.__typename === 'BuiltinAsset' && (
+              <>
+                <span>{t('MaxFaucetAmountMint')}:</span>{' '}
+                <Lozenge>{terms.change.source.maxFaucetAmountMint}</Lozenge>
+              </>
+            )}
+          </>
+        );
+      }
+      case 'UpdateNetworkParameter': {
+        // fallbackTitle = t('NetworkParameterProposal');
+        return (
+          <>
+            <span>{t('Change')}:</span>{' '}
+            <Lozenge>{terms.change.networkParameter.key}</Lozenge>{' '}
+            <span>{t('to')}</span>{' '}
+            <span className="whitespace-nowrap">
+              <Lozenge>{terms.change.networkParameter.value}</Lozenge>
+            </span>
+          </>
+        );
+      }
+      case 'NewFreeform': {
+        // fallbackTitle = t('FreeformProposal');
+        return <span />;
+      }
+      case 'UpdateAsset': {
+        // fallbackTitle = t('UpdateAssetProposal');
+        return (
+          <>
+            <span>{t('AssetID')}:</span>{' '}
+            <Lozenge>{truncateMiddle(terms.change.assetId)}</Lozenge>
+          </>
+        );
+      }
+      case 'NewTransfer':
+        // fallbackTitle = t('NewTransferProposal');
+        return featureFlags.GOVERNANCE_TRANSFERS ? (
+          <NewTransferSummary proposalId={proposal?.id} />
+        ) : null;
+      case 'CancelTransfer':
+        // fallbackTitle = t('CancelTransferProposal');
+        return featureFlags.GOVERNANCE_TRANSFERS ? (
+          <CancelTransferSummary proposalId={proposal?.id} />
+        ) : null;
+      default: {
+        return null;
+      }
+    }
+  };
+
+  let details = null;
+
+  if (proposal.__typename === 'Proposal') {
+    details = renderDetails(proposal.terms);
+  }
+
+  if (proposal.__typename === 'BatchProposal' && proposal.subProposals) {
+    details = (
+      <ul className="flex flex-col gap-2">
+        {proposal.subProposals.map((p) => {
+          if (!p?.terms) return null;
+          return <li>{renderDetails(p.terms)}</li>;
+        })}
+      </ul>
+    );
+  }
+
   return (
     <div
       data-testid="proposal-details"
       className="break-words mb-6 text-vega-light-200"
     >
-      TODO: The details
+      {details}
     </div>
   );
 };
 
-const SingleProposalHeader = ({
+export const ProposalHeader = ({
   proposal,
-  isListItem,
+  isListItem = true,
   voteState,
 }: {
-  proposal: Proposal;
+  proposal: Proposal | BatchProposal;
   isListItem?: boolean;
   voteState?: VoteState | null;
 }) => {
-  const featureFlags = useFeatureFlags((state) => state.flags);
   const { t } = useTranslation();
-  const change = proposal?.terms.change;
-
-  const consoleLink = useLinks(DApp.Console);
-
-  let details: ReactNode;
-  let fallbackTitle = '';
 
   const title = proposal?.rationale.title.trim();
-
+  const fallbackTitle = t(
+    proposal.__typename === 'Proposal'
+      ? proposal.terms.change.__typename
+      : 'Batch proposal'
+  );
   const titleContent = shorten(title ?? '', 100);
-
-  const getAsset = (proposal: Proposal) => {
-    const terms = proposal?.terms;
-    if (
-      terms?.change.__typename === 'NewMarket' &&
-      (terms.change.instrument.product?.__typename === 'FutureProduct' ||
-        terms.change.instrument.product?.__typename === 'PerpetualProduct')
-    ) {
-      return terms.change.instrument.product.settlementAsset;
-    }
-    return undefined;
-  };
-
-  switch (change?.__typename) {
-    case 'NewMarket': {
-      details = (
-        <>
-          <SuccessorCode proposalId={proposal?.id} />
-          <span>
-            {t('Code')}: {change.instrument.code}.
-          </span>{' '}
-          {proposal?.terms && getAsset(proposal)?.symbol ? (
-            <>
-              <span className="font-semibold">
-                {getAsset(proposal)?.symbol}
-              </span>{' '}
-              {t('settled future')}.
-            </>
-          ) : (
-            ''
-          )}
-        </>
-      );
-      break;
-    }
-    case 'UpdateMarketState': {
-      fallbackTitle = t('UpdateMarketStateProposal');
-      details = (
-        <span>
-          {featureFlags.UPDATE_MARKET_STATE &&
-          // @ts-ignore types are fucked
-          change?.market?.id &&
-          // @ts-ignore types are fucked
-          change.updateType ? (
-            <>
-              {/*
-              // @ts-ignore types are fucked */}
-              {t(change.updateType)}: {truncateMiddle(change.market.id)}
-            </>
-          ) : null}
-        </span>
-      );
-      break;
-    }
-    case 'UpdateMarket': {
-      fallbackTitle = t('UpdateMarketProposal');
-      details = (
-        <>
-          <span>{t('UpdateToMarket')}:</span>{' '}
-          <span className="inline-flex items-start gap-2">
-            <span className="break-all">{change.marketId} </span>
-            <span className="inline-flex items-end gap-0">
-              <CopyWithTooltip
-                text={change.marketId}
-                description={t('copyToClipboard')}
-              >
-                <button className="inline-block px-1">
-                  <VegaIcon size={20} name={VegaIconNames.COPY} />
-                </button>
-              </CopyWithTooltip>
-              <Tooltip description={t('OpenInConsole')} align="center">
-                <button
-                  className="inline-block px-1"
-                  onClick={() => {
-                    const marketPageLink = consoleLink(
-                      CONSOLE_MARKET_PAGE.replace(':marketId', change.marketId)
-                    );
-                    window.open(marketPageLink, '_blank');
-                  }}
-                >
-                  <VegaIcon size={20} name={VegaIconNames.OPEN_EXTERNAL} />
-                </button>
-              </Tooltip>
-            </span>
-          </span>
-        </>
-      );
-      break;
-    }
-    case 'UpdateReferralProgram': {
-      fallbackTitle = t('UpdateReferralProgramProposal');
-      break;
-    }
-    case 'UpdateVolumeDiscountProgram': {
-      fallbackTitle = t('UpdateVolumeDiscountProgramProposal');
-      break;
-    }
-    case 'NewAsset': {
-      fallbackTitle = t('NewAssetProposal');
-      details = (
-        <>
-          <span>{t('Symbol')}:</span> <Lozenge>{change.symbol}.</Lozenge>{' '}
-          {change.source.__typename === 'ERC20' && (
-            <>
-              <span>{t('ERC20ContractAddress')}:</span>{' '}
-              <Lozenge>{change.source.contractAddress}</Lozenge>
-            </>
-          )}{' '}
-          {change.source.__typename === 'BuiltinAsset' && (
-            <>
-              <span>{t('MaxFaucetAmountMint')}:</span>{' '}
-              <Lozenge>{change.source.maxFaucetAmountMint}</Lozenge>
-            </>
-          )}
-        </>
-      );
-      break;
-    }
-    case 'UpdateNetworkParameter': {
-      fallbackTitle = t('NetworkParameterProposal');
-      details = (
-        <>
-          <span>{t('Change')}:</span>{' '}
-          <Lozenge>{change.networkParameter.key}</Lozenge>{' '}
-          <span>{t('to')}</span>{' '}
-          <span className="whitespace-nowrap">
-            <Lozenge>{change.networkParameter.value}</Lozenge>
-          </span>
-        </>
-      );
-      break;
-    }
-    case 'NewFreeform': {
-      fallbackTitle = t('FreeformProposal');
-      details = <span />;
-      break;
-    }
-    case 'UpdateAsset': {
-      fallbackTitle = t('UpdateAssetProposal');
-      details = (
-        <>
-          <span>{t('AssetID')}:</span>{' '}
-          <Lozenge>{truncateMiddle(change.assetId)}</Lozenge>
-        </>
-      );
-      break;
-    }
-    case 'NewTransfer':
-      fallbackTitle = t('NewTransferProposal');
-      details = featureFlags.GOVERNANCE_TRANSFERS ? (
-        <NewTransferSummary proposalId={proposal?.id} />
-      ) : null;
-      break;
-    case 'CancelTransfer':
-      fallbackTitle = t('CancelTransferProposal');
-      details = featureFlags.GOVERNANCE_TRANSFERS ? (
-        <CancelTransferSummary proposalId={proposal?.id} />
-      ) : null;
-      break;
-  }
 
   return (
     <>
@@ -396,33 +334,11 @@ const SingleProposalHeader = ({
           />
         )}
       </div>
-
-      {details && (
-        <div
-          data-testid="proposal-details"
-          className="break-words mb-6 text-vega-light-200"
-        >
-          {details}
-        </div>
-      )}
-
-      {/* TODO: fix type cast */}
-      <VoteBreakdown proposal={proposal as Proposal} />
+      <ProposalDetails proposal={proposal} />
+      <VoteBreakdown proposal={proposal} />
     </>
   );
 };
-
-// const BatchProposalHeader = ({
-//   proposal,
-//   isListItem,
-//   voteState,
-// }: {
-//   proposal: BatchProposal | ListBatchProposal;
-//   isListItem?: boolean;
-//   voteState?: VoteState | null;
-// }) => {
-//   return <div>TODO: handle batch header proposal</div>;
-// };
 
 export const SuccessorCode = ({
   proposalId,

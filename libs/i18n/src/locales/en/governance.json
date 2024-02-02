@@ -81,6 +81,7 @@
   "back": "back",
   "backToStaking": "Back to Staking",
   "Balance": "Balance",
+  "Batch proposal": "Batch proposal",
   "BenefitTierMinimumActivityStreak": "Minimum activity streak",
   "BenefitTierMinimumActivityStreakDescription": "The minimum number of times the party needs to have completed the activity",
   "BenefitTierMinimumEpochs": "Minimum epochs",
