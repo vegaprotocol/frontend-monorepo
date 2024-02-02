@@ -309,18 +309,18 @@ export const ActiveRewardCard = ({
       ].includes(m.state)
   );
 
+  if (marketSettled) {
+    return null;
+  }
+
   const assetInActiveMarket =
     allMarkets &&
     Object.values(allMarkets).some((m: MarketFieldsFragment | null) => {
       if (m && getAsset(m).id === dispatchStrategy.dispatchMetricAssetId) {
-        return m?.state && [MarketState.STATE_ACTIVE].includes(m.state);
+        return m?.state && MarketState.STATE_ACTIVE === m.state;
       }
       return false;
     });
-
-  if (marketSettled) {
-    return null;
-  }
 
   const marketSuspended = transferNode.markets?.some(
     (m) =>
