@@ -11,6 +11,7 @@ import { useCandles } from '../../hooks/use-candles';
 import BigNumber from 'bignumber.js';
 import classNames from 'classnames';
 import { useT } from '../../use-t';
+import { useScreenDimensions } from '@vegaprotocol/react-helpers';
 
 interface Props {
   marketId?: string;
@@ -26,6 +27,7 @@ export const Last24hPriceChange = ({
   initialValue,
 }: Props) => {
   const t = useT();
+  const { isMobile } = useScreenDimensions();
   const { oneDayCandles, error, fiveDaysCandles } = useCandles({
     marketId,
   });
@@ -34,6 +36,10 @@ export const Last24hPriceChange = ({
     fiveDaysCandles.length > 0 &&
     (!oneDayCandles || oneDayCandles?.length === 0)
   ) {
+    // if there is no change and no percentage, we don't show anything on mobile
+    if (isMobile) {
+      return null;
+    }
     return (
       <Tooltip
         description={
@@ -60,6 +66,11 @@ export const Last24hPriceChange = ({
   const candles = oneDayCandles?.map((c) => c.close) || initialValue || [];
   const change = priceChange(candles);
   const changePercentage = priceChangePercentage(candles);
+
+  // if there is no change and no percentage, we don't show anything on mobile
+  if (!change && !changePercentage && isMobile) {
+    return null;
+  }
 
   return (
     <span

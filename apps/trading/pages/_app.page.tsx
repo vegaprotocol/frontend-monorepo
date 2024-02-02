@@ -25,7 +25,6 @@ import {
   ProtocolUpgradeProposalNotification,
 } from '@vegaprotocol/proposals';
 import { ViewingBanner } from '../components/viewing-banner';
-import { NavHeader } from '../components/navbar/nav-header';
 import { Telemetry } from '../components/telemetry';
 import { Routes as AppRoutes } from '../lib/links';
 import { SSRLoader } from './ssr-loader';
@@ -33,7 +32,6 @@ import { PartyActiveOrdersHandler } from './party-active-orders-handler';
 import { MaybeConnectEagerly } from './maybe-connect-eagerly';
 import { TransactionHandlers } from './transaction-handlers';
 import { useT } from '../lib/use-t';
-import { useScreenDimensions } from '@vegaprotocol/react-helpers';
 
 const Title = () => {
   const t = useT();
@@ -65,8 +63,6 @@ function AppBody({ Component }: AppProps) {
     'grid relative h-full z-0',
     'grid-rows-[repeat(3,min-content),minmax(0,1fr)]'
   );
-
-  const { isMobile } = useScreenDimensions();
   return (
     <div className="h-full overflow-hidden">
       <Head>
@@ -83,10 +79,7 @@ function AppBody({ Component }: AppProps) {
             // render nothing for markets/all, otherwise markets/:marketId will match with markets/all
             element={null}
           />
-          <Route
-            path={AppRoutes.MARKET}
-            element={isMobile ? <NavHeader /> : null}
-          />
+          <Route path={AppRoutes.MARKET} />
         </Routes>
         <div data-testid="banners">
           <ProtocolUpgradeProposalNotification

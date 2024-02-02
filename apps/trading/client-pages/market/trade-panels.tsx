@@ -11,11 +11,9 @@ import {
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../lib/use-t';
-import { MarketBanner } from '../../components/market-banner';
 import { ErrorBoundary } from '../../components/error-boundary';
 import { type TradingView } from './trade-views';
 import { TradingViews } from './trade-views';
-
 interface TradePanelsProps {
   market: Market;
   pinnedAsset?: PinnedAsset;
@@ -72,9 +70,6 @@ export const TradePanels = ({ market, pinnedAsset }: TradePanelsProps) => {
 
   return (
     <div className="h-full flex flex-col lg:grid grid-rows-[min-content_min-content_1fr_min-content]">
-      <div>
-        <MarketBanner market={market} />
-      </div>
       <div className="flex flex-col w-full overflow-hidden">
         <div className="flex flex-nowrap overflow-x-auto max-w-full border-t border-default">
           {['chart', 'orderbook', 'trades', 'liquidity', 'fundingPayments']

@@ -1,16 +1,21 @@
 import { VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import { MarketSelector } from '../market-selector';
-import { useMarket, useMarketList } from '@vegaprotocol/markets';
+import {
+  Last24hPriceChange,
+  useMarket,
+  useMarketList,
+} from '@vegaprotocol/markets';
 import { useParams } from 'react-router-dom';
 import * as PopoverPrimitive from '@radix-ui/react-popover';
 import { useState } from 'react';
 import { useT } from '../../lib/use-t';
 import classNames from 'classnames';
-
+import { MarketHeaderStats } from '../../client-pages/market/market-header-stats';
+import { MarketMarkPrice } from '../market-mark-price';
 /**
  * This is only rendered for the mobile navigation
  */
-export const NavHeader = () => {
+export const MobileMarketHeader = () => {
   const t = useT();
   const { marketId } = useParams();
   const { data } = useMarket(marketId);
@@ -24,14 +29,14 @@ export const NavHeader = () => {
   if (!marketId) return null;
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="p-2 flex items-center gap-4 h-10 pr-1 border-b border-default bg-vega-clight-700 dark:bg-vega-cdark-700">
       <FullScreenPopover
         open={openMarket}
         onOpenChange={(x) => {
           setOpenMarket(x);
         }}
         trigger={
-          <h1 className="flex gap-1 sm:gap-2 md:gap-4 items-center text-default text-sm md:text-lg whitespace-nowrap xl:pr-4 xl:border-r border-default">
+          <h1 className="flex gap-1 sm:gap-2 md:gap-4 items-center text-lg md:text-lg whitespace-nowrap xl:pr-4 xl:border-r border-default">
             {data
               ? data.tradableInstrument.instrument.code
               : t('Select market')}
@@ -43,7 +48,7 @@ export const NavHeader = () => {
                 }
               )}
             >
-              <VegaIcon name={VegaIconNames.CHEVRON_DOWN} size={12} />
+              <VegaIcon name={VegaIconNames.CHEVRON_DOWN} size={16} />
             </span>
           </h1>
         }
@@ -60,8 +65,19 @@ export const NavHeader = () => {
           setOpenPrice(x);
         }}
         trigger={
-          <h1 className="flex gap-1 sm:gap-2 md:gap-4 items-center text-default text-xs md:text-md whitespace-nowrap xl:pr-4 xl:border-r border-default">
-            44,500
+          <h1 className="flex gap-1 items-center text-sm md:text-md whitespace-nowrap xl:pr-4 xl:border-r border-default">
+            {data && (
+              <>
+                <Last24hPriceChange
+                  marketId={data.id}
+                  decimalPlaces={data.decimalPlaces}
+                />
+                <MarketMarkPrice
+                  marketId={data.id}
+                  decimalPlaces={data.decimalPlaces}
+                />
+              </>
+            )}
             <span
               className={classNames(
                 'transition-transform ease-in-out duration-300',
@@ -70,16 +86,14 @@ export const NavHeader = () => {
                 }
               )}
             >
-              <VegaIcon name={VegaIconNames.CHEVRON_DOWN} size={12} />
+              <VegaIcon name={VegaIconNames.CHEVRON_DOWN} size={16} />
             </span>
           </h1>
         }
       >
-        <MarketSelector
-          currentMarketId={marketId}
-          onSelect={() => setOpenMarket(false)}
-        />
-        {/* <MarketHeader /> */}
+        <div className="p-2 text-sm">
+          {data && <MarketHeaderStats market={data} />}
+        </div>
       </FullScreenPopover>
     </div>
   );
@@ -103,7 +117,7 @@ export const FullScreenPopover = ({
       <PopoverPrimitive.Portal>
         <PopoverPrimitive.Content
           data-testid="popover-content"
-          className="w-screen bg-vega-clight-800 dark:bg-vega-cdark-800 text-default border border-default"
+          className="w-screen bg-vega-clight-800 dark:bg-vega-cdark-800 border border-default"
           sideOffset={5}
         >
           {children}
