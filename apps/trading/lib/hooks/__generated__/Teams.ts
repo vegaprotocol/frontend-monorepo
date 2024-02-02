@@ -3,33 +3,40 @@ import * as Types from '@vegaprotocol/types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
+export type TeamsFieldsFragment = { __typename?: 'Team', teamId: string, referrer: string, name: string, teamUrl: string, avatarUrl: string, createdAt: any, createdAtEpoch: number, closed: boolean, totalMembers: number };
+
 export type TeamsQueryVariables = Types.Exact<{
   teamId?: Types.InputMaybe<Types.Scalars['ID']>;
   partyId?: Types.InputMaybe<Types.Scalars['ID']>;
 }>;
 
 
-export type TeamsQuery = { __typename?: 'Query', teams?: { __typename?: 'TeamConnection', edges: Array<{ __typename?: 'TeamEdge', node: { __typename?: 'Team', teamId: string, referrer: string, name: string, teamUrl: string, avatarUrl: string, createdAt: any, createdAtEpoch: number, closed: boolean } }> } | null };
+export type TeamsQuery = { __typename?: 'Query', teams?: { __typename?: 'TeamConnection', edges: Array<{ __typename?: 'TeamEdge', node: { __typename?: 'Team', teamId: string, referrer: string, name: string, teamUrl: string, avatarUrl: string, createdAt: any, createdAtEpoch: number, closed: boolean, totalMembers: number } }> } | null };
 
-
+export const TeamsFieldsFragmentDoc = gql`
+    fragment TeamsFields on Team {
+  teamId
+  referrer
+  name
+  teamUrl
+  avatarUrl
+  createdAt
+  createdAtEpoch
+  closed
+  totalMembers
+}
+    `;
 export const TeamsDocument = gql`
     query Teams($teamId: ID, $partyId: ID) {
   teams(teamId: $teamId, partyId: $partyId) {
     edges {
       node {
-        teamId
-        referrer
-        name
-        teamUrl
-        avatarUrl
-        createdAt
-        createdAtEpoch
-        closed
+        ...TeamsFields
       }
     }
   }
 }
-    `;
+    ${TeamsFieldsFragmentDoc}`;
 
 /**
  * __useTeamsQuery__
