@@ -2,46 +2,17 @@ import { type TeamGame, type TeamStats } from '../../lib/hooks/use-team';
 import { type TeamsFieldsFragment } from '../../lib/hooks/__generated__/Teams';
 import { TeamAvatar, getFallbackAvatar } from './team-avatar';
 import { FavoriteGame, Stat } from './team-stats';
-import { useI18n, useT } from '../../lib/use-t';
-import { formatNumberRounded, formatOrdinal } from '@vegaprotocol/utils';
+import { useT } from '../../lib/use-t';
+import { formatNumberRounded } from '@vegaprotocol/utils';
 import BigNumber from 'bignumber.js';
 import { Box } from './box';
 import { Intent, Tooltip, TradingAnchorButton } from '@vegaprotocol/ui-toolkit';
 import { Links } from '../../lib/links';
 import orderBy from 'lodash/orderBy';
 import { take } from 'lodash';
-import { DispatchMetric, DispatchMetricLabels } from '@vegaprotocol/types';
+import { DispatchMetricLabels } from '@vegaprotocol/types';
 import classNames from 'classnames';
 import { UpdateTeamButton } from '../../client-pages/competitions/update-team-button';
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const MOCK_LAST_GAMES = [
-  {
-    rank: 12,
-    metric: DispatchMetric.DISPATCH_METRIC_MAKER_FEES_PAID,
-    epoch: 1,
-  },
-  {
-    rank: 33,
-    metric: DispatchMetric.DISPATCH_METRIC_RELATIVE_RETURN,
-    epoch: 2,
-  },
-  {
-    rank: 4,
-    metric: DispatchMetric.DISPATCH_METRIC_VALIDATOR_RANKING,
-    epoch: 3,
-  },
-  {
-    rank: 99,
-    metric: DispatchMetric.DISPATCH_METRIC_AVERAGE_POSITION,
-    epoch: 4,
-  },
-  {
-    rank: 47,
-    metric: DispatchMetric.DISPATCH_METRIC_MARKET_VALUE,
-    epoch: 5,
-  },
-];
 
 export const TeamCard = ({
   rank,
@@ -68,7 +39,6 @@ export const TeamCard = ({
     ),
     5
   );
-  //   const lastGames = MOCK_LAST_GAMES;
 
   return (
     <div
@@ -179,7 +149,6 @@ export const TeamCard = ({
  * to english.
  */
 const RankLabel = ({ rank }: { rank: number }) => {
-  const i18n = useI18n();
-  if (i18n.language.substring(0, 2) !== 'en') return rank.toString();
-  return formatOrdinal(rank);
+  const t = useT();
+  return t('place', { count: rank, ordinal: true });
 };

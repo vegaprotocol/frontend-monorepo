@@ -14,7 +14,6 @@ import {
   toNumberParts,
   formatNumberRounded,
   toQUSD,
-  formatOrdinal,
 } from './number';
 
 describe('number utils', () => {
@@ -301,36 +300,5 @@ describe('toQUSD', () => {
     [50000e9, 5e14, 0.1], // gwei -> 50000 gwei ~= 0.1 qUSD
   ])('converts (%d, %d) to %d qUSD', (amount, quantum, expected) => {
     expect(toQUSD(amount, quantum).toNumber()).toEqual(expected);
-  });
-});
-
-describe('formatOrdinal', () => {
-  it.each([
-    [0, '0th'],
-    [1, '1st'],
-    [2, '2nd'],
-    [3, '3rd'],
-    [4, '4th'],
-    [5, '5th'],
-    [6, '6th'],
-    [7, '7th'],
-    [8, '8th'],
-    [9, '9th'],
-    [10, '10th'],
-    [11, '11th'],
-    [12, '12th'],
-    [13, '13th'],
-    [14, '14th'],
-    [21, '21st'],
-    [22, '22nd'],
-    [23, '23rd'],
-    [111, '111th'],
-    [112, '112th'],
-    [113, '113th'],
-    [11111111121, '11111111121st'],
-    [11111111132, '11111111132nd'],
-    [11111111143, '11111111143rd'],
-  ])('ordinal of %s is %s', (input, expectedOutput) => {
-    expect(formatOrdinal(input)).toEqual(expectedOutput);
   });
 });
