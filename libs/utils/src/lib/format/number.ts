@@ -254,3 +254,24 @@ export const toQUSD = (
   const qUSD = value.dividedBy(q);
   return qUSD;
 };
+
+export const formatOrdinal = (input: string | number) => {
+  const num = input.toString();
+  let suffix = 'th';
+
+  const ST =
+    num.substring(num.length - 1) === '1' &&
+    num.substring(num.length - 2) !== '11';
+  const ND =
+    num.substring(num.length - 1) === '2' &&
+    num.substring(num.length - 2) !== '12';
+  const RD =
+    num.substring(num.length - 1) === '3' &&
+    num.substring(num.length - 2) !== '13';
+
+  if (ST) suffix = 'st';
+  if (ND) suffix = 'nd';
+  if (RD) suffix = 'rd';
+
+  return `${num}${suffix}`;
+};
