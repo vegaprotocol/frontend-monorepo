@@ -92,9 +92,11 @@ export const MobileMarketHeader = () => {
           </h1>
         }
       >
-        <div className="p-2 text-sm">
-          {data && <MarketHeaderStats market={data} />}
-        </div>
+        {data && (
+          <div className="px-2 py-4 text-sm grid grid-cols-2 items-center gap-2">
+            <MarketHeaderStats market={data} />
+          </div>
+        )}
       </FullScreenPopover>
     </div>
   );
