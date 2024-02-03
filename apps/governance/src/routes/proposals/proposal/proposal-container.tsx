@@ -96,7 +96,7 @@ export const ProposalContainer = () => {
     return <BatchProposalContainer proposal={proposal} />;
   }
 
-  throw new Error('invalid proposal');
+  return null;
 };
 
 export const SingleProposalContainer = ({

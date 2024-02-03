@@ -8,6 +8,7 @@ import { formatNumber } from '@vegaprotocol/utils';
 import { ProposalState } from '@vegaprotocol/types';
 import { CompactNumber } from '@vegaprotocol/react-helpers';
 import { type Proposal, type BatchProposal } from '../../types';
+import { useBatchVoteInformation } from '../../hooks/use-vote-information';
 
 export const CompactVotes = ({ number }: { number: BigNumber }) => (
   <CompactNumber
@@ -105,8 +106,9 @@ export const VoteBreakdown = ({
 };
 
 const VoteBreakdownBatch = ({ proposal }: { proposal: BatchProposal }) => {
+  const voteInfo = useBatchVoteInformation({ proposal });
   // TODO: show summarised vote information for all sub proposals
-  return <p>View proposal for more info</p>;
+  return <pre>{JSON.stringify(voteInfo, null, 2)}</pre>;
 };
 
 const VoteBreakdownNormal = ({ proposal }: { proposal: Proposal }) => {
