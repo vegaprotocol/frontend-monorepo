@@ -16,7 +16,7 @@ export const LayoutWithSidebar = ({
   const sidebarOpen = sidebarView !== null;
   const gridClasses = classNames(
     'h-full relative z-0 grid',
-    'grid-rows-[min-content_1fr_40px]',
+    'grid-rows-[min-content_1fr_50px]',
     'lg:grid-rows-[min-content_1fr]',
     'lg:grid-cols-[1fr_280px_40px]',
     'xxxl:grid-cols-[1fr_320px_40px]'

@@ -65,8 +65,22 @@ export const Sidebar = ({ options }: { options?: ReactNode }) => {
   const { isMobile } = useScreenDimensions();
   return (
     <div className="flex h-full lg:flex-col gap-1" data-testid="sidebar">
-      {options && <nav className={navClasses}>{options}</nav>}
-      <nav className={classNames(navClasses, 'ml-auto lg:mt-auto lg:ml-0')}>
+      {options && (
+        <nav
+          className={classNames(
+            navClasses,
+            'grid grid-cols-3 grow md:grow-0 md:flex lg:flex-col pl-2'
+          )}
+        >
+          {options}
+        </nav>
+      )}
+      <nav
+        className={classNames(
+          navClasses,
+          'ml-auto lg:mt-auto lg:ml-0 shrink-0'
+        )}
+      >
         {!isMobile ? (
           <SidebarButton
             view={ViewType.ViewAs}
