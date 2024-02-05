@@ -1,3 +1,4 @@
+import compact from 'lodash/compact';
 import { RoundedWrapper } from '@vegaprotocol/ui-toolkit';
 import { ProposalHeader } from '../proposal-detail-header/proposal-header';
 import { ProposalsListItemDetails } from './proposals-list-item-details';
@@ -18,7 +19,6 @@ export const ProposalsListItem = ({ proposal }: ProposalsListItemProps) => {
         <ProposalHeader proposal={proposal} voteState={voteState} />
         {proposal.__typename === 'Proposal' ? (
           <ProposalsListItemDetails
-            type={proposal.__typename}
             id={proposal.id}
             state={proposal.state}
             closingDatetime={proposal.terms.closingDatetime}
@@ -27,11 +27,13 @@ export const ProposalsListItem = ({ proposal }: ProposalsListItemProps) => {
           />
         ) : proposal.__typename === 'BatchProposal' && proposal.batchTerms ? (
           <ProposalsListItemDetails
-            type={proposal.__typename}
             id={proposal.id}
             state={proposal.state}
             closingDatetime={proposal.batchTerms.closingDatetime}
             rejectionReason={proposal.rejectionReason}
+            enactmentDatetime={compact(
+              proposal.batchTerms.changes.map((c) => c?.enactmentDatetime)
+            )}
           />
         ) : null}
       </RoundedWrapper>

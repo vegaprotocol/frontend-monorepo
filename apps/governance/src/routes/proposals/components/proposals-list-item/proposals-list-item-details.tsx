@@ -9,21 +9,18 @@ import {
   ProposalState,
 } from '@vegaprotocol/types';
 import Routes from '../../../routes';
-import { type ProposalType } from '../../types';
 
 export const ProposalsListItemDetails = ({
   id,
-  type,
   state,
   closingDatetime,
   enactmentDatetime,
   rejectionReason,
 }: {
   id: string;
-  type: ProposalType;
   state: ProposalState;
   closingDatetime: string;
-  enactmentDatetime?: string;
+  enactmentDatetime?: string | string[];
   rejectionReason: ProposalRejectionReason | null | undefined;
 }) => {
   const { t } = useTranslation();
@@ -32,7 +29,6 @@ export const ProposalsListItemDetails = ({
     <div className="mt-4 items-start text-sm">
       <div className="flex items-center gap-2 text-vega-light-300 mb-2">
         <VoteStateText
-          type={type}
           state={state}
           enactmentDatetime={enactmentDatetime}
           closingDatetime={closingDatetime}
@@ -47,16 +43,14 @@ export const ProposalsListItemDetails = ({
 };
 
 const VoteStateText = ({
-  type,
   state,
   closingDatetime,
   enactmentDatetime,
   rejectionReason,
 }: {
-  type: ProposalType;
   state: ProposalState;
   closingDatetime: string;
-  enactmentDatetime?: string;
+  enactmentDatetime?: string | string[];
   rejectionReason: ProposalRejectionReason | null | undefined;
 }) => {
   const { t } = useTranslation();
@@ -71,7 +65,21 @@ const VoteStateText = ({
 
   switch (state) {
     case ProposalState.STATE_ENACTED: {
-      // TODO: handle batch proposal which might have many enactment times
+      if (Array.isArray(enactmentDatetime)) {
+        return (
+          <p {...props}>
+            {enactmentDatetime.map((e) => (
+              <span {...props} className="block">
+                {t('enactedOn{{date}}', {
+                  enactmentDate:
+                    enactmentDatetime &&
+                    format(new Date(e), DATE_FORMAT_DETAILED),
+                })}
+              </span>
+            ))}
+          </p>
+        );
+      }
       return (
         <p {...props}>
           {t('enactedOn{{date}}', {
@@ -82,20 +90,23 @@ const VoteStateText = ({
         </p>
       );
     }
-    case ProposalState.STATE_PASSED: {
-      // TODO: handle batch proposal which might have many enactment times
-      return (
-        <p {...props}>
-          {t('enactsOn{{date}}', {
-            enactmentDate:
-              enactmentDatetime &&
-              format(new Date(enactmentDatetime), DATE_FORMAT_DETAILED),
-          })}
-        </p>
-      );
-    }
+    case ProposalState.STATE_PASSED:
     case ProposalState.STATE_WAITING_FOR_NODE_VOTE: {
-      // TODO: handle batch proposal which might have many enactment times
+      if (Array.isArray(enactmentDatetime)) {
+        return (
+          <p {...props}>
+            {enactmentDatetime.map((e) => (
+              <span {...props} className="block">
+                {t('enactsOn{{date}}', {
+                  enactmentDate:
+                    enactmentDatetime &&
+                    format(new Date(e), DATE_FORMAT_DETAILED),
+                })}
+              </span>
+            ))}
+          </p>
+        );
+      }
       return (
         <p {...props}>
           {t('enactsOn{{date}}', {
