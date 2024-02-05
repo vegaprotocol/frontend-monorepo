@@ -19,14 +19,18 @@ import { VoteTransactionDialog } from './vote-transaction-dialog';
 import { useVoteButtonsQuery } from './__generated__/Stake';
 import type { DialogProps, VegaTxState } from '@vegaprotocol/proposals';
 import { filterAcceptableGraphqlErrors } from '../../../../lib/party';
+import {
+  NetworkParams,
+  useNetworkParams,
+} from '@vegaprotocol/network-parameters';
+import { type ProposalChangeType } from '../../types';
 
 interface VoteButtonsContainerProps {
+  changeType: ProposalChangeType;
   voteState: VoteState | null;
   voteDatetime: Date | null;
   proposalId: string | null;
   proposalState: ProposalState;
-  minVoterBalance: string | null | undefined;
-  spamProtectionMinTokens: string | null | undefined;
   submit: (voteValue: VoteValue, proposalId: string | null) => Promise<void>;
   transaction: VegaTxState | null;
   dialog: (props: DialogProps) => JSX.Element;
@@ -35,13 +39,86 @@ interface VoteButtonsContainerProps {
 
 export const VoteButtonsContainer = (props: VoteButtonsContainerProps) => {
   const { pubKey } = useVegaWallet();
+
   const {
     appState: { decimals },
   } = useAppState();
+
   const { data, loading, error } = useVoteButtonsQuery({
     variables: { partyId: pubKey || '' },
     skip: !pubKey,
   });
+
+  const { params: networkParams } = useNetworkParams([
+    NetworkParams.governance_proposal_market_minVoterBalance,
+    NetworkParams.governance_proposal_updateMarket_minVoterBalance,
+    NetworkParams.governance_proposal_asset_minVoterBalance,
+    NetworkParams.governance_proposal_updateAsset_minVoterBalance,
+    NetworkParams.governance_proposal_updateNetParam_minVoterBalance,
+    NetworkParams.governance_proposal_freeform_minVoterBalance,
+    NetworkParams.governance_proposal_referralProgram_minVoterBalance,
+    NetworkParams.governance_proposal_VolumeDiscountProgram_minVoterBalance,
+    NetworkParams.spam_protection_voting_min_tokens,
+    NetworkParams.governance_proposal_market_requiredMajority,
+    NetworkParams.governance_proposal_updateMarket_requiredMajority,
+    NetworkParams.governance_proposal_updateMarket_requiredMajorityLP,
+    NetworkParams.governance_proposal_asset_requiredMajority,
+    NetworkParams.governance_proposal_updateAsset_requiredMajority,
+    NetworkParams.governance_proposal_updateNetParam_requiredMajority,
+    NetworkParams.governance_proposal_freeform_requiredMajority,
+    NetworkParams.governance_proposal_referralProgram_requiredMajority,
+    NetworkParams.governance_proposal_VolumeDiscountProgram_requiredMajority,
+  ]);
+
+  let minVoterBalance = null;
+
+  if (networkParams) {
+    switch (props.changeType) {
+      case 'UpdateMarket':
+      case 'UpdateMarketState':
+        minVoterBalance =
+          networkParams.governance_proposal_updateMarket_minVoterBalance;
+        break;
+      case 'NewMarket':
+        minVoterBalance =
+          networkParams.governance_proposal_market_minVoterBalance;
+        break;
+      case 'NewAsset':
+        minVoterBalance =
+          networkParams.governance_proposal_asset_minVoterBalance;
+        break;
+      case 'UpdateAsset':
+        minVoterBalance =
+          networkParams.governance_proposal_updateAsset_minVoterBalance;
+        break;
+      case 'UpdateNetworkParameter':
+        minVoterBalance =
+          networkParams.governance_proposal_updateNetParam_minVoterBalance;
+        break;
+      case 'NewFreeform':
+        minVoterBalance =
+          networkParams.governance_proposal_freeform_minVoterBalance;
+        break;
+      case 'NewTransfer':
+        // TODO: check minVoterBalance for 'NewTransfer'
+        minVoterBalance =
+          networkParams.governance_proposal_freeform_minVoterBalance;
+        break;
+      case 'CancelTransfer':
+        // TODO: check minVoterBalance for 'CancelTransfer'
+        minVoterBalance =
+          networkParams.governance_proposal_freeform_minVoterBalance;
+        break;
+      case 'UpdateReferralProgram':
+        minVoterBalance =
+          networkParams.governance_proposal_referralProgram_minVoterBalance;
+        break;
+      case 'UpdateVolumeDiscountProgram':
+        minVoterBalance =
+          networkParams.governance_proposal_VolumeDiscountProgram_minVoterBalance;
+        break;
+    }
+  }
 
   const filteredErrors = filterAcceptableGraphqlErrors(error);
 
@@ -49,6 +126,10 @@ export const VoteButtonsContainer = (props: VoteButtonsContainerProps) => {
     <AsyncRenderer loading={loading} error={filteredErrors} data={data}>
       <VoteButtons
         {...props}
+        minVoterBalance={minVoterBalance}
+        spamProtectionMinTokens={
+          networkParams.spam_protection_voting_min_tokens
+        }
         currentStakeAvailable={toBigNum(
           data?.party?.stakingSummary.currentStakeAvailable || 0,
           decimals
@@ -60,6 +141,8 @@ export const VoteButtonsContainer = (props: VoteButtonsContainerProps) => {
 
 interface VoteButtonsProps extends VoteButtonsContainerProps {
   currentStakeAvailable: BigNumber;
+  minVoterBalance: string | null;
+  spamProtectionMinTokens: string | null;
 }
 
 export const VoteButtons = ({
