@@ -38,7 +38,7 @@ export const TradePanels = ({ market, pinnedAsset }: TradePanelsProps) => {
     // so watch out for clashes in props
     return (
       <ErrorBoundary feature={view}>
-        <Component marketId={market?.id} pinnedAsset={pinnedAsset} />;
+        <Component marketId={market?.id} pinnedAsset={pinnedAsset} />
       </ErrorBoundary>
     );
   };
