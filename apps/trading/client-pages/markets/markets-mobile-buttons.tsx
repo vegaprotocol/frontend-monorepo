@@ -79,13 +79,6 @@ export const MarketsMobileSidebar = () => {
                 <MobileBarActionsDropdown currentRouteId={currentRouteId} />
               </>
             )}
-
-            {/* <SidebarButton
-              view={ViewType.Chart}
-              tooltip={t('Chart')}
-              routeId={currentRouteId}
-              icon={VegaIconNames.TREND_UP}
-            /> */}
           </>
         }
       />

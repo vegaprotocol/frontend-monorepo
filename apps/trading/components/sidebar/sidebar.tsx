@@ -17,6 +17,7 @@ import { useVegaWallet, useViewAsDialog } from '@vegaprotocol/wallet';
 import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
 import { useT } from '../../lib/use-t';
 import { ErrorBoundary } from '../error-boundary';
+import { useScreenDimensions } from '@vegaprotocol/react-helpers';
 
 export enum ViewType {
   Order = 'Order',
@@ -26,9 +27,10 @@ export enum ViewType {
   Transfer = 'Transfer',
   Settings = 'Settings',
   ViewAs = 'ViewAs',
+  Chart = 'Chart',
 }
 
-type SidebarView =
+export type BarView =
   | {
       type: ViewType.Deposit;
       assetId?: string;
@@ -49,6 +51,9 @@ type SidebarView =
     }
   | {
       type: ViewType.Settings;
+    }
+  | {
+      type: ViewType.Chart;
     };
 
 export const Sidebar = ({ options }: { options?: ReactNode }) => {
@@ -57,20 +62,30 @@ export const Sidebar = ({ options }: { options?: ReactNode }) => {
   const navClasses = 'flex lg:flex-col items-center gap-2 lg:gap-4 p-1';
   const setViewAsDialogOpen = useViewAsDialog((state) => state.setOpen);
   const { pubKeys } = useVegaWallet();
+  const { isMobile } = useScreenDimensions();
   return (
-    <div className="flex h-full p-1 lg:flex-col gap-2" data-testid="sidebar">
+    <div className="flex h-full lg:flex-col gap-1" data-testid="sidebar">
       {options && <nav className={navClasses}>{options}</nav>}
       <nav className={classNames(navClasses, 'ml-auto lg:mt-auto lg:ml-0')}>
-        <SidebarButton
-          view={ViewType.ViewAs}
-          onClick={() => {
-            setViewAsDialogOpen(true);
-          }}
-          icon={VegaIconNames.EYE}
-          tooltip={t('View as party')}
-          disabled={Boolean(pubKeys)}
-          routeId={currentRouteId}
-        />
+        {!isMobile ? (
+          <SidebarButton
+            view={ViewType.ViewAs}
+            onClick={() => {
+              setViewAsDialogOpen(true);
+            }}
+            icon={VegaIconNames.EYE}
+            tooltip={t('View as party')}
+            disabled={Boolean(pubKeys)}
+            routeId={currentRouteId}
+          />
+        ) : (
+          <SidebarButton
+            view={ViewType.Chart}
+            icon={VegaIconNames.TREND_UP}
+            tooltip={t('Back to chart')}
+            routeId={currentRouteId}
+          />
+        )}
         <SidebarButton
           view={ViewType.Settings}
           icon={VegaIconNames.COG}
@@ -103,7 +118,7 @@ export const SidebarButton = ({
     getView: store.getView,
   }));
   const currView = getView(routeId);
-  const onSelect = (view: SidebarView['type']) => {
+  const onSelect = (view: BarView['type']) => {
     if (view === currView?.type) {
       setViews(null, routeId);
     } else {
@@ -133,7 +148,7 @@ export const SidebarButton = ({
       <button
         className={buttonClasses}
         data-testid={view}
-        onClick={onClick || (() => onSelect(view as SidebarView['type']))}
+        onClick={onClick || (() => onSelect(view as BarView['type']))}
         disabled={disabled}
       >
         <VegaIcon name={icon} size={20} />
@@ -178,6 +193,10 @@ export const SidebarContent = () => {
     } else {
       return <CloseSidebar />;
     }
+  }
+
+  if (view.type === ViewType.Chart) {
+    return <CloseSidebar />;
   }
 
   if (view.type === ViewType.Info) {
@@ -267,9 +286,9 @@ const CloseSidebar = () => {
 };
 
 export const useSidebar = create<{
-  views: { [key: string]: SidebarView | null };
-  setViews: (view: SidebarView | null, routeId: string) => void;
-  getView: (routeId: string) => SidebarView | null | undefined;
+  views: { [key: string]: BarView | null };
+  setViews: (view: BarView | null, routeId: string) => void;
+  getView: (routeId: string) => BarView | null | undefined;
 }>()((set, get) => ({
   views: {},
   setViews: (x, routeId) =>

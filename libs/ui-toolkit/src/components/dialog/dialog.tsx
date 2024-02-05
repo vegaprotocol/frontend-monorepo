@@ -38,7 +38,7 @@ export function Dialog({
   );
   const wrapperClasses = classNames(
     // Dimensions
-    'w-screen sm:max-w-[90vw] p-4 md:p-8',
+    'max-w-[95vw] sm:max-w-[90vw] p-4 md:p-8',
     // Need to apply background and text colors again as content is rendered in a portal
     'dark:bg-black bg-white dark:text-white',
     getIntentBorder(intent),

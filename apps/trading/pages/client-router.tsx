@@ -33,6 +33,7 @@ import { CompetitionsTeams } from '../client-pages/competitions/competitions-tea
 import { CompetitionsTeam } from '../client-pages/competitions/competitions-team';
 import { CompetitionsCreateTeam } from '../client-pages/competitions/competitions-create-team';
 import { CompetitionsUpdateTeam } from '../client-pages/competitions/competitions-update-team';
+import { MarketsMobileSidebar } from '../client-pages/markets/markets-mobile-buttons';
 import { useScreenDimensions } from '@vegaprotocol/react-helpers';
 
 // These must remain dynamically imported as pennant cannot be compiled by nextjs due to ESM
@@ -53,6 +54,11 @@ export const useRouterConfig = (): RouteObject[] => {
   const featureFlags = useFeatureFlags((state) => state.flags);
   const { isMobile } = useScreenDimensions();
   const marketHeader = isMobile ? <MobileMarketHeader /> : <MarketHeader />;
+  const marketsSidebar = isMobile ? (
+    <MarketsMobileSidebar />
+  ) : (
+    <MarketsSidebar />
+  );
   const routeConfig = compact([
     {
       index: true,
@@ -154,7 +160,7 @@ export const useRouterConfig = (): RouteObject[] => {
     {
       path: 'markets/*',
       element: (
-        <LayoutWithSidebar header={marketHeader} sidebar={<MarketsSidebar />} />
+        <LayoutWithSidebar header={marketHeader} sidebar={marketsSidebar} />
       ),
       children: [
         {
