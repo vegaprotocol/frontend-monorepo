@@ -252,6 +252,9 @@ fragment INewMarketFields on NewMarket {
       }
     }
   }
+  successorConfiguration {
+    parentMarketId
+  }
   instrument {
     name
     code
@@ -380,6 +383,19 @@ fragment IUpdateNetworkParameterFields on UpdateNetworkParameter {
   }
 }
 
+fragment VoteFields on ProposalVotes {
+  yes {
+    totalTokens
+    totalNumber
+    totalEquityLikeShareWeight
+  }
+  no {
+    totalTokens
+    totalNumber
+    totalEquityLikeShareWeight
+  }
+}
+
 fragment ProposalTermsFields on ProposalTerms {
   closingDatetime
   enactmentDatetime
@@ -414,16 +430,7 @@ fragment ProposalFields on Proposal {
     ...ProposalTermsFields
   }
   votes {
-    yes {
-      totalTokens
-      totalNumber
-      totalEquityLikeShareWeight
-    }
-    no {
-      totalTokens
-      totalNumber
-      totalEquityLikeShareWeight
-    }
+    ...VoteFields
   }
 }
 
@@ -454,16 +461,7 @@ fragment BatchProposalFields on BatchProposal {
     }
   }
   votes {
-    yes {
-      totalTokens
-      totalNumber
-      totalEquityLikeShareWeight
-    }
-    no {
-      totalTokens
-      totalNumber
-      totalEquityLikeShareWeight
-    }
+    ...VoteFields
   }
 }
 

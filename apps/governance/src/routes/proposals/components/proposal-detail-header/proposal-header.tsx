@@ -13,8 +13,8 @@ import { CurrentProposalState } from '../current-proposal-state';
 import { ProposalInfoLabel } from '../proposal-info-label';
 import {
   useCancelTransferProposalDetails,
+  useInstrumentDetailsQuery,
   useNewTransferProposalDetails,
-  useSuccessorMarketProposalDetails,
 } from '@vegaprotocol/proposals';
 import {
   CONSOLE_MARKET_PAGE,
@@ -46,9 +46,9 @@ const ProposalTypeTags = ({
   if (proposal.__typename === 'BatchProposal') {
     return (
       <div data-testid="proposal-type" className="flex gap-1">
-        {proposal.subProposals?.map((subProposal) => {
+        {proposal.subProposals?.map((subProposal, i) => {
           if (!subProposal?.terms) return null;
-          return <ProposalTypeTag terms={subProposal.terms} />;
+          return <ProposalTypeTag key={i} terms={subProposal.terms} />;
         })}
       </div>
     );
@@ -109,7 +109,13 @@ const ProposalDetails = ({
 
         return (
           <>
-            <SuccessorCode proposalId={proposal?.id} />
+            {terms.change.successorConfiguration && (
+              <ParentMarketCode
+                parentMarketId={
+                  terms.change.successorConfiguration.parentMarketId
+                }
+              />
+            )}
             <span>
               {t('Code')}: {terms.change.instrument.code}.
             </span>{' '}
@@ -257,9 +263,9 @@ const ProposalDetails = ({
   if (proposal.__typename === 'BatchProposal' && proposal.subProposals) {
     details = (
       <ul className="flex flex-col gap-2">
-        {proposal.subProposals.map((p) => {
+        {proposal.subProposals.map((p, i) => {
           if (!p?.terms) return null;
-          return <li>{renderDetails(p.terms)}</li>;
+          return <li key={i}>{renderDetails(p.terms)}</li>;
         })}
       </ul>
     );
@@ -340,25 +346,31 @@ export const ProposalHeader = ({
   );
 };
 
-export const SuccessorCode = ({
-  proposalId,
+export const ParentMarketCode = ({
+  parentMarketId,
 }: {
-  proposalId?: string | null;
+  parentMarketId: string;
 }) => {
   const { t } = useTranslation();
-  const successor = useSuccessorMarketProposalDetails(proposalId);
+  const { data } = useInstrumentDetailsQuery({
+    variables: {
+      marketId: parentMarketId,
+    },
+  });
 
-  return successor.parentMarketId || successor.code ? (
+  if (!data?.market?.tradableInstrument.instrument.code) return null;
+
+  return (
     <span className="block" data-testid="proposal-successor-info">
       {t('Successor market to')}:{' '}
       <Link
-        to={`${Routes.PROPOSALS}/${successor.parentMarketId}`}
+        to={`${Routes.PROPOSALS}/${parentMarketId}`}
         className="hover:underline"
       >
-        {successor.code || successor.parentMarketId}
+        {data.market.tradableInstrument.instrument.code}
       </Link>
     </span>
-  ) : null;
+  );
 };
 
 export const NewTransferSummary = ({

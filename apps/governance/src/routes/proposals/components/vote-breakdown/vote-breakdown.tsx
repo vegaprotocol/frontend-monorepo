@@ -8,7 +8,10 @@ import { formatNumber } from '@vegaprotocol/utils';
 import { ProposalState } from '@vegaprotocol/types';
 import { CompactNumber } from '@vegaprotocol/react-helpers';
 import { type Proposal, type BatchProposal } from '../../types';
-import { useBatchVoteInformation } from '../../hooks/use-vote-information';
+import {
+  type ProposalTermsFieldsFragment,
+  type VoteFieldsFragment,
+} from '../../__generated__/Proposals';
 
 export const CompactVotes = ({ number }: { number: BigNumber }) => (
   <CompactNumber
@@ -106,12 +109,81 @@ export const VoteBreakdown = ({
 };
 
 const VoteBreakdownBatch = ({ proposal }: { proposal: BatchProposal }) => {
-  const voteInfo = useBatchVoteInformation({ proposal });
-  // TODO: show summarised vote information for all sub proposals
-  return <pre>{JSON.stringify(voteInfo, null, 2)}</pre>;
+  return (
+    <div>
+      {proposal.subProposals?.map((p) => {
+        if (!p?.terms) return null;
+        return (
+          <VoteBreakdownBatchSubProposal
+            proposal={proposal}
+            votes={proposal.votes}
+            terms={p.terms}
+          />
+        );
+      })}
+    </div>
+  );
+};
+
+const VoteBreakdownBatchSubProposal = ({
+  proposal,
+  votes,
+  terms,
+}: {
+  proposal: BatchProposal;
+  votes: VoteFieldsFragment;
+  terms: ProposalTermsFieldsFragment;
+}) => {
+  const voteInfo = useVoteInformation({
+    votes,
+    terms,
+  });
+
+  const isProposalOpen = proposal?.state === ProposalState.STATE_OPEN;
+  const isUpdateMarket = terms?.change?.__typename === 'UpdateMarket';
+
+  return (
+    <VoteBreakDownUI
+      voteInfo={voteInfo}
+      isProposalOpen={isProposalOpen}
+      isUpdateMarket={isUpdateMarket}
+    />
+  );
 };
 
 const VoteBreakdownNormal = ({ proposal }: { proposal: Proposal }) => {
+  const voteInfo = useVoteInformation({
+    votes: proposal.votes,
+    terms: proposal.terms,
+  });
+
+  const isProposalOpen = proposal?.state === ProposalState.STATE_OPEN;
+  const isUpdateMarket = proposal?.terms?.change?.__typename === 'UpdateMarket';
+
+  return (
+    <VoteBreakDownUI
+      voteInfo={voteInfo}
+      isProposalOpen={isProposalOpen}
+      isUpdateMarket={isUpdateMarket}
+    />
+  );
+};
+
+const VoteBreakDownUI = ({
+  voteInfo,
+  isProposalOpen,
+  isUpdateMarket,
+}: {
+  voteInfo: ReturnType<typeof useVoteInformation>;
+  isProposalOpen: boolean;
+  isUpdateMarket: boolean;
+}) => {
+  const defaultDP = 2;
+
+  const { t } = useTranslation();
+
+  if (!voteInfo) return null;
+
   const {
     totalTokensPercentage,
     participationMet,
@@ -133,12 +205,8 @@ const VoteBreakdownNormal = ({ proposal }: { proposal: Proposal }) => {
     majorityLPMet,
     willPassByTokenVote,
     willPassByLPVote,
-  } = useVoteInformation({ proposal });
+  } = voteInfo;
 
-  const { t } = useTranslation();
-  const defaultDP = 2;
-  const isProposalOpen = proposal?.state === ProposalState.STATE_OPEN;
-  const isUpdateMarket = proposal?.terms?.change?.__typename === 'UpdateMarket';
   const participationThresholdProgress = BigNumber.min(
     totalTokensPercentage.dividedBy(requiredParticipation).multipliedBy(100),
     new BigNumber(100)

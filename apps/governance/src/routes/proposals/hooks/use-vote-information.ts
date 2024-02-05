@@ -1,88 +1,44 @@
-import compact from 'lodash/compact';
-import { useMemo } from 'react';
 import { useAppState } from '../../../contexts/app-state/app-state-context';
 import { BigNumber } from '../../../lib/bignumber';
-import {
-  useProposalNetworkParams,
-  useBatchProposalNetworkParams,
-} from './use-proposal-network-params';
+import { useProposalNetworkParams } from './use-proposal-network-params';
 import { addDecimal } from '@vegaprotocol/utils';
-import { type BatchProposal, type Proposal } from '../types';
 import {
-  ProposalFieldsFragment,
-  ProposalTermsFieldsFragment,
+  type ProposalTermsFieldsFragment,
+  type ProposalFieldsFragment,
+  type VoteFieldsFragment,
 } from '../__generated__/Proposals';
 
-export const useVoteInformation = ({ proposal }: { proposal: Proposal }) => {
-  const {
-    appState: { totalSupply, decimals },
-  } = useAppState();
-
-  const params = useProposalNetworkParams({
-    terms: proposal.terms,
-  });
-
-  return {
-    ...getVoteData(params, proposal.votes, totalSupply, decimals),
-    yesVotes: new BigNumber(proposal?.votes.yes.totalNumber ?? 0),
-    noVotes: new BigNumber(proposal?.votes.no.totalNumber ?? 0),
-    totalVotes: new BigNumber(proposal?.votes.yes.totalNumber ?? 0).plus(
-      proposal?.votes.no.totalNumber ?? 0
-    ),
-    requiredParticipation: new BigNumber(params.requiredParticipation).times(
-      100
-    ),
-    requiredParticipationLP:
-      params.requiredParticipationLP &&
-      new BigNumber(params.requiredParticipationLP).times(100),
-  };
-};
-export const useBatchVoteInformation = ({
-  proposal,
+export const useVoteInformation = ({
+  votes,
+  terms,
 }: {
-  proposal: BatchProposal;
+  votes: VoteFieldsFragment;
+  terms: ProposalTermsFieldsFragment;
 }) => {
   const {
     appState: { totalSupply, decimals },
   } = useAppState();
 
-  const subProposalTerms = compact(
-    proposal.subProposals?.map((sp) => sp?.terms)
-  );
-
-  const params = useBatchProposalNetworkParams({
-    terms: subProposalTerms,
-  });
+  const params = useProposalNetworkParams();
 
   if (!params) return;
 
-  if (subProposalTerms.length !== params.length) {
-    throw new Error('sub proposals are missing params');
-  }
+  const paramsForChange = params[terms.change.__typename];
 
-  const voteData = [];
-
-  for (let i = 0; i < subProposalTerms.length; i++) {
-    const terms = subProposalTerms[i];
-    const paramsForTerms = params[i];
-
-    voteData.push({
-      ...getVoteData(paramsForTerms, proposal.votes, totalSupply, decimals),
-      yesVotes: new BigNumber(proposal?.votes.yes.totalNumber ?? 0),
-      noVotes: new BigNumber(proposal?.votes.no.totalNumber ?? 0),
-      totalVotes: new BigNumber(proposal?.votes.yes.totalNumber ?? 0).plus(
-        proposal?.votes.no.totalNumber ?? 0
-      ),
-      requiredParticipation: new BigNumber(
-        paramsForTerms.requiredParticipation
-      ).times(100),
-      requiredParticipationLP:
-        paramsForTerms.requiredParticipationLP &&
-        new BigNumber(paramsForTerms.requiredParticipationLP).times(100),
-    });
-  }
-
-  return voteData;
+  return {
+    ...getVoteData(paramsForChange, votes, totalSupply, decimals),
+    yesVotes: new BigNumber(votes.yes.totalNumber ?? 0),
+    noVotes: new BigNumber(votes.no.totalNumber ?? 0),
+    totalVotes: new BigNumber(votes.yes.totalNumber ?? 0).plus(
+      votes.no.totalNumber ?? 0
+    ),
+    requiredParticipation: new BigNumber(
+      paramsForChange.requiredParticipation
+    ).times(100),
+    requiredParticipationLP:
+      paramsForChange.requiredParticipationLP &&
+      new BigNumber(paramsForChange.requiredParticipationLP).times(100),
+  };
 };
 
 const getVoteData = (
