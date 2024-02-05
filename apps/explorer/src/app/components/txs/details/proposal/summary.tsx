@@ -1,6 +1,4 @@
-import type { ProposalTerms } from '../tx-proposal';
 import { useState } from 'react';
-import type { components } from '../../../../../types/explorer';
 import { JsonViewerDialog } from '../../../dialogs/json-viewer-dialog';
 import ProposalLink from '../../../links/proposal-link/proposal-link';
 import truncate from 'lodash/truncate';
@@ -9,7 +7,12 @@ import ReactMarkdown from 'react-markdown';
 import { ProposalDate } from './proposal-date';
 import { t } from '@vegaprotocol/i18n';
 
+import type { ProposalTerms } from '../tx-proposal';
+import type { components } from '../../../../../types/explorer';
+import { BatchItem } from './batch-item';
+
 type Rationale = components['schemas']['vegaProposalRationale'];
+type Batch = components['schemas']['v1BatchProposalSubmissionTerms']['changes'];
 
 type ProposalTermsDialog = {
   open: boolean;
@@ -21,6 +24,7 @@ interface ProposalSummaryProps {
   id: string;
   rationale?: Rationale;
   terms?: ProposalTerms;
+  batch?: Batch;
 }
 
 /**
@@ -31,6 +35,7 @@ export const ProposalSummary = ({
   id,
   rationale,
   terms,
+  batch,
 }: ProposalSummaryProps) => {
   const [dialog, setDialog] = useState<ProposalTermsDialog>({
     open: false,
@@ -71,6 +76,18 @@ export const ProposalSummary = ({
             {md}
           </ReactMarkdown>
         </div>
+      )}
+      {batch && (
+        <section className="pt-2 text-sm leading-tight my-3">
+          <h2 className="text-lg pb-1">{t('Changes')}</h2>
+          <ol>
+            {batch.map((change, index) => (
+              <li className="ml-4 list-decimal" key={`batch-${index}`}>
+                <BatchItem item={change} />
+              </li>
+            ))}
+          </ol>
+        </section>
       )}
       <div className="pt-5">
         <button className="underline max-md:hidden mr-5" onClick={openDialog}>
