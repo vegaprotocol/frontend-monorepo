@@ -26,7 +26,7 @@ export default function Document() {
         <script src="/theme-setter.js" type="text/javascript" async />
 
         {/* manifest */}
-        <link rel="manifest" href="/apps/trading/assets/manifest.json" />
+        <link rel="manifest" href="/apps/trading/public/manifest.json" />
       </Head>
       <Html>
         <body
