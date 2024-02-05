@@ -37,7 +37,9 @@ declare global {
     }>;
 
     on: (event: VegaWalletEvent, callback: () => void) => void;
-    isConnected?: () => Promise<boolean>;
+    off: (event: VegaWalletEvent) => void;
+    isConnected: () => Promise<boolean>;
+    getChainId: () => Promise<{ chainID: string }>;
   }
 
   interface Window {

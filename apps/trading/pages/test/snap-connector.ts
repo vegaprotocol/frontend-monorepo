@@ -1,4 +1,4 @@
-import { JsonRpcMethod } from '.';
+import { JsonRpcMethod, type Connector, type TransactionParams } from '.';
 
 enum EthereumMethod {
   RequestSnaps = 'wallet_requestSnaps',
@@ -26,7 +26,6 @@ export class SnapConnector implements Connector {
       await this.requestSnap();
 
       const { chainId } = await this.getChainId();
-      console.log(chainId);
 
       if (chainId !== desiredChainId) {
         throw new Error('incorrect chain id');
@@ -69,6 +68,31 @@ export class SnapConnector implements Connector {
     return { error: 'failed to check if connected' };
   }
 
+  async sendTransaction(params: TransactionParams) {
+    try {
+      const res = await this.invokeSnap(JsonRpcMethod.SendTransaction, {
+        publicKey: params.publicKey,
+        sendingMode: params.sendingMode,
+        transaction: params.transaction,
+        networkEndpoints: [this.config.node],
+      });
+
+      return {
+        transactionHash: res.transactionHash,
+        signature: res.transaction.signature.value,
+        receivedAt: res.receivedAt,
+        sentAt: res.sentAt,
+      };
+    } catch (err) {
+      console.error(err);
+      return { error: 'failed to send transaction' };
+    }
+  }
+
+  ////////////////////////////////////
+  // Snap methods
+  ////////////////////////////////////
+
   async requestSnap() {
     const res = await this.request(EthereumMethod.RequestSnaps, {
       [this.config.id]: {
@@ -94,15 +118,6 @@ export class SnapConnector implements Connector {
       },
     });
   }
-
-  // async sendTransaction(
-  //   ...args: Parameters<typeof window.vega.sendTransaction>
-  // ) {
-  //   try {
-  //     const res = await window.vega.sendTransaction(...args);
-  //   } catch (err) {
-  //   }
-  // }
 
   async request(method: EthereumMethod, params?: any) {
     if (!window.ethereum) {

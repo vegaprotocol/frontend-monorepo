@@ -5,7 +5,7 @@ import { InjectedConnector } from './injected-connector';
 import { JsonRpcConnector } from './json-rpc-connector';
 import { SnapConnector } from './snap-connector';
 import { Chain, fairground, stagnet } from './chains';
-import { Connector } from '.';
+import { Connector, TransactionParams } from '.';
 import {
   PropsWithChildren,
   createContext,
@@ -16,6 +16,8 @@ import {
   useState,
 } from 'react';
 import { Dialog } from '@vegaprotocol/ui-toolkit';
+import { TransactionResponse } from '@vegaprotocol/wallet';
+import { AccountType } from '@vegaprotocol/types';
 
 const injected = new InjectedConnector();
 const jsonRpc = new JsonRpcConnector({
@@ -47,6 +49,7 @@ type Wallet = {
   connectors: Connector[];
   connect: (id: string) => Promise<void>;
   disconnect: () => Promise<void>;
+  sendTransaction: (params: TransactionParams) => Promise<TransactionResponse>;
 };
 
 function createConfig(cfg: Config): Wallet {
@@ -108,10 +111,31 @@ function createConfig(cfg: Config): Wallet {
     store.setState({ status: 'disconnected', current: undefined, keys: [] });
   }
 
+  async function sendTransaction(params: TransactionParams) {
+    const connector = connectors
+      .getState()
+      .find((x) => x.id === store.getState().current);
+
+    if (!connector) return;
+
+    try {
+      const res = await connector.sendTransaction(params);
+
+      return res;
+      console.log('res', res);
+    } catch (err) {
+      return {
+        error: 'failed to send',
+      };
+      console.error(err);
+    }
+  }
+
   return {
     store,
     connect,
     disconnect,
+    sendTransaction,
 
     get connectors() {
       return connectors.getState();
@@ -153,6 +177,13 @@ function useDisconnect() {
   };
 }
 
+function useSendTransaction() {
+  const config = useConfig();
+  return {
+    sendTransaction: config.sendTransaction,
+  };
+}
+
 const VegaWalletContext = createContext<Wallet | undefined>(undefined);
 
 function VegaWalletProvider({
@@ -174,6 +205,7 @@ function App() {
   const [open, setOpen] = useState(false);
   const { connectors, connect } = useConnect();
   const { disconnect } = useDisconnect();
+  const { sendTransaction } = useSendTransaction();
   const status = useWallet((store) => store.status);
 
   return (
@@ -207,6 +239,33 @@ function App() {
       <hr className="border-t pt-2 mt-2" />
       <div className="flex flex-col items-start gap-2">
         <button onClick={() => disconnect()}>diconnectWallet</button>
+        <button
+          onClick={async () => {
+            const fromKey =
+              '846b2ed2fff0ddf219a5302a3856f9ac279652c4d92e72e7df762117886e69cc'; // snap
+            const toKey =
+              '5a703397f6ac1f62513af1f5d0237d1b9f8b2c93ef19fbe9fa87771a2b7f55da'; // browser
+
+            const res = await sendTransaction({
+              publicKey: fromKey,
+              sendingMode: 'TYPE_SYNC',
+              transaction: {
+                transfer: {
+                  fromAccountType: AccountType.ACCOUNT_TYPE_GENERAL,
+                  to: toKey,
+                  toAccountType: AccountType.ACCOUNT_TYPE_GENERAL,
+                  asset:
+                    '16ae5dbb1fd7aa2ddef725703bfe66b3647a4da7b844bfdd04e985756f53d9d6',
+                  amount: '100',
+                  oneOff: {},
+                },
+              },
+            });
+            console.log(res);
+          }}
+        >
+          submit transfer
+        </button>
       </div>
       <div>{status}</div>
       <Keys />

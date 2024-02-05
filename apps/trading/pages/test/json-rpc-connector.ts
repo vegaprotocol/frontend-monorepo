@@ -1,4 +1,4 @@
-import { JsonRpcMethod, type Connector } from '.';
+import { JsonRpcMethod, type Connector, type TransactionParams } from '.';
 
 type JsonRpcConnectorConfig = { url: string };
 
@@ -74,13 +74,23 @@ export class JsonRpcConnector implements Connector {
     }
   }
 
-  // async sendTransaction(...args) {
-  //   try {
-  //     const res = await this.request(JsonRpcMethod.SendTransaction, args);
-  //     return res;
-  //   } catch (err) {
-  //   }
-  // }
+  async sendTransaction(params: TransactionParams) {
+    try {
+      const { data } = await this.request(
+        JsonRpcMethod.SendTransaction,
+        params
+      );
+
+      return {
+        transactionHash: data.result.transactionHash,
+        signature: data.result.transaction.signature.value,
+        receivedAt: data.result.receivedAt,
+        sentAt: data.result.sentAt,
+      };
+    } catch (err) {
+      return { error: 'failed to send transaction' };
+    }
+  }
 
   private async request(method: JsonRpcMethod, params?: any) {
     const headers = new Headers();
