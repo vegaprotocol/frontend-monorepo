@@ -34,7 +34,7 @@ type Key = {
 
 type Store = {
   chainId: string;
-  status: 'disconnected' | 'connecting' | 'reconnecting' | 'connected';
+  status: 'disconnected' | 'connecting' | 'connected';
   current: string | undefined;
   keys: Key[];
   setKeys: (keys: Key[]) => void;
@@ -63,10 +63,7 @@ function createConfig(cfg: Config): Wallet {
   }));
 
   async function connect(id: string) {
-    if (
-      store.getState().status === 'connecting' ||
-      store.getState().status === 'reconnecting'
-    ) {
+    if (store.getState().status === 'connecting') {
       return;
     }
 
