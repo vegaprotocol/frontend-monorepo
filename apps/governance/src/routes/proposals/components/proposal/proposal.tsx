@@ -18,7 +18,6 @@ import { removePaginationWrapper } from '@vegaprotocol/utils';
 import { ProposalState } from '@vegaprotocol/types';
 import { ProposalMarketChanges } from '../proposal-market-changes';
 import { ProposalUpdateMarketState } from '../proposal-update-market-state';
-import { type NetworkParamsResult } from '@vegaprotocol/network-parameters';
 import { useVoteSubmit } from '@vegaprotocol/proposals';
 import { useUserVote } from '../vote-details/use-user-vote';
 import {
@@ -31,7 +30,6 @@ import { type Proposal as IProposal, type BatchProposal } from '../../types';
 
 export interface ProposalProps {
   proposal: IProposal | BatchProposal;
-  networkParams: Partial<NetworkParamsResult>;
   marketData?: MarketInfo | null;
   parentMarketData?: MarketInfo | null;
   assetData?: AssetQuery | null;
@@ -57,7 +55,6 @@ export const Proposal = (props: ProposalProps) => {
 
 export const SingleProposal = ({
   proposal,
-  networkParams,
   restData,
   marketData,
   parentMarketData,
@@ -91,56 +88,6 @@ export const SingleProposal = ({
       asset.source.lifetimeLimit = proposal.terms.change.source.lifetimeLimit;
       asset.source.withdrawThreshold =
         proposal.terms.change.source.withdrawThreshold;
-    }
-  }
-
-  let minVoterBalance = null;
-
-  if (networkParams) {
-    switch (proposal.terms.change.__typename) {
-      case 'UpdateMarket':
-      case 'UpdateMarketState':
-        minVoterBalance =
-          networkParams.governance_proposal_updateMarket_minVoterBalance;
-        break;
-      case 'NewMarket':
-        minVoterBalance =
-          networkParams.governance_proposal_market_minVoterBalance;
-        break;
-      case 'NewAsset':
-        minVoterBalance =
-          networkParams.governance_proposal_asset_minVoterBalance;
-        break;
-      case 'UpdateAsset':
-        minVoterBalance =
-          networkParams.governance_proposal_updateAsset_minVoterBalance;
-        break;
-      case 'UpdateNetworkParameter':
-        minVoterBalance =
-          networkParams.governance_proposal_updateNetParam_minVoterBalance;
-        break;
-      case 'NewFreeform':
-        minVoterBalance =
-          networkParams.governance_proposal_freeform_minVoterBalance;
-        break;
-      case 'NewTransfer':
-        // TODO: check minVoterBalance for 'NewTransfer'
-        minVoterBalance =
-          networkParams.governance_proposal_freeform_minVoterBalance;
-        break;
-      case 'CancelTransfer':
-        // TODO: check minVoterBalance for 'CancelTransfer'
-        minVoterBalance =
-          networkParams.governance_proposal_freeform_minVoterBalance;
-        break;
-      case 'UpdateReferralProgram':
-        minVoterBalance =
-          networkParams.governance_proposal_referralProgram_minVoterBalance;
-        break;
-      case 'UpdateVolumeDiscountProgram':
-        minVoterBalance =
-          networkParams.governance_proposal_VolumeDiscountProgram_minVoterBalance;
-        break;
     }
   }
 
@@ -276,10 +223,6 @@ export const SingleProposal = ({
         <RoundedWrapper paddingBottom={true}>
           <UserVote
             proposal={proposal}
-            minVoterBalance={minVoterBalance}
-            spamProtectionMinTokens={
-              networkParams?.spam_protection_voting_min_tokens
-            }
             submit={submit}
             dialog={Dialog}
             transaction={transaction}
