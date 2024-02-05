@@ -25,7 +25,6 @@ export const TransferContainer = ({ assetId }: { assetId?: string }) => {
   const t = useT();
   const { pubKey, pubKeys, isReadOnly } = useVegaWallet();
   const { params } = useNetworkParams([
-    NetworkParams.transfer_fee_factor,
     NetworkParams.transfer_minTransferQuantumMultiple,
   ]);
 

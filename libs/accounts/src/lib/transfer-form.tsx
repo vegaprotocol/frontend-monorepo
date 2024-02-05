@@ -4,9 +4,9 @@ import {
   useRequired,
   useVegaPublicKey,
   addDecimal,
-  formatNumber,
   toBigNum,
   removeDecimal,
+  addDecimalsFormatNumber,
 } from '@vegaprotocol/utils';
 import { useT } from './use-t';
 import {
@@ -136,12 +136,14 @@ export const TransferForm = ({
 
   // Max amount given selected asset and from account
   const max = accountBalance ? new BigNumber(accountBalance) : new BigNumber(0);
+  const normalizedAmount =
+    (amount && asset && removeDecimal(amount, asset.decimals)) || '0';
 
   const transferFeeQuery = useTransferFeeQuery({
     variables: {
       fromAccount: pubKey || '',
       fromAccountType: accountType || AccountType.ACCOUNT_TYPE_GENERAL,
-      amount: (amount && asset && removeDecimal(amount, asset.decimals)) || '0',
+      amount: normalizedAmount,
       assetId: asset?.id || '',
       toAccount: selectedPubKey,
     },
@@ -441,14 +443,15 @@ export const TransferForm = ({
           </TradingInputError>
         )}
       </TradingFormGroup>
-      {(transferFee?.estimateTransferFee || fromVested) && amount && (
+      {JSON.stringify(transferFee)}
+      {(transferFee?.estimateTransferFee || fromVested) && amount && asset && (
         <TransferFee
-          amount={amount}
+          amount={normalizedAmount}
           fee={fromVested ? '0' : transferFee?.estimateTransferFee?.fee}
           discount={
             fromVested ? '0' : transferFee?.estimateTransferFee?.discount
           }
-          decimals={asset?.decimals}
+          decimals={asset.decimals}
         />
       )}
       <TradingButton type="submit" fill={true} disabled={isReadOnly}>
@@ -467,7 +470,7 @@ export const TransferFee = ({
   amount: string;
   fee?: string;
   discount?: string;
-  decimals?: number;
+  decimals: number;
 }) => {
   const t = useT();
   if (!amount || !fee) return null;
@@ -475,30 +478,25 @@ export const TransferFee = ({
     return null;
   }
 
-  const totalValue = new BigNumber(amount).plus(fee).toString();
-  const feeFactor = new BigNumber(fee).dividedBy(amount).toFixed(2);
+  const totalValue = (
+    BigInt(amount) +
+    BigInt(fee) -
+    BigInt(discount || '0')
+  ).toString();
 
   return (
     <div className="mb-4 flex flex-col gap-2 text-xs">
       <div className="flex flex-wrap items-center justify-between gap-1">
-        <Tooltip
-          description={t(
-            `The transfer fee is set by the network parameter transfer.fee.factor, currently set to {{feeFactor}}`,
-            { feeFactor }
-          )}
-        >
-          <div>{t('Transfer fee')}</div>
-        </Tooltip>
-
+        <div>{t('Transfer fee')}</div>
         <div data-testid="transfer-fee" className="text-muted">
-          {formatNumber(fee, decimals)}
+          {addDecimalsFormatNumber(fee, decimals)}
         </div>
       </div>
       {discount && discount !== '0' && (
         <div className="flex flex-wrap items-center justify-between gap-1">
           <div>{t('Discount')}</div>
           <div data-testid="discount" className="text-muted">
-            {formatNumber(discount, decimals)}
+            {addDecimalsFormatNumber(discount, decimals)}
           </div>
         </div>
       )}
@@ -513,7 +511,7 @@ export const TransferFee = ({
         </Tooltip>
 
         <div data-testid="transfer-amount" className="text-muted">
-          {formatNumber(amount, decimals)}
+          {addDecimalsFormatNumber(amount, decimals)}
         </div>
       </div>
       <div className="flex flex-wrap items-center justify-between gap-1">
@@ -526,7 +524,7 @@ export const TransferFee = ({
         </Tooltip>
 
         <div data-testid="total-transfer-fee" className="text-muted">
-          {formatNumber(totalValue, decimals)}
+          {addDecimalsFormatNumber(totalValue, decimals)}
         </div>
       </div>
     </div>
