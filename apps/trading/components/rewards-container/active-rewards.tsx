@@ -316,49 +316,30 @@ export const ActiveRewardCard = ({
         MarketState.STATE_CLOSED,
       ].includes(m.state)
   );
+
   if (marketSettled) {
     return null;
   }
 
-  const assetInSettledMarket =
+  const assetInActiveMarket =
     allMarkets &&
     Object.values(allMarkets).some((m: MarketFieldsFragment | null) => {
       if (m && getAsset(m).id === dispatchStrategy.dispatchMetricAssetId) {
-        return (
-          m?.state &&
-          [
-            MarketState.STATE_TRADING_TERMINATED,
-            MarketState.STATE_SETTLED,
-            MarketState.STATE_CANCELLED,
-            MarketState.STATE_CLOSED,
-          ].includes(m.state)
-        );
+        return m?.state && MarketState.STATE_ACTIVE === m.state;
       }
       return false;
     });
 
-  // Gray out the cards that are related to suspended markets
-  const suspended = transferNode.markets?.some(
+  const marketSuspended = transferNode.markets?.some(
     (m) =>
       m?.state === MarketState.STATE_SUSPENDED ||
       m?.state === MarketState.STATE_SUSPENDED_VIA_GOVERNANCE
   );
 
-  const assetInSuspendedMarket =
-    allMarkets &&
-    Object.values(allMarkets).some((m: MarketFieldsFragment | null) => {
-      if (m && getAsset(m).id === dispatchStrategy.dispatchMetricAssetId) {
-        return (
-          m?.state === MarketState.STATE_SUSPENDED ||
-          m?.state === MarketState.STATE_SUSPENDED_VIA_GOVERNANCE
-        );
-      }
-      return false;
-    });
-
   // Gray out the cards that are related to suspended markets
+  // Or settlement assets in markets that are not active and eligible for rewards
   const { gradientClassName, mainClassName } =
-    suspended || assetInSuspendedMarket || assetInSettledMarket
+    marketSuspended || !assetInActiveMarket
       ? {
           gradientClassName: 'from-vega-cdark-500 to-vega-clight-400',
           mainClassName: 'from-vega-cdark-400 dark:from-vega-cdark-600 to-20%',
@@ -449,12 +430,12 @@ export const ActiveRewardCard = ({
           <span data-testid="dispatch-metric-info">
             {DispatchMetricLabels[dispatchStrategy.dispatchMetric]} •{' '}
             <Tooltip
-              underline={suspended}
+              underline={marketSuspended}
               description={
-                (suspended || assetInSuspendedMarket) &&
+                (marketSuspended || !assetInActiveMarket) &&
                 (specificMarkets
                   ? t('Eligible market(s) currently suspended')
-                  : assetInSuspendedMarket
+                  : !assetInActiveMarket
                   ? t('Currently no markets eligible for reward')
                   : '')
               }
