@@ -223,6 +223,12 @@ export const MobileBarActionsDropdown = ({
         tooltip={t('Market specification')}
         routeId={currentRouteId}
       />
+      <MobileDropdownItem
+        view={ViewType.Settings}
+        icon={VegaIconNames.COG}
+        tooltip={t('Settings')}
+        routeId={currentRouteId}
+      />
     </MobileActionsDropdown>
   );
 };

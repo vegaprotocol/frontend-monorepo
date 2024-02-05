@@ -33,7 +33,7 @@ import { CompetitionsTeams } from '../client-pages/competitions/competitions-tea
 import { CompetitionsTeam } from '../client-pages/competitions/competitions-team';
 import { CompetitionsCreateTeam } from '../client-pages/competitions/competitions-create-team';
 import { CompetitionsUpdateTeam } from '../client-pages/competitions/competitions-update-team';
-import { MarketsMobileSidebar } from '../client-pages/markets/markets-mobile-buttons';
+import { MarketsMobileSidebar } from '../client-pages/markets/mobile-buttons';
 import { useScreenDimensions } from '@vegaprotocol/react-helpers';
 
 // These must remain dynamically imported as pennant cannot be compiled by nextjs due to ESM

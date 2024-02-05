@@ -82,30 +82,32 @@ export const Sidebar = ({ options }: { options?: ReactNode }) => {
         )}
       >
         {!isMobile ? (
-          <SidebarButton
-            view={ViewType.ViewAs}
-            onClick={() => {
-              setViewAsDialogOpen(true);
-            }}
-            icon={VegaIconNames.EYE}
-            tooltip={t('View as party')}
-            disabled={Boolean(pubKeys)}
-            routeId={currentRouteId}
-          />
+          <>
+            <SidebarButton
+              view={ViewType.ViewAs}
+              onClick={() => {
+                setViewAsDialogOpen(true);
+              }}
+              icon={VegaIconNames.EYE}
+              tooltip={t('View as party')}
+              disabled={Boolean(pubKeys)}
+              routeId={currentRouteId}
+            />
+            <SidebarButton
+              view={ViewType.Settings}
+              icon={VegaIconNames.COG}
+              tooltip={t('Settings')}
+              routeId={currentRouteId}
+            />
+          </>
         ) : (
           <SidebarButton
             view={ViewType.Chart}
-            icon={VegaIconNames.TREND_UP}
+            icon={VegaIconNames.TICKET}
             tooltip={t('Back to chart')}
             routeId={currentRouteId}
           />
         )}
-        <SidebarButton
-          view={ViewType.Settings}
-          icon={VegaIconNames.COG}
-          tooltip={t('Settings')}
-          routeId={currentRouteId}
-        />
         <NodeHealthContainer />
       </nav>
     </div>
