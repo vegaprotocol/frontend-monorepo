@@ -11,6 +11,7 @@ import { ProposalState } from '@vegaprotocol/types';
 import { useVoteSubmit } from '@vegaprotocol/proposals';
 import { useUserVote } from '../vote-details/use-user-vote';
 import { type Proposal as IProposal, type BatchProposal } from '../../types';
+import { ProposalChangeDetails } from './proposal-change-details';
 
 export interface ProposalProps {
   proposal: IProposal | BatchProposal;
@@ -57,7 +58,16 @@ export const Proposal = ({ proposal, restData }: ProposalProps) => {
         <ProposalDescription description={proposal.rationale.description} />
       </div>
 
-      <div>{/* TODO: add specific proposal type information here */}</div>
+      <div className="mb-4">
+        {proposal.__typename === 'Proposal' ? (
+          <ProposalChangeDetails terms={proposal.terms} />
+        ) : proposal.__typename === 'BatchProposal' ? (
+          proposal.subProposals?.map((p, i) => {
+            if (!p?.terms) return null;
+            return <ProposalChangeDetails key={i} terms={p.terms} />;
+          })
+        ) : null}
+      </div>
 
       <div className="mb-10">
         <RoundedWrapper paddingBottom={true}>
