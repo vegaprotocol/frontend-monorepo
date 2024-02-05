@@ -1,4 +1,4 @@
-import { type Connector } from '.';
+import { TransactionParams, type Connector } from '.';
 
 export class InjectedConnector implements Connector {
   id = 'injected';
@@ -49,20 +49,27 @@ export class InjectedConnector implements Connector {
     }
   }
 
-  // async sendTransaction(
-  //   ...args: Parameters<typeof window.vega.sendTransaction>
-  // ) {
-  //   try {
-  //     const res = await window.vega.sendTransaction(...args);
-  //   } catch (err) {
-  //   }
-  // }
+  async sendTransaction(params: TransactionParams) {
+    try {
+      const res = await window.vega.sendTransaction(params);
 
-  on(event: Parameters<typeof window.vega.on>[0], callback: () => void) {
+      return {
+        transactionHash: res.transactionHash,
+        signature: res.transaction.signature.value,
+        receivedAt: res.receivedAt,
+        sentAt: res.sentAt,
+      };
+    } catch (err) {
+      console.error(err);
+      return { error: 'failed to send transaction' };
+    }
+  }
+
+  on(event: 'client.disconnected', callback: () => void) {
     window.vega.on(event, callback);
   }
 
-  off(event: Parameters<typeof window.vega.off>[0]) {
+  off(event: 'client.disconnected') {
     window.vega.off(event);
   }
 }
