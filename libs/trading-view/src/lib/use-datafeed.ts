@@ -44,14 +44,22 @@ const configurationData: DatafeedConfiguration = {
   supported_resolutions: supportedResolutions as ResolutionString[],
 } as const;
 
-export const useDatafeed = () => {
+// HACK: local handle for market id
+let requestedSymbol: string | undefined = undefined;
+
+export const useDatafeed = (marketId: string) => {
   const hasHistory = useRef(false);
   const subRef = useRef<Subscription>();
   const client = useApolloClient();
 
   const datafeed = useMemo(() => {
-    const feed: IBasicDataFeed = {
+    const feed: IBasicDataFeed & { setSymbol: (symbol: string) => void } = {
+      setSymbol: (symbol: string) => {
+        // re-setting the symbol so it could be consumed by `resolveSymbol`
+        requestedSymbol = symbol;
+      },
       onReady: (callback) => {
+        requestedSymbol = marketId;
         setTimeout(() => callback(configurationData));
       },
 
@@ -68,7 +76,7 @@ export const useDatafeed = () => {
           const result = await client.query<SymbolQuery, SymbolQueryVariables>({
             query: SymbolDocument,
             variables: {
-              marketId,
+              marketId: requestedSymbol || marketId,
             },
           });
 
@@ -242,7 +250,7 @@ export const useDatafeed = () => {
     };
 
     return feed;
-  }, [client]);
+  }, [client, marketId]);
 
   useEffect(() => {
     return () => {
