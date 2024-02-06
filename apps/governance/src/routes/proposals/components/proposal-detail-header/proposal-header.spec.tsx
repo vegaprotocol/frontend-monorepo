@@ -18,20 +18,21 @@ import {
   nextWeek,
   mockWalletContext,
   createUserVoteQueryMock,
+  networkParamsQueryMock,
 } from '../../test-helpers/mocks';
-import { useFeatureFlags } from '@vegaprotocol/environment';
 import { BrowserRouter } from 'react-router-dom';
 import { VoteState } from '../vote-details/use-user-vote';
-import { useNewTransferProposalDetails } from '@vegaprotocol/proposals';
+import {
+  InstrumentDetailsDocument,
+  useNewTransferProposalDetails,
+  type InstrumentDetailsQuery,
+  type InstrumentDetailsQueryVariables,
+} from '@vegaprotocol/proposals';
 import { type MockedResponse } from '@apollo/client/testing';
 import { type Proposal } from '../../types';
 
 jest.mock('@vegaprotocol/proposals', () => ({
   ...jest.requireActual('@vegaprotocol/proposals'),
-  useSuccessorMarketProposalDetails: () => ({
-    code: 'PARENT_CODE',
-    parentMarketId: 'PARENT_ID',
-  }),
   useNewTransferProposalDetails: jest.fn(),
 }));
 
@@ -44,7 +45,7 @@ const renderComponent = (
   render(
     <AppStateProvider>
       <BrowserRouter>
-        <MockedProvider mocks={mocks}>
+        <MockedProvider mocks={[networkParamsQueryMock, ...mocks]}>
           <VegaWalletContext.Provider value={mockWalletContext}>
             <ProposalHeader
               proposal={proposal}
@@ -61,10 +62,39 @@ describe('Proposal header', () => {
   afterAll(() => {
     jest.clearAllMocks();
   });
-  it('Renders New market proposal', () => {
-    useFeatureFlags.setState({ flags: { SUCCESSOR_MARKETS: true } });
+
+  it('Renders New market proposal', async () => {
+    const parentMarketId = 'parent-id';
+    const parentCode = 'parent-code';
+    const parentName = 'parent-name';
+    const mock: MockedResponse<
+      InstrumentDetailsQuery,
+      InstrumentDetailsQueryVariables
+    > = {
+      request: {
+        query: InstrumentDetailsDocument,
+        variables: {
+          marketId: parentMarketId,
+        },
+      },
+      result: {
+        data: {
+          market: {
+            __typename: 'Market',
+            tradableInstrument: {
+              __typename: 'TradableInstrument',
+              instrument: {
+                __typename: 'Instrument',
+                code: parentCode,
+                name: parentName,
+              },
+            },
+          },
+        },
+      },
+    };
+
     renderComponent(
-      // @ts-ignore we aren't using batch yet
       generateProposal({
         rationale: {
           title: 'New some market',
@@ -73,6 +103,9 @@ describe('Proposal header', () => {
         terms: {
           change: {
             __typename: 'NewMarket',
+            successorConfiguration: {
+              parentMarketId,
+            },
             instrument: {
               __typename: 'InstrumentConfiguration',
               name: 'Some market',
@@ -87,7 +120,9 @@ describe('Proposal header', () => {
             },
           },
         },
-      })
+      }),
+      undefined,
+      [mock]
     );
     expect(screen.getByTestId('proposal-title')).toHaveTextContent(
       'New some market'
@@ -96,14 +131,13 @@ describe('Proposal header', () => {
     expect(screen.getByTestId('proposal-details')).toHaveTextContent(
       'tGBP settled future.'
     );
-    expect(screen.getByTestId('proposal-successor-info')).toHaveTextContent(
-      'PARENT_CODE'
-    );
+    expect(
+      await screen.findByTestId('proposal-successor-info')
+    ).toHaveTextContent(parentCode);
   });
 
   it('Renders Update market proposal', () => {
     renderComponent(
-      // @ts-ignore we aren't using batch yet
       generateProposal({
         rationale: {
           title: 'New market id',
@@ -132,7 +166,6 @@ describe('Proposal header', () => {
 
   it('Renders New asset proposal - ERC20', () => {
     renderComponent(
-      // @ts-ignore we aren't using batch yet
       generateProposal({
         rationale: {
           title: 'New asset: Fake currency',
@@ -162,8 +195,10 @@ describe('Proposal header', () => {
 
   it('Renders New asset proposal - BuiltInAsset', () => {
     renderComponent(
-      // @ts-ignore we aren't using batch yet
       generateProposal({
+        rationale: {
+          title: 'New asset',
+        },
         terms: {
           change: {
             __typename: 'NewAsset',
@@ -177,9 +212,7 @@ describe('Proposal header', () => {
         },
       })
     );
-    expect(screen.getByTestId('proposal-title')).toHaveTextContent(
-      'New asset proposal'
-    );
+    expect(screen.getByTestId('proposal-title')).toHaveTextContent('New asset');
     expect(screen.getByTestId('proposal-type')).toHaveTextContent('New asset');
     expect(screen.getByTestId('proposal-details')).toHaveTextContent(
       'Symbol: BIA. Max faucet amount mint: 300'
@@ -188,7 +221,6 @@ describe('Proposal header', () => {
 
   it('Renders Update network', () => {
     renderComponent(
-      // @ts-ignore we aren't using batch yet
       generateProposal({
         rationale: {
           title: 'Network parameter',
@@ -218,7 +250,6 @@ describe('Proposal header', () => {
 
   it('Renders Freeform proposal - short rationale', () => {
     renderComponent(
-      // @ts-ignore we aren't using batch yet
       generateProposal({
         id: 'short',
         rationale: {
@@ -240,7 +271,6 @@ describe('Proposal header', () => {
 
   it('Renders Freeform proposal - long rationale (105 chars) - listing', () => {
     renderComponent(
-      // @ts-ignore we aren't using batch yet
       generateProposal({
         id: 'long',
         rationale: {
@@ -266,7 +296,6 @@ describe('Proposal header', () => {
   // Remove once proposals have rationale and re-enable above tests
   it('Renders Freeform proposal - id for title', () => {
     renderComponent(
-      // @ts-ignore we aren't using batch yet
       generateProposal({
         id: 'freeform id',
         rationale: {
@@ -323,7 +352,6 @@ describe('Proposal header', () => {
 
   it('Renders proposal state: Enacted', () => {
     renderComponent(
-      // @ts-ignore we aren't using batch yet
       generateProposal({
         state: ProposalState.STATE_ENACTED,
         terms: {
@@ -336,7 +364,6 @@ describe('Proposal header', () => {
 
   it('Renders proposal state: Passed', () => {
     renderComponent(
-      // @ts-ignore we aren't using batch yet
       generateProposal({
         state: ProposalState.STATE_PASSED,
         terms: {
@@ -350,7 +377,6 @@ describe('Proposal header', () => {
 
   it('Renders proposal state: Waiting for node vote', () => {
     renderComponent(
-      // @ts-ignore we aren't using batch yet
       generateProposal({
         state: ProposalState.STATE_WAITING_FOR_NODE_VOTE,
         terms: {
@@ -365,7 +391,6 @@ describe('Proposal header', () => {
 
   it('Renders proposal state: Open', () => {
     renderComponent(
-      // @ts-ignore we aren't using batch yet
       generateProposal({
         state: ProposalState.STATE_OPEN,
         votes: {
@@ -433,8 +458,6 @@ describe('Proposal header', () => {
     expect(await screen.findByTestId('user-voted-yes')).toBeInTheDocument();
   });
 });
-
-jest.mock('@vegaprotocol/proposals');
 
 describe('<NewTransferSummary />', () => {
   it('renders null if no details are provided', () => {

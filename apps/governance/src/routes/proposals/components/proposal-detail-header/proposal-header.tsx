@@ -509,10 +509,11 @@ export const ProposalHeader = ({
   const { t } = useTranslation();
 
   const title = proposal?.rationale.title.trim();
+
   const fallbackTitle = t(
     proposal.__typename === 'Proposal'
-      ? proposal.terms.change.__typename
-      : 'Batch proposal'
+      ? 'Unknown proposal'
+      : 'Unknown batch proposal'
   );
   const titleContent = shorten(title ?? '', 100);
 
@@ -546,14 +547,10 @@ export const ProposalHeader = ({
       <div data-testid="proposal-title" className="break-all">
         {isListItem ? (
           <header>
-            <SubHeading
-              title={titleContent || fallbackTitle || t('Unknown proposal')}
-            />
+            <SubHeading title={titleContent || fallbackTitle} />
           </header>
         ) : (
-          <Heading
-            title={titleContent || fallbackTitle || t('Unknown proposal')}
-          />
+          <Heading title={titleContent || fallbackTitle} />
         )}
       </div>
       <ProposalDetails proposal={proposal} />
