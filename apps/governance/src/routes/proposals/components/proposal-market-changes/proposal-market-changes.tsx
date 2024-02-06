@@ -79,7 +79,9 @@ export const ProposalMarketChanges = ({
       );
     });
 
-  const latestEnactedProposal = enacted[enacted.length - 1];
+  const latestEnactedProposal = enacted?.length
+    ? enacted[enacted.length - 1]
+    : undefined;
 
   const originalProposal =
     // @ts-ignore no types with useFetch TODO: check this is good

@@ -1640,6 +1640,8 @@ export type Game = {
   id: Scalars['ID'];
   /** Number of participants that took part in the game during the epoch. */
   numberOfParticipants: Scalars['Int'];
+  /** ID of asset in which the rewards were paid. */
+  rewardAssetId: Scalars['ID'];
 };
 
 /** Edge type containing the game metrics and cursor information returned by a GameConnection */
@@ -1704,10 +1706,14 @@ export type IndividualGameEntity = {
   rank: Scalars['Int'];
   /** The rewards earned by the individual during the epoch */
   rewardEarned: Scalars['String'];
+  /** The rewards earned by the individual during the epoch in quantum value */
+  rewardEarnedQuantum: Scalars['String'];
   /** The reward metric applied to the game */
   rewardMetric: DispatchMetric;
   /** Total rewards earned by the individual during the game */
   totalRewardsEarned: Scalars['String'];
+  /** Total rewards earned by the individual during the game in quantum value */
+  totalRewardsEarnedQuantum: Scalars['String'];
   /** The volume traded by the individual */
   volume: Scalars['String'];
 };
@@ -4733,8 +4739,16 @@ export type QuantumRewardsPerEpoch = {
   __typename?: 'QuantumRewardsPerEpoch';
   /** Epoch for which this information is valid. */
   epoch: Scalars['Int'];
-  /** Total of rewards accumulated over the  epoch period expressed in quantum value. */
+  /** Total of rewards accumulated over the epoch period expressed in quantum value. */
   totalQuantumRewards: Scalars['String'];
+};
+
+export type QuantumVolumesPerEpoch = {
+  __typename?: 'QuantumVolumesPerEpoch';
+  /** Epoch for which this information is valid. */
+  epoch: Scalars['Int'];
+  /** Total volume across all markets, accumulated over the epoch period, expressed in quantum value. */
+  totalQuantumVolumes: Scalars['String'];
 };
 
 /** Queries allow a caller to read data and filter data via GraphQL. */
@@ -5067,7 +5081,7 @@ export type QueryestimateOrderArgs = {
 export type QueryestimatePositionArgs = {
   averageEntryPrice: Scalars['String'];
   generalAccountBalance: Scalars['String'];
-  includeCollateralIncreaseInAvailableCollateral?: InputMaybe<Scalars['Boolean']>;
+  includeRequiredPositionMarginInAvailableCollateral?: InputMaybe<Scalars['Boolean']>;
   marginAccountBalance: Scalars['String'];
   marginFactor?: InputMaybe<Scalars['String']>;
   marginMode: MarginMode;
@@ -6412,12 +6426,16 @@ export type TeamGameEntity = {
   rank: Scalars['Int'];
   /** Total rewards earned by the team during the epoch */
   rewardEarned: Scalars['String'];
+  /** Total rewards earned by the team during the epoch in quantum value */
+  rewardEarnedQuantum: Scalars['String'];
   /** Reward metric applied to the game. */
   rewardMetric: DispatchMetric;
   /** Breakdown of the team members and their contributions to the total team metrics. */
   team: TeamParticipation;
   /** Total rewards earned by the team for the game */
   totalRewardsEarned: Scalars['String'];
+  /** Total rewards earned by the team for the game in quantum value */
+  totalRewardsEarnedQuantum: Scalars['String'];
   /** Total volume traded by the team */
   volume: Scalars['String'];
 };
@@ -6431,6 +6449,8 @@ export type TeamMemberStatistics = {
   partyId: Scalars['String'];
   /** List of rewards over the requested epoch period, expressed in quantum value for each epoch */
   quantumRewards: Array<QuantumRewardsPerEpoch>;
+  /** List of trading volume totals per epoch, for the requested epoch period, expressed in quantum value */
+  quantumVolumes: Array<QuantumVolumesPerEpoch>;
   /** Total number of games played. */
   totalGamesPlayed: Scalars['Int'];
   /** Total of rewards accumulated over the requested epoch period, expressed in quantum value. */
@@ -6533,6 +6553,8 @@ export type TeamStatistics = {
   gamesPlayed: Array<Scalars['String']>;
   /** List of rewards over the requested epoch period, expressed in quantum value for each epoch */
   quantumRewards: Array<QuantumRewardsPerEpoch>;
+  /** List of trading volume totals per epoch, over the requested epoch period, expressed in quantum value */
+  quantumVolumes: Array<QuantumVolumesPerEpoch>;
   /** Team ID the statistics are related to. */
   teamId: Scalars['String'];
   /** Total of games played. */

@@ -3,6 +3,7 @@ import { type Proposal, type BatchProposal } from '../../types';
 import { ListAsset } from '../list-asset';
 import { ProposalAssetDetails } from '../proposal-asset-details';
 import { ProposalMarketChanges } from '../proposal-market-changes';
+import { ProposalMarketData } from '../proposal-market-data';
 import { ProposalReferralProgramDetails } from '../proposal-referral-program-details';
 import {
   ProposalCancelTransferDetails,
@@ -50,19 +51,31 @@ export const ProposalChangeDetails = ({
       return null;
     }
     case 'NewMarket': {
-      return <div>TODO: NewMarket</div>;
+      if (proposal.id) {
+        return <ProposalMarketData proposalId={proposal.id} />;
+      }
+      return null;
     }
     case 'UpdateMarket': {
-      return (
-        <ProposalMarketChanges
-          marketId={terms.change.marketId}
-          updatedProposal={
-            restData?.data?.proposal?.terms?.updateMarket?.changes
-          }
-        />
-      );
+      if (proposal.id) {
+        return (
+          <>
+            <div className="mb-4">
+              <ProposalMarketData proposalId={proposal.id} />
+            </div>
+            <div className="mb-4">
+              <ProposalMarketChanges
+                marketId={terms.change.marketId}
+                updatedProposal={
+                  restData?.data?.proposal?.terms?.updateMarket?.changes
+                }
+              />
+            </div>
+          </>
+        );
+      }
 
-      return <div>TODO: UpdateAsset</div>;
+      return null;
     }
     case 'NewTransfer': {
       if (proposal.id) {
@@ -88,6 +101,13 @@ export const ProposalChangeDetails = ({
     case 'UpdateNetworkParameter': {
       if (terms.change.networkParameter.key.slice(-13) === '.benefitTiers') {
         return <ProposalUpdateBenefitTiers change={terms.change} />;
+      } else {
+        return (
+          <p>
+            Changing {terms.change.networkParameter.key} to{' '}
+            {terms.change.networkParameter.value}
+          </p>
+        );
       }
 
       return null;

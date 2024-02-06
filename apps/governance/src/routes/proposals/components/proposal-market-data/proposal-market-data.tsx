@@ -18,6 +18,7 @@ import {
   getDataSourceSpecForTradingTermination,
   getSigners,
   MarginScalingFactorsPanel,
+  marketInfoProvider,
 } from '@vegaprotocol/markets';
 import {
   Button,
@@ -28,8 +29,8 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { SubHeading } from '../../../../components/heading';
 import { CollapsibleToggle } from '../../../../components/collapsible-toggle';
-import type { MarketInfo } from '@vegaprotocol/markets';
 import { create } from 'zustand';
+import { useDataProvider } from '@vegaprotocol/data-provider';
 
 type MarketDataDialogState = {
   isOpen: boolean;
@@ -48,18 +49,29 @@ export const useMarketDataDialogStore = create<MarketDataDialogState>(
 const marketDataHeaderStyles =
   'font-alpha calt text-base border-b border-vega-dark-200 mt-2 py-2';
 
-export const ProposalMarketData = ({
-  marketData,
-  parentMarketData,
-}: {
-  marketData: MarketInfo;
-  parentMarketData?: MarketInfo;
-}) => {
+export const ProposalMarketData = ({ proposalId }: { proposalId: string }) => {
   const { t } = useTranslation();
   const { isOpen, open, close } = useMarketDataDialogStore();
   const [showDetails, setShowDetails] = useState(false);
 
-  if (!marketData) {
+  const { data: marketData } = useDataProvider({
+    dataProvider: marketInfoProvider,
+    skipUpdates: true,
+    variables: {
+      marketId: proposalId,
+    },
+  });
+
+  const { data: parentMarketData } = useDataProvider({
+    dataProvider: marketInfoProvider,
+    skipUpdates: true,
+    skip: !marketData?.parentMarketID,
+    variables: {
+      marketId: marketData?.parentMarketID || '',
+    },
+  });
+
+  if (!marketData || !parentMarketData) {
     return null;
   }
 
