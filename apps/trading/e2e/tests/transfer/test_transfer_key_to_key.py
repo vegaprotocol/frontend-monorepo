@@ -64,6 +64,7 @@ def test_transfer_vesting_below_minimum(
     )
     tDAI_asset_id = shared_vega.find_asset_id(symbol="tDAI")
     shared_vega.mint(key_name="market_maker", asset=tDAI_asset_id, amount=100000)
+    shared_vega.mint(key_name="market_maker_2", asset=tDAI_asset_id, amount=10000)
     next_epoch(vega=shared_vega)
     
 

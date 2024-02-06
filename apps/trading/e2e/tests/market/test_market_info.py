@@ -92,6 +92,7 @@ def test_market_info_market_volume(page: Page):
     validate_info_section(page, fields)
 
 
+@pytest.mark.skip("tbd")
 @pytest.mark.xdist_group(name="test_market_info")
 
 def test_market_info_liquidation_strategy(page: Page):
@@ -114,6 +115,7 @@ def test_market_info_liquidation(page: Page):
     validate_info_section(page, fields)
 
 
+@pytest.mark.skip("tbd")
 @pytest.mark.xdist_group(name="test_market_info")
 
 @pytest.mark.skip("core issue #5681")

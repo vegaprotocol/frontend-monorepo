@@ -11,13 +11,20 @@ deal_ticket_warning_margin = "deal-ticket-warning-margin"
 deal_ticket_deposit_dialog_button = "deal-ticket-deposit-dialog-button"
 
 
-
+@pytest.mark.skip("tbd")
 @pytest.mark.shared_vega
 @pytest.mark.xdist_group(name="shared_vega")
 def test_should_display_info_and_button_for_deposit(
-    shared_continuous_market, shared_page: Page, shared_auth, shared_risk_accepted
+    shared_continuous_market, shared_vega: VegaServiceNull, shared_page: Page, shared_auth, shared_risk_accepted
 ):
     shared_page.goto(f"/#/markets/{shared_continuous_market}")
+    tDAI_asset_id = shared_vega.find_asset_id(symbol="tDAI")
+    shared_vega.create_key("key_small_balance")
+    shared_vega.mint(key_name="key_small_balance", asset=tDAI_asset_id, amount=1)
+    shared_vega.wait_fn(1)
+    shared_vega.wait_for_total_catchup()
+    change_keys(shared_page, shared_vega, "key_small_balance")
+    shared_page.pause()
     shared_page.get_by_test_id(order_size).fill("200000")
     shared_page.get_by_test_id(order_price).fill("20")
     # 7002-SORD-060

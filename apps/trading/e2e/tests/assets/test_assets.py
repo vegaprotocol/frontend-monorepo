@@ -60,7 +60,7 @@ def tooltip(page: Page, index: int, test_id: str, tooltip: str):
         "div")).to_have_text(tooltip)
     page.get_by_test_id("dialog-title").click()
 
-
+@pytest.mark.xdist_group(name="test_assets")
 @pytest.mark.usefixtures("continuous_market", "auth", "risk_accepted")
 def test_asset_details(page: Page):
     page.goto("/#/portfolio")

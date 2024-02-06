@@ -141,7 +141,7 @@ def test_terminated_market_no_settlement_date(page: Page, vega: VegaServiceNull)
     # TODO Create test for terminated market with settlement date in past
 
 
-@pytest.mark.xdist_group(name="test_perpetuals")
+@pytest.mark.xdist_group(name="test_closed_markets")
 @pytest.mark.usefixtures("risk_accepted", "auth")
 def test_perps_market_terminated(page: Page, vega: VegaServiceNull):
     perpetual_market = setup_perps_market(vega)
