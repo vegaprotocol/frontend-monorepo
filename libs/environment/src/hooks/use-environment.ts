@@ -19,6 +19,9 @@ import { compileErrors } from '../utils/compile-errors';
 import { envSchema } from '../utils/validate-environment';
 import { tomlConfigSchema } from '../utils/validate-configuration';
 import uniq from 'lodash/uniq';
+import orderBy from 'lodash/orderBy';
+import first from 'lodash/first';
+import { canMeasureResponseTime, measureResponseTime } from '../utils/time';
 
 type Client = ReturnType<typeof createClient>;
 type ClientCollection = {
@@ -38,7 +41,16 @@ export type EnvStore = Env & Actions;
 
 const VERSION = 1;
 export const STORAGE_KEY = `vega_url_${VERSION}`;
+
+const QUERY_TIMEOUT = 3000;
 const SUBSCRIPTION_TIMEOUT = 3000;
+
+const raceAgainst = (timeout: number): Promise<false> =>
+  new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(false);
+    }, timeout);
+  });
 
 /**
  * Fetch and validate a vega node configuration
@@ -64,53 +76,88 @@ const fetchConfig = async (url?: string) => {
 const findNode = async (clients: ClientCollection): Promise<string | null> => {
   const tests = Object.entries(clients).map((args) => testNode(...args));
   try {
-    const url = await Promise.any(tests);
-    return url;
-  } catch {
+    const nodes = await Promise.all(tests);
+    const responsiveNodes = nodes
+      .filter(([, q, s]) => q && s)
+      .map(([url, q]) => {
+        return {
+          url,
+          ...q,
+        };
+      });
+
+    // more recent and faster at the top
+    const ordered = orderBy(
+      responsiveNodes,
+      [(n) => n.blockHeight, (n) => n.vegaTime, (n) => n.responseTime],
+      ['desc', 'desc', 'asc']
+    );
+
+    const best = first(ordered);
+    return best ? best.url : null;
+  } catch (err) {
     // All tests rejected, no suitable node found
     return null;
   }
 };
 
+type Maybe<T> = T | false;
+type QueryTestResult = {
+  blockHeight: number;
+  vegaTime: Date;
+  responseTime: number;
+};
+type SubscriptionTestResult = true;
+type NodeTestResult = [
+  /** url */
+  string,
+  Maybe<QueryTestResult>,
+  Maybe<SubscriptionTestResult>
+];
 /**
  * Test a node for suitability for connection
  */
 const testNode = async (
   url: string,
   client: Client
-): Promise<string | null> => {
+): Promise<NodeTestResult> => {
   const results = await Promise.all([
-    // these promises will only resolve with true/false
-    testQuery(client),
+    testQuery(client, url),
     testSubscription(client),
   ]);
-  if (results[0] && results[1]) {
-    return url;
-  }
-
-  const message = `Tests failed for node: ${url}`;
-  console.warn(message);
-
-  // throwing here will mean this tests is ignored and a different
-  // node that hopefully does resolve will fulfill the Promise.any
-  throw new Error(message);
+  return [url, ...results];
 };
 
 /**
  * Run a test query on a client
  */
-const testQuery = async (client: Client) => {
-  try {
-    const result = await client.query<NodeCheckQuery>({
-      query: NodeCheckDocument,
-    });
-    if (!result || result.error) {
-      return false;
-    }
-    return true;
-  } catch (err) {
-    return false;
-  }
+const testQuery = (
+  client: Client,
+  url: string
+): Promise<Maybe<QueryTestResult>> => {
+  const test: Promise<Maybe<QueryTestResult>> = new Promise((resolve) =>
+    client
+      .query<NodeCheckQuery>({
+        query: NodeCheckDocument,
+      })
+      .then((result) => {
+        if (result && !result.error) {
+          const res = {
+            blockHeight: Number(result.data.statistics.blockHeight),
+            vegaTime: new Date(result.data.statistics.vegaTime),
+            // only after a request has been sent we can retrieve the response time
+            responseTime: canMeasureResponseTime(url)
+              ? measureResponseTime(url) || Infinity
+              : Infinity,
+          } as QueryTestResult;
+          resolve(res);
+        } else {
+          resolve(false);
+        }
+      })
+      .catch(() => resolve(false))
+  );
+  return Promise.race([test, raceAgainst(QUERY_TIMEOUT)]);
 };
 
 /**
@@ -118,7 +165,9 @@ const testQuery = async (client: Client) => {
  * that takes longer than SUBSCRIPTION_TIMEOUT ms to respond
  * is deemed a failure
  */
-const testSubscription = (client: Client) => {
+const testSubscription = (
+  client: Client
+): Promise<Maybe<SubscriptionTestResult>> => {
   return new Promise((resolve) => {
     const sub = client
       .subscribe<NodeCheckTimeUpdateSubscription>({
