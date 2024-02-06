@@ -35,7 +35,8 @@ export const ProposalChangeTable = ({ proposal }: ProposalChangeTableProps) => {
     ) : null;
 
   const enactmentRow =
-    proposal.__typename === 'Proposal' ? (
+    proposal.__typename === 'Proposal' &&
+    proposal.terms.change.__typename !== 'NewFreeform' ? (
       <KeyValueTableRow>
         {isFuture(new Date(proposal.terms?.enactmentDatetime || 0))
           ? t('proposedEnactment')
