@@ -68,8 +68,8 @@ const VoteStateText = ({
       if (Array.isArray(enactmentDatetime)) {
         return (
           <p {...props}>
-            {enactmentDatetime.map((e) => (
-              <span {...props} className="block">
+            {enactmentDatetime.map((e, i) => (
+              <span key={i} {...props} className="block">
                 {t('enactedOn{{date}}', {
                   enactmentDate:
                     enactmentDatetime &&
@@ -95,8 +95,8 @@ const VoteStateText = ({
       if (Array.isArray(enactmentDatetime)) {
         return (
           <p {...props}>
-            {enactmentDatetime.map((e) => (
-              <span {...props} className="block">
+            {enactmentDatetime.map((e, i) => (
+              <span key={i} {...props} className="block">
                 {t('enactsOn{{date}}', {
                   enactmentDate:
                     enactmentDatetime &&

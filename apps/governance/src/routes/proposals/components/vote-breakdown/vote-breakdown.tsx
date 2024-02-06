@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import BigNumber from 'bignumber.js';
 import { useTranslation } from 'react-i18next';
 import { useVoteInformation } from '../../hooks';
-import { Icon, Tooltip } from '@vegaprotocol/ui-toolkit';
+import { Tooltip, VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import { formatNumber } from '@vegaprotocol/utils';
 import { ProposalState } from '@vegaprotocol/types';
 import { CompactNumber } from '@vegaprotocol/react-helpers';
@@ -75,14 +75,14 @@ const Status = ({ reached, threshold, text, testId }: StatusProps) => {
     <div data-testid={testId}>
       {reached ? (
         <div className="flex items-center gap-2">
-          <Icon name="tick" size={4} />
+          <VegaIcon name={VegaIconNames.TICK} size={20} />
           <span>
             {threshold.toString()}% {text} {t('met')}
           </span>
         </div>
       ) : (
         <div className="flex items-center gap-2">
-          <Icon name="cross" size={4} />
+          <VegaIcon name={VegaIconNames.CROSS} size={20} />
           <span>
             {threshold.toString()}% {text} {t('not met')}
           </span>
@@ -244,9 +244,17 @@ const VoteBreakDownUI = ({
         >
           <span>
             {willPass ? (
-              <Icon name="tick" size={5} className="text-vega-green" />
+              <VegaIcon
+                name={VegaIconNames.TICK}
+                size={20}
+                className="text-vega-green"
+              />
             ) : (
-              <Icon name="cross" size={5} className="text-vega-pink" />
+              <VegaIcon
+                name={VegaIconNames.CROSS}
+                size={20}
+                className="text-vega-pink"
+              />
             )}
           </span>
           <span>{t('currentlySetTo')} </span>
