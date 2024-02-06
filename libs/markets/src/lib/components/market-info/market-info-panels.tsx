@@ -155,6 +155,7 @@ export const MarketVolumeInfoPanel = ({ market }: MarketInfoProps) => {
           <Last24hVolume
             marketId={market.id}
             positionDecimalPlaces={market.positionDecimalPlaces}
+            marketDecimals={market.decimalPlaces}
           />
         ),
         openInterest: dash(data?.openInterest),
