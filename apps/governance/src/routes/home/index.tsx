@@ -13,7 +13,7 @@ import { useRefreshAfterEpoch } from '../../hooks/use-refresh-after-epoch';
 import { ProposalsListItem } from '../proposals/components/proposals-list-item';
 import { ProtocolUpgradeProposalsListItem } from '../proposals/components/protocol-upgrade-proposals-list-item/protocol-upgrade-proposals-list-item';
 import Routes from '../routes';
-import { ExternalLinks, useFeatureFlags } from '@vegaprotocol/environment';
+import { ExternalLinks } from '@vegaprotocol/environment';
 import { removePaginationWrapper } from '@vegaprotocol/utils';
 import { useNodesQuery } from '../staking/home/__generated__/Nodes';
 import { useProposalsQuery } from '../proposals/__generated__/Proposals';
