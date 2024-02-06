@@ -7,6 +7,8 @@ import { useState } from 'react';
 import { CollapsibleToggle } from '../../../../components/collapsible-toggle';
 import { SubHeading } from '../../../../components/heading';
 import type { JsonValue } from '../../../../components/json-diff';
+import { useFetch } from '@vegaprotocol/react-helpers';
+import { ENV } from '../../../../config';
 
 const immutableKeys = [
   'decimalPlaces',
@@ -40,18 +42,48 @@ export const applyImmutableKeysFromEarlierVersion = (
 };
 
 interface ProposalMarketChangesProps {
-  originalProposal: JsonValue;
-  latestEnactedProposal: JsonValue | undefined;
+  marketId: string;
   updatedProposal: JsonValue;
 }
 
 export const ProposalMarketChanges = ({
-  originalProposal,
-  latestEnactedProposal,
+  marketId,
   updatedProposal,
 }: ProposalMarketChangesProps) => {
   const { t } = useTranslation();
   const [showChanges, setShowChanges] = useState(false);
+
+  const {
+    state: { data },
+  } = useFetch(`${ENV.rest}governance?proposalId=${marketId}`, undefined, true);
+
+  const {
+    state: { data: enactedProposalData },
+  } = useFetch(
+    `${ENV.rest}governances?proposalState=STATE_ENACTED&proposalType=TYPE_UPDATE_MARKET`,
+    undefined,
+    true
+  );
+
+  // @ts-ignore no types here :-/
+  const enacted = enactedProposalData?.connection?.edges
+    .filter(
+      // @ts-ignore no type here
+      ({ node }) => node?.proposal?.terms?.updateMarket?.marketId === marketId
+    )
+    // @ts-ignore no type here
+    .sort((a, b) => {
+      return (
+        new Date(a?.node?.terms?.enactmentTimestamp).getTime() -
+        new Date(b?.node?.terms?.enactmentTimestamp).getTime()
+      );
+    });
+
+  const latestEnactedProposal = enacted[enacted.length - 1];
+
+  const originalProposal =
+    // @ts-ignore no types with useFetch TODO: check this is good
+    data?.data?.proposal?.terms?.newMarket?.changes;
 
   return (
     <section data-testid="proposal-market-changes">

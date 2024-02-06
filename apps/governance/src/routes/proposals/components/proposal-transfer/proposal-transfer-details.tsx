@@ -19,17 +19,16 @@ import {
   addDecimalsFormatNumberQuantum,
   formatDateWithLocalTimezone,
 } from '@vegaprotocol/utils';
-import { type Proposal } from '../../types';
 
 export const ProposalTransferDetails = ({
-  proposal,
+  proposalId,
 }: {
-  proposal: Proposal;
+  proposalId: string;
 }) => {
   const { t } = useTranslation();
   const [show, setShow] = useState(false);
 
-  const details = useNewTransferProposalDetails(proposal?.id);
+  const details = useNewTransferProposalDetails(proposalId);
   if (!details) {
     return null;
   }

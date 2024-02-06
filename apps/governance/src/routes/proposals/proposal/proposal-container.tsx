@@ -1,11 +1,10 @@
-import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { useParams } from 'react-router-dom';
-
+import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
+import { useFetch } from '@vegaprotocol/react-helpers';
+import { ENV } from '../../../config';
 import { Proposal } from '../components/proposal';
 import { ProposalNotFound } from '../components/proposal-not-found';
 import { useProposalQuery } from '../__generated__/Proposals';
-import { useFetch } from '@vegaprotocol/react-helpers';
-import { ENV } from '../../../config';
 
 export const ProposalContainer = () => {
   const params = useParams<{ proposalId: string }>();

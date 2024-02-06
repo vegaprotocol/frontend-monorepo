@@ -48,10 +48,10 @@ export const ProposalChangeTable = ({ proposal }: ProposalChangeTableProps) => {
       <KeyValueTableRow>
         <span>{t('Enactment')}</span>
         <span className="flex flex-col gap-1">
-          {proposal.subProposals?.map((p) => {
+          {proposal.subProposals?.map((p, i) => {
             if (!p?.terms) return null;
             return (
-              <span>
+              <span key={i}>
                 {formatDateWithLocalTimezone(
                   new Date(p.terms.enactmentDatetime || 0)
                 )}

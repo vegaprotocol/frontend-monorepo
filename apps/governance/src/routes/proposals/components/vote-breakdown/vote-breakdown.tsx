@@ -111,10 +111,11 @@ export const VoteBreakdown = ({
 const VoteBreakdownBatch = ({ proposal }: { proposal: BatchProposal }) => {
   return (
     <div>
-      {proposal.subProposals?.map((p) => {
+      {proposal.subProposals?.map((p, i) => {
         if (!p?.terms) return null;
         return (
           <VoteBreakdownBatchSubProposal
+            key={i}
             proposal={proposal}
             votes={proposal.votes}
             terms={p.terms}

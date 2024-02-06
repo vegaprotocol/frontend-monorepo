@@ -6,15 +6,14 @@ import {
   RoundedWrapper,
 } from '@vegaprotocol/ui-toolkit';
 import { SubHeading } from '../../../../components/heading';
-import { type Proposal } from '../../types';
 
 export const ProposalCancelTransferDetails = ({
-  proposal,
+  proposalId,
 }: {
-  proposal: Proposal;
+  proposalId: string;
 }) => {
   const { t } = useTranslation();
-  const details = useCancelTransferProposalDetails(proposal?.id);
+  const details = useCancelTransferProposalDetails(proposalId);
 
   if (!details) {
     return null;

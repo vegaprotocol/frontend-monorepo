@@ -60,11 +60,22 @@ export const Proposal = ({ proposal, restData }: ProposalProps) => {
 
       <div className="mb-4">
         {proposal.__typename === 'Proposal' ? (
-          <ProposalChangeDetails terms={proposal.terms} />
+          <ProposalChangeDetails
+            proposal={proposal}
+            terms={proposal.terms}
+            restData={restData}
+          />
         ) : proposal.__typename === 'BatchProposal' ? (
           proposal.subProposals?.map((p, i) => {
             if (!p?.terms) return null;
-            return <ProposalChangeDetails key={i} terms={p.terms} />;
+            return (
+              <ProposalChangeDetails
+                key={i}
+                proposal={proposal}
+                terms={p.terms}
+                restData={restData}
+              />
+            );
           })
         ) : null}
       </div>
