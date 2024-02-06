@@ -2,6 +2,8 @@ import pytest
 from playwright.sync_api import Page, expect
 from vega_sim.null_service import VegaServiceNull
 from actions.utils import change_keys
+from conftest import init_vega
+from fixtures.market import setup_continuous_market
 
 
 order_size = "order-size"

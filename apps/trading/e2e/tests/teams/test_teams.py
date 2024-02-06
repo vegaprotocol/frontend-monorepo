@@ -6,8 +6,12 @@ from conftest import init_vega
 from actions.utils import next_epoch, change_keys
 from fixtures.market import setup_continuous_market
 from conftest import auth_setup, init_page, init_vega, risk_accepted_setup
-from wallet_config import PARTY_A, PARTY_B, PARTY_C, PARTY_D, MM_WALLET
+from wallet_config import  MM_WALLET, WalletConfig
 
+PARTY_A = WalletConfig("party_a", "party_a")
+PARTY_B = WalletConfig("party_b", "party_b")
+PARTY_C = WalletConfig("party_c", "party_c")
+PARTY_D = WalletConfig("party_d", "party_d")
 
 @pytest.fixture(scope="module")
 def vega(request):
@@ -210,7 +214,7 @@ def create_team(vega: VegaServiceNull):
 
     return team_name
 
-
+@pytest.mark.xdist_group(name="test_teams")
 def test_team_page_games_table(team_page: Page):
     team_page.get_by_test_id("games-toggle").click()
     expect(team_page.get_by_test_id("games-toggle")).to_have_text("Games (1)")
@@ -222,7 +226,7 @@ def test_team_page_games_table(team_page: Page):
     expect(team_page.get_by_test_id("participatingTeams-0")).to_have_text("2")
     expect(team_page.get_by_test_id("participatingMembers-0")).to_have_text("4")
 
-
+@pytest.mark.xdist_group(name="test_teams")
 def test_team_page_members_table(team_page: Page):
     team_page.get_by_test_id("members-toggle").click()
     expect(team_page.get_by_test_id("members-toggle")
@@ -231,7 +235,7 @@ def test_team_page_members_table(team_page: Page):
     expect(team_page.get_by_test_id("joinedAt-0")).to_be_visible()
     expect(team_page.get_by_test_id("joinedAtEpoch-0")).to_have_text("9")
 
-
+@pytest.mark.xdist_group(name="test_teams")
 def test_team_page_headline(team_page: Page, setup_teams_and_games):
     team_name = setup_teams_and_games["team_name"]
     expect(team_page.get_by_test_id("team-name")).to_have_text(team_name)
@@ -244,7 +248,7 @@ def test_team_page_headline(team_page: Page, setup_teams_and_games):
 
     expect(team_page.get_by_test_id("rewards-paid-stat")).to_have_text("214")
 
-
+@pytest.mark.xdist_group(name="test_teams")
 def test_switch_teams(team_page: Page, vega: VegaServiceNull):
     team_page.get_by_test_id("switch-team-button").click()
     team_page.get_by_test_id("confirm-switch-button").click()
@@ -255,7 +259,7 @@ def test_switch_teams(team_page: Page, vega: VegaServiceNull):
     team_page.reload()
     expect(team_page.get_by_test_id("members-count-stat")).to_have_text("5")
 
-
+@pytest.mark.xdist_group(name="test_teams")
 def test_leaderboard(competitions_page: Page, setup_teams_and_games):
     team_name = setup_teams_and_games["team_name"]
     competitions_page.reload()
@@ -276,7 +280,7 @@ def test_leaderboard(competitions_page: Page, setup_teams_and_games):
     # TODO  still odd that this is 0
     expect(competitions_page.get_by_test_id("volume-0")).to_have_text("-")
 
-
+@pytest.mark.xdist_group(name="test_teams")
 def test_game_card(competitions_page: Page):
     expect(competitions_page.get_by_test_id(
         "active-rewards-card")).to_have_count(2)
@@ -294,7 +298,7 @@ def test_game_card(competitions_page: Page):
     expect(game_1.get_by_test_id("staking-requirement")).to_have_text("0.00")
     expect(game_1.get_by_test_id("average-position")).to_have_text("0.00")
 
-
+@pytest.mark.xdist_group(name="test_teams")
 def test_create_team(competitions_page: Page, vega: VegaServiceNull):
     change_keys(competitions_page, vega, "market_maker_2")
     competitions_page.get_by_test_id("create-public-team-button").click()
