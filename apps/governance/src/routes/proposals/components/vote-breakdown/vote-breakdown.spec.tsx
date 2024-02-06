@@ -64,7 +64,7 @@ describe('VoteBreakdown', () => {
     jest.useRealTimers();
   });
 
-  it('Renders majority reached', () => {
+  it('Renders majority reached', async () => {
     const yesVotes = 100;
     const noVotes = 0;
 
@@ -82,10 +82,10 @@ describe('VoteBreakdown', () => {
         },
       })
     );
-    expect(screen.getByTestId('token-majority-met')).toBeInTheDocument();
+    expect(await screen.findByTestId('token-majority-met')).toBeInTheDocument();
   });
 
-  it('Renders majority not reached', () => {
+  it('Renders majority not reached', async () => {
     const yesVotes = 20;
     const noVotes = 80;
 
@@ -103,10 +103,12 @@ describe('VoteBreakdown', () => {
         },
       })
     );
-    expect(screen.getByTestId('token-majority-not-met')).toBeInTheDocument();
+    expect(
+      await screen.findByTestId('token-majority-not-met')
+    ).toBeInTheDocument();
   });
 
-  it('Renders participation reached', () => {
+  it('Renders participation reached', async () => {
     const yesVotes = 1000;
     const noVotes = 0;
 
@@ -124,10 +126,12 @@ describe('VoteBreakdown', () => {
         },
       })
     );
-    expect(screen.getByTestId('token-participation-met')).toBeInTheDocument();
+    expect(
+      await screen.findByTestId('token-participation-met')
+    ).toBeInTheDocument();
   });
 
-  it('Renders participation not reached', () => {
+  it('Renders participation not reached', async () => {
     const yesVotes = 0;
     const noVotes = 0;
 
@@ -145,11 +149,11 @@ describe('VoteBreakdown', () => {
       })
     );
     expect(
-      screen.getByTestId('token-participation-not-met')
+      await screen.findByTestId('token-participation-not-met')
     ).toBeInTheDocument();
   });
 
-  it('Renders proposal state: Update market proposal - Currently expected to pass by LP vote', () => {
+  it('Renders proposal state: Update market proposal - Currently expected to pass by LP vote', async () => {
     renderComponent(
       generateProposal({
         state: ProposalState.STATE_OPEN,
@@ -170,12 +174,12 @@ describe('VoteBreakdown', () => {
         },
       })
     );
-    expect(screen.getByTestId('vote-status')).toHaveTextContent(
+    expect(await screen.findByTestId('vote-status')).toHaveTextContent(
       'Currently expected to pass by liquidity vote'
     );
   });
 
-  it('Renders proposal state: Update market proposal - Currently expected to pass by token vote', () => {
+  it('Renders proposal state: Update market proposal - Currently expected to pass by token vote', async () => {
     renderComponent(
       generateProposal({
         state: ProposalState.STATE_OPEN,
@@ -196,12 +200,12 @@ describe('VoteBreakdown', () => {
         },
       })
     );
-    expect(screen.getByTestId('vote-status')).toHaveTextContent(
+    expect(await screen.findByTestId('vote-status')).toHaveTextContent(
       'Currently expected to pass by token vote'
     );
   });
 
-  it('Renders proposal state: Update market proposal - Currently expected to fail', () => {
+  it('Renders proposal state: Update market proposal - Currently expected to fail', async () => {
     renderComponent(
       generateProposal({
         state: ProposalState.STATE_OPEN,
@@ -222,12 +226,12 @@ describe('VoteBreakdown', () => {
         },
       })
     );
-    expect(screen.getByTestId('vote-status')).toHaveTextContent(
+    expect(await screen.findByTestId('vote-status')).toHaveTextContent(
       'Currently expected to fail'
     );
   });
 
-  it('Progress bar displays status - token majority', () => {
+  it('Progress bar displays status - token majority', async () => {
     const yesVotes = 80;
     const noVotes = 20;
 
@@ -246,13 +250,13 @@ describe('VoteBreakdown', () => {
       })
     );
 
-    const element = screen.getByTestId('token-majority-progress');
+    const element = await screen.findByTestId('token-majority-progress');
     const style = window.getComputedStyle(element);
 
     expect(style.width).toBe(`${yesVotes}%`);
   });
 
-  it('Progress bar displays status - token participation', () => {
+  it('Progress bar displays status - token participation', async () => {
     const yesVotes = 40;
     const noVotes = 20;
     const totalVotes = yesVotes + noVotes;
@@ -274,13 +278,13 @@ describe('VoteBreakdown', () => {
       })
     );
 
-    const element = screen.getByTestId('token-participation-progress');
+    const element = await screen.findByTestId('token-participation-progress');
     const style = window.getComputedStyle(element);
 
     expect(style.width).toBe(`${expectedProgress}%`);
   });
 
-  it('Progress bar displays status -  LP majority', () => {
+  it('Progress bar displays status -  LP majority', async () => {
     const yesVotesLP = 0.8;
     const noVotesLP = 0.2;
     const expectedProgress = (yesVotesLP / (yesVotesLP + noVotesLP)) * 100; // 80%
@@ -307,12 +311,12 @@ describe('VoteBreakdown', () => {
       })
     );
 
-    const element = screen.getByTestId('lp-majority-progress');
+    const element = await screen.findByTestId('lp-majority-progress');
     const style = window.getComputedStyle(element);
     expect(style.width).toBe(`${expectedProgress}%`);
   });
 
-  it('Progress bar displays status - LP participation', () => {
+  it('Progress bar displays status - LP participation', async () => {
     const yesVotesLP = 400;
     const noVotesLP = 600;
     const totalVotesLP = yesVotesLP + noVotesLP;
@@ -341,7 +345,7 @@ describe('VoteBreakdown', () => {
       })
     );
 
-    const element = screen.getByTestId('lp-participation-progress');
+    const element = await screen.findByTestId('lp-participation-progress');
     const style = window.getComputedStyle(element);
     expect(style.width).toBe(`${expectedProgress}%`);
   });
