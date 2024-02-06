@@ -13,6 +13,7 @@ item_value = "item-value"
 
 COL_ID_FEE = ".ag-center-cols-container [col-id='fee'] .ag-cell-value"
 
+
 @pytest.fixture(scope="module")
 def vega(request):
     with init_vega(request) as vega:
@@ -83,6 +84,7 @@ def setup_market_monitoring_auction(vega: VegaServiceNull, simple_market):
     vega.wait_for_total_catchup()
 
 
+@pytest.mark.xdist_group(name="test_monitoring_auction_price_volatility_market")
 @pytest.mark.usefixtures("risk_accepted", "auth", "setup_market_monitoring_auction")
 def test_market_monitoring_auction_price_volatility_limit_order(
     page: Page, simple_market, vega: VegaServiceNull
@@ -114,11 +116,10 @@ def test_market_monitoring_auction_price_volatility_limit_order(
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
     page.get_by_test_id("All").click()
-    expect(page.get_by_role("row").nth(4)).to_contain_text(
-        "0+1LimitActive110.00GTC"
-    )
+    expect(page.get_by_role("row").nth(4)).to_contain_text("0+1LimitActive110.00GTC")
 
 
+@pytest.mark.xdist_group(name="test_monitoring_auction_price_volatility_market")
 @pytest.mark.usefixtures("risk_accepted", "auth", "setup_market_monitoring_auction")
 def test_market_monitoring_auction_price_volatility_market_order(
     page: Page, simple_market
@@ -139,10 +140,10 @@ def test_market_monitoring_auction_price_volatility_market_order(
     )
     expect(page.get_by_test_id("deal-ticket-error-message-type")).to_be_visible()
 
+
+@pytest.mark.xdist_group(name="test_monitoring_auction_price_volatility_market")
 @pytest.mark.usefixtures("risk_accepted", "auth", "setup_market_monitoring_auction")
-def test_market_price_volatility(
-    page: Page, simple_market, vega: VegaServiceNull
-):
+def test_market_price_volatility(page: Page, simple_market, vega: VegaServiceNull):
     page.goto(f"/#/markets/{simple_market}")
     expect(
         page.get_by_test_id(market_trading_mode).get_by_test_id(item_value)
@@ -151,6 +152,8 @@ def test_market_price_volatility(
         "Suspended"
     )
 
+
+@pytest.mark.xdist_group(name="test_monitoring_auction_price_volatility_market")
 @pytest.mark.usefixtures("risk_accepted", "auth", "setup_market_monitoring_auction")
 def test_auction_uncross_fees(simple_market, vega: VegaServiceNull, page: Page):
     page.goto(f"/#/markets/{simple_market}")

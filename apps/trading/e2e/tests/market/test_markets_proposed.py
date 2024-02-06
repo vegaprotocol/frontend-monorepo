@@ -30,6 +30,7 @@ def proposed_market(vega: VegaServiceNull):
     return market_id
 
 
+@pytest.mark.xdist_group(name="test_market_proposed")
 @pytest.mark.usefixtures("risk_accepted")
 def test_can_see_table_headers(proposed_market, page: Page):
     page.goto("/#/markets/all")
@@ -51,6 +52,7 @@ def test_can_see_table_headers(proposed_market, page: Page):
         assert header_elements.nth(i).inner_text() == header
 
 
+@pytest.mark.xdist_group(name="test_market_proposed")
 @pytest.mark.usefixtures("risk_accepted")
 def test_renders_markets_correctly(proposed_market, page: Page):
     page.goto(f"/#/markets/all")
@@ -97,6 +99,7 @@ def test_renders_markets_correctly(proposed_market, page: Page):
     # assert last_link.get_attribute('href') == expected_href
 
 
+@pytest.mark.xdist_group(name="test_market_proposed")
 @pytest.mark.usefixtures("risk_accepted")
 def test_can_drag_and_drop_columns(proposed_market, page: Page):
     # 6001-MARK-063

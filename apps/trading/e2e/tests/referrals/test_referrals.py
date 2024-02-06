@@ -5,7 +5,7 @@ from conftest import init_vega
 from fixtures.market import setup_continuous_market, setup_simple_market
 from actions.utils import change_keys, create_and_faucet_wallet, forward_time, selector_contains_text
 from actions.vega import submit_order, submit_liquidity
-from wallet_config import MM_WALLET, PARTY_A, PARTY_B
+from wallet_config import MM_WALLET, WalletConfig
 
 SELL_ORDERS = [[1, 111], [1, 111], [1, 112], [1, 112], [
     1, 113], [1, 113], [1, 114], [1, 114], [1, 115], [1, 115]]
@@ -23,6 +23,13 @@ def continuous_market(vega):
     market = setup_simple_market(vega, custom_quantum=100000)
     return setup_continuous_market(vega, market, BUY_ORDERS, SELL_ORDERS, add_liquidity=False)
 
+
+def keys(vega):
+    PARTY_A = WalletConfig("PARTY_A", "PARTY_A")
+    create_and_faucet_wallet(vega=vega, wallet=PARTY_A)
+    PARTY_B = WalletConfig("PARTY_B", "PARTY_B")
+    create_and_faucet_wallet(vega=vega, wallet=PARTY_B)
+    return PARTY_A, PARTY_B
 
 def generate_referrer_expected_value_dic(expected_base_commission, expected_staking_multiplier, expected_final_commission_rate, expected_volume, expected_num_traders, expected_total_commission):
     return {
@@ -72,7 +79,8 @@ def create_staking_tier(minimum_staked_tokens, referral_reward_multiplier):
     }
 
 
-def setup_market_and_referral_scheme(vega: VegaServiceNull, continuous_market: str, page: Page):
+def setup_market_and_referral_scheme(vega: VegaServiceNull, continuous_market: str, page: Page, keys):
+    PARTY_A, PARTY_B = keys
     page.goto(f"/#/markets/{continuous_market}")
 
     create_and_faucet_wallet(vega=vega, wallet=PARTY_A)
@@ -116,9 +124,10 @@ def setup_market_and_referral_scheme(vega: VegaServiceNull, continuous_market: s
     submit_liquidity(vega, MM_WALLET.name, continuous_market, 100, 100)
     forward_time(vega)
 
-
+@pytest.mark.xdist_group(name="test_referrals")
 @pytest.mark.usefixtures("page", "auth", "risk_accepted")
-def test_can_traverse_up_and_down_through_tiers(continuous_market, vega: VegaServiceNull, page: Page):
+def test_can_traverse_up_and_down_through_tiers(continuous_market, vega: VegaServiceNull, page: Page, keys):
+    PARTY_A, PARTY_B = keys
     setup_market_and_referral_scheme(vega, continuous_market, page)
     change_keys(page, vega, PARTY_B.name)
     submit_order(vega, PARTY_B.name, continuous_market, "SIDE_BUY", 1, 115)
@@ -160,9 +169,10 @@ def test_can_traverse_up_and_down_through_tiers(continuous_market, vega: VegaSer
     check_tile_values(page, generate_referrer_expected_value_dic(
         "1%", "1", "1%", "0", "1", "1"))
 
-
+@pytest.mark.xdist_group(name="test_referrals")
 @pytest.mark.usefixtures("page", "auth", "risk_accepted")
-def test_does_not_move_up_tiers_when_not_enough_epochs(continuous_market, vega: VegaServiceNull, page: Page):
+def test_does_not_move_up_tiers_when_not_enough_epochs(continuous_market, vega: VegaServiceNull, page: Page, keys):
+    PARTY_A, PARTY_B = keys
     setup_market_and_referral_scheme(vega, continuous_market, page)
     change_keys(page, vega, PARTY_B.name)
     submit_order(vega, PARTY_B.name, continuous_market, "SIDE_BUY", 2, 115)

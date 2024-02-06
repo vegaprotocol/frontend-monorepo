@@ -19,7 +19,7 @@ def vega(request):
 def continuous_market(vega: VegaServiceNull):
     return setup_continuous_market(vega)
 
-
+@pytest.mark.xdist_group(name="test_collateral")
 @pytest.mark.usefixtures("auth", "risk_accepted")
 def test_usage_breakdown(continuous_market, page: Page):
     page.goto(f"/#/markets/{continuous_market}")

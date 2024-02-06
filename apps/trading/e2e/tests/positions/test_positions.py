@@ -5,7 +5,7 @@ from fixtures.market import (
     setup_continuous_market,
 )
 
-
+@pytest.mark.xdist_group(name="test_positions")
 @pytest.mark.usefixtures("auth", "risk_accepted")
 def test_closed_market_position(vega: VegaServiceNull, page: Page):
     market_id = setup_continuous_market(vega)

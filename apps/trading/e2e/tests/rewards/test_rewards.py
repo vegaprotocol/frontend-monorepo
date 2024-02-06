@@ -4,8 +4,8 @@ import vega_sim.proto.vega as vega_protos
 from playwright.sync_api import Page, expect
 from conftest import init_vega, init_page, auth_setup
 from fixtures.market import setup_continuous_market, market_exists
-from actions.utils import next_epoch, change_keys
-from wallet_config import MM_WALLET, PARTY_A, PARTY_B, PARTY_C, PARTY_D
+from actions.utils import next_epoch, change_keys, create_and_faucet_wallet
+from wallet_config import MM_WALLET, WalletConfig
 from vega_sim.null_service import VegaServiceNull
 
 # region Constants
@@ -205,13 +205,13 @@ def setup_market_with_reward_program(vega: VegaServiceNull, reward_programs, tie
         next_epoch(vega=vega)
         if HOARDER in reward_programs:
             vega.submit_order(
-            trading_key=PARTY_B.name,
-            market_id=tDAI_market,
-            order_type="TYPE_MARKET",
-            time_in_force="TIME_IN_FORCE_IOC",
-            side="SIDE_BUY",
-            volume=1,
-        )
+                trading_key=PARTY_B.name,
+                market_id=tDAI_market,
+                order_type="TYPE_MARKET",
+                time_in_force="TIME_IN_FORCE_IOC",
+                side="SIDE_BUY",
+                volume=1,
+            )
         vega.submit_order(
             trading_key=PARTY_D.name,
             market_id=tDAI_market,
@@ -271,7 +271,19 @@ VESTING = """
 }
 """
 
+@pytest.fixture(scope="module")
+def keys(vega):
+    PARTY_A = WalletConfig("PARTY_A", "PARTY_A")
+    create_and_faucet_wallet(vega=vega, wallet=PARTY_A)
+    PARTY_B = WalletConfig("PARTY_B", "PARTY_B")
+    create_and_faucet_wallet(vega=vega, wallet=PARTY_B)
+    PARTY_C = WalletConfig("PARTY_C", "PARTY_C")
+    create_and_faucet_wallet(vega=vega, wallet=PARTY_C)
+    PARTY_D = WalletConfig("PARTY_B", "PARTY_B")
+    create_and_faucet_wallet(vega=vega, wallet=PARTY_D)
+    return PARTY_A, PARTY_B, PARTY_C, PARTY_D
 
+@pytest.mark.xdist_group(name="test_rewards")
 @pytest.mark.parametrize(
     "reward_program, tier, total_rewards",
     [
@@ -291,17 +303,19 @@ def test_network_reward_pot(
     total_rewards,
     tier,
     market_ids,
+    keys
 ):
     print("reward program: " + reward_program, " tier:", tier)
     market_id, market_ids = set_market_reward_program(
         vega_instance, reward_program, market_ids, tier
     )
     page.goto(REWARDS_URL)
-    
+    PARTY_B = keys[1]
     change_keys(page, vega_instance, PARTY_B.name)
     expect(page.get_by_test_id(TOTAL_REWARDS)).to_have_text(total_rewards)
 
 
+@pytest.mark.xdist_group(name="test_rewards")
 @pytest.mark.parametrize(
     "reward_program, tier, reward_multiplier, streak_multiplier, hoarder_multiplier",
     [
@@ -323,12 +337,14 @@ def test_reward_multiplier(
     hoarder_multiplier,
     tier,
     market_ids,
+    keys
 ):
     print("reward program: " + reward_program, " tier:", tier)
     market_id, market_ids = set_market_reward_program(
         vega_instance, reward_program, market_ids, tier
     )
     page.goto(REWARDS_URL)
+    PARTY_B = keys[1]
     change_keys(page, vega_instance, PARTY_B.name)
     expect(page.get_by_test_id(COMBINED_MULTIPLIERS)).to_have_text(reward_multiplier)
     expect(page.get_by_test_id(STREAK_REWARD_MULTIPLIER_VALUE)).to_have_text(
@@ -339,6 +355,7 @@ def test_reward_multiplier(
     )
 
 
+@pytest.mark.xdist_group(name="test_rewards")
 @pytest.mark.parametrize(
     "reward_program, tier, epoch_streak",
     [
@@ -354,16 +371,20 @@ def test_activity_streak(
     epoch_streak,
     tier,
     market_ids,
+    keys
 ):
     print("reward program: " + reward_program, " tier:", tier)
     market_id, market_ids = set_market_reward_program(
         vega_instance, reward_program, market_ids, tier
     )
     page.goto(REWARDS_URL)
+    PARTY_B = keys[1]
     change_keys(page, vega_instance, PARTY_B.name)
     if tier == 1:
         expect(page.get_by_test_id(EPOCH_STREAK)).to_have_text(
-            "Active trader: " + epoch_streak + " epochs so far (Tier 1 as of last epoch)"
+            "Active trader: "
+            + epoch_streak
+            + " epochs so far (Tier 1 as of last epoch)"
         )
     else:
         expect(page.get_by_test_id(EPOCH_STREAK)).to_have_text(
@@ -371,6 +392,7 @@ def test_activity_streak(
         )
 
 
+@pytest.mark.xdist_group(name="test_rewards")
 @pytest.mark.parametrize(
     "reward_program, tier, rewards_hoarded",
     [
@@ -386,18 +408,21 @@ def test_hoarder_bonus(
     rewards_hoarded,
     tier,
     market_ids,
+    keys
 ):
     print("reward program: " + reward_program, " tier:", tier)
     market_id, market_ids = set_market_reward_program(
         vega_instance, reward_program, market_ids, tier
     )
     page.goto(REWARDS_URL)
+    PARTY_B = keys[1]
     change_keys(page, vega_instance, PARTY_B.name)
     expect(page.get_by_test_id(HOARDER_BONUS_TOTAL_HOARDED)).to_contain_text(
         rewards_hoarded
     )
 
 
+@pytest.mark.xdist_group(name="test_rewards")
 @pytest.mark.parametrize(
     "reward_program, tier, price_taking, total, earned_by_me",
     [
@@ -419,12 +444,14 @@ def test_reward_history(
     earned_by_me,
     tier,
     market_ids,
+    keys
 ):
     print("reward program: " + reward_program, " tier:", tier)
     market_id, market_ids = set_market_reward_program(
         vega_instance, reward_program, market_ids, tier
     )
     page.goto(REWARDS_URL)
+    PARTY_B = keys[1]
     change_keys(page, vega_instance, PARTY_B.name)
     page.locator('[name="fromEpoch"]').fill("1")
     expect((page.get_by_role(ROW).locator(PRICE_TAKING_COL_ID)).nth(1)).to_have_text(
@@ -437,6 +464,7 @@ def test_reward_history(
     )
 
 
+@pytest.mark.xdist_group(name="test_rewards")
 @pytest.mark.parametrize(
     "reward_program, tier",
     [
@@ -445,13 +473,14 @@ def test_reward_history(
 )
 @pytest.mark.usefixtures("auth", "risk_accepted", "market_ids")
 def test_redeem(
-    reward_program, vega_instance: VegaServiceNull, page: Page, tier, market_ids
+    reward_program, vega_instance: VegaServiceNull, page: Page, tier, market_ids, keys
 ):
     print("reward program: " + reward_program, " tier:", tier)
     market_id, market_ids = set_market_reward_program(
         vega_instance, reward_program, market_ids, tier
     )
     page.goto(REWARDS_URL)
+    PARTY_B = keys[1]
     change_keys(page, vega_instance, PARTY_B.name)
     page.get_by_test_id("redeem-rewards-button").click()
     available_to_withdraw = page.get_by_test_id(
@@ -464,6 +493,6 @@ def test_redeem(
     page.select_option(
         '[data-testid="transfer-form"] [name="fromAccount"]', option_value
     )
-    
+
     page.get_by_test_id("use-max-button").first.click()
     expect(page.get_by_test_id(TRANSFER_AMOUNT)).to_have_text(available_to_withdraw)

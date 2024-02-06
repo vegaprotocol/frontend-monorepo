@@ -2,18 +2,22 @@ import pytest
 import vega_sim.proto.vega as vega_protos
 from playwright.sync_api import Page, expect
 from vega_sim.null_service import VegaServiceNull
-from actions.utils import next_epoch
-from wallet_config import MM_WALLET, PARTY_A, PARTY_B
+from actions.utils import next_epoch, create_and_faucet_wallet
+from wallet_config import MM_WALLET, WalletConfig
 from vega_sim.service import MarketStateUpdateType
 import vega_sim.api.governance as governance
 
-
+@pytest.mark.xdist_group(name="test_filtered_cards")
 @pytest.mark.usefixtures("risk_accepted", "auth")
 def test_filtered_cards(continuous_market, vega: VegaServiceNull, page: Page):
     tDAI_asset_id = vega.find_asset_id(symbol="tDAI")
     vega.update_network_parameter(
         MM_WALLET.name, parameter="reward.asset", new_value=tDAI_asset_id
     )
+    PARTY_A = WalletConfig("PARTY_A", "PARTY_A")
+    create_and_faucet_wallet(vega=vega, wallet=PARTY_A)
+    PARTY_B = WalletConfig("PARTY_B", "PARTY_B")
+    create_and_faucet_wallet(vega=vega, wallet=PARTY_B)
     vega.mint(key_name=PARTY_B.name, asset=tDAI_asset_id, amount=100000)
     vega.mint(key_name=PARTY_A.name, asset=tDAI_asset_id, amount=100000)
     next_epoch(vega=vega)

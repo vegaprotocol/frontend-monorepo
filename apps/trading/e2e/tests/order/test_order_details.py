@@ -53,6 +53,7 @@ def verify_order_value(
         expect(element).to_have_text(expected_text)
 
 
+@pytest.mark.xdist_group(name="test_order_details")
 @pytest.mark.skip("tbd")
 @pytest.mark.usefixtures("auth", "risk_accepted")
 def test_order_details_are_correctly_displayed(

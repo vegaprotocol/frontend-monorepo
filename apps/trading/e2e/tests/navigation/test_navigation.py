@@ -1,39 +1,34 @@
 import pytest
 from playwright.sync_api import Page, expect, Locator
+from conftest import init_page, risk_accepted_setup
 
-from conftest import init_page, init_vega
 
-
+@pytest.mark.parametrize("vega", ["shared"], indirect=True)
 @pytest.fixture(scope="module")
-def vega():
-    with init_vega() as vega:
-        yield vega
-
-
-# we can reuse single page instance in all tests
-@pytest.fixture(scope="module")
-def page(vega, browser, request):
-    with init_page(vega, browser, request) as page:
+def page(shared_vega, browser, request):
+    with init_page(shared_vega, browser, request) as page:
+        risk_accepted_setup(page)
+        page.goto("/#/disclaimer")
         yield page
 
 
-@pytest.mark.usefixtures("risk_accepted")
+@pytest.mark.shared_vega
+@pytest.mark.xdist_group(name="shared_vega")
 def test_network_switcher(page: Page):
-    page.goto("/#/disclaimer")
     navbar = page.locator('nav[aria-label="Main"]')
     assert_network_switcher(navbar)
 
 
-@pytest.mark.usefixtures("risk_accepted")
+@pytest.mark.shared_vega
+@pytest.mark.xdist_group(name="shared_vega")
 def test_navbar_pages(page: Page):
-    page.goto("/#/disclaimer")
     navbar = page.locator('nav[aria-label="Main"]')
     assert_links(navbar)
 
 
-@pytest.mark.usefixtures("risk_accepted")
+@pytest.mark.shared_vega
+@pytest.mark.xdist_group(name="shared_vega")
 def test_navigation_mobile(page: Page):
-    page.goto("/#/disclaimer")
     page.set_viewport_size({"width": 800, "height": 1040})
     navbar = page.locator('nav[aria-label="Main"]')
 

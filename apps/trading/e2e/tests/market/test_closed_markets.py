@@ -2,10 +2,13 @@ import pytest
 import re
 import vega_sim.api.governance as governance
 from vega_sim.null_service import VegaServiceNull
+from vega_sim.service import MarketStateUpdateType
 from playwright.sync_api import Page, expect
 from fixtures.market import setup_continuous_market
 from conftest import init_vega
 from actions.utils import next_epoch
+from fixtures.market import setup_perps_market
+from wallet_config import MM_WALLET
 
 
 @pytest.fixture(scope="class")
@@ -26,6 +29,7 @@ def create_settled_market(vega: VegaServiceNull):
 
 
 class TestSettledMarket:
+    @pytest.mark.xdist_group(name="test_closed_markets")
     @pytest.mark.usefixtures("risk_accepted", "auth")
     def test_settled_header(self, page: Page, create_settled_market):
         page.goto(f"/#/markets/all")
@@ -51,6 +55,7 @@ class TestSettledMarket:
         for i, header in enumerate(headers):
             expect(page_headers[i]).to_have_text(header)
 
+    @pytest.mark.xdist_group(name="test_closed_markets")
     @pytest.mark.usefixtures(
         "risk_accepted",
         "auth",
@@ -113,6 +118,7 @@ class TestSettledMarket:
         ), f"Expected text to match pattern but got {date_text}"
 
 
+@pytest.mark.xdist_group(name="test_closed_markets")
 @pytest.mark.usefixtures("risk_accepted", "auth")
 def test_terminated_market_no_settlement_date(page: Page, vega: VegaServiceNull):
     setup_continuous_market(vega)
@@ -133,3 +139,39 @@ def test_terminated_market_no_settlement_date(page: Page, vega: VegaServiceNull)
 
     # TODO Create test for terminated market with settlement date in future
     # TODO Create test for terminated market with settlement date in past
+
+
+@pytest.mark.xdist_group(name="test_perpetuals")
+@pytest.mark.usefixtures("risk_accepted", "auth")
+def test_perps_market_terminated(page: Page, vega: VegaServiceNull):
+    perpetual_market = setup_perps_market(vega)
+    vega.update_market_state(
+        proposal_key=MM_WALLET.name,
+        market_id=perpetual_market,
+        market_state=MarketStateUpdateType.Terminate,
+        price=100,
+        approve_proposal=True,
+        forward_time_to_enactment=True,
+    )
+    vega.wait_fn(1)
+    vega.wait_for_total_catchup()
+
+    page.goto(f"/#/markets/{perpetual_market}")
+    # TODO change back to have text once bug #5465 is fixed
+    expect(page.get_by_test_id("market-price")).to_have_text("Mark Price100.00")
+    expect(page.get_by_test_id("market-change")).to_contain_text("Change (24h)")
+    expect(page.get_by_test_id("market-volume")).to_contain_text("Volume (24h)")
+    expect(page.get_by_test_id("market-trading-mode")).to_have_text(
+        "Trading modeNo trading"
+    )
+    expect(page.get_by_test_id("market-state")).to_have_text("StatusClosed")
+    expect(page.get_by_test_id("liquidity-supplied")).to_have_text(
+        "Liquidity supplied 0.00 (0.00%)"
+    )
+    expect(page.get_by_test_id("market-funding")).to_contain_text(
+        "Funding Rate / Countdown"
+    )
+    expect(page.get_by_test_id("index-price")).to_contain_text("Index Price")
+    expect(page.get_by_test_id("deal-ticket-error-message-summary")).to_have_text(
+        "This market is closed and not accepting orders"
+    )

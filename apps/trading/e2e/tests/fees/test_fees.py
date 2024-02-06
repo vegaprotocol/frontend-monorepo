@@ -68,6 +68,7 @@ COL_LIQUIDITY_FEE = '[col-id="liquidityFee"]'
 COL_TOTAL_FEE = '[col-id="totalFee"]'
 # endregion
 
+
 @pytest.fixture(scope="module")
 def market_ids():
     return {
@@ -287,6 +288,7 @@ def set_market_volume_discount(vega, tier, discount_program, market_ids):
     return market_ids
 
 
+@pytest.mark.xdist_group(name="test_fees")
 @pytest.mark.parametrize(
     "tier, discount_program, expected_text",
     [
@@ -315,6 +317,7 @@ def test_fees_page_discount_program_my_trading_fees(
     expect(page.get_by_test_id(LIQUIDITY_FEES)).to_have_text("Liquidity0%-0%")
 
 
+@pytest.mark.xdist_group(name="test_fees")
 @pytest.mark.parametrize(
     "tier, discount_program, volume_discount, total_discount, referral_discount",
     [
@@ -349,6 +352,7 @@ def test_fees_page_discount_program_total_discount(
     )
 
 
+@pytest.mark.xdist_group(name="test_fees")
 @pytest.mark.parametrize(
     "tier, discount_program, past_epochs_volume, required_for_next_tier",
     [(1, "volume", "103", "97"), (2, "volume", "206", "")],
@@ -377,6 +381,7 @@ def test_fees_page_volume_discount_program_my_current_volume(
         expect(page.get_by_test_id(REQUIRED_FOR_NEXT_TIER)).not_to_be_visible()
 
 
+@pytest.mark.xdist_group(name="test_fees")
 @pytest.mark.parametrize(
     "tier, discount_program, notional_taker_volume, epochs_in_set",
     [(1, "referral", "103", "1"), (2, "referral", "207", "1")],
@@ -401,6 +406,7 @@ def test_fees_page_referral_discount_program_referral_benefits(
     expect(page.get_by_test_id(EPOCHS_IN_REFERRAL_SET)).to_have_text(epochs_in_set)
 
 
+@pytest.mark.xdist_group(name="test_fees")
 @pytest.mark.parametrize(
     "tier, discount_program, my_volume_test_id, my_volume_value, your_tier",
     [
@@ -442,6 +448,7 @@ def test_fees_page_discount_program_discount(
     expect(page.get_by_test_id(your_tier).nth(1)).to_have_text("Your tier")
 
 
+@pytest.mark.xdist_group(name="test_fees")
 @pytest.mark.parametrize(
     "tier, discount_program, fees_after_discount",
     [
@@ -470,6 +477,7 @@ def test_fees_page_discount_program_fees_by_market(
     expect(row.locator(COL_TOTAL_FEE)).to_have_text("10.05%")
 
 
+@pytest.mark.xdist_group(name="test_fees")
 @pytest.mark.parametrize(
     "tier, discount_program, discount, discount_value, total_fee",
     [
@@ -517,6 +525,7 @@ def test_deal_ticket_discount_program(
     expect(tooltip.get_by_test_id(TOTAL_FEE_VALUE)).to_have_text(total_fee)
 
 
+@pytest.mark.xdist_group(name="test_fees")
 @pytest.mark.parametrize(
     "tier, discount_program, fee, fee_discount, price_1, size",
     [
@@ -571,6 +580,7 @@ def test_fills_taker_discount_program(
     expect(row.locator(COL_FEE_DISCOUNT)).to_have_text(fee_discount)
 
 
+@pytest.mark.xdist_group(name="test_fees")
 @pytest.mark.parametrize(
     "tier, discount_program, fee, fee_discount, size, price_1",
     [
@@ -612,6 +622,7 @@ def test_fills_maker_discount_program(
     expect(row.locator(COL_FEE_DISCOUNT)).to_have_text(fee_discount)
 
 
+@pytest.mark.xdist_group(name="test_fees")
 @pytest.mark.parametrize(
     "tier, discount_program, fee",
     [
@@ -645,6 +656,7 @@ def test_fills_maker_fee_tooltip_discount_program(
     )
 
 
+@pytest.mark.xdist_group(name="test_fees")
 @pytest.mark.parametrize(
     "tier, discount_program, maker_fee, total_fee, infra_fee",
     [

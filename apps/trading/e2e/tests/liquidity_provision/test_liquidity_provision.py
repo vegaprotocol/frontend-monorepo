@@ -16,7 +16,7 @@ def vega(request):
 def continuous_market(vega):
     return setup_continuous_market(vega)
 
-
+@pytest.mark.xdist_group(name="test_liquidity_provision")
 @pytest.mark.usefixtures("auth", "risk_accepted")
 def test_liquidity_provision_amendment(
     continuous_market, vega: VegaServiceNull, page: Page
@@ -87,7 +87,7 @@ def test_liquidity_provision_amendment(
     )
     expect(row).to_contain_text("Active")
 
-
+@pytest.mark.xdist_group(name="test_liquidity_provision")
 @pytest.mark.usefixtures("auth", "risk_accepted")
 def test_liquidity_provision_cancelled(
     continuous_market, vega: VegaServiceNull, page: Page

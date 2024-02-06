@@ -9,6 +9,7 @@ from actions.utils import next_epoch
 from wallet_config import MM_WALLET, MM_WALLET2, GOVERNANCE_WALLET
 from vega_sim.api import governance
 
+@pytest.mark.xdist_group(name="test_market_lifecycle")
 @pytest.mark.usefixtures("risk_accepted")
 def test_market_lifecycle(proposed_market, vega: VegaServiceNull, page: Page):
     # 7002-SORD-001

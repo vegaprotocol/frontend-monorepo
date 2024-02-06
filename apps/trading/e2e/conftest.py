@@ -33,6 +33,9 @@ logger = logging.getLogger()
 
 load_dotenv()
 
+@pytest.fixture(scope="session")
+def shared_continuous_market(shared_vega):
+    return setup_continuous_market(shared_vega)
 
 @pytest.hookimpl(tryfirst=True)
 def pytest_runtest_makereport(item, call):
@@ -174,11 +177,18 @@ def init_page(vega: VegaServiceNull, browser: Browser, request: pytest.FixtureRe
                 except Exception as e:
                     logger.error(f"Failed to save trace: {e}")
 
+@pytest.fixture(scope="function")
+def vega(request, shared_vega):
+    if getattr(request, "param", "new") == "shared":
+        yield shared_vega
+    else:
+        with init_vega(request) as new_vega:
+            yield new_vega
 
-@pytest.fixture
-def vega(request):
-    with init_vega(request) as vega:
-        yield vega
+@pytest.fixture(scope="session")
+def shared_vega(request):
+    with init_vega(request) as vega_instance:
+        yield vega_instance
 
 
 @pytest.fixture

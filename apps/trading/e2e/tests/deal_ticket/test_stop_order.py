@@ -3,8 +3,6 @@ from playwright.sync_api import Page, expect
 from vega_sim.null_service import VegaServiceNull
 from actions.vega import submit_order
 from datetime import datetime, timedelta
-from conftest import init_vega
-from fixtures.market import setup_continuous_market
 
 stop_order_btn = "order-type-Stop"
 stop_limit_order_btn = "order-type-StopLimit"
@@ -38,16 +36,19 @@ timeInForce_col = '[col-id="submission.timeInForce"]'
 updatedAt_col = '[col-id="updatedAt"]'
 close_toast = "toast-close"
 
-def create_position(vega: VegaServiceNull, market_id):
-    submit_order(vega, "Key 1", market_id, "SIDE_SELL", 100, 110)
-    submit_order(vega, "Key 1", market_id, "SIDE_BUY", 100, 110)
+def create_position(vega: VegaServiceNull, market_id, key):
+    submit_order(vega, key, market_id, "SIDE_SELL", 100, 110)
+    submit_order(vega, key, market_id, "SIDE_BUY", 100, 110)
     vega.wait_fn(1)
     vega.wait_for_total_catchup
 
+@pytest.mark.shared_vega
+@pytest.mark.xdist_group(name="shared_vega")
+@pytest.mark.parametrize("vega", ["shared"], indirect=True)
 @pytest.mark.usefixtures("auth", "risk_accepted")
-def test_stop_order_form_error_validation(continuous_market, page: Page):
+def test_stop_order_form_error_validation(shared_continuous_market, page: Page):
     # 7002-SORD-032
-    page.goto(f"/#/markets/{continuous_market}")
+    page.goto(f"/#/markets/{shared_continuous_market}")
     page.get_by_test_id(stop_order_btn).click()
     page.get_by_test_id(stop_limit_order_btn).is_visible()
     page.get_by_test_id(stop_limit_order_btn).click()
@@ -258,14 +259,14 @@ def test_submit_stop_limit_order_cancel(
 
 
 class TestStopOcoValidation:
-    @pytest.fixture(scope="class")
+    """ @pytest.fixture(scope="class")
     def vega(self, request):
         with init_vega(request) as vega:
             yield vega
 
     @pytest.fixture(scope="class")
     def continuous_market(self, vega):
-        return setup_continuous_market(vega)
+        return setup_continuous_market(vega) """
 
     @pytest.mark.skip("core issue")
     @pytest.mark.usefixtures("auth", "risk_accepted")

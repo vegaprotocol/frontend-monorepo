@@ -2,6 +2,7 @@ import pytest
 from playwright.sync_api import expect, Page
 
 
+@pytest.mark.xdist_group(name="test_market_selector")
 @pytest.mark.usefixtures("auth", "risk_accepted")
 def test_market_selector(continuous_market, page: Page):
     page.goto(f"/#/markets/{continuous_market}")

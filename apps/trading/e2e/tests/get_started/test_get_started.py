@@ -5,7 +5,7 @@ from vega_sim.null_service import VegaServiceNull
 from fixtures.market import setup_simple_market
 from conftest import init_vega
 from actions.vega import submit_order
-from wallet_config import MM_WALLET, TERMINATE_WALLET, wallets
+from wallet_config import MM_WALLET, GOVERNANCE_WALLET, wallets
 import logging
 
 logger = logging.getLogger()
@@ -23,6 +23,7 @@ def simple_market(vega: VegaServiceNull):
 
 
 class TestGetStarted:
+    @pytest.mark.xdist_group(name="test_get_started")
     def test_get_started_interactive(self, vega: VegaServiceNull, page: Page):
         page.goto("/")
         # 0007-FUGS-001
@@ -118,7 +119,7 @@ class TestGetStarted:
             "tDAI",
             proposal_key=MM_WALLET.name,
             settlement_asset_id=tdai_id,
-            termination_key=TERMINATE_WALLET.name,
+            termination_key=GOVERNANCE_WALLET.name,
             market_decimals=5,
             approve_proposal=True,
             forward_time_to_enactment=True,
@@ -136,6 +137,7 @@ class TestGetStarted:
         # Assert dialog isn't visible
         expect(page.get_by_test_id("welcome-dialog")).not_to_be_visible()
 
+    @pytest.mark.xdist_group(name="test_get_started")
     @pytest.mark.skip("TODO: this test is flakey, needs fixing")
     @pytest.mark.usefixtures("risk_accepted")
     def test_get_started_seen_already(self, simple_market, page: Page):
@@ -151,6 +153,7 @@ class TestGetStarted:
         # 0007-FUGS-007
         expect(page.get_by_test_id("dialog-content").nth(1)).to_be_visible()
 
+    @pytest.mark.xdist_group(name="test_get_started")
     @pytest.mark.skip("tbd-market-sim")
     def test_redirect_default_market(self, continuous_market, vega: VegaServiceNull, page: Page):
         page.goto("/")

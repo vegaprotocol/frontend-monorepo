@@ -52,6 +52,7 @@ def submit_order(vega: VegaServiceNull, wallet_name, market_id, side, volume, pr
     )
 
 
+@pytest.mark.xdist_group(name="test_order_match")
 @pytest.mark.usefixtures("auth", "risk_accepted")
 def test_limit_order_trade_open_order(
     opening_auction_market, vega: VegaServiceNull, page: Page
@@ -80,6 +81,7 @@ def test_limit_order_trade_open_order(
     verify_data_grid(page, "Open", expected_open_order)
 
 
+@pytest.mark.xdist_group(name="test_order_match")
 @pytest.mark.usefixtures("auth", "risk_accepted")
 def test_limit_order_trade_open_position(continuous_market, page: Page):
     page.goto(f"/#/markets/{continuous_market}")
@@ -141,6 +143,7 @@ def test_limit_order_trade_open_position(continuous_market, page: Page):
     expect(unrealisedPNL).to_have_text(position["unrealised_pnl"])
 
 
+@pytest.mark.xdist_group(name="test_order_match")
 @pytest.mark.usefixtures("auth", "risk_accepted")
 def test_limit_order_trade_order_trade_away(continuous_market, page: Page):
     page.goto(f"/#/markets/{continuous_market}")

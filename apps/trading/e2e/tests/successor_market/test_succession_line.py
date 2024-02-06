@@ -9,6 +9,8 @@ from actions.utils import next_epoch
 market_banner = "market-banner"
 
 
+
+@pytest.mark.xdist_group(name="test_succession_line")
 @pytest.mark.usefixtures("risk_accepted")
 def test_succession_line(vega: VegaServiceNull, page: Page):
     parent_market_id = setup_continuous_market(vega)
@@ -53,18 +55,10 @@ def test_succession_line(vega: VegaServiceNull, page: Page):
 
     succession_item = page.get_by_test_id("succession-line-item")
 
-    expect(succession_item.nth(1)).to_contain_text(
-        "successor market name"
-    )
-    expect(
-        succession_item.first.get_by_role("link")
-    ).to_be_attached
-    expect(
-        succession_item.last.get_by_role("link")
-    ).to_be_attached
-    expect(
-        succession_item.last.get_by_test_id("icon-bullet")
-    ).to_be_visible
+    expect(succession_item.nth(1)).to_contain_text("successor market name")
+    expect(succession_item.first.get_by_role("link")).to_be_attached
+    expect(succession_item.last.get_by_role("link")).to_be_attached
+    expect(succession_item.last.get_by_test_id("icon-bullet")).to_be_visible
 
     page.goto(f"/#/markets/{parent_market_id}")
     # Settle parent market and check that successor banner is showing
@@ -80,9 +74,10 @@ def test_succession_line(vega: VegaServiceNull, page: Page):
     expect(banner.get_by_text("This market has been succeeded")).to_be_visible()
 
 
+@pytest.mark.xdist_group(name="test_succession_line")
+
 @pytest.mark.usefixtures("risk_accepted")
 def test_banners(vega: VegaServiceNull, page: Page):
-
     banner_successor_text = "A successor to this market has been proposed"
     parent_market_id = setup_continuous_market(vega)
     tdai_id = vega.find_asset_id(symbol="tDAI")

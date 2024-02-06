@@ -81,6 +81,7 @@ def verify_prices_descending(page: Page):
 
 
 @pytest.mark.skip("tbd")
+@pytest.mark.xdist_group(name="test_orderbook")
 @pytest.mark.usefixtures("risk_accepted")
 def test_orderbook_grid_content(setup_market, page: Page):
     vega = setup_market[0]
@@ -139,6 +140,7 @@ def test_orderbook_grid_content(setup_market, page: Page):
     verify_prices_descending(page)
 
 
+@pytest.mark.xdist_group(name="test_orderbook")
 @pytest.mark.usefixtures("risk_accepted")
 def test_orderbook_resolution_change(setup_market, page: Page):
     market_id = setup_market[1]
@@ -189,6 +191,7 @@ def test_orderbook_resolution_change(setup_market, page: Page):
     #     verify_orderbook_grid(page, resolution[1])
 
 
+@pytest.mark.xdist_group(name="test_orderbook")
 @pytest.mark.usefixtures("risk_accepted")
 def test_orderbook_price_size_copy(setup_market, page: Page):
     market_id = setup_market[1]
@@ -209,6 +212,7 @@ def test_orderbook_price_size_copy(setup_market, page: Page):
 
 
 @pytest.mark.skip("tbd")
+@pytest.mark.xdist_group(name="test_orderbook")
 @pytest.mark.usefixtures("risk_accepted")
 def test_orderbook_price_movement(setup_market, page: Page):
     vega = setup_market[0]
