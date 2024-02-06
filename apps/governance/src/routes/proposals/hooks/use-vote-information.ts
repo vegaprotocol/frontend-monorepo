@@ -7,6 +7,7 @@ import {
   type ProposalFieldsFragment,
   type VoteFieldsFragment,
 } from '../__generated__/Proposals';
+import { type ProposalChangeType } from '../types';
 
 export const useVoteInformation = ({
   votes,
@@ -25,10 +26,44 @@ export const useVoteInformation = ({
 
   const paramsForChange = params[terms.change.__typename];
 
-  return getVoteData(paramsForChange, votes, totalSupply, decimals);
+  return getVoteData(
+    terms.change.__typename,
+    paramsForChange,
+    votes,
+    totalSupply,
+    decimals
+  );
+};
+
+export const useBatchVoteInformation = ({
+  votes,
+  terms,
+}: {
+  votes: VoteFieldsFragment;
+  terms: ProposalTermsFieldsFragment[];
+}) => {
+  const {
+    appState: { totalSupply, decimals },
+  } = useAppState();
+
+  const params = useProposalNetworkParams();
+
+  if (!params) return;
+
+  return terms.map((t) => {
+    const paramsForChange = params[t.change.__typename];
+    return getVoteData(
+      t.change.__typename,
+      paramsForChange,
+      votes,
+      totalSupply,
+      decimals
+    );
+  });
 };
 
 const getVoteData = (
+  changeType: ProposalChangeType,
   params: {
     requiredMajority: BigNumber;
     requiredMajorityLP: BigNumber;
@@ -118,6 +153,14 @@ const getVoteData = (
       requiredMajorityLPPercentage
     );
 
+  let willPass = false;
+
+  if (changeType === 'UpdateMarket' || changeType === 'UpdateMarketState') {
+    willPass = willPassByTokenVote && willPassByLPVote;
+  } else {
+    willPass = willPassByTokenVote;
+  }
+
   return {
     requiredMajorityPercentage,
     requiredMajorityLPPercentage,
@@ -150,5 +193,6 @@ const getVoteData = (
     requiredParticipationLP: new BigNumber(
       params.requiredParticipationLP
     ).times(100),
+    willPass,
   };
 };

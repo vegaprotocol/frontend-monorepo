@@ -1,4 +1,6 @@
-import { type ReactNode } from 'react';
+import compact from 'lodash/compact';
+import countBy from 'lodash/countBy';
+import { useState, type ReactNode } from 'react';
 import classNames from 'classnames';
 import BigNumber from 'bignumber.js';
 import { useTranslation } from 'react-i18next';
@@ -12,6 +14,7 @@ import {
   type ProposalTermsFieldsFragment,
   type VoteFieldsFragment,
 } from '../../__generated__/Proposals';
+import { useBatchVoteInformation } from '../../hooks/use-vote-information';
 
 export const CompactVotes = ({ number }: { number: BigNumber }) => (
   <CompactNumber
@@ -55,7 +58,7 @@ const VoteProgress = ({
         className={progressClasses}
         style={{ width: `${percentageFor}%` }}
         data-testid={testId}
-      ></div>
+      />
       <div className={textClasses}>{children}</div>
     </div>
   );
@@ -109,19 +112,70 @@ export const VoteBreakdown = ({
 };
 
 const VoteBreakdownBatch = ({ proposal }: { proposal: BatchProposal }) => {
+  const [fullBreakdown, setFullBreakdown] = useState(false);
+  const { t } = useTranslation();
+  // TODO: determine from sub proposals if it will pass
+  const voteInfo = useBatchVoteInformation({
+    terms: compact(
+      proposal.subProposals ? proposal.subProposals.map((p) => p?.terms) : []
+    ),
+    votes: proposal.votes,
+  });
+
+  if (!voteInfo) return null;
+
+  const batchWillPass = voteInfo.every((i) => i.willPass);
+
+  const passingCount = countBy(voteInfo, (v) => v.willPass);
+
   return (
-    <div>
-      {proposal.subProposals?.map((p, i) => {
-        if (!p?.terms) return null;
-        return (
-          <VoteBreakdownBatchSubProposal
-            key={i}
-            proposal={proposal}
-            votes={proposal.votes}
-            terms={p.terms}
-          />
-        );
-      })}
+    <div className="flex flex-col gap-2">
+      <div className="flex items-center justify-between gap-2">
+        {batchWillPass ? (
+          <p className="flex gap-2 m-0 items-center">
+            <VegaIcon name={VegaIconNames.TICK} className="text-vega-green" />
+            {t(
+              'Currently expected to pass: conditions met for {{count}} of {{total}} proposals',
+              {
+                count: passingCount['true'] || 0,
+                total: voteInfo.length,
+              }
+            )}
+          </p>
+        ) : (
+          <p className="flex gap-2 m-0 items-center">
+            <VegaIcon name={VegaIconNames.CROSS} className="text-vega-red" />
+            {t(
+              'Currently expected to fail: only {{count}} of {{total}} proposals are passing',
+              {
+                count: passingCount['true'] || 0,
+                total: voteInfo.length,
+              }
+            )}
+          </p>
+        )}
+        <button
+          className="underline"
+          onClick={() => setFullBreakdown((x) => !x)}
+        >
+          {fullBreakdown ? 'Hide vote breakdown' : 'Show vote breakdown'}
+        </button>
+      </div>
+      {fullBreakdown && (
+        <div>
+          {proposal.subProposals?.map((p, i) => {
+            if (!p?.terms) return null;
+            return (
+              <VoteBreakdownBatchSubProposal
+                key={i}
+                proposal={proposal}
+                votes={proposal.votes}
+                terms={p.terms}
+              />
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 };
@@ -135,6 +189,7 @@ const VoteBreakdownBatchSubProposal = ({
   votes: VoteFieldsFragment;
   terms: ProposalTermsFieldsFragment;
 }) => {
+  const { t } = useTranslation();
   const voteInfo = useVoteInformation({
     votes,
     terms,
@@ -144,11 +199,14 @@ const VoteBreakdownBatchSubProposal = ({
   const isUpdateMarket = terms?.change?.__typename === 'UpdateMarket';
 
   return (
-    <VoteBreakDownUI
-      voteInfo={voteInfo}
-      isProposalOpen={isProposalOpen}
-      isUpdateMarket={isUpdateMarket}
-    />
+    <div>
+      <h4>{t(terms.change.__typename)}</h4>
+      <VoteBreakDownUI
+        voteInfo={voteInfo}
+        isProposalOpen={isProposalOpen}
+        isUpdateMarket={isUpdateMarket}
+      />
+    </div>
   );
 };
 
@@ -234,6 +292,8 @@ const VoteBreakDownUI = ({
   const progressDetailsClasses = classNames(
     'flex justify-between flex-wrap mt-2 text-sm'
   );
+
+  console.log(voteInfo.requiredParticipation.toString());
 
   return (
     <div className="mb-6">

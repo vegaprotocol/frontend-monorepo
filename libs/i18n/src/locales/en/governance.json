@@ -164,6 +164,8 @@
   "CreateProposalAndDownloadJSONToShare": "Create proposal and download JSON to share",
   "currently": "currently",
   "currentlySetTo": "Currently expected to ",
+  "Currently expected to pass: conditions met for {{count}} of {{total}} proposals": "Currently expected to pass: conditions met for {{count}} of {{total}} Proposals",
+  "Currently expected to fail: only {{count}} of {{total}} proposals are passing": "Currently expected to fail: only {{count}} of {{total}} proposals are passing",
   "CurrentValue": "Current value",
   "dataIsIdentical": "Data is identical",
   "date": "Date",
