@@ -417,6 +417,7 @@
   "myVolume_other": "My volume (last {{count}} epochs)",
   "numberEpochs": "{{count}} epochs",
   "numberEpochs_one": "{{count}} epoch",
+  "Rewards earned": "Rewards earned",
   "Rewards paid out": "Rewards paid out",
   "{{reward}}x": "{{reward}}x",
   "userActive": "{{active}} trader: {{count}} epochs so far",
@@ -431,5 +432,19 @@
   "{{assetSymbol}} Reward pot": "{{assetSymbol}} Reward pot",
   "{{checkedAssets}} Assets": "{{checkedAssets}} Assets",
   "{{distance}} ago": "{{distance}} ago",
-  "{{instrumentCode}} liquidity provision": "{{instrumentCode}} liquidity provision"
+  "{{instrumentCode}} liquidity provision": "{{instrumentCode}} liquidity provision",
+  "My team": "My team",
+  "Profile": "Profile",
+  "Last {{games}} games result_one": "Last game result",
+  "Last {{games}} games result_other": "Last {{games}} games result",
+  "Leaderboard": "Leaderboard",
+  "View all teams": "View all teams",
+  "Competitions": "Competitions",
+  "Be a team player! Participate in games and work together to rake in as much profit to win.": "Be a team player! Participate in games and work together to rake in as much profit to win.",
+  "Create a public team": "Create a public team",
+  "Create a private team": "Create a private team",
+  "Choose a team": "Choose a team",
+  "Join a team": "Join a team",
+  "Solo team / lone wolf": "Solo team / lone wolf",
+  "Choose a team to get involved": "Choose a team to get involved"
 }

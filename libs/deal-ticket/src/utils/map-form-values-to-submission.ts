@@ -9,7 +9,7 @@ import type {
 } from '../hooks/use-form-values';
 import * as Schema from '@vegaprotocol/types';
 import { removeDecimal, toNanoSeconds } from '@vegaprotocol/utils';
-import { isPersistentOrder } from './time-in-force-persistance';
+import { isPersistentOrder } from './time-in-force-persistence';
 
 export const mapFormValuesToOrderSubmission = (
   order: OrderFormValues,

@@ -1,15 +1,20 @@
+fragment TeamsFields on Team {
+  teamId
+  referrer
+  name
+  teamUrl
+  avatarUrl
+  createdAt
+  createdAtEpoch
+  closed
+  totalMembers
+}
+
 query Teams($teamId: ID, $partyId: ID) {
   teams(teamId: $teamId, partyId: $partyId) {
     edges {
       node {
-        teamId
-        referrer
-        name
-        teamUrl
-        avatarUrl
-        createdAt
-        createdAtEpoch
-        closed
+        ...TeamsFields
       }
     }
   }

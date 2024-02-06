@@ -4,7 +4,8 @@ import { useTeamsQuery } from './__generated__/Teams';
 import { useTeamsStatisticsQuery } from './__generated__/TeamsStatistics';
 import compact from 'lodash/compact';
 
-export const DEFAULT_AGGREGATION_EPOCHS = 10;
+// 192
+export const DEFAULT_AGGREGATION_EPOCHS = 192;
 
 export const useTeams = (aggregationEpochs = DEFAULT_AGGREGATION_EPOCHS) => {
   const {

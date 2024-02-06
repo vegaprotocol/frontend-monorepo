@@ -29,6 +29,7 @@ import { usePositionEstimate } from '../../hooks/use-position-estimate';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { getAsset, useMarket } from '@vegaprotocol/markets';
 import { NoWalletWarning } from './deal-ticket';
+import { DealTicketMarginDetails } from './deal-ticket-margin-details';
 
 const defaultLeverage = 10;
 
@@ -93,66 +94,78 @@ export const MarginChange = ({
     },
     skip
   );
-  if (
-    !asset ||
-    !estimateMargin?.estimatePosition?.collateralIncreaseEstimate.worstCase ||
-    estimateMargin.estimatePosition.collateralIncreaseEstimate.worstCase === '0'
-  ) {
+  if (!asset || !estimateMargin?.estimatePosition) {
     return null;
   }
   const collateralIncreaseEstimate = BigInt(
     estimateMargin.estimatePosition.collateralIncreaseEstimate.worstCase
   );
-  if (!collateralIncreaseEstimate) {
-    return null;
-  }
+
   let positionWarning = '';
-  if (orders?.length && openVolume !== '0') {
-    positionWarning = t(
-      'youHaveOpenPositionAndOrders',
-      'You have an existing position and open orders on this market.',
-      {
-        count: orders.length,
-      }
-    );
-  } else if (!orders?.length) {
-    positionWarning = t('You have an existing position on this market.');
-  } else {
-    positionWarning = t(
-      'youHaveOpenOrders',
-      'You have open orders on this market.',
-      {
-        count: orders.length,
-      }
-    );
-  }
   let marginChangeWarning = '';
-  const amount = addDecimalsFormatNumber(
-    collateralIncreaseEstimate.toString(),
-    asset?.decimals
-  );
-  const { symbol } = asset;
-  const interpolation = { amount, symbol };
-  if (marginMode === Schema.MarginMode.MARGIN_MODE_CROSS_MARGIN) {
-    marginChangeWarning = t(
-      'Changing the margin mode will move {{amount}} {{symbol}} from your general account to fund the position.',
-      interpolation
+  if (collateralIncreaseEstimate) {
+    if (orders?.length && openVolume !== '0') {
+      positionWarning = t(
+        'youHaveOpenPositionAndOrders',
+        'You have an existing position and open orders on this market.',
+        {
+          count: orders.length,
+        }
+      );
+    } else if (!orders?.length) {
+      positionWarning = t('You have an existing position on this market.');
+    } else {
+      positionWarning = t(
+        'youHaveOpenOrders',
+        'You have open orders on this market.',
+        {
+          count: orders.length,
+        }
+      );
+    }
+
+    const amount = addDecimalsFormatNumber(
+      collateralIncreaseEstimate.toString(),
+      asset?.decimals
     );
-  } else {
-    marginChangeWarning = t(
-      'Changing the margin mode and leverage will move {{amount}} {{symbol}} from your general account to fund the position.',
-      interpolation
-    );
+    const { symbol } = asset;
+    const interpolation = { amount, symbol };
+    if (marginMode === Schema.MarginMode.MARGIN_MODE_CROSS_MARGIN) {
+      marginChangeWarning = t(
+        'Changing the margin mode will move {{amount}} {{symbol}} from your general account to fund the position.',
+        interpolation
+      );
+    } else {
+      marginChangeWarning = t(
+        'Changing the margin mode and leverage will move {{amount}} {{symbol}} from your general account to fund the position.',
+        interpolation
+      );
+    }
   }
   return (
     <div className="mb-2">
-      <Notification
-        intent={Intent.Warning}
-        message={
-          <>
-            <p>{positionWarning}</p>
-            <p>{marginChangeWarning}</p>
-          </>
+      {positionWarning && marginChangeWarning && (
+        <Notification
+          intent={Intent.Warning}
+          message={
+            <>
+              <p>{positionWarning}</p>
+              <p>{marginChangeWarning}</p>
+            </>
+          }
+        />
+      )}
+      <DealTicketMarginDetails
+        marginAccountBalance={marginAccountBalance}
+        generalAccountBalance={generalAccountBalance}
+        orderMarginAccountBalance={orderMarginAccountBalance}
+        assetSymbol={asset.symbol}
+        market={market}
+        positionEstimate={estimateMargin.estimatePosition}
+        side={
+          openVolume.startsWith('-')
+            ? Schema.Side.SIDE_SELL
+            : Schema.Side.SIDE_BUY
         }
       />
     </div>
