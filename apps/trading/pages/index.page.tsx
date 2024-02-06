@@ -26,6 +26,8 @@ export default function Index() {
         <meta name="twitter:image" content="./favicon.ico" />
         <meta name="twitter:image:alt" content="VEGA logo" />
         <meta name="twitter:site" content="@vegaprotocol" />
+        {/* manifest */}
+        <link rel="manifest" href="/apps/trading/public/manifest.json" />
       </Head>
       <ClientRouter />
     </>
