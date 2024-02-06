@@ -16,7 +16,7 @@ def create_position(vega: VegaServiceNull, market_id):
     vega.wait_fn(1)
     vega.wait_for_total_catchup
 
-
+@pytest.mark.xdist_group(name="test_isolated_cross_margin")
 @pytest.mark.usefixtures("auth", "risk_accepted")
 def test_switch_cross_isolated_margin(
         continuous_market, vega: VegaServiceNull, page: Page):

@@ -28,19 +28,22 @@ def test_should_display_info_and_button_for_deposit(
     shared_page.get_by_test_id(order_size).fill("200000")
     shared_page.get_by_test_id(order_price).fill("20")
     # 7002-SORD-060
-    expect(shared_page.get_by_test_id(deal_ticket_warning_margin)).to_have_text(
+    expect(page.get_by_test_id(deal_ticket_warning_margin)).to_have_text(
         "You may not have enough margin available to open this position."
     )
-    shared_page.get_by_test_id(deal_ticket_warning_margin).hover()
-    expect(shared_page.get_by_test_id("tooltip-content").nth(0)).to_be_visible()
-    shared_page.get_by_test_id(deal_ticket_deposit_dialog_button).nth(0).click()
-    expect(shared_page.get_by_test_id("sidebar-content")).to_contain_text("DepositFrom")
+    page.get_by_test_id(deal_ticket_warning_margin).hover()
+    expect(page.get_by_test_id("tooltip-content").nth(0)).to_have_text(
+        "1,661,896.6317 tDAI is currently required.You have only 1,000,000.00.Deposit tDAI"
+    )
+    page.get_by_test_id(deal_ticket_deposit_dialog_button).nth(0).click()
+    expect(page.get_by_test_id("sidebar-content")).to_contain_text("DepositFrom")
 
 
 @pytest.mark.shared_vega
 @pytest.mark.xdist_group(name="shared_vega")
 def test_should_show_an_error_if_your_balance_is_zero(
     shared_continuous_market, shared_vega: VegaServiceNull, shared_page: Page, shared_auth, shared_risk_accepted
+
 ):
     shared_page.goto(f"/#/markets/{shared_continuous_market}")
     shared_vega.create_key("key_empty")
