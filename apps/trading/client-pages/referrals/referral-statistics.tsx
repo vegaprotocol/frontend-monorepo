@@ -14,9 +14,9 @@ import {
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import {
   addDecimalsFormatNumber,
+  formatNumber,
   getDateFormat,
   getDateTimeFormat,
-  getNumberFormat,
   getUserLocale,
   removePaginationWrapper,
 } from '@vegaprotocol/utils';
@@ -323,7 +323,7 @@ export const Statistics = ({
       }
       description={<QUSDTooltip />}
     >
-      {getNumberFormat(0).format(Number(totalCommissionValue))}
+      {formatNumber(totalCommissionValue, 0)}
     </StatTile>
   );
 
@@ -563,8 +563,8 @@ export const RefereesTable = ({
               )
                 .map((r) => ({
                   ...r,
-                  volume: getNumberFormat(0).format(r.volume),
-                  commission: getNumberFormat(0).format(r.commission),
+                  volume: formatNumber(r.volume, 0),
+                  commission: formatNumber(r.commission, 0),
                 }))
                 .reverse()}
             />

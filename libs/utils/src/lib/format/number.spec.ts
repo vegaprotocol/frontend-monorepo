@@ -23,6 +23,7 @@ describe('number utils', () => {
     { v: new BigNumber(123000), d: 1, o: '12,300.0' },
     { v: new BigNumber(123001), d: 2, o: '1,230.01' },
     { v: new BigNumber(123001000), d: 2, o: '1,230,010.00' },
+    { v: '100000000000000000001', d: 18, o: '100.000000000000000001' },
   ])(
     'formats with addDecimalsFormatNumber given number correctly',
     ({ v, d, o }) => {
@@ -38,6 +39,7 @@ describe('number utils', () => {
     { v: new BigNumber(123001), d: 2, o: '1,230.01', q: 100 },
     { v: new BigNumber(123001), d: 2, o: '1,230.01', q: 0.1 },
     { v: new BigNumber(123001), d: 2, o: '1,230.01', q: 1 },
+
     {
       v: BigNumber('123456789123456789'),
       d: 10,
@@ -47,7 +49,7 @@ describe('number utils', () => {
     {
       v: BigNumber('123456789123456789'),
       d: 10,
-      o: '12,345,678.91234568',
+      o: '12,345,678.91',
       q: '1',
     },
     // USDT / USDC

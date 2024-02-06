@@ -82,6 +82,21 @@ export const getDecimalSeparator = memoize(
       .find((part) => part.type === 'decimal')?.value
 );
 
+export const getGroupSeparator = memoize(
+  () =>
+    getNumberFormat(1)
+      .formatToParts(100000000000)
+      .find((part) => part.type === 'group')?.value
+);
+
+export const getGroupSize = memoize(
+  () =>
+    getNumberFormat(1)
+      .formatToParts(100000000000)
+      .reverse()
+      .find((part) => part.type === 'integer')?.value.length
+);
+
 /** formatNumber will format the number with fixed decimals
  * @param rawValue - should be a number that is not outside the safe range fail as in https://mikemcl.github.io/bignumber.js/#toN
  * @param formatDecimals - number of decimals to use
@@ -90,7 +105,32 @@ export const formatNumber = (
   rawValue: string | number | BigNumber,
   formatDecimals = 0
 ) => {
-  return getNumberFormat(formatDecimals).format(Number(rawValue));
+  const decimalSeparator = getDecimalSeparator() || '.';
+  const groupSeparator = getGroupSeparator();
+  const groupSize = groupSeparator ? getGroupSize() : 0;
+  const formatted = new BigNumber(rawValue).toFormat(
+    Math.max(0, formatDecimals),
+    {
+      decimalSeparator,
+      groupSeparator,
+      groupSize,
+    }
+  );
+  if (!formatDecimals) {
+    return formatted;
+  }
+  const minimumFractionDigits = Math.min(
+    Math.max(0, formatDecimals),
+    MIN_FRACTION_DIGITS
+  );
+  if (!minimumFractionDigits) {
+    return formatted;
+  }
+  const parts = formatted.split(decimalSeparator);
+  parts[1] = (parts[1] || '')
+    .replace(/0+$/, '')
+    .padEnd(minimumFractionDigits, '0');
+  return parts.join(decimalSeparator);
 };
 
 /** formatNumberFixed will format the number with fixed decimals
@@ -101,7 +141,7 @@ export const formatNumberFixed = (
   rawValue: string | number | BigNumber,
   formatDecimals = 0
 ) => {
-  return getFixedNumberFormat(formatDecimals).format(Number(rawValue));
+  return new BigNumber(rawValue).toFormat(Math.max(0, formatDecimals));
 };
 
 export const quantumDecimalPlaces = (
@@ -131,9 +171,14 @@ export const addDecimalsFormatNumberQuantum = (
   if (isNaN(Number(quantum))) {
     return addDecimalsFormatNumber(rawValue, decimalPlaces);
   }
-  const quantumValue = addDecimal(quantum, decimalPlaces);
-  const numberDP = Math.max(0, Math.log10(100 / Number(quantumValue)));
-  return addDecimalsFormatNumber(rawValue, decimalPlaces, Math.ceil(numberDP));
+  const numberDP =
+    (typeof quantum === 'number' ? quantum.toString() : quantum).split('.')[1]
+      ?.length || 0;
+  return addDecimalsFormatNumber(
+    rawValue,
+    decimalPlaces,
+    Math.max(MIN_FRACTION_DIGITS, numberDP)
+  );
 };
 
 export const addDecimalsFormatNumber = (
@@ -142,7 +187,6 @@ export const addDecimalsFormatNumber = (
   formatDecimals: number = decimalPlaces
 ) => {
   const x = addDecimal(rawValue, decimalPlaces);
-
   return formatNumber(x, formatDecimals);
 };
 
