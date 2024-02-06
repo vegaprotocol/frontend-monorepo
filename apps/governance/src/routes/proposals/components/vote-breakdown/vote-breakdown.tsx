@@ -128,64 +128,127 @@ const VoteBreakdownBatch = ({ proposal }: { proposal: BatchProposal }) => {
 
   const passingCount = countBy(voteInfo, (v) => v.willPass);
 
-  return (
-    <div className="flex flex-col gap-2">
-      <div className="flex items-center justify-between gap-2">
-        {batchWillPass ? (
-          <p className="flex gap-2 m-0 items-center">
-            <VegaIcon
-              name={VegaIconNames.TICK}
-              className="text-vega-green"
-              size={20}
-            />
-            {t(
-              'Currently expected to pass: conditions met for {{count}} of {{total}} proposals',
-              {
-                count: passingCount['true'] || 0,
-                total: voteInfo.length,
-              }
-            )}
-          </p>
-        ) : (
-          <p className="flex gap-2 m-0 items-center">
-            <VegaIcon
-              name={VegaIconNames.CROSS}
-              className="text-vega-pink"
-              size={20}
-            />
-            {t(
-              'Currently expected to fail: {{count}} of {{total}} proposals are passing',
-              {
-                count: passingCount['true'] || 0,
-                total: voteInfo.length,
-              }
-            )}
-          </p>
-        )}
-        <button
-          className="underline"
-          onClick={() => setFullBreakdown((x) => !x)}
-        >
-          {fullBreakdown ? 'Hide vote breakdown' : 'Show vote breakdown'}
-        </button>
-      </div>
-      {fullBreakdown && (
-        <div>
-          {proposal.subProposals?.map((p, i) => {
-            if (!p?.terms) return null;
-            return (
-              <VoteBreakdownBatchSubProposal
-                key={i}
-                proposal={proposal}
-                votes={proposal.votes}
-                terms={p.terms}
+  if (proposal.state === ProposalState.STATE_OPEN) {
+    return (
+      <div className="flex flex-col gap-2">
+        <div className="flex items-center justify-between gap-2">
+          {batchWillPass ? (
+            <p className="flex gap-2 m-0 items-center">
+              <VegaIcon
+                name={VegaIconNames.TICK}
+                className="text-vega-green"
+                size={20}
               />
-            );
-          })}
+              {t(
+                'Currently expected to pass: conditions met for {{count}} of {{total}} proposals',
+                {
+                  count: passingCount['true'] || 0,
+                  total: voteInfo.length,
+                }
+              )}
+            </p>
+          ) : (
+            <p className="flex gap-2 m-0 items-center">
+              <VegaIcon
+                name={VegaIconNames.CROSS}
+                className="text-vega-pink"
+                size={20}
+              />
+              {t(
+                'Currently expected to fail: {{count}} of {{total}} proposals are passing',
+                {
+                  count: passingCount['true'] || 0,
+                  total: voteInfo.length,
+                }
+              )}
+            </p>
+          )}
+          <button
+            className="underline"
+            onClick={() => setFullBreakdown((x) => !x)}
+          >
+            {fullBreakdown ? 'Hide vote breakdown' : 'Show vote breakdown'}
+          </button>
         </div>
-      )}
-    </div>
-  );
+        {fullBreakdown && (
+          <div>
+            {proposal.subProposals?.map((p, i) => {
+              if (!p?.terms) return null;
+              return (
+                <VoteBreakdownBatchSubProposal
+                  key={i}
+                  proposal={proposal}
+                  votes={proposal.votes}
+                  terms={p.terms}
+                />
+              );
+            })}
+          </div>
+        )}
+      </div>
+    );
+  } else if (
+    proposal.state === ProposalState.STATE_DECLINED ||
+    proposal.state === ProposalState.STATE_PASSED
+  ) {
+    return (
+      <div className="flex flex-col gap-2">
+        <div className="flex items-center justify-between gap-2">
+          {batchWillPass ? (
+            <p className="flex gap-2 m-0 items-center">
+              <VegaIcon
+                name={VegaIconNames.TICK}
+                className="text-vega-green"
+                size={20}
+              />
+              {t(
+                'Proposal passed: conditions met for {{count}} of {{total}} proposals',
+                {
+                  count: passingCount['true'] || 0,
+                  total: voteInfo.length,
+                }
+              )}
+            </p>
+          ) : (
+            <p className="flex gap-2 m-0 items-center">
+              <VegaIcon
+                name={VegaIconNames.CROSS}
+                className="text-vega-pink"
+                size={20}
+              />
+              {t('Proposal failed: {{count}} of {{total}} proposals passed', {
+                count: passingCount['true'] || 0,
+                total: voteInfo.length,
+              })}
+            </p>
+          )}
+          <button
+            className="underline"
+            onClick={() => setFullBreakdown((x) => !x)}
+          >
+            {fullBreakdown ? 'Hide vote breakdown' : 'Show vote breakdown'}
+          </button>
+        </div>
+        {fullBreakdown && (
+          <div>
+            {proposal.subProposals?.map((p, i) => {
+              if (!p?.terms) return null;
+              return (
+                <VoteBreakdownBatchSubProposal
+                  key={i}
+                  proposal={proposal}
+                  votes={proposal.votes}
+                  terms={p.terms}
+                />
+              );
+            })}
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  return null;
 };
 
 const VoteBreakdownBatchSubProposal = ({

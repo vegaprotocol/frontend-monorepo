@@ -533,6 +533,8 @@
   "ProductMaturityIsPassed": "Product maturity is passed",
   "Proposal": "Proposal",
   "proposal": "Proposal",
+  "Proposal passed: conditions met for {{count}} of {{total}} proposals": "Proposal passed: conditions met for {{count}} of {{total}} proposals",
+  "Proposal failed: {{count}} of {{total}} proposals passed": "Proposal failed: {{count}} of {{total}} proposals passed",
   "Proposal rejected": "Proposal rejected",
   "proposalCancelTransferDetails": "Cancel governance transfer details",
   "proposalChange": "Change <code>{{key}}</code> to <code>{{value}}</code>",
