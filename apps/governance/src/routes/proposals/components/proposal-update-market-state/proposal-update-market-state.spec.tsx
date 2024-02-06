@@ -1,86 +1,73 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { ProposalUpdateMarketState } from './proposal-update-market-state';
-import { generateProposal } from '../../test-helpers/generate-proposals';
 import { MarketUpdateType } from '@vegaprotocol/types';
 
 describe('<ProposalUpdateMarketState />', () => {
-  const suspendProposal = generateProposal({
-    terms: {
-      change: {
-        __typename: 'UpdateMarketState',
-        market: {
-          id: '1',
-          decimalPlaces: 0,
-          tradableInstrument: {
-            instrument: {
-              name: 'suspendProposal Name',
-              code: 'suspendProposal Code',
-              product: {
-                __typename: 'Future',
-                quoteName: 'USD',
-              },
-            },
+  const suspendProposal = {
+    __typename: 'UpdateMarketState' as const,
+    market: {
+      id: '1',
+      decimalPlaces: 0,
+      tradableInstrument: {
+        instrument: {
+          name: 'suspendProposal Name',
+          code: 'suspendProposal Code',
+          product: {
+            __typename: 'Future' as const,
+            quoteName: 'USD',
           },
         },
-        updateType: MarketUpdateType.MARKET_STATE_UPDATE_TYPE_SUSPEND,
       },
     },
-  });
+    updateType: MarketUpdateType.MARKET_STATE_UPDATE_TYPE_SUSPEND,
+  };
 
-  const resumeProposal = generateProposal({
-    terms: {
-      change: {
-        __typename: 'UpdateMarketState',
-        market: {
-          id: '1',
-          decimalPlaces: 0,
-          tradableInstrument: {
-            instrument: {
-              name: 'resumeProposal Name',
-              code: 'resumeProposal Code',
-              product: {
-                __typename: 'Future',
-                quoteName: 'USD',
-              },
-            },
+  const resumeProposal = {
+    __typename: 'UpdateMarketState' as const,
+    market: {
+      id: '1',
+      decimalPlaces: 0,
+      tradableInstrument: {
+        instrument: {
+          name: 'resumeProposal Name',
+          code: 'resumeProposal Code',
+          product: {
+            __typename: 'Future' as const,
+            quoteName: 'USD',
           },
         },
-        updateType: MarketUpdateType.MARKET_STATE_UPDATE_TYPE_RESUME,
       },
     },
-  });
+    updateType: MarketUpdateType.MARKET_STATE_UPDATE_TYPE_RESUME,
+  };
 
-  const terminateProposal = generateProposal({
-    terms: {
-      change: {
-        __typename: 'UpdateMarketState',
-        market: {
-          id: '1',
-          decimalPlaces: 0,
-          tradableInstrument: {
-            instrument: {
-              name: 'terminateProposal Name',
-              code: 'terminateProposal Code',
-              product: {
-                __typename: 'Future',
-                quoteName: 'USD',
-              },
-            },
+  const terminateProposal = {
+    __typename: 'UpdateMarketState' as const,
+    market: {
+      id: '1',
+      decimalPlaces: 0,
+      tradableInstrument: {
+        instrument: {
+          name: 'terminateProposal Name',
+          code: 'terminateProposal Code',
+          product: {
+            __typename: 'Future' as const,
+            quoteName: 'USD',
           },
         },
-        updateType: MarketUpdateType.MARKET_STATE_UPDATE_TYPE_TERMINATE,
-        price: '123',
       },
     },
-  });
+    updateType: MarketUpdateType.MARKET_STATE_UPDATE_TYPE_TERMINATE,
+    price: '123',
+  };
 
   it('should render nothing if proposal is null', () => {
-    render(<ProposalUpdateMarketState proposal={null} />);
+    render(<ProposalUpdateMarketState change={null} />);
     expect(screen.queryByTestId('proposal-update-market-state')).toBeNull();
   });
 
   it('should toggle details when CollapsibleToggle is clicked', () => {
-    render(<ProposalUpdateMarketState proposal={suspendProposal} />);
+    render(<ProposalUpdateMarketState change={suspendProposal} />);
 
     expect(
       screen.queryByTestId('proposal-update-market-state-table')
@@ -94,7 +81,7 @@ describe('<ProposalUpdateMarketState />', () => {
   });
 
   it('should display suspend market information when showDetails is true', () => {
-    render(<ProposalUpdateMarketState proposal={suspendProposal} />);
+    render(<ProposalUpdateMarketState change={suspendProposal} />);
 
     fireEvent.click(screen.getByTestId('proposal-market-data-toggle'));
 
@@ -103,7 +90,7 @@ describe('<ProposalUpdateMarketState />', () => {
   });
 
   it('should display resume market information when showDetails is true', () => {
-    render(<ProposalUpdateMarketState proposal={resumeProposal} />);
+    render(<ProposalUpdateMarketState change={resumeProposal} />);
 
     fireEvent.click(screen.getByTestId('proposal-market-data-toggle'));
 
@@ -112,7 +99,7 @@ describe('<ProposalUpdateMarketState />', () => {
   });
 
   it('should display terminate market information when showDetails is true', () => {
-    render(<ProposalUpdateMarketState proposal={terminateProposal} />);
+    render(<ProposalUpdateMarketState change={terminateProposal} />);
 
     fireEvent.click(screen.getByTestId('proposal-market-data-toggle'));
 
