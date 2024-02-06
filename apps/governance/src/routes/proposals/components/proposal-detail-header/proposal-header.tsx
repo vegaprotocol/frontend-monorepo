@@ -26,9 +26,16 @@ import Routes from '../../../routes';
 import { Link } from 'react-router-dom';
 import { type VoteState } from '../vote-details/use-user-vote';
 import { VoteBreakdown } from '../vote-breakdown';
-import { GovernanceTransferKindMapping } from '@vegaprotocol/types';
+import {
+  GovernanceTransferKindMapping,
+  type ProposalRejectionReason,
+  ProposalRejectionReasonMapping,
+  ProposalState,
+} from '@vegaprotocol/types';
 import { type Proposal, type BatchProposal } from '../../types';
 import { type ProposalTermsFieldsFragment } from '../../__generated__/Proposals';
+import { differenceInHours, format, formatDistanceToNowStrict } from 'date-fns';
+import { DATE_FORMAT_DETAILED } from '../../../../lib/date-formats';
 
 const ProposalTypeTags = ({
   proposal,
@@ -131,7 +138,6 @@ const ProposalDetails = ({
         );
       }
       case 'UpdateMarketState': {
-        // fallbackTitle = t('UpdateMarketStateProposal');
         return (
           <span>
             {featureFlags.UPDATE_MARKET_STATE &&
@@ -146,7 +152,6 @@ const ProposalDetails = ({
         );
       }
       case 'UpdateMarket': {
-        // fallbackTitle = t('UpdateMarketProposal');
         return (
           <>
             <span>{t('UpdateToMarket')}:</span>{' '}
@@ -184,15 +189,12 @@ const ProposalDetails = ({
         );
       }
       case 'UpdateReferralProgram': {
-        // fallbackTitle = t('UpdateReferralProgramProposal');
         return null;
       }
       case 'UpdateVolumeDiscountProgram': {
-        // fallbackTitle = t('UpdateVolumeDiscountProgramProposal');
         return null;
       }
       case 'NewAsset': {
-        // fallbackTitle = t('NewAssetProposal');
         return (
           <>
             <span>{t('Symbol')}:</span>{' '}
@@ -213,7 +215,6 @@ const ProposalDetails = ({
         );
       }
       case 'UpdateNetworkParameter': {
-        // fallbackTitle = t('NetworkParameterProposal');
         return (
           <>
             <span>{t('Change')}:</span>{' '}
@@ -226,11 +227,9 @@ const ProposalDetails = ({
         );
       }
       case 'NewFreeform': {
-        // fallbackTitle = t('FreeformProposal');
         return <span />;
       }
       case 'UpdateAsset': {
-        // fallbackTitle = t('UpdateAssetProposal');
         return (
           <>
             <span>{t('AssetID')}:</span>{' '}
@@ -239,12 +238,10 @@ const ProposalDetails = ({
         );
       }
       case 'NewTransfer':
-        // fallbackTitle = t('NewTransferProposal');
         return featureFlags.GOVERNANCE_TRANSFERS ? (
           <NewTransferSummary proposalId={proposal?.id} />
         ) : null;
       case 'CancelTransfer':
-        // fallbackTitle = t('CancelTransferProposal');
         return featureFlags.GOVERNANCE_TRANSFERS ? (
           <CancelTransferSummary proposalId={proposal?.id} />
         ) : null;
@@ -257,17 +254,45 @@ const ProposalDetails = ({
   let details = null;
 
   if (proposal.__typename === 'Proposal') {
-    details = renderDetails(proposal.terms);
+    details = (
+      <div>
+        <div>{renderDetails(proposal.terms)}</div>
+        <VoteStateText
+          state={proposal.state}
+          closingDatetime={proposal.terms.closingDatetime}
+          enactmentDatetime={proposal.terms.enactmentDatetime}
+          rejectionReason={proposal.rejectionReason}
+        />
+      </div>
+    );
   }
 
   if (proposal.__typename === 'BatchProposal' && proposal.subProposals) {
     details = (
-      <ul className="flex flex-col gap-2">
-        {proposal.subProposals.map((p, i) => {
-          if (!p?.terms) return null;
-          return <li key={i}>{renderDetails(p.terms)}</li>;
-        })}
-      </ul>
+      <div>
+        <h3 className="text-xl border-b border-default pb-3 mb-3">
+          Proposals in batch
+        </h3>
+        <ul className="flex flex-col gap-2 border-b border-default pb-3 mb-3">
+          {proposal.subProposals.map((p, i) => {
+            if (!p?.terms) return null;
+            return (
+              <li key={i}>
+                <div>{renderDetails(p.terms)}</div>
+                <SubProposalStateText
+                  state={proposal.state}
+                  enactmentDatetime={p.terms.enactmentDatetime}
+                />
+              </li>
+            );
+          })}
+        </ul>
+        <BatchProposalStateText
+          state={proposal.state}
+          closingDatetime={proposal.batchTerms?.closingDatetime}
+          rejectionReason={proposal.rejectionReason}
+        />
+      </div>
     );
   }
 
@@ -279,6 +304,197 @@ const ProposalDetails = ({
       {details}
     </div>
   );
+};
+
+const VoteStateText = ({
+  state,
+  closingDatetime,
+  enactmentDatetime,
+  rejectionReason,
+}: {
+  state: ProposalState;
+  closingDatetime: string;
+  enactmentDatetime: string;
+  rejectionReason: ProposalRejectionReason | null | undefined;
+}) => {
+  const { t } = useTranslation();
+  const nowToCloseInHours = differenceInHours(
+    new Date(closingDatetime),
+    new Date()
+  );
+
+  const props = {
+    'data-testid': 'vote-details',
+  };
+
+  switch (state) {
+    case ProposalState.STATE_ENACTED: {
+      return (
+        <p {...props}>
+          {t('enactedOn{{date}}', {
+            enactmentDate:
+              enactmentDatetime &&
+              format(new Date(enactmentDatetime), DATE_FORMAT_DETAILED),
+          })}
+        </p>
+      );
+    }
+    case ProposalState.STATE_PASSED:
+    case ProposalState.STATE_WAITING_FOR_NODE_VOTE: {
+      return (
+        <p {...props}>
+          {t('enactsOn{{date}}', {
+            enactmentDate:
+              enactmentDatetime &&
+              format(new Date(enactmentDatetime), DATE_FORMAT_DETAILED),
+          })}
+        </p>
+      );
+    }
+    case ProposalState.STATE_OPEN: {
+      return (
+        <p {...props}>
+          <span className={nowToCloseInHours < 6 ? 'text-vega-orange' : ''}>
+            {t('{{time}} left to vote', {
+              time: formatDistanceToNowStrict(new Date(closingDatetime)),
+            })}
+          </span>
+        </p>
+      );
+    }
+    case ProposalState.STATE_DECLINED: {
+      return <p {...props}>{t(state)}</p>;
+    }
+    case ProposalState.STATE_REJECTED: {
+      const props = { 'data-testid': 'vote-status' };
+
+      if (rejectionReason) {
+        return (
+          <p {...props}>{t(ProposalRejectionReasonMapping[rejectionReason])}</p>
+        );
+      }
+
+      return <p {...props}>{t('Proposal rejected')}</p>;
+    }
+    default: {
+      return null;
+    }
+  }
+};
+
+/**
+ * Renders state details relevant to the sub proposal, namely the enactment
+ * date and time
+ */
+const SubProposalStateText = ({
+  state,
+  enactmentDatetime,
+}: {
+  state: ProposalState;
+  enactmentDatetime: string;
+}) => {
+  const { t } = useTranslation();
+
+  const props = {
+    'data-testid': 'vote-details',
+    className: 'm-0',
+  };
+
+  switch (state) {
+    case ProposalState.STATE_ENACTED: {
+      return (
+        <p {...props}>
+          {t('enactedOn{{date}}', {
+            enactmentDate:
+              enactmentDatetime &&
+              format(new Date(enactmentDatetime), DATE_FORMAT_DETAILED),
+          })}
+        </p>
+      );
+    }
+    case ProposalState.STATE_OPEN:
+    case ProposalState.STATE_PASSED:
+    case ProposalState.STATE_WAITING_FOR_NODE_VOTE: {
+      return (
+        <p {...props}>
+          {t('enactsOn{{date}}', {
+            enactmentDate:
+              enactmentDatetime &&
+              format(new Date(enactmentDatetime), DATE_FORMAT_DETAILED),
+          })}
+        </p>
+      );
+    }
+    case ProposalState.STATE_REJECTED:
+    case ProposalState.STATE_DECLINED: {
+      // If voting is still open we render a single clost time for all sub proposals
+      return null;
+    }
+    default: {
+      return null;
+    }
+  }
+};
+
+/**
+ * Renders state details relevant for the entire batch. IE. if the proposal was
+ * rejected or declined, or the vote close time. Does not render enactment times as
+ * those are relevant to the sub proposal
+ */
+const BatchProposalStateText = ({
+  state,
+  closingDatetime,
+  rejectionReason,
+}: {
+  state: ProposalState;
+  closingDatetime: string;
+  rejectionReason: ProposalRejectionReason | null | undefined;
+}) => {
+  const { t } = useTranslation();
+  const nowToCloseInHours = differenceInHours(
+    new Date(closingDatetime),
+    new Date()
+  );
+
+  const props = {
+    'data-testid': 'vote-details',
+  };
+
+  switch (state) {
+    case ProposalState.STATE_ENACTED:
+    case ProposalState.STATE_PASSED:
+    case ProposalState.STATE_WAITING_FOR_NODE_VOTE: {
+      return null;
+    }
+    case ProposalState.STATE_OPEN: {
+      return (
+        <p {...props}>
+          <span className={nowToCloseInHours < 6 ? 'text-vega-orange' : ''}>
+            {t('{{time}} left to vote', {
+              time: formatDistanceToNowStrict(new Date(closingDatetime)),
+            })}
+          </span>
+        </p>
+      );
+    }
+    case ProposalState.STATE_DECLINED: {
+      return <p {...props}>{t(state)}</p>;
+    }
+    case ProposalState.STATE_REJECTED: {
+      const props = { 'data-testid': 'vote-status' };
+
+      if (rejectionReason) {
+        return (
+          <p {...props}>{t(ProposalRejectionReasonMapping[rejectionReason])}</p>
+        );
+      }
+
+      return <p {...props}>{t('Proposal rejected')}</p>;
+    }
+    default: {
+      return null;
+    }
+  }
 };
 
 export const ProposalHeader = ({

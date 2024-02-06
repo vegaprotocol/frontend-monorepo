@@ -17,25 +17,7 @@ export const ProposalsListItem = ({ proposal }: ProposalsListItemProps) => {
     <li id={proposal.id} data-testid="proposals-list-item">
       <RoundedWrapper paddingBottom={true} heightFull={true}>
         <ProposalHeader proposal={proposal} voteState={voteState} />
-        {proposal.__typename === 'Proposal' ? (
-          <ProposalsListItemDetails
-            id={proposal.id}
-            state={proposal.state}
-            closingDatetime={proposal.terms.closingDatetime}
-            enactmentDatetime={proposal.terms.enactmentDatetime}
-            rejectionReason={proposal.rejectionReason}
-          />
-        ) : proposal.__typename === 'BatchProposal' && proposal.batchTerms ? (
-          <ProposalsListItemDetails
-            id={proposal.id}
-            state={proposal.state}
-            closingDatetime={proposal.batchTerms.closingDatetime}
-            rejectionReason={proposal.rejectionReason}
-            enactmentDatetime={compact(
-              proposal.batchTerms.changes.map((c) => c?.enactmentDatetime)
-            )}
-          />
-        ) : null}
+        <ProposalsListItemDetails id={proposal.id} />
       </RoundedWrapper>
     </li>
   );

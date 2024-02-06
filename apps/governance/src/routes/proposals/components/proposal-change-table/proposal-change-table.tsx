@@ -44,22 +44,6 @@ export const ProposalChangeTable = ({ proposal }: ProposalChangeTableProps) => {
           new Date(proposal.terms?.enactmentDatetime || 0)
         )}
       </KeyValueTableRow>
-    ) : proposal.__typename === 'BatchProposal' ? (
-      <KeyValueTableRow>
-        <span>{t('Enactment')}</span>
-        <span className="flex flex-col gap-1">
-          {proposal.subProposals?.map((p, i) => {
-            if (!p?.terms) return null;
-            return (
-              <span key={i}>
-                {formatDateWithLocalTimezone(
-                  new Date(p.terms.enactmentDatetime || 0)
-                )}
-              </span>
-            );
-          })}
-        </span>
-      </KeyValueTableRow>
     ) : null;
 
   return (

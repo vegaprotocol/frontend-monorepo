@@ -3,7 +3,7 @@ import countBy from 'lodash/countBy';
 import { useState, type ReactNode } from 'react';
 import classNames from 'classnames';
 import BigNumber from 'bignumber.js';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { useVoteInformation } from '../../hooks';
 import { Tooltip, VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import { formatNumber } from '@vegaprotocol/utils';
@@ -114,7 +114,7 @@ export const VoteBreakdown = ({
 const VoteBreakdownBatch = ({ proposal }: { proposal: BatchProposal }) => {
   const [fullBreakdown, setFullBreakdown] = useState(false);
   const { t } = useTranslation();
-  // TODO: determine from sub proposals if it will pass
+
   const voteInfo = useBatchVoteInformation({
     terms: compact(
       proposal.subProposals ? proposal.subProposals.map((p) => p?.terms) : []
@@ -133,7 +133,11 @@ const VoteBreakdownBatch = ({ proposal }: { proposal: BatchProposal }) => {
       <div className="flex items-center justify-between gap-2">
         {batchWillPass ? (
           <p className="flex gap-2 m-0 items-center">
-            <VegaIcon name={VegaIconNames.TICK} className="text-vega-green" />
+            <VegaIcon
+              name={VegaIconNames.TICK}
+              className="text-vega-green"
+              size={20}
+            />
             {t(
               'Currently expected to pass: conditions met for {{count}} of {{total}} proposals',
               {
@@ -144,9 +148,13 @@ const VoteBreakdownBatch = ({ proposal }: { proposal: BatchProposal }) => {
           </p>
         ) : (
           <p className="flex gap-2 m-0 items-center">
-            <VegaIcon name={VegaIconNames.CROSS} className="text-vega-red" />
+            <VegaIcon
+              name={VegaIconNames.CROSS}
+              className="text-vega-pink"
+              size={20}
+            />
             {t(
-              'Currently expected to fail: only {{count}} of {{total}} proposals are passing',
+              'Currently expected to fail: {{count}} of {{total}} proposals are passing',
               {
                 count: passingCount['true'] || 0,
                 total: voteInfo.length,
@@ -293,14 +301,12 @@ const VoteBreakDownUI = ({
     'flex justify-between flex-wrap mt-2 text-sm'
   );
 
-  console.log(voteInfo.requiredParticipation.toString());
-
   return (
     <div className="mb-6">
       {isProposalOpen && (
         <div
           data-testid="vote-status"
-          className="flex items-center gap-1 mb-2 text-bold"
+          className="flex items-center gap-2 mb-2 text-bold"
         >
           <span>
             {willPass ? (
@@ -317,14 +323,21 @@ const VoteBreakDownUI = ({
               />
             )}
           </span>
-          <span>{t('currentlySetTo')} </span>
           {willPass ? (
-            <span>
-              <span className="text-vega-green">{t('pass')}</span>
+            <p className="m-0">
+              <Trans
+                i18nKey={'Currently expected to <0>pass</0>'}
+                components={[<span className="text-vega-green" />]}
+              />
               {isUpdateMarket && <span> {updateMarketVotePassMethod}</span>}
-            </span>
+            </p>
           ) : (
-            <span className="text-vega-pink">{t('fail')}</span>
+            <p className="m-0">
+              <Trans
+                i18nKey={'Currently expected to <0>fail</0>'}
+                components={[<span className="text-vega-pink" />]}
+              />
+            </p>
           )}
         </div>
       )}
