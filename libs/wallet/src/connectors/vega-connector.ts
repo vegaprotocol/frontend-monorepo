@@ -1,6 +1,10 @@
 import { WalletClientError } from '@vegaprotocol/wallet-client';
 import type * as Schema from '@vegaprotocol/types';
 import type { PeggedReference } from '@vegaprotocol/types';
+import {
+  vegaMarginMode,
+  v1UndelegateSubmissionMethod,
+} from '@vegaprotocol/rest-clients/dist/trading-data';
 
 export interface LiquidityProvisionSubmission {
   liquidityProvisionSubmission: LiquidityProvisionBody;
@@ -32,7 +36,7 @@ export interface UndelegateSubmissionBody {
   undelegateSubmission: {
     nodeId: string;
     amount: string;
-    method: 'METHOD_NOW' | 'METHOD_AT_END_OF_EPOCH';
+    method: v1UndelegateSubmissionMethod;
   };
 }
 
@@ -472,13 +476,12 @@ export type UpdateReferralSet = {
   };
 };
 
-export enum MarginMode {
-  MARGIN_MODE_CROSS_MARGIN = 1,
-  MARGIN_MODE_ISOLATED_MARGIN,
-}
+export { vegaMarginMode as MarginMode };
+export { v1UndelegateSubmissionMethod as UndelegateSubmissionMethod };
+
 export interface UpdateMarginMode {
   marketId: string;
-  mode: MarginMode;
+  mode: vegaMarginMode;
   marginFactor?: string;
 }
 

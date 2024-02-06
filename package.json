@@ -42,6 +42,7 @@
     "@sentry/nextjs": "^6.19.3",
     "@sentry/react": "^6.19.2",
     "@sentry/tracing": "^6.19.2",
+    "@vegaprotocol/rest-clients": "^0.0.5",
     "@vegaprotocol/wallet-client": "0.1.9",
     "@walletconnect/ethereum-provider": "^2.6.0",
     "@web3-react/coinbase-wallet": "8.1.2-beta.0",

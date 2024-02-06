@@ -28,12 +28,16 @@ import {
   NetworkParams,
 } from '@vegaprotocol/network-parameters';
 import { useBalances } from '../../../lib/balances/balances-store';
-import { useVegaWallet } from '@vegaprotocol/wallet';
-import { SubHeading } from '../../../components/heading';
-import type {
-  DelegateSubmissionBody,
-  UndelegateSubmissionBody,
+import {
+  UndelegateSubmissionMethod,
+  useVegaWallet,
+  type DelegateSubmissionBody,
+  type UndelegateSubmissionBody,
 } from '@vegaprotocol/wallet';
+
+import { SubHeading } from '../../../components/heading';
+import type {} from '@vegaprotocol/wallet';
+
 import Routes from '../../routes';
 
 export enum FormState {
@@ -128,8 +132,8 @@ export const StakingForm = ({
         amount: removeDecimal(amount, appState.decimals),
         method:
           removeType === RemoveType.Now
-            ? 'METHOD_NOW'
-            : 'METHOD_AT_END_OF_EPOCH',
+            ? UndelegateSubmissionMethod.METHOD_NOW
+            : UndelegateSubmissionMethod.METHOD_AT_END_OF_EPOCH,
       },
     };
     try {

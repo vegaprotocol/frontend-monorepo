@@ -7808,6 +7808,11 @@
     "@typescript-eslint/types" "6.11.0"
     eslint-visitor-keys "^3.4.1"
 
+"@vegaprotocol/rest-clients@^0.0.5":
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/@vegaprotocol/rest-clients/-/rest-clients-0.0.5.tgz#b75f14fc549e8d170518e973435f2b91ec19f553"
+  integrity sha512-UTsGJKrzMsXHkuAmRxEA3ei9GEGFKwIHPdVl2DHlRMQRnP39atSu4IZsP6kK2HqLgJi8QiEZCyIkXQk+jrNRDA==
+
 "@vegaprotocol/wallet-client@0.1.9":
   version "0.1.9"
   resolved "https://registry.yarnpkg.com/@vegaprotocol/wallet-client/-/wallet-client-0.1.9.tgz#8c6a71c8b2222b3de5d73cade8fc6db57e332de9"
