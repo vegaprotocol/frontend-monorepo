@@ -63,6 +63,11 @@ export const Sidebar = ({ options }: { options?: ReactNode }) => {
   const setViewAsDialogOpen = useViewAsDialog((state) => state.setOpen);
   const { pubKeys } = useVegaWallet();
   const { isMobile } = useScreenDimensions();
+  const { getView } = useSidebar((store) => ({
+    setViews: store.setViews,
+    getView: store.getView,
+  }));
+  const currView = getView(currentRouteId);
   return (
     <div className="flex h-full lg:flex-col gap-1" data-testid="sidebar">
       {options && (
@@ -101,12 +106,14 @@ export const Sidebar = ({ options }: { options?: ReactNode }) => {
             />
           </>
         ) : (
-          <SidebarButton
-            view={ViewType.Chart}
-            icon={VegaIconNames.TICKET}
-            tooltip={t('Back to chart')}
-            routeId={currentRouteId}
-          />
+          currView && (
+            <SidebarButton
+              view={ViewType.Chart}
+              icon={VegaIconNames.ARROW_LEFT}
+              tooltip={t('Back to chart')}
+              routeId={currentRouteId}
+            />
+          )
         )}
         <NodeHealthContainer />
       </nav>
