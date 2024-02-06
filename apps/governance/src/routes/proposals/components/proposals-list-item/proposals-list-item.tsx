@@ -1,4 +1,3 @@
-import compact from 'lodash/compact';
 import { RoundedWrapper } from '@vegaprotocol/ui-toolkit';
 import { ProposalHeader } from '../proposal-detail-header/proposal-header';
 import { ProposalsListItemDetails } from './proposals-list-item-details';
