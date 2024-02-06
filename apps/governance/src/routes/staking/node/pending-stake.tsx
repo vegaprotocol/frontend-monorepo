@@ -5,7 +5,10 @@ import { useTranslation } from 'react-i18next';
 import { useAppState } from '../../../contexts/app-state/app-state-context';
 import type { BigNumber } from '../../../lib/bignumber';
 import type { UndelegateSubmissionBody } from '@vegaprotocol/wallet';
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import {
+  UndelegateSubmissionMethod,
+  useVegaWallet,
+} from '@vegaprotocol/wallet';
 import { removeDecimal } from '@vegaprotocol/utils';
 
 interface PendingStakeProps {
@@ -38,7 +41,7 @@ export const PendingStake = ({
         undelegateSubmission: {
           nodeId,
           amount: removeDecimal(pendingAmount.toString(), appState.decimals),
-          method: 'METHOD_NOW',
+          method: UndelegateSubmissionMethod.METHOD_NOW,
         },
       };
       await sendTx(pubKey, command);
