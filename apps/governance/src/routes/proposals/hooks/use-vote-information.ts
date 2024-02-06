@@ -25,20 +25,7 @@ export const useVoteInformation = ({
 
   const paramsForChange = params[terms.change.__typename];
 
-  return {
-    ...getVoteData(paramsForChange, votes, totalSupply, decimals),
-    yesVotes: new BigNumber(votes.yes.totalNumber ?? 0),
-    noVotes: new BigNumber(votes.no.totalNumber ?? 0),
-    totalVotes: new BigNumber(votes.yes.totalNumber ?? 0).plus(
-      votes.no.totalNumber ?? 0
-    ),
-    requiredParticipation: new BigNumber(
-      paramsForChange.requiredParticipation
-    ).times(100),
-    requiredParticipationLP:
-      paramsForChange.requiredParticipationLP &&
-      new BigNumber(paramsForChange.requiredParticipationLP).times(100),
-  };
+  return getVoteData(paramsForChange, votes, totalSupply, decimals);
 };
 
 const getVoteData = (
@@ -152,5 +139,16 @@ const getVoteData = (
     totalLPTokensPercentage,
     willPassByTokenVote,
     willPassByLPVote,
+    yesVotes: new BigNumber(votes.yes.totalNumber ?? 0),
+    noVotes: new BigNumber(votes.no.totalNumber ?? 0),
+    totalVotes: new BigNumber(votes.yes.totalNumber ?? 0).plus(
+      votes.no.totalNumber ?? 0
+    ),
+    requiredParticipation: new BigNumber(params.requiredParticipation).times(
+      100
+    ),
+    requiredParticipationLP: new BigNumber(
+      params.requiredParticipationLP
+    ).times(100),
   };
 };
