@@ -30,6 +30,12 @@ EPOCH_STREAK = "epoch-streak"
 
 # endregion
 
+# Keys
+PARTY_A = "PARTY_A"
+PARTY_B = "PARTY_B"
+PARTY_C = "PARTY_C"
+PARTY_D = "PARTY_D"
+
 
 @pytest.fixture(scope="module")
 def market_ids():
@@ -111,7 +117,9 @@ def vega_instance(
 
 def setup_market_with_reward_program(vega: VegaServiceNull, reward_programs, tier):
     print(f"Started setup_market_with_{reward_programs}_{tier}")
+    
     tDAI_market = setup_continuous_market(vega)
+    PARTY_A, PARTY_B, PARTY_C, PARTY_D = keys(vega)
     tDAI_asset_id = vega.find_asset_id(symbol="tDAI")
     vega.mint(key_name=PARTY_B.name, asset=tDAI_asset_id, amount=100000)
     vega.mint(key_name=PARTY_C.name, asset=tDAI_asset_id, amount=100000)
@@ -227,7 +235,7 @@ def setup_market_with_reward_program(vega: VegaServiceNull, reward_programs, tie
     return tDAI_market, tDAI_asset_id
 
 
-def set_market_reward_program(vega, reward_program, market_ids, tier):
+def set_market_reward_program(vega:VegaServiceNull, reward_program, market_ids, tier):
     market_id_key = f"vega_{reward_program}_tier_{tier}"
     if reward_program == COMBO:
         market_id_key = COMBO
@@ -271,7 +279,6 @@ VESTING = """
 }
 """
 
-@pytest.fixture(scope="module")
 def keys(vega):
     PARTY_A = WalletConfig("PARTY_A", "PARTY_A")
     create_and_faucet_wallet(vega=vega, wallet=PARTY_A)
@@ -279,7 +286,7 @@ def keys(vega):
     create_and_faucet_wallet(vega=vega, wallet=PARTY_B)
     PARTY_C = WalletConfig("PARTY_C", "PARTY_C")
     create_and_faucet_wallet(vega=vega, wallet=PARTY_C)
-    PARTY_D = WalletConfig("PARTY_B", "PARTY_B")
+    PARTY_D = WalletConfig("PARTY_D", "PARTY_D")
     create_and_faucet_wallet(vega=vega, wallet=PARTY_D)
     return PARTY_A, PARTY_B, PARTY_C, PARTY_D
 
@@ -302,16 +309,14 @@ def test_network_reward_pot(
     page: Page,
     total_rewards,
     tier,
-    market_ids,
-    keys
+    market_ids
 ):
     print("reward program: " + reward_program, " tier:", tier)
     market_id, market_ids = set_market_reward_program(
         vega_instance, reward_program, market_ids, tier
     )
     page.goto(REWARDS_URL)
-    PARTY_B = keys[1]
-    change_keys(page, vega_instance, PARTY_B.name)
+    change_keys(page, vega_instance, PARTY_B)
     expect(page.get_by_test_id(TOTAL_REWARDS)).to_have_text(total_rewards)
 
 
@@ -336,16 +341,14 @@ def test_reward_multiplier(
     streak_multiplier,
     hoarder_multiplier,
     tier,
-    market_ids,
-    keys
+    market_ids
 ):
     print("reward program: " + reward_program, " tier:", tier)
     market_id, market_ids = set_market_reward_program(
         vega_instance, reward_program, market_ids, tier
     )
     page.goto(REWARDS_URL)
-    PARTY_B = keys[1]
-    change_keys(page, vega_instance, PARTY_B.name)
+    change_keys(page, vega_instance, PARTY_B)
     expect(page.get_by_test_id(COMBINED_MULTIPLIERS)).to_have_text(reward_multiplier)
     expect(page.get_by_test_id(STREAK_REWARD_MULTIPLIER_VALUE)).to_have_text(
         streak_multiplier
@@ -370,16 +373,14 @@ def test_activity_streak(
     page: Page,
     epoch_streak,
     tier,
-    market_ids,
-    keys
+    market_ids
 ):
     print("reward program: " + reward_program, " tier:", tier)
     market_id, market_ids = set_market_reward_program(
         vega_instance, reward_program, market_ids, tier
     )
     page.goto(REWARDS_URL)
-    PARTY_B = keys[1]
-    change_keys(page, vega_instance, PARTY_B.name)
+    change_keys(page, vega_instance, PARTY_B)
     if tier == 1:
         expect(page.get_by_test_id(EPOCH_STREAK)).to_have_text(
             "Active trader: "
@@ -407,16 +408,15 @@ def test_hoarder_bonus(
     page: Page,
     rewards_hoarded,
     tier,
-    market_ids,
-    keys
+    market_ids
 ):
     print("reward program: " + reward_program, " tier:", tier)
     market_id, market_ids = set_market_reward_program(
         vega_instance, reward_program, market_ids, tier
     )
     page.goto(REWARDS_URL)
-    PARTY_B = keys[1]
-    change_keys(page, vega_instance, PARTY_B.name)
+    change_keys(page, vega_instance, PARTY_B)
+    page.pause()
     expect(page.get_by_test_id(HOARDER_BONUS_TOTAL_HOARDED)).to_contain_text(
         rewards_hoarded
     )
@@ -443,16 +443,14 @@ def test_reward_history(
     total,
     earned_by_me,
     tier,
-    market_ids,
-    keys
+    market_ids
 ):
     print("reward program: " + reward_program, " tier:", tier)
     market_id, market_ids = set_market_reward_program(
         vega_instance, reward_program, market_ids, tier
     )
     page.goto(REWARDS_URL)
-    PARTY_B = keys[1]
-    change_keys(page, vega_instance, PARTY_B.name)
+    change_keys(page, vega_instance, PARTY_B)
     page.locator('[name="fromEpoch"]').fill("1")
     expect((page.get_by_role(ROW).locator(PRICE_TAKING_COL_ID)).nth(1)).to_have_text(
         price_taking
@@ -473,15 +471,15 @@ def test_reward_history(
 )
 @pytest.mark.usefixtures("auth", "risk_accepted", "market_ids")
 def test_redeem(
-    reward_program, vega_instance: VegaServiceNull, page: Page, tier, market_ids, keys
+    reward_program, vega_instance: VegaServiceNull, page: Page, tier, market_ids
 ):
     print("reward program: " + reward_program, " tier:", tier)
     market_id, market_ids = set_market_reward_program(
         vega_instance, reward_program, market_ids, tier
     )
+
     page.goto(REWARDS_URL)
-    PARTY_B = keys[1]
-    change_keys(page, vega_instance, PARTY_B.name)
+    change_keys(page, vega_instance, PARTY_B)
     page.get_by_test_id("redeem-rewards-button").click()
     available_to_withdraw = page.get_by_test_id(
         "available-to-withdraw-value"

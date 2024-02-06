@@ -3,7 +3,6 @@ from playwright.sync_api import Page, expect, Locator
 from conftest import init_page, risk_accepted_setup
 
 
-@pytest.mark.parametrize("vega", ["shared"], indirect=True)
 @pytest.fixture(scope="module")
 def page(shared_vega, browser, request):
     with init_page(shared_vega, browser, request) as page:

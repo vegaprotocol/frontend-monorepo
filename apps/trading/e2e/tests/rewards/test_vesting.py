@@ -5,19 +5,14 @@ from vega_sim.null_service import VegaServiceNull
 from actions.utils import next_epoch, change_keys, create_and_faucet_wallet
 from wallet_config import MM_WALLET, WalletConfig
 
-@pytest.fixture(scope="module")
-def keys(vega):
+
+@pytest.mark.xdist_group(name="test_vesting")
+@pytest.mark.usefixtures("risk_accepted", "auth")
+def test_vesting(continuous_market, vega: VegaServiceNull, page: Page):
     PARTY_A = WalletConfig("PARTY_A", "PARTY_A")
     create_and_faucet_wallet(vega=vega, wallet=PARTY_A)
     PARTY_B = WalletConfig("PARTY_B", "PARTY_B")
     create_and_faucet_wallet(vega=vega, wallet=PARTY_B)
-    
-    return PARTY_A, PARTY_B
-
-@pytest.mark.xdist_group(name="test_vesting")
-@pytest.mark.usefixtures("risk_accepted", "auth")
-def test_vesting(continuous_market, vega: VegaServiceNull, page: Page, keys):
-    PARTY_A, PARTY_B = keys
     tDAI_asset_id = vega.find_asset_id(symbol="tDAI")
     vega.update_network_parameter(
         MM_WALLET.name, parameter="reward.asset", new_value=tDAI_asset_id
@@ -61,7 +56,7 @@ def test_vesting(continuous_market, vega: VegaServiceNull, page: Page, keys):
     page.reload()
 
     expect(page.get_by_test_id("locked-value")).to_have_text("50.00")
-    
+
     # Proceed through the 5 epoch lock period
     next_epoch(vega=vega)
     next_epoch(vega=vega)

@@ -23,6 +23,7 @@ def setup_simple_market(
     custom_asset_symbol="tDAI",
     custom_quantum=1,
 ):
+    
     if proposal_key is None:
         proposal_key = MM_WALLET.name
         vega.create_key(proposal_key)
@@ -94,7 +95,6 @@ def setup_simple_market(
     vega.forward("10s")
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
-
     return market_id
 
 

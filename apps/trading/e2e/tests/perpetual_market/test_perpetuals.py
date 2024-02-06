@@ -60,46 +60,38 @@ def perps_market(shared_vega: VegaServiceNull):
 
 @pytest.mark.shared_vega
 @pytest.mark.xdist_group(name="shared_vega")
-@pytest.mark.parametrize("vega", ["shared"], indirect=True)
-@pytest.mark.usefixtures("risk_accepted", "auth")
-def test_funding_payment_profit(perps_market, page: Page):
-    page.goto(f"/#/markets/{perps_market}")
-    page.get_by_test_id("Funding payments").click()
-    row = page.locator(row_selector)
+def test_funding_payment_profit(perps_market, shared_page: Page, shared_auth, shared_risk_accepted):
+    shared_page.goto(f"/#/markets/{perps_market}")
+    shared_page.get_by_test_id("Funding payments").click()
+    row = shared_page.locator(row_selector)
     expect(row.locator(col_amount)).to_have_text("9.00 tDAI")
 
 @pytest.mark.shared_vega
 @pytest.mark.xdist_group(name="shared_vega")
-@pytest.mark.parametrize("vega", ["shared"], indirect=True)
-@pytest.mark.usefixtures("risk_accepted", "auth")
-def test_funding_payment_loss(perps_market, page: Page, vega):
-    page.goto(f"/#/markets/{perps_market}")
-    change_keys(page, vega, "market_maker")
-    page.get_by_test_id("Funding payments").click()
-    row = page.locator(row_selector)
+def test_funding_payment_loss(perps_market, shared_page: Page, shared_vega, shared_risk_accepted, shared_auth):
+    shared_page.goto(f"/#/markets/{perps_market}")
+    change_keys(shared_page, shared_vega, "market_maker")
+    shared_page.get_by_test_id("Funding payments").click()
+    row = shared_page.locator(row_selector)
     expect(row.locator(col_amount)).to_have_text("-27.00 tDAI")
 
 @pytest.mark.shared_vega
 @pytest.mark.xdist_group(name="shared_vega")
-@pytest.mark.parametrize("vega", ["shared"], indirect=True)
-@pytest.mark.usefixtures("risk_accepted", "auth")
-def test_funding_header(perps_market, page: Page):
-    page.goto(f"/#/markets/{perps_market}")
-    expect(page.get_by_test_id("market-funding")).to_contain_text(
+def test_funding_header(perps_market, shared_page: Page, shared_auth, shared_risk_accepted):
+    shared_page.goto(f"/#/markets/{perps_market}")
+    expect(shared_page.get_by_test_id("market-funding")).to_contain_text(
         "Funding Rate / Countdown-8.1818%"
     )
-    expect(page.get_by_test_id("index-price")).to_have_text("Index Price110.00")
+    expect(shared_page.get_by_test_id("index-price")).to_have_text("Index Price110.00")
 
 @pytest.mark.skip("Skipped due to issue #5421")
 @pytest.mark.shared_vega
 @pytest.mark.xdist_group(name="shared_vega")
-@pytest.mark.parametrize("vega", ["shared"], indirect=True)
-@pytest.mark.usefixtures("risk_accepted", "auth")
-def test_funding_payment_history(perps_market, page: Page, vega):
-    page.goto(f"/#/markets/{perps_market}")
-    change_keys(page, vega, "market_maker")
-    page.get_by_test_id("Funding history").click()
-    element = page.get_by_test_id("tab-funding-history")
+def test_funding_payment_history(perps_market, shared_page: Page, shared_vega, shared_auth, shared_risk_accepted):
+    shared_page.goto(f"/#/markets/{perps_market}")
+    change_keys(shared_page, shared_vega, "market_maker")
+    shared_page.get_by_test_id("Funding history").click()
+    element = shared_page.get_by_test_id("tab-funding-history")
     # Get the bounding box of the element
     bounding_box = element.bounding_box()
     if bounding_box:
@@ -114,10 +106,8 @@ def test_funding_payment_history(perps_market, page: Page, vega):
 
 @pytest.mark.shared_vega
 @pytest.mark.xdist_group(name="shared_vega")
-@pytest.mark.parametrize("vega", ["shared"], indirect=True)
-@pytest.mark.usefixtures("risk_accepted", "auth")
-def test_perps_market_termination_proposed(perps_market, page: Page, vega: VegaServiceNull):
-    vega.update_market_state(
+def test_perps_market_termination_proposed(perps_market, shared_page: Page, shared_vega: VegaServiceNull, shared_auth, shared_risk_accepted):
+    shared_vega.update_market_state(
         proposal_key=MM_WALLET.name,
         market_id=perps_market,
         market_state=MarketStateUpdateType.Terminate,
@@ -128,10 +118,10 @@ def test_perps_market_termination_proposed(perps_market, page: Page, vega: VegaS
         forward_time_to_enactment=False,
     )
 
-    vega.wait_fn(1)
-    vega.wait_for_total_catchup()
-    page.goto(f"/#/markets/{perps_market}")
-    banner_text = page.get_by_test_id(
+    shared_vega.wait_fn(1)
+    shared_vega.wait_for_total_catchup()
+    shared_page.goto(f"/#/markets/{perps_market}")
+    banner_text = shared_page.get_by_test_id(
         f"update-state-banner-{perps_market}"
     ).text_content()
     pattern = re.compile(

@@ -36,130 +36,126 @@ timeInForce_col = '[col-id="submission.timeInForce"]'
 updatedAt_col = '[col-id="updatedAt"]'
 close_toast = "toast-close"
 
-def create_position(vega: VegaServiceNull, market_id, key):
-    submit_order(vega, key, market_id, "SIDE_SELL", 100, 110)
-    submit_order(vega, key, market_id, "SIDE_BUY", 100, 110)
-    vega.wait_fn(1)
-    vega.wait_for_total_catchup
+def create_position(shared_vega: VegaServiceNull, market_id, key):
+    submit_order(shared_vega, key, market_id, "SIDE_SELL", 100, 110)
+    submit_order(shared_vega, key, market_id, "SIDE_BUY", 100, 110)
+    shared_vega.wait_fn(1)
+    shared_vega.wait_for_total_catchup
 
 @pytest.mark.shared_vega
 @pytest.mark.xdist_group(name="shared_vega")
-@pytest.mark.parametrize("vega", ["shared"], indirect=True)
-@pytest.mark.usefixtures("auth", "risk_accepted")
-def test_stop_order_form_error_validation(shared_continuous_market, page: Page):
+def test_stop_order_form_error_validation(shared_continuous_market, shared_page: Page, shared_auth, shared_risk_accepted):
     # 7002-SORD-032
-    page.goto(f"/#/markets/{shared_continuous_market}")
-    page.get_by_test_id(stop_order_btn).click()
-    page.get_by_test_id(stop_limit_order_btn).is_visible()
-    page.get_by_test_id(stop_limit_order_btn).click()
-    page.get_by_test_id(order_side_sell).click()
-    page.get_by_test_id(submit_stop_order).click()
-    expect(page.get_by_test_id("stop-order-error-message-trigger-price")).to_have_text(
+    shared_page.goto(f"/#/markets/{shared_continuous_market}")
+    shared_page.get_by_test_id(stop_order_btn).click()
+    shared_page.get_by_test_id(stop_limit_order_btn).is_visible()
+    shared_page.get_by_test_id(stop_limit_order_btn).click()
+    shared_page.get_by_test_id(order_side_sell).click()
+    shared_page.get_by_test_id(submit_stop_order).click()
+    expect(shared_page.get_by_test_id("stop-order-error-message-trigger-price")).to_have_text(
         "You need provide a price"
     )
-    expect(page.get_by_test_id("stop-order-error-message-size")).to_have_text(
+    expect(shared_page.get_by_test_id("stop-order-error-message-size")).to_have_text(
         "Size cannot be lower than 1"
     )
 
-    page.get_by_test_id(order_size).fill("1")
-    page.get_by_test_id(order_price).fill("0.0000001")
-    expect(page.get_by_test_id("stop-order-error-message-price")).to_have_text(
+    shared_page.get_by_test_id(order_size).fill("1")
+    shared_page.get_by_test_id(order_price).fill("0.0000001")
+    expect(shared_page.get_by_test_id("stop-order-error-message-price")).to_have_text(
         "Price cannot be lower than 0.00001"
     )
 
 @pytest.mark.skip("core issue")
-@pytest.mark.usefixtures("auth", "risk_accepted")
-def test_submit_stop_order_rejected(continuous_market, vega: VegaServiceNull, page: Page):
-    page.goto(f"/#/markets/{continuous_market}")
-    page.get_by_test_id(stop_orders_tab).click()
-    page.get_by_test_id(stop_order_btn).click()
-    page.get_by_test_id(stop_market_order_btn).is_visible()
-    page.get_by_test_id(stop_market_order_btn).click()
-    page.get_by_test_id(trigger_price).fill("103")
-    page.get_by_test_id(order_size).fill("3")
-    page.get_by_test_id(submit_stop_order).click()
-    vega.wait_fn(1)
-    vega.wait_for_total_catchup()
-    page.get_by_test_id(close_toast).click()
-    page.get_by_role(row_table).locator(market_name_col).nth(1).is_visible()
-    expect((page.get_by_role(row_table).locator(market_name_col)).nth(1)).to_have_text(
+def test_submit_stop_order_rejected(continuous_market, shared_vega: VegaServiceNull, shared_page: Page, shared_auth, shared_risk_accepted):
+    shared_page.goto(f"/#/markets/{continuous_market}")
+    shared_page.get_by_test_id(stop_orders_tab).click()
+    shared_page.get_by_test_id(stop_order_btn).click()
+    shared_page.get_by_test_id(stop_market_order_btn).is_visible()
+    shared_page.get_by_test_id(stop_market_order_btn).click()
+    shared_page.get_by_test_id(trigger_price).fill("103")
+    shared_page.get_by_test_id(order_size).fill("3")
+    shared_page.get_by_test_id(submit_stop_order).click()
+    shared_vega.wait_fn(1)
+    shared_vega.wait_for_total_catchup()
+    shared_page.get_by_test_id(close_toast).click()
+    shared_page.get_by_role(row_table).locator(market_name_col).nth(1).is_visible()
+    expect((shared_page.get_by_role(row_table).locator(market_name_col)).nth(1)).to_have_text(
         "BTC:DAI_2023Futr"
     )
-    expect((page.get_by_role(row_table).locator(trigger_col)).nth(1)).to_have_text(
+    expect((shared_page.get_by_role(row_table).locator(trigger_col)).nth(1)).to_have_text(
         "Mark > 103.00"
     )
-    expect((page.get_by_role(row_table).locator(expiresAt_col)).nth(1)).to_have_text("")
-    expect((page.get_by_role(row_table).locator(size_col)).nth(1)).to_have_text("+3")
-    expect((page.get_by_role(row_table).locator(submission_type)).nth(1)).to_have_text(
+    expect((shared_page.get_by_role(row_table).locator(expiresAt_col)).nth(1)).to_have_text("")
+    expect((shared_page.get_by_role(row_table).locator(size_col)).nth(1)).to_have_text("+3")
+    expect((shared_page.get_by_role(row_table).locator(submission_type)).nth(1)).to_have_text(
         "Market"
     )
-    expect((page.get_by_role(row_table).locator(status_col)).nth(1)).to_have_text(
+    expect((shared_page.get_by_role(row_table).locator(status_col)).nth(1)).to_have_text(
         "Rejected"
     )
-    expect((page.get_by_role(row_table).locator(price_col)).nth(1)).to_have_text("-")
-    expect((page.get_by_role(row_table).locator(timeInForce_col)).nth(1)).to_have_text(
+    expect((shared_page.get_by_role(row_table).locator(price_col)).nth(1)).to_have_text("-")
+    expect((shared_page.get_by_role(row_table).locator(timeInForce_col)).nth(1)).to_have_text(
         "FOK"
     )
     expect(
-        (page.get_by_role(row_table).locator(updatedAt_col)).nth(1)
+        (shared_page.get_by_role(row_table).locator(updatedAt_col)).nth(1)
     ).not_to_be_empty()
 
 @pytest.mark.skip("core issue")
-@pytest.mark.usefixtures("auth", "risk_accepted")
 def test_submit_stop_market_order_triggered(
-    continuous_market, vega: VegaServiceNull, page: Page
+    continuous_market, shared_vega: VegaServiceNull, shared_page: Page, shared_auth, shared_risk_accepted
 ):
     # 7002-SORD-071
     # 7002-SORD-074
     # 7002-SORD-075
     # 7002-SORD-067
     # 7002-SORD-068
-    page.goto(f"/#/markets/{continuous_market}")
-    page.get_by_test_id(stop_orders_tab).click()
+    shared_page.goto(f"/#/markets/{continuous_market}")
+    shared_page.get_by_test_id(stop_orders_tab).click()
     # create a position because stop order is reduce only type
     create_position(vega, continuous_market)
 
-    page.get_by_test_id(stop_order_btn).click()
-    page.get_by_test_id(stop_market_order_btn).is_visible()
-    page.get_by_test_id(stop_market_order_btn).click()
-    page.get_by_test_id(order_side_sell).click()
-    page.get_by_test_id(trigger_price).fill("103")
-    page.get_by_test_id(order_size).fill("1")
-    page.get_by_test_id(expire).click()
+    shared_page.get_by_test_id(stop_order_btn).click()
+    shared_page.get_by_test_id(stop_market_order_btn).is_visible()
+    shared_page.get_by_test_id(stop_market_order_btn).click()
+    shared_page.get_by_test_id(order_side_sell).click()
+    shared_page.get_by_test_id(trigger_price).fill("103")
+    shared_page.get_by_test_id(order_size).fill("1")
+    shared_page.get_by_test_id(expire).click()
     expires_at = datetime.now() + timedelta(days=1)
     expires_at_input_value = expires_at.strftime("%Y-%m-%dT%H:%M:%S")
-    page.get_by_test_id("date-picker-field").fill(expires_at_input_value)
-    page.get_by_test_id(expiry_strategy_cancel).click()
-    page.get_by_test_id(submit_stop_order).click()
-    vega.forward("10s")
-    vega.wait_fn(1)
-    vega.wait_for_total_catchup()
-    page.wait_for_selector('[data-testid="toast-close"]', state="visible")
-    page.get_by_test_id(close_toast).click()
+    shared_page.get_by_test_id("date-picker-field").fill(expires_at_input_value)
+    shared_page.get_by_test_id(expiry_strategy_cancel).click()
+    shared_page.get_by_test_id(submit_stop_order).click()
+    shared_vega.forward("10s")
+    shared_vega.wait_fn(1)
+    shared_vega.wait_for_total_catchup()
+    shared_page.wait_for_selector('[data-testid="toast-close"]', state="visible")
+    shared_page.get_by_test_id(close_toast).click()
 
-    page.get_by_role(row_table).locator(market_name_col).nth(1).is_visible()
-    expect((page.get_by_role(row_table).locator(market_name_col)).nth(1)).to_have_text(
+    shared_page.get_by_role(row_table).locator(market_name_col).nth(1).is_visible()
+    expect((shared_page.get_by_role(row_table).locator(market_name_col)).nth(1)).to_have_text(
         "BTC:DAI_2023Futr"
     )
-    expect((page.get_by_role(row_table).locator(trigger_col)).nth(1)).to_have_text(
+    expect((shared_page.get_by_role(row_table).locator(trigger_col)).nth(1)).to_have_text(
         "Mark > 103.00"
     )
-    expect((page.get_by_role(row_table).locator(expiresAt_col)).nth(1)).to_contain_text(
+    expect((shared_page.get_by_role(row_table).locator(expiresAt_col)).nth(1)).to_contain_text(
         "Cancels"
     )
-    expect((page.get_by_role(row_table).locator(size_col)).nth(1)).to_have_text("-1")
-    expect((page.get_by_role(row_table).locator(submission_type)).nth(1)).to_have_text(
+    expect((shared_page.get_by_role(row_table).locator(size_col)).nth(1)).to_have_text("-1")
+    expect((shared_page.get_by_role(row_table).locator(submission_type)).nth(1)).to_have_text(
         "Market"
     )
-    expect((page.get_by_role(row_table).locator(status_col)).nth(1)).to_have_text(
+    expect((shared_page.get_by_role(row_table).locator(status_col)).nth(1)).to_have_text(
         "Triggered"
     )
-    expect((page.get_by_role(row_table).locator(price_col)).nth(1)).to_have_text("-")
-    expect((page.get_by_role(row_table).locator(timeInForce_col)).nth(1)).to_have_text(
+    expect((shared_page.get_by_role(row_table).locator(price_col)).nth(1)).to_have_text("-")
+    expect((shared_page.get_by_role(row_table).locator(timeInForce_col)).nth(1)).to_have_text(
         "FOK"
     )
     expect(
-        (page.get_by_role(row_table).locator(updatedAt_col)).nth(1)
+        (shared_page.get_by_role(row_table).locator(updatedAt_col)).nth(1)
     ).not_to_be_empty()
 
 @pytest.mark.skip("core issue")

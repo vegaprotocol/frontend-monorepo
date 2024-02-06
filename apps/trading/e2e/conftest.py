@@ -33,10 +33,6 @@ logger = logging.getLogger()
 
 load_dotenv()
 
-@pytest.fixture(scope="session")
-def shared_continuous_market(shared_vega):
-    return setup_continuous_market(shared_vega)
-
 @pytest.hookimpl(tryfirst=True)
 def pytest_runtest_makereport(item, call):
     outcome = "passed" if call.excinfo is None else "failed"
@@ -177,13 +173,10 @@ def init_page(vega: VegaServiceNull, browser: Browser, request: pytest.FixtureRe
                 except Exception as e:
                     logger.error(f"Failed to save trace: {e}")
 
-@pytest.fixture(scope="function")
-def vega(request, shared_vega):
-    if getattr(request, "param", "new") == "shared":
-        yield shared_vega
-    else:
-        with init_vega(request) as new_vega:
-            yield new_vega
+@pytest.fixture
+def vega(request):
+    with init_vega(request) as new_vega:
+        yield new_vega
 
 @pytest.fixture(scope="session")
 def shared_vega(request):
@@ -196,6 +189,10 @@ def page(vega, browser, request):
     with init_page(vega, browser, request) as page_instance:
         yield page_instance
 
+@pytest.fixture
+def shared_page(shared_vega, browser, request):
+    with init_page(shared_vega, browser, request) as page_instance:
+        yield page_instance
 
 # Set auth token so eager connection for MarketSim wallet is successful
 def auth_setup(vega: VegaServiceNull, page: Page):
@@ -232,9 +229,13 @@ def auth_setup(vega: VegaServiceNull, page: Page):
     }
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def auth(vega: VegaServiceNull, page: Page):
     return auth_setup(vega, page)
+
+@pytest.fixture
+def shared_auth(shared_vega: VegaServiceNull, shared_page: Page):
+    return auth_setup(shared_vega, shared_page)
 
 
 # Set 'risk accepted' flag, so that the risk dialog doesn't show up
@@ -249,11 +250,19 @@ def risk_accepted_setup(page: Page):
     script = "".join(storage_javascript)
     page.add_init_script(script)
 
+@pytest.fixture
+def shared_risk_accepted(shared_page: Page):
+    risk_accepted_setup(shared_page)
 
-@pytest.fixture(scope="function")
+
+@pytest.fixture
 def risk_accepted(page: Page):
     risk_accepted_setup(page)
 
+
+@pytest.fixture(scope="session")
+def shared_continuous_market(shared_vega:VegaServiceNull):
+    return setup_continuous_market(shared_vega)
 
 @pytest.fixture(scope="function")
 def simple_market(vega, request):
