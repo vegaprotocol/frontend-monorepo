@@ -443,7 +443,6 @@ export const TransferForm = ({
           </TradingInputError>
         )}
       </TradingFormGroup>
-      {JSON.stringify(transferFee)}
       {(transferFee?.estimateTransferFee || fromVested) && amount && asset && (
         <TransferFee
           amount={normalizedAmount}
