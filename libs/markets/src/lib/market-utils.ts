@@ -1,8 +1,4 @@
-import {
-  addDecimal,
-  formatNumberPercentage,
-  toBigNum,
-} from '@vegaprotocol/utils';
+import { formatNumberPercentage, toBigNum } from '@vegaprotocol/utils';
 import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
 import orderBy from 'lodash/orderBy';
@@ -151,51 +147,10 @@ export const calcCandleHigh = (candles: Candle[]): string | undefined => {
     .toString();
 };
 
-/**
- * The total number of contracts traded in the last 24 hours.
- *
- * @param candles
- * @returns the volume of a given set of candles
- */
 export const calcCandleVolume = (candles: Candle[]): string | undefined =>
   candles &&
   candles.reduce((acc, c) => new BigNumber(acc).plus(c.volume).toString(), '0');
 
-/**
- * The total number of contracts traded in the last 24 hours. (Total value of contracts traded in the last 24 hours)
- * The volume is calculated as the sum of the product of the volume and the high price of each candle.
- * The result is formatted using positionDecimalPlaces to account for the position size.
- * The result is formatted using marketDecimals to account for the market precision.
- *
- * @param candles
- * @param marketDecimals
- * @param positionDecimalPlaces
- * @returns the volume (in quote price) of a given set of candles
- */
-export const calcCandleVolumePrice = (
-  candles: Candle[],
-  marketDecimals: number = 1,
-  positionDecimalPlaces: number = 1
-): string | undefined =>
-  candles &&
-  candles.reduce(
-    (acc, c) =>
-      new BigNumber(acc)
-        .plus(
-          BigNumber(addDecimal(c.volume, positionDecimalPlaces)).times(
-            addDecimal(c.high, marketDecimals)
-          )
-        )
-        .toString(),
-    '0'
-  );
-
-/**
- * Calculates the traded factor of a given market.
- *
- * @param m
- * @returns
- */
 export const calcTradedFactor = (m: MarketMaybeWithDataAndCandles) => {
   const volume = Number(calcCandleVolume(m.candles || []) || 0);
   const price = m.data?.markPrice ? Number(m.data.markPrice) : 0;

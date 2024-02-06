@@ -7,31 +7,21 @@ import type {
 } from '@vegaprotocol/datagrid';
 import { COL_DEFS, SetFilter } from '@vegaprotocol/datagrid';
 import * as Schema from '@vegaprotocol/types';
-import {
-  addDecimalsFormatNumber,
-  formatNumber,
-  toBigNum,
-} from '@vegaprotocol/utils';
+import { addDecimalsFormatNumber, toBigNum } from '@vegaprotocol/utils';
 import { ButtonLink, Tooltip } from '@vegaprotocol/ui-toolkit';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import type {
-  MarketFieldsFragment,
   MarketMaybeWithData,
   MarketMaybeWithDataAndCandles,
 } from '@vegaprotocol/markets';
 import { MarketActionsDropdown } from './market-table-actions';
-import {
-  calcCandleVolume,
-  calcCandleVolumePrice,
-  getAsset,
-  getQuoteName,
-} from '@vegaprotocol/markets';
+import { calcCandleVolume, getAsset } from '@vegaprotocol/markets';
 import { MarketCodeCell } from './market-code-cell';
 import { useT } from '../../lib/use-t';
 
 const { MarketTradingMode, AuctionTrigger } = Schema;
 
-export const useMarketsColumnDefs = () => {
+export const useColumnDefs = () => {
   const t = useT();
   const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
   return useMemo<ColDef[]>(
@@ -168,25 +158,11 @@ export const useMarketsColumnDefs = () => {
         }: ValueFormatterParams<MarketMaybeWithDataAndCandles, 'candles'>) => {
           const candles = data?.candles;
           const vol = candles ? calcCandleVolume(candles) : '0';
-          const quoteName = getQuoteName(data as MarketFieldsFragment);
-          const volPrice =
-            candles &&
-            calcCandleVolumePrice(
-              candles,
-              data.decimalPlaces,
-              data.positionDecimalPlaces
-            );
-
           const volume =
             data && vol && vol !== '0'
               ? addDecimalsFormatNumber(vol, data.positionDecimalPlaces)
               : '0.00';
-          const volumePrice =
-            volPrice && formatNumber(volPrice, data?.decimalPlaces);
-
-          return volumePrice
-            ? `${volume} (${volumePrice} ${quoteName})`
-            : volume;
+          return volume;
         },
       },
       {

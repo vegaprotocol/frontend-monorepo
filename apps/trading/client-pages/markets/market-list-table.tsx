@@ -5,7 +5,7 @@ import {
   useDataGridEvents,
 } from '@vegaprotocol/datagrid';
 import type { MarketMaybeWithData } from '@vegaprotocol/markets';
-import { useMarketsColumnDefs } from './use-column-defs';
+import { useColumnDefs } from './use-column-defs';
 import type { DataGridStore } from '../../stores/datagrid-store-slice';
 import { type StateCreator, create } from 'zustand';
 import { persist } from 'zustand/middleware';
@@ -50,7 +50,7 @@ export const useMarketsStore = create<DataGridSlice>()(
 );
 
 export const MarketListTable = (props: Props) => {
-  const columnDefs = useMarketsColumnDefs();
+  const columnDefs = useColumnDefs();
   const gridStore = useMarketsStore((store) => store.gridStore);
   const updateGridStore = useMarketsStore((store) => store.updateGridStore);
 

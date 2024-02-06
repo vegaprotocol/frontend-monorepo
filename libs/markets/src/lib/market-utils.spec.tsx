@@ -1,7 +1,6 @@
 import * as Schema from '@vegaprotocol/types';
 import type { Market, MarketMaybeWithDataAndCandles } from './markets-provider';
 import {
-  calcCandleVolumePrice,
   calcTradedFactor,
   filterAndSortMarkets,
   sumFeesFactors,
@@ -144,33 +143,5 @@ describe('sumFeesFactors', () => {
         liquidityFee: '0.3',
       })
     ).toEqual(0.6);
-  });
-});
-
-describe('calcCandleVolumePrice', () => {
-  it('calculates the volume price', () => {
-    const candles = [
-      {
-        volume: '1000',
-        high: '100',
-        low: '10',
-        open: '15',
-        close: '90',
-        periodStart: '2022-05-18T13:08:27.693537312Z',
-      },
-      {
-        volume: '1000',
-        high: '100',
-        low: '10',
-        open: '15',
-        close: '90',
-        periodStart: '2022-05-18T14:08:27.693537312Z',
-      },
-    ];
-    const marketDecimals = 3;
-    const positionDecimalPlaces = 2;
-    expect(
-      calcCandleVolumePrice(candles, marketDecimals, positionDecimalPlaces)
-    ).toEqual('2');
   });
 });
