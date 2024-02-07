@@ -97,7 +97,9 @@ export const getGroupSize = memoize(
       .find((part) => part.type === 'integer')?.value.length
 );
 
-/** formatNumber will format the number with fixed decimals
+/**
+ * formatNumber will format the number with maximum number of decimals
+ * trailing zeros are removed but min(MIN_FRACTION_DIGITS, formatDecimals) decimal places will be kept
  * @param rawValue - should be a number that is not outside the safe range fail as in https://mikemcl.github.io/bignumber.js/#toN
  * @param formatDecimals - number of decimals to use
  */
@@ -108,24 +110,18 @@ export const formatNumber = (
   const decimalSeparator = getDecimalSeparator() || '.';
   const groupSeparator = getGroupSeparator();
   const groupSize = groupSeparator ? getGroupSize() : 0;
-  const formatted = new BigNumber(rawValue).toFormat(
-    Math.max(0, formatDecimals),
-    {
-      decimalSeparator,
-      groupSeparator,
-      groupSize,
-    }
-  );
-  if (!formatDecimals) {
+  const decimalPlaces = Math.max(0, formatDecimals);
+  const formatted = new BigNumber(rawValue).toFormat(decimalPlaces, {
+    decimalSeparator,
+    groupSeparator,
+    groupSize,
+  });
+  // if there are no decimal places just return formatted value
+  if (!decimalPlaces) {
     return formatted;
   }
-  const minimumFractionDigits = Math.min(
-    Math.max(0, formatDecimals),
-    MIN_FRACTION_DIGITS
-  );
-  if (!minimumFractionDigits) {
-    return formatted;
-  }
+  // minimum number of decimal places to keep when removing trailing zeros
+  const minimumFractionDigits = Math.min(decimalPlaces, MIN_FRACTION_DIGITS);
   const parts = formatted.split(decimalSeparator);
   parts[1] = (parts[1] || '')
     .replace(/0+$/, '')
