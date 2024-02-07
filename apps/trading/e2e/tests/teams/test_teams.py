@@ -3,15 +3,10 @@ from playwright.sync_api import expect, Page
 import vega_sim.proto.vega as vega_protos
 from vega_sim.null_service import VegaServiceNull
 from conftest import init_vega
-from actions.utils import next_epoch, change_keys
+from actions.utils import next_epoch, change_keys, create_and_faucet_wallet
 from fixtures.market import setup_continuous_market
 from conftest import auth_setup, init_page, init_vega, risk_accepted_setup
 from wallet_config import  MM_WALLET, WalletConfig
-
-PARTY_A = WalletConfig("party_a", "party_a")
-PARTY_B = WalletConfig("party_b", "party_b")
-PARTY_C = WalletConfig("party_c", "party_c")
-PARTY_D = WalletConfig("party_d", "party_d")
 
 @pytest.fixture(scope="module")
 def vega(request):
@@ -42,6 +37,17 @@ def competitions_page(vega, browser, request, setup_teams_and_games):
 @pytest.fixture(scope="module")
 def setup_teams_and_games(vega: VegaServiceNull):
     tDAI_market = setup_continuous_market(vega, custom_quantum=100000)
+    PARTY_A = WalletConfig("PARTY_A", "PARTY_A")
+    create_and_faucet_wallet(vega=vega, wallet=PARTY_A)
+    PARTY_B = WalletConfig("PARTY_B", "PARTY_B")
+    create_and_faucet_wallet(vega=vega, wallet=PARTY_B)
+    PARTY_C = WalletConfig("PARTY_C", "PARTY_C")
+    create_and_faucet_wallet(vega=vega, wallet=PARTY_C)
+    PARTY_D = WalletConfig("PARTY_D", "PARTY_D")
+    create_and_faucet_wallet(vega=vega, wallet=PARTY_D)
+    vega.wait_fn(10)
+    vega.wait_for_total_catchup()
+
     tDAI_asset_id = vega.find_asset_id(symbol="tDAI")
     vega.mint(key_name=PARTY_B.name, asset=tDAI_asset_id, amount=100000)
     vega.mint(key_name=PARTY_C.name, asset=tDAI_asset_id, amount=100000)
