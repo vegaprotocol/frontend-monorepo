@@ -40,7 +40,7 @@ def test_usage_breakdown(continuous_market, page: Page):
         "You have 1,000,000.00 tDAI in total."
     )
     expect(usage_breakdown.locator(
-        COL_ID_USED).first).to_have_text("8.50 (0%)")
+        COL_ID_USED).first).to_have_text("8.50269 (0%)")
     expect(usage_breakdown.locator(COL_ID_USED).nth(1)).to_have_text(
         "999,991.49731 (99%)"
     )

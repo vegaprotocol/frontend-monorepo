@@ -278,9 +278,9 @@ VESTING = """
         (ACTIVITY, 0, "50.00 tDAI"),
         (HOARDER, 0, "50.00 tDAI"),
         (COMBO, 0, "50.00 tDAI"),
-        (ACTIVITY, 1, "116.67 tDAI"),
-        (HOARDER, 1, "166.67 tDAI "),
-        (COMBO, 1, "183.33 tDAI"),
+        (ACTIVITY, 1, "116.66666 tDAI"),
+        (HOARDER, 1, "166.66666 tDAI "),
+        (COMBO, 1, "183.33333 tDAI"),
     ],
 )
 @pytest.mark.usefixtures("auth", "risk_accepted", "market_ids")
@@ -404,9 +404,9 @@ def test_hoarder_bonus(
         (ACTIVITY, 0, "100.00100.00%", "100.00", "50.00"),
         (HOARDER, 0, "100.00100.00%", "100.00", "50.00"),
         (COMBO, 0, "100.00100.00%", "100.00", "50.00"),
-        (ACTIVITY, 1, "300.00100.00%", "300.00", "116.67"),
-        (HOARDER, 1, "299.99999100.00%", "299.99999", "166.67"),
-        (COMBO, 1, "299.99999100.00%", "299.99999", "183.33"),
+        (ACTIVITY, 1, "300.00100.00%", "300.00", "116.66666"),
+        (HOARDER, 1, "299.99999100.00%", "299.99999", "166.66666"),
+        (COMBO, 1, "299.99999100.00%", "299.99999", "183.33333"),
     ],
 )
 @pytest.mark.usefixtures("auth", "risk_accepted", "market_ids")

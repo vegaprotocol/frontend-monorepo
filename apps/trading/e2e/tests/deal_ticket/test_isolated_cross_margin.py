@@ -22,12 +22,12 @@ def test_switch_cross_isolated_margin(
         continuous_market, vega: VegaServiceNull, page: Page):
     create_position(vega, continuous_market)
     page.goto(f"/#/markets/{continuous_market}")
-    expect(page.locator(margin_row).nth(1)).to_have_text("874.22Cross1.0x")
+    expect(page.locator(margin_row).nth(1)).to_have_text("874.21992Cross1.0x")
     # tbd - tooltip is not visible without this wait
     page.wait_for_timeout(1000)
     page.get_by_test_id(tab_positions).get_by_text("Cross").hover()
     expect(page.get_by_test_id(tooltip_content).nth(0)).to_have_text(
-        "Liquidation: 582.81Margin: 874.22General account: 998,084.95"
+        "Liquidation: 582.81328Margin: 874.21992General account: 998,084.95183"
     )
     page.get_by_role("button", name="Isolated 10x").click()
     page.locator(leverage_input).clear()
@@ -38,16 +38,16 @@ def test_switch_cross_isolated_margin(
     expect(page.get_by_test_id("toast-content")).to_have_text(
         "ConfirmedYour transaction has been confirmedView in block explorerUpdate margin modeBTC:DAI_2023Isolated margin mode, leverage: 1.0x")
     expect(page.locator(margin_row).nth(1)
-           ).to_have_text("22,110.00Isolated1.0x")
+           ).to_have_text("22,109.99996Isolated1.0x")
     # tbd - tooltip is not visible without this wait
     page.wait_for_timeout(1000)
     page.get_by_test_id(tab_positions).get_by_text("Isolated").hover()
     expect(page.get_by_test_id(tooltip_content).nth(0)).to_have_text(
-        "Liquidation: 583.62Margin: 11,110.00Order: 11,000.00"
+        "Liquidation: 583.62409Margin: 11,109.99996Order: 11,000.00"
     )
     page.get_by_role("button", name="Cross").click()
     page.get_by_role("button", name="Confirm").click()
     wait_for_toast_confirmation(page)
     next_epoch(vega=vega)
     expect(page.locator(margin_row).nth(1)).to_have_text(
-        "22,110.00Cross1.0x")
+        "22,109.99996Cross1.0x")
