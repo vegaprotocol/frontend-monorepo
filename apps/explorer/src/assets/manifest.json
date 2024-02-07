@@ -1,6 +1,6 @@
 {
-  "short_name": "Mainnet Stats",
-  "name": "Vega Mainnet statistics",
+  "short_name": "Explorer VEGA",
+  "name": "Vega Protocol - Explorer",
   "icons": [
     {
       "src": "favicon.ico",
