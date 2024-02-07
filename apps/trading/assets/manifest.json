@@ -1,6 +1,12 @@
 {
-  "short_name": "Mainnet Stats",
-  "name": "Vega Mainnet statistics",
+  "name": "Vega Protocol - Trading",
+  "short_name": "Console",
+  "description": "Vega Protocol - Trading dApp",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#000000",
+  "background_color": "#ffffff",
   "icons": [
     {
       "src": "favicon.ico",
@@ -12,9 +18,5 @@
       "type": "image/png",
       "sizes": "192x192"
     }
-  ],
-  "start_url": ".",
-  "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  ]
 }

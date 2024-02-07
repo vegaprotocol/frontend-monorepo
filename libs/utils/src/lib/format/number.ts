@@ -26,7 +26,7 @@ export function toDecimal(numberOfDecimals: number) {
 }
 
 export function toBigNum(
-  rawValue: string | number,
+  rawValue: string | number | BigNumber,
   decimals: number
 ): BigNumber {
   const divides = new BigNumber(10).exponentiatedBy(decimals);
@@ -232,4 +232,25 @@ export const formatNumberRounded = (
   }
 
   return value;
+};
+
+/**
+ * Converts given amount in one asset (determined by raw amount
+ * and quantum values) to qUSD.
+ * @param amount The raw amount
+ * @param quantum The quantum value of the asset.
+ */
+export const toQUSD = (
+  amount: string | number | BigNumber,
+  quantum: string | number
+) => {
+  const value = new BigNumber(amount);
+  let q = new BigNumber(quantum);
+
+  if (q.isNaN() || q.isLessThanOrEqualTo(0)) {
+    q = new BigNumber(1);
+  }
+
+  const qUSD = value.dividedBy(q);
+  return qUSD;
 };

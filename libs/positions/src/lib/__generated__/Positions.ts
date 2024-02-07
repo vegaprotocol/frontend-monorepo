@@ -33,7 +33,7 @@ export type EstimatePositionQueryVariables = Types.Exact<{
 }>;
 
 
-export type EstimatePositionQuery = { __typename?: 'Query', estimatePosition?: { __typename?: 'PositionEstimate', margin: { __typename?: 'MarginEstimate', worstCase: { __typename?: 'MarginLevels', maintenanceLevel: string, searchLevel: string, initialLevel: string, collateralReleaseLevel: string, marginMode: Types.MarginMode, marginFactor: string, orderMarginLevel: string }, bestCase: { __typename?: 'MarginLevels', maintenanceLevel: string, searchLevel: string, initialLevel: string, collateralReleaseLevel: string, marginMode: Types.MarginMode, marginFactor: string, orderMarginLevel: string } }, collateralIncreaseEstimate: { __typename?: 'CollateralIncreaseEstimate', worstCase: string, bestCase: string }, liquidation?: { __typename?: 'LiquidationEstimate', worstCase: { __typename?: 'LiquidationPrice', open_volume_only: string, including_buy_orders: string, including_sell_orders: string }, bestCase: { __typename?: 'LiquidationPrice', open_volume_only: string, including_buy_orders: string, including_sell_orders: string } } | null } | null };
+export type EstimatePositionQuery = { __typename?: 'Query', estimatePosition?: { __typename?: 'PositionEstimate', collateralIncreaseEstimate: { __typename?: 'CollateralIncreaseEstimate', worstCase: string, bestCase: string }, liquidation?: { __typename?: 'LiquidationEstimate', worstCase: { __typename?: 'LiquidationPrice', open_volume_only: string, including_buy_orders: string, including_sell_orders: string }, bestCase: { __typename?: 'LiquidationPrice', open_volume_only: string, including_buy_orders: string, including_sell_orders: string } } | null } | null };
 
 export const PositionFieldsFragmentDoc = gql`
     fragment PositionFields on Position {
@@ -144,26 +144,6 @@ export const EstimatePositionDocument = gql`
     includeCollateralIncreaseInAvailableCollateral: $includeCollateralIncreaseInAvailableCollateral
     scaleLiquidationPriceToMarketDecimals: true
   ) {
-    margin {
-      worstCase {
-        maintenanceLevel
-        searchLevel
-        initialLevel
-        collateralReleaseLevel
-        marginMode
-        marginFactor
-        orderMarginLevel
-      }
-      bestCase {
-        maintenanceLevel
-        searchLevel
-        initialLevel
-        collateralReleaseLevel
-        marginMode
-        marginFactor
-        orderMarginLevel
-      }
-    }
     collateralIncreaseEstimate {
       worstCase
       bestCase

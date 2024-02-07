@@ -19,6 +19,7 @@ import {
   useFundingRate,
   useMarketTradingMode,
   useExternalTwap,
+  getQuoteName,
 } from '@vegaprotocol/markets';
 import { MarketState as State } from '@vegaprotocol/types';
 import { HeaderStat } from '../../components/header';
@@ -41,6 +42,7 @@ export const MarketHeaderStats = ({ market }: MarketHeaderStatsProps) => {
   const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
 
   const asset = getAsset(market);
+  const quoteUnit = getQuoteName(market);
 
   return (
     <>
@@ -54,12 +56,16 @@ export const MarketHeaderStats = ({ market }: MarketHeaderStatsProps) => {
         <Last24hPriceChange
           marketId={market.id}
           decimalPlaces={market.decimalPlaces}
-        />
+        >
+          <span>-</span>
+        </Last24hPriceChange>
       </HeaderStat>
       <HeaderStat heading={t('Volume (24h)')} testId="market-volume">
         <Last24hVolume
           marketId={market.id}
           positionDecimalPlaces={market.positionDecimalPlaces}
+          marketDecimals={market.decimalPlaces}
+          quoteUnit={quoteUnit}
         />
       </HeaderStat>
       <HeaderStatMarketTradingMode

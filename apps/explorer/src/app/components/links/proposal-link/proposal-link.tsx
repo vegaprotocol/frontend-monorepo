@@ -26,7 +26,7 @@ const ProposalLink = ({ id, text }: ProposalLinkProps) => {
   >;
 
   const base = ENV.dataSources.governanceUrl;
-  const label = proposal?.rationale.title || id;
+  const label = proposal?.rationale?.title || id;
 
   return (
     <ExternalLink href={`${base}/proposals/${id}`}>

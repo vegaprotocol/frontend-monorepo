@@ -18,15 +18,15 @@ interface Props {
   initialValue?: string[];
   isHeader?: boolean;
   noUpdate?: boolean;
-  // to render nothing instead of '-' when there is no price change
-  hideZero?: boolean;
+  // render prop for no price change
+  children?: React.ReactNode;
 }
 
 export const Last24hPriceChange = ({
   marketId,
   decimalPlaces,
   initialValue,
-  hideZero,
+  children,
 }: Props) => {
   const t = useT();
   const { oneDayCandles, error, fiveDaysCandles } = useCandles({
@@ -37,10 +37,6 @@ export const Last24hPriceChange = ({
     fiveDaysCandles.length > 0 &&
     (!oneDayCandles || oneDayCandles?.length === 0)
   ) {
-    // render nothing instead of '-' when there is no price change
-    if (hideZero) {
-      return null;
-    }
     return (
       <Tooltip
         description={
@@ -55,23 +51,18 @@ export const Last24hPriceChange = ({
           </span>
         }
       >
-        <span>-</span>
+        <span>{children}</span>
       </Tooltip>
     );
   }
 
   if (error || !isNumeric(decimalPlaces)) {
-    return <span>-</span>;
+    return <span>{children}</span>;
   }
 
   const candles = oneDayCandles?.map((c) => c.close) || initialValue || [];
   const change = priceChange(candles);
   const changePercentage = priceChangePercentage(candles);
-
-  // render nothing instead of '-' when there is no price change
-  if (!change && !changePercentage && hideZero) {
-    return null;
-  }
 
   return (
     <span

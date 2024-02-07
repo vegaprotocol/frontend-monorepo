@@ -10,6 +10,7 @@ import {
   getUserEnabledFeatureFlags,
   setUserEnabledFeatureFlag,
 } from './use-environment';
+import { canMeasureResponseTime, measureResponseTime } from '../utils/time';
 
 const noop = () => {
   /* no op*/
@@ -17,6 +18,10 @@ const noop = () => {
 
 jest.mock('@vegaprotocol/apollo-client');
 jest.mock('zustand');
+jest.mock('../utils/time');
+
+const mockCanMeasureResponseTime = canMeasureResponseTime as jest.Mock;
+const mockMeasureResponseTime = measureResponseTime as jest.Mock;
 
 const mockCreateClient = createClient as jest.Mock;
 const createDefaultMockClient = () => {
@@ -155,6 +160,14 @@ describe('useEnvironment', () => {
     const fastNode = 'https://api.n01.foo.vega.xyz';
     const fastWait = 1000;
     const nodes = [slowNode, fastNode];
+
+    mockCanMeasureResponseTime.mockImplementation(() => true);
+    mockMeasureResponseTime.mockImplementation((url: string) => {
+      if (url === slowNode) return slowWait;
+      if (url === fastNode) return fastWait;
+      return Infinity;
+    });
+
     // @ts-ignore: typscript doesn't recognise the mock implementation
     global.fetch.mockImplementation(setupFetch({ hosts: nodes }));
 
@@ -168,7 +181,7 @@ describe('useEnvironment', () => {
                 statistics: {
                   chainId: 'chain-id',
                   blockHeight: '100',
-                  vegaTime: new Date().toISOString(),
+                  vegaTime: new Date(1).toISOString(),
                 },
               },
             });
@@ -196,7 +209,8 @@ describe('useEnvironment', () => {
       expect(result.current.nodes).toEqual(nodes);
     });
 
-    jest.runAllTimers();
+    jest.advanceTimersByTime(2000);
+    // jest.runAllTimers();
 
     await waitFor(() => {
       expect(result.current.status).toEqual('success');

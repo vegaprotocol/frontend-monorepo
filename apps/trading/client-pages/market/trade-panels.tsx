@@ -20,10 +20,10 @@ interface TradePanelsProps {
 }
 
 export const TradePanels = ({ market, pinnedAsset }: TradePanelsProps) => {
-  const [view1, setView1] = useState<TradingView>('chart');
-  const viewCfg1 = TradingViews[view1];
-  const [view2, setView2] = useState<TradingView>('positions');
-  const viewCfg2 = TradingViews[view2];
+  const [topView, setTopView] = useState<TradingView>('chart');
+  const topViewCfg = TradingViews[topView];
+  const [bottomView, setBottomView] = useState<TradingView>('positions');
+  const bottomViewCfg = TradingViews[bottomView];
 
   const renderView = (view: TradingView) => {
     const Component = TradingViews[view].component;
@@ -94,58 +94,56 @@ export const TradePanels = ({ market, pinnedAsset }: TradePanelsProps) => {
             })
             .map((_key) => {
               const key = _key as TradingView;
-              const isActive = view1 === key;
+              const isActive = topView === key;
               return (
                 <ViewButton
                   key={key}
                   view={key}
                   isActive={isActive}
                   onClick={() => {
-                    setView1(key);
+                    setTopView(key);
                   }}
                 />
               );
             })}
         </div>
-        <div className="h-[376px] sm:h-[460px] lg:h-full relative">
-          <div>{renderMenu(viewCfg1)}</div>
-          <div className="overflow-auto h-full">{renderView(view1)}</div>
+        <div className="h-[50vh] lg:h-full relative">
+          <div>{renderMenu(topViewCfg)}</div>
+          <div className="overflow-auto h-full">{renderView(topView)}</div>
         </div>
       </div>
 
-      {
-        <div className="flex flex-col w-full grow">
-          <div className="flex flex-nowrap overflow-x-auto max-w-full border-t border-default">
-            {[
-              'positions',
-              'activeOrders',
-              'closedOrders',
-              'rejectedOrders',
-              'orders',
-              'stopOrders',
-              'collateral',
-              'fills',
-            ].map((_key) => {
-              const key = _key as TradingView;
-              const isActive = view2 === key;
-              return (
-                <ViewButton
-                  key={key}
-                  view={key}
-                  isActive={isActive}
-                  onClick={() => {
-                    setView2(key);
-                  }}
-                />
-              );
-            })}
-          </div>
-          <div className="relative grow">
-            <div className="flex flex-col">{renderMenu(viewCfg2)}</div>
-            <div className="overflow-auto h-full">{renderView(view2)}</div>
-          </div>
+      <div className="flex flex-col w-full grow">
+        <div className="flex flex-nowrap overflow-x-auto max-w-full border-t border-default">
+          {[
+            'positions',
+            'activeOrders',
+            'closedOrders',
+            'rejectedOrders',
+            'orders',
+            'stopOrders',
+            'collateral',
+            'fills',
+          ].map((_key) => {
+            const key = _key as TradingView;
+            const isActive = bottomView === key;
+            return (
+              <ViewButton
+                key={key}
+                view={key}
+                isActive={isActive}
+                onClick={() => {
+                  setBottomView(key);
+                }}
+              />
+            );
+          })}
         </div>
-      }
+        <div className="relative grow">
+          <div className="flex flex-col">{renderMenu(bottomViewCfg)}</div>
+          <div className="overflow-auto h-full">{renderView(bottomView)}</div>
+        </div>
+      </div>
     </div>
   );
 };

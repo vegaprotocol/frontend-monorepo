@@ -3,7 +3,7 @@ import classNames from 'classnames';
 const NUM_AVATARS = 20;
 const AVATAR_PATHNAME_PATTERN = '/team-avatars/{id}.png';
 
-const getFallbackAvatar = (teamId: string) => {
+export const getFallbackAvatar = (teamId: string) => {
   const avatarId = ((parseInt(teamId, 16) % NUM_AVATARS) + 1)
     .toString()
     .padStart(2, '0'); // between 01 - 20

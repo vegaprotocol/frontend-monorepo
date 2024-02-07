@@ -7,6 +7,7 @@ import { AssetsDocument, type AssetsQuery } from './__generated__/Assets';
 import { AssetStatus } from '@vegaprotocol/types';
 import { type Asset } from './asset-data-provider';
 import { DENY_LIST } from './constants';
+import { type AssetFieldsFragment } from './__generated__/Asset';
 
 export interface BuiltinAssetSource {
   __typename: 'BuiltinAsset';
@@ -88,4 +89,25 @@ export const useEnabledAssets = () => {
     dataProvider: enabledAssetsProvider,
     variables: undefined,
   });
+};
+
+/** Wrapped ETH symbol */
+const WETH = 'WETH';
+type WETHDetails = Pick<AssetFieldsFragment, 'symbol' | 'decimals' | 'quantum'>;
+/**
+ * Tries to find WETH asset configuration on Vega in order to provide its
+ * details, otherwise it returns hardcoded values.
+ */
+export const useWETH = (): WETHDetails => {
+  const { data } = useAssetsDataProvider();
+  if (data) {
+    const weth = data.find((a) => a.symbol.toUpperCase() === WETH);
+    if (weth) return weth;
+  }
+
+  return {
+    symbol: WETH,
+    decimals: 18,
+    quantum: '500000000000000', // 1 WETH ~= 2000 qUSD
+  };
 };

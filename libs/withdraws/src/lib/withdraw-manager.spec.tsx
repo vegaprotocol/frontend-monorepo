@@ -38,6 +38,7 @@ jest.mock('@vegaprotocol/web3', () => ({
   useGetWithdrawDelay: () => {
     return () => Promise.resolve(10000);
   },
+  useGasPrice: () => undefined,
 }));
 
 describe('WithdrawManager', () => {

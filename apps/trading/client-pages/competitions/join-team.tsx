@@ -6,11 +6,7 @@ import {
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
-import {
-  useSimpleTransaction,
-  useVegaWallet,
-  type Status,
-} from '@vegaprotocol/wallet';
+import { useSimpleTransaction, useVegaWallet } from '@vegaprotocol/wallet';
 import { useT } from '../../lib/use-t';
 import { type Team } from '../../lib/hooks/use-team';
 import { useState } from 'react';
@@ -27,18 +23,7 @@ export const JoinTeam = ({
   refetch: () => void;
 }) => {
   const { pubKey, isReadOnly } = useVegaWallet();
-  const { send, status } = useSimpleTransaction({
-    onSuccess: refetch,
-  });
   const [confirmDialog, setConfirmDialog] = useState<JoinType>();
-
-  const joinTeam = () => {
-    send({
-      joinTeam: {
-        id: team.teamId,
-      },
-    });
-  };
 
   return (
     <>
@@ -56,11 +41,10 @@ export const JoinTeam = ({
         {confirmDialog !== undefined && (
           <DialogContent
             type={confirmDialog}
-            status={status}
             team={team}
             partyTeam={partyTeam}
-            onConfirm={joinTeam}
             onCancel={() => setConfirmDialog(undefined)}
+            refetch={refetch}
           />
         )}
       </Dialog>
@@ -110,7 +94,7 @@ export const JoinButton = ({
       // Not creator of the team, but still can't switch because
       // creators cannot leave their own team
       return (
-        <Tooltip description="As a team creator, you cannot switch teams">
+        <Tooltip description={t('As a team creator, you cannot switch teams')}>
           <Button intent={Intent.Primary} disabled={true}>
             {t('Switch team')}{' '}
           </Button>
@@ -121,7 +105,11 @@ export const JoinButton = ({
   // Party is in a team, but not this one
   else if (partyTeam && partyTeam.teamId !== team.teamId) {
     return (
-      <Button onClick={() => onJoin('switch')} intent={Intent.Primary}>
+      <Button
+        onClick={() => onJoin('switch')}
+        intent={Intent.Primary}
+        data-testid="switch-team-button"
+      >
         {t('Switch team')}{' '}
       </Button>
     );
@@ -149,20 +137,38 @@ export const JoinButton = ({
 
 const DialogContent = ({
   type,
-  status,
   team,
   partyTeam,
-  onConfirm,
   onCancel,
+  refetch,
 }: {
   type: JoinType;
-  status: Status;
   team: Team;
   partyTeam?: Team;
-  onConfirm: () => void;
   onCancel: () => void;
+  refetch: () => void;
 }) => {
   const t = useT();
+
+  const { send, status, error } = useSimpleTransaction({
+    onSuccess: refetch,
+  });
+
+  const joinTeam = () => {
+    send({
+      joinTeam: {
+        id: team.teamId,
+      },
+    });
+  };
+
+  if (error) {
+    return (
+      <p className="text-vega-red break-words first-letter:capitalize">
+        {error}
+      </p>
+    );
+  }
 
   if (status === 'requested') {
     return <p>{t('Confirm in wallet...')}</p>;
@@ -213,7 +219,11 @@ const DialogContent = ({
         </>
       )}
       <div className="flex justify-between gap-2">
-        <Button onClick={onConfirm} intent={Intent.Success}>
+        <Button
+          onClick={joinTeam}
+          intent={Intent.Success}
+          data-testid="confirm-switch-button"
+        >
           {t('Confirm')}
         </Button>
         <Button onClick={onCancel} intent={Intent.Danger}>

@@ -1,4 +1,4 @@
-export type HashProps = {
+export type HashProps = React.HTMLProps<HTMLSpanElement> & {
   text: string;
   truncate?: boolean;
 };

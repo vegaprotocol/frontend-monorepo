@@ -24,11 +24,14 @@ export default function Document() {
 
         {/* scripts */}
         <script src="/theme-setter.js" type="text/javascript" async />
+
+        {/* manifest */}
+        <link rel="manifest" href="/apps/trading/public/manifest.json" />
       </Head>
       <Html>
         <body
-          // Nextjs will set body to display none until js runs. Because the entire app is client rendered
-          // and delivered via ipfs we override this to show a server side render loading animation until the
+          // Next.js will set body to display none until js runs. Because the entire app is client rendered
+          // and delivered via IPFS we override this to show a server side render loading animation until the
           // js is downloaded and react takes over rendering
           style={{ display: 'block' }}
           className="bg-white dark:bg-vega-cdark-900 text-default font-alpha"
