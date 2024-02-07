@@ -1,4 +1,4 @@
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import {
   CopyWithTooltip,
   Lozenge,
@@ -216,14 +216,17 @@ const ProposalDetails = ({
       }
       case 'UpdateNetworkParameter': {
         return (
-          <>
-            <span>{t('Change')}:</span>{' '}
-            <Lozenge>{terms.change.networkParameter.key}</Lozenge>{' '}
-            <span>{t('to')}</span>{' '}
-            <span className="whitespace-nowrap">
-              <Lozenge>{terms.change.networkParameter.value}</Lozenge>
-            </span>
-          </>
+          <Trans
+            i18nKey="Change <lozenge>{{key}}</lozenge> to <lozenge>{{value}}</lozenge>"
+            values={{
+              key: terms.change.networkParameter.key,
+              value: terms.change.networkParameter.value,
+            }}
+            components={{
+              // @ts-ignore children passed by i18next
+              lozenge: <Lozenge />,
+            }}
+          />
         );
       }
       case 'NewFreeform': {
@@ -231,10 +234,16 @@ const ProposalDetails = ({
       }
       case 'UpdateAsset': {
         return (
-          <>
-            <span>{t('AssetID')}:</span>{' '}
-            <Lozenge>{truncateMiddle(terms.change.assetId)}</Lozenge>
-          </>
+          <Trans
+            i18nKey="Asset ID: <lozenge>{{id}}</lozenge>"
+            values={{
+              id: truncateMiddle(terms.change.assetId),
+            }}
+            components={{
+              // @ts-ignore children passed by i18next
+              lozenge: <Lozenge />,
+            }}
+          />
         );
       }
       case 'NewTransfer':

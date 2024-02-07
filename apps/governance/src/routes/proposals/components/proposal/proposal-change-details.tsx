@@ -101,16 +101,14 @@ export const ProposalChangeDetails = ({
     case 'UpdateNetworkParameter': {
       if (terms.change.networkParameter.key.slice(-13) === '.benefitTiers') {
         return <ProposalUpdateBenefitTiers change={terms.change} />;
-      } else {
-        return (
-          <p>
-            Changing {terms.change.networkParameter.key} to{' '}
-            {terms.change.networkParameter.value}
-          </p>
-        );
       }
 
-      return null;
+      return (
+        <p>
+          Changing {terms.change.networkParameter.key} to{' '}
+          {terms.change.networkParameter.value}
+        </p>
+      );
     }
     case 'NewFreeform':
     case 'NewSpotMarket':
