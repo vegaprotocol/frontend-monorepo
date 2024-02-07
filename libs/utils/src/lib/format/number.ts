@@ -167,9 +167,9 @@ export const addDecimalsFormatNumberQuantum = (
   if (isNaN(Number(quantum))) {
     return addDecimalsFormatNumber(rawValue, decimalPlaces);
   }
-  const numberDP =
-    (typeof quantum === 'number' ? quantum.toString() : quantum).split('.')[1]
-      ?.length || 0;
+  const numberDP = Math.ceil(
+    Math.abs(Math.log10(toBigNum(quantum, decimalPlaces).toNumber()))
+  );
   return addDecimalsFormatNumber(
     rawValue,
     decimalPlaces,

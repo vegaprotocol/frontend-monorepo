@@ -94,7 +94,7 @@ export const LiquidityTable = ({
       return `${addDecimalsFormatNumberQuantum(
         value,
         assetDecimalPlaces ?? 0,
-        quantum ?? 0
+        quantum ?? 1
       )}`;
     };
 
@@ -165,7 +165,7 @@ export const LiquidityTable = ({
       return `${addDecimalsFormatNumberQuantum(
         newValue,
         assetDecimalPlaces ?? 0,
-        quantum ?? 0
+        quantum ?? 1
       )}`;
     };
 
@@ -227,7 +227,7 @@ export const LiquidityTable = ({
             addDecimalsFormatNumberQuantum(
               pendingCommitmentAmount,
               assetDecimalPlaces ?? 0,
-              quantum ?? 0
+              quantum ?? 1
             );
 
           if (
@@ -238,7 +238,7 @@ export const LiquidityTable = ({
               addDecimalsFormatNumberQuantum(
                 currentCommitmentAmount,
                 assetDecimalPlaces ?? 0,
-                quantum ?? 0
+                quantum ?? 1
               );
 
             return (
@@ -286,7 +286,7 @@ export const LiquidityTable = ({
             addDecimalsFormatNumberQuantum(
               pendingCommitmentAmount,
               assetDecimalPlaces ?? 0,
-              quantum ?? 0
+              quantum ?? 1
             );
 
           if (
@@ -297,7 +297,7 @@ export const LiquidityTable = ({
               addDecimalsFormatNumberQuantum(
                 currentCommitmentAmount,
                 assetDecimalPlaces ?? 0,
-                quantum ?? 0
+                quantum ?? 1
               );
 
             return (
