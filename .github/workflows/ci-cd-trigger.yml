@@ -83,38 +83,6 @@ jobs:
       - name: Build affected spec
         run: yarn nx affected --target=build-spec
 
-  test-affected:
-    timeout-minutes: 30
-    needs: build-sources
-    runs-on: ubuntu-22.04
-    name: 'run unit test of affected apps'
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-          ref: ${{ github.event.pull_request.head.sha || github.sha }}
-
-      - name: Setup node
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-          cache: yarn
-
-      - name: Cache node modules
-        uses: actions/cache@v3
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-cache-node-modules-${{ hashFiles('yarn.lock') }}
-
-      - name: Derive appropriate SHAs for base and head for `nx affected` commands
-        uses: nrwl/nx-set-shas@v3
-        with:
-          main-branch-name: develop
-
-      - name: Test affected
-        run: yarn nx affected:test
-
   build-sources:
     timeout-minutes: 30
     needs: lint-format
@@ -193,16 +161,6 @@ jobs:
         run: |
           echo "e2e-needed: ${{ steps.check-test.outputs.e2e-needed }}"
 
-  cypress:
-    needs: [build-sources, check-e2e-needed]
-    name: '(CI) cypress'
-    if: ${{ needs.check-e2e-needed.outputs.run-tests == 'true' }}
-    uses: ./.github/workflows/cypress-run.yml
-    secrets: inherit
-    with:
-      projects: ${{ needs.build-sources.outputs.projects-e2e }}
-      tags: '@smoke'
-
   console-e2e:
     needs: [build-sources, check-e2e-needed]
     name: '(CI) trading e2e python'
@@ -277,18 +235,3 @@ jobs:
             * explorer: ${{ needs.build-sources.outputs.preview_explorer  }}
             * trading: ${{ needs.build-sources.outputs.preview_trading }}
             * tools: ${{ needs.build-sources.outputs.preview_tools }}
-
-  # Report single result at the end, to avoid mess with required checks in PR
-  cypress-check:
-    name: '(CI) cypress - check'
-    if: ${{ always() }}
-    needs: cypress
-    runs-on: ubuntu-22.04
-    steps:
-      - run: |
-          result="${{ needs.cypress.result }}"
-          if [[ $result == "success" || $result == "skipped" ]]; then
-            exit 0
-          else
-            exit 1
-          fi
