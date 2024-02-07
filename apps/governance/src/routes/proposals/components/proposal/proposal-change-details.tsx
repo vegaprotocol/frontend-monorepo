@@ -95,7 +95,11 @@ export const ProposalChangeDetails = ({
       return <ProposalVolumeDiscountProgramDetails change={terms.change} />;
     }
     case 'UpdateNetworkParameter': {
-      if (terms.change.networkParameter.key.slice(-13) === '.benefitTiers') {
+      if (
+        terms.change.networkParameter.key === 'rewards.vesting.benefitTiers' ||
+        terms.change.networkParameter.key ===
+          'rewards.activityStreak.benefitTiers'
+      ) {
         return <ProposalUpdateBenefitTiers change={terms.change} />;
       }
 
