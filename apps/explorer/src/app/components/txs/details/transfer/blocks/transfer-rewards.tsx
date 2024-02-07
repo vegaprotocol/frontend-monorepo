@@ -1,13 +1,20 @@
 import { t } from '@vegaprotocol/i18n';
 import { AssetLink, MarketLink } from '../../../../links';
-import { headerClasses, wrapperClasses } from '../transfer-details';
 import type { components } from '../../../../../../types/explorer';
 import type { Recurring } from '../transfer-details';
-import { DispatchMetricLabels } from '@vegaprotocol/types';
+import {
+  DispatchMetricLabels,
+  DistributionStrategy,
+} from '@vegaprotocol/types';
 import { VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
 
 export type Metric = components['schemas']['vegaDispatchMetric'];
 export type Strategy = components['schemas']['vegaDispatchStrategy'];
+
+export const wrapperClasses =
+  'border border-vega-light-150 dark:border-vega-dark-200 rounded-md pv-2 mb-5 w-full sm:w-3/4 min-w-[200px] ';
+export const headerClasses =
+  'bg-solid bg-vega-light-150 dark:bg-vega-dark-150 border-vega-light-150 text-center text-xl py-2 font-alpha calt';
 
 const metricLabels: Record<Metric, string> = {
   DISPATCH_METRIC_UNSPECIFIED: 'Unknown metric',
@@ -21,6 +28,11 @@ const entityScopeIcons: Record<
 > = {
   ENTITY_SCOPE_INDIVIDUALS: VegaIconNames.MAN,
   ENTITY_SCOPE_TEAMS: VegaIconNames.TEAM,
+};
+
+const distributionStrategyLabel: Record<DistributionStrategy, string> = {
+  [DistributionStrategy.DISTRIBUTION_STRATEGY_PRO_RATA]: 'Pro Rata',
+  [DistributionStrategy.DISTRIBUTION_STRATEGY_RANK]: 'Ranked',
 };
 
 interface TransferRewardsProps {
@@ -79,7 +91,6 @@ export function TransferRewards({ recurring }: TransferRewardsProps) {
         ) : null}
 
         {teamScope}
-        {distributionStrategy}
 
         {lockPeriod && lockPeriod !== '0' ? (
           <li>
@@ -116,10 +127,8 @@ export function TransferRewards({ recurring }: TransferRewardsProps) {
         {notionalTimeWeightedAveragePositionRequirement &&
         notionalTimeWeightedAveragePositionRequirement !== '' ? (
           <li>
-            <strong>
-              {t('notionalTimeWeightedAveragePositionRequirement')}
-            </strong>
-            : {notionalTimeWeightedAveragePositionRequirement}
+            <strong>{t('Notional TWAP')}</strong>:{' '}
+            {notionalTimeWeightedAveragePositionRequirement}
           </li>
         ) : null}
 
@@ -128,13 +137,44 @@ export function TransferRewards({ recurring }: TransferRewardsProps) {
             <strong>{t('Top performers')}</strong>: {nTopPerformers}
           </li>
         )}
-
-        {rankTable && rankTable.length > 0 ? (
-          <li>
-            <strong>{t('Ranks')}</strong>: {rankTable.toString()}
-          </li>
-        ) : null}
+        {distributionStrategy &&
+          distributionStrategy !== 'DISTRIBUTION_STRATEGY_UNSPECIFIED' && (
+            <li>
+              <strong>{t('Distribution strategy')}</strong>:{' '}
+              {distributionStrategyLabel[distributionStrategy]}
+            </li>
+          )}
       </ul>
+      <div className="px-6 pt-1 pb-5">
+        {rankTable && rankTable.length > 0 ? (
+          <table className="border-collapse border border-slate-400 ">
+            <thead>
+              <tr>
+                <th className="border border-slate-300 bg-slate-300 px-3">
+                  <strong>{t('Start rank')}</strong>
+                </th>
+                <th className="border border-slate-300 bg-slate-300 px-3">
+                  <strong>{t('Share of reward pool')}</strong>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {rankTable.map((row, i) => {
+                return (
+                  <tr>
+                    <td className="border border-slate-300 text-center">
+                      {row.startRank}
+                    </td>
+                    <td className="border border-slate-300 text-center">
+                      {row.shareRatio}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        ) : null}
+      </div>
     </div>
   );
 }
