@@ -41,16 +41,17 @@ export const TradingView = ({
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const widgetRef = useRef<IChartingLibraryWidget>();
 
-  const datafeed = useDatafeed();
-
   const prevMarketId = usePrevious(marketId);
   const prevTheme = usePrevious(theme);
+
+  const datafeed = useDatafeed(marketId);
 
   useEffect(() => {
     // Widget already created
     if (widgetRef.current !== undefined) {
       // Update the symbol if changed
       if (marketId !== prevMarketId) {
+        datafeed.setSymbol(marketId);
         widgetRef.current.setSymbol(
           marketId,
           (interval ? interval : '15') as TVResolutionString,

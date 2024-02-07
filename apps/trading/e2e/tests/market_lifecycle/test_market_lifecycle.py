@@ -37,7 +37,7 @@ def test_market_lifecycle(proposed_market, vega: VegaServiceNull, page: Page):
     # 6002-MDET-004
     expect(page.get_by_test_id("market-change")).to_have_text("Change (24h)0.00%0.00")
     # 6002-MDET-005
-    expect(page.get_by_test_id("market-volume")).to_have_text("Volume (24h)-")
+    expect(page.get_by_test_id("market-volume")).to_have_text("Volume (24h)- (- BTC)")
     # 6002-MDET-008
     expect(page.get_by_test_id("market-settlement-asset")).to_have_text(
         "Settlement assettDAI"

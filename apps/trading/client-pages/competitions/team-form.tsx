@@ -6,6 +6,8 @@ import {
   TextArea,
   TradingButton,
   Intent,
+  VegaIcon,
+  VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 import { URL_REGEX, isValidVegaPublicKey } from '@vegaprotocol/utils';
 
@@ -17,6 +19,8 @@ import type {
   UpdateReferralSet,
   Status,
 } from '@vegaprotocol/wallet';
+import classNames from 'classnames';
+import { useLayoutEffect, useState } from 'react';
 
 export type FormFields = {
   id: string;
@@ -28,8 +32,8 @@ export type FormFields = {
 };
 
 export enum TransactionType {
-  CreateReferralSet,
-  UpdateReferralSet,
+  CreateReferralSet = 'CreateReferralSet',
+  UpdateReferralSet = 'UpdateReferralSet',
 }
 
 const prepareTransaction = (
@@ -75,14 +79,14 @@ export const TeamForm = ({
   type,
   status,
   err,
-  isSolo,
+  isCreatingSoloTeam,
   onSubmit,
   defaultValues,
 }: {
   type: TransactionType;
   status: ReturnType<typeof useReferralSetTransaction>['status'];
   err: ReturnType<typeof useReferralSetTransaction>['err'];
-  isSolo: boolean;
+  isCreatingSoloTeam: boolean;
   onSubmit: ReturnType<typeof useReferralSetTransaction>['onSubmit'];
   defaultValues?: FormFields;
 }) => {
@@ -96,7 +100,7 @@ export const TeamForm = ({
     formState: { errors },
   } = useForm<FormFields>({
     defaultValues: {
-      private: isSolo,
+      private: isCreatingSoloTeam,
       ...defaultValues,
     },
   });
@@ -109,16 +113,14 @@ export const TeamForm = ({
 
   return (
     <form onSubmit={handleSubmit(sendTransaction)}>
-      <input
-        type="hidden"
-        {...register('id', {
-          disabled: true,
-        })}
-      />
+      <input type="hidden" {...register('id')} />
       <TradingFormGroup label={t('Team name')} labelFor="name">
-        <TradingInput {...register('name', { required: t('Required') })} />
+        <TradingInput
+          {...register('name', { required: t('Required') })}
+          data-testid="team-name-input"
+        />
         {errors.name?.message && (
-          <TradingInputError forInput="name">
+          <TradingInputError forInput="name" data-testid="team-name-error">
             {errors.name.message}
           </TradingInputError>
         )}
@@ -134,9 +136,10 @@ export const TeamForm = ({
           {...register('url', {
             pattern: { value: URL_REGEX, message: t('Invalid URL') },
           })}
+          data-testid="team-url-input"
         />
         {errors.url?.message && (
-          <TradingInputError forInput="url">
+          <TradingInputError forInput="url" data-testid="team-url-error">
             {errors.url.message}
           </TradingInputError>
         )}
@@ -153,66 +156,86 @@ export const TeamForm = ({
               message: t('Invalid image URL'),
             },
           })}
+          data-testid="avatar-url-input"
         />
         {errors.avatarUrl?.message && (
-          <TradingInputError forInput="avatarUrl">
+          <TradingInputError
+            forInput="avatarUrl"
+            data-testid="avatar-url-error"
+          >
             {errors.avatarUrl.message}
           </TradingInputError>
         )}
       </TradingFormGroup>
-      <TradingFormGroup
-        label={t('Make team private')}
-        labelFor="private"
-        hideLabel={true}
-      >
-        <Controller
-          name="private"
-          control={control}
-          render={({ field }) => {
-            return (
-              <TradingCheckbox
-                label={t('Make team private')}
-                checked={field.value}
-                onCheckedChange={(value) => {
-                  field.onChange(value);
+      {
+        // allow changing to private/public if editing, but don't show these options if making a solo team
+        (type === TransactionType.UpdateReferralSet || !isCreatingSoloTeam) && (
+          <>
+            <TradingFormGroup
+              label={t('Make team private')}
+              labelFor="private"
+              hideLabel={true}
+            >
+              <Controller
+                name="private"
+                control={control}
+                render={({ field }) => {
+                  return (
+                    <TradingCheckbox
+                      label={t('Make team private')}
+                      checked={field.value}
+                      onCheckedChange={(value) => {
+                        field.onChange(value);
+                      }}
+                      data-testid="team-private-checkbox"
+                    />
+                  );
                 }}
-                disabled={isSolo}
               />
-            );
-          }}
-        />
-      </TradingFormGroup>
-      {isPrivate && (
-        <TradingFormGroup
-          label={t('Public key allow list')}
-          labelFor="allowList"
-          labelDescription={t(
-            'Use a comma separated list to allow only specific public keys to join the team'
-          )}
-        >
-          <TextArea
-            {...register('allowList', {
-              required: t('Required'),
-              disabled: isSolo,
-              validate: {
-                allowList: (value) => {
-                  const publicKeys = parseAllowListText(value);
-                  if (publicKeys.every((pk) => isValidVegaPublicKey(pk))) {
-                    return true;
-                  }
-                  return t('Invalid public key found in allow list');
-                },
-              },
-            })}
-          />
-          {errors.allowList?.message && (
-            <TradingInputError forInput="avatarUrl">
-              {errors.allowList.message}
-            </TradingInputError>
-          )}
-        </TradingFormGroup>
+            </TradingFormGroup>
+            {isPrivate && (
+              <TradingFormGroup
+                label={t('Public key allow list')}
+                labelFor="allowList"
+                labelDescription={t(
+                  'Use a comma separated list to allow only specific public keys to join the team'
+                )}
+              >
+                <TextArea
+                  {...register('allowList', {
+                    required: t('Required'),
+                    validate: {
+                      allowList: (value) => {
+                        const publicKeys = parseAllowListText(value);
+                        if (
+                          publicKeys.every((pk) => isValidVegaPublicKey(pk))
+                        ) {
+                          return true;
+                        }
+                        return t('Invalid public key found in allow list');
+                      },
+                    },
+                  })}
+                  data-testid="team-allow-list-textarea"
+                />
+                {errors.allowList?.message && (
+                  <TradingInputError
+                    forInput="avatarUrl"
+                    data-testid="team-allow-list-error"
+                  >
+                    {errors.allowList.message}
+                  </TradingInputError>
+                )}
+              </TradingFormGroup>
+            )}
+          </>
+        )
+      }
+      {err && (
+        <p className="text-danger text-xs mb-4 first-letter:capitalize">
+          {err}
+        </p>
       )}
-      {err && <p className="text-danger text-xs mb-4 capitalize">{err}</p>}
       <SubmitButton type={type} status={status} />
     </form>
   );
@@ -233,20 +256,61 @@ const SubmitButton = ({
     text = t('Update');
   }
 
+  let confirmedText = t('Created');
+  if (type === TransactionType.UpdateReferralSet) {
+    confirmedText = t('Updated');
+  }
+
   if (status === 'requested') {
     text = t('Confirm in wallet...');
   } else if (status === 'pending') {
     text = t('Confirming transaction...');
   }
 
+  const [showConfirmed, setShowConfirmed] = useState<boolean>(false);
+  useLayoutEffect(() => {
+    let to: ReturnType<typeof setTimeout>;
+    if (status === 'confirmed' && !showConfirmed) {
+      to = setTimeout(() => {
+        setShowConfirmed(true);
+      }, 100);
+    }
+    return () => {
+      clearTimeout(to);
+    };
+  }, [showConfirmed, status]);
+
+  const confirmed = (
+    <span
+      className={classNames('text-sm transition-opacity opacity-0', {
+        'opacity-100': showConfirmed,
+      })}
+    >
+      <VegaIcon
+        name={VegaIconNames.TICK}
+        size={18}
+        className="text-vega-green-500"
+      />{' '}
+      {confirmedText}
+    </span>
+  );
+
   return (
-    <TradingButton type="submit" intent={Intent.Info} disabled={disabled}>
-      {text}
-    </TradingButton>
+    <div className="flex gap-2 items-baseline">
+      <TradingButton
+        type="submit"
+        intent={Intent.Info}
+        disabled={disabled}
+        data-testid="team-form-submit-button"
+      >
+        {text}
+      </TradingButton>
+      {status === 'confirmed' && confirmed}
+    </div>
   );
 };
 
-const parseAllowListText = (str: string) => {
+const parseAllowListText = (str: string = '') => {
   return str
     .split(',')
     .map((v) => v.trim())

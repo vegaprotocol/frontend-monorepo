@@ -19,6 +19,7 @@ export * from './lib/use-ethereum-transaction';
 export * from './lib/use-ethereum-withdraw-approval-toasts';
 export * from './lib/use-ethereum-withdraw-approvals-manager';
 export * from './lib/use-ethereum-withdraw-approvals-store';
+export * from './lib/use-gas-price';
 export * from './lib/use-get-withdraw-delay';
 export * from './lib/use-get-withdraw-threshold';
 export * from './lib/use-token-contract';

@@ -31,7 +31,7 @@ export const CompetitionsCreateTeam = () => {
         <div className="mx-auto md:w-2/3 max-w-xl">
           <Box className="flex flex-col gap-4">
             <h1 className="calt text-2xl lg:text-3xl xl:text-4xl">
-              {t('Create a team')}
+              {isSolo ? t('Create solo team') : t('Create a team')}
             </h1>
             {pubKey && !isReadOnly ? (
               <CreateTeamFormContainer isSolo={isSolo} />
@@ -71,18 +71,27 @@ const CreateTeamFormContainer = ({ isSolo }: { isSolo: boolean }) => {
 
   if (status === 'confirmed') {
     return (
-      <div className="flex flex-col items-start gap-2">
+      <div
+        className="flex flex-col items-start gap-2"
+        data-testid="team-creation-success-message"
+      >
         <p className="text-sm">{t('Team creation transaction successful')}</p>
         {code && (
           <>
             <p className="text-sm">
               Your team ID is:{' '}
-              <span className="font-mono break-all">{code}</span>
+              <span
+                className="font-mono break-all"
+                data-testid="team-id-display"
+              >
+                {code}
+              </span>
             </p>
             <TradingAnchorButton
               href={Links.COMPETITIONS_TEAM(code)}
               intent={Intent.Info}
               size="small"
+              data-testid="view-team-button"
             >
               {t('View team')}
             </TradingAnchorButton>
@@ -125,7 +134,7 @@ const CreateTeamFormContainer = ({ isSolo }: { isSolo: boolean }) => {
       onSubmit={onSubmit}
       status={status}
       err={err}
-      isSolo={isSolo}
+      isCreatingSoloTeam={isSolo}
     />
   );
 };

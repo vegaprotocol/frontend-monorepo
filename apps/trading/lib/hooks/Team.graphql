@@ -17,7 +17,7 @@ fragment TeamStatsFields on TeamStatistics {
   totalGamesPlayed
   quantumRewards {
     epoch
-    total_quantum_rewards
+    totalQuantumRewards
   }
   gamesPlayed
 }
@@ -49,6 +49,13 @@ fragment TeamGameFields on Game {
       ...TeamEntity
     }
   }
+}
+
+fragment TeamMemberStatsFields on TeamMemberStatistics {
+  partyId
+  totalQuantumVolume
+  totalQuantumRewards
+  totalGamesPlayed
 }
 
 query Team($teamId: ID!, $partyId: ID, $aggregationEpochs: Int) {
@@ -84,6 +91,16 @@ query Team($teamId: ID!, $partyId: ID, $aggregationEpochs: Int) {
     edges {
       node {
         ...TeamGameFields
+      }
+    }
+  }
+  teamMembersStatistics(
+    teamId: $teamId
+    aggregationEpochs: $aggregationEpochs
+  ) {
+    edges {
+      node {
+        ...TeamMemberStatsFields
       }
     }
   }

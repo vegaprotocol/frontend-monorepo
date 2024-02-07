@@ -67,26 +67,6 @@ query EstimatePosition(
     # we can set this variable to true so that we can format with market.decimalPlaces
     scaleLiquidationPriceToMarketDecimals: true
   ) {
-    margin {
-      worstCase {
-        maintenanceLevel
-        searchLevel
-        initialLevel
-        collateralReleaseLevel
-        marginMode
-        marginFactor
-        orderMarginLevel
-      }
-      bestCase {
-        maintenanceLevel
-        searchLevel
-        initialLevel
-        collateralReleaseLevel
-        marginMode
-        marginFactor
-        orderMarginLevel
-      }
-    }
     collateralIncreaseEstimate {
       worstCase
       bestCase

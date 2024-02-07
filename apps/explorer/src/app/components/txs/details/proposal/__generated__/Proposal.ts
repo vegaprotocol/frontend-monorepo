@@ -8,13 +8,18 @@ export type ExplorerProposalStatusQueryVariables = Types.Exact<{
 }>;
 
 
-export type ExplorerProposalStatusQuery = { __typename?: 'Query', proposal?: { __typename?: 'BatchProposal' } | { __typename?: 'Proposal', id?: string | null, state: Types.ProposalState, rejectionReason?: Types.ProposalRejectionReason | null } | null };
+export type ExplorerProposalStatusQuery = { __typename?: 'Query', proposal?: { __typename?: 'BatchProposal', id?: string | null, state: Types.ProposalState, rejectionReason?: Types.ProposalRejectionReason | null } | { __typename?: 'Proposal', id?: string | null, state: Types.ProposalState, rejectionReason?: Types.ProposalRejectionReason | null } | null };
 
 
 export const ExplorerProposalStatusDocument = gql`
     query ExplorerProposalStatus($id: ID!) {
   proposal(id: $id) {
     ... on Proposal {
+      id
+      state
+      rejectionReason
+    }
+    ... on BatchProposal {
       id
       state
       rejectionReason

@@ -13,6 +13,7 @@ import {
   toDecimal,
   toNumberParts,
   formatNumberRounded,
+  toQUSD,
 } from './number';
 
 describe('number utils', () => {
@@ -280,5 +281,24 @@ describe('formatNumberRounded', () => {
     expect(formatNumberRounded(new BigNumber(1_000_000_000_000), '1e9')).toBe(
       '1t'
     );
+  });
+});
+
+describe('toQUSD', () => {
+  it.each([
+    [0, 0, 0],
+    [1, 1, 1],
+    [1, 10, 0.1],
+    [1, 100, 0.01],
+    // real life examples
+    [1000000, 1000000, 1], // USDC -> 1 USDC ~= 1 qUSD
+    [500000, 1000000, 0.5], // USDC => 0.6 USDC ~= 0.5 qUSD
+    [1e18, 1e18, 1], // VEGA -> 1 VEGA ~= 1 qUSD
+    [123.45e18, 1e18, 123.45], // VEGA -> 1 VEGA ~= 1 qUSD
+    [1e18, 5e14, 2000], // WETH -> 1 WETH ~= 2000 qUSD
+    [1e9, 5e14, 0.000002], // gwei -> 1 gwei ~= 0.000002 qUSD
+    [50000e9, 5e14, 0.1], // gwei -> 50000 gwei ~= 0.1 qUSD
+  ])('converts (%d, %d) to %d qUSD', (amount, quantum, expected) => {
+    expect(toQUSD(amount, quantum).toNumber()).toEqual(expected);
   });
 });

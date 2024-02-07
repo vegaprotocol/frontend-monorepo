@@ -4,7 +4,7 @@ The front-end monorepo provides a toolkit for building apps that interact with V
 
 This repository is managed using [Nx](https://nx.dev).
 
-# 🔎 Applications in this repo
+## 🔎 Applications in this repo
 
 ### [Block explorer](./apps/explorer)
 
@@ -30,7 +30,7 @@ Hosting for static content being shared across apps, for example fonts.
 
 The utility dApp for validators wishing to add or remove themselves as a signer of the multisig contract.
 
-# 🧱 Libraries in this repo
+## 🧱 Libraries in this repo
 
 ### [UI toolkit](./libs/ui-toolkit)
 
@@ -53,7 +53,7 @@ A utility library for connecting to the Ethereum network and interacting with Ve
 
 Generic react helpers that can be used across multiple applications, along with other utilities.
 
-# 💻 Develop
+## 💻 Develop
 
 ### Set up
 
@@ -103,7 +103,7 @@ In CI linting, formatting and also run. These checks can be seen in the [CI work
 
 Visit the [Nx Documentation](https://nx.dev/getting-started/intro) to learn more.
 
-# 🐋 Hosting a console
+## 🐋 Hosting a console
 
 To host a console there are two possible build scenarios for running the frontends: nx performed **outside** or **inside** docker build. For specific build instructions follow [build instructions](#build-instructions).
 
@@ -226,6 +226,6 @@ Note: The script is only needed if capsule was built for first time or fresh. To
 vega wallet service run -n DV --load-tokens --tokens-passphrase-file passphrase --no-version-check --automatic-consent --home ~/.vegacapsule/testnet/wallet
 ```
 
-# 📑 License
+## 📑 License
 
 [MIT](./LICENSE)
