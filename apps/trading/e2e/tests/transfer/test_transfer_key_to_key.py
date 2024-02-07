@@ -109,7 +109,6 @@ def test_transfer_vesting_below_minimum(
     expect(shared_page.get_by_test_id("transfer-form")).to_be_visible
 
     change_keys(shared_page, shared_vega, "Key 1")
-    shared_page.pause()
     shared_page.get_by_test_id("select-asset").click()
     shared_page.get_by_test_id("rich-select-option").first.click()
     option_value = shared_page.locator(

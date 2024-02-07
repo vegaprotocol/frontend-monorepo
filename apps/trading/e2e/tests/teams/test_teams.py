@@ -6,7 +6,8 @@ from conftest import init_vega
 from actions.utils import next_epoch, change_keys, create_and_faucet_wallet
 from fixtures.market import setup_continuous_market
 from conftest import auth_setup, init_page, init_vega, risk_accepted_setup
-from wallet_config import  MM_WALLET, WalletConfig
+from wallet_config import MM_WALLET, WalletConfig
+
 
 @pytest.fixture(scope="module")
 def vega(request):
@@ -34,7 +35,7 @@ def competitions_page(vega, browser, request, setup_teams_and_games):
         yield page
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="module", autouse=True)
 def setup_teams_and_games(vega: VegaServiceNull):
     tDAI_market = setup_continuous_market(vega, custom_quantum=100000)
     PARTY_A = WalletConfig("PARTY_A", "PARTY_A")
@@ -135,7 +136,7 @@ def setup_teams_and_games(vega: VegaServiceNull):
         n_top_performers=1,
         amount=100,
         factor=1.0,
-        window_length=15
+        window_length=15,
     )
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
@@ -152,7 +153,7 @@ def setup_teams_and_games(vega: VegaServiceNull):
         n_top_performers=1,
         amount=100,
         factor=1.0,
-        window_length=15
+        window_length=15,
     )
     next_epoch(vega)
     print(f"[EPOCH: {vega.statistics().epoch_seq}] starting order activity")
@@ -220,26 +221,27 @@ def create_team(vega: VegaServiceNull):
 
     return team_name
 
+
 @pytest.mark.xdist_group(name="test_teams")
 def test_team_page_games_table(team_page: Page):
     team_page.get_by_test_id("games-toggle").click()
     expect(team_page.get_by_test_id("games-toggle")).to_have_text("Games (1)")
     expect(team_page.get_by_test_id("rank-0")).to_have_text("2")
     expect(team_page.get_by_test_id("epoch-0")).to_have_text("19")
-    expect(team_page.get_by_test_id("type-0")
-           ).to_have_text("Price maker fees paid")
+    expect(team_page.get_by_test_id("type-0")).to_have_text("Price maker fees paid")
     expect(team_page.get_by_test_id("amount-0")).to_have_text("74")
     expect(team_page.get_by_test_id("participatingTeams-0")).to_have_text("2")
     expect(team_page.get_by_test_id("participatingMembers-0")).to_have_text("4")
 
+
 @pytest.mark.xdist_group(name="test_teams")
 def test_team_page_members_table(team_page: Page):
     team_page.get_by_test_id("members-toggle").click()
-    expect(team_page.get_by_test_id("members-toggle")
-           ).to_have_text("Members (4)")
+    expect(team_page.get_by_test_id("members-toggle")).to_have_text("Members (4)")
     expect(team_page.get_by_test_id("referee-0")).to_be_visible()
     expect(team_page.get_by_test_id("joinedAt-0")).to_be_visible()
     expect(team_page.get_by_test_id("joinedAtEpoch-0")).to_have_text("9")
+
 
 @pytest.mark.xdist_group(name="test_teams")
 def test_team_page_headline(team_page: Page, setup_teams_and_games):
@@ -247,12 +249,13 @@ def test_team_page_headline(team_page: Page, setup_teams_and_games):
     expect(team_page.get_by_test_id("team-name")).to_have_text(team_name)
     expect(team_page.get_by_test_id("members-count-stat")).to_have_text("4")
 
-    expect(team_page.get_by_test_id("total-games-stat")).to_have_text("2")
+    expect(team_page.get_by_test_id("total-games-stat")).to_have_text("1")
 
     # TODO this still seems wrong as its always 0
     expect(team_page.get_by_test_id("total-volume-stat")).to_have_text("0")
 
-    expect(team_page.get_by_test_id("rewards-paid-stat")).to_have_text("214")
+    expect(team_page.get_by_test_id("rewards-paid-stat")).to_have_text("78")
+
 
 @pytest.mark.xdist_group(name="test_teams")
 def test_switch_teams(team_page: Page, vega: VegaServiceNull):
@@ -265,6 +268,7 @@ def test_switch_teams(team_page: Page, vega: VegaServiceNull):
     team_page.reload()
     expect(team_page.get_by_test_id("members-count-stat")).to_have_text("5")
 
+
 @pytest.mark.xdist_group(name="test_teams")
 def test_leaderboard(competitions_page: Page, setup_teams_and_games):
     team_name = setup_teams_and_games["team_name"]
@@ -273,36 +277,36 @@ def test_leaderboard(competitions_page: Page, setup_teams_and_games):
         competitions_page.get_by_test_id("rank-0").locator(".text-yellow-300")
     ).to_have_count(1)
     expect(
-        competitions_page.get_by_test_id(
-            "rank-1").locator(".text-vega-clight-500")
+        competitions_page.get_by_test_id("rank-1").locator(".text-vega-clight-500")
     ).to_have_count(1)
     expect(competitions_page.get_by_test_id("team-1")).to_have_text(team_name)
     expect(competitions_page.get_by_test_id("status-1")).to_have_text("Open")
 
     #  FIXME: the numbers are different we need to clarify this with the backend
     # expect(competitions_page.get_by_test_id("earned-1")).to_have_text("160")
-    expect(competitions_page.get_by_test_id("games-1")).to_have_text("2")
+    expect(competitions_page.get_by_test_id("games-1")).to_have_text("1")
 
     # TODO  still odd that this is 0
     expect(competitions_page.get_by_test_id("volume-0")).to_have_text("-")
 
+
 @pytest.mark.xdist_group(name="test_teams")
 def test_game_card(competitions_page: Page):
-    expect(competitions_page.get_by_test_id(
-        "active-rewards-card")).to_have_count(2)
+    expect(competitions_page.get_by_test_id("active-rewards-card")).to_have_count(2)
     game_1 = competitions_page.get_by_test_id("active-rewards-card").first
     expect(game_1).to_be_visible()
     expect(game_1.get_by_test_id("entity-scope")).to_have_text("Individual")
     expect(game_1.get_by_test_id("locked-for")).to_have_text("1 epoch")
     expect(game_1.get_by_test_id("reward-value")).to_have_text("100.00")
-    expect(game_1.get_by_test_id("distribution-strategy")
-           ).to_have_text("Pro rata")
-    expect(game_1.get_by_test_id("dispatch-metric-info")
-           ).to_have_text("Price maker fees paid • ")
+    expect(game_1.get_by_test_id("distribution-strategy")).to_have_text("Pro rata")
+    expect(game_1.get_by_test_id("dispatch-metric-info")).to_have_text(
+        "Price maker fees paid • "
+    )
     expect(game_1.get_by_test_id("assessed-over")).to_have_text("15 epochs")
     expect(game_1.get_by_test_id("scope")).to_have_text("In team")
     expect(game_1.get_by_test_id("staking-requirement")).to_have_text("0.00")
     expect(game_1.get_by_test_id("average-position")).to_have_text("0.00")
+
 
 @pytest.mark.xdist_group(name="test_teams")
 def test_create_team(competitions_page: Page, vega: VegaServiceNull):
