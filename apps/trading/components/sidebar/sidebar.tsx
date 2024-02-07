@@ -71,14 +71,7 @@ export const Sidebar = ({ options }: { options?: ReactNode }) => {
   return (
     <div className="flex h-full lg:flex-col gap-1" data-testid="sidebar">
       {options && (
-        <nav
-          className={classNames(
-            navClasses,
-            'grid grid-cols-3 grow md:grow-0 md:flex lg:flex-col pl-2'
-          )}
-        >
-          {options}
-        </nav>
+        <nav className={classNames(navClasses, 'flex grow')}>{options}</nav>
       )}
       <nav
         className={classNames(

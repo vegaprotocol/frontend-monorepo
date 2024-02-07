@@ -45,40 +45,41 @@ export const MarketsMobileSidebar = () => {
         element={
           <>
             <ViewInitializer />
-            {!pubKeys || isReadOnly ? (
-              <>
-                <TradingButton
-                  intent={Intent.Primary}
-                  size="medium"
-                  onClick={() => {
-                    // onClick?.();
-                    openVegaWalletDialog();
-                  }}
-                >
-                  {t('Connect')}
-                </TradingButton>
-                <MobileButton
-                  view={ViewType.Order}
-                  tooltip={t('Trade')}
-                  routeId={currentRouteId}
-                />
-                <MobileBarActionsDropdown currentRouteId={currentRouteId} />
-              </>
-            ) : (
-              <>
-                <MobileButton
-                  view={ViewType.Order}
-                  tooltip={t('Trade')}
-                  routeId={currentRouteId}
-                />
-                <MobileButton
-                  view={ViewType.Deposit}
-                  tooltip={t('Deposit')}
-                  routeId={currentRouteId}
-                />
-                <MobileBarActionsDropdown currentRouteId={currentRouteId} />
-              </>
-            )}
+            <div className="grid grid-cols-3 grow md:grow-0 md:flex lg:flex-col items-center gap-2 lg:gap-4 p-1">
+              {!pubKeys || isReadOnly ? (
+                <>
+                  <TradingButton
+                    intent={Intent.Primary}
+                    size="medium"
+                    onClick={() => {
+                      openVegaWalletDialog();
+                    }}
+                  >
+                    {t('Connect')}
+                  </TradingButton>
+                  <MobileButton
+                    view={ViewType.Order}
+                    tooltip={t('Trade')}
+                    routeId={currentRouteId}
+                  />
+                  <MobileBarActionsDropdown currentRouteId={currentRouteId} />
+                </>
+              ) : (
+                <>
+                  <MobileButton
+                    view={ViewType.Order}
+                    tooltip={t('Trade')}
+                    routeId={currentRouteId}
+                  />
+                  <MobileButton
+                    view={ViewType.Deposit}
+                    tooltip={t('Deposit')}
+                    routeId={currentRouteId}
+                  />
+                  <MobileBarActionsDropdown currentRouteId={currentRouteId} />
+                </>
+              )}
+            </div>
           </>
         }
       />
