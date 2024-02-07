@@ -58,6 +58,7 @@ export const VoteButtonsContainer = (props: VoteButtonsContainerProps) => {
     NetworkParams.governance_proposal_freeform_minVoterBalance,
     NetworkParams.governance_proposal_referralProgram_minVoterBalance,
     NetworkParams.governance_proposal_VolumeDiscountProgram_minVoterBalance,
+    NetworkParams.governance_proposal_transfer_minVoterBalance,
     NetworkParams.spam_protection_voting_min_tokens,
     NetworkParams.governance_proposal_market_requiredMajority,
     NetworkParams.governance_proposal_updateMarket_requiredMajority,
@@ -68,6 +69,7 @@ export const VoteButtonsContainer = (props: VoteButtonsContainerProps) => {
     NetworkParams.governance_proposal_freeform_requiredMajority,
     NetworkParams.governance_proposal_referralProgram_requiredMajority,
     NetworkParams.governance_proposal_VolumeDiscountProgram_requiredMajority,
+    NetworkParams.governance_proposal_transfer_requiredMajority,
   ]);
 
   let minVoterBalance = null;
@@ -99,15 +101,10 @@ export const VoteButtonsContainer = (props: VoteButtonsContainerProps) => {
         minVoterBalance =
           networkParams.governance_proposal_freeform_minVoterBalance;
         break;
-      case 'NewTransfer':
-        // TODO: check minVoterBalance for 'NewTransfer'
-        minVoterBalance =
-          networkParams.governance_proposal_freeform_minVoterBalance;
-        break;
       case 'CancelTransfer':
-        // TODO: check minVoterBalance for 'CancelTransfer'
+      case 'NewTransfer':
         minVoterBalance =
-          networkParams.governance_proposal_freeform_minVoterBalance;
+          networkParams.governance_proposal_transfer_requiredMajority;
         break;
       case 'UpdateReferralProgram':
         minVoterBalance =
