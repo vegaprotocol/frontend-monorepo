@@ -29,7 +29,7 @@ export const MobileMarketHeader = () => {
   if (!marketId) return null;
 
   return (
-    <div className="p-2 flex justify-between gap-2 items-center h-10 pr-1 border-b border-default bg-vega-clight-700 dark:bg-vega-cdark-700">
+    <div className="p-2 flex justify-between gap-2 items-center h-10 border-b border-default bg-vega-clight-700 dark:bg-vega-cdark-700">
       <FullScreenPopover
         open={openMarket}
         onOpenChange={(x) => {
@@ -42,7 +42,7 @@ export const MobileMarketHeader = () => {
               : t('Select market')}
             <span
               className={classNames(
-                'transition-transform ease-in-out duration-300',
+                'transition-transform ease-in-out duration-300 flex',
                 {
                   'rotate-180': openMarket,
                 }

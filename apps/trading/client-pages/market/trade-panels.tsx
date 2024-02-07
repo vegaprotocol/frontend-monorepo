@@ -107,7 +107,7 @@ export const TradePanels = ({ market, pinnedAsset }: TradePanelsProps) => {
               );
             })}
         </div>
-        <div className="h-[376px] sm:h-[460px] lg:h-full relative">
+        <div className="h-[50vh] lg:h-full relative">
           <div>{renderMenu(topViewCfg)}</div>
           <div className="overflow-auto h-full">{renderView(topView)}</div>
         </div>
