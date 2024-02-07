@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { type ProposalTermsFieldsFragment } from '../../__generated__/Proposals';
 import { type Proposal, type BatchProposal } from '../../types';
 import { ListAsset } from '../list-asset';
@@ -59,19 +60,15 @@ export const ProposalChangeDetails = ({
     case 'UpdateMarket': {
       if (proposal.id) {
         return (
-          <>
-            <div className="mb-4">
-              <ProposalMarketData proposalId={proposal.id} />
-            </div>
-            <div className="mb-4">
-              <ProposalMarketChanges
-                marketId={terms.change.marketId}
-                updatedProposal={
-                  restData?.data?.proposal?.terms?.updateMarket?.changes
-                }
-              />
-            </div>
-          </>
+          <div className="flex flex-col gap-4">
+            <ProposalMarketData proposalId={proposal.id} />
+            <ProposalMarketChanges
+              marketId={terms.change.marketId}
+              updatedProposal={
+                restData?.data?.proposal?.terms?.updateMarket?.changes
+              }
+            />
+          </div>
         );
       }
 
@@ -103,12 +100,7 @@ export const ProposalChangeDetails = ({
         return <ProposalUpdateBenefitTiers change={terms.change} />;
       }
 
-      return (
-        <p>
-          Changing {terms.change.networkParameter.key} to{' '}
-          {terms.change.networkParameter.value}
-        </p>
-      );
+      return null;
     }
     case 'NewFreeform':
     case 'NewSpotMarket':
