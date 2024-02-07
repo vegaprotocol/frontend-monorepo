@@ -211,7 +211,7 @@ def setup_teams_and_games(vega: VegaServiceNull):
 def create_team(vega: VegaServiceNull):
     team_name = "Foobar"
     vega.create_referral_set(
-        key_name=PARTY_A.name,
+        key_name="PARTY_A",
         name=team_name,
         team_url="https://vega.xyz",
         avatar_url="http://placekitten.com/200/200",
