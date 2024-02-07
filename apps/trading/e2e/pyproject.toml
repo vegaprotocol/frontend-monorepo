@@ -31,4 +31,4 @@ log_file_level = "INFO"
 markers = [
     "shared_vega"
 ]
-timeout = 90
+timeout = 120

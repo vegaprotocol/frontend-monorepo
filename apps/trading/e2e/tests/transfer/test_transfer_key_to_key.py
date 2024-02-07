@@ -87,7 +87,7 @@ def test_transfer_vesting_below_minimum(
         order_type="TYPE_LIMIT",
         time_in_force="TIME_IN_FORCE_GTC",
         side="SIDE_SELL",
-        price=0.30,
+        price=0.10,
         volume=1,
     )
     shared_vega.submit_order(
@@ -96,15 +96,18 @@ def test_transfer_vesting_below_minimum(
         order_type="TYPE_LIMIT",
         time_in_force="TIME_IN_FORCE_GTC",
         side="SIDE_BUY",
-        price=0.30,
+        price=0.10,
         volume=1,
     )
-    shared_vega.wait_fn(1)
+    shared_vega.wait_fn(10)
     shared_vega.wait_for_total_catchup()
     next_epoch(vega=shared_vega)
     next_epoch(vega=shared_vega)
     next_epoch(vega=shared_vega)
     next_epoch(vega=shared_vega)
+    next_epoch(vega=shared_vega)
+    next_epoch(vega=shared_vega)
+    shared_vega.wait_for_total_catchup()
     shared_page.goto("/#/portfolio")
     expect(shared_page.get_by_test_id("transfer-form")).to_be_visible
 
