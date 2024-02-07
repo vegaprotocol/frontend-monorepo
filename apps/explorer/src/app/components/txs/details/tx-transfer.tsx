@@ -13,6 +13,7 @@ import {
   SPECIAL_CASE_NETWORK_ID,
 } from '../../links/party-link/party-link';
 import { txSignatureToDeterministicId } from '../lib/deterministic-ids';
+import Hash from '../../links/hash';
 
 type Transfer = components['schemas']['commandsv1Transfer'];
 
@@ -70,7 +71,9 @@ export const TxDetailsTransfer = ({
         </TableRow>
         <TableRow modifier="bordered" data-testid="id">
           <TableCell {...sharedHeaderProps}>{t('Transfer ID')}</TableCell>
-          <TableCell>{id}</TableCell>
+          <TableCell>
+            <Hash text={id} />
+          </TableCell>
         </TableRow>
         <TxDetailsShared
           txData={txData}

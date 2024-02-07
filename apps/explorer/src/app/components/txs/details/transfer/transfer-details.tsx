@@ -10,7 +10,7 @@ export type Recurring = components['schemas']['commandsv1RecurringTransfer'];
 export type Metric = components['schemas']['vegaDispatchMetric'];
 
 export const wrapperClasses =
-  'border border-vega-light-150 dark:border-vega-dark-200 rounded-md pv-2 mb-5 w-full sm:w-1/4 min-w-[200px] ';
+  'border border-vega-light-150 dark:border-vega-dark-200 pv-2 w-full sm:w-1/3 basis-1/3';
 export const headerClasses =
   'bg-solid bg-vega-light-150 dark:bg-vega-dark-150 border-vega-light-150 text-center text-xl py-2 font-alpha calt';
 
@@ -42,12 +42,10 @@ export function TransferDetails({ transfer, from, id }: TransferDetailsProps) {
     : data?.transfer?.status;
 
   return (
-    <div className="flex gap-5 flex-wrap">
+    <div className="flex flex-wrap">
       <TransferParticipants from={from} transfer={transfer} />
-      {status ? (
-        <TransferStatusView status={status} error={error} loading={loading} />
-      ) : null}
       {recurring ? <TransferRepeat recurring={transfer.recurring} /> : null}
+      <TransferStatusView status={status} error={error} loading={loading} />
       {recurring && recurring.dispatchStrategy ? (
         <TransferRewards recurring={transfer.recurring} />
       ) : null}

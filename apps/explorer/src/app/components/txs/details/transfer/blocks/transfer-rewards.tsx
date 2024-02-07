@@ -11,10 +11,9 @@ import { VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
 export type Metric = components['schemas']['vegaDispatchMetric'];
 export type Strategy = components['schemas']['vegaDispatchStrategy'];
 
-export const wrapperClasses =
-  'border border-vega-light-150 dark:border-vega-dark-200 rounded-md pv-2 mb-5 w-full sm:w-3/4 min-w-[200px] ';
+export const wrapperClasses = 'border pv-2 w-full flex-auto basis-full';
 export const headerClasses =
-  'bg-solid bg-vega-light-150 dark:bg-vega-dark-150 border-vega-light-150 text-center text-xl py-2 font-alpha calt';
+  'bg-solid bg-vega-light-150 dark:bg-vega-dark-150 text-center text-xl py-2 font-alpha calt';
 
 const metricLabels: Record<Metric, string> = {
   DISPATCH_METRIC_UNSPECIFIED: 'Unknown metric',

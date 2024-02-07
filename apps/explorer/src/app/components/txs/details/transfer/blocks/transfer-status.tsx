@@ -20,7 +20,7 @@ interface TransferStatusProps {
  */
 export function TransferStatusView({ status, loading }: TransferStatusProps) {
   if (!status) {
-    return null;
+    status = TransferStatus.STATUS_PENDING;
   }
 
   return (
@@ -28,7 +28,9 @@ export function TransferStatusView({ status, loading }: TransferStatusProps) {
       <h2 className={headerClasses}>{t('Transfer Status')}</h2>
       <div className="relative block rounded-lg py-6 text-center p-6">
         {loading ? (
-          <Loader />
+          <div className="leading-10 mt-12">
+            <Loader size={'small'} />
+          </div>
         ) : (
           <>
             <p className="leading-10 my-2">
