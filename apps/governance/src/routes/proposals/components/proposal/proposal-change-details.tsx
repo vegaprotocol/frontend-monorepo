@@ -1,4 +1,3 @@
-import { useTranslation } from 'react-i18next';
 import { type ProposalTermsFieldsFragment } from '../../__generated__/Proposals';
 import { type Proposal, type BatchProposal } from '../../types';
 import { ListAsset } from '../list-asset';
