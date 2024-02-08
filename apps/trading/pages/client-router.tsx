@@ -24,7 +24,10 @@ import { compact } from 'lodash';
 import { useFeatureFlags } from '@vegaprotocol/environment';
 import { LiquidityHeader } from '../components/liquidity-header';
 import { MarketHeader, MobileMarketHeader } from '../components/market-header';
-import { PortfolioSidebar } from '../client-pages/portfolio/portfolio-sidebar';
+import {
+  PortfolioMobileSidebar,
+  PortfolioSidebar,
+} from '../client-pages/portfolio/portfolio-sidebar';
 import { LiquiditySidebar } from '../client-pages/liquidity/liquidity-sidebar';
 import { MarketsSidebar } from '../client-pages/markets/markets-sidebar';
 import { useT } from '../lib/use-t';
@@ -60,6 +63,12 @@ export const useRouterConfig = (): RouteObject[] => {
   ) : (
     <MarketsMobileSidebar />
   );
+  const portfolioSidebar = largeScreen ? (
+    <PortfolioSidebar />
+  ) : (
+    <PortfolioMobileSidebar />
+  );
+
   const routeConfig = compact([
     {
       index: true,
@@ -76,7 +85,7 @@ export const useRouterConfig = (): RouteObject[] => {
     featureFlags.REFERRALS
       ? {
           path: AppRoutes.REFERRALS,
-          element: <LayoutWithSidebar sidebar={<PortfolioSidebar />} />,
+          element: <LayoutWithSidebar sidebar={portfolioSidebar} />,
           children: [
             {
               element: (
@@ -109,7 +118,7 @@ export const useRouterConfig = (): RouteObject[] => {
     featureFlags.TEAM_COMPETITION
       ? {
           path: AppRoutes.COMPETITIONS,
-          element: <LayoutWithSidebar sidebar={<PortfolioSidebar />} />,
+          element: <LayoutWithSidebar sidebar={portfolioSidebar} />,
           children: [
             // pages with planets and stars
             {
@@ -140,7 +149,7 @@ export const useRouterConfig = (): RouteObject[] => {
       : undefined,
     {
       path: 'fees/*',
-      element: <LayoutWithSidebar sidebar={<PortfolioSidebar />} />,
+      element: <LayoutWithSidebar sidebar={portfolioSidebar} />,
       children: [
         {
           index: true,
@@ -150,7 +159,7 @@ export const useRouterConfig = (): RouteObject[] => {
     },
     {
       path: 'rewards/*',
-      element: <LayoutWithSidebar sidebar={<PortfolioSidebar />} />,
+      element: <LayoutWithSidebar sidebar={portfolioSidebar} />,
       children: [
         {
           index: true,
@@ -182,7 +191,7 @@ export const useRouterConfig = (): RouteObject[] => {
     },
     {
       path: 'portfolio/*',
-      element: <LayoutWithSidebar sidebar={<PortfolioSidebar />} />,
+      element: <LayoutWithSidebar sidebar={portfolioSidebar} />,
       children: [
         {
           index: true,
