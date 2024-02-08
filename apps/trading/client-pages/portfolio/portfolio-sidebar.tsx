@@ -37,7 +37,7 @@ export const PortfolioMobileSidebar = () => {
   const currentRouteId = useGetCurrentRouteId();
 
   return (
-    <>
+    <div className="grid grid-cols-3 grow md:grow-0 md:flex lg:flex-col items-center gap-2 lg:gap-4 p-1">
       <MobileButton
         view={ViewType.Deposit}
         tooltip={t('Deposit')}
@@ -53,6 +53,6 @@ export const PortfolioMobileSidebar = () => {
         tooltip={t('Transfer')}
         routeId={currentRouteId}
       />
-    </>
+    </div>
   );
 };
