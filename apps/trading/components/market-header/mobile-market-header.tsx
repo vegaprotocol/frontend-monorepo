@@ -29,14 +29,14 @@ export const MobileMarketHeader = () => {
   if (!marketId) return null;
 
   return (
-    <div className="p-2 flex justify-between gap-2 items-center h-10 border-b border-default bg-vega-clight-700 dark:bg-vega-cdark-700">
+    <div className="pl-3 pr-2 flex justify-between gap-2 h-10 bg-vega-clight-700 dark:bg-vega-cdark-700">
       <FullScreenPopover
         open={openMarket}
         onOpenChange={(x) => {
           setOpenMarket(x);
         }}
         trigger={
-          <h1 className="flex gap-1 sm:gap-2 md:gap-4 items-center text-lg md:text-lg whitespace-nowrap xl:pr-4 xl:border-r border-default">
+          <h1 className="flex gap-1 sm:gap-2 md:gap-4 items-center text-base leading-3 md:text-lg whitespace-nowrap">
             {data
               ? data.tradableInstrument.instrument.code
               : t('Select market')}
@@ -64,7 +64,7 @@ export const MobileMarketHeader = () => {
           setOpenPrice(x);
         }}
         trigger={
-          <h1 className="flex gap-1 items-center text-sm md:text-md whitespace-nowrap xl:pr-4 xl:border-r border-default">
+          <span className="flex gap-2 items-end md:text-md whitespace-nowrap leading-3">
             {data && (
               <>
                 <span className="text-xs">
@@ -73,27 +73,29 @@ export const MobileMarketHeader = () => {
                     decimalPlaces={data.decimalPlaces}
                   />
                 </span>
-                <MarketMarkPrice
-                  marketId={data.id}
-                  decimalPlaces={data.decimalPlaces}
-                />
+                <span className="flex items-center gap-1">
+                  <MarketMarkPrice
+                    marketId={data.id}
+                    decimalPlaces={data.decimalPlaces}
+                  />
+                  <VegaIcon
+                    name={VegaIconNames.CHEVRON_DOWN}
+                    size={16}
+                    className={classNames(
+                      'transition-transform ease-in-out duration-300',
+                      {
+                        'rotate-180': openPrice,
+                      }
+                    )}
+                  />
+                </span>
               </>
             )}
-            <span
-              className={classNames(
-                'transition-transform ease-in-out duration-300',
-                {
-                  'rotate-180': openPrice,
-                }
-              )}
-            >
-              <VegaIcon name={VegaIconNames.CHEVRON_DOWN} size={16} />
-            </span>
-          </h1>
+          </span>
         }
       >
         {data && (
-          <div className="px-2 py-4 text-sm grid grid-cols-2 items-center gap-2">
+          <div className="px-3 py-6 text-sm grid grid-cols-2 items-center gap-x-4 gap-y-6">
             <MarketHeaderStats market={data} />
           </div>
         )}
@@ -120,8 +122,8 @@ export const FullScreenPopover = ({
       <PopoverPrimitive.Portal>
         <PopoverPrimitive.Content
           data-testid="popover-content"
-          className="w-screen bg-vega-clight-800 dark:bg-vega-cdark-800 border border-default"
-          sideOffset={5}
+          className="w-screen bg-vega-clight-800 dark:bg-vega-cdark-800 border-y border-default"
+          sideOffset={0}
         >
           {children}
         </PopoverPrimitive.Content>

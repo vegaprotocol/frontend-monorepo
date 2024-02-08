@@ -36,7 +36,7 @@ import { CompetitionsUpdateTeam } from '../client-pages/competitions/competition
 import { MarketsMobileSidebar } from '../client-pages/markets/mobile-buttons';
 import { useScreenDimensions } from '@vegaprotocol/react-helpers';
 
-// These must remain dynamically imported as pennant cannot be compiled by nextjs due to ESM
+// These must remain dynamically imported as pennant cannot be compiled by Next.js due to ESM
 // Using dynamic imports is a workaround for this until pennant is published as ESM
 const MarketPage = lazy(() => import('../client-pages/market'));
 const Portfolio = lazy(() => import('../client-pages/portfolio'));
@@ -52,12 +52,13 @@ const NotFound = () => {
 
 export const useRouterConfig = (): RouteObject[] => {
   const featureFlags = useFeatureFlags((state) => state.flags);
-  const { isMobile } = useScreenDimensions();
-  const marketHeader = isMobile ? <MobileMarketHeader /> : <MarketHeader />;
-  const marketsSidebar = isMobile ? (
-    <MarketsMobileSidebar />
-  ) : (
+  const { screenSize } = useScreenDimensions();
+  const largeScreen = ['lg', 'xl', 'xxl', 'xxxl'].includes(screenSize);
+  const marketHeader = largeScreen ? <MarketHeader /> : <MobileMarketHeader />;
+  const marketsSidebar = largeScreen ? (
     <MarketsSidebar />
+  ) : (
+    <MarketsMobileSidebar />
   );
   const routeConfig = compact([
     {
