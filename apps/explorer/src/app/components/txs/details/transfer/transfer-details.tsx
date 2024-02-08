@@ -2,7 +2,7 @@ import type { components } from '../../../../../types/explorer';
 import { TransferRepeat } from './blocks/transfer-repeat';
 import { TransferRewards } from './blocks/transfer-rewards';
 import { TransferParticipants } from './blocks/transfer-participants';
-import { useExplorerTransferVoteQuery } from './__generated__/Transfer';
+import { useExplorerTransferStatusQuery } from './__generated__/Transfer';
 import { TransferStatusView } from './blocks/transfer-status';
 import { TransferStatus } from '@vegaprotocol/types';
 
@@ -33,13 +33,13 @@ export function TransferDetails({ transfer, from, id }: TransferDetailsProps) {
 
   // Currently all this is passed in to TransferStatus, but the extra details
   // may be useful in the future.
-  const { data, error, loading } = useExplorerTransferVoteQuery({
+  const { data, error, loading } = useExplorerTransferStatusQuery({
     variables: { id },
   });
 
   const status = error
     ? TransferStatus.STATUS_REJECTED
-    : data?.transfer?.status;
+    : data?.transfer?.transfer.status;
 
   return (
     <div className="flex flex-wrap">

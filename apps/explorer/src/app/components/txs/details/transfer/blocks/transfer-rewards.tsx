@@ -7,7 +7,7 @@ import {
   DistributionStrategy,
 } from '@vegaprotocol/types';
 import { VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
-
+import { formatNumber } from '@vegaprotocol/utils';
 export type Metric = components['schemas']['vegaDispatchMetric'];
 export type Strategy = components['schemas']['vegaDispatchStrategy'];
 
@@ -72,37 +72,44 @@ export function TransferRewards({ recurring }: TransferRewardsProps) {
     <div className={wrapperClasses}>
       <h2 className={headerClasses}>{getRewardTitle(entityScope)}</h2>
       <ul className="relative block rounded-lg py-6 text-left p-6">
+        {entityScope && entityScopeIcons[entityScope] ? (
+          <li>
+            <strong>{t('Scope')}</strong>:{' '}
+            <VegaIcon name={entityScopeIcons[entityScope]} />
+            &nbsp;
+            {individualScope ? individualScopeLabels[individualScope] : null}
+            {getScopeLabel(entityScope, teamScope)}
+          </li>
+        ) : null}
+        {metric && (
+          <li>
+            <strong>{t('Metric')}</strong>: {metricLabels[metric]}
+          </li>
+        )}
+
         {assetForMetric ? (
           <li>
             <strong>{t('Asset')}</strong>:{' '}
             <AssetLink assetId={assetForMetric} />
           </li>
         ) : null}
-        <li>
-          <strong>{t('Metric')}</strong>: {metricLabels[metric]}
-        </li>
-        {entityScope && entityScopeIcons[entityScope] ? (
-          <li>
-            <strong>{t('Scope')}</strong>:{' '}
-            <VegaIcon name={entityScopeIcons[entityScope]} />
-            {individualScope ? individualScopeLabels[individualScope] : null}
-          </li>
-        ) : null}
 
-        {teamScope}
-
-        {lockPeriod && lockPeriod !== '0' ? (
+        {lockPeriod ? (
           <li>
-            <strong>{t('Lock')}</strong>: {lockPeriod}
+            <strong>{t('Reward lock')}</strong>:&nbsp;
+            {recurring.dispatchStrategy.lockPeriod}{' '}
+            {recurring.dispatchStrategy.lockPeriod === '1'
+              ? t('epoch')
+              : t('epochs')}
           </li>
         ) : null}
 
         {markets && markets.length > 0 ? (
           <li>
             <strong>{t('Markets in scope')}</strong>:
-            <ul>
+            <ul className="inline-block ml-1">
               {markets.map((m) => (
-                <li key={m}>
+                <li key={m} className="inline-block mr-2">
                   <MarketLink id={m} />
                 </li>
               ))}
@@ -119,7 +126,10 @@ export function TransferRewards({ recurring }: TransferRewardsProps) {
         {windowLength && windowLength !== '0' ? (
           <li>
             <strong>{t('Window length')}</strong>:{' '}
-            {recurring.dispatchStrategy.windowLength}
+            {recurring.dispatchStrategy.windowLength}{' '}
+            {recurring.dispatchStrategy.windowLength === '1'
+              ? t('epoch')
+              : t('epochs')}
           </li>
         ) : null}
 
@@ -133,9 +143,11 @@ export function TransferRewards({ recurring }: TransferRewardsProps) {
 
         {nTopPerformers && (
           <li>
-            <strong>{t('Top performers')}</strong>: {nTopPerformers}
+            <strong>{t('Elligible team members:')}</strong> top{' '}
+            {`${formatNumber(Number(nTopPerformers) * 100, 0)}%`}
           </li>
         )}
+
         {distributionStrategy &&
           distributionStrategy !== 'DISTRIBUTION_STRATEGY_UNSPECIFIED' && (
             <li>
@@ -146,13 +158,13 @@ export function TransferRewards({ recurring }: TransferRewardsProps) {
       </ul>
       <div className="px-6 pt-1 pb-5">
         {rankTable && rankTable.length > 0 ? (
-          <table className="border-collapse border border-slate-400 ">
+          <table className="border-collapse border border-gray-400 ">
             <thead>
               <tr>
-                <th className="border border-slate-300 bg-slate-300 px-3">
+                <th className="border border-gray-300 bg-gray-300 px-3">
                   <strong>{t('Start rank')}</strong>
                 </th>
-                <th className="border border-slate-300 bg-slate-300 px-3">
+                <th className="border border-gray-300 bg-gray-300 px-3">
                   <strong>{t('Share of reward pool')}</strong>
                 </th>
               </tr>
@@ -178,6 +190,22 @@ export function TransferRewards({ recurring }: TransferRewardsProps) {
   );
 }
 
+export function getScopeLabel(
+  scope: components['schemas']['vegaEntityScope'] | undefined,
+  teamScope: readonly string[] | undefined
+): string {
+  if (scope === 'ENTITY_SCOPE_TEAMS') {
+    if (teamScope && teamScope.length !== 0) {
+      return ` ${teamScope.length} teams`;
+    } else {
+      return t('All teams');
+    }
+  } else if (scope === 'ENTITY_SCOPE_INDIVIDUALS') {
+    return t('Individuals');
+  } else {
+    return '';
+  }
+}
 export function getRewardTitle(
   scope?: components['schemas']['vegaEntityScope']
 ) {

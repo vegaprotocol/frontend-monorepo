@@ -25,7 +25,7 @@ export function TransferStatusView({ status, loading }: TransferStatusProps) {
 
   return (
     <div className={wrapperClasses}>
-      <h2 className={headerClasses}>{t('Transfer Status')}</h2>
+      <h2 className={headerClasses}>{t('Status')}</h2>
       <div className="relative block rounded-lg py-6 text-center p-6">
         {loading ? (
           <div className="leading-10 mt-12">
