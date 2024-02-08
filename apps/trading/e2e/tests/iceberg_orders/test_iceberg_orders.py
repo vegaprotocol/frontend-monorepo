@@ -2,8 +2,6 @@ import pytest
 from playwright.sync_api import expect, Page
 from vega_sim.null_service import VegaServiceNull
 from actions.vega import submit_order
-from conftest import init_vega
-from fixtures.market import setup_continuous_market
 from wallet_config import MM_WALLET2
 
 def hover_and_assert_tooltip(page: Page, element_text):
@@ -11,39 +9,30 @@ def hover_and_assert_tooltip(page: Page, element_text):
     element.hover()
     expect(page.get_by_role("tooltip")).to_be_visible()
 
-class TestIcebergOrdersValidations:
-    @pytest.fixture(scope="class")
-    def vega(self, request):
-        with init_vega(request) as vega:
-            yield vega
 
-    @pytest.fixture(scope="class")
-    def continuous_market(self, vega):
-        return setup_continuous_market(vega)
+@pytest.mark.usefixtures("auth", "risk_accepted")
+def test_iceberg_submit(continuous_market, vega: VegaServiceNull, page: Page):
+    page.goto(f"/#/markets/{continuous_market}")
+    page.get_by_test_id("iceberg").click()
+    page.get_by_test_id("order-peak-size").type("2")
+    page.get_by_test_id("order-minimum-size").type("1")
+    page.get_by_test_id("order-size").type("3")
+    page.get_by_test_id("order-price").type("107")
+    page.get_by_test_id("place-order").click()
 
-    @pytest.mark.usefixtures("auth", "risk_accepted")
-    def test_iceberg_submit(self, continuous_market, vega: VegaServiceNull, page: Page):
-        page.goto(f"/#/markets/{continuous_market}")
-        page.get_by_test_id("iceberg").click()
-        page.get_by_test_id("order-peak-size").type("2")
-        page.get_by_test_id("order-minimum-size").type("1")
-        page.get_by_test_id("order-size").type("3")
-        page.get_by_test_id("order-price").type("107")
-        page.get_by_test_id("place-order").click()
+    expect(page.get_by_test_id("toast-content")).to_have_text(
+        "Awaiting confirmationPlease wait for your transaction to be confirmedView in block explorer"
+    )
 
-        expect(page.get_by_test_id("toast-content")).to_have_text(
-            "Awaiting confirmationPlease wait for your transaction to be confirmedView in block explorer"
-        )
-
-        vega.wait_fn(1)
-        vega.wait_for_total_catchup()
-        expect(page.get_by_test_id("toast-content")).to_have_text(
-            "Order filledYour transaction has been confirmedView in block explorerSubmit order - filledBTC:DAI_2023+3 @ 107.00 tDAI"
-        )
-        page.get_by_test_id("All").click()
-        expect(
-            (page.get_by_role("row").locator('[col-id="type"]')).nth(1)
-        ).to_have_text("Limit (Iceberg)")
+    vega.wait_fn(1)
+    vega.wait_for_total_catchup()
+    expect(page.get_by_test_id("toast-content")).to_have_text(
+        "Order filledYour transaction has been confirmedView in block explorerSubmit order - filledBTC:DAI_2023+3 @ 107.00 tDAI"
+    )
+    page.get_by_test_id("All").click()
+    expect(
+        (page.get_by_role("row").locator('[col-id="type"]')).nth(1)
+    ).to_have_text("Limit (Iceberg)")
 
 @pytest.mark.usefixtures("auth", "risk_accepted")
 def test_iceberg_open_order(continuous_market, vega: VegaServiceNull, page: Page):

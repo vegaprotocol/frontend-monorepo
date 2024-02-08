@@ -179,36 +179,32 @@ def init_page(vega: VegaServiceNull, browser: Browser, request: pytest.FixtureRe
 @pytest.fixture
 def vega(request):
     with init_vega(request) as vega_instance:
-        # Define a cleanup function that will be called when the context exits
-        def cleanup_container():
-            try:
-                # Check if the container is still running
-                container_status = vega_instance.container.status
-                if container_status == 'running':
-                    logger.info(f"Finalizer: Stopping container {vega_instance.container.id}")
-                    vega_instance.container.stop()
-                else:
-                    logger.info(f"Container {vega_instance.container.id} is not running.")
-            except docker.errors.NotFound:
-                logger.info(f"Container {vega_instance.container.id} not found, it may have already been stopped and removed.")
-            except Exception as e:
-                logger.error(f"Error during cleanup: {str(e)}")
-
-            try:
-                # Attempt to remove the container if it exists
-                vega_instance.container.remove()
-                logger.info(f"Finalizer: Container {vega_instance.container.id} removed.")
-            except docker.errors.NotFound:
-                logger.info(f"Container {vega_instance.container.id} not found, it may have already been removed.")
-            except Exception as e:
-                logger.error(f"Error during container removal: {str(e)}")
-
-        # Register the cleanup function with pytest
-        request.addfinalizer(cleanup_container)
-
-        # Provide the vega_instance to the tests
+        request.addfinalizer(lambda: cleanup_container(vega_instance))
         yield vega_instance
 
+
+
+def cleanup_container(vega_instance):
+    try:
+        # Attempt to stop the container if it's still running
+        if vega_instance.container.status == 'running':
+            print(f"Stopping container {vega_instance.container.id}")
+            vega_instance.container.stop()
+        else:
+            print(f"Container {vega_instance.container.id} is not running.")
+    except docker.errors.NotFound:
+        print(f"Container {vega_instance.container.id} not found, may have been stopped and removed.")
+    except Exception as e:
+        print(f"Error during cleanup: {str(e)}")
+
+    try:
+        # Attempt to remove the container
+        vega_instance.container.remove()
+        print(f"Container {vega_instance.container.id} removed.")
+    except docker.errors.NotFound:
+        print(f"Container {vega_instance.container.id} not found, may have been removed.")
+    except Exception as e:
+        print(f"Error during container removal: {str(e)}")
 
 @pytest.fixture
 def page(vega, browser, request):
