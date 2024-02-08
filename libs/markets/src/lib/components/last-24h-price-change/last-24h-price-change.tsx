@@ -18,12 +18,15 @@ interface Props {
   initialValue?: string[];
   isHeader?: boolean;
   noUpdate?: boolean;
+  // render prop for no price change
+  fallback?: React.ReactNode;
 }
 
 export const Last24hPriceChange = ({
   marketId,
   decimalPlaces,
   initialValue,
+  fallback,
 }: Props) => {
   const t = useT();
   const { oneDayCandles, error, fiveDaysCandles } = useCandles({
@@ -48,13 +51,13 @@ export const Last24hPriceChange = ({
           </span>
         }
       >
-        <span>-</span>
+        <span>{fallback}</span>
       </Tooltip>
     );
   }
 
   if (error || !isNumeric(decimalPlaces)) {
-    return <span>-</span>;
+    return <span>{fallback}</span>;
   }
 
   const candles = oneDayCandles?.map((c) => c.close) || initialValue || [];

@@ -3,7 +3,6 @@ import { Outlet } from 'react-router-dom';
 import { Sidebar, SidebarContent, useSidebar } from '../sidebar';
 import classNames from 'classnames';
 import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
-
 export const LayoutWithSidebar = ({
   header,
   sidebar,
@@ -27,10 +26,13 @@ export const LayoutWithSidebar = ({
     <div className={gridClasses}>
       <div className="col-span-full">{header}</div>
       <main
-        className={classNames('col-start-1 col-end-1 overflow-y-auto', {
-          'lg:col-end-3': !sidebarOpen,
-          'hidden lg:block lg:col-end-2': sidebarOpen,
-        })}
+        className={classNames(
+          'col-start-1 col-end-1 overflow-hidden lg:overflow-y-auto grow lg:grow-0',
+          {
+            'lg:col-end-3': !sidebarOpen,
+            'hidden lg:block lg:col-end-2': sidebarOpen,
+          }
+        )}
       >
         <Outlet />
       </main>
