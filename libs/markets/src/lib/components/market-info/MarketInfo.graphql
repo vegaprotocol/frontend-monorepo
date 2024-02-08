@@ -171,6 +171,10 @@ query MarketInfo($marketId: ID!) {
         infrastructureFee
         liquidityFee
       }
+      liquidityFeeSettings {
+        feeConstant
+        method
+      }
     }
     priceMonitoringSettings {
       parameters {
