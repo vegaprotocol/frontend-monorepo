@@ -36,7 +36,7 @@ export const MobileMarketHeader = () => {
           setOpenMarket(x);
         }}
         trigger={
-          <h1 className="flex gap-1 sm:gap-2 md:gap-4 items-center text-lg md:text-lg whitespace-nowrap">
+          <h1 className="flex gap-1 sm:gap-2 md:gap-4 items-center text-base leading-3 md:text-lg whitespace-nowrap">
             {data
               ? data.tradableInstrument.instrument.code
               : t('Select market')}
@@ -64,7 +64,7 @@ export const MobileMarketHeader = () => {
           setOpenPrice(x);
         }}
         trigger={
-          <span className="flex gap-1 items-center md:text-md whitespace-nowrap">
+          <span className="flex gap-2 items-end md:text-md whitespace-nowrap leading-3">
             {data && (
               <>
                 <span className="text-xs">
@@ -73,27 +73,29 @@ export const MobileMarketHeader = () => {
                     decimalPlaces={data.decimalPlaces}
                   />
                 </span>
-                <MarketMarkPrice
-                  marketId={data.id}
-                  decimalPlaces={data.decimalPlaces}
-                />
+                <span className="flex items-center gap-1">
+                  <MarketMarkPrice
+                    marketId={data.id}
+                    decimalPlaces={data.decimalPlaces}
+                  />
+                  <VegaIcon
+                    name={VegaIconNames.CHEVRON_DOWN}
+                    size={16}
+                    className={classNames(
+                      'transition-transform ease-in-out duration-300',
+                      {
+                        'rotate-180': openPrice,
+                      }
+                    )}
+                  />
+                </span>
               </>
             )}
-            <span
-              className={classNames(
-                'transition-transform ease-in-out duration-300',
-                {
-                  'rotate-180': openPrice,
-                }
-              )}
-            >
-              <VegaIcon name={VegaIconNames.CHEVRON_DOWN} size={16} />
-            </span>
           </span>
         }
       >
         {data && (
-          <div className="p-4 text-sm grid grid-cols-2 items-center gap-4">
+          <div className="px-3 py-6 text-sm grid grid-cols-2 items-center gap-x-4 gap-y-6">
             <MarketHeaderStats market={data} />
           </div>
         )}
