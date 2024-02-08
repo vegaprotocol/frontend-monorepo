@@ -1,4 +1,4 @@
-import { type TeamGame, type TeamStats } from '../../lib/hooks/use-team';
+import { type TeamStats } from '../../lib/hooks/use-team';
 import { type TeamsFieldsFragment } from '../../lib/hooks/__generated__/Teams';
 import { TeamAvatar, getFallbackAvatar } from './team-avatar';
 import { FavoriteGame, Stat } from './team-stats';
@@ -13,6 +13,7 @@ import { take } from 'lodash';
 import { DispatchMetricLabels } from '@vegaprotocol/types';
 import classNames from 'classnames';
 import { UpdateTeamButton } from '../../client-pages/competitions/update-team-button';
+import { type TeamGame } from '../../lib/hooks/use-games';
 
 export const TeamCard = ({
   rank,
