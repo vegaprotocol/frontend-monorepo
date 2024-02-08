@@ -11,12 +11,7 @@ import { type ColDef } from 'ag-grid-community';
 import type { RowClickedEvent } from 'ag-grid-community';
 import { getDateTimeFormat } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
-import {
-  NetworkParams,
-  useNetworkParams,
-} from '@vegaprotocol/network-parameters';
 import { ProposalStateMapping } from '@vegaprotocol/types';
-import BigNumber from 'bignumber.js';
 import { DApp, TOKEN_PROPOSAL, useLinks } from '@vegaprotocol/environment';
 import { BREAKPOINT_MD } from '../../config/breakpoints';
 import { JsonViewerDialog } from '../dialogs/json-viewer-dialog';
@@ -30,15 +25,7 @@ type ProposalsTableProps = {
   data: ProposalListFieldsFragment[] | null;
 };
 export const ProposalsTable = ({ data }: ProposalsTableProps) => {
-  const { params } = useNetworkParams([
-    NetworkParams.governance_proposal_market_requiredMajority,
-  ]);
   const tokenLink = useLinks(DApp.Governance);
-  const requiredMajorityPercentage = useMemo(() => {
-    const requiredMajority =
-      params?.governance_proposal_market_requiredMajority ?? 1;
-    return new BigNumber(requiredMajority).times(100);
-  }, [params?.governance_proposal_market_requiredMajority]);
 
   const gridRef = useRef<AgGridReact>(null);
   useLayoutEffect(() => {
@@ -156,7 +143,7 @@ export const ProposalsTable = ({ data }: ProposalsTableProps) => {
         },
       },
     ],
-    [requiredMajorityPercentage, tokenLink]
+    [tokenLink]
   );
   return (
     <>
