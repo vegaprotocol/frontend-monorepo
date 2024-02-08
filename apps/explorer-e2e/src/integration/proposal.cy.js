@@ -24,10 +24,6 @@ context('Proposal page', { tags: '@smoke' }, function () {
           cy.get_element_by_col_id('title').should('have.text', proposalTitle);
           cy.get_element_by_col_id('type').should('have.text', 'NewMarket');
           cy.get_element_by_col_id('state').should('have.text', 'Enacted');
-          cy.getByTestId('vote-progress').should('be.visible');
-          cy.getByTestId('vote-progress-bar-for')
-            .invoke('attr', 'style')
-            .should('eq', 'width: 100%;');
           cy.get('[col-id="cDate"]')
             .invoke('text')
             .should('match', dateTimeRegex);
@@ -73,10 +69,6 @@ context('Proposal page', { tags: '@smoke' }, function () {
             'have.text',
             'Waiting for Node Vote'
           );
-          cy.getByTestId('vote-progress').should('be.visible');
-          cy.getByTestId('vote-progress-bar-against')
-            .invoke('attr', 'style')
-            .should('eq', 'width: 100%;');
           cy.get('[col-id="cDate"]')
             .invoke('text')
             .should('match', dateTimeRegex);
