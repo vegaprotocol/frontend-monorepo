@@ -64,7 +64,7 @@ export const MobileMarketHeader = () => {
           setOpenPrice(x);
         }}
         trigger={
-          <h1 className="flex gap-1 items-center text-sm md:text-md whitespace-nowrap xl:pr-4 xl:border-r border-default">
+          <span className="flex gap-1 items-center text-sm md:text-md whitespace-nowrap xl:pr-4 xl:border-r border-default">
             {data && (
               <>
                 <span className="text-xs">
@@ -89,7 +89,7 @@ export const MobileMarketHeader = () => {
             >
               <VegaIcon name={VegaIconNames.CHEVRON_DOWN} size={16} />
             </span>
-          </h1>
+          </span>
         }
       >
         {data && (
