@@ -27,7 +27,7 @@ export enum ViewType {
   Transfer = 'Transfer',
   Settings = 'Settings',
   ViewAs = 'ViewAs',
-  Chart = 'Chart',
+  Close = 'Close',
 }
 
 export type BarView =
@@ -53,7 +53,7 @@ export type BarView =
       type: ViewType.Settings;
     }
   | {
-      type: ViewType.Chart;
+      type: ViewType.Close;
     };
 
 export const Sidebar = ({ options }: { options?: ReactNode }) => {
@@ -101,9 +101,9 @@ export const Sidebar = ({ options }: { options?: ReactNode }) => {
         ) : (
           currView && (
             <SidebarButton
-              view={ViewType.Chart}
+              view={ViewType.Close}
               icon={VegaIconNames.ARROW_LEFT}
-              tooltip={t('Back to chart')}
+              tooltip={t('Back')}
               routeId={currentRouteId}
             />
           )
@@ -211,7 +211,7 @@ export const SidebarContent = () => {
     }
   }
 
-  if (view.type === ViewType.Chart) {
+  if (view.type === ViewType.Close) {
     return <CloseSidebar />;
   }
 
