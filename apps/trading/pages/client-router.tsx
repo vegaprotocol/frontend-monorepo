@@ -51,8 +51,9 @@ const NotFound = () => {
 
 export const useRouterConfig = (): RouteObject[] => {
   const featureFlags = useFeatureFlags((state) => state.flags);
-  const { isMobile } = useScreenDimensions();
-  const marketHeader = isMobile ? <MobileMarketHeader /> : <MarketHeader />;
+  const { screenSize } = useScreenDimensions();
+  const largeScreen = ['lg', 'xl', 'xxl', 'xxxl'].includes(screenSize);
+  const marketHeader = largeScreen ? <MarketHeader /> : <MobileMarketHeader />;
   const routeConfig = compact([
     {
       index: true,
