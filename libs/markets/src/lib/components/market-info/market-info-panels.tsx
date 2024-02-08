@@ -44,6 +44,8 @@ import type {
 } from '@vegaprotocol/types';
 import {
   ConditionOperatorMapping,
+  LiquidityFeeMethodMapping,
+  LiquidityFeeMethodMappingDescription,
   MarketStateMapping,
   MarketTradingModeMapping,
 } from '@vegaprotocol/types';
@@ -107,6 +109,33 @@ export const CurrentFeesInfoPanel = ({ market }: MarketInfoProps) => {
         )}
       </p>
     </>
+  );
+};
+
+export const LiquidityFeesSettings = ({ market }: MarketInfoProps) => {
+  return (
+    <MarketInfoTable
+      data={{
+        feeConstant: market.fees.liquidityFeeSettings?.feeConstant,
+        method: market.fees.liquidityFeeSettings && (
+          <Tooltip
+            description={
+              LiquidityFeeMethodMappingDescription[
+                market.fees.liquidityFeeSettings?.method
+              ]
+            }
+          >
+            <span>
+              {
+                LiquidityFeeMethodMapping[
+                  market.fees.liquidityFeeSettings?.method
+                ]
+              }
+            </span>
+          </Tooltip>
+        ),
+      }}
+    />
   );
 };
 
