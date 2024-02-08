@@ -2,7 +2,7 @@ import pytest
 from playwright.sync_api import Page, expect
 from vega_sim.service import PeggedOrder
 from vega_sim.null_service import VegaServiceNull
-from conftest import auth_setup, init_page, init_vega, risk_accepted_setup
+from conftest import auth_setup, init_page, init_vega, risk_accepted_setup, cleanup_container
 from fixtures.market import setup_continuous_market, setup_simple_market
 from actions.utils import wait_for_toast_confirmation
 
@@ -11,8 +11,9 @@ order_tab = "tab-orders"
 
 @pytest.fixture(scope="module")
 def vega(request):
-    with init_vega(request) as vega:
-        yield vega
+    with init_vega(request) as vega_instance:
+        request.addfinalizer(lambda: cleanup_container(vega_instance))  # Register the cleanup function
+        yield vega_instance
 
 
 @pytest.fixture(scope="module", autouse=True)

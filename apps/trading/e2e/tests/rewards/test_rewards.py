@@ -2,7 +2,7 @@ import pytest
 
 import vega_sim.proto.vega as vega_protos
 from playwright.sync_api import Page, expect
-from conftest import init_vega, init_page, auth_setup
+from conftest import init_vega, init_page, auth_setup, cleanup_container
 from fixtures.market import setup_continuous_market, market_exists
 from actions.utils import next_epoch, change_keys
 from wallet_config import MM_WALLET, PARTY_A, PARTY_B, PARTY_C, PARTY_D
@@ -46,36 +46,42 @@ def market_ids():
 @pytest.fixture(scope="module")
 def vega_activity_tier_0(request):
     with init_vega(request) as vega_activity_tier_0:
+        request.addfinalizer(lambda: cleanup_container(vega_activity_tier_0))  # Register the cleanup function
         yield vega_activity_tier_0
 
 
 @pytest.fixture(scope="module")
 def vega_hoarder_tier_0(request):
     with init_vega(request) as vega_hoarder_tier_0:
+        request.addfinalizer(lambda: cleanup_container(vega_hoarder_tier_0))  # Register the cleanup function
         yield vega_hoarder_tier_0
 
 
 @pytest.fixture(scope="module")
 def vega_combo_tier_0(request):
     with init_vega(request) as vega_combo_tier_0:
+        request.addfinalizer(lambda: cleanup_container(vega_combo_tier_0))  # Register the cleanup function
         yield vega_combo_tier_0
 
 
 @pytest.fixture(scope="module")
 def vega_activity_tier_1(request):
     with init_vega(request) as vega_activity_tier_1:
+        request.addfinalizer(lambda: cleanup_container(vega_activity_tier_1))  # Register the cleanup function
         yield vega_activity_tier_1
 
 
 @pytest.fixture(scope="module")
 def vega_hoarder_tier_1(request):
     with init_vega(request) as vega_hoarder_tier_1:
+        request.addfinalizer(lambda: cleanup_container(vega_hoarder_tier_1))  # Register the cleanup function
         yield vega_hoarder_tier_1
 
 
 @pytest.fixture(scope="module")
 def vega_combo_tier_1(request):
     with init_vega(request) as vega_combo_tier_1:
+        request.addfinalizer(lambda: cleanup_container(vega_combo_tier_1))  # Register the cleanup function
         yield vega_combo_tier_1
 
 

@@ -2,15 +2,16 @@ import pytest
 from playwright.sync_api import Page, expect
 from typing import List
 from actions.vega import submit_order, submit_liquidity, submit_multiple_orders
-from conftest import init_vega
+from conftest import init_vega, cleanup_container
 from fixtures.market import setup_simple_market
 from wallet_config import MM_WALLET, MM_WALLET2
 
 
 @pytest.fixture(scope="module")
-def vega():
-    with init_vega() as vega:
-        yield vega
+def vega(request):
+    with init_vega(request) as vega_instance:
+        request.addfinalizer(lambda: cleanup_container(vega_instance))  # Register the cleanup function
+        yield vega_instance
 
 
 @pytest.fixture(scope="module")

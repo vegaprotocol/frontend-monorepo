@@ -4,7 +4,7 @@ from playwright.sync_api import Page, expect
 from vega_sim.null_service import VegaServiceNull
 from actions.vega import submit_order
 from wallet_config import MM_WALLET
-from conftest import init_vega, init_page, auth_setup
+from conftest import init_vega, init_page, auth_setup, cleanup_container
 from actions.utils import next_epoch, change_keys, forward_time
 from fixtures.market import market_exists, setup_continuous_market
 
@@ -82,31 +82,36 @@ def market_ids():
 @pytest.fixture(scope="module")
 def vega_volume_discount_tier_1(request):
     with init_vega(request) as vega_volume_discount_tier_1:
-        yield vega_volume_discount_tier_1
+            request.addfinalizer(lambda: cleanup_container(vega_volume_discount_tier_1))  # Register the cleanup function
+            yield vega_volume_discount_tier_1
 
 
 @pytest.fixture(scope="module")
 def vega_volume_discount_tier_2(request):
     with init_vega(request) as vega_volume_discount_tier_2:
-        yield vega_volume_discount_tier_2
+            request.addfinalizer(lambda: cleanup_container(vega_volume_discount_tier_2))  # Register the cleanup function
+            yield vega_volume_discount_tier_2
 
 
 @pytest.fixture(scope="module")
 def vega_referral_discount_tier_1(request):
     with init_vega(request) as vega_referral_discount_tier_1:
-        yield vega_referral_discount_tier_1
+            request.addfinalizer(lambda: cleanup_container(vega_referral_discount_tier_1))  # Register the cleanup function
+            yield vega_referral_discount_tier_1
 
 
 @pytest.fixture(scope="module")
 def vega_referral_discount_tier_2(request):
     with init_vega(request) as vega_referral_discount_tier_2:
-        yield vega_referral_discount_tier_2
+            request.addfinalizer(lambda: cleanup_container(vega_referral_discount_tier_2))  # Register the cleanup function
+            yield vega_referral_discount_tier_2
 
 
 @pytest.fixture(scope="module")
 def vega_referral_and_volume_discount(request):
     with init_vega(request) as vega_referral_and_volume_discount:
-        yield vega_referral_and_volume_discount
+            request.addfinalizer(lambda: cleanup_container(vega_referral_and_volume_discount))  # Register the cleanup function
+            yield vega_referral_and_volume_discount
 
 
 @pytest.fixture

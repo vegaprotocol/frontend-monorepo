@@ -3,15 +3,16 @@ import pytest
 from playwright.sync_api import Page, expect
 from vega_sim.null_service import VegaServiceNull
 from fixtures.market import setup_continuous_market
-from conftest import init_page, init_vega, risk_accepted_setup
+from conftest import init_page, init_vega, risk_accepted_setup, cleanup_container
 
 market_title_test_id = "accordion-title"
 
 
 @pytest.fixture(scope="module")
-def vega():
-    with init_vega() as vega:
-        yield vega
+def vega(request):
+    with init_vega(request) as vega_instance:
+        request.addfinalizer(lambda: cleanup_container(vega_instance))  # Register the cleanup function
+        yield vega_instance
 
 
 @pytest.fixture(scope="module")

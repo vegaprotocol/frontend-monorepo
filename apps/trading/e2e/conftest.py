@@ -111,6 +111,7 @@ def init_vega(request=None):
                 f"Container {container.id} started",
                 extra={"worker_id": os.environ.get("PYTEST_XDIST_WORKER")},
             )
+            vega.container = container
             yield vega
         except APIError as e:
             logger.info(f"Container creation failed.")
@@ -177,9 +178,33 @@ def init_page(vega: VegaServiceNull, browser: Browser, request: pytest.FixtureRe
 
 @pytest.fixture
 def vega(request):
-    with init_vega(request) as vega:
-        yield vega
+    with init_vega(request) as vega_instance:
+        request.addfinalizer(lambda: cleanup_container(vega_instance))
+        yield vega_instance
 
+
+
+def cleanup_container(vega_instance):
+    try:
+        # Attempt to stop the container if it's still running
+        if vega_instance.container.status == 'running':
+            print(f"Stopping container {vega_instance.container.id}")
+            vega_instance.container.stop()
+        else:
+            print(f"Container {vega_instance.container.id} is not running.")
+    except docker.errors.NotFound:
+        print(f"Container {vega_instance.container.id} not found, may have been stopped and removed.")
+    except Exception as e:
+        print(f"Error during cleanup: {str(e)}")
+
+    try:
+        # Attempt to remove the container
+        vega_instance.container.remove()
+        print(f"Container {vega_instance.container.id} removed.")
+    except docker.errors.NotFound:
+        print(f"Container {vega_instance.container.id} not found, may have been removed.")
+    except Exception as e:
+        print(f"Error during container removal: {str(e)}")
 
 @pytest.fixture
 def page(vega, browser, request):
