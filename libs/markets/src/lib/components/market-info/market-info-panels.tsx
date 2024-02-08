@@ -84,6 +84,7 @@ import type { DataSourceFragment } from './__generated__/MarketInfo';
 import { formatDuration } from 'date-fns';
 import * as AccordionPrimitive from '@radix-ui/react-accordion';
 import { useT } from '../../use-t';
+import { isPerpetual } from '../../product';
 
 type MarketInfoProps = {
   market: MarketInfo;
@@ -1149,8 +1150,10 @@ export const LiquidityInfoPanel = ({ market, children }: MarketInfoProps) => {
 
 export const FundingInfoPanel = ({
   dataSource,
+  market,
 }: {
   dataSource: DataSourceFragment;
+  market: MarketInfo;
 }) => {
   const t = useT();
   const sourceType = dataSource.data.sourceType.sourceType;
@@ -1167,12 +1170,28 @@ export const FundingInfoPanel = ({
     hours,
     minutes,
   });
-  return initial
-    ? t('every {{duration}} from {{initialTime}}', {
-        duration,
-        initialTime: getDateTimeFormat().format(new Date(initial * 1000)),
-      })
-    : t('every {{duration}}', { duration });
+  const { product } = market.tradableInstrument.instrument;
+  return (
+    <>
+      {initial
+        ? t('every {{duration}} from {{initialTime}}', {
+            duration,
+            initialTime: getDateTimeFormat().format(new Date(initial * 1000)),
+          })
+        : t('every {{duration}}', { duration })}
+      <MarketInfoTable
+        data={{
+          makerFee: market.fees.factors.makerFee,
+          infrastructureFee: market.fees.factors.infrastructureFee,
+          liquidityFee: market.fees.factors.liquidityFee,
+          rateScalingFactor:
+            isPerpetual(product) && product.fundingRateScalingFactor,
+          rateLowerBound: isPerpetual(product) && product.fundingRateLowerBound,
+          rateUpperBound: isPerpetual(product) && product.fundingRateLowerBound,
+        }}
+      />
+    </>
+  );
 };
 
 export const OracleInfoPanel = ({

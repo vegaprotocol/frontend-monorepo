@@ -112,6 +112,9 @@ fragment Future on Future {
 
 fragment Perpetual on Perpetual {
   quoteName
+  fundingRateScalingFactor
+  fundingRateLowerBound
+  fundingRateUpperBound
   settlementAsset {
     id
     symbol
