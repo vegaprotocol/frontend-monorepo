@@ -46,6 +46,7 @@ export const useGames = (teamId?: string, epochFrom?: number): GamesData => {
   let from = epochFrom;
   if (!from && epochData) {
     from = Number(epochData.epoch.id) - TAKE_EPOCHS;
+    if (from < 1) from = 1; // make sure it's not negative
   }
 
   const { data, loading, error } = useGamesQuery({
