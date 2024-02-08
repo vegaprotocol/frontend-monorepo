@@ -3,8 +3,8 @@ import { ErrorBoundary } from '@sentry/react';
 import { CompetitionsHeader } from '../../components/competitions/competitions-header';
 import { Intent, Loader, TradingButton } from '@vegaprotocol/ui-toolkit';
 
-import { useGames } from '../../lib/hooks/use-games';
-import { useCurrentEpochInfoQuery } from '../referrals/hooks/__generated__/Epoch';
+import { useGameCards } from '../../lib/hooks/use-game-cards';
+import { useCurrentEpochInfoQuery } from '../../lib/hooks/__generated__/Epoch';
 import { Link, useNavigate } from 'react-router-dom';
 import { Links } from '../../lib/links';
 import {
@@ -28,7 +28,7 @@ export const CompetitionsHome = () => {
   const { data: epochData } = useCurrentEpochInfoQuery();
   const currentEpoch = Number(epochData?.epoch.id);
 
-  const { data: gamesData, loading: gamesLoading } = useGames({
+  const { data: gamesData, loading: gamesLoading } = useGameCards({
     onlyActive: true,
     currentEpoch,
   });

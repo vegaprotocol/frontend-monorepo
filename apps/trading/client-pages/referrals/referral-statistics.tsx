@@ -34,7 +34,7 @@ import {
 } from './hooks/use-referral';
 import { ApplyCodeForm, ApplyCodeFormContainer } from './apply-code-form';
 import { useReferralProgram } from './hooks/use-referral-program';
-import { useCurrentEpochInfoQuery } from './hooks/__generated__/Epoch';
+import { useCurrentEpochInfoQuery } from '../../lib/hooks/__generated__/Epoch';
 import { QUSDTooltip } from './qusd-tooltip';
 import { CodeTile, StatTile, Tile } from './tile';
 

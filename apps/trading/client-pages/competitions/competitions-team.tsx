@@ -12,7 +12,6 @@ import {
   type TeamStats as ITeamStats,
   type Team as TeamType,
   type Member,
-  type TeamGame,
 } from '../../lib/hooks/use-team';
 import { DApp, EXPLORER_PARTIES, useLinks } from '@vegaprotocol/environment';
 import { TeamAvatar } from '../../components/competitions/team-avatar';
@@ -23,6 +22,11 @@ import { LayoutWithGradient } from '../../components/layouts-inner';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { JoinTeam } from './join-team';
 import { UpdateTeamButton } from './update-team-button';
+import {
+  type TeamGame,
+  useGames,
+  areTeamGames,
+} from '../../lib/hooks/use-games';
 
 export const CompetitionsTeam = () => {
   const t = useT();
@@ -38,8 +42,12 @@ export const CompetitionsTeam = () => {
 const TeamPageContainer = ({ teamId }: { teamId: string | undefined }) => {
   const t = useT();
   const { pubKey } = useVegaWallet();
-  const { data, team, partyTeam, stats, members, games, loading, refetch } =
-    useTeam(teamId, pubKey || undefined);
+  const { data, team, partyTeam, stats, members, loading, refetch } = useTeam(
+    teamId,
+    pubKey || undefined
+  );
+
+  const { data: games, loading: gamesLoading } = useGames(teamId);
 
   // only show spinner on first load so when users join teams its smoother
   if (!data && loading) {
@@ -64,7 +72,8 @@ const TeamPageContainer = ({ teamId }: { teamId: string | undefined }) => {
       partyTeam={partyTeam}
       stats={stats}
       members={members}
-      games={games}
+      games={areTeamGames(games) ? games : undefined}
+      gamesLoading={gamesLoading}
       refetch={refetch}
     />
   );
@@ -76,6 +85,7 @@ const TeamPage = ({
   stats,
   members,
   games,
+  gamesLoading,
   refetch,
 }: {
   team: TeamType;
@@ -83,6 +93,7 @@ const TeamPage = ({
   stats?: ITeamStats;
   members?: Member[];
   games?: TeamGame[];
+  gamesLoading?: boolean;
   refetch: () => void;
 }) => {
   const t = useT();
@@ -113,7 +124,11 @@ const TeamPage = ({
             onClick={() => setShowGames(true)}
             data-testid="games-toggle"
           >
-            {t('Games ({{count}})', { count: games ? games.length : 0 })}
+            {t('Games {{games}}', {
+              replace: {
+                games: gamesLoading ? '' : games ? `(${games.length})` : '(0)',
+              },
+            })}
           </ToggleButton>
           <ToggleButton
             active={!showGames}
@@ -125,14 +140,32 @@ const TeamPage = ({
             })}
           </ToggleButton>
         </div>
-        {showGames ? <Games games={games} /> : <Members members={members} />}
+        {showGames ? (
+          <Games games={games} gamesLoading={gamesLoading} />
+        ) : (
+          <Members members={members} />
+        )}
       </section>
     </LayoutWithGradient>
   );
 };
 
-const Games = ({ games }: { games?: TeamGame[] }) => {
+const Games = ({
+  games,
+  gamesLoading,
+}: {
+  games?: TeamGame[];
+  gamesLoading?: boolean;
+}) => {
   const t = useT();
+
+  if (gamesLoading) {
+    return (
+      <div className="w-[15px]">
+        <Loader size="small" />
+      </div>
+    );
+  }
 
   if (!games?.length) {
     return <p>{t('No games')}</p>;

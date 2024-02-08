@@ -14,6 +14,32 @@ export type Scalars = {
   Timestamp: any;
 };
 
+/** Margins for a hypothetical position not related to any existing party */
+export type AbstractMarginLevels = {
+  __typename?: 'AbstractMarginLevels';
+  /** Asset for the current margins */
+  asset: Asset;
+  /**
+   * If the margin of the party is greater than this level, then collateral will be released from the margin account into
+   * the general account of the party for the given asset.
+   */
+  collateralReleaseLevel: Scalars['String'];
+  /** This is the minimum margin required for a party to place a new order on the network, expressed as unsigned integer */
+  initialLevel: Scalars['String'];
+  /** Minimal margin for the position to be maintained in the network (unsigned integer) */
+  maintenanceLevel: Scalars['String'];
+  /** Margin factor, only relevant for isolated margin mode, else 0 */
+  marginFactor: Scalars['String'];
+  /** Margin mode of the party, cross margin or isolated margin */
+  marginMode: MarginMode;
+  /** Market in which the margin is required for this party */
+  market: Market;
+  /** When in isolated margin, the required order margin level, otherwise, 0 */
+  orderMarginLevel: Scalars['String'];
+  /** If the margin is between maintenance and search, the network will initiate a collateral search, expressed as unsigned integer */
+  searchLevel: Scalars['String'];
+};
+
 /** An account record */
 export type AccountBalance = {
   __typename?: 'AccountBalance';
@@ -359,6 +385,8 @@ export enum AuctionTrigger {
 
 export type BatchProposal = {
   __typename?: 'BatchProposal';
+  /** Terms of all the proposals in the batch */
+  batchTerms?: Maybe<BatchProposalTerms>;
   /** RFC3339Nano time and date when the proposal reached the network */
   datetime: Scalars['Timestamp'];
   /** Details of the rejection reason */
@@ -389,10 +417,10 @@ export type BatchProposal = {
   votes: ProposalVotes;
 };
 
-/** The rationale for the proposal */
+/** The terms for the batch proposal */
 export type BatchProposalTerms = {
   __typename?: 'BatchProposalTerms';
-  /** Actual changes being introduced by the proposal - actions the proposal triggers if passed and enacted. */
+  /** Actual changes being introduced by the batch proposal - actions the proposal triggers if passed and enacted. */
   changes: Array<Maybe<BatchProposalTermsChange>>;
   /**
    * RFC3339Nano time and date when voting closes for this proposal.
@@ -529,6 +557,22 @@ export type CompositePriceConfiguration = {
   decayPower: Scalars['Int'];
   /** Decay weight used in calculating time weight for a given trade */
   decayWeight: Scalars['String'];
+};
+
+export type CompositePriceSource = {
+  __typename?: 'CompositePriceSource';
+  /** The source of the price */
+  PriceSource: Scalars['String'];
+  /** The last time the price source was updated in RFC3339Nano */
+  lastUpdated: Scalars['Timestamp'];
+  /** The current value of the composite source price */
+  price: Scalars['String'];
+};
+
+export type CompositePriceState = {
+  __typename?: 'CompositePriceState';
+  /** Underlying state of the composite price */
+  priceSources?: Maybe<Array<CompositePriceSource>>;
 };
 
 export enum CompositePriceType {
@@ -2165,9 +2209,9 @@ export type MarginEdge = {
 export type MarginEstimate = {
   __typename?: 'MarginEstimate';
   /** Margin level estimate assuming no slippage */
-  bestCase: MarginLevels;
+  bestCase: AbstractMarginLevels;
   /** Margin level estimate assuming slippage cap is applied */
-  worstCase: MarginLevels;
+  worstCase: AbstractMarginLevels;
 };
 
 /** Margins for a given a party */
@@ -2439,6 +2483,8 @@ export type MarketData = {
   liquidityProviderSla?: Maybe<Array<LiquidityProviderSLA>>;
   /** The mark price (an unsigned integer) */
   markPrice: Scalars['String'];
+  /** State of the underlying internal composite price */
+  markPriceState?: Maybe<CompositePriceState>;
   /** The methodology used for the calculation of the mark price */
   markPriceType: CompositePriceType;
   /** Market of the associated mark price */
@@ -3053,6 +3099,8 @@ export type ObservableMarketData = {
   liquidityProviderSla?: Maybe<Array<ObservableLiquidityProviderSLA>>;
   /** The mark price (an unsigned integer) */
   markPrice: Scalars['String'];
+  /** State of the underlying internal composite price */
+  markPriceState?: Maybe<CompositePriceState>;
   /** The methodology used to calculated mark price */
   markPriceType: CompositePriceType;
   /** The market growth factor for the last market time window */
@@ -4021,6 +4069,8 @@ export type PerpetualData = {
   fundingRate?: Maybe<Scalars['String']>;
   /** Internal composite price used as input to the internal VWAP */
   internalCompositePrice: Scalars['String'];
+  /** The internal state of the underlying internal composite price */
+  internalCompositePriceState?: Maybe<CompositePriceState>;
   /** The methodology used to calculated internal composite price for perpetual markets */
   internalCompositePriceType: CompositePriceType;
   /** Time-weighted average price calculated from data points for this period from the internal data source. */
@@ -4031,6 +4081,8 @@ export type PerpetualData = {
   seqNum: Scalars['Int'];
   /** Time at which the funding period started */
   startTime: Scalars['Timestamp'];
+  /** The last value from the external oracle */
+  underlyingIndexPrice: Scalars['String'];
 };
 
 export type PerpetualProduct = {
@@ -4328,7 +4380,7 @@ export type ProposalDetail = {
   __typename?: 'ProposalDetail';
   /** Batch proposal ID that is provided by Vega once proposal reaches the network */
   batchId?: Maybe<Scalars['ID']>;
-  /** Terms of the proposal for a batch proposal */
+  /** Terms of all the proposals in the batch */
   batchTerms?: Maybe<BatchProposalTerms>;
   /** RFC3339Nano time and date when the proposal reached the Vega network */
   datetime: Scalars['Timestamp'];
@@ -4354,7 +4406,7 @@ export type ProposalDetail = {
   requiredParticipation: Scalars['String'];
   /** State of the proposal */
   state: ProposalState;
-  /** Terms of the proposal for proposal */
+  /** Terms of the proposal */
   terms?: Maybe<ProposalTerms>;
 };
 
