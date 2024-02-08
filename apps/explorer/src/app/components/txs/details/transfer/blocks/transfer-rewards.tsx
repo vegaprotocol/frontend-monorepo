@@ -39,22 +39,17 @@ interface TransferRewardsProps {
 }
 
 /**
- * Renderer for a transfer. These can vary quite
- * widely, essentially every field can be null.
+ * Renders recurring transfers/game details in a way that is, perhaps, easy to understand
  *
  * @param transfer A recurring transfer object
  */
 export function TransferRewards({ recurring }: TransferRewardsProps) {
-  const metric =
-    recurring?.dispatchStrategy?.metric || 'DISPATCH_METRIC_UNSPECIFIED';
-
   if (!recurring || !recurring.dispatchStrategy) {
     return null;
   }
 
   // Destructure to make things a bit more readable
   const {
-    assetForMetric,
     entityScope,
     individualScope,
     teamScope,
@@ -81,20 +76,21 @@ export function TransferRewards({ recurring }: TransferRewardsProps) {
             {getScopeLabel(entityScope, teamScope)}
           </li>
         ) : null}
-        {metric && (
-          <li>
-            <strong>{t('Metric')}</strong>: {metricLabels[metric]}
-          </li>
-        )}
-
-        {assetForMetric ? (
-          <li>
-            <strong>{t('Asset')}</strong>:{' '}
-            <AssetLink assetId={assetForMetric} />
-          </li>
-        ) : null}
-
-        {lockPeriod ? (
+        {recurring.dispatchStrategy &&
+          recurring.dispatchStrategy.assetForMetric && (
+            <li>
+              <strong>{t('Asset for metric')}</strong>:{' '}
+              <AssetLink assetId={recurring.dispatchStrategy.assetForMetric} />
+            </li>
+          )}
+        {recurring.dispatchStrategy.metric &&
+          metricLabels[recurring.dispatchStrategy.metric] && (
+            <li>
+              <strong>{t('Metric')}</strong>:{' '}
+              {metricLabels[recurring.dispatchStrategy.metric]}
+            </li>
+          )}
+        {lockPeriod && (
           <li>
             <strong>{t('Reward lock')}</strong>:&nbsp;
             {recurring.dispatchStrategy.lockPeriod}{' '}
@@ -102,7 +98,7 @@ export function TransferRewards({ recurring }: TransferRewardsProps) {
               ? t('epoch')
               : t('epochs')}
           </li>
-        ) : null}
+        )}
 
         {markets && markets.length > 0 ? (
           <li>
@@ -172,7 +168,7 @@ export function TransferRewards({ recurring }: TransferRewardsProps) {
             <tbody>
               {rankTable.map((row, i) => {
                 return (
-                  <tr>
+                  <tr key={`rank-${i}`}>
                     <td className="border border-slate-300 text-center">
                       {row.startRank}
                     </td>
@@ -213,37 +209,6 @@ export function getRewardTitle(
     return t('Game');
   }
   return t('Reward metrics');
-}
-
-interface TransferRecurringStrategyProps {
-  strategy: Strategy;
-}
-
-/**
- * Simple renderer for a dispatch strategy in a recurring transfer
- *
- * @param strategy Dispatch strategy object
- */
-export function TransferRecurringStrategy({
-  strategy,
-}: TransferRecurringStrategyProps) {
-  if (!strategy) {
-    return null;
-  }
-
-  return (
-    <>
-      {strategy.assetForMetric ? (
-        <li>
-          <strong>{t('Asset for metric')}</strong>:{' '}
-          <AssetLink assetId={strategy.assetForMetric} />
-        </li>
-      ) : null}
-      <li>
-        <strong>{t('Metric')}</strong>: {strategy.metric}
-      </li>
-    </>
-  );
 }
 
 const individualScopeLabels: Record<
