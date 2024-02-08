@@ -3,7 +3,7 @@ from playwright.sync_api import Page, expect
 from vega_sim.null_service import VegaServiceNull
 from actions.vega import submit_order
 from fixtures.market import setup_simple_market
-from conftest import init_vega
+from conftest import init_vega, cleanup_container
 from actions.utils import wait_for_toast_confirmation, change_keys
 from wallet_config import MM_WALLET, MM_WALLET2
 
@@ -15,8 +15,10 @@ COL_ID_FEE = ".ag-center-cols-container [col-id='fee'] .ag-cell-value"
 
 @pytest.fixture(scope="module")
 def vega(request):
-    with init_vega(request) as vega:
-        yield vega
+    with init_vega(request) as vega_instance:
+        request.addfinalizer(lambda: cleanup_container(vega_instance))  # Register the cleanup function
+        yield vega_instance
+
 
 
 @pytest.fixture(scope="module")

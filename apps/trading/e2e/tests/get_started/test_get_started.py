@@ -3,7 +3,7 @@ from playwright.sync_api import expect, Page
 import json
 from vega_sim.null_service import VegaServiceNull
 from fixtures.market import setup_simple_market
-from conftest import init_vega
+from conftest import init_vega, cleanup_container
 from actions.vega import submit_order
 from wallet_config import MM_WALLET, TERMINATE_WALLET, wallets
 import logging
@@ -12,9 +12,10 @@ logger = logging.getLogger()
 
 
 @pytest.fixture(scope="class")
-def vega():
-    with init_vega() as vega:
-        yield vega
+def vega(request):
+    with init_vega(request) as vega_instance:
+        request.addfinalizer(lambda: cleanup_container(vega_instance))  # Register the cleanup function
+        yield vega_instance
 
 
 @pytest.fixture(scope="class")

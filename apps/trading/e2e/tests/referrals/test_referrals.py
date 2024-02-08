@@ -1,7 +1,7 @@
 import pytest
 from playwright.sync_api import Page
 from vega_sim.null_service import VegaServiceNull
-from conftest import init_vega
+from conftest import init_vega, cleanup_container
 from fixtures.market import setup_continuous_market, setup_simple_market
 from actions.utils import change_keys, create_and_faucet_wallet, forward_time, selector_contains_text
 from actions.vega import submit_order, submit_liquidity
@@ -14,8 +14,10 @@ BUY_ORDERS = [[1, 106], [1, 107], [1, 108]]
 
 @pytest.fixture(scope="module")
 def vega(request):
-    with init_vega(request) as vega:
-        yield vega
+    with init_vega(request) as vega_instance:
+        request.addfinalizer(lambda: cleanup_container(vega_instance))  # Register the cleanup function
+        yield vega_instance
+
 
 
 @pytest.fixture(scope="module")
