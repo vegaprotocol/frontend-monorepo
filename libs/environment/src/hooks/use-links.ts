@@ -86,6 +86,7 @@ export const DocsLinks = VEGA_DOCS_URL
       POST_REDUCE_ONLY: `${VEGA_DOCS_URL}/concepts/trading-on-vega/orders#conditional-order-parameters`,
       QUANTUM: `${VEGA_DOCS_URL}/concepts/assets/asset-framework#quantum`,
       REFERRALS: `${VEGA_DOCS_URL}/tutorials/proposals/referral-program-proposal`,
+      LIQUIDITY_FEE_PERCENTAGE: `${VEGA_DOCS_URL}/concepts/liquidity/rewards-penalties#determining-the-liquidity-fee-percentage`,
     }
   : undefined;
 
