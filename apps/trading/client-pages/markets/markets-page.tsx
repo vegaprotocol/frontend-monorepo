@@ -1,5 +1,3 @@
-import React, { useEffect } from 'react';
-import { titlefy } from '@vegaprotocol/utils';
 import {
   LocalStoragePersistTabs as Tabs,
   Tab,
@@ -7,7 +5,6 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { OpenMarkets } from './open-markets';
 import { Proposed } from './proposed';
-import { usePageTitleStore } from '../../stores';
 import { Closed } from './closed';
 import {
   DApp,
@@ -17,19 +14,14 @@ import {
 import { useT } from '../../lib/use-t';
 import { ErrorBoundary } from '../../components/error-boundary';
 import { MarketsSettings } from './markets-settings';
+import { usePageTitle } from '../../lib/hooks/use-page-title';
 
 export const MarketsPage = () => {
   const t = useT();
-  const { updateTitle } = usePageTitleStore((store) => ({
-    updateTitle: store.updateTitle,
-  }));
-
   const governanceLink = useLinks(DApp.Governance);
   const externalLink = governanceLink(TOKEN_NEW_MARKET_PROPOSAL);
 
-  useEffect(() => {
-    updateTitle(titlefy([t('Markets')]));
-  }, [updateTitle, t]);
+  usePageTitle(t('Markets'));
 
   return (
     <div className="h-full pt-0.5 pb-3 px-1.5">

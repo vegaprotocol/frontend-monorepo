@@ -1,10 +1,8 @@
 import { useEffect } from 'react';
 import type { ReactNode } from 'react';
 import { LayoutPriority } from 'allotment';
-import { titlefy } from '@vegaprotocol/utils';
 import { useIncompleteWithdrawals } from '@vegaprotocol/withdraws';
 import { Tab, LocalStoragePersistTabs as Tabs } from '@vegaprotocol/ui-toolkit';
-import { usePageTitleStore } from '../../stores';
 import {
   AccountsContainer,
   AccountsSettings,
@@ -41,6 +39,7 @@ import { WithdrawalsMenu } from '../../components/withdrawals-menu';
 import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
 import { useT } from '../../lib/use-t';
 import { ErrorBoundary } from '../../components/error-boundary';
+import { usePageTitle } from '../../lib/hooks/use-page-title';
 
 const WithdrawalsIndicator = () => {
   const { ready } = useIncompleteWithdrawals();
@@ -69,14 +68,7 @@ const SidebarViewInitializer = () => {
 
 export const Portfolio = () => {
   const t = useT();
-
-  const { updateTitle } = usePageTitleStore((store) => ({
-    updateTitle: store.updateTitle,
-  }));
-
-  useEffect(() => {
-    updateTitle(titlefy([t('Portfolio')]));
-  }, [updateTitle, t]);
+  usePageTitle(t('Portfolio'));
 
   const [sizes, handleOnLayoutChange] = usePaneLayout({ id: 'portfolio' });
   const wrapperClasses = 'p-0.5 h-full max-h-full flex flex-col';
