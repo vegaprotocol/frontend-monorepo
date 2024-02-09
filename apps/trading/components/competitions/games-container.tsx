@@ -1,6 +1,8 @@
 import { type TransferNode } from '@vegaprotocol/types';
 import { ActiveRewardCard } from '../rewards-container/active-rewards';
 import { useT } from '../../lib/use-t';
+import { useAssetsMapProvider } from '@vegaprotocol/assets';
+import { useMarketsMapProvider } from '@vegaprotocol/markets';
 
 export const GamesContainer = ({
   data,
@@ -10,6 +12,10 @@ export const GamesContainer = ({
   currentEpoch: number;
 }) => {
   const t = useT();
+  // Re-load markets and assets in the games container to ensure that the
+  // the cards are updated (not grayed out) when the user navigates to the games page
+  useAssetsMapProvider();
+  useMarketsMapProvider();
 
   if (!data || data.length === 0) {
     return (
