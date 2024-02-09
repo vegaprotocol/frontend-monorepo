@@ -288,7 +288,7 @@ def test_game_card(competitions_page: Page):
     expect(game_1.get_by_test_id("distribution-strategy")
            ).to_have_text("Pro rata")
     expect(game_1.get_by_test_id("dispatch-metric-info")
-           ).to_have_text("Price maker fees paid • ")
+           ).to_have_text("Price maker fees paid • tDAI")
     expect(game_1.get_by_test_id("assessed-over")).to_have_text("15 epochs")
     expect(game_1.get_by_test_id("scope")).to_have_text("In team")
     expect(game_1.get_by_test_id("staking-requirement")).to_have_text("0.00")
