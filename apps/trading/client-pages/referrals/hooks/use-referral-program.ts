@@ -1,4 +1,4 @@
-import { getNumberFormat } from '@vegaprotocol/utils';
+import { formatNumber } from '@vegaprotocol/utils';
 import sortBy from 'lodash/sortBy';
 import omit from 'lodash/omit';
 import { useReferralProgramQuery } from './__generated__/CurrentReferralProgram';
@@ -107,9 +107,7 @@ export const useReferralProgram = () => {
       discountFactor: Number(t.referralDiscountFactor),
       discount: BigNumber(t.referralDiscountFactor).times(100).toFixed(2) + '%',
       minimumVolume: Number(t.minimumRunningNotionalTakerVolume),
-      volume: getNumberFormat(0).format(
-        Number(t.minimumRunningNotionalTakerVolume)
-      ),
+      volume: formatNumber(t.minimumRunningNotionalTakerVolume, 0),
       epochs: Number(t.minimumEpochs),
     };
   });

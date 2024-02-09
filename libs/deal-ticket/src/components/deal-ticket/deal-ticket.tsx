@@ -73,7 +73,7 @@ import {
 } from '../../hooks';
 import { DealTicketSizeIceberg } from './deal-ticket-size-iceberg';
 import noop from 'lodash/noop';
-import { isNonPersistentOrder } from '../../utils/time-in-force-persistance';
+import { isNonPersistentOrder } from '../../utils/time-in-force-persistence';
 import { KeyValue } from './key-value';
 import { DocsLinks } from '@vegaprotocol/environment';
 import { useT } from '../../use-t';
@@ -176,12 +176,6 @@ export const DealTicket = ({
     accountBalance: generalAccountBalance,
     loading: loadingGeneralAccountBalance,
   } = useAccountBalance(asset.id);
-
-  const balance = (
-    BigInt(marginAccountBalance) +
-    BigInt(generalAccountBalance) +
-    BigInt(orderMarginAccountBalance)
-  ).toString();
 
   const { marketState, marketTradingMode } = marketData;
   const timeInForce = watch('timeInForce');
@@ -729,17 +723,11 @@ export const DealTicket = ({
         error={summaryError}
         asset={asset}
         marketTradingMode={marketData.marketTradingMode}
-        balance={balance}
-        margin={(
-          BigInt(
-            positionEstimate?.estimatePosition?.margin.bestCase.initialLevel ||
-              '0'
-          ) +
-          BigInt(
-            positionEstimate?.estimatePosition?.margin.bestCase
-              .orderMarginLevel || '0'
-          )
-        ).toString()}
+        balance={generalAccountBalance}
+        margin={
+          positionEstimate?.estimatePosition?.collateralIncreaseEstimate
+            .bestCase || '0'
+        }
         isReadOnly={isReadOnly}
         pubKey={pubKey}
         onDeposit={onDeposit}

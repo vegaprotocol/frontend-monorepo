@@ -1,7 +1,7 @@
 import pytest
 from playwright.sync_api import Page, expect
 from vega_sim.null_service import VegaServiceNull
-from conftest import init_vega
+from conftest import init_vega, cleanup_container
 from fixtures.market import setup_continuous_market
 
 TOOLTIP_LABEL = "margin-health-tooltip-label"
@@ -11,8 +11,10 @@ COL_ID_USED = ".ag-center-cols-container [col-id='used'] .ag-cell-value"
 
 @pytest.fixture(scope="module")
 def vega(request):
-    with init_vega(request) as vega:
-        yield vega
+    with init_vega(request) as vega_instance:
+        request.addfinalizer(lambda: cleanup_container(vega_instance))  # Register the cleanup function
+        yield vega_instance
+
 
 
 @pytest.fixture(scope="module")

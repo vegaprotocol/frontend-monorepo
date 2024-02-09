@@ -30,26 +30,6 @@ describe('LiquidationPrice', () => {
     result: {
       data: {
         estimatePosition: {
-          margin: {
-            worstCase: {
-              maintenanceLevel: '100',
-              searchLevel: '100',
-              initialLevel: '100',
-              collateralReleaseLevel: '100',
-              orderMarginLevel: '0',
-              marginFactor: '0',
-              marginMode: MarginMode.MARGIN_MODE_CROSS_MARGIN,
-            },
-            bestCase: {
-              maintenanceLevel: '100',
-              searchLevel: '100',
-              initialLevel: '100',
-              collateralReleaseLevel: '100',
-              orderMarginLevel: '0',
-              marginFactor: '0',
-              marginMode: MarginMode.MARGIN_MODE_CROSS_MARGIN,
-            },
-          },
           collateralIncreaseEstimate: {
             bestCase: '0',
             worstCase: '0',

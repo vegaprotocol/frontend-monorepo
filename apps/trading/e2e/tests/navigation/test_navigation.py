@@ -1,13 +1,14 @@
 import pytest
 from playwright.sync_api import Page, expect, Locator
 
-from conftest import init_page, init_vega
+from conftest import init_page, init_vega, cleanup_container
 
 
 @pytest.fixture(scope="module")
-def vega():
-    with init_vega() as vega:
-        yield vega
+def vega(request):
+    with init_vega(request) as vega_instance:
+        request.addfinalizer(lambda: cleanup_container(vega_instance))  # Register the cleanup function
+        yield vega_instance
 
 
 # we can reuse single page instance in all tests

@@ -33,6 +33,8 @@ import { TxDetailsApplyReferralCode } from './tx-apply-referral-code';
 import { TxDetailsUpdateReferralSet } from './tx-update-referral-set';
 import { TxDetailsJoinTeam } from './tx-join-team';
 import { TxDetailsUpdateMarginMode } from './tx-update-margin-mode';
+import { TxBatchProposal } from './tx-batch-proposal';
+import { TxDetailsUpdatePartyProfile } from './proposal/tx-update-party-profile';
 
 interface TxDetailsWrapperProps {
   txData: BlockExplorerTransactionResult | undefined;
@@ -136,6 +138,10 @@ function getTransactionComponent(txData?: BlockExplorerTransactionResult) {
       return TxDetailsJoinTeam;
     case 'Update Margin Mode':
       return TxDetailsUpdateMarginMode;
+    case 'Batch Proposal':
+      return TxBatchProposal;
+    case 'Update Party Profile':
+      return TxDetailsUpdatePartyProfile;
     default:
       return TxDetailsGeneric;
   }

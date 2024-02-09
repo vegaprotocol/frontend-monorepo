@@ -16,6 +16,8 @@ import { CompetitionsLeaderboard } from '../../components/competitions/competiti
 import { useTeams } from '../../lib/hooks/use-teams';
 import take from 'lodash/take';
 import { usePageTitle } from '../../lib/hooks/use-page-title';
+import { TeamCard } from '../../components/competitions/team-card';
+import { useMyTeam } from '../../lib/hooks/use-my-team';
 
 export const CompetitionsHome = () => {
   const t = useT();
@@ -33,6 +35,13 @@ export const CompetitionsHome = () => {
 
   const { data: teamsData, loading: teamsLoading } = useTeams();
 
+  const {
+    team: myTeam,
+    stats: myTeamStats,
+    games: myTeamGames,
+    rank: myTeamRank,
+  } = useMyTeam();
+
   return (
     <ErrorBoundary>
       <CompetitionsHeader title={t('Competitions')}>
@@ -43,65 +52,83 @@ export const CompetitionsHome = () => {
         </p>
       </CompetitionsHeader>
 
-      {/** Get started */}
-      <h2 className="text-2xl mb-6">{t('Get started')}</h2>
+      {/** Team card */}
+      {myTeam ? (
+        <>
+          <h2 className="text-2xl mb-6">{t('My team')}</h2>
+          <div className="mb-12">
+            <TeamCard
+              team={myTeam}
+              rank={myTeamRank}
+              stats={myTeamStats}
+              games={myTeamGames}
+            />
+          </div>
+        </>
+      ) : (
+        <>
+          {/** Get started */}
+          <h2 className="text-2xl mb-6">{t('Get started')}</h2>
 
-      <CompetitionsActionsContainer>
-        <CompetitionsAction
-          variant="A"
-          title={t('Create a team')}
-          description={t(
-            'Lorem ipsum dolor sit amet, consectetur adipisicing elit placeat ipsum minus nemo error dicta.'
-          )}
-          actionElement={
-            <TradingButton
-              intent={Intent.Primary}
-              onClick={(e) => {
-                e.preventDefault();
-                navigate(Links.COMPETITIONS_CREATE_TEAM());
-              }}
-            >
-              {t('Create a public team')}
-            </TradingButton>
-          }
-        />
-        <CompetitionsAction
-          variant="B"
-          title={t('Solo team / lone wolf')}
-          description={t(
-            'Lorem ipsum dolor sit amet, consectetur adipisicing elit placeat ipsum minus nemo error dicta.'
-          )}
-          actionElement={
-            <TradingButton
-              intent={Intent.Primary}
-              onClick={(e) => {
-                e.preventDefault();
-                navigate(Links.COMPETITIONS_CREATE_TEAM_SOLO());
-              }}
-            >
-              {t('Create a private team')}
-            </TradingButton>
-          }
-        />
-        <CompetitionsAction
-          variant="C"
-          title={t('Join a team')}
-          description={t(
-            'Lorem ipsum dolor sit amet, consectetur adipisicing elit placeat ipsum minus nemo error dicta.'
-          )}
-          actionElement={
-            <TradingButton
-              intent={Intent.Primary}
-              onClick={(e) => {
-                e.preventDefault();
-                navigate(Links.COMPETITIONS_TEAMS());
-              }}
-            >
-              {t('Choose a team')}
-            </TradingButton>
-          }
-        />
-      </CompetitionsActionsContainer>
+          <CompetitionsActionsContainer>
+            <CompetitionsAction
+              variant="A"
+              title={t('Create a team')}
+              description={t(
+                'Lorem ipsum dolor sit amet, consectetur adipisicing elit placeat ipsum minus nemo error dicta.'
+              )}
+              actionElement={
+                <TradingButton
+                  intent={Intent.Primary}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    navigate(Links.COMPETITIONS_CREATE_TEAM());
+                  }}
+                  data-testId="create-public-team-button"
+                >
+                  {t('Create a public team')}
+                </TradingButton>
+              }
+            />
+            <CompetitionsAction
+              variant="B"
+              title={t('Solo team / lone wolf')}
+              description={t(
+                'Lorem ipsum dolor sit amet, consectetur adipisicing elit placeat ipsum minus nemo error dicta.'
+              )}
+              actionElement={
+                <TradingButton
+                  intent={Intent.Primary}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    navigate(Links.COMPETITIONS_CREATE_TEAM_SOLO());
+                  }}
+                >
+                  {t('Create a private team')}
+                </TradingButton>
+              }
+            />
+            <CompetitionsAction
+              variant="C"
+              title={t('Join a team')}
+              description={t(
+                'Lorem ipsum dolor sit amet, consectetur adipisicing elit placeat ipsum minus nemo error dicta.'
+              )}
+              actionElement={
+                <TradingButton
+                  intent={Intent.Primary}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    navigate(Links.COMPETITIONS_TEAMS());
+                  }}
+                >
+                  {t('Choose a team')}
+                </TradingButton>
+              }
+            />
+          </CompetitionsActionsContainer>
+        </>
+      )}
 
       {/** List of available games */}
       <h2 className="text-2xl mb-6">{t('Games')}</h2>

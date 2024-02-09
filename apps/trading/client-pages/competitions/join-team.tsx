@@ -105,7 +105,11 @@ export const JoinButton = ({
   // Party is in a team, but not this one
   else if (partyTeam && partyTeam.teamId !== team.teamId) {
     return (
-      <Button onClick={() => onJoin('switch')} intent={Intent.Primary}>
+      <Button
+        onClick={() => onJoin('switch')}
+        intent={Intent.Primary}
+        data-testid="switch-team-button"
+      >
         {t('Switch team')}{' '}
       </Button>
     );
@@ -215,7 +219,11 @@ const DialogContent = ({
         </>
       )}
       <div className="flex justify-between gap-2">
-        <Button onClick={joinTeam} intent={Intent.Success}>
+        <Button
+          onClick={joinTeam}
+          intent={Intent.Success}
+          data-testid="confirm-switch-button"
+        >
           {t('Confirm')}
         </Button>
         <Button onClick={onCancel} intent={Intent.Danger}>

@@ -14,7 +14,7 @@ import './styles.css';
 import { usePageTitleStore } from '../stores';
 import DialogsContainer from './dialogs-container';
 import ToastsManager from './toasts-manager';
-import { HashRouter, useLocation, Route, Routes } from 'react-router-dom';
+import { HashRouter, useLocation } from 'react-router-dom';
 import { Bootstrapper } from '../components/bootstrapper';
 import { AnnouncementBanner } from '../components/banner';
 import { Navbar } from '../components/navbar';
@@ -25,9 +25,7 @@ import {
   ProtocolUpgradeProposalNotification,
 } from '@vegaprotocol/proposals';
 import { ViewingBanner } from '../components/viewing-banner';
-import { NavHeader } from '../components/navbar/nav-header';
 import { Telemetry } from '../components/telemetry';
-import { Routes as AppRoutes } from '../lib/links';
 import { SSRLoader } from './ssr-loader';
 import { PartyActiveOrdersHandler } from './party-active-orders-handler';
 import { MaybeConnectEagerly } from './maybe-connect-eagerly';
@@ -73,16 +71,7 @@ function AppBody({ Component }: AppProps) {
       <Title />
       <div className={gridClasses}>
         <AnnouncementBanner />
-        <Navbar theme={VEGA_ENV === Networks.TESTNET ? 'yellow' : 'system'}>
-          <Routes>
-            <Route
-              path={AppRoutes.MARKETS}
-              // render nothing for markets/all, otherwise markets/:marketId will match with markets/all
-              element={null}
-            />
-            <Route path={AppRoutes.MARKET} element={<NavHeader />} />
-          </Routes>
-        </Navbar>
+        <Navbar theme={VEGA_ENV === Networks.TESTNET ? 'yellow' : 'system'} />
         <div data-testid="banners">
           <ProtocolUpgradeProposalNotification
             mode={ProtocolUpgradeCountdownMode.IN_ESTIMATED_TIME_REMAINING}

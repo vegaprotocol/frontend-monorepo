@@ -4,7 +4,8 @@ import { useTeamsQuery } from './__generated__/Teams';
 import { useTeamsStatisticsQuery } from './__generated__/TeamsStatistics';
 import compact from 'lodash/compact';
 
-export const DEFAULT_AGGREGATION_EPOCHS = 10;
+// 192
+export const DEFAULT_AGGREGATION_EPOCHS = 192;
 
 export const useTeams = (aggregationEpochs = DEFAULT_AGGREGATION_EPOCHS) => {
   const {
@@ -35,7 +36,9 @@ export const useTeams = (aggregationEpochs = DEFAULT_AGGREGATION_EPOCHS) => {
       ...stats.find((s) => s.teamId === t.teamId),
     }));
 
-    return orderBy(data, (d) => Number(d.totalQuantumRewards || 0), 'desc');
+    return orderBy(data, (d) => Number(d.totalQuantumRewards || 0), 'desc').map(
+      (d, i) => ({ ...d, rank: i + 1 })
+    );
   }, [teams, stats]);
 
   return {

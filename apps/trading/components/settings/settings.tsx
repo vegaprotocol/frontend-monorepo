@@ -81,6 +81,7 @@ export const Settings = () => {
               intent={Intent.Primary}
               onClick={() => {
                 localStorage.clear();
+                sessionStorage.clear();
                 window.location.reload();
               }}
             >

@@ -2,7 +2,7 @@ import pytest
 from playwright.sync_api import Page, expect
 from vega_sim.null_service import VegaServiceNull
 from actions.utils import change_keys
-from conftest import init_vega
+from conftest import init_vega, cleanup_container
 from fixtures.market import setup_continuous_market
 
 order_size = "order-size"
@@ -14,8 +14,9 @@ deal_ticket_deposit_dialog_button = "deal-ticket-deposit-dialog-button"
 
 @pytest.fixture(scope="module")
 def vega(request):
-    with init_vega(request) as vega:
-        yield vega
+    with init_vega(request) as vega_instance:
+        request.addfinalizer(lambda: cleanup_container(vega_instance))  # Register the cleanup function
+        yield vega_instance
 
 
 @pytest.fixture(scope="module")
@@ -33,7 +34,7 @@ def test_should_display_info_and_button_for_deposit(continuous_market, page: Pag
         "You may not have enough margin available to open this position.")
     page.get_by_test_id(deal_ticket_warning_margin).hover()
     expect(page.get_by_test_id("tooltip-content").nth(0)).to_have_text(
-        "1,661,896.6317 tDAI is currently required.You have only 1,000,000.00.Deposit tDAI")
+        "1,661,888.12901 tDAI is currently required.You have only 999,991.49731.Deposit tDAI")
     page.get_by_test_id(deal_ticket_deposit_dialog_button).nth(0).click()
     expect(page.get_by_test_id("sidebar-content")
            ).to_contain_text("DepositFrom")
