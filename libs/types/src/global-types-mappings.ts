@@ -751,7 +751,7 @@ export const LiquidityFeeMethodMappingDescription: {
   [e in LiquidityFeeMethod]: string;
 } = {
   METHOD_CONSTANT: `This liquidity fee is a constant value, set in the market parameters, and overrides the liquidity providers' nominated fees.`,
-  METHOD_MARGINAL_COST: `This liquidity fee factor is determined by sorting all LP fee bids from lowest to highest, with LPs' commitments tallied up to fulfil the market's target stake. The last LP's bid becomes the fee factor.`,
+  METHOD_MARGINAL_COST: `This liquidity fee factor is determined by sorting all LP fee bids from lowest to highest, with LPs' commitments tallied up to the point of fulfilling the market's target stake. The last LP's bid becomes the fee factor.`,
   METHOD_UNSPECIFIED: 'Unspecified',
   METHOD_WEIGHTED_AVERAGE: `This liquidity fee is the weighted average of all liquidity providers' nominated fees, weighted by their commitment.`,
 };
