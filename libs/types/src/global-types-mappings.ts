@@ -739,12 +739,12 @@ export const ProposalProductTypeShortName: Record<ProposalProductType, string> =
 export const LiquidityFeeMethodMapping: { [e in LiquidityFeeMethod]: string } =
   {
     /** Fee is set by the market to a constant value irrespective of any liquidity provider's nominated fee */
-    METHOD_CONSTANT: 'Constant fee',
+    METHOD_CONSTANT: 'Constant',
     /** Fee is smallest value of all bids, such that liquidity providers with nominated fees less than or equal to this value still have sufficient commitment to fulfil the market's target stake. */
-    METHOD_MARGINAL_COST: 'Marginal cost fee',
+    METHOD_MARGINAL_COST: 'Marginal cost',
     METHOD_UNSPECIFIED: 'Unspecified',
     /** Fee is the weighted average of all liquidity providers' nominated fees, weighted by their commitment */
-    METHOD_WEIGHTED_AVERAGE: 'Weighted average fee',
+    METHOD_WEIGHTED_AVERAGE: 'Weighted average',
   };
 
 export const LiquidityFeeMethodMappingDescription: {
