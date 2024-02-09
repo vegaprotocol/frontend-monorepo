@@ -1,5 +1,4 @@
 import { type ProposalListFieldsFragment } from '@vegaprotocol/proposals';
-import { VoteProgress } from '@vegaprotocol/proposals';
 import { type AgGridReact } from 'ag-grid-react';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 import { AgGrid } from '@vegaprotocol/datagrid';
@@ -12,12 +11,7 @@ import { type ColDef } from 'ag-grid-community';
 import type { RowClickedEvent } from 'ag-grid-community';
 import { getDateTimeFormat } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
-import {
-  NetworkParams,
-  useNetworkParams,
-} from '@vegaprotocol/network-parameters';
 import { ProposalStateMapping } from '@vegaprotocol/types';
-import BigNumber from 'bignumber.js';
 import { DApp, TOKEN_PROPOSAL, useLinks } from '@vegaprotocol/environment';
 import { BREAKPOINT_MD } from '../../config/breakpoints';
 import { JsonViewerDialog } from '../dialogs/json-viewer-dialog';
@@ -31,15 +25,7 @@ type ProposalsTableProps = {
   data: ProposalListFieldsFragment[] | null;
 };
 export const ProposalsTable = ({ data }: ProposalsTableProps) => {
-  const { params } = useNetworkParams([
-    NetworkParams.governance_proposal_market_requiredMajority,
-  ]);
   const tokenLink = useLinks(DApp.Governance);
-  const requiredMajorityPercentage = useMemo(() => {
-    const requiredMajority =
-      params?.governance_proposal_market_requiredMajority ?? 1;
-    return new BigNumber(requiredMajority).times(100);
-  }, [params?.governance_proposal_market_requiredMajority]);
 
   const gridRef = useRef<AgGridReact>(null);
   useLayoutEffect(() => {
@@ -88,33 +74,6 @@ export const ProposalsTable = ({ data }: ProposalsTableProps) => {
           value,
         }: VegaValueFormatterParams<ProposalListFieldsFragment, 'state'>) => {
           return value ? ProposalStateMapping[value] : '-';
-        },
-      },
-      {
-        colId: 'voting',
-        maxWidth: 100,
-        hide: window.innerWidth <= BREAKPOINT_MD,
-        headerName: t('Voting'),
-        cellRenderer: ({
-          data,
-        }: VegaICellRendererParams<ProposalListFieldsFragment>) => {
-          if (data) {
-            const yesTokens = new BigNumber(data.votes.yes.totalTokens);
-            const noTokens = new BigNumber(data.votes.no.totalTokens);
-            const totalTokensVoted = yesTokens.plus(noTokens);
-            const yesPercentage = totalTokensVoted.isZero()
-              ? new BigNumber(0)
-              : yesTokens.multipliedBy(100).dividedBy(totalTokensVoted);
-            return (
-              <div className="flex h-full items-center justify-center pt-2 uppercase">
-                <VoteProgress
-                  threshold={requiredMajorityPercentage}
-                  progress={yesPercentage}
-                />
-              </div>
-            );
-          }
-          return '-';
         },
       },
       {
@@ -184,7 +143,7 @@ export const ProposalsTable = ({ data }: ProposalsTableProps) => {
         },
       },
     ],
-    [requiredMajorityPercentage, tokenLink]
+    [tokenLink]
   );
   return (
     <>
