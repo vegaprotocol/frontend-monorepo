@@ -1,5 +1,4 @@
 import { BigNumber } from 'bignumber.js';
-import isNil from 'lodash/isNil';
 import memoize from 'lodash/memoize';
 
 import { getUserLocale } from '../get-user-locale';
@@ -53,36 +52,36 @@ export function removeDecimal(
   return new BigNumber(value || 0).times(times).toFixed(0);
 }
 
-// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat/NumberFormat
-export const getNumberFormat = memoize((digits: number) => {
-  if (isNil(digits) || digits < 0) {
-    return new Intl.NumberFormat(getUserLocale());
-  }
-  return new Intl.NumberFormat(getUserLocale(), {
-    minimumFractionDigits: Math.min(Math.max(0, digits), MIN_FRACTION_DIGITS),
-    maximumFractionDigits: Math.min(Math.max(0, digits), MAX_FRACTION_DIGITS),
-  });
-});
-
-// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat/NumberFormat
-export const getFixedNumberFormat = memoize((digits: number) => {
-  if (isNil(digits) || digits < 0) {
-    return new Intl.NumberFormat(getUserLocale());
-  }
-  return new Intl.NumberFormat(getUserLocale(), {
-    minimumFractionDigits: Math.min(Math.max(0, digits), MAX_FRACTION_DIGITS),
-    maximumFractionDigits: Math.min(Math.max(0, digits), MAX_FRACTION_DIGITS),
-  });
-});
-
 export const getDecimalSeparator = memoize(
   () =>
-    getNumberFormat(1)
+    new Intl.NumberFormat(getUserLocale())
       .formatToParts(1.1)
-      .find((part) => part.type === 'decimal')?.value
+      .find((part) => part.type === 'decimal')?.value ?? '.'
 );
 
-/** formatNumber will format the number with fixed decimals
+export const getGroupFormat = memoize(() => {
+  const parts = new Intl.NumberFormat(getUserLocale()).formatToParts(
+    100000000000.1
+  );
+  const groupSeparator = parts.find((part) => part.type === 'group')?.value;
+  const groupSize =
+    (groupSeparator &&
+      parts.reverse().find((part) => part.type === 'integer')?.value.length) ||
+    0;
+  return {
+    groupSize,
+    groupSeparator,
+  };
+});
+
+const getFormat = memoize(() => ({
+  decimalSeparator: getDecimalSeparator(),
+  ...getGroupFormat(),
+}));
+
+/**
+ * formatNumber will format the number with maximum number of decimals
+ * trailing zeros are removed but min(MIN_FRACTION_DIGITS, formatDecimals) decimal places will be kept
  * @param rawValue - should be a number that is not outside the safe range fail as in https://mikemcl.github.io/bignumber.js/#toN
  * @param formatDecimals - number of decimals to use
  */
@@ -90,7 +89,23 @@ export const formatNumber = (
   rawValue: string | number | BigNumber,
   formatDecimals = 0
 ) => {
-  return getNumberFormat(formatDecimals).format(Number(rawValue));
+  const decimalPlaces = Math.min(
+    Math.max(0, formatDecimals),
+    MAX_FRACTION_DIGITS
+  );
+  const format = getFormat();
+  const formatted = new BigNumber(rawValue).toFormat(decimalPlaces, format);
+  // if there are no decimal places just return formatted value
+  if (!decimalPlaces) {
+    return formatted;
+  }
+  // minimum number of decimal places to keep when removing trailing zeros
+  const minimumFractionDigits = Math.min(decimalPlaces, MIN_FRACTION_DIGITS);
+  const parts = formatted.split(format.decimalSeparator);
+  parts[1] = (parts[1] || '')
+    .replace(/0+$/, '')
+    .padEnd(minimumFractionDigits, '0');
+  return parts.join(format.decimalSeparator);
 };
 
 /** formatNumberFixed will format the number with fixed decimals
@@ -101,7 +116,10 @@ export const formatNumberFixed = (
   rawValue: string | number | BigNumber,
   formatDecimals = 0
 ) => {
-  return getFixedNumberFormat(formatDecimals).format(Number(rawValue));
+  return new BigNumber(rawValue).toFormat(
+    Math.min(Math.max(0, formatDecimals), MAX_FRACTION_DIGITS),
+    getFormat()
+  );
 };
 
 export const quantumDecimalPlaces = (
@@ -131,9 +149,14 @@ export const addDecimalsFormatNumberQuantum = (
   if (isNaN(Number(quantum))) {
     return addDecimalsFormatNumber(rawValue, decimalPlaces);
   }
-  const quantumValue = addDecimal(quantum, decimalPlaces);
-  const numberDP = Math.max(0, Math.log10(100 / Number(quantumValue)));
-  return addDecimalsFormatNumber(rawValue, decimalPlaces, Math.ceil(numberDP));
+  const numberDP = Math.ceil(
+    Math.abs(Math.log10(toBigNum(quantum, decimalPlaces).toNumber()))
+  );
+  return addDecimalsFormatNumber(
+    rawValue,
+    decimalPlaces,
+    Math.max(MIN_FRACTION_DIGITS, numberDP)
+  );
 };
 
 export const addDecimalsFormatNumber = (
@@ -141,9 +164,10 @@ export const addDecimalsFormatNumber = (
   decimalPlaces: number,
   formatDecimals: number = decimalPlaces
 ) => {
-  const x = addDecimal(rawValue, decimalPlaces);
-
-  return formatNumber(x, formatDecimals);
+  return formatNumber(
+    new BigNumber(rawValue || 0).dividedBy(Math.pow(10, decimalPlaces)),
+    formatDecimals
+  );
 };
 
 export const addDecimalsFixedFormatNumber = (

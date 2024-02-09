@@ -1,7 +1,7 @@
 import { DepthChart } from 'pennant';
 import throttle from 'lodash/throttle';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
-import { addDecimal, getNumberFormat } from '@vegaprotocol/utils';
+import { addDecimal, formatNumber } from '@vegaprotocol/utils';
 import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { marketDepthProvider } from './market-depth-provider';
@@ -216,13 +216,12 @@ export const DepthChartContainer = ({ marketId }: DepthChartManagerProps) => {
 
   const volumeFormat = useCallback(
     (volume: number) =>
-      getNumberFormat(market?.positionDecimalPlaces || 0).format(volume),
+      formatNumber(volume, market?.positionDecimalPlaces || 0),
     [market?.positionDecimalPlaces]
   );
 
   const priceFormat = useCallback(
-    (price: number) =>
-      getNumberFormat(market?.decimalPlaces || 0).format(price),
+    (price: number) => formatNumber(price, market?.decimalPlaces || 0),
     [market?.decimalPlaces]
   );
 
