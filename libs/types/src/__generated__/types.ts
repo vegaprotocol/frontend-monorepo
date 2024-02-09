@@ -5015,7 +5015,7 @@ export type QueryestimateOrderArgs = {
 export type QueryestimatePositionArgs = {
   averageEntryPrice: Scalars['String'];
   generalAccountBalance: Scalars['String'];
-  includeCollateralIncreaseInAvailableCollateral?: InputMaybe<Scalars['Boolean']>;
+  includeRequiredPositionMarginInAvailableCollateral?: InputMaybe<Scalars['Boolean']>;
   marginAccountBalance: Scalars['String'];
   marginFactor?: InputMaybe<Scalars['String']>;
   marginMode: MarginMode;

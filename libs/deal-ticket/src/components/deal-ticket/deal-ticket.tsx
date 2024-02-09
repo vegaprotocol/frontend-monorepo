@@ -281,7 +281,7 @@ export const DealTicket = ({
       marginFactor: margin?.marginFactor || '1',
       marginMode:
         margin?.marginMode || Schema.MarginMode.MARGIN_MODE_CROSS_MARGIN,
-      includeCollateralIncreaseInAvailableCollateral: true,
+      includeRequiredPositionMarginInAvailableCollateral: true,
     },
     !normalizedOrder ||
       (normalizedOrder.type !== Schema.OrderType.TYPE_MARKET &&
