@@ -10,7 +10,7 @@ on:
     inputs:
       console-test-branch:
         type: choice
-        description: 'main: v0.73.5, develop: v0.73.5'
+        description: 'main: v0.73.13, develop: v0.74.0'
         options:
           - main
           - develop
@@ -205,7 +205,7 @@ jobs:
       # run tests
       #----------------------------------------------
       - name: Run tests
-        run: CONSOLE_IMAGE_NAME=ci/trading:local poetry run pytest -v --numprocesses 4 --dist loadfile --durations=45
+        run: CONSOLE_IMAGE_NAME=ci/trading:local poetry run pytest -v --numprocesses 1 --dist loadfile --durations=45
         working-directory: apps/trading/e2e
       #----------------------------------------------
       # upload traces
