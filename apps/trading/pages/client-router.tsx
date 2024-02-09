@@ -24,7 +24,10 @@ import { compact } from 'lodash';
 import { useFeatureFlags } from '@vegaprotocol/environment';
 import { LiquidityHeader } from '../components/liquidity-header';
 import { MarketHeader, MobileMarketHeader } from '../components/market-header';
-import { PortfolioSidebar } from '../client-pages/portfolio/portfolio-sidebar';
+import {
+  PortfolioMobileSidebar,
+  PortfolioSidebar,
+} from '../client-pages/portfolio/portfolio-sidebar';
 import { LiquiditySidebar } from '../client-pages/liquidity/liquidity-sidebar';
 import { MarketsSidebar } from '../client-pages/markets/markets-sidebar';
 import { useT } from '../lib/use-t';
@@ -33,9 +36,10 @@ import { CompetitionsTeams } from '../client-pages/competitions/competitions-tea
 import { CompetitionsTeam } from '../client-pages/competitions/competitions-team';
 import { CompetitionsCreateTeam } from '../client-pages/competitions/competitions-create-team';
 import { CompetitionsUpdateTeam } from '../client-pages/competitions/competitions-update-team';
+import { MarketsMobileSidebar } from '../client-pages/markets/mobile-buttons';
 import { useScreenDimensions } from '@vegaprotocol/react-helpers';
 
-// These must remain dynamically imported as pennant cannot be compiled by nextjs due to ESM
+// These must remain dynamically imported as pennant cannot be compiled by Next.js due to ESM
 // Using dynamic imports is a workaround for this until pennant is published as ESM
 const MarketPage = lazy(() => import('../client-pages/market'));
 const Portfolio = lazy(() => import('../client-pages/portfolio'));
@@ -54,6 +58,17 @@ export const useRouterConfig = (): RouteObject[] => {
   const { screenSize } = useScreenDimensions();
   const largeScreen = ['lg', 'xl', 'xxl', 'xxxl'].includes(screenSize);
   const marketHeader = largeScreen ? <MarketHeader /> : <MobileMarketHeader />;
+  const marketsSidebar = largeScreen ? (
+    <MarketsSidebar />
+  ) : (
+    <MarketsMobileSidebar />
+  );
+  const portfolioSidebar = largeScreen ? (
+    <PortfolioSidebar />
+  ) : (
+    <PortfolioMobileSidebar />
+  );
+
   const routeConfig = compact([
     {
       index: true,
@@ -70,7 +85,7 @@ export const useRouterConfig = (): RouteObject[] => {
     featureFlags.REFERRALS
       ? {
           path: AppRoutes.REFERRALS,
-          element: <LayoutWithSidebar sidebar={<PortfolioSidebar />} />,
+          element: <LayoutWithSidebar sidebar={portfolioSidebar} />,
           children: [
             {
               element: (
@@ -103,7 +118,7 @@ export const useRouterConfig = (): RouteObject[] => {
     featureFlags.TEAM_COMPETITION
       ? {
           path: AppRoutes.COMPETITIONS,
-          element: <LayoutWithSidebar sidebar={<PortfolioSidebar />} />,
+          element: <LayoutWithSidebar sidebar={portfolioSidebar} />,
           children: [
             // pages with planets and stars
             {
@@ -134,7 +149,7 @@ export const useRouterConfig = (): RouteObject[] => {
       : undefined,
     {
       path: 'fees/*',
-      element: <LayoutWithSidebar sidebar={<PortfolioSidebar />} />,
+      element: <LayoutWithSidebar sidebar={portfolioSidebar} />,
       children: [
         {
           index: true,
@@ -144,7 +159,7 @@ export const useRouterConfig = (): RouteObject[] => {
     },
     {
       path: 'rewards/*',
-      element: <LayoutWithSidebar sidebar={<PortfolioSidebar />} />,
+      element: <LayoutWithSidebar sidebar={portfolioSidebar} />,
       children: [
         {
           index: true,
@@ -155,7 +170,7 @@ export const useRouterConfig = (): RouteObject[] => {
     {
       path: 'markets/*',
       element: (
-        <LayoutWithSidebar header={marketHeader} sidebar={<MarketsSidebar />} />
+        <LayoutWithSidebar header={marketHeader} sidebar={marketsSidebar} />
       ),
       children: [
         {
@@ -176,7 +191,7 @@ export const useRouterConfig = (): RouteObject[] => {
     },
     {
       path: 'portfolio/*',
-      element: <LayoutWithSidebar sidebar={<PortfolioSidebar />} />,
+      element: <LayoutWithSidebar sidebar={portfolioSidebar} />,
       children: [
         {
           index: true,
