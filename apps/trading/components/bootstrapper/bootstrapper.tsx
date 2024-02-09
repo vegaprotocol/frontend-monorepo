@@ -153,5 +153,8 @@ const cacheConfig: InMemoryCacheConfig = {
     OrderUpdate: {
       keyFields: false,
     },
+    Game: {
+      keyFields: false,
+    },
   },
 };

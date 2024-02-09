@@ -213,12 +213,12 @@ def create_team(vega: VegaServiceNull):
 
 def test_team_page_games_table(team_page: Page):
     team_page.get_by_test_id("games-toggle").click()
-    expect(team_page.get_by_test_id("games-toggle")).to_have_text("Games (1)")
+    expect(team_page.get_by_test_id("games-toggle")).to_have_text("Games (10)")
     expect(team_page.get_by_test_id("rank-0")).to_have_text("2")
     expect(team_page.get_by_test_id("epoch-0")).to_have_text("19")
     expect(team_page.get_by_test_id("type-0")
            ).to_have_text("Price maker fees paid")
-    expect(team_page.get_by_test_id("amount-0")).to_have_text("74")
+    expect(team_page.get_by_test_id("amount-0")).to_have_text("74") # 7,438,330 on preview.11
     expect(team_page.get_by_test_id("participatingTeams-0")).to_have_text("2")
     expect(team_page.get_by_test_id("participatingMembers-0")).to_have_text("4")
 
