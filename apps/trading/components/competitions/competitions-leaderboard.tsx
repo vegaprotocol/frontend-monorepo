@@ -33,9 +33,9 @@ export const CompetitionsLeaderboard = ({
         { name: 'status', displayName: t('Status') },
         { name: 'volume', displayName: t('Volume') },
       ]}
-      data={data.map((td, i) => {
+      data={data.map((td) => {
         // leaderboard place or medal
-        let rank: number | React.ReactNode = i + 1;
+        let rank: number | React.ReactNode = td.rank;
         if (rank === 1) rank = <Rank variant="gold" />;
         if (rank === 2) rank = <Rank variant="silver" />;
         if (rank === 3) rank = <Rank variant="bronze" />;
