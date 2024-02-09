@@ -16,7 +16,6 @@ export const useTooltipMapping: () => Record<string, ReactNode> = () => {
     infrastructureFee: t(
       'Fees paid to validators as a reward for running the infrastructure of the network.'
     ),
-
     markPrice: t(
       'A concept derived from traditional markets. It is a calculated value for the ‘current market price’ on a market.'
     ),
@@ -153,6 +152,10 @@ export const useTooltipMapping: () => Record<string, ReactNode> = () => {
     ),
     minProbabilityOfTradingLPOrders: t(
       'The lower bound for the probability of trading calculation, used to measure liquidity available on a market to determine if LPs are meeting their commitment. This is a network parameter.'
+    ),
+    method: t(`The method used to calculate the market's liquidity fee.`),
+    feeConstant: t(
+      'The constant liquidity fee used when using the constant fee method .'
     ),
   };
 };

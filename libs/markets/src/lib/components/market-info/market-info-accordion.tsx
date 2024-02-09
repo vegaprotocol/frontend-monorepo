@@ -28,6 +28,7 @@ import {
   InsurancePoolInfoPanel,
   KeyDetailsInfoPanel,
   LiquidationStrategyInfoPanel,
+  LiquidityFeesSettings,
   LiquidityInfoPanel,
   LiquidityMonitoringParametersInfoPanel,
   LiquidityPriceRangeInfoPanel,
@@ -299,6 +300,11 @@ export const MarketInfoAccordion = ({
               </span>
             }
             content={<LiquiditySLAParametersInfoPanel market={market} />}
+          />
+          <AccordionItem
+            itemId="lp-fee-settings"
+            title={t('Liquidity fee settings')}
+            content={<LiquidityFeesSettings market={market} />}
           />
           <AccordionItem
             itemId="liquidity"

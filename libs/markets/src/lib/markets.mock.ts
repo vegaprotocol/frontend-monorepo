@@ -52,6 +52,11 @@ export const createMarketFragment = (
         infrastructureFee: '',
         liquidityFee: '',
       },
+      liquidityFeeSettings: {
+        __typename: 'LiquidityFeeSettings',
+        method: Schema.LiquidityFeeMethod.METHOD_MARGINAL_COST,
+        feeConstant: '',
+      },
     },
     tradableInstrument: {
       instrument: {
