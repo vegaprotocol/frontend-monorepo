@@ -15,6 +15,30 @@ import {
 } from './transfer-form';
 import { AccountType, AccountTypeMapping } from '@vegaprotocol/types';
 import { removeDecimal } from '@vegaprotocol/utils';
+import type { TransferFeeQuery } from './__generated__/TransferFee';
+
+const feeFactor = 0.001;
+const mockUseTransferFeeQuery = jest.fn(
+  ({
+    variables: { amount },
+  }: {
+    variables: { amount: string };
+  }): { data: TransferFeeQuery } => {
+    return {
+      data: {
+        estimateTransferFee: {
+          discount: '0',
+          fee: (Number(amount) * feeFactor).toFixed(),
+        },
+      },
+    };
+  }
+);
+
+jest.mock('./__generated__/TransferFee', () => ({
+  useTransferFeeQuery: (props: { variables: { amount: string } }) =>
+    mockUseTransferFeeQuery(props),
+}));
 
 describe('TransferForm', () => {
   const renderComponent = (props: TransferFormProps) => {
@@ -56,7 +80,6 @@ describe('TransferForm', () => {
   const props = {
     pubKey,
     pubKeys: [pubKey, '2'.repeat(64)],
-    feeFactor: '0.001',
     submitTransfer: jest.fn(),
     accounts: [
       {
@@ -79,7 +102,6 @@ describe('TransferForm', () => {
       pubKey,
       'a4b6e3de5d7ef4e31ae1b090be49d1a2ef7bcefff60cccf7658a0d4922651cce',
     ],
-    feeFactor: '0.001',
     submitTransfer: jest.fn(),
     accounts: [],
     minQuantumMultiple: '1',
@@ -97,10 +119,6 @@ describe('TransferForm', () => {
 
   it.each([
     {
-      targetText: 'Transfer fee',
-      tooltipText: /transfer\.fee\.factor/,
-    },
-    {
       targetText: 'Amount to be transferred',
       tooltipText: /without the fee/,
     },
@@ -109,9 +127,6 @@ describe('TransferForm', () => {
       tooltipText: /total amount taken from your account/,
     },
   ])('Tooltip for "$targetText" shows', async (o) => {
-    // 1003-TRAN-015
-    // 1003-TRAN-016
-    // 1003-TRAN-017
     // 1003-TRAN-018
     // 1003-TRAN-019
     renderComponent(props);
@@ -124,6 +139,10 @@ describe('TransferForm', () => {
     // Select asset
     await selectAsset(asset);
 
+    await userEvent.selectOptions(
+      screen.getByLabelText('From account'),
+      `${AccountType.ACCOUNT_TYPE_GENERAL}-${asset.id}`
+    );
     // set valid amount
     const amountInput = screen.getByLabelText('Amount');
     await userEvent.type(amountInput, amount);
@@ -214,9 +233,7 @@ describe('TransferForm', () => {
     // set valid amount
     await userEvent.clear(amountInput);
     await userEvent.type(amountInput, amount);
-    expect(screen.getByTestId('transfer-fee')).toHaveTextContent(
-      new BigNumber(props.feeFactor).times(amount).toFixed()
-    );
+    expect(screen.getByTestId('transfer-fee')).toHaveTextContent('1');
 
     await submit();
 
@@ -385,47 +402,44 @@ describe('TransferForm', () => {
       });
     });
   });
-  describe('IncludeFeesCheckbox', () => {
-    it('validates fields when checkbox is not checked', async () => {
-      renderComponent(props);
 
-      // check current pubkey not shown
-      const keySelect: HTMLSelectElement = screen.getByLabelText('To Vega key');
-      const pubKeyOptions = ['', pubKey, props.pubKeys[1]];
-      expect(keySelect.children).toHaveLength(pubKeyOptions.length);
-      expect(Array.from(keySelect.options).map((o) => o.value)).toEqual(
-        pubKeyOptions
-      );
+  it('validates fields', async () => {
+    renderComponent(props);
 
-      await submit();
-      expect(await screen.findAllByText('Required')).toHaveLength(2); // pubkey set as default value
+    // check current pubkey not shown
+    const keySelect: HTMLSelectElement = screen.getByLabelText('To Vega key');
+    const pubKeyOptions = ['', pubKey, props.pubKeys[1]];
+    expect(keySelect.children).toHaveLength(pubKeyOptions.length);
+    expect(Array.from(keySelect.options).map((o) => o.value)).toEqual(
+      pubKeyOptions
+    );
 
-      // Select a pubkey
-      await userEvent.selectOptions(
-        screen.getByLabelText('To Vega key'),
-        props.pubKeys[1]
-      );
+    await submit();
+    expect(await screen.findAllByText('Required')).toHaveLength(2); // pubkey set as default value
 
-      // Select asset
-      await selectAsset(asset);
+    // Select a pubkey
+    await userEvent.selectOptions(
+      screen.getByLabelText('To Vega key'),
+      props.pubKeys[1]
+    );
 
-      await userEvent.selectOptions(
-        screen.getByLabelText('From account'),
-        `${AccountType.ACCOUNT_TYPE_GENERAL}-${asset.id}`
-      );
+    // Select asset
+    await selectAsset(asset);
 
-      const amountInput = screen.getByLabelText('Amount');
+    await userEvent.selectOptions(
+      screen.getByLabelText('From account'),
+      `${AccountType.ACCOUNT_TYPE_GENERAL}-${asset.id}`
+    );
 
-      await userEvent.type(amountInput, amount);
-      const expectedFee = new BigNumber(amount)
-        .times(props.feeFactor)
-        .toFixed();
-      const total = new BigNumber(amount).plus(expectedFee).toFixed();
-      // 1003-TRAN-021
-      expect(screen.getByTestId('transfer-fee')).toHaveTextContent(expectedFee);
-      expect(screen.getByTestId('transfer-amount')).toHaveTextContent(amount);
-      expect(screen.getByTestId('total-transfer-fee')).toHaveTextContent(total);
-    });
+    const amountInput = screen.getByLabelText('Amount');
+
+    await userEvent.type(amountInput, amount);
+    const expectedFee = new BigNumber(amount).times(feeFactor).toFixed();
+    const total = new BigNumber(amount).plus(expectedFee).toFixed();
+    // 1003-TRAN-021
+    expect(screen.getByTestId('transfer-fee')).toHaveTextContent(expectedFee);
+    expect(screen.getByTestId('transfer-amount')).toHaveTextContent(amount);
+    expect(screen.getByTestId('total-transfer-fee')).toHaveTextContent(total);
   });
 
   describe('AddressField', () => {
@@ -457,24 +471,29 @@ describe('TransferForm', () => {
 
   describe('TransferFee', () => {
     const props = {
-      amount: '200',
-      feeFactor: '0.001',
-      fee: '0.2',
-      transferAmount: '200',
-      decimals: 8,
+      amount: '20000',
+      discount: '0',
+      fee: '20',
+      decimals: 2,
     };
-    it('calculates and renders the transfer fee', () => {
+    it('calculates and renders amounts and fee', () => {
       render(<TransferFee {...props} />);
-
-      const expected = new BigNumber(props.amount)
-        .times(props.feeFactor)
-        .toFixed();
-      const total = new BigNumber(props.amount).plus(expected).toFixed();
-      expect(screen.getByTestId('transfer-fee')).toHaveTextContent(expected);
-      expect(screen.getByTestId('transfer-amount')).toHaveTextContent(
-        props.amount
+      expect(screen.queryByTestId('discount')).not.toBeInTheDocument();
+      expect(screen.getByTestId('transfer-fee')).toHaveTextContent('0.2');
+      expect(screen.getByTestId('transfer-amount')).toHaveTextContent('200.00');
+      expect(screen.getByTestId('total-transfer-fee')).toHaveTextContent(
+        '200.20'
       );
-      expect(screen.getByTestId('total-transfer-fee')).toHaveTextContent(total);
+    });
+
+    it('calculates and renders amounts, fee and discount', () => {
+      render(<TransferFee {...props} discount="10" />);
+      expect(screen.getByTestId('discount')).toHaveTextContent('0.1');
+      expect(screen.getByTestId('transfer-fee')).toHaveTextContent('0.2');
+      expect(screen.getByTestId('transfer-amount')).toHaveTextContent('200.00');
+      expect(screen.getByTestId('total-transfer-fee')).toHaveTextContent(
+        '200.10'
+      );
     });
   });
 });

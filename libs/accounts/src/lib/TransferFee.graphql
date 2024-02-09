@@ -1,0 +1,18 @@
+query TransferFee(
+  $fromAccount: ID!
+  $fromAccountType: AccountType!
+  $toAccount: ID!
+  $amount: String!
+  $assetId: String!
+) {
+  estimateTransferFee(
+    fromAccount: $fromAccount
+    fromAccountType: $fromAccountType
+    toAccount: $toAccount
+    amount: $amount
+    assetId: $assetId
+  ) {
+    fee
+    discount
+  }
+}

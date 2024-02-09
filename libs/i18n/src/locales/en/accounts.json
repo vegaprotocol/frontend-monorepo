@@ -35,7 +35,6 @@
   "The total amount of each asset on this key. Includes used and available collateral.": "The total amount of each asset on this key. Includes used and available collateral.",
   "The total amount taken from your account. The amount to be transferred plus the fee.": "The total amount taken from your account. The amount to be transferred plus the fee.",
   "The total amount to be transferred (without the fee)": "The total amount to be transferred (without the fee)",
-  "The transfer fee is set by the network parameter transfer.fee.factor, currently set to {{feeFactor}}": "The transfer fee is set by the network parameter transfer.fee.factor, currently set to {{feeFactor}}",
   "To account": "To account",
   "To Vega key": "To Vega key",
   "Total": "Total",
