@@ -44,6 +44,7 @@ export type FilterOption =
   | 'Submit Order'
   | 'Transfer Funds'
   | 'Undelegate'
+  | 'Update Party Profile'
   | 'Update Referral Set'
   | 'Update Margin Mode'
   | 'Validator Heartbeat'
@@ -79,6 +80,7 @@ export const filterOptions: Record<string, FilterOption[]> = {
     'Apply Referral Code',
     'Create Referral Set',
     'Join Team',
+    'Update Party Profile',
     'Update Referral Set',
   ],
   'External Data': ['Chain Event', 'Submit Oracle Data'],

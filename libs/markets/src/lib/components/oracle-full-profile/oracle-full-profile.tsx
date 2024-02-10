@@ -240,7 +240,7 @@ export const OracleFullProfile = ({
           <div className="font-alpha calt dark:text-vega-light-300 text-vega-dark-300 mb-2 grid grid-cols-4 gap-1 uppercase">
             <div className="col-span-1">{t('Market')}</div>
             <div className="col-span-1">{t('Status')}</div>
-            <div className="col-span-1">{t('Specifications')}</div>
+            <div className="col-span-2">{t('Specifications')}</div>
           </div>
           <div className="max-h-60 overflow-auto">
             {oracleMarkets?.map((market) => (

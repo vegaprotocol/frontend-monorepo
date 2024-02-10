@@ -1,4 +1,3 @@
-import { isValidUrl } from '@vegaprotocol/utils';
 import { TradingRadio } from '@vegaprotocol/ui-toolkit';
 import { useEffect, useState } from 'react';
 import { CUSTOM_NODE_KEY } from '../../types';
@@ -8,6 +7,7 @@ import {
 } from '../../utils/__generated__/NodeCheck';
 import { LayoutCell } from './layout-cell';
 import { useT } from '../../use-t';
+import { useResponseTime } from '../../utils/time';
 
 export const POLL_INTERVAL = 1000;
 export const SUBSCRIPTION_TIMEOUT = 3000;
@@ -106,20 +106,6 @@ export const useNodeBasicStatus = () => {
     status,
     currentBlockHeight,
   };
-};
-
-export const useResponseTime = (url: string, trigger?: unknown) => {
-  const [responseTime, setResponseTime] = useState<number>();
-  useEffect(() => {
-    if (!isValidUrl(url)) return;
-    if (typeof window.performance.getEntriesByName !== 'function') return; // protection for test environment
-    const requestUrl = new URL(url);
-    const requests = window.performance.getEntriesByName(requestUrl.href);
-    const { duration } =
-      (requests.length && requests[requests.length - 1]) || {};
-    setResponseTime(duration);
-  }, [url, trigger]);
-  return { responseTime };
 };
 
 export const RowData = ({

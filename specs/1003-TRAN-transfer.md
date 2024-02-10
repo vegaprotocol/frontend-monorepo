@@ -40,8 +40,6 @@
 
 ## Transfer
 
-- **Must** display tooltip for "Transfer fee when hovered over.(<a name="1003-TRAN-017" href="#1003-TRAN-017">1003-TRAN-017</a>)
-
 - **Must** display tooltip for "Amount to be transferred" when hovered over.(<a name="1003-TRAN-018" href="#1003-TRAN-018">1003-TRAN-018</a>)
 
 - **Must** display tooltip for "Total amount (with fee)" when hovered over.(<a name="1003-TRAN-019" href="#1003-TRAN-019">1003-TRAN-019</a>)

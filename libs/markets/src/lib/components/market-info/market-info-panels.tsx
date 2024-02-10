@@ -44,6 +44,8 @@ import type {
 } from '@vegaprotocol/types';
 import {
   ConditionOperatorMapping,
+  LiquidityFeeMethodMapping,
+  LiquidityFeeMethodMappingDescription,
   MarketStateMapping,
   MarketTradingModeMapping,
 } from '@vegaprotocol/types';
@@ -54,6 +56,7 @@ import {
   TOKEN_PROPOSAL,
   useEnvironment,
   useLinks,
+  DocsLinks,
 } from '@vegaprotocol/environment';
 import type { Provider } from '../../oracle-schema';
 import { OracleBasicProfile } from '../../components/oracle-basic-profile';
@@ -110,6 +113,44 @@ export const CurrentFeesInfoPanel = ({ market }: MarketInfoProps) => {
   );
 };
 
+export const LiquidityFeesSettings = ({ market }: MarketInfoProps) => {
+  const t = useT();
+  return (
+    <>
+      <MarketInfoTable
+        data={{
+          feeConstant: market.fees.liquidityFeeSettings?.feeConstant,
+          method: market.fees.liquidityFeeSettings && (
+            <Tooltip
+              description={
+                LiquidityFeeMethodMappingDescription[
+                  market.fees.liquidityFeeSettings?.method
+                ]
+              }
+            >
+              <span>
+                {
+                  LiquidityFeeMethodMapping[
+                    market.fees.liquidityFeeSettings?.method
+                  ]
+                }
+              </span>
+            </Tooltip>
+          ),
+        }}
+      />
+      <p className="text-xs">
+        <ExternalLink
+          href={DocsLinks?.LIQUIDITY_FEE_PERCENTAGE}
+          className="mt-2"
+        >
+          {t('Fore more info, visit the documentation')}
+        </ExternalLink>
+      </p>
+    </>
+  );
+};
+
 export const MarketPriceInfoPanel = ({ market }: MarketInfoProps) => {
   const t = useT();
   const assetSymbol = getAsset(market).symbol;
@@ -155,6 +196,7 @@ export const MarketVolumeInfoPanel = ({ market }: MarketInfoProps) => {
           <Last24hVolume
             marketId={market.id}
             positionDecimalPlaces={market.positionDecimalPlaces}
+            marketDecimals={market.decimalPlaces}
           />
         ),
         openInterest: dash(data?.openInterest),

@@ -3,7 +3,6 @@ import { type Market } from '@vegaprotocol/markets';
 // TODO: handle oracle banner
 // import { OracleBanner } from '@vegaprotocol/markets';
 import { useState } from 'react';
-import AutoSizer from 'react-virtualized-auto-sizer';
 import classNames from 'classnames';
 import {
   Popover,
@@ -12,21 +11,21 @@ import {
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../lib/use-t';
-import { MarketBanner } from '../../components/market-banner';
 import { ErrorBoundary } from '../../components/error-boundary';
 import { type TradingView } from './trade-views';
 import { TradingViews } from './trade-views';
-
 interface TradePanelsProps {
   market: Market;
   pinnedAsset?: PinnedAsset;
 }
 
 export const TradePanels = ({ market, pinnedAsset }: TradePanelsProps) => {
-  const [view, setView] = useState<TradingView>('chart');
-  const viewCfg = TradingViews[view];
+  const [topView, setTopView] = useState<TradingView>('chart');
+  const topViewCfg = TradingViews[topView];
+  const [bottomView, setBottomView] = useState<TradingView>('positions');
+  const bottomViewCfg = TradingViews[bottomView];
 
-  const renderView = () => {
+  const renderView = (view: TradingView) => {
     const Component = TradingViews[view].component;
 
     if (!Component) {
@@ -39,12 +38,13 @@ export const TradePanels = ({ market, pinnedAsset }: TradePanelsProps) => {
     // so watch out for clashes in props
     return (
       <ErrorBoundary feature={view}>
-        <Component marketId={market?.id} pinnedAsset={pinnedAsset} />;
+        <Component marketId={market?.id} pinnedAsset={pinnedAsset} />
       </ErrorBoundary>
     );
   };
 
-  const renderMenu = () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const renderMenu = (viewCfg: any) => {
     if ('menu' in viewCfg || 'settings' in viewCfg) {
       return (
         <div className="flex items-center justify-end gap-1 p-1 bg-vega-clight-800 dark:bg-vega-cdark-800 border-b border-default">
@@ -69,55 +69,80 @@ export const TradePanels = ({ market, pinnedAsset }: TradePanelsProps) => {
   };
 
   return (
-    <div className="h-full grid grid-rows-[min-content_min-content_1fr_min-content]">
-      <div>
-        <MarketBanner market={market} />
-      </div>
-      <div>{renderMenu()}</div>
-      <div className="h-full relative">
-        <AutoSizer>
-          {({ width, height }) => (
-            <div style={{ width, height }} className="overflow-auto">
-              {renderView()}
-            </div>
-          )}
-        </AutoSizer>
-      </div>
-      <div className="flex flex-nowrap overflow-x-auto max-w-full border-t border-default">
-        {Object.keys(TradingViews)
-          // filter to control available views for the current market
-          // eg only perps should get the funding views
-          .filter((_key) => {
-            const key = _key as TradingView;
-            const perpOnlyViews = ['funding', 'fundingPayments'];
+    <div className="h-full flex flex-col lg:grid grid-rows-[min-content_min-content_1fr_min-content]">
+      <div className="flex flex-col w-full overflow-hidden">
+        <div className="flex flex-nowrap overflow-x-auto max-w-full border-t border-default">
+          {['chart', 'orderbook', 'trades', 'liquidity', 'fundingPayments']
+            // filter to control available views for the current market
+            // e.g. only perpetuals should get the funding views
+            .filter((_key) => {
+              const key = _key as TradingView;
+              const perpOnlyViews = ['funding', 'fundingPayments'];
 
-            if (
-              market?.tradableInstrument.instrument.product.__typename ===
-              'Perpetual'
-            ) {
+              if (
+                market?.tradableInstrument.instrument.product.__typename ===
+                'Perpetual'
+              ) {
+                return true;
+              }
+
+              if (perpOnlyViews.includes(key)) {
+                return false;
+              }
+
               return true;
-            }
+            })
+            .map((_key) => {
+              const key = _key as TradingView;
+              const isActive = topView === key;
+              return (
+                <ViewButton
+                  key={key}
+                  view={key}
+                  isActive={isActive}
+                  onClick={() => {
+                    setTopView(key);
+                  }}
+                />
+              );
+            })}
+        </div>
+        <div className="h-[50vh] lg:h-full relative">
+          <div>{renderMenu(topViewCfg)}</div>
+          <div className="overflow-auto h-full">{renderView(topView)}</div>
+        </div>
+      </div>
 
-            if (perpOnlyViews.includes(key)) {
-              return false;
-            }
-
-            return true;
-          })
-          .map((_key) => {
+      <div className="flex flex-col w-full grow">
+        <div className="flex flex-nowrap overflow-x-auto max-w-full border-t border-default">
+          {[
+            'positions',
+            'activeOrders',
+            'closedOrders',
+            'rejectedOrders',
+            'orders',
+            'stopOrders',
+            'collateral',
+            'fills',
+          ].map((_key) => {
             const key = _key as TradingView;
-            const isActive = view === key;
+            const isActive = bottomView === key;
             return (
               <ViewButton
                 key={key}
                 view={key}
                 isActive={isActive}
                 onClick={() => {
-                  setView(key);
+                  setBottomView(key);
                 }}
               />
             );
           })}
+        </div>
+        <div className="relative grow">
+          <div className="flex flex-col">{renderMenu(bottomViewCfg)}</div>
+          <div className="overflow-auto h-full">{renderView(bottomView)}</div>
+        </div>
       </div>
     </div>
   );
@@ -157,7 +182,7 @@ const useViewLabel = (view: TradingView) => {
     depth: t('Depth'),
     liquidity: t('Liquidity'),
     funding: t('Funding'),
-    fundingPayments: t('Funding Payments'),
+    fundingPayments: t('Funding'),
     orderbook: t('Orderbook'),
     trades: t('Trades'),
     positions: t('Positions'),

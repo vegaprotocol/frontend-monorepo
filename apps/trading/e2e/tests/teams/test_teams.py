@@ -2,17 +2,17 @@ import pytest
 from playwright.sync_api import expect, Page
 import vega_sim.proto.vega as vega_protos
 from vega_sim.null_service import VegaServiceNull
-from conftest import init_vega
+from conftest import init_vega, cleanup_container
 from actions.utils import next_epoch, change_keys
 from fixtures.market import setup_continuous_market
 from conftest import auth_setup, init_page, init_vega, risk_accepted_setup
 from wallet_config import PARTY_A, PARTY_B, PARTY_C, PARTY_D, MM_WALLET
 
-
 @pytest.fixture(scope="module")
 def vega(request):
-    with init_vega(request) as vega:
-        yield vega
+    with init_vega(request) as vega_instance:
+        request.addfinalizer(lambda: cleanup_container(vega_instance))  # Register the cleanup function
+        yield vega_instance
 
 
 @pytest.fixture(scope="module")
@@ -237,12 +237,12 @@ def test_team_page_headline(team_page: Page, setup_teams_and_games):
     expect(team_page.get_by_test_id("team-name")).to_have_text(team_name)
     expect(team_page.get_by_test_id("members-count-stat")).to_have_text("4")
 
-    expect(team_page.get_by_test_id("total-games-stat")).to_have_text("2")
+    expect(team_page.get_by_test_id("total-games-stat")).to_have_text("1")
 
     # TODO this still seems wrong as its always 0
     expect(team_page.get_by_test_id("total-volume-stat")).to_have_text("0")
 
-    expect(team_page.get_by_test_id("rewards-paid-stat")).to_have_text("214")
+    expect(team_page.get_by_test_id("rewards-paid-stat")).to_have_text("78")
 
 
 def test_switch_teams(team_page: Page, vega: VegaServiceNull):
@@ -271,7 +271,7 @@ def test_leaderboard(competitions_page: Page, setup_teams_and_games):
 
     #  FIXME: the numbers are different we need to clarify this with the backend
     # expect(competitions_page.get_by_test_id("earned-1")).to_have_text("160")
-    expect(competitions_page.get_by_test_id("games-1")).to_have_text("2")
+    expect(competitions_page.get_by_test_id("games-1")).to_have_text("1")
 
     # TODO  still odd that this is 0
     expect(competitions_page.get_by_test_id("volume-0")).to_have_text("-")
@@ -288,7 +288,7 @@ def test_game_card(competitions_page: Page):
     expect(game_1.get_by_test_id("distribution-strategy")
            ).to_have_text("Pro rata")
     expect(game_1.get_by_test_id("dispatch-metric-info")
-           ).to_have_text("Price maker fees paid • ")
+           ).to_have_text("Price maker fees paid • tDAI")
     expect(game_1.get_by_test_id("assessed-over")).to_have_text("15 epochs")
     expect(game_1.get_by_test_id("scope")).to_have_text("In team")
     expect(game_1.get_by_test_id("staking-requirement")).to_have_text("0.00")

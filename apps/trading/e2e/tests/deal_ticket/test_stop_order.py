@@ -3,7 +3,7 @@ from playwright.sync_api import Page, expect
 from vega_sim.null_service import VegaServiceNull
 from actions.vega import submit_order
 from datetime import datetime, timedelta
-from conftest import init_vega
+from conftest import init_vega, cleanup_container
 from fixtures.market import setup_continuous_market
 
 stop_order_btn = "order-type-Stop"
@@ -259,9 +259,10 @@ def test_submit_stop_limit_order_cancel(
 
 class TestStopOcoValidation:
     @pytest.fixture(scope="class")
-    def vega(self, request):
-        with init_vega(request) as vega:
-            yield vega
+    def vega(request):
+        with init_vega(request) as vega_instance:
+            request.addfinalizer(lambda: cleanup_container(vega_instance))  # Register the cleanup function
+            yield vega_instance
 
     @pytest.fixture(scope="class")
     def continuous_market(self, vega):

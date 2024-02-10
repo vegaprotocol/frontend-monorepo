@@ -1,5 +1,10 @@
-import { useSearchParams } from 'react-router-dom';
-import { Intent, TradingAnchorButton } from '@vegaprotocol/ui-toolkit';
+import { Link, useSearchParams } from 'react-router-dom';
+import {
+  Intent,
+  TradingAnchorButton,
+  VegaIcon,
+  VegaIconNames,
+} from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { useT } from '../../lib/use-t';
@@ -30,6 +35,19 @@ export const CompetitionsCreateTeam = () => {
       <LayoutWithGradient>
         <div className="mx-auto md:w-2/3 max-w-xl">
           <Box className="flex flex-col gap-4">
+            <Link
+              to={Links.COMPETITIONS()}
+              className="text-xs inline-flex items-center gap-1 group"
+            >
+              <VegaIcon
+                name={VegaIconNames.CHEVRON_LEFT}
+                size={12}
+                className="text-vega-clight-100 dark:text-vega-cdark-100"
+              />{' '}
+              <span className="group-hover:underline">
+                {t('Go back to the competitions')}
+              </span>
+            </Link>
             <h1 className="calt text-2xl lg:text-3xl xl:text-4xl">
               {isSolo ? t('Create solo team') : t('Create a team')}
             </h1>
@@ -78,15 +96,17 @@ const CreateTeamFormContainer = ({ isSolo }: { isSolo: boolean }) => {
         <p className="text-sm">{t('Team creation transaction successful')}</p>
         {code && (
           <>
-            <p className="text-sm">
-              Your team ID is:{' '}
-              <span
-                className="font-mono break-all"
-                data-testid="team-id-display"
-              >
-                {code}
-              </span>
-            </p>
+            <dl>
+              <dt className="text-sm">{t('Your team ID:')}</dt>
+              <dl>
+                <span
+                  className="font-mono break-all bg-rainbow bg-clip-text text-transparent text-2xl"
+                  data-testid="team-id-display"
+                >
+                  {code}
+                </span>
+              </dl>
+            </dl>
             <TradingAnchorButton
               href={Links.COMPETITIONS_TEAM(code)}
               intent={Intent.Info}

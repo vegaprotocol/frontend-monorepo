@@ -12,6 +12,10 @@ fragment MarketFields on Market {
       infrastructureFee
       liquidityFee
     }
+    liquidityFeeSettings {
+      feeConstant
+      method
+    }
   }
   tradableInstrument {
     instrument {
