@@ -2,44 +2,23 @@ import type { InMemoryCacheConfig } from '@apollo/client';
 import {
   AppFailure,
   AppLoader,
-  DocsLinks,
   NetworkLoader,
   NodeFailure,
   NodeGuard,
   useEnvironment,
 } from '@vegaprotocol/environment';
-import { VegaWalletProvider } from '@vegaprotocol/wallet';
 import type { ReactNode } from 'react';
 import { Web3Provider } from './web3-provider';
 import { useT } from '../../lib/use-t';
 import { DataLoader } from './data-loader';
-import { useChainId } from '@vegaprotocol/wallet';
+import { VegaWalletProvider } from '@vegaprotocol/wallet';
+import { config } from '../../lib/vega-wallet';
 
 export const Bootstrapper = ({ children }: { children: ReactNode }) => {
   const t = useT();
-  const {
-    error,
-    VEGA_URL,
-    VEGA_ENV,
-    VEGA_WALLET_URL,
-    VEGA_EXPLORER_URL,
-    MOZILLA_EXTENSION_URL,
-    CHROME_EXTENSION_URL,
-  } = useEnvironment();
+  const { error, VEGA_URL } = useEnvironment();
 
-  const chainId = useChainId(VEGA_URL);
-
-  if (
-    !VEGA_URL ||
-    !VEGA_WALLET_URL ||
-    !VEGA_EXPLORER_URL ||
-    !CHROME_EXTENSION_URL ||
-    !MOZILLA_EXTENSION_URL ||
-    !DocsLinks ||
-    !chainId
-  ) {
-    return <AppLoader />;
-  }
+  // const chainId = useChainId(VEGA_URL);
 
   return (
     <NetworkLoader
@@ -72,22 +51,7 @@ export const Bootstrapper = ({ children }: { children: ReactNode }) => {
               <AppFailure title={t('Could not configure web3 provider')} />
             }
           >
-            <VegaWalletProvider
-              config={{
-                network: VEGA_ENV,
-                vegaUrl: VEGA_URL,
-                chainId,
-                vegaWalletServiceUrl: VEGA_WALLET_URL,
-                links: {
-                  explorer: VEGA_EXPLORER_URL,
-                  concepts: DocsLinks.VEGA_WALLET_CONCEPTS_URL,
-                  chromeExtensionUrl: CHROME_EXTENSION_URL,
-                  mozillaExtensionUrl: MOZILLA_EXTENSION_URL,
-                },
-              }}
-            >
-              {children}
-            </VegaWalletProvider>
+            <VegaWalletProvider config={config}>{children}</VegaWalletProvider>
           </Web3Provider>
         </DataLoader>
       </NodeGuard>

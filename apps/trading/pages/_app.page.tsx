@@ -125,6 +125,4 @@ function VegaTradingApp(props: AppProps) {
   );
 }
 
-export default function () {
-  return <Test />;
-}
+export default VegaTradingApp;

@@ -12,8 +12,8 @@ import { NodeHealthContainer } from '../node-health';
 import { Settings } from '../settings';
 import { Tooltip } from '../../components/tooltip';
 import { WithdrawContainer } from '../withdraw-container';
-import { GetStarted } from '../welcome-dialog';
-import { useVegaWallet, useViewAsDialog } from '@vegaprotocol/wallet';
+// import { GetStarted } from '../welcome-dialog';
+// import { useVegaWallet, useViewAsDialog } from '@vegaprotocol/wallet';
 import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
 import { useT } from '../../lib/use-t';
 import { ErrorBoundary } from '../error-boundary';
@@ -60,54 +60,28 @@ export const Sidebar = ({ options }: { options?: ReactNode }) => {
   const t = useT();
   const currentRouteId = useGetCurrentRouteId();
   const navClasses = 'flex lg:flex-col items-center gap-2 lg:gap-4 p-1';
-  const setViewAsDialogOpen = useViewAsDialog((state) => state.setOpen);
-  const { pubKeys } = useVegaWallet();
-  const { isMobile } = useScreenDimensions();
-  const { getView } = useSidebar((store) => ({
-    setViews: store.setViews,
-    getView: store.getView,
-  }));
-  const currView = getView(currentRouteId);
+  // const setViewAsDialogOpen = useViewAsDialog((state) => state.setOpen);
+  // const { pubKeys } = useVegaWallet();
   return (
-    <div className="flex h-full lg:flex-col gap-1" data-testid="sidebar">
-      {options && (
-        <nav className={classNames(navClasses, 'flex grow')}>{options}</nav>
-      )}
-      <nav
-        className={classNames(
-          navClasses,
-          'ml-auto lg:mt-auto lg:ml-0 shrink-0'
-        )}
-      >
-        {!isMobile ? (
-          <>
-            <SidebarButton
-              view={ViewType.ViewAs}
-              onClick={() => {
-                setViewAsDialogOpen(true);
-              }}
-              icon={VegaIconNames.EYE}
-              tooltip={t('View as party')}
-              disabled={Boolean(pubKeys)}
-              routeId={currentRouteId}
-            />
-            <SidebarButton
-              view={ViewType.Settings}
-              icon={VegaIconNames.COG}
-              tooltip={t('Settings')}
-              routeId={currentRouteId}
-            />
-          </>
-        ) : (
-          currView && (
-            <SidebarButton
-              view={ViewType.Close}
-              icon={VegaIconNames.ARROW_LEFT}
-              tooltip={t('Back')}
-              routeId={currentRouteId}
-            />
-          )
-        )}
+    <div className="flex h-full p-1 lg:flex-col gap-2" data-testid="sidebar">
+      {options && <nav className={navClasses}>{options}</nav>}
+      <nav className={classNames(navClasses, 'ml-auto lg:mt-auto lg:ml-0')}>
+        {/* <SidebarButton */}
+        {/*   view={ViewType.ViewAs} */}
+        {/*   onClick={() => { */}
+        {/*     // setViewAsDialogOpen(true); */}
+        {/*   }} */}
+        {/*   icon={VegaIconNames.EYE} */}
+        {/*   tooltip={t('View as party')} */}
+        {/*   disabled={Boolean(pubKeys)} */}
+        {/*   routeId={currentRouteId} */}
+        {/* /> */}
+        <SidebarButton
+          view={ViewType.Settings}
+          icon={VegaIconNames.COG}
+          tooltip={t('Settings')}
+          routeId={currentRouteId}
+        />
         <NodeHealthContainer />
       </nav>
     </div>
@@ -203,7 +177,7 @@ export const SidebarContent = () => {
               }
             />
           </ErrorBoundary>
-          <GetStarted />
+          {/* <GetStarted /> */}
         </ContentWrapper>
       );
     } else {

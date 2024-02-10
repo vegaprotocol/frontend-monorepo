@@ -1,16 +1,14 @@
-export * from './connectors';
-export * from './context';
-export * from './use-vega-wallet';
-export * from './use-eager-connect';
-export * from './manage-dialog';
-export * from './provider';
-export * from './connect-dialog';
-export * from './utils';
-export * from './storage';
-export * from './use-chain-id';
+export { InjectedConnector } from './connectors-v2/injected-connector';
+export { SnapConnector } from './connectors-v2/snap-connector';
+export { JsonRpcConnector } from './connectors-v2/json-rpc-connector';
+export * from './types';
+export { createConfig, VegaWalletProvider } from './wallet';
+
 export {
-  useSimpleTransaction,
-  type Status,
-  type Result,
-  type Options,
-} from './use-simple-transaction';
+  useConfig,
+  useConnect,
+  useDisconnect,
+  useSendTransaction,
+} from './wallet';
+
+export { fairground, stagnet, Chain } from './chains';

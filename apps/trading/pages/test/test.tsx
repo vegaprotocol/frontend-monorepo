@@ -5,7 +5,7 @@ import { InjectedConnector } from './injected-connector';
 import { JsonRpcConnector } from './json-rpc-connector';
 import { SnapConnector } from './snap-connector';
 import { Chain, fairground, stagnet } from './chains';
-import { Connector, TransactionParams } from '.';
+import { Connector, IWalletError, TransactionParams } from '.';
 import {
   PropsWithChildren,
   createContext,
@@ -49,7 +49,9 @@ type Wallet = {
   connectors: Connector[];
   connect: (id: string) => Promise<void>;
   disconnect: () => Promise<void>;
-  sendTransaction: (params: TransactionParams) => Promise<TransactionResponse>;
+  sendTransaction: (
+    params: TransactionParams
+  ) => Promise<TransactionResponse | IWalletError>;
 };
 
 function createConfig(cfg: Config): Wallet {
@@ -116,7 +118,11 @@ function createConfig(cfg: Config): Wallet {
       .getState()
       .find((x) => x.id === store.getState().current);
 
-    if (!connector) return;
+    if (!connector) {
+      return {
+        error: 'no connector',
+      };
+    }
 
     try {
       const res = await connector.sendTransaction(params);
@@ -186,7 +192,7 @@ function useSendTransaction() {
 
 const VegaWalletContext = createContext<Wallet | undefined>(undefined);
 
-function VegaWalletProvider({
+export function VegaWalletProvider({
   children,
   config,
 }: PropsWithChildren<{ config: Wallet }>) {
