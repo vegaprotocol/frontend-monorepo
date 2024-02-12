@@ -72,7 +72,14 @@ export const TradePanels = ({ market, pinnedAsset }: TradePanelsProps) => {
     <div className="h-full flex flex-col lg:grid grid-rows-[min-content_min-content_1fr_min-content]">
       <div className="flex flex-col w-full overflow-hidden">
         <div className="flex flex-nowrap overflow-x-auto max-w-full border-t border-default">
-          {['chart', 'orderbook', 'trades', 'liquidity', 'fundingPayments']
+          {[
+            'chart',
+            'orderbook',
+            'trades',
+            'liquidity',
+            'fundingPayments',
+            'funding',
+          ]
             // filter to control available views for the current market
             // e.g. only perpetuals should get the funding views
             .filter((_key) => {
@@ -181,8 +188,8 @@ const useViewLabel = (view: TradingView) => {
     chart: t('Chart'),
     depth: t('Depth'),
     liquidity: t('Liquidity'),
-    funding: t('Funding'),
-    fundingPayments: t('Funding'),
+    funding: t('Funding history'),
+    fundingPayments: t('Funding payments'),
     orderbook: t('Orderbook'),
     trades: t('Trades'),
     positions: t('Positions'),
