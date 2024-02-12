@@ -241,6 +241,16 @@ describe('generateEpochAssetRewardsList', () => {
               amount: '5',
             },
           },
+          {
+            // This should not be included in the result
+            node: {
+              epoch: 2,
+              assetId: '3',
+              decimals: 18,
+              rewardType: AccountType.ACCOUNT_TYPE_REWARD_RETURN_VOLATILITY,
+              amount: '5',
+            },
+          },
         ],
       },
       epoch: {
