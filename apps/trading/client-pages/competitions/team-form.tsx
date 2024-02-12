@@ -46,7 +46,7 @@ const prepareTransaction = (
         createReferralSet: {
           isTeam: true,
           team: {
-            name: fields.name,
+            name: fields.name.trim(),
             teamUrl: fields.url,
             avatarUrl: fields.avatarUrl,
             closed: fields.private,
@@ -62,7 +62,7 @@ const prepareTransaction = (
           id: fields.id,
           isTeam: true,
           team: {
-            name: fields.name,
+            name: fields.name.trim(),
             teamUrl: fields.url,
             avatarUrl: fields.avatarUrl,
             closed: fields.private,
@@ -116,7 +116,17 @@ export const TeamForm = ({
       <input type="hidden" {...register('id')} />
       <TradingFormGroup label={t('Team name')} labelFor="name">
         <TradingInput
-          {...register('name', { required: t('Required') })}
+          {...register('name', {
+            required: t('Required'),
+            validate: {
+              notEmpty: (value) => {
+                if (/^\s*$/.test(value)) {
+                  return t('Team name cannot be empty');
+                }
+                return true;
+              },
+            },
+          })}
           data-testid="team-name-input"
         />
         {errors.name?.message && (
