@@ -1,3 +1,4 @@
+import { TinyScroll } from '@vegaprotocol/ui-toolkit';
 import { ErrorBoundary } from '../../components/error-boundary';
 import { FeesContainer } from '../../components/fees-container';
 import { useT } from '../../lib/use-t';
@@ -10,10 +11,10 @@ export const Fees = () => {
 
   return (
     <ErrorBoundary feature="fees">
-      <div className="container p-4 mx-auto">
-        <h1 className="md:px-4 md:pb-4 text-2xl">{title}</h1>
+      <TinyScroll className="p-4 max-h-full overflow-auto">
+        <h1 className="md:px-4 pb-4 text-2xl">{title}</h1>
         <FeesContainer />
-      </div>
+      </TinyScroll>
     </ErrorBoundary>
   );
 };
