@@ -10,7 +10,7 @@ on:
     inputs:
       console-test-branch:
         type: choice
-        description: 'main: v0.73.5, develop: v0.73.5'
+        description: 'main: v0.74.0, develop: v0.74.0'
         options:
           - main
           - develop
