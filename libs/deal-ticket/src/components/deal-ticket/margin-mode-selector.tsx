@@ -89,7 +89,7 @@ export const MarginChange = ({
       openVolume,
       marketId,
       orderMarginAccountBalance: orderMarginAccountBalance || '0',
-      includeCollateralIncreaseInAvailableCollateral: true,
+      includeRequiredPositionMarginInAvailableCollateral: true,
       orders,
     },
     skip
