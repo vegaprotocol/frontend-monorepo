@@ -48,5 +48,8 @@ export const DEFAULT_CACHE_CONFIG: InMemoryCacheConfig = {
     statistics: {
       keyFields: false,
     },
+    Game: {
+      keyFields: false,
+    },
   },
 };

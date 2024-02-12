@@ -11,7 +11,7 @@ import { useEffect } from 'react';
 import { useT } from '../../../lib/use-t';
 import { matchPath, useLocation, useNavigate } from 'react-router-dom';
 import { Routes } from '../../../lib/links';
-import { useCurrentEpochInfoQuery } from './__generated__/Epoch';
+import { useCurrentEpochInfoQuery } from '../../../lib/hooks/__generated__/Epoch';
 
 const REFETCH_INTERVAL = 60 * 60 * 1000; // 1h
 const NON_ELIGIBLE_REFERRAL_SET_TOAST_ID = 'non-eligible-referral-set';

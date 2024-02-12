@@ -34,9 +34,10 @@ import {
 } from './hooks/use-referral';
 import { ApplyCodeForm, ApplyCodeFormContainer } from './apply-code-form';
 import { useReferralProgram } from './hooks/use-referral-program';
-import { useCurrentEpochInfoQuery } from './hooks/__generated__/Epoch';
+import { useCurrentEpochInfoQuery } from '../../lib/hooks/__generated__/Epoch';
 import { QUSDTooltip } from './qusd-tooltip';
 import { CodeTile, StatTile, Tile } from './tile';
+import { areTeamGames, useGames } from '../../lib/hooks/use-games';
 
 export const ReferralStatistics = () => {
   const { pubKey } = useVegaWallet();
@@ -576,7 +577,8 @@ export const RefereesTable = ({
 };
 
 const Team = ({ teamId }: { teamId?: string }) => {
-  const { team, games, members } = useTeam(teamId);
+  const { team, members } = useTeam(teamId);
+  const { data: games } = useGames(teamId);
 
   if (!team) return null;
 
@@ -585,7 +587,10 @@ const Team = ({ teamId }: { teamId?: string }) => {
       <TeamAvatar teamId={team.teamId} imgUrl={team.avatarUrl} />
       <div className="flex flex-col items-start gap-1 lg:gap-3">
         <h1 className="calt text-2xl lg:text-3xl xl:text-5xl">{team.name}</h1>
-        <TeamStats members={members} games={games} />
+        <TeamStats
+          members={members}
+          games={areTeamGames(games) ? games : undefined}
+        />
       </div>
     </Tile>
   );

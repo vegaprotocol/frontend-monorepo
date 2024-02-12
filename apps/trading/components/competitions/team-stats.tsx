@@ -11,11 +11,11 @@ import { formatNumberRounded } from '@vegaprotocol/utils';
 import {
   type TeamStats as ITeamStats,
   type Member,
-  type TeamGame,
 } from '../../lib/hooks/use-team';
 import { useT } from '../../lib/use-t';
 import { DispatchMetricLabels, type DispatchMetric } from '@vegaprotocol/types';
 import classNames from 'classnames';
+import { type TeamGame } from '../../lib/hooks/use-games';
 
 export const TeamStats = ({
   stats,
