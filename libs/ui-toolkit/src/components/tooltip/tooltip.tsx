@@ -1,5 +1,5 @@
-import type { ReactNode } from 'react';
-import React from 'react';
+import type { ReactNode, TouchEvent } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Provider,
   Root,
@@ -12,10 +12,10 @@ import classNames from 'classnames';
 
 const tooltipContentClasses =
   'max-w-sm bg-vega-light-100 dark:bg-vega-dark-100 border border-vega-light-200 dark:border-vega-dark-200 px-2 py-1 z-20 rounded text-xs text-black dark:text-white break-word';
+
 export interface TooltipProps {
   children: React.ReactElement;
   description?: string | ReactNode;
-  open?: boolean;
   align?: 'start' | 'center' | 'end';
   side?: 'top' | 'right' | 'bottom' | 'left';
   sideOffset?: number;
@@ -28,20 +28,50 @@ export const TOOLTIP_TRIGGER_CLASS_NAME = (underline?: boolean) =>
       underline,
   });
 
+const useLongPress = (callback: (e: TouchEvent<HTMLElement>) => void) => {
+  const timer = useRef<number>();
+
+  const onTouchStart = (e: TouchEvent<HTMLElement>) => {
+    e.preventDefault();
+    timer.current = setTimeout(callback, 1000);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (timer.current) {
+        clearInterval(timer.current);
+      }
+    };
+  }, []);
+
+  return {
+    onTouchStart,
+  };
+};
+
 // Conditionally rendered tooltip if description content is provided.
 export const Tooltip = ({
   children,
   description,
-  open,
   sideOffset,
   align = 'start',
   side = 'bottom',
   underline,
-}: TooltipProps) =>
-  description ? (
+}: TooltipProps) => {
+  const [open, setOpen] = useState(false);
+
+  const { onTouchStart } = useLongPress(() => {
+    setOpen(true);
+  });
+
+  return description ? (
     <Provider delayDuration={200} skipDelayDuration={100}>
-      <Root open={open}>
-        <Trigger asChild className={TOOLTIP_TRIGGER_CLASS_NAME(underline)}>
+      <Root open={open} onOpenChange={setOpen}>
+        <Trigger
+          asChild
+          className={TOOLTIP_TRIGGER_CLASS_NAME(underline)}
+          onTouchStart={onTouchStart}
+        >
           {children}
         </Trigger>
         {description && (
@@ -67,6 +97,7 @@ export const Tooltip = ({
   ) : (
     children
   );
+};
 
 export const TextChildrenTooltip = ({
   children,
