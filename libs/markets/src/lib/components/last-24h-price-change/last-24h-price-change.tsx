@@ -2,6 +2,7 @@ import { type ReactNode } from 'react';
 import {
   addDecimalsFormatNumber,
   formatNumberPercentage,
+  getDateTimeFormat,
   priceChange,
   priceChangePercentage,
 } from '@vegaprotocol/utils';
@@ -35,7 +36,33 @@ export const Last24hPriceChange = ({
   }
 
   if (fiveDaysCandles.length < 24) {
-    return nonIdeal;
+    return (
+      <Tooltip
+        description={
+          <span className="justify-start">
+            {t(
+              'Market has not been active for 24 hours. The price change between {{start}} and {{end}} is:',
+              {
+                start: getDateTimeFormat().format(
+                  new Date(fiveDaysCandles[0].periodStart)
+                ),
+                end: getDateTimeFormat().format(
+                  new Date(
+                    fiveDaysCandles[fiveDaysCandles.length - 1].periodStart
+                  )
+                ),
+              }
+            )}
+            <PriceChangeCell
+              candles={fiveDaysCandles.map((c) => c.close) || []}
+              decimalPlaces={decimalPlaces}
+            />
+          </span>
+        }
+      >
+        <span>{nonIdeal}</span>
+      </Tooltip>
+    );
   }
 
   if (oneDayCandles.length < 24) {

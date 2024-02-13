@@ -3,6 +3,7 @@
   "{{probability}} probability price bounds": "{{probability}} probability price bounds",
   "24 hour change is unavailable at this time. The price change in the last 120 hours is:": "24 hour change is unavailable at this time. The price change in the last 120 hours is:",
   "24 hour change is unavailable at this time. The volume change in the last 120 hours is {{candleVolumeValue}}": "24 hour change is unavailable at this time. The volume change in the last 120 hours is {{candleVolumeValue}}",
+  "Market has not been active for 24 hours. The price change between {{start}} and {{end}} is:": "Market has not been active for 24 hours. The price change between {{start}} and {{end}} is:",
   "A concept derived from traditional markets. It is a calculated value for the ‘current market price’ on a market.": "A concept derived from traditional markets. It is a calculated value for the ‘current market price’ on a market.",
   "A number that will be calculated by an appropriate stochastic risk model, dependent on the type of risk model used and its parameters.": "A number that will be calculated by an appropriate stochastic risk model, dependent on the type of risk model used and its parameters.",
   "A sliding penalty for how much an LP bond is slashed if an LP fails to reach the minimum SLA. This is a network parameter.": "A sliding penalty for how much an LP bond is slashed if an LP fails to reach the minimum SLA. This is a network parameter.",
