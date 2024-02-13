@@ -18,7 +18,12 @@ export const useCandles = ({ marketId }: { marketId?: string }) => {
     skip: !marketId,
   });
 
-  const fiveDaysCandles = data?.filter(Boolean);
+  const fiveDaysCandles = data?.filter((c) => {
+    if (c.open === '' || c.close === '' || c.high === '' || c.close === '') {
+      return false;
+    }
+    return true;
+  });
 
   const oneDayCandles = fiveDaysCandles?.filter((candle) =>
     isCandleLessThan24hOld(candle, yesterday)

@@ -56,7 +56,6 @@ export const MarketHeaderStats = ({ market }: MarketHeaderStatsProps) => {
         <Last24hPriceChange
           marketId={market.id}
           decimalPlaces={market.decimalPlaces}
-          fallback={<span>-</span>}
         />
       </HeaderStat>
       <HeaderStat heading={t('Volume (24h)')} testId="market-volume">

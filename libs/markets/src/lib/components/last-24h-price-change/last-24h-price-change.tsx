@@ -1,7 +1,6 @@
 import {
   addDecimalsFormatNumber,
   formatNumberPercentage,
-  isNumeric,
   priceChange,
   priceChangePercentage,
 } from '@vegaprotocol/utils';
@@ -14,29 +13,24 @@ import { useT } from '../../use-t';
 
 interface Props {
   marketId?: string;
-  decimalPlaces?: number;
-  initialValue?: string[];
+  decimalPlaces: number;
   isHeader?: boolean;
   noUpdate?: boolean;
-  // render prop for no price change
-  fallback?: React.ReactNode;
 }
 
-export const Last24hPriceChange = ({
-  marketId,
-  decimalPlaces,
-  initialValue,
-  fallback,
-}: Props) => {
+export const Last24hPriceChange = ({ marketId, decimalPlaces }: Props) => {
   const t = useT();
   const { oneDayCandles, error, fiveDaysCandles } = useCandles({
     marketId,
   });
-  if (
-    fiveDaysCandles &&
-    fiveDaysCandles.length > 0 &&
-    (!oneDayCandles || oneDayCandles?.length === 0)
-  ) {
+
+  const fallback = <span>{'-'}</span>;
+
+  if (error || !oneDayCandles || !fiveDaysCandles) {
+    return fallback;
+  }
+
+  if (oneDayCandles.length < 24) {
     return (
       <Tooltip
         description={
@@ -51,16 +45,12 @@ export const Last24hPriceChange = ({
           </span>
         }
       >
-        <span>{fallback}</span>
+        {fallback}
       </Tooltip>
     );
   }
 
-  if (error || !isNumeric(decimalPlaces)) {
-    return <span>{fallback}</span>;
-  }
-
-  const candles = oneDayCandles?.map((c) => c.close) || initialValue || [];
+  const candles = oneDayCandles?.map((c) => c.close) || [];
   const change = priceChange(candles);
   const changePercentage = priceChangePercentage(candles);
 
