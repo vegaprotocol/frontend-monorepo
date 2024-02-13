@@ -16,7 +16,7 @@ import { useT } from '../../use-t';
 interface Props {
   marketId?: string;
   decimalPlaces: number;
-  fallback: ReactNode;
+  fallback?: ReactNode;
 }
 
 export const Last24hPriceChange = ({
