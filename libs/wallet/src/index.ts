@@ -9,6 +9,15 @@ export {
   useConnect,
   useDisconnect,
   useSendTransaction,
+  usePubKeys,
+  useWallet,
 } from './wallet';
+
+export { ConnectDialog } from './connect-dialog-v2';
+
+// old stuff
+export { useVegaWalletDialogStore } from './connect-dialog/vega-wallet-dialog-store';
+export { useVegaWallet } from './use-vega-wallet';
+export { isBrowserWalletInstalled } from './utils';
 
 export { fairground, stagnet, Chain } from './chains';

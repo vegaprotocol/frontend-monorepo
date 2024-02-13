@@ -11,18 +11,26 @@ import {
   type Store,
   type TransactionParams,
 } from './types';
+import { useStore } from 'zustand';
 
 export function createConfig(cfg: Config): Wallet {
   const connectors = createStore(() => cfg.connectors);
 
+  const chain = cfg.chains.find((c) => c.id === cfg.defaultChainId);
+
+  if (!chain) {
+    throw new Error('default chain not found in config');
+  }
+
   const store = createStore<Store>((set) => ({
-    chainId: cfg.chains[0].id,
+    chainId: chain.id,
     status: 'disconnected',
     current: undefined,
     keys: [],
     setKeys: (keys) => {
       set({ keys });
     },
+    error: undefined,
   }));
 
   async function connect(id: string) {
@@ -35,14 +43,14 @@ export function createConfig(cfg: Config): Wallet {
     if (!connector) return;
 
     try {
-      store.setState({ status: 'connecting', current: id });
+      store.setState({ status: 'connecting', current: id, error: undefined });
 
       const connectWalletRes = await connector.connectWallet(
         store.getState().chainId
       );
 
       if ('error' in connectWalletRes) {
-        throw new Error('failed to connect');
+        throw new Error(connectWalletRes.error);
       }
 
       const listKeysRes = await connector.listKeys();
@@ -56,8 +64,12 @@ export function createConfig(cfg: Config): Wallet {
         status: 'connected',
       });
     } catch (err) {
-      console.error(err);
-      store.setState({ status: 'disconnected', current: undefined, keys: [] });
+      store.setState({
+        status: 'disconnected',
+        current: undefined,
+        keys: [],
+        error: err instanceof Error ? err.message : 'failed to connect',
+      });
     }
   }
 
@@ -95,11 +107,16 @@ export function createConfig(cfg: Config): Wallet {
     }
   }
 
+  function setStoreState(state: Partial<Store>) {
+    store.setState(state);
+  }
+
   return {
     store,
     connect,
     disconnect,
     sendTransaction,
+    setStoreState,
 
     get connectors() {
       return connectors.getState();
@@ -128,6 +145,13 @@ export function useConfig() {
   return context;
 }
 
+export function useWallet<T>(selector: (store: Store) => T) {
+  const config = useConfig();
+  const store = useStore(config.store, selector);
+
+  return store;
+}
+
 export function useConnect() {
   const config = useConfig();
   return {
@@ -147,5 +171,12 @@ export function useSendTransaction() {
   const config = useConfig();
   return {
     sendTransaction: config.sendTransaction,
+  };
+}
+
+export function usePubKeys() {
+  const keys = useWallet((store) => store.keys);
+  return {
+    pubKeys: keys,
   };
 }

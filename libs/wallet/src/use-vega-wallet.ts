@@ -1,24 +1,39 @@
-import { useCallback, useContext } from 'react';
-import { useVegaWalletDialogStore } from './connect-dialog/vega-wallet-dialog-store';
-import { VegaWalletContext } from './context';
+import { create } from 'zustand';
+import { useConfig } from './wallet';
+import { useVegaWalletDialogStore } from './connect-dialog';
 
-export function useVegaWallet() {
-  const context = useContext(VegaWalletContext);
-  if (context === undefined) {
-    throw new Error('useVegaWallet must be used within VegaWalletProvider');
-  }
-  return context;
+interface PubKeyStore {
+  pubKey: string | null;
+  setPubKey: (key: string) => void;
 }
 
-export function useReconnectVegaWallet() {
-  const openVegaWalletDialog = useVegaWalletDialogStore(
-    (store) => store.openVegaWalletDialog
-  );
-  const { disconnect } = useVegaWallet();
-  const reconnect = useCallback(async () => {
-    await disconnect();
-    openVegaWalletDialog();
-  }, [disconnect, openVegaWalletDialog]);
+export const useVegaWalletStore = create<PubKeyStore>()((set) => ({
+  pubKey: null,
+  setPubKey: (key: string) => set({ pubKey: key }),
+}));
 
-  return reconnect;
-}
+// Only for vega apps that expect a single selected key
+export const useVegaWallet = () => {
+  const store = useVegaWalletStore();
+  const dialog = useVegaWalletDialogStore();
+
+  const config = useConfig();
+
+  return {
+    pubKey: store.pubKey,
+    selectPubKey: store.setPubKey,
+    onConnect: () => {
+      const state = config.store.getState();
+
+      if (state.keys.length) {
+        store.setPubKey(state.keys[0].publicKey);
+      }
+
+      if (state.status === 'connected') {
+        setTimeout(() => {
+          dialog.updateVegaWalletDialog(false);
+        }, 1000);
+      }
+    },
+  };
+};

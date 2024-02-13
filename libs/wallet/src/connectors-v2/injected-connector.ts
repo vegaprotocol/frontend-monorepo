@@ -8,7 +8,9 @@ export class InjectedConnector implements Connector {
       await window.vega.connectWallet({ chainId });
       return { success: true };
     } catch (err) {
-      return { error: 'failed to connect' };
+      return {
+        error: err instanceof Error ? err.message : 'failed to connect',
+      };
     }
   }
 

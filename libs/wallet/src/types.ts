@@ -50,15 +50,22 @@ export type Key = {
   name: string;
 };
 
+export type Status = 'disconnected' | 'connecting' | 'connected';
+
 export type Store = {
   chainId: string;
-  status: 'disconnected' | 'connecting' | 'connected';
+  status: Status;
   current: string | undefined;
   keys: Key[];
   setKeys: (keys: Key[]) => void;
+  error: string | undefined;
 };
 
-export type Config = { chains: Chain[]; connectors: Connector[] };
+export type Config = {
+  chains: Chain[];
+  defaultChainId: string;
+  connectors: Connector[];
+};
 
 export type Wallet = {
   store: StoreApi<Store>;
@@ -68,4 +75,5 @@ export type Wallet = {
   sendTransaction: (
     params: TransactionParams
   ) => Promise<TransactionResponse | IWalletError>;
+  setStoreState: (state: Partial<Store>) => void;
 };

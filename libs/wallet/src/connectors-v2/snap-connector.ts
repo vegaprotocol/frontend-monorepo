@@ -37,7 +37,9 @@ export class SnapConnector implements Connector {
 
       return { success: true };
     } catch (err) {
-      return { error: 'failed to connect' };
+      return {
+        error: err instanceof Error ? err.message : 'failed to connect',
+      };
     }
   }
 

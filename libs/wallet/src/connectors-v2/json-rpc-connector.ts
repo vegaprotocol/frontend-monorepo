@@ -24,20 +24,33 @@ export class JsonRpcConnector implements Connector {
         throw new Error('incorrect chain id');
       }
 
-      const { response } = await this.request(JsonRpcMethod.ConnectWallet, {
-        hostname: window.location.hostname,
-      });
+      const { response, data } = await this.request(
+        JsonRpcMethod.ConnectWallet,
+        {
+          hostname: window.location.hostname,
+        }
+      );
 
       const token = response.headers.get('Authorization');
 
-      if (response.ok && token) {
-        this.token = token;
-        return { success: true };
+      if (!response.ok) {
+        if ('error' in data) {
+          return { error: data.error.data };
+        }
+
+        return { error: 'failed to connect' };
       }
 
-      return { error: 'failed to connect' };
+      if (!token) {
+        return { error: 'failed to connect' };
+      }
+
+      this.token = token;
+      return { success: true };
     } catch (err) {
-      return { error: 'failed to connect' };
+      return {
+        error: err instanceof Error ? err.message : 'failed to connect',
+      };
     }
   }
 

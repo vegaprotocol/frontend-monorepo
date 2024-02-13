@@ -17,7 +17,7 @@ import {
 import { VegaWalletContext } from './context';
 import { WALLET_KEY, WALLET_RISK_ACCEPTED_KEY } from './storage';
 import { ViewConnector } from './connectors';
-import { useLocalStorage } from '@vegaprotocol/react-helpers';
+// import { useLocalStorage } from '@vegaprotocol/react-helpers';
 import { DEFAULT_KEEP_ALIVE, useIsAlive } from './use-is-alive';
 
 type Networks =
@@ -149,9 +149,9 @@ export const VegaWalletProvider = ({
     return connector.current.sendTx(pubkey, transaction);
   }, []);
 
-  const [riskAcceptedValue] = useLocalStorage(WALLET_RISK_ACCEPTED_KEY);
-  const acknowledgeNeeded =
-    config.network === 'MAINNET' && riskAcceptedValue !== 'true';
+  // const [riskAcceptedValue] = useLocalStorage(WALLET_RISK_ACCEPTED_KEY);
+  // const acknowledgeNeeded =
+  //   config.network === 'MAINNET' && riskAcceptedValue !== 'true';
 
   const isAlive = useIsAlive(
     connector.current && pubKey ? connector.current : null,
@@ -188,7 +188,7 @@ export const VegaWalletProvider = ({
       disconnect,
       sendTx,
       fetchPubKeys,
-      acknowledgeNeeded,
+      acknowledgeNeeded: false,
       isAlive,
     };
   }, [
@@ -201,7 +201,6 @@ export const VegaWalletProvider = ({
     disconnect,
     sendTx,
     fetchPubKeys,
-    acknowledgeNeeded,
     isAlive,
   ]);
 
