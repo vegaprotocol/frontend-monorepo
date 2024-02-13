@@ -25,7 +25,7 @@ export const Last24hPriceChange = ({
   fallback,
 }: Props) => {
   const t = useT();
-  const { oneDayCandles, error, fiveDaysCandles } = useCandles({
+  const { oneDayCandles, fiveDaysCandles, error } = useCandles({
     marketId,
   });
 
