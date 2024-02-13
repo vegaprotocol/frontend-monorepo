@@ -15,7 +15,6 @@ const mockData = [
     periodStart: today.toISOString(),
     __typename: 'Candle',
   },
-  null,
   {
     high: '6309988',
     low: '6296335',
