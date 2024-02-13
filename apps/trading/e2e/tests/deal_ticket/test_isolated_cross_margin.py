@@ -10,7 +10,7 @@ tab_positions = "tab-positions"
 margin_row = '[col-id="margin"]'
 
 current_margin = "deal-ticket-fee-current-margin"
-available_collaterals = "deal-ticket-fee-available-collateral"
+available_collateral = "deal-ticket-fee-available-collateral"
 additional_margin_required = "deal-ticket-fee-additional-margin-required"
 liquidation_estimate = "deal-ticket-fee-liquidation-estimate"
 dialog_content = "dialog-content"
