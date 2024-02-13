@@ -64,7 +64,9 @@ export const ProposalSummary = ({
   return (
     <div className="w-auto max-w-lg border-2 border-solid border-vega-light-100 dark:border-vega-dark-200 p-5">
       {id && <ProposalStatusIcon id={id} />}
-      {rationale?.title && <h1 className="text-xl pb-1">{rationale.title}</h1>}
+      {rationale?.title && (
+        <h1 className="text-xl pb-1 break-all">{rationale.title}</h1>
+      )}
       {rationale?.description && (
         <div className="pt-2 text-sm leading-tight">
           <ReactMarkdown
