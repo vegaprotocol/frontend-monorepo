@@ -66,7 +66,7 @@ def test_check_cross_isolated_margin_info(
     page.goto(f"/#/markets/{continuous_market}")
     expect(page.get_by_test_id(current_margin)).to_have_text(
         "Current margin874.21992 tDAI")
-    expect(page.get_by_test_id(available_collaterals)
+    expect(page.get_by_test_id(available_collateral)
            ).to_have_text("Available collateral998,084.95183 tDAI")
     expect(page.get_by_test_id(additional_margin_required)
            ).to_have_text("Additional margin required0.00 tDAI")
