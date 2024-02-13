@@ -1,3 +1,4 @@
+import { type ReactNode } from 'react';
 import {
   addDecimalsFormatNumber,
   formatNumberPercentage,
@@ -14,20 +15,27 @@ import { useT } from '../../use-t';
 interface Props {
   marketId?: string;
   decimalPlaces: number;
-  isHeader?: boolean;
-  noUpdate?: boolean;
+  fallback: ReactNode;
 }
 
-export const Last24hPriceChange = ({ marketId, decimalPlaces }: Props) => {
+export const Last24hPriceChange = ({
+  marketId,
+  decimalPlaces,
+  fallback,
+}: Props) => {
   const t = useT();
   const { oneDayCandles, error, fiveDaysCandles } = useCandles({
     marketId,
   });
 
-  const fallback = <span>{'-'}</span>;
+  const nonIdeal = fallback || <span>{'-'}</span>;
 
   if (error || !oneDayCandles || !fiveDaysCandles) {
-    return fallback;
+    return nonIdeal;
+  }
+
+  if (fiveDaysCandles.length < 24) {
+    return nonIdeal;
   }
 
   if (oneDayCandles.length < 24) {
@@ -45,7 +53,7 @@ export const Last24hPriceChange = ({ marketId, decimalPlaces }: Props) => {
           </span>
         }
       >
-        {fallback}
+        <span>{nonIdeal}</span>
       </Tooltip>
     );
   }

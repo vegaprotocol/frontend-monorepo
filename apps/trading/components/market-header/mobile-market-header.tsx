@@ -40,7 +40,7 @@ export const MobileMarketHeader = () => {
             data-testid="popover-trigger"
             className="min-w-0 flex gap-1 items-center"
           >
-            <h1 className="flex-grow whitespace-nowrap overflow-hidden text-ellipsis items-center">
+            <h1 className="whitespace-nowrap overflow-hidden text-ellipsis items-center">
               <span className="">
                 {data
                   ? data.tradableInstrument.instrument.code
@@ -88,6 +88,7 @@ export const MobileMarketHeader = () => {
                     <Last24hPriceChange
                       marketId={data.id}
                       decimalPlaces={data.decimalPlaces}
+                      fallback={<span />} // dont render anything so price is vertically centered
                     />
                   </span>
                 </span>
