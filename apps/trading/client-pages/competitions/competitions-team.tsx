@@ -124,7 +124,7 @@ const TeamPage = ({
             onClick={() => setShowGames(true)}
             data-testid="games-toggle"
           >
-            {t('Games {{games}}', {
+            {t('Results {{games}}', {
               replace: {
                 games: gamesLoading ? '' : games ? `(${games.length})` : '(0)',
               },
@@ -168,7 +168,7 @@ const Games = ({
   }
 
   if (!games?.length) {
-    return <p>{t('No games')}</p>;
+    return <p>{t('No game results available')}</p>;
   }
 
   return (
