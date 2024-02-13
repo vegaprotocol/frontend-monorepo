@@ -81,7 +81,7 @@ def test_check_cross_isolated_margin_info(
         "Current margin874.21992 tDAI")
     expect(page.get_by_test_id(dialog_content).get_by_test_id(available_collaterals)
            ).to_have_text("Available collateral998,084.95183 tDAI")
-    expect(page.get_by_test_id(dialog_content).get_by_test_id(additional_margin_requiredd)
+    expect(page.get_by_test_id(dialog_content).get_by_test_id(additional_margin_required)
            ).to_have_text("Additional margin required2,703.11341 tDAI")
     expect(page.get_by_test_id(dialog_content).get_by_test_id(liquidation_estimate)
            ).to_have_text("Liquidation estimate76.07731 BTC")
