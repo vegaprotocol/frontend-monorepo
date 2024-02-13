@@ -29,7 +29,7 @@ export type EstimatePositionQueryVariables = Types.Exact<{
   orderMarginAccountBalance: Types.Scalars['String'];
   marginMode: Types.MarginMode;
   marginFactor?: Types.InputMaybe<Types.Scalars['String']>;
-  includeCollateralIncreaseInAvailableCollateral?: Types.InputMaybe<Types.Scalars['Boolean']>;
+  includeRequiredPositionMarginInAvailableCollateral?: Types.InputMaybe<Types.Scalars['Boolean']>;
 }>;
 
 
@@ -130,7 +130,7 @@ export function usePositionsSubscriptionSubscription(baseOptions: Apollo.Subscri
 export type PositionsSubscriptionSubscriptionHookResult = ReturnType<typeof usePositionsSubscriptionSubscription>;
 export type PositionsSubscriptionSubscriptionResult = Apollo.SubscriptionResult<PositionsSubscriptionSubscription>;
 export const EstimatePositionDocument = gql`
-    query EstimatePosition($marketId: ID!, $openVolume: String!, $averageEntryPrice: String!, $orders: [OrderInfo!], $marginAccountBalance: String!, $generalAccountBalance: String!, $orderMarginAccountBalance: String!, $marginMode: MarginMode!, $marginFactor: String, $includeCollateralIncreaseInAvailableCollateral: Boolean) {
+    query EstimatePosition($marketId: ID!, $openVolume: String!, $averageEntryPrice: String!, $orders: [OrderInfo!], $marginAccountBalance: String!, $generalAccountBalance: String!, $orderMarginAccountBalance: String!, $marginMode: MarginMode!, $marginFactor: String, $includeRequiredPositionMarginInAvailableCollateral: Boolean) {
   estimatePosition(
     marketId: $marketId
     openVolume: $openVolume
@@ -141,7 +141,7 @@ export const EstimatePositionDocument = gql`
     orderMarginAccountBalance: $orderMarginAccountBalance
     marginMode: $marginMode
     marginFactor: $marginFactor
-    includeCollateralIncreaseInAvailableCollateral: $includeCollateralIncreaseInAvailableCollateral
+    includeRequiredPositionMarginInAvailableCollateral: $includeRequiredPositionMarginInAvailableCollateral
     scaleLiquidationPriceToMarketDecimals: true
   ) {
     collateralIncreaseEstimate {
@@ -185,7 +185,7 @@ export const EstimatePositionDocument = gql`
  *      orderMarginAccountBalance: // value for 'orderMarginAccountBalance'
  *      marginMode: // value for 'marginMode'
  *      marginFactor: // value for 'marginFactor'
- *      includeCollateralIncreaseInAvailableCollateral: // value for 'includeCollateralIncreaseInAvailableCollateral'
+ *      includeRequiredPositionMarginInAvailableCollateral: // value for 'includeRequiredPositionMarginInAvailableCollateral'
  *   },
  * });
  */
