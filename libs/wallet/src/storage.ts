@@ -1,9 +1,11 @@
 import { LocalStorage } from '@vegaprotocol/utils';
 
 interface ConnectorConfig {
-  token: string | null;
-  connector: 'injected' | 'jsonRpc' | 'view' | 'snap';
-  url: string | null;
+  type: 'injected' | 'jsonRpc' | 'readOnly' | 'snap';
+  url?: string;
+  chainId?: string;
+  token?: string;
+  pubKey?: string;
 }
 
 export const WALLET_CONFIG = 'vega_wallet_config';

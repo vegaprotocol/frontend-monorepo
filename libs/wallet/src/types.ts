@@ -22,9 +22,9 @@ export interface TransactionParams {
 }
 
 export interface Connector {
-  id: string;
+  readonly id: string;
 
-  connectWallet(chainId: string): Promise<{ success: boolean } | IWalletError>;
+  connectWallet(chainId?: string): Promise<{ success: boolean } | IWalletError>;
 
   disconnectWallet(): Promise<{ success: boolean } | IWalletError>;
 

@@ -1,19 +1,22 @@
+import { clearConfig, setConfig } from '../storage';
 import {
   JsonRpcMethod,
   type Connector,
   type TransactionParams,
 } from '../types';
 
-type JsonRpcConnectorConfig = { url: string };
+type JsonRpcConnectorConfig = { url: string; token?: string };
 
 export class JsonRpcConnector implements Connector {
-  id = 'json-rpc';
-  config: JsonRpcConnectorConfig;
+  readonly id = 'jsonRpc';
+
+  url: string;
+  token: string | undefined;
   requestId: number = 0;
-  token: string | null = null;
 
   constructor(config: JsonRpcConnectorConfig) {
-    this.config = config;
+    this.url = config.url;
+    this.token = config.token;
   }
 
   async connectWallet(desiredChainId: string) {
@@ -24,28 +27,33 @@ export class JsonRpcConnector implements Connector {
         throw new Error('incorrect chain id');
       }
 
-      const { response, data } = await this.request(
-        JsonRpcMethod.ConnectWallet,
-        {
-          hostname: window.location.hostname,
+      if (!this.token) {
+        const { response, data } = await this.request(
+          JsonRpcMethod.ConnectWallet,
+          {
+            hostname: window.location.hostname,
+          }
+        );
+
+        const token = response.headers.get('Authorization');
+
+        if (!response.ok) {
+          if ('error' in data) {
+            return { error: data.error.data };
+          }
+
+          return { error: 'failed to connect' };
         }
-      );
 
-      const token = response.headers.get('Authorization');
-
-      if (!response.ok) {
-        if ('error' in data) {
-          return { error: data.error.data };
+        if (!token) {
+          return { error: 'failed to connect' };
         }
 
-        return { error: 'failed to connect' };
+        this.token = token;
       }
 
-      if (!token) {
-        return { error: 'failed to connect' };
-      }
+      setConfig({ type: this.id, token: this.token, chainId, url: this.url });
 
-      this.token = token;
       return { success: true };
     } catch (err) {
       return {
@@ -57,6 +65,7 @@ export class JsonRpcConnector implements Connector {
   async disconnectWallet() {
     try {
       await this.request(JsonRpcMethod.DisconnectWallet);
+      clearConfig();
       return { success: true };
     } catch (err) {
       return { error: 'failed to disconnect' };
@@ -116,7 +125,7 @@ export class JsonRpcConnector implements Connector {
       headers.set('Authorization', this.token);
     }
 
-    const response = await fetch(this.config.url, {
+    const response = await fetch(this.url, {
       method: 'POST',
       headers,
       body: JSON.stringify({
@@ -126,7 +135,13 @@ export class JsonRpcConnector implements Connector {
         params,
       }),
     });
+
     const data = await response.json();
+
+    if (!response.ok) {
+      this.token = undefined;
+    }
+
     return {
       data,
       response,

@@ -80,6 +80,8 @@ export function createConfig(cfg: Config): Wallet {
 
     if (!connector) return;
 
+    await connector.disconnectWallet();
+
     store.setState({ status: 'disconnected', current: undefined, keys: [] });
   }
 

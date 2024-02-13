@@ -1,6 +1,9 @@
-export { InjectedConnector } from './connectors-v2/injected-connector';
-export { SnapConnector } from './connectors-v2/snap-connector';
-export { JsonRpcConnector } from './connectors-v2/json-rpc-connector';
+export {
+  InjectedConnector,
+  SnapConnector,
+  JsonRpcConnector,
+  ReadOnlyConnector,
+} from './connectors-v2';
 export * from './types';
 export { createConfig, VegaWalletProvider } from './wallet';
 
@@ -19,5 +22,7 @@ export { ConnectDialog } from './connect-dialog-v2';
 export { useVegaWalletDialogStore } from './connect-dialog/vega-wallet-dialog-store';
 export { useVegaWallet } from './use-vega-wallet';
 export { isBrowserWalletInstalled } from './utils';
+export { useEagerConnect } from './use-eager-connect';
+export { getConfig } from './storage';
 
 export { fairground, stagnet, Chain } from './chains';

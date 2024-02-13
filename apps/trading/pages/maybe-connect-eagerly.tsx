@@ -1,33 +1,15 @@
-import { useSearchParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
 import { useEnvironment } from '@vegaprotocol/environment';
+import { useEagerConnect as useVegaEagerConnect } from '@vegaprotocol/wallet';
 import { useEagerConnect as useEthereumEagerConnect } from '@vegaprotocol/web3';
-// import {
-//   useEagerConnect as useVegaEagerConnect,
-//   useVegaWallet,
-// } from '@vegaprotocol/wallet';
-import { useGlobalStore } from '../stores';
-// import { useConnectors } from '../lib/vega-connectors';
 import { useTelemetryApproval } from '../lib/hooks/use-telemetry-approval';
 
 export const MaybeConnectEagerly = () => {
   const { VEGA_ENV, SENTRY_DSN } = useEnvironment();
-  const update = useGlobalStore((store) => store.update);
-  // const connectors = useConnectors();
-  // const eagerConnecting = useVegaEagerConnect(connectors);
   const [isTelemetryApproved] = useTelemetryApproval();
   useEthereumEagerConnect(
     isTelemetryApproved ? { dsn: SENTRY_DSN, env: VEGA_ENV } : {}
   );
+  useVegaEagerConnect();
 
-  // const { pubKey, connect } = useVegaWallet();
-  const [searchParams] = useSearchParams();
-  const [query] = useState(searchParams.get('address'));
-  // if (query && !pubKey) {
-  //   connect(connectors.view);
-  // }
-  // useEffect(() => {
-  //   update({ eagerConnecting });
-  // }, [update, eagerConnecting]);
   return null;
 };

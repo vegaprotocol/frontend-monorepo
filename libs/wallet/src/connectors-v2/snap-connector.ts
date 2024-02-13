@@ -1,3 +1,4 @@
+import { clearConfig, setConfig } from '../storage';
 import {
   JsonRpcMethod,
   type Connector,
@@ -11,18 +12,22 @@ enum EthereumMethod {
 }
 
 type SnapConfig = {
-  id: string;
   node: string;
   version: string;
+  snapId: string;
 };
 
 export class SnapConnector implements Connector {
-  id = 'snap';
+  readonly id = 'snap';
 
-  config: SnapConfig;
+  node: string;
+  version: string;
+  snapId: string;
 
   constructor(config: SnapConfig) {
-    this.config = config;
+    this.node = config.node;
+    this.version = config.version;
+    this.snapId = config.snapId;
   }
 
   async connectWallet(desiredChainId: string) {
@@ -35,6 +40,7 @@ export class SnapConnector implements Connector {
         throw new Error('incorrect chain id');
       }
 
+      setConfig({ type: this.id, chainId });
       return { success: true };
     } catch (err) {
       return {
@@ -44,15 +50,16 @@ export class SnapConnector implements Connector {
   }
 
   async disconnectWallet() {
-    console.warn('disconnectWallet not implemented');
-    return { error: 'failed to disconnect' };
+    clearConfig();
+    return { success: true };
+    // return { error: 'failed to disconnect' };
   }
 
   // deprecated, pass chain on connect
   async getChainId() {
     try {
       const res = await this.invokeSnap(JsonRpcMethod.GetChainId, {
-        networkEndpoints: [this.config.node],
+        networkEndpoints: [this.node],
       });
       return { chainId: res.chainID };
     } catch (err) {
@@ -80,7 +87,7 @@ export class SnapConnector implements Connector {
         publicKey: params.publicKey,
         sendingMode: params.sendingMode,
         transaction: params.transaction,
-        networkEndpoints: [this.config.node],
+        networkEndpoints: [this.node],
       });
 
       return {
@@ -95,14 +102,22 @@ export class SnapConnector implements Connector {
     }
   }
 
+  on() {
+    console.warn('events are not supported in json rpc wallet');
+  }
+
+  off() {
+    console.warn('events are not supported in json rpc wallet');
+  }
+
   ////////////////////////////////////
   // Snap methods
   ////////////////////////////////////
 
   async requestSnap() {
     const res = await this.request(EthereumMethod.RequestSnaps, {
-      [this.config.id]: {
-        version: this.config.version,
+      [this.snapId]: {
+        version: this.version,
       },
     });
     console.log(res);
@@ -111,13 +126,13 @@ export class SnapConnector implements Connector {
   async getSnap() {
     const snaps = await this.request(EthereumMethod.GetSnaps);
     return Object.values(snaps).find(
-      (s) => s.id === this.config.id && s.version === this.config.version
+      (s) => s.id === this.snapId && s.version === this.version
     );
   }
 
   async invokeSnap(method: JsonRpcMethod, params?: any) {
     return await this.request(EthereumMethod.InvokeSnap, {
-      snapId: this.config.id,
+      snapId: this.snapId,
       request: {
         method: method,
         params,
@@ -135,13 +150,5 @@ export class SnapConnector implements Connector {
       method,
       params,
     });
-  }
-
-  on() {
-    console.warn('events are not supported in json rpc wallet');
-  }
-
-  off() {
-    console.warn('events are not supported in json rpc wallet');
   }
 }
