@@ -95,7 +95,7 @@ def test_check_cross_isolated_margin_info(
         "notification")).not_to_be_visible()
     expect(page.get_by_test_id(dialog_content).get_by_test_id(current_margin)).to_have_text(
         "Current margin4,223.33332 tDAI")
-    expect(page.get_by_test_id(dialog_content).get_by_test_id(available_collaterals)
+    expect(page.get_by_test_id(dialog_content).get_by_test_id(available_collateral)
            ).to_have_text("Available collateral995,381.83843 tDAI")
     expect(page.get_by_test_id(dialog_content).get_by_test_id(additional_margin_required)
            ).to_have_text("Additional margin required0.00 tDAI")
