@@ -170,9 +170,12 @@ const ViewButton = ({
   onClick: () => void;
 }) => {
   const label = useViewLabel(view);
-  const className = classNames('py-2 px-4 min-w-[100px] capitalize text-sm', {
-    'bg-vega-clight-500 dark:bg-vega-cdark-500': isActive,
-  });
+  const className = classNames(
+    'py-2 px-4 capitalize text-sm whitespace-nowrap',
+    {
+      'bg-vega-clight-500 dark:bg-vega-cdark-500': isActive,
+    }
+  );
 
   return (
     <button data-testid={view} onClick={onClick} className={className}>

@@ -29,28 +29,35 @@ export const MobileMarketHeader = () => {
   if (!marketId) return null;
 
   return (
-    <div className="pl-3 pr-2 flex justify-between gap-2 h-10 bg-vega-clight-700 dark:bg-vega-cdark-700">
+    <div className="pl-3 pr-2 grid grid-cols-2 h-10 bg-vega-clight-700 dark:bg-vega-cdark-700">
       <FullScreenPopover
         open={openMarket}
         onOpenChange={(x) => {
           setOpenMarket(x);
         }}
         trigger={
-          <h1 className="flex gap-1 sm:gap-2 md:gap-4 items-center text-base leading-3 md:text-lg whitespace-nowrap">
-            {data
-              ? data.tradableInstrument.instrument.code
-              : t('Select market')}
-            <span
+          <button
+            data-testid="popover-trigger"
+            className="min-w-0 flex gap-1 items-center"
+          >
+            <h1 className="flex-grow whitespace-nowrap overflow-hidden text-ellipsis items-center">
+              <span className="">
+                {data
+                  ? data.tradableInstrument.instrument.code
+                  : t('Select market')}
+              </span>
+            </h1>
+            <VegaIcon
+              name={VegaIconNames.CHEVRON_DOWN}
+              size={16}
               className={classNames(
-                'transition-transform ease-in-out duration-300 flex',
+                'origin-center transition-transform ease-in-out duration-300 flex',
                 {
                   'rotate-180': openMarket,
                 }
               )}
-            >
-              <VegaIcon name={VegaIconNames.CHEVRON_DOWN} size={16} />
-            </span>
-          </h1>
+            />
+          </button>
         }
       >
         <MarketSelector
@@ -64,34 +71,39 @@ export const MobileMarketHeader = () => {
           setOpenPrice(x);
         }}
         trigger={
-          <span className="flex gap-2 items-end md:text-md whitespace-nowrap leading-3">
+          <button
+            data-testid="popover-trigger"
+            className="min-w-0 flex gap-2 items-center justify-end"
+          >
             {data && (
               <>
-                <span className="text-xs">
-                  <Last24hPriceChange
-                    marketId={data.id}
-                    decimalPlaces={data.decimalPlaces}
-                  />
+                <span className="min-w-0 flex flex-col items-end gap-0">
+                  <span className="text-sm">
+                    <MarketMarkPrice
+                      marketId={data.id}
+                      decimalPlaces={data.decimalPlaces}
+                    />
+                  </span>
+                  <span className="text-xs">
+                    <Last24hPriceChange
+                      marketId={data.id}
+                      decimalPlaces={data.decimalPlaces}
+                    />
+                  </span>
                 </span>
-                <span className="flex items-center gap-1">
-                  <MarketMarkPrice
-                    marketId={data.id}
-                    decimalPlaces={data.decimalPlaces}
-                  />
-                  <VegaIcon
-                    name={VegaIconNames.CHEVRON_DOWN}
-                    size={16}
-                    className={classNames(
-                      'transition-transform ease-in-out duration-300',
-                      {
-                        'rotate-180': openPrice,
-                      }
-                    )}
-                  />
-                </span>
+                <VegaIcon
+                  name={VegaIconNames.CHEVRON_DOWN}
+                  size={16}
+                  className={classNames(
+                    'min-w-0 transition-transform ease-in-out duration-300',
+                    {
+                      'rotate-180': openPrice,
+                    }
+                  )}
+                />
               </>
             )}
-          </span>
+          </button>
         }
       >
         {data && (
@@ -104,11 +116,11 @@ export const MobileMarketHeader = () => {
   );
 };
 
-export interface PopoverProps extends PopoverPrimitive.PopoverProps {
+interface PopoverProps extends PopoverPrimitive.PopoverProps {
   trigger: React.ReactNode | string;
 }
 
-export const FullScreenPopover = ({
+const FullScreenPopover = ({
   trigger,
   children,
   open,
@@ -116,7 +128,7 @@ export const FullScreenPopover = ({
 }: PopoverProps) => {
   return (
     <PopoverPrimitive.Root open={open} onOpenChange={onOpenChange}>
-      <PopoverPrimitive.Trigger data-testid="popover-trigger">
+      <PopoverPrimitive.Trigger asChild={true}>
         {trigger}
       </PopoverPrimitive.Trigger>
       <PopoverPrimitive.Portal>
