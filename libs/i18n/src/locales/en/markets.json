@@ -51,7 +51,7 @@
   "Market governance": "Market governance",
   "Market has not been active for 24 hours. The price change between {{start}} and {{end}} is:": "Market has not been active for 24 hours. The price change between {{start}} and {{end}} is:",
   "Market has not been active for 24 hours. The volume traded between {{start}} and {{end}} is:": "Market has not been active for 24 hours. The volume traded between {{start}} and {{end}} is:",
-"Market has not been active for 24 hours. The volume traded between {{start}} and {{end}} is {{candleVolumeValue}} for a total of {{candleVolumePrice}} {{quoteUnit}}": "Market has not been active for 24 hours. The volume traded between {{start}} and {{end}} is {{candleVolumeValue}} for a total of {{candleVolumePrice}} {{quoteUnit}}",
+  "Market has not been active for 24 hours. The volume traded between {{start}} and {{end}} is {{candleVolumeValue}} for a total of {{candleVolumePrice}} {{quoteUnit}}": "Market has not been active for 24 hours. The volume traded between {{start}} and {{end}} is {{candleVolumeValue}} for a total of {{candleVolumePrice}} {{quoteUnit}}",
   "Market ID": "Market ID",
   "Market price": "Market price",
   "Market specification": "Market specification",
