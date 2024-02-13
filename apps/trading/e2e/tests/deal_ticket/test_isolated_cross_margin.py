@@ -11,7 +11,7 @@ margin_row = '[col-id="margin"]'
 
 current_margin = "deal-ticket-fee-current-margin"
 available_collaterals = "deal-ticket-fee-available-collateral"
-additional_margin_requiredd = "deal-ticket-fee-additional-margin-required"
+additional_margin_required = "deal-ticket-fee-additional-margin-required"
 liquidation_estimate = "deal-ticket-fee-liquidation-estimate"
 dialog_content = "dialog-content"
 
