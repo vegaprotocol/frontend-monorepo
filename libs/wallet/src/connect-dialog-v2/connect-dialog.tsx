@@ -6,8 +6,9 @@ import {
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 import { useConfig, useConnect, useWallet } from '../wallet';
-import { type Status } from '../types';
+import { type ConnectorType, type Status } from '../types';
 import { useT } from '../use-t';
+import classNames from 'classnames';
 
 export const ConnectDialog = ({
   open,
@@ -62,15 +63,15 @@ const ConnectionOptions = ({
   }
 
   return (
-    <ul className="flex flex-col gap-2">
+    <ul className="grid grid-cols-2 gap-2">
       {connectors.map((c) => {
         return (
           <ConnectionOption
             key={c.id}
-            id={c.id as any}
+            id={c.id}
             onClick={async () => {
               const res = await connect(c.id);
-              if (res.success) {
+              if (res?.success) {
                 onConnect();
               }
             }}
@@ -85,7 +86,7 @@ const ConnectionOption = ({
   id,
   onClick,
 }: {
-  id: 'injected' | 'jsonRpc' | 'snap' | 'readOnly';
+  id: ConnectorType;
   onClick: () => void;
 }) => {
   const t = useT();
@@ -101,9 +102,7 @@ const ConnectionOption = ({
           className="flex gap-2 items-center capitalize"
           onClick={onClick}
         >
-          <span className="flex items-center justify-center w-8 h-8 rounded bg-vega-cdark-600 dark:bg-vega-clight-600 text-vega-clight-800 dark:text-vega-cdark-800">
-            <ConnectorIcon id={id} />
-          </span>
+          <ConnectorIcon id={id} />
           {t(`connector-${id}-title`)}
         </button>
       </Tooltip>
@@ -132,27 +131,52 @@ const ConnectionStatus = ({ status }: { status: Status }) => {
   return null;
 };
 
-const ConnectorIcon = ({
-  id,
-}: {
-  id: 'injected' | 'jsonRpc' | 'snap' | 'readOnly';
-}) => {
+const ConnectorIcon = ({ id }: { id: ConnectorType }) => {
+  const defaultWrapperClasses =
+    'flex items-center justify-center w-8 h-8 rounded';
   switch (id) {
     case 'injected': {
-      return <VLogo className="w-4 h-4" />;
+      return (
+        <span
+          className={classNames(
+            defaultWrapperClasses,
+            'bg-vega-cdark-600 dark:bg-vega-clight-600 text-vega-clight-800 dark:text-vega-cdark-800'
+          )}
+        >
+          <VLogo className="w-4 h-4" />
+        </span>
+      );
     }
     case 'jsonRpc': {
       return (
-        <span className="text-xs">
+        <span
+          className={classNames(
+            defaultWrapperClasses,
+            'bg-vega-cdark-600 dark:bg-vega-clight-600 text-vega-clight-800 dark:text-vega-cdark-800 text-xs'
+          )}
+        >
           <span className="relative -top-0.5">{'>_'}</span>
         </span>
       );
     }
     case 'snap': {
-      return <VegaIcon name={VegaIconNames.METAMASK} size={24} />;
+      return (
+        <span className={classNames(defaultWrapperClasses, 'border')}>
+          <VegaIcon name={VegaIconNames.METAMASK} size={24} />
+        </span>
+      );
     }
     case 'readOnly': {
-      return <VegaIcon name={VegaIconNames.EYE} size={20} />;
+      return (
+        <span
+          className={classNames(
+            defaultWrapperClasses,
+            'bg-vega-blue-500 text-vega-clight-800'
+          )}
+        >
+          <VegaIcon name={VegaIconNames.EYE} size={20} />
+        </span>
+      );
     }
   }
 };

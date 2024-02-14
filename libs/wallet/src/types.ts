@@ -23,8 +23,10 @@ export interface TransactionParams {
 
 type VegaWalletEvent = 'client.disconnected';
 
+export type ConnectorType = 'injected' | 'jsonRpc' | 'snap' | 'readOnly';
+
 export interface Connector {
-  readonly id: string;
+  readonly id: ConnectorType;
 
   bindStore(state: StoreApi<Store>): void;
 
