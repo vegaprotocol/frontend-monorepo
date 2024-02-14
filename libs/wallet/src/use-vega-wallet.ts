@@ -14,7 +14,7 @@ export const useVegaWallet = () => {
     isReadOnly: store.current === 'readOnly',
     disconnect: config.disconnect,
     refreshKeys: config.refreshKeys,
-    isAlive: store.keys.length > 0,
+    isAlive: store.status === 'connected',
     sendTx: (pubKey: string, transaction: Transaction) =>
       // TODO: figure out how to type this better
       config.sendTransaction({
