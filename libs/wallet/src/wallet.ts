@@ -112,6 +112,8 @@ export function createConfig(cfg: Config): Wallet {
         pubKey: defaultKey,
       });
 
+      connector.on('client.disconnected', disconnect);
+
       return { success: true };
     } catch (err) {
       store.setState({
@@ -132,6 +134,8 @@ export function createConfig(cfg: Config): Wallet {
     if (!connector) {
       return { success: false };
     }
+
+    connector.off('client.disconnected');
 
     await connector.disconnectWallet();
 

@@ -21,6 +21,8 @@ export interface TransactionParams {
   sendingMode: 'TYPE_SYNC';
 }
 
+type VegaWalletEvent = 'client.disconnected';
+
 export interface Connector {
   readonly id: string;
 
@@ -42,9 +44,9 @@ export interface Connector {
     params: TransactionParams
   ): Promise<TransactionResponse | IWalletError>;
 
-  on(event: string, callback: () => void): void;
+  on(event: VegaWalletEvent, callback: () => void): void;
 
-  off(event: string, callback: () => void): void;
+  off(event: VegaWalletEvent): void;
 }
 
 export type Key = {
