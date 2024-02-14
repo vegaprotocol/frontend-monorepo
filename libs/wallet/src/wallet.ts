@@ -1,12 +1,6 @@
 import { createStore, type StateCreator } from 'zustand/vanilla';
 import { persist } from 'zustand/middleware';
 import {
-  type PropsWithChildren,
-  createContext,
-  createElement,
-  useContext,
-} from 'react';
-import {
   type Wallet,
   type Config,
   type Store,
@@ -16,7 +10,6 @@ import {
   type Connector,
   type ConnectorType,
 } from './types';
-import { useStore } from 'zustand';
 
 export const createSingleKeyStore: StateCreator<SingleKeyStore> = (set) => ({
   pubKey: undefined,
@@ -210,66 +203,4 @@ export function createConfig(cfg: Config): Wallet {
       return connectors.getState();
     },
   };
-}
-
-//////////////////////////////////////////////////////////
-// REACT
-//////////////////////////////////////////////////////////
-
-const VegaWalletContext = createContext<Wallet | undefined>(undefined);
-
-export function VegaWalletProvider({
-  children,
-  config,
-}: PropsWithChildren<{ config: Wallet }>) {
-  return createElement(VegaWalletContext.Provider, { value: config }, children);
-}
-
-export function useConfig() {
-  const context = useContext(VegaWalletContext);
-  if (context === undefined) {
-    throw new Error('must be used within VegaWalletProvider');
-  }
-  return context;
-}
-
-export function useWallet<T>(selector: (store: Store) => T) {
-  const config = useConfig();
-  const store = useStore(config.store, selector);
-
-  return store;
-}
-
-export function useConnect() {
-  const config = useConfig();
-  return {
-    connectors: config.connectors,
-    connect: config.connect,
-  };
-}
-
-export function useDisconnect() {
-  const config = useConfig();
-  return {
-    disconnect: config.disconnect,
-  };
-}
-
-export function useSendTransaction() {
-  const config = useConfig();
-  return {
-    sendTransaction: config.sendTransaction,
-  };
-}
-
-export function usePubKeys() {
-  const keys = useWallet((store) => store.keys);
-  return {
-    pubKeys: keys,
-  };
-}
-
-export function useChainId() {
-  const chainId = useWallet((store) => store.chainId);
-  return { chainId };
 }

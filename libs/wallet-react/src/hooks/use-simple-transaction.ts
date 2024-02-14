@@ -1,12 +1,11 @@
 import { useState } from 'react';
 import { useVegaWallet } from './use-vega-wallet';
-import { type Transaction } from './connectors';
+import { determineId, type Transaction } from '@vegaprotocol/wallet';
 import {
   useSimpleTransactionSubscription,
   type SimpleTransactionFieldsFragment,
-} from './__generated__/SimpleTransaction';
+} from '../__generated__/SimpleTransaction';
 import { useT } from './use-t';
-import { determineId } from './utils';
 
 export type Status = 'idle' | 'requested' | 'pending' | 'confirmed';
 
