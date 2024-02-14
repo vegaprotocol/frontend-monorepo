@@ -55,7 +55,7 @@ jest.mock('./__generated__/EstimateOrder', () => ({
   useEstimateFeesQuery: jest.fn((...args) => mockUseEstimateFeesQuery(...args)),
 }));
 
-jest.mock('@vegaprotocol/wallet', () => ({
+jest.mock('@vegaprotocol/wallet-react', () => ({
   useVegaWallet: () => ({ pubKey: 'pubKey' }),
 }));
 

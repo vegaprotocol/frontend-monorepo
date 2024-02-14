@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { VegaWalletContext } from '@vegaprotocol/wallet';
 import {
   act,
   fireEvent,
@@ -19,6 +18,7 @@ import {
   useDealTicketFormValues,
 } from '../../hooks/use-form-values';
 import * as positionsTools from '@vegaprotocol/positions';
+import * as walletHooks from '@vegaprotocol/wallet-react';
 import { OrdersDocument } from '@vegaprotocol/orders';
 import { formatForInput } from '@vegaprotocol/utils';
 import type { PartialDeep } from 'type-fest';
@@ -33,6 +33,8 @@ jest.mock('./deal-ticket-fee-details', () => ({
   ),
 }));
 
+jest.mock('@vegaprotocol/wallet-react');
+
 const marketPrice = '200';
 const pubKey = 'pubKey';
 const market = generateMarket();
@@ -44,6 +46,9 @@ function generateJsx(
   marketOverrides: PartialDeep<Market> = {},
   marketDataOverrides: Partial<MarketData> = {}
 ) {
+  // @ts-ignore wrong types after mock
+  walletHooks.useVegaWallet.mockReturnValue({ pubKey, isReadOnly: false });
+
   const joinedMarket: Market = {
     ...market,
     ...marketOverrides,
@@ -56,15 +61,13 @@ function generateJsx(
 
   return (
     <MockedProvider mocks={[...mocks]}>
-      <VegaWalletContext.Provider value={{ pubKey, isReadOnly: false } as any}>
-        <DealTicket
-          market={joinedMarket}
-          marketData={joinedMarketData}
-          marketPrice={marketPrice}
-          submit={submit}
-          onDeposit={jest.fn()}
-        />
-      </VegaWalletContext.Provider>
+      <DealTicket
+        market={joinedMarket}
+        marketData={joinedMarketData}
+        marketPrice={marketPrice}
+        submit={submit}
+        onDeposit={jest.fn()}
+      />
     </MockedProvider>
   );
 }

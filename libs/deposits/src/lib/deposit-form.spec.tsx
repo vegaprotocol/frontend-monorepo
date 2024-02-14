@@ -4,14 +4,14 @@ import BigNumber from 'bignumber.js';
 import type { DepositFormProps } from './deposit-form';
 import { DepositForm } from './deposit-form';
 import * as Schema from '@vegaprotocol/types';
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useWeb3ConnectStore } from '@vegaprotocol/web3';
 import { useWeb3React } from '@web3-react/core';
 import type { AssetFieldsFragment } from '@vegaprotocol/assets';
 import type { DepositBalances } from './use-deposit-balances';
 import { truncateMiddle } from '@vegaprotocol/ui-toolkit';
 
-jest.mock('@vegaprotocol/wallet');
+jest.mock('@vegaprotocol/wallet-react');
 jest.mock('@vegaprotocol/web3');
 jest.mock('@web3-react/core');
 

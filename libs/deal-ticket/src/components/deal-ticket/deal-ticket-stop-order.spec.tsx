@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { VegaWalletContext } from '@vegaprotocol/wallet';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { generateMarket } from '../../test-helpers';
@@ -13,8 +12,10 @@ import {
 } from '../../hooks/use-form-values';
 import { useFeatureFlags } from '@vegaprotocol/environment';
 import { formatForInput } from '@vegaprotocol/utils';
+import * as walletHooks from '@vegaprotocol/wallet-react';
 
 jest.mock('zustand');
+jest.mock('@vegaprotocol/wallet-react');
 jest.mock('./deal-ticket-fee-details', () => ({
   DealTicketFeeDetails: () => <div data-testid="deal-ticket-fee-details" />,
 }));
@@ -24,11 +25,11 @@ const market = generateMarket();
 const submit = jest.fn();
 
 function generateJsx(pubKey: string | null = 'pubKey', isReadOnly = false) {
+  // @ts-ignore wrong type after mock
+  walletHooks.useVegaWallet.mockReturnValue({ pubKey, isReadOnly });
   return (
     <MockedProvider>
-      <VegaWalletContext.Provider value={{ pubKey, isReadOnly } as any}>
-        <StopOrder market={market} marketPrice={marketPrice} submit={submit} />
-      </VegaWalletContext.Provider>
+      <StopOrder market={market} marketPrice={marketPrice} submit={submit} />
     </MockedProvider>
   );
 }
