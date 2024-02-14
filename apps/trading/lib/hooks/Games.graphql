@@ -17,6 +17,7 @@ fragment GameFields on Game {
   id
   epoch
   numberOfParticipants
+  rewardAssetId
   entities {
     ... on TeamGameEntity {
       ...TeamEntity
