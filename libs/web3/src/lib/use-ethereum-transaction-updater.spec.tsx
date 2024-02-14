@@ -4,24 +4,24 @@ import { MockedProvider } from '@apollo/client/testing';
 import { type ReactNode } from 'react';
 import { useEthTransactionUpdater } from './use-ethereum-transaction-updater';
 import { DepositBusEventDocument } from './__generated__/TransactionResult';
-import { VegaWalletContext } from '@vegaprotocol/wallet';
 import {
   type DepositBusEventSubscription,
   type DepositBusEventFieldsFragment,
 } from './__generated__/TransactionResult';
-import { type VegaWalletContextShape } from '@vegaprotocol/wallet';
 import { type EthTransactionStore } from './use-ethereum-transaction-store';
 import { DepositStatus } from '@vegaprotocol/types';
+import * as walletHooks from '@vegaprotocol/wallet-react';
+
+jest.mock('@vegaprotocol/wallet-react');
 
 const pubKey = 'pubKey';
 
 const render = (mocks?: MockedResponse[]) => {
+  // @ts-ignore wrong type
+  walletHooks.useVegaWallet.mockReturnValue({ pubKey });
+
   const wrapper = ({ children }: { children: ReactNode }) => (
-    <MockedProvider mocks={mocks}>
-      <VegaWalletContext.Provider value={{ pubKey } as VegaWalletContextShape}>
-        {children}
-      </VegaWalletContext.Provider>
-    </MockedProvider>
+    <MockedProvider mocks={mocks}>{children}</MockedProvider>
   );
   return renderHook(() => useEthTransactionUpdater(), { wrapper });
 };
