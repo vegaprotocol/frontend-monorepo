@@ -329,7 +329,11 @@ const IsolatedMarginModeDialog = ({
           marginFactor={`${1 / leverage}`}
         />
         <NoWalletWarning noWalletConnected={!partyId} isReadOnly={isReadOnly} />
-        <Button className="w-full" type="submit">
+        <Button
+          className="w-full"
+          type="submit"
+          data-testid="confirm-margin-mode"
+        >
           {t('Confirm')}
         </Button>
       </form>
@@ -363,6 +367,7 @@ export const MarginModeSelector = ({ marketId }: { marketId: string }) => {
       <div className="mb-4 grid h-8 leading-8 font-alpha text-xs grid-cols-2">
         <button
           type="button"
+          data-testid="cross-margin"
           onClick={() => setDialog('cross')}
           className={classnames('rounded', {
             [enabledModeClassName]:
@@ -374,6 +379,7 @@ export const MarginModeSelector = ({ marketId }: { marketId: string }) => {
         </button>
         <button
           type="button"
+          data-testid="isolated-margin"
           onClick={() => setDialog('isolated')}
           className={classnames('rounded', {
             [enabledModeClassName]:
