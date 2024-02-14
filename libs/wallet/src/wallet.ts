@@ -13,6 +13,7 @@ import {
   type TransactionParams,
   type SingleKeyStore,
   type CoreStore,
+  type Connector,
 } from './types';
 import { useStore } from 'zustand';
 
@@ -24,8 +25,6 @@ export const createSingleKeyStore: StateCreator<SingleKeyStore> = (set) => ({
 });
 
 export function createConfig(cfg: Config): Wallet {
-  const connectors = createStore(() => cfg.connectors);
-
   const chain = cfg.chains.find((c) => c.id === cfg.defaultChainId);
 
   if (!chain) {
@@ -41,6 +40,7 @@ export function createConfig(cfg: Config): Wallet {
       set({ keys });
     },
     error: undefined,
+    jsonRpcToken: undefined,
   });
 
   const store = createStore<Store>()(
@@ -56,20 +56,30 @@ export function createConfig(cfg: Config): Wallet {
             chainId: state.chainId,
             current: state.current,
             pubKey: state.pubKey,
+            jsonRpcToken: state.jsonRpcToken,
           };
         },
       }
     )
   );
 
+  const connectors = createStore(() => cfg.connectors.map(bindStore));
+
+  function bindStore(connector: Connector) {
+    connector.bindStore(store);
+    return connector;
+  }
+
   async function connect(id: string) {
     if (store.getState().status === 'connecting') {
       return;
     }
 
-    const connector = connectors.getState().find((x) => x.id === id);
+    const connector = connectors.getState().find((c) => c.id === id);
 
-    if (!connector) return;
+    if (!connector) {
+      return { success: false };
+    }
 
     try {
       store.setState({ status: 'connecting', current: id, error: undefined });
@@ -101,6 +111,8 @@ export function createConfig(cfg: Config): Wallet {
         status: 'connected',
         pubKey: defaultKey,
       });
+
+      return { success: true };
     } catch (err) {
       store.setState({
         status: 'disconnected',
@@ -108,6 +120,7 @@ export function createConfig(cfg: Config): Wallet {
         keys: [],
         error: err instanceof Error ? err.message : 'failed to connect',
       });
+      return { success: false };
     }
   }
 
@@ -116,7 +129,9 @@ export function createConfig(cfg: Config): Wallet {
       .getState()
       .find((x) => x.id === store.getState().current);
 
-    if (!connector) return;
+    if (!connector) {
+      return { success: false };
+    }
 
     await connector.disconnectWallet();
 
@@ -125,7 +140,10 @@ export function createConfig(cfg: Config): Wallet {
       current: undefined,
       keys: [],
       pubKey: undefined,
+      jsonRpcToken: undefined,
     });
+
+    return { success: true };
   }
 
   async function sendTransaction(params: TransactionParams) {

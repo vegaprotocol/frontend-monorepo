@@ -1,9 +1,10 @@
-import { type Connector } from '../types';
+import { type StoreApi } from 'zustand';
+import { type Store, type Connector } from '../types';
 
 export class ReadOnlyConnector implements Connector {
   readonly id = 'readOnly';
 
-  pubKey: string | undefined;
+  store: StoreApi<Store> | undefined;
 
   constructor(pubKey?: string) {
     if (pubKey) {
@@ -11,13 +12,19 @@ export class ReadOnlyConnector implements Connector {
     }
   }
 
+  bindStore(store: StoreApi<Store>) {
+    this.store = store;
+  }
+
   async connectWallet() {
     if (!this.pubKey) {
       const pubKey = window.prompt('Enter pubkey');
 
       if (!pubKey) {
-        return { error: 'failed to connect' };
+        return { error: 'the user rejected' };
       }
+
+      // TODO validate pubkey
 
       this.pubKey = pubKey;
     }
@@ -68,5 +75,13 @@ export class ReadOnlyConnector implements Connector {
 
   off() {
     console.warn('events are not supported using a read only connection');
+  }
+
+  get pubKey() {
+    return this.store?.getState().pubKey;
+  }
+
+  set pubKey(value: string | undefined) {
+    this.store?.setState({ pubKey: value });
   }
 }

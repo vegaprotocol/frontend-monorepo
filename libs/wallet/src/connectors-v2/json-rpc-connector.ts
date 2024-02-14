@@ -1,7 +1,9 @@
+import { type StoreApi } from 'zustand';
 import {
   JsonRpcMethod,
   type Connector,
   type TransactionParams,
+  type Store,
 } from '../types';
 
 type JsonRpcConnectorConfig = { url: string; token?: string };
@@ -10,12 +12,15 @@ export class JsonRpcConnector implements Connector {
   readonly id = 'jsonRpc';
 
   url: string;
-  token: string | undefined;
   requestId: number = 0;
+  store: StoreApi<Store> | undefined;
 
   constructor(config: JsonRpcConnectorConfig) {
     this.url = config.url;
-    this.token = config.token;
+  }
+
+  bindStore(store: StoreApi<Store>) {
+    this.store = store;
   }
 
   async connectWallet(desiredChainId: string) {
@@ -114,6 +119,14 @@ export class JsonRpcConnector implements Connector {
     }
   }
 
+  on() {
+    console.warn('events are not supported in json rpc wallet');
+  }
+
+  off() {
+    console.warn('events are not supported in json rpc wallet');
+  }
+
   private async request(method: JsonRpcMethod, params?: any) {
     const headers = new Headers();
 
@@ -144,11 +157,11 @@ export class JsonRpcConnector implements Connector {
     };
   }
 
-  on() {
-    console.warn('events are not supported in json rpc wallet');
+  get token() {
+    return this.store?.getState().jsonRpcToken;
   }
 
-  off() {
-    console.warn('events are not supported in json rpc wallet');
+  set token(value: string | undefined) {
+    this.store?.setState({ jsonRpcToken: value });
   }
 }

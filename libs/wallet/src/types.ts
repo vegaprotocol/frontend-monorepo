@@ -24,6 +24,8 @@ export interface TransactionParams {
 export interface Connector {
   readonly id: string;
 
+  bindStore(state: StoreApi<Store>): void;
+
   connectWallet(chainId?: string): Promise<{ success: boolean } | IWalletError>;
 
   disconnectWallet(): Promise<{ success: boolean } | IWalletError>;
@@ -59,6 +61,7 @@ export type CoreStore = {
   keys: Key[];
   setKeys: (keys: Key[]) => void;
   error: string | undefined;
+  jsonRpcToken: string | undefined;
 };
 
 export type SingleKeyStore = {
@@ -77,8 +80,8 @@ export type Config = {
 export type Wallet = {
   store: StoreApi<Store>;
   connectors: Connector[];
-  connect: (id: string) => Promise<void>;
-  disconnect: () => Promise<void>;
+  connect: (id: string) => Promise<{ success: boolean } | undefined>;
+  disconnect: () => Promise<{ success: boolean } | undefined>;
   sendTransaction: (
     params: TransactionParams
   ) => Promise<TransactionResponse | IWalletError>;

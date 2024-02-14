@@ -6,16 +6,12 @@ import {
   createConfig,
   fairground,
   stagnet,
-  getConfig,
 } from '@vegaprotocol/wallet';
-
-const walletCfg = getConfig();
 
 const injected = new InjectedConnector();
 
 const jsonRpc = new JsonRpcConnector({
   url: 'http://localhost:1789/api/v2/requests',
-  token: walletCfg?.token,
 });
 
 const snap = new SnapConnector({
@@ -23,10 +19,14 @@ const snap = new SnapConnector({
   snapId: 'npm:@vegaprotocol/snap',
   version: '0.3.1',
 });
-const readOnly = new ReadOnlyConnector(walletCfg?.pubKey);
+
+const readOnly = new ReadOnlyConnector();
 
 export const config = createConfig({
   chains: [fairground, stagnet],
   defaultChainId: fairground.id,
   connectors: [injected, jsonRpc, snap, readOnly],
 });
+
+// const state = config.store.getState();
+// readOnly.pubKey = state.pubKey;

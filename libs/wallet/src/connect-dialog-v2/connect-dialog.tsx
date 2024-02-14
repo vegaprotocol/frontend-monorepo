@@ -69,8 +69,10 @@ const ConnectionOptions = ({
             key={c.id}
             id={c.id as any}
             onClick={async () => {
-              await connect(c.id);
-              onConnect();
+              const res = await connect(c.id);
+              if (res.success) {
+                onConnect();
+              }
             }}
           />
         );

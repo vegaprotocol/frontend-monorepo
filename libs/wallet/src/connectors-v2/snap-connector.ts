@@ -29,6 +29,8 @@ export class SnapConnector implements Connector {
     this.snapId = config.snapId;
   }
 
+  bindStore() {}
+
   async connectWallet(desiredChainId: string) {
     try {
       await this.requestSnap();

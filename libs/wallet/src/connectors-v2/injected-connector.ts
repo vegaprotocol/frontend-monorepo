@@ -3,6 +3,8 @@ import { type TransactionParams, type Connector } from '../types';
 export class InjectedConnector implements Connector {
   readonly id = 'injected';
 
+  bindStore() {}
+
   async connectWallet(chainId: string) {
     try {
       await window.vega.connectWallet({ chainId });
