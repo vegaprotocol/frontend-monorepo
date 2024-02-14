@@ -1,11 +1,12 @@
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
-import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
-import { VegaWalletContext } from '@vegaprotocol/wallet';
 import { Navbar } from './navbar';
 import { useGlobalStore } from '../../stores';
 import { ENV, useFeatureFlags } from '@vegaprotocol/environment';
+import * as walletHooks from '@vegaprotocol/wallet-react';
+
+jest.mock('@vegaprotocol/wallet-react');
 
 jest.mock('@vegaprotocol/proposals', () => ({
   ProtocolUpgradeCountdown: () => null,
@@ -23,25 +24,20 @@ describe('Navbar', () => {
       name: 'Pub key 1',
     },
   ];
+
+  // @ts-ignore type wrong after mock
+  walletHooks.useVegaWallet.mockReturnValue({
+    status: 'connected',
+    pubKey,
+    pubKeys,
+  });
   const marketId = 'abc';
   const navbarContent = 'navbar-menu-content';
 
-  const renderComponent = (
-    initialEntries?: string[],
-    walletContext?: Partial<VegaWalletContextShape>
-  ) => {
-    const context = {
-      pubKey,
-      pubKeys,
-      selectPubKey: jest.fn(),
-      disconnect: jest.fn(),
-      ...walletContext,
-    } as VegaWalletContextShape;
+  const renderComponent = (initialEntries?: string[]) => {
     return render(
       <MemoryRouter initialEntries={initialEntries}>
-        <VegaWalletContext.Provider value={context}>
-          <Navbar />
-        </VegaWalletContext.Provider>
+        <Navbar />
       </MemoryRouter>
     );
   };
@@ -126,7 +122,15 @@ describe('Navbar', () => {
 
   it('can open wallet menu on small screens and change pubkey', async () => {
     const mockSelectPubKey = jest.fn();
-    renderComponent(undefined, { selectPubKey: mockSelectPubKey });
+
+    // @ts-ignore type wrong after mock
+    walletHooks.useVegaWallet.mockReturnValue({
+      status: 'connected',
+      pubKey,
+      pubKeys,
+      selectPubKey: mockSelectPubKey,
+    });
+    renderComponent(undefined);
     await userEvent.click(screen.getByRole('button', { name: 'Wallet' }));
 
     const menuEl = screen.getByTestId(navbarContent);
@@ -159,7 +163,15 @@ describe('Navbar', () => {
 
   it('can disconnect and close menu', async () => {
     const mockDisconnect = jest.fn();
-    renderComponent(undefined, { disconnect: mockDisconnect });
+
+    // @ts-ignore type wrong after mock
+    walletHooks.useVegaWallet.mockReturnValue({
+      status: 'connected',
+      pubKey,
+      pubKeys,
+      disconnect: mockDisconnect,
+    });
+    renderComponent(undefined);
     await userEvent.click(screen.getByRole('button', { name: 'Wallet' }));
 
     const menuEl = screen.getByTestId(navbarContent);
