@@ -1,8 +1,5 @@
 import { act, render, screen } from '@testing-library/react';
 import * as Schema from '@vegaprotocol/types';
-import type { PartialDeep } from 'type-fest';
-import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
-import { VegaWalletContext } from '@vegaprotocol/wallet';
 import { MockedProvider } from '@apollo/client/testing';
 import userEvent from '@testing-library/user-event';
 import {
@@ -10,6 +7,7 @@ import {
   type StopOrdersTableProps,
 } from './stop-orders-table';
 import { generateStopOrder } from '../mocks/generate-stop-orders';
+import * as walletHooks from '@vegaprotocol/wallet-react';
 
 // Mock theme switcher to get around inconsistent mocking of zustand
 // stores
@@ -27,6 +25,8 @@ jest.mock('@vegaprotocol/utils', () => ({
   })),
 }));
 
+jest.mock('@vegaprotocol/wallet-react');
+
 const defaultProps: StopOrdersTableProps = {
   onView: jest.fn(),
   rowData: [],
@@ -36,13 +36,13 @@ const defaultProps: StopOrdersTableProps = {
 
 const generateJsx = (
   props: Partial<StopOrdersTableProps> = defaultProps,
-  context: PartialDeep<VegaWalletContextShape> = { pubKey: '0x123' }
+  context = { pubKey: '0x123' }
 ) => {
+  // @ts-ignore types wrong after mock
+  walletHooks.useVegaWallet.mockReturnValue(context);
   return (
     <MockedProvider>
-      <VegaWalletContext.Provider value={context as VegaWalletContextShape}>
-        <StopOrdersTable {...defaultProps} {...props} />
-      </VegaWalletContext.Provider>
+      <StopOrdersTable {...defaultProps} {...props} />
     </MockedProvider>
   );
 };

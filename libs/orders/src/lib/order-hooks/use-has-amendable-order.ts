@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 import { hasAmendableOrderProvider } from '../components/order-data-provider';
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 
 export const useHasAmendableOrder = () => {

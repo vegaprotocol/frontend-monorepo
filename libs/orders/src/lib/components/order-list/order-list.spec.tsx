@@ -2,9 +2,6 @@ import { act, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { getDateTimeFormat } from '@vegaprotocol/utils';
 import * as Schema from '@vegaprotocol/types';
-import type { PartialDeep } from 'type-fest';
-import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
-import { VegaWalletContext } from '@vegaprotocol/wallet';
 import { MockedProvider } from '@apollo/client/testing';
 import type { Order, OrderFieldsFragment, OrderListTableProps } from '../';
 import { OrderListTable } from '../';
@@ -13,6 +10,7 @@ import {
   limitOrder,
   marketOrder,
 } from '../mocks/generate-orders';
+import * as walletHooks from '@vegaprotocol/wallet-react';
 
 // Mock theme switcher to get around inconsistent mocking of zustand
 // stores
@@ -22,6 +20,8 @@ jest.mock('@vegaprotocol/react-helpers', () => ({
     theme: 'light',
   }),
 }));
+
+jest.mock('@vegaprotocol/wallet-react');
 
 const defaultProps: OrderListTableProps = {
   rowData: [],
@@ -33,13 +33,13 @@ const defaultProps: OrderListTableProps = {
 
 const generateJsx = (
   props: Partial<OrderListTableProps> = defaultProps,
-  context: PartialDeep<VegaWalletContextShape> = { pubKey: '0x123' }
+  context = { pubKey: '0x123' }
 ) => {
+  // @ts-ignore types wrong after mock
+  walletHooks.useVegaWallet.mockReturnValue(context);
   return (
     <MockedProvider>
-      <VegaWalletContext.Provider value={context as VegaWalletContextShape}>
-        <OrderListTable {...defaultProps} {...props} />
-      </VegaWalletContext.Provider>
+      <OrderListTable {...defaultProps} {...props} />
     </MockedProvider>
   );
 };
