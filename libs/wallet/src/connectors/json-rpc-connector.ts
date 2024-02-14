@@ -28,7 +28,7 @@ export class JsonRpcConnector implements Connector {
       const { chainId } = await this.getChainId();
 
       if (chainId !== desiredChainId) {
-        throw new Error('incorrect chain id');
+        return { error: 'incorrect chain' };
       }
 
       if (!this.token) {
@@ -58,9 +58,7 @@ export class JsonRpcConnector implements Connector {
 
       return { success: true };
     } catch (err) {
-      return {
-        error: err instanceof Error ? err.message : 'failed to connect',
-      };
+      return { error: 'wallet not running' };
     }
   }
 
@@ -69,7 +67,7 @@ export class JsonRpcConnector implements Connector {
       await this.request(JsonRpcMethod.DisconnectWallet);
       return { success: true };
     } catch (err) {
-      return { error: 'failed to disconnect' };
+      return { error: 'wallet not running' };
     }
   }
 
@@ -77,9 +75,10 @@ export class JsonRpcConnector implements Connector {
   async getChainId() {
     try {
       const { data } = await this.request(JsonRpcMethod.GetChainId);
+
       return { chainId: data.result.chainID };
     } catch (err) {
-      return { error: 'failed to get chain id' };
+      return { error: 'wallet not running' };
     }
   }
 
@@ -88,7 +87,7 @@ export class JsonRpcConnector implements Connector {
       const { data } = await this.request(JsonRpcMethod.ListKeys);
       return data.result.keys as Array<{ publicKey: string; name: string }>;
     } catch (err) {
-      return { error: 'failed to list keys' };
+      return { error: 'wallet not running' };
     }
   }
 
@@ -97,7 +96,7 @@ export class JsonRpcConnector implements Connector {
       await this.listKeys();
       return { connected: true };
     } catch (err) {
-      return { error: 'failed to check isConnected' };
+      return { error: 'wallet not running' };
     }
   }
 
@@ -115,7 +114,7 @@ export class JsonRpcConnector implements Connector {
         sentAt: data.result.sentAt,
       };
     } catch (err) {
-      return { error: 'failed to send transaction' };
+      return { error: 'wallet not running' };
     }
   }
 

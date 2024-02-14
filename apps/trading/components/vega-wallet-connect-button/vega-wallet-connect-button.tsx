@@ -18,9 +18,8 @@ import {
 import {
   useVegaWalletDialogStore,
   isBrowserWalletInstalled,
-  useDisconnect,
+  useVegaWallet,
   type Key,
-  useWallet,
 } from '@vegaprotocol/wallet';
 import { useCopyTimeout } from '@vegaprotocol/react-helpers';
 import classNames from 'classnames';
@@ -38,12 +37,8 @@ export const VegaWalletConnectButton = ({
   const openVegaWalletDialog = useVegaWalletDialogStore(
     (store) => store.openVegaWalletDialog
   );
-  const { disconnect } = useDisconnect();
-
-  const status = useWallet((store) => store.status);
-  const pubKeys = useWallet((store) => store.keys);
-  const pubKey = useWallet((store) => store.pubKey);
-  const setPubKey = useWallet((store) => store.setPubKey);
+  const { status, pubKeys, pubKey, selectPubKey, disconnect, refreshKeys } =
+    useVegaWallet();
 
   const walletInstalled = isBrowserWalletInstalled();
 
@@ -59,10 +54,7 @@ export const VegaWalletConnectButton = ({
           <TradingDropdownTrigger
             data-testid="manage-vega-wallet"
             onClick={() => {
-              // TODO: fix me
-              // if (fetchPubKeys) {
-              //   fetchPubKeys();
-              // }
+              refreshKeys();
               setDropdownOpen(!dropdownOpen);
             }}
           >
@@ -96,7 +88,7 @@ export const VegaWalletConnectButton = ({
             <TradingDropdownRadioGroup
               value={pubKey || undefined}
               onValueChange={(value) => {
-                setPubKey(value);
+                selectPubKey(value);
               }}
             >
               {pubKeys.map((pk) => (

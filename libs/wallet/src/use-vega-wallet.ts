@@ -1,4 +1,4 @@
-import { type Transaction } from './connectors';
+import { type Transaction } from './transaction-types';
 import { useConfig, useWallet } from './wallet';
 
 // Only for vega apps that expect a single selected key
@@ -13,6 +13,7 @@ export const useVegaWallet = () => {
     selectPubKey: store.setPubKey,
     isReadOnly: store.current === 'readOnly',
     disconnect: config.disconnect,
+    refreshKeys: config.refreshKeys,
     isAlive: store.keys.length > 0,
     sendTx: (pubKey: string, transaction: Transaction) =>
       // TODO: figure out how to type this better

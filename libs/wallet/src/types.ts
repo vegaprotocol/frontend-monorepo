@@ -89,6 +89,7 @@ export type Wallet = {
   connectors: Connector[];
   connect: (id: ConnectorType) => Promise<{ success: boolean } | undefined>;
   disconnect: () => Promise<{ success: boolean } | undefined>;
+  refreshKeys: () => Promise<void>;
   sendTransaction: (
     params: TransactionParams
   ) => Promise<TransactionResponse | IWalletError>;

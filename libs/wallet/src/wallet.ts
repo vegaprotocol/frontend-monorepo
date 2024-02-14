@@ -151,6 +151,25 @@ export function createConfig(cfg: Config): Wallet {
     return { success: true };
   }
 
+  async function refreshKeys() {
+    const current = store.getState().current;
+    const connector = connectors.getState().find((c) => c.id === current);
+
+    if (!connector) {
+      return;
+    }
+
+    const listKeysRes = await connector.listKeys();
+
+    if ('error' in listKeysRes) {
+      return;
+    }
+
+    store.setState({
+      keys: listKeysRes,
+    });
+  }
+
   async function sendTransaction(params: TransactionParams) {
     const connector = connectors
       .getState()
@@ -183,6 +202,7 @@ export function createConfig(cfg: Config): Wallet {
     store,
     connect,
     disconnect,
+    refreshKeys,
     sendTransaction,
     setStoreState,
 
