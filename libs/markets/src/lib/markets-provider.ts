@@ -47,8 +47,9 @@ export const marketsProvider = makeDataProvider<
   errorPolicy: 'all',
 });
 
+export type MarketMap = Record<string, Market>;
 export const marketsMapProvider = makeDerivedDataProvider<
-  Record<string, Market>,
+  MarketMap,
   never,
   undefined
 >(
@@ -59,7 +60,7 @@ export const marketsMapProvider = makeDerivedDataProvider<
         markets[market.id] = market;
         return markets;
       },
-      {} as Record<string, Market>
+      {} as MarketMap
     );
   }
 );

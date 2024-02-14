@@ -1,9 +1,10 @@
-query CurrentEpochInfo {
-  epoch {
+query EpochInfo($epochId: ID) {
+  epoch(id: $epochId) {
     id
     timestamps {
       start
       end
+      expiry
     }
   }
 }

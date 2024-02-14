@@ -251,12 +251,7 @@ const StatusIndicator = ({
   );
 };
 
-export const ActiveRewardCard = ({
-  transferNode,
-  currentEpoch,
-  kind,
-  allMarkets,
-}: {
+type ActiveRewardCardProps = {
   transferNode: TransferNode & {
     asset?: AssetFieldsFragment | null;
     markets?: (MarketFieldsFragment | null)[];
@@ -264,7 +259,13 @@ export const ActiveRewardCard = ({
   currentEpoch: number;
   kind: RecurringTransfer;
   allMarkets?: Record<string, MarketFieldsFragment | null>;
-}) => {
+};
+export const ActiveRewardCard = ({
+  transferNode,
+  currentEpoch,
+  kind,
+  allMarkets,
+}: ActiveRewardCardProps) => {
   const t = useT();
 
   const { transfer } = transferNode;
@@ -482,6 +483,62 @@ export const ActiveRewardCard = ({
         </div>
       </div>
     </div>
+  );
+};
+
+export const DispatchMetricInfo = ({
+  transferNode,
+  allMarkets,
+}: {
+  transferNode: ActiveRewardCardProps['transferNode'];
+  allMarkets?: ActiveRewardCardProps['allMarkets'];
+}) => {
+  const dispatchStrategy =
+    transferNode.transfer.kind.__typename === 'RecurringTransfer'
+      ? transferNode.transfer.kind.dispatchStrategy
+      : null;
+
+  const dispatchAsset = transferNode.transfer.asset;
+
+  const marketIdsInScope = dispatchStrategy?.marketIdsInScope;
+  const firstMarketData = transferNode.markets?.[0];
+  const specificMarkets = useMemo(() => {
+    if (
+      !firstMarketData ||
+      !marketIdsInScope ||
+      marketIdsInScope.length === 0
+    ) {
+      return null;
+    }
+    if (marketIdsInScope.length > 1) {
+      const marketNames =
+        allMarkets &&
+        marketIdsInScope
+          .map((id) => allMarkets[id]?.tradableInstrument?.instrument?.name)
+          .join(', ');
+
+      return (
+        <Tooltip description={marketNames}>
+          <span>Specific markets</span>
+        </Tooltip>
+      );
+    }
+
+    const name = firstMarketData?.tradableInstrument?.instrument?.name;
+    if (name) {
+      return <span>{name}</span>;
+    }
+
+    return null;
+  }, [firstMarketData, marketIdsInScope, allMarkets]);
+
+  if (!dispatchStrategy) return null;
+
+  return (
+    <span data-testid="dispatch-metric-info">
+      {DispatchMetricLabels[dispatchStrategy.dispatchMetric]} •{' '}
+      <span>{specificMarkets || dispatchAsset?.name}</span>
+    </span>
   );
 };
 

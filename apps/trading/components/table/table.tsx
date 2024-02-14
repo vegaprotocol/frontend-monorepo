@@ -93,6 +93,9 @@ export const Table = forwardRef<
               key={i}
               className={classNames(dataEntry['className'] as string, {
                 'max-md:flex flex-col w-full': !noCollapse,
+                // collapsed (mobile) row divider
+                'first:border-t-0 max-md:border-t border-vega-clight-500 dark:border-vega-cdark-500 first:mt-0 mt-1':
+                  !noCollapse,
               })}
               onClick={() => {
                 if (onRowClick) {

@@ -4,7 +4,7 @@ import { CompetitionsHeader } from '../../components/competitions/competitions-h
 import { Intent, Loader, TradingButton } from '@vegaprotocol/ui-toolkit';
 
 import { useGameCards } from '../../lib/hooks/use-game-cards';
-import { useCurrentEpochInfoQuery } from '../../lib/hooks/__generated__/Epoch';
+import { useEpochInfoQuery } from '../../lib/hooks/__generated__/Epoch';
 import { Link, useNavigate } from 'react-router-dom';
 import { Links } from '../../lib/links';
 import {
@@ -25,7 +25,7 @@ export const CompetitionsHome = () => {
 
   usePageTitle(t('Competitions'));
 
-  const { data: epochData } = useCurrentEpochInfoQuery();
+  const { data: epochData } = useEpochInfoQuery();
   const currentEpoch = Number(epochData?.epoch.id);
 
   const { data: gamesData, loading: gamesLoading } = useGameCards({

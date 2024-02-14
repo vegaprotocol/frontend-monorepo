@@ -5,7 +5,7 @@ import {
 } from './__generated__/Games';
 import orderBy from 'lodash/orderBy';
 import { removePaginationWrapper } from '@vegaprotocol/utils';
-import { useCurrentEpochInfoQuery } from './__generated__/Epoch';
+import { useEpochInfoQuery } from './__generated__/Epoch';
 import { type ApolloError } from '@apollo/client';
 
 const TAKE_EPOCHS = 30; // TODO: should this be DEFAULT_AGGREGATION_EPOCHS?
@@ -39,7 +39,7 @@ export const useGames = (teamId?: string, epochFrom?: number): GamesData => {
     data: epochData,
     loading: epochLoading,
     error: epochError,
-  } = useCurrentEpochInfoQuery({
+  } = useEpochInfoQuery({
     skip: Boolean(epochFrom),
   });
 
