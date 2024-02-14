@@ -36,8 +36,7 @@ def test_switch_cross_isolated_margin(
         "Liquidation: 582.81328Margin: 874.21992General account: 998,084.95183"
     )
     page.get_by_role("button", name="Isolated 10x").click()
-    page.locator(leverage_input).clear()
-    page.locator(leverage_input).type("1")
+    page.locator(leverage_input).fill("1")
     page.get_by_role("button", name="Confirm").click()
     wait_for_toast_confirmation(page)
     next_epoch(vega=vega)
@@ -73,8 +72,7 @@ def test_check_cross_isolated_margin_info(
     expect(page.get_by_test_id(liquidation_estimate)
            ).to_have_text("Liquidation estimate- BTC")
     page.get_by_role("button", name="Isolated 10x").click()
-    page.locator(leverage_input).clear()
-    page.locator(leverage_input).type("6")
+    page.locator(leverage_input).fill("6")
     expect(page.get_by_test_id(dialog_content).get_by_test_id("notification")).to_have_text(
         "You have an existing position and and open order on this market.Changing the margin mode and leverage will move 2,703.11341 tDAI from your general account to fund the position.")
     expect(page.get_by_test_id(dialog_content).get_by_test_id(current_margin)).to_have_text(
