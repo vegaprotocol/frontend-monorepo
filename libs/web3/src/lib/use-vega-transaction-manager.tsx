@@ -41,6 +41,8 @@ export const useVegaTransactionManager = () => {
       return;
     }
     processed.current.add(transaction.id);
+
+    // TODO: figure out broken type
     sendTransaction({
       publicKey: pubKey,
       sendingMode: 'TYPE_SYNC',

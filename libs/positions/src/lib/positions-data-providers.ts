@@ -468,7 +468,10 @@ export const maxLeverageProvider = makeDerivedDataProvider<
   }
 );
 
-export const useMaxLeverage = (marketId: string, partyId: string | null) => {
+export const useMaxLeverage = (
+  marketId: string,
+  partyId: string | undefined
+) => {
   return useDataProvider({
     dataProvider: partyId ? maxLeverageProvider : maxMarketLeverageProvider,
     variables: { marketId, partyId: partyId || '' },

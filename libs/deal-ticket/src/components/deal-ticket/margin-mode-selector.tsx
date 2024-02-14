@@ -39,7 +39,7 @@ export const MarginChange = ({
   marginMode,
   marginFactor,
 }: {
-  partyId: string | null;
+  partyId: string | undefined;
   marketId: string;
   marginMode: Types.MarginMode;
   marginFactor: string;

@@ -14,6 +14,7 @@ import {
   type SingleKeyStore,
   type CoreStore,
   type Connector,
+  type ConnectorType,
 } from './types';
 import { useStore } from 'zustand';
 
@@ -70,7 +71,7 @@ export function createConfig(cfg: Config): Wallet {
     return connector;
   }
 
-  async function connect(id: string) {
+  async function connect(id: ConnectorType) {
     if (store.getState().status === 'connecting') {
       return;
     }
@@ -246,4 +247,9 @@ export function usePubKeys() {
   return {
     pubKeys: keys,
   };
+}
+
+export function useChainId() {
+  const chainId = useWallet((store) => store.chainId);
+  return { chainId };
 }

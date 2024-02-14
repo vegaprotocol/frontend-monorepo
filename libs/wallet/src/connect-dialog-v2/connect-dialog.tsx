@@ -46,39 +46,28 @@ const ConnectionOptions = ({
   const config = useConfig();
   const { connect, connectors } = useConnect();
 
-  if (error && !error.includes('the user rejected')) {
-    return (
-      <>
-        <p className="text-danger first-letter:uppercase">{error}</p>
-        <button
-          className="underline"
-          onClick={() =>
-            config.setStoreState({ status: 'disconnected', error: undefined })
-          }
-        >
-          Try again
-        </button>
-      </>
-    );
-  }
-
   return (
-    <ul className="grid grid-cols-2 gap-2">
-      {connectors.map((c) => {
-        return (
-          <ConnectionOption
-            key={c.id}
-            id={c.id}
-            onClick={async () => {
-              const res = await connect(c.id);
-              if (res?.success) {
-                onConnect();
-              }
-            }}
-          />
-        );
-      })}
-    </ul>
+    <div className="flex flex-col gap-4">
+      <ul className="grid grid-cols-2 gap-2">
+        {connectors.map((c) => {
+          return (
+            <ConnectionOption
+              key={c.id}
+              id={c.id}
+              onClick={async () => {
+                const res = await connect(c.id);
+                if (res?.success) {
+                  onConnect();
+                }
+              }}
+            />
+          );
+        })}
+      </ul>
+      {error && !error.includes('the user rejected') && (
+        <p className="text-danger text-sm first-letter:uppercase">{error}</p>
+      )}
+    </div>
   );
 };
 

@@ -1,5 +1,6 @@
 import { type StoreApi } from 'zustand';
 import { type Store, type Connector } from '../types';
+import { isValidVegaPublicKey } from '@vegaprotocol/utils';
 
 export class ReadOnlyConnector implements Connector {
   readonly id = 'readOnly';
@@ -18,15 +19,17 @@ export class ReadOnlyConnector implements Connector {
 
   async connectWallet() {
     if (!this.pubKey) {
-      const pubKey = window.prompt('Enter pubkey');
+      const value = window.prompt('Enter public key');
 
-      if (!pubKey) {
+      if (value === null) {
         return { error: 'the user rejected' };
       }
 
-      // TODO validate pubkey
+      if (!isValidVegaPublicKey(value)) {
+        return { error: 'invalid public key' };
+      }
 
-      this.pubKey = pubKey;
+      this.pubKey = value;
     }
     return { success: true };
   }

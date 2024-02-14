@@ -44,7 +44,7 @@ interface Asset {
 }
 
 export interface TransferFormProps {
-  pubKey: string | null;
+  pubKey: string | undefined;
   pubKeys: string[] | null;
   isReadOnly?: boolean;
   accounts: Array<{

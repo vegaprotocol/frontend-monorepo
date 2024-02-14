@@ -13,8 +13,8 @@ export function truncateMiddle(address: string, start = 6, end = 4) {
 }
 
 export interface ViewingAsBannerProps {
-  pubKey: string | null;
-  disconnect: () => Promise<void>;
+  pubKey: string | undefined;
+  disconnect: () => Promise<{ success: boolean } | undefined>;
 }
 
 export const ViewingAsBanner = ({

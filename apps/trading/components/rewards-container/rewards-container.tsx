@@ -309,7 +309,7 @@ type VestingBalances = NonNullable<
 >['vestingBalancesSummary'];
 
 export type RewardPotProps = {
-  pubKey: string | null;
+  pubKey: string | undefined;
   accounts: Account[] | null;
   assetId: string; // VEGA
   vestingBalancesSummary: VestingBalances | undefined;
@@ -469,7 +469,7 @@ export const Vesting = ({
   baseRate,
   multiplier,
 }: {
-  pubKey: string | null;
+  pubKey: string | undefined;
   baseRate: string;
   multiplier?: string;
 }) => {
@@ -506,7 +506,7 @@ export const Multipliers = ({
   streakMultiplier,
   hoarderMultiplier,
 }: {
-  pubKey: string | null;
+  pubKey: string | undefined;
   streakMultiplier?: string;
   hoarderMultiplier?: string;
 }) => {

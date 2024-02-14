@@ -1,25 +1,25 @@
-import { create } from 'zustand';
-import { useWallet } from './wallet';
-
-interface PubKeyStore {
-  pubKey: string | null;
-  setPubKey: (key: string) => void;
-}
-
-export const useVegaWalletStore = create<PubKeyStore>()((set) => ({
-  pubKey: null,
-  setPubKey: (key: string) => set({ pubKey: key }),
-}));
+import { type Transaction } from './connectors';
+import { useConfig, useWallet } from './wallet';
 
 // Only for vega apps that expect a single selected key
 export const useVegaWallet = () => {
-  const pubKey = useVegaWalletStore((store) => store.pubKey);
-  const setPubKey = useVegaWalletStore((store) => store.setPubKey);
-  const pubKeys = useWallet((store) => store.keys);
+  const config = useConfig();
+  const store = useWallet((store) => store);
 
   return {
-    pubKeys,
-    pubKey,
-    selectPubKey: setPubKey,
+    status: store.status,
+    pubKeys: store.keys,
+    pubKey: store.pubKey,
+    selectPubKey: store.setPubKey,
+    isReadOnly: store.current === 'readOnly',
+    disconnect: config.disconnect,
+    isAlive: store.keys.length > 0,
+    sendTx: (pubKey: string, transaction: Transaction) =>
+      // TODO: figure out how to type this better
+      config.sendTransaction({
+        publicKey: pubKey,
+        sendingMode: 'TYPE_SYNC',
+        ...transaction,
+      }),
   };
 };

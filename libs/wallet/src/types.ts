@@ -61,7 +61,7 @@ export type Status = 'disconnected' | 'connecting' | 'connected';
 export type CoreStore = {
   chainId: string;
   status: Status;
-  current: string | undefined;
+  current: ConnectorType | undefined;
   keys: Key[];
   setKeys: (keys: Key[]) => void;
   error: string | undefined;
@@ -84,7 +84,7 @@ export type Config = {
 export type Wallet = {
   store: StoreApi<Store>;
   connectors: Connector[];
-  connect: (id: string) => Promise<{ success: boolean } | undefined>;
+  connect: (id: ConnectorType) => Promise<{ success: boolean } | undefined>;
   disconnect: () => Promise<{ success: boolean } | undefined>;
   sendTransaction: (
     params: TransactionParams

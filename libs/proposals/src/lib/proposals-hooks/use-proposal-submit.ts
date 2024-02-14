@@ -29,7 +29,12 @@ export const useProposalSubmit = () => {
         });
 
         if (res) {
+          if ('error' in res) {
+            throw new Error('proposal failed');
+          }
+
           const proposalId = determineId(res.signature);
+
           if (proposalId) {
             waitForProposalEvent(proposalId, pubKey, (p) => {
               setFinalizedProposal(p);
