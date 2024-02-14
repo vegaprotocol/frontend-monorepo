@@ -1,5 +1,8 @@
 import { type StoreApi } from 'zustand';
-import { type Transaction, type TransactionResponse } from './connectors';
+import {
+  type Transaction,
+  type TransactionResponse,
+} from './transaction-types';
 import { type Chain } from './chains';
 
 export enum JsonRpcMethod {

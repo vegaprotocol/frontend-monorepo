@@ -6,8 +6,8 @@ import {
   Intent,
   Icon,
 } from '@vegaprotocol/ui-toolkit';
-import { useVegaWallet } from '../use-vega-wallet';
-import { useT } from '../use-t';
+import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useTranslation } from 'react-i18next';
 
 export interface VegaManageDialogProps {
   dialogOpen: boolean;
@@ -18,7 +18,7 @@ export const VegaManageDialog = ({
   dialogOpen,
   setDialogOpen,
 }: VegaManageDialogProps) => {
-  const t = useT();
+  const { t } = useTranslation();
   const { pubKey, pubKeys, selectPubKey, disconnect } = useVegaWallet();
   return (
     <Dialog

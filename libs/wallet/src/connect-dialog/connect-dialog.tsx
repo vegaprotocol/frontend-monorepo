@@ -5,7 +5,7 @@ import {
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
-import { useConfig, useConnect, useWallet } from '../wallet';
+import { useConnect, useWallet } from '../wallet';
 import { type ConnectorType, type Status } from '../types';
 import { useT } from '../use-t';
 import classNames from 'classnames';
@@ -43,12 +43,12 @@ const ConnectionOptions = ({
   error: string | undefined;
   onConnect: () => void;
 }) => {
-  const config = useConfig();
   const { connect, connectors } = useConnect();
 
   return (
     <div className="flex flex-col gap-4">
-      <ul className="grid grid-cols-2 gap-2">
+      <h2 className="text-xl">Connect Vega Wallet</h2>
+      <ul className="grid grid-cols-2 gap-x-2 gap-y-4">
         {connectors.map((c) => {
           return (
             <ConnectionOption

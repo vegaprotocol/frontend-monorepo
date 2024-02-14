@@ -1,15 +1,10 @@
-export {
-  InjectedConnector,
-  SnapConnector,
-  JsonRpcConnector,
-  ReadOnlyConnector,
-} from './connectors-v2';
-
+// Types
 export * from './types';
 export * from './transaction-types';
 
+// Core
 export { createConfig, VegaWalletProvider } from './wallet';
-
+export { fairground, stagnet, Chain } from './chains';
 export {
   useConfig,
   useConnect,
@@ -20,14 +15,23 @@ export {
   useWallet,
 } from './wallet';
 
+// Connectors
+export {
+  InjectedConnector,
+  SnapConnector,
+  JsonRpcConnector,
+  ReadOnlyConnector,
+} from './connectors';
+
+// Utils
 export { determineId } from './utils';
 
-export { ConnectDialog } from './connect-dialog-v2';
-
 // old stuff
-export { useVegaWalletDialogStore } from './connect-dialog/vega-wallet-dialog-store';
+export { useVegaWalletDialogStore } from './use-dialog-store';
 export { useVegaWallet } from './use-vega-wallet';
 export { isBrowserWalletInstalled } from './utils';
 export { useEagerConnect } from './use-eager-connect';
 
-export { fairground, stagnet, Chain } from './chains';
+// UI
+// TODO: split this out into reat only lib
+export { ConnectDialog } from './connect-dialog';

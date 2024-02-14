@@ -511,3 +511,21 @@ export type Transaction =
   | JoinTeam
   | CreateReferralSet
   | UpdateReferralSet;
+
+export interface TransactionResponse {
+  transactionHash: string;
+  signature: string; // still to be added by core
+  receivedAt: string;
+  sentAt: string;
+}
+
+// TODO: use this?
+//
+// export class WalletError extends WalletClientError {
+//   data: string;
+//
+//   constructor(message: string, code: number, data = 'Wallet error') {
+//     super({ code, message, data });
+//     this.data = data;
+//   }
+// }

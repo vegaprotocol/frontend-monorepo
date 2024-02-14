@@ -1,192 +1,167 @@
-import { WalletClient, WalletClientError } from '@vegaprotocol/wallet-client';
-import { clearConfig, getConfig, setConfig } from '../storage';
-import type { Transaction, VegaConnector } from './vega-connector';
-import { WalletError } from './vega-connector';
+import { type StoreApi } from 'zustand';
+import {
+  JsonRpcMethod,
+  type Connector,
+  type TransactionParams,
+  type Store,
+} from '../types';
 
-const VERSION = 'v2';
+type JsonRpcConnectorConfig = { url: string; token?: string };
 
-export const ClientErrors = {
-  NO_SERVICE: new WalletError('No service', 100),
-  INVALID_WALLET: new WalletError('Wallet version invalid', 103),
-  WRONG_NETWORK: new WalletError(
-    'Wrong network',
-    104,
-    'App is configured to work with a different chain'
-  ),
-  UNKNOWN: new WalletError(
-    'Something went wrong',
-    105,
-    'Unknown error occurred'
-  ),
-  NO_CLIENT: new WalletError('No client found.', 106),
-} as const;
+export class JsonRpcConnector implements Connector {
+  readonly id = 'jsonRpc';
 
-export class JsonRpcConnector implements VegaConnector {
-  version = VERSION;
-  private _url: string | null = null;
-  token: string | null = null;
-  reqId = 0;
-  client?: WalletClient;
+  url: string;
+  requestId: number = 0;
+  store: StoreApi<Store> | undefined;
 
-  constructor() {
-    const cfg = getConfig();
-
-    this.token = cfg?.token ?? null;
-
-    if (cfg && cfg.url) {
-      this.url = cfg.url;
-      this.client = new WalletClient({
-        address: cfg.url,
-        token: cfg.token ?? undefined,
-        onTokenChange: (token) => {
-          this.token = token;
-          setConfig({
-            token,
-            connector: 'jsonRpc',
-            url: this._url,
-          });
-        },
-      });
-    }
+  constructor(config: JsonRpcConnectorConfig) {
+    this.url = config.url;
   }
 
-  set url(url: string) {
-    this._url = url;
-    this.client = new WalletClient({
-      address: url,
-      token: this.token ?? undefined,
-      onTokenChange: (token) => {
-        this.token = token;
-        setConfig({
-          token,
-          url,
-          connector: 'jsonRpc',
-        });
-      },
-    });
+  bindStore(store: StoreApi<Store>) {
+    this.store = store;
   }
-  get url() {
-    return this._url || '';
-  }
-  async getChainId() {
-    if (!this.client) {
-      throw ClientErrors.NO_CLIENT;
-    }
+
+  async connectWallet(desiredChainId: string) {
     try {
-      const { result } = await this.client.GetChainId();
-      return result;
-    } catch (err) {
-      const {
-        code = ClientErrors.UNKNOWN.code,
-        message = ClientErrors.UNKNOWN.message,
-        title,
-      } = err as WalletClientError;
-      throw new WalletError(title, code, message);
-    }
-  }
+      const { chainId } = await this.getChainId();
 
-  async connectWallet() {
-    if (!this.client) {
-      throw ClientErrors.NO_CLIENT;
-    }
-
-    try {
-      await this.client.ConnectWallet();
-      return null;
-    } catch (err) {
-      const {
-        code = ClientErrors.UNKNOWN.code,
-        message = ClientErrors.UNKNOWN.message,
-        title,
-      } = err as WalletClientError;
-      throw new WalletError(title, code, message);
-    }
-  }
-
-  // connect actually calling list_keys here, not to be confused with connect_wallet
-  // which retrieves the session token
-  async connect() {
-    if (!this.client) {
-      throw ClientErrors.NO_CLIENT;
-    }
-
-    try {
-      const { result } = await this.client.ListKeys();
-      return result.keys;
-    } catch (err) {
-      const {
-        code = ClientErrors.UNKNOWN.code,
-        message = ClientErrors.UNKNOWN.message,
-        title,
-      } = err as WalletClientError;
-      throw new WalletError(title, code, message);
-    }
-  }
-
-  async isAlive() {
-    if (this.client) {
-      try {
-        const keys = await this.client.ListKeys();
-        if (keys.result.keys.length > 0) {
-          return true;
-        }
-      } catch (err) {
-        return false;
+      if (chainId !== desiredChainId) {
+        throw new Error('incorrect chain id');
       }
-    }
 
-    return false;
-  }
+      if (!this.token) {
+        const { response, data } = await this.request(
+          JsonRpcMethod.ConnectWallet,
+          {
+            hostname: window.location.hostname,
+          }
+        );
 
-  async disconnect() {
-    if (!this.client) {
-      throw ClientErrors.NO_CLIENT;
-    }
+        const token = response.headers.get('Authorization');
 
-    try {
-      await this.client.DisconnectWallet();
+        if (!response.ok) {
+          if ('error' in data) {
+            return { error: data.error.data };
+          }
+
+          return { error: 'failed to connect' };
+        }
+
+        if (!token) {
+          return { error: 'failed to connect' };
+        }
+
+        this.token = token;
+      }
+
+      return { success: true };
     } catch (err) {
-      // NOOP
+      return {
+        error: err instanceof Error ? err.message : 'failed to connect',
+      };
     }
-    clearConfig();
   }
 
-  async sendTx(pubKey: string, transaction: Transaction) {
-    if (!this.client) {
-      throw ClientErrors.NO_CLIENT;
+  async disconnectWallet() {
+    try {
+      await this.request(JsonRpcMethod.DisconnectWallet);
+      return { success: true };
+    } catch (err) {
+      return { error: 'failed to disconnect' };
+    }
+  }
+
+  // deprecated, pass chain on connect
+  async getChainId() {
+    try {
+      const { data } = await this.request(JsonRpcMethod.GetChainId);
+      return { chainId: data.result.chainID };
+    } catch (err) {
+      return { error: 'failed to get chain id' };
+    }
+  }
+
+  async listKeys() {
+    try {
+      const { data } = await this.request(JsonRpcMethod.ListKeys);
+      return data.result.keys as Array<{ publicKey: string; name: string }>;
+    } catch (err) {
+      return { error: 'failed to list keys' };
+    }
+  }
+
+  async isConnected() {
+    try {
+      await this.listKeys();
+      return { connected: true };
+    } catch (err) {
+      return { error: 'failed to check isConnected' };
+    }
+  }
+
+  async sendTransaction(params: TransactionParams) {
+    try {
+      const { data } = await this.request(
+        JsonRpcMethod.SendTransaction,
+        params
+      );
+
+      return {
+        transactionHash: data.result.transactionHash,
+        signature: data.result.transaction.signature.value,
+        receivedAt: data.result.receivedAt,
+        sentAt: data.result.sentAt,
+      };
+    } catch (err) {
+      return { error: 'failed to send transaction' };
+    }
+  }
+
+  on() {
+    console.warn('events are not supported in json rpc wallet');
+  }
+
+  off() {
+    console.warn('events are not supported in json rpc wallet');
+  }
+
+  private async request(method: JsonRpcMethod, params?: any) {
+    const headers = new Headers();
+
+    if (this.token) {
+      headers.set('Authorization', this.token);
     }
 
-    const { result } = await this.client.SendTransaction({
-      publicKey: pubKey,
-      sendingMode: 'TYPE_SYNC',
-      transaction,
+    const response = await fetch(this.url, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        id: `${this.requestId++}`,
+        jsonrpc: '2.0',
+        method,
+        params,
+      }),
     });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      this.token = undefined;
+    }
 
     return {
-      transactionHash: result.transactionHash,
-      sentAt: result.sentAt,
-      receivedAt: result.receivedAt,
-      signature: result.transaction.signature.value,
+      data,
+      response,
     };
   }
 
-  async checkCompat() {
-    try {
-      const result = await fetch(`${this._url}/api/${this.version}/methods`);
-      if (!result.ok) {
-        const sent1 = `The version of the wallet service running at ${this._url} is not supported.`;
-        const sent2 = `Update the wallet software to a version that expose the API ${this.version}.`;
-        const data = `${sent1}\n ${sent2}`;
-        const title = 'Wallet version invalid';
-        throw new WalletError(title, ClientErrors.INVALID_WALLET.code, data);
-      }
-      return true;
-    } catch (err) {
-      if (err instanceof WalletClientError) {
-        throw err;
-      }
+  get token() {
+    return this.store?.getState().jsonRpcToken;
+  }
 
-      throw ClientErrors.NO_SERVICE;
-    }
+  set token(value: string | undefined) {
+    this.store?.setState({ jsonRpcToken: value });
   }
 }
