@@ -5,7 +5,7 @@ import {
   CLOSE_AFTER,
   type Toast,
 } from '@vegaprotocol/ui-toolkit';
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useEffect, useMemo } from 'react';
 import { useT } from './use-t';
 import { usePrevious } from '@vegaprotocol/react-helpers';

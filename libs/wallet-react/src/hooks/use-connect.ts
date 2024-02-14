@@ -1,3 +1,5 @@
+import { useConfig } from './use-config';
+
 export function useConnect() {
   const config = useConfig();
   return {

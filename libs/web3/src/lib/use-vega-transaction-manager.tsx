@@ -2,7 +2,7 @@ import {
   useDisconnect,
   useSendTransaction,
   useVegaWallet,
-} from '@vegaprotocol/wallet';
+} from '@vegaprotocol/wallet-react';
 import { useEffect, useRef } from 'react';
 import { useVegaTransactionStore } from './use-vega-transaction-store';
 import { VegaTxStatus } from './types';

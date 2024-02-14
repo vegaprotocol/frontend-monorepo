@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { useConnect, useWallet } from './wallet';
+import { useWallet } from './use-wallet';
+import { useConnect } from './use-connect';
 
 export function useEagerConnect() {
   const current = useWallet((store) => store.current);

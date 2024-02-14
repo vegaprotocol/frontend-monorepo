@@ -11,6 +11,10 @@ export {
 } from './hooks/use-simple-transaction';
 export { useSnapStatus } from './hooks/use-snap-status';
 export { useVegaWallet } from './hooks/use-vega-wallet';
+export { useConfig } from './hooks/use-config';
+export { useConnect } from './hooks/use-connect';
+export { useDisconnect } from './hooks/use-disconnect';
+export { useSendTransaction } from './hooks/use-send-transaction';
 
 // Components
 export { ConnectDialog } from './components/connect-dialog';
