@@ -7,7 +7,7 @@ import {
   useNetworkParams,
 } from '@vegaprotocol/network-parameters';
 import { AccountType } from '@vegaprotocol/types';
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import BigNumber from 'bignumber.js';
 import {
   Card,

@@ -1,4 +1,4 @@
-import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
+import { useVegaWallet, useDialogStore } from '@vegaprotocol/wallet-react';
 import { RainbowButton } from '../../components/rainbow-button';
 import { useState } from 'react';
 import {
@@ -28,7 +28,7 @@ export const CreateCodeContainer = () => {
   const t = useT();
   const { pubKey, isReadOnly } = useVegaWallet();
   const isInReferralSet = useIsInReferralSet(pubKey);
-  const openWalletDialog = useVegaWalletDialogStore(
+  const openWalletDialog = useDialogStore(
     (store) => store.openVegaWalletDialog
   );
 

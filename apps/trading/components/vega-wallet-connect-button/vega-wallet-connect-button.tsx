@@ -15,12 +15,8 @@ import {
   TradingDropdownRadioItem,
   TradingDropdownItemIndicator,
 } from '@vegaprotocol/ui-toolkit';
-import {
-  useVegaWalletDialogStore,
-  isBrowserWalletInstalled,
-  useVegaWallet,
-  type Key,
-} from '@vegaprotocol/wallet';
+import { isBrowserWalletInstalled, type Key } from '@vegaprotocol/wallet';
+import { useDialogStore, useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useCopyTimeout } from '@vegaprotocol/react-helpers';
 import classNames from 'classnames';
 import { useT } from '../../lib/use-t';
@@ -34,7 +30,7 @@ export const VegaWalletConnectButton = ({
 }) => {
   const t = useT();
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const openVegaWalletDialog = useVegaWalletDialogStore(
+  const openVegaWalletDialog = useDialogStore(
     (store) => store.openVegaWalletDialog
   );
   const { status, pubKeys, pubKey, selectPubKey, disconnect, refreshKeys } =

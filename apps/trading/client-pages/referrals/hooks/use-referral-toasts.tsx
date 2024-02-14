@@ -6,7 +6,7 @@ import {
   Button,
 } from '@vegaprotocol/ui-toolkit';
 import { useReferral } from './use-referral';
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useEffect } from 'react';
 import { useT } from '../../../lib/use-t';
 import { matchPath, useLocation, useNavigate } from 'react-router-dom';

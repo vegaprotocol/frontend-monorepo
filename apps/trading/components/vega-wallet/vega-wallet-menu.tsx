@@ -5,7 +5,8 @@ import {
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 import { truncateByChars } from '@vegaprotocol/utils';
-import { useVegaWallet, type Key } from '@vegaprotocol/wallet';
+import { type Key } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useCallback, useMemo } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { ViewType, useSidebar } from '../sidebar';

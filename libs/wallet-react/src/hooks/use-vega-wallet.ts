@@ -1,5 +1,6 @@
-import { type Transaction } from './transaction-types';
-import { useConfig, useWallet } from './wallet';
+import { type Transaction } from '@vegaprotocol/wallet';
+import { useConfig } from './use-config';
+import { useWallet } from './use-wallet';
 
 // Only for vega apps that expect a single selected key
 export const useVegaWallet = () => {

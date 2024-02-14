@@ -5,7 +5,10 @@ export { WalletContext, WalletProvider } from './context';
 export { useChainId } from './hooks/use-chain-id';
 export { useDialogStore } from './hooks/use-dialog-store';
 export { useEagerConnect } from './hooks/use-eager-connect';
-export { useSimpleTransaction } from './hooks/use-simple-transaction';
+export {
+  useSimpleTransaction,
+  type Options,
+} from './hooks/use-simple-transaction';
 export { useSnapStatus } from './hooks/use-snap-status';
 export { useVegaWallet } from './hooks/use-vega-wallet';
 

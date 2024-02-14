@@ -9,8 +9,6 @@ import {
 } from './sidebar';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { VegaIconNames } from '@vegaprotocol/ui-toolkit';
-import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
-import { VegaWalletContext } from '@vegaprotocol/wallet';
 import { Routes as AppRoutes } from '../../lib/links';
 
 jest.mock('../node-health', () => ({
@@ -33,10 +31,6 @@ jest.mock('../welcome-dialog', () => ({
   GetStarted: () => <div data-testid="get-started" />,
 }));
 
-const walletContext = {
-  pubKeys: [{ publicKey: 'pubkey' }],
-} as VegaWalletContextShape;
-
 describe('Sidebar', () => {
   beforeEach(() => {
     useSidebar.setState({ views: {} });
@@ -44,11 +38,9 @@ describe('Sidebar', () => {
 
   it('renders options prop', () => {
     render(
-      <VegaWalletContext.Provider value={walletContext}>
-        <MemoryRouter>
-          <Sidebar options={<div data-testid="options" />} />
-        </MemoryRouter>
-      </VegaWalletContext.Provider>
+      <MemoryRouter>
+        <Sidebar options={<div data-testid="options" />} />
+      </MemoryRouter>
     );
 
     expect(screen.getByTestId(ViewType.ViewAs)).toBeInTheDocument();
@@ -60,20 +52,18 @@ describe('Sidebar', () => {
   it('renders selected state', async () => {
     const routeId = '/markets/ABC';
     render(
-      <VegaWalletContext.Provider value={walletContext}>
-        <MemoryRouter initialEntries={[routeId]}>
-          <Sidebar
-            options={
-              <SidebarButton
-                view={ViewType.Deposit}
-                icon={VegaIconNames.DEPOSIT}
-                tooltip="Deposit"
-                routeId={'/markets/:marketId'}
-              />
-            }
-          />
-        </MemoryRouter>
-      </VegaWalletContext.Provider>
+      <MemoryRouter initialEntries={[routeId]}>
+        <Sidebar
+          options={
+            <SidebarButton
+              view={ViewType.Deposit}
+              icon={VegaIconNames.DEPOSIT}
+              tooltip="Deposit"
+              routeId={'/markets/:marketId'}
+            />
+          }
+        />
+      </MemoryRouter>
     );
 
     const settingsButton = screen.getByTestId(ViewType.Settings);
@@ -102,17 +92,15 @@ describe('SidebarContent', () => {
 
   it('renders the correct content', () => {
     const { container } = render(
-      <VegaWalletContext.Provider value={walletContext}>
-        <MemoryRouter initialEntries={['/markets/ABC']}>
-          <Routes>
-            <Route
-              path="/markets/:marketId"
-              id={AppRoutes.MARKET}
-              element={<SidebarContent />}
-            />
-          </Routes>
-        </MemoryRouter>
-      </VegaWalletContext.Provider>
+      <MemoryRouter initialEntries={['/markets/ABC']}>
+        <Routes>
+          <Route
+            path="/markets/:marketId"
+            id={AppRoutes.MARKET}
+            element={<SidebarContent />}
+          />
+        </Routes>
+      </MemoryRouter>
     );
 
     expect(container).toBeEmptyDOMElement();
@@ -136,17 +124,15 @@ describe('SidebarContent', () => {
 
   it('closes sidebar if market id is required but not present', () => {
     const { container } = render(
-      <VegaWalletContext.Provider value={walletContext}>
-        <MemoryRouter initialEntries={['/portfolio']}>
-          <Routes>
-            <Route
-              path="/portfolio"
-              id={AppRoutes.PORTFOLIO}
-              element={<SidebarContent />}
-            />
-          </Routes>
-        </MemoryRouter>
-      </VegaWalletContext.Provider>
+      <MemoryRouter initialEntries={['/portfolio']}>
+        <Routes>
+          <Route
+            path="/portfolio"
+            id={AppRoutes.PORTFOLIO}
+            element={<SidebarContent />}
+          />
+        </Routes>
+      </MemoryRouter>
     );
 
     act(() => {

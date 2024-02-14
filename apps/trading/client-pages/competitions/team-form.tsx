@@ -14,10 +14,10 @@ import { URL_REGEX, isValidVegaPublicKey } from '@vegaprotocol/utils';
 import { type useReferralSetTransaction } from '../../lib/hooks/use-referral-set-transaction';
 import { useT } from '../../lib/use-t';
 import { useForm, Controller } from 'react-hook-form';
-import type {
-  CreateReferralSet,
-  UpdateReferralSet,
-  Status,
+import {
+  type CreateReferralSet,
+  type UpdateReferralSet,
+  type Status,
 } from '@vegaprotocol/wallet';
 import classNames from 'classnames';
 import { useLayoutEffect, useState } from 'react';

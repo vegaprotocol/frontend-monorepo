@@ -27,6 +27,3 @@ export const config = createConfig({
   defaultChainId: fairground.id,
   connectors: [injected, jsonRpc, snap, readOnly],
 });
-
-// const state = config.store.getState();
-// readOnly.pubKey = state.pubKey;

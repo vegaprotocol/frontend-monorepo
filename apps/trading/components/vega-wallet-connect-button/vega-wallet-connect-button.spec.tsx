@@ -1,14 +1,14 @@
 import { fireEvent, render, screen } from '@testing-library/react';
-import { VegaWalletContext } from '@vegaprotocol/wallet';
-import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
+import { type Wallet, type Store } from '@vegaprotocol/wallet';
+import { WalletContext } from '@vegaprotocol/wallet-react';
 import { VegaWalletConnectButton } from './vega-wallet-connect-button';
 import { truncateByChars } from '@vegaprotocol/utils';
 import userEvent from '@testing-library/user-event';
 
 const mockUpdateDialogOpen = jest.fn();
-jest.mock('@vegaprotocol/wallet', () => ({
-  ...jest.requireActual('@vegaprotocol/wallet'),
-  useVegaWalletDialogStore: () => mockUpdateDialogOpen,
+jest.mock('@vegaprotocol/wallet-react', () => ({
+  ...jest.requireActual('@vegaprotocol/wallet-react'),
+  useDialogStore: () => mockUpdateDialogOpen,
 }));
 
 jest.mock('../../lib/hooks/use-get-current-route-id', () => ({
@@ -19,17 +19,17 @@ beforeEach(() => {
   jest.clearAllMocks();
 });
 
-const generateJsx = (context: VegaWalletContextShape) => {
+const generateJsx = (context: Wallet) => {
   return (
-    <VegaWalletContext.Provider value={context}>
+    <WalletContext.Provider value={context}>
       <VegaWalletConnectButton />
-    </VegaWalletContext.Provider>
+    </WalletContext.Provider>
   );
 };
 
 describe('VegaWalletConnectButton', () => {
   it('should fire dialog when not connected', () => {
-    render(generateJsx({ pubKey: null } as VegaWalletContextShape));
+    render(generateJsx({ pubKey: null } as Wallet));
 
     const button = screen.getByTestId('connect-vega-wallet');
     expect(button).toHaveTextContent('Get started');
@@ -39,7 +39,7 @@ describe('VegaWalletConnectButton', () => {
 
   it('should render "Connect" when browser wallet is detected', () => {
     window.vega = window.vega || ({} as Vega);
-    render(generateJsx({ pubKey: null } as VegaWalletContextShape));
+    render(generateJsx({ pubKey: null } as Wallet));
 
     const button = screen.getByTestId('connect-vega-wallet');
     expect(button).toHaveTextContent('Connect');
@@ -54,7 +54,7 @@ describe('VegaWalletConnectButton', () => {
       generateJsx({
         pubKey: pubKey.publicKey,
         pubKeys: [pubKey],
-        fetchPubKeys: () => Promise.resolve([pubKey, pubKey2]),
+        refreshKeys: () => Promise.resolve([pubKey, pubKey2]),
       } as VegaWalletContextShape)
     );
 

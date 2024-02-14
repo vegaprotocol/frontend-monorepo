@@ -1,6 +1,6 @@
 import { LedgerExportForm } from '@vegaprotocol/ledger';
 import { Loader, Splash } from '@vegaprotocol/ui-toolkit';
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useEnvironment } from '@vegaprotocol/environment';
 import type { PartyAssetFieldsFragment } from '@vegaprotocol/assets';
 import { usePartyAssetsQuery } from '@vegaprotocol/assets';

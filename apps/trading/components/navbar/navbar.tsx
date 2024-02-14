@@ -25,7 +25,7 @@ import { NavLink } from 'react-router-dom';
 import { Links } from '../../lib/links';
 import classNames from 'classnames';
 import { VegaWalletMenu } from '../vega-wallet';
-import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
+import { useVegaWallet, useDialogStore } from '@vegaprotocol/wallet-react';
 import { WalletIcon } from '../icons/wallet';
 import { ProtocolUpgradeCountdown } from '@vegaprotocol/proposals';
 import { useT, useI18n } from '../../lib/use-t';
@@ -42,7 +42,7 @@ export const Navbar = ({ theme = 'system' }: { theme?: Theme }) => {
 
   const { pubKey } = useVegaWallet();
 
-  const openVegaWalletDialog = useVegaWalletDialogStore(
+  const openVegaWalletDialog = useDialogStore(
     (store) => store.openVegaWalletDialog
   );
 

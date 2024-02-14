@@ -1,5 +1,5 @@
 import { useEnvironment } from '@vegaprotocol/environment';
-import { useEagerConnect as useVegaEagerConnect } from '@vegaprotocol/wallet';
+import { useEagerConnect as useVegaEagerConnect } from '@vegaprotocol/wallet-react';
 import { useEagerConnect as useEthereumEagerConnect } from '@vegaprotocol/web3';
 import { useTelemetryApproval } from '../lib/hooks/use-telemetry-approval';
 

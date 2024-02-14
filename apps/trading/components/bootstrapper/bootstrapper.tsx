@@ -11,7 +11,7 @@ import type { ReactNode } from 'react';
 import { Web3Provider } from './web3-provider';
 import { useT } from '../../lib/use-t';
 import { DataLoader } from './data-loader';
-import { VegaWalletProvider } from '@vegaprotocol/wallet';
+import { WalletProvider } from '@vegaprotocol/wallet-react';
 import { config } from '../../lib/vega-wallet';
 
 export const Bootstrapper = ({ children }: { children: ReactNode }) => {
@@ -51,7 +51,7 @@ export const Bootstrapper = ({ children }: { children: ReactNode }) => {
               <AppFailure title={t('Could not configure web3 provider')} />
             }
           >
-            <VegaWalletProvider config={config}>{children}</VegaWalletProvider>
+            <WalletProvider config={config}>{children}</WalletProvider>
           </Web3Provider>
         </DataLoader>
       </NodeGuard>

@@ -1,4 +1,4 @@
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useFundsAvailableQuery } from './__generated__/FundsAvailable';
 import compact from 'lodash/compact';
 import BigNumber from 'bignumber.js';
