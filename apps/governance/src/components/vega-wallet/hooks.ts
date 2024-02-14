@@ -10,7 +10,7 @@ import vegaBlack from '../../images/vega_black.png';
 import vegaVesting from '../../images/vega_vesting.png';
 import { BigNumber } from '../../lib/bignumber';
 import { type WalletCardAssetProps } from '../wallet-card';
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useContracts } from '../../contexts/contracts/contracts-context';
 import * as Schema from '@vegaprotocol/types';
 import {

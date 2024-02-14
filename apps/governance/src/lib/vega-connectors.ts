@@ -1,30 +1,29 @@
-import { useFeatureFlags } from '@vegaprotocol/environment';
-import { useMemo } from 'react';
 import {
-  JsonRpcConnector,
-  ViewConnector,
   InjectedConnector,
+  JsonRpcConnector,
   SnapConnector,
-  DEFAULT_SNAP_ID,
+  ReadOnlyConnector,
+  createConfig,
+  fairground,
+  stagnet,
 } from '@vegaprotocol/wallet';
 
-const urlParams = new URLSearchParams(window.location.search);
+const injected = new InjectedConnector();
 
-export const jsonRpc = new JsonRpcConnector();
-export const injected = new InjectedConnector();
-export const view = new ViewConnector(urlParams.get('address'));
+const jsonRpc = new JsonRpcConnector({
+  url: 'http://localhost:1789/api/v2/requests',
+});
 
-export const snap = new SnapConnector(DEFAULT_SNAP_ID);
+const snap = new SnapConnector({
+  node: 'https://api.n08.testnet.vega.rocks',
+  snapId: 'npm:@vegaprotocol/snap',
+  version: '0.3.1',
+});
 
-export const useConnectors = () => {
-  const featureFlags = useFeatureFlags((state) => state.flags);
-  return useMemo(
-    () => ({
-      injected,
-      jsonRpc,
-      view,
-      snap: featureFlags.METAMASK_SNAPS ? snap : undefined,
-    }),
-    [featureFlags.METAMASK_SNAPS]
-  );
-};
+const readOnly = new ReadOnlyConnector();
+
+export const config = createConfig({
+  chains: [fairground, stagnet],
+  defaultChainId: fairground.id,
+  connectors: [injected, jsonRpc, snap, readOnly],
+});

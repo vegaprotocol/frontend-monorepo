@@ -119,16 +119,17 @@ export class SnapConnector implements Connector {
         version: this.version,
       },
     });
-    console.log(res);
   }
 
   async getSnap() {
     const snaps = await this.request(EthereumMethod.GetSnaps);
     return Object.values(snaps).find(
+      // @ts-ignore fix these types
       (s) => s.id === this.snapId && s.version === this.version
     );
   }
 
+  // eslint-disable-next-line
   async invokeSnap(method: JsonRpcMethod, params?: any) {
     return await this.request(EthereumMethod.InvokeSnap, {
       snapId: this.snapId,

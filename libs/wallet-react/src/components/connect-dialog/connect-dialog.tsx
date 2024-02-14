@@ -12,7 +12,7 @@ import { useConnect } from '../../hooks/use-connect';
 // import { useT } from '../use-t';
 import classNames from 'classnames';
 
-const useT = (s: string) => s;
+const useT = () => (s: string) => s;
 
 export const ConnectDialog = ({
   open,

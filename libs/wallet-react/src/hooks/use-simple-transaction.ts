@@ -43,7 +43,7 @@ export const useSimpleTransaction = (opts?: Options) => {
     try {
       const res = await sendTx(pubKey, tx);
 
-      if (!res) {
+      if (!res || 'error' in res) {
         throw new Error(t('Transaction could not be sent'));
       }
 

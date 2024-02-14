@@ -1,11 +1,10 @@
 import { Button } from '@vegaprotocol/ui-toolkit';
-import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useVegaWalletDialogStore } from '@vegaprotocol/wallet';
+import { useDialogStore } from '@vegaprotocol/wallet-react';
 
 export const ConnectToVega = () => {
   const { t } = useTranslation();
-  const { openVegaWalletDialog } = useVegaWalletDialogStore((store) => ({
+  const { openVegaWalletDialog } = useDialogStore((store) => ({
     openVegaWalletDialog: store.openVegaWalletDialog,
   }));
   return (

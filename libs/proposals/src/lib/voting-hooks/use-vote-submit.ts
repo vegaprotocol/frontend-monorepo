@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import * as Sentry from '@sentry/react';
 import { useVegaTransaction } from '../proposals-hooks/use-vega-transaction';
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useVoteEvent } from './use-vote-event';
 import type { VoteValue } from '@vegaprotocol/types';
 import type { VoteEventFieldsFragment } from './__generated__/VoteSubsciption';

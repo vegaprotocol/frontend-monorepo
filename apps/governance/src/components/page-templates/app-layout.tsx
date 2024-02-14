@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import type { ReactNode } from 'react';
 import { AnnouncementBanner } from '@vegaprotocol/announcements';
 import { Nav } from '../nav';

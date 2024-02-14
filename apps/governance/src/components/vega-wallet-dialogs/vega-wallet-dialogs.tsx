@@ -1,4 +1,4 @@
-import { ConnectDialog, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
+import { ConnectDialog, useDialogStore } from '@vegaprotocol/wallet-react';
 import {
   AppStateActionType,
   useAppState,
@@ -9,14 +9,12 @@ import { VegaManageDialog } from '../manage-dialog';
 
 export const VegaWalletDialogs = () => {
   const { appState, appDispatch } = useAppState();
-  const vegaWalletDialogOpen = useVegaWalletDialogStore(
+  const vegaWalletDialogOpen = useDialogStore(
     (store) => store.vegaWalletDialogOpen
   );
-  const updateVegaWalletDialog = useVegaWalletDialogStore(
-    (store) => (open: boolean) => {
-      store.updateVegaWalletDialog(open);
-    }
-  );
+  const updateVegaWalletDialog = useDialogStore((store) => (open: boolean) => {
+    store.updateVegaWalletDialog(open);
+  });
   return (
     <>
       <ConnectDialog

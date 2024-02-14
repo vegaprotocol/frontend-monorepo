@@ -25,9 +25,13 @@ export class JsonRpcConnector implements Connector {
 
   async connectWallet(desiredChainId: string) {
     try {
-      const { chainId } = await this.getChainId();
+      const chainRes = await this.getChainId();
 
-      if (chainId !== desiredChainId) {
+      if ('error' in chainRes) {
+        return { error: chainRes.error };
+      }
+
+      if (chainRes.chainId !== desiredChainId) {
         return { error: 'incorrect chain' };
       }
 

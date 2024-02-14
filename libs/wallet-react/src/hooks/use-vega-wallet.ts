@@ -17,7 +17,7 @@ export const useVegaWallet = () => {
     refreshKeys: config.refreshKeys,
     isAlive: store.status === 'connected',
     sendTx: (pubKey: string, transaction: Transaction) =>
-      // TODO: figure out how to type this better
+      // @ts-ignore TODO: figure out how to type this better
       config.sendTransaction({
         publicKey: pubKey,
         sendingMode: 'TYPE_SYNC',

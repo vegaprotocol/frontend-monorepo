@@ -1,11 +1,11 @@
 import classNames from 'classnames';
 import { useTranslation } from 'react-i18next';
-import { useVegaWalletDialogStore } from '@vegaprotocol/wallet';
+import { useDialogStore } from '@vegaprotocol/wallet-react';
 import { Button } from '@vegaprotocol/ui-toolkit';
 import { SubHeading } from '../../components/heading';
 
 export const ConnectToSeeRewards = () => {
-  const { openVegaWalletDialog } = useVegaWalletDialogStore((store) => ({
+  const { openVegaWalletDialog } = useDialogStore((store) => ({
     openVegaWalletDialog: store.openVegaWalletDialog,
   }));
   const { t } = useTranslation();

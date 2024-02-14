@@ -15,4 +15,4 @@ export {
 } from './connectors';
 
 // Utils
-export { determineId, isBrowserWalletInstalled } from './utils';
+export * from './utils';

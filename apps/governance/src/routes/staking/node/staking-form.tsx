@@ -27,11 +27,11 @@ import {
   NetworkParams,
 } from '@vegaprotocol/network-parameters';
 import { useBalances } from '../../../lib/balances/balances-store';
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { SubHeading } from '../../../components/heading';
-import type {
-  DelegateSubmissionBody,
-  UndelegateSubmissionBody,
+import {
+  type DelegateSubmissionBody,
+  type UndelegateSubmissionBody,
 } from '@vegaprotocol/wallet';
 import Routes from '../../routes';
 

@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { Icon, ExternalLink } from '@vegaprotocol/ui-toolkit';
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { ProposalState } from '@vegaprotocol/types';
 import { ConnectToVega } from '../../../../components/connect-to-vega';
 import { VoteButtonsContainer } from './vote-buttons';

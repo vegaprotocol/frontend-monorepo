@@ -26,7 +26,7 @@ import {
 } from '@vegaprotocol/web3';
 import { Web3Provider } from '@vegaprotocol/web3';
 import { VegaWalletDialogs } from './components/vega-wallet-dialogs';
-import { VegaWalletProvider, useChainId } from '@vegaprotocol/wallet';
+import { WalletProvider, useChainId } from '@vegaprotocol/wallet-react';
 import {
   useVegaTransactionManager,
   useVegaTransactionUpdater,
@@ -40,7 +40,6 @@ import {
   NodeGuard,
   NodeSwitcherDialog,
   useNodeSwitcherStore,
-  DocsLinks,
   NodeFailure,
   AppLoader as Loader,
 } from '@vegaprotocol/environment';
@@ -56,6 +55,7 @@ import {
 import { useLocalStorage } from '@vegaprotocol/react-helpers';
 import { useTranslation } from 'react-i18next';
 import { isPartyNotFoundError } from './lib/party';
+import { config } from './lib/vega-connectors';
 
 const cache: InMemoryCacheConfig = {
   typePolicies: {
@@ -121,12 +121,7 @@ const Web3Container = ({
     ETHEREUM_PROVIDER_URL,
     ETH_LOCAL_PROVIDER_URL,
     ETH_WALLET_MNEMONIC,
-    VEGA_ENV,
     VEGA_URL,
-    VEGA_EXPLORER_URL,
-    CHROME_EXTENSION_URL,
-    MOZILLA_EXTENSION_URL,
-    VEGA_WALLET_URL,
   } = useEnvironment();
 
   const vegaChainId = useChainId(VEGA_URL);
@@ -159,35 +154,14 @@ const Web3Container = ({
     return <SplashLoader />;
   }
 
-  if (
-    !VEGA_URL ||
-    !VEGA_WALLET_URL ||
-    !VEGA_EXPLORER_URL ||
-    !DocsLinks ||
-    !CHROME_EXTENSION_URL ||
-    !MOZILLA_EXTENSION_URL ||
-    !vegaChainId
-  ) {
+  if (!VEGA_URL || !vegaChainId) {
     return null;
   }
 
   return (
     <Web3Provider connectors={connectors}>
       <Web3Connector connectors={connectors} chainId={Number(chainId)}>
-        <VegaWalletProvider
-          config={{
-            network: VEGA_ENV,
-            vegaUrl: VEGA_URL,
-            chainId: vegaChainId,
-            vegaWalletServiceUrl: VEGA_WALLET_URL,
-            links: {
-              explorer: VEGA_EXPLORER_URL,
-              concepts: DocsLinks?.VEGA_WALLET_CONCEPTS_URL,
-              chromeExtensionUrl: CHROME_EXTENSION_URL,
-              mozillaExtensionUrl: MOZILLA_EXTENSION_URL,
-            },
-          }}
-        >
+        <WalletProvider config={config}>
           <ContractsProvider>
             <AppLoader>
               <BalanceManager>
@@ -211,7 +185,7 @@ const Web3Container = ({
               </BalanceManager>
             </AppLoader>
           </ContractsProvider>
-        </VegaWalletProvider>
+        </WalletProvider>
       </Web3Connector>
     </Web3Provider>
   );

@@ -6,7 +6,7 @@ import {
   Intent,
   Icon,
 } from '@vegaprotocol/ui-toolkit';
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useTranslation } from 'react-i18next';
 
 export interface VegaManageDialogProps {

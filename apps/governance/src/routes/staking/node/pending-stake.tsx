@@ -4,8 +4,8 @@ import { Button, Callout, Intent, Loader } from '@vegaprotocol/ui-toolkit';
 import { useTranslation } from 'react-i18next';
 import { useAppState } from '../../../contexts/app-state/app-state-context';
 import type { BigNumber } from '../../../lib/bignumber';
-import type { UndelegateSubmissionBody } from '@vegaprotocol/wallet';
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import { type UndelegateSubmissionBody } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { removeDecimal } from '@vegaprotocol/utils';
 
 interface PendingStakeProps {

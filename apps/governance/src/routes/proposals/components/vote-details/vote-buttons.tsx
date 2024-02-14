@@ -1,7 +1,7 @@
 import { format } from 'date-fns';
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
+import { useVegaWallet, useDialogStore } from '@vegaprotocol/wallet-react';
 import {
   AsyncRenderer,
   Button,
@@ -163,7 +163,7 @@ export const VoteButtons = ({
 }: VoteButtonsProps) => {
   const { t } = useTranslation();
   const { pubKey } = useVegaWallet();
-  const { openVegaWalletDialog } = useVegaWalletDialogStore((store) => ({
+  const { openVegaWalletDialog } = useDialogStore((store) => ({
     openVegaWalletDialog: store.openVegaWalletDialog,
   }));
   const [changeVote, setChangeVote] = React.useState(false);

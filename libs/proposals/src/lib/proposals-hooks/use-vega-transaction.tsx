@@ -4,7 +4,7 @@ import {
   WalletClientError,
   WalletHttpError,
 } from '@vegaprotocol/wallet-client';
-import { useVegaWallet, WalletError, ClientErrors } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import type { Transaction } from '@vegaprotocol/wallet';
 import type { VegaTransactionContentMap } from '../../components/vega-transaction-dialog';
 import { VegaTransactionDialog } from '../../components/vega-transaction-dialog';
@@ -41,18 +41,20 @@ export const initialState = {
   dialogOpen: false,
 };
 
-export const orderErrorResolve = (err: Error | unknown): Error => {
-  if (err instanceof WalletClientError || err instanceof WalletError) {
-    return err;
-  } else if (err instanceof WalletHttpError) {
-    return ClientErrors.UNKNOWN;
-  } else if (err instanceof TypeError) {
-    return ClientErrors.NO_SERVICE;
-  } else if (err instanceof Error) {
-    return err;
-  }
-  return ClientErrors.UNKNOWN;
-};
+// TODO: fix me
+//
+// export const orderErrorResolve = (err: Error | unknown): Error => {
+//   if (err instanceof WalletClientError || err instanceof WalletError) {
+//     return err;
+//   } else if (err instanceof WalletHttpError) {
+//     return ClientErrors.UNKNOWN;
+//   } else if (err instanceof TypeError) {
+//     return ClientErrors.NO_SERVICE;
+//   } else if (err instanceof Error) {
+//     return err;
+//   }
+//   return ClientErrors.UNKNOWN;
+// };
 
 export const useVegaTransaction = () => {
   const { sendTx, disconnect } = useVegaWallet();
@@ -92,6 +94,10 @@ export const useVegaTransaction = () => {
           return null;
         }
 
+        if ('error' in res) {
+          throw new Error('transaction failed');
+        }
+
         if (res.signature && res.transactionHash) {
           setTransaction({
             status: VegaTxStatus.Pending,
@@ -104,14 +110,15 @@ export const useVegaTransaction = () => {
 
         return null;
       } catch (err) {
-        const error = orderErrorResolve(err);
-        if ((error as WalletError).code === ClientErrors.NO_SERVICE.code) {
-          disconnect();
-        }
-        setTransaction({
-          error,
-          status: VegaTxStatus.Error,
-        });
+        console.error(err);
+        // const error = orderErrorResolve(err);
+        // if ((error as WalletError).code === ClientErrors.NO_SERVICE.code) {
+        //   disconnect();
+        // }
+        // setTransaction({
+        //   error,
+        //   status: VegaTxStatus.Error,
+        // });
         return null;
       }
     },

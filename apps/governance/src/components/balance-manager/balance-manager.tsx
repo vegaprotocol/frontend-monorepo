@@ -7,7 +7,7 @@ import { useGetAssociationBreakdown } from '../../hooks/use-get-association-brea
 import { useGetUserBalances } from '../../hooks/use-get-user-balances';
 import { useBalances } from '../../lib/balances/balances-store';
 import type { ReactElement } from 'react';
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useListenForStakingEvents as useListenForAssociationEvents } from '../../hooks/use-listen-for-staking-events';
 import { useTranches } from '../../lib/tranches/tranches-store';
 import { useUserTrancheBalances } from '../../routes/redemption/hooks';
