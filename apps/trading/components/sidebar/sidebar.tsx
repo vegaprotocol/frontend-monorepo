@@ -12,10 +12,10 @@ import { NodeHealthContainer } from '../node-health';
 import { Settings } from '../settings';
 import { Tooltip } from '../../components/tooltip';
 import { WithdrawContainer } from '../withdraw-container';
+import { GetStarted } from '../welcome-dialog';
 import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
 import { useT } from '../../lib/use-t';
 import { ErrorBoundary } from '../error-boundary';
-import { useScreenDimensions } from '@vegaprotocol/react-helpers';
 
 export enum ViewType {
   Order = 'Order',
@@ -24,7 +24,6 @@ export enum ViewType {
   Withdraw = 'Withdraw',
   Transfer = 'Transfer',
   Settings = 'Settings',
-  ViewAs = 'ViewAs',
   Close = 'Close',
 }
 
@@ -163,7 +162,7 @@ export const SidebarContent = () => {
               }
             />
           </ErrorBoundary>
-          {/* <GetStarted /> */}
+          <GetStarted />
         </ContentWrapper>
       );
     } else {

@@ -1,9 +1,5 @@
 import { MockedProvider, type MockedResponse } from '@apollo/react-testing';
 import { render, screen, waitFor } from '@testing-library/react';
-import {
-  VegaWalletContext,
-  type VegaWalletContextShape,
-} from '@vegaprotocol/wallet';
 import { ReferralStatistics } from './referral-statistics';
 import {
   ReferralProgramDocument,
@@ -25,9 +21,23 @@ import {
   type RefereesQuery,
 } from './hooks/__generated__/Referees';
 import { MemoryRouter } from 'react-router-dom';
+import * as walletHooks from '@vegaprotocol/wallet-react';
+
+jest.mock('@vegaprotocol/wallet-react');
 
 const MOCK_PUBKEY =
   '1234567890123456789012345678901234567890123456789012345678901234';
+
+// @ts-ignore type wrong after mock
+walletHooks.useVegaWallet.mockReturnValue({
+  pubKey: MOCK_PUBKEY,
+});
+
+// @ts-ignore type wrong after mock
+walletHooks.useSimpleTransaction.mockReturnValue({
+  send: jest.fn(),
+  status: 'idle',
+});
 
 const MOCK_STAKE_AVAILABLE: StakeAvailableQuery = {
   networkParameter: {
@@ -301,19 +311,11 @@ const refereesMock30: MockedResponse<RefereesQuery, RefereesQueryVariables> = {
 
 describe('ReferralStatistics', () => {
   const renderComponent = (mocks: MockedResponse[]) => {
-    const walletContext = {
-      pubKey: MOCK_PUBKEY,
-      isReadOnly: false,
-      sendTx: jest.fn(),
-    } as unknown as VegaWalletContextShape;
-
     return render(
       <MemoryRouter>
-        <VegaWalletContext.Provider value={walletContext}>
-          <MockedProvider mocks={mocks} showWarnings={false}>
-            <ReferralStatistics />
-          </MockedProvider>
-        </VegaWalletContext.Provider>
+        <MockedProvider mocks={mocks} showWarnings={false}>
+          <ReferralStatistics />
+        </MockedProvider>
       </MemoryRouter>
     );
   };

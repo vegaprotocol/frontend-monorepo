@@ -2,11 +2,8 @@ import { useEffect } from 'react';
 import { matchPath, useLocation } from 'react-router-dom';
 import { Dialog, Intent } from '@vegaprotocol/ui-toolkit';
 import { useEnvironment } from '@vegaprotocol/environment';
-// import { VegaConnectDialog } from '@vegaprotocol/wallet';
-import { useConnectors } from '../../lib/vega-connectors';
 import { useT } from '../../lib/use-t';
 import { Routes } from '../../lib/links';
-import { RiskMessage } from './risk-message';
 import { WelcomeDialogContent } from './welcome-dialog-content';
 import { useOnboardingStore } from './use-get-onboarding-step';
 import { ensureSuffix } from '@vegaprotocol/utils';
@@ -20,7 +17,6 @@ export const WelcomeDialog = () => {
   const { pathname } = useLocation();
   const t = useT();
   const { VEGA_ENV } = useEnvironment();
-  const connectors = useConnectors();
   const dismissed = useOnboardingStore((store) => store.dismissed);
   const dialogOpen = useOnboardingStore((store) => store.dialogOpen);
   const dismiss = useOnboardingStore((store) => store.dismiss);
@@ -49,7 +45,7 @@ export const WelcomeDialog = () => {
     //   onClose={() => setWalletDialogOpen(false)}
     //   contentOnly
     // />
-    <div>TODO: fix me</div>
+    <div>TODO: handle onboarding connection</div>
   ) : (
     <WelcomeDialogContent />
   );

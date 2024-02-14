@@ -47,7 +47,7 @@ export enum OnboardingStep {
 }
 
 export const useGetOnboardingStep = () => {
-  const connecting = useGlobalStore((store) => store.eagerConnecting);
+  // const connecting = useGlobalStore((store) => store.eagerConnecting);
   const { pubKey = '', pubKeys } = useVegaWallet();
   const { data: depositsData } = useDataProvider({
     dataProvider: depositsProvider,
@@ -87,7 +87,7 @@ export const useGetOnboardingStep = () => {
   const positions = Boolean(positionsData?.length);
 
   const isLoading = Boolean(
-    (connecting || pubKey) &&
+    pubKey &&
       (depositsData === null ||
         ordersData === null ||
         collateralData === null ||

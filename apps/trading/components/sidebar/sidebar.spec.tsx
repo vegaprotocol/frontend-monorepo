@@ -43,7 +43,6 @@ describe('Sidebar', () => {
       </MemoryRouter>
     );
 
-    expect(screen.getByTestId(ViewType.ViewAs)).toBeInTheDocument();
     expect(screen.getByTestId(ViewType.Settings)).toBeInTheDocument();
     expect(screen.getByTestId('node-health')).toBeInTheDocument();
     expect(screen.getByTestId('options')).toBeInTheDocument();
@@ -162,7 +161,7 @@ describe('SidebarContent', () => {
 });
 
 describe('SidebarButton', () => {
-  it.each([ViewType.Info, ViewType.Deposit, ViewType.ViewAs])(
+  it.each([ViewType.Info, ViewType.Deposit])(
     'runs given callback regardless of requested view (%s)',
     async (view) => {
       const onClick = jest.fn();

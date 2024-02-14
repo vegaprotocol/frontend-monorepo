@@ -1,9 +1,15 @@
 import { MemoryRouter } from 'react-router-dom';
-import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
-import { VegaWalletContext } from '@vegaprotocol/wallet';
 import { GetStarted } from './get-started';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { useOnboardingStore } from './use-get-onboarding-step';
+import * as walletHooks from '@vegaprotocol/wallet-react';
+
+jest.mock('@vegaprotocol/wallet-react');
+
+// @ts-ignore type wrong after mock
+walletHooks.useVegaWallet.mockReturnValue({
+  pubKey: 'my-pubkey',
+});
 
 let mockStep = 1;
 jest.mock('./use-get-onboarding-step', () => ({
@@ -12,12 +18,10 @@ jest.mock('./use-get-onboarding-step', () => ({
 }));
 
 describe('GetStarted', () => {
-  const renderComponent = (context: Partial<VegaWalletContextShape> = {}) => {
+  const renderComponent = () => {
     return render(
       <MemoryRouter>
-        <VegaWalletContext.Provider value={context as VegaWalletContextShape}>
-          <GetStarted />
-        </VegaWalletContext.Provider>
+        <GetStarted />
       </MemoryRouter>
     );
   };
@@ -48,7 +52,7 @@ describe('GetStarted', () => {
   it('renders nothing if dismissed', () => {
     useOnboardingStore.setState({ dismissed: true });
     mockStep = 0;
-    const { container } = renderComponent({ pubKey: 'my-pubkey' });
+    const { container } = renderComponent();
     expect(container).toBeEmptyDOMElement();
   });
 
@@ -69,9 +73,7 @@ describe('GetStarted', () => {
     mockStep = 3;
     rerender(
       <MemoryRouter>
-        <VegaWalletContext.Provider value={{} as VegaWalletContextShape}>
-          <GetStarted />
-        </VegaWalletContext.Provider>
+        <GetStarted />
       </MemoryRouter>
     );
     checkTicks(screen.getAllByRole('listitem'));
@@ -80,9 +82,7 @@ describe('GetStarted', () => {
     mockStep = 4;
     rerender(
       <MemoryRouter>
-        <VegaWalletContext.Provider value={{} as VegaWalletContextShape}>
-          <GetStarted />
-        </VegaWalletContext.Provider>
+        <GetStarted />
       </MemoryRouter>
     );
     checkTicks(screen.getAllByRole('listitem'));
@@ -95,11 +95,7 @@ describe('GetStarted', () => {
     mockStep = 5;
     rerender(
       <MemoryRouter>
-        <VegaWalletContext.Provider
-          value={{ pubKey: 'my-pubkey' } as VegaWalletContextShape}
-        >
-          <GetStarted />
-        </VegaWalletContext.Provider>
+        <GetStarted />
       </MemoryRouter>
     );
     expect(container).toBeEmptyDOMElement();

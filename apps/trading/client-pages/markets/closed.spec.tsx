@@ -18,8 +18,6 @@ import {
   MarketsDocument,
   getAsset,
 } from '@vegaprotocol/markets';
-import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
-import { VegaWalletContext } from '@vegaprotocol/wallet';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import {
   createMarketFragment,
@@ -37,7 +35,6 @@ describe('Closed', () => {
     3
   ).toISOString();
   const settlementDateTag = `settlement-expiry-date:${settlementDateMetaDate}`;
-  const pubKey = 'pubKey';
   const marketId = 'market-0';
   const settlementDataProperty = 'spec-binding';
   const settlementDataId = 'settlement-data-oracle-id';
@@ -175,11 +172,7 @@ describe('Closed', () => {
       render(
         <MemoryRouter>
           <MockedProvider mocks={mocks}>
-            <VegaWalletContext.Provider
-              value={{ pubKey } as VegaWalletContextShape}
-            >
-              <Closed />
-            </VegaWalletContext.Provider>
+            <Closed />
           </MockedProvider>
         </MemoryRouter>
       );

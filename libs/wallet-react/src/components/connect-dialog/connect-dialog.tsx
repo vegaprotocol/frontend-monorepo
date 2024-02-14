@@ -5,10 +5,14 @@ import {
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
-import { useConnect, useWallet } from '../wallet';
-import { type ConnectorType, type Status } from '../types';
-import { useT } from '../use-t';
+import { type ConnectorType, type Status } from '@vegaprotocol/wallet';
+import { useWallet } from '../../hooks/use-wallet';
+import { useConnect } from '../../hooks/use-connect';
+// TODO: set up useT
+// import { useT } from '../use-t';
 import classNames from 'classnames';
+
+const useT = (s: string) => s;
 
 export const ConnectDialog = ({
   open,

@@ -4,11 +4,17 @@ import {
   useGetOnboardingStep,
   OnboardingStep,
 } from './use-get-onboarding-step';
-import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
-import { VegaWalletContext } from '@vegaprotocol/wallet';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { ordersWithMarketProvider } from '@vegaprotocol/orders';
 import { positionsDataProvider } from '@vegaprotocol/positions';
+import * as walletHooks from '@vegaprotocol/wallet-react';
+
+jest.mock('@vegaprotocol/wallet-react');
+
+// @ts-ignore type wrong after mock
+walletHooks.useVegaWallet.mockReturnValue({
+  pubKey: 'my-pubkey',
+});
 
 let mockData: object[] | null = [{ id: 'item-id' }];
 jest.mock('@vegaprotocol/data-provider', () => ({
@@ -16,44 +22,42 @@ jest.mock('@vegaprotocol/data-provider', () => ({
   useDataProvider: jest.fn(() => ({ data: mockData })),
 }));
 
-let mockContext: Partial<VegaWalletContextShape> = { pubKey: 'test-pubkey' };
-
 describe('useGetOnboardingStep', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockData = [];
-    mockContext = { pubKey: 'test-pubkey' };
     globalThis.window.vega = {} as Vega;
   });
 
-  const wrapper = ({ children }: { children: ReactNode }) => (
-    <VegaWalletContext.Provider
-      value={mockContext as unknown as VegaWalletContextShape}
-    >
-      {children}
-    </VegaWalletContext.Provider>
-  );
-
   it('should return properly ONBOARDING_UNKNOWN_STEP', () => {
     mockData = null;
-    const { result } = renderHook(() => useGetOnboardingStep(), { wrapper });
+    const { result } = renderHook(() => useGetOnboardingStep());
     expect(result.current).toEqual(OnboardingStep.ONBOARDING_UNKNOWN_STEP);
   });
 
   it('should return properly ONBOARDING_CONNECT_STEP', () => {
-    mockContext = { pubKey: null };
-    const { result } = renderHook(() => useGetOnboardingStep(), { wrapper });
+    // @ts-ignore type wrong after mock
+    walletHooks.useVegaWallet.mockReturnValue({
+      pubKey: null,
+    });
+    const { result } = renderHook(() => useGetOnboardingStep());
     expect(result.current).toEqual(OnboardingStep.ONBOARDING_CONNECT_STEP);
   });
 
-  it('should return properly ONBOARDING_DEPOSIT_STEP', async () => {
-    const { result } = renderHook(() => useGetOnboardingStep(), { wrapper });
-    await expect(result.current).toEqual(
-      OnboardingStep.ONBOARDING_DEPOSIT_STEP
-    );
+  it('should return properly ONBOARDING_DEPOSIT_STEP', () => {
+    // @ts-ignore type wrong after mock
+    walletHooks.useVegaWallet.mockReturnValue({
+      pubKey: 'my-key',
+    });
+    const { result } = renderHook(() => useGetOnboardingStep());
+    expect(result.current).toEqual(OnboardingStep.ONBOARDING_DEPOSIT_STEP);
   });
 
-  it('should return properly ONBOARDING_ORDER_STEP', async () => {
+  it('should return properly ONBOARDING_ORDER_STEP', () => {
+    // @ts-ignore type wrong after mock
+    walletHooks.useVegaWallet.mockReturnValue({
+      pubKey: 'my-key',
+    });
     mockData = [{ id: 'item-id' }];
     (useDataProvider as jest.Mock).mockImplementation((args) => {
       if (
@@ -64,18 +68,20 @@ describe('useGetOnboardingStep', () => {
       }
       return { data: mockData };
     });
-    const { result } = renderHook(() => useGetOnboardingStep(), { wrapper });
-    await expect(result.current).toEqual(OnboardingStep.ONBOARDING_ORDER_STEP);
+    const { result } = renderHook(() => useGetOnboardingStep());
+    expect(result.current).toEqual(OnboardingStep.ONBOARDING_ORDER_STEP);
   });
 
-  it('should return properly ONBOARDING_COMPLETE_STEP', async () => {
+  it('should return properly ONBOARDING_COMPLETE_STEP', () => {
+    // @ts-ignore type wrong after mock
+    walletHooks.useVegaWallet.mockReturnValue({
+      pubKey: 'my-key',
+    });
     mockData = [{ id: 'item-id' }];
     (useDataProvider as jest.Mock).mockImplementation(() => {
       return { data: mockData };
     });
-    const { result } = renderHook(() => useGetOnboardingStep(), { wrapper });
-    await expect(result.current).toEqual(
-      OnboardingStep.ONBOARDING_COMPLETE_STEP
-    );
+    const { result } = renderHook(() => useGetOnboardingStep());
+    expect(result.current).toEqual(OnboardingStep.ONBOARDING_COMPLETE_STEP);
   });
 });
