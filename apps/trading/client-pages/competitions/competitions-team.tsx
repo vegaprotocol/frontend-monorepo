@@ -238,9 +238,6 @@ const Games = ({
     <Table
       columns={[
         {
-          name: 'id',
-        },
-        {
           name: 'epoch',
           displayName: t('Epoch'),
         },
@@ -319,7 +316,7 @@ const Games = ({
         const assetSymbol = asset ? <RewardAssetCell asset={asset} /> : '-';
 
         return {
-          id: `${game.id} ${transfer?.transfer.status}`,
+          id: game.id,
           amount: dependable(earnedAmount),
           asset: dependable(assetSymbol),
           daily: dependable(dailyAmount),
