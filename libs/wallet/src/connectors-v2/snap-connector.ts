@@ -1,4 +1,3 @@
-import { clearConfig, setConfig } from '../storage';
 import {
   JsonRpcMethod,
   type Connector,
@@ -40,7 +39,6 @@ export class SnapConnector implements Connector {
         throw new Error('incorrect chain id');
       }
 
-      setConfig({ type: this.id, chainId });
       return { success: true };
     } catch (err) {
       return {
@@ -50,7 +48,6 @@ export class SnapConnector implements Connector {
   }
 
   async disconnectWallet() {
-    clearConfig();
     return { success: true };
     // return { error: 'failed to disconnect' };
   }

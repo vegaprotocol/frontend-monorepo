@@ -1,4 +1,5 @@
-import { createStore } from 'zustand/vanilla';
+import { createStore, type StateCreator } from 'zustand/vanilla';
+import { persist } from 'zustand/middleware';
 import {
   type PropsWithChildren,
   createContext,
@@ -10,8 +11,17 @@ import {
   type Config,
   type Store,
   type TransactionParams,
+  type SingleKeyStore,
+  type CoreStore,
 } from './types';
 import { useStore } from 'zustand';
+
+export const createSingleKeyStore: StateCreator<SingleKeyStore> = (set) => ({
+  pubKey: undefined,
+  setPubKey: (key) => {
+    set({ pubKey: key });
+  },
+});
 
 export function createConfig(cfg: Config): Wallet {
   const connectors = createStore(() => cfg.connectors);
@@ -22,7 +32,7 @@ export function createConfig(cfg: Config): Wallet {
     throw new Error('default chain not found in config');
   }
 
-  const store = createStore<Store>((set) => ({
+  const createStoreSlice: StateCreator<CoreStore> = (set) => ({
     chainId: chain.id,
     status: 'disconnected',
     current: undefined,
@@ -31,7 +41,26 @@ export function createConfig(cfg: Config): Wallet {
       set({ keys });
     },
     error: undefined,
-  }));
+  });
+
+  const store = createStore<Store>()(
+    persist(
+      (...args) => ({
+        ...createStoreSlice(...args),
+        ...createSingleKeyStore(...args),
+      }),
+      {
+        name: 'vega_wallet_store',
+        partialize(state) {
+          return {
+            chainId: state.chainId,
+            current: state.current,
+            pubKey: state.pubKey,
+          };
+        },
+      }
+    )
+  );
 
   async function connect(id: string) {
     if (store.getState().status === 'connecting') {
@@ -59,9 +88,18 @@ export function createConfig(cfg: Config): Wallet {
         throw new Error('failed to get keys');
       }
 
+      const storedPubKey = store.getState().pubKey;
+      let defaultKey;
+      if (listKeysRes.find((k) => k.publicKey === storedPubKey)) {
+        defaultKey = storedPubKey;
+      } else {
+        defaultKey = listKeysRes[0].publicKey;
+      }
+
       store.setState({
         keys: listKeysRes,
         status: 'connected',
+        pubKey: defaultKey,
       });
     } catch (err) {
       store.setState({
@@ -82,7 +120,12 @@ export function createConfig(cfg: Config): Wallet {
 
     await connector.disconnectWallet();
 
-    store.setState({ status: 'disconnected', current: undefined, keys: [] });
+    store.setState({
+      status: 'disconnected',
+      current: undefined,
+      keys: [],
+      pubKey: undefined,
+    });
   }
 
   async function sendTransaction(params: TransactionParams) {

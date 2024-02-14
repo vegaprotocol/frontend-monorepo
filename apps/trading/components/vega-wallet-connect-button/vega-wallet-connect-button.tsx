@@ -16,7 +16,6 @@ import {
   TradingDropdownItemIndicator,
 } from '@vegaprotocol/ui-toolkit';
 import {
-  useVegaWallet,
   useVegaWalletDialogStore,
   isBrowserWalletInstalled,
   useDisconnect,
@@ -39,11 +38,12 @@ export const VegaWalletConnectButton = ({
   const openVegaWalletDialog = useVegaWalletDialogStore(
     (store) => store.openVegaWalletDialog
   );
-  const { pubKey, selectPubKey } = useVegaWallet();
   const { disconnect } = useDisconnect();
 
   const status = useWallet((store) => store.status);
   const pubKeys = useWallet((store) => store.keys);
+  const pubKey = useWallet((store) => store.pubKey);
+  const setPubKey = useWallet((store) => store.setPubKey);
 
   const walletInstalled = isBrowserWalletInstalled();
 
@@ -96,7 +96,7 @@ export const VegaWalletConnectButton = ({
             <TradingDropdownRadioGroup
               value={pubKey || undefined}
               onValueChange={(value) => {
-                selectPubKey(value);
+                setPubKey(value);
               }}
             >
               {pubKeys.map((pk) => (

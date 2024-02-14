@@ -1,4 +1,3 @@
-import { clearConfig, setConfig } from '../storage';
 import {
   JsonRpcMethod,
   type Connector,
@@ -52,8 +51,6 @@ export class JsonRpcConnector implements Connector {
         this.token = token;
       }
 
-      setConfig({ type: this.id, token: this.token, chainId, url: this.url });
-
       return { success: true };
     } catch (err) {
       return {
@@ -65,7 +62,6 @@ export class JsonRpcConnector implements Connector {
   async disconnectWallet() {
     try {
       await this.request(JsonRpcMethod.DisconnectWallet);
-      clearConfig();
       return { success: true };
     } catch (err) {
       return { error: 'failed to disconnect' };

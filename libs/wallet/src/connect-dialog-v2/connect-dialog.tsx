@@ -12,11 +12,9 @@ import { useT } from '../use-t';
 export const ConnectDialog = ({
   open,
   onChange,
-  onConnect,
 }: {
   open: boolean;
   onChange: (open: boolean) => void;
-  onConnect: () => void;
 }) => {
   const status = useWallet((store) => store.status);
   const error = useWallet((store) => store.error);
@@ -24,7 +22,12 @@ export const ConnectDialog = ({
   return (
     <Dialog open={open} size="small" onChange={onChange}>
       {status === 'disconnected' ? (
-        <ConnectionOptions onConnect={onConnect} error={error} />
+        <ConnectionOptions
+          error={error}
+          onConnect={() => {
+            setTimeout(() => onChange(false), 1000);
+          }}
+        />
       ) : (
         <ConnectionStatus status={status} />
       )}

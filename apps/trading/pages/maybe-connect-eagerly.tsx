@@ -9,7 +9,7 @@ export const MaybeConnectEagerly = () => {
   useEthereumEagerConnect(
     isTelemetryApproved ? { dsn: SENTRY_DSN, env: VEGA_ENV } : {}
   );
-  useVegaEagerConnect();
+  // useVegaEagerConnect();
 
   return null;
 };

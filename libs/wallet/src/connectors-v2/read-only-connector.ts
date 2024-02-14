@@ -1,4 +1,3 @@
-import { clearConfig, setConfig } from '../storage';
 import { type Connector } from '../types';
 
 export class ReadOnlyConnector implements Connector {
@@ -21,14 +20,12 @@ export class ReadOnlyConnector implements Connector {
       }
 
       this.pubKey = pubKey;
-      setConfig({ type: this.id, pubKey });
     }
     return { success: true };
   }
 
   async disconnectWallet() {
     this.pubKey = undefined;
-    clearConfig();
     return { success: true };
   }
 

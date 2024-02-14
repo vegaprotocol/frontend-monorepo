@@ -27,6 +27,6 @@ const readOnly = new ReadOnlyConnector(walletCfg?.pubKey);
 
 export const config = createConfig({
   chains: [fairground, stagnet],
-  defaultChainId: stagnet.id,
+  defaultChainId: fairground.id,
   connectors: [injected, jsonRpc, snap, readOnly],
 });

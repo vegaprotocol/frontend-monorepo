@@ -52,7 +52,7 @@ export type Key = {
 
 export type Status = 'disconnected' | 'connecting' | 'connected';
 
-export type Store = {
+export type CoreStore = {
   chainId: string;
   status: Status;
   current: string | undefined;
@@ -60,6 +60,13 @@ export type Store = {
   setKeys: (keys: Key[]) => void;
   error: string | undefined;
 };
+
+export type SingleKeyStore = {
+  pubKey: string | undefined;
+  setPubKey: (key: string) => void;
+};
+
+export type Store = CoreStore & SingleKeyStore;
 
 export type Config = {
   chains: Chain[];

@@ -1,4 +1,3 @@
-import { clearConfig, setConfig } from '../storage';
 import { type TransactionParams, type Connector } from '../types';
 
 export class InjectedConnector implements Connector {
@@ -7,7 +6,6 @@ export class InjectedConnector implements Connector {
   async connectWallet(chainId: string) {
     try {
       await window.vega.connectWallet({ chainId });
-      setConfig({ type: this.id, chainId });
       return { success: true };
     } catch (err) {
       return {
@@ -19,7 +17,6 @@ export class InjectedConnector implements Connector {
   async disconnectWallet() {
     try {
       await window.vega.disconnectWallet();
-      clearConfig();
       return { success: true };
     } catch (err) {
       return { error: 'failed to disconnect' };
