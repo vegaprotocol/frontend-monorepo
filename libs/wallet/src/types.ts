@@ -95,3 +95,45 @@ export type Wallet = {
   ) => Promise<TransactionResponse | IWalletError>;
   setStoreState: (state: Partial<Store>) => void;
 };
+
+declare global {
+  interface Vega {
+    connectWallet: (args: { chainId: string }) => Promise<null>;
+    disconnectWallet: () => Promise<void>;
+    listKeys: () => Promise<{
+      keys: Array<{ name: string; publicKey: string }>;
+    }>;
+    sendTransaction: (params: {
+      publicKey: string;
+      transaction: Transaction;
+      sendingMode: 'TYPE_SYNC';
+    }) => Promise<{
+      receivedAt: string;
+      sentAt: string;
+      transaction: {
+        from: {
+          pubKey: string;
+        };
+        inputData: string;
+        pow: {
+          tid: string;
+          nonce: string;
+        };
+        signature: {
+          algo: string;
+          value: string;
+          version: number;
+        };
+        version: number;
+      };
+      transactionHash: string;
+    }>;
+
+    on: (event: VegaWalletEvent, callback: () => void) => void;
+    isConnected?: () => Promise<boolean>;
+  }
+
+  interface Window {
+    vega: Vega;
+  }
+}

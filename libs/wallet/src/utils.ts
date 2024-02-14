@@ -1,23 +1,24 @@
 import { removeDecimal, toNanoSeconds } from '@vegaprotocol/utils';
-import type { Market, Order } from '@vegaprotocol/types';
-import type { AccountType } from '@vegaprotocol/types';
+import { type AccountType, type Market, type Order } from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
 import { ethers } from 'ethers';
 import { sha3_256 } from 'js-sha3';
-import type { OrderAmendment, Transaction, Transfer } from './connectors';
 import type { Exact } from 'type-fest';
 import {
-  ApplyReferralCode,
-  BatchMarketInstructionSubmissionBody,
-  CreateReferralSet,
-  OrderAmendmentBody,
-  OrderCancellationBody,
-  OrderSubmissionBody,
-  StopOrdersCancellationBody,
-  StopOrdersSubmissionBody,
-  TransferBody,
-  UpdateMarginModeBody,
-  WithdrawSubmissionBody,
+  type ApplyReferralCode,
+  type BatchMarketInstructionSubmissionBody,
+  type CreateReferralSet,
+  type OrderAmendmentBody,
+  type OrderCancellationBody,
+  type OrderSubmissionBody,
+  type StopOrdersCancellationBody,
+  type StopOrdersSubmissionBody,
+  type TransferBody,
+  type UpdateMarginModeBody,
+  type WithdrawSubmissionBody,
+  type Transfer,
+  type OrderAmendment,
+  type Transaction,
 } from './transaction-types';
 
 /**
