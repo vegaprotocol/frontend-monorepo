@@ -62,5 +62,15 @@
   "Wallet rejected transaction": "Wallet rejected transaction",
   "Wrong Network": "Wrong Network",
   "Wrong network": "Wrong network",
-  "your browser": "your browser"
+  "your browser": "your browser",
+
+  "connector-injected-title": "Vega Wallet",
+  "connector-snap-title": "Metamask Snap",
+  "connector-jsonRpc-title": "Command Line Wallet",
+  "connector-readOnly-title": "Read only",
+
+  "connector-injected-desc": "Connect with Vega Wallet extension to access all features including key management and detailed transaction views from your browser.",
+  "connector-snap-desc": "Connect directly via Metamask with the Vega Snap for single key support without advanced features.",
+  "connector-jsonRpc-desc": "Connect using the command line wallet or the legacy desktop app.",
+  "connector-readOnly-desc": "Provide a public key to connect in read only mode."
 }
