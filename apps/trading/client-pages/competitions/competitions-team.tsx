@@ -10,7 +10,11 @@ import {
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
-import { type Asset, type RecurringTransfer } from '@vegaprotocol/types';
+import {
+  TransferStatus,
+  type Asset,
+  type RecurringTransfer,
+} from '@vegaprotocol/types';
 import classNames from 'classnames';
 import { useT } from '../../lib/use-t';
 import { Table } from '../../components/table';
@@ -124,6 +128,7 @@ const TeamPage = ({
   gamesLoading,
   transfers,
   transfersLoading,
+  allMarkets,
   refetch,
 }: {
   team: TeamType;
@@ -187,6 +192,7 @@ const TeamPage = ({
             gamesLoading={gamesLoading}
             transfers={transfers}
             transfersLoading={transfersLoading}
+            allMarkets={allMarkets}
           />
         ) : (
           <Members members={members} />
@@ -232,6 +238,9 @@ const Games = ({
     <Table
       columns={[
         {
+          name: 'id',
+        },
+        {
           name: 'epoch',
           displayName: t('Epoch'),
         },
@@ -262,13 +271,23 @@ const Games = ({
         },
       ]}
       data={games.map((game) => {
-        let transfer = transfers?.find(
-          (t) =>
-            t.transfer.gameId === game.id &&
-            t.transfer.kind.__typename === 'RecurringTransfer' &&
+        let transfer = transfers?.find((t) => {
+          if (!isScopedToTeams(t)) return false;
+
+          const idMatch = t.transfer.gameId === game.id;
+          const metricMatch =
             t.transfer.kind.dispatchStrategy?.dispatchMetric ===
-              game.team.rewardMetric
-        );
+            game.team.rewardMetric;
+
+          const start = t.transfer.kind.startEpoch <= game.epoch;
+          const end = t.transfer.kind.endEpoch
+            ? t.transfer.kind.endEpoch >= game.epoch
+            : true;
+
+          const rejected = t.transfer.status === TransferStatus.STATUS_REJECTED;
+
+          return idMatch && metricMatch && start && end && !rejected;
+        });
         if (!transfer || !isScopedToTeams(transfer)) transfer = undefined;
         const asset = transfer?.transfer.asset;
 
@@ -300,6 +319,7 @@ const Games = ({
         const assetSymbol = asset ? <RewardAssetCell asset={asset} /> : '-';
 
         return {
+          id: `${game.id} ${transfer?.transfer.status}`,
           amount: dependable(earnedAmount),
           asset: dependable(assetSymbol),
           daily: dependable(dailyAmount),
