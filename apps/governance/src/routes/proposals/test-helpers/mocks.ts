@@ -5,23 +5,7 @@ import type { VoteValue } from '@vegaprotocol/types';
 import type { UserVoteQuery } from '../components/vote-details/__generated__/Vote';
 import { UserVoteDocument } from '../components/vote-details/__generated__/Vote';
 import faker from 'faker';
-import { type Key } from '@vegaprotocol/wallet';
-
-export const mockPubkey: Key = {
-  publicKey: '0x123',
-  name: 'test key 1',
-};
-
-// export const mockWalletContext = {
-//   pubKey: mockPubkey.publicKey,
-//   pubKeys: [mockPubkey],
-//   isReadOnly: false,
-//   sendTx: jest.fn().mockReturnValue(Promise.resolve(null)),
-//   connect: jest.fn(),
-//   disconnect: jest.fn(),
-//   selectPubKey: jest.fn(),
-//   connector: null,
-// } as unknown as VegaWalletContextShape;
+import { mockPubkey } from '../../../setup-tests';
 
 const mockEthereumConfig = {
   network_id: '3',

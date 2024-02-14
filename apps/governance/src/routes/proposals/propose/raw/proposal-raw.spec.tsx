@@ -3,8 +3,6 @@ import type { MockedResponse } from '@apollo/client/testing';
 import { addHours, getTime } from 'date-fns';
 import { AppStateProvider } from '../../../../contexts/app-state/app-state-provider';
 import { MockedProvider } from '@apollo/client/testing';
-import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
-import { VegaWalletContext } from '@vegaprotocol/wallet';
 import * as Schema from '@vegaprotocol/types';
 import { ProposeRaw } from './propose-raw';
 import { ProposalEventDocument } from '@vegaprotocol/proposals';
@@ -12,6 +10,9 @@ import type { ProposalEventSubscription } from '@vegaprotocol/proposals';
 
 import type { NetworkParamsQuery } from '@vegaprotocol/network-parameters';
 import { NetworkParamsDocument } from '@vegaprotocol/network-parameters';
+import * as walletHooks from '@vegaprotocol/wallet-react';
+
+jest.mock('@vegaprotocol/wallet-react');
 
 const paramsDelay = 20;
 
@@ -104,22 +105,16 @@ describe('Raw proposal form', () => {
     delay: 300,
   };
   const setup = (mockSendTx = jest.fn()) => {
+    // @ts-ignore types after mock
+    walletHooks.useVegaWallet.mockReturnValue({ pubKey, sendTx: mockSendTx });
+    // @ts-ignore types after mock
+    walletHooks.useDialogStore.mockReturnValue(jest.fn());
     return render(
       <AppStateProvider>
         <MockedProvider
           mocks={[rawProposalNetworkParamsQueryMock, mockProposalEvent]}
         >
-          <VegaWalletContext.Provider
-            value={
-              {
-                pubKey,
-                sendTx: mockSendTx,
-                links: { explorer: 'explorer' },
-              } as unknown as VegaWalletContextShape
-            }
-          >
-            <ProposeRaw />
-          </VegaWalletContext.Provider>
+          <ProposeRaw />
         </MockedProvider>
       </AppStateProvider>
     );

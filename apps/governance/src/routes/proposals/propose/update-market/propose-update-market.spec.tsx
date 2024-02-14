@@ -2,15 +2,16 @@ import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
 import { MemoryRouter as Router } from 'react-router-dom';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { VegaWalletContext } from '@vegaprotocol/wallet';
 import { AppStateProvider } from '../../../../contexts/app-state/app-state-provider';
-import { mockWalletContext } from '../../test-helpers/mocks';
 import { ProposeUpdateMarket } from './propose-update-market';
 import type { NetworkParamsQuery } from '@vegaprotocol/network-parameters';
 import { NetworkParamsDocument } from '@vegaprotocol/network-parameters';
 import type { ProposalMarketsQueryQuery } from './__generated__/UpdateMarket';
 import { ProposalMarketsQueryDocument } from './__generated__/UpdateMarket';
 import { ProposalState } from '@vegaprotocol/types';
+import * as walletHooks from '@vegaprotocol/wallet-react';
+
+jest.mock('@vegaprotocol/wallet-react');
 
 const updateMarketNetworkParamsQueryMock: MockedResponse<NetworkParamsQuery> = {
   request: {
@@ -217,29 +218,30 @@ const marketQueryMock: MockedResponse<ProposalMarketsQueryQuery> = {
   },
 };
 
-const renderComponent = () =>
-  render(
+const renderComponent = () => {
+  // @ts-ignore wrong types from mock
+  walletHooks.useVegaWallet.mockReturnValue({ pubKey: '0x123' });
+  return render(
     <MockedProvider
       mocks={[updateMarketNetworkParamsQueryMock, marketQueryMock]}
       addTypename={false}
     >
       <Router>
         <AppStateProvider>
-          <VegaWalletContext.Provider value={mockWalletContext}>
-            <ProposeUpdateMarket />
-          </VegaWalletContext.Provider>
+          <ProposeUpdateMarket />
         </AppStateProvider>
       </Router>
     </MockedProvider>
   );
+};
 
 // Note: form submission is tested in propose-raw.spec.tsx. Reusable form
 // components are tested in their own directory.
 
 describe('Propose Update Market', () => {
-  it('should render successfully', async () => {
+  it('should render successfully', () => {
     const { baseElement } = renderComponent();
-    await expect(baseElement).toBeTruthy();
+    expect(baseElement).toBeTruthy();
   });
 
   it('should render the title', async () => {

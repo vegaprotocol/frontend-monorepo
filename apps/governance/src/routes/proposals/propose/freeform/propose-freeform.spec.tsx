@@ -1,13 +1,14 @@
 import { render, screen } from '@testing-library/react';
 import { ProposeFreeform } from './propose-freeform';
 import { MockedProvider } from '@apollo/client/testing';
-import { mockWalletContext } from '../../test-helpers/mocks';
 import { AppStateProvider } from '../../../../contexts/app-state/app-state-provider';
-import { VegaWalletContext } from '@vegaprotocol/wallet';
 import { MemoryRouter as Router } from 'react-router-dom';
 import type { NetworkParamsQuery } from '@vegaprotocol/network-parameters';
 import type { MockedResponse } from '@apollo/client/testing';
 import { NetworkParamsDocument } from '@vegaprotocol/network-parameters';
+import * as walletHooks from '@vegaprotocol/wallet-react';
+
+jest.mock('@vegaprotocol/wallet-react');
 
 jest.mock('@vegaprotocol/environment', () => ({
   ...jest.requireActual('@vegaprotocol/environment'),
@@ -72,18 +73,19 @@ const updateMarketNetworkParamsQueryMock: MockedResponse<NetworkParamsQuery> = {
   },
 };
 
-const renderComponent = () =>
-  render(
+const renderComponent = () => {
+  // @ts-ignore wrong type
+  walletHooks.useVegaWallet.mockReturnValue({ pubKey: '0x123' });
+  return render(
     <Router>
       <MockedProvider mocks={[updateMarketNetworkParamsQueryMock]}>
         <AppStateProvider>
-          <VegaWalletContext.Provider value={mockWalletContext}>
-            <ProposeFreeform />
-          </VegaWalletContext.Provider>
+          <ProposeFreeform />
         </AppStateProvider>
       </MockedProvider>
     </Router>
   );
+};
 
 // Note: form submission is tested in propose-raw.spec.tsx. Reusable form
 // components are tested in their own directory.

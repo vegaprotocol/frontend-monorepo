@@ -1,13 +1,14 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { ProposeNetworkParameter } from './propose-network-parameter';
 import { MockedProvider } from '@apollo/client/testing';
-import { mockWalletContext } from '../../test-helpers/mocks';
 import { AppStateProvider } from '../../../../contexts/app-state/app-state-provider';
-import { VegaWalletContext } from '@vegaprotocol/wallet';
 import { MemoryRouter as Router } from 'react-router-dom';
 import type { NetworkParamsQuery } from '@vegaprotocol/network-parameters';
 import { NetworkParamsDocument } from '@vegaprotocol/network-parameters';
 import type { MockedResponse } from '@apollo/client/testing';
+import * as walletHooks from '@vegaprotocol/wallet-react';
+
+jest.mock('@vegaprotocol/wallet-react');
 
 jest.mock('@vegaprotocol/environment', () => ({
   ...jest.requireActual('@vegaprotocol/environment'),
@@ -72,26 +73,27 @@ const updateMarketNetworkParamsQueryMock: MockedResponse<NetworkParamsQuery> = {
   },
 };
 
-const renderComponent = () =>
-  render(
+const renderComponent = () => {
+  // @ts-ignore wrong types from mock
+  walletHooks.useVegaWallet.mockReturnValue({ pubKey: '0x123' });
+  return render(
     <Router>
       <MockedProvider mocks={[updateMarketNetworkParamsQueryMock]}>
         <AppStateProvider>
-          <VegaWalletContext.Provider value={mockWalletContext}>
-            <ProposeNetworkParameter />
-          </VegaWalletContext.Provider>
+          <ProposeNetworkParameter />
         </AppStateProvider>
       </MockedProvider>
     </Router>
   );
+};
 
 // Note: form submission is tested in propose-raw.spec.tsx. Reusable form
 // components are tested in their own directory.
 
 describe('Propose Network Parameter', () => {
-  it('should render successfully', async () => {
+  it('should render successfully', () => {
     const { baseElement } = renderComponent();
-    await expect(baseElement).toBeTruthy();
+    expect(baseElement).toBeTruthy();
   });
 
   it('should render the correct title', async () => {

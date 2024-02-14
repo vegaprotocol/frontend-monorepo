@@ -3,31 +3,48 @@ import BigNumber from 'bignumber.js';
 import { VoteButtons } from './vote-buttons';
 import { VoteState } from './use-user-vote';
 import { ProposalState } from '@vegaprotocol/types';
-import { VegaWalletContext } from '@vegaprotocol/wallet';
-import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
-import { mockWalletContext } from '../../test-helpers/mocks';
 import { AppStateProvider } from '../../../../contexts/app-state/app-state-provider';
 import { MockedProvider } from '@apollo/react-testing';
+import * as walletHooks from '@vegaprotocol/wallet-react';
+
+jest.mock('@vegaprotocol/wallet-react');
+
+// @ts-ignore type wrong after mock
+walletHooks.useDialogStore.mockReturnValue(jest.fn());
+
+const key = { publicKey: '0x123', name: 'key 1' };
 
 describe('Vote buttons', () => {
+  beforeEach(() => {
+    // @ts-ignore wrong type after mock
+    walletHooks.useVegaWallet.mockReturnValue({
+      status: 'connected',
+      pubKey: key.publicKey,
+      pubKeys: [key],
+      isReadOnly: false,
+      sendTx: jest.fn().mockReturnValue(Promise.resolve(null)),
+      connect: jest.fn(),
+      disconnect: jest.fn(),
+      selectPubKey: jest.fn(),
+    });
+  });
+
   it('should render successfully', () => {
     const { baseElement } = render(
       <AppStateProvider>
         <MockedProvider>
-          <VegaWalletContext.Provider value={mockWalletContext}>
-            <VoteButtons
-              voteState={VoteState.NotCast}
-              voteDatetime={null}
-              proposalState={ProposalState.STATE_OPEN}
-              proposalId={null}
-              minVoterBalance={null}
-              spamProtectionMinTokens={null}
-              currentStakeAvailable={new BigNumber(1)}
-              dialog={() => <div>Blah</div>}
-              submit={() => Promise.resolve()}
-              transaction={null}
-            />
-          </VegaWalletContext.Provider>
+          <VoteButtons
+            voteState={VoteState.NotCast}
+            voteDatetime={null}
+            proposalState={ProposalState.STATE_OPEN}
+            proposalId={null}
+            minVoterBalance={null}
+            spamProtectionMinTokens={null}
+            currentStakeAvailable={new BigNumber(1)}
+            dialog={() => <div>Blah</div>}
+            submit={() => Promise.resolve()}
+            transaction={null}
+          />
         </MockedProvider>
       </AppStateProvider>
     );
@@ -38,20 +55,18 @@ describe('Vote buttons', () => {
     render(
       <AppStateProvider>
         <MockedProvider>
-          <VegaWalletContext.Provider value={mockWalletContext}>
-            <VoteButtons
-              voteState={VoteState.NotCast}
-              voteDatetime={null}
-              proposalState={ProposalState.STATE_PASSED}
-              proposalId={null}
-              minVoterBalance={null}
-              spamProtectionMinTokens={null}
-              currentStakeAvailable={new BigNumber(1)}
-              dialog={() => <div>Blah</div>}
-              submit={() => Promise.resolve()}
-              transaction={null}
-            />
-          </VegaWalletContext.Provider>
+          <VoteButtons
+            voteState={VoteState.NotCast}
+            voteDatetime={null}
+            proposalState={ProposalState.STATE_PASSED}
+            proposalId={null}
+            minVoterBalance={null}
+            spamProtectionMinTokens={null}
+            currentStakeAvailable={new BigNumber(1)}
+            dialog={() => <div>Blah</div>}
+            submit={() => Promise.resolve()}
+            transaction={null}
+          />
         </MockedProvider>
       </AppStateProvider>
     );
@@ -59,7 +74,8 @@ describe('Vote buttons', () => {
   });
 
   it('should provide a connect wallet prompt if no pubkey', () => {
-    const mockWalletNoPubKeyContext = {
+    // @ts-ignore type wrong after mock
+    walletHooks.useVegaWallet.mockReturnValue({
       pubKey: null,
       pubKeys: [],
       isReadOnly: false,
@@ -67,26 +83,23 @@ describe('Vote buttons', () => {
       connect: jest.fn(),
       disconnect: jest.fn(),
       selectPubKey: jest.fn(),
-      connector: null,
-    } as unknown as VegaWalletContextShape;
+    });
 
     render(
       <AppStateProvider>
         <MockedProvider>
-          <VegaWalletContext.Provider value={mockWalletNoPubKeyContext}>
-            <VoteButtons
-              voteState={VoteState.NotCast}
-              voteDatetime={null}
-              proposalState={ProposalState.STATE_OPEN}
-              proposalId={null}
-              minVoterBalance={null}
-              spamProtectionMinTokens={null}
-              currentStakeAvailable={new BigNumber(1)}
-              dialog={() => <div>Blah</div>}
-              submit={() => Promise.resolve()}
-              transaction={null}
-            />
-          </VegaWalletContext.Provider>
+          <VoteButtons
+            voteState={VoteState.NotCast}
+            voteDatetime={null}
+            proposalState={ProposalState.STATE_OPEN}
+            proposalId={null}
+            minVoterBalance={null}
+            spamProtectionMinTokens={null}
+            currentStakeAvailable={new BigNumber(1)}
+            dialog={() => <div>Blah</div>}
+            submit={() => Promise.resolve()}
+            transaction={null}
+          />
         </MockedProvider>
       </AppStateProvider>
     );
@@ -98,20 +111,18 @@ describe('Vote buttons', () => {
     render(
       <AppStateProvider>
         <MockedProvider>
-          <VegaWalletContext.Provider value={mockWalletContext}>
-            <VoteButtons
-              voteState={VoteState.NotCast}
-              voteDatetime={null}
-              proposalState={ProposalState.STATE_OPEN}
-              proposalId={null}
-              minVoterBalance={null}
-              spamProtectionMinTokens={null}
-              currentStakeAvailable={new BigNumber(0)}
-              dialog={() => <div>Blah</div>}
-              submit={() => Promise.resolve()}
-              transaction={null}
-            />
-          </VegaWalletContext.Provider>
+          <VoteButtons
+            voteState={VoteState.NotCast}
+            voteDatetime={null}
+            proposalState={ProposalState.STATE_OPEN}
+            proposalId={null}
+            minVoterBalance={null}
+            spamProtectionMinTokens={null}
+            currentStakeAvailable={new BigNumber(0)}
+            dialog={() => <div>Blah</div>}
+            submit={() => Promise.resolve()}
+            transaction={null}
+          />
         </MockedProvider>
       </AppStateProvider>
     );
@@ -126,20 +137,18 @@ describe('Vote buttons', () => {
     render(
       <AppStateProvider>
         <MockedProvider>
-          <VegaWalletContext.Provider value={mockWalletContext}>
-            <VoteButtons
-              voteState={VoteState.NotCast}
-              voteDatetime={null}
-              proposalState={ProposalState.STATE_OPEN}
-              proposalId={null}
-              minVoterBalance="2000000000000000000"
-              spamProtectionMinTokens="1000000000000000000"
-              currentStakeAvailable={new BigNumber(1)}
-              dialog={() => <div>Blah</div>}
-              submit={() => Promise.resolve()}
-              transaction={null}
-            />
-          </VegaWalletContext.Provider>
+          <VoteButtons
+            voteState={VoteState.NotCast}
+            voteDatetime={null}
+            proposalState={ProposalState.STATE_OPEN}
+            proposalId={null}
+            minVoterBalance="2000000000000000000"
+            spamProtectionMinTokens="1000000000000000000"
+            currentStakeAvailable={new BigNumber(1)}
+            dialog={() => <div>Blah</div>}
+            submit={() => Promise.resolve()}
+            transaction={null}
+          />
         </MockedProvider>
       </AppStateProvider>
     );
@@ -154,20 +163,18 @@ describe('Vote buttons', () => {
     render(
       <AppStateProvider>
         <MockedProvider>
-          <VegaWalletContext.Provider value={mockWalletContext}>
-            <VoteButtons
-              voteState={VoteState.Yes}
-              voteDatetime={null}
-              proposalState={ProposalState.STATE_OPEN}
-              proposalId={null}
-              minVoterBalance="2000000000000000000"
-              spamProtectionMinTokens="1000000000000000000"
-              currentStakeAvailable={new BigNumber(10)}
-              dialog={() => <div>Blah</div>}
-              submit={() => Promise.resolve()}
-              transaction={null}
-            />
-          </VegaWalletContext.Provider>
+          <VoteButtons
+            voteState={VoteState.Yes}
+            voteDatetime={null}
+            proposalState={ProposalState.STATE_OPEN}
+            proposalId={null}
+            minVoterBalance="2000000000000000000"
+            spamProtectionMinTokens="1000000000000000000"
+            currentStakeAvailable={new BigNumber(10)}
+            dialog={() => <div>Blah</div>}
+            submit={() => Promise.resolve()}
+            transaction={null}
+          />
         </MockedProvider>
       </AppStateProvider>
     );
@@ -179,20 +186,18 @@ describe('Vote buttons', () => {
     render(
       <AppStateProvider>
         <MockedProvider>
-          <VegaWalletContext.Provider value={mockWalletContext}>
-            <VoteButtons
-              voteState={VoteState.No}
-              voteDatetime={null}
-              proposalState={ProposalState.STATE_OPEN}
-              proposalId={null}
-              minVoterBalance="2000000000000000000"
-              spamProtectionMinTokens="1000000000000000000"
-              currentStakeAvailable={new BigNumber(10)}
-              dialog={() => <div>Blah</div>}
-              submit={() => Promise.resolve()}
-              transaction={null}
-            />
-          </VegaWalletContext.Provider>
+          <VoteButtons
+            voteState={VoteState.No}
+            voteDatetime={null}
+            proposalState={ProposalState.STATE_OPEN}
+            proposalId={null}
+            minVoterBalance="2000000000000000000"
+            spamProtectionMinTokens="1000000000000000000"
+            currentStakeAvailable={new BigNumber(10)}
+            dialog={() => <div>Blah</div>}
+            submit={() => Promise.resolve()}
+            transaction={null}
+          />
         </MockedProvider>
       </AppStateProvider>
     );
