@@ -4,6 +4,7 @@ import first from 'lodash/first';
 import { useTeamsQuery } from './__generated__/Teams';
 import { useTeam } from './use-team';
 import { useTeams } from './use-teams';
+import { areTeamGames, useGames } from './use-games';
 
 export const useMyTeam = () => {
   const { pubKey } = useVegaWallet();
@@ -19,7 +20,8 @@ export const useMyTeam = () => {
 
   const team = first(compact(maybeMyTeam?.teams?.edges.map((n) => n.node)));
   const rank = teams.findIndex((t) => t.teamId === team?.teamId) + 1;
-  const { games, stats } = useTeam(team?.teamId);
+  const { stats } = useTeam(team?.teamId);
+  const { data: games } = useGames(team?.teamId);
 
-  return { team, stats, games, rank };
+  return { team, stats, games: areTeamGames(games) ? games : undefined, rank };
 };

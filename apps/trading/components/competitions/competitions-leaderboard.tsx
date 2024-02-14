@@ -56,7 +56,10 @@ export const CompetitionsLeaderboard = ({
               className="hover:underline"
               to={Links.COMPETITIONS_TEAM(td.teamId)}
             >
-              {td.name}
+              {
+                // Its possible for a tx to be submitted with an empty space as team name
+                td.name.trim() !== '' ? td.name : t('[empty]')
+              }
             </Link>
           ),
           earned: num(td.totalQuantumRewards),

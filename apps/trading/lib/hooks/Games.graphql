@@ -1,0 +1,35 @@
+fragment TeamEntity on TeamGameEntity {
+  rank
+  volume
+  rewardMetric
+  rewardEarned
+  totalRewardsEarned
+  team {
+    teamId
+    membersParticipating {
+      individual
+      rank
+    }
+  }
+}
+
+fragment GameFields on Game {
+  id
+  epoch
+  numberOfParticipants
+  entities {
+    ... on TeamGameEntity {
+      ...TeamEntity
+    }
+  }
+}
+
+query Games($epochFrom: Int) {
+  games(epochFrom: $epochFrom, entityScope: ENTITY_SCOPE_TEAMS) {
+    edges {
+      node {
+        ...GameFields
+      }
+    }
+  }
+}

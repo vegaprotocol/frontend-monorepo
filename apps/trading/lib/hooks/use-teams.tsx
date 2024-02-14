@@ -3,9 +3,18 @@ import { useMemo } from 'react';
 import { useTeamsQuery } from './__generated__/Teams';
 import { useTeamsStatisticsQuery } from './__generated__/TeamsStatistics';
 import compact from 'lodash/compact';
+import { type TeamStatsFieldsFragment } from './__generated__/Team';
 
 // 192
 export const DEFAULT_AGGREGATION_EPOCHS = 192;
+
+const EMPTY_STATS: Partial<TeamStatsFieldsFragment> = {
+  totalQuantumVolume: '0',
+  totalQuantumRewards: '0',
+  totalGamesPlayed: 0,
+  gamesPlayed: [],
+  quantumRewards: [],
+};
 
 export const useTeams = (aggregationEpochs = DEFAULT_AGGREGATION_EPOCHS) => {
   const {
@@ -33,7 +42,7 @@ export const useTeams = (aggregationEpochs = DEFAULT_AGGREGATION_EPOCHS) => {
   const data = useMemo(() => {
     const data = teams.map((t) => ({
       ...t,
-      ...stats.find((s) => s.teamId === t.teamId),
+      ...(stats.find((s) => s.teamId === t.teamId) || EMPTY_STATS),
     }));
 
     return orderBy(data, (d) => Number(d.totalQuantumRewards || 0), 'desc').map(

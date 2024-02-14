@@ -83,6 +83,12 @@ export const generateEpochTotalRewardsList = ({
         (Number(rewardItem?.amount) || 0) + Number(reward.amount)
       ).toString();
 
+      // only RowAccountTypes are relevant for this table, others should
+      // be discarded
+      if (!Object.keys(RowAccountTypes).includes(reward.rewardType)) {
+        return acc;
+      }
+
       rewards?.set(reward.rewardType, {
         rewardType: reward.rewardType,
         amount,
