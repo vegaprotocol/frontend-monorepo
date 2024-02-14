@@ -4,7 +4,7 @@ from playwright.sync_api import Page, expect
 from vega_sim.null_service import VegaServiceNull
 from vega_sim.service import MarketStateUpdateType
 from datetime import datetime, timedelta
-from conftest import init_vega
+from conftest import init_vega, cleanup_container
 from actions.utils import change_keys
 from actions.vega import submit_multiple_orders
 from fixtures.market import setup_perps_market
@@ -17,8 +17,9 @@ col_amount = '[col-id="amount"]'
 class TestPerpetuals:
     @pytest.fixture(scope="class")
     def vega(self, request):
-        with init_vega(request) as vega:
-            yield vega
+        with init_vega(request) as vega_instance:
+            request.addfinalizer(lambda: cleanup_container(vega_instance))  # Register the cleanup function
+            yield vega_instance
 
     @pytest.fixture(scope="class")
     def perps_market(self, vega: VegaServiceNull):
