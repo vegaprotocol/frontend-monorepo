@@ -235,7 +235,7 @@ export const useRouterConfig = () => {
       path: Routes.TREASURY,
       handle: {
         name: t('Treasury'),
-        text: t('Network Treasury'),
+        text: t('Treasury'),
         breadcrumb: () => <Link to={Routes.TREASURY}>{t('Treasury')}</Link>,
       },
       element: <NetworkTreasury />,
