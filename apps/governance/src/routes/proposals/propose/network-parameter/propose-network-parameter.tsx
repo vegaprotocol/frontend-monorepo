@@ -91,7 +91,7 @@ export const ProposeNetworkParameter = () => {
     watch,
     trigger,
   } = useForm<NetworkParameterProposalFormFields>();
-  const { finalizedProposal, submit, Dialog } = useProposalSubmit();
+  const { finalizedProposal, transaction, submit } = useProposalSubmit();
 
   const selectedParamEntry = params
     ? Object.entries(params).find(([key]) => key === selectedNetworkParam)
@@ -312,7 +312,7 @@ export const ProposeNetworkParameter = () => {
               <ProposalFormDownloadJson downloadJson={viewJson} />
               <ProposalFormTransactionDialog
                 finalizedProposal={finalizedProposal}
-                TransactionDialog={Dialog}
+                transaction={transaction}
               />
             </form>
           </div>

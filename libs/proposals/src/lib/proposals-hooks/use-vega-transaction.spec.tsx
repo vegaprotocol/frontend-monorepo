@@ -30,8 +30,7 @@ function setup(hookValues?: Partial<typeof defaultHookValues>) {
   return renderHook(() => useVegaTransaction());
 }
 
-// TODO: fix me
-describe.skip('useVegaTransaction', () => {
+describe('useVegaTransaction', () => {
   it('has the correct default state', () => {
     const { result } = setup();
     expect(result.current).toEqual({
@@ -40,35 +39,18 @@ describe.skip('useVegaTransaction', () => {
       reset: expect.any(Function),
       setComplete: expect.any(Function),
       setTransaction: expect.any(Function),
-      Dialog: expect.any(Function),
     });
   });
 
   it('resets state if sendTx returns null (user rejects)', async () => {
-    const mockSendTx = jest.fn().mockReturnValue(Promise.resolve(null));
+    const mockSendTx = jest
+      .fn()
+      .mockReturnValue(Promise.resolve({ error: 'user rejected' }));
     const { result } = setup({ sendTx: mockSendTx });
     await act(async () => {
       result.current.send(mockPubKey, {} as Transaction);
     });
     expect(result.current.transaction.status).toEqual(VegaTxStatus.Default);
-  });
-
-  it('handles a single wallet error', () => {
-    const error = new WalletError('test error', 1, 'test data');
-    const mockSendTx = jest.fn(() => {
-      throw error;
-    });
-    const { result } = setup({ sendTx: mockSendTx });
-    act(() => {
-      result.current.send(mockPubKey, {} as Transaction);
-    });
-    expect(result.current.transaction.status).toEqual(VegaTxStatus.Error);
-    expect(result.current.transaction.error).toHaveProperty(
-      'message',
-      error.message
-    );
-    expect(result.current.transaction.error).toHaveProperty('code', 1);
-    expect(result.current.transaction.error).toHaveProperty('data', error.data);
   });
 
   it('handles a single error', () => {
@@ -98,17 +80,8 @@ describe.skip('useVegaTransaction', () => {
     });
     expect(result.current.transaction.status).toEqual(VegaTxStatus.Error);
     expect(result.current.transaction.error).toHaveProperty(
-      'title',
-      'Something went wrong'
-    );
-    expect(result.current.transaction.error).toHaveProperty('code', 105);
-    expect(result.current.transaction.error).toHaveProperty(
       'message',
-      'Unknown error occurred'
-    );
-    expect(result.current.transaction.error).toHaveProperty(
-      'data',
-      'Unknown error occurred'
+      'something went wrong'
     );
   });
 

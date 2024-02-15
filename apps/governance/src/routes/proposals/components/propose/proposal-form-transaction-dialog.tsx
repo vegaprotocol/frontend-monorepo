@@ -1,19 +1,22 @@
 import {
+  VegaTransactionDialog,
   getProposalDialogIcon,
   getProposalDialogIntent,
   useGetProposalDialogTitle,
 } from '@vegaprotocol/proposals';
-import type { ProposalEventFieldsFragment } from '@vegaprotocol/proposals';
-import type { DialogProps } from '@vegaprotocol/proposals';
+import type {
+  ProposalEventFieldsFragment,
+  VegaTxState,
+} from '@vegaprotocol/proposals';
 
 interface ProposalFormTransactionDialogProps {
   finalizedProposal: ProposalEventFieldsFragment | null;
-  TransactionDialog: (props: DialogProps) => JSX.Element;
+  transaction: VegaTxState;
 }
 
 export const ProposalFormTransactionDialog = ({
   finalizedProposal,
-  TransactionDialog,
+  transaction,
 }: ProposalFormTransactionDialogProps) => {
   const title = useGetProposalDialogTitle(finalizedProposal?.state);
   // Render a custom complete UI if the proposal was rejected otherwise
@@ -24,13 +27,15 @@ export const ProposalFormTransactionDialog = ({
 
   return (
     <div data-testid="proposal-transaction-dialog">
-      <TransactionDialog
+      <VegaTransactionDialog
         title={title}
         intent={getProposalDialogIntent(finalizedProposal?.state)}
         icon={getProposalDialogIcon(finalizedProposal?.state)}
         content={{
           Complete: completeContent,
         }}
+        transaction={transaction}
+        isOpen={transaction.dialogOpen}
       />
     </div>
   );

@@ -64,7 +64,7 @@ export const ProposeNewAsset = () => {
     watch,
     trigger,
   } = useForm<NewAssetProposalFormFields>();
-  const { finalizedProposal, submit, Dialog } = useProposalSubmit();
+  const { finalizedProposal, transaction, submit } = useProposalSubmit();
 
   const assembleProposal = (fields: NewAssetProposalFormFields) => {
     const isVoteDeadlineAtMinimum = doesValueEquateToParam(
@@ -232,7 +232,7 @@ export const ProposeNewAsset = () => {
               <ProposalFormDownloadJson downloadJson={viewJson} />
               <ProposalFormTransactionDialog
                 finalizedProposal={finalizedProposal}
-                TransactionDialog={Dialog}
+                transaction={transaction}
               />
             </form>
           </div>

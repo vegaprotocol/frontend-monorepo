@@ -62,7 +62,7 @@ export const ProposeNewMarket = () => {
     watch,
     trigger,
   } = useForm<NewMarketProposalFormFields>();
-  const { finalizedProposal, submit, Dialog } = useProposalSubmit();
+  const { finalizedProposal, transaction, submit } = useProposalSubmit();
 
   const assembleProposal = (fields: NewMarketProposalFormFields) => {
     const isVoteDeadlineAtMinimum = doesValueEquateToParam(
@@ -214,7 +214,7 @@ export const ProposeNewMarket = () => {
               <ProposalFormDownloadJson downloadJson={viewJson} />
               <ProposalFormTransactionDialog
                 finalizedProposal={finalizedProposal}
-                TransactionDialog={Dialog}
+                transaction={transaction}
               />
             </form>
           </div>

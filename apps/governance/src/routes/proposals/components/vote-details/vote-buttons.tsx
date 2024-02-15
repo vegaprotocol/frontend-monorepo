@@ -17,7 +17,7 @@ import { VoteState } from './use-user-vote';
 import { ProposalMinRequirements, ProposalUserAction } from '../shared';
 import { VoteTransactionDialog } from './vote-transaction-dialog';
 import { useVoteButtonsQuery } from './__generated__/Stake';
-import type { DialogProps, VegaTxState } from '@vegaprotocol/proposals';
+import type { VegaTxState } from '@vegaprotocol/proposals';
 import { filterAcceptableGraphqlErrors } from '../../../../lib/party';
 import {
   NetworkParams,
@@ -32,8 +32,7 @@ interface VoteButtonsContainerProps {
   proposalId: string | null;
   proposalState: ProposalState;
   submit: (voteValue: VoteValue, proposalId: string | null) => Promise<void>;
-  transaction: VegaTxState | null;
-  dialog: (props: DialogProps) => JSX.Element;
+  transaction: VegaTxState;
   className?: string;
 }
 
@@ -159,7 +158,6 @@ export const VoteButtons = ({
   spamProtectionMinTokens,
   submit,
   transaction,
-  dialog: Dialog,
 }: VoteButtonsProps) => {
   const { t } = useTranslation();
   const { pubKey } = useVegaWallet();
@@ -301,11 +299,7 @@ export const VoteButtons = ({
           </p>
         )
       )}
-      <VoteTransactionDialog
-        voteState={voteState}
-        transaction={transaction}
-        TransactionDialog={Dialog}
-      />
+      <VoteTransactionDialog voteState={voteState} transaction={transaction} />
     </>
   );
 };

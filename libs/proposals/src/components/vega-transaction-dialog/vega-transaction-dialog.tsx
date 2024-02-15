@@ -133,7 +133,7 @@ export const VegaDialog = ({ transaction }: VegaDialogProps) => {
             <a
               className="underline"
               data-testid="tx-block-explorer"
-              href={link(`/txs/0x${transaction.txHash}`)}
+              href={link(EXPLORER_TX.replace(':hash', transaction.txHash))}
               target="_blank"
               rel="noreferrer"
             >

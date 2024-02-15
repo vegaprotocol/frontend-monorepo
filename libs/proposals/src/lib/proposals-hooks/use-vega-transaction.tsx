@@ -1,14 +1,6 @@
-import type { ReactNode } from 'react';
-import { useCallback, useMemo, useState } from 'react';
-import {
-  WalletClientError,
-  WalletHttpError,
-} from '@vegaprotocol/wallet-client';
+import { useCallback, useState } from 'react';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import type { Transaction } from '@vegaprotocol/wallet';
-import type { VegaTransactionContentMap } from '../../components/vega-transaction-dialog';
-import { VegaTransactionDialog } from '../../components/vega-transaction-dialog';
-import type { Intent } from '@vegaprotocol/ui-toolkit';
 
 export enum VegaTxStatus {
   Default = 'Default',
@@ -26,13 +18,6 @@ export interface VegaTxState {
   dialogOpen: boolean;
 }
 
-export interface DialogProps {
-  intent?: Intent;
-  title?: string;
-  icon?: ReactNode;
-  content?: VegaTransactionContentMap;
-}
-
 export const initialState = {
   status: VegaTxStatus.Default,
   error: null,
@@ -41,23 +26,8 @@ export const initialState = {
   dialogOpen: false,
 };
 
-// TODO: fix me
-//
-// export const orderErrorResolve = (err: Error | unknown): Error => {
-//   if (err instanceof WalletClientError || err instanceof WalletError) {
-//     return err;
-//   } else if (err instanceof WalletHttpError) {
-//     return ClientErrors.UNKNOWN;
-//   } else if (err instanceof TypeError) {
-//     return ClientErrors.NO_SERVICE;
-//   } else if (err instanceof Error) {
-//     return err;
-//   }
-//   return ClientErrors.UNKNOWN;
-// };
-
 export const useVegaTransaction = () => {
-  const { sendTx, disconnect } = useVegaWallet();
+  const { sendTx } = useVegaWallet();
   const [transaction, _setTransaction] = useState<VegaTxState>(initialState);
 
   const setTransaction = useCallback((update: Partial<VegaTxState>) => {
@@ -88,13 +58,12 @@ export const useVegaTransaction = () => {
 
         const res = await sendTx(pubKey, tx);
 
-        if (res === null) {
-          // User rejected
-          reset();
-          return null;
-        }
-
         if ('error' in res) {
+          if (res.error.includes('user rejected')) {
+            reset();
+            return null;
+          }
+
           throw new Error('transaction failed');
         }
 
@@ -110,34 +79,15 @@ export const useVegaTransaction = () => {
 
         return null;
       } catch (err) {
-        console.error(err);
-        // const error = orderErrorResolve(err);
-        // if ((error as WalletError).code === ClientErrors.NO_SERVICE.code) {
-        //   disconnect();
-        // }
-        // setTransaction({
-        //   error,
-        //   status: VegaTxStatus.Error,
-        // });
+        setTransaction({
+          error: err instanceof Error ? err : Error('something went wrong'),
+          status: VegaTxStatus.Error,
+        });
         return null;
       }
     },
-    [sendTx, setTransaction, reset, disconnect]
+    [sendTx, setTransaction, reset]
   );
-
-  const Dialog = useMemo(() => {
-    return (props: DialogProps) => (
-      <VegaTransactionDialog
-        {...props}
-        isOpen={transaction.dialogOpen}
-        onChange={(isOpen) => {
-          if (!isOpen) reset();
-          setTransaction({ dialogOpen: isOpen });
-        }}
-        transaction={transaction}
-      />
-    );
-  }, [transaction, setTransaction, reset]);
 
   return {
     send,
@@ -145,6 +95,5 @@ export const useVegaTransaction = () => {
     reset,
     setComplete,
     setTransaction,
-    Dialog,
   };
 };

@@ -1,0 +1,12 @@
+FileVersion = 2
+
+[API]
+  [API.GRPC]
+    Hosts = ["127.0.0.1:3002", "127.0.0.1:3012", "127.0.0.1:3022", "127.0.0.1:3032"]
+  [API.REST]
+  [API.GraphQL]
+
+[Apps]
+  Console = ""
+  Governance = ""
+  Explorer = ""

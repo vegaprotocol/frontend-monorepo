@@ -1,11 +1,13 @@
 import { t } from '@vegaprotocol/i18n';
 import { VoteState } from './use-user-vote';
-import type { DialogProps, VegaTxState } from '@vegaprotocol/proposals';
+import {
+  VegaTransactionDialog,
+  type VegaTxState,
+} from '@vegaprotocol/proposals';
 
 interface VoteTransactionDialogProps {
   voteState: VoteState;
-  transaction: VegaTxState | null;
-  TransactionDialog: (props: DialogProps) => JSX.Element;
+  transaction: VegaTxState;
 }
 
 const dialogTitle = (voteState: VoteState): string | undefined => {
@@ -22,7 +24,6 @@ const dialogTitle = (voteState: VoteState): string | undefined => {
 export const VoteTransactionDialog = ({
   voteState,
   transaction,
-  TransactionDialog,
 }: VoteTransactionDialogProps) => {
   // Render a custom message if the voting fails otherwise
   // pass undefined so that the default vega transaction dialog UI gets used
@@ -33,11 +34,13 @@ export const VoteTransactionDialog = ({
 
   return (
     <div data-testid="vote-transaction-dialog">
-      <TransactionDialog
+      <VegaTransactionDialog
         title={dialogTitle(voteState)}
+        transaction={transaction}
         content={{
           Complete: customMessage,
         }}
+        isOpen={transaction.dialogOpen}
       />
     </div>
   );
