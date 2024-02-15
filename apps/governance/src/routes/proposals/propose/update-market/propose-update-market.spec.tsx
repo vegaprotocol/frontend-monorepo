@@ -9,9 +9,7 @@ import { NetworkParamsDocument } from '@vegaprotocol/network-parameters';
 import type { ProposalMarketsQueryQuery } from './__generated__/UpdateMarket';
 import { ProposalMarketsQueryDocument } from './__generated__/UpdateMarket';
 import { ProposalState } from '@vegaprotocol/types';
-import * as walletHooks from '@vegaprotocol/wallet-react';
-
-jest.mock('@vegaprotocol/wallet-react');
+import { MockedWalletProvider } from '@vegaprotocol/wallet-react';
 
 const updateMarketNetworkParamsQueryMock: MockedResponse<NetworkParamsQuery> = {
   request: {
@@ -219,17 +217,17 @@ const marketQueryMock: MockedResponse<ProposalMarketsQueryQuery> = {
 };
 
 const renderComponent = () => {
-  // @ts-ignore wrong types from mock
-  walletHooks.useVegaWallet.mockReturnValue({ pubKey: '0x123' });
   return render(
     <MockedProvider
       mocks={[updateMarketNetworkParamsQueryMock, marketQueryMock]}
       addTypename={false}
     >
       <Router>
-        <AppStateProvider>
-          <ProposeUpdateMarket />
-        </AppStateProvider>
+        <MockedWalletProvider>
+          <AppStateProvider>
+            <ProposeUpdateMarket />
+          </AppStateProvider>
+        </MockedWalletProvider>
       </Router>
     </MockedProvider>
   );

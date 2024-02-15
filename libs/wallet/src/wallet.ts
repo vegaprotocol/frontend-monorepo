@@ -11,11 +11,23 @@ import {
   type ConnectorType,
 } from './types';
 
-export const createSingleKeyStore: StateCreator<SingleKeyStore> = (set) => ({
+export const createSingleKeySlice: StateCreator<SingleKeyStore> = (set) => ({
   pubKey: undefined,
   setPubKey: (key) => {
     set({ pubKey: key });
   },
+});
+
+export const createCoreStoreSlice: StateCreator<CoreStore> = (set) => ({
+  chainId: '',
+  status: 'disconnected',
+  current: undefined,
+  keys: [],
+  setKeys: (keys) => {
+    set({ keys });
+  },
+  error: undefined,
+  jsonRpcToken: undefined,
 });
 
 export function createConfig(cfg: Config): Wallet {
@@ -25,23 +37,12 @@ export function createConfig(cfg: Config): Wallet {
     throw new Error('default chain not found in config');
   }
 
-  const createStoreSlice: StateCreator<CoreStore> = (set) => ({
-    chainId: chain.id,
-    status: 'disconnected',
-    current: undefined,
-    keys: [],
-    setKeys: (keys) => {
-      set({ keys });
-    },
-    error: undefined,
-    jsonRpcToken: undefined,
-  });
-
   const store = createStore<Store>()(
     persist(
       (...args) => ({
-        ...createStoreSlice(...args),
-        ...createSingleKeyStore(...args),
+        ...createCoreStoreSlice(...args),
+        ...createSingleKeySlice(...args),
+        chainId: chain.id,
       }),
       {
         name: 'vega_wallet_store',

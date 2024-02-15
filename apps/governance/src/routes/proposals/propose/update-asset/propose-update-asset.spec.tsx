@@ -6,9 +6,7 @@ import { ProposeUpdateAsset } from './propose-update-asset';
 import type { NetworkParamsQuery } from '@vegaprotocol/network-parameters';
 import type { MockedResponse } from '@apollo/client/testing';
 import { NetworkParamsDocument } from '@vegaprotocol/network-parameters';
-import * as walletHooks from '@vegaprotocol/wallet-react';
-
-jest.mock('@vegaprotocol/wallet-react');
+import { MockedWalletProvider } from '@vegaprotocol/wallet-react';
 
 jest.mock('@vegaprotocol/environment', () => ({
   ...jest.requireActual('@vegaprotocol/environment'),
@@ -74,14 +72,14 @@ const updateAssetNetworkParamsQueryMock: MockedResponse<NetworkParamsQuery> = {
 };
 
 const renderComponent = () => {
-  // @ts-ignore wrong types from mock
-  walletHooks.useVegaWallet.mockReturnValue({ pubKey: '0x123' });
   return render(
     <Router>
       <MockedProvider mocks={[updateAssetNetworkParamsQueryMock]}>
-        <AppStateProvider>
-          <ProposeUpdateAsset />
-        </AppStateProvider>
+        <MockedWalletProvider>
+          <AppStateProvider>
+            <ProposeUpdateAsset />
+          </AppStateProvider>
+        </MockedWalletProvider>
       </MockedProvider>
     </Router>
   );

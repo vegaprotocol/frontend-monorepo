@@ -5,10 +5,8 @@ import { generateProposal } from '../../test-helpers/generate-proposals';
 import { Proposal } from './proposal';
 import { ProposalState } from '@vegaprotocol/types';
 import { type Proposal as IProposal } from '../../types';
-import * as walletHooks from '@vegaprotocol/wallet-react';
-import { AppStateProvider } from 'apps/governance/src/contexts/app-state/app-state-provider';
-
-jest.mock('@vegaprotocol/wallet-react');
+import { AppStateProvider } from '../../../../contexts/app-state/app-state-provider';
+import { MockedWalletProvider } from '@vegaprotocol/wallet-react';
 
 jest.mock('@vegaprotocol/network-parameters', () => ({
   ...jest.requireActual('@vegaprotocol/network-parameters'),
@@ -52,14 +50,14 @@ jest.mock('../vote-details', () => ({
 }));
 
 const renderComponent = (proposal: IProposal) => {
-  // @ts-ignore wrong types from mock
-  walletHooks.useVegaWallet.mockReturnValue({ pubKey: '0x123' });
   return render(
     <MemoryRouter>
       <MockedProvider>
-        <AppStateProvider>
-          <Proposal restData={null} proposal={proposal} />
-        </AppStateProvider>
+        <MockedWalletProvider>
+          <AppStateProvider>
+            <Proposal restData={null} proposal={proposal} />
+          </AppStateProvider>
+        </MockedWalletProvider>
       </MockedProvider>
     </MemoryRouter>
   );

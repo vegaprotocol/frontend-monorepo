@@ -1,28 +1,23 @@
 import { render, screen } from '@testing-library/react';
+import { MockedWalletProvider } from '@vegaprotocol/wallet-react';
+import { type Store } from '@vegaprotocol/wallet';
 import { AppStateProvider } from '../../../../contexts/app-state/app-state-provider';
 import { ProposalFormSubmit } from './proposal-form-submit';
-import * as walletHooks from '@vegaprotocol/wallet-react';
 
-jest.mock('@vegaprotocol/wallet-react');
-
-// @ts-ignore type wrong after mock
-walletHooks.useDialogStore.mockReturnValue(jest.fn());
-
-const renderComponent = (isSubmitting: boolean) => {
+const renderComponent = (isSubmitting: boolean, store?: Partial<Store>) => {
   render(
-    <AppStateProvider>
-      <ProposalFormSubmit isSubmitting={isSubmitting} />
-    </AppStateProvider>
+    <MockedWalletProvider store={store}>
+      <AppStateProvider>
+        <ProposalFormSubmit isSubmitting={isSubmitting} />
+      </AppStateProvider>
+    </MockedWalletProvider>
   );
 };
 
 describe('Proposal Form Submit', () => {
+  const pubKey = { publicKey: '123456__123456', name: 'test' };
+
   it('should display connection message and button if wallet not connected', () => {
-    // @ts-ignore type wrong after mock
-    walletHooks.useVegaWallet.mockReturnValue({
-      status: 'disconnected',
-      pubKey: undefined,
-    });
     renderComponent(false);
 
     expect(
@@ -34,27 +29,20 @@ describe('Proposal Form Submit', () => {
   });
 
   it('should display submit button if wallet is connected', () => {
-    const pubKey = { publicKey: '123456__123456', name: 'test' };
-
-    // @ts-ignore types wrong after mock
-    walletHooks.useVegaWallet.mockReturnValue({
+    renderComponent(false, {
       pubKey: pubKey.publicKey,
-      pubKeys: [pubKey],
+      keys: [pubKey],
     });
-    renderComponent(false);
     expect(screen.getByTestId('proposal-submit')).toHaveTextContent(
       'Submit proposal'
     );
   });
 
   it('should display submitting button text if wallet is connected and submitting', () => {
-    const pubKey = { publicKey: '123456__123456', name: 'test' };
-    // @ts-ignore types wrong after mock
-    walletHooks.useVegaWallet.mockReturnValue({
+    renderComponent(true, {
       pubKey: pubKey.publicKey,
-      pubKeys: [pubKey],
+      keys: [pubKey],
     });
-    renderComponent(true);
     expect(screen.getByTestId('proposal-submit')).toHaveTextContent(
       'Submitting proposal'
     );

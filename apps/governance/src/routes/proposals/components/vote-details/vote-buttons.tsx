@@ -135,14 +135,7 @@ export const VoteButtonsContainer = (props: VoteButtonsContainerProps) => {
   );
 };
 
-interface VoteButtonsProps {
-  voteState: VoteState | null;
-  voteDatetime: Date | null;
-  proposalId: string | null;
-  proposalState: ProposalState;
-  submit: (voteValue: VoteValue, proposalId: string | null) => Promise<void>;
-  transaction: VegaTxState | null;
-  dialog: (props: DialogProps) => JSX.Element;
+export interface VoteButtonsProps extends VoteButtonsContainerProps {
   currentStakeAvailable: BigNumber;
   minVoterBalance: string | null;
   spamProtectionMinTokens: string | null;

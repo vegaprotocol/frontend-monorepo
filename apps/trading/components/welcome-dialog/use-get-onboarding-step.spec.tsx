@@ -1,4 +1,3 @@
-import type { ReactNode } from 'react';
 import { renderHook } from '@testing-library/react';
 import {
   useGetOnboardingStep,
@@ -8,6 +7,8 @@ import { useDataProvider } from '@vegaprotocol/data-provider';
 import { ordersWithMarketProvider } from '@vegaprotocol/orders';
 import { positionsDataProvider } from '@vegaprotocol/positions';
 import * as walletHooks from '@vegaprotocol/wallet-react';
+
+// TODO: review these tests and use MockedWalletProvider
 
 jest.mock('@vegaprotocol/wallet-react');
 

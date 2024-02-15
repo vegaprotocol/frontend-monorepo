@@ -1,15 +1,8 @@
 import { MemoryRouter } from 'react-router-dom';
+import { MockedWalletProvider } from '@vegaprotocol/wallet-react';
 import { GetStarted } from './get-started';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { useOnboardingStore } from './use-get-onboarding-step';
-import * as walletHooks from '@vegaprotocol/wallet-react';
-
-jest.mock('@vegaprotocol/wallet-react');
-
-// @ts-ignore type wrong after mock
-walletHooks.useVegaWallet.mockReturnValue({
-  pubKey: 'my-pubkey',
-});
 
 let mockStep = 1;
 jest.mock('./use-get-onboarding-step', () => ({
@@ -19,9 +12,11 @@ jest.mock('./use-get-onboarding-step', () => ({
 
 describe('GetStarted', () => {
   const renderComponent = () => {
-    return render(
+    return (
       <MemoryRouter>
-        <GetStarted />
+        <MockedWalletProvider store={{ pubKey: 'my-pubkey' }}>
+          <GetStarted />
+        </MockedWalletProvider>
       </MemoryRouter>
     );
   };
@@ -38,13 +33,13 @@ describe('GetStarted', () => {
   });
 
   it('renders full get started content if not connected and no browser wallet detected', () => {
-    renderComponent();
+    render(renderComponent());
     expect(screen.getByTestId('get-started-banner')).toBeInTheDocument();
   });
 
   it('renders connect prompt if no pubKey but wallet installed', () => {
     globalThis.window.vega = {} as Vega;
-    renderComponent();
+    render(renderComponent());
     expect(screen.getByTestId('get-started-banner')).toBeInTheDocument();
     globalThis.window.vega = undefined as unknown as Vega;
   });
@@ -52,7 +47,7 @@ describe('GetStarted', () => {
   it('renders nothing if dismissed', () => {
     useOnboardingStore.setState({ dismissed: true });
     mockStep = 0;
-    const { container } = renderComponent();
+    const { container } = render(renderComponent());
     expect(container).toBeEmptyDOMElement();
   });
 
@@ -66,25 +61,17 @@ describe('GetStarted', () => {
     navigatorGetter.mockReturnValue('Chrome');
 
     mockStep = 2;
-    const { rerender, container } = renderComponent();
+    const { rerender, container } = render(renderComponent());
     checkTicks(screen.getAllByRole('listitem'));
     expect(screen.getByRole('button', { name: 'Connect' })).toBeInTheDocument();
 
     mockStep = 3;
-    rerender(
-      <MemoryRouter>
-        <GetStarted />
-      </MemoryRouter>
-    );
+    rerender(renderComponent());
     checkTicks(screen.getAllByRole('listitem'));
     expect(screen.getByRole('link', { name: 'Deposit' })).toBeInTheDocument();
 
     mockStep = 4;
-    rerender(
-      <MemoryRouter>
-        <GetStarted />
-      </MemoryRouter>
-    );
+    rerender(renderComponent());
     checkTicks(screen.getAllByRole('listitem'));
     expect(
       screen.getByRole('link', { name: 'Ready to trade' })
@@ -93,11 +80,7 @@ describe('GetStarted', () => {
     fireEvent.click(screen.getByRole('link', { name: 'Ready to trade' }));
 
     mockStep = 5;
-    rerender(
-      <MemoryRouter>
-        <GetStarted />
-      </MemoryRouter>
-    );
+    rerender(renderComponent());
     expect(container).toBeEmptyDOMElement();
   });
 });
