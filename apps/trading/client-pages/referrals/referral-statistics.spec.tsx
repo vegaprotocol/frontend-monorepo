@@ -21,23 +21,10 @@ import {
   type RefereesQuery,
 } from './hooks/__generated__/Referees';
 import { MemoryRouter } from 'react-router-dom';
-import * as walletHooks from '@vegaprotocol/wallet-react';
-
-jest.mock('@vegaprotocol/wallet-react');
+import { MockedWalletProvider } from '@vegaprotocol/wallet-react';
 
 const MOCK_PUBKEY =
   '1234567890123456789012345678901234567890123456789012345678901234';
-
-// @ts-ignore type wrong after mock
-walletHooks.useVegaWallet.mockReturnValue({
-  pubKey: MOCK_PUBKEY,
-});
-
-// @ts-ignore type wrong after mock
-walletHooks.useSimpleTransaction.mockReturnValue({
-  send: jest.fn(),
-  status: 'idle',
-});
 
 const MOCK_STAKE_AVAILABLE: StakeAvailableQuery = {
   networkParameter: {
@@ -314,7 +301,9 @@ describe('ReferralStatistics', () => {
     return render(
       <MemoryRouter>
         <MockedProvider mocks={mocks} showWarnings={false}>
-          <ReferralStatistics />
+          <MockedWalletProvider store={{ pubKey: MOCK_PUBKEY }}>
+            <ReferralStatistics />
+          </MockedWalletProvider>
         </MockedProvider>
       </MemoryRouter>
     );

@@ -7,7 +7,7 @@ import {
   type StopOrdersTableProps,
 } from './stop-orders-table';
 import { generateStopOrder } from '../mocks/generate-stop-orders';
-import * as walletHooks from '@vegaprotocol/wallet-react';
+import { MockedWalletProvider } from '@vegaprotocol/wallet-react';
 
 // Mock theme switcher to get around inconsistent mocking of zustand
 // stores
@@ -25,8 +25,6 @@ jest.mock('@vegaprotocol/utils', () => ({
   })),
 }));
 
-jest.mock('@vegaprotocol/wallet-react');
-
 const defaultProps: StopOrdersTableProps = {
   onView: jest.fn(),
   rowData: [],
@@ -38,11 +36,11 @@ const generateJsx = (
   props: Partial<StopOrdersTableProps> = defaultProps,
   context = { pubKey: '0x123' }
 ) => {
-  // @ts-ignore types wrong after mock
-  walletHooks.useVegaWallet.mockReturnValue(context);
   return (
     <MockedProvider>
-      <StopOrdersTable {...defaultProps} {...props} />
+      <MockedWalletProvider store={context}>
+        <StopOrdersTable {...defaultProps} {...props} />
+      </MockedWalletProvider>
     </MockedProvider>
   );
 };

@@ -10,18 +10,15 @@ import {
 } from './__generated__/TransactionResult';
 import { type EthTransactionStore } from './use-ethereum-transaction-store';
 import { DepositStatus } from '@vegaprotocol/types';
-import * as walletHooks from '@vegaprotocol/wallet-react';
-
-jest.mock('@vegaprotocol/wallet-react');
+import { MockedWalletProvider } from '@vegaprotocol/wallet-react';
 
 const pubKey = 'pubKey';
 
 const render = (mocks?: MockedResponse[]) => {
-  // @ts-ignore wrong type
-  walletHooks.useVegaWallet.mockReturnValue({ pubKey });
-
   const wrapper = ({ children }: { children: ReactNode }) => (
-    <MockedProvider mocks={mocks}>{children}</MockedProvider>
+    <MockedProvider mocks={mocks}>
+      <MockedWalletProvider store={{ pubKey }}>{children}</MockedWalletProvider>
+    </MockedProvider>
   );
   return renderHook(() => useEthTransactionUpdater(), { wrapper });
 };

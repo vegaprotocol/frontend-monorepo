@@ -4,17 +4,15 @@ import { OrderListManager, Filter } from './order-list-manager';
 import * as useDataProviderHook from '@vegaprotocol/data-provider';
 import type { OrderFieldsFragment } from '../';
 import { MockedProvider } from '@apollo/client/testing';
-import * as walletHooks from '@vegaprotocol/wallet-react';
-
-jest.mock('@vegaprotocol/wallet-react');
+import { MockedWalletProvider } from '@vegaprotocol/wallet-react';
 
 const generateJsx = (props: Partial<OrderListManagerProps> | null = null) => {
   const pubKey = '0x123';
-  // @ts-ignore wrong type
-  walletHooks.useVegaWallet.mockReturnValue({ pubKey });
   return (
     <MockedProvider>
-      <OrderListManager partyId={pubKey} isReadOnly={false} {...props} />
+      <MockedWalletProvider store={{ pubKey }}>
+        <OrderListManager partyId={pubKey} isReadOnly={false} {...props} />
+      </MockedWalletProvider>
     </MockedProvider>
   );
 };

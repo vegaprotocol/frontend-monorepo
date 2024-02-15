@@ -12,10 +12,9 @@ import {
 } from '../../hooks/use-form-values';
 import { useFeatureFlags } from '@vegaprotocol/environment';
 import { formatForInput } from '@vegaprotocol/utils';
-import * as walletHooks from '@vegaprotocol/wallet-react';
+import { MockedWalletProvider } from '@vegaprotocol/wallet-react';
 
 jest.mock('zustand');
-jest.mock('@vegaprotocol/wallet-react');
 jest.mock('./deal-ticket-fee-details', () => ({
   DealTicketFeeDetails: () => <div data-testid="deal-ticket-fee-details" />,
 }));
@@ -24,12 +23,17 @@ const marketPrice = '200';
 const market = generateMarket();
 const submit = jest.fn();
 
-function generateJsx(pubKey: string | null = 'pubKey', isReadOnly = false) {
-  // @ts-ignore wrong type after mock
-  walletHooks.useVegaWallet.mockReturnValue({ pubKey, isReadOnly });
+function generateJsx(
+  pubKey: string | undefined = 'pubKey',
+  isReadOnly = false
+) {
   return (
     <MockedProvider>
-      <StopOrder market={market} marketPrice={marketPrice} submit={submit} />
+      <MockedWalletProvider
+        store={{ pubKey, current: isReadOnly ? 'readOnly' : 'injected' }}
+      >
+        <StopOrder market={market} marketPrice={marketPrice} submit={submit} />
+      </MockedWalletProvider>
     </MockedProvider>
   );
 }

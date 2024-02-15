@@ -10,7 +10,7 @@ import {
   limitOrder,
   marketOrder,
 } from '../mocks/generate-orders';
-import * as walletHooks from '@vegaprotocol/wallet-react';
+import { MockedWalletProvider } from '@vegaprotocol/wallet-react';
 
 // Mock theme switcher to get around inconsistent mocking of zustand
 // stores
@@ -20,8 +20,6 @@ jest.mock('@vegaprotocol/react-helpers', () => ({
     theme: 'light',
   }),
 }));
-
-jest.mock('@vegaprotocol/wallet-react');
 
 const defaultProps: OrderListTableProps = {
   rowData: [],
@@ -35,11 +33,11 @@ const generateJsx = (
   props: Partial<OrderListTableProps> = defaultProps,
   context = { pubKey: '0x123' }
 ) => {
-  // @ts-ignore types wrong after mock
-  walletHooks.useVegaWallet.mockReturnValue(context);
   return (
     <MockedProvider>
-      <OrderListTable {...defaultProps} {...props} />
+      <MockedWalletProvider store={context}>
+        <OrderListTable {...defaultProps} {...props} />
+      </MockedWalletProvider>
     </MockedProvider>
   );
 };

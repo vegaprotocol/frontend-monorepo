@@ -19,7 +19,11 @@ import { isBrowserWalletInstalled, type Key } from '@vegaprotocol/wallet';
 import { useDialogStore, useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useCopyTimeout } from '@vegaprotocol/react-helpers';
 import classNames from 'classnames';
+import { ViewType, useSidebar } from '../sidebar';
+import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
 import { useT } from '../../lib/use-t';
+
+// TODO:  trnasfer button
 
 export const VegaWalletConnectButton = ({
   intent = Intent.None,
@@ -33,8 +37,17 @@ export const VegaWalletConnectButton = ({
   const openVegaWalletDialog = useDialogStore(
     (store) => store.openVegaWalletDialog
   );
-  const { status, pubKeys, pubKey, selectPubKey, disconnect, refreshKeys } =
-    useVegaWallet();
+  const currentRouteId = useGetCurrentRouteId();
+  const setViews = useSidebar((store) => store.setViews);
+  const {
+    status,
+    pubKeys,
+    pubKey,
+    selectPubKey,
+    disconnect,
+    refreshKeys,
+    isReadOnly,
+  } = useVegaWallet();
 
   const walletInstalled = isBrowserWalletInstalled();
 
@@ -96,6 +109,17 @@ export const VegaWalletConnectButton = ({
               ))}
             </TradingDropdownRadioGroup>
             <TradingDropdownSeparator />
+            {!isReadOnly && (
+              <TradingDropdownItem
+                data-testid="wallet-transfer"
+                onClick={() => {
+                  setViews({ type: ViewType.Transfer }, currentRouteId);
+                  setDropdownOpen(false);
+                }}
+              >
+                {t('Transfer')}
+              </TradingDropdownItem>
+            )}
             <TradingDropdownItem data-testid="disconnect" onClick={disconnect}>
               {t('Disconnect')}
             </TradingDropdownItem>

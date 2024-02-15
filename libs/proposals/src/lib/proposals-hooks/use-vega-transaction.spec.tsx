@@ -5,29 +5,18 @@ import {
   useVegaTransaction,
   VegaTxStatus,
 } from './use-vega-transaction';
-import * as walletHooks from '@vegaprotocol/wallet-react';
-
-jest.mock('@vegaprotocol/wallet-react');
+import { MockedWalletProvider } from '@vegaprotocol/wallet-react';
+import { type ReactNode } from 'react';
 
 const mockPubKey = '0x123';
 
-const defaultHookValues = {
-  pubKey: null,
-  pubKeys: [],
-  isReadOnly: false,
-  sendTx: jest.fn(),
-  connect: jest.fn(),
-  disconnect: jest.fn(),
-  selectPubKey: jest.fn(),
-};
-
-function setup(hookValues?: Partial<typeof defaultHookValues>) {
-  // @ts-ignore wrong types from mock
-  walletHooks.useVegaWallet.mockReturnValue({
-    ...defaultHookValues,
-    ...hookValues,
-  });
-  return renderHook(() => useVegaTransaction());
+function setup(mockSendTx = jest.fn()) {
+  const wrapper = ({ children }: { children: ReactNode }) => (
+    <MockedWalletProvider config={{ sendTransaction: mockSendTx }}>
+      {children}
+    </MockedWalletProvider>
+  );
+  return renderHook(() => useVegaTransaction(), { wrapper });
 }
 
 describe('useVegaTransaction', () => {
@@ -46,7 +35,7 @@ describe('useVegaTransaction', () => {
     const mockSendTx = jest
       .fn()
       .mockReturnValue(Promise.resolve({ error: 'user rejected' }));
-    const { result } = setup({ sendTx: mockSendTx });
+    const { result } = setup(mockSendTx);
     await act(async () => {
       result.current.send(mockPubKey, {} as Transaction);
     });
@@ -58,7 +47,7 @@ describe('useVegaTransaction', () => {
     const mockSendTx = jest.fn(() => {
       throw error;
     });
-    const { result } = setup({ sendTx: mockSendTx });
+    const { result } = setup(mockSendTx);
     act(() => {
       result.current.send(mockPubKey, {} as Transaction);
     });
@@ -74,7 +63,7 @@ describe('useVegaTransaction', () => {
     const mockSendTx = jest.fn(() => {
       throw unknownThrow;
     });
-    const { result } = setup({ sendTx: mockSendTx });
+    const { result } = setup(mockSendTx);
     act(() => {
       result.current.send(mockPubKey, {} as Transaction);
     });
@@ -91,7 +80,7 @@ describe('useVegaTransaction', () => {
       signature: 'signature',
     };
     const mockSendTx = jest.fn().mockReturnValue(Promise.resolve(successObj));
-    const { result } = setup({ sendTx: mockSendTx });
+    const { result } = setup(mockSendTx);
     await act(async () => {
       result.current.send(mockPubKey, {} as Transaction);
     });
@@ -118,7 +107,7 @@ describe('useVegaTransaction', () => {
       })
     );
 
-    const { result } = setup({ sendTx: mockSendTx });
+    const { result } = setup(mockSendTx);
 
     await act(async () => {
       result.current.send(mockPubKey, {} as Transaction);

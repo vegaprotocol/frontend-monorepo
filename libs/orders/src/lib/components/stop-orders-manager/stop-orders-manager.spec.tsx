@@ -3,21 +3,19 @@ import { StopOrdersManager } from './stop-orders-manager';
 import * as useDataProviderHook from '@vegaprotocol/data-provider';
 import type { StopOrder } from '../order-data-provider/stop-orders-data-provider';
 import { MockedProvider } from '@apollo/client/testing';
-import * as walletHooks from '@vegaprotocol/wallet-react';
+import { MockedWalletProvider } from '@vegaprotocol/wallet-react';
 
 jest.mock('../stop-orders-table/stop-orders-table', () => ({
   StopOrdersTable: () => <div>StopOrdersTable</div>,
 }));
 
-jest.mock('@vegaprotocol/wallet-react');
-
 const generateJsx = () => {
   const pubKey = '0x123';
-  // @ts-ignore types wrong after mock
-  walletHooks.useVegaWallet.mockReturnValue({ pubKey });
   return (
     <MockedProvider>
-      <StopOrdersManager partyId={pubKey} isReadOnly={false} />
+      <MockedWalletProvider store={{ pubKey }}>
+        <StopOrdersManager partyId={pubKey} isReadOnly={false} />
+      </MockedWalletProvider>
     </MockedProvider>
   );
 };
