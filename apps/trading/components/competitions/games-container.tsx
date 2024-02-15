@@ -68,6 +68,7 @@ export const GamesContainer = ({
             transferNode={game}
             currentEpoch={currentEpoch}
             kind={transfer.kind}
+            allMarkets={markets || undefined}
           />
         );
       })}

@@ -1,0 +1,18 @@
+query ExplorerTransferStatus($id: ID!) {
+  transfer(id: $id) {
+    transfer {
+      reference
+      timestamp
+      status
+      reason
+      fromAccountType
+      from
+      to
+      toAccountType
+      asset {
+        id
+      }
+      amount
+    }
+  }
+}

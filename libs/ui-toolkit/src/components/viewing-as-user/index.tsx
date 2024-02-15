@@ -1,4 +1,4 @@
-import { NotificationBanner, SHORT } from '../notification-banner';
+import { NotificationBanner } from '../notification-banner';
 import { Intent } from '../../utils/intent';
 import { TradingButton } from '../trading-button';
 import { useT } from '../../use-t';
@@ -23,7 +23,7 @@ export const ViewingAsBanner = ({
 }: ViewingAsBannerProps) => {
   const t = useT();
   return (
-    <NotificationBanner intent={Intent.None} className={SHORT}>
+    <NotificationBanner>
       <div className="flex items-baseline justify-between">
         <span data-testid="view-banner">
           {t('Viewing as Vega user: {{pubKey}}', {

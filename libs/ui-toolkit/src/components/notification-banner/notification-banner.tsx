@@ -4,8 +4,6 @@ import { Intent } from '../../utils/intent';
 import { Icon, VegaIcon, VegaIconNames } from '../icon';
 import type { HTMLAttributes } from 'react';
 
-export const SHORT = '!px-1 !py-1 min-h-fit';
-
 interface NotificationBannerProps {
   intent?: Intent;
   children?: React.ReactNode;
@@ -23,7 +21,7 @@ export const NotificationBanner = ({
   return (
     <div
       className={classNames(
-        'flex items-center border-b px-2',
+        'flex items-center border-b pl-3 pr-2',
         'text-xs leading-tight font-normal',
         {
           'bg-vega-light-100 dark:bg-vega-dark-100 ': intent === Intent.None,
