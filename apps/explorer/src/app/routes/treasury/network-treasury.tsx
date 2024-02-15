@@ -137,7 +137,7 @@ export const NetworkTransfersTable = () => {
                 <tr>
                   <th className={theadClasses}>Amount</th>
                   <th className={theadClasses}>Asset</th>
-                  <th className={theadClasses}>Timestamp</th>
+                  <th className={theadClasses}>Age</th>
                   <th className={theadClasses}>From</th>
                   <th className={theadClasses}>To</th>
                   <th className={theadClasses}>Status</th>
@@ -156,6 +156,7 @@ export const NetworkTransfersTable = () => {
                           className={`px-2 py-1 border text-right ${
                             isIncoming ? colours.INCOMING : colours.OUTGOING
                           }`}
+                          title={a.amount}
                         >
                           {a &&
                           a.toAccountType ===
