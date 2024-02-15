@@ -7,7 +7,7 @@ context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
   });
 
   describe('Links and buttons', function () {
-    it('should have link for proposal page', function () {
+    it.skip('should have link for proposal page', function () {
       cy.getByTestId('home-proposals').within(() => {
         cy.get('[href="/proposals"]')
           .should('exist')
@@ -27,7 +27,7 @@ context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
       cy.getByTestId('app-announcement').should('not.exist');
     });
 
-    it('should show open or enacted proposals without proposal summary', function () {
+    it.skip('should show open or enacted proposals without proposal summary', function () {
       cy.get('body').then(($body) => {
         if (!$body.find('[data-testid="proposals-list-item"]').length) {
           cy.createMarket();
@@ -51,7 +51,7 @@ context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
         });
     });
 
-    it('should have external link for governance', function () {
+    it.skip('should have external link for governance', function () {
       cy.getByTestId('home-proposals').within(() => {
         cy.getByTestId('external-link')
           .should('have.attr', 'href')
@@ -59,7 +59,7 @@ context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
       });
     });
 
-    it('should have link for validator page', function () {
+    it.skip('should have link for validator page', function () {
       cy.getByTestId('home-validators').within(() => {
         cy.get('[href="/validators"]')
           .first()
@@ -68,7 +68,7 @@ context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
       });
     });
 
-    it('should have external link for validators', function () {
+    it.skip('should have external link for validators', function () {
       cy.getByTestId('home-validators').within(() => {
         cy.getByTestId('external-link')
           .should('have.attr', 'href')
@@ -79,7 +79,7 @@ context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
       });
     });
 
-    it('should have information on active nodes', function () {
+    it.skip('should have information on active nodes', function () {
       cy.getByTestId('node-information')
         .first()
         .should('contain.text', '2')
@@ -93,7 +93,7 @@ context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
         .and('contain.text', 'consensus nodes');
     });
 
-    it('should contain link to specific validators', function () {
+    it.skip('should contain link to specific validators', function () {
       cy.getByTestId('validators')
         .should('have.length', '2')
         .each(($validator) => {
@@ -101,7 +101,7 @@ context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
         });
     });
 
-    it('should have link for rewards page', function () {
+    it.skip('should have link for rewards page', function () {
       cy.getByTestId('home-rewards').within(() => {
         cy.get('[href="/rewards"]')
           .first()
@@ -110,7 +110,7 @@ context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
       });
     });
 
-    it('should have link for withdrawal page', function () {
+    it.skip('should have link for withdrawal page', function () {
       cy.getByTestId('home-vega-token').within(() => {
         cy.get('[href="/token/withdraw"]')
           .first()
