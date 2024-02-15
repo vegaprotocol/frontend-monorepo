@@ -16,7 +16,8 @@ liquidation_estimate = "deal-ticket-fee-liquidation-estimate"
 dialog_content = "dialog-content"
 cross_margin = "cross-margin"
 isolated_margin = "isolated-margin"
-confirm_margin_mode = "confirm-margin-mode"
+confirm_cross_margin_mode = "confirm-cross-margin-mode"
+confirm_isolated_margin_mode = "confirm-isolated-margin-mode"
 
 
 def create_position(vega: VegaServiceNull, market_id):
@@ -31,7 +32,6 @@ def test_switch_cross_isolated_margin(
         continuous_market, vega: VegaServiceNull, page: Page):
     create_position(vega, continuous_market)
     page.goto(f"/#/markets/{continuous_market}")
-    page.pause()
     expect(page.locator(margin_row).nth(1)).to_have_text("874.21992Cross1.0x")
     # tbd - tooltip is not visible without this wait
     page.wait_for_timeout(1000)
@@ -41,7 +41,7 @@ def test_switch_cross_isolated_margin(
     )
     page.get_by_test_id(isolated_margin).click()
     page.locator(leverage_input).fill("1")
-    page.get_by_test_id(confirm_margin_mode).click()
+    page.get_by_test_id(confirm_isolated_margin_mode).click()
     wait_for_toast_confirmation(page)
     next_epoch(vega=vega)
     expect(page.get_by_test_id("toast-content")).to_have_text(
@@ -55,7 +55,7 @@ def test_switch_cross_isolated_margin(
         "Liquidation: 583.62409Margin: 11,109.99996Order: 11,000.00"
     )
     page.get_by_test_id(cross_margin).click()
-    page.get_by_test_id(confirm_margin_mode).click()
+    page.get_by_test_id(confirm_cross_margin_mode).click()
     wait_for_toast_confirmation(page)
     next_epoch(vega=vega)
     expect(page.locator(margin_row).nth(1)).to_have_text(
@@ -86,8 +86,8 @@ def test_check_cross_isolated_margin_info(
     expect(page.get_by_test_id(dialog_content).get_by_test_id(additional_margin_required)
            ).to_have_text("Additional margin required2,703.11341 tDAI")
     expect(page.get_by_test_id(dialog_content).get_by_test_id(liquidation_estimate)
-           ).to_have_text("Liquidation estimate76.07731 BTC")
-    page.get_by_test_id(confirm_margin_mode).click()
+           ).to_have_text("Liquidation estimate95.23553 BTC")
+    page.get_by_test_id(confirm_isolated_margin_mode).click()
     wait_for_toast_confirmation(page)
     next_epoch(vega=vega)
     expect(page.get_by_test_id("toast-content")).to_have_text(

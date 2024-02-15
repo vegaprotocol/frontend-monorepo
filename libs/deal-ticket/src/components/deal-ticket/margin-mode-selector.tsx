@@ -222,6 +222,7 @@ const CrossMarginModeDialog = ({
       <NoWalletWarning noWalletConnected={!partyId} isReadOnly={isReadOnly} />
       <Button
         className="w-full"
+        data-testid="confirm-cross-margin-mode"
         onClick={() => {
           partyId &&
             !isReadOnly &&
@@ -332,7 +333,7 @@ const IsolatedMarginModeDialog = ({
         <Button
           className="w-full"
           type="submit"
-          data-testid="confirm-margin-mode"
+          data-testid="confirm-isolated-margin-mode"
         >
           {t('Confirm')}
         </Button>
