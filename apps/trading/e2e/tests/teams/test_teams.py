@@ -8,10 +8,13 @@ from fixtures.market import setup_continuous_market
 from conftest import auth_setup, init_page, init_vega, risk_accepted_setup
 from wallet_config import PARTY_A, PARTY_B, PARTY_C, PARTY_D, MM_WALLET
 
+
 @pytest.fixture(scope="module")
 def vega(request):
     with init_vega(request) as vega_instance:
-        request.addfinalizer(lambda: cleanup_container(vega_instance))  # Register the cleanup function
+        request.addfinalizer(
+            lambda: cleanup_container(vega_instance)
+        )  # Register the cleanup function
         yield vega_instance
 
 
@@ -125,7 +128,7 @@ def setup_teams_and_games(vega: VegaServiceNull):
         n_top_performers=1,
         amount=100,
         factor=1.0,
-        window_length=15
+        window_length=15,
     )
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
@@ -213,23 +216,22 @@ def create_team(vega: VegaServiceNull):
 
 
 def test_team_page_games_table(team_page: Page):
-    team_page.pause()
     team_page.get_by_test_id("games-toggle").click()
     expect(team_page.get_by_test_id("games-toggle")).to_have_text("Results (10)")
     expect(team_page.get_by_test_id("rank-0")).to_have_text("1")
     expect(team_page.get_by_test_id("epoch-0")).to_have_text("19")
-    expect(team_page.get_by_test_id("type-0")
-           ).to_have_text("Price maker fees paid")
-    #TODO skipped as the amount is wrong
-    #expect(team_page.get_by_test_id("amount-0")).to_have_text("74") # 50,000,000 on 74.1
+    expect(team_page.get_by_test_id("type-0")).to_have_text(
+        "Price maker fees paid • tDAI "
+    )
+    # TODO skipped as the amount is wrong
+    # expect(team_page.get_by_test_id("amount-0")).to_have_text("74") # 50,000,000 on 74.1
     expect(team_page.get_by_test_id("participatingTeams-0")).to_have_text("2")
     expect(team_page.get_by_test_id("participatingMembers-0")).to_have_text("3")
 
 
 def test_team_page_members_table(team_page: Page):
     team_page.get_by_test_id("members-toggle").click()
-    expect(team_page.get_by_test_id("members-toggle")
-           ).to_have_text("Members (4)")
+    expect(team_page.get_by_test_id("members-toggle")).to_have_text("Members (4)")
     expect(team_page.get_by_test_id("referee-0")).to_be_visible()
     expect(team_page.get_by_test_id("joinedAt-0")).to_be_visible()
     expect(team_page.get_by_test_id("joinedAtEpoch-0")).to_have_text("9")
@@ -267,8 +269,7 @@ def test_leaderboard(competitions_page: Page, setup_teams_and_games):
         competitions_page.get_by_test_id("rank-0").locator(".text-yellow-300")
     ).to_have_count(1)
     expect(
-        competitions_page.get_by_test_id(
-            "rank-1").locator(".text-vega-clight-500")
+        competitions_page.get_by_test_id("rank-1").locator(".text-vega-clight-500")
     ).to_have_count(1)
     expect(competitions_page.get_by_test_id("team-0")).to_have_text(team_name)
     expect(competitions_page.get_by_test_id("status-1")).to_have_text("Open")
@@ -282,17 +283,16 @@ def test_leaderboard(competitions_page: Page, setup_teams_and_games):
 
 
 def test_game_card(competitions_page: Page):
-    expect(competitions_page.get_by_test_id(
-        "active-rewards-card")).to_have_count(2)
+    expect(competitions_page.get_by_test_id("active-rewards-card")).to_have_count(2)
     game_1 = competitions_page.get_by_test_id("active-rewards-card").first
     expect(game_1).to_be_visible()
     expect(game_1.get_by_test_id("entity-scope")).to_have_text("Individual")
     expect(game_1.get_by_test_id("locked-for")).to_have_text("1 epoch")
     expect(game_1.get_by_test_id("reward-value")).to_have_text("100.00")
-    expect(game_1.get_by_test_id("distribution-strategy")
-           ).to_have_text("Pro rata")
-    expect(game_1.get_by_test_id("dispatch-metric-info")
-           ).to_have_text("Price maker fees paid • tDAI")
+    expect(game_1.get_by_test_id("distribution-strategy")).to_have_text("Pro rata")
+    expect(game_1.get_by_test_id("dispatch-metric-info")).to_have_text(
+        "Price maker fees paid • tDAI"
+    )
     expect(game_1.get_by_test_id("assessed-over")).to_have_text("15 epochs")
     expect(game_1.get_by_test_id("scope")).to_have_text("In team")
     expect(game_1.get_by_test_id("staking-requirement")).to_have_text("0.00")

@@ -1,12 +1,28 @@
-import { useState, type ButtonHTMLAttributes } from 'react';
+import { useState, type ButtonHTMLAttributes, useRef } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import orderBy from 'lodash/orderBy';
-import { Splash, truncateMiddle, Loader } from '@vegaprotocol/ui-toolkit';
-import { DispatchMetricLabels, type DispatchMetric } from '@vegaprotocol/types';
+import {
+  Splash,
+  truncateMiddle,
+  Loader,
+  Dialog,
+  Button,
+  VegaIcon,
+  VegaIconNames,
+} from '@vegaprotocol/ui-toolkit';
+import {
+  TransferStatus,
+  type Asset,
+  type RecurringTransfer,
+} from '@vegaprotocol/types';
 import classNames from 'classnames';
 import { useT } from '../../lib/use-t';
 import { Table } from '../../components/table';
-import { formatNumber, getDateTimeFormat } from '@vegaprotocol/utils';
+import {
+  addDecimalsFormatNumberQuantum,
+  formatNumber,
+  getDateTimeFormat,
+} from '@vegaprotocol/utils';
 import {
   useTeam,
   type TeamStats as ITeamStats,
@@ -27,6 +43,19 @@ import {
   useGames,
   areTeamGames,
 } from '../../lib/hooks/use-games';
+import { useEpochInfoQuery } from '../../lib/hooks/__generated__/Epoch';
+import {
+  type EnrichedTransfer,
+  isScopedToTeams,
+  useGameCards,
+} from '../../lib/hooks/use-game-cards';
+import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
+import {
+  ActiveRewardCard,
+  DispatchMetricInfo,
+} from '../../components/rewards-container/active-rewards';
+import { type MarketMap, useMarketsMapProvider } from '@vegaprotocol/markets';
+import format from 'date-fns/format';
 
 export const CompetitionsTeam = () => {
   const t = useT();
@@ -48,6 +77,14 @@ const TeamPageContainer = ({ teamId }: { teamId: string | undefined }) => {
   );
 
   const { data: games, loading: gamesLoading } = useGames(teamId);
+
+  const { data: epochData, loading: epochLoading } = useEpochInfoQuery();
+  const { data: transfersData, loading: transfersLoading } = useGameCards({
+    currentEpoch: Number(epochData?.epoch.id),
+    onlyActive: false,
+  });
+
+  const { data: markets } = useMarketsMapProvider();
 
   // only show spinner on first load so when users join teams its smoother
   if (!data && loading) {
@@ -74,6 +111,9 @@ const TeamPageContainer = ({ teamId }: { teamId: string | undefined }) => {
       members={members}
       games={areTeamGames(games) ? games : undefined}
       gamesLoading={gamesLoading}
+      transfers={transfersData}
+      transfersLoading={epochLoading || transfersLoading}
+      allMarkets={markets || undefined}
       refetch={refetch}
     />
   );
@@ -86,6 +126,9 @@ const TeamPage = ({
   members,
   games,
   gamesLoading,
+  transfers,
+  transfersLoading,
+  allMarkets,
   refetch,
 }: {
   team: TeamType;
@@ -94,6 +137,9 @@ const TeamPage = ({
   members?: Member[];
   games?: TeamGame[];
   gamesLoading?: boolean;
+  transfers?: EnrichedTransfer[];
+  transfersLoading?: boolean;
+  allMarkets?: MarketMap;
   refetch: () => void;
 }) => {
   const t = useT();
@@ -141,7 +187,13 @@ const TeamPage = ({
           </ToggleButton>
         </div>
         {showGames ? (
-          <Games games={games} gamesLoading={gamesLoading} />
+          <Games
+            games={games}
+            gamesLoading={gamesLoading}
+            transfers={transfers}
+            transfersLoading={transfersLoading}
+            allMarkets={allMarkets}
+          />
         ) : (
           <Members members={members} />
         )}
@@ -153,9 +205,15 @@ const TeamPage = ({
 const Games = ({
   games,
   gamesLoading,
+  transfers,
+  transfersLoading,
+  allMarkets,
 }: {
   games?: TeamGame[];
   gamesLoading?: boolean;
+  transfers?: EnrichedTransfer[];
+  transfersLoading?: boolean;
+  allMarkets?: MarketMap;
 }) => {
   const t = useT();
 
@@ -171,40 +229,106 @@ const Games = ({
     return <p>{t('No game results available')}</p>;
   }
 
+  const dependable = (value: string | JSX.Element) => {
+    if (transfersLoading) return <Loader size="small" />;
+    return value;
+  };
+
   return (
     <Table
       columns={[
-        { name: 'rank', displayName: t('Rank') },
         {
           name: 'epoch',
           displayName: t('Epoch'),
-          headerClassName: 'hidden md:table-cell',
-          className: 'hidden md:table-cell',
+        },
+        {
+          name: 'endtime',
+          displayName: t('End time'),
         },
         { name: 'type', displayName: t('Type') },
-        { name: 'amount', displayName: t('Amount earned') },
+        {
+          name: 'asset',
+          displayName: t('Reward asset'),
+        },
+        { name: 'daily', displayName: t('Daily reward amount') },
+        { name: 'rank', displayName: t('Rank') },
+        { name: 'amount', displayName: t('Amount earned this epoch') },
+        { name: 'total', displayName: t('Cumulative amount earned') },
         {
           name: 'participatingTeams',
           displayName: t('No. of participating teams'),
-          headerClassName: 'hidden md:table-cell',
-          className: 'hidden md:table-cell',
         },
         {
           name: 'participatingMembers',
           displayName: t('No. of participating members'),
-          headerClassName: 'hidden md:table-cell',
-          className: 'hidden md:table-cell',
         },
-      ]}
-      data={games.map((game) => ({
-        rank: game.team.rank,
-        epoch: game.epoch,
-        type: DispatchMetricLabels[game.team.rewardMetric as DispatchMetric],
-        amount: formatNumber(game.team.totalRewardsEarned),
-        participatingTeams: game.entities.length,
-        participatingMembers: game.numberOfParticipants,
-      }))}
-      noCollapse={true}
+      ].map((c) => ({ ...c, headerClassName: 'text-left' }))}
+      data={games.map((game) => {
+        let transfer = transfers?.find((t) => {
+          if (!isScopedToTeams(t)) return false;
+
+          const idMatch = t.transfer.gameId === game.id;
+          const metricMatch =
+            t.transfer.kind.dispatchStrategy?.dispatchMetric ===
+            game.team.rewardMetric;
+
+          const start = t.transfer.kind.startEpoch <= game.epoch;
+          const end = t.transfer.kind.endEpoch
+            ? t.transfer.kind.endEpoch >= game.epoch
+            : true;
+
+          const rejected = t.transfer.status === TransferStatus.STATUS_REJECTED;
+
+          return idMatch && metricMatch && start && end && !rejected;
+        });
+        if (!transfer || !isScopedToTeams(transfer)) transfer = undefined;
+        const asset = transfer?.transfer.asset;
+
+        const dailyAmount =
+          asset && transfer
+            ? addDecimalsFormatNumberQuantum(
+                transfer.transfer.amount,
+                asset.decimals,
+                asset.quantum
+              )
+            : '-';
+
+        const earnedAmount = asset
+          ? addDecimalsFormatNumberQuantum(
+              game.team.rewardEarned,
+              asset.decimals,
+              asset.quantum
+            )
+          : '-';
+
+        const totalAmount = asset
+          ? addDecimalsFormatNumberQuantum(
+              game.team.totalRewardsEarned,
+              asset.decimals,
+              asset.quantum
+            )
+          : '-';
+
+        const assetSymbol = asset ? <RewardAssetCell asset={asset} /> : '-';
+
+        return {
+          id: game.id,
+          amount: dependable(earnedAmount),
+          asset: dependable(assetSymbol),
+          daily: dependable(dailyAmount),
+          endtime: <EndTimeCell epoch={game.epoch} />,
+          epoch: game.epoch,
+          participatingMembers: game.numberOfParticipants,
+          participatingTeams: game.entities.length,
+          rank: game.team.rank,
+          total: totalAmount,
+          // type: DispatchMetricLabels[game.team.rewardMetric as DispatchMetric],
+          type: dependable(
+            <GameTypeCell transfer={transfer} allMarkets={allMarkets} />
+          ),
+        };
+      })}
+      noCollapse={false}
     />
   );
 };
@@ -284,5 +408,128 @@ const ToggleButton = ({
         'border-vega-yellow': active,
       })}
     />
+  );
+};
+
+const EndTimeCell = ({ epoch }: { epoch?: number }) => {
+  const { data, loading } = useEpochInfoQuery({
+    variables: {
+      epochId: epoch ? epoch.toString() : undefined,
+    },
+    fetchPolicy: 'cache-and-network',
+  });
+
+  if (loading) return <Loader size="small" />;
+  if (data) {
+    return format(
+      new Date(data.epoch.timestamps.expiry),
+      'yyyy/MM/dd hh:mm:ss'
+    );
+  }
+
+  return null;
+};
+
+const RewardAssetCell = ({ asset }: { asset: Asset }) => {
+  const open = useAssetDetailsDialogStore((state) => state.open);
+  const ref = useRef<HTMLButtonElement>(null);
+  return (
+    <button
+      ref={ref}
+      onClick={(e) => {
+        e.preventDefault();
+        open(asset.id, ref.current);
+      }}
+      className="border-b border-dashed border-vega-clight-200 dark:border-vega-cdark-200 text-left text-nowrap whitespace-nowrap"
+    >
+      {asset.symbol}
+    </button>
+  );
+};
+
+const GameTypeCell = ({
+  transfer,
+  allMarkets,
+}: {
+  transfer?: EnrichedTransfer;
+  allMarkets?: MarketMap;
+}) => {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLButtonElement>(null);
+  if (!transfer) return '-';
+  return (
+    <>
+      <ActiveRewardCardDialog
+        open={open}
+        onChange={(isOpen) => setOpen(isOpen)}
+        trigger={ref.current}
+        transfer={transfer}
+        allMarkets={allMarkets}
+      />
+      <button
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen(true);
+        }}
+        ref={ref}
+        className="border-b border-dashed border-vega-clight-200 dark:border-vega-cdark-200 text-left md:truncate md:max-w-[25vw]"
+      >
+        <DispatchMetricInfo transferNode={transfer} allMarkets={allMarkets} />
+      </button>
+    </>
+  );
+};
+
+const ActiveRewardCardDialog = ({
+  open,
+  onChange,
+  trigger,
+  transfer,
+  allMarkets,
+}: {
+  open: boolean;
+  onChange: (isOpen: boolean) => void;
+  trigger?: HTMLElement | null;
+  transfer: EnrichedTransfer;
+  allMarkets?: MarketMap;
+}) => {
+  const t = useT();
+  const { data } = useEpochInfoQuery();
+  return (
+    <Dialog
+      open={open}
+      title={t('Game details')}
+      onChange={(isOpen) => onChange(isOpen)}
+      icon={<VegaIcon name={VegaIconNames.INFO} />}
+      onCloseAutoFocus={(e) => {
+        /**
+         * This mimics radix's default behaviour that focuses the dialog's
+         * trigger after closing itself
+         */
+        if (trigger) {
+          e.preventDefault();
+          trigger.focus();
+        }
+      }}
+    >
+      <div className="py-5 max-w-[454px]">
+        <ActiveRewardCard
+          transferNode={transfer}
+          currentEpoch={Number(data?.epoch.id)}
+          kind={transfer.transfer.kind as RecurringTransfer}
+          allMarkets={allMarkets}
+        />
+      </div>
+      <div className="w-1/4">
+        <Button
+          data-testid="close-asset-details-dialog"
+          fill={true}
+          size="sm"
+          onClick={() => onChange(false)}
+        >
+          {t('Close')}
+        </Button>
+      </div>
+    </Dialog>
   );
 };

@@ -34,7 +34,7 @@ import {
 } from './hooks/use-referral';
 import { ApplyCodeForm, ApplyCodeFormContainer } from './apply-code-form';
 import { useReferralProgram } from './hooks/use-referral-program';
-import { useCurrentEpochInfoQuery } from '../../lib/hooks/__generated__/Epoch';
+import { useEpochInfoQuery } from '../../lib/hooks/__generated__/Epoch';
 import { QUSDTooltip } from './qusd-tooltip';
 import { CodeTile, StatTile, Tile } from './tile';
 import { areTeamGames, useGames } from '../../lib/hooks/use-games';
@@ -95,7 +95,7 @@ export const useStats = ({
   program: ReturnType<typeof useReferralProgram>;
 }) => {
   const { benefitTiers } = program;
-  const { data: epochData } = useCurrentEpochInfoQuery({
+  const { data: epochData } = useEpochInfoQuery({
     fetchPolicy: 'network-only',
   });
   const { data: statsData } = useReferralSetStatsQuery({

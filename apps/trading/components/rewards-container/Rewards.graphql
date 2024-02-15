@@ -73,6 +73,7 @@ query ActiveRewards(
           reference
           status
           timestamp
+          gameId
           kind {
             ... on RecurringTransfer {
               startEpoch

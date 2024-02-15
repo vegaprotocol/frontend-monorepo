@@ -455,5 +455,12 @@
   "Go back to the team's profile": "Go back to the team's profile",
   "Go back to the competitions": "Go back to the competitions",
   "Your team ID:": "Your team ID:",
-  "Changes successfully saved to your team.": "Changes successfully saved to your team."
+  "Changes successfully saved to your team.": "Changes successfully saved to your team.",
+  "Results {{games}}": "Results {{games}}",
+  "End time": "End time",
+  "Reward asset": "Reward asset",
+  "Daily reward amount": "Daily reward amount",
+  "Amount earned this epoch": "Amount earned this epoch",
+  "Cumulative amount earned": "Cumulative amount earned",
+  "Game details": "Game details"
 }
