@@ -82,6 +82,7 @@ export const normalizeTransfer = <T extends Exact<Transfer, T>>(
 
 export const isBrowserWalletInstalled = () => Boolean(window.vega);
 
+// TODO: we might be able to use wallets type narrowing
 export const isMarginModeUpdateTransaction = (
   transaction: Transaction
 ): transaction is UpdateMarginModeBody => 'updateMarginMode' in transaction;

@@ -106,6 +106,8 @@ export function createConfig(cfg: Config): Wallet {
         pubKey: defaultKey,
       });
 
+      // TODO: is there a better way to do this
+      connector.off('client.disconnected');
       connector.on('client.disconnected', disconnect);
 
       return { success: true };
@@ -178,17 +180,15 @@ export function createConfig(cfg: Config): Wallet {
       const res = await connector.sendTransaction(params);
 
       return res;
+      // eslint-disable-next-line
       console.log('res', res);
     } catch (err) {
       return {
         error: 'failed to send',
       };
+      // eslint-disable-next-line
       console.error(err);
     }
-  }
-
-  function setStoreState(state: Partial<Store>) {
-    store.setState(state);
   }
 
   return {
@@ -197,7 +197,6 @@ export function createConfig(cfg: Config): Wallet {
     disconnect,
     refreshKeys,
     sendTransaction,
-    setStoreState,
 
     get connectors() {
       return connectors.getState();

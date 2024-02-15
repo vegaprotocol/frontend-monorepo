@@ -93,7 +93,6 @@ export type Wallet = {
   sendTransaction: (
     params: TransactionParams
   ) => Promise<TransactionResponse | IWalletError>;
-  setStoreState: (state: Partial<Store>) => void;
 };
 
 declare global {
