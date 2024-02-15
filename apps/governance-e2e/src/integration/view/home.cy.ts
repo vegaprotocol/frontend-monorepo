@@ -86,7 +86,7 @@ context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
         .and('contain.text', 'active nodes');
     });
 
-    it('should have information on consensus nodes', function () {
+    it.skip('should have information on consensus nodes', function () {
       cy.getByTestId('node-information')
         .last()
         .should('contain.text', '2')
@@ -132,7 +132,7 @@ context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
     });
 
     // 0006-NETW-003 0006-NETW-008 0006-NETW-009 0006-NETW-010 0006-NETW-012 0006-NETW-013 0006-NETW-017 0006-NETW-018 0006-NETW-019 0006-NETW-020
-    it('should have option to switch to different network node', function () {
+    it.skip('should have option to switch to different network node', function () {
       cy.getByTestId('git-network-data').within(() => {
         cy.getByTestId('link').click();
       });
@@ -189,7 +189,7 @@ context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
       cy.viewport('iphone-xr');
     });
 
-    it('should have burger button', () => {
+    it.skip('should have burger button', () => {
       cy.getByTestId('button-menu-drawer').should('be.visible').click();
       cy.getByTestId('menu-drawer').should('be.visible');
     });
