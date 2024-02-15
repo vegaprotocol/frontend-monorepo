@@ -1,7 +1,8 @@
+import { type ReactNode } from 'react';
 import {
   addDecimalsFormatNumber,
   formatNumberPercentage,
-  isNumeric,
+  getDateTimeFormat,
   priceChange,
   priceChangePercentage,
 } from '@vegaprotocol/utils';
@@ -14,29 +15,57 @@ import { useT } from '../../use-t';
 
 interface Props {
   marketId?: string;
-  decimalPlaces?: number;
-  initialValue?: string[];
-  isHeader?: boolean;
-  noUpdate?: boolean;
-  // render prop for no price change
-  fallback?: React.ReactNode;
+  decimalPlaces: number;
+  fallback?: ReactNode;
 }
 
 export const Last24hPriceChange = ({
   marketId,
   decimalPlaces,
-  initialValue,
   fallback,
 }: Props) => {
   const t = useT();
-  const { oneDayCandles, error, fiveDaysCandles } = useCandles({
+  const { oneDayCandles, fiveDaysCandles, error } = useCandles({
     marketId,
   });
-  if (
-    fiveDaysCandles &&
-    fiveDaysCandles.length > 0 &&
-    (!oneDayCandles || oneDayCandles?.length === 0)
-  ) {
+
+  const nonIdeal = fallback || <span>{'-'}</span>;
+
+  if (error || !oneDayCandles || !fiveDaysCandles) {
+    return nonIdeal;
+  }
+
+  if (fiveDaysCandles.length < 24) {
+    return (
+      <Tooltip
+        description={
+          <span className="justify-start">
+            {t(
+              'Market has not been active for 24 hours. The price change between {{start}} and {{end}} is:',
+              {
+                start: getDateTimeFormat().format(
+                  new Date(fiveDaysCandles[0].periodStart)
+                ),
+                end: getDateTimeFormat().format(
+                  new Date(
+                    fiveDaysCandles[fiveDaysCandles.length - 1].periodStart
+                  )
+                ),
+              }
+            )}
+            <PriceChangeCell
+              candles={fiveDaysCandles.map((c) => c.close) || []}
+              decimalPlaces={decimalPlaces}
+            />
+          </span>
+        }
+      >
+        <span>{nonIdeal}</span>
+      </Tooltip>
+    );
+  }
+
+  if (oneDayCandles.length < 24) {
     return (
       <Tooltip
         description={
@@ -51,16 +80,12 @@ export const Last24hPriceChange = ({
           </span>
         }
       >
-        <span>{fallback}</span>
+        <span>{nonIdeal}</span>
       </Tooltip>
     );
   }
 
-  if (error || !isNumeric(decimalPlaces)) {
-    return <span>{fallback}</span>;
-  }
-
-  const candles = oneDayCandles?.map((c) => c.close) || initialValue || [];
+  const candles = oneDayCandles?.map((c) => c.close) || [];
   const change = priceChange(candles);
   const changePercentage = priceChangePercentage(candles);
 

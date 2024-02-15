@@ -7,7 +7,7 @@ import {
   type FirstDataRenderedEvent,
   type SortChangedEvent,
   type GridReadyEvent,
-  GridApi,
+  type GridApi,
 } from 'ag-grid-community';
 import { useCallback, useEffect, useRef } from 'react';
 

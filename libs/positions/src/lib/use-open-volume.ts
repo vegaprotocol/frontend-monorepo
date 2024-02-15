@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import {
-  OpenVolumeData,
   openVolumeDataProvider,
+  type OpenVolumeData,
 } from './positions-data-providers';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 
