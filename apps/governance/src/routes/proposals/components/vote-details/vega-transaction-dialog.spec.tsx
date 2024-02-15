@@ -4,31 +4,17 @@ import { VoteState } from './use-user-vote';
 import { VegaTxStatus } from '@vegaprotocol/proposals';
 
 describe('VoteTransactionDialog', () => {
-  const mockTransactionDialog = jest.fn(({ title, content }) => (
-    <div>
-      <div>{title}</div>
-      <div>{content?.Complete}</div>
-    </div>
-  ));
-
-  it('renders without crashing', () => {
-    render(
-      <VoteTransactionDialog
-        voteState={VoteState.Yes}
-        transaction={null}
-        TransactionDialog={mockTransactionDialog}
-      />
-    );
-
-    expect(screen.getByTestId('vote-transaction-dialog')).toBeInTheDocument();
-  });
-
   it('renders with txRequested title when voteState is Requested', () => {
     render(
       <VoteTransactionDialog
         voteState={VoteState.Requested}
-        transaction={null}
-        TransactionDialog={mockTransactionDialog}
+        transaction={{
+          error: null,
+          txHash: null,
+          signature: null,
+          status: VegaTxStatus.Requested,
+          dialogOpen: true,
+        }}
       />
     );
 
@@ -39,8 +25,13 @@ describe('VoteTransactionDialog', () => {
     render(
       <VoteTransactionDialog
         voteState={VoteState.Pending}
-        transaction={null}
-        TransactionDialog={mockTransactionDialog}
+        transaction={{
+          error: null,
+          txHash: null,
+          signature: null,
+          status: VegaTxStatus.Pending,
+          dialogOpen: true,
+        }}
       />
     );
 
@@ -51,8 +42,13 @@ describe('VoteTransactionDialog', () => {
     render(
       <VoteTransactionDialog
         voteState={VoteState.Yes} // or any other state other than Requested or Pending
-        transaction={null}
-        TransactionDialog={mockTransactionDialog}
+        transaction={{
+          error: null,
+          txHash: null,
+          signature: null,
+          status: VegaTxStatus.Complete,
+          dialogOpen: true,
+        }}
       />
     );
 
@@ -65,13 +61,12 @@ describe('VoteTransactionDialog', () => {
       <VoteTransactionDialog
         voteState={VoteState.Failed}
         transaction={{
-          error: { message: 'Custom error test message', name: 'blah' },
+          error: new Error('Custom error test message'),
           txHash: null,
           signature: null,
           status: VegaTxStatus.Error,
-          dialogOpen: false,
+          dialogOpen: true,
         }}
-        TransactionDialog={mockTransactionDialog}
       />
     );
 
@@ -86,10 +81,9 @@ describe('VoteTransactionDialog', () => {
           error: null,
           txHash: null,
           signature: null,
-          status: VegaTxStatus.Error,
-          dialogOpen: false,
+          status: VegaTxStatus.Complete,
+          dialogOpen: true,
         }}
-        TransactionDialog={mockTransactionDialog}
       />
     );
 
@@ -100,8 +94,13 @@ describe('VoteTransactionDialog', () => {
     render(
       <VoteTransactionDialog
         voteState={VoteState.Yes}
-        transaction={null}
-        TransactionDialog={mockTransactionDialog}
+        transaction={{
+          error: null,
+          txHash: null,
+          signature: null,
+          status: VegaTxStatus.Default,
+          dialogOpen: true,
+        }}
       />
     );
 

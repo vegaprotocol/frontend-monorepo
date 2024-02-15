@@ -6,6 +6,7 @@ import { ProposalState } from '@vegaprotocol/types';
 import { AppStateProvider } from '../../../../contexts/app-state/app-state-provider';
 import { MockedProvider } from '@apollo/react-testing';
 import * as walletHooks from '@vegaprotocol/wallet-react';
+import { VegaTxStatus } from '@vegaprotocol/proposals';
 
 jest.mock('@vegaprotocol/wallet-react');
 
@@ -13,6 +14,13 @@ jest.mock('@vegaprotocol/wallet-react');
 walletHooks.useDialogStore.mockReturnValue(jest.fn());
 
 const key = { publicKey: '0x123', name: 'key 1' };
+const transaction = {
+  status: VegaTxStatus.Default,
+  error: null,
+  txHash: null,
+  signature: null,
+  dialogOpen: false,
+};
 
 describe('Vote buttons', () => {
   beforeEach(() => {
@@ -41,9 +49,8 @@ describe('Vote buttons', () => {
             minVoterBalance={null}
             spamProtectionMinTokens={null}
             currentStakeAvailable={new BigNumber(1)}
-            dialog={() => <div>Blah</div>}
             submit={() => Promise.resolve()}
-            transaction={null}
+            transaction={transaction}
           />
         </MockedProvider>
       </AppStateProvider>
@@ -63,9 +70,8 @@ describe('Vote buttons', () => {
             minVoterBalance={null}
             spamProtectionMinTokens={null}
             currentStakeAvailable={new BigNumber(1)}
-            dialog={() => <div>Blah</div>}
             submit={() => Promise.resolve()}
-            transaction={null}
+            transaction={transaction}
           />
         </MockedProvider>
       </AppStateProvider>
@@ -96,9 +102,8 @@ describe('Vote buttons', () => {
             minVoterBalance={null}
             spamProtectionMinTokens={null}
             currentStakeAvailable={new BigNumber(1)}
-            dialog={() => <div>Blah</div>}
             submit={() => Promise.resolve()}
-            transaction={null}
+            transaction={transaction}
           />
         </MockedProvider>
       </AppStateProvider>
@@ -119,9 +124,8 @@ describe('Vote buttons', () => {
             minVoterBalance={null}
             spamProtectionMinTokens={null}
             currentStakeAvailable={new BigNumber(0)}
-            dialog={() => <div>Blah</div>}
             submit={() => Promise.resolve()}
-            transaction={null}
+            transaction={transaction}
           />
         </MockedProvider>
       </AppStateProvider>
@@ -145,9 +149,8 @@ describe('Vote buttons', () => {
             minVoterBalance="2000000000000000000"
             spamProtectionMinTokens="1000000000000000000"
             currentStakeAvailable={new BigNumber(1)}
-            dialog={() => <div>Blah</div>}
             submit={() => Promise.resolve()}
-            transaction={null}
+            transaction={transaction}
           />
         </MockedProvider>
       </AppStateProvider>
@@ -171,9 +174,8 @@ describe('Vote buttons', () => {
             minVoterBalance="2000000000000000000"
             spamProtectionMinTokens="1000000000000000000"
             currentStakeAvailable={new BigNumber(10)}
-            dialog={() => <div>Blah</div>}
             submit={() => Promise.resolve()}
-            transaction={null}
+            transaction={transaction}
           />
         </MockedProvider>
       </AppStateProvider>
@@ -194,9 +196,8 @@ describe('Vote buttons', () => {
             minVoterBalance="2000000000000000000"
             spamProtectionMinTokens="1000000000000000000"
             currentStakeAvailable={new BigNumber(10)}
-            dialog={() => <div>Blah</div>}
             submit={() => Promise.resolve()}
-            transaction={null}
+            transaction={transaction}
           />
         </MockedProvider>
       </AppStateProvider>

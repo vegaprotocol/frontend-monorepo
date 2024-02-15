@@ -253,11 +253,5 @@ describe('Raw proposal form', () => {
     expect(screen.getByTestId('dialog-title')).toHaveTextContent(
       'Confirm transaction in wallet'
     );
-
-    await act(async () => {
-      jest.advanceTimersByTime(200);
-    });
-
-    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   });
 });

@@ -29,7 +29,7 @@ export const VoteTransactionDialog = ({
   // pass undefined so that the default vega transaction dialog UI gets used
   const customMessage =
     voteState === VoteState.Failed ? (
-      <p>{transaction?.error?.message || t('voteError')}</p>
+      <p>{transaction.error?.message || t('voteError')}</p>
     ) : undefined;
 
   return (
