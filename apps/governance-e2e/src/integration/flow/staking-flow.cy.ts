@@ -236,7 +236,7 @@ context(
       });
 
       // 1002-STKE-041 1002-STKE-053
-      it.skip(
+      it(
         'Able to remove part of a stake against a validator',
         // @ts-ignore clash between jest and cypress
         { tags: '@smoke' },
