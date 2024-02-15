@@ -257,16 +257,12 @@ const Games = ({
         {
           name: 'participatingTeams',
           displayName: t('No. of participating teams'),
-          headerClassName: 'hidden md:table-cell',
-          className: 'hidden md:table-cell',
         },
         {
           name: 'participatingMembers',
           displayName: t('No. of participating members'),
-          headerClassName: 'hidden md:table-cell',
-          className: 'hidden md:table-cell',
         },
-      ]}
+      ].map((c) => ({ ...c, headerClassName: 'text-left' }))}
       data={games.map((game) => {
         let transfer = transfers?.find((t) => {
           if (!isScopedToTeams(t)) return false;
