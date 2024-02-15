@@ -11,19 +11,20 @@ import { Button, Toggle } from '@vegaprotocol/ui-toolkit';
 import { Link } from 'react-router-dom';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 import { ExternalLinks } from '@vegaprotocol/environment';
-import { type ProposalFieldsFragment } from '../../proposals/__generated__/Proposals';
 import { type ProtocolUpgradeProposalFieldsFragment } from '@vegaprotocol/proposals';
-import { type Proposal } from '../../types';
+import { type BatchProposal, type Proposal } from '../../types';
+
+type Proposals = Array<Proposal | BatchProposal>;
 
 interface ProposalsListProps {
-  proposals: Proposal[];
+  proposals: Proposals;
   protocolUpgradeProposals: ProtocolUpgradeProposalFieldsFragment[];
   lastBlockHeight?: string;
 }
 
 interface SortedProposalsProps {
-  open: Proposal[];
-  closed: Proposal[];
+  open: Proposals;
+  closed: Proposals;
 }
 
 interface SortedProtocolUpgradeProposalsProps {
@@ -31,15 +32,26 @@ interface SortedProtocolUpgradeProposalsProps {
   closed: ProtocolUpgradeProposalFieldsFragment[];
 }
 
-export const orderByDate = (arr: Proposal[]) =>
+export const orderByDate = (arr: Proposals) =>
   orderBy(
     arr,
     [
-      (p) =>
-        p?.terms?.enactmentDatetime
-          ? new Date(p?.terms?.enactmentDatetime).getTime()
-          : // has to be defaulted to 0 because new Date(null).getTime() -> NaN which is first when ordered
-            new Date(p?.terms?.closingDatetime || 0).getTime(),
+      (p) => {
+        if (p.__typename === 'BatchProposal') {
+          // Batch proposals can have different enactment dates, this could be improved by ordering
+          // by soonest enactment date in the batch
+          return new Date(p.batchTerms?.closingDatetime || p.datetime);
+        }
+
+        if (p.__typename === 'Proposal') {
+          return p?.terms?.enactmentDatetime
+            ? new Date(p?.terms?.enactmentDatetime).getTime()
+            : // has to be defaulted to 0 because new Date(null).getTime() -> NaN which is first when ordered
+              new Date(p?.terms?.closingDatetime || 0).getTime();
+        }
+
+        throw new Error('invalid proposal');
+      },
       (p) => new Date(p?.datetime).getTime(),
     ],
     ['asc', 'asc']
@@ -76,18 +88,40 @@ export const ProposalsList = ({
 
   const sortedProposals: SortedProposalsProps = useMemo(() => {
     const initialSorting = proposals.reduce(
-      (acc: SortedProposalsProps, proposal) => {
-        if (isFuture(new Date(proposal?.terms.closingDatetime))) {
-          acc.open.push(proposal);
-        } else {
-          acc.closed.push(proposal);
+      (acc, proposal) => {
+        if (proposal.__typename === 'Proposal') {
+          if (isFuture(new Date(proposal?.terms.closingDatetime))) {
+            acc.open.push(proposal);
+          } else {
+            acc.closed.push(proposal);
+          }
+          return acc;
         }
+
+        if (proposal.__typename === 'BatchProposal') {
+          if (
+            // this could be improved by sorting by soonest enactment date of all the
+            // sub proposals
+            isFuture(
+              new Date(
+                proposal.batchTerms?.closingDatetime || proposal.datetime
+              )
+            )
+          ) {
+            acc.open.push(proposal);
+          } else {
+            acc.closed.push(proposal);
+          }
+
+          return acc;
+        }
+
         return acc;
       },
       {
         open: [],
         closed: [],
-      }
+      } as SortedProposalsProps
     );
     return {
       open:
@@ -121,7 +155,7 @@ export const ProposalsList = ({
       };
     }, [protocolUpgradeProposals, lastBlockHeight]);
 
-  const filterPredicate = (p: ProposalFieldsFragment | Proposal) =>
+  const filterPredicate = (p: Proposal | BatchProposal) =>
     p?.id?.includes(filterString) ||
     p?.party?.id?.toString().includes(filterString);
 

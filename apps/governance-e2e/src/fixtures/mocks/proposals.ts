@@ -2,7 +2,7 @@ export const proposalsData = {
   proposalsConnection: {
     edges: [
       {
-        node: {
+        proposalNode: {
           id: 'e8ba9d268e12514644fd1fc7ff289292f4ce6489cc32cc73133aea52c04aef89',
           rationale: {
             title: 'Add asset Wrapped Ether',
@@ -56,7 +56,7 @@ export const proposalsData = {
         __typename: 'ProposalEdge',
       },
       {
-        node: {
+        proposalNode: {
           id: 'd848fc7881f13d366df5f61ab139d5fcfa72bf838151bb51b54381870e357931',
           rationale: {
             title: 'Add asset Dai Stablecoin',
@@ -110,60 +110,7 @@ export const proposalsData = {
         __typename: 'ProposalEdge',
       },
       {
-        node: {
-          id: 'ccbd651b4a1167fd73c4a0340ac759fa0a31ca487ad46a13254b741ad71947ed',
-          rationale: {
-            title: 'New DAI market',
-            description: 'New DAI market',
-            __typename: 'ProposalRationale',
-          },
-          reference: '0VFQusmmESdrP5GuL8naB6lxfoE3RPGaEeo7abdN',
-          state: 'STATE_ENACTED',
-          datetime: '2022-11-26T19:36:19.26034Z',
-          rejectionReason: null,
-          party: {
-            id: '69464e35bcb8e8a2900ca0f87acaf252d50cf2ab2fc73694845a16b7c8a0dc6f',
-            __typename: 'Party',
-          },
-          errorDetails: null,
-          terms: {
-            closingDatetime: '2022-11-26T19:36:42Z',
-            enactmentDatetime: '2023-03-22T13:57:37Z',
-            change: {
-              instrument: {
-                name: 'UNIDAI Monthly (Dec 2022)',
-                code: 'UNIDAI.MF21',
-                product: {
-                  settlementAsset: { symbol: 'tDAI', __typename: 'Asset' },
-                  __typename: 'FutureProduct',
-                },
-                __typename: 'InstrumentConfiguration',
-              },
-              __typename: 'NewMarket',
-            },
-            __typename: 'ProposalTerms',
-          },
-          votes: {
-            yes: {
-              totalTokens: '0',
-              totalNumber: '0',
-              totalEquityLikeShareWeight: '0',
-              __typename: 'ProposalVoteSide',
-            },
-            no: {
-              totalTokens: '0',
-              totalNumber: '0',
-              totalEquityLikeShareWeight: '0',
-              __typename: 'ProposalVoteSide',
-            },
-            __typename: 'ProposalVotes',
-          },
-          __typename: 'Proposal',
-        },
-        __typename: 'ProposalEdge',
-      },
-      {
-        node: {
+        proposalNode: {
           id: 'bc70383f0e9515b15542cf4c63590cd2ca46b3363ba7c4a72af0e62112b3951b',
           rationale: {
             title: 'USDC-III',
@@ -217,60 +164,7 @@ export const proposalsData = {
         __typename: 'ProposalEdge',
       },
       {
-        node: {
-          id: '9d9b2a9d0179d0e4ccb317f6c4a5db0b905d893190bfb5e5499985ef313281c8',
-          rationale: {
-            title: 'New BTC market',
-            description: 'New BTC market',
-            __typename: 'ProposalRationale',
-          },
-          reference: 'AXeRWS3TvLBFDgWOSHQpKFJf3NTbnWK6310q02fZ',
-          state: 'STATE_ENACTED',
-          datetime: '2022-11-26T19:36:19.26034Z',
-          rejectionReason: null,
-          party: {
-            id: '69464e35bcb8e8a2900ca0f87acaf252d50cf2ab2fc73694845a16b7c8a0dc6f',
-            __typename: 'Party',
-          },
-          errorDetails: null,
-          terms: {
-            closingDatetime: '2022-11-26T19:36:42Z',
-            enactmentDatetime: '2023-03-22T13:57:37Z',
-            change: {
-              instrument: {
-                name: 'ETHBTC Quarterly (Feb 2023)',
-                code: 'ETHBTC.QM21',
-                product: {
-                  settlementAsset: { symbol: 'tBTC', __typename: 'Asset' },
-                  __typename: 'FutureProduct',
-                },
-                __typename: 'InstrumentConfiguration',
-              },
-              __typename: 'NewMarket',
-            },
-            __typename: 'ProposalTerms',
-          },
-          votes: {
-            yes: {
-              totalTokens: '0',
-              totalNumber: '0',
-              totalEquityLikeShareWeight: '0',
-              __typename: 'ProposalVoteSide',
-            },
-            no: {
-              totalTokens: '0',
-              totalNumber: '0',
-              totalEquityLikeShareWeight: '0',
-              __typename: 'ProposalVoteSide',
-            },
-            __typename: 'ProposalVotes',
-          },
-          __typename: 'Proposal',
-        },
-        __typename: 'ProposalEdge',
-      },
-      {
-        node: {
+        proposalNode: {
           id: '9c48796e7988769ededc2b2b02220b00e93f65f23e8141bf1fd23a6983d95943',
           rationale: {
             title: 'Update governance.proposal.asset.requiredMajority',

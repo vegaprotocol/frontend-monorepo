@@ -1,17 +1,8 @@
 import { generateProposal } from '../../test-helpers/generate-proposals';
-import { MockedProvider } from '@apollo/client/testing';
-import { VegaWalletContext } from '@vegaprotocol/wallet';
-import { BrowserRouter as Router } from 'react-router-dom';
-import { AppStateProvider } from '../../../../contexts/app-state/app-state-provider';
 import { RejectedProposalsList } from './rejected-proposals-list';
 import { ProposalState } from '@vegaprotocol/types';
-import { render, screen, waitFor, within } from '@testing-library/react';
-import {
-  mockWalletContext,
-  networkParamsQueryMock,
-  nextWeek,
-  lastMonth,
-} from '../../test-helpers/mocks';
+import { render, screen } from '@testing-library/react';
+import { nextWeek, lastMonth } from '../../test-helpers/mocks';
 import { type Proposal } from '../../types';
 
 const rejectedProposalClosesNextWeek = generateProposal({
@@ -36,31 +27,15 @@ const rejectedProposalClosedLastMonth = generateProposal({
 });
 
 const renderComponent = (proposals: Proposal[]) => (
-  <Router>
-    <MockedProvider mocks={[networkParamsQueryMock]}>
-      <AppStateProvider>
-        <VegaWalletContext.Provider value={mockWalletContext}>
-          <RejectedProposalsList proposals={proposals} />
-        </VegaWalletContext.Provider>
-      </AppStateProvider>
-    </MockedProvider>
-  </Router>
+  <RejectedProposalsList proposals={proposals} />
 );
 
-beforeAll(() => {
-  jest.useFakeTimers();
-  jest.setSystemTime(0);
-});
-afterAll(() => {
-  jest.useRealTimers();
-});
-
-jest.mock('../vote-details/use-user-vote', () => ({
-  useUserVote: jest.fn().mockImplementation(() => ({ voteState: 'NotCast' })),
+jest.mock('../proposals-list-item', () => ({
+  ProposalsListItem: () => <div data-testid="proposals-list-item" />,
 }));
 
 describe('Rejected proposals list', () => {
-  it('Renders a list of proposals', async () => {
+  it('Renders a list of proposals', () => {
     render(
       renderComponent([
         rejectedProposalClosedLastMonth,
@@ -68,25 +43,13 @@ describe('Rejected proposals list', () => {
       ])
     );
 
-    await waitFor(() => {
-      const rejectedProposals = within(
-        screen.getByTestId('rejected-proposals')
-      );
-      const rejectedProposalsItems = rejectedProposals.getAllByTestId(
-        'proposals-list-item'
-      );
-      expect(rejectedProposalsItems).toHaveLength(2);
-    });
+    expect(screen.getAllByTestId('proposals-list-item')).toHaveLength(2);
   });
 
   it('Displays text when there are no proposals', async () => {
     render(renderComponent([]));
 
-    await waitFor(() => {
-      expect(screen.getByTestId('no-rejected-proposals')).toBeInTheDocument();
-      expect(
-        screen.queryByTestId('rejected-proposals')
-      ).not.toBeInTheDocument();
-    });
+    expect(screen.getByTestId('no-rejected-proposals')).toBeInTheDocument();
+    expect(screen.queryByTestId('rejected-proposals')).not.toBeInTheDocument();
   });
 });

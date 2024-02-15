@@ -8,29 +8,27 @@ import { Row } from '@vegaprotocol/markets';
 import { useState } from 'react';
 import { CollapsibleToggle } from '../../../../components/collapsible-toggle';
 import { SubHeading } from '../../../../components/heading';
-import { type Proposal } from '../../types';
+import { type UpdateMarketStatesFragment } from '../../__generated__/Proposals';
 
 interface ProposalUpdateMarketStateProps {
-  proposal: Proposal | null;
+  change: UpdateMarketStatesFragment | null;
 }
 
 export const ProposalUpdateMarketState = ({
-  proposal,
+  change,
 }: ProposalUpdateMarketStateProps) => {
   const { t } = useTranslation();
   const [showDetails, setShowDetails] = useState(false);
   let market;
   let isTerminate = false;
 
-  if (!proposal) {
+  if (!change) {
     return null;
   }
 
-  if (proposal?.terms.change.__typename === 'UpdateMarketState') {
-    market = proposal?.terms?.change?.market;
-    isTerminate =
-      proposal?.terms?.change?.updateType ===
-      'MARKET_STATE_UPDATE_TYPE_TERMINATE';
+  if (change.__typename === 'UpdateMarketState') {
+    market = change?.market;
+    isTerminate = change?.updateType === 'MARKET_STATE_UPDATE_TYPE_TERMINATE';
   }
 
   return (
@@ -45,7 +43,7 @@ export const ProposalUpdateMarketState = ({
 
       {showDetails && (
         <RoundedWrapper paddingBottom={true} marginBottomLarge={true}>
-          {proposal?.terms.change.__typename === 'UpdateMarketState' && (
+          {change.__typename === 'UpdateMarketState' && (
             <KeyValueTable data-testid="proposal-update-market-state-table">
               <KeyValueTableRow>
                 {t('marketId')}
@@ -59,10 +57,10 @@ export const ProposalUpdateMarketState = ({
                 {t('marketCode')}
                 {market?.tradableInstrument?.instrument?.code}
               </KeyValueTableRow>
-              {isTerminate && (
+              {isTerminate && market && (
                 <Row
                   field="termination-price"
-                  value={proposal?.terms?.change?.price}
+                  value={change?.price}
                   assetSymbol={
                     market?.tradableInstrument?.instrument?.product
                       ?.__typename === 'Future' ||

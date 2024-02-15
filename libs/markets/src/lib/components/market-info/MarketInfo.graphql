@@ -139,6 +139,8 @@ query MarketInfo($marketId: ID!) {
     state
     tradingMode
     linearSlippageFactor
+    parentMarketID
+    successorMarketID
     proposal {
       id
       rationale {

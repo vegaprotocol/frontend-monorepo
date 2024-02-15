@@ -6,7 +6,6 @@ import { render, screen } from '@testing-library/react';
 import { generateProposal } from '../../test-helpers/generate-proposals';
 import { Proposal } from './proposal';
 import { ProposalState } from '@vegaprotocol/types';
-import { mockNetworkParams } from '../../test-helpers/mocks';
 import { type Proposal as IProposal } from '../../types';
 
 jest.mock('@vegaprotocol/network-parameters', () => ({
@@ -38,6 +37,12 @@ jest.mock('../list-asset', () => ({
   ListAsset: () => <div data-testid="proposal-list-asset"></div>,
 }));
 
+jest.mock('./proposal-change-details', () => ({
+  ProposalChangeDetails: () => (
+    <div data-testid="proposal-change-details"></div>
+  ),
+}));
+
 const vegaWalletConfig: VegaWalletConfig = {
   network: 'TESTNET',
   vegaUrl: 'https://vega.xyz',
@@ -56,11 +61,7 @@ const renderComponent = (proposal: IProposal) => {
     <MemoryRouter>
       <MockedProvider>
         <VegaWalletProvider config={vegaWalletConfig}>
-          <Proposal
-            restData={{}}
-            proposal={proposal}
-            networkParams={mockNetworkParams}
-          />
+          <Proposal restData={{}} proposal={proposal} />
         </VegaWalletProvider>
       </MockedProvider>
     </MemoryRouter>
@@ -99,27 +100,6 @@ it('renders each section', async () => {
   expect(await screen.findByTestId('proposal-header')).toBeInTheDocument();
   expect(screen.getByTestId('proposal-change-table')).toBeInTheDocument();
   expect(screen.getByTestId('proposal-json')).toBeInTheDocument();
+  expect(screen.getByTestId('proposal-change-details')).toBeInTheDocument();
   expect(screen.queryByTestId('proposal-list-asset')).not.toBeInTheDocument();
-});
-
-it('renders whitelist section if proposal is new asset and source is erc20', async () => {
-  const proposal = generateProposal({
-    terms: {
-      change: {
-        __typename: 'NewAsset',
-        name: 'foo',
-        symbol: 'FOO',
-        decimals: 18,
-        quantum: '1',
-        source: {
-          __typename: 'ERC20',
-          lifetimeLimit: '1',
-          withdrawThreshold: '100',
-        },
-      },
-    },
-  });
-  renderComponent(proposal);
-
-  expect(screen.getByTestId('proposal-list-asset')).toBeInTheDocument();
 });

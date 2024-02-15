@@ -1,3 +1,4 @@
+import compact from 'lodash/compact';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
@@ -12,10 +13,10 @@ import { useRefreshAfterEpoch } from '../../hooks/use-refresh-after-epoch';
 import { ProposalsListItem } from '../proposals/components/proposals-list-item';
 import { ProtocolUpgradeProposalsListItem } from '../proposals/components/protocol-upgrade-proposals-list-item/protocol-upgrade-proposals-list-item';
 import Routes from '../routes';
-import { ExternalLinks, useFeatureFlags } from '@vegaprotocol/environment';
+import { ExternalLinks } from '@vegaprotocol/environment';
 import { removePaginationWrapper } from '@vegaprotocol/utils';
 import { useNodesQuery } from '../staking/home/__generated__/Nodes';
-import { useProposalsQuery } from '../proposals/proposals/__generated__/Proposals';
+import { useProposalsQuery } from '../proposals/__generated__/Proposals';
 import {
   getNotRejectedProposals,
   getNotRejectedProtocolUpgradeProposals,
@@ -31,7 +32,7 @@ import {
   orderByUpgradeBlockHeight,
 } from '../proposals/components/proposals-list/proposals-list';
 import { BigNumber } from '../../lib/bignumber';
-import { type Proposal } from '../proposals/types';
+import { type Proposal, type BatchProposal } from '../proposals/types';
 
 const nodesToShow = 6;
 
@@ -39,7 +40,7 @@ const HomeProposals = ({
   proposals,
   protocolUpgradeProposals,
 }: {
-  proposals: Proposal[];
+  proposals: Array<Proposal | BatchProposal>;
   protocolUpgradeProposals: ProtocolUpgradeProposalFieldsFragment[];
 }) => {
   const { t } = useTranslation();
@@ -60,12 +61,9 @@ const HomeProposals = ({
           <ProtocolUpgradeProposalsListItem key={index} proposal={proposal} />
         ))}
 
-        {proposals.map(
-          (proposal) =>
-            proposal?.id && (
-              <ProposalsListItem key={proposal.id} proposal={proposal} />
-            )
-        )}
+        {compact(proposals).map((proposal) => {
+          return <ProposalsListItem key={proposal.id} proposal={proposal} />;
+        })}
       </ul>
 
       <div className="mt-6">
@@ -175,7 +173,6 @@ export const ValidatorDetailsLink = ({
 };
 
 const GovernanceHome = ({ name }: RouteChildProps) => {
-  const featureFlags = useFeatureFlags((state) => state.flags);
   useDocumentTitle(name);
   const { t } = useTranslation();
   const {
@@ -186,11 +183,6 @@ const GovernanceHome = ({ name }: RouteChildProps) => {
     pollInterval: 5000,
     fetchPolicy: 'network-only',
     errorPolicy: 'ignore',
-    variables: {
-      includeNewMarketProductFields: !!featureFlags.PRODUCT_PERPETUALS,
-      includeUpdateMarketStates: !!featureFlags.UPDATE_MARKET_STATE,
-      includeUpdateReferralPrograms: !!featureFlags.REFERRALS,
-    },
   });
 
   const {
@@ -212,15 +204,18 @@ const GovernanceHome = ({ name }: RouteChildProps) => {
 
   useRefreshAfterEpoch(validatorsData?.epoch.timestamps.expiry, refetch);
 
-  const proposals = useMemo(
-    () =>
-      proposalsData
-        ? getNotRejectedProposals(
-            removePaginationWrapper(proposalsData.proposalsConnection?.edges)
+  const proposals = useMemo(() => {
+    if (!proposalsData?.proposalsConnection?.edges?.length) return [];
+    return proposalsData
+      ? getNotRejectedProposals(
+          compact(
+            proposalsData.proposalsConnection.edges.map(
+              (edge) => edge?.proposalNode
+            )
           )
-        : [],
-    [proposalsData]
-  );
+        )
+      : [];
+  }, [proposalsData]);
 
   const sortedProposals = useMemo(
     () => orderByDate(proposals).reverse(),

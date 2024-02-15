@@ -3,14 +3,12 @@ import {
   generateProtocolUpgradeProposal,
 } from '../../test-helpers/generate-proposals';
 import { MockedProvider } from '@apollo/client/testing';
-import { VegaWalletContext } from '@vegaprotocol/wallet';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { AppStateProvider } from '../../../../contexts/app-state/app-state-provider';
 import { ProposalsList } from './proposals-list';
 import { ProposalState } from '@vegaprotocol/types';
 import { fireEvent, render, screen, within } from '@testing-library/react';
 import {
-  mockWalletContext,
   networkParamsQueryMock,
   lastWeek,
   nextWeek,
@@ -19,6 +17,16 @@ import {
 } from '../../test-helpers/mocks';
 import { type ProtocolUpgradeProposalFieldsFragment } from '@vegaprotocol/proposals';
 import { type Proposal } from '../../types';
+
+jest.mock('../vote-details/use-user-vote', () => ({
+  useUserVote: jest.fn().mockImplementation(() => ({ voteState: 'NotCast' })),
+}));
+
+jest.mock('../proposals-list-item', () => ({
+  ProposalsListItem: ({ proposal }: { proposal: { id: string } }) => (
+    <div data-testid="proposals-list-item" id={proposal.id} />
+  ),
+}));
 
 const openProposalClosesNextMonth = generateProposal({
   id: 'proposal1',
@@ -69,12 +77,10 @@ const renderComponent = (
   <Router>
     <MockedProvider mocks={[networkParamsQueryMock]}>
       <AppStateProvider>
-        <VegaWalletContext.Provider value={mockWalletContext}>
-          <ProposalsList
-            proposals={proposals}
-            protocolUpgradeProposals={protocolUpgradeProposals || []}
-          />
-        </VegaWalletContext.Provider>
+        <ProposalsList
+          proposals={proposals}
+          protocolUpgradeProposals={protocolUpgradeProposals || []}
+        />
       </AppStateProvider>
     </MockedProvider>
   </Router>
@@ -87,10 +93,6 @@ beforeAll(() => {
 afterAll(() => {
   jest.useRealTimers();
 });
-
-jest.mock('../vote-details/use-user-vote', () => ({
-  useUserVote: jest.fn().mockImplementation(() => ({ voteState: 'NotCast' })),
-}));
 
 describe('Proposals list', () => {
   it('Render a page title and link to the make proposal form', async () => {

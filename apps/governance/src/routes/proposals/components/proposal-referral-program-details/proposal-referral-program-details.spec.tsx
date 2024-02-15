@@ -7,7 +7,6 @@ import {
   formatReferralRewardMultiplier,
   ProposalReferralProgramDetails,
 } from './proposal-referral-program-details';
-import { generateProposal } from '../../test-helpers/generate-proposals';
 
 jest.mock('../../../../contexts/app-state/app-state-context', () => ({
   useAppState: () => ({
@@ -59,87 +58,65 @@ describe('ProposalReferralProgramDetails helper functions', () => {
   });
 });
 
-const mockReferralProposal = generateProposal({
-  terms: {
-    change: {
-      __typename: 'UpdateReferralProgram',
-      benefitTiers: [
-        {
-          minimumEpochs: 6,
-          minimumRunningNotionalTakerVolume: '10000',
-          referralDiscountFactor: '0.001',
-          referralRewardFactor: '0.001',
-        },
-        {
-          minimumEpochs: 24,
-          minimumRunningNotionalTakerVolume: '500000',
-          referralDiscountFactor: '0.005',
-          referralRewardFactor: '0.005',
-        },
-        {
-          minimumEpochs: 48,
-          minimumRunningNotionalTakerVolume: '1000000',
-          referralDiscountFactor: '0.01',
-          referralRewardFactor: '0.01',
-        },
-      ],
-      endOfProgram: '2026-10-03T10:34:34Z',
-      windowLength: 3,
-      stakingTiers: [
-        {
-          minimumStakedTokens: '1',
-          referralRewardMultiplier: '1',
-        },
-        {
-          minimumStakedTokens: '2',
-          referralRewardMultiplier: '2',
-        },
-        {
-          minimumStakedTokens: '5',
-          referralRewardMultiplier: '3',
-        },
-      ],
+const mockChange = {
+  __typename: 'UpdateReferralProgram' as const,
+  benefitTiers: [
+    {
+      minimumEpochs: 6,
+      minimumRunningNotionalTakerVolume: '10000',
+      referralDiscountFactor: '0.001',
+      referralRewardFactor: '0.001',
     },
-  },
-});
+    {
+      minimumEpochs: 24,
+      minimumRunningNotionalTakerVolume: '500000',
+      referralDiscountFactor: '0.005',
+      referralRewardFactor: '0.005',
+    },
+    {
+      minimumEpochs: 48,
+      minimumRunningNotionalTakerVolume: '1000000',
+      referralDiscountFactor: '0.01',
+      referralRewardFactor: '0.01',
+    },
+  ],
+  endOfProgram: '2026-10-03T10:34:34Z',
+  windowLength: 3,
+  stakingTiers: [
+    {
+      minimumStakedTokens: '1',
+      referralRewardMultiplier: '1',
+    },
+    {
+      minimumStakedTokens: '2',
+      referralRewardMultiplier: '2',
+    },
+    {
+      minimumStakedTokens: '5',
+      referralRewardMultiplier: '3',
+    },
+  ],
+};
 
 describe('<ProposalReferralProgramDetails />', () => {
   it('should not render if proposal is null', () => {
-    render(<ProposalReferralProgramDetails proposal={null} />);
-    expect(
-      screen.queryByTestId('proposal-referral-program-details')
-    ).toBeNull();
-  });
-
-  it('should not render if __typename is not UpdateReferralProgram', () => {
-    const updateMarketProposal = generateProposal({
-      terms: {
-        change: {
-          __typename: 'UpdateMarket',
-        },
-      },
-    });
-    render(<ProposalReferralProgramDetails proposal={updateMarketProposal} />);
+    render(<ProposalReferralProgramDetails change={null} />);
     expect(
       screen.queryByTestId('proposal-referral-program-details')
     ).toBeNull();
   });
 
   it('should not render if there are no relevant fields', () => {
-    const incompleteProposal = generateProposal({
-      terms: {
-        change: {},
-      },
-    });
-
-    render(<ProposalReferralProgramDetails proposal={incompleteProposal} />);
+    const emptyChange = {};
+    // @ts-ignore change deliberately empty
+    render(<ProposalReferralProgramDetails change={emptyChange} />);
     expect(
       screen.queryByTestId('proposal-referral-program-details')
     ).toBeNull();
   });
 
   it('should render relevant fields if present', () => {
-    render(<ProposalReferralProgramDetails proposal={mockReferralProposal} />);
+    render(<ProposalReferralProgramDetails change={mockChange} />);
     expect(
       screen.getByTestId('proposal-referral-program-window-length')
     ).toBeInTheDocument();

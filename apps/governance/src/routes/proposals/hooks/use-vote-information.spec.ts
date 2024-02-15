@@ -79,33 +79,35 @@ describe('use-vote-information', () => {
 
     const {
       result: { current },
-    } = renderHook(() => useVoteInformation({ proposal }));
+    } = renderHook(() =>
+      useVoteInformation({ terms: proposal.terms, votes: proposal.votes })
+    );
 
-    expect(current.requiredMajorityPercentage).toEqual(new BigNumber(50));
-    expect(current.requiredMajorityLPPercentage).toEqual(new BigNumber(50));
-    expect(current.noTokens).toEqual(new BigNumber(60));
-    expect(current.noVotes).toEqual(new BigNumber(60));
-    expect(current.noEquityLikeShareWeight).toEqual(new BigNumber(70));
-    expect(current.yesTokens).toEqual(new BigNumber(40));
-    expect(current.yesVotes).toEqual(new BigNumber(40));
-    expect(current.yesEquityLikeShareWeight).toEqual(new BigNumber(30));
-    expect(current.totalTokensVoted).toEqual(new BigNumber(100));
-    expect(current.totalVotes).toEqual(new BigNumber(100));
-    expect(current.totalEquityLikeShareWeight).toEqual(new BigNumber(100));
-    expect(current.yesPercentage).toEqual(new BigNumber(40));
-    expect(current.yesLPPercentage).toEqual(new BigNumber(30));
-    expect(current.noPercentage).toEqual(new BigNumber(60));
-    expect(current.noLPPercentage).toEqual(new BigNumber(70));
-    expect(current.requiredParticipation).toEqual(new BigNumber(50));
-    expect(current.participationMet).toEqual(true);
-    expect(current.requiredParticipationLP).toEqual(new BigNumber(50));
-    expect(current.participationLPMet).toEqual(true);
-    expect(current.majorityMet).toEqual(false);
-    expect(current.majorityLPMet).toEqual(false);
-    expect(current.totalTokensPercentage).toEqual(new BigNumber(100));
-    expect(current.totalLPTokensPercentage).toEqual(new BigNumber(100));
-    expect(current.willPassByTokenVote).toEqual(false);
-    expect(current.willPassByLPVote).toEqual(false);
+    expect(current?.requiredMajorityLPPercentage).toEqual(new BigNumber(50));
+    expect(current?.requiredMajorityPercentage).toEqual(new BigNumber(50));
+    expect(current?.noTokens).toEqual(new BigNumber(60));
+    expect(current?.noVotes).toEqual(new BigNumber(60));
+    expect(current?.noEquityLikeShareWeight).toEqual(new BigNumber(70));
+    expect(current?.yesTokens).toEqual(new BigNumber(40));
+    expect(current?.yesVotes).toEqual(new BigNumber(40));
+    expect(current?.yesEquityLikeShareWeight).toEqual(new BigNumber(30));
+    expect(current?.totalTokensVoted).toEqual(new BigNumber(100));
+    expect(current?.totalVotes).toEqual(new BigNumber(100));
+    expect(current?.totalEquityLikeShareWeight).toEqual(new BigNumber(100));
+    expect(current?.yesPercentage).toEqual(new BigNumber(40));
+    expect(current?.yesLPPercentage).toEqual(new BigNumber(30));
+    expect(current?.noPercentage).toEqual(new BigNumber(60));
+    expect(current?.noLPPercentage).toEqual(new BigNumber(70));
+    expect(current?.requiredParticipation).toEqual(new BigNumber(50));
+    expect(current?.participationMet).toEqual(true);
+    expect(current?.requiredParticipationLP).toEqual(new BigNumber(50));
+    expect(current?.participationLPMet).toEqual(true);
+    expect(current?.majorityMet).toEqual(false);
+    expect(current?.majorityLPMet).toEqual(false);
+    expect(current?.totalTokensPercentage).toEqual(new BigNumber(100));
+    expect(current?.totalLPTokensPercentage).toEqual(new BigNumber(100));
+    expect(current?.willPassByTokenVote).toEqual(false);
+    expect(current?.willPassByLPVote).toEqual(false);
   });
 
   it('correctly returns majority, participation and will-pass status for a proposal with no votes', () => {
@@ -123,11 +125,13 @@ describe('use-vote-information', () => {
 
     const {
       result: { current },
-    } = renderHook(() => useVoteInformation({ proposal }));
+    } = renderHook(() =>
+      useVoteInformation({ terms: proposal.terms, votes: proposal.votes })
+    );
 
-    expect(current.participationMet).toEqual(false);
-    expect(current.majorityMet).toEqual(false);
-    expect(current.willPassByTokenVote).toEqual(false);
+    expect(current?.participationMet).toEqual(false);
+    expect(current?.majorityMet).toEqual(false);
+    expect(current?.willPassByTokenVote).toEqual(false);
   });
 
   it('correctly shows lack of participation for a failing proposal lacking votes', () => {
@@ -145,9 +149,11 @@ describe('use-vote-information', () => {
 
     const {
       result: { current },
-    } = renderHook(() => useVoteInformation({ proposal }));
+    } = renderHook(() =>
+      useVoteInformation({ terms: proposal.terms, votes: proposal.votes })
+    );
 
-    expect(current.participationMet).toEqual(false);
+    expect(current?.participationMet).toEqual(false);
   });
 
   it('correctly shows participation but lack of majority for a failing proposal with enough votes but not enough majority', () => {
@@ -165,11 +171,13 @@ describe('use-vote-information', () => {
 
     const {
       result: { current },
-    } = renderHook(() => useVoteInformation({ proposal }));
+    } = renderHook(() =>
+      useVoteInformation({ terms: proposal.terms, votes: proposal.votes })
+    );
 
-    expect(current.participationMet).toEqual(true);
-    expect(current.majorityMet).toEqual(false);
-    expect(current.willPassByTokenVote).toEqual(false);
+    expect(current?.participationMet).toEqual(true);
+    expect(current?.majorityMet).toEqual(false);
+    expect(current?.willPassByTokenVote).toEqual(false);
   });
 
   it('correctly shows participation, majority and will-pass data for successful proposal', () => {
@@ -187,11 +195,13 @@ describe('use-vote-information', () => {
 
     const {
       result: { current },
-    } = renderHook(() => useVoteInformation({ proposal }));
+    } = renderHook(() =>
+      useVoteInformation({ terms: proposal.terms, votes: proposal.votes })
+    );
 
-    expect(current.participationMet).toEqual(true);
-    expect(current.majorityMet).toEqual(true);
-    expect(current.willPassByTokenVote).toEqual(true);
+    expect(current?.participationMet).toEqual(true);
+    expect(current?.majorityMet).toEqual(true);
+    expect(current?.willPassByTokenVote).toEqual(true);
   });
 
   it('correctly shows whether an update market proposal will pass by token or LP vote - both failing', () => {
@@ -221,10 +231,12 @@ describe('use-vote-information', () => {
 
     const {
       result: { current },
-    } = renderHook(() => useVoteInformation({ proposal }));
+    } = renderHook(() =>
+      useVoteInformation({ terms: proposal.terms, votes: proposal.votes })
+    );
 
-    expect(current.willPassByTokenVote).toEqual(false);
-    expect(current.willPassByLPVote).toEqual(false);
+    expect(current?.willPassByTokenVote).toEqual(false);
+    expect(current?.willPassByLPVote).toEqual(false);
   });
 
   it('correctly shows whether an update market proposal failing token but passing LP voting', () => {
@@ -254,9 +266,11 @@ describe('use-vote-information', () => {
 
     const {
       result: { current },
-    } = renderHook(() => useVoteInformation({ proposal }));
+    } = renderHook(() =>
+      useVoteInformation({ terms: proposal.terms, votes: proposal.votes })
+    );
 
-    expect(current.willPassByTokenVote).toEqual(false);
-    expect(current.willPassByLPVote).toEqual(true);
+    expect(current?.willPassByTokenVote).toEqual(false);
+    expect(current?.willPassByLPVote).toEqual(true);
   });
 });

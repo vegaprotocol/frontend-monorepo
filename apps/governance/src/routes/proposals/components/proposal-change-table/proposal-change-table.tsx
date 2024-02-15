@@ -6,16 +6,46 @@ import {
   KeyValueTableRow,
   RoundedWrapper,
 } from '@vegaprotocol/ui-toolkit';
-import { type Proposal } from '../../types';
+import { type Proposal, type BatchProposal } from '../../types';
 
 interface ProposalChangeTableProps {
-  proposal: Proposal;
+  proposal: Proposal | BatchProposal;
 }
 
 export const ProposalChangeTable = ({ proposal }: ProposalChangeTableProps) => {
   const { t } = useTranslation();
 
-  const terms = proposal?.terms;
+  const closingTimeRow =
+    proposal.__typename === 'Proposal' ? (
+      <KeyValueTableRow>
+        {isFuture(new Date(proposal.terms?.closingDatetime))
+          ? t('closesOn')
+          : t('closedOn')}
+        {formatDateWithLocalTimezone(new Date(proposal.terms?.closingDatetime))}
+      </KeyValueTableRow>
+    ) : proposal.__typename === 'BatchProposal' ? (
+      <KeyValueTableRow>
+        {isFuture(new Date(proposal.batchTerms?.closingDatetime))
+          ? t('closesOn')
+          : t('closedOn')}
+        {formatDateWithLocalTimezone(
+          new Date(proposal.batchTerms?.closingDatetime)
+        )}
+      </KeyValueTableRow>
+    ) : null;
+
+  const enactmentRow =
+    proposal.__typename === 'Proposal' &&
+    proposal.terms.change.__typename !== 'NewFreeform' ? (
+      <KeyValueTableRow>
+        {isFuture(new Date(proposal.terms?.enactmentDatetime || 0))
+          ? t('proposedEnactment')
+          : t('enactedOn')}
+        {formatDateWithLocalTimezone(
+          new Date(proposal.terms?.enactmentDatetime || 0)
+        )}
+      </KeyValueTableRow>
+    ) : null;
 
   return (
     <RoundedWrapper paddingBottom={true}>
@@ -24,22 +54,8 @@ export const ProposalChangeTable = ({ proposal }: ProposalChangeTableProps) => {
           {t('id')}
           {proposal?.id}
         </KeyValueTableRow>
-        <KeyValueTableRow>
-          {isFuture(new Date(terms?.closingDatetime))
-            ? t('closesOn')
-            : t('closedOn')}
-          {formatDateWithLocalTimezone(new Date(terms?.closingDatetime))}
-        </KeyValueTableRow>
-        {terms?.change.__typename !== 'NewFreeform' ? (
-          <KeyValueTableRow>
-            {isFuture(new Date(terms?.enactmentDatetime || 0))
-              ? t('proposedEnactment')
-              : t('enactedOn')}
-            {formatDateWithLocalTimezone(
-              new Date(terms?.enactmentDatetime || 0)
-            )}
-          </KeyValueTableRow>
-        ) : null}
+        {closingTimeRow}
+        {enactmentRow}
         <KeyValueTableRow>
           {t('proposedBy')}
           <span style={{ wordBreak: 'break-word' }}>{proposal?.party.id}</span>

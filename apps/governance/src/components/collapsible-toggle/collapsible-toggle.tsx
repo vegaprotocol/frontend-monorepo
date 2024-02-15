@@ -1,5 +1,5 @@
 import classnames from 'classnames';
-import { Icon } from '@vegaprotocol/ui-toolkit';
+import { VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import type { Dispatch, SetStateAction, ReactNode } from 'react';
 
 interface CollapsibleToggleProps {
@@ -30,7 +30,7 @@ export const CollapsibleToggle = ({
       <div className="flex items-center gap-3">
         {children}
         <div className={classes} data-testid="toggle-icon-wrapper">
-          <Icon name="chevron-down" size={8} />
+          <VegaIcon name={VegaIconNames.CHEVRON_DOWN} size={20} />
         </div>
       </div>
     </button>

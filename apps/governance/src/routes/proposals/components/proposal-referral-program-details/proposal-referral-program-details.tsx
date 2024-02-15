@@ -13,10 +13,10 @@ import {
 } from '@vegaprotocol/utils';
 import BigNumber from 'bignumber.js';
 import { useAppState } from '../../../../contexts/app-state/app-state-context';
-import { type Proposal } from '../../types';
+import { type UpdateReferralProgramsFragment } from '../../__generated__/Proposals';
 
 interface ProposalReferralProgramDetailsProps {
-  proposal: Proposal | null;
+  change: UpdateReferralProgramsFragment | null;
 }
 
 export const formatEndOfProgramTimestamp = (value: string) => {
@@ -44,20 +44,19 @@ export const formatReferralRewardMultiplier = (value: string) => {
 };
 
 export const ProposalReferralProgramDetails = ({
-  proposal,
+  change,
 }: ProposalReferralProgramDetailsProps) => {
   const {
     appState: { decimals },
   } = useAppState();
   const { t } = useTranslation();
-  if (proposal?.terms?.change?.__typename !== 'UpdateReferralProgram') {
-    return null;
-  }
 
-  const benefitTiers = proposal?.terms?.change?.benefitTiers.slice();
-  const stakingTiers = proposal?.terms?.change?.stakingTiers.slice();
-  const windowLength = proposal?.terms?.change?.windowLength;
-  const endOfProgramTimestamp = proposal?.terms?.change?.endOfProgram;
+  if (change?.__typename !== 'UpdateReferralProgram') return null;
+
+  const benefitTiers = change?.benefitTiers.slice();
+  const stakingTiers = change?.stakingTiers.slice();
+  const windowLength = change?.windowLength;
+  const endOfProgramTimestamp = change?.endOfProgram;
 
   if (
     !benefitTiers &&

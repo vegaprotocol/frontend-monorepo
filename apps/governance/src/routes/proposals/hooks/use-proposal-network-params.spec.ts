@@ -1,7 +1,6 @@
 import { renderHook } from '@testing-library/react';
 import { BigNumber } from '../../../lib/bignumber';
 import { useProposalNetworkParams } from './use-proposal-network-params';
-import { generateProposal } from '../test-helpers/generate-proposals';
 
 jest.mock('@vegaprotocol/network-parameters', () => ({
   ...jest.requireActual('@vegaprotocol/network-parameters'),
@@ -29,118 +28,84 @@ jest.mock('@vegaprotocol/network-parameters', () => ({
 
 describe('use-proposal-network-params', () => {
   it('returns the correct params for an update market proposal', () => {
-    const proposal = generateProposal({
-      terms: {
-        change: {
-          __typename: 'UpdateMarket',
-        },
-      },
-    });
-
     const {
       result: { current },
-    } = renderHook(() => useProposalNetworkParams({ proposal }));
+    } = renderHook(() => useProposalNetworkParams());
+
+    const expectedObj = {
+      requiredMajority: expect.any(BigNumber),
+      requiredMajorityLP: expect.any(BigNumber),
+      requiredParticipation: expect.any(BigNumber),
+      requiredParticipationLP: expect.any(BigNumber),
+    };
 
     expect(current).toEqual({
-      requiredMajority: '0.1',
-      requiredMajorityLP: '0.2',
-      requiredParticipation: new BigNumber(0.15),
-      requiredParticipationLP: new BigNumber(0.25),
+      NewMarket: expectedObj,
+      NewSpotMarket: expectedObj,
+      UpdateMarket: expectedObj,
+      UpdateMarketState: expectedObj,
+      UpdateSpotMarket: expectedObj,
+      UpdateNetworkParameter: expectedObj,
+      NewAsset: expectedObj,
+      UpdateAsset: expectedObj,
+      NewFreeform: expectedObj,
+      UpdateReferralProgram: expectedObj,
+      UpdateVolumeDiscountProgram: expectedObj,
+      NewTransfer: expectedObj,
+      CancelTransfer: expectedObj,
     });
   });
 
-  it('returns the correct params for a market proposal', () => {
-    const proposal = generateProposal({
-      terms: {
-        change: {
-          __typename: 'NewMarket',
-        },
-      },
-    });
-
+  it('returns the correct values for the proposal change type', () => {
     const {
       result: { current },
-    } = renderHook(() => useProposalNetworkParams({ proposal }));
+    } = renderHook(() => useProposalNetworkParams());
 
-    expect(current).toEqual({
-      requiredMajority: '0.3',
-      requiredParticipation: new BigNumber(0.35),
-    });
-  });
+    expect(current?.UpdateMarket.requiredMajority.toString()).toEqual('0.1');
+    expect(current?.UpdateMarket.requiredMajorityLP.toString()).toEqual('0.2');
+    expect(current?.UpdateMarket.requiredParticipation.toString()).toEqual(
+      '0.15'
+    );
+    expect(current?.UpdateMarket.requiredParticipationLP.toString()).toEqual(
+      '0.25'
+    );
 
-  it('returns the correct params for an asset proposal', () => {
-    const proposal = generateProposal({
-      terms: {
-        change: {
-          __typename: 'NewAsset',
-        },
-      },
-    });
+    expect(current?.NewMarket.requiredMajority.toString()).toEqual('0.3');
+    expect(current?.NewMarket.requiredMajorityLP.toString()).toEqual('0');
+    expect(current?.NewMarket.requiredParticipation.toString()).toEqual('0.35');
+    expect(current?.NewMarket.requiredParticipationLP.toString()).toEqual('0');
 
-    const {
-      result: { current },
-    } = renderHook(() => useProposalNetworkParams({ proposal }));
+    expect(current?.NewAsset.requiredMajority.toString()).toEqual('0.4');
+    expect(current?.NewAsset.requiredMajorityLP.toString()).toEqual('0');
+    expect(current?.NewAsset.requiredParticipation.toString()).toEqual('0.45');
+    expect(current?.NewAsset.requiredParticipationLP.toString()).toEqual('0');
 
-    expect(current).toEqual({
-      requiredMajority: '0.4',
-      requiredParticipation: new BigNumber(0.45),
-    });
-  });
+    expect(current?.UpdateAsset.requiredMajority.toString()).toEqual('0.5');
+    expect(current?.UpdateAsset.requiredMajorityLP.toString()).toEqual('0');
+    expect(current?.UpdateAsset.requiredParticipation.toString()).toEqual(
+      '0.55'
+    );
 
-  it('returns the correct params for an update asset proposal', () => {
-    const proposal = generateProposal({
-      terms: {
-        change: {
-          __typename: 'UpdateAsset',
-        },
-      },
-    });
+    expect(current?.UpdateNetworkParameter.requiredMajority.toString()).toEqual(
+      '0.6'
+    );
+    expect(
+      current?.UpdateNetworkParameter.requiredMajorityLP.toString()
+    ).toEqual('0');
+    expect(
+      current?.UpdateNetworkParameter.requiredParticipation.toString()
+    ).toEqual('0.65');
+    expect(
+      current?.UpdateNetworkParameter.requiredParticipationLP.toString()
+    ).toEqual('0');
 
-    const {
-      result: { current },
-    } = renderHook(() => useProposalNetworkParams({ proposal }));
-
-    expect(current).toEqual({
-      requiredMajority: '0.5',
-      requiredParticipation: new BigNumber(0.55),
-    });
-  });
-
-  it('returns the correct params for a network params proposal', () => {
-    const proposal = generateProposal({
-      terms: {
-        change: {
-          __typename: 'UpdateNetworkParameter',
-        },
-      },
-    });
-
-    const {
-      result: { current },
-    } = renderHook(() => useProposalNetworkParams({ proposal }));
-
-    expect(current).toEqual({
-      requiredMajority: '0.6',
-      requiredParticipation: new BigNumber(0.65),
-    });
-  });
-
-  it('returns the correct params for a freeform proposal', () => {
-    const proposal = generateProposal({
-      terms: {
-        change: {
-          __typename: 'NewFreeform',
-        },
-      },
-    });
-
-    const {
-      result: { current },
-    } = renderHook(() => useProposalNetworkParams({ proposal }));
-
-    expect(current).toEqual({
-      requiredMajority: '0.7',
-      requiredParticipation: new BigNumber(0.75),
-    });
+    expect(current?.NewFreeform.requiredMajority.toString()).toEqual('0.7');
+    expect(current?.NewFreeform.requiredMajorityLP.toString()).toEqual('0');
+    expect(current?.NewFreeform.requiredParticipation.toString()).toEqual(
+      '0.75'
+    );
+    expect(current?.NewFreeform.requiredParticipationLP.toString()).toEqual(
+      '0'
+    );
   });
 });

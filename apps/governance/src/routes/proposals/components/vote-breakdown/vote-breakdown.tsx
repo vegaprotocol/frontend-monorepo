@@ -1,13 +1,20 @@
-import { type ReactNode } from 'react';
+import compact from 'lodash/compact';
+import countBy from 'lodash/countBy';
+import { useState, type ReactNode } from 'react';
 import classNames from 'classnames';
 import BigNumber from 'bignumber.js';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { useVoteInformation } from '../../hooks';
-import { Icon, Tooltip } from '@vegaprotocol/ui-toolkit';
+import { Tooltip, VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import { formatNumber } from '@vegaprotocol/utils';
 import { ProposalState } from '@vegaprotocol/types';
 import { CompactNumber } from '@vegaprotocol/react-helpers';
-import { type Proposal } from '../../types';
+import { type Proposal, type BatchProposal } from '../../types';
+import {
+  type ProposalTermsFieldsFragment,
+  type VoteFieldsFragment,
+} from '../../__generated__/Proposals';
+import { useBatchVoteInformation } from '../../hooks/use-vote-information';
 
 export const CompactVotes = ({ number }: { number: BigNumber }) => (
   <CompactNumber
@@ -17,10 +24,6 @@ export const CompactVotes = ({ number }: { number: BigNumber }) => (
     compactDisplay="short"
   />
 );
-
-interface VoteBreakdownProps {
-  proposal: Proposal;
-}
 
 interface VoteProgressProps {
   percentageFor: BigNumber;
@@ -55,7 +58,7 @@ const VoteProgress = ({
         className={progressClasses}
         style={{ width: `${percentageFor}%` }}
         data-testid={testId}
-      ></div>
+      />
       <div className={textClasses}>{children}</div>
     </div>
   );
@@ -75,14 +78,14 @@ const Status = ({ reached, threshold, text, testId }: StatusProps) => {
     <div data-testid={testId}>
       {reached ? (
         <div className="flex items-center gap-2">
-          <Icon name="tick" size={4} />
+          <VegaIcon name={VegaIconNames.TICK} size={20} />
           <span>
             {threshold.toString()}% {text} {t('met')}
           </span>
         </div>
       ) : (
         <div className="flex items-center gap-2">
-          <Icon name="cross" size={4} />
+          <VegaIcon name={VegaIconNames.CROSS} size={20} />
           <span>
             {threshold.toString()}% {text} {t('not met')}
           </span>
@@ -92,7 +95,225 @@ const Status = ({ reached, threshold, text, testId }: StatusProps) => {
   );
 };
 
-export const VoteBreakdown = ({ proposal }: VoteBreakdownProps) => {
+export const VoteBreakdown = ({
+  proposal,
+}: {
+  proposal: Proposal | BatchProposal;
+}) => {
+  if (proposal.__typename === 'Proposal') {
+    return <VoteBreakdownNormal proposal={proposal} />;
+  }
+
+  if (proposal.__typename === 'BatchProposal') {
+    return <VoteBreakdownBatch proposal={proposal} />;
+  }
+
+  return null;
+};
+
+const VoteBreakdownBatch = ({ proposal }: { proposal: BatchProposal }) => {
+  const [fullBreakdown, setFullBreakdown] = useState(false);
+  const { t } = useTranslation();
+
+  const voteInfo = useBatchVoteInformation({
+    terms: compact(
+      proposal.subProposals ? proposal.subProposals.map((p) => p?.terms) : []
+    ),
+    votes: proposal.votes,
+  });
+
+  if (!voteInfo) return null;
+
+  const batchWillPass = voteInfo.every((i) => i.willPass);
+
+  const passingCount = countBy(voteInfo, (v) => v.willPass);
+
+  if (proposal.state === ProposalState.STATE_OPEN) {
+    return (
+      <div className="flex flex-col gap-2">
+        <div className="flex items-center justify-between gap-2">
+          {batchWillPass ? (
+            <p className="flex gap-2 m-0 items-center">
+              <VegaIcon
+                name={VegaIconNames.TICK}
+                className="text-vega-green"
+                size={20}
+              />
+              {t(
+                'Currently expected to pass: conditions met for {{count}} of {{total}} proposals',
+                {
+                  count: passingCount['true'] || 0,
+                  total: voteInfo.length,
+                }
+              )}
+            </p>
+          ) : (
+            <p className="flex gap-2 m-0 items-center">
+              <VegaIcon
+                name={VegaIconNames.CROSS}
+                className="text-vega-pink"
+                size={20}
+              />
+              {t(
+                'Currently expected to fail: {{count}} of {{total}} proposals are passing',
+                {
+                  count: passingCount['true'] || 0,
+                  total: voteInfo.length,
+                }
+              )}
+            </p>
+          )}
+          <button
+            className="underline"
+            onClick={() => setFullBreakdown((x) => !x)}
+          >
+            {fullBreakdown ? 'Hide vote breakdown' : 'Show vote breakdown'}
+          </button>
+        </div>
+        {fullBreakdown && (
+          <div>
+            {proposal.subProposals?.map((p, i) => {
+              if (!p?.terms) return null;
+              return (
+                <VoteBreakdownBatchSubProposal
+                  key={i}
+                  proposal={proposal}
+                  votes={proposal.votes}
+                  terms={p.terms}
+                />
+              );
+            })}
+          </div>
+        )}
+      </div>
+    );
+  } else if (
+    proposal.state === ProposalState.STATE_DECLINED ||
+    proposal.state === ProposalState.STATE_PASSED
+  ) {
+    return (
+      <div className="flex flex-col gap-2">
+        <div className="flex items-center justify-between gap-2">
+          {batchWillPass ? (
+            <p className="flex gap-2 m-0 items-center">
+              <VegaIcon
+                name={VegaIconNames.TICK}
+                className="text-vega-green"
+                size={20}
+              />
+              {t(
+                'Proposal passed: conditions met for {{count}} of {{total}} proposals',
+                {
+                  count: passingCount['true'] || 0,
+                  total: voteInfo.length,
+                }
+              )}
+            </p>
+          ) : (
+            <p className="flex gap-2 m-0 items-center">
+              <VegaIcon
+                name={VegaIconNames.CROSS}
+                className="text-vega-pink"
+                size={20}
+              />
+              {t('Proposal failed: {{count}} of {{total}} proposals passed', {
+                count: passingCount['true'] || 0,
+                total: voteInfo.length,
+              })}
+            </p>
+          )}
+          <button
+            className="underline"
+            onClick={() => setFullBreakdown((x) => !x)}
+          >
+            {fullBreakdown ? 'Hide vote breakdown' : 'Show vote breakdown'}
+          </button>
+        </div>
+        {fullBreakdown && (
+          <div>
+            {proposal.subProposals?.map((p, i) => {
+              if (!p?.terms) return null;
+              return (
+                <VoteBreakdownBatchSubProposal
+                  key={i}
+                  proposal={proposal}
+                  votes={proposal.votes}
+                  terms={p.terms}
+                />
+              );
+            })}
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  return null;
+};
+
+const VoteBreakdownBatchSubProposal = ({
+  proposal,
+  votes,
+  terms,
+}: {
+  proposal: BatchProposal;
+  votes: VoteFieldsFragment;
+  terms: ProposalTermsFieldsFragment;
+}) => {
+  const { t } = useTranslation();
+  const voteInfo = useVoteInformation({
+    votes,
+    terms,
+  });
+
+  const isProposalOpen = proposal?.state === ProposalState.STATE_OPEN;
+  const isUpdateMarket = terms?.change?.__typename === 'UpdateMarket';
+
+  return (
+    <div>
+      <h4>{t(terms.change.__typename)}</h4>
+      <VoteBreakDownUI
+        voteInfo={voteInfo}
+        isProposalOpen={isProposalOpen}
+        isUpdateMarket={isUpdateMarket}
+      />
+    </div>
+  );
+};
+
+const VoteBreakdownNormal = ({ proposal }: { proposal: Proposal }) => {
+  const voteInfo = useVoteInformation({
+    votes: proposal.votes,
+    terms: proposal.terms,
+  });
+
+  const isProposalOpen = proposal?.state === ProposalState.STATE_OPEN;
+  const isUpdateMarket = proposal?.terms?.change?.__typename === 'UpdateMarket';
+
+  return (
+    <VoteBreakDownUI
+      voteInfo={voteInfo}
+      isProposalOpen={isProposalOpen}
+      isUpdateMarket={isUpdateMarket}
+    />
+  );
+};
+
+const VoteBreakDownUI = ({
+  voteInfo,
+  isProposalOpen,
+  isUpdateMarket,
+}: {
+  voteInfo: ReturnType<typeof useVoteInformation>;
+  isProposalOpen: boolean;
+  isUpdateMarket: boolean;
+}) => {
+  const defaultDP = 2;
+
+  const { t } = useTranslation();
+
+  if (!voteInfo) return null;
+
   const {
     totalTokensPercentage,
     participationMet,
@@ -114,12 +335,8 @@ export const VoteBreakdown = ({ proposal }: VoteBreakdownProps) => {
     majorityLPMet,
     willPassByTokenVote,
     willPassByLPVote,
-  } = useVoteInformation({ proposal });
+  } = voteInfo;
 
-  const { t } = useTranslation();
-  const defaultDP = 2;
-  const isProposalOpen = proposal?.state === ProposalState.STATE_OPEN;
-  const isUpdateMarket = proposal?.terms?.change?.__typename === 'UpdateMarket';
   const participationThresholdProgress = BigNumber.min(
     totalTokensPercentage.dividedBy(requiredParticipation).multipliedBy(100),
     new BigNumber(100)
@@ -152,23 +369,38 @@ export const VoteBreakdown = ({ proposal }: VoteBreakdownProps) => {
       {isProposalOpen && (
         <div
           data-testid="vote-status"
-          className="flex items-center gap-1 mb-2 text-bold"
+          className="flex items-center gap-2 mb-2 text-bold"
         >
           <span>
             {willPass ? (
-              <Icon name="tick" size={5} className="text-vega-green" />
+              <VegaIcon
+                name={VegaIconNames.TICK}
+                size={20}
+                className="text-vega-green"
+              />
             ) : (
-              <Icon name="cross" size={5} className="text-vega-pink" />
+              <VegaIcon
+                name={VegaIconNames.CROSS}
+                size={20}
+                className="text-vega-pink"
+              />
             )}
           </span>
-          <span>{t('currentlySetTo')} </span>
           {willPass ? (
-            <span>
-              <span className="text-vega-green">{t('pass')}</span>
+            <p className="m-0">
+              <Trans
+                i18nKey={'Currently expected to <0>pass</0>'}
+                components={[<span className="text-vega-green" />]}
+              />
               {isUpdateMarket && <span> {updateMarketVotePassMethod}</span>}
-            </span>
+            </p>
           ) : (
-            <span className="text-vega-pink">{t('fail')}</span>
+            <p className="m-0">
+              <Trans
+                i18nKey={'Currently expected to <0>fail</0>'}
+                components={[<span className="text-vega-pink" />]}
+              />
+            </p>
           )}
         </div>
       )}

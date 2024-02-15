@@ -8,12 +8,10 @@ import { SubHeading } from '../../../../components/heading';
 import { type VoteValue } from '@vegaprotocol/types';
 import { type DialogProps, type VegaTxState } from '@vegaprotocol/proposals';
 import { type VoteState } from './use-user-vote';
-import { type Proposal } from '../../types';
+import { type Proposal, type BatchProposal } from '../../types';
 
 interface UserVoteProps {
-  proposal: Proposal;
-  minVoterBalance: string | null | undefined;
-  spamProtectionMinTokens: string | null | undefined;
+  proposal: Proposal | BatchProposal;
   transaction: VegaTxState | null;
   submit: (voteValue: VoteValue, proposalId: string | null) => Promise<void>;
   dialog: (props: DialogProps) => JSX.Element;
@@ -23,8 +21,6 @@ interface UserVoteProps {
 
 export const UserVote = ({
   proposal,
-  minVoterBalance,
-  spamProtectionMinTokens,
   submit,
   transaction,
   dialog,
@@ -46,12 +42,17 @@ export const UserVote = ({
       {pubKey ? (
         proposal && (
           <VoteButtonsContainer
+            changeType={
+              proposal.__typename === 'BatchProposal'
+                ? // @ts-ignore should not be null/undefined
+                  proposal.subProposals[0]?.terms?.change.__typename
+                : // @ts-ignore should not be null/undefined
+                  proposal.terms?.change.__typename
+            }
             voteState={voteState}
             voteDatetime={voteDatetime}
             proposalState={proposal.state}
             proposalId={proposal.id ?? ''}
-            minVoterBalance={minVoterBalance}
-            spamProtectionMinTokens={spamProtectionMinTokens}
             className="flex"
             submit={submit}
             transaction={transaction}

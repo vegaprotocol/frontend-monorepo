@@ -66,12 +66,12 @@ export const KeyValueTableRow = ({
   id,
 }: KeyValueTableRowProps) => {
   const dlClassName = classNames(
-    'flex gap-1 flex-wrap justify-between py-1 text-sm',
+    'flex gap-1 flex-wrap justify-between py-1 text-sm items-start',
     {
       'border-b border-neutral-300 dark:border-neutral-700': !noBorder,
     },
-    { 'flex-col items-start': !inline },
-    { 'flex-row items-center': inline },
+    { 'flex-col': !inline },
+    { 'flex-row': inline },
     className
   );
   const dtClassNames = classNames(

@@ -1,0 +1,493 @@
+fragment UpdateMarketStates on UpdateMarketState {
+  __typename
+  updateType
+  market {
+    decimalPlaces
+    id
+    tradableInstrument {
+      instrument {
+        product {
+          __typename
+          ... on Future {
+            quoteName
+          }
+          ... on Perpetual {
+            quoteName
+          }
+        }
+        name
+        code
+      }
+    }
+  }
+  updateType
+  price
+}
+
+fragment UpdateReferralPrograms on UpdateReferralProgram {
+  __typename
+  benefitTiers {
+    minimumEpochs
+    minimumRunningNotionalTakerVolume
+    referralDiscountFactor
+    referralRewardFactor
+  }
+  endOfProgram: endOfProgramTimestamp
+  windowLength
+  stakingTiers {
+    minimumStakedTokens
+    referralRewardMultiplier
+  }
+}
+
+fragment UpdateVolumeDiscountPrograms on UpdateVolumeDiscountProgram {
+  __typename
+  benefitTiers {
+    minimumRunningNotionalTakerVolume
+    volumeDiscountFactor
+  }
+  endOfProgramTimestamp
+  windowLength
+}
+
+# I prefix due to clash in libs/proposals
+fragment IUpdateMarketFields on UpdateMarket {
+  __typename
+  marketId
+  updateMarketConfiguration {
+    instrument {
+      code
+      product {
+        ... on UpdateFutureProduct {
+          quoteName
+          dataSourceSpecForSettlementData {
+            sourceType {
+              ... on DataSourceDefinitionInternal {
+                sourceType {
+                  ... on DataSourceSpecConfigurationTime {
+                    conditions {
+                      operator
+                      value
+                    }
+                  }
+                }
+              }
+              ... on DataSourceDefinitionExternal {
+                sourceType {
+                  ... on DataSourceSpecConfiguration {
+                    signers {
+                      signer {
+                        ... on PubKey {
+                          key
+                        }
+                        ... on ETHAddress {
+                          address
+                        }
+                      }
+                    }
+                    filters {
+                      key {
+                        name
+                        type
+                      }
+                      conditions {
+                        operator
+                        value
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+          # dataSourceSpecForTradingTermination {
+          #   sourceType {
+          #     ... on DataSourceDefinitionInternal {
+          #       sourceType {
+          #         ... on DataSourceSpecConfigurationTime {
+          #           conditions {
+          #             operator
+          #             value
+          #           }
+          #         }
+          #       }
+          #     }
+          #     ... on DataSourceDefinitionExternal {
+          #       sourceType {
+          #         ... on DataSourceSpecConfiguration {
+          #           signers {
+          #             signer {
+          #               ... on PubKey {
+          #                 key
+          #               }
+          #               ... on ETHAddress {
+          #                 address
+          #               }
+          #             }
+          #           }
+          #           filters {
+          #             key {
+          #               name
+          #               type
+          #             }
+          #             conditions {
+          #               operator
+          #               value
+          #             }
+          #           }
+          #         }
+          #       }
+          #     }
+          #   }
+          # }
+          dataSourceSpecBinding {
+            settlementDataProperty
+            tradingTerminationProperty
+          }
+        }
+        ... on UpdatePerpetualProduct {
+          quoteName
+          dataSourceSpecForSettlementData {
+            sourceType {
+              ... on DataSourceDefinitionInternal {
+                sourceType {
+                  ... on DataSourceSpecConfigurationTime {
+                    conditions {
+                      operator
+                      value
+                    }
+                  }
+                }
+              }
+              ... on DataSourceDefinitionExternal {
+                sourceType {
+                  ... on DataSourceSpecConfiguration {
+                    signers {
+                      signer {
+                        ... on PubKey {
+                          key
+                        }
+                        ... on ETHAddress {
+                          address
+                        }
+                      }
+                    }
+                    filters {
+                      key {
+                        name
+                        type
+                      }
+                      conditions {
+                        operator
+                        value
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+          dataSourceSpecBinding {
+            settlementDataProperty
+            settlementScheduleProperty
+          }
+        }
+      }
+    }
+    metadata
+    priceMonitoringParameters {
+      triggers {
+        horizonSecs
+        probability
+        auctionExtensionSecs
+      }
+    }
+    liquidityMonitoringParameters {
+      targetStakeParameters {
+        timeWindow
+        scalingFactor
+      }
+    }
+    riskParameters {
+      ... on UpdateMarketSimpleRiskModel {
+        simple {
+          factorLong
+          factorShort
+        }
+      }
+      ... on UpdateMarketLogNormalRiskModel {
+        logNormal {
+          riskAversionParameter
+          tau
+          params {
+            r
+            sigma
+            mu
+          }
+        }
+      }
+    }
+  }
+}
+
+# I prefix due to clash in libs/proposals
+fragment INewMarketFields on NewMarket {
+  __typename
+  decimalPlaces
+  metadata
+  riskParameters {
+    ... on LogNormalRiskModel {
+      riskAversionParameter
+      tau
+      params {
+        mu
+        r
+        sigma
+      }
+    }
+    ... on SimpleRiskModel {
+      params {
+        factorLong
+        factorShort
+      }
+    }
+  }
+  successorConfiguration {
+    parentMarketId
+  }
+  instrument {
+    name
+    code
+    product {
+      ... on FutureProduct {
+        settlementAsset {
+          id
+          name
+          symbol
+          decimals
+          quantum
+        }
+        quoteName
+        dataSourceSpecBinding {
+          settlementDataProperty
+          tradingTerminationProperty
+        }
+        dataSourceSpecForSettlementData {
+          sourceType {
+            ... on DataSourceDefinitionInternal {
+              sourceType {
+                ... on DataSourceSpecConfigurationTime {
+                  conditions {
+                    operator
+                    value
+                  }
+                }
+              }
+            }
+            ... on DataSourceDefinitionExternal {
+              sourceType {
+                ... on DataSourceSpecConfiguration {
+                  signers {
+                    signer {
+                      ... on PubKey {
+                        key
+                      }
+                      ... on ETHAddress {
+                        address
+                      }
+                    }
+                  }
+                  filters {
+                    key {
+                      name
+                      type
+                    }
+                    conditions {
+                      operator
+                      value
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      ... on PerpetualProduct {
+        settlementAsset {
+          id
+          name
+          symbol
+          decimals
+          quantum
+        }
+        quoteName
+      }
+    }
+  }
+  priceMonitoringParameters {
+    triggers {
+      horizonSecs
+      probability
+      auctionExtensionSecs
+    }
+  }
+  liquidityMonitoringParameters {
+    targetStakeParameters {
+      timeWindow
+      scalingFactor
+    }
+  }
+  positionDecimalPlaces
+  linearSlippageFactor
+}
+
+# I prefix due to clash in lib/proposals
+fragment INewAssetFields on NewAsset {
+  __typename
+  name
+  symbol
+  decimals
+  quantum
+  source {
+    ... on BuiltinAsset {
+      maxFaucetAmountMint
+    }
+    ... on ERC20 {
+      contractAddress
+      withdrawThreshold
+      lifetimeLimit
+    }
+  }
+}
+
+# I prefix due to clash in libs/proposals
+fragment IUpdateAssetFields on UpdateAsset {
+  __typename
+  assetId
+  quantum
+  source {
+    ... on UpdateERC20 {
+      lifetimeLimit
+      withdrawThreshold
+    }
+  }
+}
+
+# I prefix due to clash in libs/proposals
+fragment IUpdateNetworkParameterFields on UpdateNetworkParameter {
+  __typename
+  networkParameter {
+    key
+    value
+  }
+}
+
+fragment VoteFields on ProposalVotes {
+  yes {
+    totalTokens
+    totalNumber
+    totalEquityLikeShareWeight
+  }
+  no {
+    totalTokens
+    totalNumber
+    totalEquityLikeShareWeight
+  }
+}
+
+fragment ProposalTermsFields on ProposalTerms {
+  closingDatetime
+  enactmentDatetime
+  change {
+    __typename
+    ...UpdateMarketStates
+    ...UpdateReferralPrograms
+    ...UpdateVolumeDiscountPrograms
+    ...INewMarketFields
+    ...IUpdateMarketFields
+    ...INewAssetFields
+    ...IUpdateNetworkParameterFields
+    ...IUpdateAssetFields
+  }
+}
+
+fragment ProposalFields on Proposal {
+  id
+  rationale {
+    title
+    description
+  }
+  reference
+  state
+  datetime
+  rejectionReason
+  party {
+    id
+  }
+  errorDetails
+  terms {
+    ...ProposalTermsFields
+  }
+  votes {
+    ...VoteFields
+  }
+}
+
+fragment BatchProposalFields on BatchProposal {
+  id
+  rationale {
+    title
+    description
+  }
+  reference
+  state
+  datetime
+  rejectionReason
+  party {
+    id
+  }
+  errorDetails
+  batchTerms {
+    closingDatetime
+    changes {
+      enactmentDatetime
+    }
+  }
+  subProposals {
+    datetime
+    terms {
+      ...ProposalTermsFields
+    }
+  }
+  votes {
+    ...VoteFields
+  }
+}
+
+query Proposals {
+  proposalsConnection {
+    edges {
+      proposalNode {
+        __typename
+        ... on Proposal {
+          ...ProposalFields
+        }
+        ... on BatchProposal {
+          ...BatchProposalFields
+        }
+      }
+    }
+  }
+}
+
+query Proposal($proposalId: ID!) {
+  proposal(id: $proposalId) {
+    ... on Proposal {
+      ...ProposalFields
+    }
+    ... on BatchProposal {
+      ...BatchProposalFields
+    }
+  }
+}
