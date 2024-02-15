@@ -32,9 +32,15 @@ export function getNameForParty(id: string, data?: ExplorerNodeNamesQuery) {
 export type PartyLinkProps = Partial<ComponentProps<typeof Link>> & {
   id: string;
   truncate?: boolean;
+  networkLabel?: string;
 };
 
-const PartyLink = ({ id, truncate = false, ...props }: PartyLinkProps) => {
+const PartyLink = ({
+  id,
+  truncate = false,
+  networkLabel = t('Network'),
+  ...props
+}: PartyLinkProps) => {
   const { data } = useExplorerNodeNamesQuery();
   const name = useMemo(() => getNameForParty(id, data), [data, id]);
   const useName = name !== id;
@@ -44,7 +50,7 @@ const PartyLink = ({ id, truncate = false, ...props }: PartyLinkProps) => {
   if (id === SPECIAL_CASE_NETWORK || id === SPECIAL_CASE_NETWORK_ID) {
     return (
       <span className="font-mono" data-testid="network">
-        {t('Network')}
+        {networkLabel}
       </span>
     );
   }

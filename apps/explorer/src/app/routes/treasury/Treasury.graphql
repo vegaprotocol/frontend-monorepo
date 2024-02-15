@@ -1,16 +1,9 @@
-query ExplorerTreasury($partyId: ID!) {
-  party(id: $partyId) {
-    accountsConnection {
-      edges {
-        node {
-          type
-          asset {
-            id
-          }
-          market {
-            id
-            state
-          }
+query ExplorerTreasury {
+  assetsConnection(pagination: { last: 1000 }) {
+    edges {
+      node {
+        id
+        networkTreasuryAccount {
           balance
         }
       }

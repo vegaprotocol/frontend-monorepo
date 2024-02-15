@@ -7,6 +7,7 @@ export type AssetBalanceProps = {
   price: string;
   showAssetLink?: boolean;
   showAssetSymbol?: boolean;
+  rounded?: boolean;
 };
 
 /**
@@ -18,12 +19,17 @@ const AssetBalance = ({
   price,
   showAssetLink = true,
   showAssetSymbol = false,
+  rounded = false,
 }: AssetBalanceProps) => {
   const { data: asset, loading } = useAssetDataProvider(assetId);
 
   const label =
     !loading && asset && asset.decimals
-      ? addDecimalsFixedFormatNumber(price, asset.decimals)
+      ? addDecimalsFixedFormatNumber(
+          price,
+          asset.decimals,
+          rounded ? 0 : undefined
+        )
       : price;
 
   return (
