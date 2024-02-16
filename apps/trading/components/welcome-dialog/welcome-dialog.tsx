@@ -130,7 +130,7 @@ export const ConnectionOption = ({
   return (
     <li>
       <button
-        className="flex gap-2 w-full hover:bg-vega-clight-800 p-4 rounded"
+        className="flex gap-2 w-full hover:bg-vega-clight-800 dark:hover:bg-vega-cdark-800 p-4 rounded"
         onClick={onClick}
       >
         <span>

@@ -41,7 +41,7 @@ export const ConnectionOptions = ({ onConnect }: { onConnect: () => void }) => {
   return (
     <div className="flex flex-col gap-4">
       <h2 className="text-xl">Connect Vega Wallet</h2>
-      <ul className="grid grid-cols-2 gap-x-2 gap-y-4">
+      <ul className="grid grid-cols-2 gap-x-2 gap-y-4 -mx-2">
         {connectors.map((c) => {
           return (
             <ConnectionOption
@@ -84,9 +84,10 @@ export const ConnectionOption = ({
         align="center"
         side="right"
         sideOffset={10}
+        delayDuration={400}
       >
         <button
-          className="flex gap-2 items-center capitalize"
+          className="w-full flex gap-2 items-center p-2 rounded capitalize hover:bg-vega-clight-800 dark:hover:bg-vega-cdark-800"
           onClick={onClick}
         >
           <ConnectorIcon id={id} />
