@@ -1,7 +1,7 @@
 import { MemoryRouter } from 'react-router-dom';
-import { MockedWalletProvider } from '@vegaprotocol/wallet-react';
+import { MockedWalletProvider, mockConfig } from '@vegaprotocol/wallet-react';
 import { GetStarted } from './get-started';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import { useOnboardingStore } from './use-get-onboarding-step';
 
 let mockStep = 1;
@@ -14,7 +14,7 @@ describe('GetStarted', () => {
   const renderComponent = () => {
     return (
       <MemoryRouter>
-        <MockedWalletProvider store={{ pubKey: 'my-pubkey' }}>
+        <MockedWalletProvider>
           <GetStarted />
         </MockedWalletProvider>
       </MemoryRouter>
@@ -32,6 +32,12 @@ describe('GetStarted', () => {
     jest.clearAllMocks();
   });
 
+  afterEach(() => {
+    act(() => {
+      mockConfig.reset();
+    });
+  });
+
   it('renders full get started content if not connected and no browser wallet detected', () => {
     render(renderComponent());
     expect(screen.getByTestId('get-started-banner')).toBeInTheDocument();
@@ -45,6 +51,7 @@ describe('GetStarted', () => {
   });
 
   it('renders nothing if dismissed', () => {
+    mockConfig.store.setState({ status: 'connected', pubKey: 'my-key' });
     useOnboardingStore.setState({ dismissed: true });
     mockStep = 0;
     const { container } = render(renderComponent());
@@ -52,6 +59,7 @@ describe('GetStarted', () => {
   });
 
   it('steps should be ticked', () => {
+    mockConfig.store.setState({ status: 'connected', pubKey: 'my-key' });
     useOnboardingStore.setState({ dismissed: false });
     const navigatorGetter: jest.SpyInstance = jest.spyOn(
       window.navigator,

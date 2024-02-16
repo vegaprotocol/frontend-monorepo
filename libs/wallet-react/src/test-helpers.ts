@@ -1,48 +1,86 @@
-import { createStore } from 'zustand/vanilla';
+import { type StoreApi } from 'zustand/vanilla';
 import { createElement, type PropsWithChildren } from 'react';
 import {
-  createCoreStoreSlice,
-  createSingleKeySlice,
-  type Wallet,
+  createConfig,
+  stagnet,
   type Store,
+  type Connector,
 } from '@vegaprotocol/wallet';
 import { WalletContext } from './context';
 
-const store = createStore<Store>()((...args) => ({
-  ...createCoreStoreSlice(...args),
-  ...createSingleKeySlice(...args),
-  chainId: 'test-chain-id',
-}));
-
-const defaultContext: Wallet = {
-  store,
-  connectors: [],
-  connect: () => Promise.resolve({ success: true }),
-  disconnect: () => Promise.resolve({ success: true }),
-  refreshKeys: () => Promise.resolve(),
-  sendTransaction: (_) => {
-    return Promise.resolve({
-      transactionHash: 'test-tx-hash',
-      signature: 'test-signature',
-      sentAt: '2024-01-01T00:00:00.000Z',
-      receivedAt: '2024-01-01T00:00:00.000Z',
-    });
+export const mockKeys = [
+  {
+    name: 'Key 1',
+    publicKey: '1'.repeat(64),
   },
+  {
+    name: 'Key 2',
+    publicKey: '2'.repeat(64),
+  },
+];
+
+export class MockConnector implements Connector {
+  readonly id = 'mock';
+
+  store: StoreApi<Store> | undefined;
+
+  constructor() {}
+
+  bindStore(store: StoreApi<Store>) {
+    this.store = store;
+  }
+
+  async connectWallet() {
+    return { success: true };
+  }
+
+  async disconnectWallet() {
+    return { success: true };
+  }
+
+  async getChainId() {
+    return {
+      chainId: stagnet.id,
+    };
+  }
+
+  async listKeys() {
+    return mockKeys;
+  }
+
+  async isConnected() {
+    return { connected: true };
+  }
+
+  // @ts-ignore deliberate fail
+  async sendTransaction() {
+    return {
+      transactionHash: '0x' + 'a'.repeat(64),
+      signature: '0x' + 'a'.repeat(64),
+      sentAt: new Date().toISOString(),
+      receivedAt: new Date().toISOString(),
+    };
+  }
+
+  on() {}
+
+  off() {}
+}
+
+const mockConnector = new MockConnector();
+
+export const mockChain = {
+  id: 'mock-chain',
+  testnet: true,
+  name: 'My Mocked Chain',
 };
 
-export function MockedWalletProvider({
-  children,
-  config,
-  store: testStore,
-}: PropsWithChildren<{
-  config?: Partial<Wallet>;
-  store?: Partial<Store>;
-}>) {
-  // TODO: dont do this, dodgy set states in render
-  if (testStore) {
-    store.setState(testStore);
-  }
-  const value = { ...defaultContext, ...config };
+export const mockConfig = createConfig({
+  chains: [mockChain],
+  defaultChainId: mockChain.id,
+  connectors: [mockConnector],
+});
 
-  return createElement(WalletContext.Provider, { value }, children);
+export function MockedWalletProvider({ children }: PropsWithChildren) {
+  return createElement(WalletContext.Provider, { value: mockConfig }, children);
 }

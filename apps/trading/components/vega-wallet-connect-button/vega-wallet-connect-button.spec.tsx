@@ -1,32 +1,31 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import { VegaWalletConnectButton } from './vega-wallet-connect-button';
 import { truncateByChars } from '@vegaprotocol/utils';
 import userEvent from '@testing-library/user-event';
-import { MockedWalletProvider } from '@vegaprotocol/wallet-react';
-import { type Store, type Wallet } from '@vegaprotocol/wallet';
+import { mockConfig, MockedWalletProvider } from '@vegaprotocol/wallet-react';
 
-// TODO: check this
-//
 jest.mock('../../lib/hooks/use-get-current-route-id', () => ({
   useGetCurrentRouteId: jest.fn().mockReturnValue('current-route-id'),
 }));
 
-const renderComponent = (
-  store?: Partial<Store>,
-  config?: Partial<Wallet>,
-  mockOnClick = jest.fn()
-) => {
+const renderComponent = (mockOnClick = jest.fn()) => {
   return (
-    <MockedWalletProvider store={store} config={config}>
+    <MockedWalletProvider>
       <VegaWalletConnectButton onClick={mockOnClick} />
     </MockedWalletProvider>
   );
 };
 
 describe('VegaWalletConnectButton', () => {
+  afterEach(() => {
+    act(() => {
+      mockConfig.reset();
+    });
+  });
+
   it('should fire dialog when not connected', async () => {
     const onClick = jest.fn();
-    render(renderComponent(undefined, undefined, onClick));
+    render(renderComponent(onClick));
     const button = screen.getByTestId('connect-vega-wallet');
     expect(button).toHaveTextContent('Get started');
     await userEvent.click(button);
@@ -41,32 +40,26 @@ describe('VegaWalletConnectButton', () => {
   });
 
   it('should open dropdown and refresh keys when connected', async () => {
-    const pubKey = { publicKey: '123456__123456', name: 'test' };
-    const pubKey2 = { publicKey: 'abcdef__abcdef', name: 'test2' };
-    const keys = [pubKey, pubKey2];
+    const key = { publicKey: '123456__123456', name: 'test' };
+    const key2 = { publicKey: 'abcdef__abcdef', name: 'test2' };
+    const keys = [key, key2];
 
-    const refreshKeys = jest.fn();
-    const disconnect = jest.fn();
-    const setPubKey = jest.fn();
+    mockConfig.store.setState({
+      status: 'connected',
+      keys,
+      pubKey: key.publicKey,
+    });
 
-    render(
-      renderComponent(
-        {
-          status: 'connected',
-          pubKey: pubKey.publicKey,
-          keys,
-          setPubKey,
-        },
-        {
-          refreshKeys,
-          disconnect,
-        }
-      )
-    );
+    const refreshKeys = jest.spyOn(mockConfig, 'refreshKeys');
+    const disconnect = jest.spyOn(mockConfig, 'disconnect');
+    const setPubKey = jest.spyOn(mockConfig.store, 'setState');
 
+    render(renderComponent());
+
+    expect(screen.queryByTestId('connect-vega-wallet')).not.toBeInTheDocument();
     const button = screen.getByTestId('manage-vega-wallet');
-    expect(button).toHaveTextContent(truncateByChars(pubKey.publicKey));
-    // userEvent.click doesn't work here for some reason
+    expect(button).toHaveTextContent(truncateByChars(key.publicKey));
+
     fireEvent.click(button);
 
     expect(await screen.findByRole('menu')).toBeInTheDocument();
@@ -75,8 +68,8 @@ describe('VegaWalletConnectButton', () => {
     );
     expect(refreshKeys).toHaveBeenCalled();
 
-    fireEvent.click(screen.getByTestId(`key-${pubKey2.publicKey}`));
-    expect(setPubKey).toHaveBeenCalledWith(pubKey2.publicKey);
+    fireEvent.click(screen.getByTestId(`key-${key2.publicKey}`));
+    expect(setPubKey).toHaveBeenCalledWith({ pubKey: key2.publicKey });
 
     fireEvent.click(screen.getByTestId('disconnect'));
     expect(disconnect).toHaveBeenCalled();

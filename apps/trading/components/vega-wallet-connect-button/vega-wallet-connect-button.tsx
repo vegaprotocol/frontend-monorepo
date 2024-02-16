@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { truncateByChars } from '@vegaprotocol/utils';
 import {
@@ -22,8 +22,6 @@ import classNames from 'classnames';
 import { ViewType, useSidebar } from '../sidebar';
 import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
 import { useT } from '../../lib/use-t';
-
-// TODO:  trnasfer button
 
 export const VegaWalletConnectButton = ({
   intent = Intent.None,
@@ -51,9 +49,7 @@ export const VegaWalletConnectButton = ({
 
   const walletInstalled = isBrowserWalletInstalled();
 
-  const activeKey = useMemo(() => {
-    return pubKeys?.find((pk) => pk.publicKey === pubKey);
-  }, [pubKey, pubKeys]);
+  const activeKey = pubKeys?.find((pk) => pk.publicKey === pubKey);
 
   if (status === 'connected') {
     return (

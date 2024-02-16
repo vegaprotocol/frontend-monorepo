@@ -20,4 +20,9 @@ export { useSendTransaction } from './hooks/use-send-transaction';
 export { ConnectDialog } from './components/connect-dialog';
 
 // Testing
-export { MockedWalletProvider } from './test-helpers';
+export {
+  mockConfig,
+  mockKeys,
+  MockConnector,
+  MockedWalletProvider,
+} from './test-helpers';

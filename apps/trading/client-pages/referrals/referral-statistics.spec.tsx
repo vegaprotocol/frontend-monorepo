@@ -21,10 +21,13 @@ import {
   type RefereesQuery,
 } from './hooks/__generated__/Referees';
 import { MemoryRouter } from 'react-router-dom';
-import { MockedWalletProvider } from '@vegaprotocol/wallet-react';
+import {
+  mockConfig,
+  mockKeys,
+  MockedWalletProvider,
+} from '@vegaprotocol/wallet-react';
 
-const MOCK_PUBKEY =
-  '1234567890123456789012345678901234567890123456789012345678901234';
+const MOCK_PUBKEY = mockKeys[0].publicKey;
 
 const MOCK_STAKE_AVAILABLE: StakeAvailableQuery = {
   networkParameter: {
@@ -301,13 +304,25 @@ describe('ReferralStatistics', () => {
     return render(
       <MemoryRouter>
         <MockedProvider mocks={mocks} showWarnings={false}>
-          <MockedWalletProvider store={{ pubKey: MOCK_PUBKEY }}>
+          <MockedWalletProvider>
             <ReferralStatistics />
           </MockedWalletProvider>
         </MockedProvider>
       </MemoryRouter>
     );
   };
+
+  beforeAll(() => {
+    mockConfig.store.setState({
+      status: 'connected',
+      keys: mockKeys,
+      pubKey: mockKeys[0].publicKey,
+    });
+  });
+
+  afterAll(() => {
+    mockConfig.reset();
+  });
 
   it('displays apply code when no data has been found for given pubkey', () => {
     renderComponent([]);

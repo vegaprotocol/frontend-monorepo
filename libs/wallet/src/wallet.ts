@@ -1,4 +1,4 @@
-import { createStore, type StateCreator } from 'zustand/vanilla';
+import { createStore } from 'zustand/vanilla';
 import { persist } from 'zustand/middleware';
 import {
   type Wallet,
@@ -11,24 +11,18 @@ import {
   type ConnectorType,
 } from './types';
 
-export const createSingleKeySlice: StateCreator<SingleKeyStore> = (set) => ({
+export const createSingleKeySlice: SingleKeyStore = {
   pubKey: undefined,
-  setPubKey: (key) => {
-    set({ pubKey: key });
-  },
-});
+};
 
-export const createCoreStoreSlice: StateCreator<CoreStore> = (set) => ({
+export const createCoreStoreSlice: CoreStore = {
   chainId: '',
   status: 'disconnected',
   current: undefined,
   keys: [],
-  setKeys: (keys) => {
-    set({ keys });
-  },
   error: undefined,
   jsonRpcToken: undefined,
-});
+};
 
 export function createConfig(cfg: Config): Wallet {
   const chain = cfg.chains.find((c) => c.id === cfg.defaultChainId);
@@ -37,13 +31,28 @@ export function createConfig(cfg: Config): Wallet {
     throw new Error('default chain not found in config');
   }
 
+  function getInitialState() {
+    return {
+      ...createCoreStoreSlice,
+      ...createSingleKeySlice,
+      // chainId: '',
+      // status: 'disconnected',
+      // current: undefined,
+      // keys: [],
+      // error: undefined,
+      // jsonRpcToken: undefined,
+      // pubKey: undefined,
+    };
+  }
+
   const store = createStore<Store>()(
     persist(
-      (...args) => ({
-        ...createCoreStoreSlice(...args),
-        ...createSingleKeySlice(...args),
-        chainId: chain.id,
-      }),
+      getInitialState,
+      // (...args) => ({
+      //   ...createCoreStoreSlice(...args),
+      //   ...createSingleKeySlice(...args),
+      //   chainId: chain.id,
+      // }),
       {
         name: 'vega_wallet_store',
         partialize(state) {
@@ -93,6 +102,7 @@ export function createConfig(cfg: Config): Wallet {
         throw new Error('failed to get keys');
       }
 
+      // TODO: this shouldnt be in core as we dont want to enforce single key usage
       const storedPubKey = store.getState().pubKey;
       let defaultKey;
       if (listKeysRes.find((k) => k.publicKey === storedPubKey)) {
@@ -192,12 +202,17 @@ export function createConfig(cfg: Config): Wallet {
     }
   }
 
+  function reset() {
+    store.setState(getInitialState(), true);
+  }
+
   return {
     store,
     connect,
     disconnect,
     refreshKeys,
     sendTransaction,
+    reset,
 
     get connectors() {
       return connectors.getState();

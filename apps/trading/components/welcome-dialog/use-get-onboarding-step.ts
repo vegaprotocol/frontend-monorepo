@@ -7,7 +7,6 @@ import { ordersWithMarketProvider } from '@vegaprotocol/orders';
 import * as Types from '@vegaprotocol/types';
 import { aggregatedAccountsDataProvider } from '@vegaprotocol/accounts';
 import { positionsDataProvider } from '@vegaprotocol/positions';
-import { useGlobalStore } from '../../stores';
 
 const ONBOARDING_STORAGE_KEY = 'vega_onboarding';
 

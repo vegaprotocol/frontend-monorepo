@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react';
+import { act, renderHook } from '@testing-library/react';
 import {
   useGetOnboardingStep,
   OnboardingStep,
@@ -6,16 +6,7 @@ import {
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { ordersWithMarketProvider } from '@vegaprotocol/orders';
 import { positionsDataProvider } from '@vegaprotocol/positions';
-import * as walletHooks from '@vegaprotocol/wallet-react';
-
-// TODO: review these tests and use MockedWalletProvider
-
-jest.mock('@vegaprotocol/wallet-react');
-
-// @ts-ignore type wrong after mock
-walletHooks.useVegaWallet.mockReturnValue({
-  pubKey: 'my-pubkey',
-});
+import { MockedWalletProvider, mockConfig } from '@vegaprotocol/wallet-react';
 
 let mockData: object[] | null = [{ id: 'item-id' }];
 jest.mock('@vegaprotocol/data-provider', () => ({
@@ -30,35 +21,38 @@ describe('useGetOnboardingStep', () => {
     globalThis.window.vega = {} as Vega;
   });
 
+  afterEach(() => {
+    act(() => {
+      mockConfig.reset();
+    });
+  });
+
+  const setup = () => {
+    return renderHook(() => useGetOnboardingStep(), {
+      wrapper: MockedWalletProvider,
+    });
+  };
+
   it('should return properly ONBOARDING_UNKNOWN_STEP', () => {
+    mockConfig.store.setState({ status: 'connected', pubKey: 'my-key' });
     mockData = null;
-    const { result } = renderHook(() => useGetOnboardingStep());
+    const { result } = setup();
     expect(result.current).toEqual(OnboardingStep.ONBOARDING_UNKNOWN_STEP);
   });
 
   it('should return properly ONBOARDING_CONNECT_STEP', () => {
-    // @ts-ignore type wrong after mock
-    walletHooks.useVegaWallet.mockReturnValue({
-      pubKey: null,
-    });
-    const { result } = renderHook(() => useGetOnboardingStep());
+    const { result } = setup();
     expect(result.current).toEqual(OnboardingStep.ONBOARDING_CONNECT_STEP);
   });
 
   it('should return properly ONBOARDING_DEPOSIT_STEP', () => {
-    // @ts-ignore type wrong after mock
-    walletHooks.useVegaWallet.mockReturnValue({
-      pubKey: 'my-key',
-    });
-    const { result } = renderHook(() => useGetOnboardingStep());
+    mockConfig.store.setState({ status: 'connected', pubKey: 'my-key' });
+    const { result } = setup();
     expect(result.current).toEqual(OnboardingStep.ONBOARDING_DEPOSIT_STEP);
   });
 
   it('should return properly ONBOARDING_ORDER_STEP', () => {
-    // @ts-ignore type wrong after mock
-    walletHooks.useVegaWallet.mockReturnValue({
-      pubKey: 'my-key',
-    });
+    mockConfig.store.setState({ status: 'connected', pubKey: 'my-key' });
     mockData = [{ id: 'item-id' }];
     (useDataProvider as jest.Mock).mockImplementation((args) => {
       if (
@@ -69,20 +63,17 @@ describe('useGetOnboardingStep', () => {
       }
       return { data: mockData };
     });
-    const { result } = renderHook(() => useGetOnboardingStep());
+    const { result } = setup();
     expect(result.current).toEqual(OnboardingStep.ONBOARDING_ORDER_STEP);
   });
 
   it('should return properly ONBOARDING_COMPLETE_STEP', () => {
-    // @ts-ignore type wrong after mock
-    walletHooks.useVegaWallet.mockReturnValue({
-      pubKey: 'my-key',
-    });
+    mockConfig.store.setState({ status: 'connected', pubKey: 'my-key' });
     mockData = [{ id: 'item-id' }];
     (useDataProvider as jest.Mock).mockImplementation(() => {
       return { data: mockData };
     });
-    const { result } = renderHook(() => useGetOnboardingStep());
+    const { result } = setup();
     expect(result.current).toEqual(OnboardingStep.ONBOARDING_COMPLETE_STEP);
   });
 });

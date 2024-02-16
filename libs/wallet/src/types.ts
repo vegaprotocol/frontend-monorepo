@@ -26,7 +26,12 @@ export interface TransactionParams {
 
 type VegaWalletEvent = 'client.disconnected';
 
-export type ConnectorType = 'injected' | 'jsonRpc' | 'snap' | 'readOnly';
+export type ConnectorType =
+  | 'injected'
+  | 'jsonRpc'
+  | 'snap'
+  | 'readOnly'
+  | 'mock';
 
 export interface Connector {
   readonly id: ConnectorType;
@@ -66,14 +71,14 @@ export type CoreStore = {
   status: Status;
   current: ConnectorType | undefined;
   keys: Key[];
-  setKeys: (keys: Key[]) => void;
+  // setKeys: (keys: Key[]) => void;
   error: string | undefined;
   jsonRpcToken: string | undefined;
 };
 
 export type SingleKeyStore = {
   pubKey: string | undefined;
-  setPubKey: (key: string) => void;
+  // setPubKey: (key: string) => void;
 };
 
 export type Store = CoreStore & SingleKeyStore;
@@ -93,6 +98,7 @@ export type Wallet = {
   sendTransaction: (
     params: TransactionParams
   ) => Promise<TransactionResponse | IWalletError>;
+  reset: () => void;
 };
 
 declare global {

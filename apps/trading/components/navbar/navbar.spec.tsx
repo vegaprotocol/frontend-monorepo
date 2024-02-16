@@ -1,48 +1,27 @@
-import { render, screen, within } from '@testing-library/react';
+import { act, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import { Navbar } from './navbar';
 import { useGlobalStore } from '../../stores';
 import { ENV, useFeatureFlags } from '@vegaprotocol/environment';
-import { MockedWalletProvider } from '@vegaprotocol/wallet-react';
-import { type Wallet, type Store } from '@vegaprotocol/wallet';
+import {
+  mockConfig,
+  mockKeys,
+  MockedWalletProvider,
+} from '@vegaprotocol/wallet-react';
 
 jest.mock('@vegaprotocol/proposals', () => ({
   ProtocolUpgradeCountdown: () => null,
 }));
 
 describe('Navbar', () => {
-  const pubKey = '000';
-  const pubKeys = [
-    {
-      publicKey: pubKey,
-      name: 'Pub key 0',
-    },
-    {
-      publicKey: '111',
-      name: 'Pub key 1',
-    },
-  ];
-
   const marketId = 'abc';
   const navbarContent = 'navbar-menu-content';
 
-  const renderComponent = (
-    initialEntries?: string[],
-    store?: Partial<Store>,
-    config?: Partial<Wallet>
-  ) => {
-    const defaultStore: Partial<Store> = {
-      status: 'connected',
-      pubKey,
-      keys: pubKeys,
-    };
+  const renderComponent = (initialEntries?: string[]) => {
     return render(
       <MemoryRouter initialEntries={initialEntries}>
-        <MockedWalletProvider
-          config={config}
-          store={{ ...defaultStore, ...store }}
-        >
+        <MockedWalletProvider>
           <Navbar />
         </MockedWalletProvider>
       </MemoryRouter>
@@ -58,6 +37,12 @@ describe('Navbar', () => {
 
   afterAll(() => {
     jest.clearAllMocks();
+  });
+
+  afterEach(() => {
+    act(() => {
+      mockConfig.reset();
+    });
   });
 
   it('should be properly rendered', () => {
@@ -128,23 +113,30 @@ describe('Navbar', () => {
   });
 
   it('can open wallet menu on small screens and change pubkey', async () => {
-    const mockSelectPubKey = jest.fn();
-    renderComponent(undefined, { setPubKey: mockSelectPubKey });
+    mockConfig.store.setState({
+      status: 'connected',
+      keys: mockKeys,
+      pubKey: mockKeys[0].publicKey,
+    });
+    const mockSelectPubKey = jest.spyOn(mockConfig.store, 'setState');
+    renderComponent(undefined);
     await userEvent.click(screen.getByRole('button', { name: 'Wallet' }));
 
     const menuEl = screen.getByTestId(navbarContent);
     expect(menuEl).toBeInTheDocument();
     const menu = within(menuEl);
 
-    expect(menu.getAllByTestId(/key-\d+-mobile/)).toHaveLength(pubKeys.length);
+    expect(menu.getAllByTestId(/key-\d+-mobile/)).toHaveLength(mockKeys.length);
 
-    const activeKey = within(menu.getByTestId('key-000-mobile'));
-    expect(activeKey.getByText(pubKeys[0].name)).toBeInTheDocument();
+    const activeKey = within(menu.getByTestId(/key-1+-mobile/));
+    expect(activeKey.getByText(mockKeys[0].name)).toBeInTheDocument();
     expect(activeKey.getByTestId('icon-tick')).toBeInTheDocument();
 
-    const inactiveKey = within(menu.getByTestId('key-111-mobile'));
-    await userEvent.click(inactiveKey.getByText(pubKeys[1].name));
-    expect(mockSelectPubKey).toHaveBeenCalledWith(pubKeys[1].publicKey);
+    const inactiveKey = within(menu.getByTestId(/key-2+-mobile/));
+    await userEvent.click(inactiveKey.getByText(mockKeys[1].name));
+    expect(mockSelectPubKey).toHaveBeenCalledWith({
+      pubKey: mockKeys[1].publicKey,
+    });
   });
 
   it('can transfer and close menu', async () => {
@@ -161,8 +153,8 @@ describe('Navbar', () => {
   });
 
   it('can disconnect and close menu', async () => {
-    const mockDisconnect = jest.fn();
-    renderComponent(undefined, undefined, { disconnect: mockDisconnect });
+    const mockDisconnect = jest.spyOn(mockConfig, 'disconnect');
+    renderComponent(undefined);
     await userEvent.click(screen.getByRole('button', { name: 'Wallet' }));
 
     const menuEl = screen.getByTestId(navbarContent);
