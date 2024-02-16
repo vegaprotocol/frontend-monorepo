@@ -1,9 +1,4 @@
-import {
-  AsyncRenderer,
-  Icon,
-  VegaIcon,
-  VegaIconNames,
-} from '@vegaprotocol/ui-toolkit';
+import { AsyncRenderer, Icon } from '@vegaprotocol/ui-toolkit';
 import { removePaginationWrapper } from '@vegaprotocol/utils';
 import { useDocumentTitle } from '../../hooks/use-document-title';
 import {
@@ -21,6 +16,10 @@ import { TimeAgo } from '../../components/time-ago';
 import { TransferStatusIcon } from '../../components/txs/details/transfer/blocks/transfer-status';
 import { t } from '@vegaprotocol/i18n';
 import { IconNames } from '@blueprintjs/icons';
+import { RouteTitle } from '../../components/route-title';
+import { useMemo } from 'react';
+import { useScreenDimensions } from '@vegaprotocol/react-helpers';
+import { AssetIcon } from './components/asset-icon';
 
 type NonZeroAccount = {
   assetId: string;
@@ -56,6 +55,11 @@ export const NetworkAccountsTable = () => {
     // This needs to ignore error as old assets may no longer properly resolve
     errorPolicy: 'ignore',
   });
+  const { screenSize } = useScreenDimensions();
+  const shouldRound = useMemo(
+    () => ['xs', 'sm', 'md', 'lg'].includes(screenSize),
+    [screenSize]
+  );
 
   return (
     <AsyncRenderer
@@ -65,17 +69,28 @@ export const NetworkAccountsTable = () => {
       render={(data) => {
         const c = parseResultsToAccounts(data);
         return (
-          <section>
+          <section className="md:flex md:flex-row flex-wrap">
             {c.map((a) => (
-              <p>
-                <span>
-                  <AssetBalance
-                    assetId={a.assetId}
-                    price={a.balance}
-                    showAssetSymbol={true}
-                  />
-                </span>
-              </p>
+              <div className="basis-1/2 md:basis-1/4">
+                <div className="bg-white rounded overflow-hidden shadow-lg dark:bg-black dark:border-slate-500 dark:border">
+                  <div className="text-center p-6 bg-gray-100 dark:bg-slate-900 border-b dark:border-slate-500">
+                    <p className="flex justify-center">
+                      <AssetIcon symbol={a.assetId} />
+                    </p>
+                    <p className="mt-3">
+                      <AssetLink assetId={a.assetId} />
+                    </p>
+                  </div>
+                  <div className="text-center py-5">
+                    <AssetBalance
+                      assetId={a.assetId}
+                      price={a.balance}
+                      showAssetSymbol={true}
+                      rounded={shouldRound}
+                    />
+                  </div>
+                </div>
+              </div>
             ))}
           </section>
         );
@@ -120,6 +135,20 @@ export const NetworkTransfersTable = () => {
     errorPolicy: 'ignore',
   });
 
+  const { screenSize } = useScreenDimensions();
+  const shouldRound = useMemo(
+    () => ['xs', 'sm', 'md', 'lg'].includes(screenSize),
+    [screenSize]
+  );
+  const shouldTruncate = useMemo(
+    () => ['xs', 'sm', 'md', 'lg', 'xl'].includes(screenSize),
+    [screenSize]
+  );
+  const shouldHideColumns = useMemo(
+    () => ['xs', 'sm'].includes(screenSize),
+    [screenSize]
+  );
+
   return (
     <section>
       <AsyncRenderer
@@ -140,8 +169,20 @@ export const NetworkTransfersTable = () => {
                   <th className={theadClasses}>Age</th>
                   <th className={theadClasses}>From</th>
                   <th className={theadClasses}>To</th>
-                  <th className={theadClasses}>Status</th>
-                  <th className={theadClasses}>Trigger</th>
+                  <th
+                    className={`${theadClasses} ${
+                      shouldHideColumns ? 'hidden' : ''
+                    }`}
+                  >
+                    Status
+                  </th>
+                  <th
+                    className={`${theadClasses} ${
+                      shouldHideColumns ? 'hidden' : ''
+                    }`}
+                  >
+                    Trigger
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -153,7 +194,7 @@ export const NetworkTransfersTable = () => {
                     <tr>
                       {a && a.amount && a.asset && (
                         <td
-                          className={`px-2 py-1 border text-right ${
+                          className={`px-2 py-1 border whitespace-nowrap text-right ${
                             isIncoming ? colours.INCOMING : colours.OUTGOING
                           }`}
                           title={a.amount}
@@ -175,55 +216,70 @@ export const NetworkTransfersTable = () => {
                             assetId={a.asset.id}
                             price={a.amount}
                             showAssetLink={false}
-                            rounded={true}
+                            rounded={shouldRound}
                           />
                         </td>
                       )}
-                      {a && a.amount && a.asset && (
-                        <td className="px-2 py-1 border">
+                      <td className="px-2 py-1 border whitespace-nowrap">
+                        {a && a.amount && a.asset && (
                           <AssetLink
                             assetId={a.asset.id}
                             showAssetSymbol={true}
                           />
-                        </td>
-                      )}
-                      {a && a.timestamp && (
-                        <td className="px-2 py-1 border">
-                          <TimeAgo date={a.timestamp} />
-                        </td>
-                      )}
-                      {a && a.from && (
-                        <td className="px-2 py-1 border">
+                        )}
+                      </td>
+                      <td className="px-2 py-1 border">
+                        {a && a.timestamp && <TimeAgo date={a.timestamp} />}
+                      </td>
+                      <td className="px-2 py-1 border">
+                        {a && a.from && (
                           <PartyLink
                             id={a.from}
                             truncate={true}
+                            truncateLength={shouldTruncate ? 4 : 15}
                             networkLabel={t('Treasury')}
                           />
-                        </td>
-                      )}
-                      {a && !a.to && (
-                        <td className="px-2 py-1 border">
-                          {AccountTypeMapping[a.toAccountType]}
-                        </td>
-                      )}
-                      {a && a.to && (
-                        <td className="px-2 py-1 border">
-                          <PartyLink id={a.to} networkLabel={t('Treasury')} />
-                        </td>
-                      )}
-                      {a && a.status && (
-                        <td className="px-2 py-1 border text-center">
+                        )}
+                      </td>
+                      <td className="px-2 py-1 border">
+                        {a && a.to && (
+                          <PartyLink
+                            id={a.to}
+                            networkLabel={t('Treasury')}
+                            truncate={true}
+                            truncateLength={shouldTruncate ? 4 : 15}
+                          />
+                        )}
+                        {a && !a.to && (
+                          <span
+                            className="underline decoration-dotted"
+                            title={AccountTypeMapping[a.toAccountType]}
+                          >
+                            {getToAccountTypeLabel(a.toAccountType)}
+                          </span>
+                        )}
+                      </td>
+                      <td
+                        className={`px-2 py-1 border text-center ${
+                          shouldHideColumns ? 'hidden' : ''
+                        }`}
+                      >
+                        {a && a.status && (
                           <TransferStatusIcon status={a.status} />
-                        </td>
-                      )}
-                      {a && (
-                        <td
-                          className="px-2 py-1 border"
-                          title={a.kind.__typename}
+                        )}
+                      </td>
+                      <td
+                        className={`px-2 py-1 border ${
+                          shouldHideColumns ? 'hidden' : ''
+                        }`}
+                      >
+                        <span
+                          className="underline decoration-dotted"
+                          title={a?.kind.__typename}
                         >
-                          {typeLabel(a.kind.__typename)}
-                        </td>
-                      )}
+                          {a && typeLabel(a.kind.__typename)}
+                        </span>
+                      </td>
                     </tr>
                   );
                 })}
@@ -235,6 +291,35 @@ export const NetworkTransfersTable = () => {
     </section>
   );
 };
+
+export function getToAccountTypeLabel(type?: AccountType): string {
+  switch (type) {
+    case AccountType.ACCOUNT_TYPE_NETWORK_TREASURY:
+      return t('Treasury');
+    case AccountType.ACCOUNT_TYPE_FEES_INFRASTRUCTURE:
+    case AccountType.ACCOUNT_TYPE_FEES_MAKER:
+    case AccountType.ACCOUNT_TYPE_FEES_LIQUIDITY:
+    case AccountType.ACCOUNT_TYPE_LP_LIQUIDITY_FEES:
+    case AccountType.ACCOUNT_TYPE_PENDING_FEE_REFERRAL_REWARD:
+      return t('Fees');
+    case AccountType.ACCOUNT_TYPE_GLOBAL_INSURANCE:
+      return t('Insurance');
+    case AccountType.ACCOUNT_TYPE_GLOBAL_REWARD:
+    case AccountType.ACCOUNT_TYPE_REWARD_AVERAGE_POSITION:
+    case AccountType.ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES:
+    case AccountType.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES:
+    case AccountType.ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES:
+    case AccountType.ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS:
+    case AccountType.ACCOUNT_TYPE_REWARD_RELATIVE_RETURN:
+    case AccountType.ACCOUNT_TYPE_REWARD_RETURN_VOLATILITY:
+    case AccountType.ACCOUNT_TYPE_REWARD_VALIDATOR_RANKING:
+    case AccountType.ACCOUNT_TYPE_VESTED_REWARDS:
+    case AccountType.ACCOUNT_TYPE_VESTING_REWARDS:
+      return t('Rewards');
+    default:
+      return t('Other');
+  }
+}
 
 export function typeLabel(kind?: string): string {
   switch (kind) {
@@ -252,17 +337,15 @@ export function typeLabel(kind?: string): string {
 export const NetworkTreasury = () => {
   useDocumentTitle(['Network Treasury']);
   return (
-    <>
-      <section>
-        <h2 className="text-lg">{t('Treasury balances')}</h2>
+    <section>
+      <RouteTitle data-testid="block-header">{t(`Treasury`)}</RouteTitle>
+      <div>
         <NetworkAccountsTable />
-      </section>
-      <section className="mt-5">
-        <h2 className="text-lg">
-          <VegaIcon name={VegaIconNames.TRANSFER} /> {t('Transfers')}
-        </h2>
+      </div>
+      <div className="mt-5">
+        <h2 className="text-3xl mb-2">{t('Transfers')}</h2>
         <NetworkTransfersTable />
-      </section>
-    </>
+      </div>
+    </section>
   );
 };

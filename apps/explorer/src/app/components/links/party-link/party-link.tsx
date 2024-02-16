@@ -33,11 +33,13 @@ export type PartyLinkProps = Partial<ComponentProps<typeof Link>> & {
   id: string;
   truncate?: boolean;
   networkLabel?: string;
+  truncateLength?: number;
 };
 
 const PartyLink = ({
   id,
   truncate = false,
+  truncateLength = 4,
   networkLabel = t('Network'),
   ...props
 }: PartyLinkProps) => {
@@ -76,7 +78,11 @@ const PartyLink = ({
         {useName ? (
           name
         ) : (
-          <Hash text={truncate ? truncateMiddle(id, 4, 4) : id} />
+          <Hash
+            text={
+              truncate ? truncateMiddle(id, truncateLength, truncateLength) : id
+            }
+          />
         )}
       </Link>
     </span>
