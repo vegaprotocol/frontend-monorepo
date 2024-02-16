@@ -1,11 +1,6 @@
 import { type StoreApi } from 'zustand/vanilla';
 import { createElement, type PropsWithChildren } from 'react';
-import {
-  createConfig,
-  stagnet,
-  type Store,
-  type Connector,
-} from '@vegaprotocol/wallet';
+import { createConfig, type Store, type Connector } from '@vegaprotocol/wallet';
 import { WalletContext } from './context';
 
 export const mockKeys = [
@@ -21,6 +16,8 @@ export const mockKeys = [
 
 export class MockConnector implements Connector {
   readonly id = 'mock';
+  readonly name = 'Mock';
+  readonly description = 'Connector for test purposes';
 
   store: StoreApi<Store> | undefined;
 
@@ -40,7 +37,7 @@ export class MockConnector implements Connector {
 
   async getChainId() {
     return {
-      chainId: stagnet.id,
+      chainId: mockChain.id,
     };
   }
 

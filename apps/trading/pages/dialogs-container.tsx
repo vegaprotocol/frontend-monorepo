@@ -7,6 +7,7 @@ import {
   WithdrawalApprovalDialogContainer,
 } from '@vegaprotocol/web3';
 import { ConnectDialog, useDialogStore } from '@vegaprotocol/wallet-react';
+import { WelcomeDialog } from '../components/welcome-dialog';
 
 const DialogsContainer = () => {
   const { isOpen, id, trigger, setOpen } = useAssetDetailsDialogStore();
@@ -29,6 +30,7 @@ const DialogsContainer = () => {
         open={isOpen}
         onChange={setOpen}
       />
+      <WelcomeDialog />
       <Web3ConnectUncontrolledDialog />
       <WithdrawalApprovalDialogContainer />
     </>

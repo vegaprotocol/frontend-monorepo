@@ -18,13 +18,11 @@ export const ConnectDialog = ({
   onChange: (open: boolean) => void;
 }) => {
   const status = useWallet((store) => store.status);
-  const error = useWallet((store) => store.error);
 
   return (
     <Dialog open={open} size="small" onChange={onChange}>
       {status === 'disconnected' ? (
         <ConnectionOptions
-          error={error}
           onConnect={() => {
             setTimeout(() => onChange(false), 1000);
           }}
@@ -36,13 +34,8 @@ export const ConnectDialog = ({
   );
 };
 
-const ConnectionOptions = ({
-  error,
-  onConnect,
-}: {
-  error: string | undefined;
-  onConnect: () => void;
-}) => {
+export const ConnectionOptions = ({ onConnect }: { onConnect: () => void }) => {
+  const error = useWallet((store) => store.error);
   const { connect, connectors } = useConnect();
 
   return (
@@ -73,7 +66,7 @@ const ConnectionOptions = ({
   );
 };
 
-const ConnectionOption = ({
+export const ConnectionOption = ({
   id,
   name,
   description,
@@ -104,7 +97,7 @@ const ConnectionOption = ({
   );
 };
 
-const ConnectionStatus = ({ status }: { status: Status }) => {
+export const ConnectionStatus = ({ status }: { status: Status }) => {
   if (status === 'connecting') {
     return (
       <>
@@ -125,7 +118,7 @@ const ConnectionStatus = ({ status }: { status: Status }) => {
   return null;
 };
 
-const ConnectorIcon = ({ id }: { id: ConnectorType }) => {
+export const ConnectorIcon = ({ id }: { id: ConnectorType }) => {
   const defaultWrapperClasses =
     'flex items-center justify-center w-8 h-8 rounded';
   switch (id) {

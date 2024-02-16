@@ -1,1 +1,7 @@
-export { ConnectDialog } from './connect-dialog';
+export {
+  ConnectDialog,
+  ConnectionOptions,
+  ConnectionOption,
+  ConnectionStatus,
+  ConnectorIcon,
+} from './connect-dialog';

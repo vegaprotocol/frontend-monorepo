@@ -11,10 +11,14 @@ import {
   type ConnectorType,
 } from './types';
 
+// get/set functions are not used in the slices so these
+// can be plain objects
 export const createSingleKeySlice: SingleKeyStore = {
   pubKey: undefined,
 };
 
+// get/set functions are not used in the slices so these
+// can be plain objects
 export const createCoreStoreSlice: CoreStore = {
   chainId: '',
   status: 'disconnected',
@@ -31,40 +35,26 @@ export function createConfig(cfg: Config): Wallet {
     throw new Error('default chain not found in config');
   }
 
-  function getInitialState() {
+  const getInitialState = () => {
     return {
       ...createCoreStoreSlice,
       ...createSingleKeySlice,
-      // chainId: '',
-      // status: 'disconnected',
-      // current: undefined,
-      // keys: [],
-      // error: undefined,
-      // jsonRpcToken: undefined,
-      // pubKey: undefined,
+      chainId: chain.id,
     };
-  }
+  };
 
   const store = createStore<Store>()(
-    persist(
-      getInitialState,
-      // (...args) => ({
-      //   ...createCoreStoreSlice(...args),
-      //   ...createSingleKeySlice(...args),
-      //   chainId: chain.id,
-      // }),
-      {
-        name: 'vega_wallet_store',
-        partialize(state) {
-          return {
-            chainId: state.chainId,
-            current: state.current,
-            pubKey: state.pubKey,
-            jsonRpcToken: state.jsonRpcToken,
-          };
-        },
-      }
-    )
+    persist(getInitialState, {
+      name: 'vega_wallet_store',
+      partialize(state) {
+        return {
+          chainId: state.chainId,
+          current: state.current,
+          pubKey: state.pubKey,
+          jsonRpcToken: state.jsonRpcToken,
+        };
+      },
+    })
   );
 
   const connectors = createStore(() => cfg.connectors.map(bindStore));
