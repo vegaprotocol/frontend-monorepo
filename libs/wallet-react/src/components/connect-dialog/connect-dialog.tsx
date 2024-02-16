@@ -41,7 +41,7 @@ export const ConnectionOptions = ({ onConnect }: { onConnect: () => void }) => {
   return (
     <div className="flex flex-col gap-4">
       <h2 className="text-xl">Connect Vega Wallet</h2>
-      <ul className="grid grid-cols-2 gap-x-2 gap-y-4 -mx-2">
+      <ul className="grid grid-cols-2 gap-1 -mx-2">
         {connectors.map((c) => {
           return (
             <ConnectionOption
@@ -149,7 +149,12 @@ export const ConnectorIcon = ({ id }: { id: ConnectorType }) => {
     }
     case 'snap': {
       return (
-        <span className={classNames(defaultWrapperClasses, 'border')}>
+        <span
+          className={classNames(
+            defaultWrapperClasses,
+            'border bg-white dark:bg-vega-clight-600'
+          )}
+        >
           <VegaIcon name={VegaIconNames.METAMASK} size={24} />
         </span>
       );
