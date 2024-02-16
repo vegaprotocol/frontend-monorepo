@@ -16,6 +16,8 @@ export {
   SnapConnector,
   JsonRpcConnector,
   ReadOnlyConnector,
+  ConnectorError,
+  ConnectorErrors,
 } from './connectors';
 
 // Utils

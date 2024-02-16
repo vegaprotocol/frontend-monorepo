@@ -10,6 +10,7 @@ import {
   type Connector,
   type ConnectorType,
 } from './types';
+import { ConnectorError, ConnectorErrors } from './connectors';
 
 // get/set functions are not used in the slices so these
 // can be plain objects
@@ -78,31 +79,20 @@ export function createConfig(cfg: Config): Wallet {
     try {
       store.setState({ status: 'connecting', current: id, error: undefined });
 
-      const connectWalletRes = await connector.connectWallet(
-        store.getState().chainId
-      );
-
-      if ('error' in connectWalletRes) {
-        throw new Error(connectWalletRes.error);
-      }
-
-      const listKeysRes = await connector.listKeys();
-
-      if ('error' in listKeysRes) {
-        throw new Error('failed to get keys');
-      }
+      await connector.connectWallet(store.getState().chainId);
+      const keys = await connector.listKeys();
 
       // TODO: this shouldnt be in core as we dont want to enforce single key usage
       const storedPubKey = store.getState().pubKey;
       let defaultKey;
-      if (listKeysRes.find((k) => k.publicKey === storedPubKey)) {
+      if (keys.find((k) => k.publicKey === storedPubKey)) {
         defaultKey = storedPubKey;
       } else {
-        defaultKey = listKeysRes[0].publicKey;
+        defaultKey = keys[0].publicKey;
       }
 
       store.setState({
-        keys: listKeysRes,
+        keys,
         status: 'connected',
         pubKey: defaultKey,
       });
@@ -117,7 +107,7 @@ export function createConfig(cfg: Config): Wallet {
         status: 'disconnected',
         current: undefined,
         keys: [],
-        error: err instanceof Error ? err.message : 'failed to connect',
+        error: err instanceof ConnectorError ? err : ConnectorErrors.unknown,
       });
       return { success: false };
     }

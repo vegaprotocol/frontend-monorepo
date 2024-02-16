@@ -4,6 +4,7 @@ import {
   type TransactionResponse,
 } from './transaction-types';
 import { type Chain } from './chains';
+import { type ConnectorError } from './connectors';
 
 export enum JsonRpcMethod {
   ConnectWallet = 'client.connect_wallet',
@@ -14,17 +15,13 @@ export enum JsonRpcMethod {
   GetChainId = 'client.get_chain_id',
 }
 
-export interface IWalletError {
-  error: string;
-}
-
 export interface TransactionParams {
   publicKey: string;
   transaction: Transaction;
   sendingMode: 'TYPE_SYNC';
 }
 
-type VegaWalletEvent = 'client.disconnected';
+export type VegaWalletEvent = 'client.disconnected';
 
 export type ConnectorType =
   | 'injected'
@@ -39,16 +36,12 @@ export interface Connector {
   readonly description: string;
 
   bindStore(state: StoreApi<Store>): void;
-  connectWallet(chainId?: string): Promise<{ success: boolean } | IWalletError>;
-  disconnectWallet(): Promise<{ success: boolean } | IWalletError>;
-  getChainId(): Promise<{ chainId: string } | IWalletError>;
-  listKeys(): Promise<
-    Array<{ publicKey: string; name: string }> | IWalletError
-  >;
-  isConnected(): Promise<{ connected: boolean } | IWalletError>;
-  sendTransaction(
-    params: TransactionParams
-  ): Promise<TransactionResponse | IWalletError>;
+  connectWallet(chainId?: string): Promise<{ success: boolean }>;
+  disconnectWallet(): Promise<{ success: boolean }>;
+  getChainId(): Promise<{ chainId: string }>;
+  listKeys(): Promise<Array<{ publicKey: string; name: string }>>;
+  isConnected(): Promise<{ connected: boolean }>;
+  sendTransaction(params: TransactionParams): Promise<TransactionResponse>;
   on(event: VegaWalletEvent, callback: () => void): void;
   off(event: VegaWalletEvent): void;
 }
@@ -65,14 +58,12 @@ export type CoreStore = {
   status: Status;
   current: ConnectorType | undefined;
   keys: Key[];
-  // setKeys: (keys: Key[]) => void;
-  error: string | undefined;
+  error: ConnectorError | undefined;
   jsonRpcToken: string | undefined;
 };
 
 export type SingleKeyStore = {
   pubKey: string | undefined;
-  // setPubKey: (key: string) => void;
 };
 
 export type Store = CoreStore & SingleKeyStore;
@@ -89,9 +80,7 @@ export type Wallet = {
   connect: (id: ConnectorType) => Promise<{ success: boolean } | undefined>;
   disconnect: () => Promise<{ success: boolean } | undefined>;
   refreshKeys: () => Promise<void>;
-  sendTransaction: (
-    params: TransactionParams
-  ) => Promise<TransactionResponse | IWalletError>;
+  sendTransaction: (params: TransactionParams) => Promise<TransactionResponse>;
   reset: () => void;
 };
 

@@ -1,4 +1,9 @@
-import { type TransactionParams, type Connector } from '../types';
+import { ConnectorErrors } from '.';
+import {
+  type TransactionParams,
+  type Connector,
+  type VegaWalletEvent,
+} from '../types';
 
 export class InjectedConnector implements Connector {
   readonly id = 'injected';
@@ -13,9 +18,7 @@ export class InjectedConnector implements Connector {
       await window.vega.connectWallet({ chainId });
       return { success: true };
     } catch (err) {
-      return {
-        error: err instanceof Error ? err.message : 'failed to connect',
-      };
+      throw ConnectorErrors.connect;
     }
   }
 
@@ -24,7 +27,7 @@ export class InjectedConnector implements Connector {
       await window.vega.disconnectWallet();
       return { success: true };
     } catch (err) {
-      return { error: 'failed to disconnect' };
+      throw ConnectorErrors.disconnect;
     }
   }
 
@@ -34,7 +37,7 @@ export class InjectedConnector implements Connector {
       const res = await window.vega.getChainId();
       return { chainId: res.chainID };
     } catch (err) {
-      return { error: 'failed to get chain id' };
+      throw ConnectorErrors.chainId;
     }
   }
 
@@ -43,7 +46,7 @@ export class InjectedConnector implements Connector {
       const res = await window.vega.listKeys();
       return res.keys;
     } catch (err) {
-      return { error: 'failed to list keys' };
+      throw ConnectorErrors.listKeys;
     }
   }
 
@@ -52,7 +55,7 @@ export class InjectedConnector implements Connector {
       const res = await window.vega.isConnected();
       return { connected: res };
     } catch (err) {
-      return { error: 'failed to check isConnected' };
+      throw ConnectorErrors.isConnected;
     }
   }
 
@@ -67,16 +70,15 @@ export class InjectedConnector implements Connector {
         sentAt: res.sentAt,
       };
     } catch (err) {
-      console.error(err);
-      return { error: 'failed to send transaction' };
+      throw ConnectorErrors.isConnected;
     }
   }
 
-  on(event: 'client.disconnected', callback: () => void) {
+  on(event: VegaWalletEvent, callback: () => void) {
     window.vega.on(event, callback);
   }
 
-  off(event: 'client.disconnected') {
+  off(event: VegaWalletEvent) {
     window.vega.off(event);
   }
 }

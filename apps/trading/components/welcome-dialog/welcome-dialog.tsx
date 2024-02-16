@@ -13,7 +13,7 @@ import { Routes } from '../../lib/links';
 import { WelcomeDialogContent } from './welcome-dialog-content';
 import { useOnboardingStore } from './use-get-onboarding-step';
 import { ensureSuffix } from '@vegaprotocol/utils';
-import { type ConnectorType } from '@vegaprotocol/wallet';
+import { ConnectorErrors, type ConnectorType } from '@vegaprotocol/wallet';
 
 /**
  * A list of paths on which the welcome dialog should be omitted.
@@ -106,8 +106,10 @@ const ConnectionOptions = ({ onConnect }: { onConnect: () => void }) => {
             );
           })}
         </ul>
-        {error && !error.includes('the user rejected') && (
-          <p className="text-danger text-sm first-letter:uppercase">{error}</p>
+        {error && error.code !== ConnectorErrors.userRejected.code && (
+          <p className="text-danger text-sm first-letter:uppercase">
+            {error.message}
+          </p>
         )}
       </div>
     );

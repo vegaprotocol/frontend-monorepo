@@ -1,3 +1,4 @@
+import { ConnectorError, ConnectorErrors } from '.';
 import {
   JsonRpcMethod,
   type Connector,
@@ -41,20 +42,22 @@ export class SnapConnector implements Connector {
       const { chainId } = await this.getChainId();
 
       if (chainId !== desiredChainId) {
-        throw new Error('incorrect chain id');
+        throw ConnectorErrors.chainId;
       }
 
       return { success: true };
     } catch (err) {
-      return {
-        error: err instanceof Error ? err.message : 'failed to connect',
-      };
+      if (err instanceof ConnectorError) {
+        throw err;
+      }
+
+      throw ConnectorErrors.noConnector;
     }
   }
 
+  // TODO: check how snaps should actually disconnect
   async disconnectWallet() {
     return { success: true };
-    // return { error: 'failed to disconnect' };
   }
 
   // deprecated, pass chain on connect
@@ -65,7 +68,7 @@ export class SnapConnector implements Connector {
       });
       return { chainId: res.chainID };
     } catch (err) {
-      return { error: 'failed to get chain id' };
+      throw ConnectorErrors.chainId;
     }
   }
 
@@ -74,13 +77,13 @@ export class SnapConnector implements Connector {
       const res = await this.invokeSnap(JsonRpcMethod.ListKeys);
       return res.keys as Array<{ publicKey: string; name: string }>;
     } catch (err) {
-      return { error: 'failed to list keys' };
+      throw ConnectorErrors.listKeys;
     }
   }
 
   async isConnected() {
     console.warn('isConnected not implemented');
-    return { error: 'failed to check if connected' };
+    throw ConnectorErrors.isConnected;
   }
 
   async sendTransaction(params: TransactionParams) {
@@ -99,8 +102,7 @@ export class SnapConnector implements Connector {
         sentAt: res.sentAt,
       };
     } catch (err) {
-      console.error(err);
-      return { error: 'failed to send transaction' };
+      throw ConnectorErrors.sendTransaction;
     }
   }
 

@@ -5,7 +5,11 @@ import {
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
-import { type ConnectorType, type Status } from '@vegaprotocol/wallet';
+import {
+  ConnectorErrors,
+  type ConnectorType,
+  type Status,
+} from '@vegaprotocol/wallet';
 import { useWallet } from '../../hooks/use-wallet';
 import { useConnect } from '../../hooks/use-connect';
 import classNames from 'classnames';
@@ -59,8 +63,10 @@ export const ConnectionOptions = ({ onConnect }: { onConnect: () => void }) => {
           );
         })}
       </ul>
-      {error && !error.includes('the user rejected') && (
-        <p className="text-danger text-sm first-letter:uppercase">{error}</p>
+      {error && error.code !== ConnectorErrors.userRejected.code && (
+        <p className="text-danger text-sm first-letter:uppercase">
+          {error.message}
+        </p>
       )}
     </div>
   );

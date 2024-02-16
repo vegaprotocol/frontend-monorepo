@@ -1,6 +1,7 @@
 import { type StoreApi } from 'zustand';
 import { type Store, type Connector } from '../types';
 import { isValidVegaPublicKey } from '@vegaprotocol/utils';
+import { ConnectorError, ConnectorErrors } from '.';
 
 export class ReadOnlyConnector implements Connector {
   readonly id = 'readOnly';
@@ -20,20 +21,33 @@ export class ReadOnlyConnector implements Connector {
   }
 
   async connectWallet() {
-    if (!this.pubKey) {
+    try {
+      if (this.pubKey) {
+        return { success: true };
+      }
+
       const value = window.prompt('Enter public key');
 
       if (value === null) {
-        return { error: 'the user rejected' };
+        throw ConnectorErrors.userRejected;
       }
 
+      // TODO: extend connect error with messaging for invalid public key
       if (!isValidVegaPublicKey(value)) {
-        return { error: 'invalid public key' };
+        // throw new Error('invalid public key');
+        throw ConnectorErrors.connect;
       }
 
       this.pubKey = value;
+
+      return { success: true };
+    } catch (err) {
+      if (err instanceof ConnectorError) {
+        throw err;
+      }
+
+      throw ConnectorErrors.connect;
     }
-    return { success: true };
   }
 
   async disconnectWallet() {
@@ -42,14 +56,12 @@ export class ReadOnlyConnector implements Connector {
   }
 
   async getChainId() {
-    return {
-      error: `You are connected in a view only state for public key: ${this.pubKey}`,
-    };
+    throw ConnectorErrors.chainId;
   }
 
   async listKeys() {
     if (!this.pubKey) {
-      return { error: 'failed to list keys' };
+      throw ConnectorErrors.listKeys;
     }
     return [
       {
@@ -69,9 +81,12 @@ export class ReadOnlyConnector implements Connector {
 
   // @ts-ignore deliberate fail
   async sendTransaction() {
-    return {
-      error: `You are connected in a view only state for public key: ${this.pubKey}. In order to send transactions you must connect to a real wallet.`,
-    };
+    // TODO: extend send tx with more information
+    //
+    // return {
+    //   error: `You are connected in a view only state for public key: ${this.pubKey}. In order to send transactions you must connect to a real wallet.`,
+    // };
+    throw ConnectorErrors.sendTransaction;
   }
 
   on() {
