@@ -39,11 +39,11 @@ export const NetworkAccountsTable = () => {
                     <p className="flex justify-center">
                       <AssetIcon symbol={a.assetId} />
                     </p>
-                    <p className="mt-3">
+                    <p className="mt-3" data-testid="name">
                       <AssetLink assetId={a.assetId} />
                     </p>
                   </div>
-                  <div className="text-center py-5">
+                  <div className="text-center py-5" data-testid="balance">
                     <AssetBalance
                       assetId={a.assetId}
                       price={a.balance}
