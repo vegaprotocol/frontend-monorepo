@@ -27,6 +27,7 @@ def create_position(vega: VegaServiceNull, market_id):
     vega.wait_for_total_catchup
 
 
+@pytest.mark.skip("tempory disabling of isolated margin")
 @pytest.mark.usefixtures("auth", "risk_accepted")
 def test_switch_cross_isolated_margin(
         continuous_market, vega: VegaServiceNull, page: Page):
@@ -62,6 +63,7 @@ def test_switch_cross_isolated_margin(
         "22,109.99996Cross1.0x")
 
 
+@pytest.mark.skip("tempory disabling of isolated margin")
 @pytest.mark.usefixtures("auth", "risk_accepted")
 def test_check_cross_isolated_margin_info(
         continuous_market, vega: VegaServiceNull, page: Page):
