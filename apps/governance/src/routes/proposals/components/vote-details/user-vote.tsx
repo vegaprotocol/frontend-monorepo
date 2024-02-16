@@ -11,9 +11,7 @@ import { type VoteState } from './use-user-vote';
 import { type Proposal, type BatchProposal } from '../../types';
 
 interface UserVoteProps {
-  proposal: Proposal;
-  minVoterBalance: string | null | undefined;
-  spamProtectionMinTokens: string | null | undefined;
+  proposal: Proposal | BatchProposal;
   transaction: VegaTxState;
   submit: (voteValue: VoteValue, proposalId: string | null) => Promise<void>;
   voteState: VoteState | null;

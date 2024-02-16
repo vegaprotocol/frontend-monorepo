@@ -172,7 +172,9 @@ describe('Vesting', () => {
   });
 
   it('doesnt use multiplier if not connected', () => {
-    render(<Vesting baseRate={'0.25'} pubKey={null} multiplier={undefined} />);
+    render(
+      <Vesting baseRate={'0.25'} pubKey={undefined} multiplier={undefined} />
+    );
 
     expect(screen.getByTestId('vesting-rate')).toHaveTextContent('25%');
 
@@ -199,7 +201,11 @@ describe('Multipliers', () => {
 
   it('shows not connected state', () => {
     render(
-      <Multipliers pubKey={null} streakMultiplier="3" hoarderMultiplier="2" />
+      <Multipliers
+        pubKey={undefined}
+        streakMultiplier="3"
+        hoarderMultiplier="2"
+      />
     );
 
     expect(

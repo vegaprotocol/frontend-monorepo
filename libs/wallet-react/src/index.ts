@@ -8,6 +8,7 @@ export { useEagerConnect } from './hooks/use-eager-connect';
 export {
   useSimpleTransaction,
   type Options,
+  type Status,
 } from './hooks/use-simple-transaction';
 export { useSnapStatus } from './hooks/use-snap-status';
 export { useVegaWallet } from './hooks/use-vega-wallet';

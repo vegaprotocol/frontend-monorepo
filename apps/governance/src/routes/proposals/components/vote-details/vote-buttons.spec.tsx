@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import BigNumber from 'bignumber.js';
 import { VoteButtons, type VoteButtonsProps } from './vote-buttons';
 import { VoteState } from './use-user-vote';
@@ -6,8 +6,7 @@ import { ProposalState } from '@vegaprotocol/types';
 import { AppStateProvider } from '../../../../contexts/app-state/app-state-provider';
 import { MockedProvider } from '@apollo/react-testing';
 import { VegaTxStatus } from '@vegaprotocol/proposals';
-import { MockedWalletProvider } from '@vegaprotocol/wallet-react';
-import { type Store } from '@vegaprotocol/wallet';
+import { MockedWalletProvider, mockConfig } from '@vegaprotocol/wallet-react';
 
 describe('Vote buttons', () => {
   const key = { publicKey: '0x123', name: 'key 1' };
@@ -30,22 +29,27 @@ describe('Vote buttons', () => {
     transaction,
   };
 
-  const renderComponent = (
-    testProps?: Partial<VoteButtonsProps>,
-    walletStore?: Partial<Store>
-  ) => {
+  const renderComponent = (testProps?: Partial<VoteButtonsProps>) => {
     return render(
       <AppStateProvider>
         <MockedProvider>
-          <MockedWalletProvider
-            store={{ pubKey: key.publicKey, keys: [key], ...walletStore }}
-          >
+          <MockedWalletProvider>
             <VoteButtons {...props} {...testProps} />
           </MockedWalletProvider>
         </MockedProvider>
       </AppStateProvider>
     );
   };
+
+  beforeEach(() => {
+    mockConfig.store.setState({ pubKey: key.publicKey, keys: [key] });
+  });
+
+  afterEach(() => {
+    act(() => {
+      mockConfig.reset();
+    });
+  });
 
   it('should render successfully', () => {
     const { baseElement } = renderComponent();
@@ -58,10 +62,8 @@ describe('Vote buttons', () => {
   });
 
   it('should provide a connect wallet prompt if no pubkey', () => {
-    renderComponent(undefined, {
-      pubKey: undefined,
-      keys: [],
-    });
+    mockConfig.reset();
+    renderComponent();
     expect(screen.getByTestId('connect-wallet')).toBeTruthy();
   });
 

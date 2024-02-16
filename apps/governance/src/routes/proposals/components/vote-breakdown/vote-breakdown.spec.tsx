@@ -51,11 +51,12 @@ const renderComponent = (
     </Router>
   );
 
-describe.skip('VoteBreakdown', () => {
+describe('VoteBreakdown', () => {
   beforeAll(() => {
     jest.useFakeTimers();
     jest.setSystemTime(0);
   });
+
   afterAll(() => {
     jest.useRealTimers();
   });

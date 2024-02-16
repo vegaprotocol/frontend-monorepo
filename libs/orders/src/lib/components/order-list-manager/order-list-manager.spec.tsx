@@ -4,20 +4,28 @@ import { OrderListManager, Filter } from './order-list-manager';
 import * as useDataProviderHook from '@vegaprotocol/data-provider';
 import type { OrderFieldsFragment } from '../';
 import { MockedProvider } from '@apollo/client/testing';
-import { MockedWalletProvider } from '@vegaprotocol/wallet-react';
-
-const generateJsx = (props: Partial<OrderListManagerProps> | null = null) => {
-  const pubKey = '0x123';
-  return (
-    <MockedProvider>
-      <MockedWalletProvider store={{ pubKey }}>
-        <OrderListManager partyId={pubKey} isReadOnly={false} {...props} />
-      </MockedWalletProvider>
-    </MockedProvider>
-  );
-};
+import { MockedWalletProvider, mockConfig } from '@vegaprotocol/wallet-react';
 
 describe('OrderListManager', () => {
+  const pubKey = '0x123';
+
+  const generateJsx = (props: Partial<OrderListManagerProps> | null = null) => {
+    return (
+      <MockedProvider>
+        <MockedWalletProvider>
+          <OrderListManager partyId={pubKey} isReadOnly={false} {...props} />
+        </MockedWalletProvider>
+      </MockedProvider>
+    );
+  };
+
+  beforeAll(() => {
+    mockConfig.store.setState({ pubKey });
+  });
+
+  afterAll(() => {
+    mockConfig.reset();
+  });
   it('should render the order list if orders provided', async () => {
     jest.spyOn(useDataProviderHook, 'useDataProvider').mockReturnValue({
       data: [{ id: '1' } as OrderFieldsFragment],

@@ -23,7 +23,7 @@ import { formatForInput } from '@vegaprotocol/utils';
 import type { PartialDeep } from 'type-fest';
 import type { Market } from '@vegaprotocol/markets';
 import type { MarketData } from '@vegaprotocol/markets';
-import { MockedWalletProvider } from '@vegaprotocol/wallet-react';
+import { MockedWalletProvider, mockConfig } from '@vegaprotocol/wallet-react';
 
 jest.mock('zustand');
 jest.mock('./deal-ticket-fee-details', () => ({
@@ -56,7 +56,7 @@ function generateJsx(
 
   return (
     <MockedProvider mocks={[...mocks]}>
-      <MockedWalletProvider store={{ pubKey }}>
+      <MockedWalletProvider>
         <DealTicket
           market={joinedMarket}
           marketData={joinedMarketData}
@@ -73,12 +73,19 @@ describe('DealTicket', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     localStorage.clear();
+    mockConfig.store.setState({ pubKey });
+  });
+
+  afterEach(() => {
+    act(() => {
+      mockConfig.reset();
+    });
   });
 
   it('check filtering of active orders', async () => {
     const mockOrders: OrdersQuery = {
       party: {
-        id: 'pubKey',
+        id: pubKey,
         ordersConnection: {
           edges: [
             {

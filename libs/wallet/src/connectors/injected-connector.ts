@@ -2,6 +2,9 @@ import { type TransactionParams, type Connector } from '../types';
 
 export class InjectedConnector implements Connector {
   readonly id = 'injected';
+  readonly name = 'Vega Wallet';
+  readonly description =
+    'Connect with Vega Wallet extension to access all features including key management and detailed transaction views from your browser.';
 
   bindStore() {}
 

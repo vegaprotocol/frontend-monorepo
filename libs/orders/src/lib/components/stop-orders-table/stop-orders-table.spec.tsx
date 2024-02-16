@@ -7,7 +7,7 @@ import {
   type StopOrdersTableProps,
 } from './stop-orders-table';
 import { generateStopOrder } from '../mocks/generate-stop-orders';
-import { MockedWalletProvider } from '@vegaprotocol/wallet-react';
+import { MockedWalletProvider, mockConfig } from '@vegaprotocol/wallet-react';
 
 // Mock theme switcher to get around inconsistent mocking of zustand
 // stores
@@ -32,13 +32,10 @@ const defaultProps: StopOrdersTableProps = {
   isReadOnly: false,
 };
 
-const generateJsx = (
-  props: Partial<StopOrdersTableProps> = defaultProps,
-  context = { pubKey: '0x123' }
-) => {
+const generateJsx = (props: Partial<StopOrdersTableProps> = defaultProps) => {
   return (
     <MockedProvider>
-      <MockedWalletProvider store={context}>
+      <MockedWalletProvider>
         <StopOrdersTable {...defaultProps} {...props} />
       </MockedWalletProvider>
     </MockedProvider>
@@ -109,6 +106,14 @@ const rowData = [
 ];
 
 describe('StopOrdersTable', () => {
+  beforeAll(() => {
+    mockConfig.store.setState({ pubKey: '0x123' });
+  });
+
+  afterAll(() => {
+    mockConfig.reset();
+  });
+
   it('should render correct columns', async () => {
     await act(async () => {
       render(generateJsx({ rowData }));

@@ -5,21 +5,24 @@ import {
   useVegaTransaction,
   VegaTxStatus,
 } from './use-vega-transaction';
-import { MockedWalletProvider } from '@vegaprotocol/wallet-react';
+import { MockedWalletProvider, mockConfig } from '@vegaprotocol/wallet-react';
 import { type ReactNode } from 'react';
 
 const mockPubKey = '0x123';
 
-function setup(mockSendTx = jest.fn()) {
+function setup() {
   const wrapper = ({ children }: { children: ReactNode }) => (
-    <MockedWalletProvider config={{ sendTransaction: mockSendTx }}>
-      {children}
-    </MockedWalletProvider>
+    <MockedWalletProvider>{children}</MockedWalletProvider>
   );
   return renderHook(() => useVegaTransaction(), { wrapper });
 }
 
 describe('useVegaTransaction', () => {
+  const successObj = {
+    transactionHash: '0x123',
+    signature: 'signature',
+  };
+
   it('has the correct default state', () => {
     const { result } = setup();
     expect(result.current).toEqual({
@@ -32,10 +35,10 @@ describe('useVegaTransaction', () => {
   });
 
   it('resets state if sendTx returns null (user rejects)', async () => {
-    const mockSendTx = jest
-      .fn()
+    jest
+      .spyOn(mockConfig, 'sendTransaction')
       .mockReturnValue(Promise.resolve({ error: 'user rejected' }));
-    const { result } = setup(mockSendTx);
+    const { result } = setup();
     await act(async () => {
       result.current.send(mockPubKey, {} as Transaction);
     });
@@ -44,10 +47,10 @@ describe('useVegaTransaction', () => {
 
   it('handles a single error', () => {
     const error = new Error('test error');
-    const mockSendTx = jest.fn(() => {
+    jest.spyOn(mockConfig, 'sendTransaction').mockImplementation(() => {
       throw error;
     });
-    const { result } = setup(mockSendTx);
+    const { result } = setup();
     act(() => {
       result.current.send(mockPubKey, {} as Transaction);
     });
@@ -60,10 +63,10 @@ describe('useVegaTransaction', () => {
 
   it('handles an unknown error', () => {
     const unknownThrow = { foo: 'bar' };
-    const mockSendTx = jest.fn(() => {
+    jest.spyOn(mockConfig, 'sendTransaction').mockImplementation(() => {
       throw unknownThrow;
     });
-    const { result } = setup(mockSendTx);
+    const { result } = setup();
     act(() => {
       result.current.send(mockPubKey, {} as Transaction);
     });
@@ -75,12 +78,11 @@ describe('useVegaTransaction', () => {
   });
 
   it('sets txHash and signature to state if successful', async () => {
-    const successObj = {
-      transactionHash: '0x123',
-      signature: 'signature',
-    };
-    const mockSendTx = jest.fn().mockReturnValue(Promise.resolve(successObj));
-    const { result } = setup(mockSendTx);
+    jest
+      .spyOn(mockConfig, 'sendTransaction')
+      // @ts-ignore fields ommitted for brevity
+      .mockResolvedValue(successObj);
+    const { result } = setup();
     await act(async () => {
       result.current.send(mockPubKey, {} as Transaction);
     });
@@ -100,14 +102,12 @@ describe('useVegaTransaction', () => {
   });
 
   it('reset resets transaction status', async () => {
-    const mockSendTx = jest.fn().mockReturnValue(
-      Promise.resolve({
-        transactionHash: '0x123',
-        signature: 'signature',
-      })
-    );
+    jest
+      .spyOn(mockConfig, 'sendTransaction')
+      // @ts-ignore fields ommitted for brevity
+      .mockResolvedValue(successObj);
 
-    const { result } = setup(mockSendTx);
+    const { result } = setup();
 
     await act(async () => {
       result.current.send(mockPubKey, {} as Transaction);

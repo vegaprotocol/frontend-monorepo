@@ -35,27 +35,21 @@ export type ConnectorType =
 
 export interface Connector {
   readonly id: ConnectorType;
+  readonly name: string;
+  readonly description: string;
 
   bindStore(state: StoreApi<Store>): void;
-
   connectWallet(chainId?: string): Promise<{ success: boolean } | IWalletError>;
-
   disconnectWallet(): Promise<{ success: boolean } | IWalletError>;
-
   getChainId(): Promise<{ chainId: string } | IWalletError>;
-
   listKeys(): Promise<
     Array<{ publicKey: string; name: string }> | IWalletError
   >;
-
   isConnected(): Promise<{ connected: boolean } | IWalletError>;
-
   sendTransaction(
     params: TransactionParams
   ): Promise<TransactionResponse | IWalletError>;
-
   on(event: VegaWalletEvent, callback: () => void): void;
-
   off(event: VegaWalletEvent): void;
 }
 
@@ -143,7 +137,5 @@ declare global {
 
   interface Window {
     vega: Vega;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    ethereum: any;
   }
 }

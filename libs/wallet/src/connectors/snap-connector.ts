@@ -18,6 +18,9 @@ type SnapConfig = {
 
 export class SnapConnector implements Connector {
   readonly id = 'snap';
+  readonly name = 'Metamask Snap';
+  readonly description =
+    'Connect directly via Metamask with the Vega Snap for single key support without advanced features.';
 
   node: string;
   version: string;
@@ -114,7 +117,7 @@ export class SnapConnector implements Connector {
   ////////////////////////////////////
 
   async requestSnap() {
-    const res = await this.request(EthereumMethod.RequestSnaps, {
+    await this.request(EthereumMethod.RequestSnaps, {
       [this.snapId]: {
         version: this.version,
       },
@@ -129,6 +132,8 @@ export class SnapConnector implements Connector {
     );
   }
 
+  // TODO: fix any
+  //
   // eslint-disable-next-line
   async invokeSnap(method: JsonRpcMethod, params?: any) {
     return await this.request(EthereumMethod.InvokeSnap, {
@@ -140,8 +145,12 @@ export class SnapConnector implements Connector {
     });
   }
 
+  // TODO: fix any
+  //
+  // eslint-disable-next-line
   async request(method: EthereumMethod, params?: any) {
-    if (!window.ethereum) {
+    // eslint-disable-next-line
+    if (!(window as any).ethereum) {
       throw new Error('no window.ethereum');
     }
 

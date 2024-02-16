@@ -49,6 +49,10 @@ jest.mock('../vote-details', () => ({
   UserVote: () => <div data-testid="user-vote"></div>,
 }));
 
+jest.mock('./proposal-change-details', () => ({
+  ProposalChangeDetails: () => <div data-testid="proposal-change-details" />,
+}));
+
 const renderComponent = (proposal: IProposal) => {
   return render(
     <MemoryRouter>

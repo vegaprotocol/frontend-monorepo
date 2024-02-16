@@ -14,7 +14,7 @@ import { useT } from '../../lib/use-t';
 import { useScreenDimensions } from '@vegaprotocol/react-helpers';
 import { useEffect } from 'react';
 import classNames from 'classnames';
-import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
+import { useVegaWallet, useDialogStore } from '@vegaprotocol/wallet-react';
 
 const ViewInitializer = () => {
   const currentRouteId = useGetCurrentRouteId();
@@ -34,7 +34,7 @@ export const MarketsMobileSidebar = () => {
   const t = useT();
   const currentRouteId = useGetCurrentRouteId();
   const { pubKeys, isReadOnly } = useVegaWallet();
-  const openVegaWalletDialog = useVegaWalletDialogStore(
+  const openVegaWalletDialog = useDialogStore(
     (store) => store.openVegaWalletDialog
   );
 

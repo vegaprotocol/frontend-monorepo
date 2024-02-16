@@ -29,7 +29,7 @@ describe('JoinButton', () => {
   });
 
   it('disables button if not connected', async () => {
-    render(<JoinButton {...props} pubKey={null} />);
+    render(<JoinButton {...props} pubKey={undefined} />);
     const button = screen.getByRole('button');
     expect(button).toBeDisabled();
     await userEvent.hover(button);

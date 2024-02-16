@@ -3,7 +3,7 @@ export * from './types';
 export * from './transaction-types';
 
 // Core
-export { fairground, stagnet, Chain } from './chains';
+export { fairground, stagnet, type Chain } from './chains';
 export {
   createConfig,
   createCoreStoreSlice,

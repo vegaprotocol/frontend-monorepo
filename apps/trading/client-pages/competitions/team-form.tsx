@@ -17,8 +17,8 @@ import { useForm, Controller } from 'react-hook-form';
 import {
   type CreateReferralSet,
   type UpdateReferralSet,
-  type Status,
 } from '@vegaprotocol/wallet';
+import { type Status } from '@vegaprotocol/wallet-react';
 import classNames from 'classnames';
 import { useLayoutEffect, useState } from 'react';
 

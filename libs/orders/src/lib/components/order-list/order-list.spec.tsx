@@ -10,7 +10,7 @@ import {
   limitOrder,
   marketOrder,
 } from '../mocks/generate-orders';
-import { MockedWalletProvider } from '@vegaprotocol/wallet-react';
+import { MockedWalletProvider, mockConfig } from '@vegaprotocol/wallet-react';
 
 // Mock theme switcher to get around inconsistent mocking of zustand
 // stores
@@ -29,13 +29,10 @@ const defaultProps: OrderListTableProps = {
   isReadOnly: false,
 };
 
-const generateJsx = (
-  props: Partial<OrderListTableProps> = defaultProps,
-  context = { pubKey: '0x123' }
-) => {
+const generateJsx = (props: Partial<OrderListTableProps> = defaultProps) => {
   return (
     <MockedProvider>
-      <MockedWalletProvider store={context}>
+      <MockedWalletProvider>
         <OrderListTable {...defaultProps} {...props} />
       </MockedWalletProvider>
     </MockedProvider>
@@ -43,6 +40,14 @@ const generateJsx = (
 };
 
 describe('OrderListTable', () => {
+  beforeAll(() => {
+    mockConfig.store.setState({ pubKey: '0x123' });
+  });
+
+  afterAll(() => {
+    mockConfig.reset();
+  });
+
   it('should render correct columns', async () => {
     //  7003-MORD-001
     //  7003-MORD-002

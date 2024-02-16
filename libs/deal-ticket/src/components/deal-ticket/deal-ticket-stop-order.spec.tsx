@@ -12,7 +12,7 @@ import {
 } from '../../hooks/use-form-values';
 import { useFeatureFlags } from '@vegaprotocol/environment';
 import { formatForInput } from '@vegaprotocol/utils';
-import { MockedWalletProvider } from '@vegaprotocol/wallet-react';
+import { MockedWalletProvider, mockConfig } from '@vegaprotocol/wallet-react';
 
 jest.mock('zustand');
 jest.mock('./deal-ticket-fee-details', () => ({
@@ -23,15 +23,10 @@ const marketPrice = '200';
 const market = generateMarket();
 const submit = jest.fn();
 
-function generateJsx(
-  pubKey: string | undefined = 'pubKey',
-  isReadOnly = false
-) {
+function generateJsx() {
   return (
     <MockedProvider>
-      <MockedWalletProvider
-        store={{ pubKey, current: isReadOnly ? 'readOnly' : 'injected' }}
-      >
+      <MockedWalletProvider>
         <StopOrder market={market} marketPrice={marketPrice} submit={submit} />
       </MockedWalletProvider>
     </MockedProvider>
@@ -76,12 +71,13 @@ const numberOfActiveOrdersLimit = 'stop-order-warning-limit';
 
 const ocoPostfix = (id: string, postfix = true) => (postfix ? `${id}-oco` : id);
 
-const mockDataProvider = jest.fn((...args) => ({
+const mockDataProvider = jest.fn(() => ({
   data: Array(0),
   reload: jest.fn(),
 }));
 jest.mock('@vegaprotocol/data-provider', () => ({
   ...jest.requireActual('@vegaprotocol/data-provider'),
+  // @ts-ignore TODO: fix this
   useDataProvider: jest.fn((...args) => mockDataProvider(...args)),
 }));
 
@@ -89,11 +85,13 @@ describe('StopOrder', () => {
   beforeEach(() => {
     localStorage.clear();
     useFeatureFlags.setState({ flags: { STOP_ORDERS: true } });
+    mockConfig.store.setState({ pubKey: '0x123' });
   });
 
   afterEach(() => {
     localStorage.clear();
     jest.clearAllMocks();
+    mockConfig.reset();
   });
 
   it('should display ticket defaults limit order', async () => {
@@ -255,7 +253,8 @@ describe('StopOrder', () => {
   });
 
   it('does not submit if no wallet connected', async () => {
-    render(generateJsx(null));
+    mockConfig.store.setState({ pubKey: undefined });
+    render(generateJsx());
     await userEvent.type(screen.getByTestId(sizeInput), '1');
     await userEvent.type(screen.getByTestId(priceInput), '1');
     await userEvent.type(screen.getByTestId(triggerPriceInput), '1');
@@ -555,8 +554,10 @@ describe('StopOrder', () => {
       data: Array(4),
     });
     render(generateJsx());
+    // @ts-ignore TODO: fix this
     expect(mockDataProvider.mock.lastCall?.[0].skip).toBe(true);
     await userEvent.type(screen.getByTestId(sizeInput), '0.01');
+    // @ts-ignore TODO: fix this
     expect(mockDataProvider.mock.lastCall?.[0].skip).toBe(false);
     // 7002-SORD-011
     expect(screen.getByTestId(numberOfActiveOrdersLimit)).toBeInTheDocument();

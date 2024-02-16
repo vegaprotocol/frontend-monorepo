@@ -10,6 +10,9 @@ type JsonRpcConnectorConfig = { url: string; token?: string };
 
 export class JsonRpcConnector implements Connector {
   readonly id = 'jsonRpc';
+  readonly name = 'Command Line Wallet';
+  readonly description =
+    'Connect using the command line wallet or the legacy desktop app.';
 
   url: string;
   requestId: number = 0;
@@ -130,6 +133,8 @@ export class JsonRpcConnector implements Connector {
     console.warn('events are not supported in json rpc wallet');
   }
 
+  // TODO: fix any
+  // eslint-disable-next-line
   private async request(method: JsonRpcMethod, params?: any) {
     const headers = new Headers();
 

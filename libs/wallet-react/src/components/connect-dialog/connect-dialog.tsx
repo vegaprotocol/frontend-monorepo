@@ -8,11 +8,7 @@ import {
 import { type ConnectorType, type Status } from '@vegaprotocol/wallet';
 import { useWallet } from '../../hooks/use-wallet';
 import { useConnect } from '../../hooks/use-connect';
-// TODO: set up useT
-// import { useT } from '../use-t';
 import classNames from 'classnames';
-
-const useT = () => (s: string) => s;
 
 export const ConnectDialog = ({
   open,
@@ -58,6 +54,8 @@ const ConnectionOptions = ({
             <ConnectionOption
               key={c.id}
               id={c.id}
+              name={c.name}
+              description={c.description}
               onClick={async () => {
                 const res = await connect(c.id);
                 if (res?.success) {
@@ -77,16 +75,19 @@ const ConnectionOptions = ({
 
 const ConnectionOption = ({
   id,
+  name,
+  description,
   onClick,
 }: {
   id: ConnectorType;
+  name: string;
+  description: string;
   onClick: () => void;
 }) => {
-  const t = useT();
   return (
     <li>
       <Tooltip
-        description={t(`connector-${id}-desc`)}
+        description={description}
         align="center"
         side="right"
         sideOffset={10}
@@ -96,7 +97,7 @@ const ConnectionOption = ({
           onClick={onClick}
         >
           <ConnectorIcon id={id} />
-          {t(`connector-${id}-title`)}
+          {name}
         </button>
       </Tooltip>
     </li>
@@ -172,4 +173,6 @@ const ConnectorIcon = ({ id }: { id: ConnectorType }) => {
       );
     }
   }
+
+  throw new Error('invalid connector id');
 };

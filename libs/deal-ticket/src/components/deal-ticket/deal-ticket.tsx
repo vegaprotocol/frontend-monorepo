@@ -780,7 +780,7 @@ interface SummaryMessageProps {
   balance: string;
   margin: string;
   isReadOnly: boolean;
-  pubKey: string | null;
+  pubKey: string | undefined;
   onDeposit: (assetId: string) => void;
 }
 

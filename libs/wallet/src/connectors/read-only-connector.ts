@@ -4,6 +4,8 @@ import { isValidVegaPublicKey } from '@vegaprotocol/utils';
 
 export class ReadOnlyConnector implements Connector {
   readonly id = 'readOnly';
+  readonly name = 'Read Only';
+  readonly description = 'Provide a public key to connect in read only mode.';
 
   store: StoreApi<Store> | undefined;
 
