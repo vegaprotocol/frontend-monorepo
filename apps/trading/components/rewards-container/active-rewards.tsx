@@ -1,12 +1,8 @@
-import { useActiveRewardsQuery } from './__generated__/Rewards';
 import { useT } from '../../lib/use-t';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import classNames from 'classnames';
 import {
-  type IconName,
   type VegaIconSize,
-  Icon,
-  Intent,
   Tooltip,
   VegaIcon,
   VegaIconNames,
@@ -14,18 +10,12 @@ import {
   TinyScroll,
   truncateMiddle,
 } from '@vegaprotocol/ui-toolkit';
-import { IconNames } from '@blueprintjs/icons';
 import {
-  type Maybe,
-  type Transfer,
   type TransferNode,
-  type RecurringTransfer,
   DistributionStrategyDescriptionMapping,
   DistributionStrategyMapping,
   EntityScope,
   EntityScopeMapping,
-  TransferStatus,
-  TransferStatusMapping,
   DispatchMetric,
   DispatchMetricDescription,
   DispatchMetricLabels,
@@ -36,41 +26,31 @@ import {
   IndividualScopeDescriptionMapping,
 } from '@vegaprotocol/types';
 import { Card } from '../card/card';
-import { useMemo, useState } from 'react';
+import { type ReactNode, useState } from 'react';
 import {
   type AssetFieldsFragment,
-  useAssetsMapProvider,
+  type BasicAssetDetails,
 } from '@vegaprotocol/assets';
+import { type MarketFieldsFragment } from '@vegaprotocol/markets';
 import {
-  type MarketFieldsFragment,
-  useMarketsMapProvider,
-  getAsset,
-} from '@vegaprotocol/markets';
+  type EnrichedRewardTransfer,
+  useRewards,
+} from '../../lib/hooks/use-rewards';
+import compact from 'lodash/compact';
+
+enum CardColour {
+  BLUE,
+  GREEN,
+  GREY,
+  ORANGE,
+  PINK,
+  PURPLE,
+  WHITE,
+  YELLOW,
+}
 
 export type Filter = {
   searchTerm: string;
-};
-
-export const isActiveReward = (node: TransferNode, currentEpoch: number) => {
-  const { transfer } = node;
-  if (transfer.kind.__typename !== 'RecurringTransfer') {
-    return false;
-  }
-  const { dispatchStrategy } = transfer.kind;
-
-  if (!dispatchStrategy) {
-    return false;
-  }
-
-  if (transfer.kind.endEpoch && transfer.kind.endEpoch < currentEpoch) {
-    return false;
-  }
-
-  if (transfer.status !== TransferStatus.STATUS_PENDING) {
-    return false;
-  }
-
-  return true;
 };
 
 export const applyFilter = (
@@ -95,7 +75,10 @@ export const applyFilter = (
     transfer.asset?.symbol
       .toLowerCase()
       .includes(filter.searchTerm.toLowerCase()) ||
-    EntityScopeLabelMapping[transfer.kind.dispatchStrategy.entityScope]
+    (
+      EntityScopeLabelMapping[transfer.kind.dispatchStrategy.entityScope] ||
+      'Unspecified'
+    )
       .toLowerCase()
       .includes(filter.searchTerm.toLowerCase()) ||
     node.asset?.name
@@ -114,42 +97,15 @@ export const applyFilter = (
 
 export const ActiveRewards = ({ currentEpoch }: { currentEpoch: number }) => {
   const t = useT();
-  const { data: activeRewardsData } = useActiveRewardsQuery({
-    variables: {
-      isReward: true,
-    },
+  const { data } = useRewards({
+    onlyActive: false,
   });
 
   const [filter, setFilter] = useState<Filter>({
     searchTerm: '',
   });
 
-  const { data: assets } = useAssetsMapProvider();
-  const { data: markets } = useMarketsMapProvider();
-
-  const enrichedTransfers = activeRewardsData?.transfersConnection?.edges
-    ?.map((e) => e?.node as TransferNode)
-    .filter((node) => isActiveReward(node, currentEpoch))
-    .map((node) => {
-      if (node.transfer.kind.__typename !== 'RecurringTransfer') {
-        return node;
-      }
-
-      const asset =
-        assets &&
-        assets[
-          node.transfer.kind.dispatchStrategy?.dispatchMetricAssetId || ''
-        ];
-
-      const marketsInScope =
-        node.transfer.kind.dispatchStrategy?.marketIdsInScope?.map(
-          (id) => markets && markets[id]
-        );
-
-      return { ...node, asset, markets: marketsInScope };
-    });
-
-  if (!enrichedTransfers || !enrichedTransfers.length) return null;
+  if (!data || !data.length) return null;
 
   return (
     <Card
@@ -157,7 +113,8 @@ export const ActiveRewards = ({ currentEpoch }: { currentEpoch: number }) => {
       className="lg:col-span-full"
       data-testid="active-rewards-card"
     >
-      {enrichedTransfers.length > 1 && (
+      {/** CARDS FILTER */}
+      {data.length > 1 && (
         <TradingInput
           onChange={(e) =>
             setFilter((curr) => ({ ...curr, searchTerm: e.target.value }))
@@ -172,142 +129,33 @@ export const ActiveRewards = ({ currentEpoch }: { currentEpoch: number }) => {
           prependElement={<VegaIcon name={VegaIconNames.SEARCH} />}
         />
       )}
+      {/** CARDS */}
       <TinyScroll className="grid gap-x-8 gap-y-10 h-fit grid-cols-[repeat(auto-fill,_minmax(230px,_1fr))] md:grid-cols-[repeat(auto-fill,_minmax(230px,_1fr))] lg:grid-cols-[repeat(auto-fill,_minmax(320px,_1fr))] xl:grid-cols-[repeat(auto-fill,_minmax(335px,_1fr))] max-h-[40rem] overflow-auto pr-2">
-        {enrichedTransfers
+        {data
           .filter((n) => applyFilter(n, filter))
-          .map((node, i) => {
-            const { transfer } = node;
-            if (
-              transfer.kind.__typename !== 'RecurringTransfer' ||
-              !transfer.kind.dispatchStrategy?.dispatchMetric
-            ) {
-              return null;
-            }
-
-            return (
-              node && (
-                <ActiveRewardCard
-                  key={i}
-                  transferNode={node}
-                  kind={transfer.kind}
-                  currentEpoch={currentEpoch}
-                  allMarkets={markets || {}}
-                />
-              )
-            );
-          })}
+          .map((node, i) => (
+            <ActiveRewardCard
+              key={i}
+              transferNode={node}
+              currentEpoch={currentEpoch}
+            />
+          ))}
       </TinyScroll>
     </Card>
   );
 };
 
-// This was built to be a status indicator for the rewards based on the transfer status
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const StatusIndicator = ({
-  status,
-  reason,
-}: {
-  status: TransferStatus;
-  reason?: Maybe<string> | undefined;
-}) => {
-  const t = useT();
-  const getIconIntent = (status: string) => {
-    switch (status) {
-      case TransferStatus.STATUS_DONE:
-        return { icon: IconNames.TICK_CIRCLE, intent: Intent.Success };
-      case TransferStatus.STATUS_REJECTED:
-        return { icon: IconNames.ERROR, intent: Intent.Danger };
-      default:
-        return { icon: IconNames.HELP, intent: Intent.Primary };
-    }
-  };
-  const { icon, intent } = getIconIntent(status);
-  return (
-    <Tooltip
-      description={
-        <span>
-          {t('Transfer status: {{status}} {{reason}}', {
-            status: TransferStatusMapping[status],
-            reason: reason ? `(${reason})` : '',
-          })}
-        </span>
-      }
-    >
-      <span
-        className={classNames(
-          {
-            'text-gray-700 dark:text-gray-300': intent === Intent.None,
-            'text-vega-blue': intent === Intent.Primary,
-            'text-vega-green dark:text-vega-green': intent === Intent.Success,
-            'dark:text-yellow text-yellow-600': intent === Intent.Warning,
-            'text-vega-red': intent === Intent.Danger,
-          },
-          'flex items-start p-1 align-text-bottom'
-        )}
-      >
-        <Icon size={3} name={icon as IconName} />
-      </span>
-    </Tooltip>
-  );
-};
-
 type ActiveRewardCardProps = {
-  transferNode: TransferNode & {
-    asset?: AssetFieldsFragment | null;
-    markets?: (MarketFieldsFragment | null)[];
-  };
+  transferNode: EnrichedRewardTransfer;
   currentEpoch: number;
-  kind: RecurringTransfer;
-  allMarkets?: Record<string, MarketFieldsFragment | null>;
 };
 export const ActiveRewardCard = ({
   transferNode,
   currentEpoch,
-  kind,
-  allMarkets,
 }: ActiveRewardCardProps) => {
-  const t = useT();
-
-  const { transfer } = transferNode;
-  const { dispatchStrategy } = kind;
-
-  const marketIdsInScope = dispatchStrategy?.marketIdsInScope;
-  const firstMarketData = transferNode.markets?.[0];
-
-  const specificMarkets = useMemo(() => {
-    if (
-      !firstMarketData ||
-      !marketIdsInScope ||
-      marketIdsInScope.length === 0
-    ) {
-      return null;
-    }
-    if (marketIdsInScope.length > 1) {
-      const marketNames =
-        allMarkets &&
-        marketIdsInScope
-          .map((id) => allMarkets[id]?.tradableInstrument?.instrument?.name)
-          .join(', ');
-
-      return (
-        <Tooltip description={marketNames}>
-          <span>Specific markets</span>
-        </Tooltip>
-      );
-    }
-    return (
-      <span>{firstMarketData?.tradableInstrument?.instrument?.name || ''}</span>
-    );
-  }, [firstMarketData, marketIdsInScope, allMarkets]);
-
-  const dispatchAsset = transferNode.asset;
-
-  if (!dispatchStrategy) {
-    return null;
-  }
-
-  // Gray out/hide the cards that are related to not trading markets
-  const marketSettled = transferNode.markets?.some(
+  // don't display the cards that are scoped to not trading markets
+  // FIXME: what if only one of the scoped market is settled? I presume the rewards is still valid for the rest, isn't it?
+  const marketSettled = transferNode.markets?.filter(
     (m) =>
       m?.state &&
       [
@@ -317,98 +165,127 @@ export const ActiveRewardCard = ({
         MarketState.STATE_CLOSED,
       ].includes(m.state)
   );
-
   if (marketSettled) {
     return null;
   }
 
-  const assetInActiveMarket =
-    allMarkets &&
-    Object.values(allMarkets).some((m: MarketFieldsFragment | null) => {
-      if (m && getAsset(m).id === dispatchStrategy.dispatchMetricAssetId) {
-        return m?.state && MarketState.STATE_ACTIVE === m.state;
-      }
-      return false;
-    });
+  let colour =
+    DispatchMetricColourMap[
+      transferNode.transfer.kind.dispatchStrategy.dispatchMetric
+    ];
 
-  const marketSuspended = transferNode.markets?.some(
+  // grey out of any of the markets is suspended or
+  // if the asset is not currently traded on any of the active markets
+  const marketSuspended = transferNode.markets?.filter(
     (m) =>
       m?.state === MarketState.STATE_SUSPENDED ||
       m?.state === MarketState.STATE_SUSPENDED_VIA_GOVERNANCE
   );
 
-  // Gray out the cards that are related to suspended markets
-  // Or settlement assets in markets that are not active and eligible for rewards
-  const { gradientClassName, mainClassName } =
-    marketSuspended || !assetInActiveMarket
-      ? {
-          gradientClassName: 'from-vega-cdark-500 to-vega-clight-400',
-          mainClassName: 'from-vega-cdark-400 dark:from-vega-cdark-600 to-20%',
-        }
-      : getGradientClasses(dispatchStrategy.dispatchMetric);
+  if (marketSuspended || !transferNode.isAssetTraded) {
+    colour = CardColour.GREY;
+  }
 
-  const entityScope = dispatchStrategy.entityScope;
+  return (
+    <RewardCard
+      colour={colour}
+      rewardAmount={addDecimalsFormatNumber(
+        transferNode.transfer.amount,
+        transferNode.transfer.asset?.decimals || 0,
+        6
+      )}
+      rewardAsset={transferNode.asset}
+      endsIn={
+        transferNode.transfer.kind.endEpoch != null
+          ? currentEpoch - transferNode.transfer.kind.endEpoch
+          : undefined
+      }
+      dispatchStrategy={transferNode.transfer.kind.dispatchStrategy}
+      dispatchMetricInfo={<DispatchMetricInfo reward={transferNode} />}
+    />
+  );
+};
 
+const RewardCard = ({
+  colour,
+  rewardAmount,
+  rewardAsset,
+  dispatchStrategy,
+  endsIn,
+  dispatchMetricInfo,
+}: {
+  colour: CardColour;
+  rewardAmount: string;
+  /** The asset linked to the dispatch strategy via `dispatchMetricAssetId` property. */
+  rewardAsset?: BasicAssetDetails;
+  /** The transfer's dispatch strategy. */
+  dispatchStrategy: DispatchStrategy;
+  /** The number of epochs until the transfer stops. */
+  endsIn?: number;
+  /** The VEGA asset details, required to format the min staking amount. */
+  vegaAsset?: BasicAssetDetails;
+  dispatchMetricInfo?: ReactNode;
+}) => {
+  const t = useT();
   return (
     <div>
       <div
         className={classNames(
           'bg-gradient-to-r col-span-full p-0.5 lg:col-auto h-full',
           'rounded-lg',
-          gradientClassName
+          CardColourStyles[colour].gradientClassName
         )}
         data-testid="active-rewards-card"
       >
         <div
           className={classNames(
-            mainClassName,
-            'bg-gradient-to-b bg-vega-clight-800 dark:bg-vega-cdark-800 h-full w-full rounded p-4 flex flex-col gap-4'
+            CardColourStyles[colour].mainClassName,
+            'bg-gradient-to-b bg-vega-clight-800 dark:bg-vega-cdark-800 h-full w-full rounded-md p-4 flex flex-col gap-4'
           )}
         >
           <div className="flex justify-between gap-4">
+            {/** ENTITY SCOPE */}
             <div className="flex flex-col gap-2 items-center text-center">
-              <EntityIcon transfer={transfer} />
-              {entityScope && (
+              <EntityIcon entityScope={dispatchStrategy.entityScope} />
+              {dispatchStrategy.entityScope && (
                 <span className="text-muted text-xs" data-testid="entity-scope">
-                  {EntityScopeLabelMapping[entityScope] || t('Unspecified')}
+                  {EntityScopeLabelMapping[dispatchStrategy.entityScope] ||
+                    t('Unspecified')}
                 </span>
               )}
             </div>
 
+            {/** AMOUNT AND DISTRIBUTION STRATEGY */}
             <div className="flex flex-col gap-2 items-center text-center">
+              {/** AMOUNT */}
               <h3 className="flex flex-col gap-1 text-2xl shrink-1 text-center">
                 <span className="font-glitch" data-testid="reward-value">
-                  {addDecimalsFormatNumber(
-                    transferNode.transfer.amount,
-                    transferNode.transfer.asset?.decimals || 0,
-                    6
-                  )}
+                  {rewardAmount}
                 </span>
 
-                <span className="font-alpha">
-                  {transferNode.transfer.asset?.symbol}
-                </span>
+                <span className="font-alpha">{rewardAsset?.symbol || ''}</span>
               </h3>
-              {
-                <Tooltip
-                  description={t(
-                    DistributionStrategyDescriptionMapping[
+
+              {/** DISTRIBUTION STRATEGY */}
+              <Tooltip
+                description={t(
+                  DistributionStrategyDescriptionMapping[
+                    dispatchStrategy.distributionStrategy
+                  ]
+                )}
+                underline={true}
+              >
+                <span className="text-xs" data-testid="distribution-strategy">
+                  {
+                    DistributionStrategyMapping[
                       dispatchStrategy.distributionStrategy
                     ]
-                  )}
-                  underline={true}
-                >
-                  <span className="text-xs" data-testid="distribution-strategy">
-                    {
-                      DistributionStrategyMapping[
-                        dispatchStrategy.distributionStrategy
-                      ]
-                    }
-                  </span>
-                </Tooltip>
-              }
+                  }
+                </span>
+              </Tooltip>
             </div>
 
+            {/** DISTRIBUTION DELAY */}
             <div className="flex flex-col gap-2 items-center text-center">
               <CardIcon
                 iconName={VegaIconNames.LOCK}
@@ -421,63 +298,59 @@ export const ActiveRewardCard = ({
                 data-testid="locked-for"
               >
                 {t('numberEpochs', '{{count}} epochs', {
-                  count: kind.dispatchStrategy?.lockPeriod,
+                  count: dispatchStrategy.lockPeriod,
                 })}
               </span>
             </div>
           </div>
 
           <span className="border-[0.5px] border-gray-700" />
-          <span data-testid="dispatch-metric-info">
-            {DispatchMetricLabels[dispatchStrategy.dispatchMetric]} •{' '}
-            <Tooltip
-              underline={marketSuspended}
-              description={
-                (marketSuspended || !assetInActiveMarket) &&
-                (specificMarkets
-                  ? t('Eligible market(s) currently suspended')
-                  : !assetInActiveMarket
-                  ? t('Currently no markets eligible for reward')
-                  : '')
-              }
-            >
-              <span>{specificMarkets || dispatchAsset?.name}</span>
-            </Tooltip>
-          </span>
+          {/** DISPATCH METRIC */}
+          {dispatchMetricInfo ? (
+            dispatchMetricInfo
+          ) : (
+            <span data-testid="dispatch-metric-info">
+              {DispatchMetricLabels[dispatchStrategy.dispatchMetric]}
+            </span>
+          )}
 
           <div className="flex items-center gap-8 flex-wrap">
-            {kind.endEpoch && (
+            {/** ENDS IN */}
+            {endsIn != null && (
               <span className="flex flex-col">
                 <span className="text-muted text-xs">{t('Ends in')} </span>
                 <span data-testid="ends-in">
-                  {t('numberEpochs', '{{count}} epochs', {
-                    count: kind.endEpoch - currentEpoch,
-                  })}
+                  {endsIn >= 0
+                    ? t('numberEpochs', '{{count}} epochs', {
+                        count: endsIn,
+                      })
+                    : t('Ended')}
                 </span>
               </span>
             )}
 
-            {
-              <span className="flex flex-col">
-                <span className="text-muted text-xs">{t('Assessed over')}</span>
-                <span data-testid="assessed-over">
-                  {t('numberEpochs', '{{count}} epochs', {
-                    count: dispatchStrategy.windowLength,
-                  })}
-                </span>
+            {/** WINDOW LENGTH */}
+            <span className="flex flex-col">
+              <span className="text-muted text-xs">{t('Assessed over')}</span>
+              <span data-testid="assessed-over">
+                {t('numberEpochs', '{{count}} epochs', {
+                  count: dispatchStrategy.windowLength,
+                })}
               </span>
-            }
+            </span>
           </div>
+          {/** DISPATCH METRIC DESCRIPTION */}
           {dispatchStrategy?.dispatchMetric && (
             <span className="text-muted text-sm h-[3rem]">
               {t(DispatchMetricDescription[dispatchStrategy?.dispatchMetric])}
             </span>
           )}
           <span className="border-[0.5px] border-gray-700" />
-          {kind.dispatchStrategy && (
+          {/** REQUIREMENTS */}
+          {dispatchStrategy && (
             <RewardRequirements
-              dispatchStrategy={kind.dispatchStrategy}
-              assetDecimalPlaces={transfer.asset?.decimals}
+              dispatchStrategy={dispatchStrategy}
+              rewardAsset={rewardAsset}
             />
           )}
         </div>
@@ -487,77 +360,62 @@ export const ActiveRewardCard = ({
 };
 
 export const DispatchMetricInfo = ({
-  transferNode,
-  allMarkets,
+  reward,
 }: {
-  transferNode: ActiveRewardCardProps['transferNode'];
-  allMarkets?: ActiveRewardCardProps['allMarkets'];
+  reward: EnrichedRewardTransfer;
 }) => {
-  const dispatchStrategy =
-    transferNode.transfer.kind.__typename === 'RecurringTransfer'
-      ? transferNode.transfer.kind.dispatchStrategy
-      : null;
+  const t = useT();
+  const dispatchStrategy = reward.transfer.kind.dispatchStrategy;
+  const marketNames = compact(
+    reward.markets?.map((m) => m.tradableInstrument.instrument.name)
+  );
 
-  const dispatchAsset = transferNode.transfer.asset;
-
-  const marketIdsInScope = dispatchStrategy?.marketIdsInScope;
-  const firstMarketData = transferNode.markets?.[0];
-  const specificMarkets = useMemo(() => {
-    if (
-      !firstMarketData ||
-      !marketIdsInScope ||
-      marketIdsInScope.length === 0
-    ) {
-      return null;
-    }
-    if (marketIdsInScope.length > 1) {
-      const marketNames =
-        allMarkets &&
-        marketIdsInScope
-          .map((id) => allMarkets[id]?.tradableInstrument?.instrument?.name)
-          .join(', ');
-
-      return (
-        <Tooltip description={marketNames}>
-          <span>Specific markets</span>
-        </Tooltip>
-      );
-    }
-
-    const name = firstMarketData?.tradableInstrument?.instrument?.name;
-    if (name) {
-      return <span>{name}</span>;
-    }
-
-    return null;
-  }, [firstMarketData, marketIdsInScope, allMarkets]);
-
-  if (!dispatchStrategy) return null;
+  let additionalDispatchMetricInfo = null;
+  // scoped to only one market
+  if (marketNames.length === 1) {
+    additionalDispatchMetricInfo = <span>{marketNames[0]}</span>;
+  }
+  // scoped to many markets
+  if (marketNames.length > 1) {
+    additionalDispatchMetricInfo = (
+      <Tooltip description={marketNames}>
+        <span>{t('Specific markets')}</span>
+      </Tooltip>
+    );
+  }
 
   return (
     <span data-testid="dispatch-metric-info">
-      {DispatchMetricLabels[dispatchStrategy.dispatchMetric]} •{' '}
-      <span>{specificMarkets || dispatchAsset?.name}</span>
+      {DispatchMetricLabels[dispatchStrategy.dispatchMetric]}
+      {additionalDispatchMetricInfo != null && (
+        <> • {additionalDispatchMetricInfo}</>
+      )}
     </span>
   );
 };
 
 const RewardRequirements = ({
   dispatchStrategy,
-  assetDecimalPlaces = 0,
+  rewardAsset,
+  vegaAsset,
 }: {
   dispatchStrategy: DispatchStrategy;
-  assetDecimalPlaces: number | undefined;
+  rewardAsset?: BasicAssetDetails;
+  vegaAsset?: BasicAssetDetails;
 }) => {
   const t = useT();
+
+  const entityLabel = EntityScopeLabelMapping[dispatchStrategy.entityScope];
 
   return (
     <dl className="flex justify-between flex-wrap items-center gap-3 text-xs">
       <div className="flex flex-col gap-1">
         <dt className="flex items-center gap-1 text-muted">
-          {t('{{entity}} scope', {
-            entity: EntityScopeLabelMapping[dispatchStrategy.entityScope],
-          })}
+          {entityLabel
+            ? t('{{entity}} scope', {
+                entity: entityLabel,
+              })
+            : t('Scope')}
         </dt>
         <dd className="flex items-center gap-1" data-testid="scope">
           <RewardEntityScope dispatchStrategy={dispatchStrategy} />
@@ -574,7 +432,7 @@ const RewardRequirements = ({
         >
           {addDecimalsFormatNumber(
             dispatchStrategy?.stakingRequirement || 0,
-            assetDecimalPlaces
+            vegaAsset?.decimals || 18
           )}
         </dd>
       </div>
@@ -587,7 +445,7 @@ const RewardRequirements = ({
           {addDecimalsFormatNumber(
             dispatchStrategy?.notionalTimeWeightedAveragePositionRequirement ||
               0,
-            assetDecimalPlaces
+            rewardAsset?.decimals || 0
           )}
         </dd>
       </div>
@@ -645,44 +503,65 @@ const RewardEntityScope = ({
     );
   }
 
-  return null;
+  return t('Unspecified');
 };
 
-const getGradientClasses = (d: DispatchMetric | undefined) => {
-  switch (d) {
-    case DispatchMetric.DISPATCH_METRIC_AVERAGE_POSITION:
-      return {
-        gradientClassName: 'from-vega-pink-500 to-vega-purple-400',
-        mainClassName: 'from-vega-pink-400 dark:from-vega-pink-600 to-20%',
-      };
-    case DispatchMetric.DISPATCH_METRIC_LP_FEES_RECEIVED:
-      return {
-        gradientClassName: 'from-vega-green-500 to-vega-yellow-500',
-        mainClassName: 'from-vega-green-400 dark:from-vega-green-600 to-20%',
-      };
-    case DispatchMetric.DISPATCH_METRIC_MAKER_FEES_PAID:
-      return {
-        gradientClassName: 'from-vega-orange-500 to-vega-pink-400',
-        mainClassName: 'from-vega-orange-400 dark:from-vega-orange-600 to-20%',
-      };
-    case DispatchMetric.DISPATCH_METRIC_MARKET_VALUE:
-    case DispatchMetric.DISPATCH_METRIC_RELATIVE_RETURN:
-      return {
-        gradientClassName: 'from-vega-purple-500 to-vega-blue-400',
-        mainClassName: 'from-vega-purple-400 dark:from-vega-purple-600 to-20%',
-      };
-    case DispatchMetric.DISPATCH_METRIC_RETURN_VOLATILITY:
-      return {
-        gradientClassName: 'from-vega-blue-500 to-vega-green-400',
-        mainClassName: 'from-vega-blue-400 dark:from-vega-blue-600 to-20%',
-      };
-    case DispatchMetric.DISPATCH_METRIC_VALIDATOR_RANKING:
-    default:
-      return {
-        gradientClassName: 'from-vega-pink-500 to-vega-purple-400',
-        mainClassName: 'from-vega-pink-400 dark:from-vega-pink-600 to-20%',
-      };
-  }
+const CardColourStyles: Record<
+  CardColour,
+  { gradientClassName: string; mainClassName: string }
+> = {
+  [CardColour.BLUE]: {
+    gradientClassName: 'from-vega-blue-500 to-vega-green-400',
+    mainClassName: 'from-vega-blue-400 dark:from-vega-blue-600 to-20%',
+  },
+  [CardColour.GREEN]: {
+    gradientClassName: 'from-vega-green-500 to-vega-yellow-500',
+    mainClassName: 'from-vega-green-400 dark:from-vega-green-600 to-20%',
+  },
+  [CardColour.GREY]: {
+    gradientClassName: 'from-vega-cdark-500 to-vega-clight-200',
+    mainClassName: 'from-vega-cdark-400 dark:from-vega-cdark-600 to-20%',
+  },
+  [CardColour.ORANGE]: {
+    gradientClassName: 'from-vega-orange-500 to-vega-pink-400',
+    mainClassName: 'from-vega-orange-400 dark:from-vega-orange-600 to-20%',
+  },
+  [CardColour.PINK]: {
+    gradientClassName: 'from-vega-pink-500 to-vega-purple-400',
+    mainClassName: 'from-vega-pink-400 dark:from-vega-pink-600 to-20%',
+  },
+  [CardColour.PURPLE]: {
+    gradientClassName: 'from-vega-purple-500 to-vega-blue-400',
+    mainClassName: 'from-vega-purple-400 dark:from-vega-purple-600 to-20%',
+  },
+  [CardColour.WHITE]: {
+    gradientClassName:
+      'from-vega-clight-600 dark:from-vega-clight-900 to-vega-yellow-500 dark:to-vega-yellow-400',
+    mainClassName: 'from-white dark:from-vega-clight-100 to-20%',
+  },
+  [CardColour.YELLOW]: {
+    gradientClassName: 'from-vega-yellow-500 to-vega-orange-400',
+    mainClassName: 'from-vega-yellow-400 dark:from-vega-yellow-600 to-20%',
+  },
+};
+
+const DispatchMetricColourMap: Record<DispatchMetric, CardColour> = {
+  // Liquidity provision fees received
+  [DispatchMetric.DISPATCH_METRIC_LP_FEES_RECEIVED]: CardColour.BLUE,
+  // Price maker fees paid
+  [DispatchMetric.DISPATCH_METRIC_MAKER_FEES_PAID]: CardColour.PINK,
+  // Price maker fees earned
+  [DispatchMetric.DISPATCH_METRIC_MAKER_FEES_RECEIVED]: CardColour.GREEN,
+  // Total market value
+  [DispatchMetric.DISPATCH_METRIC_MARKET_VALUE]: CardColour.WHITE,
+  // Average position
+  [DispatchMetric.DISPATCH_METRIC_AVERAGE_POSITION]: CardColour.ORANGE,
+  // Relative return
+  [DispatchMetric.DISPATCH_METRIC_RELATIVE_RETURN]: CardColour.PURPLE,
+  // Return volatility
+  [DispatchMetric.DISPATCH_METRIC_RETURN_VOLATILITY]: CardColour.YELLOW,
+  // Validator ranking
+  [DispatchMetric.DISPATCH_METRIC_VALIDATOR_RANKING]: CardColour.WHITE,
 };
 
 const CardIcon = ({
@@ -703,36 +582,29 @@ const CardIcon = ({
   );
 };
 
+const EntityScopeIconMap: Record<EntityScope, VegaIconNames> = {
+  [EntityScope.ENTITY_SCOPE_TEAMS]: VegaIconNames.TEAM,
+  [EntityScope.ENTITY_SCOPE_INDIVIDUALS]: VegaIconNames.MAN,
+};
+
 const EntityIcon = ({
-  transfer,
+  entityScope,
   size = 18,
 }: {
-  transfer: Transfer;
+  entityScope: EntityScope;
   size?: VegaIconSize;
 }) => {
-  if (transfer.kind.__typename !== 'RecurringTransfer') {
-    return null;
-  }
-  const entityScope = transfer.kind.dispatchStrategy?.entityScope;
-  const getIconName = () => {
-    switch (entityScope) {
-      case EntityScope.ENTITY_SCOPE_TEAMS:
-        return VegaIconNames.TEAM;
-      case EntityScope.ENTITY_SCOPE_INDIVIDUALS:
-        return VegaIconNames.MAN;
-      default:
-        return VegaIconNames.QUESTION_MARK;
-    }
-  };
-  const iconName = getIconName();
   return (
     <Tooltip
       description={
-        <span>{entityScope ? EntityScopeMapping[entityScope] : ''}</span>
+        entityScope ? <span>{EntityScopeMapping[entityScope]}</span> : undefined
       }
     >
       <span className="flex items-center p-2 rounded-full border border-gray-600">
-        {iconName && <VegaIcon name={iconName} size={size} />}
+        <VegaIcon
+          name={EntityScopeIconMap[entityScope] || VegaIconNames.QUESTION_MARK}
+          size={size}
+        />
       </span>
     </Tooltip>
   );

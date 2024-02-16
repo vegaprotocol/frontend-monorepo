@@ -93,21 +93,42 @@ export const useEnabledAssets = () => {
 
 /** Wrapped ETH symbol */
 const WETH = 'WETH';
-type WETHDetails = Pick<AssetFieldsFragment, 'symbol' | 'decimals' | 'quantum'>;
+
+/** VEGA */
+const VEGA = 'VEGA';
+
+export type BasicAssetDetails = Pick<
+  AssetFieldsFragment,
+  'symbol' | 'decimals' | 'quantum'
+>;
 /**
  * Tries to find WETH asset configuration on Vega in order to provide its
  * details, otherwise it returns hardcoded values.
  */
-export const useWETH = (): WETHDetails => {
+export const useWETH = (): BasicAssetDetails => {
   const { data } = useAssetsDataProvider();
   if (data) {
-    const weth = data.find((a) => a.symbol.toUpperCase() === WETH);
-    if (weth) return weth;
+    const details = data.find((a) => a.symbol.toUpperCase() === WETH);
+    if (details) return details;
   }
 
   return {
     symbol: WETH,
     decimals: 18,
     quantum: '500000000000000', // 1 WETH ~= 2000 qUSD
+  };
+};
+
+export const useVEGA = (): BasicAssetDetails => {
+  const { data } = useAssetsDataProvider();
+  if (data) {
+    const details = data.find((a) => a.symbol.toUpperCase() === VEGA);
+    if (details) return details;
+  }
+
+  return {
+    symbol: VEGA,
+    decimals: 18,
+    quantum: '1000000000000000000', // 1 VEGA ~= 1 qUSD
   };
 };

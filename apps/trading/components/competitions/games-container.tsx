@@ -1,17 +1,15 @@
 import { ActiveRewardCard } from '../rewards-container/active-rewards';
 import { useT } from '../../lib/use-t';
-import { type EnrichedTransfer } from '../../lib/hooks/use-game-cards';
-import { useMarketsMapProvider } from '@vegaprotocol/markets';
+import { type EnrichedRewardTransfer } from '../../lib/hooks/use-rewards';
 
 export const GamesContainer = ({
   data,
   currentEpoch,
 }: {
-  data: EnrichedTransfer[];
+  data: EnrichedRewardTransfer[];
   currentEpoch: number;
 }) => {
   const t = useT();
-  const { data: markets } = useMarketsMapProvider();
 
   if (!data || data.length === 0) {
     return (
@@ -37,8 +35,6 @@ export const GamesContainer = ({
             key={i}
             transferNode={game}
             currentEpoch={currentEpoch}
-            kind={transfer.kind}
-            allMarkets={markets || undefined}
           />
         );
       })}

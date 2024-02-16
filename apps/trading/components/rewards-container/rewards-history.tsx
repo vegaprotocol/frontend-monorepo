@@ -16,7 +16,7 @@ import {
 import {
   useRewardsHistoryQuery,
   type RewardsHistoryQuery,
-} from './__generated__/Rewards';
+} from '../../lib/hooks/__generated__/Rewards';
 import { useRewardsRowData } from './use-reward-row-data';
 import { useT } from '../../lib/use-t';
 
