@@ -20,8 +20,7 @@
           "@vegaprotocol/i18n",
           "@vegaprotocol/types",
           "@vegaprotocol/ui-toolkit",
-          "@vegaprotocol/utils",
-          "@vegaprotocol/wallet-client"
+          "@vegaprotocol/utils"
         ],
         "rollupConfig": "@nx/react/plugins/bundle-rollup",
         "compiler": "swc",
