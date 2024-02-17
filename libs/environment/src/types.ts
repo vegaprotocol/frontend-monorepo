@@ -14,6 +14,7 @@ export enum Networks {
   DEVNET = 'DEVNET',
   MAINNET = 'MAINNET',
 }
+
 export type Environment = z.infer<typeof envSchema>;
 export type FeatureFlags = z.infer<typeof featureFlagsSchema>;
 export type CosmicElevatorFlags = Pick<

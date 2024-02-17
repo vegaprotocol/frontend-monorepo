@@ -82,8 +82,12 @@ export class SnapConnector implements Connector {
   }
 
   async isConnected() {
-    console.warn('isConnected not implemented');
-    throw ConnectorErrors.isConnected;
+    try {
+      await this.listKeys();
+      return { connected: true };
+    } catch (err) {
+      return { connected: false };
+    }
   }
 
   async sendTransaction(params: TransactionParams) {
@@ -102,7 +106,11 @@ export class SnapConnector implements Connector {
         sentAt: res.sentAt,
       };
     } catch (err) {
-      throw ConnectorErrors.sendTransaction;
+      if (err instanceof ConnectorError) {
+        throw err;
+      }
+
+      throw ConnectorErrors.noConnector;
     }
   }
 

@@ -22,4 +22,5 @@ export const ConnectorErrors = {
   isConnected: new ConnectorError('failed to check connection', 6),
   sendTransaction: new ConnectorError('failed to send transaction', 7),
   unknown: new ConnectorError('unknown error', 8),
+  noWallet: new ConnectorError('no wallet running', 9),
 };

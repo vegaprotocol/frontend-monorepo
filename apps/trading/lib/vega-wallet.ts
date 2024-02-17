@@ -7,6 +7,7 @@ import {
   fairground,
   stagnet,
 } from '@vegaprotocol/wallet';
+import { ENV, CHAIN_IDS } from '@vegaprotocol/environment';
 
 const injected = new InjectedConnector();
 
@@ -24,6 +25,6 @@ const readOnly = new ReadOnlyConnector();
 
 export const config = createConfig({
   chains: [fairground, stagnet],
-  defaultChainId: fairground.id,
+  defaultChainId: CHAIN_IDS[ENV.VEGA_ENV],
   connectors: [injected, jsonRpc, snap, readOnly],
 });

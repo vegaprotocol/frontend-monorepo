@@ -77,10 +77,12 @@ export type Config = {
 export type Wallet = {
   store: StoreApi<Store>;
   connectors: Connector[];
-  connect: (id: ConnectorType) => Promise<{ success: boolean } | undefined>;
-  disconnect: () => Promise<{ success: boolean } | undefined>;
+  connect: (id: ConnectorType) => Promise<{ status: Status }>;
+  disconnect: () => Promise<{ status: Status }>;
   refreshKeys: () => Promise<void>;
-  sendTransaction: (params: TransactionParams) => Promise<TransactionResponse>;
+  sendTransaction: (
+    params: TransactionParams
+  ) => Promise<TransactionResponse | undefined>;
   reset: () => void;
 };
 

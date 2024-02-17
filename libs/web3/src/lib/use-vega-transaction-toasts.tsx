@@ -900,11 +900,7 @@ const VegaTxCompleteToastsContent = ({ tx }: VegaTxToastContentProps) => {
 const VegaTxErrorToastContent = ({ tx }: VegaTxToastContentProps) => {
   const t = useT();
   let label = t('Error occurred');
-  let errorMessage = 'Something failed';
-  // let errorMessage =
-  //   tx.error instanceof WalletError
-  //     ? `${tx.error.title}: ${tx.error.data}`
-  //     : tx.error?.message;
+  let errorMessage = tx.error?.message;
 
   // const reconnectVegaWallet = useReconnectVegaWallet();
 

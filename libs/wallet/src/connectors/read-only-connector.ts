@@ -55,6 +55,7 @@ export class ReadOnlyConnector implements Connector {
     return { success: true };
   }
 
+  // @ts-ignore read only connector has no reference to a chain
   async getChainId() {
     throw ConnectorErrors.chainId;
   }

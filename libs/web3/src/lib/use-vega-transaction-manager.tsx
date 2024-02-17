@@ -3,23 +3,10 @@ import {
   useSendTransaction,
   useVegaWallet,
 } from '@vegaprotocol/wallet-react';
+import { ConnectorError, ConnectorErrors } from '@vegaprotocol/wallet';
 import { useEffect, useRef } from 'react';
 import { useVegaTransactionStore } from './use-vega-transaction-store';
 import { VegaTxStatus } from './types';
-
-// TODO: handle this
-// const orderErrorResolve = (err: Error | unknown): Error => {
-//   if (err instanceof WalletClientError || err instanceof WalletError) {
-//     return err;
-//   } else if (err instanceof WalletHttpError) {
-//     return ClientErrors.UNKNOWN;
-//   } else if (err instanceof TypeError) {
-//     return ClientErrors.NO_SERVICE;
-//   } else if (err instanceof Error) {
-//     return err;
-//   }
-//   return ClientErrors.UNKNOWN;
-// };
 
 export const useVegaTransactionManager = () => {
   const { pubKey } = useVegaWallet();
@@ -42,15 +29,13 @@ export const useVegaTransactionManager = () => {
     }
     processed.current.add(transaction.id);
 
-    // @ts-ignore TODO: figure out broken type
     sendTransaction({
       publicKey: pubKey,
       sendingMode: 'TYPE_SYNC',
-      ...transaction.body,
+      transaction: transaction.body,
     })
       .then((res) => {
-        if (res === null || 'error' in res) {
-          // User rejected
+        if (!res) {
           del(transaction.id);
           return;
         }
@@ -64,12 +49,18 @@ export const useVegaTransactionManager = () => {
         }
       })
       .catch((err) => {
-        // const error = orderErrorResolve(err);
-        // if ((error as WalletError).code === ClientErrors.NO_SERVICE.code) {
-        //   disconnect();
-        // }
+        if (
+          err instanceof ConnectorError &&
+          err.code === ConnectorErrors.noWallet.code
+        ) {
+          disconnect();
+        }
+
         update(transaction.id, {
-          error: err,
+          error:
+            err instanceof ConnectorError
+              ? new Error(err.message)
+              : new Error('something went wrong'),
           status: VegaTxStatus.Error,
         });
       });

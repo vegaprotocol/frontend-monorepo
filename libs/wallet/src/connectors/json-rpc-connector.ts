@@ -80,7 +80,7 @@ export class JsonRpcConnector implements Connector {
       await this.request(JsonRpcMethod.DisconnectWallet);
       return { success: true };
     } catch (err) {
-      throw ConnectorErrors.disconnect;
+      throw ConnectorErrors.noWallet;
     }
   }
 
@@ -91,7 +91,7 @@ export class JsonRpcConnector implements Connector {
 
       return { chainId: data.result.chainID };
     } catch (err) {
-      throw ConnectorErrors.chainId;
+      throw ConnectorErrors.noWallet;
     }
   }
 
@@ -100,7 +100,7 @@ export class JsonRpcConnector implements Connector {
       const { data } = await this.request(JsonRpcMethod.ListKeys);
       return data.result.keys as Array<{ publicKey: string; name: string }>;
     } catch (err) {
-      throw ConnectorErrors.noConnector;
+      throw ConnectorErrors.noWallet;
     }
   }
 
@@ -108,19 +108,24 @@ export class JsonRpcConnector implements Connector {
     try {
       await this.listKeys();
       return { connected: true };
-    } catch (err) {
-      throw ConnectorErrors.noConnector;
+    } catch {
+      return { connected: false };
     }
   }
 
   async sendTransaction(params: TransactionParams) {
     try {
-      const { data } = await this.request(
+      const { response, data } = await this.request(
         JsonRpcMethod.SendTransaction,
         params
       );
 
-      // TODO handle not okay responses but wallet is running
+      if (!response.ok) {
+        if ('error' in data && data.error.code === 3001) {
+          throw ConnectorErrors.userRejected;
+        }
+        throw ConnectorErrors.sendTransaction;
+      }
 
       return {
         transactionHash: data.result.transactionHash,
@@ -133,7 +138,7 @@ export class JsonRpcConnector implements Connector {
         throw err;
       }
 
-      throw ConnectorErrors.noConnector;
+      throw ConnectorErrors.noWallet;
     }
   }
 
@@ -149,7 +154,6 @@ export class JsonRpcConnector implements Connector {
   // eslint-disable-next-line
   private async request(method: JsonRpcMethod, params?: any) {
     const headers = new Headers();
-
     if (this.token) {
       headers.set('Authorization', this.token);
     }
@@ -166,10 +170,6 @@ export class JsonRpcConnector implements Connector {
     });
 
     const data = await response.json();
-
-    if (!response.ok) {
-      this.token = undefined;
-    }
 
     return {
       data,

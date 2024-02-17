@@ -21,16 +21,20 @@ export const ConnectDialog = ({
   open: boolean;
   onChange: (open: boolean) => void;
 }) => {
+  const { connect } = useConnect();
   const status = useWallet((store) => store.status);
+
+  const onConnect = async (id: ConnectorType) => {
+    const res = await connect(id);
+    if (res.status === 'connected') {
+      setTimeout(() => onChange(false), 1000);
+    }
+  };
 
   return (
     <Dialog open={open} size="small" onChange={onChange}>
       {status === 'disconnected' ? (
-        <ConnectionOptions
-          onConnect={() => {
-            setTimeout(() => onChange(false), 1000);
-          }}
-        />
+        <ConnectionOptions onConnect={onConnect} />
       ) : (
         <ConnectionStatus status={status} />
       )}
@@ -38,9 +42,13 @@ export const ConnectDialog = ({
   );
 };
 
-export const ConnectionOptions = ({ onConnect }: { onConnect: () => void }) => {
+export const ConnectionOptions = ({
+  onConnect,
+}: {
+  onConnect: (id: ConnectorType) => void;
+}) => {
   const error = useWallet((store) => store.error);
-  const { connect, connectors } = useConnect();
+  const { connectors } = useConnect();
 
   return (
     <div className="flex flex-col gap-4">
@@ -53,12 +61,7 @@ export const ConnectionOptions = ({ onConnect }: { onConnect: () => void }) => {
               id={c.id}
               name={c.name}
               description={c.description}
-              onClick={async () => {
-                const res = await connect(c.id);
-                if (res?.success) {
-                  onConnect();
-                }
-              }}
+              onClick={() => onConnect(c.id)}
             />
           );
         })}

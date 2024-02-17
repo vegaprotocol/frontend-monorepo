@@ -67,16 +67,16 @@ export function createConfig(cfg: Config): Wallet {
 
   async function connect(id: ConnectorType) {
     if (store.getState().status === 'connecting') {
-      return;
-    }
-
-    const connector = connectors.getState().find((c) => c.id === id);
-
-    if (!connector) {
-      return { success: false };
+      return { status: 'connecting' as const };
     }
 
     try {
+      const connector = connectors.getState().find((c) => c.id === id);
+
+      if (!connector) {
+        throw ConnectorErrors.noConnector;
+      }
+
       store.setState({ status: 'connecting', current: id, error: undefined });
 
       await connector.connectWallet(store.getState().chainId);
@@ -97,11 +97,10 @@ export function createConfig(cfg: Config): Wallet {
         pubKey: defaultKey,
       });
 
-      // TODO: is there a better way to do this
       connector.off('client.disconnected');
       connector.on('client.disconnected', disconnect);
 
-      return { success: true };
+      return { status: 'connected' as const };
     } catch (err) {
       store.setState({
         status: 'disconnected',
@@ -109,7 +108,7 @@ export function createConfig(cfg: Config): Wallet {
         keys: [],
         error: err instanceof ConnectorError ? err : ConnectorErrors.unknown,
       });
-      return { success: false };
+      return { status: 'disconnected' as const };
     }
   }
 
@@ -118,42 +117,43 @@ export function createConfig(cfg: Config): Wallet {
       .getState()
       .find((x) => x.id === store.getState().current);
 
-    if (!connector) {
-      return { success: false };
+    try {
+      if (!connector) {
+        throw ConnectorErrors.noConnector;
+      }
+
+      connector.off('client.disconnected');
+
+      await connector.disconnectWallet();
+
+      store.setState(getInitialState(), true);
+      return { status: 'connected' as const };
+    } catch (err) {
+      store.setState({
+        ...getInitialState(),
+        error: err instanceof ConnectorError ? err : ConnectorErrors.unknown,
+      });
+      return { status: 'disconnected' as const };
     }
-
-    connector.off('client.disconnected');
-
-    await connector.disconnectWallet();
-
-    store.setState({
-      status: 'disconnected',
-      current: undefined,
-      keys: [],
-      pubKey: undefined,
-      jsonRpcToken: undefined,
-    });
-
-    return { success: true };
   }
 
   async function refreshKeys() {
-    const current = store.getState().current;
-    const connector = connectors.getState().find((c) => c.id === current);
+    const connector = connectors
+      .getState()
+      .find((x) => x.id === store.getState().current);
 
-    if (!connector) {
-      return;
+    try {
+      if (!connector) {
+        throw ConnectorErrors.noConnector;
+      }
+
+      const keys = await connector.listKeys();
+      store.setState({ keys });
+    } catch (err) {
+      store.setState({
+        error: err instanceof ConnectorError ? err : ConnectorErrors.unknown,
+      });
     }
-
-    const listKeysRes = await connector.listKeys();
-
-    if ('error' in listKeysRes) {
-      return;
-    }
-
-    store.setState({
-      keys: listKeysRes,
-    });
   }
 
   async function sendTransaction(params: TransactionParams) {
@@ -161,24 +161,16 @@ export function createConfig(cfg: Config): Wallet {
       .getState()
       .find((x) => x.id === store.getState().current);
 
-    if (!connector) {
-      return {
-        error: 'no connector',
-      };
-    }
-
     try {
-      const res = await connector.sendTransaction(params);
-
-      return res;
-      // eslint-disable-next-line
-      console.log('res', res);
+      if (!connector) {
+        throw ConnectorErrors.noConnector;
+      }
+      return connector.sendTransaction(params);
     } catch (err) {
-      return {
-        error: 'failed to send',
-      };
-      // eslint-disable-next-line
-      console.error(err);
+      if (err instanceof ConnectorError) {
+        throw err;
+      }
+      throw ConnectorErrors.unknown;
     }
   }
 

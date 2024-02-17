@@ -9,3 +9,6 @@ export * from './types';
 
 // Utils
 export * from './utils/__generated__/NodeCheck';
+
+// Chain info
+export { CHAIN_IDS } from './chains';

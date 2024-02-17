@@ -72,11 +72,11 @@ export const mockChain = {
   name: 'My Mocked Chain',
 };
 
-export const mockConfig = createConfig({
-  chains: [mockChain],
-  defaultChainId: mockChain.id,
-  connectors: [mockConnector],
-});
+// export const mockConfig = createConfig({
+//   chains: [mockChain],
+//   defaultChainId: mockChain.id,
+//   connectors: [mockConnector],
+// });
 
 export function MockedWalletProvider({ children }: PropsWithChildren) {
   return createElement(WalletContext.Provider, { value: mockConfig }, children);
