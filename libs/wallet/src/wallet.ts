@@ -12,6 +12,8 @@ import {
 } from './types';
 import { ConnectorError, ConnectorErrors } from './connectors';
 
+export const STORE_KEY = 'vega_wallet_store';
+
 // get/set functions are not used in the slices so these
 // can be plain objects
 export const singleKeyStoreSlice: SingleKeyStore = {
@@ -46,7 +48,7 @@ export function createConfig(cfg: Config): Wallet {
 
   const store = createStore<Store>()(
     persist(getInitialState, {
-      name: 'vega_wallet_store',
+      name: STORE_KEY,
       partialize(state) {
         return {
           chainId: state.chainId,
@@ -127,7 +129,7 @@ export function createConfig(cfg: Config): Wallet {
       await connector.disconnectWallet();
 
       store.setState(getInitialState(), true);
-      return { status: 'connected' as const };
+      return { status: 'disconnected' as const };
     } catch (err) {
       store.setState({
         ...getInitialState(),

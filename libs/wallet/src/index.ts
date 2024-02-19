@@ -3,7 +3,7 @@ export * from './types';
 export * from './transaction-types';
 
 // Core
-export { fairground, stagnet, type Chain } from './chains';
+export { fairground, stagnet, mockChain, type Chain } from './chains';
 export { createConfig, coreStoreSlice, singleKeyStoreSlice } from './wallet';
 
 // Connectors
@@ -12,6 +12,7 @@ export {
   SnapConnector,
   JsonRpcConnector,
   ReadOnlyConnector,
+  MockConnector,
   ConnectorError,
   ConnectorErrors,
 } from './connectors';

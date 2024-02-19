@@ -15,3 +15,9 @@ export const stagnet = {
   testnet: true,
   name: 'Stagnet',
 };
+
+export const mockChain = {
+  id: 'mock-chain',
+  testnet: true,
+  name: 'My Mocked Chain',
+};
