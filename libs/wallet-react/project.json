@@ -19,10 +19,8 @@
         "outputPath": "dist/libs/wallet-react",
         "tsConfig": "libs/wallet-react/tsconfig.lib.json",
         "project": "libs/wallet-react/package.json",
-        "entryFile": [
-          "libs/wallet-react/src/index.ts",
-          "libs/wallet-react/src/testing.ts"
-        ],
+        "entryFile": "libs/wallet-react/src/index.ts",
+        "additionalEntryPoints": ["libs/wallet-react/src/testing.ts"],
         "external": ["react", "react-dom", "react/jsx-runtime"],
         "rollupConfig": "@nx/react/plugins/bundle-rollup",
         "compiler": "babel",
