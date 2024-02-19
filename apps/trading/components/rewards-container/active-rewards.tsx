@@ -371,11 +371,16 @@ export const DispatchMetricInfo = ({
   );
 
   let additionalDispatchMetricInfo = null;
-  // scoped to only one market
+
+  // if asset found then display asset symbol
+  if (reward.asset) {
+    additionalDispatchMetricInfo = <span>{reward.asset.symbol}</span>;
+  }
+  // but if scoped to only one market then display market name
   if (marketNames.length === 1) {
     additionalDispatchMetricInfo = <span>{marketNames[0]}</span>;
   }
-  // scoped to many markets
+  // or if scoped to many markets then indicate it's scoped to "specific markets"
   if (marketNames.length > 1) {
     additionalDispatchMetricInfo = (
       <Tooltip description={marketNames}>
