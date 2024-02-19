@@ -21,7 +21,7 @@ import { type ApolloError } from '@apollo/client';
 import compact from 'lodash/compact';
 import { useEpochInfoQuery } from './__generated__/Epoch';
 
-type RewardTransfer = TransferNode & {
+export type RewardTransfer = TransferNode & {
   transfer: {
     kind: RecurringTransfer & {
       dispatchStrategy: DispatchStrategy;
@@ -44,7 +44,7 @@ export type EnrichedRewardTransfer = RewardTransfer & {
  * A reward has to be a recurring transfer and has to have a
  * dispatch strategy.
  */
-const isReward = (node: TransferNode): node is RewardTransfer => {
+export const isReward = (node: TransferNode): node is RewardTransfer => {
   if (
     node.transfer.kind.__typename === 'RecurringTransfer' &&
     node.transfer.kind.dispatchStrategy != null
@@ -62,9 +62,9 @@ export const isActiveReward = (node: RewardTransfer, currentEpoch: number) => {
 
   const pending = transfer.status === TransferStatus.STATUS_PENDING;
   const withinEpochs =
-    transfer.kind.startEpoch >= currentEpoch &&
+    transfer.kind.startEpoch <= currentEpoch &&
     (transfer.kind.endEpoch != null
-      ? transfer.kind.endEpoch < currentEpoch
+      ? transfer.kind.endEpoch >= currentEpoch
       : true);
 
   if (pending && withinEpochs) return true;

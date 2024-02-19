@@ -1,9 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import {
-  ActiveRewardCard,
-  applyFilter,
-  isActiveReward,
-} from './active-rewards';
+import { ActiveRewardCard, applyFilter } from './active-rewards';
 import {
   AccountType,
   AssetStatus,
@@ -11,54 +7,13 @@ import {
   DistributionStrategy,
   EntityScope,
   IndividualScope,
-  type RecurringTransfer,
-  type TransferNode,
   TransferStatus,
   type Transfer,
 } from '@vegaprotocol/types';
-
-jest.mock('./__generated__/Rewards', () => ({
-  useMarketForRewardsQuery: () => ({
-    data: undefined,
-  }),
-}));
-
-jest.mock('@vegaprotocol/assets', () => ({
-  useAssetDataProvider: () => {
-    return {
-      data: {
-        assetId: 'asset-1',
-      },
-    };
-  },
-}));
+import { type EnrichedRewardTransfer } from '../../lib/hooks/use-rewards';
 
 describe('ActiveRewards', () => {
-  const mockRecurringTransfer: RecurringTransfer = {
-    __typename: 'RecurringTransfer',
-    startEpoch: 115332,
-    endEpoch: 115432,
-    factor: '1',
-    dispatchStrategy: {
-      __typename: 'DispatchStrategy',
-      dispatchMetric: DispatchMetric.DISPATCH_METRIC_LP_FEES_RECEIVED,
-      dispatchMetricAssetId:
-        'c9fe6fc24fce121b2cc72680543a886055abb560043fda394ba5376203b7527d',
-      marketIdsInScope: null,
-      entityScope: EntityScope.ENTITY_SCOPE_INDIVIDUALS,
-      individualScope: IndividualScope.INDIVIDUAL_SCOPE_ALL,
-      teamScope: null,
-      nTopPerformers: '',
-      stakingRequirement: '',
-      notionalTimeWeightedAveragePositionRequirement: '',
-      windowLength: 1,
-      lockPeriod: 0,
-      distributionStrategy: DistributionStrategy.DISTRIBUTION_STRATEGY_PRO_RATA,
-      rankTable: null,
-    },
-  };
-
-  const mockTransferNode: TransferNode = {
+  const reward: EnrichedRewardTransfer = {
     __typename: 'TransferNode',
     transfer: {
       __typename: 'Transfer',
@@ -86,21 +41,37 @@ describe('ActiveRewards', () => {
       reference: 'reward',
       status: TransferStatus.STATUS_PENDING,
       timestamp: '2023-12-18T13:05:35.948706Z',
-      kind: mockRecurringTransfer,
+      kind: {
+        __typename: 'RecurringTransfer',
+        startEpoch: 115332,
+        endEpoch: 115432,
+        factor: '1',
+        dispatchStrategy: {
+          __typename: 'DispatchStrategy',
+          dispatchMetric: DispatchMetric.DISPATCH_METRIC_LP_FEES_RECEIVED,
+          dispatchMetricAssetId:
+            'c9fe6fc24fce121b2cc72680543a886055abb560043fda394ba5376203b7527d',
+          marketIdsInScope: null,
+          entityScope: EntityScope.ENTITY_SCOPE_INDIVIDUALS,
+          individualScope: IndividualScope.INDIVIDUAL_SCOPE_ALL,
+          teamScope: null,
+          nTopPerformers: '',
+          stakingRequirement: '',
+          notionalTimeWeightedAveragePositionRequirement: '',
+          windowLength: 1,
+          lockPeriod: 0,
+          distributionStrategy:
+            DistributionStrategy.DISTRIBUTION_STRATEGY_PRO_RATA,
+          rankTable: null,
+        },
+      },
       reason: null,
     },
     fees: [],
   };
 
   it('renders with valid props', () => {
-    render(
-      <ActiveRewardCard
-        transferNode={mockTransferNode}
-        currentEpoch={1}
-        kind={mockRecurringTransfer}
-        allMarkets={{}}
-      />
-    );
+    render(<ActiveRewardCard transferNode={reward} currentEpoch={115432} />);
 
     expect(
       screen.getByText(/Liquidity provision fees received/i)
@@ -108,39 +79,9 @@ describe('ActiveRewards', () => {
     expect(screen.getByText('Individual scope')).toBeInTheDocument();
     expect(screen.getByText('Average position')).toBeInTheDocument();
     expect(screen.getByText('Ends in')).toBeInTheDocument();
-    expect(screen.getByText('115431 epochs')).toBeInTheDocument();
+    expect(screen.getByText('1 epoch')).toBeInTheDocument();
     expect(screen.getByText('Assessed over')).toBeInTheDocument();
     expect(screen.getByText('1 epoch')).toBeInTheDocument();
-  });
-
-  describe('isActiveReward', () => {
-    it('returns true for valid active reward', () => {
-      const node = {
-        transfer: {
-          kind: {
-            __typename: 'RecurringTransfer',
-            dispatchStrategy: {},
-            endEpoch: 10,
-          },
-          status: TransferStatus.STATUS_PENDING,
-        },
-      } as TransferNode;
-      expect(isActiveReward(node, 5)).toBeTruthy();
-    });
-
-    it('returns false for invalid active reward', () => {
-      const node = {
-        transfer: {
-          kind: {
-            __typename: 'RecurringTransfer',
-            dispatchStrategy: {},
-            endEpoch: 10,
-          },
-          status: TransferStatus.STATUS_PENDING,
-        },
-      } as TransferNode;
-      expect(isActiveReward(node, 15)).toBeFalsy();
-    });
   });
 
   describe('applyFilter', () => {
