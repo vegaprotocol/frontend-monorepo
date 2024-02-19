@@ -1,5 +1,6 @@
 import { determineId, normalizeOrderAmendment } from './utils';
 import * as Schema from '@vegaprotocol/types';
+
 describe('determineId', () => {
   it('produces a known result for an ID', () => {
     const res = determineId(
