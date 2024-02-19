@@ -1,6 +1,10 @@
 import { useCallback, useState } from 'react';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
-import type { Transaction } from '@vegaprotocol/wallet';
+import {
+  ConnectorError,
+  ConnectorErrors,
+  type Transaction,
+} from '@vegaprotocol/wallet';
 
 export enum VegaTxStatus {
   Default = 'Default',
@@ -58,13 +62,8 @@ export const useVegaTransaction = () => {
 
         const res = await sendTx(pubKey, tx);
 
-        if ('error' in res) {
-          if (res.error.includes('user rejected')) {
-            reset();
-            return null;
-          }
-
-          throw new Error('transaction failed');
+        if (!res) {
+          return;
         }
 
         if (res.signature && res.transactionHash) {
@@ -79,6 +78,13 @@ export const useVegaTransaction = () => {
 
         return null;
       } catch (err) {
+        if (
+          err instanceof ConnectorError &&
+          err.code === ConnectorErrors.userRejected.code
+        ) {
+          reset();
+          return;
+        }
         setTransaction({
           error: err instanceof Error ? err : Error('something went wrong'),
           status: VegaTxStatus.Error,
