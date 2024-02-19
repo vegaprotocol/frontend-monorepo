@@ -1,0 +1,44 @@
+query ExplorerTreasuryTransfers {
+  transfersConnection(
+    partyId: "network"
+    direction: ToOrFrom
+    pagination: { last: 200 }
+  ) {
+    pageInfo {
+      hasNextPage
+    }
+    edges {
+      node {
+        transfer {
+          timestamp
+          from
+          amount
+          to
+          status
+          reason
+          toAccountType
+          fromAccountType
+          asset {
+            id
+          }
+          id
+          status
+          kind {
+            ... on OneOffTransfer {
+              deliverOn
+            }
+            ... on RecurringTransfer {
+              startEpoch
+            }
+            ... on OneOffGovernanceTransfer {
+              deliverOn
+            }
+            ... on RecurringGovernanceTransfer {
+              endEpoch
+            }
+          }
+        }
+      }
+    }
+  }
+}

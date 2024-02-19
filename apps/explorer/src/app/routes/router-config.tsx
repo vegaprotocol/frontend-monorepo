@@ -30,6 +30,7 @@ import { PartyAccountsByAsset } from './parties/id/accounts';
 import { Disclaimer } from './pages/disclaimer';
 import { useFeatureFlags } from '@vegaprotocol/environment';
 import RestrictedPage from './restricted';
+import { NetworkTreasury } from './treasury';
 
 export type Navigable = {
   path: string;
@@ -229,6 +230,17 @@ export const useRouterConfig = () => {
         ]
       : [];
 
+  const treasuryRoutes: Route[] = [
+    {
+      path: Routes.TREASURY,
+      handle: {
+        name: t('Treasury'),
+        text: t('Treasury'),
+        breadcrumb: () => <Link to={Routes.TREASURY}>{t('Treasury')}</Link>,
+      },
+      element: <NetworkTreasury />,
+    },
+  ];
   const validators: Route[] = featureFlags.EXPLORER_VALIDATORS
     ? [
         {
@@ -358,6 +370,7 @@ export const useRouterConfig = () => {
         ...marketsRoutes,
         ...networkParametersRoutes,
         ...validators,
+        ...treasuryRoutes,
       ],
     },
     {

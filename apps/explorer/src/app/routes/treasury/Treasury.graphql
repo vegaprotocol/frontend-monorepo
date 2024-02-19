@@ -1,0 +1,12 @@
+query ExplorerTreasury {
+  assetsConnection(pagination: { last: 1000 }) {
+    edges {
+      node {
+        id
+        networkTreasuryAccount {
+          balance
+        }
+      }
+    }
+  }
+}
