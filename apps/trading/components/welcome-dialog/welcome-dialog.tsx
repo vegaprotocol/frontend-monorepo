@@ -98,7 +98,7 @@ const ConnectionOptions = ({ onConnect }: { onConnect: () => void }) => {
                 description={c.description}
                 onClick={async () => {
                   const res = await connect(c.id);
-                  if (res?.success) {
+                  if (res.status === 'connected') {
                     onConnect();
                   }
                 }}
