@@ -19,9 +19,9 @@ type SnapConfig = {
 
 export class SnapConnector implements Connector {
   readonly id = 'snap';
-  readonly name = 'Metamask Snap';
+  readonly name = 'MetaMask Snap';
   readonly description =
-    'Connect directly via Metamask with the Vega Snap for single key support without advanced features.';
+    'Connect directly via MetaMask with the Vega Snap for single key support without advanced features.';
 
   node: string;
   version: string;

@@ -1,5 +1,10 @@
 import { createElement, type PropsWithChildren } from 'react';
-import { createConfig, mockChain, MockConnector } from '@vegaprotocol/wallet';
+import {
+  createConfig,
+  mockChain,
+  MockConnector,
+  type Wallet,
+} from '@vegaprotocol/wallet';
 import { WalletContext } from './context';
 
 const mockConnector = new MockConnector();
@@ -10,11 +15,14 @@ export const mockConfig = createConfig({
   connectors: [mockConnector],
 });
 
-export function MockedWalletProvider({ children }: PropsWithChildren) {
+export function MockedWalletProvider({
+  children,
+  config,
+}: PropsWithChildren<{ config?: Wallet }>) {
   return createElement(
     WalletContext.Provider,
     {
-      value: mockConfig,
+      value: config ? config : mockConfig,
     },
     children
   );

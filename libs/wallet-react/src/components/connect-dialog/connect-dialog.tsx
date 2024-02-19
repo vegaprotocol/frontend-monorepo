@@ -13,6 +13,9 @@ import {
 import { useWallet } from '../../hooks/use-wallet';
 import { useConnect } from '../../hooks/use-connect';
 import classNames from 'classnames';
+import { useT } from '../../hooks/use-t';
+
+export const DIALOG_CLOSE_DELAY = 1000;
 
 export const ConnectDialog = ({
   open,
@@ -27,7 +30,7 @@ export const ConnectDialog = ({
   const onConnect = async (id: ConnectorType) => {
     const res = await connect(id);
     if (res.status === 'connected') {
-      setTimeout(() => onChange(false), 1000);
+      setTimeout(() => onChange(false), DIALOG_CLOSE_DELAY);
     }
   };
 
@@ -47,13 +50,17 @@ export const ConnectionOptions = ({
 }: {
   onConnect: (id: ConnectorType) => void;
 }) => {
+  const t = useT();
   const error = useWallet((store) => store.error);
   const { connectors } = useConnect();
 
   return (
     <div className="flex flex-col gap-4">
-      <h2 className="text-xl">Connect Vega Wallet</h2>
-      <ul className="grid grid-cols-2 gap-1 -mx-2">
+      <h2 className="text-xl">{t('Connect Vega Wallet')}</h2>
+      <ul
+        className="grid grid-cols-2 gap-1 -mx-2"
+        data-testid="connectors-list"
+      >
         {connectors.map((c) => {
           return (
             <ConnectionOption
@@ -67,7 +74,10 @@ export const ConnectionOptions = ({
         })}
       </ul>
       {error && error.code !== ConnectorErrors.userRejected.code && (
-        <p className="text-danger text-sm first-letter:uppercase">
+        <p
+          className="text-danger text-sm first-letter:uppercase"
+          data-testid="connection-error"
+        >
           {error.message}
         </p>
       )}
@@ -98,6 +108,7 @@ export const ConnectionOption = ({
         <button
           className="w-full flex gap-2 items-center p-2 rounded capitalize hover:bg-vega-clight-800 dark:hover:bg-vega-cdark-800"
           onClick={onClick}
+          data-testid={`connector-${id}`}
         >
           <ConnectorIcon id={id} />
           {name}
@@ -180,7 +191,15 @@ export const ConnectorIcon = ({ id }: { id: ConnectorType }) => {
         </span>
       );
     }
+    default: {
+      return (
+        <span
+          className={classNames(
+            defaultWrapperClasses,
+            'bg-vega-cdark-600 dark:bg-vega-clight-600 text-vega-clight-800 dark:text-vega-cdark-800 text-xs'
+          )}
+        />
+      );
+    }
   }
-
-  throw new Error('invalid connector id');
 };

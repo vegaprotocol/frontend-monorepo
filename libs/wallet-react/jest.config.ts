@@ -8,4 +8,5 @@ export default {
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   coverageDirectory: '../../coverage/libs/wallet-react',
+  setupFilesAfterEnv: ['./src/setup-tests.ts'],
 };

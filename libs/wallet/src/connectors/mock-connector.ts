@@ -1,3 +1,4 @@
+import { mockChain } from '../chains';
 import { type Connector } from '../types';
 
 export const mockKeys = [
