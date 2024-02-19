@@ -98,7 +98,7 @@ export const applyFilter = (
 export const ActiveRewards = ({ currentEpoch }: { currentEpoch: number }) => {
   const t = useT();
   const { data } = useRewards({
-    onlyActive: false,
+    onlyActive: true,
   });
 
   const [filter, setFilter] = useState<Filter>({
@@ -197,7 +197,7 @@ export const ActiveRewardCard = ({
       rewardAsset={transferNode.asset}
       endsIn={
         transferNode.transfer.kind.endEpoch != null
-          ? currentEpoch - transferNode.transfer.kind.endEpoch
+          ? transferNode.transfer.kind.endEpoch - currentEpoch
           : undefined
       }
       dispatchStrategy={transferNode.transfer.kind.dispatchStrategy}
@@ -319,7 +319,7 @@ const RewardCard = ({
             {endsIn != null && (
               <span className="flex flex-col">
                 <span className="text-muted text-xs">{t('Ends in')} </span>
-                <span data-testid="ends-in">
+                <span data-testid="ends-in" data-endsin={endsIn}>
                   {endsIn >= 0
                     ? t('numberEpochs', '{{count}} epochs', {
                         count: endsIn,
