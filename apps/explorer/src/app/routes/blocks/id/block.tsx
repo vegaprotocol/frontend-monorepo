@@ -16,6 +16,7 @@ import { useBlockInfo } from '@vegaprotocol/tendermint';
 import { NodeLink } from '../../../components/links';
 import { useDocumentTitle } from '../../../hooks/use-document-title';
 import EmptyList from '../../../components/empty-list/empty-list';
+import { useExplorerEpochForBlockQuery } from '../../../components/links/block-link/__generated__/EpochByBlock';
 
 type Params = { block: string };
 
@@ -25,6 +26,11 @@ const Block = () => {
   const {
     state: { data: blockData, loading, error },
   } = useBlockInfo(Number(block));
+
+  const { data } = useExplorerEpochForBlockQuery({
+    errorPolicy: 'ignore',
+    variables: { block: block?.toString() || '' },
+  });
 
   return (
     <section>
@@ -75,6 +81,7 @@ const Block = () => {
                     <code>{blockData.result.block.header.consensus_hash}</code>
                   </TableCell>
                 </TableRow>
+
                 <TableRow modifier="bordered">
                   <TableHeader scope="row">Mined by</TableHeader>
                   <TableCell modifier="bordered">
@@ -97,6 +104,14 @@ const Block = () => {
                     )}
                   </TableCell>
                 </TableRow>
+                {data && data.epoch && (
+                  <TableRow modifier="bordered">
+                    <TableHeader scope="row">{t('Epoch')}</TableHeader>
+                    <TableCell modifier="bordered">
+                      <code>{data.epoch.id}</code>
+                    </TableCell>
+                  </TableRow>
+                )}
                 <TableRow modifier="bordered">
                   <TableHeader scope="row">Transactions</TableHeader>
                   <TableCell modifier="bordered">

@@ -74,7 +74,7 @@ export const TxDetailsShared = ({
       <TableRow modifier="bordered">
         <TableCell {...sharedHeaderProps}>{t('Block')}</TableCell>
         <TableCell>
-          <BlockLink height={height} />
+          <BlockLink height={height} showEpoch={true} />
         </TableCell>
       </TableRow>
       <TableRow modifier="bordered">
