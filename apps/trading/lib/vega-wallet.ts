@@ -26,5 +26,11 @@ const readOnly = new ReadOnlyConnector();
 export const config = createConfig({
   chains: [fairground, stagnet],
   defaultChainId: CHAIN_IDS[ENV.VEGA_ENV],
-  connectors: [injected, jsonRpc, snap, readOnly],
+  connectors: [
+    injected,
+    jsonRpc,
+    snap,
+    // @ts-ignore getChainId only throws
+    readOnly,
+  ],
 });
