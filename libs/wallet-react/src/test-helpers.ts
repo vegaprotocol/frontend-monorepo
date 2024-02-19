@@ -1,5 +1,5 @@
 import { type StoreApi } from 'zustand/vanilla';
-import { createElement, type PropsWithChildren } from 'react';
+import { createElement, useRef, type PropsWithChildren } from 'react';
 import { createConfig, type Store, type Connector } from '@vegaprotocol/wallet';
 import { WalletContext } from './context';
 
@@ -72,12 +72,18 @@ export const mockChain = {
   name: 'My Mocked Chain',
 };
 
-// export const mockConfig = createConfig({
-//   chains: [mockChain],
-//   defaultChainId: mockChain.id,
-//   connectors: [mockConnector],
-// });
-
 export function MockedWalletProvider({ children }: PropsWithChildren) {
-  return createElement(WalletContext.Provider, { value: mockConfig }, children);
+  const configRef = useRef(
+    createConfig({
+      chains: [mockChain],
+      defaultChainId: mockChain.id,
+      connectors: [mockConnector],
+    })
+  );
+
+  return createElement(
+    WalletContext.Provider,
+    { value: configRef.current },
+    children
+  );
 }
