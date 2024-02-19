@@ -8,7 +8,7 @@ import {
   mockConfig,
   mockKeys,
   MockedWalletProvider,
-} from '@vegaprotocol/wallet-react';
+} from '@vegaprotocol/wallet-react/testing';
 
 jest.mock('@vegaprotocol/proposals', () => ({
   ProtocolUpgradeCountdown: () => null,

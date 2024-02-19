@@ -10,7 +10,10 @@ import {
 } from './__generated__/TransactionResult';
 import { type EthTransactionStore } from './use-ethereum-transaction-store';
 import { DepositStatus } from '@vegaprotocol/types';
-import { MockedWalletProvider, mockConfig } from '@vegaprotocol/wallet-react';
+import {
+  MockedWalletProvider,
+  mockConfig,
+} from '@vegaprotocol/wallet-react/testing';
 
 const pubKey = 'pubKey';
 

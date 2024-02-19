@@ -7,7 +7,10 @@ import {
   type StopOrdersTableProps,
 } from './stop-orders-table';
 import { generateStopOrder } from '../mocks/generate-stop-orders';
-import { MockedWalletProvider, mockConfig } from '@vegaprotocol/wallet-react';
+import {
+  MockedWalletProvider,
+  mockConfig,
+} from '@vegaprotocol/wallet-react/testing';
 
 // Mock theme switcher to get around inconsistent mocking of zustand
 // stores

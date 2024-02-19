@@ -1,5 +1,8 @@
 import { MemoryRouter } from 'react-router-dom';
-import { MockedWalletProvider, mockConfig } from '@vegaprotocol/wallet-react';
+import {
+  MockedWalletProvider,
+  mockConfig,
+} from '@vegaprotocol/wallet-react/testing';
 import { GetStarted } from './get-started';
 import { render, screen, fireEvent, act } from '@testing-library/react';
 import { useOnboardingStore } from './use-get-onboarding-step';

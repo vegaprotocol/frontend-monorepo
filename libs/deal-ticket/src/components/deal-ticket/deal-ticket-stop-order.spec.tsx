@@ -12,7 +12,10 @@ import {
 } from '../../hooks/use-form-values';
 import { useFeatureFlags } from '@vegaprotocol/environment';
 import { formatForInput } from '@vegaprotocol/utils';
-import { MockedWalletProvider, mockConfig } from '@vegaprotocol/wallet-react';
+import {
+  MockedWalletProvider,
+  mockConfig,
+} from '@vegaprotocol/wallet-react/testing';
 
 jest.mock('zustand');
 jest.mock('./deal-ticket-fee-details', () => ({

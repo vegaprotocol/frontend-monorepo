@@ -2,7 +2,10 @@ import { act, fireEvent, render, screen } from '@testing-library/react';
 import { VegaWalletConnectButton } from './vega-wallet-connect-button';
 import { truncateByChars } from '@vegaprotocol/utils';
 import userEvent from '@testing-library/user-event';
-import { mockConfig, MockedWalletProvider } from '@vegaprotocol/wallet-react';
+import {
+  mockConfig,
+  MockedWalletProvider,
+} from '@vegaprotocol/wallet-react/testing';
 
 jest.mock('../../lib/hooks/use-get-current-route-id', () => ({
   useGetCurrentRouteId: jest.fn().mockReturnValue('current-route-id'),

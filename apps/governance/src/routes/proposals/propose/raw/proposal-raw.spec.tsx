@@ -10,7 +10,10 @@ import { ProposalEventDocument } from '@vegaprotocol/proposals';
 import type { ProposalEventSubscription } from '@vegaprotocol/proposals';
 import type { NetworkParamsQuery } from '@vegaprotocol/network-parameters';
 import { NetworkParamsDocument } from '@vegaprotocol/network-parameters';
-import { MockedWalletProvider, mockConfig } from '@vegaprotocol/wallet-react';
+import {
+  MockedWalletProvider,
+  mockConfig,
+} from '@vegaprotocol/wallet-react/testing';
 
 const rawProposalNetworkParamsQueryMock: MockedResponse<NetworkParamsQuery> = {
   request: {

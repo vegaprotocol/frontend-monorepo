@@ -4,7 +4,10 @@ import { OrderListManager, Filter } from './order-list-manager';
 import * as useDataProviderHook from '@vegaprotocol/data-provider';
 import type { OrderFieldsFragment } from '../';
 import { MockedProvider } from '@apollo/client/testing';
-import { MockedWalletProvider, mockConfig } from '@vegaprotocol/wallet-react';
+import {
+  MockedWalletProvider,
+  mockConfig,
+} from '@vegaprotocol/wallet-react/testing';
 
 describe('OrderListManager', () => {
   const pubKey = '0x123';

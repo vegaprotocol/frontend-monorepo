@@ -3,7 +3,10 @@ import { StopOrdersManager } from './stop-orders-manager';
 import * as useDataProviderHook from '@vegaprotocol/data-provider';
 import type { StopOrder } from '../order-data-provider/stop-orders-data-provider';
 import { MockedProvider } from '@apollo/client/testing';
-import { MockedWalletProvider, mockConfig } from '@vegaprotocol/wallet-react';
+import {
+  MockedWalletProvider,
+  mockConfig,
+} from '@vegaprotocol/wallet-react/testing';
 
 jest.mock('../stop-orders-table/stop-orders-table', () => ({
   StopOrdersTable: () => <div>StopOrdersTable</div>,

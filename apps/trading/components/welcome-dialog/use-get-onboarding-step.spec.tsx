@@ -6,7 +6,10 @@ import {
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { ordersWithMarketProvider } from '@vegaprotocol/orders';
 import { positionsDataProvider } from '@vegaprotocol/positions';
-import { MockedWalletProvider, mockConfig } from '@vegaprotocol/wallet-react';
+import {
+  MockedWalletProvider,
+  mockConfig,
+} from '@vegaprotocol/wallet-react/testing';
 
 let mockData: object[] | null = [{ id: 'item-id' }];
 jest.mock('@vegaprotocol/data-provider', () => ({

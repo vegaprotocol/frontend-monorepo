@@ -23,7 +23,10 @@ import { formatForInput } from '@vegaprotocol/utils';
 import type { PartialDeep } from 'type-fest';
 import type { Market } from '@vegaprotocol/markets';
 import type { MarketData } from '@vegaprotocol/markets';
-import { MockedWalletProvider, mockConfig } from '@vegaprotocol/wallet-react';
+import {
+  MockedWalletProvider,
+  mockConfig,
+} from '@vegaprotocol/wallet-react/testing';
 
 jest.mock('zustand');
 jest.mock('./deal-ticket-fee-details', () => ({

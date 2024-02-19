@@ -4,11 +4,7 @@ export * from './transaction-types';
 
 // Core
 export { fairground, stagnet, type Chain } from './chains';
-export {
-  createConfig,
-  createCoreStoreSlice,
-  createSingleKeySlice,
-} from './wallet';
+export { createConfig, coreStoreSlice, singleKeyStoreSlice } from './wallet';
 
 // Connectors
 export {

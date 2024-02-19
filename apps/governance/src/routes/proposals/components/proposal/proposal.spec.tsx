@@ -6,7 +6,7 @@ import { Proposal } from './proposal';
 import { ProposalState } from '@vegaprotocol/types';
 import { type Proposal as IProposal } from '../../types';
 import { AppStateProvider } from '../../../../contexts/app-state/app-state-provider';
-import { MockedWalletProvider } from '@vegaprotocol/wallet-react';
+import { MockedWalletProvider } from '@vegaprotocol/wallet-react/testing';
 
 jest.mock('@vegaprotocol/network-parameters', () => ({
   ...jest.requireActual('@vegaprotocol/network-parameters'),

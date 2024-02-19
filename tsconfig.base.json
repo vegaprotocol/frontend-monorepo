@@ -57,6 +57,9 @@
       "@vegaprotocol/utils": ["libs/utils/src/index.ts"],
       "@vegaprotocol/wallet": ["libs/wallet/src/index.ts"],
       "@vegaprotocol/wallet-react": ["libs/wallet-react/src/index.ts"],
+      "@vegaprotocol/wallet-react/testing": [
+        "libs/wallet-react/src/testing.ts"
+      ],
       "@vegaprotocol/web3": ["libs/web3/src/index.ts"],
       "@vegaprotocol/withdraws": ["libs/withdraws/src/index.ts"]
     }

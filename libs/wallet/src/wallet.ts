@@ -14,13 +14,13 @@ import { ConnectorError, ConnectorErrors } from './connectors';
 
 // get/set functions are not used in the slices so these
 // can be plain objects
-export const createSingleKeySlice: SingleKeyStore = {
+export const singleKeyStoreSlice: SingleKeyStore = {
   pubKey: undefined,
 };
 
 // get/set functions are not used in the slices so these
 // can be plain objects
-export const createCoreStoreSlice: CoreStore = {
+export const coreStoreSlice: CoreStore = {
   chainId: '',
   status: 'disconnected',
   current: undefined,
@@ -38,8 +38,8 @@ export function createConfig(cfg: Config): Wallet {
 
   const getInitialState = () => {
     return {
-      ...createCoreStoreSlice,
-      ...createSingleKeySlice,
+      ...coreStoreSlice,
+      ...singleKeyStoreSlice,
       chainId: chain.id,
     };
   };

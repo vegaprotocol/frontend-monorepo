@@ -6,7 +6,7 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import type { MockedResponse } from '@apollo/client/testing';
 import type { NetworkParamsQuery } from '@vegaprotocol/network-parameters';
 import { NetworkParamsDocument } from '@vegaprotocol/network-parameters';
-import { MockedWalletProvider } from '@vegaprotocol/wallet-react';
+import { MockedWalletProvider } from '@vegaprotocol/wallet-react/testing';
 
 jest.mock('@vegaprotocol/environment', () => ({
   ...jest.requireActual('@vegaprotocol/environment'),

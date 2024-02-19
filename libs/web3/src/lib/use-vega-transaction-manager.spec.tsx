@@ -7,7 +7,10 @@ import {
   type VegaTransactionStore,
   type VegaStoredTxState,
 } from './use-vega-transaction-store';
-import { mockConfig, MockedWalletProvider } from '@vegaprotocol/wallet-react';
+import {
+  mockConfig,
+  MockedWalletProvider,
+} from '@vegaprotocol/wallet-react/testing';
 
 const mockDisconnect = jest.fn();
 

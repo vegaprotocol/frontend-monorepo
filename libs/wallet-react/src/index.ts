@@ -20,11 +20,3 @@ export { useWallet } from './hooks/use-wallet';
 
 // Components
 export * from './components/connect-dialog';
-
-// Testing
-export {
-  // mockConfig,
-  mockKeys,
-  MockConnector,
-  MockedWalletProvider,
-} from './test-helpers';

@@ -6,7 +6,10 @@ import { ProposalState } from '@vegaprotocol/types';
 import { AppStateProvider } from '../../../../contexts/app-state/app-state-provider';
 import { MockedProvider } from '@apollo/react-testing';
 import { VegaTxStatus } from '@vegaprotocol/proposals';
-import { MockedWalletProvider, mockConfig } from '@vegaprotocol/wallet-react';
+import {
+  MockedWalletProvider,
+  mockConfig,
+} from '@vegaprotocol/wallet-react/testing';
 
 describe('Vote buttons', () => {
   const key = { publicKey: '0x123', name: 'key 1' };

@@ -1,5 +1,8 @@
 import { act, render, screen } from '@testing-library/react';
-import { MockedWalletProvider, mockConfig } from '@vegaprotocol/wallet-react';
+import {
+  MockedWalletProvider,
+  mockConfig,
+} from '@vegaprotocol/wallet-react/testing';
 import { AppStateProvider } from '../../../../contexts/app-state/app-state-provider';
 import { ProposalFormSubmit } from './proposal-form-submit';
 

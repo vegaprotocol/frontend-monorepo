@@ -9,7 +9,7 @@ import { NetworkParamsDocument } from '@vegaprotocol/network-parameters';
 import type { ProposalMarketsQueryQuery } from './__generated__/UpdateMarket';
 import { ProposalMarketsQueryDocument } from './__generated__/UpdateMarket';
 import { ProposalState } from '@vegaprotocol/types';
-import { MockedWalletProvider } from '@vegaprotocol/wallet-react';
+import { MockedWalletProvider } from '@vegaprotocol/wallet-react/testing';
 
 const updateMarketNetworkParamsQueryMock: MockedResponse<NetworkParamsQuery> = {
   request: {

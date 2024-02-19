@@ -5,7 +5,10 @@ import {
   useVegaTransaction,
   VegaTxStatus,
 } from './use-vega-transaction';
-import { MockedWalletProvider, mockConfig } from '@vegaprotocol/wallet-react';
+import {
+  MockedWalletProvider,
+  mockConfig,
+} from '@vegaprotocol/wallet-react/testing';
 import { type ReactNode } from 'react';
 
 const mockPubKey = '0x123';

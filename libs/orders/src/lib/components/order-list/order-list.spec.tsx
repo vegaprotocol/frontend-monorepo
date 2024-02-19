@@ -10,7 +10,10 @@ import {
   limitOrder,
   marketOrder,
 } from '../mocks/generate-orders';
-import { MockedWalletProvider, mockConfig } from '@vegaprotocol/wallet-react';
+import {
+  MockedWalletProvider,
+  mockConfig,
+} from '@vegaprotocol/wallet-react/testing';
 
 // Mock theme switcher to get around inconsistent mocking of zustand
 // stores

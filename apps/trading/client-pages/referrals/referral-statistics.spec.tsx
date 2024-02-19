@@ -25,7 +25,7 @@ import {
   mockConfig,
   mockKeys,
   MockedWalletProvider,
-} from '@vegaprotocol/wallet-react';
+} from '@vegaprotocol/wallet-react/testing';
 
 const MOCK_PUBKEY = mockKeys[0].publicKey;
 
