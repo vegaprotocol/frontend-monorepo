@@ -1,7 +1,7 @@
 export function mockBrowserWallet(overrides?: Partial<Vega>) {
   const vega: Vega = {
-    connectWallet: jest.fn().mockReturnValue(Promise.resolve(null)),
-    disconnectWallet: jest.fn().mockReturnValue(Promise.resolve()),
+    connectWallet: jest.fn().mockResolvedValue(null),
+    disconnectWallet: jest.fn().mockResolvedValue(undefined),
     listKeys: jest
       .fn()
       .mockReturnValue({ keys: [{ name: 'test key', publicKey: '0x123' }] }),
@@ -13,7 +13,9 @@ export function mockBrowserWallet(overrides?: Partial<Vega>) {
       success: true,
       txHash: '0x123',
     }),
+    getChainId: jest.fn().mockResolvedValue({ chainID: 'mock chain' }),
     on: jest.fn(),
+    off: jest.fn(),
     isConnected: jest.fn().mockRejectedValue(Promise.resolve(true)),
     ...overrides,
   };
