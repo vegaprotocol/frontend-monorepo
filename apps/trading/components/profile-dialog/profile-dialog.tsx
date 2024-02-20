@@ -3,6 +3,7 @@ import {
   FormGroup,
   Input,
   InputError,
+  Intent,
   TradingButton,
 } from '@vegaprotocol/ui-toolkit';
 import { useProfileDialogStore } from '../../stores/profile-dialog-store';
@@ -12,11 +13,12 @@ import { useRequired } from '@vegaprotocol/utils';
 import { useSimpleTransaction } from '@vegaprotocol/wallet';
 
 export const ProfileDialog = () => {
+  const t = useT();
   const open = useProfileDialogStore((store) => store.open);
   const setOpen = useProfileDialogStore((store) => store.setOpen);
 
   return (
-    <Dialog open={open} onChange={setOpen}>
+    <Dialog open={open} onChange={setOpen} title={t('Set party alias')}>
       <ProfileFormContainer />
     </Dialog>
   );
@@ -74,8 +76,8 @@ const ProfileForm = ({
   } = useForm<FormFields>();
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <FormGroup label="Profile alias" labelFor="alias">
+    <form onSubmit={handleSubmit(onSubmit)} className="mt-3">
+      <FormGroup label="Alias" labelFor="alias">
         <Input
           {...register('alias', {
             validate: {
@@ -87,7 +89,9 @@ const ProfileForm = ({
           <InputError>{errors.alias.message}</InputError>
         )}
       </FormGroup>
-      <TradingButton type="submit">{t('Submit')}</TradingButton>
+      <TradingButton type="submit" intent={Intent.Info}>
+        {t('Submit')}
+      </TradingButton>
     </form>
   );
 };
