@@ -70,6 +70,7 @@ export const Proposal = ({ proposal, restData }: ProposalProps) => {
             if (!p?.terms) return null;
             return (
               <ProposalChangeDetails
+                indicator={i + 1}
                 key={i}
                 proposal={proposal}
                 terms={p.terms}

@@ -9,6 +9,7 @@ import { useState } from 'react';
 import { CollapsibleToggle } from '../../../../components/collapsible-toggle';
 import { SubHeading } from '../../../../components/heading';
 import { type UpdateMarketStatesFragment } from '../../__generated__/Proposals';
+import { MarketUpdateTypeMapping } from '@vegaprotocol/types';
 
 interface ProposalUpdateMarketStateProps {
   change: UpdateMarketStatesFragment | null;
@@ -48,6 +49,12 @@ export const ProposalUpdateMarketState = ({
               <KeyValueTableRow>
                 {t('marketId')}
                 {market?.id}
+              </KeyValueTableRow>
+              <KeyValueTableRow>
+                {t('State')}
+                <span className="bg-vega-green-650 px-1">
+                  {MarketUpdateTypeMapping[change.updateType]}
+                </span>
               </KeyValueTableRow>
               <KeyValueTableRow>
                 {t('marketName')}

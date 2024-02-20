@@ -8,6 +8,7 @@ import {
   type PeggedReference,
   type ProposalChange,
   type TransferStatus,
+  MarketUpdateType,
 } from './__generated__/types';
 import type { AccountType } from './__generated__/types';
 import type {
@@ -754,4 +755,11 @@ export const LiquidityFeeMethodMappingDescription: {
   METHOD_MARGINAL_COST: `This liquidity fee factor is determined by sorting all LP fee bids from lowest to highest, with LPs' commitments tallied up to the point of fulfilling the market's target stake. The last LP's bid becomes the fee factor.`,
   METHOD_UNSPECIFIED: 'Unspecified',
   METHOD_WEIGHTED_AVERAGE: `This liquidity fee is the weighted average of all liquidity providers' nominated fees, weighted by their commitment.`,
+};
+
+export const MarketUpdateTypeMapping = {
+  [MarketUpdateType.MARKET_STATE_UPDATE_TYPE_RESUME]: 'Resume',
+  [MarketUpdateType.MARKET_STATE_UPDATE_TYPE_SUSPEND]: 'Suspend',
+  [MarketUpdateType.MARKET_STATE_UPDATE_TYPE_TERMINATE]: 'Terminate',
+  [MarketUpdateType.MARKET_STATE_UPDATE_TYPE_UNSPECIFIED]: 'Unspecified',
 };
