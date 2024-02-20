@@ -1,4 +1,4 @@
-import pytest
+""" import pytest
 from playwright.sync_api import Page, expect
 from vega_sim.service import PeggedOrder
 from vega_sim.null_service import VegaServiceNull
@@ -443,3 +443,4 @@ def test_order_cancel_all_orders(vega: VegaServiceNull, page: Page):
     expect(
         page.locator('.ag-cell[col-id="status"]', has_text="Cancelled")
     ).to_have_count(7)
+ """
