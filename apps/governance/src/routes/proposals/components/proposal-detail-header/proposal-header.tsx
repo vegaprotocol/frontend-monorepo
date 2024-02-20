@@ -36,6 +36,7 @@ import { type Proposal, type BatchProposal } from '../../types';
 import { type ProposalTermsFieldsFragment } from '../../__generated__/Proposals';
 import { differenceInHours, format, formatDistanceToNowStrict } from 'date-fns';
 import { DATE_FORMAT_DETAILED } from '../../../../lib/date-formats';
+import { getIndicatorStyle } from '../proposal/colours';
 
 const ProposalTypeTags = ({
   proposal,
@@ -286,12 +287,15 @@ const ProposalDetails = ({
           {proposal.subProposals.map((p, i) => {
             if (!p?.terms) return null;
             return (
-              <li key={i}>
-                <div>{renderDetails(p.terms)}</div>
-                <SubProposalStateText
-                  state={proposal.state}
-                  enactmentDatetime={p.terms.enactmentDatetime}
-                />
+              <li key={i} className="flex gap-3">
+                <span className={getIndicatorStyle(i + 1)}>{i + 1}</span>
+                <span>
+                  <div>{renderDetails(p.terms)}</div>
+                  <SubProposalStateText
+                    state={proposal.state}
+                    enactmentDatetime={p.terms.enactmentDatetime}
+                  />
+                </span>
               </li>
             );
           })}
