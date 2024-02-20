@@ -15,6 +15,7 @@ import {
   type VoteFieldsFragment,
 } from '../../__generated__/Proposals';
 import { useBatchVoteInformation } from '../../hooks/use-vote-information';
+import { getIndicatorStyle } from '../proposal/colours';
 
 export const CompactVotes = ({ number }: { number: BigNumber }) => (
   <CompactNumber
@@ -176,6 +177,7 @@ const VoteBreakdownBatch = ({ proposal }: { proposal: BatchProposal }) => {
               if (!p?.terms) return null;
               return (
                 <VoteBreakdownBatchSubProposal
+                  indicator={i + 1}
                   key={i}
                   proposal={proposal}
                   votes={proposal.votes}
@@ -255,10 +257,12 @@ const VoteBreakdownBatchSubProposal = ({
   proposal,
   votes,
   terms,
+  indicator,
 }: {
   proposal: BatchProposal;
   votes: VoteFieldsFragment;
   terms: ProposalTermsFieldsFragment;
+  indicator?: number;
 }) => {
   const { t } = useTranslation();
   const voteInfo = useVoteInformation({
@@ -269,9 +273,16 @@ const VoteBreakdownBatchSubProposal = ({
   const isProposalOpen = proposal?.state === ProposalState.STATE_OPEN;
   const isUpdateMarket = terms?.change?.__typename === 'UpdateMarket';
 
+  const indicatorElement = indicator && (
+    <span className={getIndicatorStyle(indicator)}>{indicator}</span>
+  );
+
   return (
     <div>
-      <h4>{t(terms.change.__typename)}</h4>
+      <div className="flex items-baseline gap-3">
+        {indicatorElement}
+        <h4>{t(terms.change.__typename)}</h4>
+      </div>
       <VoteBreakDownUI
         voteInfo={voteInfo}
         isProposalOpen={isProposalOpen}
