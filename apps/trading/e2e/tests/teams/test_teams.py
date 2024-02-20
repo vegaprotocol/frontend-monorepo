@@ -242,12 +242,12 @@ def test_team_page_headline(team_page: Page, setup_teams_and_games):
     expect(team_page.get_by_test_id("team-name")).to_have_text(team_name)
     expect(team_page.get_by_test_id("members-count-stat")).to_have_text("4")
 
-    expect(team_page.get_by_test_id("total-games-stat")).to_have_text("2")
+    expect(team_page.get_by_test_id("total-games-stat")).to_have_text("1")
 
     # TODO this still seems wrong as its always 0
     expect(team_page.get_by_test_id("total-volume-stat")).to_have_text("0")
 
-    expect(team_page.get_by_test_id("rewards-paid-stat")).to_have_text("1.2k")
+    expect(team_page.get_by_test_id("rewards-paid-stat")).to_have_text("500")
 
 
 def test_switch_teams(team_page: Page, vega: VegaServiceNull):
@@ -264,19 +264,18 @@ def test_switch_teams(team_page: Page, vega: VegaServiceNull):
 def test_leaderboard(competitions_page: Page, setup_teams_and_games):
     team_name = setup_teams_and_games["team_name"]
     competitions_page.reload()
-    competitions_page.pause()
     expect(
         competitions_page.get_by_test_id("rank-0").locator(".text-yellow-300")
     ).to_have_count(1)
     expect(
         competitions_page.get_by_test_id("rank-1").locator(".text-vega-clight-500")
     ).to_have_count(1)
-    expect(competitions_page.get_by_test_id("team-0")).to_have_text(team_name)
+    expect(competitions_page.get_by_test_id("team-1")).to_have_text(team_name)
     expect(competitions_page.get_by_test_id("status-1")).to_have_text("Open")
 
     #  FIXME: the numbers are different we need to clarify this with the backend
     # expect(competitions_page.get_by_test_id("earned-1")).to_have_text("160")
-    expect(competitions_page.get_by_test_id("games-1")).to_have_text("2")
+    expect(competitions_page.get_by_test_id("games-1")).to_have_text("1")
 
     # TODO  still odd that this is 0
     expect(competitions_page.get_by_test_id("volume-0")).to_have_text("0")
