@@ -141,11 +141,7 @@ const ProposalDetails = ({
       }
       case 'UpdateMarketState': {
         const marketPageLink = consoleLink(
-          CONSOLE_MARKET_PAGE.replace(
-            ':marketId',
-            // @ts-ignore ts doesn't like this field even though its already a string above???
-            terms.change.market.id
-          )
+          CONSOLE_MARKET_PAGE.replace(':marketId', terms.change.market.id)
         );
         return (
           <span>
@@ -188,11 +184,7 @@ const ProposalDetails = ({
       }
       case 'UpdateMarket': {
         const marketPageLink = consoleLink(
-          CONSOLE_MARKET_PAGE.replace(
-            ':marketId',
-            // @ts-ignore ts doesn't like this field even though its already a string above???
-            terms.change.marketId
-          )
+          CONSOLE_MARKET_PAGE.replace(':marketId', terms.change.marketId)
         );
 
         return (
