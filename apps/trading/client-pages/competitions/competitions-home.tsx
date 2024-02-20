@@ -2,8 +2,6 @@ import { useT } from '../../lib/use-t';
 import { ErrorBoundary } from '@sentry/react';
 import { CompetitionsHeader } from '../../components/competitions/competitions-header';
 import { Intent, Loader, TradingButton } from '@vegaprotocol/ui-toolkit';
-
-import { useGameCards } from '../../lib/hooks/use-game-cards';
 import { useEpochInfoQuery } from '../../lib/hooks/__generated__/Epoch';
 import { Link, useNavigate } from 'react-router-dom';
 import { Links } from '../../lib/links';
@@ -18,6 +16,7 @@ import take from 'lodash/take';
 import { usePageTitle } from '../../lib/hooks/use-page-title';
 import { TeamCard } from '../../components/competitions/team-card';
 import { useMyTeam } from '../../lib/hooks/use-my-team';
+import { useRewards } from '../../lib/hooks/use-rewards';
 
 export const CompetitionsHome = () => {
   const t = useT();
@@ -28,9 +27,9 @@ export const CompetitionsHome = () => {
   const { data: epochData } = useEpochInfoQuery();
   const currentEpoch = Number(epochData?.epoch.id);
 
-  const { data: gamesData, loading: gamesLoading } = useGameCards({
+  const { data: gamesData, loading: gamesLoading } = useRewards({
     onlyActive: true,
-    currentEpoch,
+    scopeToTeams: true,
   });
 
   const { data: teamsData, loading: teamsLoading } = useTeams();

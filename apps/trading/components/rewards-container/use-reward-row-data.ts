@@ -4,7 +4,7 @@ import BigNumber from 'bignumber.js';
 import { removePaginationWrapper } from '@vegaprotocol/utils';
 import { type Asset } from '@vegaprotocol/assets';
 import { type PartyRewardsConnection } from './rewards-history';
-import { type RewardsHistoryQuery } from './__generated__/Rewards';
+import { type RewardsHistoryQuery } from '../../lib/hooks/__generated__/Rewards';
 
 const REWARD_ACCOUNT_TYPES = [
   AccountType.ACCOUNT_TYPE_GLOBAL_REWARD,
