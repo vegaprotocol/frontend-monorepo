@@ -23,7 +23,7 @@ export const ProfileDialog = () => {
 };
 
 const ProfileFormContainer = () => {
-  const { send, status } = useSimpleTransaction();
+  const { send, status, error } = useSimpleTransaction();
 
   const sendTx = (field: FormFields) => {
     send({
@@ -34,6 +34,10 @@ const ProfileFormContainer = () => {
       },
     });
   };
+
+  if (error) {
+    return <p className="break-words">{error}</p>;
+  }
 
   if (status === 'pending') {
     return <p>Pending</p>;
