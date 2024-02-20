@@ -22,7 +22,7 @@ export const ProfileDialog = () => {
   const sendTx = (field: FormFields) => {
     send({
       updatePartyProfile: {
-        // TODO: alias validation
+        // TODO: alias validation ?
         alias: field.alias,
         metadata: [],
       },
@@ -70,7 +70,7 @@ const ProfileForm = ({
     }
 
     if (status === 'pending') {
-      return t('Awaiting transaction...');
+      return t('Confirming transaction...');
     }
 
     return t('Submit');
