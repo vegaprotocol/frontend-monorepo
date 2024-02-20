@@ -921,8 +921,8 @@ export const EthOraclePanel = ({ sourceType }: { sourceType: EthCallSpec }) => {
         <>
           <MarketInfoTable key={i} data={filter.key} />
           <h3 className={header}>{t('Conditions')}</h3>
-          {filter.conditions?.map((condition) => (
-            <span>
+          {filter.conditions?.map((condition, i) => (
+            <span key={i}>
               {ConditionOperatorMapping[condition.operator]} {condition.value}
             </span>
           ))}
@@ -1173,21 +1173,23 @@ export const FundingInfoPanel = ({
   const { product } = market.tradableInstrument.instrument;
   return (
     <>
-      {initial
-        ? t('every {{duration}} from {{initialTime}}', {
-            duration,
-            initialTime: getDateTimeFormat().format(new Date(initial * 1000)),
-          })
-        : t('every {{duration}}', { duration })}
+      <p
+        className="first-letter:uppercase text-x;w
+        "
+      >
+        {initial
+          ? t('every {{duration}} from {{initialTime}}', {
+              duration,
+              initialTime: getDateTimeFormat().format(new Date(initial * 1000)),
+            })
+          : t('every {{duration}}', { duration })}
+      </p>
       <MarketInfoTable
         data={{
-          makerFee: market.fees.factors.makerFee,
-          infrastructureFee: market.fees.factors.infrastructureFee,
-          liquidityFee: market.fees.factors.liquidityFee,
           rateScalingFactor:
             isPerpetual(product) && product.fundingRateScalingFactor,
           rateLowerBound: isPerpetual(product) && product.fundingRateLowerBound,
-          rateUpperBound: isPerpetual(product) && product.fundingRateLowerBound,
+          rateUpperBound: isPerpetual(product) && product.fundingRateUpperBound,
         }}
       />
     </>
