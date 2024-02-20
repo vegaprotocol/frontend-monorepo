@@ -445,7 +445,6 @@
   "Leaderboard": "Leaderboard",
   "View all teams": "View all teams",
   "Competitions": "Competitions",
-  "Be a team player! Participate in games and work together to rake in as much profit to win.": "Be a team player! Participate in games and work together to rake in as much profit to win.",
   "Create a public team": "Create a public team",
   "Create a private team": "Create a private team",
   "Choose a team": "Choose a team",
@@ -462,5 +461,12 @@
   "Daily reward amount": "Daily reward amount",
   "Amount earned this epoch": "Amount earned this epoch",
   "Cumulative amount earned": "Cumulative amount earned",
-  "Game details": "Game details"
+  "Game details": "Game details",
+  "Check the cards below to see what community-created, on-chain games are active and how to compete. Joining a team also lets you take part in the on-chain <0>referral program</0>.": "Check the cards below to see what community-created, on-chain games are active and how to compete. Joining a team also lets you take part in the on-chain <0>referral program</0>.",
+  "Got an idea for a competition? Anyone can define and fund one -- <0>propose an on-chain game</0> yourself.": "Got an idea for a competition? Anyone can define and fund one -- <0>propose an on-chain game</0> yourself.",
+  "Create a new team, share your code with potential members, or set a whitelist for an exclusive group.": "Create a new team, share your code with potential members, or set a whitelist for an exclusive group.",
+  "Want to compete but think the best team size is one? This is the option for you.": "Want to compete but think the best team size is one? This is the option for you.",
+  "Browse existing public teams to find your perfect match.": "Browse existing public teams to find your perfect match.",
+  "See all the live games on the cards below. Every on-chain game is community funded and designed. <0>Find out how to create one</0>.": "See all the live games on the cards below. Every on-chain game is community funded and designed. <0>Find out how to create one</0>.",
+  "Teams can earn rewards if they meet the goals set in the on-chain trading competitions. Track your earned rewards here, and see which teams are top of the leaderboard this month.": "Teams can earn rewards if they meet the goals set in the on-chain trading competitions. Track your earned rewards here, and see which teams are top of the leaderboard this month."
 }
