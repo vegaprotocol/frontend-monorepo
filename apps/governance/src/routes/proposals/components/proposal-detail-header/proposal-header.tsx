@@ -37,6 +37,7 @@ import { type ProposalTermsFieldsFragment } from '../../__generated__/Proposals'
 import { differenceInHours, format, formatDistanceToNowStrict } from 'date-fns';
 import { DATE_FORMAT_DETAILED } from '../../../../lib/date-formats';
 import { getIndicatorStyle } from '../proposal/colours';
+import { MarketName } from '../proposal/market-name';
 
 const ProposalTypeTags = ({
   proposal,
@@ -145,8 +146,42 @@ const ProposalDetails = ({
             terms.change?.market?.id &&
             terms.change.updateType ? (
               <>
-                {t(terms.change.updateType)}:{' '}
-                {truncateMiddle(terms.change.market.id)}
+                <span>{t(terms.change.updateType)}: </span>
+                <span className="inline-flex gap-2">
+                  <span className="break-all">
+                    <MarketName marketId={terms.change.market.id} />
+                  </span>
+                  <span className="inline-flex items-end gap-0">
+                    <CopyWithTooltip
+                      text={terms.change.market.id}
+                      description={t('copyId')}
+                    >
+                      <button className="inline-block px-1">
+                        <VegaIcon size={20} name={VegaIconNames.COPY} />
+                      </button>
+                    </CopyWithTooltip>
+                    <Tooltip description={t('OpenInConsole')} align="center">
+                      <button
+                        className="inline-block px-1"
+                        onClick={() => {
+                          const marketPageLink = consoleLink(
+                            CONSOLE_MARKET_PAGE.replace(
+                              ':marketId',
+                              // @ts-ignore ts doesn't like this field even though its already a string above???
+                              terms.change.market.id
+                            )
+                          );
+                          window.open(marketPageLink, '_blank');
+                        }}
+                      >
+                        <VegaIcon
+                          size={20}
+                          name={VegaIconNames.OPEN_EXTERNAL}
+                        />
+                      </button>
+                    </Tooltip>
+                  </span>
+                </span>
               </>
             ) : null}
           </span>
@@ -155,13 +190,15 @@ const ProposalDetails = ({
       case 'UpdateMarket': {
         return (
           <>
-            <span>{t('UpdateToMarket')}:</span>{' '}
+            <span>{t('UpdateToMarket')}: </span>
             <span className="inline-flex items-start gap-2">
-              <span className="break-all">{terms.change.marketId} </span>
+              <span className="break-all">
+                <MarketName marketId={terms.change.marketId} />
+              </span>
               <span className="inline-flex items-end gap-0">
                 <CopyWithTooltip
                   text={terms.change.marketId}
-                  description={t('copyToClipboard')}
+                  description={t('copyId')}
                 >
                   <button className="inline-block px-1">
                     <VegaIcon size={20} name={VegaIconNames.COPY} />
