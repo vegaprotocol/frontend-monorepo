@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom';
-import { Splash } from '@vegaprotocol/ui-toolkit';
 import { formatNumber } from '@vegaprotocol/utils';
 import { type useTeams } from '../../lib/hooks/use-teams';
 import { useT } from '../../lib/use-t';
@@ -18,7 +17,11 @@ export const CompetitionsLeaderboard = ({
   const num = (n?: number | string) => (!n ? '-' : formatNumber(n, 0));
 
   if (!data || data.length === 0) {
-    return <Splash>{t('Could not find any teams')}</Splash>;
+    return (
+      <p className="text-sm">
+        {t('Currently no active teams on the network.')}
+      </p>
+    );
   }
 
   return (

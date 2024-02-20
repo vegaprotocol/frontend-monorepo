@@ -13,14 +13,14 @@ export const GamesContainer = ({
 
   if (!data || data.length === 0) {
     return (
-      <p className="mb-6 text-muted">
-        {t('There are currently no games available.')}
+      <p className="text-sm">
+        {t('Currently no active games on the network.')}
       </p>
     );
   }
 
   return (
-    <div className="mb-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {data.map((game, i) => {
         // TODO: Remove `kind` prop from ActiveRewardCard
         const { transfer } = game;
