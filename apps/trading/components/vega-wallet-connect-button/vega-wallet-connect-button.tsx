@@ -13,12 +13,11 @@ import {
   TradingDropdownSeparator,
   TradingDropdownItem,
   TradingDropdownRadioItem,
-  TradingDropdownItemIndicator,
+  Tooltip,
 } from '@vegaprotocol/ui-toolkit';
 import { isBrowserWalletInstalled, type Key } from '@vegaprotocol/wallet';
 import { useDialogStore, useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useCopyTimeout } from '@vegaprotocol/react-helpers';
-import classNames from 'classnames';
 import { ViewType, useSidebar } from '../sidebar';
 import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
 import { useT } from '../../lib/use-t';
@@ -148,31 +147,44 @@ const KeypairItem = ({ pk, active }: { pk: Key; active: boolean }) => {
   return (
     <TradingDropdownRadioItem value={pk.publicKey}>
       <div
-        className={classNames('flex-1 mr-2', {
-          'text-default': active,
-          'text-muted': !active,
-        })}
+        className="flex flex-1 mr-2 justify-between"
         data-testid={`key-${pk.publicKey}`}
       >
-        <span className={classNames('mr-2 uppercase')}>
-          {pk.name}
-          {' | '}
-          {truncateByChars(pk.publicKey)}
-        </span>
-        <span className="inline-flex items-center gap-1">
-          <CopyToClipboard text={pk.publicKey} onCopy={() => setCopied(true)}>
-            <button
-              data-testid="copy-vega-public-key"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <span className="sr-only">{t('Copy')}</span>
-              <VegaIcon name={VegaIconNames.COPY} />
+        <span className="flex flex-col grow gap-px mr-2 max-w-[292px]">
+          <span className="flex items-center gap-1 justify-between">
+            <span>{truncateByChars(pk.publicKey)}</span>
+            <CopyToClipboard text={pk.publicKey} onCopy={() => setCopied(true)}>
+              <Tooltip description={t('Copied')} open={copied}>
+                <button
+                  data-testid="copy-vega-public-key"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <span className="sr-only">{t('Copy')}</span>
+                  <VegaIcon name={VegaIconNames.COPY} />
+                </button>
+              </Tooltip>
+            </CopyToClipboard>
+          </span>
+
+          <span className="flex items-center gap-1 justify-between">
+            <span className="text-xs text-secondary text-ellipsis overflow-hidden">
+              <span className="uppercase">On chain alias:</span>{' '}
+              foobarsdfsldjf;laksdjf;alskdjfaksldjfsdfjadskfjdskjfksdjfksdjf
+            </span>
+            <button title={t('Edit alias')}>
+              <span className="sr-only">{t('Edit alias')}</span>
+              <VegaIcon name={VegaIconNames.EDIT} />
             </button>
-          </CopyToClipboard>
-          {copied && <span className="text-xs">{t('Copied')}</span>}
+          </span>
+          <span className="flex gap-1 justify-between">
+            <span className="text-xs text-secondary">
+              <span className="uppercase">Key alias:</span>
+              {pk.name}
+            </span>
+          </span>
         </span>
       </div>
-      <TradingDropdownItemIndicator />
+      {/* <TradingDropdownItemIndicator /> */}
     </TradingDropdownRadioItem>
   );
 };
