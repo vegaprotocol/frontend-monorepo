@@ -140,6 +140,9 @@ const ProposalDetails = ({
         );
       }
       case 'UpdateMarketState': {
+        const marketPageLink = consoleLink(
+          CONSOLE_MARKET_PAGE.replace(':marketId', terms.change.market.id)
+        );
         return (
           <span>
             {featureFlags.UPDATE_MARKET_STATE &&
@@ -161,24 +164,16 @@ const ProposalDetails = ({
                       </button>
                     </CopyWithTooltip>
                     <Tooltip description={t('OpenInConsole')} align="center">
-                      <button
+                      <Link
                         className="inline-block px-1"
-                        onClick={() => {
-                          const marketPageLink = consoleLink(
-                            CONSOLE_MARKET_PAGE.replace(
-                              ':marketId',
-                              // @ts-ignore ts doesn't like this field even though its already a string above???
-                              terms.change.market.id
-                            )
-                          );
-                          window.open(marketPageLink, '_blank');
-                        }}
+                        to={marketPageLink}
+                        target="_blank"
                       >
                         <VegaIcon
                           size={20}
                           name={VegaIconNames.OPEN_EXTERNAL}
                         />
-                      </button>
+                      </Link>
                     </Tooltip>
                   </span>
                 </span>
@@ -188,6 +183,10 @@ const ProposalDetails = ({
         );
       }
       case 'UpdateMarket': {
+        const marketPageLink = consoleLink(
+          CONSOLE_MARKET_PAGE.replace(':marketId', terms.change.marketId)
+        );
+
         return (
           <>
             <span>{t('UpdateToMarket')}: </span>
@@ -205,21 +204,13 @@ const ProposalDetails = ({
                   </button>
                 </CopyWithTooltip>
                 <Tooltip description={t('OpenInConsole')} align="center">
-                  <button
+                  <Link
                     className="inline-block px-1"
-                    onClick={() => {
-                      const marketPageLink = consoleLink(
-                        CONSOLE_MARKET_PAGE.replace(
-                          ':marketId',
-                          // @ts-ignore ts doesn't like this field even though its already a string above???
-                          terms.change.marketId
-                        )
-                      );
-                      window.open(marketPageLink, '_blank');
-                    }}
+                    target="_blank"
+                    to={marketPageLink}
                   >
                     <VegaIcon size={20} name={VegaIconNames.OPEN_EXTERNAL} />
-                  </button>
+                  </Link>
                 </Tooltip>
               </span>
             </span>
