@@ -33,6 +33,12 @@ export const useSimpleTransaction = (opts?: Options) => {
   const [result, setResult] = useState<Result>();
   const [error, setError] = useState<string>();
 
+  const reset = () => {
+    setStatus('idle');
+    setResult(undefined);
+    setError(undefined);
+  };
+
   const send = async (tx: Transaction) => {
     if (!pubKey) {
       throw new Error('no pubKey');
@@ -114,5 +120,6 @@ export const useSimpleTransaction = (opts?: Options) => {
     error,
     status,
     send,
+    reset,
   };
 };
