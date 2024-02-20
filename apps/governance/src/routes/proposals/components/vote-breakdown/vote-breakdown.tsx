@@ -333,7 +333,6 @@ const VoteBreakDownUI = ({
     noPercentage,
     noLPPercentage,
     yesPercentage,
-    yesLPPercentage,
     yesTokens,
     noTokens,
     totalEquityLikeShareWeight,
@@ -346,6 +345,7 @@ const VoteBreakDownUI = ({
     majorityLPMet,
     willPassByTokenVote,
     willPassByLPVote,
+    lpVoteWeight,
   } = voteInfo;
 
   const participationThresholdProgress = BigNumber.min(
@@ -425,7 +425,7 @@ const VoteBreakDownUI = ({
               data-testid="lp-majority-breakdown"
             >
               <VoteProgress
-                percentageFor={yesLPPercentage}
+                percentageFor={lpVoteWeight}
                 colourfulBg={true}
                 testId="lp-majority-progress"
               >
@@ -444,10 +444,10 @@ const VoteBreakDownUI = ({
                   <span>{t('liquidityProviderVotesFor')}:</span>
                   <Tooltip
                     description={
-                      <span>{yesLPPercentage.toFixed(defaultDP)}%</span>
+                      <span>{lpVoteWeight.toFixed(defaultDP)}%</span>
                     }
                   >
-                    <button>{yesLPPercentage.toFixed(1)}%</button>
+                    <button>{lpVoteWeight.toFixed(1)}%</button>
                   </Tooltip>
                 </div>
 

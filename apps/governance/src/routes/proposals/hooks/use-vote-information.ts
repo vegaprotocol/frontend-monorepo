@@ -123,15 +123,19 @@ const getVoteData = (
     totalSupply.multipliedBy(params.requiredParticipation)
   );
 
+  const lpVoteWeight = yesEquityLikeShareWeight
+    .dividedBy(totalEquityLikeShareWeight)
+    .multipliedBy(100);
+
   const participationLPMet = params.requiredParticipationLP
-    ? totalEquityLikeShareWeight.isGreaterThan(params.requiredParticipationLP)
+    ? lpVoteWeight.isGreaterThan(params.requiredParticipationLP)
     : false;
 
   const majorityMet = yesPercentage.isGreaterThanOrEqualTo(
     requiredMajorityPercentage
   );
 
-  const majorityLPMet = yesLPPercentage.isGreaterThanOrEqualTo(
+  const majorityLPMet = lpVoteWeight.isGreaterThanOrEqualTo(
     requiredMajorityLPPercentage
   );
 
@@ -149,14 +153,12 @@ const getVoteData = (
 
   const willPassByLPVote =
     participationLPMet &&
-    new BigNumber(yesLPPercentage).isGreaterThanOrEqualTo(
-      requiredMajorityLPPercentage
-    );
+    lpVoteWeight.isGreaterThanOrEqualTo(requiredMajorityLPPercentage);
 
   let willPass = false;
 
   if (changeType === 'UpdateMarket' || changeType === 'UpdateMarketState') {
-    willPass = willPassByTokenVote && willPassByLPVote;
+    willPass = willPassByTokenVote || willPassByLPVote;
   } else {
     willPass = willPassByTokenVote;
   }
@@ -182,6 +184,7 @@ const getVoteData = (
     totalLPTokensPercentage,
     willPassByTokenVote,
     willPassByLPVote,
+    lpVoteWeight: lpVoteWeight.isNaN() ? new BigNumber(0) : lpVoteWeight,
     yesVotes: new BigNumber(votes.yes.totalNumber ?? 0),
     noVotes: new BigNumber(votes.no.totalNumber ?? 0),
     totalVotes: new BigNumber(votes.yes.totalNumber ?? 0).plus(
