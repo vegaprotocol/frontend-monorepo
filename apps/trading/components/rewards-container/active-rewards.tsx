@@ -39,14 +39,14 @@ import {
 import compact from 'lodash/compact';
 
 enum CardColour {
-  BLUE,
-  GREEN,
-  GREY,
-  ORANGE,
-  PINK,
-  PURPLE,
-  WHITE,
-  YELLOW,
+  BLUE = 'BLUE',
+  GREEN = 'GREEN',
+  GREY = 'GREY',
+  ORANGE = 'ORANGE',
+  PINK = 'PINK',
+  PURPLE = 'PURPLE',
+  WHITE = 'WHITE',
+  YELLOW = 'YELLOW',
 }
 
 export type Filter = {
@@ -154,7 +154,6 @@ export const ActiveRewardCard = ({
   currentEpoch,
 }: ActiveRewardCardProps) => {
   // don't display the cards that are scoped to not trading markets
-  // FIXME: what if only one of the scoped market is settled? I presume the rewards is still valid for the rest, isn't it?
   const marketSettled = transferNode.markets?.filter(
     (m) =>
       m?.state &&
@@ -165,7 +164,12 @@ export const ActiveRewardCard = ({
         MarketState.STATE_CLOSED,
       ].includes(m.state)
   );
-  if (marketSettled) {
+
+  // hide the card if all of the markets are being marked as e.g. settled
+  if (
+    marketSettled?.length === transferNode.markets?.length &&
+    Boolean(transferNode.markets && transferNode.markets.length > 0)
+  ) {
     return null;
   }
 
@@ -176,11 +180,13 @@ export const ActiveRewardCard = ({
 
   // grey out of any of the markets is suspended or
   // if the asset is not currently traded on any of the active markets
-  const marketSuspended = transferNode.markets?.filter(
-    (m) =>
-      m?.state === MarketState.STATE_SUSPENDED ||
-      m?.state === MarketState.STATE_SUSPENDED_VIA_GOVERNANCE
-  );
+  const marketSuspended =
+    transferNode.markets?.filter(
+      (m) =>
+        m?.state === MarketState.STATE_SUSPENDED ||
+        m?.state === MarketState.STATE_SUSPENDED_VIA_GOVERNANCE
+    ).length === transferNode.markets?.length &&
+    Boolean(transferNode.markets && transferNode.markets.length > 0);
 
   if (marketSuspended || !transferNode.isAssetTraded) {
     colour = CardColour.GREY;
