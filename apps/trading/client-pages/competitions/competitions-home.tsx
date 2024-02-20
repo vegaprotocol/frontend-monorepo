@@ -52,9 +52,6 @@ export const CompetitionsHome = () => {
     <ErrorBoundary>
       <CompetitionsHeader title={t('Competitions')}>
         <p className="text-lg mb-3">
-          {/* {t(
-            'Be a team player! Participate in games and work together to rake in as much profit to win.'
-          )} */}
           <Trans
             i18nKey={
               'Check the cards below to see what community-created, on-chain games are active and how to compete. Joining a team also lets you take part in the on-chain <0>referral program</0>.'
