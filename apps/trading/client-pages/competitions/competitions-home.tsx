@@ -180,11 +180,13 @@ export const CompetitionsHome = () => {
         {/** Docs: https://docs.vega.xyz/mainnet/tutorials/proposals/asset-transfer-proposal */}
       </p>
 
-      {gamesLoading ? (
-        <Loader size="small" />
-      ) : (
-        <GamesContainer data={gamesData} currentEpoch={currentEpoch} />
-      )}
+      <div className="mb-12 flex">
+        {gamesLoading ? (
+          <Loader size="small" />
+        ) : (
+          <GamesContainer data={gamesData} currentEpoch={currentEpoch} />
+        )}
+      </div>
 
       {/** The teams ranking */}
       <div className="mb-1 flex flex-row items-baseline gap-3 justify-between">
@@ -203,11 +205,13 @@ export const CompetitionsHome = () => {
         )}
       </p>
 
-      {teamsLoading ? (
-        <Loader size="small" />
-      ) : (
-        <CompetitionsLeaderboard data={take(teamsData, 10)} />
-      )}
+      <div className="flex">
+        {teamsLoading ? (
+          <Loader size="small" />
+        ) : (
+          <CompetitionsLeaderboard data={take(teamsData, 10)} />
+        )}
+      </div>
     </ErrorBoundary>
   );
 };
