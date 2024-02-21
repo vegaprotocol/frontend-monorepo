@@ -18,6 +18,7 @@ import { useConnect } from '../../hooks/use-connect';
 import classNames from 'classnames';
 import { useT } from '../../hooks/use-t';
 import { useWalletChainId } from '../../hooks/use-wallet-chain-id';
+import { Links } from '../../constants';
 
 export const DIALOG_CLOSE_DELAY = 1000;
 
@@ -60,7 +61,7 @@ export const ConnectionOptions = ({
 
   return (
     <div className="flex flex-col gap-4">
-      <h2 className="text-xl">{t('Connect Vega Wallet')}</h2>
+      <h2 className="text-xl">{t('Connect to Vega')}</h2>
       <ul
         className="grid grid-cols-2 gap-1 -mx-2"
         data-testid="connectors-list"
@@ -85,6 +86,14 @@ export const ConnectionOptions = ({
           {error.message}
         </p>
       )}
+      <a
+        href={Links.walletOverview}
+        target="_blank"
+        rel="noreferrer"
+        className="text-sm underline underline-offset-4"
+      >
+        Dont have a wallet?
+      </a>
     </div>
   );
 };

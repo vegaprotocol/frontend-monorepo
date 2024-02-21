@@ -1,4 +1,4 @@
-import { ConnectorErrors } from '.';
+import { ConnectorError, ConnectorErrors } from '.';
 import {
   type TransactionParams,
   type Connector,
@@ -15,9 +15,16 @@ export class InjectedConnector implements Connector {
 
   async connectWallet(chainId: string) {
     try {
+      if (window.vega === undefined) {
+        throw ConnectorErrors.noWallet;
+      }
+
       await window.vega.connectWallet({ chainId });
       return { success: true };
     } catch (err) {
+      if (err instanceof ConnectorError) {
+        throw err;
+      }
       throw ConnectorErrors.connect;
     }
   }
