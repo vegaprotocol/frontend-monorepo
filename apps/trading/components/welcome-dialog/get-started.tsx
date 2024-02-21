@@ -26,6 +26,7 @@ interface Props {
 
 const GetStartedButton = ({ step }: { step: OnboardingStep }) => {
   const t = useT();
+  const { VEGA_ENV } = useEnvironment();
   const dismiss = useOnboardingStore((store) => store.dismiss);
   const setDialog = useOnboardingStore((store) => store.setDialog);
   const risk = useOnboardingStore((store) => store.risk);
@@ -43,7 +44,7 @@ const GetStartedButton = ({ step }: { step: OnboardingStep }) => {
       <TradingButton
         {...buttonProps}
         onClick={() => {
-          if (risk !== 'accepted') {
+          if (risk !== 'accepted' && VEGA_ENV === Networks.MAINNET) {
             setDialog('risk');
           } else {
             setDialog('connect');

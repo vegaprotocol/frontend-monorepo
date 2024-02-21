@@ -12,6 +12,7 @@ import {
   type RiskStatus,
 } from '../welcome-dialog/use-get-onboarding-step';
 import { RiskAck } from '../risk-ack';
+import { Networks, useEnvironment } from '@vegaprotocol/environment';
 
 const DIALOG_CLOSE_DELAY = 1000;
 
@@ -46,11 +47,12 @@ const Content = ({
   status: Status;
   onConnect: (id: ConnectorType) => void;
 }) => {
+  const { VEGA_ENV } = useEnvironment();
   const setDialog = useDialogStore((store) => store.set);
   const acceptRisk = useOnboardingStore((store) => store.acceptRisk);
   const rejectRisk = useOnboardingStore((store) => store.rejectRisk);
 
-  if (risk !== 'accepted') {
+  if (VEGA_ENV === Networks.MAINNET && risk !== 'accepted') {
     return (
       <RiskAck
         onAccept={() => {
