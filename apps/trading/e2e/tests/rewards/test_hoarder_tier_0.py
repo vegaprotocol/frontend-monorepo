@@ -1,14 +1,8 @@
 import pytest
-from rewards_test_ids import *
 import vega_sim.proto.vega as vega_protos
+from rewards_test_ids import *
 from playwright.sync_api import Page, expect
-from conftest import (
-    init_vega,
-    init_page,
-    auth_setup,
-    risk_accepted_setup,
-    cleanup_container,
-)
+from conftest import init_vega, init_page, auth_setup, risk_accepted_setup, cleanup_container
 from fixtures.market import setup_continuous_market
 from actions.utils import next_epoch, change_keys
 from wallet_config import MM_WALLET
@@ -20,7 +14,6 @@ def vega(request):
     with init_vega(request) as vega_instance:
         request.addfinalizer(lambda: cleanup_container(vega_instance))
         yield vega_instance
-
 
 @pytest.fixture(scope="module")
 def page(vega, browser, request):
@@ -45,10 +38,9 @@ def setup_market_with_reward_program(vega: VegaServiceNull):
 
     vega.update_network_parameter(
         proposal_key=MM_WALLET.name,
-        parameter="rewards.activityStreak.benefitTiers",
-        new_value=ACTIVITY_STREAKS,
+        parameter="rewards.vesting.benefitTiers",
+        new_value=VESTING,
     )
-    print("update_network_parameter activity done")
     next_epoch(vega=vega)
 
     tDAI_asset_id = vega.find_asset_id(symbol="tDAI")
@@ -86,38 +78,37 @@ def setup_market_with_reward_program(vega: VegaServiceNull):
     )
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
+
     next_epoch(vega=vega)
     return tDAI_market, tDAI_asset_id
 
 
-@pytest.mark.xdist_group(name="test_rewards_activity_tier_0")
+@pytest.mark.xdist_group(name="test_rewards_hoarder_tier_0")
 def test_network_reward_pot(
     page: Page,
 ):
     expect(page.get_by_test_id(TOTAL_REWARDS)).to_have_text("50.00 tDAI")
-    page.pause()
 
 
-@pytest.mark.xdist_group(name="test_rewards_activity_tier_0")
+@pytest.mark.xdist_group(name="test_rewards_hoarder_tier_0")
 def test_reward_multiplier(
     page: Page,
 ):
-    page.pause()
     expect(page.get_by_test_id(COMBINED_MULTIPLIERS)).to_have_text("1x")
     expect(page.get_by_test_id(STREAK_REWARD_MULTIPLIER_VALUE)).to_have_text("1x")
     expect(page.get_by_test_id(HOARDER_REWARD_MULTIPLIER_VALUE)).to_have_text("1x")
 
 
-""" @pytest.mark.xdist_group(name="test_rewards_activity_tier_0")
-def test_activity_streak(
+@pytest.mark.xdist_group(name="test_rewards_hoarder_tier_0")
+def test_hoarder_bonus(
     page: Page,
 ):
-    expect(page.get_by_test_id(EPOCH_STREAK)).to_have_text(
-        "Active trader: 1 epochs so far "
+    expect(page.get_by_test_id(HOARDER_BONUS_TOTAL_HOARDED)).to_contain_text(
+        "5,000,000"
     )
 
 
-@pytest.mark.xdist_group(name="test_rewards_activity_tier_0")
+@pytest.mark.xdist_group(name="test_rewards_hoarder_tier_0")
 def test_reward_history(
     page: Page,
 ):
@@ -128,4 +119,3 @@ def test_reward_history(
     expect((page.get_by_role(ROW).locator(TOTAL_COL_ID)).nth(1)).to_have_text("100.00")
     page.get_by_test_id(EARNED_BY_ME_BUTTON).click()
     expect((page.get_by_role(ROW).locator(TOTAL_COL_ID)).nth(1)).to_have_text("50.00")
- """

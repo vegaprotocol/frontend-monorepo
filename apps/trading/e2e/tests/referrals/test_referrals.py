@@ -15,7 +15,7 @@ BUY_ORDERS = [[1, 106], [1, 107], [1, 108]]
 @pytest.fixture(scope="module")
 def vega(request):
     with init_vega(request) as vega_instance:
-        request.addfinalizer(lambda: cleanup_container(vega_instance))  # Register the cleanup function
+        request.addfinalizer(lambda: cleanup_container(vega_instance))
         yield vega_instance
 
 

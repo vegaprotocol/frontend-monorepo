@@ -14,7 +14,7 @@ logger = logging.getLogger()
 @pytest.fixture(scope="class")
 def vega(request):
     with init_vega(request) as vega_instance:
-        request.addfinalizer(lambda: cleanup_container(vega_instance))  # Register the cleanup function
+        request.addfinalizer(lambda: cleanup_container(vega_instance))
         yield vega_instance
 
 
@@ -142,8 +142,7 @@ class TestGetStarted:
     def test_get_started_seen_already(self, simple_market, page: Page):
         page.goto(f"/#/markets/{simple_market}")
         get_started_locator = page.get_by_test_id("connect-vega-wallet")
-        page.wait_for_selector(
-            '[data-testid="connect-vega-wallet"]', state="attached")
+        page.wait_for_selector('[data-testid="connect-vega-wallet"]', state="attached")
         expect(get_started_locator).to_be_enabled
         expect(get_started_locator).to_be_visible
         # 0007-FUGS-015
@@ -153,7 +152,9 @@ class TestGetStarted:
         expect(page.get_by_test_id("dialog-content").nth(1)).to_be_visible()
 
     @pytest.mark.skip("tbd-market-sim")
-    def test_redirect_default_market(self, continuous_market, vega: VegaServiceNull, page: Page):
+    def test_redirect_default_market(
+        self, continuous_market, vega: VegaServiceNull, page: Page
+    ):
         page.goto("/")
         # 0007-FUGS-012
         expect(page).to_have_url(

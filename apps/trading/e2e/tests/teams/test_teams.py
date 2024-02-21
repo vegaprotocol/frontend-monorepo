@@ -14,7 +14,7 @@ def vega(request):
     with init_vega(request) as vega_instance:
         request.addfinalizer(
             lambda: cleanup_container(vega_instance)
-        )  # Register the cleanup function
+        )
         yield vega_instance
 
 
