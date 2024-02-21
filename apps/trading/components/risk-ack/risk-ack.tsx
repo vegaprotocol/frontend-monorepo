@@ -7,16 +7,20 @@ import {
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../lib/use-t';
-import { useOnboardingStore } from '../welcome-dialog/use-get-onboarding-step';
 import { Links } from '../../lib/links';
 
-export const RiskAck = () => {
+export const RiskAck = ({
+  onAccept,
+  onReject,
+}: {
+  onAccept: () => void;
+  onReject: () => void;
+}) => {
   const t = useT();
-  const accept = useOnboardingStore((store) => store.acceptRisk);
-  const reject = useOnboardingStore((store) => store.rejectRisk);
 
   return (
-    <>
+    <div className="flex flex-col gap-4">
+      <h2 className="text-xl">{t('Understand the risk')}</h2>
       <div className="p-6 mb-6 bg-vega-light-100 dark:bg-vega-dark-100">
         <ul className="list-[square] ml-4">
           <li className="mb-1">
@@ -34,7 +38,7 @@ export const RiskAck = () => {
           </li>
         </ul>
       </div>
-      <p className="mb-8">
+      <p>
         <Trans
           defaults="By using the Vega Console, you acknowledge that you have read and understood the <0>Vega Console Disclaimer</0>"
           components={[<DisclaimerLink key="link" onClick={() => {}} />]}
@@ -42,17 +46,17 @@ export const RiskAck = () => {
       </p>
       <div className="grid grid-cols-2 gap-5">
         <div>
-          <Button onClick={reject} fill>
+          <Button onClick={onReject} fill>
             {t('Cancel')}
           </Button>
         </div>
         <div>
-          <Button onClick={accept} intent={Intent.Info} fill>
+          <Button onClick={onAccept} intent={Intent.Info} fill>
             {t('I agree')}
           </Button>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

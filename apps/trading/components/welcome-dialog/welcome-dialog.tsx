@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { matchPath, useLocation } from 'react-router-dom';
 import { Dialog, Intent } from '@vegaprotocol/ui-toolkit';
-import { useEnvironment } from '@vegaprotocol/environment';
 import {
   ConnectorIcon,
   ConnectionStatus,
@@ -14,7 +13,10 @@ import { ensureSuffix } from '@vegaprotocol/utils';
 import { useT } from '../../lib/use-t';
 import { Routes } from '../../lib/links';
 import { WelcomeDialogContent } from './welcome-dialog-content';
-import { useOnboardingStore } from './use-get-onboarding-step';
+import {
+  useOnboardingStore,
+  type OnboardingDialog,
+} from './use-get-onboarding-step';
 import { RiskAck } from '../risk-ack';
 
 /**
@@ -28,7 +30,6 @@ export const WelcomeDialog = () => {
   const dialog = useOnboardingStore((store) => store.dialog);
   const dismiss = useOnboardingStore((store) => store.dismiss);
   const setDialog = useOnboardingStore((store) => store.setDialog);
-  const title = useTitle();
 
   useEffect(() => {
     const shouldOmit = OMIT_ON_LIST.map((path) =>
@@ -40,22 +41,6 @@ export const WelcomeDialog = () => {
     setDialog('intro');
   }, [dismissed, pathname, setDialog]);
 
-  let content = null;
-
-  if (dialog === 'intro') {
-    content = <WelcomeDialogContent />;
-  } else if (dialog === 'connect') {
-    content = (
-      <ConnectionOptions
-        onConnect={() => {
-          setTimeout(() => setDialog('intro'), 1000);
-        }}
-      />
-    );
-  } else if (dialog === 'risk') {
-    content = <RiskAck />;
-  }
-
   const onClose = () => {
     setDialog('inactive');
     dismiss();
@@ -64,72 +49,99 @@ export const WelcomeDialog = () => {
   return (
     <Dialog
       open={dismissed ? false : dialog !== 'inactive'}
-      title={title}
       size="medium"
       onChange={onClose}
       intent={Intent.None}
       dataTestId="welcome-dialog"
     >
-      {content}
+      <Content
+        dialog={dialog}
+        onConnect={() => {
+          setTimeout(() => setDialog('intro'), 1000);
+        }}
+      />
     </Dialog>
   );
 };
 
-const useTitle = () => {
-  const t = useT();
-  const { VEGA_ENV } = useEnvironment();
-  const dialog = useOnboardingStore((store) => store.dialog);
+const Content = ({
+  dialog,
+  onConnect,
+}: {
+  dialog: OnboardingDialog;
+  onConnect: () => void;
+}) => {
+  const accept = useOnboardingStore((store) => store.acceptRisk);
+  const reject = useOnboardingStore((store) => store.rejectRisk);
+  const setDialog = useOnboardingStore((store) => store.setDialog);
 
-  if (dialog === 'risk') {
-    return t('Understand the risk');
+  if (dialog === 'intro') {
+    return <WelcomeDialogContent />;
   }
 
   if (dialog === 'connect') {
-    return t('Connect Vega Wallet');
+    return <ConnectionOptions onConnect={onConnect} />;
   }
 
-  return t('Console {{env}}', { env: VEGA_ENV });
+  if (dialog === 'risk') {
+    return (
+      <RiskAck
+        onAccept={() => {
+          accept();
+          setDialog('connect');
+        }}
+        onReject={() => {
+          reject();
+          setDialog('intro');
+        }}
+      />
+    );
+  }
 };
 
 const ConnectionOptions = ({ onConnect }: { onConnect: () => void }) => {
+  const t = useT();
   const error = useWallet((store) => store.error);
   const { connect, connectors } = useConnect();
   const status = useWallet((store) => store.status);
 
   if (status === 'disconnected') {
     return (
-      <div className="flex flex-col gap-6">
-        <ul className="flex flex-col -mx-4 -mb-4">
-          {connectors.map((c) => {
-            return (
-              <ConnectionOption
-                key={c.id}
-                id={c.id}
-                name={c.name}
-                description={c.description}
-                onClick={async () => {
-                  const res = await connect(c.id);
-                  if (res.status === 'connected') {
-                    onConnect();
-                  }
-                }}
-              />
-            );
-          })}
-        </ul>
-        {error && error.code !== ConnectorErrors.userRejected.code && (
-          <p className="text-danger text-sm first-letter:uppercase">
-            {error.message}
-          </p>
-        )}
-        <a
-          href={Links.walletOverview}
-          target="_blank"
-          rel="noreferrer"
-          className="text-sm underline underline-offset-4"
-        >
-          Dont have a wallet?
-        </a>
+      <div className="flex flex-col gap-4">
+        <h2>{t('Connect to Vega')}</h2>
+        <div className="flex flex-col gap-6">
+          <ul className="flex flex-col -mx-4 -mb-4">
+            {connectors.map((c) => {
+              return (
+                <ConnectionOption
+                  key={c.id}
+                  id={c.id}
+                  name={c.name}
+                  description={c.description}
+                  onClick={async () => {
+                    const res = await connect(c.id);
+                    if (res.status === 'connected') {
+                      onConnect();
+                    }
+                  }}
+                />
+              );
+            })}
+          </ul>
+          {error && error.code !== ConnectorErrors.userRejected.code && (
+            <p className="text-danger text-sm first-letter:uppercase">
+              {error.message}
+            </p>
+          )}
+          <a
+            href={Links.walletOverview}
+            target="_blank"
+            rel="noreferrer"
+            className="text-sm underline underline-offset-4"
+          >
+            Dont have a wallet?
+          </a>
+        </div>
       </div>
     );
   }

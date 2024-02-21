@@ -1,5 +1,5 @@
 import { Dialog } from '@vegaprotocol/ui-toolkit';
-import { type ConnectorType } from '@vegaprotocol/wallet';
+import { type Status, type ConnectorType } from '@vegaprotocol/wallet';
 import {
   ConnectionOptions,
   ConnectionStatus,
@@ -7,19 +7,20 @@ import {
   useDialogStore,
   useWallet,
 } from '@vegaprotocol/wallet-react';
-import { useOnboardingStore } from '../welcome-dialog/use-get-onboarding-step';
+import {
+  useOnboardingStore,
+  type RiskStatus,
+} from '../welcome-dialog/use-get-onboarding-step';
 import { RiskAck } from '../risk-ack';
-import { useT } from '../../lib/use-t';
 
 const DIALOG_CLOSE_DELAY = 1000;
 
 export const VegaWalletConnectDialog = () => {
-  const t = useT();
+  const { connect } = useConnect();
   const open = useDialogStore((store) => store.isOpen);
   const setDialog = useDialogStore((store) => store.set);
   const risk = useOnboardingStore((store) => store.risk);
 
-  const { connect } = useConnect();
   const status = useWallet((store) => store.status);
 
   const onConnect = async (id: ConnectorType) => {
@@ -29,21 +30,43 @@ export const VegaWalletConnectDialog = () => {
     }
   };
 
-  let content = null;
-  let title = null;
-
-  if (risk !== 'accepted') {
-    title = t('Understand the risk');
-    content = <RiskAck />;
-  } else if (status === 'disconnected') {
-    content = <ConnectionOptions onConnect={onConnect} />;
-  } else {
-    content = <ConnectionStatus status={status} />;
-  }
-
   return (
-    <Dialog open={open} size="small" onChange={setDialog} title={title}>
-      {content}
+    <Dialog open={open} size="small" onChange={setDialog}>
+      <Content risk={risk} status={status} onConnect={onConnect} />
     </Dialog>
   );
+};
+
+const Content = ({
+  risk,
+  status,
+  onConnect,
+}: {
+  risk: RiskStatus;
+  status: Status;
+  onConnect: (id: ConnectorType) => void;
+}) => {
+  const setDialog = useDialogStore((store) => store.set);
+  const acceptRisk = useOnboardingStore((store) => store.acceptRisk);
+  const rejectRisk = useOnboardingStore((store) => store.rejectRisk);
+
+  if (risk !== 'accepted') {
+    return (
+      <RiskAck
+        onAccept={() => {
+          acceptRisk();
+        }}
+        onReject={() => {
+          rejectRisk();
+          setDialog(false);
+        }}
+      />
+    );
+  }
+
+  if (status === 'disconnected') {
+    return <ConnectionOptions onConnect={onConnect} />;
+  }
+
+  return <ConnectionStatus status={status} />;
 };

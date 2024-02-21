@@ -10,8 +10,8 @@ import { positionsDataProvider } from '@vegaprotocol/positions';
 
 const ONBOARDING_STORAGE_KEY = 'vega_onboarding';
 
-type RiskStatus = 'pending' | 'accepted' | 'rejected';
-type OnboardingDialog = 'inactive' | 'intro' | 'risk' | 'connect';
+export type RiskStatus = 'pending' | 'accepted' | 'rejected';
+export type OnboardingDialog = 'inactive' | 'intro' | 'risk' | 'connect';
 
 export const useOnboardingStore = create<{
   dialog: OnboardingDialog;
@@ -30,10 +30,10 @@ export const useOnboardingStore = create<{
       setDialog: (step) => set({ dialog: step }),
       risk: 'pending',
       acceptRisk: () => {
-        set({ risk: 'accepted', dialog: 'connect' });
+        set({ risk: 'accepted' });
       },
       rejectRisk: () => {
-        set({ risk: 'rejected', dialog: 'intro' });
+        set({ risk: 'rejected' });
       },
     }),
     {

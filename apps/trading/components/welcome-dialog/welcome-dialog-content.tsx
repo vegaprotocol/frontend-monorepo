@@ -23,40 +23,43 @@ export const WelcomeDialogContent = () => {
           'Free from the risks of real trading, Fairground is a safe and fun place to try out Vega yourself with virtual assets.'
         );
   return (
-    <div className="flex flex-col sm:flex-row gap-8">
-      <div className="flex flex-col justify-between pt-3 sm:w-1/2">
-        <ul className="ml-0">
-          <ListItemContent
-            icon={<NonCustodialIcon />}
-            title={t('Non-custodial and pseudonymous')}
-            text={t('No third party has access to your funds.')}
-          />
-          <ListItemContent
-            icon={<PurposeBuiltIcon />}
-            title={t('Purpose built proof of stake blockchain')}
-            text={t(
-              'Fully decentralised high performance peer-to-network trading.'
-            )}
-          />
-          <ListItemContent
-            icon={<RewardIcon />}
-            title={t('Low fees and no cost to place orders')}
-            text={t(
-              'Fees work like a CEX with no per-transaction gas for orders'
-            )}
-          />
-        </ul>
-        <TradingAnchorButton
-          href={link}
-          onClick={() => setDialog('inactive')}
-          className="block w-full"
-          data-testid="browse-markets-button"
-        >
-          {t('Explore')}
-        </TradingAnchorButton>
-      </div>
-      <div className="flex sm:w-1/2 grow">
-        <GetStarted lead={lead} />
+    <div className="flex flex-col gap-4">
+      <h2 className="text-xl">{t('Console {{env}}', { env: VEGA_ENV })}</h2>
+      <div className="flex flex-col sm:flex-row gap-8">
+        <div className="flex flex-col gap-4 justify-between sm:w-1/2">
+          <ul className="flex flex-col gap-4">
+            <ListItemContent
+              icon={<NonCustodialIcon />}
+              title={t('Non-custodial and pseudonymous')}
+              text={t('No third party has access to your funds.')}
+            />
+            <ListItemContent
+              icon={<PurposeBuiltIcon />}
+              title={t('Purpose built proof of stake blockchain')}
+              text={t(
+                'Fully decentralised high performance peer-to-network trading.'
+              )}
+            />
+            <ListItemContent
+              icon={<RewardIcon />}
+              title={t('Low fees and no cost to place orders')}
+              text={t(
+                'Fees work like a CEX with no per-transaction gas for orders'
+              )}
+            />
+          </ul>
+          <TradingAnchorButton
+            href={link}
+            onClick={() => setDialog('inactive')}
+            className="block w-full"
+            data-testid="browse-markets-button"
+          >
+            {t('Explore')}
+          </TradingAnchorButton>
+        </div>
+        <div className="flex sm:w-1/2 grow">
+          <GetStarted lead={lead} />
+        </div>
       </div>
     </div>
   );
@@ -72,7 +75,7 @@ const ListItemContent = ({
   text: string;
 }) => {
   return (
-    <li className="flex my-4 gap-3">
+    <li className="flex gap-3">
       <div className="pt-1 shrink-0">{icon}</div>
       <div>
         <h3 className="mb-2 text-lg leading-snug">{title}</h3>
