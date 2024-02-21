@@ -32,9 +32,7 @@ export const VegaWalletConnectButton = ({
 }) => {
   const t = useT();
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const openVegaWalletDialog = useDialogStore(
-    (store) => store.openVegaWalletDialog
-  );
+  const openVegaWalletDialog = useDialogStore((store) => store.open);
   const currentRouteId = useGetCurrentRouteId();
   const setViews = useSidebar((store) => store.setViews);
   const {

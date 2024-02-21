@@ -24,9 +24,7 @@ export const CompetitionsUpdateTeam = () => {
   const t = useT();
   usePageTitle([t('Competitions'), t('Update a team')]);
   const { pubKey, isReadOnly } = useVegaWallet();
-  const openWalletDialog = useDialogStore(
-    (store) => store.openVegaWalletDialog
-  );
+  const openWalletDialog = useDialogStore((store) => store.open);
   const { teamId } = useParams<{ teamId: string }>();
   if (!teamId) {
     return <Navigate to={Links.COMPETITIONS()} />;

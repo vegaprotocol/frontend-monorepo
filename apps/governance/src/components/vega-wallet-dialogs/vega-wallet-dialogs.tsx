@@ -9,17 +9,13 @@ import { VegaManageDialog } from '../manage-dialog';
 
 export const VegaWalletDialogs = () => {
   const { appState, appDispatch } = useAppState();
-  const vegaWalletDialogOpen = useDialogStore(
-    (store) => store.vegaWalletDialogOpen
-  );
-  const updateVegaWalletDialog = useDialogStore((store) => (open: boolean) => {
-    store.updateVegaWalletDialog(open);
-  });
+  const vegaWalletDialogOpen = useDialogStore((store) => store.isOpen);
+  const setVegaWalletDialog = useDialogStore((store) => store.set);
   return (
     <>
       <ConnectDialog
         open={vegaWalletDialogOpen}
-        onChange={updateVegaWalletDialog}
+        onChange={setVegaWalletDialog}
       />
       <VegaManageDialog
         dialogOpen={appState.vegaWalletManageOverlay}

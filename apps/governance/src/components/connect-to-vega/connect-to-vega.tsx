@@ -4,14 +4,10 @@ import { useDialogStore } from '@vegaprotocol/wallet-react';
 
 export const ConnectToVega = () => {
   const { t } = useTranslation();
-  const { openVegaWalletDialog } = useDialogStore((store) => ({
-    openVegaWalletDialog: store.openVegaWalletDialog,
-  }));
+  const openVegaWalletDialog = useDialogStore((store) => store.open);
   return (
     <Button
-      onClick={() => {
-        openVegaWalletDialog();
-      }}
+      onClick={openVegaWalletDialog}
       data-testid="connect-to-vega-wallet-btn"
       variant="primary"
     >

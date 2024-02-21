@@ -1,16 +1,15 @@
 import { create } from 'zustand';
 
 export interface DialogStore {
-  vegaWalletDialogOpen: boolean;
-  updateVegaWalletDialog: (open: boolean) => void;
-  openVegaWalletDialog: () => void;
-  closeVegaWalletDialog: () => void;
+  isOpen: boolean;
+  set: (open: boolean) => void;
+  open: () => void;
+  close: () => void;
 }
 
 export const useDialogStore = create<DialogStore>()((set) => ({
-  vegaWalletDialogOpen: false,
-  updateVegaWalletDialog: (open: boolean) =>
-    set({ vegaWalletDialogOpen: open }),
-  openVegaWalletDialog: () => set({ vegaWalletDialogOpen: true }),
-  closeVegaWalletDialog: () => set({ vegaWalletDialogOpen: false }),
+  isOpen: false,
+  set: (open: boolean) => set({ isOpen: open }),
+  open: () => set({ isOpen: true }),
+  close: () => set({ isOpen: false }),
 }));

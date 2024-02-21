@@ -42,9 +42,7 @@ export const Navbar = ({ theme = 'system' }: { theme?: Theme }) => {
 
   const { pubKey } = useVegaWallet();
 
-  const openVegaWalletDialog = useDialogStore(
-    (store) => store.openVegaWalletDialog
-  );
+  const openVegaWalletDialog = useDialogStore((store) => store.open);
 
   const isConnected = pubKey !== null;
 

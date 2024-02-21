@@ -26,9 +26,7 @@ export const CompetitionsCreateTeam = () => {
   usePageTitle(t('Create a team'));
 
   const { isReadOnly, pubKey } = useVegaWallet();
-  const openWalletDialog = useDialogStore(
-    (store) => store.openVegaWalletDialog
-  );
+  const openWalletDialog = useDialogStore((store) => store.open);
 
   return (
     <ErrorBoundary feature="create-team">

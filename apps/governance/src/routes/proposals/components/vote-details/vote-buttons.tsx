@@ -160,9 +160,7 @@ export const VoteButtons = ({
 }: VoteButtonsProps) => {
   const { t } = useTranslation();
   const { pubKey } = useVegaWallet();
-  const { openVegaWalletDialog } = useDialogStore((store) => ({
-    openVegaWalletDialog: store.openVegaWalletDialog,
-  }));
+  const openVegaWalletDialog = useDialogStore((store) => store.open);
   const [changeVote, setChangeVote] = React.useState(false);
   const proposalVotable = useMemo(
     () =>
@@ -181,11 +179,7 @@ export const VoteButtons = ({
     if (!pubKey) {
       return (
         <div data-testid="connect-wallet">
-          <ButtonLink
-            onClick={() => {
-              openVegaWalletDialog();
-            }}
-          >
+          <ButtonLink onClick={openVegaWalletDialog}>
             {t('connectVegaWallet')}
           </ButtonLink>{' '}
           {t('toVote')}

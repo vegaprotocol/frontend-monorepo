@@ -11,12 +11,8 @@ import { WelcomeDialog } from '../components/welcome-dialog';
 
 const DialogsContainer = () => {
   const { isOpen, id, trigger, setOpen } = useAssetDetailsDialogStore();
-  const vegaWalletDialogOpen = useDialogStore(
-    (store) => store.vegaWalletDialogOpen
-  );
-  const updateVegaWalletDialog = useDialogStore((store) => (open: boolean) => {
-    store.updateVegaWalletDialog(open);
-  });
+  const vegaWalletDialogOpen = useDialogStore((store) => store.isOpen);
+  const updateVegaWalletDialog = useDialogStore((store) => store.set);
 
   return (
     <>

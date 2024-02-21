@@ -34,9 +34,7 @@ export const MarketsMobileSidebar = () => {
   const t = useT();
   const currentRouteId = useGetCurrentRouteId();
   const { pubKeys, isReadOnly } = useVegaWallet();
-  const openVegaWalletDialog = useDialogStore(
-    (store) => store.openVegaWalletDialog
-  );
+  const openVegaWalletDialog = useDialogStore((store) => store.open);
 
   return (
     <Routes>

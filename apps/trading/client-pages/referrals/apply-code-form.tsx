@@ -83,9 +83,7 @@ export const ApplyCodeForm = ({ onSuccess }: { onSuccess?: () => void }) => {
   const t = useT();
   const program = useReferralProgram();
   const navigate = useNavigate();
-  const openWalletDialog = useDialogStore(
-    (store) => store.openVegaWalletDialog
-  );
+  const openWalletDialog = useDialogStore((store) => store.open);
 
   const { isReadOnly, pubKey } = useVegaWallet();
   const { isEligible, requiredFunds } = useFundsAvailable();

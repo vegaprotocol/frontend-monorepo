@@ -10,9 +10,7 @@ interface VegaWalletContainerProps {
 export const VegaWalletContainer = ({ children }: VegaWalletContainerProps) => {
   const { t } = useTranslation();
   const { pubKey } = useVegaWallet();
-  const { openVegaWalletDialog } = useDialogStore((store) => ({
-    openVegaWalletDialog: store.openVegaWalletDialog,
-  }));
+  const openVegaWalletDialog = useDialogStore((store) => store.open);
 
   if (!pubKey) {
     return (

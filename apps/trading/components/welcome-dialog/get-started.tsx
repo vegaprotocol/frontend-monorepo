@@ -110,9 +110,7 @@ export const GetStarted = ({ lead }: Props) => {
   const t = useT();
   const { pubKey } = useVegaWallet();
   const { VEGA_ENV, VEGA_NETWORKS } = useEnvironment();
-  const openVegaWalletDialog = useDialogStore(
-    (store) => store.openVegaWalletDialog
-  );
+  const openVegaWalletDialog = useDialogStore((store) => store.open);
   const currentStep = useGetOnboardingStep();
   const dismissed = useOnboardingStore((store) => store.dismissed);
 

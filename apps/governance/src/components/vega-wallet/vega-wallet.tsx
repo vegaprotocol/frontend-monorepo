@@ -76,9 +76,7 @@ export const VegaWallet = () => {
 
 const VegaWalletNotConnected = () => {
   const { t } = useTranslation();
-  const { openVegaWalletDialog } = useDialogStore((store) => ({
-    openVegaWalletDialog: store.openVegaWalletDialog,
-  }));
+  const openVegaWalletDialog = useDialogStore((store) => store.open);
   return (
     <>
       <Button

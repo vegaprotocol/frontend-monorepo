@@ -19,9 +19,7 @@ import { useTranslation } from 'react-i18next';
 const WalletDisconnectAdditionalContent = () => {
   const { t } = useTranslation();
   const { hideToast } = useWalletDisconnectToastActions();
-  const openVegaWalletDialog = useDialogStore(
-    (store) => store.openVegaWalletDialog
-  );
+  const openVegaWalletDialog = useDialogStore((store) => store.open);
   return (
     <p className="mt-2">
       <TradingButton

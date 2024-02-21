@@ -28,9 +28,7 @@ export const CreateCodeContainer = () => {
   const t = useT();
   const { pubKey, isReadOnly } = useVegaWallet();
   const isInReferralSet = useIsInReferralSet(pubKey);
-  const openWalletDialog = useDialogStore(
-    (store) => store.openVegaWalletDialog
-  );
+  const openWalletDialog = useDialogStore((store) => store.open);
 
   // Navigate to the index page when already in the referral set.
   if (isInReferralSet) {
