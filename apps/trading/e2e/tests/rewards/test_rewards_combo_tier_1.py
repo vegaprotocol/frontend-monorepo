@@ -84,7 +84,7 @@ def setup_market_with_reward_program(vega: VegaServiceNull):
         side="SIDE_BUY",
         volume=1,
     )
-
+    vega.wait_fn(1)
     vega.wait_for_total_catchup()
     next_epoch(vega=vega)
     vega.submit_order(
@@ -113,6 +113,7 @@ def setup_market_with_reward_program(vega: VegaServiceNull):
         side="SIDE_BUY",
         volume=1,
     )
+    vega.wait_fn(1)
     vega.wait_for_total_catchup()
     next_epoch(vega=vega)
     next_epoch(vega=vega)

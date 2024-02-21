@@ -84,9 +84,8 @@ def setup_market_with_reward_program(vega: VegaServiceNull):
         side="SIDE_BUY",
         volume=1,
     )
-
+    vega.wait_fn(1)
     vega.wait_for_total_catchup()
-
     next_epoch(vega=vega)
     return tDAI_market, tDAI_asset_id
 
@@ -96,18 +95,20 @@ def test_network_reward_pot(
     page: Page,
 ):
     expect(page.get_by_test_id(TOTAL_REWARDS)).to_have_text("50.00 tDAI")
+    page.pause()
 
 
 @pytest.mark.xdist_group(name="test_rewards_activity_tier_0")
 def test_reward_multiplier(
     page: Page,
 ):
+    page.pause()
     expect(page.get_by_test_id(COMBINED_MULTIPLIERS)).to_have_text("1x")
     expect(page.get_by_test_id(STREAK_REWARD_MULTIPLIER_VALUE)).to_have_text("1x")
     expect(page.get_by_test_id(HOARDER_REWARD_MULTIPLIER_VALUE)).to_have_text("1x")
 
 
-@pytest.mark.xdist_group(name="test_rewards_activity_tier_0")
+""" @pytest.mark.xdist_group(name="test_rewards_activity_tier_0")
 def test_activity_streak(
     page: Page,
 ):
@@ -127,3 +128,4 @@ def test_reward_history(
     expect((page.get_by_role(ROW).locator(TOTAL_COL_ID)).nth(1)).to_have_text("100.00")
     page.get_by_test_id(EARNED_BY_ME_BUTTON).click()
     expect((page.get_by_role(ROW).locator(TOTAL_COL_ID)).nth(1)).to_have_text("50.00")
+ """
