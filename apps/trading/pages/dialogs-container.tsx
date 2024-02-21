@@ -6,20 +6,15 @@ import {
   Web3ConnectUncontrolledDialog,
   WithdrawalApprovalDialogContainer,
 } from '@vegaprotocol/web3';
-import { ConnectDialog, useDialogStore } from '@vegaprotocol/wallet-react';
 import { WelcomeDialog } from '../components/welcome-dialog';
+import { VegaWalletConnectDialog } from '../components/vega-wallet-connect-dialog';
 
 const DialogsContainer = () => {
   const { isOpen, id, trigger, setOpen } = useAssetDetailsDialogStore();
-  const vegaWalletDialogOpen = useDialogStore((store) => store.isOpen);
-  const updateVegaWalletDialog = useDialogStore((store) => store.set);
 
   return (
     <>
-      <ConnectDialog
-        open={vegaWalletDialogOpen}
-        onChange={updateVegaWalletDialog}
-      />
+      <VegaWalletConnectDialog />
       <AssetDetailsDialog
         assetId={id}
         trigger={trigger || null}
