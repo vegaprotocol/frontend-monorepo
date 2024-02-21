@@ -4,6 +4,12 @@ export type Chain = {
   name: string;
 };
 
+export const mainnet = {
+  id: 'vega-mainnet-0011',
+  testnet: true,
+  name: 'Fairground',
+};
+
 export const fairground = {
   id: 'vega-fairground-202305051805',
   testnet: true,

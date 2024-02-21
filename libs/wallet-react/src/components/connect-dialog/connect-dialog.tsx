@@ -7,6 +7,9 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import {
   ConnectorErrors,
+  mainnet,
+  fairground,
+  stagnet,
   type ConnectorType,
   type Status,
 } from '@vegaprotocol/wallet';
@@ -14,6 +17,7 @@ import { useWallet } from '../../hooks/use-wallet';
 import { useConnect } from '../../hooks/use-connect';
 import classNames from 'classnames';
 import { useT } from '../../hooks/use-t';
+import { useWalletChainId } from '../../hooks/use-wallet-chain-id';
 
 export const DIALOG_CLOSE_DELAY = 1000;
 
@@ -140,16 +144,20 @@ export const ConnectionStatus = ({ status }: { status: Status }) => {
 };
 
 export const ConnectorIcon = ({ id }: { id: ConnectorType }) => {
+  const { chainId } = useWalletChainId();
+
   const defaultWrapperClasses =
     'flex items-center justify-center w-8 h-8 rounded';
   switch (id) {
     case 'injected': {
       return (
         <span
-          className={classNames(
-            defaultWrapperClasses,
-            'bg-vega-cdark-600 dark:bg-vega-clight-600 text-vega-clight-800 dark:text-vega-cdark-800'
-          )}
+          className={classNames(defaultWrapperClasses, {
+            'bg-black dark:bg-white text-vega-clight-800 dark:text-vega-cdark-800':
+              chainId === mainnet.id,
+            'bg-vega-yellow text-vega-cdark-800': chainId === fairground.id,
+            'bg-vega-blue text-vega-cdark-800': chainId === stagnet.id,
+          })}
         >
           <VLogo className="w-4 h-4" />
         </span>
@@ -160,7 +168,7 @@ export const ConnectorIcon = ({ id }: { id: ConnectorType }) => {
         <span
           className={classNames(
             defaultWrapperClasses,
-            'bg-vega-cdark-600 dark:bg-vega-clight-600 text-vega-clight-800 dark:text-vega-cdark-800 text-xs'
+            'bg-black dark:bg-white text-vega-clight-800 dark:text-vega-cdark-800 text-xs'
           )}
         >
           <span className="relative -top-0.5">{'>_'}</span>

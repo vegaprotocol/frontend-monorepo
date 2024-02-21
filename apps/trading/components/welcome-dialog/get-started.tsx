@@ -149,7 +149,11 @@ export const GetStarted = ({ lead }: Props) => {
             <Trans
               defaults="Ready to trade with real funds? <0>Switch to Mainnet</0>"
               components={[
-                <ExternalLink href={VEGA_NETWORKS.MAINNET} key="link">
+                <ExternalLink
+                  href={VEGA_NETWORKS.MAINNET}
+                  key="link"
+                  className="underline"
+                >
                   Switch to Mainnet
                 </ExternalLink>,
               ]}
