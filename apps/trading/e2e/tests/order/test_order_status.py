@@ -1,4 +1,4 @@
-""" import pytest
+import pytest
 from playwright.sync_api import Page, expect
 from vega_sim.service import PeggedOrder
 from vega_sim.null_service import VegaServiceNull
@@ -49,7 +49,7 @@ def markets(vega: VegaServiceNull):
         price=130,
     )
 
-    vega.forward("10s")
+    vega.forward("2s")
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
 
@@ -63,7 +63,7 @@ def markets(vega: VegaServiceNull):
         price=88,
     )
 
-    vega.forward("10s")
+    vega.forward("2s")
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
 
@@ -77,7 +77,7 @@ def markets(vega: VegaServiceNull):
         price=88,
     )
 
-    vega.forward("10s")
+    vega.forward("2s")
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
 
@@ -92,7 +92,7 @@ def markets(vega: VegaServiceNull):
         wait=False,
     )
 
-    vega.forward("10s")
+    vega.forward("2s")
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
 
@@ -105,7 +105,7 @@ def markets(vega: VegaServiceNull):
         volume=100,
         price=104,
     )
-    vega.forward("10s")
+    vega.forward("2s")
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
 
@@ -120,7 +120,7 @@ def markets(vega: VegaServiceNull):
         expires_at=vega.get_blockchain_time() + 5 * 1e9,
     )
 
-    vega.forward("10s")
+    vega.forward("2s")
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
 
@@ -134,7 +134,7 @@ def markets(vega: VegaServiceNull):
         volume=20,
     )
 
-    vega.forward("10s")
+    vega.forward("2s")
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
 
@@ -148,7 +148,7 @@ def markets(vega: VegaServiceNull):
         volume=40,
     )
 
-    vega.forward("10s")
+    vega.forward("2s")
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
 
@@ -162,7 +162,7 @@ def markets(vega: VegaServiceNull):
         volume=60,
     )
 
-    vega.forward("10s")
+    vega.forward("2s")
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
 
@@ -177,7 +177,7 @@ def markets(vega: VegaServiceNull):
         volume=60,
     )
 
-    vega.forward("10s")
+    vega.forward("2s")
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
 
@@ -190,8 +190,7 @@ def markets(vega: VegaServiceNull):
         volume=10,
         price=150,
     )
-
-    vega.forward("10s")
+    
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
 
@@ -205,7 +204,6 @@ def markets(vega: VegaServiceNull):
         price=160,
     )
 
-    vega.forward("10s")
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
 
@@ -219,7 +217,6 @@ def markets(vega: VegaServiceNull):
         price=60,
     )
 
-    vega.forward("10s")
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
 
@@ -395,7 +392,6 @@ def test_order_amend_order(vega: VegaServiceNull, page: Page):
     page.get_by_role("button", name="Update").click()
 
     wait_for_toast_confirmation(page, timeout=5000)
-    vega.forward("10s")
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
     expect(page.locator('[row-index="1"]').first).to_contain_text(
@@ -414,7 +410,6 @@ def test_order_cancel_single_order(vega: VegaServiceNull, page: Page):
     page.get_by_test_id("cancel").first.click()
 
     wait_for_toast_confirmation(page, timeout=5000)
-    vega.forward("10s")
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
     expect(page.locator('[row-index="0"]').first).to_contain_text(
@@ -434,7 +429,6 @@ def test_order_cancel_all_orders(vega: VegaServiceNull, page: Page):
     page.get_by_test_id("cancelAll").click()
 
     wait_for_toast_confirmation(page, timeout=5000)
-    vega.forward("10s")
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
 
@@ -443,4 +437,3 @@ def test_order_cancel_all_orders(vega: VegaServiceNull, page: Page):
     expect(
         page.locator('.ag-cell[col-id="status"]', has_text="Cancelled")
     ).to_have_count(7)
- """
