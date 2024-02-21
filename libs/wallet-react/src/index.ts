@@ -23,3 +23,4 @@ export { Links } from './constants';
 
 // Components
 export * from './components/connect-dialog';
+export { RiskAck } from './components/risk-ack';

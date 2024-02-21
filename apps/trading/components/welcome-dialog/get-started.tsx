@@ -44,7 +44,7 @@ const GetStartedButton = ({ step }: { step: OnboardingStep }) => {
       <TradingButton
         {...buttonProps}
         onClick={() => {
-          if (risk !== 'accepted' && VEGA_ENV === Networks.MAINNET) {
+          if (VEGA_ENV === Networks.MAINNET && risk !== 'accepted') {
             setDialog('risk');
           } else {
             setDialog('connect');

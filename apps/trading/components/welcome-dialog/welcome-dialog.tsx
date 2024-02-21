@@ -7,6 +7,7 @@ import {
   useConnect,
   useWallet,
   Links,
+  RiskAck,
 } from '@vegaprotocol/wallet-react';
 import { ConnectorErrors, type ConnectorType } from '@vegaprotocol/wallet';
 import { ensureSuffix } from '@vegaprotocol/utils';
@@ -17,7 +18,7 @@ import {
   useOnboardingStore,
   type OnboardingDialog,
 } from './use-get-onboarding-step';
-import { RiskAck } from '../risk-ack';
+import { RiskAckContent } from '../risk-ack-content';
 
 /**
  * A list of paths on which the welcome dialog should be omitted.
@@ -94,7 +95,9 @@ const Content = ({
           reject();
           setDialog('intro');
         }}
-      />
+      >
+        <RiskAckContent />
+      </RiskAck>
     );
   }
 };
