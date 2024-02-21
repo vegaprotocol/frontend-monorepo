@@ -23,7 +23,7 @@ const immutableKeys = [
   'decimalPlaces',
   'positionDecimalPlaces',
   'instrument.name',
-  'instrument.future.settlementAsset',
+  // 'instrument.future.settlementAsset',
 ];
 
 export const applyImmutableKeysFromEarlierVersion = (
