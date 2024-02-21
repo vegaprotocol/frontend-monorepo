@@ -61,7 +61,7 @@ const renderComponent = (proposal: IProposal) => {
     <MemoryRouter>
       <MockedProvider>
         <VegaWalletProvider config={vegaWalletConfig}>
-          <Proposal restData={{}} proposal={proposal} />
+          <Proposal restData={null} proposal={proposal} />
         </VegaWalletProvider>
       </MockedProvider>
     </MemoryRouter>

@@ -23,7 +23,7 @@ const immutableKeys = [
   'decimalPlaces',
   'positionDecimalPlaces',
   'instrument.name',
-  // 'instrument.future.settlementAsset',
+  'instrument.future.settlementAsset',
 ];
 
 export const applyImmutableKeysFromEarlierVersion = (
@@ -44,7 +44,8 @@ export const applyImmutableKeysFromEarlierVersion = (
 
   // Overwrite the immutable keys in the updatedVersionCopy with the earlier values
   immutableKeys.forEach((key) => {
-    set(updatedVersionCopy, key, get(earlierVersion, key));
+    const earlier = get(earlierVersion, key);
+    if (earlier) set(updatedVersionCopy, key, earlier);
   });
 
   return updatedVersionCopy;
