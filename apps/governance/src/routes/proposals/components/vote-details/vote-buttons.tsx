@@ -135,10 +135,16 @@ export const VoteButtonsContainer = (props: VoteButtonsContainerProps) => {
   );
 };
 
-export interface VoteButtonsProps extends VoteButtonsContainerProps {
+export interface VoteButtonsProps {
+  voteState: VoteState | null;
+  voteDatetime: Date | null;
+  proposalState: ProposalState;
+  proposalId: string | null;
   currentStakeAvailable: BigNumber;
   minVoterBalance: string | null;
   spamProtectionMinTokens: string | null;
+  submit: (voteValue: VoteValue, proposalId: string | null) => Promise<void>;
+  transaction: VegaTxState;
 }
 
 export const VoteButtons = ({

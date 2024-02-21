@@ -155,7 +155,7 @@ describe('Proposal header', () => {
       screen.queryByTestId('proposal-description')
     ).not.toBeInTheDocument();
     expect(screen.getByTestId('proposal-details')).toHaveTextContent(
-      'Update to market: MarketId'
+      'Update to market ID: MarketId'
     );
   });
 
