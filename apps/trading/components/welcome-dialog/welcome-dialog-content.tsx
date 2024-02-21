@@ -10,9 +10,7 @@ import { useT } from '../../lib/use-t';
 export const WelcomeDialogContent = () => {
   const t = useT();
   const { VEGA_ENV } = useEnvironment();
-  const setOnboardingDialog = useOnboardingStore(
-    (store) => store.setDialogOpen
-  );
+  const setDialog = useOnboardingStore((store) => store.setDialog);
 
   const { data } = useTopTradedMarkets();
   const marketId = data && data[0]?.id;
@@ -50,7 +48,7 @@ export const WelcomeDialogContent = () => {
         </ul>
         <TradingAnchorButton
           href={link}
-          onClick={() => setOnboardingDialog(false)}
+          onClick={() => setDialog('inactive')}
           className="block w-full"
           data-testid="browse-markets-button"
         >

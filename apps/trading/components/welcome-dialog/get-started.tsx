@@ -27,11 +27,9 @@ interface Props {
 const GetStartedButton = ({ step }: { step: OnboardingStep }) => {
   const t = useT();
   const dismiss = useOnboardingStore((store) => store.dismiss);
-  const setDialogOpen = useOnboardingStore((store) => store.setDialogOpen);
+  const setDialog = useOnboardingStore((store) => store.setDialog);
+  const risk = useOnboardingStore((store) => store.risk);
   const marketId = useGlobalStore((store) => store.marketId);
-  const setWalletDialogOpen = useOnboardingStore(
-    (store) => store.setWalletDialogOpen
-  );
   const setViews = useSidebar((store) => store.setViews);
 
   const buttonProps = {
@@ -42,7 +40,16 @@ const GetStartedButton = ({ step }: { step: OnboardingStep }) => {
 
   if (step <= OnboardingStep.ONBOARDING_CONNECT_STEP) {
     return (
-      <TradingButton {...buttonProps} onClick={() => setWalletDialogOpen(true)}>
+      <TradingButton
+        {...buttonProps}
+        onClick={() => {
+          if (risk !== 'accepted') {
+            setDialog('risk');
+          } else {
+            setDialog('connect');
+          }
+        }}
+      >
         {t('Connect')}
       </TradingButton>
     );
@@ -51,7 +58,7 @@ const GetStartedButton = ({ step }: { step: OnboardingStep }) => {
       <TradingAnchorButton
         {...buttonProps}
         href={Links.DEPOSIT()}
-        onClick={() => setDialogOpen(false)}
+        onClick={() => setDialog('inactive')}
       >
         {t('Deposit')}
       </TradingAnchorButton>
@@ -73,7 +80,7 @@ const GetStartedButton = ({ step }: { step: OnboardingStep }) => {
   }
 
   return (
-    <TradingButton {...buttonProps} onClick={() => setWalletDialogOpen(true)}>
+    <TradingButton {...buttonProps} onClick={() => setDialog('connect')}>
       {t('Get started')}
     </TradingButton>
   );

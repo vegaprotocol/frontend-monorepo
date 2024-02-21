@@ -10,27 +10,37 @@ import { positionsDataProvider } from '@vegaprotocol/positions';
 
 const ONBOARDING_STORAGE_KEY = 'vega_onboarding';
 
+type RiskStatus = 'pending' | 'accepted' | 'rejected';
+type OnboardingDialog = 'inactive' | 'intro' | 'risk' | 'connect';
+
 export const useOnboardingStore = create<{
-  dialogOpen: boolean;
-  walletDialogOpen: boolean;
+  dialog: OnboardingDialog;
   dismissed: boolean;
   dismiss: () => void;
-  setDialogOpen: (isOpen: boolean) => void;
-  setWalletDialogOpen: (isOpen: boolean) => void;
+  setDialog: (step: OnboardingDialog) => void;
+  risk: RiskStatus;
+  acceptRisk: () => void;
+  rejectRisk: () => void;
 }>()(
   persist(
     (set) => ({
-      dialogOpen: false,
-      walletDialogOpen: false,
+      dialog: 'inactive',
       dismissed: false,
       dismiss: () => set({ dismissed: true }),
-      setDialogOpen: (isOpen) => set({ dialogOpen: isOpen }),
-      setWalletDialogOpen: (isOpen) => set({ walletDialogOpen: isOpen }),
+      setDialog: (step) => set({ dialog: step }),
+      risk: 'pending',
+      acceptRisk: () => {
+        set({ risk: 'accepted', dialog: 'connect' });
+      },
+      rejectRisk: () => {
+        set({ risk: 'rejected', dialog: 'intro' });
+      },
     }),
     {
       name: ONBOARDING_STORAGE_KEY,
       partialize: (state) => ({
         dismissed: state.dismissed,
+        risk: state.risk,
       }),
     }
   )
