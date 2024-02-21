@@ -111,7 +111,7 @@ export const addValidatorsSelfDelegate = () => {
                   String(node0ApiToken),
                   String(node0Id)
                 ),
-                { timeout: 60000 }
+                { timeout: 90000 }
               );
               // Self delegating Node 1 wallet
               cy.get('@node1PubKey').then((node1PubKey) => {
@@ -124,7 +124,7 @@ export const addValidatorsSelfDelegate = () => {
                         String(node1ApiToken),
                         String(node1Id)
                       ),
-                      { timeout: 60000 }
+                      { timeout: 90000 }
                     );
                   });
                 });
