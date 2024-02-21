@@ -7,6 +7,7 @@ import {
   ConnectionStatus,
   useConnect,
   useWallet,
+  Links,
 } from '@vegaprotocol/wallet-react';
 import { ConnectorErrors, type ConnectorType } from '@vegaprotocol/wallet';
 import { ensureSuffix } from '@vegaprotocol/utils';
@@ -121,6 +122,14 @@ const ConnectionOptions = ({ onConnect }: { onConnect: () => void }) => {
             {error.message}
           </p>
         )}
+        <a
+          href={Links.walletOverview}
+          target="_blank"
+          rel="noreferrer"
+          className="text-sm underline underline-offset-4"
+        >
+          Dont have a wallet?
+        </a>
       </div>
     );
   }

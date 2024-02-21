@@ -18,5 +18,8 @@ export { useDisconnect } from './hooks/use-disconnect';
 export { useSendTransaction } from './hooks/use-send-transaction';
 export { useWallet } from './hooks/use-wallet';
 
+// Constants
+export { Links } from './constants';
+
 // Components
 export * from './components/connect-dialog';
