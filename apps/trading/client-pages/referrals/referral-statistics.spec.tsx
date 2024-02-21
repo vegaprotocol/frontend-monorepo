@@ -23,10 +23,19 @@ import {
 import { MemoryRouter } from 'react-router-dom';
 import {
   mockConfig,
-  mockKeys,
   MockedWalletProvider,
 } from '@vegaprotocol/wallet-react/testing';
 
+const mockKeys = [
+  {
+    name: 'Key 1',
+    publicKey: '1'.repeat(64),
+  },
+  {
+    name: 'Key 2',
+    publicKey: '2'.repeat(64),
+  },
+];
 const MOCK_PUBKEY = mockKeys[0].publicKey;
 
 const MOCK_STAKE_AVAILABLE: StakeAvailableQuery = {

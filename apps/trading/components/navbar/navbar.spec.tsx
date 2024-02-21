@@ -6,7 +6,6 @@ import { useGlobalStore } from '../../stores';
 import { ENV, useFeatureFlags } from '@vegaprotocol/environment';
 import {
   mockConfig,
-  mockKeys,
   MockedWalletProvider,
 } from '@vegaprotocol/wallet-react/testing';
 
@@ -113,6 +112,16 @@ describe('Navbar', () => {
   });
 
   it('can open wallet menu on small screens and change pubkey', async () => {
+    const mockKeys = [
+      {
+        name: 'Key 1',
+        publicKey: '1'.repeat(64),
+      },
+      {
+        name: 'Key 2',
+        publicKey: '2'.repeat(64),
+      },
+    ];
     mockConfig.store.setState({
       status: 'connected',
       keys: mockKeys,
