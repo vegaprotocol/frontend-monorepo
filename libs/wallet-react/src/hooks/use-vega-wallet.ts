@@ -16,12 +16,12 @@ export const useVegaWallet = () => {
     disconnect: config.disconnect,
     refreshKeys: config.refreshKeys,
     isAlive: store.status === 'connected',
-    sendTx: (pubKey: string, transaction: Transaction) =>
-      // @ts-ignore TODO: figure out how to type this better
-      config.sendTransaction({
+    sendTx: (pubKey: string, transaction: Transaction) => {
+      return config.sendTransaction({
         publicKey: pubKey,
         sendingMode: 'TYPE_SYNC',
-        ...transaction,
-      }),
+        transaction,
+      });
+    },
   };
 };

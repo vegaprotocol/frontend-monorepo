@@ -158,7 +158,7 @@ export class JsonRpcConnector implements Connector {
       headers.set('Authorization', this.token);
     }
 
-    const response = await fetch(this.url, {
+    const response = await fetch(`${this.url}/api/v2/requests`, {
       method: 'POST',
       headers,
       body: JSON.stringify({
