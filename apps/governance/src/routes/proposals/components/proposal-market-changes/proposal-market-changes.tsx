@@ -1,14 +1,23 @@
 import cloneDeep from 'lodash/cloneDeep';
 import set from 'lodash/set';
 import get from 'lodash/get';
-import { JsonDiff } from '../../../../components/json-diff';
+import compact from 'lodash/compact';
+import orderBy from 'lodash/orderBy';
+import { JsonDiff, type JsonValue } from '../../../../components/json-diff';
 import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 import { CollapsibleToggle } from '../../../../components/collapsible-toggle';
 import { SubHeading } from '../../../../components/heading';
-import type { JsonValue } from '../../../../components/json-diff';
-import { useFetch } from '@vegaprotocol/react-helpers';
-import { ENV } from '../../../../config';
+import {
+  useFetchProposal,
+  useFetchProposals,
+  flatten,
+  isBatchProposalNode,
+  isSingleProposalNode,
+  type ProposalNode,
+  type SingleProposalData,
+  type SubProposalData,
+} from '../proposal/proposal-utils';
 
 const immutableKeys = [
   'decimalPlaces',
@@ -18,8 +27,8 @@ const immutableKeys = [
 ];
 
 export const applyImmutableKeysFromEarlierVersion = (
-  earlierVersion: JsonValue,
-  updatedVersion: JsonValue
+  earlierVersion: unknown,
+  updatedVersion: unknown
 ) => {
   if (
     typeof earlierVersion !== 'object' ||
@@ -35,7 +44,8 @@ export const applyImmutableKeysFromEarlierVersion = (
 
   // Overwrite the immutable keys in the updatedVersionCopy with the earlier values
   immutableKeys.forEach((key) => {
-    set(updatedVersionCopy, key, get(earlierVersion, key));
+    const earlier = get(earlierVersion, key);
+    if (earlier) set(updatedVersionCopy, key, earlier);
   });
 
   return updatedVersionCopy;
@@ -43,49 +53,84 @@ export const applyImmutableKeysFromEarlierVersion = (
 
 interface ProposalMarketChangesProps {
   marketId: string;
-  updatedProposal: JsonValue;
+  /** This are the changes from proposal */
+  updateProposalNode: ProposalNode | null;
+  indicator?: number;
 }
 
 export const ProposalMarketChanges = ({
   marketId,
-  updatedProposal,
+  updateProposalNode,
+  indicator,
 }: ProposalMarketChangesProps) => {
   const { t } = useTranslation();
   const [showChanges, setShowChanges] = useState(false);
 
-  const {
-    state: { data },
-  } = useFetch(`${ENV.rest}governance?proposalId=${marketId}`, undefined, true);
+  const { data: originalProposalData } = useFetchProposal({
+    proposalId: marketId,
+  });
 
-  const {
-    state: { data: enactedProposalData },
-  } = useFetch(
-    `${ENV.rest}governances?proposalState=STATE_ENACTED&proposalType=TYPE_UPDATE_MARKET`,
-    undefined,
-    true
+  const { data: enactedProposalsData } = useFetchProposals({
+    proposalState: 'STATE_ENACTED',
+    proposalType: 'TYPE_UPDATE_MARKET',
+  });
+
+  let updateProposal: SingleProposalData | SubProposalData | undefined;
+  if (isBatchProposalNode(updateProposalNode)) {
+    updateProposal = updateProposalNode.proposals.find(
+      (p, i) =>
+        p.terms.updateMarket?.marketId === marketId &&
+        (indicator != null ? i === indicator - 1 : true)
+    );
+  }
+  if (isSingleProposalNode(updateProposalNode)) {
+    updateProposal = updateProposalNode.proposal;
+  }
+
+  // this should get the proposal before the current one
+  const enactedUpdateMarketProposals = orderBy(
+    compact(
+      flatten(enactedProposalsData).filter((enacted) => {
+        const related = enacted.terms.updateMarket?.marketId === marketId;
+        const notCurrent =
+          enacted.id !== updateProposal?.id ||
+          ('batchId' in enacted && enacted.batchId !== updateProposal.id);
+        const beforeCurrent =
+          Number(enacted.terms.enactmentTimestamp) <
+          Number(updateProposal?.terms.enactmentTimestamp);
+        return related && notCurrent && beforeCurrent;
+      })
+    ),
+    [(proposal) => Number(proposal.terms.enactmentTimestamp)],
+    'desc'
   );
 
-  // @ts-ignore no types here :-/
-  const enacted = enactedProposalData?.connection?.edges
-    .filter(
-      // @ts-ignore no type here
-      ({ node }) => node?.proposal?.terms?.updateMarket?.marketId === marketId
-    )
-    // @ts-ignore no type here
-    .sort((a, b) => {
-      return (
-        new Date(a?.node?.terms?.enactmentTimestamp).getTime() -
-        new Date(b?.node?.terms?.enactmentTimestamp).getTime()
-      );
-    });
+  const latestEnactedProposal =
+    enactedUpdateMarketProposals.length > 0
+      ? enactedUpdateMarketProposals[0]
+      : undefined;
 
-  const latestEnactedProposal = enacted?.length
-    ? enacted[enacted.length - 1]
-    : undefined;
+  let originalProposal;
+  if (isBatchProposalNode(originalProposalData)) {
+    originalProposal = originalProposalData.proposals.find(
+      (proposal) => proposal.id === marketId && proposal.terms.newMarket != null
+    );
+  }
+  if (isSingleProposalNode(originalProposalData)) {
+    originalProposal = originalProposalData.proposal;
+  }
 
-  const originalProposal =
-    // @ts-ignore no types with useFetch TODO: check this is good
-    data?.data?.proposal?.terms?.newMarket?.changes;
+  // LEFT SIDE: update market proposal enacted just before this one
+  // or original new market proposal
+  const left =
+    latestEnactedProposal?.terms.updateMarket?.changes ||
+    originalProposal?.terms.newMarket?.changes;
+
+  // RIGHT SIDE: this update market proposal
+  const right = applyImmutableKeysFromEarlierVersion(
+    left,
+    updateProposal?.terms.updateMarket?.changes
+  );
 
   return (
     <section data-testid="proposal-market-changes">
@@ -99,20 +144,7 @@ export const ProposalMarketChanges = ({
 
       {showChanges && (
         <div className="mb-6">
-          <JsonDiff
-            left={latestEnactedProposal || originalProposal}
-            right={
-              latestEnactedProposal
-                ? applyImmutableKeysFromEarlierVersion(
-                    latestEnactedProposal,
-                    updatedProposal
-                  )
-                : applyImmutableKeysFromEarlierVersion(
-                    originalProposal,
-                    updatedProposal
-                  )
-            }
-          />
+          <JsonDiff left={left as JsonValue} right={right as JsonValue} />
         </div>
       )}
     </section>

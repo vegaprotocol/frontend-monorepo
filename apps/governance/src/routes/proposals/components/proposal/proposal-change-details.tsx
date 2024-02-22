@@ -13,6 +13,7 @@ import { ProposalUpdateBenefitTiers } from '../proposal-update-benefit-tiers';
 import { ProposalUpdateMarketState } from '../proposal-update-market-state';
 import { ProposalVolumeDiscountProgramDetails } from '../proposal-volume-discount-program-details';
 import { getIndicatorStyle } from './colours';
+import { type ProposalNode } from './proposal-utils';
 
 export const ProposalChangeDetails = ({
   proposal,
@@ -22,8 +23,7 @@ export const ProposalChangeDetails = ({
 }: {
   proposal: Proposal | BatchProposal;
   terms: ProposalTermsFieldsFragment;
-  // eslint-disable-next-line
-  restData: any;
+  restData: ProposalNode | null;
   indicator?: number;
 }) => {
   let details = null;
@@ -63,30 +63,13 @@ export const ProposalChangeDetails = ({
     }
     case 'UpdateMarket': {
       if (proposal.id) {
-        const marketId = terms.change.marketId;
-        const proposalData = restData?.data?.proposal;
-        let updatedProposal = null;
-        // single proposal
-        if ('terms' in proposalData) {
-          updatedProposal = proposalData?.terms?.updateMarket?.changes;
-        }
-        // batch proposal - need to fish for the actual changes
-        if (
-          'batchTerms' in proposalData &&
-          Array.isArray(proposalData.batchTerms?.changes)
-        ) {
-          updatedProposal = proposalData?.batchTerms?.changes.find(
-            (ch: { updateMarket?: { marketId: string } }) =>
-              ch?.updateMarket?.marketId === marketId
-          )?.updateMarket?.changes;
-        }
-
         details = (
           <div className="flex flex-col gap-4">
             <ProposalMarketData proposalId={proposal.id} />
             <ProposalMarketChanges
+              indicator={indicator}
               marketId={terms.change.marketId}
-              updatedProposal={updatedProposal}
+              updateProposalNode={restData}
             />
           </div>
         );

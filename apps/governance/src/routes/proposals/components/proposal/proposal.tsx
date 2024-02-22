@@ -8,15 +8,17 @@ import { ProposalJson } from '../proposal-json';
 import { UserVote } from '../vote-details';
 import Routes from '../../../routes';
 import { ProposalState } from '@vegaprotocol/types';
+import { type ProposalNode } from './proposal-utils';
 import { useVoteSubmit } from '@vegaprotocol/proposals';
 import { useUserVote } from '../vote-details/use-user-vote';
 import { type Proposal as IProposal, type BatchProposal } from '../../types';
 import { ProposalChangeDetails } from './proposal-change-details';
+import { type JsonValue } from 'type-fest';
 
 export interface ProposalProps {
   proposal: IProposal | BatchProposal;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  restData: any;
+  restData: ProposalNode | null;
 }
 
 export const Proposal = ({ proposal, restData }: ProposalProps) => {
@@ -95,7 +97,7 @@ export const Proposal = ({ proposal, restData }: ProposalProps) => {
       </div>
 
       <div className="mb-6">
-        <ProposalJson proposal={restData?.data?.proposal} />
+        <ProposalJson proposal={restData?.proposal as unknown as JsonValue} />
       </div>
     </section>
   );

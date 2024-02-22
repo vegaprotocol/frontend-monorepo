@@ -1,17 +1,16 @@
 import { useParams } from 'react-router-dom';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
-import { useFetch } from '@vegaprotocol/react-helpers';
-import { ENV } from '../../../config';
 import { Proposal } from '../components/proposal';
 import { ProposalNotFound } from '../components/proposal-not-found';
 import { useProposalQuery } from '../__generated__/Proposals';
+import { useFetchProposal } from '../components/proposal/proposal-utils';
 
 export const ProposalContainer = () => {
   const params = useParams<{ proposalId: string }>();
 
-  const {
-    state: { data: restData, loading: restLoading, error: restError },
-  } = useFetch(`${ENV.rest}governance?proposalId=${params.proposalId}`);
+  const { data: restData, loading: restLoading } = useFetchProposal({
+    proposalId: params.proposalId,
+  });
 
   const { data, loading, error } = useProposalQuery({
     fetchPolicy: 'network-only',
@@ -26,7 +25,7 @@ export const ProposalContainer = () => {
   return (
     <AsyncRenderer
       loading={Boolean(loading || restLoading)}
-      error={error || restError}
+      error={error}
       data={{
         ...data,
         ...(restData ? { restData } : {}),
