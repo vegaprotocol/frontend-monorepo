@@ -45,7 +45,7 @@ Pull Docker images for your environment:
 ### 4. Build a Docker Image of Your Locally Built Trading App
 
 ```bash
-yarn nx build trading ./docker/prepare-dist.sh
+./docker/prepare-dist.sh
 docker build -f docker/node-outside-docker.Dockerfile --build-arg APP=trading --build-arg ENV_NAME=stagnet1 -t vegaprotocol/trading:latest .
 ```
 
@@ -65,6 +65,7 @@ Ensure the Docker daemon is running. Update the `.env` file with the correct tra
   ```
 
   Once the console is served, update the `.env` file to set `local_server=true`. You can then run your tests using the same commands as above.
+  NOTE: Parallel running of tests will not work against locally served console.
 
 ## Test Strategy and Container Cleanup
 
