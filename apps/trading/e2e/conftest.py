@@ -300,7 +300,7 @@ def opening_auction_market(vega):
     return setup_opening_auction_market(vega)
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="function")
 def shared_continuous_market(shared_vega:VegaServiceNull):
     return setup_continuous_market(shared_vega)
 
