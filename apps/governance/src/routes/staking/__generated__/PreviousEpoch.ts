@@ -3,19 +3,18 @@ import * as Types from '@vegaprotocol/types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
-export type ValidatorNodeFragment = { __typename?: 'Node', id: string, name: string, stakedTotal: string, rewardScore?: { __typename?: 'RewardScore', rawValidatorScore: string, performanceScore: string, multisigScore: string, validatorScore: string, normalisedScore: string, validatorStatus: Types.ValidatorStatus } | null, rankingScore: { __typename?: 'RankingScore', status: Types.ValidatorStatus, previousStatus: Types.ValidatorStatus, rankingScore: string, stakeScore: string, performanceScore: string, votingPower: string } };
+export type ValidatorNodeFragment = { __typename?: 'Node', id: string, stakedTotal: string, rewardScore?: { __typename?: 'RewardScore', rawValidatorScore: string, performanceScore: string, multisigScore: string, validatorScore: string, normalisedScore: string, validatorStatus: Types.ValidatorStatus } | null, rankingScore: { __typename?: 'RankingScore', status: Types.ValidatorStatus, previousStatus: Types.ValidatorStatus, rankingScore: string, stakeScore: string, performanceScore: string, votingPower: string } };
 
 export type PreviousEpochQueryVariables = Types.Exact<{
   epochId?: Types.InputMaybe<Types.Scalars['ID']>;
 }>;
 
 
-export type PreviousEpochQuery = { __typename?: 'Query', epoch: { __typename?: 'Epoch', id: string, validatorsConnection?: { __typename?: 'NodesConnection', edges?: Array<{ __typename?: 'NodeEdge', node: { __typename?: 'Node', id: string, name: string, stakedTotal: string, rewardScore?: { __typename?: 'RewardScore', rawValidatorScore: string, performanceScore: string, multisigScore: string, validatorScore: string, normalisedScore: string, validatorStatus: Types.ValidatorStatus } | null, rankingScore: { __typename?: 'RankingScore', status: Types.ValidatorStatus, previousStatus: Types.ValidatorStatus, rankingScore: string, stakeScore: string, performanceScore: string, votingPower: string } } } | null> | null } | null } };
+export type PreviousEpochQuery = { __typename?: 'Query', epoch: { __typename?: 'Epoch', id: string, validatorsConnection?: { __typename?: 'NodesConnection', edges?: Array<{ __typename?: 'NodeEdge', node: { __typename?: 'Node', id: string, stakedTotal: string, rewardScore?: { __typename?: 'RewardScore', rawValidatorScore: string, performanceScore: string, multisigScore: string, validatorScore: string, normalisedScore: string, validatorStatus: Types.ValidatorStatus } | null, rankingScore: { __typename?: 'RankingScore', status: Types.ValidatorStatus, previousStatus: Types.ValidatorStatus, rankingScore: string, stakeScore: string, performanceScore: string, votingPower: string } } } | null> | null } | null } };
 
 export const ValidatorNodeFragmentDoc = gql`
     fragment ValidatorNode on Node {
   id
-  name
   stakedTotal
   rewardScore {
     rawValidatorScore

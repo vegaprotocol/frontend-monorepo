@@ -1,6 +1,5 @@
 fragment ValidatorNode on Node {
   id
-  name
   stakedTotal
   rewardScore {
     rawValidatorScore
