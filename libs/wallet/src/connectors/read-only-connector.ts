@@ -2,6 +2,7 @@ import { type StoreApi } from 'zustand';
 import { type Store, type Connector } from '../types';
 import { isValidVegaPublicKey } from '@vegaprotocol/utils';
 import { ConnectorError, ConnectorErrors } from '.';
+import { type TransactionResponse } from '../transaction-types';
 
 export class ReadOnlyConnector implements Connector {
   readonly id = 'readOnly';
@@ -55,8 +56,8 @@ export class ReadOnlyConnector implements Connector {
     return { success: true };
   }
 
-  // @ts-ignore read only connector has no reference to a chain
-  async getChainId() {
+  // define return type here to appease typescript, even though it'll only throw
+  async getChainId(): Promise<{ chainId: string }> {
     throw ConnectorErrors.chainId;
   }
 
@@ -80,8 +81,8 @@ export class ReadOnlyConnector implements Connector {
     return { connected: false };
   }
 
-  // @ts-ignore deliberate fail
-  async sendTransaction() {
+  // define return type here to appease typescript, even though it'll only throw
+  async sendTransaction(): Promise<TransactionResponse> {
     // TODO: extend send tx with more information
     //
     // return {
