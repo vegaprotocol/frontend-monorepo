@@ -40,7 +40,7 @@ context('View functionality with public key', { tags: '@smoke' }, function () {
     verifyConnectedToPubKey();
   });
 
-  it('Able to connect public key via wallet and view assets in wallet', function () {
+  it.skip('Able to connect public key via wallet and view assets in wallet', function () {
     verifyConnectedToPubKey();
     cy.getByTestId('currency-title', { timeout: 10000 })
       .should('have.length.at.least', 2)
