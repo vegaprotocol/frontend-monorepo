@@ -12,13 +12,16 @@ import { Web3Provider } from './web3-provider';
 import { useT } from '../../lib/use-t';
 import { DataLoader } from './data-loader';
 import { WalletProvider } from '@vegaprotocol/wallet-react';
-import { config } from '../../lib/vega-wallet';
+import { useVegaWalletConfig } from '../../lib/hooks/use-vega-wallet-config';
 
 export const Bootstrapper = ({ children }: { children: ReactNode }) => {
   const t = useT();
   const { error, VEGA_URL } = useEnvironment();
+  const config = useVegaWalletConfig();
 
-  // const chainId = useChainId(VEGA_URL);
+  if (!config) {
+    return <AppLoader />;
+  }
 
   return (
     <NetworkLoader

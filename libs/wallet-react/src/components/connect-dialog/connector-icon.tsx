@@ -6,10 +6,10 @@ import {
   type ConnectorType,
 } from '@vegaprotocol/wallet';
 import { VegaIcon, VegaIconNames, VLogo } from '@vegaprotocol/ui-toolkit';
-import { useWalletChainId } from '../../hooks/use-wallet-chain-id';
+import { useChainId } from '../../hooks/use-chain-id';
 
 export const ConnectorIcon = ({ id }: { id: ConnectorType }) => {
-  const { chainId } = useWalletChainId();
+  const { chainId } = useChainId();
 
   const defaultWrapperClasses =
     'flex items-center justify-center w-8 h-8 rounded';
