@@ -1,27 +1,32 @@
+fragment ValidatorNode on Node {
+  id
+  name
+  stakedTotal
+  rewardScore {
+    rawValidatorScore
+    performanceScore
+    multisigScore
+    validatorScore
+    normalisedScore
+    validatorStatus
+  }
+  rankingScore {
+    status
+    previousStatus
+    rankingScore
+    stakeScore
+    performanceScore
+    votingPower
+  }
+}
+
 query PreviousEpoch($epochId: ID) {
   epoch(id: $epochId) {
     id
     validatorsConnection {
       edges {
         node {
-          id
-          stakedTotal
-          rewardScore {
-            rawValidatorScore
-            performanceScore
-            multisigScore
-            validatorScore
-            normalisedScore
-            validatorStatus
-          }
-          rankingScore {
-            status
-            previousStatus
-            rankingScore
-            stakeScore
-            performanceScore
-            votingPower
-          }
+          ...ValidatorNode
         }
       }
     }

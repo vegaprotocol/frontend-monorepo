@@ -391,6 +391,8 @@
   "multisigContractIncorrect": "was incorrectly configured as at the end of the last epoch so rewards were penalised. Validator and delegator rewards will continue to be penalised until this is resolved.",
   "multisigContractLink": "Ethereum Multisig Contract",
   "multisigPenalty": "Multisig penalty",
+  "multisigPenaltyThisNodeIndicator": "The multisig score for this node is equal to zero.",
+  "multisigPenaltyDescription": "The multisig score is used in the calculation of rewards. For each validator that gets a multisig score of zero, no staking rewards are paid to that consensus validators and their nominators until the epoch following the one in which the configuration issue is resolved.",
   "myPendingStake": "My pending stake",
   "myStake": "My stake",
   "n/a": "N/A",

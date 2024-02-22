@@ -1,5 +1,8 @@
 import { removePaginationWrapper } from '@vegaprotocol/utils';
-import type { PreviousEpochQuery } from '../routes/staking/__generated__/PreviousEpoch';
+import type {
+  PreviousEpochQuery,
+  ValidatorNodeFragment,
+} from '../routes/staking/__generated__/PreviousEpoch';
 
 export enum MultisigStatus {
   'correct' = 'correct',
@@ -17,12 +20,15 @@ export const getMultisigStatusInfo = (
     previousEpochData?.epoch.validatorsConnection?.edges
   );
 
-  const hasZero = allNodesInPreviousEpoch.some(
-    (node) => Number(node?.rewardScore?.multisigScore) === 0
-  );
-  const hasOne = allNodesInPreviousEpoch.some(
-    (node) => Number(node?.rewardScore?.multisigScore) === 1
-  );
+  const zeroScore = (node: ValidatorNodeFragment) =>
+    Number(node.rewardScore?.multisigScore) === 0;
+  const oneScore = (node: ValidatorNodeFragment) =>
+    Number(node.rewardScore?.multisigScore) === 1;
+
+  const hasZero = allNodesInPreviousEpoch.some(zeroScore);
+  const hasOne = allNodesInPreviousEpoch.some(oneScore);
+
+  const zeroScoreNodes = allNodesInPreviousEpoch.filter(zeroScore);
 
   if (hasZero && hasOne) {
     // If any individual node has 0 it means that node is missing from the multisig and needs to be added
@@ -38,5 +44,6 @@ export const getMultisigStatusInfo = (
   return {
     showMultisigStatusError: status !== MultisigStatus.correct,
     multisigStatus: status,
+    zeroScoreNodes,
   };
 };
