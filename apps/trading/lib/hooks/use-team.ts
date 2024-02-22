@@ -5,7 +5,7 @@ import {
   type TeamRefereeFieldsFragment,
   type TeamMemberStatsFieldsFragment,
 } from './__generated__/Team';
-import { DEFAULT_AGGREGATION_EPOCHS } from './use-teams';
+import { TEAMS_STATS_EPOCHS } from './constants';
 
 export type Team = TeamFieldsFragment;
 export type TeamStats = TeamStatsFieldsFragment;
@@ -22,7 +22,7 @@ export const useTeam = (teamId?: string, partyId?: string) => {
     variables: {
       teamId: teamId || '',
       partyId,
-      aggregationEpochs: DEFAULT_AGGREGATION_EPOCHS,
+      aggregationEpochs: TEAMS_STATS_EPOCHS,
     },
     skip: !teamId,
     fetchPolicy: 'cache-and-network',
