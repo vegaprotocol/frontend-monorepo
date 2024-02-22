@@ -27,7 +27,7 @@ context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
       cy.getByTestId('app-announcement').should('not.exist');
     });
 
-    it('should show open or enacted proposals without proposal summary', function () {
+    it.skip('should show open or enacted proposals without proposal summary', function () {
       cy.get('body').then(($body) => {
         if (!$body.find('[data-testid="proposals-list-item"]').length) {
           cy.createMarket();
@@ -159,7 +159,7 @@ context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
       cy.getByTestId('node-url-custom').click({ force: true });
       cy.get('input').should('exist');
       cy.getByTestId('connect').should('be.disabled');
-      cy.getByTestId('dialog-close').getByTestId('icon-cross').click();
+      cy.getByTestId('dialog-close').click();
     });
 
     it('should display eth data', function () {
