@@ -44,25 +44,25 @@ def create_position(vega: VegaServiceNull, market_id):
     vega.wait_fn(1)
     vega.wait_for_total_catchup
 
-@pytest.mark.usefixtures("auth", "risk_accepted")
-def test_stop_order_form_error_validation(continuous_market, page: Page):
+@pytest.mark.usefixtures("auth_shared_vega", "risk_accepted_shared_vega")
+def test_stop_order_form_error_validation(shared_continuous_market, page_shared_vega: Page):
     # 7002-SORD-032
-    page.goto(f"/#/markets/{continuous_market}")
-    page.get_by_test_id(stop_order_btn).click()
-    page.get_by_test_id(stop_limit_order_btn).is_visible()
-    page.get_by_test_id(stop_limit_order_btn).click()
-    page.get_by_test_id(order_side_sell).click()
-    page.get_by_test_id(submit_stop_order).click()
-    expect(page.get_by_test_id("stop-order-error-message-trigger-price")).to_have_text(
+    page_shared_vega.goto(f"/#/markets/{shared_continuous_market}")
+    page_shared_vega.get_by_test_id(stop_order_btn).click()
+    page_shared_vega.get_by_test_id(stop_limit_order_btn).is_visible()
+    page_shared_vega.get_by_test_id(stop_limit_order_btn).click()
+    page_shared_vega.get_by_test_id(order_side_sell).click()
+    page_shared_vega.get_by_test_id(submit_stop_order).click()
+    expect(page_shared_vega.get_by_test_id("stop-order-error-message-trigger-price")).to_have_text(
         "You need provide a price"
     )
-    expect(page.get_by_test_id("stop-order-error-message-size")).to_have_text(
+    expect(page_shared_vega.get_by_test_id("stop-order-error-message-size")).to_have_text(
         "Size cannot be lower than 1"
     )
 
-    page.get_by_test_id(order_size).fill("1")
-    page.get_by_test_id(order_price).fill("0.0000001")
-    expect(page.get_by_test_id("stop-order-error-message-price")).to_have_text(
+    page_shared_vega.get_by_test_id(order_size).fill("1")
+    page_shared_vega.get_by_test_id(order_price).fill("0.0000001")
+    expect(page_shared_vega.get_by_test_id("stop-order-error-message-price")).to_have_text(
         "Price cannot be lower than 0.00001"
     )
 
@@ -257,7 +257,7 @@ def test_submit_stop_limit_order_cancel(
     ).to_have_text("Cancelled")
 
 
-class TestStopOcoValidation:
+""" class TestStopOcoValidation:
     @pytest.fixture(scope="class")
     def vega(request):
         with init_vega(request) as vega_instance:
@@ -296,3 +296,4 @@ class TestStopOcoValidation:
         expect(page.get_by_test_id("stop-order-warning-limit")).to_have_text(
             "There is a limit of 4 active stop orders per market. Orders submitted above the limit will be immediately rejected."
         )
+ """

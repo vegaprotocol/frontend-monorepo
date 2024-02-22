@@ -1,16 +1,15 @@
 import pytest
 from playwright.sync_api import expect, Page
-from conftest import init_vega, cleanup_container
+from conftest import init_page, risk_accepted_setup
 
 
 @pytest.fixture(scope="module")
-def vega(request):
-    with init_vega(request) as vega_instance:
-        request.addfinalizer(lambda: cleanup_container(vega_instance))
-        yield vega_instance
+def page(shared_vega, browser, request):
+    with init_page(shared_vega, browser, request) as page:
+        risk_accepted_setup(page)
+        yield page
 
 
-@pytest.mark.usefixtures("risk_accepted")
 def test_share_usage_data(page: Page):
     page.goto("/")
     page.get_by_test_id("Settings").click()
@@ -41,7 +40,6 @@ ICON_TO_TOAST = {
 }
 
 
-@pytest.mark.usefixtures("risk_accepted")
 def test_toast_positions(page: Page):
     page.goto("/")
     page.get_by_test_id("Settings").click()
@@ -52,7 +50,7 @@ def test_toast_positions(page: Page):
         expect(page.locator(f"[{toast_selector}]")).to_be_visible()
 
 
-@pytest.mark.usefixtures("risk_accepted")
+
 def test_dark_mode(page: Page):
     page.goto("/")
     page.get_by_test_id("Settings").click()
