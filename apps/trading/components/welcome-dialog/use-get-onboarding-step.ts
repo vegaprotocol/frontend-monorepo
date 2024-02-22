@@ -56,8 +56,7 @@ export enum OnboardingStep {
 }
 
 export const useGetOnboardingStep = () => {
-  // const connecting = useGlobalStore((store) => store.eagerConnecting);
-  const { pubKey = '', pubKeys } = useVegaWallet();
+  const { status, pubKey = '', pubKeys } = useVegaWallet();
   const { data: depositsData } = useDataProvider({
     dataProvider: depositsProvider,
     variables: { partyId: pubKey || '' },
@@ -96,11 +95,12 @@ export const useGetOnboardingStep = () => {
   const positions = Boolean(positionsData?.length);
 
   const isLoading = Boolean(
-    pubKey &&
-      (depositsData === null ||
-        ordersData === null ||
-        collateralData === null ||
-        positionsData === null)
+    status === 'connecting' ||
+      (pubKey &&
+        (depositsData === null ||
+          ordersData === null ||
+          collateralData === null ||
+          positionsData === null))
   );
   let step = OnboardingStep.ONBOARDING_UNKNOWN_STEP;
   if (isLoading) {

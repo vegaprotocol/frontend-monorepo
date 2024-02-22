@@ -1,5 +1,5 @@
 import { useSearchParams } from 'react-router-dom';
-// import { GetStarted } from '../../components/welcome-dialog/get-started';
+import { GetStarted } from '../../components/welcome-dialog/get-started';
 import { WithdrawContainer } from '../../components/withdraw-container';
 
 export const Withdraw = () => {
@@ -8,7 +8,7 @@ export const Withdraw = () => {
   return (
     <>
       <WithdrawContainer assetId={assetId} />
-      {/* <GetStarted /> */}
+      <GetStarted />
     </>
   );
 };

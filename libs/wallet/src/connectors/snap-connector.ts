@@ -27,6 +27,9 @@ export class SnapConnector implements Connector {
   version: string;
   snapId: string;
 
+  // Note: we may not be able to set `node` in the constructor
+  // as the trading app won't know the current node until
+  // the app runs
   constructor(config: SnapConfig) {
     this.node = config.node;
     this.version = config.version;
@@ -126,6 +129,12 @@ export class SnapConnector implements Connector {
   // Snap methods
   ////////////////////////////////////
 
+  /**
+   * Requests permission for a website to communicate with the specified snaps
+   * and attempts to install them if they're not already installed.
+   * If the installation of any snap fails, returns the error that caused the failure.
+   * More informations here: https://docs.metamask.io/snaps/reference/rpc-api/#wallet_requestsnaps
+   */
   async requestSnap() {
     await this.request(EthereumMethod.RequestSnaps, {
       [this.snapId]: {

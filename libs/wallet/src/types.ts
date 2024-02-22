@@ -80,9 +80,7 @@ export type Wallet = {
   connect: (id: ConnectorType) => Promise<{ status: Status }>;
   disconnect: () => Promise<{ status: Status }>;
   refreshKeys: () => Promise<void>;
-  sendTransaction: (
-    params: TransactionParams
-  ) => Promise<TransactionResponse | undefined>;
+  sendTransaction: (params: TransactionParams) => Promise<TransactionResponse>;
   reset: () => void;
 };
 

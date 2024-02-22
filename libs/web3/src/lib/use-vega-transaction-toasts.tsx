@@ -4,8 +4,6 @@ import compact from 'lodash/compact';
 import {
   isTransferTransaction,
   isBatchMarketInstructionsTransaction,
-  // ClientErrors,
-  // WalletError,
   isOrderAmendmentTransaction,
   isOrderCancellationTransaction,
   isOrderSubmissionTransaction,

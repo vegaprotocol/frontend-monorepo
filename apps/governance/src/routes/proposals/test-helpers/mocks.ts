@@ -5,7 +5,12 @@ import type { VoteValue } from '@vegaprotocol/types';
 import type { UserVoteQuery } from '../components/vote-details/__generated__/Vote';
 import { UserVoteDocument } from '../components/vote-details/__generated__/Vote';
 import faker from 'faker';
-import { mockPubkey } from '../../../setup-tests';
+import { type Key } from '@vegaprotocol/wallet';
+
+export const mockPubkey: Key = {
+  publicKey: '0x123',
+  name: 'test key 1',
+};
 
 const mockEthereumConfig = {
   network_id: '3',

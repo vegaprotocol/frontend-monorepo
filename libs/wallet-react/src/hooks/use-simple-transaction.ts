@@ -1,6 +1,11 @@
 import { useState } from 'react';
 import { useVegaWallet } from './use-vega-wallet';
-import { determineId, type Transaction } from '@vegaprotocol/wallet';
+import {
+  ConnectorError,
+  ConnectorErrors,
+  determineId,
+  type Transaction,
+} from '@vegaprotocol/wallet';
 import {
   useSimpleTransactionSubscription,
   type SimpleTransactionFieldsFragment,
@@ -43,10 +48,6 @@ export const useSimpleTransaction = (opts?: Options) => {
     try {
       const res = await sendTx(pubKey, tx);
 
-      if (!res || 'error' in res) {
-        throw new Error(t('Transaction could not be sent'));
-      }
-
       setStatus('pending');
       setResult({
         txHash: res?.transactionHash.toLowerCase(),
@@ -54,8 +55,8 @@ export const useSimpleTransaction = (opts?: Options) => {
         id: determineId(res.signature),
       });
     } catch (err) {
-      if (err instanceof Error) {
-        if (err.message.includes('user rejected')) {
+      if (err instanceof ConnectorError) {
+        if (err.code === ConnectorErrors.userRejected.code) {
           setStatus('idle');
         } else {
           setError(err.message);

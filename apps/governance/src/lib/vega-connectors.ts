@@ -15,6 +15,7 @@ const jsonRpc = new JsonRpcConnector({
 });
 
 const snap = new SnapConnector({
+  // TODO: un hard code url
   node: 'https://api.n08.testnet.vega.rocks',
   snapId: 'npm:@vegaprotocol/snap',
   version: '0.3.1',
@@ -29,6 +30,7 @@ export const config = createConfig({
     injected,
     jsonRpc,
     snap,
+    // TODO: fix type
     // @ts-ignore getChainId only throws
     readOnly,
   ],

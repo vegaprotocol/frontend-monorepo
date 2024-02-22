@@ -55,7 +55,7 @@ export const WelcomeDialog = () => {
       intent={Intent.None}
       dataTestId="welcome-dialog"
     >
-      <Content
+      <DialogStepSwitch
         dialog={dialog}
         onConnect={() => {
           setTimeout(() => setDialog('intro'), 1000);
@@ -65,7 +65,7 @@ export const WelcomeDialog = () => {
   );
 };
 
-const Content = ({
+const DialogStepSwitch = ({
   dialog,
   onConnect,
 }: {
@@ -81,7 +81,7 @@ const Content = ({
   }
 
   if (dialog === 'connect') {
-    return <ConnectionOptions onConnect={onConnect} />;
+    return <OnboardConnectionOptions onConnect={onConnect} />;
   }
 
   if (dialog === 'risk') {
@@ -102,7 +102,7 @@ const Content = ({
   }
 };
 
-const ConnectionOptions = ({ onConnect }: { onConnect: () => void }) => {
+const OnboardConnectionOptions = ({ onConnect }: { onConnect: () => void }) => {
   const t = useT();
   const error = useWallet((store) => store.error);
   const { connect, connectors } = useConnect();
@@ -116,7 +116,7 @@ const ConnectionOptions = ({ onConnect }: { onConnect: () => void }) => {
           <ul className="flex flex-col -mx-4 -mb-4">
             {connectors.map((c) => {
               return (
-                <ConnectionOption
+                <OnboardConnectionOption
                   key={c.id}
                   id={c.id}
                   name={c.name}
@@ -152,7 +152,7 @@ const ConnectionOptions = ({ onConnect }: { onConnect: () => void }) => {
   return <ConnectionStatus status={status} />;
 };
 
-export const ConnectionOption = ({
+export const OnboardConnectionOption = ({
   id,
   name,
   description,
