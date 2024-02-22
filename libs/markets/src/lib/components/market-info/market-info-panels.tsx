@@ -84,6 +84,7 @@ import type { DataSourceFragment } from './__generated__/MarketInfo';
 import { formatDuration } from 'date-fns';
 import * as AccordionPrimitive from '@radix-ui/react-accordion';
 import { useT } from '../../use-t';
+import { isPerpetual } from '../../product';
 
 type MarketInfoProps = {
   market: MarketInfo;
@@ -920,8 +921,8 @@ export const EthOraclePanel = ({ sourceType }: { sourceType: EthCallSpec }) => {
         <>
           <MarketInfoTable key={i} data={filter.key} />
           <h3 className={header}>{t('Conditions')}</h3>
-          {filter.conditions?.map((condition) => (
-            <span>
+          {filter.conditions?.map((condition, i) => (
+            <span key={i}>
               {ConditionOperatorMapping[condition.operator]} {condition.value}
             </span>
           ))}
@@ -1149,8 +1150,10 @@ export const LiquidityInfoPanel = ({ market, children }: MarketInfoProps) => {
 
 export const FundingInfoPanel = ({
   dataSource,
+  market,
 }: {
   dataSource: DataSourceFragment;
+  market: MarketInfo;
 }) => {
   const t = useT();
   const sourceType = dataSource.data.sourceType.sourceType;
@@ -1167,12 +1170,30 @@ export const FundingInfoPanel = ({
     hours,
     minutes,
   });
-  return initial
-    ? t('every {{duration}} from {{initialTime}}', {
-        duration,
-        initialTime: getDateTimeFormat().format(new Date(initial * 1000)),
-      })
-    : t('every {{duration}}', { duration });
+  const { product } = market.tradableInstrument.instrument;
+  return (
+    <>
+      <p
+        className="first-letter:uppercase text-x;w
+        "
+      >
+        {initial
+          ? t('every {{duration}} from {{initialTime}}', {
+              duration,
+              initialTime: getDateTimeFormat().format(new Date(initial * 1000)),
+            })
+          : t('every {{duration}}', { duration })}
+      </p>
+      <MarketInfoTable
+        data={{
+          rateScalingFactor:
+            isPerpetual(product) && product.fundingRateScalingFactor,
+          rateLowerBound: isPerpetual(product) && product.fundingRateLowerBound,
+          rateUpperBound: isPerpetual(product) && product.fundingRateUpperBound,
+        }}
+      />
+    </>
+  );
 };
 
 export const OracleInfoPanel = ({

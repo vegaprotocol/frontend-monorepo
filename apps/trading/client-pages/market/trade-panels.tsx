@@ -75,6 +75,7 @@ export const TradePanels = ({ market, pinnedAsset }: TradePanelsProps) => {
           {[
             'chart',
             'orderbook',
+            'depth',
             'trades',
             'liquidity',
             'fundingPayments',

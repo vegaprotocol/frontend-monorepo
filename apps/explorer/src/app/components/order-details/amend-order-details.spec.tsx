@@ -175,6 +175,7 @@ describe('Amend order details', () => {
 
     const res = renderExistingAmend('123', 1, amend);
     expect(await res.findByText('New size')).toBeInTheDocument();
+    expect(await res.findByText('Size ±')).toBeInTheDocument();
   });
 
   it('Renders Reference if provided', async () => {

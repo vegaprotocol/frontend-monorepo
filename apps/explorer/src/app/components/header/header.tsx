@@ -41,6 +41,7 @@ export const Header = () => {
       Routes.ASSETS,
       Routes.MARKETS,
       Routes.GOVERNANCE,
+      Routes.TREASURY,
       Routes.NETWORK_PARAMETERS,
       Routes.GENESIS,
     ].map((n) => pages.find((r) => r.path === n))

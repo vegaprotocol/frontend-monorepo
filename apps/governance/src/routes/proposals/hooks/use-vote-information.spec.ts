@@ -273,4 +273,74 @@ describe('use-vote-information', () => {
     expect(current?.willPassByTokenVote).toEqual(false);
     expect(current?.willPassByLPVote).toEqual(true);
   });
+
+  it('mainnet recreation: only yes LP votes equal passing', () => {
+    const yesVotes = 0;
+    const noVotes = 70;
+    const yesEquityLikeShareWeight = '0.21';
+    const noEquityLikeShareWeight = '0';
+    const fixedTokenValue = 1000000000000000000;
+
+    const proposal = generateProposal({
+      terms: {
+        change: {
+          __typename: 'UpdateMarket',
+          marketId: '12345',
+        },
+      },
+      votes: {
+        __typename: 'ProposalVotes',
+        yes: generateYesVotes(
+          yesVotes,
+          fixedTokenValue,
+          yesEquityLikeShareWeight
+        ),
+        no: generateNoVotes(noVotes, fixedTokenValue, noEquityLikeShareWeight),
+      },
+    });
+
+    const {
+      result: { current },
+    } = renderHook(() =>
+      useVoteInformation({ terms: proposal.terms, votes: proposal.votes })
+    );
+
+    expect(current?.willPassByTokenVote).toEqual(false);
+    expect(current?.willPassByLPVote).toEqual(true);
+  });
+
+  it('mainnet recreation: mixed yes and no LP votes equal failing', () => {
+    const yesVotes = 0;
+    const noVotes = 70;
+    const yesEquityLikeShareWeight = '0.21';
+    const noEquityLikeShareWeight = '0.22';
+    const fixedTokenValue = 1000000000000000000;
+
+    const proposal = generateProposal({
+      terms: {
+        change: {
+          __typename: 'UpdateMarket',
+          marketId: '12345',
+        },
+      },
+      votes: {
+        __typename: 'ProposalVotes',
+        yes: generateYesVotes(
+          yesVotes,
+          fixedTokenValue,
+          yesEquityLikeShareWeight
+        ),
+        no: generateNoVotes(noVotes, fixedTokenValue, noEquityLikeShareWeight),
+      },
+    });
+
+    const {
+      result: { current },
+    } = renderHook(() =>
+      useVoteInformation({ terms: proposal.terms, votes: proposal.votes })
+    );
+
+    expect(current?.willPassByTokenVote).toEqual(false);
+    expect(current?.willPassByLPVote).toEqual(false);
+  });
 });

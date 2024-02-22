@@ -82,7 +82,7 @@ const AmendOrderDetails = ({ id, version, amend }: AmendOrderDetailsProps) => {
             {amend.sizeDelta && amend.sizeDelta !== '0' ? (
               <div className="mb-12 md:mb-0">
                 <h2 className="text-dark mb-4 text-2xl font-bold">
-                  {t('New size')}
+                  {t('Size ±')}
                 </h2>
                 <h5
                   className={`mb-0 text-lg font-medium capitalize text-gray-500 ${getSideDeltaColour(
@@ -93,6 +93,16 @@ const AmendOrderDetails = ({ id, version, amend }: AmendOrderDetailsProps) => {
                 </h5>
               </div>
             ) : null}
+            {o && (
+              <div className="">
+                <h2 className="text-dark mb-4 text-2xl font-bold">
+                  {t('New size')}
+                </h2>
+                <h5 className="mb-0 text-lg font-medium text-gray-500">
+                  {o ? o.size : null}
+                </h5>
+              </div>
+            )}
 
             {amend.price && amend.price !== '0' ? (
               <div className="">

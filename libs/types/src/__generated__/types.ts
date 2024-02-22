@@ -3831,6 +3831,7 @@ export type PartytradesConnectionArgs = {
 export type PartytransfersConnectionArgs = {
   direction?: InputMaybe<TransferDirection>;
   fromEpoch?: InputMaybe<Scalars['Int']>;
+  gameId?: InputMaybe<Scalars['ID']>;
   isReward?: InputMaybe<Scalars['Boolean']>;
   pagination?: InputMaybe<Pagination>;
   scope?: InputMaybe<TransferScope>;
@@ -4047,11 +4048,11 @@ export type Perpetual = {
   /** Data source specification describing the data source for settlement schedule */
   dataSourceSpecForSettlementSchedule: DataSourceSpec;
   /** Lower bound for the funding-rate such that the funding-rate will never be lower than this value */
-  fundingRateLowerBound: Scalars['String'];
+  fundingRateLowerBound?: Maybe<Scalars['String']>;
   /** Factor applied to funding-rates. This scales the impact that spot price deviations have on funding payments */
-  fundingRateScalingFactor: Scalars['String'];
+  fundingRateScalingFactor?: Maybe<Scalars['String']>;
   /** Upper bound for the funding-rate such that the funding-rate will never be higher than this value */
-  fundingRateUpperBound: Scalars['String'];
+  fundingRateUpperBound?: Maybe<Scalars['String']>;
   /** Continuously compounded interest rate used in funding rate calculation, in the range [-1, 1] */
   interestRate: Scalars['String'];
   /** Optional configuration driving the internal composite price calculation for perpetual product */
@@ -4104,11 +4105,11 @@ export type PerpetualProduct = {
   /** Data source specification describing the data source for settlement schedule */
   dataSourceSpecForSettlementSchedule: DataSourceDefinition;
   /** Lower bound for the funding-rate such that the funding-rate will never be lower than this value */
-  fundingRateLowerBound: Scalars['String'];
+  fundingRateLowerBound?: Maybe<Scalars['String']>;
   /** Factor applied to funding-rates. This scales the impact that spot price deviations have on funding payments. */
-  fundingRateScalingFactor: Scalars['String'];
+  fundingRateScalingFactor?: Maybe<Scalars['String']>;
   /** Upper bound for the funding-rate such that the funding-rate will never be higher than this value */
-  fundingRateUpperBound: Scalars['String'];
+  fundingRateUpperBound?: Maybe<Scalars['String']>;
   /** Continuously compounded interest rate used in funding rate calculation, in the range [-1, 1] */
   interestRate: Scalars['String'];
   /** Controls how much the upcoming funding payment liability contributes to party's margin, in the range [0, 1] */
@@ -5159,6 +5160,8 @@ export type QuerygamesArgs = {
   epochTo?: InputMaybe<Scalars['Int']>;
   gameId?: InputMaybe<Scalars['ID']>;
   pagination?: InputMaybe<Pagination>;
+  partyId?: InputMaybe<Scalars['ID']>;
+  teamId?: InputMaybe<Scalars['ID']>;
 };
 
 
@@ -5464,6 +5467,7 @@ export type QuerytransferArgs = {
 export type QuerytransfersConnectionArgs = {
   direction?: InputMaybe<TransferDirection>;
   fromEpoch?: InputMaybe<Scalars['Int']>;
+  gameId?: InputMaybe<Scalars['ID']>;
   isReward?: InputMaybe<Scalars['Boolean']>;
   pagination?: InputMaybe<Pagination>;
   partyId?: InputMaybe<Scalars['ID']>;
@@ -7099,11 +7103,11 @@ export type UpdatePerpetualProduct = {
   /** Data source specification describing the data source for settlement schedule */
   dataSourceSpecForSettlementSchedule: DataSourceDefinition;
   /** Lower bound for the funding-rate such that the funding-rate will never be lower than this value */
-  fundingRateLowerBound: Scalars['String'];
+  fundingRateLowerBound?: Maybe<Scalars['String']>;
   /** Factor applied to funding-rates. This scales the impact that spot price deviations have on funding payments. */
-  fundingRateScalingFactor: Scalars['String'];
+  fundingRateScalingFactor?: Maybe<Scalars['String']>;
   /** Upper bound for the funding-rate such that the funding-rate will never be higher than this value */
-  fundingRateUpperBound: Scalars['String'];
+  fundingRateUpperBound?: Maybe<Scalars['String']>;
   /** Continuously compounded interest rate used in funding rate calculation, in the range [-1, 1] */
   interestRate: Scalars['String'];
   /** Controls how much the upcoming funding payment liability contributes to party's margin, in the range [0, 1] */

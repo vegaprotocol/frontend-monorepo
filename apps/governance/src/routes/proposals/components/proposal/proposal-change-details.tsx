@@ -12,21 +12,26 @@ import {
 import { ProposalUpdateBenefitTiers } from '../proposal-update-benefit-tiers';
 import { ProposalUpdateMarketState } from '../proposal-update-market-state';
 import { ProposalVolumeDiscountProgramDetails } from '../proposal-volume-discount-program-details';
+import { getIndicatorStyle } from './colours';
+import { type ProposalNode } from './proposal-utils';
 
 export const ProposalChangeDetails = ({
   proposal,
   terms,
   restData,
+  indicator,
 }: {
   proposal: Proposal | BatchProposal;
   terms: ProposalTermsFieldsFragment;
-  // eslint-disable-next-line
-  restData: any;
+  restData: ProposalNode | null;
+  indicator?: number;
 }) => {
+  let details = null;
+
   switch (terms.change.__typename) {
     case 'NewAsset': {
       if (proposal.id && terms.change.source.__typename === 'ERC20') {
-        return (
+        details = (
           <div>
             <ListAsset
               assetId={proposal.id}
@@ -37,62 +42,64 @@ export const ProposalChangeDetails = ({
           </div>
         );
       }
-      return null;
+      break;
     }
     case 'UpdateAsset': {
       if (proposal.id) {
-        return (
+        details = (
           <ProposalAssetDetails
             change={terms.change}
             assetId={terms.change.assetId}
           />
         );
       }
-      return null;
+      break;
     }
     case 'NewMarket': {
       if (proposal.id) {
-        return <ProposalMarketData proposalId={proposal.id} />;
+        details = <ProposalMarketData proposalId={proposal.id} />;
       }
-      return null;
+      break;
     }
     case 'UpdateMarket': {
       if (proposal.id) {
-        return (
+        details = (
           <div className="flex flex-col gap-4">
             <ProposalMarketData proposalId={proposal.id} />
             <ProposalMarketChanges
+              indicator={indicator}
               marketId={terms.change.marketId}
-              updatedProposal={
-                restData?.data?.proposal?.terms?.updateMarket?.changes
-              }
+              updateProposalNode={restData}
             />
           </div>
         );
       }
 
-      return null;
+      break;
     }
     case 'NewTransfer': {
       if (proposal.id) {
-        return <ProposalTransferDetails proposalId={proposal.id} />;
+        details = <ProposalTransferDetails proposalId={proposal.id} />;
       }
-      return null;
+      break;
     }
     case 'CancelTransfer': {
       if (proposal.id) {
-        return <ProposalCancelTransferDetails proposalId={proposal.id} />;
+        details = <ProposalCancelTransferDetails proposalId={proposal.id} />;
       }
-      return null;
+      break;
     }
     case 'UpdateMarketState': {
-      return <ProposalUpdateMarketState change={terms.change} />;
+      details = <ProposalUpdateMarketState change={terms.change} />;
+      break;
     }
     case 'UpdateReferralProgram': {
-      return <ProposalReferralProgramDetails change={terms.change} />;
+      details = <ProposalReferralProgramDetails change={terms.change} />;
+      break;
     }
     case 'UpdateVolumeDiscountProgram': {
-      return <ProposalVolumeDiscountProgramDetails change={terms.change} />;
+      details = <ProposalVolumeDiscountProgramDetails change={terms.change} />;
+      break;
     }
     case 'UpdateNetworkParameter': {
       if (
@@ -100,18 +107,27 @@ export const ProposalChangeDetails = ({
         terms.change.networkParameter.key ===
           'rewards.activityStreak.benefitTiers'
       ) {
-        return <ProposalUpdateBenefitTiers change={terms.change} />;
+        details = <ProposalUpdateBenefitTiers change={terms.change} />;
       }
 
-      return null;
+      break;
     }
     case 'NewFreeform':
     case 'NewSpotMarket':
-    case 'UpdateSpotMarket': {
-      return null;
-    }
+    case 'UpdateSpotMarket':
     default: {
-      return null;
+      break;
     }
   }
+
+  if (indicator != null) {
+    details = (
+      <div className="flex gap-3 mb-3">
+        <div className={getIndicatorStyle(indicator)}>{indicator}</div>
+        <div>{details}</div>
+      </div>
+    );
+  }
+
+  return details;
 };

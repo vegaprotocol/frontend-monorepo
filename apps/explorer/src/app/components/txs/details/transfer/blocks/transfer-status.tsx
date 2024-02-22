@@ -34,16 +34,28 @@ export function TransferStatusView({ status, loading }: TransferStatusProps) {
         ) : (
           <>
             <p className="leading-10 my-2">
-              <Icon
-                name={getIconForStatus(status)}
-                className={getColourForStatus(status)}
-              />
+              <TransferStatusIcon status={status} />
             </p>
             <p className="leading-10 my-2">{TransferStatusMapping[status]}</p>
           </>
         )}
       </div>
     </div>
+  );
+}
+
+interface TransferStatusIconProps {
+  status: TransferStatus;
+}
+
+export function TransferStatusIcon({ status }: TransferStatusIconProps) {
+  return (
+    <span title={TransferStatusMapping[status]}>
+      <Icon
+        name={getIconForStatus(status)}
+        className={getColourForStatus(status)}
+      />
+    </span>
   );
 }
 
@@ -59,6 +71,8 @@ export function getIconForStatus(status: TransferStatus): IconName {
     case TransferStatus.STATUS_DONE:
       return IconNames.TICK;
     case TransferStatus.STATUS_REJECTED:
+      return IconNames.CROSS;
+    case TransferStatus.STATUS_CANCELLED:
       return IconNames.CROSS;
     default:
       return IconNames.TIME;
@@ -78,6 +92,8 @@ export function getColourForStatus(status: TransferStatus): string {
       return 'text-green-500';
     case TransferStatus.STATUS_REJECTED:
       return 'text-red-500';
+    case TransferStatus.STATUS_CANCELLED:
+      return 'text-red-600';
     default:
       return 'text-yellow-500';
   }

@@ -57,21 +57,21 @@ describe('applyImmutableKeysFromEarlierVersion', () => {
 describe('ProposalMarketChanges', () => {
   it('renders correctly', () => {
     const { getByTestId } = render(
-      <ProposalMarketChanges marketId="market-id" updatedProposal={{}} />
+      <ProposalMarketChanges marketId="market-id" updateProposalNode={null} />
     );
     expect(getByTestId('proposal-market-changes')).toBeInTheDocument();
   });
 
   it('JsonDiff is not visible when showChanges is false', () => {
     const { queryByTestId } = render(
-      <ProposalMarketChanges marketId="market-id" updatedProposal={{}} />
+      <ProposalMarketChanges marketId="market-id" updateProposalNode={null} />
     );
     expect(queryByTestId('json-diff')).not.toBeInTheDocument();
   });
 
   it('JsonDiff is visible when showChanges is true', async () => {
     const { getByTestId } = render(
-      <ProposalMarketChanges marketId="market-id" updatedProposal={{}} />
+      <ProposalMarketChanges marketId="market-id" updateProposalNode={null} />
     );
     fireEvent.click(getByTestId('proposal-market-changes-toggle'));
     expect(getByTestId('json-diff')).toBeInTheDocument();

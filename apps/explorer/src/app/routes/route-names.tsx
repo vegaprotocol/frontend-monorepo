@@ -12,4 +12,5 @@ export const Routes = {
   ORACLES: 'oracles',
   NETWORK_PARAMETERS: 'network-parameters',
   DISCLAIMER: 'disclaimer',
+  TREASURY: 'treasury',
 };

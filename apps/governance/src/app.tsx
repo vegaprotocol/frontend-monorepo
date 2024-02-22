@@ -62,6 +62,9 @@ const cache: InMemoryCacheConfig = {
     Account: {
       keyFields: false,
     },
+    Instrument: {
+      keyFields: ['code'],
+    },
     Delegation: {
       keyFields: false,
       // Only get full updates

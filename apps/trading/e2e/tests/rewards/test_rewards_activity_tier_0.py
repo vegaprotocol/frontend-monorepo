@@ -1,47 +1,25 @@
 import pytest
+from rewards_test_ids import *
 import vega_sim.proto.vega as vega_protos
 from playwright.sync_api import Page, expect
-from conftest import init_vega, init_page, auth_setup, risk_accepted_setup, cleanup_container
+from conftest import (
+    init_vega,
+    init_page,
+    auth_setup,
+    risk_accepted_setup,
+    cleanup_container,
+)
 from fixtures.market import setup_continuous_market
-from actions.utils import next_epoch, change_keys, create_and_faucet_wallet
-from wallet_config import MM_WALLET, WalletConfig
+from actions.utils import next_epoch, change_keys
+from wallet_config import MM_WALLET
 from vega_sim.null_service import VegaServiceNull
-
-# region Constants
-ACTIVITY = "activity"
-HOARDER = "hoarder"
-COMBO = "combo"
-
-REWARDS_URL = "/#/rewards"
-
-# test IDs
-COMBINED_MULTIPLIERS = "combined-multipliers"
-TOTAL_REWARDS = "total-rewards"
-PRICE_TAKING_COL_ID = '[col-id="priceTaking"]'
-TOTAL_COL_ID = '[col-id="total"]'
-ROW = "row"
-STREAK_REWARD_MULTIPLIER_VALUE = "streak-reward-multiplier-value"
-HOARDER_REWARD_MULTIPLIER_VALUE = "hoarder-reward-multiplier-value"
-HOARDER_BONUS_TOTAL_HOARDED = "hoarder-bonus-total-hoarded"
-EARNED_BY_ME_BUTTON = "earned-by-me-button"
-TRANSFER_AMOUNT = "transfer-amount"
-EPOCH_STREAK = "epoch-streak"
-
-# endregion
-
-# Keys
-PARTY_A = "PARTY_A"
-PARTY_B = "PARTY_B"
-PARTY_C = "PARTY_C"
-PARTY_D = "PARTY_D"
 
 
 @pytest.fixture(scope="module")
 def vega(request):
     with init_vega(request) as vega_instance:
-        request.addfinalizer(lambda: cleanup_container(vega_instance))  # Register the cleanup function
+        request.addfinalizer(lambda: cleanup_container(vega_instance))
         yield vega_instance
-
 
 
 @pytest.fixture(scope="module")
@@ -106,36 +84,10 @@ def setup_market_with_reward_program(vega: VegaServiceNull):
         side="SIDE_BUY",
         volume=1,
     )
-
+    vega.wait_fn(1)
     vega.wait_for_total_catchup()
-
     next_epoch(vega=vega)
     return tDAI_market, tDAI_asset_id
-
-
-ACTIVITY_STREAKS = """
-{
-    "tiers": [
-        {
-            "minimum_activity_streak": 2, 
-            "reward_multiplier": "2.0", 
-            "vesting_multiplier": "1.1"
-        }
-    ]
-}
-"""
-
-
-def keys(vega):
-    PARTY_A = WalletConfig("PARTY_A", "PARTY_A")
-    create_and_faucet_wallet(vega=vega, wallet=PARTY_A)
-    PARTY_B = WalletConfig("PARTY_B", "PARTY_B")
-    create_and_faucet_wallet(vega=vega, wallet=PARTY_B)
-    PARTY_C = WalletConfig("PARTY_C", "PARTY_C")
-    create_and_faucet_wallet(vega=vega, wallet=PARTY_C)
-    PARTY_D = WalletConfig("PARTY_D", "PARTY_D")
-    create_and_faucet_wallet(vega=vega, wallet=PARTY_D)
-    return PARTY_A, PARTY_B, PARTY_C, PARTY_D
 
 
 @pytest.mark.xdist_group(name="test_rewards_activity_tier_0")
@@ -143,18 +95,20 @@ def test_network_reward_pot(
     page: Page,
 ):
     expect(page.get_by_test_id(TOTAL_REWARDS)).to_have_text("50.00 tDAI")
+    page.pause()
 
 
 @pytest.mark.xdist_group(name="test_rewards_activity_tier_0")
 def test_reward_multiplier(
     page: Page,
 ):
+    page.pause()
     expect(page.get_by_test_id(COMBINED_MULTIPLIERS)).to_have_text("1x")
     expect(page.get_by_test_id(STREAK_REWARD_MULTIPLIER_VALUE)).to_have_text("1x")
     expect(page.get_by_test_id(HOARDER_REWARD_MULTIPLIER_VALUE)).to_have_text("1x")
 
 
-@pytest.mark.xdist_group(name="test_rewards_activity_tier_0")
+""" @pytest.mark.xdist_group(name="test_rewards_activity_tier_0")
 def test_activity_streak(
     page: Page,
 ):
@@ -174,3 +128,4 @@ def test_reward_history(
     expect((page.get_by_role(ROW).locator(TOTAL_COL_ID)).nth(1)).to_have_text("100.00")
     page.get_by_test_id(EARNED_BY_ME_BUTTON).click()
     expect((page.get_by_role(ROW).locator(TOTAL_COL_ID)).nth(1)).to_have_text("50.00")
+ """

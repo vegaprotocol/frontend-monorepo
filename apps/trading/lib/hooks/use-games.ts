@@ -7,8 +7,7 @@ import orderBy from 'lodash/orderBy';
 import { removePaginationWrapper } from '@vegaprotocol/utils';
 import { useEpochInfoQuery } from './__generated__/Epoch';
 import { type ApolloError } from '@apollo/client';
-
-const TAKE_EPOCHS = 30; // TODO: should this be DEFAULT_AGGREGATION_EPOCHS?
+import { TEAMS_STATS_EPOCHS } from './constants';
 
 const findTeam = (entities: GameFieldsFragment['entities'], teamId: string) => {
   const team = entities.find(
@@ -45,7 +44,7 @@ export const useGames = (teamId?: string, epochFrom?: number): GamesData => {
 
   let from = epochFrom;
   if (!from && epochData) {
-    from = Number(epochData.epoch.id) - TAKE_EPOCHS;
+    from = Number(epochData.epoch.id) - TEAMS_STATS_EPOCHS;
     if (from < 1) from = 1; // make sure it's not negative
   }
 

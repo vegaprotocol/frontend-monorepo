@@ -157,5 +157,14 @@ export const useTooltipMapping: () => Record<string, ReactNode> = () => {
     feeConstant: t(
       'The constant liquidity fee used when using the constant fee method .'
     ),
+    rateScalingFactor: t(
+      'Factor applied to funding-rates. This scales the impact that spot price deviations have on funding payments.'
+    ),
+    rateLowerBound: t(
+      'Lower bound for the funding-rate such that the funding-rate will never be lower than this value.'
+    ),
+    rateUpperBound: t(
+      'Upper bound for the funding-rate such that the funding-rate will never be higher than this value.'
+    ),
   };
 };

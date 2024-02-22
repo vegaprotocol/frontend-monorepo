@@ -20,7 +20,7 @@ import {
   type RewardsPageQuery,
   useRewardsPageQuery,
   useRewardsEpochQuery,
-} from './__generated__/Rewards';
+} from '../../lib/hooks/__generated__/Rewards';
 import {
   TradingButton,
   VegaIcon,

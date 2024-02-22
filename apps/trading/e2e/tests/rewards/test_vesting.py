@@ -43,6 +43,7 @@ def test_vesting(continuous_market, vega: VegaServiceNull, page: Page):
         side="SIDE_BUY",
         volume=1,
     )
+    vega.wait_fn(1)
     vega.wait_for_total_catchup()
 
     page.goto("/#/rewards")

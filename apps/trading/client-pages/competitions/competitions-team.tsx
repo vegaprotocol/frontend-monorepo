@@ -10,11 +10,7 @@ import {
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
-import {
-  TransferStatus,
-  type Asset,
-  type RecurringTransfer,
-} from '@vegaprotocol/types';
+import { TransferStatus, type Asset } from '@vegaprotocol/types';
 import classNames from 'classnames';
 import { useT } from '../../lib/use-t';
 import { Table } from '../../components/table';
@@ -44,11 +40,6 @@ import {
   areTeamGames,
 } from '../../lib/hooks/use-games';
 import { useEpochInfoQuery } from '../../lib/hooks/__generated__/Epoch';
-import {
-  type EnrichedTransfer,
-  isScopedToTeams,
-  useGameCards,
-} from '../../lib/hooks/use-game-cards';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import {
   ActiveRewardCard,
@@ -56,6 +47,11 @@ import {
 } from '../../components/rewards-container/active-rewards';
 import { type MarketMap, useMarketsMapProvider } from '@vegaprotocol/markets';
 import format from 'date-fns/format';
+import {
+  type EnrichedRewardTransfer,
+  isScopedToTeams,
+  useRewards,
+} from '../../lib/hooks/use-rewards';
 
 export const CompetitionsTeam = () => {
   const t = useT();
@@ -78,10 +74,9 @@ const TeamPageContainer = ({ teamId }: { teamId: string | undefined }) => {
 
   const { data: games, loading: gamesLoading } = useGames(teamId);
 
-  const { data: epochData, loading: epochLoading } = useEpochInfoQuery();
-  const { data: transfersData, loading: transfersLoading } = useGameCards({
-    currentEpoch: Number(epochData?.epoch.id),
+  const { data: transfersData, loading: transfersLoading } = useRewards({
     onlyActive: false,
+    scopeToTeams: true,
   });
 
   const { data: markets } = useMarketsMapProvider();
@@ -112,7 +107,7 @@ const TeamPageContainer = ({ teamId }: { teamId: string | undefined }) => {
       games={areTeamGames(games) ? games : undefined}
       gamesLoading={gamesLoading}
       transfers={transfersData}
-      transfersLoading={epochLoading || transfersLoading}
+      transfersLoading={transfersLoading}
       allMarkets={markets || undefined}
       refetch={refetch}
     />
@@ -137,7 +132,7 @@ const TeamPage = ({
   members?: Member[];
   games?: TeamGame[];
   gamesLoading?: boolean;
-  transfers?: EnrichedTransfer[];
+  transfers?: EnrichedRewardTransfer[];
   transfersLoading?: boolean;
   allMarkets?: MarketMap;
   refetch: () => void;
@@ -211,7 +206,7 @@ const Games = ({
 }: {
   games?: TeamGame[];
   gamesLoading?: boolean;
-  transfers?: EnrichedTransfer[];
+  transfers?: EnrichedRewardTransfer[];
   transfersLoading?: boolean;
   allMarkets?: MarketMap;
 }) => {
@@ -451,7 +446,7 @@ const GameTypeCell = ({
   transfer,
   allMarkets,
 }: {
-  transfer?: EnrichedTransfer;
+  transfer?: EnrichedRewardTransfer;
   allMarkets?: MarketMap;
 }) => {
   const [open, setOpen] = useState(false);
@@ -474,7 +469,7 @@ const GameTypeCell = ({
         ref={ref}
         className="border-b border-dashed border-vega-clight-200 dark:border-vega-cdark-200 text-left md:truncate md:max-w-[25vw]"
       >
-        <DispatchMetricInfo transferNode={transfer} allMarkets={allMarkets} />
+        <DispatchMetricInfo reward={transfer} />
       </button>
     </>
   );
@@ -490,7 +485,7 @@ const ActiveRewardCardDialog = ({
   open: boolean;
   onChange: (isOpen: boolean) => void;
   trigger?: HTMLElement | null;
-  transfer: EnrichedTransfer;
+  transfer: EnrichedRewardTransfer;
   allMarkets?: MarketMap;
 }) => {
   const t = useT();
@@ -516,8 +511,6 @@ const ActiveRewardCardDialog = ({
         <ActiveRewardCard
           transferNode={transfer}
           currentEpoch={Number(data?.epoch.id)}
-          kind={transfer.transfer.kind as RecurringTransfer}
-          allMarkets={allMarkets}
         />
       </div>
       <div className="w-1/4">

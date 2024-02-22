@@ -181,7 +181,10 @@ export const MarketInfoAccordion = ({
               itemId="funding"
               title={t('Funding')}
               content={
-                <FundingInfoPanel dataSource={settlementScheduleDataSource} />
+                <FundingInfoPanel
+                  dataSource={settlementScheduleDataSource}
+                  market={market}
+                />
               }
             />
           )}
