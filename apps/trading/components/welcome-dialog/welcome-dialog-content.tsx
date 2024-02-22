@@ -4,7 +4,7 @@ import { Links } from '../../lib/links';
 import { Networks, useEnvironment } from '@vegaprotocol/environment';
 import type { ReactNode } from 'react';
 import { useTopTradedMarkets } from '../../lib/hooks/use-top-traded-markets';
-import { useOnboardingStore } from './use-get-onboarding-step';
+import { useOnboardingStore } from '../../stores/onboarding';
 import { useT } from '../../lib/use-t';
 
 export const WelcomeDialogContent = () => {

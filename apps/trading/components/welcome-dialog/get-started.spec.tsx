@@ -5,11 +5,12 @@ import {
 } from '@vegaprotocol/wallet-react/testing';
 import { GetStarted } from './get-started';
 import { render, screen, fireEvent, act } from '@testing-library/react';
-import { useOnboardingStore } from './use-get-onboarding-step';
+import { useOnboardingStore } from '../../stores/onboarding';
 
 let mockStep = 1;
-jest.mock('./use-get-onboarding-step', () => ({
-  ...jest.requireActual('./use-get-onboarding-step'),
+
+jest.mock('../../lib/hooks/use-get-onboarding-step', () => ({
+  ...jest.requireActual('../../lib/hooks/use-get-onboarding-step'),
   useGetOnboardingStep: jest.fn(() => mockStep),
 }));
 

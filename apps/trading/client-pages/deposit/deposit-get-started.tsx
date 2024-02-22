@@ -1,11 +1,11 @@
 import classNames from 'classnames';
 import { Intent, TradingAnchorButton } from '@vegaprotocol/ui-toolkit';
 import { GetStartedCheckList } from '../../components/welcome-dialog';
+import { useOnboardingStore } from '../../stores/onboarding';
 import {
   useGetOnboardingStep,
-  useOnboardingStore,
   OnboardingStep,
-} from '../../components/welcome-dialog/use-get-onboarding-step';
+} from '../../lib/hooks/use-get-onboarding-step';
 import { Links } from '../../lib/links';
 import { useT } from '../../lib/use-t';
 

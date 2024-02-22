@@ -17,7 +17,7 @@ import { WelcomeDialogContent } from './welcome-dialog-content';
 import {
   useOnboardingStore,
   type OnboardingDialog,
-} from './use-get-onboarding-step';
+} from '../../stores/onboarding';
 import { RiskAckContent } from '../risk-ack-content';
 
 /**

@@ -2,7 +2,7 @@ import {
   ConnectDialogWithRiskAck,
   useDialogStore,
 } from '@vegaprotocol/wallet-react';
-import { useOnboardingStore } from '../welcome-dialog/use-get-onboarding-step';
+import { useOnboardingStore } from '../../stores/onboarding';
 import { Networks, useEnvironment } from '@vegaprotocol/environment';
 import { RiskAckContent } from '../risk-ack-content';
 

@@ -9,11 +9,11 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet, useDialogStore } from '@vegaprotocol/wallet-react';
 import { Networks, useEnvironment } from '@vegaprotocol/environment';
+import { useOnboardingStore } from '../../stores/onboarding';
 import {
   OnboardingStep,
   useGetOnboardingStep,
-  useOnboardingStore,
-} from './use-get-onboarding-step';
+} from '../../lib/hooks/use-get-onboarding-step';
 import { Links, Routes } from '../../lib/links';
 import { useGlobalStore } from '../../stores';
 import { useSidebar, ViewType } from '../sidebar';
