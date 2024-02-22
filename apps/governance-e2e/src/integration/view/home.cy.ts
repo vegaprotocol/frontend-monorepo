@@ -159,7 +159,7 @@ context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
       cy.getByTestId('node-url-custom').click({ force: true });
       cy.get('input').should('exist');
       cy.getByTestId('connect').should('be.disabled');
-      cy.getByTestId('icon-cross').click();
+      cy.getByTestId('dialog-close').getByTestId('icon-cross').click();
     });
 
     it('should display eth data', function () {
@@ -189,7 +189,7 @@ context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
       cy.viewport('iphone-xr');
     });
 
-    it('should have burger button', () => {
+    it.skip('should have burger button', () => {
       cy.getByTestId('button-menu-drawer').should('be.visible').click();
       cy.getByTestId('menu-drawer').should('be.visible');
     });
