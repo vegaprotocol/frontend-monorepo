@@ -2,7 +2,7 @@ import { type ReactNode } from 'react';
 import sortBy from 'lodash/sortBy';
 import { format, formatDuration, intervalToDuration } from 'date-fns';
 import { type MarketViewProposalFieldsFragment } from '@vegaprotocol/proposals';
-import { ProposalState } from '@vegaprotocol/types';
+import { MarketState, ProposalState } from '@vegaprotocol/types';
 import {
   DApp,
   TOKEN_PROPOSAL,
@@ -23,6 +23,16 @@ export const MarketUpdateStateBanner = ({
 }) => {
   const t = useT();
   const governanceLink = useLinks(DApp.Governance);
+
+  const openTradingProposals = sortBy(
+    proposals.filter(
+      (p) =>
+        p.state === ProposalState.STATE_OPEN &&
+        p.terms.change.__typename === 'UpdateMarketState' &&
+        market.state === MarketState.STATE_SUSPENDED_VIA_GOVERNANCE
+    ),
+    (p) => p.terms.enactmentDatetime
+  );
 
   const openProposals = sortBy(
     proposals.filter((p) => p.state === ProposalState.STATE_OPEN),
@@ -45,12 +55,35 @@ export const MarketUpdateStateBanner = ({
       ? governanceLink(TOKEN_PROPOSAL.replace(':id', openProposals[0]?.id))
       : undefined;
 
+  const openTradingProposalsLink =
+    passedProposals.length && openTradingProposals[0]?.id
+      ? governanceLink(
+          TOKEN_PROPOSAL.replace(':id', openTradingProposals[0]?.id)
+        )
+      : undefined;
+
   const proposalsLink =
     openProposals.length > 1 ? governanceLink(TOKEN_PROPOSALS) : undefined;
 
   let content: ReactNode;
 
-  if (passedProposals.length) {
+  if (openTradingProposals.length > 1) {
+    content = (
+      <>
+        <p className="uppercase mb-1">
+          {t(
+            'Trading on market {{name}} was suspended by governance. There are open proposals to resume trading on this market.',
+            { name }
+          )}
+        </p>
+        <p>
+          <ExternalLink href={openTradingProposalsLink}>
+            {t('View proposals')}
+          </ExternalLink>
+        </p>
+      </>
+    );
+  } else if (passedProposals.length) {
     const { date, duration, price } = getMessageVariables(passedProposals[0]);
     content = (
       <>
