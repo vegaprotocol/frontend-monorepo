@@ -1,156 +1,99 @@
 # Trading Market-Sim End-To-End Tests
 
-This direcotry contains end-to-end tests for the trading application using vega-market-sim. This README will guide you through setting up your environment and running the tests.
+This directory contains end-to-end tests for the Trading application using Vega-market-sim. This guide will help you set up your environment and run the tests efficiently.
 
 ## Prerequisites
 
-- [Poetry](https://python-poetry.org/docs/#installing-with-the-official-installer)
-- [Docker](https://www.docker.com/)
-- [Python versions ">=3.9,<3.11"](https://www.python.org/)
+Ensure you have the following installed:
 
-## Getting Started
+- [Poetry](https://python-poetry.org/docs/#installing-with-the-official-installer) for dependency management.
+- [Docker](https://www.docker.com/) for running isolated application containers.
+- Python, versions ">=3.9,<3.11". Install from the [official Python website](https://www.python.org/).
 
-1. **Install Poetry**: Follow the instructions on the [official Poetry website](https://python-poetry.org/docs/#installing-with-the-official-installer).
-2. **Install Docker**: Follow the instructions on the [official Docker website](https://docs.docker.com/desktop/).
-3. **Install Python**: Follow the instructions on the [official Python website](https://www.python.org/)
-   **ensure you install a version between 3.9 and 3.11.**
-4. **Start up a Poetry environment**: Execute the commands below to configure the Poetry environment.
+## Setup
 
-### Ensure you are in the tests folder before running commands
+### 1. Install Dependencies
+
+- **Poetry**: Follow the installation guide on the [official Poetry website](https://python-poetry.org/docs/#installing-with-the-official-installer).
+- **Docker**: Installation instructions are available on the [official Docker website](https://docs.docker.com/desktop/).
+- **Python**: Install a version between 3.9 and 3.11, as detailed on the [official Python website](https://www.python.org/).
+
+### 2. Configure Your Environment
+
+Ensure you're in the tests folder before executing commands.
 
 ```bash
 poetry shell
-```
-
-5. **Install python dependencies**
-
-To make sure you are on the latest version of our market-sim branch.
-
-```bash
-poetry update vega-sim
-```
-
-```bash
+poetry update vega-sim  # Updates to the latest version of the market-sim branch
 poetry install
+playwright install chromium  # Installs necessary browsers for Playwright
 ```
 
-6. **Install Playwright Browsers**: Execute the command below to browsers for Playwright.
+### 3. Prepare Binaries and Docker Images
 
-```bash
-playwright install chromium
-```
-
-7. **Download necessary binaries**:
-   Use the following command within your Python environment. The `--force` flag ensures the binaries are overwritten, and the `--version` specifies the desired version. e.g. `v0.73.4`
+Download necessary binaries for the desired Vega version:
 
 ```bash
 python -m vega_sim.tools.load_binaries --force --version $VEGA_VERSION
 ```
 
-8. **Pull the desired Docker image**
+Pull Docker images for your environment:
 
-```bash
-docker pull vegaprotocol/trading:develop
-```
+- **Development**: `docker pull vegaprotocol/trading:develop`
+- **Production**: `docker pull vegaprotocol/trading:main`
 
-9. **Run tests**: Poetry/Python will serve the app from docker
-
-### Update the .env file with the correct trading image.
-
-```bash
-poetry run pytest
-```
-
-### Docker images
-
-Pull the desired image:
-
-**Testnet**
-
-```bash
-docker pull vegaprotocol/trading:develop
-```
-
-**Mainnet**
-
-```bash
-docker pull vegaprotocol/trading:main
-```
-
-Find all available images on [Docker Hub](https://hub.docker.com/r/vegaprotocol/trading/tags).
-
-#### Create a Docker Image of Your Locally Built Trading App
-
-To build your Docker image, use the following commands:
+### 4. Build a Docker Image of Your Locally Built Trading App
 
 ```bash
 yarn nx build trading ./docker/prepare-dist.sh
-```
-
-```bash
 docker build -f docker/node-outside-docker.Dockerfile --build-arg APP=trading --build-arg ENV_NAME=stagnet1 -t vegaprotocol/trading:latest .
 ```
 
-## Running Tests 🧪
+## Running Tests
 
-Before running make sure the docker daemon is running.
+Ensure the Docker daemon is running. Update the `.env` file with the correct trading image before proceeding.
 
-To run a specific test, use the `-k` option followed by the name of the test.
-Run all tests:
+- **Run all tests**: `poetry run pytest`
+- **Run a specific test**: `poetry run pytest -k "test_name" -s --headed`
+- **Run tests using your locally served console**:
 
-```bash
-poetry run pytest
+  In one terminal window, build and serve the trading console:
+
+  ```bash
+  yarn nx build trading
+  yarn nx serve trading
+  ```
+
+  Once the console is served, update the `.env` file to set `local_server=true`. You can then run your tests using the same commands as above.
+
+## Test Strategy and Container Cleanup
+
+### Strategy
+
+We aim for each test file to use a single Vega instance to ensure test isolation and manage resources efficiently. This approach helps in maintaining test performance and reliability.
+
+### Cleanup Procedure
+
+To ensure proper cleanup of containers after each test, use the following fixture pattern:
+
+```python
+@pytest.fixture
+def vega(request):
+    with init_vega(request) as vega_instance:
+        request.addfinalizer(lambda: cleanup_container(vega_instance))
+        yield vega_instance
 ```
 
-Run a targeted test:
+## Running Tests in Parallel
 
-```bash
-poetry run pytest -k "test_name" -s --headed
-```
+For running tests in parallel:
 
-Run from anywhere:
+- **Within the e2e folder**: `poetry run pytest -s --numprocesses auto --dist loadfile`
+- **From anywhere**: `yarn trading:test:all`
 
-```bash
-yarn trading:test -- "test_name" -s --headed
-```
+## Troubleshooting
 
-Run using your locally served console:
+If IntelliSense is not working in VSCode, follow these steps:
 
-Within one terminal
-
-```bash
-yarn nx build trading
-```
-
-```bash
-yarn nx serve trading
-
-```
-
-Once console is served you can update the .env file to have local_server to true.
-
-## Running Tests in Parallel 🔢
-
-To run tests in parallel, use the `--numprocesses auto` option. The `--dist loadfile` setting ensures that multiple runners are not assigned to a single test file.
-
-### From within the e2e folder:
-
-```bash
-poetry run pytest -s --numprocesses auto --dist loadfile
-```
-
-### From anywhere:
-
-```bash
-yarn trading:test:all
-```
-
-# Things to know
-
-If you "intellisense" isn't working follow these steps:
-
-1. ```bash
-   poetry run which python
-   ```
-
-2. Then open the command menu in vscode (cmd + shift + p) and type `select interpreter` , press enter, select enter interpreter path press enter then paste in the output from that above command you should get the right python again
+1. Find the Poetry environment's Python binary: `poetry run which python`
+2. In VSCode, open the command menu (`cmd + shift + p`), search for `Python: Select Interpreter`, select `Enter interpreter path`, and paste the path from step 1.
