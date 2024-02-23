@@ -5,6 +5,11 @@ import {
 } from './proposal-market-changes';
 import type { JsonValue } from '../../../../components/json-diff';
 
+jest.mock('../proposal/market-name.tsx', () => ({
+  ...jest.requireActual('../proposal/market-name.tsx'),
+  MarketName: jest.fn(),
+}));
+
 describe('applyImmutableKeysFromEarlierVersion', () => {
   it('returns an empty object if any argument is not an object or null', () => {
     const earlierVersion: JsonValue = null;

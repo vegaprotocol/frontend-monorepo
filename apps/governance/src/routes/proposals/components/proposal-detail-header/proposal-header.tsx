@@ -54,11 +54,8 @@ const ProposalTypeTags = ({
 
   if (proposal.__typename === 'BatchProposal') {
     return (
-      <div data-testid="proposal-type" className="flex gap-1">
-        {proposal.subProposals?.map((subProposal, i) => {
-          if (!subProposal?.terms) return null;
-          return <ProposalTypeTag key={i} terms={subProposal.terms} />;
-        })}
+      <div data-testid="proposal-type">
+        <ProposalInfoLabel variant="secondary">BatchProposal</ProposalInfoLabel>
       </div>
     );
   }
