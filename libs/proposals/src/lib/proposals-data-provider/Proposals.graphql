@@ -488,6 +488,28 @@ fragment MarketViewProposalFields on Proposal {
 fragment MarketViewBatchProposalFields on BatchProposal {
   id
   state
+  subProposals {
+    id
+    batchId
+    reference
+    state
+    terms {
+      closingDatetime
+      enactmentDatetime
+      change {
+        __typename
+        ... on UpdateMarketState {
+          ...UpdateMarketStateFields
+        }
+        ... on NewMarket {
+          ...NewMarketSuccessorFields
+        }
+        ... on UpdateMarket {
+          ...UpdateMarketFields
+        }
+      }
+    }
+  }
   batchTerms {
     closingDatetime
     changes {
@@ -528,6 +550,11 @@ query MarketViewProposals(
 
 subscription MarketViewLiveProposals {
   proposals {
-    ...MarketViewProposalFields
+    # ... on BatchProposal {
+    #   ...MarketViewBatchProposalFields
+    # }
+    ... on Proposal {
+      ...MarketViewProposalFields
+    }
   }
 }

@@ -14,8 +14,8 @@ import {
   type MarketViewProposalsQuery,
   type MarketViewProposalsQueryVariables,
   type MarketViewLiveProposalsSubscriptionVariables,
+  type MarketViewBatchProposalFieldsFragment,
 } from './__generated__/Proposals';
-import { removePaginationWrapper } from '@vegaprotocol/utils';
 
 const getData = (responseData: ProposalsListQuery | null) =>
   responseData?.proposalsConnection?.edges
@@ -63,13 +63,24 @@ const ProposalTypeMap: Record<
 };
 
 const matchFilter = (
-  data: MarketViewProposalFieldsFragment,
+  data:
+    | MarketViewProposalFieldsFragment
+    | MarketViewBatchProposalFieldsFragment,
   variables: MarketViewProposalsQueryVariables
 ) => {
   return (
     (!variables.inState || data.state === variables.inState) &&
     (!variables.proposalType ||
-      data.terms.change.__typename === ProposalTypeMap[variables.proposalType])
+      (data.__typename === 'Proposal' &&
+        data.terms.change.__typename ===
+          ProposalTypeMap[variables.proposalType]) ||
+      (data.__typename === 'BatchProposal' &&
+        data.subProposals?.find(
+          (p) =>
+            variables.proposalType &&
+            p?.terms?.change.__typename ===
+              ProposalTypeMap[variables.proposalType]
+        )))
   );
 };
 
@@ -104,7 +115,25 @@ export const update: Update<
 
 const getMarketProposalsData = (
   responseData: MarketViewProposalsQuery | null
-) => removePaginationWrapper(responseData?.proposalsConnection?.edges) || [];
+): MarketViewProposalFieldsFragment[] => {
+  const proposals: MarketViewProposalFieldsFragment[] = [];
+  responseData?.proposalsConnection?.edges?.forEach((edge) => {
+    if (edge?.proposalNode) {
+      if (edge.proposalNode.__typename === 'Proposal') {
+        proposals.push(edge.proposalNode as MarketViewProposalFieldsFragment);
+      } else if (
+        edge.proposalNode.__typename === 'BatchProposal' &&
+        edge.proposalNode.subProposals
+      ) {
+        proposals.push(
+          ...(edge.proposalNode
+            .subProposals as MarketViewProposalFieldsFragment[])
+        );
+      }
+    }
+  });
+  return proposals;
+};
 
 const subscriptionVariables: MarketViewLiveProposalsSubscriptionVariables = {};
 
