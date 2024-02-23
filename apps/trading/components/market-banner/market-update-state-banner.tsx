@@ -55,12 +55,9 @@ export const MarketUpdateStateBanner = ({
       ? governanceLink(TOKEN_PROPOSAL.replace(':id', openProposals[0]?.id))
       : undefined;
 
-  const openTradingProposalsLink =
-    passedProposals.length && openTradingProposals[0]?.id
-      ? governanceLink(
-          TOKEN_PROPOSAL.replace(':id', openTradingProposals[0]?.id)
-        )
-      : undefined;
+  const openTradingProposalsLink = openTradingProposals[0]?.id
+    ? governanceLink(TOKEN_PROPOSAL.replace(':id', openTradingProposals[0]?.id))
+    : undefined;
 
   const proposalsLink =
     openProposals.length > 1 ? governanceLink(TOKEN_PROPOSALS) : undefined;
