@@ -12,6 +12,7 @@ import { useT } from '../../lib/use-t';
 import classNames from 'classnames';
 import { MarketHeaderStats } from '../../client-pages/market/market-header-stats';
 import { MarketMarkPrice } from '../market-mark-price';
+import { MarketBanner } from '../market-banner';
 /**
  * This is only rendered for the mobile navigation
  */
@@ -108,8 +109,11 @@ export const MobileMarketHeader = () => {
         }
       >
         {data && (
-          <div className="px-3 py-6 text-sm grid grid-cols-2 items-center gap-x-4 gap-y-6">
-            <MarketHeaderStats market={data} />
+          <div>
+            <MarketBanner market={data} />
+            <div className="px-3 py-6 text-sm grid grid-cols-2 items-center gap-x-4 gap-y-6">
+              <MarketHeaderStats market={data} />
+            </div>
           </div>
         )}
       </FullScreenPopover>
