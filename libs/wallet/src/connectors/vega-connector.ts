@@ -131,7 +131,6 @@ interface ProposalNewMarketTerms {
       positionDecimalPlaces: string;
       linearSlippageFactor: string;
       // FIXME: workaround because of https://github.com/vegaprotocol/vega/issues/10343
-      quadraticSlippageFactor: string;
       instrument: {
         name: string;
         code: string;
@@ -157,6 +156,16 @@ interface ProposalNewMarketTerms {
       logNormal: LogNormal;
       successor?: Successor;
       liquiditySlaParameters: LiquiditySLAParameters;
+      markPriceConfiguration: {
+        decayWeight: string;
+        decayPower: string;
+        cashAmount: string;
+        sourceWeights: string[];
+        sourceStalenessTolerance: string[];
+        compositePriceType: Schema.CompositePriceType;
+        dataSourcesSpec: Schema.DataSourceDefinition[];
+        dataSourcesSpecBinding: Schema.SpecBindingForCompositePrice[];
+      };
     };
   };
   closingTimestamp: number;
