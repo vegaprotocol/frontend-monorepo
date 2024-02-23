@@ -2,7 +2,11 @@ import { type ReactNode } from 'react';
 import sortBy from 'lodash/sortBy';
 import { format, formatDuration, intervalToDuration } from 'date-fns';
 import { type MarketViewProposalFieldsFragment } from '@vegaprotocol/proposals';
-import { MarketState, ProposalState } from '@vegaprotocol/types';
+import {
+  MarketState,
+  MarketUpdateType,
+  ProposalState,
+} from '@vegaprotocol/types';
 import {
   DApp,
   TOKEN_PROPOSAL,
@@ -29,7 +33,9 @@ export const MarketUpdateStateBanner = ({
       (p) =>
         p.state === ProposalState.STATE_OPEN &&
         p.terms.change.__typename === 'UpdateMarketState' &&
-        market.state === MarketState.STATE_SUSPENDED_VIA_GOVERNANCE
+        market.state === MarketState.STATE_SUSPENDED_VIA_GOVERNANCE &&
+        p.terms.change.updateType ===
+          MarketUpdateType.MARKET_STATE_UPDATE_TYPE_RESUME
     ),
     (p) => p.terms.enactmentDatetime
   );
