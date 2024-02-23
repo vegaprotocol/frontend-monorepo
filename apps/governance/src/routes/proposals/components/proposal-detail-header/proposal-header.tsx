@@ -312,7 +312,7 @@ const ProposalDetails = ({
           {proposal.subProposals.map((p, i) => {
             if (!p?.terms) return null;
             return (
-              <li key={i} className="flex gap-3">
+              <li key={i} className="flex gap-3 items-center">
                 <span className={getIndicatorStyle(i + 1)}>{i + 1}</span>
                 <span>
                   <div>{renderDetails(p.terms)}</div>
