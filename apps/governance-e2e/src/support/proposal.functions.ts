@@ -112,8 +112,6 @@ export function createNewMarketProposalTxBody(): ProposalSubmissionBody {
               performanceHysteresisEpochs: 2,
               slaCompetitionFactor: '0.1',
             },
-            // FIXME: workaround because of https://github.com/vegaprotocol/vega/issues/10343
-            quadraticSlippageFactor: '0',
             instrument: {
               name: 'Token test market',
               code: 'TEST.24h',
@@ -210,6 +208,16 @@ export function createNewMarketProposalTxBody(): ProposalSubmissionBody {
                 sigma: 0.5,
               },
             },
+            markPriceConfiguration: {
+              decayWeight: '1',
+              decayPower: '1',
+              cashAmount: '5000000',
+              sourceWeights: undefined,
+              sourceStalenessTolerance: ['1m0s', '1m0s', '1m0s'],
+              compositePriceType: 'COMPOSITE_PRICE_TYPE_WEIGHTED',
+              dataSourcesSpec: [],
+              dataSourcesSpecBinding: [],
+            },
           },
         },
         closingTimestamp,
@@ -242,8 +250,6 @@ export function createSuccessorMarketProposalTxBody(
             decimalPlaces: '5',
             positionDecimalPlaces: '5',
             linearSlippageFactor: '0.001',
-            // FIXME: workaround because of https://github.com/vegaprotocol/vega/issues/10343
-            quadraticSlippageFactor: '0',
             liquiditySlaParameters: {
               priceRange: '0.5',
               commitmentMinTimeFraction: '0.1',
@@ -353,6 +359,16 @@ export function createSuccessorMarketProposalTxBody(
             successor: {
               parentMarketId: parentMarketId,
               insurancePoolFraction: '0.75',
+            },
+            markPriceConfiguration: {
+              decayWeight: '1',
+              decayPower: '1',
+              cashAmount: '5000000',
+              sourceWeights: undefined,
+              sourceStalenessTolerance: ['1m0s', '1m0s', '1m0s'],
+              compositePriceType: 'COMPOSITE_PRICE_TYPE_WEIGHTED',
+              dataSourcesSpec: [],
+              dataSourcesSpecBinding: [],
             },
           },
         },

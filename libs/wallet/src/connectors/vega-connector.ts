@@ -160,9 +160,9 @@ interface ProposalNewMarketTerms {
         decayWeight: string;
         decayPower: string;
         cashAmount: string;
-        sourceWeights: string[];
+        sourceWeights: undefined;
         sourceStalenessTolerance: string[];
-        compositePriceType: Schema.CompositePriceType;
+        compositePriceType: string;
         dataSourcesSpec: Schema.DataSourceDefinition[];
         dataSourcesSpecBinding: Schema.SpecBindingForCompositePrice[];
       };
@@ -177,8 +177,6 @@ interface ProposalUpdateMarketTerms {
     marketId: string;
     changes: {
       linearSlippageFactor: string;
-      // FIXME: workaround because of https://github.com/vegaprotocol/vega/issues/10343
-      quadraticSlippageFactor: string;
       instrument: {
         code: string;
         future: {
