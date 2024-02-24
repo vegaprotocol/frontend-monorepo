@@ -1,4 +1,5 @@
 import { ConnectorError, ConnectorErrors } from '.';
+import { type Transaction } from '../transaction-types';
 import {
   JsonRpcMethod,
   type Connector,
@@ -17,6 +18,29 @@ type SnapConfig = {
   snapId: string;
 };
 
+type SnapInvocationParams = Partial<{
+  transaction: Transaction;
+  publicKey: string;
+  networkEndpoints: string[];
+  sendingMode: 'TYPE_SYNC';
+}>;
+
+type RequestArguments = {
+  method: string;
+  params?: unknown[] | object;
+};
+
+declare global {
+  type WindowEthereumProvider = {
+    isMetaMask: boolean;
+    request<T = unknown>(args: RequestArguments): Promise<T>;
+  };
+
+  interface Window {
+    ethereum: WindowEthereumProvider;
+  }
+}
+
 export class SnapConnector implements Connector {
   readonly id = 'snap';
   readonly name = 'MetaMask Snap';
@@ -27,9 +51,8 @@ export class SnapConnector implements Connector {
   version: string;
   snapId: string;
 
-  // Note: we may not be able to set `node` in the constructor
-  // as the trading app won't know the current node until
-  // the app runs
+  // Note: apps may not know which node is selected on start up so its up
+  // to the app to make sure class intances are renewed if the node changes
   constructor(config: SnapConfig) {
     this.node = config.node;
     this.version = config.version;
@@ -58,7 +81,6 @@ export class SnapConnector implements Connector {
     }
   }
 
-  // TODO: check how snaps should actually disconnect
   async disconnectWallet() {
     return { success: true };
   }
@@ -66,9 +88,12 @@ export class SnapConnector implements Connector {
   // deprecated, pass chain on connect
   async getChainId() {
     try {
-      const res = await this.invokeSnap(JsonRpcMethod.GetChainId, {
-        networkEndpoints: [this.node],
-      });
+      const res = await this.invokeSnap<{ chainID: string }>(
+        JsonRpcMethod.GetChainId,
+        {
+          networkEndpoints: [this.node],
+        }
+      );
       return { chainId: res.chainID };
     } catch (err) {
       throw ConnectorErrors.chainId;
@@ -77,8 +102,10 @@ export class SnapConnector implements Connector {
 
   async listKeys() {
     try {
-      const res = await this.invokeSnap(JsonRpcMethod.ListKeys);
-      return res.keys as Array<{ publicKey: string; name: string }>;
+      const res = await this.invokeSnap<{
+        keys: Array<{ publicKey: string; name: string }>;
+      }>(JsonRpcMethod.ListKeys);
+      return res.keys;
     } catch (err) {
       throw ConnectorErrors.listKeys;
     }
@@ -95,10 +122,22 @@ export class SnapConnector implements Connector {
 
   async sendTransaction(params: TransactionParams) {
     try {
-      const res = await this.invokeSnap(JsonRpcMethod.SendTransaction, {
+      let transaction = null;
+      try {
+        transaction = JSON.parse(JSON.stringify(params.transaction));
+      } catch (err) {
+        throw ConnectorErrors.sendTransaction;
+      }
+
+      const res = await this.invokeSnap<{
+        transactionHash: string;
+        transaction: { signature: { value: string } };
+        receivedAt: string;
+        sentAt: string;
+      }>(JsonRpcMethod.SendTransaction, {
         publicKey: params.publicKey,
         sendingMode: params.sendingMode,
-        transaction: params.transaction,
+        transaction,
         networkEndpoints: [this.node],
       });
 
@@ -113,7 +152,7 @@ export class SnapConnector implements Connector {
         throw err;
       }
 
-      throw ConnectorErrors.noConnector;
+      throw ConnectorErrors.sendTransaction;
     }
   }
 
@@ -143,18 +182,28 @@ export class SnapConnector implements Connector {
     });
   }
 
-  async getSnap() {
-    const snaps = await this.request(EthereumMethod.GetSnaps);
-    return Object.values(snaps).find(
-      // @ts-ignore fix these types
-      (s) => s.id === this.snapId && s.version === this.version
-    );
-  }
-
-  // TODO: fix any
+  // TODO: check if this is needed, its used in use-snap-status
   //
-  // eslint-disable-next-line
-  async invokeSnap(method: JsonRpcMethod, params?: any) {
+  //
+  // /**
+  //  * Gets the list of all installed snaps.
+  //  * More information here: https://docs.metamask.io/snaps/reference/rpc-api/#wallet_getsnaps
+  //  */
+  // async getSnap() {
+  //   const snaps = await this.request(EthereumMethod.GetSnaps);
+  //   return Object.values(snaps).find(
+  //     (s) => s.id === this.snapId && s.version === this.version
+  //   );
+  // }
+
+  /**
+   * Calls a method on the specified snap, always vega in this case
+   * should always be npm:@vegaprotocol/snap
+   */
+  async invokeSnap<TResult>(
+    method: JsonRpcMethod,
+    params?: SnapInvocationParams
+  ): Promise<TResult> {
     return await this.request(EthereumMethod.InvokeSnap, {
       snapId: this.snapId,
       request: {
@@ -164,19 +213,28 @@ export class SnapConnector implements Connector {
     });
   }
 
-  // TODO: fix any
-  //
-  // eslint-disable-next-line
-  async request(method: EthereumMethod, params?: any) {
-    // eslint-disable-next-line
-    if (!(window as any).ethereum) {
-      throw new Error('no window.ethereum');
+  /**
+   * Calls window.ethereum.request with method and params
+   */
+  async request<TResult>(
+    method: EthereumMethod,
+    params?: object
+  ): Promise<TResult> {
+    if (
+      'ethereum' in window &&
+      typeof window.ethereum === 'object' &&
+      window.ethereum &&
+      'request' in window.ethereum &&
+      'isMetaMask' in window.ethereum &&
+      window.ethereum.isMetaMask &&
+      typeof window.ethereum.request === 'function'
+    ) {
+      return window.ethereum.request({
+        method,
+        params,
+      });
     }
 
-    // @ts-ignore ethereum types a bit mangled from web3-react
-    return window.ethereum.request({
-      method,
-      params,
-    });
+    throw ConnectorErrors.noConnector;
   }
 }
