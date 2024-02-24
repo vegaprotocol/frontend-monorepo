@@ -4,9 +4,9 @@ import { isValidVegaPublicKey } from '@vegaprotocol/utils';
 import { ConnectorError, ConnectorErrors } from '.';
 import { type TransactionResponse } from '../transaction-types';
 
-export class ReadOnlyConnector implements Connector {
-  readonly id = 'readOnly';
-  readonly name = 'Read Only';
+export class ViewPartyConnector implements Connector {
+  readonly id = 'viewParty';
+  readonly name = 'View party';
   readonly description = 'Provide a public key to connect in read only mode.';
 
   store: StoreApi<Store> | undefined;
@@ -92,11 +92,11 @@ export class ReadOnlyConnector implements Connector {
   }
 
   on() {
-    console.warn('events are not supported using a read only connection');
+    console.warn('events are not supported using a view party connection');
   }
 
   off() {
-    console.warn('events are not supported using a read only connection');
+    console.warn('events are not supported using a view party connection');
   }
 
   get pubKey() {

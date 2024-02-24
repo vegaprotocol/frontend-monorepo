@@ -15,6 +15,7 @@ export { useVegaWallet } from './hooks/use-vega-wallet';
 export { useConfig } from './hooks/use-config';
 export { useConnect } from './hooks/use-connect';
 export { useDisconnect } from './hooks/use-disconnect';
+export { usePubKeys } from './hooks/use-pub-keys';
 export { useSendTransaction } from './hooks/use-send-transaction';
 export { useWallet } from './hooks/use-wallet';
 

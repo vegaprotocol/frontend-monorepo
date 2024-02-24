@@ -27,7 +27,7 @@ export type ConnectorType =
   | 'injected'
   | 'jsonRpc'
   | 'snap'
-  | 'readOnly'
+  | 'viewParty'
   | 'mock';
 
 export interface Connector {

@@ -52,7 +52,7 @@ export const ConnectorIcon = ({ id }: { id: ConnectorType }) => {
         </span>
       );
     }
-    case 'readOnly': {
+    case 'viewParty': {
       return (
         <span
           className={classNames(

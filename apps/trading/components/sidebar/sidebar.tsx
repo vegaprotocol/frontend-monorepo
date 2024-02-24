@@ -84,7 +84,10 @@ export const Sidebar = ({ options }: { options?: ReactNode }) => {
             <SidebarButton
               view={ViewType.ViewAs}
               onClick={async () => {
-                await connect('readOnly');
+                const res = await connect('viewParty');
+                if (res.status !== 'connected') {
+                  alert('Invalid public key');
+                }
               }}
               icon={VegaIconNames.EYE}
               tooltip={t('View as party')}

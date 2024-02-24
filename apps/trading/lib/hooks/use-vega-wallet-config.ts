@@ -2,7 +2,7 @@ import {
   InjectedConnector,
   JsonRpcConnector,
   SnapConnector,
-  ReadOnlyConnector,
+  ViewPartyConnector,
   createConfig,
   fairground,
   stagnet,
@@ -32,12 +32,12 @@ export const useVegaWalletConfig = () => {
       version: '0.3.1',
     });
 
-    const readOnly = new ReadOnlyConnector();
+    const viewParty = new ViewPartyConnector();
 
     const config = createConfig({
       chains: [fairground, stagnet],
       defaultChainId: CHAIN_IDS[VEGA_ENV],
-      connectors: [injected, jsonRpc, snap, readOnly],
+      connectors: [injected, jsonRpc, snap, viewParty],
     });
 
     return config;

@@ -11,7 +11,7 @@ export {
   InjectedConnector,
   SnapConnector,
   JsonRpcConnector,
-  ReadOnlyConnector,
+  ViewPartyConnector,
   MockConnector,
   ConnectorError,
   ConnectorErrors,
