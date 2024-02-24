@@ -13,6 +13,7 @@ import { Settings } from '../settings';
 import { Tooltip } from '../../components/tooltip';
 import { WithdrawContainer } from '../withdraw-container';
 import { GetStarted } from '../welcome-dialog';
+import { useConnect, usePubKeys } from '@vegaprotocol/wallet-react';
 import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
 import { useT } from '../../lib/use-t';
 import { ErrorBoundary } from '../error-boundary';
@@ -25,6 +26,7 @@ export enum ViewType {
   Withdraw = 'Withdraw',
   Transfer = 'Transfer',
   Settings = 'Settings',
+  ViewAs = 'ViewAs',
   Close = 'Close',
 }
 
@@ -55,6 +57,8 @@ export type BarView =
     };
 
 export const Sidebar = ({ options }: { options?: ReactNode }) => {
+  const { connect } = useConnect();
+  const { pubKeys } = usePubKeys();
   const t = useT();
   const currentRouteId = useGetCurrentRouteId();
   const navClasses = 'flex lg:flex-col items-center gap-2 lg:gap-4 p-1';
@@ -76,12 +80,24 @@ export const Sidebar = ({ options }: { options?: ReactNode }) => {
         )}
       >
         {!isMobile ? (
-          <SidebarButton
-            view={ViewType.Settings}
-            icon={VegaIconNames.COG}
-            tooltip={t('Settings')}
-            routeId={currentRouteId}
-          />
+          <>
+            <SidebarButton
+              view={ViewType.ViewAs}
+              onClick={async () => {
+                await connect('readOnly');
+              }}
+              icon={VegaIconNames.EYE}
+              tooltip={t('View as party')}
+              disabled={Boolean(pubKeys.length)}
+              routeId={currentRouteId}
+            />
+            <SidebarButton
+              view={ViewType.Settings}
+              icon={VegaIconNames.COG}
+              tooltip={t('Settings')}
+              routeId={currentRouteId}
+            />
+          </>
         ) : (
           currView && (
             <SidebarButton
