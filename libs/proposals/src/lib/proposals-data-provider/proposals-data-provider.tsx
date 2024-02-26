@@ -14,8 +14,13 @@ import {
   type MarketViewProposalsQuery,
   type MarketViewProposalsQueryVariables,
   type MarketViewLiveProposalsSubscriptionVariables,
-  type MarketViewBatchProposalFieldsFragment,
+  type SubProposalFragment,
 } from './__generated__/Proposals';
+
+export type ProposalFragment =
+  | MarketViewProposalFieldsFragment
+  | SubProposalFragment;
+export type ProposalFragments = Array<ProposalFragment>;
 
 const getData = (responseData: ProposalsListQuery | null) =>
   responseData?.proposalsConnection?.edges
@@ -63,34 +68,23 @@ const ProposalTypeMap: Record<
 };
 
 const matchFilter = (
-  data:
-    | MarketViewProposalFieldsFragment
-    | MarketViewBatchProposalFieldsFragment,
+  data: ProposalFragment,
   variables: MarketViewProposalsQueryVariables
 ) => {
   return (
     (!variables.inState || data.state === variables.inState) &&
     (!variables.proposalType ||
-      (data.__typename === 'Proposal' &&
-        data.terms.change.__typename ===
-          ProposalTypeMap[variables.proposalType]) ||
-      (data.__typename === 'BatchProposal' &&
-        data.subProposals?.find(
-          (p) =>
-            variables.proposalType &&
-            p?.terms?.change.__typename ===
-              ProposalTypeMap[variables.proposalType]
-        )))
+      data.terms?.change.__typename === ProposalTypeMap[variables.proposalType])
   );
 };
 
 export const update: Update<
-  MarketViewProposalFieldsFragment[] | null,
-  MarketViewProposalFieldsFragment,
+  ProposalFragment[] | null,
+  ProposalFragment,
   MarketViewProposalsQueryVariables
 > = (
-  data: MarketViewProposalFieldsFragment[] | null,
-  delta: MarketViewProposalFieldsFragment,
+  data: ProposalFragment[] | null,
+  delta: ProposalFragment,
   reload,
   variables
 ) => {
@@ -115,19 +109,18 @@ export const update: Update<
 
 const getMarketProposalsData = (
   responseData: MarketViewProposalsQuery | null
-): MarketViewProposalFieldsFragment[] => {
-  const proposals: MarketViewProposalFieldsFragment[] = [];
+): ProposalFragments => {
+  const proposals: ProposalFragment[] = [];
   responseData?.proposalsConnection?.edges?.forEach((edge) => {
     if (edge?.proposalNode) {
       if (edge.proposalNode.__typename === 'Proposal') {
-        proposals.push(edge.proposalNode as MarketViewProposalFieldsFragment);
+        proposals.push(edge.proposalNode);
       } else if (
         edge.proposalNode.__typename === 'BatchProposal' &&
         edge.proposalNode.subProposals
       ) {
         proposals.push(
-          ...(edge.proposalNode
-            .subProposals as MarketViewProposalFieldsFragment[])
+          ...(edge.proposalNode.subProposals as ProposalFragments)
         );
       }
     }
@@ -139,7 +132,7 @@ const subscriptionVariables: MarketViewLiveProposalsSubscriptionVariables = {};
 
 export const marketViewProposalsDataProvider = makeDataProvider<
   MarketViewProposalsQuery,
-  MarketViewProposalFieldsFragment[],
+  ProposalFragments,
   MarketViewLiveProposalsSubscription,
   MarketViewProposalFieldsFragment,
   MarketViewProposalsQueryVariables,

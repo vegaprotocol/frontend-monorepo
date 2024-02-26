@@ -1,5 +1,5 @@
 import { Fragment } from 'react';
-import { type MarketViewProposalFieldsFragment } from '@vegaprotocol/proposals';
+import { type ProposalFragment } from '@vegaprotocol/proposals';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 import { DApp, TOKEN_PROPOSAL, useLinks } from '@vegaprotocol/environment';
 import { useT } from '../../lib/use-t';
@@ -7,7 +7,7 @@ import { useT } from '../../lib/use-t';
 export const MarketSuccessorProposalBanner = ({
   proposals,
 }: {
-  proposals: MarketViewProposalFieldsFragment[];
+  proposals: ProposalFragment[];
 }) => {
   const t = useT();
   const tokenLink = useLinks(DApp.Governance);
@@ -28,7 +28,7 @@ export const MarketSuccessorProposalBanner = ({
           }
         )}{' '}
         {proposals.map((item, i) => {
-          if (item.terms.change.__typename !== 'NewMarket') {
+          if (item.terms?.change.__typename !== 'NewMarket') {
             return null;
           }
 

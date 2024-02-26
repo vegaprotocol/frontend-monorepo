@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react';
 import sortBy from 'lodash/sortBy';
 import { format, formatDuration, intervalToDuration } from 'date-fns';
-import { type MarketViewProposalFieldsFragment } from '@vegaprotocol/proposals';
+import { type ProposalFragment } from '@vegaprotocol/proposals';
 import { MarketUpdateType, ProposalState } from '@vegaprotocol/types';
 import {
   DApp,
@@ -19,7 +19,7 @@ export const MarketUpdateStateBanner = ({
   proposals,
 }: {
   market: Market;
-  proposals: MarketViewProposalFieldsFragment[];
+  proposals: ProposalFragment[];
 }) => {
   const t = useT();
   const governanceLink = useLinks(DApp.Governance);
@@ -27,20 +27,21 @@ export const MarketUpdateStateBanner = ({
   const openTradingProposals = sortBy(
     proposals.filter(
       (p) =>
+        p.terms &&
         p.terms.change.__typename === 'UpdateMarketState' &&
         p.terms.change.updateType ===
           MarketUpdateType.MARKET_STATE_UPDATE_TYPE_RESUME
     ),
-    (p) => p.terms.enactmentDatetime
+    (p) => p.terms?.enactmentDatetime
   );
 
   const openProposals = sortBy(
     proposals.filter((p) => p.state === ProposalState.STATE_OPEN),
-    (p) => p.terms.enactmentDatetime
+    (p) => p.terms?.enactmentDatetime
   );
   const passedProposals = sortBy(
     proposals.filter((p) => p.state === ProposalState.STATE_PASSED),
-    (p) => p.terms.enactmentDatetime
+    (p) => p.terms?.enactmentDatetime
   );
 
   if (!passedProposals.length && !openProposals.length) {
@@ -55,9 +56,18 @@ export const MarketUpdateStateBanner = ({
       ? governanceLink(TOKEN_PROPOSAL.replace(':id', openProposals[0]?.id))
       : undefined;
 
-  const openTradingProposalsLink = openTradingProposals[0]?.id
-    ? governanceLink(TOKEN_PROPOSAL.replace(':id', openTradingProposals[0]?.id))
-    : undefined;
+  const openTradingProposalsLink =
+    openTradingProposals[0]?.__typename === 'Proposal' &&
+    openTradingProposals[0]?.id
+      ? governanceLink(
+          TOKEN_PROPOSAL.replace(':id', openTradingProposals[0].id)
+        )
+      : openTradingProposals[0]?.__typename === 'ProposalDetail' &&
+        openTradingProposals[0]?.batchId
+      ? governanceLink(
+          TOKEN_PROPOSAL.replace(':id', openTradingProposals[0].batchId)
+        )
+      : undefined;
 
   const proposalsLink =
     openProposals.length > 1 ? governanceLink(TOKEN_PROPOSALS) : undefined;
@@ -146,20 +156,23 @@ export const MarketUpdateStateBanner = ({
   return <div data-testid={`update-state-banner-${market.id}`}>{content}</div>;
 };
 
-const getMessageVariables = (proposal: MarketViewProposalFieldsFragment) => {
-  const enactmentDatetime = new Date(proposal.terms.enactmentDatetime);
-  const date = format(enactmentDatetime, 'dd MMMM');
-  const duration = formatDuration(
-    intervalToDuration({
-      start: new Date(),
-      end: enactmentDatetime,
-    }),
-    {
-      format: ['days', 'hours'],
-    }
-  );
+const getMessageVariables = (proposal: ProposalFragment) => {
+  const enactmentDatetime =
+    proposal.terms && new Date(proposal.terms.enactmentDatetime);
+  const date = enactmentDatetime && format(enactmentDatetime, 'dd MMMM');
+  const duration =
+    enactmentDatetime &&
+    formatDuration(
+      intervalToDuration({
+        start: new Date(),
+        end: enactmentDatetime,
+      }),
+      {
+        format: ['days', 'hours'],
+      }
+    );
   const price =
-    proposal.terms.change.__typename === 'UpdateMarketState'
+    proposal.terms?.change.__typename === 'UpdateMarketState'
       ? proposal.terms.change.price
       : '';
   return {
