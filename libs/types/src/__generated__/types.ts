@@ -1232,6 +1232,14 @@ export type EpochTimestamps = {
   start?: Maybe<Scalars['Timestamp']>;
 };
 
+export type EquityLikeShareWeightPerMarket = {
+  __typename?: 'EquityLikeShareWeightPerMarket';
+  /** The equity-like share weight for this market */
+  equityLikeShareWeight: Scalars['String'];
+  /** The market ID */
+  marketId: Scalars['String'];
+};
+
 /** Response for the signature bundle to allowlist an ERC20 token in the collateral bridge */
 export type Erc20ListAssetBundle = {
   __typename?: 'Erc20ListAssetBundle';
@@ -1955,7 +1963,7 @@ export type LiquidityOrderReference = {
 /** Information about a liquidity provider */
 export type LiquidityProvider = {
   __typename?: 'LiquidityProvider';
-  /** Information used for calculating an LP's fee share, such as the equity like share, average entry valuation and liquidity score, for the given liquidity provider and market */
+  /** Information used for calculating an LP's fee share, such as the equity-like share, average entry valuation and liquidity score, for the given liquidity provider and market */
   feeShare?: Maybe<LiquidityProviderFeeShare>;
   /** Market ID the liquidity provision is for */
   marketId: Scalars['ID'];
@@ -1983,7 +1991,7 @@ export type LiquidityProviderEdge = {
   node: LiquidityProvider;
 };
 
-/** The equity like share of liquidity fee for each liquidity provider */
+/** The equity-like share of liquidity fee for each liquidity provider */
 export type LiquidityProviderFeeShare = {
   __typename?: 'LiquidityProviderFeeShare';
   /** The average entry valuation of the liquidity provider for the market */
@@ -2483,7 +2491,7 @@ export type MarketData = {
   indicativeVolume: Scalars['String'];
   /** The last traded price (an unsigned integer) */
   lastTradedPrice: Scalars['String'];
-  /** The equity like share of liquidity fee for each liquidity provider */
+  /** The equity-like share of liquidity fee for each liquidity provider */
   liquidityProviderFeeShare?: Maybe<Array<LiquidityProviderFeeShare>>;
   /** SLA performance statistics */
   liquidityProviderSla?: Maybe<Array<LiquidityProviderSLA>>;
@@ -3032,7 +3040,7 @@ export type Normaliser = {
   name: Scalars['String'];
 };
 
-/** The equity like share of liquidity fee for each liquidity provider */
+/** The equity-like share of liquidity fee for each liquidity provider */
 export type ObservableLiquidityProviderFeeShare = {
   __typename?: 'ObservableLiquidityProviderFeeShare';
   /** The average entry valuation of the liquidity provider for the market */
@@ -3099,7 +3107,7 @@ export type ObservableMarketData = {
   indicativeVolume: Scalars['String'];
   /** The last traded price (an unsigned integer) */
   lastTradedPrice: Scalars['String'];
-  /** The equity like share of liquidity fee for each liquidity provider */
+  /** The equity-like share of liquidity fee for each liquidity provider */
   liquidityProviderFeeShare?: Maybe<Array<ObservableLiquidityProviderFeeShare>>;
   /** SLA performance statistics */
   liquidityProviderSla?: Maybe<Array<ObservableLiquidityProviderSLA>>;
@@ -3830,12 +3838,14 @@ export type PartytradesConnectionArgs = {
 /** Represents a party on Vega, could be an ethereum wallet address in the future */
 export type PartytransfersConnectionArgs = {
   direction?: InputMaybe<TransferDirection>;
+  fromAccountType?: InputMaybe<AccountType>;
   fromEpoch?: InputMaybe<Scalars['Int']>;
   gameId?: InputMaybe<Scalars['ID']>;
   isReward?: InputMaybe<Scalars['Boolean']>;
   pagination?: InputMaybe<Pagination>;
   scope?: InputMaybe<TransferScope>;
   status?: InputMaybe<TransferStatus>;
+  toAccountType?: InputMaybe<AccountType>;
   toEpoch?: InputMaybe<Scalars['Int']>;
 };
 
@@ -4471,7 +4481,7 @@ export enum ProposalRejectionReason {
   PROPOSAL_ERROR_GOVERNANCE_TRANSFER_PROPOSAL_INVALID = 'PROPOSAL_ERROR_GOVERNANCE_TRANSFER_PROPOSAL_INVALID',
   /** Proposal terms timestamps are not compatible (Validation < Closing < Enactment) */
   PROPOSAL_ERROR_INCOMPATIBLE_TIMESTAMPS = 'PROPOSAL_ERROR_INCOMPATIBLE_TIMESTAMPS',
-  /** The proposal is rejected because the party does not have enough equity like share in the market */
+  /** The proposal is rejected because the party does not have enough equity-like share in the market */
   PROPOSAL_ERROR_INSUFFICIENT_EQUITY_LIKE_SHARE = 'PROPOSAL_ERROR_INSUFFICIENT_EQUITY_LIKE_SHARE',
   /** The proposer for this proposal has insufficient tokens */
   PROPOSAL_ERROR_INSUFFICIENT_TOKENS = 'PROPOSAL_ERROR_INSUFFICIENT_TOKENS',
@@ -4653,7 +4663,7 @@ export type ProposalVoteEdge = {
 
 export type ProposalVoteSide = {
   __typename?: 'ProposalVoteSide';
-  /** Total equity like share weight for this side (only for UpdateMarket Proposals) */
+  /** Total equity-like share weight for this side (only for UpdateMarket Proposals) */
   totalEquityLikeShareWeight: Scalars['String'];
   /** Total number of votes cast for this side */
   totalNumber: Scalars['String'];
@@ -5466,6 +5476,7 @@ export type QuerytransferArgs = {
 /** Queries allow a caller to read data and filter data via GraphQL. */
 export type QuerytransfersConnectionArgs = {
   direction?: InputMaybe<TransferDirection>;
+  fromAccountType?: InputMaybe<AccountType>;
   fromEpoch?: InputMaybe<Scalars['Int']>;
   gameId?: InputMaybe<Scalars['ID']>;
   isReward?: InputMaybe<Scalars['Boolean']>;
@@ -5473,6 +5484,7 @@ export type QuerytransfersConnectionArgs = {
   partyId?: InputMaybe<Scalars['ID']>;
   scope?: InputMaybe<TransferScope>;
   status?: InputMaybe<TransferStatus>;
+  toAccountType?: InputMaybe<AccountType>;
   toEpoch?: InputMaybe<Scalars['Int']>;
 };
 
@@ -7238,7 +7250,9 @@ export type Vote = {
   __typename?: 'Vote';
   /** RFC3339Nano time and date when the vote reached Vega network */
   datetime: Scalars['Timestamp'];
-  /** The weight of this vote based on the total equity like share */
+  /** The equity-like share weight per market (only for batch proposals) */
+  equityLikeSharePerMarket?: Maybe<Array<Maybe<EquityLikeShareWeightPerMarket>>>;
+  /** The weight of this vote based on the total equity-like share */
   equityLikeShareWeight: Scalars['String'];
   /** Total number of governance tokens for the party that cast the vote */
   governanceTokenBalance: Scalars['String'];

@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { ProposalState } from '@vegaprotocol/types';
 import { MarketUpdateBanner } from './market-update-banner';
-import { type MarketViewProposalFieldsFragment } from '@vegaprotocol/proposals';
+import { type ProposalFragment } from '@vegaprotocol/proposals';
 
 describe('MarketUpdateBanner', () => {
   const change = {
@@ -34,9 +34,7 @@ describe('MarketUpdateBanner', () => {
 
   it('renders content for a single open proposal', () => {
     render(
-      <MarketUpdateBanner
-        proposals={[openProposal as MarketViewProposalFieldsFragment]}
-      />
+      <MarketUpdateBanner proposals={[openProposal as ProposalFragment]} />
     );
 
     expect(
@@ -50,9 +48,7 @@ describe('MarketUpdateBanner', () => {
 
   it('renders content for a single passed proposal', () => {
     render(
-      <MarketUpdateBanner
-        proposals={[passedProposal as MarketViewProposalFieldsFragment]}
-      />
+      <MarketUpdateBanner proposals={[passedProposal as ProposalFragment]} />
     );
 
     expect(
@@ -65,10 +61,7 @@ describe('MarketUpdateBanner', () => {
   });
 
   it('renders content for multiple passed proposals', () => {
-    const proposals = [
-      openProposal,
-      openProposal,
-    ] as MarketViewProposalFieldsFragment[];
+    const proposals = [openProposal, openProposal] as ProposalFragment[];
 
     render(<MarketUpdateBanner proposals={proposals} />);
 
