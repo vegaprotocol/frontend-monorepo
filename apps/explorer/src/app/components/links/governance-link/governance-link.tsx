@@ -9,7 +9,7 @@ export type GovernanceLinkProps = {
 /**
  * Just a link to the governance page, with optional text
  */
-const GovernanceLink = ({ text = t('Goveranance') }: GovernanceLinkProps) => {
+const GovernanceLink = ({ text = t('Governance') }: GovernanceLinkProps) => {
   const base = ENV.dataSources.governanceUrl;
 
   return <ExternalLink href={base}>{text}</ExternalLink>;

@@ -243,21 +243,13 @@ export const NetworkTransfersTable = () => {
                           shouldHideColumns ? 'hidden' : ''
                         }`}
                       >
-                        {!isGovernanceTransfer(a?.kind.__typename) && (
-                          <span
-                            className="underline decoration-dotted"
-                            title={a?.kind.__typename}
-                            data-testid="transfer-kind"
-                          >
-                            {a && typeLabel(a.kind.__typename)}
-                          </span>
-                        )}
-
-                        {isGovernanceTransfer(a?.kind.__typename) && (
-                          <span className="">
-                            {typeLabel(a?.kind.__typename)}
-                          </span>
-                        )}
+                        <span
+                          className="underline decoration-dotted"
+                          title={a?.kind.__typename}
+                          data-testid="transfer-kind"
+                        >
+                          {a && typeLabel(a.kind.__typename)}
+                        </span>
                         {isGovernanceTransfer(a?.kind.__typename) && a?.id && (
                           <span className="ml-4">
                             <ProposalLink id={a?.id} text="View" />
