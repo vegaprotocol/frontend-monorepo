@@ -206,7 +206,7 @@ export const ProposalsList = ({
         />
       )}
 
-      <section className="-mx-4 p-4 mb-8 bg-vega-dark-100">
+      <section className="-mx-4 p-4 mb-8 bg-vega-cdark-900 rounded-l-sm">
         <SubHeading title={t('openProposals')} />
 
         {sortedProposals.open.length > 0 ||

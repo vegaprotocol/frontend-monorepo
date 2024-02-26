@@ -18,7 +18,7 @@ export const ProposalJson = ({ proposal }: { proposal?: unknown }) => {
         <SubHeading title={t('proposalJson')} />
       </CollapsibleToggle>
 
-      {showDetails && <SyntaxHighlighter data={proposal} />}
+      {showDetails && <SyntaxHighlighter size="smaller" data={proposal} />}
     </section>
   );
 };
