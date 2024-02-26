@@ -119,7 +119,7 @@ def setup_market_and_referral_scheme(vega: VegaServiceNull, continuous_market: s
     forward_time(vega)
 
 
-@pytest.mark.usefixtures("page", "auth", "risk_accepted")
+@pytest.mark.usefixtures("auth", "risk_accepted")
 def test_can_traverse_up_and_down_through_tiers(continuous_market, vega: VegaServiceNull, page: Page):
     setup_market_and_referral_scheme(vega, continuous_market, page)
     change_keys(page, vega, PARTY_B.name)
@@ -163,7 +163,7 @@ def test_can_traverse_up_and_down_through_tiers(continuous_market, vega: VegaSer
         "1%", "1", "1%", "0", "1", "1"))
 
 
-@pytest.mark.usefixtures("page", "auth", "risk_accepted")
+@pytest.mark.usefixtures("auth", "risk_accepted")
 def test_does_not_move_up_tiers_when_not_enough_epochs(continuous_market, vega: VegaServiceNull, page: Page):
     setup_market_and_referral_scheme(vega, continuous_market, page)
     change_keys(page, vega, PARTY_B.name)
