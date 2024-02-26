@@ -64,10 +64,10 @@ export const MarketUpdateStateBanner = ({
 
   let content: ReactNode;
 
-  if (openTradingProposals.length > 1) {
+  if (openTradingProposals.length >= 1) {
     content = (
       <>
-        <p className="uppercase mb-1">
+        <p className="mb-1">
           {t(
             'Trading on market {{name}} was suspended by governance. There are open proposals to resume trading on this market.',
             { name }
