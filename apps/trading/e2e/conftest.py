@@ -182,11 +182,14 @@ def vega(request):
         request.addfinalizer(lambda: cleanup_container(vega_instance))
         yield vega_instance
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="session", autouse=True)
 def shared_vega(request):
     with init_vega(request) as vega_instance:
-        request.addfinalizer(lambda: cleanup_container(vega_instance))
-        yield vega_instance
+        try:
+            request.addfinalizer(lambda: cleanup_container(vega_instance))
+            yield vega_instance
+        finally:
+            cleanup_container(vega_instance)
 
 @pytest.fixture
 def page_shared_vega(shared_vega, browser, request):
