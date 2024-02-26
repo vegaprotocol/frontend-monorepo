@@ -235,7 +235,7 @@ def test_submit_stop_oco_market_order_pending(
         "PendingOCO"
     )
 
-@pytest.mark.usefixtures("page", "continuous_market", "auth", "risk_accepted")
+@pytest.mark.usefixtures("auth", "risk_accepted")
 def test_submit_stop_oco_limit_order_pending(
     continuous_market, vega: VegaServiceNull, page: Page
 ):
