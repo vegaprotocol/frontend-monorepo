@@ -2,6 +2,11 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { ProposalUpdateMarketState } from './proposal-update-market-state';
 import { MarketUpdateType } from '@vegaprotocol/types';
 
+jest.mock('../proposal/market-name.tsx', () => ({
+  ...jest.requireActual('../proposal/market-name.tsx'),
+  MarketName: jest.fn(),
+}));
+
 describe('<ProposalUpdateMarketState />', () => {
   const suspendProposal = {
     __typename: 'UpdateMarketState' as const,

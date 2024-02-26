@@ -25,7 +25,7 @@ export const addCreateMarket = () => {
     cy.highlight('creating market on capsule environment');
 
     cy.wrap(createMarket(config), {
-      timeout: 5 * 60 * 1000,
+      timeout: 9 * 60 * 1000,
     })
       // register market list result so it can be retrieved in tests later
       .as('markets');

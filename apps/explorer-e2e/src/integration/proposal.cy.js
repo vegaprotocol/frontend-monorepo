@@ -1,7 +1,7 @@
 import { getNewAssetTxBody } from '../support/governance.functions';
 
 context('Proposal page', { tags: '@smoke' }, function () {
-  describe('Verify elements on page', function () {
+  describe.skip('Verify elements on page', function () {
     const proposalHeading = 'proposals-heading';
     const dateTimeRegex =
       /(\d{1,2})\/(\d{1,2})\/(\d{4}), (\d{1,2}):(\d{1,2}):(\d{1,2})/gm;

@@ -1,7 +1,8 @@
 import classNames from 'classnames';
+import { type ReactNode } from 'react';
 
 interface HeadingProps {
-  title?: string;
+  title?: ReactNode;
   centerContent?: boolean;
   marginTop?: boolean;
   marginBottom?: boolean;

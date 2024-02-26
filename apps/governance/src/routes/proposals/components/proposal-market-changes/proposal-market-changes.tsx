@@ -18,6 +18,7 @@ import {
   type SingleProposalData,
   type SubProposalData,
 } from '../proposal/proposal-utils';
+import { MarketName } from '../proposal/market-name';
 
 const immutableKeys = [
   'decimalPlaces',
@@ -139,7 +140,13 @@ export const ProposalMarketChanges = ({
         setToggleState={setShowChanges}
         dataTestId={'proposal-market-changes-toggle'}
       >
-        <SubHeading title={t('updatesToMarket')} />
+        <SubHeading
+          title={
+            <>
+              {t('UpdateToMarket')}: <MarketName marketId={marketId} />
+            </>
+          }
+        />
       </CollapsibleToggle>
 
       {showChanges && (

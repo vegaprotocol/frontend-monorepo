@@ -4,7 +4,6 @@ import {
   lpAggregatedDataProvider,
   type Filter,
   LiquidityTable,
-  liquidityProvisionsDataProvider,
 } from '@vegaprotocol/liquidity';
 import { getAsset, useMarket } from '@vegaprotocol/markets';
 import {
@@ -71,7 +70,7 @@ export const LiquidityContainer = ({
 
 const useReloadLiquidityData = (marketId: string | undefined) => {
   const { reload } = useDataProvider({
-    dataProvider: liquidityProvisionsDataProvider,
+    dataProvider: lpAggregatedDataProvider,
     variables: { marketId: marketId || '' },
     update: () => true,
     skip: !marketId,
