@@ -15,7 +15,7 @@ def vega(request):
         request.addfinalizer(lambda: cleanup_container(vega_instance))  # Register the cleanup function
         yield vega_instance
 
-
+#
 @pytest.fixture(scope="module", autouse=True)
 def markets(vega: VegaServiceNull):
     market_1 = setup_continuous_market(
@@ -215,7 +215,7 @@ def markets(vega: VegaServiceNull):
         side="SIDE_BUY",
         volume=10,
         price=60,
-    )
+    ) 
 
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
