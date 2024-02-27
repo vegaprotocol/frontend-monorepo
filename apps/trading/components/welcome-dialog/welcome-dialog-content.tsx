@@ -25,7 +25,7 @@ export const WelcomeDialogContent = () => {
   return (
     <div className="flex flex-col gap-4">
       <h2 className="text-xl">{t('Console {{env}}', { env: VEGA_ENV })}</h2>
-      <div className="flex flex-col sm:flex-row gap-8">
+      <div className="flex flex-col sm:flex-row gap-6 md:gap-8">
         <div className="flex flex-col gap-4 justify-between sm:w-1/2">
           <ul className="flex flex-col gap-4">
             <ListItemContent

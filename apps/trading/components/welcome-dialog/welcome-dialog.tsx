@@ -44,8 +44,12 @@ export const WelcomeDialog = () => {
   }, [dismissed, pathname, setDialog]);
 
   const onClose = () => {
-    setDialog('inactive');
-    dismiss();
+    if (dialog === 'connect' || dialog === 'risk') {
+      setDialog('intro');
+    } else {
+      setDialog('inactive');
+      dismiss();
+    }
   };
 
   return (
@@ -111,7 +115,7 @@ const OnboardConnectionOptions = ({ onConnect }: { onConnect: () => void }) => {
 
   if (status === 'disconnected') {
     return (
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-2 md:gap-4">
         <h2>{t('Connect to Vega')}</h2>
         <div className="flex flex-col items-start gap-6">
           <ul className="flex flex-col -mx-4 -mb-4">

@@ -1,4 +1,4 @@
-import { type FunctionComponent } from 'react';
+import { type ReactNode, type FunctionComponent } from 'react';
 import {
   ConnectorErrors,
   isBrowserWalletInstalled,
@@ -36,7 +36,7 @@ export const ConnectionOptions = ({
     <div className="flex flex-col items-start gap-4">
       <h2 className="text-xl">{t('Connect to Vega')}</h2>
       <ul
-        className="grid grid-cols-2 gap-1 -mx-2"
+        className="grid grid-cols-1 sm:grid-cols-2 gap-1 -mx-2"
         data-testid="connectors-list"
       >
         {connectors.map((c) => {
@@ -92,6 +92,11 @@ interface ConnectionOptionProps {
   onClick: () => void;
 }
 
+const CONNECTION_OPTION_CLASSES =
+  'w-full flex gap-2 items-center p-2 rounded first-letter:capitalize hover:bg-vega-clight-800 dark:hover:bg-vega-cdark-800';
+const CONNECTION_OPTION_CLASSES_DESC =
+  'w-full flex gap-2 items-start p-4 rounded first-letter:capitalize hover:bg-vega-clight-800 dark:hover:bg-vega-cdark-800';
+
 export const ConnectionOptionDefault = ({
   id,
   name,
@@ -101,18 +106,12 @@ export const ConnectionOptionDefault = ({
 }: ConnectionOptionProps) => {
   if (showDescription) {
     return (
-      <button
-        className="flex gap-2 w-full hover:bg-vega-clight-800 dark:hover:bg-vega-cdark-800 p-4 rounded"
-        onClick={onClick}
-      >
-        <span>
-          <ConnectorIcon id={id} />
-        </span>
+      <ConnectionOptionButtonWithDescription id={id} onClick={onClick}>
         <span className="flex flex-col justify-start text-left">
           <span className="first-letter:capitalize">{name}</span>
           <span className="text-muted text-sm">{description}</span>
         </span>
-      </button>
+      </ConnectionOptionButtonWithDescription>
     );
   }
 
@@ -124,14 +123,9 @@ export const ConnectionOptionDefault = ({
       sideOffset={10}
       delayDuration={400}
     >
-      <button
-        className="w-full flex gap-2 items-center p-2 rounded first-letter:capitalize hover:bg-vega-clight-800 dark:hover:bg-vega-cdark-800"
-        onClick={onClick}
-        data-testid={`connector-${id}`}
-      >
-        <ConnectorIcon id={id} />
+      <ConnectionOptionButton id={id} onClick={onClick}>
         {name}
-      </button>
+      </ConnectionOptionButton>
     </Tooltip>
   );
 };
@@ -155,35 +149,21 @@ export const ConnectionOptionInjected = ({
 
   if (showDescription) {
     return isBrowserWalletInstalled() ? (
-      <button
-        className="flex gap-2 w-full hover:bg-vega-clight-800 dark:hover:bg-vega-cdark-800 p-4 rounded"
-        onClick={onClick}
-      >
-        <span>
-          <ConnectorIcon id={id} />
-        </span>
+      <ConnectionOptionButtonWithDescription id={id} onClick={onClick}>
         <span className="flex flex-col justify-start text-left">
           <span className="capitalize leading-5">{name}</span>
           <span className="text-muted text-sm">{description}</span>
         </span>
-      </button>
+      </ConnectionOptionButtonWithDescription>
     ) : (
-      <a
-        className="flex gap-2 w-full hover:bg-vega-clight-800 dark:hover:bg-vega-cdark-800 p-4 rounded"
-        href={link}
-        target="_blank"
-        rel="noreferrer"
-      >
-        <span>
-          <ConnectorIcon id={id} />
-        </span>
+      <ConnectionOptionLinkWithDescription id={id} href={link}>
         <span className="flex flex-col justify-start text-left">
           <span className="capitalize leading-5">
             {t('Get the Vega Wallet')}
           </span>
           <span className="text-muted text-sm">{description}</span>
         </span>
-      </a>
+      </ConnectionOptionLinkWithDescription>
     );
   }
 
@@ -196,25 +176,15 @@ export const ConnectionOptionInjected = ({
       delayDuration={400}
     >
       {isBrowserWalletInstalled() ? (
-        <button
-          className="w-full flex gap-2 items-center p-2 rounded capitalize hover:bg-vega-clight-800 dark:hover:bg-vega-cdark-800"
-          onClick={onClick}
-          data-testid={`connector-${id}`}
-        >
-          <ConnectorIcon id={id} />
-          {name}
-        </button>
+        <span>
+          <ConnectionOptionButton id={id} onClick={onClick}>
+            {name}
+          </ConnectionOptionButton>
+        </span>
       ) : (
-        <a
-          href={link}
-          target="_blank"
-          rel="noreferrer"
-          className="w-full flex gap-2 items-center p-2 rounded capitalize hover:bg-vega-clight-800 dark:hover:bg-vega-cdark-800"
-          data-testid={`connector-${id}`}
-        >
-          <ConnectorIcon id={id} />
+        <ConnectionOptionLink id={id} href={link}>
           {t('Get the Vega Wallet')}
-        </a>
+        </ConnectionOptionLink>
       )}
     </Tooltip>
   );
@@ -235,35 +205,21 @@ export const ConnectionOptionSnap = ({
 
   if (showDescription) {
     return isMetaMaskInstalled() ? (
-      <button
-        className="flex gap-2 w-full hover:bg-vega-clight-800 dark:hover:bg-vega-cdark-800 p-4 rounded"
-        onClick={onClick}
-      >
-        <span>
-          <ConnectorIcon id={id} />
-        </span>
+      <ConnectionOptionButtonWithDescription id={id} onClick={onClick}>
         <span className="flex flex-col justify-start text-left">
           <span className="capitalize leading-5">{name}</span>
           <span className="text-muted text-sm">{description}</span>
         </span>
-      </button>
+      </ConnectionOptionButtonWithDescription>
     ) : (
-      <a
-        className="flex gap-2 w-full hover:bg-vega-clight-800 dark:hover:bg-vega-cdark-800 p-4 rounded"
-        href={link}
-        target="_blank"
-        rel="noreferrer"
-      >
-        <span>
-          <ConnectorIcon id={id} />
-        </span>
+      <ConnectionOptionLinkWithDescription id={id} href={link}>
         <span className="flex flex-col justify-start text-left">
           <span className="capitalize leading-5">
             {t('Get the Vega Wallet')}
           </span>
           <span className="text-muted text-sm">{description}</span>
         </span>
-      </a>
+      </ConnectionOptionLinkWithDescription>
     );
   }
 
@@ -276,27 +232,102 @@ export const ConnectionOptionSnap = ({
       delayDuration={400}
     >
       {isMetaMaskInstalled() ? (
-        <button
-          className="w-full flex gap-2 items-center p-2 rounded capitalize hover:bg-vega-clight-800 dark:hover:bg-vega-cdark-800"
-          onClick={onClick}
-          data-testid={`connector-${id}`}
-        >
-          <ConnectorIcon id={id} />
+        <ConnectionOptionButton id={id} onClick={onClick}>
           {name}
-        </button>
+        </ConnectionOptionButton>
       ) : (
-        <a
-          href={link}
-          target="_blank"
-          rel="noreferrer"
-          className="w-full flex gap-2 items-center p-2 rounded capitalize hover:bg-vega-clight-800 dark:hover:bg-vega-cdark-800"
-          data-testid={`connector-${id}`}
-        >
-          <ConnectorIcon id={id} />
+        <ConnectionOptionLink id={id} href={link}>
           {t('Get MetaMask')}
-        </a>
+        </ConnectionOptionLink>
       )}
     </Tooltip>
+  );
+};
+
+const ConnectionOptionButton = ({
+  children,
+  id,
+  onClick,
+}: {
+  children: ReactNode;
+  id: ConnectorType;
+  onClick: () => void;
+}) => {
+  return (
+    <button
+      className={CONNECTION_OPTION_CLASSES}
+      onClick={onClick}
+      data-testid={`connector-${id}`}
+    >
+      <ConnectorIcon id={id} />
+      {children}
+    </button>
+  );
+};
+
+const ConnectionOptionLink = ({
+  children,
+  id,
+  href,
+}: {
+  children: ReactNode;
+  id: ConnectorType;
+  href: string;
+}) => {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noreferrer"
+      className={CONNECTION_OPTION_CLASSES}
+      data-testid={`connector-${id}`}
+    >
+      <ConnectorIcon id={id} />
+      {children}
+    </a>
+  );
+};
+
+const ConnectionOptionButtonWithDescription = ({
+  children,
+  id,
+  onClick,
+}: {
+  children: ReactNode;
+  id: ConnectorType;
+  onClick: () => void;
+}) => {
+  return (
+    <button className={CONNECTION_OPTION_CLASSES_DESC} onClick={onClick}>
+      <span>
+        <ConnectorIcon id={id} />
+      </span>
+      {children}
+    </button>
+  );
+};
+
+const ConnectionOptionLinkWithDescription = ({
+  children,
+  id,
+  href,
+}: {
+  children: ReactNode;
+  id: ConnectorType;
+  href: string;
+}) => {
+  return (
+    <a
+      className={CONNECTION_OPTION_CLASSES_DESC}
+      href={href}
+      target="_blank"
+      rel="noreferrer"
+    >
+      <span>
+        <ConnectorIcon id={id} />
+      </span>
+      {children}
+    </a>
   );
 };
 
