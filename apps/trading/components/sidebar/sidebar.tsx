@@ -86,7 +86,7 @@ export const Sidebar = ({ options }: { options?: ReactNode }) => {
               onClick={async () => {
                 const res = await connect('viewParty');
                 if (res.status !== 'connected') {
-                  alert('Invalid public key');
+                  window.alert('Failed to connect');
                 }
               }}
               icon={VegaIconNames.EYE}

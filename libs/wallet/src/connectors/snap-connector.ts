@@ -53,6 +53,9 @@ export class SnapConnector implements Connector {
   version: string;
   snapId: string;
   pollRef: NodeJS.Timer | undefined;
+  pollListeners: Record<VegaWalletEvent, (() => void)[]> = {
+    'client.disconnected': [],
+  };
 
   // Note: apps may not know which node is selected on start up so its up
   // to the app to make sure class intances are renewed if the node changes
@@ -74,6 +77,7 @@ export class SnapConnector implements Connector {
         throw ConnectorErrors.chainId;
       }
 
+      this.startPoll();
       return { success: true };
     } catch (err) {
       if (err instanceof ConnectorError) {
@@ -85,6 +89,7 @@ export class SnapConnector implements Connector {
   }
 
   async disconnectWallet() {
+    this.stopPoll();
     return { success: true };
   }
 
@@ -99,6 +104,7 @@ export class SnapConnector implements Connector {
       );
       return { chainId: res.chainID };
     } catch (err) {
+      this.stopPoll();
       throw ConnectorErrors.chainId;
     }
   }
@@ -110,6 +116,7 @@ export class SnapConnector implements Connector {
       }>(JsonRpcMethod.ListKeys);
       return res.keys;
     } catch (err) {
+      this.stopPoll();
       throw ConnectorErrors.listKeys;
     }
   }
@@ -118,13 +125,14 @@ export class SnapConnector implements Connector {
     try {
       // Check if metamask is unlocked
       if (!window.ethereum.selectedAddress) {
-        return { connected: false };
+        throw ConnectorErrors.noWallet;
       }
 
       // If this throws its likely the snap is disabled or has been uninstalled
       await this.listKeys();
       return { connected: true };
     } catch (err) {
+      this.stopPoll();
       return { connected: false };
     }
   }
@@ -166,24 +174,39 @@ export class SnapConnector implements Connector {
   }
 
   on(event: VegaWalletEvent, callback: () => void) {
-    if (event === 'client.disconnected') {
-      this.pollRef = setInterval(async () => {
-        const result = await this.isConnected();
-        if (result.connected) return;
-        callback();
-      }, 3000);
-    }
+    this.pollListeners[event].push(callback);
   }
 
-  off(event: VegaWalletEvent) {
-    if (event === 'client.disconnected' && this.pollRef) {
-      clearInterval(this.pollRef);
-    }
+  off(event: VegaWalletEvent, callback?: () => void) {
+    this.pollListeners[event] = this.pollListeners[event].filter(
+      (cb) => cb !== callback
+    );
   }
-
   ////////////////////////////////////
   // Snap methods
   ////////////////////////////////////
+
+  emit(event: VegaWalletEvent) {
+    this.pollListeners[event].forEach((listener) => {
+      listener();
+    });
+  }
+
+  startPoll() {
+    // This only event we need to poll for right now is client.disconnect,
+    // if more events get added we will need more logic here
+    this.pollRef = setInterval(async () => {
+      const result = await this.isConnected();
+      if (result.connected) return;
+      this.emit('client.disconnected');
+    }, 2000);
+  }
+
+  stopPoll() {
+    if (this.pollRef) {
+      clearInterval(this.pollRef);
+    }
+  }
 
   /**
    * Requests permission for a website to communicate with the specified snaps

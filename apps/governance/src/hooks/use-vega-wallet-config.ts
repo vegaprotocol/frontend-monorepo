@@ -28,12 +28,12 @@ export const useVegaWalletConfig = () => {
       version: '0.3.1',
     });
 
-    const readOnly = new ViewPartyConnector();
+    const viewParty = new ViewPartyConnector();
 
     const config = createConfig({
       chains: [mainnet, fairground, stagnet],
       defaultChainId: fairground.id,
-      connectors: [injected, jsonRpc, snap, readOnly],
+      connectors: [injected, jsonRpc, snap, viewParty],
     });
 
     return config;

@@ -99,7 +99,7 @@ export function createConfig(cfg: Config): Wallet {
         pubKey: defaultKey,
       });
 
-      connector.off('client.disconnected');
+      connector.off('client.disconnected', disconnect);
       connector.on('client.disconnected', disconnect);
 
       return { status: 'connected' as const };

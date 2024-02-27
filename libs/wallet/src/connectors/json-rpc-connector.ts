@@ -20,6 +20,9 @@ export class JsonRpcConnector implements Connector {
   requestId: number = 0;
   store: StoreApi<Store> | undefined;
   pollRef: NodeJS.Timer | undefined;
+  pollListeners: Record<VegaWalletEvent, (() => void)[]> = {
+    'client.disconnected': [],
+  };
 
   constructor(config: JsonRpcConnectorConfig) {
     this.url = config.url;
@@ -67,6 +70,7 @@ export class JsonRpcConnector implements Connector {
         this.token = token;
       }
 
+      this.startPoll();
       return { success: true };
     } catch (err) {
       if (err instanceof ConnectorError) {
@@ -79,6 +83,7 @@ export class JsonRpcConnector implements Connector {
 
   async disconnectWallet() {
     try {
+      this.stopPoll();
       await this.request(JsonRpcMethod.DisconnectWallet);
       return { success: true };
     } catch (err) {
@@ -93,6 +98,7 @@ export class JsonRpcConnector implements Connector {
 
       return { chainId: data.result.chainID };
     } catch (err) {
+      this.stopPoll();
       throw ConnectorErrors.noWallet;
     }
   }
@@ -102,6 +108,7 @@ export class JsonRpcConnector implements Connector {
       const { data } = await this.request(JsonRpcMethod.ListKeys);
       return data.result.keys as Array<{ publicKey: string; name: string }>;
     } catch (err) {
+      this.stopPoll();
       throw ConnectorErrors.noWallet;
     }
   }
@@ -111,6 +118,7 @@ export class JsonRpcConnector implements Connector {
       await this.listKeys();
       return { connected: true };
     } catch {
+      this.stopPoll();
       return { connected: false };
     }
   }
@@ -145,19 +153,39 @@ export class JsonRpcConnector implements Connector {
   }
 
   on(event: VegaWalletEvent, callback: () => void) {
-    if (event === 'client.disconnected') {
-      this.pollRef = setInterval(async () => {
-        const result = await this.isConnected();
-        if (result.connected) return;
-        callback();
-      }, 3000);
+    this.pollListeners[event].push(callback);
+  }
+
+  off(event: VegaWalletEvent, callback?: () => void) {
+    this.pollListeners[event] = this.pollListeners[event].filter(
+      (cb) => cb !== callback
+    );
+  }
+
+  ////////////////////////////////////
+  // JSON rpc connector methods
+  ////////////////////////////////////
+
+  startPoll() {
+    // This only event we need to poll for right now is client.disconnect,
+    // if more events get added we will need more logic here
+    this.pollRef = setInterval(async () => {
+      const result = await this.isConnected();
+      if (result.connected) return;
+      this.emit('client.disconnected');
+    }, 2000);
+  }
+
+  stopPoll() {
+    if (this.pollRef) {
+      clearInterval(this.pollRef);
     }
   }
 
-  off(event: VegaWalletEvent) {
-    if (event === 'client.disconnected' && this.pollRef) {
-      clearInterval(this.pollRef);
-    }
+  emit(event: VegaWalletEvent) {
+    this.pollListeners[event].forEach((listener) => {
+      listener();
+    });
   }
 
   // TODO: fix any

@@ -85,7 +85,7 @@ export class InjectedConnector implements Connector {
     window.vega.on(event, callback);
   }
 
-  off(event: VegaWalletEvent) {
-    window.vega.off(event);
+  off(event: VegaWalletEvent, callback: () => void) {
+    window.vega.off(event, callback);
   }
 }

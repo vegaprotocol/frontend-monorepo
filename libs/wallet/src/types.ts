@@ -43,7 +43,7 @@ export interface Connector {
   isConnected(): Promise<{ connected: boolean }>;
   sendTransaction(params: TransactionParams): Promise<TransactionResponse>;
   on(event: VegaWalletEvent, callback: () => void): void;
-  off(event: VegaWalletEvent): void;
+  off(event: VegaWalletEvent, callback?: () => void): void;
 }
 
 export type Key = {
@@ -118,7 +118,7 @@ declare global {
     }>;
 
     on: (event: VegaWalletEvent, callback: () => void) => void;
-    off: (event: VegaWalletEvent) => void;
+    off: (event: VegaWalletEvent, callback: () => void) => void;
     isConnected: () => Promise<boolean>;
     // deprecated
     getChainId: () => Promise<{ chainID: string }>;

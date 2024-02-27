@@ -10,7 +10,7 @@ export const ConnectionStatus = ({ status }: { status: Status }) => {
       <>
         <h3 className="text-lg">{t('Connecting...')}</h3>
         <p className="text-secondary">
-          {t('Approve the connection from your Vega wallet app.')}
+          {t('Approve the connection from your wallet app.')}
         </p>
       </>
     );
