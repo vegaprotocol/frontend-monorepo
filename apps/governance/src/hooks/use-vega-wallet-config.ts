@@ -25,7 +25,7 @@ export const useVegaWalletConfig = () => {
     const snap = new SnapConnector({
       node: new URL(VEGA_URL).origin,
       snapId: 'npm:@vegaprotocol/snap',
-      version: '0.3.1',
+      version: '1.0.1',
     });
 
     const viewParty = new ViewPartyConnector();
