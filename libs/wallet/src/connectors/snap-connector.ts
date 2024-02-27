@@ -84,7 +84,7 @@ export class SnapConnector implements Connector {
         throw err;
       }
 
-      throw ConnectorErrors.noConnector;
+      throw ConnectorErrors.noWallet;
     }
   }
 
@@ -275,6 +275,6 @@ export class SnapConnector implements Connector {
       });
     }
 
-    throw ConnectorErrors.noConnector;
+    throw ConnectorErrors.noWallet;
   }
 }
