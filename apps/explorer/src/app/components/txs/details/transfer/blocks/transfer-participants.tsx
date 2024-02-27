@@ -44,8 +44,14 @@ const AccountType: Record<AccountTypes, string> = {
   ACCOUNT_TYPE_ORDER_MARGIN: 'Order Margin',
 };
 
+export type TransferFee = {
+  amount?: string;
+  epoch?: number;
+};
+
 interface TransferParticipantsProps {
   transfer: Transfer;
+  fees?: TransferFee[] | null;
   from: string;
 }
 
@@ -60,6 +66,7 @@ interface TransferParticipantsProps {
 export function TransferParticipants({
   transfer,
   from,
+  fees,
 }: TransferParticipantsProps) {
   // This mapping is required as the global account types require a type to be set, while
   // the underlying protobufs allow for every field to be undefined.
@@ -104,6 +111,9 @@ export function TransferParticipants({
               {transfer.asset ? (
                 <SizeInAsset assetId={transfer.asset} size={transfer.amount} />
               ) : null}
+              {transfer.asset && fees && (
+                <TransferFees assetId={transfer.asset} fees={fees} />
+              )}
             </div>
 
             {/* Empty divs for the top arrow and the bottom arrow of the transfer inset */}
@@ -125,10 +135,6 @@ export function TransferParticipants({
                 <path d="M0,0L8,9l8,-9Z" />
               </svg>
             </div>
-            {/*
-            <div className="z-10 absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rotate-45 w-4 h-4 dark:border-vega-dark-200 border-vega-light-200 bg-white dark:bg-black border-r border-b"></div>
-            <div className="z-10 absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 rotate-45 w-4 h-4 border-vega-light-200 dark:border-vega-dark-200 bg-vega-light-200 dark:bg-vega-dark-200 border-r border-b"></div>
-              */}
           </div>
         </div>
 
@@ -167,5 +173,39 @@ export function TransferRecurringRecipient({
   }
 
   // Fallback should not happen
+  return null;
+}
+
+export function TransferFees({
+  assetId,
+  fees,
+}: {
+  assetId: string;
+  fees: TransferFee[];
+}) {
+  if (assetId && fees) {
+    if (fees.length === 1) {
+      return (
+        <p>
+          Fee: <SizeInAsset assetId={assetId} size={fees[0].amount} />
+        </p>
+      );
+    } else {
+      return (
+        <details className="cursor-pointer">
+          <summary>{t('Fees')}</summary>
+          <ul>
+            {fees.map((fee) => (
+              <li className="text-nowrap">
+                <SizeInAsset assetId={assetId} size={fee.amount} />{' '}
+                {t('in epoch')} {fee.epoch}
+              </li>
+            ))}
+          </ul>
+        </details>
+      );
+    }
+  }
+
   return null;
 }
