@@ -17,6 +17,7 @@ export { useConnect } from './hooks/use-connect';
 export { useConnector } from './hooks/use-connector';
 export { useDisconnect } from './hooks/use-disconnect';
 export { usePubKeys } from './hooks/use-pub-keys';
+export { useReconnect } from './hooks/use-reconnect';
 export { useSendTransaction } from './hooks/use-send-transaction';
 export { useWallet } from './hooks/use-wallet';
 

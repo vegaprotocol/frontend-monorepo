@@ -59,7 +59,7 @@ export const useVegaTransactionManager = () => {
         update(transaction.id, {
           error:
             err instanceof ConnectorError
-              ? new Error(err.message)
+              ? err
               : new Error('something went wrong'),
           status: VegaTxStatus.Error,
         });
