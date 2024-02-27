@@ -1,10 +1,10 @@
 import {
   useMarketProposals,
-  type MarketViewProposalFieldsFragment,
+  type ProposalFragment,
 } from '@vegaprotocol/proposals';
 import { ProposalState, ProposalType } from '@vegaprotocol/types';
 
-const isPending = (p: MarketViewProposalFieldsFragment) => {
+const isPending = (p: ProposalFragment) => {
   return [ProposalState.STATE_OPEN, ProposalState.STATE_PASSED].includes(
     p.state
   );
@@ -21,9 +21,10 @@ export const useUpdateMarketStateProposals = (
 
   const proposals = data
     ? data.filter(isPending).filter((p) => {
-        const change = p.terms.change;
+        const change = p.terms?.change;
 
         if (
+          change &&
           change.__typename === 'UpdateMarketState' &&
           change.market.id === marketId
         ) {
@@ -48,8 +49,9 @@ export const useUpdateMarketProposals = (
 
   const proposals = data
     ? data.filter(isPending).filter((p) => {
-        const change = p.terms.change;
+        const change = p.terms?.change;
         if (
+          change &&
           change.__typename === 'UpdateMarket' &&
           change.marketId === marketId
         ) {
@@ -73,8 +75,9 @@ export const useSuccessorMarketProposals = (
 
   const proposals = data
     ? data.filter(isPending).filter((p) => {
-        const change = p.terms.change;
+        const change = p.terms?.change;
         if (
+          change &&
           change.__typename === 'NewMarket' &&
           change.successorConfiguration?.parentMarketId === marketId
         ) {

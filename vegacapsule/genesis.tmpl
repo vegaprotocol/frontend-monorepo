@@ -175,6 +175,7 @@
 	  },
 	  "network_parameters": {
       "blockchains.ethereumConfig": "{\"network_id\": \"{{ .NetworkID }}\", \"chain_id\": \"{{ .ChainID }}\", \"collateral_bridge_contract\": { \"address\": \"{{.GetEthContractAddr "erc20_bridge_1"}}\" }, \"confirmations\": 3, \"staking_bridge_contract\": { \"address\": \"{{.GetEthContractAddr "staking_bridge"}}\", \"deployment_block_height\": 0}, \"token_vesting_contract\": { \"address\": \"{{.GetEthContractAddr "erc20_vesting"}}\", \"deployment_block_height\": 0 }, \"multisig_control_contract\": { \"address\": \"{{.GetEthContractAddr "MultisigControl"}}\", \"deployment_block_height\": 0 }}",
+	  	"blockchains.ethereumRpcAndEvmCompatDataSourcesConfig": "{\"configs\": []}",
 		"governance.proposal.asset.minClose": "2s",
 		"governance.proposal.asset.minEnact": "2s",
 		"governance.proposal.asset.requiredParticipation": "0.00000000000000000000000015",

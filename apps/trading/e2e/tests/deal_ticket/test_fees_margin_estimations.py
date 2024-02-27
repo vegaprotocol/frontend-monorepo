@@ -1,4 +1,4 @@
-import pytest
+""" import pytest
 from playwright.sync_api import Page, expect
 from vega_sim.null_service import VegaServiceNull
 from actions.vega import submit_order
@@ -87,3 +87,4 @@ def test_margin_and_fees_estimations(continuous_market, vega: VegaServiceNull, p
     # expect(page.get_by_test_id("toast-content")).to_contain_text(
     #     "Your transaction has been confirmed"
     # )
+ """

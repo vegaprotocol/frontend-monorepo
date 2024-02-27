@@ -6,7 +6,7 @@ import {
   TOKEN_PROPOSALS,
   useLinks,
 } from '@vegaprotocol/environment';
-import { type MarketViewProposalFieldsFragment } from '@vegaprotocol/proposals';
+import { type ProposalFragment } from '@vegaprotocol/proposals';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 import { ProposalState } from '@vegaprotocol/types';
 import { useT } from '../../lib/use-t';
@@ -14,17 +14,17 @@ import { useT } from '../../lib/use-t';
 export const MarketUpdateBanner = ({
   proposals,
 }: {
-  proposals: MarketViewProposalFieldsFragment[];
+  proposals: ProposalFragment[];
 }) => {
   const governanceLink = useLinks(DApp.Governance);
   const t = useT();
   const openProposals = sortBy(
     proposals.filter((p) => p.state === ProposalState.STATE_OPEN),
-    (p) => p.terms.enactmentDatetime
+    (p) => p.terms?.enactmentDatetime
   );
   const passedProposals = sortBy(
     proposals.filter((p) => p.state === ProposalState.STATE_PASSED),
-    (p) => p.terms.enactmentDatetime
+    (p) => p.terms?.enactmentDatetime
   );
 
   let content = null;
@@ -49,7 +49,7 @@ export const MarketUpdateBanner = ({
     content = (
       <p>
         {t('Proposal set to change market on {{date}}.', {
-          date: format(new Date(proposal.terms.enactmentDatetime), 'dd MMMM'),
+          date: format(new Date(proposal.terms?.enactmentDatetime), 'dd MMMM'),
         })}
         <ExternalLink href={proposalLink}>{t('View proposal')}</ExternalLink>,
       </p>

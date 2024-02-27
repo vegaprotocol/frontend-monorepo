@@ -485,14 +485,45 @@ fragment MarketViewProposalFields on Proposal {
   }
 }
 
+fragment SubProposal on ProposalDetail {
+  id
+  batchId
+  reference
+  state
+  terms {
+    closingDatetime
+    enactmentDatetime
+    change {
+      __typename
+      ... on UpdateMarketState {
+        ...UpdateMarketStateFields
+      }
+      ... on NewMarket {
+        ...NewMarketSuccessorFields
+      }
+      ... on UpdateMarket {
+        ...UpdateMarketFields
+      }
+    }
+  }
+}
+
 query MarketViewProposals(
   $proposalType: ProposalType
   $inState: ProposalState
 ) {
   proposalsConnection(proposalType: $proposalType, inState: $inState) {
     edges {
-      node {
-        ...MarketViewProposalFields
+      proposalNode {
+        ... on BatchProposal {
+          id
+          subProposals {
+            ...SubProposal
+          }
+        }
+        ... on Proposal {
+          ...MarketViewProposalFields
+        }
       }
     }
   }
@@ -500,6 +531,8 @@ query MarketViewProposals(
 
 subscription MarketViewLiveProposals {
   proposals {
-    ...MarketViewProposalFields
+    ... on Proposal {
+      ...MarketViewProposalFields
+    }
   }
 }

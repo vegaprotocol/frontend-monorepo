@@ -7,7 +7,7 @@ import {
   useMaliciousOracle,
 } from '@vegaprotocol/markets';
 import { useState } from 'react';
-import { type MarketViewProposalFieldsFragment } from '@vegaprotocol/proposals';
+import { type ProposalFragment } from '@vegaprotocol/proposals';
 import { MarketSuspendedBanner } from './market-suspended-banner';
 import { MarketUpdateBanner } from './market-update-banner';
 import { MarketUpdateStateBanner } from './market-update-state-banner';
@@ -22,17 +22,17 @@ import {
 
 type UpdateMarketBanner = {
   kind: 'UpdateMarket';
-  proposals: MarketViewProposalFieldsFragment[];
+  proposals: ProposalFragment[];
 };
 
 type UpdateMarketStateBanner = {
   kind: 'UpdateMarketState';
-  proposals: MarketViewProposalFieldsFragment[];
+  proposals: ProposalFragment[];
 };
 
 type NewMarketBanner = {
   kind: 'NewMarket'; // aka a proposal of NewMarket which succeeds the current market
-  proposals: MarketViewProposalFieldsFragment[];
+  proposals: ProposalFragment[];
 };
 
 type SettledBanner = {

@@ -46,11 +46,11 @@ context('Validators Page - verify elements on page', function () {
 
   // @ts-ignore clash between jest and cypress
   describe('with wallets disconnected', { tags: '@smoke' }, function () {
-    it.skip('Should have validators tab highlighted', function () {
+    it('Should have validators tab highlighted', function () {
       verifyTabHighlighted(navigation.validators);
     });
 
-    it.skip('Should have validators ON VEGA header visible', function () {
+    it('Should have validators ON VEGA header visible', function () {
       verifyPageHeader('Validators');
     });
 
@@ -192,7 +192,7 @@ context('Validators Page - verify elements on page', function () {
       });
 
       // 1002-STKE-006
-      it.skip('Should be able to see validator name', function () {
+      it('Should be able to see validator name', function () {
         cy.getByTestId(validatorTitle).should('not.be.empty');
       });
 

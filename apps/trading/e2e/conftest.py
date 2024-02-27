@@ -182,7 +182,27 @@ def vega(request):
         request.addfinalizer(lambda: cleanup_container(vega_instance))
         yield vega_instance
 
+@pytest.fixture(scope="session", autouse=True)
+def shared_vega(request):
+    with init_vega(request) as vega_instance:
+        try:
+            request.addfinalizer(lambda: cleanup_container(vega_instance))
+            yield vega_instance
+        finally:
+            cleanup_container(vega_instance)
 
+@pytest.fixture
+def page_shared_vega(shared_vega, browser, request):
+    with init_page(shared_vega, browser, request) as page_instance:
+        yield page_instance
+
+@pytest.fixture
+def auth_shared_vega(shared_vega: VegaServiceNull, page_shared_vega: Page):
+    return auth_setup(shared_vega, page_shared_vega)
+
+@pytest.fixture
+def risk_accepted_shared_vega(page_shared_vega: Page):
+    risk_accepted_setup(page_shared_vega)
 
 def cleanup_container(vega_instance):
     try:
@@ -282,6 +302,10 @@ def simple_market(vega, request):
 def opening_auction_market(vega):
     return setup_opening_auction_market(vega)
 
+
+@pytest.fixture(scope="function")
+def shared_continuous_market(shared_vega:VegaServiceNull):
+    return setup_continuous_market(shared_vega)
 
 @pytest.fixture(scope="function")
 def continuous_market(vega):

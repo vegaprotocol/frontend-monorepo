@@ -10,6 +10,7 @@ import { CollapsibleToggle } from '../../../../components/collapsible-toggle';
 import { SubHeading } from '../../../../components/heading';
 import { type UpdateMarketStatesFragment } from '../../__generated__/Proposals';
 import { MarketUpdateTypeMapping } from '@vegaprotocol/types';
+import { MarketName } from '../proposal/market-name';
 
 interface ProposalUpdateMarketStateProps {
   change: UpdateMarketStatesFragment | null;
@@ -20,16 +21,18 @@ export const ProposalUpdateMarketState = ({
 }: ProposalUpdateMarketStateProps) => {
   const { t } = useTranslation();
   const [showDetails, setShowDetails] = useState(false);
-  let market;
-  let isTerminate = false;
 
-  if (!change) {
+  if (!change || change.__typename !== 'UpdateMarketState') {
     return null;
   }
 
-  if (change.__typename === 'UpdateMarketState') {
-    market = change?.market;
-    isTerminate = change?.updateType === 'MARKET_STATE_UPDATE_TYPE_TERMINATE';
+  const market = change?.market;
+  const isTerminate =
+    change?.updateType === 'MARKET_STATE_UPDATE_TYPE_TERMINATE';
+
+  let toggleTitle = t(change.updateType);
+  if (toggleTitle.length === 0) {
+    toggleTitle = t('MarketDetails');
   }
 
   return (
@@ -39,7 +42,13 @@ export const ProposalUpdateMarketState = ({
         setToggleState={setShowDetails}
         dataTestId="proposal-market-data-toggle"
       >
-        <SubHeading title={t('MarketDetails')} />
+        <SubHeading
+          title={
+            <>
+              {toggleTitle}: <MarketName marketId={market?.id} />
+            </>
+          }
+        />
       </CollapsibleToggle>
 
       {showDetails && (

@@ -9,6 +9,7 @@ from actions.utils import next_epoch
 from wallet_config import MM_WALLET, MM_WALLET2, GOVERNANCE_WALLET
 from vega_sim.api import governance
 
+
 @pytest.mark.usefixtures("risk_accepted")
 def test_market_lifecycle(proposed_market, vega: VegaServiceNull, page: Page):
     # 7002-SORD-001
@@ -16,15 +17,18 @@ def test_market_lifecycle(proposed_market, vega: VegaServiceNull, page: Page):
     trading_mode = page.get_by_test_id("market-trading-mode").get_by_test_id(
         "item-value"
     )
-    market_state = page.get_by_test_id("market-state").get_by_test_id("item-value")
+    market_state = page.get_by_test_id(
+        "market-state").get_by_test_id("item-value")
 
     # setup market in proposed step, without liquidity provided
     market_id = proposed_market
     page.goto(f"/#/markets/{market_id}")
     # 6002-MDET-001
-    expect(page.get_by_test_id("header-title")).to_have_text("BTC:DAI_2023Futr")
+    expect(page.get_by_test_id("header-title")
+           ).to_have_text("BTC:DAI_2023Futr")
     # 6002-MDET-002
-    expect(page.get_by_test_id("market-expiry")).to_have_text("ExpiryNot time-based")
+    expect(page.get_by_test_id("market-expiry")
+           ).to_have_text("ExpiryNot time-based")
     page.get_by_test_id("market-expiry").hover()
     expect(page.get_by_test_id("expiry-tooltip").first).to_have_text(
         "This market expires when triggered by its oracle, not on a set date.View oracle specification"
@@ -123,16 +127,16 @@ def test_market_lifecycle(proposed_market, vega: VegaServiceNull, page: Page):
     expect(market_state).to_have_text("Active")
 
     vega.update_market_state(
-        market_id = market_id,
-        proposal_key = MM_WALLET.name,
-        market_state = MarketStateUpdateType.Suspend,
-        forward_time_to_enactment = False
+        market_id=market_id,
+        proposal_key=MM_WALLET.name,
+        market_state=MarketStateUpdateType.Suspend,
+        forward_time_to_enactment=False
     )
 
     expect(
         page
-            .get_by_test_id("market-banner")
-            .get_by_test_id(f"update-state-banner-{market_id}")
+        .get_by_test_id("market-banner")
+        .get_by_test_id(f"update-state-banner-{market_id}")
     ).to_be_visible()
 
     next_epoch(vega=vega)
@@ -143,12 +147,14 @@ def test_market_lifecycle(proposed_market, vega: VegaServiceNull, page: Page):
 
     # banner should not show after resume
     vega.update_market_state(
-        market_id = market_id,
-        proposal_key = MM_WALLET.name,
-        market_state = MarketStateUpdateType.Resume,
-        forward_time_to_enactment = False
+        market_id=market_id,
+        proposal_key=MM_WALLET.name,
+        market_state=MarketStateUpdateType.Resume,
+        forward_time_to_enactment=False
     )
 
+    expect(page.get_by_test_id("market-banner")
+           ).to_have_text(" Trading on market BTC:DAI_2023 was suspended by governance. There are open proposals to resume trading on this market.View proposals1/2")
     next_epoch(vega=vega)
 
     expect(page.get_by_test_id("market-banner")).not_to_be_visible()
