@@ -1,10 +1,20 @@
-import { ConnectorErrors, type ConnectorType } from '@vegaprotocol/wallet';
+import {
+  ConnectorErrors,
+  isBrowserWalletInstalled,
+  type ConnectorType,
+} from '@vegaprotocol/wallet';
 import { Tooltip } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../hooks/use-t';
 import { useWallet } from '../../hooks/use-wallet';
 import { useConnect } from '../../hooks/use-connect';
 import { Links } from '../../constants';
 import { ConnectorIcon } from './connector-icon';
+import { useUserAgent } from '@vegaprotocol/react-helpers';
+
+const extensionLinks = {
+  chrome: Links.chromeExtension,
+  firefox: Links.mozillaExtension,
+} as const;
 
 export const ConnectionOptions = ({
   onConnect,
@@ -65,6 +75,36 @@ export const ConnectionOption = ({
   description: string;
   onClick: () => void;
 }) => {
+  const t = useT();
+  const userAgent = useUserAgent();
+
+  if (id === 'injected' && !isBrowserWalletInstalled()) {
+    const link = userAgent ? extensionLinks[userAgent] : Links.walletOverview;
+
+    return (
+      <li>
+        <Tooltip
+          description={description}
+          align="center"
+          side="right"
+          sideOffset={10}
+          delayDuration={400}
+        >
+          <a
+            href={link}
+            target="_blank"
+            rel="noreferrer"
+            className="w-full flex gap-2 items-center p-2 rounded capitalize hover:bg-vega-clight-800 dark:hover:bg-vega-cdark-800"
+            data-testid={`connector-${id}`}
+          >
+            <ConnectorIcon id={id} />
+            {t('Get the Vega Wallet')}
+          </a>
+        </Tooltip>
+      </li>
+    );
+  }
+
   return (
     <li>
       <Tooltip

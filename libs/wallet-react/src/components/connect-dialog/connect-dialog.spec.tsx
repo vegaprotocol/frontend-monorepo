@@ -57,7 +57,7 @@ describe('ConnectDialog', () => {
     await user.click(screen.getByTestId(`connector-${mock.id}`));
 
     expect(within(dialog).getByRole('heading', { level: 3 })).toHaveTextContent(
-      'Connected'
+      'Successfully connected'
     );
 
     await new Promise((resolve) => setTimeout(resolve, DIALOG_CLOSE_DELAY));
