@@ -39,6 +39,7 @@ declare global {
   };
 
   interface Window {
+    // @ts-ignore must have identical modifiers
     ethereum: WindowEthereumProvider;
   }
 }

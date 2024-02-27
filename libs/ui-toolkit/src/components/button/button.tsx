@@ -140,7 +140,7 @@ type ButtonLinkProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'style'>;
 
 export const ButtonLink = forwardRef<HTMLButtonElement, ButtonLinkProps>(
   ({ type = 'button', className, ...props }, ref) => {
-    const style = classnames('inline underline', className);
+    const style = classnames('inline underline underline-offset-4', className);
     return <button ref={ref} className={style} type={type} {...props} />;
   }
 );
