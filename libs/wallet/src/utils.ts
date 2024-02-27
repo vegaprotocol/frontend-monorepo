@@ -80,7 +80,6 @@ export const normalizeTransfer = <T extends Exact<Transfer, T>>(
   };
 };
 
-// @ts-ignore not sure why but window.vega not defined despite it being globally declared
 export const isBrowserWalletInstalled = () => Boolean(window.vega);
 
 export const isMarginModeUpdateTransaction = (
