@@ -37,7 +37,7 @@ export const useVegaWalletConfig = () => {
     const config = createConfig({
       chains: [fairground, stagnet],
       defaultChainId: CHAIN_IDS[VEGA_ENV],
-      connectors: [injected, jsonRpc, snap, viewParty],
+      connectors: [injected, snap, jsonRpc, viewParty],
     });
 
     return config;

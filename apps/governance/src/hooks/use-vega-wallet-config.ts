@@ -33,7 +33,7 @@ export const useVegaWalletConfig = () => {
     const config = createConfig({
       chains: [mainnet, fairground, stagnet],
       defaultChainId: fairground.id,
-      connectors: [injected, jsonRpc, snap, viewParty],
+      connectors: [injected, snap, jsonRpc, viewParty],
     });
 
     return config;

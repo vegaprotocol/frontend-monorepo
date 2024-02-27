@@ -81,6 +81,9 @@ export const normalizeTransfer = <T extends Exact<Transfer, T>>(
 };
 
 export const isBrowserWalletInstalled = () => Boolean(window.vega);
+export const isMetaMaskInstalled = () => {
+  return window.ethereum && window.ethereum.isMetaMask;
+};
 
 export const isMarginModeUpdateTransaction = (
   transaction: Transaction

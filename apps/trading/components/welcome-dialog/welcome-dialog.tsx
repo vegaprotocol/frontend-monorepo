@@ -2,18 +2,15 @@ import { useEffect } from 'react';
 import { matchPath, useLocation } from 'react-router-dom';
 import { Dialog, Intent } from '@vegaprotocol/ui-toolkit';
 import {
-  ConnectorIcon,
   ConnectionStatus,
   useConnect,
   useWallet,
   Links,
   RiskAck,
+  ConnectionOptionRecord,
+  ConnectionOptionDefault,
 } from '@vegaprotocol/wallet-react';
-import {
-  ConnectorErrors,
-  isBrowserWalletInstalled,
-  type ConnectorType,
-} from '@vegaprotocol/wallet';
+import { ConnectorErrors } from '@vegaprotocol/wallet';
 import { ensureSuffix } from '@vegaprotocol/utils';
 import { useT } from '../../lib/use-t';
 import { Routes } from '../../lib/links';
@@ -23,16 +20,11 @@ import {
   type OnboardingDialog,
 } from '../../stores/onboarding';
 import { RiskAckContent } from '../risk-ack-content';
-import { useUserAgent } from '@vegaprotocol/react-helpers';
 
 /**
  * A list of paths on which the welcome dialog should be omitted.
  */
 const OMIT_ON_LIST = [ensureSuffix(Routes.REFERRALS, '/*')];
-const EXTENSION_LINKS = {
-  chrome: Links.chromeExtension,
-  firefox: Links.mozillaExtension,
-} as const;
 
 export const WelcomeDialog = () => {
   const { pathname } = useLocation();
@@ -121,38 +113,34 @@ const OnboardConnectionOptions = ({ onConnect }: { onConnect: () => void }) => {
     return (
       <div className="flex flex-col gap-4">
         <h2>{t('Connect to Vega')}</h2>
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col items-start gap-6">
           <ul className="flex flex-col -mx-4 -mb-4">
             {connectors.map((c) => {
-              const handleConnect = async () => {
-                const res = await connect(c.id);
-                if (res.status === 'connected') {
-                  onConnect();
-                }
+              const ConnectionOption = ConnectionOptionRecord[c.id];
+              const props = {
+                id: c.id,
+                name: c.name,
+                description: c.description,
+                showDescription: true,
+                onClick: async () => {
+                  const res = await connect(c.id);
+                  if (res.status === 'connected') {
+                    onConnect();
+                  }
+                },
               };
 
-              if (c.id === 'injected') {
+              if (ConnectionOption) {
                 return (
                   <li key={c.id}>
-                    <OnboardConnectionOptionInjected
-                      id={c.id}
-                      name={c.name}
-                      description={c.description}
-                      onClick={handleConnect}
-                    />
+                    <ConnectionOption {...props} />
                   </li>
                 );
               }
 
               return (
                 <li key={c.id}>
-                  <OnboardConnectionOption
-                    key={c.id}
-                    id={c.id}
-                    name={c.name}
-                    description={c.description}
-                    onClick={handleConnect}
-                  />
+                  <ConnectionOptionDefault {...props} />
                 </li>
               );
             })}
@@ -176,77 +164,4 @@ const OnboardConnectionOptions = ({ onConnect }: { onConnect: () => void }) => {
   }
 
   return <ConnectionStatus status={status} />;
-};
-
-const OnboardConnectionOption = ({
-  id,
-  name,
-  description,
-  onClick,
-}: {
-  id: ConnectorType;
-  name: string;
-  description: string;
-  onClick: () => void;
-}) => {
-  return (
-    <button
-      className="flex gap-2 w-full hover:bg-vega-clight-800 dark:hover:bg-vega-cdark-800 p-4 rounded"
-      onClick={onClick}
-    >
-      <span>
-        <ConnectorIcon id={id} />
-      </span>
-      <span className="flex flex-col justify-start text-left">
-        <span className="capitalize leading-5">{name}</span>
-        <span className="text-muted text-sm">{description}</span>
-      </span>
-    </button>
-  );
-};
-
-const OnboardConnectionOptionInjected = ({
-  id,
-  name,
-  description,
-  onClick,
-}: {
-  id: ConnectorType;
-  name: string;
-  description: string;
-  onClick: () => void;
-}) => {
-  const t = useT();
-  const userAgent = useUserAgent();
-  const link = userAgent ? EXTENSION_LINKS[userAgent] : Links.walletOverview;
-
-  return isBrowserWalletInstalled() ? (
-    <button
-      className="flex gap-2 w-full hover:bg-vega-clight-800 dark:hover:bg-vega-cdark-800 p-4 rounded"
-      onClick={onClick}
-    >
-      <span>
-        <ConnectorIcon id={id} />
-      </span>
-      <span className="flex flex-col justify-start text-left">
-        <span className="capitalize leading-5">{name}</span>
-        <span className="text-muted text-sm">{description}</span>
-      </span>
-    </button>
-  ) : (
-    <a
-      className="flex gap-2 w-full hover:bg-vega-clight-800 dark:hover:bg-vega-cdark-800 p-4 rounded"
-      href={link}
-      target="_blank"
-      rel="noreferrer"
-    >
-      <span>
-        <ConnectorIcon id={id} />
-      </span>
-      <span className="flex flex-col justify-start text-left">
-        <span className="capitalize leading-5">{t('Get the Vega Wallet')}</span>
-        <span className="text-muted text-sm">{description}</span>
-      </span>
-    </a>
-  );
 };

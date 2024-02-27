@@ -1,7 +1,9 @@
+import { type FunctionComponent } from 'react';
 import {
   ConnectorErrors,
   isBrowserWalletInstalled,
   type ConnectorType,
+  isMetaMaskInstalled,
 } from '@vegaprotocol/wallet';
 import { Tooltip } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../hooks/use-t';
@@ -11,9 +13,14 @@ import { Links } from '../../constants';
 import { ConnectorIcon } from './connector-icon';
 import { useUserAgent } from '@vegaprotocol/react-helpers';
 
-const extensionLinks = {
+const vegaExtensionsLinks = {
   chrome: Links.chromeExtension,
   firefox: Links.mozillaExtension,
+} as const;
+
+const metaMaskExtensionsLinks = {
+  chrome: Links.chromeMetaMaskExtension,
+  firefox: Links.mozillaMetaMaskExtension,
 } as const;
 
 export const ConnectionOptions = ({
@@ -33,27 +40,26 @@ export const ConnectionOptions = ({
         data-testid="connectors-list"
       >
         {connectors.map((c) => {
-          if (c.id === 'injected') {
+          const ConnectionOption = ConnectionOptionRecord[c.id];
+          const props = {
+            id: c.id,
+            name: c.name,
+            description: c.description,
+            showDescription: false,
+            onClick: () => onConnect(c.id),
+          };
+
+          if (ConnectionOption) {
             return (
               <li key={c.id}>
-                <ConnectionOptionInjected
-                  id={c.id}
-                  name={c.name}
-                  description={c.description}
-                  onClick={() => onConnect(c.id)}
-                />
+                <ConnectionOption {...props} />
               </li>
             );
           }
 
           return (
             <li key={c.id}>
-              <ConnectionOption
-                id={c.id}
-                name={c.name}
-                description={c.description}
-                onClick={() => onConnect(c.id)}
-              />
+              <ConnectionOptionDefault {...props} />
             </li>
           );
         })}
@@ -78,17 +84,38 @@ export const ConnectionOptions = ({
   );
 };
 
-export const ConnectionOption = ({
-  id,
-  name,
-  description,
-  onClick,
-}: {
+interface ConnectionOptionProps {
   id: ConnectorType;
   name: string;
   description: string;
+  showDescription?: boolean;
   onClick: () => void;
-}) => {
+}
+
+export const ConnectionOptionDefault = ({
+  id,
+  name,
+  description,
+  showDescription = false,
+  onClick,
+}: ConnectionOptionProps) => {
+  if (showDescription) {
+    return (
+      <button
+        className="flex gap-2 w-full hover:bg-vega-clight-800 dark:hover:bg-vega-cdark-800 p-4 rounded"
+        onClick={onClick}
+      >
+        <span>
+          <ConnectorIcon id={id} />
+        </span>
+        <span className="flex flex-col justify-start text-left">
+          <span className="first-letter:capitalize">{name}</span>
+          <span className="text-muted text-sm">{description}</span>
+        </span>
+      </button>
+    );
+  }
+
   return (
     <Tooltip
       description={description}
@@ -98,7 +125,7 @@ export const ConnectionOption = ({
       delayDuration={400}
     >
       <button
-        className="w-full flex gap-2 items-center p-2 rounded capitalize hover:bg-vega-clight-800 dark:hover:bg-vega-cdark-800"
+        className="w-full flex gap-2 items-center p-2 rounded first-letter:capitalize hover:bg-vega-clight-800 dark:hover:bg-vega-cdark-800"
         onClick={onClick}
         data-testid={`connector-${id}`}
       >
@@ -117,16 +144,48 @@ export const ConnectionOptionInjected = ({
   id,
   name,
   description,
+  showDescription = false,
   onClick,
-}: {
-  id: 'injected';
-  name: string;
-  description: string;
-  onClick: () => void;
-}) => {
+}: ConnectionOptionProps) => {
   const t = useT();
   const userAgent = useUserAgent();
-  const link = userAgent ? extensionLinks[userAgent] : Links.walletOverview;
+  const link = userAgent
+    ? vegaExtensionsLinks[userAgent]
+    : Links.walletOverview;
+
+  if (showDescription) {
+    return isBrowserWalletInstalled() ? (
+      <button
+        className="flex gap-2 w-full hover:bg-vega-clight-800 dark:hover:bg-vega-cdark-800 p-4 rounded"
+        onClick={onClick}
+      >
+        <span>
+          <ConnectorIcon id={id} />
+        </span>
+        <span className="flex flex-col justify-start text-left">
+          <span className="capitalize leading-5">{name}</span>
+          <span className="text-muted text-sm">{description}</span>
+        </span>
+      </button>
+    ) : (
+      <a
+        className="flex gap-2 w-full hover:bg-vega-clight-800 dark:hover:bg-vega-cdark-800 p-4 rounded"
+        href={link}
+        target="_blank"
+        rel="noreferrer"
+      >
+        <span>
+          <ConnectorIcon id={id} />
+        </span>
+        <span className="flex flex-col justify-start text-left">
+          <span className="capitalize leading-5">
+            {t('Get the Vega Wallet')}
+          </span>
+          <span className="text-muted text-sm">{description}</span>
+        </span>
+      </a>
+    );
+  }
 
   return (
     <Tooltip
@@ -159,4 +218,91 @@ export const ConnectionOptionInjected = ({
       )}
     </Tooltip>
   );
+};
+
+export const ConnectionOptionSnap = ({
+  id,
+  name,
+  description,
+  showDescription = false,
+  onClick,
+}: ConnectionOptionProps) => {
+  const t = useT();
+  const userAgent = useUserAgent();
+  const link = userAgent
+    ? metaMaskExtensionsLinks[userAgent]
+    : Links.walletOverview;
+
+  if (showDescription) {
+    return isMetaMaskInstalled() ? (
+      <button
+        className="flex gap-2 w-full hover:bg-vega-clight-800 dark:hover:bg-vega-cdark-800 p-4 rounded"
+        onClick={onClick}
+      >
+        <span>
+          <ConnectorIcon id={id} />
+        </span>
+        <span className="flex flex-col justify-start text-left">
+          <span className="capitalize leading-5">{name}</span>
+          <span className="text-muted text-sm">{description}</span>
+        </span>
+      </button>
+    ) : (
+      <a
+        className="flex gap-2 w-full hover:bg-vega-clight-800 dark:hover:bg-vega-cdark-800 p-4 rounded"
+        href={link}
+        target="_blank"
+        rel="noreferrer"
+      >
+        <span>
+          <ConnectorIcon id={id} />
+        </span>
+        <span className="flex flex-col justify-start text-left">
+          <span className="capitalize leading-5">
+            {t('Get the Vega Wallet')}
+          </span>
+          <span className="text-muted text-sm">{description}</span>
+        </span>
+      </a>
+    );
+  }
+
+  return (
+    <Tooltip
+      description={description}
+      align="center"
+      side="right"
+      sideOffset={10}
+      delayDuration={400}
+    >
+      {isMetaMaskInstalled() ? (
+        <button
+          className="w-full flex gap-2 items-center p-2 rounded capitalize hover:bg-vega-clight-800 dark:hover:bg-vega-cdark-800"
+          onClick={onClick}
+          data-testid={`connector-${id}`}
+        >
+          <ConnectorIcon id={id} />
+          {name}
+        </button>
+      ) : (
+        <a
+          href={link}
+          target="_blank"
+          rel="noreferrer"
+          className="w-full flex gap-2 items-center p-2 rounded capitalize hover:bg-vega-clight-800 dark:hover:bg-vega-cdark-800"
+          data-testid={`connector-${id}`}
+        >
+          <ConnectorIcon id={id} />
+          {t('Get MetaMask')}
+        </a>
+      )}
+    </Tooltip>
+  );
+};
+
+export const ConnectionOptionRecord: {
+  [C in ConnectorType]?: FunctionComponent<ConnectionOptionProps>;
+} = {
+  injected: ConnectionOptionInjected,
+  snap: ConnectionOptionSnap,
 };
