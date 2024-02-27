@@ -4,6 +4,7 @@ import {
   type Connector,
   type TransactionParams,
   type Store,
+  type VegaWalletEvent,
 } from '../types';
 import { ConnectorError, ConnectorErrors } from '.';
 
@@ -18,6 +19,7 @@ export class JsonRpcConnector implements Connector {
   url: string;
   requestId: number = 0;
   store: StoreApi<Store> | undefined;
+  pollRef: NodeJS.Timer | undefined;
 
   constructor(config: JsonRpcConnectorConfig) {
     this.url = config.url;
@@ -142,18 +144,27 @@ export class JsonRpcConnector implements Connector {
     }
   }
 
-  on() {
-    console.warn('events are not supported in json rpc wallet');
+  on(event: VegaWalletEvent, callback: () => void) {
+    if (event === 'client.disconnected') {
+      this.pollRef = setInterval(async () => {
+        const result = await this.isConnected();
+        if (result.connected) return;
+        callback();
+      }, 3000);
+    }
   }
 
-  off() {
-    console.warn('events are not supported in json rpc wallet');
+  off(event: VegaWalletEvent) {
+    if (event === 'client.disconnected' && this.pollRef) {
+      clearInterval(this.pollRef);
+    }
   }
 
   // TODO: fix any
   // eslint-disable-next-line
   private async request(method: JsonRpcMethod, params?: any) {
     const headers = new Headers();
+
     if (this.token) {
       headers.set('Authorization', this.token);
     }

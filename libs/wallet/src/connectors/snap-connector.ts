@@ -4,6 +4,7 @@ import {
   JsonRpcMethod,
   type Connector,
   type TransactionParams,
+  type VegaWalletEvent,
 } from '../types';
 
 enum EthereumMethod {
@@ -34,6 +35,7 @@ declare global {
   type WindowEthereumProvider = {
     isMetaMask: boolean;
     request<T = unknown>(args: RequestArguments): Promise<T>;
+    selectedAddress: string | null;
   };
 
   interface Window {
@@ -50,6 +52,7 @@ export class SnapConnector implements Connector {
   node: string;
   version: string;
   snapId: string;
+  pollRef: NodeJS.Timer | undefined;
 
   // Note: apps may not know which node is selected on start up so its up
   // to the app to make sure class intances are renewed if the node changes
@@ -113,6 +116,12 @@ export class SnapConnector implements Connector {
 
   async isConnected() {
     try {
+      // Check if metamask is unlocked
+      if (!window.ethereum.selectedAddress) {
+        return { connected: false };
+      }
+
+      // If this throws its likely the snap is disabled or has been uninstalled
       await this.listKeys();
       return { connected: true };
     } catch (err) {
@@ -156,12 +165,20 @@ export class SnapConnector implements Connector {
     }
   }
 
-  on() {
-    console.warn('events are not supported in json rpc wallet');
+  on(event: VegaWalletEvent, callback: () => void) {
+    if (event === 'client.disconnected') {
+      this.pollRef = setInterval(async () => {
+        const result = await this.isConnected();
+        if (result.connected) return;
+        callback();
+      }, 3000);
+    }
   }
 
-  off() {
-    console.warn('events are not supported in json rpc wallet');
+  off(event: VegaWalletEvent) {
+    if (event === 'client.disconnected' && this.pollRef) {
+      clearInterval(this.pollRef);
+    }
   }
 
   ////////////////////////////////////
