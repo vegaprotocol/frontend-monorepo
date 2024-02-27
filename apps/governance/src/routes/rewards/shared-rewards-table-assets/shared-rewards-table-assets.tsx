@@ -18,22 +18,6 @@ export const RowAccountTypes = {
     columnTitle: 'rewardsColInfraHeader',
     description: 'rewardsColInfraTooltip',
   },
-  [AccountType.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES]: {
-    columnTitle: 'rewardsColPriceTakingHeader',
-    description: 'rewardsColPriceTakingTooltip',
-  },
-  [AccountType.ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES]: {
-    columnTitle: 'rewardsColPriceMakingHeader',
-    description: 'rewardsColPriceMakingTooltip',
-  },
-  [AccountType.ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES]: {
-    columnTitle: 'rewardsColLiquidityProvisionHeader',
-    description: 'rewardsColLiquidityProvisionTooltip',
-  },
-  [AccountType.ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS]: {
-    columnTitle: 'rewardsColMarketCreationHeader',
-    description: 'rewardsColMarketCreationTooltip',
-  },
 };
 
 interface ColumnHeaderProps {
@@ -55,7 +39,7 @@ export const rowGridItemStyles = (last = false) =>
   });
 
 const gridStyles = classNames(
-  'grid grid-cols-[repeat(8,minmax(100px,auto))] max-w-full overflow-auto',
+  'grid grid-cols-[repeat(4,minmax(100px,auto))] max-w-full overflow-auto',
   `border-t border-vega-dark-200`,
   'text-sm'
 );
