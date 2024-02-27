@@ -1,6 +1,6 @@
-const { utils } = require('@commitlint/config-nx-scopes');
+import { utils } from '@commitlint/config-nx-scopes';
 
-module.exports = {
+export default {
   extends: ['@commitlint/config-conventional', '@commitlint/config-nx-scopes'],
   rules: {
     'scope-empty': [2, 'never'],
