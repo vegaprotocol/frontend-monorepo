@@ -15,8 +15,8 @@ import {
   type VoteFieldsFragment,
 } from '../../__generated__/Proposals';
 import { useBatchVoteInformation } from '../../hooks/use-vote-information';
-import { getIndicatorStyle } from '../proposal/colours';
 import { MarketName } from '../proposal/market-name';
+import { Indicator } from '../proposal/indicator';
 
 export const CompactVotes = ({ number }: { number: BigNumber }) => (
   <CompactNumber
@@ -300,13 +300,11 @@ const VoteBreakdownBatchSubProposal = ({
     </>
   ) : null;
 
-  const indicatorElement = indicator && (
-    <span className={getIndicatorStyle(indicator)}>{indicator}</span>
-  );
+  const indicatorElement = indicator && <Indicator indicator={indicator} />;
 
   return (
     <div className="mb-6">
-      <div className="flex items-baseline gap-3 mb-3">
+      <div className="flex items-center gap-3 mb-3">
         {indicatorElement}
         <h4>
           {t(terms.change.__typename)} {marketName}

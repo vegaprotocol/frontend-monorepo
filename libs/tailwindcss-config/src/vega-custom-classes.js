@@ -23,13 +23,14 @@ const vegaCustomClasses = plugin(function ({ addUtilities }) {
       background: colors.white,
       color: colors.neutral[700],
       border: `1px solid ${colors.neutral[300]}`,
+      borderRadius: '0.5rem',
     },
     '.syntax-highlighter-wrapper-sm .hljs': {
-      fontSize: '0.875rem',
-      lineHeight: '1.25rem',
+      fontSize: '0.75rem',
+      lineHeight: '1rem',
     },
     '.dark .syntax-highlighter-wrapper .hljs': {
-      background: colors.neutral[800],
+      background: theme.colors.vega.cdark[900],
       color: theme.colors.vega.green.DEFAULT,
       border: 0,
     },
