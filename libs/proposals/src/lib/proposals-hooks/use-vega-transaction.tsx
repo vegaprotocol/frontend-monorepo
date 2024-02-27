@@ -16,7 +16,7 @@ export enum VegaTxStatus {
 
 export interface VegaTxState {
   status: VegaTxStatus;
-  error: Error | null;
+  error: ConnectorError | null;
   txHash: string | null;
   signature: string | null;
   dialogOpen: boolean;
@@ -86,7 +86,7 @@ export const useVegaTransaction = () => {
           return;
         }
         setTransaction({
-          error: err instanceof Error ? err : Error('something went wrong'),
+          error: err instanceof ConnectorError ? err : ConnectorErrors.unknown,
           status: VegaTxStatus.Error,
         });
         return null;
