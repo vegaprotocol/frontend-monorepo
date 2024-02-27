@@ -80,7 +80,16 @@ export const normalizeTransfer = <T extends Exact<Transfer, T>>(
   };
 };
 
+/**
+ * TODO: We may want to create a package similar to @metamask/detect-ethereum-provider as this wont suffice
+ * if called immeidately, and before the extension has been able to add the vega object to the window
+ */
 export const isBrowserWalletInstalled = () => Boolean(window.vega);
+
+/**
+ * TODO: We may want to use @metamask/detect-ethereum-provider here. It works for now as this is called
+ * when the dialog is opened so metamask has had plenty of time to add the ethereum object to the window
+ */
 export const isMetaMaskInstalled = () => {
   return window.ethereum && window.ethereum.isMetaMask;
 };
