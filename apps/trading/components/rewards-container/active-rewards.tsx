@@ -24,6 +24,9 @@ import {
   type DispatchStrategy,
   IndividualScopeMapping,
   IndividualScopeDescriptionMapping,
+  AccountType,
+  DistributionStrategy,
+  IndividualScope,
 } from '@vegaprotocol/types';
 import { Card } from '../card/card';
 import { type ReactNode, useState } from 'react';
@@ -61,22 +64,21 @@ export const applyFilter = (
   filter: Filter
 ) => {
   const { transfer } = node;
-  if (
-    transfer.kind.__typename !== 'RecurringTransfer' ||
-    !transfer.kind.dispatchStrategy?.dispatchMetric
-  ) {
+  if (transfer.kind.__typename !== 'RecurringTransfer') {
     return false;
   }
 
   if (
-    DispatchMetricLabels[transfer.kind.dispatchStrategy.dispatchMetric]
-      .toLowerCase()
-      .includes(filter.searchTerm.toLowerCase()) ||
+    (transfer.kind.dispatchStrategy?.dispatchMetric &&
+      DispatchMetricLabels[transfer.kind.dispatchStrategy.dispatchMetric]
+        .toLowerCase()
+        .includes(filter.searchTerm.toLowerCase())) ||
     transfer.asset?.symbol
       .toLowerCase()
       .includes(filter.searchTerm.toLowerCase()) ||
     (
-      EntityScopeLabelMapping[transfer.kind.dispatchStrategy.entityScope] ||
+      (transfer.kind.dispatchStrategy &&
+        EntityScopeLabelMapping[transfer.kind.dispatchStrategy.entityScope]) ||
       'Unspecified'
     )
       .toLowerCase()
@@ -100,6 +102,14 @@ export const ActiveRewards = ({ currentEpoch }: { currentEpoch: number }) => {
   const { data } = useRewards({
     onlyActive: true,
   });
+
+  // TODO: filter out staking rewards
+
+  // const stakingRewards = data?.filter(
+  //   (n) => n.transfer.toAccountType === AccountType.ACCOUNT_TYPE_GLOBAL_REWARD
+  // );
+
+  // console.log(stakingRewards, 'stakingRewards');
 
   const [filter, setFilter] = useState<Filter>({
     searchTerm: '',
@@ -190,6 +200,28 @@ export const ActiveRewardCard = ({
 
   if (marketSuspended || !transferNode.isAssetTraded) {
     colour = CardColour.GREY;
+  }
+
+  if (
+    transferNode.transfer.toAccountType ===
+    AccountType.ACCOUNT_TYPE_GLOBAL_REWARD
+  ) {
+    return (
+      <StakingRewardCard
+        colour={CardColour.WHITE}
+        rewardAmount={addDecimalsFormatNumber(
+          transferNode.transfer.amount,
+          transferNode.transfer.asset?.decimals || 0,
+          6
+        )}
+        rewardAsset={transferNode.asset}
+        endsIn={
+          transferNode.transfer.kind.endEpoch != null
+            ? transferNode.transfer.kind.endEpoch - currentEpoch
+            : undefined
+        }
+      />
+    );
   }
 
   return (
@@ -359,6 +391,196 @@ const RewardCard = ({
               rewardAsset={rewardAsset}
             />
           )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const StakingRewardCard = ({
+  colour,
+  rewardAmount,
+  rewardAsset,
+  endsIn,
+}: {
+  colour: CardColour;
+  rewardAmount: string;
+  /** The asset linked to the dispatch strategy via `dispatchMetricAssetId` property. */
+  rewardAsset?: BasicAssetDetails;
+  /** The number of epochs until the transfer stops. */
+  endsIn?: number;
+  /** The VEGA asset details, required to format the min staking amount. */
+  vegaAsset?: BasicAssetDetails;
+}) => {
+  const t = useT();
+  return (
+    <div>
+      <div
+        className={classNames(
+          'bg-gradient-to-r col-span-full p-0.5 lg:col-auto h-full',
+          'rounded-lg',
+          CardColourStyles[colour].gradientClassName
+        )}
+        data-testid="active-rewards-card"
+      >
+        <div
+          className={classNames(
+            CardColourStyles[colour].mainClassName,
+            'bg-gradient-to-b bg-vega-clight-800 dark:bg-vega-cdark-800 h-full w-full rounded-md p-4 flex flex-col gap-4'
+          )}
+        >
+          <div className="flex justify-between gap-4">
+            {/** ENTITY SCOPE */}
+            <div className="flex flex-col gap-2 items-center text-center">
+              <EntityIcon entityScope={EntityScope.ENTITY_SCOPE_INDIVIDUALS} />
+              {
+                <span className="text-muted text-xs" data-testid="entity-scope">
+                  {EntityScopeLabelMapping[
+                    EntityScope.ENTITY_SCOPE_INDIVIDUALS
+                  ] || t('Unspecified')}
+                </span>
+              }
+            </div>
+
+            {/** AMOUNT AND DISTRIBUTION STRATEGY */}
+            <div className="flex flex-col gap-2 items-center text-center">
+              {/** AMOUNT */}
+              <h3 className="flex flex-col gap-1 text-2xl shrink-1 text-center">
+                <span className="font-glitch" data-testid="reward-value">
+                  {rewardAmount}
+                </span>
+
+                <span className="font-alpha">{rewardAsset?.symbol || ''}</span>
+              </h3>
+
+              {/** DISTRIBUTION STRATEGY */}
+              <Tooltip
+                description={t(
+                  DistributionStrategyDescriptionMapping[
+                    DistributionStrategy.DISTRIBUTION_STRATEGY_PRO_RATA
+                  ]
+                )}
+                underline={true}
+              >
+                <span className="text-xs" data-testid="distribution-strategy">
+                  {
+                    DistributionStrategyMapping[
+                      DistributionStrategy.DISTRIBUTION_STRATEGY_PRO_RATA
+                    ]
+                  }
+                </span>
+              </Tooltip>
+            </div>
+
+            {/** DISTRIBUTION DELAY */}
+            <div className="flex flex-col gap-2 items-center text-center">
+              <CardIcon
+                iconName={VegaIconNames.LOCK}
+                tooltip={t(
+                  'Number of epochs after distribution to delay vesting of rewards by'
+                )}
+              />
+              <span
+                className="text-muted text-xs whitespace-nowrap"
+                data-testid="locked-for"
+              >
+                {t('numberEpochs', '{{count}} epochs', {
+                  count: 0,
+                })}
+              </span>
+            </div>
+          </div>
+
+          <span className="border-[0.5px] border-gray-700" />
+          {/** DISPATCH METRIC */}
+          {
+            <span data-testid="dispatch-metric-info">
+              {t('Staking rewards')}
+            </span>
+          }
+          <div className="flex items-center gap-8 flex-wrap">
+            {/** ENDS IN */}
+            {endsIn != null && (
+              <span className="flex flex-col">
+                <span className="text-muted text-xs">{t('Ends in')} </span>
+                <span data-testid="ends-in" data-endsin={endsIn}>
+                  {endsIn >= 0
+                    ? t('numberEpochs', '{{count}} epochs', {
+                        count: endsIn,
+                      })
+                    : t('Ended')}
+                </span>
+              </span>
+            )}
+
+            {/** WINDOW LENGTH */}
+            <span className="flex flex-col">
+              <span className="text-muted text-xs">{t('Assessed over')}</span>
+              <span data-testid="assessed-over">
+                {t('numberEpochs', '{{count}} epochs', {
+                  count: 1,
+                })}
+              </span>
+            </span>
+          </div>
+          {/** DISPATCH METRIC DESCRIPTION */}
+          {
+            <span className="text-muted text-sm h-[3rem]">
+              {t(
+                'Global staking reward for staking $VEGA on the network via the Governance app'
+              )}
+            </span>
+          }
+          <span className="border-[0.5px] border-gray-700" />
+          {/** REQUIREMENTS */}
+          <dl className="flex justify-between flex-wrap items-center gap-3 text-xs">
+            <div className="flex flex-col gap-1">
+              <dt className="flex items-center gap-1 text-muted">
+                {t('Team scope')}
+              </dt>
+              <dd className="flex items-center gap-1" data-testid="scope">
+                <Tooltip
+                  description={
+                    IndividualScopeDescriptionMapping[
+                      IndividualScope.INDIVIDUAL_SCOPE_ALL
+                    ]
+                  }
+                >
+                  <span>
+                    {
+                      IndividualScopeMapping[
+                        IndividualScope.INDIVIDUAL_SCOPE_ALL
+                      ]
+                    }
+                  </span>
+                </Tooltip>
+              </dd>
+            </div>
+
+            <div className="flex flex-col gap-1">
+              <dt className="flex items-center gap-1 text-muted">
+                {t('Staked VEGA')}
+              </dt>
+              <dd
+                className="flex items-center gap-1"
+                data-testid="staking-requirement"
+              >
+                1
+              </dd>
+            </div>
+
+            <div className="flex flex-col gap-1">
+              <dt className="flex items-center gap-1 text-muted">
+                {t('Average position')}
+              </dt>
+              <dd
+                className="flex items-center gap-1"
+                data-testid="average-position"
+              >
+                0
+              </dd>
+            </div>
+          </dl>
         </div>
       </div>
     </div>
