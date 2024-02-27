@@ -103,14 +103,6 @@ export const ActiveRewards = ({ currentEpoch }: { currentEpoch: number }) => {
     onlyActive: true,
   });
 
-  // TODO: filter out staking rewards
-
-  // const stakingRewards = data?.filter(
-  //   (n) => n.transfer.toAccountType === AccountType.ACCOUNT_TYPE_GLOBAL_REWARD
-  // );
-
-  // console.log(stakingRewards, 'stakingRewards');
-
   const [filter, setFilter] = useState<Filter>({
     searchTerm: '',
   });
