@@ -28,4 +28,4 @@ jobs:
           npm install --no-save @commitlint/cli @commitlint/config-conventional @commitlint/config-nx-scopes nx
 
       - name: Check PR title
-        run: echo "${{ github.event.pull_request.title }}" | npx commitlint --config ./commitlint.config-ci.js
+        run: echo "${{ github.event.pull_request.title }}" | npx commitlint --config ./commitlint.config-ci.mjs
