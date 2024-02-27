@@ -80,7 +80,7 @@ const mockDataProvider = jest.fn(() => ({
 }));
 jest.mock('@vegaprotocol/data-provider', () => ({
   ...jest.requireActual('@vegaprotocol/data-provider'),
-  // @ts-ignore TODO: fix this
+  // @ts-ignore doesn't like spreading args here
   useDataProvider: jest.fn((...args) => mockDataProvider(...args)),
 }));
 
@@ -557,11 +557,9 @@ describe('StopOrder', () => {
       data: Array(4),
     });
     render(generateJsx());
-    // @ts-ignore TODO: fix this
-    expect(mockDataProvider.mock.lastCall?.[0].skip).toBe(true);
+    expect((mockDataProvider as jest.Mock).mock.lastCall?.[0].skip).toBe(true);
     await userEvent.type(screen.getByTestId(sizeInput), '0.01');
-    // @ts-ignore TODO: fix this
-    expect(mockDataProvider.mock.lastCall?.[0].skip).toBe(false);
+    expect((mockDataProvider as jest.Mock).mock.lastCall?.[0].skip).toBe(false);
     // 7002-SORD-011
     expect(screen.getByTestId(numberOfActiveOrdersLimit)).toBeInTheDocument();
   });
