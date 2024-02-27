@@ -140,13 +140,6 @@ export class SnapConnector implements Connector {
 
   async sendTransaction(params: TransactionParams) {
     try {
-      let transaction = null;
-      try {
-        transaction = JSON.parse(JSON.stringify(params.transaction));
-      } catch (err) {
-        throw ConnectorErrors.sendTransaction;
-      }
-
       const res = await this.invokeSnap<{
         transactionHash: string;
         transaction: { signature: { value: string } };
@@ -155,7 +148,7 @@ export class SnapConnector implements Connector {
       }>(JsonRpcMethod.SendTransaction, {
         publicKey: params.publicKey,
         sendingMode: params.sendingMode,
-        transaction,
+        transaction: params.transaction,
         networkEndpoints: [this.node],
       });
 
@@ -248,7 +241,7 @@ export class SnapConnector implements Connector {
     return await this.request(EthereumMethod.InvokeSnap, {
       snapId: this.snapId,
       request: {
-        method: method,
+        method,
         params,
       },
     });
@@ -270,6 +263,14 @@ export class SnapConnector implements Connector {
       window.ethereum.isMetaMask &&
       typeof window.ethereum.request === 'function'
     ) {
+      // Firefox doesn't like undefined properties or some properties
+      // on __proto__ so we need to strip them out with JSON.strinfify
+      try {
+        params = JSON.parse(JSON.stringify(params));
+      } catch (err) {
+        throw ConnectorErrors.sendTransaction; // TODO change this
+      }
+
       return window.ethereum.request({
         method,
         params,
