@@ -26,7 +26,7 @@ export const ConnectionOptions = ({
   const { connectors } = useConnect();
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col items-start gap-4">
       <h2 className="text-xl">{t('Connect to Vega')}</h2>
       <ul
         className="grid grid-cols-2 gap-1 -mx-2"
