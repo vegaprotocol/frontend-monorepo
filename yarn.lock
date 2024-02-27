@@ -1601,10 +1601,10 @@
   dependencies:
     conventional-changelog-conventionalcommits "^4.3.1"
 
-"@commitlint/config-nx-scopes@17.4.2":
-  version "17.4.2"
-  resolved "https://registry.yarnpkg.com/@commitlint/config-nx-scopes/-/config-nx-scopes-17.4.2.tgz#365feba8d5f935517d4387381b8c90289a8596c7"
-  integrity sha512-xNbbLfFxK+U0LJv99PNP+qe1c3J8Q76gdtz9JIcUJL8FsRV5dDdxvYplNAs88WqCFViP0ipNTYljyigftr3nqg==
+"@commitlint/config-nx-scopes@16.3.0":
+  version "16.3.0"
+  resolved "https://registry.yarnpkg.com/@commitlint/config-nx-scopes/-/config-nx-scopes-16.3.0.tgz#0af026399fab7719984575aa04c1df7e4985a984"
+  integrity sha512-3Q4RhQXgjMysvXXseMYPdgaFA2NaPIGU6F6iUqCGiImjzVUlsKrjTRw5gnkK2TyCAExGSW7b9LiEcFhYzuo9PQ==
 
 "@commitlint/config-validator@^16.2.1":
   version "16.2.1"
