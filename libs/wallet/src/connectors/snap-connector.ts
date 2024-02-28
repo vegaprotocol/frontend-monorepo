@@ -189,13 +189,13 @@ export class SnapConnector implements Connector {
   // Snap methods
   ////////////////////////////////////
 
-  emit(event: VegaWalletEvent) {
+  private emit(event: VegaWalletEvent) {
     this.pollListeners[event].forEach((listener) => {
       listener();
     });
   }
 
-  startPoll() {
+  private startPoll() {
     // This only event we need to poll for right now is client.disconnect,
     // if more events get added we will need more logic here
     this.pollRef = setInterval(async () => {
@@ -205,7 +205,7 @@ export class SnapConnector implements Connector {
     }, 2000);
   }
 
-  stopPoll() {
+  private stopPoll() {
     if (this.pollRef) {
       clearInterval(this.pollRef);
     }
@@ -217,7 +217,7 @@ export class SnapConnector implements Connector {
    * If the installation of any snap fails, returns the error that caused the failure.
    * More informations here: https://docs.metamask.io/snaps/reference/rpc-api/#wallet_requestsnaps
    */
-  async requestSnap() {
+  private async requestSnap() {
     await this.request(EthereumMethod.RequestSnaps, {
       [this.snapId]: {
         version: this.version,
@@ -243,7 +243,7 @@ export class SnapConnector implements Connector {
    * Calls a method on the specified snap, always vega in this case
    * should always be npm:@vegaprotocol/snap
    */
-  async invokeSnap<TResult>(
+  private async invokeSnap<TResult>(
     method: JsonRpcMethod,
     params?: SnapInvocationParams
   ): Promise<TResult> {
@@ -259,7 +259,7 @@ export class SnapConnector implements Connector {
   /**
    * Calls window.ethereum.request with method and params
    */
-  async request<TResult>(
+  private async request<TResult>(
     method: EthereumMethod,
     params?: object
   ): Promise<TResult> {

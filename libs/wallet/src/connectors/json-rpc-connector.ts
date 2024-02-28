@@ -179,7 +179,7 @@ export class JsonRpcConnector implements Connector {
   // JSON rpc connector methods
   ////////////////////////////////////
 
-  startPoll() {
+  private startPoll() {
     // This only event we need to poll for right now is client.disconnect,
     // if more events get added we will need more logic here
     this.pollRef = setInterval(async () => {
@@ -189,13 +189,13 @@ export class JsonRpcConnector implements Connector {
     }, 2000);
   }
 
-  stopPoll() {
+  private stopPoll() {
     if (this.pollRef) {
       clearInterval(this.pollRef);
     }
   }
 
-  emit(event: VegaWalletEvent) {
+  private emit(event: VegaWalletEvent) {
     this.pollListeners[event].forEach((listener) => {
       listener();
     });
