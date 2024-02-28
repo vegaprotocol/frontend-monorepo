@@ -1,5 +1,6 @@
 import { mockChain } from './chains';
-import { ConnectorErrors, MockConnector, mockKeys } from './connectors';
+import { MockConnector, mockKeys } from './connectors';
+import { ConnectorErrors } from './errors';
 import { createConfig, STORE_KEY } from './wallet';
 
 beforeEach(() => {

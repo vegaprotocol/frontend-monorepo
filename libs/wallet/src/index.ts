@@ -13,9 +13,10 @@ export {
   JsonRpcConnector,
   ViewPartyConnector,
   MockConnector,
-  ConnectorError,
-  ConnectorErrors,
 } from './connectors';
+
+// Errors
+export { ConnectorError, ConnectorErrors } from './errors';
 
 // Utils
 export * from './utils';

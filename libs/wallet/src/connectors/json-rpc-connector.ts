@@ -6,7 +6,7 @@ import {
   type Store,
   type VegaWalletEvent,
 } from '../types';
-import { ConnectorError, ConnectorErrors } from '.';
+import { ConnectorError, ConnectorErrors } from '../errors';
 
 type JsonRpcConnectorConfig = { url: string; token?: string };
 

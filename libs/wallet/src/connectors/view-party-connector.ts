@@ -1,7 +1,7 @@
 import { type StoreApi } from 'zustand';
 import { type Store, type Connector } from '../types';
 import { isValidVegaPublicKey } from '@vegaprotocol/utils';
-import { ConnectorError, ConnectorErrors } from '.';
+import { ConnectorError, ConnectorErrors } from '../errors';
 import { type TransactionResponse } from '../transaction-types';
 
 export class ViewPartyConnector implements Connector {

@@ -4,7 +4,7 @@ import {
   type TransactionResponse,
 } from './transaction-types';
 import { type Chain } from './chains';
-import { type ConnectorError } from './connectors';
+import { type ConnectorError } from './errors';
 
 export enum JsonRpcMethod {
   ConnectWallet = 'client.connect_wallet',

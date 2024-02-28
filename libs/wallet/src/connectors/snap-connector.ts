@@ -1,4 +1,4 @@
-import { ConnectorError, ConnectorErrors } from '.';
+import { ConnectorError, ConnectorErrors } from '../errors';
 import { type Transaction } from '../transaction-types';
 import {
   JsonRpcMethod,

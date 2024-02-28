@@ -10,7 +10,7 @@ import {
   type Connector,
   type ConnectorType,
 } from './types';
-import { ConnectorError, ConnectorErrors } from './connectors';
+import { ConnectorError, ConnectorErrors } from './errors';
 
 export const STORE_KEY = 'vega_wallet_store';
 
