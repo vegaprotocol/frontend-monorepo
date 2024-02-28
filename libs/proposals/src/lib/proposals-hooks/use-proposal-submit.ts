@@ -10,7 +10,8 @@ import { type ProposalEventFieldsFragment } from './__generated__/Proposal';
 export const useProposalSubmit = () => {
   const { pubKey } = useVegaWallet();
 
-  const { send, transaction, setComplete } = useVegaTransaction();
+  const { send, transaction, setComplete, setTransaction } =
+    useVegaTransaction();
   const waitForProposalEvent = useProposalEvent(transaction);
 
   const [finalizedProposal, setFinalizedProposal] =
@@ -54,5 +55,6 @@ export const useProposalSubmit = () => {
     transaction,
     finalizedProposal,
     submit,
+    setTransaction,
   };
 };

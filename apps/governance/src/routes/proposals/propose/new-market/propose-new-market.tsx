@@ -62,7 +62,8 @@ export const ProposeNewMarket = () => {
     watch,
     trigger,
   } = useForm<NewMarketProposalFormFields>();
-  const { finalizedProposal, transaction, submit } = useProposalSubmit();
+  const { finalizedProposal, transaction, submit, setTransaction } =
+    useProposalSubmit();
 
   const assembleProposal = (fields: NewMarketProposalFormFields) => {
     const isVoteDeadlineAtMinimum = doesValueEquateToParam(
@@ -215,6 +216,7 @@ export const ProposeNewMarket = () => {
               <ProposalFormTransactionDialog
                 finalizedProposal={finalizedProposal}
                 transaction={transaction}
+                onChange={(open) => setTransaction({ dialogOpen: open })}
               />
             </form>
           </div>

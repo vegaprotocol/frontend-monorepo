@@ -12,11 +12,13 @@ import type {
 interface ProposalFormTransactionDialogProps {
   finalizedProposal: ProposalEventFieldsFragment | null;
   transaction: VegaTxState;
+  onChange: (open: boolean) => void;
 }
 
 export const ProposalFormTransactionDialog = ({
   finalizedProposal,
   transaction,
+  onChange,
 }: ProposalFormTransactionDialogProps) => {
   const title = useGetProposalDialogTitle(finalizedProposal?.state);
   // Render a custom complete UI if the proposal was rejected otherwise
@@ -36,6 +38,7 @@ export const ProposalFormTransactionDialog = ({
         }}
         transaction={transaction}
         isOpen={transaction.dialogOpen}
+        onChange={onChange}
       />
     </div>
   );

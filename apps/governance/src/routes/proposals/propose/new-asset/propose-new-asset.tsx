@@ -64,7 +64,8 @@ export const ProposeNewAsset = () => {
     watch,
     trigger,
   } = useForm<NewAssetProposalFormFields>();
-  const { finalizedProposal, transaction, submit } = useProposalSubmit();
+  const { finalizedProposal, transaction, submit, setTransaction } =
+    useProposalSubmit();
 
   const assembleProposal = (fields: NewAssetProposalFormFields) => {
     const isVoteDeadlineAtMinimum = doesValueEquateToParam(
@@ -233,6 +234,7 @@ export const ProposeNewAsset = () => {
               <ProposalFormTransactionDialog
                 finalizedProposal={finalizedProposal}
                 transaction={transaction}
+                onChange={(open) => setTransaction({ dialogOpen: open })}
               />
             </form>
           </div>
