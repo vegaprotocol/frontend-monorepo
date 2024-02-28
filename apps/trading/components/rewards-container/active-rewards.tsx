@@ -64,6 +64,12 @@ export const applyFilter = (
   filter: Filter
 ) => {
   const { transfer } = node;
+
+  // if the transfer is a staking reward then it should be displayed
+  if (transfer.toAccountType === AccountType.ACCOUNT_TYPE_GLOBAL_REWARD) {
+    return true;
+  }
+
   if (transfer.kind.__typename !== 'RecurringTransfer') {
     return false;
   }
@@ -91,14 +97,6 @@ export const applyFilter = (
         .toLocaleLowerCase()
         .includes(filter.searchTerm.toLowerCase())
     )
-  ) {
-    return true;
-  }
-
-  // if the transfer is a staking reward then it should be displayed
-  if (
-    !transfer.kind.dispatchStrategy &&
-    transfer.toAccountType === AccountType.ACCOUNT_TYPE_GLOBAL_REWARD
   ) {
     return true;
   }
