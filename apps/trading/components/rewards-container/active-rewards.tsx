@@ -94,6 +94,15 @@ export const applyFilter = (
   ) {
     return true;
   }
+
+  // if the transfer is a staking reward then it should be displayed
+  if (
+    !transfer.kind.dispatchStrategy &&
+    transfer.toAccountType === AccountType.ACCOUNT_TYPE_GLOBAL_REWARD
+  ) {
+    return true;
+  }
+
   return false;
 };
 
