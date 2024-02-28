@@ -263,16 +263,8 @@ export class SnapConnector implements Connector {
     method: EthereumMethod,
     params?: object
   ): Promise<TResult> {
-    if (
-      'ethereum' in window &&
-      typeof window.ethereum === 'object' &&
-      window.ethereum &&
-      'request' in window.ethereum &&
-      'isMetaMask' in window.ethereum &&
-      window.ethereum.isMetaMask &&
-      typeof window.ethereum.request === 'function'
-    ) {
-      // Firefox doesn't like undefined properties or some properties
+    if (window.ethereum?.request && window.ethereum?.isMetaMask) {
+      // MetaMask in Firefox doesn't like undefined properties or some properties
       // on __proto__ so we need to strip them out with JSON.strinfify
       try {
         params = JSON.parse(JSON.stringify(params));
