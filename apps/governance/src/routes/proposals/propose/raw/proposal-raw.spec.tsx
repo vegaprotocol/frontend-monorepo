@@ -14,7 +14,7 @@ import {
   MockedWalletProvider,
   mockConfig,
 } from '@vegaprotocol/wallet-react/testing';
-import { ConnectorErrors } from '@vegaprotocol/wallet';
+import { userRejectedError } from '@vegaprotocol/wallet';
 
 const paramsDelay = 20;
 
@@ -245,7 +245,7 @@ describe('Raw proposal form', () => {
   it('can be rejected by the user', async () => {
     jest.spyOn(mockConfig, 'sendTransaction').mockReturnValue(
       new Promise((_, reject) => {
-        setTimeout(() => reject(ConnectorErrors.userRejected), 100);
+        setTimeout(() => reject(userRejectedError()), 100);
       })
     );
     setup();

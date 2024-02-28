@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import { VegaTxStatus } from '../../lib/proposals-hooks/use-vega-transaction';
 import type { VegaTransactionDialogProps } from './vega-transaction-dialog';
 import { VegaTransactionDialog } from './vega-transaction-dialog';
-import { ConnectorErrors } from '@vegaprotocol/wallet';
+import { unknownError } from '@vegaprotocol/wallet';
 
 jest.mock('@vegaprotocol/environment', () => ({
   ...jest.requireActual('@vegaprotocol/environment'),
@@ -68,7 +68,7 @@ describe('VegaTransactionDialog', () => {
         {...props}
         transaction={{
           ...props.transaction,
-          error: ConnectorErrors.unknown,
+          error: unknownError(),
           status: VegaTxStatus.Error,
         }}
       />

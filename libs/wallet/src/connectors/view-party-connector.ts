@@ -1,7 +1,14 @@
 import { type StoreApi } from 'zustand';
 import { type Store, type Connector } from '../types';
 import { isValidVegaPublicKey } from '@vegaprotocol/utils';
-import { ConnectorError, ConnectorErrors } from '../errors';
+import {
+  ConnectorError,
+  chainIdError,
+  connectError,
+  listKeysError,
+  sendTransactionError,
+  userRejectedError,
+} from '../errors';
 import { type TransactionResponse } from '../transaction-types';
 
 export class ViewPartyConnector implements Connector {
@@ -30,13 +37,11 @@ export class ViewPartyConnector implements Connector {
       const value = window.prompt('Enter public key');
 
       if (value === null) {
-        throw ConnectorErrors.userRejected;
+        throw userRejectedError();
       }
 
-      // TODO: extend connect error with messaging for invalid public key
       if (!isValidVegaPublicKey(value)) {
-        // throw new Error('invalid public key');
-        throw ConnectorErrors.connect;
+        throw connectError('invalid public key');
       }
 
       this.pubKey = value;
@@ -47,7 +52,7 @@ export class ViewPartyConnector implements Connector {
         throw err;
       }
 
-      throw ConnectorErrors.connect;
+      throw connectError();
     }
   }
 
@@ -56,14 +61,13 @@ export class ViewPartyConnector implements Connector {
     return { success: true };
   }
 
-  // define return type here to appease typescript, even though it'll only throw
   async getChainId(): Promise<{ chainId: string }> {
-    throw ConnectorErrors.chainId;
+    throw chainIdError('view party connector has not reference to a chain');
   }
 
   async listKeys() {
     if (!this.pubKey) {
-      throw ConnectorErrors.listKeys;
+      throw listKeysError();
     }
     return [
       {
@@ -83,12 +87,9 @@ export class ViewPartyConnector implements Connector {
 
   // define return type here to appease typescript, even though it'll only throw
   async sendTransaction(): Promise<TransactionResponse> {
-    // TODO: extend send tx with more information
-    //
-    // return {
-    //   error: `You are connected in a view only state for public key: ${this.pubKey}. In order to send transactions you must connect to a real wallet.`,
-    // };
-    throw ConnectorErrors.sendTransaction;
+    throw sendTransactionError(
+      'cannot send transactions when using view party connector'
+    );
   }
 
   on() {

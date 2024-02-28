@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import { VoteTransactionDialog } from './vote-transaction-dialog';
 import { VoteState } from './use-user-vote';
 import { VegaTxStatus } from '@vegaprotocol/proposals';
-import { ConnectorErrors } from '@vegaprotocol/wallet';
+import { ConnectorErrors, unknownError } from '@vegaprotocol/wallet';
 
 describe('VoteTransactionDialog', () => {
   it('renders with txRequested title when voteState is Requested', () => {
@@ -62,7 +62,7 @@ describe('VoteTransactionDialog', () => {
       <VoteTransactionDialog
         voteState={VoteState.Failed}
         transaction={{
-          error: ConnectorErrors.unknown,
+          error: unknownError(),
           txHash: null,
           signature: null,
           status: VegaTxStatus.Error,
@@ -71,7 +71,9 @@ describe('VoteTransactionDialog', () => {
       />
     );
 
-    expect(screen.getByText('Custom error test message')).toBeInTheDocument();
+    expect(
+      screen.getByText(ConnectorErrors.unknown.message)
+    ).toBeInTheDocument();
   });
 
   it('renders default error message when voteState is failed and no error message exists on the tx', () => {

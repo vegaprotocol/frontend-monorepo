@@ -115,7 +115,10 @@ export const VegaDialog = ({ transaction }: VegaDialogProps) => {
 
   if (transaction.status === VegaTxStatus.Error) {
     content = (
-      <div data-testid={transaction.status}>{transaction.error?.message}</div>
+      <div data-testid={transaction.status} className="first-letter:capitalize">
+        <p>{transaction.error?.message}</p>
+        <p>{transaction.error?.data}</p>
+      </div>
     );
   }
 

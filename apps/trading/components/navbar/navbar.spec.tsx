@@ -14,6 +14,16 @@ jest.mock('@vegaprotocol/proposals', () => ({
 }));
 
 describe('Navbar', () => {
+  const mockKeys = [
+    {
+      name: 'Key 1',
+      publicKey: '1'.repeat(64),
+    },
+    {
+      name: 'Key 2',
+      publicKey: '2'.repeat(64),
+    },
+  ];
   const marketId = 'abc';
   const navbarContent = 'navbar-menu-content';
 
@@ -112,16 +122,6 @@ describe('Navbar', () => {
   });
 
   it('can open wallet menu on small screens and change pubkey', async () => {
-    const mockKeys = [
-      {
-        name: 'Key 1',
-        publicKey: '1'.repeat(64),
-      },
-      {
-        name: 'Key 2',
-        publicKey: '2'.repeat(64),
-      },
-    ];
     mockConfig.store.setState({
       status: 'connected',
       keys: mockKeys,
@@ -149,6 +149,11 @@ describe('Navbar', () => {
   });
 
   it('can transfer and close menu', async () => {
+    mockConfig.store.setState({
+      status: 'connected',
+      keys: mockKeys,
+      pubKey: mockKeys[0].publicKey,
+    });
     renderComponent();
     await userEvent.click(screen.getByRole('button', { name: 'Wallet' }));
 
@@ -162,6 +167,11 @@ describe('Navbar', () => {
   });
 
   it('can disconnect and close menu', async () => {
+    mockConfig.store.setState({
+      status: 'connected',
+      keys: mockKeys,
+      pubKey: mockKeys[0].publicKey,
+    });
     const mockDisconnect = jest.spyOn(mockConfig, 'disconnect');
     renderComponent(undefined);
     await userEvent.click(screen.getByRole('button', { name: 'Wallet' }));

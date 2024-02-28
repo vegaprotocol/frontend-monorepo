@@ -3,6 +3,7 @@ import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import {
   ConnectorError,
   ConnectorErrors,
+  unknownError,
   type Transaction,
 } from '@vegaprotocol/wallet';
 
@@ -86,7 +87,7 @@ export const useVegaTransaction = () => {
           return;
         }
         setTransaction({
-          error: err instanceof ConnectorError ? err : ConnectorErrors.unknown,
+          error: err instanceof ConnectorError ? err : unknownError(),
           status: VegaTxStatus.Error,
         });
         return null;

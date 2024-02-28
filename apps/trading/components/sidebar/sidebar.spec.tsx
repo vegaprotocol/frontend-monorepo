@@ -10,6 +10,7 @@ import {
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import { Routes as AppRoutes } from '../../lib/links';
+import { MockedWalletProvider } from '@vegaprotocol/wallet-react/testing';
 
 jest.mock('../node-health', () => ({
   NodeHealthContainer: () => <span data-testid="node-health" />,
@@ -39,7 +40,9 @@ describe('Sidebar', () => {
   it('renders options prop', () => {
     render(
       <MemoryRouter>
-        <Sidebar options={<div data-testid="options" />} />
+        <MockedWalletProvider>
+          <Sidebar options={<div data-testid="options" />} />
+        </MockedWalletProvider>
       </MemoryRouter>
     );
 
@@ -52,16 +55,18 @@ describe('Sidebar', () => {
     const routeId = '/markets/ABC';
     render(
       <MemoryRouter initialEntries={[routeId]}>
-        <Sidebar
-          options={
-            <SidebarButton
-              view={ViewType.Deposit}
-              icon={VegaIconNames.DEPOSIT}
-              tooltip="Deposit"
-              routeId={'/markets/:marketId'}
-            />
-          }
-        />
+        <MockedWalletProvider>
+          <Sidebar
+            options={
+              <SidebarButton
+                view={ViewType.Deposit}
+                icon={VegaIconNames.DEPOSIT}
+                tooltip="Deposit"
+                routeId={'/markets/:marketId'}
+              />
+            }
+          />
+        </MockedWalletProvider>
       </MemoryRouter>
     );
 
@@ -92,13 +97,15 @@ describe('SidebarContent', () => {
   it('renders the correct content', () => {
     const { container } = render(
       <MemoryRouter initialEntries={['/markets/ABC']}>
-        <Routes>
-          <Route
-            path="/markets/:marketId"
-            id={AppRoutes.MARKET}
-            element={<SidebarContent />}
-          />
-        </Routes>
+        <MockedWalletProvider>
+          <Routes>
+            <Route
+              path="/markets/:marketId"
+              id={AppRoutes.MARKET}
+              element={<SidebarContent />}
+            />
+          </Routes>
+        </MockedWalletProvider>
       </MemoryRouter>
     );
 
@@ -124,13 +131,15 @@ describe('SidebarContent', () => {
   it('closes sidebar if market id is required but not present', () => {
     const { container } = render(
       <MemoryRouter initialEntries={['/portfolio']}>
-        <Routes>
-          <Route
-            path="/portfolio"
-            id={AppRoutes.PORTFOLIO}
-            element={<SidebarContent />}
-          />
-        </Routes>
+        <MockedWalletProvider>
+          <Routes>
+            <Route
+              path="/portfolio"
+              id={AppRoutes.PORTFOLIO}
+              element={<SidebarContent />}
+            />
+          </Routes>
+        </MockedWalletProvider>
       </MemoryRouter>
     );
 

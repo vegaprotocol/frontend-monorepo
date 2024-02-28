@@ -6,7 +6,13 @@ import {
   type Store,
   type VegaWalletEvent,
 } from '../types';
-import { ConnectorError, ConnectorErrors } from '../errors';
+import {
+  ConnectorError,
+  connectError,
+  noWalletError,
+  sendTransactionError,
+  userRejectedError,
+} from '../errors';
 
 type JsonRpcConnectorConfig = { url: string; token?: string };
 
@@ -37,11 +43,13 @@ export class JsonRpcConnector implements Connector {
       const chainRes = await this.getChainId();
 
       if ('error' in chainRes) {
-        throw ConnectorErrors.chainId;
+        throw connectError('getChainId failed');
       }
 
       if (chainRes.chainId !== desiredChainId) {
-        throw ConnectorErrors.chainId;
+        throw connectError(
+          `desired chain is ${desiredChainId} but wallet chain is ${chainRes.chainId}`
+        );
       }
 
       if (!this.token) {
@@ -55,16 +63,14 @@ export class JsonRpcConnector implements Connector {
         const token = response.headers.get('Authorization');
 
         if (!response.ok) {
-          // TODO: extend ConnectorError with data on jsonrpc error
           if ('error' in data && data.error.code === 3001) {
-            // user rejected
-            throw ConnectorErrors.userRejected;
+            throw userRejectedError();
           }
-          throw ConnectorErrors.connect;
+          throw connectError('response not ok');
         }
 
         if (!token) {
-          throw ConnectorErrors.connect;
+          throw connectError('no Authorization header');
         }
 
         this.token = token;
@@ -77,7 +83,7 @@ export class JsonRpcConnector implements Connector {
         throw err;
       }
 
-      throw ConnectorErrors.noConnector;
+      throw noWalletError();
     }
   }
 
@@ -87,7 +93,7 @@ export class JsonRpcConnector implements Connector {
       await this.request(JsonRpcMethod.DisconnectWallet);
       return { success: true };
     } catch (err) {
-      throw ConnectorErrors.noWallet;
+      throw noWalletError();
     }
   }
 
@@ -99,7 +105,7 @@ export class JsonRpcConnector implements Connector {
       return { chainId: data.result.chainID };
     } catch (err) {
       this.stopPoll();
-      throw ConnectorErrors.noWallet;
+      throw noWalletError();
     }
   }
 
@@ -109,7 +115,7 @@ export class JsonRpcConnector implements Connector {
       return data.result.keys as Array<{ publicKey: string; name: string }>;
     } catch (err) {
       this.stopPoll();
-      throw ConnectorErrors.noWallet;
+      throw noWalletError();
     }
   }
 
@@ -131,10 +137,17 @@ export class JsonRpcConnector implements Connector {
       );
 
       if (!response.ok) {
-        if ('error' in data && data.error.code === 3001) {
-          throw ConnectorErrors.userRejected;
+        if ('error' in data) {
+          if (data.error.code === 3001) {
+            throw userRejectedError();
+          }
+
+          throw sendTransactionError(
+            `${data.error.message}: ${data.error.data}`
+          );
         }
-        throw ConnectorErrors.sendTransaction;
+
+        throw sendTransactionError('response not ok');
       }
 
       return {
@@ -148,7 +161,7 @@ export class JsonRpcConnector implements Connector {
         throw err;
       }
 
-      throw ConnectorErrors.noWallet;
+      throw noWalletError();
     }
   }
 

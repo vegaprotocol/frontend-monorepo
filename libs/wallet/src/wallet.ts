@@ -10,7 +10,7 @@ import {
   type Connector,
   type ConnectorType,
 } from './types';
-import { ConnectorError, ConnectorErrors } from './errors';
+import { ConnectorError, noConnectorError, unknownError } from './errors';
 
 export const STORE_KEY = 'vega_wallet_store';
 
@@ -76,7 +76,7 @@ export function createConfig(cfg: Config): Wallet {
       const connector = connectors.getState().find((c) => c.id === id);
 
       if (!connector) {
-        throw ConnectorErrors.noConnector;
+        throw noConnectorError();
       }
 
       store.setState({ status: 'connecting', current: id, error: undefined });
@@ -108,7 +108,7 @@ export function createConfig(cfg: Config): Wallet {
         status: 'disconnected',
         current: undefined,
         keys: [],
-        error: err instanceof ConnectorError ? err : ConnectorErrors.unknown,
+        error: err instanceof ConnectorError ? err : unknownError(),
       });
       return { status: 'disconnected' as const };
     }
@@ -121,7 +121,7 @@ export function createConfig(cfg: Config): Wallet {
 
     try {
       if (!connector) {
-        throw ConnectorErrors.noConnector;
+        throw noConnectorError();
       }
 
       connector.off('client.disconnected');
@@ -133,7 +133,7 @@ export function createConfig(cfg: Config): Wallet {
     } catch (err) {
       store.setState({
         ...getInitialState(),
-        error: err instanceof ConnectorError ? err : ConnectorErrors.unknown,
+        error: err instanceof ConnectorError ? err : unknownError(),
       });
       return { status: 'disconnected' as const };
     }
@@ -146,14 +146,14 @@ export function createConfig(cfg: Config): Wallet {
 
     try {
       if (!connector) {
-        throw ConnectorErrors.noConnector;
+        throw noConnectorError();
       }
 
       const keys = await connector.listKeys();
       store.setState({ keys });
     } catch (err) {
       store.setState({
-        error: err instanceof ConnectorError ? err : ConnectorErrors.unknown,
+        error: err instanceof ConnectorError ? err : unknownError(),
       });
     }
   }
@@ -165,14 +165,14 @@ export function createConfig(cfg: Config): Wallet {
 
     try {
       if (!connector) {
-        throw ConnectorErrors.noConnector;
+        throw noConnectorError();
       }
       return connector.sendTransaction(params);
     } catch (err) {
       if (err instanceof ConnectorError) {
         throw err;
       }
-      throw ConnectorErrors.unknown;
+      throw unknownError();
     }
   }
 

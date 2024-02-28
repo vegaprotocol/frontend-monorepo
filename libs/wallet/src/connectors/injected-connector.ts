@@ -1,4 +1,13 @@
-import { ConnectorError, ConnectorErrors } from '../errors';
+import {
+  ConnectorError,
+  chainIdError,
+  connectError,
+  disconnectError,
+  isConnectedError,
+  listKeysError,
+  noWalletError,
+  sendTransactionError,
+} from '../errors';
 import {
   type TransactionParams,
   type Connector,
@@ -16,7 +25,7 @@ export class InjectedConnector implements Connector {
   async connectWallet(chainId: string) {
     try {
       if (window.vega === undefined) {
-        throw ConnectorErrors.noWallet;
+        throw noWalletError('window.vega is undefined');
       }
 
       await window.vega.connectWallet({ chainId });
@@ -25,7 +34,7 @@ export class InjectedConnector implements Connector {
       if (err instanceof ConnectorError) {
         throw err;
       }
-      throw ConnectorErrors.connect;
+      throw connectError();
     }
   }
 
@@ -34,7 +43,7 @@ export class InjectedConnector implements Connector {
       await window.vega.disconnectWallet();
       return { success: true };
     } catch (err) {
-      throw ConnectorErrors.disconnect;
+      throw disconnectError();
     }
   }
 
@@ -44,7 +53,7 @@ export class InjectedConnector implements Connector {
       const res = await window.vega.getChainId();
       return { chainId: res.chainID };
     } catch (err) {
-      throw ConnectorErrors.chainId;
+      throw chainIdError();
     }
   }
 
@@ -53,7 +62,7 @@ export class InjectedConnector implements Connector {
       const res = await window.vega.listKeys();
       return res.keys;
     } catch (err) {
-      throw ConnectorErrors.listKeys;
+      throw listKeysError();
     }
   }
 
@@ -62,7 +71,7 @@ export class InjectedConnector implements Connector {
       const res = await window.vega.isConnected();
       return { connected: res };
     } catch (err) {
-      throw ConnectorErrors.isConnected;
+      throw isConnectedError();
     }
   }
 
@@ -77,7 +86,7 @@ export class InjectedConnector implements Connector {
         sentAt: res.sentAt,
       };
     } catch (err) {
-      throw ConnectorErrors.sendTransaction;
+      throw sendTransactionError();
     }
   }
 

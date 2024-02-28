@@ -16,7 +16,7 @@ export {
 } from './connectors';
 
 // Errors
-export { ConnectorError, ConnectorErrors } from './errors';
+export * from './errors';
 
 // Utils
 export * from './utils';

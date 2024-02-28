@@ -1,11 +1,13 @@
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import {
+  connectError,
   ConnectorErrors,
   createConfig,
   InjectedConnector,
   mockChain,
   MockConnector,
+  userRejectedError,
   type Wallet,
 } from '@vegaprotocol/wallet';
 import { MockedWalletProvider } from '../../testing';
@@ -68,7 +70,7 @@ describe('ConnectDialog', () => {
   it('doesnt show user rejected error', async () => {
     jest
       .spyOn(mock, 'connectWallet')
-      .mockRejectedValueOnce(ConnectorErrors.userRejected);
+      .mockRejectedValueOnce(userRejectedError());
 
     const props = {
       open: true,
@@ -87,9 +89,7 @@ describe('ConnectDialog', () => {
   });
 
   it('shows error', async () => {
-    jest
-      .spyOn(mock, 'connectWallet')
-      .mockRejectedValueOnce(ConnectorErrors.connect);
+    jest.spyOn(mock, 'connectWallet').mockRejectedValueOnce(connectError());
 
     const props = {
       open: true,

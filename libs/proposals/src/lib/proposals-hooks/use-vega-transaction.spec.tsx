@@ -1,5 +1,5 @@
 import { act, renderHook } from '@testing-library/react';
-import { ConnectorErrors, type Transaction } from '@vegaprotocol/wallet';
+import { userRejectedError, type Transaction } from '@vegaprotocol/wallet';
 import {
   initialState,
   useVegaTransaction,
@@ -40,7 +40,7 @@ describe('useVegaTransaction', () => {
   it('resets state if sendTx returns null (user rejects)', async () => {
     jest
       .spyOn(mockConfig, 'sendTransaction')
-      .mockRejectedValue(ConnectorErrors.userRejected);
+      .mockRejectedValue(userRejectedError());
     const { result } = setup();
     await act(async () => {
       result.current.send(mockPubKey, {} as Transaction);

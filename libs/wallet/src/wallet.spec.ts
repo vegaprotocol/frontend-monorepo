@@ -1,6 +1,6 @@
 import { mockChain } from './chains';
 import { MockConnector, mockKeys } from './connectors';
-import { ConnectorErrors } from './errors';
+import { noConnectorError, userRejectedError } from './errors';
 import { createConfig, STORE_KEY } from './wallet';
 
 beforeEach(() => {
@@ -45,7 +45,7 @@ describe('connect', () => {
     expect(result).toEqual({ status: 'disconnected' });
     expect(config.store.getState()).toMatchObject({
       status: 'disconnected',
-      error: ConnectorErrors.noConnector,
+      error: noConnectorError(),
       current: undefined,
       keys: [],
       pubKey: undefined,
@@ -67,7 +67,10 @@ describe('connect', () => {
 
     expect(spyConnect).toHaveBeenCalledTimes(1);
     expect(spyConnect).toHaveBeenCalledWith(mockChain.id);
-    expect(spyOff).toHaveBeenCalledWith('client.disconnected');
+    expect(spyOff).toHaveBeenCalledWith(
+      'client.disconnected',
+      expect.any(Function)
+    );
     expect(spyOn).toHaveBeenCalledWith(
       'client.disconnected',
       expect.any(Function)
@@ -90,7 +93,7 @@ describe('disconnect', () => {
     expect(result).toEqual({ status: 'disconnected' });
     expect(config.store.getState()).toMatchObject({
       status: 'disconnected',
-      error: ConnectorErrors.noConnector,
+      error: noConnectorError(),
       current: undefined,
       keys: [],
       pubKey: undefined,
@@ -127,7 +130,7 @@ describe('refresh keys', () => {
   it('handles invalid connector', async () => {
     await config.refreshKeys();
     expect(config.store.getState()).toMatchObject({
-      error: ConnectorErrors.noConnector,
+      error: noConnectorError(),
     });
   });
 
@@ -166,7 +169,7 @@ describe('sendTransaction', () => {
     });
 
     await expect(config.sendTransaction(params)).rejects.toEqual(
-      ConnectorErrors.noConnector
+      noConnectorError()
     );
   });
 
@@ -180,14 +183,14 @@ describe('sendTransaction', () => {
 
     jest
       .spyOn(mockConnector, 'sendTransaction')
-      .mockRejectedValue(ConnectorErrors.userRejected);
+      .mockRejectedValue(userRejectedError());
 
     await config.connect('mock');
 
     expect(config.store.getState().status).toBe('connected');
 
     await expect(config.sendTransaction(params)).rejects.toEqual(
-      ConnectorErrors.userRejected
+      userRejectedError()
     );
   });
 

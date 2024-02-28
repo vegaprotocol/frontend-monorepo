@@ -1,4 +1,11 @@
-import { ConnectorError, ConnectorErrors } from '../errors';
+import {
+  ConnectorError,
+  chainIdError,
+  connectError,
+  listKeysError,
+  noWalletError,
+  sendTransactionError,
+} from '../errors';
 import { type Transaction } from '../transaction-types';
 import {
   JsonRpcMethod,
@@ -75,7 +82,9 @@ export class SnapConnector implements Connector {
       const { chainId } = await this.getChainId();
 
       if (chainId !== desiredChainId) {
-        throw ConnectorErrors.chainId;
+        throw connectError(
+          `desired chain is ${desiredChainId} but wallet chain is ${chainId}`
+        );
       }
 
       this.startPoll();
@@ -85,7 +94,7 @@ export class SnapConnector implements Connector {
         throw err;
       }
 
-      throw ConnectorErrors.noWallet;
+      throw noWalletError();
     }
   }
 
@@ -106,7 +115,7 @@ export class SnapConnector implements Connector {
       return { chainId: res.chainID };
     } catch (err) {
       this.stopPoll();
-      throw ConnectorErrors.chainId;
+      throw chainIdError();
     }
   }
 
@@ -118,7 +127,7 @@ export class SnapConnector implements Connector {
       return res.keys;
     } catch (err) {
       this.stopPoll();
-      throw ConnectorErrors.listKeys;
+      throw listKeysError();
     }
   }
 
@@ -126,7 +135,7 @@ export class SnapConnector implements Connector {
     try {
       // Check if metamask is unlocked
       if (!window.ethereum.selectedAddress) {
-        throw ConnectorErrors.noWallet;
+        throw noWalletError();
       }
 
       // If this throws its likely the snap is disabled or has been uninstalled
@@ -163,7 +172,7 @@ export class SnapConnector implements Connector {
         throw err;
       }
 
-      throw ConnectorErrors.sendTransaction;
+      throw sendTransactionError();
     }
   }
 
@@ -268,7 +277,7 @@ export class SnapConnector implements Connector {
       try {
         params = JSON.parse(JSON.stringify(params));
       } catch (err) {
-        throw ConnectorErrors.sendTransaction; // TODO change this
+        throw sendTransactionError();
       }
 
       return window.ethereum.request({
@@ -277,6 +286,6 @@ export class SnapConnector implements Connector {
       });
     }
 
-    throw ConnectorErrors.noWallet;
+    throw noWalletError();
   }
 }
