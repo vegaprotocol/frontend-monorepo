@@ -8,7 +8,7 @@ export const RiskAckContent = () => {
   const t = useT();
   return (
     <>
-      <div className="p-6 mb-6 bg-vega-light-100 dark:bg-vega-dark-100">
+      <div className="p-6 bg-vega-light-100 dark:bg-vega-dark-100">
         <ul className="list-[square] ml-4">
           <li className="mb-1">
             {t(
@@ -25,7 +25,7 @@ export const RiskAckContent = () => {
           </li>
         </ul>
       </div>
-      <p className="mb-8">
+      <p>
         <Trans
           defaults="By using the Vega Console, you acknowledge that you have read and understood the <0>Vega Console Disclaimer</0>"
           components={[<DisclaimerLink key="link" />]}
@@ -37,13 +37,11 @@ export const RiskAckContent = () => {
 
 const DisclaimerLink = ({ children }: { children?: string[] }) => (
   <Link
-    className="underline underline-offset-4"
+    className="flex-inline items-center gap-1 underline underline-offset-4"
     to={Links.DISCLAIMER()}
     target="_blank"
   >
-    <span className="flex items-center gap-1">
-      <span>{children}</span>
-      <VegaIcon name={VegaIconNames.OPEN_EXTERNAL} />
-    </span>
+    <span>{children}</span>
+    <VegaIcon name={VegaIconNames.OPEN_EXTERNAL} />
   </Link>
 );
