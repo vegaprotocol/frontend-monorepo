@@ -1,5 +1,4 @@
 import { act, fireEvent, render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import type { MockedResponse } from '@apollo/client/testing';
 import { addHours, getTime } from 'date-fns';
 import { AppStateProvider } from '../../../../contexts/app-state/app-state-provider';
@@ -8,12 +7,16 @@ import * as Schema from '@vegaprotocol/types';
 import { ProposeRaw } from './propose-raw';
 import { ProposalEventDocument } from '@vegaprotocol/proposals';
 import type { ProposalEventSubscription } from '@vegaprotocol/proposals';
+
 import type { NetworkParamsQuery } from '@vegaprotocol/network-parameters';
 import { NetworkParamsDocument } from '@vegaprotocol/network-parameters';
 import {
   MockedWalletProvider,
   mockConfig,
 } from '@vegaprotocol/wallet-react/testing';
+import { ConnectorErrors } from '@vegaprotocol/wallet';
+
+const paramsDelay = 20;
 
 const rawProposalNetworkParamsQueryMock: MockedResponse<NetworkParamsQuery> = {
   request: {
@@ -76,6 +79,7 @@ const rawProposalNetworkParamsQueryMock: MockedResponse<NetworkParamsQuery> = {
       },
     },
   },
+  delay: paramsDelay,
 };
 
 describe('Raw proposal form', () => {
@@ -102,7 +106,7 @@ describe('Raw proposal form', () => {
     },
     delay: 300,
   };
-  const renderComponent = () => {
+  const setup = () => {
     return render(
       <AppStateProvider>
         <MockedProvider
@@ -116,19 +120,24 @@ describe('Raw proposal form', () => {
     );
   };
 
-  beforeEach(() => {
-    mockConfig.store.setState({ pubKey });
+  beforeAll(() => {
+    jest.useFakeTimers();
+    mockConfig.store.setState({ status: 'connected', pubKey: '0x123' });
+  });
+
+  afterAll(() => {
+    jest.useRealTimers();
+    mockConfig.reset();
   });
 
   afterEach(() => {
-    act(() => {
-      mockConfig.reset();
-    });
+    jest.clearAllMocks();
   });
 
   it('handles validation', async () => {
     const mockSendTx = jest.spyOn(mockConfig, 'sendTransaction');
-    renderComponent();
+
+    setup();
 
     expect(await screen.findByTestId('proposal-submit')).toBeTruthy();
     await act(async () => {
@@ -157,15 +166,27 @@ describe('Raw proposal form', () => {
   it('sends the transaction', async () => {
     const mockSendTx = jest
       .spyOn(mockConfig, 'sendTransaction')
-      // @ts-ignore fields ommitted for brevity
-      .mockResolvedValue({
-        transactionHash: 'tx-hash',
-        signature:
-          'cfe592d169f87d0671dd447751036d0dddc165b9c4b65e5a5060e2bbadd1aa726d4cbe9d3c3b327bcb0bff4f83999592619a2493f9bbd251fae99ce7ce766909',
-      });
-    renderComponent();
+      .mockReturnValue(
+        new Promise((resolve) => {
+          setTimeout(
+            () =>
+              resolve({
+                transactionHash: 'tx-hash',
+                signature:
+                  'cfe592d169f87d0671dd447751036d0dddc165b9c4b65e5a5060e2bbadd1aa726d4cbe9d3c3b327bcb0bff4f83999592619a2493f9bbd251fae99ce7ce766909',
+                sentAt: new Date().toISOString(),
+                receivedAt: new Date().toISOString(),
+              }),
+            100
+          );
+        })
+      );
 
-    expect(await screen.findByTestId('raw-proposal-form')).toBeInTheDocument();
+    setup();
+
+    await act(async () => {
+      jest.advanceTimersByTime(paramsDelay);
+    });
 
     const inputJSON = JSON.stringify({
       rationale: {
@@ -188,58 +209,71 @@ describe('Raw proposal form', () => {
       target: { value: inputJSON },
     });
 
-    await userEvent.click(screen.getByTestId('proposal-submit'));
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('proposal-submit'));
+    });
 
     expect(mockSendTx).toHaveBeenCalledWith({
       publicKey: pubKey,
       sendingMode: 'TYPE_SYNC',
-      proposalSubmission: JSON.parse(inputJSON),
+      transaction: {
+        proposalSubmission: JSON.parse(inputJSON),
+      },
     });
 
-    // TODO: figure out why these assertions aren't working
-    //
-    // expect(screen.getByTestId('dialog-title')).toHaveTextContent(
-    //   'Confirm transaction in wallet'
-    // );
-    //
-    // await new Promise((resolve) => setTimeout(resolve, 0));
-    //
-    // expect(screen.getByTestId('dialog-title')).toHaveTextContent(
-    //   'Awaiting network confirmation'
-    // );
-    //
-    // await new Promise((resolve) => setTimeout(resolve, 0));
-    //
-    // expect(screen.getByTestId('dialog-title')).toHaveTextContent(
-    //   'Proposal submitted'
-    // );
+    expect(screen.getByTestId('dialog-title')).toHaveTextContent(
+      'Confirm transaction in wallet'
+    );
+
+    await act(async () => {
+      jest.advanceTimersByTime(200);
+    });
+
+    expect(screen.getByTestId('dialog-title')).toHaveTextContent(
+      'Awaiting network confirmation'
+    );
+
+    await act(async () => {
+      jest.advanceTimersByTime(400);
+    });
+
+    expect(screen.getByTestId('dialog-title')).toHaveTextContent(
+      'Proposal submitted'
+    );
   });
 
   it('can be rejected by the user', async () => {
-    jest
-      .spyOn(mockConfig, 'sendTransaction')
-      // @ts-ignore override types and allow null for user rejection
-      .mockResolvedValue(null);
-    renderComponent();
+    jest.spyOn(mockConfig, 'sendTransaction').mockReturnValue(
+      new Promise((_, reject) => {
+        setTimeout(() => reject(ConnectorErrors.userRejected), 100);
+      })
+    );
+    setup();
 
-    expect(await screen.findByTestId('raw-proposal-form')).toBeInTheDocument();
+    await act(async () => {
+      jest.advanceTimersByTime(paramsDelay);
+    });
+
+    const inputJSON = '{}';
 
     expect(await screen.findByTestId('proposal-data')).toBeTruthy();
 
-    // TODO: test dialog shows and then disappears after rejection
+    fireEvent.change(screen.getByTestId('proposal-data'), {
+      target: { value: inputJSON },
+    });
 
-    // const inputJSON = '{}';
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('proposal-submit'));
+    });
 
-    // fireEvent.change(screen.getByTestId('proposal-data'), {
-    //   target: { value: inputJSON },
-    // });
+    expect(screen.getByTestId('dialog-title')).toHaveTextContent(
+      'Confirm transaction in wallet'
+    );
 
-    // await act(async () => {
-    //   fireEvent.click(screen.getByTestId('proposal-submit'));
-    // });
-    //
-    // expect(screen.getByTestId('dialog-title')).toHaveTextContent(
-    //   'Confirm transaction in wallet'
-    // );
+    await act(async () => {
+      jest.advanceTimersByTime(200);
+    });
+
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   });
 });
