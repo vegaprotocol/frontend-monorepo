@@ -1,3 +1,4 @@
+import EventEmitter from 'eventemitter3';
 import {
   ConnectorError,
   chainIdError,
@@ -61,9 +62,7 @@ export class SnapConnector implements Connector {
   version: string;
   snapId: string;
   pollRef: NodeJS.Timer | undefined;
-  pollListeners: Record<VegaWalletEvent, (() => void)[]> = {
-    'client.disconnected': [],
-  };
+  ee: EventEmitter;
 
   // Note: apps may not know which node is selected on start up so its up
   // to the app to make sure class intances are renewed if the node changes
@@ -71,6 +70,7 @@ export class SnapConnector implements Connector {
     this.node = config.node;
     this.version = config.version;
     this.snapId = config.snapId;
+    this.ee = new EventEmitter();
   }
 
   bindStore() {}
@@ -177,23 +177,15 @@ export class SnapConnector implements Connector {
   }
 
   on(event: VegaWalletEvent, callback: () => void) {
-    this.pollListeners[event].push(callback);
+    this.ee.on(event, callback);
   }
 
   off(event: VegaWalletEvent, callback?: () => void) {
-    this.pollListeners[event] = this.pollListeners[event].filter(
-      (cb) => cb !== callback
-    );
+    this.ee.off(event, callback);
   }
   ////////////////////////////////////
   // Snap methods
   ////////////////////////////////////
-
-  private emit(event: VegaWalletEvent) {
-    this.pollListeners[event].forEach((listener) => {
-      listener();
-    });
-  }
 
   private startPoll() {
     // This only event we need to poll for right now is client.disconnect,
@@ -201,7 +193,7 @@ export class SnapConnector implements Connector {
     this.pollRef = setInterval(async () => {
       const result = await this.isConnected();
       if (result.connected) return;
-      this.emit('client.disconnected');
+      this.ee.emit('client.disconnected');
     }, 2000);
   }
 

@@ -1,4 +1,5 @@
 import { type StoreApi } from 'zustand';
+import { EventEmitter } from 'eventemitter3';
 import {
   JsonRpcMethod,
   type Connector,
@@ -26,12 +27,11 @@ export class JsonRpcConnector implements Connector {
   requestId: number = 0;
   store: StoreApi<Store> | undefined;
   pollRef: NodeJS.Timer | undefined;
-  pollListeners: Record<VegaWalletEvent, (() => void)[]> = {
-    'client.disconnected': [],
-  };
+  ee: EventEmitter;
 
   constructor(config: JsonRpcConnectorConfig) {
     this.url = config.url;
+    this.ee = new EventEmitter();
   }
 
   bindStore(store: StoreApi<Store>) {
@@ -166,13 +166,11 @@ export class JsonRpcConnector implements Connector {
   }
 
   on(event: VegaWalletEvent, callback: () => void) {
-    this.pollListeners[event].push(callback);
+    this.ee.on(event, callback);
   }
 
   off(event: VegaWalletEvent, callback?: () => void) {
-    this.pollListeners[event] = this.pollListeners[event].filter(
-      (cb) => cb !== callback
-    );
+    this.ee.off(event, callback);
   }
 
   ////////////////////////////////////
@@ -185,7 +183,7 @@ export class JsonRpcConnector implements Connector {
     this.pollRef = setInterval(async () => {
       const result = await this.isConnected();
       if (result.connected) return;
-      this.emit('client.disconnected');
+      this.ee.emit('client.disconnected');
     }, 2000);
   }
 
@@ -193,12 +191,6 @@ export class JsonRpcConnector implements Connector {
     if (this.pollRef) {
       clearInterval(this.pollRef);
     }
-  }
-
-  private emit(event: VegaWalletEvent) {
-    this.pollListeners[event].forEach((listener) => {
-      listener();
-    });
   }
 
   // TODO: fix any
