@@ -223,20 +223,26 @@ def auth_setup(vega: VegaServiceNull, page: Page):
     # Set token to localStorage so eager connect hook picks it up and immediately connects
     wallet_config = json.dumps(
         {
-            "token": f"VWT {wallet_api_token}",
-            "connector": "jsonRpc",
-            "url": f"http://localhost:{vega.wallet_port}",
+        "state":{
+            "chainId":"CUSTOM",
+            "current":"jsonRpc",
+            "jsonRpcToken": f"VWT {wallet_api_token}",
+        },
+        "version":0
         }
     )
+    onboarding_config = json.dumps({
+        "state": {
+            "dismissed": True,
+            "risk": "accepted"
+        },
+        "version": 0
+    })
 
-    storage_javascript = [
-        # Store wallet config so eager connection is initiated
-        f"localStorage.setItem('vega_wallet_config', '{wallet_config}');",
-        # Ensure wallet ris dialog doesnt show, otherwise eager connect wont work
-        "localStorage.setItem('vega_wallet_risk_accepted', 'true');",
-        # Ensure initial risk dialog doesnt show
-        "localStorage.setItem('vega_risk_accepted', 'true');",
-    ]
+    storage_javascript = f"""
+    localStorage.setItem('vega_wallet_store', '{wallet_config}');
+    localStorage.setItem('vega_onboarding', '{onboarding_config}');
+    """
     script = "".join(storage_javascript)
     page.add_init_script(script)
 
@@ -254,9 +260,14 @@ def auth(vega: VegaServiceNull, page: Page):
 
 # Set 'risk accepted' flag, so that the risk dialog doesn't show up
 def risk_accepted_setup(page: Page):
-    onboarding_config = json.dumps({"state": {"dismissed": True}, "version": 0})
+    onboarding_config = json.dumps({
+        "state": {
+            "dismissed": True,
+            "risk": "accepted"
+        },
+        "version": 0
+    })
     storage_javascript = [
-        "localStorage.setItem('vega_risk_accepted', 'true');",
         f"localStorage.setItem('vega_onboarding', '{onboarding_config}');",
         "localStorage.setItem('vega_telemetry_approval', 'false');",
         "localStorage.setItem('vega_telemetry_viewed', 'true');",
