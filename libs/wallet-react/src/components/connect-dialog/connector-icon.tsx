@@ -1,28 +1,18 @@
 import classNames from 'classnames';
-import {
-  mainnet,
-  fairground,
-  stagnet,
-  type ConnectorType,
-} from '@vegaprotocol/wallet';
+import { type ConnectorType } from '@vegaprotocol/wallet';
 import { VegaIcon, VegaIconNames, VLogo } from '@vegaprotocol/ui-toolkit';
-import { useChainId } from '../../hooks/use-chain-id';
 
 export const ConnectorIcon = ({ id }: { id: ConnectorType }) => {
-  const { chainId } = useChainId();
-
   const defaultWrapperClasses =
     'flex items-center justify-center w-8 h-8 rounded';
   switch (id) {
     case 'injected': {
       return (
         <span
-          className={classNames(defaultWrapperClasses, {
-            'bg-black dark:bg-white text-vega-clight-800 dark:text-vega-cdark-800':
-              chainId === mainnet.id,
-            'bg-vega-yellow text-vega-cdark-800': chainId === fairground.id,
-            'bg-vega-blue text-vega-cdark-800': chainId === stagnet.id,
-          })}
+          className={classNames(
+            defaultWrapperClasses,
+            'bg-black dark:bg-white text-vega-clight-800 dark:text-vega-cdark-800'
+          )}
         >
           <VLogo className="w-4 h-4" />
         </span>
