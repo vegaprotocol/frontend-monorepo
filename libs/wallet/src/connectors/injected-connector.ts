@@ -77,7 +77,7 @@ export class InjectedConnector implements Connector {
         sentAt: res.sentAt,
       };
     } catch (err) {
-      throw ConnectorErrors.isConnected;
+      throw ConnectorErrors.sendTransaction;
     }
   }
 
