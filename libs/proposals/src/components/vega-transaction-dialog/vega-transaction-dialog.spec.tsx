@@ -74,7 +74,9 @@ describe('VegaTransactionDialog', () => {
       />
     );
     expect(screen.getByTestId('dialog-title')).toHaveTextContent(/failed/i);
-    expect(screen.getByTestId(VegaTxStatus.Error)).toHaveTextContent(/failed/i);
+    expect(screen.getByTestId(VegaTxStatus.Error)).toHaveTextContent(
+      /unknown error/i
+    );
   });
 
   it('default complete', () => {

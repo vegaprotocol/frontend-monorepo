@@ -1,5 +1,10 @@
 import { act, renderHook } from '@testing-library/react';
-import { userRejectedError, type Transaction } from '@vegaprotocol/wallet';
+import {
+  userRejectedError,
+  type Transaction,
+  ConnectorErrors,
+  sendTransactionError,
+} from '@vegaprotocol/wallet';
 import {
   initialState,
   useVegaTransaction,
@@ -49,7 +54,7 @@ describe('useVegaTransaction', () => {
   });
 
   it('handles a single error', () => {
-    const error = new Error('test error');
+    const error = sendTransactionError();
     jest.spyOn(mockConfig, 'sendTransaction').mockImplementation(() => {
       throw error;
     });
@@ -60,7 +65,7 @@ describe('useVegaTransaction', () => {
     expect(result.current.transaction.status).toEqual(VegaTxStatus.Error);
     expect(result.current.transaction.error).toHaveProperty(
       'message',
-      error.message
+      ConnectorErrors.sendTransaction.message
     );
   });
 
@@ -76,7 +81,7 @@ describe('useVegaTransaction', () => {
     expect(result.current.transaction.status).toEqual(VegaTxStatus.Error);
     expect(result.current.transaction.error).toHaveProperty(
       'message',
-      'something went wrong'
+      ConnectorErrors.unknown.message
     );
   });
 
