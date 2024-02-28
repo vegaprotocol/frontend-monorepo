@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AsyncRenderer, Pagination } from '@vegaprotocol/ui-toolkit';
 import type { EpochFieldsFragment } from '../home/__generated__/Rewards';
@@ -23,36 +23,16 @@ export const EpochTotalRewards = ({ currentEpoch }: EpochTotalRewardsProps) => {
     'rewards_marketCreationQuantumMultiple'
   );
   const [page, setPage] = useState(1);
-  const { data, loading, error, refetch } = useEpochAssetsRewardsQuery({
+  const { data, loading, error } = useEpochAssetsRewardsQuery({
     notifyOnNetworkStatusChange: true,
     variables: {
-      epochRewardSummariesFilter: {
-        fromEpoch: epochId - EPOCHS_PAGE_SIZE,
-      },
+      epochRewardSummariesFilter: calculateEpochOffset({
+        epochId,
+        page: page,
+        size: EPOCHS_PAGE_SIZE,
+      }),
     },
   });
-
-  const refetchData = useCallback(
-    async (toPage?: number) => {
-      const targetPage = toPage ?? page;
-      await refetch({
-        epochRewardSummariesFilter: calculateEpochOffset({
-          epochId,
-          page: targetPage,
-          size: EPOCHS_PAGE_SIZE,
-        }),
-      });
-      setPage(targetPage);
-    },
-    [epochId, page, refetch]
-  );
-
-  useEffect(() => {
-    // when the epoch changes, we want to refetch the data to update the current page
-    if (data) {
-      refetchData();
-    }
-  }, [epochId, data, refetchData]);
 
   const epochTotalRewardSummaries =
     generateEpochTotalRewardsList({
@@ -85,10 +65,10 @@ export const EpochTotalRewards = ({ currentEpoch }: EpochTotalRewardsProps) => {
             isLoading={loading}
             hasPrevPage={page > 1}
             hasNextPage={page < totalPages}
-            onBack={() => refetchData(page - 1)}
-            onNext={() => refetchData(page + 1)}
-            onFirst={() => refetchData(1)}
-            onLast={() => refetchData(totalPages)}
+            onBack={() => setPage((x) => x - 1)}
+            onNext={() => setPage((x) => x + 1)}
+            onFirst={() => setPage(1)}
+            onLast={() => setPage(totalPages)}
           >
             {t('Page')} {page}
           </Pagination>

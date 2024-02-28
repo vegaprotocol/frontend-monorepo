@@ -1,10 +1,9 @@
-import { useMemo, useEffect, useState, useCallback, useRef } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AsyncRenderer, Pagination } from '@vegaprotocol/ui-toolkit';
 import { removePaginationWrapper } from '@vegaprotocol/utils';
 import type { EpochFieldsFragment } from '../home/__generated__/Rewards';
 import { useRewardsQuery } from '../home/__generated__/Rewards';
-import { ENV } from '../../../config';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { EpochIndividualRewardsTable } from './epoch-individual-rewards-table';
 import { generateEpochIndividualRewardsList } from './generate-epoch-individual-rewards-list';
@@ -27,22 +26,16 @@ export const EpochIndividualRewards = ({
   const [page, setPage] = useState(1);
   const { t } = useTranslation();
   const { pubKey } = useVegaWallet();
-  const { delegationsPagination } = ENV;
   const { param: marketCreationQuantumMultiple } = useNetworkParam(
     'rewards_marketCreationQuantumMultiple'
   );
 
-  const { data, loading, error, refetch } = useRewardsQuery({
+  const { data, loading, error } = useRewardsQuery({
     notifyOnNetworkStatusChange: true,
     variables: {
       partyId: pubKey || '',
-      fromEpoch: epochId - EPOCHS_PAGE_SIZE,
-      toEpoch: epochId,
-      delegationsPagination: delegationsPagination
-        ? {
-            first: Number(delegationsPagination),
-          }
-        : undefined,
+      ...calculateEpochOffset({ epochId, page, size: EPOCHS_PAGE_SIZE }),
+      delegationsPagination: { first: 50 },
     },
     skip: !pubKey,
   });
@@ -69,36 +62,6 @@ export const EpochIndividualRewards = ({
       size: EPOCHS_PAGE_SIZE,
     });
   }, [data?.party, epochId, epochRewardSummaries, page, rewards]);
-
-  const refetchData = useCallback(
-    async (toPage?: number) => {
-      const targetPage = toPage ?? page;
-      await refetch({
-        partyId: pubKey || '',
-        ...calculateEpochOffset({ epochId, page, size: EPOCHS_PAGE_SIZE }),
-        delegationsPagination: delegationsPagination
-          ? {
-              first: Number(delegationsPagination),
-            }
-          : undefined,
-      });
-      setPage(targetPage);
-    },
-    [epochId, page, refetch, delegationsPagination, pubKey]
-  );
-
-  const prevEpochIdRef = useRef<number | null>(null);
-
-  useEffect(() => {
-    if (prevEpochIdRef.current === null) {
-      prevEpochIdRef.current = epochId;
-    } else if (epochId !== prevEpochIdRef.current) {
-      // When the epoch changes, we want to refetch the data to update the current page
-      refetchData();
-    }
-
-    prevEpochIdRef.current = epochId;
-  }, [epochId, refetchData]);
 
   // Workarounds for the error handling of AsyncRenderer
   const filteredErrors = filterAcceptableGraphqlErrors(error);
@@ -131,10 +94,10 @@ export const EpochIndividualRewards = ({
               isLoading={loading}
               hasPrevPage={page > 1}
               hasNextPage={page < totalPages}
-              onBack={() => refetchData(page - 1)}
-              onNext={() => refetchData(page + 1)}
-              onFirst={() => refetchData(1)}
-              onLast={() => refetchData(totalPages)}
+              onBack={() => setPage((x) => x - 1)}
+              onNext={() => setPage((x) => x + 1)}
+              onFirst={() => setPage(1)}
+              onLast={() => setPage(totalPages)}
             >
               {t('Page')} {page}
             </Pagination>

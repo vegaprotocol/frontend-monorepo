@@ -1,4 +1,3 @@
-import { ENV } from '../../../config';
 import { Callout, Intent, Splash } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useTranslation } from 'react-i18next';
@@ -28,16 +27,13 @@ export const NodeContainer = ({
 }) => {
   const { t } = useTranslation();
   const { pubKey } = useVegaWallet();
-  const { delegationsPagination } = ENV;
 
   const { data, loading, error, refetch } = useStakingQuery({
     variables: {
       partyId: pubKey || '',
-      delegationsPagination: delegationsPagination
-        ? {
-            first: Number(delegationsPagination),
-          }
-        : undefined,
+      delegationsPagination: {
+        first: 50,
+      },
     },
     errorPolicy: 'all',
   });
