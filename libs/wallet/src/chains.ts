@@ -6,7 +6,7 @@ export type Chain = {
 
 export const mainnet = {
   id: 'vega-mainnet-0011',
-  testnet: true,
+  testnet: false,
   name: 'Fairground',
 };
 
