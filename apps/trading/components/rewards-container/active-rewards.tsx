@@ -27,6 +27,7 @@ import {
   AccountType,
   DistributionStrategy,
   IndividualScope,
+  type Asset,
 } from '@vegaprotocol/types';
 import { Card } from '../card/card';
 import { type ReactNode, useState } from 'react';
@@ -182,6 +183,29 @@ export const ActiveRewardCard = ({
     return null;
   }
 
+  if (
+    !transferNode.transfer.kind.dispatchStrategy &&
+    transferNode.transfer.toAccountType ===
+      AccountType.ACCOUNT_TYPE_GLOBAL_REWARD
+  ) {
+    return (
+      <StakingRewardCard
+        colour={CardColour.WHITE}
+        rewardAmount={addDecimalsFormatNumber(
+          transferNode.transfer.amount,
+          transferNode.transfer.asset?.decimals || 0,
+          6
+        )}
+        rewardAsset={transferNode.transfer.asset || undefined}
+        endsIn={
+          transferNode.transfer.kind.endEpoch != null
+            ? transferNode.transfer.kind.endEpoch - currentEpoch
+            : undefined
+        }
+      />
+    );
+  }
+
   let colour =
     DispatchMetricColourMap[
       transferNode.transfer.kind.dispatchStrategy.dispatchMetric
@@ -199,28 +223,6 @@ export const ActiveRewardCard = ({
 
   if (marketSuspended || !transferNode.isAssetTraded) {
     colour = CardColour.GREY;
-  }
-
-  if (
-    transferNode.transfer.toAccountType ===
-    AccountType.ACCOUNT_TYPE_GLOBAL_REWARD
-  ) {
-    return (
-      <StakingRewardCard
-        colour={CardColour.WHITE}
-        rewardAmount={addDecimalsFormatNumber(
-          transferNode.transfer.amount,
-          transferNode.transfer.asset?.decimals || 0,
-          6
-        )}
-        rewardAsset={transferNode.asset}
-        endsIn={
-          transferNode.transfer.kind.endEpoch != null
-            ? transferNode.transfer.kind.endEpoch - currentEpoch
-            : undefined
-        }
-      />
-    );
   }
 
   return (
@@ -405,7 +407,7 @@ const StakingRewardCard = ({
   colour: CardColour;
   rewardAmount: string;
   /** The asset linked to the dispatch strategy via `dispatchMetricAssetId` property. */
-  rewardAsset?: BasicAssetDetails;
+  rewardAsset?: Asset;
   /** The number of epochs until the transfer stops. */
   endsIn?: number;
   /** The VEGA asset details, required to format the min staking amount. */

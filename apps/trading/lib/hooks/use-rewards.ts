@@ -16,6 +16,7 @@ import {
   EntityScope,
   IndividualScope,
   MarketState,
+  AccountType,
 } from '@vegaprotocol/types';
 import { type ApolloError } from '@apollo/client';
 import compact from 'lodash/compact';
@@ -46,8 +47,9 @@ export type EnrichedRewardTransfer = RewardTransfer & {
  */
 export const isReward = (node: TransferNode): node is RewardTransfer => {
   if (
-    node.transfer.kind.__typename === 'RecurringTransfer' &&
-    node.transfer.kind.dispatchStrategy != null
+    (node.transfer.kind.__typename === 'RecurringTransfer' &&
+      node.transfer.kind.dispatchStrategy != null) ||
+    node.transfer.toAccountType === AccountType.ACCOUNT_TYPE_GLOBAL_REWARD
   ) {
     return true;
   }
@@ -142,6 +144,7 @@ export const useRewards = ({
     .filter((node) => (scopeToTeams ? isScopedToTeams(node) : true))
     // enrich with dispatch asset and markets in scope details
     .map((node) => {
+      if (!node.transfer.kind.dispatchStrategy) return node;
       const asset =
         assets &&
         assets[node.transfer.kind.dispatchStrategy.dispatchMetricAssetId];
@@ -169,7 +172,7 @@ export const useRewards = ({
         ...node,
         asset: asset ? asset : undefined,
         isAssetTraded: isAssetTraded != null ? isAssetTraded : undefined,
-        markets: marketsInScope.length > 0 ? marketsInScope : undefined,
+        markets: marketsInScope?.length > 0 ? marketsInScope : undefined,
       };
     });
 
