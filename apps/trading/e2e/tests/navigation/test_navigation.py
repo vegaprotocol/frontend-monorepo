@@ -1,30 +1,39 @@
 import pytest
 from playwright.sync_api import Page, expect, Locator
-from conftest import init_page, risk_accepted_setup
+
+from conftest import init_page, init_vega, cleanup_container
 
 
 @pytest.fixture(scope="module")
-def page(shared_vega, browser, request):
-    with init_page(shared_vega, browser, request) as page:
-        risk_accepted_setup(page)
-        page.goto("/#/disclaimer")
+def vega(request):
+    with init_vega(request) as vega_instance:
+        request.addfinalizer(lambda: cleanup_container(vega_instance))
+        yield vega_instance
+
+
+@pytest.fixture(scope="module")
+def page(vega, browser, request):
+    with init_page(vega, browser, request) as page:
         yield page
 
 
-
+@pytest.mark.usefixtures("risk_accepted")
 def test_network_switcher(page: Page):
+    page.goto("/#/disclaimer")
     navbar = page.locator('nav[aria-label="Main"]')
     assert_network_switcher(navbar)
 
 
-
+@pytest.mark.usefixtures("risk_accepted")
 def test_navbar_pages(page: Page):
+    page.goto("/#/disclaimer")
     navbar = page.locator('nav[aria-label="Main"]')
     assert_links(navbar)
 
 
-
+@pytest.mark.usefixtures("risk_accepted")
 def test_navigation_mobile(page: Page):
+    page.goto("/#/disclaimer")
     page.set_viewport_size({"width": 800, "height": 1040})
     navbar = page.locator('nav[aria-label="Main"]')
 
