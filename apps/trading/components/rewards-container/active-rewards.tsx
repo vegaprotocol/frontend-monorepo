@@ -24,6 +24,7 @@ import {
   type DispatchStrategy,
   IndividualScopeMapping,
   IndividualScopeDescriptionMapping,
+  type Asset,
 } from '@vegaprotocol/types';
 import { Card } from '../card/card';
 import { type ReactNode, useState } from 'react';
@@ -200,7 +201,8 @@ export const ActiveRewardCard = ({
         transferNode.transfer.asset?.decimals || 0,
         6
       )}
-      rewardAsset={transferNode.asset}
+      rewardAsset={transferNode.dispatchAsset}
+      transferAsset={transferNode.transfer.asset || undefined}
       endsIn={
         transferNode.transfer.kind.endEpoch != null
           ? transferNode.transfer.kind.endEpoch - currentEpoch
@@ -216,6 +218,8 @@ const RewardCard = ({
   colour,
   rewardAmount,
   rewardAsset,
+  transferAsset,
+  vegaAsset,
   dispatchStrategy,
   endsIn,
   dispatchMetricInfo,
@@ -224,12 +228,14 @@ const RewardCard = ({
   rewardAmount: string;
   /** The asset linked to the dispatch strategy via `dispatchMetricAssetId` property. */
   rewardAsset?: BasicAssetDetails;
+  /** The VEGA asset details, required to format the min staking amount. */
+  transferAsset?: Asset | undefined;
+  /** The VEGA asset details, required to format the min staking amount. */
+  vegaAsset?: BasicAssetDetails;
   /** The transfer's dispatch strategy. */
   dispatchStrategy: DispatchStrategy;
   /** The number of epochs until the transfer stops. */
   endsIn?: number;
-  /** The VEGA asset details, required to format the min staking amount. */
-  vegaAsset?: BasicAssetDetails;
   dispatchMetricInfo?: ReactNode;
 }) => {
   const t = useT();
@@ -269,7 +275,9 @@ const RewardCard = ({
                   {rewardAmount}
                 </span>
 
-                <span className="font-alpha">{rewardAsset?.symbol || ''}</span>
+                <span className="font-alpha">
+                  {transferAsset?.symbol || ''}
+                </span>
               </h3>
 
               {/** DISTRIBUTION STRATEGY */}
@@ -357,6 +365,7 @@ const RewardCard = ({
             <RewardRequirements
               dispatchStrategy={dispatchStrategy}
               rewardAsset={rewardAsset}
+              vegaAsset={vegaAsset}
             />
           )}
         </div>
@@ -379,8 +388,8 @@ export const DispatchMetricInfo = ({
   let additionalDispatchMetricInfo = null;
 
   // if asset found then display asset symbol
-  if (reward.asset) {
-    additionalDispatchMetricInfo = <span>{reward.asset.symbol}</span>;
+  if (reward.dispatchAsset) {
+    additionalDispatchMetricInfo = <span>{reward.dispatchAsset.symbol}</span>;
   }
   // but if scoped to only one market then display market name
   if (marketNames.length === 1) {
