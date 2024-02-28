@@ -90,7 +90,7 @@ export const Sidebar = ({ options }: { options?: ReactNode }) => {
                 }
               }}
               icon={VegaIconNames.EYE}
-              tooltip={t('View as party')}
+              tooltip={t('View as public key')}
               disabled={Boolean(pubKeys.length)}
               routeId={currentRouteId}
             />
