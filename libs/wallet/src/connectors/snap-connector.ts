@@ -100,7 +100,6 @@ export class SnapConnector implements Connector {
 
   async disconnectWallet() {
     this.stopPoll();
-    return { success: true };
   }
 
   // deprecated, pass chain on connect

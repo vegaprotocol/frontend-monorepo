@@ -91,7 +91,6 @@ export class JsonRpcConnector implements Connector {
     try {
       this.stopPoll();
       await this.request(JsonRpcMethod.DisconnectWallet);
-      return { success: true };
     } catch (err) {
       throw noWalletError();
     }

@@ -25,9 +25,7 @@ export class MockConnector implements Connector {
     return { success: true };
   }
 
-  async disconnectWallet() {
-    return { success: true };
-  }
+  async disconnectWallet() {}
 
   async getChainId() {
     return {

@@ -41,7 +41,6 @@ export class InjectedConnector implements Connector {
   async disconnectWallet() {
     try {
       await window.vega.disconnectWallet();
-      return { success: true };
     } catch (err) {
       throw disconnectError();
     }

@@ -58,7 +58,6 @@ export class ViewPartyConnector implements Connector {
 
   async disconnectWallet() {
     this.pubKey = undefined;
-    return { success: true };
   }
 
   async getChainId(): Promise<{ chainId: string }> {

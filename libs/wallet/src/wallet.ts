@@ -84,7 +84,8 @@ export function createConfig(cfg: Config): Wallet {
       await connector.connectWallet(store.getState().chainId);
       const keys = await connector.listKeys();
 
-      // TODO: this shouldnt be in core as we dont want to enforce single key usage
+      // TODO: this shouldnt be in the default config as we dont want to enforce single key usage
+      // need to find a way to optin into using this slice in the store
       const storedPubKey = store.getState().pubKey;
       let defaultKey;
       if (keys.find((k) => k.publicKey === storedPubKey)) {

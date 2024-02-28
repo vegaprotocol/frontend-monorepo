@@ -37,7 +37,7 @@ export interface Connector {
 
   bindStore(state: StoreApi<Store>): void;
   connectWallet(chainId?: string): Promise<{ success: boolean }>;
-  disconnectWallet(): Promise<{ success: boolean }>;
+  disconnectWallet(): Promise<void>;
   getChainId(): Promise<{ chainId: string }>;
   listKeys(): Promise<Array<{ publicKey: string; name: string }>>;
   isConnected(): Promise<{ connected: boolean }>;
