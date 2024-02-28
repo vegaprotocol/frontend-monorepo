@@ -11,6 +11,7 @@ export const WelcomeDialogContent = () => {
   const t = useT();
   const { VEGA_ENV } = useEnvironment();
   const setDialog = useOnboardingStore((store) => store.setDialog);
+  const dismiss = useOnboardingStore((store) => store.dismiss);
 
   const { data } = useTopTradedMarkets();
   const marketId = data && data[0]?.id;
@@ -50,7 +51,10 @@ export const WelcomeDialogContent = () => {
           </ul>
           <TradingAnchorButton
             href={link}
-            onClick={() => setDialog('inactive')}
+            onClick={() => {
+              setDialog('inactive');
+              dismiss();
+            }}
             className="block w-full"
             data-testid="browse-markets-button"
           >
