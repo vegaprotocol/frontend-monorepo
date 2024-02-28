@@ -182,8 +182,6 @@ def vega(request):
         request.addfinalizer(lambda: cleanup_container(vega_instance))
         yield vega_instance
 
-
-
 def cleanup_container(vega_instance):
     try:
         # Attempt to stop the container if it's still running
@@ -221,14 +219,15 @@ def auth_setup(vega: VegaServiceNull, page: Page):
     wallet_api_token = vega.wallet.login_tokens[DEFAULT_WALLET_NAME]
 
     # Set token to localStorage so eager connect hook picks it up and immediately connects
+    # no pubkey is set so it should default to the first pubkey
     wallet_config = json.dumps(
         {
-        "state":{
-            "chainId":"CUSTOM",
-            "current":"jsonRpc",
-            "jsonRpcToken": f"VWT {wallet_api_token}",
-        },
-        "version":0
+          "state":{
+              "chainId":"CUSTOM",
+              "current":"jsonRpc",
+              "jsonRpcToken": f"VWT {wallet_api_token}",
+          },
+          "version":0
         }
     )
     onboarding_config = json.dumps({
@@ -239,8 +238,15 @@ def auth_setup(vega: VegaServiceNull, page: Page):
         "version": 0
     })
 
+    # Before we set the wallet store, get any currently stored key and set it as well.
+    # This way if you navigate the page, reload or start a new test, the last used key
+    # will be persisted. Playwright will clear storage on every test and navigation event
     storage_javascript = f"""
-    localStorage.setItem('vega_wallet_store', '{wallet_config}');
+    var currentStorage = JSON.parse(localStorage.getItem('vega_wallet_store'));
+    var defaultStorage = JSON.parse('{wallet_config}');
+    var pubKey = currentStorage?.state?.pubKey;
+    defaultStorage['state']['pubKey'] = pubKey || undefined;
+    localStorage.setItem('vega_wallet_store', JSON.stringify(defaultStorage));
     localStorage.setItem('vega_onboarding', '{onboarding_config}');
     """
     script = "".join(storage_javascript)
@@ -314,14 +320,14 @@ def perps_market(vega, request):
 
 @pytest.fixture(autouse=True)
 def retry_on_http_error(request):
-    retry_count = 3 
+    retry_count = 3
     for i in range(retry_count):
         try:
             yield
-            return 
+            return
         except requests.exceptions.HTTPError:
             if i < retry_count - 1:
                 print(f"Retrying due to HTTPError (attempt {i+1}/{retry_count})")
             else:
-                raise 
+                raise
 
