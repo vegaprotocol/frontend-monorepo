@@ -1,4 +1,4 @@
-import { type ReactNode, type FunctionComponent } from 'react';
+import { type ReactNode, type FunctionComponent, forwardRef } from 'react';
 import {
   ConnectorErrors,
   isBrowserWalletInstalled,
@@ -123,9 +123,11 @@ export const ConnectionOptionDefault = ({
       sideOffset={10}
       delayDuration={400}
     >
-      <ConnectionOptionButton id={id} onClick={onClick}>
-        {name}
-      </ConnectionOptionButton>
+      <span>
+        <ConnectionOptionButton id={id} onClick={onClick}>
+          {name}
+        </ConnectionOptionButton>
+      </span>
     </Tooltip>
   );
 };
@@ -175,17 +177,17 @@ export const ConnectionOptionInjected = ({
       sideOffset={10}
       delayDuration={400}
     >
-      {isBrowserWalletInstalled() ? (
-        <span>
+      <span>
+        {isBrowserWalletInstalled() ? (
           <ConnectionOptionButton id={id} onClick={onClick}>
             {name}
           </ConnectionOptionButton>
-        </span>
-      ) : (
-        <ConnectionOptionLink id={id} href={link}>
-          {t('Get the Vega Wallet')}
-        </ConnectionOptionLink>
-      )}
+        ) : (
+          <ConnectionOptionLink id={id} href={link}>
+            {t('Get the Vega Wallet')}
+          </ConnectionOptionLink>
+        )}
+      </span>
     </Tooltip>
   );
 };
@@ -231,49 +233,50 @@ export const ConnectionOptionSnap = ({
       sideOffset={10}
       delayDuration={400}
     >
-      {isMetaMaskInstalled() ? (
-        <ConnectionOptionButton id={id} onClick={onClick}>
-          {name}
-        </ConnectionOptionButton>
-      ) : (
-        <ConnectionOptionLink id={id} href={link}>
-          {t('Get MetaMask')}
-        </ConnectionOptionLink>
-      )}
+      <span>
+        {isMetaMaskInstalled() ? (
+          <ConnectionOptionButton id={id} onClick={onClick}>
+            {name}
+          </ConnectionOptionButton>
+        ) : (
+          <ConnectionOptionLink id={id} href={link}>
+            {t('Get MetaMask')}
+          </ConnectionOptionLink>
+        )}
+      </span>
     </Tooltip>
   );
 };
 
-const ConnectionOptionButton = ({
-  children,
-  id,
-  onClick,
-}: {
-  children: ReactNode;
-  id: ConnectorType;
-  onClick: () => void;
-}) => {
+const ConnectionOptionButton = forwardRef<
+  HTMLButtonElement,
+  {
+    children: ReactNode;
+    id: ConnectorType;
+    onClick: () => void;
+  }
+>(({ children, id, onClick }, ref) => {
   return (
     <button
       className={CONNECTION_OPTION_CLASSES}
       onClick={onClick}
       data-testid={`connector-${id}`}
+      ref={ref}
     >
       <ConnectorIcon id={id} />
       {children}
     </button>
   );
-};
+});
 
-const ConnectionOptionLink = ({
-  children,
-  id,
-  href,
-}: {
-  children: ReactNode;
-  id: ConnectorType;
-  href: string;
-}) => {
+const ConnectionOptionLink = forwardRef<
+  HTMLAnchorElement,
+  {
+    children: ReactNode;
+    id: ConnectorType;
+    href: string;
+  }
+>(({ children, id, href }, ref) => {
   return (
     <a
       href={href}
@@ -281,43 +284,47 @@ const ConnectionOptionLink = ({
       rel="noreferrer"
       className={CONNECTION_OPTION_CLASSES}
       data-testid={`connector-${id}`}
+      ref={ref}
     >
       <ConnectorIcon id={id} />
       {children}
     </a>
   );
-};
+});
 
-const ConnectionOptionButtonWithDescription = ({
-  children,
-  id,
-  onClick,
-}: {
-  children: ReactNode;
-  id: ConnectorType;
-  onClick: () => void;
-}) => {
+const ConnectionOptionButtonWithDescription = forwardRef<
+  HTMLButtonElement,
+  {
+    children: ReactNode;
+    id: ConnectorType;
+    onClick: () => void;
+  }
+>(({ children, id, onClick }, ref) => {
   return (
-    <button className={CONNECTION_OPTION_CLASSES_DESC} onClick={onClick}>
+    <button
+      className={CONNECTION_OPTION_CLASSES_DESC}
+      onClick={onClick}
+      ref={ref}
+    >
       <span>
         <ConnectorIcon id={id} />
       </span>
       {children}
     </button>
   );
-};
+});
 
-const ConnectionOptionLinkWithDescription = ({
-  children,
-  id,
-  href,
-}: {
-  children: ReactNode;
-  id: ConnectorType;
-  href: string;
-}) => {
+const ConnectionOptionLinkWithDescription = forwardRef<
+  HTMLAnchorElement,
+  {
+    children: ReactNode;
+    id: ConnectorType;
+    href: string;
+  }
+>(({ children, id, href }, ref) => {
   return (
     <a
+      ref={ref}
       className={CONNECTION_OPTION_CLASSES_DESC}
       href={href}
       target="_blank"
@@ -329,7 +336,7 @@ const ConnectionOptionLinkWithDescription = ({
       {children}
     </a>
   );
-};
+});
 
 export const ConnectionOptionRecord: {
   [C in ConnectorType]?: FunctionComponent<ConnectionOptionProps>;
