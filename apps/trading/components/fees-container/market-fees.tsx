@@ -22,6 +22,11 @@ const useFeesTableColumnDefs = (): ColDef[] => {
           width: 150,
         },
         {
+          field: 'feeAfterDiscount',
+          headerName: t('Total fee after discount'),
+          valueFormatter: ({ value }: { value: number }) => value + '%',
+        },
+        {
           field: 'liquidityFee',
           valueFormatter: ({ value }: { value: number }) => value + '%',
         },
@@ -36,11 +41,6 @@ const useFeesTableColumnDefs = (): ColDef[] => {
         {
           field: 'totalFee',
           headerName: t('Total fee before discount'),
-          valueFormatter: ({ value }: { value: number }) => value + '%',
-        },
-        {
-          field: 'feeAfterDiscount',
-          headerName: t('Total fee after discount'),
           valueFormatter: ({ value }: { value: number }) => value + '%',
         },
       ] as ColDef[],
