@@ -6,7 +6,6 @@ import { usePreviousEpochQuery } from '../__generated__/PreviousEpoch';
 import { ValidatorTables } from './validator-tables';
 import { useRefreshAfterEpoch } from '../../../hooks/use-refresh-after-epoch';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { ENV } from '../../../config';
 import { getMultisigStatusInfo } from '../../../lib/get-multisig-status-info';
 import { MultisigIncorrectNotice } from '../../../components/multisig-incorrect-notice';
 
@@ -20,7 +19,6 @@ export const EpochData = () => {
     refetch: nodesRefetch,
   } = useNodesQuery();
 
-  const { delegationsPagination } = ENV;
   const {
     data: userStakingData,
     error: userStakingError,
@@ -29,11 +27,9 @@ export const EpochData = () => {
   } = useStakingQuery({
     variables: {
       partyId: pubKey || '',
-      delegationsPagination: delegationsPagination
-        ? {
-            first: Number(delegationsPagination),
-          }
-        : undefined,
+      delegationsPagination: {
+        first: 50,
+      },
     },
   });
   const { data: previousEpochData } = usePreviousEpochQuery({
