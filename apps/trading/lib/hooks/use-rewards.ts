@@ -80,15 +80,14 @@ export const isActiveReward = (node: RewardTransfer, currentEpoch: number) => {
  * if the scope is set to individuals but the individuals are in a team.
  */
 export const isScopedToTeams = (node: EnrichedRewardTransfer) =>
-  (node.transfer.kind.dispatchStrategy &&
-    // scoped to teams
-    node.transfer.kind.dispatchStrategy.entityScope ===
-      EntityScope.ENTITY_SCOPE_TEAMS) ||
+  // scoped to teams
+  node.transfer.kind.dispatchStrategy?.entityScope ===
+    EntityScope.ENTITY_SCOPE_TEAMS ||
   // or to individuals
-  (node.transfer.kind.dispatchStrategy.entityScope ===
+  (node.transfer.kind.dispatchStrategy?.entityScope ===
     EntityScope.ENTITY_SCOPE_INDIVIDUALS &&
     // but they have to be in a team
-    node.transfer.kind.dispatchStrategy.individualScope ===
+    node.transfer.kind.dispatchStrategy?.individualScope ===
       IndividualScope.INDIVIDUAL_SCOPE_IN_TEAM);
 
 /** Retrieves rewards (transfers) */
