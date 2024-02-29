@@ -144,6 +144,7 @@ export const useRewards = ({
     .filter((node) => (scopeToTeams ? isScopedToTeams(node) : true))
     // enrich with dispatch asset and markets in scope details
     .map((node) => {
+      if (!node.transfer.kind.dispatchStrategy) return node;
       const dispatchAsset =
         (assets &&
           assets[node.transfer.kind.dispatchStrategy.dispatchMetricAssetId]) ||

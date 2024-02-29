@@ -350,7 +350,7 @@ const RewardCard = ({
             </div>
           </div>
 
-          <span className="border-[0.5px] border-gray-700" />
+          <span className="border-[0.5px] dark:border-vega-cdark-500 border-vega-clight-500" />
           {/** DISPATCH METRIC */}
           {dispatchMetricInfo ? (
             dispatchMetricInfo
@@ -391,7 +391,7 @@ const RewardCard = ({
               {t(DispatchMetricDescription[dispatchStrategy?.dispatchMetric])}
             </p>
           )}
-          <span className="border-[0.5px] border-gray-700" />
+          <span className="border-[0.5px] dark:border-vega-cdark-500 border-vega-clight-500" />
           {/** REQUIREMENTS */}
           {dispatchStrategy && (
             <RewardRequirements
@@ -500,7 +500,7 @@ const StakingRewardCard = ({
             </div>
           </div>
 
-          <span className="border-[0.5px] border-gray-700" />
+          <span className="border-[0.5px] dark:border-vega-cdark-500 border-vega-clight-500" />
           {/** DISPATCH METRIC */}
           {
             <span data-testid="dispatch-metric-info">
@@ -540,7 +540,7 @@ const StakingRewardCard = ({
               )}
             </p>
           }
-          <span className="border-[0.5px] border-gray-700" />
+          <span className="border-[0.5px] dark:border-vega-cdark-500 border-vega-clight-500" />
           {/** REQUIREMENTS */}
           <dl className="flex justify-between flex-wrap items-center gap-3 text-xs">
             <div className="flex flex-col gap-1">
