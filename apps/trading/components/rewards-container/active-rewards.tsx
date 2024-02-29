@@ -275,7 +275,7 @@ const RewardCard = ({
                   {rewardAmount}
                 </span>
 
-                <span className="font-alpha">
+                <span className="font-alpha" data-testid="reward-asset">
                   {transferAsset?.symbol || ''}
                 </span>
               </h3>
