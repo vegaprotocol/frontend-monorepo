@@ -20,6 +20,7 @@ describe('getMultisigStatus', () => {
     expect(result).toEqual({
       multisigStatus: MultisigStatus.noNodes,
       showMultisigStatusError: true,
+      zeroScoreNodes: [],
     });
   });
 
@@ -35,6 +36,7 @@ describe('getMultisigStatus', () => {
     expect(result).toEqual({
       multisigStatus: MultisigStatus.correct,
       showMultisigStatusError: false,
+      zeroScoreNodes: [],
     });
   });
 
@@ -50,6 +52,22 @@ describe('getMultisigStatus', () => {
     expect(result).toEqual({
       multisigStatus: MultisigStatus.nodeNeedsRemoving,
       showMultisigStatusError: true,
+      zeroScoreNodes: [
+        {
+          id: '1',
+          rewardScore: {
+            multisigScore: '0',
+          },
+          stakedTotal: '1000',
+        },
+        {
+          id: '2',
+          rewardScore: {
+            multisigScore: '0',
+          },
+          stakedTotal: '1000',
+        },
+      ],
     });
   });
 
@@ -65,6 +83,15 @@ describe('getMultisigStatus', () => {
     expect(result).toEqual({
       multisigStatus: MultisigStatus.nodeNeedsAdding,
       showMultisigStatusError: true,
+      zeroScoreNodes: [
+        {
+          id: '1',
+          rewardScore: {
+            multisigScore: '0',
+          },
+          stakedTotal: '1000',
+        },
+      ],
     });
   });
 });

@@ -143,14 +143,14 @@ export const ProposalMarketChanges = ({
         <SubHeading
           title={
             <>
-              {t('UpdateToMarket')}: <MarketName marketId={marketId} />
+              {t('UpdateToMarket')}: <MarketName marketId={marketId} truncate />
             </>
           }
         />
       </CollapsibleToggle>
 
       {showChanges && (
-        <div className="mb-6">
+        <div className="mb-6 bg-vega-cdark-900 p-2 rounded-lg">
           <JsonDiff left={left as JsonValue} right={right as JsonValue} />
         </div>
       )}

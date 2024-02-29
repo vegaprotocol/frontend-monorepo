@@ -15,19 +15,16 @@ export const CollapsibleToggle = ({
   dataTestId,
   children,
 }: CollapsibleToggleProps) => {
-  const classes = classnames(
-    'mb-4 transition-transform ease-in-out duration-300',
-    {
-      'rotate-180': toggleState,
-    }
-  );
+  const classes = classnames('transition-transform ease-in-out duration-300', {
+    'rotate-180': toggleState,
+  });
 
   return (
     <button
       onClick={() => setToggleState(!toggleState)}
       data-testid={dataTestId}
     >
-      <div className="flex items-center gap-3">
+      <div className="flex items-baseline gap-3">
         {children}
         <div className={classes} data-testid="toggle-icon-wrapper">
           <VegaIcon name={VegaIconNames.CHEVRON_DOWN} size={20} />

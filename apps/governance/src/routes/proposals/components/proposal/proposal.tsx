@@ -60,7 +60,7 @@ export const Proposal = ({ proposal, restData }: ProposalProps) => {
         <ProposalDescription description={proposal.rationale.description} />
       </div>
 
-      <div className="mb-4">
+      <div className="mb-4 flex flex-col gap-0">
         {proposal.__typename === 'Proposal' ? (
           <ProposalChangeDetails
             proposal={proposal}

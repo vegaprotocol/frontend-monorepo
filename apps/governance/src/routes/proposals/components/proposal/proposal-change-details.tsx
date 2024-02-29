@@ -1,3 +1,4 @@
+import { Trans, useTranslation } from 'react-i18next';
 import { type ProposalTermsFieldsFragment } from '../../__generated__/Proposals';
 import { type Proposal, type BatchProposal } from '../../types';
 import { ListAsset } from '../list-asset';
@@ -12,8 +13,10 @@ import {
 import { ProposalUpdateBenefitTiers } from '../proposal-update-benefit-tiers';
 import { ProposalUpdateMarketState } from '../proposal-update-market-state';
 import { ProposalVolumeDiscountProgramDetails } from '../proposal-volume-discount-program-details';
-import { getIndicatorStyle } from './colours';
 import { type ProposalNode } from './proposal-utils';
+import { Lozenge } from '@vegaprotocol/ui-toolkit';
+import { Indicator } from './indicator';
+import { SubHeading } from '../../../../components/heading';
 
 export const ProposalChangeDetails = ({
   proposal,
@@ -26,6 +29,7 @@ export const ProposalChangeDetails = ({
   restData: ProposalNode | null;
   indicator?: number;
 }) => {
+  const { t } = useTranslation();
   let details = null;
 
   switch (terms.change.__typename) {
@@ -108,6 +112,25 @@ export const ProposalChangeDetails = ({
           'rewards.activityStreak.benefitTiers'
       ) {
         details = <ProposalUpdateBenefitTiers change={terms.change} />;
+      } else {
+        details = (
+          <div className="mb-4">
+            <SubHeading title={t(terms.change.__typename as string)} />
+            <span>
+              <Trans
+                i18nKey="Change <lozenge>{{key}}</lozenge> to <lozenge>{{value}}</lozenge>"
+                values={{
+                  key: terms.change.networkParameter.key,
+                  value: terms.change.networkParameter.value,
+                }}
+                components={{
+                  // @ts-ignore children passed by i18next
+                  lozenge: <Lozenge />,
+                }}
+              />
+            </span>
+          </div>
+        );
       }
 
       break;
@@ -120,10 +143,12 @@ export const ProposalChangeDetails = ({
     }
   }
 
-  if (indicator != null) {
+  if (indicator != null && details != null) {
     details = (
-      <div className="flex gap-3 mb-3">
-        <div className={getIndicatorStyle(indicator)}>{indicator}</div>
+      <div className="grid grid-cols-[40px_minmax(0,1fr)] grid-rows-1 gap-3 mb-3">
+        <div className="w-10">
+          <Indicator indicator={indicator} />
+        </div>
         <div>{details}</div>
       </div>
     );

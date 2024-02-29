@@ -49,7 +49,7 @@ def markets(vega: VegaServiceNull):
         price=130,
     )
 
-    vega.forward("5s")
+    vega.forward("2s")
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
 
@@ -63,7 +63,7 @@ def markets(vega: VegaServiceNull):
         price=88,
     )
 
-    vega.forward("5s")
+    vega.forward("2s")
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
 
@@ -77,7 +77,7 @@ def markets(vega: VegaServiceNull):
         price=88,
     )
 
-    vega.forward("5s")
+    vega.forward("2s")
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
 
@@ -92,7 +92,7 @@ def markets(vega: VegaServiceNull):
         wait=False,
     )
 
-    vega.forward("5s")
+    vega.forward("2s")
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
 
@@ -105,7 +105,7 @@ def markets(vega: VegaServiceNull):
         volume=100,
         price=104,
     )
-    vega.forward("5s")
+    vega.forward("2s")
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
 
@@ -120,7 +120,7 @@ def markets(vega: VegaServiceNull):
         expires_at=vega.get_blockchain_time() + 5 * 1e9,
     )
 
-    vega.forward("5s")
+    vega.forward("2s")
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
 
@@ -134,7 +134,7 @@ def markets(vega: VegaServiceNull):
         volume=20,
     )
 
-    vega.forward("5s")
+    vega.forward("2s")
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
 
@@ -148,7 +148,7 @@ def markets(vega: VegaServiceNull):
         volume=40,
     )
 
-    vega.forward("5s")
+    vega.forward("2s")
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
 
@@ -162,7 +162,7 @@ def markets(vega: VegaServiceNull):
         volume=60,
     )
 
-    vega.forward("5s")
+    vega.forward("2s")
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
 
@@ -177,7 +177,7 @@ def markets(vega: VegaServiceNull):
         volume=60,
     )
 
-    vega.forward("5s")
+    vega.forward("2s")
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
 
@@ -190,7 +190,7 @@ def markets(vega: VegaServiceNull):
         volume=10,
         price=150,
     )
-    vega.forward("5s")
+    
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
 
@@ -203,7 +203,7 @@ def markets(vega: VegaServiceNull):
         volume=10,
         price=160,
     )
-    vega.forward("5s")
+
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
 
@@ -216,7 +216,7 @@ def markets(vega: VegaServiceNull):
         volume=10,
         price=60,
     )
-    vega.forward("5s")
+
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
 

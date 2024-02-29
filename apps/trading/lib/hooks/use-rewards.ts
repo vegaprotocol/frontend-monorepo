@@ -32,7 +32,7 @@ export type RewardTransfer = TransferNode & {
 
 export type EnrichedRewardTransfer = RewardTransfer & {
   /** Dispatch metric asset (reward asset) */
-  asset?: AssetFieldsFragment;
+  dispatchAsset?: AssetFieldsFragment;
   /** A flag determining whether a reward asset is being traded on any of the active markets */
   isAssetTraded?: boolean;
   /** A list of markets in scope */
@@ -144,10 +144,10 @@ export const useRewards = ({
     .filter((node) => (scopeToTeams ? isScopedToTeams(node) : true))
     // enrich with dispatch asset and markets in scope details
     .map((node) => {
-      if (!node.transfer.kind.dispatchStrategy) return node;
-      const asset =
-        assets &&
-        assets[node.transfer.kind.dispatchStrategy.dispatchMetricAssetId];
+      const dispatchAsset =
+        (assets &&
+          assets[node.transfer.kind.dispatchStrategy.dispatchMetricAssetId]) ||
+        undefined;
       const marketsInScope = compact(
         node.transfer.kind.dispatchStrategy.marketIdsInScope?.map(
           (id) => markets && markets[id]
@@ -170,7 +170,7 @@ export const useRewards = ({
         });
       return {
         ...node,
-        asset: asset ? asset : undefined,
+        dispatchAsset,
         isAssetTraded: isAssetTraded != null ? isAssetTraded : undefined,
         markets: marketsInScope?.length > 0 ? marketsInScope : undefined,
       };
