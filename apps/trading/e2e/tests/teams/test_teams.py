@@ -61,7 +61,9 @@ def setup_teams_and_games(vega: VegaServiceNull):
             symbol="VEGA",
             decimals=5,
             max_faucet_amount=1e10,
+            quantum=100000, 
         )
+    
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
     VEGA_asset_id = vega.find_asset_id(symbol="VEGA")
