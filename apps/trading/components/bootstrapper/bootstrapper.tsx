@@ -7,7 +7,7 @@ import {
   NodeGuard,
   useEnvironment,
 } from '@vegaprotocol/environment';
-import type { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { Web3Provider } from './web3-provider';
 import { useT } from '../../lib/use-t';
 import { DataLoader } from './data-loader';
