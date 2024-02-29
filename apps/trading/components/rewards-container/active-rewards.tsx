@@ -1,5 +1,5 @@
 import { useT } from '../../lib/use-t';
-import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
+import { addDecimalsFormatNumber, formatNumber } from '@vegaprotocol/utils';
 import classNames from 'classnames';
 import {
   type VegaIconSize,
@@ -555,13 +555,7 @@ const StakingRewardCard = ({
                     ]
                   }
                 >
-                  <span>
-                    {
-                      IndividualScopeMapping[
-                        IndividualScope.INDIVIDUAL_SCOPE_ALL
-                      ]
-                    }
-                  </span>
+                  <span>{t('Individual')}</span>
                 </Tooltip>
               </dd>
             </div>
@@ -574,7 +568,7 @@ const StakingRewardCard = ({
                 className="flex items-center gap-1"
                 data-testid="staking-requirement"
               >
-                1
+                {formatNumber(1, 2)}
               </dd>
             </div>
 
@@ -586,7 +580,7 @@ const StakingRewardCard = ({
                 className="flex items-center gap-1"
                 data-testid="average-position"
               >
-                0
+                {formatNumber(0, 2)}
               </dd>
             </div>
           </dl>
