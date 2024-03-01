@@ -5,7 +5,6 @@ import {
   ProposalState,
   VoteValue,
 } from '@vegaprotocol/types';
-import { VegaWalletContext } from '@vegaprotocol/wallet';
 import { AppStateProvider } from '../../../../contexts/app-state/app-state-provider';
 import {
   generateNoVotes,
@@ -16,9 +15,7 @@ import { ProposalHeader, NewTransferSummary } from './proposal-header';
 import {
   lastWeek,
   nextWeek,
-  mockWalletContext,
   createUserVoteQueryMock,
-  networkParamsQueryMock,
 } from '../../test-helpers/mocks';
 import { BrowserRouter } from 'react-router-dom';
 import { VoteState } from '../vote-details/use-user-vote';
@@ -45,14 +42,12 @@ const renderComponent = (
   render(
     <AppStateProvider>
       <BrowserRouter>
-        <MockedProvider mocks={[networkParamsQueryMock, ...mocks]}>
-          <VegaWalletContext.Provider value={mockWalletContext}>
-            <ProposalHeader
-              proposal={proposal}
-              isListItem={isListItem}
-              voteState={voteState}
-            />
-          </VegaWalletContext.Provider>
+        <MockedProvider mocks={mocks}>
+          <ProposalHeader
+            proposal={proposal}
+            isListItem={isListItem}
+            voteState={voteState}
+          />
         </MockedProvider>
       </BrowserRouter>
     </AppStateProvider>
@@ -160,7 +155,7 @@ describe('Proposal header', () => {
       screen.queryByTestId('proposal-description')
     ).not.toBeInTheDocument();
     expect(screen.getByTestId('proposal-details')).toHaveTextContent(
-      'Update to market: MarketId'
+      /Update to market: MarketId/
     );
   });
 

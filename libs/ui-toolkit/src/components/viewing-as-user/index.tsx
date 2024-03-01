@@ -1,3 +1,4 @@
+import { type Status } from '@vegaprotocol/wallet';
 import { NotificationBanner } from '../notification-banner';
 import { Intent } from '../../utils/intent';
 import { TradingButton } from '../trading-button';
@@ -13,8 +14,8 @@ export function truncateMiddle(address: string, start = 6, end = 4) {
 }
 
 export interface ViewingAsBannerProps {
-  pubKey: string | null;
-  disconnect: () => Promise<void>;
+  pubKey: string | undefined;
+  disconnect: () => Promise<{ status: Status } | undefined>;
 }
 
 export const ViewingAsBanner = ({

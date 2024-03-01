@@ -1,6 +1,5 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
-import { isBrowserWalletInstalled } from '@vegaprotocol/wallet';
 import { truncateByChars } from '@vegaprotocol/utils';
 import {
   VegaIcon,
@@ -16,11 +15,11 @@ import {
   TradingDropdownRadioItem,
   TradingDropdownItemIndicator,
 } from '@vegaprotocol/ui-toolkit';
-import type { PubKey } from '@vegaprotocol/wallet';
-import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
+import { isBrowserWalletInstalled, type Key } from '@vegaprotocol/wallet';
+import { useDialogStore, useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useCopyTimeout } from '@vegaprotocol/react-helpers';
-import { ViewType, useSidebar } from '../sidebar';
 import classNames from 'classnames';
+import { ViewType, useSidebar } from '../sidebar';
 import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
 import { useT } from '../../lib/use-t';
 
@@ -33,26 +32,24 @@ export const VegaWalletConnectButton = ({
 }) => {
   const t = useT();
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const openVegaWalletDialog = useVegaWalletDialogStore(
-    (store) => store.openVegaWalletDialog
-  );
+  const openVegaWalletDialog = useDialogStore((store) => store.open);
   const currentRouteId = useGetCurrentRouteId();
   const setViews = useSidebar((store) => store.setViews);
   const {
-    pubKey,
+    status,
     pubKeys,
+    pubKey,
     selectPubKey,
     disconnect,
+    refreshKeys,
     isReadOnly,
-    fetchPubKeys,
   } = useVegaWallet();
-  const isConnected = pubKey !== null;
-  const walletInstalled = isBrowserWalletInstalled();
-  const activeKey = useMemo(() => {
-    return pubKeys?.find((pk) => pk.publicKey === pubKey);
-  }, [pubKey, pubKeys]);
 
-  if (isConnected && pubKeys) {
+  const walletInstalled = isBrowserWalletInstalled();
+
+  const activeKey = pubKeys?.find((pk) => pk.publicKey === pubKey);
+
+  if (status === 'connected') {
     return (
       <TradingDropdown
         open={dropdownOpen}
@@ -60,19 +57,25 @@ export const VegaWalletConnectButton = ({
           <TradingDropdownTrigger
             data-testid="manage-vega-wallet"
             onClick={() => {
-              if (fetchPubKeys) {
-                fetchPubKeys();
-              }
-              setDropdownOpen(!dropdownOpen);
+              refreshKeys();
+              setDropdownOpen((x) => !x);
             }}
           >
             <Button
               size="small"
               icon={<VegaIcon name={VegaIconNames.CHEVRON_DOWN} size={14} />}
             >
-              {activeKey && <span className="uppercase">{activeKey.name}</span>}
-              {' | '}
-              {truncateByChars(pubKey)}
+              {activeKey ? (
+                <>
+                  {activeKey && (
+                    <span className="uppercase">{activeKey.name}</span>
+                  )}
+                  {' | '}
+                  {truncateByChars(activeKey.publicKey)}
+                </>
+              ) : (
+                <>{'Select key'}</>
+              )}
             </Button>
           </TradingDropdownTrigger>
         }
@@ -86,7 +89,7 @@ export const VegaWalletConnectButton = ({
         >
           <div className="min-w-[340px]" data-testid="keypair-list">
             <TradingDropdownRadioGroup
-              value={pubKey}
+              value={pubKey || undefined}
               onValueChange={(value) => {
                 selectPubKey(value);
               }}
@@ -138,7 +141,7 @@ export const VegaWalletConnectButton = ({
   );
 };
 
-const KeypairItem = ({ pk, active }: { pk: PubKey; active: boolean }) => {
+const KeypairItem = ({ pk, active }: { pk: Key; active: boolean }) => {
   const t = useT();
   const [copied, setCopied] = useCopyTimeout();
 

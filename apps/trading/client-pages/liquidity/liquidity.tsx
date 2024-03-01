@@ -1,7 +1,7 @@
 import { matchFilter, lpAggregatedDataProvider } from '@vegaprotocol/liquidity';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { Tab, Tabs } from '@vegaprotocol/ui-toolkit';
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { LiquidityContainer } from '../../components/liquidity-container';

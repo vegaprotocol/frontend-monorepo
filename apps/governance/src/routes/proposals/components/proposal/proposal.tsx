@@ -23,7 +23,7 @@ export interface ProposalProps {
 
 export const Proposal = ({ proposal, restData }: ProposalProps) => {
   const { t } = useTranslation();
-  const { submit, Dialog, finalizedVote, transaction } = useVoteSubmit();
+  const { submit, finalizedVote, transaction } = useVoteSubmit();
   const { voteState, voteDatetime } = useUserVote(proposal?.id, finalizedVote);
 
   return (
@@ -88,7 +88,6 @@ export const Proposal = ({ proposal, restData }: ProposalProps) => {
           <UserVote
             proposal={proposal}
             submit={submit}
-            dialog={Dialog}
             transaction={transaction}
             voteState={voteState}
             voteDatetime={voteDatetime}

@@ -1,4 +1,4 @@
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { FundingPaymentsManager } from '@vegaprotocol/funding-payments';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';

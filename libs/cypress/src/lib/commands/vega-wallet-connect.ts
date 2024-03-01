@@ -47,6 +47,7 @@ export function addVegaWalletConnect() {
         return;
       }
       cy.wrap(btn).click();
+      cy.wait(200);
       cy.get('[data-testid=connectors-list]')
         .find('[data-testid="connector-jsonRpc"]')
         .click();
@@ -61,7 +62,10 @@ export function addVegaWalletConnect() {
   });
 }
 
-const onboardingViewedState = { state: { dismissed: true }, version: 0 };
+const onboardingViewedState = {
+  state: { dismissed: true, risk: 'accepted' },
+  version: 0,
+};
 
 export function addSetVegaWallet() {
   Cypress.Commands.add('setVegaWallet', () => {
@@ -73,11 +77,13 @@ export function addSetVegaWallet() {
       win.localStorage.setItem('vega_telemetry_approval', 'false');
       win.localStorage.setItem('vega_telemetry_viewed', 'true');
       win.localStorage.setItem(
-        'vega_wallet_config',
+        'vega_wallet_store',
         JSON.stringify({
-          token: `VWT ${Cypress.env('VEGA_WALLET_API_TOKEN')}`,
-          connector: 'jsonRpc',
-          url: 'http://localhost:1789',
+          state: {
+            jsonRpcToken: `VWT ${Cypress.env('VEGA_WALLET_API_TOKEN')}`,
+            current: 'jsonRpc',
+          },
+          version: 0,
         })
       );
     });

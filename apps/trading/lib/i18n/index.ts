@@ -56,7 +56,8 @@ i18n
     fallbackLng: 'en',
     supportedLngs,
     load: 'languageOnly',
-    // have a common namespace used around the full app
+    // load all these namespaces immediately on start up. If the name space is not here,
+    // it will only be loaded once used by useTranslation
     ns: [
       'accounts',
       'assets',
@@ -79,6 +80,7 @@ i18n
       'ui-toolkit',
       'utils',
       'wallet',
+      'wallet-react',
       'web3',
     ],
     defaultNS: 'trading',

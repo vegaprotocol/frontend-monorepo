@@ -1,8 +1,8 @@
-import React from 'react';
+import { Children, type ReactNode } from 'react';
 
 export interface TemplateSidebarProps {
-  children: React.ReactNode;
-  sidebar: React.ReactNode[];
+  children: ReactNode;
+  sidebar: ReactNode;
 }
 
 export function TemplateSidebar({ children, sidebar }: TemplateSidebarProps) {
@@ -12,9 +12,9 @@ export function TemplateSidebar({ children, sidebar }: TemplateSidebarProps) {
         {children}
       </main>
       <aside className="col-start-2 row-start-1 row-span-2 hidden lg:block p-4 bg-banner bg-contain border-l border-neutral-700">
-        {sidebar.map((Component, i) => (
+        {Children.map(sidebar, (child, i) => (
           <section className="mb-4 last:mb-0" key={i}>
-            {Component}
+            {child}
           </section>
         ))}
       </aside>

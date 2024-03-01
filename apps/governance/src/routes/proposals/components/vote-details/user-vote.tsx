@@ -1,20 +1,19 @@
 import { useTranslation } from 'react-i18next';
 import { Icon, ExternalLink } from '@vegaprotocol/ui-toolkit';
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { ProposalState } from '@vegaprotocol/types';
 import { ConnectToVega } from '../../../../components/connect-to-vega';
 import { VoteButtonsContainer } from './vote-buttons';
 import { SubHeading } from '../../../../components/heading';
 import { type VoteValue } from '@vegaprotocol/types';
-import { type DialogProps, type VegaTxState } from '@vegaprotocol/proposals';
+import { type VegaTxState } from '@vegaprotocol/proposals';
 import { type VoteState } from './use-user-vote';
 import { type Proposal, type BatchProposal } from '../../types';
 
 interface UserVoteProps {
   proposal: Proposal | BatchProposal;
-  transaction: VegaTxState | null;
+  transaction: VegaTxState;
   submit: (voteValue: VoteValue, proposalId: string | null) => Promise<void>;
-  dialog: (props: DialogProps) => JSX.Element;
   voteState: VoteState | null;
   voteDatetime: Date | null;
 }
@@ -23,7 +22,6 @@ export const UserVote = ({
   proposal,
   submit,
   transaction,
-  dialog,
   voteState,
   voteDatetime,
 }: UserVoteProps) => {
@@ -56,7 +54,6 @@ export const UserVote = ({
             className="flex"
             submit={submit}
             transaction={transaction}
-            dialog={dialog}
           />
         )
       ) : (

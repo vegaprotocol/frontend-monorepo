@@ -1,5 +1,5 @@
 import { Dialog } from '@vegaprotocol/ui-toolkit';
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { WithdrawFormContainer } from './withdraw-form-container';
 import { useWeb3ConnectStore } from '@vegaprotocol/web3';
 import { useWithdrawalDialog } from './withdrawal-dialog';

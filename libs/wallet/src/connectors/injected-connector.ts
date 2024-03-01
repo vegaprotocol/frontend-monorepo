@@ -1,143 +1,99 @@
-import { clearConfig, setConfig } from '../storage';
-import type { Transaction, VegaConnector } from './vega-connector';
+import {
+  ConnectorError,
+  chainIdError,
+  connectError,
+  disconnectError,
+  isConnectedError,
+  listKeysError,
+  noWalletError,
+  sendTransactionError,
+} from '../errors';
+import {
+  type TransactionParams,
+  type Connector,
+  type VegaWalletEvent,
+} from '../types';
 
-type VegaWalletEvent = 'client.disconnected';
+export class InjectedConnector implements Connector {
+  readonly id = 'injected';
+  readonly name = 'Vega Wallet';
+  readonly description =
+    'Connect with Vega Wallet extension to access all features including key management and detailed transaction views from your browser.';
 
-declare global {
-  interface Vega {
-    connectWallet: (args: { chainId: string }) => Promise<null>;
-    disconnectWallet: () => Promise<void>;
-    listKeys: () => Promise<{
-      keys: Array<{ name: string; publicKey: string }>;
-    }>;
-    sendTransaction: (params: {
-      publicKey: string;
-      transaction: Transaction;
-      sendingMode: 'TYPE_SYNC';
-    }) => Promise<{
-      receivedAt: string;
-      sentAt: string;
-      transaction: {
-        from: {
-          pubKey: string;
-        };
-        inputData: string;
-        pow: {
-          tid: string;
-          nonce: string;
-        };
-        signature: {
-          algo: string;
-          value: string;
-          version: number;
-        };
-        version: number;
-      };
-      transactionHash: string;
-    }>;
-
-    on: (event: VegaWalletEvent, callback: () => void) => void;
-    isConnected?: () => Promise<boolean>;
-  }
-
-  interface Window {
-    vega: Vega;
-  }
-}
-
-export const InjectedConnectorErrors = {
-  USER_REJECTED: new Error('Connection denied'),
-  VEGA_UNDEFINED: new Error('window.vega not found'),
-  INVALID_CHAIN: new Error('Invalid chain'),
-};
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const wait = (ms: number) =>
-  new Promise<boolean>((_, reject) => {
-    setTimeout(() => {
-      reject(false);
-    }, ms);
-  });
-
-const INJECTED_CONNECTOR_TIMEOUT = 1000;
-
-export class InjectedConnector implements VegaConnector {
-  isConnected = false;
-  chainId: string | null = null;
-  description = 'Connects using the Vega wallet browser extension';
-  alive: ReturnType<typeof setInterval> | undefined = undefined;
+  bindStore() {}
 
   async connectWallet(chainId: string) {
-    this.chainId = chainId;
     try {
+      if (window.vega === undefined) {
+        throw noWalletError('window.vega is undefined');
+      }
+
       await window.vega.connectWallet({ chainId });
-      this.isConnected = true;
-      window.vega.on('client.disconnected', () => {
-        this.isConnected = false;
-      });
-
-      this.alive = setInterval(async () => {
-        try {
-          const connected = await Promise.race([
-            // FIXME: All of the `window.vega` initiated promises are `pending`
-            // while waiting for the user action when transaction is sent.
-            // (Probably due to the FIFO queue  of the `PortServer`?)
-            // Because of that we cannot `wait` here as while waiting for the
-            // user action in wallet this will `reject`. It'd be cool if the
-            // `window.vega` was not blocking the api calls.
-
-            // wait(INJECTED_CONNECTOR_TIMEOUT),
-
-            // `isConnected` is only available in the newer versions
-            // of the browser wallet
-            'isConnected' in window.vega &&
-            typeof window.vega.isConnected === 'function'
-              ? window.vega.isConnected()
-              : window.vega.listKeys(),
-          ]);
-          this.isConnected = Boolean(connected);
-        } catch {
-          this.isConnected = false;
-        }
-      }, INJECTED_CONNECTOR_TIMEOUT * 2);
-    } catch {
-      throw new Error(
-        `could not connect to the vega wallet on chain: ${chainId}`
-      );
+      return { success: true };
+    } catch (err) {
+      if (err instanceof ConnectorError) {
+        throw err;
+      }
+      throw connectError();
     }
   }
 
-  async connect() {
-    const res = await window.vega.listKeys();
-    setConfig({
-      connector: 'injected',
-      token: null, // no token required for injected
-      url: null, // no url for injected
-    });
-    return res.keys;
+  async disconnectWallet() {
+    try {
+      await window.vega.disconnectWallet();
+    } catch (err) {
+      throw disconnectError();
+    }
   }
 
-  async isAlive() {
-    return this.isConnected;
+  // deprecated, pass chain on connect
+  async getChainId() {
+    try {
+      const res = await window.vega.getChainId();
+      return { chainId: res.chainID };
+    } catch (err) {
+      throw chainIdError();
+    }
   }
 
-  disconnect() {
-    clearInterval(this.alive);
-    clearConfig();
-    return window.vega.disconnectWallet();
+  async listKeys() {
+    try {
+      const res = await window.vega.listKeys();
+      return res.keys;
+    } catch (err) {
+      throw listKeysError();
+    }
   }
 
-  async sendTx(pubKey: string, transaction: Transaction) {
-    const result = await window.vega.sendTransaction({
-      publicKey: pubKey,
-      transaction,
-      sendingMode: 'TYPE_SYNC' as const,
-    });
-    return {
-      transactionHash: result.transactionHash,
-      receivedAt: result.receivedAt,
-      sentAt: result.sentAt,
-      signature: result.transaction.signature.value,
-    };
+  async isConnected() {
+    try {
+      const res = await window.vega.isConnected();
+      return { connected: res };
+    } catch (err) {
+      throw isConnectedError();
+    }
+  }
+
+  async sendTransaction(params: TransactionParams) {
+    try {
+      const res = await window.vega.sendTransaction(params);
+
+      return {
+        transactionHash: res.transactionHash,
+        signature: res.transaction.signature.value,
+        receivedAt: res.receivedAt,
+        sentAt: res.sentAt,
+      };
+    } catch (err) {
+      throw sendTransactionError();
+    }
+  }
+
+  on(event: VegaWalletEvent, callback: () => void) {
+    window.vega.on(event, callback);
+  }
+
+  off(event: VegaWalletEvent, callback: () => void) {
+    window.vega.off(event, callback);
   }
 }

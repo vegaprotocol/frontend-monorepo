@@ -15,8 +15,6 @@ import {
   MarketsDocument,
   MarketsCandlesDocument,
 } from '@vegaprotocol/markets';
-import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
-import { VegaWalletContext } from '@vegaprotocol/wallet';
 import {
   marketsQuery,
   marketsDataQuery,
@@ -27,7 +25,6 @@ import userEvent from '@testing-library/user-event';
 describe('Open', () => {
   let originalNow: typeof Date.now;
   const mockNowTimestamp = 1672531200000;
-  const pubKey = 'pubKey';
 
   const marketsQueryData = marketsQuery();
   const marketsMock: MockedResponse<MarketsQuery> = {
@@ -80,11 +77,7 @@ describe('Open', () => {
           <MockedProvider
             mocks={[marketsMock, marketsCandlesMock, marketsDataMock]}
           >
-            <VegaWalletContext.Provider
-              value={{ pubKey } as VegaWalletContextShape}
-            >
-              <OpenMarkets />
-            </VegaWalletContext.Provider>
+            <OpenMarkets />
           </MockedProvider>
         </MemoryRouter>
       );

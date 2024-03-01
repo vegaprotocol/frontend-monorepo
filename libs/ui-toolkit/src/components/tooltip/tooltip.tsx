@@ -20,6 +20,7 @@ export interface TooltipProps {
   side?: 'top' | 'right' | 'bottom' | 'left';
   sideOffset?: number;
   underline?: boolean;
+  delayDuration?: number;
 }
 
 export const TOOLTIP_TRIGGER_CLASS_NAME = (underline?: boolean) =>
@@ -37,9 +38,10 @@ export const Tooltip = ({
   align = 'start',
   side = 'bottom',
   underline,
+  delayDuration = 200,
 }: TooltipProps) =>
   description ? (
-    <Provider delayDuration={200} skipDelayDuration={100}>
+    <Provider delayDuration={delayDuration} skipDelayDuration={100}>
       <Root open={open}>
         <Trigger asChild className={TOOLTIP_TRIGGER_CLASS_NAME(underline)}>
           {children}

@@ -1,7 +1,7 @@
 import { useDataGridEvents } from '@vegaprotocol/datagrid';
 import { StopOrdersManager } from '@vegaprotocol/orders';
 import { Splash } from '@vegaprotocol/ui-toolkit';
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useMarketClickHandler } from '../../lib/hooks/use-market-click-handler';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';

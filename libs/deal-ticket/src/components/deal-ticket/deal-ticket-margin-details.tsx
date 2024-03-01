@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 import { getAsset, getQuoteName } from '@vegaprotocol/markets';
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { AccountBreakdownDialog } from '@vegaprotocol/accounts';
 import { formatRange, formatValue } from '@vegaprotocol/utils';
 import * as Schema from '@vegaprotocol/types';

@@ -1,5 +1,5 @@
 import { Callout, Intent, Splash } from '@vegaprotocol/ui-toolkit';
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useTranslation } from 'react-i18next';
 import { useRefreshAfterEpoch } from '../../../hooks/use-refresh-after-epoch';
 import { SplashLoader } from '../../../components/splash-loader';

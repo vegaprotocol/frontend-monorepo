@@ -5,7 +5,7 @@ import { useStakingQuery } from '../__generated__/Staking';
 import { usePreviousEpochQuery } from '../__generated__/PreviousEpoch';
 import { ValidatorTables } from './validator-tables';
 import { useRefreshAfterEpoch } from '../../../hooks/use-refresh-after-epoch';
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { getMultisigStatusInfo } from '../../../lib/get-multisig-status-info';
 import { MultisigIncorrectNotice } from '../../../components/multisig-incorrect-notice';
 

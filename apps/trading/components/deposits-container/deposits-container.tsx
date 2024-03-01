@@ -2,7 +2,7 @@ import { Splash } from '@vegaprotocol/ui-toolkit';
 import { DepositsTable } from '@vegaprotocol/deposits';
 import { depositsProvider } from '@vegaprotocol/deposits';
 import { useDataProvider } from '@vegaprotocol/data-provider';
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useT } from '../../lib/use-t';
 
 export const DepositsContainer = () => {

@@ -1,5 +1,5 @@
 import { PositionsTable } from './positions-table';
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import {
   positionsMetricsProvider,

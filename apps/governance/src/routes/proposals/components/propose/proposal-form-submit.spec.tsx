@@ -1,25 +1,32 @@
-import { render, screen } from '@testing-library/react';
-import { VegaWalletContext } from '@vegaprotocol/wallet';
+import { act, render, screen } from '@testing-library/react';
+import {
+  MockedWalletProvider,
+  mockConfig,
+} from '@vegaprotocol/wallet-react/testing';
 import { AppStateProvider } from '../../../../contexts/app-state/app-state-provider';
 import { ProposalFormSubmit } from './proposal-form-submit';
-import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
 
-const renderComponent = (
-  context: VegaWalletContextShape,
-  isSubmitting: boolean
-) => {
+const renderComponent = (isSubmitting: boolean) => {
   render(
-    <AppStateProvider>
-      <VegaWalletContext.Provider value={context}>
+    <MockedWalletProvider>
+      <AppStateProvider>
         <ProposalFormSubmit isSubmitting={isSubmitting} />
-      </VegaWalletContext.Provider>
-    </AppStateProvider>
+      </AppStateProvider>
+    </MockedWalletProvider>
   );
 };
 
 describe('Proposal Form Submit', () => {
+  const pubKey = { publicKey: '123456__123456', name: 'test' };
+
+  afterEach(() => {
+    act(() => {
+      mockConfig.reset();
+    });
+  });
+
   it('should display connection message and button if wallet not connected', () => {
-    renderComponent({ pubKey: null } as VegaWalletContextShape, false);
+    renderComponent(false);
 
     expect(
       screen.getByText('Connect your wallet to submit a proposal')
@@ -30,28 +37,22 @@ describe('Proposal Form Submit', () => {
   });
 
   it('should display submit button if wallet is connected', () => {
-    const pubKey = { publicKey: '123456__123456', name: 'test' };
-    renderComponent(
-      {
-        pubKey: pubKey.publicKey,
-        pubKeys: [pubKey],
-      } as VegaWalletContextShape,
-      false
-    );
+    mockConfig.store.setState({
+      pubKey: pubKey.publicKey,
+      keys: [pubKey],
+    });
+    renderComponent(false);
     expect(screen.getByTestId('proposal-submit')).toHaveTextContent(
       'Submit proposal'
     );
   });
 
   it('should display submitting button text if wallet is connected and submitting', () => {
-    const pubKey = { publicKey: '123456__123456', name: 'test' };
-    renderComponent(
-      {
-        pubKey: pubKey.publicKey,
-        pubKeys: [pubKey],
-      } as VegaWalletContextShape,
-      true
-    );
+    mockConfig.store.setState({
+      pubKey: pubKey.publicKey,
+      keys: [pubKey],
+    });
+    renderComponent(true);
     expect(screen.getByTestId('proposal-submit')).toHaveTextContent(
       'Submitting proposal'
     );

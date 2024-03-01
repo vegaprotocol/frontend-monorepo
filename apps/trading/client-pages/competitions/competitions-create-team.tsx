@@ -5,7 +5,7 @@ import {
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
-import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
+import { useVegaWallet, useDialogStore } from '@vegaprotocol/wallet-react';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { useT } from '../../lib/use-t';
 import { useReferralSetTransaction } from '../../lib/hooks/use-referral-set-transaction';
@@ -26,9 +26,7 @@ export const CompetitionsCreateTeam = () => {
   usePageTitle(t('Create a team'));
 
   const { isReadOnly, pubKey } = useVegaWallet();
-  const openWalletDialog = useVegaWalletDialogStore(
-    (store) => store.openVegaWalletDialog
-  );
+  const openWalletDialog = useDialogStore((store) => store.open);
 
   return (
     <ErrorBoundary feature="create-team">

@@ -33,8 +33,8 @@ let mockVegaWalletHookValue: {
   pubKey: null,
 };
 
-jest.mock('@vegaprotocol/wallet', () => ({
-  ...jest.requireActual('@vegaprotocol/wallet'),
+jest.mock('@vegaprotocol/wallet-react', () => ({
+  ...jest.requireActual('@vegaprotocol/wallet-react'),
   useVegaWallet: jest.fn(() => mockVegaWalletHookValue),
 }));
 

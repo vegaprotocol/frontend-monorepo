@@ -4,23 +4,23 @@ import { MockedProvider } from '@apollo/client/testing';
 import { type ReactNode } from 'react';
 import { useEthTransactionUpdater } from './use-ethereum-transaction-updater';
 import { DepositBusEventDocument } from './__generated__/TransactionResult';
-import { VegaWalletContext } from '@vegaprotocol/wallet';
 import {
   type DepositBusEventSubscription,
   type DepositBusEventFieldsFragment,
 } from './__generated__/TransactionResult';
-import { type VegaWalletContextShape } from '@vegaprotocol/wallet';
 import { type EthTransactionStore } from './use-ethereum-transaction-store';
 import { DepositStatus } from '@vegaprotocol/types';
+import {
+  MockedWalletProvider,
+  mockConfig,
+} from '@vegaprotocol/wallet-react/testing';
 
 const pubKey = 'pubKey';
 
 const render = (mocks?: MockedResponse[]) => {
   const wrapper = ({ children }: { children: ReactNode }) => (
     <MockedProvider mocks={mocks}>
-      <VegaWalletContext.Provider value={{ pubKey } as VegaWalletContextShape}>
-        {children}
-      </VegaWalletContext.Provider>
+      <MockedWalletProvider>{children}</MockedWalletProvider>
     </MockedProvider>
   );
   return renderHook(() => useEthTransactionUpdater(), { wrapper });
@@ -73,10 +73,12 @@ const mockedDepositBusEvent: MockedResponse<DepositBusEventSubscription> = {
 
 describe('useEthTransactionUpdater', () => {
   it('updates deposit on DepositBusEvents', async () => {
+    mockConfig.store.setState({ pubKey });
     mockTransactionStoreState.mockReturnValue(defaultState);
     render([mockedDepositBusEvent]);
     await waitFor(() => {
       expect(updateDeposit).toHaveBeenCalledWith(depositBusEvent);
     });
+    mockConfig.reset();
   });
 });

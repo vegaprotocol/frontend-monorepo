@@ -11,7 +11,7 @@ import { useApolloClient } from '@apollo/client';
 import { useMemo } from 'react';
 import debounce from 'lodash/debounce';
 import AutoSizer from 'react-virtualized-auto-sizer';
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useT } from './use-t';
 import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
 

@@ -5,10 +5,10 @@ import * as web3 from '@vegaprotocol/web3';
 import { renderHook, waitFor } from '@testing-library/react';
 import { useIncompleteWithdrawals } from './use-ready-to-complete-withdrawals-toast';
 import { MockedProvider } from '@apollo/client/testing';
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 
 jest.mock('@vegaprotocol/web3');
-jest.mock('@vegaprotocol/wallet');
+jest.mock('@vegaprotocol/wallet-react');
 
 type Asset = WithdrawalFieldsFragment['asset'];
 type Withdrawal = WithdrawalFieldsFragment;

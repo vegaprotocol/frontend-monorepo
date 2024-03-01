@@ -1,12 +1,12 @@
 import { MemoryRouter } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
-import { VegaWalletProvider } from '@vegaprotocol/wallet';
-import { type VegaWalletConfig } from '@vegaprotocol/wallet';
 import { render, screen } from '@testing-library/react';
 import { generateProposal } from '../../test-helpers/generate-proposals';
 import { Proposal } from './proposal';
 import { ProposalState } from '@vegaprotocol/types';
 import { type Proposal as IProposal } from '../../types';
+import { AppStateProvider } from '../../../../contexts/app-state/app-state-provider';
+import { MockedWalletProvider } from '@vegaprotocol/wallet-react/testing';
 
 jest.mock('@vegaprotocol/network-parameters', () => ({
   ...jest.requireActual('@vegaprotocol/network-parameters'),
@@ -24,45 +24,44 @@ jest.mock('@vegaprotocol/network-parameters', () => ({
     error: null,
   })),
 }));
+
 jest.mock('../proposal-detail-header/proposal-header', () => ({
   ProposalHeader: () => <div data-testid="proposal-header"></div>,
 }));
+
 jest.mock('../proposal-change-table', () => ({
   ProposalChangeTable: () => <div data-testid="proposal-change-table"></div>,
 }));
+
 jest.mock('../proposal-json', () => ({
   ProposalJson: () => <div data-testid="proposal-json"></div>,
 }));
+
 jest.mock('../list-asset', () => ({
   ListAsset: () => <div data-testid="proposal-list-asset"></div>,
 }));
 
-jest.mock('./proposal-change-details', () => ({
-  ProposalChangeDetails: () => (
-    <div data-testid="proposal-change-details"></div>
-  ),
+jest.mock('../list-asset', () => ({
+  ListAsset: () => <div data-testid="proposal-list-asset"></div>,
 }));
 
-const vegaWalletConfig: VegaWalletConfig = {
-  network: 'TESTNET',
-  vegaUrl: 'https://vega.xyz',
-  vegaWalletServiceUrl: 'https://wallet.vega.xyz',
-  links: {
-    explorer: 'explorer',
-    concepts: 'concepts',
-    chromeExtensionUrl: 'chrome',
-    mozillaExtensionUrl: 'mozilla',
-  },
-  chainId: 'VEGA_CHAIN_ID',
-};
+jest.mock('../vote-details', () => ({
+  UserVote: () => <div data-testid="user-vote"></div>,
+}));
+
+jest.mock('./proposal-change-details', () => ({
+  ProposalChangeDetails: () => <div data-testid="proposal-change-details" />,
+}));
 
 const renderComponent = (proposal: IProposal) => {
-  render(
+  return render(
     <MemoryRouter>
       <MockedProvider>
-        <VegaWalletProvider config={vegaWalletConfig}>
-          <Proposal restData={null} proposal={proposal} />
-        </VegaWalletProvider>
+        <MockedWalletProvider>
+          <AppStateProvider>
+            <Proposal restData={null} proposal={proposal} />
+          </AppStateProvider>
+        </MockedWalletProvider>
       </MockedProvider>
     </MemoryRouter>
   );

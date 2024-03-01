@@ -1,4 +1,4 @@
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useStakeAvailableQuery } from './__generated__/StakeAvailable';
 
 /**
