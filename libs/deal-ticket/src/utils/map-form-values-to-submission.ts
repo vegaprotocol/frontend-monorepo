@@ -10,6 +10,7 @@ import type {
 import * as Schema from '@vegaprotocol/types';
 import { removeDecimal, toNanoSeconds } from '@vegaprotocol/utils';
 import { isPersistentOrder } from './time-in-force-persistence';
+import { type MarketFieldsFragment } from '@vegaprotocol/markets';
 
 export const mapFormValuesToOrderSubmission = (
   order: OrderFormValues,
@@ -158,4 +159,76 @@ export const mapFormValuesToStopOrdersSubmission = (
   }
 
   return submission;
+};
+
+export const mapFormValuesToTakeProfitAndStopLoss = (
+  formValues: OrderFormValues,
+  market: MarketFieldsFragment
+) => {
+  const ocoType =
+    formValues.type === Schema.OrderType.TYPE_LIMIT
+      ? Schema.OrderType.TYPE_MARKET
+      : Schema.OrderType.TYPE_LIMIT;
+  const orderSubmission = mapFormValuesToOrderSubmission(
+    formValues,
+    market.id,
+    market.decimalPlaces,
+    market.positionDecimalPlaces
+  );
+
+  const takeProfitStopOrderSubmission =
+    formValues.takeProfit &&
+    mapFormValuesToStopOrdersSubmission(
+      {
+        ...formValues,
+        price: formValues.takeProfit,
+        triggerDirection:
+          formValues.side === Schema.Side.SIDE_SELL
+            ? Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_FALLS_BELOW
+            : Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE,
+        triggerType: 'price',
+        ocoTriggerType: 'price',
+        expire: false,
+        ocoType,
+        ocoSize: formValues.size,
+        ocoTimeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_FOK,
+      },
+      market.id,
+      market.decimalPlaces,
+      market.positionDecimalPlaces
+    );
+
+  const stopLossStopOrderSubmission =
+    formValues.stopLoss &&
+    mapFormValuesToStopOrdersSubmission(
+      {
+        ...formValues,
+        price: formValues.stopLoss,
+        triggerDirection:
+          formValues.side === Schema.Side.SIDE_BUY
+            ? Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_FALLS_BELOW
+            : Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE,
+        triggerType: 'price',
+        ocoTriggerType: 'price',
+        expire: false,
+        ocoType,
+        ocoSize: formValues.size,
+        ocoTimeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_FOK,
+      },
+      market.id,
+      market.decimalPlaces,
+      market.positionDecimalPlaces
+    );
+  const stopOrdersSubmission = [];
+  if (takeProfitStopOrderSubmission) {
+    stopOrdersSubmission.push(takeProfitStopOrderSubmission);
+  }
+  if (stopLossStopOrderSubmission) {
+    stopOrdersSubmission.push(stopLossStopOrderSubmission);
+  }
+  const batchMarketInstructions = {
+    submissions: [orderSubmission],
+    stopOrdersSubmission,
+  };
+  return batchMarketInstructions;
 };

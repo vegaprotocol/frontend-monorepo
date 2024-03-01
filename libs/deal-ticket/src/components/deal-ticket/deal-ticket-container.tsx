@@ -73,7 +73,7 @@ export const DealTicketContainer = ({
               market={market}
               marketPrice={marketPrice}
               marketData={marketData}
-              submit={(orderSubmission) => create({ orderSubmission })}
+              submit={(transaction) => create(transaction)}
             />
           )}
         </>
