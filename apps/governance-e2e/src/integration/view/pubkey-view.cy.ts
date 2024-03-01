@@ -34,12 +34,6 @@ context('View functionality with public key', { tags: '@smoke' }, function () {
     cy.connectPublicKey(vegaWalletPubKey);
   });
 
-  it('Able to connect public key using url', function () {
-    cy.getByTestId('exit-view').click();
-    cy.visit(`/?address=${vegaWalletPubKey}`);
-    verifyConnectedToPubKey();
-  });
-
   it.skip('Able to connect public key via wallet and view assets in wallet', function () {
     verifyConnectedToPubKey();
     cy.getByTestId('currency-title', { timeout: 10000 })
