@@ -16,6 +16,7 @@ import {
   EntityScope,
   IndividualScope,
   MarketState,
+  AccountType,
 } from '@vegaprotocol/types';
 import { type ApolloError } from '@apollo/client';
 import compact from 'lodash/compact';
@@ -46,8 +47,9 @@ export type EnrichedRewardTransfer = RewardTransfer & {
  */
 export const isReward = (node: TransferNode): node is RewardTransfer => {
   if (
-    node.transfer.kind.__typename === 'RecurringTransfer' &&
-    node.transfer.kind.dispatchStrategy != null
+    (node.transfer.kind.__typename === 'RecurringTransfer' &&
+      node.transfer.kind.dispatchStrategy != null) ||
+    node.transfer.toAccountType === AccountType.ACCOUNT_TYPE_GLOBAL_REWARD
   ) {
     return true;
   }
@@ -79,13 +81,13 @@ export const isActiveReward = (node: RewardTransfer, currentEpoch: number) => {
  */
 export const isScopedToTeams = (node: EnrichedRewardTransfer) =>
   // scoped to teams
-  node.transfer.kind.dispatchStrategy.entityScope ===
+  node.transfer.kind.dispatchStrategy?.entityScope ===
     EntityScope.ENTITY_SCOPE_TEAMS ||
   // or to individuals
-  (node.transfer.kind.dispatchStrategy.entityScope ===
+  (node.transfer.kind.dispatchStrategy?.entityScope ===
     EntityScope.ENTITY_SCOPE_INDIVIDUALS &&
     // but they have to be in a team
-    node.transfer.kind.dispatchStrategy.individualScope ===
+    node.transfer.kind.dispatchStrategy?.individualScope ===
       IndividualScope.INDIVIDUAL_SCOPE_IN_TEAM);
 
 /** Retrieves rewards (transfers) */
@@ -142,6 +144,7 @@ export const useRewards = ({
     .filter((node) => (scopeToTeams ? isScopedToTeams(node) : true))
     // enrich with dispatch asset and markets in scope details
     .map((node) => {
+      if (!node.transfer.kind.dispatchStrategy) return node;
       const dispatchAsset =
         (assets &&
           assets[node.transfer.kind.dispatchStrategy.dispatchMetricAssetId]) ||
@@ -170,7 +173,7 @@ export const useRewards = ({
         ...node,
         dispatchAsset,
         isAssetTraded: isAssetTraded != null ? isAssetTraded : undefined,
-        markets: marketsInScope.length > 0 ? marketsInScope : undefined,
+        markets: marketsInScope?.length > 0 ? marketsInScope : undefined,
       };
     });
 
