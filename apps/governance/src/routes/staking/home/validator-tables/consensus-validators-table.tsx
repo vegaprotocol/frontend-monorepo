@@ -185,13 +185,17 @@ export const ConsensusValidatorsTable = ({
           const { rawValidatorScore: previousEpochValidatorScore } =
             getLastEpochScoreAndPerformance(previousEpochData, id);
 
-          const overstakingPenalty = calculateOverallPenalty(
+          const overstakingPenalty = calculateOverstakedPenalty(
             id,
             allNodesInPreviousEpoch
           );
-          const totalPenalty = calculateOverstakedPenalty(
+          const totalPenalty = calculateOverallPenalty(
             id,
             allNodesInPreviousEpoch
+          );
+
+          const lastEpochDataForNode = allNodesInPreviousEpoch.find(
+            (node) => node.id === id
           );
 
           return {
@@ -239,6 +243,12 @@ export const ConsensusValidatorsTable = ({
               : undefined,
             [ValidatorFields.MULTISIG_ERROR]:
               multisigStatus?.showMultisigStatusError,
+            [ValidatorFields.MULTISIG_PENALTY]: formatNumberPercentage(
+              new BigNumber(1)
+                .minus(lastEpochDataForNode?.rewardScore?.multisigScore ?? 1)
+                .times(100),
+              2
+            ),
           };
         }
       );
@@ -378,7 +388,6 @@ export const ConsensusValidatorsTable = ({
           headerTooltip: t('StakeDescription').toString(),
           cellRenderer: TotalStakeRenderer,
           width: 120,
-          sort: 'desc',
         },
         {
           field: ValidatorFields.PENDING_STAKE,
@@ -400,6 +409,7 @@ export const ConsensusValidatorsTable = ({
           headerTooltip: t('NormalisedVotingPowerDescription').toString(),
           cellRenderer: VotingPowerRenderer,
           width: 120,
+          sort: 'desc',
         },
         {
           field: ValidatorFields.TOTAL_PENALTIES,
