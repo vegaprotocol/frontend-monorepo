@@ -256,6 +256,8 @@ export type AggregatedLedgerEntry = {
   toAccountPartyId?: Maybe<Scalars['ID']>;
   /** Account type, if query was grouped by receiver account type - else null */
   toAccountType?: Maybe<AccountType>;
+  /** Transfer ID associated with this aggregated ledger entry */
+  transferId: Scalars['ID'];
   /** Type of the transfer for this ledger entry */
   transferType?: Maybe<TransferType>;
   /** RFC3339Nano time from at which this ledger entries records were relevant */

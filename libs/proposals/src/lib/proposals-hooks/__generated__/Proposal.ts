@@ -25,7 +25,7 @@ export type ProposalOfMarketQueryVariables = Types.Exact<{
 }>;
 
 
-export type ProposalOfMarketQuery = { __typename?: 'Query', proposal?: { __typename?: 'BatchProposal' } | { __typename?: 'Proposal', id?: string | null, terms: { __typename?: 'ProposalTerms', enactmentDatetime?: any | null } } | null };
+export type ProposalOfMarketQuery = { __typename?: 'Query', proposal?: { __typename?: 'BatchProposal', id?: string | null, batchTerms?: { __typename?: 'BatchProposalTerms', changes: Array<{ __typename?: 'BatchProposalTermsChange', enactmentDatetime?: any | null, change: { __typename?: 'CancelTransfer' } | { __typename?: 'NewAsset' } | { __typename?: 'NewFreeform' } | { __typename: 'NewMarket' } | { __typename?: 'NewSpotMarket' } | { __typename?: 'NewTransfer' } | { __typename?: 'UpdateAsset' } | { __typename?: 'UpdateMarket' } | { __typename?: 'UpdateMarketState' } | { __typename?: 'UpdateNetworkParameter' } | { __typename?: 'UpdateReferralProgram' } | { __typename?: 'UpdateSpotMarket' } | { __typename?: 'UpdateVolumeDiscountProgram' } } | null> } | null } | { __typename?: 'Proposal', id?: string | null, terms: { __typename?: 'ProposalTerms', enactmentDatetime?: any | null } } | null };
 
 export type SuccessorMarketProposalDetailsQueryVariables = Types.Exact<{
   proposalId: Types.Scalars['ID'];
@@ -150,6 +150,19 @@ export const ProposalOfMarketDocument = gql`
       id
       terms {
         enactmentDatetime
+      }
+    }
+    ... on BatchProposal {
+      id
+      batchTerms {
+        changes {
+          enactmentDatetime
+          change {
+            ... on NewMarket {
+              __typename
+            }
+          }
+        }
       }
     }
   }
