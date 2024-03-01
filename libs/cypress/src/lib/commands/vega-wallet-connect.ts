@@ -47,6 +47,7 @@ export function addVegaWalletConnect() {
         return;
       }
       cy.wrap(btn).click();
+      cy.wait(200);
       cy.get('[data-testid=connectors-list]')
         .find('[data-testid="connector-jsonRpc"]')
         .click();
