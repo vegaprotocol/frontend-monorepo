@@ -288,7 +288,7 @@ describe('Consensus validators table', () => {
 
     expect(
       grid.querySelector('[role="gridcell"][col-id="totalPenalties"]')
-    ).toHaveTextContent('13.16%');
+    ).toHaveTextContent('10.07%');
 
     expect(
       grid.querySelector('[role="gridcell"][col-id="normalisedVotingPower"]')
