@@ -49,10 +49,4 @@ To run the minimal set of unit tests, run the following:
 yarn nx test trading
 ```
 
-To run the UI automation tests with a mocked API, run:
-
-```bash
-yarn nx run trading-e2e:e2e
-```
-
-To run tests with market sim please read [the readme](e2e/README.md).
+To run the UI automation tests please read [e2e/README.md](e2e/README.md)
