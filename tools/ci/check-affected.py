@@ -84,6 +84,9 @@ if 'release' in args.github_ref:
 
 
 projects = json.dumps(projects)
+
+# The trading project does not use the deafult NX e2e setup (cypress)
+projects_e2e.remove('trading-e2e')
 projects_e2e = json.dumps(projects_e2e)
 
 print(f'Projects: {projects}')
