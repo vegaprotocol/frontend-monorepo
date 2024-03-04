@@ -156,27 +156,14 @@ const KeypairRadioGroup = ({
           (e) => e.node.partyId === pk.publicKey
         );
         return (
-          <KeypairItem
-            key={pk.publicKey}
-            pk={pk}
-            alias={profile?.node.alias}
-            active={pk.publicKey === pubKey}
-          />
+          <KeypairItem key={pk.publicKey} pk={pk} alias={profile?.node.alias} />
         );
       })}
     </TradingDropdownRadioGroup>
   );
 };
 
-const KeypairItem = ({
-  pk,
-  alias,
-  active,
-}: {
-  pk: Key;
-  alias: string | undefined;
-  active: boolean;
-}) => {
+const KeypairItem = ({ pk, alias }: { pk: Key; alias: string | undefined }) => {
   const t = useT();
   const [copied, setCopied] = useCopyTimeout();
   const setOpen = useProfileDialogStore((store) => store.setOpen);
@@ -207,7 +194,7 @@ const KeypairItem = ({
           data-testid={`key-${pk.publicKey}`}
         >
           <Tooltip description={t('Public facing key alias. Click to edit')}>
-            <button onClick={() => setOpen(pk.publicKey)}>
+            <button data-testid="alias" onClick={() => setOpen(pk.publicKey)}>
               {alias ? alias : t('No alias')}
             </button>
           </Tooltip>
