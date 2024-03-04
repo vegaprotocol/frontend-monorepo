@@ -17,6 +17,7 @@ import { NodeLink } from '../../../components/links';
 import { useDocumentTitle } from '../../../hooks/use-document-title';
 import EmptyList from '../../../components/empty-list/empty-list';
 import { useExplorerEpochForBlockQuery } from '../../../components/links/block-link/__generated__/EpochByBlock';
+import EpochOverview from '../../../components/epoch-overview/epoch';
 
 type Params = { block: string };
 
@@ -106,9 +107,9 @@ const Block = () => {
                 </TableRow>
                 {data && data.epoch && (
                   <TableRow modifier="bordered">
-                    <TableHeader scope="row">{t('Epoch')}</TableHeader>
+                    <TableCell scope="row">{t('Epoch')}</TableCell>
                     <TableCell modifier="bordered">
-                      <code>{data.epoch.id}</code>
+                      <EpochOverview id={data.epoch.id} icon={false} />
                     </TableCell>
                   </TableRow>
                 )}

@@ -10,6 +10,8 @@ import { ChainResponseCode } from '../chain-response-code/chain-reponse.code';
 import { TxDataView } from '../../tx-data-view';
 import Hash from '../../../links/hash';
 import { Signature } from '../../../signature/signature';
+import { useExplorerEpochForBlockQuery } from '../../../links/block-link/__generated__/EpochByBlock';
+import EpochOverview from '../../../epoch-overview/epoch';
 
 interface TxDetailsSharedProps {
   txData: BlockExplorerTransactionResult | undefined;
@@ -44,6 +46,11 @@ export const TxDetailsShared = ({
   blockData,
   hideTypeRow = false,
 }: TxDetailsSharedProps) => {
+  const { data } = useExplorerEpochForBlockQuery({
+    errorPolicy: 'ignore',
+    variables: { block: txData?.block.toString() || '' },
+  });
+
   if (!txData) {
     return <>{t('Awaiting Block Explorer transaction details')}</>;
   }
@@ -74,7 +81,7 @@ export const TxDetailsShared = ({
       <TableRow modifier="bordered">
         <TableCell {...sharedHeaderProps}>{t('Block')}</TableCell>
         <TableCell>
-          <BlockLink height={height} showEpoch={true} />
+          <BlockLink height={height} showEpoch={false} />
         </TableCell>
       </TableRow>
       <TableRow modifier="bordered">
@@ -83,6 +90,7 @@ export const TxDetailsShared = ({
           <Signature signature={txData.signature} />
         </TableCell>
       </TableRow>
+
       <TableRow modifier="bordered">
         <TableCell {...sharedHeaderProps}>{t('Time')}</TableCell>
         <TableCell>
@@ -100,6 +108,14 @@ export const TxDetailsShared = ({
           )}
         </TableCell>
       </TableRow>
+      {data && data.epoch && (
+        <TableRow modifier="bordered">
+          <TableCell scope="row">{t('Epoch')}</TableCell>
+          <TableCell modifier="bordered">
+            <EpochOverview id={data.epoch.id} icon={false} />
+          </TableCell>
+        </TableRow>
+      )}
       <TableRow modifier="bordered">
         <TableCell {...sharedHeaderProps}>{t('Response code')}</TableCell>
         <TableCell>
