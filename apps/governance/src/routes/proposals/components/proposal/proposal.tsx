@@ -48,6 +48,7 @@ export const Proposal = ({ proposal, restData }: ProposalProps) => {
 
       <ProposalHeader
         proposal={proposal}
+        restData={restData}
         isListItem={false}
         voteState={voteState}
       />
