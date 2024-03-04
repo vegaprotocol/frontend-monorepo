@@ -181,7 +181,7 @@ export const mapFormValuesToTakeProfitAndStopLoss = (
     mapFormValuesToStopOrdersSubmission(
       {
         ...formValues,
-        price: formValues.takeProfit,
+        ocoPrice: formValues.takeProfit,
         triggerDirection:
           formValues.side === Schema.Side.SIDE_SELL
             ? Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_FALLS_BELOW
@@ -203,7 +203,7 @@ export const mapFormValuesToTakeProfitAndStopLoss = (
     mapFormValuesToStopOrdersSubmission(
       {
         ...formValues,
-        price: formValues.stopLoss,
+        ocoPrice: formValues.stopLoss,
         triggerDirection:
           formValues.side === Schema.Side.SIDE_BUY
             ? Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_FALLS_BELOW

@@ -80,7 +80,7 @@ import { isNonPersistentOrder } from '../../utils/time-in-force-persistence';
 import { KeyValue } from './key-value';
 import { DocsLinks } from '@vegaprotocol/environment';
 import { useT } from '../../use-t';
-import { DealTicketSizeTakeProfitStopLoss } from './deal-ticket-size-tp-sl';
+import { DealTicketPriceTakeProfitStopLoss } from './deal-ticket-price-tp-sl';
 
 export const REDUCE_ONLY_TOOLTIP =
   '"Reduce only" will ensure that this order will not increase the size of an open position. When the order is matched, it will only trade enough volume to bring your open volume towards 0 but never change the direction of your position. If applied to a limit order that is not instantly filled, the order will be stopped.';
@@ -756,7 +756,7 @@ export const DealTicket = ({
             />
           )}
           {tpSl && (
-            <DealTicketSizeTakeProfitStopLoss
+            <DealTicketPriceTakeProfitStopLoss
               market={market}
               takeProfitError={errors.takeProfit?.message}
               stopLossError={errors.stopLoss?.message}
@@ -765,6 +765,7 @@ export const DealTicket = ({
               takeProfit={takeProfit}
               stopLoss={stopLoss}
               side={side}
+              quoteName={quoteName}
             />
           )}
         </>
