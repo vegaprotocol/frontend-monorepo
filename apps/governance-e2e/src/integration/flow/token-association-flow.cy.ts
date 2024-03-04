@@ -5,6 +5,7 @@ import {
   navigateTo,
   navigation,
   turnTelemetryOff,
+  setRiskAccepted,
 } from '../../support/common.functions';
 import {
   stakingPageAssociateTokens,
@@ -57,6 +58,7 @@ context(
         function () {
           cy.clearLocalStorage();
           turnTelemetryOff();
+          setRiskAccepted();
           cy.mockChainId();
           cy.reload();
           waitForSpinner();

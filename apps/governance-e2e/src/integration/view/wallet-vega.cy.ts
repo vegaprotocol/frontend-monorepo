@@ -1,5 +1,8 @@
 import { truncateByChars } from '@vegaprotocol/utils';
-import { waitForSpinner } from '../../support/common.functions';
+import {
+  setRiskAccepted,
+  waitForSpinner,
+} from '../../support/common.functions';
 import {
   vegaWalletFaucetAssetsWithoutCheck,
   vegaWalletTeardown,
@@ -11,7 +14,6 @@ const connectButton = 'connect-vega-wallet';
 const getVegaLink = 'link';
 const dialog = '[role="dialog"]:visible';
 const dialogHeader = 'dialog-title';
-const walletDialogHeader = 'wallet-dialog-title';
 const connectorsList = 'connectors-list';
 const dialogCloseBtn = 'dialog-close';
 const accountNo = 'vega-account-truncated';
@@ -34,6 +36,7 @@ context(
   () => {
     before('visit token home page', () => {
       cy.visit('/');
+      setRiskAccepted();
       cy.get(walletContainer, { timeout: 60000 }).should('be.visible');
     });
 
@@ -63,17 +66,12 @@ context(
 
       it('should have Connect Vega header visible', () => {
         cy.get(dialog).within(() => {
-          cy.getByTestId(walletDialogHeader)
+          cy.getByTestId(connectorsList)
             .should('be.visible')
-            .and('have.text', 'Get a Vega wallet');
-        });
-      });
-
-      it('should have jsonRpc and hosted connection options visible on list', function () {
-        cy.getByTestId(connectorsList).within(() => {
-          cy.getByTestId('connector-jsonRpc')
-            .should('be.visible')
-            .and('have.text', 'Use the Desktop App/CLI');
+            .and(
+              'have.text',
+              'Get the Vega WalletGet MetaMask>_Command Line WalletView as public key'
+            );
         });
       });
 
@@ -88,7 +86,6 @@ context(
       before('connect vega wallet', function () {
         cy.mockChainId();
         cy.visit('/');
-        cy.wait('@ChainId');
         cy.connectVegaWallet();
         vegaWalletTeardown();
       });
