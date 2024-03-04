@@ -68,9 +68,26 @@ query SuccessorMarketProposalDetails($proposalId: ID!) {
       terms {
         change {
           ... on NewMarket {
+            __typename
             successorConfiguration {
               parentMarketId
               insurancePoolFraction
+            }
+          }
+        }
+      }
+    }
+    ... on BatchProposal {
+      id
+      batchTerms {
+        changes {
+          change {
+            ... on NewMarket {
+              __typename
+              successorConfiguration {
+                parentMarketId
+                insurancePoolFraction
+              }
             }
           }
         }
