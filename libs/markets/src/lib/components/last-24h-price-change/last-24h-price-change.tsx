@@ -2,16 +2,14 @@ import { type ReactNode } from 'react';
 import {
   addDecimalsFormatNumber,
   formatNumberPercentage,
-  getDateTimeFormat,
   priceChange,
   priceChangePercentage,
 } from '@vegaprotocol/utils';
-import { PriceChangeCell, signedNumberCssClass } from '@vegaprotocol/datagrid';
-import { Tooltip, VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
+import { signedNumberCssClass } from '@vegaprotocol/datagrid';
+import { VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import { useCandles } from '../../hooks/use-candles';
 import BigNumber from 'bignumber.js';
 import classNames from 'classnames';
-import { useT } from '../../use-t';
 
 interface Props {
   marketId?: string;
@@ -24,7 +22,6 @@ export const Last24hPriceChange = ({
   decimalPlaces,
   fallback,
 }: Props) => {
-  const t = useT();
   const { oneDayCandles, fiveDaysCandles, error } = useCandles({
     marketId,
   });
@@ -33,56 +30,6 @@ export const Last24hPriceChange = ({
 
   if (error || !oneDayCandles || !fiveDaysCandles) {
     return nonIdeal;
-  }
-
-  if (fiveDaysCandles.length < 24) {
-    return (
-      <Tooltip
-        description={
-          <span className="justify-start">
-            {t(
-              'Market has not been active for 24 hours. The price change between {{start}} and {{end}} is:',
-              {
-                start: getDateTimeFormat().format(
-                  new Date(fiveDaysCandles[0].periodStart)
-                ),
-                end: getDateTimeFormat().format(
-                  new Date(
-                    fiveDaysCandles[fiveDaysCandles.length - 1].periodStart
-                  )
-                ),
-              }
-            )}
-            <PriceChangeCell
-              candles={fiveDaysCandles.map((c) => c.close) || []}
-              decimalPlaces={decimalPlaces}
-            />
-          </span>
-        }
-      >
-        <span>{nonIdeal}</span>
-      </Tooltip>
-    );
-  }
-
-  if (oneDayCandles.length < 24) {
-    return (
-      <Tooltip
-        description={
-          <span className="justify-start">
-            {t(
-              '24 hour change is unavailable at this time. The price change in the last 120 hours is:'
-            )}{' '}
-            <PriceChangeCell
-              candles={fiveDaysCandles.map((c) => c.close) || []}
-              decimalPlaces={decimalPlaces}
-            />
-          </span>
-        }
-      >
-        <span>{nonIdeal}</span>
-      </Tooltip>
-    );
   }
 
   const candles = oneDayCandles?.map((c) => c.close) || [];

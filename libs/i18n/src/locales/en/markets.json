@@ -1,8 +1,6 @@
 {
   "{{liquidityPriceRange}} of mid price": "{{liquidityPriceRange}} of mid price",
   "{{probability}} probability price bounds": "{{probability}} probability price bounds",
-  "24 hour change is unavailable at this time. The price change in the last 120 hours is:": "24 hour change is unavailable at this time. The price change in the last 120 hours is:",
-  "24 hour change is unavailable at this time. The volume change in the last 120 hours is {{candleVolumeValue}} for a total of {{candleVolumePrice}} {{quoteUnit}}": "24 hour change is unavailable at this time. The volume change in the last 120 hours is {{candleVolumeValue}} for a total of {{candleVolumePrice}} {{quoteUnit}}",
   "A concept derived from traditional markets. It is a calculated value for the ‘current market price’ on a market.": "A concept derived from traditional markets. It is a calculated value for the ‘current market price’ on a market.",
   "A number that will be calculated by an appropriate stochastic risk model, dependent on the type of risk model used and its parameters.": "A number that will be calculated by an appropriate stochastic risk model, dependent on the type of risk model used and its parameters.",
   "A sliding penalty for how much an LP bond is slashed if an LP fails to reach the minimum SLA. This is a network parameter.": "A sliding penalty for how much an LP bond is slashed if an LP fails to reach the minimum SLA. This is a network parameter.",
@@ -51,9 +49,6 @@
   "Market": "Market",
   "Market data": "Market data",
   "Market governance": "Market governance",
-  "Market has not been active for 24 hours. The price change between {{start}} and {{end}} is:": "Market has not been active for 24 hours. The price change between {{start}} and {{end}} is:",
-  "Market has not been active for 24 hours. The volume traded between {{start}} and {{end}} is:": "Market has not been active for 24 hours. The volume traded between {{start}} and {{end}} is:",
-  "Market has not been active for 24 hours. The volume traded between {{start}} and {{end}} is {{candleVolumeValue}} for a total of {{candleVolumePrice}} {{quoteUnit}}": "Market has not been active for 24 hours. The volume traded between {{start}} and {{end}} is {{candleVolumeValue}} for a total of {{candleVolumePrice}} {{quoteUnit}}",
   "Market ID": "Market ID",
   "Market price": "Market price",
   "Market specification": "Market specification",

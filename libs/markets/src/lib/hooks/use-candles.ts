@@ -8,7 +8,7 @@ export const useCandles = ({ marketId }: { marketId?: string }) => {
   const fiveDaysAgo = useFiveDaysAgo();
   const yesterday = useYesterday();
   const since = new Date(fiveDaysAgo).toISOString();
-  const { data, error } = useThrottledDataProvider({
+  const { data: fiveDaysCandles, error } = useThrottledDataProvider({
     dataProvider: marketCandlesProvider,
     variables: {
       marketId: marketId || '',
@@ -16,13 +16,6 @@ export const useCandles = ({ marketId }: { marketId?: string }) => {
       since,
     },
     skip: !marketId,
-  });
-
-  const fiveDaysCandles = data?.filter((c) => {
-    if (c.open === '' || c.close === '' || c.high === '' || c.close === '') {
-      return false;
-    }
-    return true;
   });
 
   const oneDayCandles = fiveDaysCandles?.filter((candle) =>
