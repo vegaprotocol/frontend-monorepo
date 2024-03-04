@@ -7,7 +7,7 @@ from conftest import init_page, init_vega, cleanup_container
 @pytest.fixture(scope="module")
 def vega(request):
     with init_vega(request) as vega_instance:
-        request.addfinalizer(lambda: cleanup_container(vega_instance))
+        request.addfinalizer(lambda: cleanup_container(vega_instance, request))
         yield vega_instance
 
 

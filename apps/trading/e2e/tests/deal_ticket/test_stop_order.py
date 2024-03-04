@@ -261,7 +261,7 @@ class TestStopOcoValidation:
     @pytest.fixture(scope="class")
     def vega(request):
         with init_vega(request) as vega_instance:
-            request.addfinalizer(lambda: cleanup_container(vega_instance))  # Register the cleanup function
+            request.addfinalizer(lambda: cleanup_container(vega_instance, request))
             yield vega_instance
 
     @pytest.fixture(scope="class")

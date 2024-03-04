@@ -14,51 +14,45 @@ from conftest import (
 from actions.utils import next_epoch, change_keys, forward_time
 from fixtures.market import setup_continuous_market
 
+
 @pytest.fixture(scope="module")
-def vega(request):
+def setup_environment(request, browser):
+    # Initialize Vega and setup cleanup
     with init_vega(request) as vega_instance:
-        request.addfinalizer(
-            lambda: cleanup_container(vega_instance)
+        request.addfinalizer(lambda: cleanup_container(vega_instance, request))
+
+        # Setup the market with volume discount program
+        market = setup_continuous_market(vega_instance, custom_quantum=100000)
+        vega_instance.update_volume_discount_program(
+            proposal_key=MM_WALLET.name,
+            benefit_tiers=[
+                {
+                    "minimum_running_notional_taker_volume": 100,
+                    "volume_discount_factor": 0.1,
+                },
+                {
+                    "minimum_running_notional_taker_volume": 200,
+                    "volume_discount_factor": 0.2,
+                },
+            ],
+            window_length=7,
         )
-        yield vega_instance
+        next_epoch(vega=vega_instance)
 
+        for _ in range(3):
+            submit_order(vega_instance, "Key 1", market, "SIDE_BUY", 1, 110)
+            forward_time(vega_instance, True if _ < 3 - 1 else False)
 
-@pytest.fixture(scope="module")
-def page(vega, browser, request):
-    with init_page(vega, browser, request) as page:
-        risk_accepted_setup(page)
-        auth_setup(vega, page)
-        yield page
-
-
-@pytest.fixture(scope="module", autouse=True)
-def setup_market_with_volume_discount_program(vega: VegaServiceNull):
-    market = setup_continuous_market(vega, custom_quantum=100000)
-    vega.update_volume_discount_program(
-        proposal_key=MM_WALLET.name,
-        benefit_tiers=[
-            {
-                "minimum_running_notional_taker_volume": 100,
-                "volume_discount_factor": 0.1,
-            },
-            {
-                "minimum_running_notional_taker_volume": 200,
-                "volume_discount_factor": 0.2,
-            },
-        ],
-        window_length=7,
-    )
-    next_epoch(vega=vega)
-
-    for _ in range(3):
-        submit_order(vega, "Key 1", market, "SIDE_BUY", 1, 110)
-        forward_time(vega, True if _ < 3 - 1 else False)
-
-    return market
+        # Initialize page and apply setups
+        with init_page(vega_instance, browser, request) as page_instance:
+            risk_accepted_setup(page_instance)
+            auth_setup(vega_instance, page_instance)
+            yield vega_instance, market, page_instance
 
 
 @pytest.mark.xdist_group(name="test_fees_volume_tier_2")
-def test_fees_page_discount_program_my_trading_fees(page: Page):
+def test_fees_page_discount_program_my_trading_fees(setup_environment):
+    vega, market, page = setup_environment
     page.goto("/#/fees")
     expect(page.get_by_test_id(ADJUSTED_FEES)).to_have_text("8.04%-8.04%")
     expect(page.get_by_test_id(TOTAL_FEE_BEFORE_DISCOUNT)).to_have_text(
@@ -70,7 +64,8 @@ def test_fees_page_discount_program_my_trading_fees(page: Page):
 
 
 @pytest.mark.xdist_group(name="test_fees_volume_tier_2")
-def test_fees_page_discount_program_total_discount(page: Page):
+def test_fees_page_discount_program_total_discount(setup_environment):
+    vega, market, page = setup_environment
     page.goto("/#/fees")
     expect(page.get_by_test_id(TOTAL_DISCOUNT)).to_have_text("20%")
     expect(page.get_by_test_id(VOLUME_DISCOUNT_ROW)).to_have_text("Volume discount20%")
@@ -84,14 +79,16 @@ def test_fees_page_discount_program_total_discount(page: Page):
 
 
 @pytest.mark.xdist_group(name="test_fees_volume_tier_2")
-def test_fees_page_volume_discount_program_my_current_volume(page: Page):
+def test_fees_page_volume_discount_program_my_current_volume(setup_environment):
+    vega, market, page = setup_environment
     page.goto("/#/fees")
     expect(page.get_by_test_id(PAST_EPOCHS_VOLUME)).to_have_text("206")
     expect(page.get_by_test_id(REQUIRED_FOR_NEXT_TIER)).not_to_be_visible()
 
 
 @pytest.mark.xdist_group(name="test_fees_volume_tier_2")
-def test_fees_page_discount_program_discount(page: Page):
+def test_fees_page_discount_program_discount(setup_environment):
+    vega, market, page = setup_environment
     page.goto("/#/fees")
     expect(page.get_by_test_id(TIER_VALUE_0)).to_have_text("1")
     expect(page.get_by_test_id(TIER_VALUE_1)).to_have_text("2")
@@ -105,7 +102,8 @@ def test_fees_page_discount_program_discount(page: Page):
 
 
 @pytest.mark.xdist_group(name="test_fees_volume_tier_2")
-def test_fees_page_discount_program_fees_by_market(page: Page):
+def test_fees_page_discount_program_fees_by_market(setup_environment):
+    vega, market, page = setup_environment
     page.goto("/#/fees")
     pinned = page.locator(PINNED_ROW_LOCATOR)
     row = page.locator(ROW_LOCATOR)
@@ -118,11 +116,9 @@ def test_fees_page_discount_program_fees_by_market(page: Page):
 
 
 @pytest.mark.xdist_group(name="test_fees_volume_tier_2")
-def test_deal_ticket_discount_program(
-    page: Page,
-    setup_market_with_volume_discount_program,
-):
-    page.goto(f"/#/markets/{setup_market_with_volume_discount_program}")
+def test_deal_ticket_discount_program(setup_environment):
+    vega, market, page = setup_environment
+    page.goto(f"/#/markets/{market}")
     page.get_by_test_id(ORDER_SIZE).fill("1")
     page.get_by_test_id(ORDER_PRICE).fill("1")
     expect(page.get_by_test_id(DISCOUNT_PILL)).to_have_text("-20%")
@@ -142,11 +138,9 @@ def test_deal_ticket_discount_program(
 
 
 @pytest.mark.xdist_group(name="test_fees_volume_tier_2")
-def test_fills_taker_discount_program(
-    page: Page,
-    setup_market_with_volume_discount_program,
-):
-    page.goto(f"/#/markets/{setup_market_with_volume_discount_program}")
+def test_fills_taker_discount_program(setup_environment):
+    vega, market, page = setup_environment
+    page.goto(f"/#/markets/{market}")
     page.get_by_test_id(FILLS).click()
     row = page.get_by_test_id(TAB_FILLS).locator(ROW_LOCATOR).first
     expect(row.locator(COL_SIZE)).to_have_text("+1")
@@ -161,11 +155,10 @@ def test_fills_taker_discount_program(
 
 @pytest.mark.xdist_group(name="test_fees_volume_tier_2")
 def test_fills_maker_discount_program(
-    vega: VegaServiceNull,
-    page: Page,
-    setup_market_with_volume_discount_program,
+    setup_environment,
 ):
-    page.goto(f"/#/markets/{setup_market_with_volume_discount_program}")
+    vega, market, page = setup_environment
+    page.goto(f"/#/markets/{market}")
     change_keys(page, vega, MM_WALLET.name)
     page.get_by_test_id(FILLS).click()
     row = page.get_by_test_id(TAB_FILLS).locator(ROW_LOCATOR).first
@@ -178,10 +171,9 @@ def test_fills_maker_discount_program(
 
 
 @pytest.mark.xdist_group(name="test_fees_volume_tier_2")
-def test_fills_maker_fee_tooltip_discount_program(
-    vega, page: Page, setup_market_with_volume_discount_program
-):
-    page.goto(f"/#/markets/{setup_market_with_volume_discount_program}")
+def test_fills_maker_fee_tooltip_discount_program(setup_environment):
+    vega, market, page = setup_environment
+    page.goto(f"/#/markets/{market}")
     change_keys(page, vega, MM_WALLET.name)
     page.get_by_test_id(FILLS).click()
     row = page.get_by_test_id(TAB_FILLS).locator(ROW_LOCATOR).first
@@ -195,10 +187,10 @@ def test_fills_maker_fee_tooltip_discount_program(
 
 @pytest.mark.xdist_group(name="test_fees_volume_tier_2")
 def test_fills_taker_fee_tooltip_discount_program(
-    page: Page,
-    setup_market_with_volume_discount_program,
+    setup_environment,
 ):
-    page.goto(f"/#/markets/{setup_market_with_volume_discount_program}")
+    vega, market, page = setup_environment
+    page.goto(f"/#/markets/{market}")
     page.get_by_test_id(FILLS).click()
     row = page.get_by_test_id(TAB_FILLS).locator(ROW_LOCATOR).first
     # tbd - tooltip is not visible without this wait

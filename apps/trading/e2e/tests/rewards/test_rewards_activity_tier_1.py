@@ -10,22 +10,21 @@ from vega_sim.null_service import VegaServiceNull
 
 
 @pytest.fixture(scope="module")
-def vega(request):
+def setup_environment(request, browser):
+
     with init_vega(request) as vega_instance:
-        request.addfinalizer(lambda: cleanup_container(vega_instance))
-        yield vega_instance
+        request.addfinalizer(lambda: cleanup_container(vega_instance, request))
+
+        tDAI_market, tDAI_asset_id = setup_market_with_reward_program(vega_instance)
+
+        with init_page(vega_instance, browser, request) as page:
+            risk_accepted_setup(page)
+            auth_setup(vega_instance, page)
+            page.goto(REWARDS_URL)
+            change_keys(page, vega_instance, PARTY_B)
+            yield page, tDAI_market, tDAI_asset_id
 
 
-@pytest.fixture(scope="module")
-def page(vega, browser, request):
-    with init_page(vega, browser, request) as page:
-        risk_accepted_setup(page)
-        auth_setup(vega, page)
-        page.goto(REWARDS_URL)
-        change_keys(page, vega, PARTY_B)
-        yield page
-
-@pytest.fixture(scope="module", autouse=True)
 def setup_market_with_reward_program(vega: VegaServiceNull):
     tDAI_market = setup_continuous_market(vega)
     PARTY_A, PARTY_B, PARTY_C, PARTY_D = keys(vega)
@@ -128,34 +127,36 @@ def setup_market_with_reward_program(vega: VegaServiceNull):
     return tDAI_market, tDAI_asset_id
 
 
-@pytest.mark.xdist_group(name="test_rewards_activity_tier_1")
-def test_network_reward_pot(page: Page):
-    
+
+def test_network_reward_pot(setup_environment):
+    page, tDAI_market, tDAI_asset_id = setup_environment
     expect(page.get_by_test_id(TOTAL_REWARDS)).to_have_text("116.66666 tDAI")
 
 
-@pytest.mark.xdist_group(name="test_rewards_activity_tier_1")
+
 def test_reward_multiplier(
-    page: Page,
+    setup_environment
 ):
+    page, tDAI_market, tDAI_asset_id = setup_environment
     expect(page.get_by_test_id(COMBINED_MULTIPLIERS)).to_have_text("2x")
     expect(page.get_by_test_id(STREAK_REWARD_MULTIPLIER_VALUE)).to_have_text("2x")
     expect(page.get_by_test_id(HOARDER_REWARD_MULTIPLIER_VALUE)).to_have_text("1x")
 
 
-@pytest.mark.xdist_group(name="test_rewards_activity_tier_1")
 def test_activity_streak(
-    page: Page,
+    setup_environment
 ):
+    page, tDAI_market, tDAI_asset_id = setup_environment
     expect(page.get_by_test_id(EPOCH_STREAK)).to_have_text(
         "Active trader: 7 epochs so far (Tier 1 as of last epoch)"
     )
 
 
-@pytest.mark.xdist_group(name="test_rewards_activity_tier_1")
+
 def test_reward_history(
-    page: Page,
+    setup_environment
 ):
+    page, tDAI_market, tDAI_asset_id = setup_environment
     page.locator('[name="fromEpoch"]').fill("1")
     expect((page.get_by_role(ROW).locator(PRICE_TAKING_COL_ID)).nth(1)).to_have_text(
         "300.00100.00%"
@@ -167,10 +168,11 @@ def test_reward_history(
     )
 
 
-@pytest.mark.xdist_group(name="test_rewards_activity_tier_1")
+
 def test_redeem(
-    page: Page,
+    setup_environment
 ):
+    page, tDAI_market, tDAI_asset_id = setup_environment
     page.get_by_test_id("redeem-rewards-button").click()
     available_to_withdraw = page.get_by_test_id(
         "available-to-withdraw-value"

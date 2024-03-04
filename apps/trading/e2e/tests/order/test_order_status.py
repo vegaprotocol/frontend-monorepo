@@ -10,228 +10,218 @@ order_tab = "tab-orders"
 
 
 @pytest.fixture(scope="module")
-def vega(request):
+def setup_environment(request, browser):
+    # Initialize Vega with cleanup
     with init_vega(request) as vega_instance:
-        request.addfinalizer(lambda: cleanup_container(vega_instance))  # Register the cleanup function
-        yield vega_instance
+        request.addfinalizer(lambda: cleanup_container(vega_instance, request))
 
+        # Setup multiple markets
+        markets = {
+            "market_1": setup_continuous_market(vega_instance, custom_market_name="market-1"),
+            "market_2": setup_continuous_market(vega_instance, custom_market_name="market-2"),
+            "market_3": setup_continuous_market(vega_instance, custom_market_name="market-3"),
+            "market_4": setup_continuous_market(vega_instance, custom_market_name="market-4"),
+            "market_5": setup_simple_market(vega_instance, custom_market_name="market-5"),
+        }
 
-@pytest.fixture(scope="module", autouse=True)
-def markets(vega: VegaServiceNull):
-    market_1 = setup_continuous_market(
-        vega,
-        custom_market_name="market-1",
-    )
-    market_2 = setup_continuous_market(
-        vega,
-        custom_market_name="market-2",
-    )
-    market_3 = setup_continuous_market(
-        vega,
-        custom_market_name="market-3",
-    )
-    market_4 = setup_continuous_market(
-        vega,
-        custom_market_name="market-4",
-    )
-    market_5 = setup_simple_market(
-        vega,
-        custom_market_name="market-5",
-    )
+        # Execute a series of orders across different markets
+        # Example for market_1 orders, adjust as necessary for your test scenario
+        vega_instance.submit_order(
+            trading_key="Key 1",
+            market_id=markets["market_1"],
+            time_in_force="TIME_IN_FORCE_IOC",
+            order_type="TYPE_LIMIT",
+            side="SIDE_SELL",
+            volume=100,
+            price=130,
+        )
+        
+        vega_instance.forward("2s")
+        vega_instance.wait_fn(1)
+        vega_instance.wait_for_total_catchup()
 
-    vega.submit_order(
-        trading_key="Key 1",
-        market_id=market_1,
-        time_in_force="TIME_IN_FORCE_IOC",
-        order_type="TYPE_LIMIT",
-        side="SIDE_SELL",
-        volume=100,
-        price=130,
-    )
+        vega_instance.submit_order(
+            trading_key="Key 1",
+            market_id=markets["market_1"],
+            time_in_force="TIME_IN_FORCE_GTC",
+            order_type="TYPE_LIMIT",
+            side="SIDE_SELL",
+            volume=100,
+            price=88,
+        )
 
-    vega.forward("2s")
-    vega.wait_fn(1)
-    vega.wait_for_total_catchup()
+        vega_instance.forward("2s")
+        vega_instance.wait_fn(1)
+        vega_instance.wait_for_total_catchup()
 
-    vega.submit_order(
-        trading_key="Key 1",
-        market_id=market_1,
-        time_in_force="TIME_IN_FORCE_GTC",
-        order_type="TYPE_LIMIT",
-        side="SIDE_SELL",
-        volume=100,
-        price=88,
-    )
+        vega_instance.submit_order(
+            trading_key="Key 1",
+            market_id=markets["market_1"],
+            time_in_force="TIME_IN_FORCE_IOC",
+            order_type="TYPE_LIMIT",
+            side="SIDE_SELL",
+            volume=100,
+            price=88,
+        )
 
-    vega.forward("2s")
-    vega.wait_fn(1)
-    vega.wait_for_total_catchup()
+        vega_instance.forward("2s")
+        vega_instance.wait_fn(1)
+        vega_instance.wait_for_total_catchup()
 
-    vega.submit_order(
-        trading_key="Key 1",
-        market_id=market_1,
-        time_in_force="TIME_IN_FORCE_IOC",
-        order_type="TYPE_LIMIT",
-        side="SIDE_SELL",
-        volume=100,
-        price=88,
-    )
+        vega_instance.submit_order(
+            trading_key="Key 1",
+            market_id=markets["market_1"],
+            time_in_force="TIME_IN_FORCE_GTC",
+            order_type="TYPE_LIMIT",
+            side="SIDE_SELL",
+            volume=1e10,
+            price=130,
+            wait=False,
+        )
 
-    vega.forward("2s")
-    vega.wait_fn(1)
-    vega.wait_for_total_catchup()
+        vega_instance.forward("2s")
+        vega_instance.wait_fn(1)
+        vega_instance.wait_for_total_catchup()
 
-    vega.submit_order(
-        trading_key="Key 1",
-        market_id=market_1,
-        time_in_force="TIME_IN_FORCE_GTC",
-        order_type="TYPE_LIMIT",
-        side="SIDE_SELL",
-        volume=1e10,
-        price=130,
-        wait=False,
-    )
+        vega_instance.submit_order(
+            trading_key="Key 1",
+            market_id=markets["market_2"],
+            time_in_force="TIME_IN_FORCE_IOC",
+            order_type="TYPE_LIMIT",
+            side="SIDE_BUY",
+            volume=100,
+            price=104,
+        )
+        vega_instance.forward("2s")
+        vega_instance.wait_fn(1)
+        vega_instance.wait_for_total_catchup()
 
-    vega.forward("2s")
-    vega.wait_fn(1)
-    vega.wait_for_total_catchup()
+        vega_instance.submit_order(
+            trading_key="Key 1",
+            market_id=markets["market_3"],
+            time_in_force="TIME_IN_FORCE_GTT",
+            order_type="TYPE_LIMIT",
+            side="SIDE_SELL",
+            volume=10,
+            price=120,
+            expires_at=vega_instance.get_blockchain_time() + 5 * 1e9,
+        )
 
-    vega.submit_order(
-        trading_key="Key 1",
-        market_id=market_2,
-        time_in_force="TIME_IN_FORCE_IOC",
-        order_type="TYPE_LIMIT",
-        side="SIDE_BUY",
-        volume=100,
-        price=104,
-    )
-    vega.forward("2s")
-    vega.wait_fn(1)
-    vega.wait_for_total_catchup()
+        vega_instance.forward("2s")
+        vega_instance.wait_fn(1)
+        vega_instance.wait_for_total_catchup()
 
-    vega.submit_order(
-        trading_key="Key 1",
-        market_id=market_3,
-        time_in_force="TIME_IN_FORCE_GTT",
-        order_type="TYPE_LIMIT",
-        side="SIDE_SELL",
-        volume=10,
-        price=120,
-        expires_at=vega.get_blockchain_time() + 5 * 1e9,
-    )
+        vega_instance.submit_order(
+            market_id=markets["market_4"],
+            trading_key="Key 1",
+            side="SIDE_BUY",
+            order_type="TYPE_LIMIT",
+            pegged_order=PeggedOrder(reference="PEGGED_REFERENCE_MID", offset=5),
+            time_in_force="TIME_IN_FORCE_GTC",
+            volume=20,
+        )
 
-    vega.forward("2s")
-    vega.wait_fn(1)
-    vega.wait_for_total_catchup()
+        vega_instance.forward("2s")
+        vega_instance.wait_fn(1)
+        vega_instance.wait_for_total_catchup()
 
-    vega.submit_order(
-        market_id=market_4,
-        trading_key="Key 1",
-        side="SIDE_BUY",
-        order_type="TYPE_LIMIT",
-        pegged_order=PeggedOrder(reference="PEGGED_REFERENCE_MID", offset=5),
-        time_in_force="TIME_IN_FORCE_GTC",
-        volume=20,
-    )
+        vega_instance.submit_order(
+            market_id=markets["market_4"],
+            trading_key="Key 1",
+            side="SIDE_BUY",
+            order_type="TYPE_LIMIT",
+            pegged_order=PeggedOrder(reference="PEGGED_REFERENCE_BEST_BID", offset=10),
+            time_in_force="TIME_IN_FORCE_GTC",
+            volume=40,
+        )
 
-    vega.forward("2s")
-    vega.wait_fn(1)
-    vega.wait_for_total_catchup()
+        vega_instance.forward("2s")
+        vega_instance.wait_fn(1)
+        vega_instance.wait_for_total_catchup()
 
-    vega.submit_order(
-        market_id=market_4,
-        trading_key="Key 1",
-        side="SIDE_BUY",
-        order_type="TYPE_LIMIT",
-        pegged_order=PeggedOrder(reference="PEGGED_REFERENCE_BEST_BID", offset=10),
-        time_in_force="TIME_IN_FORCE_GTC",
-        volume=40,
-    )
+        vega_instance.submit_order(
+            market_id=markets["market_4"],
+            trading_key="Key 1",
+            side="SIDE_SELL",
+            order_type="TYPE_LIMIT",
+            pegged_order=PeggedOrder(reference="PEGGED_REFERENCE_BEST_ASK", offset=15),
+            time_in_force="TIME_IN_FORCE_GTC",
+            volume=60,
+        )
 
-    vega.forward("2s")
-    vega.wait_fn(1)
-    vega.wait_for_total_catchup()
+        vega_instance.forward("2s")
+        vega_instance.wait_fn(1)
+        vega_instance.wait_for_total_catchup()
 
-    vega.submit_order(
-        market_id=market_4,
-        trading_key="Key 1",
-        side="SIDE_SELL",
-        order_type="TYPE_LIMIT",
-        pegged_order=PeggedOrder(reference="PEGGED_REFERENCE_BEST_ASK", offset=15),
-        time_in_force="TIME_IN_FORCE_GTC",
-        volume=60,
-    )
+        vega_instance.submit_order(
+            market_id=markets["market_5"],
+            trading_key="Key 1",
+            side="SIDE_SELL",
+            order_type="TYPE_LIMIT",
+            pegged_order=PeggedOrder(reference="PEGGED_REFERENCE_BEST_ASK", offset=15),
+            wait=False,
+            time_in_force="TIME_IN_FORCE_GTC",
+            volume=60,
+        )
 
-    vega.forward("2s")
-    vega.wait_fn(1)
-    vega.wait_for_total_catchup()
+        vega_instance.forward("2s")
+        vega_instance.wait_fn(1)
+        vega_instance.wait_for_total_catchup()
 
-    vega.submit_order(
-        market_id=market_5,
-        trading_key="Key 1",
-        side="SIDE_SELL",
-        order_type="TYPE_LIMIT",
-        pegged_order=PeggedOrder(reference="PEGGED_REFERENCE_BEST_ASK", offset=15),
-        wait=False,
-        time_in_force="TIME_IN_FORCE_GTC",
-        volume=60,
-    )
+        vega_instance.submit_order(
+            trading_key="Key 1",
+            market_id=markets["market_2"],
+            time_in_force="TIME_IN_FORCE_GTC",
+            order_type="TYPE_LIMIT",
+            side="SIDE_SELL",
+            volume=10,
+            price=150,
+        )
+        
+        vega_instance.wait_fn(1)
+        vega_instance.wait_for_total_catchup()
 
-    vega.forward("2s")
-    vega.wait_fn(1)
-    vega.wait_for_total_catchup()
+        vega_instance.submit_order(
+            trading_key="Key 1",
+            market_id=markets["market_2"],
+            time_in_force="TIME_IN_FORCE_GTC",
+            order_type="TYPE_LIMIT",
+            side="SIDE_SELL",
+            volume=10,
+            price=160,
+        )
 
-    vega.submit_order(
-        trading_key="Key 1",
-        market_id=market_2,
-        time_in_force="TIME_IN_FORCE_GTC",
-        order_type="TYPE_LIMIT",
-        side="SIDE_SELL",
-        volume=10,
-        price=150,
-    )
-    
-    vega.wait_fn(1)
-    vega.wait_for_total_catchup()
+        vega_instance.wait_fn(1)
+        vega_instance.wait_for_total_catchup()
 
-    vega.submit_order(
-        trading_key="Key 1",
-        market_id=market_2,
-        time_in_force="TIME_IN_FORCE_GTC",
-        order_type="TYPE_LIMIT",
-        side="SIDE_SELL",
-        volume=10,
-        price=160,
-    )
+        vega_instance.submit_order(
+            trading_key="Key 1",
+            market_id=markets["market_3"],
+            time_in_force="TIME_IN_FORCE_GTC",
+            order_type="TYPE_LIMIT",
+            side="SIDE_BUY",
+            volume=10,
+            price=60,
+        )
 
-    vega.wait_fn(1)
-    vega.wait_for_total_catchup()
-
-    vega.submit_order(
-        trading_key="Key 1",
-        market_id=market_3,
-        time_in_force="TIME_IN_FORCE_GTC",
-        order_type="TYPE_LIMIT",
-        side="SIDE_BUY",
-        volume=10,
-        price=60,
-    )
-
-    vega.wait_fn(1)
-    vega.wait_for_total_catchup()
+        vega_instance.wait_fn(1)
+        vega_instance.wait_for_total_catchup()
+        # Initialize page and setup
+        
+        yield vega_instance, markets
 
 
 @pytest.fixture(scope="module")
-def page(vega, browser, request):
-    with init_page(vega, browser, request) as page:
+def page(setup_environment, browser, request):
+    vega_instance, markets = setup_environment
+    with init_page(vega_instance, browser, request) as page:
         risk_accepted_setup(page)
-        auth_setup(vega, page)
+        auth_setup(vega_instance, page)
         page.goto("/")
         page.get_by_test_id("All").click()
         yield page
 
 
-# close toast that is still opened after test
 @pytest.fixture(autouse=True)
 def after_each(page: Page):
     yield
@@ -381,7 +371,8 @@ def test_order_status_pegged_mid(page: Page):
     )
 
 
-def test_order_amend_order(vega: VegaServiceNull, page: Page):
+def test_order_amend_order(setup_environment, page:Page):
+    vega, markets = setup_environment
     #  7002-SORD-053
     #  7003-MORD-012
     #  7003-MORD-014
@@ -402,13 +393,13 @@ def test_order_amend_order(vega: VegaServiceNull, page: Page):
     )
 
 
-def test_order_cancel_single_order(vega: VegaServiceNull, page: Page):
+def test_order_cancel_single_order(setup_environment, page:Page):
+    vega, markets = setup_environment
     #  7003-MORD-009
     #  7003-MORD-010
     #  7003-MORD-011
     #  7002-SORD-043
     page.get_by_test_id("cancel").first.click()
-
     wait_for_toast_confirmation(page, timeout=5000)
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
@@ -420,7 +411,8 @@ def test_order_cancel_single_order(vega: VegaServiceNull, page: Page):
     )
 
 
-def test_order_cancel_all_orders(vega: VegaServiceNull, page: Page):
+def test_order_cancel_all_orders(setup_environment, page:Page):
+    vega, markets = setup_environment
     #  7003-MORD-009
     #  7003-MORD-010
     #  7003-MORD-011

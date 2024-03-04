@@ -67,23 +67,10 @@ class CustomHttpRequestHandler(http.server.SimpleHTTPRequestHandler):
 @contextmanager
 def init_vega(request=None):
     local_server = os.getenv("LOCAL_SERVER", "false").lower() == "true"
-    port_config = None
-    if local_server:
-        port_config = {
-            Ports.DATA_NODE_REST: 8001,
-        }
-    default_seconds = 1
-    seconds_per_block = default_seconds
-    if request and hasattr(request, "param"):
-        seconds_per_block = request.param
+    port_config = {"Ports.DATA_NODE_REST": 8001} if local_server else None
+    seconds_per_block = request.param if request and hasattr(request, "param") else 1
 
-    logger.info(
-        "Starting VegaServiceNull",
-        extra={"worker_id": os.environ.get("PYTEST_XDIST_WORKER")},
-    )
-    logger.info(f"Using console image: {console_image_name}")
-    logger.info(f"Using vega version: {vega_version}")
-
+    logger.info("Starting VegaServiceNull", extra={"worker_id": os.getenv("PYTEST_XDIST_WORKER", "default")})
     vega_service_args = {
         "run_with_console": False,
         "launch_graphql": False,
@@ -93,38 +80,28 @@ def init_vega(request=None):
         "transactions_per_block": 1000,
         "seconds_per_block": seconds_per_block,
         "genesis_time": datetime.now() - timedelta(days=1),
+        "port_config": port_config,
     }
 
-    if port_config is not None:
-        vega_service_args["port_config"] = port_config
-
     with VegaServiceNull(**vega_service_args) as vega:
+        container = None
         try:
-            container = docker_client.containers.run(
-                console_image_name, detach=True, ports={"80/tcp": vega.console_port}
-            )
-
-            if not isinstance(container, Container):
-                raise Exception("container instance invalid")
-
-            logger.info(
-                f"Container {container.id} started",
-                extra={"worker_id": os.environ.get("PYTEST_XDIST_WORKER")},
-            )
+            container = docker_client.containers.run(console_image_name, detach=True, ports={"80/tcp": vega.console_port})
+            module_file_name = request.module.__file__ if request and hasattr(request, 'module') else "Unknown Module"
+            test_name = request.node.name if request and hasattr(request, 'node') else "Unknown Test"
+            logger.info(f"Container {container.id}, {container.name} started for VegaService. Module File Name: {module_file_name}, Test Name: {test_name}", extra={"worker_id": os.getenv("PYTEST_XDIST_WORKER", "default")})
             vega.container = container
-            logger.info(f"Container ID: {container.id}, Name: {container.name}, Status: {container.status}")
             yield vega
-        except APIError as e:
-            logger.info(f"Container creation failed.")
-            logger.info(e)
-            raise e
         finally:
-            logger.info(f"Stopping container {container.id}")
-            container.stop()
-            logger.info(f"Container ID: {container.id}, Name: {container.name}, Status: {container.status}")
-            logger.info(f"Removing container {container.id}")
-            container.remove()
-            logger.info(f"Container ID: {container.id}, Name: {container.name}, Status: {container.status}")
+            if container:
+                try:
+                    logger.info(f"Stopping and removing container {container.id}")
+                    container.stop()
+                    container.wait()
+                    container.remove()
+                    logger.info(f"Container {container.id} has been removed")
+                except Exception as e:
+                    logger.error(f"Error during container cleanup: {e}")
 
 
 @contextmanager
@@ -182,35 +159,36 @@ def init_page(vega: VegaServiceNull, browser: Browser, request: pytest.FixtureRe
 @pytest.fixture
 def vega(request):
     with init_vega(request) as vega_instance:
-        request.addfinalizer(lambda: cleanup_container(vega_instance))
+        request.addfinalizer(lambda: cleanup_container(vega_instance, request))
         yield vega_instance
 
-def cleanup_container(vega_instance):
-    # Ensure there is a list of containers to work with
-    if hasattr(vega_instance, 'containers') and vega_instance.containers:
-        for container in vega_instance.containers:
-            try:
-                # Check if each container is still running and then stop it
-                if container.status == 'running':
-                    print(f"Stopping container {container.id}")
-                    container.stop()
-                else:
-                    print(f"Container {container.id} is not running.")
-            except docker.errors.NotFound:
-                print(f"Container {container.id} not found, may have been stopped and removed.")
-            except Exception as e:
-                print(f"Error during cleanup for container {container.id}: {str(e)}")
+def cleanup_container(vega_instance:VegaServiceNull, request=None):
+    try:
+        vega_instance.stop()
+    except Exception as e:
+        logger.info(f"Unable to stop vega_instance in cleanup_container.{e}")
+    if not hasattr(vega_instance, 'containers') or not vega_instance.containers:
+        print(f"No containers to cleanup.")
+        return
 
-            try:
-                # Attempt to remove the container after stopping it
-                container.remove()
-                print(f"Container {container.id} removed.")
-            except docker.errors.NotFound:
-                print(f"Container {container.id} not found, may have been removed.")
-            except Exception as e:
-                print(f"Error during container removal for container {container.id}: {str(e)}")
-    else:
-        print("No containers to cleanup.")
+    module_file_name = request.module.__file__ if request and hasattr(request, 'module') else "Unknown Module"
+    test_name = request.node.name if request and hasattr(request, 'node') else "Unknown Test"
+    container_count = len(vega_instance.containers)
+    logger.info(f"Starting cleanup for {container_count} containers for test {test_name} in {module_file_name}")
+
+    for container in vega_instance.containers:
+        try:
+            if container.status == 'running':
+                logger.info(f"Stopping container {container.id} ({container.name})")
+                container.stop()
+                container.wait()
+            container.remove()
+            logger.info(f"Container {container.id} ({container.name}) removed.")
+        except docker.errors.NotFound:
+            logger.info(f"Container {container.id} not found, may have been stopped and removed.")
+        except Exception as e:
+            logger.error(f"Error during cleanup for container {container.id} ({container.name}): {e}")
+
 
 
 @pytest.fixture
@@ -326,17 +304,21 @@ def perps_market(vega, request):
         kwargs.update(request.param)
     return setup_perps_market(vega, **kwargs)
 
+@pytest.fixture(scope="session", autouse=True)
+def cleanup_all_containers(request):
+    yield
+    logger.info("test run complete")
+    # The code after 'yield' runs after all tests are done.
+    client = docker.from_env()
 
-@pytest.fixture(autouse=True)
-def retry_on_http_error(request):
-    retry_count = 3
-    for i in range(retry_count):
-        try:
-            yield
-            return
-        except requests.exceptions.HTTPError:
-            if i < retry_count - 1:
-                print(f"Retrying due to HTTPError (attempt {i+1}/{retry_count})")
-            else:
-                raise
+    def remove_all_containers():
+        for container in client.containers.list(all=True):
+            logger.info(f"Stopping and removing container {container.id}, {container.name}...")
+            try:
+                container.stop()
+                container.remove()
+                logger.info(f"Container {container.id}, {container.name} successfully removed.")
+            except Exception as e:
+                logger.info(f"Error removing container {container.id}: {e}")
 
+    request.addfinalizer(remove_all_containers)

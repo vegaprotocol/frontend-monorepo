@@ -14,7 +14,7 @@ logger = logging.getLogger()
 @pytest.fixture(scope="class")
 def vega(request):
     with init_vega(request) as vega_instance:
-        request.addfinalizer(lambda: cleanup_container(vega_instance))
+        request.addfinalizer(lambda: cleanup_container(vega_instance, request))
         yield vega_instance
 
 

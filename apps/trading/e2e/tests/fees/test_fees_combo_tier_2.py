@@ -1,4 +1,5 @@
 import pytest
+import threading
 from fees_test_ids import *
 from playwright.sync_api import Page, expect
 from vega_sim.null_service import VegaServiceNull
@@ -14,79 +15,81 @@ from conftest import (
 from actions.utils import next_epoch, change_keys, forward_time
 from fixtures.market import setup_continuous_market
 
-
 @pytest.fixture(scope="module")
-def vega(request):
+def setup_environment(request, browser):
+    # Initialize Vega with cleanup
     with init_vega(request) as vega_instance:
-        request.addfinalizer(
-            lambda: cleanup_container(vega_instance)
+        request.addfinalizer(lambda: cleanup_container(vega_instance, request))
+
+        # Setup the market with volume and referral discount programs
+        market = setup_continuous_market(vega_instance, custom_quantum=100000)
+        vega_instance.update_volume_discount_program(
+            proposal_key=MM_WALLET.name,
+            benefit_tiers=[
+                {"minimum_running_notional_taker_volume": 100, "volume_discount_factor": 0.1},
+                {"minimum_running_notional_taker_volume": 200, "volume_discount_factor": 0.2},
+            ],
+            window_length=7,
         )
-        yield vega_instance
+        next_epoch(vega_instance)
+
+        vega_instance.update_referral_program(
+            proposal_key=MM_WALLET.name,
+            benefit_tiers=[
+                {
+                    "minimum_running_notional_taker_volume": 100,
+                    "minimum_epochs": 1,
+                    "referral_reward_factor": 0.1,
+                    "referral_discount_factor": 0.1,
+                },
+                {
+                    "minimum_running_notional_taker_volume": 200,
+                    "minimum_epochs": 2,
+                    "referral_reward_factor": 0.2,
+                    "referral_discount_factor": 0.2,
+                },
+            ],
+            staking_tiers=[
+                {"minimum_staked_tokens": 100, "referral_reward_multiplier": 1.1},
+                {"minimum_staked_tokens": 200, "referral_reward_multiplier": 1.2},
+            ],
+            window_length=1,
+        )
+        vega_instance.create_referral_set(key_name=MM_WALLET.name)
+        next_epoch(vega_instance)
+        referral_set_id = list(vega_instance.list_referral_sets().keys())[0]
+        vega_instance.apply_referral_code(key_name="Key 1", id=referral_set_id)
+        next_epoch(vega_instance)
+
+        for _ in range(2):
+            submit_order(vega_instance, "Key 1", market, "SIDE_BUY", 2, 110)
+            forward_time(vega_instance, True if _ < 2 - 1 else False)
 
 
-@pytest.fixture(scope="module")
-def page(vega, browser, request):
-    with init_page(vega, browser, request) as page:
-        risk_accepted_setup(page)
-        auth_setup(vega, page)
-        yield page
+        def list_non_daemonic_threads():
+            # Get the current list of all active threads
+            current_threads = threading.enumerate()
 
+            # Filter and list non-daemonic threads
+            non_daemonic_threads = [t for t in current_threads if not t.daemon]
 
-@pytest.fixture(scope="module", autouse=True)
-def setup_combined_market(vega: VegaServiceNull):
-    market = setup_continuous_market(vega, custom_quantum=100000)
-    vega.update_volume_discount_program(
-        proposal_key=MM_WALLET.name,
-        benefit_tiers=[
-            {
-                "minimum_running_notional_taker_volume": 100,
-                "volume_discount_factor": 0.1,
-            },
-            {
-                "minimum_running_notional_taker_volume": 200,
-                "volume_discount_factor": 0.2,
-            },
-        ],
-        window_length=7,
-    )
-    next_epoch(vega=vega)
+            print("Non-Daemonic Threads:")
+            for thread in non_daemonic_threads:
+                print(f"{thread.name} (ID: {thread.ident})")
 
-    vega.update_referral_program(
-        proposal_key=MM_WALLET.name,
-        benefit_tiers=[
-            {
-                "minimum_running_notional_taker_volume": 100,
-                "minimum_epochs": 1,
-                "referral_reward_factor": 0.1,
-                "referral_discount_factor": 0.1,
-            },
-            {
-                "minimum_running_notional_taker_volume": 200,
-                "minimum_epochs": 2,
-                "referral_reward_factor": 0.2,
-                "referral_discount_factor": 0.2,
-            },
-        ],
-        staking_tiers=[
-            {"minimum_staked_tokens": 100, "referral_reward_multiplier": 1.1},
-            {"minimum_staked_tokens": 200, "referral_reward_multiplier": 1.2},
-        ],
-        window_length=1,
-    )
-    vega.create_referral_set(key_name=MM_WALLET.name)
-    next_epoch(vega=vega)
-    referral_set_id = list(vega.list_referral_sets().keys())[0]
-    vega.apply_referral_code(key_name="Key 1", id=referral_set_id)
-    next_epoch(vega=vega)
+        # Example usage
+        list_non_daemonic_threads()
 
-    for _ in range(2):
-        submit_order(vega, "Key 1", market, "SIDE_BUY", 2, 110)
-        forward_time(vega, True if _ < 2 - 1 else False)
-    return market
+        # Initialize page and setup
+        with init_page(vega_instance, browser, request) as page_instance:
+            risk_accepted_setup(page_instance)
+            auth_setup(vega_instance, page_instance)
+            yield vega_instance, market, page_instance
 
 
 @pytest.mark.xdist_group(name="test_fees_combo_tier_2")
-def test_fees_page_discount_program_my_trading_fees(page: Page):
+def test_fees_page_discount_program_my_trading_fees(setup_environment):
+    vega, market, page = setup_environment
     page.goto("/#/fees")
     expect(page.get_by_test_id(ADJUSTED_FEES)).to_have_text("6.432%-6.432%")
     expect(page.get_by_test_id(TOTAL_FEE_BEFORE_DISCOUNT)).to_have_text(
@@ -99,8 +102,9 @@ def test_fees_page_discount_program_my_trading_fees(page: Page):
 
 @pytest.mark.xdist_group(name="test_fees_combo_tier_2")
 def test_fees_page_discount_program_total_discount(
-    page: Page,
+    setup_environment,
 ):
+    vega, market, page = setup_environment
     page.goto("/#/fees")
     expect(page.get_by_test_id(TOTAL_DISCOUNT)).to_have_text("36%")
     expect(page.get_by_test_id(VOLUME_DISCOUNT_ROW)).to_have_text("Volume discount20%")
@@ -114,7 +118,8 @@ def test_fees_page_discount_program_total_discount(
 
 
 @pytest.mark.xdist_group(name="test_fees_combo_tier_2")
-def test_fees_page_discount_program_fees_by_market(page: Page):
+def test_fees_page_discount_program_fees_by_market(setup_environment):
+    vega, market, page = setup_environment
     page.goto("/#/fees")
     pinned = page.locator(PINNED_ROW_LOCATOR)
     row = page.locator(ROW_LOCATOR)
@@ -128,10 +133,10 @@ def test_fees_page_discount_program_fees_by_market(page: Page):
 
 @pytest.mark.xdist_group(name="test_fees_combo_tier_2")
 def test_deal_ticket_discount_program(
-    page: Page,
-    setup_combined_market,
+    setup_environment
 ):
-    page.goto(f"/#/markets/{setup_combined_market}")
+    vega, market, page = setup_environment
+    page.goto(f"/#/markets/{market}")
     page.get_by_test_id(ORDER_SIZE).fill("1")
     page.get_by_test_id(ORDER_PRICE).fill("1")
     expect(page.get_by_test_id(DISCOUNT_PILL)).to_have_text("-36%")
@@ -152,10 +157,10 @@ def test_deal_ticket_discount_program(
 
 @pytest.mark.xdist_group(name="test_fees_combo_tier_2")
 def test_fills_taker_discount_program(
-    page: Page,
-    setup_combined_market,
+    setup_environment
 ):
-    page.goto(f"/#/markets/{setup_combined_market}")
+    vega, market, page = setup_environment
+    page.goto(f"/#/markets/{market}")
     page.get_by_test_id(FILLS).click()
     row = page.get_by_test_id(TAB_FILLS).locator(ROW_LOCATOR).first
     expect(row.locator(COL_SIZE)).to_have_text("+2")
@@ -168,11 +173,10 @@ def test_fills_taker_discount_program(
 
 @pytest.mark.xdist_group(name="test_fees_combo_tier_2")
 def test_fills_maker_discount_program(
-    vega: VegaServiceNull,
-    page: Page,
-    setup_combined_market,
+    setup_environment
 ):
-    page.goto(f"/#/markets/{setup_combined_market}")
+    vega, market, page = setup_environment
+    page.goto(f"/#/markets/{market}")
     change_keys(page, vega, MM_WALLET.name)
     page.get_by_test_id(FILLS).click()
     row = page.get_by_test_id(TAB_FILLS).locator(ROW_LOCATOR).first
@@ -185,10 +189,10 @@ def test_fills_maker_discount_program(
 
 
 @pytest.mark.xdist_group(name="test_fees_combo_tier_2")
-def test_fills_maker_fee_tooltip_discount_program(
-    vega: VegaServiceNull, page: Page, setup_combined_market
+def test_fills_maker_fee_tooltip_discount_program(setup_environment
 ):
-    page.goto(f"/#/markets/{setup_combined_market}")
+    vega, market, page = setup_environment
+    page.goto(f"/#/markets/{market}")
     change_keys(page, vega, MM_WALLET.name)
     page.get_by_test_id(FILLS).click()
     row = page.get_by_test_id(TAB_FILLS).locator(ROW_LOCATOR).first
@@ -202,10 +206,10 @@ def test_fills_maker_fee_tooltip_discount_program(
 
 @pytest.mark.xdist_group(name="test_fees_combo_tier_2")
 def test_fills_taker_fee_tooltip_discount_program(
-    page: Page,
-    setup_combined_market,
+    setup_environment,
 ):
-    page.goto(f"/#/markets/{setup_combined_market}")
+    vega, market, page = setup_environment
+    page.goto(f"/#/markets/{market}")
     page.get_by_test_id(FILLS).click()
     row = page.get_by_test_id(TAB_FILLS).locator(ROW_LOCATOR).first
     # tbd - tooltip is not visible without this wait

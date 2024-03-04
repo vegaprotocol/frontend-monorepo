@@ -16,7 +16,7 @@ COL_ID_FEE = ".ag-center-cols-container [col-id='fee'] .ag-cell-value"
 @pytest.fixture(scope="module")
 def vega(request):
     with init_vega(request) as vega_instance:
-        request.addfinalizer(lambda: cleanup_container(vega_instance))
+        request.addfinalizer(lambda: cleanup_container(vega_instance, request))
         yield vega_instance
 
 
