@@ -40,7 +40,7 @@ export function addVegaWalletConnect() {
     const connectVegaWalletButton = `[data-testid=connect-vega-wallet${
       isMobile ? '-mobile' : ''
     }]:visible`;
-
+    cy.wait(8000);
     cy.get(connectVegaWalletButton).then((btn) => {
       if (btn.length === 0) {
         cy.log('could not find the button, perhaps already connected');
