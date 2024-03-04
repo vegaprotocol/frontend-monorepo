@@ -1,5 +1,8 @@
 import { truncateByChars } from '@vegaprotocol/utils';
-import { waitForSpinner } from '../../support/common.functions';
+import {
+  setRiskAccepted,
+  waitForSpinner,
+} from '../../support/common.functions';
 import {
   vegaWalletFaucetAssetsWithoutCheck,
   vegaWalletTeardown,
@@ -34,6 +37,7 @@ context(
   () => {
     before('visit token home page', () => {
       cy.visit('/');
+      setRiskAccepted();
       cy.get(walletContainer, { timeout: 60000 }).should('be.visible');
     });
 
