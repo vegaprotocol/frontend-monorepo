@@ -149,38 +149,6 @@ describe('generateEpochAssetRewardsList', () => {
                         amount: '0',
                       },
                     ],
-                    [
-                      AccountType.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES,
-                      {
-                        rewardType:
-                          AccountType.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES,
-                        amount: '0',
-                      },
-                    ],
-                    [
-                      AccountType.ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES,
-                      {
-                        rewardType:
-                          AccountType.ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES,
-                        amount: '0',
-                      },
-                    ],
-                    [
-                      AccountType.ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES,
-                      {
-                        rewardType:
-                          AccountType.ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES,
-                        amount: '0',
-                      },
-                    ],
-                    [
-                      AccountType.ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS,
-                      {
-                        rewardType:
-                          AccountType.ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS,
-                        amount: '0',
-                      },
-                    ],
                   ]),
                   totalAmount: '123',
                 },
@@ -291,40 +259,8 @@ describe('generateEpochAssetRewardsList', () => {
                         amount: '100',
                       },
                     ],
-                    [
-                      AccountType.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES,
-                      {
-                        rewardType:
-                          AccountType.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES,
-                        amount: '123',
-                      },
-                    ],
-                    [
-                      AccountType.ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES,
-                      {
-                        rewardType:
-                          AccountType.ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES,
-                        amount: '0',
-                      },
-                    ],
-                    [
-                      AccountType.ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES,
-                      {
-                        rewardType:
-                          AccountType.ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES,
-                        amount: '0',
-                      },
-                    ],
-                    [
-                      AccountType.ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS,
-                      {
-                        rewardType:
-                          AccountType.ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS,
-                        amount: '0',
-                      },
-                    ],
                   ]),
-                  totalAmount: '223',
+                  totalAmount: '100',
                 },
               ],
             ]),
@@ -334,66 +270,7 @@ describe('generateEpochAssetRewardsList', () => {
           '2',
           {
             epoch: 2,
-            assetRewards: new Map([
-              [
-                '1',
-                {
-                  assetId: '1',
-                  decimals: 18,
-                  name: 'Asset 1',
-                  rewards: new Map([
-                    [
-                      AccountType.ACCOUNT_TYPE_GLOBAL_REWARD,
-                      {
-                        rewardType: AccountType.ACCOUNT_TYPE_GLOBAL_REWARD,
-                        amount: '0',
-                      },
-                    ],
-                    [
-                      AccountType.ACCOUNT_TYPE_FEES_INFRASTRUCTURE,
-                      {
-                        rewardType:
-                          AccountType.ACCOUNT_TYPE_FEES_INFRASTRUCTURE,
-                        amount: '0',
-                      },
-                    ],
-                    [
-                      AccountType.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES,
-                      {
-                        rewardType:
-                          AccountType.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES,
-                        amount: '0',
-                      },
-                    ],
-                    [
-                      AccountType.ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES,
-                      {
-                        rewardType:
-                          AccountType.ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES,
-                        amount: '0',
-                      },
-                    ],
-                    [
-                      AccountType.ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES,
-                      {
-                        rewardType:
-                          AccountType.ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES,
-                        amount: '5',
-                      },
-                    ],
-                    [
-                      AccountType.ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS,
-                      {
-                        rewardType:
-                          AccountType.ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS,
-                        amount: '0',
-                      },
-                    ],
-                  ]),
-                  totalAmount: '5',
-                },
-              ],
-            ]),
+            assetRewards: new Map(),
           },
         ],
       ])
@@ -489,66 +366,7 @@ describe('generateEpochAssetRewardsList', () => {
           '2',
           {
             epoch: 2,
-            assetRewards: new Map([
-              [
-                '1',
-                {
-                  assetId: '1',
-                  name: 'Asset 1',
-                  decimals: 18,
-                  rewards: new Map([
-                    [
-                      AccountType.ACCOUNT_TYPE_GLOBAL_REWARD,
-                      {
-                        rewardType: AccountType.ACCOUNT_TYPE_GLOBAL_REWARD,
-                        amount: '0',
-                      },
-                    ],
-                    [
-                      AccountType.ACCOUNT_TYPE_FEES_INFRASTRUCTURE,
-                      {
-                        rewardType:
-                          AccountType.ACCOUNT_TYPE_FEES_INFRASTRUCTURE,
-                        amount: '0',
-                      },
-                    ],
-                    [
-                      AccountType.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES,
-                      {
-                        rewardType:
-                          AccountType.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES,
-                        amount: '0',
-                      },
-                    ],
-                    [
-                      AccountType.ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES,
-                      {
-                        rewardType:
-                          AccountType.ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES,
-                        amount: '0',
-                      },
-                    ],
-                    [
-                      AccountType.ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES,
-                      {
-                        rewardType:
-                          AccountType.ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES,
-                        amount: '33',
-                      },
-                    ],
-                    [
-                      AccountType.ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS,
-                      {
-                        rewardType:
-                          AccountType.ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS,
-                        amount: '0',
-                      },
-                    ],
-                  ]),
-                  totalAmount: '33',
-                },
-              ],
-            ]),
+            assetRewards: new Map(),
           },
         ],
         [
@@ -576,38 +394,6 @@ describe('generateEpochAssetRewardsList', () => {
                         rewardType:
                           AccountType.ACCOUNT_TYPE_FEES_INFRASTRUCTURE,
                         amount: '15',
-                      },
-                    ],
-                    [
-                      AccountType.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES,
-                      {
-                        rewardType:
-                          AccountType.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES,
-                        amount: '0',
-                      },
-                    ],
-                    [
-                      AccountType.ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES,
-                      {
-                        rewardType:
-                          AccountType.ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES,
-                        amount: '0',
-                      },
-                    ],
-                    [
-                      AccountType.ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES,
-                      {
-                        rewardType:
-                          AccountType.ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES,
-                        amount: '0',
-                      },
-                    ],
-                    [
-                      AccountType.ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS,
-                      {
-                        rewardType:
-                          AccountType.ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS,
-                        amount: '0',
                       },
                     ],
                   ]),
@@ -656,40 +442,8 @@ describe('generateEpochAssetRewardsList', () => {
                         amount: '100',
                       },
                     ],
-                    [
-                      AccountType.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES,
-                      {
-                        rewardType:
-                          AccountType.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES,
-                        amount: '123',
-                      },
-                    ],
-                    [
-                      AccountType.ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES,
-                      {
-                        rewardType:
-                          AccountType.ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES,
-                        amount: '0',
-                      },
-                    ],
-                    [
-                      AccountType.ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES,
-                      {
-                        rewardType:
-                          AccountType.ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES,
-                        amount: '0',
-                      },
-                    ],
-                    [
-                      AccountType.ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS,
-                      {
-                        rewardType:
-                          AccountType.ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS,
-                        amount: '0',
-                      },
-                    ],
                   ]),
-                  totalAmount: '223',
+                  totalAmount: '100',
                 },
               ],
             ]),

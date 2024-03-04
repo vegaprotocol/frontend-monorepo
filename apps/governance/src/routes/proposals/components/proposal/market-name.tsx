@@ -1,6 +1,13 @@
 import { useMarketInfoQuery } from '@vegaprotocol/markets';
+import { truncateMiddle } from '@vegaprotocol/ui-toolkit';
 
-export const MarketName = ({ marketId }: { marketId?: string }) => {
+export const MarketName = ({
+  marketId,
+  truncate,
+}: {
+  marketId?: string;
+  truncate?: boolean;
+}) => {
   const { data } = useMarketInfoQuery({
     variables: {
       marketId: marketId || '',
@@ -8,7 +15,7 @@ export const MarketName = ({ marketId }: { marketId?: string }) => {
     skip: !marketId,
   });
 
-  return (
-    <span>{data?.market?.tradableInstrument.instrument.code || marketId}</span>
-  );
+  const id = truncate ? truncateMiddle(marketId || '') : marketId;
+
+  return <span>{data?.market?.tradableInstrument.instrument.code || id}</span>;
 };

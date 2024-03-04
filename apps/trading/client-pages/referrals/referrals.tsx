@@ -9,7 +9,7 @@ import { TiersContainer } from './tiers';
 import { TabLink } from './buttons';
 import { Outlet, useMatch } from 'react-router-dom';
 import { Routes } from '../../lib/links';
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useReferral } from './hooks/use-referral';
 import { REFERRAL_DOCS_LINK } from './constants';
 import classNames from 'classnames';

@@ -3,7 +3,7 @@ import { Intent, useToasts } from '@vegaprotocol/ui-toolkit';
 import { useTelemetryApproval } from '../../lib/hooks/use-telemetry-approval';
 import { useCallback, useEffect } from 'react';
 import { TelemetryApproval } from './telemetry-approval';
-import { useOnboardingStore } from '../welcome-dialog/use-get-onboarding-step';
+import { useOnboardingStore } from '../../stores/onboarding';
 import { useT } from '../../lib/use-t';
 
 const TELEMETRY_APPROVAL_TOAST_ID = 'telemetry_toast_id';

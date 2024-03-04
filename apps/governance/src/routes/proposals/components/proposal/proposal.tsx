@@ -23,7 +23,7 @@ export interface ProposalProps {
 
 export const Proposal = ({ proposal, restData }: ProposalProps) => {
   const { t } = useTranslation();
-  const { submit, Dialog, finalizedVote, transaction } = useVoteSubmit();
+  const { submit, finalizedVote, transaction } = useVoteSubmit();
   const { voteState, voteDatetime } = useUserVote(proposal?.id, finalizedVote);
 
   return (
@@ -60,7 +60,7 @@ export const Proposal = ({ proposal, restData }: ProposalProps) => {
         <ProposalDescription description={proposal.rationale.description} />
       </div>
 
-      <div className="mb-4">
+      <div className="mb-4 flex flex-col gap-0">
         {proposal.__typename === 'Proposal' ? (
           <ProposalChangeDetails
             proposal={proposal}
@@ -88,7 +88,6 @@ export const Proposal = ({ proposal, restData }: ProposalProps) => {
           <UserVote
             proposal={proposal}
             submit={submit}
-            dialog={Dialog}
             transaction={transaction}
             voteState={voteState}
             voteDatetime={voteDatetime}

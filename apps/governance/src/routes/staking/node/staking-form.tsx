@@ -3,7 +3,6 @@ import * as Sentry from '@sentry/react';
 import React, { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { ENV } from '../../../config';
 import { usePartyDelegationsLazyQuery } from './__generated__/PartyDelegations';
 import { TokenInput } from '../../../components/token-input';
 import { useAppState } from '../../../contexts/app-state/app-state-context';
@@ -28,11 +27,11 @@ import {
   NetworkParams,
 } from '@vegaprotocol/network-parameters';
 import { useBalances } from '../../../lib/balances/balances-store';
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { SubHeading } from '../../../components/heading';
-import type {
-  DelegateSubmissionBody,
-  UndelegateSubmissionBody,
+import {
+  type DelegateSubmissionBody,
+  type UndelegateSubmissionBody,
 } from '@vegaprotocol/wallet';
 import Routes from '../../routes';
 
@@ -79,7 +78,6 @@ export const StakingForm = ({
   const [error, setError] = useState<Error | null>(null);
   const [isDialogVisible, setIsDialogVisible] = useState(false);
   const { t } = useTranslation();
-  const { delegationsPagination } = ENV;
   const [action, setAction] = React.useState<StakeAction>(
     params.action as StakeAction
   );
@@ -154,11 +152,9 @@ export const StakingForm = ({
   const [delegationSearch, { data }] = usePartyDelegationsLazyQuery({
     variables: {
       partyId: pubKey,
-      delegationsPagination: delegationsPagination
-        ? {
-            first: Number(delegationsPagination),
-          }
-        : undefined,
+      delegationsPagination: {
+        first: 50,
+      },
     },
     fetchPolicy: 'network-only',
   });

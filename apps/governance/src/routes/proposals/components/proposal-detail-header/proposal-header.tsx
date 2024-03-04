@@ -36,8 +36,8 @@ import { type Proposal, type BatchProposal } from '../../types';
 import { type ProposalTermsFieldsFragment } from '../../__generated__/Proposals';
 import { differenceInHours, format, formatDistanceToNowStrict } from 'date-fns';
 import { DATE_FORMAT_DETAILED } from '../../../../lib/date-formats';
-import { getIndicatorStyle } from '../proposal/colours';
 import { MarketName } from '../proposal/market-name';
+import { Indicator } from '../proposal/indicator';
 
 const ProposalTypeTags = ({
   proposal,
@@ -54,11 +54,8 @@ const ProposalTypeTags = ({
 
   if (proposal.__typename === 'BatchProposal') {
     return (
-      <div data-testid="proposal-type" className="flex gap-1">
-        {proposal.subProposals?.map((subProposal, i) => {
-          if (!subProposal?.terms) return null;
-          return <ProposalTypeTag key={i} terms={subProposal.terms} />;
-        })}
+      <div data-testid="proposal-type">
+        <ProposalInfoLabel variant="secondary">BatchProposal</ProposalInfoLabel>
       </div>
     );
   }
@@ -253,7 +250,7 @@ const ProposalDetails = ({
             }}
             components={{
               // @ts-ignore children passed by i18next
-              lozenge: <Lozenge />,
+              lozenge: <Lozenge className="text-xs" />,
             }}
           />
         );
@@ -315,8 +312,11 @@ const ProposalDetails = ({
           {proposal.subProposals.map((p, i) => {
             if (!p?.terms) return null;
             return (
-              <li key={i} className="flex gap-3">
-                <span className={getIndicatorStyle(i + 1)}>{i + 1}</span>
+              <li
+                key={i}
+                className="grid grid-cols-[40px_minmax(0,1fr)] grid-rows-1 gap-3 items-center"
+              >
+                <Indicator indicator={i + 1} />
                 <span>
                   <div>{renderDetails(p.terms)}</div>
                   <SubProposalStateText

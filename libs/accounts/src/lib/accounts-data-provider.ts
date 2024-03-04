@@ -217,7 +217,7 @@ export const aggregatedAccountDataProvider = makeDerivedDataProvider<
     ) || null
 );
 
-export const useAccounts = (partyId: string | null) => {
+export const useAccounts = (partyId: string | undefined) => {
   return useDataProvider({
     dataProvider: accountsDataProvider,
     variables: {

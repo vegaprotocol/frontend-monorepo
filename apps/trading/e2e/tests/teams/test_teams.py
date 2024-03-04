@@ -52,8 +52,25 @@ def setup_teams_and_games(vega: VegaServiceNull):
     vega.update_network_parameter(
         MM_WALLET.name, parameter="reward.asset", new_value=tDAI_asset_id
     )
+    
 
     next_epoch(vega=vega)
+    vega.create_asset(
+            MM_WALLET.name,
+            name="VEGA",
+            symbol="VEGA",
+            decimals=5,
+            max_faucet_amount=1e10,
+            quantum=100000, 
+        )
+    
+    vega.wait_fn(1)
+    vega.wait_for_total_catchup()
+    VEGA_asset_id = vega.find_asset_id(symbol="VEGA")
+    vega.mint(PARTY_A.name, VEGA_asset_id, 1e5)
+    vega.mint(PARTY_B.name, VEGA_asset_id, 1e5)
+    vega.wait_fn(1)
+    vega.wait_for_total_catchup()
     team_name = create_team(vega)
 
     next_epoch(vega)
@@ -101,7 +118,7 @@ def setup_teams_and_games(vega: VegaServiceNull):
         from_key_name=PARTY_A.name,
         from_account_type=vega_protos.vega.ACCOUNT_TYPE_GENERAL,
         to_account_type=vega_protos.vega.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES,
-        asset=tDAI_asset_id,
+        asset=VEGA_asset_id,
         reference="reward",
         asset_for_metric=tDAI_asset_id,
         metric=vega_protos.vega.DISPATCH_METRIC_MAKER_FEES_PAID,
@@ -119,7 +136,7 @@ def setup_teams_and_games(vega: VegaServiceNull):
         from_key_name=PARTY_B.name,
         from_account_type=vega_protos.vega.ACCOUNT_TYPE_GENERAL,
         to_account_type=vega_protos.vega.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES,
-        asset=tDAI_asset_id,
+        asset=VEGA_asset_id,
         reference="reward",
         asset_for_metric=tDAI_asset_id,
         metric=vega_protos.vega.DISPATCH_METRIC_MAKER_FEES_PAID,
@@ -288,6 +305,7 @@ def test_game_card(competitions_page: Page):
     expect(game_1.get_by_test_id("entity-scope")).to_have_text("Individual")
     expect(game_1.get_by_test_id("locked-for")).to_have_text("1 epoch")
     expect(game_1.get_by_test_id("reward-value")).to_have_text("100.00")
+    expect(game_1.get_by_test_id("reward-asset")).to_have_text("VEGA")
     expect(game_1.get_by_test_id("distribution-strategy")).to_have_text("Pro rata")
     expect(game_1.get_by_test_id("dispatch-metric-info")).to_have_text(
         "Price maker fees paid • tDAI"

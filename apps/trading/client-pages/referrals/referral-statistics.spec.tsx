@@ -1,9 +1,5 @@
 import { MockedProvider, type MockedResponse } from '@apollo/react-testing';
 import { render, screen, waitFor } from '@testing-library/react';
-import {
-  VegaWalletContext,
-  type VegaWalletContextShape,
-} from '@vegaprotocol/wallet';
 import { ReferralStatistics } from './referral-statistics';
 import {
   ReferralProgramDocument,
@@ -25,9 +21,22 @@ import {
   type RefereesQuery,
 } from './hooks/__generated__/Referees';
 import { MemoryRouter } from 'react-router-dom';
+import {
+  mockConfig,
+  MockedWalletProvider,
+} from '@vegaprotocol/wallet-react/testing';
 
-const MOCK_PUBKEY =
-  '1234567890123456789012345678901234567890123456789012345678901234';
+const mockKeys = [
+  {
+    name: 'Key 1',
+    publicKey: '1'.repeat(64),
+  },
+  {
+    name: 'Key 2',
+    publicKey: '2'.repeat(64),
+  },
+];
+const MOCK_PUBKEY = mockKeys[0].publicKey;
 
 const MOCK_STAKE_AVAILABLE: StakeAvailableQuery = {
   networkParameter: {
@@ -301,22 +310,28 @@ const refereesMock30: MockedResponse<RefereesQuery, RefereesQueryVariables> = {
 
 describe('ReferralStatistics', () => {
   const renderComponent = (mocks: MockedResponse[]) => {
-    const walletContext = {
-      pubKey: MOCK_PUBKEY,
-      isReadOnly: false,
-      sendTx: jest.fn(),
-    } as unknown as VegaWalletContextShape;
-
     return render(
       <MemoryRouter>
-        <VegaWalletContext.Provider value={walletContext}>
-          <MockedProvider mocks={mocks} showWarnings={false}>
+        <MockedProvider mocks={mocks} showWarnings={false}>
+          <MockedWalletProvider>
             <ReferralStatistics />
-          </MockedProvider>
-        </VegaWalletContext.Provider>
+          </MockedWalletProvider>
+        </MockedProvider>
       </MemoryRouter>
     );
   };
+
+  beforeAll(() => {
+    mockConfig.store.setState({
+      status: 'connected',
+      keys: mockKeys,
+      pubKey: mockKeys[0].publicKey,
+    });
+  });
+
+  afterAll(() => {
+    mockConfig.reset();
+  });
 
   it('displays apply code when no data has been found for given pubkey', () => {
     renderComponent([]);

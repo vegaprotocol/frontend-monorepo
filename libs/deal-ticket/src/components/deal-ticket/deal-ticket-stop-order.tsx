@@ -1,5 +1,5 @@
 import { useRef, useCallback, useEffect } from 'react';
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import {
   type OrderSubmissionBody,
   type StopOrdersSubmission,

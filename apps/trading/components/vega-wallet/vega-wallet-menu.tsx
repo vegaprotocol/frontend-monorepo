@@ -5,7 +5,8 @@ import {
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 import { truncateByChars } from '@vegaprotocol/utils';
-import { useVegaWallet, type PubKey } from '@vegaprotocol/wallet';
+import { type Key } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useCallback, useMemo } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { ViewType, useSidebar } from '../sidebar';
@@ -73,7 +74,7 @@ const KeypairListItem = ({
   isActive,
   onSelectItem,
 }: {
-  pk: PubKey;
+  pk: Key;
   isActive: boolean;
   onSelectItem: (pk: string) => void;
 }) => {

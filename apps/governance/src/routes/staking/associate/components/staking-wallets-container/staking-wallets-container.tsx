@@ -2,7 +2,7 @@ import { useWeb3React } from '@web3-react/core';
 import { useTranslation } from 'react-i18next';
 
 import { EthConnectPrompt } from '../../../../../components/eth-connect-prompt';
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { ConnectToVega } from '../../../../../components/connect-to-vega';
 
 export const StakingWalletsContainer = ({

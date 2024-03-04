@@ -15,7 +15,8 @@ import {
   type VoteFieldsFragment,
 } from '../../__generated__/Proposals';
 import { useBatchVoteInformation } from '../../hooks/use-vote-information';
-import { getIndicatorStyle } from '../proposal/colours';
+import { MarketName } from '../proposal/market-name';
+import { Indicator } from '../proposal/indicator';
 
 export const CompactVotes = ({ number }: { number: BigNumber }) => (
   <CompactNumber
@@ -40,8 +41,9 @@ const VoteProgress = ({
   children,
 }: VoteProgressProps) => {
   const containerClasses = classNames(
-    'relative h-10 rounded-md border border-vega-dark-300 overflow-hidden',
-    colourfulBg ? 'bg-vega-pink' : 'bg-vega-dark-400'
+    'relative h-2 rounded-md overflow-hidden',
+    // 'border border-vega-dark-300',
+    colourfulBg ? 'bg-vega-red' : 'bg-vega-dark-200'
   );
 
   const progressClasses = classNames(
@@ -50,17 +52,19 @@ const VoteProgress = ({
   );
 
   const textClasses = classNames(
-    'absolute top-0 left-0 w-full h-full flex items-center justify-start px-3 text-black'
+    'w-full flex items-center justify-start text-white text-sm pb-1'
   );
 
   return (
-    <div className={containerClasses}>
-      <div
-        className={progressClasses}
-        style={{ width: `${percentageFor}%` }}
-        data-testid={testId}
-      />
+    <div>
       <div className={textClasses}>{children}</div>
+      <div className={containerClasses}>
+        <div
+          className={progressClasses}
+          style={{ width: `${percentageFor}%` }}
+          data-testid={testId}
+        />
+      </div>
     </div>
   );
 };
@@ -79,14 +83,22 @@ const Status = ({ reached, threshold, text, testId }: StatusProps) => {
     <div data-testid={testId}>
       {reached ? (
         <div className="flex items-center gap-2">
-          <VegaIcon name={VegaIconNames.TICK} size={20} />
+          <VegaIcon
+            name={VegaIconNames.TICK}
+            className="text-vega-green"
+            size={20}
+          />
           <span>
             {threshold.toString()}% {text} {t('met')}
           </span>
         </div>
       ) : (
         <div className="flex items-center gap-2">
-          <VegaIcon name={VegaIconNames.CROSS} size={20} />
+          <VegaIcon
+            name={VegaIconNames.CROSS}
+            className="text-vega-red"
+            size={20}
+          />
           <span>
             {threshold.toString()}% {text} {t('not met')}
           </span>
@@ -152,7 +164,7 @@ const VoteBreakdownBatch = ({ proposal }: { proposal: BatchProposal }) => {
             <p className="flex gap-2 m-0 items-center">
               <VegaIcon
                 name={VegaIconNames.CROSS}
-                className="text-vega-pink"
+                className="text-vega-red"
                 size={20}
               />
               {t(
@@ -215,7 +227,7 @@ const VoteBreakdownBatch = ({ proposal }: { proposal: BatchProposal }) => {
             <p className="flex gap-2 m-0 items-center">
               <VegaIcon
                 name={VegaIconNames.CROSS}
-                className="text-vega-pink"
+                className="text-vega-red"
                 size={20}
               />
               {t('Proposal failed: {{count}} of {{total}} proposals passed', {
@@ -237,6 +249,7 @@ const VoteBreakdownBatch = ({ proposal }: { proposal: BatchProposal }) => {
               if (!p?.terms) return null;
               return (
                 <VoteBreakdownBatchSubProposal
+                  indicator={i + 1}
                   key={i}
                   proposal={proposal}
                   votes={proposal.votes}
@@ -273,21 +286,37 @@ const VoteBreakdownBatchSubProposal = ({
   const isProposalOpen = proposal?.state === ProposalState.STATE_OPEN;
   const isUpdateMarket = terms?.change?.__typename === 'UpdateMarket';
 
-  const indicatorElement = indicator && (
-    <span className={getIndicatorStyle(indicator)}>{indicator}</span>
-  );
+  let marketId = undefined;
+  if (terms?.change?.__typename === 'UpdateMarket') {
+    marketId = terms.change.marketId;
+  }
+  if (terms?.change?.__typename === 'UpdateMarketState') {
+    marketId = terms.change.market.id;
+  }
+
+  const marketName = marketId ? (
+    <>
+      : <MarketName marketId={marketId} />
+    </>
+  ) : null;
+
+  const indicatorElement = indicator && <Indicator indicator={indicator} />;
 
   return (
-    <div>
-      <div className="flex items-baseline gap-3">
+    <div className="mb-6">
+      <div className="flex items-center gap-3 mb-3">
         {indicatorElement}
-        <h4>{t(terms.change.__typename)}</h4>
+        <h4>
+          {t(terms.change.__typename)} {marketName}
+        </h4>
       </div>
-      <VoteBreakDownUI
-        voteInfo={voteInfo}
-        isProposalOpen={isProposalOpen}
-        isUpdateMarket={isUpdateMarket}
-      />
+      <div className="rounded-sm bg-vega-dark-100 p-3">
+        <VoteBreakDownUI
+          voteInfo={voteInfo}
+          isProposalOpen={isProposalOpen}
+          isUpdateMarket={isUpdateMarket}
+        />
+      </div>
     </div>
   );
 };
@@ -302,11 +331,13 @@ const VoteBreakdownNormal = ({ proposal }: { proposal: Proposal }) => {
   const isUpdateMarket = proposal?.terms?.change?.__typename === 'UpdateMarket';
 
   return (
-    <VoteBreakDownUI
-      voteInfo={voteInfo}
-      isProposalOpen={isProposalOpen}
-      isUpdateMarket={isUpdateMarket}
-    />
+    <div className="mb-6">
+      <VoteBreakDownUI
+        voteInfo={voteInfo}
+        isProposalOpen={isProposalOpen}
+        isUpdateMarket={isUpdateMarket}
+      />
+    </div>
   );
 };
 
@@ -370,13 +401,13 @@ const VoteBreakDownUI = ({
     'flex justify-between flex-wrap gap-6'
   );
   const sectionClasses = classNames('min-w-[300px] flex-1 flex-grow');
-  const headingClasses = classNames('mb-2 text-vega-dark-400');
+  const headingClasses = classNames('mb-2 text-sm text-white font-bold');
   const progressDetailsClasses = classNames(
     'flex justify-between flex-wrap mt-2 text-sm'
   );
 
   return (
-    <div className="mb-6">
+    <div>
       {isProposalOpen && (
         <div
           data-testid="vote-status"
@@ -393,7 +424,7 @@ const VoteBreakDownUI = ({
               <VegaIcon
                 name={VegaIconNames.CROSS}
                 size={20}
-                className="text-vega-pink"
+                className="text-vega-red"
               />
             )}
           </span>
@@ -409,100 +440,10 @@ const VoteBreakDownUI = ({
             <p className="m-0">
               <Trans
                 i18nKey={'Currently expected to <0>fail</0>'}
-                components={[<span className="text-vega-pink" />]}
+                components={[<span className="text-vega-red" />]}
               />
             </p>
           )}
-        </div>
-      )}
-
-      {isUpdateMarket && (
-        <div className="mb-4">
-          <h3 className={headingClasses}>{t('liquidityProviderVote')}</h3>
-          <div className={sectionWrapperClasses}>
-            <section
-              className={sectionClasses}
-              data-testid="lp-majority-breakdown"
-            >
-              <VoteProgress
-                percentageFor={lpVoteWeight}
-                colourfulBg={true}
-                testId="lp-majority-progress"
-              >
-                <Status
-                  reached={majorityLPMet}
-                  threshold={requiredMajorityLPPercentage}
-                  text={t('majorityThreshold')}
-                  testId={
-                    majorityLPMet ? 'lp-majority-met' : 'lp-majority-not-met'
-                  }
-                />
-              </VoteProgress>
-
-              <div className={progressDetailsClasses}>
-                <div className="flex items-center gap-1">
-                  <span>{t('liquidityProviderVotesFor')}:</span>
-                  <Tooltip
-                    description={
-                      <span>{lpVoteWeight.toFixed(defaultDP)}%</span>
-                    }
-                  >
-                    <button>{lpVoteWeight.toFixed(1)}%</button>
-                  </Tooltip>
-                </div>
-
-                <div className="flex items-center gap-1">
-                  <span>{t('liquidityProviderVotesAgainst')}:</span>
-                  <span>
-                    <Tooltip
-                      description={
-                        <span>{noLPPercentage.toFixed(defaultDP)}%</span>
-                      }
-                    >
-                      <button>{noLPPercentage.toFixed(1)}%</button>
-                    </Tooltip>
-                  </span>
-                </div>
-              </div>
-            </section>
-
-            <section
-              className={sectionClasses}
-              data-testid="lp-participation-breakdown"
-            >
-              <VoteProgress
-                percentageFor={
-                  lpParticipationThresholdProgress || new BigNumber(0)
-                }
-                testId="lp-participation-progress"
-              >
-                <Status
-                  reached={participationLPMet}
-                  threshold={requiredParticipationLP || new BigNumber(1)}
-                  text={t('participationThreshold')}
-                  testId={
-                    participationLPMet
-                      ? 'lp-participation-met'
-                      : 'lp-participation-not-met'
-                  }
-                />
-              </VoteProgress>
-
-              <div className="flex mt-2 text-sm">
-                <div className="flex items-center gap-1">
-                  <span>{t('totalLiquidityProviderTokensVoted')}:</span>
-                  <Tooltip
-                    description={formatNumber(
-                      totalEquityLikeShareWeight,
-                      defaultDP
-                    )}
-                  >
-                    <span>{totalEquityLikeShareWeight.toFixed(1)}%</span>
-                  </Tooltip>
-                </div>
-              </div>
-            </section>
-          </div>
         </div>
       )}
 
@@ -605,6 +546,97 @@ const VoteBreakDownUI = ({
           </div>
         </section>
       </div>
+
+      {/** Liquidity provider vote */}
+      {isUpdateMarket && (
+        <div className="mt-3">
+          <h3 className={headingClasses}>{t('liquidityProviderVote')}</h3>
+          <div className={sectionWrapperClasses}>
+            <section
+              className={sectionClasses}
+              data-testid="lp-majority-breakdown"
+            >
+              <VoteProgress
+                percentageFor={lpVoteWeight}
+                colourfulBg={true}
+                testId="lp-majority-progress"
+              >
+                <Status
+                  reached={majorityLPMet}
+                  threshold={requiredMajorityLPPercentage}
+                  text={t('majorityThreshold')}
+                  testId={
+                    majorityLPMet ? 'lp-majority-met' : 'lp-majority-not-met'
+                  }
+                />
+              </VoteProgress>
+
+              <div className={progressDetailsClasses}>
+                <div className="flex items-center gap-1">
+                  <span>{t('liquidityProviderVotesFor')}:</span>
+                  <Tooltip
+                    description={
+                      <span>{lpVoteWeight.toFixed(defaultDP)}%</span>
+                    }
+                  >
+                    <button>{lpVoteWeight.toFixed(1)}%</button>
+                  </Tooltip>
+                </div>
+
+                <div className="flex items-center gap-1">
+                  <span>{t('liquidityProviderVotesAgainst')}:</span>
+                  <span>
+                    <Tooltip
+                      description={
+                        <span>{noLPPercentage.toFixed(defaultDP)}%</span>
+                      }
+                    >
+                      <button>{noLPPercentage.toFixed(1)}%</button>
+                    </Tooltip>
+                  </span>
+                </div>
+              </div>
+            </section>
+
+            <section
+              className={sectionClasses}
+              data-testid="lp-participation-breakdown"
+            >
+              <VoteProgress
+                percentageFor={
+                  lpParticipationThresholdProgress || new BigNumber(0)
+                }
+                testId="lp-participation-progress"
+              >
+                <Status
+                  reached={participationLPMet}
+                  threshold={requiredParticipationLP || new BigNumber(1)}
+                  text={t('participationThreshold')}
+                  testId={
+                    participationLPMet
+                      ? 'lp-participation-met'
+                      : 'lp-participation-not-met'
+                  }
+                />
+              </VoteProgress>
+
+              <div className="flex mt-2 text-sm">
+                <div className="flex items-center gap-1">
+                  <span>{t('totalLiquidityProviderTokensVoted')}:</span>
+                  <Tooltip
+                    description={formatNumber(
+                      totalEquityLikeShareWeight,
+                      defaultDP
+                    )}
+                  >
+                    <span>{totalEquityLikeShareWeight.toFixed(1)}%</span>
+                  </Tooltip>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -1,9 +1,8 @@
 import {
-  useSimpleTransaction,
-  type Options,
   type CreateReferralSet,
   type UpdateReferralSet,
 } from '@vegaprotocol/wallet';
+import { useSimpleTransaction, type Options } from '@vegaprotocol/wallet-react';
 import { useStakeAvailable } from './use-stake-available';
 
 /**

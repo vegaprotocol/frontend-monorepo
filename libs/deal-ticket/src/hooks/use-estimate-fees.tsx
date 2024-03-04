@@ -1,4 +1,4 @@
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
 
 import type { EstimateFeesQuery } from './__generated__/EstimateOrder';

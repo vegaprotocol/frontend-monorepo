@@ -31,7 +31,7 @@ import { TeamStats } from '../../components/competitions/team-stats';
 import { usePageTitle } from '../../lib/hooks/use-page-title';
 import { ErrorBoundary } from '../../components/error-boundary';
 import { LayoutWithGradient } from '../../components/layouts-inner';
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { JoinTeam } from './join-team';
 import { UpdateTeamButton } from './update-team-button';
 import {

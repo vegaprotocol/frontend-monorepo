@@ -1,7 +1,6 @@
 import './i18n';
 
 import React, { useEffect } from 'react';
-import * as Sentry from '@sentry/react';
 import { BrowserRouter as Router, useLocation } from 'react-router-dom';
 import { AppLoader } from './app-loader';
 import { NetworkInfo } from '@vegaprotocol/network-info';
@@ -26,7 +25,7 @@ import {
 } from '@vegaprotocol/web3';
 import { Web3Provider } from '@vegaprotocol/web3';
 import { VegaWalletDialogs } from './components/vega-wallet-dialogs';
-import { VegaWalletProvider, useChainId } from '@vegaprotocol/wallet';
+import { WalletProvider } from '@vegaprotocol/wallet-react';
 import {
   useVegaTransactionManager,
   useVegaTransactionUpdater,
@@ -36,26 +35,21 @@ import { useEthereumConfig } from '@vegaprotocol/web3';
 import {
   useEnvironment,
   NetworkLoader,
-  useInitializeEnv,
   NodeGuard,
   NodeSwitcherDialog,
   useNodeSwitcherStore,
-  DocsLinks,
   NodeFailure,
   AppLoader as Loader,
+  useInitializeEnv,
 } from '@vegaprotocol/environment';
-import { ENV } from './config';
 import type { InMemoryCacheConfig } from '@apollo/client';
 import { CreateWithdrawalDialog } from '@vegaprotocol/withdraws';
 import { SplashLoader } from './components/splash-loader';
 import { ToastsManager } from './toasts-manager';
-import {
-  TelemetryDialog,
-  TELEMETRY_ON,
-} from './components/telemetry-dialog/telemetry-dialog';
-import { useLocalStorage } from '@vegaprotocol/react-helpers';
+import { TelemetryDialog } from './components/telemetry-dialog/telemetry-dialog';
 import { useTranslation } from 'react-i18next';
-import { isPartyNotFoundError } from './lib/party';
+import { useSentryInit } from './hooks/use-sentry-init';
+import { useVegaWalletConfig } from './hooks/use-vega-wallet-config';
 
 const cache: InMemoryCacheConfig = {
   typePolicies: {
@@ -104,32 +98,12 @@ const Web3Container = ({
   /** Ethereum provider url */
   providerUrl: string;
 }) => {
-  const InitializeHandlers = () => {
-    useVegaTransactionManager();
-    useVegaTransactionUpdater();
-    useEthTransactionManager();
-    useEthTransactionUpdater();
-    useEthWithdrawApprovalsManager();
-    return null;
-  };
-
   const [connectors, initializeConnectors] = useWeb3ConnectStore((store) => [
     store.connectors,
     store.initialize,
   ]);
-  const {
-    ETHEREUM_PROVIDER_URL,
-    ETH_LOCAL_PROVIDER_URL,
-    ETH_WALLET_MNEMONIC,
-    VEGA_ENV,
-    VEGA_URL,
-    VEGA_EXPLORER_URL,
-    CHROME_EXTENSION_URL,
-    MOZILLA_EXTENSION_URL,
-    VEGA_WALLET_URL,
-  } = useEnvironment();
-
-  const vegaChainId = useChainId(VEGA_URL);
+  const { ETHEREUM_PROVIDER_URL, ETH_LOCAL_PROVIDER_URL, ETH_WALLET_MNEMONIC } =
+    useEnvironment();
 
   useEffect(() => {
     if (chainId) {
@@ -150,50 +124,31 @@ const Web3Container = ({
     ETH_LOCAL_PROVIDER_URL,
     ETH_WALLET_MNEMONIC,
   ]);
-  const sideBar = React.useMemo(() => {
-    return [<EthWallet />, <VegaWallet />];
-  }, []);
 
-  if (connectors.length === 0) {
+  const vegaWalletConfig = useVegaWalletConfig();
+
+  if (!vegaWalletConfig || connectors.length === 0) {
     // Prevent loading when the connectors are not initialized
     return <SplashLoader />;
-  }
-
-  if (
-    !VEGA_URL ||
-    !VEGA_WALLET_URL ||
-    !VEGA_EXPLORER_URL ||
-    !DocsLinks ||
-    !CHROME_EXTENSION_URL ||
-    !MOZILLA_EXTENSION_URL ||
-    !vegaChainId
-  ) {
-    return null;
   }
 
   return (
     <Web3Provider connectors={connectors}>
       <Web3Connector connectors={connectors} chainId={Number(chainId)}>
-        <VegaWalletProvider
-          config={{
-            network: VEGA_ENV,
-            vegaUrl: VEGA_URL,
-            chainId: vegaChainId,
-            vegaWalletServiceUrl: VEGA_WALLET_URL,
-            links: {
-              explorer: VEGA_EXPLORER_URL,
-              concepts: DocsLinks?.VEGA_WALLET_CONCEPTS_URL,
-              chromeExtensionUrl: CHROME_EXTENSION_URL,
-              mozillaExtensionUrl: MOZILLA_EXTENSION_URL,
-            },
-          }}
-        >
+        <WalletProvider config={vegaWalletConfig}>
           <ContractsProvider>
             <AppLoader>
               <BalanceManager>
                 <>
                   <AppLayout>
-                    <TemplateSidebar sidebar={sideBar}>
+                    <TemplateSidebar
+                      sidebar={
+                        <>
+                          <EthWallet />
+                          <VegaWallet />
+                        </>
+                      }
+                    >
                       <AppRouter />
                     </TemplateSidebar>
                     <footer className="p-4 break-all border-t border-neutral-700">
@@ -211,7 +166,7 @@ const Web3Container = ({
               </BalanceManager>
             </AppLoader>
           </ContractsProvider>
-        </VegaWalletProvider>
+        </WalletProvider>
       </Web3Connector>
     </Web3Provider>
   );
@@ -231,20 +186,9 @@ const ScrollToTop = () => {
   return null;
 };
 
-const removeQueryParams = (url: string) => {
-  return url.split('?')[0];
-};
-
 const AppContainer = () => {
   const { config, loading, error } = useEthereumConfig();
-  const {
-    VEGA_ENV,
-    VEGA_URL,
-    GIT_COMMIT_HASH,
-    GIT_BRANCH,
-    ETHEREUM_PROVIDER_URL,
-  } = useEnvironment();
-  const [telemetryOn] = useLocalStorage(TELEMETRY_ON);
+  const { VEGA_URL, ETHEREUM_PROVIDER_URL } = useEnvironment();
   const { t } = useTranslation();
   const [nodeSwitcherOpen, setNodeSwitcher] = useNodeSwitcherStore((store) => [
     store.dialogOpen,
@@ -254,70 +198,7 @@ const AppContainer = () => {
   // Hacky skip all the loading & web3 init for geo restricted users
   const isRestricted = document?.location?.pathname?.includes('/restricted');
 
-  useEffect(() => {
-    if (ENV.dsn && telemetryOn === 'true') {
-      Sentry.init({
-        dsn: ENV.dsn,
-        tracesSampleRate: 0.1,
-        enabled: true,
-        environment: VEGA_ENV,
-        release: GIT_COMMIT_HASH,
-        beforeSend(event, hint) {
-          const error = hint?.originalException;
-          const errorIsString = typeof error === 'string';
-          const errorIsObject = error instanceof Error;
-          const requestUrl = event.request?.url;
-          const transaction = event.transaction;
-
-          if (
-            (errorIsString && isPartyNotFoundError({ message: error })) ||
-            (errorIsObject && isPartyNotFoundError(error))
-          ) {
-            // This error is caused by a pubkey making an API request before
-            // it has interacted with the chain. This isn't needed in Sentry.
-            return null;
-          }
-
-          const updatedRequest =
-            requestUrl && requestUrl.includes('/claim?')
-              ? { ...event.request, url: removeQueryParams(requestUrl) }
-              : event.request;
-
-          const updatedTransaction =
-            transaction && transaction.includes('/claim?')
-              ? removeQueryParams(transaction)
-              : transaction;
-
-          const updatedBreadcrumbs = event.breadcrumbs?.map((breadcrumb) => {
-            if (
-              breadcrumb.type === 'navigation' &&
-              breadcrumb.data?.to?.includes('/claim?')
-            ) {
-              return {
-                ...breadcrumb,
-                data: {
-                  ...breadcrumb.data,
-                  to: removeQueryParams(breadcrumb.data.to),
-                },
-              };
-            }
-            return breadcrumb;
-          });
-
-          return {
-            ...event,
-            request: updatedRequest,
-            transaction: updatedTransaction,
-            breadcrumbs: updatedBreadcrumbs ?? event.breadcrumbs,
-          };
-        },
-      });
-      Sentry.setTag('branch', GIT_BRANCH);
-      Sentry.setTag('commit', GIT_COMMIT_HASH);
-    } else {
-      Sentry.close();
-    }
-  }, [GIT_COMMIT_HASH, GIT_BRANCH, VEGA_ENV, telemetryOn]);
+  useSentryInit();
 
   if (isRestricted) {
     return (
@@ -357,6 +238,15 @@ const AppContainer = () => {
       <NodeSwitcherDialog open={nodeSwitcherOpen} setOpen={setNodeSwitcher} />
     </Router>
   );
+};
+
+const InitializeHandlers = () => {
+  useVegaTransactionManager();
+  useVegaTransactionUpdater();
+  useEthTransactionManager();
+  useEthTransactionUpdater();
+  useEthWithdrawApprovalsManager();
+  return null;
 };
 
 function App() {

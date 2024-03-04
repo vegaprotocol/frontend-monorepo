@@ -1,6 +1,6 @@
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { activeOrdersProvider } from '@vegaprotocol/orders';
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 
 export const PartyActiveOrdersHandler = () => {
   const { pubKey } = useVegaWallet();

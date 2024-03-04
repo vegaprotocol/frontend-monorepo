@@ -1,4 +1,4 @@
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import compact from 'lodash/compact';
 import first from 'lodash/first';
 import { useTeamsQuery } from './__generated__/Teams';

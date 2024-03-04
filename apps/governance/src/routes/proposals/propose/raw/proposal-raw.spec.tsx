@@ -3,8 +3,6 @@ import type { MockedResponse } from '@apollo/client/testing';
 import { addHours, getTime } from 'date-fns';
 import { AppStateProvider } from '../../../../contexts/app-state/app-state-provider';
 import { MockedProvider } from '@apollo/client/testing';
-import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
-import { VegaWalletContext } from '@vegaprotocol/wallet';
 import * as Schema from '@vegaprotocol/types';
 import { ProposeRaw } from './propose-raw';
 import { ProposalEventDocument } from '@vegaprotocol/proposals';
@@ -12,6 +10,11 @@ import type { ProposalEventSubscription } from '@vegaprotocol/proposals';
 
 import type { NetworkParamsQuery } from '@vegaprotocol/network-parameters';
 import { NetworkParamsDocument } from '@vegaprotocol/network-parameters';
+import {
+  MockedWalletProvider,
+  mockConfig,
+} from '@vegaprotocol/wallet-react/testing';
+import { userRejectedError } from '@vegaprotocol/wallet';
 
 const paramsDelay = 20;
 
@@ -103,23 +106,15 @@ describe('Raw proposal form', () => {
     },
     delay: 300,
   };
-  const setup = (mockSendTx = jest.fn()) => {
+  const setup = () => {
     return render(
       <AppStateProvider>
         <MockedProvider
           mocks={[rawProposalNetworkParamsQueryMock, mockProposalEvent]}
         >
-          <VegaWalletContext.Provider
-            value={
-              {
-                pubKey,
-                sendTx: mockSendTx,
-                links: { explorer: 'explorer' },
-              } as unknown as VegaWalletContextShape
-            }
-          >
+          <MockedWalletProvider>
             <ProposeRaw />
-          </VegaWalletContext.Provider>
+          </MockedWalletProvider>
         </MockedProvider>
       </AppStateProvider>
     );
@@ -127,15 +122,22 @@ describe('Raw proposal form', () => {
 
   beforeAll(() => {
     jest.useFakeTimers();
+    mockConfig.store.setState({ status: 'connected', pubKey: '0x123' });
   });
 
   afterAll(() => {
     jest.useRealTimers();
+    mockConfig.reset();
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
   it('handles validation', async () => {
-    const mockSendTx = jest.fn().mockReturnValue(Promise.resolve());
-    setup(mockSendTx);
+    const mockSendTx = jest.spyOn(mockConfig, 'sendTransaction');
+
+    setup();
 
     expect(await screen.findByTestId('proposal-submit')).toBeTruthy();
     await act(async () => {
@@ -162,20 +164,25 @@ describe('Raw proposal form', () => {
   });
 
   it('sends the transaction', async () => {
-    const mockSendTx = jest.fn().mockReturnValue(
-      new Promise((resolve) => {
-        setTimeout(
-          () =>
-            resolve({
-              transactionHash: 'tx-hash',
-              signature:
-                'cfe592d169f87d0671dd447751036d0dddc165b9c4b65e5a5060e2bbadd1aa726d4cbe9d3c3b327bcb0bff4f83999592619a2493f9bbd251fae99ce7ce766909',
-            }),
-          100
-        );
-      })
-    );
-    setup(mockSendTx);
+    const mockSendTx = jest
+      .spyOn(mockConfig, 'sendTransaction')
+      .mockReturnValue(
+        new Promise((resolve) => {
+          setTimeout(
+            () =>
+              resolve({
+                transactionHash: 'tx-hash',
+                signature:
+                  'cfe592d169f87d0671dd447751036d0dddc165b9c4b65e5a5060e2bbadd1aa726d4cbe9d3c3b327bcb0bff4f83999592619a2493f9bbd251fae99ce7ce766909',
+                sentAt: new Date().toISOString(),
+                receivedAt: new Date().toISOString(),
+              }),
+            100
+          );
+        })
+      );
+
+    setup();
 
     await act(async () => {
       jest.advanceTimersByTime(paramsDelay);
@@ -206,8 +213,12 @@ describe('Raw proposal form', () => {
       fireEvent.click(screen.getByTestId('proposal-submit'));
     });
 
-    expect(mockSendTx).toHaveBeenCalledWith(pubKey, {
-      proposalSubmission: JSON.parse(inputJSON),
+    expect(mockSendTx).toHaveBeenCalledWith({
+      publicKey: pubKey,
+      sendingMode: 'TYPE_SYNC',
+      transaction: {
+        proposalSubmission: JSON.parse(inputJSON),
+      },
     });
 
     expect(screen.getByTestId('dialog-title')).toHaveTextContent(
@@ -232,12 +243,12 @@ describe('Raw proposal form', () => {
   });
 
   it('can be rejected by the user', async () => {
-    const mockSendTx = jest.fn().mockReturnValue(
-      new Promise((resolve) => {
-        setTimeout(() => resolve(null), 100);
+    jest.spyOn(mockConfig, 'sendTransaction').mockReturnValue(
+      new Promise((_, reject) => {
+        setTimeout(() => reject(userRejectedError()), 100);
       })
     );
-    setup(mockSendTx);
+    setup();
 
     await act(async () => {
       jest.advanceTimersByTime(paramsDelay);

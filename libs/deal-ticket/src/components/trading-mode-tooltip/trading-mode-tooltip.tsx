@@ -1,11 +1,7 @@
 import { useMemo } from 'react';
 import { parseISO, isValid, isAfter } from 'date-fns';
 import classNames from 'classnames';
-import {
-  useProposalOfMarketQuery,
-  type ProposalOfMarketQuery,
-  type SingleProposal,
-} from '@vegaprotocol/proposals';
+import { useProposalOfMarketQuery } from '@vegaprotocol/proposals';
 import { DocsLinks } from '@vegaprotocol/environment';
 import { getDateTimeFormat } from '@vegaprotocol/utils';
 import * as Schema from '@vegaprotocol/types';
@@ -40,15 +36,21 @@ export const TradingModeTooltip = ({
         marketTradingMode,
   });
 
-  // We only fetch Proposals (and not BatchProposals)
-  const proposal = proposalData?.proposal as SingleProposal<
-    ProposalOfMarketQuery['proposal']
-  >;
-
   if (!market || !marketData) {
     return null;
   }
-  const enactmentDate = parseISO(proposal?.terms.enactmentDatetime);
+
+  let enactmentDate;
+  const proposal = proposalData?.proposal;
+
+  if (proposal?.__typename === 'Proposal') {
+    enactmentDate = parseISO(proposal.terms.enactmentDatetime);
+  } else if (proposal?.__typename === 'BatchProposal') {
+    const change = proposal.batchTerms?.changes.find(
+      (c) => c?.change.__typename === 'NewMarket'
+    );
+    enactmentDate = change ? parseISO(change.enactmentDatetime) : undefined;
+  }
 
   const compiledGrid =
     !skipGrid && compileGridData(t, market, marketData, onSelect);
@@ -67,14 +69,16 @@ export const TradingModeTooltip = ({
       return (
         <section data-testid="trading-mode-tooltip">
           <p
-            className={classNames('flex flex-col', {
+            className={classNames('flex flex-col items-start gap-2', {
               'mb-4': Boolean(compiledGrid),
             })}
           >
-            {isValid(enactmentDate) && isAfter(new Date(), enactmentDate) ? (
+            {enactmentDate &&
+            isValid(enactmentDate) &&
+            isAfter(new Date(), enactmentDate) ? (
               <>
                 <span
-                  className="justify-center font-bold my-2"
+                  className="justify-center font-bold"
                   data-testid="opening-auction-sub-status"
                 >
                   {`${Schema.MarketTradingModeMapping[marketTradingMode]}: ${t(
@@ -91,7 +95,7 @@ export const TradingModeTooltip = ({
               <>
                 {isValid(enactmentDate) && (
                   <span
-                    className="justify-center font-bold my-2"
+                    className="justify-center font-bold"
                     data-testid="opening-auction-sub-status"
                   >
                     {`${
@@ -109,10 +113,7 @@ export const TradingModeTooltip = ({
               </>
             )}
             {DocsLinks && (
-              <ExternalLink
-                href={DocsLinks.AUCTION_TYPE_OPENING}
-                className="ml-1"
-              >
+              <ExternalLink href={DocsLinks.AUCTION_TYPE_OPENING}>
                 {t('Find out more')}
               </ExternalLink>
             )}

@@ -1,5 +1,5 @@
 import { DepositStatus } from '@vegaprotocol/types';
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useDepositBusEventSubscription } from './__generated__/TransactionResult';
 import { useEthTransactionStore } from './use-ethereum-transaction-store';
 

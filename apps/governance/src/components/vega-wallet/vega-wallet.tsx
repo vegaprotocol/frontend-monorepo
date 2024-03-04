@@ -25,7 +25,7 @@ import {
 } from '../wallet-card';
 import { VegaWalletPrompt } from './vega-wallet-prompt';
 import { usePollForDelegations } from './hooks';
-import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
+import { useVegaWallet, useDialogStore } from '@vegaprotocol/wallet-react';
 import { Button, ButtonLink } from '@vegaprotocol/ui-toolkit';
 import { toBigNum } from '@vegaprotocol/utils';
 import { usePendingBalancesStore } from '../../hooks/use-pending-balances-manager';
@@ -34,16 +34,17 @@ import omit from 'lodash/omit';
 
 export const VegaWallet = () => {
   const { t } = useTranslation();
-  const { pubKey, pubKeys } = useVegaWallet();
+  const { status, pubKey, pubKeys } = useVegaWallet();
   const pubKeyObj = useMemo(() => {
     return pubKeys?.find((pk) => pk.publicKey === pubKey);
   }, [pubKey, pubKeys]);
 
-  const child = !pubKeys ? (
-    <VegaWalletNotConnected />
-  ) : (
-    <VegaWalletConnected vegaKeys={pubKeys.map((pk) => pk.publicKey)} />
-  );
+  const child =
+    status === 'connected' ? (
+      <VegaWalletConnected vegaKeys={pubKeys.map((pk) => pk.publicKey)} />
+    ) : (
+      <VegaWalletNotConnected />
+    );
 
   return (
     <section className="vega-wallet" data-testid="vega-wallet">
@@ -75,9 +76,7 @@ export const VegaWallet = () => {
 
 const VegaWalletNotConnected = () => {
   const { t } = useTranslation();
-  const { openVegaWalletDialog } = useVegaWalletDialogStore((store) => ({
-    openVegaWalletDialog: store.openVegaWalletDialog,
-  }));
+  const openVegaWalletDialog = useDialogStore((store) => store.open);
   return (
     <>
       <Button

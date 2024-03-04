@@ -9,7 +9,7 @@ import { SideSelector } from './side-selector';
 import { TimeInForceSelector } from './time-in-force-selector';
 import { TypeSelector } from './type-selector';
 import { type OrderSubmission } from '@vegaprotocol/wallet';
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { mapFormValuesToOrderSubmission } from '../../utils/map-form-values-to-submission';
 import {
   TradingInput as Input,
@@ -780,7 +780,7 @@ interface SummaryMessageProps {
   balance: string;
   margin: string;
   isReadOnly: boolean;
-  pubKey: string | null;
+  pubKey: string | undefined;
   onDeposit: (assetId: string) => void;
 }
 

@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import * as Sentry from '@sentry/react';
 import { useVegaTransaction } from '../proposals-hooks/use-vega-transaction';
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useVoteEvent } from './use-vote-event';
 import type { VoteValue } from '@vegaprotocol/types';
 import type { VoteEventFieldsFragment } from './__generated__/VoteSubsciption';
@@ -10,7 +10,7 @@ export type FinalizedVote = VoteEventFieldsFragment & { pubKey: string };
 
 export const useVoteSubmit = () => {
   const { pubKey } = useVegaWallet();
-  const { send, transaction, setComplete, Dialog } = useVegaTransaction();
+  const { send, transaction, setComplete } = useVegaTransaction();
   const waitForVoteEvent = useVoteEvent(transaction);
 
   const [finalizedVote, setFinalizedVote] = useState<FinalizedVote | null>(
@@ -49,7 +49,6 @@ export const useVoteSubmit = () => {
   return {
     transaction,
     finalizedVote,
-    Dialog,
     submit,
   };
 };

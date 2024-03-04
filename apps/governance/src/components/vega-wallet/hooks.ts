@@ -4,14 +4,13 @@ import keyBy from 'lodash/keyBy';
 import uniq from 'lodash/uniq';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { ENV } from '../../config';
 
 import noIcon from '../../images/token-no-icon.png';
 import vegaBlack from '../../images/vega_black.png';
 import vegaVesting from '../../images/vega_vesting.png';
 import { BigNumber } from '../../lib/bignumber';
 import { type WalletCardAssetProps } from '../wallet-card';
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useContracts } from '../../contexts/contracts/contracts-context';
 import * as Schema from '@vegaprotocol/types';
 import {
@@ -37,7 +36,6 @@ export const usePollForDelegations = () => {
   const { t } = useTranslation();
   const { pubKey } = useVegaWallet();
   const client = useApolloClient();
-  const { delegationsPagination } = ENV;
   const [delegations, setDelegations] = React.useState<
     WalletDelegationFieldsFragment[]
   >([]);
@@ -68,11 +66,9 @@ export const usePollForDelegations = () => {
             query: DelegationsDocument,
             variables: {
               partyId: pubKey,
-              delegationsPagination: delegationsPagination
-                ? {
-                    first: Number(delegationsPagination),
-                  }
-                : undefined,
+              delegationsPagination: {
+                first: 50,
+              },
             },
             fetchPolicy: 'network-only',
           })
@@ -236,14 +232,14 @@ export const usePollForDelegations = () => {
             // will just continue to fail
             clearInterval(interval);
           });
-      }, 1000);
+      }, 20000);
     }
 
     return () => {
       clearInterval(interval);
       mounted = false;
     };
-  }, [delegationsPagination, client, decimals, pubKey, t, vegaToken.address]);
+  }, [client, decimals, pubKey, t, vegaToken.address]);
 
   return { delegations, currentStakeAvailable, delegatedNodes, accounts };
 };

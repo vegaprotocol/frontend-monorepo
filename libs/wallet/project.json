@@ -17,12 +17,8 @@
           "react",
           "react-dom",
           "react/jsx-runtime",
-          "@vegaprotocol/i18n",
-          "@vegaprotocol/react-helpers",
           "@vegaprotocol/types",
-          "@vegaprotocol/ui-toolkit",
-          "@vegaprotocol/utils",
-          "@vegaprotocol/wallet-client"
+          "@vegaprotocol/utils"
         ],
         "rollupConfig": "@nx/react/plugins/bundle-rollup",
         "compiler": "swc",

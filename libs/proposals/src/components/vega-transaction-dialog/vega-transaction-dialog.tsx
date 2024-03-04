@@ -1,10 +1,14 @@
 import type { ReactNode } from 'react';
 import { Dialog, Icon, Intent, Loader } from '@vegaprotocol/ui-toolkit';
-import { WalletClientError } from '@vegaprotocol/wallet-client';
 import type { VegaTxState } from '../../lib/proposals-hooks/use-vega-transaction';
 import { VegaTxStatus } from '../../lib/proposals-hooks/use-vega-transaction';
-import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useT } from '../../use-t';
+import {
+  DApp,
+  EXPLORER_TX,
+  useEnvironment,
+  useLinks,
+} from '@vegaprotocol/environment';
 
 export type VegaTransactionContentMap = {
   [C in VegaTxStatus]?: JSX.Element;
@@ -88,7 +92,8 @@ interface VegaDialogProps {
  */
 export const VegaDialog = ({ transaction }: VegaDialogProps) => {
   const t = useT();
-  const { links, network } = useVegaWallet();
+  const { VEGA_ENV } = useEnvironment();
+  const link = useLinks(DApp.Explorer);
 
   let content = null;
   if (transaction.status === VegaTxStatus.Requested) {
@@ -99,9 +104,9 @@ export const VegaDialog = ({ transaction }: VegaDialogProps) => {
             'Please open your wallet application and confirm or reject the transaction'
           )}
         </p>
-        {network !== 'MAINNET' && (
+        {VEGA_ENV !== 'MAINNET' && (
           <p data-testid="testnet-transaction-info">
-            {t('[This is {{network}} transaction only]', { network })}
+            {t('[This is {{network}} transaction only]', { network: VEGA_ENV })}
           </p>
         )}
       </>
@@ -109,13 +114,12 @@ export const VegaDialog = ({ transaction }: VegaDialogProps) => {
   }
 
   if (transaction.status === VegaTxStatus.Error) {
-    let messageText = '';
-    if (transaction.error instanceof WalletClientError) {
-      messageText = `${transaction.error.title}: ${transaction.error.message}`;
-    } else if (transaction.error instanceof Error) {
-      messageText = transaction.error.message;
-    }
-    content = <div data-testid={transaction.status}>{messageText}</div>;
+    content = (
+      <div data-testid={transaction.status} className="first-letter:capitalize">
+        <p>{transaction.error?.message}</p>
+        <p>{transaction.error?.data}</p>
+      </div>
+    );
   }
 
   if (transaction.status === VegaTxStatus.Pending) {
@@ -127,7 +131,7 @@ export const VegaDialog = ({ transaction }: VegaDialogProps) => {
             <a
               className="underline"
               data-testid="tx-block-explorer"
-              href={`${links.explorer}/txs/0x${transaction.txHash}`}
+              href={link(EXPLORER_TX.replace(':hash', transaction.txHash))}
               target="_blank"
               rel="noreferrer"
             >
@@ -148,7 +152,7 @@ export const VegaDialog = ({ transaction }: VegaDialogProps) => {
             <a
               className="underline"
               data-testid="tx-block-explorer"
-              href={`${links.explorer}/txs/0x${transaction.txHash}`}
+              href={link(EXPLORER_TX.replace(':hash', transaction.txHash))}
               target="_blank"
               rel="noreferrer"
             >

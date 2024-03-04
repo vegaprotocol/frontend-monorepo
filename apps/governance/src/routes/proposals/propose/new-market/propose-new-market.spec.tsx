@@ -1,13 +1,12 @@
 import { render, screen } from '@testing-library/react';
 import { ProposeNewMarket } from './propose-new-market';
 import { MockedProvider } from '@apollo/client/testing';
-import { mockWalletContext } from '../../test-helpers/mocks';
 import { AppStateProvider } from '../../../../contexts/app-state/app-state-provider';
-import { VegaWalletContext } from '@vegaprotocol/wallet';
 import { BrowserRouter as Router } from 'react-router-dom';
 import type { MockedResponse } from '@apollo/client/testing';
 import type { NetworkParamsQuery } from '@vegaprotocol/network-parameters';
 import { NetworkParamsDocument } from '@vegaprotocol/network-parameters';
+import { MockedWalletProvider } from '@vegaprotocol/wallet-react/testing';
 
 jest.mock('@vegaprotocol/environment', () => ({
   ...jest.requireActual('@vegaprotocol/environment'),
@@ -72,26 +71,27 @@ const newMarketNetworkParamsQueryMock: MockedResponse<NetworkParamsQuery> = {
   },
 };
 
-const renderComponent = () =>
-  render(
+const renderComponent = () => {
+  return render(
     <Router>
       <MockedProvider mocks={[newMarketNetworkParamsQueryMock]}>
-        <AppStateProvider>
-          <VegaWalletContext.Provider value={mockWalletContext}>
+        <MockedWalletProvider>
+          <AppStateProvider>
             <ProposeNewMarket />
-          </VegaWalletContext.Provider>
-        </AppStateProvider>
+          </AppStateProvider>
+        </MockedWalletProvider>
       </MockedProvider>
     </Router>
   );
+};
 
 // Note: form submission is tested in propose-raw.spec.tsx. Reusable form
 // components are tested in their own directory.
 
 describe('Propose New Market', () => {
-  it('should render successfully', async () => {
+  it('should render successfully', () => {
     const { baseElement } = renderComponent();
-    await expect(baseElement).toBeTruthy();
+    expect(baseElement).toBeTruthy();
   });
 
   it('should render the form components', async () => {

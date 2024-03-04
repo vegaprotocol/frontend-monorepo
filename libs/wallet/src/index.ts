@@ -1,16 +1,22 @@
-export * from './connectors';
-export * from './context';
-export * from './use-vega-wallet';
-export * from './use-eager-connect';
-export * from './manage-dialog';
-export * from './provider';
-export * from './connect-dialog';
-export * from './utils';
-export * from './storage';
-export * from './use-chain-id';
+// Types
+export * from './types';
+export * from './transaction-types';
+
+// Core
+export { mainnet, fairground, stagnet, mockChain, type Chain } from './chains';
+export { createConfig, coreStoreSlice, singleKeyStoreSlice } from './wallet';
+
+// Connectors
 export {
-  useSimpleTransaction,
-  type Status,
-  type Result,
-  type Options,
-} from './use-simple-transaction';
+  InjectedConnector,
+  SnapConnector,
+  JsonRpcConnector,
+  ViewPartyConnector,
+  MockConnector,
+} from './connectors';
+
+// Errors
+export * from './errors';
+
+// Utils
+export * from './utils';

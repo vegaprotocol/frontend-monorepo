@@ -43,16 +43,19 @@ class TestGetStarted:
 
         # Set token to localStorage so eager connect hook picks it up and immediately connects
         wallet_config = json.dumps(
-            {
-                "token": f"VWT {wallet_api_token}",
-                "connector": "jsonRpc",
-                "url": f"http://localhost:{vega.wallet_port}",
-            }
-        )
+        {
+          "state":{
+              "chainId":"CUSTOM",
+              "current":"jsonRpc",
+              "jsonRpcToken": f"VWT {wallet_api_token}",
+          },
+          "version":0
+        }
+    )
 
         storage_javascript = [
             # Store wallet config so eager connection is initiated
-            f"localStorage.setItem('vega_wallet_config', '{wallet_config}');",
+            f"localStorage.setItem('vega_wallet_store', '{wallet_config}');",
             # Ensure wallet ris dialog doesnt show, otherwise eager connect wont work
             "localStorage.setItem('vega_wallet_risk_accepted', 'true');",
             # Ensure initial risk dialog doesnt show

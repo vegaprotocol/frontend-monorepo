@@ -1,7 +1,7 @@
 import * as Sentry from '@sentry/react';
 import { toBigNum } from '@vegaprotocol/utils';
 import { Splash } from '@vegaprotocol/ui-toolkit';
-import { useVegaWallet, useEagerConnect } from '@vegaprotocol/wallet';
+import { useVegaWallet, useEagerConnect } from '@vegaprotocol/wallet-react';
 import { useFeatureFlags, useEnvironment } from '@vegaprotocol/environment';
 import { useWeb3React } from '@web3-react/core';
 import React, { Suspense } from 'react';
@@ -15,20 +15,6 @@ import {
 } from './contexts/app-state/app-state-context';
 import { useContracts } from './contexts/contracts/contracts-context';
 import { useRefreshAssociatedBalances } from './hooks/use-refresh-associated-balances';
-import { useConnectors } from './lib/vega-connectors';
-import { useSearchParams } from 'react-router-dom';
-
-const useVegaWalletEagerConnect = () => {
-  const connectors = useConnectors();
-  const vegaConnecting = useEagerConnect(connectors);
-  const { pubKey, connect } = useVegaWallet();
-  const [searchParams] = useSearchParams();
-  const [query] = React.useState(searchParams.get('address'));
-  if (query && !pubKey) {
-    connect(connectors.view);
-  }
-  return vegaConnecting;
-};
 
 export const AppLoader = ({ children }: { children: React.ReactElement }) => {
   const featureFlags = useFeatureFlags((state) => state.flags);
@@ -40,7 +26,7 @@ export const AppLoader = ({ children }: { children: React.ReactElement }) => {
   const { token, staking, vesting } = useContracts();
   const setAssociatedBalances = useRefreshAssociatedBalances();
   const [balancesLoaded, setBalancesLoaded] = React.useState(false);
-  const vegaConnecting = useVegaWalletEagerConnect();
+  const vegaConnecting = useEagerConnect();
 
   const loaded = balancesLoaded && !vegaConnecting;
 

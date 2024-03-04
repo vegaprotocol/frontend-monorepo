@@ -14,8 +14,8 @@ import { RainbowButton } from '../../components/rainbow-button';
 import {
   useSimpleTransaction,
   useVegaWallet,
-  useVegaWalletDialogStore,
-} from '@vegaprotocol/wallet';
+  useDialogStore,
+} from '@vegaprotocol/wallet-react';
 import { useIsInReferralSet, useReferral } from './hooks/use-referral';
 import { Routes } from '../../lib/links';
 import { Statistics, useStats } from './referral-statistics';
@@ -83,9 +83,7 @@ export const ApplyCodeForm = ({ onSuccess }: { onSuccess?: () => void }) => {
   const t = useT();
   const program = useReferralProgram();
   const navigate = useNavigate();
-  const openWalletDialog = useVegaWalletDialogStore(
-    (store) => store.openVegaWalletDialog
-  );
+  const openWalletDialog = useDialogStore((store) => store.open);
 
   const { isReadOnly, pubKey } = useVegaWallet();
   const { isEligible, requiredFunds } = useFundsAvailable();

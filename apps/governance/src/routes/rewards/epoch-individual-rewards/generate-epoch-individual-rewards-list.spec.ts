@@ -23,36 +23,6 @@ describe('generateEpochIndividualRewardsList', () => {
     epoch: { id: '2' },
   };
 
-  const reward3: RewardFieldsFragment = {
-    rewardType: AccountType.ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES,
-    amount: '200',
-    percentageOfTotal: '0.2',
-    receivedAt: new Date(),
-    asset: { id: 'gbp', symbol: 'GBP', name: 'GBP', decimals: 7 },
-    party: { id: 'blah' },
-    epoch: { id: '2' },
-  };
-
-  const reward4: RewardFieldsFragment = {
-    rewardType: AccountType.ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES,
-    amount: '100',
-    percentageOfTotal: '0.1',
-    receivedAt: new Date(),
-    asset: { id: 'usd', symbol: 'USD', name: 'USD', decimals: 6 },
-    party: { id: 'blah' },
-    epoch: { id: '1' },
-  };
-
-  const reward5: RewardFieldsFragment = {
-    rewardType: AccountType.ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES,
-    amount: '150',
-    percentageOfTotal: '0.15',
-    receivedAt: new Date(),
-    asset: { id: 'usd', symbol: 'USD', name: 'USD', decimals: 6 },
-    party: { id: 'blah' },
-    epoch: { id: '3' },
-  };
-
   const rewardWrongType: RewardFieldsFragment = {
     rewardType: AccountType.ACCOUNT_TYPE_INSURANCE,
     amount: '50',
@@ -120,25 +90,9 @@ describe('generateEpochIndividualRewardsList', () => {
               amount: '0',
               percentageOfTotal: '0',
             },
-            [AccountType.ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES]: {
-              amount: '0',
-              percentageOfTotal: '0',
-            },
             [AccountType.ACCOUNT_TYPE_GLOBAL_REWARD]: {
               amount: '100',
               percentageOfTotal: '0.1',
-            },
-            [AccountType.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES]: {
-              amount: '0',
-              percentageOfTotal: '0',
-            },
-            [AccountType.ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES]: {
-              amount: '0',
-              percentageOfTotal: '0',
-            },
-            [AccountType.ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS]: {
-              amount: '0',
-              percentageOfTotal: '0',
             },
           },
         },
@@ -147,7 +101,7 @@ describe('generateEpochIndividualRewardsList', () => {
   });
 
   it('should return an array sorted by epoch descending', () => {
-    const rewards = [reward1, reward2, reward3, reward4];
+    const rewards = [reward1, reward2];
     const result1 = generateEpochIndividualRewardsList({
       rewards,
       epochId: 2,
@@ -157,7 +111,7 @@ describe('generateEpochIndividualRewardsList', () => {
     expect(result1[0].epoch).toEqual(2);
     expect(result1[1].epoch).toEqual(1);
 
-    const reorderedRewards = [reward4, reward3, reward2, reward1];
+    const reorderedRewards = [reward2, reward1];
     const result2 = generateEpochIndividualRewardsList({
       rewards: reorderedRewards,
       epochId: 2,
@@ -170,7 +124,7 @@ describe('generateEpochIndividualRewardsList', () => {
 
   it('returns data in the expected shape', () => {
     // Just sanity checking the whole structure here
-    const rewards = [reward1, reward2, reward3, reward4];
+    const rewards = [reward1, reward2];
     const result = generateEpochIndividualRewardsList({
       rewards,
       epochId: 2,
@@ -182,37 +136,6 @@ describe('generateEpochIndividualRewardsList', () => {
         epoch: 2,
         rewards: [
           {
-            asset: 'GBP',
-            totalAmount: '200',
-            decimals: 7,
-            rewardTypes: {
-              [AccountType.ACCOUNT_TYPE_FEES_INFRASTRUCTURE]: {
-                amount: '0',
-                percentageOfTotal: '0',
-              },
-              [AccountType.ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES]: {
-                amount: '200',
-                percentageOfTotal: '0.2',
-              },
-              [AccountType.ACCOUNT_TYPE_GLOBAL_REWARD]: {
-                amount: '0',
-                percentageOfTotal: '0',
-              },
-              [AccountType.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES]: {
-                amount: '0',
-                percentageOfTotal: '0',
-              },
-              [AccountType.ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES]: {
-                amount: '0',
-                percentageOfTotal: '0',
-              },
-              [AccountType.ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS]: {
-                amount: '0',
-                percentageOfTotal: '0',
-              },
-            },
-          },
-          {
             asset: 'EUR',
             totalAmount: '50',
             decimals: 5,
@@ -221,25 +144,9 @@ describe('generateEpochIndividualRewardsList', () => {
                 amount: '0',
                 percentageOfTotal: '0',
               },
-              [AccountType.ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES]: {
-                amount: '0',
-                percentageOfTotal: '0',
-              },
               [AccountType.ACCOUNT_TYPE_GLOBAL_REWARD]: {
                 amount: '50',
                 percentageOfTotal: '0.05',
-              },
-              [AccountType.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES]: {
-                amount: '0',
-                percentageOfTotal: '0',
-              },
-              [AccountType.ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES]: {
-                amount: '0',
-                percentageOfTotal: '0',
-              },
-              [AccountType.ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS]: {
-                amount: '0',
-                percentageOfTotal: '0',
               },
             },
           },
@@ -250,32 +157,16 @@ describe('generateEpochIndividualRewardsList', () => {
         rewards: [
           {
             asset: 'USD',
-            totalAmount: '200',
+            totalAmount: '100',
             decimals: 6,
             rewardTypes: {
               [AccountType.ACCOUNT_TYPE_FEES_INFRASTRUCTURE]: {
                 amount: '0',
                 percentageOfTotal: '0',
               },
-              [AccountType.ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES]: {
-                amount: '100',
-                percentageOfTotal: '0.1',
-              },
               [AccountType.ACCOUNT_TYPE_GLOBAL_REWARD]: {
                 amount: '100',
                 percentageOfTotal: '0.1',
-              },
-              [AccountType.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES]: {
-                amount: '0',
-                percentageOfTotal: '0',
-              },
-              [AccountType.ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES]: {
-                amount: '0',
-                percentageOfTotal: '0',
-              },
-              [AccountType.ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS]: {
-                amount: '0',
-                percentageOfTotal: '0',
               },
             },
           },
@@ -285,7 +176,7 @@ describe('generateEpochIndividualRewardsList', () => {
   });
 
   it('returns data correctly for the requested epoch range', () => {
-    const rewards = [reward1, reward2, reward3, reward4, reward5];
+    const rewards = [reward1, reward2];
     const resultPageOne = generateEpochIndividualRewardsList({
       rewards,
       epochId: 3,
@@ -297,74 +188,11 @@ describe('generateEpochIndividualRewardsList', () => {
     expect(resultPageOne).toEqual([
       {
         epoch: 3,
-        rewards: [
-          {
-            asset: 'USD',
-            decimals: 6,
-            totalAmount: '150',
-            rewardTypes: {
-              [AccountType.ACCOUNT_TYPE_FEES_INFRASTRUCTURE]: {
-                amount: '0',
-                percentageOfTotal: '0',
-              },
-              [AccountType.ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES]: {
-                amount: '150',
-                percentageOfTotal: '0.15',
-              },
-              [AccountType.ACCOUNT_TYPE_GLOBAL_REWARD]: {
-                amount: '0',
-                percentageOfTotal: '0',
-              },
-              [AccountType.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES]: {
-                amount: '0',
-                percentageOfTotal: '0',
-              },
-              [AccountType.ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES]: {
-                amount: '0',
-                percentageOfTotal: '0',
-              },
-              [AccountType.ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS]: {
-                amount: '0',
-                percentageOfTotal: '0',
-              },
-            },
-          },
-        ],
+        rewards: [],
       },
       {
         epoch: 2,
         rewards: [
-          {
-            asset: 'GBP',
-            totalAmount: '200',
-            decimals: 7,
-            rewardTypes: {
-              [AccountType.ACCOUNT_TYPE_FEES_INFRASTRUCTURE]: {
-                amount: '0',
-                percentageOfTotal: '0',
-              },
-              [AccountType.ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES]: {
-                amount: '200',
-                percentageOfTotal: '0.2',
-              },
-              [AccountType.ACCOUNT_TYPE_GLOBAL_REWARD]: {
-                amount: '0',
-                percentageOfTotal: '0',
-              },
-              [AccountType.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES]: {
-                amount: '0',
-                percentageOfTotal: '0',
-              },
-              [AccountType.ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES]: {
-                amount: '0',
-                percentageOfTotal: '0',
-              },
-              [AccountType.ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS]: {
-                amount: '0',
-                percentageOfTotal: '0',
-              },
-            },
-          },
           {
             asset: 'EUR',
             totalAmount: '50',
@@ -374,25 +202,9 @@ describe('generateEpochIndividualRewardsList', () => {
                 amount: '0',
                 percentageOfTotal: '0',
               },
-              [AccountType.ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES]: {
-                amount: '0',
-                percentageOfTotal: '0',
-              },
               [AccountType.ACCOUNT_TYPE_GLOBAL_REWARD]: {
                 amount: '50',
                 percentageOfTotal: '0.05',
-              },
-              [AccountType.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES]: {
-                amount: '0',
-                percentageOfTotal: '0',
-              },
-              [AccountType.ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES]: {
-                amount: '0',
-                percentageOfTotal: '0',
-              },
-              [AccountType.ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS]: {
-                amount: '0',
-                percentageOfTotal: '0',
               },
             },
           },
@@ -414,32 +226,16 @@ describe('generateEpochIndividualRewardsList', () => {
         rewards: [
           {
             asset: 'USD',
-            totalAmount: '200',
+            totalAmount: '100',
             decimals: 6,
             rewardTypes: {
               [AccountType.ACCOUNT_TYPE_FEES_INFRASTRUCTURE]: {
                 amount: '0',
                 percentageOfTotal: '0',
               },
-              [AccountType.ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES]: {
-                amount: '100',
-                percentageOfTotal: '0.1',
-              },
               [AccountType.ACCOUNT_TYPE_GLOBAL_REWARD]: {
                 amount: '100',
                 percentageOfTotal: '0.1',
-              },
-              [AccountType.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES]: {
-                amount: '0',
-                percentageOfTotal: '0',
-              },
-              [AccountType.ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES]: {
-                amount: '0',
-                percentageOfTotal: '0',
-              },
-              [AccountType.ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS]: {
-                amount: '0',
-                percentageOfTotal: '0',
               },
             },
           },

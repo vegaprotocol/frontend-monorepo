@@ -37,6 +37,7 @@ import {
 import type { ReactNode } from 'react';
 import type { StakingNodeFieldsFragment } from '../__generated__/Staking';
 import type { PreviousEpochQuery } from '../__generated__/PreviousEpoch';
+import { getMultisigStatusInfo } from '../../../lib/get-multisig-status-info';
 
 const statuses = {
   [Schema.ValidatorStatus.VALIDATOR_NODE_STATUS_ERSATZ]: 'status-ersatz',
@@ -103,6 +104,10 @@ export const ValidatorTable = ({
       overall: calculateOverallPenalty(node.id, allNodesInPreviousEpoch),
     };
   }, [node, previousEpochData?.epoch.validatorsConnection?.edges]);
+
+  const multisigStatus = previousEpochData
+    ? getMultisigStatusInfo(previousEpochData)
+    : undefined;
 
   return (
     <>
@@ -280,6 +285,34 @@ export const ValidatorTable = ({
                     {formatNumberPercentage(penalties.performance, 2)}
                   </span>
                 </Tooltip>
+              </KeyValueTableRow>
+              <KeyValueTableRow>
+                <span className="uppercase">{t('multisigPenalty')}</span>
+
+                <span
+                  data-testid="multisig-penalty"
+                  className="flex gap-2 items-baseline"
+                >
+                  {multisigStatus?.zeroScoreNodes.find(
+                    (n) => n.id === node.id
+                  ) ? (
+                    <Tooltip
+                      description={t('multisigPenaltyThisNodeIndicator')}
+                    >
+                      <span className="inline-block w-2 h-2 rounded-full bg-vega-red-500"></span>
+                    </Tooltip>
+                  ) : null}
+                  <Tooltip description={t('multisigPenaltyDescription')}>
+                    <span>
+                      {formatNumberPercentage(
+                        BigNumber(
+                          multisigStatus?.showMultisigStatusError ? 100 : 0
+                        ),
+                        2
+                      )}
+                    </span>
+                  </Tooltip>
+                </span>
               </KeyValueTableRow>
               <KeyValueTableRow noBorder={true}>
                 <span>

@@ -2,9 +2,6 @@ import { act, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { getDateTimeFormat } from '@vegaprotocol/utils';
 import * as Schema from '@vegaprotocol/types';
-import type { PartialDeep } from 'type-fest';
-import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
-import { VegaWalletContext } from '@vegaprotocol/wallet';
 import { MockedProvider } from '@apollo/client/testing';
 import type { Order, OrderFieldsFragment, OrderListTableProps } from '../';
 import { OrderListTable } from '../';
@@ -13,6 +10,10 @@ import {
   limitOrder,
   marketOrder,
 } from '../mocks/generate-orders';
+import {
+  MockedWalletProvider,
+  mockConfig,
+} from '@vegaprotocol/wallet-react/testing';
 
 // Mock theme switcher to get around inconsistent mocking of zustand
 // stores
@@ -31,20 +32,25 @@ const defaultProps: OrderListTableProps = {
   isReadOnly: false,
 };
 
-const generateJsx = (
-  props: Partial<OrderListTableProps> = defaultProps,
-  context: PartialDeep<VegaWalletContextShape> = { pubKey: '0x123' }
-) => {
+const generateJsx = (props: Partial<OrderListTableProps> = defaultProps) => {
   return (
     <MockedProvider>
-      <VegaWalletContext.Provider value={context as VegaWalletContextShape}>
+      <MockedWalletProvider>
         <OrderListTable {...defaultProps} {...props} />
-      </VegaWalletContext.Provider>
+      </MockedWalletProvider>
     </MockedProvider>
   );
 };
 
 describe('OrderListTable', () => {
+  beforeAll(() => {
+    mockConfig.store.setState({ pubKey: '0x123' });
+  });
+
+  afterAll(() => {
+    mockConfig.reset();
+  });
+
   it('should render correct columns', async () => {
     //  7003-MORD-001
     //  7003-MORD-002
