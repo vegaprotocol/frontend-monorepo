@@ -134,6 +134,7 @@ export const CONSOLE_TRANSFER = '#/portfolio/assets/transfer';
 export const CONSOLE_TRANSFER_ASSET =
   '#/portfolio/assets/transfer?assetId=:assetId';
 export const CONSOLE_MARKET_PAGE = '#/markets/:marketId';
+export const CONSOLE_REWARDS_PAGE = '#/rewards';
 
 // Governance pages
 export const TOKEN_NEW_MARKET_PROPOSAL = '/proposals/propose/new-market';
