@@ -60,6 +60,16 @@ def setup_market_with_reward_program(vega: VegaServiceNull):
     vega.recurring_transfer(
         from_key_name=PARTY_A.name,
         from_account_type=vega_protos.vega.ACCOUNT_TYPE_GENERAL,
+        to_account_type=vega_protos.vega.ACCOUNT_TYPE_GLOBAL_REWARD,
+        asset=tDAI_asset_id,
+        amount=100,
+        factor=1.0,
+    )
+    vega.wait_fn(1)
+    vega.wait_for_total_catchup()
+    vega.recurring_transfer(
+        from_key_name=PARTY_A.name,
+        from_account_type=vega_protos.vega.ACCOUNT_TYPE_GENERAL,
         to_account_type=vega_protos.vega.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES,
         asset=tDAI_asset_id,
         reference="reward",
@@ -160,7 +170,7 @@ def test_reward_multiplier(
 
 
 @pytest.mark.xdist_group(name="test_rewards_combo_tier_1")
-def test_reward_history(
+def test_reward_history_foo(
     page: Page,
 ):
     page.locator('[name="fromEpoch"]').fill("1")
@@ -172,3 +182,21 @@ def test_reward_history(
     expect((page.get_by_role(ROW).locator(TOTAL_COL_ID)).nth(1)).to_have_text(
         "183.33333"
     )
+
+def test_staking_reward(
+    page: Page,
+):
+    expect(page.get_by_test_id("active-rewards-card")).to_have_count(2)
+    staking_reward_card = page.get_by_test_id("active-rewards-card").nth(1)
+    expect(staking_reward_card).to_be_visible()
+    expect(staking_reward_card.get_by_test_id("entity-scope")).to_have_text("Individual")
+    expect(staking_reward_card.get_by_test_id("locked-for")).to_have_text("0 epochs")
+    expect(staking_reward_card.get_by_test_id("reward-value")).to_have_text("100.00")
+    expect(staking_reward_card.get_by_test_id("distribution-strategy")).to_have_text("Pro rata")
+    expect(staking_reward_card.get_by_test_id("dispatch-metric-info")).to_have_text(
+        "Staking rewards"
+    )
+    expect(staking_reward_card.get_by_test_id("assessed-over")).to_have_text("1 epoch")
+    expect(staking_reward_card.get_by_test_id("scope")).to_have_text("Individual")
+    expect(staking_reward_card.get_by_test_id("staking-requirement")).to_have_text("1.00")
+    expect(staking_reward_card.get_by_test_id("average-position")).to_have_text("0.00")
