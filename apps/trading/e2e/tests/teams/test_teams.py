@@ -302,7 +302,7 @@ def test_game_card(competitions_page: Page):
     expect(competitions_page.get_by_test_id("active-rewards-card")).to_have_count(1)
     game_1 = competitions_page.get_by_test_id("active-rewards-card").first
     expect(game_1).to_be_visible()
-    expect(game_1.get_by_test_id("entity-scope")).to_have_text("Individual")
+    expect(game_1.get_by_test_id("entity-scope")).to_have_text("Team")
     expect(game_1.get_by_test_id("locked-for")).to_have_text("1 epoch")
     expect(game_1.get_by_test_id("reward-value")).to_have_text("100.00")
     expect(game_1.get_by_test_id("reward-asset")).to_have_text("VEGA")
@@ -311,7 +311,7 @@ def test_game_card(competitions_page: Page):
         "Price maker fees paid • tDAI"
     )
     expect(game_1.get_by_test_id("assessed-over")).to_have_text("15 epochs")
-    expect(game_1.get_by_test_id("scope")).to_have_text("In team")
+    expect(game_1.get_by_test_id("scope")).to_have_text("All teams")
     expect(game_1.get_by_test_id("staking-requirement")).to_have_text("0.00")
     expect(game_1.get_by_test_id("average-position")).to_have_text("0.00")
 
