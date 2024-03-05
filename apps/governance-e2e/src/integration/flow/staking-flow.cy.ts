@@ -7,6 +7,7 @@ import {
   navigateTo,
   navigation,
   turnTelemetryOff,
+  setRiskAccepted,
 } from '../../support/common.functions';
 import {
   clickOnValidatorFromList,
@@ -57,6 +58,7 @@ context(
     // 1002-STKE-002, 1002-STKE-032
     before('visit staking tab and connect vega wallet', function () {
       cy.visit('/');
+      setRiskAccepted();
       ethereumWalletConnect();
       cy.connectVegaWallet();
       vegaWalletSetSpecifiedApprovalAmount('1000');

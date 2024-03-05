@@ -37,10 +37,12 @@ export function addVegaWalletConnect() {
   Cypress.Commands.add('connectVegaWallet', (isMobile) => {
     mockConnectWallet();
     cy.highlight(`Connecting Vega Wallet`);
+    cy.get('[data-testid="splash-loader"]', { timeout: 20000 }).should(
+      'not.exist'
+    );
     const connectVegaWalletButton = `[data-testid=connect-vega-wallet${
       isMobile ? '-mobile' : ''
     }]:visible`;
-
     cy.get(connectVegaWalletButton).then((btn) => {
       if (btn.length === 0) {
         cy.log('could not find the button, perhaps already connected');

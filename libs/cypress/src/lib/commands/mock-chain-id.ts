@@ -12,7 +12,7 @@ declare global {
   }
 }
 
-const chainId = 'test-id';
+const chainId = 'vega-stagnet1-202307191148';
 
 export function addMockChainId() {
   Cypress.Commands.add('mockChainId', () => {

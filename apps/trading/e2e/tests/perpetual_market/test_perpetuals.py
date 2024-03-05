@@ -57,7 +57,7 @@ class TestPerpetuals:
         page.goto(f"/#/markets/{perps_market}")
         page.get_by_test_id("Funding payments").click()
         row = page.locator(row_selector)
-        expect(row.locator(col_amount)).to_have_text("9.00 tDAI")
+        expect(row.locator(col_amount)).to_have_text("4.45 tDAI")
 
     @pytest.mark.usefixtures("risk_accepted", "auth")
     def test_funding_payment_loss(self, perps_market, page: Page, vega):
@@ -65,7 +65,7 @@ class TestPerpetuals:
         change_keys(page, vega, "market_maker")
         page.get_by_test_id("Funding payments").click()
         row = page.locator(row_selector)
-        expect(row.locator(col_amount)).to_have_text("-27.00 tDAI")
+        expect(row.locator(col_amount)).to_have_text("-13.35 tDAI")
 
     @pytest.mark.usefixtures("risk_accepted", "auth")
     def test_funding_header(self, perps_market, page: Page):

@@ -3,6 +3,7 @@
 import { aliasGQLQuery } from '@vegaprotocol/cypress';
 import {
   navigation,
+  setRiskAccepted,
   verifyPageHeader,
   verifyTabHighlighted,
 } from '../../support/common.functions';
@@ -187,6 +188,7 @@ context('Validators Page - verify elements on page', function () {
       before('connect wallets and click on validator', function () {
         cy.mockChainId();
         cy.visit('/validators');
+        setRiskAccepted();
         cy.connectVegaWallet();
         clickOnValidatorFromList(0);
       });
