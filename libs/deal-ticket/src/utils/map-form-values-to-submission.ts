@@ -112,7 +112,7 @@ export const mapFormValuesToStopOrdersSubmission = (
     decimalPlaces
   );
   let oppositeStopOrderSetup: StopOrderSetup | undefined = undefined;
-  if (data.oco && data.ocoType && data.ocoSize && data.ocoTimeInForce) {
+  if (data.oco) {
     oppositeStopOrderSetup = {
       orderSubmission: mapFormValuesToOrderSubmission(
         {
