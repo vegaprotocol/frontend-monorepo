@@ -170,7 +170,7 @@ def test_reward_multiplier(
 
 
 @pytest.mark.xdist_group(name="test_rewards_combo_tier_1")
-def test_reward_history_foo(
+def test_reward_history(
     page: Page,
 ):
     page.locator('[name="fromEpoch"]').fill("1")
