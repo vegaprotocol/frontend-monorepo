@@ -31,13 +31,13 @@ export interface StopOrderFormValues {
 
   oco?: boolean;
 
-  ocoTriggerType: 'price' | 'trailingPercentOffset';
+  ocoTriggerType?: 'price' | 'trailingPercentOffset';
   ocoTriggerPrice?: string;
   ocoTriggerTrailingPercentOffset?: string;
 
-  ocoType: OrderType;
-  ocoSize: string;
-  ocoTimeInForce: OrderTimeInForce;
+  ocoType?: OrderType;
+  ocoSize?: string;
+  ocoTimeInForce?: OrderTimeInForce;
   ocoPrice?: string;
 }
 
