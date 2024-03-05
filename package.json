@@ -11,7 +11,6 @@
     "build:all": "nx run-many --all --target=build",
     "build-spec:all": "nx run-many --all --target=build-spec",
     "lint:all": "nx run-many --all --target=lint",
-    "e2e:all": "nx run-many --all --target=e2e",
     "vegacapsule": "vegacapsule network bootstrap --config-path=../frontend-monorepo/vegacapsule/config.hcl",
     "release": "git checkout develop ; git pull ; node scripts/make-release.js",
     "trading:test": "cd apps/trading/e2e && poetry run pytest -k",
