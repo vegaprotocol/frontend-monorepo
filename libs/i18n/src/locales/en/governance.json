@@ -971,5 +971,6 @@
   "YourIdentityAnonymous": "Your identity is always anonymous on Vega",
   "yourStake": "Your stake",
   "yourVote": "Your vote",
-  "youVoted": "You voted"
+  "youVoted": "You voted",
+  "rewardsMovedNotification": "Trading and liquidity rewards have moved. Visit <0>Console</0> to view your rewards."
 }
