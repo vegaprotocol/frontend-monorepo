@@ -193,8 +193,6 @@ export const DealTicket = ({
   const peakSize = watch('peakSize');
   const expiresAt = watch('expiresAt');
   const postOnly = watch('postOnly');
-  const takeProfit = watch('takeProfit');
-  const stopLoss = watch('stopLoss');
 
   useEffect(() => {
     const size = storedFormValues?.[dealTicketType]?.size;
@@ -400,14 +398,15 @@ export const DealTicket = ({
         submit({
           batchMarketInstructions,
         });
+      } else {
+        const orderSubmission = mapFormValuesToOrderSubmission(
+          formValues,
+          market.id,
+          market.decimalPlaces,
+          market.positionDecimalPlaces
+        );
+        submit({ orderSubmission });
       }
-      const orderSubmission = mapFormValuesToOrderSubmission(
-        formValues,
-        market.id,
-        market.decimalPlaces,
-        market.positionDecimalPlaces
-      );
-      submit({ orderSubmission });
       lastSubmitTime.current = now;
     },
     [market, pubKey, submit]
@@ -764,10 +763,6 @@ export const DealTicket = ({
               takeProfitError={errors.takeProfit?.message}
               stopLossError={errors.stopLoss?.message}
               control={control}
-              setPrice={price}
-              takeProfit={takeProfit}
-              stopLoss={stopLoss}
-              side={side}
               quoteName={quoteName}
             />
           )}

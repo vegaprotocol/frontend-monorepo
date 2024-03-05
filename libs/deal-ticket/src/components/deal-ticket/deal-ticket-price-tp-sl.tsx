@@ -12,17 +12,12 @@ import {
   Pill,
 } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../use-t';
-import { type Side } from '@vegaprotocol/types';
 
 export interface DealTicketPriceTakeProfitStopLossProps {
   control: Control<OrderFormValues>;
   market: Market;
   takeProfitError?: string;
   stopLossError?: string;
-  setPrice?: string;
-  takeProfit?: string;
-  stopLoss?: string;
-  side?: Side;
   quoteName?: string;
 }
 
@@ -32,10 +27,6 @@ export const DealTicketPriceTakeProfitStopLoss = ({
   takeProfitError,
   stopLossError,
   quoteName,
-  setPrice,
-  takeProfit,
-  stopLoss,
-  side,
 }: DealTicketPriceTakeProfitStopLossProps) => {
   const t = useT();
   const validateAmount = useValidateAmount();
