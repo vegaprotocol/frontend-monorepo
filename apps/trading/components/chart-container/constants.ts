@@ -10,6 +10,7 @@ export const SUPPORTED_INTERVALS = [
   Interval.INTERVAL_I1H,
   Interval.INTERVAL_I4H,
   Interval.INTERVAL_I6H,
+  Interval.INTERVAL_I8H,
   Interval.INTERVAL_I12H,
   Interval.INTERVAL_I1D,
   Interval.INTERVAL_I7D,
