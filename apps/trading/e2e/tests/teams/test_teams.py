@@ -299,7 +299,7 @@ def test_leaderboard(competitions_page: Page, setup_teams_and_games):
 
 
 def test_game_card(competitions_page: Page):
-    expect(competitions_page.get_by_test_id("active-rewards-card")).to_have_count(2)
+    expect(competitions_page.get_by_test_id("active-rewards-card")).to_have_count(1)
     game_1 = competitions_page.get_by_test_id("active-rewards-card").first
     expect(game_1).to_be_visible()
     expect(game_1.get_by_test_id("entity-scope")).to_have_text("Individual")
