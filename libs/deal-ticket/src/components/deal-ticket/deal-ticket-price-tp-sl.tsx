@@ -84,7 +84,6 @@ export const DealTicketPriceTakeProfitStopLoss = ({
               name="takeProfit"
               control={control}
               rules={{
-                required: t('You need provide a take profit price'),
                 min: {
                   value: priceStep,
                   message: t(
@@ -138,7 +137,6 @@ export const DealTicketPriceTakeProfitStopLoss = ({
               name="stopLoss"
               control={control}
               rules={{
-                required: t('You need provide a stop loss price'),
                 min: {
                   value: priceStep,
                   message: t('Price cannot be lower than {{priceStep}}', {
