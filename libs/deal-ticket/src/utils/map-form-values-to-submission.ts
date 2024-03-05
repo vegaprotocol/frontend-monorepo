@@ -203,6 +203,7 @@ export const mapFormValuesToTakeProfitAndStopLoss = (
 
   const stopOrdersSubmission = [];
 
+  // if there are both take profit and stop loss then the stop order needs to be OCO
   if (formValues.takeProfit && formValues.stopLoss) {
     const ocoStopOrderSubmission = mapFormValuesToStopOrdersSubmission(
       {
