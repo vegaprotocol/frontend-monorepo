@@ -68,6 +68,10 @@ if not projects:
 # generate e2e targets
 projects_e2e = [f'{app}-e2e' for app in projects]
 
+# remove trading-e2e because it doesn't exists any more (new target is: console-e2e)
+if "trading-e2e" in projects_e2e:
+    projects_e2e.remove("trading-e2e")
+
 # check affection for multisig-signer which is deployed only from develop and pull requests
 if args.event_name == 'pull_request' or 'develop' in args.github_ref:
     if 'multisig-signer' in affected:
