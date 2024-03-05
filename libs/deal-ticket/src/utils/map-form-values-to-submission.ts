@@ -201,9 +201,35 @@ export const mapFormValuesToTakeProfitAndStopLoss = (
       ? Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_FALLS_BELOW
       : Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE;
 
-  const takeProfitStopOrderSubmission =
-    formValues.takeProfit &&
-    mapFormValuesToStopOrdersSubmission(
+  const stopOrdersSubmission = [];
+
+  if (formValues.takeProfit && formValues.stopLoss) {
+    const ocoStopOrderSubmission = mapFormValuesToStopOrdersSubmission(
+      {
+        ...formValues,
+        triggerPrice: formValues.stopLoss,
+        ocoTriggerPrice: formValues.takeProfit,
+        price: formValues.stopLoss,
+        triggerDirection: stopLossTriggerDirection,
+        triggerType: 'price',
+        side: oppositeSide,
+        expire: false,
+        type: Schema.OrderType.TYPE_MARKET,
+        oco: true,
+        ocoPrice: formValues.takeProfit,
+        ocoTriggerType: 'price',
+        ocoType: Schema.OrderType.TYPE_MARKET,
+        ocoSize: formValues.size,
+        ocoTimeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_FOK,
+      },
+      market.id,
+      market.decimalPlaces,
+      market.positionDecimalPlaces,
+      reference
+    );
+    stopOrdersSubmission.push(ocoStopOrderSubmission);
+  } else if (formValues.takeProfit) {
+    const takeProfitStopOrderSubmission = mapFormValuesToStopOrdersSubmission(
       {
         ...formValues,
         price: formValues.takeProfit,
@@ -215,6 +241,7 @@ export const mapFormValuesToTakeProfitAndStopLoss = (
         timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_FOK,
         ocoTriggerType: 'price',
         type: Schema.OrderType.TYPE_MARKET,
+        oco: false,
         ocoType: Schema.OrderType.TYPE_MARKET,
         ocoSize: formValues.size,
         ocoTimeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_FOK,
@@ -224,10 +251,9 @@ export const mapFormValuesToTakeProfitAndStopLoss = (
       market.positionDecimalPlaces,
       reference
     );
-
-  const stopLossStopOrderSubmission =
-    formValues.stopLoss &&
-    mapFormValuesToStopOrdersSubmission(
+    stopOrdersSubmission.push(takeProfitStopOrderSubmission);
+  } else if (formValues.stopLoss) {
+    const stopLossStopOrderSubmission = mapFormValuesToStopOrdersSubmission(
       {
         ...formValues,
         triggerPrice: formValues.stopLoss,
@@ -237,6 +263,7 @@ export const mapFormValuesToTakeProfitAndStopLoss = (
         side: oppositeSide,
         expire: false,
         type: Schema.OrderType.TYPE_MARKET,
+        oco: false,
         ocoTriggerType: 'price',
         ocoType: Schema.OrderType.TYPE_MARKET,
         ocoSize: formValues.size,
@@ -247,13 +274,9 @@ export const mapFormValuesToTakeProfitAndStopLoss = (
       market.positionDecimalPlaces,
       reference
     );
-  const stopOrdersSubmission = [];
-  if (takeProfitStopOrderSubmission) {
-    stopOrdersSubmission.push(takeProfitStopOrderSubmission);
-  }
-  if (stopLossStopOrderSubmission) {
     stopOrdersSubmission.push(stopLossStopOrderSubmission);
   }
+
   const batchMarketInstructions = {
     submissions: [orderSubmission],
     stopOrdersSubmission,
