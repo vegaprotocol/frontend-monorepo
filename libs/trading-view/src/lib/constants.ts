@@ -21,7 +21,7 @@ export const TRADINGVIEW_INTERVAL_MAP = {
   [Interval.INTERVAL_I6H]: '360',
   [Interval.INTERVAL_I12H]: '720',
   [Interval.INTERVAL_I1D]: '1D',
-  [Interval.INTERVAL_I7D]: '7D',
+  [Interval.INTERVAL_I7D]: '1W',
 } as const;
 
 export type ResolutionRecord = typeof TRADINGVIEW_INTERVAL_MAP;

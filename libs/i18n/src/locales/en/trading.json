@@ -151,7 +151,7 @@
   "INTERVAL_I4H": "4H",
   "INTERVAL_I5M": "5m",
   "INTERVAL_I6H": "6H",
-  "INTERVAL_I7D": "7D",
+  "INTERVAL_I7D": "1W",
   "Improve vega console": "Improve vega console",
   "Inactive": "Inactive",
   "Index Price": "Index Price",

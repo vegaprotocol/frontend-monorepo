@@ -38,7 +38,7 @@ const resolutionMap: Record<string, Interval> = {
   '360': Interval.INTERVAL_I6H,
   '720': Interval.INTERVAL_I12H,
   '1D': Interval.INTERVAL_I1D,
-  '7D': Interval.INTERVAL_I7D,
+  '1W': Interval.INTERVAL_I7D,
 } as const;
 
 const supportedResolutions = Object.keys(resolutionMap);
