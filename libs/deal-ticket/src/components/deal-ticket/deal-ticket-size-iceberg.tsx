@@ -1,7 +1,7 @@
 import { Controller, type Control } from 'react-hook-form';
 import type { Market } from '@vegaprotocol/markets';
 import type { OrderFormValues } from '../../hooks/use-form-values';
-import { toDecimal, useValidateAmount } from '@vegaprotocol/utils';
+import { useValidateAmount } from '@vegaprotocol/utils';
 import {
   TradingFormGroup,
   TradingInput,
@@ -9,6 +9,7 @@ import {
   Tooltip,
 } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../use-t';
+import { determineSizeStep } from '../../utils/step';
 
 export interface DealTicketSizeIcebergProps {
   control: Control<OrderFormValues>;
@@ -29,7 +30,7 @@ export const DealTicketSizeIceberg = ({
 }: DealTicketSizeIcebergProps) => {
   const t = useT();
   const validateAmount = useValidateAmount();
-  const sizeStep = toDecimal(market?.positionDecimalPlaces);
+  const sizeStep = determineSizeStep(market);
 
   const renderPeakSizeError = () => {
     if (peakSizeError) {

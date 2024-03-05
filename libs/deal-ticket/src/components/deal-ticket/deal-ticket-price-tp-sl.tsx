@@ -12,6 +12,7 @@ import {
   Pill,
 } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../use-t';
+import { determinePriceStep } from '../../utils/step';
 
 export interface DealTicketPriceTakeProfitStopLossProps {
   control: Control<OrderFormValues>;
@@ -30,7 +31,7 @@ export const DealTicketPriceTakeProfitStopLoss = ({
 }: DealTicketPriceTakeProfitStopLossProps) => {
   const t = useT();
   const validateAmount = useValidateAmount();
-  const priceStep = toDecimal(market?.decimalPlaces);
+  const priceStep = determinePriceStep(market);
 
   const renderTakeProfitError = () => {
     if (takeProfitError) {

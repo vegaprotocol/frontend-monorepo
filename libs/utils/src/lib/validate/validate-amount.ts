@@ -1,35 +1,24 @@
 import { useCallback } from 'react';
 import { useT } from '../use-t';
+import BigNumber from 'bignumber.js';
 
 export const useValidateAmount = () => {
   const t = useT();
   return useCallback(
     (step: number | string, field: string) => {
-      const [, stepDecimals = ''] = String(step).split('.');
-
       return (value?: string) => {
-        if (Number(step) > 1) {
-          if (Number(value) % Number(step) > 0) {
-            return t(
-              '{{field}} must be a multiple of {{step}} for this market',
-              {
-                field,
-                step,
-              }
-            );
-          }
-          return true;
-        }
-        const [, valueDecimals = ''] = (value || '').split('.');
-        if (stepDecimals.length < valueDecimals.length) {
-          if (stepDecimals === '') {
+        const isValid = validateAgainstStep(step, value);
+        if (!isValid) {
+          if (new BigNumber(step).isEqualTo(1)) {
             return t('{{field}} must be whole numbers for this market', {
               field,
+              step,
             });
           }
-          return t('{{field}} accepts up to {{decimals}} decimal places', {
+
+          return t('{{field}} must be a multiple of {{step}} for this market', {
             field,
-            decimals: stepDecimals.length,
+            step,
           });
         }
         return true;
@@ -37,4 +26,25 @@ export const useValidateAmount = () => {
     },
     [t]
   );
+};
+
+const isMultipleOf = (value: BigNumber, multipleOf: BigNumber) =>
+  value.modulo(multipleOf).isZero();
+
+export const validateAgainstStep = (
+  step: string | number,
+  input?: string | number
+) => {
+  const stepValue = new BigNumber(step);
+  if (stepValue.isNaN()) {
+    // unable to check if step is not a number
+    return false;
+  }
+  if (stepValue.isZero()) {
+    // every number is valid when step is zero
+    return true;
+  }
+
+  const value = new BigNumber(input || '');
+  return isMultipleOf(value, stepValue);
 };

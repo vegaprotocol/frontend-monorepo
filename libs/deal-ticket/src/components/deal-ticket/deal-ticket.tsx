@@ -32,7 +32,6 @@ import {
   toBigNum,
   removeDecimal,
   useValidateAmount,
-  toDecimal,
   formatForInput,
   formatValue,
 } from '@vegaprotocol/utils';
@@ -82,6 +81,7 @@ import { DocsLinks } from '@vegaprotocol/environment';
 import { useT } from '../../use-t';
 import { DealTicketPriceTakeProfitStopLoss } from './deal-ticket-price-tp-sl';
 import uniqueId from 'lodash/uniqueId';
+import { determinePriceStep, determineSizeStep } from '../../utils/step';
 
 export const REDUCE_ONLY_TOOLTIP =
   '"Reduce only" will ensure that this order will not increase the size of an open position. When the order is matched, it will only trade enough volume to bring your open volume towards 0 but never change the direction of your position. If applied to a limit order that is not instantly filled, the order will be stopped.';
@@ -419,10 +419,11 @@ export const DealTicket = ({
     },
   });
 
-  const priceStep = toDecimal(market?.decimalPlaces);
-  const sizeStep = toDecimal(market?.positionDecimalPlaces);
+  const sizeStep = determineSizeStep(market);
   const quoteName = getQuoteName(market);
   const isLimitType = type === Schema.OrderType.TYPE_LIMIT;
+
+  const priceStep = determinePriceStep(market);
 
   return (
     <form

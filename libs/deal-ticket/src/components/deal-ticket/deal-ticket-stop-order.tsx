@@ -8,7 +8,6 @@ import {
   formatForInput,
   formatValue,
   removeDecimal,
-  toDecimal,
   useValidateAmount,
 } from '@vegaprotocol/utils';
 import { type Control, type UseFormWatch } from 'react-hook-form';
@@ -59,6 +58,7 @@ import { KeyValue } from './key-value';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { stopOrdersProvider } from '@vegaprotocol/orders';
 import { useT } from '../../use-t';
+import { determinePriceStep, determineSizeStep } from '../../utils/step';
 
 export interface StopOrderProps {
   market: Market;
@@ -904,8 +904,8 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
     market.tradableInstrument.instrument.metadata.tags
   );
 
-  const sizeStep = toDecimal(market?.positionDecimalPlaces);
-  const priceStep = toDecimal(market?.decimalPlaces);
+  const sizeStep = determineSizeStep(market);
+  const priceStep = determinePriceStep(market);
 
   useController({
     name: 'type',
