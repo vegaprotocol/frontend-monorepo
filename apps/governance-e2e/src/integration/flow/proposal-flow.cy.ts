@@ -21,6 +21,7 @@ import {
   navigation,
   closeDialog,
   turnTelemetryOff,
+  setRiskAccepted,
 } from '../../support/common.functions';
 import {
   clickOnValidatorFromList,
@@ -82,6 +83,7 @@ context(
     beforeEach('visit governance tab', function () {
       cy.clearLocalStorage();
       turnTelemetryOff();
+      setRiskAccepted();
       cy.reload();
       cy.mockChainId();
       waitForSpinner();
@@ -92,7 +94,7 @@ context(
     });
 
     // Test can only pass if run before other proposal tests.
-    it.skip('Should be able to see that no proposals exist', function () {
+    it('Should be able to see that no proposals exist', function () {
       // 3001-VOTE-003
       cy.getByTestId(noOpenProposals)
         .should('be.visible')

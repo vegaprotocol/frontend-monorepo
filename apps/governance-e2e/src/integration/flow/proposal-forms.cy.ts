@@ -3,6 +3,7 @@ import {
   dissociateFromSecondWalletKey,
   navigateTo,
   navigation,
+  setRiskAccepted,
   turnTelemetryOff,
   waitForSpinner,
 } from '../../support/common.functions';
@@ -74,6 +75,7 @@ context(
     beforeEach('visit governance tab', function () {
       cy.clearLocalStorage();
       turnTelemetryOff();
+      setRiskAccepted();
       cy.mockChainId();
       cy.reload();
       waitForSpinner();
@@ -215,7 +217,7 @@ context(
     });
 
     // 3003-PMAN-001
-    it.skip(
+    it(
       'Able to submit valid new market proposal',
       // @ts-ignore clash between jest and cypress
       { tags: '@smoke' },
@@ -299,7 +301,7 @@ context(
 
     // Will fail if run after 'Able to submit update market proposal and vote for proposal'
     // 3002-PROP-022
-    it.skip('Unable to submit update market proposal without equity-like share in the market', function () {
+    it('Unable to submit update market proposal without equity-like share in the market', function () {
       switchVegaWalletPubKey();
       stakingPageAssociateTokens('1');
       goToMakeNewProposal(governanceProposalType.UPDATE_MARKET);
