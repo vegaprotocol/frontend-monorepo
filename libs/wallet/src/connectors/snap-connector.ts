@@ -44,6 +44,9 @@ declare global {
     isMetaMask: boolean;
     request<T = unknown>(args: RequestArguments): Promise<T>;
     selectedAddress: string | null;
+    // eslint-disable-next-line
+    on: (event: string, callback: (...args: any[]) => void) => void;
+    off: (event: string) => void;
   };
 
   interface Window {
@@ -61,7 +64,6 @@ export class SnapConnector implements Connector {
   node: string;
   version: string;
   snapId: string;
-  pollRef: NodeJS.Timer | undefined;
   ee: EventEmitter;
 
   // Note: apps may not know which node is selected on start up so its up
@@ -87,7 +89,7 @@ export class SnapConnector implements Connector {
         );
       }
 
-      this.startPoll();
+      this.bindListeners();
       return { success: true };
     } catch (err) {
       if (err instanceof ConnectorError) {
@@ -99,7 +101,7 @@ export class SnapConnector implements Connector {
   }
 
   async disconnectWallet() {
-    this.stopPoll();
+    this.unbindListeners();
   }
 
   // deprecated, pass chain on connect
@@ -113,7 +115,7 @@ export class SnapConnector implements Connector {
       );
       return { chainId: res.chainID };
     } catch (err) {
-      this.stopPoll();
+      this.unbindListeners();
       throw chainIdError();
     }
   }
@@ -125,23 +127,18 @@ export class SnapConnector implements Connector {
       }>(JsonRpcMethod.ListKeys);
       return res.keys;
     } catch (err) {
-      this.stopPoll();
+      this.unbindListeners();
       throw listKeysError();
     }
   }
 
   async isConnected() {
     try {
-      // Check if metamask is unlocked
-      if (!window.ethereum.selectedAddress) {
-        throw noWalletError();
-      }
-
       // If this throws its likely the snap is disabled or has been uninstalled
       await this.listKeys();
       return { connected: true };
     } catch (err) {
-      this.stopPoll();
+      this.unbindListeners();
       return { connected: false };
     }
   }
@@ -186,20 +183,19 @@ export class SnapConnector implements Connector {
   // Snap methods
   ////////////////////////////////////
 
-  private startPoll() {
-    // This only event we need to poll for right now is client.disconnect,
-    // if more events get added we will need more logic here
-    this.pollRef = setInterval(async () => {
-      const result = await this.isConnected();
-      if (result.connected) return;
-      this.ee.emit('client.disconnected');
-    }, 2000);
+  /**
+   * Emit wallet listeners for listeners invovoked by MetaMask
+   */
+  private bindListeners() {
+    window.ethereum.on('accountsChanged', (accounts: string[]) => {
+      if (!accounts.length) {
+        this.ee.emit('client.disconnected');
+      }
+    });
   }
 
-  private stopPoll() {
-    if (this.pollRef) {
-      clearInterval(this.pollRef);
-    }
+  private unbindListeners() {
+    window.ethereum.off('accountsChanged');
   }
 
   /**
