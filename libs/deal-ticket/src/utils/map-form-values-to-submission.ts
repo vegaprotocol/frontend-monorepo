@@ -125,7 +125,8 @@ export const mapFormValuesToStopOrdersSubmission = (
         },
         marketId,
         decimalPlaces,
-        positionDecimalPlaces
+        positionDecimalPlaces,
+        reference
       ),
     };
     setTrigger(
