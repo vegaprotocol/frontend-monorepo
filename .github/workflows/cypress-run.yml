@@ -38,7 +38,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        project: ${{ fromJSON(inputs.projects) !=null || fromJSON(inputs.projects) ==true }}
+        project: ${{ fromJSON(inputs.projects) }}
     name: ${{ matrix.project }}
     needs: runner-choice
     runs-on: ${{ needs.runner-choice.outputs.runner }}
