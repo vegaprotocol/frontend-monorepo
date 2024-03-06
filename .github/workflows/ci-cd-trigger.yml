@@ -152,11 +152,11 @@ jobs:
           echo "Affected apps: $output"
           apps=($output)
           if [[ " ${apps[@]} " =~ " trading " ]] && [[ ${#apps[@]} -eq 1 ]]; then
-            echo "::set-output name=trading_only::true"
+            echo "trading_only=true" >> $GITHUB_OUTPUT
           else
-            echo "::set-output name=trading_only::false"
+            echo "trading_only=false" >> $GITHUB_OUTPUT
         env:
-          GITHUB_OUTPUT: $GITHUB_OUTPUT
+          GITHUB_OUTPUT: ${{ github.action_path }}/output
 
       - name: Verify script result
         run: |
