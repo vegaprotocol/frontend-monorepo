@@ -492,6 +492,14 @@ export interface UpdateMarginMode {
 export interface UpdateMarginModeBody {
   updateMarginMode: UpdateMarginMode;
 }
+
+export interface UpdatePartyProfile {
+  updatePartyProfile: {
+    alias: string;
+    metadata: Array<{ key: string; value: string }>;
+  };
+}
+
 export type Transaction =
   | UpdateMarginModeBody
   | StopOrdersSubmissionBody
@@ -510,7 +518,8 @@ export type Transaction =
   | ApplyReferralCode
   | JoinTeam
   | CreateReferralSet
-  | UpdateReferralSet;
+  | UpdateReferralSet
+  | UpdatePartyProfile;
 
 export interface TransactionResponse {
   transactionHash: string;

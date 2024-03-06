@@ -1,21 +1,57 @@
-import { act, fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen, within } from '@testing-library/react';
 import { VegaWalletConnectButton } from './vega-wallet-connect-button';
-import { truncateByChars } from '@vegaprotocol/utils';
 import userEvent from '@testing-library/user-event';
 import {
   mockConfig,
   MockedWalletProvider,
 } from '@vegaprotocol/wallet-react/testing';
+import { MockedProvider, type MockedResponse } from '@apollo/react-testing';
+import {
+  PartyProfilesDocument,
+  type PartyProfilesQuery,
+} from './__generated__/PartyProfiles';
 
 jest.mock('../../lib/hooks/use-get-current-route-id', () => ({
   useGetCurrentRouteId: jest.fn().mockReturnValue('current-route-id'),
 }));
 
+const key = { publicKey: '123456__123456', name: 'test' };
+const key2 = { publicKey: 'abcdef__abcdef', name: 'test2' };
+const keys = [key, key2];
+const keyProfile = {
+  __typename: 'PartyProfile' as const,
+  partyId: key.publicKey,
+  alias: `${key.name} alias`,
+  metadata: [],
+};
+
 const renderComponent = (mockOnClick = jest.fn()) => {
+  const partyProfilesMock: MockedResponse<PartyProfilesQuery> = {
+    request: {
+      query: PartyProfilesDocument,
+      variables: { partyIds: keys.map((k) => k.publicKey) },
+    },
+    result: {
+      data: {
+        partiesProfilesConnection: {
+          __typename: 'PartiesProfilesConnection',
+          edges: [
+            {
+              __typename: 'PartyProfileEdge',
+              node: keyProfile,
+            },
+          ],
+        },
+      },
+    },
+  };
+
   return (
-    <MockedWalletProvider>
-      <VegaWalletConnectButton onClick={mockOnClick} />
-    </MockedWalletProvider>
+    <MockedProvider mocks={[partyProfilesMock]}>
+      <MockedWalletProvider>
+        <VegaWalletConnectButton onClick={mockOnClick} />
+      </MockedWalletProvider>
+    </MockedProvider>
   );
 };
 
@@ -43,10 +79,6 @@ describe('VegaWalletConnectButton', () => {
   });
 
   it('should open dropdown and refresh keys when connected', async () => {
-    const key = { publicKey: '123456__123456', name: 'test' };
-    const key2 = { publicKey: 'abcdef__abcdef', name: 'test2' };
-    const keys = [key, key2];
-
     mockConfig.store.setState({
       status: 'connected',
       keys,
@@ -61,14 +93,22 @@ describe('VegaWalletConnectButton', () => {
 
     expect(screen.queryByTestId('connect-vega-wallet')).not.toBeInTheDocument();
     const button = screen.getByTestId('manage-vega-wallet');
-    expect(button).toHaveTextContent(truncateByChars(key.publicKey));
+    expect(button).toHaveTextContent(key.name);
 
     fireEvent.click(button);
 
     expect(await screen.findByRole('menu')).toBeInTheDocument();
-    expect(await screen.findAllByRole('menuitemradio')).toHaveLength(
-      keys.length
+    const menuItems = await screen.findAllByRole('menuitemradio');
+    expect(menuItems).toHaveLength(keys.length);
+
+    expect(within(menuItems[0]).getByTestId('alias')).toHaveTextContent(
+      keyProfile.alias
     );
+
+    expect(within(menuItems[1]).getByTestId('alias')).toHaveTextContent(
+      'No alias'
+    );
+
     expect(refreshKeys).toHaveBeenCalled();
 
     fireEvent.click(screen.getByTestId(`key-${key2.publicKey}`));
