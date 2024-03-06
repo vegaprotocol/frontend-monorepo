@@ -183,20 +183,21 @@ export function TransferFees({
   assetId: string;
   fees: TransferFee[];
 }) {
-  if (assetId && fees) {
+  // A recurring transfer that is rejected or cancelled will have an array of fees of 0 length
+  if (assetId && fees && fees.length > 0) {
     if (fees.length === 1) {
       return (
-        <p>
+        <p className="mt-2">
           Fee: <SizeInAsset assetId={assetId} size={fees[0].amount} />
         </p>
       );
     } else {
       return (
-        <details className="cursor-pointer">
+        <details className="cursor-pointer mt-2">
           <summary>{t('Fees')}</summary>
           <ul>
             {fees.map((fee) => (
-              <li className="text-nowrap">
+              <li className="text-nowrap leading-normal">
                 <SizeInAsset assetId={assetId} size={fee.amount} />{' '}
                 {t('in epoch')} {fee.epoch}
               </li>
