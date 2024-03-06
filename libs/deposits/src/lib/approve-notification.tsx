@@ -19,7 +19,7 @@ import { useT } from './use-t';
 interface ApproveNotificationProps {
   isActive: boolean;
   selectedAsset?: Asset;
-  onApprove: () => void;
+  onApprove: (amount?: string) => void;
   approved: boolean;
   balances: DepositBalances | null;
   amount: string;
@@ -74,7 +74,7 @@ export const ApproveNotification = ({
           text: t('Approve {{assetSymbol}}', {
             assetSymbol: selectedAsset?.symbol,
           }),
-          action: onApprove,
+          action: () => onApprove(),
           dataTestId: 'approve-submit',
         }}
       />
@@ -84,14 +84,26 @@ export const ApproveNotification = ({
   let message = t('Approve again to deposit more than {{allowance}}', {
     allowance: formatNumber(balances.allowance.toString()),
   });
+  const buttonProps = {
+    size: 'small' as const,
+    text: t('Approve {{assetSymbol}}', {
+      assetSymbol: selectedAsset?.symbol,
+    }),
+    action: () => onApprove(),
+    dataTestId: 'reapprove-submit',
+  };
 
   if (VEGA_ENV === Networks.MAINNET && selectedAsset.id === USDT_ID[VEGA_ENV]) {
     message = t(
-      'Approve again to deposit more than {{allowance}}. For USDT you need to reset your approval amount to 0 before can you approve more',
+      'USDT approved amount cannot be changed, only revoked. Revoke and reapprove to deposit more than {{allowance}}.',
       {
-        assetSymbol: selectedAsset?.symbol,
+        allowance: formatNumber(balances.allowance.toString()),
       }
     );
+    buttonProps.text = t('Revoke {{assetSymbol}} approval', {
+      assetSymbol: selectedAsset?.symbol,
+    });
+    buttonProps.action = () => onApprove('0');
   }
 
   const reApprovePrompt = (
@@ -100,14 +112,7 @@ export const ApproveNotification = ({
         intent={intent}
         testId="reapprove-default"
         message={message}
-        buttonProps={{
-          size: 'small',
-          text: t('Approve {{assetSymbol}}', {
-            assetSymbol: selectedAsset?.symbol,
-          }),
-          action: onApprove,
-          dataTestId: 'reapprove-submit',
-        }}
+        buttonProps={buttonProps}
       />
     </div>
   );
