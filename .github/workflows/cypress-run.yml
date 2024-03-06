@@ -35,11 +35,10 @@ jobs:
         run: echo ${{ steps.step.outputs.runner }}
 
   e2e:
-    if: ${{ fromJSON(inputs.projects) != null }}
     strategy:
       fail-fast: false
       matrix:
-        project: ${{ fromJSON(inputs.projects) }}
+        project: ${{ fromJSON(inputs.projects) !=null }}
     name: ${{ matrix.project }}
     needs: runner-choice
     runs-on: ${{ needs.runner-choice.outputs.runner }}
