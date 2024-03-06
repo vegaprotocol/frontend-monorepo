@@ -29,7 +29,7 @@ export class JsonRpcConnector implements Connector {
   requestId: number = 0;
   store: StoreApi<Store> | undefined;
   pollRef: NodeJS.Timer | undefined;
-  ee: EventEmitter;
+  ee: InstanceType<typeof EventEmitter>;
 
   constructor(config: JsonRpcConnectorConfig) {
     this.url = config.url;
