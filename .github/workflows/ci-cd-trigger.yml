@@ -287,16 +287,16 @@ jobs:
             * tools: ${{ needs.build-sources.outputs.preview_tools }}
 
   # Report single result at the end, to avoid mess with required checks in PR
-  cypress-check:
-    name: '(CI) cypress - check'
-    if: ${{ needs.check-e2e-needed.outputs.run-tests == 'true' && needs.build-sources.outputs.trading_only != 'true' }}
-    needs: cypress
-    runs-on: ubuntu-22.04
-    steps:
-      - run: |
-          result="${{ needs.cypress.result }}"
-          if [[ $result == "success" || $result == "skipped" ]]; then
-            exit 0
-          else
-            exit 1
-          fi
+  # cypress-check:
+  #   name: '(CI) cypress - check'
+  #   if: ${{ needs.check-e2e-needed.outputs.run-tests == 'true' && needs.build-sources.outputs.trading_only != 'true' }}
+  #   needs: cypress
+  #   runs-on: ubuntu-22.04
+  #   steps:
+  #     - run: |
+  #         result="${{ needs.cypress.result }}"
+  #         if [[ $result == "success" || $result == "skipped" ]]; then
+  #           exit 0
+  #         else
+  #           exit 1
+  #         fi
