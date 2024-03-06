@@ -4,6 +4,7 @@
   "Approval failed": "Approval failed",
   "Approve {{assetSymbol}}": "Approve {{assetSymbol}}",
   "Approve again to deposit more than {{allowance}}": "Approve again to deposit more than {{allowance}}",
+  "Approve again to deposit more than {{allowance}}. For USDT you need to reset your approval amount to 0 before can you approve more": "Approve again to deposit more than {{allowance}}. For USDT you need to reset your approval amount to 0 before can you approve more",
   "Asset": "Asset",
   "Balance available": "Balance available",
   "Before you can make a deposit of your chosen asset, {{assetSymbol}}, you need to approve its use in your Ethereum wallet": "Before you can make a deposit of your chosen asset, {{assetSymbol}}, you need to approve its use in your Ethereum wallet",

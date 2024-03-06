@@ -1,5 +1,9 @@
 import type { Asset } from '@vegaprotocol/assets';
-import { EtherscanLink } from '@vegaprotocol/environment';
+import {
+  EtherscanLink,
+  Networks,
+  useEnvironment,
+} from '@vegaprotocol/environment';
 import { Intent, Notification } from '@vegaprotocol/ui-toolkit';
 import {
   formatNumber,
@@ -23,6 +27,11 @@ interface ApproveNotificationProps {
   intent?: Intent;
 }
 
+const USDT_ID: { [Networks.MAINNET]: string } = {
+  [Networks.MAINNET]:
+    'bf1e88d19db4b3ca0d1d5bdb73718a01686b18cf731ca26adedf3c8b83802bba',
+};
+
 export const ApproveNotification = ({
   isActive,
   selectedAsset,
@@ -33,6 +42,7 @@ export const ApproveNotification = ({
   approveTxId,
   intent = Intent.Warning,
 }: ApproveNotificationProps) => {
+  const { VEGA_ENV } = useEnvironment();
   const t = useT();
   const tx = useEthTransactionStore((state) => {
     return state.transactions.find((t) => t?.id === approveTxId);
@@ -70,14 +80,26 @@ export const ApproveNotification = ({
       />
     </div>
   );
+
+  let message = t('Approve again to deposit more than {{allowance}}', {
+    allowance: formatNumber(balances.allowance.toString()),
+  });
+
+  if (VEGA_ENV === Networks.MAINNET && selectedAsset.id === USDT_ID[VEGA_ENV]) {
+    message = t(
+      'Approve again to deposit more than {{allowance}}. For USDT you need to reset your approval amount to 0 before can you approve more',
+      {
+        assetSymbol: selectedAsset?.symbol,
+      }
+    );
+  }
+
   const reApprovePrompt = (
     <div className="mb-4">
       <Notification
         intent={intent}
         testId="reapprove-default"
-        message={t('Approve again to deposit more than {{allowance}}', {
-          allowance: formatNumber(balances.allowance.toString()),
-        })}
+        message={message}
         buttonProps={{
           size: 'small',
           text: t('Approve {{assetSymbol}}', {
