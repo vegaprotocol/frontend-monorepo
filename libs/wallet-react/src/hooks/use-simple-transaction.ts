@@ -65,7 +65,7 @@ export const useSimpleTransaction = (opts?: Options) => {
         if (err.code === ConnectorErrors.userRejected.code) {
           setStatus('idle');
         } else {
-          setError(`${err.message}: ${err.data}`);
+          setError(`${err.message}${err.data ? `: ${err.data}` : ''}`);
           setStatus('idle');
           opts?.onError?.(err.message);
         }

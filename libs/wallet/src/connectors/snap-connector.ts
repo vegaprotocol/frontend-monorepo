@@ -1,4 +1,3 @@
-import EventEmitter from 'eventemitter3';
 import {
   ConnectorError,
   chainIdError,
@@ -6,13 +5,13 @@ import {
   listKeysError,
   noWalletError,
   sendTransactionError,
+  userRejectedError,
 } from '../errors';
 import { type Transaction } from '../transaction-types';
 import {
   JsonRpcMethod,
   type Connector,
   type TransactionParams,
-  type VegaWalletEvent,
 } from '../types';
 
 enum EthereumMethod {
@@ -43,16 +42,20 @@ declare global {
   type WindowEthereumProvider = {
     isMetaMask: boolean;
     request<T = unknown>(args: RequestArguments): Promise<T>;
-    selectedAddress: string | null;
-    // eslint-disable-next-line
-    on: (event: string, callback: (...args: any[]) => void) => void;
-    off: (event: string) => void;
   };
 
   interface Window {
     // @ts-ignore must have identical modifiers
     ethereum: WindowEthereumProvider;
   }
+}
+
+interface SnapRPCError {
+  code: number;
+  message: string;
+  data: {
+    originalError: { code: number };
+  };
 }
 
 export class SnapConnector implements Connector {
@@ -64,7 +67,6 @@ export class SnapConnector implements Connector {
   node: string;
   version: string;
   snapId: string;
-  ee: EventEmitter;
 
   // Note: apps may not know which node is selected on start up so its up
   // to the app to make sure class intances are renewed if the node changes
@@ -72,14 +74,21 @@ export class SnapConnector implements Connector {
     this.node = config.node;
     this.version = config.version;
     this.snapId = config.snapId;
-    this.ee = new EventEmitter();
   }
 
   bindStore() {}
 
   async connectWallet(desiredChainId: string) {
     try {
-      await this.requestSnap();
+      const res = await this.requestSnap();
+
+      if (res[this.snapId].blocked) {
+        throw connectError('snap is blocked');
+      }
+
+      if (!res[this.snapId].enabled) {
+        throw connectError('snap is not enabled');
+      }
 
       const { chainId } = await this.getChainId();
 
@@ -89,7 +98,6 @@ export class SnapConnector implements Connector {
         );
       }
 
-      this.bindListeners();
       return { success: true };
     } catch (err) {
       if (err instanceof ConnectorError) {
@@ -100,34 +108,47 @@ export class SnapConnector implements Connector {
     }
   }
 
-  async disconnectWallet() {
-    this.unbindListeners();
-  }
+  async disconnectWallet() {}
 
   // deprecated, pass chain on connect
   async getChainId() {
     try {
-      const res = await this.invokeSnap<{ chainID: string }>(
+      const data = await this.invokeSnap<{ chainID: string }>(
         JsonRpcMethod.GetChainId,
         {
           networkEndpoints: [this.node],
         }
       );
-      return { chainId: res.chainID };
+
+      if ('error' in data) {
+        throw chainIdError(data.error.message);
+      }
+
+      return { chainId: data.chainID };
     } catch (err) {
-      this.unbindListeners();
+      if (err instanceof ConnectorError) {
+        throw err;
+      }
+
       throw chainIdError();
     }
   }
 
   async listKeys() {
     try {
-      const res = await this.invokeSnap<{
+      const data = await this.invokeSnap<{
         keys: Array<{ publicKey: string; name: string }>;
       }>(JsonRpcMethod.ListKeys);
-      return res.keys;
+
+      if ('error' in data) {
+        throw listKeysError(data.error.message);
+      }
+
+      return data.keys;
     } catch (err) {
-      this.unbindListeners();
+      if (err instanceof ConnectorError) {
+        throw err;
+      }
       throw listKeysError();
     }
   }
@@ -138,14 +159,19 @@ export class SnapConnector implements Connector {
       await this.listKeys();
       return { connected: true };
     } catch (err) {
-      this.unbindListeners();
       return { connected: false };
     }
   }
 
   async sendTransaction(params: TransactionParams) {
     try {
-      const res = await this.invokeSnap<{
+      // MetaMask in Firefox doesn't like undefined properties or some properties
+      // on __proto__ so we need to strip them out with JSON.strinfify
+      params = JSON.parse(JSON.stringify(params));
+
+      // If the transaction is invalid this will throw with SnapRPCError
+      // but if its rejected it will resolve with 'error' in data
+      const data = await this.invokeSnap<{
         transactionHash: string;
         transaction: { signature: { value: string } };
         receivedAt: string;
@@ -157,46 +183,40 @@ export class SnapConnector implements Connector {
         networkEndpoints: [this.node],
       });
 
+      if ('error' in data) {
+        if (data.error.code === -4) {
+          throw userRejectedError();
+        }
+
+        throw sendTransactionError(`${data.error.message}: ${data.error.data}`);
+      }
+
       return {
-        transactionHash: res.transactionHash,
-        signature: res.transaction.signature.value,
-        receivedAt: res.receivedAt,
-        sentAt: res.sentAt,
+        transactionHash: data.transactionHash,
+        signature: data.transaction.signature.value,
+        receivedAt: data.receivedAt,
+        sentAt: data.sentAt,
       };
     } catch (err) {
       if (err instanceof ConnectorError) {
         throw err;
       }
 
+      if (this.isSnapRPCError(err)) {
+        throw sendTransactionError(err.message);
+      }
+
       throw sendTransactionError();
     }
   }
 
-  on(event: VegaWalletEvent, callback: () => void) {
-    this.ee.on(event, callback);
-  }
+  on() {}
 
-  off(event: VegaWalletEvent, callback?: () => void) {
-    this.ee.off(event, callback);
-  }
+  off() {}
+
   ////////////////////////////////////
   // Snap methods
   ////////////////////////////////////
-
-  /**
-   * Emit wallet listeners for listeners invovoked by MetaMask
-   */
-  private bindListeners() {
-    window.ethereum.on('accountsChanged', (accounts: string[]) => {
-      if (!accounts.length) {
-        this.ee.emit('client.disconnected');
-      }
-    });
-  }
-
-  private unbindListeners() {
-    window.ethereum.off('accountsChanged');
-  }
 
   /**
    * Requests permission for a website to communicate with the specified snaps
@@ -204,27 +224,23 @@ export class SnapConnector implements Connector {
    * If the installation of any snap fails, returns the error that caused the failure.
    * More informations here: https://docs.metamask.io/snaps/reference/rpc-api/#wallet_requestsnaps
    */
-  private async requestSnap() {
-    await this.request(EthereumMethod.RequestSnaps, {
-      [this.snapId]: {
-        version: this.version,
+  private async requestSnap(): Promise<{
+    [snapId: string]: {
+      blocked: boolean;
+      enabled: boolean;
+      id: string;
+      version: string;
+    };
+  }> {
+    return window.ethereum.request({
+      method: EthereumMethod.RequestSnaps,
+      params: {
+        [this.snapId]: {
+          version: this.version,
+        },
       },
     });
   }
-
-  // TODO: check if this is needed, its used in use-snap-status
-  //
-  //
-  // /**
-  //  * Gets the list of all installed snaps.
-  //  * More information here: https://docs.metamask.io/snaps/reference/rpc-api/#wallet_getsnaps
-  //  */
-  // async getSnap() {
-  //   const snaps = await this.request(EthereumMethod.GetSnaps);
-  //   return Object.values(snaps).find(
-  //     (s) => s.id === this.snapId && s.version === this.version
-  //   );
-  // }
 
   /**
    * Calls a method on the specified snap, always vega in this case
@@ -233,38 +249,30 @@ export class SnapConnector implements Connector {
   private async invokeSnap<TResult>(
     method: JsonRpcMethod,
     params?: SnapInvocationParams
-  ): Promise<TResult> {
-    return await this.request(EthereumMethod.InvokeSnap, {
-      snapId: this.snapId,
-      request: {
-        method,
-        params,
+  ): Promise<TResult | { error: SnapRPCError }> {
+    return window.ethereum.request({
+      method: EthereumMethod.InvokeSnap,
+      params: {
+        snapId: this.snapId,
+        request: {
+          method,
+          params,
+        },
       },
     });
   }
 
-  /**
-   * Calls window.ethereum.request with method and params
-   */
-  private async request<TResult>(
-    method: EthereumMethod,
-    params?: object
-  ): Promise<TResult> {
-    if (window.ethereum?.request && window.ethereum?.isMetaMask) {
-      // MetaMask in Firefox doesn't like undefined properties or some properties
-      // on __proto__ so we need to strip them out with JSON.strinfify
-      try {
-        params = JSON.parse(JSON.stringify(params));
-      } catch (err) {
-        throw sendTransactionError();
-      }
-
-      return window.ethereum.request({
-        method,
-        params,
-      });
+  private isSnapRPCError(obj: unknown): obj is SnapRPCError {
+    if (
+      obj !== undefined &&
+      obj !== null &&
+      typeof obj === 'object' &&
+      'code' in obj &&
+      'message' in obj &&
+      'data' in obj
+    ) {
+      return true;
     }
-
-    throw noWalletError();
+    return false;
   }
 }
