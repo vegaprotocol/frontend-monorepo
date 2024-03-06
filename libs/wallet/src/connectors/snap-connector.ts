@@ -53,7 +53,7 @@ declare global {
 interface SnapRPCError {
   code: number;
   message: string;
-  data: {
+  data?: {
     originalError: { code: number };
   };
 }
@@ -167,10 +167,6 @@ export class SnapConnector implements Connector {
 
   async sendTransaction(params: TransactionParams) {
     try {
-      // MetaMask in Firefox doesn't like undefined properties or some properties
-      // on __proto__ so we need to strip them out with JSON.strinfify
-      params = JSON.parse(JSON.stringify(params));
-
       // If the transaction is invalid this will throw with SnapRPCError
       // but if its rejected it will resolve with 'error' in data
       const data = await this.invokeSnap<{
@@ -250,8 +246,12 @@ export class SnapConnector implements Connector {
    */
   private async invokeSnap<TResult>(
     method: JsonRpcMethod,
-    params?: SnapInvocationParams
+    params: SnapInvocationParams = {}
   ): Promise<TResult | { error: SnapRPCError }> {
+    // MetaMask in Firefox doesn't like undefined properties or some properties
+    // on __proto__ so we need to strip them out with JSON.strinfify
+    params = JSON.parse(JSON.stringify(params));
+
     return window.ethereum.request({
       method: EthereumMethod.InvokeSnap,
       params: {
@@ -270,8 +270,7 @@ export class SnapConnector implements Connector {
       obj !== null &&
       typeof obj === 'object' &&
       'code' in obj &&
-      'message' in obj &&
-      'data' in obj
+      'message' in obj
     ) {
       return true;
     }
