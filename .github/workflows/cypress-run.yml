@@ -35,7 +35,7 @@ jobs:
         run: echo ${{ steps.step.outputs.runner }}
 
   e2e:
-    if: ${{ inputs.projects != null }}
+    if: ${{ fromJSON(inputs.projects) != null }}
     strategy:
       fail-fast: false
       matrix:
