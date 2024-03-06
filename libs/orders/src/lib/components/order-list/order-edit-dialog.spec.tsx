@@ -24,7 +24,7 @@ describe('OrderEditDialog', () => {
     await userEvent.click(submitButton);
     const inputErrorText = within(editOrder).getByTestId('input-error-text');
     expect(inputErrorText).toHaveTextContent(
-      'Price accepts up to 1 decimal places'
+      'Price must be a multiple of 0.1 for this market'
     );
   });
 });

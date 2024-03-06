@@ -883,7 +883,7 @@ describe('DealTicket', () => {
         'deal-ticket-error-message-price'
       );
       expect(errorMessage).toHaveTextContent(
-        'Price accepts up to 2 decimal places'
+        'Price must be a multiple of 0.01 for this market'
       );
     });
   });
