@@ -145,18 +145,18 @@ jobs:
           main-branch-name: develop
 
       - name: See affected apps
-        id: affected_apps
         run: |
           branch_slug="$(echo '${{ github.head_ref || github.ref_name }}' | sed -r s/[^a-zA-Z0-9]+/-/g | sed -r s/^-+\|-+$//g | cut -c 1-50 )"
           output=$(python3 tools/ci/check-affected.py --github-ref="${{ github.ref }}" --branch-slug="$branch_slug" --event-name="${{ github.event_name }}")
           echo "Affected apps: $output"
           apps=($output)
           if [[ " ${apps[@]} " =~ " trading " ]] && [[ ${#apps[@]} -eq 1 ]]; then
-            echo "trading_only=true" >> $GITHUB_OUTPUT
+            echo "trading_only=true" >> $GITHUB_ENV
           else
-            echo "trading_only=false" >> $GITHUB_OUTPUT
-        env:
-          GITHUB_OUTPUT: ${{ github.action_path }}/output
+            echo "trading_only=false" >> $GITHUB_ENV
+
+      - name: Output trading_only variable
+        run: echo "trading_only=$(<"$GITHUB_ENV" grep 'trading_only=' | cut -d'=' -f2)" >> $GITHUB_OUTPUT
 
       - name: Verify script result
         run: |
