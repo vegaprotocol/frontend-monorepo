@@ -58,6 +58,8 @@ interface SnapRPCError {
   };
 }
 
+const USER_REJECTED_CODE = -4;
+
 export class SnapConnector implements Connector {
   readonly id = 'snap';
   readonly name = 'MetaMask Snap';
@@ -184,7 +186,7 @@ export class SnapConnector implements Connector {
       });
 
       if ('error' in data) {
-        if (data.error.code === -4) {
+        if (data.error.code === USER_REJECTED_CODE) {
           throw userRejectedError();
         }
 

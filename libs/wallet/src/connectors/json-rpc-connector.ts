@@ -17,6 +17,8 @@ import {
 
 type JsonRpcConnectorConfig = { url: string; token?: string };
 
+const USER_REJECTED_CODE = 3001;
+
 export class JsonRpcConnector implements Connector {
   readonly id = 'jsonRpc';
   readonly name = 'Command Line Wallet';
@@ -63,7 +65,7 @@ export class JsonRpcConnector implements Connector {
         const token = response.headers.get('Authorization');
 
         if (!response.ok) {
-          if ('error' in data && data.error.code === 3001) {
+          if ('error' in data && data.error.code === USER_REJECTED_CODE) {
             throw userRejectedError();
           }
           throw connectError('response not ok');
@@ -137,7 +139,7 @@ export class JsonRpcConnector implements Connector {
 
       if (!response.ok) {
         if ('error' in data) {
-          if (data.error.code === 3001) {
+          if (data.error.code === USER_REJECTED_CODE) {
             throw userRejectedError();
           }
 

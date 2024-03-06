@@ -7,12 +7,26 @@ import {
   listKeysError,
   noWalletError,
   sendTransactionError,
+  userRejectedError,
 } from '../errors';
 import {
   type TransactionParams,
   type Connector,
   type VegaWalletEvent,
 } from '../types';
+
+interface InjectedError {
+  message: string;
+  code: number;
+  data:
+    | {
+        message: string;
+        code: number;
+      }
+    | string;
+}
+
+const USER_REJECTED_CODE = -4;
 
 export class InjectedConnector implements Connector {
   readonly id = 'injected';
@@ -85,6 +99,18 @@ export class InjectedConnector implements Connector {
         sentAt: res.sentAt,
       };
     } catch (err) {
+      if (this.isInjectedError(err)) {
+        if (err.code === USER_REJECTED_CODE) {
+          throw userRejectedError();
+        }
+
+        if (typeof err.data === 'string') {
+          throw sendTransactionError(err.data);
+        } else {
+          throw sendTransactionError(err.data.message);
+        }
+      }
+
       throw sendTransactionError();
     }
   }
@@ -95,5 +121,19 @@ export class InjectedConnector implements Connector {
 
   off(event: VegaWalletEvent, callback: () => void) {
     window.vega.off(event, callback);
+  }
+
+  private isInjectedError(obj: unknown): obj is InjectedError {
+    if (
+      obj !== undefined &&
+      obj !== null &&
+      typeof obj === 'object' &&
+      'code' in obj &&
+      'message' in obj &&
+      'data' in obj
+    ) {
+      return true;
+    }
+    return false;
   }
 }

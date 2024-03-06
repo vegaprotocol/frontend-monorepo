@@ -132,10 +132,7 @@ export function createConfig(cfg: Config): Wallet {
       store.setState(getInitialState(), true);
       return { status: 'disconnected' as const };
     } catch (err) {
-      store.setState({
-        ...getInitialState(),
-        error: err instanceof ConnectorError ? err : unknownError(),
-      });
+      store.setState(getInitialState());
       return { status: 'disconnected' as const };
     }
   }
