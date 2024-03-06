@@ -27,6 +27,7 @@ export const useEthTransactionManager = () => {
       confirmations: 0,
       notify: true,
     });
+
     const {
       contract,
       methodName,
@@ -44,7 +45,13 @@ export const useEthTransactionManager = () => {
         ) {
           throw new Error('method not found on contract');
         }
-        await contract.contract.callStatic[methodName](...args);
+
+        // If this is an approve DONT call callStatic. This is because approve for Tether USDT
+        // on mainnet requries you to approve back to 0. You cannot approve an amount if you
+        // already have an existing approval amount, resulting in the callStatic throwing
+        if (methodName !== 'approve') {
+          await contract.contract.callStatic[methodName](...args);
+        }
       } catch (err) {
         update(transaction.id, {
           status: EthTxStatus.Error,
