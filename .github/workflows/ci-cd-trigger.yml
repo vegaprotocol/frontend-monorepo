@@ -149,8 +149,13 @@ jobs:
         run: |
           branch_slug="$(echo '${{ github.head_ref || github.ref_name }}' | sed -r s/[^a-zA-Z0-9]+/-/g | sed -r s/^-+\|-+$//g | cut -c 1-50 )"
           output=$(python3 tools/ci/check-affected.py --github-ref="${{ github.ref }}" --branch-slug="$branch_slug" --event-name="${{ github.event_name }}")
-          echo "output=$output"
-          echo "::set-output name=affects_trading::$(echo $output | grep -q 'trading' && echo 'true' || echo 'false')"
+          echo "Affected apps: $output"
+          # Assuming output is a space-separated list of affected apps
+          apps=($output)
+          if [[ " ${apps[@]} " =~ " trading " ]] && [[ ${#apps[@]} -eq 1 ]]; then
+            echo "trading_only=true" >> $GITHUB_ENV
+          else
+            echo "trading_only=false" >> $GITHUB_ENV
         env:
           GITHUB_REF: ${{ github.ref }}
           BRANCH_SLUG: $branch_slug
@@ -287,7 +292,7 @@ jobs:
   # Report single result at the end, to avoid mess with required checks in PR
   cypress-check:
     name: '(CI) cypress - check'
-    if: ${{ needs.build-sources.outputs.affects_trading == 'false' }}
+    if: ${{ needs.check-e2e-needed.outputs.run-tests == 'true' && env.trading_only != 'true' }}
     needs: cypress
     runs-on: ubuntu-22.04
     steps:
