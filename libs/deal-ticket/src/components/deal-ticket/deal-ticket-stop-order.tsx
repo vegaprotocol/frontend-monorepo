@@ -58,7 +58,7 @@ import { KeyValue } from './key-value';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { stopOrdersProvider } from '@vegaprotocol/orders';
 import { useT } from '../../use-t';
-import { determinePriceStep, determineSizeStep } from '../../utils/step';
+import { determinePriceStep, determineSizeStep } from '@vegaprotocol/utils';
 
 export interface StopOrderProps {
   market: Market;

@@ -1,7 +1,7 @@
 import { Controller, type Control } from 'react-hook-form';
 import type { Market } from '@vegaprotocol/markets';
 import type { OrderFormValues } from '../../hooks/use-form-values';
-import { toDecimal, useValidateAmount } from '@vegaprotocol/utils';
+import { determinePriceStep, useValidateAmount } from '@vegaprotocol/utils';
 import {
   TradingFormGroup,
   TradingInputError,
@@ -12,7 +12,6 @@ import {
   Pill,
 } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../use-t';
-import { determinePriceStep } from '../../utils/step';
 
 export interface DealTicketPriceTakeProfitStopLossProps {
   control: Control<OrderFormValues>;

@@ -1,5 +1,5 @@
-import type { Market } from '@vegaprotocol/markets';
-import { toBigNum, toDecimal } from '@vegaprotocol/utils';
+import type { Market } from '@vegaprotocol/types';
+import { toBigNum, toDecimal } from './format';
 
 export const determinePriceStep = (
   market: Pick<Market, 'decimalPlaces' | 'tickSize'>

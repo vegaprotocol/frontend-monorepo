@@ -9,7 +9,7 @@ import {
   Tooltip,
 } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../use-t';
-import { determineSizeStep } from '../../utils/step';
+import { determineSizeStep } from '@vegaprotocol/utils';
 
 export interface DealTicketSizeIcebergProps {
   control: Control<OrderFormValues>;
