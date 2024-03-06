@@ -153,9 +153,12 @@ jobs:
           # Assuming output is a space-separated list of affected apps
           apps=($output)
           if [[ " ${apps[@]} " =~ " trading " ]] && [[ ${#apps[@]} -eq 1 ]]; then
-            echo "trading_only=true" >> $GITHUB_ENV
+            echo "::set-output name=trading_only::true"
           else
-            echo "trading_only=false" >> $GITHUB_ENV
+            echo "::set-output name=trading_only::false"
+          env:
+            GITHUB_OUTPUT: $GITHUB_OUTPUT
+
         env:
           GITHUB_REF: ${{ github.ref }}
           BRANCH_SLUG: $branch_slug
@@ -292,7 +295,7 @@ jobs:
   # Report single result at the end, to avoid mess with required checks in PR
   cypress-check:
     name: '(CI) cypress - check'
-    if: ${{ needs.check-e2e-needed.outputs.run-tests == 'true' && env.trading_only != 'true' }}
+    if: ${{ needs.check-e2e-needed.outputs.run-tests == 'true' && needs.build-sources.outputs.trading_only != 'true' }}
     needs: cypress
     runs-on: ubuntu-22.04
     steps:
