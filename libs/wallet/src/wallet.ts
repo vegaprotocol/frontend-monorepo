@@ -143,7 +143,7 @@ export function createConfig(cfg: Config): Wallet {
 
     // Only refresh keys if connnected. If you aren't connect when you connect
     // you will get the latest keys
-    if (state.status === 'connected') {
+    if (state.status !== 'connected') {
       return;
     }
 

@@ -69,7 +69,8 @@ export const ConnectionOptions = ({
           className="text-danger text-sm first-letter:uppercase"
           data-testid="connection-error"
         >
-          {error.message}: {error.data}
+          {error.message}
+          {error.data ? `: ${error.data}` : ''}
         </p>
       )}
       <a

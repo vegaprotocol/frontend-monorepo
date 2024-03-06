@@ -93,7 +93,6 @@ describe('disconnect', () => {
     expect(result).toEqual({ status: 'disconnected' });
     expect(config.store.getState()).toMatchObject({
       status: 'disconnected',
-      error: noConnectorError(),
       current: undefined,
       keys: [],
       pubKey: undefined,
@@ -130,7 +129,7 @@ describe('refresh keys', () => {
   it('handles invalid connector', async () => {
     await config.refreshKeys();
     expect(config.store.getState()).toMatchObject({
-      error: noConnectorError(),
+      error: undefined,
     });
   });
 
