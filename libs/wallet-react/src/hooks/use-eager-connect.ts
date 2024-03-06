@@ -28,7 +28,7 @@ export function useEagerConnect() {
     if (typeof window !== 'undefined') {
       attemptConnect();
     }
-  }, [connect, current]);
+  }, [status, connect, current]);
 
   return status;
 }
