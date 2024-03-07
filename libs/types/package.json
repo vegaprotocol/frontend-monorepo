@@ -1,6 +1,6 @@
 {
   "name": "@vegaprotocol/types",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "dependencies": {},
   "type": "module",
   "module": "./index.js"
