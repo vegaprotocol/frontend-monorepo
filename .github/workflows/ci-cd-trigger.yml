@@ -200,6 +200,7 @@ jobs:
     uses: ./.github/workflows/cypress-run.yml
     secrets: inherit
     with:
+      if: ${{ needs.build-sources.outputs.projects-e2e }} != null
       projects: ${{ needs.build-sources.outputs.projects-e2e }}
       tags: '@smoke'
 
