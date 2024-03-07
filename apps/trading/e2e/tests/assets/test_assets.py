@@ -65,7 +65,7 @@ def tooltip(page: Page, index: int, test_id: str, tooltip: str):
 def test_asset_details(page: Page):
     page.goto("/#/portfolio")
     page.locator('[data-testid="tab-collateral"] >> text=tDAI').click()
-    # test
+
     for index, pair in enumerate(label_value_tooltip_pairs):
         if index in [7, 8, 9]:  # Skip indices 7, 8, and 9.
             continue
