@@ -3,55 +3,38 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/wallet/src",
   "projectType": "library",
-  "tags": [],
   "targets": {
     "build": {
       "executor": "@nx/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/libs/wallet",
+        "main": "libs/wallet/src/index.ts",
         "tsConfig": "libs/wallet/tsconfig.lib.json",
+        "assets": [],
         "project": "libs/wallet/package.json",
-        "entryFile": "libs/wallet/src/index.ts",
-        "external": [
-          "react",
-          "react-dom",
-          "react/jsx-runtime",
-          "@vegaprotocol/types",
-          "@vegaprotocol/utils"
-        ],
-        "rollupConfig": "@nx/react/plugins/bundle-rollup",
         "compiler": "swc",
-        "format": ["esm", "cjs"],
-        "assets": [
-          {
-            "glob": "libs/wallet/README.md",
-            "input": ".",
-            "output": "."
-          }
-        ]
+        "format": ["esm"]
       }
+    },
+    "publish": {
+      "command": "node tools/scripts/publish.mjs wallet {args.ver} {args.tag}",
+      "dependsOn": ["build"]
     },
     "lint": {
       "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["libs/wallet/**/*.{ts,tsx,js,jsx}"]
+        "lintFilePatterns": ["libs/wallet/**/*.ts", "libs/wallet/package.json"]
       }
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/libs/wallet"],
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
         "jestConfig": "libs/wallet/jest.config.ts"
       }
-    },
-    "build-spec": {
-      "executor": "nx:run-commands",
-      "outputs": [],
-      "options": {
-        "command": "yarn tsc --project ./libs/wallet/tsconfig.spec.json"
-      }
     }
-  }
+  },
+  "tags": []
 }

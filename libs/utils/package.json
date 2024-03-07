@@ -1,5 +1,7 @@
 {
   "name": "@vegaprotocol/utils",
   "version": "0.0.10",
-  "type": "commonjs"
+  "dependencies": {},
+  "type": "module",
+  "module": "./index.js"
 }

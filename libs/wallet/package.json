@@ -1,4 +1,7 @@
 {
   "name": "@vegaprotocol/wallet",
-  "version": "0.0.2"
+  "version": "0.0.1",
+  "dependencies": {},
+  "type": "module",
+  "module": "./index.js"
 }
