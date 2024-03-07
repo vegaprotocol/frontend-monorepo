@@ -118,7 +118,10 @@ export class InjectedConnector implements Connector {
   on(event: VegaWalletEvent, callback: () => void) {
     // Check for on/off in case user is on older versions which don't support it
     // We can remove this check once FF is at the latest version
-    if ('on' in window.vega && typeof window.vega.on === 'function') {
+    if (
+      typeof window.vega !== 'undefined' &&
+      typeof window.vega.on === 'function'
+    ) {
       window.vega.on(event, callback);
     }
   }
@@ -126,7 +129,10 @@ export class InjectedConnector implements Connector {
   off(event: VegaWalletEvent, callback: () => void) {
     // Check for on/off in case user is on older versions which don't support it
     // We can remove this check once FF is at the latest version
-    if ('off' in window.vega && typeof window.vega.on === 'function') {
+    if (
+      typeof window.vega !== 'undefined' &&
+      typeof window.vega.off === 'function'
+    ) {
       window.vega.off(event, callback);
     }
   }
