@@ -194,8 +194,13 @@ const KeypairItem = ({ pk, alias }: { pk: Key; alias: string | undefined }) => {
           data-testid={`key-${pk.publicKey}`}
         >
           <Tooltip description={t('Public facing key alias. Click to edit')}>
-            <button data-testid="alias" onClick={() => setOpen(pk.publicKey)}>
+            <button
+              data-testid="alias"
+              onClick={() => setOpen(pk.publicKey)}
+              className="flex items-center gap-1"
+            >
               {alias ? alias : t('No alias')}
+              <VegaIcon name={VegaIconNames.EDIT} />
             </button>
           </Tooltip>
         </div>
