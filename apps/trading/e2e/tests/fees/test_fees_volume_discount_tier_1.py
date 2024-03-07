@@ -1,5 +1,6 @@
 import pytest
 from fees_test_ids import *
+from typing import Tuple, Generator
 from playwright.sync_api import Page, expect
 from vega_sim.null_service import VegaServiceNull
 from actions.vega import submit_order
@@ -16,18 +17,25 @@ from fixtures.market import setup_continuous_market
 
 
 @pytest.fixture(scope="module")
-def setup_vega_and_market(request, browser):
-    # Initialize Vega with cleanup
+def setup_environment(
+    request, browser
+) -> Generator[Tuple[VegaServiceNull, str, Page], None, None]:
     with init_vega(request) as vega_instance:
-        request.addfinalizer(lambda: cleanup_container(vega_instance, request))
+        request.addfinalizer(lambda: cleanup_container(vega_instance))
 
         # Setup the market with volume discount program
         market = setup_continuous_market(vega_instance, custom_quantum=100000)
         vega_instance.update_volume_discount_program(
             proposal_key=MM_WALLET.name,
             benefit_tiers=[
-                {"minimum_running_notional_taker_volume": 100, "volume_discount_factor": 0.1},
-                {"minimum_running_notional_taker_volume": 200, "volume_discount_factor": 0.2},
+                {
+                    "minimum_running_notional_taker_volume": 100,
+                    "volume_discount_factor": 0.1,
+                },
+                {
+                    "minimum_running_notional_taker_volume": 200,
+                    "volume_discount_factor": 0.2,
+                },
             ],
             window_length=7,
         )
@@ -44,8 +52,10 @@ def setup_vega_and_market(request, browser):
             yield vega_instance, market, page
 
 
-def test_fees_page_discount_program_my_trading_fees(setup_vega_and_market):
-    vega, market, page = setup_vega_and_market
+def test_fees_page_discount_program_my_trading_fees(
+    setup_environment: Tuple[VegaServiceNull, str, Page],
+) -> None:
+    vega, market, page = setup_environment
     page.goto("/#/fees")
     expect(page.get_by_test_id(ADJUSTED_FEES)).to_have_text("9.045%-9.045%")
     expect(page.get_by_test_id(TOTAL_FEE_BEFORE_DISCOUNT)).to_have_text(
@@ -56,11 +66,10 @@ def test_fees_page_discount_program_my_trading_fees(setup_vega_and_market):
     expect(page.get_by_test_id(LIQUIDITY_FEES)).to_have_text("Liquidity0%-0%")
 
 
-
 def test_fees_page_discount_program_total_discount(
-    setup_vega_and_market
-):
-    vega, market, page = setup_vega_and_market
+    setup_environment: Tuple[VegaServiceNull, str, Page],
+) -> None:
+    vega, market, page = setup_environment
     page.goto("/#/fees")
     expect(page.get_by_test_id(TOTAL_DISCOUNT)).to_have_text("10%")
     expect(page.get_by_test_id(VOLUME_DISCOUNT_ROW)).to_have_text("Volume discount10%")
@@ -73,22 +82,20 @@ def test_fees_page_discount_program_total_discount(
     )
 
 
-
 def test_fees_page_volume_discount_program_my_current_volume(
-    setup_vega_and_market
-):
-    vega, market, page = setup_vega_and_market
+    setup_environment: Tuple[VegaServiceNull, str, Page],
+) -> None:
+    vega, market, page = setup_environment
     page.goto("/#/fees")
     expect(page.get_by_test_id(PAST_EPOCHS_VOLUME)).to_have_text("103")
 
     expect(page.get_by_test_id(REQUIRED_FOR_NEXT_TIER)).to_have_text("97")
 
 
-
 def test_fees_page_discount_program_discount(
-    setup_vega_and_market
-):
-    vega, market, page = setup_vega_and_market
+    setup_environment: Tuple[VegaServiceNull, str, Page],
+) -> None:
+    vega, market, page = setup_environment
     page.goto("/#/fees")
     expect(page.get_by_test_id(TIER_VALUE_0)).to_have_text("1")
     expect(page.get_by_test_id(TIER_VALUE_1)).to_have_text("2")
@@ -101,9 +108,10 @@ def test_fees_page_discount_program_discount(
     expect(page.get_by_test_id("your-volume-tier-0").nth(1)).to_have_text("Your tier")
 
 
-
-def test_fees_page_discount_program_fees_by_market(setup_vega_and_market):
-    vega, market, page = setup_vega_and_market
+def test_fees_page_discount_program_fees_by_market(
+    setup_environment: Tuple[VegaServiceNull, str, Page],
+) -> None:
+    vega, market, page = setup_environment
     page.goto("/#/fees")
     pinned = page.locator(PINNED_ROW_LOCATOR)
     row = page.locator(ROW_LOCATOR)
@@ -115,11 +123,10 @@ def test_fees_page_discount_program_fees_by_market(setup_vega_and_market):
     expect(row.locator(COL_TOTAL_FEE)).to_have_text("10.05%")
 
 
-
 def test_deal_ticket_discount_program_testing(
-    setup_vega_and_market
-):
-    vega, market, page = setup_vega_and_market
+    setup_environment: Tuple[VegaServiceNull, str, Page],
+) -> None:
+    vega, market, page = setup_environment
     page.goto(f"/#/markets/{market}")
     page.get_by_test_id(ORDER_SIZE).fill("1")
     page.get_by_test_id(ORDER_PRICE).fill("1")
@@ -139,10 +146,11 @@ def test_deal_ticket_discount_program_testing(
     expect(tooltip.get_by_test_id(TOTAL_FEE_VALUE)).to_have_text("0.09045 tDAI")
 
 
+@pytest.mark.xdist_group(name="test_fees_volume_tier_1")
 def test_fills_taker_discount_program(
-    setup_vega_and_market
-):
-    vega, market, page = setup_vega_and_market
+    setup_environment: Tuple[VegaServiceNull, str, Page],
+) -> None:
+    vega, market, page = setup_environment
     page.goto(f"/#/markets/{market}")
     page.get_by_test_id(FILLS).click()
     row = page.get_by_test_id(TAB_FILLS).locator(ROW_LOCATOR).first
@@ -154,10 +162,11 @@ def test_fills_taker_discount_program(
     expect(row.locator(COL_FEE_DISCOUNT)).to_have_text("1.04017 tDAI")
 
 
+@pytest.mark.xdist_group(name="test_fees_volume_tier_1")
 def test_fills_maker_discount_program(
-    setup_vega_and_market
-):
-    vega, market, page = setup_vega_and_market
+    setup_environment: Tuple[VegaServiceNull, str, Page],
+) -> None:
+    vega, market, page = setup_environment
     page.goto(f"/#/markets/{market}")
     change_keys(page, vega, MM_WALLET.name)
     page.get_by_test_id(FILLS).click()
@@ -170,11 +179,10 @@ def test_fills_maker_discount_program(
     expect(row.locator(COL_FEE_DISCOUNT)).to_have_text("1.035 tDAI")
 
 
-
 def test_fills_maker_fee_tooltip_discount_program(
-    setup_vega_and_market
-):
-    vega, market, page = setup_vega_and_market
+    setup_environment: Tuple[VegaServiceNull, str, Page],
+) -> None:
+    vega, market, page = setup_environment
     page.goto(f"/#/markets/{market}")
     change_keys(page, vega, MM_WALLET.name)
     page.get_by_test_id(FILLS).click()
@@ -187,11 +195,10 @@ def test_fills_maker_fee_tooltip_discount_program(
     )
 
 
-
 def test_fills_taker_fee_tooltip_discount_program(
-    setup_vega_and_market
-):
-    vega, market, page = setup_vega_and_market
+    setup_environment: Tuple[VegaServiceNull, str, Page],
+) -> None:
+    vega, market, page = setup_environment
     page.goto(f"/#/markets/{market}")
     page.get_by_test_id(FILLS).click()
     row = page.get_by_test_id(TAB_FILLS).locator(ROW_LOCATOR).first

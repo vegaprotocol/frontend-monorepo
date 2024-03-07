@@ -1,8 +1,15 @@
 import pytest
 from rewards_test_ids import *
+from typing import Tuple, Generator
 import vega_sim.proto.vega as vega_protos
 from playwright.sync_api import Page, expect
-from conftest import init_vega, init_page, auth_setup, risk_accepted_setup, cleanup_container
+from conftest import (
+    init_vega,
+    init_page,
+    auth_setup,
+    risk_accepted_setup,
+    cleanup_container,
+)
 from fixtures.market import setup_continuous_market
 from actions.utils import next_epoch, change_keys
 from wallet_config import MM_WALLET
@@ -10,10 +17,10 @@ from vega_sim.null_service import VegaServiceNull
 
 
 @pytest.fixture(scope="module")
-def setup_environment(request, browser):
+def setup_environment(request, browser) -> Generator[Tuple[Page, str, str], None, None]:
 
     with init_vega(request) as vega_instance:
-        request.addfinalizer(lambda: cleanup_container(vega_instance, request))
+        request.addfinalizer(lambda: cleanup_container(vega_instance))
 
         tDAI_market, tDAI_asset_id = setup_market_with_reward_program(vega_instance)
 
@@ -127,16 +134,16 @@ def setup_market_with_reward_program(vega: VegaServiceNull):
     return tDAI_market, tDAI_asset_id
 
 
-
-def test_network_reward_pot(setup_environment):
+def test_network_reward_pot(
+    setup_environment: Tuple[Page, str, str],
+) -> None:
     page, tDAI_market, tDAI_asset_id = setup_environment
     expect(page.get_by_test_id(TOTAL_REWARDS)).to_have_text("116.66666 tDAI")
 
 
-
 def test_reward_multiplier(
-    setup_environment
-):
+    setup_environment: Tuple[Page, str, str],
+) -> None:
     page, tDAI_market, tDAI_asset_id = setup_environment
     expect(page.get_by_test_id(COMBINED_MULTIPLIERS)).to_have_text("2x")
     expect(page.get_by_test_id(STREAK_REWARD_MULTIPLIER_VALUE)).to_have_text("2x")
@@ -144,18 +151,17 @@ def test_reward_multiplier(
 
 
 def test_activity_streak(
-    setup_environment
-):
+    setup_environment: Tuple[Page, str, str],
+) -> None:
     page, tDAI_market, tDAI_asset_id = setup_environment
     expect(page.get_by_test_id(EPOCH_STREAK)).to_have_text(
         "Active trader: 7 epochs so far (Tier 1 as of last epoch)"
     )
 
 
-
 def test_reward_history(
-    setup_environment
-):
+    setup_environment: Tuple[Page, str, str],
+) -> None:
     page, tDAI_market, tDAI_asset_id = setup_environment
     page.locator('[name="fromEpoch"]').fill("1")
     expect((page.get_by_role(ROW).locator(PRICE_TAKING_COL_ID)).nth(1)).to_have_text(
@@ -168,10 +174,9 @@ def test_reward_history(
     )
 
 
-
 def test_redeem(
-    setup_environment
-):
+    setup_environment: Tuple[Page, str, str],
+) -> None:
     page, tDAI_market, tDAI_asset_id = setup_environment
     page.get_by_test_id("redeem-rewards-button").click()
     available_to_withdraw = page.get_by_test_id(

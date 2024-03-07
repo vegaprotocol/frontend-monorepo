@@ -1,5 +1,6 @@
 import pytest
 from rewards_test_ids import *
+from typing import Tuple, Generator
 import vega_sim.proto.vega as vega_protos
 from playwright.sync_api import Page, expect
 from conftest import (
@@ -16,10 +17,10 @@ from vega_sim.null_service import VegaServiceNull
 
 
 @pytest.fixture(scope="module")
-def setup_environment(request, browser):
+def setup_environment(request, browser) -> Generator[Tuple[Page, str, str], None, None]:
 
     with init_vega(request) as vega_instance:
-        request.addfinalizer(lambda: cleanup_container(vega_instance, request))
+        request.addfinalizer(lambda: cleanup_container(vega_instance))
 
         tDAI_market, tDAI_asset_id = setup_market_with_reward_program(vega_instance)
 
@@ -91,22 +92,22 @@ def setup_market_with_reward_program(vega: VegaServiceNull):
 
 
 def test_network_reward_pot(
-    setup_environment
-):
+    setup_environment: Tuple[Page, str, str],
+) -> None:
     page, tDAI_market, tDAI_asset_id = setup_environment
     expect(page.get_by_test_id(TOTAL_REWARDS)).to_have_text("50.00 tDAI")
 
 
 def test_reward_multiplier(
-    setup_environment
-):
+    setup_environment: Tuple[Page, str, str],
+) -> None:
     page, tDAI_market, tDAI_asset_id = setup_environment
     expect(page.get_by_test_id(COMBINED_MULTIPLIERS)).to_have_text("1x")
     expect(page.get_by_test_id(STREAK_REWARD_MULTIPLIER_VALUE)).to_have_text("1x")
     expect(page.get_by_test_id(HOARDER_REWARD_MULTIPLIER_VALUE)).to_have_text("1x")
 
 
-""" @pytest.mark.xdist_group(name="test_rewards_activity_tier_0")
+"""
 def test_activity_streak(
     page: Page,
 ):
@@ -115,7 +116,6 @@ def test_activity_streak(
     )
 
 
-@pytest.mark.xdist_group(name="test_rewards_activity_tier_0")
 def test_reward_history(
     page: Page,
 ):

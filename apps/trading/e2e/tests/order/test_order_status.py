@@ -13,7 +13,7 @@ order_tab = "tab-orders"
 def setup_environment(request, browser):
     # Initialize Vega with cleanup
     with init_vega(request) as vega_instance:
-        request.addfinalizer(lambda: cleanup_container(vega_instance, request))
+        request.addfinalizer(lambda: cleanup_container(vega_instance))
 
         # Setup multiple markets
         markets = {

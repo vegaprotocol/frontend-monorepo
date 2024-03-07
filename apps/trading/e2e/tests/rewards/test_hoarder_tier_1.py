@@ -1,5 +1,6 @@
 import pytest
 from rewards_test_ids import *
+from typing import Tuple, Generator
 import vega_sim.proto.vega as vega_protos
 from playwright.sync_api import Page, expect
 from conftest import (
@@ -16,10 +17,10 @@ from vega_sim.null_service import VegaServiceNull
 
 
 @pytest.fixture(scope="module")
-def setup_environment(request, browser):
+def setup_environment(request, browser) -> Generator[Tuple[Page, str, str], None, None]:
 
     with init_vega(request) as vega_instance:
-        request.addfinalizer(lambda: cleanup_container(vega_instance, request))
+        request.addfinalizer(lambda: cleanup_container(vega_instance))
 
         tDAI_market, tDAI_asset_id = setup_market_with_reward_program(vega_instance)
 
@@ -139,28 +140,34 @@ def setup_market_with_reward_program(vega: VegaServiceNull):
     return tDAI_market, tDAI_asset_id
 
 
-def test_network_reward_pot(setup_environment):
+def test_network_reward_pot(
+    setup_environment: Tuple[Page, str, str],
+) -> None:
     page, tDAI_market, tDAI_asset_id = setup_environment
     expect(page.get_by_test_id(TOTAL_REWARDS)).to_have_text("166.66666 tDAI")
 
 
 def test_reward_multiplier(
-    setup_environment,
-):
+    setup_environment: Tuple[Page, str, str],
+) -> None:
     page, tDAI_market, tDAI_asset_id = setup_environment
     expect(page.get_by_test_id(COMBINED_MULTIPLIERS)).to_have_text("2x")
     expect(page.get_by_test_id(STREAK_REWARD_MULTIPLIER_VALUE)).to_have_text("1x")
     expect(page.get_by_test_id(HOARDER_REWARD_MULTIPLIER_VALUE)).to_have_text("2x")
 
 
-def test_hoarder_bonus(setup_environment):
+def test_hoarder_bonus(
+    setup_environment: Tuple[Page, str, str],
+) -> None:
     page, tDAI_market, tDAI_asset_id = setup_environment
     expect(page.get_by_test_id(HOARDER_BONUS_TOTAL_HOARDED)).to_contain_text(
         "16,666,666"
     )
 
 
-def test_reward_history(setup_environment):
+def test_reward_history(
+    setup_environment: Tuple[Page, str, str],
+) -> None:
     page, tDAI_market, tDAI_asset_id = setup_environment
     page.locator('[name="fromEpoch"]').fill("1")
     expect((page.get_by_role(ROW).locator(PRICE_TAKING_COL_ID)).nth(1)).to_have_text(

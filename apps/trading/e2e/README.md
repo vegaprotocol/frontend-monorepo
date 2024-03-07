@@ -81,7 +81,7 @@ To ensure proper cleanup of containers after each test, use the following fixtur
 @pytest.fixture
 def vega(request):
     with init_vega(request) as vega_instance:
-        request.addfinalizer(lambda: cleanup_container(vega_instance, request))
+        request.addfinalizer(lambda: cleanup_container(vega_instance))
         yield vega_instance
 ```
 

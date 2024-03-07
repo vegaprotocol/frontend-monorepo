@@ -15,7 +15,7 @@ deal_ticket_deposit_dialog_button = "deal-ticket-deposit-dialog-button"
 @pytest.fixture(scope="module")
 def vega(request):
     with init_vega(request) as vega_instance:
-        request.addfinalizer(lambda: cleanup_container(vega_instance, request))
+        request.addfinalizer(lambda: cleanup_container(vega_instance))
         yield vega_instance
 
 
