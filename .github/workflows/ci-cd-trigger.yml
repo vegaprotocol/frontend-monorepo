@@ -287,7 +287,7 @@ jobs:
     steps:
       - run: |
           echo result="${{ needs.cypress.result }}"
-          if [[ $result == "success" || $result == "skipped" || $result == "null" ]]; then
+          if [[ $result == "success" || $result == "skipped" ]]; then
             exit 0
           else
             exit 1
