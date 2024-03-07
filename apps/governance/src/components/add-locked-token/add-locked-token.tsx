@@ -12,7 +12,7 @@ export const AddLockedTokenAddress = () => {
   return (
     <Callout
       title={t(
-        'New Keep track of locked tokens in your wallet with the VEGA (VESTING) token.'
+        'Keep track of locked tokens in your wallet with the VEGA (VESTING) token.'
       )}
     >
       {addSupported ? (
