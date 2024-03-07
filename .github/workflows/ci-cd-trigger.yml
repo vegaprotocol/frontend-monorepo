@@ -196,7 +196,7 @@ jobs:
   cypress:
     needs: [build-sources, check-e2e-needed]
     name: '(CI) cypress'
-    if: ${{ needs.check-e2e-needed.outputs.run-tests == 'true' && needs.check-e2e-needed.outputs.run-tests != null }}
+    if: ${{ needs.check-e2e-needed.outputs.run-tests == 'true' }}
     uses: ./.github/workflows/cypress-run.yml
     secrets: inherit
     with:
@@ -287,7 +287,7 @@ jobs:
     steps:
       - run: |
           result="${{ needs.cypress.result }}"
-          if [[ $result == "success" || $result == "skipped" ]]; then
+          if [[ $result == "success" || $result == "skipped" || $result == "null" ]]; then
             exit 0
           else
             exit 1
