@@ -286,7 +286,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - run: |
-          result="${{ needs.cypress.result }}"
+          echo result="${{ needs.cypress.result }}"
           if [[ $result == "success" || $result == "skipped" || $result == "null" ]]; then
             exit 0
           else
