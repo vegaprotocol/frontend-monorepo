@@ -1,4 +1,4 @@
-import type { Asset } from '@vegaprotocol/assets';
+import { USDT_ID, type Asset } from '@vegaprotocol/assets';
 import {
   EtherscanLink,
   Networks,
@@ -26,11 +26,6 @@ interface ApproveNotificationProps {
   approveTxId: number | null;
   intent?: Intent;
 }
-
-const USDT_ID: { [Networks.MAINNET]: string } = {
-  [Networks.MAINNET]:
-    'bf1e88d19db4b3ca0d1d5bdb73718a01686b18cf731ca26adedf3c8b83802bba',
-};
 
 export const ApproveNotification = ({
   isActive,
