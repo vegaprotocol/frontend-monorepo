@@ -176,7 +176,6 @@ jobs:
     name: '(CI) check if e2e needed'
     outputs:
       run-tests: ${{ steps.check-test.outputs.e2e-needed }}
-      if: ${{ steps.check-test.outputs.e2e-needed == true }}
     steps:
       - name: Check branch
         id: check-test
@@ -197,9 +196,9 @@ jobs:
   cypress:
     needs: [build-sources, check-e2e-needed]
     name: '(CI) cypress'
-    if: ${{ needs.check-e2e-needed.outputs.run-tests == 'true' }}
     uses: ./.github/workflows/cypress-run.yml
     secrets: inherit
+    if: needs.check-e2e-needed.outputs.run-tests == 'true' && contains(needs.build-sources.outputs.projects, 'governance-e2e') && contains(needs.build-sources.outputs.projects, 'explorer-e2e')
     with:
       projects: ${{ needs.build-sources.outputs.projects-e2e }}
       tags: '@smoke'
