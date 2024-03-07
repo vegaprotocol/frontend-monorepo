@@ -170,6 +170,9 @@ const cacheConfig: InMemoryCacheConfig = {
     Fees: {
       keyFields: false,
     },
+    PartyProfile: {
+      keyFields: ['partyId'],
+    },
     // The folling types are cached by the data provider and not by apollo
     PositionUpdate: {
       keyFields: false,

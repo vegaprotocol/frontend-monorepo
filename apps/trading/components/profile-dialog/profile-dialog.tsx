@@ -32,9 +32,7 @@ export const ProfileDialog = () => {
   const setOpen = useProfileDialogStore((store) => store.setOpen);
 
   const { send, status, error, reset } = useSimpleTransaction({
-    onSuccess: () => {
-      refetch();
-    },
+    onSuccess: () => refetch(),
   });
 
   const profileEdge = data?.partiesProfilesConnection?.edges.find(

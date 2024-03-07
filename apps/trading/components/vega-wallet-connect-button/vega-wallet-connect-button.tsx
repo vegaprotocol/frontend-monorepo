@@ -147,6 +147,7 @@ const KeypairRadioGroup = ({
   const { data } = usePartyProfilesQuery({
     variables: { partyIds: pubKeys.map((pk) => pk.publicKey) },
     skip: pubKeys.length <= 0,
+    fetchPolicy: 'cache-and-network',
   });
 
   return (

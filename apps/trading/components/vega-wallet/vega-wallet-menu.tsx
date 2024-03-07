@@ -28,6 +28,7 @@ export const VegaWalletMenu = ({
   const { data } = usePartyProfilesQuery({
     variables: { partyIds: pubKeys.map((pk) => pk.publicKey) },
     skip: pubKeys.length <= 0,
+    fetchPolicy: 'cache-and-network',
   });
 
   const activeKey = useMemo(() => {
