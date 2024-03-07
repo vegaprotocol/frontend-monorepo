@@ -35,11 +35,11 @@ export const useSubmitApproval = (
     reset: () => {
       setId(null);
     },
-    perform: () => {
+    perform: (amount?: string) => {
       if (!asset || !config) return;
       const id = createEthTransaction(contract, 'approve', [
         config?.collateral_bridge_contract.address,
-        MaxUint256.toString(),
+        amount ? amount : MaxUint256.toString(),
       ]);
       setId(id);
     },
