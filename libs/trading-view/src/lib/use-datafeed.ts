@@ -32,9 +32,14 @@ const resolutionMap: Record<string, Interval> = {
   '1': Interval.INTERVAL_I1M,
   '5': Interval.INTERVAL_I5M,
   '15': Interval.INTERVAL_I15M,
+  '30': Interval.INTERVAL_I30M,
   '60': Interval.INTERVAL_I1H,
+  '240': Interval.INTERVAL_I4H,
   '360': Interval.INTERVAL_I6H,
+  '480': Interval.INTERVAL_I8H,
+  '720': Interval.INTERVAL_I12H,
   '1D': Interval.INTERVAL_I1D,
+  '1W': Interval.INTERVAL_I7D,
 } as const;
 
 const supportedResolutions = Object.keys(resolutionMap);
