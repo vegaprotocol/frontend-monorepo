@@ -25,6 +25,6 @@ export default {
     '^.+\\.[tj]s$': ['@swc/jest', swcJestConfig],
   },
   moduleFileExtensions: ['ts', 'js', 'html'],
-  testEnvironment: 'node',
+  testEnvironment: 'jsdom',
   coverageDirectory: '../../coverage/libs/utils',
 };
