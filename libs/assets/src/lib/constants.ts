@@ -62,3 +62,10 @@ export const DENY_LIST: Record<string, string[]> = {
     'fdf0ec118d98393a7702cf72e46fc87ad680b152f64b2aac59e093ac2d688fbb',
   ],
 };
+
+// We need a record of USDT on mainnet as it needs special handling for
+// deposits and approvals due to the contract not conforming exactly
+// to ERC20
+export const USDT_ID = {
+  MAINNET: 'bf1e88d19db4b3ca0d1d5bdb73718a01686b18cf731ca26adedf3c8b83802bba',
+} as const;

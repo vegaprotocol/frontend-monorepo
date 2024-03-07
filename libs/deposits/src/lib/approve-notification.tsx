@@ -1,5 +1,9 @@
-import type { Asset } from '@vegaprotocol/assets';
-import { EtherscanLink } from '@vegaprotocol/environment';
+import { USDT_ID, type Asset } from '@vegaprotocol/assets';
+import {
+  EtherscanLink,
+  Networks,
+  useEnvironment,
+} from '@vegaprotocol/environment';
 import { Intent, Notification } from '@vegaprotocol/ui-toolkit';
 import {
   formatNumber,
@@ -15,7 +19,7 @@ import { useT } from './use-t';
 interface ApproveNotificationProps {
   isActive: boolean;
   selectedAsset?: Asset;
-  onApprove: () => void;
+  onApprove: (amount?: string) => void;
   approved: boolean;
   balances: DepositBalances | null;
   amount: string;
@@ -33,6 +37,7 @@ export const ApproveNotification = ({
   approveTxId,
   intent = Intent.Warning,
 }: ApproveNotificationProps) => {
+  const { VEGA_ENV } = useEnvironment();
   const t = useT();
   const tx = useEthTransactionStore((state) => {
     return state.transactions.find((t) => t?.id === approveTxId);
@@ -64,28 +69,45 @@ export const ApproveNotification = ({
           text: t('Approve {{assetSymbol}}', {
             assetSymbol: selectedAsset?.symbol,
           }),
-          action: onApprove,
+          action: () => onApprove(),
           dataTestId: 'approve-submit',
         }}
       />
     </div>
   );
+
+  let message = t('Approve again to deposit more than {{allowance}}', {
+    allowance: formatNumber(balances.allowance.toString()),
+  });
+  const buttonProps = {
+    size: 'small' as const,
+    text: t('Approve {{assetSymbol}}', {
+      assetSymbol: selectedAsset?.symbol,
+    }),
+    action: () => onApprove(),
+    dataTestId: 'reapprove-submit',
+  };
+
+  if (VEGA_ENV === Networks.MAINNET && selectedAsset.id === USDT_ID[VEGA_ENV]) {
+    message = t(
+      'USDT approved amount cannot be changed, only revoked. Revoke and reapprove to deposit more than {{allowance}}.',
+      {
+        allowance: formatNumber(balances.allowance.toString()),
+      }
+    );
+    buttonProps.text = t('Revoke {{assetSymbol}} approval', {
+      assetSymbol: selectedAsset?.symbol,
+    });
+    buttonProps.action = () => onApprove('0');
+  }
+
   const reApprovePrompt = (
     <div className="mb-4">
       <Notification
         intent={intent}
         testId="reapprove-default"
-        message={t('Approve again to deposit more than {{allowance}}', {
-          allowance: formatNumber(balances.allowance.toString()),
-        })}
-        buttonProps={{
-          size: 'small',
-          text: t('Approve {{assetSymbol}}', {
-            assetSymbol: selectedAsset?.symbol,
-          }),
-          action: onApprove,
-          dataTestId: 'reapprove-submit',
-        }}
+        message={message}
+        buttonProps={buttonProps}
       />
     </div>
   );

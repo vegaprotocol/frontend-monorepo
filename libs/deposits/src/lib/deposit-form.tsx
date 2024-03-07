@@ -58,7 +58,7 @@ export interface DepositFormProps {
   onSelectAsset: (assetId: string) => void;
   handleAmountChange: (amount: string) => void;
   onDisconnect: () => void;
-  submitApprove: () => void;
+  submitApprove: (amount?: string) => void;
   approveTxId: number | null;
   submitFaucet: () => void;
   faucetTxId: number | null;
@@ -423,8 +423,8 @@ export const DepositForm = ({
         isActive={isActive}
         approveTxId={approveTxId}
         selectedAsset={selectedAsset}
-        onApprove={() => {
-          submitApprove();
+        onApprove={(amount) => {
+          submitApprove(amount);
           setApproveNotificationIntent(Intent.Warning);
         }}
         balances={balances}

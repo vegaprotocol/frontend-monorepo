@@ -1,7 +1,7 @@
 import { useScript } from '@vegaprotocol/react-helpers';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useT } from './use-t';
-import { TradingView, type OnAutoSaveNeededCallback } from './trading-view';
+import { TradingView } from './trading-view';
 import { CHARTING_LIBRARY_FILE, type ResolutionString } from './constants';
 
 export const TradingViewContainer = ({
@@ -10,16 +10,12 @@ export const TradingViewContainer = ({
   marketId,
   interval,
   onIntervalChange,
-  onAutoSaveNeeded,
-  state,
 }: {
   libraryPath: string;
   libraryHash: string;
   marketId: string;
   interval: ResolutionString;
   onIntervalChange: (interval: string) => void;
-  onAutoSaveNeeded: OnAutoSaveNeededCallback;
-  state: object | undefined;
 }) => {
   const t = useT();
   const scriptState = useScript(
@@ -49,8 +45,6 @@ export const TradingViewContainer = ({
       marketId={marketId}
       interval={interval}
       onIntervalChange={onIntervalChange}
-      onAutoSaveNeeded={onAutoSaveNeeded}
-      state={state}
     />
   );
 };

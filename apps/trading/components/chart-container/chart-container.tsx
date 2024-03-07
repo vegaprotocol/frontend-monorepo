@@ -30,8 +30,6 @@ export const ChartContainer = ({ marketId }: { marketId: string }) => {
     setStudies,
     setStudySizes,
     setOverlays,
-    state,
-    setState,
   } = useChartSettings();
 
   const pennantChart = (
@@ -68,10 +66,6 @@ export const ChartContainer = ({ marketId }: { marketId: string }) => {
           onIntervalChange={(newInterval) => {
             setInterval(fromTradingViewResolution(newInterval));
           }}
-          onAutoSaveNeeded={(data) => {
-            setState(data);
-          }}
-          state={state}
         />
       );
     }

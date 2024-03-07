@@ -9,7 +9,6 @@ type StudySizes = { [S in Study]?: number };
 export type Chartlib = 'pennant' | 'tradingview';
 
 interface StoredSettings {
-  state: object | undefined; // Don't see a better type provided from TradingView type definitions
   chartlib: Chartlib;
   // For interval we use the enum from @vegaprotocol/types, this is to make mapping between different
   // chart types easier and more consistent
@@ -30,7 +29,6 @@ const STUDY_ORDER: Study[] = [
 ];
 
 export const DEFAULT_CHART_SETTINGS = {
-  state: undefined,
   chartlib: 'pennant' as const,
   interval: Interval.INTERVAL_I15M,
   type: ChartType.CANDLE,
@@ -47,7 +45,6 @@ export const useChartSettingsStore = create<
     setStudies: (studies?: Study[]) => void;
     setStudySizes: (sizes: number[]) => void;
     setChartlib: (lib: Chartlib) => void;
-    setState: (state: object) => void;
   }
 >()(
   persist(
@@ -94,9 +91,6 @@ export const useChartSettingsStore = create<
         set((state) => {
           state.chartlib = lib;
         });
-      },
-      setState: (state) => {
-        set({ state });
       },
     })),
     {
@@ -151,7 +145,5 @@ export const useChartSettings = () => {
     setOverlays: settings.setOverlays,
     setStudySizes: settings.setStudySizes,
     setChartlib: settings.setChartlib,
-    state: settings.state,
-    setState: settings.setState,
   };
 };
