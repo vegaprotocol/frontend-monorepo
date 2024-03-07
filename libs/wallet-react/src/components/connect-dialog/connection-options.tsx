@@ -1,4 +1,9 @@
-import { type ReactNode, type FunctionComponent, forwardRef } from 'react';
+import {
+  type ReactNode,
+  type FunctionComponent,
+  forwardRef,
+  useState,
+} from 'react';
 import {
   ConnectorErrors,
   isBrowserWalletInstalled,
@@ -12,6 +17,7 @@ import { useConnect } from '../../hooks/use-connect';
 import { Links } from '../../constants';
 import { ConnectorIcon } from './connector-icon';
 import { useUserAgent } from '@vegaprotocol/react-helpers';
+import { Trans } from 'react-i18next';
 
 const vegaExtensionsLinks = {
   chrome: Links.chromeExtension,
@@ -29,48 +35,67 @@ export const ConnectionOptions = ({
   onConnect: (id: ConnectorType) => void;
 }) => {
   const t = useT();
-  const error = useWallet((store) => store.error);
   const { connectors } = useConnect();
+  const error = useWallet((store) => store.error);
+  const [isInstalling, setIsInstalling] = useState(false);
 
   return (
     <div className="flex flex-col items-start gap-4">
       <h2 className="text-xl">{t('Connect to Vega')}</h2>
-      <ul
-        className="grid grid-cols-1 sm:grid-cols-2 gap-1 -mx-2"
-        data-testid="connectors-list"
-      >
-        {connectors.map((c) => {
-          const ConnectionOption = ConnectionOptionRecord[c.id];
-          const props = {
-            id: c.id,
-            name: c.name,
-            description: c.description,
-            showDescription: false,
-            onClick: () => onConnect(c.id),
-          };
-
-          if (ConnectionOption) {
-            return (
-              <li key={c.id}>
-                <ConnectionOption {...props} />
-              </li>
-            );
-          }
-
-          return (
-            <li key={c.id}>
-              <ConnectionOptionDefault {...props} />
-            </li>
-          );
-        })}
-      </ul>
-      {error && error.code !== ConnectorErrors.userRejected.code && (
-        <p
-          className="text-danger text-sm first-letter:uppercase"
-          data-testid="connection-error"
-        >
-          {error.message}
+      {isInstalling ? (
+        <p className="text-warning">
+          <Trans
+            i18nKey="Once you have the added the extension, <0>refresh</0> you browser."
+            components={[
+              <button
+                onClick={() => window.location.reload()}
+                className="underline underline-offset-4"
+              />,
+            ]}
+          />
         </p>
+      ) : (
+        <>
+          <ul
+            className="grid grid-cols-1 sm:grid-cols-2 gap-1 -mx-2"
+            data-testid="connectors-list"
+          >
+            {connectors.map((c) => {
+              const ConnectionOption = ConnectionOptionRecord[c.id];
+              const props = {
+                id: c.id,
+                name: c.name,
+                description: c.description,
+                showDescription: false,
+                onClick: () => onConnect(c.id),
+                onInstall: () => setIsInstalling(true),
+              };
+
+              if (ConnectionOption) {
+                return (
+                  <li key={c.id}>
+                    <ConnectionOption {...props} />
+                  </li>
+                );
+              }
+
+              return (
+                <li key={c.id}>
+                  <ConnectionOptionDefault {...props} />
+                </li>
+              );
+            })}
+          </ul>
+          {error && error.code !== ConnectorErrors.userRejected.code && (
+            <p
+              className="text-danger text-sm first-letter:uppercase"
+              data-testid="connection-error"
+            >
+              {error.message}
+              {error.data ? `: ${error.data}` : ''}
+            </p>
+          )}
+        </>
       )}
       <a
         href={Links.walletOverview}
@@ -90,6 +115,7 @@ interface ConnectionOptionProps {
   description: string;
   showDescription?: boolean;
   onClick: () => void;
+  onInstall?: () => void;
 }
 
 const CONNECTION_OPTION_CLASSES =
@@ -142,6 +168,7 @@ export const ConnectionOptionInjected = ({
   description,
   showDescription = false,
   onClick,
+  onInstall,
 }: ConnectionOptionProps) => {
   const t = useT();
   const userAgent = useUserAgent();
@@ -158,7 +185,11 @@ export const ConnectionOptionInjected = ({
         </span>
       </ConnectionOptionButtonWithDescription>
     ) : (
-      <ConnectionOptionLinkWithDescription id={id} href={link}>
+      <ConnectionOptionLinkWithDescription
+        id={id}
+        href={link}
+        onClick={onInstall}
+      >
         <span className="flex flex-col justify-start text-left">
           <span className="capitalize leading-5">
             {t('Get the Vega Wallet')}
@@ -183,7 +214,7 @@ export const ConnectionOptionInjected = ({
             {name}
           </ConnectionOptionButton>
         ) : (
-          <ConnectionOptionLink id={id} href={link}>
+          <ConnectionOptionLink id={id} href={link} onClick={onInstall}>
             {t('Get the Vega Wallet')}
           </ConnectionOptionLink>
         )}
@@ -275,8 +306,9 @@ const ConnectionOptionLink = forwardRef<
     children: ReactNode;
     id: ConnectorType;
     href: string;
+    onClick?: () => void;
   }
->(({ children, id, href }, ref) => {
+>(({ children, id, href, onClick }, ref) => {
   return (
     <a
       href={href}
@@ -285,6 +317,7 @@ const ConnectionOptionLink = forwardRef<
       className={CONNECTION_OPTION_CLASSES}
       data-testid={`connector-${id}`}
       ref={ref}
+      onClick={onClick}
     >
       <ConnectorIcon id={id} />
       {children}
@@ -320,8 +353,10 @@ const ConnectionOptionLinkWithDescription = forwardRef<
     children: ReactNode;
     id: ConnectorType;
     href: string;
+
+    onClick?: () => void;
   }
->(({ children, id, href }, ref) => {
+>(({ children, id, href, onClick }, ref) => {
   return (
     <a
       ref={ref}
@@ -329,6 +364,7 @@ const ConnectionOptionLinkWithDescription = forwardRef<
       href={href}
       target="_blank"
       rel="noreferrer"
+      onClick={onClick}
     >
       <span>
         <ConnectorIcon id={id} />

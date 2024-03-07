@@ -26,9 +26,9 @@ export const AppLoader = ({ children }: { children: React.ReactElement }) => {
   const { token, staking, vesting } = useContracts();
   const setAssociatedBalances = useRefreshAssociatedBalances();
   const [balancesLoaded, setBalancesLoaded] = React.useState(false);
-  const vegaConnecting = useEagerConnect();
+  const vegaWalletStatus = useEagerConnect();
 
-  const loaded = balancesLoaded && !vegaConnecting;
+  const loaded = balancesLoaded && vegaWalletStatus !== 'connecting';
 
   React.useEffect(() => {
     const run = async () => {
@@ -169,3 +169,5 @@ export const AppLoader = ({ children }: { children: React.ReactElement }) => {
   }
   return <Suspense fallback={loading}>{children}</Suspense>;
 };
+
+AppLoader.displayName = 'AppLoader';
