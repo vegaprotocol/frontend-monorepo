@@ -3,8 +3,6 @@ import * as RadioGroupPrimitive from '@radix-ui/react-radio-group';
 import classNames from 'classnames';
 import type { ReactNode } from 'react';
 import { labelClasses } from '../checkbox';
-import { CopyWithTooltip } from '../copy-with-tooltip';
-import { VegaIcon, VegaIconNames } from '../icon';
 
 export interface TradingRadioGroupProps {
   name?: string;
@@ -88,36 +86,25 @@ export const TradingRadio = ({
     'border-vega-clight-700 dark:border-vega-cdark-700'
   );
   return (
-    <span className="inline-flex gap-2">
-      <label className={wrapperClasses} htmlFor={id}>
-        <RadioGroupPrimitive.Item
-          value={value}
-          className={itemClasses}
-          id={id}
-          data-testid={id}
-          disabled={disabled}
-        >
-          <RadioGroupPrimitive.Indicator className={indicatorClasses} />
-        </RadioGroupPrimitive.Item>
-        <span
-          className={
-            disabled
-              ? 'text-vega-clight-200 dark:text-vega-cdark-200'
-              : 'cursor-pointer'
-          }
-        >
-          {label}
-        </span>
-      </label>
-      {value && value !== 'custom' && (
-        <span className="text-muted">
-          <CopyWithTooltip text={value}>
-            <button>
-              <VegaIcon name={VegaIconNames.COPY} />
-            </button>
-          </CopyWithTooltip>
-        </span>
-      )}
-    </span>
+    <label className={wrapperClasses} htmlFor={id}>
+      <RadioGroupPrimitive.Item
+        value={value}
+        className={itemClasses}
+        id={id}
+        data-testid={id}
+        disabled={disabled}
+      >
+        <RadioGroupPrimitive.Indicator className={indicatorClasses} />
+      </RadioGroupPrimitive.Item>
+      <span
+        className={
+          disabled
+            ? 'text-vega-clight-200 dark:text-vega-cdark-200'
+            : 'cursor-pointer'
+        }
+      >
+        {label}
+      </span>
+    </label>
   );
 };
