@@ -42,9 +42,12 @@ const Loading = () => {
   const t = useT();
   const setNodeSwitcher = useNodeSwitcherStore((store) => store.setDialogOpen);
   useEffect(() => {
-    setTimeout(() => {
+    const to = setTimeout(() => {
       if (!showSlowNotification) setShowSlowNotification(true);
     }, 5000);
+    return () => {
+      clearTimeout(to);
+    };
   }, [showSlowNotification]);
   return (
     <Splash>
