@@ -1003,7 +1003,7 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
                 name="oco"
                 label={
                   <Tooltip
-                    description={<span>{t('One cancels another')}</span>}
+                    description={<span>{t('One cancels the other')}</span>}
                   >
                     <>{t('OCO')}</>
                   </Tooltip>

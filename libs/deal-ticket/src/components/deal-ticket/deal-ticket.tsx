@@ -8,9 +8,12 @@ import { ExpirySelector } from './expiry-selector';
 import { SideSelector } from './side-selector';
 import { TimeInForceSelector } from './time-in-force-selector';
 import { TypeSelector } from './type-selector';
-import { type OrderSubmission } from '@vegaprotocol/wallet';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
-import { mapFormValuesToOrderSubmission } from '../../utils/map-form-values-to-submission';
+import { type Transaction } from '@vegaprotocol/wallet';
+import {
+  mapFormValuesToOrderSubmission,
+  mapFormValuesToTakeProfitAndStopLoss,
+} from '../../utils/map-form-values-to-submission';
 import {
   TradingInput as Input,
   TradingCheckbox as Checkbox,
@@ -77,6 +80,8 @@ import { isNonPersistentOrder } from '../../utils/time-in-force-persistence';
 import { KeyValue } from './key-value';
 import { DocsLinks } from '@vegaprotocol/environment';
 import { useT } from '../../use-t';
+import { DealTicketPriceTakeProfitStopLoss } from './deal-ticket-price-tp-sl';
+import uniqueId from 'lodash/uniqueId';
 
 export const REDUCE_ONLY_TOOLTIP =
   '"Reduce only" will ensure that this order will not increase the size of an open position. When the order is matched, it will only trade enough volume to bring your open volume towards 0 but never change the direction of your position. If applied to a limit order that is not instantly filled, the order will be stopped.';
@@ -86,7 +91,7 @@ export interface DealTicketProps {
   marketData: StaticMarketData;
   marketPrice?: string | null;
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
-  submit: (order: OrderSubmission) => void;
+  submit: (order: Transaction) => void;
   onDeposit: (assetId: string) => void;
 }
 
@@ -184,6 +189,7 @@ export const DealTicket = ({
   const rawSize = watch('size');
   const rawPrice = watch('price');
   const iceberg = watch('iceberg');
+  const tpSl = watch('tpSl');
   const peakSize = watch('peakSize');
   const expiresAt = watch('expiresAt');
   const postOnly = watch('postOnly');
@@ -382,17 +388,28 @@ export const DealTicket = ({
       if (lastSubmitTime.current && now - lastSubmitTime.current < 1000) {
         return;
       }
-      submit(
-        mapFormValuesToOrderSubmission(
+      if (formValues.tpSl) {
+        const reference = `${pubKey}-${now}-${uniqueId()}`;
+        const batchMarketInstructions = mapFormValuesToTakeProfitAndStopLoss(
+          formValues,
+          market,
+          reference
+        );
+        submit({
+          batchMarketInstructions,
+        });
+      } else {
+        const orderSubmission = mapFormValuesToOrderSubmission(
           formValues,
           market.id,
           market.decimalPlaces,
           market.positionDecimalPlaces
-        )
-      );
+        );
+        submit({ orderSubmission });
+      }
       lastSubmitTime.current = now;
     },
-    [submit, market.decimalPlaces, market.positionDecimalPlaces, market.id]
+    [market, pubKey, submit]
   );
   useController({
     name: 'type',
@@ -674,40 +691,63 @@ export const DealTicket = ({
           )}
         />
       </div>
-      {isLimitType && (
+      {
         <>
           <div className="flex justify-between gap-2 pb-2">
+            {isLimitType && (
+              <Controller
+                name="iceberg"
+                control={control}
+                render={({ field }) => (
+                  <Tooltip
+                    description={
+                      <p>
+                        {t(
+                          'ICEBERG_TOOLTIP',
+                          'Trade only a fraction of the order size at once. After the peak size of the order has traded, the size is reset. This is repeated until the order is cancelled, expires, or its full volume trades away. For example, an iceberg order with a size of 1000 and a peak size of 100 will effectively be split into 10 orders with a size of 100 each. Note that the full volume of the order is not hidden and is still reflected in the order book.'
+                        )}{' '}
+                        <ExternalLink href={DocsLinks?.ICEBERG_ORDERS}>
+                          {t('Find out more')}
+                        </ExternalLink>{' '}
+                      </p>
+                    }
+                  >
+                    <div>
+                      <Checkbox
+                        name="iceberg"
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                        disabled={disableIcebergCheckbox}
+                        label={t('Iceberg')}
+                      />
+                    </div>
+                  </Tooltip>
+                )}
+              />
+            )}
             <Controller
-              name="iceberg"
+              name="tpSl"
               control={control}
               render={({ field }) => (
                 <Tooltip
                   description={
-                    <p>
-                      {t(
-                        'ICEBERG_TOOLTIP',
-                        'Trade only a fraction of the order size at once. After the peak size of the order has traded, the size is reset. This is repeated until the order is cancelled, expires, or its full volume trades away. For example, an iceberg order with a size of 1000 and a peak size of 100 will effectively be split into 10 orders with a size of 100 each. Note that the full volume of the order is not hidden and is still reflected in the order book.'
-                      )}{' '}
-                      <ExternalLink href={DocsLinks?.ICEBERG_ORDERS}>
-                        {t('Find out more')}
-                      </ExternalLink>{' '}
-                    </p>
+                    <p>{t('TP_SL_TOOLTIP', 'Take profit / Stop loss')}</p>
                   }
                 >
                   <div>
                     <Checkbox
-                      name="iceberg"
+                      name="tpSl"
                       checked={field.value}
                       onCheckedChange={field.onChange}
-                      disabled={disableIcebergCheckbox}
-                      label={t('Iceberg')}
+                      disabled={false}
+                      label={t('TP / SL')}
                     />
                   </div>
                 </Tooltip>
               )}
             />
           </div>
-          {iceberg && (
+          {isLimitType && iceberg && (
             <DealTicketSizeIceberg
               market={market}
               peakSizeError={errors.peakSize?.message}
@@ -717,8 +757,18 @@ export const DealTicket = ({
               peakSize={peakSize}
             />
           )}
+          {tpSl && (
+            <DealTicketPriceTakeProfitStopLoss
+              market={market}
+              takeProfitError={errors.takeProfit?.message}
+              stopLossError={errors.stopLoss?.message}
+              control={control}
+              quoteName={quoteName}
+            />
+          )}
         </>
-      )}
+      }
+
       <SummaryMessage
         error={summaryError}
         asset={asset}

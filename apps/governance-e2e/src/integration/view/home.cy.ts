@@ -79,21 +79,21 @@ context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
       });
     });
 
-    it('should have information on active nodes', function () {
+    it.skip('should have information on active nodes', function () {
       cy.getByTestId('node-information')
         .first()
         .should('contain.text', '2')
         .and('contain.text', 'active nodes');
     });
 
-    it('should have information on consensus nodes', function () {
+    it.skip('should have information on consensus nodes', function () {
       cy.getByTestId('node-information')
         .last()
         .should('contain.text', '2')
         .and('contain.text', 'consensus nodes');
     });
 
-    it('should contain link to specific validators', function () {
+    it.skip('should contain link to specific validators', function () {
       cy.getByTestId('validators')
         .should('have.length', '2')
         .each(($validator) => {

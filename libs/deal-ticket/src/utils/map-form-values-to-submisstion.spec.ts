@@ -1,8 +1,15 @@
-import type { OrderSubmissionBody } from '@vegaprotocol/wallet';
-import { mapFormValuesToOrderSubmission } from './map-form-values-to-submission';
+import type {
+  OrderSubmissionBody,
+  StopOrdersSubmission,
+} from '@vegaprotocol/wallet';
+import {
+  mapFormValuesToOrderSubmission,
+  mapFormValuesToTakeProfitAndStopLoss,
+} from './map-form-values-to-submission';
 import * as Schema from '@vegaprotocol/types';
 import { OrderTimeInForce, OrderType } from '@vegaprotocol/types';
 import type { OrderFormValues } from '../hooks';
+import { type MarketFieldsFragment } from '@vegaprotocol/markets';
 
 describe('mapFormValuesToOrderSubmission', () => {
   it('sets and formats price only for limit orders', () => {
@@ -185,4 +192,233 @@ describe('mapFormValuesToOrderSubmission', () => {
       ).toEqual(reduceOnly);
     }
   );
+});
+
+const mockMarket: MarketFieldsFragment = {
+  __typename: 'Market',
+  id: 'marketId',
+  decimalPlaces: 1,
+  positionDecimalPlaces: 4,
+  state: Schema.MarketState.STATE_ACTIVE,
+  tradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
+} as MarketFieldsFragment;
+
+const orderFormValues: OrderFormValues = {
+  type: OrderType.TYPE_LIMIT,
+  side: Schema.Side.SIDE_BUY,
+  timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
+  size: '1',
+  price: '66300',
+  postOnly: false,
+  reduceOnly: false,
+  tpSl: true,
+  takeProfit: '70000',
+  stopLoss: '60000',
+};
+
+describe('mapFormValuesToTakeProfitAndStopLoss', () => {
+  it('creates batch market instructions for a normal order created with TP and SL', () => {
+    const result = mapFormValuesToTakeProfitAndStopLoss(
+      orderFormValues,
+      mockMarket,
+      'reference'
+    );
+
+    const expected: {
+      submissions: Schema.OrderSubmission[];
+      stopOrdersSubmission: StopOrdersSubmission[];
+    } = {
+      stopOrdersSubmission: [
+        {
+          fallsBelow: {
+            orderSubmission: {
+              expiresAt: undefined,
+              marketId: 'marketId',
+              postOnly: false,
+              price: undefined,
+              reduceOnly: true,
+              reference: 'reference',
+              side: Schema.Side.SIDE_SELL,
+              size: '10000',
+              timeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK,
+              type: OrderType.TYPE_MARKET,
+            },
+            price: '600000',
+          },
+          risesAbove: {
+            orderSubmission: {
+              expiresAt: undefined,
+              marketId: 'marketId',
+              postOnly: false,
+              price: undefined,
+              reduceOnly: true,
+              reference: 'reference',
+              side: Schema.Side.SIDE_SELL,
+              size: '10000',
+              timeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK,
+              type: OrderType.TYPE_MARKET,
+            },
+            price: '700000',
+          },
+        },
+      ],
+      submissions: [
+        {
+          expiresAt: undefined,
+          marketId: 'marketId',
+          postOnly: false,
+          price: '663000',
+          reduceOnly: false,
+          reference: 'reference',
+          side: Schema.Side.SIDE_BUY,
+          size: '10000',
+          timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
+          type: OrderType.TYPE_LIMIT,
+        },
+      ],
+    };
+    expect(result).toEqual(expected);
+  });
+
+  it('creates batch market instructions for a normal order created without TP and SL', () => {
+    // Create order form values without TP and SL
+    const orderFormValuesWithoutTPSL = { ...orderFormValues };
+    delete orderFormValuesWithoutTPSL.takeProfit;
+    delete orderFormValuesWithoutTPSL.stopLoss;
+
+    const result = mapFormValuesToTakeProfitAndStopLoss(
+      orderFormValuesWithoutTPSL,
+      mockMarket,
+      'reference'
+    );
+
+    // Expected result when TP and SL are not provided
+    const expected: {
+      submissions: Schema.OrderSubmission[];
+      stopOrdersSubmission: StopOrdersSubmission[];
+    } = {
+      stopOrdersSubmission: [],
+      submissions: [
+        {
+          expiresAt: undefined,
+          marketId: 'marketId',
+          postOnly: false,
+          price: '663000',
+          reduceOnly: false,
+          reference: 'reference',
+          side: Schema.Side.SIDE_BUY,
+          size: '10000',
+          timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
+          type: OrderType.TYPE_LIMIT,
+        },
+      ],
+    };
+    expect(result).toEqual(expected);
+  });
+
+  it('creates batch market instructions for a normal order created with TP only', () => {
+    // Create order form values with TP only
+    const orderFormValuesWithTP = { ...orderFormValues };
+    orderFormValuesWithTP.stopLoss = undefined;
+
+    const result = mapFormValuesToTakeProfitAndStopLoss(
+      orderFormValuesWithTP,
+      mockMarket,
+      'reference'
+    );
+
+    // Expected result when only TP is provided
+    const expected: {
+      submissions: Schema.OrderSubmission[];
+      stopOrdersSubmission: StopOrdersSubmission[];
+    } = {
+      stopOrdersSubmission: [
+        {
+          risesAbove: {
+            orderSubmission: {
+              expiresAt: undefined,
+              marketId: 'marketId',
+              postOnly: false,
+              price: undefined,
+              reduceOnly: true,
+              reference: 'reference',
+              side: Schema.Side.SIDE_SELL,
+              size: '10000',
+              timeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK,
+              type: OrderType.TYPE_MARKET,
+            },
+            price: '700000',
+          },
+        },
+      ],
+      submissions: [
+        {
+          expiresAt: undefined,
+          marketId: 'marketId',
+          postOnly: false,
+          price: '663000',
+          reduceOnly: false,
+          reference: 'reference',
+          side: Schema.Side.SIDE_BUY,
+          size: '10000',
+          timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
+          type: OrderType.TYPE_LIMIT,
+        },
+      ],
+    };
+    expect(result).toEqual(expected);
+  });
+
+  it('creates batch market instructions for a normal order created with SL only', () => {
+    // Create order form values with SL only
+    const orderFormValuesWithSL = { ...orderFormValues };
+    orderFormValuesWithSL.takeProfit = undefined;
+
+    const result = mapFormValuesToTakeProfitAndStopLoss(
+      orderFormValuesWithSL,
+      mockMarket,
+      'reference'
+    );
+
+    // Expected result when only SL is provided
+    const expected: {
+      submissions: Schema.OrderSubmission[];
+      stopOrdersSubmission: StopOrdersSubmission[];
+    } = {
+      stopOrdersSubmission: [
+        {
+          fallsBelow: {
+            orderSubmission: {
+              expiresAt: undefined,
+              marketId: 'marketId',
+              postOnly: false,
+              price: undefined,
+              reduceOnly: true,
+              reference: 'reference',
+              side: Schema.Side.SIDE_SELL,
+              size: '10000',
+              timeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK,
+              type: OrderType.TYPE_MARKET,
+            },
+            price: '600000',
+          },
+        },
+      ],
+      submissions: [
+        {
+          expiresAt: undefined,
+          marketId: 'marketId',
+          postOnly: false,
+          price: '663000',
+          reduceOnly: false,
+          reference: 'reference',
+          side: Schema.Side.SIDE_BUY,
+          size: '10000',
+          timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
+          type: OrderType.TYPE_LIMIT,
+        },
+      ],
+    };
+    expect(result).toEqual(expected);
+  });
 });
