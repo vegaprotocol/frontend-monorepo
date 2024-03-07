@@ -176,7 +176,7 @@ jobs:
     name: '(CI) check if e2e needed'
     outputs:
       run-tests: ${{ steps.check-test.outputs.e2e-needed }}
-      if: steps.check-test.outputs.e2e-needed == 'true'
+      if: ${{ steps.check-test.outputs.e2e-needed == true }}
     steps:
       - name: Check branch
         id: check-test
