@@ -45,7 +45,7 @@ export const ConnectionOptions = ({
       {isInstalling ? (
         <p className="text-warning">
           <Trans
-            i18nKey="Once you have the added the extension, <0>refresh</0> you browser."
+            i18nKey="Once you have added the extension, <0>refresh</0> your browser."
             components={[
               <button
                 onClick={() => window.location.reload()}
