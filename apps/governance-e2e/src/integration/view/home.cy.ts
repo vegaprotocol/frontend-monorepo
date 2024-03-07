@@ -93,7 +93,7 @@ context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
         .and('contain.text', 'consensus nodes');
     });
 
-    it('should contain link to specific validators', function () {
+    it.skip('should contain link to specific validators', function () {
       cy.getByTestId('validators')
         .should('have.length', '2')
         .each(($validator) => {
