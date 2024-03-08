@@ -4,7 +4,6 @@ import type { OrderFormValues } from '../../hooks/use-form-values';
 import { determinePriceStep, useValidateAmount } from '@vegaprotocol/utils';
 import {
   TradingFormGroup,
-  TradingInputError,
   Tooltip,
   FormGroup,
   Input,
@@ -31,30 +30,6 @@ export const DealTicketPriceTakeProfitStopLoss = ({
   const t = useT();
   const validateAmount = useValidateAmount();
   const priceStep = determinePriceStep(market);
-
-  const renderTakeProfitError = () => {
-    if (takeProfitError) {
-      return (
-        <TradingInputError testId="deal-ticket-take-profit-error-message">
-          {takeProfitError}
-        </TradingInputError>
-      );
-    }
-
-    return null;
-  };
-
-  const renderStopLossError = () => {
-    if (stopLossError) {
-      return (
-        <TradingInputError testId="deal-stop-loss-error-message">
-          {stopLossError}
-        </TradingInputError>
-      );
-    }
-
-    return null;
-  };
 
   return (
     <div className="mb-2">
@@ -165,8 +140,6 @@ export const DealTicketPriceTakeProfitStopLoss = ({
           </TradingFormGroup>
         </div>
       </div>
-      {renderTakeProfitError()}
-      {renderStopLossError()}
     </div>
   );
 };
