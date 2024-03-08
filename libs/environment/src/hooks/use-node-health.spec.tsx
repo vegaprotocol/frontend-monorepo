@@ -28,6 +28,16 @@ const createStatsMock = (
           blockHeight: blockHeight.toString(),
           vegaTime: '12345',
         },
+        networkParametersConnection: {
+          edges: [
+            {
+              node: {
+                key: 'a',
+                value: '1',
+              },
+            },
+          ],
+        },
       },
     },
   };

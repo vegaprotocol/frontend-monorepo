@@ -1,5 +1,5 @@
 import { parse as tomlParse } from 'toml';
-import { isValidUrl, LocalStorage } from '@vegaprotocol/utils';
+import { LocalStorage, isValidUrl } from '@vegaprotocol/utils';
 import { useEffect } from 'react';
 import { create } from 'zustand';
 import { createClient } from '@vegaprotocol/apollo-client';
@@ -22,6 +22,7 @@ import uniq from 'lodash/uniq';
 import orderBy from 'lodash/orderBy';
 import first from 'lodash/first';
 import { canMeasureResponseTime, measureResponseTime } from '../utils/time';
+import compact from 'lodash/compact';
 
 type Client = ReturnType<typeof createClient>;
 type ClientCollection = {
@@ -70,10 +71,19 @@ const fetchConfig = async (url?: string) => {
 };
 
 /**
- * Find a suitable node by running a test query and test
+ * Find a suitable nodes by running a test query and test
  * subscription, against a list of clients, first to resolve wins
  */
-const findNode = async (clients: ClientCollection): Promise<string | null> => {
+const findHealthyNodes = async (nodes: string[]) => {
+  const clients: ClientCollection = {};
+  nodes.forEach((url) => {
+    clients[url] = createClient({
+      url,
+      cacheConfig: undefined,
+      retry: false,
+      connectToDevTools: false,
+    });
+  });
   const tests = Object.entries(clients).map((args) => testNode(...args));
   try {
     const nodes = await Promise.all(tests);
@@ -93,11 +103,10 @@ const findNode = async (clients: ClientCollection): Promise<string | null> => {
       ['desc', 'desc', 'asc']
     );
 
-    const best = first(ordered);
-    return best ? best.url : null;
+    return ordered;
   } catch (err) {
     // All tests rejected, no suitable node found
-    return null;
+    return [];
   }
 };
 
@@ -142,6 +151,15 @@ const testQuery = (
       })
       .then((result) => {
         if (result && !result.error) {
+          const netParams = compact(
+            result.data.networkParametersConnection.edges?.map((n) => n?.node)
+          );
+          if (netParams.length === 0) {
+            // any node that doesn't return the network parameters is considered
+            // failed
+            resolve(false);
+            return;
+          }
           const res = {
             blockHeight: Number(result.data.statistics.blockHeight),
             vegaTime: new Date(result.data.statistics.vegaTime),
@@ -600,32 +618,34 @@ export const useEnvironment = create<EnvStore>()((set, get) => ({
     }
 
     const state = get();
-    const storedUrl = LocalStorage.getItem(STORAGE_KEY);
+
+    let storedUrl = LocalStorage.getItem(STORAGE_KEY);
+    if (!isValidUrl(storedUrl)) {
+      // remove invalid data from local storage
+      LocalStorage.removeItem(STORAGE_KEY);
+      storedUrl = null;
+    }
 
     let nodes: string[] | undefined;
     try {
-      nodes = await fetchConfig(state.VEGA_CONFIG_URL);
-      const enrichedNodes = uniq(
-        [...nodes, state.VEGA_URL, storedUrl].filter(Boolean) as string[]
+      nodes = uniq(
+        compact([
+          // url from local storage
+          storedUrl,
+          // url from state (if set via env var)
+          state.VEGA_URL,
+          // urls from network configuration
+          ...(await fetchConfig(state.VEGA_CONFIG_URL)),
+        ])
       );
-      set({ nodes: enrichedNodes });
+      set({ nodes });
     } catch (err) {
       console.warn(`Could not fetch node config from ${state.VEGA_CONFIG_URL}`);
     }
 
-    // Node url found in localStorage, if its valid attempt to connect
-    if (storedUrl) {
-      if (isValidUrl(storedUrl)) {
-        set({ VEGA_URL: storedUrl, status: 'success' });
-        return;
-      } else {
-        LocalStorage.removeItem(STORAGE_KEY);
-      }
-    }
-
-    // VEGA_URL env var is set and is a valid url no need to proceed
-    if (state.VEGA_URL) {
-      set({ status: 'success' });
+    // skip picking up the best node if VEGA_URL env variable is set
+    if (state.VEGA_URL && isValidUrl(state.VEGA_URL)) {
+      state.setUrl(state.VEGA_URL);
       return;
     }
 
@@ -639,37 +659,35 @@ export const useEnvironment = create<EnvStore>()((set, get) => ({
       return;
     }
 
-    // Create a map of node urls to client instances
-    const clients: ClientCollection = {};
-    nodes.forEach((url) => {
-      clients[url] = createClient({
-        url,
-        cacheConfig: undefined,
-        retry: false,
-        connectToDevTools: false,
-      });
+    const healthyNodes = await findHealthyNodes(nodes);
+
+    // A requested node is a node to which the app was previously connected
+    // or the one set via env variable.
+    const requestedNodeUrl = storedUrl || state.VEGA_URL;
+
+    const bestNode = first(healthyNodes);
+    const requestedNode = healthyNodes.find(
+      (n) => requestedNodeUrl && n.url === requestedNodeUrl
+    );
+    if (!requestedNode) {
+      // remove unhealthy node url from local storage
+      LocalStorage.removeItem(STORAGE_KEY);
+    }
+    // A node's url (VEGA_URL) is either the requested node (previously
+    // connected or taken form env variable) or the currently best available
+    // node.
+    const url = requestedNode?.url || bestNode?.url;
+
+    if (url != null) {
+      state.setUrl(url);
+      return;
+    }
+
+    set({
+      status: 'failed',
+      error: 'No suitable node found',
     });
-
-    // Find a suitable node to connect to by attempting a query and a
-    // subscription, first to fulfill both will be the resulting url.
-    const url = await findNode(clients);
-
-    if (url !== null) {
-      set({
-        status: 'success',
-        VEGA_URL: url,
-      });
-      LocalStorage.setItem(STORAGE_KEY, url);
-    }
-    // Every node failed either to make a query or retrieve data from
-    // a subscription
-    else {
-      set({
-        status: 'failed',
-        error: 'No node found',
-      });
-      console.warn('No suitable vega node was found');
-    }
+    console.warn('No suitable node was found');
   },
 }));
 
