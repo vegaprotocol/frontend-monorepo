@@ -1,9 +1,11 @@
-import { join } from 'path';
-import { createGlobPatternsForDependencies } from '@nx/react/tailwind';
-import { theme } from '@vegaprotocol/tailwindcss-config';
-import { vegaCustomClasses } from '@vegaprotocol/tailwindcss-config';
+const { join } = require('path');
+const { createGlobPatternsForDependencies } = require('@nx/react/tailwind');
+const { theme } = require('../../libs/tailwindcss-config/src/theme');
+const {
+  vegaCustomClasses,
+} = require('../../libs/tailwindcss-config/src/vega-custom-classes');
 
-export default {
+module.exports = {
   content: [
     join(__dirname, 'src/**/*.{js,ts,jsx,tsx}'),
     'libs/ui-toolkit/src/utils/shared.ts',
