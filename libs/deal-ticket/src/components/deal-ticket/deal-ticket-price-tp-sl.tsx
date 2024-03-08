@@ -79,9 +79,9 @@ export const DealTicketPriceTakeProfitStopLoss = ({
                       {...field}
                     />
                   </FormGroup>
-                  {fieldState.error && (
+                  {(fieldState.error || takeProfitError) && (
                     <InputError testId="deal-ticket-error-message-price-take-profit">
-                      {fieldState.error.message}
+                      {fieldState.error?.message || takeProfitError}
                     </InputError>
                   )}
                 </div>
@@ -129,9 +129,9 @@ export const DealTicketPriceTakeProfitStopLoss = ({
                       {...field}
                     />
                   </FormGroup>
-                  {fieldState.error && (
+                  {(fieldState.error || stopLossError) && (
                     <InputError testId="deal-ticket-error-message-price-stop-loss">
-                      {fieldState.error.message}
+                      {fieldState.error?.message || stopLossError}
                     </InputError>
                   )}
                 </div>
