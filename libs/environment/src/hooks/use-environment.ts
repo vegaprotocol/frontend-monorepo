@@ -619,6 +619,12 @@ export const useEnvironment = create<EnvStore>()((set, get) => ({
 
     const state = get();
 
+    // skip picking up the best node if VEGA_URL env variable is set
+    if (state.VEGA_URL && isValidUrl(state.VEGA_URL)) {
+      state.setUrl(state.VEGA_URL);
+      return;
+    }
+
     let storedUrl = LocalStorage.getItem(STORAGE_KEY);
     if (!isValidUrl(storedUrl)) {
       // remove invalid data from local storage
@@ -667,24 +673,21 @@ export const useEnvironment = create<EnvStore>()((set, get) => ({
       // remove unhealthy node url from local storage
       LocalStorage.removeItem(STORAGE_KEY);
     }
-    // A node's url (VEGA_URL) is either the requsted node (previously
+    // A node's url (VEGA_URL) is either the requested node (previously
     // connected or taken form env variable) or the currently best available
     // node.
     const url = requestedNode?.url || bestNode?.url;
 
     if (url != null) {
-      set({
-        status: 'success',
-        VEGA_URL: url,
-      });
-      LocalStorage.setItem(STORAGE_KEY, url);
-    } else {
-      set({
-        status: 'failed',
-        error: 'No suitable node found',
-      });
-      console.warn('No suitable node was found');
+      state.setUrl(url);
+      return;
     }
+
+    set({
+      status: 'failed',
+      error: 'No suitable node found',
+    });
+    console.warn('No suitable node was found');
   },
 }));
 
