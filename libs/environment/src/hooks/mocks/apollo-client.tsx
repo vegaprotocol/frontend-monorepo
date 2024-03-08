@@ -39,6 +39,19 @@ export const getMockStatisticsResult = (
     blockHeight: '11',
     vegaTime: new Date().toISOString(),
   },
+  networkParametersConnection: {
+    __typename: 'NetworkParametersConnection',
+    edges: [
+      {
+        __typename: 'NetworkParameterEdge',
+        node: {
+          __typename: 'NetworkParameter',
+          key: 'a',
+          value: '1',
+        },
+      },
+    ],
+  },
 });
 
 export const getMockQueryResult = (env: Networks): NodeCheckQuery => ({
@@ -47,6 +60,19 @@ export const getMockQueryResult = (env: Networks): NodeCheckQuery => ({
     chainId: `${env.toLowerCase()}-0123`,
     blockHeight: '11',
     vegaTime: new Date().toISOString(),
+  },
+  networkParametersConnection: {
+    __typename: 'NetworkParametersConnection',
+    edges: [
+      {
+        __typename: 'NetworkParameterEdge',
+        node: {
+          __typename: 'NetworkParameter',
+          key: 'a',
+          value: '1',
+        },
+      },
+    ],
   },
 });
 

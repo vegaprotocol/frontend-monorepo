@@ -1,4 +1,9 @@
-import { TradingRadio } from '@vegaprotocol/ui-toolkit';
+import {
+  CopyWithTooltip,
+  TradingRadio,
+  VegaIcon,
+  VegaIconNames,
+} from '@vegaprotocol/ui-toolkit';
 import { useEffect, useState } from 'react';
 import { CUSTOM_NODE_KEY } from '../../types';
 import {
@@ -127,8 +132,17 @@ export const RowData = ({
   return (
     <>
       {id !== CUSTOM_NODE_KEY && (
-        <div className="break-all" data-testid="node">
+        <div className="break-all flex gap-2" data-testid="node">
           <TradingRadio id={`node-url-${id}`} value={url} label={url} />
+          {url.length > 0 && url !== 'custom' && (
+            <span className="text-muted">
+              <CopyWithTooltip text={url}>
+                <button>
+                  <VegaIcon name={VegaIconNames.COPY} />
+                </button>
+              </CopyWithTooltip>
+            </span>
+          )}
         </div>
       )}
       <LayoutCell
