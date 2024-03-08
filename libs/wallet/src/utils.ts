@@ -1,4 +1,3 @@
-import { ethers } from 'ethers';
 import { sha3_256 } from 'js-sha3';
 import {
   type ApplyReferralCode,
@@ -20,17 +19,16 @@ import {
  * Can match up the newly created order with incoming orders via a subscription
  */
 export const determineId = (sig: string) => {
-  return sha3_256(ethers.utils.arrayify('0x' + sig));
+  return sha3_256(new Uint8Array(hexToBytes(sig)));
 };
 
-/**
- * Base64 encode a transaction object
- */
-export const encodeTransaction = (tx: Transaction): string => {
-  return ethers.utils.base64.encode(
-    ethers.utils.toUtf8Bytes(JSON.stringify(tx))
-  );
-};
+function hexToBytes(hex: string) {
+  const bytes = [];
+  for (let i = 0; i < hex.length; i += 2) {
+    bytes.push(parseInt(hex.substr(i, 2), 16));
+  }
+  return bytes;
+}
 
 /**
  * TODO: We may want to create a package similar to @metamask/detect-ethereum-provider as this wont suffice
