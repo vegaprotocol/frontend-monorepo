@@ -103,7 +103,7 @@ const KeypairListItem = ({
 
   return (
     <div
-      className="flex flex-col w-full ml-4 mr-2 mb-4"
+      className="flex flex-col w-full px-4 mb-4"
       data-testid={`key-${pk.publicKey}-mobile`}
     >
       <span className="flex gap-2 items-center mr-2">
@@ -126,11 +126,11 @@ const KeypairListItem = ({
         </CopyToClipboard>
         {copied && <span className="text-xs">{t('Copied')}</span>}
       </span>
-
       <span
         className="flex gap-2 items-center"
         data-testid={`key-${pk.publicKey}`}
       >
+        <span className="truncate">{alias ? alias : t('No alias')}</span>
         <button
           data-testid="alias"
           onClick={() => {
@@ -139,7 +139,6 @@ const KeypairListItem = ({
           }}
           className="flex items-center gap-1"
         >
-          {alias ? alias : t('No alias')}
           <VegaIcon name={VegaIconNames.EDIT} />
         </button>
       </span>
