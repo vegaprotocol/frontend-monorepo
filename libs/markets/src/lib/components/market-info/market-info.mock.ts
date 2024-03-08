@@ -14,6 +14,7 @@ export const marketInfoQuery = (
       positionDecimalPlaces: 0,
       state: Schema.MarketState.STATE_ACTIVE,
       tradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
+      tickSize: '1',
       proposal: {
         __typename: 'Proposal',
         id: 'market-0',

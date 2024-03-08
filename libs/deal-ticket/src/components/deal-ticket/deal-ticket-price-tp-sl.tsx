@@ -1,10 +1,9 @@
 import { Controller, type Control } from 'react-hook-form';
 import type { Market } from '@vegaprotocol/markets';
 import type { OrderFormValues } from '../../hooks/use-form-values';
-import { toDecimal, useValidateAmount } from '@vegaprotocol/utils';
+import { determinePriceStep, useValidateAmount } from '@vegaprotocol/utils';
 import {
   TradingFormGroup,
-  TradingInputError,
   Tooltip,
   FormGroup,
   Input,
@@ -30,31 +29,7 @@ export const DealTicketPriceTakeProfitStopLoss = ({
 }: DealTicketPriceTakeProfitStopLossProps) => {
   const t = useT();
   const validateAmount = useValidateAmount();
-  const priceStep = toDecimal(market?.decimalPlaces);
-
-  const renderTakeProfitError = () => {
-    if (takeProfitError) {
-      return (
-        <TradingInputError testId="deal-ticket-take-profit-error-message">
-          {takeProfitError}
-        </TradingInputError>
-      );
-    }
-
-    return null;
-  };
-
-  const renderStopLossError = () => {
-    if (stopLossError) {
-      return (
-        <TradingInputError testId="deal-stop-loss-error-message">
-          {stopLossError}
-        </TradingInputError>
-      );
-    }
-
-    return null;
-  };
+  const priceStep = determinePriceStep(market);
 
   return (
     <div className="mb-2">
@@ -104,9 +79,9 @@ export const DealTicketPriceTakeProfitStopLoss = ({
                       {...field}
                     />
                   </FormGroup>
-                  {fieldState.error && (
+                  {(fieldState.error || takeProfitError) && (
                     <InputError testId="deal-ticket-error-message-price-take-profit">
-                      {fieldState.error.message}
+                      {fieldState.error?.message || takeProfitError}
                     </InputError>
                   )}
                 </div>
@@ -154,9 +129,9 @@ export const DealTicketPriceTakeProfitStopLoss = ({
                       {...field}
                     />
                   </FormGroup>
-                  {fieldState.error && (
+                  {(fieldState.error || stopLossError) && (
                     <InputError testId="deal-ticket-error-message-price-stop-loss">
-                      {fieldState.error.message}
+                      {fieldState.error?.message || stopLossError}
                     </InputError>
                   )}
                 </div>
@@ -165,8 +140,6 @@ export const DealTicketPriceTakeProfitStopLoss = ({
           </TradingFormGroup>
         </div>
       </div>
-      {renderTakeProfitError()}
-      {renderStopLossError()}
     </div>
   );
 };

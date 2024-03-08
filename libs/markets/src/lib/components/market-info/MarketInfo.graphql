@@ -139,6 +139,7 @@ query MarketInfo($marketId: ID!) {
     id
     decimalPlaces
     positionDecimalPlaces
+    tickSize
     state
     tradingMode
     linearSlippageFactor
