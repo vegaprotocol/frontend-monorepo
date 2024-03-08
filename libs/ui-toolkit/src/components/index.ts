@@ -13,7 +13,6 @@ export * from './divider';
 export * from './drawer';
 export * from './dropdown-menu';
 export * from './form-group';
-export * from './healthbar';
 export * from './icon';
 export * from './indicator';
 export * from './input';
