@@ -1,5 +1,5 @@
 import * as Schema from '@vegaprotocol/types';
-import { determineId } from '../utils';
+import { determineId } from '@vegaprotocol/wallet';
 import { setGraphQLEndpoint } from './request';
 import { vote } from './vote';
 import { stakeForVegaPublicKey } from './ethereum-setup';

@@ -25,10 +25,15 @@ export const determineId = (sig: string) => {
 function hexToBytes(hex: string) {
   const bytes = [];
   for (let i = 0; i < hex.length; i += 2) {
-    bytes.push(parseInt(hex.substr(i, 2), 16));
+    bytes.push(parseInt(hex.substring(i, i + 2), 16));
   }
   return bytes;
 }
+
+/* Validates string is 64 chars hex string */
+export const isValidVegaPublicKey = (value: string) => {
+  return /^[A-Fa-f0-9]{64}$/i.test(value);
+};
 
 /**
  * TODO: We may want to create a package similar to @metamask/detect-ethereum-provider as this wont suffice
