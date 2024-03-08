@@ -18,6 +18,12 @@ export default function Document() {
           type="font/woff"
         />
 
+        <link
+          rel="preload"
+          href="/AlphaLyrae.woff2"
+          as="font"
+          type="font/woff2"
+        />
         {/* icons */}
         <link rel="icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="apple-touch-icon" content="/favicon.ico" />
