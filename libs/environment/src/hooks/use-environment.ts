@@ -619,12 +619,6 @@ export const useEnvironment = create<EnvStore>()((set, get) => ({
 
     const state = get();
 
-    // skip picking up the best node if VEGA_URL env variable is set
-    if (state.VEGA_URL && isValidUrl(state.VEGA_URL)) {
-      state.setUrl(state.VEGA_URL);
-      return;
-    }
-
     let storedUrl = LocalStorage.getItem(STORAGE_KEY);
     if (!isValidUrl(storedUrl)) {
       // remove invalid data from local storage
@@ -647,6 +641,12 @@ export const useEnvironment = create<EnvStore>()((set, get) => ({
       set({ nodes });
     } catch (err) {
       console.warn(`Could not fetch node config from ${state.VEGA_CONFIG_URL}`);
+    }
+
+    // skip picking up the best node if VEGA_URL env variable is set
+    if (state.VEGA_URL && isValidUrl(state.VEGA_URL)) {
+      state.setUrl(state.VEGA_URL);
+      return;
     }
 
     // No url found in env vars or localStorage, AND no nodes were found in
