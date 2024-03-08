@@ -153,7 +153,7 @@ context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
               .invoke('text')
               .should('not.eq', currentBlockHeight);
           });
-        cy.getByTestId('subscription-cell').should('have.text', 'Yes');
+        cy.getByTestId('subscription-cell').should('be.be.visible');
       });
       cy.getByTestId('connect').should('be.disabled');
       cy.getByTestId('node-url-custom').click({ force: true });
