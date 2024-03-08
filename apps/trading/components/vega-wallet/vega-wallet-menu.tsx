@@ -131,16 +131,18 @@ const KeypairListItem = ({
         data-testid={`key-${pk.publicKey}`}
       >
         <span className="truncate">{alias ? alias : t('No alias')}</span>
-        <button
-          data-testid="alias"
-          onClick={() => {
-            setOpen(pk.publicKey);
-            setMenu(null);
-          }}
-          className="flex items-center gap-1"
-        >
-          <VegaIcon name={VegaIconNames.EDIT} />
-        </button>
+        {isActive && (
+          <button
+            data-testid="alias"
+            onClick={() => {
+              setOpen(pk.publicKey);
+              setMenu(null);
+            }}
+            className="flex items-center gap-1"
+          >
+            <VegaIcon name={VegaIconNames.EDIT} />
+          </button>
+        )}
       </span>
     </div>
   );

@@ -94,6 +94,7 @@ export const VegaWalletConnectButton = ({
             <KeypairRadioGroup
               pubKey={pubKey}
               pubKeys={pubKeys}
+              activeKey={activeKey?.publicKey}
               onSelect={selectPubKey}
             />
             <TradingDropdownSeparator />
@@ -138,10 +139,12 @@ export const VegaWalletConnectButton = ({
 const KeypairRadioGroup = ({
   pubKey,
   pubKeys,
+  activeKey,
   onSelect,
 }: {
   pubKey: string | undefined;
   pubKeys: Key[];
+  activeKey: string | undefined;
   onSelect: (pubKey: string) => void;
 }) => {
   const { data } = usePartyProfilesQuery({
@@ -157,14 +160,27 @@ const KeypairRadioGroup = ({
           (e) => e.node.partyId === pk.publicKey
         );
         return (
-          <KeypairItem key={pk.publicKey} pk={pk} alias={profile?.node.alias} />
+          <KeypairItem
+            key={pk.publicKey}
+            pk={pk}
+            isActive={activeKey === pk.publicKey}
+            alias={profile?.node.alias}
+          />
         );
       })}
     </TradingDropdownRadioGroup>
   );
 };
 
-const KeypairItem = ({ pk, alias }: { pk: Key; alias: string | undefined }) => {
+const KeypairItem = ({
+  pk,
+  isActive,
+  alias,
+}: {
+  pk: Key;
+  alias: string | undefined;
+  isActive: boolean;
+}) => {
   const t = useT();
   const [copied, setCopied] = useCopyTimeout();
   const setOpen = useProfileDialogStore((store) => store.setOpen);
@@ -201,7 +217,7 @@ const KeypairItem = ({ pk, alias }: { pk: Key; alias: string | undefined }) => {
               className="flex items-center gap-1"
             >
               {alias ? alias : t('No alias')}
-              <VegaIcon name={VegaIconNames.EDIT} />
+              {isActive && <VegaIcon name={VegaIconNames.EDIT} />}
             </button>
           </Tooltip>
         </div>
