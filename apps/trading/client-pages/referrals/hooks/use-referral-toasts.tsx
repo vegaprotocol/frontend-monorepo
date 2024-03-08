@@ -5,20 +5,22 @@ import {
   ToastHeading,
   Button,
 } from '@vegaprotocol/ui-toolkit';
-import { useReferral } from './use-referral';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useEffect } from 'react';
 import { useT } from '../../../lib/use-t';
 import { matchPath, useLocation, useNavigate } from 'react-router-dom';
 import { Routes } from '../../../lib/links';
 import { useEpochInfoQuery } from '../../../lib/hooks/__generated__/Epoch';
+import { useFindReferralSet } from './use-find-referral-set';
 
 const REFETCH_INTERVAL = 60 * 60 * 1000; // 1h
 const NON_ELIGIBLE_REFERRAL_SET_TOAST_ID = 'non-eligible-referral-set';
 
 const useNonEligibleReferralSet = () => {
   const { pubKey } = useVegaWallet();
-  const { data, loading, refetch } = useReferral({ pubKey, role: 'referee' });
+  const { data, loading, role, isEligible, refetch } =
+    useFindReferralSet(pubKey);
+
   const {
     data: epochData,
     loading: epochLoading,
@@ -36,7 +38,13 @@ const useNonEligibleReferralSet = () => {
     };
   }, [epochRefetch, refetch]);
 
-  return { data, epoch: epochData?.epoch.id, loading: loading || epochLoading };
+  return {
+    data,
+    isEligible,
+    role,
+    epoch: epochData?.epoch.id,
+    loading: loading || epochLoading,
+  };
 };
 
 export const useReferralToasts = () => {
@@ -49,14 +57,16 @@ export const useReferralToasts = () => {
     store.update,
   ]);
 
-  const { data, epoch, loading } = useNonEligibleReferralSet();
+  const { data, role, isEligible, epoch, loading } =
+    useNonEligibleReferralSet();
 
   useEffect(() => {
     if (
       data &&
+      role === 'referee' &&
       epoch &&
       !loading &&
-      !data.isEligible &&
+      !isEligible &&
       !hasToast(NON_ELIGIBLE_REFERRAL_SET_TOAST_ID + epoch)
     ) {
       const nonEligibleReferralToast: Toast = {
@@ -98,9 +108,11 @@ export const useReferralToasts = () => {
     data,
     epoch,
     hasToast,
+    isEligible,
     loading,
     navigate,
     pathname,
+    role,
     setToast,
     t,
     updateToast,
