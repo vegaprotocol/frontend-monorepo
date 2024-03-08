@@ -1,6 +1,6 @@
 {
   "name": "@vegaprotocol/wallet",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "dependencies": {
     "@vegaprotocol/types": "0.0.7",
     "@vegaprotocol/utils": "0.0.11",
