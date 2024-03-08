@@ -1,4 +1,4 @@
-module.exports = {
+export const theme = {
   screens: {
     xs: '500px',
     sm: '640px',

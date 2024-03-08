@@ -1,8 +1,8 @@
-const plugin = require('tailwindcss/plugin');
-const colors = require('tailwindcss/colors');
-const themelite = require('./theme-lite');
+import plugin from 'tailwindcss/plugin';
+import colors from 'tailwindcss/colors';
+import { themeLite } from './theme-lite';
 
-const vegaCustomClassesLite = plugin(function ({ addUtilities }) {
+export const vegaCustomClassesLite = plugin(function ({ addUtilities }) {
   addUtilities({
     '.percent-change-up::before': {
       content: ' ',
@@ -35,19 +35,19 @@ const vegaCustomClassesLite = plugin(function ({ addUtilities }) {
       textTransform: 'uppercase',
       textDecoration: 'none',
       backgroundColor: 'rgba(0, 143, 74, 0.1)',
-      border: `1px solid ${themelite.colors.darkerGreen}`,
-      color: themelite.colors.darkerGreen,
+      border: `1px solid ${themeLite.colors.darkerGreen}`,
+      color: themeLite.colors.darkerGreen,
       '&:hover': {
-        backgroundColor: themelite.colors.darkerGreen,
+        backgroundColor: themeLite.colors.darkerGreen,
         color: colors.white,
       },
       '&.selected': {
-        backgroundColor: themelite.colors.darkerGreen,
+        backgroundColor: themeLite.colors.darkerGreen,
         color: colors.white,
       },
     },
     '.buyButtonDark': {
-      color: themelite.colors.darkerGreen,
+      color: themeLite.colors.darkerGreen,
       '&:hover': {
         color: colors.black,
       },
@@ -59,19 +59,19 @@ const vegaCustomClassesLite = plugin(function ({ addUtilities }) {
       textTransform: 'uppercase',
       textDecoration: 'none',
       backgroundColor: 'rgba(255, 8, 126, 0.1)',
-      border: `1px solid ${themelite.colors.pink}`,
-      color: themelite.colors.pink,
+      border: `1px solid ${themeLite.colors.pink}`,
+      color: themeLite.colors.pink,
       '&:hover': {
         color: colors.white,
-        backgroundColor: themelite.colors.pink,
+        backgroundColor: themeLite.colors.pink,
       },
       '&.selected': {
-        backgroundColor: themelite.colors.pink,
+        backgroundColor: themeLite.colors.pink,
         color: colors.white,
       },
     },
     '.sellButtonDark': {
-      color: themelite.colors.pink,
+      color: themeLite.colors.pink,
       '&:hover': {
         color: colors.black,
       },
@@ -110,5 +110,3 @@ const vegaCustomClassesLite = plugin(function ({ addUtilities }) {
     // },
   });
 });
-
-module.exports = vegaCustomClassesLite;

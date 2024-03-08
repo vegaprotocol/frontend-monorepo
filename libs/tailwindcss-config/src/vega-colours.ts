@@ -1,4 +1,4 @@
-const VegaColours = {
+export const VegaColours = {
   yellow: {
     DEFAULT: '#D7FB50',
     dark: '#9BE106',
@@ -31,8 +31,4 @@ const VegaColours = {
     300: '#A7A7A7',
     400: '#626262',
   },
-};
-
-module.exports = {
-  VegaColours,
 };

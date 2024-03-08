@@ -1,8 +1,8 @@
-const plugin = require('tailwindcss/plugin');
-const colors = require('tailwindcss/colors');
-const theme = require('./theme');
+import plugin from 'tailwindcss/plugin';
+import colors from 'tailwindcss/colors';
+import { theme } from './theme';
 
-const vegaCustomClasses = plugin(function ({ addUtilities }) {
+export const vegaCustomClasses = plugin(function ({ addUtilities }) {
   addUtilities({
     '.calt': {
       fontFeatureSettings: "'calt'",
@@ -32,7 +32,7 @@ const vegaCustomClasses = plugin(function ({ addUtilities }) {
     '.dark .syntax-highlighter-wrapper .hljs': {
       background: theme.colors.vega.cdark[900],
       color: theme.colors.vega.green.DEFAULT,
-      border: 0,
+      border: '0',
     },
     '.syntax-highlighter-wrapper .hljs-literal': {
       color: theme.colors.vega.pink.DEFAULT,
@@ -60,5 +60,3 @@ const vegaCustomClasses = plugin(function ({ addUtilities }) {
     },
   });
 });
-
-module.exports = vegaCustomClasses;
