@@ -123,7 +123,7 @@ export const OrderEditDialog = ({
                   min: (value) =>
                     Number(value) >= Number(step)
                       ? true
-                      : t('Price cannot be lower than {{priceStep}}', {
+                      : t('Price cannot be lower than {{step}}', {
                           step,
                         }),
                   validate: validateAmount(step, t('Price')),
@@ -147,7 +147,7 @@ export const OrderEditDialog = ({
                   min: (value) =>
                     Number(value) >= Number(stepSize)
                       ? true
-                      : t('Size cannot be lower than {{sizeStep}}', {
+                      : t('Size cannot be lower than {{stepSize}}', {
                           stepSize,
                         }),
                   validate: validateAmount(stepSize, t('Size')),
