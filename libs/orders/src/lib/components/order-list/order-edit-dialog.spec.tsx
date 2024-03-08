@@ -17,6 +17,7 @@ describe('OrderEditDialog', () => {
     );
     const editOrder = await screen.findByTestId('edit-order');
     const limitPrice = within(editOrder).getByLabelText('Price');
+    await userEvent.clear(limitPrice);
     await userEvent.type(limitPrice, '0.111111');
     const submitButton = within(editOrder).getByRole('button', {
       name: 'Update',
