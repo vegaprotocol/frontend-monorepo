@@ -1,8 +1,12 @@
 import { formatNumber } from '@vegaprotocol/utils';
 import sortBy from 'lodash/sortBy';
 import omit from 'lodash/omit';
-import { useReferralProgramQuery } from './__generated__/CurrentReferralProgram';
+import {
+  type ReferralProgramQuery,
+  useReferralProgramQuery,
+} from './__generated__/CurrentReferralProgram';
 import BigNumber from 'bignumber.js';
+import { type ApolloError } from '@apollo/client';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const MOCK = {
@@ -82,7 +86,37 @@ const MOCK = {
   },
 };
 
-export const useReferralProgram = () => {
+type ProgramDetail = Omit<
+  NonNullable<ReferralProgramQuery['currentReferralProgram']>,
+  'benefitTiers' | 'stakingTiers'
+>;
+
+export type BenefitTier = {
+  tier: number;
+  rewardFactor: number;
+  commission: string;
+  discountFactor: number;
+  discount: string;
+  minimumVolume: number;
+  volume: string;
+  epochs: number;
+};
+
+type StakingTier = {
+  tier: number;
+  minimumStakedTokens: string;
+  referralRewardMultiplier: string;
+};
+
+export type ReferralProgramData = {
+  benefitTiers: BenefitTier[];
+  stakingTiers: StakingTier[];
+  details: ProgramDetail | undefined;
+  loading: boolean;
+  error?: ApolloError;
+};
+
+export const useReferralProgram = (): ReferralProgramData => {
   const { data, loading, error } = useReferralProgramQuery({
     fetchPolicy: 'cache-and-network',
   });
