@@ -3,6 +3,7 @@ import { createGlobPatternsForDependencies } from '@nx/next/tailwind';
 import { theme } from '@vegaprotocol/tailwindcss-config';
 import { vegaCustomClasses } from '@vegaprotocol/tailwindcss-config';
 
+// eslint-disable-next-line
 export default {
   content: [
     join(__dirname, 'pages/**/*.{js,ts,jsx,tsx}'),
