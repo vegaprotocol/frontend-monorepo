@@ -186,7 +186,7 @@ def test_reward_history(
 
 def test_staking_reward(
     setup_environment: Tuple[Page, str, str],
-) -> None:
+):
     page, tDAI_market, tDAI_asset_id = setup_environment
     expect(page.get_by_test_id("active-rewards-card")).to_have_count(2)
     staking_reward_card = page.get_by_test_id("active-rewards-card").nth(1)

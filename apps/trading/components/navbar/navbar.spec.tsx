@@ -8,6 +8,12 @@ import {
   mockConfig,
   MockedWalletProvider,
 } from '@vegaprotocol/wallet-react/testing';
+import { MockedProvider, type MockedResponse } from '@apollo/react-testing';
+import {
+  PartyProfilesDocument,
+  type PartyProfilesQuery,
+  type PartyProfilesQueryVariables,
+} from '../vega-wallet-connect-button/__generated__/PartyProfiles';
 
 jest.mock('@vegaprotocol/proposals', () => ({
   ProtocolUpgradeCountdown: () => null,
@@ -24,15 +30,45 @@ describe('Navbar', () => {
       publicKey: '2'.repeat(64),
     },
   ];
+  const key1Alias = 'key 1 alias';
   const marketId = 'abc';
   const navbarContent = 'navbar-menu-content';
+
+  const partyProfilesMock: MockedResponse<
+    PartyProfilesQuery,
+    PartyProfilesQueryVariables
+  > = {
+    request: {
+      query: PartyProfilesDocument,
+      variables: {
+        partyIds: mockKeys.map((k) => k.publicKey),
+      },
+    },
+    result: {
+      data: {
+        partiesProfilesConnection: {
+          edges: [
+            {
+              node: {
+                partyId: mockKeys[0].publicKey,
+                alias: key1Alias,
+                metadata: [],
+              },
+            },
+          ],
+        },
+      },
+    },
+  };
 
   const renderComponent = (initialEntries?: string[]) => {
     return render(
       <MemoryRouter initialEntries={initialEntries}>
-        <MockedWalletProvider>
-          <Navbar />
-        </MockedWalletProvider>
+        <MockedProvider mocks={[partyProfilesMock]}>
+          <MockedWalletProvider>
+            <Navbar />
+          </MockedWalletProvider>
+        </MockedProvider>
       </MemoryRouter>
     );
   };
@@ -140,6 +176,7 @@ describe('Navbar', () => {
     const activeKey = within(menu.getByTestId(/key-1+-mobile/));
     expect(activeKey.getByText(mockKeys[0].name)).toBeInTheDocument();
     expect(activeKey.getByTestId('icon-tick')).toBeInTheDocument();
+    expect(screen.getByText(key1Alias)).toBeInTheDocument();
 
     const inactiveKey = within(menu.getByTestId(/key-2+-mobile/));
     await userEvent.click(inactiveKey.getByText(mockKeys[1].name));
