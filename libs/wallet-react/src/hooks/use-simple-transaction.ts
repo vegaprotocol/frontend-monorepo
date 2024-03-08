@@ -65,12 +65,12 @@ export const useSimpleTransaction = (opts?: Options) => {
         if (err.code === ConnectorErrors.userRejected.code) {
           setStatus('idle');
         } else {
-          setError(err.message);
+          setError(`${err.message}${err.data ? `: ${err.data}` : ''}`);
           setStatus('idle');
           opts?.onError?.(err.message);
         }
       } else {
-        const msg = t('Wallet rejected transaction');
+        const msg = t('Something went wrong');
         setError(msg);
         setStatus('idle');
         opts?.onError?.(msg);

@@ -54,6 +54,7 @@ export const generateFill = (override?: PartialDeep<Trade>) => {
       decimalPlaces: 5,
       state: MarketState.STATE_ACTIVE,
       tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+      tickSize: '1',
       fees: {
         __typename: 'Fees',
         factors: {

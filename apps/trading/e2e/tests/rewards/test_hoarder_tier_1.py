@@ -1,8 +1,15 @@
 import pytest
 from rewards_test_ids import *
+from typing import Tuple, Generator
 import vega_sim.proto.vega as vega_protos
 from playwright.sync_api import Page, expect
-from conftest import init_vega, init_page, auth_setup, risk_accepted_setup, cleanup_container
+from conftest import (
+    init_vega,
+    init_page,
+    auth_setup,
+    risk_accepted_setup,
+    cleanup_container,
+)
 from fixtures.market import setup_continuous_market
 from actions.utils import next_epoch, change_keys
 from wallet_config import MM_WALLET
@@ -10,23 +17,21 @@ from vega_sim.null_service import VegaServiceNull
 
 
 @pytest.fixture(scope="module")
-def vega(request):
+def setup_environment(request, browser) -> Generator[Tuple[Page, str, str], None, None]:
+
     with init_vega(request) as vega_instance:
-        request.addfinalizer(lambda: cleanup_container(vega_instance)) 
-        yield vega_instance
+        request.addfinalizer(lambda: cleanup_container(vega_instance))
+
+        tDAI_market, tDAI_asset_id = setup_market_with_reward_program(vega_instance)
+
+        with init_page(vega_instance, browser, request) as page:
+            risk_accepted_setup(page)
+            auth_setup(vega_instance, page)
+            page.goto(REWARDS_URL)
+            change_keys(page, vega_instance, PARTY_B)
+            yield page, tDAI_market, tDAI_asset_id
 
 
-@pytest.fixture(scope="module")
-def page(vega, browser, request):
-    with init_page(vega, browser, request) as page:
-        risk_accepted_setup(page)
-        auth_setup(vega, page)
-        page.goto(REWARDS_URL)
-        change_keys(page, vega, PARTY_B)
-        yield page
-
-
-@pytest.fixture(scope="module", autouse=True)
 def setup_market_with_reward_program(vega: VegaServiceNull):
     tDAI_market = setup_continuous_market(vega)
     PARTY_A, PARTY_B, PARTY_C, PARTY_D = keys(vega)
@@ -135,31 +140,35 @@ def setup_market_with_reward_program(vega: VegaServiceNull):
     return tDAI_market, tDAI_asset_id
 
 
-@pytest.mark.xdist_group(name="test_rewards_hoarder_tier_1")
 def test_network_reward_pot(
-    page: Page,
-):
+    setup_environment: Tuple[Page, str, str],
+) -> None:
+    page, tDAI_market, tDAI_asset_id = setup_environment
     expect(page.get_by_test_id(TOTAL_REWARDS)).to_have_text("166.66666 tDAI")
 
 
-@pytest.mark.xdist_group(name="test_rewards_hoarder_tier_1")
 def test_reward_multiplier(
-    page: Page,
-):
+    setup_environment: Tuple[Page, str, str],
+) -> None:
+    page, tDAI_market, tDAI_asset_id = setup_environment
     expect(page.get_by_test_id(COMBINED_MULTIPLIERS)).to_have_text("2x")
     expect(page.get_by_test_id(STREAK_REWARD_MULTIPLIER_VALUE)).to_have_text("1x")
     expect(page.get_by_test_id(HOARDER_REWARD_MULTIPLIER_VALUE)).to_have_text("2x")
 
 
-@pytest.mark.xdist_group(name="test_rewards_hoarder_tier_1")
-def test_hoarder_bonus(page: Page):
+def test_hoarder_bonus(
+    setup_environment: Tuple[Page, str, str],
+) -> None:
+    page, tDAI_market, tDAI_asset_id = setup_environment
     expect(page.get_by_test_id(HOARDER_BONUS_TOTAL_HOARDED)).to_contain_text(
         "16,666,666"
     )
 
 
-@pytest.mark.xdist_group(name="test_rewards_hoarder_tier_1")
-def test_reward_history(page: Page):
+def test_reward_history(
+    setup_environment: Tuple[Page, str, str],
+) -> None:
+    page, tDAI_market, tDAI_asset_id = setup_environment
     page.locator('[name="fromEpoch"]').fill("1")
     expect((page.get_by_role(ROW).locator(PRICE_TAKING_COL_ID)).nth(1)).to_have_text(
         "299.99999100.00%"

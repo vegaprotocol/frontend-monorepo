@@ -23,6 +23,7 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import {
   addDecimalsFormatNumber,
+  determinePriceStep,
   formatNumber,
   formatNumberPercentage,
   getDateTimeFormat,
@@ -347,6 +348,7 @@ export const KeyDetailsInfoPanel = ({
                 marketDecimalPlaces: market.decimalPlaces,
                 positionDecimalPlaces: market.positionDecimalPlaces,
                 settlementAssetDecimalPlaces: assetDecimals,
+                tickSize: determinePriceStep(market),
               }
             : {
                 name: market.tradableInstrument.instrument.name,
@@ -357,6 +359,7 @@ export const KeyDetailsInfoPanel = ({
                 marketDecimalPlaces: market.decimalPlaces,
                 positionDecimalPlaces: market.positionDecimalPlaces,
                 settlementAssetDecimalPlaces: assetDecimals,
+                tickSize: determinePriceStep(market),
               }
         }
         parentData={

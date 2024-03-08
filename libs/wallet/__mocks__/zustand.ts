@@ -1,5 +1,4 @@
 import type { StateCreator } from 'zustand';
-import { act } from 'react-dom/test-utils';
 const { create: actualCreate } = jest.requireActual('zustand'); // if using jest
 
 // a variable to hold reset functions for all stores declared in the app
@@ -17,5 +16,5 @@ export const create =
 
 // Reset all stores after each test run
 beforeEach(() => {
-  act(() => storeResetFns.forEach((resetFn) => resetFn()));
+  storeResetFns.forEach((resetFn) => resetFn());
 });

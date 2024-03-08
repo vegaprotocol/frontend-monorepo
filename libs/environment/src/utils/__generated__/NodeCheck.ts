@@ -6,7 +6,7 @@ const defaultOptions = {} as const;
 export type NodeCheckQueryVariables = Types.Exact<{ [key: string]: never; }>;
 
 
-export type NodeCheckQuery = { __typename?: 'Query', statistics: { __typename?: 'Statistics', chainId: string, blockHeight: string, vegaTime: any } };
+export type NodeCheckQuery = { __typename?: 'Query', statistics: { __typename?: 'Statistics', chainId: string, blockHeight: string, vegaTime: any }, networkParametersConnection: { __typename?: 'NetworkParametersConnection', edges?: Array<{ __typename?: 'NetworkParameterEdge', node: { __typename?: 'NetworkParameter', key: string, value: string } } | null> | null } };
 
 export type NodeCheckTimeUpdateSubscriptionVariables = Types.Exact<{ [key: string]: never; }>;
 
@@ -20,6 +20,14 @@ export const NodeCheckDocument = gql`
     chainId
     blockHeight
     vegaTime
+  }
+  networkParametersConnection {
+    edges {
+      node {
+        key
+        value
+      }
+    }
   }
 }
     `;

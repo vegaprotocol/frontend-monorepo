@@ -37,6 +37,7 @@ export const createMarketFragment = (
     positionDecimalPlaces: 0,
     tradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
     state: Schema.MarketState.STATE_ACTIVE,
+    tickSize: '1',
     marketTimestamps: {
       __typename: 'MarketTimestamps',
       close: null,

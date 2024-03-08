@@ -34,18 +34,28 @@ const INTERVAL_TO_PENNANT_MAP = {
   [PennantInterval.I1M]: Schema.Interval.INTERVAL_I1M,
   [PennantInterval.I5M]: Schema.Interval.INTERVAL_I5M,
   [PennantInterval.I15M]: Schema.Interval.INTERVAL_I15M,
+  [PennantInterval.I30M]: Schema.Interval.INTERVAL_I30M,
   [PennantInterval.I1H]: Schema.Interval.INTERVAL_I1H,
+  [PennantInterval.I4H]: Schema.Interval.INTERVAL_I4H,
   [PennantInterval.I6H]: Schema.Interval.INTERVAL_I6H,
+  [PennantInterval.I8H]: Schema.Interval.INTERVAL_I8H,
+  [PennantInterval.I12H]: Schema.Interval.INTERVAL_I12H,
   [PennantInterval.I1D]: Schema.Interval.INTERVAL_I1D,
+  [PennantInterval.I7D]: Schema.Interval.INTERVAL_I7D,
 };
 
 const defaultConfig = {
   decimalPlaces: 5,
   supportedIntervals: [
+    PennantInterval.I7D,
     PennantInterval.I1D,
+    PennantInterval.I12H,
+    PennantInterval.I8H,
     PennantInterval.I6H,
+    PennantInterval.I4H,
     PennantInterval.I1H,
     PennantInterval.I15M,
+    PennantInterval.I30M,
     PennantInterval.I5M,
     PennantInterval.I1M,
   ],
@@ -137,10 +147,15 @@ export class VegaDataSource implements DataSource {
           decimalPlaces: this._decimalPlaces,
           positionDecimalPlaces: this._positionDecimalPlaces,
           supportedIntervals: [
+            PennantInterval.I7D,
             PennantInterval.I1D,
+            PennantInterval.I12H,
+            PennantInterval.I8H,
             PennantInterval.I6H,
+            PennantInterval.I4H,
             PennantInterval.I1H,
             PennantInterval.I15M,
+            PennantInterval.I30M,
             PennantInterval.I5M,
             PennantInterval.I1M,
           ],
@@ -255,6 +270,10 @@ const getDuration = (
   multiplier: number
 ): Duration => {
   switch (interval) {
+    case 'I7D':
+      return {
+        days: 7 * multiplier,
+      };
     case 'I1D':
       return {
         days: 1 * multiplier,
@@ -271,13 +290,29 @@ const getDuration = (
       return {
         minutes: 5 * multiplier,
       };
+    case 'I4H':
+      return {
+        hours: 4 * multiplier,
+      };
     case 'I6H':
       return {
         hours: 6 * multiplier,
       };
+    case 'I8H':
+      return {
+        hours: 8 * multiplier,
+      };
+    case 'I12H':
+      return {
+        hours: 12 * multiplier,
+      };
     case 'I15M':
       return {
         minutes: 15 * multiplier,
+      };
+    case 'I30M':
+      return {
+        minutes: 30 * multiplier,
       };
   }
 };
@@ -288,14 +323,24 @@ const getDifference = (
   dateRight: Date
 ): number => {
   switch (interval) {
+    case 'I7D':
+      return differenceInDays(dateRight, dateLeft) / 7;
     case 'I1D':
       return differenceInDays(dateRight, dateLeft);
+    case 'I12H':
+      return differenceInHours(dateRight, dateLeft) / 12;
+    case 'I8H':
+      return differenceInHours(dateRight, dateLeft) / 8;
     case 'I6H':
       return differenceInHours(dateRight, dateLeft) / 6;
+    case 'I4H':
+      return differenceInHours(dateRight, dateLeft) / 4;
     case 'I1H':
       return differenceInHours(dateRight, dateLeft);
     case 'I15M':
       return differenceInMinutes(dateRight, dateLeft) / 15;
+    case 'I30M':
+      return differenceInMinutes(dateRight, dateLeft) / 30;
     case 'I5M':
       return differenceInMinutes(dateRight, dateLeft) / 5;
     case 'I1M':

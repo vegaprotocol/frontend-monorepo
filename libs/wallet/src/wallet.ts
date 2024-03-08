@@ -132,18 +132,20 @@ export function createConfig(cfg: Config): Wallet {
       store.setState(getInitialState(), true);
       return { status: 'disconnected' as const };
     } catch (err) {
-      store.setState({
-        ...getInitialState(),
-        error: err instanceof ConnectorError ? err : unknownError(),
-      });
+      store.setState(getInitialState(), true);
       return { status: 'disconnected' as const };
     }
   }
 
   async function refreshKeys() {
-    const connector = connectors
-      .getState()
-      .find((x) => x.id === store.getState().current);
+    const state = store.getState();
+    const connector = connectors.getState().find((x) => x.id === state.current);
+
+    // Only refresh keys if connnected. If you aren't connect when you connect
+    // you will get the latest keys
+    if (state.status !== 'connected') {
+      return;
+    }
 
     try {
       if (!connector) {

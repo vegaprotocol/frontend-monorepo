@@ -2,7 +2,6 @@ import { renderHook } from '@testing-library/react';
 import { Intent } from '@vegaprotocol/ui-toolkit';
 import BigNumber from 'bignumber.js';
 import {
-  formatWithAsset,
   sumLiquidityCommitted,
   getFeeLevels,
   calcDayVolume,
@@ -22,17 +21,6 @@ const CANDLES_2 = [
   { volume: '20', open: '12', close: '12' },
   { volume: '10', open: '21', close: '21' },
 ];
-
-describe('formatWithAsset', () => {
-  it('should return formatted string', () => {
-    const result = formatWithAsset('103926176181', {
-      decimals: 5,
-      symbol: 'tEURO',
-    });
-
-    expect(result).toEqual('1,039,261.76181 tEURO');
-  });
-});
 
 describe('sumLiquidityCommitted', () => {
   it('should return the total sum', () => {
