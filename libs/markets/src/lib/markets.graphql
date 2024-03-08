@@ -2,6 +2,7 @@ fragment MarketFields on Market {
   id
   decimalPlaces
   positionDecimalPlaces
+  tickSize
   state
   tradingMode
   parentMarketID

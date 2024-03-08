@@ -27,6 +27,7 @@ export const useEthTransactionManager = () => {
       confirmations: 0,
       notify: true,
     });
+
     const {
       contract,
       methodName,
@@ -44,6 +45,7 @@ export const useEthTransactionManager = () => {
         ) {
           throw new Error('method not found on contract');
         }
+
         await contract.contract.callStatic[methodName](...args);
       } catch (err) {
         update(transaction.id, {

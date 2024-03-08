@@ -403,6 +403,9 @@ export interface BatchMarketInstructionSubmissionBody {
     // Note: If multiple orders are submitted the first order ID is determined by hashing the signature of the transaction
     // (see determineId function). For each subsequent order's ID, a hash of the previous orders ID is used
     submissions?: OrderSubmission[];
+    stopOrdersSubmission?: StopOrdersSubmission[];
+    stopOrdersCancellation?: StopOrdersCancellation[];
+    updateMarginMode?: UpdateMarginMode[];
   };
 }
 
@@ -492,6 +495,14 @@ export interface UpdateMarginMode {
 export interface UpdateMarginModeBody {
   updateMarginMode: UpdateMarginMode;
 }
+
+export interface UpdatePartyProfile {
+  updatePartyProfile: {
+    alias: string;
+    metadata: Array<{ key: string; value: string }>;
+  };
+}
+
 export type Transaction =
   | UpdateMarginModeBody
   | StopOrdersSubmissionBody
@@ -510,7 +521,8 @@ export type Transaction =
   | ApplyReferralCode
   | JoinTeam
   | CreateReferralSet
-  | UpdateReferralSet;
+  | UpdateReferralSet
+  | UpdatePartyProfile;
 
 export interface TransactionResponse {
   transactionHash: string;

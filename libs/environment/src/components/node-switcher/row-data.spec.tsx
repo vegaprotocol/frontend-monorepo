@@ -40,6 +40,16 @@ const mockStatsQuery = (
         vegaTime: new Date().toISOString(),
         chainId: 'test-chain-id',
       },
+      networkParametersConnection: {
+        edges: [
+          {
+            node: {
+              key: 'a',
+              value: '1',
+            },
+          },
+        ],
+      },
     },
   },
 });
@@ -334,6 +344,16 @@ describe('RowData', () => {
               blockHeight,
               vegaTime: new Date().toISOString(),
               chainId: 'test-chain-id',
+            },
+            networkParametersConnection: {
+              edges: [
+                {
+                  node: {
+                    key: 'a',
+                    value: '1',
+                  },
+                },
+              ],
             },
           },
         },

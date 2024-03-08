@@ -51,6 +51,7 @@ export const useGames = (teamId?: string, epochFrom?: number): GamesData => {
   const { data, loading, error } = useGamesQuery({
     variables: {
       epochFrom: from,
+      teamId: teamId,
     },
     skip: !from,
     fetchPolicy: 'cache-and-network',

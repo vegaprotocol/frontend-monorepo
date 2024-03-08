@@ -25,15 +25,11 @@ export const TradingView = ({
   libraryPath,
   interval,
   onIntervalChange,
-  onAutoSaveNeeded,
-  state,
 }: {
   marketId: string;
   libraryPath: string;
   interval: ResolutionString;
   onIntervalChange: (interval: string) => void;
-  onAutoSaveNeeded: OnAutoSaveNeededCallback;
-  state: object | undefined;
 }) => {
   const { isMobile } = useScreenDimensions();
   const { theme } = useThemeSwitcher();
@@ -108,7 +104,6 @@ export const TradingView = ({
         backgroundColor: overrides['paneProperties.background'],
       },
       auto_save_delay: 1,
-      saved_data: state,
     };
 
     widgetRef.current = new window.TradingView.widget(widgetOptions);
@@ -117,25 +112,12 @@ export const TradingView = ({
       if (!widgetRef.current) return;
 
       const activeChart = widgetRef.current.activeChart();
-
-      if (!state) {
-        // If chart has loaded with no state, create a volume study
-        activeChart.createStudy('Volume');
-      }
+      activeChart.createStudy('Volume');
 
       // Subscribe to interval changes so it can be persisted in chart settings
       activeChart.onIntervalChanged().subscribe(null, onIntervalChange);
     });
-
-    widgetRef.current.subscribe('onAutoSaveNeeded', () => {
-      if (!widgetRef.current) return;
-
-      widgetRef.current.save((newState) => {
-        onAutoSaveNeeded(newState);
-      });
-    });
   }, [
-    state,
     datafeed,
     interval,
     prevTheme,
@@ -145,7 +127,6 @@ export const TradingView = ({
     language,
     libraryPath,
     isMobile,
-    onAutoSaveNeeded,
     onIntervalChange,
   ]);
 

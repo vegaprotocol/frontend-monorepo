@@ -47,7 +47,7 @@
       "@vegaprotocol/react-helpers": ["libs/react-helpers/src/index.ts"],
       "@vegaprotocol/smart-contracts": ["libs/smart-contracts/src/index.ts"],
       "@vegaprotocol/tailwindcss-config": [
-        "libs/tailwindcss-config/src/index.js"
+        "libs/tailwindcss-config/src/index.ts"
       ],
       "@vegaprotocol/tendermint": ["libs/tendermint/src/index.ts"],
       "@vegaprotocol/trades": ["libs/trades/src/index.ts"],

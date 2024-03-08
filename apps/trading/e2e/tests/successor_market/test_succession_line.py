@@ -97,10 +97,13 @@ def test_banners(vega: VegaServiceNull, page: Page):
         settlement_price=100,
         market_id=parent_market_id,
     )
-
+    vega.wait_fn(1)
+    vega.wait_for_total_catchup()
     successor_name = "successor market name"
     propose_successor(vega, parent_market_id, tdai_id, successor_name)
-
+    vega.wait_fn(1)
+    vega.wait_for_total_catchup()
+    page.reload()
     # Check that the banners notifying about the successor proposal and market has been settled are shown
     banner = page.get_by_test_id(market_banner)
     expect(banner).to_be_attached()

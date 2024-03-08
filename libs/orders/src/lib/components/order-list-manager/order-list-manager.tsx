@@ -3,7 +3,6 @@ import { type AgGridReact } from 'ag-grid-react';
 import { Pagination, type useDataGridEvents } from '@vegaprotocol/datagrid';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useDataProvider } from '@vegaprotocol/data-provider';
-import { normalizeOrderAmendment } from '@vegaprotocol/wallet';
 import { useVegaTransactionStore } from '@vegaprotocol/web3';
 import type { OrderTxUpdateFieldsFragment } from '@vegaprotocol/web3';
 import { OrderEditDialog } from '../order-list/order-edit-dialog';
@@ -12,6 +11,7 @@ import { OrderViewDialog } from '../order-list/order-view-dialog';
 import { OrderListTable } from '../order-list';
 import { ordersWithMarketProvider } from '../order-data-provider/order-data-provider';
 import { useT } from '../../use-t';
+import { normalizeOrderAmendment } from '../../utils';
 
 export enum Filter {
   'Open' = 'Open',

@@ -1,7 +1,9 @@
 const { join } = require('path');
 const { createGlobPatternsForDependencies } = require('@nx/react/tailwind');
-const theme = require('../tailwindcss-config/src/theme');
-const vegaCustomClasses = require('../tailwindcss-config/src/vega-custom-classes');
+const { theme } = require('../tailwindcss-config/src/theme');
+const {
+  vegaCustomClasses,
+} = require('../tailwindcss-config/src/vega-custom-classes');
 
 module.exports = {
   content: [

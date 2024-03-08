@@ -12,7 +12,7 @@ export class ConnectorError extends Error {
 
 export const ConnectorErrors = {
   userRejected: { message: 'user rejected', code: 0 },
-  noConnector: { message: 'no connector', code: 1 },
+  noConnector: { message: 'not connected', code: 1 },
   connect: { message: 'failed to connect', code: 2 },
   disconnect: { message: 'failed to disconnect', code: 3 },
   chainId: { message: 'incorrect chain id', code: 4 },

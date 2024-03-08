@@ -21,6 +21,7 @@ export const generateStopOrder = (
       __typename: 'Market',
       id: 'market-id',
       decimalPlaces: 1,
+      tickSize: '1',
       fees: {
         __typename: 'Fees',
         factors: {

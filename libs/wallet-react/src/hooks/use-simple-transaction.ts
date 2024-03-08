@@ -33,6 +33,12 @@ export const useSimpleTransaction = (opts?: Options) => {
   const [result, setResult] = useState<Result>();
   const [error, setError] = useState<string>();
 
+  const reset = () => {
+    setStatus('idle');
+    setResult(undefined);
+    setError(undefined);
+  };
+
   const send = async (tx: Transaction) => {
     if (!pubKey) {
       throw new Error('no pubKey');
@@ -59,12 +65,12 @@ export const useSimpleTransaction = (opts?: Options) => {
         if (err.code === ConnectorErrors.userRejected.code) {
           setStatus('idle');
         } else {
-          setError(err.message);
+          setError(`${err.message}${err.data ? `: ${err.data}` : ''}`);
           setStatus('idle');
           opts?.onError?.(err.message);
         }
       } else {
-        const msg = t('Wallet rejected transaction');
+        const msg = t('Something went wrong');
         setError(msg);
         setStatus('idle');
         opts?.onError?.(msg);
@@ -114,5 +120,6 @@ export const useSimpleTransaction = (opts?: Options) => {
     error,
     status,
     send,
+    reset,
   };
 };

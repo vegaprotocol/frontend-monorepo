@@ -7,12 +7,26 @@ import {
   listKeysError,
   noWalletError,
   sendTransactionError,
+  userRejectedError,
 } from '../errors';
 import {
   type TransactionParams,
   type Connector,
   type VegaWalletEvent,
 } from '../types';
+
+interface InjectedError {
+  message: string;
+  code: number;
+  data:
+    | {
+        message: string;
+        code: number;
+      }
+    | string;
+}
+
+const USER_REJECTED_CODE = -4;
 
 export class InjectedConnector implements Connector {
   readonly id = 'injected';
@@ -85,15 +99,55 @@ export class InjectedConnector implements Connector {
         sentAt: res.sentAt,
       };
     } catch (err) {
+      if (this.isInjectedError(err)) {
+        if (err.code === USER_REJECTED_CODE) {
+          throw userRejectedError();
+        }
+
+        if (typeof err.data === 'string') {
+          throw sendTransactionError(err.data);
+        } else {
+          throw sendTransactionError(err.data.message);
+        }
+      }
+
       throw sendTransactionError();
     }
   }
 
   on(event: VegaWalletEvent, callback: () => void) {
-    window.vega.on(event, callback);
+    // Check for on/off in case user is on older versions which don't support it
+    // We can remove this check once FF is at the latest version
+    if (
+      typeof window.vega !== 'undefined' &&
+      typeof window.vega.on === 'function'
+    ) {
+      window.vega.on(event, callback);
+    }
   }
 
   off(event: VegaWalletEvent, callback: () => void) {
-    window.vega.off(event, callback);
+    // Check for on/off in case user is on older versions which don't support it
+    // We can remove this check once FF is at the latest version
+    if (
+      typeof window.vega !== 'undefined' &&
+      typeof window.vega.off === 'function'
+    ) {
+      window.vega.off(event, callback);
+    }
+  }
+
+  private isInjectedError(obj: unknown): obj is InjectedError {
+    if (
+      obj !== undefined &&
+      obj !== null &&
+      typeof obj === 'object' &&
+      'code' in obj &&
+      'message' in obj &&
+      'data' in obj
+    ) {
+      return true;
+    }
+    return false;
   }
 }

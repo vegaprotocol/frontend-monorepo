@@ -140,6 +140,7 @@ describe('WithdrawFormContainer', () => {
           positionDecimalPlaces: 0,
           state: Types.MarketState.STATE_SUSPENDED,
           tradingMode: Types.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
+          tickSize: '1',
           fees: {
             __typename: 'Fees',
             factors: {
