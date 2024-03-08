@@ -31,37 +31,27 @@ export const ProfileDialog = () => {
   const pubKey = useProfileDialogStore((store) => store.pubKey);
   const setOpen = useProfileDialogStore((store) => store.setOpen);
 
-  const { send, status, error, reset } = useSimpleTransaction({
-    onSuccess: () => refetch(),
-  });
-
   const profileEdge = data?.partiesProfilesConnection?.edges.find(
     (e) => e.node.partyId === pubKey
   );
-
-  const sendTx = (field: FormFields) => {
-    send({
-      updatePartyProfile: {
-        alias: field.alias,
-        metadata: [],
-      },
-    });
-  };
 
   return (
     <Dialog
       open={open}
       onChange={() => {
         setOpen(undefined);
-        reset();
       }}
       title={t('Edit profile')}
     >
-      <ProfileForm
+      <ProfileFormContainer
         profile={profileEdge?.node}
-        status={status}
-        error={error}
-        onSubmit={sendTx}
+        onSuccess={() => {
+          refetch();
+
+          setTimeout(() => {
+            setOpen(undefined);
+          }, 1000);
+        }}
       />
     </Dialog>
   );
@@ -74,6 +64,32 @@ interface FormFields {
 type Profile = NonNullable<
   PartyProfilesQuery['partiesProfilesConnection']
 >['edges'][number]['node'];
+
+const ProfileFormContainer = ({
+  profile,
+  onSuccess,
+}: {
+  profile: Profile | undefined;
+  onSuccess: () => void;
+}) => {
+  const { send, status, error } = useSimpleTransaction({ onSuccess });
+  const sendTx = (field: FormFields) => {
+    send({
+      updatePartyProfile: {
+        alias: field.alias,
+        metadata: [],
+      },
+    });
+  };
+  return (
+    <ProfileForm
+      profile={profile}
+      status={status}
+      error={error}
+      onSubmit={sendTx}
+    />
+  );
+};
 
 const ProfileForm = ({
   profile,
@@ -112,6 +128,14 @@ const ProfileForm = ({
 
   const errorMessage = errors.alias?.message || error;
 
+  if (status === 'confirmed') {
+    return (
+      <p className="mt-2 mb-4 text-sm text-vega-green-600 dark:text-vega-green">
+        {t('Profile updated')}
+      </p>
+    );
+  }
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="mt-3">
       <FormGroup label="Alias" labelFor="alias">
@@ -128,12 +152,6 @@ const ProfileForm = ({
               {errorMessage}
             </p>
           </InputError>
-        )}
-
-        {status === 'confirmed' && (
-          <p className="mt-2 mb-4 text-sm text-success">
-            {t('Profile updated')}
-          </p>
         )}
       </FormGroup>
       <TradingButton
