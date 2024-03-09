@@ -3,8 +3,8 @@ import {
   getDateTimeFormat,
   isNumeric,
   toBigNum,
-  useFormatTrigger,
 } from '@vegaprotocol/utils';
+import { useFormatTrigger } from '@vegaprotocol/react-helpers';
 import * as Schema from '@vegaprotocol/types';
 import {
   ActionsDropdown,

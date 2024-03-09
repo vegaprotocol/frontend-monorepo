@@ -40,9 +40,9 @@ import {
   formatNumber,
   toBigNum,
   truncateByChars,
-  useFormatTrigger,
   HALFMAXGOINT64,
 } from '@vegaprotocol/utils';
+import { useFormatTrigger } from '@vegaprotocol/react-helpers';
 import { useAssetsMapProvider } from '@vegaprotocol/assets';
 import { useEthWithdrawApprovalsStore } from './use-ethereum-withdraw-approvals-store';
 import { DApp, EXPLORER_TX, useLinks } from '@vegaprotocol/environment';

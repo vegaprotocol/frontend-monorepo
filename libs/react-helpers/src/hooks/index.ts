@@ -15,3 +15,4 @@ export * from './use-previous';
 export * from './use-validate';
 export { useScript } from './use-script';
 export { useUserAgent } from './use-user-agent';
+export { useFormatTrigger } from './use-format-trigger';
