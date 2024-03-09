@@ -17,7 +17,10 @@
               "ethers",
               "graphql",
               "graphql-tag",
-              "graphql-ws"
+              "graphql-ws",
+              "react",
+              "react-dom",
+              "react-i18next"
             ],
             "patterns": ["@sentry/*"]
           }
