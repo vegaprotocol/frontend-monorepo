@@ -12,5 +12,6 @@ export * from './use-theme-switcher';
 export * from './use-storybook-theme-observer';
 export * from './use-yesterday';
 export * from './use-previous';
+export * from './use-validate';
 export { useScript } from './use-script';
 export { useUserAgent } from './use-user-agent';

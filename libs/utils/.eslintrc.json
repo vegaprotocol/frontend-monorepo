@@ -1,6 +1,6 @@
 {
   "extends": ["../../.eslintrc.json"],
-  "ignorePatterns": ["!**/*", "__generated__"],
+  "ignorePatterns": ["!**/*"],
   "overrides": [
     {
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
@@ -9,16 +9,15 @@
           "error",
           {
             "paths": [
-              "error",
               "@apollo/client",
+              "@ethersproject",
               "@vegaprotocol/data-provider",
               "ag-grid-react",
               "ag-grid-community",
+              "ethers",
               "graphql",
               "graphql-tag",
-              "graphql-ws",
-              "ethers",
-              "@ethersproject"
+              "graphql-ws"
             ],
             "patterns": ["@sentry/*"]
           }

@@ -14,7 +14,7 @@ import {
   RoundedWrapper,
   TextArea,
 } from '@vegaprotocol/ui-toolkit';
-import { useValidateJson } from '@vegaprotocol/utils';
+import { useValidateJson } from '@vegaprotocol/react-helpers';
 import {
   NetworkParams,
   useNetworkParams,

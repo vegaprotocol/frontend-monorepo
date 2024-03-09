@@ -8,7 +8,7 @@ import {
   useProposalSubmit,
 } from '@vegaprotocol/proposals';
 import { useEnvironment, DocsLinks } from '@vegaprotocol/environment';
-import { useValidateJson } from '@vegaprotocol/utils';
+import { useValidateJson } from '@vegaprotocol/react-helpers';
 import {
   NetworkParams,
   useNetworkParams,

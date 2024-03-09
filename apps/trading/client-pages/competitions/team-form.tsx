@@ -9,7 +9,7 @@ import {
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
-import { URL_REGEX, isValidVegaPublicKey } from '@vegaprotocol/utils';
+import { URL_REGEX, validVegaPublicKey } from '@vegaprotocol/utils';
 
 import { type useReferralSetTransaction } from '../../lib/hooks/use-referral-set-transaction';
 import { useT } from '../../lib/use-t';
@@ -217,9 +217,7 @@ export const TeamForm = ({
                     validate: {
                       allowList: (value) => {
                         const publicKeys = parseAllowListText(value);
-                        if (
-                          publicKeys.every((pk) => isValidVegaPublicKey(pk))
-                        ) {
+                        if (publicKeys.every((pk) => validVegaPublicKey(pk))) {
                           return true;
                         }
                         return t('Invalid public key found in allow list');

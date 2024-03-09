@@ -10,7 +10,7 @@ import {
   addDecimalsFormatNumber,
   formatNumber,
   removePaginationWrapper,
-  suitableForSyntaxHighlighter,
+  validForSyntaxHighlighter,
 } from '@vegaprotocol/utils';
 import { t } from '@vegaprotocol/i18n';
 import { RouteTitle } from '../../components/route-title';
@@ -134,7 +134,7 @@ export const NetworkParameterRow = ({
 }: {
   row: { key: string; value: string };
 }) => {
-  const isSyntaxRow = suitableForSyntaxHighlighter(value);
+  const isSyntaxRow = validForSyntaxHighlighter(value);
   useDocumentTitle(['Network Parameters']);
 
   return (

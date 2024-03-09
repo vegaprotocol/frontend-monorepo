@@ -1,6 +1,6 @@
 import { type StoreApi } from 'zustand';
 import { type Store, type Connector } from '../types';
-import { isValidVegaPublicKey } from '@vegaprotocol/utils';
+import { validVegaPublicKey } from '@vegaprotocol/utils';
 import {
   ConnectorError,
   chainIdError,
@@ -40,7 +40,7 @@ export class ViewPartyConnector implements Connector {
         throw userRejectedError();
       }
 
-      if (!isValidVegaPublicKey(value)) {
+      if (!validVegaPublicKey(value)) {
         throw connectError('invalid public key');
       }
 

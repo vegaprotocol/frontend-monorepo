@@ -1,13 +1,15 @@
 import sortBy from 'lodash/sortBy';
 import {
-  useMaxSafe,
-  useRequired,
-  useVegaPublicKey,
   addDecimal,
   toBigNum,
   removeDecimal,
   addDecimalsFormatNumber,
 } from '@vegaprotocol/utils';
+import {
+  useMaxSafe,
+  useRequired,
+  useVegaPublicKey,
+} from '@vegaprotocol/react-helpers';
 import { useT } from './use-t';
 import {
   TradingFormGroup,

@@ -1,16 +1,18 @@
 import type { Asset, AssetFieldsFragment } from '@vegaprotocol/assets';
 import { AssetOption } from '@vegaprotocol/assets';
 import {
+  addDecimal,
+  isAssetTypeERC20,
+  formatNumber,
+} from '@vegaprotocol/utils';
+import {
+  useLocalStorage,
   useEthereumAddress,
   useRequired,
   useVegaPublicKey,
   useMinSafe,
   useMaxSafe,
-  addDecimal,
-  isAssetTypeERC20,
-  formatNumber,
-} from '@vegaprotocol/utils';
-import { useLocalStorage } from '@vegaprotocol/react-helpers';
+} from '@vegaprotocol/react-helpers';
 import {
   TradingFormGroup,
   TradingInput,

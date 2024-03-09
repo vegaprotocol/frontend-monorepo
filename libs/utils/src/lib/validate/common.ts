@@ -1,77 +1,52 @@
 import BigNumber from 'bignumber.js';
-import { useT } from '../use-t';
-import { useCallback } from 'react';
 
-export const useRequired = () => {
-  const t = useT();
-  return useCallback(
-    (value: string) => {
-      if (value === null || value === undefined || value === '') {
-        return t('Required');
-      }
-      return true;
-    },
-    [t]
-  );
-};
-
-export const useEthereumAddress = () => {
-  const t = useT();
-  return useCallback(
-    (value: string) => {
-      if (!/^0x[0-9a-fA-F]{40}$/i.test(value)) {
-        return t('Invalid Ethereum address');
-      }
-      return true;
-    },
-    [t]
-  );
+export const validRequired = (value: string | number | undefined | null) => {
+  if (value === null || value === undefined || value === '') {
+    return false;
+  }
+  return true;
 };
 
 export const VEGA_ID_REGEX = /^[A-Fa-f0-9]{64}$/i;
-export const isValidVegaPublicKey = (value: string) => {
+export const validVegaPublicKey = (value: string) => {
   return VEGA_ID_REGEX.test(value);
 };
-export const useVegaPublicKey = () => {
-  const t = useT();
-  return useCallback(
-    (value: string) => {
-      if (!isValidVegaPublicKey(value)) {
-        return t('Invalid Vega key');
-      }
-      return true;
-    },
-    [t]
-  );
+
+export const URL_REGEX =
+  /^(https?:\/\/)?([a-zA-Z0-9.-]+(\.[a-zA-Z]{2,})+)(:[0-9]{1,5})?(\/[^\s]*)?$/;
+export const validUrl = (value: string) => {
+  return URL_REGEX.test(value);
 };
 
-export const useMinSafe = () => {
-  const t = useT();
-  return useCallback(
-    (min: BigNumber) => (value: string) => {
-      if (new BigNumber(value).isLessThan(min)) {
-        return t('Value is below minimum');
-      }
-      return true;
-    },
-    [t]
-  );
+export const ETH_ADDRESS = /^0x[0-9a-fA-F]{40}$/i;
+export const validEthAddress = (value: string) => {
+  return ETH_ADDRESS.test(value);
 };
 
-export const useMaxSafe = () => {
-  const t = useT();
-  return useCallback(
-    (max: BigNumber) => (value: string) => {
-      if (new BigNumber(value).isGreaterThan(max)) {
-        return t('Value is above maximum');
-      }
-      return true;
-    },
-    [t]
-  );
+export const validMinSafe = (
+  value: string | number | BigNumber,
+  min: string | number | BigNumber
+) => {
+  return new BigNumber(value).isLessThan(min);
 };
 
-export const suitableForSyntaxHighlighter = (str: string) => {
+export const validMaxSafe = (
+  value: string | number | BigNumber,
+  max: string | number | BigNumber
+) => {
+  return new BigNumber(value).isGreaterThan(max);
+};
+
+export const validJSON = (value: string) => {
+  try {
+    JSON.parse(value);
+    return true;
+  } catch (e) {
+    return false;
+  }
+};
+
+export const validForSyntaxHighlighter = (str: string) => {
   try {
     const test = JSON.parse(str);
     return test && Object.keys(test).length > 0;
@@ -80,35 +55,17 @@ export const suitableForSyntaxHighlighter = (str: string) => {
   }
 };
 
-export const useValidateJson = () => {
-  const t = useT();
-  return useCallback(
-    (value: string) => {
-      try {
-        JSON.parse(value);
-        return true;
-      } catch (e) {
-        return t('Must be valid JSON');
-      }
-    },
-    [t]
-  );
-};
+export const validStep = (step: string | number, input?: string | number) => {
+  const stepValue = new BigNumber(step);
+  if (stepValue.isNaN()) {
+    // unable to check if step is not a number
+    return false;
+  }
+  if (stepValue.isZero()) {
+    // every number is valid when step is zero
+    return true;
+  }
 
-export const URL_REGEX =
-  /^(https?:\/\/)?([a-zA-Z0-9.-]+(\.[a-zA-Z]{2,})+)(:[0-9]{1,5})?(\/[^\s]*)?$/;
-const isValidUrl = (value: string) => {
-  return URL_REGEX.test(value);
-};
-export const useValidateUrl = () => {
-  const t = useT();
-  return useCallback(
-    (value: string) => {
-      if (!isValidUrl(value)) {
-        return t('Invalid URL');
-      }
-      return true;
-    },
-    [t]
-  );
+  const value = new BigNumber(input || '');
+  return value.modulo(stepValue).isZero();
 };

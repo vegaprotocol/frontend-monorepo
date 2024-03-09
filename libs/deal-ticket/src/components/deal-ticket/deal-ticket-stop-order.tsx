@@ -8,8 +8,8 @@ import {
   formatForInput,
   formatValue,
   removeDecimal,
-  useValidateAmount,
 } from '@vegaprotocol/utils';
+import { useValidateAmount } from '@vegaprotocol/react-helpers';
 import { type Control, type UseFormWatch } from 'react-hook-form';
 import { useForm, Controller, useController } from 'react-hook-form';
 import * as Schema from '@vegaprotocol/types';

@@ -1,7 +1,8 @@
 import { Controller, type Control } from 'react-hook-form';
 import type { Market } from '@vegaprotocol/markets';
 import type { OrderFormValues } from '../../hooks/use-form-values';
-import { determinePriceStep, useValidateAmount } from '@vegaprotocol/utils';
+import { determinePriceStep } from '@vegaprotocol/utils';
+import { useValidateAmount } from '@vegaprotocol/react-helpers';
 import {
   TradingFormGroup,
   Tooltip,

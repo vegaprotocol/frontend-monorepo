@@ -3,10 +3,10 @@ import {
   getDateTimeFormat,
   addDecimal,
   addDecimalsFormatNumber,
-  useValidateAmount,
   determinePriceStep,
   determineSizeStep,
 } from '@vegaprotocol/utils';
+import { useValidateAmount } from '@vegaprotocol/react-helpers';
 import { Size } from '@vegaprotocol/datagrid';
 import * as Schema from '@vegaprotocol/types';
 import {

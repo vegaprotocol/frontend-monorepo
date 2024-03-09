@@ -31,10 +31,10 @@ import { useOpenVolume } from '@vegaprotocol/positions';
 import {
   toBigNum,
   removeDecimal,
-  useValidateAmount,
   formatForInput,
   formatValue,
 } from '@vegaprotocol/utils';
+import { useValidateAmount } from '@vegaprotocol/react-helpers';
 import { activeOrdersProvider } from '@vegaprotocol/orders';
 import {
   getAsset,
