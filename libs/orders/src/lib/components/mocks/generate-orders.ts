@@ -22,8 +22,10 @@ export const generateOrder = (partialOrder?: PartialDeep<Order>) => {
       },
       marketTimestamps: {
         __typename: 'MarketTimestamps',
-        close: '',
-        open: '',
+        proposed: '2022-08-23T11:36:32.252490405Z',
+        pending: '2022-08-24T11:36:32.252490405Z',
+        open: null,
+        close: null,
       },
       positionDecimalPlaces: 2,
       state: Schema.MarketState.STATE_ACTIVE,

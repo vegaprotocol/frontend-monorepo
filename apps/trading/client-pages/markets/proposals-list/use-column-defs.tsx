@@ -18,8 +18,11 @@ import {
   ProductTypeShortName,
 } from '@vegaprotocol/types';
 import { ProposalActionsDropdown } from './proposal-actions-dropdown';
-import { type MarketFieldsFragment, getProductType } from '@vegaprotocol/markets';
-import { useT } from '../../..//lib/use-t';
+import {
+  type MarketFieldsFragment,
+  getProductType,
+} from '@vegaprotocol/markets';
+import { useT } from '../../../lib/use-t';
 
 export const useColumnDefs = () => {
   const t = useT();

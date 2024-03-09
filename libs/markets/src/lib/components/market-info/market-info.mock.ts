@@ -26,6 +26,8 @@ export const marketInfoQuery = (
       linearSlippageFactor: '0.01',
       marketTimestamps: {
         __typename: 'MarketTimestamps',
+        proposed: '2022-11-13T02:15:24.543614154Z',
+        pending: '2022-11-14T02:15:24.543614154Z',
         open: '2022-11-15T02:15:24.543614154Z',
         close: null,
       },
