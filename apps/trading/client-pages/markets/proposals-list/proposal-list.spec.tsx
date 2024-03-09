@@ -1,77 +1,42 @@
 import { render, screen, waitFor, within } from '@testing-library/react';
-import merge from 'lodash/merge';
 import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
 import { ProposalsList } from './proposals-list';
-import * as Types from '@vegaprotocol/types';
+import { MarketState } from '@vegaprotocol/types';
+import { createMarketFragment } from '@vegaprotocol/mock';
 import {
-  createProposalListFieldsFragment,
-  ProposalsListDocument,
-  type ProposalsListQuery,
-} from '@vegaprotocol/proposals';
-import type { PartialDeep } from 'type-fest';
+  type MarketsQuery,
+  MarketsDocument,
+  type MarketsQueryVariables,
+} from '@vegaprotocol/markets';
 
 const parentMarketName = 'Parent Market Name';
 const ParentMarketCell = () => <span>{parentMarketName}</span>;
 
 describe('ProposalsList', () => {
   const rowContainerSelector = '.ag-center-cols-container';
-
-  const createProposalsMock = (override?: PartialDeep<ProposalsListQuery>) => {
-    const defaultProposalEdges = [
-      {
-        __typename: 'ProposalEdge' as const,
-        node: createProposalListFieldsFragment({
-          id: 'id-1',
-          state: Types.ProposalState.STATE_OPEN,
-        }),
-      },
-      {
-        __typename: 'ProposalEdge' as const,
-        node: createProposalListFieldsFragment({
-          id: 'id-2',
-          state: Types.ProposalState.STATE_PASSED,
-        }),
-      },
-      {
-        __typename: 'ProposalEdge' as const,
-        node: createProposalListFieldsFragment({
-          id: 'id-3',
-          state: Types.ProposalState.STATE_WAITING_FOR_NODE_VOTE,
-        }),
-      },
-    ];
-    const data = merge(
-      {
-        proposalsConnection: {
-          __typename: 'ProposalsConnection' as const,
-          edges: defaultProposalEdges,
-        },
-      },
-      override
-    );
-
-    const mock: MockedResponse<ProposalsListQuery> = {
-      request: {
-        query: ProposalsListDocument,
-        variables: {
-          proposalType: Types.ProposalType.TYPE_NEW_MARKET,
-        },
-      },
-      result: {
-        data,
-      },
-    };
-
-    return mock;
-  };
-
-  beforeEach(() => {
-    jest.clearAllMocks();
+  const market = createMarketFragment({
+    state: MarketState.STATE_PROPOSED,
   });
 
   it('should be properly rendered', async () => {
-    const mock = createProposalsMock();
+    const mock: MockedResponse<MarketsQuery, MarketsQueryVariables> = {
+      request: {
+        query: MarketsDocument,
+      },
+      result: {
+        data: {
+          marketsConnection: {
+            edges: [
+              {
+                node: market,
+              },
+            ],
+          },
+        },
+      },
+    };
+
     render(
       <MockedProvider mocks={[mock]}>
         <ProposalsList cellRenderers={{ ParentMarketCell }} />
@@ -104,30 +69,25 @@ describe('ProposalsList', () => {
 
     expect(await container.findAllByRole('row')).toHaveLength(
       // @ts-ignore data is mocked
-      mock?.result?.data.proposalsConnection.edges.length
+      mock?.result?.data.marketsConnection.edges.length
     );
 
     expect(
       container.getAllByRole('gridcell', {
         name: (_, element) =>
-          element.getAttribute('col-id') ===
-          'terms.change.successorConfiguration.parentMarketId',
+          element.getAttribute('col-id') === 'parentMarketID',
       })[0]
     ).toHaveTextContent(parentMarketName);
   });
 
   it('empty response should causes no data message display', async () => {
-    const mock: MockedResponse<ProposalsListQuery> = {
+    const mock: MockedResponse<MarketsQuery, MarketsQueryVariables> = {
       request: {
-        query: ProposalsListDocument,
-        variables: {
-          proposalType: Types.ProposalType.TYPE_NEW_MARKET,
-        },
+        query: MarketsDocument,
       },
       result: {
         data: {
-          proposalsConnection: {
-            __typename: 'ProposalsConnection',
+          marketsConnection: {
             edges: [],
           },
         },
