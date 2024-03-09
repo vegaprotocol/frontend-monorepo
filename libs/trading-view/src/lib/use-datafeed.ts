@@ -17,7 +17,8 @@ import {
   type SymbolQuery,
   type SymbolQueryVariables,
 } from './__generated__/Symbol';
-import { getMarketExpiryDate, toBigNum } from '@vegaprotocol/utils';
+import { toBigNum } from '@vegaprotocol/utils';
+import { getMarketExpiryDate } from '@vegaprotocol/react-helpers';
 import {
   type IBasicDataFeed,
   type DatafeedConfiguration,

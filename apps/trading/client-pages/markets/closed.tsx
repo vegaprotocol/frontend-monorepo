@@ -11,10 +11,8 @@ import { useMemo } from 'react';
 import type { Asset } from '@vegaprotocol/types';
 import type { ProductType } from '@vegaprotocol/types';
 import { MarketState, MarketStateMapping } from '@vegaprotocol/types';
-import {
-  addDecimalsFormatNumber,
-  getMarketExpiryDate,
-} from '@vegaprotocol/utils';
+import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
+import { getMarketExpiryDate } from '@vegaprotocol/react-helpers';
 import { closedMarketsWithDataProvider, getAsset } from '@vegaprotocol/markets';
 import type { DataSourceFilterFragment } from '@vegaprotocol/markets';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';

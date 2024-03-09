@@ -1,42 +1,10 @@
 import { MarketState } from '@vegaprotocol/types';
+import { getDateTimeFormat } from '@vegaprotocol/utils';
 import { isValid, parseISO } from 'date-fns';
-import { getDateTimeFormat } from './format';
 import { useT } from './use-t';
 
-export const getMarketExpiryDate = (
-  tags?: ReadonlyArray<string> | null
-): Date | null => {
-  if (tags) {
-    const dateFound = tags.reduce<Date | null>((agg, tag) => {
-      const parsed = parseISO(
-        (tag.match(/^settlement.*:/) &&
-          tag
-            .split(':')
-            .filter((item, i) => i)
-            .join(':')) as string
-      );
-      if (isValid(parsed)) {
-        agg = parsed;
-      }
-      return agg;
-    }, null);
-    return dateFound;
-  }
-  return null;
-};
-
-export const getMarketExpiryDateFormatted = (
-  tags?: ReadonlyArray<string> | null
-): string | null => {
-  if (tags) {
-    const dateFound = getMarketExpiryDate(tags);
-    return dateFound ? getDateTimeFormat().format(dateFound) : null;
-  }
-  return null;
-};
-
-export const getExpiryDate = (
-  tags: ReadonlyArray<string> | null,
+export const useMarketExpiryDate = (
+  tags: ReadonlyArray<string> | null | undefined,
   close: string | null,
   state: MarketState
 ): string => {
@@ -66,4 +34,36 @@ export const getExpiryDate = (
     }
   }
   return content;
+};
+
+export const getMarketExpiryDateFormatted = (
+  tags?: ReadonlyArray<string> | null
+): string | null => {
+  if (tags) {
+    const dateFound = getMarketExpiryDate(tags);
+    return dateFound ? getDateTimeFormat().format(dateFound) : null;
+  }
+  return null;
+};
+
+export const getMarketExpiryDate = (
+  tags?: ReadonlyArray<string> | null
+): Date | null => {
+  if (tags) {
+    const dateFound = tags.reduce<Date | null>((agg, tag) => {
+      const parsed = parseISO(
+        (tag.match(/^settlement.*:/) &&
+          tag
+            .split(':')
+            .filter((item, i) => i)
+            .join(':')) as string
+      );
+      if (isValid(parsed)) {
+        agg = parsed;
+      }
+      return agg;
+    }, null);
+    return dateFound;
+  }
+  return null;
 };

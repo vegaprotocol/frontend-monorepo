@@ -1,9 +1,7 @@
 import { useCallback } from 'react';
 import { type StopOrder, StopOrderTriggerDirection } from '@vegaprotocol/types';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
-
-// TODO: add real useT func
-const useT = () => (str: string) => str;
+import { useT } from './use-t';
 
 export const useFormatTrigger = () => {
   const t = useT();

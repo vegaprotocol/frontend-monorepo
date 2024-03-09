@@ -1,9 +1,7 @@
 import { useCallback } from 'react';
 import BigNumber from 'bignumber.js';
 import * as utils from '@vegaprotocol/utils';
-
-// TODO: add i18n to react helpers
-const useT = () => (str: string) => str;
+import { useT } from './use-t';
 
 export const useRequired = () => {
   const t = useT();

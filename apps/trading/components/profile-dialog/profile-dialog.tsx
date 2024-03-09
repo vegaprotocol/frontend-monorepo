@@ -9,7 +9,7 @@ import {
 import { useProfileDialogStore } from '../../stores/profile-dialog-store';
 import { useForm } from 'react-hook-form';
 import { useT } from '../../lib/use-t';
-import { useRequired } from '@vegaprotocol/utils';
+import { useRequired } from '@vegaprotocol/react-helpers';
 import {
   useSimpleTransaction,
   type Status,

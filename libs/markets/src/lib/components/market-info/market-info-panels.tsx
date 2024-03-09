@@ -27,8 +27,8 @@ import {
   formatNumber,
   formatNumberPercentage,
   getDateTimeFormat,
-  getMarketExpiryDateFormatted,
 } from '@vegaprotocol/utils';
+import { getMarketExpiryDateFormatted } from '@vegaprotocol/react-helpers';
 import type { Get } from 'type-fest';
 import { MarketInfoTable } from './info-key-value-table';
 import type {

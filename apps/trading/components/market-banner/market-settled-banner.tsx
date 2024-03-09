@@ -7,11 +7,8 @@ import {
   useSuccessorMarket,
   type Market,
 } from '@vegaprotocol/markets';
-import {
-  addDecimalsFormatNumber,
-  getMarketExpiryDate,
-  isNumeric,
-} from '@vegaprotocol/utils';
+import { addDecimalsFormatNumber, isNumeric } from '@vegaprotocol/utils';
+import { getMarketExpiryDate } from '@vegaprotocol/react-helpers';
 import { useT, ns } from '../../lib/use-t';
 import { Links } from '../../lib/links';
 
