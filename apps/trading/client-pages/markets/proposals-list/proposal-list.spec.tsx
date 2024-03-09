@@ -4,9 +4,11 @@ import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
 import { ProposalsList } from './proposals-list';
 import * as Types from '@vegaprotocol/types';
-import { createProposalListFieldsFragment } from '../../lib/proposals-data-provider/proposals.mock';
-import type { ProposalsListQuery } from '../../lib';
-import { ProposalsListDocument } from '../../lib';
+import {
+  createProposalListFieldsFragment,
+  ProposalsListDocument,
+  type ProposalsListQuery,
+} from '@vegaprotocol/proposals';
 import type { PartialDeep } from 'type-fest';
 
 const parentMarketName = 'Parent Market Name';
