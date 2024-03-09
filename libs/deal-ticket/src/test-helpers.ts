@@ -13,6 +13,8 @@ export function generateMarket(override?: PartialDeep<Market>): Market {
     state: Schema.MarketState.STATE_ACTIVE,
     marketTimestamps: {
       __typename: 'MarketTimestamps',
+      proposed: '2024-01-02',
+      pending: '2024-01-01',
       close: '',
       open: '',
     },
