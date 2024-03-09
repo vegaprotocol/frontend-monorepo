@@ -27,6 +27,7 @@ import * as Schema from '@vegaprotocol/types';
 import {
   filterAndSortClosedMarkets,
   filterAndSortMarkets,
+  filterAndSortProposedMarkets,
 } from './market-utils';
 import type { Candle } from './market-candles-provider';
 
@@ -112,6 +113,11 @@ export const activeMarketsProvider = makeDerivedDataProvider<Market[], never>(
 export const closedMarketsProvider = makeDerivedDataProvider<Market[], never>(
   [marketsProvider],
   ([markets]) => filterAndSortClosedMarkets(markets)
+);
+
+export const proposedMarketsProvider = makeDerivedDataProvider<Market[], never>(
+  [marketsProvider],
+  ([markets]) => filterAndSortProposedMarkets(markets)
 );
 
 export type MarketMaybeWithCandles = Market & { candles?: Candle[] };
@@ -240,4 +246,11 @@ export const useMarketList = () => {
     error,
     reload,
   };
+};
+
+export const useProposedMarketsList = () => {
+  return useDataProvider({
+    dataProvider: proposedMarketsProvider,
+    variables: undefined,
+  });
 };
