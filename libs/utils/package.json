@@ -7,10 +7,6 @@
     "date-fns": "^2.28.0",
     "lodash": "^4.17.21"
   },
-  "peerDependencies": {
-    "react": "18.2.0",
-    "react-i18next": "13.5.0"
-  },
   "type": "module",
   "module": "./index.js"
 }
