@@ -1,7 +1,6 @@
-import type { ProposalSubmissionBody } from '@vegaprotocol/wallet';
+import { determineId, type ProposalSubmissionBody } from '@vegaprotocol/wallet';
 import { sendVegaTx } from './wallet-client';
 import { waitForProposal } from './propose-market';
-import { determineId } from '../utils';
 const vegaPubKey = Cypress.env('VEGA_PUBLIC_KEY');
 
 export async function submitProposal(proposalTx: ProposalSubmissionBody) {

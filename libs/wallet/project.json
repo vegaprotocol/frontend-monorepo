@@ -15,7 +15,7 @@
         "project": "libs/wallet/package.json",
         "compiler": "swc",
         "format": ["esm"],
-        "external": ["@vegaprotocol/types", "@vegaprotocol/utils"]
+        "external": ["@vegaprotocol/types"]
       }
     },
     "publish": {
