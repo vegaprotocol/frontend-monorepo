@@ -10,35 +10,39 @@ from wallet_config import PARTY_A, PARTY_B, PARTY_C, PARTY_D, MM_WALLET
 
 
 @pytest.fixture(scope="module")
-def vega(request):
-    with init_vega(request) as vega_instance:
-        request.addfinalizer(
-            lambda: cleanup_container(vega_instance)
-        )
-        yield vega_instance
+def vega_setup(request):
+    vega_instance = init_vega(request)
+    request.addfinalizer(lambda: cleanup_container(vega_instance))
+    setup_teams_and_games_data = setup_teams_and_games(vega_instance)
+    yield vega_instance, setup_teams_and_games_data
 
 
 @pytest.fixture(scope="module")
-def team_page(vega, browser, request, setup_teams_and_games):
-    with init_page(vega, browser, request) as page:
+def page_setup(vega_setup, browser, request):
+    vega_instance, setup_teams_and_games_data = vega_setup
+    team_id = setup_teams_and_games_data["team_id"]
+    with init_page(vega_instance, browser, request) as page:
         risk_accepted_setup(page)
-        auth_setup(vega, page)
-        team_id = setup_teams_and_games["team_id"]
-        page.goto(f"/#/competitions/teams/{team_id}")
-        yield page
+        auth_setup(vega_instance, page)
+        yield page, setup_teams_and_games_data
 
 
 @pytest.fixture(scope="module")
-def competitions_page(vega, browser, request, setup_teams_and_games):
-    with init_page(vega, browser, request) as page:
-        risk_accepted_setup(page)
-        auth_setup(vega, page)
-        team_id = setup_teams_and_games["team_id"]
-        page.goto(f"/#/competitions/")
-        yield page
+def team_page(page_setup):
+    page, setup_teams_and_games_data = page_setup
+    team_id = setup_teams_and_games_data["team_id"]
+    page.goto(f"/#/competitions/teams/{team_id}")
+    yield page
+
 
 
 @pytest.fixture(scope="module")
+def competitions_page(page_setup):
+    page, _ = page_setup
+    page.goto(f"/#/competitions/")
+    yield page
+
+
 def setup_teams_and_games(vega: VegaServiceNull):
     tDAI_market = setup_continuous_market(vega, custom_quantum=100000)
     tDAI_asset_id = vega.find_asset_id(symbol="tDAI")
