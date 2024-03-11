@@ -34,6 +34,21 @@
       "options": {
         "jestConfig": "libs/types/jest.config.ts"
       }
+    },
+    "generate": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["npx graphql-codegen --config=libs/types/codegen.yml"],
+        "parallel": false
+      }
+    },
+    "local-registry": {
+      "executor": "@nx/js:verdaccio",
+      "options": {
+        "port": 4873,
+        "config": ".verdaccio/config.yml",
+        "storage": "tmp/local-registry/storage"
+      }
     }
   },
   "tags": []
