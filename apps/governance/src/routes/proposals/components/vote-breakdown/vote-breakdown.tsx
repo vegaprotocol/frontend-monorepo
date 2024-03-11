@@ -17,6 +17,7 @@ import {
 import { useBatchVoteInformation } from '../../hooks/use-vote-information';
 import { MarketName } from '../proposal/market-name';
 import { Indicator } from '../proposal/indicator';
+import { type ProposalNode } from '../proposal/proposal-utils';
 
 export const CompactVotes = ({ number }: { number: BigNumber }) => (
   <CompactNumber
@@ -110,23 +111,63 @@ const Status = ({ reached, threshold, text, testId }: StatusProps) => {
 
 export const VoteBreakdown = ({
   proposal,
+  restData,
 }: {
   proposal: Proposal | BatchProposal;
+  restData?: ProposalNode | null;
 }) => {
   if (proposal.__typename === 'Proposal') {
     return <VoteBreakdownNormal proposal={proposal} />;
   }
 
   if (proposal.__typename === 'BatchProposal') {
-    return <VoteBreakdownBatch proposal={proposal} />;
+    return <VoteBreakdownBatch proposal={proposal} restData={restData} />;
   }
 
   return null;
 };
 
-const VoteBreakdownBatch = ({ proposal }: { proposal: BatchProposal }) => {
+const VoteBreakdownBatch = ({
+  proposal,
+  restData,
+}: {
+  proposal: BatchProposal;
+  restData?: ProposalNode | null;
+}) => {
   const [fullBreakdown, setFullBreakdown] = useState(false);
   const { t } = useTranslation();
+
+  const yesELS =
+    restData?.yes?.reduce((all, y) => {
+      if (y.elsPerMarket) {
+        y.elsPerMarket.forEach((item) => {
+          const share = Number(item.els);
+          if (all[item.marketId]) {
+            all[item.marketId].push(share);
+          } else {
+            all[item.marketId] = [share];
+          }
+          return all;
+        });
+      }
+      return all;
+    }, {} as Record<string, number[]>) || {};
+
+  const noELS =
+    restData?.no?.reduce((all, y) => {
+      if (y.elsPerMarket) {
+        y.elsPerMarket.forEach((item) => {
+          const share = Number(item.els);
+          if (all[item.marketId]) {
+            all[item.marketId].push(share);
+          } else {
+            all[item.marketId] = [share];
+          }
+          return all;
+        });
+      }
+      return all;
+    }, {} as Record<string, number[]>) || {};
 
   const voteInfo = useBatchVoteInformation({
     terms: compact(
@@ -194,6 +235,8 @@ const VoteBreakdownBatch = ({ proposal }: { proposal: BatchProposal }) => {
                   proposal={proposal}
                   votes={proposal.votes}
                   terms={p.terms}
+                  yesELS={yesELS}
+                  noELS={noELS}
                 />
               );
             })}
@@ -254,6 +297,8 @@ const VoteBreakdownBatch = ({ proposal }: { proposal: BatchProposal }) => {
                   proposal={proposal}
                   votes={proposal.votes}
                   terms={p.terms}
+                  yesELS={yesELS}
+                  noELS={noELS}
                 />
               );
             })}
@@ -271,17 +316,17 @@ const VoteBreakdownBatchSubProposal = ({
   votes,
   terms,
   indicator,
+  yesELS,
+  noELS,
 }: {
   proposal: BatchProposal;
   votes: VoteFieldsFragment;
   terms: ProposalTermsFieldsFragment;
   indicator?: number;
+  yesELS: Record<string, number[]>;
+  noELS: Record<string, number[]>;
 }) => {
   const { t } = useTranslation();
-  const voteInfo = useVoteInformation({
-    votes,
-    terms,
-  });
 
   const isProposalOpen = proposal?.state === ProposalState.STATE_OPEN;
   const isUpdateMarket = terms?.change?.__typename === 'UpdateMarket';
@@ -293,6 +338,15 @@ const VoteBreakdownBatchSubProposal = ({
   if (terms?.change?.__typename === 'UpdateMarketState') {
     marketId = terms.change.market.id;
   }
+
+  const voteInfo = useVoteInformation({
+    votes,
+    terms,
+    // yes votes ELS for this specific proposal (market)
+    yesELS: marketId ? yesELS[marketId] : undefined,
+    // no votes ELS for this specific proposal (market)
+    noELS: marketId ? noELS[marketId] : undefined,
+  });
 
   const marketName = marketId ? (
     <>
