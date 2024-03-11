@@ -22,12 +22,12 @@ import {
   EntityScopeLabelMapping,
   MarketState,
   type DispatchStrategy,
-  IndividualScopeMapping,
   IndividualScopeDescriptionMapping,
   AccountType,
   DistributionStrategy,
   IndividualScope,
   type Asset,
+  type Team,
 } from '@vegaprotocol/types';
 import { Card } from '../card/card';
 import { type ReactNode, useState } from 'react';
@@ -41,6 +41,10 @@ import {
   useRewards,
 } from '../../lib/hooks/use-rewards';
 import compact from 'lodash/compact';
+import { useMyTeam } from '../../lib/hooks/use-my-team';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
+import BigNumber from 'bignumber.js';
+import { type VestingBalances } from './rewards-container';
 
 enum CardColour {
   BLUE = 'BLUE',
@@ -56,6 +60,29 @@ enum CardColour {
 export type Filter = {
   searchTerm: string;
 };
+
+/** Eligibility requirements for rewards */
+export type Requirements = {
+  isEligible: boolean;
+  amountStaked?: string;
+  team?: Partial<Team>;
+};
+
+const Tick = () => (
+  <VegaIcon
+    name={VegaIconNames.TICK}
+    size={18}
+    className="text-vega-green-500"
+  />
+);
+
+const Cross = () => (
+  <VegaIcon
+    name={VegaIconNames.CROSS}
+    size={18}
+    className="text-vega-red-500"
+  />
+);
 
 export const applyFilter = (
   node: TransferNode & {
@@ -105,11 +132,37 @@ export const applyFilter = (
   return false;
 };
 
-export const ActiveRewards = ({ currentEpoch }: { currentEpoch: number }) => {
+export const ActiveRewards = ({
+  currentEpoch,
+  vestingBalancesSummary,
+  assetId,
+}: {
+  currentEpoch: number;
+  assetId: string; // VEGA
+  vestingBalancesSummary: VestingBalances | undefined;
+}) => {
   const t = useT();
   const { data } = useRewards({
     onlyActive: true,
   });
+  const { pubKey } = useVegaWallet();
+  const { team } = useMyTeam();
+
+  const vestingEntries = vestingBalancesSummary?.vestingBalances?.filter(
+    (b) => b.asset.id === assetId
+  );
+  const vestingBalances = vestingEntries?.length
+    ? vestingEntries.map((e) => e.balance)
+    : [0];
+  const totalVesting = BigNumber.sum.apply(null, vestingBalances);
+
+  const requirements = pubKey
+    ? {
+        isEligible: Boolean(totalVesting),
+        amountStaked: totalVesting.toString(),
+        team,
+      }
+    : undefined;
 
   const [filter, setFilter] = useState<Filter>({
     searchTerm: '',
@@ -148,6 +201,7 @@ export const ActiveRewards = ({ currentEpoch }: { currentEpoch: number }) => {
               key={i}
               transferNode={node}
               currentEpoch={currentEpoch}
+              requirements={requirements}
             />
           ))}
       </TinyScroll>
@@ -158,10 +212,12 @@ export const ActiveRewards = ({ currentEpoch }: { currentEpoch: number }) => {
 type ActiveRewardCardProps = {
   transferNode: EnrichedRewardTransfer;
   currentEpoch: number;
+  requirements?: Requirements;
 };
 export const ActiveRewardCard = ({
   transferNode,
   currentEpoch,
+  requirements,
 }: ActiveRewardCardProps) => {
   // don't display the cards that are scoped to not trading markets
   const marketSettled = transferNode.markets?.filter(
@@ -202,6 +258,7 @@ export const ActiveRewardCard = ({
             ? transferNode.transfer.kind.endEpoch - currentEpoch
             : undefined
         }
+        requirements={requirements}
       />
     );
   }
@@ -242,6 +299,7 @@ export const ActiveRewardCard = ({
       }
       dispatchStrategy={transferNode.transfer.kind.dispatchStrategy}
       dispatchMetricInfo={<DispatchMetricInfo reward={transferNode} />}
+      requirements={requirements}
     />
   );
 };
@@ -255,6 +313,7 @@ const RewardCard = ({
   dispatchStrategy,
   endsIn,
   dispatchMetricInfo,
+  requirements,
 }: {
   colour: CardColour;
   rewardAmount: string;
@@ -269,6 +328,8 @@ const RewardCard = ({
   /** The number of epochs until the transfer stops. */
   endsIn?: number;
   dispatchMetricInfo?: ReactNode;
+  /** Eligibility requirements for rewards */
+  requirements?: Requirements;
 }) => {
   const t = useT();
   return (
@@ -398,6 +459,7 @@ const RewardCard = ({
               dispatchStrategy={dispatchStrategy}
               rewardAsset={rewardAsset}
               vegaAsset={vegaAsset}
+              requirements={requirements}
             />
           )}
         </div>
@@ -411,6 +473,7 @@ const StakingRewardCard = ({
   rewardAmount,
   rewardAsset,
   endsIn,
+  requirements,
 }: {
   colour: CardColour;
   rewardAmount: string;
@@ -420,8 +483,18 @@ const StakingRewardCard = ({
   endsIn?: number;
   /** The VEGA asset details, required to format the min staking amount. */
   vegaAsset?: BasicAssetDetails;
+  /** Eligibility requirements for rewards */
+  requirements?: Requirements;
 }) => {
   const t = useT();
+  const amountStaked = requirements?.amountStaked;
+  const tickOrCross = requirements ? (
+    new BigNumber(amountStaked || 0).isGreaterThanOrEqualTo(1) ? (
+      <Tick />
+    ) : (
+      <Cross />
+    )
+  ) : null;
   return (
     <div>
       <div
@@ -555,11 +628,12 @@ const StakingRewardCard = ({
                     ]
                   }
                 >
-                  <span>{t('Individual')}</span>
+                  <span>
+                    {tickOrCross} {t('Individual')}
+                  </span>
                 </Tooltip>
               </dd>
             </div>
-
             <div className="flex flex-col gap-1">
               <dt className="flex items-center gap-1 text-muted">
                 {t('Staked VEGA')}
@@ -568,7 +642,18 @@ const StakingRewardCard = ({
                 className="flex items-center gap-1"
                 data-testid="staking-requirement"
               >
-                {formatNumber(1, 2)}
+                {!amountStaked ? (
+                  '1.00'
+                ) : new BigNumber(amountStaked).isGreaterThanOrEqualTo(1) ? (
+                  <Tick />
+                ) : (
+                  <Cross />
+                )}
+                {addDecimalsFormatNumber(
+                  amountStaked || 0,
+                  18, // vega asset decimals
+                  6
+                )}
               </dd>
             </div>
 
@@ -580,6 +665,8 @@ const StakingRewardCard = ({
                 className="flex items-center gap-1"
                 data-testid="average-position"
               >
+                {' '}
+                {tickOrCross}
                 {formatNumber(0, 2)}
               </dd>
             </div>
@@ -614,7 +701,7 @@ export const DispatchMetricInfo = ({
   // or if scoped to many markets then indicate it's scoped to "specific markets"
   if (marketNames.length > 1) {
     additionalDispatchMetricInfo = (
-      <Tooltip description={marketNames}>
+      <Tooltip description={marketNames.join(', ')}>
         <span>{t('Specific markets')}</span>
       </Tooltip>
     );
@@ -634,14 +721,21 @@ const RewardRequirements = ({
   dispatchStrategy,
   rewardAsset,
   vegaAsset,
+  requirements,
 }: {
   dispatchStrategy: DispatchStrategy;
   rewardAsset?: BasicAssetDetails;
   vegaAsset?: BasicAssetDetails;
+  requirements?: Requirements;
 }) => {
   const t = useT();
 
   const entityLabel = EntityScopeLabelMapping[dispatchStrategy.entityScope];
+
+  const stakingRequirement = dispatchStrategy.stakingRequirement;
+  const amountStaked = requirements?.amountStaked;
+  const averagePosition =
+    dispatchStrategy.notionalTimeWeightedAveragePositionRequirement;
 
   return (
     <dl className="flex justify-between flex-wrap items-center gap-3 text-xs">
@@ -654,7 +748,10 @@ const RewardRequirements = ({
             : t('Scope')}
         </dt>
         <dd className="flex items-center gap-1" data-testid="scope">
-          <RewardEntityScope dispatchStrategy={dispatchStrategy} />
+          <RewardEntityScope
+            dispatchStrategy={dispatchStrategy}
+            requirements={requirements}
+          />
         </dd>
       </div>
 
@@ -666,10 +763,27 @@ const RewardRequirements = ({
           className="flex items-center gap-1"
           data-testid="staking-requirement"
         >
-          {addDecimalsFormatNumber(
-            dispatchStrategy?.stakingRequirement || 0,
-            vegaAsset?.decimals || 18
-          )}
+          {!stakingRequirement
+            ? ''
+            : requirements &&
+              (new BigNumber(
+                stakingRequirement.toString() || 0
+              ).isLessThanOrEqualTo(amountStaked?.toString() || 0) ? (
+                <Tick />
+              ) : (
+                <Cross />
+              ))}
+          {!stakingRequirement
+            ? '-'
+            : requirements && amountStaked
+            ? addDecimalsFormatNumber(
+                amountStaked || 0,
+                vegaAsset?.decimals || 18
+              )
+            : addDecimalsFormatNumber(
+                stakingRequirement.toString() || 0,
+                vegaAsset?.decimals || 18
+              )}
         </dd>
       </div>
 
@@ -678,11 +792,12 @@ const RewardRequirements = ({
           {t('Average position')}
         </dt>
         <dd className="flex items-center gap-1" data-testid="average-position">
-          {addDecimalsFormatNumber(
-            dispatchStrategy?.notionalTimeWeightedAveragePositionRequirement ||
-              0,
-            rewardAsset?.decimals || 0
-          )}
+          {averagePosition
+            ? addDecimalsFormatNumber(
+                averagePosition || 0,
+                rewardAsset?.decimals || 0
+              )
+            : '-'}
         </dd>
       </div>
     </dl>
@@ -691,55 +806,77 @@ const RewardRequirements = ({
 
 const RewardEntityScope = ({
   dispatchStrategy,
+  requirements,
 }: {
   dispatchStrategy: DispatchStrategy;
+  requirements?: Requirements;
 }) => {
   const t = useT();
+  const listedTeams = dispatchStrategy.teamScope;
 
-  if (dispatchStrategy.entityScope === EntityScope.ENTITY_SCOPE_TEAMS) {
-    return (
-      <Tooltip
-        description={
-          dispatchStrategy.teamScope?.length ? (
-            <div className="text-xs">
-              <p className="mb-1">{t('Eligible teams')}</p>
-              <ul>
-                {dispatchStrategy.teamScope.map((teamId) => {
-                  if (!teamId) return null;
-                  return <li key={teamId}>{truncateMiddle(teamId)}</li>;
-                })}
-              </ul>
-            </div>
-          ) : (
-            t('All teams are eligible')
-          )
-        }
-      >
-        <span>
-          {dispatchStrategy.teamScope?.length
-            ? t('Some teams')
-            : t('All teams')}
-        </span>
-      </Tooltip>
+  const isEligible = () => {
+    const isInTeam =
+      listedTeams?.find((team) => team === requirements?.team?.teamId) || false;
+    const teamsList = listedTeams && (
+      <ul>
+        {listedTeams.map((teamId) => {
+          if (!teamId) return null;
+          return <li key={teamId}>{truncateMiddle(teamId)}</li>;
+        })}
+      </ul>
     );
-  }
 
-  if (
-    dispatchStrategy.entityScope === EntityScope.ENTITY_SCOPE_INDIVIDUALS &&
-    dispatchStrategy.individualScope
-  ) {
-    return (
-      <Tooltip
-        description={
-          IndividualScopeDescriptionMapping[dispatchStrategy.individualScope]
-        }
-      >
-        <span>{IndividualScopeMapping[dispatchStrategy.individualScope]}</span>
-      </Tooltip>
-    );
-  }
+    if (
+      dispatchStrategy.entityScope === EntityScope.ENTITY_SCOPE_TEAMS &&
+      !listedTeams
+    ) {
+      return { tooltip: t('All teams'), eligible: true };
+    }
+    if (
+      dispatchStrategy.entityScope === EntityScope.ENTITY_SCOPE_TEAMS &&
+      listedTeams
+    ) {
+      return {
+        tooltip: (
+          <div className="text-xs">
+            <p className="mb-1">{t('Eligible teams')}</p> {teamsList}
+          </div>
+        ),
+        eligible: isInTeam,
+      };
+    }
 
-  return t('Unspecified');
+    if (dispatchStrategy.entityScope === EntityScope.ENTITY_SCOPE_INDIVIDUALS) {
+      switch (dispatchStrategy.individualScope) {
+        case IndividualScope.INDIVIDUAL_SCOPE_IN_TEAM:
+          return {
+            tooltip: (
+              <div className="text-xs">
+                <p className="mb-1">{t('Teams individuals')}</p> {teamsList}
+              </div>
+            ),
+            eligible: isInTeam,
+          };
+        case IndividualScope.INDIVIDUAL_SCOPE_NOT_IN_TEAM:
+          return { tooltip: t('Solo individuals'), eligible: true };
+        case IndividualScope.INDIVIDUAL_SCOPE_ALL:
+          return { tooltip: t('All individuals'), eligible: true };
+      }
+    }
+
+    return { tooltip: t('Unspecified'), eligible: false };
+  };
+
+  const { tooltip, eligible } = isEligible();
+  const tickOrCross = requirements ? eligible ? <Tick /> : <Cross /> : null;
+
+  return (
+    <Tooltip description={tooltip}>
+      <span>
+        {tickOrCross} {eligible ? t('Eligible') : t('Not eligible')}
+      </span>
+    </Tooltip>
+  );
 };
 
 const CardColourStyles: Record<

@@ -286,7 +286,11 @@ export const RewardsContainer = () => {
             </span>
           </Card>
         )}
-        <ActiveRewards currentEpoch={Number(epochData?.epoch.id)} />
+        <ActiveRewards
+          currentEpoch={Number(epochData?.epoch.id)}
+          assetId={params.reward_asset}
+          vestingBalancesSummary={rewardsData?.party?.vestingBalancesSummary}
+        />
         <Card
           title={t('Rewards history')}
           className="lg:col-span-full hidden md:block"
@@ -304,7 +308,7 @@ export const RewardsContainer = () => {
   );
 };
 
-type VestingBalances = NonNullable<
+export type VestingBalances = NonNullable<
   RewardsPageQuery['party']
 >['vestingBalancesSummary'];
 
