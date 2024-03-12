@@ -8,13 +8,18 @@ import {
   type VoteFieldsFragment,
 } from '../__generated__/Proposals';
 import { type ProposalChangeType } from '../types';
+import sum from 'lodash/sum';
 
 export const useVoteInformation = ({
   votes,
   terms,
+  yesELS,
+  noELS,
 }: {
   votes: VoteFieldsFragment;
   terms: ProposalTermsFieldsFragment;
+  yesELS?: number[];
+  noELS?: number[];
 }) => {
   const {
     appState: { totalSupply, decimals },
@@ -31,7 +36,9 @@ export const useVoteInformation = ({
     paramsForChange,
     votes,
     totalSupply,
-    decimals
+    decimals,
+    yesELS,
+    noELS
   );
 };
 
@@ -72,7 +79,11 @@ const getVoteData = (
   },
   votes: ProposalFieldsFragment['votes'],
   totalSupply: BigNumber,
-  decimals: number
+  decimals: number,
+  /** A list of ELS yes votes */
+  yesELS?: number[],
+  /** A list if ELS no votes */
+  noELS?: number[]
 ) => {
   const requiredMajorityPercentage = params.requiredMajority
     ? new BigNumber(params.requiredMajority).times(100)
@@ -86,17 +97,31 @@ const getVoteData = (
     addDecimal(votes.no.totalTokens ?? 0, decimals)
   );
 
-  const noEquityLikeShareWeight = !votes.no.totalEquityLikeShareWeight
+  let noEquityLikeShareWeight = !votes.no.totalEquityLikeShareWeight
     ? new BigNumber(0)
     : new BigNumber(votes.no.totalEquityLikeShareWeight).times(100);
+  // there's no meaningful `totalEquityLikeShareWeight` in batch proposals,
+  // it has to be deduced from `elsPerMarket` of `no` votes of given proposal
+  // data. (by REST DATA)
+  if (noELS != null) {
+    const noTotalELS = sum(noELS);
+    noEquityLikeShareWeight = new BigNumber(noTotalELS).times(100);
+  }
 
   const yesTokens = new BigNumber(
     addDecimal(votes.yes.totalTokens ?? 0, decimals)
   );
 
-  const yesEquityLikeShareWeight = !votes.yes.totalEquityLikeShareWeight
+  let yesEquityLikeShareWeight = !votes.yes.totalEquityLikeShareWeight
     ? new BigNumber(0)
     : new BigNumber(votes.yes.totalEquityLikeShareWeight).times(100);
+  // there's no meaningful `totalEquityLikeShareWeight` in batch proposals,
+  // it has to be deduced from `elsPerMarket` of `yes` votes of given proposal
+  // data. (by REST DATA)
+  if (noELS != null) {
+    const yesTotalELS = sum(yesELS);
+    yesEquityLikeShareWeight = new BigNumber(yesTotalELS).times(100);
+  }
 
   const totalTokensVoted = yesTokens.plus(noTokens);
 

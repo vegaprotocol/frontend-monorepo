@@ -38,6 +38,7 @@ import { differenceInHours, format, formatDistanceToNowStrict } from 'date-fns';
 import { DATE_FORMAT_DETAILED } from '../../../../lib/date-formats';
 import { MarketName } from '../proposal/market-name';
 import { Indicator } from '../proposal/indicator';
+import { type ProposalNode } from '../proposal/proposal-utils';
 
 const ProposalTypeTags = ({
   proposal,
@@ -540,10 +541,12 @@ const BatchProposalStateText = ({
 
 export const ProposalHeader = ({
   proposal,
+  restData,
   isListItem = true,
   voteState,
 }: {
   proposal: Proposal | BatchProposal;
+  restData?: ProposalNode | null;
   isListItem?: boolean;
   voteState?: VoteState | null;
 }) => {
@@ -595,7 +598,7 @@ export const ProposalHeader = ({
         )}
       </div>
       <ProposalDetails proposal={proposal} />
-      <VoteBreakdown proposal={proposal} />
+      <VoteBreakdown proposal={proposal} restData={restData} />
     </>
   );
 };

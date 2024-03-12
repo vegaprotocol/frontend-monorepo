@@ -91,6 +91,28 @@ export type ProposalNode = {
   proposal: ProposalData;
   proposalType: ProposalNodeType;
   proposals: SubProposalData[];
+  yes?: [
+    {
+      partyId: string;
+      elsPerMarket?: [
+        {
+          marketId: string;
+          els: string;
+        }
+      ];
+    }
+  ];
+  no?: [
+    {
+      partyId: string;
+      elsPerMarket?: [
+        {
+          marketId: string;
+          els: string;
+        }
+      ];
+    }
+  ];
 };
 
 type SingleProposalNode = ProposalNode & {
