@@ -44,7 +44,7 @@ import compact from 'lodash/compact';
 import { useMyTeam } from '../../lib/hooks/use-my-team';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import BigNumber from 'bignumber.js';
-import { type VestingBalances } from './rewards-container';
+import { useStakeAvailable } from '../../lib/hooks/use-stake-available';
 
 enum CardColour {
   BLUE = 'BLUE',
@@ -64,7 +64,7 @@ export type Filter = {
 /** Eligibility requirements for rewards */
 export type Requirements = {
   isEligible: boolean;
-  amountStaked?: string;
+  stakeAvailable?: bigint;
   team?: Partial<Team>;
 };
 
@@ -132,15 +132,7 @@ export const applyFilter = (
   return false;
 };
 
-export const ActiveRewards = ({
-  currentEpoch,
-  vestingBalancesSummary,
-  assetId,
-}: {
-  currentEpoch: number;
-  assetId: string; // VEGA
-  vestingBalancesSummary: VestingBalances | undefined;
-}) => {
+export const ActiveRewards = ({ currentEpoch }: { currentEpoch: number }) => {
   const t = useT();
   const { data } = useRewards({
     onlyActive: true,
@@ -148,18 +140,13 @@ export const ActiveRewards = ({
   const { pubKey } = useVegaWallet();
   const { team } = useMyTeam();
 
-  const vestingEntries = vestingBalancesSummary?.vestingBalances?.filter(
-    (b) => b.asset.id === assetId
-  );
-  const vestingBalances = vestingEntries?.length
-    ? vestingEntries.map((e) => e.balance)
-    : [0];
-  const totalVesting = BigNumber.sum.apply(null, vestingBalances);
+  const { stakeAvailable, isEligible, requiredStake } = useStakeAvailable();
 
   const requirements = pubKey
     ? {
-        isEligible: Boolean(totalVesting),
-        amountStaked: totalVesting.toString(),
+        isEligible,
+        stakeAvailable,
+        requiredStake,
         team,
       }
     : undefined;
@@ -259,6 +246,7 @@ export const ActiveRewardCard = ({
             : undefined
         }
         requirements={requirements}
+        gameId={transferNode.transfer.gameId}
       />
     );
   }
@@ -300,6 +288,7 @@ export const ActiveRewardCard = ({
       dispatchStrategy={transferNode.transfer.kind.dispatchStrategy}
       dispatchMetricInfo={<DispatchMetricInfo reward={transferNode} />}
       requirements={requirements}
+      gameId={transferNode.transfer.gameId}
     />
   );
 };
@@ -314,6 +303,7 @@ const RewardCard = ({
   endsIn,
   dispatchMetricInfo,
   requirements,
+  gameId,
 }: {
   colour: CardColour;
   rewardAmount: string;
@@ -330,6 +320,8 @@ const RewardCard = ({
   dispatchMetricInfo?: ReactNode;
   /** Eligibility requirements for rewards */
   requirements?: Requirements;
+  /** The game id of the transfer */
+  gameId?: string | null;
 }) => {
   const t = useT();
   return (
@@ -460,6 +452,7 @@ const RewardCard = ({
               rewardAsset={rewardAsset}
               vegaAsset={vegaAsset}
               requirements={requirements}
+              gameId={gameId}
             />
           )}
         </div>
@@ -474,6 +467,7 @@ const StakingRewardCard = ({
   rewardAsset,
   endsIn,
   requirements,
+  gameId,
 }: {
   colour: CardColour;
   rewardAmount: string;
@@ -485,11 +479,13 @@ const StakingRewardCard = ({
   vegaAsset?: BasicAssetDetails;
   /** Eligibility requirements for rewards */
   requirements?: Requirements;
+  /** The game id of the transfer */
+  gameId?: string | null;
 }) => {
   const t = useT();
-  const amountStaked = requirements?.amountStaked;
+  const stakeAvailable = requirements?.stakeAvailable;
   const tickOrCross = requirements ? (
-    new BigNumber(amountStaked || 0).isGreaterThanOrEqualTo(1) ? (
+    stakeAvailable && stakeAvailable > 1 ? (
       <Tick />
     ) : (
       <Cross />
@@ -642,15 +638,15 @@ const StakingRewardCard = ({
                 className="flex items-center gap-1"
                 data-testid="staking-requirement"
               >
-                {!amountStaked ? (
+                {!stakeAvailable ? (
                   '1.00'
-                ) : new BigNumber(amountStaked).isGreaterThanOrEqualTo(1) ? (
+                ) : stakeAvailable > 1 ? (
                   <Tick />
                 ) : (
                   <Cross />
                 )}
                 {addDecimalsFormatNumber(
-                  amountStaked || 0,
+                  stakeAvailable?.toString() || '0',
                   18, // vega asset decimals
                   6
                 )}
@@ -722,18 +718,20 @@ const RewardRequirements = ({
   rewardAsset,
   vegaAsset,
   requirements,
+  gameId,
 }: {
   dispatchStrategy: DispatchStrategy;
   rewardAsset?: BasicAssetDetails;
   vegaAsset?: BasicAssetDetails;
   requirements?: Requirements;
+  gameId?: string | null;
 }) => {
   const t = useT();
 
   const entityLabel = EntityScopeLabelMapping[dispatchStrategy.entityScope];
 
   const stakingRequirement = dispatchStrategy.stakingRequirement;
-  const amountStaked = requirements?.amountStaked;
+  const stakeAvailable = requirements?.stakeAvailable;
   const averagePosition =
     dispatchStrategy.notionalTimeWeightedAveragePositionRequirement;
 
@@ -768,16 +766,16 @@ const RewardRequirements = ({
             : requirements &&
               (new BigNumber(
                 stakingRequirement.toString() || 0
-              ).isLessThanOrEqualTo(amountStaked?.toString() || 0) ? (
+              ).isLessThanOrEqualTo(stakeAvailable?.toString() || 0) ? (
                 <Tick />
               ) : (
                 <Cross />
               ))}
           {!stakingRequirement
             ? '-'
-            : requirements && amountStaked
+            : requirements && stakeAvailable
             ? addDecimalsFormatNumber(
-                amountStaked || 0,
+                (stakeAvailable || 0).toString(),
                 vegaAsset?.decimals || 18
               )
             : addDecimalsFormatNumber(
