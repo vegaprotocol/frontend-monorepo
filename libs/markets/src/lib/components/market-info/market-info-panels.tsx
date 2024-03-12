@@ -1856,17 +1856,19 @@ export const PriceConfigurationPanel = ({
   priceConfiguration: PriceConfigurationFragment;
 }) => {
   const t = useT();
+  const typeLabel: {
+    [key in CompositePriceType]: string;
+  } = {
+    [CompositePriceType.COMPOSITE_PRICE_TYPE_WEIGHTED]: t('Weighted'),
+    [CompositePriceType.COMPOSITE_PRICE_TYPE_MEDIAN]: t('Median'),
+    [CompositePriceType.COMPOSITE_PRICE_TYPE_LAST_TRADE]: t('Last Trade'),
+  };
   return (
     <>
       <KeyValueTable>
         <KeyValueTableRow noBorder className="text-xs">
           <div>{t('Composite Price Type')}</div>
-          <div>
-            {priceConfiguration.CompositePriceType ===
-            CompositePriceType.COMPOSITE_PRICE_TYPE_WEIGHTED
-              ? t('Weighted')
-              : t('Median')}
-          </div>
+          <div>{typeLabel[priceConfiguration.CompositePriceType]}</div>
         </KeyValueTableRow>
       </KeyValueTable>
       <PriceConfigurationTradePricePanel
