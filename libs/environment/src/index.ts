@@ -12,3 +12,6 @@ export * from './utils/__generated__/NodeCheck';
 
 // Chain info
 export { CHAIN_IDS } from './chains';
+
+// External chain environments
+export * from './external-chain';

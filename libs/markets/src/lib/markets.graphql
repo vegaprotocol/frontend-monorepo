@@ -37,8 +37,18 @@ fragment MarketFields on Market {
     }
   }
   marketTimestamps {
+    proposed
+    pending
     open
     close
+  }
+  marketProposal {
+    ... on Proposal {
+      id
+    }
+    ... on BatchProposal {
+      id
+    }
   }
 }
 

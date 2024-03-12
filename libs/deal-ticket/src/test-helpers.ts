@@ -14,6 +14,8 @@ export function generateMarket(override?: PartialDeep<Market>): Market {
     tickSize: '1',
     marketTimestamps: {
       __typename: 'MarketTimestamps',
+      proposed: '2024-01-02',
+      pending: '2024-01-01',
       close: '',
       open: '',
     },

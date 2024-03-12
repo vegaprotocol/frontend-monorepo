@@ -13,6 +13,8 @@ const MARKET_A: Partial<Market> = {
   id: '1',
   marketTimestamps: {
     __typename: 'MarketTimestamps',
+    proposed: '2022-05-11T13:08:27.693537312Z',
+    pending: '2022-05-12T13:08:27.693537312Z',
     open: '2022-05-18T13:08:27.693537312Z',
     close: null,
   },
@@ -24,6 +26,8 @@ const MARKET_B: Partial<Market> = {
   id: '2',
   marketTimestamps: {
     __typename: 'MarketTimestamps',
+    proposed: '2022-05-11T13:08:27.693537312Z',
+    pending: '2022-05-12T13:08:27.693537312Z',
     open: '2022-05-18T13:00:39.328347732Z',
     close: null,
   },
@@ -35,6 +39,8 @@ const MARKET_C: Partial<Market> = {
   id: '3',
   marketTimestamps: {
     __typename: 'MarketTimestamps',
+    proposed: '2022-05-11T13:08:27.693537312Z',
+    pending: '2022-05-12T13:08:27.693537312Z',
     open: '2022-05-17T13:00:39.328347732Z',
     close: null,
   },
@@ -46,6 +52,8 @@ const MARKET_D: Partial<Market> = {
   id: '4',
   marketTimestamps: {
     __typename: 'MarketTimestamps',
+    proposed: '2022-05-11T13:08:27.693537312Z',
+    pending: '2022-05-12T13:08:27.693537312Z',
     open: '2022-05-16T13:00:39.328347732Z',
     close: null,
   },

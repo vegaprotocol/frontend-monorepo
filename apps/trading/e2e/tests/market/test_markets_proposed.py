@@ -63,9 +63,9 @@ def test_renders_markets_correctly(proposed_market, page: Page):
 
     # 6001-MARK-052
     # 6001-MARK-053
-    expect(row.locator('[col-id="state"]')).to_have_text("Open")
+    expect(row.locator('[col-id="state"]')).to_have_text("Proposed")
     expect(
-        row.locator('[col-id="terms.change.successorConfiguration.parentMarketId"]')
+        row.locator('[col-id="parentMarketID"]')
     ).to_have_text("-")
 
     # 6001-MARK-056

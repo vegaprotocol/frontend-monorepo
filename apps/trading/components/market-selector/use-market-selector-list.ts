@@ -63,7 +63,11 @@ export const useMarketSelectorList = ({
         [
           (m) => {
             if (!m.candles?.length) return 0;
-            return Number(priceChangePercentage(m.candles.map((c) => c.close)));
+            return Number(
+              priceChangePercentage(
+                m.candles.filter((c) => c.close !== '').map((c) => c.close)
+              )
+            );
           },
         ],
         [dir]

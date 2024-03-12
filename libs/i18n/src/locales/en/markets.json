@@ -144,6 +144,7 @@
   "View governance proposal": "View governance proposal",
   "View liquidity provision table": "View liquidity provision table",
   "View on Etherscan": "View on Etherscan",
+  "View on {{chainLabel}}": "View on {{chainLabel}}",
   "View settlement data specification": "View settlement data specification",
   "View settlement schedule specification": "View settlement schedule specification",
   "View termination specification": "View termination specification",

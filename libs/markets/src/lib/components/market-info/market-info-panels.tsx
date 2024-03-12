@@ -49,6 +49,7 @@ import {
   LiquidityFeeMethodMappingDescription,
   MarketStateMapping,
   MarketTradingModeMapping,
+  type SuccessorConfiguration,
 } from '@vegaprotocol/types';
 import {
   DApp,
@@ -58,6 +59,7 @@ import {
   useEnvironment,
   useLinks,
   DocsLinks,
+  getExternalChainLabel,
 } from '@vegaprotocol/environment';
 import type { Provider } from '../../oracle-schema';
 import { OracleBasicProfile } from '../../components/oracle-basic-profile';
@@ -69,11 +71,7 @@ import {
   useSuccessorMarketIdsQuery,
   useSuccessorMarketQuery,
 } from '../../__generated__';
-import {
-  useSuccessorMarketProposalDetailsQuery,
-  type SuccessorMarketProposalDetailsQuery,
-  type SingleProposal,
-} from '@vegaprotocol/proposals';
+import { useSuccessorMarketProposalDetailsQuery } from '@vegaprotocol/proposals';
 import { getQuoteName, getAsset } from '../../market-utils';
 import classNames from 'classnames';
 import compact from 'lodash/compact';
@@ -254,15 +252,27 @@ export const KeyDetailsInfoPanel = ({
       skip: !featureFlags.SUCCESSOR_MARKETS || !market.proposal?.id,
     });
 
-  const successorProposal = successorProposalDetails?.proposal as
-    | SingleProposal<SuccessorMarketProposalDetailsQuery['proposal']>
-    | undefined;
+  let successorConfiguration: SuccessorConfiguration | false = false;
 
-  const successorConfiguration =
-    successorProposal?.terms.change.__typename === 'NewMarket' &&
-    successorProposal.terms.change.successorConfiguration?.__typename ===
-      'SuccessorConfiguration' &&
-    successorProposal.terms.change.successorConfiguration;
+  if (successorProposalDetails?.proposal?.__typename === 'Proposal') {
+    successorConfiguration =
+      successorProposalDetails.proposal.terms.change.__typename ===
+        'NewMarket' &&
+      successorProposalDetails.proposal.terms.change.successorConfiguration
+        ?.__typename === 'SuccessorConfiguration' &&
+      successorProposalDetails.proposal.terms.change.successorConfiguration;
+  } else if (
+    successorProposalDetails?.proposal?.__typename === 'BatchProposal'
+  ) {
+    const subTerms = successorProposalDetails.proposal.batchTerms?.changes.find(
+      (c) => c?.change.__typename === 'NewMarket'
+    );
+    successorConfiguration =
+      subTerms?.change.__typename === 'NewMarket' &&
+      subTerms?.change.successorConfiguration?.__typename ===
+        'SuccessorConfiguration' &&
+      subTerms?.change?.successorConfiguration;
+  }
 
   // The following queries are needed as the parent market could also have been a successor market.
   // Note: the parent market is only passed to this component if the successor markets flag is enabled,
@@ -281,9 +291,27 @@ export const KeyDetailsInfoPanel = ({
       },
       skip: !parentMarket?.proposal?.id,
     });
-  const parentProposal = parentSuccessorProposalDetails?.proposal as
-    | SingleProposal<SuccessorMarketProposalDetailsQuery['proposal']>
-    | undefined;
+
+  let parentSuccessorConfig: SuccessorConfiguration | undefined = undefined;
+
+  if (parentSuccessorProposalDetails?.proposal?.__typename === 'Proposal') {
+    const parentProposal = parentSuccessorProposalDetails?.proposal;
+    parentSuccessorConfig =
+      parentProposal.terms.change.__typename === 'NewMarket'
+        ? parentProposal.terms.change.successorConfiguration || undefined
+        : undefined;
+  } else if (
+    parentSuccessorProposalDetails?.proposal?.__typename === 'BatchProposal'
+  ) {
+    const subTerms =
+      parentSuccessorProposalDetails.proposal.batchTerms?.changes.find(
+        (c) => c?.change.__typename === 'NewMarket'
+      );
+    parentSuccessorConfig =
+      subTerms?.change.__typename === 'NewMarket'
+        ? subTerms.change.successorConfiguration || undefined
+        : undefined;
+  }
 
   const assetDecimals = getAsset(market).decimals;
 
@@ -339,10 +367,7 @@ export const KeyDetailsInfoPanel = ({
           parentMarket && {
             name: parentMarket?.tradableInstrument?.instrument?.name,
             parentMarketID: grandparentMarketIdData?.market?.parentMarketID,
-            insurancePoolFraction:
-              parentProposal?.terms.change.__typename === 'NewMarket' &&
-              parentProposal?.terms.change.successorConfiguration
-                ?.insurancePoolFraction,
+            insurancePoolFraction: parentSuccessorConfig?.insurancePoolFraction,
             status:
               parentMarket?.state && MarketStateMapping[parentMarket.state],
             tradingMode:
@@ -872,8 +897,15 @@ export const EthOraclePanel = ({ sourceType }: { sourceType: EthCallSpec }) => {
           </KeyValueTable>
 
           <div className="my-2">
-            <EtherscanLink address={sourceType.address}>
-              {t('View on Etherscan')}
+            <EtherscanLink
+              address={sourceType.address}
+              sourceChainId={sourceType.sourceChainId}
+            >
+              {t('View on {{chainLabel}}', {
+                chainLabel: getExternalChainLabel(
+                  sourceType.sourceChainId.toString()
+                ),
+              })}
             </EtherscanLink>
           </div>
         </>

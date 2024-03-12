@@ -47,14 +47,10 @@ query ProposalOfMarket($marketId: ID!) {
     }
     ... on BatchProposal {
       id
-      batchTerms {
-        changes {
+      subProposals {
+        id
+        terms {
           enactmentDatetime
-          change {
-            ... on NewMarket {
-              __typename
-            }
-          }
         }
       }
     }
@@ -71,6 +67,22 @@ query SuccessorMarketProposalDetails($proposalId: ID!) {
             successorConfiguration {
               parentMarketId
               insurancePoolFraction
+            }
+          }
+        }
+      }
+    }
+    ... on BatchProposal {
+      id
+      batchTerms {
+        changes {
+          change {
+            ... on NewMarket {
+              __typename
+              successorConfiguration {
+                parentMarketId
+                insurancePoolFraction
+              }
             }
           }
         }

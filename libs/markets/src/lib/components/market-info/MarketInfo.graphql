@@ -46,6 +46,7 @@ fragment DataSource on DataSourceSpec {
                 operator
               }
             }
+            sourceChainId
           }
           ... on DataSourceSpecConfiguration {
             signers {
@@ -153,6 +154,8 @@ query MarketInfo($marketId: ID!) {
       }
     }
     marketTimestamps {
+      proposed
+      pending
       open
       close
     }

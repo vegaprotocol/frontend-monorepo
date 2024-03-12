@@ -217,6 +217,8 @@ describe('WithdrawFormContainer', () => {
           },
           marketTimestamps: {
             __typename: 'MarketTimestamps',
+            proposed: '2022-10-23T18:17:59.149283671Z',
+            pending: '2022-10-24T18:17:59.149283671Z',
             open: '2022-10-25T18:17:59.149283671Z',
             close: null,
           },

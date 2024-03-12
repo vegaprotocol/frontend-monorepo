@@ -1,5 +1,5 @@
 import Hash from '../hash';
-import { getExternalExplorerLink } from './external-chain';
+import { getExternalExplorerLink } from '@vegaprotocol/environment';
 import { ExternalChainIcon } from './external-chain-icon';
 
 export enum EthExplorerLinkTypes {
@@ -23,7 +23,7 @@ export const ExternalExplorerLink = ({
   code = false,
   ...props
 }: ExternalExplorerLinkProps) => {
-  const link = `${getExternalExplorerLink(chain, type)}/${type}/${id}${
+  const link = `${getExternalExplorerLink(chain)}/${type}/${id}${
     code ? '#code' : ''
   }`;
   return (
