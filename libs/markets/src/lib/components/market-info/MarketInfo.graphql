@@ -135,6 +135,132 @@ fragment Perpetual on Perpetual {
   }
 }
 
+query MarketInfoMainnet($marketId: ID!) {
+  market(id: $marketId) {
+    id
+    decimalPlaces
+    positionDecimalPlaces
+    state
+    tradingMode
+    linearSlippageFactor
+    parentMarketID
+    successorMarketID
+    proposal {
+      id
+      rationale {
+        title
+        description
+      }
+    }
+    marketTimestamps {
+      proposed
+      pending
+      open
+      close
+    }
+    openingAuction {
+      durationSecs
+      volume
+    }
+    accountsConnection {
+      edges {
+        node {
+          type
+          asset {
+            id
+          }
+          balance
+        }
+      }
+    }
+    fees {
+      factors {
+        makerFee
+        infrastructureFee
+        liquidityFee
+      }
+      liquidityFeeSettings {
+        feeConstant
+        method
+      }
+    }
+    priceMonitoringSettings {
+      parameters {
+        triggers {
+          horizonSecs
+          probability
+          auctionExtensionSecs
+        }
+      }
+    }
+    riskFactors {
+      market
+      short
+      long
+    }
+    liquidityMonitoringParameters {
+      targetStakeParameters {
+        timeWindow
+        scalingFactor
+      }
+    }
+    liquiditySLAParameters {
+      priceRange
+      commitmentMinTimeFraction
+      performanceHysteresisEpochs
+      slaCompetitionFactor
+    }
+    liquidationStrategy {
+      disposalTimeStep
+      disposalFraction
+      fullDisposalSize
+      maxFractionConsumed
+    }
+    tradableInstrument {
+      instrument {
+        id
+        name
+        code
+        metadata {
+          tags
+        }
+        product {
+          ... on Future {
+            ...Future
+          }
+          ... on Perpetual {
+            ...Perpetual
+          }
+        }
+      }
+      riskModel {
+        ... on LogNormalRiskModel {
+          tau
+          riskAversionParameter
+          params {
+            r
+            sigma
+            mu
+          }
+        }
+        ... on SimpleRiskModel {
+          params {
+            factorLong
+            factorShort
+          }
+        }
+      }
+      marginCalculator {
+        scalingFactors {
+          searchLevel
+          initialMargin
+          collateralRelease
+        }
+      }
+    }
+  }
+}
+
 query MarketInfo($marketId: ID!) {
   market(id: $marketId) {
     id
