@@ -2,6 +2,7 @@ import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 import type { ComponentProps } from 'react';
 import { ETHERSCAN_ADDRESS, ETHERSCAN_TX, useEtherscanLink } from '../hooks';
 import { useT } from '../use-t';
+import { getExternalChainLabel } from '../external-chain';
 
 export const EtherscanLink = ({
   address,
@@ -32,7 +33,13 @@ export const EtherscanLink = ({
   return (
     <ExternalLink
       href={href}
-      title={t('View on Etherscan (opens in a new tab)')}
+      title={
+        sourceChainId
+          ? t('View on {{chainLabel}} (opens in a new tab)', {
+              chainLabel: getExternalChainLabel(sourceChainId.toString()),
+            })
+          : t('View on Etherscan (opens in a new tab)')
+      }
       {...props}
     >
       {children || address || tx}

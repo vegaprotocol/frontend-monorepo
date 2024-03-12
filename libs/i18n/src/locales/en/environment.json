@@ -38,6 +38,7 @@
   "This app will only work on {{VEGA_ENV}}. Select a node to connect to.": "This app will only work on {{VEGA_ENV}}. Select a node to connect to.",
   "VALIDATOR_TESTNET": "VALIDATOR_TESTNET",
   "View on Etherscan (opens in a new tab)": "View on Etherscan (opens in a new tab)",
+  "View on {{chainLabel}} (opens in a new tab)": "View on {{chainLabel}} (opens in a new tab)",
   "Warning delay ( >{{warningLatency}} sec): {{blockUpdateLatency}} sec": "Warning delay ( >{{warningLatency}} sec): {{blockUpdateLatency}} sec",
   "Yes": "Yes"
 }
