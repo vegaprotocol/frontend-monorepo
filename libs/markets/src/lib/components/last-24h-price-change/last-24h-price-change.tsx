@@ -32,7 +32,8 @@ export const Last24hPriceChange = ({
     return nonIdeal;
   }
 
-  const candles = oneDayCandles?.map((c) => c.close) || [];
+  const candles =
+    oneDayCandles.map((c) => c.close).filter((c) => c !== '') || [];
   const change = priceChange(candles);
   const changePercentage = priceChangePercentage(candles);
 
