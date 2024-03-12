@@ -1,4 +1,5 @@
 import merge from 'lodash/merge';
+import cloneDeep from 'lodash/cloneDeep';
 import * as Schema from '@vegaprotocol/types';
 import type { PartialDeep } from 'type-fest';
 import type {
@@ -31,7 +32,7 @@ export const marketsQuery = (
 export const createMarketFragment = (
   override?: PartialDeep<MarketFieldsFragment>
 ): MarketFieldsFragment => {
-  const defaultFragment = {
+  const defaultFragment: MarketFieldsFragment = {
     id: 'market-0',
     decimalPlaces: 5,
     positionDecimalPlaces: 0,
@@ -82,7 +83,7 @@ export const createMarketFragment = (
           },
           dataSourceSpecForTradingTermination: {
             __typename: 'DataSourceSpec',
-            id: 'f028fe5ea7de3890962a05a7163fdde562629af649ed81b8c8902fafb6eef04f',
+            id: '871f467e06f91029df8fba3edc0a0aad0259445f2bb144cb79a4113fe5be95bf',
             data: {
               __typename: 'DataSourceDefinition',
               sourceType: {
@@ -149,12 +150,12 @@ export const createMarketFragment = (
             },
           },
           dataSourceSpecBinding: {
-            __typename: 'DataSourceSpecBinding',
+            __typename: 'DataSourceSpecToFutureBinding',
             tradingTerminationProperty: 'trading-termination-property',
             settlementDataProperty: 'settlement-data-property',
           },
           quoteName: 'DAI',
-        } as const,
+        },
         __typename: 'Instrument',
       },
       __typename: 'TradableInstrument',
@@ -162,7 +163,7 @@ export const createMarketFragment = (
     __typename: 'Market',
   };
 
-  return merge(defaultFragment, override);
+  return merge(cloneDeep(defaultFragment), override);
 };
 
 const marketFieldsFragments: MarketFieldsFragment[] = [
