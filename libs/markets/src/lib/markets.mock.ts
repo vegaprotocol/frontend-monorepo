@@ -39,8 +39,10 @@ export const createMarketFragment = (
     state: Schema.MarketState.STATE_ACTIVE,
     marketTimestamps: {
       __typename: 'MarketTimestamps',
-      close: null,
+      proposed: '2022-08-23T11:36:32.252490405Z',
+      pending: '2022-08-24T11:36:32.252490405Z',
       open: null,
+      close: null,
     },
     successorMarketID: null,
     parentMarketID: null,
@@ -189,6 +191,9 @@ const marketFieldsFragments: MarketFieldsFragment[] = [
     tradingMode: Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
     state: Schema.MarketState.STATE_SUSPENDED,
     marketTimestamps: {
+      proposed: '2022-08-23T11:36:32.252490405Z',
+      pending: '2022-08-24T11:36:32.252490405Z',
+      open: '2022-08-25T11:36:32.252490405Z',
       close: '2022-08-26T11:36:32.252490405Z',
     },
     fees: {
@@ -219,6 +224,9 @@ const marketFieldsFragments: MarketFieldsFragment[] = [
   createMarketFragment({
     id: 'market-3',
     marketTimestamps: {
+      proposed: '2022-08-23T11:36:32.252490405Z',
+      pending: '2022-08-24T11:36:32.252490405Z',
+      open: '2022-08-25T11:36:32.252490405Z',
       close: '2022-08-26T11:36:32.252490405Z',
     },
     fees: {

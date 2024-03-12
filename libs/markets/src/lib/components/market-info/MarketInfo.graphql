@@ -152,6 +152,8 @@ query MarketInfo($marketId: ID!) {
       }
     }
     marketTimestamps {
+      proposed
+      pending
       open
       close
     }

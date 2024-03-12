@@ -13,12 +13,16 @@ import type {
   VegaValueFormatterParams,
 } from '@vegaprotocol/datagrid';
 import {
-  ProposalProductTypeShortName,
-  ProposalStateMapping,
+  MarketStateMapping,
+  ProductTypeMapping,
+  ProductTypeShortName,
 } from '@vegaprotocol/types';
-import type { ProposalListFieldsFragment } from '../../lib/proposals-data-provider/__generated__/Proposals';
-import { ProposalActionsDropdown } from '../proposal-actions-dropdown';
-import { useT } from '../../use-t';
+import { ProposalActionsDropdown } from './proposal-actions-dropdown';
+import {
+  type MarketFieldsFragment,
+  getProductType,
+} from '@vegaprotocol/markets';
+import { useT } from '../../../lib/use-t';
 
 export const useColumnDefs = () => {
   const t = useT();
@@ -28,7 +32,7 @@ export const useColumnDefs = () => {
       {
         colId: 'market',
         headerName: t('Market'),
-        field: 'terms.change.instrument.code',
+        field: 'tradableInstrument.instrument.code',
         pinned: true,
         cellStyle: { lineHeight: '14px' },
         cellRenderer: ({
@@ -36,19 +40,9 @@ export const useColumnDefs = () => {
           data,
         }: {
           value: string;
-          data: ProposalListFieldsFragment;
+          data: MarketFieldsFragment;
         }) => {
           if (!value || !data) return '-';
-
-          const getProductType = (data: ProposalListFieldsFragment) => {
-            if (
-              data.terms.__typename === 'ProposalTerms' &&
-              data.terms.change.__typename === 'NewMarket'
-            ) {
-              return data.terms.change.instrument.product?.__typename;
-            }
-            return undefined;
-          };
 
           const productType = getProductType(data);
           return (
@@ -57,10 +51,10 @@ export const useColumnDefs = () => {
                 primary={value}
                 secondary={
                   <span
-                    title={ProposalProductTypeShortName[productType]}
+                    title={ProductTypeMapping[productType]}
                     className="uppercase"
                   >
-                    {ProposalProductTypeShortName[productType]}
+                    {ProductTypeShortName[productType]}
                   </span>
                 }
               />
@@ -71,7 +65,7 @@ export const useColumnDefs = () => {
       {
         colId: 'asset',
         headerName: t('Settlement asset'),
-        field: 'terms.change.instrument.product.settlementAsset.symbol',
+        field: 'tradableInstrument.instrument.product.settlementAsset.symbol',
       },
       {
         colId: 'state',
@@ -79,39 +73,42 @@ export const useColumnDefs = () => {
         field: 'state',
         valueFormatter: ({
           value,
-        }: VegaValueFormatterParams<ProposalListFieldsFragment, 'state'>) =>
-          value ? ProposalStateMapping[value] : '-',
+        }: VegaValueFormatterParams<MarketFieldsFragment, 'state'>) => {
+          return value ? MarketStateMapping[value] : '-';
+        },
         filter: SetFilter,
         filterParams: {
-          set: ProposalStateMapping,
+          set: MarketStateMapping,
         },
       },
       {
         headerName: t('Parent market'),
-        field: 'terms.change.successorConfiguration.parentMarketId',
+        field: 'parentMarketID',
         cellRenderer: 'ParentMarketCell',
       },
       {
         colId: 'closing-date',
         headerName: t('Closing date'),
-        field: 'terms.closingDatetime',
+        field: 'marketTimestamps.pending',
         valueFormatter: ({
           value,
         }: VegaValueFormatterParams<
-          ProposalListFieldsFragment,
-          'terms.closingDatetime'
-        >) => (value ? getDateTimeFormat().format(new Date(value)) : '-'),
+          MarketFieldsFragment,
+          'marketTimestamps.pending'
+        >) => {
+          return value ? getDateTimeFormat().format(new Date(value)) : '-';
+        },
         filter: DateRangeFilter,
       },
       {
         colId: 'enactment-date',
         headerName: t('Enactment date'),
-        field: 'terms.enactmentDatetime',
+        field: 'marketTimestamps.open',
         valueFormatter: ({
           value,
         }: VegaValueFormatterParams<
-          ProposalListFieldsFragment,
-          'terms.enactmentDatetime'
+          MarketFieldsFragment,
+          'marketTimestamps.open'
         >) => (value ? getDateTimeFormat().format(new Date(value)) : '-'),
         filter: DateRangeFilter,
       },
@@ -120,10 +117,10 @@ export const useColumnDefs = () => {
         ...COL_DEFS.actions,
         cellRenderer: ({
           data,
-        }: VegaICellRendererParams<ProposalListFieldsFragment>) => {
-          if (!data?.id) return null;
+        }: VegaICellRendererParams<MarketFieldsFragment>) => {
+          if (!data?.marketProposal?.id) return null;
 
-          return <ProposalActionsDropdown id={data.id} />;
+          return <ProposalActionsDropdown id={data.marketProposal.id} />;
         },
       },
     ]);

@@ -65,6 +65,8 @@ export const generateFill = (override?: PartialDeep<Trade>) => {
       },
       marketTimestamps: {
         __typename: 'MarketTimestamps',
+        proposed: '2005-03-31T19:37:00.000Z',
+        pending: '2005-04-01T19:37:00.000Z',
         open: '2005-04-02T19:37:00.000Z',
         close: '2005-04-02T19:37:00.000Z',
       },
