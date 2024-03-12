@@ -140,6 +140,8 @@ query MarketInfoMainnet($marketId: ID!) {
     id
     decimalPlaces
     positionDecimalPlaces
+    # tickSize is not on mainnet and the query will fail. See typePolicy for tickSize in bootstrapper.tsx
+    tickSize @client
     state
     tradingMode
     linearSlippageFactor
