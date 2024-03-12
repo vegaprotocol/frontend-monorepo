@@ -31,12 +31,26 @@ export interface SparklineProps {
 }
 
 export const SparklineView = ({
-  data,
+  data: rawData,
   width = 60,
   height = 15,
   points = 24,
   className,
 }: SparklineProps) => {
+  // Value can come in as 0, due to candle.close being empty string ''
+  // Instead of skewing the sparkline with 0 values, we map over and set any
+  // 0 values to the last non 0 value resulting in a better sparkline
+  let lastClose = 0;
+  const data = rawData.map((val) => {
+    if (val === 0) {
+      return lastClose;
+    } else {
+      lastClose = val;
+    }
+
+    return val;
+  });
+
   // Get the extent for our y value
   const [min, max] = extent(data, (d) => d);
 
