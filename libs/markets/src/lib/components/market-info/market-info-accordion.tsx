@@ -139,11 +139,6 @@ export const MarketInfoAccordion = ({
                 />
               );
             })}
-          <AccordionItem
-            itemId="current-fees"
-            title={t('Current fees')}
-            content={<CurrentFeesInfoPanel market={market} />}
-          />
         </Accordion>
       </div>
       <div className="mb-8">
