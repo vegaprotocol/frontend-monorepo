@@ -9,3 +9,6 @@ export * from './types';
 
 // Utils
 export * from './utils/__generated__/NodeCheck';
+
+// External chain environments
+export * from './external-chain';

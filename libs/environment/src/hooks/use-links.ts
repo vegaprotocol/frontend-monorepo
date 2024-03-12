@@ -3,6 +3,7 @@ import { useCallback } from 'react';
 import { Networks } from '../types';
 import { ENV, useEnvironment } from './use-environment';
 import { stripFullStops } from '@vegaprotocol/utils';
+import { getExternalExplorerLink } from '../external-chain';
 
 const VEGA_DOCS_URL =
   process.env['NX_VEGA_DOCS_URL'] || 'https://docs.vega.xyz/mainnet';
@@ -91,10 +92,6 @@ export const DocsLinks = VEGA_DOCS_URL
     }
   : undefined;
 
-const scanUrls: Record<number, string> = {
-  42161: 'https://arbiscan.io',
-};
-
 export const useLinks = (dapp: DApp, network?: Net) => {
   const { VEGA_ENV, VEGA_EXPLORER_URL, VEGA_TOKEN_URL, VEGA_CONSOLE_URL } = ENV;
   const fallback = {
@@ -125,7 +122,10 @@ export const useLinks = (dapp: DApp, network?: Net) => {
 
 export const useEtherscanLink = (sourceChainId?: number) => {
   const { ETHERSCAN_URL } = useEnvironment();
-  const otherScanUrl = sourceChainId ? scanUrls[sourceChainId] : undefined;
+
+  const otherScanUrl = sourceChainId
+    ? getExternalExplorerLink(sourceChainId.toString())
+    : undefined;
 
   const baseUrl = trim(otherScanUrl || ETHERSCAN_URL, '/');
 
