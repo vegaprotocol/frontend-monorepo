@@ -1879,6 +1879,7 @@ export const PriceConfigurationPanel = ({
       />
       {priceConfiguration.dataSourcesSpec?.map((spec, i) => (
         <PriceConfigurationOraclePanel
+          key={i}
           marketId={market.id}
           priceConfiguration={priceConfiguration}
           sourceIndex={i}
