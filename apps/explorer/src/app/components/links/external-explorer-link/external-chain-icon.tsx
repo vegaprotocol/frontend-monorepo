@@ -1,5 +1,8 @@
-import type { ChainIdMapping } from './external-chain';
-import { SUPPORTED_CHAIN_IDS, SUPPORTED_CHAIN_LABELS } from './external-chain';
+import type { ChainIdMapping } from '@vegaprotocol/environment';
+import {
+  SUPPORTED_CHAIN_IDS,
+  SUPPORTED_CHAIN_LABELS,
+} from '@vegaprotocol/environment';
 
 export const SUPPORTED_CHAIN_ICON_URLS: ChainIdMapping = {
   '1': '/assets/chain-eth-logo.svg',
