@@ -339,7 +339,7 @@ export const KeyDetailsInfoPanel = ({
                 parentMarketID:
                   parentMarketIdData?.market?.parentMarketID || '-',
                 insurancePoolFraction:
-                  parentSuccessorConfig?.insurancePoolFraction || '-',
+                  successorConfiguration.insurancePoolFraction || '-',
                 status: market.state && MarketStateMapping[market.state],
                 tradingMode:
                   market.tradingMode &&
@@ -363,10 +363,7 @@ export const KeyDetailsInfoPanel = ({
           parentMarket && {
             name: parentMarket?.tradableInstrument?.instrument?.name,
             parentMarketID: grandparentMarketIdData?.market?.parentMarketID,
-            insurancePoolFraction:
-              parentProposal?.terms.change.__typename === 'NewMarket' &&
-              parentProposal?.terms.change.successorConfiguration
-                ?.insurancePoolFraction,
+            insurancePoolFraction: parentSuccessorConfig?.insurancePoolFraction,
             status:
               parentMarket?.state && MarketStateMapping[parentMarket.state],
             tradingMode:
