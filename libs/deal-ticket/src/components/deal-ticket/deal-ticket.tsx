@@ -388,7 +388,7 @@ export const DealTicket = ({
       if (lastSubmitTime.current && now - lastSubmitTime.current < 1000) {
         return;
       }
-      if (formValues.tpSl) {
+      if (formValues.tpSl && (formValues.takeProfit || formValues.stopLoss)) {
         const reference = `${pubKey}-${now}-${uniqueId()}`;
         const batchMarketInstructions = mapFormValuesToTakeProfitAndStopLoss(
           formValues,
