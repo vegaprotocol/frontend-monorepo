@@ -58,6 +58,7 @@ import {
   useEnvironment,
   useLinks,
   DocsLinks,
+  getExternalChainLabel,
 } from '@vegaprotocol/environment';
 import type { Provider } from '../../oracle-schema';
 import { OracleBasicProfile } from '../../components/oracle-basic-profile';
@@ -893,8 +894,15 @@ export const EthOraclePanel = ({ sourceType }: { sourceType: EthCallSpec }) => {
           </KeyValueTable>
 
           <div className="my-2">
-            <EtherscanLink address={sourceType.address}>
-              {t('View on Etherscan')}
+            <EtherscanLink
+              address={sourceType.address}
+              sourceChainId={sourceType.sourceChainId}
+            >
+              {t('View on {{chainLabel}}', {
+                chainLabel: getExternalChainLabel(
+                  sourceType.sourceChainId.toString()
+                ),
+              })}
             </EtherscanLink>
           </div>
         </>

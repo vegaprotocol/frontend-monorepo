@@ -10,7 +10,7 @@ export const SUPPORTED_CHAIN_LABELS: ChainIdMapping = {
   '11155111': 'Sepolia',
 };
 
-export function getExternalExplorerLink(chainId: string, type: string) {
+export function getExternalExplorerLink(chainId: string) {
   if (SUPPORTED_CHAIN_IDS.includes(chainId)) {
     switch (chainId) {
       case '1':
