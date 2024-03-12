@@ -1,11 +1,7 @@
 import { useMemo } from 'react';
 import { parseISO, isValid, isAfter } from 'date-fns';
 import classNames from 'classnames';
-import {
-  useProposalOfMarketQuery,
-  type ProposalOfMarketQuery,
-  type SingleProposal,
-} from '@vegaprotocol/proposals';
+import { useProposalOfMarketQuery } from '@vegaprotocol/proposals';
 import { DocsLinks } from '@vegaprotocol/environment';
 import { getDateTimeFormat } from '@vegaprotocol/utils';
 import * as Schema from '@vegaprotocol/types';
@@ -21,6 +17,32 @@ type TradingModeTooltipProps = {
   skipGrid?: boolean;
 };
 
+const useEnactmentDatetime = (marketId?: string, skip?: boolean) => {
+  const variables = useMemo(() => ({ marketId: marketId || '' }), [marketId]);
+  const { data: proposalData } = useProposalOfMarketQuery({
+    variables,
+    skip,
+  });
+
+  let v: string = '';
+  if (proposalData?.proposal) {
+    if (proposalData?.proposal?.__typename === 'Proposal') {
+      v = proposalData.proposal.terms.enactmentDatetime;
+    }
+    if (
+      proposalData?.proposal?.__typename === 'BatchProposal' &&
+      proposalData.proposal.subProposals
+    ) {
+      const sub = proposalData.proposal.subProposals.find(
+        (p) => p?.id === variables.marketId
+      );
+      v = sub?.terms?.enactmentDatetime;
+    }
+  }
+
+  return parseISO(v);
+};
+
 export const TradingModeTooltip = ({
   marketId,
   onSelect,
@@ -31,24 +53,15 @@ export const TradingModeTooltip = ({
   const { data: market } = useMarket(marketId);
   const { data: marketData } = useStaticMarketData(marketId, skip);
   const { marketTradingMode, trigger } = marketData || {};
-  const variables = useMemo(() => ({ marketId: marketId || '' }), [marketId]);
-  const { data: proposalData } = useProposalOfMarketQuery({
-    variables,
-    skip:
-      !marketTradingMode ||
-      Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION !==
-        marketTradingMode,
-  });
 
-  // We only fetch Proposals (and not BatchProposals)
-  const proposal = proposalData?.proposal as SingleProposal<
-    ProposalOfMarketQuery['proposal']
-  >;
+  const skipEnactmentDate =
+    !marketTradingMode ||
+    Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION !== marketTradingMode;
+  const enactmentDate = useEnactmentDatetime(marketId, skipEnactmentDate);
 
   if (!market || !marketData) {
     return null;
   }
-  const enactmentDate = parseISO(proposal?.terms.enactmentDatetime);
 
   const compiledGrid =
     !skipGrid && compileGridData(t, market, marketData, onSelect);

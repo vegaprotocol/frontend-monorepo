@@ -45,6 +45,14 @@ query ProposalOfMarket($marketId: ID!) {
         enactmentDatetime
       }
     }
+    ... on BatchProposal {
+      subProposals {
+        id
+        terms {
+          enactmentDatetime
+        }
+      }
+    }
   }
 }
 
