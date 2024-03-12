@@ -71,6 +71,22 @@ query SuccessorMarketProposalDetails($proposalId: ID!) {
         }
       }
     }
+    ... on BatchProposal {
+      id
+      batchTerms {
+        changes {
+          change {
+            ... on NewMarket {
+              __typename
+              successorConfiguration {
+                parentMarketId
+                insurancePoolFraction
+              }
+            }
+          }
+        }
+      }
+    }
   }
 }
 
