@@ -869,7 +869,10 @@ export const EthOraclePanel = ({ sourceType }: { sourceType: EthCallSpec }) => {
           </KeyValueTable>
 
           <div className="my-2">
-            <EtherscanLink address={sourceType.address}>
+            <EtherscanLink
+              address={sourceType.address}
+              sourceChainId={sourceType.sourceChainId}
+            >
               {t('View on Etherscan')}
             </EtherscanLink>
           </div>

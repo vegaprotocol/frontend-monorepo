@@ -6,14 +6,16 @@ import { useT } from '../use-t';
 export const EtherscanLink = ({
   address,
   tx,
+  sourceChainId,
   children,
   ...props
 }: {
   address?: string;
   tx?: string;
+  sourceChainId?: number;
 } & ComponentProps<typeof ExternalLink>) => {
   const t = useT();
-  const etherscanLink = useEtherscanLink();
+  const etherscanLink = useEtherscanLink(sourceChainId);
   let href = '';
 
   if ((!address && !tx) || (address && tx)) {

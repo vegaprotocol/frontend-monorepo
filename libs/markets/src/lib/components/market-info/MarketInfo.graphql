@@ -46,6 +46,7 @@ fragment DataSource on DataSourceSpec {
                 operator
               }
             }
+            sourceChainId
           }
           ... on DataSourceSpecConfiguration {
             signers {

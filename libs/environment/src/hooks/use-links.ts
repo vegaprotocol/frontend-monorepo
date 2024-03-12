@@ -91,6 +91,10 @@ export const DocsLinks = VEGA_DOCS_URL
     }
   : undefined;
 
+const scanUrls: Record<number, string> = {
+  42161: 'https://arbiscan.io',
+};
+
 export const useLinks = (dapp: DApp, network?: Net) => {
   const { VEGA_ENV, VEGA_EXPLORER_URL, VEGA_TOKEN_URL, VEGA_CONSOLE_URL } = ENV;
   const fallback = {
@@ -119,9 +123,12 @@ export const useLinks = (dapp: DApp, network?: Net) => {
   return link;
 };
 
-export const useEtherscanLink = () => {
+export const useEtherscanLink = (sourceChainId?: number) => {
   const { ETHERSCAN_URL } = useEnvironment();
-  const baseUrl = trim(ETHERSCAN_URL, '/');
+  const otherScanUrl = sourceChainId ? scanUrls[sourceChainId] : undefined;
+
+  const baseUrl = trim(otherScanUrl || ETHERSCAN_URL, '/');
+
   const link = useCallback(
     (url?: string) => `${baseUrl}/${trim(url, '/') || ''}`,
     [baseUrl]
