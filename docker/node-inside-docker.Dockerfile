@@ -1,14 +1,15 @@
 # Build container
 ARG NODE_VERSION
-FROM --platform=amd64 node:${NODE_VERSION}-alpine3.16 as build
+FROM --platform=amd64 node:${NODE_VERSION}-alpine3.18 as build
 WORKDIR /app
 # Argument to allow building of different apps
 ARG APP
 ARG ENV_NAME=""
 RUN apk add --update --no-cache \
-  make==4.3-r0 \
-  gcc==11.2.1_git20220219-r2 \
-  g++==11.2.1_git20220219-r2
+  git \
+  make==4.4.1-r1 \
+  gcc==12.2.1_git20220924-r10 \
+  g++==12.2.1_git20220924-r10
 COPY . ./
 RUN yarn --pure-lockfile
 # work around for different build process in trading
