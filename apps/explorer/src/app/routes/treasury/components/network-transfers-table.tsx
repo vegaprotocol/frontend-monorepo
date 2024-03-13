@@ -12,6 +12,7 @@ import { t } from '@vegaprotocol/i18n';
 import { IconNames } from '@blueprintjs/icons';
 import { useMemo } from 'react';
 import { useScreenDimensions } from '@vegaprotocol/react-helpers';
+import ProposalLink from '../../../components/links/proposal-link/proposal-link';
 
 export const colours = {
   INCOMING: '!fill-vega-green-600 text-vega-green-600 mr-2',
@@ -50,14 +51,24 @@ export function getToAccountTypeLabel(type?: AccountType): string {
   }
 }
 
+export function isGovernanceTransfer(kind?: string): boolean {
+  if (kind && kind.includes('Governance')) {
+    return true;
+  }
+
+  return false;
+}
+
 export function typeLabel(kind?: string): string {
   switch (kind) {
     case 'OneOffTransfer':
+      return t('Transfer - one time');
     case 'RecurringTransfer':
-      return t('Transfer');
+      return t('Transfer - repeating');
     case 'OneOffGovernanceTransfer':
+      return t('Governance - one time');
     case 'RecurringGovernanceTransfer':
-      return t('Governance');
+      return t('Governance - repeating');
     default:
       return t('Unknown');
   }
@@ -239,6 +250,11 @@ export const NetworkTransfersTable = () => {
                         >
                           {a && typeLabel(a.kind.__typename)}
                         </span>
+                        {isGovernanceTransfer(a?.kind.__typename) && a?.id && (
+                          <span className="ml-4">
+                            <ProposalLink id={a?.id} text="View" />
+                          </span>
+                        )}
                       </td>
                     </tr>
                   );

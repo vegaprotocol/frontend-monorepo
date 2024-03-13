@@ -8,12 +8,16 @@ export type ExplorerTransferStatusQueryVariables = Types.Exact<{
 }>;
 
 
-export type ExplorerTransferStatusQuery = { __typename?: 'Query', transfer?: { __typename?: 'TransferNode', transfer: { __typename?: 'Transfer', reference?: string | null, timestamp: any, status: Types.TransferStatus, reason?: string | null, fromAccountType: Types.AccountType, from: string, to: string, toAccountType: Types.AccountType, amount: string, asset?: { __typename?: 'Asset', id: string } | null } } | null };
+export type ExplorerTransferStatusQuery = { __typename?: 'Query', transfer?: { __typename?: 'TransferNode', fees?: Array<{ __typename?: 'TransferFee', amount: string, epoch: number } | null> | null, transfer: { __typename?: 'Transfer', reference?: string | null, timestamp: any, status: Types.TransferStatus, reason?: string | null, fromAccountType: Types.AccountType, from: string, to: string, toAccountType: Types.AccountType, amount: string, asset?: { __typename?: 'Asset', id: string } | null } } | null };
 
 
 export const ExplorerTransferStatusDocument = gql`
     query ExplorerTransferStatus($id: ID!) {
   transfer(id: $id) {
+    fees {
+      amount
+      epoch
+    }
     transfer {
       reference
       timestamp
