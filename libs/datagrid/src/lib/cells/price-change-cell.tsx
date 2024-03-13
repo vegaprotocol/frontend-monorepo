@@ -18,8 +18,9 @@ export interface PriceChangeCellProps {
 export const PriceChangeCell = memo(
   forwardRef<HTMLSpanElement, PriceChangeCellProps>(
     ({ candles, decimalPlaces }: PriceChangeCellProps, ref) => {
-      const change = priceChange(candles);
-      const changePercentage = priceChangePercentage(candles);
+      const validCandles = candles.filter((c) => c !== '');
+      const change = priceChange(validCandles);
+      const changePercentage = priceChangePercentage(validCandles);
       return (
         <span
           ref={ref}

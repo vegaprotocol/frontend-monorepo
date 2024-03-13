@@ -2,6 +2,7 @@ import { t } from '@vegaprotocol/i18n';
 import type { components } from '../../../types/explorer';
 import { VoteIcon } from '../vote-icon/vote-icon';
 import { ExternalChainIcon } from '../links/external-explorer-link/external-chain-icon';
+import { getTypeLabelForTransfer } from './details/tx-transfer';
 
 interface TxOrderTypeProps {
   orderType: string;
@@ -95,7 +96,7 @@ export function getLabelForOrderType(
 
 /**
  * Given a proposal, will return a specific label
- * @param chainEvent
+ * @param proposal
  * @returns
  */
 export function getLabelForProposal(
@@ -140,6 +141,36 @@ export function getLabelForProposal(
   } else {
     return t('Proposal');
   }
+}
+
+type label = {
+  type: string;
+  colours: string;
+};
+
+export function getLabelForTransfer(
+  transfer: components['schemas']['commandsv1Transfer']
+): label {
+  const type = getTypeLabelForTransfer(transfer);
+
+  if (transfer.toAccountType === 'ACCOUNT_TYPE_NETWORK_TREASURY') {
+    return {
+      type,
+      colours:
+        'text-vega-green dark:text-green bg-vega-dark-150 dark:bg-vega-dark-250',
+    };
+  } else if (transfer.recurring) {
+    return {
+      type,
+      colours:
+        'text-vega-yellow dark:text-yellow bg-vega-dark-150 dark:bg-vega-dark-250',
+    };
+  }
+  return {
+    type,
+    colours:
+      'text-white dark:text-white bg-vega-dark-150 dark:bg-vega-dark-250',
+  };
 }
 
 /**
@@ -225,9 +256,10 @@ export const TxOrderType = ({ orderType, command }: TxOrderTypeProps) => {
   if (type === 'Chain Event' && !!command?.chainEvent) {
     type = getLabelForChainEvent(command.chainEvent);
     colours = 'text-white dark-text-white bg-vega-pink dark:bg-vega-pink';
-  } else if (type === 'Validator Heartbeat') {
-    colours =
-      'text-white dark-text-white bg-vega-light-200 dark:bg-vega-dark-100';
+  } else if (type === 'Transfer Funds' && command?.transfer) {
+    const res = getLabelForTransfer(command.transfer);
+    type = res.type;
+    colours = res.colours;
   } else if (type === 'Proposal' || type === 'Governance Proposal') {
     if (command && !!command.proposalSubmission) {
       type = getLabelForProposal(command.proposalSubmission);
