@@ -113,7 +113,7 @@ export const ExplorerOracleDataSourceSpecFragmentDoc = gql`
     `;
 export const ExplorerOracleFormMarketsDocument = gql`
     query ExplorerOracleFormMarkets {
-  marketsConnection {
+  marketsConnection(includeSettled: false, pagination: {first: 20}) {
     edges {
       node {
         ...ExplorerOracleForMarketsMarket
@@ -126,7 +126,7 @@ export const ExplorerOracleFormMarketsDocument = gql`
         dataSourceSpec {
           ...ExplorerOracleDataSourceSpec
         }
-        dataConnection(pagination: {last: 1}) {
+        dataConnection(pagination: {first: 1}) {
           edges {
             node {
               externalData {
