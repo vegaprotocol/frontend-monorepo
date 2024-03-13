@@ -2,8 +2,10 @@ import {
   makeDataProvider,
   makeDerivedDataProvider,
 } from '@vegaprotocol/data-provider';
+import { ENV, Networks } from '@vegaprotocol/environment';
 import {
   MarketInfoDocument,
+  MarketInfoMainnetDocument,
   type MarketInfoQuery,
   type MarketInfoQueryVariables,
 } from './__generated__/MarketInfo';
@@ -30,7 +32,11 @@ export const marketInfoProvider = makeDataProvider<
   never,
   MarketInfoQueryVariables
 >({
-  query: MarketInfoDocument,
+  query:
+    // Mainnet does not support tickSize, and a query for tickSize on a market will completely fail
+    ENV.VEGA_ENV === Networks.MAINNET
+      ? MarketInfoMainnetDocument
+      : MarketInfoDocument,
   getData,
   errorPolicy: 'all',
   pollInterval: 5000,
