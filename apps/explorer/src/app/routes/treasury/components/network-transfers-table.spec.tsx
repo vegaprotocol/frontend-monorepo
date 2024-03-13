@@ -16,19 +16,21 @@ import type { DeepPartial } from '@apollo/client/utilities';
 
 describe('typeLabel', () => {
   it('should return "Transfer" for "OneOffTransfer" kind', () => {
-    expect(typeLabel('OneOffTransfer')).toBe('Transfer');
+    expect(typeLabel('OneOffTransfer')).toBe('Transfer - one time');
   });
 
   it('should return "Transfer" for "RecurringTransfer" kind', () => {
-    expect(typeLabel('RecurringTransfer')).toBe('Transfer');
+    expect(typeLabel('RecurringTransfer')).toBe('Transfer - repeating');
   });
 
   it('should return "Governance" for "OneOffGovernanceTransfer" kind', () => {
-    expect(typeLabel('OneOffGovernanceTransfer')).toBe('Governance');
+    expect(typeLabel('OneOffGovernanceTransfer')).toBe('Governance - one time');
   });
 
   it('should return "Governance" for "RecurringGovernanceTransfer" kind', () => {
-    expect(typeLabel('RecurringGovernanceTransfer')).toBe('Governance');
+    expect(typeLabel('RecurringGovernanceTransfer')).toBe(
+      'Governance - repeating'
+    );
   });
 
   it('should return "Unknown" for unknown kind', () => {
@@ -256,7 +258,7 @@ describe('NetworkTransfersTable', () => {
     expect(screen.getByTestId('from-account').textContent).toEqual('Treasury');
     expect(screen.getByTestId('to-account').textContent).toEqual('7100…97a0');
     expect(screen.getByTestId('transfer-kind').textContent).toEqual(
-      'Governance'
+      'Governance - one time'
     );
   });
 });
