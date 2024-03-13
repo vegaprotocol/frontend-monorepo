@@ -44,6 +44,7 @@ import type {
   SignerKind,
 } from '@vegaprotocol/types';
 import {
+  CompositePriceType,
   ConditionOperatorMapping,
   LiquidityFeeMethodMapping,
   LiquidityFeeMethodMappingDescription,
@@ -79,7 +80,10 @@ import {
   NetworkParams,
   useNetworkParams,
 } from '@vegaprotocol/network-parameters';
-import type { DataSourceFragment } from './__generated__/MarketInfo';
+import type {
+  DataSourceFragment,
+  PriceConfigurationFragment,
+} from './__generated__/MarketInfo';
 import { formatDuration } from 'date-fns';
 import * as AccordionPrimitive from '@radix-ui/react-accordion';
 import { useT } from '../../use-t';
@@ -244,13 +248,22 @@ export const KeyDetailsInfoPanel = ({
     },
     skip: !featureFlags.SUCCESSOR_MARKETS,
   });
+  const proposalId =
+    (market.marketProposal?.__typename === 'Proposal' &&
+      market.marketProposal.id) ||
+    '';
 
   const { data: successorProposalDetails } =
     useSuccessorMarketProposalDetailsQuery({
       variables: {
-        proposalId: market.proposal?.id || '',
+        proposalId,
       },
-      skip: !featureFlags.SUCCESSOR_MARKETS || !market.proposal?.id,
+      skip:
+        !featureFlags.SUCCESSOR_MARKETS ||
+        !(
+          market.marketProposal?.__typename === 'Proposal' &&
+          market.marketProposal?.id
+        ),
     });
 
   let successorConfiguration: SuccessorConfiguration | false = false;
@@ -288,9 +301,9 @@ export const KeyDetailsInfoPanel = ({
   const { data: parentSuccessorProposalDetails } =
     useSuccessorMarketProposalDetailsQuery({
       variables: {
-        proposalId: parentMarket?.proposal?.id || '',
+        proposalId,
       },
-      skip: !parentMarket?.proposal?.id,
+      skip: !proposalId,
     });
 
   let parentSuccessorConfig: SuccessorConfiguration | undefined = undefined;
@@ -1207,6 +1220,9 @@ export const FundingInfoPanel = ({
     minutes,
   });
   const { product } = market.tradableInstrument.instrument;
+  const indexPrice = (
+    <DataSourceLinks {...getDataSourceSpec(product, 'settlementData')} />
+  );
   return (
     <>
       <p
@@ -1228,6 +1244,85 @@ export const FundingInfoPanel = ({
           rateUpperBound: isPerpetual(product) && product.fundingRateUpperBound,
         }}
       />
+      {indexPrice && (
+        <>
+          <div className="my-1">{t('Index Price')}</div>
+          {indexPrice}
+        </>
+      )}
+    </>
+  );
+};
+
+const DataSourceLinks = ({
+  dataSourceSpec,
+  dataSourceSpecId,
+}: ReturnType<typeof getDataSourceSpec>) => {
+  const t = useT();
+  const { VEGA_EXPLORER_URL } = useEnvironment();
+  const address = dataSourceSpec &&
+    dataSourceSpec.sourceType.__typename === 'DataSourceDefinitionExternal' &&
+    dataSourceSpec.sourceType.sourceType?.__typename === 'EthCallSpec' && (
+      <KeyValueTableRow noBorder className="text-xs">
+        <div>{t('Address')}</div>
+        <CopyWithTooltip text={dataSourceSpec.sourceType.sourceType.address}>
+          <button
+            data-testid="copy-eth-oracle-address"
+            className="text-right uppercase"
+          >
+            <span className="flex gap-1">
+              {truncateMiddle(dataSourceSpec.sourceType.sourceType.address)}
+              <VegaIcon name={VegaIconNames.COPY} size={16} />
+            </span>
+          </button>
+        </CopyWithTooltip>
+      </KeyValueTableRow>
+    );
+  const explorerLink = dataSourceSpecId && (
+    <ExternalLink
+      data-testid="oracle-spec-links"
+      href={`${VEGA_EXPLORER_URL}/oracles/${dataSourceSpecId}`}
+      className="text-xs my-1"
+    >
+      {t('View specification')}
+    </ExternalLink>
+  );
+  return address || explorerLink ? (
+    <KeyValueTable>
+      {address}
+      {explorerLink}
+    </KeyValueTable>
+  ) : null;
+};
+
+export const TerminationAndSettlementPanel = ({
+  market,
+}: {
+  market: MarketInfo;
+}) => {
+  const t = useT();
+  const { product } = market.tradableInstrument.instrument;
+  const settlement = (
+    <DataSourceLinks {...getDataSourceSpec(product, 'settlementData')} />
+  );
+  const termination = (
+    <DataSourceLinks {...getDataSourceSpec(product, 'termination')} />
+  );
+
+  return (
+    <>
+      {settlement && (
+        <>
+          <div className="my-1">{t('Settlement')}</div>
+          {settlement}
+        </>
+      )}
+      {termination && (
+        <>
+          <div className="my-1">{t('Termination')}</div>
+          {termination}
+        </>
+      )}
     </>
   );
 };
@@ -1546,5 +1641,254 @@ const OracleProfile = (props: {
       />
       <OracleDialog {...props} open={open} onChange={onChange} />
     </div>
+  );
+};
+
+const getSourceWeight = (
+  priceConfiguration: PriceConfigurationFragment,
+  index: number
+) =>
+  priceConfiguration.CompositePriceType ===
+    CompositePriceType.COMPOSITE_PRICE_TYPE_WEIGHTED &&
+  priceConfiguration.SourceWeights
+    ? Number(priceConfiguration.SourceWeights[index]) * 100
+    : undefined;
+
+const getStalenessTolerance = (
+  priceConfiguration: PriceConfigurationFragment,
+  index: number
+) => {
+  return (priceConfiguration.SourceStalenessTolerance[index] || '-').replace(
+    /0s$/,
+    ''
+  );
+};
+
+const SourceWeight = ({ sourceWeight }: { sourceWeight?: number }) => {
+  const t = useT();
+  return (
+    sourceWeight && (
+      <KeyValueTableRow noBorder className="text-xs">
+        <div>{t('Source Weight')}</div>
+        <div>{sourceWeight.toFixed(2)}%</div>
+      </KeyValueTableRow>
+    )
+  );
+};
+
+const StalenessTolerance = ({
+  priceConfiguration,
+  index,
+}: {
+  priceConfiguration: PriceConfigurationFragment;
+  index: number;
+}) => {
+  const t = useT();
+  return (
+    <KeyValueTableRow noBorder className="text-xs">
+      <div>{t('Staleness tolerance')}</div>
+      <div>{getStalenessTolerance(priceConfiguration, index)}</div>
+    </KeyValueTableRow>
+  );
+};
+
+export const PriceConfigurationTradePricePanel = ({
+  market,
+  priceConfiguration,
+}: {
+  market: MarketInfo;
+  priceConfiguration: PriceConfigurationFragment;
+}) => {
+  const t = useT();
+  const sourceWeight = getSourceWeight(priceConfiguration, 0);
+  return (
+    sourceWeight !== 0 && (
+      <>
+        <div className="my-1">{t('Trade price')}</div>
+        <KeyValueTable>
+          <SourceWeight sourceWeight={sourceWeight} />
+          <StalenessTolerance
+            priceConfiguration={priceConfiguration}
+            index={0}
+          />
+          <KeyValueTableRow noBorder className="text-xs">
+            <div>{t('Decay weight')}</div>
+            <div>{market.markPriceConfiguration.decayWeight}</div>
+          </KeyValueTableRow>
+          <KeyValueTableRow noBorder className="text-xs">
+            <div>{t('Decay power')}</div>
+            <div>{market.markPriceConfiguration.decayPower}</div>
+          </KeyValueTableRow>
+        </KeyValueTable>
+      </>
+    )
+  );
+};
+
+export const PriceConfigurationBookPricePanel = ({
+  market,
+  priceConfiguration,
+}: {
+  market: MarketInfo;
+  priceConfiguration: PriceConfigurationFragment;
+}) => {
+  const t = useT();
+  const asset = getAsset(market);
+  const sourceWeight = getSourceWeight(priceConfiguration, 1);
+  return (
+    sourceWeight !== 0 && (
+      <>
+        <div className="my-1">{t('Book price')}</div>
+        <KeyValueTable>
+          <SourceWeight sourceWeight={sourceWeight} />
+          <StalenessTolerance
+            priceConfiguration={priceConfiguration}
+            index={1}
+          />
+          <KeyValueTableRow noBorder className="text-xs">
+            <div>{t('Cash amount')}</div>
+            <div>{`${addDecimalsFormatNumber(
+              priceConfiguration.cashAmount,
+              asset.decimals
+            )} ${asset.symbol}`}</div>
+          </KeyValueTableRow>
+        </KeyValueTable>
+      </>
+    )
+  );
+};
+
+export const PriceConfigurationOraclePanel = ({
+  marketId,
+  priceConfiguration,
+  sourceIndex,
+}: {
+  marketId: string;
+  priceConfiguration: PriceConfigurationFragment;
+  sourceIndex: number;
+}) => {
+  const t = useT();
+  const dataSourceSpec = priceConfiguration.dataSourcesSpec?.[sourceIndex];
+  const sourceType =
+    dataSourceSpec?.sourceType.__typename === 'DataSourceDefinitionExternal' &&
+    dataSourceSpec?.sourceType.sourceType.__typename === 'EthCallSpec' &&
+    dataSourceSpec?.sourceType.sourceType;
+  const sourceWeight = getSourceWeight(priceConfiguration, sourceIndex + 2);
+  const { VEGA_EXPLORER_URL } = useEnvironment();
+  return (
+    sourceType &&
+    sourceWeight !== 0 && (
+      <>
+        <div className="my-1">
+          {t('Price oracle {{index}}', {
+            index:
+              (priceConfiguration.dataSourcesSpec?.length ?? 0) > 1
+                ? sourceIndex + 1
+                : '',
+          })}
+        </div>
+        <KeyValueTable>
+          <SourceWeight sourceWeight={sourceWeight} />
+          <StalenessTolerance
+            priceConfiguration={priceConfiguration}
+            index={sourceIndex + 2}
+          />
+
+          <KeyValueTable>
+            <KeyValueTableRow noBorder className="text-xs">
+              <div>{t('Address')}</div>
+              <CopyWithTooltip text={sourceType.address}>
+                <button
+                  data-testid="copy-eth-oracle-address"
+                  className="text-right uppercase"
+                >
+                  <span className="flex gap-1">
+                    {truncateMiddle(sourceType.address)}
+                    <VegaIcon name={VegaIconNames.COPY} size={16} />
+                  </span>
+                </button>
+              </CopyWithTooltip>
+            </KeyValueTableRow>
+            <ExternalLink
+              data-testid="oracle-spec-links"
+              href={`${VEGA_EXPLORER_URL}/market/${marketId}/oracles#${sourceType.address}`}
+              className="text-xs my-1"
+            >
+              {t('Oracle specification')}
+            </ExternalLink>
+          </KeyValueTable>
+        </KeyValueTable>
+      </>
+    )
+  );
+};
+
+export const PriceConfigurationMedianPanel = ({
+  priceConfiguration,
+}: {
+  priceConfiguration: PriceConfigurationFragment;
+}) => {
+  const t = useT();
+  const sourceWeight = getSourceWeight(
+    priceConfiguration,
+    (priceConfiguration.SourceWeights?.length ?? 0) - 1
+  );
+  return (
+    sourceWeight !== 0 && (
+      <>
+        <div className="my-1">{t('Median price')}</div>
+        <KeyValueTable>
+          <SourceWeight sourceWeight={sourceWeight} />
+          <StalenessTolerance
+            priceConfiguration={priceConfiguration}
+            index={priceConfiguration.SourceStalenessTolerance.length - 1}
+          />
+        </KeyValueTable>
+      </>
+    )
+  );
+};
+
+export const PriceConfigurationPanel = ({
+  market,
+  priceConfiguration,
+}: {
+  market: MarketInfo;
+  priceConfiguration: PriceConfigurationFragment;
+}) => {
+  const t = useT();
+  const typeLabel: {
+    [key in CompositePriceType]: string;
+  } = {
+    [CompositePriceType.COMPOSITE_PRICE_TYPE_WEIGHTED]: t('Weighted'),
+    [CompositePriceType.COMPOSITE_PRICE_TYPE_MEDIAN]: t('Median'),
+    [CompositePriceType.COMPOSITE_PRICE_TYPE_LAST_TRADE]: t('Last Trade'),
+  };
+  return (
+    <>
+      <KeyValueTable>
+        <KeyValueTableRow noBorder className="text-xs">
+          <div>{t('Composite Price Type')}</div>
+          <div>{typeLabel[priceConfiguration.CompositePriceType]}</div>
+        </KeyValueTableRow>
+      </KeyValueTable>
+      <PriceConfigurationTradePricePanel
+        market={market}
+        priceConfiguration={priceConfiguration}
+      />
+      <PriceConfigurationBookPricePanel
+        market={market}
+        priceConfiguration={priceConfiguration}
+      />
+      {priceConfiguration.dataSourcesSpec?.map((spec, i) => (
+        <PriceConfigurationOraclePanel
+          key={i}
+          marketId={market.id}
+          priceConfiguration={priceConfiguration}
+          sourceIndex={i}
+        />
+      ))}
+      <PriceConfigurationMedianPanel priceConfiguration={priceConfiguration} />
+    </>
   );
 };
