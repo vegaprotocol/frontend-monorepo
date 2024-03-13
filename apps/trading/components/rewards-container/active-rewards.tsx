@@ -384,6 +384,25 @@ const RewardCard = ({
                 })}
               </span>
             </span>
+            {/** CAPPED AT */}
+            {dispatchStrategy.capRewardFeeMultiple && (
+              <span className="flex flex-col">
+                <span className="text-muted text-xs">{t('Capped at')}</span>
+                <Tooltip
+                  description={t(
+                    'Reward will be capped at {{capRewardFeeMultiple}} X of taker fees paid in the epoch',
+                    {
+                      capRewardFeeMultiple:
+                        dispatchStrategy.capRewardFeeMultiple,
+                    }
+                  )}
+                >
+                  <span data-testid="cappedAt">
+                    x{dispatchStrategy.capRewardFeeMultiple}
+                  </span>
+                </Tooltip>
+              </span>
+            )}
           </div>
           {/** DISPATCH METRIC DESCRIPTION */}
           {dispatchStrategy?.dispatchMetric && (
