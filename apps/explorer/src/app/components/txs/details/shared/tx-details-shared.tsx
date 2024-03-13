@@ -48,7 +48,7 @@ export const TxDetailsShared = ({
 }: TxDetailsSharedProps) => {
   const { data } = useExplorerEpochForBlockQuery({
     errorPolicy: 'ignore',
-    variables: { block: txData?.block.toString() || '' },
+    variables: { block: txData?.block?.toString() || '' },
   });
 
   if (!txData) {

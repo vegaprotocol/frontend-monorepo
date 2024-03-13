@@ -197,6 +197,7 @@ export const MarketVolumeInfoPanel = ({ market }: MarketInfoProps) => {
             marketId={market.id}
             positionDecimalPlaces={market.positionDecimalPlaces}
             marketDecimals={market.decimalPlaces}
+            quoteUnit={getQuoteName(market)}
           />
         ),
         openInterest: dash(data?.openInterest),
@@ -788,7 +789,7 @@ export const PriceMonitoringBoundsInfoPanel = ({
 
   return (
     <>
-      <div className="mb-2 grid grid-cols-2 text-sm">
+      <div className="mb-2 grid grid-cols-2 text-xs">
         <p className="col-span-1">
           {t('{{probability}} probability price bounds', {
             probability: formatNumberPercentage(
