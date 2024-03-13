@@ -927,9 +927,13 @@ export const PriceMonitoringBoundsInfoPanel = ({ market }: MarketInfoProps) => {
         </div>
         <p className="my-2 text-xs leading-none">
           {t('Results in {{duration}} auction if breached', {
-            duration: `${duration(
-              trigger.minAuctionExtensionSecs * 1000
-            )} ~ ${duration(trigger.maxAuctionExtensionSecs * 1000)}`,
+            duration:
+              trigger.minAuctionExtensionSecs !==
+              trigger.maxAuctionExtensionSecs
+                ? `${duration(
+                    trigger.minAuctionExtensionSecs * 1000
+                  )} ~ ${duration(trigger.maxAuctionExtensionSecs * 1000)}`
+                : duration(trigger.minAuctionExtensionSecs * 1000),
           })}
         </p>
       </div>
