@@ -41,9 +41,16 @@ export function TransferDetails({ transfer, from, id }: TransferDetailsProps) {
     ? TransferStatus.STATUS_REJECTED
     : data?.transfer?.transfer.status;
 
+  const fees = data?.transfer?.fees?.map((fee) => {
+    return {
+      amount: fee?.amount ? fee.amount : '0',
+      epoch: fee?.epoch ? fee.epoch : 0,
+    };
+  });
+
   return (
     <div className="flex flex-wrap">
-      <TransferParticipants from={from} transfer={transfer} />
+      <TransferParticipants from={from} transfer={transfer} fees={fees} />
       {recurring ? <TransferRepeat recurring={transfer.recurring} /> : null}
       <TransferStatusView status={status} error={error} loading={loading} />
       {recurring && recurring.dispatchStrategy ? (
