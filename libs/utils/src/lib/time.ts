@@ -47,7 +47,14 @@ export function getSecondsFromInterval(str: string) {
   return seconds;
 }
 
-export const convertToCountdown = (time: number) => {
+type Duration = {
+  days: number;
+  hours: number;
+  minutes: number;
+  seconds: number;
+};
+
+export const convertToDuration = (time: number): Duration => {
   const s = 1000;
   const m = 1000 * 60;
   const h = 1000 * 60 * 60;
@@ -60,7 +67,7 @@ export const convertToCountdown = (time: number) => {
   const minutes = Math.floor((t - days * d - hours * h) / m);
   const seconds = Math.floor((t - days * d - hours * h - minutes * m) / s);
 
-  return [days, hours, minutes, seconds];
+  return { days, hours, minutes, seconds };
 };
 
 /**
@@ -70,7 +77,7 @@ export const convertToCountdownString = (
   time: number,
   pattern = '0d00h00m00s'
 ) => {
-  const values = convertToCountdown(time);
+  const values = Object.values(convertToDuration(time));
 
   let i = 0;
   const countdown = pattern

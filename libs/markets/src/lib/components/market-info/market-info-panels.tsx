@@ -24,11 +24,11 @@ import {
 import {
   addDecimalsFormatNumber,
   determinePriceStep,
-  convertToCountdownString,
   formatNumberPercentage,
   getDateTimeFormat,
   getMarketExpiryDateFormatted,
   toBigNum,
+  useDuration,
 } from '@vegaprotocol/utils';
 import type { Get } from 'type-fest';
 import { MarketInfoTable } from './info-key-value-table';
@@ -89,9 +89,11 @@ import { formatDuration } from 'date-fns';
 import * as AccordionPrimitive from '@radix-ui/react-accordion';
 import { useT } from '../../use-t';
 import { isPerpetual } from '../../product';
-import uniqWith from 'lodash/uniqWith';
 import omit from 'lodash/omit';
 import orderBy from 'lodash/orderBy';
+import groupBy from 'lodash/groupBy';
+import min from 'lodash/min';
+import sum from 'lodash/sum';
 
 type MarketInfoProps = {
   market: MarketInfo;
@@ -783,8 +785,30 @@ export const RiskFactorsInfoPanel = ({
   return <MarketInfoTable data={data} parentData={parentData} unformatted />;
 };
 
+type TriggerInfo = {
+  maxValidPrice: BigNumber;
+  minValidPrice: BigNumber;
+  referencePrice: BigNumber;
+  horizonSecs: number;
+  probability: number;
+  auctionExtensionSecs: number;
+};
+
+/** Calculates a trigger info group signature. */
+const triggerInfoGroupIteratee = (t: TriggerInfo) =>
+  `${t.horizonSecs}|${
+    t.probability
+  }|${t.minValidPrice.toString()}|${t.maxValidPrice.toString()}`;
+
+type ExtendedTriggerInfo = Omit<TriggerInfo, 'auctionExtensionSecs'> & {
+  minAuctionExtensionSecs: number;
+  maxAuctionExtensionSecs: number;
+};
+
 export const PriceMonitoringBoundsInfoPanel = ({ market }: MarketInfoProps) => {
   const t = useT();
+  const duration = useDuration();
+  const compactDuration = useDuration('compact');
   const { data } = useDataProvider({
     dataProvider: marketDataProvider,
     variables: { marketId: market.id },
@@ -792,24 +816,38 @@ export const PriceMonitoringBoundsInfoPanel = ({ market }: MarketInfoProps) => {
 
   const quoteUnit = getQuoteName(market);
 
-  const triggers = orderBy(
-    uniqWith(
-      compact(
-        data?.priceMonitoringBounds?.map((b) => ({
-          ...omit(b.trigger, '__typename'),
-          maxValidPrice: toBigNum(b.maxValidPrice, market.decimalPlaces),
-          minValidPrice: toBigNum(b.minValidPrice, market.decimalPlaces),
-          referencePrice: toBigNum(b.referencePrice, market.decimalPlaces),
-        }))
-      ),
-      isEqual
-    ),
+  let triggers = Object.entries(
+    groupBy(
+      data?.priceMonitoringBounds?.map((b) => ({
+        ...omit(b.trigger, '__typename'),
+        maxValidPrice: toBigNum(b.maxValidPrice, market.decimalPlaces),
+        minValidPrice: toBigNum(b.minValidPrice, market.decimalPlaces),
+        referencePrice: toBigNum(b.referencePrice, market.decimalPlaces),
+      })),
+      triggerInfoGroupIteratee
+    )
+  ).map(([_, ts]) => {
+    const info = omit(ts[0], 'auctionExtensionSecs');
+    const auctions = ts.map((t) => t.auctionExtensionSecs);
+    const minAuctionExtensionSecs = min(auctions) as number;
+    const maxAuctionExtensionSecs = sum(auctions);
+    const extendedInfo: ExtendedTriggerInfo = {
+      ...info,
+      minAuctionExtensionSecs,
+      maxAuctionExtensionSecs,
+    };
+    return extendedInfo;
+  });
+
+  triggers = orderBy(
+    triggers,
     [
       (bd) => bd.probability,
       (bd) => bd.horizonSecs,
-      (bd) => bd.auctionExtensionSecs,
+      (bd) => bd.minAuctionExtensionSecs,
+      (bd) => bd.maxAuctionExtensionSecs,
     ],
-    ['desc', 'asc', 'asc']
+    ['desc', 'asc', 'asc', 'asc']
   );
 
   if (!triggers || triggers.length === 0) {
@@ -843,7 +881,7 @@ export const PriceMonitoringBoundsInfoPanel = ({ market }: MarketInfoProps) => {
     const probability = formatNumberPercentage(
       new BigNumber(trigger.probability).times(100)
     );
-    const within = convertToCountdownString(trigger.horizonSecs * 1000);
+    const within = compactDuration(trigger.horizonSecs * 1000);
     return (
       <div key={index} className="mb-2 border-b border-b-vega-clight-500">
         <div className="font-mono text-xs flex">
@@ -889,9 +927,9 @@ export const PriceMonitoringBoundsInfoPanel = ({ market }: MarketInfoProps) => {
         </div>
         <p className="my-2 text-xs leading-none">
           {t('Results in {{duration}} auction if breached', {
-            duration: convertToCountdownString(
-              trigger.auctionExtensionSecs * 1000
-            ),
+            duration: `${duration(
+              trigger.minAuctionExtensionSecs * 1000
+            )} ~ ${duration(trigger.maxAuctionExtensionSecs * 1000)}`,
           })}
         </p>
       </div>

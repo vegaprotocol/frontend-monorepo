@@ -12,5 +12,23 @@
   "Not time-based": "Not time-based",
   "Required": "Required",
   "Value is above maximum": "Value is above maximum",
-  "Value is below minimum": "Value is below minimum"
+  "Value is below minimum": "Value is below minimum",
+
+  "duration_days_one": "{{count}} day",
+  "duration_days_other": "{{count}} days",
+  "duration_hours_one": "{{count}} hour",
+  "duration_hours_other": "{{count}} hours",
+  "duration_minutes_one": "{{count}} minute",
+  "duration_minutes_other": "{{count}} minutes",
+  "duration_seconds_one": "{{count}} second",
+  "duration_seconds_other": "{{count}} seconds",
+
+  "duration_days_compact_one": "{{count}}d",
+  "duration_days_compact_other": "{{count}}d",
+  "duration_hours_compact_one": "{{count}}h",
+  "duration_hours_compact_other": "{{count}}h",
+  "duration_minutes_compact_one": "{{count}}m",
+  "duration_minutes_compact_other": "{{count}}m",
+  "duration_seconds_compact_one": "{{count}}s",
+  "duration_seconds_compact_other": "{{count}}s"
 }
