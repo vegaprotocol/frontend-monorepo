@@ -1,7 +1,7 @@
 import { Controller, type Control } from 'react-hook-form';
 import type { Market } from '@vegaprotocol/markets';
 import type { OrderFormValues } from '../../hooks/use-form-values';
-import { determinePriceStep } from '@vegaprotocol/utils';
+import { determinePriceStep, useValidateAmount } from '@vegaprotocol/utils';
 import {
   TradingFormGroup,
   Tooltip,
@@ -29,6 +29,7 @@ export const DealTicketPriceTakeProfitStopLoss = ({
 }: DealTicketPriceTakeProfitStopLossProps) => {
   const t = useT();
   const priceStep = determinePriceStep(market);
+  const validateAmount = useValidateAmount();
 
   return (
     <div className="mb-2">
@@ -48,6 +49,9 @@ export const DealTicketPriceTakeProfitStopLoss = ({
             <Controller
               name="takeProfit"
               control={control}
+              rules={{
+                validate: validateAmount(priceStep, 'takeProfit'),
+              }}
               render={({ field, fieldState }) => (
                 <div className="mb-2">
                   <FormGroup
@@ -89,6 +93,9 @@ export const DealTicketPriceTakeProfitStopLoss = ({
             <Controller
               name="stopLoss"
               control={control}
+              rules={{
+                validate: validateAmount(priceStep, 'stopLoss'),
+              }}
               render={({ field, fieldState }) => (
                 <div className="mb-2">
                   <FormGroup

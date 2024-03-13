@@ -7,7 +7,7 @@ export const useValidateAmount = () => {
   return useCallback(
     (step: number | string, field: string) => {
       return (value?: string) => {
-        const isValid = validateAgainstStep(step, value);
+        const isValid = value ? validateAgainstStep(step, value) : true;
         if (!isValid) {
           if (new BigNumber(step).isEqualTo(1)) {
             return t('{{field}} must be whole numbers for this market', {
@@ -33,7 +33,7 @@ const isMultipleOf = (value: BigNumber, multipleOf: BigNumber) =>
 
 export const validateAgainstStep = (
   step: string | number,
-  input?: string | number
+  input: string | number
 ) => {
   const stepValue = new BigNumber(step);
   if (stepValue.isNaN()) {
@@ -45,6 +45,6 @@ export const validateAgainstStep = (
     return true;
   }
 
-  const value = new BigNumber(input || '');
+  const value = new BigNumber(input);
   return isMultipleOf(value, stepValue);
 };
