@@ -170,5 +170,6 @@
   "within {{duration}}": "within {{duration}}",
   "Minimum price that isn't currently breaching the specified price monitoring trigger": "Minimum price that isn't currently breaching the specified price monitoring trigger",
   "Maximum price that isn't currently breaching the specified price monitoring trigger": "Maximum price that isn't currently breaching the specified price monitoring trigger",
-  "{{probability}} of prices must be within the bounds for {{duration}}": "{{probability}} of prices must be within the bounds for {{duration}}"
+  "{{probability}} of prices must be within the bounds for {{duration}}": "{{probability}} of prices must be within the bounds for {{duration}}",
+  "No price monitoring bounds detected.": "No price monitoring bounds detected."
 }
