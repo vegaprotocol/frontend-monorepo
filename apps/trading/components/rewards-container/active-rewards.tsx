@@ -218,6 +218,12 @@ export const ActiveRewardCard = ({
       ].includes(m.state)
   );
 
+  const startsIn = transferNode.transfer.kind.startEpoch - currentEpoch;
+  const endsIn =
+    transferNode.transfer.kind.endEpoch != null
+      ? transferNode.transfer.kind.endEpoch - currentEpoch
+      : undefined;
+
   // hide the card if all of the markets are being marked as e.g. settled
   if (
     marketSettled?.length === transferNode.markets?.length &&
@@ -240,11 +246,8 @@ export const ActiveRewardCard = ({
           6
         )}
         rewardAsset={transferNode.transfer.asset || undefined}
-        endsIn={
-          transferNode.transfer.kind.endEpoch != null
-            ? transferNode.transfer.kind.endEpoch - currentEpoch
-            : undefined
-        }
+        startsIn={startsIn > 0 ? startsIn : undefined}
+        endsIn={endsIn}
         requirements={requirements}
         gameId={transferNode.transfer.gameId}
       />
@@ -266,7 +269,7 @@ export const ActiveRewardCard = ({
     ).length === transferNode.markets?.length &&
     Boolean(transferNode.markets && transferNode.markets.length > 0);
 
-  if (marketSuspended || !transferNode.isAssetTraded) {
+  if (marketSuspended || !transferNode.isAssetTraded || startsIn > 0) {
     colour = CardColour.GREY;
   }
 
@@ -280,11 +283,8 @@ export const ActiveRewardCard = ({
       )}
       rewardAsset={transferNode.dispatchAsset}
       transferAsset={transferNode.transfer.asset || undefined}
-      endsIn={
-        transferNode.transfer.kind.endEpoch != null
-          ? transferNode.transfer.kind.endEpoch - currentEpoch
-          : undefined
-      }
+      startsIn={startsIn > 0 ? startsIn : undefined}
+      endsIn={endsIn}
       dispatchStrategy={transferNode.transfer.kind.dispatchStrategy}
       dispatchMetricInfo={<DispatchMetricInfo reward={transferNode} />}
       requirements={requirements}
@@ -300,6 +300,7 @@ const RewardCard = ({
   transferAsset,
   vegaAsset,
   dispatchStrategy,
+  startsIn,
   endsIn,
   dispatchMetricInfo,
   requirements,
@@ -315,6 +316,8 @@ const RewardCard = ({
   vegaAsset?: BasicAssetDetails;
   /** The transfer's dispatch strategy. */
   dispatchStrategy: DispatchStrategy;
+  /** The number of epochs until the transfer starts. */
+  startsIn?: number;
   /** The number of epochs until the transfer stops. */
   endsIn?: number;
   dispatchMetricInfo?: ReactNode;
@@ -414,20 +417,30 @@ const RewardCard = ({
           )}
 
           <div className="flex items-center gap-8 flex-wrap">
-            {/** ENDS IN */}
-            {endsIn != null && (
+            {/** ENDS IN or STARTS IN */}
+            {startsIn ? (
               <span className="flex flex-col">
-                <span className="text-muted text-xs">{t('Ends in')} </span>
-                <span data-testid="ends-in" data-endsin={endsIn}>
-                  {endsIn >= 0
-                    ? t('numberEpochs', '{{count}} epochs', {
-                        count: endsIn,
-                      })
-                    : t('Ended')}
+                <span className="text-muted text-xs">{t('Starts in')} </span>
+                <span data-testid="starts-in" data-startsin={startsIn}>
+                  {t('numberEpochs', '{{count}} epochs', {
+                    count: endsIn,
+                  })}
                 </span>
               </span>
+            ) : (
+              endsIn && (
+                <span className="flex flex-col">
+                  <span className="text-muted text-xs">{t('Ends in')} </span>
+                  <span data-testid="ends-in" data-endsin={endsIn}>
+                    {endsIn >= 0
+                      ? t('numberEpochs', '{{count}} epochs', {
+                          count: endsIn,
+                        })
+                      : t('Ended')}
+                  </span>
+                </span>
+              )
             )}
-
             {/** WINDOW LENGTH */}
             <span className="flex flex-col">
               <span className="text-muted text-xs">{t('Assessed over')}</span>
@@ -465,6 +478,7 @@ const StakingRewardCard = ({
   colour,
   rewardAmount,
   rewardAsset,
+  startsIn,
   endsIn,
   requirements,
   gameId,
@@ -473,6 +487,8 @@ const StakingRewardCard = ({
   rewardAmount: string;
   /** The asset linked to the dispatch strategy via `dispatchMetricAssetId` property. */
   rewardAsset?: Asset;
+  /** The number of epochs until the transfer starts. */
+  startsIn?: number;
   /** The number of epochs until the transfer stops. */
   endsIn?: number;
   /** The VEGA asset details, required to format the min staking amount. */
@@ -577,18 +593,29 @@ const StakingRewardCard = ({
             </span>
           }
           <div className="flex items-center gap-8 flex-wrap">
-            {/** ENDS IN */}
-            {endsIn != null && (
+            {/** ENDS IN or STARTS IN */}
+            {startsIn ? (
               <span className="flex flex-col">
-                <span className="text-muted text-xs">{t('Ends in')} </span>
-                <span data-testid="ends-in" data-endsin={endsIn}>
-                  {endsIn >= 0
-                    ? t('numberEpochs', '{{count}} epochs', {
-                        count: endsIn,
-                      })
-                    : t('Ended')}
+                <span className="text-muted text-xs">{t('Starts in')} </span>
+                <span data-testid="starts-in" data-startsin={startsIn}>
+                  {t('numberEpochs', '{{count}} epochs', {
+                    count: startsIn,
+                  })}
                 </span>
               </span>
+            ) : (
+              endsIn && (
+                <span className="flex flex-col">
+                  <span className="text-muted text-xs">{t('Ends in')} </span>
+                  <span data-testid="ends-in" data-endsin={endsIn}>
+                    {endsIn >= 0
+                      ? t('numberEpochs', '{{count}} epochs', {
+                          count: endsIn,
+                        })
+                      : t('Ended')}
+                  </span>
+                </span>
+              )
             )}
 
             {/** WINDOW LENGTH */}
