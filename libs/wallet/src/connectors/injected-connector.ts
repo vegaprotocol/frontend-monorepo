@@ -23,6 +23,7 @@ interface InjectedError {
         message: string;
         code: number;
       }
+    | string[]
     | string;
 }
 
@@ -104,11 +105,7 @@ export class InjectedConnector implements Connector {
           throw userRejectedError();
         }
 
-        if (typeof err.data === 'string') {
-          throw sendTransactionError(err.data);
-        } else {
-          throw sendTransactionError(err.data.message);
-        }
+        throw sendTransactionError(JSON.stringify(err.data));
       }
 
       throw sendTransactionError();
