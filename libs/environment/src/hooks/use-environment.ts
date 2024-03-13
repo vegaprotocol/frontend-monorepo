@@ -390,6 +390,12 @@ export const compileFeatureFlags = (refresh = false): FeatureFlags => {
     STOP_ORDERS: TRUTHY.includes(
       windowOrDefault('NX_STOP_ORDERS', process.env['NX_STOP_ORDERS']) as string
     ),
+    TAKE_PROFIT_STOP_LOSS: TRUTHY.includes(
+      windowOrDefault(
+        'NX_TAKE_PROFIT_STOP_LOSS',
+        process.env['NX_TAKE_PROFIT_STOP_LOSS']
+      ) as string
+    ),
     ISOLATED_MARGIN: TRUTHY.includes(
       windowOrDefault(
         'NX_ISOLATED_MARGIN',

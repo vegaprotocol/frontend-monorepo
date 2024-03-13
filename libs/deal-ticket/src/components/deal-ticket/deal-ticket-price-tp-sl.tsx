@@ -28,8 +28,8 @@ export const DealTicketPriceTakeProfitStopLoss = ({
   quoteName,
 }: DealTicketPriceTakeProfitStopLossProps) => {
   const t = useT();
-  const validateAmount = useValidateAmount();
   const priceStep = determinePriceStep(market);
+  const validateAmount = useValidateAmount();
 
   return (
     <div className="mb-2">
@@ -50,15 +50,6 @@ export const DealTicketPriceTakeProfitStopLoss = ({
               name="takeProfit"
               control={control}
               rules={{
-                min: {
-                  value: priceStep,
-                  message: t(
-                    'Take profit price cannot be lower than {{priceStep}}',
-                    {
-                      priceStep,
-                    }
-                  ),
-                },
                 validate: validateAmount(priceStep, 'takeProfit'),
               }}
               render={({ field, fieldState }) => (
@@ -103,12 +94,6 @@ export const DealTicketPriceTakeProfitStopLoss = ({
               name="stopLoss"
               control={control}
               rules={{
-                min: {
-                  value: priceStep,
-                  message: t('Price cannot be lower than {{priceStep}}', {
-                    priceStep,
-                  }),
-                },
                 validate: validateAmount(priceStep, 'stopLoss'),
               }}
               render={({ field, fieldState }) => (

@@ -50,7 +50,6 @@ export const marketsProvider = makeDataProvider<
       ? MarketsMainnetDocument
       : MarketsDocument,
   getData,
-  fetchPolicy: 'cache-first',
   errorPolicy: 'all',
 });
 

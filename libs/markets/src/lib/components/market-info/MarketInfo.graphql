@@ -10,82 +10,102 @@ fragment DataSourceFilter on Filter {
   }
 }
 
+fragment SourceType on DataSourceKind {
+  ... on DataSourceDefinitionExternal {
+    sourceType {
+      ... on EthCallSpec {
+        abi
+        address
+        args
+        method
+        requiredConfirmations
+        normalisers {
+          name
+          expression
+        }
+        trigger {
+          trigger {
+            ... on EthTimeTrigger {
+              initial
+              every
+              until
+            }
+          }
+        }
+        filters {
+          key {
+            name
+            type
+            numberDecimalPlaces
+          }
+          conditions {
+            value
+            operator
+          }
+        }
+      }
+      ... on DataSourceSpecConfiguration {
+        signers {
+          signer {
+            ... on PubKey {
+              key
+            }
+            ... on ETHAddress {
+              address
+            }
+          }
+        }
+        filters {
+          ...DataSourceFilter
+        }
+      }
+    }
+  }
+  ... on DataSourceDefinitionInternal {
+    sourceType {
+      ... on DataSourceSpecConfigurationTime {
+        conditions {
+          operator
+          value
+        }
+      }
+      ... on DataSourceSpecConfigurationTimeTrigger {
+        __typename
+        triggers {
+          initial
+          every
+        }
+        conditions {
+          operator
+          value
+        }
+      }
+    }
+  }
+}
+
+fragment PriceConfiguration on CompositePriceConfiguration {
+  decayWeight
+  decayPower
+  cashAmount
+  SourceWeights
+  SourceStalenessTolerance
+  CompositePriceType
+  dataSourcesSpec {
+    sourceType {
+      ...SourceType
+    }
+  }
+  dataSourcesSpecBinding {
+    priceSourceProperty
+  }
+}
+
 fragment DataSource on DataSourceSpec {
   id
   data {
     sourceType {
-      ... on DataSourceDefinitionExternal {
-        sourceType {
-          ... on EthCallSpec {
-            abi
-            address
-            args
-            method
-            requiredConfirmations
-            normalisers {
-              name
-              expression
-            }
-            trigger {
-              trigger {
-                ... on EthTimeTrigger {
-                  initial
-                  every
-                  until
-                }
-              }
-            }
-            filters {
-              key {
-                name
-                type
-                numberDecimalPlaces
-              }
-              conditions {
-                value
-                operator
-              }
-            }
-            sourceChainId
-          }
-          ... on DataSourceSpecConfiguration {
-            signers {
-              signer {
-                ... on PubKey {
-                  key
-                }
-                ... on ETHAddress {
-                  address
-                }
-              }
-            }
-            filters {
-              ...DataSourceFilter
-            }
-          }
-        }
-      }
-      ... on DataSourceDefinitionInternal {
-        sourceType {
-          ... on DataSourceSpecConfigurationTime {
-            conditions {
-              operator
-              value
-            }
-          }
-          ... on DataSourceSpecConfigurationTimeTrigger {
-            __typename
-            triggers {
-              initial
-              every
-            }
-            conditions {
-              operator
-              value
-            }
-          }
-        }
-      }
+      ...SourceType
     }
   }
 }
@@ -132,6 +152,9 @@ fragment Perpetual on Perpetual {
   dataSourceSpecBinding {
     settlementDataProperty
     settlementScheduleProperty
+  }
+  internalCompositePriceConfig {
+    ...PriceConfiguration
   }
 }
 
@@ -274,11 +297,13 @@ query MarketInfo($marketId: ID!) {
     linearSlippageFactor
     parentMarketID
     successorMarketID
-    proposal {
-      id
-      rationale {
-        title
-        description
+    marketProposal {
+      ... on Proposal {
+        id
+        rationale {
+          title
+          description
+        }
       }
     }
     marketTimestamps {
@@ -286,6 +311,9 @@ query MarketInfo($marketId: ID!) {
       pending
       open
       close
+    }
+    markPriceConfiguration {
+      ...PriceConfiguration
     }
     openingAuction {
       durationSecs

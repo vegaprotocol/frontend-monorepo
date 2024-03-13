@@ -199,6 +199,9 @@ describe('Closed', () => {
 
   it('renders correctly formatted and filtered rows', async () => {
     await renderComponent([marketsMock, marketsDataMock, oracleDataMock]);
+    await waitFor(() => {
+      expect(screen.getAllByRole('gridcell').length).toBeGreaterThan(0);
+    });
 
     const assetSymbol = getAsset(market).symbol;
 

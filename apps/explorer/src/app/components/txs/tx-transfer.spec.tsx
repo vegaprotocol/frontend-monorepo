@@ -21,7 +21,7 @@ describe('TX: Transfer: getLabelForTransfer', () => {
       },
     };
 
-    expect(getTypeLabelForTransfer(mock)).toEqual('Reward top up transfer');
+    expect(getTypeLabelForTransfer(mock)).toEqual('Reward transfer');
   });
 
   it('renders reward top up label if the TO party is network', () => {
@@ -32,7 +32,7 @@ describe('TX: Transfer: getLabelForTransfer', () => {
       },
     };
 
-    expect(getTypeLabelForTransfer(mock)).toEqual('Reward top up transfer');
+    expect(getTypeLabelForTransfer(mock)).toEqual('Reward transfer');
   });
 
   it('renders recurring label if the tx has a recurring property', () => {
