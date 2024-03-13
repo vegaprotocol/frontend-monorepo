@@ -97,7 +97,7 @@
   "Proposal": "Proposal",
   "Propose a change to market": "Propose a change to market",
   "Read more": "Read more",
-  "Results in {{auctionExtensionSecs}} seconds auction if breached": "Results in {{auctionExtensionSecs}} seconds auction if breached",
+  "Results in {{duration}} auction if breached": "Results in {{duration}} auction if breached",
   "Risk factors": "Risk factors",
   "Risk model": "Risk model",
   "Settlement": "Settlement",
@@ -166,6 +166,9 @@
   "View settlement schedule specification": "View settlement schedule specification",
   "View specification": "View specification",
   "View termination specification": "View termination specification",
-  "Within {{horizonSecs}} seconds": "Within {{horizonSecs}} seconds",
-  "Weighted": "Weighted"
+  "Weighted": "Weighted",
+  "within {{duration}}": "within {{duration}}",
+  "Minimum price that isn't currently breaching the specified price monitoring trigger": "Minimum price that isn't currently breaching the specified price monitoring trigger",
+  "Maximum price that isn't currently breaching the specified price monitoring trigger": "Maximum price that isn't currently breaching the specified price monitoring trigger",
+  "{{probability}} of prices must be within the bounds for {{duration}}": "{{probability}} of prices must be within the bounds for {{duration}}"
 }

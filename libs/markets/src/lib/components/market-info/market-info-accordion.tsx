@@ -221,7 +221,12 @@ export const MarketInfoAccordion = ({
             title={t('Risk factors')}
             content={<RiskFactorsInfoPanel market={market} />}
           />
-          {(market.priceMonitoringSettings?.parameters?.triggers || []).map(
+          <AccordionItem
+            itemId="trigger"
+            title={t('Price monitoring bounds')}
+            content={<PriceMonitoringBoundsInfoPanel market={market} />}
+          />
+          {/* {(market.priceMonitoringSettings?.parameters?.triggers || []).map(
             (_, triggerIndex) => {
               const id = `trigger-${triggerIndex}`;
               return (
@@ -241,7 +246,7 @@ export const MarketInfoAccordion = ({
                 />
               );
             }
-          )}
+          )} */}
           <AccordionItem
             itemId="liquidation-strategy"
             title={t('Liquidation strategy')}

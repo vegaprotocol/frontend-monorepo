@@ -24,10 +24,11 @@ import {
 import {
   addDecimalsFormatNumber,
   determinePriceStep,
-  formatNumber,
+  convertToCountdownString,
   formatNumberPercentage,
   getDateTimeFormat,
   getMarketExpiryDateFormatted,
+  toBigNum,
 } from '@vegaprotocol/utils';
 import type { Get } from 'type-fest';
 import { MarketInfoTable } from './info-key-value-table';
@@ -88,6 +89,9 @@ import { formatDuration } from 'date-fns';
 import * as AccordionPrimitive from '@radix-ui/react-accordion';
 import { useT } from '../../use-t';
 import { isPerpetual } from '../../product';
+import uniqWith from 'lodash/uniqWith';
+import omit from 'lodash/omit';
+import orderBy from 'lodash/orderBy';
 
 type MarketInfoProps = {
   market: MarketInfo;
@@ -779,12 +783,7 @@ export const RiskFactorsInfoPanel = ({
   return <MarketInfoTable data={data} parentData={parentData} unformatted />;
 };
 
-export const PriceMonitoringBoundsInfoPanel = ({
-  market,
-  triggerIndex,
-}: MarketInfoProps & {
-  triggerIndex: number;
-}) => {
+export const PriceMonitoringBoundsInfoPanel = ({ market }: MarketInfoProps) => {
   const t = useT();
   const { data } = useDataProvider({
     dataProvider: marketDataProvider,
@@ -793,46 +792,111 @@ export const PriceMonitoringBoundsInfoPanel = ({
 
   const quoteUnit = getQuoteName(market);
 
-  const bounds = data?.priceMonitoringBounds?.[triggerIndex];
-  const trigger = bounds?.trigger;
+  const triggers = orderBy(
+    uniqWith(
+      compact(
+        data?.priceMonitoringBounds?.map((b) => ({
+          ...omit(b.trigger, '__typename'),
+          maxValidPrice: toBigNum(b.maxValidPrice, market.decimalPlaces),
+          minValidPrice: toBigNum(b.minValidPrice, market.decimalPlaces),
+          referencePrice: toBigNum(b.referencePrice, market.decimalPlaces),
+        }))
+      ),
+      isEqual
+    ),
+    [
+      (bd) => bd.probability,
+      (bd) => bd.horizonSecs,
+      (bd) => bd.auctionExtensionSecs,
+    ],
+    ['desc', 'asc', 'asc']
+  );
 
-  if (!trigger) {
-    return null;
+  if (!triggers || triggers.length === 0) {
+    return <div>{t('No price monitoring bounds detected.')}</div>;
   }
 
-  return (
-    <>
-      <div className="mb-2 grid grid-cols-2 text-xs">
-        <p className="col-span-1">
-          {t('{{probability}} probability price bounds', {
-            probability: formatNumberPercentage(
-              new BigNumber(trigger.probability).times(100)
+  const price = (price: string, direction: 'min' | 'max') => (
+    <div
+      className={classNames(
+        'rounded px-1 py-[1px] bg-vega-clight-500 dark:bg-vega-cdark-500 relative',
+        'after:absolute after:content-[" "] after:z-10',
+        'after:block after:w-3 after:h-3 after:bg-vega-clight-500 dark:after:bg-vega-cdark-500 after:rotate-45 after:-translate-y-1/2',
+        {
+          'after:top-1/2 after:right-[-6px]': direction === 'min',
+          'after:top-1/2 after:left-[-6px]': direction === 'max',
+        }
+      )}
+    >
+      <div
+        className={classNames('text-[10px]', {
+          'text-left': direction === 'min',
+          'text-right': direction === 'max',
+        })}
+      >
+        {price} <span>{quoteUnit}</span>
+      </div>
+    </div>
+  );
+
+  return triggers.map((trigger, index) => {
+    const probability = formatNumberPercentage(
+      new BigNumber(trigger.probability).times(100)
+    );
+    const within = convertToCountdownString(trigger.horizonSecs * 1000);
+    return (
+      <div key={index} className="mb-2 border-b border-b-vega-clight-500">
+        <div className="font-mono text-xs flex">
+          {/** MIN PRICE */}
+          <Tooltip
+            description={t(
+              "Minimum price that isn't currently breaching the specified price monitoring trigger"
+            )}
+          >
+            {price(trigger.minValidPrice.toString(10), 'min')}
+          </Tooltip>
+
+          {/** TRIGGERS WHEN */}
+          <Tooltip
+            description={t(
+              '{{probability}} of prices must be within the bounds for {{duration}}',
+              {
+                probability: probability,
+                duration: within,
+              }
+            )}
+          >
+            <div aria-hidden className="w-full text-center text-[10px]">
+              <div className="border-b-[2px] border-dashed border-vega-clight-500 dark:border-vega-cdark-500 w-full h-1/2 translate-y-[1px]">
+                {probability}
+              </div>
+              <div className="w-full">
+                {t('within {{duration}}', {
+                  duration: within,
+                })}
+              </div>
+            </div>
+          </Tooltip>
+
+          {/** MAX PRICE */}
+          <Tooltip
+            description={t(
+              "Maximum price that isn't currently breaching the specified price monitoring trigger"
+            )}
+          >
+            {price(trigger.maxValidPrice.toString(10), 'max')}
+          </Tooltip>
+        </div>
+        <p className="my-2 text-xs leading-none">
+          {t('Results in {{duration}} auction if breached', {
+            duration: convertToCountdownString(
+              trigger.auctionExtensionSecs * 1000
             ),
           })}
         </p>
-        <p className="col-span-1 text-right">
-          {t('Within {{horizonSecs}} seconds', {
-            horizonSecs: formatNumber(trigger.horizonSecs),
-          })}
-        </p>
       </div>
-      {bounds && (
-        <MarketInfoTable
-          data={{
-            highestPrice: bounds.maxValidPrice,
-            lowestPrice: bounds.minValidPrice,
-          }}
-          decimalPlaces={market.decimalPlaces}
-          assetSymbol={quoteUnit}
-        />
-      )}
-      <p className="mt-2 text-xs">
-        {t('Results in {{auctionExtensionSecs}} seconds auction if breached', {
-          auctionExtensionSecs: trigger.auctionExtensionSecs.toString(),
-        })}
-      </p>
-    </>
-  );
+    );
+  });
 };
 
 export const LiquidationStrategyInfoPanel = ({
