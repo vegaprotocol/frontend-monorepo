@@ -12,6 +12,16 @@ import {
 } from '@vegaprotocol/types';
 import { type EnrichedRewardTransfer } from '../../lib/hooks/use-rewards';
 
+jest.mock('../../lib/hooks/__generated__/Rewards', () => ({
+  useTWAPQuery: () => ({
+    data: {
+      timeWeightedNotionalPosition: {
+        timeWeightedNotionalPosition: '1.00',
+      },
+    },
+  }),
+}));
+
 describe('ActiveRewards', () => {
   const reward: EnrichedRewardTransfer = {
     __typename: 'TransferNode',
@@ -71,7 +81,7 @@ describe('ActiveRewards', () => {
   };
 
   it('renders with valid props', () => {
-    render(<ActiveRewardCard transferNode={reward} currentEpoch={115432} />);
+    render(<ActiveRewardCard transferNode={reward} currentEpoch={115500} />);
 
     expect(
       screen.getByText(/Liquidity provision fees received/i)

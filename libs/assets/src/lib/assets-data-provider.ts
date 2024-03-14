@@ -99,7 +99,7 @@ const VEGA = 'VEGA';
 
 export type BasicAssetDetails = Pick<
   AssetFieldsFragment,
-  'symbol' | 'decimals' | 'quantum'
+  'symbol' | 'decimals' | 'quantum' | 'id'
 >;
 /**
  * Tries to find WETH asset configuration on Vega in order to provide its
@@ -116,6 +116,7 @@ export const useWETH = (): BasicAssetDetails => {
     symbol: WETH,
     decimals: 18,
     quantum: '500000000000000', // 1 WETH ~= 2000 qUSD
+    id: '',
   };
 };
 
@@ -130,5 +131,6 @@ export const useVEGA = (): BasicAssetDetails => {
     symbol: VEGA,
     decimals: 18,
     quantum: '1000000000000000000', // 1 VEGA ~= 1 qUSD
+    id: '',
   };
 };

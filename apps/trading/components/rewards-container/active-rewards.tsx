@@ -45,6 +45,7 @@ import { useMyTeam } from '../../lib/hooks/use-my-team';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import BigNumber from 'bignumber.js';
 import { useStakeAvailable } from '../../lib/hooks/use-stake-available';
+import { useTWAPQuery } from '../../lib/hooks/__generated__/Rewards';
 
 enum CardColour {
   BLUE = 'BLUE',
@@ -66,6 +67,7 @@ export type Requirements = {
   isEligible: boolean;
   stakeAvailable?: bigint;
   team?: Partial<Team>;
+  pubKey: string;
 };
 
 const Tick = () => (
@@ -139,15 +141,14 @@ export const ActiveRewards = ({ currentEpoch }: { currentEpoch: number }) => {
   });
   const { pubKey } = useVegaWallet();
   const { team } = useMyTeam();
-
   const { stakeAvailable, isEligible, requiredStake } = useStakeAvailable();
-
   const requirements = pubKey
     ? {
         isEligible,
         stakeAvailable,
         requiredStake,
         team,
+        pubKey,
       }
     : undefined;
 
@@ -759,8 +760,30 @@ const RewardRequirements = ({
 
   const stakingRequirement = dispatchStrategy.stakingRequirement;
   const stakeAvailable = requirements?.stakeAvailable;
-  const averagePosition =
+  const averagePositionRequirements =
     dispatchStrategy.notionalTimeWeightedAveragePositionRequirement;
+
+  const { data: twap } = useTWAPQuery({
+    variables: {
+      gameId: gameId || '',
+      partyId: requirements?.pubKey || '',
+      assetId: rewardAsset?.id || '',
+    },
+    skip: !requirements,
+  });
+  const averagePosition =
+    twap?.timeWeightedNotionalPosition?.timeWeightedNotionalPosition;
+
+  const averagePositionFormatted =
+    averagePosition &&
+    addDecimalsFormatNumber(averagePosition, rewardAsset?.decimals || 0);
+
+  const averagePositionRequirementsFormatted =
+    averagePositionRequirements &&
+    addDecimalsFormatNumber(
+      averagePositionRequirements,
+      rewardAsset?.decimals || 0
+    );
 
   return (
     <dl className="flex justify-between flex-wrap items-center gap-3 text-xs">
@@ -816,14 +839,38 @@ const RewardRequirements = ({
         <dt className="flex items-center gap-1 text-muted">
           {t('Average position')}
         </dt>
-        <dd className="flex items-center gap-1" data-testid="average-position">
-          {averagePosition
-            ? addDecimalsFormatNumber(
-                averagePosition || 0,
-                rewardAsset?.decimals || 0
-              )
-            : '-'}
-        </dd>
+        <Tooltip
+          description={
+            averagePosition
+              ? t('Your average position is {{averagePosition}}', {
+                  averagePosition: averagePositionFormatted,
+                })
+              : t(
+                  'The average position requirement is {{averagePositionRequirements}}',
+                  {
+                    averagePositionRequirements:
+                      averagePositionRequirementsFormatted,
+                  }
+                )
+          }
+        >
+          <dd
+            className="flex items-center gap-1"
+            data-testid="average-position"
+          >
+            {requirements &&
+              (new BigNumber(averagePosition || 0).isGreaterThan(
+                averagePositionRequirements
+              ) ? (
+                <Tick />
+              ) : (
+                <Cross />
+              ))}
+            {averagePositionFormatted ||
+              averagePositionRequirementsFormatted ||
+              '-'}
+          </dd>
+        </Tooltip>
       </div>
     </dl>
   );
@@ -855,8 +902,17 @@ const RewardEntityScope = ({
       dispatchStrategy.entityScope === EntityScope.ENTITY_SCOPE_TEAMS &&
       !listedTeams
     ) {
+      return { tooltip: t('Not in a team'), eligible: false };
+    }
+
+    if (
+      dispatchStrategy.entityScope === EntityScope.ENTITY_SCOPE_TEAMS &&
+      !listedTeams &&
+      requirements?.team
+    ) {
       return { tooltip: t('All teams'), eligible: true };
     }
+
     if (
       dispatchStrategy.entityScope === EntityScope.ENTITY_SCOPE_TEAMS &&
       listedTeams
@@ -895,10 +951,12 @@ const RewardEntityScope = ({
   const { tooltip, eligible } = isEligible();
   const tickOrCross = requirements ? eligible ? <Tick /> : <Cross /> : null;
 
+  const eligibilityLabel = eligible ? t('Eligible') : t('Not eligible');
+
   return (
     <Tooltip description={tooltip}>
       <span>
-        {tickOrCross} {eligible ? t('Eligible') : t('Not eligible')}
+        {tickOrCross} {requirements ? eligibilityLabel : tooltip}
       </span>
     </Tooltip>
   );

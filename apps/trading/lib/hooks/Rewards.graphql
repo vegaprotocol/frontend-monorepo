@@ -110,6 +110,22 @@ query ActiveRewards(
   }
 }
 
+query TWAP($partyId: ID!, $assetId: ID!, $gameId: ID!, $epochSeq: Int) {
+  timeWeightedNotionalPosition(
+    partyId: $partyId
+    gameId: $gameId
+    assetId: $assetId
+    epochSeq: $epochSeq
+  ) {
+    assetId
+    partyId
+    gameId
+    timeWeightedNotionalPosition
+    lastUpdated
+    epoch
+  }
+}
+
 query RewardsHistory(
   $partyId: ID!
   $epochRewardSummariesPagination: Pagination
