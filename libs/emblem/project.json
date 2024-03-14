@@ -1,0 +1,36 @@
+{
+  "name": "@vegaprotocol/emblem",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/emblem/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/rollup:rollup",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/emblem",
+        "main": "libs/emblem/src/index.ts",
+        "tsConfig": "libs/emblem/tsconfig.lib.json",
+        "assets": [],
+        "project": "libs/emblem/package.json",
+        "compiler": "swc",
+        "format": ["cjs", "esm"]
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/emblem/**/*.ts", "libs/emblem/package.json"]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "libs/emblem/jest.config.ts"
+      }
+    }
+  },
+  "tags": []
+}
