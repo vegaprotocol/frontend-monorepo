@@ -30,14 +30,14 @@ export interface TimeTriggerProps {
 }
 
 export function TimeTrigger({ data }: TimeTriggerProps) {
+  const d = parseDate(data?.initial);
+
   return (
     <span key={JSON.stringify(data)}>
       {data?.initial ? (
         <span title={`${data.initial}`}>
           <strong>{t('starting at')}</strong>{' '}
-          <em className="not-italic underline decoration-dotted">
-            {fromUnixTime(data.initial).toLocaleString()}
-          </em>
+          <em className="not-italic underline decoration-dotted">{d}</em>
         </span>
       ) : (
         ''
@@ -45,7 +45,7 @@ export function TimeTrigger({ data }: TimeTriggerProps) {
       {data?.every ? (
         <span title={`${data.every} ${t('seconds')}`}>
           , <strong>{t('every')}</strong>{' '}
-          <em className="not-italic underline decoration-dotted">
+          <em className="not-italic underline decor</em>ation-dotted">
             {secondsToMinutes(data.every)} {t('minutes')}
           </em>{' '}
         </span>
@@ -54,4 +54,24 @@ export function TimeTrigger({ data }: TimeTriggerProps) {
       )}
     </span>
   );
+}
+
+/**
+ * Dates in oracle triggers can be (or maybe were previously) Unix Time or timestamps
+ * depending on type. This function handles both cases and returns a nicely formatted date.
+ *
+ * @param date
+ * @returns string Localestring for date
+ */
+export function parseDate(date?: string | number): string {
+  if (!date) {
+    return 'Invalid date';
+  }
+  const d = fromUnixTime(+date).toLocaleString();
+
+  if (d === 'Invalid Date') {
+    return new Date(date).toLocaleString();
+  }
+
+  return d;
 }
