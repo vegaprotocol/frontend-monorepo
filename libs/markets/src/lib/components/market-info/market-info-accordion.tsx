@@ -226,27 +226,6 @@ export const MarketInfoAccordion = ({
             title={t('Price monitoring bounds')}
             content={<PriceMonitoringBoundsInfoPanel market={market} />}
           />
-          {/* {(market.priceMonitoringSettings?.parameters?.triggers || []).map(
-            (_, triggerIndex) => {
-              const id = `trigger-${triggerIndex}`;
-              return (
-                <AccordionItem
-                  key={id}
-                  itemId={id}
-                  title={t('Price monitoring bounds {{index}}', {
-                    index: triggerIndex + 1,
-                  })}
-                  content={
-                    <PriceMonitoringBoundsInfoPanel
-                      market={market}
-                      triggerIndex={triggerIndex}
-                      key={id}
-                    />
-                  }
-                />
-              );
-            }
-          )} */}
           <AccordionItem
             itemId="liquidation-strategy"
             title={t('Liquidation strategy')}
