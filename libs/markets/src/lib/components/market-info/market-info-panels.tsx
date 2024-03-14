@@ -28,7 +28,6 @@ import {
   getDateTimeFormat,
   getMarketExpiryDateFormatted,
   toBigNum,
-  useDuration,
 } from '@vegaprotocol/utils';
 import type { Get } from 'type-fest';
 import { MarketInfoTable } from './info-key-value-table';
@@ -94,6 +93,7 @@ import orderBy from 'lodash/orderBy';
 import groupBy from 'lodash/groupBy';
 import min from 'lodash/min';
 import sum from 'lodash/sum';
+import { useDuration } from '@vegaprotocol/react-helpers';
 
 type MarketInfoProps = {
   market: MarketInfo;
@@ -939,6 +939,37 @@ export const PriceMonitoringBoundsInfoPanel = ({ market }: MarketInfoProps) => {
       </div>
     );
   });
+};
+
+export const PriceMonitoringSettingsInfoPanel = ({
+  market,
+  className,
+}: MarketInfoProps & { className?: classNames.Argument }) => {
+  const t = useT();
+
+  const triggers = groupBy(
+    market.priceMonitoringSettings?.parameters?.triggers?.map((t) =>
+      omit(t, '__typename')
+    ) || [],
+    (t) => `${t.horizonSecs}|${t.probability}|${t.auctionExtensionSecs}`
+  );
+
+  return (
+    <dl className="grid grid-cols-3 md:grid-cols-6 gap-3">
+      {Object.entries(triggers).map(([_, trigger], i) => (
+        <span className="border p-3 rounded">
+          <dt className="text-sm font-bold">
+            {t('triggers', {
+              count: trigger.length,
+            })}
+          </dt>
+          <dt>
+            <MarketInfoTable data={trigger[0]} />
+          </dt>
+        </span>
+      ))}
+    </dl>
+  );
 };
 
 export const LiquidationStrategyInfoPanel = ({

@@ -1,5 +1,5 @@
-import { convertToDuration } from './time';
-import { useT } from './use-t';
+import { convertToDuration } from '@vegaprotocol/utils';
+import { useT } from '../use-t';
 
 enum DurationKeys {
   Days = 'duration_days',

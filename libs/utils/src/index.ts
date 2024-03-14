@@ -17,4 +17,3 @@ export * from './lib/resolve-network-name';
 export * from './lib/is-test-env';
 export * from './lib/constants';
 export * from './lib/step';
-export * from './lib/use-duration';
