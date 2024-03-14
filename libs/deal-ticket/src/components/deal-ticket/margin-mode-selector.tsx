@@ -255,6 +255,7 @@ const IsolatedMarginModeDialog = ({
   );
   const { data: maxLeverage } = useMaxLeverage(marketId, partyId);
   const max = Math.floor((maxLeverage || 1) * 10) / 10;
+  const min = 0.1;
   useEffect(() => {
     setLeverage(Number((1 / Number(marginFactor)).toFixed(1)));
   }, [marginFactor]);
@@ -309,6 +310,7 @@ const IsolatedMarginModeDialog = ({
           <div className="mb-2">
             <LeverageSlider
               max={max}
+              min={min}
               step={0.1}
               value={[leverage || 1]}
               onValueChange={([value]) => setLeverage(value)}
@@ -317,7 +319,7 @@ const IsolatedMarginModeDialog = ({
           <Input
             type="number"
             id="leverage-input"
-            min={1}
+            min={min}
             max={max}
             step={0.1}
             value={leverage || ''}

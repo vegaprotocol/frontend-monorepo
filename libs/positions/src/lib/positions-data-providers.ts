@@ -404,7 +404,7 @@ const getMaxLeverage = (market: MarketInfo | null) => {
     (Math.max(
       Number(market.riskFactors.long),
       Number(market.riskFactors.short)
-    ) || 1);
+    ) + Number(market.linearSlippageFactor) || 1);
   return maxLeverage;
 };
 

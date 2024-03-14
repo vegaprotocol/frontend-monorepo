@@ -80,13 +80,13 @@ export const AssetDocument = gql`
  * });
  */
 export function useAssetQuery(baseOptions: Apollo.QueryHookOptions<AssetQuery, AssetQueryVariables>) {
-  const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useQuery<AssetQuery, AssetQueryVariables>(AssetDocument, options);
-}
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<AssetQuery, AssetQueryVariables>(AssetDocument, options);
+      }
 export function useAssetLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AssetQuery, AssetQueryVariables>) {
-  const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useLazyQuery<AssetQuery, AssetQueryVariables>(AssetDocument, options);
-}
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<AssetQuery, AssetQueryVariables>(AssetDocument, options);
+        }
 export type AssetQueryHookResult = ReturnType<typeof useAssetQuery>;
 export type AssetLazyQueryHookResult = ReturnType<typeof useAssetLazyQuery>;
 export type AssetQueryResult = Apollo.QueryResult<AssetQuery, AssetQueryVariables>;
