@@ -3,17 +3,16 @@ import type { SliderProps } from '@radix-ui/react-slider';
 import classNames from 'classnames';
 
 export const LeverageSlider = (
-  props: Omit<SliderProps, 'min' | 'max'> & Required<Pick<SliderProps, 'max'>>
+  props: Omit<SliderProps, 'min' | 'max'> &
+    Required<Pick<SliderProps, 'max' | 'min'>>
 ) => {
-  const step = [2, 5, 10, 20, 25, 50, 100].find(
+  const step = [0.1, 0.2, 0.5, 2, 5, 10, 20, 25, 50, 100].find(
     (step) => props.max / step <= 6
   );
-  const min = 1;
   const value = props.value?.[0] || props.defaultValue?.[0];
   return (
     <SliderPrimitive.Root
       {...props}
-      min={min}
       className="relative flex items-center select-none touch-none h-10 pb-5 w-full"
     >
       <SliderPrimitive.Track className=" relative grow h-[4px]">
@@ -28,13 +27,17 @@ export const LeverageSlider = (
               .map((v, i) => {
                 const labelValue = step * i || 1;
                 const higherThanValue = value && labelValue > value;
+                if (labelValue > props.max) {
+                  return null;
+                }
                 return (
                   <span
                     key={labelValue}
                     className="absolute flex flex-col items-center translate-x-[-50%]"
                     style={{
                       left: `${
-                        ((labelValue - min) / (props.max - min)) * 100
+                        ((labelValue - props.min) / (props.max - props.min)) *
+                        100
                       }%`,
                     }}
                   >
@@ -50,7 +53,7 @@ export const LeverageSlider = (
                       )}
                     ></span>
                     <span className="text-xs font-alpha mt-1 text-vega-clight-100 dark:text-vega-cdark-100 ">
-                      {labelValue}x
+                      {labelValue.toFixed(labelValue < 1 ? 1 : 0)}x
                     </span>
                   </span>
                 );
