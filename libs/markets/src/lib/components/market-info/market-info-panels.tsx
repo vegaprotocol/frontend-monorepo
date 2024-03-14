@@ -917,7 +917,7 @@ export const EthOraclePanel = ({ sourceType }: { sourceType: EthCallSpec }) => {
             >
               {t('View on {{chainLabel}}', {
                 chainLabel: getExternalChainLabel(
-                  sourceType.sourceChainId.toString()
+                  (sourceType.sourceChainId || 1).toString()
                 ),
               })}
             </EtherscanLink>
