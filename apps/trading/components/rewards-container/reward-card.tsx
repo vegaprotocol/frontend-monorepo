@@ -464,7 +464,11 @@ const StakingRewardCard = ({
   );
 };
 
-const DispatchMetricInfo = ({ reward }: { reward: EnrichedRewardTransfer }) => {
+export const DispatchMetricInfo = ({
+  reward,
+}: {
+  reward: EnrichedRewardTransfer;
+}) => {
   const t = useT();
   const dispatchStrategy = reward.transfer.kind.dispatchStrategy;
   const marketNames = compact(
