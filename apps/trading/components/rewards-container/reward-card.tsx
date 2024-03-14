@@ -609,7 +609,8 @@ const RewardRequirements = ({
                       averagePositionRequirementsFormatted,
                   }
                 )
-              : t(
+              : averagePositionRequirements &&
+                t(
                   'The average position requirement is {{averagePositionRequirements}}',
                   {
                     averagePositionRequirements:
@@ -623,6 +624,7 @@ const RewardRequirements = ({
             data-testid="average-position"
           >
             {requirements &&
+              averagePositionRequirements &&
               (new BigNumber(averagePosition || 0).isGreaterThan(
                 averagePositionRequirements
               ) ? (
