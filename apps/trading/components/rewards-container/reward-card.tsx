@@ -36,7 +36,7 @@ import { useTWAPQuery } from '../../lib/hooks/__generated__/Rewards';
 const Tick = () => (
   <VegaIcon
     name={VegaIconNames.TICK}
-    size={18}
+    size={12}
     className="text-vega-green-500"
   />
 );
@@ -44,7 +44,7 @@ const Tick = () => (
 const Cross = () => (
   <VegaIcon
     name={VegaIconNames.CROSS}
-    size={18}
+    size={12}
     className="text-vega-red-500"
   />
 );
@@ -217,7 +217,7 @@ const RewardCard = ({
           </div>
           {/** DISPATCH METRIC DESCRIPTION */}
           {dispatchStrategy?.dispatchMetric && (
-            <p className="text-muted text-sm h-[4rem]">
+            <p className="text-muted text-sm h-16">
               {t(DispatchMetricDescription[dispatchStrategy?.dispatchMetric])}
             </p>
           )}
@@ -394,7 +394,7 @@ const StakingRewardCard = ({
           </div>
           {/** DISPATCH METRIC DESCRIPTION */}
           {
-            <p className="text-muted text-sm h-[4rem]">
+            <p className="text-muted text-sm h-16">
               {t(
                 'Global staking reward for staking $VEGA on the network via the Governance app'
               )}
@@ -491,7 +491,7 @@ const DispatchMetricInfo = ({ reward }: { reward: EnrichedRewardTransfer }) => {
   }
 
   return (
-    <span data-testid="dispatch-metric-info" className="h-[2.5rem]">
+    <span data-testid="dispatch-metric-info" className="h-12">
       {DispatchMetricLabels[dispatchStrategy.dispatchMetric]}
       {additionalDispatchMetricInfo != null && (
         <> • {additionalDispatchMetricInfo}</>
