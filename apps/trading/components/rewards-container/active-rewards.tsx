@@ -454,7 +454,7 @@ const RewardCard = ({
           </div>
           {/** DISPATCH METRIC DESCRIPTION */}
           {dispatchStrategy?.dispatchMetric && (
-            <p className="text-muted text-sm h-[3rem]">
+            <p className="text-muted text-sm h-[4rem]">
               {t(DispatchMetricDescription[dispatchStrategy?.dispatchMetric])}
             </p>
           )}
@@ -631,7 +631,7 @@ const StakingRewardCard = ({
           </div>
           {/** DISPATCH METRIC DESCRIPTION */}
           {
-            <p className="text-muted text-sm h-[3rem]">
+            <p className="text-muted text-sm h-[4rem]">
               {t(
                 'Global staking reward for staking $VEGA on the network via the Governance app'
               )}
@@ -732,7 +732,7 @@ export const DispatchMetricInfo = ({
   }
 
   return (
-    <span data-testid="dispatch-metric-info">
+    <span data-testid="dispatch-metric-info" className="h-[2.5rem]">
       {DispatchMetricLabels[dispatchStrategy.dispatchMetric]}
       {additionalDispatchMetricInfo != null && (
         <> • {additionalDispatchMetricInfo}</>
