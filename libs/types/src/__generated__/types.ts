@@ -4959,6 +4959,8 @@ export type Query = {
    * If a team does not have at least the number of epochs worth of data, it is ignored.
    */
   teamsStatistics?: Maybe<TeamsStatisticsConnection>;
+  /** Time weighted notional position is a metric used to determine if a reward should be paid to a party */
+  timeWeightedNotionalPosition?: Maybe<TimeWeightedNotionalPosition>;
   /** Get total transfer fee discount available */
   totalTransferFeeDiscount?: Maybe<TotalTransferFeeDiscount>;
   /** Get a list of all trades and apply any given filters to the results */
@@ -5459,6 +5461,15 @@ export type QueryteamsStatisticsArgs = {
   aggregationEpochs?: InputMaybe<Scalars['Int']>;
   pagination?: InputMaybe<Pagination>;
   teamId?: InputMaybe<Scalars['ID']>;
+};
+
+
+/** Queries allow a caller to read data and filter data via GraphQL. */
+export type QuerytimeWeightedNotionalPositionArgs = {
+  assetId: Scalars['ID'];
+  epochSeq?: InputMaybe<Scalars['Int']>;
+  gameId: Scalars['ID'];
+  partyId: Scalars['ID'];
 };
 
 
@@ -6613,6 +6624,22 @@ export type TimeUpdate = {
   __typename?: 'TimeUpdate';
   /** RFC3339Nano time of new block time */
   timestamp: Scalars['Timestamp'];
+};
+
+export type TimeWeightedNotionalPosition = {
+  __typename?: 'TimeWeightedNotionalPosition';
+  /** Settlement asset for this position */
+  assetId: Scalars['ID'];
+  /** Epoch the time weighted notional position was calculated for */
+  epoch: Scalars['Int'];
+  /** Game the time weighted notional position was calculated for */
+  gameId: Scalars['ID'];
+  /** Time of the last block in which the metric was updated */
+  lastUpdated: Scalars['Timestamp'];
+  /** Party holding the position */
+  partyId: Scalars['ID'];
+  /** Time weighted notional position */
+  timeWeightedNotionalPosition: Scalars['String'];
 };
 
 /** Returns total transfer fee discount available */
