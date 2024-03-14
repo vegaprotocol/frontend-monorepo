@@ -2,7 +2,10 @@ import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { NodeHealthContainer, NodeUrl } from './node-health';
 import { MockedProvider, type MockedResponse } from '@apollo/client/testing';
-import { NodeCheckDocument, type NodeCheckQuery } from '@vegaprotocol/environment';
+import {
+  NodeCheckDocument,
+  type NodeCheckQuery,
+} from '@vegaprotocol/environment';
 
 const mockSetNodeSwitcher = jest.fn();
 
