@@ -9,7 +9,7 @@ import Routes from '../../routes/routes';
 export const RiskMessage = () => {
   return (
     <>
-      <div className="bg-vega-light-100 dark:bg-vega-dark-100 p-6 mb-6">
+      <div className="bg-vega-light-100 dark:bg-vega-dark-100 p-6">
         <ul className="list-[square] ml-4">
           <li>
             {t(
@@ -23,7 +23,7 @@ export const RiskMessage = () => {
           </li>
         </ul>
       </div>
-      <p className="mb-8">
+      <p>
         {t(
           'By using the Vega Governance App, you acknowledge that you have read and understood the'
         )}{' '}

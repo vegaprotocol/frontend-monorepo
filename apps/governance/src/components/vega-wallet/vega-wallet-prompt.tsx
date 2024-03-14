@@ -1,11 +1,11 @@
 import { ButtonLink, Link } from '@vegaprotocol/ui-toolkit';
 import { useTranslation } from 'react-i18next';
 import { ExternalLinks } from '@vegaprotocol/environment';
-import { useViewAsDialog } from '@vegaprotocol/wallet';
+import { useConnect } from '@vegaprotocol/wallet-react';
 
 export const VegaWalletPrompt = () => {
   const { t } = useTranslation();
-  const setViewAsDialog = useViewAsDialog((state) => state.setOpen);
+  const { connect } = useConnect();
   return (
     <>
       <h3 className="mt-4 mb-2">{t('getWallet')}</h3>
@@ -16,7 +16,7 @@ export const VegaWalletPrompt = () => {
         <ButtonLink
           className="text-neutral-500"
           data-testid="view-as-user"
-          onClick={() => setViewAsDialog(true)}
+          onClick={() => connect('viewParty')}
         >
           {t('viewAsParty')}
         </ButtonLink>

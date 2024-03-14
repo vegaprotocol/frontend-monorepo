@@ -53,6 +53,9 @@ export type OrderFormValues = {
   iceberg?: boolean;
   peakSize?: string;
   minimumVisibleSize?: string;
+  tpSl?: boolean;
+  takeProfit?: string;
+  stopLoss?: string;
 };
 
 type UpdateOrder = (marketId: string, values: Partial<OrderFormValues>) => void;

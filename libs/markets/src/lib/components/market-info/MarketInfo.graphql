@@ -10,82 +10,102 @@ fragment DataSourceFilter on Filter {
   }
 }
 
+fragment SourceType on DataSourceKind {
+  ... on DataSourceDefinitionExternal {
+    sourceType {
+      ... on EthCallSpec {
+        abi
+        address
+        args
+        method
+        requiredConfirmations
+        normalisers {
+          name
+          expression
+        }
+        trigger {
+          trigger {
+            ... on EthTimeTrigger {
+              initial
+              every
+              until
+            }
+          }
+        }
+        filters {
+          key {
+            name
+            type
+            numberDecimalPlaces
+          }
+          conditions {
+            value
+            operator
+          }
+        }
+      }
+      ... on DataSourceSpecConfiguration {
+        signers {
+          signer {
+            ... on PubKey {
+              key
+            }
+            ... on ETHAddress {
+              address
+            }
+          }
+        }
+        filters {
+          ...DataSourceFilter
+        }
+      }
+    }
+  }
+  ... on DataSourceDefinitionInternal {
+    sourceType {
+      ... on DataSourceSpecConfigurationTime {
+        conditions {
+          operator
+          value
+        }
+      }
+      ... on DataSourceSpecConfigurationTimeTrigger {
+        __typename
+        triggers {
+          initial
+          every
+        }
+        conditions {
+          operator
+          value
+        }
+      }
+    }
+  }
+}
+
+fragment PriceConfiguration on CompositePriceConfiguration {
+  decayWeight
+  decayPower
+  cashAmount
+  SourceWeights
+  SourceStalenessTolerance
+  CompositePriceType
+  dataSourcesSpec {
+    sourceType {
+      ...SourceType
+    }
+  }
+  dataSourcesSpecBinding {
+    priceSourceProperty
+  }
+}
+
 fragment DataSource on DataSourceSpec {
   id
   data {
     sourceType {
-      ... on DataSourceDefinitionExternal {
-        sourceType {
-          ... on EthCallSpec {
-            abi
-            address
-            args
-            method
-            requiredConfirmations
-            normalisers {
-              name
-              expression
-            }
-            trigger {
-              trigger {
-                ... on EthTimeTrigger {
-                  initial
-                  every
-                  until
-                }
-              }
-            }
-            filters {
-              key {
-                name
-                type
-                numberDecimalPlaces
-              }
-              conditions {
-                value
-                operator
-              }
-            }
-            sourceChainId
-          }
-          ... on DataSourceSpecConfiguration {
-            signers {
-              signer {
-                ... on PubKey {
-                  key
-                }
-                ... on ETHAddress {
-                  address
-                }
-              }
-            }
-            filters {
-              ...DataSourceFilter
-            }
-          }
-        }
-      }
-      ... on DataSourceDefinitionInternal {
-        sourceType {
-          ... on DataSourceSpecConfigurationTime {
-            conditions {
-              operator
-              value
-            }
-          }
-          ... on DataSourceSpecConfigurationTimeTrigger {
-            __typename
-            triggers {
-              initial
-              every
-            }
-            conditions {
-              operator
-              value
-            }
-          }
-        }
-      }
+      ...SourceType
     }
   }
 }
@@ -133,13 +153,18 @@ fragment Perpetual on Perpetual {
     settlementDataProperty
     settlementScheduleProperty
   }
+  internalCompositePriceConfig {
+    ...PriceConfiguration
+  }
 }
 
-query MarketInfo($marketId: ID!) {
+query MarketInfoMainnet($marketId: ID!) {
   market(id: $marketId) {
     id
     decimalPlaces
     positionDecimalPlaces
+    # tickSize is not on mainnet and the query will fail. See typePolicy for tickSize in bootstrapper.tsx
+    tickSize @client
     state
     tradingMode
     linearSlippageFactor
@@ -157,6 +182,138 @@ query MarketInfo($marketId: ID!) {
       pending
       open
       close
+    }
+    openingAuction {
+      durationSecs
+      volume
+    }
+    accountsConnection {
+      edges {
+        node {
+          type
+          asset {
+            id
+          }
+          balance
+        }
+      }
+    }
+    fees {
+      factors {
+        makerFee
+        infrastructureFee
+        liquidityFee
+      }
+      liquidityFeeSettings {
+        feeConstant
+        method
+      }
+    }
+    priceMonitoringSettings {
+      parameters {
+        triggers {
+          horizonSecs
+          probability
+          auctionExtensionSecs
+        }
+      }
+    }
+    riskFactors {
+      market
+      short
+      long
+    }
+    liquidityMonitoringParameters {
+      targetStakeParameters {
+        timeWindow
+        scalingFactor
+      }
+    }
+    liquiditySLAParameters {
+      priceRange
+      commitmentMinTimeFraction
+      performanceHysteresisEpochs
+      slaCompetitionFactor
+    }
+    liquidationStrategy {
+      disposalTimeStep
+      disposalFraction
+      fullDisposalSize
+      maxFractionConsumed
+    }
+    tradableInstrument {
+      instrument {
+        id
+        name
+        code
+        metadata {
+          tags
+        }
+        product {
+          ... on Future {
+            ...Future
+          }
+          ... on Perpetual {
+            ...Perpetual
+          }
+        }
+      }
+      riskModel {
+        ... on LogNormalRiskModel {
+          tau
+          riskAversionParameter
+          params {
+            r
+            sigma
+            mu
+          }
+        }
+        ... on SimpleRiskModel {
+          params {
+            factorLong
+            factorShort
+          }
+        }
+      }
+      marginCalculator {
+        scalingFactors {
+          searchLevel
+          initialMargin
+          collateralRelease
+        }
+      }
+    }
+  }
+}
+
+query MarketInfo($marketId: ID!) {
+  market(id: $marketId) {
+    id
+    decimalPlaces
+    positionDecimalPlaces
+    tickSize
+    state
+    tradingMode
+    linearSlippageFactor
+    parentMarketID
+    successorMarketID
+    marketProposal {
+      ... on Proposal {
+        id
+        rationale {
+          title
+          description
+        }
+      }
+    }
+    marketTimestamps {
+      proposed
+      pending
+      open
+      close
+    }
+    markPriceConfiguration {
+      ...PriceConfiguration
     }
     openingAuction {
       durationSecs

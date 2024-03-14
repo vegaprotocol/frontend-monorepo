@@ -25,7 +25,7 @@ export const RewardsHistoryContainer = ({
   pubKey,
   assets,
 }: {
-  pubKey: string | null;
+  pubKey: string | undefined;
   epoch: number;
   assets: Record<string, AssetFieldsFragment>;
 }) => {
@@ -129,7 +129,7 @@ export const RewardHistoryTable = ({
   epochRewardSummaries: RewardsHistoryQuery['epochRewardSummaries'];
   partyRewards: PartyRewardsConnection;
   assets: Record<string, AssetFieldsFragment> | null;
-  pubKey: string | null;
+  pubKey: string | undefined;
   epoch: number;
   epochVariables: {
     from: number;
@@ -145,7 +145,7 @@ export const RewardHistoryTable = ({
     epochRewardSummaries,
     partyRewards,
     assets,
-    partyId: isParty ? pubKey : null,
+    partyId: isParty ? pubKey : undefined,
   });
 
   const columnDefs = useMemo<ColDef<RewardRow>[]>(() => {

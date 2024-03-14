@@ -4,7 +4,7 @@ import {
   WithdrawalsTable,
   useIncompleteWithdrawals,
 } from '@vegaprotocol/withdraws';
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { useT } from '../../lib/use-t';
 

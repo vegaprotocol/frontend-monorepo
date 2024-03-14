@@ -4,7 +4,7 @@ import { AsyncRenderer, Pagination } from '@vegaprotocol/ui-toolkit';
 import { removePaginationWrapper } from '@vegaprotocol/utils';
 import type { EpochFieldsFragment } from '../home/__generated__/Rewards';
 import { useRewardsQuery } from '../home/__generated__/Rewards';
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { EpochIndividualRewardsTable } from './epoch-individual-rewards-table';
 import { generateEpochIndividualRewardsList } from './generate-epoch-individual-rewards-list';
 import { calculateEpochOffset } from '../../../lib/epoch-pagination';

@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import {
   addDecimal,
   removePaginationWrapper,

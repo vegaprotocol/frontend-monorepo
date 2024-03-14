@@ -14,12 +14,14 @@ export enum Networks {
   DEVNET = 'DEVNET',
   MAINNET = 'MAINNET',
 }
+
 export type Environment = z.infer<typeof envSchema>;
 export type FeatureFlags = z.infer<typeof featureFlagsSchema>;
 export type CosmicElevatorFlags = Pick<
   FeatureFlags,
   | 'ICEBERG_ORDERS'
   | 'ISOLATED_MARGIN'
+  | 'TAKE_PROFIT_STOP_LOSS'
   | 'STOP_ORDERS'
   | 'SUCCESSOR_MARKETS'
   | 'PRODUCT_PERPETUALS'

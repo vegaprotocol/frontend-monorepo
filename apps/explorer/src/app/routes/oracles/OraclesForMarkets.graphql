@@ -120,3 +120,36 @@ query ExplorerOracleFormMarkets {
     }
   }
 }
+
+query ExplorerOracleForMarket($id: ID!) {
+  marketsConnection(id: $id) {
+    edges {
+      node {
+        ...ExplorerOracleForMarketsMarket
+      }
+    }
+  }
+  oracleSpecsConnection {
+    edges {
+      node {
+        dataSourceSpec {
+          ...ExplorerOracleDataSourceSpec
+        }
+        dataConnection(pagination: { last: 1 }) {
+          edges {
+            node {
+              externalData {
+                data {
+                  data {
+                    name
+                    value
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

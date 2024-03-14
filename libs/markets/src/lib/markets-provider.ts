@@ -4,10 +4,12 @@ import {
   makeDerivedDataProvider,
   useDataProvider,
 } from '@vegaprotocol/data-provider';
+import { ENV, Networks } from '@vegaprotocol/environment';
 import {
   MarketsDocument,
   type MarketsQuery,
   type MarketFieldsFragment,
+  MarketsMainnetDocument,
 } from './__generated__/markets';
 import { type MarketsCandlesQueryVariables } from './__generated__/markets-candles';
 
@@ -42,9 +44,12 @@ export const marketsProvider = makeDataProvider<
   never,
   never
 >({
-  query: MarketsDocument,
+  query:
+    // Mainnet does not support tickSize, and a query for tickSize on a market will completely fail
+    ENV.VEGA_ENV === Networks.MAINNET
+      ? MarketsMainnetDocument
+      : MarketsDocument,
   getData,
-  fetchPolicy: 'cache-first',
   errorPolicy: 'all',
 });
 

@@ -1,0 +1,10 @@
+query ExplorerEpochForBlock($block: String!) {
+  epoch(block: $block) {
+    id
+    timestamps {
+      start
+      end
+      lastBlock
+    }
+  }
+}

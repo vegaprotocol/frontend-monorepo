@@ -61,6 +61,7 @@ const mockConsensusValidators: NodesFragmentFragment[] = [
 ];
 
 jest.mock('@vegaprotocol/environment', () => ({
+  ...jest.requireActual('@vegaprotocol/environment'),
   useVegaRelease: jest.fn(),
   useVegaReleases: jest.fn(),
 }));

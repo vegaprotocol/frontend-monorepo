@@ -3,22 +3,32 @@ import type { OrderListManagerProps } from './order-list-manager';
 import { OrderListManager, Filter } from './order-list-manager';
 import * as useDataProviderHook from '@vegaprotocol/data-provider';
 import type { OrderFieldsFragment } from '../';
-import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
-import { VegaWalletContext } from '@vegaprotocol/wallet';
 import { MockedProvider } from '@apollo/client/testing';
-
-const generateJsx = (props: Partial<OrderListManagerProps> | null = null) => {
-  const pubKey = '0x123';
-  return (
-    <MockedProvider>
-      <VegaWalletContext.Provider value={{ pubKey } as VegaWalletContextShape}>
-        <OrderListManager partyId={pubKey} isReadOnly={false} {...props} />
-      </VegaWalletContext.Provider>
-    </MockedProvider>
-  );
-};
+import {
+  MockedWalletProvider,
+  mockConfig,
+} from '@vegaprotocol/wallet-react/testing';
 
 describe('OrderListManager', () => {
+  const pubKey = '0x123';
+
+  const generateJsx = (props: Partial<OrderListManagerProps> | null = null) => {
+    return (
+      <MockedProvider>
+        <MockedWalletProvider>
+          <OrderListManager partyId={pubKey} isReadOnly={false} {...props} />
+        </MockedWalletProvider>
+      </MockedProvider>
+    );
+  };
+
+  beforeAll(() => {
+    mockConfig.store.setState({ pubKey });
+  });
+
+  afterAll(() => {
+    mockConfig.reset();
+  });
   it('should render the order list if orders provided', async () => {
     jest.spyOn(useDataProviderHook, 'useDataProvider').mockReturnValue({
       data: [{ id: '1' } as OrderFieldsFragment],
@@ -32,7 +42,7 @@ describe('OrderListManager', () => {
     render(generateJsx());
 
     expect(
-      await screen.getByRole('treegrid', {
+      await screen.findByRole('treegrid', {
         name: (_, element) => element.classList.contains('ag-root'),
       })
     ).toBeInTheDocument();
@@ -52,7 +62,7 @@ describe('OrderListManager', () => {
     render(generateJsx());
 
     expect(
-      await screen.getByText('Something went wrong: Query error')
+      await screen.findByText('Something went wrong: Query error')
     ).toBeInTheDocument();
   });
 

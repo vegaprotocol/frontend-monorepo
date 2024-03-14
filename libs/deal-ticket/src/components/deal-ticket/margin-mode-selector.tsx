@@ -8,7 +8,8 @@ import {
   Notification,
   Intent,
 } from '@vegaprotocol/ui-toolkit';
-import { MarginMode, useVegaWallet } from '@vegaprotocol/wallet';
+import { MarginMode } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import * as Types from '@vegaprotocol/types';
 import {
   type VegaTransactionStore,
@@ -39,7 +40,7 @@ export const MarginChange = ({
   marginMode,
   marginFactor,
 }: {
-  partyId: string | null;
+  partyId: string | undefined;
   marketId: string;
   marginMode: Types.MarginMode;
   marginFactor: string;

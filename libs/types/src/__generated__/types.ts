@@ -936,6 +936,8 @@ export enum DispatchMetric {
 /** Dispatch strategy for a recurring transfer */
 export type DispatchStrategy = {
   __typename?: 'DispatchStrategy';
+  /** Optional multiplier on taker fees used to cap the rewards a party may receive in an epoch */
+  capRewardFeeMultiple?: Maybe<Scalars['String']>;
   /** Defines the data that will be used to compare markets so as to distribute rewards appropriately */
   dispatchMetric: DispatchMetric;
   /** The asset to use for measuring contribution to the metric */
@@ -2391,6 +2393,8 @@ export type Market = {
   state: MarketState;
   /** Optional: Market ID of the successor to this market if one exists */
   successorMarketID?: Maybe<Scalars['ID']>;
+  /** The market minimum tick size */
+  tickSize: Scalars['String'];
   /** An instance of, or reference to, a tradable instrument. */
   tradableInstrument: TradableInstrument;
   /** @deprecated Simplify and consolidate trades query and remove nesting. Use trades query instead */
@@ -2816,6 +2820,8 @@ export type NewMarket = {
   riskParameters: RiskModel;
   /** Successor market configuration. If this proposed market is meant to succeed a given market, then this needs to be set. */
   successorConfiguration?: Maybe<SuccessorConfiguration>;
+  /** The market minimum tick size */
+  tickSize: Scalars['String'];
 };
 
 /** Configuration for a new spot market on Vega */
@@ -2839,6 +2845,8 @@ export type NewSpotMarket = {
   riskParameters?: Maybe<RiskModel>;
   /** Specifies parameters related to liquidity target stake calculation */
   targetStakeParameters: TargetStakeParameters;
+  /** The market minimum tick size */
+  tickSize: Scalars['String'];
 };
 
 export type NewTransfer = {
@@ -7074,6 +7082,8 @@ export type UpdateMarketConfiguration = {
   quadraticSlippageFactor: Scalars['String'];
   /** Updated futures market risk model parameters. */
   riskParameters: UpdateMarketRiskParameters;
+  /** The market minimum tick size */
+  tickSize: Scalars['String'];
 };
 
 export type UpdateMarketLogNormalRiskModel = {
@@ -7171,6 +7181,8 @@ export type UpdateSpotMarketConfiguration = {
   riskParameters: RiskModel;
   /** Specifies parameters related to target stake calculation */
   targetStakeParameters: TargetStakeParameters;
+  /** The market minimum tick size */
+  tickSize: Scalars['String'];
 };
 
 export type UpdateVolumeDiscountProgram = {

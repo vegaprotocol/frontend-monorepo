@@ -13,7 +13,8 @@ declare global {
 
 const hasMethod = (req: CyHttpMessages.IncomingHttpRequest, method: string) => {
   const { body } = req;
-  return 'method' in body && body.method === method;
+  const b = JSON.parse(body);
+  return 'method' in b && b.method === method;
 };
 
 export function addMockWalletCommand() {
@@ -72,7 +73,7 @@ export const aliasWalletConnectQuery = (
       body: {
         jsonrpc: '2.0',
         result: {
-          chainID: 'test-id',
+          chainID: 'vega-fairground-202305051805',
         },
         id: '1',
       },

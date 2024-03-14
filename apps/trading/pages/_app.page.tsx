@@ -24,7 +24,6 @@ import {
   ProtocolUpgradeInProgressNotification,
   ProtocolUpgradeProposalNotification,
 } from '@vegaprotocol/proposals';
-import { ViewingBanner } from '../components/viewing-banner';
 import { Telemetry } from '../components/telemetry';
 import { SSRLoader } from './ssr-loader';
 import { PartyActiveOrdersHandler } from './party-active-orders-handler';
@@ -77,7 +76,6 @@ function AppBody({ Component }: AppProps) {
             mode={ProtocolUpgradeCountdownMode.IN_ESTIMATED_TIME_REMAINING}
           />
           <ProtocolUpgradeInProgressNotification />
-          <ViewingBanner />
         </div>
         <div data-testid={`pathname-${location.pathname}`}>
           <Component />

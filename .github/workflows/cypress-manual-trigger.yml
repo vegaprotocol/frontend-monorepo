@@ -12,7 +12,6 @@ on:
         options:
           - explorer-e2e
           - governance-e2e
-          - trading-e2e
       tags:
         description: 'Test tags to run'
         required: true

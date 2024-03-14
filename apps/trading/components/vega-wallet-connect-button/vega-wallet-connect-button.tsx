@@ -1,6 +1,5 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
-import { isBrowserWalletInstalled } from '@vegaprotocol/wallet';
 import { truncateByChars } from '@vegaprotocol/utils';
 import {
   VegaIcon,
@@ -15,14 +14,17 @@ import {
   TradingDropdownItem,
   TradingDropdownRadioItem,
   TradingDropdownItemIndicator,
+  Tooltip,
 } from '@vegaprotocol/ui-toolkit';
-import type { PubKey } from '@vegaprotocol/wallet';
-import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
+import { isBrowserWalletInstalled, type Key } from '@vegaprotocol/wallet';
+import { useDialogStore, useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useCopyTimeout } from '@vegaprotocol/react-helpers';
-import { ViewType, useSidebar } from '../sidebar';
 import classNames from 'classnames';
+import { ViewType, useSidebar } from '../sidebar';
 import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
 import { useT } from '../../lib/use-t';
+import { usePartyProfilesQuery } from './__generated__/PartyProfiles';
+import { useProfileDialogStore } from '../../stores/profile-dialog-store';
 
 export const VegaWalletConnectButton = ({
   intent = Intent.None,
@@ -33,26 +35,24 @@ export const VegaWalletConnectButton = ({
 }) => {
   const t = useT();
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const openVegaWalletDialog = useVegaWalletDialogStore(
-    (store) => store.openVegaWalletDialog
-  );
+  const openVegaWalletDialog = useDialogStore((store) => store.open);
   const currentRouteId = useGetCurrentRouteId();
   const setViews = useSidebar((store) => store.setViews);
   const {
-    pubKey,
+    status,
     pubKeys,
+    pubKey,
     selectPubKey,
     disconnect,
+    refreshKeys,
     isReadOnly,
-    fetchPubKeys,
   } = useVegaWallet();
-  const isConnected = pubKey !== null;
-  const walletInstalled = isBrowserWalletInstalled();
-  const activeKey = useMemo(() => {
-    return pubKeys?.find((pk) => pk.publicKey === pubKey);
-  }, [pubKey, pubKeys]);
 
-  if (isConnected && pubKeys) {
+  const walletInstalled = isBrowserWalletInstalled();
+
+  const activeKey = pubKeys?.find((pk) => pk.publicKey === pubKey);
+
+  if (status === 'connected') {
     return (
       <TradingDropdown
         open={dropdownOpen}
@@ -60,19 +60,25 @@ export const VegaWalletConnectButton = ({
           <TradingDropdownTrigger
             data-testid="manage-vega-wallet"
             onClick={() => {
-              if (fetchPubKeys) {
-                fetchPubKeys();
-              }
-              setDropdownOpen(!dropdownOpen);
+              refreshKeys();
+              setDropdownOpen((x) => !x);
             }}
           >
             <Button
               size="small"
               icon={<VegaIcon name={VegaIconNames.CHEVRON_DOWN} size={14} />}
             >
-              {activeKey && <span className="uppercase">{activeKey.name}</span>}
-              {' | '}
-              {truncateByChars(pubKey)}
+              {activeKey ? (
+                <>
+                  {activeKey && (
+                    <span className="uppercase">
+                      {activeKey.name ? activeKey.name : t('Unnamed key')}
+                    </span>
+                  )}
+                </>
+              ) : (
+                <>{'Select key'}</>
+              )}
             </Button>
           </TradingDropdownTrigger>
         }
@@ -85,20 +91,12 @@ export const VegaWalletConnectButton = ({
           onEscapeKeyDown={() => setDropdownOpen(false)}
         >
           <div className="min-w-[340px]" data-testid="keypair-list">
-            <TradingDropdownRadioGroup
-              value={pubKey}
-              onValueChange={(value) => {
-                selectPubKey(value);
-              }}
-            >
-              {pubKeys.map((pk) => (
-                <KeypairItem
-                  key={pk.publicKey}
-                  pk={pk}
-                  active={pk.publicKey === pubKey}
-                />
-              ))}
-            </TradingDropdownRadioGroup>
+            <KeypairRadioGroup
+              pubKey={pubKey}
+              pubKeys={pubKeys}
+              activeKey={activeKey?.publicKey}
+              onSelect={selectPubKey}
+            />
             <TradingDropdownSeparator />
             {!isReadOnly && (
               <TradingDropdownItem
@@ -138,28 +136,68 @@ export const VegaWalletConnectButton = ({
   );
 };
 
-const KeypairItem = ({ pk, active }: { pk: PubKey; active: boolean }) => {
+const KeypairRadioGroup = ({
+  pubKey,
+  pubKeys,
+  activeKey,
+  onSelect,
+}: {
+  pubKey: string | undefined;
+  pubKeys: Key[];
+  activeKey: string | undefined;
+  onSelect: (pubKey: string) => void;
+}) => {
+  const { data } = usePartyProfilesQuery({
+    variables: { partyIds: pubKeys.map((pk) => pk.publicKey) },
+    skip: pubKeys.length <= 0,
+    fetchPolicy: 'cache-and-network',
+  });
+
+  return (
+    <TradingDropdownRadioGroup value={pubKey} onValueChange={onSelect}>
+      {pubKeys.map((pk) => {
+        const profile = data?.partiesProfilesConnection?.edges.find(
+          (e) => e.node.partyId === pk.publicKey
+        );
+        return (
+          <KeypairItem
+            key={pk.publicKey}
+            pk={pk}
+            isActive={activeKey === pk.publicKey}
+            alias={profile?.node.alias}
+          />
+        );
+      })}
+    </TradingDropdownRadioGroup>
+  );
+};
+
+const KeypairItem = ({
+  pk,
+  isActive,
+  alias,
+}: {
+  pk: Key;
+  alias: string | undefined;
+  isActive: boolean;
+}) => {
   const t = useT();
   const [copied, setCopied] = useCopyTimeout();
+  const setOpen = useProfileDialogStore((store) => store.setOpen);
 
   return (
     <TradingDropdownRadioItem value={pk.publicKey}>
-      <div
-        className={classNames('flex-1 mr-2', {
-          'text-default': active,
-          'text-muted': !active,
-        })}
-        data-testid={`key-${pk.publicKey}`}
-      >
-        <span className={classNames('mr-2 uppercase')}>
-          {pk.name}
+      <div>
+        <div className="flex items-center gap-2">
+          <span>{pk.name ? pk.name : t('Unnamed key')}</span>
           {' | '}
-          {truncateByChars(pk.publicKey)}
-        </span>
-        <span className="inline-flex items-center gap-1">
+          <span className="font-mono">
+            {truncateByChars(pk.publicKey, 3, 3)}
+          </span>
           <CopyToClipboard text={pk.publicKey} onCopy={() => setCopied(true)}>
             <button
               data-testid="copy-vega-public-key"
+              className="relative -top-px"
               onClick={(e) => e.stopPropagation()}
             >
               <span className="sr-only">{t('Copy')}</span>
@@ -167,7 +205,22 @@ const KeypairItem = ({ pk, active }: { pk: PubKey; active: boolean }) => {
             </button>
           </CopyToClipboard>
           {copied && <span className="text-xs">{t('Copied')}</span>}
-        </span>
+        </div>
+        <div
+          className={classNames('flex-1 mr-2 text-secondary text-sm')}
+          data-testid={`key-${pk.publicKey}`}
+        >
+          <Tooltip description={t('Public facing key alias. Click to edit')}>
+            <button
+              data-testid="alias"
+              onClick={() => setOpen(pk.publicKey)}
+              className="flex items-center gap-1"
+            >
+              {alias ? alias : t('No alias')}
+              {isActive && <VegaIcon name={VegaIconNames.EDIT} />}
+            </button>
+          </Tooltip>
+        </div>
       </div>
       <TradingDropdownItemIndicator />
     </TradingDropdownRadioItem>

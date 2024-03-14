@@ -1,5 +1,4 @@
 import BigNumber from 'bignumber.js';
-import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 
 import type { MarketNodeFragment } from './../__generated__/MarketsLiquidity';
 import { Intent } from '@vegaprotocol/ui-toolkit';
@@ -21,20 +20,6 @@ export const sumLiquidityCommitted = (
     : 0;
 };
 
-export const formatWithAsset = (
-  value: string,
-  settlementAsset: {
-    decimals?: number;
-    symbol?: string;
-  }
-) => {
-  const { decimals, symbol } = settlementAsset;
-  const formattedValue = decimals
-    ? addDecimalsFormatNumber(value, decimals)
-    : value;
-  return `${formattedValue} ${symbol}`;
-};
-
 interface Candle {
   open: string;
   close: string;
@@ -46,10 +31,6 @@ export const getCandle24hAgo = (
   candles24hAgo: { marketId: string; candles: Candle[] | undefined }[]
 ) => {
   return candles24hAgo.find((c) => c.marketId === marketId)?.candles?.[0];
-};
-
-export const displayChange = (value: string) => {
-  return parseFloat(value) > 0 ? `+${value}` : value;
 };
 
 export const EMPTY_VALUE = ' - ';

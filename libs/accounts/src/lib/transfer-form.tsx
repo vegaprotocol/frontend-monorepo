@@ -19,7 +19,6 @@ import {
   TradingButton,
 } from '@vegaprotocol/ui-toolkit';
 import type { Transfer } from '@vegaprotocol/wallet';
-import { normalizeTransfer } from '@vegaprotocol/wallet';
 import BigNumber from 'bignumber.js';
 import type { ReactNode } from 'react';
 import { useCallback, useEffect, useState } from 'react';
@@ -27,6 +26,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { AssetOption, Balance } from '@vegaprotocol/assets';
 import { AccountType, AccountTypeMapping } from '@vegaprotocol/types';
 import { useTransferFeeQuery } from './__generated__/TransferFee';
+import { normalizeTransfer } from './utils';
 
 interface FormFields {
   toVegaKey: string;
@@ -44,7 +44,7 @@ interface Asset {
 }
 
 export interface TransferFormProps {
-  pubKey: string | null;
+  pubKey: string | undefined;
   pubKeys: string[] | null;
   isReadOnly?: boolean;
   accounts: Array<{

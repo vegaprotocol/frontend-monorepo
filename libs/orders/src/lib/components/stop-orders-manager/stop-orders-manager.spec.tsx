@@ -2,26 +2,37 @@ import { render, screen, act } from '@testing-library/react';
 import { StopOrdersManager } from './stop-orders-manager';
 import * as useDataProviderHook from '@vegaprotocol/data-provider';
 import type { StopOrder } from '../order-data-provider/stop-orders-data-provider';
-import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
-import { VegaWalletContext } from '@vegaprotocol/wallet';
 import { MockedProvider } from '@apollo/client/testing';
+import {
+  MockedWalletProvider,
+  mockConfig,
+} from '@vegaprotocol/wallet-react/testing';
 
 jest.mock('../stop-orders-table/stop-orders-table', () => ({
   StopOrdersTable: () => <div>StopOrdersTable</div>,
 }));
 
+const pubKey = '0x123';
+
 const generateJsx = () => {
-  const pubKey = '0x123';
   return (
     <MockedProvider>
-      <VegaWalletContext.Provider value={{ pubKey } as VegaWalletContextShape}>
+      <MockedWalletProvider>
         <StopOrdersManager partyId={pubKey} isReadOnly={false} />
-      </VegaWalletContext.Provider>
+      </MockedWalletProvider>
     </MockedProvider>
   );
 };
 
 describe('StopOrdersManager', () => {
+  beforeAll(() => {
+    mockConfig.store.setState({ pubKey });
+  });
+
+  afterAll(() => {
+    mockConfig.reset();
+  });
+
   it('should render the stop orders table if data provided', async () => {
     jest.spyOn(useDataProviderHook, 'useDataProvider').mockReturnValue({
       data: [{ id: '1' } as StopOrder],

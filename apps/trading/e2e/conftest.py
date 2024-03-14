@@ -92,7 +92,7 @@ def init_vega(request=None):
         "store_transactions": True,
         "transactions_per_block": 1000,
         "seconds_per_block": seconds_per_block,
-        "genesis_time": datetime.now() - timedelta(days=1),
+        "genesis_time": datetime.now() - timedelta(hours=1),
     }
 
     if port_config is not None:
@@ -112,6 +112,7 @@ def init_vega(request=None):
                 extra={"worker_id": os.environ.get("PYTEST_XDIST_WORKER")},
             )
             vega.container = container
+            logger.info(f"Container ID: {container.id}, Name: {container.name}, Status: {container.status}")
             yield vega
         except APIError as e:
             logger.info(f"Container creation failed.")
@@ -120,8 +121,10 @@ def init_vega(request=None):
         finally:
             logger.info(f"Stopping container {container.id}")
             container.stop()
+            logger.info(f"Container ID: {container.id}, Name: {container.name}, Status: {container.status}")
             logger.info(f"Removing container {container.id}")
             container.remove()
+            logger.info(f"Container ID: {container.id}, Name: {container.name}, Status: {container.status}")
 
 
 @contextmanager
@@ -182,29 +185,33 @@ def vega(request):
         request.addfinalizer(lambda: cleanup_container(vega_instance))
         yield vega_instance
 
-
-
 def cleanup_container(vega_instance):
-    try:
-        # Attempt to stop the container if it's still running
-        if vega_instance.container.status == 'running':
-            print(f"Stopping container {vega_instance.container.id}")
-            vega_instance.container.stop()
-        else:
-            print(f"Container {vega_instance.container.id} is not running.")
-    except docker.errors.NotFound:
-        print(f"Container {vega_instance.container.id} not found, may have been stopped and removed.")
-    except Exception as e:
-        print(f"Error during cleanup: {str(e)}")
+    # Ensure there is a list of containers to work with
+    if hasattr(vega_instance, 'containers') and vega_instance.containers:
+        for container in vega_instance.containers:
+            try:
+                # Check if each container is still running and then stop it
+                if container.status == 'running':
+                    print(f"Stopping container {container.id}")
+                    container.stop()
+                else:
+                    print(f"Container {container.id} is not running.")
+            except docker.errors.NotFound:
+                print(f"Container {container.id} not found, may have been stopped and removed.")
+            except Exception as e:
+                print(f"Error during cleanup for container {container.id}: {str(e)}")
 
-    try:
-        # Attempt to remove the container
-        vega_instance.container.remove()
-        print(f"Container {vega_instance.container.id} removed.")
-    except docker.errors.NotFound:
-        print(f"Container {vega_instance.container.id} not found, may have been removed.")
-    except Exception as e:
-        print(f"Error during container removal: {str(e)}")
+            try:
+                # Attempt to remove the container after stopping it
+                container.remove()
+                print(f"Container {container.id} removed.")
+            except docker.errors.NotFound:
+                print(f"Container {container.id} not found, may have been removed.")
+            except Exception as e:
+                print(f"Error during container removal for container {container.id}: {str(e)}")
+    else:
+        print("No containers to cleanup.")
+
 
 @pytest.fixture
 def page(vega, browser, request):
@@ -221,22 +228,36 @@ def auth_setup(vega: VegaServiceNull, page: Page):
     wallet_api_token = vega.wallet.login_tokens[DEFAULT_WALLET_NAME]
 
     # Set token to localStorage so eager connect hook picks it up and immediately connects
+    # no pubkey is set so it should default to the first pubkey
     wallet_config = json.dumps(
         {
-            "token": f"VWT {wallet_api_token}",
-            "connector": "jsonRpc",
-            "url": f"http://localhost:{vega.wallet_port}",
+          "state":{
+              "chainId":"CUSTOM",
+              "current":"jsonRpc",
+              "jsonRpcToken": f"VWT {wallet_api_token}",
+          },
+          "version":0
         }
     )
+    onboarding_config = json.dumps({
+        "state": {
+            "dismissed": True,
+            "risk": "accepted"
+        },
+        "version": 0
+    })
 
-    storage_javascript = [
-        # Store wallet config so eager connection is initiated
-        f"localStorage.setItem('vega_wallet_config', '{wallet_config}');",
-        # Ensure wallet ris dialog doesnt show, otherwise eager connect wont work
-        "localStorage.setItem('vega_wallet_risk_accepted', 'true');",
-        # Ensure initial risk dialog doesnt show
-        "localStorage.setItem('vega_risk_accepted', 'true');",
-    ]
+    # Before we set the wallet store, get any currently stored key and set it as well.
+    # This way if you navigate the page, reload or start a new test, the last used key
+    # will be persisted. Playwright will clear storage on every test and navigation event
+    storage_javascript = f"""
+    var currentStorage = JSON.parse(localStorage.getItem('vega_wallet_store'));
+    var defaultStorage = JSON.parse('{wallet_config}');
+    var pubKey = currentStorage?.state?.pubKey;
+    defaultStorage['state']['pubKey'] = pubKey || undefined;
+    localStorage.setItem('vega_wallet_store', JSON.stringify(defaultStorage));
+    localStorage.setItem('vega_onboarding', '{onboarding_config}');
+    """
     script = "".join(storage_javascript)
     page.add_init_script(script)
 
@@ -254,9 +275,14 @@ def auth(vega: VegaServiceNull, page: Page):
 
 # Set 'risk accepted' flag, so that the risk dialog doesn't show up
 def risk_accepted_setup(page: Page):
-    onboarding_config = json.dumps({"state": {"dismissed": True}, "version": 0})
+    onboarding_config = json.dumps({
+        "state": {
+            "dismissed": True,
+            "risk": "accepted"
+        },
+        "version": 0
+    })
     storage_javascript = [
-        "localStorage.setItem('vega_risk_accepted', 'true');",
         f"localStorage.setItem('vega_onboarding', '{onboarding_config}');",
         "localStorage.setItem('vega_telemetry_approval', 'false');",
         "localStorage.setItem('vega_telemetry_viewed', 'true');",
@@ -303,14 +329,13 @@ def perps_market(vega, request):
 
 @pytest.fixture(autouse=True)
 def retry_on_http_error(request):
-    retry_count = 3 
+    retry_count = 3
     for i in range(retry_count):
         try:
             yield
-            return 
+            return
         except requests.exceptions.HTTPError:
             if i < retry_count - 1:
                 print(f"Retrying due to HTTPError (attempt {i+1}/{retry_count})")
             else:
-                raise 
-
+                raise

@@ -1,27 +1,18 @@
-import { useVegaWallet, WalletError, ClientErrors } from '@vegaprotocol/wallet';
+import {
+  useDisconnect,
+  useSendTransaction,
+  useVegaWallet,
+} from '@vegaprotocol/wallet-react';
+import { ConnectorError, ConnectorErrors } from '@vegaprotocol/wallet';
 import { useEffect, useRef } from 'react';
 import { useVegaTransactionStore } from './use-vega-transaction-store';
-import {
-  WalletClientError,
-  WalletHttpError,
-} from '@vegaprotocol/wallet-client';
 import { VegaTxStatus } from './types';
 
-const orderErrorResolve = (err: Error | unknown): Error => {
-  if (err instanceof WalletClientError || err instanceof WalletError) {
-    return err;
-  } else if (err instanceof WalletHttpError) {
-    return ClientErrors.UNKNOWN;
-  } else if (err instanceof TypeError) {
-    return ClientErrors.NO_SERVICE;
-  } else if (err instanceof Error) {
-    return err;
-  }
-  return ClientErrors.UNKNOWN;
-};
-
 export const useVegaTransactionManager = () => {
-  const { sendTx, pubKey, disconnect } = useVegaWallet();
+  const { pubKey } = useVegaWallet();
+  const { disconnect } = useDisconnect();
+  const { sendTransaction } = useSendTransaction();
+
   const processed = useRef<Set<number>>(new Set());
   const transaction = useVegaTransactionStore((state) =>
     state.transactions.find(
@@ -37,13 +28,18 @@ export const useVegaTransactionManager = () => {
       return;
     }
     processed.current.add(transaction.id);
-    sendTx(pubKey, transaction.body)
+
+    sendTransaction({
+      publicKey: pubKey,
+      sendingMode: 'TYPE_SYNC',
+      transaction: transaction.body,
+    })
       .then((res) => {
-        if (res === null) {
-          // User rejected
+        if (!res) {
           del(transaction.id);
           return;
         }
+
         if (res.signature && res.transactionHash) {
           update(transaction.id, {
             status: VegaTxStatus.Pending,
@@ -53,14 +49,20 @@ export const useVegaTransactionManager = () => {
         }
       })
       .catch((err) => {
-        const error = orderErrorResolve(err);
-        if ((error as WalletError).code === ClientErrors.NO_SERVICE.code) {
+        if (
+          err instanceof ConnectorError &&
+          err.code === ConnectorErrors.noWallet.code
+        ) {
           disconnect();
         }
+
         update(transaction.id, {
-          error,
+          error:
+            err instanceof ConnectorError
+              ? err
+              : new Error('something went wrong'),
           status: VegaTxStatus.Error,
         });
       });
-  }, [transaction, pubKey, del, sendTx, update, disconnect]);
+  }, [transaction, pubKey, del, sendTransaction, update, disconnect]);
 };

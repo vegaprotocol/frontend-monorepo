@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react';
 import * as Sentry from '@sentry/react';
-import { useVegaWallet, determineId } from '@vegaprotocol/wallet';
+import { determineId } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useVegaTransaction } from './use-vega-transaction';
 import { useProposalEvent } from './use-proposal-event';
 import { type ProposalSubmission } from '@vegaprotocol/wallet';
@@ -9,7 +10,8 @@ import { type ProposalEventFieldsFragment } from './__generated__/Proposal';
 export const useProposalSubmit = () => {
   const { pubKey } = useVegaWallet();
 
-  const { send, transaction, setComplete, Dialog } = useVegaTransaction();
+  const { send, transaction, setComplete, setTransaction } =
+    useVegaTransaction();
   const waitForProposalEvent = useProposalEvent(transaction);
 
   const [finalizedProposal, setFinalizedProposal] =
@@ -29,7 +31,12 @@ export const useProposalSubmit = () => {
         });
 
         if (res) {
+          if ('error' in res) {
+            throw new Error('proposal failed');
+          }
+
           const proposalId = determineId(res.signature);
+
           if (proposalId) {
             waitForProposalEvent(proposalId, pubKey, (p) => {
               setFinalizedProposal(p);
@@ -47,7 +54,7 @@ export const useProposalSubmit = () => {
   return {
     transaction,
     finalizedProposal,
-    Dialog,
     submit,
+    setTransaction,
   };
 };

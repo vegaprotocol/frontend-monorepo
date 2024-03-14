@@ -6,7 +6,10 @@ import {
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
-import { useSimpleTransaction, useVegaWallet } from '@vegaprotocol/wallet';
+import {
+  useSimpleTransaction,
+  useVegaWallet,
+} from '@vegaprotocol/wallet-react';
 import { useT } from '../../lib/use-t';
 import { type Team } from '../../lib/hooks/use-team';
 import { useState } from 'react';
@@ -59,7 +62,7 @@ export const JoinButton = ({
   partyTeam,
   onJoin,
 }: {
-  pubKey: string | null;
+  pubKey: string | undefined;
   isReadOnly: boolean;
   team: Team;
   partyTeam?: Team;

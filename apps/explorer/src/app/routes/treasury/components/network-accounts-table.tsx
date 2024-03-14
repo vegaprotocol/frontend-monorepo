@@ -33,7 +33,10 @@ export const NetworkAccountsTable = () => {
         return (
           <section className="md:flex md:flex-row flex-wrap">
             {c.map((a) => (
-              <div className="basis-1/2 md:basis-1/4">
+              <div
+                className="basis-1/2 md:basis-1/4"
+                key={`${a.assetId}-${a.balance}`}
+              >
                 <div className="bg-white rounded overflow-hidden shadow-lg dark:bg-black dark:border-slate-500 dark:border">
                   <div className="text-center p-6 bg-gray-100 dark:bg-slate-900 border-b dark:border-slate-500">
                     <p className="flex justify-center">

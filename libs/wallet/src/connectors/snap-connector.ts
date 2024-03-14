@@ -1,247 +1,279 @@
 import {
-  WalletError,
-  type PubKey,
-  type Transaction,
-  type VegaConnector,
-} from './vega-connector';
-import { clearConfig, setConfig } from '../storage';
+  ConnectorError,
+  chainIdError,
+  connectError,
+  listKeysError,
+  noWalletError,
+  sendTransactionError,
+  userRejectedError,
+} from '../errors';
+import { type Transaction } from '../transaction-types';
+import {
+  JsonRpcMethod,
+  type Connector,
+  type TransactionParams,
+} from '../types';
+
+enum EthereumMethod {
+  RequestSnaps = 'wallet_requestSnaps',
+  GetSnaps = 'wallet_getSnaps',
+  InvokeSnap = 'wallet_invokeSnap',
+}
+
+type SnapConfig = {
+  node: string;
+  version: string;
+  snapId: string;
+};
+
+type SnapInvocationParams = Partial<{
+  transaction: Transaction;
+  publicKey: string;
+  networkEndpoints: string[];
+  sendingMode: 'TYPE_SYNC';
+}>;
 
 type RequestArguments = {
   method: string;
   params?: unknown[] | object;
 };
-type WindowEthereumProvider = {
-  isMetaMask: boolean;
-  request<T = unknown>(args: RequestArguments): Promise<T>;
-};
 
-export const SnapConnectorErrors = {
-  ETHEREUM_UNDEFINED: new Error('MetaMask extension could not be found'),
-  NODE_ADDRESS_NOT_SET: new Error('nodeAddress is not set'),
-  SNAP_ID_NOT_SET: new Error('snapId is not set'),
-  TRANSACTION_PARSE: new Error('could not parse transaction data'),
-};
-
-const ethereumRequest = <T>(args: RequestArguments): Promise<T> => {
-  // can't declare `EthereumProvider` here because of the conflict with
-  // type definitions of `@web3-react`
-  if (
-    'ethereum' in window &&
-    typeof window.ethereum === 'object' &&
-    window.ethereum &&
-    'request' in window.ethereum &&
-    'isMetaMask' in window.ethereum &&
-    window.ethereum.isMetaMask &&
-    typeof window.ethereum.request === 'function'
-  ) {
-    return (window.ethereum as WindowEthereumProvider).request<T>(args);
-  }
-  throw SnapConnectorErrors.ETHEREUM_UNDEFINED;
-};
-
-export const LOCAL_SNAP_ID = 'local:http://localhost:8080';
-export const DEFAULT_SNAP_ID = 'npm:@vegaprotocol/snap';
-export const DEFAULT_SNAP_VERSION = '1.0.1';
-
-type GetSnapsResponse = Record<string, Snap>;
-
-type Snap = {
-  id: string;
-  initialPermissions?: Record<string, unknown>;
-  version: string;
-  enables: boolean;
-  blocked: boolean;
-};
-
-type InvokeSnapRequest = {
-  method: string;
-  params?: object;
-};
-
-type SendTransactionResponse =
-  | {
-      transactionHash: string;
-      receivedAt: string;
-      sentAt: string;
-      transaction?: {
-        signature?: {
-          value: string;
-        };
-      };
-    }
-  | {
-      error: Error & {
-        code: number;
-        data: unknown;
-      };
-    };
-type GetChainIdResponse = {
-  chainID: string;
-};
-type ListKeysResponse = { keys: PubKey[] };
-
-/**
- * Requests permission for a website to communicate with the specified snaps
- * and attempts to install them if they're not already installed.
- * If the installation of any snap fails, returns the error that caused the failure.
- * More informations here: https://docs.metamask.io/snaps/reference/rpc-api/#wallet_requestsnaps
- */
-export const requestSnap = async (
-  snapId: string,
-  params: Record<'version' | string, unknown> = {}
-) => {
-  try {
-    await ethereumRequest({
-      method: 'wallet_requestSnaps',
-      params: {
-        [snapId]: params,
-      },
-    });
-  } catch (err) {
-    // NOOP - rejected by user
-  }
-};
-
-/**
- * Gets the list of all installed snaps.
- * More information here: https://docs.metamask.io/snaps/reference/rpc-api/#wallet_getsnaps
- */
-export const getSnaps = async (): Promise<GetSnapsResponse> => {
-  return (await ethereumRequest({
-    method: 'wallet_getSnaps',
-  })) as GetSnapsResponse;
-};
-
-/**
- * Gets the requested snap by `snapId` and an optional `version`
- */
-export const getSnap = async (
-  snapId: string,
-  version?: string
-): Promise<Snap | undefined> => {
-  const snaps = await getSnaps();
-  return Object.values(snaps).find(
-    (snap) => snap.id === snapId && (!version || snap.version === version)
-  );
-};
-
-export const invokeSnap = async <T>(
-  snapId: string,
-  request: InvokeSnapRequest
-) => {
-  const req = {
-    method: 'wallet_invokeSnap',
-    params: {
-      snapId,
-      request,
-    },
+declare global {
+  type WindowEthereumProvider = {
+    isMetaMask: boolean;
+    request<T = unknown>(args: RequestArguments): Promise<T>;
   };
-  return await ethereumRequest<T>(req);
-};
 
-export class SnapConnector implements VegaConnector {
-  description = "Connects using Vega Protocol's MetaMask snap";
-  snapId: string | undefined = undefined;
-  nodeAddress: string | undefined = undefined;
+  interface Window {
+    // @ts-ignore must have identical modifiers
+    ethereum: WindowEthereumProvider;
+  }
+}
 
-  // note we cannot set nodeAddress in the constructor because the
-  // trading app will not know what the vega url is until the app runs
-  constructor(snapId = DEFAULT_SNAP_ID) {
-    this.snapId = snapId;
+interface SnapRPCError {
+  code: number;
+  message: string;
+  data?: {
+    originalError: { code: number };
+  };
+}
+
+const USER_REJECTED_CODE = -4;
+
+export class SnapConnector implements Connector {
+  readonly id = 'snap';
+  readonly name = 'MetaMask Snap';
+  readonly description =
+    'Connect directly via MetaMask with the Vega Snap for single key support without advanced features.';
+
+  node: string;
+  version: string;
+  snapId: string;
+
+  // Note: apps may not know which node is selected on start up so its up
+  // to the app to make sure class intances are renewed if the node changes
+  constructor(config: SnapConfig) {
+    this.node = config.node;
+    this.version = config.version;
+    this.snapId = config.snapId;
+  }
+
+  bindStore() {}
+
+  async connectWallet(desiredChainId: string) {
+    try {
+      const res = await this.requestSnap();
+
+      if (res[this.snapId].blocked) {
+        throw connectError('snap is blocked');
+      }
+
+      if (!res[this.snapId].enabled) {
+        throw connectError('snap is not enabled');
+      }
+
+      const { chainId } = await this.getChainId();
+
+      if (chainId !== desiredChainId) {
+        throw connectError(
+          `desired chain is ${desiredChainId} but wallet chain is ${chainId}`
+        );
+      }
+
+      return { success: true };
+    } catch (err) {
+      if (err instanceof ConnectorError) {
+        throw err;
+      }
+
+      throw noWalletError();
+    }
+  }
+
+  async disconnectWallet() {}
+
+  // deprecated, pass chain on connect
+  async getChainId() {
+    try {
+      const data = await this.invokeSnap<{ chainID: string }>(
+        JsonRpcMethod.GetChainId,
+        {
+          networkEndpoints: [this.node],
+        }
+      );
+
+      if ('error' in data) {
+        throw chainIdError(data.error.message);
+      }
+
+      return { chainId: data.chainID };
+    } catch (err) {
+      if (err instanceof ConnectorError) {
+        throw err;
+      }
+
+      throw chainIdError();
+    }
   }
 
   async listKeys() {
-    if (!this.snapId) throw SnapConnectorErrors.SNAP_ID_NOT_SET;
-    return await invokeSnap<ListKeysResponse>(this.snapId, {
-      method: 'client.list_keys',
-    });
-  }
-
-  async connect() {
-    const res = await this.listKeys();
-    setConfig({
-      connector: 'snap',
-      token: null, // no token required for snap
-      url: null, // no url required for snap
-    });
-    return res?.keys;
-  }
-
-  async isAlive() {
     try {
-      const keys = await this.listKeys();
-      if (keys.keys.length > 0) {
-        return true;
+      const data = await this.invokeSnap<{
+        keys: Array<{ publicKey: string; name: string }>;
+      }>(JsonRpcMethod.ListKeys);
+
+      if ('error' in data) {
+        throw listKeysError(data.error.message);
       }
-    } catch (err) {
-      return false;
-    }
 
-    return false;
+      return data.keys;
+    } catch (err) {
+      if (err instanceof ConnectorError) {
+        throw err;
+      }
+      throw listKeysError();
+    }
   }
 
-  async sendTx(pubKey: string, transaction: Transaction) {
-    if (!this.nodeAddress) throw SnapConnectorErrors.NODE_ADDRESS_NOT_SET;
-    if (!this.snapId) throw SnapConnectorErrors.SNAP_ID_NOT_SET;
-
-    // This step is needed to strip the transaction object from any additional
-    // properties, such as `__proto__`, etc.
-    let txData = null;
+  async isConnected() {
     try {
-      txData = JSON.parse(JSON.stringify(transaction));
+      // If this throws its likely the snap is disabled or has been uninstalled
+      await this.listKeys();
+      return { connected: true };
     } catch (err) {
-      throw SnapConnectorErrors.TRANSACTION_PARSE;
+      return { connected: false };
     }
+  }
 
-    const payload = {
-      method: 'client.send_transaction',
+  async sendTransaction(params: TransactionParams) {
+    try {
+      // If the transaction is invalid this will throw with SnapRPCError
+      // but if its rejected it will resolve with 'error' in data
+      const data = await this.invokeSnap<{
+        transactionHash: string;
+        transaction: { signature: { value: string } };
+        receivedAt: string;
+        sentAt: string;
+      }>(JsonRpcMethod.SendTransaction, {
+        publicKey: params.publicKey,
+        sendingMode: params.sendingMode,
+        transaction: params.transaction,
+        networkEndpoints: [this.node],
+      });
+
+      if ('error' in data) {
+        if (data.error.code === USER_REJECTED_CODE) {
+          throw userRejectedError();
+        }
+
+        throw sendTransactionError(`${data.error.message}: ${data.error.data}`);
+      }
+
+      return {
+        transactionHash: data.transactionHash,
+        signature: data.transaction.signature.value,
+        receivedAt: data.receivedAt,
+        sentAt: data.sentAt,
+      };
+    } catch (err) {
+      if (err instanceof ConnectorError) {
+        throw err;
+      }
+
+      if (this.isSnapRPCError(err)) {
+        throw sendTransactionError(err.message);
+      }
+
+      throw sendTransactionError();
+    }
+  }
+
+  on() {}
+
+  off() {}
+
+  ////////////////////////////////////
+  // Snap methods
+  ////////////////////////////////////
+
+  /**
+   * Requests permission for a website to communicate with the specified snaps
+   * and attempts to install them if they're not already installed.
+   * If the installation of any snap fails, returns the error that caused the failure.
+   * More informations here: https://docs.metamask.io/snaps/reference/rpc-api/#wallet_requestsnaps
+   */
+  private async requestSnap(): Promise<{
+    [snapId: string]: {
+      blocked: boolean;
+      enabled: boolean;
+      id: string;
+      version: string;
+    };
+  }> {
+    return window.ethereum.request({
+      method: EthereumMethod.RequestSnaps,
       params: {
-        sendingMode: 'TYPE_SYNC',
-        transaction: txData,
-        publicKey: pubKey,
-        networkEndpoints: [this.nodeAddress],
+        [this.snapId]: {
+          version: this.version,
+        },
       },
-    };
-
-    const result = await invokeSnap<SendTransactionResponse>(
-      this.snapId,
-      payload
-    );
-
-    if ('error' in result) {
-      const { message, code, data } = result.error;
-      throw new WalletError(
-        message,
-        code,
-        typeof data === 'string' ? data : ''
-      );
-    }
-
-    if (!result?.transaction?.signature) {
-      throw new Error('could not retrieve transaction siganture');
-    }
-
-    return {
-      transactionHash: result.transactionHash,
-      signature: result?.transaction?.signature?.value,
-      receivedAt: result.receivedAt,
-      sentAt: result.sentAt,
-    };
-  }
-
-  async getChainId(): Promise<GetChainIdResponse> {
-    if (!this.nodeAddress) throw SnapConnectorErrors.NODE_ADDRESS_NOT_SET;
-    if (!this.snapId) throw SnapConnectorErrors.SNAP_ID_NOT_SET;
-
-    const response = await invokeSnap<GetChainIdResponse>(this.snapId, {
-      method: 'client.get_chain_id',
-      params: { networkEndpoints: [this.nodeAddress] },
     });
-
-    return response;
   }
 
-  async disconnect() {
-    clearConfig();
+  /**
+   * Calls a method on the specified snap, always vega in this case
+   * should always be npm:@vegaprotocol/snap
+   */
+  private async invokeSnap<TResult>(
+    method: JsonRpcMethod,
+    params: SnapInvocationParams = {}
+  ): Promise<TResult | { error: SnapRPCError }> {
+    // MetaMask in Firefox doesn't like undefined properties or some properties
+    // on __proto__ so we need to strip them out with JSON.strinfify
+    params = JSON.parse(JSON.stringify(params));
+
+    return window.ethereum.request({
+      method: EthereumMethod.InvokeSnap,
+      params: {
+        snapId: this.snapId,
+        request: {
+          method,
+          params,
+        },
+      },
+    });
+  }
+
+  private isSnapRPCError(obj: unknown): obj is SnapRPCError {
+    if (
+      obj !== undefined &&
+      obj !== null &&
+      typeof obj === 'object' &&
+      'code' in obj &&
+      'message' in obj
+    ) {
+      return true;
+    }
+    return false;
   }
 }

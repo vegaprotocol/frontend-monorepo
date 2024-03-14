@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { marginsDataProvider } from '@vegaprotocol/accounts';
 import type { MarginFieldsFragment } from '@vegaprotocol/accounts';

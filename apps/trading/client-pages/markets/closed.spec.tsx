@@ -1,5 +1,4 @@
 import { act, render, screen, waitFor, within } from '@testing-library/react';
-// import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import { Closed } from './closed';
 import { MarketStateMapping, PropertyKeyType } from '@vegaprotocol/types';
@@ -18,8 +17,6 @@ import {
   MarketsDocument,
   getAsset,
 } from '@vegaprotocol/markets';
-import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
-import { VegaWalletContext } from '@vegaprotocol/wallet';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import {
   createMarketFragment,
@@ -37,7 +34,6 @@ describe('Closed', () => {
     3
   ).toISOString();
   const settlementDateTag = `settlement-expiry-date:${settlementDateMetaDate}`;
-  const pubKey = 'pubKey';
   const marketId = 'market-0';
   const settlementDataProperty = 'spec-binding';
   const settlementDataId = 'settlement-data-oracle-id';
@@ -175,11 +171,7 @@ describe('Closed', () => {
       render(
         <MemoryRouter>
           <MockedProvider mocks={mocks}>
-            <VegaWalletContext.Provider
-              value={{ pubKey } as VegaWalletContextShape}
-            >
-              <Closed />
-            </VegaWalletContext.Provider>
+            <Closed />
           </MockedProvider>
         </MemoryRouter>
       );
@@ -207,6 +199,9 @@ describe('Closed', () => {
 
   it('renders correctly formatted and filtered rows', async () => {
     await renderComponent([marketsMock, marketsDataMock, oracleDataMock]);
+    await waitFor(() => {
+      expect(screen.getAllByRole('gridcell').length).toBeGreaterThan(0);
+    });
 
     const assetSymbol = getAsset(market).symbol;
 

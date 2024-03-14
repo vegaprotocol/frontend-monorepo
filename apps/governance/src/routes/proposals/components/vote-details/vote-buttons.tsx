@@ -1,7 +1,7 @@
 import { format } from 'date-fns';
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
+import { useVegaWallet, useDialogStore } from '@vegaprotocol/wallet-react';
 import {
   AsyncRenderer,
   Button,
@@ -17,7 +17,7 @@ import { VoteState } from './use-user-vote';
 import { ProposalMinRequirements, ProposalUserAction } from '../shared';
 import { VoteTransactionDialog } from './vote-transaction-dialog';
 import { useVoteButtonsQuery } from './__generated__/Stake';
-import type { DialogProps, VegaTxState } from '@vegaprotocol/proposals';
+import type { VegaTxState } from '@vegaprotocol/proposals';
 import { filterAcceptableGraphqlErrors } from '../../../../lib/party';
 import {
   NetworkParams,
@@ -32,8 +32,7 @@ interface VoteButtonsContainerProps {
   proposalId: string | null;
   proposalState: ProposalState;
   submit: (voteValue: VoteValue, proposalId: string | null) => Promise<void>;
-  transaction: VegaTxState | null;
-  dialog: (props: DialogProps) => JSX.Element;
+  transaction: VegaTxState;
   className?: string;
 }
 
@@ -136,17 +135,16 @@ export const VoteButtonsContainer = (props: VoteButtonsContainerProps) => {
   );
 };
 
-interface VoteButtonsProps {
+export interface VoteButtonsProps {
   voteState: VoteState | null;
   voteDatetime: Date | null;
-  proposalId: string | null;
   proposalState: ProposalState;
-  submit: (voteValue: VoteValue, proposalId: string | null) => Promise<void>;
-  transaction: VegaTxState | null;
-  dialog: (props: DialogProps) => JSX.Element;
+  proposalId: string | null;
   currentStakeAvailable: BigNumber;
   minVoterBalance: string | null;
   spamProtectionMinTokens: string | null;
+  submit: (voteValue: VoteValue, proposalId: string | null) => Promise<void>;
+  transaction: VegaTxState;
 }
 
 export const VoteButtons = ({
@@ -159,13 +157,10 @@ export const VoteButtons = ({
   spamProtectionMinTokens,
   submit,
   transaction,
-  dialog: Dialog,
 }: VoteButtonsProps) => {
   const { t } = useTranslation();
   const { pubKey } = useVegaWallet();
-  const { openVegaWalletDialog } = useVegaWalletDialogStore((store) => ({
-    openVegaWalletDialog: store.openVegaWalletDialog,
-  }));
+  const openVegaWalletDialog = useDialogStore((store) => store.open);
   const [changeVote, setChangeVote] = React.useState(false);
   const proposalVotable = useMemo(
     () =>
@@ -184,11 +179,7 @@ export const VoteButtons = ({
     if (!pubKey) {
       return (
         <div data-testid="connect-wallet">
-          <ButtonLink
-            onClick={() => {
-              openVegaWalletDialog();
-            }}
-          >
+          <ButtonLink onClick={openVegaWalletDialog}>
             {t('connectVegaWallet')}
           </ButtonLink>{' '}
           {t('toVote')}
@@ -301,11 +292,7 @@ export const VoteButtons = ({
           </p>
         )
       )}
-      <VoteTransactionDialog
-        voteState={voteState}
-        transaction={transaction}
-        TransactionDialog={Dialog}
-      />
+      <VoteTransactionDialog voteState={voteState} transaction={transaction} />
     </>
   );
 };

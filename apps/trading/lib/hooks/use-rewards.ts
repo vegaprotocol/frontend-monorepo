@@ -14,8 +14,8 @@ import {
   TransferStatus,
   type DispatchStrategy,
   EntityScope,
-  IndividualScope,
   MarketState,
+  AccountType,
 } from '@vegaprotocol/types';
 import { type ApolloError } from '@apollo/client';
 import compact from 'lodash/compact';
@@ -46,8 +46,9 @@ export type EnrichedRewardTransfer = RewardTransfer & {
  */
 export const isReward = (node: TransferNode): node is RewardTransfer => {
   if (
-    node.transfer.kind.__typename === 'RecurringTransfer' &&
-    node.transfer.kind.dispatchStrategy != null
+    (node.transfer.kind.__typename === 'RecurringTransfer' &&
+      node.transfer.kind.dispatchStrategy != null) ||
+    node.transfer.toAccountType === AccountType.ACCOUNT_TYPE_GLOBAL_REWARD
   ) {
     return true;
   }
@@ -73,20 +74,11 @@ export const isActiveReward = (node: RewardTransfer, currentEpoch: number) => {
 
 /**
  * Checks if given reward (transfer) is scoped to teams.
- *
- * A reward is scoped to teams if it's entity scope is set to teams or
- * if the scope is set to individuals but the individuals are in a team.
  */
 export const isScopedToTeams = (node: EnrichedRewardTransfer) =>
   // scoped to teams
-  node.transfer.kind.dispatchStrategy.entityScope ===
-    EntityScope.ENTITY_SCOPE_TEAMS ||
-  // or to individuals
-  (node.transfer.kind.dispatchStrategy.entityScope ===
-    EntityScope.ENTITY_SCOPE_INDIVIDUALS &&
-    // but they have to be in a team
-    node.transfer.kind.dispatchStrategy.individualScope ===
-      IndividualScope.INDIVIDUAL_SCOPE_IN_TEAM);
+  node.transfer.kind.dispatchStrategy?.entityScope ===
+  EntityScope.ENTITY_SCOPE_TEAMS;
 
 /** Retrieves rewards (transfers) */
 export const useRewards = ({
@@ -142,6 +134,7 @@ export const useRewards = ({
     .filter((node) => (scopeToTeams ? isScopedToTeams(node) : true))
     // enrich with dispatch asset and markets in scope details
     .map((node) => {
+      if (!node.transfer.kind.dispatchStrategy) return node;
       const dispatchAsset =
         (assets &&
           assets[node.transfer.kind.dispatchStrategy.dispatchMetricAssetId]) ||
@@ -170,7 +163,7 @@ export const useRewards = ({
         ...node,
         dispatchAsset,
         isAssetTraded: isAssetTraded != null ? isAssetTraded : undefined,
-        markets: marketsInScope.length > 0 ? marketsInScope : undefined,
+        markets: marketsInScope?.length > 0 ? marketsInScope : undefined,
       };
     });
 

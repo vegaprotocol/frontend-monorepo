@@ -11,6 +11,7 @@ export function generateMarket(override?: PartialDeep<Market>): Market {
     positionDecimalPlaces: 1,
     tradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
     state: Schema.MarketState.STATE_ACTIVE,
+    tickSize: '1',
     marketTimestamps: {
       __typename: 'MarketTimestamps',
       proposed: '2024-01-02',

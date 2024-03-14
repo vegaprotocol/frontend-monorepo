@@ -194,11 +194,11 @@ describe('isScopedToTeams', () => {
         undefined,
         makeDispatchStrategy(
           EntityScope.ENTITY_SCOPE_INDIVIDUALS,
-          IndividualScope.INDIVIDUAL_SCOPE_IN_TEAM // individual in teams
+          IndividualScope.INDIVIDUAL_SCOPE_IN_TEAM // individual in teams but not a team game
         ),
         'RecurringTransfer'
       ),
-      true,
+      false,
     ],
     [
       makeReward(

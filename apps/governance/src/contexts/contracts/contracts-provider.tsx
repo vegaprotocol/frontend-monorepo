@@ -111,3 +111,4 @@ export const ContractsProvider = ({ children }: { children: JSX.Element }) => {
     </ContractsContext.Provider>
   );
 };
+ContractsProvider.displayName = 'ContractsProvider';

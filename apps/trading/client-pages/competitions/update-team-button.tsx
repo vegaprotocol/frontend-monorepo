@@ -1,6 +1,6 @@
 import { type Team } from '../../lib/hooks/use-team';
 import { type ComponentProps } from 'react';
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { Intent, TradingAnchorButton } from '@vegaprotocol/ui-toolkit';
 import { Links } from '../../lib/links';
 import { useT } from '../../lib/use-t';

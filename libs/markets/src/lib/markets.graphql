@@ -1,7 +1,63 @@
+fragment MarketFieldsMainnet on Market {
+  id
+  decimalPlaces
+  positionDecimalPlaces
+  # tickSize is not on mainnet and the query will fail. See typePolicy for tickSize in bootstrapper.tsx
+  tickSize @client
+  state
+  tradingMode
+  parentMarketID
+  successorMarketID
+  fees {
+    factors {
+      makerFee
+      infrastructureFee
+      liquidityFee
+    }
+    liquidityFeeSettings {
+      feeConstant
+      method
+    }
+  }
+  tradableInstrument {
+    instrument {
+      id
+      name
+      code
+      metadata {
+        tags
+      }
+      product {
+        ... on Future {
+          ...Future
+        }
+        ... on Perpetual {
+          ...Perpetual
+        }
+      }
+    }
+  }
+  marketTimestamps {
+    proposed
+    pending
+    open
+    close
+  }
+  marketProposal {
+    ... on Proposal {
+      id
+    }
+    ... on BatchProposal {
+      id
+    }
+  }
+}
+
 fragment MarketFields on Market {
   id
   decimalPlaces
   positionDecimalPlaces
+  tickSize
   state
   tradingMode
   parentMarketID
@@ -56,6 +112,16 @@ query Markets {
     edges {
       node {
         ...MarketFields
+      }
+    }
+  }
+}
+
+query MarketsMainnet {
+  marketsConnection {
+    edges {
+      node {
+        ...MarketFieldsMainnet
       }
     }
   }

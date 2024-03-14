@@ -72,7 +72,7 @@ class TestSettledMarket:
         # 6001-MARK-009
         # 6001-MARK-008
         # 6001-MARK-010
-        pattern = r"(\d+)\s+(months|hours|days)\s+ago"
+        pattern = r"(\d+)\s+(months|hours|days|minutes)\s+ago"
         date_text = row_selector.locator('[col-id="settlementDate"]').inner_text()
         assert re.match(
             pattern, date_text

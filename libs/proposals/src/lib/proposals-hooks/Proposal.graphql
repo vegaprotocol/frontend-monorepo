@@ -46,6 +46,7 @@ query ProposalOfMarket($marketId: ID!) {
       }
     }
     ... on BatchProposal {
+      id
       subProposals {
         id
         terms {

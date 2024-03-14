@@ -25,7 +25,7 @@ export type ProposalOfMarketQueryVariables = Types.Exact<{
 }>;
 
 
-export type ProposalOfMarketQuery = { __typename?: 'Query', proposal?: { __typename?: 'BatchProposal', subProposals?: Array<{ __typename?: 'ProposalDetail', id?: string | null, terms?: { __typename?: 'ProposalTerms', enactmentDatetime?: any | null } | null } | null> | null } | { __typename?: 'Proposal', id?: string | null, terms: { __typename?: 'ProposalTerms', enactmentDatetime?: any | null } } | null };
+export type ProposalOfMarketQuery = { __typename?: 'Query', proposal?: { __typename?: 'BatchProposal', id?: string | null, subProposals?: Array<{ __typename?: 'ProposalDetail', id?: string | null, terms?: { __typename?: 'ProposalTerms', enactmentDatetime?: any | null } | null } | null> | null } | { __typename?: 'Proposal', id?: string | null, terms: { __typename?: 'ProposalTerms', enactmentDatetime?: any | null } } | null };
 
 export type SuccessorMarketProposalDetailsQueryVariables = Types.Exact<{
   proposalId: Types.Scalars['ID'];
@@ -153,6 +153,7 @@ export const ProposalOfMarketDocument = gql`
       }
     }
     ... on BatchProposal {
+      id
       subProposals {
         id
         terms {

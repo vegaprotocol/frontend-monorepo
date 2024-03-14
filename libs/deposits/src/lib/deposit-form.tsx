@@ -23,7 +23,7 @@ import {
   truncateMiddle,
   TradingButton,
 } from '@vegaprotocol/ui-toolkit';
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useWeb3React } from '@web3-react/core';
 import BigNumber from 'bignumber.js';
 import type { ButtonHTMLAttributes, ChangeEvent, ReactNode } from 'react';

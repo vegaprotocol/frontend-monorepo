@@ -33,10 +33,10 @@ const SizeInAsset = ({
   }
 
   return (
-    <p>
+    <span>
       <span>{label}</span>&nbsp;
       <AssetLink assetId={assetId} showAssetSymbol={true} asDialog={true} />
-    </p>
+    </span>
   );
 };
 
