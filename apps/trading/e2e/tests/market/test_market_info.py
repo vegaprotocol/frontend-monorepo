@@ -225,7 +225,6 @@ def test_market_info_risk_factors(page: Page):
 
 def test_market_info_price_monitoring_bounds(page: Page):
     # 6002-MDET-211
-    page.pause()
     page.get_by_test_id(market_title_test_id).get_by_text(
         "Price monitoring bounds"
     ).click()
