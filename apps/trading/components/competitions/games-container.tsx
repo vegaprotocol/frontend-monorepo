@@ -1,9 +1,9 @@
-import { ActiveRewardCard } from '../rewards-container/active-rewards';
 import { useT } from '../../lib/use-t';
 import { type EnrichedRewardTransfer } from '../../lib/hooks/use-rewards';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useStakeAvailable } from '../../lib/hooks/use-stake-available';
 import { useMyTeam } from '../../lib/hooks/use-my-team';
+import { ActiveRewardCard } from '../rewards-container/reward-card';
 
 export const GamesContainer = ({
   data,
