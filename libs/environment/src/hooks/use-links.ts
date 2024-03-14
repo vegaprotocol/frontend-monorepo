@@ -3,6 +3,7 @@ import { useCallback } from 'react';
 import { Networks } from '../types';
 import { ENV, useEnvironment } from './use-environment';
 import { stripFullStops } from '@vegaprotocol/utils';
+import { getExternalExplorerLink } from '../external-chain';
 
 const VEGA_DOCS_URL =
   process.env['NX_VEGA_DOCS_URL'] || 'https://docs.vega.xyz/mainnet';
@@ -119,9 +120,15 @@ export const useLinks = (dapp: DApp, network?: Net) => {
   return link;
 };
 
-export const useEtherscanLink = () => {
+export const useEtherscanLink = (sourceChainId?: number) => {
   const { ETHERSCAN_URL } = useEnvironment();
-  const baseUrl = trim(ETHERSCAN_URL, '/');
+
+  const otherScanUrl = sourceChainId
+    ? getExternalExplorerLink(sourceChainId.toString())
+    : undefined;
+
+  const baseUrl = trim(otherScanUrl || ETHERSCAN_URL, '/');
+
   const link = useCallback(
     (url?: string) => `${baseUrl}/${trim(url, '/') || ''}`,
     [baseUrl]

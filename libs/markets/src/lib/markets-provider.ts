@@ -4,10 +4,12 @@ import {
   makeDerivedDataProvider,
   useDataProvider,
 } from '@vegaprotocol/data-provider';
+import { ENV, Networks } from '@vegaprotocol/environment';
 import {
   MarketsDocument,
   type MarketsQuery,
   type MarketFieldsFragment,
+  MarketsMainnetDocument,
 } from './__generated__/markets';
 import { type MarketsCandlesQueryVariables } from './__generated__/markets-candles';
 
@@ -27,6 +29,7 @@ import * as Schema from '@vegaprotocol/types';
 import {
   filterAndSortClosedMarkets,
   filterAndSortMarkets,
+  filterAndSortProposedMarkets,
 } from './market-utils';
 import type { Candle } from './market-candles-provider';
 
@@ -41,9 +44,12 @@ export const marketsProvider = makeDataProvider<
   never,
   never
 >({
-  query: MarketsDocument,
+  query:
+    // Mainnet does not support tickSize, and a query for tickSize on a market will completely fail
+    ENV.VEGA_ENV === Networks.MAINNET
+      ? MarketsMainnetDocument
+      : MarketsDocument,
   getData,
-  fetchPolicy: 'cache-first',
   errorPolicy: 'all',
 });
 
@@ -112,6 +118,11 @@ export const activeMarketsProvider = makeDerivedDataProvider<Market[], never>(
 export const closedMarketsProvider = makeDerivedDataProvider<Market[], never>(
   [marketsProvider],
   ([markets]) => filterAndSortClosedMarkets(markets)
+);
+
+export const proposedMarketsProvider = makeDerivedDataProvider<Market[], never>(
+  [marketsProvider],
+  ([markets]) => filterAndSortProposedMarkets(markets)
 );
 
 export type MarketMaybeWithCandles = Market & { candles?: Candle[] };
@@ -240,4 +251,11 @@ export const useMarketList = () => {
     error,
     reload,
   };
+};
+
+export const useProposedMarketsList = () => {
+  return useDataProvider({
+    dataProvider: proposedMarketsProvider,
+    variables: undefined,
+  });
 };

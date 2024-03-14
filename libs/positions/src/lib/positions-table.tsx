@@ -400,7 +400,7 @@ export const PositionsTable = ({
         sortable: false,
         filter: false,
         cellRenderer: ({ data }: VegaICellRendererParams<Position>) => {
-          if (!data) {
+          if (!data || data.openVolume === '0') {
             return '-';
           }
           return (

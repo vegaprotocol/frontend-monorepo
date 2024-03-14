@@ -1,4 +1,7 @@
 {
   "name": "@vegaprotocol/ui-toolkit",
-  "version": "0.12.9"
+  "version": "0.12.9",
+  "devDependencies": {
+    "@vegaprotocol/tailwindcss-config": "0.0.6"
+  }
 }

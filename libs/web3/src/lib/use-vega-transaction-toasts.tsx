@@ -902,6 +902,7 @@ const VegaTxErrorToastContent = ({ tx }: VegaTxToastContentProps) => {
   const t = useT();
   let label = t('Error occurred');
   let errorMessage = tx.error?.message;
+  const errorData = tx.error instanceof ConnectorError ? tx.error.data : '';
 
   const reconnectVegaWallet = useReconnect();
 
@@ -912,7 +913,7 @@ const VegaTxErrorToastContent = ({ tx }: VegaTxToastContentProps) => {
     ConnectorErrors.noConnector.code,
   ];
 
-  const walletError =
+  const noConnectionError =
     tx.error instanceof ConnectorError &&
     walletNoConnectionCodes.includes(tx.error.code);
 
@@ -926,7 +927,7 @@ const VegaTxErrorToastContent = ({ tx }: VegaTxToastContentProps) => {
     );
   }
 
-  if (walletError) {
+  if (noConnectionError) {
     label = t('Wallet disconnected');
     errorMessage = t('The connection to your Vega Wallet has been lost.');
   }
@@ -935,7 +936,8 @@ const VegaTxErrorToastContent = ({ tx }: VegaTxToastContentProps) => {
     <>
       <ToastHeading>{label}</ToastHeading>
       <p className="first-letter:uppercase">{errorMessage}</p>
-      {walletError && (
+      {errorData && <p className="first-letter:uppercase">{errorData}</p>}
+      {noConnectionError && (
         <Button size="xs" onClick={reconnectVegaWallet}>
           {t('Connect vega wallet')}
         </Button>

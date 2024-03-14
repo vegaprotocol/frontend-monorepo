@@ -4,6 +4,8 @@ import {
   addDecimal,
   addDecimalsFormatNumber,
   useValidateAmount,
+  determinePriceStep,
+  determineSizeStep,
 } from '@vegaprotocol/utils';
 import { Size } from '@vegaprotocol/datagrid';
 import * as Schema from '@vegaprotocol/types';
@@ -52,8 +54,10 @@ export const OrderEditDialog = ({
     },
   });
 
-  const step = toDecimal(order.market?.decimalPlaces ?? 0);
-  const stepSize = toDecimal(order.market?.positionDecimalPlaces ?? 0);
+  const step = order.market ? determinePriceStep(order.market) : toDecimal(0);
+  const stepSize = order.market
+    ? determineSizeStep(order.market)
+    : toDecimal(0);
 
   return (
     <Dialog
@@ -117,9 +121,11 @@ export const OrderEditDialog = ({
                 required: t('You need to provide a price'),
                 validate: {
                   min: (value) =>
-                    Number(value) > 0
+                    Number(value) >= Number(step)
                       ? true
-                      : t('The price cannot be negative'),
+                      : t('Price cannot be lower than {{step}}', {
+                          step,
+                        }),
                   validate: validateAmount(step, t('Price')),
                 },
               })}
@@ -139,7 +145,11 @@ export const OrderEditDialog = ({
                 required: t('You need to provide a size'),
                 validate: {
                   min: (value) =>
-                    Number(value) > 0 ? true : t('The size cannot be negative'),
+                    Number(value) >= Number(stepSize)
+                      ? true
+                      : t('Size cannot be lower than {{stepSize}}', {
+                          stepSize,
+                        }),
                   validate: validateAmount(stepSize, t('Size')),
                 },
               })}

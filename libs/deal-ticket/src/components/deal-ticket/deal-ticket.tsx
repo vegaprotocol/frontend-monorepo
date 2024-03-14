@@ -32,7 +32,6 @@ import {
   toBigNum,
   removeDecimal,
   useValidateAmount,
-  toDecimal,
   formatForInput,
   formatValue,
 } from '@vegaprotocol/utils';
@@ -78,10 +77,11 @@ import { DealTicketSizeIceberg } from './deal-ticket-size-iceberg';
 import noop from 'lodash/noop';
 import { isNonPersistentOrder } from '../../utils/time-in-force-persistence';
 import { KeyValue } from './key-value';
-import { DocsLinks } from '@vegaprotocol/environment';
+import { DocsLinks, useFeatureFlags } from '@vegaprotocol/environment';
 import { useT } from '../../use-t';
 import { DealTicketPriceTakeProfitStopLoss } from './deal-ticket-price-tp-sl';
 import uniqueId from 'lodash/uniqueId';
+import { determinePriceStep, determineSizeStep } from '@vegaprotocol/utils';
 
 export const REDUCE_ONLY_TOOLTIP =
   '"Reduce only" will ensure that this order will not increase the size of an open position. When the order is matched, it will only trade enough volume to bring your open volume towards 0 but never change the direction of your position. If applied to a limit order that is not instantly filled, the order will be stopped.';
@@ -381,6 +381,7 @@ export const DealTicket = ({
   const disablePostOnlyCheckbox = nonPersistentOrder;
   const disableReduceOnlyCheckbox = !nonPersistentOrder;
   const disableIcebergCheckbox = nonPersistentOrder;
+  const featureFlags = useFeatureFlags((state) => state.flags);
 
   const onSubmit = useCallback(
     (formValues: OrderFormValues) => {
@@ -388,7 +389,11 @@ export const DealTicket = ({
       if (lastSubmitTime.current && now - lastSubmitTime.current < 1000) {
         return;
       }
-      if (formValues.tpSl) {
+      if (
+        featureFlags.TAKE_PROFIT_STOP_LOSS &&
+        formValues.tpSl &&
+        (formValues.takeProfit || formValues.stopLoss)
+      ) {
         const reference = `${pubKey}-${now}-${uniqueId()}`;
         const batchMarketInstructions = mapFormValuesToTakeProfitAndStopLoss(
           formValues,
@@ -409,7 +414,7 @@ export const DealTicket = ({
       }
       lastSubmitTime.current = now;
     },
-    [market, pubKey, submit]
+    [featureFlags.TAKE_PROFIT_STOP_LOSS, market, pubKey, submit]
   );
   useController({
     name: 'type',
@@ -419,10 +424,11 @@ export const DealTicket = ({
     },
   });
 
-  const priceStep = toDecimal(market?.decimalPlaces);
-  const sizeStep = toDecimal(market?.positionDecimalPlaces);
+  const sizeStep = determineSizeStep(market);
   const quoteName = getQuoteName(market);
   const isLimitType = type === Schema.OrderType.TYPE_LIMIT;
+
+  const priceStep = determinePriceStep(market);
 
   return (
     <form
@@ -725,27 +731,29 @@ export const DealTicket = ({
                 )}
               />
             )}
-            <Controller
-              name="tpSl"
-              control={control}
-              render={({ field }) => (
-                <Tooltip
-                  description={
-                    <p>{t('TP_SL_TOOLTIP', 'Take profit / Stop loss')}</p>
-                  }
-                >
-                  <div>
-                    <Checkbox
-                      name="tpSl"
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                      disabled={false}
-                      label={t('TP / SL')}
-                    />
-                  </div>
-                </Tooltip>
-              )}
-            />
+            {featureFlags.TAKE_PROFIT_STOP_LOSS && (
+              <Controller
+                name="tpSl"
+                control={control}
+                render={({ field }) => (
+                  <Tooltip
+                    description={
+                      <p>{t('TP_SL_TOOLTIP', 'Take profit / Stop loss')}</p>
+                    }
+                  >
+                    <div>
+                      <Checkbox
+                        name="tpSl"
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                        disabled={false}
+                        label={t('TP / SL')}
+                      />
+                    </div>
+                  </Tooltip>
+                )}
+              />
+            )}
           </div>
           {isLimitType && iceberg && (
             <DealTicketSizeIceberg
@@ -757,7 +765,7 @@ export const DealTicket = ({
               peakSize={peakSize}
             />
           )}
-          {tpSl && (
+          {featureFlags.TAKE_PROFIT_STOP_LOSS && tpSl && (
             <DealTicketPriceTakeProfitStopLoss
               market={market}
               takeProfitError={errors.takeProfit?.message}

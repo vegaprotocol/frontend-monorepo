@@ -1,6 +1,6 @@
 import { type StoreApi } from 'zustand';
 import { type Store, type Connector } from '../types';
-import { isValidVegaPublicKey } from '@vegaprotocol/utils';
+import { type TransactionResponse } from '../transaction-types';
 import {
   ConnectorError,
   chainIdError,
@@ -9,7 +9,7 @@ import {
   sendTransactionError,
   userRejectedError,
 } from '../errors';
-import { type TransactionResponse } from '../transaction-types';
+import { isValidVegaPublicKey } from '../utils';
 
 export class ViewPartyConnector implements Connector {
   readonly id = 'viewParty';

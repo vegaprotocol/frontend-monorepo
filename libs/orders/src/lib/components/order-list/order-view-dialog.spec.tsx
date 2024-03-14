@@ -22,6 +22,7 @@ describe('OrderViewDialog', () => {
         positionDecimalPlaces: 3,
         state: MarketState.STATE_ACTIVE,
         tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+        tickSize: '1',
         fees: {
           __typename: 'Fees',
           factors: {
@@ -116,6 +117,8 @@ describe('OrderViewDialog', () => {
         },
         marketTimestamps: {
           __typename: 'MarketTimestamps',
+          proposed: '2023-07-17T12:05:25.822854221Z',
+          pending: '2023-07-18T12:05:25.822854221Z',
           open: '2023-07-19T12:05:25.822854221Z',
           close: null,
         },

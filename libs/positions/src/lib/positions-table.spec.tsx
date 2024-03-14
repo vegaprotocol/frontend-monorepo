@@ -102,7 +102,7 @@ describe('Positions', () => {
     expect(cell.getByTestId('stack-cell-secondary')).toHaveTextContent('12.3');
   });
 
-  it('doesnt render entry / mark if market is in opening auction', async () => {
+  it('does not render entry / mark if market is in opening auction', async () => {
     await renderComponent({
       ...singleRow,
       marketTradingMode: Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
@@ -116,6 +116,15 @@ describe('Positions', () => {
     await renderComponent(singleRow);
     const cells = screen.getAllByRole('gridcell');
     expect(cells[4].textContent).toEqual('liquidation price');
+  });
+
+  it('do not displays liquidation price if openVolume is 0', async () => {
+    await renderComponent({
+      ...singleRow,
+      openVolume: '0',
+    });
+    const cells = screen.getAllByRole('gridcell');
+    expect(cells[4].textContent).toEqual('-');
   });
 
   it('displays margin and leverage', async () => {

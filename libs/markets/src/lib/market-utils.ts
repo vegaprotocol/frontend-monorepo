@@ -123,6 +123,16 @@ export const filterAndSortClosedMarkets = (markets: MarketMaybeWithData[]) => {
   });
 };
 
+export const filterAndSortProposedMarkets = (
+  markets: MarketMaybeWithData[]
+) => {
+  return markets.filter((m) => {
+    return [MarketState.STATE_PROPOSED].includes(
+      m.data?.marketState || m.state
+    );
+  });
+};
+
 export const calcCandleLow = (candles: Candle[]): string | undefined => {
   return candles
     ?.reduce((acc: BigNumber, c) => {

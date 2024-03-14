@@ -8,12 +8,14 @@ import EpochMissingOverview from './epoch-missing';
 import { Icon, Tooltip } from '@vegaprotocol/ui-toolkit';
 import type { IconProps } from '@vegaprotocol/ui-toolkit';
 import isPast from 'date-fns/isPast';
+import { EpochSymbol } from '../links/block-link/block-link';
 
 const borderClass =
   'border-solid border-2 border-vega-dark-200 border-collapse';
 
 export type EpochOverviewProps = {
   id?: string;
+  icon?: boolean;
 };
 
 /**
@@ -24,7 +26,7 @@ export type EpochOverviewProps = {
  *
  * The details are hidden in a tooltip, behind the epoch number
  */
-const EpochOverview = ({ id }: EpochOverviewProps) => {
+const EpochOverview = ({ id, icon = true }: EpochOverviewProps) => {
   const { data, error, loading } = useExplorerEpochQuery({
     variables: { id: id || '' },
   });
@@ -38,7 +40,12 @@ const EpochOverview = ({ id }: EpochOverviewProps) => {
   }
 
   if (!ti || loading || error) {
-    return <span>{id}</span>;
+    return (
+      <span>
+        <EpochSymbol />
+        {id}
+      </span>
+    );
   }
 
   const description = (
@@ -90,7 +97,11 @@ const EpochOverview = ({ id }: EpochOverviewProps) => {
   return (
     <Tooltip description={description}>
       <p>
-        <IconForEpoch start={ti.start} end={ti.end} />
+        {icon ? (
+          <IconForEpoch start={ti.start} end={ti.end} />
+        ) : (
+          <EpochSymbol />
+        )}
         {id}
       </p>
     </Tooltip>

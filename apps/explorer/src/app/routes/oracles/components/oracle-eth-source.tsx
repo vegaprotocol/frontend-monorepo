@@ -4,7 +4,7 @@ import {
   ExternalExplorerLink,
   EthExplorerLinkTypes,
 } from '../../../components/links/external-explorer-link/external-explorer-link';
-import { getExternalChainLabel } from '../../../components/links/external-explorer-link/external-chain';
+import { getExternalChainLabel } from '@vegaprotocol/environment';
 import { t } from 'i18next';
 
 interface OracleDetailsEthSourceProps {

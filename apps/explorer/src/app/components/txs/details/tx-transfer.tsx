@@ -113,13 +113,16 @@ export const TxDetailsTransfer = ({
 
 /**
  * Gets a string description of this transfer
- * @param txData A full transfer
+ * @param tx A full transfer
  * @returns string Transfer label
  */
 export function getTypeLabelForTransfer(tx: Transfer) {
   if (tx.to === SPECIAL_CASE_NETWORK || tx.to === SPECIAL_CASE_NETWORK_ID) {
+    if (tx.toAccountType === 'ACCOUNT_TYPE_NETWORK_TREASURY') {
+      return 'Treasury transfer';
+    }
     if (tx.recurring && tx.recurring.dispatchStrategy) {
-      return 'Reward top up transfer';
+      return 'Reward transfer';
     }
     // Else: we don't know that it's a reward transfer, so let's not guess
   } else if (tx.recurring) {

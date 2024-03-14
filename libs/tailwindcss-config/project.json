@@ -5,28 +5,30 @@
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nx/js:tsc",
+      "executor": "@nx/rollup:rollup",
       "outputs": ["{options.outputPath}"],
-      "format": ["esm", "cjs"],
       "options": {
         "outputPath": "dist/libs/tailwindcss-config",
-        "main": "libs/tailwindcss-config/src/index.js",
+        "main": "libs/tailwindcss-config/src/index.ts",
         "tsConfig": "libs/tailwindcss-config/tsconfig.lib.json",
-        "assets": ["libs/tailwindcss-config/*.md"]
+        "assets": [],
+        "project": "libs/tailwindcss-config/package.json",
+        "compiler": "swc",
+        "format": ["esm", "cjs"]
       }
+    },
+    "publish": {
+      "command": "node tools/scripts/publish.mjs tailwindcss-config {args.ver} {args.tag}",
+      "dependsOn": ["build"]
     },
     "lint": {
       "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["libs/tailwindcss-config/**/*.js"]
-      }
-    },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/libs/tailwindcss-config"],
-      "options": {
-        "jestConfig": "libs/tailwindcss-config/jest.config.js"
+        "lintFilePatterns": [
+          "libs/tailwindcss-config/**/*.ts",
+          "libs/tailwindcss-config/package.json"
+        ]
       }
     }
   },

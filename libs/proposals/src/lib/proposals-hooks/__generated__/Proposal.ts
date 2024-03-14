@@ -25,14 +25,14 @@ export type ProposalOfMarketQueryVariables = Types.Exact<{
 }>;
 
 
-export type ProposalOfMarketQuery = { __typename?: 'Query', proposal?: { __typename?: 'BatchProposal', id?: string | null, batchTerms?: { __typename?: 'BatchProposalTerms', changes: Array<{ __typename?: 'BatchProposalTermsChange', enactmentDatetime?: any | null, change: { __typename?: 'CancelTransfer' } | { __typename?: 'NewAsset' } | { __typename?: 'NewFreeform' } | { __typename: 'NewMarket' } | { __typename?: 'NewSpotMarket' } | { __typename?: 'NewTransfer' } | { __typename?: 'UpdateAsset' } | { __typename?: 'UpdateMarket' } | { __typename?: 'UpdateMarketState' } | { __typename?: 'UpdateNetworkParameter' } | { __typename?: 'UpdateReferralProgram' } | { __typename?: 'UpdateSpotMarket' } | { __typename?: 'UpdateVolumeDiscountProgram' } } | null> } | null } | { __typename?: 'Proposal', id?: string | null, terms: { __typename?: 'ProposalTerms', enactmentDatetime?: any | null } } | null };
+export type ProposalOfMarketQuery = { __typename?: 'Query', proposal?: { __typename?: 'BatchProposal', id?: string | null, subProposals?: Array<{ __typename?: 'ProposalDetail', id?: string | null, terms?: { __typename?: 'ProposalTerms', enactmentDatetime?: any | null } | null } | null> | null } | { __typename?: 'Proposal', id?: string | null, terms: { __typename?: 'ProposalTerms', enactmentDatetime?: any | null } } | null };
 
 export type SuccessorMarketProposalDetailsQueryVariables = Types.Exact<{
   proposalId: Types.Scalars['ID'];
 }>;
 
 
-export type SuccessorMarketProposalDetailsQuery = { __typename?: 'Query', proposal?: { __typename?: 'BatchProposal' } | { __typename?: 'Proposal', id?: string | null, terms: { __typename?: 'ProposalTerms', change: { __typename?: 'CancelTransfer' } | { __typename?: 'NewAsset' } | { __typename?: 'NewFreeform' } | { __typename?: 'NewMarket', successorConfiguration?: { __typename?: 'SuccessorConfiguration', parentMarketId: string, insurancePoolFraction: string } | null } | { __typename?: 'NewSpotMarket' } | { __typename?: 'NewTransfer' } | { __typename?: 'UpdateAsset' } | { __typename?: 'UpdateMarket' } | { __typename?: 'UpdateMarketState' } | { __typename?: 'UpdateNetworkParameter' } | { __typename?: 'UpdateReferralProgram' } | { __typename?: 'UpdateSpotMarket' } | { __typename?: 'UpdateVolumeDiscountProgram' } } } | null };
+export type SuccessorMarketProposalDetailsQuery = { __typename?: 'Query', proposal?: { __typename?: 'BatchProposal', id?: string | null, batchTerms?: { __typename?: 'BatchProposalTerms', changes: Array<{ __typename?: 'BatchProposalTermsChange', change: { __typename?: 'CancelTransfer' } | { __typename?: 'NewAsset' } | { __typename?: 'NewFreeform' } | { __typename: 'NewMarket', successorConfiguration?: { __typename?: 'SuccessorConfiguration', parentMarketId: string, insurancePoolFraction: string } | null } | { __typename?: 'NewSpotMarket' } | { __typename?: 'NewTransfer' } | { __typename?: 'UpdateAsset' } | { __typename?: 'UpdateMarket' } | { __typename?: 'UpdateMarketState' } | { __typename?: 'UpdateNetworkParameter' } | { __typename?: 'UpdateReferralProgram' } | { __typename?: 'UpdateSpotMarket' } | { __typename?: 'UpdateVolumeDiscountProgram' } } | null> } | null } | { __typename?: 'Proposal', id?: string | null, terms: { __typename?: 'ProposalTerms', change: { __typename?: 'CancelTransfer' } | { __typename?: 'NewAsset' } | { __typename?: 'NewFreeform' } | { __typename?: 'NewMarket', successorConfiguration?: { __typename?: 'SuccessorConfiguration', parentMarketId: string, insurancePoolFraction: string } | null } | { __typename?: 'NewSpotMarket' } | { __typename?: 'NewTransfer' } | { __typename?: 'UpdateAsset' } | { __typename?: 'UpdateMarket' } | { __typename?: 'UpdateMarketState' } | { __typename?: 'UpdateNetworkParameter' } | { __typename?: 'UpdateReferralProgram' } | { __typename?: 'UpdateSpotMarket' } | { __typename?: 'UpdateVolumeDiscountProgram' } } } | null };
 
 export type InstrumentDetailsQueryVariables = Types.Exact<{
   marketId: Types.Scalars['ID'];
@@ -154,14 +154,10 @@ export const ProposalOfMarketDocument = gql`
     }
     ... on BatchProposal {
       id
-      batchTerms {
-        changes {
+      subProposals {
+        id
+        terms {
           enactmentDatetime
-          change {
-            ... on NewMarket {
-              __typename
-            }
-          }
         }
       }
     }
@@ -207,6 +203,22 @@ export const SuccessorMarketProposalDetailsDocument = gql`
             successorConfiguration {
               parentMarketId
               insurancePoolFraction
+            }
+          }
+        }
+      }
+    }
+    ... on BatchProposal {
+      id
+      batchTerms {
+        changes {
+          change {
+            ... on NewMarket {
+              __typename
+              successorConfiguration {
+                parentMarketId
+                insurancePoolFraction
+              }
             }
           }
         }

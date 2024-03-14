@@ -1,10 +1,17 @@
 import pytest
 import re
+from typing import Generator, Tuple
 from playwright.sync_api import Page, expect
 from vega_sim.null_service import VegaServiceNull
 from vega_sim.service import MarketStateUpdateType
 from datetime import datetime, timedelta
-from conftest import init_vega, cleanup_container
+from conftest import (
+    init_vega,
+    cleanup_container,
+    auth_setup,
+    risk_accepted_setup,
+    init_page,
+)
 from actions.utils import change_keys
 from actions.vega import submit_multiple_orders
 from fixtures.market import setup_perps_market
@@ -13,62 +20,68 @@ from wallet_config import MM_WALLET, MM_WALLET2, TERMINATE_WALLET
 row_selector = '[data-testid="tab-funding-payments"] .ag-center-cols-container .ag-row'
 col_amount = '[col-id="amount"]'
 
+@pytest.fixture(scope="module")
+def setup_environment(
+        request, browser
+    ) -> Generator[Tuple[Page, VegaServiceNull, str], None, None]:
+        with init_vega(request) as vega:
+            request.addfinalizer(lambda: cleanup_container(vega))
+            perps_market = setup_perps_market(vega)
+            submit_multiple_orders(
+                vega, MM_WALLET.name, perps_market, "SIDE_SELL", [[1, 110], [1, 105]]
+            )
+            submit_multiple_orders(
+                vega, MM_WALLET2.name, perps_market, "SIDE_BUY", [[1, 90], [1, 95]]
+            )
+            vega.submit_settlement_data(
+                settlement_key=TERMINATE_WALLET.name,
+                settlement_price=110,
+                market_id=perps_market,
+            )
+            vega.wait_fn(1)
+            vega.wait_for_total_catchup()
+            submit_multiple_orders(
+                vega, MM_WALLET.name, perps_market, "SIDE_SELL", [[1, 110], [1, 105]]
+            )
+            submit_multiple_orders(
+                vega, MM_WALLET2.name, perps_market, "SIDE_BUY", [[1, 112], [1, 115]]
+            )
+            vega.submit_settlement_data(
+                settlement_key=TERMINATE_WALLET.name,
+                settlement_price=110,
+                market_id=perps_market,
+            )
+            vega.wait_fn(10)
+            vega.wait_for_total_catchup()
 
+            with init_page(vega, browser, request) as page:
+                risk_accepted_setup(page)
+                auth_setup(vega, page)
+                yield page, vega, perps_market
 class TestPerpetuals:
-    @pytest.fixture(scope="class")
-    def vega(self, request):
-        with init_vega(request) as vega_instance:
-            request.addfinalizer(lambda: cleanup_container(vega_instance))
-            yield vega_instance
-
-    @pytest.fixture(scope="class")
-    def perps_market(self, vega: VegaServiceNull):
-        perps_market = setup_perps_market(vega)
-        submit_multiple_orders(
-            vega, MM_WALLET.name, perps_market, "SIDE_SELL", [[1, 110], [1, 105]]
-        )
-        submit_multiple_orders(
-            vega, MM_WALLET2.name, perps_market, "SIDE_BUY", [[1, 90], [1, 95]]
-        )
-        vega.submit_settlement_data(
-            settlement_key=TERMINATE_WALLET.name,
-            settlement_price=110,
-            market_id=perps_market,
-        )
-        vega.wait_fn(1)
-        vega.wait_for_total_catchup()
-        submit_multiple_orders(
-            vega, MM_WALLET.name, perps_market, "SIDE_SELL", [[1, 110], [1, 105]]
-        )
-        submit_multiple_orders(
-            vega, MM_WALLET2.name, perps_market, "SIDE_BUY", [[1, 112], [1, 115]]
-        )
-        vega.submit_settlement_data(
-            settlement_key=TERMINATE_WALLET.name,
-            settlement_price=110,
-            market_id=perps_market,
-        )
-        vega.wait_fn(10)
-        vega.wait_for_total_catchup()
-        return perps_market
-
-    @pytest.mark.usefixtures("risk_accepted", "auth")
-    def test_funding_payment_profit(self, perps_market, page: Page):
+    def test_funding_payment_profit(self, 
+        setup_environment: Tuple[Page, str, str],
+    ) -> None:
+        page, vega, perps_market = setup_environment
         page.goto(f"/#/markets/{perps_market}")
         page.get_by_test_id("Funding payments").click()
         row = page.locator(row_selector)
         expect(row.locator(col_amount)).to_have_text("4.45 tDAI")
 
-    @pytest.mark.usefixtures("risk_accepted", "auth")
-    def test_funding_payment_loss(self, perps_market, page: Page, vega):
+    def test_funding_payment_loss(self, 
+        setup_environment: Tuple[Page, str, str],
+    ) -> None:
+        page, vega, perps_market = setup_environment
         page.goto(f"/#/markets/{perps_market}")
         change_keys(page, vega, "market_maker")
         page.get_by_test_id("Funding payments").click()
         row = page.locator(row_selector)
         expect(row.locator(col_amount)).to_have_text("-13.35 tDAI")
 
-    @pytest.mark.usefixtures("risk_accepted", "auth")
-    def test_funding_header(self, perps_market, page: Page):
+    def test_funding_header(self, 
+        setup_environment: Tuple[Page, str, str],
+    ) -> None:
+        page, vega, perps_market = setup_environment
         page.goto(f"/#/markets/{perps_market}")
         expect(page.get_by_test_id("market-funding")).to_contain_text(
             "Funding Rate / Countdown-8.1818%"
@@ -76,7 +89,6 @@ class TestPerpetuals:
         expect(page.get_by_test_id("index-price")).to_have_text("Index Price110.00")
 
     @pytest.mark.skip("Skipped due to issue #5421")
-    @pytest.mark.usefixtures("risk_accepted", "auth")
     def test_funding_payment_history(perps_market, page: Page, vega):
         page.goto(f"/#/markets/{perps_market}")
         change_keys(page, vega, "market_maker")

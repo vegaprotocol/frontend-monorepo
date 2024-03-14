@@ -1,18 +1,16 @@
 import BigNumber from 'bignumber.js';
 
 export const priceChangePercentage = (candles: string[]) => {
-  const change = priceChange(candles);
-  if (change && candles && candles.length > 0) {
-    const yesterdayLastPrice = candles[0] && BigInt(candles[0]);
-    if (yesterdayLastPrice) {
-      return new BigNumber(change.toString())
-        .dividedBy(new BigNumber(yesterdayLastPrice.toString()))
-        .multipliedBy(100)
-        .toNumber();
-    }
+  if (!candles.length) {
     return 0;
   }
-  return 0;
+
+  const change = priceChange(candles);
+
+  return new BigNumber(change.toString())
+    .dividedBy(new BigNumber(candles[0]))
+    .multipliedBy(100)
+    .toNumber();
 };
 
 export const priceChange = (candles: string[]) => {

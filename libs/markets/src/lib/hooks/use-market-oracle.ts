@@ -25,6 +25,7 @@ export const getMatchingOracleProvider = (
 
     if (
       dataSourceSpec.sourceType.__typename === 'DataSourceDefinitionExternal' &&
+      dataSourceSpec.sourceType.sourceType &&
       'signers' in dataSourceSpec.sourceType.sourceType
     ) {
       return dataSourceSpec.sourceType.sourceType.signers?.some(

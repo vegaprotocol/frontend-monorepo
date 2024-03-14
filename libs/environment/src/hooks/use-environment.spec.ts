@@ -34,6 +34,16 @@ const createDefaultMockClient = () => {
             blockHeight: '100',
             vegaTime: new Date().toISOString(),
           },
+          networkParametersConnection: {
+            edges: [
+              {
+                node: {
+                  key: 'something',
+                  value: 123,
+                },
+              },
+            ],
+          },
         },
       }),
     subscribe: () => ({
@@ -183,6 +193,16 @@ describe('useEnvironment', () => {
                   blockHeight: '100',
                   vegaTime: new Date(1).toISOString(),
                 },
+                networkParametersConnection: {
+                  edges: [
+                    {
+                      node: {
+                        key: 'something',
+                        value: 123,
+                      },
+                    },
+                  ],
+                },
               },
             });
           }, wait);
@@ -243,6 +263,16 @@ describe('useEnvironment', () => {
               chainId: 'chain-id',
               blockHeight: '100',
               vegaTime: new Date().toISOString(),
+            },
+            networkParametersConnection: {
+              edges: [
+                {
+                  node: {
+                    key: 'something',
+                    value: 123,
+                  },
+                },
+              ],
             },
           },
         }),

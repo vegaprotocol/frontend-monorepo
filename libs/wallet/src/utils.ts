@@ -1,9 +1,4 @@
-import { removeDecimal, toNanoSeconds } from '@vegaprotocol/utils';
-import { type AccountType, type Market, type Order } from '@vegaprotocol/types';
-import BigNumber from 'bignumber.js';
-import { ethers } from 'ethers';
 import { sha3_256 } from 'js-sha3';
-import type { Exact } from 'type-fest';
 import {
   type ApplyReferralCode,
   type BatchMarketInstructionSubmissionBody,
@@ -16,8 +11,6 @@ import {
   type TransferBody,
   type UpdateMarginModeBody,
   type WithdrawSubmissionBody,
-  type Transfer,
-  type OrderAmendment,
   type Transaction,
 } from './transaction-types';
 
@@ -26,58 +19,20 @@ import {
  * Can match up the newly created order with incoming orders via a subscription
  */
 export const determineId = (sig: string) => {
-  return sha3_256(ethers.utils.arrayify('0x' + sig));
+  return sha3_256(new Uint8Array(hexToBytes(sig)));
 };
 
-/**
- * Base64 encode a transaction object
- */
-export const encodeTransaction = (tx: Transaction): string => {
-  return ethers.utils.base64.encode(
-    ethers.utils.toUtf8Bytes(JSON.stringify(tx))
-  );
-};
-
-export const normalizeOrderAmendment = <T extends Exact<OrderAmendment, T>>(
-  order: Pick<Order, 'id' | 'timeInForce' | 'size' | 'expiresAt'>,
-  market: Pick<Market, 'id' | 'decimalPlaces' | 'positionDecimalPlaces'>,
-  price: string,
-  size: string
-): OrderAmendment => ({
-  orderId: order.id,
-  marketId: market.id,
-  price: removeDecimal(price, market.decimalPlaces),
-  timeInForce: order.timeInForce,
-  sizeDelta: size
-    ? new BigNumber(removeDecimal(size, market.positionDecimalPlaces))
-        .minus(order.size)
-        .toNumber()
-    : 0,
-  expiresAt: order.expiresAt
-    ? toNanoSeconds(order.expiresAt) // Wallet expects timestamp in nanoseconds
-    : undefined,
-});
-
-export const normalizeTransfer = <T extends Exact<Transfer, T>>(
-  address: string,
-  amount: string,
-  fromAccountType: AccountType,
-  toAccountType: AccountType,
-  asset: {
-    id: string;
-    decimals: number;
+function hexToBytes(hex: string) {
+  const bytes = [];
+  for (let i = 0; i < hex.length; i += 2) {
+    bytes.push(parseInt(hex.substring(i, i + 2), 16));
   }
-): Transfer => {
-  return {
-    to: address,
-    fromAccountType,
-    toAccountType,
-    asset: asset.id,
-    amount: removeDecimal(amount, asset.decimals),
-    // oneOff or recurring required otherwise wallet will error
-    // default oneOff is immediate transfer
-    oneOff: {},
-  };
+  return bytes;
+}
+
+/* Validates string is 64 chars hex string */
+export const isValidVegaPublicKey = (value: string) => {
+  return /^[A-Fa-f0-9]{64}$/i.test(value);
 };
 
 /**

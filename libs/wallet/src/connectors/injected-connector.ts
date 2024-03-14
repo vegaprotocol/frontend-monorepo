@@ -23,6 +23,7 @@ interface InjectedError {
         message: string;
         code: number;
       }
+    | string[]
     | string;
 }
 
@@ -48,6 +49,11 @@ export class InjectedConnector implements Connector {
       if (err instanceof ConnectorError) {
         throw err;
       }
+
+      if (this.isInjectedError(err)) {
+        throw connectError(err.message);
+      }
+
       throw connectError();
     }
   }
@@ -66,6 +72,10 @@ export class InjectedConnector implements Connector {
       const res = await window.vega.getChainId();
       return { chainId: res.chainID };
     } catch (err) {
+      if (this.isInjectedError(err)) {
+        throw connectError(err.message);
+      }
+
       throw chainIdError();
     }
   }
@@ -84,6 +94,10 @@ export class InjectedConnector implements Connector {
       const res = await window.vega.isConnected();
       return { connected: res };
     } catch (err) {
+      if (this.isInjectedError(err)) {
+        throw connectError(err.message);
+      }
+
       throw isConnectedError();
     }
   }
@@ -104,11 +118,7 @@ export class InjectedConnector implements Connector {
           throw userRejectedError();
         }
 
-        if (typeof err.data === 'string') {
-          throw sendTransactionError(err.data);
-        } else {
-          throw sendTransactionError(err.data.message);
-        }
+        throw sendTransactionError(JSON.stringify(err.data));
       }
 
       throw sendTransactionError();

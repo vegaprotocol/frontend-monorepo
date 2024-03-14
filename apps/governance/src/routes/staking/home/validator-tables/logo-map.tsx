@@ -3,8 +3,6 @@ export const VALIDATOR_LOGO_MAP: { [key: string]: string } = {
     'https://pbs.twimg.com/profile_images/1586047492629712897/ZVMWBE94_400x400.jpg',
   efbdf943443bd7595e83b0d7e88f37b7932d487d1b94aab3d004997273bb43fc:
     'https://pbs.twimg.com/profile_images/1026823609979949057/3e-LCHHm_400x400.jpg',
-  '126751c5830b50d39eb85412fb2964f46338cce6946ff455b73f1b1be3f5e8cc':
-    'https://pbs.twimg.com/profile_images/1228627868542029824/9aoaLiIx_400x400.jpg',
   '43697a3e911d8b70c0ce672adde17a5c38ca8f6a0486bf85ed0546e1b9a82887':
     'https://pbs.twimg.com/profile_images/1352167987478843392/XzX82gIb_400x400.jpg',
   ac735acc9ab11cf1d8c59c2df2107e00092b4ac96451cb137a1629af5b66242a:

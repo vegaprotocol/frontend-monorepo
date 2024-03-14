@@ -9,12 +9,14 @@ from actions.utils import next_epoch, change_keys
 from wallet_config import MM_WALLET
 from vega_sim.null_service import VegaServiceNull
 
+
 @pytest.fixture(scope="module")
 def setup_environment(request, browser) -> Generator[Tuple[Page, str, str], None, None]:
     with init_vega(request) as vega_instance:
         request.addfinalizer(lambda: cleanup_container(vega_instance))
 
-        tDAI_market, tDAI_asset_id = setup_market_with_reward_program(vega_instance)
+        tDAI_market, tDAI_asset_id = setup_market_with_reward_program(
+            vega_instance)
 
         with init_page(vega_instance, browser, request) as page:
             risk_accepted_setup(page)
@@ -147,12 +149,10 @@ def setup_market_with_reward_program(vega: VegaServiceNull):
     return tDAI_market, tDAI_asset_id
 
 
-
-def test_network_reward_pot(     setup_environment: Tuple[Page, str, str],
-) -> None:
+def test_network_reward_pot(setup_environment: Tuple[Page, str, str],
+                            ) -> None:
     page, tDAI_market, tDAI_asset_id = setup_environment
     expect(page.get_by_test_id(TOTAL_REWARDS)).to_have_text("183.33333 tDAI")
-
 
 
 def test_reward_multiplier(
@@ -168,7 +168,6 @@ def test_reward_multiplier(
     )
 
 
-
 def test_reward_history(
     setup_environment: Tuple[Page, str, str],
 ) -> None:
@@ -177,26 +176,37 @@ def test_reward_history(
     expect((page.get_by_role(ROW).locator(PRICE_TAKING_COL_ID)).nth(1)).to_have_text(
         "299.99999100.00%"
     )
-    expect((page.get_by_role(ROW).locator(TOTAL_COL_ID)).nth(1)).to_have_text("299.99999")
+    expect((page.get_by_role(ROW).locator(TOTAL_COL_ID)).nth(
+        1)).to_have_text("299.99999")
     page.get_by_test_id(EARNED_BY_ME_BUTTON).click()
     expect((page.get_by_role(ROW).locator(TOTAL_COL_ID)).nth(1)).to_have_text(
         "183.33333"
     )
 
+
 def test_staking_reward(
-    page: Page,
+    setup_environment: Tuple[Page, str, str],
 ):
+    page, tDAI_market, tDAI_asset_id = setup_environment
     expect(page.get_by_test_id("active-rewards-card")).to_have_count(2)
     staking_reward_card = page.get_by_test_id("active-rewards-card").nth(1)
     expect(staking_reward_card).to_be_visible()
-    expect(staking_reward_card.get_by_test_id("entity-scope")).to_have_text("Individual")
-    expect(staking_reward_card.get_by_test_id("locked-for")).to_have_text("0 epochs")
-    expect(staking_reward_card.get_by_test_id("reward-value")).to_have_text("100.00")
-    expect(staking_reward_card.get_by_test_id("distribution-strategy")).to_have_text("Pro rata")
+    expect(staking_reward_card.get_by_test_id(
+        "entity-scope")).to_have_text("Individual")
+    expect(staking_reward_card.get_by_test_id(
+        "locked-for")).to_have_text("0 epochs")
+    expect(staking_reward_card.get_by_test_id(
+        "reward-value")).to_have_text("100.00")
+    expect(staking_reward_card.get_by_test_id(
+        "distribution-strategy")).to_have_text("Pro rata")
     expect(staking_reward_card.get_by_test_id("dispatch-metric-info")).to_have_text(
         "Staking rewards"
     )
-    expect(staking_reward_card.get_by_test_id("assessed-over")).to_have_text("1 epoch")
-    expect(staking_reward_card.get_by_test_id("scope")).to_have_text("Individual")
-    expect(staking_reward_card.get_by_test_id("staking-requirement")).to_have_text("1.00")
-    expect(staking_reward_card.get_by_test_id("average-position")).to_have_text("0.00")
+    expect(staking_reward_card.get_by_test_id(
+        "assessed-over")).to_have_text("1 epoch")
+    expect(staking_reward_card.get_by_test_id(
+        "scope")).to_have_text("Individual")
+    expect(staking_reward_card.get_by_test_id(
+        "staking-requirement")).to_have_text("1.00")
+    expect(staking_reward_card.get_by_test_id(
+        "average-position")).to_have_text("0.00")

@@ -54,6 +54,7 @@ export const generateFill = (override?: PartialDeep<Trade>) => {
       decimalPlaces: 5,
       state: MarketState.STATE_ACTIVE,
       tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+      tickSize: '1',
       fees: {
         __typename: 'Fees',
         factors: {
@@ -65,6 +66,8 @@ export const generateFill = (override?: PartialDeep<Trade>) => {
       },
       marketTimestamps: {
         __typename: 'MarketTimestamps',
+        proposed: '2005-03-31T19:37:00.000Z',
+        pending: '2005-04-01T19:37:00.000Z',
         open: '2005-04-02T19:37:00.000Z',
         close: '2005-04-02T19:37:00.000Z',
       },

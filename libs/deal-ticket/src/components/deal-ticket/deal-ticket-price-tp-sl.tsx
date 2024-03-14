@@ -1,10 +1,9 @@
 import { Controller, type Control } from 'react-hook-form';
 import type { Market } from '@vegaprotocol/markets';
 import type { OrderFormValues } from '../../hooks/use-form-values';
-import { toDecimal, useValidateAmount } from '@vegaprotocol/utils';
+import { determinePriceStep, useValidateAmount } from '@vegaprotocol/utils';
 import {
   TradingFormGroup,
-  TradingInputError,
   Tooltip,
   FormGroup,
   Input,
@@ -29,32 +28,8 @@ export const DealTicketPriceTakeProfitStopLoss = ({
   quoteName,
 }: DealTicketPriceTakeProfitStopLossProps) => {
   const t = useT();
+  const priceStep = determinePriceStep(market);
   const validateAmount = useValidateAmount();
-  const priceStep = toDecimal(market?.decimalPlaces);
-
-  const renderTakeProfitError = () => {
-    if (takeProfitError) {
-      return (
-        <TradingInputError testId="deal-ticket-take-profit-error-message">
-          {takeProfitError}
-        </TradingInputError>
-      );
-    }
-
-    return null;
-  };
-
-  const renderStopLossError = () => {
-    if (stopLossError) {
-      return (
-        <TradingInputError testId="deal-stop-loss-error-message">
-          {stopLossError}
-        </TradingInputError>
-      );
-    }
-
-    return null;
-  };
 
   return (
     <div className="mb-2">
@@ -75,15 +50,6 @@ export const DealTicketPriceTakeProfitStopLoss = ({
               name="takeProfit"
               control={control}
               rules={{
-                min: {
-                  value: priceStep,
-                  message: t(
-                    'Take profit price cannot be lower than {{priceStep}}',
-                    {
-                      priceStep,
-                    }
-                  ),
-                },
                 validate: validateAmount(priceStep, 'takeProfit'),
               }}
               render={({ field, fieldState }) => (
@@ -104,9 +70,9 @@ export const DealTicketPriceTakeProfitStopLoss = ({
                       {...field}
                     />
                   </FormGroup>
-                  {fieldState.error && (
+                  {(fieldState.error || takeProfitError) && (
                     <InputError testId="deal-ticket-error-message-price-take-profit">
-                      {fieldState.error.message}
+                      {fieldState.error?.message || takeProfitError}
                     </InputError>
                   )}
                 </div>
@@ -128,12 +94,6 @@ export const DealTicketPriceTakeProfitStopLoss = ({
               name="stopLoss"
               control={control}
               rules={{
-                min: {
-                  value: priceStep,
-                  message: t('Price cannot be lower than {{priceStep}}', {
-                    priceStep,
-                  }),
-                },
                 validate: validateAmount(priceStep, 'stopLoss'),
               }}
               render={({ field, fieldState }) => (
@@ -154,9 +114,9 @@ export const DealTicketPriceTakeProfitStopLoss = ({
                       {...field}
                     />
                   </FormGroup>
-                  {fieldState.error && (
+                  {(fieldState.error || stopLossError) && (
                     <InputError testId="deal-ticket-error-message-price-stop-loss">
-                      {fieldState.error.message}
+                      {fieldState.error?.message || stopLossError}
                     </InputError>
                   )}
                 </div>
@@ -165,8 +125,6 @@ export const DealTicketPriceTakeProfitStopLoss = ({
           </TradingFormGroup>
         </div>
       </div>
-      {renderTakeProfitError()}
-      {renderStopLossError()}
     </div>
   );
 };

@@ -21,6 +21,7 @@ export const generateStopOrder = (
       __typename: 'Market',
       id: 'market-id',
       decimalPlaces: 1,
+      tickSize: '1',
       fees: {
         __typename: 'Fees',
         factors: {
@@ -32,6 +33,8 @@ export const generateStopOrder = (
       },
       marketTimestamps: {
         __typename: 'MarketTimestamps',
+        proposed: '2005-04-02T19:37:00.000Z',
+        pending: '2005-04-03T19:37:00.000Z',
         close: '',
         open: '',
       },

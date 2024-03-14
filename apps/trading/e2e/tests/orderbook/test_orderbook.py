@@ -3,45 +3,46 @@ from playwright.sync_api import Page, expect
 from vega_sim.null_service import VegaServiceNull
 from typing import List
 from actions.vega import submit_order, submit_liquidity, submit_multiple_orders
-from conftest import init_vega, cleanup_container
+from conftest import init_vega, cleanup_container, init_page, risk_accepted_setup
 from fixtures.market import setup_simple_market
 from wallet_config import MM_WALLET, MM_WALLET2
 from actions.utils import next_epoch
+from typing import Generator, Tuple
 
 
 @pytest.fixture(scope="module")
-def vega(request):
-    with init_vega(request) as vega_instance:
-        request.addfinalizer(lambda: cleanup_container(vega_instance))
-        yield vega_instance
+def setup_environment(request, browser) -> Generator[Tuple[Page, VegaServiceNull, str], None, None]:
+    # Setup Vega instance and perform cleanup after the test module
+    with init_vega(request) as vega:
+        request.addfinalizer(lambda: cleanup_container(vega))
 
+        # Setup the market using the Vega instance
+        market_id = setup_simple_market(vega)
 
-@pytest.fixture(scope="module")
-def setup_market(vega: VegaServiceNull):
-    market_id = setup_simple_market(vega)
-    submit_liquidity(vega, MM_WALLET.name, market_id)
-    submit_multiple_orders(
-        vega,
-        MM_WALLET.name,
-        market_id,
-        "SIDE_SELL",
-        [[10, 130.005], [3, 130], [7, 120], [5, 110], [2, 105]],
-    )
-    submit_multiple_orders(
-        vega,
-        MM_WALLET2.name,
-        market_id,
-        "SIDE_BUY",
-        [[10, 69.995], [5, 70], [5, 85], [3, 90], [3, 95]],
-    )
+        # Perform additional market setup tasks
+        submit_liquidity(vega, MM_WALLET.name, market_id)
+        submit_multiple_orders(
+            vega,
+            MM_WALLET.name,
+            market_id,
+            "SIDE_SELL",
+            [[10, 130.005], [3, 130], [7, 120], [5, 110], [2, 105]],
+        )
+        submit_multiple_orders(
+            vega,
+            MM_WALLET2.name,
+            market_id,
+            "SIDE_BUY",
+            [[10, 69.995], [5, 70], [5, 85], [3, 90], [3, 95]],
+        )
 
-    vega.wait_fn(1)
-    vega.wait_for_total_catchup()
-    
-    return [
-        vega,
-        market_id,
-    ]
+        # Wait for the setup to be reflected in Vega
+        vega.wait_fn(1)
+        vega.wait_for_total_catchup()
+
+        with init_page(vega, browser, request) as page:
+                risk_accepted_setup(page)
+                yield page, vega, market_id
 
 
 # these values don't align with the multiple orders above as
@@ -82,10 +83,10 @@ def verify_prices_descending(page: Page):
     assert prices == sorted(prices, reverse=True)
 
 
-@pytest.mark.usefixtures("risk_accepted")
-def test_orderbook_grid_content(setup_market, page: Page):
-    vega = setup_market[0]
-    market_id = setup_market[1]
+
+def test_orderbook_grid_content(setup_environment: Tuple[Page, VegaServiceNull, str],
+    ) -> None:
+    page, vega, market_id = setup_environment
 
     # Create a so that lastTradePrice is shown in the mid section
     # of the book
@@ -140,9 +141,10 @@ def test_orderbook_grid_content(setup_market, page: Page):
     verify_prices_descending(page)
 
 
-@pytest.mark.usefixtures("risk_accepted")
-def test_orderbook_resolution_change(setup_market, page: Page):
-    market_id = setup_market[1]
+
+def test_orderbook_resolution_change(setup_environment: Tuple[Page, VegaServiceNull, str],
+    ) -> None:
+    page, vega, market_id = setup_environment
     # 6003-ORDB-008
     orderbook_content_0_01 = [
         [130.01, 10, 126],
@@ -186,10 +188,12 @@ def test_orderbook_resolution_change(setup_market, page: Page):
         verify_orderbook_grid(page, resolution[1])
 
 
-@pytest.mark.usefixtures("risk_accepted")
-def test_orderbook_price_size_copy(setup_market, page: Page):
-    market_id = setup_market[1]
+def test_orderbook_price_size_copy(setup_environment: Tuple[Page, VegaServiceNull, str],
+    ) -> None:
+    page, vega, market_id = setup_environment
     # 6003-ORDB-009
+    page.get_by_test_id("resolution").click()
+    page.get_by_role("menuitem").get_by_text("0.00001", exact=True).click()
     prices = page.get_by_test_id("tab-orderbook").locator('[data-testid^="price-"]')
     volumes = page.get_by_test_id("tab-orderbook").locator('[data-testid*="-vol-"]')
 
@@ -205,10 +209,10 @@ def test_orderbook_price_size_copy(setup_market, page: Page):
         expect(page.get_by_test_id("order-size")).to_have_value(volume.text_content())
 
 
-@pytest.mark.usefixtures("risk_accepted")
-def test_orderbook_price_movement(setup_market, page: Page):
-    vega = setup_market[0]
-    market_id = setup_market[1]
+
+def test_orderbook_price_movement(setup_environment: Tuple[Page, VegaServiceNull, str],
+    ) -> None:
+    page, vega, market_id = setup_environment
 
     page.goto(f"/#/markets/{market_id}")
     page.locator("[data-testid=Orderbook]").click()
