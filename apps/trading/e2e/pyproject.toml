@@ -15,7 +15,7 @@ pytest-xdist = "^3.3.1"
 python-dotenv = "^1.0.0"
 
 [tool.poetry.group.main.dependencies]
-vega-sim = { git = "https://github.com/vegaprotocol/vega-market-sim.git/", tag = "v0.74.10" }
+vega-sim = { git = "https://github.com/vegaprotocol/vega-market-sim.git/", tag = "vega-v0.74.10" }
 
 [tool.poetry.group.develop.dependencies]
 vega-sim = { git = "https://github.com/vegaprotocol/vega-market-sim.git/" }
