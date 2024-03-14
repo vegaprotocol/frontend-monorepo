@@ -79,6 +79,7 @@ query ActiveRewards(
               startEpoch
               endEpoch
               dispatchStrategy {
+                capRewardFeeMultiple
                 dispatchMetric
                 dispatchMetricAssetId
                 marketIdsInScope
