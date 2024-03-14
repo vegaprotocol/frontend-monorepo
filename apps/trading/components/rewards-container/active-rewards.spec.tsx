@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import { ActiveRewardCard, applyFilter } from './active-rewards';
+import { applyFilter } from './active-rewards';
 import {
   AccountType,
   AssetStatus,
@@ -11,6 +11,7 @@ import {
   type Transfer,
 } from '@vegaprotocol/types';
 import { type EnrichedRewardTransfer } from '../../lib/hooks/use-rewards';
+import { ActiveRewardCard } from './reward-card';
 
 jest.mock('../../lib/hooks/__generated__/Rewards', () => ({
   useTWAPQuery: () => ({
