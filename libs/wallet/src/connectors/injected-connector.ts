@@ -49,6 +49,11 @@ export class InjectedConnector implements Connector {
       if (err instanceof ConnectorError) {
         throw err;
       }
+
+      if (this.isInjectedError(err)) {
+        throw connectError(err.message);
+      }
+
       throw connectError();
     }
   }
@@ -67,6 +72,10 @@ export class InjectedConnector implements Connector {
       const res = await window.vega.getChainId();
       return { chainId: res.chainID };
     } catch (err) {
+      if (this.isInjectedError(err)) {
+        throw connectError(err.message);
+      }
+
       throw chainIdError();
     }
   }
@@ -85,6 +94,10 @@ export class InjectedConnector implements Connector {
       const res = await window.vega.isConnected();
       return { connected: res };
     } catch (err) {
+      if (this.isInjectedError(err)) {
+        throw connectError(err.message);
+      }
+
       throw isConnectedError();
     }
   }
