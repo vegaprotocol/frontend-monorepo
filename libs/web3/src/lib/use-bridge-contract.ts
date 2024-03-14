@@ -1,15 +1,14 @@
+import { useMemo } from 'react';
 import { CollateralBridge } from '@vegaprotocol/smart-contracts';
 import { useWeb3React } from '@web3-react/core';
-import { useMemo } from 'react';
 import { useEthereumConfig } from './use-ethereum-config';
 import { useDefaultWeb3Provider } from './default-web3-provider';
-import { localLoggerFactory } from '@vegaprotocol/logger';
+import { logger } from './logger';
 
 export const useBridgeContract = (allowDefaultProvider = false) => {
   const { provider: activeProvider } = useWeb3React();
   const { provider: defaultProvider } = useDefaultWeb3Provider();
   const { config } = useEthereumConfig();
-  const logger = localLoggerFactory({ application: 'web3' });
 
   const provider = useMemo(() => {
     if (!activeProvider && allowDefaultProvider) {

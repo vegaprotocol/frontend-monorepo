@@ -4,7 +4,6 @@ import { useEffect, useRef } from 'react';
 import { addDecimal } from '@vegaprotocol/utils';
 import { useGetWithdrawThreshold } from './use-get-withdraw-threshold';
 import { useGetWithdrawDelay } from './use-get-withdraw-delay';
-import { localLoggerFactory } from '@vegaprotocol/logger';
 
 import { CollateralBridge } from '@vegaprotocol/smart-contracts';
 import { useEthereumConfig } from './use-ethereum-config';
@@ -21,6 +20,7 @@ import {
   WithdrawalFailure,
 } from './use-ethereum-withdraw-approvals-store';
 import { useT } from './use-t';
+import { logger } from './logger';
 
 export const useEthWithdrawApprovalsManager = () => {
   const t = useT();
@@ -144,10 +144,7 @@ export const useEthWithdrawApprovalsManager = () => {
         transaction.withdrawal || undefined
       );
     })().catch((err) => {
-      localLoggerFactory({ application: 'web3' }).error(
-        'create withdrawal transaction',
-        err
-      );
+      logger.error('create withdrawal transaction', err);
       update(transaction.id, {
         status: ApprovalStatus.Error,
         message: t('Something went wrong'),
