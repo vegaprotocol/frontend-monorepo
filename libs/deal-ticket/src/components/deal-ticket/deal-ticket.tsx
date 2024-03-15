@@ -395,7 +395,12 @@ export const DealTicket = ({
     (!openVolume.startsWith('-') && side === Schema.Side.SIDE_SELL);
   if (margin?.marginMode === Schema.MarginMode.MARGIN_MODE_ISOLATED_MARGIN) {
     const availableMargin = new BigNumber(generalAccountBalance)
-      .plus(reducePositionOrder ? marginAccountBalance || 0 : 0)
+      .plus(
+        reducePositionOrder &&
+          normalizedOrder.type === Schema.OrderType.TYPE_MARKET
+          ? marginAccountBalance || 0
+          : 0
+      )
       .div(new BigNumber(10).exponentiatedBy(accountDecimals ?? 0));
     maxSize = availableMargin
       .div(margin.marginFactor)
@@ -405,7 +410,10 @@ export const DealTicket = ({
         )
       );
     maxSize = maxSize.minus(maxSize.mod(sizeStep));
-    if (reducePositionOrder) {
+    if (
+      reducePositionOrder &&
+      normalizedOrder.type === Schema.OrderType.TYPE_MARKET
+    ) {
       maxSize = maxSize.plus(volume.abs());
     }
   } else {
