@@ -1948,7 +1948,7 @@ export const PriceConfigurationOraclePanel = ({
             </KeyValueTableRow>
             <ExternalLink
               data-testid="oracle-spec-links"
-              href={`${VEGA_EXPLORER_URL}/market/${marketId}/oracles#${sourceType.address}`}
+              href={`${VEGA_EXPLORER_URL}/markets/${marketId}/oracles#${sourceType.address}`}
               className="text-xs my-1"
             >
               {t('Oracle specification')}
