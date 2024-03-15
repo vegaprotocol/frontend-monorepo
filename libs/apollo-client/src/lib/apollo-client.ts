@@ -126,6 +126,7 @@ export function createClient({
         'NodeCheck',
         'NodeCheckTimeUpdate',
         'BlockStatistics',
+        'TWAP',
       ].includes(operation.operationName)
     ) {
       return;
