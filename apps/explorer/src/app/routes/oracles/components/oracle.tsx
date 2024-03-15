@@ -48,6 +48,11 @@ export const OracleDetails = ({
       ? dataSource.dataSourceSpec.spec.data.sourceType.sourceType.sourceChainId.toString()
       : undefined;
 
+  const requiredConfirmations =
+    (sourceType.sourceType.__typename === 'EthCallSpec' &&
+      sourceType.sourceType.requiredConfirmations) ||
+    '';
+
   return (
     <div>
       <TableWithTbody className="mb-2">
@@ -64,15 +69,23 @@ export const OracleDetails = ({
             {getStatusString(dataSource.dataSourceSpec.spec.status)}
           </TableCell>
         </TableRow>
+        <OracleMarkets id={id} />
         <OracleSigners sourceType={sourceType} />
         <OracleEthSource sourceType={sourceType} chain={chain} />
-        <OracleMarkets id={id} />
         <TableRow modifier="bordered">
-          <TableHeader scope="row">{t('Filter')}</TableHeader>
+          <TableHeader scope="row" className="pt-1 align-text-top">
+            {t('Filter')}
+          </TableHeader>
           <TableCell modifier="bordered">
             <OracleFilter data={dataSource} />
           </TableCell>
         </TableRow>
+        {requiredConfirmations && requiredConfirmations > 0 && (
+          <TableRow modifier="bordered">
+            <TableHeader scope="row">{t('Required Confirmations')}</TableHeader>
+            <TableCell modifier="bordered">{requiredConfirmations}</TableCell>
+          </TableRow>
+        )}
       </TableWithTbody>
       {dataConnection ? <OracleData data={dataConnection} /> : null}
     </div>

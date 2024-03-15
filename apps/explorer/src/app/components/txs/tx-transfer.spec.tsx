@@ -81,6 +81,7 @@ describe('TxDetailsTransfer', () => {
     hash: 'test',
     submitter:
       'e1943eea46fed576cf2be42972f3c5515ad3d0ac7ac013f56677c12a53a1b3ed',
+    block: '100',
     command: {
       nonce: '5188810881378065222',
       blockHeight: '14951513',
