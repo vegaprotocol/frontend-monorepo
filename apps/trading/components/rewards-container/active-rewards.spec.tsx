@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import { ActiveRewardCard, applyFilter } from './active-rewards';
+import { applyFilter } from './active-rewards';
 import {
   AccountType,
   AssetStatus,
@@ -11,6 +11,17 @@ import {
   type Transfer,
 } from '@vegaprotocol/types';
 import { type EnrichedRewardTransfer } from '../../lib/hooks/use-rewards';
+import { ActiveRewardCard } from './reward-card';
+
+jest.mock('../../lib/hooks/__generated__/Rewards', () => ({
+  useTWAPQuery: () => ({
+    data: {
+      timeWeightedNotionalPosition: {
+        timeWeightedNotionalPosition: '1.00',
+      },
+    },
+  }),
+}));
 
 describe('ActiveRewards', () => {
   const reward: EnrichedRewardTransfer = {
@@ -71,7 +82,7 @@ describe('ActiveRewards', () => {
   };
 
   it('renders with valid props', () => {
-    render(<ActiveRewardCard transferNode={reward} currentEpoch={115432} />);
+    render(<ActiveRewardCard transferNode={reward} currentEpoch={115500} />);
 
     expect(
       screen.getByText(/Liquidity provision fees received/i)

@@ -304,7 +304,7 @@ export const RewardsContainer = () => {
   );
 };
 
-type VestingBalances = NonNullable<
+export type VestingBalances = NonNullable<
   RewardsPageQuery['party']
 >['vestingBalancesSummary'];
 

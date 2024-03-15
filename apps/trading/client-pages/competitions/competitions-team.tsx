@@ -41,10 +41,6 @@ import {
 } from '../../lib/hooks/use-games';
 import { useEpochInfoQuery } from '../../lib/hooks/__generated__/Epoch';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
-import {
-  ActiveRewardCard,
-  DispatchMetricInfo,
-} from '../../components/rewards-container/active-rewards';
 import { type MarketMap, useMarketsMapProvider } from '@vegaprotocol/markets';
 import format from 'date-fns/format';
 import {
@@ -52,6 +48,10 @@ import {
   isScopedToTeams,
   useRewards,
 } from '../../lib/hooks/use-rewards';
+import {
+  ActiveRewardCard,
+  DispatchMetricInfo,
+} from '../../components/rewards-container/reward-card';
 
 export const CompetitionsTeam = () => {
   const t = useT();

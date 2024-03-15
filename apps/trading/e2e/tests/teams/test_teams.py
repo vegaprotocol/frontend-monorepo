@@ -10,7 +10,8 @@ from typing import Generator, Tuple
 from wallet_config import PARTY_A, PARTY_B, PARTY_C, PARTY_D, MM_WALLET, MM_WALLET2
 
 COMPETITIONS_URL = "/#/competitions/"
-TEAMS_URL = "/#/competitions/teams/" 
+TEAMS_URL = "/#/competitions/teams/"
+
 
 @pytest.fixture(scope="module")
 def setup_environment(request, browser) -> Generator[Tuple[Page, VegaServiceNull, dict], None, None]:
@@ -18,6 +19,7 @@ def setup_environment(request, browser) -> Generator[Tuple[Page, VegaServiceNull
         request.addfinalizer(lambda: cleanup_container(vega_instance))
         setup_data = setup_teams_and_games(vega_instance)
         yield vega_instance, setup_data
+
 
 @pytest.fixture(scope="module")
 def competitions_page(setup_environment, browser, request) -> Generator[Tuple[Page, str, VegaServiceNull], None, None]:
@@ -29,6 +31,7 @@ def competitions_page(setup_environment, browser, request) -> Generator[Tuple[Pa
         page.goto(COMPETITIONS_URL)
         yield page, team_name, vega_instance
 
+
 @pytest.fixture(scope="module")
 def team_page(setup_environment, browser, request) -> Generator[Tuple[Page, str, VegaServiceNull], None, None]:
     vega_instance, setup_data = setup_environment
@@ -39,6 +42,7 @@ def team_page(setup_environment, browser, request) -> Generator[Tuple[Page, str,
         auth_setup(vega_instance, page)
         page.goto(f"{TEAMS_URL}{team_id}")
         yield page, team_name, team_id, vega_instance
+
 
 def setup_teams_and_games(vega: VegaServiceNull):
     tDAI_market = setup_continuous_market(vega, custom_quantum=100000)
@@ -53,18 +57,17 @@ def setup_teams_and_games(vega: VegaServiceNull):
     vega.update_network_parameter(
         MM_WALLET.name, parameter="reward.asset", new_value=tDAI_asset_id
     )
-    
 
     next_epoch(vega=vega)
     vega.create_asset(
-            MM_WALLET.name,
-            name="VEGA",
-            symbol="VEGA",
-            decimals=5,
-            max_faucet_amount=1e10,
-            quantum=100000, 
-        )
-    
+        MM_WALLET.name,
+        name="VEGA",
+        symbol="VEGA",
+        decimals=5,
+        max_faucet_amount=1e10,
+        quantum=100000,
+    )
+
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
     VEGA_asset_id = vega.find_asset_id(symbol="VEGA")
@@ -233,7 +236,7 @@ def create_team(vega: VegaServiceNull):
     return team_name
 
 
-def test_team_page_games_table(team_page:Tuple[Page, str, str, VegaServiceNull]):
+def test_team_page_games_table(team_page: Tuple[Page, str, str, VegaServiceNull]):
     page, team_name, team_id, vega = team_page
     page.get_by_test_id("games-toggle").click()
     expect(page.get_by_test_id("games-toggle")).to_have_text("Results (10)")
@@ -248,7 +251,7 @@ def test_team_page_games_table(team_page:Tuple[Page, str, str, VegaServiceNull])
     expect(page.get_by_test_id("participatingMembers-0")).to_have_text("3")
 
 
-def test_team_page_members_table(team_page:Tuple[Page, str, str, VegaServiceNull]):
+def test_team_page_members_table(team_page: Tuple[Page, str, str, VegaServiceNull]):
     page, team_name, team_id, vega = team_page
     page.get_by_test_id("members-toggle").click()
     expect(page.get_by_test_id("members-toggle")).to_have_text("Members (4)")
@@ -257,7 +260,7 @@ def test_team_page_members_table(team_page:Tuple[Page, str, str, VegaServiceNull
     expect(page.get_by_test_id("joinedAtEpoch-0")).to_have_text("9")
 
 
-def test_team_page_headline(team_page:Tuple[Page, str, str, VegaServiceNull]):
+def test_team_page_headline(team_page: Tuple[Page, str, str, VegaServiceNull]):
     page, team_name, team_id, vega = team_page
     expect(page.get_by_test_id("team-name")).to_have_text(team_name)
     expect(page.get_by_test_id("members-count-stat")).to_have_text("4")
@@ -270,7 +273,7 @@ def test_team_page_headline(team_page:Tuple[Page, str, str, VegaServiceNull]):
     expect(page.get_by_test_id("rewards-paid-stat")).to_have_text("500")
 
 
-def test_switch_teams(team_page:Tuple[Page, str, str, VegaServiceNull]):
+def test_switch_teams(team_page: Tuple[Page, str, str, VegaServiceNull]):
     page, team_name, team_id, vega = team_page
     page.get_by_test_id("switch-team-button").click()
     page.get_by_test_id("confirm-switch-button").click()
@@ -282,7 +285,7 @@ def test_switch_teams(team_page:Tuple[Page, str, str, VegaServiceNull]):
     expect(page.get_by_test_id("members-count-stat")).to_have_text("5")
 
 
-def test_leaderboard(competitions_page:Tuple[Page, str, VegaServiceNull]):
+def test_leaderboard(competitions_page: Tuple[Page, str, VegaServiceNull]):
     page, team_name, vega = competitions_page
     page.reload()
     expect(
@@ -302,7 +305,7 @@ def test_leaderboard(competitions_page:Tuple[Page, str, VegaServiceNull]):
     expect(page.get_by_test_id("volume-0")).to_have_text("0")
 
 
-def test_game_card(competitions_page:Tuple[Page, str, VegaServiceNull]):
+def test_game_card(competitions_page: Tuple[Page, str, VegaServiceNull]):
     page, team_name, vega = competitions_page
     expect(page.get_by_test_id("active-rewards-card")).to_have_count(1)
     game_1 = page.get_by_test_id("active-rewards-card").first
@@ -311,17 +314,19 @@ def test_game_card(competitions_page:Tuple[Page, str, VegaServiceNull]):
     expect(game_1.get_by_test_id("locked-for")).to_have_text("1 epoch")
     expect(game_1.get_by_test_id("reward-value")).to_have_text("100.00")
     expect(game_1.get_by_test_id("reward-asset")).to_have_text("VEGA")
-    expect(game_1.get_by_test_id("distribution-strategy")).to_have_text("Pro rata")
+    expect(game_1.get_by_test_id("distribution-strategy")
+           ).to_have_text("Pro rata")
     expect(game_1.get_by_test_id("dispatch-metric-info")).to_have_text(
         "Price maker fees paid • tDAI"
     )
     expect(game_1.get_by_test_id("assessed-over")).to_have_text("15 epochs")
-    expect(game_1.get_by_test_id("scope")).to_have_text("All teams")
-    expect(game_1.get_by_test_id("staking-requirement")).to_have_text("0.00")
-    expect(game_1.get_by_test_id("average-position")).to_have_text("0.00")
+    page.pause()
+    expect(game_1.get_by_test_id("scope")).to_have_text("Eligible")
+    expect(game_1.get_by_test_id("staking-requirement")).to_have_text("-")
+    expect(game_1.get_by_test_id("average-position")).to_have_text("-")
 
 
-def test_create_team(competitions_page:Tuple[Page, str, VegaServiceNull]):
+def test_create_team(competitions_page: Tuple[Page, str, VegaServiceNull]):
     page, team_id, vega = competitions_page
     change_keys(page, vega, MM_WALLET2.name)
     page.get_by_test_id("create-public-team-button").click()
