@@ -19,7 +19,7 @@ const DELAY: TimestampedDelay = { value: undefined, ts: 0 };
  * (contract.get_withdraw_threshold)
  */
 export const useGetWithdrawDelay = () => {
-  const contract = useBridgeContract(true);
+  const contract = useBridgeContract();
 
   const getDelay = useCallback(async () => {
     if (DELAY.value != null && Date.now() - DELAY.ts <= MAX_AGE) {

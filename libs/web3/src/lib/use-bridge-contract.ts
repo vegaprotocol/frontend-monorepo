@@ -2,39 +2,34 @@ import { useMemo } from 'react';
 import { CollateralBridge } from '@vegaprotocol/smart-contracts';
 import { useWeb3React } from '@web3-react/core';
 import { useEthereumConfig } from './use-ethereum-config';
-import { useDefaultWeb3Provider } from './default-web3-provider';
-import { logger } from './logger';
 
-export const useBridgeContract = (allowDefaultProvider = false) => {
-  const { provider: activeProvider } = useWeb3React();
-  const { provider: defaultProvider } = useDefaultWeb3Provider();
+export const useBridgeContract = () => {
+  const { provider } = useWeb3React();
   const { config } = useEthereumConfig();
 
-  const provider = useMemo(() => {
-    if (!activeProvider && allowDefaultProvider) {
-      logger.info('will use default web3 provider');
-      return defaultProvider;
-    }
-    return activeProvider;
-  }, [activeProvider, allowDefaultProvider, defaultProvider, logger]);
-
   // this has to be memoized, otherwise it ticks like crazy
-  const signer = useMemo(() => {
-    return !activeProvider && allowDefaultProvider
-      ? undefined
-      : activeProvider?.getSigner();
-  }, [activeProvider, allowDefaultProvider]);
+  const signerOrProvider = useMemo(() => {
+    if (!provider) {
+      return;
+    }
+
+    const signer = provider.getSigner();
+
+    if (signer) return signer;
+
+    return provider;
+  }, [provider]);
 
   const contract = useMemo(() => {
-    if (!provider || !config) {
+    if (!signerOrProvider || !config) {
       return null;
     }
 
     return new CollateralBridge(
       config.collateral_bridge_contract.address,
-      signer || provider
+      signerOrProvider
     );
-  }, [provider, signer, config]);
+  }, [signerOrProvider, config]);
 
   return contract;
 };

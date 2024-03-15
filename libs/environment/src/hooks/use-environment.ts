@@ -251,6 +251,10 @@ const compileEnvVars = () => {
         process.env['NX_ETHEREUM_PROVIDER_URL']
       )
     ),
+    ETHEREUM_CHAIN_ID: windowOrDefault(
+      'ETHEREUM_CHAIN_ID',
+      Number(process.env['NX_ETHEREUM_CHAIN_ID'])
+    ),
     ETH_LOCAL_PROVIDER_URL: windowOrDefault(
       'ETH_LOCAL_PROVIDER_URL',
       process.env['NX_ETH_LOCAL_PROVIDER_URL']
@@ -571,7 +575,7 @@ const getEtherscanUrl = (
     : 'https://sepolia.etherscan.io';
 };
 
-const windowOrDefault = (key: string, defaultValue?: string) => {
+const windowOrDefault = (key: string, defaultValue?: string | number) => {
   if (typeof window !== 'undefined') {
     // @ts-ignore avoid conflict in env
     if (window._env_ && window._env_[key]) {

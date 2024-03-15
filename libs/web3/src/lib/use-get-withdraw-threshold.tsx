@@ -37,7 +37,7 @@ export const addr = (asset: Asset | undefined) =>
  * can be retrieved using contract.default_withdraw_delay
  */
 export const useGetWithdrawThreshold = () => {
-  const contract = useBridgeContract(true);
+  const contract = useBridgeContract();
 
   const getThreshold = useCallback(
     async (asset: Asset | undefined) => {

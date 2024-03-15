@@ -68,6 +68,7 @@ export interface DepositFormProps {
     vegaPublicKey: string;
   }) => void;
   isFaucetable?: boolean;
+  desiredChainId: number;
 }
 
 export const DepositForm = ({
@@ -83,6 +84,7 @@ export const DepositForm = ({
   faucetTxId,
   approveTxId,
   isFaucetable,
+  desiredChainId,
 }: DepositFormProps) => {
   const t = useT();
   const ethereumAddress = useEthereumAddress();
@@ -93,7 +95,6 @@ export const DepositForm = ({
   const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
   const openDialog = useWeb3ConnectStore((store) => store.open);
   const { isActive, account, chainId } = useWeb3React();
-  const desiredChainId = useWeb3ConnectStore((store) => store.desiredChainId);
   const invalidChain = isActive && chainId !== desiredChainId;
   const { pubKey, pubKeys: _pubKeys } = useVegaWallet();
   const [approveNotificationIntent, setApproveNotificationIntent] =

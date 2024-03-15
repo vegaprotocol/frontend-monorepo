@@ -40,6 +40,7 @@ export const envSchema = z
     ETHERSCAN_URL: z.string().url({
       message: 'The NX_ETHERSCAN_URL environment variable must be a valid url',
     }),
+    ETHEREUM_CHAIN_ID: z.number(),
     HOSTED_WALLET_URL: z.optional(z.string()),
     ETH_LOCAL_PROVIDER_URL: z.optional(z.string()),
     ETH_WALLET_MNEMONIC: z.optional(z.string()),

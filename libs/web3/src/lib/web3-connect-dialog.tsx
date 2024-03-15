@@ -16,19 +16,16 @@ import { useWeb3ConnectStore } from './web3-connect-store';
 import { theme } from '@vegaprotocol/tailwindcss-config';
 import classNames from 'classnames';
 import { useT } from './use-t';
+import { connectors, fallbackConnector } from './connectors';
 
 interface Web3ConnectDialogProps {
   dialogOpen: boolean;
   setDialogOpen: (isOpen: boolean) => void;
-  connectors: [Connector, Web3ReactHooks][];
-  desiredChainId?: number;
 }
 
 export const Web3ConnectDialog = ({
   dialogOpen,
   setDialogOpen,
-  connectors,
-  desiredChainId,
 }: Web3ConnectDialogProps) => {
   const t = useT();
   return (
@@ -44,17 +41,21 @@ export const Web3ConnectDialog = ({
       size="small"
     >
       <ul className="grid grid-cols-2 gap-2" data-testid="web3-connector-list">
-        {connectors.map((connector, i) => (
-          <li key={i} className="mb-2 last:mb-0">
-            <ConnectButton
-              connector={connector}
-              desiredChainId={desiredChainId}
-              onClick={() => {
-                setDialogOpen(false);
-              }}
-            />
-          </li>
-        ))}
+        {connectors.map((connector, i) => {
+          // Dont show the fallback connector as an option
+          if (connector[0] === fallbackConnector) return null;
+
+          return (
+            <li key={i} className="mb-2 last:mb-0">
+              <ConnectButton
+                connector={connector}
+                onClick={() => {
+                  setDialogOpen(false);
+                }}
+              />
+            </li>
+          );
+        })}
       </ul>
     </Dialog>
   );
@@ -62,11 +63,9 @@ export const Web3ConnectDialog = ({
 
 const ConnectButton = ({
   connector,
-  desiredChainId,
   onClick,
 }: {
   connector: [Connector, Web3ReactHooks];
-  desiredChainId?: number;
   onClick?: () => void;
 }) => {
   const t = useT();
@@ -94,7 +93,7 @@ const ConnectButton = ({
         }
 
         try {
-          await connectorInstance.activate(desiredChainId);
+          await connectorInstance.activate();
           setEagerConnector(info.name);
           onClick?.();
         } catch (err) {
@@ -110,18 +109,10 @@ const ConnectButton = ({
 };
 
 export const Web3ConnectUncontrolledDialog = () => {
-  const { isOpen, connectors, open, close, desiredChainId } =
-    useWeb3ConnectStore();
+  const { isOpen, open, close } = useWeb3ConnectStore();
   const onChange = (isOpen: boolean) => (isOpen ? open() : close());
 
-  return (
-    <Web3ConnectDialog
-      dialogOpen={isOpen}
-      setDialogOpen={onChange}
-      connectors={connectors}
-      desiredChainId={desiredChainId}
-    />
-  );
+  return <Web3ConnectDialog dialogOpen={isOpen} setDialogOpen={onChange} />;
 };
 
 function getConnectorInfo(connector: Connector, t: ReturnType<typeof useT>) {

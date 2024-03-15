@@ -5,8 +5,8 @@ import {
   useEnvironment,
   useNodeSwitcherStore,
 } from '@vegaprotocol/environment';
+import { Web3Provider } from '@vegaprotocol/web3';
 import { useEffect, type ReactNode, useState } from 'react';
-import { Web3Provider } from './web3-provider';
 import { useT } from '../../lib/use-t';
 import { DataLoader } from './data-loader';
 import { WalletProvider } from '@vegaprotocol/wallet-react';
@@ -78,8 +78,6 @@ const Loading = () => {
 };
 
 export const Bootstrapper = ({ children }: { children: ReactNode }) => {
-  const t = useT();
-
   const { error, VEGA_URL } = useEnvironment((state) => ({
     error: state.error,
     VEGA_URL: state.VEGA_URL,
@@ -114,10 +112,7 @@ export const Bootstrapper = ({ children }: { children: ReactNode }) => {
         skeleton={<Loading />}
         failure={<Failure reason={ERR_DATA_LOADER} />}
       >
-        <Web3Provider
-          skeleton={<Loading />}
-          failure={<Failure reason={t('Could not configure web3 provider')} />}
-        >
+        <Web3Provider>
           <WalletProvider config={config}>{children}</WalletProvider>
         </Web3Provider>
       </DataLoader>

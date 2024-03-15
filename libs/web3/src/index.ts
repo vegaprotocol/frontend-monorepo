@@ -1,7 +1,6 @@
 export * from './lib/__generated__/TransactionResult';
 export * from './lib/__generated__/WithdrawalApproval';
 export * from './lib/constants';
-export * from './lib/default-web3-provider';
 export * from './lib/eip-1193-custom-bridge';
 export * from './lib/ethereum-error';
 export * from './lib/ethereum-transaction-dialog';
@@ -33,7 +32,6 @@ export * from './lib/use-wallet-disconnected-toasts';
 export * from './lib/use-web3-disconnect';
 export * from './lib/web3-connect-dialog';
 export * from './lib/web3-connect-store';
-export * from './lib/web3-connectors';
 export * from './lib/web3-provider';
 export * from './lib/withdrawal-approval-dialog';
 export * from './lib/withdrawal-approval-status';
