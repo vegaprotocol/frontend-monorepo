@@ -1,8 +1,8 @@
 import { pseudoRandom } from '@vegaprotocol/ui-toolkit';
-
-const generate = pseudoRandom(1);
+import { useRef } from 'react';
 
 export const SSRLoader = () => {
+  const generateRef = useRef(pseudoRandom(1));
   return (
     <div
       style={{
@@ -38,7 +38,7 @@ export const SSRLoader = () => {
                 width: 10,
                 height: 10,
                 animation: 'flickering 0.4s linear alternate infinite',
-                animationDelay: `-${generate()}s`,
+                animationDelay: `-${generateRef.current()}s`,
                 animationDirection: i % 2 === 0 ? 'reverse' : 'alternate',
                 background: 'black',
               }}
