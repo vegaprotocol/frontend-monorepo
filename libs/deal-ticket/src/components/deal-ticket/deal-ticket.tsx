@@ -386,13 +386,11 @@ export const DealTicket = ({
   const disableIcebergCheckbox = nonPersistentOrder;
   const featureFlags = useFeatureFlags((state) => state.flags);
   const sizeStep = determineSizeStep(market);
+  const reducePositionOrder =
+    (openVolume.startsWith('-') && side === Schema.Side.SIDE_BUY) ||
+    (!openVolume.startsWith('-') && side === Schema.Side.SIDE_SELL);
   const availableMargin = new BigNumber(generalAccountBalance)
-    .plus(
-      (openVolume.startsWith('-') && side === Schema.Side.SIDE_BUY) ||
-        (!openVolume.startsWith('-') && side === Schema.Side.SIDE_SELL)
-        ? marginAccountBalance || 0
-        : 0
-    )
+    .plus(reducePositionOrder ? marginAccountBalance || 0 : 0)
     .div(new BigNumber(10).exponentiatedBy(accountDecimals ?? 0));
   let maxSize = (
     margin?.marginMode === Schema.MarginMode.MARGIN_MODE_ISOLATED_MARGIN
@@ -416,7 +414,19 @@ export const DealTicket = ({
         : marketPrice) || '0'
     ).div(new BigNumber(10).exponentiatedBy(market.decimalPlaces ?? 0))
   );
-  maxSize = maxSize.minus(maxSize.mod(sizeStep));
+  maxSize = maxSize
+    .minus(maxSize.mod(sizeStep))
+    .plus(
+      reducePositionOrder
+        ? new BigNumber(openVolume || 0)
+            .abs()
+            .div(
+              new BigNumber(10).exponentiatedBy(
+                market.positionDecimalPlaces ?? 0
+              )
+            )
+        : 0
+    );
 
   const onSubmit = useCallback(
     (formValues: OrderFormValues) => {
