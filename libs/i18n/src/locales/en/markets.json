@@ -87,6 +87,7 @@
   "oracleInMarkets_other": "Oracle in {{count}} markets",
   "oracleInMarkets": "Oracle in {{count}} markets",
   "Price monitoring bounds {{index}}": "Price monitoring bounds {{index}}",
+  "Price monitoring bounds": "Price monitoring bounds",
   "Price oracle {{index}}": "Price oracle {{index}}",
   "Probability level for price projection, e.g. value of 0.95 will result in a price range such that over the specified projection horizon, the prices observed in the market should be in that range 95% of the time.": "Probability level for price projection, e.g. value of 0.95 will result in a price range such that over the specified projection horizon, the prices observed in the market should be in that range 95% of the time.",
   "Probability level used in <0>Expected Shortfall</0> calculation when obtaining Risk Factor Long and Risk Factor Short": "Probability level used in <0>Expected Shortfall</0> calculation when obtaining Risk Factor Long and Risk Factor Short",
@@ -97,7 +98,7 @@
   "Proposal": "Proposal",
   "Propose a change to market": "Propose a change to market",
   "Read more": "Read more",
-  "Results in {{auctionExtensionSecs}} seconds auction if breached": "Results in {{auctionExtensionSecs}} seconds auction if breached",
+  "Results in {{duration}} auction if breached": "Results in {{duration}} auction if breached",
   "Risk factors": "Risk factors",
   "Risk model": "Risk model",
   "Settlement": "Settlement",
@@ -166,6 +167,12 @@
   "View settlement schedule specification": "View settlement schedule specification",
   "View specification": "View specification",
   "View termination specification": "View termination specification",
-  "Within {{horizonSecs}} seconds": "Within {{horizonSecs}} seconds",
-  "Weighted": "Weighted"
+  "Weighted": "Weighted",
+  "within {{duration}}": "within {{duration}}",
+  "Minimum price that isn't currently breaching the specified price monitoring trigger": "Minimum price that isn't currently breaching the specified price monitoring trigger",
+  "Maximum price that isn't currently breaching the specified price monitoring trigger": "Maximum price that isn't currently breaching the specified price monitoring trigger",
+  "{{probability}} of prices must be within the bounds for {{duration}}": "{{probability}} of prices must be within the bounds for {{duration}}",
+  "No price monitoring bounds detected.": "No price monitoring bounds detected.",
+  "triggers_one": "Trigger",
+  "triggers_other": "Chain of {{count}} triggers"
 }

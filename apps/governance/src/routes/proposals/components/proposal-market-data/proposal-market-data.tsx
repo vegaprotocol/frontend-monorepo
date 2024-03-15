@@ -19,6 +19,7 @@ import {
   getSigners,
   MarginScalingFactorsPanel,
   marketInfoProvider,
+  PriceMonitoringSettingsInfoPanel,
 } from '@vegaprotocol/markets';
 import {
   Button,
@@ -245,39 +246,23 @@ export const ProposalMarketData = ({ proposalId }: { proposalId: string }) => {
               parentMarket={parentMarketData}
             />
 
-            {showParentPriceMonitoringBounds &&
-              (
-                parentMarketData?.priceMonitoringSettings?.parameters
-                  ?.triggers || []
-              ).map((_, triggerIndex) => (
-                <>
-                  <h2 className={marketDataHeaderStyles}>
-                    {t(`Parent price monitoring bounds ${triggerIndex + 1}`)}
-                  </h2>
-
-                  <div className="text-vega-dark-300 line-through">
-                    <PriceMonitoringBoundsInfoPanel
-                      market={parentMarketData}
-                      triggerIndex={triggerIndex}
-                    />
-                  </div>
-                </>
-              ))}
-
-            {(
-              marketData.priceMonitoringSettings?.parameters?.triggers || []
-            ).map((_, triggerIndex) => (
+            {showParentPriceMonitoringBounds && (
+              // shows bounds for parent market
               <>
                 <h2 className={marketDataHeaderStyles}>
-                  {t(`Price monitoring bounds ${triggerIndex + 1}`)}
+                  {t('Parent price monitoring bounds')}
                 </h2>
-
-                <PriceMonitoringBoundsInfoPanel
-                  market={marketData}
-                  triggerIndex={triggerIndex}
-                />
+                <div className="text-vega-dark-300 line-through">
+                  <PriceMonitoringBoundsInfoPanel market={parentMarketData} />
+                </div>
               </>
-            ))}
+            )}
+
+            <h2 className={marketDataHeaderStyles}>
+              {t('Price monitoring settings')}
+            </h2>
+            <PriceMonitoringSettingsInfoPanel market={marketData} />
+
             <h2 className={marketDataHeaderStyles}>
               {t('Liquidity monitoring parameters')}
             </h2>

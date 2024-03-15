@@ -1,6 +1,6 @@
 import {
-  convertToCountdown,
   convertToCountdownString,
+  convertToDuration,
   getSecondsFromInterval,
 } from './time';
 
@@ -60,7 +60,8 @@ describe('convertToCountdown', () => {
       [30, 3, 12, 3],
     ],
   ])('converts %d ms to %s', (time, countdown) => {
-    expect(convertToCountdown(time)).toEqual(countdown);
+    const duration = convertToDuration(time);
+    expect(Object.values(duration)).toEqual(countdown);
   });
 });
 

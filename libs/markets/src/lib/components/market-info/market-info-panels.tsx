@@ -24,10 +24,10 @@ import {
 import {
   addDecimalsFormatNumber,
   determinePriceStep,
-  formatNumber,
   formatNumberPercentage,
   getDateTimeFormat,
   getMarketExpiryDateFormatted,
+  toBigNum,
 } from '@vegaprotocol/utils';
 import type { Get } from 'type-fest';
 import { MarketInfoTable } from './info-key-value-table';
@@ -88,6 +88,12 @@ import { formatDuration } from 'date-fns';
 import * as AccordionPrimitive from '@radix-ui/react-accordion';
 import { useT } from '../../use-t';
 import { isPerpetual } from '../../product';
+import omit from 'lodash/omit';
+import orderBy from 'lodash/orderBy';
+import groupBy from 'lodash/groupBy';
+import min from 'lodash/min';
+import sum from 'lodash/sum';
+import { useDuration } from '@vegaprotocol/react-helpers';
 
 type MarketInfoProps = {
   market: MarketInfo;
@@ -779,13 +785,30 @@ export const RiskFactorsInfoPanel = ({
   return <MarketInfoTable data={data} parentData={parentData} unformatted />;
 };
 
-export const PriceMonitoringBoundsInfoPanel = ({
-  market,
-  triggerIndex,
-}: MarketInfoProps & {
-  triggerIndex: number;
-}) => {
+type TriggerInfo = {
+  maxValidPrice: BigNumber;
+  minValidPrice: BigNumber;
+  referencePrice: BigNumber;
+  horizonSecs: number;
+  probability: number;
+  auctionExtensionSecs: number;
+};
+
+/** Calculates a trigger info group signature. */
+const triggerInfoGroupIteratee = (t: TriggerInfo) =>
+  `${t.horizonSecs}|${
+    t.probability
+  }|${t.minValidPrice.toString()}|${t.maxValidPrice.toString()}`;
+
+type ExtendedTriggerInfo = Omit<TriggerInfo, 'auctionExtensionSecs'> & {
+  minAuctionExtensionSecs: number;
+  maxAuctionExtensionSecs: number;
+};
+
+export const PriceMonitoringBoundsInfoPanel = ({ market }: MarketInfoProps) => {
   const t = useT();
+  const duration = useDuration();
+  const compactDuration = useDuration('compact');
   const { data } = useDataProvider({
     dataProvider: marketDataProvider,
     variables: { marketId: market.id },
@@ -793,45 +816,159 @@ export const PriceMonitoringBoundsInfoPanel = ({
 
   const quoteUnit = getQuoteName(market);
 
-  const bounds = data?.priceMonitoringBounds?.[triggerIndex];
-  const trigger = bounds?.trigger;
+  let triggers = Object.entries(
+    groupBy(
+      data?.priceMonitoringBounds?.map((b) => ({
+        ...omit(b.trigger, '__typename'),
+        maxValidPrice: toBigNum(b.maxValidPrice, market.decimalPlaces),
+        minValidPrice: toBigNum(b.minValidPrice, market.decimalPlaces),
+        referencePrice: toBigNum(b.referencePrice, market.decimalPlaces),
+      })),
+      triggerInfoGroupIteratee
+    )
+  ).map(([_, ts]) => {
+    const info = omit(ts[0], 'auctionExtensionSecs');
+    const auctions = ts.map((t) => t.auctionExtensionSecs);
+    const minAuctionExtensionSecs = min(auctions) as number;
+    const maxAuctionExtensionSecs = sum(auctions);
+    const extendedInfo: ExtendedTriggerInfo = {
+      ...info,
+      minAuctionExtensionSecs,
+      maxAuctionExtensionSecs,
+    };
+    return extendedInfo;
+  });
 
-  if (!trigger) {
-    return null;
+  triggers = orderBy(
+    triggers,
+    [
+      (bd) => bd.probability,
+      (bd) => bd.horizonSecs,
+      (bd) => bd.minAuctionExtensionSecs,
+      (bd) => bd.maxAuctionExtensionSecs,
+    ],
+    ['desc', 'asc', 'asc', 'asc']
+  );
+
+  if (!triggers || triggers.length === 0) {
+    return <div>{t('No price monitoring bounds detected.')}</div>;
   }
 
-  return (
-    <>
-      <div className="mb-2 grid grid-cols-2 text-xs">
-        <p className="col-span-1">
-          {t('{{probability}} probability price bounds', {
-            probability: formatNumberPercentage(
-              new BigNumber(trigger.probability).times(100)
-            ),
-          })}
-        </p>
-        <p className="col-span-1 text-right">
-          {t('Within {{horizonSecs}} seconds', {
-            horizonSecs: formatNumber(trigger.horizonSecs),
+  const price = (price: string, direction: 'min' | 'max') => (
+    <div
+      className={classNames(
+        'rounded px-1 py-[1px] bg-vega-clight-500 dark:bg-vega-cdark-500 relative',
+        'after:absolute after:content-[" "] after:z-10',
+        'after:block after:w-3 after:h-3 after:bg-vega-clight-500 dark:after:bg-vega-cdark-500 after:rotate-45 after:-translate-y-1/2',
+        {
+          'after:top-1/2 after:right-[-6px]': direction === 'min',
+          'after:top-1/2 after:left-[-6px]': direction === 'max',
+        }
+      )}
+    >
+      <div
+        className={classNames('text-[10px]', {
+          'text-left': direction === 'min',
+          'text-right': direction === 'max',
+        })}
+      >
+        {price} <span>{quoteUnit}</span>
+      </div>
+    </div>
+  );
+
+  return triggers.map((trigger, index) => {
+    const probability = formatNumberPercentage(
+      new BigNumber(trigger.probability).times(100)
+    );
+    const within = compactDuration(trigger.horizonSecs * 1000);
+    return (
+      <div key={index} className="mb-2 border-b border-b-vega-clight-500">
+        <div className="font-mono text-xs flex">
+          {/** MIN PRICE */}
+          <Tooltip
+            description={t(
+              "Minimum price that isn't currently breaching the specified price monitoring trigger"
+            )}
+          >
+            {price(trigger.minValidPrice.toString(10), 'min')}
+          </Tooltip>
+
+          {/** TRIGGERS WHEN */}
+          <Tooltip
+            description={t(
+              '{{probability}} of prices must be within the bounds for {{duration}}',
+              {
+                probability: probability,
+                duration: within,
+              }
+            )}
+          >
+            <div aria-hidden className="w-full text-center text-[10px]">
+              <div className="border-b-[2px] border-dashed border-vega-clight-500 dark:border-vega-cdark-500 w-full h-1/2 translate-y-[1px]">
+                {probability}
+              </div>
+              <div className="w-full">
+                {t('within {{duration}}', {
+                  duration: within,
+                })}
+              </div>
+            </div>
+          </Tooltip>
+
+          {/** MAX PRICE */}
+          <Tooltip
+            description={t(
+              "Maximum price that isn't currently breaching the specified price monitoring trigger"
+            )}
+          >
+            {price(trigger.maxValidPrice.toString(10), 'max')}
+          </Tooltip>
+        </div>
+        <p className="my-2 text-xs leading-none">
+          {t('Results in {{duration}} auction if breached', {
+            duration:
+              trigger.minAuctionExtensionSecs !==
+              trigger.maxAuctionExtensionSecs
+                ? `${duration(
+                    trigger.minAuctionExtensionSecs * 1000
+                  )} ~ ${duration(trigger.maxAuctionExtensionSecs * 1000)}`
+                : duration(trigger.minAuctionExtensionSecs * 1000),
           })}
         </p>
       </div>
-      {bounds && (
-        <MarketInfoTable
-          data={{
-            highestPrice: bounds.maxValidPrice,
-            lowestPrice: bounds.minValidPrice,
-          }}
-          decimalPlaces={market.decimalPlaces}
-          assetSymbol={quoteUnit}
-        />
-      )}
-      <p className="mt-2 text-xs">
-        {t('Results in {{auctionExtensionSecs}} seconds auction if breached', {
-          auctionExtensionSecs: trigger.auctionExtensionSecs.toString(),
-        })}
-      </p>
-    </>
+    );
+  });
+};
+
+export const PriceMonitoringSettingsInfoPanel = ({
+  market,
+  className,
+}: MarketInfoProps & { className?: classNames.Argument }) => {
+  const t = useT();
+
+  const triggers = groupBy(
+    market.priceMonitoringSettings?.parameters?.triggers?.map((t) =>
+      omit(t, '__typename')
+    ) || [],
+    (t) => `${t.horizonSecs}|${t.probability}|${t.auctionExtensionSecs}`
+  );
+
+  return (
+    <dl className="grid grid-cols-3 md:grid-cols-6 gap-3">
+      {Object.entries(triggers).map(([_, trigger], i) => (
+        <span className="border p-3 rounded">
+          <dt className="text-sm font-bold">
+            {t('triggers', {
+              count: trigger.length,
+            })}
+          </dt>
+          <dt>
+            <MarketInfoTable data={trigger[0]} />
+          </dt>
+        </span>
+      ))}
+    </dl>
   );
 };
 
