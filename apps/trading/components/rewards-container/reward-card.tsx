@@ -556,6 +556,7 @@ const RewardRequirements = ({
       assetId: rewardAsset?.id || '',
     },
     skip: !requirements,
+    errorPolicy: 'ignore',
   });
   const averagePosition =
     twap?.timeWeightedNotionalPosition?.timeWeightedNotionalPosition;
