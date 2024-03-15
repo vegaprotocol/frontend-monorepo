@@ -449,18 +449,20 @@ const StakingRewardCard = ({
                 className="flex items-center gap-1"
                 data-testid="staking-requirement"
               >
-                {!stakeAvailable ? (
-                  '1.00'
-                ) : stakeAvailable > 1 ? (
-                  <Tick />
-                ) : (
-                  <Cross />
-                )}
-                {addDecimalsFormatNumber(
-                  stakeAvailable?.toString() || '0',
-                  18, // vega asset decimals
-                  6
-                )}
+                {stakeAvailable ? (
+                  stakeAvailable > 1 ? (
+                    <Tick />
+                  ) : (
+                    <Cross />
+                  )
+                ) : undefined}
+                {stakeAvailable
+                  ? addDecimalsFormatNumber(
+                      stakeAvailable?.toString() || '0',
+                      18, // vega asset decimals
+                      6
+                    )
+                  : '1.00'}
               </dd>
             </div>
 
