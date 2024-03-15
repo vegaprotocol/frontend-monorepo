@@ -266,6 +266,7 @@ const StakingRewardCard = ({
   startsIn,
   endsIn,
   requirements,
+  vegaAsset,
   gameId,
 }: {
   colour: CardColour;
@@ -460,7 +461,7 @@ const StakingRewardCard = ({
                 {stakeAvailable
                   ? addDecimalsFormatNumber(
                       stakeAvailable?.toString() || '0',
-                      18, // vega asset decimals
+                      vegaAsset?.decimals || 18, // vega asset decimals
                       6
                     )
                   : '1.00'}
