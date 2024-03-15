@@ -16,12 +16,12 @@ import { FilterLabel } from './tx-filter-label';
 
 // All possible transaction types. Should be generated.
 export type FilterOption =
-  | 'Amend LiquidityProvision Order'
+  | 'Amend Liquidity Provision Order'
   | 'Amend Order'
   | 'Apply Referral Code'
   | 'Batch Market Instructions'
   | 'Batch Proposal'
-  | 'Cancel LiquidityProvision Order'
+  | 'Cancel Liquidity Provision Order'
   | 'Cancel Order'
   | 'Cancel Transfer Funds'
   | 'Chain Event'
@@ -53,10 +53,10 @@ export type FilterOption =
 
 export const filterOptions: Record<string, FilterOption[]> = {
   'Market Instructions': [
-    'Amend LiquidityProvision Order',
+    'Amend Liquidity Provision Order',
     'Amend Order',
     'Batch Market Instructions',
-    'Cancel LiquidityProvision Order',
+    'Cancel Liquidity Provision Order',
     'Cancel Order',
     'Liquidity Provision Order',
     'Stop Orders Submission',
