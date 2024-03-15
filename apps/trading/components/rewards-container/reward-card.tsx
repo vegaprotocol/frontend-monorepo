@@ -25,6 +25,7 @@ import {
   IndividualScope,
   type Asset,
   type Team,
+  IndividualScopeMapping,
 } from '@vegaprotocol/types';
 import { type ReactNode } from 'react';
 import { type BasicAssetDetails } from '@vegaprotocol/assets';
@@ -677,6 +678,55 @@ const RewardEntityScope = ({
 }) => {
   const t = useT();
   const listedTeams = dispatchStrategy.teamScope;
+
+  if (!requirements) {
+    if (dispatchStrategy.entityScope === EntityScope.ENTITY_SCOPE_TEAMS) {
+      return (
+        <Tooltip
+          description={
+            dispatchStrategy.teamScope?.length ? (
+              <div className="text-xs">
+                <p className="mb-1">{t('Eligible teams')}</p>
+                <ul>
+                  {dispatchStrategy.teamScope.map((teamId) => {
+                    if (!teamId) return null;
+                    return <li key={teamId}>{truncateMiddle(teamId)}</li>;
+                  })}
+                </ul>
+              </div>
+            ) : (
+              t('All teams are eligible')
+            )
+          }
+        >
+          <span>
+            {dispatchStrategy.teamScope?.length
+              ? t('Some teams')
+              : t('All teams')}
+          </span>
+        </Tooltip>
+      );
+    }
+
+    if (
+      dispatchStrategy.entityScope === EntityScope.ENTITY_SCOPE_INDIVIDUALS &&
+      dispatchStrategy.individualScope
+    ) {
+      return (
+        <Tooltip
+          description={
+            IndividualScopeDescriptionMapping[dispatchStrategy.individualScope]
+          }
+        >
+          <span>
+            {IndividualScopeMapping[dispatchStrategy.individualScope]}
+          </span>
+        </Tooltip>
+      );
+    }
+
+    return t('Unspecified');
+  }
 
   const isEligible = () => {
     const isInTeam =
