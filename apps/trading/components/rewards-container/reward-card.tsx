@@ -797,7 +797,7 @@ const RewardEntityScope = ({
 
   return (
     <Tooltip description={tooltip}>
-      <span>
+      <span className="flex items-center gap-1">
         {tickOrCross} {requirements ? eligibilityLabel : tooltip}
       </span>
     </Tooltip>
