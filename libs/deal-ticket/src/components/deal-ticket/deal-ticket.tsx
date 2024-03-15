@@ -386,45 +386,29 @@ export const DealTicket = ({
   const disableIcebergCheckbox = nonPersistentOrder;
   const featureFlags = useFeatureFlags((state) => state.flags);
   const sizeStep = determineSizeStep(market);
+  let maxSize = new BigNumber(0);
+  const volume = new BigNumber(openVolume || 0).div(
+    new BigNumber(10).exponentiatedBy(market.positionDecimalPlaces ?? 0)
+  );
   const reducePositionOrder =
     (openVolume.startsWith('-') && side === Schema.Side.SIDE_BUY) ||
     (!openVolume.startsWith('-') && side === Schema.Side.SIDE_SELL);
-  const availableMargin = new BigNumber(generalAccountBalance)
-    .plus(reducePositionOrder ? marginAccountBalance || 0 : 0)
-    .div(new BigNumber(10).exponentiatedBy(accountDecimals ?? 0));
-  let maxSize = (
-    margin?.marginMode === Schema.MarginMode.MARGIN_MODE_ISOLATED_MARGIN
-      ? availableMargin.div(margin.marginFactor)
-      : availableMargin
-          .div(
-            BigNumber(
-              (side === Schema.Side.SIDE_BUY
-                ? market.riskFactors?.long
-                : market.riskFactors?.short) || 1
-            )
-          )
-          .div(
-            market.tradableInstrument.marginCalculator?.scalingFactors
-              .initialMargin ?? 1
-          )
-  ).div(
-    new BigNumber(
-      (margin?.marginMode === Schema.MarginMode.MARGIN_MODE_ISOLATED_MARGIN
-        ? price
-        : marketPrice) || '0'
-    ).div(new BigNumber(10).exponentiatedBy(market.decimalPlaces ?? 0))
-  );
-  maxSize = maxSize.minus(maxSize.mod(sizeStep));
-  if (reducePositionOrder && openVolume && openVolume !== '0') {
-    maxSize = maxSize.plus(
-      new BigNumber(openVolume)
-        .abs()
-        .div(
-          new BigNumber(10).exponentiatedBy(market.positionDecimalPlaces ?? 0)
+  if (margin?.marginMode === Schema.MarginMode.MARGIN_MODE_ISOLATED_MARGIN) {
+    const availableMargin = new BigNumber(generalAccountBalance)
+      .plus(reducePositionOrder ? marginAccountBalance || 0 : 0)
+      .div(new BigNumber(10).exponentiatedBy(accountDecimals ?? 0));
+    maxSize = availableMargin
+      .div(margin.marginFactor)
+      .div(
+        new BigNumber(price || '0').div(
+          new BigNumber(10).exponentiatedBy(market.decimalPlaces ?? 0)
         )
-    );
-  }
-  if (margin?.marginMode !== Schema.MarginMode.MARGIN_MODE_ISOLATED_MARGIN) {
+      );
+    maxSize = maxSize.minus(maxSize.mod(sizeStep));
+    if (reducePositionOrder) {
+      maxSize = maxSize.plus(volume.abs());
+    }
+  } else {
     const remainingBuy = new BigNumber(
       activeOrders
         ?.filter((order) => order.side === Schema.Side.SIDE_BUY)
@@ -437,9 +421,44 @@ export const DealTicket = ({
         ?.reduce((sum, order) => sum + BigInt(order.remaining), BigInt(0))
         .toString() || 0
     ).div(new BigNumber(10).exponentiatedBy(market.positionDecimalPlaces ?? 0));
-    maxSize = maxSize.minus(
-      side === Schema.Side.SIDE_BUY ? remainingBuy : remainingSell
+    const remainingBuyPlusOpenVolume = remainingBuy.plus(
+      volume.isGreaterThan(0) ? volume : 0
     );
+    const remainingSellPlusOpenVolume = remainingSell.plus(
+      volume.isLessThan(0) ? volume.abs() : 0
+    );
+    const availableMargin = new BigNumber(generalAccountBalance || 0)
+      .plus(marginAccountBalance || 0)
+      .div(new BigNumber(10).exponentiatedBy(accountDecimals ?? 0));
+    maxSize = availableMargin
+      .div(
+        BigNumber(
+          (side === Schema.Side.SIDE_BUY
+            ? market.riskFactors?.long
+            : market.riskFactors?.short) || 1
+        )
+      )
+      .div(
+        market.tradableInstrument.marginCalculator?.scalingFactors
+          .initialMargin ?? 1
+      )
+      .div(
+        new BigNumber(marketPrice || '0').div(
+          new BigNumber(10).exponentiatedBy(market.decimalPlaces ?? 0)
+        )
+      );
+    maxSize = maxSize.minus(maxSize.mod(sizeStep));
+    maxSize = maxSize.minus(
+      side === Schema.Side.SIDE_BUY
+        ? remainingBuyPlusOpenVolume
+        : remainingSellPlusOpenVolume
+    );
+    if (
+      reducePositionOrder &&
+      normalizedOrder.type === Schema.OrderType.TYPE_MARKET
+    ) {
+      maxSize = maxSize.plus(volume.abs());
+    }
   }
 
   const onSubmit = useCallback(
