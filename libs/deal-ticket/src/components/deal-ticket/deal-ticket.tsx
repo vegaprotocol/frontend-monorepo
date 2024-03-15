@@ -414,19 +414,33 @@ export const DealTicket = ({
         : marketPrice) || '0'
     ).div(new BigNumber(10).exponentiatedBy(market.decimalPlaces ?? 0))
   );
-  maxSize = maxSize
-    .minus(maxSize.mod(sizeStep))
-    .plus(
-      reducePositionOrder
-        ? new BigNumber(openVolume || 0)
-            .abs()
-            .div(
-              new BigNumber(10).exponentiatedBy(
-                market.positionDecimalPlaces ?? 0
-              )
-            )
-        : 0
+  maxSize = maxSize.minus(maxSize.mod(sizeStep));
+  if (reducePositionOrder && openVolume && openVolume !== '0') {
+    maxSize = maxSize.plus(
+      new BigNumber(openVolume)
+        .abs()
+        .div(
+          new BigNumber(10).exponentiatedBy(market.positionDecimalPlaces ?? 0)
+        )
     );
+  }
+  if (margin?.marginMode !== Schema.MarginMode.MARGIN_MODE_ISOLATED_MARGIN) {
+    const remainingBuy = new BigNumber(
+      activeOrders
+        ?.filter((order) => order.side === Schema.Side.SIDE_BUY)
+        ?.reduce((sum, order) => sum + BigInt(order.remaining), BigInt(0))
+        .toString() || 0
+    ).div(new BigNumber(10).exponentiatedBy(market.positionDecimalPlaces ?? 0));
+    const remainingSell = new BigNumber(
+      activeOrders
+        ?.filter((order) => order.side === Schema.Side.SIDE_SELL)
+        ?.reduce((sum, order) => sum + BigInt(order.remaining), BigInt(0))
+        .toString() || 0
+    ).div(new BigNumber(10).exponentiatedBy(market.positionDecimalPlaces ?? 0));
+    maxSize = maxSize.minus(
+      side === Schema.Side.SIDE_BUY ? remainingBuy : remainingSell
+    );
+  }
 
   const onSubmit = useCallback(
     (formValues: OrderFormValues) => {
