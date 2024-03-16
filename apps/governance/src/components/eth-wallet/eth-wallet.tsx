@@ -189,9 +189,9 @@ const ConnectedKey = () => {
 export const EthWallet = () => {
   const { t } = useTranslation();
   const { appDispatch, appState } = useAppState();
-  const { account, connector } = useWeb3React();
+  const { account } = useWeb3React();
   const pendingTxs = usePendingTransactions();
-  const disconnect = useWeb3Disconnect(connector);
+  const disconnect = useWeb3Disconnect();
   const { config } = useEthereumConfig();
   const { open } = useWeb3ConnectStore();
 

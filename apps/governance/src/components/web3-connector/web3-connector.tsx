@@ -62,7 +62,7 @@ export const Web3Content = ({ children, appChainId }: Web3ContentProps) => {
   const { connector, chainId } = useWeb3React();
   const [previousChainId, setPreviousChainId] = useState(chainId);
   const error = useWeb3ConnectStore((store) => store.error);
-  const disconnect = useWeb3Disconnect(connector);
+  const disconnect = useWeb3Disconnect();
 
   const showDisconnectNotice = useCallback(
     (isVisible: boolean) =>

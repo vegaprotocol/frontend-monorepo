@@ -34,8 +34,8 @@ const pageWrapperClasses = classnames(
 );
 
 const ConnectedApp = ({ config }: { config: EthereumConfig | null }) => {
-  const { account, connector } = useWeb3React();
-  const disconnect = useWeb3Disconnect(connector);
+  const { account } = useWeb3React();
+  const disconnect = useWeb3Disconnect();
   return (
     <main className="w-full max-w-3xl px-5 justify-self-center">
       <h1>{t('Multisig signer')}</h1>

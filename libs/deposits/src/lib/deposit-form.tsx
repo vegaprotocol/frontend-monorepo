@@ -481,9 +481,8 @@ const DisconnectEthereumButton = ({
   onDisconnect: () => void;
 }) => {
   const t = useT();
-  const { connector } = useWeb3React();
   const [, , removeEagerConnector] = useLocalStorage(ETHEREUM_EAGER_CONNECT);
-  const disconnect = useWeb3Disconnect(connector);
+  const disconnect = useWeb3Disconnect();
 
   return (
     <ButtonLink

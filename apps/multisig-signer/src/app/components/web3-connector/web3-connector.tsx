@@ -60,9 +60,9 @@ export const Web3Content = ({
   appChainId,
   setDialogOpen,
 }: Web3ContentProps) => {
-  const { connector, chainId } = useWeb3React();
+  const { chainId } = useWeb3React();
   const error = useWeb3ConnectStore((store) => store.error);
-  const disconnect = useWeb3Disconnect(connector);
+  const disconnect = useWeb3Disconnect();
 
   useEffect(() => {
     if (connector?.connectEagerly) {

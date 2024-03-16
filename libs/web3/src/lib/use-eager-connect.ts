@@ -4,14 +4,13 @@ import { MetaMask } from '@web3-react/metamask';
 import type { Connector } from '@web3-react/types';
 import { WalletConnect } from '@web3-react/walletconnect-v2';
 import { useEffect, useRef } from 'react';
-import { useWeb3ConnectStore } from './web3-connect-store';
+import { connectors } from './connectors';
 import { isTestEnv } from '@vegaprotocol/utils';
 import { logger } from './logger';
 
 export const ETHEREUM_EAGER_CONNECT = 'ethereum-eager-connect';
 
 export const useEagerConnect = () => {
-  const connectors = useWeb3ConnectStore((store) => store.connectors);
   const [eagerConnector] = useLocalStorage(ETHEREUM_EAGER_CONNECT);
   const attemptedRef = useRef(false);
 
