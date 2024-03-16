@@ -263,6 +263,10 @@ const compileEnvVars = () => {
       'ETH_WALLET_MNEMONIC',
       process.env['NX_ETH_WALLET_MNEMONIC']
     ),
+    WALLETCONNECT_PROJECT_ID: windowOrDefault(
+      'WALLETCONNECT_PROJECT_ID',
+      process.env['NX_WALLETCONNECT_PROJECT_ID']
+    ),
     ORACLE_PROOFS_URL: windowOrDefault(
       'ORACLE_PROOFS_URL',
       process.env['NX_ORACLE_PROOFS_URL']

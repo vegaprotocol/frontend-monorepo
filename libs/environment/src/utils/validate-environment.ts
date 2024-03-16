@@ -54,6 +54,7 @@ export const envSchema = z
     MOZILLA_EXTENSION_URL: z.optional(z.string()),
     CHARTING_LIBRARY_PATH: z.optional(z.string()),
     CHARTING_LIBRARY_HASH: z.optional(z.string()),
+    WALLETCONNECT_PROJECT_ID: z.string(),
   })
   .refine(
     (data) => {

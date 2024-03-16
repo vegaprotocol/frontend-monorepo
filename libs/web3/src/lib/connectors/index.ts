@@ -1,64 +1,23 @@
 import { initializeConnector, type Web3ReactHooks } from '@web3-react/core';
-import { type AddEthereumChainParameter } from '@web3-react/types';
 import { MetaMask } from '@web3-react/metamask';
 import { Network } from '@web3-react/network';
 import { CoinbaseWallet } from '@web3-react/coinbase-wallet';
 import { WalletConnect } from '@web3-react/walletconnect-v2';
 import { WalletConnect as WalletConnectLegacy } from '@web3-react/walletconnect';
 import { theme } from '@vegaprotocol/tailwindcss-config';
+import { ENV } from '@vegaprotocol/environment';
 
-interface BasicChainInformation {
-  urls: string[];
-  name: string;
-}
-
-interface ExtendedChainInformation extends BasicChainInformation {
-  nativeCurrency: AddEthereumChainParameter['nativeCurrency'];
-  blockExplorerUrls: AddEthereumChainParameter['blockExplorerUrls'];
-}
-
-type ChainConfig = {
-  [chainId: number]: BasicChainInformation | ExtendedChainInformation;
+const URLS = {
+  [ENV.ETHEREUM_CHAIN_ID]: [ENV.ETHEREUM_PROVIDER_URL],
 };
-
-// TODO: Get these from the environment
-const DEFAULT_CHAIN_ID = 1;
-const MAINNET_PROVIDER_URL =
-  'https://eth-mainnet.rpc.grove.city/v1/af6a2d529a11f8158bc8ca2a';
-const TESTNET_PROVIDER_URL =
-  'https://sepolia.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8';
-const WALLET_CONNECT_PROJECT_ID = 'fe8091dc35738863e509fc4947525c72';
-
-const CHAINS: { [chainId: number]: ChainConfig } = {
-  1: {
-    urls: [MAINNET_PROVIDER_URL],
-    name: 'Ethereum',
-  },
-  11155111: {
-    urls: [TESTNET_PROVIDER_URL],
-    name: 'Sepolia',
-  },
-};
-
-const URLS: { [chainId: number]: string[] } = Object.keys(CHAINS).reduce<{
-  [chainId: number]: string[];
-}>((accumulator, chainId) => {
-  const validURLs: string[] = CHAINS[Number(chainId)].urls;
-
-  if (validURLs.length) {
-    accumulator[Number(chainId)] = validURLs;
-  }
-
-  return accumulator;
-}, {});
 
 const [metaMask, metaMaskHooks] = initializeConnector<MetaMask>(
   (actions) => new MetaMask({ actions })
 );
 
-const [network, networkHooks] = initializeConnector<Network>(
-  (actions) => new Network({ actions, urlMap: URLS })
-);
+const [network, networkHooks] = initializeConnector<Network>((actions) => {
+  return new Network({ actions, urlMap: URLS });
+});
 
 const [coinbase, coinbaseHooks] = initializeConnector<CoinbaseWallet>(
   (actions) =>
@@ -67,7 +26,7 @@ const [coinbase, coinbaseHooks] = initializeConnector<CoinbaseWallet>(
       options: {
         appName: 'Vega',
         darkMode: true,
-        url: MAINNET_PROVIDER_URL,
+        url: ENV.ETHEREUM_PROVIDER_URL,
       },
       onError: (error) => {
         console.warn('ERR_COINBASE_WALLET', error);
@@ -81,13 +40,10 @@ const [walletConnectLegacy, walletConnectLegacyHooks] =
       new WalletConnectLegacy({
         actions,
         options: {
-          rpc: {
-            1: MAINNET_PROVIDER_URL,
-            11155111: TESTNET_PROVIDER_URL,
-          },
+          rpc: URLS,
           qrcode: true,
         },
-        defaultChainId: DEFAULT_CHAIN_ID,
+        defaultChainId: ENV.ETHEREUM_CHAIN_ID,
       })
   );
 
@@ -95,15 +51,12 @@ const [walletConnect, walletConnectHooks] = initializeConnector<WalletConnect>(
   (actions) =>
     new WalletConnect({
       actions,
-      defaultChainId: DEFAULT_CHAIN_ID,
+      defaultChainId: ENV.ETHEREUM_CHAIN_ID,
       options: {
-        projectId: WALLET_CONNECT_PROJECT_ID,
+        projectId: ENV.WALLETCONNECT_PROJECT_ID,
         chains: [1, 11155111],
         showQrModal: true,
-        rpcMap: {
-          1: MAINNET_PROVIDER_URL,
-          11155111: TESTNET_PROVIDER_URL,
-        },
+        rpcMap: URLS,
         qrModalOptions: {
           themeMode: 'dark',
           themeVariables: {
