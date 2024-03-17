@@ -17,6 +17,7 @@ import classNames from 'classnames';
 import { useT } from './use-t';
 import { connectors, fallbackConnector } from './connectors';
 import { CONNECTOR_STORAGE_KEY } from './constants';
+import { useEthereumConfig } from './use-ethereum-config';
 
 interface Web3ConnectDialogProps {
   dialogOpen: boolean;
@@ -27,6 +28,7 @@ export const Web3ConnectDialog = ({
   dialogOpen,
   setDialogOpen,
 }: Web3ConnectDialogProps) => {
+  const { config } = useEthereumConfig();
   const t = useT();
   return (
     <Dialog
@@ -48,6 +50,7 @@ export const Web3ConnectDialog = ({
           return (
             <li key={i} className="mb-2 last:mb-0">
               <ConnectButton
+                chainId={Number(config?.chain_id || 1)}
                 connector={connector}
                 onClick={() => {
                   setDialogOpen(false);
@@ -62,9 +65,11 @@ export const Web3ConnectDialog = ({
 };
 
 const ConnectButton = ({
+  chainId,
   connector,
   onClick,
 }: {
+  chainId: number;
   connector: [Connector, Web3ReactHooks];
   onClick?: () => void;
 }) => {
@@ -93,7 +98,7 @@ const ConnectButton = ({
         }
 
         try {
-          await connectorInstance.activate();
+          await connectorInstance.activate(chainId);
           setEagerConnector(info.name);
           onClick?.();
         } catch (err) {

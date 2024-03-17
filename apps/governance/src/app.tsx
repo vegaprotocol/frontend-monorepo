@@ -1,6 +1,6 @@
 import './i18n';
 
-import React, { useEffect } from 'react';
+import { Suspense, useEffect } from 'react';
 import { BrowserRouter as Router, useLocation } from 'react-router-dom';
 import { AppLoader } from './app-loader';
 import { NetworkInfo } from '@vegaprotocol/network-info';
@@ -14,9 +14,8 @@ import { AppStateProvider } from './contexts/app-state/app-state-provider';
 import { ContractsProvider } from './contexts/contracts/contracts-provider';
 import { AppRouter } from './routes';
 import {
-  Web3ConnectDialog,
+  Web3ConnectUncontrolledDialog,
   WithdrawalApprovalDialogContainer,
-  useWeb3ConnectStore,
 } from '@vegaprotocol/web3';
 import {
   useEthTransactionManager,
@@ -90,7 +89,6 @@ const cache: InMemoryCacheConfig = {
 
 const Web3Container = () => {
   const vegaWalletConfig = useVegaWalletConfig();
-  const { open, close, isOpen } = useWeb3ConnectStore();
 
   if (!vegaWalletConfig) {
     // Prevent loading when the connectors are not initialized
@@ -126,10 +124,7 @@ const Web3Container = () => {
                 <CreateWithdrawalDialog />
                 <WithdrawalApprovalDialogContainer />
                 <TelemetryDialog />
-                <Web3ConnectDialog
-                  dialogOpen={isOpen}
-                  setDialogOpen={(isOpen) => (isOpen ? open() : close())}
-                />
+                <Web3ConnectUncontrolledDialog />
               </>
             </BalanceManager>
           </AppLoader>
@@ -207,11 +202,11 @@ function App() {
   useInitializeEnv();
 
   return (
-    <React.Suspense fallback={<Loader />}>
+    <Suspense fallback={<Loader />}>
       <NetworkLoader cache={cache}>
         <AppContainer />
       </NetworkLoader>
-    </React.Suspense>
+    </Suspense>
   );
 }
 
