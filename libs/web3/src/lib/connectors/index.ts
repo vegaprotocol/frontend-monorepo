@@ -7,9 +7,45 @@ import { WalletConnect as WalletConnectLegacy } from '@web3-react/walletconnect'
 import { theme } from '@vegaprotocol/tailwindcss-config';
 import { ENV } from '@vegaprotocol/environment';
 
-const URLS = {
-  [ENV.ETHEREUM_CHAIN_ID]: [ENV.ETHEREUM_PROVIDER_URL],
+interface BasicChainInformation {
+  urls: string[];
+  name: string;
+}
+
+// interface ExtendedChainInformation extends BasicChainInformation {
+//   nativeCurrency: AddEthereumChainParameter['nativeCurrency'];
+//   blockExplorerUrls: AddEthereumChainParameter['blockExplorerUrls'];
+// }
+
+type ChainConfig = {
+  [chainId: number]: BasicChainInformation;
 };
+
+const MAINNET_PROVIDER_URL =
+  'https://eth-mainnet.rpc.grove.city/v1/af6a2d529a11f8158bc8ca2a';
+const TESTNET_PROVIDER_URL =
+  'https://sepolia.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8';
+
+const CHAINS: ChainConfig = {
+  1: {
+    urls: [MAINNET_PROVIDER_URL],
+    name: 'Ethereum',
+  },
+  11155111: {
+    urls: [TESTNET_PROVIDER_URL],
+    name: 'Sepolia',
+  },
+};
+
+const URLS = Object.keys(CHAINS).reduce((acc, chainId) => {
+  const validURLs = CHAINS[Number(chainId)].urls;
+
+  if (validURLs.length) {
+    acc[Number(chainId)] = validURLs;
+  }
+
+  return acc;
+}, {} as { [chainId: number]: string[] });
 
 const [metaMask, metaMaskHooks] = initializeConnector<MetaMask>(
   (actions) => new MetaMask({ actions })
@@ -26,7 +62,7 @@ const [coinbase, coinbaseHooks] = initializeConnector<CoinbaseWallet>(
       options: {
         appName: 'Vega',
         darkMode: true,
-        url: ENV.ETHEREUM_PROVIDER_URL,
+        url: CHAINS[ENV.ETHEREUM_CHAIN_ID].urls[0],
       },
       onError: (error) => {
         console.warn('ERR_COINBASE_WALLET', error);

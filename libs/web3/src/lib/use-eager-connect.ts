@@ -7,11 +7,10 @@ import { useEffect, useRef } from 'react';
 import { connectors } from './connectors';
 import { isTestEnv } from '@vegaprotocol/utils';
 import { logger } from './logger';
-
-export const ETHEREUM_EAGER_CONNECT = 'ethereum-eager-connect';
+import { CONNECTOR_STORAGE_KEY } from './constants';
 
 export const useEagerConnect = () => {
-  const [eagerConnector] = useLocalStorage(ETHEREUM_EAGER_CONNECT);
+  const [eagerConnector] = useLocalStorage(CONNECTOR_STORAGE_KEY);
   const attemptedRef = useRef(false);
 
   useEffect(() => {
@@ -30,6 +29,7 @@ export const useEagerConnect = () => {
         }
       }
     };
+
     tryConnectEagerly();
 
     attemptedRef.current = true;

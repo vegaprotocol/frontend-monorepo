@@ -251,9 +251,8 @@ const compileEnvVars = () => {
         process.env['NX_ETHEREUM_PROVIDER_URL']
       )
     ),
-    ETHEREUM_CHAIN_ID: windowOrDefault(
-      'ETHEREUM_CHAIN_ID',
-      Number(process.env['NX_ETHEREUM_CHAIN_ID'])
+    ETHEREUM_CHAIN_ID: Number(
+      windowOrDefault('ETHEREUM_CHAIN_ID', process.env['NX_ETHEREUM_CHAIN_ID'])
     ),
     ETH_LOCAL_PROVIDER_URL: windowOrDefault(
       'ETH_LOCAL_PROVIDER_URL',
@@ -266,7 +265,7 @@ const compileEnvVars = () => {
     WALLETCONNECT_PROJECT_ID: windowOrDefault(
       'WALLETCONNECT_PROJECT_ID',
       process.env['NX_WALLETCONNECT_PROJECT_ID']
-    ),
+    ) as string,
     ORACLE_PROOFS_URL: windowOrDefault(
       'ORACLE_PROOFS_URL',
       process.env['NX_ORACLE_PROOFS_URL']
@@ -331,7 +330,7 @@ const compileEnvVars = () => {
     ),
     CHARTING_LIBRARY_PATH: windowOrDefault(
       'NX_CHARTING_LIBRARY_PATH',
-      process.env['NX_CHARTING_LIBRARY_PATH']
+      process.env['NX_CHARTING_LIBRARY_PATH'] as string
     ),
     CHARTING_LIBRARY_HASH: windowOrDefault(
       'NX_CHARTING_LIBRARY_HASH',
@@ -579,7 +578,7 @@ const getEtherscanUrl = (
     : 'https://sepolia.etherscan.io';
 };
 
-const windowOrDefault = (key: string, defaultValue?: string | number) => {
+const windowOrDefault = (key: string, defaultValue?: string) => {
   if (typeof window !== 'undefined') {
     // @ts-ignore avoid conflict in env
     if (window._env_ && window._env_[key]) {

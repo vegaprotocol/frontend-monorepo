@@ -6,12 +6,11 @@ import {
 } from '@vegaprotocol/smart-contracts';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useWeb3React } from '@web3-react/core';
-import React from 'react';
+import { useEffect, useState } from 'react';
 
 import { SplashLoader } from '../../components/splash-loader';
 import { type ContractsContextShape } from './contracts-context';
 import { ContractsContext } from './contracts-context';
-import { createDefaultProvider } from '../../lib/web3-connectors';
 import { useEthereumConfig } from '@vegaprotocol/web3';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { ENV } from '../../config';
@@ -20,35 +19,22 @@ import { ENV } from '../../config';
  * Provides Vega Ethereum contract instances to its children.
  */
 export const ContractsProvider = ({ children }: { children: JSX.Element }) => {
-  const {
-    provider: activeProvider,
-    account,
-    chainId: activeChainId,
-  } = useWeb3React();
+  const { provider, account, chainId } = useWeb3React();
   const { config } = useEthereumConfig();
   const { VEGA_ENV, ETHEREUM_PROVIDER_URL } = useEnvironment();
-  const [contracts, setContracts] =
-    React.useState<ContractsContextShape | null>(null);
+  const [contracts, setContracts] = useState<ContractsContextShape | null>(
+    null
+  );
 
   // Create instances of contract classes. If we have an account use a signer for the
   // contracts so that we can sign transactions, otherwise use the provider for just
   // reading data
-  React.useEffect(() => {
+  useEffect(() => {
     let cancelled = false;
     const run = async () => {
       let signer = null;
 
       if (config) {
-        const defaultProvider = createDefaultProvider(
-          ETHEREUM_PROVIDER_URL,
-          Number(config.chain_id)
-        );
-
-        const provider =
-          activeProvider && activeChainId === Number(config.chain_id)
-            ? activeProvider
-            : defaultProvider;
-
         if (account && provider && typeof provider.getSigner === 'function') {
           signer = provider.getSigner(account);
         }
@@ -88,14 +74,7 @@ export const ContractsProvider = ({ children }: { children: JSX.Element }) => {
       //  TODO: hacky quick fix for release to prevent race condition, find a better fix for this.
       cancelled = true;
     };
-  }, [
-    activeProvider,
-    activeChainId,
-    account,
-    config,
-    VEGA_ENV,
-    ETHEREUM_PROVIDER_URL,
-  ]);
+  }, [provider, chainId, account, config, VEGA_ENV, ETHEREUM_PROVIDER_URL]);
 
   if (!contracts) {
     return (

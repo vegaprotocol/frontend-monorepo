@@ -10,13 +10,13 @@ import { WalletConnect } from '@web3-react/walletconnect-v2';
 import { WalletConnect as WalletConnectLegacy } from '@web3-react/walletconnect';
 import { CoinbaseWallet } from '@web3-react/coinbase-wallet';
 import type { Connector } from '@web3-react/types';
-import { ETHEREUM_EAGER_CONNECT } from './use-eager-connect';
 import type { Web3ReactHooks } from '@web3-react/core';
 import { useWeb3ConnectStore } from './web3-connect-store';
 import { theme } from '@vegaprotocol/tailwindcss-config';
 import classNames from 'classnames';
 import { useT } from './use-t';
 import { connectors, fallbackConnector } from './connectors';
+import { CONNECTOR_STORAGE_KEY } from './constants';
 
 interface Web3ConnectDialogProps {
   dialogOpen: boolean;
@@ -72,7 +72,7 @@ const ConnectButton = ({
   const [connectorInstance, { useIsActivating }] = connector;
   const isActivating = useIsActivating();
   const info = getConnectorInfo(connectorInstance, t);
-  const [, setEagerConnector] = useLocalStorage(ETHEREUM_EAGER_CONNECT);
+  const [, setEagerConnector] = useLocalStorage(CONNECTOR_STORAGE_KEY);
   return (
     <button
       className={classNames(

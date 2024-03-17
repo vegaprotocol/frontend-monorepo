@@ -10,18 +10,18 @@ import { AppLayout } from './components/page-templates/app-layout';
 import { TemplateSidebar } from './components/page-templates/template-sidebar';
 import { TransactionModal } from './components/transactions-modal';
 import { VegaWallet } from './components/vega-wallet';
-import { Web3Connector } from './components/web3-connector';
 import { AppStateProvider } from './contexts/app-state/app-state-provider';
 import { ContractsProvider } from './contexts/contracts/contracts-provider';
 import { AppRouter } from './routes';
-import type { EthereumConfig } from '@vegaprotocol/web3';
-import { WithdrawalApprovalDialogContainer } from '@vegaprotocol/web3';
 import {
-  createConnectors,
+  Web3ConnectDialog,
+  WithdrawalApprovalDialogContainer,
+  useWeb3ConnectStore,
+} from '@vegaprotocol/web3';
+import {
   useEthTransactionManager,
   useEthTransactionUpdater,
   useEthWithdrawApprovalsManager,
-  useWeb3ConnectStore,
 } from '@vegaprotocol/web3';
 import { Web3Provider } from '@vegaprotocol/web3';
 import { VegaWalletDialogs } from './components/vega-wallet-dialogs';
@@ -30,8 +30,6 @@ import {
   useVegaTransactionManager,
   useVegaTransactionUpdater,
 } from '@vegaprotocol/web3';
-import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
-import { useEthereumConfig } from '@vegaprotocol/web3';
 import {
   useEnvironment,
   NetworkLoader,
@@ -90,84 +88,53 @@ const cache: InMemoryCacheConfig = {
   },
 };
 
-const Web3Container = ({
-  chainId,
-}: {
-  /** Ethereum chain id */
-  chainId: number;
-  /** Ethereum provider url */
-  providerUrl: string;
-}) => {
-  const [connectors, initializeConnectors] = useWeb3ConnectStore((store) => [
-    store.connectors,
-    store.initialize,
-  ]);
-  const { ETHEREUM_PROVIDER_URL, ETH_LOCAL_PROVIDER_URL, ETH_WALLET_MNEMONIC } =
-    useEnvironment();
-
-  useEffect(() => {
-    if (chainId) {
-      return initializeConnectors(
-        createConnectors(
-          ETHEREUM_PROVIDER_URL,
-          Number(chainId),
-          ETH_LOCAL_PROVIDER_URL,
-          ETH_WALLET_MNEMONIC
-        ),
-        Number(chainId)
-      );
-    }
-  }, [
-    chainId,
-    ETHEREUM_PROVIDER_URL,
-    initializeConnectors,
-    ETH_LOCAL_PROVIDER_URL,
-    ETH_WALLET_MNEMONIC,
-  ]);
-
+const Web3Container = () => {
   const vegaWalletConfig = useVegaWalletConfig();
+  const { open, close, isOpen } = useWeb3ConnectStore();
 
-  if (!vegaWalletConfig || connectors.length === 0) {
+  if (!vegaWalletConfig) {
     // Prevent loading when the connectors are not initialized
     return <SplashLoader />;
   }
 
   return (
-    <Web3Provider connectors={connectors}>
-      <Web3Connector connectors={connectors} chainId={Number(chainId)}>
-        <WalletProvider config={vegaWalletConfig}>
-          <ContractsProvider>
-            <AppLoader>
-              <BalanceManager>
-                <>
-                  <AppLayout>
-                    <TemplateSidebar
-                      sidebar={
-                        <>
-                          <EthWallet />
-                          <VegaWallet />
-                        </>
-                      }
-                    >
-                      <AppRouter />
-                    </TemplateSidebar>
-                    <footer className="p-4 break-all border-t border-neutral-700">
-                      <NetworkInfo />
-                    </footer>
-                  </AppLayout>
-                  <ToastsManager />
-                  <InitializeHandlers />
-                  <VegaWalletDialogs />
-                  <TransactionModal />
-                  <CreateWithdrawalDialog />
-                  <WithdrawalApprovalDialogContainer />
-                  <TelemetryDialog />
-                </>
-              </BalanceManager>
-            </AppLoader>
-          </ContractsProvider>
-        </WalletProvider>
-      </Web3Connector>
+    <Web3Provider>
+      <WalletProvider config={vegaWalletConfig}>
+        <ContractsProvider>
+          <AppLoader>
+            <BalanceManager>
+              <>
+                <AppLayout>
+                  <TemplateSidebar
+                    sidebar={
+                      <>
+                        <EthWallet />
+                        <VegaWallet />
+                      </>
+                    }
+                  >
+                    <AppRouter />
+                  </TemplateSidebar>
+                  <footer className="p-4 break-all border-t border-neutral-700">
+                    <NetworkInfo />
+                  </footer>
+                </AppLayout>
+                <ToastsManager />
+                <InitializeHandlers />
+                <VegaWalletDialogs />
+                <TransactionModal />
+                <CreateWithdrawalDialog />
+                <WithdrawalApprovalDialogContainer />
+                <TelemetryDialog />
+                <Web3ConnectDialog
+                  dialogOpen={isOpen}
+                  setDialogOpen={(isOpen) => (isOpen ? open() : close())}
+                />
+              </>
+            </BalanceManager>
+          </AppLoader>
+        </ContractsProvider>
+      </WalletProvider>
     </Web3Provider>
   );
 };
@@ -187,8 +154,7 @@ const ScrollToTop = () => {
 };
 
 const AppContainer = () => {
-  const { config, loading, error } = useEthereumConfig();
-  const { VEGA_URL, ETHEREUM_PROVIDER_URL } = useEnvironment();
+  const { VEGA_URL } = useEnvironment();
   const { t } = useTranslation();
   const [nodeSwitcherOpen, setNodeSwitcher] = useNodeSwitcherStore((store) => [
     store.dialogOpen,
@@ -219,19 +185,7 @@ const AppContainer = () => {
               <NodeFailure title={t('NodeUnsuitable', { url: VEGA_URL })} />
             }
           >
-            <AsyncRenderer<EthereumConfig | null>
-              loading={loading}
-              data={config}
-              error={error}
-              render={(cnf) =>
-                cnf && (
-                  <Web3Container
-                    chainId={Number(cnf.chain_id)}
-                    providerUrl={ETHEREUM_PROVIDER_URL}
-                  />
-                )
-              }
-            />
+            <Web3Container />
           </NodeGuard>
         </div>
       </AppStateProvider>
