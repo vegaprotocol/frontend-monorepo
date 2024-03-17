@@ -20,6 +20,7 @@ import {
 import { useContracts } from './contexts/contracts/contracts-context';
 import { useRefreshAssociatedBalances } from './hooks/use-refresh-associated-balances';
 
+// TODO: This blocks the app until you connect
 export const AppLoader = ({ children }: { children: React.ReactElement }) => {
   const featureFlags = useFeatureFlags((state) => state.flags);
   const { t } = useTranslation();

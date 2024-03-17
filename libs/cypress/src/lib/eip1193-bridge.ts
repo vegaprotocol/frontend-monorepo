@@ -113,7 +113,6 @@ export class CustomizedBridge extends Eip1193Bridge {
 const getAccount = (number = 0) => `m/44'/60'/0'/0/${number}`;
 
 const getProvider = () => {
-  // TODO: check capsule setup
   const url = Cypress.env('ETHEREUM_PROVIDER_URL');
   const chainId = Cypress.env('ETHEREUM_CHAIN_ID');
   return new JsonRpcProvider(url, chainId);

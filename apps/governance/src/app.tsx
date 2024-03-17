@@ -1,7 +1,7 @@
 import './i18n';
 
-import { Suspense, useEffect } from 'react';
-import { BrowserRouter as Router, useLocation } from 'react-router-dom';
+import { Suspense } from 'react';
+import { BrowserRouter as Router } from 'react-router-dom';
 import { AppLoader } from './app-loader';
 import { NetworkInfo } from '@vegaprotocol/network-info';
 import { BalanceManager } from './components/balance-manager';
@@ -10,6 +10,7 @@ import { AppLayout } from './components/page-templates/app-layout';
 import { TemplateSidebar } from './components/page-templates/template-sidebar';
 import { TransactionModal } from './components/transactions-modal';
 import { VegaWallet } from './components/vega-wallet';
+import { ScrollToTop } from './components/scroll-to-top';
 import { AppStateProvider } from './contexts/app-state/app-state-provider';
 import { ContractsProvider } from './contexts/contracts/contracts-provider';
 import { AppRouter } from './routes';
@@ -100,52 +101,37 @@ const Web3Container = () => {
       <WalletProvider config={vegaWalletConfig}>
         <ContractsProvider>
           <AppLoader>
-            <BalanceManager>
-              <>
-                <AppLayout>
-                  <TemplateSidebar
-                    sidebar={
-                      <>
-                        <EthWallet />
-                        <VegaWallet />
-                      </>
-                    }
-                  >
-                    <AppRouter />
-                  </TemplateSidebar>
-                  <footer className="p-4 break-all border-t border-neutral-700">
-                    <NetworkInfo />
-                  </footer>
-                </AppLayout>
-                <ToastsManager />
-                <InitializeHandlers />
-                <VegaWalletDialogs />
-                <TransactionModal />
-                <CreateWithdrawalDialog />
-                <WithdrawalApprovalDialogContainer />
-                <TelemetryDialog />
-                <Web3ConnectUncontrolledDialog />
-              </>
-            </BalanceManager>
+            <>
+              <AppLayout>
+                <TemplateSidebar
+                  sidebar={
+                    <>
+                      <EthWallet />
+                      <VegaWallet />
+                    </>
+                  }
+                >
+                  <AppRouter />
+                </TemplateSidebar>
+                <footer className="p-4 break-all border-t border-neutral-700">
+                  <NetworkInfo />
+                </footer>
+              </AppLayout>
+              <BalanceManager />
+              <ToastsManager />
+              <InitializeHandlers />
+              <VegaWalletDialogs />
+              <TransactionModal />
+              <CreateWithdrawalDialog />
+              <WithdrawalApprovalDialogContainer />
+              <TelemetryDialog />
+              <Web3ConnectUncontrolledDialog />
+            </>
           </AppLoader>
         </ContractsProvider>
       </WalletProvider>
     </Web3Provider>
   );
-};
-
-const ScrollToTop = () => {
-  const { pathname } = useLocation();
-
-  useEffect(() => {
-    // "document.documentElement.scrollTo" is the magic for React Router Dom v6
-    document.documentElement.scrollTo({
-      top: 0,
-      left: 0,
-    });
-  }, [pathname]);
-
-  return null;
 };
 
 const AppContainer = () => {

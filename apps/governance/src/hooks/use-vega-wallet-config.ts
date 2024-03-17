@@ -9,7 +9,7 @@ import {
   stagnet,
   mainnet,
 } from '@vegaprotocol/wallet';
-import { useEnvironment } from '@vegaprotocol/environment';
+import { CHAIN_IDS, useEnvironment } from '@vegaprotocol/environment';
 
 export const useVegaWalletConfig = () => {
   const { VEGA_ENV, VEGA_URL, VEGA_WALLET_URL } = useEnvironment();
@@ -32,7 +32,7 @@ export const useVegaWalletConfig = () => {
 
     const config = createConfig({
       chains: [mainnet, fairground, stagnet],
-      defaultChainId: fairground.id,
+      defaultChainId: CHAIN_IDS[VEGA_ENV],
       connectors: [injected, snap, jsonRpc, viewParty],
     });
 

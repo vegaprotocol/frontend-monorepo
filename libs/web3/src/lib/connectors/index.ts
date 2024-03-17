@@ -24,12 +24,16 @@ type ChainConfig = {
 
 const CHAINS: ChainConfig = {
   1: {
-    urls: [ENV.ETHEREUM_RPC_URLS[1]],
+    urls: [ENV.ETHEREUM_RPC_URLS['1']],
     name: 'Ethereum',
   },
   11155111: {
-    urls: [ENV.ETHEREUM_RPC_URLS[11155111]],
+    urls: [ENV.ETHEREUM_RPC_URLS['11155111']],
     name: 'Sepolia',
+  },
+  1440: {
+    urls: [ENV.ETHEREUM_RPC_URLS['1440']],
+    name: 'Local',
   },
 };
 
@@ -43,13 +47,14 @@ const URLS = Object.keys(CHAINS).reduce((acc, chainId) => {
   return acc;
 }, {} as { [chainId: number]: string[] });
 
-const [metaMask, metaMaskHooks] = initializeConnector<MetaMask>(
-  (actions) => new MetaMask({ actions })
-);
-
+//  This is the fallback connector and should be last in the connectors array
 const [network, networkHooks] = initializeConnector<Network>((actions) => {
   return new Network({ actions, urlMap: URLS });
 });
+
+const [metaMask, metaMaskHooks] = initializeConnector<MetaMask>(
+  (actions) => new MetaMask({ actions })
+);
 
 const [coinbase, coinbaseHooks] = initializeConnector<CoinbaseWallet>(
   (actions) =>

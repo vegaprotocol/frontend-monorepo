@@ -16,7 +16,6 @@ export const addValidatorsSelfDelegate = () => {
   Cypress.Commands.add('validatorsSelfDelegate', () => {
     const config = {
       ethWalletMnemonic: Cypress.env('ETH_WALLET_MNEMONIC'),
-      // TODO: check capsule setup
       ethereumProviderUrl: Cypress.env('ETHEREUM_PROVIDER_URL'),
       vegaWalletUrl: Cypress.env('VEGA_WALLET_URL'),
       vegaUrl: Cypress.env('VEGA_URL'),
