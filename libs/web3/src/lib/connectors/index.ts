@@ -12,6 +12,7 @@ interface BasicChainInformation {
   name: string;
 }
 
+// TODO: figure out how to use blockExplorerUrls
 // interface ExtendedChainInformation extends BasicChainInformation {
 //   nativeCurrency: AddEthereumChainParameter['nativeCurrency'];
 //   blockExplorerUrls: AddEthereumChainParameter['blockExplorerUrls'];
@@ -23,11 +24,11 @@ type ChainConfig = {
 
 const CHAINS: ChainConfig = {
   1: {
-    urls: [ENV.ETHEREUM_PROVIDER_URL[1]],
+    urls: [ENV.ETHEREUM_RPC_URLS[1]],
     name: 'Ethereum',
   },
   11155111: {
-    urls: [ENV.ETHEREUM_PROVIDER_URL[11155111]],
+    urls: [ENV.ETHEREUM_RPC_URLS[11155111]],
     name: 'Sepolia',
   },
 };

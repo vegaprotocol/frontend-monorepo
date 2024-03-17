@@ -12,7 +12,6 @@ import { SplashLoader } from '../../components/splash-loader';
 import { type ContractsContextShape } from './contracts-context';
 import { ContractsContext } from './contracts-context';
 import { useEthereumConfig } from '@vegaprotocol/web3';
-import { useEnvironment } from '@vegaprotocol/environment';
 import { ENV } from '../../config';
 
 /**
@@ -21,7 +20,6 @@ import { ENV } from '../../config';
 export const ContractsProvider = ({ children }: { children: JSX.Element }) => {
   const { provider, account, chainId } = useWeb3React();
   const { config } = useEthereumConfig();
-  const { VEGA_ENV, ETHEREUM_PROVIDER_URL } = useEnvironment();
   const [contracts, setContracts] = useState<ContractsContextShape | null>(
     null
   );
@@ -74,7 +72,7 @@ export const ContractsProvider = ({ children }: { children: JSX.Element }) => {
       //  TODO: hacky quick fix for release to prevent race condition, find a better fix for this.
       cancelled = true;
     };
-  }, [provider, chainId, account, config, VEGA_ENV, ETHEREUM_PROVIDER_URL]);
+  }, [provider, chainId, account, config]);
 
   if (!contracts) {
     return (

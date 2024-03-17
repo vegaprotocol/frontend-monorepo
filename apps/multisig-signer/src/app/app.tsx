@@ -1,6 +1,6 @@
 import * as Sentry from '@sentry/react';
 import classnames from 'classnames';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { BrowserTracing } from '@sentry/tracing';
 import {
   NetworkLoader,
@@ -20,7 +20,6 @@ import {
   Header,
   ContractDetails,
 } from './components';
-import { createConnectors } from './lib/web3-connectors';
 import { Web3Connector } from './components/web3-connector';
 import { EthWalletContainer } from './components/eth-wallet-container';
 import { useWeb3React } from '@web3-react/core';
@@ -54,7 +53,7 @@ const ConnectedApp = ({ config }: { config: EthereumConfig | null }) => {
 };
 
 function App() {
-  const { VEGA_ENV, ETHEREUM_PROVIDER_URL } = useEnvironment();
+  const { VEGA_ENV } = useEnvironment();
   const { config, loading, error } = useEthereumConfig();
   const [dialogOpen, setDialogOpen] = useState(false);
 
@@ -67,16 +66,9 @@ function App() {
     });
   }, [VEGA_ENV]);
 
-  const Connectors = useMemo(() => {
-    if (config?.chain_id) {
-      return createConnectors(ETHEREUM_PROVIDER_URL, Number(config.chain_id));
-    }
-    return [];
-  }, [config?.chain_id, ETHEREUM_PROVIDER_URL]);
-
   return (
     <AsyncRenderer loading={loading} data={config} error={error}>
-      <Web3Provider connectors={Connectors}>
+      <Web3Provider>
         <Web3Connector dialogOpen={dialogOpen} setDialogOpen={setDialogOpen}>
           <EthWalletContainer
             dialogOpen={dialogOpen}

@@ -33,13 +33,12 @@ There are a few different configuration options offered for this app:
 
 The network configuration for the app
 
-| **Flag**                   | **Purpose**                                                                                              |
-| -------------------------- | -------------------------------------------------------------------------------------------------------- |
-| `NX_VEGA_ENV`              | The name of the currently connected vega environment                                                     |
-| `NX_VEGA_CONFIG_URL`       | The network configuration for the app                                                                    |
-| `NX_VEGA_URL`              | The GraphQL query endpoint of a [Vega data node](https://github.com/vegaprotocol/networks#data-node)     |
-| `NX_ETHEREUM_PROVIDER_URL` | The Ethereum Provider URL for getting data from the Ethereum network, for example Infura or a local node |
-| `NX_ETHERSCAN_URL`         | The Etherscan URL to link Ethereum transactions to                                                       |
+| **Flag**             | **Purpose**                                                                                          |
+| -------------------- | ---------------------------------------------------------------------------------------------------- |
+| `NX_VEGA_ENV`        | The name of the currently connected vega environment                                                 |
+| `NX_VEGA_CONFIG_URL` | The network configuration for the app                                                                |
+| `NX_VEGA_URL`        | The GraphQL query endpoint of a [Vega data node](https://github.com/vegaprotocol/networks#data-node) |
+| `NX_ETHERSCAN_URL`   | The Etherscan URL to link Ethereum transactions to                                                   |
 
 ## Testing
 

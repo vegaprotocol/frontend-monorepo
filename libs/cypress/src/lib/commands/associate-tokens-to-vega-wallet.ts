@@ -16,6 +16,7 @@ declare global {
 export function addAssociateTokensToVegaWallet() {
   Cypress.Commands.add('associateTokensToVegaWallet', (amount) => {
     const ethWalletMnemonic = Cypress.env('ETH_WALLET_MNEMONIC');
+    // TODO: check capsule setup
     const ethereumProviderUrl = Cypress.env('ETHEREUM_PROVIDER_URL');
     const vegaWalletUrl = Cypress.env('VEGA_WALLET_URL');
     const vegaUrl = Cypress.env('VEGA_URL');

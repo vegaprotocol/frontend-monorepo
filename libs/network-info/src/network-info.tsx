@@ -20,7 +20,8 @@ export const NetworkInfo = () => {
     GIT_COMMIT_HASH,
     GIT_ORIGIN_URL,
     GITHUB_FEEDBACK_URL,
-    ETHEREUM_PROVIDER_URL,
+    ETHEREUM_CHAIN_ID,
+    ETHEREUM_RPC_URLS,
   } = useEnvironment();
 
   const setNodeSwitcher = useNodeSwitcherStore((store) => store.setDialogOpen);
@@ -38,7 +39,7 @@ export const NetworkInfo = () => {
       <p data-testid="git-eth-data" className="mb-2 break-all">
         {t('Reading Ethereum data from')}{' '}
         <Lozenge className="bg-neutral-300 dark:bg-neutral-700">
-          {ETHEREUM_PROVIDER_URL}
+          {ETHEREUM_RPC_URLS[ETHEREUM_CHAIN_ID]}
         </Lozenge>
         .{' '}
       </p>

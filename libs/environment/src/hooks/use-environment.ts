@@ -244,12 +244,9 @@ const compileEnvVars = () => {
       VEGA_ENV,
       windowOrDefault('ETHERSCAN_URL', process.env['NX_ETHERSCAN_URL'])
     ),
-    // TODO: Rename to ETHEREUM_RPC_URLS
-    ETHEREUM_PROVIDER_URL: getEthereumProviderUrl(
-      windowOrDefault(
-        'ETHEREUM_PROVIDER_URL',
-        process.env['NX_ETHEREUM_PROVIDER_URL']
-      )
+    ETHEREUM_RPC_URLS: getEthereumRpcUrls(
+      // @ts-ignore TODO: figure out this type
+      windowOrDefault('ETHEREUM_RPC_URLS', process.env['NX_ETHEREUM_RPC_URLS'])
     ),
     ETHEREUM_CHAIN_ID: Number(
       windowOrDefault('ETHEREUM_CHAIN_ID', process.env['NX_ETHEREUM_CHAIN_ID'])
@@ -556,7 +553,7 @@ const parseJSON = (value?: string) => {
 /**
  * Provides a fallback ethereum provider url for test purposes in some apps
  */
-const getEthereumProviderUrl = (envvar: string) => {
+const getEthereumRpcUrls = (envvar: string) => {
   const cfg = parseJSON(envvar);
 
   const obj: { [chainId: number]: string } = {};
@@ -564,7 +561,8 @@ const getEthereumProviderUrl = (envvar: string) => {
   for (const key in cfg) {
     obj[Number(key)] = cfg[key];
   }
-  return obj;
+
+  return obj as { 1: string; 11155111: string };
 };
 /**
  * Provide a fallback etherscan url for test purposes in some apps

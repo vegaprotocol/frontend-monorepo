@@ -33,7 +33,10 @@ export const envSchema = z
           Networks
         ).join(' | ')}`,
       }),
-    ETHEREUM_PROVIDER_URL: z.record(z.number(), z.string().url()),
+    ETHEREUM_RPC_URLS: z.object({
+      1: z.string().url(),
+      11155111: z.string().url(),
+    }),
     ETHERSCAN_URL: z.string().url({
       message: 'The NX_ETHERSCAN_URL environment variable must be a valid url',
     }),
