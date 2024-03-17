@@ -126,7 +126,7 @@ const Web3Container = () => {
               <CreateWithdrawalDialog />
               <WithdrawalApprovalDialogContainer />
               <TelemetryDialog />
-              <Web3ConnectUncontrolledDialog />
+              <Web3ConnectUncontrolledDialog connectors={connectors} />
             </>
           </AppLoader>
         </ContractsProvider>
