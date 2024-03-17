@@ -83,7 +83,7 @@ export const createMarketFragment = (
           },
           dataSourceSpecForTradingTermination: {
             __typename: 'DataSourceSpec',
-            id: '871f467e06f91029df8fba3edc0a0aad0259445f2bb144cb79a4113fe5be95bf',
+            id: 'trading-termination-oracle-id',
             data: {
               __typename: 'DataSourceDefinition',
               sourceType: {
@@ -117,7 +117,7 @@ export const createMarketFragment = (
           },
           dataSourceSpecForSettlementData: {
             __typename: 'DataSourceSpec',
-            id: 'f028fe5ea7de3890962a05a7163fdde562629af649ed81b8c8902fafb6eef04f',
+            id: 'settlement-data-oracle-id',
             data: {
               __typename: 'DataSourceDefinition',
               sourceType: {

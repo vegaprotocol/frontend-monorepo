@@ -151,6 +151,7 @@ const ClosedMarketsDataGrid = ({
       {
         headerName: t('Settlement date'),
         colId: 'settlementDate', // colId needed if no field property provided otherwise column order is ruined in tests
+        field: 'code',
         valueGetter: ({ data }: { data: Row }) => {
           return getMarketExpiryDate(data.metadata);
         },
@@ -246,18 +247,18 @@ const ClosedMarketsDataGrid = ({
       },
       {
         headerName: t('Settlement asset'),
-        field: 'settlementAsset',
+        field: 'settlementAsset.id',
         cellRenderer: ({
-          value,
-        }: VegaValueFormatterParams<Row, 'settlementAsset'>) => (
+          data,
+        }: VegaValueFormatterParams<Row, 'settlementAsset.id'>) => (
           <button
             className="underline"
             onClick={() => {
-              if (!value) return;
-              openAssetDialog(value.id);
+              if (!data?.settlementAsset) return;
+              openAssetDialog(data.settlementAsset.id);
             }}
           >
-            {value ? value.symbol : '-'}
+            {data?.settlementAsset ? data.settlementAsset.symbol : '-'}
           </button>
         ),
       },

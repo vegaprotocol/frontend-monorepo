@@ -341,9 +341,9 @@ describe('Closed', () => {
       oracleDataMock,
     ]);
 
-    const actionCell = screen
-      .getAllByRole('gridcell')
-      .find((el) => el.getAttribute('col-id') === 'market-actions');
+    const actionCell = (await screen.findAllByRole('gridcell')).find(
+      (el) => el.getAttribute('col-id') === 'market-actions'
+    );
 
     await userEvent.click(
       within(actionCell as HTMLElement).getByTestId('dropdown-menu')
