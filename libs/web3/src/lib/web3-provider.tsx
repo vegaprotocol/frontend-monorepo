@@ -9,6 +9,7 @@ interface Web3ProviderProps {
 
 export const Web3Provider = ({ children }: Web3ProviderProps) => {
   const { ETHEREUM_CHAIN_ID } = useEnvironment();
+
   useEffect(() => {
     // Always connect the fallback connector so we can at least
     // read from contracts

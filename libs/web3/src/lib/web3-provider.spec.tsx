@@ -1,23 +1,37 @@
-import { act, render, screen } from '@testing-library/react';
-import type { Web3ReactHooks } from '@web3-react/core';
-import { initializeConnector } from '@web3-react/core';
-import { MetaMask } from '@web3-react/metamask';
+import { type ReactNode } from 'react';
+import { render, screen } from '@testing-library/react';
 import { Web3Provider } from './web3-provider';
+import { fallbackConnector } from './connectors';
 
-const [foo, fooHooks] = initializeConnector(
-  (actions) => new MetaMask({ actions })
-);
+jest.mock('./connectors', () => {
+  const network = {
+    activate: jest.fn(),
+  };
+  return {
+    connectors: [],
+    fallbackConnector: network,
+  };
+});
 
-const connectors: [MetaMask, Web3ReactHooks][] = [[foo, fooHooks]];
+jest.mock('@vegaprotocol/environment', () => ({
+  useEnvironment: () => ({
+    ETHEREUM_CHAIN_ID: 1440,
+  }),
+}));
 
-it('Renders children', async () => {
-  await act(async () => {
-    render(
-      <Web3Provider connectors={connectors}>
-        <div>Child</div>
-      </Web3Provider>
-    );
-  });
+jest.mock('@web3-react/core', () => ({
+  Web3ReactProvider: ({ children }: { children: ReactNode }) => children,
+}));
+
+it('starts fallback connector on correct chain', async () => {
+  const spy = jest.spyOn(fallbackConnector, 'activate');
+
+  render(
+    <Web3Provider>
+      <div>Child</div>
+    </Web3Provider>
+  );
 
   expect(screen.getByText('Child')).toBeInTheDocument();
+  expect(spy).toHaveBeenCalledWith(1440);
 });

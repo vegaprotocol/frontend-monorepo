@@ -1,27 +1,68 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { Web3ConnectDialog } from './web3-connect-dialog';
-import type { Web3ReactHooks } from '@web3-react/core';
-import { initializeConnector } from '@web3-react/core';
-import { MetaMask } from '@web3-react/metamask';
-import type { Connector } from '@web3-react/types';
+import { MockedProvider, type MockedResponse } from '@apollo/client/testing';
+import { connectors } from './connectors';
+import {
+  NetworkParamsDocument,
+  type NetworkParamsQuery,
+} from '@vegaprotocol/network-parameters';
 
-const [foo, fooHooks] = initializeConnector((actions) => {
-  return new MetaMask({ actions });
-});
+jest.mock('@vegaprotocol/environment', () => ({
+  ENV: {
+    ETHEREUM_CHAIN_ID: 1440,
+    ETHEREUM_RPC_URLS: { 1440: 'https://foo.com' },
+  },
+}));
 
-const connectors: [Connector, Web3ReactHooks][] = [[foo, fooHooks]];
+jest.mock('@web3-react/walletconnect', () => ({
+  WalletConnect: function () {
+    return { activate: jest.fn() };
+  },
+}));
 
-const props = {
+jest.mock('@web3-react/walletconnect-v2', () => ({
+  WalletConnect: function () {
+    return { activate: jest.fn() };
+  },
+}));
+
+const defaultProps = {
   dialogOpen: false,
   setDialogOpen: jest.fn(),
-  connectors,
-  desiredChainId: 3,
 };
 
+const mockChainId = 1440;
+const mockEthereumConfig: MockedResponse<NetworkParamsQuery, never> = {
+  request: {
+    query: NetworkParamsDocument,
+  },
+  result: {
+    data: {
+      networkParametersConnection: {
+        edges: [
+          {
+            node: {
+              key: 'blockchains.ethereumConfig',
+              value: JSON.stringify({ chain_id: mockChainId }),
+            },
+          },
+        ],
+      },
+    },
+  },
+};
+
+const renderComponent = (props?: Partial<typeof defaultProps>) => (
+  <MockedProvider mocks={[mockEthereumConfig]}>
+    <Web3ConnectDialog {...defaultProps} {...props} />
+  </MockedProvider>
+);
+
 it('Dialog can be open or closed', () => {
-  const { container, rerender } = render(<Web3ConnectDialog {...props} />);
+  const { container, rerender } = render(renderComponent());
   expect(container).toBeEmptyDOMElement();
-  rerender(<Web3ConnectDialog {...props} dialogOpen={true} />);
+  rerender(renderComponent({ dialogOpen: true }));
   expect(screen.getByTestId('web3-connector-list')).toBeInTheDocument();
   expect(
     screen.getByText('Connect to your Ethereum wallet')
@@ -29,21 +70,23 @@ it('Dialog can be open or closed', () => {
 });
 
 it('Renders connection options', async () => {
+  const user = userEvent.setup();
+  const mockSetDialog = jest.fn();
   const spyOnConnect = jest
-    .spyOn(foo, 'activate')
+    .spyOn(connectors[0][0], 'activate')
     .mockReturnValue(Promise.resolve());
 
-  render(<Web3ConnectDialog {...props} dialogOpen={true} />);
-  const connectorList = screen.getByTestId('web3-connector-list');
-  expect(connectorList).toBeInTheDocument();
-  expect(connectorList.children).toHaveLength(Object.keys(connectors).length);
+  render(renderComponent({ dialogOpen: true, setDialogOpen: mockSetDialog }));
 
-  expect(screen.getByTestId('web3-connector-MetaMask')).toBeInTheDocument();
+  const connectorList = await screen.findByTestId('web3-connector-list');
+  expect(connectorList).toBeInTheDocument();
+  expect(connectorList.children).toHaveLength(connectors.length - 1);
 
   // Assert connection is attempted with desired chain
-  fireEvent.click(screen.getByTestId('web3-connector-MetaMask'));
-  expect(spyOnConnect).toHaveBeenCalledWith(props.desiredChainId);
+  await user.click(screen.getByTestId('web3-connector-MetaMask'));
+  expect(spyOnConnect).toHaveBeenCalledWith(mockChainId);
+
   await waitFor(() => {
-    expect(props.setDialogOpen).toHaveBeenCalledWith(false);
+    expect(mockSetDialog).toHaveBeenCalledWith(false);
   });
 });
