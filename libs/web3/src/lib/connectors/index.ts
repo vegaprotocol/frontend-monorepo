@@ -63,7 +63,11 @@ const [coinbase, coinbaseHooks] = initializeConnector<CoinbaseWallet>(
       options: {
         appName: 'Vega',
         darkMode: true,
-        url: CHAINS[ENV.ETHEREUM_CHAIN_ID].urls[0],
+        // Default to mainnet if ETHEREUM_CHAIN_ID is not set, which can be
+        // the case in many unit tests
+        url: ENV.ETHEREUM_CHAIN_ID
+          ? CHAINS[ENV.ETHEREUM_CHAIN_ID].urls[0]
+          : CHAINS[1].urls[0],
       },
       onError: (error) => {
         console.warn('ERR_COINBASE_WALLET', error);
