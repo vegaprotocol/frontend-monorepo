@@ -2,34 +2,24 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Web3ConnectDialog } from './web3-connect-dialog';
 import { MockedProvider, type MockedResponse } from '@apollo/client/testing';
-import { connectors } from './connectors';
 import {
   NetworkParamsDocument,
   type NetworkParamsQuery,
 } from '@vegaprotocol/network-parameters';
+import { createConnectors } from './connectors';
 
 jest.mock('@vegaprotocol/environment', () => ({
   ENV: {
-    ETHEREUM_CHAIN_ID: 1440,
-    ETHEREUM_RPC_URLS: { 1440: 'https://foo.com' },
+    ETHEREUM_CHAIN_ID: 11155111,
+    ETHEREUM_RPC_URLS: { 11155111: 'https://foo.com' },
   },
 }));
 
-jest.mock('@web3-react/walletconnect', () => ({
-  WalletConnect: function () {
-    return { activate: jest.fn() };
-  },
-}));
-
-jest.mock('@web3-react/walletconnect-v2', () => ({
-  WalletConnect: function () {
-    return { activate: jest.fn() };
-  },
-}));
-
+const connectors = createConnectors();
 const defaultProps = {
   dialogOpen: false,
   setDialogOpen: jest.fn(),
+  connectors,
 };
 
 const mockChainId = 1440;

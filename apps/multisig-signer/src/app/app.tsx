@@ -24,6 +24,7 @@ import { Web3Connector } from './components/web3-connector';
 import { EthWalletContainer } from './components/eth-wallet-container';
 import { useWeb3React } from '@web3-react/core';
 import type { InMemoryCacheConfig } from '@apollo/client';
+import { connectors } from './config/web3-connectors';
 
 const pageWrapperClasses = classnames(
   'min-h-screen w-screen',
@@ -68,7 +69,7 @@ function App() {
 
   return (
     <AsyncRenderer loading={loading} data={config} error={error}>
-      <Web3Provider>
+      <Web3Provider connectors={connectors}>
         <Web3Connector dialogOpen={dialogOpen} setDialogOpen={setDialogOpen}>
           <EthWalletContainer
             dialogOpen={dialogOpen}

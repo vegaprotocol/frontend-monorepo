@@ -13,6 +13,7 @@ import { WalletProvider } from '@vegaprotocol/wallet-react';
 import { useVegaWalletConfig } from '../../lib/hooks/use-vega-wallet-config';
 import { Trans } from 'react-i18next';
 import { Button, Loader, Splash, VLogo } from '@vegaprotocol/ui-toolkit';
+import { connectors } from '../../lib/web3-connectors';
 
 const Failure = ({ reason }: { reason?: ReactNode }) => {
   const t = useT();
@@ -112,7 +113,7 @@ export const Bootstrapper = ({ children }: { children: ReactNode }) => {
         skeleton={<Loading />}
         failure={<Failure reason={ERR_DATA_LOADER} />}
       >
-        <Web3Provider>
+        <Web3Provider connectors={connectors}>
           <WalletProvider config={config}>{children}</WalletProvider>
         </Web3Provider>
       </DataLoader>

@@ -19,6 +19,7 @@ import {
 } from './contexts/app-state/app-state-context';
 import { useContracts } from './contexts/contracts/contracts-context';
 import { useRefreshAssociatedBalances } from './hooks/use-refresh-associated-balances';
+import { connectors } from './lib/web3-connectors';
 
 // TODO: This blocks the app until you connect
 export const AppLoader = ({ children }: { children: React.ReactElement }) => {
@@ -34,7 +35,7 @@ export const AppLoader = ({ children }: { children: React.ReactElement }) => {
 
   // Eager connect wallets
   const vegaWalletStatus = useVegaEagerConnect();
-  useEthereumEagerConnect();
+  useEthereumEagerConnect({ connectors });
 
   const loaded = balancesLoaded && vegaWalletStatus !== 'connecting';
 

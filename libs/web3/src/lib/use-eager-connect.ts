@@ -4,12 +4,15 @@ import { MetaMask } from '@web3-react/metamask';
 import type { Connector } from '@web3-react/types';
 import { WalletConnect } from '@web3-react/walletconnect-v2';
 import { useEffect, useRef } from 'react';
-import { connectors } from './connectors';
 import { isTestEnv } from '@vegaprotocol/utils';
 import { logger } from './logger';
 import { CONNECTOR_STORAGE_KEY } from './constants';
 
-export const useEagerConnect = () => {
+export const useEagerConnect = ({
+  connectors,
+}: {
+  connectors: [Connector, Web3ReactHooks][];
+}) => {
   const [eagerConnector] = useLocalStorage(CONNECTOR_STORAGE_KEY);
   const attemptedRef = useRef(false);
 

@@ -15,18 +15,20 @@ import { useWeb3ConnectStore } from './web3-connect-store';
 import { theme } from '@vegaprotocol/tailwindcss-config';
 import classNames from 'classnames';
 import { useT } from './use-t';
-import { connectors, fallbackConnector } from './connectors';
 import { CONNECTOR_STORAGE_KEY } from './constants';
 import { useEthereumConfig } from './use-ethereum-config';
+import { Network } from '@web3-react/network';
 
 interface Web3ConnectDialogProps {
   dialogOpen: boolean;
   setDialogOpen: (isOpen: boolean) => void;
+  connectors: [Connector, Web3ReactHooks][];
 }
 
 export const Web3ConnectDialog = ({
   dialogOpen,
   setDialogOpen,
+  connectors,
 }: Web3ConnectDialogProps) => {
   const { config } = useEthereumConfig();
   const t = useT();
@@ -45,7 +47,7 @@ export const Web3ConnectDialog = ({
       <ul className="grid grid-cols-2 gap-2" data-testid="web3-connector-list">
         {connectors.map((connector, i) => {
           // Dont show the fallback connector as an option
-          if (connector[0] === fallbackConnector) return null;
+          if (connector[0] instanceof Network) return null;
 
           return (
             <li key={i} className="mb-2 last:mb-0">
@@ -113,11 +115,21 @@ const ConnectButton = ({
   );
 };
 
-export const Web3ConnectUncontrolledDialog = () => {
+export const Web3ConnectUncontrolledDialog = ({
+  connectors,
+}: {
+  connectors: [Connector, Web3ReactHooks][];
+}) => {
   const { isOpen, open, close } = useWeb3ConnectStore();
   const onChange = (isOpen: boolean) => (isOpen ? open() : close());
 
-  return <Web3ConnectDialog dialogOpen={isOpen} setDialogOpen={onChange} />;
+  return (
+    <Web3ConnectDialog
+      connectors={connectors}
+      dialogOpen={isOpen}
+      setDialogOpen={onChange}
+    />
+  );
 };
 
 function getConnectorInfo(connector: Connector, t: ReturnType<typeof useT>) {

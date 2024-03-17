@@ -47,85 +47,88 @@ const URLS = Object.keys(CHAINS).reduce((acc, chainId) => {
   return acc;
 }, {} as { [chainId: number]: string[] });
 
-//  This is the fallback connector and should be last in the connectors array
-const [network, networkHooks] = initializeConnector<Network>((actions) => {
-  return new Network({ actions, urlMap: URLS });
-});
+export const createConnectors = () => {
+  //  This is the fallback connector and should be last in the connectors array
+  const [network, networkHooks] = initializeConnector<Network>((actions) => {
+    return new Network({ actions, urlMap: URLS });
+  });
 
-const [metaMask, metaMaskHooks] = initializeConnector<MetaMask>(
-  (actions) => new MetaMask({ actions })
-);
+  const [metaMask, metaMaskHooks] = initializeConnector<MetaMask>(
+    (actions) => new MetaMask({ actions })
+  );
 
-const [coinbase, coinbaseHooks] = initializeConnector<CoinbaseWallet>(
-  (actions) =>
-    new CoinbaseWallet({
-      actions,
-      options: {
-        appName: 'Vega',
-        darkMode: true,
-        // Default to mainnet if ETHEREUM_CHAIN_ID is not set, which can be
-        // the case in many unit tests
-        url: ENV.ETHEREUM_CHAIN_ID
-          ? CHAINS[ENV.ETHEREUM_CHAIN_ID].urls[0]
-          : CHAINS[1].urls[0],
-      },
-      onError: (error) => {
-        console.warn('ERR_COINBASE_WALLET', error);
-      },
-    })
-);
-
-const [walletConnectLegacy, walletConnectLegacyHooks] =
-  initializeConnector<WalletConnectLegacy>(
+  const [coinbase, coinbaseHooks] = initializeConnector<CoinbaseWallet>(
     (actions) =>
-      new WalletConnectLegacy({
+      new CoinbaseWallet({
         actions,
         options: {
-          rpc: URLS,
-          qrcode: true,
+          appName: 'Vega',
+          darkMode: true,
+          // Default to mainnet if ETHEREUM_CHAIN_ID is not set, which can be
+          // the case in many unit tests
+          url: ENV.ETHEREUM_CHAIN_ID
+            ? CHAINS[ENV.ETHEREUM_CHAIN_ID].urls[0]
+            : CHAINS[1].urls[0],
         },
-        defaultChainId: ENV.ETHEREUM_CHAIN_ID,
+        onError: (error) => {
+          console.warn('ERR_COINBASE_WALLET', error);
+        },
       })
   );
 
-const [walletConnect, walletConnectHooks] = initializeConnector<WalletConnect>(
-  (actions) =>
-    new WalletConnect({
-      actions,
-      defaultChainId: ENV.ETHEREUM_CHAIN_ID,
-      options: {
-        projectId: ENV.WALLETCONNECT_PROJECT_ID,
-        chains: [1, 11155111],
-        showQrModal: true,
-        rpcMap: URLS,
-        qrModalOptions: {
-          themeMode: 'dark',
-          themeVariables: {
-            '--w3m-z-index': '40',
-            '--w3m-accent-color': theme.colors.vega.yellow.DEFAULT,
-            '--w3m-background-color': theme.colors.vega.dark[100],
-            '--w3m-font-family': 'AlphaLyrae',
-            '--w3m-container-border-radius': '0.25rem',
-            '--w3m-background-border-radius': '0.25rem',
-            '--w3m-accent-fill-color': theme.colors.vega.yellow.DEFAULT,
+  const [walletConnectLegacy, walletConnectLegacyHooks] =
+    initializeConnector<WalletConnectLegacy>(
+      (actions) =>
+        new WalletConnectLegacy({
+          actions,
+          options: {
+            rpc: URLS,
+            qrcode: true,
           },
-        },
-      },
-      onError: (error) => {
-        console.warn('ERR_WALLET_CONNECT', error.message);
-      },
-    })
-);
+          defaultChainId: ENV.ETHEREUM_CHAIN_ID,
+        })
+    );
 
-export const fallbackConnector = network;
+  const [walletConnect, walletConnectHooks] =
+    initializeConnector<WalletConnect>(
+      (actions) =>
+        new WalletConnect({
+          actions,
+          defaultChainId: ENV.ETHEREUM_CHAIN_ID,
+          options: {
+            projectId: ENV.WALLETCONNECT_PROJECT_ID,
+            chains: [1, 11155111],
+            showQrModal: true,
+            rpcMap: URLS,
+            qrModalOptions: {
+              themeMode: 'dark',
+              themeVariables: {
+                '--w3m-z-index': '40',
+                '--w3m-accent-color': theme.colors.vega.yellow.DEFAULT,
+                '--w3m-background-color': theme.colors.vega.dark[100],
+                '--w3m-font-family': 'AlphaLyrae',
+                '--w3m-container-border-radius': '0.25rem',
+                '--w3m-background-border-radius': '0.25rem',
+                '--w3m-accent-fill-color': theme.colors.vega.yellow.DEFAULT,
+              },
+            },
+          },
+          onError: (error) => {
+            console.warn('ERR_WALLET_CONNECT', error.message);
+          },
+        })
+    );
 
-export const connectors: [
-  MetaMask | WalletConnect | CoinbaseWallet | WalletConnectLegacy | Network,
-  Web3ReactHooks
-][] = [
-  [metaMask, metaMaskHooks],
-  [walletConnect, walletConnectHooks],
-  [coinbase, coinbaseHooks],
-  [walletConnectLegacy, walletConnectLegacyHooks],
-  [network, networkHooks],
-];
+  const connectors: [
+    MetaMask | WalletConnect | CoinbaseWallet | WalletConnectLegacy | Network,
+    Web3ReactHooks
+  ][] = [
+    [metaMask, metaMaskHooks],
+    [walletConnect, walletConnectHooks],
+    [coinbase, coinbaseHooks],
+    [walletConnectLegacy, walletConnectLegacyHooks],
+    [network, networkHooks],
+  ];
+
+  return connectors;
+};

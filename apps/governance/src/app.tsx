@@ -48,6 +48,7 @@ import { TelemetryDialog } from './components/telemetry-dialog/telemetry-dialog'
 import { useTranslation } from 'react-i18next';
 import { useSentryInit } from './hooks/use-sentry-init';
 import { useVegaWalletConfig } from './hooks/use-vega-wallet-config';
+import { connectors } from './lib/web3-connectors';
 
 const cache: InMemoryCacheConfig = {
   typePolicies: {
@@ -97,7 +98,7 @@ const Web3Container = () => {
   }
 
   return (
-    <Web3Provider>
+    <Web3Provider connectors={connectors}>
       <WalletProvider config={vegaWalletConfig}>
         <ContractsProvider>
           <AppLoader>

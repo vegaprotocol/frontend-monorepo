@@ -10,7 +10,6 @@ import {
   isAssetTypeERC20,
   formatNumber,
 } from '@vegaprotocol/utils';
-import { useLocalStorage } from '@vegaprotocol/react-helpers';
 import {
   TradingFormGroup,
   TradingInput,
@@ -32,7 +31,6 @@ import { useWatch, Controller, useForm } from 'react-hook-form';
 import { DepositLimits } from './deposit-limits';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import {
-  ETHEREUM_EAGER_CONNECT,
   useWeb3ConnectStore,
   getChainName,
   useWeb3Disconnect,
@@ -481,14 +479,12 @@ const DisconnectEthereumButton = ({
   onDisconnect: () => void;
 }) => {
   const t = useT();
-  const [, , removeEagerConnector] = useLocalStorage(ETHEREUM_EAGER_CONNECT);
   const disconnect = useWeb3Disconnect();
 
   return (
     <ButtonLink
       onClick={() => {
         disconnect();
-        removeEagerConnector();
         onDisconnect();
       }}
       data-testid="disconnect-ethereum-wallet"

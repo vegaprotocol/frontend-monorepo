@@ -1,5 +1,6 @@
 export * from './lib/__generated__/TransactionResult';
 export * from './lib/__generated__/WithdrawalApproval';
+export { createConnectors } from './lib/connectors';
 export * from './lib/constants';
 export * from './lib/eip-1193-custom-bridge';
 export * from './lib/ethereum-error';

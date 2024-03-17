@@ -8,6 +8,7 @@ import {
 } from '@vegaprotocol/web3';
 import { Button, Splash, AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { useWeb3React } from '@web3-react/core';
+import { connectors } from '../../config/web3-connectors';
 
 interface Web3ConnectorProps {
   children: ReactElement;
@@ -21,7 +22,7 @@ export function Web3Connector({ children }: Web3ConnectorProps) {
   return (
     <AsyncRenderer loading={loading} error={error} data={config}>
       <Web3Content appChainId={appChainId}>{children}</Web3Content>
-      <Web3ConnectUncontrolledDialog />
+      <Web3ConnectUncontrolledDialog connectors={connectors} />
     </AsyncRenderer>
   );
 }
@@ -35,7 +36,7 @@ export const Web3Content = ({ children, appChainId }: Web3ContentProps) => {
   const { chainId } = useWeb3React();
   const disconnect = useWeb3Disconnect();
 
-  useEagerConnect();
+  useEagerConnect({ connectors });
 
   // TODO: check error from  web3 connect store
   // if (error) {
