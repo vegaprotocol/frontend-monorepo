@@ -21,18 +21,13 @@ type ChainConfig = {
   [chainId: number]: BasicChainInformation;
 };
 
-const MAINNET_PROVIDER_URL =
-  'https://eth-mainnet.rpc.grove.city/v1/af6a2d529a11f8158bc8ca2a';
-const TESTNET_PROVIDER_URL =
-  'https://sepolia.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8';
-
 const CHAINS: ChainConfig = {
   1: {
-    urls: [MAINNET_PROVIDER_URL],
+    urls: [ENV.ETHEREUM_PROVIDER_URL[1]],
     name: 'Ethereum',
   },
   11155111: {
-    urls: [TESTNET_PROVIDER_URL],
+    urls: [ENV.ETHEREUM_PROVIDER_URL[11155111]],
     name: 'Sepolia',
   },
 };

@@ -229,7 +229,7 @@ const compileEnvVars = () => {
       'VEGA_CONFIG_URL',
       process.env['NX_VEGA_CONFIG_URL'] as string
     ),
-    VEGA_NETWORKS: parseNetworks(
+    VEGA_NETWORKS: parseJSON(
       windowOrDefault('VEGA_NETWORKS', process.env['NX_VEGA_NETWORKS'])
     ),
     VEGA_WALLET_URL: windowOrDefault(
@@ -244,8 +244,8 @@ const compileEnvVars = () => {
       VEGA_ENV,
       windowOrDefault('ETHERSCAN_URL', process.env['NX_ETHERSCAN_URL'])
     ),
+    // TODO: Rename to ETHEREUM_RPC_URLS
     ETHEREUM_PROVIDER_URL: getEthereumProviderUrl(
-      VEGA_ENV,
       windowOrDefault(
         'ETHEREUM_PROVIDER_URL',
         process.env['NX_ETHEREUM_PROVIDER_URL']
@@ -542,7 +542,7 @@ export const compileFeatureFlags = (refresh = false): FeatureFlags => {
   return flags;
 };
 
-const parseNetworks = (value?: string) => {
+const parseJSON = (value?: string) => {
   if (value) {
     try {
       return JSON.parse(value);
@@ -556,14 +556,15 @@ const parseNetworks = (value?: string) => {
 /**
  * Provides a fallback ethereum provider url for test purposes in some apps
  */
-const getEthereumProviderUrl = (
-  network: Networks | undefined,
-  envvar: string | undefined
-) => {
-  if (envvar) return envvar;
-  return network === Networks.MAINNET
-    ? 'https://mainnet.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8'
-    : 'https://sepolia.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8';
+const getEthereumProviderUrl = (envvar: string) => {
+  const cfg = parseJSON(envvar);
+
+  const obj: { [chainId: number]: string } = {};
+  // convert keys to numbers
+  for (const key in cfg) {
+    obj[Number(key)] = cfg[key];
+  }
+  return obj;
 };
 /**
  * Provide a fallback etherscan url for test purposes in some apps
