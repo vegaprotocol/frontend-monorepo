@@ -76,6 +76,7 @@ beforeEach(() => {
     isActive: true,
     account: MOCK_ETH_ADDRESS,
     connector: mockConnector,
+    chainId: 11155111,
   });
 });
 
@@ -114,6 +115,7 @@ describe('Deposit form', () => {
       (useWeb3React as jest.Mock).mockReturnValue({
         isActive: false,
         account: '',
+        chainId: 11155111,
       });
       render(<DepositForm {...props} />);
 
@@ -235,6 +237,7 @@ describe('Deposit form', () => {
       account: MOCK_ETH_ADDRESS,
       isActive: true,
       connector: mockConnector,
+      chainId: 11155111,
     });
 
     render(
@@ -274,6 +277,7 @@ describe('Deposit form', () => {
       account,
       isActive: true,
       connector: mockConnector,
+      chainId: 11155111,
     });
 
     const balance = new BigNumber(50);
@@ -331,6 +335,7 @@ describe('Deposit form', () => {
     (useWeb3React as jest.Mock).mockReturnValue({
       isActive: false,
       account: '',
+      chainId: 11155111,
     });
 
     render(<DepositForm {...props} />);
@@ -347,6 +352,7 @@ describe('Deposit form', () => {
     (useWeb3React as jest.Mock).mockReturnValue({
       isActive: true,
       account: MOCK_ETH_ADDRESS,
+      chainId: 11155111,
     });
     render(<DepositForm {...props} />);
 
