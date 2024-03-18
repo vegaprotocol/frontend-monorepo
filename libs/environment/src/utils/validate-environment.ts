@@ -39,7 +39,6 @@ export const envSchema = z
     }),
     ETHEREUM_CHAIN_ID: z.number(),
     HOSTED_WALLET_URL: z.optional(z.string()),
-    ETH_LOCAL_PROVIDER_URL: z.optional(z.string()),
     ETH_WALLET_MNEMONIC: z.optional(z.string()),
     ANNOUNCEMENTS_CONFIG_URL: z.optional(z.string()),
     VEGA_INCIDENT_URL: z.optional(z.string()),

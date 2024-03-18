@@ -250,10 +250,6 @@ const compileEnvVars = () => {
     ETHEREUM_CHAIN_ID: Number(
       windowOrDefault('ETHEREUM_CHAIN_ID', process.env['NX_ETHEREUM_CHAIN_ID'])
     ),
-    ETH_LOCAL_PROVIDER_URL: windowOrDefault(
-      'ETH_LOCAL_PROVIDER_URL',
-      process.env['NX_ETH_LOCAL_PROVIDER_URL']
-    ),
     ETH_WALLET_MNEMONIC: windowOrDefault(
       'ETH_WALLET_MNEMONIC',
       process.env['NX_ETH_WALLET_MNEMONIC']
@@ -553,10 +549,6 @@ const parseJSON = (value?: string) => {
  * Provides a fallback ethereum provider url for test purposes in some apps
  */
 const getEthereumRpcUrls = (envvar: string | undefined) => {
-  if (!envvar) {
-    throw new Error('ETHEREUM_RPC_URLS must be set');
-  }
-
   const cfg = parseJSON(envvar);
 
   const obj: { [chainId: number]: string } = {};
