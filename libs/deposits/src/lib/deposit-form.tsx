@@ -66,7 +66,7 @@ export interface DepositFormProps {
     vegaPublicKey: string;
   }) => void;
   isFaucetable?: boolean;
-  desiredChainId: number;
+  desiredChainId?: number;
 }
 
 export const DepositForm = ({
