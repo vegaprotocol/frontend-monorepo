@@ -74,6 +74,10 @@ export const DealTicketContainer = ({
           ) : (
             <DealTicket
               {...props}
+              riskFactors={market.riskFactors}
+              scalingFactors={
+                market.tradableInstrument.marginCalculator?.scalingFactors
+              }
               market={market}
               marketPrice={marketPrice}
               marketData={marketData}

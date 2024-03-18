@@ -55,6 +55,7 @@ import {
   SummaryValidationType,
 } from '../../constants';
 import type {
+  Market,
   MarketInfo,
   MarketData,
   StaticMarketData,
@@ -83,13 +84,17 @@ import { useT } from '../../use-t';
 import { DealTicketPriceTakeProfitStopLoss } from './deal-ticket-price-tp-sl';
 import uniqueId from 'lodash/uniqueId';
 import { determinePriceStep, determineSizeStep } from '@vegaprotocol/utils';
-import { BigNumber } from 'bignumber.js';
+import { useMaxSize } from '../../hooks/use-max-size';
 
 export const REDUCE_ONLY_TOOLTIP =
   '"Reduce only" will ensure that this order will not increase the size of an open position. When the order is matched, it will only trade enough volume to bring your open volume towards 0 but never change the direction of your position. If applied to a limit order that is not instantly filled, the order will be stopped.';
 
 export interface DealTicketProps {
-  market: MarketInfo;
+  scalingFactors?: NonNullable<
+    MarketInfo['tradableInstrument']['marginCalculator']
+  >['scalingFactors'];
+  riskFactors: MarketInfo['riskFactors'];
+  market: Market;
   marketData: StaticMarketData;
   marketPrice?: string | null;
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
@@ -141,6 +146,8 @@ export const getBaseQuoteUnit = (tags?: string[] | null) =>
 
 export const DealTicket = ({
   market,
+  riskFactors,
+  scalingFactors,
   onMarketClick,
   marketData,
   marketPrice,
@@ -386,88 +393,25 @@ export const DealTicket = ({
   const disableIcebergCheckbox = nonPersistentOrder;
   const featureFlags = useFeatureFlags((state) => state.flags);
   const sizeStep = determineSizeStep(market);
-  let maxSize = new BigNumber(0);
-  const volume = new BigNumber(openVolume || 0).div(
-    new BigNumber(10).exponentiatedBy(market.positionDecimalPlaces ?? 0)
-  );
-  const reducePositionOrder =
-    (openVolume.startsWith('-') && side === Schema.Side.SIDE_BUY) ||
-    (!openVolume.startsWith('-') && side === Schema.Side.SIDE_SELL);
-  if (margin?.marginMode === Schema.MarginMode.MARGIN_MODE_ISOLATED_MARGIN) {
-    const availableMargin = new BigNumber(generalAccountBalance)
-      .plus(
-        reducePositionOrder &&
-          normalizedOrder.type === Schema.OrderType.TYPE_MARKET
-          ? marginAccountBalance || 0
-          : 0
-      )
-      .div(new BigNumber(10).exponentiatedBy(accountDecimals ?? 0));
-    maxSize = availableMargin
-      .div(margin.marginFactor)
-      .div(
-        new BigNumber(price || '0').div(
-          new BigNumber(10).exponentiatedBy(market.decimalPlaces ?? 0)
-        )
-      );
-    maxSize = maxSize.minus(maxSize.mod(sizeStep));
-    if (
-      reducePositionOrder &&
-      normalizedOrder.type === Schema.OrderType.TYPE_MARKET
-    ) {
-      maxSize = maxSize.plus(volume.abs());
-    }
-  } else {
-    const remainingBuy = new BigNumber(
-      activeOrders
-        ?.filter((order) => order.side === Schema.Side.SIDE_BUY)
-        ?.reduce((sum, order) => sum + BigInt(order.remaining), BigInt(0))
-        .toString() || 0
-    ).div(new BigNumber(10).exponentiatedBy(market.positionDecimalPlaces ?? 0));
-    const remainingSell = new BigNumber(
-      activeOrders
-        ?.filter((order) => order.side === Schema.Side.SIDE_SELL)
-        ?.reduce((sum, order) => sum + BigInt(order.remaining), BigInt(0))
-        .toString() || 0
-    ).div(new BigNumber(10).exponentiatedBy(market.positionDecimalPlaces ?? 0));
-    const remainingBuyPlusOpenVolume = remainingBuy.plus(
-      volume.isGreaterThan(0) ? volume : 0
-    );
-    const remainingSellPlusOpenVolume = remainingSell.plus(
-      volume.isLessThan(0) ? volume.abs() : 0
-    );
-    const availableMargin = new BigNumber(generalAccountBalance || 0)
-      .plus(marginAccountBalance || 0)
-      .div(new BigNumber(10).exponentiatedBy(accountDecimals ?? 0));
-    maxSize = availableMargin
-      .div(
-        BigNumber(
-          (side === Schema.Side.SIDE_BUY
-            ? market.riskFactors?.long
-            : market.riskFactors?.short) || 1
-        )
-      )
-      .div(
-        market.tradableInstrument.marginCalculator?.scalingFactors
-          .initialMargin ?? 1
-      )
-      .div(
-        new BigNumber(marketPrice || '0').div(
-          new BigNumber(10).exponentiatedBy(market.decimalPlaces ?? 0)
-        )
-      );
-    maxSize = maxSize.minus(maxSize.mod(sizeStep));
-    maxSize = maxSize.minus(
-      side === Schema.Side.SIDE_BUY
-        ? remainingBuyPlusOpenVolume
-        : remainingSellPlusOpenVolume
-    );
-    if (
-      reducePositionOrder &&
-      normalizedOrder.type === Schema.OrderType.TYPE_MARKET
-    ) {
-      maxSize = maxSize.plus(volume.abs());
-    }
-  }
+
+  const maxSize = useMaxSize({
+    accountDecimals: accountDecimals ?? undefined,
+    activeOrders: activeOrders ?? undefined,
+    decimalPlaces: market.decimalPlaces,
+    marginAccountBalance,
+    marginFactor: margin?.marginFactor,
+    marginMode: margin?.marginMode,
+    marketPrice: marketPrice ?? undefined,
+    price,
+    riskFactors,
+    scalingFactors,
+    side,
+    sizeStep,
+    type,
+    generalAccountBalance,
+    openVolume,
+    positionDecimalPlaces: market.positionDecimalPlaces,
+  });
 
   const onSubmit = useCallback(
     (formValues: OrderFormValues) => {
