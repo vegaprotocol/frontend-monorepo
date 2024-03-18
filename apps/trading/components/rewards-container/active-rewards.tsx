@@ -76,7 +76,7 @@ export const applyFilter = (
 export const ActiveRewards = ({ currentEpoch }: { currentEpoch: number }) => {
   const t = useT();
   const { data } = useRewards({
-    onlyActive: true,
+    onlyActive: false,
   });
   const { pubKey } = useVegaWallet();
   const { team } = useMyTeam();
