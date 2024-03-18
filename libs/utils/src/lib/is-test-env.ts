@@ -1,3 +1,3 @@
 export const isTestEnv = () => {
-  return window && 'Cypress' in window;
+  return typeof window !== 'undefined' && 'Cypress' in window;
 };

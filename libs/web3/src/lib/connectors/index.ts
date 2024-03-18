@@ -56,7 +56,7 @@ export const createConnectors = () => {
   }, {} as { [chainId: number]: string[] });
 
   // Provide single modified connector that allows signing in cypress env
-  if (isTestEnv() && 'Cypress' in window) {
+  if (isTestEnv()) {
     const [url, urlHooks] = initializeUrlConnector(
       ENV.ETHEREUM_RPC_URLS['1440'],
       // @ts-ignore we are in a cypress env due to checks above
