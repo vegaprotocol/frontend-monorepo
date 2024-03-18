@@ -15,9 +15,8 @@ export type EmblemByAssetProps = {
  * @returns React.Node
  */
 export function EmblemByAsset(p: EmblemByAssetProps) {
-  const url = `${URL_BASE}/vega/${
-    p.vegaChain ? p.vegaChain : DEFAULT_VEGA_CHAIN
-  }/asset/${p.asset}/${FILENAME}`;
+  const chain = p.vegaChain ? p.vegaChain : DEFAULT_VEGA_CHAIN;
+  const url = `${URL_BASE}/vega/${chain}/asset/${p.asset}/${FILENAME}`;
 
   return <EmblemBase src={url} {...p} />;
 }

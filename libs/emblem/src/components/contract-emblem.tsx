@@ -14,8 +14,8 @@ export type EmblemByContractProps = {
  * @returns React.Node
  */
 export function EmblemByContract(p: EmblemByContractProps) {
-  const url = `${URL_BASE}/chain/${
-    p.chainId ? p.chainId : DEFAULT_CHAIN
-  }/asset/${p.contract}/${FILENAME}`;
+  const chain = p.chainId ? p.chainId : DEFAULT_CHAIN;
+  const url = `${URL_BASE}/chain/${chain}/asset/${p.contract}/${FILENAME}`;
+
   return <EmblemBase src={url} {...p} />;
 }

@@ -15,7 +15,7 @@ export type EmblemProps = ImgProps &
 export function Emblem(props: EmblemProps) {
   if (isEmblemByAsset(props)) {
     return <EmblemByAsset {...props} />;
-  } else {
-    return <EmblemByContract {...props} />;
   }
+
+  return <EmblemByContract {...props} />;
 }
