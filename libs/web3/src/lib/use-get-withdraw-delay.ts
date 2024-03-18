@@ -39,7 +39,7 @@ export const useGetWithdrawDelay = () => {
       logger.error('could not get withdraw delay', err);
       return undefined;
     }
-  }, [contract, logger]);
+  }, [contract]);
 
   return getDelay;
 };

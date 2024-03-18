@@ -69,7 +69,7 @@ export const useGetWithdrawThreshold = () => {
         return undefined;
       }
     },
-    [contract, logger]
+    [contract]
   );
 
   return getThreshold;
