@@ -245,7 +245,6 @@ const compileEnvVars = () => {
       windowOrDefault('ETHERSCAN_URL', process.env['NX_ETHERSCAN_URL'])
     ),
     ETHEREUM_RPC_URLS: getEthereumRpcUrls(
-      // @ts-ignore TODO: figure out this type
       windowOrDefault('ETHEREUM_RPC_URLS', process.env['NX_ETHEREUM_RPC_URLS'])
     ),
     ETHEREUM_CHAIN_ID: Number(
@@ -562,7 +561,7 @@ const getEthereumRpcUrls = (envvar: string) => {
     obj[Number(key)] = cfg[key];
   }
 
-  return obj as { 1: string; 11155111: string };
+  return obj;
 };
 /**
  * Provide a fallback etherscan url for test purposes in some apps
