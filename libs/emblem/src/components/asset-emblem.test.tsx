@@ -10,9 +10,7 @@ describe('EmblemByAsset', () => {
       alt: 'Emblem',
     };
 
-    const { getByAltText, debug } = render(<EmblemByAsset {...props} />);
-
-    debug();
+    const { getByAltText } = render(<EmblemByAsset {...props} />);
 
     const emblemImage = getByAltText('Emblem');
 

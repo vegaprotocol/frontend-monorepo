@@ -10,9 +10,7 @@ describe('EmblemByContract', () => {
       alt: 'Emblem',
     };
 
-    const { getByAltText, debug } = render(<EmblemByContract {...props} />);
-
-    debug();
+    const { getByAltText } = render(<EmblemByContract {...props} />);
 
     const emblemImage = getByAltText('Emblem');
 
