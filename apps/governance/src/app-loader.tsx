@@ -21,7 +21,6 @@ import { useContracts } from './contexts/contracts/contracts-context';
 import { useRefreshAssociatedBalances } from './hooks/use-refresh-associated-balances';
 import { connectors } from './lib/web3-connectors';
 
-// TODO: This blocks the app until you connect
 export const AppLoader = ({ children }: { children: React.ReactElement }) => {
   const featureFlags = useFeatureFlags((state) => state.flags);
   const { t } = useTranslation();
@@ -34,10 +33,10 @@ export const AppLoader = ({ children }: { children: React.ReactElement }) => {
   const [balancesLoaded, setBalancesLoaded] = useState(false);
 
   // Eager connect wallets
-  const vegaWalletStatus = useVegaEagerConnect();
+  useVegaEagerConnect();
   useEthereumEagerConnect({ connectors });
 
-  const loaded = balancesLoaded && vegaWalletStatus !== 'connecting';
+  const loaded = balancesLoaded;
 
   useEffect(() => {
     const run = async () => {
@@ -176,6 +175,7 @@ export const AppLoader = ({ children }: { children: React.ReactElement }) => {
   if (!loaded) {
     return loading;
   }
+
   return <Suspense fallback={loading}>{children}</Suspense>;
 };
 
