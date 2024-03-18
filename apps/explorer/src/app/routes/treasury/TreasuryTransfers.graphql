@@ -29,11 +29,13 @@ query ExplorerTreasuryTransfers {
             }
             ... on RecurringTransfer {
               startEpoch
+              endEpoch
             }
             ... on OneOffGovernanceTransfer {
               deliverOn
             }
             ... on RecurringGovernanceTransfer {
+              startEpoch
               endEpoch
             }
           }

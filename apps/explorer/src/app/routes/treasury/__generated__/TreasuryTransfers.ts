@@ -6,7 +6,7 @@ const defaultOptions = {} as const;
 export type ExplorerTreasuryTransfersQueryVariables = Types.Exact<{ [key: string]: never; }>;
 
 
-export type ExplorerTreasuryTransfersQuery = { __typename?: 'Query', transfersConnection?: { __typename?: 'TransferConnection', pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean }, edges?: Array<{ __typename?: 'TransferEdge', node: { __typename?: 'TransferNode', transfer: { __typename?: 'Transfer', timestamp: any, from: string, amount: string, to: string, status: Types.TransferStatus, reason?: string | null, toAccountType: Types.AccountType, fromAccountType: Types.AccountType, id: string, asset?: { __typename?: 'Asset', id: string } | null, kind: { __typename?: 'OneOffGovernanceTransfer', deliverOn?: any | null } | { __typename?: 'OneOffTransfer', deliverOn?: any | null } | { __typename?: 'RecurringGovernanceTransfer', endEpoch?: number | null } | { __typename?: 'RecurringTransfer', startEpoch: number } } } } | null> | null } | null };
+export type ExplorerTreasuryTransfersQuery = { __typename?: 'Query', transfersConnection?: { __typename?: 'TransferConnection', pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean }, edges?: Array<{ __typename?: 'TransferEdge', node: { __typename?: 'TransferNode', transfer: { __typename?: 'Transfer', timestamp: any, from: string, amount: string, to: string, status: Types.TransferStatus, reason?: string | null, toAccountType: Types.AccountType, fromAccountType: Types.AccountType, id: string, asset?: { __typename?: 'Asset', id: string } | null, kind: { __typename?: 'OneOffGovernanceTransfer', deliverOn?: any | null } | { __typename?: 'OneOffTransfer', deliverOn?: any | null } | { __typename?: 'RecurringGovernanceTransfer', startEpoch: number, endEpoch?: number | null } | { __typename?: 'RecurringTransfer', startEpoch: number, endEpoch?: number | null } } } } | null> | null } | null };
 
 
 export const ExplorerTreasuryTransfersDocument = gql`
@@ -41,11 +41,13 @@ export const ExplorerTreasuryTransfersDocument = gql`
             }
             ... on RecurringTransfer {
               startEpoch
+              endEpoch
             }
             ... on OneOffGovernanceTransfer {
               deliverOn
             }
             ... on RecurringGovernanceTransfer {
+              startEpoch
               endEpoch
             }
           }
