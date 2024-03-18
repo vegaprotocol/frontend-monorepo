@@ -36,7 +36,7 @@ export const NetworkInfo = () => {
         </Lozenge>
         . <Link onClick={() => setNodeSwitcher(true)}>{t('Edit')}</Link>
       </p>
-      {ETHEREUM_RPC_URLS && (
+      {ETHEREUM_RPC_URLS && ETHEREUM_CHAIN_ID && (
         <p data-testid="git-eth-data" className="mb-2 break-all">
           {t('Reading Ethereum data from')}{' '}
           <Lozenge className="bg-neutral-300 dark:bg-neutral-700">
