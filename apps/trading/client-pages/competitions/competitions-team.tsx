@@ -75,7 +75,7 @@ const TeamPageContainer = ({ teamId }: { teamId: string | undefined }) => {
   const { data: games, loading: gamesLoading } = useGames(teamId);
 
   const { data: transfersData, loading: transfersLoading } = useRewards({
-    onlyActive: false,
+    onlyActive: true,
     scopeToTeams: true,
   });
 
