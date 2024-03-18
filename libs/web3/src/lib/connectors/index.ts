@@ -115,7 +115,7 @@ export const createConnectors = () => {
           defaultChainId: ENV.ETHEREUM_CHAIN_ID,
           options: {
             projectId: ENV.WALLETCONNECT_PROJECT_ID as string,
-            chains: [1, 11155111],
+            chains: Object.keys(CHAINS).map((k) => Number(k)),
             showQrModal: true,
             rpcMap: URLS,
             qrModalOptions: {
