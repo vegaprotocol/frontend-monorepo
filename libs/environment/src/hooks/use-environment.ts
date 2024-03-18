@@ -552,7 +552,11 @@ const parseJSON = (value?: string) => {
 /**
  * Provides a fallback ethereum provider url for test purposes in some apps
  */
-const getEthereumRpcUrls = (envvar: string) => {
+const getEthereumRpcUrls = (envvar: string | undefined) => {
+  if (!envvar) {
+    throw new Error('ETHEREUM_RPC_URLS must be set');
+  }
+
   const cfg = parseJSON(envvar);
 
   const obj: { [chainId: number]: string } = {};
