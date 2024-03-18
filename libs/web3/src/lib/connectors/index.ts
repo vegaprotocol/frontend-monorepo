@@ -6,6 +6,8 @@ import { WalletConnect } from '@web3-react/walletconnect-v2';
 import { WalletConnect as WalletConnectLegacy } from '@web3-react/walletconnect';
 import { theme } from '@vegaprotocol/tailwindcss-config';
 import { ENV } from '@vegaprotocol/environment';
+import { isTestEnv } from '@vegaprotocol/utils';
+import { initializeUrlConnector } from '../url-connector';
 
 interface BasicChainInformation {
   urls: string[];
@@ -51,6 +53,17 @@ export const createConnectors = () => {
 
     return acc;
   }, {} as { [chainId: number]: string[] });
+
+  // Provide single modified connector that allows signing in cypress env
+  if (isTestEnv() && 'Cypress' in window) {
+    const [url, urlHooks] = initializeUrlConnector(
+      ENV.ETHEREUM_RPC_URLS['1440'],
+      // @ts-ignore we are in a cypress env due to checks above
+      Cypress.env('ETH_WALLET_MNEMONIC')
+    );
+
+    return [[url, urlHooks]];
+  }
 
   //  This is the fallback connector and should be last in the connectors array
   const [network, networkHooks] = initializeConnector<Network>((actions) => {
