@@ -79,7 +79,7 @@ const mockEnvVars = {
     MAINNET: 'https://mainnet.url',
   },
   VEGA_WALLET_URL: 'https://localhost:1234',
-  ETHEREUM_RPC_URLS: { 1440: 'http://localhost:8454' },
+  ETHEREUM_RPC_URLS: { 1440: 'http://localhost:8545' },
   ETHERSCAN_URL: 'https://etherscan.url',
   ETHEREUM_CHAIN_ID: 1440,
   WALLETCONNECT_PROJECT_ID: 'abc',
