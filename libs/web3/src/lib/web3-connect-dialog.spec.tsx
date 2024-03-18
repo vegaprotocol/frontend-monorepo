@@ -9,9 +9,15 @@ import {
 import { createConnectors } from './connectors';
 
 jest.mock('@vegaprotocol/environment', () => ({
+  useEnvironment: () => ({
+    ETHEREUM_CHAIN_ID: 11155111,
+    ETHEREUM_RPC_URLS: { 1115511: 'https://foo.com' },
+    WALLETCONNECT_PROJECT_ID: 'walletconnect-id',
+  }),
   ENV: {
     ETHEREUM_CHAIN_ID: 11155111,
     ETHEREUM_RPC_URLS: { 11155111: 'https://foo.com' },
+    WALLETCONNECT_PROJECT_ID: 'walletconnect-id',
   },
 }));
 
