@@ -22,32 +22,36 @@ type ChainConfig = {
   [chainId: number]: BasicChainInformation;
 };
 
-const CHAINS: ChainConfig = {
-  1: {
-    urls: [ENV.ETHEREUM_RPC_URLS['1']],
-    name: 'Ethereum',
-  },
-  11155111: {
-    urls: [ENV.ETHEREUM_RPC_URLS['11155111']],
-    name: 'Sepolia',
-  },
-  1440: {
-    urls: [ENV.ETHEREUM_RPC_URLS['1440']],
-    name: 'Local',
-  },
-};
-
-const URLS = Object.keys(CHAINS).reduce((acc, chainId) => {
-  const validURLs = CHAINS[Number(chainId)].urls;
-
-  if (validURLs.length) {
-    acc[Number(chainId)] = validURLs;
-  }
-
-  return acc;
-}, {} as { [chainId: number]: string[] });
-
 export const createConnectors = () => {
+  if (!ENV) return [];
+  if (!ENV.ETHEREUM_RPC_URLS) return [];
+  if (!ENV.WALLETCONNECT_PROJECT_ID) return [];
+
+  const CHAINS: ChainConfig = {
+    1: {
+      urls: [ENV.ETHEREUM_RPC_URLS['1']],
+      name: 'Ethereum',
+    },
+    11155111: {
+      urls: [ENV.ETHEREUM_RPC_URLS['11155111']],
+      name: 'Sepolia',
+    },
+    1440: {
+      urls: [ENV.ETHEREUM_RPC_URLS['1440']],
+      name: 'Local',
+    },
+  };
+
+  const URLS = Object.keys(CHAINS).reduce((acc, chainId) => {
+    const validURLs = CHAINS[Number(chainId)].urls;
+
+    if (validURLs.length) {
+      acc[Number(chainId)] = validURLs;
+    }
+
+    return acc;
+  }, {} as { [chainId: number]: string[] });
+
   //  This is the fallback connector and should be last in the connectors array
   const [network, networkHooks] = initializeConnector<Network>((actions) => {
     return new Network({ actions, urlMap: URLS });
@@ -96,7 +100,7 @@ export const createConnectors = () => {
           actions,
           defaultChainId: ENV.ETHEREUM_CHAIN_ID,
           options: {
-            projectId: ENV.WALLETCONNECT_PROJECT_ID,
+            projectId: ENV.WALLETCONNECT_PROJECT_ID as string,
             chains: [1, 11155111],
             showQrModal: true,
             rpcMap: URLS,

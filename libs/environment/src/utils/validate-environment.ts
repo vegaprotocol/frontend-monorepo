@@ -33,11 +33,11 @@ export const envSchema = z
           Networks
         ).join(' | ')}`,
       }),
-    ETHEREUM_RPC_URLS: z.record(z.string(), z.string().url()),
+    ETHEREUM_RPC_URLS: z.optional(z.record(z.string(), z.string().url())),
     ETHERSCAN_URL: z.string().url({
       message: 'The NX_ETHERSCAN_URL environment variable must be a valid url',
     }),
-    ETHEREUM_CHAIN_ID: z.number(),
+    ETHEREUM_CHAIN_ID: z.optional(z.number()),
     HOSTED_WALLET_URL: z.optional(z.string()),
     ETH_WALLET_MNEMONIC: z.optional(z.string()),
     ANNOUNCEMENTS_CONFIG_URL: z.optional(z.string()),
@@ -50,7 +50,7 @@ export const envSchema = z
     MOZILLA_EXTENSION_URL: z.optional(z.string()),
     CHARTING_LIBRARY_PATH: z.optional(z.string()),
     CHARTING_LIBRARY_HASH: z.optional(z.string()),
-    WALLETCONNECT_PROJECT_ID: z.string(),
+    WALLETCONNECT_PROJECT_ID: z.optional(z.string()),
   })
   .refine(
     (data) => {

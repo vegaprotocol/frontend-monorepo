@@ -222,6 +222,11 @@ const compileEnvVars = () => {
     process.env['NX_VEGA_ENV']
   ) as Networks;
 
+  const ethereumChainId = windowOrDefault(
+    'ETHEREUM_CHAIN_ID',
+    process.env['NX_ETHEREUM_CHAIN_ID']
+  );
+
   const env: Environment = {
     VEGA_URL: windowOrDefault('VEGA_URL', process.env['NX_VEGA_URL']),
     VEGA_ENV,
@@ -247,9 +252,7 @@ const compileEnvVars = () => {
     ETHEREUM_RPC_URLS: getEthereumRpcUrls(
       windowOrDefault('ETHEREUM_RPC_URLS', process.env['NX_ETHEREUM_RPC_URLS'])
     ),
-    ETHEREUM_CHAIN_ID: Number(
-      windowOrDefault('ETHEREUM_CHAIN_ID', process.env['NX_ETHEREUM_CHAIN_ID'])
-    ),
+    ETHEREUM_CHAIN_ID: ethereumChainId ? Number(ethereumChainId) : undefined,
     ETH_WALLET_MNEMONIC: windowOrDefault(
       'ETH_WALLET_MNEMONIC',
       process.env['NX_ETH_WALLET_MNEMONIC']
