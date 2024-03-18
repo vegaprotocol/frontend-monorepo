@@ -68,6 +68,7 @@ beforeEach(() => {
     approveTxId: null,
     faucetTxId: null,
     isFaucetable: true,
+    desiredChainId: 11155111,
   };
 
   (useVegaWallet as jest.Mock).mockReturnValue({ pubKey: null, pubKeys: [] });
@@ -370,7 +371,6 @@ describe('Deposit form', () => {
       // eslint-disable-next-line
       (selector: (result: ReturnType<typeof useWeb3ConnectStore>) => any) => {
         return selector({
-          desiredChainId: 11155111,
           open: jest.fn(),
         });
       }

@@ -74,6 +74,7 @@ export class UrlConnector extends Connector {
   }
 }
 
+// TODO: check that we can connect without this
 export const initializeUrlConnector = (
   localProviderUrl?: string,
   walletMnemonic?: string
