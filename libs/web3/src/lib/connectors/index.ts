@@ -1,4 +1,5 @@
 import { initializeConnector, type Web3ReactHooks } from '@web3-react/core';
+import { type Connector } from '@web3-react/types';
 import { MetaMask } from '@web3-react/metamask';
 import { Network } from '@web3-react/network';
 import { CoinbaseWallet } from '@web3-react/coinbase-wallet';
@@ -62,7 +63,7 @@ export const createConnectors = () => {
       Cypress.env('ETH_WALLET_MNEMONIC')
     );
 
-    return [[url, urlHooks]];
+    return [[url, urlHooks]] as [Connector, Web3ReactHooks][];
   }
 
   //  This is the fallback connector and should be last in the connectors array
