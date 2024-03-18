@@ -64,7 +64,6 @@ export const ENV = {
   explorerUrl: windowOrDefault('NX_VEGA_EXPLORER'),
   docsUrl: windowOrDefault('NX_VEGA_DOCS_URL'),
   ethWalletMnemonic: windowOrDefault('NX_ETH_WALLET_MNEMONIC'),
-  localProviderUrl: windowOrDefault('NX_LOCAL_PROVIDER_URL'),
   rest: windowOrDefault('NX_VEGA_REST_URL'),
   addresses:
     ContractAddresses[(envName === 'local' ? 'CUSTOM' : envName) as Networks],

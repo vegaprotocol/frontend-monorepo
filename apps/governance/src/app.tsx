@@ -1,7 +1,7 @@
 import './i18n';
 
-import React, { useEffect } from 'react';
-import { BrowserRouter as Router, useLocation } from 'react-router-dom';
+import { Suspense } from 'react';
+import { BrowserRouter as Router } from 'react-router-dom';
 import { AppLoader } from './app-loader';
 import { NetworkInfo } from '@vegaprotocol/network-info';
 import { BalanceManager } from './components/balance-manager';
@@ -10,18 +10,18 @@ import { AppLayout } from './components/page-templates/app-layout';
 import { TemplateSidebar } from './components/page-templates/template-sidebar';
 import { TransactionModal } from './components/transactions-modal';
 import { VegaWallet } from './components/vega-wallet';
-import { Web3Connector } from './components/web3-connector';
+import { ScrollToTop } from './components/scroll-to-top';
 import { AppStateProvider } from './contexts/app-state/app-state-provider';
 import { ContractsProvider } from './contexts/contracts/contracts-provider';
 import { AppRouter } from './routes';
-import type { EthereumConfig } from '@vegaprotocol/web3';
-import { WithdrawalApprovalDialogContainer } from '@vegaprotocol/web3';
 import {
-  createConnectors,
+  Web3ConnectUncontrolledDialog,
+  WithdrawalApprovalDialogContainer,
+} from '@vegaprotocol/web3';
+import {
   useEthTransactionManager,
   useEthTransactionUpdater,
   useEthWithdrawApprovalsManager,
-  useWeb3ConnectStore,
 } from '@vegaprotocol/web3';
 import { Web3Provider } from '@vegaprotocol/web3';
 import { VegaWalletDialogs } from './components/vega-wallet-dialogs';
@@ -30,8 +30,6 @@ import {
   useVegaTransactionManager,
   useVegaTransactionUpdater,
 } from '@vegaprotocol/web3';
-import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
-import { useEthereumConfig } from '@vegaprotocol/web3';
 import {
   useEnvironment,
   NetworkLoader,
@@ -50,6 +48,7 @@ import { TelemetryDialog } from './components/telemetry-dialog/telemetry-dialog'
 import { useTranslation } from 'react-i18next';
 import { useSentryInit } from './hooks/use-sentry-init';
 import { useVegaWalletConfig } from './hooks/use-vega-wallet-config';
+import { connectors } from './lib/web3-connectors';
 
 const cache: InMemoryCacheConfig = {
   typePolicies: {
@@ -90,105 +89,54 @@ const cache: InMemoryCacheConfig = {
   },
 };
 
-const Web3Container = ({
-  chainId,
-}: {
-  /** Ethereum chain id */
-  chainId: number;
-  /** Ethereum provider url */
-  providerUrl: string;
-}) => {
-  const [connectors, initializeConnectors] = useWeb3ConnectStore((store) => [
-    store.connectors,
-    store.initialize,
-  ]);
-  const { ETHEREUM_PROVIDER_URL, ETH_LOCAL_PROVIDER_URL, ETH_WALLET_MNEMONIC } =
-    useEnvironment();
-
-  useEffect(() => {
-    if (chainId) {
-      return initializeConnectors(
-        createConnectors(
-          ETHEREUM_PROVIDER_URL,
-          Number(chainId),
-          ETH_LOCAL_PROVIDER_URL,
-          ETH_WALLET_MNEMONIC
-        ),
-        Number(chainId)
-      );
-    }
-  }, [
-    chainId,
-    ETHEREUM_PROVIDER_URL,
-    initializeConnectors,
-    ETH_LOCAL_PROVIDER_URL,
-    ETH_WALLET_MNEMONIC,
-  ]);
-
+const Web3Container = () => {
   const vegaWalletConfig = useVegaWalletConfig();
 
-  if (!vegaWalletConfig || connectors.length === 0) {
+  if (!vegaWalletConfig) {
     // Prevent loading when the connectors are not initialized
     return <SplashLoader />;
   }
 
   return (
     <Web3Provider connectors={connectors}>
-      <Web3Connector connectors={connectors} chainId={Number(chainId)}>
-        <WalletProvider config={vegaWalletConfig}>
-          <ContractsProvider>
-            <AppLoader>
-              <BalanceManager>
-                <>
-                  <AppLayout>
-                    <TemplateSidebar
-                      sidebar={
-                        <>
-                          <EthWallet />
-                          <VegaWallet />
-                        </>
-                      }
-                    >
-                      <AppRouter />
-                    </TemplateSidebar>
-                    <footer className="p-4 break-all border-t border-neutral-700">
-                      <NetworkInfo />
-                    </footer>
-                  </AppLayout>
-                  <ToastsManager />
-                  <InitializeHandlers />
-                  <VegaWalletDialogs />
-                  <TransactionModal />
-                  <CreateWithdrawalDialog />
-                  <WithdrawalApprovalDialogContainer />
-                  <TelemetryDialog />
-                </>
-              </BalanceManager>
-            </AppLoader>
-          </ContractsProvider>
-        </WalletProvider>
-      </Web3Connector>
+      <WalletProvider config={vegaWalletConfig}>
+        <ContractsProvider>
+          <AppLoader>
+            <>
+              <AppLayout>
+                <TemplateSidebar
+                  sidebar={
+                    <>
+                      <EthWallet />
+                      <VegaWallet />
+                    </>
+                  }
+                >
+                  <AppRouter />
+                </TemplateSidebar>
+                <footer className="p-4 break-all border-t border-neutral-700">
+                  <NetworkInfo />
+                </footer>
+              </AppLayout>
+              <BalanceManager />
+              <ToastsManager />
+              <InitializeHandlers />
+              <VegaWalletDialogs />
+              <TransactionModal />
+              <CreateWithdrawalDialog />
+              <WithdrawalApprovalDialogContainer />
+              <TelemetryDialog />
+              <Web3ConnectUncontrolledDialog connectors={connectors} />
+            </>
+          </AppLoader>
+        </ContractsProvider>
+      </WalletProvider>
     </Web3Provider>
   );
 };
 
-const ScrollToTop = () => {
-  const { pathname } = useLocation();
-
-  useEffect(() => {
-    // "document.documentElement.scrollTo" is the magic for React Router Dom v6
-    document.documentElement.scrollTo({
-      top: 0,
-      left: 0,
-    });
-  }, [pathname]);
-
-  return null;
-};
-
 const AppContainer = () => {
-  const { config, loading, error } = useEthereumConfig();
-  const { VEGA_URL, ETHEREUM_PROVIDER_URL } = useEnvironment();
+  const { VEGA_URL } = useEnvironment();
   const { t } = useTranslation();
   const [nodeSwitcherOpen, setNodeSwitcher] = useNodeSwitcherStore((store) => [
     store.dialogOpen,
@@ -219,19 +167,7 @@ const AppContainer = () => {
               <NodeFailure title={t('NodeUnsuitable', { url: VEGA_URL })} />
             }
           >
-            <AsyncRenderer<EthereumConfig | null>
-              loading={loading}
-              data={config}
-              error={error}
-              render={(cnf) =>
-                cnf && (
-                  <Web3Container
-                    chainId={Number(cnf.chain_id)}
-                    providerUrl={ETHEREUM_PROVIDER_URL}
-                  />
-                )
-              }
-            />
+            <Web3Container />
           </NodeGuard>
         </div>
       </AppStateProvider>
@@ -253,11 +189,11 @@ function App() {
   useInitializeEnv();
 
   return (
-    <React.Suspense fallback={<Loader />}>
+    <Suspense fallback={<Loader />}>
       <NetworkLoader cache={cache}>
         <AppContainer />
       </NetworkLoader>
-    </React.Suspense>
+    </Suspense>
   );
 }
 

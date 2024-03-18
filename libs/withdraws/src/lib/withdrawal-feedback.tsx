@@ -101,11 +101,9 @@ const ActionButton = ({
   submitWithdraw: (withdrawalId: string) => void;
 }) => {
   const t = useT();
+  const { ETHEREUM_CHAIN_ID } = useEnvironment();
   const { isActive, chainId } = useWeb3React();
-  const { open, desiredChainId } = useWeb3ConnectStore((store) => ({
-    open: store.open,
-    desiredChainId: store.desiredChainId,
-  }));
+  const open = useWeb3ConnectStore((store) => store.open);
 
   if (!isActive) {
     return (
@@ -115,7 +113,7 @@ const ActionButton = ({
     );
   }
 
-  if (chainId !== desiredChainId) {
+  if (chainId !== ETHEREUM_CHAIN_ID) {
     const chainName = getChainName(chainId);
     return (
       <>

@@ -10,26 +10,27 @@ import { WalletConnect } from '@web3-react/walletconnect-v2';
 import { WalletConnect as WalletConnectLegacy } from '@web3-react/walletconnect';
 import { CoinbaseWallet } from '@web3-react/coinbase-wallet';
 import type { Connector } from '@web3-react/types';
-import { ETHEREUM_EAGER_CONNECT } from './use-eager-connect';
 import type { Web3ReactHooks } from '@web3-react/core';
 import { useWeb3ConnectStore } from './web3-connect-store';
 import { theme } from '@vegaprotocol/tailwindcss-config';
 import classNames from 'classnames';
 import { useT } from './use-t';
+import { CONNECTOR_STORAGE_KEY } from './constants';
+import { useEthereumConfig } from './use-ethereum-config';
+import { Network } from '@web3-react/network';
 
 interface Web3ConnectDialogProps {
   dialogOpen: boolean;
   setDialogOpen: (isOpen: boolean) => void;
   connectors: [Connector, Web3ReactHooks][];
-  desiredChainId?: number;
 }
 
 export const Web3ConnectDialog = ({
   dialogOpen,
   setDialogOpen,
   connectors,
-  desiredChainId,
 }: Web3ConnectDialogProps) => {
+  const { config } = useEthereumConfig();
   const t = useT();
   return (
     <Dialog
@@ -44,36 +45,41 @@ export const Web3ConnectDialog = ({
       size="small"
     >
       <ul className="grid grid-cols-2 gap-2" data-testid="web3-connector-list">
-        {connectors.map((connector, i) => (
-          <li key={i} className="mb-2 last:mb-0">
-            <ConnectButton
-              connector={connector}
-              desiredChainId={desiredChainId}
-              onClick={() => {
-                setDialogOpen(false);
-              }}
-            />
-          </li>
-        ))}
+        {connectors.map((connector, i) => {
+          // Dont show the fallback connector as an option
+          if (connector[0] instanceof Network) return null;
+
+          return (
+            <li key={i} className="mb-2 last:mb-0">
+              <ConnectButton
+                chainId={Number(config?.chain_id || 1)}
+                connector={connector}
+                onClick={() => {
+                  setDialogOpen(false);
+                }}
+              />
+            </li>
+          );
+        })}
       </ul>
     </Dialog>
   );
 };
 
 const ConnectButton = ({
+  chainId,
   connector,
-  desiredChainId,
   onClick,
 }: {
+  chainId: number;
   connector: [Connector, Web3ReactHooks];
-  desiredChainId?: number;
   onClick?: () => void;
 }) => {
   const t = useT();
   const [connectorInstance, { useIsActivating }] = connector;
   const isActivating = useIsActivating();
   const info = getConnectorInfo(connectorInstance, t);
-  const [, setEagerConnector] = useLocalStorage(ETHEREUM_EAGER_CONNECT);
+  const [, setEagerConnector] = useLocalStorage(CONNECTOR_STORAGE_KEY);
   return (
     <button
       className={classNames(
@@ -94,7 +100,7 @@ const ConnectButton = ({
         }
 
         try {
-          await connectorInstance.activate(desiredChainId);
+          await connectorInstance.activate(chainId);
           setEagerConnector(info.name);
           onClick?.();
         } catch (err) {
@@ -109,17 +115,19 @@ const ConnectButton = ({
   );
 };
 
-export const Web3ConnectUncontrolledDialog = () => {
-  const { isOpen, connectors, open, close, desiredChainId } =
-    useWeb3ConnectStore();
+export const Web3ConnectUncontrolledDialog = ({
+  connectors,
+}: {
+  connectors: [Connector, Web3ReactHooks][];
+}) => {
+  const { isOpen, open, close } = useWeb3ConnectStore();
   const onChange = (isOpen: boolean) => (isOpen ? open() : close());
 
   return (
     <Web3ConnectDialog
+      connectors={connectors}
       dialogOpen={isOpen}
       setDialogOpen={onChange}
-      connectors={connectors}
-      desiredChainId={desiredChainId}
     />
   );
 };

@@ -230,6 +230,7 @@ export class SnapConnector implements Connector {
       version: string;
     };
   }> {
+    // @ts-ignore gov app doesn't like the types here?
     return window.ethereum.request({
       method: EthereumMethod.RequestSnaps,
       params: {
@@ -252,6 +253,7 @@ export class SnapConnector implements Connector {
     // on __proto__ so we need to strip them out with JSON.strinfify
     params = JSON.parse(JSON.stringify(params));
 
+    // @ts-ignore gov app doesn't like the types here?
     return window.ethereum.request({
       method: EthereumMethod.InvokeSnap,
       params: {

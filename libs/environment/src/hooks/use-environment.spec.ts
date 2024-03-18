@@ -79,8 +79,10 @@ const mockEnvVars = {
     MAINNET: 'https://mainnet.url',
   },
   VEGA_WALLET_URL: 'https://localhost:1234',
-  ETHEREUM_PROVIDER_URL: 'https://ether.provider',
+  ETHEREUM_RPC_URLS: { 1440: 'http://localhost:8545' },
   ETHERSCAN_URL: 'https://etherscan.url',
+  ETHEREUM_CHAIN_ID: 1440,
+  WALLETCONNECT_PROJECT_ID: 'abc',
 };
 
 describe('useEnvironment', () => {
@@ -103,9 +105,15 @@ describe('useEnvironment', () => {
 
     process.env['NX_VEGA_ENV'] = mockEnvVars.VEGA_ENV;
     process.env['NX_VEGA_NETWORKS'] = JSON.stringify(mockEnvVars.VEGA_NETWORKS);
-    process.env['NX_ETHEREUM_PROVIDER_URL'] = mockEnvVars.ETHEREUM_PROVIDER_URL;
+    process.env['NX_ETHEREUM_RPC_URLS'] = JSON.stringify(
+      mockEnvVars.ETHEREUM_RPC_URLS
+    );
     process.env['NX_VEGA_WALLET_URL'] = mockEnvVars.VEGA_WALLET_URL;
     process.env['NX_ETHERSCAN_URL'] = mockEnvVars.ETHERSCAN_URL;
+    process.env['NX_ETHEREUM_CHAIN_ID'] =
+      mockEnvVars.ETHEREUM_CHAIN_ID.toString();
+    process.env['NX_WALLETCONNECT_PROJECT_ID'] =
+      mockEnvVars.WALLETCONNECT_PROJECT_ID;
 
     // if config is fetched resulting suitable node
     // will be stored in localStorage

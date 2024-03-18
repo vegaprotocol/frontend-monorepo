@@ -1,6 +1,6 @@
-import { useBridgeContract } from './use-bridge-contract';
 import { useCallback } from 'react';
-import { localLoggerFactory } from '@vegaprotocol/logger';
+import { logger } from './logger';
+import { useBridgeContract } from './use-bridge-contract';
 
 /**
  * The withdraw delay is a global value set on the contract bridge which may be
@@ -19,8 +19,7 @@ const DELAY: TimestampedDelay = { value: undefined, ts: 0 };
  * (contract.get_withdraw_threshold)
  */
 export const useGetWithdrawDelay = () => {
-  const contract = useBridgeContract(true);
-  const logger = localLoggerFactory({ application: 'web3' });
+  const contract = useBridgeContract();
 
   const getDelay = useCallback(async () => {
     if (DELAY.value != null && Date.now() - DELAY.ts <= MAX_AGE) {
@@ -40,7 +39,7 @@ export const useGetWithdrawDelay = () => {
       logger.error('could not get withdraw delay', err);
       return undefined;
     }
-  }, [contract, logger]);
+  }, [contract]);
 
   return getDelay;
 };

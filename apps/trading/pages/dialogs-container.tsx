@@ -9,6 +9,7 @@ import {
 import { WelcomeDialog } from '../components/welcome-dialog';
 import { VegaWalletConnectDialog } from '../components/vega-wallet-connect-dialog';
 import { ProfileDialog } from '../components/profile-dialog';
+import { connectors } from '../lib/web3-connectors';
 
 const DialogsContainer = () => {
   const { isOpen, id, trigger, setOpen } = useAssetDetailsDialogStore();
@@ -23,7 +24,7 @@ const DialogsContainer = () => {
         onChange={setOpen}
       />
       <WelcomeDialog />
-      <Web3ConnectUncontrolledDialog />
+      <Web3ConnectUncontrolledDialog connectors={connectors} />
       <WithdrawalApprovalDialogContainer />
       <ProfileDialog />
     </>

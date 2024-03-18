@@ -3,7 +3,7 @@ import { useBridgeContract } from './use-bridge-contract';
 import BigNumber from 'bignumber.js';
 import { addDecimal } from '@vegaprotocol/utils';
 import type { WithdrawalBusEventFieldsFragment } from './__generated__/TransactionResult';
-import { localLoggerFactory } from '@vegaprotocol/logger';
+import { logger } from './logger';
 
 type Asset = Pick<
   WithdrawalBusEventFieldsFragment['asset'],
@@ -37,8 +37,7 @@ export const addr = (asset: Asset | undefined) =>
  * can be retrieved using contract.default_withdraw_delay
  */
 export const useGetWithdrawThreshold = () => {
-  const logger = localLoggerFactory({ application: 'web3' });
-  const contract = useBridgeContract(true);
+  const contract = useBridgeContract();
 
   const getThreshold = useCallback(
     async (asset: Asset | undefined) => {
@@ -70,7 +69,7 @@ export const useGetWithdrawThreshold = () => {
         return undefined;
       }
     },
-    [contract, logger]
+    [contract]
   );
 
   return getThreshold;

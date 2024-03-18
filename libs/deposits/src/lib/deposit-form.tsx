@@ -10,7 +10,6 @@ import {
   isAssetTypeERC20,
   formatNumber,
 } from '@vegaprotocol/utils';
-import { useLocalStorage } from '@vegaprotocol/react-helpers';
 import {
   TradingFormGroup,
   TradingInput,
@@ -32,7 +31,6 @@ import { useWatch, Controller, useForm } from 'react-hook-form';
 import { DepositLimits } from './deposit-limits';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import {
-  ETHEREUM_EAGER_CONNECT,
   useWeb3ConnectStore,
   getChainName,
   useWeb3Disconnect,
@@ -68,6 +66,7 @@ export interface DepositFormProps {
     vegaPublicKey: string;
   }) => void;
   isFaucetable?: boolean;
+  desiredChainId?: number;
 }
 
 export const DepositForm = ({
@@ -83,6 +82,7 @@ export const DepositForm = ({
   faucetTxId,
   approveTxId,
   isFaucetable,
+  desiredChainId,
 }: DepositFormProps) => {
   const t = useT();
   const ethereumAddress = useEthereumAddress();
@@ -93,7 +93,6 @@ export const DepositForm = ({
   const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
   const openDialog = useWeb3ConnectStore((store) => store.open);
   const { isActive, account, chainId } = useWeb3React();
-  const desiredChainId = useWeb3ConnectStore((store) => store.desiredChainId);
   const invalidChain = isActive && chainId !== desiredChainId;
   const { pubKey, pubKeys: _pubKeys } = useVegaWallet();
   const [approveNotificationIntent, setApproveNotificationIntent] =
@@ -480,15 +479,12 @@ const DisconnectEthereumButton = ({
   onDisconnect: () => void;
 }) => {
   const t = useT();
-  const { connector } = useWeb3React();
-  const [, , removeEagerConnector] = useLocalStorage(ETHEREUM_EAGER_CONNECT);
-  const disconnect = useWeb3Disconnect(connector);
+  const disconnect = useWeb3Disconnect();
 
   return (
     <ButtonLink
       onClick={() => {
         disconnect();
-        removeEagerConnector();
         onDisconnect();
       }}
       data-testid="disconnect-ethereum-wallet"

@@ -1,5 +1,4 @@
-import React from 'react';
-
+import { useReducer } from 'react';
 import { BigNumber } from '../../lib/bignumber';
 import type { AppState, AppStateAction } from './app-state-context';
 import { AppStateActionType, AppStateContext } from './app-state-context';
@@ -61,7 +60,7 @@ export function AppStateProvider({
   children,
   initialState,
 }: AppStateProviderProps) {
-  const [state, dispatch] = React.useReducer(appStateReducer, {
+  const [state, dispatch] = useReducer(appStateReducer, {
     ...initialAppState,
     ...initialState,
   });

@@ -75,14 +75,10 @@ export class UrlConnector extends Connector {
 }
 
 export const initializeUrlConnector = (
-  localProviderUrl?: string,
-  walletMnemonic?: string
-) =>
-  localProviderUrl &&
-  walletMnemonic &&
-  localProviderUrl.length > 0 &&
-  walletMnemonic.length > 0
-    ? initializeConnector<UrlConnector>(
-        (actions) => new UrlConnector(actions, localProviderUrl, walletMnemonic)
-      )
-    : null;
+  localProviderUrl: string,
+  walletMnemonic: string
+) => {
+  return initializeConnector<UrlConnector>(
+    (actions) => new UrlConnector(actions, localProviderUrl, walletMnemonic)
+  );
+};

@@ -12,7 +12,9 @@ The environment variables needed to be present for any app consuming this librar
 
 `NX_GITHUB_FEEDBACK_URL` - the repository's feedback URL to point to
 
-`NX_ETHEREUM_PROVIDER_URL` - the Ethereum provider url
+`NX_ETHEREUM_RPC_URLS` - the Ethereum provider urls
+
+`NX_ETHEREUM_CHAIN_ID` - the Ethereum chain used by the app
 
 For examples, see Block Explorer's .env files [here](../../apps/explorer)
 

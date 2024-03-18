@@ -1,10 +1,14 @@
 import * as Sentry from '@sentry/react';
 import { toBigNum } from '@vegaprotocol/utils';
 import { Splash } from '@vegaprotocol/ui-toolkit';
-import { useVegaWallet, useEagerConnect } from '@vegaprotocol/wallet-react';
+import {
+  useVegaWallet,
+  useEagerConnect as useVegaEagerConnect,
+} from '@vegaprotocol/wallet-react';
+import { useEagerConnect as useEthereumEagerConnect } from '@vegaprotocol/web3';
 import { useFeatureFlags, useEnvironment } from '@vegaprotocol/environment';
 import { useWeb3React } from '@web3-react/core';
-import React, { Suspense } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { SplashError } from './components/splash-error';
@@ -15,6 +19,7 @@ import {
 } from './contexts/app-state/app-state-context';
 import { useContracts } from './contexts/contracts/contracts-context';
 import { useRefreshAssociatedBalances } from './hooks/use-refresh-associated-balances';
+import { connectors } from './lib/web3-connectors';
 
 export const AppLoader = ({ children }: { children: React.ReactElement }) => {
   const featureFlags = useFeatureFlags((state) => state.flags);
@@ -25,12 +30,15 @@ export const AppLoader = ({ children }: { children: React.ReactElement }) => {
   const { appDispatch } = useAppState();
   const { token, staking, vesting } = useContracts();
   const setAssociatedBalances = useRefreshAssociatedBalances();
-  const [balancesLoaded, setBalancesLoaded] = React.useState(false);
-  const vegaWalletStatus = useEagerConnect();
+  const [balancesLoaded, setBalancesLoaded] = useState(false);
 
-  const loaded = balancesLoaded && vegaWalletStatus !== 'connecting';
+  // Eager connect wallets
+  useVegaEagerConnect();
+  useEthereumEagerConnect({ connectors });
 
-  React.useEffect(() => {
+  const loaded = balancesLoaded;
+
+  useEffect(() => {
     const run = async () => {
       try {
         const [
@@ -78,13 +86,13 @@ export const AppLoader = ({ children }: { children: React.ReactElement }) => {
     featureFlags.GOVERNANCE_NETWORK_DOWN,
   ]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (account && pubKey) {
       setAssociatedBalances(account, pubKey);
     }
   }, [setAssociatedBalances, account, pubKey]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const networkLimitsEndpoint = new URL('/network/limits', VEGA_URL).href;
     const statsEndpoint = new URL('/statistics', VEGA_URL).href;
 
@@ -167,6 +175,7 @@ export const AppLoader = ({ children }: { children: React.ReactElement }) => {
   if (!loaded) {
     return loading;
   }
+
   return <Suspense fallback={loading}>{children}</Suspense>;
 };
 

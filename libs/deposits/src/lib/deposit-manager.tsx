@@ -14,6 +14,7 @@ import {
   useEthereumConfig,
 } from '@vegaprotocol/web3';
 import { usePersistentDeposit } from './use-persistent-deposit';
+import { useEnvironment } from '@vegaprotocol/environment';
 
 interface DepositManagerProps {
   assetId?: string;
@@ -26,6 +27,7 @@ export const DepositManager = ({
   assets,
   isFaucetable,
 }: DepositManagerProps) => {
+  const { ETHEREUM_CHAIN_ID } = useEnvironment();
   const createEthTransaction = useEthTransactionStore((state) => state.create);
   const { config } = useEthereumConfig();
   const [persistentDeposit, savePersistentDeposit] =
@@ -92,6 +94,7 @@ export const DepositManager = ({
       approveTxId={approve.id}
       balances={balances}
       isFaucetable={isFaucetable}
+      desiredChainId={ETHEREUM_CHAIN_ID}
     />
   );
 };

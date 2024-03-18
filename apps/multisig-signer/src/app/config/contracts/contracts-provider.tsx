@@ -4,16 +4,14 @@ import { Splash } from '@vegaprotocol/ui-toolkit';
 import { type ContractsContextShape } from './contracts-context';
 import { ContractsContext } from './contracts-context';
 import { useEthereumConfig } from '@vegaprotocol/web3';
-import { useEnvironment } from '@vegaprotocol/environment';
 import { useWeb3React } from '@web3-react/core';
 
 /**
  * Provides Vega Ethereum contract instances to its children.
  */
 export const ContractsProvider = ({ children }: { children: JSX.Element }) => {
-  const { provider: activeProvider, account } = useWeb3React();
+  const { provider, account } = useWeb3React();
   const { config } = useEthereumConfig();
-  const { VEGA_ENV, ETHEREUM_PROVIDER_URL } = useEnvironment();
   const [contracts, setContracts] = useState<ContractsContextShape | null>(
     null
   );
@@ -25,13 +23,9 @@ export const ContractsProvider = ({ children }: { children: JSX.Element }) => {
     let cancelled = false;
     const run = async () => {
       if (config) {
-        if (
-          account &&
-          activeProvider &&
-          typeof activeProvider.getSigner === 'function'
-        ) {
-          const signer = activeProvider.getSigner();
-          if (activeProvider && config) {
+        if (account && provider && typeof provider.getSigner === 'function') {
+          const signer = provider.getSigner();
+          if (provider && config) {
             if (!cancelled) {
               setContracts({
                 multisig: new MultisigControl(
@@ -49,7 +43,7 @@ export const ContractsProvider = ({ children }: { children: JSX.Element }) => {
       //  TODO: hacky quick fix for release to prevent race condition, find a better fix for this.
       cancelled = true;
     };
-  }, [config, VEGA_ENV, ETHEREUM_PROVIDER_URL, account, activeProvider]);
+  }, [config, account, provider]);
 
   if (!contracts) {
     return <Splash>Error: cannot get data on multisig contract</Splash>;

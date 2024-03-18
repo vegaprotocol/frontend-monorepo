@@ -222,6 +222,11 @@ const compileEnvVars = () => {
     process.env['NX_VEGA_ENV']
   ) as Networks;
 
+  const ethereumChainId = windowOrDefault(
+    'ETHEREUM_CHAIN_ID',
+    process.env['NX_ETHEREUM_CHAIN_ID']
+  );
+
   const env: Environment = {
     VEGA_URL: windowOrDefault('VEGA_URL', process.env['NX_VEGA_URL']),
     VEGA_ENV,
@@ -229,7 +234,7 @@ const compileEnvVars = () => {
       'VEGA_CONFIG_URL',
       process.env['NX_VEGA_CONFIG_URL'] as string
     ),
-    VEGA_NETWORKS: parseNetworks(
+    VEGA_NETWORKS: parseJSON(
       windowOrDefault('VEGA_NETWORKS', process.env['NX_VEGA_NETWORKS'])
     ),
     VEGA_WALLET_URL: windowOrDefault(
@@ -244,21 +249,18 @@ const compileEnvVars = () => {
       VEGA_ENV,
       windowOrDefault('ETHERSCAN_URL', process.env['NX_ETHERSCAN_URL'])
     ),
-    ETHEREUM_PROVIDER_URL: getEthereumProviderUrl(
-      VEGA_ENV,
-      windowOrDefault(
-        'ETHEREUM_PROVIDER_URL',
-        process.env['NX_ETHEREUM_PROVIDER_URL']
-      )
+    ETHEREUM_RPC_URLS: getEthereumRpcUrls(
+      windowOrDefault('ETHEREUM_RPC_URLS', process.env['NX_ETHEREUM_RPC_URLS'])
     ),
-    ETH_LOCAL_PROVIDER_URL: windowOrDefault(
-      'ETH_LOCAL_PROVIDER_URL',
-      process.env['NX_ETH_LOCAL_PROVIDER_URL']
-    ),
+    ETHEREUM_CHAIN_ID: ethereumChainId ? Number(ethereumChainId) : undefined,
     ETH_WALLET_MNEMONIC: windowOrDefault(
       'ETH_WALLET_MNEMONIC',
       process.env['NX_ETH_WALLET_MNEMONIC']
     ),
+    WALLETCONNECT_PROJECT_ID: windowOrDefault(
+      'WALLETCONNECT_PROJECT_ID',
+      process.env['NX_WALLETCONNECT_PROJECT_ID']
+    ) as string,
     ORACLE_PROOFS_URL: windowOrDefault(
       'ORACLE_PROOFS_URL',
       process.env['NX_ORACLE_PROOFS_URL']
@@ -323,7 +325,7 @@ const compileEnvVars = () => {
     ),
     CHARTING_LIBRARY_PATH: windowOrDefault(
       'NX_CHARTING_LIBRARY_PATH',
-      process.env['NX_CHARTING_LIBRARY_PATH']
+      process.env['NX_CHARTING_LIBRARY_PATH'] as string
     ),
     CHARTING_LIBRARY_HASH: windowOrDefault(
       'NX_CHARTING_LIBRARY_HASH',
@@ -535,7 +537,7 @@ export const compileFeatureFlags = (refresh = false): FeatureFlags => {
   return flags;
 };
 
-const parseNetworks = (value?: string) => {
+const parseJSON = (value?: string) => {
   if (value) {
     try {
       return JSON.parse(value);
@@ -549,14 +551,16 @@ const parseNetworks = (value?: string) => {
 /**
  * Provides a fallback ethereum provider url for test purposes in some apps
  */
-const getEthereumProviderUrl = (
-  network: Networks | undefined,
-  envvar: string | undefined
-) => {
-  if (envvar) return envvar;
-  return network === Networks.MAINNET
-    ? 'https://mainnet.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8'
-    : 'https://sepolia.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8';
+const getEthereumRpcUrls = (envvar: string | undefined) => {
+  const cfg = parseJSON(envvar);
+
+  const obj: { [chainId: number]: string } = {};
+  // convert keys to numbers
+  for (const key in cfg) {
+    obj[Number(key)] = cfg[key];
+  }
+
+  return obj;
 };
 /**
  * Provide a fallback etherscan url for test purposes in some apps
