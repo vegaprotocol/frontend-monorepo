@@ -12,7 +12,7 @@ Wrapper component for [EmblemByAsset](#emblembyasset) and [EmblemByContract](#em
 
 | Property Name   | Required or Optional | Description                                                      |
 | --------------- | -------------------- | ---------------------------------------------------------------- |
-| asset           | Required             | The ID of the Vega Asset.                                        |
+| asset           | Optional             | The ID of the Vega Asset.                                        |
 | chainId         | Optional             | The ID of the Vega Chain.                                        |
 | vegaChainId     | Optional             | The ID of the Vega Chain (e.g. `vega-fairground-2020305051805`). |
 | contractAddress | Optional             | The address of the smart contract on its origin chain.           |
