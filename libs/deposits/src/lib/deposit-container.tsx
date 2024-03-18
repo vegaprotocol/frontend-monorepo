@@ -1,32 +1,42 @@
-import { useEffect, useState } from 'react';
+import { useMemo } from 'react';
 import { Networks, useEnvironment } from '@vegaprotocol/environment';
 import { AsyncRendererInline } from '@vegaprotocol/ui-toolkit';
 import { DepositManager } from './deposit-manager';
 import { useEnabledAssets } from '@vegaprotocol/assets';
+import { SquidWidget } from '@0xsquid/widget';
+import { type AppConfig } from '@0xsquid/widget/widget/core/types/config';
+import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
+
+// Customize here
+// https://widget.squidrouter.com/
+const lightStyle = {};
+const darkStyle = {};
 
 export const DepositContainer = () => {
-  const [mod, setMod] = useState();
-  const config = {
-    companyName: 'Squid Widget',
-    integratorId: '<your integrator id>',
-    slippage: 1,
-    instantExec: true,
-    infiniteApproval: false,
-    apiUrl: 'https://api.squidrouter.com',
-  };
+  const { theme } = useThemeSwitcher();
+  const config = useMemo(() => {
+    const config: AppConfig = {
+      companyName: 'Vega',
+      integratorId: 'vega-swap-widget',
+      slippage: 1,
+      // @ts-ignore instantExec does not exist on AppConfig, BUT its in the examples, should be fine?
+      instantExec: true,
+      infiniteApproval: false,
+      apiUrl: 'https://api.squidrouter.com',
+      style: theme === 'dark' ? darkStyle : lightStyle,
+      availableChains: {
+        destination: [42161],
+      },
+    };
 
-  useEffect(() => {
-    (async () => {
-      const res = await import('@0xsquid/widget');
-      setMod(res);
-    })();
-  }, []);
+    return config;
+  }, [theme]);
 
-  if (mod) {
-    return <mod.SquidWidget config={config} />;
-  }
-
-  return <div>here</div>;
+  return (
+    <div>
+      <SquidWidget config={config} />
+    </div>
+  );
 };
 
 /**

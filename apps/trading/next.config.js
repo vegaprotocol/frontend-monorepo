@@ -34,6 +34,7 @@ const nextConfig = {
     // See: https://github.com/gregberge/svgr
     svgr: false,
   },
+  transpilePackages: ['@0xsquid/widget'],
   pageExtensions: ['page.tsx', 'page.jsx'],
   env: {
     GIT_COMMIT: commitHash,
