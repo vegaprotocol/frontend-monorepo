@@ -31,7 +31,7 @@ i18n
     load: 'languageOnly',
     debug: isInDev,
     // have a common namespace used around the full app
-    ns: ['governance', 'wallet', 'wallet-react'],
+    ns: ['governance', 'wallet', 'wallet-react', 'assets', 'utils'],
     defaultNS: 'governance',
     keySeparator: false, // we use content as keys
     nsSeparator: false,
