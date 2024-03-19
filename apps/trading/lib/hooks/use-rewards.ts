@@ -56,17 +56,16 @@ export const isReward = (node: TransferNode): node is RewardTransfer => {
 };
 
 /**
- * Checks if given reward (transfer) is active.
+ * Checks if given reward (transfer) is has not ended. If it is active or due to start in the future.
  */
 export const isActiveReward = (node: RewardTransfer, currentEpoch: number) => {
   const { transfer } = node;
 
   const pending = transfer.status === TransferStatus.STATUS_PENDING;
   const withinEpochs =
-    transfer.kind.startEpoch <= currentEpoch &&
-    (transfer.kind.endEpoch != null
+    transfer.kind.endEpoch != null
       ? transfer.kind.endEpoch >= currentEpoch
-      : true);
+      : true;
 
   if (pending && withinEpochs) return true;
   return false;

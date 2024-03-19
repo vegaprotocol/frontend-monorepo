@@ -138,7 +138,7 @@ describe('isActiveReward', () => {
         makeDispatchStrategy(EntityScope.ENTITY_SCOPE_TEAMS),
         'RecurringTransfer'
       ),
-      false,
+      true,
     ],
     [
       makeReward(
