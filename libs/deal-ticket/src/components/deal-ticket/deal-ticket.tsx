@@ -406,7 +406,6 @@ export const DealTicket = ({
     riskFactors,
     scalingFactors,
     side,
-    sizeStep,
     type,
     generalAccountBalance,
     openVolume,
@@ -523,7 +522,7 @@ export const DealTicket = ({
             </FormGroup>
             <Slider
               min={0}
-              max={maxSize.toNumber()}
+              max={maxSize}
               step={Number(sizeStep)}
               value={[Number(field.value)]}
               onValueChange={([value]) => field.onChange(value)}

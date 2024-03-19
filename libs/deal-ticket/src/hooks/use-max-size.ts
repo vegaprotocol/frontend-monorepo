@@ -1,13 +1,13 @@
 import type { MarketInfo } from '@vegaprotocol/markets';
 import type { OrderFieldsFragment } from '@vegaprotocol/orders';
 import { MarginMode, OrderType, Side } from '@vegaprotocol/types';
-import { toBigNum } from '@vegaprotocol/utils';
+import { determineSizeStep, toBigNum } from '@vegaprotocol/utils';
 import BigNumber from 'bignumber.js';
 import { useMemo } from 'react';
 
-interface UseMaxSizeProps {
+export interface UseMaxSizeProps {
   accountDecimals?: number;
-  activeOrders?: OrderFieldsFragment[];
+  activeOrders?: Pick<OrderFieldsFragment, 'remaining' | 'side'>[];
   decimalPlaces: number;
   generalAccountBalance: string;
   marginAccountBalance: string;
@@ -18,11 +18,13 @@ interface UseMaxSizeProps {
   positionDecimalPlaces: number;
   price?: string;
   riskFactors: MarketInfo['riskFactors'];
-  scalingFactors?: NonNullable<
-    MarketInfo['tradableInstrument']['marginCalculator']
-  >['scalingFactors'];
+  scalingFactors?: Pick<
+    NonNullable<
+      MarketInfo['tradableInstrument']['marginCalculator']
+    >['scalingFactors'],
+    'initialMargin'
+  >;
   side: Side;
-  sizeStep: string;
   type: OrderType;
 }
 
@@ -38,7 +40,6 @@ export const useMaxSize = ({
   accountDecimals,
   price,
   decimalPlaces,
-  sizeStep,
   activeOrders,
   riskFactors,
   scalingFactors,
@@ -52,7 +53,7 @@ export const useMaxSize = ({
       (!openVolume.startsWith('-') && side === Side.SIDE_SELL);
     if (marginMode === MarginMode.MARGIN_MODE_ISOLATED_MARGIN) {
       if (!marginFactor || !price) {
-        return maxSize;
+        return 0;
       }
       const availableMargin =
         accountDecimals !== undefined
@@ -72,13 +73,13 @@ export const useMaxSize = ({
         !marketPrice ||
         accountDecimals === undefined
       ) {
-        return maxSize;
+        return 0;
       }
       const availableMargin = toBigNum(
         generalAccountBalance,
         accountDecimals
       ).plus(toBigNum(marginAccountBalance, accountDecimals));
-      // maxSize = availableMargin / scalingFactors.initialMargin / marketPrice
+      // maxSize = availableMargin / riskFactor / scalingFactors.initialMargin / marketPrice
       maxSize = availableMargin
         .div(
           BigNumber(
@@ -99,7 +100,7 @@ export const useMaxSize = ({
           )
         )
         .minus(
-          // subtract open volume
+          // subtract open volume if increasing position
           side === Side.SIDE_BUY
             ? volume.isGreaterThan(0)
               ? volume
@@ -110,12 +111,14 @@ export const useMaxSize = ({
         );
     }
     // round to size step
-    maxSize = maxSize.minus(maxSize.mod(sizeStep));
+    maxSize = maxSize.minus(
+      maxSize.mod(determineSizeStep({ positionDecimalPlaces }))
+    );
     if (reducingPosition && type === OrderType.TYPE_MARKET) {
       // add open volume if position will be reduced
       maxSize = maxSize.plus(volume.abs());
     }
-    return maxSize;
+    return maxSize.toNumber();
   }, [
     openVolume,
     positionDecimalPlaces,
@@ -128,7 +131,6 @@ export const useMaxSize = ({
     accountDecimals,
     price,
     decimalPlaces,
-    sizeStep,
     activeOrders,
     riskFactors,
     scalingFactors,
