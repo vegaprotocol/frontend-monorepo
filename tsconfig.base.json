@@ -26,6 +26,7 @@
       "@vegaprotocol/datagrid": ["libs/datagrid/src/index.ts"],
       "@vegaprotocol/deal-ticket": ["libs/deal-ticket/src/index.ts"],
       "@vegaprotocol/deposits": ["libs/deposits/src/index.ts"],
+      "@vegaprotocol/emblem": ["libs/emblem/src/index.ts"],
       "@vegaprotocol/environment": ["libs/environment/src/index.ts"],
       "@vegaprotocol/fills": ["libs/fills/src/index.ts"],
       "@vegaprotocol/funding-payments": ["libs/funding-payments/src/index.ts"],
