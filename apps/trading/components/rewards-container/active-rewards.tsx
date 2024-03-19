@@ -39,9 +39,8 @@ export const applyFilter = (
   }
 
   if (
-    (transfer.kind.__typename !== 'RecurringTransfer' &&
-      transfer.kind.__typename !== 'RecurringGovernanceTransfer') ||
-    !transfer.kind.dispatchStrategy?.dispatchMetric
+    transfer.kind.__typename !== 'RecurringTransfer' &&
+    transfer.kind.__typename !== 'RecurringGovernanceTransfer'
   ) {
     return null;
   }

@@ -45,7 +45,7 @@ export function Dialog({
     {
       'w-[520px]': size === 'small',
       'sm:w-[680px]': size === 'medium',
-      'sm:w-[720px] lg:w-[940px]': size === 'large',
+      'w-[1000px] xs:w-[720px] lg:w-[940px]': size === 'large',
     }
   );
 
