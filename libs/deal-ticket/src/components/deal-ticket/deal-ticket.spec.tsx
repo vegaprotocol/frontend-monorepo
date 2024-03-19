@@ -21,7 +21,7 @@ import * as positionsTools from '@vegaprotocol/positions';
 import { OrdersDocument } from '@vegaprotocol/orders';
 import { formatForInput } from '@vegaprotocol/utils';
 import type { PartialDeep } from 'type-fest';
-import type { Market } from '@vegaprotocol/markets';
+import type { Market, MarketInfo } from '@vegaprotocol/markets';
 import type { MarketData } from '@vegaprotocol/markets';
 import {
   MockedWalletProvider,
@@ -47,10 +47,10 @@ function generateJsx(
   marketOverrides: PartialDeep<Market> = {},
   marketDataOverrides: Partial<MarketData> = {}
 ) {
-  const joinedMarket: Market = {
+  const joinedMarket: MarketInfo = {
     ...market,
     ...marketOverrides,
-  } as Market;
+  } as MarketInfo;
 
   const joinedMarketData: MarketData = {
     ...marketData,
@@ -61,6 +61,16 @@ function generateJsx(
     <MockedProvider mocks={[...mocks]}>
       <MockedWalletProvider>
         <DealTicket
+          riskFactors={{
+            market: market.id,
+            short: '1.046438713957377',
+            long: '0.526943480689886',
+          }}
+          scalingFactors={{
+            searchLevel: 1.1,
+            initialMargin: 1.5,
+            collateralRelease: 1.7,
+          }}
           market={joinedMarket}
           marketData={joinedMarketData}
           marketPrice={marketPrice}

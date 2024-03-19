@@ -25,6 +25,7 @@
     "**/*.jsx",
     "**/*.ts",
     "**/*.tsx",
-    "../utils/src/lib/step.ts"
+    "../utils/src/lib/step.ts",
+    "src/components/deal-ticket/deal-ticket.spec.tsx.disabled"
   ]
 }

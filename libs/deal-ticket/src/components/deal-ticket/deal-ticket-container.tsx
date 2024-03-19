@@ -6,14 +6,15 @@ import {
 import { StopOrder } from './deal-ticket-stop-order';
 import {
   useStaticMarketData,
-  useMarket,
   useMarketPrice,
+  marketInfoProvider,
 } from '@vegaprotocol/markets';
 import { AsyncRendererInline } from '@vegaprotocol/ui-toolkit';
 import { DealTicket } from './deal-ticket';
 import { useFeatureFlags } from '@vegaprotocol/environment';
 import { useT } from '../../use-t';
 import { MarginModeSelector } from './margin-mode-selector';
+import { useDataProvider } from '@vegaprotocol/data-provider';
 
 interface DealTicketContainerProps {
   marketId: string;
@@ -34,7 +35,10 @@ export const DealTicketContainer = ({
     data: market,
     error: marketError,
     loading: marketLoading,
-  } = useMarket(marketId);
+  } = useDataProvider({
+    dataProvider: marketInfoProvider,
+    variables: { marketId },
+  });
 
   const {
     data: marketData,
@@ -70,6 +74,10 @@ export const DealTicketContainer = ({
           ) : (
             <DealTicket
               {...props}
+              riskFactors={market.riskFactors}
+              scalingFactors={
+                market.tradableInstrument.marginCalculator?.scalingFactors
+              }
               market={market}
               marketPrice={marketPrice}
               marketData={marketData}

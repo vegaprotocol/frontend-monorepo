@@ -25,6 +25,7 @@ import {
   TradingButton as Button,
   Pill,
   ExternalLink,
+  Slider,
 } from '@vegaprotocol/ui-toolkit';
 
 import { useOpenVolume } from '@vegaprotocol/positions';
@@ -55,6 +56,7 @@ import {
 } from '../../constants';
 import type {
   Market,
+  MarketInfo,
   MarketData,
   StaticMarketData,
 } from '@vegaprotocol/markets';
@@ -82,11 +84,16 @@ import { useT } from '../../use-t';
 import { DealTicketPriceTakeProfitStopLoss } from './deal-ticket-price-tp-sl';
 import uniqueId from 'lodash/uniqueId';
 import { determinePriceStep, determineSizeStep } from '@vegaprotocol/utils';
+import { useMaxSize } from '../../hooks/use-max-size';
 
 export const REDUCE_ONLY_TOOLTIP =
   '"Reduce only" will ensure that this order will not increase the size of an open position. When the order is matched, it will only trade enough volume to bring your open volume towards 0 but never change the direction of your position. If applied to a limit order that is not instantly filled, the order will be stopped.';
 
 export interface DealTicketProps {
+  scalingFactors?: NonNullable<
+    MarketInfo['tradableInstrument']['marginCalculator']
+  >['scalingFactors'];
+  riskFactors: MarketInfo['riskFactors'];
   market: Market;
   marketData: StaticMarketData;
   marketPrice?: string | null;
@@ -139,6 +146,8 @@ export const getBaseQuoteUnit = (tags?: string[] | null) =>
 
 export const DealTicket = ({
   market,
+  riskFactors,
+  scalingFactors,
   onMarketClick,
   marketData,
   marketPrice,
@@ -179,6 +188,7 @@ export const DealTicket = ({
 
   const {
     accountBalance: generalAccountBalance,
+    accountDecimals,
     loading: loadingGeneralAccountBalance,
   } = useAccountBalance(asset.id);
 
@@ -382,6 +392,26 @@ export const DealTicket = ({
   const disableReduceOnlyCheckbox = !nonPersistentOrder;
   const disableIcebergCheckbox = nonPersistentOrder;
   const featureFlags = useFeatureFlags((state) => state.flags);
+  const sizeStep = determineSizeStep(market);
+
+  const maxSize = useMaxSize({
+    accountDecimals: accountDecimals ?? undefined,
+    activeOrders: activeOrders ?? undefined,
+    decimalPlaces: market.decimalPlaces,
+    marginAccountBalance,
+    marginFactor: margin?.marginFactor,
+    marginMode: margin?.marginMode,
+    marketPrice: marketPrice ?? undefined,
+    price,
+    riskFactors,
+    scalingFactors,
+    side,
+    sizeStep,
+    type,
+    generalAccountBalance,
+    openVolume,
+    positionDecimalPlaces: market.positionDecimalPlaces,
+  });
 
   const onSubmit = useCallback(
     (formValues: OrderFormValues) => {
@@ -424,7 +454,6 @@ export const DealTicket = ({
     },
   });
 
-  const sizeStep = determineSizeStep(market);
   const quoteName = getQuoteName(market);
   const isLimitType = type === Schema.OrderType.TYPE_LIMIT;
 
@@ -492,6 +521,13 @@ export const DealTicket = ({
                 {...field}
               />
             </FormGroup>
+            <Slider
+              min={0}
+              max={maxSize.toNumber()}
+              step={Number(sizeStep)}
+              value={[Number(field.value)]}
+              onValueChange={([value]) => field.onChange(value)}
+            />
             {fieldState.error && (
               <InputError testId="deal-ticket-error-message-size">
                 {fieldState.error.message}
