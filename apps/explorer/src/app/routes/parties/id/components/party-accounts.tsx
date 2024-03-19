@@ -2,7 +2,9 @@ import { useExplorerPartyAssetsQuery } from '../__generated__/Party-assets';
 import { AssetLink, MarketLink } from '../../../../components/links';
 import AssetBalance from '../../../../components/asset-balance/asset-balance';
 import { AccountTypeMapping } from '@vegaprotocol/types';
-
+import { t } from '@vegaprotocol/i18n';
+import { Emblem } from '@vegaprotocol/emblem';
+import { ENV } from '../../../../config/env';
 interface PartyAccountsProps {
   partyId: string;
 }
@@ -20,16 +22,15 @@ export const PartyAccounts = ({ partyId }: PartyAccountsProps) => {
   const party = data?.partiesConnection?.edges[0]?.node;
   const accounts =
     party?.accountsConnection?.edges?.filter((edge) => edge?.node) || [];
-
   return (
     <div className="block min-h-44 h-60 4 w-full border-red-800 relative">
       <table>
         <thead>
           <tr>
-            <th className="text-right px-4">Balance</th>
-            <th className="text-left px-4">Type</th>
-            <th className="text-left px-4">Market</th>
-            <th className="text-left px-4">Asset</th>
+            <th className="text-right px-4">{t('Balance')}</th>
+            <th className="text-left px-4">{t('Type')}</th>
+            <th className="text-left px-4">{t('Market')}</th>
+            <th className="text-left px-4">{t('Asset')}</th>
           </tr>
         </thead>
         <tbody>
@@ -71,6 +72,7 @@ export const PartyAccounts = ({ partyId }: PartyAccountsProps) => {
                     {market?.id ? <MarketLink id={market.id} /> : '-'}
                   </td>
                   <td className="px-4">
+                    <Emblem asset={asset.id} vegaChain={ENV.vegaChainId} />
                     <AssetLink assetId={asset.id} />
                   </td>
                 </tr>
