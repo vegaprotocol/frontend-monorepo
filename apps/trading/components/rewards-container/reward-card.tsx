@@ -188,7 +188,7 @@ const RewardCard = ({
                 <span className="text-muted text-xs">{t('Starts in')} </span>
                 <span data-testid="starts-in" data-startsin={startsIn}>
                   {t('numberEpochs', '{{count}} epochs', {
-                    count: endsIn,
+                    count: startsIn,
                   })}
                 </span>
               </span>
