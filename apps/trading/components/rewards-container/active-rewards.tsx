@@ -3,7 +3,6 @@ import {
   VegaIcon,
   VegaIconNames,
   TradingInput,
-  TinyScroll,
 } from '@vegaprotocol/ui-toolkit';
 import {
   type TransferNode,
@@ -120,7 +119,7 @@ export const ActiveRewards = ({ currentEpoch }: { currentEpoch: number }) => {
         />
       )}
       {/** CARDS */}
-      <TinyScroll className="grid gap-x-8 gap-y-10 h-fit grid-cols-[repeat(auto-fill,_minmax(230px,_1fr))] md:grid-cols-[repeat(auto-fill,_minmax(230px,_1fr))] lg:grid-cols-[repeat(auto-fill,_minmax(320px,_1fr))] xl:grid-cols-[repeat(auto-fill,_minmax(335px,_1fr))] max-h-[40rem] overflow-auto pr-2">
+      <div className="grid gap-x-8 gap-y-10 h-fit grid-cols-[repeat(auto-fill,_minmax(230px,_1fr))] md:grid-cols-[repeat(auto-fill,_minmax(230px,_1fr))] lg:grid-cols-[repeat(auto-fill,_minmax(320px,_1fr))] xl:grid-cols-[repeat(auto-fill,_minmax(335px,_1fr))] pr-2">
         {data
           .filter((n) => applyFilter(n, filter))
           .map((node, i) => (
@@ -131,7 +130,7 @@ export const ActiveRewards = ({ currentEpoch }: { currentEpoch: number }) => {
               requirements={requirements}
             />
           ))}
-      </TinyScroll>
+      </div>
     </Card>
   );
 };

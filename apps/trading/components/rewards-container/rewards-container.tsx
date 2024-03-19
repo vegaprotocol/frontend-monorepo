@@ -246,6 +246,19 @@ export const RewardsContainer = () => {
           })}
       </div>
       <div className="grid auto-rows-min grid-cols-6 gap-3">
+        <Card
+          title={t('Rewards history')}
+          className="lg:col-span-full hidden md:block"
+          loading={rewardsLoading}
+          noBackgroundOnMobile={true}
+          highlight={true}
+        >
+          <RewardsHistoryContainer
+            epoch={Number(epochData?.epoch.id)}
+            pubKey={pubKey}
+            assets={assetMap}
+          />
+        </Card>
         {pubKey && activityStreakBenefitTiers.tiers?.length > 0 && (
           <Card
             title={t('Activity Streak')}
@@ -287,18 +300,6 @@ export const RewardsContainer = () => {
           </Card>
         )}
         <ActiveRewards currentEpoch={Number(epochData?.epoch.id)} />
-        <Card
-          title={t('Rewards history')}
-          className="lg:col-span-full hidden md:block"
-          loading={rewardsLoading}
-          noBackgroundOnMobile={true}
-        >
-          <RewardsHistoryContainer
-            epoch={Number(epochData?.epoch.id)}
-            pubKey={pubKey}
-            assets={assetMap}
-          />
-        </Card>
       </div>
     </div>
   );
