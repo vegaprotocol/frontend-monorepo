@@ -38,8 +38,12 @@ export const applyFilter = (
     return true;
   }
 
-  if (transfer.kind.__typename !== 'RecurringTransfer') {
-    return false;
+  if (
+    (transfer.kind.__typename !== 'RecurringTransfer' &&
+      transfer.kind.__typename !== 'RecurringGovernanceTransfer') ||
+    !transfer.kind.dispatchStrategy?.dispatchMetric
+  ) {
+    return null;
   }
 
   if (

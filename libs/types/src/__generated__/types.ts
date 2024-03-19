@@ -887,8 +887,10 @@ export type DepositEdge = {
 
 /** The status of a deposit */
 export enum DepositStatus {
-  /** The deposit have been cancelled by the network, either because it expired, or something went wrong with the foreign chain */
+  /** The deposit have been cancelled by the network, either because it expired, could not be verified, or something went wrong with the foreign chain */
   STATUS_CANCELLED = 'STATUS_CANCELLED',
+  /** The deposit was rejected as a duplicate transaction */
+  STATUS_DUPLICATE_REJECTED = 'STATUS_DUPLICATE_REJECTED',
   /** The deposit was finalised, it was valid, the foreign chain has executed it and the network updated all accounts */
   STATUS_FINALIZED = 'STATUS_FINALIZED',
   /** The deposit is open and being processed by the network */
