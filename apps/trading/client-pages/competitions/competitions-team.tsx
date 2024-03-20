@@ -194,7 +194,7 @@ const TeamPage = ({
               text={globalThis.location.href}
             >
               <button className="h-10 w-7">
-                <VegaIcon name={VegaIconNames.ARROW_UP} size={16} />
+                <VegaIcon name={VegaIconNames.COPY} size={16} />
               </button>
             </CopyWithTooltip>
           </div>
