@@ -66,10 +66,12 @@ export const useMaxSize = ({
         .div(marginFactor)
         .div(toBigNum(price, decimalPlaces));
     } else {
+      const effectivePrice =
+        type === OrderType.TYPE_LIMIT ? marketPrice || price : marketPrice;
       if (
         !scalingFactors?.initialMargin ||
         !riskFactors ||
-        !marketPrice ||
+        !effectivePrice ||
         accountDecimals === undefined
       ) {
         return maxSize;
@@ -86,7 +88,7 @@ export const useMaxSize = ({
           )
         )
         .div(scalingFactors.initialMargin)
-        .div(toBigNum(marketPrice, decimalPlaces));
+        .div(toBigNum(effectivePrice, decimalPlaces));
       maxSize = maxSize
         .minus(
           // subtract remaining orders
