@@ -35,7 +35,7 @@ const nextConfig = {
     svgr: false,
   },
   transpilePackages: [
-    '@0xsquid/staking',
+    '@0xsquid/widget',
     '@0xsquid/staking-widget',
     '@0xsquid/checkout-widget',
   ],

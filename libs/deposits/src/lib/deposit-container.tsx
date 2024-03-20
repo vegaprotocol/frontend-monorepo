@@ -3,14 +3,15 @@ import { Networks, useEnvironment } from '@vegaprotocol/environment';
 import { AsyncRendererInline } from '@vegaprotocol/ui-toolkit';
 import { DepositManager } from './deposit-manager';
 import { useEnabledAssets } from '@vegaprotocol/assets';
-import { SquidStakingWidget } from '@0xsquid/staking-widget';
-import { SquidcheckoutWidget } from '@0xsquid/checkout-widget';
-import { type AppConfig as StakingAppConfig } from '@0xsquid/staking-widget/widget/core/types/config';
-import {
-  type AppConfig as CheckoutAppConfig,
-  CheckoutMode,
-} from '@0xsquid/checkout-widget/widget/core/types/config';
 import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
+import { SquidWidget } from '@0xsquid/widget';
+import { type AppConfig as NormalConfig } from '@0xsquid/widget/widget/core/types/config';
+
+//import { SquidStakingWidget } from '@0xsquid/staking-widget';
+// import { type AppConfig as StakingConfig } from '@0xsquid/staking-widget/widget/core/types/config';
+
+//import { SquidcheckoutWidget } from '@0xsquid/checkout-widget';
+// import { type AppConfig } from '@0xsquid/checkout-widget/widget/core/types/config';
 
 // Customize here
 // https://widget.squidrouter.com/
@@ -31,7 +32,7 @@ const lightStyle = {
   roundedBox: '1rem',
   roundedDropDown: '20rem',
   displayDivider: false,
-}
+};
 
 const darkStyle = {
   neutralContent: '#b8add2',
@@ -50,106 +51,79 @@ const darkStyle = {
   roundedBox: '1rem',
   roundedDropDown: '20rem',
   displayDivider: false,
-}
+};
 
+const v2config = {
+  integratorId: 'vega-swap-widget',
+  apiUrl: 'https://testnet.api.squidrouter.com',
+};
 export const DepositContainer = () => {
+  return (
+    <div>
+      <SquidWidget config={v2config} />
+    </div>
+  );
+};
+
+export const DepositContainer2 = () => {
   const { theme } = useThemeSwitcher();
 
   const checkoutConfig = useMemo(() => {
-    const config: CheckoutAppConfig = {
+    const config: AppConfig = {
       companyName: 'Vega',
       integratorId: 'vega-swap-widget',
       slippage: 1,
       // @ts-ignore instantExec does not exist on AppConfig, BUT its in the examples, should be fine?
       instantExec: true,
       infiniteApproval: false,
-      apiUrl: 'https://api.squidrouter.com',
-      style: theme === 'dark' ? darkStyle : lightStyle,
+      apiUrl: 'https://testnet.api.squidrouter.com',
+      // style: theme === 'dark' ? darkStyle : lightStyle,
       availableChains: {
-        destination: [42161],
+        destination: [11155111],
       },
+      environment: 'testnet',
       checkoutConfig: {
-        introPage: {
-          title: 'checkout title',
-          description: 'checkout description',
-          logoUrl: 'logoUrl',
-        },
+        // introPage: {
+        //   title: 'Deposit for vega',
+        //   description: 'foo bar buzz quz',
+        //   logoUrl:
+        //     'https://icon.vega.xyz/vega/vega-stagnet1-202307191148/asset/fc7fd956078fb1fc9db5c19b88f0874c4299b2a7639ad05a47a28c0aef291b55/logo.svg',
+        // },
         checkoutContract: {
           address: '0xdb10bF403771E44D0456F6C51EE655bb67AB05d9',
           explorerLink: 'https://sepolia.etherscan.io',
         },
-        checkoutMode: CheckoutMode.BUY,
+        checkoutMode: 'buy',
         item: {
-          title: 'item title',
-          subTitle: 'item subTitle',
-          imageUrl: 'tiem imageurl',
+          title: 'Deposit',
+          subTitle: 'Deposit to Vega via Squid',
+          imageUrl:
+            'https://icon.vega.xyz/vega/vega-stagnet1-202307191148/asset/fc7fd956078fb1fc9db5c19b88f0874c4299b2a7639ad05a47a28c0aef291b55/logo.svg',
         },
-        prefetchData: async () => 1,
+        // prefetchData: async () => 1,
         payment: {
           token: {
             chainId: 1,
-            address: '0xdb10bF403771E44D0456F6C51EE655bb67AB05d9',
-            symbol: 'payment symbol',
+            address: '0x',
+            symbol: 'ETH',
           },
           unitPrice: '',
           nbOfItems: 1,
         },
-        customContractCalls: [],
+        customContractCalls: [
+          // {
+          //   callType: 1;
+          //   target: string;
+          //   value?: string;
+          //   callData: string;
+          //   payload?: {
+          //       tokenAddress: string;
+          //       inputPos: number;
+          //   };
+          //   estimatedGas: '5000',
+          // }
+        ],
       },
-    };
-
-    return config;
-  }, [theme]);
-
-  const stakingConfig = useMemo(() => {
-    const config: StakingAppConfig = {
-      companyName: 'Vega',
-      integratorId: 'vega-swap-widget',
-      slippage: 1,
-      // @ts-ignore instantExec does not exist on AppConfig, BUT its in the examples, should be fine?
-      instantExec: true,
-      infiniteApproval: false,
-      apiUrl: 'https://api.squidrouter.com',
-      style: theme === 'dark' ? darkStyle : lightStyle,
-      availableChains: {
-        destination: [42161],
-      },
-      // stakeConfig: {
-      //   tokensConfig: [
-      //     {
-      //       stakedToken: {
-      //         chainId: 1,
-      //         address: '0xfooo',
-      //         name: 'something',
-      //         symbol: 'symbol',
-      //         decimals: 18,
-      //         logoURI: '',
-      //         coingeckoId: '',
-      //         commonKey: '',
-      //         bridgeOnly: true,
-      //         ibcDenom: '',
-      //         codeHash: '',
-      //       },
-      //       stakedTokenExchangeRateGetter: async () => 1,
-      //       tokenToStake: {
-      //         chainId: 1,
-      //         address: '',
-      //       },
-      //       customContractCalls: [],
-      //       unstakeLink: '',
-      //       logoUrl: '',
-      //       stakingContract: {
-      //         address: '',
-      //         explorerLink: '',
-      //       },
-      //     },
-      //   ],
-      //   introPage: {
-      //     title: 'intro page title',
-      //     description: 'intro page description',
-      //     onClose: () => console.log('onClose'),
-      //   },
-      // },
     };
 
     return config;
@@ -157,17 +131,50 @@ export const DepositContainer = () => {
 
   return (
     <div className="flex gap-10">
-      <div><SquidcheckoutWidget config={checkoutConfig} />></div>
-      <div>
+      <div className="w-[500px]">
+        <SquidcheckoutWidget config={checkoutConfig} />
+      </div>
+      <div className="w-[500px]">
+        <SquidWidget config={normalConfig} />
+      </div>
+      <div className="w-[500px]">
         <SquidStakingWidget config={stakingConfig} />
       </div>
     </div>
   );
 };
 
-// <div>
-//   <SquidcheckoutWidget config={checkoutConfig} />
-// </div>
+const stakingConfig: StakingConfig = {
+  integratorId: 'vega-swap-widget',
+  environment: 'testnet',
+  stakeConfig: {
+    tokensConfig: [
+      {
+        stakedToken: {
+          chainId: 11155111,
+          address: '',
+          name: 'aUSDC',
+          symbol: 'aUSDC',
+          decimals: 6,
+          logoURI: '',
+          coingeckoId: '',
+        },
+        tokenToStake: {
+          chainId: 11155111,
+          address: '',
+        },
+        customContractCalls: [],
+        logoUrl:
+          'https://icon.vega.xyz/vega/vega-stagnet1-202307191148/asset/fc7fd956078fb1fc9db5c19b88f0874c4299b2a7639ad05a47a28c0aef291b55/logo.svg',
+      },
+    ],
+  },
+};
+
+const normalConfig: NormalConfig = {
+  integratorId: 'vega-swap-widget',
+  environment: 'testnet',
+};
 
 /**
  *  Fetches data required for the Deposit page
