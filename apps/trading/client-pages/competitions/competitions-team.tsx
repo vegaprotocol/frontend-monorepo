@@ -172,7 +172,7 @@ const TeamPage = ({
           >
             {team.name}
           </h1>
-          <div className="flex gap-2 ">
+          <div className="flex gap-2">
             <JoinTeam team={team} partyTeam={partyTeam} refetch={refetch} />
             <UpdateTeamButton team={team} />
             {team.teamUrl && team.teamUrl.length > 0 && (
