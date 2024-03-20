@@ -118,7 +118,7 @@ export const JoinButton = ({
     // This team is closed.
     if (isTeamClosed) {
       return (
-        <Tooltip description={t('You cannot join a closed team')}>
+        <Tooltip description={t('You cannot join a private team')}>
           <Button
             intent={Intent.Primary}
             data-testid="switch-team-button"

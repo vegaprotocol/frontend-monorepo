@@ -10,6 +10,9 @@ import {
   VegaIcon,
   VegaIconNames,
   Tooltip,
+  TradingAnchorButton,
+  Intent,
+  CopyWithTooltip,
 } from '@vegaprotocol/ui-toolkit';
 import { TransferStatus, type Asset } from '@vegaprotocol/types';
 import classNames from 'classnames';
@@ -17,6 +20,7 @@ import { useT } from '../../lib/use-t';
 import { Table } from '../../components/table';
 import {
   addDecimalsFormatNumberQuantum,
+  formatDateWithLocalTimezone,
   formatNumber,
   getDateTimeFormat,
   removePaginationWrapper,
@@ -143,20 +147,66 @@ const TeamPage = ({
   const t = useT();
   const [showGames, setShowGames] = useState(true);
 
+  const createdAt = new Date(team.createdAt);
+
+  const closedIndicator = team.closed ? (
+    <div className="border rounded border-vega-clight-300 dark:border-vega-cdark-300 px-1 pt-[1px] flex items-baseline gap-1">
+      <VegaIcon name={VegaIconNames.LOCK} size={10} />
+      <span>{t('Private')}</span>
+    </div>
+  ) : (
+    <div className="border rounded border-vega-clight-300 dark:border-vega-cdark-300 px-1 pt-[1px] flex items-baseline gap-1">
+      <VegaIcon name={VegaIconNames.GLOBE} size={10} />
+      <span>{t('Public')}</span>
+    </div>
+  );
+
   return (
     <LayoutWithGradient>
       <header className="flex gap-3 lg:gap-4 pt-5 lg:pt-10">
         <TeamAvatar teamId={team.teamId} imgUrl={team.avatarUrl} />
-        <div className="flex flex-col items-start gap-1 lg:gap-3">
+        <div className="flex flex-col items-start gap-1 lg:gap-2">
           <h1
             className="calt text-2xl lg:text-3xl xl:text-5xl"
             data-testid="team-name"
           >
             {team.name}
           </h1>
-          <div className="flex gap-2">
+          <div className="flex gap-2 ">
             <JoinTeam team={team} partyTeam={partyTeam} refetch={refetch} />
             <UpdateTeamButton team={team} />
+            {team.teamUrl && team.teamUrl.length > 0 && (
+              <Tooltip description={t("Visit the team's page.")}>
+                <span>
+                  <TradingAnchorButton
+                    intent={Intent.Info}
+                    target="_blank"
+                    referrerPolicy="no-referrer"
+                    href={team.teamUrl}
+                  >
+                    <VegaIcon name={VegaIconNames.OPEN_EXTERNAL} size={16} />
+                  </TradingAnchorButton>
+                </span>
+              </Tooltip>
+            )}
+            <CopyWithTooltip
+              description={t('Copy this page url.')}
+              text={globalThis.location.href}
+            >
+              <button className="h-10 w-7">
+                <VegaIcon name={VegaIconNames.ARROW_UP} size={16} />
+              </button>
+            </CopyWithTooltip>
+          </div>
+          <div className="flex gap-2 items-baseline text-xs text-muted font-alpha calt">
+            {closedIndicator}
+            <div className="">
+              {t('Created at')}:{' '}
+              <span className="text-vega-cdark-600 dark:text-vega-clight-600 ">
+                {formatDateWithLocalTimezone(createdAt)}
+              </span>{' '}
+              ({t('epoch')}: {team.createdAtEpoch})
+            </div>
           </div>
         </div>
       </header>
