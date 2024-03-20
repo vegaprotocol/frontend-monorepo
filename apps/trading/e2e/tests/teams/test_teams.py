@@ -295,7 +295,7 @@ def test_leaderboard(competitions_page: Tuple[Page, str, VegaServiceNull]):
         page.get_by_test_id("rank-1").locator(".text-vega-clight-500")
     ).to_have_count(1)
     expect(page.get_by_test_id("team-1")).to_have_text(team_name)
-    expect(page.get_by_test_id("status-1")).to_have_text("Open")
+    expect(page.get_by_test_id("status-1")).to_have_text("Public")
 
     #  FIXME: the numbers are different we need to clarify this with the backend
     # expect(competitions_page.get_by_test_id("earned-1")).to_have_text("160")
