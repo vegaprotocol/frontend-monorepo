@@ -251,6 +251,7 @@ const RewardCard = ({
               vegaAsset={vegaAsset}
               requirements={requirements}
               gameId={gameId}
+              startsIn={startsIn}
             />
           )}
         </div>
@@ -534,12 +535,14 @@ const RewardRequirements = ({
   vegaAsset,
   requirements,
   gameId,
+  startsIn,
 }: {
   dispatchStrategy: DispatchStrategy;
   rewardAsset?: BasicAssetDetails;
   vegaAsset?: BasicAssetDetails;
   requirements?: Requirements;
   gameId?: string | null;
+  startsIn?: number;
 }) => {
   const t = useT();
 
@@ -654,6 +657,7 @@ const RewardRequirements = ({
           >
             {requirements &&
               averagePositionRequirements &&
+              !startsIn &&
               (new BigNumber(averagePosition || 0).isGreaterThan(
                 averagePositionRequirements
               ) ? (
