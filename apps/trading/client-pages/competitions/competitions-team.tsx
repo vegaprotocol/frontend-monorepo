@@ -20,7 +20,6 @@ import { useT } from '../../lib/use-t';
 import { Table } from '../../components/table';
 import {
   addDecimalsFormatNumberQuantum,
-  formatDateWithLocalTimezone,
   formatNumber,
   getDateTimeFormat,
   removePaginationWrapper,
@@ -203,7 +202,7 @@ const TeamPage = ({
             <div className="">
               {t('Created at')}:{' '}
               <span className="text-vega-cdark-600 dark:text-vega-clight-600 ">
-                {formatDateWithLocalTimezone(createdAt)}
+                {getDateTimeFormat().format(createdAt)}
               </span>{' '}
               ({t('epoch')}: {team.createdAtEpoch})
             </div>
