@@ -242,6 +242,7 @@ def test_team_page_games_table(team_page: Tuple[Page, str, str, VegaServiceNull]
     expect(page.get_by_test_id("games-toggle")).to_have_text("Results (10)")
     expect(page.get_by_test_id("rank-0")).to_have_text("1")
     expect(page.get_by_test_id("epoch-0")).to_have_text("19")
+    expect(page.get_by_test_id("endtime-0")).to_be_visible()
     expect(page.get_by_test_id("type-0")).to_have_text(
         "Price maker fees paid • tDAI "
     )
@@ -256,6 +257,9 @@ def test_team_page_members_table(team_page: Tuple[Page, str, str, VegaServiceNul
     page.get_by_test_id("members-toggle").click()
     expect(page.get_by_test_id("members-toggle")).to_have_text("Members (4)")
     expect(page.get_by_test_id("referee-0")).to_be_visible()
+    expect(page.get_by_test_id("icon-question-mark").nth(0)).to_be_visible()
+    expect(page.get_by_test_id("referee-3").locator(".text-muted").nth(1)
+           ).to_have_text("Owner")
     expect(page.get_by_test_id("joinedAt-0")).to_be_visible()
     expect(page.get_by_test_id("joinedAtEpoch-0")).to_have_text("9")
 
@@ -263,6 +267,8 @@ def test_team_page_members_table(team_page: Tuple[Page, str, str, VegaServiceNul
 def test_team_page_headline(team_page: Tuple[Page, str, str, VegaServiceNull]):
     page, team_name, team_id, vega = team_page
     expect(page.get_by_test_id("team-name")).to_have_text(team_name)
+    expect(page.get_by_test_id("icon-open-external").nth(1)).to_be_visible()
+    expect(page.get_by_test_id("icon-copy")).to_be_visible()
     expect(page.get_by_test_id("members-count-stat")).to_have_text("4")
 
     expect(page.get_by_test_id("total-games-stat")).to_have_text("1")
@@ -295,7 +301,7 @@ def test_leaderboard(competitions_page: Tuple[Page, str, VegaServiceNull]):
         page.get_by_test_id("rank-1").locator(".text-vega-clight-500")
     ).to_have_count(1)
     expect(page.get_by_test_id("team-1")).to_have_text(team_name)
-    expect(page.get_by_test_id("status-1")).to_have_text("Open")
+    expect(page.get_by_test_id("status-1")).to_have_text("Public")
 
     #  FIXME: the numbers are different we need to clarify this with the backend
     # expect(competitions_page.get_by_test_id("earned-1")).to_have_text("160")
@@ -320,7 +326,6 @@ def test_game_card(competitions_page: Tuple[Page, str, VegaServiceNull]):
         "Price maker fees paid • tDAI"
     )
     expect(game_1.get_by_test_id("assessed-over")).to_have_text("15 epochs")
-    page.pause()
     expect(game_1.get_by_test_id("scope")).to_have_text("Eligible")
     expect(game_1.get_by_test_id("staking-requirement")).to_have_text("-")
     expect(game_1.get_by_test_id("average-position")).to_have_text("-")

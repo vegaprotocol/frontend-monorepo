@@ -70,6 +70,12 @@ export const JoinButton = ({
 }) => {
   const t = useT();
 
+  /**
+   * A team cannot be joined (closed) when set as such
+   * and the currently connected pubkey is not whitelisted.
+   */
+  const isTeamClosed = team.closed && !team.allowList.includes(pubKey || '');
+
   if (!pubKey || isReadOnly) {
     return (
       <Tooltip description={t('Connect your wallet to join the team')}>
@@ -79,8 +85,9 @@ export const JoinButton = ({
       </Tooltip>
     );
   }
+
   // Party is the creator of a team
-  else if (partyTeam && partyTeam.referrer === pubKey) {
+  if (partyTeam && partyTeam.referrer === pubKey) {
     // Party is the creator of THIS team
     if (partyTeam.teamId === team.teamId) {
       return (
@@ -105,8 +112,24 @@ export const JoinButton = ({
       );
     }
   }
+
   // Party is in a team, but not this one
-  else if (partyTeam && partyTeam.teamId !== team.teamId) {
+  if (partyTeam && partyTeam.teamId !== team.teamId) {
+    // This team is closed.
+    if (isTeamClosed) {
+      return (
+        <Tooltip description={t('You cannot join a private team')}>
+          <Button
+            intent={Intent.Primary}
+            data-testid="switch-team-button"
+            disabled={true}
+          >
+            {t('Switch team')}{' '}
+          </Button>
+        </Tooltip>
+      );
+    }
+    // This team is open.
     return (
       <Button
         onClick={() => onJoin('switch')}
@@ -117,8 +140,9 @@ export const JoinButton = ({
       </Button>
     );
   }
+
   // Joined. Current party is already in this team
-  else if (partyTeam && partyTeam.teamId === team.teamId) {
+  if (partyTeam && partyTeam.teamId === team.teamId) {
     return (
       <Button intent={Intent.None} disabled={true}>
         <span className="flex items-center gap-2">
@@ -131,6 +155,17 @@ export const JoinButton = ({
     );
   }
 
+  // This team is closed.
+  if (isTeamClosed) {
+    return (
+      <Tooltip description={t('You cannot join a closed team')}>
+        <Button intent={Intent.Primary} disabled={true}>
+          {t('Join team')}
+        </Button>
+      </Tooltip>
+    );
+  }
+  // This team is open.
   return (
     <Button onClick={() => onJoin('join')} intent={Intent.Primary}>
       {t('Join team')}
