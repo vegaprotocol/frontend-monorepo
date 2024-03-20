@@ -9,6 +9,7 @@ import {
   Button,
   VegaIcon,
   VegaIconNames,
+  Tooltip,
 } from '@vegaprotocol/ui-toolkit';
 import { TransferStatus, type Asset } from '@vegaprotocol/types';
 import classNames from 'classnames';
@@ -18,6 +19,7 @@ import {
   addDecimalsFormatNumberQuantum,
   formatNumber,
   getDateTimeFormat,
+  removePaginationWrapper,
 } from '@vegaprotocol/utils';
 import {
   useTeam,
@@ -52,6 +54,7 @@ import {
   ActiveRewardCard,
   DispatchMetricInfo,
 } from '../../components/rewards-container/reward-card';
+import { usePartyProfilesQuery } from '../../components/vega-wallet-connect-button/__generated__/PartyProfiles';
 
 export const CompetitionsTeam = () => {
   const t = useT();
@@ -331,13 +334,30 @@ const Games = ({
 const Members = ({ members }: { members?: Member[] }) => {
   const t = useT();
 
+  const partyIds = members?.map((m) => m.referee) || [];
+  const { data: profilesData } = usePartyProfilesQuery({
+    variables: {
+      partyIds,
+    },
+    skip: partyIds.length === 0,
+  });
+  const profiles = removePaginationWrapper(
+    profilesData?.partiesProfilesConnection?.edges
+  );
+
   if (!members?.length) {
     return <p>{t('No members')}</p>;
   }
 
   const data = orderBy(
     members.map((m) => ({
-      referee: <RefereeLink pubkey={m.referee} isCreator={m.isCreator} />,
+      referee: (
+        <RefereeLink
+          pubkey={m.referee}
+          isCreator={m.isCreator}
+          profiles={profiles}
+        />
+      ),
       rewards: formatNumber(m.totalQuantumRewards),
       volume: formatNumber(m.totalQuantumVolume),
       gamesPlayed: formatNumber(m.totalGamesPlayed),
@@ -351,7 +371,7 @@ const Members = ({ members }: { members?: Member[] }) => {
   return (
     <Table
       columns={[
-        { name: 'referee', displayName: t('Member ID') },
+        { name: 'referee', displayName: t('Member') },
         { name: 'rewards', displayName: t('Rewards earned') },
         { name: 'volume', displayName: t('Total volume') },
         { name: 'gamesPlayed', displayName: t('Games played') },
@@ -373,21 +393,43 @@ const Members = ({ members }: { members?: Member[] }) => {
 const RefereeLink = ({
   pubkey,
   isCreator,
+  profiles,
 }: {
   pubkey: string;
   isCreator: boolean;
+  profiles?: { partyId: string; alias: string }[];
 }) => {
   const t = useT();
   const linkCreator = useLinks(DApp.Explorer);
   const link = linkCreator(EXPLORER_PARTIES.replace(':id', pubkey));
 
+  const alias = profiles?.find((p) => p.partyId === pubkey)?.alias;
+
   return (
-    <>
+    <div className="flex items-baseline gap-2">
       <Link to={link} target="_blank" className="underline underline-offset-4">
-        {truncateMiddle(pubkey)}
-      </Link>{' '}
-      <span className="text-muted text-xs">{isCreator ? t('Owner') : ''}</span>
-    </>
+        {alias || truncateMiddle(pubkey)}
+      </Link>
+      {!alias && (
+        <Tooltip
+          description={t(
+            'You can set your pubkey alias by using the key selector in the top right corner.'
+          )}
+        >
+          <button className="text-muted text-xs">
+            <VegaIcon name={VegaIconNames.QUESTION_MARK} size={14} />
+          </button>
+        </Tooltip>
+      )}
+      {alias && (
+        <span className="text-muted text-xs">{truncateMiddle(pubkey)}</span>
+      )}
+      {isCreator && (
+        <span className="text-muted text-xs border border-vega-clight-300 dark:border-vega-cdark-300  rounded px-1 py-[1px]">
+          {t('Owner')}
+        </span>
+      )}
+    </div>
   );
 };
 
