@@ -27,7 +27,10 @@ import {
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 import { formatPercentage } from '../fees-container/utils';
-import { addDecimalsFormatNumberQuantum } from '@vegaprotocol/utils';
+import {
+  addDecimalsFormatNumber,
+  addDecimalsFormatNumberQuantum,
+} from '@vegaprotocol/utils';
 import { ViewType, useSidebar } from '../sidebar';
 import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
 import { RewardsHistoryContainer } from './rewards-history';
@@ -389,10 +392,10 @@ export const RewardPot = ({
       {rewardAsset ? (
         <>
           <CardStat
-            value={`${addDecimalsFormatNumberQuantum(
+            value={`${addDecimalsFormatNumber(
               totalRewards.toString(),
               rewardAsset.decimals,
-              rewardAsset.quantum
+              2
             )} ${rewardAsset.symbol}`}
             testId="total-rewards"
           />
