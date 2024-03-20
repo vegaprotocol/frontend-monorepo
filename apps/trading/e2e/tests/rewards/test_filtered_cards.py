@@ -77,7 +77,6 @@ def test_filtered_future_cards(continuous_market, vega: VegaServiceNull, page: P
     vega.update_network_parameter(
         MM_WALLET.name, parameter="reward.asset", new_value=tDAI_asset_id
     )
-    page.pause()
     vega.mint(key_name=PARTY_B.name, asset=tDAI_asset_id, amount=100000)
     vega.mint(key_name=PARTY_A.name, asset=tDAI_asset_id, amount=100000)
     next_epoch(vega=vega)
@@ -114,6 +113,8 @@ def test_filtered_future_cards(continuous_market, vega: VegaServiceNull, page: P
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
     page.goto("/#/rewards")
-
-    expect(page.get_by_test_id("active-rewards-card")
-           ).to_be_visible(timeout=15000)
+    card = page.get_by_test_id("active-rewards-card")
+    expect(card).to_be_visible(timeout=15000)
+    expect(page.get_by_test_id("starts-in")).to_have_text("6 epochs")
+    color = card.evaluate("element => getComputedStyle(element).color")
+    assert color == "rgb(4, 4, 5)", f"Unexpected color: {color}"
