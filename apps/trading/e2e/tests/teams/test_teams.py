@@ -14,7 +14,9 @@ TEAMS_URL = "/#/competitions/teams/"
 
 
 @pytest.fixture(scope="module")
-def setup_environment(request, browser) -> Generator[Tuple[Page, VegaServiceNull, dict], None, None]:
+def setup_environment(
+    request, browser
+) -> Generator[Tuple[Page, VegaServiceNull, dict], None, None]:
     with init_vega(request) as vega_instance:
         request.addfinalizer(lambda: cleanup_container(vega_instance))
         setup_data = setup_teams_and_games(vega_instance)
@@ -22,7 +24,9 @@ def setup_environment(request, browser) -> Generator[Tuple[Page, VegaServiceNull
 
 
 @pytest.fixture(scope="module")
-def competitions_page(setup_environment, browser, request) -> Generator[Tuple[Page, str, VegaServiceNull], None, None]:
+def competitions_page(
+    setup_environment, browser, request
+) -> Generator[Tuple[Page, str, VegaServiceNull], None, None]:
     vega_instance, setup_data = setup_environment
     team_name = setup_data["team_name"]
     with init_page(vega_instance, browser, request) as page:
@@ -33,7 +37,9 @@ def competitions_page(setup_environment, browser, request) -> Generator[Tuple[Pa
 
 
 @pytest.fixture(scope="module")
-def team_page(setup_environment, browser, request) -> Generator[Tuple[Page, str, VegaServiceNull], None, None]:
+def team_page(
+    setup_environment, browser, request
+) -> Generator[Tuple[Page, str, VegaServiceNull], None, None]:
     vega_instance, setup_data = setup_environment
     team_name = setup_data["team_name"]
     team_id = setup_data["team_id"]
@@ -153,8 +159,7 @@ def setup_teams_and_games(vega: VegaServiceNull):
     )
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
-    # this recurring transfer has been commented out as there appears to be a bug where individual rewards earned are showing on the teams page
-    """ vega.recurring_transfer(
+    vega.recurring_transfer(
         from_key_name=PARTY_C.name,
         from_account_type=vega_protos.vega.ACCOUNT_TYPE_GENERAL,
         to_account_type=vega_protos.vega.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES,
@@ -168,7 +173,7 @@ def setup_teams_and_games(vega: VegaServiceNull):
         amount=100,
         factor=1.0,
         window_length=15
-    ) """
+    )
     next_epoch(vega)
     print(f"[EPOCH: {vega.statistics().epoch_seq}] starting order activity")
 
@@ -243,11 +248,12 @@ def test_team_page_games_table(team_page: Tuple[Page, str, str, VegaServiceNull]
     expect(page.get_by_test_id("rank-0")).to_have_text("1")
     expect(page.get_by_test_id("epoch-0")).to_have_text("19")
     expect(page.get_by_test_id("endtime-0")).to_be_visible()
-    expect(page.get_by_test_id("type-0")).to_have_text(
-        "Price maker fees paid • tDAI "
-    )
-    # TODO skipped as the amount is wrong
-    # expect(page.get_by_test_id("amount-0")).to_have_text("74") # 50,000,000 on 74.1
+    expect(page.get_by_test_id("type-0")).to_have_text("Price maker fees paid • tDAI ")
+    expect(page.get_by_test_id("asset-0")).to_have_text("VEGA")
+    expect(page.get_by_test_id("daily-0")).to_have_text("100.00")
+    expect(page.get_by_test_id("rank-0")).to_have_text("1")
+    expect(page.get_by_test_id("amount-0")).to_have_text("50.00")
+    expect(page.get_by_test_id("total-0")).to_have_text("500.00")
     expect(page.get_by_test_id("participatingTeams-0")).to_have_text("2")
     expect(page.get_by_test_id("participatingMembers-0")).to_have_text("3")
 
@@ -258,8 +264,9 @@ def test_team_page_members_table(team_page: Tuple[Page, str, str, VegaServiceNul
     expect(page.get_by_test_id("members-toggle")).to_have_text("Members (4)")
     expect(page.get_by_test_id("referee-0")).to_be_visible()
     expect(page.get_by_test_id("icon-question-mark").nth(0)).to_be_visible()
-    expect(page.get_by_test_id("referee-3").locator(".text-muted").nth(1)
-           ).to_have_text("Owner")
+    expect(page.get_by_test_id("referee-3").locator(".text-muted").nth(1)).to_have_text(
+        "Owner"
+    )
     expect(page.get_by_test_id("joinedAt-0")).to_be_visible()
     expect(page.get_by_test_id("joinedAtEpoch-0")).to_have_text("9")
 
@@ -294,17 +301,14 @@ def test_switch_teams(team_page: Tuple[Page, str, str, VegaServiceNull]):
 def test_leaderboard(competitions_page: Tuple[Page, str, VegaServiceNull]):
     page, team_name, vega = competitions_page
     page.reload()
-    expect(
-        page.get_by_test_id("rank-0").locator(".text-yellow-300")
-    ).to_have_count(1)
+    page.pause()
+    expect(page.get_by_test_id("rank-0").locator(".text-yellow-300")).to_have_count(1)
     expect(
         page.get_by_test_id("rank-1").locator(".text-vega-clight-500")
     ).to_have_count(1)
     expect(page.get_by_test_id("team-1")).to_have_text(team_name)
     expect(page.get_by_test_id("status-1")).to_have_text("Public")
-
-    #  FIXME: the numbers are different we need to clarify this with the backend
-    # expect(competitions_page.get_by_test_id("earned-1")).to_have_text("160")
+    expect(page.get_by_test_id("earned-1")).to_have_text("500")
     expect(page.get_by_test_id("games-1")).to_have_text("1")
 
     # TODO  still odd that this is 0
@@ -320,8 +324,7 @@ def test_game_card(competitions_page: Tuple[Page, str, VegaServiceNull]):
     expect(game_1.get_by_test_id("locked-for")).to_have_text("1 epoch")
     expect(game_1.get_by_test_id("reward-value")).to_have_text("100.00")
     expect(game_1.get_by_test_id("reward-asset")).to_have_text("VEGA")
-    expect(game_1.get_by_test_id("distribution-strategy")
-           ).to_have_text("Pro rata")
+    expect(game_1.get_by_test_id("distribution-strategy")).to_have_text("Pro rata")
     expect(game_1.get_by_test_id("dispatch-metric-info")).to_have_text(
         "Price maker fees paid • tDAI"
     )
@@ -337,18 +340,14 @@ def test_create_team(competitions_page: Tuple[Page, str, VegaServiceNull]):
     page.get_by_test_id("create-public-team-button").click()
     page.get_by_test_id("team-name-input").fill("e2e")
     page.get_by_test_id("team-url-input").fill("https://vega.xyz")
-    page.get_by_test_id("avatar-url-input").fill(
-        "http://placekitten.com/200/200"
-    )
+    page.get_by_test_id("avatar-url-input").fill("http://placekitten.com/200/200")
     page.get_by_test_id("team-form-submit-button").click()
     expect(page.get_by_test_id("team-form-submit-button")).to_have_text(
         "Confirming transaction..."
     )
     vega.wait_fn(2)
     vega.wait_for_total_catchup()
-    expect(
-        page.get_by_test_id("team-creation-success-message")
-    ).to_be_visible()
+    expect(page.get_by_test_id("team-creation-success-message")).to_be_visible()
     expect(page.get_by_test_id("team-id-display")).to_be_visible()
     expect(page.get_by_test_id("team-id-display")).to_be_visible()
     page.get_by_test_id("view-team-button").click()
