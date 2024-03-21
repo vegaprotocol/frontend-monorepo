@@ -155,7 +155,7 @@ def setup_teams_and_games(vega: VegaServiceNull):
         n_top_performers=1,
         amount=100,
         factor=1.0,
-        window_length=15,
+        window_length=5,
     )
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
@@ -286,22 +286,10 @@ def test_team_page_headline(team_page: Tuple[Page, str, str, VegaServiceNull]):
     expect(page.get_by_test_id("rewards-paid-stat")).to_have_text("500")
 
 
-def test_switch_teams(team_page: Tuple[Page, str, str, VegaServiceNull]):
-    page, team_name, team_id, vega = team_page
-    page.get_by_test_id("switch-team-button").click()
-    page.get_by_test_id("confirm-switch-button").click()
-    expect(page.get_by_test_id("dialog-content").first).to_be_visible()
-    vega.wait_fn(1)
-    vega.wait_for_total_catchup()
-    next_epoch(vega=vega)
-    page.reload()
-    expect(page.get_by_test_id("members-count-stat")).to_have_text("5")
-
 
 def test_leaderboard(competitions_page: Tuple[Page, str, VegaServiceNull]):
     page, team_name, vega = competitions_page
     page.reload()
-    page.pause()
     expect(page.get_by_test_id("rank-0").locator(".text-yellow-300")).to_have_count(1)
     expect(
         page.get_by_test_id("rank-1").locator(".text-vega-clight-500")
@@ -333,6 +321,16 @@ def test_game_card(competitions_page: Tuple[Page, str, VegaServiceNull]):
     expect(game_1.get_by_test_id("staking-requirement")).to_have_text("-")
     expect(game_1.get_by_test_id("average-position")).to_have_text("-")
 
+def test_switch_teams(team_page: Tuple[Page, str, str, VegaServiceNull]):
+    page, team_name, team_id, vega = team_page
+    page.get_by_test_id("switch-team-button").click()
+    page.get_by_test_id("confirm-switch-button").click()
+    expect(page.get_by_test_id("dialog-content").first).to_be_visible()
+    vega.wait_fn(1)
+    vega.wait_for_total_catchup()
+    next_epoch(vega=vega)
+    page.reload()
+    expect(page.get_by_test_id("members-count-stat")).to_have_text("5")
 
 def test_create_team(competitions_page: Tuple[Page, str, VegaServiceNull]):
     page, team_id, vega = competitions_page
