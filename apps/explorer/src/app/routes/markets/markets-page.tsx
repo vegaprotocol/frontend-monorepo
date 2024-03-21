@@ -1,6 +1,6 @@
 import { useScrollToLocation } from '../../hooks/scroll-to-location';
 import { useDocumentTitle } from '../../hooks/use-document-title';
-import { marketsProvider } from '@vegaprotocol/markets';
+import { marketsWithDataProvider } from '@vegaprotocol/markets';
 import { RouteTitle } from '../../components/route-title';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/i18n';
@@ -12,7 +12,7 @@ export const MarketsPage = () => {
   useScrollToLocation();
 
   const { data, loading, error } = useDataProvider({
-    dataProvider: marketsProvider,
+    dataProvider: marketsWithDataProvider,
     variables: undefined,
     skipUpdates: true,
   });

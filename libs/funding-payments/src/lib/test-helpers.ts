@@ -1,9 +1,6 @@
 import merge from 'lodash/merge';
 import type { PartialDeep } from 'type-fest';
-import * as Schema from '@vegaprotocol/types';
 import type { FundingPayment } from './funding-payments-data-provider';
-
-const { MarketState, MarketTradingMode } = Schema;
 
 export const generateFundingPayment = (
   override?: PartialDeep<FundingPayment>
@@ -20,8 +17,6 @@ export const generateFundingPayment = (
       id: 'market-id',
       positionDecimalPlaces: 0,
       decimalPlaces: 5,
-      state: MarketState.STATE_ACTIVE,
-      tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
       tickSize: '1',
       fees: {
         __typename: 'Fees',

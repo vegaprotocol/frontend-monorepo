@@ -199,8 +199,6 @@ const mockMarket: MarketFieldsFragment = {
   id: 'marketId',
   decimalPlaces: 1,
   positionDecimalPlaces: 4,
-  state: Schema.MarketState.STATE_ACTIVE,
-  tradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
 } as MarketFieldsFragment;
 
 const orderFormValues: OrderFormValues = {

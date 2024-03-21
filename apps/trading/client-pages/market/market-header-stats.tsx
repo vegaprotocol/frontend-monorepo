@@ -20,6 +20,7 @@ import {
   useMarketTradingMode,
   useExternalTwap,
   getQuoteName,
+  useMarketState,
 } from '@vegaprotocol/markets';
 import { MarketState as State } from '@vegaprotocol/types';
 import { HeaderStat } from '../../components/header';
@@ -66,11 +67,8 @@ export const MarketHeaderStats = ({ market }: MarketHeaderStatsProps) => {
           quoteUnit={quoteUnit}
         />
       </HeaderStat>
-      <HeaderStatMarketTradingMode
-        marketId={market.id}
-        initialTradingMode={market.tradingMode}
-      />
-      <MarketState market={market} />
+      <HeaderStatMarketTradingMode marketId={market.id} />
+      <MarketState marketId={market.id} />
       {asset ? (
         <HeaderStat
           heading={t('Settlement asset')}
@@ -264,13 +262,15 @@ export const FundingCountdown = ({ marketId }: { marketId: string }) => {
 };
 
 const ExpiryLabel = ({ market }: ExpiryLabelProps) => {
-  const content = market.tradableInstrument.instrument.metadata.tags
-    ? getExpiryDate(
-        market.tradableInstrument.instrument.metadata.tags,
-        market.marketTimestamps.close,
-        market.state
-      )
-    : '-';
+  const { data: state } = useMarketState(market.id);
+  const content =
+    market.tradableInstrument.instrument.metadata.tags && state
+      ? getExpiryDate(
+          market.tradableInstrument.instrument.metadata.tags,
+          market.marketTimestamps.close,
+          state
+        )
+      : '-';
   return <div data-testid="trading-expiry">{content}</div>;
 };
 
@@ -283,6 +283,7 @@ const ExpiryTooltipContent = ({
   market,
   explorerUrl,
 }: ExpiryTooltipContentProps) => {
+  const { data: state } = useMarketState(market.id);
   const t = useT();
   if (market.marketTimestamps.close === null) {
     const oracleId =
@@ -298,8 +299,8 @@ const ExpiryTooltipContent = ({
     const isExpired =
       metadataExpiryDate &&
       Date.now() - metadataExpiryDate.valueOf() > 0 &&
-      (market.state === State.STATE_TRADING_TERMINATED ||
-        market.state === State.STATE_SETTLED);
+      (state === State.STATE_TRADING_TERMINATED ||
+        state === State.STATE_SETTLED);
 
     return (
       <section data-testid="expiry-tooltip">

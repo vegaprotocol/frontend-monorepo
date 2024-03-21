@@ -1,5 +1,9 @@
 import * as Schema from '@vegaprotocol/types';
-import type { Market, MarketMaybeWithDataAndCandles } from './markets-provider';
+import type {
+  Market,
+  MarketMaybeWithData,
+  MarketMaybeWithDataAndCandles,
+} from './markets-provider';
 import {
   calcCandleVolumePrice,
   calcTradedFactor,
@@ -7,9 +11,10 @@ import {
   sumFeesFactors,
   totalFeesFactorsPercentage,
 } from './market-utils';
+import type { MarketData } from './market-data-provider';
 const { MarketState, MarketTradingMode } = Schema;
 
-const MARKET_A: Partial<Market> = {
+const MARKET_A: Partial<MarketMaybeWithData> = {
   id: '1',
   marketTimestamps: {
     __typename: 'MarketTimestamps',
@@ -18,11 +23,13 @@ const MARKET_A: Partial<Market> = {
     open: '2022-05-18T13:08:27.693537312Z',
     close: null,
   },
-  state: MarketState.STATE_ACTIVE,
-  tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+  data: {
+    marketState: MarketState.STATE_ACTIVE,
+    marketTradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+  } as MarketData,
 };
 
-const MARKET_B: Partial<Market> = {
+const MARKET_B: Partial<MarketMaybeWithData> = {
   id: '2',
   marketTimestamps: {
     __typename: 'MarketTimestamps',
@@ -31,11 +38,13 @@ const MARKET_B: Partial<Market> = {
     open: '2022-05-18T13:00:39.328347732Z',
     close: null,
   },
-  state: MarketState.STATE_ACTIVE,
-  tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+  data: {
+    marketState: MarketState.STATE_ACTIVE,
+    marketTradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+  } as MarketData,
 };
 
-const MARKET_C: Partial<Market> = {
+const MARKET_C: Partial<MarketMaybeWithData> = {
   id: '3',
   marketTimestamps: {
     __typename: 'MarketTimestamps',
@@ -44,11 +53,13 @@ const MARKET_C: Partial<Market> = {
     open: '2022-05-17T13:00:39.328347732Z',
     close: null,
   },
-  state: MarketState.STATE_REJECTED,
-  tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+  data: {
+    marketState: MarketState.STATE_REJECTED,
+    marketTradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+  } as MarketData,
 };
 
-const MARKET_D: Partial<Market> = {
+const MARKET_D: Partial<MarketMaybeWithData> = {
   id: '4',
   marketTimestamps: {
     __typename: 'MarketTimestamps',
@@ -57,8 +68,10 @@ const MARKET_D: Partial<Market> = {
     open: '2022-05-16T13:00:39.328347732Z',
     close: null,
   },
-  state: MarketState.STATE_ACTIVE,
-  tradingMode: MarketTradingMode.TRADING_MODE_NO_TRADING,
+  data: {
+    marketState: MarketState.STATE_ACTIVE,
+    marketTradingMode: MarketTradingMode.TRADING_MODE_NO_TRADING,
+  } as MarketData,
 };
 
 describe('mapDataToMarketList', () => {
@@ -68,7 +81,7 @@ describe('mapDataToMarketList', () => {
       MARKET_B,
       MARKET_C,
       MARKET_D,
-    ] as unknown as Market[]);
+    ] as unknown as MarketMaybeWithData[]);
     expect(result).toEqual([MARKET_B, MARKET_A]);
   });
 });

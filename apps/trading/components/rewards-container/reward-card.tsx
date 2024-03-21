@@ -937,13 +937,13 @@ export const ActiveRewardCard = ({
   // don't display the cards that are scoped to not trading markets
   const marketSettled = transferNode.markets?.filter(
     (m) =>
-      m?.state &&
+      m?.data?.marketState &&
       [
         MarketState.STATE_TRADING_TERMINATED,
         MarketState.STATE_SETTLED,
         MarketState.STATE_CANCELLED,
         MarketState.STATE_CLOSED,
-      ].includes(m.state)
+      ].includes(m?.data?.marketState)
   );
 
   const startsIn = transferNode.transfer.kind.startEpoch - currentEpoch;
@@ -992,8 +992,8 @@ export const ActiveRewardCard = ({
   const marketSuspended =
     transferNode.markets?.filter(
       (m) =>
-        m?.state === MarketState.STATE_SUSPENDED ||
-        m?.state === MarketState.STATE_SUSPENDED_VIA_GOVERNANCE
+        m?.data?.marketState === MarketState.STATE_SUSPENDED ||
+        m?.data?.marketState === MarketState.STATE_SUSPENDED_VIA_GOVERNANCE
     ).length === transferNode.markets?.length &&
     Boolean(transferNode.markets && transferNode.markets.length > 0);
 

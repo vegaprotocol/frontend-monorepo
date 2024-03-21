@@ -126,7 +126,9 @@ export const useMarketsColumnDefs = () => {
         valueFormatter: ({
           data,
         }: VegaValueFormatterParams<MarketMaybeWithData, 'state'>) => {
-          return data?.state ? Schema.MarketStateMapping[data.state] : '-';
+          return data?.data?.marketState
+            ? Schema.MarketStateMapping[data?.data?.marketState]
+            : '-';
         },
         filter: SetFilter,
         filterParams: {

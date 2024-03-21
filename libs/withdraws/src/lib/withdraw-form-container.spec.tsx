@@ -138,8 +138,6 @@ describe('WithdrawFormContainer', () => {
           id: 'marketId-1',
           decimalPlaces: 5,
           positionDecimalPlaces: 0,
-          state: Types.MarketState.STATE_SUSPENDED,
-          tradingMode: Types.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
           tickSize: '1',
           fees: {
             __typename: 'Fees',
