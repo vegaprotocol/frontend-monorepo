@@ -451,7 +451,7 @@
   "You need a <0>Vega wallet</0> to start trading in this market.": "You need a <0>Vega wallet</0> to start trading in this market.",
   "You need at least {{requiredStake}} VEGA staked to generate a referral code and participate in the referral program.": "You need at least {{requiredStake}} VEGA staked to generate a referral code and participate in the referral program.",
   "You will no longer be able to hold a position on this market when it closes in {{duration}}.": "You will no longer be able to hold a position on this market when it closes in {{duration}}.",
-  "Your average position is {{averagePosition}}, but the requirement is {{averagePositionRequirements}}": "Your average position is {{averagePosition}}, but the requirement is {{averagePositionRequirements}}",
+  "Your average position is {{averagePosition}}, and the requirement is {{averagePositionRequirements}}": "Your average position is {{averagePosition}}, and the requirement is {{averagePositionRequirements}}",
   "Your code has been rejected": "Your code has been rejected",
   "Your identity is always anonymous on Vega": "Your identity is always anonymous on Vega",
   "Your key's private name, can be changed in your wallet": "Your key's private name, can be changed in your wallet",
