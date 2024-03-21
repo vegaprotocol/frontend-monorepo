@@ -1,12 +1,16 @@
-fragment TradeFields on Trade {
+fragment LatestTradeFields on Trade {
   id
   price
   size
   createdAt
-  aggressor
-  market {
-    id
-  }
+  type
+}
+
+fragment LatestTradeUpdateFields on TradeUpdate {
+  id
+  price
+  size
+  createdAt
   type
 }
 
@@ -15,8 +19,14 @@ query LatestTrades($marketIds: [ID!], $partyIds: [ID!]) {
   trades(filter: { marketIds: $marketIds, partyIds: $partyIds }) {
     edges {
       node {
-        ...TradeFields
+        ...LatestTradeFields
       }
     }
+  }
+}
+
+subscription LatestTradesUpdate($marketIds: [ID!], $partyIds: [ID!]) {
+  tradesStream(filter: { marketIds: $marketIds, partyIds: $partyIds }) {
+    ...LatestTradeUpdateFields
   }
 }
