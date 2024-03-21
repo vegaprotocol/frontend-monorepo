@@ -17,6 +17,9 @@ query Symbol($marketId: ID!) {
           ... on Perpetual {
             __typename
           }
+          ... on Spot {
+            __typename
+          }
         }
       }
     }
