@@ -21,6 +21,8 @@
   },
   "private": true,
   "dependencies": {
+    "@0xsquid/sdk": "1.14.15",
+    "@0xsquid/squid-types": "^0.1.59",
     "@apollo/client": "^3.5.8",
     "@blueprintjs/icons": "^3.32.0",
     "@coinbase/wallet-sdk": "^3.6.5",
