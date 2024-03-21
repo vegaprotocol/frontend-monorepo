@@ -13,7 +13,7 @@ interface UseMaxSizeProps {
   marginAccountBalance: string;
   marginFactor?: string;
   marginMode?: MarginMode;
-  marketPrice?: string;
+  markPrice?: string;
   openVolume: string;
   positionDecimalPlaces: number;
   price?: string;
@@ -43,7 +43,7 @@ export const useMaxSize = ({
   activeOrders,
   riskFactors,
   scalingFactors,
-  marketPrice,
+  markPrice,
   marketIsInAuction,
 }: UseMaxSizeProps) =>
   useMemo(() => {
@@ -69,9 +69,7 @@ export const useMaxSize = ({
         .div(toBigNum(price, decimalPlaces));
     } else {
       const effectivePrice =
-        type === OrderType.TYPE_LIMIT && marketIsInAuction
-          ? price
-          : marketPrice;
+        type === OrderType.TYPE_LIMIT && marketIsInAuction ? price : markPrice;
       if (
         !scalingFactors?.initialMargin ||
         !riskFactors ||
@@ -138,5 +136,6 @@ export const useMaxSize = ({
     activeOrders,
     riskFactors,
     scalingFactors,
-    marketPrice,
+    markPrice,
+    marketIsInAuction,
   ]);
