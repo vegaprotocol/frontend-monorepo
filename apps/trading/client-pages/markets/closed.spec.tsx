@@ -341,31 +341,33 @@ describe('Closed', () => {
       oracleDataMock,
     ]);
 
-    const actionCell = screen
-      .getAllByRole('gridcell')
-      .find((el) => el.getAttribute('col-id') === 'market-actions');
+    await waitFor(async () => {
+      const actionCell = screen
+        .getAllByRole('gridcell')
+        .find((el) => el.getAttribute('col-id') === 'market-actions');
 
-    await userEvent.click(
-      within(actionCell as HTMLElement).getByTestId('dropdown-menu')
-    );
+      await userEvent.click(
+        within(actionCell as HTMLElement).getByTestId('dropdown-menu')
+      );
 
-    expect(screen.getByRole('menu')).toBeInTheDocument();
+      expect(screen.getByRole('menu')).toBeInTheDocument();
 
-    expect(
-      screen.getByRole('menuitem', { name: 'Copy Market ID' })
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole('menuitem', { name: 'View on Explorer' })
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole('menuitem', { name: 'View settlement asset details' })
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole('menuitem', { name: 'View parent market' })
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole('menuitem', { name: 'View successor market' })
-    ).toBeInTheDocument();
+      expect(
+        screen.getByRole('menuitem', { name: 'Copy Market ID' })
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole('menuitem', { name: 'View on Explorer' })
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole('menuitem', { name: 'View settlement asset details' })
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole('menuitem', { name: 'View parent market' })
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole('menuitem', { name: 'View successor market' })
+      ).toBeInTheDocument();
+    });
   });
 
   it('successor market should be visible', async () => {

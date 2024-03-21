@@ -15,3 +15,7 @@ i18n.use(initReactI18next).init({
 });
 
 global.ResizeObserver = ResizeObserver;
+
+jest.mock('./hooks/use-latest-trades.ts', () => ({
+  useLatestTrades: jest.fn(() => ({ data: null })),
+}));

@@ -1,0 +1,22 @@
+fragment TradeFields on Trade {
+  id
+  price
+  size
+  createdAt
+  aggressor
+  market {
+    id
+  }
+  type
+}
+
+# Gets the latest trades for given market and party ids
+query LatestTrades($marketIds: [ID!], $partyIds: [ID!]) {
+  trades(filter: { marketIds: $marketIds, partyIds: $partyIds }) {
+    edges {
+      node {
+        ...TradeFields
+      }
+    }
+  }
+}
