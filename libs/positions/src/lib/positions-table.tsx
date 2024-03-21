@@ -13,6 +13,8 @@ import {
   type VegaValueGetterParams,
   type TypedDataAgGrid,
   type VegaICellRendererParams,
+  zeroClassNames,
+  isZero,
 } from '@vegaprotocol/datagrid';
 import {
   ButtonLink,
@@ -262,7 +264,10 @@ export const PositionsTable = ({
         field: 'openVolume',
         type: 'rightAligned',
         cellClass: 'font-mono text-right',
-        cellClassRules: signedNumberCssClassRules,
+        cellClassRules: {
+          ...signedNumberCssClassRules,
+          [zeroClassNames]: isZero,
+        },
         filter: 'agNumberColumnFilter',
         sortable: false,
         filterValueGetter: ({ data }: { data: Position }) => {
