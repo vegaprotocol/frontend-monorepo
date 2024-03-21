@@ -24,6 +24,7 @@ interface UseMaxSizeProps {
   side: Side;
   sizeStep: string;
   type: OrderType;
+  marketIsInAuction: boolean;
 }
 
 export const useMaxSize = ({
@@ -43,6 +44,7 @@ export const useMaxSize = ({
   riskFactors,
   scalingFactors,
   marketPrice,
+  marketIsInAuction,
 }: UseMaxSizeProps) =>
   useMemo(() => {
     let maxSize = new BigNumber(0);
@@ -67,7 +69,9 @@ export const useMaxSize = ({
         .div(toBigNum(price, decimalPlaces));
     } else {
       const effectivePrice =
-        type === OrderType.TYPE_LIMIT ? marketPrice || price : marketPrice;
+        type === OrderType.TYPE_LIMIT && marketIsInAuction
+          ? price
+          : marketPrice;
       if (
         !scalingFactors?.initialMargin ||
         !riskFactors ||

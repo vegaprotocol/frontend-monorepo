@@ -393,6 +393,7 @@ export const DealTicket = ({
   const disableIcebergCheckbox = nonPersistentOrder;
   const featureFlags = useFeatureFlags((state) => state.flags);
   const sizeStep = determineSizeStep(market);
+  const marketIsInAuction = isMarketInAuction(marketData.marketTradingMode);
 
   const maxSize = useMaxSize({
     accountDecimals: accountDecimals ?? undefined,
@@ -411,6 +412,7 @@ export const DealTicket = ({
     generalAccountBalance,
     openVolume,
     positionDecimalPlaces: market.positionDecimalPlaces,
+    marketIsInAuction,
   });
 
   const onSubmit = useCallback(
@@ -595,7 +597,7 @@ export const DealTicket = ({
           }
           assetSymbol={assetSymbol}
           market={market}
-          isMarketInAuction={isMarketInAuction(marketData.marketTradingMode)}
+          marketIsInAuction={marketIsInAuction}
         />
       </div>
       <Controller
