@@ -46,9 +46,7 @@ import { LiquidationPrice } from './liquidation-price';
 import { useT } from '../use-t';
 import classnames from 'classnames';
 import BigNumber from 'bignumber.js';
-import compact from 'lodash/compact';
-import first from 'lodash/first';
-import { useLatestTrades } from '../hooks/use-latest-trades';
+import { useLatestTrade } from '@vegaprotocol/trades';
 
 interface Props extends TypedDataAgGrid<Position> {
   onClose?: (data: Position) => void;
@@ -626,18 +624,14 @@ export const OpenVolumeCell = ({
 }: VegaICellRendererParams<Position, 'openVolume'>) => {
   const t = useT();
 
-  const marketIds = compact([data?.marketId]);
-  const partyIds = compact([data?.partyId]);
-
-  const { data: latestTrades } = useLatestTrades(marketIds, partyIds);
-  const mostRecentTrade = first(latestTrades);
+  const { data: latestTrade } = useLatestTrade(data?.marketId, data?.partyId);
 
   if (!valueFormatted || !data || !data.notional) {
     return <>-</>;
   }
 
   let positionStatus = PositionStatus.POSITION_STATUS_UNSPECIFIED;
-  if (mostRecentTrade?.type === TradeType.TYPE_NETWORK_CLOSE_OUT_BAD) {
+  if (latestTrade?.type === TradeType.TYPE_NETWORK_CLOSE_OUT_BAD) {
     positionStatus = PositionStatus.POSITION_STATUS_CLOSED_OUT;
   }
 
@@ -658,7 +652,7 @@ export const OpenVolumeCell = ({
   }
 
   const closeOutPrice = addDecimalsFormatNumber(
-    mostRecentTrade?.price || '0',
+    latestTrade?.price || '0',
     data.marketDecimalPlaces
   );
   const description = positionStatus ===

@@ -7,7 +7,7 @@ import { PositionStatus } from '@vegaprotocol/types';
 import type { ICellRendererParams } from 'ag-grid-community';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { singleRow } from './positions.mock';
-import { useLatestTrades } from '../hooks/use-latest-trades';
+import { useLatestTrade } from '@vegaprotocol/trades';
 
 jest.mock('./liquidation-price', () => ({
   LiquidationPrice: () => (
@@ -264,13 +264,11 @@ describe('Positions', () => {
     });
 
     it('renders status with warning tooltip if position was closed out', async () => {
-      (useLatestTrades as jest.Mock).mockReturnValue({
-        data: [
-          {
-            type: 'TYPE_NETWORK_CLOSE_OUT_BAD',
-            price: '100',
-          },
-        ],
+      (useLatestTrade as jest.Mock).mockReturnValue({
+        data: {
+          type: 'TYPE_NETWORK_CLOSE_OUT_BAD',
+          price: '100',
+        },
       });
       const props = {
         data: singleRow,
@@ -296,13 +294,11 @@ describe('Positions', () => {
     });
 
     it('renders tooltip when positions has been closed out (liquidated)', async () => {
-      (useLatestTrades as jest.Mock).mockReturnValue({
-        data: [
-          {
-            type: 'TYPE_NETWORK_CLOSE_OUT_BAD',
-            price: '100',
-          },
-        ],
+      (useLatestTrade as jest.Mock).mockReturnValue({
+        data: {
+          type: 'TYPE_NETWORK_CLOSE_OUT_BAD',
+          price: '100',
+        },
       });
       await renderComponent(singleRow);
       const cells = screen.getAllByRole('gridcell');

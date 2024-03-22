@@ -7,10 +7,14 @@ fragment TradeFields on Trade {
   market {
     id
   }
+  type
 }
 
-query Trades($marketId: ID!, $pagination: Pagination) {
-  trades(filter: { marketIds: [$marketId] }, pagination: $pagination) {
+query Trades($marketIds: [ID!], $partyIds: [ID!], $pagination: Pagination) {
+  trades(
+    filter: { marketIds: $marketIds, partyIds: $partyIds }
+    pagination: $pagination
+  ) {
     edges {
       node {
         ...TradeFields
@@ -33,10 +37,11 @@ fragment TradeUpdateFields on TradeUpdate {
   createdAt
   marketId
   aggressor
+  type
 }
 
-subscription TradesUpdate($marketId: ID!) {
-  tradesStream(filter: { marketIds: [$marketId] }) {
+subscription TradesUpdate($marketIds: [ID!], $partyIds: [ID!]) {
+  tradesStream(filter: { marketIds: $marketIds, partyIds: $partyIds }) {
     ...TradeUpdateFields
   }
 }

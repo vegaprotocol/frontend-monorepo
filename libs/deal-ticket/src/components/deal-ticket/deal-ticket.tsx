@@ -67,14 +67,7 @@ import {
   marginModeDataProvider,
 } from '@vegaprotocol/accounts';
 import { useDataProvider } from '@vegaprotocol/data-provider';
-import { type OrderFormValues } from '../../hooks';
-import {
-  DealTicketType,
-  dealTicketTypeToOrderType,
-  isStopOrderType,
-  useDealTicketFormValues,
-  usePositionEstimate,
-} from '../../hooks';
+import { usePositionEstimate } from '../../hooks';
 import { DealTicketSizeIceberg } from './deal-ticket-size-iceberg';
 import noop from 'lodash/noop';
 import { isNonPersistentOrder } from '../../utils/time-in-force-persistence';
@@ -85,6 +78,13 @@ import { DealTicketPriceTakeProfitStopLoss } from './deal-ticket-price-tp-sl';
 import uniqueId from 'lodash/uniqueId';
 import { determinePriceStep, determineSizeStep } from '@vegaprotocol/utils';
 import { useMaxSize } from '../../hooks/use-max-size';
+import {
+  DealTicketType,
+  type OrderFormValues,
+  dealTicketTypeToOrderType,
+  isStopOrderType,
+  useDealTicketFormValues,
+} from '@vegaprotocol/react-helpers';
 
 export const REDUCE_ONLY_TOOLTIP =
   '"Reduce only" will ensure that this order will not increase the size of an open position. When the order is matched, it will only trade enough volume to bring your open volume towards 0 but never change the direction of your position. If applied to a limit order that is not instantly filled, the order will be stopped.';

@@ -16,7 +16,7 @@ import type { OrdersQuery } from '@vegaprotocol/orders';
 import {
   DealTicketType,
   useDealTicketFormValues,
-} from '../../hooks/use-form-values';
+} from '@vegaprotocol/react-helpers';
 import * as positionsTools from '@vegaprotocol/positions';
 import { OrdersDocument } from '@vegaprotocol/orders';
 import { formatForInput } from '@vegaprotocol/utils';
