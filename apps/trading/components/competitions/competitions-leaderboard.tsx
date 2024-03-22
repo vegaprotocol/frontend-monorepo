@@ -44,6 +44,7 @@ export const CompetitionsLeaderboard = ({
 
         const avatar = (
           <TeamAvatar
+            key={td.teamId}
             teamId={td.teamId}
             imgUrl={td.avatarUrl}
             alt={td.name}

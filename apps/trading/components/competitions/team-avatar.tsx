@@ -58,6 +58,7 @@ export const TeamAvatar = ({
         }
       )}
       referrerPolicy="no-referrer"
+      crossOrigin="anonymous"
     />
   );
 };
