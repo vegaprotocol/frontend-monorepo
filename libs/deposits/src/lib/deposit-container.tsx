@@ -1,6 +1,10 @@
-import { ChainData, TokenData, Squid, SquidCallType } from '@0xsquid/sdk';
+import {
+  Squid,
+  type TokenData,
+  type ChainData,
+  SquidCallType,
+} from '@0xsquid/sdk';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
-// import { ChainData, Token } from '@0xsquid/squid-types';
 import { TradingButton } from '@vegaprotocol/ui-toolkit';
 import { useWeb3React } from '@web3-react/core';
 import { ethers } from 'ethers';
@@ -8,6 +12,11 @@ import { FormEvent, useEffect, useRef, useState } from 'react';
 import { BRIDGE_ABI, ERC20_ABI } from '@vegaprotocol/smart-contracts';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useWeb3ConnectStore } from '@vegaprotocol/web3';
+// import {
+//   ChainData,
+//   SquidCallType,
+//   Token,
+// } from '@0xsquid/squid-types';
 
 /**
  *  Fetches data required for the Deposit page
@@ -19,15 +28,14 @@ export const DepositContainer = ({ assetId }: { assetId?: string }) => {
 
   const squid = useRef(
     new Squid({
-      // baseUrl: 'https://testnet.v2.api.squidrouter.com',
-      baseUrl: 'https://testnet.api.squidrouter.com',
+      baseUrl: 'https://api.squidrouter.com',
       integratorId: 'vega-swap-widget',
     })
   );
   const formRef = useRef<HTMLFormElement>(null);
   const [ready, setready] = useState(false);
-  const [chains, setChains] = useState<ChainData[]>();
-  const [tokens, setTokens] = useState<TokenData[]>();
+  const [chains, setChains] = useState<ChainData[]>([]);
+  const [tokens, setTokens] = useState<TokenData[]>([]);
 
   const [fromChain, setFromChain] = useState<string>();
 
@@ -35,7 +43,6 @@ export const DepositContainer = ({ assetId }: { assetId?: string }) => {
     const run = async () => {
       await squid.current.init();
       console.log('squid inited');
-      console.log(squid.current);
       setready(true);
 
       setChains(squid.current.chains);
@@ -48,12 +55,6 @@ export const DepositContainer = ({ assetId }: { assetId?: string }) => {
   if (!ready) {
     return <div>Loading</div>;
   }
-
-  console.log(
-    chains,
-    tokens,
-    tokens?.filter((t) => t.chainId.toString() === fromChain?.toString())
-  );
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -81,64 +82,55 @@ export const DepositContainer = ({ assetId }: { assetId?: string }) => {
     if (!fromToken) return;
     if (!fromAmount) return;
 
-    const bridgeAddress = '0x3152207Cb8B251AdF88628554a1422AA2b734F61';
-
-    // aUSDC on sepolia
-    const aUSDCSepolia = '0x254d06f33bDc5b8ee05b2ea472107E300226659A';
-
-    const usdcSepoliaContract = new ethers.Contract(
-      aUSDCSepolia,
-      ERC20_ABI,
-      provider
+    console.log(
+      chains,
+      tokens?.filter((t) => t.chainId.toString() === fromChain?.toString()),
+      fromChain,
+      fromToken
     );
 
-    console.log(fromToken);
+    const bridgeAddress = '0x23872549cE10B40e31D6577e0A920088B0E0666a';
+    const USDCMainnet = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
 
-    // const selectedContract = new ethers.Contract(
-    //   fromToken,
-    //   ERC20_ABI,
-    //   provider
-    // );
-    // console.log(selectedContract);
-    // const balance = await selectedContract.balanceOf(account);
-    // console.log(balance);
-    // return;
+    const usdcMainnetContract = new ethers.Contract(
+      USDCMainnet,
+      ERC20_ABI,
+      provider.getSigner()
+    );
 
     const bridgeContract = new ethers.Contract(
       bridgeAddress,
       BRIDGE_ABI,
-      provider.getSigner() || provider
+      provider.getSigner()
     );
 
-    const approveEncodeData = usdcSepoliaContract.interface.encodeFunctionData(
+    const approveEncodeData = usdcMainnetContract.interface.encodeFunctionData(
       'approve',
       [bridgeAddress, 0]
     );
 
     const depositEncodedData = bridgeContract.interface.encodeFunctionData(
       'deposit_asset',
-      [aUSDCSepolia, 0, '0x' + pubKey]
+      [USDCMainnet, 0, '0x' + pubKey]
     );
-
-    console.log(fromAmount);
 
     const { route, ...rest } = await squid.current.getRoute({
       fromChain,
-      fromAmount,
       fromToken,
-      toChain: '11155111', // Sepolia
-      toToken: aUSDCSepolia,
+      fromAmount,
+      toChain: '1',
+      toToken: USDCMainnet,
       fromAddress: account,
       toAddress: account,
       slippage: 1,
       customContractCalls: [
         {
           callType: SquidCallType.FULL_TOKEN_BALANCE,
-          target: aUSDCSepolia,
+          target: USDCMainnet,
           value: '0', // native value to be sent with call
           callData: approveEncodeData,
           payload: {
-            tokenAddress: aUSDCSepolia, // balance of this token replaces 0 on line 13
+            tokenAddress: USDCMainnet, // balance of this token replaces 0 on line 13
             inputPos: 1,
           },
           estimatedGas: '50000',
@@ -149,10 +141,10 @@ export const DepositContainer = ({ assetId }: { assetId?: string }) => {
           value: '0',
           callData: depositEncodedData,
           payload: {
-            tokenAddress: bridgeAddress,
+            tokenAddress: USDCMainnet,
             inputPos: 1,
           },
-          estimatedGas: '78000',
+          estimatedGas: '50000',
         },
       ],
     });
@@ -220,7 +212,12 @@ export const DepositContainer = ({ assetId }: { assetId?: string }) => {
         </div>
         <div>
           <label>Amount</label>
-          <input name="amount" type="text" className="p-1 border w-full" />
+          <input
+            name="amount"
+            type="text"
+            className="p-1 border w-full"
+            defaultValue="1000000000000000000"
+          />
         </div>
         <TradingButton type="submit">Submit</TradingButton>
       </form>
