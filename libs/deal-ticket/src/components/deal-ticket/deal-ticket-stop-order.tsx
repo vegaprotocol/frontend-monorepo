@@ -26,6 +26,8 @@ import {
   Pill,
   Intent,
   Notification,
+  VegaIcon,
+  VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 import {
   getAsset,
@@ -56,9 +58,10 @@ import { validateExpiration } from '../../utils';
 import { NOTIONAL_SIZE_TOOLTIP_TEXT } from '../../constants';
 import { KeyValue } from './key-value';
 import { useDataProvider } from '@vegaprotocol/data-provider';
-import { stopOrdersProvider } from '@vegaprotocol/orders';
+import { activeOrdersProvider, stopOrdersProvider } from '@vegaprotocol/orders';
 import { useT } from '../../use-t';
 import { determinePriceStep, determineSizeStep } from '@vegaprotocol/utils';
+import { useOpenVolume } from '@vegaprotocol/positions';
 
 export interface StopOrderProps {
   market: Market;
@@ -450,6 +453,54 @@ const Price = ({
         );
       }}
     />
+  );
+};
+
+const NoOpenVolumeWarning = ({
+  side,
+  partyId,
+  marketId,
+}: {
+  side: Schema.Side;
+  partyId?: string;
+  marketId: string;
+}) => {
+  const { data: activeOrders } = useDataProvider({
+    dataProvider: activeOrdersProvider,
+    variables: { partyId: partyId || '', marketId },
+    skip: !partyId,
+  });
+
+  const t = useT();
+  const { openVolume } = useOpenVolume(partyId, marketId) || {};
+  const volume = BigInt(openVolume || 0);
+  const remaining = activeOrders
+    ? activeOrders.reduce((size, order) => {
+        if (side !== order.side) {
+          size += BigInt(order.remaining);
+        }
+        return size;
+      }, BigInt(0))
+    : BigInt(0);
+
+  if (
+    (side === Schema.Side.SIDE_BUY && volume - remaining < BigInt(0)) ||
+    (side === Schema.Side.SIDE_SELL && volume + remaining > BigInt(0))
+  ) {
+    return null;
+  }
+  return (
+    <div
+      className="flex text-xs items-center mb-2"
+      data-testid="deal-ticket-warning-margin"
+    >
+      <span className="text-yellow-500 mr-2">
+        <VegaIcon name={VegaIconNames.WARNING} />
+      </span>
+      {t(
+        'Stop orders are reduce only and this order would increase your position.'
+      )}
+    </div>
   );
 };
 
@@ -1189,7 +1240,7 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
           />
         </div>
       ) : null}
-
+      <NoOpenVolumeWarning side={side} partyId={pubKey} marketId={market.id} />
       <SubmitButton
         assetUnit={assetUnit}
         market={market}
