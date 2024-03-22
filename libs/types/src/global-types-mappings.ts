@@ -108,7 +108,6 @@ export const DepositStatusMapping: {
   STATUS_FINALIZED: 'Finalized',
   STATUS_DUPLICATE_REJECTED: 'Duplicate rejected',
   STATUS_OPEN: 'Open',
-  STATUS_DUPLICATE_REJECTED: 'Rejected due to duplicate',
 };
 
 /**
