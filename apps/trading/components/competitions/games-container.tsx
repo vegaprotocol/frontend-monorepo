@@ -119,7 +119,7 @@ export const GamesContainer = ({
             'Search by reward dispatch metric, entity scope or asset name'
           )}
           data-testid="search-term"
-          className="mb-4 w-20 mr-2"
+          className="mb-4 w-20 mr-2 max-w-xl"
           prependElement={<VegaIcon name={VegaIconNames.SEARCH} />}
         />
       )}
