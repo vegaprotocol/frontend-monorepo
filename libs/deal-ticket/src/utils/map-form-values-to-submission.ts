@@ -6,7 +6,7 @@ import type {
 import type {
   OrderFormValues,
   StopOrderFormValues,
-} from '../hooks/use-form-values';
+} from '@vegaprotocol/react-helpers';
 import * as Schema from '@vegaprotocol/types';
 import { removeDecimal, toNanoSeconds } from '@vegaprotocol/utils';
 import { isPersistentOrder } from './time-in-force-persistence';

@@ -5,11 +5,11 @@ import { generateMarket } from '../../test-helpers';
 import { StopOrder } from './deal-ticket-stop-order';
 import * as Schema from '@vegaprotocol/types';
 import { MockedProvider } from '@apollo/client/testing';
-import type { StopOrderFormValues } from '../../hooks/use-form-values';
 import {
+  type StopOrderFormValues,
   DealTicketType,
   useDealTicketFormValues,
-} from '../../hooks/use-form-values';
+} from '@vegaprotocol/react-helpers';
 import { useFeatureFlags } from '@vegaprotocol/environment';
 import { formatForInput } from '@vegaprotocol/utils';
 import {

@@ -28,9 +28,9 @@
   "View settlement asset details": "View settlement asset details",
   "Worst case": "Worst case",
   "Worst case liquidation price": "Worst case liquidation price",
-  "You did not have enough {{assetSymbol}} collateral to meet the maintenance margin requirements for your position, so it was closed by the network.": "You did not have enough {{assetSymbol}} collateral to meet the maintenance margin requirements for your position, so it was closed by the network.",
   "You received less {{assetSymbol}} in gains that you should have when the market moved in your favour. This occurred because one or more other trader(s) were closed out and did not have enough funds to cover their losses, and the market's insurance pool was empty.": "You received less {{assetSymbol}} in gains that you should have when the market moved in your favour. This occurred because one or more other trader(s) were closed out and did not have enough funds to cover their losses, and the market's insurance pool was empty.",
   "Your open orders were cancelled.": "Your open orders were cancelled.",
   "Your position is distressed.": "Your position is distressed.",
-  "Your position was closed.": "Your position was closed."
+  "Your position was closed.": "Your position was closed.",
+  "You did not have enough {{assetSymbol}} to meet the margin required for your position, so it was liquidated by the network at {{price}}.": "You did not have enough {{assetSymbol}} to meet the margin required for your position, so it was liquidated by the network at {{price}}."
 }

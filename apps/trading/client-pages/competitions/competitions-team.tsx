@@ -21,7 +21,6 @@ import { Table } from '../../components/table';
 import {
   addDecimalsFormatNumberQuantum,
   formatNumber,
-  getDateTimeFormat,
   removePaginationWrapper,
 } from '@vegaprotocol/utils';
 import {
@@ -58,6 +57,8 @@ import {
   DispatchMetricInfo,
 } from '../../components/rewards-container/reward-card';
 import { usePartyProfilesQuery } from '../../components/vega-wallet-connect-button/__generated__/PartyProfiles';
+
+const formatDate = (date: Date) => format(date, 'yyyy/MM/dd hh:mm:ss');
 
 export const CompetitionsTeam = () => {
   const t = useT();
@@ -202,7 +203,7 @@ const TeamPage = ({
             <div className="">
               {t('Created at')}:{' '}
               <span className="text-vega-cdark-600 dark:text-vega-clight-600 ">
-                {getDateTimeFormat().format(createdAt)}
+                {formatDate(createdAt)}
               </span>{' '}
               ({t('epoch')}: {team.createdAtEpoch})
             </div>
@@ -410,7 +411,7 @@ const Members = ({ members }: { members?: Member[] }) => {
       rewards: formatNumber(m.totalQuantumRewards),
       volume: formatNumber(m.totalQuantumVolume),
       gamesPlayed: formatNumber(m.totalGamesPlayed),
-      joinedAt: getDateTimeFormat().format(new Date(m.joinedAt)),
+      joinedAt: formatDate(new Date(m.joinedAt)),
       joinedAtEpoch: Number(m.joinedAtEpoch),
     })),
     'joinedAtEpoch',
@@ -507,10 +508,7 @@ const EndTimeCell = ({ epoch }: { epoch?: number }) => {
 
   if (loading) return <Loader size="small" />;
   if (data) {
-    return format(
-      new Date(data.epoch.timestamps.expiry),
-      'yyyy/MM/dd hh:mm:ss'
-    );
+    return formatDate(new Date(data.epoch.timestamps.expiry));
   }
 
   return null;

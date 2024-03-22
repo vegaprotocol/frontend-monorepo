@@ -15,3 +15,12 @@ i18n.use(initReactI18next).init({
 });
 
 global.ResizeObserver = ResizeObserver;
+
+jest.mock('@vegaprotocol/trades', () => ({
+  ...jest.requireActual('@vegaprotocol/trades'),
+  useLatestTrade: jest.fn(() => ({
+    data: undefined,
+    loading: false,
+    error: undefined,
+  })),
+}));

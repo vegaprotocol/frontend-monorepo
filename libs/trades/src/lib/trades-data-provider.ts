@@ -23,10 +23,14 @@ export const MAX_TRADES = 500;
 const getData = (
   responseData: TradesQuery | null
 ): (TradeFieldsFragment & Cursor)[] =>
-  responseData?.trades?.edges.map<TradeFieldsFragment & Cursor>((edge) => ({
-    ...edge.node,
-    cursor: edge.cursor,
-  })) || [];
+  orderBy(
+    responseData?.trades?.edges.map<TradeFieldsFragment & Cursor>((edge) => ({
+      ...edge.node,
+      cursor: edge.cursor,
+    })),
+    'createdAt',
+    'desc'
+  ) || [];
 
 const getDelta = (subscriptionData: TradesUpdateSubscription) =>
   subscriptionData?.tradesStream || [];
@@ -101,7 +105,10 @@ export const tradesProvider = makeDataProvider<
     last: MAX_TRADES,
   },
   fetchPolicy: 'no-cache',
-  getSubscriptionVariables: ({ marketId }) => ({ marketId }),
+  getSubscriptionVariables: ({ marketIds, partyIds }) => ({
+    marketIds,
+    partyIds,
+  }),
 });
 
 export const tradesWithMarketProvider = makeDerivedDataProvider<

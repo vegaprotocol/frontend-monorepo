@@ -16,17 +16,17 @@ export interface DealTicketFeeDetailsProps {
   assetSymbol: string;
   order: OrderSubmissionBody['orderSubmission'];
   market: Market;
-  isMarketInAuction?: boolean;
+  marketIsInAuction?: boolean;
 }
 
 export const DealTicketFeeDetails = ({
   assetSymbol,
   order,
   market,
-  isMarketInAuction,
+  marketIsInAuction,
 }: DealTicketFeeDetailsProps) => {
   const t = useT();
-  const feeEstimate = useEstimateFees(order, isMarketInAuction);
+  const feeEstimate = useEstimateFees(order, marketIsInAuction);
   const asset = getAsset(market);
   const { decimals: assetDecimals, quantum } = asset;
 

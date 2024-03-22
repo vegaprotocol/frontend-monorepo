@@ -18,7 +18,7 @@ describe('useMaxSize', () => {
     marginAccountBalance: '0',
     accountDecimals,
     price: removeDecimal('8', decimalPlaces), // 8.0
-    marketPrice: removeDecimal('10', decimalPlaces), // 10.0
+    markPrice: removeDecimal('10', decimalPlaces), // 10.0
     decimalPlaces,
     activeOrders: [],
     riskFactors: {
@@ -29,6 +29,7 @@ describe('useMaxSize', () => {
     scalingFactors: {
       initialMargin: 1.5,
     },
+    marketIsInAuction: false,
   };
 
   const renderUseMaxSizeHook = (initialProps: UseMaxSizeProps) =>

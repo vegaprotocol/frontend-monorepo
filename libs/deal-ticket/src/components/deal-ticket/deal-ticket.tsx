@@ -67,14 +67,7 @@ import {
   marginModeDataProvider,
 } from '@vegaprotocol/accounts';
 import { useDataProvider } from '@vegaprotocol/data-provider';
-import { type OrderFormValues } from '../../hooks';
-import {
-  DealTicketType,
-  dealTicketTypeToOrderType,
-  isStopOrderType,
-  useDealTicketFormValues,
-  usePositionEstimate,
-} from '../../hooks';
+import { usePositionEstimate } from '../../hooks';
 import { DealTicketSizeIceberg } from './deal-ticket-size-iceberg';
 import noop from 'lodash/noop';
 import { isNonPersistentOrder } from '../../utils/time-in-force-persistence';
@@ -85,6 +78,13 @@ import { DealTicketPriceTakeProfitStopLoss } from './deal-ticket-price-tp-sl';
 import uniqueId from 'lodash/uniqueId';
 import { determinePriceStep, determineSizeStep } from '@vegaprotocol/utils';
 import { useMaxSize } from '../../hooks/use-max-size';
+import {
+  DealTicketType,
+  type OrderFormValues,
+  dealTicketTypeToOrderType,
+  isStopOrderType,
+  useDealTicketFormValues,
+} from '@vegaprotocol/react-helpers';
 
 export const REDUCE_ONLY_TOOLTIP =
   '"Reduce only" will ensure that this order will not increase the size of an open position. When the order is matched, it will only trade enough volume to bring your open volume towards 0 but never change the direction of your position. If applied to a limit order that is not instantly filled, the order will be stopped.';
@@ -97,6 +97,7 @@ export interface DealTicketProps {
   market: Market;
   marketData: StaticMarketData;
   marketPrice?: string | null;
+  markPrice?: string | null;
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
   submit: (order: Transaction) => void;
   onDeposit: (assetId: string) => void;
@@ -151,6 +152,7 @@ export const DealTicket = ({
   onMarketClick,
   marketData,
   marketPrice,
+  markPrice,
   submit,
   onDeposit,
 }: DealTicketProps) => {
@@ -393,6 +395,7 @@ export const DealTicket = ({
   const disableIcebergCheckbox = nonPersistentOrder;
   const featureFlags = useFeatureFlags((state) => state.flags);
   const sizeStep = determineSizeStep(market);
+  const marketIsInAuction = isMarketInAuction(marketData.marketTradingMode);
 
   const maxSize = useMaxSize({
     accountDecimals: accountDecimals ?? undefined,
@@ -401,7 +404,7 @@ export const DealTicket = ({
     marginAccountBalance,
     marginFactor: margin?.marginFactor,
     marginMode: margin?.marginMode,
-    marketPrice: marketPrice ?? undefined,
+    markPrice: markPrice ?? undefined,
     price,
     riskFactors,
     scalingFactors,
@@ -410,6 +413,7 @@ export const DealTicket = ({
     generalAccountBalance,
     openVolume,
     positionDecimalPlaces: market.positionDecimalPlaces,
+    marketIsInAuction,
   });
 
   const onSubmit = useCallback(
@@ -594,7 +598,7 @@ export const DealTicket = ({
           }
           assetSymbol={assetSymbol}
           market={market}
-          isMarketInAuction={isMarketInAuction(marketData.marketTradingMode)}
+          marketIsInAuction={marketIsInAuction}
         />
       </div>
       <Controller
