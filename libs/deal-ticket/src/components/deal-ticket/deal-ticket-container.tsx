@@ -8,6 +8,7 @@ import {
   useStaticMarketData,
   useMarketPrice,
   marketInfoProvider,
+  markPriceProvider,
 } from '@vegaprotocol/markets';
 import { AsyncRendererInline } from '@vegaprotocol/ui-toolkit';
 import { DealTicket } from './deal-ticket';
@@ -46,7 +47,11 @@ export const DealTicketContainer = ({
     loading: marketDataLoading,
     reload,
   } = useStaticMarketData(marketId);
-  const { data: marketPrice } = useMarketPrice(market?.id);
+  const { data: marketPrice } = useMarketPrice(marketId);
+  const { data: markPrice } = useDataProvider({
+    dataProvider: markPriceProvider,
+    variables: { marketId },
+  });
   const create = useVegaTransactionStore((state) => state.create);
   return (
     <AsyncRendererInline
@@ -80,6 +85,7 @@ export const DealTicketContainer = ({
               }
               market={market}
               marketPrice={marketPrice}
+              markPrice={markPrice}
               marketData={marketData}
               submit={(transaction) => create(transaction)}
             />
