@@ -2,7 +2,7 @@ import { useVegaTransactionStore } from '@vegaprotocol/web3';
 import {
   isStopOrderType,
   useDealTicketFormValues,
-} from '../../hooks/use-form-values';
+} from '@vegaprotocol/react-helpers';
 import { StopOrder } from './deal-ticket-stop-order';
 import {
   useStaticMarketData,

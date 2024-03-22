@@ -2,7 +2,7 @@ import { act, render, screen } from '@testing-library/react';
 import { getTimeFormat } from '@vegaprotocol/utils';
 import { SELL_CLASS, TradesTable, BUY_CLASS } from './trades-table';
 import type { Trade } from './trades-data-provider';
-import { Side } from '@vegaprotocol/types';
+import { Side, TradeType } from '@vegaprotocol/types';
 
 const trade: Trade = {
   __typename: 'Trade',
@@ -17,6 +17,7 @@ const trade: Trade = {
     decimalPlaces: 2,
     positionDecimalPlaces: 2,
   } as Trade['market'],
+  type: TradeType.TYPE_DEFAULT,
 };
 
 describe('TradesTable', () => {

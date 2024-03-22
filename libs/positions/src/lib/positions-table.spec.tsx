@@ -7,6 +7,7 @@ import { PositionStatus } from '@vegaprotocol/types';
 import type { ICellRendererParams } from 'ag-grid-community';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { singleRow } from './positions.mock';
+import { useLatestTrade } from '@vegaprotocol/trades';
 
 jest.mock('./liquidation-price', () => ({
   LiquidationPrice: () => (
@@ -262,26 +263,15 @@ describe('Positions', () => {
       expect(screen.queryByTestId(/icon-/)).not.toBeInTheDocument();
     });
 
-    it('renders status with warning tooltip if orders were closed', () => {
-      const props = {
-        data: {
-          ...singleRow,
-          status: PositionStatus.POSITION_STATUS_ORDERS_CLOSED,
-        },
-        valueFormatted: '100',
-      } as ICellRendererParams;
-      render(<OpenVolumeCell {...props} />);
-      const content = screen.getByText(props.valueFormatted as string);
-      expect(content).toBeInTheDocument();
-      expect(screen.getByTestId(/icon-/)).toBeInTheDocument();
-    });
-
     it('renders status with warning tooltip if position was closed out', async () => {
-      const props = {
+      (useLatestTrade as jest.Mock).mockReturnValue({
         data: {
-          ...singleRow,
-          status: PositionStatus.POSITION_STATUS_CLOSED_OUT,
+          type: 'TYPE_NETWORK_CLOSE_OUT_BAD',
+          price: '100',
         },
+      });
+      const props = {
+        data: singleRow,
         valueFormatted: '100',
       } as ICellRendererParams;
       render(<OpenVolumeCell {...props} />);
@@ -303,31 +293,23 @@ describe('Positions', () => {
       expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
     });
 
-    it.each([
-      {
-        status: PositionStatus.POSITION_STATUS_CLOSED_OUT,
-        text: 'Your position was closed.',
-      },
-      {
-        status: PositionStatus.POSITION_STATUS_ORDERS_CLOSED,
-        text: 'Your open orders were cancelled.',
-      },
-      {
-        status: PositionStatus.POSITION_STATUS_DISTRESSED,
-        text: 'Your position is distressed.',
-      },
-    ])('renders content for $status', async (data) => {
-      await renderComponent({
-        ...singleRow,
-        status: data.status,
+    it('renders tooltip when positions has been closed out (liquidated)', async () => {
+      (useLatestTrade as jest.Mock).mockReturnValue({
+        data: {
+          type: 'TYPE_NETWORK_CLOSE_OUT_BAD',
+          price: '100',
+        },
       });
+      await renderComponent(singleRow);
       const cells = screen.getAllByRole('gridcell');
       const cell = cells[1];
       const tooltipTrigger = cell.querySelector('[data-state="closed"]');
       expect(tooltipTrigger).not.toBeNull();
       await userEvent.hover(tooltipTrigger as Element);
       const tooltip = within(await screen.findByRole('tooltip'));
-      expect(tooltip.getByText(data.text)).toBeInTheDocument();
+      expect(
+        tooltip.getByText('Your position was closed.')
+      ).toBeInTheDocument();
     });
   });
 

@@ -48,8 +48,8 @@ import {
   DealTicketType,
   dealTicketTypeToOrderType,
   isStopOrderType,
-} from '../../hooks/use-form-values';
-import { type StopOrderFormValues } from '../../hooks/use-form-values';
+  type StopOrderFormValues,
+} from '@vegaprotocol/react-helpers';
 import { mapFormValuesToStopOrdersSubmission } from '../../utils/map-form-values-to-submission';
 import { DealTicketFeeDetails } from './deal-ticket-fee-details';
 import { validateExpiration } from '../../utils';
