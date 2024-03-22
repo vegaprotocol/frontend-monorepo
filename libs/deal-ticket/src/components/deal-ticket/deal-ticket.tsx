@@ -662,44 +662,31 @@ export const DealTicket = ({
             )}
           />
         )}
-      <div className="flex justify-between gap-2 pb-2">
-        <Controller
-          name="postOnly"
-          control={control}
-          render={({ field }) => (
-            <Tooltip
-              description={
-                <>
-                  <span>
-                    {disablePostOnlyCheckbox
-                      ? t(
-                          '"Post only" can not be used on "Fill or Kill" or "Immediate or Cancel" orders.'
-                        )
-                      : t(
-                          '"Post only" will ensure the order is not filled immediately but is placed on the order book as a passive order. When the order is processed it is either stopped (if it would not be filled immediately), or placed in the order book as a passive order until the price taker matches with it.'
-                        )}
-                  </span>{' '}
-                  <ExternalLink href={DocsLinks?.POST_REDUCE_ONLY}>
-                    {t('Find out more')}
-                  </ExternalLink>
-                </>
-              }
-            >
-              <div>
-                <Checkbox
-                  name="post-only"
-                  checked={!disablePostOnlyCheckbox && field.value}
-                  disabled={disablePostOnlyCheckbox}
-                  onCheckedChange={(postOnly) => {
-                    field.onChange(postOnly);
-                    setValue('reduceOnly', false);
-                  }}
-                  label={t('Post only')}
-                />
-              </div>
-            </Tooltip>
-          )}
-        />
+
+      <div className="grid grid-cols-2 gap-2 pb-2">
+        {featureFlags.TAKE_PROFIT_STOP_LOSS && (
+          <Controller
+            name="tpSl"
+            control={control}
+            render={({ field }) => (
+              <Tooltip
+                description={
+                  <p>{t('TP_SL_TOOLTIP', 'Take profit / Stop loss')}</p>
+                }
+              >
+                <div>
+                  <Checkbox
+                    name="tpSl"
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                    disabled={false}
+                    label={t('TP / SL')}
+                  />
+                </div>
+              </Tooltip>
+            )}
+          />
+        )}
         <Controller
           name="reduceOnly"
           control={control}
@@ -736,85 +723,99 @@ export const DealTicket = ({
           )}
         />
       </div>
-      {
-        <>
-          <div className="flex justify-between gap-2 pb-2">
-            {isLimitType && (
-              <Controller
-                name="iceberg"
-                control={control}
-                render={({ field }) => (
-                  <Tooltip
-                    description={
-                      <p>
-                        {t(
-                          'ICEBERG_TOOLTIP',
-                          'Trade only a fraction of the order size at once. After the peak size of the order has traded, the size is reset. This is repeated until the order is cancelled, expires, or its full volume trades away. For example, an iceberg order with a size of 1000 and a peak size of 100 will effectively be split into 10 orders with a size of 100 each. Note that the full volume of the order is not hidden and is still reflected in the order book.'
-                        )}{' '}
-                        <ExternalLink href={DocsLinks?.ICEBERG_ORDERS}>
-                          {t('Find out more')}
-                        </ExternalLink>{' '}
-                      </p>
-                    }
-                  >
-                    <div>
-                      <Checkbox
-                        name="iceberg"
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                        disabled={disableIcebergCheckbox}
-                        label={t('Iceberg')}
-                      />
-                    </div>
-                  </Tooltip>
-                )}
-              />
+
+      {isLimitType && (
+        <div className="grid grid-cols-2 gap-2 pb-2">
+          <Controller
+            name="iceberg"
+            control={control}
+            render={({ field }) => (
+              <Tooltip
+                description={
+                  <p>
+                    {t(
+                      'ICEBERG_TOOLTIP',
+                      'Trade only a fraction of the order size at once. After the peak size of the order has traded, the size is reset. This is repeated until the order is cancelled, expires, or its full volume trades away. For example, an iceberg order with a size of 1000 and a peak size of 100 will effectively be split into 10 orders with a size of 100 each. Note that the full volume of the order is not hidden and is still reflected in the order book.'
+                    )}{' '}
+                    <ExternalLink href={DocsLinks?.ICEBERG_ORDERS}>
+                      {t('Find out more')}
+                    </ExternalLink>{' '}
+                  </p>
+                }
+              >
+                <div>
+                  <Checkbox
+                    name="iceberg"
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                    disabled={disableIcebergCheckbox}
+                    label={t('Iceberg')}
+                  />
+                </div>
+              </Tooltip>
             )}
-            {featureFlags.TAKE_PROFIT_STOP_LOSS && (
-              <Controller
-                name="tpSl"
-                control={control}
-                render={({ field }) => (
-                  <Tooltip
-                    description={
-                      <p>{t('TP_SL_TOOLTIP', 'Take profit / Stop loss')}</p>
-                    }
-                  >
-                    <div>
-                      <Checkbox
-                        name="tpSl"
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                        disabled={false}
-                        label={t('TP / SL')}
-                      />
-                    </div>
-                  </Tooltip>
-                )}
-              />
+          />
+
+          <Controller
+            name="postOnly"
+            control={control}
+            render={({ field }) => (
+              <Tooltip
+                description={
+                  <>
+                    <span>
+                      {disablePostOnlyCheckbox
+                        ? t(
+                            '"Post only" can not be used on "Fill or Kill" or "Immediate or Cancel" orders.'
+                          )
+                        : t(
+                            '"Post only" will ensure the order is not filled immediately but is placed on the order book as a passive order. When the order is processed it is either stopped (if it would not be filled immediately), or placed in the order book as a passive order until the price taker matches with it.'
+                          )}
+                    </span>{' '}
+                    <ExternalLink href={DocsLinks?.POST_REDUCE_ONLY}>
+                      {t('Find out more')}
+                    </ExternalLink>
+                  </>
+                }
+              >
+                <div>
+                  <Checkbox
+                    name="post-only"
+                    checked={!disablePostOnlyCheckbox && field.value}
+                    disabled={disablePostOnlyCheckbox}
+                    onCheckedChange={(postOnly) => {
+                      field.onChange(postOnly);
+                      setValue('reduceOnly', false);
+                    }}
+                    label={t('Post only')}
+                  />
+                </div>
+              </Tooltip>
             )}
-          </div>
-          {isLimitType && iceberg && (
-            <DealTicketSizeIceberg
-              market={market}
-              peakSizeError={errors.peakSize?.message}
-              minimumVisibleSizeError={errors.minimumVisibleSize?.message}
-              control={control}
-              size={rawSize}
-              peakSize={peakSize}
-            />
-          )}
-          {featureFlags.TAKE_PROFIT_STOP_LOSS && tpSl && (
-            <DealTicketPriceTakeProfitStopLoss
-              market={market}
-              takeProfitError={errors.takeProfit?.message}
-              stopLossError={errors.stopLoss?.message}
-              control={control}
-              quoteName={quoteName}
-            />
-          )}
-        </>
-      }
+          />
+        </div>
+      )}
+
+      {isLimitType && iceberg && (
+        <DealTicketSizeIceberg
+          market={market}
+          peakSizeError={errors.peakSize?.message}
+          minimumVisibleSizeError={errors.minimumVisibleSize?.message}
+          control={control}
+          size={rawSize}
+          peakSize={peakSize}
+        />
+      )}
+
+      {featureFlags.TAKE_PROFIT_STOP_LOSS && tpSl && (
+        <DealTicketPriceTakeProfitStopLoss
+          market={market}
+          takeProfitError={errors.takeProfit?.message}
+          stopLossError={errors.stopLoss?.message}
+          control={control}
+          quoteName={quoteName}
+        />
+      )}
 
       <SummaryMessage
         error={summaryError}
