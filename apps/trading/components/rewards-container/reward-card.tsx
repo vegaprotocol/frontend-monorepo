@@ -7,6 +7,8 @@ import {
   VegaIcon,
   VegaIconNames,
   truncateMiddle,
+  KeyValueTable,
+  KeyValueTableRow,
 } from '@vegaprotocol/ui-toolkit';
 import {
   DistributionStrategyDescriptionMapping,
@@ -92,6 +94,8 @@ const RewardCard = ({
   gameId?: string | null;
 }) => {
   const t = useT();
+  const { rankTable } = dispatchStrategy;
+
   return (
     <div>
       <div
@@ -135,11 +139,44 @@ const RewardCard = ({
 
               {/** DISTRIBUTION STRATEGY */}
               <Tooltip
-                description={t(
-                  DistributionStrategyDescriptionMapping[
-                    dispatchStrategy.distributionStrategy
-                  ]
-                )}
+                description={
+                  <div>
+                    {t(
+                      DistributionStrategyDescriptionMapping[
+                        dispatchStrategy.distributionStrategy
+                      ]
+                    )}
+                    .
+                    {rankTable && (
+                      <KeyValueTable
+                        className="text-xs"
+                        data-testid="rank-table"
+                      >
+                        <KeyValueTableRow
+                          key="rank-table-header"
+                          className="text-xs"
+                        >
+                          <dd>{t('Start Rank')}</dd>
+                          <dt>{t('Share Ratio')}</dt>
+                        </KeyValueTableRow>
+
+                        {rankTable?.map((rank, i) => {
+                          return (
+                            rank && (
+                              <KeyValueTableRow
+                                key={`rank-table-row-${i}`}
+                                className="text-xs"
+                              >
+                                <dd>{rank?.startRank}</dd>
+                                <dt>{rank?.shareRatio}</dt>
+                              </KeyValueTableRow>
+                            )
+                          );
+                        })}
+                      </KeyValueTable>
+                    )}
+                  </div>
+                }
                 underline={true}
               >
                 <span className="text-xs" data-testid="distribution-strategy">
