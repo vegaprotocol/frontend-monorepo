@@ -26,8 +26,6 @@ import {
   Pill,
   Intent,
   Notification,
-  VegaIcon,
-  VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 import {
   getAsset,
@@ -490,16 +488,14 @@ const NoOpenVolumeWarning = ({
     return null;
   }
   return (
-    <div
-      className="flex text-xs items-center mb-2"
-      data-testid="deal-ticket-warning-margin"
-    >
-      <span className="text-yellow-500 mr-2">
-        <VegaIcon name={VegaIconNames.WARNING} />
-      </span>
-      {t(
-        'Stop orders are reduce only and this order would increase your position.'
-      )}
+    <div className="mb-2">
+      <Notification
+        intent={Intent.Warning}
+        testId={'stop-order-warning-position'}
+        message={t(
+          'Stop orders are reduce only and this order would increase your position.'
+        )}
+      />
     </div>
   );
 };
@@ -1239,8 +1235,13 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
             )}
           />
         </div>
-      ) : null}
-      <NoOpenVolumeWarning side={side} partyId={pubKey} marketId={market.id} />
+      ) : (
+        <NoOpenVolumeWarning
+          side={side}
+          partyId={pubKey}
+          marketId={market.id}
+        />
+      )}
       <SubmitButton
         assetUnit={assetUnit}
         market={market}
