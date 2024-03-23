@@ -133,23 +133,23 @@ The [`docker`](./docker) subfolder has some docker configurations for easily set
 
 ### nx build inside the docker
 
-Using multistage dockerfile dist is compiled using [node](https://hub.docker.com/_/node) image and later packed to nginx as in [dist build](#dist-build). The multistage builds ensures consistent CPU architecture and build toolchains are used so that the result will be identical.
+Using multistage dockerfile dist is compiled using [node](https://hub.docker.com/_/node) image and later packed to nginx as in [dist-build](#dist-build). The multistage builds ensures consistent CPU architecture and build toolchains are used so that the result will be identical.
 
 ```bash
-docker build --build-arg APP=[YOUR APP] --build-arg NODE_VERSION=20.9.1 --build-arg ENV_NAME=mainnet -t [TAG] -f docker/node-inside-docker.Dockerfile .
+docker build --build-arg APP=[YOUR APP] --build-arg NODE_VERSION=20.11 --build-arg ENV_NAME=mainnet -t [TAG] -f docker/node-inside-docker.Dockerfile .
 ```
 
 ### Computing ipfs-hash of the build
 
 At the moment this feature is important only for Console releases.
 
-Each docker build finishes with hash calculation for ` dist`` directory. Resulting hash is added to file named as  `/ipfs-hash`. Once docker image is produced you can run following commad to display ipfs-hash:
+Each docker build finishes with hash calculation for `dist` directory. Resulting hash is added to file named as  `/ipfs-hash`. Once docker image is produced you can run following command to display ipfs-hash:
 
 ```bash
 make recalculate-ipfs TAG=vegaprotocol/trading:{YOUR_VERSION}
 ```
 
-**updating hash:** recompiling dist directory (even if there are no changed to source code) results in different hash computed by ipfs command.
+**updating hash:** recompiling dist directory (even if there are no changes to source code) results in different hash computed by ipfs command.
 
 ### nx build outside the docker
 
