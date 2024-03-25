@@ -4,6 +4,7 @@ import {
   makeDataProvider,
   makeDerivedDataProvider,
   defaultAppend as append,
+  useDataProvider,
 } from '@vegaprotocol/data-provider';
 import { type Market } from '@vegaprotocol/markets';
 import { marketsMapProvider } from '@vegaprotocol/markets';
@@ -207,6 +208,18 @@ export const activeOrdersProvider = makeDerivedDataProvider<
       : orders;
   }
 );
+
+export const useActiveOrders = (
+  partyId: string | undefined,
+  marketId?: string
+) =>
+  useDataProvider({
+    dataProvider: activeOrdersProvider,
+    variables: marketId
+      ? { partyId: partyId || '', marketId }
+      : { partyId: partyId || '' },
+    skip: !partyId,
+  });
 
 export const ordersWithMarketProvider = makeDerivedDataProvider<
   (Order & Cursor)[],

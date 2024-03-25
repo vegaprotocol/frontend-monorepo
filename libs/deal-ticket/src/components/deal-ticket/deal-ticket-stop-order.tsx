@@ -56,7 +56,7 @@ import { validateExpiration } from '../../utils';
 import { NOTIONAL_SIZE_TOOLTIP_TEXT } from '../../constants';
 import { KeyValue } from './key-value';
 import { useDataProvider } from '@vegaprotocol/data-provider';
-import { activeOrdersProvider, stopOrdersProvider } from '@vegaprotocol/orders';
+import { useActiveOrders, stopOrdersProvider } from '@vegaprotocol/orders';
 import { useT } from '../../use-t';
 import { determinePriceStep, determineSizeStep } from '@vegaprotocol/utils';
 import { useOpenVolume } from '@vegaprotocol/positions';
@@ -454,7 +454,7 @@ const Price = ({
   );
 };
 
-const NoOpenVolumeWarning = ({
+export const NoOpenVolumeWarning = ({
   side,
   partyId,
   marketId,
@@ -463,12 +463,7 @@ const NoOpenVolumeWarning = ({
   partyId?: string;
   marketId: string;
 }) => {
-  const { data: activeOrders } = useDataProvider({
-    dataProvider: activeOrdersProvider,
-    variables: { partyId: partyId || '', marketId },
-    skip: !partyId,
-  });
-
+  const { data: activeOrders } = useActiveOrders(partyId, marketId);
   const t = useT();
   const { openVolume } = useOpenVolume(partyId, marketId) || {};
   const volume = BigInt(openVolume || 0);

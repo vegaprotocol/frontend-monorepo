@@ -36,7 +36,7 @@ import {
   formatForInput,
   formatValue,
 } from '@vegaprotocol/utils';
-import { activeOrdersProvider } from '@vegaprotocol/orders';
+import { useActiveOrders } from '@vegaprotocol/orders';
 import {
   getAsset,
   getDerivedPrice,
@@ -252,11 +252,7 @@ export const DealTicket = ({
     market.positionDecimalPlaces
   );
 
-  const { data: activeOrders } = useDataProvider({
-    dataProvider: activeOrdersProvider,
-    variables: { partyId: pubKey || '', marketId: market.id },
-    skip: !pubKey,
-  });
+  const { data: activeOrders } = useActiveOrders(pubKey, market.id);
   const { data: margin } = useDataProvider({
     dataProvider: marginModeDataProvider,
     variables: { partyId: pubKey || '', marketId: market.id },
