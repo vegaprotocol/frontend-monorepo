@@ -23,6 +23,9 @@ import {
   OrderTimeInForce,
   OrderType,
   Side,
+  StopOrderRejectionReason,
+  StopOrderRejectionReasonMapping,
+  StopOrderStatus,
   WithdrawalStatus,
 } from '@vegaprotocol/types';
 
@@ -48,14 +51,22 @@ jest.mock('./wait-for-withdrawal-approval', () => ({
   waitForWithdrawalApproval: () => mockWaitForWithdrawalApproval(),
 }));
 
+const mockWaitForStopOrder = jest.fn();
+
+jest.mock('./wait-for-stop-order', () => ({
+  waitForStopOrder: () => mockWaitForStopOrder(),
+}));
+
 const updateWithdrawal = jest.fn();
 const updateOrder = jest.fn();
 const updateTransactionResult = jest.fn();
+const getTransaction = jest.fn();
 
 const defaultState: Partial<VegaTransactionStore> = {
   updateWithdrawal,
   updateOrder,
   updateTransactionResult,
+  getTransaction,
 };
 
 const mockTransactionStoreState = jest.fn<Partial<VegaTransactionStore>, []>();
@@ -177,6 +188,29 @@ describe('useVegaTransactionManager', () => {
       expect(updateTransactionResult).toHaveBeenCalledWith(
         transactionResultBusEvent
       );
+    });
+  });
+
+  it('waits for stop order and sets error if rejected', async () => {
+    getTransaction.mockReturnValueOnce({
+      signature: 'signature',
+      body: {
+        stopOrdersSubmission: {},
+      },
+    });
+    const rejectionReason =
+      StopOrderRejectionReason.REJECTION_REASON_STOP_ORDER_NOT_CLOSING_THE_POSITION;
+    mockTransactionStoreState.mockReturnValue(defaultState);
+    mockWaitForStopOrder.mockResolvedValueOnce({
+      status: StopOrderStatus.STATUS_REJECTED,
+      rejectionReason,
+    });
+    render([mockedTransactionResultBusEvent]);
+    await waitFor(() => {
+      expect(updateTransactionResult).toHaveBeenCalledWith({
+        ...transactionResultBusEvent,
+        error: StopOrderRejectionReasonMapping[rejectionReason],
+      });
     });
   });
 
