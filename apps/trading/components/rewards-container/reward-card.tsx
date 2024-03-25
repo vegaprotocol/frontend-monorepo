@@ -35,6 +35,7 @@ import { type EnrichedRewardTransfer } from '../../lib/hooks/use-rewards';
 import compact from 'lodash/compact';
 import BigNumber from 'bignumber.js';
 import { useTWAPQuery } from '../../lib/hooks/__generated__/Rewards';
+import { usePayoutPerRank } from './use-payout-per-rank';
 
 const Tick = () => (
   <VegaIcon
@@ -96,6 +97,9 @@ const RewardCard = ({
   const t = useT();
   const { rankTable } = dispatchStrategy;
 
+  const result = usePayoutPerRank(rankTable);
+  const { payoutsPerWinnerAsPercentage } = result;
+
   return (
     <div>
       <div
@@ -147,34 +151,37 @@ const RewardCard = ({
                       ]
                     )}
                     .
-                    {rankTable && (
-                      <KeyValueTable
-                        className="text-xs"
-                        data-testid="rank-table"
-                      >
-                        <KeyValueTableRow
-                          key="rank-table-header"
+                    {payoutsPerWinnerAsPercentage &&
+                      payoutsPerWinnerAsPercentage.length > 0 && (
+                        <KeyValueTable
                           className="text-xs"
+                          data-testid="rank-table"
                         >
-                          <dd>{t('Start Rank')}</dd>
-                          <dt>{t('Share Ratio')}</dt>
-                        </KeyValueTableRow>
+                          <KeyValueTableRow
+                            key="rank-table-header"
+                            className="text-xs"
+                          >
+                            <dd>{t('Tier')}</dd>
+                            <dt>{t('Payout per Tier (%)')}</dt>
+                          </KeyValueTableRow>
 
-                        {rankTable?.map((rank, i) => {
-                          return (
-                            rank && (
-                              <KeyValueTableRow
-                                key={`rank-table-row-${i}`}
-                                className="text-xs"
-                              >
-                                <dd>{rank?.startRank}</dd>
-                                <dt>{rank?.shareRatio}</dt>
-                              </KeyValueTableRow>
-                            )
-                          );
-                        })}
-                      </KeyValueTable>
-                    )}
+                          {payoutsPerWinnerAsPercentage?.map(
+                            (payout: number, tier: number) => {
+                              return (
+                                payout && (
+                                  <KeyValueTableRow
+                                    key={`rank-table-row-${tier}`}
+                                    className="text-xs"
+                                  >
+                                    <dd>{tier + 1}</dd>
+                                    <dt>{formatNumber(payout, 4)}%</dt>
+                                  </KeyValueTableRow>
+                                )
+                              );
+                            }
+                          )}
+                        </KeyValueTable>
+                      )}
                   </div>
                 }
                 underline={true}
