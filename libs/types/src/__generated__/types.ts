@@ -7187,14 +7187,6 @@ export type UpdateReferralProgram = {
   windowLength: Scalars['Int'];
 };
 
-export type UpdateSpotInstrumentConfiguration = {
-  __typename?: 'UpdateSpotInstrumentConfiguration';
-  /** Instrument code, human-readable shortcode used to describe the instrument. */
-  code: Scalars['String'];
-  /** Instrument name */
-  name: Scalars['String'];
-};
-
 /** Update an existing spot market on Vega */
 export type UpdateSpotMarket = {
   __typename?: 'UpdateSpotMarket';
@@ -7206,8 +7198,6 @@ export type UpdateSpotMarket = {
 
 export type UpdateSpotMarketConfiguration = {
   __typename?: 'UpdateSpotMarketConfiguration';
-  /** Updated spot market instrument configuration. */
-  instrument: UpdateSpotInstrumentConfiguration;
   /** Specifies how the liquidity fee for the market will be calculated */
   liquidityFeeSettings?: Maybe<LiquidityFeeSettings>;
   /** Specifies the liquidity provision SLA parameters */
