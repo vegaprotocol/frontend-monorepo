@@ -12,6 +12,19 @@ export const statisticsQuery = (
       blockHeight: '11',
       vegaTime: new Date().toISOString(),
     },
+    networkParametersConnection: {
+      __typename: 'NetworkParametersConnection',
+      edges: [
+        {
+          __typename: 'NetworkParameterEdge',
+          node: {
+            __typename: 'NetworkParameter',
+            key: 'a',
+            value: '1',
+          },
+        },
+      ],
+    },
   };
 
   return merge(defaultResult, override);
