@@ -111,6 +111,8 @@ html [data-theme='light'] {
 
   --pennant-color-volume-buy: theme(colors.market.green.DEFAULT);
   --pennant-color-volume-sell: theme(colors.market.red.DEFAULT);
+
+  --pennant-background-label-color: theme(colors.vega.clight.600);
 }
 
 html [data-theme='dark'] {
@@ -132,6 +134,7 @@ html [data-theme='dark'] {
 
   --pennant-color-volume-buy: theme(colors.market.green.600);
   --pennant-color-volume-sell: theme(colors.market.red.DEFAULT);
+  --pennant-background-label-color: theme(colors.vega.cdark.600);
 }
 
 /**
