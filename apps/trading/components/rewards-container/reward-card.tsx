@@ -671,7 +671,7 @@ const RewardRequirements = ({
           description={
             averagePosition
               ? t(
-                  'Your average position is {{averagePosition}}, but the requirement is {{averagePositionRequirements}}',
+                  'Your average position is {{averagePosition}}, and the requirement is {{averagePositionRequirements}}',
                   {
                     averagePosition: averagePositionFormatted,
                     averagePositionRequirements:

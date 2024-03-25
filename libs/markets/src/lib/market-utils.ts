@@ -25,8 +25,7 @@ export const getAsset = (market: Partial<Market>) => {
   }
 
   if (product.__typename === 'Spot') {
-    // TODO to handle baseAsset for Spots
-    throw new Error('Failed to retrieve asset. Spots not yet implemented');
+    return product.quoteAsset;
   }
 
   throw new Error('Failed to retrieve asset. Invalid product type');
@@ -62,8 +61,7 @@ export const getQuoteName = (market: Partial<Market>) => {
   }
 
   if (product.__typename === 'Spot') {
-    // TODO to handle baseAsset for Spots
-    throw new Error('Failed to retrieve quoteName. Spots not yet implemented');
+    return product.quoteAsset.symbol;
   }
 
   throw new Error('Failed to retrieve quoteName. Invalid product type');

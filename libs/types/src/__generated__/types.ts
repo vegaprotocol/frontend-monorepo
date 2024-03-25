@@ -887,8 +887,10 @@ export type DepositEdge = {
 
 /** The status of a deposit */
 export enum DepositStatus {
-  /** The deposit have been cancelled by the network, either because it expired, or something went wrong with the foreign chain */
+  /** The deposit have been cancelled by the network, either because it expired, could not be verified, or something went wrong with the foreign chain */
   STATUS_CANCELLED = 'STATUS_CANCELLED',
+  /** The deposit was rejected as a duplicate transaction */
+  STATUS_DUPLICATE_REJECTED = 'STATUS_DUPLICATE_REJECTED',
   /** The deposit was finalised, it was valid, the foreign chain has executed it and the network updated all accounts */
   STATUS_FINALIZED = 'STATUS_FINALIZED',
   /** The deposit is open and being processed by the network */
@@ -7185,6 +7187,14 @@ export type UpdateReferralProgram = {
   windowLength: Scalars['Int'];
 };
 
+export type UpdateSpotInstrumentConfiguration = {
+  __typename?: 'UpdateSpotInstrumentConfiguration';
+  /** Instrument code, human-readable shortcode used to describe the instrument. */
+  code: Scalars['String'];
+  /** Instrument name */
+  name: Scalars['String'];
+};
+
 /** Update an existing spot market on Vega */
 export type UpdateSpotMarket = {
   __typename?: 'UpdateSpotMarket';
@@ -7196,6 +7206,8 @@ export type UpdateSpotMarket = {
 
 export type UpdateSpotMarketConfiguration = {
   __typename?: 'UpdateSpotMarketConfiguration';
+  /** Updated spot market instrument configuration. */
+  instrument: UpdateSpotInstrumentConfiguration;
   /** Specifies how the liquidity fee for the market will be calculated */
   liquidityFeeSettings?: Maybe<LiquidityFeeSettings>;
   /** Specifies the liquidity provision SLA parameters */

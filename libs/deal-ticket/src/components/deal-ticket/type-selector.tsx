@@ -15,7 +15,7 @@ import {
 import type { Market, StaticMarketData } from '@vegaprotocol/markets';
 import { compileGridData } from '../trading-mode-tooltip';
 import { MarketModeValidationType } from '../../constants';
-import { DealTicketType } from '../../hooks/use-form-values';
+import { DealTicketType } from '@vegaprotocol/react-helpers';
 import * as RadioGroup from '@radix-ui/react-radio-group';
 import classNames from 'classnames';
 import { useFeatureFlags } from '@vegaprotocol/environment';

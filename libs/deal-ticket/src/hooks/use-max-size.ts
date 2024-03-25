@@ -13,7 +13,7 @@ export interface UseMaxSizeProps {
   marginAccountBalance: string;
   marginFactor?: string;
   marginMode?: MarginMode;
-  marketPrice?: string;
+  markPrice?: string;
   openVolume: string;
   positionDecimalPlaces: number;
   price?: string;
@@ -26,6 +26,7 @@ export interface UseMaxSizeProps {
   >;
   side: Side;
   type: OrderType;
+  marketIsInAuction: boolean;
 }
 
 export const useMaxSize = ({
@@ -43,7 +44,8 @@ export const useMaxSize = ({
   activeOrders,
   riskFactors,
   scalingFactors,
-  marketPrice,
+  markPrice,
+  marketIsInAuction,
 }: UseMaxSizeProps) =>
   useMemo(() => {
     let maxSize = new BigNumber(0);
@@ -67,10 +69,12 @@ export const useMaxSize = ({
         .div(marginFactor)
         .div(toBigNum(price, decimalPlaces));
     } else {
+      const effectivePrice =
+        type === OrderType.TYPE_LIMIT && marketIsInAuction ? price : markPrice;
       if (
         !scalingFactors?.initialMargin ||
         !riskFactors ||
-        !marketPrice ||
+        !effectivePrice ||
         accountDecimals === undefined
       ) {
         return 0;
@@ -87,7 +91,7 @@ export const useMaxSize = ({
           )
         )
         .div(scalingFactors.initialMargin)
-        .div(toBigNum(marketPrice, decimalPlaces));
+        .div(toBigNum(effectivePrice, decimalPlaces));
       maxSize = maxSize
         .minus(
           // subtract remaining orders
@@ -134,5 +138,6 @@ export const useMaxSize = ({
     activeOrders,
     riskFactors,
     scalingFactors,
-    marketPrice,
+    markPrice,
+    marketIsInAuction,
   ]);

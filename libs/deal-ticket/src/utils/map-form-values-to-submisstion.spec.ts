@@ -8,7 +8,7 @@ import {
 } from './map-form-values-to-submission';
 import * as Schema from '@vegaprotocol/types';
 import { OrderTimeInForce, OrderType } from '@vegaprotocol/types';
-import type { OrderFormValues } from '../hooks';
+import type { OrderFormValues } from '@vegaprotocol/react-helpers';
 import { type MarketFieldsFragment } from '@vegaprotocol/markets';
 
 describe('mapFormValuesToOrderSubmission', () => {

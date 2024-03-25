@@ -158,6 +158,16 @@ fragment Perpetual on Perpetual {
   }
 }
 
+fragment Spot on Spot {
+  baseAsset {
+    ...AssetListFields
+  }
+  quoteAsset {
+    ...AssetListFields
+  }
+  name
+}
+
 query MarketInfoMainnet($marketId: ID!) {
   market(id: $marketId) {
     id
@@ -255,6 +265,9 @@ query MarketInfoMainnet($marketId: ID!) {
           }
           ... on Perpetual {
             ...Perpetual
+          }
+          ... on Spot {
+            ...Spot
           }
         }
       }
@@ -387,6 +400,9 @@ query MarketInfo($marketId: ID!) {
           }
           ... on Perpetual {
             ...Perpetual
+          }
+          ... on Spot {
+            ...Spot
           }
         }
       }

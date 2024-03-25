@@ -106,6 +106,7 @@ export const DepositStatusMapping: {
 } = {
   STATUS_CANCELLED: 'Cancelled',
   STATUS_FINALIZED: 'Finalized',
+  STATUS_DUPLICATE_REJECTED: 'Duplicate rejected',
   STATUS_OPEN: 'Open',
 };
 
