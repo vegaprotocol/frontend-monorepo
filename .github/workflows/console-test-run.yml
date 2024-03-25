@@ -183,21 +183,21 @@ jobs:
           virtualenvs-in-project: true
           virtualenvs-path: .venv
       #----------------------------------------------
-      # update lock file to avoid vega-sim version
+      # Set up pyproject.toml based on branch
       #----------------------------------------------
-      - name: Update poetry.lock
-        run: rm poetry.lock
+      - name: Create pyproject.toml based on branch
+        run: |
+          if [ "${{ needs.console-test-branch.outputs.console-branch }}" = "main" ]; then
+            mv pyproject.main.toml pyproject.toml
+          elif [ "${{ needs.console-test-branch.outputs.console-branch }}" = "develop" ]; then
+            mv pyproject.develop.toml pyproject.toml
+          fi
         working-directory: apps/trading/e2e
       #----------------------------------------------
       # install python dependencies
       #----------------------------------------------
       - name: Install dependencies
-        run: |
-          if [ "${{ needs.console-test-branch.outputs.console-branch }}" = "main" ]; then
-            poetry install --no-interaction --no-root --only main
-          elif [ "${{ needs.console-test-branch.outputs.console-branch }}" = "develop" ]; then
-            poetry install --no-interaction --no-root --only develop
-          fi
+        run: poetry lock && poetry install --no-interaction --no-root
         working-directory: apps/trading/e2e
       #----------------------------------------------
       # install vega binaries
