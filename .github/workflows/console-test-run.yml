@@ -183,6 +183,12 @@ jobs:
           virtualenvs-in-project: true
           virtualenvs-path: .venv
       #----------------------------------------------
+      # update lock file to avoid vega-sim version
+      #----------------------------------------------
+      - name: Update poetry.lock
+        run: rm poetry.lock
+        working-directory: apps/trading/e2e
+      #----------------------------------------------
       # install python dependencies
       #----------------------------------------------
       - name: Install dependencies
