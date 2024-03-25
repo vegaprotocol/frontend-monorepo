@@ -18,7 +18,7 @@ python-dotenv = "^1.0.0"
 optional = true
 
 [tool.poetry.group.main.dependencies]
-vega-sim = { git = "https://github.com/vegaprotocol/vega-market-sim.git/", tag = "vega-v0.74.10" }
+vega-sim = { git = "https://github.com/vegaprotocol/vega-market-sim.git/", branch = "release/vega-v0.74.10" }
 
 [tool.poetry.group.develop]
 optional = true
