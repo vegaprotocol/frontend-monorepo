@@ -25,7 +25,7 @@ export const getAsset = (market: Partial<Market>) => {
   }
 
   if (product.__typename === 'Spot') {
-    return product.baseAsset;
+    return product.quoteAsset;
   }
 
   throw new Error('Failed to retrieve asset. Invalid product type');
