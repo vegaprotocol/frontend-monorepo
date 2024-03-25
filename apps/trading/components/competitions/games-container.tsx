@@ -3,7 +3,10 @@ import { type EnrichedRewardTransfer } from '../../lib/hooks/use-rewards';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useStakeAvailable } from '../../lib/hooks/use-stake-available';
 import { useMyTeam } from '../../lib/hooks/use-my-team';
-import { ActiveRewardCard } from '../rewards-container/reward-card';
+import {
+  ActiveRewardCard,
+  areAllMarketsSettled,
+} from '../rewards-container/reward-card';
 import {
   VegaIcon,
   VegaIconNames,
@@ -127,6 +130,9 @@ export const GamesContainer = ({
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {data
           .filter((n) => applyFilter(n, filter))
+          // filter out the cards (rewards) for which all of the markets
+          // are settled
+          .filter((n) => !areAllMarketsSettled(n))
           .map((game, i) => {
             // TODO: Remove `kind` prop from ActiveRewardCard
             const { transfer } = game;

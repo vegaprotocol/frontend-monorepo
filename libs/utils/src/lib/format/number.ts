@@ -302,3 +302,7 @@ export const toQUSD = (
   const qUSD = value.dividedBy(q);
   return qUSD;
 };
+
+export const isSafeInteger = (x: unknown): x is number => {
+  return x != null && typeof x === 'number' && Number.isSafeInteger(x);
+};

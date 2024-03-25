@@ -25,9 +25,10 @@ fragment GameFields on Game {
   }
 }
 
-query Games($epochFrom: Int, $teamId: ID) {
+query Games($epochFrom: Int, $epochTo: Int, $teamId: ID) {
   games(
     epochFrom: $epochFrom
+    epochTo: $epochTo
     teamId: $teamId
     entityScope: ENTITY_SCOPE_TEAMS
   ) {

@@ -18,7 +18,7 @@ import { useRewards } from '../../lib/hooks/use-rewards';
 import { useMyTeam } from '../../lib/hooks/use-my-team';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useStakeAvailable } from '../../lib/hooks/use-stake-available';
-import { ActiveRewardCard } from './reward-card';
+import { ActiveRewardCard, areAllMarketsSettled } from './reward-card';
 
 export type Filter = {
   searchTerm: string;
@@ -122,6 +122,9 @@ export const ActiveRewards = ({ currentEpoch }: { currentEpoch: number }) => {
       <div className="grid gap-x-8 gap-y-10 h-fit grid-cols-[repeat(auto-fill,_minmax(230px,_1fr))] md:grid-cols-[repeat(auto-fill,_minmax(230px,_1fr))] lg:grid-cols-[repeat(auto-fill,_minmax(320px,_1fr))] xl:grid-cols-[repeat(auto-fill,_minmax(335px,_1fr))] pr-2">
         {data
           .filter((n) => applyFilter(n, filter))
+          // filter out the cards (rewards) for which all of the markets
+          // are settled
+          .filter((n) => !areAllMarketsSettled(n))
           .map((node, i) => (
             <ActiveRewardCard
               key={i}
