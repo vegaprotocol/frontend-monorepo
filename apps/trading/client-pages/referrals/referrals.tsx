@@ -10,12 +10,12 @@ import { TabLink } from './buttons';
 import { Outlet, useMatch } from 'react-router-dom';
 import { Routes } from '../../lib/links';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
-import { useReferral } from './hooks/use-referral';
 import { REFERRAL_DOCS_LINK } from './constants';
 import classNames from 'classnames';
 import { useT } from '../../lib/use-t';
 import { ErrorBoundary } from '../../components/error-boundary';
 import { usePageTitle } from '../../lib/hooks/use-page-title';
+import { useFindReferralSet } from './hooks/use-find-referral-set';
 
 const Nav = () => {
   const t = useT();
@@ -34,26 +34,9 @@ export const Referrals = () => {
   const t = useT();
   const { pubKey } = useVegaWallet();
 
-  const {
-    data: referee,
-    loading: refereeLoading,
-    error: refereeError,
-  } = useReferral({
-    pubKey,
-    role: 'referee',
-  });
-  const {
-    data: referrer,
-    loading: referrerLoading,
-    error: referrerError,
-  } = useReferral({
-    pubKey,
-    role: 'referrer',
-  });
+  const { data, loading, error } = useFindReferralSet(pubKey);
 
-  const error = refereeError || referrerError;
-  const loading = refereeLoading || referrerLoading;
-  const showNav = !loading && !error && !referrer && !referee;
+  const showNav = !loading && !error && !data;
 
   usePageTitle(t('Referrals'));
 

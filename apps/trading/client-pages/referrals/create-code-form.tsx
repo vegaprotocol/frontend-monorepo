@@ -16,13 +16,16 @@ import {
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { DApp, TokenStaticLinks, useLinks } from '@vegaprotocol/environment';
 import { ABOUT_REFERRAL_DOCS_LINK } from './constants';
-import { useIsInReferralSet, useReferral } from './hooks/use-referral';
 import { useT } from '../../lib/use-t';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { Links, Routes } from '../../lib/links';
 import { useReferralProgram } from './hooks/use-referral-program';
 import { useReferralSetTransaction } from '../../lib/hooks/use-referral-set-transaction';
 import { Trans } from 'react-i18next';
+import {
+  useFindReferralSet,
+  useIsInReferralSet,
+} from './hooks/use-find-referral-set';
 
 export const CreateCodeContainer = () => {
   const t = useT();
@@ -145,7 +148,7 @@ const CreateCodeDialog = ({
   const t = useT();
   const createLink = useLinks(DApp.Governance);
   const { pubKey } = useVegaWallet();
-  const { refetch } = useReferral({ pubKey, role: 'referrer' });
+  const { refetch } = useFindReferralSet(pubKey);
   const {
     err,
     code,
