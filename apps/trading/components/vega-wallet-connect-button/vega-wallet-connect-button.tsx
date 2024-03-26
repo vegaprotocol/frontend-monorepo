@@ -96,6 +96,7 @@ export const VegaWalletConnectButton = ({
               pubKeys={pubKeys}
               activeKey={activeKey?.publicKey}
               onSelect={selectPubKey}
+              isReadOnly={isReadOnly}
             />
             <TradingDropdownSeparator />
             {!isReadOnly && (
@@ -141,11 +142,13 @@ const KeypairRadioGroup = ({
   pubKeys,
   activeKey,
   onSelect,
+  isReadOnly,
 }: {
   pubKey: string | undefined;
   pubKeys: Key[];
   activeKey: string | undefined;
   onSelect: (pubKey: string) => void;
+  isReadOnly: boolean;
 }) => {
   const { data } = usePartyProfilesQuery({
     variables: { partyIds: pubKeys.map((pk) => pk.publicKey) },
@@ -165,6 +168,7 @@ const KeypairRadioGroup = ({
             pk={pk}
             isActive={activeKey === pk.publicKey}
             alias={profile?.node.alias}
+            isReadOnly={isReadOnly}
           />
         );
       })}
@@ -176,10 +180,12 @@ const KeypairItem = ({
   pk,
   isActive,
   alias,
+  isReadOnly,
 }: {
   pk: Key;
   alias: string | undefined;
   isActive: boolean;
+  isReadOnly: boolean;
 }) => {
   const t = useT();
   const [copied, setCopied] = useCopyTimeout();
@@ -210,16 +216,18 @@ const KeypairItem = ({
           className={classNames('flex-1 mr-2 text-secondary text-sm')}
           data-testid={`key-${pk.publicKey}`}
         >
-          <Tooltip description={t('Public facing key alias. Click to edit')}>
-            <button
-              data-testid="alias"
-              onClick={() => setOpen(pk.publicKey)}
-              className="flex items-center gap-1"
-            >
-              {alias ? alias : t('No alias')}
-              {isActive && <VegaIcon name={VegaIconNames.EDIT} />}
-            </button>
-          </Tooltip>
+          {!isReadOnly && (
+            <Tooltip description={t('Public facing key alias. Click to edit')}>
+              <button
+                data-testid="alias"
+                onClick={() => setOpen(pk.publicKey)}
+                className="flex items-center gap-1"
+              >
+                {alias ? alias : t('No alias')}
+                {isActive && <VegaIcon name={VegaIconNames.EDIT} />}
+              </button>
+            </Tooltip>
+          )}
         </div>
       </div>
       <TradingDropdownItemIndicator />
