@@ -8,6 +8,9 @@ type AssetStatProps = HTMLAttributes<HTMLDivElement> & {
   asset: { id: string; symbol: string };
 };
 
+/**
+ * Asset symbol that when clicked launches the asset detail dialog
+ */
 export const AssetStat = ({ heading, asset, ...props }: AssetStatProps) => {
   const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
 

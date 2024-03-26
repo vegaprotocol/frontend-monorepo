@@ -8,13 +8,18 @@ type Last24hVolumeChangeStatProps = HTMLAttributes<HTMLDivElement> & {
   marketDecimalPlaces: number;
   positionDecimalPlaces: number;
   quoteUnit: string;
+  baseUnit?: string;
 };
 
+/**
+ * The last 24h volume change wrapped in a HeaderStat
+ */
 export const Last24hVolumeChangeStat = ({
   marketId,
   marketDecimalPlaces,
   positionDecimalPlaces,
   quoteUnit,
+  baseUnit,
 }: Last24hVolumeChangeStatProps) => {
   const t = useT();
 
@@ -25,6 +30,7 @@ export const Last24hVolumeChangeStat = ({
         positionDecimalPlaces={positionDecimalPlaces}
         marketDecimals={marketDecimalPlaces}
         quoteUnit={quoteUnit}
+        baseUnit={baseUnit}
       />
     </HeaderStat>
   );
