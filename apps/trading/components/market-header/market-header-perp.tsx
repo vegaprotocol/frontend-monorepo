@@ -15,8 +15,6 @@ import {
   useMarketState,
 } from '@vegaprotocol/markets';
 import { HeaderStat } from '../../components/header';
-import { HeaderStatMarketTradingMode } from '../../components/market-trading-mode';
-import { MarketState } from '../../components/market-state';
 import { MarketLiquiditySupplied } from '../../components/liquidity-supplied';
 import { useEffect, useState } from 'react';
 import { useDataProvider } from '@vegaprotocol/data-provider';
@@ -60,11 +58,11 @@ export const MarketHeaderPerp = ({ market }: MarketHeaderPerpProps) => {
         positionDecimalPlaces={market.positionDecimalPlaces}
         quoteUnit={quoteUnit}
       />
-      <HeaderStatMarketTradingMode
+      <Stats.MarketTradingModeStat
         marketId={market.id}
         initialTradingMode={market.tradingMode}
       />
-      <MarketState market={market} />
+      <Stats.MarketStateStat market={market} />
       <Stats.AssetStat
         heading={t('Settlement asset')}
         asset={asset}
