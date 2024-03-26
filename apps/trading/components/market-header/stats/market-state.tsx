@@ -1,9 +1,9 @@
 import { useMarketState } from '@vegaprotocol/markets';
 import * as Schema from '@vegaprotocol/types';
-import { HeaderStat } from '../header';
+import { HeaderStat } from '../../header';
 import { DocsLinks } from '@vegaprotocol/environment';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
-import { useT } from '../../lib/use-t';
+import { useT } from '../../../lib/use-t';
 
 export const MarketState = ({ marketId }: { marketId?: string }) => {
   const t = useT();
@@ -13,7 +13,7 @@ export const MarketState = ({ marketId }: { marketId?: string }) => {
     <HeaderStat
       heading={t('Status')}
       description={useGetMarketStateTooltip(marketState ?? undefined)}
-      testId="market-state"
+      data-testid="market-state"
     >
       {marketState ? Schema.MarketStateMapping[marketState] : '-'}
     </HeaderStat>

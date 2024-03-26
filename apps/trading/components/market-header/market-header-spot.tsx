@@ -31,6 +31,11 @@ export const MarketHeaderSpot = ({ market }: MarketHeaderSpotProps) => {
         positionDecimalPlaces={market.positionDecimalPlaces}
         quoteUnit={quoteAsset.symbol}
       />
+      <Stats.MarketTradingModeStat
+        marketId={market.id}
+        initialTradingMode={market.tradingMode}
+      />
+      <Stats.MarketStateStat market={market} />
       <Stats.AssetStat
         heading={t('Quote asset')}
         asset={quoteAsset}
