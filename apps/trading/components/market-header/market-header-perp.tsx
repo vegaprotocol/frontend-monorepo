@@ -1,12 +1,7 @@
-import { DocsLinks, useEnvironment } from '@vegaprotocol/environment';
-import { ExternalLink, Link } from '@vegaprotocol/ui-toolkit';
+import { DocsLinks } from '@vegaprotocol/environment';
+import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 import type { Market } from '@vegaprotocol/markets';
-import {
-  addDecimalsFormatNumber,
-  fromNanoSeconds,
-  getMarketExpiryDate,
-  useExpiryDate,
-} from '@vegaprotocol/utils';
+import { addDecimalsFormatNumber, fromNanoSeconds } from '@vegaprotocol/utils';
 import {
   getAsset,
   getDataSourceSpecForSettlementSchedule,
@@ -19,7 +14,6 @@ import {
   getQuoteName,
   useMarketState,
 } from '@vegaprotocol/markets';
-import { MarketState as State } from '@vegaprotocol/types';
 import { HeaderStat } from '../../components/header';
 import { MarketMarkPrice } from '../../components/market-mark-price';
 import { HeaderStatMarketTradingMode } from '../../components/market-trading-mode';
@@ -33,13 +27,16 @@ import { AssetHeaderStat } from './asset-header-stat';
 import { Last24hPriceChangeHeaderStat } from './last-24h-price-change-header-stat';
 import { Last24hVolumeChangeHeaderStat } from './last-24h-volume-change-header-stat';
 
-interface MarketHeaderStatsProps {
+interface MarketHeaderPerpProps {
   market: Market;
 }
 
-export const MarketHeaderStats = ({ market }: MarketHeaderStatsProps) => {
+export const MarketHeaderPerp = ({ market }: MarketHeaderPerpProps) => {
+  if (market.tradableInstrument.instrument.product.__typename !== 'Perpetual') {
+    throw new Error('incorrect market type for header');
+  }
+
   const t = useT();
-  const { VEGA_EXPLORER_URL } = useEnvironment();
 
   const asset = getAsset(market);
   const quoteUnit = getQuoteName(market);
@@ -83,79 +80,41 @@ export const MarketHeaderStats = ({ market }: MarketHeaderStatsProps) => {
         assetDecimals={asset?.decimals || 0}
         quantum={asset.quantum}
       />
-      {market.tradableInstrument.instrument.product.__typename === 'Future' && (
-        <HeaderStat
-          heading={t('Expiry')}
-          description={
-            <ExpiryTooltipContent
-              market={market}
-              explorerUrl={VEGA_EXPLORER_URL}
-            />
-          }
-          data-testid="market-expiry"
-        >
-          <ExpiryLabel market={market} />
-        </HeaderStat>
-      )}
-      {market.tradableInstrument.instrument.product.__typename ===
-        'Perpetual' && (
-        <HeaderStat
-          heading={`${t('Funding Rate')} / ${t('Countdown')}`}
-          data-testid="market-funding"
-        >
-          <div className="flex gap-2">
-            <FundingRate marketId={market.id} />
-            <FundingCountdown marketId={market.id} />
+      <HeaderStat
+        heading={`${t('Funding Rate')} / ${t('Countdown')}`}
+        data-testid="market-funding"
+      >
+        <div className="flex gap-2">
+          <FundingRate marketId={market.id} />
+          <FundingCountdown marketId={market.id} />
+        </div>
+      </HeaderStat>
+      <HeaderStat
+        heading={`${t('Index Price')}`}
+        description={
+          <div className="p1">
+            {t(
+              'The external time weighted average price (TWAP) received from the data source defined in the data sourcing specification.'
+            )}
+            {DocsLinks && (
+              <ExternalLink href={DocsLinks.ETH_DATA_SOURCES} className="mt-2">
+                {t('Find out more')}
+              </ExternalLink>
+            )}
           </div>
-        </HeaderStat>
-      )}
-      {market.tradableInstrument.instrument.product.__typename ===
-        'Perpetual' && (
-        <HeaderStat
-          heading={`${t('Index Price')}`}
-          description={
-            <div className="p1">
-              {t(
-                'The external time weighted average price (TWAP) received from the data source defined in the data sourcing specification.'
-              )}
-              <div className="flex flex-col gap-1">
-                {DocsLinks && (
-                  <ExternalLink
-                    href={DocsLinks.ETH_DATA_SOURCES}
-                    className="mt-2"
-                  >
-                    {t('Find out more')}
-                  </ExternalLink>
-                )}
-                {sourceType && (
-                  <ExternalLink
-                    data-testid="oracle-spec-links"
-                    href={`${VEGA_EXPLORER_URL}/markets/${market.id}/oracles#${sourceType.address}`}
-                    className="text-xs my-1"
-                  >
-                    {t('Oracle specification')}
-                  </ExternalLink>
-                )}
-              </div>
-            </div>
+        }
+        data-testid="index-price"
+      >
+        <IndexPrice
+          marketId={market.id}
+          decimalPlaces={
+            market.tradableInstrument.instrument.product.settlementAsset
+              .decimals
           }
-          data-testid="index-price"
-        >
-          <IndexPrice
-            marketId={market.id}
-            decimalPlaces={
-              market.tradableInstrument.instrument.product.settlementAsset
-                .decimals
-            }
-          />
-        </HeaderStat>
-      )}
+        />
+      </HeaderStat>
     </>
   );
-};
-
-type ExpiryLabelProps = {
-  market: Market;
 };
 
 export const FundingRate = ({ marketId }: { marketId: string }) => {
@@ -263,69 +222,4 @@ export const FundingCountdown = ({ marketId }: { marketId: string }) => {
       {useFormatCountdown(now, startTime, every)}
     </div>
   );
-};
-
-const ExpiryLabel = ({ market }: ExpiryLabelProps) => {
-  const { data: marketState } = useMarketState(market.id);
-  const content =
-    useExpiryDate(
-      market.tradableInstrument.instrument.metadata.tags,
-      market.marketTimestamps.close,
-      marketState
-    ) || '-';
-  return <div data-testid="trading-expiry">{content}</div>;
-};
-
-type ExpiryTooltipContentProps = {
-  market: Market;
-  explorerUrl?: string;
-};
-
-const ExpiryTooltipContent = ({
-  market,
-  explorerUrl,
-}: ExpiryTooltipContentProps) => {
-  const { data: state } = useMarketState(market.id);
-  const t = useT();
-  if (market.marketTimestamps.close === null) {
-    const oracleId =
-      market.tradableInstrument.instrument.product.__typename === 'Future'
-        ? market.tradableInstrument.instrument.product
-            .dataSourceSpecForTradingTermination?.id
-        : undefined;
-
-    const metadataExpiryDate = getMarketExpiryDate(
-      market.tradableInstrument.instrument.metadata.tags
-    );
-
-    const isExpired =
-      metadataExpiryDate &&
-      Date.now() - metadataExpiryDate.valueOf() > 0 &&
-      (state === State.STATE_TRADING_TERMINATED ||
-        state === State.STATE_SETTLED);
-
-    return (
-      <section data-testid="expiry-tooltip">
-        <p className="mb-2">
-          {t(
-            'This market expires when triggered by its oracle, not on a set date.'
-          )}
-        </p>
-        {metadataExpiryDate && !isExpired && (
-          <p className="mb-2">
-            {t(
-              'This timestamp is user curated metadata and does not drive any on-chain functionality.'
-            )}
-          </p>
-        )}
-        {explorerUrl && oracleId && (
-          <Link href={`${explorerUrl}/oracles#${oracleId}`} target="_blank">
-            {t('View oracle specification')}
-          </Link>
-        )}
-      </section>
-    );
-  }
-
-  return null;
 };

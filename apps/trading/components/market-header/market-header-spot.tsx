@@ -6,11 +6,11 @@ import { LastTradeHeaderStat } from './last-trade-header-stat';
 import { Last24hPriceChangeHeaderStat } from './last-24h-price-change-header-stat';
 import { Last24hVolumeChangeHeaderStat } from './last-24h-volume-change-header-stat';
 
-interface MarketHeaderStatsProps {
+interface MarketHeaderSpotProps {
   market: Market;
 }
 
-export const MarketHeaderSpot = ({ market }: MarketHeaderStatsProps) => {
+export const MarketHeaderSpot = ({ market }: MarketHeaderSpotProps) => {
   if (market.tradableInstrument.instrument.product.__typename !== 'Spot') {
     throw new Error('incorrect market type for header');
   }

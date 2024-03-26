@@ -2,16 +2,10 @@ import { Popover, VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import { Header, HeaderTitle } from '../header';
 import { Route, Routes, useParams } from 'react-router-dom';
 import { MarketSelector } from '../../components/market-selector/market-selector';
-import { MarketHeaderStats } from './market-header-stats';
-import {
-  type Market,
-  getProductType,
-  useMarket,
-  useMarketList,
-} from '@vegaprotocol/markets';
+import { useMarket, useMarketList } from '@vegaprotocol/markets';
 import { useState } from 'react';
 import { ProductTypeShortName } from '@vegaprotocol/types';
-import { MarketHeaderSpot } from './market-header-spot';
+import { MarketHeaderSwitch } from './market-header-switch';
 
 export const MarketHeader = () => {
   const { marketId } = useParams();
@@ -65,22 +59,4 @@ export const MarketHeader = () => {
       />
     </Routes>
   );
-};
-
-export const MarketHeaderSwitch = ({ market }: { market: Market }) => {
-  const productType = getProductType(market);
-
-  if (productType === 'Spot') {
-    return <MarketHeaderSpot market={market} />;
-  }
-
-  if (productType === 'Future') {
-    return <MarketHeaderStats market={market} />;
-  }
-
-  if (productType === 'Perpetual') {
-    return <MarketHeaderStats market={market} />;
-  }
-
-  throw new Error('invalid product type');
 };
