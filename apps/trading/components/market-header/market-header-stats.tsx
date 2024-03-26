@@ -1,6 +1,5 @@
-import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import { DocsLinks, useEnvironment } from '@vegaprotocol/environment';
-import { ButtonLink, ExternalLink, Link } from '@vegaprotocol/ui-toolkit';
+import { ExternalLink, Link } from '@vegaprotocol/ui-toolkit';
 import type { Market } from '@vegaprotocol/markets';
 import {
   addDecimalsFormatNumber,
@@ -32,6 +31,7 @@ import { useEffect, useState } from 'react';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { PriceCell } from '@vegaprotocol/datagrid';
 import { useT } from '../../lib/use-t';
+import { AssetHeaderStat } from './asset-header-stat';
 
 interface MarketHeaderStatsProps {
   market: Market;
@@ -40,7 +40,6 @@ interface MarketHeaderStatsProps {
 export const MarketHeaderStats = ({ market }: MarketHeaderStatsProps) => {
   const t = useT();
   const { VEGA_EXPLORER_URL } = useEnvironment();
-  const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
 
   const asset = getAsset(market);
   const quoteUnit = getQuoteName(market);
@@ -53,19 +52,19 @@ export const MarketHeaderStats = ({ market }: MarketHeaderStatsProps) => {
 
   return (
     <>
-      <HeaderStat heading={t('Mark Price')} testId="market-price">
+      <HeaderStat heading={t('Mark Price')} data-testid="market-price">
         <MarketMarkPrice
           marketId={market.id}
           decimalPlaces={market.decimalPlaces}
         />
       </HeaderStat>
-      <HeaderStat heading={t('Change (24h)')} testId="market-change">
+      <HeaderStat heading={t('Change (24h)')} data-testid="market-change">
         <Last24hPriceChange
           marketId={market.id}
           decimalPlaces={market.decimalPlaces}
         />
       </HeaderStat>
-      <HeaderStat heading={t('Volume (24h)')} testId="market-volume">
+      <HeaderStat heading={t('Volume (24h)')} data-testid="market-volume">
         <Last24hVolume
           marketId={market.id}
           marketDecimals={market.decimalPlaces}
@@ -73,24 +72,16 @@ export const MarketHeaderStats = ({ market }: MarketHeaderStatsProps) => {
           quoteUnit={quoteUnit}
         />
       </HeaderStat>
-      <HeaderStatMarketTradingMode marketId={market.id} />
-      <MarketState marketId={market.id} />
-      {asset ? (
-        <HeaderStat
-          heading={t('Settlement asset')}
-          testId="market-settlement-asset"
-        >
-          <div>
-            <ButtonLink
-              onClick={(e) => {
-                openAssetDetailsDialog(asset.id, e.target as HTMLElement);
-              }}
-            >
-              {asset.symbol}
-            </ButtonLink>
-          </div>
-        </HeaderStat>
-      ) : null}
+      <HeaderStatMarketTradingMode
+        marketId={market.id}
+        initialTradingMode={market.tradingMode}
+      />
+      <MarketState market={market} />
+      <AssetHeaderStat
+        heading={t('Settlement asset')}
+        asset={asset}
+        data-testid="market-settlement-asset"
+      />
       <MarketLiquiditySupplied
         marketId={market.id}
         assetDecimals={asset?.decimals || 0}
@@ -105,7 +96,7 @@ export const MarketHeaderStats = ({ market }: MarketHeaderStatsProps) => {
               explorerUrl={VEGA_EXPLORER_URL}
             />
           }
-          testId="market-expiry"
+          data-testid="market-expiry"
         >
           <ExpiryLabel market={market} />
         </HeaderStat>
@@ -114,7 +105,7 @@ export const MarketHeaderStats = ({ market }: MarketHeaderStatsProps) => {
         'Perpetual' && (
         <HeaderStat
           heading={`${t('Funding Rate')} / ${t('Countdown')}`}
-          testId="market-funding"
+          data-testid="market-funding"
         >
           <div className="flex gap-2">
             <FundingRate marketId={market.id} />
@@ -152,7 +143,7 @@ export const MarketHeaderStats = ({ market }: MarketHeaderStatsProps) => {
               </div>
             </div>
           }
-          testId="index-price"
+          data-testid="index-price"
         >
           <IndexPrice
             marketId={market.id}

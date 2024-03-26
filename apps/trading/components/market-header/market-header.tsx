@@ -71,7 +71,7 @@ export const MarketHeaderSwitch = ({ market }: { market: Market }) => {
   const productType = getProductType(market);
 
   if (productType === 'Spot') {
-    <MarketHeaderSpot />;
+    return <MarketHeaderSpot market={market} />;
   }
 
   if (productType === 'Future') {
