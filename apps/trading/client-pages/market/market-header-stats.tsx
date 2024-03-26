@@ -45,6 +45,12 @@ export const MarketHeaderStats = ({ market }: MarketHeaderStatsProps) => {
   const asset = getAsset(market);
   const quoteUnit = getQuoteName(market);
 
+  const dataSourceSpec = market.markPriceConfiguration.dataSourcesSpec?.[1];
+  const sourceType =
+    dataSourceSpec?.sourceType.__typename === 'DataSourceDefinitionExternal' &&
+    dataSourceSpec?.sourceType.sourceType.__typename === 'EthCallSpec' &&
+    dataSourceSpec?.sourceType.sourceType;
+
   return (
     <>
       <HeaderStat heading={t('Mark Price')} testId="market-price">
@@ -125,14 +131,25 @@ export const MarketHeaderStats = ({ market }: MarketHeaderStatsProps) => {
               {t(
                 'The external time weighted average price (TWAP) received from the data source defined in the data sourcing specification.'
               )}
-              {DocsLinks && (
-                <ExternalLink
-                  href={DocsLinks.ETH_DATA_SOURCES}
-                  className="mt-2"
-                >
-                  {t('Find out more')}
-                </ExternalLink>
-              )}
+              <div className="flex flex-col">
+                {DocsLinks && (
+                  <ExternalLink
+                    href={DocsLinks.ETH_DATA_SOURCES}
+                    className="mt-2"
+                  >
+                    {t('Find out more')}
+                  </ExternalLink>
+                )}
+                {sourceType && (
+                  <ExternalLink
+                    data-testid="oracle-spec-links"
+                    href={`${VEGA_EXPLORER_URL}/markets/${market.id}/oracles#${sourceType.address}`}
+                    className="text-xs my-1"
+                  >
+                    {t('Oracle specification')}
+                  </ExternalLink>
+                )}
+              </div>
             </div>
           }
           testId="index-price"
