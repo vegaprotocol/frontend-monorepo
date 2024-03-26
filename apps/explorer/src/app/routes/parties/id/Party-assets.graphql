@@ -49,6 +49,14 @@ query ExplorerPartyAssets($partyId: ID!) {
             }
           }
         }
+        marginsConnection {
+          edges {
+            node {
+              marginMode
+              marginFactor
+            }
+          }
+        }
         stakingSummary {
           currentStakeAvailable
           linkings(pagination: { last: 100 }) {

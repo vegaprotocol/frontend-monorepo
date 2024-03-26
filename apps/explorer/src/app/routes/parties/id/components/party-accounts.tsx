@@ -5,6 +5,7 @@ import { AccountTypeMapping } from '@vegaprotocol/types';
 import { t } from '@vegaprotocol/i18n';
 import { Emblem } from '@vegaprotocol/emblem';
 import { ENV } from '../../../../config/env';
+import { PartyMarketMode } from './party-market-mode';
 interface PartyAccountsProps {
   partyId: string;
 }
@@ -30,6 +31,7 @@ export const PartyAccounts = ({ partyId }: PartyAccountsProps) => {
             <th className="text-right px-4">{t('Balance')}</th>
             <th className="text-left px-4">{t('Type')}</th>
             <th className="text-left px-4">{t('Market')}</th>
+            <th className="text-left px-4">{t('Margin mode')}</th>
             <th className="text-left px-4">{t('Asset')}</th>
           </tr>
         </thead>
@@ -70,6 +72,16 @@ export const PartyAccounts = ({ partyId }: PartyAccountsProps) => {
                   <td className="px-4">{AccountTypeMapping[type]}</td>
                   <td className="px-4">
                     {market?.id ? <MarketLink id={market.id} /> : '-'}
+                  </td>
+                  <td className="px-4">
+                    {market?.id ? (
+                      <PartyMarketMode
+                        partyId={partyId}
+                        marketId={market?.id}
+                      />
+                    ) : (
+                      '-'
+                    )}
                   </td>
                   <td className="px-4">
                     <Emblem asset={asset.id} vegaChain={ENV.vegaChainId} />
