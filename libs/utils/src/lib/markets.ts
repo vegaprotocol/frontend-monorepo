@@ -35,10 +35,10 @@ export const getMarketExpiryDateFormatted = (
   return null;
 };
 
-export const getExpiryDate = (
-  tags: ReadonlyArray<string> | null,
-  close: string | null,
-  state: MarketState
+export const useExpiryDate = (
+  tags?: ReadonlyArray<string> | null,
+  close?: string | null,
+  state?: MarketState | null
 ): string => {
   const t = useT();
   const metadataExpiryDate = getMarketExpiryDate(tags);

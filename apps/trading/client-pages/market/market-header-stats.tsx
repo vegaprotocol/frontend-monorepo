@@ -5,8 +5,8 @@ import type { Market } from '@vegaprotocol/markets';
 import {
   addDecimalsFormatNumber,
   fromNanoSeconds,
-  getExpiryDate,
   getMarketExpiryDate,
+  useExpiryDate,
 } from '@vegaprotocol/utils';
 import {
   Last24hPriceChange,
@@ -262,15 +262,13 @@ export const FundingCountdown = ({ marketId }: { marketId: string }) => {
 };
 
 const ExpiryLabel = ({ market }: ExpiryLabelProps) => {
-  const { data: state } = useMarketState(market.id);
+  const { data: marketState } = useMarketState(market.id);
   const content =
-    market.tradableInstrument.instrument.metadata.tags && state
-      ? getExpiryDate(
-          market.tradableInstrument.instrument.metadata.tags,
-          market.marketTimestamps.close,
-          state
-        )
-      : '-';
+    useExpiryDate(
+      market.tradableInstrument.instrument.metadata.tags,
+      market.marketTimestamps.close,
+      marketState
+    ) || '-';
   return <div data-testid="trading-expiry">{content}</div>;
 };
 
