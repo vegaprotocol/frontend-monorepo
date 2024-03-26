@@ -27,6 +27,14 @@ export const generateFundingPayment = (
           makerFee: '0.1',
         },
       },
+      markPriceConfiguration: {
+        decayWeight: '',
+        decayPower: 0,
+        cashAmount: '',
+        SourceStalenessTolerance: [],
+        CompositePriceType:
+          Schema.CompositePriceType.COMPOSITE_PRICE_TYPE_LAST_TRADE,
+      },
       marketTimestamps: {
         __typename: 'MarketTimestamps',
         proposed: '2005-03-31T19:37:00.000Z',

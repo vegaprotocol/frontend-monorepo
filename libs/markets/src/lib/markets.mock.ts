@@ -159,6 +159,14 @@ export const createMarketFragment = (
       __typename: 'TradableInstrument',
     },
     __typename: 'Market',
+    markPriceConfiguration: {
+      decayWeight: '',
+      decayPower: 0,
+      cashAmount: '',
+      SourceStalenessTolerance: [],
+      CompositePriceType:
+        Schema.CompositePriceType.COMPOSITE_PRICE_TYPE_LAST_TRADE,
+    },
   };
 
   return merge(cloneDeep(defaultFragment), override);

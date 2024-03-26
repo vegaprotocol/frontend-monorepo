@@ -21,6 +21,14 @@ export const generateOrder = (partialOrder?: PartialDeep<Order>) => {
           makerFee: '0.1',
         },
       },
+      markPriceConfiguration: {
+        decayWeight: '',
+        decayPower: 0,
+        cashAmount: '',
+        SourceStalenessTolerance: [],
+        CompositePriceType:
+          Schema.CompositePriceType.COMPOSITE_PRICE_TYPE_LAST_TRADE,
+      },
       marketTimestamps: {
         __typename: 'MarketTimestamps',
         proposed: '2022-08-23T11:36:32.252490405Z',

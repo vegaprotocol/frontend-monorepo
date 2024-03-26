@@ -51,6 +51,14 @@ export const generateFill = (override?: PartialDeep<Trade>) => {
       positionDecimalPlaces: 0,
       decimalPlaces: 5,
       tickSize: '1',
+      markPriceConfiguration: {
+        decayWeight: '',
+        decayPower: 0,
+        cashAmount: '',
+        SourceStalenessTolerance: [],
+        CompositePriceType:
+          Schema.CompositePriceType.COMPOSITE_PRICE_TYPE_LAST_TRADE,
+      },
       fees: {
         __typename: 'Fees',
         factors: {
