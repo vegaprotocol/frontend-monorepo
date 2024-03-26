@@ -46,6 +46,11 @@ export const MarketHeaderSpot = ({ market }: MarketHeaderSpotProps) => {
         asset={baseAsset}
         data-testid="base-asset"
       />
+      <Stats.LiquidityStat
+        marketId={market.id}
+        assetDecimals={quoteAsset.decimals}
+        quantum={quoteAsset.quantum}
+      />
     </>
   );
 };
