@@ -58,6 +58,10 @@ export const RankPayoutTable = ({
               const isFinalTier = tier === rankTable.length - 1;
               isOpenFinalTier =
                 isFinalTier && rank ? rank.shareRatio > 0 : false;
+
+              if (isFinalTier && rank?.shareRatio === 0) {
+                return null;
+              }
               return (
                 rank && (
                   <tr
@@ -74,17 +78,17 @@ export const RankPayoutTable = ({
                     </td>
                     <td>
                       <span className="flex p-1 justify-end">
-                        {endRank || 'N/A*'}
+                        {endRank || 'TBC*'}
                       </span>
                     </td>
                     <td>
                       <span className="flex p-1 justify-end">
-                        {rank.shareRatio || 'N/A*'}
+                        {rank.shareRatio || 'TBC*'}
                       </span>
                     </td>
                     <td>
                       <span className="flex p-1 justify-end">
-                        {placesPaid || 'N/A*'}
+                        {placesPaid || 'TBC*'}
                       </span>
                     </td>
                     <td>
@@ -92,9 +96,9 @@ export const RankPayoutTable = ({
                         {payoutsPerWinnerAsPercentage?.[tier]
                           ? `${formatNumber(
                               payoutsPerWinnerAsPercentage[tier],
-                              4
+                              2
                             )} %`
-                          : 'N/A*'}
+                          : 'TBC*'}
                       </span>
                     </td>
                   </tr>
@@ -146,17 +150,16 @@ export const usePayoutPerRank = (
     const endRank =
       tier < rankTable.length - 1 ? rankTable[tier + 1]?.startRank : undefined;
     endRank && endRanks.push(endRank);
-    const numPayout = endRank && startRank ? endRank - startRank : undefined;
+    const numPayout = endRank && startRank ? endRank - startRank : 0;
 
-    numPayout && numPayouts.push(numPayout);
+    numPayouts.push(numPayout);
 
     const shareRatio = rank?.shareRatio;
-    const ratioShare =
-      shareRatio && numPayout ? shareRatio * numPayout : undefined;
+    const ratioShare = shareRatio ? shareRatio * numPayout : 0;
 
-    ratioShare && ratioShares.push(ratioShare);
+    ratioShares.push(ratioShare);
 
-    totalRatio += ratioShare || 0;
+    totalRatio += ratioShare;
   });
 
   rankTable.forEach((_rank, tier) => {
