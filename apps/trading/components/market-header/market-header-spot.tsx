@@ -25,12 +25,11 @@ export const MarketHeaderSpot = ({ market }: MarketHeaderSpotProps) => {
         marketId={market.id}
         decimalPlaces={market.decimalPlaces}
       />
-      <Stats.Last24hVolumeChangeStat
+      <Stats.Last24hSpotVolumeStat
         marketId={market.id}
         marketDecimalPlaces={market.decimalPlaces}
-        positionDecimalPlaces={market.positionDecimalPlaces}
-        quoteUnit={quoteAsset.symbol}
-        baseUnit={baseAsset.symbol}
+        quoteAsset={quoteAsset}
+        baseAsset={baseAsset}
       />
       <Stats.MarketTradingModeStat
         marketId={market.id}
