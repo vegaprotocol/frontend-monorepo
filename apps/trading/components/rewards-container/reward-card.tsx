@@ -145,6 +145,7 @@ const RewardCard = ({
                           dispatchStrategy.distributionStrategy
                         ]
                       )}
+                      .
                     </p>
 
                     <p>

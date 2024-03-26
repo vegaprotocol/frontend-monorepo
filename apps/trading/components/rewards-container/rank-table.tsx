@@ -10,47 +10,106 @@ export const RankPayoutTable = ({
   const t = useT();
   const { payoutsPerWinnerAsPercentage, numPayouts, endRanks } =
     usePayoutPerRank(rankTable);
+  let isOpenFinalTier = false;
+
   return (
     rankTable &&
     rankTable.length > 0 && (
-      <table className="min-w-full divide-y divide-gray-200">
-        <thead className="">
-          <tr className="text-right text-xs divide-x p-4">
-            <th scope="col">{t('Rank Tier')}</th>
-            <th scope="col">{t('Start Rank')}</th>
-            <th scope="col">{t('End Rank')}</th>
-            <th scope="col">{t('Share Ratio')}</th>
-            <th scope="col">{t('Places Paid')}</th>
-            <th scope="col">{t('Payout')}</th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-gray-500 text-xs">
-          {rankTable?.map((rank: RankTable | null, tier: number) => {
-            const endRank = endRanks?.[tier];
-            const placesPaid = numPayouts?.[tier];
-            return (
-              rank && (
-                <tr
-                  key={`rank-table-row-${tier}`}
-                  className="whitespace-nowrap text-right divide-x p-4"
-                >
-                  <td>{tier + 1}</td>
-                  <td>{rank.startRank}</td>
-                  <td>{endRank || '-'}</td>
-                  <td>{rank.shareRatio}</td>
-                  <td>{placesPaid}</td>
-                  <td>
-                    {payoutsPerWinnerAsPercentage?.[tier]
-                      ? `${formatNumber(payoutsPerWinnerAsPercentage[tier], 4)}
-                    %`
-                      : '-'}
-                  </td>
-                </tr>
-              )
-            );
-          })}
-        </tbody>
-      </table>
+      <>
+        <table className="min-w-full divide-y divide-gray-200">
+          <thead className="">
+            <tr className="text-right text-xs divide-x">
+              <th scope="col">
+                <span className="flex p-1 w-full justify-end">
+                  {t('Rank tier')}
+                </span>
+              </th>
+              <th scope="col">
+                <span className="flex p-1 w-full justify-end">
+                  {t('Start rank')}
+                </span>
+              </th>
+              <th scope="col">
+                <span className="flex p-1 w-full justify-end">
+                  {t('End rank')}
+                </span>
+              </th>
+              <th scope="col">
+                <span className="flex p-1 w-full justify-end">
+                  {t('Share ratio')}
+                </span>
+              </th>
+              <th scope="col">
+                <span className="flex p-1 w-full justify-end">
+                  {t('Places paid')}
+                </span>
+              </th>
+              <th scope="col">
+                <span className="flex p-1 w-full justify-end">
+                  {t('Payout')}
+                </span>
+              </th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-500 text-xs">
+            {rankTable?.map((rank: RankTable | null, tier: number) => {
+              const endRank = endRanks?.[tier];
+              const placesPaid = numPayouts?.[tier];
+              const isFinalTier = tier === rankTable.length - 1;
+              isOpenFinalTier =
+                isFinalTier && rank ? rank.shareRatio > 0 : false;
+              return (
+                rank && (
+                  <tr
+                    key={`rank-table-row-${tier}`}
+                    className="whitespace-nowrap text-right divide-x p-4"
+                  >
+                    <td>
+                      <span className="flex p-1 justify-end">{tier + 1}</span>
+                    </td>
+                    <td>
+                      <span className="flex p-1 justify-end">
+                        {rank.startRank}
+                      </span>
+                    </td>
+                    <td>
+                      <span className="flex p-1 justify-end">
+                        {endRank || 'N/A*'}
+                      </span>
+                    </td>
+                    <td>
+                      <span className="flex p-1 justify-end">
+                        {rank.shareRatio || 'N/A*'}
+                      </span>
+                    </td>
+                    <td>
+                      <span className="flex p-1 justify-end">
+                        {placesPaid || 'N/A*'}
+                      </span>
+                    </td>
+                    <td>
+                      <span className="flex p-1 justify-end">
+                        {payoutsPerWinnerAsPercentage?.[tier]
+                          ? `${formatNumber(
+                              payoutsPerWinnerAsPercentage[tier],
+                              4
+                            )} %`
+                          : 'N/A*'}
+                      </span>
+                    </td>
+                  </tr>
+                )
+              );
+            })}
+          </tbody>
+        </table>
+        <p>
+          {isOpenFinalTier &&
+            t(
+              '*Note: Final tier will payout to all game participants, therefore all payout estimates will lower depending on how many participants there are.'
+            )}
+        </p>
+      </>
     )
   );
 };
@@ -87,16 +146,17 @@ export const usePayoutPerRank = (
     const endRank =
       tier < rankTable.length - 1 ? rankTable[tier + 1]?.startRank : undefined;
     endRank && endRanks.push(endRank);
-    const numPayout = endRank && startRank ? endRank - startRank : 0;
+    const numPayout = endRank && startRank ? endRank - startRank : undefined;
 
-    numPayouts.push(numPayout);
+    numPayout && numPayouts.push(numPayout);
 
     const shareRatio = rank?.shareRatio;
-    const ratioShare = shareRatio ? shareRatio * numPayout : 0;
+    const ratioShare =
+      shareRatio && numPayout ? shareRatio * numPayout : undefined;
 
-    ratioShares.push(ratioShare);
+    ratioShare && ratioShares.push(ratioShare);
 
-    totalRatio += ratioShare;
+    totalRatio += ratioShare || 0;
   });
 
   rankTable.forEach((_rank, tier) => {
