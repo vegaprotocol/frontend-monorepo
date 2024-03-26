@@ -1,11 +1,9 @@
-import { useCallback, useMemo, useState } from 'react';
 import {
   NetworkParams,
   useNetworkParams,
 } from '@vegaprotocol/network-parameters';
 import { useDataProvider } from '@vegaprotocol/data-provider';
-import type { MarketData } from '@vegaprotocol/markets';
-import { marketDataProvider, marketProvider } from '@vegaprotocol/markets';
+import { marketDataProvider } from '@vegaprotocol/markets';
 import { HeaderStat } from '../../header';
 import {
   ExternalLink,
@@ -27,8 +25,7 @@ import { Links } from '../../../lib/links';
 import { useT } from '../../../lib/use-t';
 
 interface LiquidityStatProps {
-  marketId?: string;
-  noUpdate?: boolean;
+  marketId: string;
   assetDecimals: number;
   quantum: string;
 }
@@ -36,11 +33,9 @@ interface LiquidityStatProps {
 export const LiquidityStat = ({
   marketId,
   assetDecimals,
-  noUpdate = false,
   quantum,
 }: LiquidityStatProps) => {
   const t = useT();
-  const [market, setMarket] = useState<MarketData>();
   const { params } = useNetworkParams([
     NetworkParams.market_liquidity_stakeToCcyVolume,
     NetworkParams.market_liquidity_targetstake_triggering_ratio,
@@ -48,34 +43,9 @@ export const LiquidityStat = ({
 
   const stakeToCcyVolume = params.market_liquidity_stakeToCcyVolume;
 
-  const variables = useMemo(
-    () => ({
-      marketId: marketId || '',
-    }),
-    [marketId]
-  );
-
-  const { data } = useDataProvider({
-    dataProvider: marketProvider,
-    variables,
-    skip: !marketId,
-  });
-
-  const update = useCallback(
-    ({ data: marketData }: { data: MarketData | null }) => {
-      if (!noUpdate && marketData) {
-        setMarket(marketData);
-      }
-      return true;
-    },
-    [noUpdate]
-  );
-
-  useDataProvider({
+  const { data: market } = useDataProvider({
     dataProvider: marketDataProvider,
-    update,
-    variables,
-    skip: noUpdate || !marketId || !data,
+    variables: { marketId },
   });
 
   const supplied = market?.suppliedStake
