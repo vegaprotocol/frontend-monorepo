@@ -36,11 +36,6 @@ export const RankPayoutTable = ({
               </th>
               <th scope="col">
                 <span className="flex p-1 w-full justify-end">
-                  {t('Share ratio')}
-                </span>
-              </th>
-              <th scope="col">
-                <span className="flex p-1 w-full justify-end">
                   {t('Places paid')}
                 </span>
               </th>
@@ -79,11 +74,6 @@ export const RankPayoutTable = ({
                     <td>
                       <span className="flex p-1 justify-end">
                         {endRank || 'TBC*'}
-                      </span>
-                    </td>
-                    <td>
-                      <span className="flex p-1 justify-end">
-                        {rank.shareRatio || 'TBC*'}
                       </span>
                     </td>
                     <td>
