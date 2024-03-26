@@ -1,7 +1,10 @@
 import type { Market } from '@vegaprotocol/markets';
-import { AssetHeaderStat } from './asset-header-stat';
 import { useT } from '../../lib/use-t';
+
+import { AssetHeaderStat } from './asset-header-stat';
 import { LastTradeHeaderStat } from './last-trade-header-stat';
+import { Last24hPriceChangeHeaderStat } from './last-24h-price-change-header-stat';
+import { Last24hVolumeChangeHeaderStat } from './last-24h-volume-change-header-stat';
 
 interface MarketHeaderStatsProps {
   market: Market;
@@ -21,6 +24,16 @@ export const MarketHeaderSpot = ({ market }: MarketHeaderStatsProps) => {
       <LastTradeHeaderStat
         marketId={market.id}
         decimalPlaces={market.decimalPlaces}
+      />
+      <Last24hPriceChangeHeaderStat
+        marketId={market.id}
+        decimalPlaces={market.decimalPlaces}
+      />
+      <Last24hVolumeChangeHeaderStat
+        marketId={market.id}
+        marketDecimalPlaces={market.decimalPlaces}
+        positionDecimalPlaces={market.positionDecimalPlaces}
+        quoteUnit={quoteAsset.symbol}
       />
       <AssetHeaderStat
         heading={t('Quote asset')}
