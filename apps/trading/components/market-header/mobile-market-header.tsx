@@ -10,7 +10,7 @@ import * as PopoverPrimitive from '@radix-ui/react-popover';
 import { useState } from 'react';
 import { useT } from '../../lib/use-t';
 import classNames from 'classnames';
-import { MarketHeaderStats } from '../../client-pages/market/market-header-stats';
+import { MarketHeaderStats } from './market-header-stats';
 import { MarketMarkPrice } from '../market-mark-price';
 import { MarketBanner } from '../market-banner';
 /**
