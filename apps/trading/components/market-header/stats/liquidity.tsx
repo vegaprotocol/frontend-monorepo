@@ -6,7 +6,7 @@ import {
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import type { MarketData } from '@vegaprotocol/markets';
 import { marketDataProvider, marketProvider } from '@vegaprotocol/markets';
-import { HeaderStat } from '../header';
+import { HeaderStat } from '../../header';
 import {
   ExternalLink,
   Indicator,
@@ -23,22 +23,22 @@ import {
 } from '@vegaprotocol/utils';
 import { DocsLinks } from '@vegaprotocol/environment';
 import { Link } from 'react-router-dom';
-import { Links } from '../../lib/links';
-import { useT } from '../../lib/use-t';
+import { Links } from '../../../lib/links';
+import { useT } from '../../../lib/use-t';
 
-interface Props {
+interface LiquidityStatProps {
   marketId?: string;
   noUpdate?: boolean;
   assetDecimals: number;
   quantum: string;
 }
 
-export const MarketLiquiditySupplied = ({
+export const LiquidityStat = ({
   marketId,
   assetDecimals,
   noUpdate = false,
   quantum,
-}: Props) => {
+}: LiquidityStatProps) => {
   const t = useT();
   const [market, setMarket] = useState<MarketData>();
   const { params } = useNetworkParams([
@@ -158,13 +158,16 @@ export const MarketLiquiditySupplied = ({
     <HeaderStat
       heading={t('Liquidity supplied')}
       description={description}
-      testId="liquidity-supplied"
+      data-testid="liquidity-supplied"
     >
       <Indicator variant={status} /> {supplied} (
       {percentage.gt(100) ? '>100%' : formatNumberPercentage(percentage, 2)})
     </HeaderStat>
   ) : (
-    <HeaderStat heading={t('Liquidity supplied')} testId="liquidity-supplied">
+    <HeaderStat
+      heading={t('Liquidity supplied')}
+      data-testid="liquidity-supplied"
+    >
       {'-'}
     </HeaderStat>
   );

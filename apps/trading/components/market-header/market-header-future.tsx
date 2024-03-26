@@ -1,6 +1,5 @@
 import type { Market } from '@vegaprotocol/markets';
 import { getAsset, getQuoteName } from '@vegaprotocol/markets';
-import { MarketLiquiditySupplied } from '../../components/liquidity-supplied';
 import { useT } from '../../lib/use-t';
 import * as Stats from './stats';
 
@@ -44,7 +43,7 @@ export const MarketHeaderFuture = ({ market }: MarketHeaderFutureProps) => {
         asset={asset}
         data-testid="market-settlement-asset"
       />
-      <MarketLiquiditySupplied
+      <Stats.LiquidityStat
         marketId={market.id}
         assetDecimals={asset?.decimals || 0}
         quantum={asset.quantum}

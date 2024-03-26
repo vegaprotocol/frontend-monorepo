@@ -15,7 +15,6 @@ import {
   useMarketState,
 } from '@vegaprotocol/markets';
 import { HeaderStat } from '../../components/header';
-import { MarketLiquiditySupplied } from '../../components/liquidity-supplied';
 import { useEffect, useState } from 'react';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { PriceCell } from '@vegaprotocol/datagrid';
@@ -68,9 +67,9 @@ export const MarketHeaderPerp = ({ market }: MarketHeaderPerpProps) => {
         asset={asset}
         data-testid="market-settlement-asset"
       />
-      <MarketLiquiditySupplied
+      <Stats.LiquidityStat
         marketId={market.id}
-        assetDecimals={asset?.decimals || 0}
+        assetDecimals={asset.decimals}
         quantum={asset.quantum}
       />
       <HeaderStat
