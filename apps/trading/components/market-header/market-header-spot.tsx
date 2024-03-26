@@ -30,6 +30,7 @@ export const MarketHeaderSpot = ({ market }: MarketHeaderSpotProps) => {
         marketDecimalPlaces={market.decimalPlaces}
         positionDecimalPlaces={market.positionDecimalPlaces}
         quoteUnit={quoteAsset.symbol}
+        baseUnit={baseAsset.symbol}
       />
       <Stats.MarketTradingModeStat
         marketId={market.id}

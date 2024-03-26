@@ -8,6 +8,9 @@ type Last24hPriceChangeStatProps = HTMLAttributes<HTMLDivElement> & {
   decimalPlaces: number;
 };
 
+/**
+ * The last 24h price change wrapped in a HeaderStat
+ */
 export const Last24hPriceChangeStat = ({
   marketId,
   decimalPlaces,
