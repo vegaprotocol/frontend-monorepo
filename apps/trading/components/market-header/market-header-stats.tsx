@@ -8,8 +8,6 @@ import {
   useExpiryDate,
 } from '@vegaprotocol/utils';
 import {
-  Last24hPriceChange,
-  Last24hVolume,
   getAsset,
   getDataSourceSpecForSettlementSchedule,
   isMarketInAuction,
@@ -32,6 +30,8 @@ import { useDataProvider } from '@vegaprotocol/data-provider';
 import { PriceCell } from '@vegaprotocol/datagrid';
 import { useT } from '../../lib/use-t';
 import { AssetHeaderStat } from './asset-header-stat';
+import { Last24hPriceChangeHeaderStat } from './last-24h-price-change-header-stat';
+import { Last24hVolumeChangeHeaderStat } from './last-24h-volume-change-header-stat';
 
 interface MarketHeaderStatsProps {
   market: Market;
@@ -58,20 +58,16 @@ export const MarketHeaderStats = ({ market }: MarketHeaderStatsProps) => {
           decimalPlaces={market.decimalPlaces}
         />
       </HeaderStat>
-      <HeaderStat heading={t('Change (24h)')} data-testid="market-change">
-        <Last24hPriceChange
-          marketId={market.id}
-          decimalPlaces={market.decimalPlaces}
-        />
-      </HeaderStat>
-      <HeaderStat heading={t('Volume (24h)')} data-testid="market-volume">
-        <Last24hVolume
-          marketId={market.id}
-          marketDecimals={market.decimalPlaces}
-          positionDecimalPlaces={market.positionDecimalPlaces}
-          quoteUnit={quoteUnit}
-        />
-      </HeaderStat>
+      <Last24hPriceChangeHeaderStat
+        marketId={market.id}
+        decimalPlaces={market.decimalPlaces}
+      />
+      <Last24hVolumeChangeHeaderStat
+        marketId={market.id}
+        marketDecimalPlaces={market.decimalPlaces}
+        positionDecimalPlaces={market.positionDecimalPlaces}
+        quoteUnit={quoteUnit}
+      />
       <HeaderStatMarketTradingMode
         marketId={market.id}
         initialTradingMode={market.tradingMode}
