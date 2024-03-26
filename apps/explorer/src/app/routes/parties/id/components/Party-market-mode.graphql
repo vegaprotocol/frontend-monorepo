@@ -1,0 +1,15 @@
+query ExplorerPartyMarginMode($partyId: ID!, $marketId: ID!) {
+  partyMarginModes(partyId: $partyId, marketId: $marketId) {
+    edges {
+      node {
+        atEpoch
+        partyId
+        marketId
+        marginMode
+        marginFactor
+        maxTheoreticalLeverage
+        minTheoreticalMarginFactor
+      }
+    }
+  }
+}

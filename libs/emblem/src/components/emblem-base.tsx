@@ -20,7 +20,7 @@ export function EmblemBase(p: ImgProps) {
       alt={p.alt || 'Emblem'}
       width="20"
       height="20"
-      className="inline-block w-5 h-5 mx-2"
+      className="inline-block w-5 h-5 mx-2 align-text-top"
     />
   );
 }

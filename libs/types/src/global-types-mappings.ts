@@ -54,7 +54,7 @@ export const AccountTypeMapping: {
   ACCOUNT_TYPE_GLOBAL_REWARD: 'Global reward account',
   ACCOUNT_TYPE_INSURANCE: 'Insurance account',
   ACCOUNT_TYPE_MARGIN: 'Margin account',
-  ACCOUNT_TYPE_ORDER_MARGIN: 'Per asset market account',
+  ACCOUNT_TYPE_ORDER_MARGIN: 'Order margin account',
   ACCOUNT_TYPE_PENDING_TRANSFERS: 'Pending transfers account',
   ACCOUNT_TYPE_PENDING_FEE_REFERRAL_REWARD:
     'Pending fee referral reward account',
