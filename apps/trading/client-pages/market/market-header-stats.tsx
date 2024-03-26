@@ -131,7 +131,7 @@ export const MarketHeaderStats = ({ market }: MarketHeaderStatsProps) => {
               {t(
                 'The external time weighted average price (TWAP) received from the data source defined in the data sourcing specification.'
               )}
-              <div className="flex flex-col">
+              <div className="flex flex-col gap-1">
                 {DocsLinks && (
                   <ExternalLink
                     href={DocsLinks.ETH_DATA_SOURCES}
