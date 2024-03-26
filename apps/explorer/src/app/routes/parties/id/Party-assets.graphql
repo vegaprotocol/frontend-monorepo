@@ -52,6 +52,9 @@ query ExplorerPartyAssets($partyId: ID!) {
         marginsConnection {
           edges {
             node {
+              market {
+                id
+              }
               marginMode
               marginFactor
             }
