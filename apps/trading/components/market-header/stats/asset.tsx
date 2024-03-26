@@ -1,18 +1,14 @@
 import { ButtonLink } from '@vegaprotocol/ui-toolkit';
-import { HeaderStat } from '../header';
+import { HeaderStat } from '../../header';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import { type HTMLAttributes } from 'react';
 
-type AssetHeaderStatProps = HTMLAttributes<HTMLDivElement> & {
+type AssetStatProps = HTMLAttributes<HTMLDivElement> & {
   heading: string;
   asset: { id: string; symbol: string };
 };
 
-export const AssetHeaderStat = ({
-  heading,
-  asset,
-  ...props
-}: AssetHeaderStatProps) => {
+export const AssetStat = ({ heading, asset, ...props }: AssetStatProps) => {
   const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
 
   return (

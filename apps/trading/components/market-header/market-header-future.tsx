@@ -5,14 +5,11 @@ import { getExpiryDate, getMarketExpiryDate } from '@vegaprotocol/utils';
 import { getAsset, getQuoteName } from '@vegaprotocol/markets';
 import { MarketState as State } from '@vegaprotocol/types';
 import { HeaderStat } from '../../components/header';
-import { MarketMarkPrice } from '../../components/market-mark-price';
 import { HeaderStatMarketTradingMode } from '../../components/market-trading-mode';
 import { MarketState } from '../../components/market-state';
 import { MarketLiquiditySupplied } from '../../components/liquidity-supplied';
 import { useT } from '../../lib/use-t';
-import { AssetHeaderStat } from './asset-header-stat';
-import { Last24hPriceChangeHeaderStat } from './last-24h-price-change-header-stat';
-import { Last24hVolumeChangeHeaderStat } from './last-24h-volume-change-header-stat';
+import * as Stats from './stats';
 
 interface MarketHeaderFutureProps {
   market: Market;
@@ -31,17 +28,15 @@ export const MarketHeaderFuture = ({ market }: MarketHeaderFutureProps) => {
 
   return (
     <>
-      <HeaderStat heading={t('Mark Price')} data-testid="market-price">
-        <MarketMarkPrice
-          marketId={market.id}
-          decimalPlaces={market.decimalPlaces}
-        />
-      </HeaderStat>
-      <Last24hPriceChangeHeaderStat
+      <Stats.MarkPriceStat
         marketId={market.id}
         decimalPlaces={market.decimalPlaces}
       />
-      <Last24hVolumeChangeHeaderStat
+      <Stats.Last24hPriceChangeStat
+        marketId={market.id}
+        decimalPlaces={market.decimalPlaces}
+      />
+      <Stats.Last24hVolumeChangeStat
         marketId={market.id}
         marketDecimalPlaces={market.decimalPlaces}
         positionDecimalPlaces={market.positionDecimalPlaces}
@@ -52,7 +47,7 @@ export const MarketHeaderFuture = ({ market }: MarketHeaderFutureProps) => {
         initialTradingMode={market.tradingMode}
       />
       <MarketState market={market} />
-      <AssetHeaderStat
+      <Stats.AssetStat
         heading={t('Settlement asset')}
         asset={asset}
         data-testid="market-settlement-asset"

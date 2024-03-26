@@ -1,21 +1,21 @@
-import { useT } from '../../lib/use-t';
-import { HeaderStat } from '../header';
+import { useT } from '../../../lib/use-t';
+import { HeaderStat } from '../../header';
 import { type HTMLAttributes } from 'react';
 import { Last24hVolume } from '@vegaprotocol/markets';
 
-type Last24hVolumeChangeHeaderStatsProps = HTMLAttributes<HTMLDivElement> & {
+type Last24hVolumeChangeStatProps = HTMLAttributes<HTMLDivElement> & {
   marketId: string;
   marketDecimalPlaces: number;
   positionDecimalPlaces: number;
   quoteUnit: string;
 };
 
-export const Last24hVolumeChangeHeaderStat = ({
+export const Last24hVolumeChangeStat = ({
   marketId,
   marketDecimalPlaces,
   positionDecimalPlaces,
   quoteUnit,
-}: Last24hVolumeChangeHeaderStatsProps) => {
+}: Last24hVolumeChangeStatProps) => {
   const t = useT();
 
   return (
