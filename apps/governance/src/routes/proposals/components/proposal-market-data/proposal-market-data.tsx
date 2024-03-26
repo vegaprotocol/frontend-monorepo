@@ -50,7 +50,7 @@ export const useMarketDataDialogStore = create<MarketDataDialogState>(
 const marketDataHeaderStyles =
   'font-alpha calt text-base border-b border-vega-dark-200 mt-2 py-2';
 
-export const ProposalMarketData = ({ proposalId }: { proposalId: string }) => {
+export const ProposalMarketData = ({ marketId }: { marketId: string }) => {
   const { t } = useTranslation();
   const { isOpen, open, close } = useMarketDataDialogStore();
   const [showDetails, setShowDetails] = useState(false);
@@ -59,7 +59,7 @@ export const ProposalMarketData = ({ proposalId }: { proposalId: string }) => {
     dataProvider: marketInfoProvider,
     skipUpdates: true,
     variables: {
-      marketId: proposalId,
+      marketId: marketId,
     },
   });
 
