@@ -7,8 +7,6 @@ import {
   VegaIcon,
   VegaIconNames,
   truncateMiddle,
-  KeyValueTable,
-  KeyValueTableRow,
 } from '@vegaprotocol/ui-toolkit';
 import {
   DistributionStrategyDescriptionMapping,
@@ -35,7 +33,7 @@ import { type EnrichedRewardTransfer } from '../../lib/hooks/use-rewards';
 import compact from 'lodash/compact';
 import BigNumber from 'bignumber.js';
 import { useTWAPQuery } from '../../lib/hooks/__generated__/Rewards';
-import { usePayoutPerRank } from './use-payout-per-rank';
+import { RankPayoutTable } from './rank-table';
 
 const Tick = () => (
   <VegaIcon
@@ -95,10 +93,6 @@ const RewardCard = ({
   gameId?: string | null;
 }) => {
   const t = useT();
-  const { rankTable } = dispatchStrategy;
-
-  const result = usePayoutPerRank(rankTable);
-  const { payoutsPerWinnerAsPercentage } = result;
 
   return (
     <div>
@@ -144,44 +138,25 @@ const RewardCard = ({
               {/** DISTRIBUTION STRATEGY */}
               <Tooltip
                 description={
-                  <div>
-                    {t(
-                      DistributionStrategyDescriptionMapping[
-                        dispatchStrategy.distributionStrategy
-                      ]
-                    )}
-                    .
-                    {payoutsPerWinnerAsPercentage &&
-                      payoutsPerWinnerAsPercentage.length > 0 && (
-                        <KeyValueTable
-                          className="text-xs"
-                          data-testid="rank-table"
-                        >
-                          <KeyValueTableRow
-                            key="rank-table-header"
-                            className="text-xs"
-                          >
-                            <dd>{t('Tier')}</dd>
-                            <dt>{t('Payout per Tier (%)')}</dt>
-                          </KeyValueTableRow>
-
-                          {payoutsPerWinnerAsPercentage?.map(
-                            (payout: number, tier: number) => {
-                              return (
-                                payout && (
-                                  <KeyValueTableRow
-                                    key={`rank-table-row-${tier}`}
-                                    className="text-xs"
-                                  >
-                                    <dd>{tier + 1}</dd>
-                                    <dt>{formatNumber(payout, 4)}%</dt>
-                                  </KeyValueTableRow>
-                                )
-                              );
-                            }
-                          )}
-                        </KeyValueTable>
+                  <div className="flex flex-col gap-4">
+                    <p>
+                      {t(
+                        DistributionStrategyDescriptionMapping[
+                          dispatchStrategy.distributionStrategy
+                        ]
                       )}
+                    </p>
+
+                    <p>
+                      {dispatchStrategy.rankTable &&
+                        t(
+                          'Payout percentages are base estimates assuming no individual reward multipliers are active. If users in teams have active multipliers, the reward amounts may vary.'
+                        )}
+                    </p>
+
+                    {dispatchStrategy.rankTable && (
+                      <RankPayoutTable rankTable={dispatchStrategy.rankTable} />
+                    )}
                   </div>
                 }
                 underline={true}

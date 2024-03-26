@@ -1,4 +1,4 @@
-import { usePayoutPerRank } from './use-payout-per-rank';
+import { usePayoutPerRank } from './rank-table';
 
 // Test case as per https://docs.google.com/spreadsheets/d/1RpWKnGEf4eYMxjI-feauRa9vWz3pNGdP05ejQrwWatg/
 describe('usePayoutPerRank', () => {
@@ -34,6 +34,8 @@ describe('usePayoutPerRank', () => {
       payoutsPerTier: [0.125, 0.1875, 0.3125, 0.375, 0],
       payoutsPerWinner: [0.125, 0.0625, 0.0625, 0.0375],
       payoutsPerWinnerAsPercentage: [12.5, 6.25, 6.25, 3.75],
+      endRanks: [2, 5, 10, 20],
+      startRanks: [1, 2, 5, 10, 20],
     });
   });
 });
