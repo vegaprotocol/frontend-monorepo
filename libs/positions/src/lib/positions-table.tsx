@@ -544,6 +544,7 @@ export const PositionsTable = ({
       onClose && !isReadOnly
         ? {
             ...COL_DEFS.actions,
+            colId: 'actions',
             cellRenderer: ({ data }: VegaICellRendererParams<Position>) => {
               return (
                 <div className="flex items-center justify-end gap-2">
