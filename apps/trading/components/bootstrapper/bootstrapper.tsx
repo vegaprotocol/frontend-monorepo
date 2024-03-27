@@ -1,6 +1,5 @@
 import type { InMemoryCacheConfig } from '@apollo/client';
 import {
-  AppLoader,
   NetworkLoader,
   useEnvironment,
   useNodeSwitcherStore,
@@ -86,10 +85,6 @@ export const Bootstrapper = ({ children }: { children: ReactNode }) => {
   }));
   const config = useVegaWalletConfig();
 
-  if (!config) {
-    return <AppLoader />;
-  }
-
   const ERR_DATA_LOADER = (
     <Trans
       i18nKey="It appears that the connection to the node <0>{{VEGA_URL}}</0> does not return necessary data, try switching to another node."
@@ -118,7 +113,11 @@ export const Bootstrapper = ({ children }: { children: ReactNode }) => {
           skeleton={<Loading />}
           failure={<Failure reason={t('Could not configure web3 provider')} />}
         >
-          <WalletProvider config={config}>{children}</WalletProvider>
+          {config ? (
+            <WalletProvider config={config}>{children}</WalletProvider>
+          ) : (
+            <Failure reason={t('Could not configure the wallet provider')} />
+          )}
         </Web3Provider>
       </DataLoader>
     </NetworkLoader>
