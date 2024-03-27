@@ -1,6 +1,5 @@
 import type { InMemoryCacheConfig } from '@apollo/client';
 import {
-  AppLoader,
   DocsLinks,
   NetworkLoader,
   useEnvironment,
@@ -92,18 +91,6 @@ export const Bootstrapper = ({ children }: { children: ReactNode }) => {
 
   const chainId = useChainId(VEGA_URL);
 
-  if (
-    !VEGA_URL ||
-    !VEGA_WALLET_URL ||
-    !VEGA_EXPLORER_URL ||
-    !CHROME_EXTENSION_URL ||
-    !MOZILLA_EXTENSION_URL ||
-    !DocsLinks ||
-    !chainId
-  ) {
-    return <AppLoader />;
-  }
-
   const ERR_DATA_LOADER = (
     <Trans
       i18nKey="It appears that the connection to the node <0>{{VEGA_URL}}</0> does not return necessary data, try switching to another node."
@@ -132,22 +119,32 @@ export const Bootstrapper = ({ children }: { children: ReactNode }) => {
           skeleton={<Loading />}
           failure={<Failure reason={t('Could not configure web3 provider')} />}
         >
-          <VegaWalletProvider
-            config={{
-              network: VEGA_ENV,
-              vegaUrl: VEGA_URL,
-              chainId,
-              vegaWalletServiceUrl: VEGA_WALLET_URL,
-              links: {
-                explorer: VEGA_EXPLORER_URL,
-                concepts: DocsLinks.VEGA_WALLET_CONCEPTS_URL,
-                chromeExtensionUrl: CHROME_EXTENSION_URL,
-                mozillaExtensionUrl: MOZILLA_EXTENSION_URL,
-              },
-            }}
-          >
-            {children}
-          </VegaWalletProvider>
+          {VEGA_URL &&
+          VEGA_WALLET_URL &&
+          VEGA_EXPLORER_URL &&
+          CHROME_EXTENSION_URL &&
+          MOZILLA_EXTENSION_URL &&
+          DocsLinks &&
+          chainId ? (
+            <VegaWalletProvider
+              config={{
+                network: VEGA_ENV,
+                vegaUrl: VEGA_URL,
+                chainId,
+                vegaWalletServiceUrl: VEGA_WALLET_URL,
+                links: {
+                  explorer: VEGA_EXPLORER_URL,
+                  concepts: DocsLinks.VEGA_WALLET_CONCEPTS_URL,
+                  chromeExtensionUrl: CHROME_EXTENSION_URL,
+                  mozillaExtensionUrl: MOZILLA_EXTENSION_URL,
+                },
+              }}
+            >
+              {children}
+            </VegaWalletProvider>
+          ) : (
+            <Failure reason={t('No suitable node found')} />
+          )}
         </Web3Provider>
       </DataLoader>
     </NetworkLoader>
