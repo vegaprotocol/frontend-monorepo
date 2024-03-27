@@ -66,6 +66,7 @@
   "Copy": "Copy",
   "Copy Market ID": "Copy Market ID",
   "Could not configure web3 provider": "Could not configure web3 provider",
+  "Could not configure the wallet provider": "Could not configure the wallet provider",
   "Could not initialize app": "Could not initialize app",
   "Countdown": "Countdown",
   "Create": "Create",
