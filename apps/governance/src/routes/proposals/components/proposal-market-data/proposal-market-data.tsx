@@ -20,6 +20,9 @@ import {
   MarginScalingFactorsPanel,
   marketInfoProvider,
   PriceMonitoringSettingsInfoPanel,
+  isSpot,
+  isPerpetual,
+  isFuture,
 } from '@vegaprotocol/markets';
 import {
   Button,
@@ -173,8 +176,7 @@ export const ProposalMarketData = ({ proposalId }: { proposalId: string }) => {
                   }
                 />
 
-                {marketData.tradableInstrument.instrument.product.__typename ===
-                  'Future' && (
+                {isFuture(product) && (
                   <div>
                     <h2 className={marketDataHeaderStyles}>
                       {t('Termination oracle')}
@@ -191,8 +193,7 @@ export const ProposalMarketData = ({ proposalId }: { proposalId: string }) => {
                   </div>
                 )}
 
-                {marketData.tradableInstrument.instrument.product.__typename ===
-                  'Perpetual' && (
+                {isPerpetual(product) && (
                   <div>
                     <h2 className={marketDataHeaderStyles}>
                       {t('Settlement schedule oracle')}
@@ -214,11 +215,17 @@ export const ProposalMarketData = ({ proposalId }: { proposalId: string }) => {
             {/*Note: successor markets will not differ in their settlement*/}
             {/*assets, so no need to pass in parent market data for comparison.*/}
 
-            <h2 className={marketDataHeaderStyles}>{t('Settlement assets')}</h2>
-            <SettlementAssetInfoPanel
-              market={marketData}
-              parentMarket={parentMarketData}
-            />
+            {!isSpot(product) && (
+              <>
+                <h2 className={marketDataHeaderStyles}>
+                  {t('Settlement assets')}
+                </h2>
+                <SettlementAssetInfoPanel
+                  market={marketData}
+                  parentMarket={parentMarketData}
+                />
+              </>
+            )}
 
             <h2 className={marketDataHeaderStyles}>{t('Metadata')}</h2>
             <MetadataInfoPanel
@@ -226,25 +233,27 @@ export const ProposalMarketData = ({ proposalId }: { proposalId: string }) => {
               parentMarket={parentMarketData}
             />
 
-            <h2 className={marketDataHeaderStyles}>{t('Risk model')}</h2>
-            <RiskModelInfoPanel
-              market={marketData}
-              parentMarket={parentMarketData}
-            />
-
-            <h2 className={marketDataHeaderStyles}>
-              {t('Margin scaling factors')}
-            </h2>
-            <MarginScalingFactorsPanel
-              market={marketData}
-              parentMarket={parentMarketData}
-            />
-
-            <h2 className={marketDataHeaderStyles}>{t('Risk factors')}</h2>
-            <RiskFactorsInfoPanel
-              market={marketData}
-              parentMarket={parentMarketData}
-            />
+            {!isSpot(product) && (
+              <>
+                <h2 className={marketDataHeaderStyles}>{t('Risk model')}</h2>
+                <RiskModelInfoPanel
+                  market={marketData}
+                  parentMarket={parentMarketData}
+                />
+                <h2 className={marketDataHeaderStyles}>
+                  {t('Margin scaling factors')}
+                </h2>
+                <MarginScalingFactorsPanel
+                  market={marketData}
+                  parentMarket={parentMarketData}
+                />
+                <h2 className={marketDataHeaderStyles}>{t('Risk factors')}</h2>
+                <RiskFactorsInfoPanel
+                  market={marketData}
+                  parentMarket={parentMarketData}
+                />
+              </>
+            )}
 
             {showParentPriceMonitoringBounds && (
               // shows bounds for parent market
