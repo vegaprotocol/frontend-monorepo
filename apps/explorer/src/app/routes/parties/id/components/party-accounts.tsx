@@ -5,6 +5,7 @@ import { AccountTypeMapping, MarginMode } from '@vegaprotocol/types';
 import { t } from '@vegaprotocol/i18n';
 import { Emblem } from '@vegaprotocol/emblem';
 import { ENV } from '../../../../config/env';
+import { Leverage } from '../../../../components/leverage/leverage';
 
 interface PartyAccountsProps {
   partyId: string;
@@ -60,6 +61,8 @@ export const PartyAccounts = ({ partyId }: PartyAccountsProps) => {
               const { type, asset, balance, market } = e.node;
 
               // Blank by default, as most accounts do not relate to a market
+              let marginFactor = undefined;
+
               let marginLabel =
                 MarginLabels[MarginMode.MARGIN_MODE_UNSPECIFIED];
               if (market?.id && party?.marginsConnection) {
@@ -68,6 +71,10 @@ export const PartyAccounts = ({ partyId }: PartyAccountsProps) => {
                 );
                 if (m) {
                   marginLabel = MarginLabels[m.node.marginMode];
+                  marginFactor =
+                    m?.node?.marginFactor !== '0'
+                      ? m.node.marginFactor
+                      : undefined;
                 }
               }
 
@@ -85,6 +92,11 @@ export const PartyAccounts = ({ partyId }: PartyAccountsProps) => {
                     {marginLabel.length > 0
                       ? AccountTypeMapping[type].toLowerCase()
                       : AccountTypeMapping[type]}
+                    {marginFactor && type === 'ACCOUNT_TYPE_ORDER_MARGIN' && (
+                      <span className="ml-1">
+                        (<Leverage marginFactor={marginFactor} />)
+                      </span>
+                    )}
                   </td>
                   <td className="px-4">
                     {market?.id ? <MarketLink id={market.id} /> : '-'}
