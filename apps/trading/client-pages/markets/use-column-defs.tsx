@@ -170,7 +170,12 @@ export const useMarketsColumnDefs = () => {
           const vol = candles ? calcCandleVolume(candles) : '0';
           const quoteName = getQuoteName(data);
           const volPrice =
-            candles && calcCandleVolumePrice(candles, data.decimalPlaces);
+            candles &&
+            calcCandleVolumePrice(
+              candles,
+              data.decimalPlaces,
+              data.positionDecimalPlaces
+            );
 
           const volume =
             data && vol && vol !== '0'
