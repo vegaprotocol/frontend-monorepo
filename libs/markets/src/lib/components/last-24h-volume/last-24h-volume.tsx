@@ -48,11 +48,11 @@ export const Last24hVolume = ({
           {candleVolume
             ? addDecimalsFormatNumber(candleVolume, positionDecimalPlaces)
             : '-'}
-          {' ' + baseUnit}
+          {baseUnit && ' ' + baseUnit}
         </span>
         <span>
           ({candleVolumePrice ? formatNumber(candleVolumePrice) : '-'}
-          {' ' + quoteUnit})
+          {quoteUnit && ' ' + quoteUnit})
         </span>
       </span>
     </Tooltip>
