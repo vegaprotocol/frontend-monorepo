@@ -255,7 +255,7 @@ context(
     });
 
     // 3009-NTWU-001 3009-NTWU-002 3009-NTWU-006 3009-NTWU-009
-    it.skip('should display network upgrade banner with estimate', function () {
+    it('should display network upgrade banner with estimate', function () {
       mockNetworkUpgradeProposal();
       cy.visit('/');
       cy.getByTestId('banners').within(() => {

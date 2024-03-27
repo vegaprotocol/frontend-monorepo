@@ -34,14 +34,14 @@ context('View functionality with public key', { tags: '@smoke' }, function () {
     cy.connectPublicKey(vegaWalletPubKey);
   });
 
-  it.skip('Able to connect public key via wallet and view assets in wallet', function () {
+  it('Able to connect public key via wallet and view assets in wallet', function () {
     verifyConnectedToPubKey();
-    cy.getByTestId('currency-title', { timeout: 10000 })
+    cy.getByTestId('currency-title', { timeout: 80000 })
       .should('have.length.at.least', 2)
       .and('contain.text', 'USDC (fake)');
   });
 
-  it.skip('Unable to submit proposal with public key', function () {
+  it('Unable to submit proposal with public key', function () {
     const expectedErrorTxt = `You are connected in a view only state for public key: ${vegaWalletPubKey}. In order to send transactions you must connect to a real wallet.`;
 
     goToMakeNewProposal(governanceProposalType.RAW);

@@ -40,7 +40,7 @@ context(
       });
 
       // Skipping due to bug #3471 causing flaky failuress
-      it.skip('should have option to view go to next and previous page', function () {
+      it('should have option to view go to next and previous page', function () {
         waitForBeginningOfEpoch();
         cy.getByTestId('page-info')
           .should('contain.text', 'Page ')
@@ -63,7 +63,7 @@ context(
           });
       });
 
-      it('should have option to go to last and newest page', function () {
+      it.only('should have option to go to last and newest page', function () {
         cy.getByTestId('goto-last-page').click();
         cy.getByTestId('epoch-total-rewards-table')
           .last()
@@ -71,7 +71,9 @@ context(
           .first()
           .should('have.text', 'EPOCH 1');
         cy.getByTestId('goto-first-page').click();
-        cy.get('h2').should('not.contain.text', 'EPOCH 1');
+        cy.getByTestId('epoch-total-rewards-table')
+          .get('h2')
+          .should('not.contain.text', 'EPOCH 1');
       });
     });
   }

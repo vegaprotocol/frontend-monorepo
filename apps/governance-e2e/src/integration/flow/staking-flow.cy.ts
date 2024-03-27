@@ -238,7 +238,7 @@ context(
       });
 
       // 1002-STKE-041 1002-STKE-053
-      it.skip(
+      it(
         'Able to remove part of a stake against a validator',
         // @ts-ignore clash between jest and cypress
         { tags: '@smoke' },
@@ -428,7 +428,7 @@ context(
         validateValidatorListTotalStakeAndShare('0', '3,002.00', '50.02%');
       });
 
-      it.skip('Associating wallet tokens - when some already staked - auto stakes tokens to staked validator', function () {
+      it('Associating wallet tokens - when some already staked - auto stakes tokens to staked validator', function () {
         // 1002-STKE-004
         stakingPageAssociateTokens('3');
         verifyUnstakedBalance(3.0);
@@ -442,7 +442,7 @@ context(
         verifyStakedBalance(7.0);
       });
 
-      it.skip('Associating vesting contract tokens - when some already staked - auto stakes tokens to staked validator', function () {
+      it('Associating vesting contract tokens - when some already staked - auto stakes tokens to staked validator', function () {
         // 1002-STKE-004
         stakingPageAssociateTokens('3', { type: 'contract' });
         verifyUnstakedBalance(3.0);
@@ -456,7 +456,7 @@ context(
         verifyStakedBalance(7.0);
       });
 
-      it.skip('Associating vesting contract tokens - when wallet tokens already staked - auto stakes tokens to staked validator', function () {
+      it('Associating vesting contract tokens - when wallet tokens already staked - auto stakes tokens to staked validator', function () {
         // 1002-STKE-004
         stakingPageAssociateTokens('3', { type: 'wallet' });
         verifyUnstakedBalance(3.0);
@@ -470,7 +470,7 @@ context(
         verifyStakedBalance(7.0);
       });
 
-      it.skip('Associating tokens - with multiple validators already staked - auto stakes to staked validators - abiding by existing stake ratio', function () {
+      it('Associating tokens - with multiple validators already staked - auto stakes to staked validators - abiding by existing stake ratio', function () {
         // 1002-STKE-004
         stakingPageAssociateTokens('6');
         verifyUnstakedBalance(6.0);

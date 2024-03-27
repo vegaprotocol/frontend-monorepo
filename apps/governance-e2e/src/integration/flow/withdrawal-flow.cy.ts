@@ -100,7 +100,7 @@ context(
     });
 
     // eslint-disable-next-line
-    it.skip(
+    it(
       'Able to withdraw asset: -eth wallet connected -withdraw funds button',
       // @ts-ignore clash between jest and cypress
       { tags: '@smoke' },
@@ -284,7 +284,7 @@ context(
     });
 
     // Skipping test due to bug #3882
-    it.skip('Unable to withdraw asset on pub key view', function () {
+    it('Unable to withdraw asset on pub key view', function () {
       const vegaWalletPubKey = Cypress.env('vegaWalletPublicKey');
       const expectedErrorTxt = `You are connected in a view only state for public key: ${vegaWalletPubKey}. In order to send transactions you must connect to a real wallet.`;
 
