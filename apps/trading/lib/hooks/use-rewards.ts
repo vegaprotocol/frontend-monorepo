@@ -46,7 +46,8 @@ export type EnrichedRewardTransfer = RewardTransfer & {
  */
 export const isReward = (node: TransferNode): node is RewardTransfer => {
   if (
-    (node.transfer.kind.__typename === 'RecurringTransfer' &&
+    ((node.transfer.kind.__typename === 'RecurringTransfer' ||
+      node.transfer.kind.__typename === 'RecurringGovernanceTransfer') &&
       node.transfer.kind.dispatchStrategy != null) ||
     node.transfer.toAccountType === AccountType.ACCOUNT_TYPE_GLOBAL_REWARD
   ) {
