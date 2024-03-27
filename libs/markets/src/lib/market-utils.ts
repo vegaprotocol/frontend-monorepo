@@ -1,8 +1,4 @@
-import {
-  addDecimal,
-  formatNumberPercentage,
-  toBigNum,
-} from '@vegaprotocol/utils';
+import { formatNumberPercentage, toBigNum } from '@vegaprotocol/utils';
 import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
 import orderBy from 'lodash/orderBy';
@@ -190,19 +186,12 @@ export const calcCandleVolume = (candles: Candle[]): string | undefined =>
  */
 export const calcCandleVolumePrice = (
   candles: Candle[],
-  marketDecimals: number = 1,
-  positionDecimalPlaces: number = 1
+  decimalPlaces: number
 ): string | undefined =>
   candles &&
   candles.reduce(
     (acc, c) =>
-      new BigNumber(acc)
-        .plus(
-          BigNumber(addDecimal(c.volume, positionDecimalPlaces)).times(
-            addDecimal(c.high, marketDecimals)
-          )
-        )
-        .toString(),
+      new BigNumber(acc).plus(toBigNum(c.notional, decimalPlaces)).toString(),
     '0'
   );
 

@@ -177,6 +177,7 @@ describe('calcCandleVolumePrice', () => {
         low: '10',
         open: '15',
         close: '90',
+        notional: '100',
         periodStart: '2022-05-18T13:08:27.693537312Z',
       },
       {
@@ -185,13 +186,11 @@ describe('calcCandleVolumePrice', () => {
         low: '10',
         open: '15',
         close: '90',
+        notional: '100',
         periodStart: '2022-05-18T14:08:27.693537312Z',
       },
     ];
-    const marketDecimals = 3;
-    const positionDecimalPlaces = 2;
-    expect(
-      calcCandleVolumePrice(candles, marketDecimals, positionDecimalPlaces)
-    ).toEqual('2');
+    const decimalPlaces = 2;
+    expect(calcCandleVolumePrice(candles, decimalPlaces)).toEqual('2');
   });
 });

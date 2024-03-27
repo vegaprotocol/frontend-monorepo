@@ -13,7 +13,7 @@ interface Props {
   positionDecimalPlaces?: number;
   formatDecimals?: number;
   initialValue?: string;
-  marketDecimals?: number;
+  marketDecimals: number;
   quoteUnit?: string;
 }
 
@@ -41,11 +41,7 @@ export const Last24hVolume = ({
     : initialValue;
 
   const candleVolumePrice = oneDayCandles
-    ? calcCandleVolumePrice(
-        oneDayCandles,
-        marketDecimals,
-        positionDecimalPlaces
-      )
+    ? calcCandleVolumePrice(oneDayCandles, marketDecimals)
     : initialValue;
 
   return (

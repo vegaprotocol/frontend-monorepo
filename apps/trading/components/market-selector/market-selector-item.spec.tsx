@@ -79,6 +79,7 @@ describe('MarketSelectorItem', () => {
       high: '5',
       low: '5',
       volume: '50',
+      notional: '10000',
       periodStart: yesterday.toISOString(),
     },
     {
@@ -87,6 +88,7 @@ describe('MarketSelectorItem', () => {
       high: '10',
       low: '10',
       volume: '50',
+      notional: '10000',
       periodStart: yesterday.toISOString(),
     },
   ];
