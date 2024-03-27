@@ -106,6 +106,7 @@
   "Stop Limit": "Stop Limit",
   "Stop Market": "Stop Market",
   "Stop order will be triggered immediately": "Stop order will be triggered immediately",
+  "Stop orders are reduce only and this order would increase your position.": "Stop orders are reduce only and this order would increase your position.",
   "Strategy": "Strategy",
   "Submit": "Submit",
   "Subtotal": "Subtotal",

@@ -31,6 +31,8 @@ import {
 jest.mock('zustand');
 jest.mock('./deal-ticket-fee-details', () => ({
   DealTicketFeeDetails: () => <div data-testid="deal-ticket-fee-details" />,
+}));
+jest.mock('./deal-ticket-margin-details', () => ({
   DealTicketMarginDetails: () => (
     <div data-testid="deal-ticket-margin-details" />
   ),
