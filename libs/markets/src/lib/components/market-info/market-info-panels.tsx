@@ -205,8 +205,8 @@ export const MarketVolumeInfoPanel = ({ market }: MarketInfoProps) => {
         '24hourVolume': (
           <Last24hVolume
             marketId={market.id}
-            positionDecimalPlaces={market.positionDecimalPlaces}
             marketDecimals={market.decimalPlaces}
+            positionDecimalPlaces={market.positionDecimalPlaces}
             quoteUnit={getQuoteName(market)}
           />
         ),

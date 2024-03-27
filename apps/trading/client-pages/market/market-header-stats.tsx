@@ -61,10 +61,9 @@ export const MarketHeaderStats = ({ market }: MarketHeaderStatsProps) => {
       <HeaderStat heading={t('Volume (24h)')} testId="market-volume">
         <Last24hVolume
           marketId={market.id}
-          positionDecimalPlaces={market.positionDecimalPlaces}
           marketDecimals={market.decimalPlaces}
+          positionDecimalPlaces={market.positionDecimalPlaces}
           quoteUnit={quoteUnit}
-          assetDecimals={asset.decimals}
         />
       </HeaderStat>
       <HeaderStatMarketTradingMode

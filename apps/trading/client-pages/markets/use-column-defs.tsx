@@ -169,9 +169,8 @@ export const useMarketsColumnDefs = () => {
           const candles = data.candles;
           const vol = candles ? calcCandleVolume(candles) : '0';
           const quoteName = getQuoteName(data);
-          const asset = getAsset(data);
           const volPrice =
-            candles && calcCandleVolumePrice(candles, asset.decimals);
+            candles && calcCandleVolumePrice(candles, data.decimalPlaces);
 
           const volume =
             data && vol && vol !== '0'
