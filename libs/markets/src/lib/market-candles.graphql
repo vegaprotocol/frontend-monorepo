@@ -4,6 +4,7 @@ fragment MarketCandlesFields on Candle {
   open
   close
   volume
+  notional
   periodStart
 }
 
