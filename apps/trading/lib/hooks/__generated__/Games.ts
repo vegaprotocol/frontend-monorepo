@@ -9,6 +9,7 @@ export type GameFieldsFragment = { __typename?: 'Game', id: string, epoch: numbe
 
 export type GamesQueryVariables = Types.Exact<{
   epochFrom?: Types.InputMaybe<Types.Scalars['Int']>;
+  epochTo?: Types.InputMaybe<Types.Scalars['Int']>;
   teamId?: Types.InputMaybe<Types.Scalars['ID']>;
 }>;
 
@@ -45,8 +46,13 @@ export const GameFieldsFragmentDoc = gql`
 }
     ${TeamEntityFragmentDoc}`;
 export const GamesDocument = gql`
-    query Games($epochFrom: Int, $teamId: ID) {
-  games(epochFrom: $epochFrom, teamId: $teamId, entityScope: ENTITY_SCOPE_TEAMS) {
+    query Games($epochFrom: Int, $epochTo: Int, $teamId: ID) {
+  games(
+    epochFrom: $epochFrom
+    epochTo: $epochTo
+    teamId: $teamId
+    entityScope: ENTITY_SCOPE_TEAMS
+  ) {
     edges {
       node {
         ...GameFields
@@ -69,6 +75,7 @@ export const GamesDocument = gql`
  * const { data, loading, error } = useGamesQuery({
  *   variables: {
  *      epochFrom: // value for 'epochFrom'
+ *      epochTo: // value for 'epochTo'
  *      teamId: // value for 'teamId'
  *   },
  * });

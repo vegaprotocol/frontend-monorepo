@@ -945,17 +945,8 @@ const EntityIcon = ({
   );
 };
 
-export const ActiveRewardCard = ({
-  transferNode,
-  currentEpoch,
-  requirements,
-}: {
-  transferNode: EnrichedRewardTransfer;
-  currentEpoch: number;
-  requirements?: Requirements;
-}) => {
-  // don't display the cards that are scoped to not trading markets
-  const marketSettled = transferNode.markets?.filter(
+export const areAllMarketsSettled = (transferNode: EnrichedRewardTransfer) => {
+  const settledMarkets = transferNode.markets?.filter(
     (m) =>
       m?.state &&
       [
@@ -966,19 +957,39 @@ export const ActiveRewardCard = ({
       ].includes(m.state)
   );
 
+  return (
+    settledMarkets?.length === transferNode.markets?.length &&
+    Boolean(transferNode.markets && transferNode.markets.length > 0)
+  );
+};
+
+export const areAllMarketsSuspended = (
+  transferNode: EnrichedRewardTransfer
+) => {
+  return (
+    transferNode.markets?.filter(
+      (m) =>
+        m?.state === MarketState.STATE_SUSPENDED ||
+        m?.state === MarketState.STATE_SUSPENDED_VIA_GOVERNANCE
+    ).length === transferNode.markets?.length &&
+    Boolean(transferNode.markets && transferNode.markets.length > 0)
+  );
+};
+
+export const ActiveRewardCard = ({
+  transferNode,
+  currentEpoch,
+  requirements,
+}: {
+  transferNode: EnrichedRewardTransfer;
+  currentEpoch: number;
+  requirements?: Requirements;
+}) => {
   const startsIn = transferNode.transfer.kind.startEpoch - currentEpoch;
   const endsIn =
     transferNode.transfer.kind.endEpoch != null
       ? transferNode.transfer.kind.endEpoch - currentEpoch
       : undefined;
-
-  // hide the card if all of the markets are being marked as e.g. settled
-  if (
-    marketSettled?.length === transferNode.markets?.length &&
-    Boolean(transferNode.markets && transferNode.markets.length > 0)
-  ) {
-    return null;
-  }
 
   if (
     !transferNode.transfer.kind.dispatchStrategy &&
@@ -1007,17 +1018,21 @@ export const ActiveRewardCard = ({
       transferNode.transfer.kind.dispatchStrategy.dispatchMetric
     ];
 
-  // grey out of any of the markets is suspended or
-  // if the asset is not currently traded on any of the active markets
-  const marketSuspended =
-    transferNode.markets?.filter(
-      (m) =>
-        m?.state === MarketState.STATE_SUSPENDED ||
-        m?.state === MarketState.STATE_SUSPENDED_VIA_GOVERNANCE
-    ).length === transferNode.markets?.length &&
-    Boolean(transferNode.markets && transferNode.markets.length > 0);
-
-  if (marketSuspended || !transferNode.isAssetTraded || startsIn > 0) {
+  /**
+   * Display the card as grey if any of the condition is `true`:
+   *
+   * - all markets scoped to the reward are settled
+   * - all markets scoped to the reward are suspended
+   * - the reward's asset is not actively traded on any of the active markets
+   * - it start in the future
+   *
+   */
+  if (
+    areAllMarketsSettled(transferNode) ||
+    areAllMarketsSuspended(transferNode) ||
+    !transferNode.isAssetTraded ||
+    startsIn > 0
+  ) {
     colour = CardColour.GREY;
   }
 

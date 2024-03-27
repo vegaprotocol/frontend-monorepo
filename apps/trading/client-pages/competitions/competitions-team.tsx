@@ -283,101 +283,104 @@ const Games = ({
   };
 
   return (
-    <Table
-      columns={[
-        {
-          name: 'epoch',
-          displayName: t('Epoch'),
-        },
-        {
-          name: 'endtime',
-          displayName: t('End time'),
-        },
-        { name: 'type', displayName: t('Type') },
-        {
-          name: 'asset',
-          displayName: t('Reward asset'),
-        },
-        { name: 'daily', displayName: t('Daily reward amount') },
-        { name: 'rank', displayName: t('Rank') },
-        { name: 'amount', displayName: t('Amount earned this epoch') },
-        { name: 'total', displayName: t('Cumulative amount earned') },
-        {
-          name: 'participatingTeams',
-          displayName: t('No. of participating teams'),
-        },
-        {
-          name: 'participatingMembers',
-          displayName: t('No. of participating members'),
-        },
-      ].map((c) => ({ ...c, headerClassName: 'text-left' }))}
-      data={games.map((game) => {
-        let transfer = transfers?.find((t) => {
-          if (!isScopedToTeams(t)) return false;
+    <div className="text-sm">
+      <Table
+        columns={[
+          {
+            name: 'epoch',
+            displayName: t('Epoch'),
+          },
+          {
+            name: 'endtime',
+            displayName: t('End time'),
+          },
+          { name: 'type', displayName: t('Type') },
+          {
+            name: 'asset',
+            displayName: t('Reward asset'),
+          },
+          { name: 'daily', displayName: t('Daily reward amount') },
+          { name: 'rank', displayName: t('Rank') },
+          { name: 'amount', displayName: t('Amount earned this epoch') },
+          { name: 'total', displayName: t('Cumulative amount earned') },
+          {
+            name: 'participatingTeams',
+            displayName: t('No. of participating teams'),
+          },
+          {
+            name: 'participatingMembers',
+            displayName: t('No. of participating members'),
+          },
+        ].map((c) => ({ ...c, headerClassName: 'text-left' }))}
+        data={games.map((game) => {
+          let transfer = transfers?.find((t) => {
+            if (!isScopedToTeams(t)) return false;
 
-          const idMatch = t.transfer.gameId === game.id;
-          const metricMatch =
-            t.transfer.kind.dispatchStrategy?.dispatchMetric ===
-            game.team.rewardMetric;
+            const idMatch = t.transfer.gameId === game.id;
+            const metricMatch =
+              t.transfer.kind.dispatchStrategy?.dispatchMetric ===
+              game.team.rewardMetric;
 
-          const start = t.transfer.kind.startEpoch <= game.epoch;
-          const end = t.transfer.kind.endEpoch
-            ? t.transfer.kind.endEpoch >= game.epoch
-            : true;
+            const start = t.transfer.kind.startEpoch <= game.epoch;
+            const end = t.transfer.kind.endEpoch
+              ? t.transfer.kind.endEpoch >= game.epoch
+              : true;
 
-          const rejected = t.transfer.status === TransferStatus.STATUS_REJECTED;
+            const rejected =
+              t.transfer.status === TransferStatus.STATUS_REJECTED;
 
-          return idMatch && metricMatch && start && end && !rejected;
-        });
-        if (!transfer || !isScopedToTeams(transfer)) transfer = undefined;
-        const asset = transfer?.transfer.asset;
+            return idMatch && metricMatch && start && end && !rejected;
+          });
+          if (!transfer || !isScopedToTeams(transfer)) transfer = undefined;
+          const asset = transfer?.transfer.asset;
 
-        const dailyAmount =
-          asset && transfer
+          const dailyAmount =
+            asset && transfer
+              ? addDecimalsFormatNumberQuantum(
+                  transfer.transfer.amount,
+                  asset.decimals,
+                  asset.quantum
+                )
+              : '-';
+
+          const earnedAmount = asset
             ? addDecimalsFormatNumberQuantum(
-                transfer.transfer.amount,
+                game.team.rewardEarned,
                 asset.decimals,
                 asset.quantum
               )
             : '-';
 
-        const earnedAmount = asset
-          ? addDecimalsFormatNumberQuantum(
-              game.team.rewardEarned,
-              asset.decimals,
-              asset.quantum
-            )
-          : '-';
+          const totalAmount = asset
+            ? addDecimalsFormatNumberQuantum(
+                game.team.totalRewardsEarned,
+                asset.decimals,
+                asset.quantum
+              )
+            : '-';
 
-        const totalAmount = asset
-          ? addDecimalsFormatNumberQuantum(
-              game.team.totalRewardsEarned,
-              asset.decimals,
-              asset.quantum
-            )
-          : '-';
+          const assetSymbol = asset ? <RewardAssetCell asset={asset} /> : '-';
 
-        const assetSymbol = asset ? <RewardAssetCell asset={asset} /> : '-';
-
-        return {
-          id: game.id,
-          amount: dependable(earnedAmount),
-          asset: dependable(assetSymbol),
-          daily: dependable(dailyAmount),
-          endtime: <EndTimeCell epoch={game.epoch} />,
-          epoch: game.epoch,
-          participatingMembers: game.numberOfParticipants,
-          participatingTeams: game.entities.length,
-          rank: game.team.rank,
-          total: totalAmount,
-          // type: DispatchMetricLabels[game.team.rewardMetric as DispatchMetric],
-          type: dependable(
-            <GameTypeCell transfer={transfer} allMarkets={allMarkets} />
-          ),
-        };
-      })}
-      noCollapse={false}
-    />
+          return {
+            id: game.id,
+            amount: dependable(earnedAmount),
+            asset: dependable(assetSymbol),
+            daily: dependable(dailyAmount),
+            endtime: <EndTimeCell epoch={game.epoch} />,
+            epoch: game.epoch,
+            participatingMembers: game.numberOfParticipants,
+            participatingTeams: game.entities.length,
+            rank: game.team.rank,
+            total: totalAmount,
+            // type: DispatchMetricLabels[game.team.rewardMetric as DispatchMetric],
+            type: dependable(
+              <GameTypeCell transfer={transfer} allMarkets={allMarkets} />
+            ),
+          };
+        })}
+        noCollapse={false}
+      />
+    </div>
   );
 };
 
@@ -419,24 +422,26 @@ const Members = ({ members }: { members?: Member[] }) => {
   );
 
   return (
-    <Table
-      columns={[
-        { name: 'referee', displayName: t('Member') },
-        { name: 'rewards', displayName: t('Rewards earned') },
-        { name: 'volume', displayName: t('Total volume') },
-        { name: 'gamesPlayed', displayName: t('Games played') },
-        {
-          name: 'joinedAt',
-          displayName: t('Joined at'),
-        },
-        {
-          name: 'joinedAtEpoch',
-          displayName: t('Joined epoch'),
-        },
-      ]}
-      data={data}
-      noCollapse={true}
-    />
+    <div className="text-sm">
+      <Table
+        columns={[
+          { name: 'referee', displayName: t('Member') },
+          { name: 'rewards', displayName: t('Rewards earned') },
+          { name: 'volume', displayName: t('Total volume') },
+          { name: 'gamesPlayed', displayName: t('Games played') },
+          {
+            name: 'joinedAt',
+            displayName: t('Joined at'),
+          },
+          {
+            name: 'joinedAtEpoch',
+            displayName: t('Joined epoch'),
+          },
+        ]}
+        data={data}
+        noCollapse={true}
+      />
+    </div>
   );
 };
 
@@ -503,7 +508,7 @@ const EndTimeCell = ({ epoch }: { epoch?: number }) => {
     variables: {
       epochId: epoch ? epoch.toString() : undefined,
     },
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: 'cache-first',
   });
 
   if (loading) return <Loader size="small" />;
