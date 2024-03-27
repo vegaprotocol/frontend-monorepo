@@ -177,7 +177,11 @@ describe('calcCandleVolumePrice', () => {
         periodStart: '2022-05-18T14:08:27.693537312Z',
       },
     ];
-    const decimalPlaces = 2;
-    expect(calcCandleVolumePrice(candles, decimalPlaces)).toEqual('2');
+
+    const marketDecimals = 3;
+    const positionDecimalPlaces = 2;
+    expect(
+      calcCandleVolumePrice(candles, marketDecimals, positionDecimalPlaces)
+    ).toEqual('0.002');
   });
 });
