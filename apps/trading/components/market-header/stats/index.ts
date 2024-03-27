@@ -7,4 +7,3 @@ export { ExpiryStat } from './expiry';
 export { MarketStateStat } from './market-state';
 export { MarketTradingModeStat } from './market-trading-mode';
 export { LiquidityStat } from './liquidity';
-export { Last24hSpotVolumeStat } from './last-24h-spot-volume';
