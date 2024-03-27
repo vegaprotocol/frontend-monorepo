@@ -24,6 +24,7 @@ export const WithdrawFormContainer = ({
   const { data, loading, error } = useDataProvider({
     dataProvider: accountsDataProvider,
     variables: { partyId: partyId || '' },
+    skip: true,
   });
 
   const filteredAsset = useMemo(
