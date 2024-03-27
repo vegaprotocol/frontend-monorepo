@@ -23,7 +23,7 @@ const getTradingModeLabel = (
   );
 };
 
-interface HeaderStatMarketTradingModeProps {
+interface MarketTradingModeStatProps {
   marketId?: string;
   onSelect?: (marketId: string, metaKey?: boolean) => void;
 }
@@ -31,7 +31,7 @@ interface HeaderStatMarketTradingModeProps {
 export const MarketTradingModeStat = ({
   marketId,
   onSelect,
-}: HeaderStatMarketTradingModeProps) => {
+}: MarketTradingModeStatProps) => {
   const t = useT();
   const { data } = useStaticMarketData(marketId);
   const { marketTradingMode, trigger } = data || {};
@@ -52,7 +52,7 @@ export const MarketTradingModeStat = ({
 export const MarketTradingMode = ({
   marketId,
   inViewRoot,
-}: Omit<HeaderStatMarketTradingModeProps, 'onUpdate'> & {
+}: Omit<MarketTradingModeStatProps, 'onUpdate'> & {
   inViewRoot?: RefObject<Element>;
 }) => {
   const [ref, inView] = useInView({ root: inViewRoot?.current });
