@@ -1,7 +1,7 @@
 import { formatDistanceStrict } from 'date-fns';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
-import { ProgressBar } from '../progress-bar';
+import { HighlightProgressBar as ProgressBar } from '../highlight-progress-bar';
 
 export interface EpochCountdownProps {
   id: string;
