@@ -64,6 +64,7 @@ export const MarketHeaderStats = ({ market }: MarketHeaderStatsProps) => {
           positionDecimalPlaces={market.positionDecimalPlaces}
           marketDecimals={market.decimalPlaces}
           quoteUnit={quoteUnit}
+          assetDecimals={asset.decimals}
         />
       </HeaderStat>
       <HeaderStatMarketTradingMode

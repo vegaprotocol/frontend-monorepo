@@ -155,6 +155,7 @@ describe('sumFeesFactors', () => {
   });
 });
 
+// TODO: update this to use notional
 describe('calcCandleVolumePrice', () => {
   it('calculates the volume price', () => {
     const candles = [

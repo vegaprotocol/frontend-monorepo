@@ -13,17 +13,17 @@ interface Props {
   positionDecimalPlaces?: number;
   formatDecimals?: number;
   initialValue?: string;
-  marketDecimals?: number;
   quoteUnit?: string;
+  assetDecimals: number;
 }
 
 export const Last24hVolume = ({
   marketId,
-  marketDecimals,
   positionDecimalPlaces,
   formatDecimals,
   initialValue,
   quoteUnit,
+  assetDecimals,
 }: Props) => {
   const t = useT();
   const { oneDayCandles, fiveDaysCandles, error } = useCandles({
@@ -41,11 +41,7 @@ export const Last24hVolume = ({
     : initialValue;
 
   const candleVolumePrice = oneDayCandles
-    ? calcCandleVolumePrice(
-        oneDayCandles,
-        marketDecimals,
-        positionDecimalPlaces
-      )
+    ? calcCandleVolumePrice(oneDayCandles, assetDecimals)
     : initialValue;
 
   return (

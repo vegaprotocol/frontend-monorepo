@@ -15,7 +15,6 @@ import {
 import { ButtonLink, Tooltip } from '@vegaprotocol/ui-toolkit';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import type {
-  MarketFieldsFragment,
   MarketMaybeWithData,
   MarketMaybeWithDataAndCandles,
 } from '@vegaprotocol/markets';
@@ -166,16 +165,13 @@ export const useMarketsColumnDefs = () => {
         valueFormatter: ({
           data,
         }: ValueFormatterParams<MarketMaybeWithDataAndCandles, 'candles'>) => {
-          const candles = data?.candles;
+          if (!data) return '-';
+          const candles = data.candles;
           const vol = candles ? calcCandleVolume(candles) : '0';
-          const quoteName = getQuoteName(data as MarketFieldsFragment);
+          const quoteName = getQuoteName(data);
+          const asset = getAsset(data);
           const volPrice =
-            candles &&
-            calcCandleVolumePrice(
-              candles,
-              data.decimalPlaces,
-              data.positionDecimalPlaces
-            );
+            candles && calcCandleVolumePrice(candles, asset.decimals);
 
           const volume =
             data && vol && vol !== '0'
