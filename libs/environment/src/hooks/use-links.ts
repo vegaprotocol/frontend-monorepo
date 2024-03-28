@@ -20,7 +20,7 @@ type DAppLinks = {
 };
 
 const EmptyLinks: DAppLinks = {
-  [Networks.VALIDATOR_TESTNET]: '',
+  [Networks.VALIDATORS_TESTNET]: '',
   [Networks.MAINNET_MIRROR]: '',
   [Networks.DEVNET]: '',
   [Networks.STAGNET1]: '',
@@ -32,7 +32,7 @@ const ExplorerLinks = {
   ...EmptyLinks,
   [Networks.STAGNET1]: 'https://explorer.stagnet1.vega.rocks',
   [Networks.TESTNET]: 'https://explorer.fairground.wtf',
-  [Networks.VALIDATOR_TESTNET]:
+  [Networks.VALIDATORS_TESTNET]:
     'https://explorer.validators-testnet.vega.rocks',
   [Networks.MAINNET_MIRROR]: 'https://explorer.mainnet-mirror.vega.rocks/',
   [Networks.MAINNET]: 'https://explorer.vega.xyz',
@@ -51,7 +51,7 @@ const GovernanceLinks = {
   [Networks.DEVNET]: 'https://dev.governance.vega.xyz',
   [Networks.STAGNET1]: 'https://governance.stagnet1.vega.rocks',
   [Networks.TESTNET]: 'https://governance.fairground.wtf',
-  [Networks.VALIDATOR_TESTNET]:
+  [Networks.VALIDATORS_TESTNET]:
     'https://governance.validators-testnet.vega.rocks',
   [Networks.MAINNET_MIRROR]: 'https://governance.mainnet-mirror.vega.rocks',
   [Networks.MAINNET]: 'https://governance.vega.xyz',
