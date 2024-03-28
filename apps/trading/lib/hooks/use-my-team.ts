@@ -21,7 +21,7 @@ export const useMyTeam = () => {
   const team = first(compact(maybeMyTeam?.teams?.edges.map((n) => n.node)));
   const rank = teams.findIndex((t) => t.teamId === team?.teamId) + 1;
   const { stats } = useTeam(team?.teamId);
-  const { data: games } = useGames(team?.teamId);
+  const { data: games } = useGames({ teamId: team?.teamId });
 
   return { team, stats, games: areTeamGames(games) ? games : undefined, rank };
 };

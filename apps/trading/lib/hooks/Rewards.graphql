@@ -95,12 +95,14 @@ query ActiveRewards(
   $isReward: Boolean
   $partyId: ID
   $direction: TransferDirection
+  $gameId: ID
   $pagination: Pagination
 ) {
   transfersConnection(
     partyId: $partyId
     isReward: $isReward
     direction: $direction
+    gameId: $gameId
     pagination: $pagination
   ) {
     edges {

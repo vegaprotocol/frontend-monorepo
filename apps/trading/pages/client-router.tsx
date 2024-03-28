@@ -38,6 +38,7 @@ import { CompetitionsCreateTeam } from '../client-pages/competitions/competition
 import { CompetitionsUpdateTeam } from '../client-pages/competitions/competitions-update-team';
 import { MarketsMobileSidebar } from '../client-pages/markets/mobile-buttons';
 import { useScreenDimensions } from '@vegaprotocol/react-helpers';
+import { CompetitionsGame } from '../client-pages/competitions/competitions-game';
 
 // These must remain dynamically imported as pennant cannot be compiled by Next.js due to ESM
 // Using dynamic imports is a workaround for this until pennant is published as ESM
@@ -128,6 +129,10 @@ export const useRouterConfig = (): RouteObject[] => {
                 {
                   path: AppRoutes.COMPETITIONS_TEAMS,
                   element: <CompetitionsTeams />,
+                },
+                {
+                  path: AppRoutes.COMPETITIONS_GAME,
+                  element: <CompetitionsGame />,
                 },
               ],
             },
