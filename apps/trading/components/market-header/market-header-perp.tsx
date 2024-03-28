@@ -16,12 +16,6 @@ export const MarketHeaderPerp = ({ market }: MarketHeaderPerpProps) => {
   const asset = getAsset(market);
   const quoteUnit = getQuoteName(market);
 
-  const dataSourceSpec = market.markPriceConfiguration?.dataSourcesSpec?.[1];
-  const sourceType =
-    dataSourceSpec?.sourceType.__typename === 'DataSourceDefinitionExternal' &&
-    dataSourceSpec?.sourceType.sourceType.__typename === 'EthCallSpec' &&
-    dataSourceSpec?.sourceType.sourceType;
-
   return (
     <>
       <Stats.MarkPriceStat
@@ -54,6 +48,7 @@ export const MarketHeaderPerp = ({ market }: MarketHeaderPerpProps) => {
       <Stats.IndexPriceStat
         marketId={market.id}
         assetDecimals={asset.decimals}
+        markPriceConfiguration={market.markPriceConfiguration}
       />
     </>
   );
