@@ -34,7 +34,7 @@ The utility dApp for validators wishing to add or remove themselves as a signer 
 
 ### [UI toolkit](./libs/ui-toolkit)
 
-The UI toolkit contains a set of components used to build interfaces that can interact with the Vega protocol, and follow the design style of the project.
+The UI toolkit contains components used to build interfaces that can interact with the Vega protocol, and follow the design style of the project.
 It contains a storybook that can be served with `yarn nx run ui-toolkit:storybook`.
 
 ### [Tailwind CSS config](./libs/tailwindcss-config)
