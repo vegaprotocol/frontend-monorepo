@@ -36,8 +36,6 @@ export const createMarketFragment = (
     id: 'market-0',
     decimalPlaces: 5,
     positionDecimalPlaces: 0,
-    tradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
-    state: Schema.MarketState.STATE_ACTIVE,
     tickSize: '1',
     marketTimestamps: {
       __typename: 'MarketTimestamps',
@@ -161,6 +159,14 @@ export const createMarketFragment = (
       __typename: 'TradableInstrument',
     },
     __typename: 'Market',
+    markPriceConfiguration: {
+      decayWeight: '',
+      decayPower: 0,
+      cashAmount: '',
+      SourceStalenessTolerance: [],
+      CompositePriceType:
+        Schema.CompositePriceType.COMPOSITE_PRICE_TYPE_LAST_TRADE,
+    },
   };
 
   return merge(cloneDeep(defaultFragment), override);
@@ -190,8 +196,6 @@ const marketFieldsFragments: MarketFieldsFragment[] = [
   }),
   createMarketFragment({
     id: 'market-2',
-    tradingMode: Schema.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
-    state: Schema.MarketState.STATE_SUSPENDED,
     marketTimestamps: {
       proposed: '2022-08-23T11:36:32.252490405Z',
       pending: '2022-08-24T11:36:32.252490405Z',

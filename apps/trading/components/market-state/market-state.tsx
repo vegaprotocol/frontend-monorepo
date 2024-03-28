@@ -1,48 +1,18 @@
-import throttle from 'lodash/throttle';
-import type { MarketData, Market } from '@vegaprotocol/markets';
-import { marketDataProvider } from '@vegaprotocol/markets';
-import { useDataProvider } from '@vegaprotocol/data-provider';
+import { useMarketState } from '@vegaprotocol/markets';
 import * as Schema from '@vegaprotocol/types';
 import { HeaderStat } from '../header';
-import { useCallback, useRef, useState } from 'react';
-import * as constants from '../constants';
 import { DocsLinks } from '@vegaprotocol/environment';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../lib/use-t';
 
-export const MarketState = ({ market }: { market: Market | null }) => {
+export const MarketState = ({ marketId }: { marketId?: string }) => {
   const t = useT();
-  const [marketState, setMarketState] = useState<Schema.MarketState | null>(
-    null
-  );
-
-  const throttledSetMarketState = useRef(
-    throttle((state: Schema.MarketState) => {
-      setMarketState(state);
-    }, constants.THROTTLE_UPDATE_TIME)
-  ).current;
-
-  const update = useCallback(
-    ({ data: marketData }: { data: MarketData | null }) => {
-      if (marketData) {
-        throttledSetMarketState(marketData.marketState);
-      }
-      return true;
-    },
-    [throttledSetMarketState]
-  );
-
-  useDataProvider({
-    dataProvider: marketDataProvider,
-    update,
-    variables: { marketId: market?.id || '' },
-    skip: !market?.id,
-  });
+  const { data: marketState } = useMarketState(marketId);
 
   return (
     <HeaderStat
       heading={t('Status')}
-      description={useGetMarketStateTooltip(marketState)}
+      description={useGetMarketStateTooltip(marketState ?? undefined)}
       testId="market-state"
     >
       {marketState ? Schema.MarketStateMapping[marketState] : '-'}
@@ -50,7 +20,7 @@ export const MarketState = ({ market }: { market: Market | null }) => {
   );
 };
 
-const useGetMarketStateTooltip = (state: Schema.MarketState | null) => {
+const useGetMarketStateTooltip = (state?: Schema.MarketState) => {
   const t = useT();
   if (state === Schema.MarketState.STATE_ACTIVE) {
     return t('Enactment date reached and usual auction exit checks pass');

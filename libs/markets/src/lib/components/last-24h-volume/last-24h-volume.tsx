@@ -10,10 +10,10 @@ import { useT } from '../../use-t';
 
 interface Props {
   marketId?: string;
-  positionDecimalPlaces?: number;
   formatDecimals?: number;
   initialValue?: string;
   marketDecimals: number;
+  positionDecimalPlaces: number;
   quoteUnit?: string;
 }
 
@@ -41,7 +41,11 @@ export const Last24hVolume = ({
     : initialValue;
 
   const candleVolumePrice = oneDayCandles
-    ? calcCandleVolumePrice(oneDayCandles, marketDecimals)
+    ? calcCandleVolumePrice(
+        oneDayCandles,
+        marketDecimals,
+        positionDecimalPlaces
+      )
     : initialValue;
 
   return (

@@ -42,6 +42,7 @@ query StopOrderById($stopOrderId: ID!) {
     expiryStrategy
     triggerDirection
     status
+    rejectionReason
     createdAt
     updatedAt
     partyId

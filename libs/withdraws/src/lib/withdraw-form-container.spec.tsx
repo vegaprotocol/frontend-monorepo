@@ -138,8 +138,6 @@ describe('WithdrawFormContainer', () => {
           id: 'marketId-1',
           decimalPlaces: 5,
           positionDecimalPlaces: 0,
-          state: Types.MarketState.STATE_SUSPENDED,
-          tradingMode: Types.MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
           tickSize: '1',
           fees: {
             __typename: 'Fees',
@@ -149,6 +147,14 @@ describe('WithdrawFormContainer', () => {
               infrastructureFee: '0.0005',
               liquidityFee: '0.001',
             },
+          },
+          markPriceConfiguration: {
+            decayWeight: '',
+            decayPower: 0,
+            cashAmount: '',
+            SourceStalenessTolerance: [],
+            CompositePriceType:
+              Types.CompositePriceType.COMPOSITE_PRICE_TYPE_LAST_TRADE,
           },
           tradableInstrument: {
             __typename: 'TradableInstrument',

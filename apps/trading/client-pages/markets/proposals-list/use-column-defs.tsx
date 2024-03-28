@@ -19,7 +19,7 @@ import {
 } from '@vegaprotocol/types';
 import { ProposalActionsDropdown } from './proposal-actions-dropdown';
 import {
-  type MarketFieldsFragment,
+  type MarketMaybeWithData,
   getProductType,
 } from '@vegaprotocol/markets';
 import { useT } from '../../../lib/use-t';
@@ -40,7 +40,7 @@ export const useColumnDefs = () => {
           data,
         }: {
           value: string;
-          data: MarketFieldsFragment;
+          data: MarketMaybeWithData;
         }) => {
           if (!value || !data) return '-';
 
@@ -70,10 +70,13 @@ export const useColumnDefs = () => {
       {
         colId: 'state',
         headerName: t('State'),
-        field: 'state',
+        field: 'data.marketState',
         valueFormatter: ({
           value,
-        }: VegaValueFormatterParams<MarketFieldsFragment, 'state'>) => {
+        }: VegaValueFormatterParams<
+          MarketMaybeWithData,
+          'data.marketState'
+        >) => {
           return value ? MarketStateMapping[value] : '-';
         },
         filter: SetFilter,
@@ -93,7 +96,7 @@ export const useColumnDefs = () => {
         valueFormatter: ({
           value,
         }: VegaValueFormatterParams<
-          MarketFieldsFragment,
+          MarketMaybeWithData,
           'marketTimestamps.pending'
         >) => {
           return value ? getDateTimeFormat().format(new Date(value)) : '-';
@@ -107,7 +110,7 @@ export const useColumnDefs = () => {
         valueFormatter: ({
           value,
         }: VegaValueFormatterParams<
-          MarketFieldsFragment,
+          MarketMaybeWithData,
           'marketTimestamps.open'
         >) => (value ? getDateTimeFormat().format(new Date(value)) : '-'),
         filter: DateRangeFilter,
@@ -117,7 +120,7 @@ export const useColumnDefs = () => {
         ...COL_DEFS.actions,
         cellRenderer: ({
           data,
-        }: VegaICellRendererParams<MarketFieldsFragment>) => {
+        }: VegaICellRendererParams<MarketMaybeWithData>) => {
           if (!data?.marketProposal?.id) return null;
 
           return <ProposalActionsDropdown id={data.marketProposal.id} />;

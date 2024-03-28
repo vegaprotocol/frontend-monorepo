@@ -9,7 +9,7 @@ export interface SettlementDataCellProps {
   oracleSpecId: string;
   metaDate: Date | null;
   closeTimestamp: string | null;
-  marketState: MarketState;
+  marketState?: MarketState;
 }
 
 export const SettlementDateCell = ({

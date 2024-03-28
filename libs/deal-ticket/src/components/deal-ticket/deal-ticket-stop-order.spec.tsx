@@ -2,7 +2,7 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { generateMarket } from '../../test-helpers';
-import { StopOrder } from './deal-ticket-stop-order';
+import { NoOpenVolumeWarning, StopOrder } from './deal-ticket-stop-order';
 import * as Schema from '@vegaprotocol/types';
 import { MockedProvider } from '@apollo/client/testing';
 import {
@@ -82,6 +82,22 @@ jest.mock('@vegaprotocol/data-provider', () => ({
   ...jest.requireActual('@vegaprotocol/data-provider'),
   // @ts-ignore doesn't like spreading args here
   useDataProvider: jest.fn((...args) => mockDataProvider(...args)),
+}));
+
+const mockUseOpenVolume = jest.fn(() => ({
+  openVolume: '0',
+}));
+
+jest.mock('@vegaprotocol/positions', () => ({
+  ...jest.requireActual('@vegaprotocol/positions'),
+  useOpenVolume: jest.fn(() => mockUseOpenVolume()),
+}));
+
+const mockActiveOrders = jest.fn(() => ({}));
+
+jest.mock('@vegaprotocol/orders', () => ({
+  ...jest.requireActual('@vegaprotocol/orders'),
+  useActiveOrders: jest.fn(() => mockActiveOrders()),
 }));
 
 describe('StopOrder', () => {
@@ -574,5 +590,59 @@ describe('StopOrder', () => {
     expect(screen.queryByTestId(numberOfActiveOrdersLimit)).toBeNull();
     await userEvent.click(screen.getByTestId(oco));
     expect(screen.getByTestId(numberOfActiveOrdersLimit)).toBeInTheDocument();
+  });
+});
+
+describe('NoOpenVolumeWarning', () => {
+  const testId = 'stop-order-warning-position';
+
+  it('shows warning if there is no possible position to reduce', () => {
+    const activeOrders = [
+      {
+        side: Schema.Side.SIDE_BUY,
+        remaining: '8',
+      },
+      {
+        side: Schema.Side.SIDE_BUY,
+        remaining: '2',
+      },
+      {
+        side: Schema.Side.SIDE_SELL,
+        remaining: '7',
+      },
+      {
+        side: Schema.Side.SIDE_SELL,
+        remaining: '3',
+      },
+    ];
+    mockActiveOrders.mockReturnValue({ data: activeOrders });
+
+    mockUseOpenVolume.mockReturnValue({ openVolume: '10' });
+    const result = render(
+      <NoOpenVolumeWarning side={Schema.Side.SIDE_BUY} marketId="" />
+    );
+    // side buy, volume + remaining 20
+    expect(screen.getByTestId(testId)).toBeInTheDocument();
+
+    result.rerender(
+      <NoOpenVolumeWarning side={Schema.Side.SIDE_SELL} marketId="" />
+    );
+    // side sell, volume - remaining = 0
+    expect(screen.queryByTestId(testId)).not.toBeInTheDocument();
+
+    result.rerender(
+      <NoOpenVolumeWarning side={Schema.Side.SIDE_BUY} marketId="" />
+    );
+    // side sell, volume - remaining = 0
+    expect(screen.queryByTestId(testId)).toBeInTheDocument();
+
+    mockUseOpenVolume.mockReturnValue({ openVolume: '2' });
+    render(<NoOpenVolumeWarning side={Schema.Side.SIDE_SELL} marketId="" />);
+    // side buy, volume + remaining = 12
+    expect(screen.queryByTestId(testId)).toBeInTheDocument();
+
+    render(<NoOpenVolumeWarning side={Schema.Side.SIDE_SELL} marketId="" />);
+    // side sell, volume - remaining = -8
+    expect(screen.getByTestId(testId)).toBeInTheDocument();
   });
 });

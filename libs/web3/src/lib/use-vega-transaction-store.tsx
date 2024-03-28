@@ -47,6 +47,7 @@ export interface VegaTransactionStore {
   ) => void;
   dismiss: (index: number) => void;
   delete: (index: number) => void;
+  getTransaction: (txHash: string) => VegaStoredTxState | undefined;
   updateWithdrawal: (
     withdrawal: NonNullable<VegaStoredTxState['withdrawal']>,
     withdrawalApproval: NonNullable<VegaStoredTxState['withdrawalApproval']>
@@ -60,6 +61,12 @@ export interface VegaTransactionStore {
 export const useVegaTransactionStore = create<VegaTransactionStore>()(
   subscribeWithSelector((set, get) => ({
     transactions: [] as (VegaStoredTxState | undefined)[],
+    getTransaction: (txHash: string) => {
+      return get().transactions.find(
+        (transaction) =>
+          transaction?.txHash && transaction.txHash.toLowerCase() === txHash
+      );
+    },
     create: (body: Transaction, order?: OrderTxUpdateFieldsFragment) => {
       const transactions = get().transactions;
       const now = new Date();

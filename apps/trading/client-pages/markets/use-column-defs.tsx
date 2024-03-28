@@ -125,7 +125,9 @@ export const useMarketsColumnDefs = () => {
         valueFormatter: ({
           data,
         }: VegaValueFormatterParams<MarketMaybeWithData, 'state'>) => {
-          return data?.state ? Schema.MarketStateMapping[data.state] : '-';
+          return data?.data?.marketState
+            ? Schema.MarketStateMapping[data?.data?.marketState]
+            : '-';
         },
         filter: SetFilter,
         filterParams: {
@@ -170,7 +172,12 @@ export const useMarketsColumnDefs = () => {
           const vol = candles ? calcCandleVolume(candles) : '0';
           const quoteName = getQuoteName(data);
           const volPrice =
-            candles && calcCandleVolumePrice(candles, data.decimalPlaces);
+            candles &&
+            calcCandleVolumePrice(
+              candles,
+              data.decimalPlaces,
+              data.positionDecimalPlaces
+            );
 
           const volume =
             data && vol && vol !== '0'
