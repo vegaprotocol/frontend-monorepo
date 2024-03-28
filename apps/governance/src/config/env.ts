@@ -41,7 +41,7 @@ export const ContractAddresses: {
     claimAddress: '0x8Cef746ab7C83B61F6461cC92882bD61AB65a994', // TODO not deployed to this env, but random address so app doesn't error
     lockedAddress: '0x0', // TODO not deployed to this env
   },
-  VALIDATOR_TESTNET: {
+  VALIDATORS_TESTNET: {
     claimAddress: '0x8Cef746ab7C83B61F6461cC92882bD61AB65a994', // TODO not deployed to this env, but random address so app doesn't error
     lockedAddress: '0x0', // TODO not deployed to this env
     // This is a fallback contract address for the validator testnet network which does not

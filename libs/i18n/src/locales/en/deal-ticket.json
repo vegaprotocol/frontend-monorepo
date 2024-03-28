@@ -154,7 +154,7 @@
   "TYPE_SELECTOR_LIQUIDITY_MONITORING_AUCTION": "This market is in auction until it reaches <0>sufficient liquidity</0>. Only limit orders are permitted when market is in auction.",
   "TYPE_SELECTOR_PRICE_MONITORING_AUCTION": "This market is in auction due to <0>high price volatility</0>. Only limit orders are permitted when market is in auction.",
   "Until the auction ends, you can only place GFA, GTT, or GTC limit orders": "Until the auction ends, you can only place GFA, GTT, or GTC limit orders",
-  "VALIDATOR_TESTNET": "VALIDATOR_TESTNET",
+  "VALIDATORS_TESTNET": "VALIDATORS_TESTNET",
   "Volume discount": "Volume discount",
   "When the order trades and its size falls below this threshold, it will be reset to the peak size and moved to the back of the priority order. Must be less than or equal to peak size, and greater than 0.": "When the order trades and its size falls below this threshold, it will be reset to the peak size and moved to the back of the priority order. Must be less than or equal to peak size, and greater than 0.",
   "You are setting this market to cross-margin mode.": "You are setting this market to cross-margin mode.",

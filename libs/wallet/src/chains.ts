@@ -16,6 +16,12 @@ export const fairground = {
   name: 'Fairground',
 };
 
+export const validatorsTestnet = {
+  id: 'vega-testnet-0002-v4',
+  testnet: true,
+  name: 'Validators Testnet',
+};
+
 export const stagnet = {
   id: 'vega-stagnet1-202307191148',
   testnet: true,
