@@ -22,6 +22,7 @@ import { marketInfoProvider } from './market-info-data-provider';
 import type { MarketInfo } from './market-info-data-provider';
 import { MarketProposalNotification } from '@vegaprotocol/proposals';
 import {
+  BaseAssetInfoPanel,
   CurrentFeesInfoPanel,
   FundingInfoPanel,
   InstrumentInfoPanel,
@@ -39,6 +40,7 @@ import {
   MetadataInfoPanel,
   PriceConfigurationPanel,
   PriceMonitoringBoundsInfoPanel,
+  QuoteAssetInfoPanel,
   RiskFactorsInfoPanel,
   RiskModelInfoPanel,
   SettlementAssetInfoPanel,
@@ -49,6 +51,7 @@ import {
   getDataSourceSpecForSettlementSchedule,
   isPerpetual,
   isFuture,
+  isSpot,
 } from '../../product';
 import { useT } from '../../use-t';
 
@@ -155,17 +158,19 @@ export const MarketInfoAccordion = ({
             title={t('Instrument')}
             content={<InstrumentInfoPanel market={market} />}
           />
-          <AccordionItem
-            itemId="mark-price"
-            title={t('Mark price')}
-            content={
-              <PriceConfigurationPanel
-                market={market}
-                priceConfiguration={market.markPriceConfiguration}
-              />
-            }
-          />
-          {settlementScheduleDataSource && (
+          {!isSpot(product) && (
+            <AccordionItem
+              itemId="mark-price"
+              title={t('Mark price')}
+              content={
+                <PriceConfigurationPanel
+                  market={market}
+                  priceConfiguration={market.markPriceConfiguration}
+                />
+              }
+            />
+          )}
+          {!isSpot(product) && settlementScheduleDataSource && (
             <AccordionItem
               itemId="funding"
               title={t('Funding')}
@@ -196,41 +201,63 @@ export const MarketInfoAccordion = ({
               content={<TerminationAndSettlementPanel market={market} />}
             />
           )}
-          <AccordionItem
-            itemId="settlement-asset"
-            title={t('Settlement asset')}
-            content={<SettlementAssetInfoPanel market={market} />}
-          />
+          {!isSpot(product) && (
+            <AccordionItem
+              itemId="settlement-asset"
+              title={t('Settlement asset')}
+              content={<SettlementAssetInfoPanel market={market} />}
+            />
+          )}
+          {isSpot(product) && (
+            <>
+              <AccordionItem
+                itemId="base-asset"
+                title={t('Base asset')}
+                content={<BaseAssetInfoPanel market={market} />}
+              />
+              <AccordionItem
+                itemId="quote-asset"
+                title={t('Quote asset')}
+                content={<QuoteAssetInfoPanel market={market} />}
+              />
+            </>
+          )}
           <AccordionItem
             itemId="metadata"
             title={t('Metadata')}
             content={<MetadataInfoPanel market={market} />}
           />
-          <AccordionItem
-            itemId="risk-model"
-            title={t('Risk model')}
-            content={<RiskModelInfoPanel market={market} />}
-          />
-          <AccordionItem
-            itemId="margin-scaling-factors"
-            title={t('Margin scaling factors')}
-            content={<MarginScalingFactorsPanel market={market} />}
-          />
-          <AccordionItem
-            itemId="risk-factors"
-            title={t('Risk factors')}
-            content={<RiskFactorsInfoPanel market={market} />}
-          />
+          {!isSpot(product) && (
+            <>
+              <AccordionItem
+                itemId="risk-model"
+                title={t('Risk model')}
+                content={<RiskModelInfoPanel market={market} />}
+              />
+              <AccordionItem
+                itemId="margin-scaling-factors"
+                title={t('Margin scaling factors')}
+                content={<MarginScalingFactorsPanel market={market} />}
+              />
+              <AccordionItem
+                itemId="risk-factors"
+                title={t('Risk factors')}
+                content={<RiskFactorsInfoPanel market={market} />}
+              />
+            </>
+          )}
           <AccordionItem
             itemId="trigger"
             title={t('Price monitoring bounds')}
             content={<PriceMonitoringBoundsInfoPanel market={market} />}
           />
-          <AccordionItem
-            itemId="liquidation-strategy"
-            title={t('Liquidation strategy')}
-            content={<LiquidationStrategyInfoPanel market={market} />}
-          />
+          {!isSpot(product) && (
+            <AccordionItem
+              itemId="liquidation-strategy"
+              title={t('Liquidation strategy')}
+              content={<LiquidationStrategyInfoPanel market={market} />}
+            />
+          )}
           <AccordionItem
             itemId="liquidity-monitoring-parameters"
             title={t('Liquidity monitoring parameters')}
@@ -327,7 +354,7 @@ export const MarketInfoAccordion = ({
                   </>
                 }
               />
-              {featureFlags.SUCCESSOR_MARKETS && (
+              {featureFlags.SUCCESSOR_MARKETS && !isSpot(product) && (
                 <AccordionItem
                   itemId="succession-line"
                   title={t('Succession line')}

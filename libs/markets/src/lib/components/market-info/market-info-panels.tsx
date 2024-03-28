@@ -3,7 +3,11 @@ import type { ReactNode } from 'react';
 import { Fragment, useMemo, useState } from 'react';
 import { AssetDetailsTable, useAssetDataProvider } from '@vegaprotocol/assets';
 import { marketDataProvider } from '../../market-data-provider';
-import { totalFeesFactorsPercentage } from '../../market-utils';
+import {
+  getBaseAsset,
+  getQuoteAsset,
+  totalFeesFactorsPercentage,
+} from '../../market-utils';
 import {
   Accordion,
   AccordionChevron,
@@ -548,6 +552,62 @@ export const InstrumentInfoPanel = ({
         }
       }
     />
+  );
+};
+
+export const BaseAssetInfoPanel = ({ market }: MarketInfoProps) => {
+  const t = useT();
+  const assetSymbol = getBaseAsset(market).symbol;
+  const quoteAsset = getQuoteAsset(market);
+  const assetId = useMemo(() => getBaseAsset(market).id, [market]);
+
+  const { data: asset } = useAssetDataProvider(assetId ?? '');
+  return asset ? (
+    <>
+      <AssetDetailsTable
+        asset={asset}
+        inline={true}
+        noBorder={true}
+        dtClassName="text-black dark:text-white text-ui !px-0 text-xs"
+        ddClassName="text-black dark:text-white text-ui !px-0 max-w-full text-xs"
+      />
+      <p className="mt-4 text-xs">
+        {t(
+          'There is 1 unit of the base asset ({{assetSymbol}}) to every 1 quote asset ({{quoteUnit}}).',
+          { assetSymbol, quoteUnit: quoteAsset }
+        )}
+      </p>
+    </>
+  ) : (
+    <Splash>{t('No data')}</Splash>
+  );
+};
+
+export const QuoteAssetInfoPanel = ({ market }: MarketInfoProps) => {
+  const t = useT();
+  const assetSymbol = getQuoteAsset(market).symbol;
+  const quoteAsset = getQuoteAsset(market);
+  const assetId = useMemo(() => getQuoteAsset(market).id, [market]);
+
+  const { data: asset } = useAssetDataProvider(assetId ?? '');
+  return asset ? (
+    <>
+      <AssetDetailsTable
+        asset={asset}
+        inline={true}
+        noBorder={true}
+        dtClassName="text-black dark:text-white text-ui !px-0 text-xs"
+        ddClassName="text-black dark:text-white text-ui !px-0 max-w-full text-xs"
+      />
+      <p className="mt-4 text-xs">
+        {t(
+          'There is 1 unit of the base asset ({{assetSymbol}}) to every 1 quote asset ({{quoteUnit}}).',
+          { assetSymbol, quoteUnit: quoteAsset }
+        )}
+      </p>
+    </>
+  ) : (
+    <Splash>{t('No data')}</Splash>
   );
 };
 

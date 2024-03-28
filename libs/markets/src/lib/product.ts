@@ -3,9 +3,13 @@ import type {
   FutureFragment,
   MarketInfo,
   PerpetualFragment,
+  SpotFragment,
 } from './components';
 
 type Product = MarketInfo['tradableInstrument']['instrument']['product'];
+
+export const isSpot = (product: Product): product is SpotFragment =>
+  product.__typename === 'Spot';
 
 export const isFuture = (product: Product): product is FutureFragment =>
   product.__typename === 'Future';

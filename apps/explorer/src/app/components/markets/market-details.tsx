@@ -1,15 +1,18 @@
 import { t } from '@vegaprotocol/i18n';
 import type { MarketInfoWithData } from '@vegaprotocol/markets';
 import {
+  BaseAssetInfoPanel,
   LiquidationStrategyInfoPanel,
   LiquidityPriceRangeInfoPanel,
   LiquiditySLAParametersInfoPanel,
   MarginScalingFactorsPanel,
   PriceMonitoringBoundsInfoPanel,
   PriceMonitoringSettingsInfoPanel,
+  QuoteAssetInfoPanel,
   SuccessionLineInfoPanel,
   getDataSourceSpecForSettlementData,
   getDataSourceSpecForTradingTermination,
+  isSpot,
 } from '@vegaprotocol/markets';
 import {
   LiquidityInfoPanel,
@@ -64,16 +67,32 @@ export const MarketDetails = ({ market }: { market: MarketInfoWithData }) => {
       <KeyDetailsInfoPanel market={market} />
       <h2 className={headerClassName}>{t('Instrument')}</h2>
       <InstrumentInfoPanel market={market} />
-      <h2 className={headerClassName}>{t('Settlement asset')}</h2>
-      <SettlementAssetInfoPanel market={market} />
+      {!isSpot(product) && (
+        <>
+          <h2 className={headerClassName}>{t('Settlement asset')}</h2>
+          <SettlementAssetInfoPanel market={market} />
+        </>
+      )}
+      {isSpot(product) && (
+        <>
+          <h2 className={headerClassName}>{t('Base asset')}</h2>
+          <BaseAssetInfoPanel market={market} />
+          <h2 className={headerClassName}>{t('Quote asset')}</h2>
+          <QuoteAssetInfoPanel market={market} />
+        </>
+      )}
       <h2 className={headerClassName}>{t('Metadata')}</h2>
       <MetadataInfoPanel market={market} />
-      <h2 className={headerClassName}>{t('Risk model')}</h2>
-      <RiskModelInfoPanel market={market} />
-      <h2 className={headerClassName}>{t('Margin scaling factors')}</h2>
-      <MarginScalingFactorsPanel market={market} />
-      <h2 className={headerClassName}>{t('Risk factors')}</h2>
-      <RiskFactorsInfoPanel market={market} />
+      {!isSpot(product) && (
+        <>
+          <h2 className={headerClassName}>{t('Risk model')}</h2>
+          <RiskModelInfoPanel market={market} />
+          <h2 className={headerClassName}>{t('Margin scaling factors')}</h2>
+          <MarginScalingFactorsPanel market={market} />
+          <h2 className={headerClassName}>{t('Risk factors')}</h2>
+          <RiskFactorsInfoPanel market={market} />
+        </>
+      )}
       <h2 className={headerClassName}>{t('Price monitoring bounds')}</h2>
       <div className="mt-3">
         <PriceMonitoringBoundsInfoPanel market={market} />
@@ -82,8 +101,12 @@ export const MarketDetails = ({ market }: { market: MarketInfoWithData }) => {
       <div className="mt-3">
         <PriceMonitoringSettingsInfoPanel market={market} />
       </div>
-      <h2 className={headerClassName}>{t('Liquidation strategy')}</h2>
-      <LiquidationStrategyInfoPanel market={market} />
+      {!isSpot(product) && (
+        <>
+          <h2 className={headerClassName}>{t('Liquidation strategy')}</h2>
+          <LiquidationStrategyInfoPanel market={market} />
+        </>
+      )}
       <h2 className={headerClassName}>{t('Liquidity monitoring')}</h2>
       <LiquidityMonitoringParametersInfoPanel market={market} />
       <h2 className={headerClassName}>{t('Liquidity price range')}</h2>
@@ -105,8 +128,12 @@ export const MarketDetails = ({ market }: { market: MarketInfoWithData }) => {
           <OracleInfoPanel market={market} type="settlementData" />
         </>
       )}
-      <h2 className={`${headerClassName} mb-4`}>{t('Succession line')}</h2>
-      <SuccessionLineInfoPanel market={market} />
+      {!isSpot(product) && (
+        <>
+          <h2 className={`${headerClassName} mb-4`}>{t('Succession line')}</h2>
+          <SuccessionLineInfoPanel market={market} />
+        </>
+      )}
     </div>
   );
 };
