@@ -33,6 +33,7 @@ import { type EnrichedRewardTransfer } from '../../lib/hooks/use-rewards';
 import compact from 'lodash/compact';
 import BigNumber from 'bignumber.js';
 import { useTWAPQuery } from '../../lib/hooks/__generated__/Rewards';
+import { RankPayoutTable } from './rank-table';
 
 const Tick = () => (
   <VegaIcon
@@ -92,6 +93,7 @@ const RewardCard = ({
   gameId?: string | null;
 }) => {
   const t = useT();
+
   return (
     <div>
       <div
@@ -135,11 +137,29 @@ const RewardCard = ({
 
               {/** DISTRIBUTION STRATEGY */}
               <Tooltip
-                description={t(
-                  DistributionStrategyDescriptionMapping[
-                    dispatchStrategy.distributionStrategy
-                  ]
-                )}
+                description={
+                  <div className="flex flex-col gap-4">
+                    <p>
+                      {t(
+                        DistributionStrategyDescriptionMapping[
+                          dispatchStrategy.distributionStrategy
+                        ]
+                      )}
+                      .
+                    </p>
+
+                    <p>
+                      {dispatchStrategy.rankTable &&
+                        t(
+                          'Payout percentages are base estimates assuming no individual reward multipliers are active. If users in teams have active multipliers, the reward amounts may vary.'
+                        )}
+                    </p>
+
+                    {dispatchStrategy.rankTable && (
+                      <RankPayoutTable rankTable={dispatchStrategy.rankTable} />
+                    )}
+                  </div>
+                }
                 underline={true}
               >
                 <span className="text-xs" data-testid="distribution-strategy">
@@ -928,13 +948,13 @@ const EntityIcon = ({
 export const areAllMarketsSettled = (transferNode: EnrichedRewardTransfer) => {
   const settledMarkets = transferNode.markets?.filter(
     (m) =>
-      m?.state &&
+      m?.data?.marketState &&
       [
         MarketState.STATE_TRADING_TERMINATED,
         MarketState.STATE_SETTLED,
         MarketState.STATE_CANCELLED,
         MarketState.STATE_CLOSED,
-      ].includes(m.state)
+      ].includes(m?.data?.marketState)
   );
 
   return (
@@ -949,8 +969,8 @@ export const areAllMarketsSuspended = (
   return (
     transferNode.markets?.filter(
       (m) =>
-        m?.state === MarketState.STATE_SUSPENDED ||
-        m?.state === MarketState.STATE_SUSPENDED_VIA_GOVERNANCE
+        m?.data?.marketState === MarketState.STATE_SUSPENDED ||
+        m?.data?.marketState === MarketState.STATE_SUSPENDED_VIA_GOVERNANCE
     ).length === transferNode.markets?.length &&
     Boolean(transferNode.markets && transferNode.markets.length > 0)
   );

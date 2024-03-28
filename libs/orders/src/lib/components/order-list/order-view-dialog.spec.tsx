@@ -3,8 +3,7 @@ import { OrderViewDialog } from './order-view-dialog';
 import type { Order } from '../order-data-provider';
 import { BrowserRouter } from 'react-router-dom';
 import {
-  MarketState,
-  MarketTradingMode,
+  CompositePriceType,
   OrderStatus,
   OrderTimeInForce,
   OrderType,
@@ -20,8 +19,14 @@ describe('OrderViewDialog', () => {
         id: 'b66cd4be223dfd900a4750bb5175e17d8f678996877d262be4c749a99e22a970',
         decimalPlaces: 5,
         positionDecimalPlaces: 3,
-        state: MarketState.STATE_ACTIVE,
-        tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+        markPriceConfiguration: {
+          decayWeight: '',
+          decayPower: 0,
+          cashAmount: '',
+          SourceStalenessTolerance: [],
+          CompositePriceType:
+            CompositePriceType.COMPOSITE_PRICE_TYPE_LAST_TRADE,
+        },
         tickSize: '1',
         fees: {
           __typename: 'Fees',

@@ -1,8 +1,4 @@
-import {
-  addDecimal,
-  formatNumberPercentage,
-  toBigNum,
-} from '@vegaprotocol/utils';
+import { formatNumberPercentage, toBigNum } from '@vegaprotocol/utils';
 import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
 import orderBy from 'lodash/orderBy';
@@ -93,8 +89,8 @@ export const filterAndSortMarkets = (markets: MarketMaybeWithData[]) => {
   ];
   const orderedMarkets = orderBy(
     markets?.filter((m) => {
-      const state = m.data?.marketState || m.state;
-      const tradingMode = m.data?.marketTradingMode || m.tradingMode;
+      const state = m.data?.marketState;
+      const tradingMode = m.data?.marketTradingMode;
       return (
         state !== MarketState.STATE_REJECTED &&
         tradingMode !== MarketTradingMode.TRADING_MODE_NO_TRADING
@@ -105,19 +101,26 @@ export const filterAndSortMarkets = (markets: MarketMaybeWithData[]) => {
   );
   return orderedMarkets.sort(
     (a, b) =>
-      tradingModesOrdering.indexOf(a.data?.marketTradingMode || a.tradingMode) -
-      tradingModesOrdering.indexOf(b.data?.marketTradingMode || b.tradingMode)
+      (a.data?.marketTradingMode
+        ? tradingModesOrdering.indexOf(a.data?.marketTradingMode)
+        : -1) -
+      (b.data?.marketTradingMode
+        ? tradingModesOrdering.indexOf(b.data?.marketTradingMode)
+        : -1)
   );
 };
 
 export const filterAndSortClosedMarkets = (markets: MarketMaybeWithData[]) => {
   return markets.filter((m) => {
-    return [
-      MarketState.STATE_SETTLED,
-      MarketState.STATE_TRADING_TERMINATED,
-      MarketState.STATE_CLOSED,
-      MarketState.STATE_CANCELLED,
-    ].includes(m.data?.marketState || m.state);
+    return (
+      m.data?.marketState &&
+      [
+        MarketState.STATE_SETTLED,
+        MarketState.STATE_TRADING_TERMINATED,
+        MarketState.STATE_CLOSED,
+        MarketState.STATE_CANCELLED,
+      ].includes(m.data.marketState)
+    );
   });
 };
 
@@ -125,8 +128,9 @@ export const filterAndSortProposedMarkets = (
   markets: MarketMaybeWithData[]
 ) => {
   return markets.filter((m) => {
-    return [MarketState.STATE_PROPOSED].includes(
-      m.data?.marketState || m.state
+    return (
+      m.data?.marketState &&
+      [MarketState.STATE_PROPOSED].includes(m.data?.marketState)
     );
   });
 };
@@ -182,18 +186,15 @@ export const calcCandleVolume = (candles: Candle[]): string | undefined =>
  */
 export const calcCandleVolumePrice = (
   candles: Candle[],
-  marketDecimals: number = 1,
-  positionDecimalPlaces: number = 1
+  marketDecimals: number,
+  positionDecimals: number
 ): string | undefined =>
   candles &&
   candles.reduce(
     (acc, c) =>
       new BigNumber(acc)
-        .plus(
-          BigNumber(addDecimal(c.volume, positionDecimalPlaces)).times(
-            addDecimal(c.high, marketDecimals)
-          )
-        )
+        // Using notional both price and size need conversion with decimals, we can acheive the same result by just combining them
+        .plus(toBigNum(c.notional, marketDecimals + positionDecimals))
         .toString(),
     '0'
   );

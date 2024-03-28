@@ -25,7 +25,7 @@ import {
   useMarginAccountBalance,
 } from '@vegaprotocol/accounts';
 import { useMaxLeverage, useOpenVolume } from '@vegaprotocol/positions';
-import { activeOrdersProvider } from '@vegaprotocol/orders';
+import { useActiveOrders } from '@vegaprotocol/orders';
 import { usePositionEstimate } from '../../hooks/use-position-estimate';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { getAsset, useMarket } from '@vegaprotocol/markets';
@@ -64,10 +64,7 @@ export const MarginChange = ({
     openVolume: '0',
     averageEntryPrice: '0',
   };
-  const { data: activeOrders } = useDataProvider({
-    dataProvider: activeOrdersProvider,
-    variables: { partyId: partyId || '', marketId },
-  });
+  const { data: activeOrders } = useActiveOrders(partyId, marketId);
   const orders = activeOrders
     ? activeOrders.map<Schema.OrderInfo>((order) => ({
         isMarketOrder: order.type === Schema.OrderType.TYPE_MARKET,

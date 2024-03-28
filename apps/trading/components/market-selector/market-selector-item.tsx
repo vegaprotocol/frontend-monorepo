@@ -72,17 +72,17 @@ const MarketData = ({
 
   const marketTradingMode = marketData
     ? marketData.marketTradingMode
-    : market.data
-    ? market.data.marketTradingMode
-    : market.tradingMode;
+    : market.data?.marketTradingMode;
 
-  const mode = [
-    MarketTradingMode.TRADING_MODE_BATCH_AUCTION,
-    MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
-    MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
-  ].includes(marketTradingMode)
-    ? MarketTradingModeMapping[marketTradingMode]
-    : '';
+  const mode =
+    marketTradingMode &&
+    [
+      MarketTradingMode.TRADING_MODE_BATCH_AUCTION,
+      MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
+      MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
+    ].includes(marketTradingMode)
+      ? MarketTradingModeMapping[marketTradingMode]
+      : '';
 
   const { oneDayCandles } = useCandles({ marketId: market.id });
 

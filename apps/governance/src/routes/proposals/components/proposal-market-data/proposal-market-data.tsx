@@ -50,7 +50,7 @@ export const useMarketDataDialogStore = create<MarketDataDialogState>(
 const marketDataHeaderStyles =
   'font-alpha calt text-base border-b border-vega-dark-200 mt-2 py-2';
 
-export const ProposalMarketData = ({ proposalId }: { proposalId: string }) => {
+export const ProposalMarketData = ({ marketId }: { marketId: string }) => {
   const { t } = useTranslation();
   const { isOpen, open, close } = useMarketDataDialogStore();
   const [showDetails, setShowDetails] = useState(false);
@@ -59,7 +59,7 @@ export const ProposalMarketData = ({ proposalId }: { proposalId: string }) => {
     dataProvider: marketInfoProvider,
     skipUpdates: true,
     variables: {
-      marketId: proposalId,
+      marketId: marketId,
     },
   });
 
@@ -72,7 +72,7 @@ export const ProposalMarketData = ({ proposalId }: { proposalId: string }) => {
     },
   });
 
-  if (!marketData || !parentMarketData) {
+  if (!marketData) {
     return null;
   }
 
@@ -134,13 +134,13 @@ export const ProposalMarketData = ({ proposalId }: { proposalId: string }) => {
             <h2 className={marketDataHeaderStyles}>{t('Key details')}</h2>
             <KeyDetailsInfoPanel
               market={marketData}
-              parentMarket={parentMarketData}
+              parentMarket={parentMarketData ? parentMarketData : undefined}
             />
 
             <h2 className={marketDataHeaderStyles}>{t('Instrument')}</h2>
             <InstrumentInfoPanel
               market={marketData}
-              parentMarket={parentMarketData}
+              parentMarket={parentMarketData ? parentMarketData : undefined}
             />
 
             {settlementData &&
@@ -156,7 +156,7 @@ export const ProposalMarketData = ({ proposalId }: { proposalId: string }) => {
                     isParentSettlementDataEqual ||
                     isParentSettlementScheduleDataEqual
                       ? undefined
-                      : parentMarketData
+                      : parentMarketData || undefined
                   }
                 />
               </>
@@ -169,7 +169,9 @@ export const ProposalMarketData = ({ proposalId }: { proposalId: string }) => {
                   market={marketData}
                   type="settlementData"
                   parentMarket={
-                    isParentSettlementDataEqual ? undefined : parentMarketData
+                    isParentSettlementDataEqual
+                      ? undefined
+                      : parentMarketData || undefined
                   }
                 />
 
@@ -185,7 +187,7 @@ export const ProposalMarketData = ({ proposalId }: { proposalId: string }) => {
                       parentMarket={
                         isParentTerminationDataEqual
                           ? undefined
-                          : parentMarketData
+                          : parentMarketData || undefined
                       }
                     />
                   </div>
@@ -203,7 +205,7 @@ export const ProposalMarketData = ({ proposalId }: { proposalId: string }) => {
                       parentMarket={
                         isParentSettlementScheduleDataEqual
                           ? undefined
-                          : parentMarketData
+                          : parentMarketData || undefined
                       }
                     />
                   </div>
@@ -217,19 +219,19 @@ export const ProposalMarketData = ({ proposalId }: { proposalId: string }) => {
             <h2 className={marketDataHeaderStyles}>{t('Settlement assets')}</h2>
             <SettlementAssetInfoPanel
               market={marketData}
-              parentMarket={parentMarketData}
+              parentMarket={parentMarketData || undefined}
             />
 
             <h2 className={marketDataHeaderStyles}>{t('Metadata')}</h2>
             <MetadataInfoPanel
               market={marketData}
-              parentMarket={parentMarketData}
+              parentMarket={parentMarketData || undefined}
             />
 
             <h2 className={marketDataHeaderStyles}>{t('Risk model')}</h2>
             <RiskModelInfoPanel
               market={marketData}
-              parentMarket={parentMarketData}
+              parentMarket={parentMarketData || undefined}
             />
 
             <h2 className={marketDataHeaderStyles}>
@@ -237,13 +239,13 @@ export const ProposalMarketData = ({ proposalId }: { proposalId: string }) => {
             </h2>
             <MarginScalingFactorsPanel
               market={marketData}
-              parentMarket={parentMarketData}
+              parentMarket={parentMarketData || undefined}
             />
 
             <h2 className={marketDataHeaderStyles}>{t('Risk factors')}</h2>
             <RiskFactorsInfoPanel
               market={marketData}
-              parentMarket={parentMarketData}
+              parentMarket={parentMarketData || undefined}
             />
 
             {showParentPriceMonitoringBounds && (
@@ -268,14 +270,14 @@ export const ProposalMarketData = ({ proposalId }: { proposalId: string }) => {
             </h2>
             <LiquidityMonitoringParametersInfoPanel
               market={marketData}
-              parentMarket={parentMarketData}
+              parentMarket={parentMarketData || undefined}
             />
             <h2 className={marketDataHeaderStyles}>
               {t('Liquidity price range')}
             </h2>
             <LiquidityPriceRangeInfoPanel
               market={marketData}
-              parentMarket={parentMarketData}
+              parentMarket={parentMarketData || undefined}
             />
 
             <h2 className={marketDataHeaderStyles}>
@@ -283,7 +285,7 @@ export const ProposalMarketData = ({ proposalId }: { proposalId: string }) => {
             </h2>
             <LiquiditySLAParametersInfoPanel
               market={marketData}
-              parentMarket={parentMarketData}
+              parentMarket={parentMarketData || undefined}
             />
           </div>
         </>
