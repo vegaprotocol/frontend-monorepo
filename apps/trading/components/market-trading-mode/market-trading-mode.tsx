@@ -26,20 +26,15 @@ const getTradingModeLabel = (
 interface HeaderStatMarketTradingModeProps {
   marketId?: string;
   onSelect?: (marketId: string, metaKey?: boolean) => void;
-  initialTradingMode?: Schema.MarketTradingMode;
-  initialTrigger?: Schema.AuctionTrigger;
 }
 
 export const HeaderStatMarketTradingMode = ({
   marketId,
   onSelect,
-  initialTradingMode,
-  initialTrigger,
 }: HeaderStatMarketTradingModeProps) => {
   const t = useT();
   const { data } = useStaticMarketData(marketId);
-  const marketTradingMode = data?.marketTradingMode ?? initialTradingMode;
-  const trigger = data?.trigger ?? initialTrigger;
+  const { marketTradingMode, trigger } = data || {};
 
   return (
     <HeaderStat
@@ -56,8 +51,6 @@ export const HeaderStatMarketTradingMode = ({
 
 export const MarketTradingMode = ({
   marketId,
-  initialTradingMode,
-  initialTrigger,
   inViewRoot,
 }: Omit<HeaderStatMarketTradingModeProps, 'onUpdate'> & {
   inViewRoot?: RefObject<Element>;
@@ -72,10 +65,7 @@ export const MarketTradingMode = ({
       }
     >
       <span ref={ref}>
-        {getTradingModeLabel(
-          data?.marketTradingMode ?? initialTradingMode,
-          data?.trigger ?? initialTrigger
-        )}
+        {getTradingModeLabel(data?.marketTradingMode, data?.trigger)}
       </span>
     </Tooltip>
   );

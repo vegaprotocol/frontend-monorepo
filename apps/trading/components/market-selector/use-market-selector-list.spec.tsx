@@ -409,7 +409,6 @@ describe('useMarketSelectorList', () => {
       }),
       createMarketFragment({
         id: 'market-1',
-        state: MarketState.STATE_ACTIVE,
         // @ts-ignore data not on fragment
         data: createMarketsDataFragment({
           marketState: MarketState.STATE_ACTIVE,
@@ -424,7 +423,6 @@ describe('useMarketSelectorList', () => {
       }),
       createMarketFragment({
         id: 'market-2',
-        state: MarketState.STATE_ACTIVE,
         // @ts-ignore data not on fragment
         data: createMarketsDataFragment({
           marketState: MarketState.STATE_ACTIVE,
@@ -439,7 +437,6 @@ describe('useMarketSelectorList', () => {
       }),
       createMarketFragment({
         id: 'market-3',
-        state: MarketState.STATE_ACTIVE,
         // @ts-ignore data not on fragment
         data: createMarketsDataFragment({
           marketState: MarketState.STATE_ACTIVE,

@@ -9,8 +9,6 @@ export function generateMarket(override?: PartialDeep<Market>): Market {
     id: 'market-id',
     decimalPlaces: 2,
     positionDecimalPlaces: 1,
-    tradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
-    state: Schema.MarketState.STATE_ACTIVE,
     tickSize: '1',
     marketTimestamps: {
       __typename: 'MarketTimestamps',

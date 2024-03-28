@@ -4,9 +4,9 @@ import {
 } from '@vegaprotocol/assets';
 import { useActiveRewardsQuery } from './__generated__/Rewards';
 import {
-  type MarketFieldsFragment,
-  useMarketsMapProvider,
+  type MarketMaybeWithData,
   getAsset,
+  marketsWithDataProvider,
 } from '@vegaprotocol/markets';
 import {
   type RecurringTransfer,
@@ -20,6 +20,7 @@ import {
 import { type ApolloError } from '@apollo/client';
 import compact from 'lodash/compact';
 import { useEpochInfoQuery } from './__generated__/Epoch';
+import { useDataProvider } from '@vegaprotocol/data-provider';
 
 export type RewardTransfer = TransferNode & {
   transfer: {
@@ -35,7 +36,7 @@ export type EnrichedRewardTransfer = RewardTransfer & {
   /** A flag determining whether a reward asset is being traded on any of the active markets */
   isAssetTraded?: boolean;
   /** A list of markets in scope */
-  markets?: MarketFieldsFragment[];
+  markets?: MarketMaybeWithData[];
 };
 
 /**
@@ -115,11 +116,15 @@ export const useRewards = ({
     loading: assetsLoading,
     error: assetsError,
   } = useAssetsMapProvider();
+
   const {
     data: markets,
     loading: marketsLoading,
     error: marketsError,
-  } = useMarketsMapProvider();
+  } = useDataProvider({
+    dataProvider: marketsWithDataProvider,
+    variables: undefined,
+  });
 
   const enriched = compact(
     data?.transfersConnection?.edges?.map((n) => n?.node)
@@ -140,7 +145,7 @@ export const useRewards = ({
         undefined;
       const marketsInScope = compact(
         node.transfer.kind.dispatchStrategy.marketIdsInScope?.map(
-          (id) => markets && markets[id]
+          (id) => markets && markets.find((m) => m.id === id)
         )
       );
       const isAssetTraded =
@@ -151,7 +156,7 @@ export const useRewards = ({
             return (
               mAsset.id ===
                 node.transfer.kind.dispatchStrategy.dispatchMetricAssetId &&
-              m.state === MarketState.STATE_ACTIVE
+              m.data?.marketState === MarketState.STATE_ACTIVE
             );
           } catch {
             // NOOP

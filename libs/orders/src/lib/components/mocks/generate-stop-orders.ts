@@ -39,7 +39,6 @@ export const generateStopOrder = (
         open: '',
       },
       positionDecimalPlaces: 2,
-      state: Schema.MarketState.STATE_ACTIVE,
       tradableInstrument: {
         __typename: 'TradableInstrument',
         instrument: {
@@ -96,7 +95,6 @@ export const generateStopOrder = (
           },
         },
       },
-      tradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
     },
     submission: {
       marketId: 'market-id',

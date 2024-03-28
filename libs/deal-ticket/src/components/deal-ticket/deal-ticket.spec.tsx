@@ -850,9 +850,8 @@ describe('DealTicket', () => {
     ];
 
     it.each(states)('handles state %s correctly', async (marketState) => {
-      const marketOverrides = { state: marketState };
       const marketDataOverrides = { marketState: marketState };
-      render(generateJsx([], marketOverrides, marketDataOverrides));
+      render(generateJsx([], {}, marketDataOverrides));
 
       const text = `This market is ${marketState
         .split('_')

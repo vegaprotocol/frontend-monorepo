@@ -29,7 +29,6 @@ export const generateOrder = (partialOrder?: PartialDeep<Order>) => {
         close: null,
       },
       positionDecimalPlaces: 2,
-      state: Schema.MarketState.STATE_ACTIVE,
       tradableInstrument: {
         __typename: 'TradableInstrument',
         instrument: {
@@ -86,7 +85,6 @@ export const generateOrder = (partialOrder?: PartialDeep<Order>) => {
           },
         },
       },
-      tradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
     },
     size: '10',
     type: Schema.OrderType.TYPE_MARKET,
