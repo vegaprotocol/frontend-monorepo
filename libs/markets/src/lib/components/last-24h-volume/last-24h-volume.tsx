@@ -1,20 +1,16 @@
 import { calcCandleVolume, calcCandleVolumePrice } from '../../market-utils';
-import {
-  addDecimalsFormatNumber,
-  formatNumber,
-  isNumeric,
-} from '@vegaprotocol/utils';
+import { addDecimalsFormatNumber, formatNumber } from '@vegaprotocol/utils';
 import { Tooltip } from '@vegaprotocol/ui-toolkit';
 import { useCandles } from '../../hooks';
 import { useT } from '../../use-t';
 
-interface Props {
+interface Last24hVolumeProps {
   marketId?: string;
-  formatDecimals?: number;
-  initialValue?: string;
-  marketDecimals: number;
   positionDecimalPlaces: number;
+  marketDecimals: number;
+  formatDecimals?: number;
   quoteUnit?: string;
+  baseUnit?: string;
 }
 
 export const Last24hVolume = ({
@@ -22,9 +18,9 @@ export const Last24hVolume = ({
   marketDecimals,
   positionDecimalPlaces,
   formatDecimals,
-  initialValue,
   quoteUnit,
-}: Props) => {
+  baseUnit,
+}: Last24hVolumeProps) => {
   const t = useT();
   const { oneDayCandles, fiveDaysCandles, error } = useCandles({
     marketId,
@@ -36,17 +32,12 @@ export const Last24hVolume = ({
     return nonIdeal;
   }
 
-  const candleVolume = oneDayCandles
-    ? calcCandleVolume(oneDayCandles)
-    : initialValue;
-
-  const candleVolumePrice = oneDayCandles
-    ? calcCandleVolumePrice(
-        oneDayCandles,
-        marketDecimals,
-        positionDecimalPlaces
-      )
-    : initialValue;
+  const candleVolume = calcCandleVolume(oneDayCandles);
+  const candleVolumePrice = calcCandleVolumePrice(
+    oneDayCandles,
+    marketDecimals,
+    positionDecimalPlaces
+  );
 
   return (
     <Tooltip
@@ -54,19 +45,20 @@ export const Last24hVolume = ({
         'The total number of contracts traded in the last 24 hours. (Total value of contracts traded in the last 24 hours)'
       )}
     >
-      <span>
-        {candleVolume && isNumeric(positionDecimalPlaces)
-          ? addDecimalsFormatNumber(
-              candleVolume,
-              positionDecimalPlaces,
-              formatDecimals
-            )
-          : '-'}{' '}
-        (
-        {candleVolumePrice && isNumeric(positionDecimalPlaces)
-          ? formatNumber(candleVolumePrice, formatDecimals)
-          : '-'}{' '}
-        {quoteUnit})
+      <span className="flex gap-1">
+        <span>
+          {candleVolume
+            ? addDecimalsFormatNumber(candleVolume, positionDecimalPlaces)
+            : '-'}
+          {baseUnit && ' ' + baseUnit}
+        </span>
+        <span>
+          (
+          {candleVolumePrice
+            ? formatNumber(candleVolumePrice, formatDecimals)
+            : '-'}
+          {quoteUnit && ' ' + quoteUnit})
+        </span>
       </span>
     </Tooltip>
   );

@@ -43,7 +43,7 @@ export const useExpiryDate = (
   const t = useT();
   const metadataExpiryDate = getMarketExpiryDate(tags);
   const marketTimestampCloseDate = close && new Date(close);
-  let content = null;
+  let content = '-';
   if (!metadataExpiryDate) {
     content = marketTimestampCloseDate
       ? t('Expired on {{date}}', {
