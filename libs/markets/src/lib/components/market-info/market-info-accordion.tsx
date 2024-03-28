@@ -158,16 +158,18 @@ export const MarketInfoAccordion = ({
             title={t('Instrument')}
             content={<InstrumentInfoPanel market={market} />}
           />
-          <AccordionItem
-            itemId="mark-price"
-            title={t('Mark price')}
-            content={
-              <PriceConfigurationPanel
-                market={market}
-                priceConfiguration={market.markPriceConfiguration}
-              />
-            }
-          />
+          {!isSpot(product) && (
+            <AccordionItem
+              itemId="mark-price"
+              title={t('Mark price')}
+              content={
+                <PriceConfigurationPanel
+                  market={market}
+                  priceConfiguration={market.markPriceConfiguration}
+                />
+              }
+            />
+          )}
           {!isSpot(product) && settlementScheduleDataSource && (
             <AccordionItem
               itemId="funding"
