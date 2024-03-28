@@ -13,7 +13,7 @@
   }
 
   h1 {
-    @apply text-2xl text-white uppercase mb-4;
+    @apply text-2xl text-white mb-4;
   }
   h2 {
     @apply text-xl text-white mb-4;

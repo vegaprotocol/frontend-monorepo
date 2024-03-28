@@ -10,7 +10,10 @@ import {
   type TransferStatus,
   MarketUpdateType,
 } from './__generated__/types';
-import type { AccountType } from './__generated__/types';
+import type {
+  AccountType,
+  StopOrderRejectionReason,
+} from './__generated__/types';
 import type {
   AuctionTrigger,
   DataSourceSpecStatus,
@@ -283,6 +286,29 @@ export const StopOrderStatusMapping: {
   STATUS_STOPPED: 'Stopped',
   STATUS_TRIGGERED: 'Triggered',
   STATUS_UNSPECIFIED: 'Unspecified',
+};
+
+/**
+ * Stop order rejection reason mappings.
+ */
+export const StopOrderRejectionReasonMapping: {
+  [T in StopOrderRejectionReason]: string;
+} = {
+  REJECTION_REASON_TRADING_NOT_ALLOWED: 'Trading is not allowed yet',
+  REJECTION_REASON_EXPIRY_IN_THE_PAST:
+    'Expiry of the stop order is in the past',
+  REJECTION_REASON_MUST_BE_REDUCE_ONLY:
+    'Stop orders submission must be reduce only',
+  REJECTION_REASON_MAX_STOP_ORDERS_PER_PARTY_REACHED:
+    'Party has reached the maximum stop orders allowed for this market',
+  REJECTION_REASON_STOP_ORDER_NOT_ALLOWED_WITHOUT_A_POSITION:
+    'Stop orders are not allowed without a position',
+  REJECTION_REASON_STOP_ORDER_NOT_CLOSING_THE_POSITION:
+    'This stop order does not close the position',
+  REJECTION_REASON_STOP_ORDER_NOT_ALLOWED_DURING_OPENING_AUCTION:
+    'Stop orders are not allowed during the opening auction',
+  REJECTION_REASON_STOP_ORDER_CANNOT_MATCH_OCO_EXPIRY_TIMES:
+    'Stop order cannot have matching OCO expiry times',
 };
 
 /**
@@ -713,7 +739,7 @@ export const IndividualScopeMapping: { [e in IndividualScope]: string } = {
 export const IndividualScopeDescriptionMapping: {
   [e in IndividualScope]: string;
 } = {
-  INDIVIDUAL_SCOPE_ALL: 'All parties are eligble',
+  INDIVIDUAL_SCOPE_ALL: 'All parties are eligible',
   INDIVIDUAL_SCOPE_IN_TEAM: 'Parties in teams are eligible',
   INDIVIDUAL_SCOPE_NOT_IN_TEAM: 'Only parties not in teams are eligible',
 };

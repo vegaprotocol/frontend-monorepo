@@ -61,10 +61,11 @@ fragment MarketFields on Market {
   decimalPlaces
   positionDecimalPlaces
   tickSize
-  state
-  tradingMode
   parentMarketID
   successorMarketID
+  markPriceConfiguration {
+    ...PriceConfiguration
+  }
   fees {
     factors {
       makerFee

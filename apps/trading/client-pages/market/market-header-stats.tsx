@@ -5,8 +5,8 @@ import type { Market } from '@vegaprotocol/markets';
 import {
   addDecimalsFormatNumber,
   fromNanoSeconds,
-  getExpiryDate,
   getMarketExpiryDate,
+  useExpiryDate,
 } from '@vegaprotocol/utils';
 import {
   Last24hPriceChange,
@@ -20,6 +20,7 @@ import {
   useMarketTradingMode,
   useExternalTwap,
   getQuoteName,
+  useMarketState,
 } from '@vegaprotocol/markets';
 import { MarketState as State } from '@vegaprotocol/types';
 import { HeaderStat } from '../../components/header';
@@ -44,6 +45,12 @@ export const MarketHeaderStats = ({ market }: MarketHeaderStatsProps) => {
   const asset = getAsset(market);
   const quoteUnit = getQuoteName(market);
 
+  const dataSourceSpec = market.markPriceConfiguration?.dataSourcesSpec?.[1];
+  const sourceType =
+    dataSourceSpec?.sourceType.__typename === 'DataSourceDefinitionExternal' &&
+    dataSourceSpec?.sourceType.sourceType.__typename === 'EthCallSpec' &&
+    dataSourceSpec?.sourceType.sourceType;
+
   return (
     <>
       <HeaderStat heading={t('Mark Price')} testId="market-price">
@@ -61,16 +68,13 @@ export const MarketHeaderStats = ({ market }: MarketHeaderStatsProps) => {
       <HeaderStat heading={t('Volume (24h)')} testId="market-volume">
         <Last24hVolume
           marketId={market.id}
-          positionDecimalPlaces={market.positionDecimalPlaces}
           marketDecimals={market.decimalPlaces}
+          positionDecimalPlaces={market.positionDecimalPlaces}
           quoteUnit={quoteUnit}
         />
       </HeaderStat>
-      <HeaderStatMarketTradingMode
-        marketId={market.id}
-        initialTradingMode={market.tradingMode}
-      />
-      <MarketState market={market} />
+      <HeaderStatMarketTradingMode marketId={market.id} />
+      <MarketState marketId={market.id} />
       {asset ? (
         <HeaderStat
           heading={t('Settlement asset')}
@@ -127,14 +131,25 @@ export const MarketHeaderStats = ({ market }: MarketHeaderStatsProps) => {
               {t(
                 'The external time weighted average price (TWAP) received from the data source defined in the data sourcing specification.'
               )}
-              {DocsLinks && (
-                <ExternalLink
-                  href={DocsLinks.ETH_DATA_SOURCES}
-                  className="mt-2"
-                >
-                  {t('Find out more')}
-                </ExternalLink>
-              )}
+              <div className="flex flex-col gap-1">
+                {DocsLinks && (
+                  <ExternalLink
+                    href={DocsLinks.ETH_DATA_SOURCES}
+                    className="mt-2"
+                  >
+                    {t('Find out more')}
+                  </ExternalLink>
+                )}
+                {sourceType && (
+                  <ExternalLink
+                    data-testid="oracle-spec-links"
+                    href={`${VEGA_EXPLORER_URL}/markets/${market.id}/oracles#${sourceType.address}`}
+                    className="text-xs my-1"
+                  >
+                    {t('Oracle specification')}
+                  </ExternalLink>
+                )}
+              </div>
             </div>
           }
           testId="index-price"
@@ -264,13 +279,13 @@ export const FundingCountdown = ({ marketId }: { marketId: string }) => {
 };
 
 const ExpiryLabel = ({ market }: ExpiryLabelProps) => {
-  const content = market.tradableInstrument.instrument.metadata.tags
-    ? getExpiryDate(
-        market.tradableInstrument.instrument.metadata.tags,
-        market.marketTimestamps.close,
-        market.state
-      )
-    : '-';
+  const { data: marketState } = useMarketState(market.id);
+  const content =
+    useExpiryDate(
+      market.tradableInstrument.instrument.metadata.tags,
+      market.marketTimestamps.close,
+      marketState
+    ) || '-';
   return <div data-testid="trading-expiry">{content}</div>;
 };
 
@@ -283,6 +298,7 @@ const ExpiryTooltipContent = ({
   market,
   explorerUrl,
 }: ExpiryTooltipContentProps) => {
+  const { data: state } = useMarketState(market.id);
   const t = useT();
   if (market.marketTimestamps.close === null) {
     const oracleId =
@@ -298,8 +314,8 @@ const ExpiryTooltipContent = ({
     const isExpired =
       metadataExpiryDate &&
       Date.now() - metadataExpiryDate.valueOf() > 0 &&
-      (market.state === State.STATE_TRADING_TERMINATED ||
-        market.state === State.STATE_SETTLED);
+      (state === State.STATE_TRADING_TERMINATED ||
+        state === State.STATE_SETTLED);
 
     return (
       <section data-testid="expiry-tooltip">

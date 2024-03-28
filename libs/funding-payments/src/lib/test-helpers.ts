@@ -1,9 +1,7 @@
 import merge from 'lodash/merge';
 import type { PartialDeep } from 'type-fest';
-import * as Schema from '@vegaprotocol/types';
 import type { FundingPayment } from './funding-payments-data-provider';
-
-const { MarketState, MarketTradingMode } = Schema;
+import { CompositePriceType } from '@vegaprotocol/types';
 
 export const generateFundingPayment = (
   override?: PartialDeep<FundingPayment>
@@ -20,8 +18,6 @@ export const generateFundingPayment = (
       id: 'market-id',
       positionDecimalPlaces: 0,
       decimalPlaces: 5,
-      state: MarketState.STATE_ACTIVE,
-      tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
       tickSize: '1',
       fees: {
         __typename: 'Fees',
@@ -31,6 +27,13 @@ export const generateFundingPayment = (
           liquidityFee: '0.1',
           makerFee: '0.1',
         },
+      },
+      markPriceConfiguration: {
+        decayWeight: '',
+        decayPower: 0,
+        cashAmount: '',
+        SourceStalenessTolerance: [],
+        CompositePriceType: CompositePriceType.COMPOSITE_PRICE_TYPE_LAST_TRADE,
       },
       marketTimestamps: {
         __typename: 'MarketTimestamps',

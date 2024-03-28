@@ -3,11 +3,17 @@ import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
 import { ProposalsList } from './proposals-list';
 import { MarketState } from '@vegaprotocol/types';
-import { createMarketFragment } from '@vegaprotocol/mock';
+import {
+  createMarketFragment,
+  createMarketsDataFragment,
+} from '@vegaprotocol/mock';
 import {
   type MarketsQuery,
   MarketsDocument,
   type MarketsQueryVariables,
+  type MarketsDataQuery,
+  type MarketsDataQueryVariables,
+  MarketsDataDocument,
 } from '@vegaprotocol/markets';
 
 const parentMarketName = 'Parent Market Name';
@@ -15,12 +21,13 @@ const ParentMarketCell = () => <span>{parentMarketName}</span>;
 
 describe('ProposalsList', () => {
   const rowContainerSelector = '.ag-center-cols-container';
-  const market = createMarketFragment({
-    state: MarketState.STATE_PROPOSED,
+  const market = createMarketFragment();
+  const marketData = createMarketsDataFragment({
+    marketState: MarketState.STATE_PROPOSED,
   });
 
   it('should be properly rendered', async () => {
-    const mock: MockedResponse<MarketsQuery, MarketsQueryVariables> = {
+    const marketMock: MockedResponse<MarketsQuery, MarketsQueryVariables> = {
       request: {
         query: MarketsDocument,
       },
@@ -37,8 +44,28 @@ describe('ProposalsList', () => {
       },
     };
 
+    const marketDataMock: MockedResponse<
+      MarketsDataQuery,
+      MarketsDataQueryVariables
+    > = {
+      request: {
+        query: MarketsDataDocument,
+      },
+      result: {
+        data: {
+          marketsConnection: {
+            edges: [
+              {
+                node: { data: marketData },
+              },
+            ],
+          },
+        },
+      },
+    };
+
     render(
-      <MockedProvider mocks={[mock]}>
+      <MockedProvider mocks={[marketMock, marketDataMock]}>
         <ProposalsList cellRenderers={{ ParentMarketCell }} />
       </MockedProvider>
     );
@@ -69,7 +96,7 @@ describe('ProposalsList', () => {
 
     expect(await container.findAllByRole('row')).toHaveLength(
       // @ts-ignore data is mocked
-      mock?.result?.data.marketsConnection.edges.length
+      marketMock?.result?.data.marketsConnection.edges.length
     );
 
     expect(
@@ -81,7 +108,7 @@ describe('ProposalsList', () => {
   });
 
   it('empty response should causes no data message display', async () => {
-    const mock: MockedResponse<MarketsQuery, MarketsQueryVariables> = {
+    const marketMock: MockedResponse<MarketsQuery, MarketsQueryVariables> = {
       request: {
         query: MarketsDocument,
       },
@@ -93,8 +120,23 @@ describe('ProposalsList', () => {
         },
       },
     };
+    const marketDataMock: MockedResponse<
+      MarketsDataQuery,
+      MarketsDataQueryVariables
+    > = {
+      request: {
+        query: MarketsDataDocument,
+      },
+      result: {
+        data: {
+          marketsConnection: {
+            edges: [],
+          },
+        },
+      },
+    };
     render(
-      <MockedProvider mocks={[mock]}>
+      <MockedProvider mocks={[marketMock, marketDataMock]}>
         <ProposalsList cellRenderers={{ ParentMarketCell }} />
       </MockedProvider>
     );
