@@ -16,6 +16,7 @@ describe('useMaxSize', () => {
     marginFactor: '0.1',
     type: OrderType.TYPE_MARKET,
     marginAccountBalance: '0',
+    orderMarginAccountBalance: '0',
     accountDecimals,
     price: removeDecimal('8', decimalPlaces), // 8.0
     markPrice: removeDecimal('10', decimalPlaces), // 10.0
@@ -51,7 +52,7 @@ describe('useMaxSize', () => {
         generalAccountBalance: removeDecimal('75', accountDecimals),
       });
 
-      // 75 / 0.1 / 8 = 125
+      // 75 / 0.1 / 8 = 93.75
       expect(result.current).toEqual(93.7);
     });
 
@@ -62,7 +63,7 @@ describe('useMaxSize', () => {
         marginAccountBalance: removeDecimal('25', accountDecimals),
         generalAccountBalance: removeDecimal('75', accountDecimals),
       });
-      // ((75 + 25) / 0.1 / 8) + 25 (reduced volume) = 125
+      // ((75 + 25) / 0.1 / 8) + 25 (reduced volume) = 150
       expect(result.current).toEqual(150);
     });
 
@@ -76,6 +77,29 @@ describe('useMaxSize', () => {
       });
       // 75 / 0.1 / 8 = 125
       expect(result.current).toEqual(93.7);
+    });
+
+    it('if limit order use available collateral from order margin account balance', () => {
+      const { result } = renderUseMaxSizeHook({
+        ...initialProps,
+        type: OrderType.TYPE_LIMIT,
+        orderMarginAccountBalance: removeDecimal('20', accountDecimals),
+        generalAccountBalance: removeDecimal('80', accountDecimals),
+        activeOrders: [
+          {
+            remaining: removeDecimal('10', positionDecimalPlaces),
+            side: Side.SIDE_SELL,
+            price: removeDecimal('20', decimalPlaces),
+          },
+          {
+            remaining: removeDecimal('10', positionDecimalPlaces),
+            side: Side.SIDE_BUY,
+            price: removeDecimal('5', decimalPlaces),
+          },
+        ],
+      });
+      // 95 / 0.1 / 8 = 125
+      expect(result.current).toEqual(118.7);
     });
   });
 
@@ -94,6 +118,17 @@ describe('useMaxSize', () => {
       });
       // available collateral / marginFactor / price = 100 / 0.8 / 1.5 / 10 = 8.3
       expect(result.current).toEqual(8.3);
+    });
+
+    it('use price if order type is limit and market is in auction', () => {
+      const { result } = renderUseMaxSizeHook({
+        ...initialProps,
+        marketIsInAuction: true,
+        type: OrderType.TYPE_LIMIT,
+        marginMode: MarginMode.MARGIN_MODE_CROSS_MARGIN,
+      });
+      // available collateral / marginFactor / price = 100 / 0.9 / 1.5 / 8 = 7.4
+      expect(result.current).toEqual(9.2);
     });
 
     it('if increasing position subtract open volume', () => {
@@ -142,14 +177,17 @@ describe('useMaxSize', () => {
           {
             remaining: removeDecimal('0.5', positionDecimalPlaces),
             side: Side.SIDE_SELL,
+            price: '123',
           },
           {
             remaining: removeDecimal('0.9', positionDecimalPlaces),
             side: Side.SIDE_BUY,
+            price: '123',
           },
           {
             remaining: removeDecimal('0.9', positionDecimalPlaces),
             side: Side.SIDE_BUY,
+            price: '123',
           },
         ],
         marginAccountBalance: removeDecimal('25', accountDecimals),
