@@ -15,8 +15,8 @@ import {
   useNetworkParams,
   NetworkParams,
 } from '@vegaprotocol/network-parameters';
+import { EpochCountdown } from '@vegaprotocol/ui-toolkit';
 import { useEpochQuery } from './__generated__/Rewards';
-import { EpochCountdown } from '../../../components/epoch-countdown';
 import { Heading, SubHeading } from '../../../components/heading';
 import { EpochIndividualRewards } from '../epoch-individual-rewards/epoch-individual-rewards';
 import { useRefreshAfterEpoch } from '../../../hooks/use-refresh-after-epoch';

@@ -2,7 +2,7 @@ export interface ProgressBarProps {
   value: number;
 }
 
-export const ProgressBar = ({ value }: ProgressBarProps) => {
+export const HighlightProgressBar = ({ value }: ProgressBarProps) => {
   const percent = value == null ? undefined : 100 * clamp(value, 0, 1);
   // don't set width if value is null (rely on default CSS value)
   const width = percent == null ? undefined : percent + '%';

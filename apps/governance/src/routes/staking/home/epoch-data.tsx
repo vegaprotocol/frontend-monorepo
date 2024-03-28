@@ -1,5 +1,4 @@
-import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
-import { EpochCountdown } from '../../../components/epoch-countdown';
+import { AsyncRenderer, EpochCountdown } from '@vegaprotocol/ui-toolkit';
 import { useNodesQuery } from './__generated__/Nodes';
 import { useStakingQuery } from '../__generated__/Staking';
 import { usePreviousEpochQuery } from '../__generated__/PreviousEpoch';

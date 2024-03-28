@@ -53,6 +53,9 @@ export * from './vega-icons';
 export * from './vega-logo';
 export * from './viewing-as-user';
 export * from './pill';
+export * from './progress-bar';
+export * from './highlight-progress-bar';
+export * from './epoch-countdown';
 
 // Trading specific components
 export * from './trading-button';

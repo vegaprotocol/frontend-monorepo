@@ -9,8 +9,7 @@ import {
   toBigNum,
 } from '@vegaprotocol/utils';
 import { Link } from 'react-router-dom';
-import { Icon } from '@vegaprotocol/ui-toolkit';
-import { EpochCountdown } from '../../../components/epoch-countdown';
+import { Icon, EpochCountdown } from '@vegaprotocol/ui-toolkit';
 import { BigNumber } from '../../../lib/bignumber';
 import { ConnectToVega } from '../../../components/connect-to-vega';
 import { StakingForm } from './staking-form';

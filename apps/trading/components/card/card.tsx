@@ -12,7 +12,7 @@ export const Card = ({
   noBackgroundOnMobile = false,
 }: {
   children: ReactNode;
-  title: string;
+  title?: string;
   className?: string;
   loading?: boolean;
   highlight?: boolean;
@@ -44,7 +44,7 @@ export const Card = ({
             noBackgroundOnMobile,
         })}
       >
-        <h2 className="mb-3">{title}</h2>
+        {title && <h2 className="mb-3">{title}</h2>}
         {loading ? <CardLoader /> : children}
       </div>
     </div>

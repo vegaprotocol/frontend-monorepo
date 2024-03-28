@@ -181,6 +181,11 @@ query RewardsHistory(
 query RewardsEpoch {
   epoch {
     id
+    timestamps {
+      start
+      end
+      expiry
+    }
   }
 }
 
