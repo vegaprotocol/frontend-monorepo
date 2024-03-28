@@ -1,6 +1,9 @@
 import { DocsLinks, useEnvironment } from '@vegaprotocol/environment';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
-import { type MarketFieldsFragment, useExternalTwap } from '@vegaprotocol/markets';
+import {
+  type MarketFieldsFragment,
+  useExternalTwap,
+} from '@vegaprotocol/markets';
 import { PriceCell } from '@vegaprotocol/datagrid';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { HeaderStat } from '../../../components/header';
