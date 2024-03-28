@@ -34,6 +34,8 @@ import compact from 'lodash/compact';
 import BigNumber from 'bignumber.js';
 import { useTWAPQuery } from '../../lib/hooks/__generated__/Rewards';
 import { RankPayoutTable } from './rank-table';
+import { Links } from '../../lib/links';
+import { Link } from 'react-router-dom';
 
 const Tick = () => (
   <VegaIcon
@@ -108,6 +110,7 @@ const RewardCard = ({
           className={classNames(
             CardColourStyles[colour].mainClassName,
             'bg-gradient-to-b bg-vega-clight-800 dark:bg-vega-cdark-800 h-full w-full rounded-md p-4 flex flex-col gap-4'
+            // 'grid grid-cols-4 grid-rows-2'
           )}
         >
           <div className="flex justify-between gap-4">
@@ -991,12 +994,20 @@ export const ActiveRewardCard = ({
       ? transferNode.transfer.kind.endEpoch - currentEpoch
       : undefined;
 
+  const clickable = (element: ReactNode) => {
+    const gameLink = transferNode.transfer.gameId
+      ? Links.COMPETITIONS_GAME(transferNode.transfer.gameId)
+      : undefined;
+    if (gameLink) return <Link to={gameLink}>{element}</Link>;
+    return element;
+  };
+
   if (
     !transferNode.transfer.kind.dispatchStrategy &&
     transferNode.transfer.toAccountType ===
       AccountType.ACCOUNT_TYPE_GLOBAL_REWARD
   ) {
-    return (
+    return clickable(
       <StakingRewardCard
         colour={CardColour.WHITE}
         rewardAmount={addDecimalsFormatNumber(
@@ -1036,7 +1047,7 @@ export const ActiveRewardCard = ({
     colour = CardColour.GREY;
   }
 
-  return (
+  return clickable(
     <RewardCard
       colour={colour}
       rewardAmount={addDecimalsFormatNumber(

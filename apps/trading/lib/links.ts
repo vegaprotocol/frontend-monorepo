@@ -22,6 +22,7 @@ export const Routes = {
   COMPETITIONS_CREATE_TEAM: '/competitions/teams/create',
   COMPETITIONS_CREATE_TEAM_SOLO: '/competitions/teams/create?solo=true',
   COMPETITIONS_UPDATE_TEAM: '/competitions/teams/:teamId/update',
+  COMPETITIONS_GAME: '/competitions/games/:gameId',
   FEES: '/fees',
   REWARDS: '/rewards',
 } as const;
@@ -54,6 +55,8 @@ export const Links: ConsoleLinks = {
   COMPETITIONS_CREATE_TEAM_SOLO: () => Routes.COMPETITIONS_CREATE_TEAM_SOLO,
   COMPETITIONS_UPDATE_TEAM: (teamId: string) =>
     Routes.COMPETITIONS_UPDATE_TEAM.replace(':teamId', teamId),
+  COMPETITIONS_GAME: (gameId: string) =>
+    Routes.COMPETITIONS_GAME.replace(':gameId', gameId),
   FEES: () => Routes.FEES,
   REWARDS: () => Routes.REWARDS,
 };
