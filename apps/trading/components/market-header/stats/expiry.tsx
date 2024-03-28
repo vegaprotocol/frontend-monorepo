@@ -1,11 +1,11 @@
 import { useEnvironment } from '@vegaprotocol/environment';
 import { MarketState as State } from '@vegaprotocol/types';
-import { getExpiryDate, getMarketExpiryDate } from '@vegaprotocol/utils';
+import { getMarketExpiryDate, useExpiryDate } from '@vegaprotocol/utils';
 import { Link } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../../lib/use-t';
 import { HeaderStat } from '../../header';
 import { type HTMLAttributes } from 'react';
-import { type Market } from '@vegaprotocol/markets';
+import { useMarketState, type Market } from '@vegaprotocol/markets';
 
 type ExpiryStatProps = HTMLAttributes<HTMLDivElement> & {
   market: Market;
@@ -32,13 +32,12 @@ export const ExpiryStat = ({ market }: ExpiryStatProps) => {
 };
 
 const ExpiryLabel = ({ market }: { market: Market }) => {
-  const content = market.tradableInstrument.instrument.metadata.tags
-    ? getExpiryDate(
-        market.tradableInstrument.instrument.metadata.tags,
-        market.marketTimestamps.close,
-        market.state
-      )
-    : '-';
+  const { data: state } = useMarketState(market.id);
+  const content = useExpiryDate(
+    market.tradableInstrument.instrument.metadata.tags,
+    market.marketTimestamps.close,
+    state
+  );
   return <div data-testid="trading-expiry">{content}</div>;
 };
 
@@ -55,6 +54,8 @@ const ExpiryTooltipContent = ({
     throw new Error('Invalid product type for ExpiryTooltipContent');
   }
 
+  const { data: state } = useMarketState(market.id);
+
   const t = useT();
 
   if (market.marketTimestamps.close === null) {
@@ -69,8 +70,8 @@ const ExpiryTooltipContent = ({
     const isExpired =
       metadataExpiryDate &&
       Date.now() - metadataExpiryDate.valueOf() > 0 &&
-      (market.state === State.STATE_TRADING_TERMINATED ||
-        market.state === State.STATE_SETTLED);
+      (state === State.STATE_TRADING_TERMINATED ||
+        state === State.STATE_SETTLED);
 
     return (
       <section data-testid="expiry-tooltip">

@@ -39,7 +39,7 @@ export const MarketHeaderPerp = ({ market }: MarketHeaderPerpProps) => {
         quoteUnit={quoteUnit}
       />
       <Stats.MarketTradingModeStat marketId={market.id} />
-      <Stats.MarketStateStat market={market} />
+      <Stats.MarketStateStat marketId={market.id} />
       <Stats.AssetStat
         heading={t('Settlement asset')}
         asset={asset}

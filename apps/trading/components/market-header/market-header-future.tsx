@@ -33,11 +33,8 @@ export const MarketHeaderFuture = ({ market }: MarketHeaderFutureProps) => {
         positionDecimalPlaces={market.positionDecimalPlaces}
         quoteUnit={quoteUnit}
       />
-      <Stats.MarketTradingModeStat
-        marketId={market.id}
-        initialTradingMode={market.tradingMode}
-      />
-      <Stats.MarketStateStat market={market} />
+      <Stats.MarketTradingModeStat marketId={market.id} />
+      <Stats.MarketStateStat marketId={market.id} />
       <Stats.AssetStat
         heading={t('Settlement asset')}
         asset={asset}

@@ -68,7 +68,7 @@ export const LiquidityHeader = () => {
       <HeaderStat
         heading={t('Target stake')}
         description={tooltipMapping['targetStake']}
-        testId="target-stake"
+        data-testid="target-stake"
       >
         <div>
           {targetStake
@@ -82,7 +82,7 @@ export const LiquidityHeader = () => {
       <HeaderStat
         heading={t('Supplied stake')}
         description={tooltipMapping['suppliedStake']}
-        testId="supplied-stake"
+        data-testid="supplied-stake"
       >
         <div>
           {suppliedStake
@@ -93,7 +93,10 @@ export const LiquidityHeader = () => {
             : '-'}
         </div>
       </HeaderStat>
-      <HeaderStat heading={t('Liquidity supplied')} testId="liquidity-supplied">
+      <HeaderStat
+        heading={t('Liquidity supplied')}
+        data-testid="liquidity-supplied"
+      >
         <Indicator variant={status} /> {formatNumberPercentage(percentage, 2)}
       </HeaderStat>
       <HeaderStat
@@ -102,7 +105,7 @@ export const LiquidityHeader = () => {
           'The amount of fees paid to liquidity providers across the whole market during the last epoch {{epoch}}.',
           { epoch: feesObject?.node.epoch.toString() || '-' }
         )}
-        testId="fees-paid"
+        data-testid="fees-paid"
       >
         <div>
           {feesObject?.node.totalFeesPaid
@@ -114,7 +117,7 @@ export const LiquidityHeader = () => {
         </div>
       </HeaderStat>
       {marketId && (
-        <HeaderStat heading={t('Market ID')} testId="liquidity-market-id">
+        <HeaderStat heading={t('Market ID')} data-testid="liquidity-market-id">
           <div className="break-word">
             <CopyWithTooltip text={marketId}>
               <button
@@ -130,7 +133,7 @@ export const LiquidityHeader = () => {
           </div>
         </HeaderStat>
       )}
-      <HeaderStat heading={t('Learn more')} testId="liquidity-learn-more">
+      <HeaderStat heading={t('Learn more')} data-testid="liquidity-learn-more">
         {DocsLinks ? (
           <ExternalLink href={DocsLinks.LIQUIDITY}>
             {t('Providing liquidity')}
