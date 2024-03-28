@@ -45,7 +45,7 @@ export const MarketHeaderStats = ({ market }: MarketHeaderStatsProps) => {
   const asset = getAsset(market);
   const quoteUnit = getQuoteName(market);
 
-  const dataSourceSpec = market.markPriceConfiguration.dataSourcesSpec?.[1];
+  const dataSourceSpec = market.markPriceConfiguration?.dataSourcesSpec?.[1];
   const sourceType =
     dataSourceSpec?.sourceType.__typename === 'DataSourceDefinitionExternal' &&
     dataSourceSpec?.sourceType.sourceType.__typename === 'EthCallSpec' &&
