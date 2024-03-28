@@ -212,5 +212,11 @@ const cacheConfig: InMemoryCacheConfig = {
     Game: {
       keyFields: false,
     },
+    TeamGameEntity: {
+      keyFields: false,
+    },
+    TeamEntity: {
+      keyFields: false,
+    },
   },
 };

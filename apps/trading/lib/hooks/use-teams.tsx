@@ -3,8 +3,12 @@ import { useMemo } from 'react';
 import { useTeamsQuery } from './__generated__/Teams';
 import { useTeamsStatisticsQuery } from './__generated__/TeamsStatistics';
 import compact from 'lodash/compact';
-import { type TeamStatsFieldsFragment } from './__generated__/Team';
+import {
+  type TeamFieldsFragment,
+  type TeamStatsFieldsFragment,
+} from './__generated__/Team';
 import { TEAMS_STATS_EPOCHS } from './constants';
+import { removePaginationWrapper } from '@vegaprotocol/utils';
 
 const EMPTY_STATS: Partial<TeamStatsFieldsFragment> = {
   totalQuantumVolume: '0',
@@ -53,4 +57,16 @@ export const useTeams = (aggregationEpochs = TEAMS_STATS_EPOCHS) => {
     loading: teamsLoading && statsLoading,
     error: teamsError || statsError,
   };
+};
+
+export const useTeamsMap = () => {
+  const { data: teamsData, loading } = useTeamsQuery();
+  const teams = removePaginationWrapper(teamsData?.teams?.edges).reduce(
+    (all, t) => {
+      return { ...all, [t.teamId]: t } as Record<string, TeamFieldsFragment>;
+    },
+    {} as Record<string, TeamFieldsFragment>
+  );
+
+  return { data: teams, loading };
 };

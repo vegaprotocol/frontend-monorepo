@@ -79,7 +79,7 @@ const TeamPageContainer = ({ teamId }: { teamId: string | undefined }) => {
     pubKey || undefined
   );
 
-  const { data: games, loading: gamesLoading } = useGames(teamId);
+  const { data: games, loading: gamesLoading } = useGames({ teamId });
 
   const { data: transfersData, loading: transfersLoading } = useRewards({
     onlyActive: false,
