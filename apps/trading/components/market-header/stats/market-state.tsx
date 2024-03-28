@@ -5,7 +5,7 @@ import { DocsLinks } from '@vegaprotocol/environment';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../../lib/use-t';
 
-export const MarketState = ({ marketId }: { marketId?: string }) => {
+export const MarketStateStat = ({ marketId }: { marketId?: string }) => {
   const t = useT();
   const { data: marketState } = useMarketState(marketId);
 

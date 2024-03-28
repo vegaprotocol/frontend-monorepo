@@ -28,7 +28,7 @@ export const FundingRateStat = ({ marketId }: { marketId: string }) => {
   );
 };
 
-export const FundingRate = ({ marketId }: { marketId: string }) => {
+const FundingRate = ({ marketId }: { marketId: string }) => {
   const { data: fundingRate } = useFundingRate(marketId);
   return (
     <div data-testid="funding-rate">
