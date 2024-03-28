@@ -583,6 +583,34 @@ export const BaseAssetInfoPanel = ({ market }: MarketInfoProps) => {
   );
 };
 
+export const QuoteAssetInfoPanel = ({ market }: MarketInfoProps) => {
+  const t = useT();
+  const assetSymbol = getQuoteAsset(market).symbol;
+  const quoteAsset = getQuoteAsset(market);
+  const assetId = useMemo(() => getQuoteAsset(market).id, [market]);
+
+  const { data: asset } = useAssetDataProvider(assetId ?? '');
+  return asset ? (
+    <>
+      <AssetDetailsTable
+        asset={asset}
+        inline={true}
+        noBorder={true}
+        dtClassName="text-black dark:text-white text-ui !px-0 text-xs"
+        ddClassName="text-black dark:text-white text-ui !px-0 max-w-full text-xs"
+      />
+      <p className="mt-4 text-xs">
+        {t(
+          'There is 1 unit of the base asset ({{assetSymbol}}) to every 1 quote asset ({{quoteUnit}}).',
+          { assetSymbol, quoteUnit: quoteAsset }
+        )}
+      </p>
+    </>
+  ) : (
+    <Splash>{t('No data')}</Splash>
+  );
+};
+
 export const SettlementAssetInfoPanel = ({ market }: MarketInfoProps) => {
   const t = useT();
   const assetSymbol = getAsset(market).symbol;

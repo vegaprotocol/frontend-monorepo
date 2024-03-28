@@ -40,6 +40,7 @@ import {
   MetadataInfoPanel,
   PriceConfigurationPanel,
   PriceMonitoringBoundsInfoPanel,
+  QuoteAssetInfoPanel,
   RiskFactorsInfoPanel,
   RiskModelInfoPanel,
   SettlementAssetInfoPanel,
@@ -206,11 +207,18 @@ export const MarketInfoAccordion = ({
             />
           )}
           {isSpot(product) && (
-            <AccordionItem
-              itemId="base-asset"
-              title={t('Base asset')}
-              content={<BaseAssetInfoPanel market={market} />}
-            />
+            <>
+              <AccordionItem
+                itemId="base-asset"
+                title={t('Base asset')}
+                content={<BaseAssetInfoPanel market={market} />}
+              />
+              <AccordionItem
+                itemId="quote-asset"
+                title={t('Quote asset')}
+                content={<QuoteAssetInfoPanel market={market} />}
+              />
+            </>
           )}
           <AccordionItem
             itemId="metadata"

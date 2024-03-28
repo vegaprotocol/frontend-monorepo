@@ -24,6 +24,7 @@ import {
   isPerpetual,
   isFuture,
   BaseAssetInfoPanel,
+  QuoteAssetInfoPanel,
 } from '@vegaprotocol/markets';
 import {
   Button,
@@ -222,6 +223,11 @@ export const ProposalMarketData = ({ marketId }: { marketId: string }) => {
               <>
                 <h2 className={marketDataHeaderStyles}>{t('Base assets')}</h2>
                 <BaseAssetInfoPanel
+                  market={marketData}
+                  parentMarket={parentMarketData || undefined}
+                />
+                <h2 className={marketDataHeaderStyles}>{t('Quote assets')}</h2>
+                <QuoteAssetInfoPanel
                   market={marketData}
                   parentMarket={parentMarketData || undefined}
                 />

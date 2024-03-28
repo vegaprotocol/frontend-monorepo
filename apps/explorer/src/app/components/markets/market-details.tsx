@@ -8,6 +8,7 @@ import {
   MarginScalingFactorsPanel,
   PriceMonitoringBoundsInfoPanel,
   PriceMonitoringSettingsInfoPanel,
+  QuoteAssetInfoPanel,
   SuccessionLineInfoPanel,
   getDataSourceSpecForSettlementData,
   getDataSourceSpecForTradingTermination,
@@ -76,6 +77,8 @@ export const MarketDetails = ({ market }: { market: MarketInfoWithData }) => {
         <>
           <h2 className={headerClassName}>{t('Base asset')}</h2>
           <BaseAssetInfoPanel market={market} />
+          <h2 className={headerClassName}>{t('Quote asset')}</h2>
+          <QuoteAssetInfoPanel market={market} />
         </>
       )}
       <h2 className={headerClassName}>{t('Metadata')}</h2>
