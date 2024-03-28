@@ -43,7 +43,8 @@ class TestSettledMarket:
             "",
         ]
 
-        page.wait_for_selector('[data-testid="tab-closed-markets"]', state="visible")
+        page.wait_for_selector(
+            '[data-testid="tab-closed-markets"]', state="visible")
         page_headers = (
             page.get_by_test_id("tab-closed-markets")
             .locator(".ag-header-cell-text")
@@ -64,16 +65,19 @@ class TestSettledMarket:
         ).first
 
         # 6001-MARK-001
-        expect(row_selector.locator('[col-id="code"]')).to_have_text("BTC:DAI_2023Futr")
+        expect(row_selector.locator('[col-id="code"]')
+               ).to_have_text("BTC:DAI_2023Futr")
         # 6001-MARK-003
-        expect(row_selector.locator('[col-id="state"]')).to_have_text("Settled")
+        expect(row_selector.locator(
+            '[col-id="state"]')).to_have_text("Settled")
         # 6001-MARK-004
         # 6001-MARK-005
         # 6001-MARK-009
         # 6001-MARK-008
         # 6001-MARK-010
-        pattern = r"(\d+)\s+(months|hours|days|minutes)\s+ago"
-        date_text = row_selector.locator('[col-id="settlementDate"]').inner_text()
+        pattern = r"Expected\s+(?:in\s+)?(\d+)\s+(months|hours|days|minutes)"
+        date_text = row_selector.locator(
+            '[col-id="settlementDate"]').inner_text()
         assert re.match(
             pattern, date_text
         ), f"Expected text to match pattern but got {date_text}"
@@ -86,11 +90,14 @@ class TestSettledMarket:
             actual_href
         ), f"Expected href to match {expected_pattern.pattern}, but got {actual_href}"
         # 6001-MARK-011
-        expect(row_selector.locator('[col-id="bestBidPrice"]')).to_have_text("0.00")
+        expect(row_selector.locator(
+            '[col-id="bestBidPrice"]')).to_have_text("0.00")
         # 6001-MARK-012
-        expect(row_selector.locator('[col-id="bestOfferPrice"]')).to_have_text("0.00")
+        expect(row_selector.locator(
+            '[col-id="bestOfferPrice"]')).to_have_text("0.00")
         # 6001-MARK-013
-        expect(row_selector.locator('[col-id="markPrice"]')).to_have_text("110.00")
+        expect(row_selector.locator(
+            '[col-id="markPrice"]')).to_have_text("110.00")
         # 6001-MARK-014
         # 6001-MARK-015
         # 6001-MARK-016
@@ -107,7 +114,8 @@ class TestSettledMarket:
         ), f"Expected href to match {expected_pattern.pattern}, but got {actual_href}"
 
         # 6001-MARK-018
-        expect(row_selector.locator('[col-id="settlementAsset"]')).to_have_text("tDAI")
+        expect(row_selector.locator(
+            '[col-id="settlementAsset"]')).to_have_text("tDAI")
         # 6001-MARK-020
         assert re.match(
             pattern, date_text
@@ -129,8 +137,10 @@ def test_terminated_market_no_settlement_date(page: Page, vega: VegaServiceNull)
     row_selector = page.locator(
         '[data-testid="tab-closed-markets"] .ag-center-cols-container .ag-row'
     ).first
-    expect(row_selector.locator('[col-id="state"]')).to_have_text("Trading Terminated")
-    expect(row_selector.locator('[col-id="settlementDate"]')).to_have_text("Unknown")
+    expect(row_selector.locator('[col-id="state"]')
+           ).to_have_text("Trading Terminated")
+    expect(row_selector.locator(
+        '[col-id="settlementDate"]')).to_have_text("Unknown")
 
     # TODO Create test for terminated market with settlement date in future
     # TODO Create test for terminated market with settlement date in past
