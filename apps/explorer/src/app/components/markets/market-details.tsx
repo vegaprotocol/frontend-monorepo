@@ -1,6 +1,7 @@
 import { t } from '@vegaprotocol/i18n';
 import type { MarketInfoWithData } from '@vegaprotocol/markets';
 import {
+  BaseAssetInfoPanel,
   LiquidationStrategyInfoPanel,
   LiquidityPriceRangeInfoPanel,
   LiquiditySLAParametersInfoPanel,
@@ -65,8 +66,18 @@ export const MarketDetails = ({ market }: { market: MarketInfoWithData }) => {
       <KeyDetailsInfoPanel market={market} />
       <h2 className={headerClassName}>{t('Instrument')}</h2>
       <InstrumentInfoPanel market={market} />
-      <h2 className={headerClassName}>{t('Settlement asset')}</h2>
-      <SettlementAssetInfoPanel market={market} />
+      {!isSpot(product) && (
+        <>
+          <h2 className={headerClassName}>{t('Settlement asset')}</h2>
+          <SettlementAssetInfoPanel market={market} />
+        </>
+      )}
+      {isSpot(product) && (
+        <>
+          <h2 className={headerClassName}>{t('Base asset')}</h2>
+          <BaseAssetInfoPanel market={market} />
+        </>
+      )}
       <h2 className={headerClassName}>{t('Metadata')}</h2>
       <MetadataInfoPanel market={market} />
       {!isSpot(product) && (

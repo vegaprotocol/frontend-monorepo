@@ -22,6 +22,7 @@ import { marketInfoProvider } from './market-info-data-provider';
 import type { MarketInfo } from './market-info-data-provider';
 import { MarketProposalNotification } from '@vegaprotocol/proposals';
 import {
+  BaseAssetInfoPanel,
   CurrentFeesInfoPanel,
   FundingInfoPanel,
   InstrumentInfoPanel,
@@ -202,6 +203,13 @@ export const MarketInfoAccordion = ({
               itemId="settlement-asset"
               title={t('Settlement asset')}
               content={<SettlementAssetInfoPanel market={market} />}
+            />
+          )}
+          {isSpot(product) && (
+            <AccordionItem
+              itemId="base-asset"
+              title={t('Base asset')}
+              content={<BaseAssetInfoPanel market={market} />}
             />
           )}
           <AccordionItem

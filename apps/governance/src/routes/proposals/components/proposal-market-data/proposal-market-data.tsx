@@ -23,6 +23,7 @@ import {
   isSpot,
   isPerpetual,
   isFuture,
+  BaseAssetInfoPanel,
 } from '@vegaprotocol/markets';
 import {
   Button,
@@ -221,6 +222,16 @@ export const ProposalMarketData = ({ proposalId }: { proposalId: string }) => {
                   {t('Settlement assets')}
                 </h2>
                 <SettlementAssetInfoPanel
+                  market={marketData}
+                  parentMarket={parentMarketData}
+                />
+              </>
+            )}
+
+            {isSpot(product) && (
+              <>
+                <h2 className={marketDataHeaderStyles}>{t('Base assets')}</h2>
+                <BaseAssetInfoPanel
                   market={marketData}
                   parentMarket={parentMarketData}
                 />
