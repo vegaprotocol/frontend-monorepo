@@ -17,6 +17,14 @@ export function generateMarket(override?: PartialDeep<Market>): Market {
       close: '',
       open: '',
     },
+    markPriceConfiguration: {
+      decayWeight: '',
+      decayPower: 0,
+      cashAmount: '',
+      SourceStalenessTolerance: [],
+      CompositePriceType:
+        Schema.CompositePriceType.COMPOSITE_PRICE_TYPE_LAST_TRADE,
+    },
     tradableInstrument: {
       __typename: 'TradableInstrument',
       instrument: {

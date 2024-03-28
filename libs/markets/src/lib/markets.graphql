@@ -63,6 +63,9 @@ fragment MarketFields on Market {
   tickSize
   parentMarketID
   successorMarketID
+  markPriceConfiguration {
+    ...PriceConfiguration
+  }
   fees {
     factors {
       makerFee

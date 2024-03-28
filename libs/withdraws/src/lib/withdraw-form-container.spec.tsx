@@ -148,6 +148,14 @@ describe('WithdrawFormContainer', () => {
               liquidityFee: '0.001',
             },
           },
+          markPriceConfiguration: {
+            decayWeight: '',
+            decayPower: 0,
+            cashAmount: '',
+            SourceStalenessTolerance: [],
+            CompositePriceType:
+              Types.CompositePriceType.COMPOSITE_PRICE_TYPE_LAST_TRADE,
+          },
           tradableInstrument: {
             __typename: 'TradableInstrument',
             instrument: {

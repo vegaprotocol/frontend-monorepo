@@ -132,7 +132,8 @@ export const update = <T extends Omit<OrderFieldsFragment, 'market'> & Cursor>(
 ): T[] => {
   const updatedData = data ? [...data] : ([] as T[]);
   delta.forEach((orderUpdate) => {
-    const index = data?.findIndex((order) => order.id === orderUpdate.id) ?? -1;
+    const index =
+      data?.findIndex((order) => order?.id === orderUpdate.id) ?? -1;
     const newer = !data?.length || orderUpdate.createdAt >= data[0].createdAt;
     const doesFilterPass =
       !variables || orderMatchFilters(orderUpdate, variables);
@@ -204,7 +205,7 @@ export const activeOrdersProvider = makeDerivedDataProvider<
     }
     const orders = partsData[0] as ReturnType<typeof getData>;
     return variables.marketId
-      ? orders.filter((order) => variables.marketId === order.market.id)
+      ? orders.filter((order) => variables.marketId === order?.market.id)
       : orders;
   }
 );
