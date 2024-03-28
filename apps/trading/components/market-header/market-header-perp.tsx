@@ -50,7 +50,7 @@ export const MarketHeaderPerp = ({ market }: MarketHeaderPerpProps) => {
         assetDecimals={asset.decimals}
         quantum={asset.quantum}
       />
-      <Stats.FundingRate marketId={market.id} />
+      <Stats.FundingRateStat marketId={market.id} />
       <Stats.IndexPriceStat
         marketId={market.id}
         assetDecimals={asset.decimals}

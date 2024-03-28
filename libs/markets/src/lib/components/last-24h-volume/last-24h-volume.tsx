@@ -4,10 +4,11 @@ import { Tooltip } from '@vegaprotocol/ui-toolkit';
 import { useCandles } from '../../hooks';
 import { useT } from '../../use-t';
 
-interface Props {
+interface Last24hVolumeProps {
   marketId?: string;
   positionDecimalPlaces: number;
   marketDecimals: number;
+  formatDecimals?: number;
   quoteUnit?: string;
   baseUnit?: string;
 }
@@ -16,9 +17,10 @@ export const Last24hVolume = ({
   marketId,
   marketDecimals,
   positionDecimalPlaces,
+  formatDecimals,
   quoteUnit,
   baseUnit,
-}: Props) => {
+}: Last24hVolumeProps) => {
   const t = useT();
   const { oneDayCandles, fiveDaysCandles, error } = useCandles({
     marketId,
@@ -51,7 +53,10 @@ export const Last24hVolume = ({
           {baseUnit && ' ' + baseUnit}
         </span>
         <span>
-          ({candleVolumePrice ? formatNumber(candleVolumePrice) : '-'}
+          (
+          {candleVolumePrice
+            ? formatNumber(candleVolumePrice, formatDecimals)
+            : '-'}
           {quoteUnit && ' ' + quoteUnit})
         </span>
       </span>

@@ -8,4 +8,4 @@ export { MarketStateStat } from './market-state';
 export { MarketTradingModeStat } from './market-trading-mode';
 export { LiquidityStat } from './liquidity';
 export { IndexPriceStat } from './index-price';
-export { FundingRate } from './funding-rate';
+export { FundingRateStat } from './funding-rate';
