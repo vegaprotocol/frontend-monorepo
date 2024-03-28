@@ -20,4 +20,5 @@ export const ENV = {
   addresses: {
     feedback: windowOrDefault('NX_GITHUB_FEEDBACK_URL'),
   },
+  vegaChainId: windowOrDefault('NX_VEGA_CHAIN_ID'),
 };
