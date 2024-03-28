@@ -86,7 +86,10 @@ export const CompetitionsGame = () => {
           ) : null
         ),
         teamName: dependable(
-          <Link to={Links.COMPETITIONS_TEAM(ent.team)}>
+          <Link
+            to={Links.COMPETITIONS_TEAM(ent.team)}
+            className="hover:underline"
+          >
             {teams[ent.team].name}
           </Link>
         ),
