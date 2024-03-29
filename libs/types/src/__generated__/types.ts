@@ -6186,6 +6186,8 @@ export enum StopOrderRejectionReason {
   REJECTION_REASON_MUST_BE_REDUCE_ONLY = 'REJECTION_REASON_MUST_BE_REDUCE_ONLY',
   /** Stop order cannot have matching OCO expiry times */
   REJECTION_REASON_STOP_ORDER_CANNOT_MATCH_OCO_EXPIRY_TIMES = 'REJECTION_REASON_STOP_ORDER_CANNOT_MATCH_OCO_EXPIRY_TIMES',
+  /** The percentage value for the linked stop order is invalid */
+  REJECTION_REASON_STOP_ORDER_LINKED_PERCENTAGE_INVALID = 'REJECTION_REASON_STOP_ORDER_LINKED_PERCENTAGE_INVALID',
   /** Stop orders are not allowed during the opening auction */
   REJECTION_REASON_STOP_ORDER_NOT_ALLOWED_DURING_OPENING_AUCTION = 'REJECTION_REASON_STOP_ORDER_NOT_ALLOWED_DURING_OPENING_AUCTION',
   /** Stop orders are not allowed without a position */
