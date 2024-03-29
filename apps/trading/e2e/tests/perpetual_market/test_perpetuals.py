@@ -66,8 +66,8 @@ def setup_environment(
 
 class TestPerpetuals:
     def test_funding_payment_profit(self,
-                                    setup_environment: Tuple[Page, str, str],
-                                    ) -> None:
+        setup_environment: Tuple[Page, str, str],
+    ) -> None:
         page, vega, perps_market = setup_environment
         page.goto(f"/#/markets/{perps_market}")
         page.get_by_test_id("Funding payments").click()
@@ -75,8 +75,8 @@ class TestPerpetuals:
         expect(row.locator(col_amount)).to_have_text("4.45 tDAI")
 
     def test_funding_payment_loss(self,
-                                  setup_environment: Tuple[Page, str, str],
-                                  ) -> None:
+        setup_environment: Tuple[Page, str, str],
+    ) -> None:
         page, vega, perps_market = setup_environment
         page.goto(f"/#/markets/{perps_market}")
         change_keys(page, vega, "market_maker")
@@ -85,8 +85,8 @@ class TestPerpetuals:
         expect(row.locator(col_amount)).to_have_text("-13.35 tDAI")
 
     def test_funding_header(self,
-                            setup_environment: Tuple[Page, str, str],
-                            ) -> None:
+        setup_environment: Tuple[Page, str, str],
+    ) -> None:
         page, vega, perps_market = setup_environment
         page.goto(f"/#/markets/{perps_market}")
         expect(page.get_by_test_id("market-funding")).to_contain_text(
