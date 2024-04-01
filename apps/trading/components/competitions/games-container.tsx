@@ -40,7 +40,10 @@ export const applyFilter = (
     return true;
   }
 
-  if (transfer.kind.__typename !== 'RecurringTransfer') {
+  if (
+    transfer.kind.__typename !== 'RecurringTransfer' &&
+    transfer.kind.__typename !== 'RecurringGovernanceTransfer'
+  ) {
     return false;
   }
 

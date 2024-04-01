@@ -37,8 +37,10 @@ export const applyFilter = (
   if (transfer.toAccountType === AccountType.ACCOUNT_TYPE_GLOBAL_REWARD) {
     return true;
   }
-
-  if (transfer.kind.__typename !== 'RecurringTransfer') {
+  if (
+    transfer.kind.__typename !== 'RecurringTransfer' &&
+    transfer.kind.__typename !== 'RecurringGovernanceTransfer'
+  ) {
     return false;
   }
 
