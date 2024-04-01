@@ -10,6 +10,16 @@ export type RewardsPageQueryVariables = Types.Exact<{
 
 export type RewardsPageQuery = { __typename?: 'Query', party?: { __typename?: 'Party', id: string, vestingStats?: { __typename?: 'PartyVestingStats', rewardBonusMultiplier: string, quantumBalance: string, epochSeq: number } | null, activityStreak?: { __typename?: 'PartyActivityStreak', activeFor: number, isActive: boolean, inactiveFor: number, rewardDistributionMultiplier: string, rewardVestingMultiplier: string, epoch: number, tradedVolume: string, openVolume: string } | null, vestingBalancesSummary: { __typename?: 'PartyVestingBalancesSummary', epoch?: number | null, vestingBalances?: Array<{ __typename?: 'PartyVestingBalance', balance: string, asset: { __typename?: 'Asset', id: string, symbol: string, decimals: number, quantum: string } }> | null, lockedBalances?: Array<{ __typename?: 'PartyLockedBalance', balance: string, untilEpoch: number, asset: { __typename?: 'Asset', id: string, symbol: string, decimals: number, quantum: string } }> | null } } | null };
 
+export type RecurringTransferFields_OneOffGovernanceTransfer_Fragment = { __typename?: 'OneOffGovernanceTransfer' };
+
+export type RecurringTransferFields_OneOffTransfer_Fragment = { __typename?: 'OneOffTransfer' };
+
+export type RecurringTransferFields_RecurringGovernanceTransfer_Fragment = { __typename?: 'RecurringGovernanceTransfer', startEpoch: number, endEpoch?: number | null, dispatchStrategy?: { __typename?: 'DispatchStrategy', capRewardFeeMultiple?: string | null, dispatchMetric: Types.DispatchMetric, dispatchMetricAssetId: string, marketIdsInScope?: Array<string> | null, entityScope: Types.EntityScope, individualScope?: Types.IndividualScope | null, teamScope?: Array<string | null> | null, nTopPerformers?: string | null, stakingRequirement: string, notionalTimeWeightedAveragePositionRequirement: string, windowLength: number, lockPeriod: number, distributionStrategy: Types.DistributionStrategy, rankTable?: Array<{ __typename?: 'RankTable', startRank: number, shareRatio: number } | null> | null } | null };
+
+export type RecurringTransferFields_RecurringTransfer_Fragment = { __typename?: 'RecurringTransfer', startEpoch: number, endEpoch?: number | null, dispatchStrategy?: { __typename?: 'DispatchStrategy', capRewardFeeMultiple?: string | null, dispatchMetric: Types.DispatchMetric, dispatchMetricAssetId: string, marketIdsInScope?: Array<string> | null, entityScope: Types.EntityScope, individualScope?: Types.IndividualScope | null, teamScope?: Array<string | null> | null, nTopPerformers?: string | null, stakingRequirement: string, notionalTimeWeightedAveragePositionRequirement: string, windowLength: number, lockPeriod: number, distributionStrategy: Types.DistributionStrategy, rankTable?: Array<{ __typename?: 'RankTable', startRank: number, shareRatio: number } | null> | null } | null };
+
+export type RecurringTransferFieldsFragment = RecurringTransferFields_OneOffGovernanceTransfer_Fragment | RecurringTransferFields_OneOffTransfer_Fragment | RecurringTransferFields_RecurringGovernanceTransfer_Fragment | RecurringTransferFields_RecurringTransfer_Fragment;
+
 export type ActiveRewardsQueryVariables = Types.Exact<{
   isReward?: Types.InputMaybe<Types.Scalars['Boolean']>;
   partyId?: Types.InputMaybe<Types.Scalars['ID']>;
@@ -18,7 +28,7 @@ export type ActiveRewardsQueryVariables = Types.Exact<{
 }>;
 
 
-export type ActiveRewardsQuery = { __typename?: 'Query', transfersConnection?: { __typename?: 'TransferConnection', edges?: Array<{ __typename?: 'TransferEdge', node: { __typename?: 'TransferNode', transfer: { __typename?: 'Transfer', amount: string, id: string, from: string, fromAccountType: Types.AccountType, to: string, toAccountType: Types.AccountType, reference?: string | null, status: Types.TransferStatus, timestamp: any, gameId?: string | null, reason?: string | null, asset?: { __typename?: 'Asset', id: string, symbol: string, decimals: number, name: string, quantum: string, status: Types.AssetStatus } | null, kind: { __typename?: 'OneOffGovernanceTransfer' } | { __typename?: 'OneOffTransfer' } | { __typename?: 'RecurringGovernanceTransfer' } | { __typename?: 'RecurringTransfer', startEpoch: number, endEpoch?: number | null, dispatchStrategy?: { __typename?: 'DispatchStrategy', capRewardFeeMultiple?: string | null, dispatchMetric: Types.DispatchMetric, dispatchMetricAssetId: string, marketIdsInScope?: Array<string> | null, entityScope: Types.EntityScope, individualScope?: Types.IndividualScope | null, teamScope?: Array<string | null> | null, nTopPerformers?: string | null, stakingRequirement: string, notionalTimeWeightedAveragePositionRequirement: string, windowLength: number, lockPeriod: number, distributionStrategy: Types.DistributionStrategy, rankTable?: Array<{ __typename?: 'RankTable', startRank: number, shareRatio: number } | null> | null } | null } }, fees?: Array<{ __typename?: 'TransferFee', transferId: string, amount: string, epoch: number } | null> | null } } | null> | null } | null };
+export type ActiveRewardsQuery = { __typename?: 'Query', transfersConnection?: { __typename?: 'TransferConnection', edges?: Array<{ __typename?: 'TransferEdge', node: { __typename?: 'TransferNode', transfer: { __typename?: 'Transfer', amount: string, id: string, from: string, fromAccountType: Types.AccountType, to: string, toAccountType: Types.AccountType, reference?: string | null, status: Types.TransferStatus, timestamp: any, gameId?: string | null, reason?: string | null, asset?: { __typename?: 'Asset', id: string, symbol: string, decimals: number, name: string, quantum: string, status: Types.AssetStatus } | null, kind: { __typename?: 'OneOffGovernanceTransfer' } | { __typename?: 'OneOffTransfer' } | { __typename?: 'RecurringGovernanceTransfer', startEpoch: number, endEpoch?: number | null, dispatchStrategy?: { __typename?: 'DispatchStrategy', capRewardFeeMultiple?: string | null, dispatchMetric: Types.DispatchMetric, dispatchMetricAssetId: string, marketIdsInScope?: Array<string> | null, entityScope: Types.EntityScope, individualScope?: Types.IndividualScope | null, teamScope?: Array<string | null> | null, nTopPerformers?: string | null, stakingRequirement: string, notionalTimeWeightedAveragePositionRequirement: string, windowLength: number, lockPeriod: number, distributionStrategy: Types.DistributionStrategy, rankTable?: Array<{ __typename?: 'RankTable', startRank: number, shareRatio: number } | null> | null } | null } | { __typename?: 'RecurringTransfer', startEpoch: number, endEpoch?: number | null, dispatchStrategy?: { __typename?: 'DispatchStrategy', capRewardFeeMultiple?: string | null, dispatchMetric: Types.DispatchMetric, dispatchMetricAssetId: string, marketIdsInScope?: Array<string> | null, entityScope: Types.EntityScope, individualScope?: Types.IndividualScope | null, teamScope?: Array<string | null> | null, nTopPerformers?: string | null, stakingRequirement: string, notionalTimeWeightedAveragePositionRequirement: string, windowLength: number, lockPeriod: number, distributionStrategy: Types.DistributionStrategy, rankTable?: Array<{ __typename?: 'RankTable', startRank: number, shareRatio: number } | null> | null } | null } }, fees?: Array<{ __typename?: 'TransferFee', transferId: string, amount: string, epoch: number } | null> | null } } | null> | null } | null };
 
 export type TWAPQueryVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
@@ -53,7 +63,56 @@ export type MarketForRewardsQueryVariables = Types.Exact<{
 
 export type MarketForRewardsQuery = { __typename?: 'Query', market?: { __typename?: 'Market', tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', id: string, name: string, code: string, metadata: { __typename?: 'InstrumentMetadata', tags?: Array<string> | null } } } } | null };
 
-
+export const RecurringTransferFieldsFragmentDoc = gql`
+    fragment RecurringTransferFields on TransferKind {
+  ... on RecurringGovernanceTransfer {
+    startEpoch
+    endEpoch
+    dispatchStrategy {
+      capRewardFeeMultiple
+      dispatchMetric
+      dispatchMetricAssetId
+      marketIdsInScope
+      entityScope
+      individualScope
+      teamScope
+      nTopPerformers
+      stakingRequirement
+      notionalTimeWeightedAveragePositionRequirement
+      windowLength
+      lockPeriod
+      distributionStrategy
+      rankTable {
+        startRank
+        shareRatio
+      }
+    }
+  }
+  ... on RecurringTransfer {
+    startEpoch
+    endEpoch
+    dispatchStrategy {
+      capRewardFeeMultiple
+      dispatchMetric
+      dispatchMetricAssetId
+      marketIdsInScope
+      entityScope
+      individualScope
+      teamScope
+      nTopPerformers
+      stakingRequirement
+      notionalTimeWeightedAveragePositionRequirement
+      windowLength
+      lockPeriod
+      distributionStrategy
+      rankTable {
+        startRank
+        shareRatio
+      }
+    }
+  }
+}
+    `;
 export const RewardsPageDocument = gql`
     query RewardsPage($partyId: ID!) {
   party(id: $partyId) {
@@ -156,29 +215,7 @@ export const ActiveRewardsDocument = gql`
           timestamp
           gameId
           kind {
-            ... on RecurringTransfer {
-              startEpoch
-              endEpoch
-              dispatchStrategy {
-                capRewardFeeMultiple
-                dispatchMetric
-                dispatchMetricAssetId
-                marketIdsInScope
-                entityScope
-                individualScope
-                teamScope
-                nTopPerformers
-                stakingRequirement
-                notionalTimeWeightedAveragePositionRequirement
-                windowLength
-                lockPeriod
-                distributionStrategy
-                rankTable {
-                  startRank
-                  shareRatio
-                }
-              }
-            }
+            ...RecurringTransferFields
           }
           reason
         }
@@ -191,7 +228,7 @@ export const ActiveRewardsDocument = gql`
     }
   }
 }
-    `;
+    ${RecurringTransferFieldsFragmentDoc}`;
 
 /**
  * __useActiveRewardsQuery__
