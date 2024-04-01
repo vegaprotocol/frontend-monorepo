@@ -187,7 +187,7 @@
   "Markets": "Markets",
   "MARKET_STATE_UPDATE_TYPE_RESUME": "resume",
   "MARKET_STATE_UPDATE_TYPE_SUSPEND": "suspend",
-  "MARKET_STATE_UPDATE_TYPE_TERMINATE": "terminate",
+  "MARKET_STATE_UPDATE_TYPE_TERMINATE": "close",
   "MARKET_STATE_UPDATE_TYPE_UNSPECIFIED": "unknown",
   "Members": "Members",
   "Members ({{count}})": "Members ({{count}})",
