@@ -40,7 +40,6 @@ describe('Closed', () => {
 
   const market = createMarketFragment({
     id: marketId,
-    state: MarketState.STATE_SETTLED,
     tradableInstrument: {
       instrument: {
         metadata: {
@@ -96,6 +95,7 @@ describe('Closed', () => {
 
   const marketsData = createMarketsDataFragment({
     __typename: 'MarketData',
+    marketState: MarketState.STATE_SETTLED,
     market: {
       __typename: 'Market',
       id: marketId,
@@ -208,7 +208,7 @@ describe('Closed', () => {
     const cells = screen.getAllByRole('gridcell');
     const expectedValues = [
       market.tradableInstrument.instrument.code,
-      MarketStateMapping[market.state],
+      MarketStateMapping[marketsData.marketState],
       '3 days ago',
       /* eslint-disable @typescript-eslint/no-non-null-assertion */
       addDecimalsFormatNumber(marketsData.bestBidPrice, market.decimalPlaces),
@@ -227,87 +227,6 @@ describe('Closed', () => {
     });
   });
 
-  it('only renders settled and terminated markets', async () => {
-    const mixedMarkets = [
-      {
-        // include as settled
-        __typename: 'MarketEdge' as const,
-        node: createMarketFragment({
-          id: 'include-0',
-          state: MarketState.STATE_SETTLED,
-        }),
-      },
-      {
-        // omit this market
-        __typename: 'MarketEdge' as const,
-        node: createMarketFragment({
-          id: 'discard-0',
-          state: MarketState.STATE_SUSPENDED,
-        }),
-      },
-      {
-        // include as terminated
-        __typename: 'MarketEdge' as const,
-        node: createMarketFragment({
-          id: 'include-1',
-          state: MarketState.STATE_TRADING_TERMINATED,
-        }),
-      },
-      {
-        // omit this market
-        __typename: 'MarketEdge' as const,
-        node: createMarketFragment({
-          id: 'discard-1',
-          state: MarketState.STATE_ACTIVE,
-        }),
-      },
-    ];
-    const mixedMarketsMock: MockedResponse<MarketsQuery> = {
-      request: {
-        query: MarketsDocument,
-      },
-      result: {
-        data: {
-          marketsConnection: {
-            __typename: 'MarketConnection',
-            edges: mixedMarkets,
-          },
-        },
-      },
-    };
-
-    await renderComponent([mixedMarketsMock, marketsDataMock, oracleDataMock]);
-
-    // check that the number of rows in datagrid is 2
-    const container = within(
-      document.querySelector('.ag-center-cols-container') as HTMLElement
-    );
-    const expectedRows = mixedMarkets.filter((m) => {
-      return [
-        MarketState.STATE_SETTLED,
-        MarketState.STATE_TRADING_TERMINATED,
-      ].includes(m.node.state);
-    });
-
-    await waitFor(() => {
-      // check rows length is correct
-      const rows = container.getAllByRole('row');
-      expect(rows).toHaveLength(expectedRows.length);
-    });
-
-    // check that only included ids are shown
-    const cells = screen
-      .getAllByRole('gridcell')
-      .filter((cell) => cell.getAttribute('col-id') === 'code')
-      .map((cell) => {
-        const marketCode = within(cell).getByTestId('stack-cell-primary');
-        return marketCode.textContent;
-      });
-    expect(cells).toEqual(
-      expectedRows.map((m) => m.node.tradableInstrument.instrument.code)
-    );
-  });
-
   it('display market actions', async () => {
     // Use market with a successor Id as the actions dropdown will optionally
     // show a link to the successor market
@@ -315,8 +234,7 @@ describe('Closed', () => {
       {
         __typename: 'MarketEdge' as const,
         node: createMarketFragment({
-          id: 'include-0',
-          state: MarketState.STATE_SETTLED,
+          id: marketId,
           successorMarketID: 'successor',
           parentMarketID: 'parent',
         }),
@@ -375,8 +293,7 @@ describe('Closed', () => {
       {
         __typename: 'MarketEdge' as const,
         node: createMarketFragment({
-          id: 'include-0',
-          state: MarketState.STATE_SETTLED,
+          id: marketId,
           successorMarketID: 'successor',
         }),
       },

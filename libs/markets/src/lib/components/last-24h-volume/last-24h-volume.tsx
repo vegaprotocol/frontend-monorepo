@@ -10,10 +10,10 @@ import { useT } from '../../use-t';
 
 interface Props {
   marketId?: string;
-  positionDecimalPlaces?: number;
   formatDecimals?: number;
   initialValue?: string;
-  marketDecimals?: number;
+  marketDecimals: number;
+  positionDecimalPlaces: number;
   quoteUnit?: string;
 }
 

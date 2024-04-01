@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { getAsset, type MarketFieldsFragment } from '@vegaprotocol/markets';
+import { getAsset, type MarketMaybeWithData } from '@vegaprotocol/markets';
 import { t } from '@vegaprotocol/i18n';
 import { ButtonLink } from '@vegaprotocol/ui-toolkit';
 import { type AgGridReact } from 'ag-grid-react';
@@ -17,7 +17,7 @@ import { type RowClickedEvent } from 'ag-grid-community';
 import { Link, useNavigate } from 'react-router-dom';
 
 type MarketsTableProps = {
-  data: MarketFieldsFragment[] | null;
+  data: MarketMaybeWithData[] | null;
 };
 export const MarketsTable = ({ data }: MarketsTableProps) => {
   const openAssetDetailsDialog = useAssetDetailsDialogStore(
@@ -56,10 +56,10 @@ export const MarketsTable = ({ data }: MarketsTableProps) => {
         headerName: t('Status'),
         field: 'state',
         hide: window.innerWidth <= BREAKPOINT_MD,
-        valueGetter: ({
-          data,
-        }: VegaValueGetterParams<MarketFieldsFragment>) => {
-          return data?.state ? MarketStateMapping[data?.state] : '-';
+        valueGetter: ({ data }: VegaValueGetterParams<MarketMaybeWithData>) => {
+          return data?.data?.marketState
+            ? MarketStateMapping[data?.data.marketState]
+            : '-';
         },
       },
       {
@@ -70,7 +70,7 @@ export const MarketsTable = ({ data }: MarketsTableProps) => {
         cellRenderer: ({
           data,
         }: VegaICellRendererParams<
-          MarketFieldsFragment,
+          MarketMaybeWithData,
           'tradableInstrument.instrument.product.settlementAsset.symbol'
         >) => {
           const value = data && getAsset(data);
@@ -99,7 +99,7 @@ export const MarketsTable = ({ data }: MarketsTableProps) => {
         field: 'id',
         cellRenderer: ({
           value,
-        }: VegaICellRendererParams<MarketFieldsFragment, 'id'>) =>
+        }: VegaICellRendererParams<MarketMaybeWithData, 'id'>) =>
           value ? (
             <Link className="underline" to={value}>
               {t('View details')}
@@ -116,7 +116,7 @@ export const MarketsTable = ({ data }: MarketsTableProps) => {
     <AgGrid
       ref={gridRef}
       rowData={data}
-      getRowId={({ data }: { data: MarketFieldsFragment }) => data.id}
+      getRowId={({ data }: { data: MarketMaybeWithData }) => data.id}
       overlayNoRowsTemplate={t('This chain has no markets')}
       domLayout="autoHeight"
       defaultColDef={{

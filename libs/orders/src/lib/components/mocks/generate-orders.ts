@@ -21,6 +21,14 @@ export const generateOrder = (partialOrder?: PartialDeep<Order>) => {
           makerFee: '0.1',
         },
       },
+      markPriceConfiguration: {
+        decayWeight: '',
+        decayPower: 0,
+        cashAmount: '',
+        SourceStalenessTolerance: [],
+        CompositePriceType:
+          Schema.CompositePriceType.COMPOSITE_PRICE_TYPE_LAST_TRADE,
+      },
       marketTimestamps: {
         __typename: 'MarketTimestamps',
         proposed: '2022-08-23T11:36:32.252490405Z',
@@ -29,7 +37,6 @@ export const generateOrder = (partialOrder?: PartialDeep<Order>) => {
         close: null,
       },
       positionDecimalPlaces: 2,
-      state: Schema.MarketState.STATE_ACTIVE,
       tradableInstrument: {
         __typename: 'TradableInstrument',
         instrument: {
@@ -86,7 +93,6 @@ export const generateOrder = (partialOrder?: PartialDeep<Order>) => {
           },
         },
       },
-      tradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
     },
     size: '10',
     type: Schema.OrderType.TYPE_MARKET,

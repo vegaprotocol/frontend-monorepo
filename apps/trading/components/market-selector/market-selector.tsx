@@ -120,7 +120,7 @@ export const MarketSelector = ({
       <div data-testid="market-selector-list">
         <MarketList
           data={markets}
-          loading={loading}
+          loading={loading && !data}
           error={error}
           searchTerm={filter.searchTerm}
           currentMarketId={currentMarketId}

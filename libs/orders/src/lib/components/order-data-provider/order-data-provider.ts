@@ -4,6 +4,7 @@ import {
   makeDataProvider,
   makeDerivedDataProvider,
   defaultAppend as append,
+  useDataProvider,
 } from '@vegaprotocol/data-provider';
 import { type Market } from '@vegaprotocol/markets';
 import { marketsMapProvider } from '@vegaprotocol/markets';
@@ -131,7 +132,8 @@ export const update = <T extends Omit<OrderFieldsFragment, 'market'> & Cursor>(
 ): T[] => {
   const updatedData = data ? [...data] : ([] as T[]);
   delta.forEach((orderUpdate) => {
-    const index = data?.findIndex((order) => order.id === orderUpdate.id) ?? -1;
+    const index =
+      data?.findIndex((order) => order?.id === orderUpdate.id) ?? -1;
     const newer = !data?.length || orderUpdate.createdAt >= data[0].createdAt;
     const doesFilterPass =
       !variables || orderMatchFilters(orderUpdate, variables);
@@ -203,10 +205,22 @@ export const activeOrdersProvider = makeDerivedDataProvider<
     }
     const orders = partsData[0] as ReturnType<typeof getData>;
     return variables.marketId
-      ? orders.filter((order) => variables.marketId === order.market.id)
+      ? orders.filter((order) => variables.marketId === order?.market.id)
       : orders;
   }
 );
+
+export const useActiveOrders = (
+  partyId: string | undefined,
+  marketId?: string
+) =>
+  useDataProvider({
+    dataProvider: activeOrdersProvider,
+    variables: marketId
+      ? { partyId: partyId || '', marketId }
+      : { partyId: partyId || '' },
+    skip: !partyId,
+  });
 
 export const ordersWithMarketProvider = makeDerivedDataProvider<
   (Order & Cursor)[],

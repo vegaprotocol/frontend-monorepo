@@ -6,6 +6,7 @@ import {
   ViewPartyConnector,
   createConfig,
   fairground,
+  validatorsTestnet,
   stagnet,
   mainnet,
 } from '@vegaprotocol/wallet';
@@ -31,7 +32,7 @@ export const useVegaWalletConfig = () => {
     const viewParty = new ViewPartyConnector();
 
     const config = createConfig({
-      chains: [mainnet, fairground, stagnet],
+      chains: [mainnet, fairground, validatorsTestnet, stagnet],
       defaultChainId: CHAIN_IDS[VEGA_ENV],
       connectors: [injected, snap, jsonRpc, viewParty],
     });

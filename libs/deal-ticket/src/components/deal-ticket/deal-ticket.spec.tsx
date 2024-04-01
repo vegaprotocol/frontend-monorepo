@@ -31,6 +31,8 @@ import {
 jest.mock('zustand');
 jest.mock('./deal-ticket-fee-details', () => ({
   DealTicketFeeDetails: () => <div data-testid="deal-ticket-fee-details" />,
+}));
+jest.mock('./deal-ticket-margin-details', () => ({
   DealTicketMarginDetails: () => (
     <div data-testid="deal-ticket-margin-details" />
   ),
@@ -848,9 +850,8 @@ describe('DealTicket', () => {
     ];
 
     it.each(states)('handles state %s correctly', async (marketState) => {
-      const marketOverrides = { state: marketState };
       const marketDataOverrides = { marketState: marketState };
-      render(generateJsx([], marketOverrides, marketDataOverrides));
+      render(generateJsx([], {}, marketDataOverrides));
 
       const text = `This market is ${marketState
         .split('_')

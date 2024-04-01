@@ -110,19 +110,30 @@ export const marketWithDataProvider = makeDerivedDataProvider<
   };
 });
 
-export const activeMarketsProvider = makeDerivedDataProvider<Market[], never>(
-  [marketsProvider],
-  ([markets]) => filterAndSortMarkets(markets)
+export const marketsWithDataProvider = makeDerivedDataProvider<
+  MarketMaybeWithData[],
+  never
+>([marketsProvider, marketsDataProvider], (parts) =>
+  addData(parts[0] as Market[], parts[1] as MarketData[])
 );
 
-export const closedMarketsProvider = makeDerivedDataProvider<Market[], never>(
-  [marketsProvider],
-  ([markets]) => filterAndSortClosedMarkets(markets)
+export const activeMarketsProvider = makeDerivedDataProvider<
+  MarketMaybeWithData[],
+  never
+>([marketsWithDataProvider], ([markets]) => filterAndSortMarkets(markets));
+
+export const closedMarketsProvider = makeDerivedDataProvider<
+  MarketMaybeWithData[],
+  never
+>([marketsWithDataProvider], ([markets]) =>
+  filterAndSortClosedMarkets(markets)
 );
 
-export const proposedMarketsProvider = makeDerivedDataProvider<Market[], never>(
-  [marketsProvider],
-  ([markets]) => filterAndSortProposedMarkets(markets)
+export const proposedMarketsProvider = makeDerivedDataProvider<
+  MarketMaybeWithData[],
+  never
+>([marketsWithDataProvider], ([markets]) =>
+  filterAndSortProposedMarkets(markets)
 );
 
 export type MarketMaybeWithCandles = Market & { candles?: Candle[] };
@@ -157,28 +168,7 @@ const addData = <T extends Market>(markets: T[], marketsData: MarketData[]) =>
     data: marketsData.find((data) => data.market.id === market.id),
   }));
 
-export const marketsWithDataProvider = makeDerivedDataProvider<
-  MarketMaybeWithData[],
-  never
->([activeMarketsProvider, marketsDataProvider], (parts) =>
-  addData(parts[0] as Market[], parts[1] as MarketData[])
-);
-
-export const closedMarketsWithDataProvider = makeDerivedDataProvider<
-  MarketMaybeWithData[],
-  never
->([closedMarketsProvider, marketsDataProvider], (parts) =>
-  addData(parts[0] as Market[], parts[1] as MarketData[])
-);
-
-export const allMarketsWithDataProvider = makeDerivedDataProvider<
-  MarketMaybeWithData[],
-  never
->([marketsProvider, marketsDataProvider], (parts) =>
-  addData(parts[0] as Market[], parts[1] as MarketData[])
-);
-
-export const allMarketsWithLiveDataProvider = makeDerivedDataProvider<
+export const marketsWithLiveDataProvider = makeDerivedDataProvider<
   MarketMaybeWithData[],
   MarketMaybeWithData,
   { marketIds: string[] }
