@@ -41,55 +41,6 @@ query RewardsPage($partyId: ID!) {
   }
 }
 
-fragment RecurringTransferFields on TransferKind {
-  ... on RecurringGovernanceTransfer {
-    startEpoch
-    endEpoch
-    dispatchStrategy {
-      capRewardFeeMultiple
-      dispatchMetric
-      dispatchMetricAssetId
-      marketIdsInScope
-      entityScope
-      individualScope
-      teamScope
-      nTopPerformers
-      stakingRequirement
-      notionalTimeWeightedAveragePositionRequirement
-      windowLength
-      lockPeriod
-      distributionStrategy
-      rankTable {
-        startRank
-        shareRatio
-      }
-    }
-  }
-  ... on RecurringTransfer {
-    startEpoch
-    endEpoch
-    dispatchStrategy {
-      capRewardFeeMultiple
-      dispatchMetric
-      dispatchMetricAssetId
-      marketIdsInScope
-      entityScope
-      individualScope
-      teamScope
-      nTopPerformers
-      stakingRequirement
-      notionalTimeWeightedAveragePositionRequirement
-      windowLength
-      lockPeriod
-      distributionStrategy
-      rankTable {
-        startRank
-        shareRatio
-      }
-    }
-  }
-}
-
 query ActiveRewards(
   $isReward: Boolean
   $partyId: ID
@@ -124,7 +75,29 @@ query ActiveRewards(
           timestamp
           gameId
           kind {
-            ...RecurringTransferFields
+            ... on RecurringTransfer {
+              startEpoch
+              endEpoch
+              dispatchStrategy {
+                capRewardFeeMultiple
+                dispatchMetric
+                dispatchMetricAssetId
+                marketIdsInScope
+                entityScope
+                individualScope
+                teamScope
+                nTopPerformers
+                stakingRequirement
+                notionalTimeWeightedAveragePositionRequirement
+                windowLength
+                lockPeriod
+                distributionStrategy
+                rankTable {
+                  startRank
+                  shareRatio
+                }
+              }
+            }
           }
           reason
         }
