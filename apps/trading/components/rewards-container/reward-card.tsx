@@ -111,7 +111,6 @@ const RewardCard = ({
           className={classNames(
             CardColourStyles[colour].mainClassName,
             'bg-gradient-to-b bg-vega-clight-800 dark:bg-vega-cdark-800 h-full w-full rounded-md p-4 flex flex-col gap-4'
-            // 'grid grid-cols-4 grid-rows-2'
           )}
         >
           <div className="flex justify-between gap-4">
@@ -998,33 +997,27 @@ export const ActiveRewardCard = ({
       ? transferNode.transfer.kind.endEpoch - currentEpoch
       : undefined;
 
-  const clickable = (element: ReactNode) => {
-    const gameLink = transferNode.transfer.gameId
-      ? Links.COMPETITIONS_GAME(transferNode.transfer.gameId)
-      : undefined;
-    if (gameLink) return <Link to={gameLink}>{element}</Link>;
-    return element;
-  };
-
   if (
     !transferNode.transfer.kind.dispatchStrategy &&
     transferNode.transfer.toAccountType ===
       AccountType.ACCOUNT_TYPE_GLOBAL_REWARD
   ) {
-    return clickable(
-      <StakingRewardCard
-        colour={CardColour.WHITE}
-        rewardAmount={addDecimalsFormatNumber(
-          transferNode.transfer.amount,
-          transferNode.transfer.asset?.decimals || 0,
-          6
-        )}
-        rewardAsset={transferNode.transfer.asset || undefined}
-        startsIn={startsIn > 0 ? startsIn : undefined}
-        endsIn={endsIn}
-        requirements={requirements}
-        gameId={transferNode.transfer.gameId}
-      />
+    return (
+      <LinkToGame gameId={transferNode.transfer.gameId}>
+        <StakingRewardCard
+          colour={CardColour.WHITE}
+          rewardAmount={addDecimalsFormatNumber(
+            transferNode.transfer.amount,
+            transferNode.transfer.asset?.decimals || 0,
+            6
+          )}
+          rewardAsset={transferNode.transfer.asset || undefined}
+          startsIn={startsIn > 0 ? startsIn : undefined}
+          endsIn={endsIn}
+          requirements={requirements}
+          gameId={transferNode.transfer.gameId}
+        />
+      </LinkToGame>
     );
   }
 
@@ -1051,22 +1044,37 @@ export const ActiveRewardCard = ({
     colour = CardColour.GREY;
   }
 
-  return clickable(
-    <RewardCard
-      colour={colour}
-      rewardAmount={addDecimalsFormatNumber(
-        transferNode.transfer.amount,
-        transferNode.transfer.asset?.decimals || 0,
-        6
-      )}
-      rewardAsset={transferNode.dispatchAsset}
-      transferAsset={transferNode.transfer.asset || undefined}
-      startsIn={startsIn > 0 ? startsIn : undefined}
-      endsIn={endsIn}
-      dispatchStrategy={transferNode.transfer.kind.dispatchStrategy}
-      dispatchMetricInfo={<DispatchMetricInfo reward={transferNode} />}
-      requirements={requirements}
-      gameId={transferNode.transfer.gameId}
-    />
+  return (
+    <LinkToGame gameId={transferNode.transfer.gameId}>
+      <RewardCard
+        colour={colour}
+        rewardAmount={addDecimalsFormatNumber(
+          transferNode.transfer.amount,
+          transferNode.transfer.asset?.decimals || 0,
+          6
+        )}
+        rewardAsset={transferNode.dispatchAsset}
+        transferAsset={transferNode.transfer.asset || undefined}
+        startsIn={startsIn > 0 ? startsIn : undefined}
+        endsIn={endsIn}
+        dispatchStrategy={transferNode.transfer.kind.dispatchStrategy}
+        dispatchMetricInfo={<DispatchMetricInfo reward={transferNode} />}
+        requirements={requirements}
+        gameId={transferNode.transfer.gameId}
+      />
+    </LinkToGame>
   );
+};
+
+const LinkToGame = ({
+  gameId,
+  children,
+}: {
+  gameId?: string | null;
+  children: ReactNode;
+}) => {
+  if (gameId && gameId.length > 0) {
+    return <Link to={Links.COMPETITIONS_GAME(gameId)}>{children}</Link>;
+  }
+  return children;
 };
