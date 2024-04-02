@@ -87,15 +87,14 @@ export const filterAndSortMarkets = (markets: MarketMaybeWithData[]) => {
     MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
     MarketTradingMode.TRADING_MODE_NO_TRADING,
   ];
+
+  const activeMarkets = filterActiveMarkets(markets);
+
   const orderedMarkets = orderBy(
-    markets?.filter((m) => {
-      const state = m.data?.marketState;
+    activeMarkets.filter((m) => {
       const tradingMode = m.data?.marketTradingMode;
-      return (
-        state !== MarketState.STATE_REJECTED &&
-        tradingMode !== MarketTradingMode.TRADING_MODE_NO_TRADING
-      );
-    }) || [],
+      return tradingMode !== MarketTradingMode.TRADING_MODE_NO_TRADING;
+    }),
     ['marketTimestamps.open', 'id'],
     ['asc', 'asc']
   );
@@ -110,7 +109,20 @@ export const filterAndSortMarkets = (markets: MarketMaybeWithData[]) => {
   );
 };
 
-export const filterAndSortClosedMarkets = (markets: MarketMaybeWithData[]) => {
+export const filterActiveMarkets = (markets: MarketMaybeWithData[]) => {
+  return markets.filter((m) => {
+    return (
+      m.data?.marketState &&
+      [
+        MarketState.STATE_ACTIVE,
+        MarketState.STATE_SUSPENDED,
+        MarketState.STATE_SUSPENDED_VIA_GOVERNANCE,
+      ].includes(m.data.marketState)
+    );
+  });
+};
+
+export const filterClosedMarkets = (markets: MarketMaybeWithData[]) => {
   return markets.filter((m) => {
     return (
       m.data?.marketState &&
@@ -124,9 +136,7 @@ export const filterAndSortClosedMarkets = (markets: MarketMaybeWithData[]) => {
   });
 };
 
-export const filterAndSortProposedMarkets = (
-  markets: MarketMaybeWithData[]
-) => {
+export const filterProposedMarkets = (markets: MarketMaybeWithData[]) => {
   return markets.filter((m) => {
     return (
       m.data?.marketState &&
