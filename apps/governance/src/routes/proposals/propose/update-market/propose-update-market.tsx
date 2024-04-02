@@ -131,27 +131,29 @@ export const ProposeUpdateMarket = () => {
     );
 
     return {
-      rationale: {
-        title: fields.proposalTitle,
-        description: fields.proposalDescription,
-      },
-      terms: {
-        updateMarket: {
-          marketId: fields.proposalMarketId,
-          changes: fields.proposalTerms
-            ? { ...JSON.parse(fields.proposalTerms) }
-            : {},
+      proposalSubmission: {
+        rationale: {
+          title: fields.proposalTitle,
+          description: fields.proposalDescription,
         },
-        closingTimestamp: getClosingTimestamp(
-          fields.proposalVoteDeadline,
-          isVoteDeadlineAtMinimum,
-          isVoteDeadlineAtMaximum
-        ),
-        enactmentTimestamp: getEnactmentTimestamp(
-          fields.proposalEnactmentDeadline,
-          isEnactmentDeadlineAtMinimum,
-          isEnactmentDeadlineAtMaximum
-        ),
+        terms: {
+          updateMarket: {
+            marketId: fields.proposalMarketId,
+            changes: fields.proposalTerms
+              ? { ...JSON.parse(fields.proposalTerms) }
+              : {},
+          },
+          closingTimestamp: getClosingTimestamp(
+            fields.proposalVoteDeadline,
+            isVoteDeadlineAtMinimum,
+            isVoteDeadlineAtMaximum
+          ),
+          enactmentTimestamp: getEnactmentTimestamp(
+            fields.proposalEnactmentDeadline,
+            isEnactmentDeadlineAtMinimum,
+            isEnactmentDeadlineAtMaximum
+          ),
+        },
       },
     };
   };

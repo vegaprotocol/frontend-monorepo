@@ -388,6 +388,7 @@ interface ProposalUpdateMarketStateTerms {
 }
 
 export interface ProposalSubmission {
+  reference?: string;
   rationale: {
     description: string;
     title: string;
@@ -411,7 +412,7 @@ export interface ProposalSubmissionBody {
 type BatchChange<T> = Omit<T, 'closingTimestamp'>;
 
 export interface BatchProposalSubmission {
-  reference: string;
+  reference?: string;
   rationale: {
     description: string;
     title: string;
@@ -556,6 +557,7 @@ export type Transaction =
   | UndelegateSubmissionBody
   | OrderAmendmentBody
   | ProposalSubmissionBody
+  | BatchProposalSubmissionBody
   | BatchMarketInstructionSubmissionBody
   | TransferBody
   | LiquidityProvisionSubmission
