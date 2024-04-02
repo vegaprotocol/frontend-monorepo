@@ -56,7 +56,7 @@ export const MarketSelector = ({
   }, [reload]);
 
   return (
-    <div data-testid="market-selector" className="md:w-[580px]">
+    <div data-testid="market-selector" className="md:w-[680px]">
       <div className="px-2 pt-2 mb-2">
         <ProductSelector
           product={filter.product}
