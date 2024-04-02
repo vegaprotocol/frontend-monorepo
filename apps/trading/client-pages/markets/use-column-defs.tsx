@@ -135,7 +135,7 @@ export const useMarketsColumnDefs = () => {
         },
       },
       {
-        headerName: t('Mark price'),
+        headerName: t('Price'),
         field: 'data.markPrice',
         type: 'rightAligned',
         cellRenderer: 'PriceFlashCell',

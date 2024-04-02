@@ -157,7 +157,7 @@ export const MarketInfoAccordion = ({
           />
           <AccordionItem
             itemId="mark-price"
-            title={t('Mark price')}
+            title={t('Price')}
             content={
               <PriceConfigurationPanel
                 market={market}
