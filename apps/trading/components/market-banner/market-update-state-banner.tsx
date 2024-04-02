@@ -3,12 +3,7 @@ import sortBy from 'lodash/sortBy';
 import { format, formatDuration, intervalToDuration } from 'date-fns';
 import { type ProposalFragment } from '@vegaprotocol/proposals';
 import { MarketUpdateType, ProposalState } from '@vegaprotocol/types';
-import {
-  DApp,
-  TOKEN_PROPOSAL,
-  TOKEN_PROPOSALS,
-  useLinks,
-} from '@vegaprotocol/environment';
+import { DApp, TOKEN_PROPOSAL, useLinks } from '@vegaprotocol/environment';
 import { getQuoteName, type Market } from '@vegaprotocol/markets';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { useT } from '../../lib/use-t';
@@ -49,12 +44,6 @@ export const MarketUpdateStateBanner = ({
   }
 
   const name = market.tradableInstrument.instrument.code;
-  const assetSymbol = getQuoteName(market);
-
-  const proposalLink =
-    !passedProposals.length && openProposals[0]?.id
-      ? governanceLink(TOKEN_PROPOSAL.replace(':id', openProposals[0]?.id))
-      : undefined;
 
   const openTradingProposalsLink =
     openTradingProposals[0]?.__typename === 'Proposal' &&
@@ -68,9 +57,6 @@ export const MarketUpdateStateBanner = ({
           TOKEN_PROPOSAL.replace(':id', openTradingProposals[0].batchId)
         )
       : undefined;
-
-  const proposalsLink =
-    openProposals.length > 1 ? governanceLink(TOKEN_PROPOSALS) : undefined;
 
   let content: ReactNode;
 
@@ -91,55 +77,49 @@ export const MarketUpdateStateBanner = ({
       </>
     );
   } else if (passedProposals.length) {
-    const { date, duration, price } = getMessageVariables(passedProposals[0]);
     content = (
-      <>
-        <p className="uppercase mb-1">
-          {t('Trading on market {{name}} will stop on {{date}}', {
-            name,
-            date,
-          })}
-        </p>
-        <p>
-          {t(
-            'You will no longer be able to hold a position on this market when it closes in {{duration}}.',
-            { duration }
-          )}{' '}
-          {price &&
-            assetSymbol &&
-            t('The final price will be {{price}} {{assetSymbol}}.', {
-              price: addDecimalsFormatNumber(price, market.decimalPlaces),
-              assetSymbol,
-            })}
-        </p>
-      </>
-    );
-  } else if (openProposals.length > 1) {
-    content = (
-      <>
-        <p className="uppercase mb-1">
-          {t(
-            'Trading on market {{name}} may stop. There are open proposals to close this market',
-            { name }
-          )}
-        </p>
-        <p>
-          <ExternalLink href={proposalsLink}>
-            {t('View proposals')}
-          </ExternalLink>
-        </p>
-      </>
+      <PassedProposalContent market={market} proposal={passedProposals[0]} />
     );
   } else {
-    const { date, price } = getMessageVariables(openProposals[0]);
     content = (
-      <>
-        <p className="mb-1">
-          {t(
-            'Trading on market {{name}} may stop on {{date}}. There is an open proposal to close this market.',
-            { name, date }
-          )}
-        </p>
+      <OpenProposalContent market={market} proposal={openProposals[0]} />
+    );
+  }
+
+  return <div data-testid={`update-state-banner-${market.id}`}>{content}</div>;
+};
+
+const OpenProposalContent = ({
+  market,
+  proposal,
+}: {
+  market: Market;
+  proposal: ProposalFragment;
+}) => {
+  const t = useT();
+  const governanceLink = useLinks(DApp.Governance);
+  const { date, action, price } = useMessageVariables(proposal);
+
+  const assetSymbol = getQuoteName(market);
+  const proposalLink = proposal.id
+    ? governanceLink(TOKEN_PROPOSAL.replace(':id', proposal.id))
+    : undefined;
+
+  const change =
+    proposal.terms?.change.__typename === 'UpdateMarketState'
+      ? proposal.terms.change
+      : undefined;
+
+  return (
+    <>
+      <p className="mb-1">
+        {t(
+          'Trading on market {{name}} may {{action}} on {{date}}. There is an open proposal to {{action}} this market.',
+          { name: market.tradableInstrument.instrument.code, action, date }
+        )}
+      </p>
+      {change?.updateType ===
+        MarketUpdateType.MARKET_STATE_UPDATE_TYPE_TERMINATE && (
         <p>
           {price &&
             assetSymbol &&
@@ -149,14 +129,58 @@ export const MarketUpdateStateBanner = ({
             })}{' '}
           <ExternalLink href={proposalLink}>{t('View proposal')}</ExternalLink>
         </p>
-      </>
-    );
-  }
-
-  return <div data-testid={`update-state-banner-${market.id}`}>{content}</div>;
+      )}
+    </>
+  );
 };
 
-const getMessageVariables = (proposal: ProposalFragment) => {
+const PassedProposalContent = ({
+  market,
+  proposal,
+}: {
+  market: Market;
+  proposal: ProposalFragment;
+}) => {
+  const t = useT();
+  const { date, action, price, duration } = useMessageVariables(proposal);
+
+  const assetSymbol = getQuoteName(market);
+
+  const change =
+    proposal.terms?.change.__typename === 'UpdateMarketState'
+      ? proposal.terms.change
+      : undefined;
+
+  return (
+    <>
+      <p className="uppercase mb-1">
+        {t('Trading on market {{name}} will {{action}} on {{date}}', {
+          name: market.tradableInstrument.instrument.code,
+          date,
+          action,
+        })}
+      </p>
+      {change?.updateType ===
+        MarketUpdateType.MARKET_STATE_UPDATE_TYPE_TERMINATE && (
+        <p>
+          {t(
+            'You will no longer be able to hold a position on this market when it terminates in {{duration}}.',
+            { duration }
+          )}{' '}
+          {price &&
+            assetSymbol &&
+            t('The final price will be {{price}} {{assetSymbol}}.', {
+              price: addDecimalsFormatNumber(price, market.decimalPlaces),
+              assetSymbol,
+            })}
+        </p>
+      )}
+    </>
+  );
+};
+
+const useMessageVariables = (proposal: ProposalFragment) => {
+  const t = useT();
   const enactmentDatetime =
     proposal.terms && new Date(proposal.terms.enactmentDatetime);
   const date = enactmentDatetime && format(enactmentDatetime, 'dd MMMM');
@@ -175,9 +199,16 @@ const getMessageVariables = (proposal: ProposalFragment) => {
     proposal.terms?.change.__typename === 'UpdateMarketState'
       ? proposal.terms.change.price
       : '';
+
+  const action =
+    proposal.terms?.change.__typename === 'UpdateMarketState'
+      ? t(proposal.terms.change.updateType)
+      : 'change';
+
   return {
     date,
     duration,
     price,
+    action,
   };
 };
