@@ -27,9 +27,9 @@ import {
 import { useMemo } from 'react';
 import * as Schema from '@vegaprotocol/types';
 import {
-  filterAndSortClosedMarkets,
+  filterClosedMarkets,
   filterAndSortMarkets,
-  filterAndSortProposedMarkets,
+  filterProposedMarkets,
 } from './market-utils';
 import type { Candle } from './market-candles-provider';
 
@@ -125,16 +125,12 @@ export const activeMarketsProvider = makeDerivedDataProvider<
 export const closedMarketsProvider = makeDerivedDataProvider<
   MarketMaybeWithData[],
   never
->([marketsWithDataProvider], ([markets]) =>
-  filterAndSortClosedMarkets(markets)
-);
+>([marketsWithDataProvider], ([markets]) => filterClosedMarkets(markets));
 
 export const proposedMarketsProvider = makeDerivedDataProvider<
   MarketMaybeWithData[],
   never
->([marketsWithDataProvider], ([markets]) =>
-  filterAndSortProposedMarkets(markets)
-);
+>([marketsWithDataProvider], ([markets]) => filterProposedMarkets(markets));
 
 export type MarketMaybeWithCandles = Market & { candles?: Candle[] };
 
@@ -148,7 +144,7 @@ const addCandles = <T extends Market>(
       ?.candles,
   }));
 
-export const marketsWithCandlesProvider = makeDerivedDataProvider<
+export const activeMarketsWithCandlesProvider = makeDerivedDataProvider<
   MarketMaybeWithCandles[],
   never,
   MarketsCandlesQueryVariables
