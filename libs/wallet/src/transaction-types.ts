@@ -7,6 +7,7 @@ import type {
   OrderTimeInForce,
   StopOrderExpiryStrategy,
   VoteValue,
+  MarketUpdateType,
 } from '@vegaprotocol/types';
 
 export interface LiquidityProvisionSubmission {
@@ -374,6 +375,18 @@ interface LiquiditySLAParameters {
   slaCompetitionFactor: string;
 }
 
+interface ProposalUpdateMarketStateTerms {
+  updateMarketState: {
+    changes: {
+      marketId: string;
+      updateType: MarketUpdateType;
+      price?: string;
+    };
+  };
+  closingTimestamp: number;
+  enactmentTimestamp: number;
+}
+
 export interface ProposalSubmission {
   rationale: {
     description: string;
@@ -387,11 +400,39 @@ export interface ProposalSubmission {
     | ProposalNewAssetTerms
     | ProposalUpdateAssetTerms
     | ProposalTransferTerms
-    | ProposalCancelTransferTerms;
+    | ProposalCancelTransferTerms
+    | ProposalUpdateMarketStateTerms;
 }
 
 export interface ProposalSubmissionBody {
   proposalSubmission: ProposalSubmission;
+}
+
+type BatchChange<T> = Omit<T, 'closingTimestamp'>;
+
+export interface BatchProposalSubmission {
+  reference: string;
+  rationale: {
+    description: string;
+    title: string;
+  };
+  terms: {
+    closingTimestamp: string;
+    changes: Array<
+      | BatchChange<ProposalFreeformTerms>
+      | BatchChange<ProposalNewMarketTerms>
+      | BatchChange<ProposalUpdateMarketTerms>
+      | BatchChange<ProposalNetworkParameterTerms>
+      | BatchChange<ProposalNewAssetTerms>
+      | BatchChange<ProposalUpdateAssetTerms>
+      | BatchChange<ProposalTransferTerms>
+      | BatchChange<ProposalCancelTransferTerms>
+    >;
+  };
+}
+
+export interface BatchProposalSubmissionBody {
+  batchProposalSubmission: BatchProposalSubmission;
 }
 
 export interface BatchMarketInstructionSubmissionBody {
