@@ -12,7 +12,7 @@ export interface TextAreaProps
 export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
   ({ className, hasError, ...props }, ref) => {
     const textAreaClassName = classNames(
-      'shadow-input dark:shadow-input-dark',
+      'shadow-input dark:shadow-input-dark !overflow-auto',
       className
     );
 
