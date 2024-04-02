@@ -212,5 +212,11 @@ const cacheConfig: InMemoryCacheConfig = {
     Game: {
       keyFields: false,
     },
+    RecurringTransfer: {
+      keyFields: false,
+    },
+    RecurringGovernanceTransfer: {
+      keyFields: false,
+    },
   },
 };

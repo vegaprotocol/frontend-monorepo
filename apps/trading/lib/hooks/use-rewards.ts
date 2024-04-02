@@ -21,6 +21,7 @@ import { type ApolloError } from '@apollo/client';
 import compact from 'lodash/compact';
 import { useEpochInfoQuery } from './__generated__/Epoch';
 import { useDataProvider } from '@vegaprotocol/data-provider';
+import { removePaginationWrapper } from '@vegaprotocol/utils';
 
 export type RewardTransfer = TransferNode & {
   transfer: {
@@ -46,12 +47,13 @@ export type EnrichedRewardTransfer = RewardTransfer & {
  * dispatch strategy.
  */
 export const isReward = (node: TransferNode): node is RewardTransfer => {
-  if (
-    ((node.transfer.kind.__typename === 'RecurringTransfer' ||
+  const isRecurringTransfer =
+    (node.transfer.kind.__typename === 'RecurringTransfer' ||
       node.transfer.kind.__typename === 'RecurringGovernanceTransfer') &&
-      node.transfer.kind.dispatchStrategy != null) ||
-    node.transfer.toAccountType === AccountType.ACCOUNT_TYPE_GLOBAL_REWARD
-  ) {
+    node.transfer.kind.dispatchStrategy != null;
+  const isStakingReward =
+    node.transfer.toAccountType === AccountType.ACCOUNT_TYPE_GLOBAL_REWARD;
+  if (isRecurringTransfer || isStakingReward) {
     return true;
   }
   return false;
@@ -107,6 +109,9 @@ export const useRewards = ({
   const { data, loading, error } = useActiveRewardsQuery({
     variables: {
       isReward: true,
+      pagination: {
+        first: 1000,
+      },
     },
     skip: onlyActive && isNaN(currentEpoch),
     fetchPolicy: 'cache-and-network',
@@ -127,9 +132,9 @@ export const useRewards = ({
     variables: undefined,
   });
 
-  const enriched = compact(
-    data?.transfersConnection?.edges?.map((n) => n?.node)
-  )
+  const transfers = removePaginationWrapper(data?.transfersConnection?.edges);
+
+  const enriched = transfers
     .map((n) => n as TransferNode)
     // make sure we have only rewards here
     .filter(isReward)
