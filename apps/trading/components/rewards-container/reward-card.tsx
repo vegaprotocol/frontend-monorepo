@@ -34,6 +34,7 @@ import compact from 'lodash/compact';
 import BigNumber from 'bignumber.js';
 import { useTWAPQuery } from '../../lib/hooks/__generated__/Rewards';
 import { RankPayoutTable } from './rank-table';
+import { useFeatureFlags } from '@vegaprotocol/environment';
 
 const Tick = () => (
   <VegaIcon
@@ -573,17 +574,19 @@ const RewardRequirements = ({
   const averagePositionRequirements =
     dispatchStrategy.notionalTimeWeightedAveragePositionRequirement;
 
+  const featureFlags = useFeatureFlags((state) => state.flags);
+
   const { data: twap } = useTWAPQuery({
     variables: {
       gameId: gameId || '',
       partyId: requirements?.pubKey || '',
       assetId: rewardAsset?.id || '',
     },
-    skip: !requirements,
+    skip: !featureFlags.TWAP_REWARDS || !requirements,
     errorPolicy: 'ignore',
   });
   const averagePosition =
-    twap?.timeWeightedNotionalPosition?.timeWeightedNotionalPosition;
+    twap && twap?.timeWeightedNotionalPosition?.timeWeightedNotionalPosition;
 
   const averagePositionFormatted =
     averagePosition &&
@@ -676,6 +679,7 @@ const RewardRequirements = ({
             data-testid="average-position"
           >
             {requirements &&
+              featureFlags.TWAP_REWARDS &&
               averagePositionRequirements &&
               !startsIn &&
               (new BigNumber(averagePosition || 0).isGreaterThan(
