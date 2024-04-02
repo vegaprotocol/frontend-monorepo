@@ -57,7 +57,7 @@ jobs:
       #----------------------------------------------
       - name: Build trading app
         run: |
-          ENV_NAME="${{ needs.console-test-branch.outputs.console-branch == 'main' && 'mainnet' || 'stagnet1' }}"
+          ENV_NAME="${{ github.base_ref == 'main' && 'mainnet' || 'stagnet1' }}"
           yarn env-cmd -f ./apps/trading/.env.$ENV_NAME yarn nx export trading
           DIST_LOCATION=dist/apps/trading/exported
           mv $DIST_LOCATION dist-result
@@ -77,7 +77,7 @@ jobs:
           load: true
           build-args: |
             APP=trading
-            ENV_NAME=${{ needs.console-test-branch.outputs.console-branch == 'main' && 'mainnet' || 'stagnet1' }}
+            ENV_NAME="${{ github.base_ref == 'main' && 'mainnet' || 'stagnet1' }}"
           tags: ci/trading:local
           outputs: type=docker,dest=/tmp/console-image.tar
 
