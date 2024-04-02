@@ -135,7 +135,7 @@ def test_perps_market_termination_proposed(page: Page, vega: VegaServiceNull):
         f"update-state-banner-{perpetual_market}"
     ).text_content()
     pattern = re.compile(
-        r"Trading on market BTC:DAI_Perpetual may stop on \d{2} [A-Za-z]+\. There is an open proposal to close this market\.Proposed final price is 100\.00 BTC\. View proposal"
+        r"Trading on market BTC:DAI_Perpetual may close on \d{2} [A-Za-z]+\. There is an open proposal to close this market\.Proposed final price is 100\.00 BTC\. View proposal"
     )
     assert pattern.search(
         banner_text
