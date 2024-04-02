@@ -189,19 +189,23 @@ describe('Raw proposal form', () => {
     });
 
     const inputJSON = JSON.stringify({
-      rationale: {
-        description: 'Update governance.proposal.freeform.minVoterBalance',
-        title: 'testing 123',
-      },
-      terms: {
-        updateNetworkParameter: {
-          changes: {
-            key: 'governance.proposal.freeform.minVoterBalance',
-            value: '300',
-          },
+      proposalSubmission: {
+        rationale: {
+          description: 'Update governance.proposal.freeform.minVoterBalance',
+          title: 'testing 123',
         },
-        closingTimestamp: Math.floor(getTime(addHours(new Date(), 2)) / 1000),
-        enactmentTimestamp: Math.floor(getTime(addHours(new Date(), 3)) / 1000),
+        terms: {
+          updateNetworkParameter: {
+            changes: {
+              key: 'governance.proposal.freeform.minVoterBalance',
+              value: '300',
+            },
+          },
+          closingTimestamp: Math.floor(getTime(addHours(new Date(), 2)) / 1000),
+          enactmentTimestamp: Math.floor(
+            getTime(addHours(new Date(), 3)) / 1000
+          ),
+        },
       },
     });
 
@@ -216,9 +220,7 @@ describe('Raw proposal form', () => {
     expect(mockSendTx).toHaveBeenCalledWith({
       publicKey: pubKey,
       sendingMode: 'TYPE_SYNC',
-      transaction: {
-        proposalSubmission: JSON.parse(inputJSON),
-      },
+      transaction: JSON.parse(inputJSON),
     });
 
     expect(screen.getByTestId('dialog-title')).toHaveTextContent(
