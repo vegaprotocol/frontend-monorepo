@@ -86,12 +86,14 @@ export const CompetitionsGame = () => {
           ) : null
         ),
         teamName: dependable(
-          <Link
-            to={Links.COMPETITIONS_TEAM(ent.team)}
-            className="hover:underline"
-          >
-            {teams[ent.team].name}
-          </Link>
+          teams[ent.team] ? (
+            <Link
+              to={Links.COMPETITIONS_TEAM(ent.team)}
+              className="hover:underline"
+            >
+              {teams[ent.team].name}
+            </Link>
+          ) : null
         ),
       }));
     })
@@ -143,7 +145,7 @@ export const CompetitionsGame = () => {
                 data={orderBy(entries, ['epoch', 'rank'], ['desc', 'asc'])}
               />
             ) : (
-              <span className="text-xs">{t('No data')}</span>
+              <div className="text-base text-center">{t('No data')}</div>
             )
           ) : (
             <Loader size="small" />
