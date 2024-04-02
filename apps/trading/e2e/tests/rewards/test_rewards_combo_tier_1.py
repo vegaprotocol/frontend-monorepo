@@ -173,6 +173,7 @@ def test_reward_history(
 ) -> None:
     page, tDAI_market, tDAI_asset_id = setup_environment
     page.locator('[name="fromEpoch"]').fill("1")
+    
     expect((page.get_by_role(ROW).locator(PRICE_TAKING_COL_ID)).nth(1)).to_have_text(
         "299.99999100.00%"
     )
@@ -182,6 +183,13 @@ def test_reward_history(
     expect((page.get_by_role(ROW).locator(TOTAL_COL_ID)).nth(1)).to_have_text(
         "183.33333"
     )
+
+
+def test_epoch_counter(
+    setup_environment: Tuple[Page, str, str],
+) -> None:
+    page, tDAI_market, tDAI_asset_id = setup_environment
+    expect(page.get_by_test_id("epoch-countdown")).to_have_text("Epoch 14Awaiting next epoch")
 
 
 def test_staking_reward(
