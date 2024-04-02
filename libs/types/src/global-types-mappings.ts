@@ -438,6 +438,10 @@ export const ProposalRejectionReasonMapping: {
   PROPOSAL_ERROR_INVALID_PERPETUAL_PRODUCT: 'Invalid perpetual product',
   PROPOSAL_ERROR_INVALID_SLA_PARAMS: 'Invalid SLA params',
   PROPOSAL_ERROR_MISSING_SLA_PARAMS: 'Missing SLA params',
+  // TODO: check and remove ts-expect-error when schema is correct
+  // @ts-expect-error this rejection reason is not yet in the schema but does exist
+  PROPOSAL_ERROR_PROPOSAL_IN_BATCH_REJECTED:
+    'One or more sub proposals are invalid',
 };
 
 /**
