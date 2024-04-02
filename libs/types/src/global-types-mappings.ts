@@ -309,6 +309,8 @@ export const StopOrderRejectionReasonMapping: {
     'Stop orders are not allowed during the opening auction',
   REJECTION_REASON_STOP_ORDER_CANNOT_MATCH_OCO_EXPIRY_TIMES:
     'Stop order cannot have matching OCO expiry times',
+  REJECTION_REASON_STOP_ORDER_LINKED_PERCENTAGE_INVALID:
+    'The percentage value for the linked stop order is invalid',
 };
 
 /**
