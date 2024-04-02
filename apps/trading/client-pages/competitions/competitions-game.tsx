@@ -142,7 +142,11 @@ export const CompetitionsGame = () => {
                   { name: 'teamName', displayName: t('Team name') },
                   { name: 'amount', displayName: t('Rewards earned') },
                 ].map((c) => ({ ...c, headerClassName: 'text-left' }))}
-                data={orderBy(entries, ['epoch', 'rank'], ['desc', 'asc'])}
+                data={orderBy(
+                  entries,
+                  ['epoch', 'rank', 'teamName'],
+                  ['desc', 'asc', 'asc']
+                )}
               />
             ) : (
               <div className="text-base text-center">{t('No data')}</div>
