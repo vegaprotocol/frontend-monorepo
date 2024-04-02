@@ -8,6 +8,9 @@ fragment MarketFieldsMainnet on Market {
   tradingMode
   parentMarketID
   successorMarketID
+  markPriceConfiguration {
+    ...PriceConfiguration
+  }
   fees {
     factors {
       makerFee
