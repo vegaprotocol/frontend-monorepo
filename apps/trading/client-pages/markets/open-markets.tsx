@@ -1,6 +1,6 @@
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import type { MarketMaybeWithData } from '@vegaprotocol/markets';
-import { marketListProvider } from '@vegaprotocol/markets';
+import { activeMarketsWithCandlesProvider } from '@vegaprotocol/markets';
 import { useEffect } from 'react';
 import type { CellClickedEvent } from 'ag-grid-community';
 import MarketListTable from './market-list-table';
@@ -16,7 +16,7 @@ export const OpenMarkets = () => {
   const handleOnSelect = useMarketClickHandler();
   const yesterday = useYesterday();
   const { data, error, reload } = useDataProvider({
-    dataProvider: marketListProvider,
+    dataProvider: activeMarketsWithCandlesProvider,
     variables: {
       since: new Date(yesterday).toISOString(),
       interval: Interval.INTERVAL_I1H,

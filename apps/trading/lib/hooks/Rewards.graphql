@@ -45,7 +45,8 @@ fragment RecurringTransferFields on RecurringTransfer {
   startEpoch
   endEpoch
   dispatchStrategy {
-    capRewardFeeMultiple
+    # TODO add back compatible with 0.75
+    # capRewardFeeMultiple
     dispatchMetric
     dispatchMetricAssetId
     marketIdsInScope
@@ -69,7 +70,8 @@ fragment RecurringGovernanceTransferFields on RecurringGovernanceTransfer {
   startEpoch
   endEpoch
   dispatchStrategy {
-    capRewardFeeMultiple
+    # TODO add back compatible with 0.75
+    # capRewardFeeMultiple
     dispatchMetric
     dispatchMetricAssetId
     marketIdsInScope

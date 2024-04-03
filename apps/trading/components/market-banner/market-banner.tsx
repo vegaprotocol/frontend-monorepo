@@ -1,19 +1,19 @@
-import compact from 'lodash/compact';
-import { MarketState } from '@vegaprotocol/types';
-import { Intent, NotificationBanner } from '@vegaprotocol/ui-toolkit';
 import {
-  useMarketState,
   type Market,
   useMaliciousOracle,
+  useMarketState,
 } from '@vegaprotocol/markets';
+import type { ProposalFragment } from '@vegaprotocol/proposals';
+import { MarketState } from '@vegaprotocol/types';
+import { Intent, NotificationBanner } from '@vegaprotocol/ui-toolkit';
+import compact from 'lodash/compact';
 import { useState } from 'react';
-import { type ProposalFragment } from '@vegaprotocol/proposals';
+import { MarketOracleBanner, type Oracle } from './market-oracle-banner';
+import { MarketSettledBanner } from './market-settled-banner';
+import { MarketSuccessorProposalBanner } from './market-successor-proposal-banner';
 import { MarketSuspendedBanner } from './market-suspended-banner';
 import { MarketUpdateBanner } from './market-update-banner';
 import { MarketUpdateStateBanner } from './market-update-state-banner';
-import { MarketSettledBanner } from './market-settled-banner';
-import { MarketSuccessorProposalBanner } from './market-successor-proposal-banner';
-import { MarketOracleBanner, type Oracle } from './market-oracle-banner';
 import {
   useSuccessorMarketProposals,
   useUpdateMarketProposals,

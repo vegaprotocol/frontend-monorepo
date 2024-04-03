@@ -193,6 +193,9 @@ query MarketInfoMainnet($marketId: ID!) {
       open
       close
     }
+    markPriceConfiguration {
+      ...PriceConfiguration
+    }
     openingAuction {
       durationSecs
       volume

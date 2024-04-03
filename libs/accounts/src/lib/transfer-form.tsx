@@ -365,6 +365,13 @@ export const TransferForm = ({
             {errors.toVegaKey.message}
           </TradingInputError>
         )}
+        {toVegaKeyMode === 'input' &&
+          selectedPubKey &&
+          !pubKeys?.includes(selectedPubKey) && (
+            <TradingInputError forInput="toVegaKey" intent="warning">
+              {t('You do not own this Vega public key')}
+            </TradingInputError>
+          )}
       </TradingFormGroup>
       <TradingFormGroup label={t('Amount')} labelFor="amount">
         <TradingInput
