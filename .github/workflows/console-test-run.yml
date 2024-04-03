@@ -168,7 +168,13 @@ jobs:
           if [[ "${{ github.base_ref }}" == "main" ]]; then
             echo "VEGA_VERSION=$(grep VEGA_VERSION apps/trading/e2e/.env.main | cut -d '=' -f2)" >> $GITHUB_ENV
             echo "ENV_FILE=.env.main"
+        run: |
+          if [[ "${{ github.base_ref }}" == "main" ]]; then
+            echo "VEGA_VERSION=$(grep VEGA_VERSION apps/trading/e2e/.env.main | cut -d '=' -f2)" >> $GITHUB_ENV
+            echo "ENV_FILE=.env.main"
           else
+            echo "VEGA_VERSION=$(grep VEGA_VERSION apps/trading/e2e/.env | cut -d '=' -f2)" >> $GITHUB_ENV
+            echo "ENV_FILE=.env"
             echo "VEGA_VERSION=$(grep VEGA_VERSION apps/trading/e2e/.env | cut -d '=' -f2)" >> $GITHUB_ENV
             echo "ENV_FILE=.env"
           fi
