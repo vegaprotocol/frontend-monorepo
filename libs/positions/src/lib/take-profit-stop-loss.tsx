@@ -22,7 +22,7 @@ import {
   VegaTxStatus,
 } from '@vegaprotocol/web3';
 import { Dialog } from '@vegaprotocol/ui-toolkit';
-import { useEffect, type ReactNode } from 'react';
+import { useEffect, type ReactNode, useState } from 'react';
 
 import { useOpenVolume } from './use-open-volume';
 import {
@@ -465,6 +465,9 @@ export const TakeProfitStopLossDialog = ({
   onClose,
   create,
 }: TakeProfitStopLossDialogProps) => {
+  const [visibleForm, setVisibleForm] = useState<'sl' | 'tp' | undefined>(
+    undefined
+  );
   const { data: market } = useMarket(marketId);
   const { pubKey } = useVegaWallet();
   const { data: activeStopOrders, reload } = useDataProvider({
@@ -590,17 +593,28 @@ export const TakeProfitStopLossDialog = ({
             averageEntryPrice={openVolume?.averageEntryPrice}
           />
         )}
-        {market && (
-          <Setup
-            allocation={takeProfitAllocation}
-            create={create}
-            market={market}
-            marketPrice={markPrice}
-            side={side}
-            triggerDirection={takeProfitTrigger}
-            openVolume={openVolume?.openVolume}
-            averageEntryPrice={openVolume?.averageEntryPrice}
-          />
+        {visibleForm !== 'tp' ? (
+          <Button
+            className="w-full"
+            type="button"
+            data-testid="add-sl"
+            onClick={() => setVisibleForm('tp')}
+          >
+            {t('Add TP')}
+          </Button>
+        ) : (
+          market && (
+            <Setup
+              allocation={takeProfitAllocation}
+              create={create}
+              market={market}
+              marketPrice={markPrice}
+              side={side}
+              triggerDirection={takeProfitTrigger}
+              openVolume={openVolume?.openVolume}
+              averageEntryPrice={openVolume?.averageEntryPrice}
+            />
+          )
         )}
       </div>
       <hr className="border-vega-clight-500 dark:border-vega-cdark-500 mb-6" />
@@ -615,17 +629,28 @@ export const TakeProfitStopLossDialog = ({
             averageEntryPrice={openVolume?.averageEntryPrice}
           />
         )}
-        {market && (
-          <Setup
-            allocation={stopLossAllocation}
-            create={create}
-            market={market}
-            marketPrice={markPrice}
-            side={side}
-            triggerDirection={stopLossTrigger}
-            openVolume={openVolume?.openVolume}
-            averageEntryPrice={openVolume?.averageEntryPrice}
-          />
+        {visibleForm !== 'sl' ? (
+          <Button
+            className="w-full"
+            type="button"
+            data-testid="add-sl"
+            onClick={() => setVisibleForm('sl')}
+          >
+            {t('Add SL')}
+          </Button>
+        ) : (
+          market && (
+            <Setup
+              allocation={stopLossAllocation}
+              create={create}
+              market={market}
+              marketPrice={markPrice}
+              side={side}
+              triggerDirection={stopLossTrigger}
+              openVolume={openVolume?.openVolume}
+              averageEntryPrice={openVolume?.averageEntryPrice}
+            />
+          )
         )}
       </div>
     </Dialog>
