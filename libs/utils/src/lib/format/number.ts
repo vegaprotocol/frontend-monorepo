@@ -18,18 +18,42 @@ export const getUnlimitedThreshold = (decimalPlaces: number) =>
 const MIN_FRACTION_DIGITS = 2;
 const MAX_FRACTION_DIGITS = 20;
 
-export function toDecimal(numberOfDecimals: number) {
-  return new BigNumber(1)
-    .dividedBy(new BigNumber(10).exponentiatedBy(numberOfDecimals))
-    .toString(10);
-}
-
+/**
+ * Converts "raw" value to a decimal representation as a `BigNumber`
+ *
+ * Example:
+ *  `toBigNum(1, 3)` -> 0.001
+ *  `toBigNum(1234, 2)` -> 12.34
+ *
+ * @param rawValue The "raw" value
+ * @param decimals The number of decimal places
+ */
 export function toBigNum(
   rawValue: string | number | BigNumber,
   decimals: number
 ): BigNumber {
-  const divides = new BigNumber(10).exponentiatedBy(decimals);
-  return new BigNumber(rawValue || 0).dividedBy(divides);
+  const d = new BigNumber(10).exponentiatedBy(decimals);
+  return new BigNumber(rawValue || 0).dividedBy(d);
+}
+
+/**
+ * Reverses `toBigNum` - converts given decimal representation
+ * as a "raw" value (`BigNumber`)
+ *
+ * Example:
+ *   `formBigNum(5.4321, 4)` -> 54321
+ *   `formBigNum(112.34, 2)` -> 11234
+ */
+export const fromBigNum = (
+  input: string | number | BigNumber,
+  decimals: number
+) => {
+  const d = new BigNumber(10).exponentiatedBy(decimals);
+  return new BigNumber(input).times(d);
+};
+
+export function toDecimal(numberOfDecimals: number) {
+  return toBigNum(1, numberOfDecimals).toString(10);
 }
 
 export function addDecimal(
@@ -277,4 +301,8 @@ export const toQUSD = (
 
   const qUSD = value.dividedBy(q);
   return qUSD;
+};
+
+export const isSafeInteger = (x: unknown): x is number => {
+  return x != null && typeof x === 'number' && Number.isSafeInteger(x);
 };

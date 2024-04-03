@@ -1,5 +1,6 @@
 import pytest
 from rewards_test_ids import *
+from typing import Tuple, Generator
 import vega_sim.proto.vega as vega_protos
 from playwright.sync_api import Page, expect
 from conftest import init_vega, init_page, auth_setup, risk_accepted_setup, cleanup_container
@@ -8,25 +9,23 @@ from actions.utils import next_epoch, change_keys
 from wallet_config import MM_WALLET
 from vega_sim.null_service import VegaServiceNull
 
+
 @pytest.fixture(scope="module")
-def vega(request):
+def setup_environment(request, browser) -> Generator[Tuple[Page, str, str], None, None]:
     with init_vega(request) as vega_instance:
         request.addfinalizer(lambda: cleanup_container(vega_instance))
-        yield vega_instance
+
+        tDAI_market, tDAI_asset_id = setup_market_with_reward_program(
+            vega_instance)
+
+        with init_page(vega_instance, browser, request) as page:
+            risk_accepted_setup(page)
+            auth_setup(vega_instance, page)
+            page.goto(REWARDS_URL)
+            change_keys(page, vega_instance, PARTY_B)
+            yield page, tDAI_market, tDAI_asset_id
 
 
-
-@pytest.fixture(scope="module")
-def page(vega, browser, request):
-    with init_page(vega, browser, request) as page:
-        risk_accepted_setup(page)
-        auth_setup(vega, page)
-        page.goto(REWARDS_URL)
-        change_keys(page, vega, PARTY_B)
-        yield page
-
-
-@pytest.fixture(scope="module", autouse=True)
 def setup_market_with_reward_program(vega: VegaServiceNull):
     tDAI_market = setup_continuous_market(vega)
     PARTY_A, PARTY_B, PARTY_C, PARTY_D = keys(vega)
@@ -57,6 +56,16 @@ def setup_market_with_reward_program(vega: VegaServiceNull):
     )
 
     next_epoch(vega=vega)
+    vega.recurring_transfer(
+        from_key_name=PARTY_A.name,
+        from_account_type=vega_protos.vega.ACCOUNT_TYPE_GENERAL,
+        to_account_type=vega_protos.vega.ACCOUNT_TYPE_GLOBAL_REWARD,
+        asset=tDAI_asset_id,
+        amount=100,
+        factor=1.0,
+    )
+    vega.wait_fn(1)
+    vega.wait_for_total_catchup()
     vega.recurring_transfer(
         from_key_name=PARTY_A.name,
         from_account_type=vega_protos.vega.ACCOUNT_TYPE_GENERAL,
@@ -140,16 +149,16 @@ def setup_market_with_reward_program(vega: VegaServiceNull):
     return tDAI_market, tDAI_asset_id
 
 
-@pytest.mark.xdist_group(name="test_rewards_combo_tier_1")
-def test_network_reward_pot( page: Page
-):
+def test_network_reward_pot(setup_environment: Tuple[Page, str, str],
+                            ) -> None:
+    page, tDAI_market, tDAI_asset_id = setup_environment
     expect(page.get_by_test_id(TOTAL_REWARDS)).to_have_text("183.33333 tDAI")
 
 
-@pytest.mark.xdist_group(name="test_rewards_combo_tier_1")
 def test_reward_multiplier(
-    page: Page,
-):
+    setup_environment: Tuple[Page, str, str],
+) -> None:
+    page, tDAI_market, tDAI_asset_id = setup_environment
     expect(page.get_by_test_id(COMBINED_MULTIPLIERS)).to_have_text("4x")
     expect(page.get_by_test_id(STREAK_REWARD_MULTIPLIER_VALUE)).to_have_text(
         "2x"
@@ -159,16 +168,45 @@ def test_reward_multiplier(
     )
 
 
-@pytest.mark.xdist_group(name="test_rewards_combo_tier_1")
 def test_reward_history(
-    page: Page,
-):
+    setup_environment: Tuple[Page, str, str],
+) -> None:
+    page, tDAI_market, tDAI_asset_id = setup_environment
     page.locator('[name="fromEpoch"]').fill("1")
     expect((page.get_by_role(ROW).locator(PRICE_TAKING_COL_ID)).nth(1)).to_have_text(
         "299.99999100.00%"
     )
-    expect((page.get_by_role(ROW).locator(TOTAL_COL_ID)).nth(1)).to_have_text("299.99999")
+    expect((page.get_by_role(ROW).locator(TOTAL_COL_ID)).nth(
+        1)).to_have_text("299.99999")
     page.get_by_test_id(EARNED_BY_ME_BUTTON).click()
     expect((page.get_by_role(ROW).locator(TOTAL_COL_ID)).nth(1)).to_have_text(
         "183.33333"
     )
+
+
+def test_staking_reward(
+    setup_environment: Tuple[Page, str, str],
+):
+    page, tDAI_market, tDAI_asset_id = setup_environment
+    expect(page.get_by_test_id("active-rewards-card")).to_have_count(2)
+    staking_reward_card = page.get_by_test_id("active-rewards-card").nth(1)
+    expect(staking_reward_card).to_be_visible()
+    expect(staking_reward_card.get_by_test_id(
+        "entity-scope")).to_have_text("Individual")
+    expect(staking_reward_card.get_by_test_id(
+        "locked-for")).to_have_text("0 epochs")
+    expect(staking_reward_card.get_by_test_id(
+        "reward-value")).to_have_text("100.00")
+    expect(staking_reward_card.get_by_test_id(
+        "distribution-strategy")).to_have_text("Pro rata")
+    expect(staking_reward_card.get_by_test_id("dispatch-metric-info")).to_have_text(
+        "Staking rewards"
+    )
+    expect(staking_reward_card.get_by_test_id(
+        "assessed-over")).to_have_text("1 epoch")
+    expect(staking_reward_card.get_by_test_id(
+        "scope")).to_have_text("Individual")
+    expect(staking_reward_card.get_by_test_id(
+        "staking-requirement")).to_have_text("1.00")
+    expect(staking_reward_card.get_by_test_id(
+        "average-position")).to_have_text("0.00")

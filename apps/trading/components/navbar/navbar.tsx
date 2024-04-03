@@ -25,7 +25,7 @@ import { NavLink } from 'react-router-dom';
 import { Links } from '../../lib/links';
 import classNames from 'classnames';
 import { VegaWalletMenu } from '../vega-wallet';
-import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
+import { useDialogStore, useWallet } from '@vegaprotocol/wallet-react';
 import { WalletIcon } from '../icons/wallet';
 import { ProtocolUpgradeCountdown } from '@vegaprotocol/proposals';
 import { useT, useI18n } from '../../lib/use-t';
@@ -40,13 +40,9 @@ export const Navbar = ({ theme = 'system' }: { theme?: Theme }) => {
   // menu state for small screens
   const [menu, setMenu] = useState<MenuState>(null);
 
-  const { pubKey } = useVegaWallet();
+  const status = useWallet((store) => store.status);
 
-  const openVegaWalletDialog = useVegaWalletDialogStore(
-    (store) => store.openVegaWalletDialog
-  );
-
-  const isConnected = pubKey !== null;
+  const openVegaWalletDialog = useDialogStore((store) => store.open);
 
   const navTextClasses = 'text-vega-clight-200 dark:text-vega-cdark-200';
   const rootClasses = classNames(
@@ -88,7 +84,7 @@ export const Navbar = ({ theme = 'system' }: { theme?: Theme }) => {
         </div>
         <NavbarMobileButton
           onClick={() => {
-            if (isConnected) {
+            if (status === 'connected') {
               setMenu((x) => (x === 'wallet' ? null : 'wallet'));
             } else {
               openVegaWalletDialog();

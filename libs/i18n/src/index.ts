@@ -19,6 +19,7 @@ import en_positions from './locales/en/positions.json';
 import en_trades from './locales/en/trading.json';
 import en_ui_toolkit from './locales/en/ui-toolkit.json';
 import en_wallet from './locales/en/wallet.json';
+import en_wallet_react from './locales/en/wallet-react.json';
 
 export const locales = {
   en: {
@@ -41,5 +42,6 @@ export const locales = {
     trades: en_trades,
     'ui-toolkit': en_ui_toolkit,
     wallet: en_wallet,
+    wallet_react: en_wallet_react,
   },
 };

@@ -1,5 +1,9 @@
 query ExplorerTransferStatus($id: ID!) {
   transfer(id: $id) {
+    fees {
+      amount
+      epoch
+    }
     transfer {
       reference
       timestamp

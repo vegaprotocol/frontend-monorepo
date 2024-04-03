@@ -1,5 +1,5 @@
 import { useRef, useCallback, useEffect } from 'react';
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import {
   type OrderSubmissionBody,
   type StopOrdersSubmission,
@@ -8,7 +8,6 @@ import {
   formatForInput,
   formatValue,
   removeDecimal,
-  toDecimal,
   useValidateAmount,
 } from '@vegaprotocol/utils';
 import { type Control, type UseFormWatch } from 'react-hook-form';
@@ -49,16 +48,18 @@ import {
   DealTicketType,
   dealTicketTypeToOrderType,
   isStopOrderType,
-} from '../../hooks/use-form-values';
-import { type StopOrderFormValues } from '../../hooks/use-form-values';
+  type StopOrderFormValues,
+} from '@vegaprotocol/react-helpers';
 import { mapFormValuesToStopOrdersSubmission } from '../../utils/map-form-values-to-submission';
 import { DealTicketFeeDetails } from './deal-ticket-fee-details';
 import { validateExpiration } from '../../utils';
 import { NOTIONAL_SIZE_TOOLTIP_TEXT } from '../../constants';
 import { KeyValue } from './key-value';
 import { useDataProvider } from '@vegaprotocol/data-provider';
-import { stopOrdersProvider } from '@vegaprotocol/orders';
+import { useActiveOrders, stopOrdersProvider } from '@vegaprotocol/orders';
 import { useT } from '../../use-t';
+import { determinePriceStep, determineSizeStep } from '@vegaprotocol/utils';
+import { useOpenVolume } from '@vegaprotocol/positions';
 
 export interface StopOrderProps {
   market: Market;
@@ -450,6 +451,47 @@ const Price = ({
         );
       }}
     />
+  );
+};
+
+export const NoOpenVolumeWarning = ({
+  side,
+  partyId,
+  marketId,
+}: {
+  side: Schema.Side;
+  partyId?: string;
+  marketId: string;
+}) => {
+  const { data: activeOrders } = useActiveOrders(partyId, marketId);
+  const t = useT();
+  const { openVolume } = useOpenVolume(partyId, marketId) || {};
+  const volume = BigInt(openVolume || 0);
+  const remaining = activeOrders
+    ? activeOrders.reduce((size, order) => {
+        if (side !== order.side) {
+          size += BigInt(order.remaining);
+        }
+        return size;
+      }, BigInt(0))
+    : BigInt(0);
+
+  if (
+    (side === Schema.Side.SIDE_BUY && volume - remaining < BigInt(0)) ||
+    (side === Schema.Side.SIDE_SELL && volume + remaining > BigInt(0))
+  ) {
+    return null;
+  }
+  return (
+    <div className="mb-2">
+      <Notification
+        intent={Intent.Warning}
+        testId={'stop-order-warning-position'}
+        message={t(
+          'Stop orders are reduce only and this order would increase your position.'
+        )}
+      />
+    </div>
   );
 };
 
@@ -904,8 +946,8 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
     market.tradableInstrument.instrument.metadata.tags
   );
 
-  const sizeStep = toDecimal(market?.positionDecimalPlaces);
-  const priceStep = toDecimal(market?.decimalPlaces);
+  const sizeStep = determineSizeStep(market);
+  const priceStep = determinePriceStep(market);
 
   useController({
     name: 'type',
@@ -1003,7 +1045,7 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
                 name="oco"
                 label={
                   <Tooltip
-                    description={<span>{t('One cancels another')}</span>}
+                    description={<span>{t('One cancels the other')}</span>}
                   >
                     <>{t('OCO')}</>
                   </Tooltip>
@@ -1188,8 +1230,13 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
             )}
           />
         </div>
-      ) : null}
-
+      ) : (
+        <NoOpenVolumeWarning
+          side={side}
+          partyId={pubKey}
+          marketId={market.id}
+        />
+      )}
       <SubmitButton
         assetUnit={assetUnit}
         market={market}

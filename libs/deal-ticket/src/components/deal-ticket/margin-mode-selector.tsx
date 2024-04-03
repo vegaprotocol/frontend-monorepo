@@ -8,7 +8,8 @@ import {
   Notification,
   Intent,
 } from '@vegaprotocol/ui-toolkit';
-import { MarginMode, useVegaWallet } from '@vegaprotocol/wallet';
+import { MarginMode } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import * as Types from '@vegaprotocol/types';
 import {
   type VegaTransactionStore,
@@ -24,7 +25,7 @@ import {
   useMarginAccountBalance,
 } from '@vegaprotocol/accounts';
 import { useMaxLeverage, useOpenVolume } from '@vegaprotocol/positions';
-import { activeOrdersProvider } from '@vegaprotocol/orders';
+import { useActiveOrders } from '@vegaprotocol/orders';
 import { usePositionEstimate } from '../../hooks/use-position-estimate';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { getAsset, useMarket } from '@vegaprotocol/markets';
@@ -39,7 +40,7 @@ export const MarginChange = ({
   marginMode,
   marginFactor,
 }: {
-  partyId: string | null;
+  partyId: string | undefined;
   marketId: string;
   marginMode: Types.MarginMode;
   marginFactor: string;
@@ -63,10 +64,7 @@ export const MarginChange = ({
     openVolume: '0',
     averageEntryPrice: '0',
   };
-  const { data: activeOrders } = useDataProvider({
-    dataProvider: activeOrdersProvider,
-    variables: { partyId: partyId || '', marketId },
-  });
+  const { data: activeOrders } = useActiveOrders(partyId, marketId);
   const orders = activeOrders
     ? activeOrders.map<Schema.OrderInfo>((order) => ({
         isMarketOrder: order.type === Schema.OrderType.TYPE_MARKET,
@@ -254,6 +252,7 @@ const IsolatedMarginModeDialog = ({
   );
   const { data: maxLeverage } = useMaxLeverage(marketId, partyId);
   const max = Math.floor((maxLeverage || 1) * 10) / 10;
+  const min = 0.1;
   useEffect(() => {
     setLeverage(Number((1 / Number(marginFactor)).toFixed(1)));
   }, [marginFactor]);
@@ -308,6 +307,7 @@ const IsolatedMarginModeDialog = ({
           <div className="mb-2">
             <LeverageSlider
               max={max}
+              min={min}
               step={0.1}
               value={[leverage || 1]}
               onValueChange={([value]) => setLeverage(value)}
@@ -316,7 +316,7 @@ const IsolatedMarginModeDialog = ({
           <Input
             type="number"
             id="leverage-input"
-            min={1}
+            min={min}
             max={max}
             step={0.1}
             value={leverage || ''}

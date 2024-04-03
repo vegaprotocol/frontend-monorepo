@@ -5,9 +5,8 @@ import Home from './home';
 import OraclePage from './oracles';
 import Oracles from './oracles/home';
 import { Oracle } from './oracles/id';
-import Party from './parties';
 import { Parties } from './parties/home';
-import { Party as PartySingle } from './parties/id';
+import { Party } from './parties/id';
 import { ValidatorsPage } from './validators';
 import Genesis from './genesis';
 import { Block } from './blocks/id';
@@ -17,6 +16,7 @@ import { TxsList } from './txs/home';
 import { t } from '@vegaprotocol/i18n';
 import { Routes } from './route-names';
 import { NetworkParameters } from './network-parameters';
+import { Outlet } from 'react-router-dom';
 import type { Params, RouteObject } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { MarketPage, MarketsPage } from './markets';
@@ -31,6 +31,7 @@ import { Disclaimer } from './pages/disclaimer';
 import { useFeatureFlags } from '@vegaprotocol/environment';
 import RestrictedPage from './restricted';
 import { NetworkTreasury } from './treasury';
+import { MarketOraclesPage } from './markets/market-oracles-page';
 
 export type Navigable = {
   path: string;
@@ -67,7 +68,7 @@ export const useRouterConfig = () => {
     ? [
         {
           path: Routes.PARTIES,
-          element: <Party />,
+          element: <Outlet />,
           handle: {
             name: t('Parties'),
             text: t('Parties'),
@@ -80,12 +81,12 @@ export const useRouterConfig = () => {
             },
             {
               path: ':party',
-              element: <Party />,
+              element: <Outlet />,
 
               children: [
                 {
                   index: true,
-                  element: <PartySingle />,
+                  element: <Party />,
                   handle: {
                     breadcrumb: (params: Params<string>) => (
                       <Link to={linkTo(Routes.PARTIES, params.party)}>
@@ -96,7 +97,7 @@ export const useRouterConfig = () => {
                 },
                 {
                   path: 'assets',
-                  element: <Party />,
+                  element: <Outlet />,
                   handle: {
                     breadcrumb: (params: Params<string>) => (
                       <Link to={linkTo(Routes.PARTIES, params.party)}>
@@ -199,12 +200,36 @@ export const useRouterConfig = () => {
             },
             {
               path: ':marketId',
-              element: <MarketPage />,
-              handle: {
-                breadcrumb: (params: Params<string>) => (
-                  <MarketLink id={params.marketId as string} />
-                ),
-              },
+              element: <Outlet />,
+              children: [
+                {
+                  index: true,
+                  element: <MarketPage />,
+                  handle: {
+                    breadcrumb: (params: Params<string>) => (
+                      <MarketLink id={params.marketId as string} />
+                    ),
+                  },
+                },
+                {
+                  path: 'oracles',
+                  element: <Outlet />,
+                  handle: {
+                    breadcrumb: (params: Params<string>) => (
+                      <MarketLink id={params.marketId as string} />
+                    ),
+                  },
+                  children: [
+                    {
+                      index: true,
+                      element: <MarketOraclesPage />,
+                      handle: {
+                        breadcrumb: (params: Params<string>) => t('Oracles'),
+                      },
+                    },
+                  ],
+                },
+              ],
             },
           ],
         },

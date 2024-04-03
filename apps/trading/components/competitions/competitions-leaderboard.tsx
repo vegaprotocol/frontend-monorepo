@@ -44,6 +44,7 @@ export const CompetitionsLeaderboard = ({
 
         const avatar = (
           <TeamAvatar
+            key={td.teamId}
             teamId={td.teamId}
             imgUrl={td.avatarUrl}
             alt={td.name}
@@ -67,7 +68,7 @@ export const CompetitionsLeaderboard = ({
           ),
           earned: num(td.totalQuantumRewards),
           games: num(td.totalGamesPlayed),
-          status: td.closed ? t('Closed') : t('Open'),
+          status: td.closed ? t('Private') : t('Public'),
           volume: num(td.totalQuantumVolume),
         };
       })}

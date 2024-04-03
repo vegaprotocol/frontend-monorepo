@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { SubHeading } from '../../../components/sub-heading';
 import { toNonHex } from '../../../components/search/detect-search';
-import { useTxsData } from '../../../hooks/use-txs-data';
+import { getInitialFilters, useTxsData } from '../../../hooks/use-txs-data';
 import { TxsInfiniteList } from '../../../components/txs';
 import { PageHeader } from '../../../components/page-header';
 import { useDocumentTitle } from '../../../hooks/use-document-title';
@@ -15,16 +15,18 @@ import { PartyBlockAccounts } from './components/party-block-accounts';
 import { isValidPartyId } from './components/party-id-error';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { TxsListNavigation } from '../../../components/txs/tx-list-navigation';
-import type { FilterOption } from '../../../components/txs/tx-filter';
-import { AllFilterOptions, TxsFilter } from '../../../components/txs/tx-filter';
+import {
+  TxsFilter,
+  type FilterOption,
+} from '../../../components/txs/tx-filter';
 import { useSearchParams } from 'react-router-dom';
 
 type Params = { party: string };
 
 const Party = () => {
   const [params] = useSearchParams();
+  const [filters, setFilters] = useState(getInitialFilters(params));
 
-  const [filters, setFilters] = useState(new Set(AllFilterOptions));
   const { party } = useParams<Params>();
 
   useDocumentTitle(['Public keys', party || '-']);

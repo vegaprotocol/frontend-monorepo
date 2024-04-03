@@ -13,7 +13,7 @@ import { Settings } from '../settings';
 import { Tooltip } from '../../components/tooltip';
 import { WithdrawContainer } from '../withdraw-container';
 import { GetStarted } from '../welcome-dialog';
-import { useVegaWallet, useViewAsDialog } from '@vegaprotocol/wallet';
+import { useConnect, usePubKeys } from '@vegaprotocol/wallet-react';
 import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
 import { useT } from '../../lib/use-t';
 import { ErrorBoundary } from '../error-boundary';
@@ -57,11 +57,11 @@ export type BarView =
     };
 
 export const Sidebar = ({ options }: { options?: ReactNode }) => {
+  const { connect } = useConnect();
+  const { pubKeys } = usePubKeys();
   const t = useT();
   const currentRouteId = useGetCurrentRouteId();
   const navClasses = 'flex lg:flex-col items-center gap-2 lg:gap-4 p-1';
-  const setViewAsDialogOpen = useViewAsDialog((state) => state.setOpen);
-  const { pubKeys } = useVegaWallet();
   const { isMobile } = useScreenDimensions();
   const { getView } = useSidebar((store) => ({
     setViews: store.setViews,
@@ -83,12 +83,15 @@ export const Sidebar = ({ options }: { options?: ReactNode }) => {
           <>
             <SidebarButton
               view={ViewType.ViewAs}
-              onClick={() => {
-                setViewAsDialogOpen(true);
+              onClick={async () => {
+                const res = await connect('viewParty');
+                if (res.status !== 'connected') {
+                  window.alert('Failed to connect');
+                }
               }}
               icon={VegaIconNames.EYE}
-              tooltip={t('View as party')}
-              disabled={Boolean(pubKeys)}
+              tooltip={t('View as public key')}
+              disabled={Boolean(pubKeys.length)}
               routeId={currentRouteId}
             />
             <SidebarButton

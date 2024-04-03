@@ -4,9 +4,9 @@ import {
 } from '@vegaprotocol/assets';
 import { useActiveRewardsQuery } from './__generated__/Rewards';
 import {
-  type MarketFieldsFragment,
-  useMarketsMapProvider,
+  type MarketMaybeWithData,
   getAsset,
+  marketsWithDataProvider,
 } from '@vegaprotocol/markets';
 import {
   type RecurringTransfer,
@@ -14,12 +14,14 @@ import {
   TransferStatus,
   type DispatchStrategy,
   EntityScope,
-  IndividualScope,
   MarketState,
+  AccountType,
 } from '@vegaprotocol/types';
 import { type ApolloError } from '@apollo/client';
 import compact from 'lodash/compact';
 import { useEpochInfoQuery } from './__generated__/Epoch';
+import { useDataProvider } from '@vegaprotocol/data-provider';
+import { removePaginationWrapper } from '@vegaprotocol/utils';
 
 export type RewardTransfer = TransferNode & {
   transfer: {
@@ -35,7 +37,7 @@ export type EnrichedRewardTransfer = RewardTransfer & {
   /** A flag determining whether a reward asset is being traded on any of the active markets */
   isAssetTraded?: boolean;
   /** A list of markets in scope */
-  markets?: MarketFieldsFragment[];
+  markets?: MarketMaybeWithData[];
 };
 
 /**
@@ -45,27 +47,29 @@ export type EnrichedRewardTransfer = RewardTransfer & {
  * dispatch strategy.
  */
 export const isReward = (node: TransferNode): node is RewardTransfer => {
-  if (
-    node.transfer.kind.__typename === 'RecurringTransfer' &&
-    node.transfer.kind.dispatchStrategy != null
-  ) {
+  const isRecurringTransfer =
+    (node.transfer.kind.__typename === 'RecurringTransfer' ||
+      node.transfer.kind.__typename === 'RecurringGovernanceTransfer') &&
+    node.transfer.kind.dispatchStrategy != null;
+  const isStakingReward =
+    node.transfer.toAccountType === AccountType.ACCOUNT_TYPE_GLOBAL_REWARD;
+  if (isRecurringTransfer || isStakingReward) {
     return true;
   }
   return false;
 };
 
 /**
- * Checks if given reward (transfer) is active.
+ * Checks if given reward (transfer) is has not ended. If it is active or due to start in the future.
  */
 export const isActiveReward = (node: RewardTransfer, currentEpoch: number) => {
   const { transfer } = node;
 
   const pending = transfer.status === TransferStatus.STATUS_PENDING;
   const withinEpochs =
-    transfer.kind.startEpoch <= currentEpoch &&
-    (transfer.kind.endEpoch != null
+    transfer.kind.endEpoch != null
       ? transfer.kind.endEpoch >= currentEpoch
-      : true);
+      : true;
 
   if (pending && withinEpochs) return true;
   return false;
@@ -73,20 +77,11 @@ export const isActiveReward = (node: RewardTransfer, currentEpoch: number) => {
 
 /**
  * Checks if given reward (transfer) is scoped to teams.
- *
- * A reward is scoped to teams if it's entity scope is set to teams or
- * if the scope is set to individuals but the individuals are in a team.
  */
 export const isScopedToTeams = (node: EnrichedRewardTransfer) =>
   // scoped to teams
-  node.transfer.kind.dispatchStrategy.entityScope ===
-    EntityScope.ENTITY_SCOPE_TEAMS ||
-  // or to individuals
-  (node.transfer.kind.dispatchStrategy.entityScope ===
-    EntityScope.ENTITY_SCOPE_INDIVIDUALS &&
-    // but they have to be in a team
-    node.transfer.kind.dispatchStrategy.individualScope ===
-      IndividualScope.INDIVIDUAL_SCOPE_IN_TEAM);
+  node.transfer.kind.dispatchStrategy?.entityScope ===
+  EntityScope.ENTITY_SCOPE_TEAMS;
 
 /** Retrieves rewards (transfers) */
 export const useRewards = ({
@@ -114,6 +109,9 @@ export const useRewards = ({
   const { data, loading, error } = useActiveRewardsQuery({
     variables: {
       isReward: true,
+      pagination: {
+        first: 1000,
+      },
     },
     skip: onlyActive && isNaN(currentEpoch),
     fetchPolicy: 'cache-and-network',
@@ -124,15 +122,19 @@ export const useRewards = ({
     loading: assetsLoading,
     error: assetsError,
   } = useAssetsMapProvider();
+
   const {
     data: markets,
     loading: marketsLoading,
     error: marketsError,
-  } = useMarketsMapProvider();
+  } = useDataProvider({
+    dataProvider: marketsWithDataProvider,
+    variables: undefined,
+  });
 
-  const enriched = compact(
-    data?.transfersConnection?.edges?.map((n) => n?.node)
-  )
+  const transfers = removePaginationWrapper(data?.transfersConnection?.edges);
+
+  const enriched = transfers
     .map((n) => n as TransferNode)
     // make sure we have only rewards here
     .filter(isReward)
@@ -142,13 +144,14 @@ export const useRewards = ({
     .filter((node) => (scopeToTeams ? isScopedToTeams(node) : true))
     // enrich with dispatch asset and markets in scope details
     .map((node) => {
+      if (!node.transfer.kind.dispatchStrategy) return node;
       const dispatchAsset =
         (assets &&
           assets[node.transfer.kind.dispatchStrategy.dispatchMetricAssetId]) ||
         undefined;
       const marketsInScope = compact(
         node.transfer.kind.dispatchStrategy.marketIdsInScope?.map(
-          (id) => markets && markets[id]
+          (id) => markets && markets.find((m) => m.id === id)
         )
       );
       const isAssetTraded =
@@ -159,7 +162,7 @@ export const useRewards = ({
             return (
               mAsset.id ===
                 node.transfer.kind.dispatchStrategy.dispatchMetricAssetId &&
-              m.state === MarketState.STATE_ACTIVE
+              m.data?.marketState === MarketState.STATE_ACTIVE
             );
           } catch {
             // NOOP
@@ -170,7 +173,7 @@ export const useRewards = ({
         ...node,
         dispatchAsset,
         isAssetTraded: isAssetTraded != null ? isAssetTraded : undefined,
-        markets: marketsInScope.length > 0 ? marketsInScope : undefined,
+        markets: marketsInScope?.length > 0 ? marketsInScope : undefined,
       };
     });
 

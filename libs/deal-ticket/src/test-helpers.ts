@@ -9,14 +9,21 @@ export function generateMarket(override?: PartialDeep<Market>): Market {
     id: 'market-id',
     decimalPlaces: 2,
     positionDecimalPlaces: 1,
-    tradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
-    state: Schema.MarketState.STATE_ACTIVE,
+    tickSize: '1',
     marketTimestamps: {
       __typename: 'MarketTimestamps',
       proposed: '2024-01-02',
       pending: '2024-01-01',
       close: '',
       open: '',
+    },
+    markPriceConfiguration: {
+      decayWeight: '',
+      decayPower: 0,
+      cashAmount: '',
+      SourceStalenessTolerance: [],
+      CompositePriceType:
+        Schema.CompositePriceType.COMPOSITE_PRICE_TYPE_LAST_TRADE,
     },
     tradableInstrument: {
       __typename: 'TradableInstrument',

@@ -17,7 +17,7 @@ import {
 import {
   type MarketMaybeWithData,
   type MarketDataQueryVariables,
-  allMarketsWithLiveDataProvider,
+  marketsWithLiveDataProvider,
   getAsset,
   marketInfoProvider,
   type MarketInfo,
@@ -57,8 +57,8 @@ export interface Position {
   marketDecimalPlaces: number;
   marketId: string;
   marketCode: string;
-  marketTradingMode: MarketTradingMode;
-  marketState: MarketState;
+  marketTradingMode?: MarketTradingMode;
+  marketState?: MarketState;
   markPrice: string | undefined;
   notional: string | undefined;
   openVolume: string;
@@ -171,8 +171,8 @@ export const getMetrics = (
       marketDecimalPlaces,
       marketId: market.id,
       marketCode: market.tradableInstrument.instrument.code,
-      marketTradingMode: market.tradingMode,
-      marketState: market.state,
+      marketTradingMode: market.data?.marketTradingMode,
+      marketState: market.data?.marketState,
       markPrice: marketData ? marketData.markPrice : undefined,
       notional: notional
         ? notional.multipliedBy(10 ** marketDecimalPlaces).toFixed(0)
@@ -325,6 +325,7 @@ export const preparePositions = (metrics: Position[], showClosed: boolean) => {
     }
 
     if (
+      p.marketState &&
       [
         MarketState.STATE_ACTIVE,
         MarketState.STATE_PENDING,
@@ -369,7 +370,7 @@ export const positionsMetricsProvider = makeDerivedDataProvider<
         partyId: firstOrSelf(variables.partyIds),
       }),
     (callback, client, variables) =>
-      allMarketsWithLiveDataProvider(callback, client, {
+      marketsWithLiveDataProvider(callback, client, {
         marketIds: variables.marketIds,
       }),
     (callback, client, variables) =>
@@ -404,7 +405,7 @@ const getMaxLeverage = (market: MarketInfo | null) => {
     (Math.max(
       Number(market.riskFactors.long),
       Number(market.riskFactors.short)
-    ) || 1);
+    ) + Number(market.linearSlippageFactor) || 1);
   return maxLeverage;
 };
 
@@ -468,7 +469,10 @@ export const maxLeverageProvider = makeDerivedDataProvider<
   }
 );
 
-export const useMaxLeverage = (marketId: string, partyId: string | null) => {
+export const useMaxLeverage = (
+  marketId: string,
+  partyId: string | undefined
+) => {
   return useDataProvider({
     dataProvider: partyId ? maxLeverageProvider : maxMarketLeverageProvider,
     variables: { marketId, partyId: partyId || '' },

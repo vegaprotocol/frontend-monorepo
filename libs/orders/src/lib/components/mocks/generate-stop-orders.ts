@@ -21,6 +21,7 @@ export const generateStopOrder = (
       __typename: 'Market',
       id: 'market-id',
       decimalPlaces: 1,
+      tickSize: '1',
       fees: {
         __typename: 'Fees',
         factors: {
@@ -30,6 +31,14 @@ export const generateStopOrder = (
           makerFee: '0.1',
         },
       },
+      markPriceConfiguration: {
+        decayWeight: '',
+        decayPower: 0,
+        cashAmount: '',
+        SourceStalenessTolerance: [],
+        CompositePriceType:
+          Schema.CompositePriceType.COMPOSITE_PRICE_TYPE_LAST_TRADE,
+      },
       marketTimestamps: {
         __typename: 'MarketTimestamps',
         proposed: '2005-04-02T19:37:00.000Z',
@@ -38,7 +47,6 @@ export const generateStopOrder = (
         open: '',
       },
       positionDecimalPlaces: 2,
-      state: Schema.MarketState.STATE_ACTIVE,
       tradableInstrument: {
         __typename: 'TradableInstrument',
         instrument: {
@@ -95,7 +103,6 @@ export const generateStopOrder = (
           },
         },
       },
-      tradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
     },
     submission: {
       marketId: 'market-id',

@@ -6,7 +6,7 @@ import {
   VegaIconNames,
   useToasts,
 } from '@vegaprotocol/ui-toolkit';
-import { useVegaWalletDialogStore } from '@vegaprotocol/wallet';
+import { useDialogStore } from '@vegaprotocol/wallet-react';
 import {
   useEthereumTransactionToasts,
   useEthereumWithdrawApprovalsToasts,
@@ -19,9 +19,7 @@ import { useTranslation } from 'react-i18next';
 const WalletDisconnectAdditionalContent = () => {
   const { t } = useTranslation();
   const { hideToast } = useWalletDisconnectToastActions();
-  const openVegaWalletDialog = useVegaWalletDialogStore(
-    (store) => store.openVegaWalletDialog
-  );
+  const openVegaWalletDialog = useDialogStore((store) => store.open);
   return (
     <p className="mt-2">
       <TradingButton

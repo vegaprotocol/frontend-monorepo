@@ -51,7 +51,8 @@ export const ProposeFreeform = () => {
     watch,
     trigger,
   } = useForm<FreeformProposalFormFields>();
-  const { finalizedProposal, submit, Dialog } = useProposalSubmit();
+  const { finalizedProposal, transaction, submit, setTransaction } =
+    useProposalSubmit();
 
   const assembleProposal = (fields: FreeformProposalFormFields) => {
     const isVoteDeadlineAtMinimum =
@@ -169,7 +170,8 @@ export const ProposeFreeform = () => {
               <ProposalFormDownloadJson downloadJson={viewJson} />
               <ProposalFormTransactionDialog
                 finalizedProposal={finalizedProposal}
-                TransactionDialog={Dialog}
+                transaction={transaction}
+                onChange={(open) => setTransaction({ dialogOpen: open })}
               />
             </form>
           </div>

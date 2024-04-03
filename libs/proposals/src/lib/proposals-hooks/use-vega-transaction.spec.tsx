@@ -1,36 +1,36 @@
 import { act, renderHook } from '@testing-library/react';
-import type { VegaWalletContextShape, Transaction } from '@vegaprotocol/wallet';
-import { VegaWalletContext, WalletError } from '@vegaprotocol/wallet';
-import type { ReactNode } from 'react';
+import {
+  userRejectedError,
+  type Transaction,
+  ConnectorErrors,
+  sendTransactionError,
+} from '@vegaprotocol/wallet';
 import {
   initialState,
   useVegaTransaction,
   VegaTxStatus,
 } from './use-vega-transaction';
+import {
+  MockedWalletProvider,
+  mockConfig,
+} from '@vegaprotocol/wallet-react/testing';
+import { type ReactNode } from 'react';
 
 const mockPubKey = '0x123';
 
-const defaultWalletContext = {
-  pubKey: null,
-  pubKeys: [],
-  isReadOnly: false,
-  sendTx: jest.fn(),
-  connect: jest.fn(),
-  disconnect: jest.fn(),
-  selectPubKey: jest.fn(),
-  connector: null,
-} as unknown as VegaWalletContextShape;
-
-function setup(context?: Partial<VegaWalletContextShape>) {
+function setup() {
   const wrapper = ({ children }: { children: ReactNode }) => (
-    <VegaWalletContext.Provider value={{ ...defaultWalletContext, ...context }}>
-      {children}
-    </VegaWalletContext.Provider>
+    <MockedWalletProvider>{children}</MockedWalletProvider>
   );
   return renderHook(() => useVegaTransaction(), { wrapper });
 }
 
 describe('useVegaTransaction', () => {
+  const successObj = {
+    transactionHash: '0x123',
+    signature: 'signature',
+  };
+
   it('has the correct default state', () => {
     const { result } = setup();
     expect(result.current).toEqual({
@@ -39,85 +39,58 @@ describe('useVegaTransaction', () => {
       reset: expect.any(Function),
       setComplete: expect.any(Function),
       setTransaction: expect.any(Function),
-      Dialog: expect.any(Function),
     });
   });
 
   it('resets state if sendTx returns null (user rejects)', async () => {
-    const mockSendTx = jest.fn().mockReturnValue(Promise.resolve(null));
-    const { result } = setup({ sendTx: mockSendTx });
+    jest
+      .spyOn(mockConfig, 'sendTransaction')
+      .mockRejectedValue(userRejectedError());
+    const { result } = setup();
     await act(async () => {
       result.current.send(mockPubKey, {} as Transaction);
     });
     expect(result.current.transaction.status).toEqual(VegaTxStatus.Default);
   });
 
-  it('handles a single wallet error', () => {
-    const error = new WalletError('test error', 1, 'test data');
-    const mockSendTx = jest.fn(() => {
-      throw error;
-    });
-    const { result } = setup({ sendTx: mockSendTx });
-    act(() => {
-      result.current.send(mockPubKey, {} as Transaction);
-    });
-    expect(result.current.transaction.status).toEqual(VegaTxStatus.Error);
-    expect(result.current.transaction.error).toHaveProperty(
-      'message',
-      error.message
-    );
-    expect(result.current.transaction.error).toHaveProperty('code', 1);
-    expect(result.current.transaction.error).toHaveProperty('data', error.data);
-  });
-
   it('handles a single error', () => {
-    const error = new Error('test error');
-    const mockSendTx = jest.fn(() => {
+    const error = sendTransactionError();
+    jest.spyOn(mockConfig, 'sendTransaction').mockImplementation(() => {
       throw error;
     });
-    const { result } = setup({ sendTx: mockSendTx });
+    const { result } = setup();
     act(() => {
       result.current.send(mockPubKey, {} as Transaction);
     });
     expect(result.current.transaction.status).toEqual(VegaTxStatus.Error);
     expect(result.current.transaction.error).toHaveProperty(
       'message',
-      error.message
+      ConnectorErrors.sendTransaction.message
     );
   });
 
   it('handles an unknown error', () => {
     const unknownThrow = { foo: 'bar' };
-    const mockSendTx = jest.fn(() => {
+    jest.spyOn(mockConfig, 'sendTransaction').mockImplementation(() => {
       throw unknownThrow;
     });
-    const { result } = setup({ sendTx: mockSendTx });
+    const { result } = setup();
     act(() => {
       result.current.send(mockPubKey, {} as Transaction);
     });
     expect(result.current.transaction.status).toEqual(VegaTxStatus.Error);
     expect(result.current.transaction.error).toHaveProperty(
-      'title',
-      'Something went wrong'
-    );
-    expect(result.current.transaction.error).toHaveProperty('code', 105);
-    expect(result.current.transaction.error).toHaveProperty(
       'message',
-      'Unknown error occurred'
-    );
-    expect(result.current.transaction.error).toHaveProperty(
-      'data',
-      'Unknown error occurred'
+      ConnectorErrors.unknown.message
     );
   });
 
   it('sets txHash and signature to state if successful', async () => {
-    const successObj = {
-      transactionHash: '0x123',
-      signature: 'signature',
-    };
-    const mockSendTx = jest.fn().mockReturnValue(Promise.resolve(successObj));
-    const { result } = setup({ sendTx: mockSendTx });
+    jest
+      .spyOn(mockConfig, 'sendTransaction')
+      // @ts-ignore fields ommitted for brevity
+      .mockResolvedValue(successObj);
+    const { result } = setup();
     await act(async () => {
       result.current.send(mockPubKey, {} as Transaction);
     });
@@ -137,14 +110,12 @@ describe('useVegaTransaction', () => {
   });
 
   it('reset resets transaction status', async () => {
-    const mockSendTx = jest.fn().mockReturnValue(
-      Promise.resolve({
-        transactionHash: '0x123',
-        signature: 'signature',
-      })
-    );
+    jest
+      .spyOn(mockConfig, 'sendTransaction')
+      // @ts-ignore fields ommitted for brevity
+      .mockResolvedValue(successObj);
 
-    const { result } = setup({ sendTx: mockSendTx });
+    const { result } = setup();
 
     await act(async () => {
       result.current.send(mockPubKey, {} as Transaction);

@@ -41,6 +41,56 @@ query RewardsPage($partyId: ID!) {
   }
 }
 
+fragment RecurringTransferFields on RecurringTransfer {
+  startEpoch
+  endEpoch
+  dispatchStrategy {
+    # TODO add back compatible with 0.75
+    # capRewardFeeMultiple
+    dispatchMetric
+    dispatchMetricAssetId
+    marketIdsInScope
+    entityScope
+    individualScope
+    teamScope
+    nTopPerformers
+    stakingRequirement
+    notionalTimeWeightedAveragePositionRequirement
+    windowLength
+    lockPeriod
+    distributionStrategy
+    rankTable {
+      startRank
+      shareRatio
+    }
+  }
+}
+
+fragment RecurringGovernanceTransferFields on RecurringGovernanceTransfer {
+  startEpoch
+  endEpoch
+  dispatchStrategy {
+    # TODO add back compatible with 0.75
+    # capRewardFeeMultiple
+    dispatchMetric
+    dispatchMetricAssetId
+    marketIdsInScope
+    entityScope
+    individualScope
+    teamScope
+    nTopPerformers
+    stakingRequirement
+    notionalTimeWeightedAveragePositionRequirement
+    windowLength
+    lockPeriod
+    distributionStrategy
+    rankTable {
+      startRank
+      shareRatio
+    }
+  }
+}
+
 query ActiveRewards(
   $isReward: Boolean
   $partyId: ID
@@ -76,26 +126,10 @@ query ActiveRewards(
           gameId
           kind {
             ... on RecurringTransfer {
-              startEpoch
-              endEpoch
-              dispatchStrategy {
-                dispatchMetric
-                dispatchMetricAssetId
-                marketIdsInScope
-                entityScope
-                individualScope
-                teamScope
-                nTopPerformers
-                stakingRequirement
-                notionalTimeWeightedAveragePositionRequirement
-                windowLength
-                lockPeriod
-                distributionStrategy
-                rankTable {
-                  startRank
-                  shareRatio
-                }
-              }
+              ...RecurringTransferFields
+            }
+            ... on RecurringGovernanceTransfer {
+              ...RecurringGovernanceTransferFields
             }
           }
           reason
@@ -107,6 +141,22 @@ query ActiveRewards(
         }
       }
     }
+  }
+}
+
+query TWAP($partyId: ID!, $assetId: ID!, $gameId: ID!, $epochSeq: Int) {
+  timeWeightedNotionalPosition(
+    partyId: $partyId
+    gameId: $gameId
+    assetId: $assetId
+    epochSeq: $epochSeq
+  ) {
+    assetId
+    partyId
+    gameId
+    timeWeightedNotionalPosition
+    lastUpdated
+    epoch
   }
 }
 

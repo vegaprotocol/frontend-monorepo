@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import type { PinnedAsset } from '@vegaprotocol/accounts';
 import { AccountManager } from '@vegaprotocol/accounts';
 import { create } from 'zustand';

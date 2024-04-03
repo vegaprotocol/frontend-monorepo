@@ -5,16 +5,12 @@ from vega_sim.null_service import VegaServiceNull
 from actions.utils import (
     wait_for_toast_confirmation,
     create_and_faucet_wallet,
-    WalletConfig,
     next_epoch,
     change_keys,
 )
 import vega_sim.proto.vega as vega_protos
+from wallet_config import PARTY_A, PARTY_B, PARTY_C
 
-LIQ = WalletConfig("liq", "liq")
-PARTY_A = WalletConfig("party_a", "party_a")
-PARTY_B = WalletConfig("party_b", "party_b")
-PARTY_C = WalletConfig("party_c", "party_c")
 
 
 @pytest.mark.usefixtures("auth", "risk_accepted")

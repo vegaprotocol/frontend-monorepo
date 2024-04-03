@@ -746,13 +746,13 @@ test = ["enum34", "ipaddress", "mock", "pywin32", "wmi"]
 
 [[package]]
 name = "pycparser"
-version = "2.21"
+version = "2.22"
 description = "C parser in Python"
 optional = false
-python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
+python-versions = ">=3.8"
 files = [
-    {file = "pycparser-2.21-py2.py3-none-any.whl", hash = "sha256:8ee45429555515e1f6b185e78100aea234072576aa43ab53aefcae078162fca9"},
-    {file = "pycparser-2.21.tar.gz", hash = "sha256:e644fdec12f7872f86c58ff790da456218b10f863970249516d60a5eaca77206"},
+    {file = "pycparser-2.22-py3-none-any.whl", hash = "sha256:c3702b6d3dd8c7abc1afa565d7e63d53a1d0bd86cdc24edd75470f4de499cfcc"},
+    {file = "pycparser-2.22.tar.gz", hash = "sha256:491c8be9c040f5390f5bf44a5b07752bd07f56edf992381b05c701439eec10f6"},
 ]
 
 [[package]]
@@ -1165,8 +1165,8 @@ profile = ["pytest-profiling", "snakeviz"]
 [package.source]
 type = "git"
 url = "https://github.com/vegaprotocol/vega-market-sim.git/"
-reference = "release/vega-v0.74.10"
-resolved_reference = "dc44b9c1fc99505654c5c870bb1ef25b3f642676"
+reference = "pre-release/vega-v0.75.5"
+resolved_reference = "b2a3437fc13ced2b7ecd582ca4778bbc4b0fe3a6"
 
 [[package]]
 name = "websocket-client"
@@ -1347,4 +1347,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<3.11"
-content-hash = "ae1d3ab39d4466eadbf93a4965475bfe2e9a094418c68b9dcb7dc581747b2ba4"
+content-hash = "80e87cbde486e7bb150fce0b1c974de38501bc16732952b455d43cb843426623"

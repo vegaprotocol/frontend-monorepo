@@ -97,7 +97,7 @@ export const useRewardsRowData = ({
   partyRewards: PartyRewardsConnection;
   epochRewardSummaries: RewardsHistoryQuery['epochRewardSummaries'];
   assets: Record<string, Asset> | null;
-  partyId: string | null;
+  partyId: string | undefined;
 }) => {
   if (partyId) {
     const rewards = removePaginationWrapper(partyRewards?.edges).map((r) => ({

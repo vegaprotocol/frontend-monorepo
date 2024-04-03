@@ -1,6 +1,6 @@
 import maxBy from 'lodash/maxBy';
 import minBy from 'lodash/minBy';
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import {
   useNetworkParams,
   NetworkParams,

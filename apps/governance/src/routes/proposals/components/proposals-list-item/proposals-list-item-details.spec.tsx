@@ -1,15 +1,14 @@
 import { BrowserRouter as Router } from 'react-router-dom';
-import { VegaWalletContext } from '@vegaprotocol/wallet';
 import { render, screen } from '@testing-library/react';
+import { AppStateProvider } from '../../../../contexts/app-state/app-state-provider';
 import { ProposalsListItemDetails } from './proposals-list-item-details';
-import { mockWalletContext } from '../../test-helpers/mocks';
 
 const renderComponent = (id: string) =>
   render(
     <Router>
-      <VegaWalletContext.Provider value={mockWalletContext}>
+      <AppStateProvider>
         <ProposalsListItemDetails id={id} />
-      </VegaWalletContext.Provider>
+      </AppStateProvider>
     </Router>
   );
 

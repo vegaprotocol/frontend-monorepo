@@ -89,7 +89,7 @@ fragment ExplorerOracleDataSourceSpec on ExternalDataSourceSpec {
 }
 
 query ExplorerOracleFormMarkets {
-  marketsConnection {
+  marketsConnection(includeSettled: false, pagination: { first: 20 }) {
     edges {
       node {
         ...ExplorerOracleForMarketsMarket
@@ -102,7 +102,40 @@ query ExplorerOracleFormMarkets {
         dataSourceSpec {
           ...ExplorerOracleDataSourceSpec
         }
-        dataConnection(pagination: { last: 1 }) {
+        dataConnection(pagination: { first: 1 }) {
+          edges {
+            node {
+              externalData {
+                data {
+                  data {
+                    name
+                    value
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+query ExplorerOracleForMarket($id: ID!) {
+  marketsConnection(id: $id) {
+    edges {
+      node {
+        ...ExplorerOracleForMarketsMarket
+      }
+    }
+  }
+  oracleSpecsConnection {
+    edges {
+      node {
+        dataSourceSpec {
+          ...ExplorerOracleDataSourceSpec
+        }
+        dataConnection(pagination: { first: 1 }) {
           edges {
             node {
               externalData {

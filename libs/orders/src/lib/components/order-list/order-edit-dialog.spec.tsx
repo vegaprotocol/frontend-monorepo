@@ -17,6 +17,7 @@ describe('OrderEditDialog', () => {
     );
     const editOrder = await screen.findByTestId('edit-order');
     const limitPrice = within(editOrder).getByLabelText('Price');
+    await userEvent.clear(limitPrice);
     await userEvent.type(limitPrice, '0.111111');
     const submitButton = within(editOrder).getByRole('button', {
       name: 'Update',
@@ -24,7 +25,7 @@ describe('OrderEditDialog', () => {
     await userEvent.click(submitButton);
     const inputErrorText = within(editOrder).getByTestId('input-error-text');
     expect(inputErrorText).toHaveTextContent(
-      'Price accepts up to 1 decimal places'
+      'Price must be a multiple of 0.1 for this market'
     );
   });
 });

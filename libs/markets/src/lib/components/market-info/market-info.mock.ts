@@ -14,7 +14,8 @@ export const marketInfoQuery = (
       positionDecimalPlaces: 0,
       state: Schema.MarketState.STATE_ACTIVE,
       tradingMode: Schema.MarketTradingMode.TRADING_MODE_CONTINUOUS,
-      proposal: {
+      tickSize: '1',
+      marketProposal: {
         __typename: 'Proposal',
         id: 'market-0',
         rationale: {
@@ -22,6 +23,17 @@ export const marketInfoQuery = (
           title: 'ETHBTC',
           description: '',
         },
+      },
+      markPriceConfiguration: {
+        decayWeight: '',
+        decayPower: 0,
+        cashAmount: '',
+        SourceWeights: null,
+        SourceStalenessTolerance: [],
+        CompositePriceType:
+          Schema.CompositePriceType.COMPOSITE_PRICE_TYPE_MEDIAN,
+        dataSourcesSpec: null,
+        dataSourcesSpecBinding: null,
       },
       linearSlippageFactor: '0.01',
       marketTimestamps: {

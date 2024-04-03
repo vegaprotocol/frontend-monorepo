@@ -5,10 +5,9 @@ import {
   CLOSE_AFTER,
   type Toast,
 } from '@vegaprotocol/ui-toolkit';
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useConnector } from '@vegaprotocol/wallet-react';
 import { useEffect, useMemo } from 'react';
 import { useT } from './use-t';
-import { usePrevious } from '@vegaprotocol/react-helpers';
 
 export const WALLET_DISCONNECTED_TOAST_ID = 'WALLET_DISCONNECTED_TOAST_ID';
 
@@ -41,11 +40,8 @@ export const useWalletDisconnectedToasts = (
     state.setToast,
     state.update,
   ]);
+  const { connector } = useConnector();
   const { showToast, hideToast } = useWalletDisconnectToastActions();
-
-  const { isAlive } = useVegaWallet();
-  const wasAlive = usePrevious(isAlive);
-  const disconnected = wasAlive && !isAlive;
 
   const toast: Toast = useMemo(
     () => ({
@@ -67,12 +63,20 @@ export const useWalletDisconnectedToasts = (
   );
 
   useEffect(() => {
-    if (disconnected) {
+    if (!connector) return;
+
+    function handleDisconnect() {
       if (hasToast(WALLET_DISCONNECTED_TOAST_ID)) {
         showToast();
       } else {
         setToast(toast);
       }
     }
-  }, [disconnected, hasToast, isAlive, setToast, showToast, t, toast]);
+
+    connector.on('client.disconnected', handleDisconnect);
+
+    return () => {
+      connector.off('client.disconnected', handleDisconnect);
+    };
+  }, [connector, hasToast, setToast, showToast, t, toast]);
 };

@@ -13,6 +13,8 @@ import {
   type VegaValueGetterParams,
   type TypedDataAgGrid,
   type VegaICellRendererParams,
+  zeroClassNames,
+  isZero,
 } from '@vegaprotocol/datagrid';
 import {
   ButtonLink,
@@ -36,6 +38,7 @@ import {
   MarketTradingMode,
   PositionStatus,
   PositionStatusMapping,
+  TradeType,
 } from '@vegaprotocol/types';
 import { DocsLinks, useFeatureFlags } from '@vegaprotocol/environment';
 import { PositionActionsDropdown } from './position-actions-dropdown';
@@ -43,6 +46,7 @@ import { LiquidationPrice } from './liquidation-price';
 import { useT } from '../use-t';
 import classnames from 'classnames';
 import BigNumber from 'bignumber.js';
+import { useLatestTrade } from '@vegaprotocol/trades';
 
 interface Props extends TypedDataAgGrid<Position> {
   onClose?: (data: Position) => void;
@@ -258,7 +262,10 @@ export const PositionsTable = ({
         field: 'openVolume',
         type: 'rightAligned',
         cellClass: 'font-mono text-right',
-        cellClassRules: signedNumberCssClassRules,
+        cellClassRules: {
+          ...signedNumberCssClassRules,
+          [zeroClassNames]: isZero,
+        },
         filter: 'agNumberColumnFilter',
         sortable: false,
         filterValueGetter: ({ data }: { data: Position }) => {
@@ -400,7 +407,7 @@ export const PositionsTable = ({
         sortable: false,
         filter: false,
         cellRenderer: ({ data }: VegaICellRendererParams<Position>) => {
-          if (!data) {
+          if (!data || data.openVolume === '0') {
             return '-';
           }
           return (
@@ -537,6 +544,7 @@ export const PositionsTable = ({
       onClose && !isReadOnly
         ? {
             ...COL_DEFS.actions,
+            colId: 'actions',
             cellRenderer: ({ data }: VegaICellRendererParams<Position>) => {
               return (
                 <div className="flex items-center justify-end gap-2">
@@ -616,49 +624,51 @@ export const OpenVolumeCell = ({
   data,
 }: VegaICellRendererParams<Position, 'openVolume'>) => {
   const t = useT();
+
+  const { data: latestTrade } = useLatestTrade(data?.marketId, data?.partyId);
+
   if (!valueFormatted || !data || !data.notional) {
     return <>-</>;
   }
 
-  const POSITION_RESOLUTION_LINK = DocsLinks?.POSITION_RESOLUTION ?? '';
-  let primaryTooltip;
-  switch (data.status) {
-    case PositionStatus.POSITION_STATUS_CLOSED_OUT:
-      primaryTooltip = t('Your position was closed.');
-      break;
-    case PositionStatus.POSITION_STATUS_ORDERS_CLOSED:
-      primaryTooltip = t('Your open orders were cancelled.');
-      break;
-    case PositionStatus.POSITION_STATUS_DISTRESSED:
-      primaryTooltip = t('Your position is distressed.');
-      break;
+  let positionStatus = PositionStatus.POSITION_STATUS_UNSPECIFIED;
+  if (latestTrade?.type === TradeType.TYPE_NETWORK_CLOSE_OUT_BAD) {
+    positionStatus = PositionStatus.POSITION_STATUS_CLOSED_OUT;
   }
 
-  let secondaryTooltip;
-  switch (data.status) {
-    case PositionStatus.POSITION_STATUS_CLOSED_OUT:
-      secondaryTooltip = t(
-        `You did not have enough {{assetSymbol}} collateral to meet the maintenance margin requirements for your position, so it was closed by the network.`,
-        { assetSymbol: data.assetSymbol }
-      );
-      break;
-    case PositionStatus.POSITION_STATUS_ORDERS_CLOSED:
-      secondaryTooltip = t(
-        'The position was distressed, but removing open orders from the book brought the margin level back to a point where the open position could be maintained.'
-      );
-      break;
-    case PositionStatus.POSITION_STATUS_DISTRESSED:
-      secondaryTooltip = t(
-        'The position was distressed, but could not be closed out - orders were removed from the book, and the open volume will be closed out once there is sufficient volume on the book.'
-      );
-      break;
-    default:
-      secondaryTooltip = t('Maintained by network');
+  const POSITION_RESOLUTION_LINK = DocsLinks?.POSITION_RESOLUTION ?? '';
+
+  const notional = addDecimalsFormatNumber(
+    data.notional,
+    data.marketDecimalPlaces
+  );
+
+  const cellContent = (
+    <StackedCell primary={valueFormatted} secondary={notional} />
+  );
+
+  if (positionStatus !== PositionStatus.POSITION_STATUS_CLOSED_OUT) {
+    // eslint-disable-next-line react/jsx-no-useless-fragment
+    return <>{cellContent}</>;
   }
-  const description = (
+
+  const closeOutPrice = addDecimalsFormatNumber(
+    latestTrade?.price || '0',
+    data.marketDecimalPlaces
+  );
+  const description = positionStatus ===
+    PositionStatus.POSITION_STATUS_CLOSED_OUT && (
     <>
-      <p className="mb-2">{primaryTooltip}</p>
-      <p className="mb-2">{secondaryTooltip}</p>
+      <p className="mb-2">{t('Your position was closed.')}</p>
+      <p className="mb-2">
+        {t(
+          'You did not have enough {{assetSymbol}} to meet the margin required for your position, so it was liquidated by the network at {{price}}.',
+          {
+            assetSymbol: data.assetSymbol,
+            price: closeOutPrice,
+          }
+        )}
+      </p>
       <p className="mb-2">
         {t('Status: {{status}}', {
           nsSeparator: '*',
@@ -674,20 +684,6 @@ export const OpenVolumeCell = ({
       )}
     </>
   );
-
-  const notional = addDecimalsFormatNumber(
-    data.notional,
-    data.marketDecimalPlaces
-  );
-
-  const cellContent = (
-    <StackedCell primary={valueFormatted} secondary={notional} />
-  );
-
-  if (data.status === PositionStatus.POSITION_STATUS_UNSPECIFIED) {
-    // eslint-disable-next-line react/jsx-no-useless-fragment
-    return <>{cellContent}</>;
-  }
 
   return (
     <Tooltip description={description}>

@@ -7,7 +7,7 @@ import {
   useNetworkParams,
 } from '@vegaprotocol/network-parameters';
 import { AccountType } from '@vegaprotocol/types';
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import BigNumber from 'bignumber.js';
 import {
   Card,
@@ -246,6 +246,19 @@ export const RewardsContainer = () => {
           })}
       </div>
       <div className="grid auto-rows-min grid-cols-6 gap-3">
+        <Card
+          title={t('Rewards history')}
+          className="lg:col-span-full hidden md:block"
+          loading={rewardsLoading}
+          noBackgroundOnMobile={true}
+          highlight={true}
+        >
+          <RewardsHistoryContainer
+            epoch={Number(epochData?.epoch.id)}
+            pubKey={pubKey}
+            assets={assetMap}
+          />
+        </Card>
         {pubKey && activityStreakBenefitTiers.tiers?.length > 0 && (
           <Card
             title={t('Activity Streak')}
@@ -287,29 +300,17 @@ export const RewardsContainer = () => {
           </Card>
         )}
         <ActiveRewards currentEpoch={Number(epochData?.epoch.id)} />
-        <Card
-          title={t('Rewards history')}
-          className="lg:col-span-full hidden md:block"
-          loading={rewardsLoading}
-          noBackgroundOnMobile={true}
-        >
-          <RewardsHistoryContainer
-            epoch={Number(epochData?.epoch.id)}
-            pubKey={pubKey}
-            assets={assetMap}
-          />
-        </Card>
       </div>
     </div>
   );
 };
 
-type VestingBalances = NonNullable<
+export type VestingBalances = NonNullable<
   RewardsPageQuery['party']
 >['vestingBalancesSummary'];
 
 export type RewardPotProps = {
-  pubKey: string | null;
+  pubKey: string | undefined;
   accounts: Account[] | null;
   assetId: string; // VEGA
   vestingBalancesSummary: VestingBalances | undefined;
@@ -469,7 +470,7 @@ export const Vesting = ({
   baseRate,
   multiplier,
 }: {
-  pubKey: string | null;
+  pubKey: string | undefined;
   baseRate: string;
   multiplier?: string;
 }) => {
@@ -506,7 +507,7 @@ export const Multipliers = ({
   streakMultiplier,
   hoarderMultiplier,
 }: {
-  pubKey: string | null;
+  pubKey: string | undefined;
   streakMultiplier?: string;
   hoarderMultiplier?: string;
 }) => {

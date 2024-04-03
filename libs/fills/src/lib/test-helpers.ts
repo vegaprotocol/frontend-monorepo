@@ -3,8 +3,6 @@ import type { PartialDeep } from 'type-fest';
 import * as Schema from '@vegaprotocol/types';
 import type { Trade } from './fills-data-provider';
 
-const { MarketState, MarketTradingMode } = Schema;
-
 export const generateFill = (override?: PartialDeep<Trade>) => {
   const defaultFill: Trade = {
     __typename: 'Trade',
@@ -52,8 +50,15 @@ export const generateFill = (override?: PartialDeep<Trade>) => {
       id: 'market-id',
       positionDecimalPlaces: 0,
       decimalPlaces: 5,
-      state: MarketState.STATE_ACTIVE,
-      tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+      tickSize: '1',
+      markPriceConfiguration: {
+        decayWeight: '',
+        decayPower: 0,
+        cashAmount: '',
+        SourceStalenessTolerance: [],
+        CompositePriceType:
+          Schema.CompositePriceType.COMPOSITE_PRICE_TYPE_LAST_TRADE,
+      },
       fees: {
         __typename: 'Fees',
         factors: {

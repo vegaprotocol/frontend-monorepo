@@ -1,7 +1,7 @@
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { tradesWithMarketProvider } from './trades-data-provider';
 import { TradesTable } from './trades-table';
-import { useDealTicketFormValues } from '@vegaprotocol/deal-ticket';
+import { useDealTicketFormValues } from '@vegaprotocol/react-helpers';
 import type { useDataGridEvents } from '@vegaprotocol/datagrid';
 import { useT } from './use-t';
 
@@ -19,7 +19,7 @@ export const TradesManager = ({
 
   const { data, error } = useDataProvider({
     dataProvider: tradesWithMarketProvider,
-    variables: { marketId },
+    variables: { marketIds: [marketId] },
   });
 
   return (

@@ -38,12 +38,12 @@ export function Dialog({
   );
   const wrapperClasses = classNames(
     // Dimensions
-    'max-w-[95vw] sm:max-w-[90vw] p-4 md:p-8',
+    'max-w-[95vw] sm:max-w-[90vw] p-4 md:p-8 rounded-lg',
     // Need to apply background and text colors again as content is rendered in a portal
     'dark:bg-black bg-white dark:text-white',
     getIntentBorder(intent),
     {
-      'sm:w-[520px]': size === 'small',
+      'w-[520px]': size === 'small',
       'sm:w-[680px]': size === 'medium',
       'sm:w-[720px] lg:w-[940px]': size === 'large',
     }
@@ -85,19 +85,19 @@ export function Dialog({
                   <VegaIcon name={VegaIconNames.CROSS} size={24} />
                 </DialogPrimitives.Close>
               )}
-              <div data-testid="dialog-content" className="flex-1 max-w-full">
+              <div
+                data-testid="dialog-content"
+                className="flex flex-col gap-2 flex-1 max-w-full"
+              >
                 {title && (
-                  <span
-                    className="text-xl uppercase flex gap-4"
-                    data-testid="dialog-title"
-                  >
+                  <h3 className="text-xl flex gap-4" data-testid="dialog-title">
                     {icon && (
                       <span className="fill-current flex items-center">
                         {icon}
                       </span>
                     )}
                     {title}
-                  </span>
+                  </h3>
                 )}
                 <div>{children}</div>
               </div>

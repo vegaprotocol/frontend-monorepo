@@ -1,14 +1,5 @@
 import z from 'zod';
-
-export enum Networks {
-  VALIDATOR_TESTNET = 'VALIDATOR_TESTNET',
-  MAINNET_MIRROR = 'MAINNET_MIRROR',
-  CUSTOM = 'CUSTOM',
-  TESTNET = 'TESTNET',
-  STAGNET1 = 'STAGNET1',
-  DEVNET = 'DEVNET',
-  MAINNET = 'MAINNET',
-}
+import { Networks } from '../types';
 
 // combine schema above with custom rule to ensure either
 // VEGA_URL or VEGA_CONFIG_URL are provided
@@ -76,6 +67,8 @@ export const envSchema = z
 const COSMIC_ELEVATOR_FLAGS = {
   SUCCESSOR_MARKETS: z.optional(z.boolean()),
   STOP_ORDERS: z.optional(z.boolean()),
+  TAKE_PROFIT_STOP_LOSS: z.optional(z.boolean()),
+  TWAP_REWARDS: z.optional(z.boolean()),
   ISOLATED_MARGIN: z.optional(z.boolean()),
   ICEBERG_ORDERS: z.optional(z.boolean()),
   PRODUCT_PERPETUALS: z.optional(z.boolean()),

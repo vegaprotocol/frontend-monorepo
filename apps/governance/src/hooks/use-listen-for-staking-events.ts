@@ -7,7 +7,7 @@ import { useWeb3React } from '@web3-react/core';
 
 export const useListenForStakingEvents = (
   contract: Contract | undefined,
-  vegaPublicKey: string | null,
+  vegaPublicKey: string | undefined,
   numberOfConfirmations: number
 ) => {
   const { account } = useWeb3React();

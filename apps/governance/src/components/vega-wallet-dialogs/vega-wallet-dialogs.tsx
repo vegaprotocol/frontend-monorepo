@@ -1,25 +1,39 @@
 import {
-  VegaConnectDialog,
-  VegaManageDialog,
-  ViewAsDialog,
-} from '@vegaprotocol/wallet';
+  ConnectDialogWithRiskAck,
+  useDialogStore,
+} from '@vegaprotocol/wallet-react';
 import {
   AppStateActionType,
   useAppState,
 } from '../../contexts/app-state/app-state-context';
-import { useConnectors } from '../../lib/vega-connectors';
 import { RiskMessage } from './risk-message';
+import { VegaManageDialog } from '../manage-dialog';
+import { useLocalStorage } from '@vegaprotocol/react-helpers';
+import { Networks, useEnvironment } from '@vegaprotocol/environment';
 
 export const VegaWalletDialogs = () => {
+  const { VEGA_ENV } = useEnvironment();
   const { appState, appDispatch } = useAppState();
-  const connectors = useConnectors();
+  const [riskAccepted, setRiskAccepted] = useLocalStorage(
+    'vega_wallet_risk_accepted'
+  );
+  const vegaWalletDialogOpen = useDialogStore((store) => store.isOpen);
+  const setVegaWalletDialog = useDialogStore((store) => store.set);
   return (
     <>
-      <VegaConnectDialog
-        connectors={connectors}
-        riskMessage={<RiskMessage />}
+      <ConnectDialogWithRiskAck
+        open={vegaWalletDialogOpen}
+        onChange={setVegaWalletDialog}
+        riskAccepted={
+          VEGA_ENV === Networks.TESTNET ? riskAccepted === 'true' : true
+        }
+        riskAckContent={<RiskMessage />}
+        onRiskAccepted={() => setRiskAccepted('true')}
+        onRiskRejected={() => {
+          setRiskAccepted('false');
+          setVegaWalletDialog(false);
+        }}
       />
-
       <VegaManageDialog
         dialogOpen={appState.vegaWalletManageOverlay}
         setDialogOpen={(open) =>
@@ -29,8 +43,6 @@ export const VegaWalletDialogs = () => {
           })
         }
       />
-
-      <ViewAsDialog connector={connectors.view} />
     </>
   );
 };

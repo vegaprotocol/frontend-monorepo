@@ -1,4 +1,4 @@
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { WithdrawFormContainer } from '@vegaprotocol/withdraws';
 import { useVegaTransactionStore } from '@vegaprotocol/web3';
 

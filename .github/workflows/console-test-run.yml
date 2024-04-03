@@ -10,7 +10,7 @@ on:
     inputs:
       console-test-branch:
         type: choice
-        description: 'main: v0.74.10, develop: v0.75.1'
+        description: 'main: v0.74.10, develop: v0.75.5'
         options:
           - main
           - develop
@@ -57,7 +57,7 @@ jobs:
       #----------------------------------------------
       - name: Build trading app
         run: |
-          ENV_NAME="${{ needs.console-test-branch.outputs.console-branch == 'main' && 'mainnet' || 'stagnet1' }}"
+          ENV_NAME="${{ github.base_ref == 'main' && 'mainnet' || 'stagnet1' }}"
           yarn env-cmd -f ./apps/trading/.env.$ENV_NAME yarn nx export trading
           DIST_LOCATION=dist/apps/trading/exported
           mv $DIST_LOCATION dist-result
@@ -77,7 +77,7 @@ jobs:
           load: true
           build-args: |
             APP=trading
-            ENV_NAME=${{ needs.console-test-branch.outputs.console-branch == 'main' && 'mainnet' || 'stagnet1' }}
+            ENV_NAME="${{ github.base_ref == 'main' && 'mainnet' || 'stagnet1' }}"
           tags: ci/trading:local
           outputs: type=docker,dest=/tmp/console-image.tar
 
@@ -164,7 +164,23 @@ jobs:
       #----------------------------------------------
       - name: Set VEGA_VERSION from .env
         id: set_vega_version
-        run: echo "VEGA_VERSION=$(grep VEGA_VERSION apps/trading/e2e/.env | cut -d '=' -f2)" >> $GITHUB_ENV
+        run: |
+          if [[ "${{ github.base_ref }}" == "main" ]]; then
+            echo "VEGA_VERSION=$(grep VEGA_VERSION apps/trading/e2e/.env.main | cut -d '=' -f2)" >> $GITHUB_ENV
+            echo "ENV_FILE=.env.main"
+          else
+            echo "VEGA_VERSION=$(grep VEGA_VERSION apps/trading/e2e/.env | cut -d '=' -f2)" >> $GITHUB_ENV
+            echo "ENV_FILE=.env"
+          fi
+      #----------------------------------------------
+      #       update .env file
+      #----------------------------------------------
+      - name: Override .env with .env.main if base ref is main
+        run: |
+          if [[ "${{ github.base_ref }}" == "main" ]]; then
+            cp apps/trading/e2e/.env.main apps/trading/e2e/.env
+            echo "Overridden .env with .env.main"
+          fi
       #----------------------------------------------
       #  -----  Setup python  -----
       #----------------------------------------------

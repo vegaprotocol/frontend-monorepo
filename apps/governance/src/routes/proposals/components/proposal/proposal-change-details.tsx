@@ -17,17 +17,20 @@ import { type ProposalNode } from './proposal-utils';
 import { Lozenge } from '@vegaprotocol/ui-toolkit';
 import { Indicator } from './indicator';
 import { SubHeading } from '../../../../components/heading';
+import { determineId } from '@vegaprotocol/wallet';
 
 export const ProposalChangeDetails = ({
   proposal,
   terms,
   restData,
   indicator,
+  termsCount = 0,
 }: {
   proposal: Proposal | BatchProposal;
   terms: ProposalTermsFieldsFragment;
   restData: ProposalNode | null;
   indicator?: number;
+  termsCount?: number;
 }) => {
   const { t } = useTranslation();
   let details = null;
@@ -61,7 +64,18 @@ export const ProposalChangeDetails = ({
     }
     case 'NewMarket': {
       if (proposal.id) {
-        details = <ProposalMarketData proposalId={proposal.id} />;
+        let marketId = proposal.id;
+
+        // TODO: when https://github.com/vegaprotocol/vega/issues/11005 gets merged
+        // this will need to be updated to loop forward from 0. Right now subProposals
+        // are returned (when using GQL) in the reverse order
+        if (proposal.__typename === 'BatchProposal') {
+          for (let i = termsCount - 1; i >= 0; i--) {
+            marketId = determineId(marketId);
+          }
+        }
+
+        details = <ProposalMarketData marketId={marketId} />;
       }
       break;
     }
@@ -69,7 +83,7 @@ export const ProposalChangeDetails = ({
       if (proposal.id) {
         details = (
           <div className="flex flex-col gap-4">
-            <ProposalMarketData proposalId={proposal.id} />
+            <ProposalMarketData marketId={proposal.id} />
             <ProposalMarketChanges
               indicator={indicator}
               marketId={terms.change.marketId}

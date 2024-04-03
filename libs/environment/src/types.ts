@@ -6,7 +6,7 @@ import type {
 } from './utils/validate-environment';
 
 export enum Networks {
-  VALIDATOR_TESTNET = 'VALIDATOR_TESTNET',
+  VALIDATORS_TESTNET = 'VALIDATORS_TESTNET',
   MAINNET_MIRROR = 'MAINNET_MIRROR',
   CUSTOM = 'CUSTOM',
   TESTNET = 'TESTNET',
@@ -14,12 +14,15 @@ export enum Networks {
   DEVNET = 'DEVNET',
   MAINNET = 'MAINNET',
 }
+
 export type Environment = z.infer<typeof envSchema>;
 export type FeatureFlags = z.infer<typeof featureFlagsSchema>;
 export type CosmicElevatorFlags = Pick<
   FeatureFlags,
   | 'ICEBERG_ORDERS'
   | 'ISOLATED_MARGIN'
+  | 'TAKE_PROFIT_STOP_LOSS'
+  | 'TWAP_REWARDS'
   | 'STOP_ORDERS'
   | 'SUCCESSOR_MARKETS'
   | 'PRODUCT_PERPETUALS'

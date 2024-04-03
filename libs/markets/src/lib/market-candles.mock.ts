@@ -40,5 +40,6 @@ const marketCandlesFieldsFragment: MarketCandlesFieldsFragment = {
   high: '110',
   low: '90',
   volume: '1',
+  notional: '100',
   periodStart: '2022-11-01T15:49:00Z',
 };

@@ -7,13 +7,13 @@ import {
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
-import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
+import { useVegaWallet, useDialogStore } from '@vegaprotocol/wallet-react';
 import { Networks, useEnvironment } from '@vegaprotocol/environment';
+import { useOnboardingStore } from '../../stores/onboarding';
 import {
   OnboardingStep,
   useGetOnboardingStep,
-  useOnboardingStore,
-} from './use-get-onboarding-step';
+} from '../../lib/hooks/use-get-onboarding-step';
 import { Links, Routes } from '../../lib/links';
 import { useGlobalStore } from '../../stores';
 import { useSidebar, ViewType } from '../sidebar';
@@ -26,12 +26,11 @@ interface Props {
 
 const GetStartedButton = ({ step }: { step: OnboardingStep }) => {
   const t = useT();
+  const { VEGA_ENV } = useEnvironment();
   const dismiss = useOnboardingStore((store) => store.dismiss);
-  const setDialogOpen = useOnboardingStore((store) => store.setDialogOpen);
+  const setDialog = useOnboardingStore((store) => store.setDialog);
+  const risk = useOnboardingStore((store) => store.risk);
   const marketId = useGlobalStore((store) => store.marketId);
-  const setWalletDialogOpen = useOnboardingStore(
-    (store) => store.setWalletDialogOpen
-  );
   const setViews = useSidebar((store) => store.setViews);
 
   const buttonProps = {
@@ -42,7 +41,16 @@ const GetStartedButton = ({ step }: { step: OnboardingStep }) => {
 
   if (step <= OnboardingStep.ONBOARDING_CONNECT_STEP) {
     return (
-      <TradingButton {...buttonProps} onClick={() => setWalletDialogOpen(true)}>
+      <TradingButton
+        {...buttonProps}
+        onClick={() => {
+          if (VEGA_ENV === Networks.MAINNET && risk !== 'accepted') {
+            setDialog('risk');
+          } else {
+            setDialog('connect');
+          }
+        }}
+      >
         {t('Connect')}
       </TradingButton>
     );
@@ -51,7 +59,7 @@ const GetStartedButton = ({ step }: { step: OnboardingStep }) => {
       <TradingAnchorButton
         {...buttonProps}
         href={Links.DEPOSIT()}
-        onClick={() => setDialogOpen(false)}
+        onClick={() => setDialog('inactive')}
       >
         {t('Deposit')}
       </TradingAnchorButton>
@@ -73,7 +81,7 @@ const GetStartedButton = ({ step }: { step: OnboardingStep }) => {
   }
 
   return (
-    <TradingButton {...buttonProps} onClick={() => setWalletDialogOpen(true)}>
+    <TradingButton {...buttonProps} onClick={() => setDialog('connect')}>
       {t('Get started')}
     </TradingButton>
   );
@@ -110,9 +118,7 @@ export const GetStarted = ({ lead }: Props) => {
   const t = useT();
   const { pubKey } = useVegaWallet();
   const { VEGA_ENV, VEGA_NETWORKS } = useEnvironment();
-  const openVegaWalletDialog = useVegaWalletDialogStore(
-    (store) => store.openVegaWalletDialog
-  );
+  const openVegaWalletDialog = useDialogStore((store) => store.open);
   const currentStep = useGetOnboardingStep();
   const dismissed = useOnboardingStore((store) => store.dismissed);
 
@@ -151,7 +157,11 @@ export const GetStarted = ({ lead }: Props) => {
             <Trans
               defaults="Ready to trade with real funds? <0>Switch to Mainnet</0>"
               components={[
-                <ExternalLink href={VEGA_NETWORKS.MAINNET} key="link">
+                <ExternalLink
+                  href={VEGA_NETWORKS.MAINNET}
+                  key="link"
+                  className="underline"
+                >
                   Switch to Mainnet
                 </ExternalLink>,
               ]}

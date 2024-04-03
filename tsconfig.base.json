@@ -26,6 +26,7 @@
       "@vegaprotocol/datagrid": ["libs/datagrid/src/index.ts"],
       "@vegaprotocol/deal-ticket": ["libs/deal-ticket/src/index.ts"],
       "@vegaprotocol/deposits": ["libs/deposits/src/index.ts"],
+      "@vegaprotocol/emblem": ["libs/emblem/src/index.ts"],
       "@vegaprotocol/environment": ["libs/environment/src/index.ts"],
       "@vegaprotocol/fills": ["libs/fills/src/index.ts"],
       "@vegaprotocol/funding-payments": ["libs/funding-payments/src/index.ts"],
@@ -47,7 +48,7 @@
       "@vegaprotocol/react-helpers": ["libs/react-helpers/src/index.ts"],
       "@vegaprotocol/smart-contracts": ["libs/smart-contracts/src/index.ts"],
       "@vegaprotocol/tailwindcss-config": [
-        "libs/tailwindcss-config/src/index.js"
+        "libs/tailwindcss-config/src/index.ts"
       ],
       "@vegaprotocol/tendermint": ["libs/tendermint/src/index.ts"],
       "@vegaprotocol/trades": ["libs/trades/src/index.ts"],
@@ -56,6 +57,10 @@
       "@vegaprotocol/ui-toolkit": ["libs/ui-toolkit/src/index.ts"],
       "@vegaprotocol/utils": ["libs/utils/src/index.ts"],
       "@vegaprotocol/wallet": ["libs/wallet/src/index.ts"],
+      "@vegaprotocol/wallet-react": ["libs/wallet-react/src/index.ts"],
+      "@vegaprotocol/wallet-react/testing": [
+        "libs/wallet-react/src/testing.ts"
+      ],
       "@vegaprotocol/web3": ["libs/web3/src/index.ts"],
       "@vegaprotocol/withdraws": ["libs/withdraws/src/index.ts"]
     }

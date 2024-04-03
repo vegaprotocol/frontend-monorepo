@@ -11,7 +11,7 @@ import {
   truncateMiddle,
   TextChildrenTooltip as Tooltip,
 } from '@vegaprotocol/ui-toolkit';
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import {
   addDecimalsFormatNumber,
   formatNumber,

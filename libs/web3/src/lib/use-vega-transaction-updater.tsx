@@ -1,5 +1,5 @@
 import { useApolloClient } from '@apollo/client';
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import {
   useOrderTxUpdateSubscription,
   useWithdrawalBusEventSubscription,
@@ -7,6 +7,16 @@ import {
 } from './__generated__/TransactionResult';
 import { useVegaTransactionStore } from './use-vega-transaction-store';
 import { waitForWithdrawalApproval } from './wait-for-withdrawal-approval';
+import {
+  determineId,
+  isStopOrdersSubmissionTransaction,
+} from '@vegaprotocol/wallet';
+import { waitForStopOrder } from './wait-for-stop-order';
+import {
+  StopOrderRejectionReasonMapping,
+  StopOrderStatus,
+  StopOrderStatusMapping,
+} from '@vegaprotocol/types';
 
 export const useVegaTransactionUpdater = () => {
   const client = useApolloClient();
@@ -16,6 +26,9 @@ export const useVegaTransactionUpdater = () => {
   const updateOrder = useVegaTransactionStore((state) => state.updateOrder);
   const updateTransaction = useVegaTransactionStore(
     (state) => state.updateTransactionResult
+  );
+  const getTransaction = useVegaTransactionStore(
+    (state) => state.getTransaction
   );
 
   const { pubKey } = useVegaWallet();
@@ -51,11 +64,43 @@ export const useVegaTransactionUpdater = () => {
     variables,
     skip,
     fetchPolicy: 'no-cache',
-    onData: ({ data: result }) =>
-      result.data?.busEvents?.forEach((event) => {
-        if (event.event.__typename === 'TransactionResult') {
-          updateTransaction(event.event);
+    onData: ({ data: result }) => {
+      result.data?.busEvents?.forEach(({ event }) => {
+        if (event.__typename === 'TransactionResult') {
+          let updateImmediately = true;
+          if (event.status && !event.error) {
+            const transaction = getTransaction(event.hash.toLocaleLowerCase());
+            if (
+              transaction &&
+              transaction.signature &&
+              isStopOrdersSubmissionTransaction(transaction.body)
+            ) {
+              waitForStopOrder(determineId(transaction.signature), client).then(
+                (stopOrder) => {
+                  updateTransaction(
+                    stopOrder &&
+                      stopOrder.status === StopOrderStatus.STATUS_REJECTED
+                      ? {
+                          ...event,
+                          error:
+                            (stopOrder.rejectionReason &&
+                              StopOrderRejectionReasonMapping[
+                                stopOrder.rejectionReason
+                              ]) ||
+                            StopOrderStatusMapping[stopOrder.status],
+                        }
+                      : event
+                  );
+                }
+              );
+              updateImmediately = false;
+            }
+          }
+          if (updateImmediately) {
+            updateTransaction(event);
+          }
         }
-      }),
+      });
+    },
   });
 };

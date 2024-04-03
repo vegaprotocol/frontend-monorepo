@@ -15,7 +15,7 @@ import {
   addDecimalsFormatNumber,
   getMarketExpiryDate,
 } from '@vegaprotocol/utils';
-import { closedMarketsWithDataProvider, getAsset } from '@vegaprotocol/markets';
+import { closedMarketsProvider, getAsset } from '@vegaprotocol/markets';
 import type { DataSourceFilterFragment } from '@vegaprotocol/markets';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import { useMarketClickHandler } from '../../lib/hooks/use-market-click-handler';
@@ -35,7 +35,7 @@ interface Row {
   code: string;
   name: string;
   decimalPlaces: number;
-  state: MarketState;
+  state?: MarketState;
   metadata: string[];
   closeTimestamp: string | null;
   bestBidPrice: string | undefined;
@@ -53,7 +53,7 @@ interface Row {
 
 export const Closed = () => {
   const { data: marketData, error } = useDataProvider({
-    dataProvider: closedMarketsWithDataProvider,
+    dataProvider: closedMarketsProvider,
     variables: undefined,
   });
 
@@ -87,7 +87,7 @@ export const Closed = () => {
       code: instrument.code,
       name: instrument.name,
       decimalPlaces: market.decimalPlaces,
-      state: market.state,
+      state: market.data?.marketState,
       metadata: instrument.metadata.tags ?? [],
       closeTimestamp: market.marketTimestamps.close,
       bestBidPrice: market.data?.bestBidPrice,

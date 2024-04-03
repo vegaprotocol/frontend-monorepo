@@ -4,7 +4,9 @@ from vega_sim.null_service import VegaServiceNull
 from datetime import datetime, timedelta
 from conftest import init_vega, cleanup_container
 from fixtures.market import setup_continuous_market
-from actions.utils import wait_for_toast_confirmation
+from actions.vega import submit_order
+from actions.utils import wait_for_toast_confirmation, change_keys
+from wallet_config import PARTY_C, MM_WALLET
 
 order_size = "order-size"
 order_price = "order-price"
@@ -18,7 +20,7 @@ expire = "expire"
 @pytest.fixture(scope="module")
 def vega(request):
     with init_vega(request) as vega_instance:
-        request.addfinalizer(lambda: cleanup_container(vega_instance))  # Register the cleanup function
+        request.addfinalizer(lambda: cleanup_container(vega_instance))
         yield vega_instance
 
 
@@ -149,3 +151,27 @@ def test_connect_vega_wallet(continuous_market, page: Page):
     # TODO: accept wallet connection and assert wallet is connected.
     expect(page.get_by_test_id("order-type-Limit")).to_be_checked()
     expect(page.get_by_test_id("order-price")).to_have_value("101")
+
+
+@pytest.mark.usefixtures("auth", "risk_accepted")
+def test_liquidated_tooltip(continuous_market, vega: VegaServiceNull, page: Page):
+    tdai_id = vega.find_asset_id(symbol="tDAI")
+    vega.mint(
+        PARTY_C.name,
+        asset=tdai_id,
+        amount=20,
+    )
+    vega.wait_fn(1)
+    vega.wait_for_total_catchup()
+    submit_order(vega, PARTY_C.name, continuous_market, "SIDE_BUY", 1, 110)
+    submit_order(vega, "Key 1", continuous_market, "SIDE_SELL", 1, 110)
+    vega.wait_fn(1)
+    vega.wait_for_total_catchup()
+    page.goto(f"/#/markets/{continuous_market}")
+    change_keys(page, vega, PARTY_C.name)
+    submit_order(vega, MM_WALLET.name, continuous_market, "SIDE_BUY", 100, 90)
+    submit_order(vega, "Key 1", continuous_market, "SIDE_SELL", 100, 90)
+    vega.wait_fn(1)
+    vega.wait_for_total_catchup()
+    page.locator('[id="cell-openVolume-0"]').hover()
+    expect(page.get_by_test_id("tooltip-content").first).to_contain_text("")

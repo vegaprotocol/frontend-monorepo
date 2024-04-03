@@ -9,6 +9,10 @@ import {
   Button,
   VegaIcon,
   VegaIconNames,
+  Tooltip,
+  TradingAnchorButton,
+  Intent,
+  CopyWithTooltip,
 } from '@vegaprotocol/ui-toolkit';
 import { TransferStatus, type Asset } from '@vegaprotocol/types';
 import classNames from 'classnames';
@@ -17,7 +21,7 @@ import { Table } from '../../components/table';
 import {
   addDecimalsFormatNumberQuantum,
   formatNumber,
-  getDateTimeFormat,
+  removePaginationWrapper,
 } from '@vegaprotocol/utils';
 import {
   useTeam,
@@ -31,7 +35,7 @@ import { TeamStats } from '../../components/competitions/team-stats';
 import { usePageTitle } from '../../lib/hooks/use-page-title';
 import { ErrorBoundary } from '../../components/error-boundary';
 import { LayoutWithGradient } from '../../components/layouts-inner';
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { JoinTeam } from './join-team';
 import { UpdateTeamButton } from './update-team-button';
 import {
@@ -41,10 +45,6 @@ import {
 } from '../../lib/hooks/use-games';
 import { useEpochInfoQuery } from '../../lib/hooks/__generated__/Epoch';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
-import {
-  ActiveRewardCard,
-  DispatchMetricInfo,
-} from '../../components/rewards-container/active-rewards';
 import { type MarketMap, useMarketsMapProvider } from '@vegaprotocol/markets';
 import format from 'date-fns/format';
 import {
@@ -52,6 +52,13 @@ import {
   isScopedToTeams,
   useRewards,
 } from '../../lib/hooks/use-rewards';
+import {
+  ActiveRewardCard,
+  DispatchMetricInfo,
+} from '../../components/rewards-container/reward-card';
+import { usePartyProfilesQuery } from '../../components/vega-wallet-connect-button/__generated__/PartyProfiles';
+
+const formatDate = (date: Date) => format(date, 'yyyy/MM/dd hh:mm:ss');
 
 export const CompetitionsTeam = () => {
   const t = useT();
@@ -140,11 +147,25 @@ const TeamPage = ({
   const t = useT();
   const [showGames, setShowGames] = useState(true);
 
+  const createdAt = new Date(team.createdAt);
+
+  const closedIndicator = team.closed ? (
+    <div className="border rounded border-vega-clight-300 dark:border-vega-cdark-300 px-1 pt-[1px] flex items-baseline gap-1">
+      <VegaIcon name={VegaIconNames.LOCK} size={10} />
+      <span>{t('Private')}</span>
+    </div>
+  ) : (
+    <div className="border rounded border-vega-clight-300 dark:border-vega-cdark-300 px-1 pt-[1px] flex items-baseline gap-1">
+      <VegaIcon name={VegaIconNames.GLOBE} size={10} />
+      <span>{t('Public')}</span>
+    </div>
+  );
+
   return (
     <LayoutWithGradient>
       <header className="flex gap-3 lg:gap-4 pt-5 lg:pt-10">
         <TeamAvatar teamId={team.teamId} imgUrl={team.avatarUrl} />
-        <div className="flex flex-col items-start gap-1 lg:gap-3">
+        <div className="flex flex-col items-start gap-1 lg:gap-2">
           <h1
             className="calt text-2xl lg:text-3xl xl:text-5xl"
             data-testid="team-name"
@@ -154,6 +175,38 @@ const TeamPage = ({
           <div className="flex gap-2">
             <JoinTeam team={team} partyTeam={partyTeam} refetch={refetch} />
             <UpdateTeamButton team={team} />
+            {team.teamUrl && team.teamUrl.length > 0 && (
+              <Tooltip description={t("Visit the team's page.")}>
+                <span>
+                  <TradingAnchorButton
+                    intent={Intent.Info}
+                    target="_blank"
+                    referrerPolicy="no-referrer"
+                    href={team.teamUrl}
+                  >
+                    <VegaIcon name={VegaIconNames.OPEN_EXTERNAL} size={16} />
+                  </TradingAnchorButton>
+                </span>
+              </Tooltip>
+            )}
+            <CopyWithTooltip
+              description={t('Copy this page url.')}
+              text={globalThis.location.href}
+            >
+              <button className="h-10 w-7">
+                <VegaIcon name={VegaIconNames.COPY} size={16} />
+              </button>
+            </CopyWithTooltip>
+          </div>
+          <div className="flex gap-2 items-baseline text-xs text-muted font-alpha calt">
+            {closedIndicator}
+            <div className="">
+              {t('Created at')}:{' '}
+              <span className="text-vega-cdark-600 dark:text-vega-clight-600 ">
+                {formatDate(createdAt)}
+              </span>{' '}
+              ({t('epoch')}: {team.createdAtEpoch})
+            </div>
           </div>
         </div>
       </header>
@@ -230,106 +283,120 @@ const Games = ({
   };
 
   return (
-    <Table
-      columns={[
-        {
-          name: 'epoch',
-          displayName: t('Epoch'),
-        },
-        {
-          name: 'endtime',
-          displayName: t('End time'),
-        },
-        { name: 'type', displayName: t('Type') },
-        {
-          name: 'asset',
-          displayName: t('Reward asset'),
-        },
-        { name: 'daily', displayName: t('Daily reward amount') },
-        { name: 'rank', displayName: t('Rank') },
-        { name: 'amount', displayName: t('Amount earned this epoch') },
-        { name: 'total', displayName: t('Cumulative amount earned') },
-        {
-          name: 'participatingTeams',
-          displayName: t('No. of participating teams'),
-        },
-        {
-          name: 'participatingMembers',
-          displayName: t('No. of participating members'),
-        },
-      ].map((c) => ({ ...c, headerClassName: 'text-left' }))}
-      data={games.map((game) => {
-        let transfer = transfers?.find((t) => {
-          if (!isScopedToTeams(t)) return false;
+    <div className="text-sm">
+      <Table
+        columns={[
+          {
+            name: 'epoch',
+            displayName: t('Epoch'),
+          },
+          {
+            name: 'endtime',
+            displayName: t('End time'),
+          },
+          { name: 'type', displayName: t('Type') },
+          {
+            name: 'asset',
+            displayName: t('Reward asset'),
+          },
+          { name: 'daily', displayName: t('Daily reward amount') },
+          { name: 'rank', displayName: t('Rank') },
+          { name: 'amount', displayName: t('Amount earned this epoch') },
+          { name: 'total', displayName: t('Cumulative amount earned') },
+          {
+            name: 'participatingTeams',
+            displayName: t('No. of participating teams'),
+          },
+          {
+            name: 'participatingMembers',
+            displayName: t('No. of participating members'),
+          },
+        ].map((c) => ({ ...c, headerClassName: 'text-left' }))}
+        data={games.map((game) => {
+          let transfer = transfers?.find((t) => {
+            if (!isScopedToTeams(t)) return false;
 
-          const idMatch = t.transfer.gameId === game.id;
-          const metricMatch =
-            t.transfer.kind.dispatchStrategy?.dispatchMetric ===
-            game.team.rewardMetric;
+            const idMatch = t.transfer.gameId === game.id;
+            const metricMatch =
+              t.transfer.kind.dispatchStrategy?.dispatchMetric ===
+              game.team.rewardMetric;
 
-          const start = t.transfer.kind.startEpoch <= game.epoch;
-          const end = t.transfer.kind.endEpoch
-            ? t.transfer.kind.endEpoch >= game.epoch
-            : true;
+            const start = t.transfer.kind.startEpoch <= game.epoch;
+            const end = t.transfer.kind.endEpoch
+              ? t.transfer.kind.endEpoch >= game.epoch
+              : true;
 
-          const rejected = t.transfer.status === TransferStatus.STATUS_REJECTED;
+            const rejected =
+              t.transfer.status === TransferStatus.STATUS_REJECTED;
 
-          return idMatch && metricMatch && start && end && !rejected;
-        });
-        if (!transfer || !isScopedToTeams(transfer)) transfer = undefined;
-        const asset = transfer?.transfer.asset;
+            return idMatch && metricMatch && start && end && !rejected;
+          });
+          if (!transfer || !isScopedToTeams(transfer)) transfer = undefined;
+          const asset = transfer?.transfer.asset;
 
-        const dailyAmount =
-          asset && transfer
+          const dailyAmount =
+            asset && transfer
+              ? addDecimalsFormatNumberQuantum(
+                  transfer.transfer.amount,
+                  asset.decimals,
+                  asset.quantum
+                )
+              : '-';
+
+          const earnedAmount = asset
             ? addDecimalsFormatNumberQuantum(
-                transfer.transfer.amount,
+                game.team.rewardEarned,
                 asset.decimals,
                 asset.quantum
               )
             : '-';
 
-        const earnedAmount = asset
-          ? addDecimalsFormatNumberQuantum(
-              game.team.rewardEarned,
-              asset.decimals,
-              asset.quantum
-            )
-          : '-';
+          const totalAmount = asset
+            ? addDecimalsFormatNumberQuantum(
+                game.team.totalRewardsEarned,
+                asset.decimals,
+                asset.quantum
+              )
+            : '-';
 
-        const totalAmount = asset
-          ? addDecimalsFormatNumberQuantum(
-              game.team.totalRewardsEarned,
-              asset.decimals,
-              asset.quantum
-            )
-          : '-';
+          const assetSymbol = asset ? <RewardAssetCell asset={asset} /> : '-';
 
-        const assetSymbol = asset ? <RewardAssetCell asset={asset} /> : '-';
-
-        return {
-          id: game.id,
-          amount: dependable(earnedAmount),
-          asset: dependable(assetSymbol),
-          daily: dependable(dailyAmount),
-          endtime: <EndTimeCell epoch={game.epoch} />,
-          epoch: game.epoch,
-          participatingMembers: game.numberOfParticipants,
-          participatingTeams: game.entities.length,
-          rank: game.team.rank,
-          total: totalAmount,
-          // type: DispatchMetricLabels[game.team.rewardMetric as DispatchMetric],
-          type: dependable(
-            <GameTypeCell transfer={transfer} allMarkets={allMarkets} />
-          ),
-        };
-      })}
-      noCollapse={false}
-    />
+          return {
+            id: game.id,
+            amount: dependable(earnedAmount),
+            asset: dependable(assetSymbol),
+            daily: dependable(dailyAmount),
+            endtime: <EndTimeCell epoch={game.epoch} />,
+            epoch: game.epoch,
+            participatingMembers: game.numberOfParticipants,
+            participatingTeams: game.entities.length,
+            rank: game.team.rank,
+            total: totalAmount,
+            // type: DispatchMetricLabels[game.team.rewardMetric as DispatchMetric],
+            type: dependable(
+              <GameTypeCell transfer={transfer} allMarkets={allMarkets} />
+            ),
+          };
+        })}
+        noCollapse={false}
+      />
+    </div>
   );
 };
 
 const Members = ({ members }: { members?: Member[] }) => {
   const t = useT();
+
+  const partyIds = members?.map((m) => m.referee) || [];
+  const { data: profilesData } = usePartyProfilesQuery({
+    variables: {
+      partyIds,
+    },
+    skip: partyIds.length === 0,
+  });
+  const profiles = removePaginationWrapper(
+    profilesData?.partiesProfilesConnection?.edges
+  );
 
   if (!members?.length) {
     return <p>{t('No members')}</p>;
@@ -337,11 +404,17 @@ const Members = ({ members }: { members?: Member[] }) => {
 
   const data = orderBy(
     members.map((m) => ({
-      referee: <RefereeLink pubkey={m.referee} isCreator={m.isCreator} />,
+      referee: (
+        <RefereeLink
+          pubkey={m.referee}
+          isCreator={m.isCreator}
+          profiles={profiles}
+        />
+      ),
       rewards: formatNumber(m.totalQuantumRewards),
       volume: formatNumber(m.totalQuantumVolume),
       gamesPlayed: formatNumber(m.totalGamesPlayed),
-      joinedAt: getDateTimeFormat().format(new Date(m.joinedAt)),
+      joinedAt: formatDate(new Date(m.joinedAt)),
       joinedAtEpoch: Number(m.joinedAtEpoch),
     })),
     'joinedAtEpoch',
@@ -349,45 +422,69 @@ const Members = ({ members }: { members?: Member[] }) => {
   );
 
   return (
-    <Table
-      columns={[
-        { name: 'referee', displayName: t('Member ID') },
-        { name: 'rewards', displayName: t('Rewards earned') },
-        { name: 'volume', displayName: t('Total volume') },
-        { name: 'gamesPlayed', displayName: t('Games played') },
-        {
-          name: 'joinedAt',
-          displayName: t('Joined at'),
-        },
-        {
-          name: 'joinedAtEpoch',
-          displayName: t('Joined epoch'),
-        },
-      ]}
-      data={data}
-      noCollapse={true}
-    />
+    <div className="text-sm">
+      <Table
+        columns={[
+          { name: 'referee', displayName: t('Member') },
+          { name: 'rewards', displayName: t('Rewards earned') },
+          { name: 'volume', displayName: t('Total volume') },
+          { name: 'gamesPlayed', displayName: t('Games played') },
+          {
+            name: 'joinedAt',
+            displayName: t('Joined at'),
+          },
+          {
+            name: 'joinedAtEpoch',
+            displayName: t('Joined epoch'),
+          },
+        ]}
+        data={data}
+        noCollapse={true}
+      />
+    </div>
   );
 };
 
 const RefereeLink = ({
   pubkey,
   isCreator,
+  profiles,
 }: {
   pubkey: string;
   isCreator: boolean;
+  profiles?: { partyId: string; alias: string }[];
 }) => {
   const t = useT();
   const linkCreator = useLinks(DApp.Explorer);
   const link = linkCreator(EXPLORER_PARTIES.replace(':id', pubkey));
 
+  const alias = profiles?.find((p) => p.partyId === pubkey)?.alias;
+
   return (
-    <>
+    <div className="flex items-baseline gap-2">
       <Link to={link} target="_blank" className="underline underline-offset-4">
-        {truncateMiddle(pubkey)}
-      </Link>{' '}
-      <span className="text-muted text-xs">{isCreator ? t('Owner') : ''}</span>
-    </>
+        {alias || truncateMiddle(pubkey)}
+      </Link>
+      {!alias && (
+        <Tooltip
+          description={t(
+            'You can set your pubkey alias by using the key selector in the top right corner.'
+          )}
+        >
+          <button className="text-muted text-xs">
+            <VegaIcon name={VegaIconNames.QUESTION_MARK} size={14} />
+          </button>
+        </Tooltip>
+      )}
+      {alias && (
+        <span className="text-muted text-xs">{truncateMiddle(pubkey)}</span>
+      )}
+      {isCreator && (
+        <span className="text-muted text-xs border border-vega-clight-300 dark:border-vega-cdark-300  rounded px-1 py-[1px]">
+          {t('Owner')}
+        </span>
+      )}
+    </div>
   );
 };
 
@@ -411,15 +508,12 @@ const EndTimeCell = ({ epoch }: { epoch?: number }) => {
     variables: {
       epochId: epoch ? epoch.toString() : undefined,
     },
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: 'cache-first',
   });
 
   if (loading) return <Loader size="small" />;
   if (data) {
-    return format(
-      new Date(data.epoch.timestamps.expiry),
-      'yyyy/MM/dd hh:mm:ss'
-    );
+    return formatDate(new Date(data.epoch.timestamps.expiry));
   }
 
   return null;

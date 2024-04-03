@@ -887,8 +887,10 @@ export type DepositEdge = {
 
 /** The status of a deposit */
 export enum DepositStatus {
-  /** The deposit have been cancelled by the network, either because it expired, or something went wrong with the foreign chain */
+  /** The deposit have been cancelled by the network, either because it expired, could not be verified, or something went wrong with the foreign chain */
   STATUS_CANCELLED = 'STATUS_CANCELLED',
+  /** The deposit was rejected as a duplicate transaction */
+  STATUS_DUPLICATE_REJECTED = 'STATUS_DUPLICATE_REJECTED',
   /** The deposit was finalised, it was valid, the foreign chain has executed it and the network updated all accounts */
   STATUS_FINALIZED = 'STATUS_FINALIZED',
   /** The deposit is open and being processed by the network */
@@ -936,6 +938,8 @@ export enum DispatchMetric {
 /** Dispatch strategy for a recurring transfer */
 export type DispatchStrategy = {
   __typename?: 'DispatchStrategy';
+  /** Optional multiplier on taker fees used to cap the rewards a party may receive in an epoch */
+  capRewardFeeMultiple?: Maybe<Scalars['String']>;
   /** Defines the data that will be used to compare markets so as to distribute rewards appropriately */
   dispatchMetric: DispatchMetric;
   /** The asset to use for measuring contribution to the metric */
@@ -2391,6 +2395,8 @@ export type Market = {
   state: MarketState;
   /** Optional: Market ID of the successor to this market if one exists */
   successorMarketID?: Maybe<Scalars['ID']>;
+  /** The market minimum tick size */
+  tickSize: Scalars['String'];
   /** An instance of, or reference to, a tradable instrument. */
   tradableInstrument: TradableInstrument;
   /** @deprecated Simplify and consolidate trades query and remove nesting. Use trades query instead */
@@ -2816,6 +2822,8 @@ export type NewMarket = {
   riskParameters: RiskModel;
   /** Successor market configuration. If this proposed market is meant to succeed a given market, then this needs to be set. */
   successorConfiguration?: Maybe<SuccessorConfiguration>;
+  /** The market minimum tick size */
+  tickSize: Scalars['String'];
 };
 
 /** Configuration for a new spot market on Vega */
@@ -2839,6 +2847,8 @@ export type NewSpotMarket = {
   riskParameters?: Maybe<RiskModel>;
   /** Specifies parameters related to liquidity target stake calculation */
   targetStakeParameters: TargetStakeParameters;
+  /** The market minimum tick size */
+  tickSize: Scalars['String'];
 };
 
 export type NewTransfer = {
@@ -4951,6 +4961,8 @@ export type Query = {
    * If a team does not have at least the number of epochs worth of data, it is ignored.
    */
   teamsStatistics?: Maybe<TeamsStatisticsConnection>;
+  /** Time weighted notional position is a metric used to determine if a reward should be paid to a party */
+  timeWeightedNotionalPosition?: Maybe<TimeWeightedNotionalPosition>;
   /** Get total transfer fee discount available */
   totalTransferFeeDiscount?: Maybe<TotalTransferFeeDiscount>;
   /** Get a list of all trades and apply any given filters to the results */
@@ -5451,6 +5463,15 @@ export type QueryteamsStatisticsArgs = {
   aggregationEpochs?: InputMaybe<Scalars['Int']>;
   pagination?: InputMaybe<Pagination>;
   teamId?: InputMaybe<Scalars['ID']>;
+};
+
+
+/** Queries allow a caller to read data and filter data via GraphQL. */
+export type QuerytimeWeightedNotionalPositionArgs = {
+  assetId: Scalars['ID'];
+  epochSeq?: InputMaybe<Scalars['Int']>;
+  gameId: Scalars['ID'];
+  partyId: Scalars['ID'];
 };
 
 
@@ -6165,6 +6186,8 @@ export enum StopOrderRejectionReason {
   REJECTION_REASON_MUST_BE_REDUCE_ONLY = 'REJECTION_REASON_MUST_BE_REDUCE_ONLY',
   /** Stop order cannot have matching OCO expiry times */
   REJECTION_REASON_STOP_ORDER_CANNOT_MATCH_OCO_EXPIRY_TIMES = 'REJECTION_REASON_STOP_ORDER_CANNOT_MATCH_OCO_EXPIRY_TIMES',
+  /** The percentage value for the linked stop order is invalid */
+  REJECTION_REASON_STOP_ORDER_LINKED_PERCENTAGE_INVALID = 'REJECTION_REASON_STOP_ORDER_LINKED_PERCENTAGE_INVALID',
   /** Stop orders are not allowed during the opening auction */
   REJECTION_REASON_STOP_ORDER_NOT_ALLOWED_DURING_OPENING_AUCTION = 'REJECTION_REASON_STOP_ORDER_NOT_ALLOWED_DURING_OPENING_AUCTION',
   /** Stop orders are not allowed without a position */
@@ -6605,6 +6628,22 @@ export type TimeUpdate = {
   __typename?: 'TimeUpdate';
   /** RFC3339Nano time of new block time */
   timestamp: Scalars['Timestamp'];
+};
+
+export type TimeWeightedNotionalPosition = {
+  __typename?: 'TimeWeightedNotionalPosition';
+  /** Settlement asset for this position */
+  assetId: Scalars['ID'];
+  /** Epoch the time weighted notional position was calculated for */
+  epoch: Scalars['Int'];
+  /** Game the time weighted notional position was calculated for */
+  gameId: Scalars['ID'];
+  /** Time of the last block in which the metric was updated */
+  lastUpdated: Scalars['Timestamp'];
+  /** Party holding the position */
+  partyId: Scalars['ID'];
+  /** Time weighted notional position */
+  timeWeightedNotionalPosition: Scalars['String'];
 };
 
 /** Returns total transfer fee discount available */
@@ -7074,6 +7113,8 @@ export type UpdateMarketConfiguration = {
   quadraticSlippageFactor: Scalars['String'];
   /** Updated futures market risk model parameters. */
   riskParameters: UpdateMarketRiskParameters;
+  /** The market minimum tick size */
+  tickSize: Scalars['String'];
 };
 
 export type UpdateMarketLogNormalRiskModel = {
@@ -7171,6 +7212,8 @@ export type UpdateSpotMarketConfiguration = {
   riskParameters: RiskModel;
   /** Specifies parameters related to target stake calculation */
   targetStakeParameters: TargetStakeParameters;
+  /** The market minimum tick size */
+  tickSize: Scalars['String'];
 };
 
 export type UpdateVolumeDiscountProgram = {

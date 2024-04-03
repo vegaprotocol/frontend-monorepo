@@ -4,29 +4,40 @@ export default function Document() {
   return (
     <>
       <Head>
-        {/*
-          meta tags
-          - next advised against using _document for this, so they exist in our
-          - single page index.page.tsx
-        */}
-
         {/* preload fonts */}
         <link
           rel="preload"
-          href="/AlphaLyrae.woff"
+          href="/AlphaLyrae.woff2"
           as="font"
-          type="font/woff"
+          type="font/woff2"
+          crossOrigin="anonymous"
         />
 
         {/* icons */}
         <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-        <link rel="apple-touch-icon" content="/favicon.ico" />
+        <link
+          rel="apple-touch-icon"
+          sizes="180x180"
+          href="/apple-touch-icon.png"
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="32x32"
+          href="/favicon-32x32.png"
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="16x16"
+          href="/favicon-16x16.png"
+        />
 
         {/* scripts */}
         <script src="/theme-setter.js" type="text/javascript" async />
 
         {/* manifest */}
-        <link rel="manifest" href="/apps/trading/public/manifest.json" />
+        <link rel="manifest" href="/manifest.json" />
       </Head>
       <Html>
         <body

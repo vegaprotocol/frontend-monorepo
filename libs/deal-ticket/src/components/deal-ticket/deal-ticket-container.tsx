@@ -2,18 +2,20 @@ import { useVegaTransactionStore } from '@vegaprotocol/web3';
 import {
   isStopOrderType,
   useDealTicketFormValues,
-} from '../../hooks/use-form-values';
+} from '@vegaprotocol/react-helpers';
 import { StopOrder } from './deal-ticket-stop-order';
 import {
   useStaticMarketData,
-  useMarket,
   useMarketPrice,
+  marketInfoProvider,
+  markPriceProvider,
 } from '@vegaprotocol/markets';
 import { AsyncRendererInline } from '@vegaprotocol/ui-toolkit';
 import { DealTicket } from './deal-ticket';
 import { useFeatureFlags } from '@vegaprotocol/environment';
 import { useT } from '../../use-t';
 import { MarginModeSelector } from './margin-mode-selector';
+import { useDataProvider } from '@vegaprotocol/data-provider';
 
 interface DealTicketContainerProps {
   marketId: string;
@@ -34,7 +36,10 @@ export const DealTicketContainer = ({
     data: market,
     error: marketError,
     loading: marketLoading,
-  } = useMarket(marketId);
+  } = useDataProvider({
+    dataProvider: marketInfoProvider,
+    variables: { marketId },
+  });
 
   const {
     data: marketData,
@@ -42,7 +47,11 @@ export const DealTicketContainer = ({
     loading: marketDataLoading,
     reload,
   } = useStaticMarketData(marketId);
-  const { data: marketPrice } = useMarketPrice(market?.id);
+  const { data: marketPrice } = useMarketPrice(marketId);
+  const { data: markPrice } = useDataProvider({
+    dataProvider: markPriceProvider,
+    variables: { marketId },
+  });
   const create = useVegaTransactionStore((state) => state.create);
   return (
     <AsyncRendererInline
@@ -70,10 +79,15 @@ export const DealTicketContainer = ({
           ) : (
             <DealTicket
               {...props}
+              riskFactors={market.riskFactors}
+              scalingFactors={
+                market.tradableInstrument.marginCalculator?.scalingFactors
+              }
               market={market}
               marketPrice={marketPrice}
+              markPrice={markPrice}
               marketData={marketData}
-              submit={(orderSubmission) => create({ orderSubmission })}
+              submit={(transaction) => create(transaction)}
             />
           )}
         </>

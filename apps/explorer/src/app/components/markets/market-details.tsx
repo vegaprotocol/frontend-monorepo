@@ -6,6 +6,7 @@ import {
   LiquiditySLAParametersInfoPanel,
   MarginScalingFactorsPanel,
   PriceMonitoringBoundsInfoPanel,
+  PriceMonitoringSettingsInfoPanel,
   SuccessionLineInfoPanel,
   getDataSourceSpecForSettlementData,
   getDataSourceSpecForTradingTermination,
@@ -21,7 +22,6 @@ import {
   RiskModelInfoPanel,
   SettlementAssetInfoPanel,
 } from '@vegaprotocol/markets';
-import { MarketInfoTable } from '@vegaprotocol/markets';
 import type { DataSourceFragment } from '@vegaprotocol/markets';
 import isEqual from 'lodash/isEqual';
 
@@ -74,27 +74,14 @@ export const MarketDetails = ({ market }: { market: MarketInfoWithData }) => {
       <MarginScalingFactorsPanel market={market} />
       <h2 className={headerClassName}>{t('Risk factors')}</h2>
       <RiskFactorsInfoPanel market={market} />
-      {(market.data?.priceMonitoringBounds || []).map((trigger, i) => (
-        <>
-          <h2 className={headerClassName}>
-            {t('Price monitoring bounds %s', [(i + 1).toString()])}
-          </h2>
-          <PriceMonitoringBoundsInfoPanel
-            market={market}
-            triggerIndex={i + 1}
-          />
-        </>
-      ))}
-      {(market.priceMonitoringSettings?.parameters?.triggers || []).map(
-        (trigger, i) => (
-          <>
-            <h2 className={headerClassName}>
-              {t('Price monitoring settings %s', [(i + 1).toString()])}
-            </h2>
-            <MarketInfoTable data={trigger} key={i} />
-          </>
-        )
-      )}
+      <h2 className={headerClassName}>{t('Price monitoring bounds')}</h2>
+      <div className="mt-3">
+        <PriceMonitoringBoundsInfoPanel market={market} />
+      </div>
+      <h2 className={headerClassName}>{t('Price monitoring settings')}</h2>
+      <div className="mt-3">
+        <PriceMonitoringSettingsInfoPanel market={market} />
+      </div>
       <h2 className={headerClassName}>{t('Liquidation strategy')}</h2>
       <LiquidationStrategyInfoPanel market={market} />
       <h2 className={headerClassName}>{t('Liquidity monitoring')}</h2>

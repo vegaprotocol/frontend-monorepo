@@ -15,7 +15,7 @@ export const DEFAULT_AGGREGATION_DAYS = 30;
 export type Role = 'referrer' | 'referee';
 type UseReferralArgs = (
   | { code: string | undefined }
-  | { pubKey: string | null; role: Role }
+  | { pubKey: string | undefined; role: Role }
 ) & {
   aggregationEpochs?: number;
 };
@@ -188,7 +188,7 @@ const retrieveReferralSetData = (data: ReferralSetsQuery | undefined) =>
     ? data.referralSets.edges[0]?.node
     : undefined;
 
-export const useIsInReferralSet = (pubKey: string | null) => {
+export const useIsInReferralSet = (pubKey: string | undefined) => {
   const [asRefereeVariables, asRefereeSkip] = prepareVariables({
     pubKey,
     role: 'referee',

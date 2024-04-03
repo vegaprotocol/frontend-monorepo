@@ -80,14 +80,16 @@ export const TradingModeTooltip = ({
       return (
         <section data-testid="trading-mode-tooltip">
           <p
-            className={classNames('flex flex-col', {
+            className={classNames('flex flex-col items-start gap-2', {
               'mb-4': Boolean(compiledGrid),
             })}
           >
-            {isValid(enactmentDate) && isAfter(new Date(), enactmentDate) ? (
+            {enactmentDate &&
+            isValid(enactmentDate) &&
+            isAfter(new Date(), enactmentDate) ? (
               <>
                 <span
-                  className="justify-center font-bold my-2"
+                  className="justify-center font-bold"
                   data-testid="opening-auction-sub-status"
                 >
                   {`${Schema.MarketTradingModeMapping[marketTradingMode]}: ${t(
@@ -104,7 +106,7 @@ export const TradingModeTooltip = ({
               <>
                 {isValid(enactmentDate) && (
                   <span
-                    className="justify-center font-bold my-2"
+                    className="justify-center font-bold"
                     data-testid="opening-auction-sub-status"
                   >
                     {`${
@@ -122,10 +124,7 @@ export const TradingModeTooltip = ({
               </>
             )}
             {DocsLinks && (
-              <ExternalLink
-                href={DocsLinks.AUCTION_TYPE_OPENING}
-                className="ml-1"
-              >
+              <ExternalLink href={DocsLinks.AUCTION_TYPE_OPENING}>
                 {t('Find out more')}
               </ExternalLink>
             )}

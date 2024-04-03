@@ -20,5 +20,12 @@
     "jest.config.ts",
     "__mocks__"
   ],
-  "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx"]
+  "include": [
+    "**/*.js",
+    "**/*.jsx",
+    "**/*.ts",
+    "**/*.tsx",
+    "../utils/src/lib/step.ts",
+    "src/components/deal-ticket/deal-ticket.spec.tsx.disabled"
+  ]
 }

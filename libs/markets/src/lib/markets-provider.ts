@@ -4,10 +4,12 @@ import {
   makeDerivedDataProvider,
   useDataProvider,
 } from '@vegaprotocol/data-provider';
+import { ENV, Networks } from '@vegaprotocol/environment';
 import {
   MarketsDocument,
   type MarketsQuery,
   type MarketFieldsFragment,
+  MarketsMainnetDocument,
 } from './__generated__/markets';
 import { type MarketsCandlesQueryVariables } from './__generated__/markets-candles';
 
@@ -25,9 +27,9 @@ import {
 import { useMemo } from 'react';
 import * as Schema from '@vegaprotocol/types';
 import {
-  filterAndSortClosedMarkets,
+  filterClosedMarkets,
   filterAndSortMarkets,
-  filterAndSortProposedMarkets,
+  filterProposedMarkets,
 } from './market-utils';
 import type { Candle } from './market-candles-provider';
 
@@ -42,9 +44,12 @@ export const marketsProvider = makeDataProvider<
   never,
   never
 >({
-  query: MarketsDocument,
+  query:
+    // Mainnet does not support tickSize, and a query for tickSize on a market will completely fail
+    ENV.VEGA_ENV === Networks.MAINNET
+      ? MarketsMainnetDocument
+      : MarketsDocument,
   getData,
-  fetchPolicy: 'cache-first',
   errorPolicy: 'all',
 });
 
@@ -105,20 +110,27 @@ export const marketWithDataProvider = makeDerivedDataProvider<
   };
 });
 
-export const activeMarketsProvider = makeDerivedDataProvider<Market[], never>(
-  [marketsProvider],
-  ([markets]) => filterAndSortMarkets(markets)
+export const marketsWithDataProvider = makeDerivedDataProvider<
+  MarketMaybeWithData[],
+  never
+>([marketsProvider, marketsDataProvider], (parts) =>
+  addData(parts[0] as Market[], parts[1] as MarketData[])
 );
 
-export const closedMarketsProvider = makeDerivedDataProvider<Market[], never>(
-  [marketsProvider],
-  ([markets]) => filterAndSortClosedMarkets(markets)
-);
+export const activeMarketsProvider = makeDerivedDataProvider<
+  MarketMaybeWithData[],
+  never
+>([marketsWithDataProvider], ([markets]) => filterAndSortMarkets(markets));
 
-export const proposedMarketsProvider = makeDerivedDataProvider<Market[], never>(
-  [marketsProvider],
-  ([markets]) => filterAndSortProposedMarkets(markets)
-);
+export const closedMarketsProvider = makeDerivedDataProvider<
+  MarketMaybeWithData[],
+  never
+>([marketsWithDataProvider], ([markets]) => filterClosedMarkets(markets));
+
+export const proposedMarketsProvider = makeDerivedDataProvider<
+  MarketMaybeWithData[],
+  never
+>([marketsWithDataProvider], ([markets]) => filterProposedMarkets(markets));
 
 export type MarketMaybeWithCandles = Market & { candles?: Candle[] };
 
@@ -132,7 +144,7 @@ const addCandles = <T extends Market>(
       ?.candles,
   }));
 
-export const marketsWithCandlesProvider = makeDerivedDataProvider<
+export const activeMarketsWithCandlesProvider = makeDerivedDataProvider<
   MarketMaybeWithCandles[],
   never,
   MarketsCandlesQueryVariables
@@ -152,28 +164,7 @@ const addData = <T extends Market>(markets: T[], marketsData: MarketData[]) =>
     data: marketsData.find((data) => data.market.id === market.id),
   }));
 
-export const marketsWithDataProvider = makeDerivedDataProvider<
-  MarketMaybeWithData[],
-  never
->([activeMarketsProvider, marketsDataProvider], (parts) =>
-  addData(parts[0] as Market[], parts[1] as MarketData[])
-);
-
-export const closedMarketsWithDataProvider = makeDerivedDataProvider<
-  MarketMaybeWithData[],
-  never
->([closedMarketsProvider, marketsDataProvider], (parts) =>
-  addData(parts[0] as Market[], parts[1] as MarketData[])
-);
-
-export const allMarketsWithDataProvider = makeDerivedDataProvider<
-  MarketMaybeWithData[],
-  never
->([marketsProvider, marketsDataProvider], (parts) =>
-  addData(parts[0] as Market[], parts[1] as MarketData[])
-);
-
-export const allMarketsWithLiveDataProvider = makeDerivedDataProvider<
+export const marketsWithLiveDataProvider = makeDerivedDataProvider<
   MarketMaybeWithData[],
   MarketMaybeWithData,
   { marketIds: string[] }

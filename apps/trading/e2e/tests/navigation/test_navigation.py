@@ -52,8 +52,8 @@ def test_navigation_mobile(page: Page):
     wallet_button = navbar.get_by_test_id("navbar-mobile-wallet")
     expect(wallet_button).to_be_visible()
     wallet_button.click()
-    dialog = page.get_by_test_id("dialog-content")
-    expect(dialog.get_by_test_id("wallet-dialog-title")).to_be_visible()
+
+    expect(page.get_by_test_id("dialog-content").nth(1)).to_be_visible()
     # endregion
 
 

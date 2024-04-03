@@ -2,7 +2,7 @@ import { ErrorBoundary } from '../../components/error-boundary';
 import { usePageTitle } from '../../lib/hooks/use-page-title';
 import { Box } from '../../components/competitions/box';
 import { useT } from '../../lib/use-t';
-import { useVegaWallet, useVegaWalletDialogStore } from '@vegaprotocol/wallet';
+import { useVegaWallet, useDialogStore } from '@vegaprotocol/wallet-react';
 import {
   Intent,
   Loader,
@@ -24,9 +24,7 @@ export const CompetitionsUpdateTeam = () => {
   const t = useT();
   usePageTitle([t('Competitions'), t('Update a team')]);
   const { pubKey, isReadOnly } = useVegaWallet();
-  const openWalletDialog = useVegaWalletDialogStore(
-    (store) => store.openVegaWalletDialog
-  );
+  const openWalletDialog = useDialogStore((store) => store.open);
   const { teamId } = useParams<{ teamId: string }>();
   if (!teamId) {
     return <Navigate to={Links.COMPETITIONS()} />;

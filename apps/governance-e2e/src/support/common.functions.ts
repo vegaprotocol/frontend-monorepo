@@ -102,6 +102,12 @@ export function turnTelemetryOff() {
   );
 }
 
+export function setRiskAccepted() {
+  cy.window().then((win) =>
+    win.localStorage.setItem('vega_wallet_risk_accepted', 'true')
+  );
+}
+
 export function dissociateFromSecondWalletKey() {
   const secondWalletKey = Cypress.env('vegaWalletPublicKey2Short');
   cy.getByTestId('vega-in-wallet')

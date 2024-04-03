@@ -1,4 +1,4 @@
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useWeb3React } from '@web3-react/core';
 import { EthConnectPrompt } from '../../../components/eth-connect-prompt';
 import { DisassociatePage } from './components/disassociate-page';

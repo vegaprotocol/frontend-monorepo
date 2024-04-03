@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { VegaWalletContext } from '@vegaprotocol/wallet';
 import {
   act,
   fireEvent,
@@ -17,17 +16,23 @@ import type { OrdersQuery } from '@vegaprotocol/orders';
 import {
   DealTicketType,
   useDealTicketFormValues,
-} from '../../hooks/use-form-values';
+} from '@vegaprotocol/react-helpers';
 import * as positionsTools from '@vegaprotocol/positions';
 import { OrdersDocument } from '@vegaprotocol/orders';
 import { formatForInput } from '@vegaprotocol/utils';
 import type { PartialDeep } from 'type-fest';
-import type { Market } from '@vegaprotocol/markets';
+import type { Market, MarketInfo } from '@vegaprotocol/markets';
 import type { MarketData } from '@vegaprotocol/markets';
+import {
+  MockedWalletProvider,
+  mockConfig,
+} from '@vegaprotocol/wallet-react/testing';
 
 jest.mock('zustand');
 jest.mock('./deal-ticket-fee-details', () => ({
   DealTicketFeeDetails: () => <div data-testid="deal-ticket-fee-details" />,
+}));
+jest.mock('./deal-ticket-margin-details', () => ({
   DealTicketMarginDetails: () => (
     <div data-testid="deal-ticket-margin-details" />
   ),
@@ -44,10 +49,10 @@ function generateJsx(
   marketOverrides: PartialDeep<Market> = {},
   marketDataOverrides: Partial<MarketData> = {}
 ) {
-  const joinedMarket: Market = {
+  const joinedMarket: MarketInfo = {
     ...market,
     ...marketOverrides,
-  } as Market;
+  } as MarketInfo;
 
   const joinedMarketData: MarketData = {
     ...marketData,
@@ -56,15 +61,25 @@ function generateJsx(
 
   return (
     <MockedProvider mocks={[...mocks]}>
-      <VegaWalletContext.Provider value={{ pubKey, isReadOnly: false } as any}>
+      <MockedWalletProvider>
         <DealTicket
+          riskFactors={{
+            market: market.id,
+            short: '1.046438713957377',
+            long: '0.526943480689886',
+          }}
+          scalingFactors={{
+            searchLevel: 1.1,
+            initialMargin: 1.5,
+            collateralRelease: 1.7,
+          }}
           market={joinedMarket}
           marketData={joinedMarketData}
           marketPrice={marketPrice}
           submit={submit}
           onDeposit={jest.fn()}
         />
-      </VegaWalletContext.Provider>
+      </MockedWalletProvider>
     </MockedProvider>
   );
 }
@@ -73,12 +88,19 @@ describe('DealTicket', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     localStorage.clear();
+    mockConfig.store.setState({ pubKey });
+  });
+
+  afterEach(() => {
+    act(() => {
+      mockConfig.reset();
+    });
   });
 
   it('check filtering of active orders', async () => {
     const mockOrders: OrdersQuery = {
       party: {
-        id: 'pubKey',
+        id: pubKey,
         ordersConnection: {
           edges: [
             {
@@ -828,9 +850,8 @@ describe('DealTicket', () => {
     ];
 
     it.each(states)('handles state %s correctly', async (marketState) => {
-      const marketOverrides = { state: marketState };
       const marketDataOverrides = { marketState: marketState };
-      render(generateJsx([], marketOverrides, marketDataOverrides));
+      render(generateJsx([], {}, marketDataOverrides));
 
       const text = `This market is ${marketState
         .split('_')
@@ -873,7 +894,7 @@ describe('DealTicket', () => {
         'deal-ticket-error-message-price'
       );
       expect(errorMessage).toHaveTextContent(
-        'Price accepts up to 2 decimal places'
+        'Price must be a multiple of 0.01 for this market'
       );
     });
   });

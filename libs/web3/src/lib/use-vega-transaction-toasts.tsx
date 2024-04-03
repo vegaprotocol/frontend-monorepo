@@ -1,25 +1,9 @@
 import { useCallback } from 'react';
 import first from 'lodash/first';
 import compact from 'lodash/compact';
-import type {
-  BatchMarketInstructionSubmissionBody,
-  OrderAmendment,
-  OrderSubmission,
-  StopOrdersSubmission,
-  StopOrderSetup,
-  UpdateMarginMode,
-} from '@vegaprotocol/wallet';
-import type {
-  OrderTxUpdateFieldsFragment,
-  WithdrawalBusEventFieldsFragment,
-} from './__generated__/TransactionResult';
-import type { VegaStoredTxState } from './use-vega-transaction-store';
 import {
   isTransferTransaction,
   isBatchMarketInstructionsTransaction,
-  ClientErrors,
-  useReconnectVegaWallet,
-  WalletError,
   isOrderAmendmentTransaction,
   isOrderCancellationTransaction,
   isOrderSubmissionTransaction,
@@ -29,7 +13,20 @@ import {
   isReferralRelatedTransaction,
   isMarginModeUpdateTransaction,
   MarginMode,
+  type BatchMarketInstructionSubmissionBody,
+  type OrderAmendment,
+  type OrderSubmission,
+  type StopOrdersSubmission,
+  type StopOrderSetup,
+  type UpdateMarginMode,
+  ConnectorErrors,
+  ConnectorError,
 } from '@vegaprotocol/wallet';
+import type {
+  OrderTxUpdateFieldsFragment,
+  WithdrawalBusEventFieldsFragment,
+} from './__generated__/TransactionResult';
+import type { VegaStoredTxState } from './use-vega-transaction-store';
 import { useVegaTransactionStore } from './use-vega-transaction-store';
 import { VegaTxStatus } from './types';
 import type { Toast, ToastContent } from '@vegaprotocol/ui-toolkit';
@@ -62,6 +59,7 @@ import { useWithdrawalApprovalDialog } from './withdrawal-approval-dialog';
 import * as Schema from '@vegaprotocol/types';
 import { Trans } from 'react-i18next';
 import { useT } from './use-t';
+import { useReconnect } from '@vegaprotocol/wallet-react';
 
 export const getRejectionReason = (
   order: OrderTxUpdateFieldsFragment,
@@ -903,20 +901,20 @@ const VegaTxCompleteToastsContent = ({ tx }: VegaTxToastContentProps) => {
 const VegaTxErrorToastContent = ({ tx }: VegaTxToastContentProps) => {
   const t = useT();
   let label = t('Error occurred');
-  let errorMessage =
-    tx.error instanceof WalletError
-      ? `${tx.error.title}: ${tx.error.data}`
-      : tx.error?.message;
+  let errorMessage = tx.error?.message;
+  const errorData = tx.error instanceof ConnectorError ? tx.error.data : '';
 
-  const reconnectVegaWallet = useReconnectVegaWallet();
+  const reconnectVegaWallet = useReconnect();
 
   const orderRejection = tx.order && getRejectionReason(tx.order, t);
+
   const walletNoConnectionCodes = [
-    ClientErrors.NO_SERVICE.code,
-    ClientErrors.NO_CLIENT.code,
+    ConnectorErrors.noWallet.code,
+    ConnectorErrors.noConnector.code,
   ];
-  const walletError =
-    tx.error instanceof WalletError &&
+
+  const noConnectionError =
+    tx.error instanceof ConnectorError &&
     walletNoConnectionCodes.includes(tx.error.code);
 
   if (orderRejection) {
@@ -928,7 +926,8 @@ const VegaTxErrorToastContent = ({ tx }: VegaTxToastContentProps) => {
       }
     );
   }
-  if (walletError) {
+
+  if (noConnectionError) {
     label = t('Wallet disconnected');
     errorMessage = t('The connection to your Vega Wallet has been lost.');
   }
@@ -937,7 +936,8 @@ const VegaTxErrorToastContent = ({ tx }: VegaTxToastContentProps) => {
     <>
       <ToastHeading>{label}</ToastHeading>
       <p className="first-letter:uppercase">{errorMessage}</p>
-      {walletError && (
+      {errorData && <p className="first-letter:uppercase">{errorData}</p>}
+      {noConnectionError && (
         <Button size="xs" onClick={reconnectVegaWallet}>
           {t('Connect vega wallet')}
         </Button>

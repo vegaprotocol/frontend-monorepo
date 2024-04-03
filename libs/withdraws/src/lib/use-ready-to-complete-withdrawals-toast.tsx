@@ -1,5 +1,5 @@
 import { useDataProvider } from '@vegaprotocol/data-provider';
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import BigNumber from 'bignumber.js';
 import type { Toast } from '@vegaprotocol/ui-toolkit';
 import { Button, Intent, Panel, ToastHeading } from '@vegaprotocol/ui-toolkit';

@@ -1,6 +1,5 @@
 import type { InMemoryCacheConfig } from '@apollo/client';
 import {
-  DocsLinks,
   NetworkLoader,
   useEnvironment,
   useNodeSwitcherStore,
@@ -9,9 +8,10 @@ import { useEffect, type ReactNode, useState } from 'react';
 import { Web3Provider } from './web3-provider';
 import { useT } from '../../lib/use-t';
 import { DataLoader } from './data-loader';
+import { WalletProvider } from '@vegaprotocol/wallet-react';
+import { useVegaWalletConfig } from '../../lib/hooks/use-vega-wallet-config';
 import { Trans } from 'react-i18next';
 import { Button, Loader, Splash, VLogo } from '@vegaprotocol/ui-toolkit';
-import { VegaWalletProvider, useChainId } from '@vegaprotocol/wallet';
 
 const Failure = ({ reason }: { reason?: ReactNode }) => {
   const t = useT();
@@ -79,17 +79,11 @@ const Loading = () => {
 export const Bootstrapper = ({ children }: { children: ReactNode }) => {
   const t = useT();
 
-  const {
-    error,
-    VEGA_URL,
-    VEGA_ENV,
-    VEGA_WALLET_URL,
-    VEGA_EXPLORER_URL,
-    MOZILLA_EXTENSION_URL,
-    CHROME_EXTENSION_URL,
-  } = useEnvironment();
-
-  const chainId = useChainId(VEGA_URL);
+  const { error, VEGA_URL } = useEnvironment((state) => ({
+    error: state.error,
+    VEGA_URL: state.VEGA_URL,
+  }));
+  const config = useVegaWalletConfig();
 
   const ERR_DATA_LOADER = (
     <Trans
@@ -119,31 +113,10 @@ export const Bootstrapper = ({ children }: { children: ReactNode }) => {
           skeleton={<Loading />}
           failure={<Failure reason={t('Could not configure web3 provider')} />}
         >
-          {VEGA_URL &&
-          VEGA_WALLET_URL &&
-          VEGA_EXPLORER_URL &&
-          CHROME_EXTENSION_URL &&
-          MOZILLA_EXTENSION_URL &&
-          DocsLinks &&
-          chainId ? (
-            <VegaWalletProvider
-              config={{
-                network: VEGA_ENV,
-                vegaUrl: VEGA_URL,
-                chainId,
-                vegaWalletServiceUrl: VEGA_WALLET_URL,
-                links: {
-                  explorer: VEGA_EXPLORER_URL,
-                  concepts: DocsLinks.VEGA_WALLET_CONCEPTS_URL,
-                  chromeExtensionUrl: CHROME_EXTENSION_URL,
-                  mozillaExtensionUrl: MOZILLA_EXTENSION_URL,
-                },
-              }}
-            >
-              {children}
-            </VegaWalletProvider>
+          {config ? (
+            <WalletProvider config={config}>{children}</WalletProvider>
           ) : (
-            <Failure reason={t('No suitable node found')} />
+            <Failure reason={t('Could not configure the wallet provider')} />
           )}
         </Web3Provider>
       </DataLoader>
@@ -171,6 +144,30 @@ const cacheConfig: InMemoryCacheConfig = {
     Product: {
       keyFields: ['settlementAsset', ['id']],
     },
+    Market: {
+      fields: {
+        /**
+         * Intercept cache field for tickSize because mainnet specific queries have been
+         * set up, marking this field as client only. The following can be removed when mainnet
+         * supports ticksize:
+         *
+         * 1. The typePolicy for tickSize below
+         * 2. The MarketInfoMainnet query in libs/markets/src/lib/components/market-info/MarketInfo.graphql
+         * 3. The ternary to switch queries in libs/markets/src/lib/components/market-info/market-info-data-provider.ts
+         * 4. The MarketsMainnet query in libs/markets/src/lib/markets.graphql
+         * 5. The ternary to switch queries in libs/markets/src/lib/markets-provider.ts
+         */
+        tickSize: {
+          read(value) {
+            // value is not present, we have probably marked tickSize as a client only field
+            if (!value) return '1';
+
+            // Use fetch response value
+            return value;
+          },
+        },
+      },
+    },
     MarketData: {
       keyFields: ['market', ['id']],
     },
@@ -196,6 +193,9 @@ const cacheConfig: InMemoryCacheConfig = {
     Fees: {
       keyFields: false,
     },
+    PartyProfile: {
+      keyFields: ['partyId'],
+    },
     // The folling types are cached by the data provider and not by apollo
     PositionUpdate: {
       keyFields: false,
@@ -210,6 +210,12 @@ const cacheConfig: InMemoryCacheConfig = {
       keyFields: false,
     },
     Game: {
+      keyFields: false,
+    },
+    RecurringTransfer: {
+      keyFields: false,
+    },
+    RecurringGovernanceTransfer: {
       keyFields: false,
     },
   },
