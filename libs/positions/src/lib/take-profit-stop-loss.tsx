@@ -21,7 +21,12 @@ import {
   VegaTxStatus,
 } from '@vegaprotocol/web3';
 import { Dialog } from '@vegaprotocol/ui-toolkit';
-import { type FormEventHandler, useEffect, useState } from 'react';
+import {
+  type FormEventHandler,
+  useEffect,
+  useState,
+  type ReactNode,
+} from 'react';
 
 import { useOpenVolume } from './use-open-volume';
 import {
@@ -32,7 +37,9 @@ import {
 import {
   addDecimalsFormatNumber,
   determinePriceStep,
+  formatNumber,
   removeDecimal,
+  toBigNum,
 } from '@vegaprotocol/utils';
 import {
   type Market,
@@ -41,6 +48,8 @@ import {
   getQuoteName,
 } from '@vegaprotocol/markets';
 import { useT } from '../use-t';
+import { signedNumberCssClass } from '@vegaprotocol/datagrid';
+import { Trans } from 'react-i18next';
 
 interface TakeProfitStopLossDialogProps {
   open: boolean;
@@ -51,8 +60,39 @@ interface TakeProfitStopLossDialogProps {
 
 const POLLING_TIME = 2000;
 
+const ProfitAndLoss = ({
+  averageEntryPrice,
+  exitPrice,
+  openVolume,
+  size,
+  decimalPlaces,
+  positionDecimalPlaces,
+}: {
+  averageEntryPrice?: string;
+  exitPrice: string;
+  openVolume?: string;
+  size: string;
+  decimalPlaces: number;
+  positionDecimalPlaces: number;
+}) => {
+  const profitAndLoss = toBigNum(exitPrice || 0, decimalPlaces)
+    .minus(toBigNum(averageEntryPrice || 0, decimalPlaces))
+    .multipliedBy(toBigNum(openVolume || 0, positionDecimalPlaces))
+    .multipliedBy(size);
+
+  return profitAndLoss.isNaN() ? (
+    '-'
+  ) : (
+    <span className={signedNumberCssClass(profitAndLoss.toNumber())}>
+      {formatNumber(profitAndLoss)}
+    </span>
+  );
+};
+
 export const Setup = ({
   allocation,
+  averageEntryPrice,
+  openVolume,
   create,
   market,
   side,
@@ -62,6 +102,8 @@ export const Setup = ({
   market: Market;
   side: Schema.Side;
   triggerDirection: Schema.StopOrderTriggerDirection;
+  averageEntryPrice?: string;
+  openVolume?: string;
   allocation?: number;
 }) => {
   const t = useT();
@@ -74,7 +116,7 @@ export const Setup = ({
   ).find((transaction) => {
     if (
       !transaction ||
-      [VegaTxStatus.Error, VegaTxStatus.Complete].includes(
+      ![VegaTxStatus.Requested, VegaTxStatus.Pending].includes(
         transaction.status
       ) ||
       !isStopOrdersSubmissionTransaction(transaction?.body)
@@ -108,7 +150,7 @@ export const Setup = ({
     };
     const stopOrderSetup: StopOrderSetup = {
       sizeOverrideSetting: SizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION,
-      sizeOverrideValue: { percentage: '1' },
+      sizeOverrideValue: { percentage: (Number(size) / 100).toString() },
       price: removeDecimal(price, market.decimalPlaces),
       orderSubmission: {
         marketId: market.id,
@@ -131,6 +173,45 @@ export const Setup = ({
       stopOrdersSubmission,
     });
   };
+
+  let info: ReactNode = null;
+  if (averageEntryPrice && openVolume && price && size) {
+    const values = {
+      price,
+      symbol: quoteName,
+    };
+    const components = [
+      <ProfitAndLoss
+        averageEntryPrice={averageEntryPrice}
+        openVolume={openVolume}
+        decimalPlaces={market.decimalPlaces}
+        exitPrice={removeDecimal(price, market.decimalPlaces)}
+        positionDecimalPlaces={market.positionDecimalPlaces}
+        size={(Number(size) / 100).toString()}
+      />,
+    ];
+    const takeProfit =
+      (side === Schema.Side.SIDE_SELL &&
+        triggerDirection ===
+          Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE) ||
+      (side === Schema.Side.SIDE_BUY &&
+        triggerDirection ===
+          Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_FALLS_BELOW);
+    info = (
+      <p className="text-xs mb-2">
+        <Trans
+          i18nKey={takeProfit ? 'takeProfitSummary' : 'stopLossSummary'}
+          defaults={
+            takeProfit
+              ? 'When the mark price rises above {{ price }} {{ symbol }} it will trigger a Take Profit order to close this position for an estimated profit of <0/> {{ symbol }}.'
+              : 'When the mark price falls below {{ price }} {{ symbol }} it will trigger a Stop Loss order to close this position with an estimated loss of <0/> {{ symbol }}.'
+          }
+          values={values}
+          components={components}
+        />
+      </p>
+    );
+  }
 
   return (
     <form onSubmit={onSubmit}>
@@ -161,13 +242,18 @@ export const Setup = ({
           />
         </div>
       </div>
+      {info}
       <Button
         disabled={!!transaction}
         className="w-full"
         type="submit"
-        data-testid="confirm-isolated-margin-mode"
+        data-testid="submit-tpsl"
       >
-        {transaction ? t('Processing') : t('Confirm')}
+        {transaction
+          ? transaction.status === VegaTxStatus.Requested
+            ? t('Action required')
+            : t('Awaiting confirmation')
+          : t('Confirm')}
       </Button>
     </form>
   );
@@ -175,33 +261,55 @@ export const Setup = ({
 
 const StopOrder = ({
   stopOrder,
-  decimalPlaces,
-  symbol,
+  market,
   create,
+  averageEntryPrice,
+  openVolume,
 }: {
   stopOrder: StopOrderFieldsFragment;
-  decimalPlaces?: Market['decimalPlaces'];
-  symbol?: string | null;
+  market: Market;
   create: VegaTransactionStore['create'];
+  averageEntryPrice?: string;
+  openVolume?: string;
 }) => {
+  const symbol = getQuoteName(market);
+  const price =
+    stopOrder.trigger.__typename === 'StopOrderPrice' &&
+    stopOrder.trigger.price;
   const t = useT();
   return (
-    <div className="flex justify-between">
-      {t('Reduce {{value}}% at {{price}} {{symbol}}', {
-        value: (Number(stopOrder.sizeOverrideValue) * 100).toFixed(),
-        price:
-          stopOrder.trigger.__typename === 'StopOrderPrice' &&
-          decimalPlaces !== undefined
-            ? addDecimalsFormatNumber(stopOrder.trigger.price, decimalPlaces)
-            : '',
-        symbol,
-      })}
+    <div className="flex justify-between text-xs items-center gap-3 px-3 py-1.5 dark:bg-vega-cdark-800 bg-vega-clight-800 mb-0.5">
+      <span>
+        <Trans
+          i18nKey={'tpSlOrder'}
+          defaults={
+            'Reduce {{value}}% at {{price}} {{symbol}} for estimated PnL of <0/> {{symbol}}'
+          }
+          values={{
+            value: (Number(stopOrder.sizeOverrideValue) * 100).toFixed(),
+            price:
+              price && addDecimalsFormatNumber(price, market.decimalPlaces),
+            symbol,
+          }}
+          components={[
+            <ProfitAndLoss
+              averageEntryPrice={averageEntryPrice}
+              openVolume={openVolume}
+              decimalPlaces={market.decimalPlaces}
+              exitPrice={price || '0'}
+              positionDecimalPlaces={market.positionDecimalPlaces}
+              size={stopOrder.sizeOverrideValue || '0'}
+            />,
+          ]}
+        />
+      </span>
       <ButtonLink
-        data-testid="close-position"
+        data-testid="cancel-stop-order"
         onClick={() =>
           create({
             stopOrdersCancellation: {
               stopOrderId: stopOrder.id,
+              marketId: market.id,
             },
           })
         }
@@ -214,53 +322,60 @@ const StopOrder = ({
 };
 
 const StopOrdersList = ({
+  allocation,
   stopOrders,
-  decimalPlaces,
-  symbol,
   create,
+  ...props
 }: {
   stopOrders?: StopOrderFieldsFragment[];
-  decimalPlaces?: Market['decimalPlaces'];
-  symbol?: string | null;
   create: VegaTransactionStore['create'];
+  allocation?: number;
+  market: Market;
+  averageEntryPrice?: string;
+  openVolume?: string;
 }) => {
   const t = useT();
+  if (!stopOrders?.length) {
+    return null;
+  }
   return (
-    <>
-      {stopOrders?.length && (
+    <div className="mb-3">
+      <div className="flex justify-between text-xs px-3 pb-1.5">
+        <span>
+          {t('Allocation: {{percentage}}%', { percentage: allocation })}
+        </span>
         <ButtonLink
-          data-testid="close-position"
+          data-testid="cancel-all"
           onClick={() =>
             create(
               stopOrders.length > 1
                 ? {
                     batchMarketInstructions: {
                       stopOrdersCancellation: stopOrders?.map(
-                        ({ id: stopOrderId }) => ({ stopOrderId })
+                        ({ id: stopOrderId }) => ({
+                          stopOrderId,
+                          marketId: props.market.id,
+                        })
                       ),
                     },
                   }
                 : {
                     stopOrdersCancellation: {
                       stopOrderId: stopOrders[0].id,
+                      marketId: props.market.id,
                     },
                   }
             )
           }
-          title={t('Close all')}
+          title={t('Cancel all')}
         >
-          {t('Close all')}
+          {t('Cancel all')}
         </ButtonLink>
-      )}
+      </div>
       {stopOrders?.map((stopOrder) => (
-        <StopOrder
-          stopOrder={stopOrder}
-          decimalPlaces={decimalPlaces}
-          symbol={symbol}
-          create={create}
-        />
+        <StopOrder stopOrder={stopOrder} create={create} {...props} />
       ))}
-    </>
+    </div>
   );
 };
 
@@ -296,13 +411,14 @@ export const TakeProfitStopLossDialog = ({
   const stopLossTrigger =
     takeProfitTrigger ===
     Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_FALLS_BELOW
-      ? Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_FALLS_BELOW
-      : Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE;
+      ? Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE
+      : Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_FALLS_BELOW;
 
   const takeProfitStopOrders = activeStopOrders?.filter(
     (order) =>
-      order.sizeOverrideSetting ===
-        Schema.StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION &&
+      /*order.sizeOverrideSetting ===
+        Schema.StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION &&*/
+      (order.sizeOverrideValue = '0.1') &&
       order.triggerDirection === takeProfitTrigger
   );
 
@@ -314,8 +430,9 @@ export const TakeProfitStopLossDialog = ({
 
   const stopLossStopOrders = activeStopOrders?.filter(
     (order) =>
-      order.sizeOverrideSetting ===
-        Schema.StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION &&
+      /*order.sizeOverrideSetting ===
+        Schema.StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION &&*/
+      (order.sizeOverrideValue = '0.1') &&
       order.triggerDirection === stopLossTrigger
   );
 
@@ -351,20 +468,28 @@ export const TakeProfitStopLossDialog = ({
         }
       }}
     >
-      <dl>
-        <dt>{t('Symbol')}</dt>
-        <dd>{market?.tradableInstrument.instrument.code}</dd>
-        <dt>{t('Entry price')}</dt>
-        <dd>
+      <dl className="mb-6 grid grid-cols-2 gap-1 font-alpha text-vega-clight-50 dark:text-vega-cdark-50">
+        <dt className="text-vega-clight-100 dark:text-vega-cdark-100">
+          {t('Symbol')}
+        </dt>
+        <dd className="text-right">
+          {market?.tradableInstrument.instrument.code}
+        </dd>
+        <dt className="text-vega-clight-100 dark:text-vega-cdark-100">
+          {t('Entry price')}
+        </dt>
+        <dd className="text-right">
           {openVolume?.averageEntryPrice &&
             market &&
             `${addDecimalsFormatNumber(
               openVolume.averageEntryPrice,
               market?.decimalPlaces
-            )}} ${quoteName}`}
+            )} ${quoteName}`}
         </dd>
-        <dt>{t('Mark price')}</dt>
-        <dd>
+        <dt className="text-vega-clight-100 dark:text-vega-cdark-100">
+          {t('Mark price')}
+        </dt>
+        <dd className="text-right">
           {markPrice &&
             market &&
             `${addDecimalsFormatNumber(
@@ -373,39 +498,54 @@ export const TakeProfitStopLossDialog = ({
             )} ${quoteName}`}
         </dd>
       </dl>
-      <div>{t('Take profit')}</div>
-      <StopOrdersList
-        stopOrders={takeProfitStopOrders}
-        decimalPlaces={market?.decimalPlaces}
-        create={create}
-        symbol={quoteName}
-      />
-      {market && (
-        <Setup
-          allocation={takeProfitAllocation}
-          create={create}
-          market={market}
-          side={side}
-          triggerDirection={takeProfitTrigger}
-        />
-      )}
-
-      <div className="">{t('Stop loss')}</div>
-      <StopOrdersList
-        stopOrders={stopLossStopOrders}
-        decimalPlaces={market?.decimalPlaces}
-        create={create}
-        symbol={quoteName}
-      />
-      {market && (
-        <Setup
-          allocation={stopLossAllocation}
-          create={create}
-          market={market}
-          side={side}
-          triggerDirection={stopLossTrigger}
-        />
-      )}
+      <hr className="border-vega-clight-500 dark:border-vega-cdark-500 mb-6" />
+      <div className="mb-1">{t('Take profit')}</div>
+      <div className="mb-6">
+        {market && (
+          <StopOrdersList
+            stopOrders={takeProfitStopOrders}
+            create={create}
+            market={market}
+            openVolume={openVolume?.openVolume}
+            averageEntryPrice={openVolume?.averageEntryPrice}
+          />
+        )}
+        {market && (
+          <Setup
+            allocation={takeProfitAllocation}
+            create={create}
+            market={market}
+            side={side}
+            triggerDirection={takeProfitTrigger}
+            openVolume={openVolume?.openVolume}
+            averageEntryPrice={openVolume?.averageEntryPrice}
+          />
+        )}
+      </div>
+      <hr className="border-vega-clight-500 dark:border-vega-cdark-500 mb-6" />
+      <div className="mb-1">{t('Stop loss')}</div>
+      <div className="mb-6">
+        {market && (
+          <StopOrdersList
+            stopOrders={stopLossStopOrders}
+            create={create}
+            market={market}
+            openVolume={openVolume?.openVolume}
+            averageEntryPrice={openVolume?.averageEntryPrice}
+          />
+        )}
+        {market && (
+          <Setup
+            allocation={stopLossAllocation}
+            create={create}
+            market={market}
+            side={side}
+            triggerDirection={stopLossTrigger}
+            openVolume={openVolume?.openVolume}
+            averageEntryPrice={openVolume?.averageEntryPrice}
+          />
+        )}
+      </div>
     </Dialog>
   );
 };
