@@ -4,6 +4,7 @@ import {
   TradingButton as Button,
   ButtonLink,
   TradingInput as Input,
+  InputError,
   Pill,
   VegaIcon,
   VegaIconNames,
@@ -21,12 +22,7 @@ import {
   VegaTxStatus,
 } from '@vegaprotocol/web3';
 import { Dialog } from '@vegaprotocol/ui-toolkit';
-import {
-  type FormEventHandler,
-  useEffect,
-  useState,
-  type ReactNode,
-} from 'react';
+import { useEffect, type ReactNode } from 'react';
 
 import { useOpenVolume } from './use-open-volume';
 import {
@@ -40,6 +36,7 @@ import {
   formatNumber,
   removeDecimal,
   toBigNum,
+  useValidateAmount,
 } from '@vegaprotocol/utils';
 import {
   type Market,
@@ -50,6 +47,7 @@ import {
 import { useT } from '../use-t';
 import { signedNumberCssClass } from '@vegaprotocol/datagrid';
 import { Trans } from 'react-i18next';
+import { Controller, useForm } from 'react-hook-form';
 
 interface TakeProfitStopLossDialogProps {
   open: boolean;
@@ -89,6 +87,11 @@ const ProfitAndLoss = ({
   );
 };
 
+interface FormValues {
+  size: string;
+  price: string;
+}
+
 export const Setup = ({
   allocation,
   averageEntryPrice,
@@ -97,6 +100,7 @@ export const Setup = ({
   market,
   side,
   triggerDirection,
+  marketPrice,
 }: {
   create: VegaTransactionStore['create'];
   market: Market;
@@ -105,10 +109,13 @@ export const Setup = ({
   averageEntryPrice?: string;
   openVolume?: string;
   allocation?: number;
+  marketPrice: string | null;
 }) => {
   const t = useT();
-  const [price, setPrice] = useState('');
-  const [size, setSize] = useState('');
+  const { handleSubmit, control, watch } = useForm<FormValues>();
+  const price = watch('price');
+  const size = watch('size');
+  const validateAmount = useValidateAmount();
   const priceStep = determinePriceStep(market);
   const quoteName = getQuoteName(market);
   const transaction = useVegaTransactionStore(
@@ -139,8 +146,7 @@ export const Setup = ({
     }
     return true;
   });
-  const onSubmit: FormEventHandler = (e) => {
-    e.preventDefault();
+  const onSubmit = (values: FormValues) => {
     if (transaction) {
       return;
     }
@@ -150,8 +156,8 @@ export const Setup = ({
     };
     const stopOrderSetup: StopOrderSetup = {
       sizeOverrideSetting: SizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION,
-      sizeOverrideValue: { percentage: (Number(size) / 100).toString() },
-      price: removeDecimal(price, market.decimalPlaces),
+      sizeOverrideValue: { percentage: (Number(values.size) / 100).toString() },
+      price: removeDecimal(values.price, market.decimalPlaces),
       orderSubmission: {
         marketId: market.id,
         reduceOnly: true,
@@ -213,32 +219,106 @@ export const Setup = ({
     );
   }
 
+  const sizeStep = 0.1;
+
   return (
-    <form onSubmit={onSubmit}>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <div className="flex gap-2 mb-2">
         <div className="w-1/2">
-          <Input
-            type="number"
-            id="price-input"
-            className="w-full"
-            min={priceStep}
-            step={priceStep}
-            appendElement={<Pill size="xs">{quoteName}</Pill>}
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
+          <Controller
+            name="price"
+            control={control}
+            rules={{
+              required: t('You need provide a price'),
+              min: {
+                value: priceStep,
+                message: t('Price cannot be lower than {{priceStep}}', {
+                  priceStep,
+                }),
+              },
+              validate: validateAmount(priceStep, 'Price'),
+            }}
+            render={({ field, fieldState }) => {
+              let triggerWarning = false;
+              if (marketPrice && field.value) {
+                const condition =
+                  triggerDirection ===
+                  Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE
+                    ? '>'
+                    : '<';
+                const diff =
+                  BigInt(marketPrice) -
+                  BigInt(removeDecimal(field.value, market.decimalPlaces));
+                if (
+                  (condition === '>' && diff > 0) ||
+                  (condition === '<' && diff < 0)
+                ) {
+                  triggerWarning = true;
+                }
+              }
+              return (
+                <>
+                  <Input
+                    type="number"
+                    id="price-input"
+                    className="w-full"
+                    min={priceStep}
+                    step={priceStep}
+                    appendElement={<Pill size="xs">{quoteName}</Pill>}
+                    hasError={!!fieldState.error}
+                    {...field}
+                  />
+                  {fieldState.error && (
+                    <InputError testId="tpsl-error-message-price">
+                      {fieldState.error.message}
+                    </InputError>
+                  )}
+                  {!fieldState.error && triggerWarning && (
+                    <InputError
+                      intent="warning"
+                      testId="tpsl-warning-message-trigger-price"
+                    >
+                      {t('Stop order will be triggered immediately')}
+                    </InputError>
+                  )}
+                </>
+              );
+            }}
           />
         </div>
         <div className="w-1/2">
-          <Input
-            type="number"
-            id="size-input"
-            className="w-full"
-            min={0.1}
-            max={100 - (allocation ?? 0)}
-            step={0.1}
-            appendElement={<Pill size="xs">%</Pill>}
-            value={size}
-            onChange={(e) => setSize(e.target.value)}
+          <Controller
+            name={'size'}
+            control={control}
+            rules={{
+              required: t('You need to provide a size'),
+              min: {
+                value: sizeStep,
+                message: t('Size cannot be lower than {{sizeStep}}', {
+                  sizeStep,
+                }),
+              },
+              validate: validateAmount(sizeStep, 'Size'),
+            }}
+            render={({ field, fieldState }) => (
+              <>
+                <Input
+                  type="number"
+                  className="w-full"
+                  min={sizeStep}
+                  max={100 - (allocation ?? 0)}
+                  step={sizeStep}
+                  appendElement={<Pill size="xs">%</Pill>}
+                  hasError={!!fieldState.error}
+                  {...field}
+                />
+                {fieldState.error && (
+                  <InputError testId="tpsl-error-message-size">
+                    {fieldState.error.message}
+                  </InputError>
+                )}
+              </>
+            )}
           />
         </div>
       </div>
@@ -515,6 +595,7 @@ export const TakeProfitStopLossDialog = ({
             allocation={takeProfitAllocation}
             create={create}
             market={market}
+            marketPrice={markPrice}
             side={side}
             triggerDirection={takeProfitTrigger}
             openVolume={openVolume?.openVolume}
@@ -539,6 +620,7 @@ export const TakeProfitStopLossDialog = ({
             allocation={stopLossAllocation}
             create={create}
             market={market}
+            marketPrice={markPrice}
             side={side}
             triggerDirection={stopLossTrigger}
             openVolume={openVolume?.openVolume}
