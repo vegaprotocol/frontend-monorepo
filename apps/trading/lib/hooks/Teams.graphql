@@ -10,11 +10,27 @@ fragment TeamsFields on Team {
   totalMembers
 }
 
-query Teams($teamId: ID, $partyId: ID) {
+query Teams($teamId: ID, $partyId: ID, $checkReferrals: Boolean = false) {
   teams(teamId: $teamId, partyId: $partyId) {
     edges {
       node {
         ...TeamsFields
+      }
+    }
+  }
+  referrer: referralSets(referrer: $partyId) @include(if: $checkReferrals) {
+    edges {
+      node {
+        id
+        referrer
+      }
+    }
+  }
+  referee: referralSets(referee: $partyId) @include(if: $checkReferrals) {
+    edges {
+      node {
+        id
+        referrer
       }
     }
   }

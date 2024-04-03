@@ -47,9 +47,11 @@ export const useTeams = (aggregationEpochs = TEAMS_STATS_EPOCHS) => {
       ...(stats.find((s) => s.teamId === t.teamId) || EMPTY_STATS),
     }));
 
-    return orderBy(data, (d) => Number(d.totalQuantumRewards || 0), 'desc').map(
-      (d, i) => ({ ...d, rank: i + 1 })
-    );
+    return orderBy(
+      data,
+      [(d) => Number(d.totalQuantumRewards || 0), 'name'],
+      ['desc', 'asc']
+    ).map((d, i) => ({ ...d, rank: i + 1 }));
   }, [teams, stats]);
 
   return {
