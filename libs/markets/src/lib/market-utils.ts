@@ -117,6 +117,7 @@ export const filterActiveMarkets = (markets: MarketMaybeWithData[]) => {
         MarketState.STATE_ACTIVE,
         MarketState.STATE_SUSPENDED,
         MarketState.STATE_SUSPENDED_VIA_GOVERNANCE,
+        MarketState.STATE_PENDING,
       ].includes(m.data.marketState)
     );
   });
