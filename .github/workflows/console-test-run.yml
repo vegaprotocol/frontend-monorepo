@@ -173,6 +173,15 @@ jobs:
             echo "ENV_FILE=.env"
           fi
       #----------------------------------------------
+      #       update .env file
+      #----------------------------------------------
+      - name: Override .env with .env.main if base ref is main
+        run: |
+          if [[ "${{ github.base_ref }}" == "main" ]]; then
+            cp apps/trading/e2e/.env.main apps/trading/e2e/.env
+            echo "Overridden .env with .env.main"
+          fi
+      #----------------------------------------------
       #  -----  Setup python  -----
       #----------------------------------------------
       - name: Setup Python
