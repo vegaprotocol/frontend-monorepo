@@ -10,12 +10,14 @@ import { type ReferrerStats } from './hooks/use-referrer-stats';
 import { type RefereeStats } from './hooks/use-referee-stats';
 import { QUSDTooltip } from './qusd-tooltip';
 import { NoProgramTile, StatTile, Tile } from './tile';
-import { Loader, Tooltip } from '@vegaprotocol/ui-toolkit';
+import {
+  Loader,
+  TextChildrenTooltip as Tooltip,
+} from '@vegaprotocol/ui-toolkit';
 import { type BenefitTier } from './hooks/use-referral-program';
-import { useTeam } from '../../lib/hooks/use-team';
-import { areTeamGames, useGames } from '../../lib/hooks/use-games';
-import { TeamAvatar } from '../../components/competitions/team-avatar';
-import { TeamStats } from '../../components/competitions/team-stats';
+import { areTeamGames } from '../../lib/hooks/use-games';
+import { TeamCard } from '../../components/competitions/team-card';
+import { useMyTeam } from '../../lib/hooks/use-my-team';
 
 /* Formatters */
 
@@ -144,7 +146,7 @@ export const FinalCommissionTile = ({
     !baseCommission.loading && !finalCommission.loading && !multiplier.loading
       ? `(${percentageFormatter(
           baseCommission.value
-        )} &times; ${multiplier.value.toString()} = ${percentageFormatter(
+        )} * ${multiplier.value.toString()} = ${percentageFormatter(
           finalCommission.value
         )})`
       : undefined;
@@ -207,7 +209,7 @@ export const TotalCommissionTile = ({
                 'Depending on data node retention you may not be able see the full 30 days'
               )}
             >
-              <span>last 30 epochs</span>
+              last 30 epochs
             </Tooltip>,
           ]}
         />
@@ -420,21 +422,23 @@ export const NoProgramTileFor = ({ tile }: { tile: string }) => {
 /** Teams */
 
 export const TeamTile = ({ teamId }: { teamId?: string }) => {
-  const { team, members } = useTeam(teamId);
-  const { data: games } = useGames(teamId);
+  const {
+    team: myTeam,
+    stats: myTeamStats,
+    games: myTeamGames,
+    rank: myTeamRank,
+  } = useMyTeam({ teamId });
 
-  if (!team) return null;
+  if (!myTeam) return null;
 
   return (
-    <Tile className="flex gap-3 lg:gap-4">
-      <TeamAvatar teamId={team.teamId} imgUrl={team.avatarUrl} />
-      <div className="flex flex-col items-start gap-1 lg:gap-3">
-        <h1 className="calt text-2xl lg:text-3xl xl:text-5xl">{team.name}</h1>
-        <TeamStats
-          members={members}
-          games={areTeamGames(games) ? games : undefined}
-        />
-      </div>
+    <Tile>
+      <TeamCard
+        team={myTeam}
+        rank={myTeamRank}
+        stats={myTeamStats}
+        games={areTeamGames(myTeamGames) ? myTeamGames : undefined}
+      />
     </Tile>
   );
 };

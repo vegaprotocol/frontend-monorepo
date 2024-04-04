@@ -55,7 +55,7 @@ export const useReferrerStats = (
   };
 
   const finalCommission = {
-    value: !multiplier.value.isNaN()
+    value: multiplier.value.isNaN()
       ? baseCommission.value
       : new BigNumber(multiplier.value).times(baseCommission.value),
     loading,

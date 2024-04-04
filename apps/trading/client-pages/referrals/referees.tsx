@@ -3,7 +3,7 @@ import { ns, useT } from '../../lib/use-t';
 import classNames from 'classnames';
 import {
   Loader,
-  Tooltip,
+  TextChildrenTooltip as Tooltip,
   VegaIcon,
   VegaIconNames,
   truncateMiddle,
