@@ -29,6 +29,7 @@ import {
   type StopOrderFieldsFragment,
   stopOrdersProvider,
 } from '@vegaprotocol/orders';
+import orderBy from 'lodash/orderBy';
 
 import {
   addDecimalsFormatNumber,
@@ -306,7 +307,7 @@ export const Setup = ({
                   type="number"
                   className="w-full"
                   min={sizeStep}
-                  max={100 - (allocation ?? 0)}
+                  max={100 - (allocation ?? 0) * 100}
                   step={sizeStep}
                   appendElement={<Pill size="xs">%</Pill>}
                   hasError={!!fieldState.error}
@@ -353,9 +354,7 @@ const StopOrder = ({
   openVolume?: string;
 }) => {
   const symbol = getQuoteName(market);
-  const price =
-    stopOrder.trigger.__typename === 'StopOrderPrice' &&
-    stopOrder.trigger.price;
+  const price = (stopOrder.trigger as Schema.StopOrderPrice).price;
   const t = useT();
   return (
     <div className="flex justify-between text-xs items-center gap-3 px-3 py-1.5 dark:bg-vega-cdark-800 bg-vega-clight-800 mb-0.5">
@@ -422,7 +421,9 @@ const StopOrdersList = ({
     <div className="mb-3">
       <div className="flex justify-between text-xs px-3 pb-1.5">
         <span>
-          {t('Allocation: {{percentage}}%', { percentage: allocation })}
+          {t('Allocation: {{percentage}}%', {
+            percentage: (allocation * 100).toFixed(),
+          })}
         </span>
         <ButtonLink
           data-testid="cancel-all"
@@ -458,6 +459,28 @@ const StopOrdersList = ({
     </div>
   );
 };
+
+const filterAndSort = (
+  stopOrders: StopOrderFieldsFragment[] | null,
+  triggerDirection: Schema.StopOrderTriggerDirection,
+  order: 'asc' | 'desc'
+) =>
+  orderBy(
+    stopOrders?.filter(
+      (order) =>
+        /*order.sizeOverrideSetting ===
+      Schema.StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION &&*/
+        (order.sizeOverrideValue = '0.1') &&
+        order.triggerDirection === triggerDirection
+    ),
+    (stopOrder) => BigInt((stopOrder.trigger as Schema.StopOrderPrice).price),
+    order
+  );
+
+const getAllocation = (stopOrders: StopOrderFieldsFragment[] | undefined) =>
+  stopOrders?.reduce((allocation, stopOrder) => {
+    return allocation + (Number(stopOrder.sizeOverrideValue) || 0);
+  }, 0) || 0;
 
 export const TakeProfitStopLossDialog = ({
   marketId,
@@ -497,33 +520,21 @@ export const TakeProfitStopLossDialog = ({
       ? Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE
       : Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_FALLS_BELOW;
 
-  const takeProfitStopOrders = activeStopOrders?.filter(
-    (order) =>
-      /*order.sizeOverrideSetting ===
-        Schema.StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION &&*/
-      (order.sizeOverrideValue = '0.1') &&
-      order.triggerDirection === takeProfitTrigger
+  const takeProfitStopOrders = filterAndSort(
+    activeStopOrders,
+    takeProfitTrigger,
+    side === Schema.Side.SIDE_SELL ? 'asc' : 'desc'
   );
 
-  const takeProfitAllocation = takeProfitStopOrders?.reduce(
-    (allocation, stopOrder) =>
-      (allocation += Number(stopOrder.sizeOverrideValue) || 0),
-    0
+  const takeProfitAllocation = getAllocation(takeProfitStopOrders);
+
+  const stopLossStopOrders = filterAndSort(
+    activeStopOrders,
+    stopLossTrigger,
+    side === Schema.Side.SIDE_SELL ? 'desc' : 'asc'
   );
 
-  const stopLossStopOrders = activeStopOrders?.filter(
-    (order) =>
-      /*order.sizeOverrideSetting ===
-        Schema.StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION &&*/
-      (order.sizeOverrideValue = '0.1') &&
-      order.triggerDirection === stopLossTrigger
-  );
-
-  const stopLossAllocation = stopLossStopOrders?.reduce(
-    (allocation, stopOrder) =>
-      (allocation += Number(stopOrder.sizeOverrideValue) || 0),
-    0
-  );
+  const stopLossAllocation = getAllocation(stopLossStopOrders);
 
   const { data: markPrice } = useDataProvider({
     dataProvider: markPriceProvider,
@@ -586,6 +597,7 @@ export const TakeProfitStopLossDialog = ({
       <div className="mb-6">
         {market && (
           <StopOrdersList
+            allocation={takeProfitAllocation}
             stopOrders={takeProfitStopOrders}
             create={create}
             market={market}
@@ -622,6 +634,7 @@ export const TakeProfitStopLossDialog = ({
       <div className="mb-6">
         {market && (
           <StopOrdersList
+            allocation={stopLossAllocation}
             stopOrders={stopLossStopOrders}
             create={create}
             market={market}
