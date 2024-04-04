@@ -113,7 +113,6 @@ class TestPerpetuals:
             print("Bounding box not found for the element")
 
 
-@pytest.mark.skip("need to be clarify")
 @pytest.mark.usefixtures("risk_accepted", "auth")
 def test_perps_market_termination_proposed(page: Page, vega: VegaServiceNull):
     perpetual_market = setup_perps_market(vega)
@@ -123,8 +122,8 @@ def test_perps_market_termination_proposed(page: Page, vega: VegaServiceNull):
         market_id=perpetual_market,
         market_state=MarketStateUpdateType.Terminate,
         price=100,
-        vote_closing_time=datetime.now() + timedelta(seconds=30),
-        vote_enactment_time=datetime.now() + timedelta(seconds=60),
+        vote_closing_time=datetime.fromtimestamp(vega.get_blockchain_time(in_seconds=True)) + timedelta(seconds=30),
+        vote_enactment_time=datetime.fromtimestamp(vega.get_blockchain_time(in_seconds=True)) + timedelta(seconds=60),
         approve_proposal=True,
         forward_time_to_enactment=False,
     )

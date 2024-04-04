@@ -398,6 +398,7 @@ export const DealTicket = ({
     activeOrders: activeOrders ?? undefined,
     decimalPlaces: market.decimalPlaces,
     marginAccountBalance,
+    orderMarginAccountBalance,
     marginFactor: margin?.marginFactor,
     marginMode: margin?.marginMode,
     markPrice: markPrice ?? undefined,
