@@ -87,7 +87,6 @@ jobs:
   run-tests:
     name: run-tests
     runs-on: 8-cores
-    needs: create-docker-image
     timeout-minutes: 45
     steps:
       #----------------------------------------------

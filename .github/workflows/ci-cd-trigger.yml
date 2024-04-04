@@ -215,7 +215,7 @@ jobs:
   trading-e2e:
     needs: [build-sources, check-e2e-needed, publish-dist]
     name: '(CI) trading e2e python'
-    uses: ./.github/workflows/console-test-run.yml
+    uses: ./.github/workflows/trading-e2e-test-run.yml
     secrets: inherit
     if: needs.check-e2e-needed.outputs.run-tests == 'true' && contains(needs.build-sources.outputs.projects, 'trading')
     with:
