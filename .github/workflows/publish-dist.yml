@@ -166,6 +166,12 @@ jobs:
           echo "List html directory"
           docker run --rm ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:local /bin/sh -c 'apk add --update tree; tree /usr/share/nginx/html'
 
+      - name: Upload docker image for trading-e2e-test usage
+        uses: actions/upload-artifact@v3
+        with:
+          name: trading-image
+          path: /tmp/trading-image.tar
+
       - name: Publish dist as docker image (ghcr)
         uses: docker/build-push-action@v3
         continue-on-error: true

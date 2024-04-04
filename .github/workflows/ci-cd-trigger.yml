@@ -203,15 +203,6 @@ jobs:
       projects: ${{ needs.build-sources.outputs.projects-e2e }}
       tags: '@smoke'
 
-  trading-e2e:
-    needs: [build-sources, check-e2e-needed]
-    name: '(CI) trading e2e python'
-    uses: ./.github/workflows/trading-e2e-test-run.yml
-    secrets: inherit
-    if: needs.check-e2e-needed.outputs.run-tests == 'true' && contains(needs.build-sources.outputs.projects, 'trading')
-    with:
-      github-sha: ${{ github.event.pull_request.head.sha || github.sha }}
-
   publish-dist:
     needs: build-sources
     name: '(CD) publish dist'
@@ -220,6 +211,15 @@ jobs:
     secrets: inherit
     with:
       projects: ${{ needs.build-sources.outputs.projects }}
+
+  trading-e2e:
+    needs: [build-sources, check-e2e-needed, publish-dist]
+    name: '(CI) trading e2e python'
+    uses: ./.github/workflows/trading-e2e-test-run.yml
+    secrets: inherit
+    if: needs.check-e2e-needed.outputs.run-tests == 'true' && contains(needs.build-sources.outputs.projects, 'trading')
+    with:
+      github-sha: ${{ github.event.pull_request.head.sha || github.sha }}
 
   dist-check:
     runs-on: ubuntu-latest

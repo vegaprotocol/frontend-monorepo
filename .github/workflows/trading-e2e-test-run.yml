@@ -8,81 +8,81 @@ on:
         type: string
 
 jobs:
-  create-docker-image:
-    name: Create docker image for trading-e2e-test
-    runs-on: ubuntu-22.04
-    timeout-minutes: 45
-    steps:
-      #----------------------------------------------
-      #       check-out frontend-monorepo
-      #----------------------------------------------
-      - name: Checkout frontend-monorepo
-        uses: actions/checkout@v3
-        with:
-          ref: ${{ inputs.github-sha || github.sha }}
-      #----------------------------------------------
-      #       cache node modules
-      #----------------------------------------------
-      - name: setup node
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-          cache: yarn
+  # create-docker-image:
+  #   name: Create docker image for trading-e2e-test
+  #   runs-on: ubuntu-22.04
+  #   timeout-minutes: 45
+  #   steps:
+  #     #----------------------------------------------
+  #     #       check-out frontend-monorepo
+  #     #----------------------------------------------
+  #     - name: Checkout frontend-monorepo
+  #       uses: actions/checkout@v3
+  #       with:
+  #         ref: ${{ inputs.github-sha || github.sha }}
+  #     #----------------------------------------------
+  #     #       cache node modules
+  #     #----------------------------------------------
+  #     - name: setup node
+  #       uses: actions/setup-node@v4
+  #       with:
+  #         node-version-file: '.nvmrc'
+  #         cache: yarn
 
-      - name: Cache node modules
-        id: cache
-        uses: actions/cache@v3
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-cache-node-modules-${{ hashFiles('yarn.lock') }}
-          # comment out "restore-keys" if you need to rebuild yarn from 0
-          restore-keys: |
-            ${{ runner.os }}-cache-node-modules-
-      #----------------------------------------------
-      #       install deps if cache missing
-      #----------------------------------------------
-      - name: yarn install
-        if: steps.cache.outputs.cache-hit != 'true'
-        run: yarn install --pure-lockfile
-      #----------------------------------------------
-      #       build trading
-      #----------------------------------------------
-      - name: Build trading app
-        run: |
-          ENV_NAME="${{ github.base_ref == 'main' && 'mainnet' || 'stagnet1' }}"
-          yarn env-cmd -f ./apps/trading/.env.$ENV_NAME yarn nx export trading
-          DIST_LOCATION=dist/apps/trading/exported
-          mv $DIST_LOCATION dist-result
-          tree dist-result
-      #----------------------------------------------
-      #       export trading app docker image
-      #----------------------------------------------
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+  #     - name: Cache node modules
+  #       id: cache
+  #       uses: actions/cache@v3
+  #       with:
+  #         path: node_modules
+  #         key: ${{ runner.os }}-cache-node-modules-${{ hashFiles('yarn.lock') }}
+  #         # comment out "restore-keys" if you need to rebuild yarn from 0
+  #         restore-keys: |
+  #           ${{ runner.os }}-cache-node-modules-
+  #     #----------------------------------------------
+  #     #       install deps if cache missing
+  #     #----------------------------------------------
+  #     - name: yarn install
+  #       if: steps.cache.outputs.cache-hit != 'true'
+  #       run: yarn install --pure-lockfile
+  #     #----------------------------------------------
+  #     #       build trading
+  #     #----------------------------------------------
+  #     - name: Build trading app
+  #       run: |
+  #         ENV_NAME="${{ github.base_ref == 'main' && 'mainnet' || 'stagnet1' }}"
+  #         yarn env-cmd -f ./apps/trading/.env.$ENV_NAME yarn nx export trading
+  #         DIST_LOCATION=dist/apps/trading/exported
+  #         mv $DIST_LOCATION dist-result
+  #         tree dist-result
+  #     #----------------------------------------------
+  #     #       export trading app docker image
+  #     #----------------------------------------------
+  #     - name: Set up Docker Buildx
+  #       uses: docker/setup-buildx-action@v3
 
-      - name: Build and export to local Docker
-        id: docker_build
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: docker/node-outside-docker.Dockerfile
-          load: true
-          build-args: |
-            APP=trading
-            ENV_NAME="${{ github.base_ref == 'main' && 'mainnet' || 'stagnet1' }}"
-          tags: ci/trading:local
-          outputs: type=docker,dest=/tmp/trading-image.tar
+  #     - name: Build and export to local Docker
+  #       id: docker_build
+  #       uses: docker/build-push-action@v5
+  #       with:
+  #         context: .
+  #         file: docker/node-outside-docker.Dockerfile
+  #         load: true
+  #         build-args: |
+  #           APP=trading
+  #           ENV_NAME="${{ github.base_ref == 'main' && 'mainnet' || 'stagnet1' }}"
+  #         tags: ci/trading:local
+  #         outputs: type=docker,dest=/tmp/trading-image.tar
 
-      - name: Verify docker image created
-        run: |
-          echo ${{ steps.docker_build.outputs.digest }}
-          echo ${{ steps.docker_build.outputs.imageid }}
+  #     - name: Verify docker image created
+  #       run: |
+  #         echo ${{ steps.docker_build.outputs.digest }}
+  #         echo ${{ steps.docker_build.outputs.imageid }}
 
-      - name: Upload docker image for trading-e2e-test usage
-        uses: actions/upload-artifact@v3
-        with:
-          name: trading-image
-          path: /tmp/trading-image.tar
+  #     - name: Upload docker image for trading-e2e-test usage
+  #       uses: actions/upload-artifact@v3
+  #       with:
+  #         name: trading-image
+  #         path: /tmp/trading-image.tar
 
   run-tests:
     name: run-tests
@@ -136,8 +136,11 @@ jobs:
       # install vega binaries
       #----------------------------------------------
       - name: Install vega binaries
-        run: poetry run python -m vega_sim.tools.load_binaries --force --version ${{ env.VEGA_VERSION }}
+        run: |
+          export VEGA_VERSION=$(grep VEGA_VERSION .env | cut -d '=' -f2)
+          poetry run python -m vega_sim.tools.load_binaries --force --version $VEGA_VERSION
         working-directory: apps/trading/e2e
+
       #----------------------------------------------
       # install playwrightworking-directory: apps/trading/e2e
       #----------------------------------------------
