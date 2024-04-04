@@ -49,7 +49,7 @@ export type RewardsHistoryQuery = { __typename?: 'Query', epochRewardSummaries?:
 export type RewardsEpochQueryVariables = Types.Exact<{ [key: string]: never; }>;
 
 
-export type RewardsEpochQuery = { __typename?: 'Query', epoch: { __typename?: 'Epoch', id: string } };
+export type RewardsEpochQuery = { __typename?: 'Query', epoch: { __typename?: 'Epoch', id: string, timestamps: { __typename?: 'EpochTimestamps', start?: any | null, end?: any | null, expiry?: any | null } } };
 
 export type MarketForRewardsQueryVariables = Types.Exact<{
   marketId: Types.Scalars['ID'];
@@ -391,6 +391,11 @@ export const RewardsEpochDocument = gql`
     query RewardsEpoch {
   epoch {
     id
+    timestamps {
+      start
+      end
+      expiry
+    }
   }
 }
     `;

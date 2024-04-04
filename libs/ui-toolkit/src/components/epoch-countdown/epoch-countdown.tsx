@@ -1,7 +1,7 @@
 import { formatDistanceStrict } from 'date-fns';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
-import { ProgressBar } from '../progress-bar';
+import { HighlightProgressBar as ProgressBar } from '../highlight-progress-bar';
 
 export interface EpochCountdownProps {
   id: string;
@@ -55,7 +55,7 @@ export function EpochCountdown({
 
   return (
     <div data-testid="epoch-countdown" className="epoch-countdown">
-      <div className="flex items-end mb-3">
+      <div className="flex items-end mb-3 gap-4">
         <h3 className="flex-1 m-0 text-sm">
           {t('Epoch')} {id}
         </h3>

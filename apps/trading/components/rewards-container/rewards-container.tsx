@@ -253,11 +253,13 @@ export const RewardsContainer = () => {
           noBackgroundOnMobile={true}
           highlight={true}
         >
-          <RewardsHistoryContainer
-            epoch={Number(epochData?.epoch.id)}
-            pubKey={pubKey}
-            assets={assetMap}
-          />
+          <div className="flex flex-col gap-4">
+            <RewardsHistoryContainer
+              epoch={Number(epochData?.epoch.id)}
+              pubKey={pubKey}
+              assets={assetMap}
+            />
+          </div>
         </Card>
         {pubKey && activityStreakBenefitTiers.tiers?.length > 0 && (
           <Card
