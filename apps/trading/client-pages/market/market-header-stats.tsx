@@ -53,7 +53,7 @@ export const MarketHeaderStats = ({ market }: MarketHeaderStatsProps) => {
 
   return (
     <>
-      <HeaderStat heading={t('Price')} testId="market-price">
+      <HeaderStat heading={t('Mark Price')} testId="market-price">
         <MarketMarkPrice
           marketId={market.id}
           decimalPlaces={market.decimalPlaces}
