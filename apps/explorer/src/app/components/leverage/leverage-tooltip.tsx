@@ -5,7 +5,7 @@ const borderClass =
 
 export type LeverageTooltipProps = {
   marginFactor: string;
-  leverage: string;
+  leverage: number;
 };
 
 /**
