@@ -164,12 +164,22 @@ jobs:
       #----------------------------------------------
       - name: Set VEGA_VERSION from .env
         id: set_vega_version
-        run: if [[ "${{ github.base_ref }}" == "main" ]]; then
-          echo "VEGA_VERSION=$(grep VEGA_VERSION apps/trading/e2e/.env.main | cut -d '=' -f2)" >> $GITHUB_ENV
-          echo "ENV_FILE=.env.main"
+        run: |
+          if [[ "${{ github.base_ref }}" == "main" ]]; then
+            echo "VEGA_VERSION=$(grep VEGA_VERSION apps/trading/e2e/.env.main | cut -d '=' -f2)" >> $GITHUB_ENV
+            echo "ENV_FILE=.env.main"
           else
-          echo "VEGA_VERSION=$(grep VEGA_VERSION apps/trading/e2e/.env | cut -d '=' -f2)" >> $GITHUB_ENV
-          echo "ENV_FILE=.env"
+            echo "VEGA_VERSION=$(grep VEGA_VERSION apps/trading/e2e/.env | cut -d '=' -f2)" >> $GITHUB_ENV
+            echo "ENV_FILE=.env"
+          fi
+      #----------------------------------------------
+      #       update .env file
+      #----------------------------------------------
+      - name: Override .env with .env.main if base ref is main
+        run: |
+          if [[ "${{ github.base_ref }}" == "main" ]]; then
+            cp apps/trading/e2e/.env.main apps/trading/e2e/.env
+            echo "Overridden .env with .env.main"
           fi
       #----------------------------------------------
       #  -----  Setup python  -----

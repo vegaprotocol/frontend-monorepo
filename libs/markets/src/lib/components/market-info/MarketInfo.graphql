@@ -180,11 +180,13 @@ query MarketInfoMainnet($marketId: ID!) {
     linearSlippageFactor
     parentMarketID
     successorMarketID
-    proposal {
-      id
-      rationale {
-        title
-        description
+    marketProposal {
+      ... on Proposal {
+        id
+        rationale {
+          title
+          description
+        }
       }
     }
     marketTimestamps {

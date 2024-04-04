@@ -2,10 +2,10 @@ import type { RefObject } from 'react';
 import { TradingModeTooltip } from '@vegaprotocol/deal-ticket';
 import { useInView } from 'react-intersection-observer';
 import * as Schema from '@vegaprotocol/types';
-import { HeaderStat } from '../header';
+import { HeaderStat } from '../../header';
 import { Tooltip } from '@vegaprotocol/ui-toolkit';
 import { useStaticMarketData } from '@vegaprotocol/markets';
-import { useT } from '../../lib/use-t';
+import { useT } from '../../../lib/use-t';
 
 const getTradingModeLabel = (
   marketTradingMode?: Schema.MarketTradingMode,
@@ -23,15 +23,15 @@ const getTradingModeLabel = (
   );
 };
 
-interface HeaderStatMarketTradingModeProps {
+interface MarketTradingModeStatProps {
   marketId?: string;
   onSelect?: (marketId: string, metaKey?: boolean) => void;
 }
 
-export const HeaderStatMarketTradingMode = ({
+export const MarketTradingModeStat = ({
   marketId,
   onSelect,
-}: HeaderStatMarketTradingModeProps) => {
+}: MarketTradingModeStatProps) => {
   const t = useT();
   const { data } = useStaticMarketData(marketId);
   const { marketTradingMode, trigger } = data || {};
@@ -42,7 +42,7 @@ export const HeaderStatMarketTradingMode = ({
       description={
         <TradingModeTooltip marketId={marketId} onSelect={onSelect} />
       }
-      testId="market-trading-mode"
+      data-testid="market-trading-mode"
     >
       <div>{getTradingModeLabel(marketTradingMode, trigger)}</div>
     </HeaderStat>
@@ -52,7 +52,7 @@ export const HeaderStatMarketTradingMode = ({
 export const MarketTradingMode = ({
   marketId,
   inViewRoot,
-}: Omit<HeaderStatMarketTradingModeProps, 'onUpdate'> & {
+}: Omit<MarketTradingModeStatProps, 'onUpdate'> & {
   inViewRoot?: RefObject<Element>;
 }) => {
   const [ref, inView] = useInView({ root: inViewRoot?.current });

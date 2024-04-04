@@ -35,6 +35,8 @@ import BigNumber from 'bignumber.js';
 import { useTWAPQuery } from '../../lib/hooks/__generated__/Rewards';
 import { RankPayoutTable } from './rank-table';
 import { useFeatureFlags } from '@vegaprotocol/environment';
+import { Links } from '../../lib/links';
+import { Link } from 'react-router-dom';
 
 const Tick = () => (
   <VegaIcon
@@ -1001,19 +1003,21 @@ export const ActiveRewardCard = ({
       AccountType.ACCOUNT_TYPE_GLOBAL_REWARD
   ) {
     return (
-      <StakingRewardCard
-        colour={CardColour.WHITE}
-        rewardAmount={addDecimalsFormatNumber(
-          transferNode.transfer.amount,
-          transferNode.transfer.asset?.decimals || 0,
-          6
-        )}
-        rewardAsset={transferNode.transfer.asset || undefined}
-        startsIn={startsIn > 0 ? startsIn : undefined}
-        endsIn={endsIn}
-        requirements={requirements}
-        gameId={transferNode.transfer.gameId}
-      />
+      <LinkToGame gameId={transferNode.transfer.gameId}>
+        <StakingRewardCard
+          colour={CardColour.WHITE}
+          rewardAmount={addDecimalsFormatNumber(
+            transferNode.transfer.amount,
+            transferNode.transfer.asset?.decimals || 0,
+            6
+          )}
+          rewardAsset={transferNode.transfer.asset || undefined}
+          startsIn={startsIn > 0 ? startsIn : undefined}
+          endsIn={endsIn}
+          requirements={requirements}
+          gameId={transferNode.transfer.gameId}
+        />
+      </LinkToGame>
     );
   }
 
@@ -1041,21 +1045,36 @@ export const ActiveRewardCard = ({
   }
 
   return (
-    <RewardCard
-      colour={colour}
-      rewardAmount={addDecimalsFormatNumber(
-        transferNode.transfer.amount,
-        transferNode.transfer.asset?.decimals || 0,
-        6
-      )}
-      rewardAsset={transferNode.dispatchAsset}
-      transferAsset={transferNode.transfer.asset || undefined}
-      startsIn={startsIn > 0 ? startsIn : undefined}
-      endsIn={endsIn}
-      dispatchStrategy={transferNode.transfer.kind.dispatchStrategy}
-      dispatchMetricInfo={<DispatchMetricInfo reward={transferNode} />}
-      requirements={requirements}
-      gameId={transferNode.transfer.gameId}
-    />
+    <LinkToGame gameId={transferNode.transfer.gameId}>
+      <RewardCard
+        colour={colour}
+        rewardAmount={addDecimalsFormatNumber(
+          transferNode.transfer.amount,
+          transferNode.transfer.asset?.decimals || 0,
+          6
+        )}
+        rewardAsset={transferNode.dispatchAsset}
+        transferAsset={transferNode.transfer.asset || undefined}
+        startsIn={startsIn > 0 ? startsIn : undefined}
+        endsIn={endsIn}
+        dispatchStrategy={transferNode.transfer.kind.dispatchStrategy}
+        dispatchMetricInfo={<DispatchMetricInfo reward={transferNode} />}
+        requirements={requirements}
+        gameId={transferNode.transfer.gameId}
+      />
+    </LinkToGame>
   );
+};
+
+const LinkToGame = ({
+  gameId,
+  children,
+}: {
+  gameId?: string | null;
+  children: ReactNode;
+}) => {
+  if (gameId && gameId.length > 0) {
+    return <Link to={Links.COMPETITIONS_GAME(gameId)}>{children}</Link>;
+  }
+  return children;
 };
