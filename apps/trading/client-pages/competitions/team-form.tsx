@@ -216,7 +216,6 @@ export const TeamForm = ({
               >
                 <TextArea
                   {...register('allowList', {
-                    required: t('Required'),
                     validate: {
                       allowList: (value) => {
                         const publicKeys = parseAllowListText(value);
