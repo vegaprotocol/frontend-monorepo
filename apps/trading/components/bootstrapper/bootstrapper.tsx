@@ -218,5 +218,11 @@ const cacheConfig: InMemoryCacheConfig = {
     RecurringGovernanceTransfer: {
       keyFields: false,
     },
+    TeamGameEntity: {
+      keyFields: false,
+    },
+    TeamEntity: {
+      keyFields: false,
+    },
   },
 };

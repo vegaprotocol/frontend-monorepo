@@ -18,7 +18,7 @@ export const TeamAvatar = ({
   size = 'large',
 }: {
   teamId: string;
-  imgUrl: string;
+  imgUrl?: string;
   alt?: string;
   size?: 'large' | 'small';
 }) => {
@@ -26,7 +26,7 @@ export const TeamAvatar = ({
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
-      src={imgUrl}
+      src={imgUrl || getFallbackAvatar(teamId)}
       alt={alt || 'Team avatar'}
       className={classNames(
         'rounded-full bg-vega-clight-700 dark:bg-vega-cdark-700 shrink-0',

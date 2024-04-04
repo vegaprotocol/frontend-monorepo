@@ -1,6 +1,6 @@
 import { Tooltip } from '@vegaprotocol/ui-toolkit';
 import classNames from 'classnames';
-import type { ReactNode } from 'react';
+import type { HTMLAttributes, ReactNode } from 'react';
 
 interface TradeMarketHeaderProps {
   title: ReactNode;
@@ -29,19 +29,19 @@ export const Header = ({ title, children }: TradeMarketHeaderProps) => {
   );
 };
 
+type HeaderStatProps = HTMLAttributes<HTMLDivElement> & {
+  heading: string;
+  id?: string;
+  description?: string | ReactNode;
+};
+
 export const HeaderStat = ({
   children,
   heading,
   id,
   description,
-  testId,
-}: {
-  children: ReactNode;
-  heading: string;
-  id?: string;
-  description?: string | ReactNode;
-  testId?: string;
-}) => {
+  ...props
+}: HeaderStatProps) => {
   const itemClass = classNames(
     'text-muted',
     'min-w-min last:pr-0 whitespace-nowrap'
@@ -49,7 +49,7 @@ export const HeaderStat = ({
   const itemValueClasses = 'text-default';
 
   return (
-    <div data-testid={testId} className={itemClass}>
+    <div {...props} className={classNames(itemClass, props.className)}>
       <div data-testid="item-header" id={id}>
         {heading}
       </div>

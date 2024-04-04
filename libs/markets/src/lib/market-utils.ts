@@ -27,6 +27,38 @@ export const getAsset = (market: Partial<Market>) => {
   throw new Error('Failed to retrieve asset. Invalid product type');
 };
 
+export const getBaseAsset = (market: Partial<Market>) => {
+  if (!market.tradableInstrument?.instrument.product) {
+    throw new Error('Failed to retrieve asset. Invalid tradable instrument');
+  }
+
+  const product = market.tradableInstrument.instrument.product;
+
+  if (product.__typename === 'Spot') {
+    return product.baseAsset;
+  }
+
+  throw new Error(
+    `Failed to retrieve base asset. Invalid product type ${product.__typename}`
+  );
+};
+
+export const getQuoteAsset = (market: Partial<Market>) => {
+  if (!market.tradableInstrument?.instrument.product) {
+    throw new Error('Failed to retrieve asset. Invalid tradable instrument');
+  }
+
+  const product = market.tradableInstrument.instrument.product;
+
+  if (product.__typename === 'Spot') {
+    return product.quoteAsset;
+  }
+
+  throw new Error(
+    `Failed to retrieve quote asset. Invalid product type ${product.__typename}`
+  );
+};
+
 export const getProductType = (market: Partial<Market>) => {
   if (!market.tradableInstrument?.instrument.product) {
     throw new Error(
@@ -117,6 +149,7 @@ export const filterActiveMarkets = (markets: MarketMaybeWithData[]) => {
         MarketState.STATE_ACTIVE,
         MarketState.STATE_SUSPENDED,
         MarketState.STATE_SUSPENDED_VIA_GOVERNANCE,
+        MarketState.STATE_PENDING,
       ].includes(m.data.marketState)
     );
   });
