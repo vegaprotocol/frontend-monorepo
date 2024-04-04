@@ -14,6 +14,8 @@ import { DispatchMetricLabels } from '@vegaprotocol/types';
 import classNames from 'classnames';
 import { UpdateTeamButton } from '../../client-pages/competitions/update-team-button';
 import { type TeamGame } from '../../lib/hooks/use-games';
+import { Rank } from './graphics/rank';
+import { type ReactNode } from 'react';
 
 export const TeamCard = ({
   rank,
@@ -40,6 +42,12 @@ export const TeamCard = ({
     ),
     5
   );
+
+  let rankElement: ReactNode | number = rank;
+  if (!rank) rankElement = t('None');
+  if (rank === 1) rankElement = <Rank variant="gold" />;
+  if (rank === 2) rankElement = <Rank variant="silver" />;
+  if (rank === 3) rankElement = <Rank variant="bronze" />;
 
   return (
     <div
@@ -79,7 +87,7 @@ export const TeamCard = ({
         >
           <Stat
             className="flex flex-col-reverse"
-            value={rank || t('None')}
+            value={rankElement}
             label={t('Rank')}
             valueTestId="team-rank"
           />
