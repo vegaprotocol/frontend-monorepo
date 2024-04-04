@@ -6,6 +6,7 @@ import {
   EpochsTile,
   NextTierEpochsTile,
   NextTierVolumeTile,
+  NoProgramTileFor,
   RunningVolumeTile,
   TeamTile,
 } from './tiles';
@@ -47,6 +48,9 @@ export const RefereeStatistics = ({
 
   const { isEligible } = useStakeAvailable(referrerPubKey);
 
+  const { details } = useReferralProgram();
+  const isProgramRunning = Boolean(details);
+
   return (
     <>
       <div
@@ -59,28 +63,50 @@ export const RefereeStatistics = ({
           <TeamTile teamId={setId} />
           {/** TILES ROW 1 */}
           <div className="grid grid-rows-1 gap-5 grid-cols-1 md:grid-cols-3">
-            <BenefitTierTile
-              benefitTier={benefitTier}
-              nextBenefitTier={nextBenefitTier}
-            />
-            <RunningVolumeTile
-              aggregationEpochs={aggregationEpochs}
-              runningVolume={runningVolume}
-            />
+            {isProgramRunning ? (
+              <>
+                <BenefitTierTile
+                  benefitTier={benefitTier}
+                  nextBenefitTier={nextBenefitTier}
+                />
+                <RunningVolumeTile
+                  aggregationEpochs={aggregationEpochs}
+                  runningVolume={runningVolume}
+                />
+              </>
+            ) : (
+              <>
+                <NoProgramTileFor tile={BenefitTierTile.name} />
+                <NoProgramTileFor tile={RunningVolumeTile.name} />
+              </>
+            )}
             <CodeTile code={setId} />
           </div>
           {/** TILES ROW 2 */}
           <div className="grid grid-rows-1 gap-5 grid-cols-1 sm:grid-cols-2 xl:grid-cols-4">
-            <DiscountTile discountFactor={discountFactor} />
-            <NextTierVolumeTile
-              nextBenefitTier={nextBenefitTier}
-              runningVolume={runningVolume}
-            />
+            {isProgramRunning ? (
+              <>
+                <DiscountTile discountFactor={discountFactor} />
+                <NextTierVolumeTile
+                  nextBenefitTier={nextBenefitTier}
+                  runningVolume={runningVolume}
+                />
+              </>
+            ) : (
+              <>
+                <NoProgramTileFor tile={DiscountTile.name} />
+                <NoProgramTileFor tile={NextTierVolumeTile.name} />
+              </>
+            )}
             <EpochsTile epochs={epochs} />
-            <NextTierEpochsTile
-              epochs={epochs}
-              nextBenefitTier={nextBenefitTier}
-            />
+            {isProgramRunning ? (
+              <NextTierEpochsTile
+                epochs={epochs}
+                nextBenefitTier={nextBenefitTier}
+              />
+            ) : (
+              <NoProgramTileFor tile={NextTierEpochsTile.name} />
+            )}
           </div>
         </div>
         {/** ELIGIBILITY WARNING */}

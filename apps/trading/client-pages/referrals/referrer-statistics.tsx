@@ -3,6 +3,7 @@ import { useReferrerStats } from './hooks/use-referrer-stats';
 import {
   BaseCommissionTile,
   FinalCommissionTile,
+  NoProgramTileFor,
   RefereesTile,
   StakingMultiplierTile,
   TeamTile,
@@ -11,6 +12,7 @@ import {
   dateFormatter,
 } from './tiles';
 import { CodeTile } from './tile';
+import { useReferralProgram } from './hooks/use-referral-program';
 
 export const ReferrerStatistics = ({
   aggregationEpochs,
@@ -34,6 +36,9 @@ export const ReferrerStatistics = ({
     volume,
   } = useReferrerStats(setId, aggregationEpochs);
 
+  const { details } = useReferralProgram();
+  const isProgramRunning = Boolean(details);
+
   return (
     <div
       data-testid="referral-statistics"
@@ -45,22 +50,36 @@ export const ReferrerStatistics = ({
         <TeamTile teamId={setId} />
         {/** TILES ROW 1 */}
         <div className="grid grid-rows-1 gap-5 grid-cols-1 md:grid-cols-3">
-          <BaseCommissionTile
-            aggregationEpochs={aggregationEpochs}
-            baseCommission={baseCommission}
-            runningVolume={runningVolume}
-          />
-          <StakingMultiplierTile multiplier={multiplier} />
-          <FinalCommissionTile
-            baseCommission={baseCommission}
-            multiplier={multiplier}
-            finalCommission={finalCommission}
-          />
+          {isProgramRunning ? (
+            <>
+              <BaseCommissionTile
+                aggregationEpochs={aggregationEpochs}
+                baseCommission={baseCommission}
+                runningVolume={runningVolume}
+              />
+              <StakingMultiplierTile multiplier={multiplier} />
+              <FinalCommissionTile
+                baseCommission={baseCommission}
+                multiplier={multiplier}
+                finalCommission={finalCommission}
+              />
+            </>
+          ) : (
+            <>
+              <NoProgramTileFor tile={BaseCommissionTile.name} />
+              <NoProgramTileFor tile={StakingMultiplierTile.name} />
+              <NoProgramTileFor tile={FinalCommissionTile.name} />
+            </>
+          )}
         </div>
         {/** TILES ROW 2 */}
         <div className="grid grid-rows-1 gap-5 grid-cols-1 sm:grid-cols-2 xl:grid-cols-4">
           <CodeTile code={setId} createdAt={dateFormatter(createdAt)} />
-          <VolumeTile aggregationEpochs={aggregationEpochs} volume={volume} />
+          {isProgramRunning ? (
+            <VolumeTile aggregationEpochs={aggregationEpochs} volume={volume} />
+          ) : (
+            <NoProgramTileFor tile={VolumeTile.name} />
+          )}
           <RefereesTile referees={referees} />
           <TotalCommissionTile
             aggregationEpochs={aggregationEpochs}
