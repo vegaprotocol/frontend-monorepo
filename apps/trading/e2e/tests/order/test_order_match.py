@@ -93,7 +93,7 @@ def test_limit_order_trade_open_position(continuous_market, page: Page):
         "average_entry_price": "107.50",
         "mark_price": "107.50",
         "margin": "8.50269",
-        "leverage": "Cross1.0x",
+        "leverage": "1.0x",
         "liquidation": "0.00",
         "realised_pnl": "0.00",
         "unrealised_pnl": "0.00",
