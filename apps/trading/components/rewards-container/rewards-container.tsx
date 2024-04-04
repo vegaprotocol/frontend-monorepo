@@ -22,7 +22,6 @@ import {
   useRewardsEpochQuery,
 } from '../../lib/hooks/__generated__/Rewards';
 import {
-  EpochCountdown,
   TradingButton,
   VegaIcon,
   VegaIconNames,
@@ -132,18 +131,6 @@ export const RewardsContainer = () => {
 
   return (
     <div className="flex flex-col w-full gap-3">
-      <Card
-        key={params.reward_asset}
-        className="lg:col-span-3 xl:col-span-2"
-        loading={loading}
-      >
-        <EpochCountdown
-          id={epochData.epoch.id}
-          startDate={new Date(epochData.epoch.timestamps.start)}
-          endDate={new Date(epochData.epoch.timestamps.end)}
-        />
-      </Card>
-
       <div className="grid auto-rows-min grid-cols-6 gap-3">
         {/* Always show reward information for vega */}
         <Card
