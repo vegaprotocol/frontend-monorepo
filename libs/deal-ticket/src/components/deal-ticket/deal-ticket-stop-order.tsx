@@ -68,7 +68,6 @@ export interface StopOrderProps {
 }
 
 const MAX_NUMBER_OF_ACTIVE_STOP_ORDERS = 4;
-const POLLING_TIME = 2000;
 const trailingPercentOffsetStep = '0.1';
 
 const getDefaultValues = (
@@ -899,7 +898,7 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
   const triggerTrailingPercentOffset = watch('triggerTrailingPercentOffset');
   const triggerType = watch('triggerType');
 
-  const { data: activeStopOrders, reload } = useDataProvider({
+  const { data: activeStopOrders } = useDataProvider({
     dataProvider: stopOrdersProvider,
     variables: {
       filter: {
@@ -910,15 +909,6 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
     },
     skip: !(pubKey && (formState.isDirty || formState.submitCount)),
   });
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      reload();
-    }, POLLING_TIME);
-    return () => {
-      clearInterval(interval);
-    };
-  }, [reload]);
 
   useEffect(() => {
     const storedSize = storedFormValues?.[dealTicketType]?.size;

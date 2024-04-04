@@ -29,6 +29,7 @@ export const stopOrdersProvider = makeDataProvider<
   never,
   StopOrdersQueryVariables
 >({
+  pollInterval: 2000,
   query: StopOrdersDocument,
   getData,
 });

@@ -545,7 +545,7 @@ export const PositionsTable = ({
       },
       onEditTPSL && !isReadOnly
         ? {
-            headerName: t('Manage TP/SL'),
+            headerName: t('Manage TP / SL'),
             sortable: false,
             resizable: false,
             filter: false,
@@ -558,11 +558,15 @@ export const PositionsTable = ({
                   data?.openVolume !== '0' &&
                   data.partyId === pubKey ? (
                     <ButtonLink
-                      data-testid="close-position"
+                      data-testid="edit-tpsl"
                       onClick={() => onEditTPSL(data.marketId)}
-                      title={t('Edit TP/SL')}
+                      title={
+                        data.stopOrders?.length
+                          ? t('Edit TP / SL')
+                          : t('Add TP / SL')
+                      }
                     >
-                      {t('Edit')}
+                      {data.stopOrders?.length ? t('Edit') : t('Add')}
                     </ButtonLink>
                   ) : null}
                 </div>

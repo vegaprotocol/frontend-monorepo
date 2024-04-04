@@ -22,7 +22,7 @@ import {
   VegaTxStatus,
 } from '@vegaprotocol/web3';
 import { Dialog } from '@vegaprotocol/ui-toolkit';
-import { useEffect, type ReactNode, useState } from 'react';
+import { type ReactNode, useState } from 'react';
 
 import { useOpenVolume } from './use-open-volume';
 import {
@@ -56,8 +56,6 @@ interface TakeProfitStopLossDialogProps {
   marketId: string;
   create: VegaTransactionStore['create'];
 }
-
-const POLLING_TIME = 2000;
 
 const ProfitAndLoss = ({
   averageEntryPrice,
@@ -493,7 +491,7 @@ export const TakeProfitStopLossDialog = ({
   );
   const { data: market } = useMarket(marketId);
   const { pubKey } = useVegaWallet();
-  const { data: activeStopOrders, reload } = useDataProvider({
+  const { data: activeStopOrders } = useDataProvider({
     dataProvider: stopOrdersProvider,
     variables: {
       filter: {
@@ -540,15 +538,6 @@ export const TakeProfitStopLossDialog = ({
     dataProvider: markPriceProvider,
     variables: { marketId },
   });
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      reload();
-    }, POLLING_TIME);
-    return () => {
-      clearInterval(interval);
-    };
-  }, [reload]);
 
   const t = useT();
   return (
