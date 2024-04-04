@@ -100,7 +100,7 @@ export const CompetitionsHome = () => {
     createPrivateTeamBtnProps = {
       ...createPrivateTeamBtnProps,
       children: t('Upgrade to private team'),
-      tooltip: t('Upgrade your existing referral set to a private team'),
+      tooltip: t('Upgrade your existing referral set to a private team.'),
       disabled: myTeamId == null,
     };
     /** C */
