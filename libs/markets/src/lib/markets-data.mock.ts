@@ -44,6 +44,7 @@ export const createMarketsDataFragment = (
     bestBidPrice: '0',
     bestOfferPrice: '0',
     markPrice: '4612690058',
+    lastTradedPrice: '4612690058',
     targetStake: '0',
     suppliedStake: '0',
     auctionStart: new Date().toISOString(),

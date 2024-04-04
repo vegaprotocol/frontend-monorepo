@@ -188,7 +188,7 @@ describe('Closed', () => {
       'Settlement date',
       'Best bid',
       'Best offer',
-      'Mark price',
+      'Price',
       'Settlement price',
       'Settlement asset',
       '', // actions row

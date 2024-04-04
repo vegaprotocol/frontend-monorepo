@@ -33,6 +33,7 @@ const { MarketTradingMode, AuctionTrigger } = Schema;
 export const useMarketsColumnDefs = () => {
   const t = useT();
   const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
+
   return useMemo<ColDef[]>(
     () => [
       {
@@ -135,22 +136,43 @@ export const useMarketsColumnDefs = () => {
         },
       },
       {
-        headerName: t('Mark price'),
+        headerName: t('Price'),
         field: 'data.markPrice',
         type: 'rightAligned',
         cellRenderer: 'PriceFlashCell',
         filter: 'agNumberColumnFilter',
         valueGetter: ({ data }: VegaValueGetterParams<MarketMaybeWithData>) => {
+          if (
+            data?.tradableInstrument.instrument.product.__typename === 'Spot'
+          ) {
+            return data?.data?.lastTradedPrice === undefined
+              ? undefined
+              : toBigNum(
+                  data?.data?.lastTradedPrice,
+                  data.decimalPlaces
+                ).toNumber();
+          }
           return data?.data?.markPrice === undefined
             ? undefined
             : toBigNum(data?.data?.markPrice, data.decimalPlaces).toNumber();
         },
         valueFormatter: ({
           data,
-        }: VegaValueFormatterParams<MarketMaybeWithData, 'data.markPrice'>) =>
-          data?.data?.bestOfferPrice === undefined
+        }: VegaValueFormatterParams<MarketMaybeWithData, 'data.markPrice'>) => {
+          if (
+            data?.tradableInstrument.instrument.product.__typename === 'Spot'
+          ) {
+            return data?.data?.lastTradedPrice === undefined
+              ? '-'
+              : addDecimalsFormatNumber(
+                  data.data.lastTradedPrice,
+                  data.decimalPlaces
+                );
+          }
+          return data?.data?.bestOfferPrice === undefined
             ? '-'
-            : addDecimalsFormatNumber(data.data.markPrice, data.decimalPlaces),
+            : addDecimalsFormatNumber(data.data.markPrice, data.decimalPlaces);
+        },
       },
       {
         headerName: t('24h volume'),

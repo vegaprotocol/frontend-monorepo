@@ -3,23 +3,23 @@ import * as Types from '@vegaprotocol/types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
-export type MarketDataUpdateFieldsFragment = { __typename?: 'ObservableMarketData', marketId: string, auctionEnd?: string | null, auctionStart?: string | null, bestBidPrice: string, bestBidVolume: string, bestOfferPrice: string, bestOfferVolume: string, bestStaticBidPrice: string, bestStaticBidVolume: string, bestStaticOfferPrice: string, bestStaticOfferVolume: string, indicativePrice: string, indicativeVolume: string, marketState: Types.MarketState, marketTradingMode: Types.MarketTradingMode, markPrice: string, midPrice: string, openInterest: string, staticMidPrice: string, suppliedStake?: string | null, targetStake?: string | null, trigger: Types.AuctionTrigger, lastTradedPrice: string, productData?: { __typename?: 'PerpetualData', fundingRate?: string | null, fundingPayment?: string | null, externalTwap?: string | null, internalTwap?: string | null } | null, priceMonitoringBounds?: Array<{ __typename?: 'PriceMonitoringBounds', minValidPrice: string, maxValidPrice: string, referencePrice: string, trigger: { __typename?: 'PriceMonitoringTrigger', horizonSecs: number, probability: number, auctionExtensionSecs: number } }> | null };
+export type MarketDataUpdateFieldsFragment = { __typename?: 'ObservableMarketData', marketId: string, auctionEnd?: string | null, auctionStart?: string | null, bestBidPrice: string, bestBidVolume: string, bestOfferPrice: string, bestOfferVolume: string, bestStaticBidPrice: string, bestStaticBidVolume: string, bestStaticOfferPrice: string, bestStaticOfferVolume: string, indicativePrice: string, indicativeVolume: string, marketState: Types.MarketState, marketTradingMode: Types.MarketTradingMode, markPrice: string, lastTradedPrice: string, midPrice: string, openInterest: string, staticMidPrice: string, suppliedStake?: string | null, targetStake?: string | null, trigger: Types.AuctionTrigger, productData?: { __typename?: 'PerpetualData', fundingRate?: string | null, fundingPayment?: string | null, externalTwap?: string | null, internalTwap?: string | null } | null, priceMonitoringBounds?: Array<{ __typename?: 'PriceMonitoringBounds', minValidPrice: string, maxValidPrice: string, referencePrice: string, trigger: { __typename?: 'PriceMonitoringTrigger', horizonSecs: number, probability: number, auctionExtensionSecs: number } }> | null };
 
 export type MarketDataUpdateSubscriptionVariables = Types.Exact<{
   marketId: Types.Scalars['ID'];
 }>;
 
 
-export type MarketDataUpdateSubscription = { __typename?: 'Subscription', marketsData: Array<{ __typename?: 'ObservableMarketData', marketId: string, auctionEnd?: string | null, auctionStart?: string | null, bestBidPrice: string, bestBidVolume: string, bestOfferPrice: string, bestOfferVolume: string, bestStaticBidPrice: string, bestStaticBidVolume: string, bestStaticOfferPrice: string, bestStaticOfferVolume: string, indicativePrice: string, indicativeVolume: string, marketState: Types.MarketState, marketTradingMode: Types.MarketTradingMode, markPrice: string, midPrice: string, openInterest: string, staticMidPrice: string, suppliedStake?: string | null, targetStake?: string | null, trigger: Types.AuctionTrigger, lastTradedPrice: string, productData?: { __typename?: 'PerpetualData', fundingRate?: string | null, fundingPayment?: string | null, externalTwap?: string | null, internalTwap?: string | null } | null, priceMonitoringBounds?: Array<{ __typename?: 'PriceMonitoringBounds', minValidPrice: string, maxValidPrice: string, referencePrice: string, trigger: { __typename?: 'PriceMonitoringTrigger', horizonSecs: number, probability: number, auctionExtensionSecs: number } }> | null }> };
+export type MarketDataUpdateSubscription = { __typename?: 'Subscription', marketsData: Array<{ __typename?: 'ObservableMarketData', marketId: string, auctionEnd?: string | null, auctionStart?: string | null, bestBidPrice: string, bestBidVolume: string, bestOfferPrice: string, bestOfferVolume: string, bestStaticBidPrice: string, bestStaticBidVolume: string, bestStaticOfferPrice: string, bestStaticOfferVolume: string, indicativePrice: string, indicativeVolume: string, marketState: Types.MarketState, marketTradingMode: Types.MarketTradingMode, markPrice: string, lastTradedPrice: string, midPrice: string, openInterest: string, staticMidPrice: string, suppliedStake?: string | null, targetStake?: string | null, trigger: Types.AuctionTrigger, productData?: { __typename?: 'PerpetualData', fundingRate?: string | null, fundingPayment?: string | null, externalTwap?: string | null, internalTwap?: string | null } | null, priceMonitoringBounds?: Array<{ __typename?: 'PriceMonitoringBounds', minValidPrice: string, maxValidPrice: string, referencePrice: string, trigger: { __typename?: 'PriceMonitoringTrigger', horizonSecs: number, probability: number, auctionExtensionSecs: number } }> | null }> };
 
-export type MarketDataFieldsFragment = { __typename?: 'MarketData', auctionEnd?: string | null, auctionStart?: string | null, bestBidPrice: string, bestBidVolume: string, bestOfferPrice: string, bestOfferVolume: string, bestStaticBidPrice: string, bestStaticBidVolume: string, bestStaticOfferPrice: string, bestStaticOfferVolume: string, indicativePrice: string, indicativeVolume: string, marketState: Types.MarketState, marketTradingMode: Types.MarketTradingMode, markPrice: string, midPrice: string, openInterest: string, staticMidPrice: string, suppliedStake?: string | null, targetStake?: string | null, trigger: Types.AuctionTrigger, lastTradedPrice: string, market: { __typename?: 'Market', id: string }, productData?: { __typename?: 'PerpetualData', fundingRate?: string | null, fundingPayment?: string | null, externalTwap?: string | null, internalTwap?: string | null } | null, priceMonitoringBounds?: Array<{ __typename?: 'PriceMonitoringBounds', minValidPrice: string, maxValidPrice: string, referencePrice: string, trigger: { __typename?: 'PriceMonitoringTrigger', horizonSecs: number, probability: number, auctionExtensionSecs: number } }> | null };
+export type MarketDataFieldsFragment = { __typename?: 'MarketData', auctionEnd?: string | null, auctionStart?: string | null, bestBidPrice: string, bestBidVolume: string, bestOfferPrice: string, bestOfferVolume: string, bestStaticBidPrice: string, bestStaticBidVolume: string, bestStaticOfferPrice: string, bestStaticOfferVolume: string, indicativePrice: string, indicativeVolume: string, marketState: Types.MarketState, marketTradingMode: Types.MarketTradingMode, markPrice: string, lastTradedPrice: string, midPrice: string, openInterest: string, staticMidPrice: string, suppliedStake?: string | null, targetStake?: string | null, trigger: Types.AuctionTrigger, market: { __typename?: 'Market', id: string }, productData?: { __typename?: 'PerpetualData', fundingRate?: string | null, fundingPayment?: string | null, externalTwap?: string | null, internalTwap?: string | null } | null, priceMonitoringBounds?: Array<{ __typename?: 'PriceMonitoringBounds', minValidPrice: string, maxValidPrice: string, referencePrice: string, trigger: { __typename?: 'PriceMonitoringTrigger', horizonSecs: number, probability: number, auctionExtensionSecs: number } }> | null };
 
 export type MarketDataQueryVariables = Types.Exact<{
   marketId: Types.Scalars['ID'];
 }>;
 
 
-export type MarketDataQuery = { __typename?: 'Query', marketsConnection?: { __typename?: 'MarketConnection', edges: Array<{ __typename?: 'MarketEdge', node: { __typename?: 'Market', data?: { __typename?: 'MarketData', auctionEnd?: string | null, auctionStart?: string | null, bestBidPrice: string, bestBidVolume: string, bestOfferPrice: string, bestOfferVolume: string, bestStaticBidPrice: string, bestStaticBidVolume: string, bestStaticOfferPrice: string, bestStaticOfferVolume: string, indicativePrice: string, indicativeVolume: string, marketState: Types.MarketState, marketTradingMode: Types.MarketTradingMode, markPrice: string, midPrice: string, openInterest: string, staticMidPrice: string, suppliedStake?: string | null, targetStake?: string | null, trigger: Types.AuctionTrigger, lastTradedPrice: string, market: { __typename?: 'Market', id: string }, productData?: { __typename?: 'PerpetualData', fundingRate?: string | null, fundingPayment?: string | null, externalTwap?: string | null, internalTwap?: string | null } | null, priceMonitoringBounds?: Array<{ __typename?: 'PriceMonitoringBounds', minValidPrice: string, maxValidPrice: string, referencePrice: string, trigger: { __typename?: 'PriceMonitoringTrigger', horizonSecs: number, probability: number, auctionExtensionSecs: number } }> | null } | null } }> } | null };
+export type MarketDataQuery = { __typename?: 'Query', marketsConnection?: { __typename?: 'MarketConnection', edges: Array<{ __typename?: 'MarketEdge', node: { __typename?: 'Market', data?: { __typename?: 'MarketData', auctionEnd?: string | null, auctionStart?: string | null, bestBidPrice: string, bestBidVolume: string, bestOfferPrice: string, bestOfferVolume: string, bestStaticBidPrice: string, bestStaticBidVolume: string, bestStaticOfferPrice: string, bestStaticOfferVolume: string, indicativePrice: string, indicativeVolume: string, marketState: Types.MarketState, marketTradingMode: Types.MarketTradingMode, markPrice: string, lastTradedPrice: string, midPrice: string, openInterest: string, staticMidPrice: string, suppliedStake?: string | null, targetStake?: string | null, trigger: Types.AuctionTrigger, market: { __typename?: 'Market', id: string }, productData?: { __typename?: 'PerpetualData', fundingRate?: string | null, fundingPayment?: string | null, externalTwap?: string | null, internalTwap?: string | null } | null, priceMonitoringBounds?: Array<{ __typename?: 'PriceMonitoringBounds', minValidPrice: string, maxValidPrice: string, referencePrice: string, trigger: { __typename?: 'PriceMonitoringTrigger', horizonSecs: number, probability: number, auctionExtensionSecs: number } }> | null } | null } }> } | null };
 
 export const MarketDataUpdateFieldsFragmentDoc = gql`
     fragment MarketDataUpdateFields on ObservableMarketData {
@@ -47,6 +47,7 @@ export const MarketDataUpdateFieldsFragmentDoc = gql`
   marketState
   marketTradingMode
   markPrice
+  lastTradedPrice
   midPrice
   openInterest
   priceMonitoringBounds {
@@ -94,6 +95,7 @@ export const MarketDataFieldsFragmentDoc = gql`
   marketState
   marketTradingMode
   markPrice
+  lastTradedPrice
   midPrice
   openInterest
   priceMonitoringBounds {
@@ -138,9 +140,9 @@ export const MarketDataUpdateDocument = gql`
  * });
  */
 export function useMarketDataUpdateSubscription(baseOptions: Apollo.SubscriptionHookOptions<MarketDataUpdateSubscription, MarketDataUpdateSubscriptionVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useSubscription<MarketDataUpdateSubscription, MarketDataUpdateSubscriptionVariables>(MarketDataUpdateDocument, options);
-      }
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useSubscription<MarketDataUpdateSubscription, MarketDataUpdateSubscriptionVariables>(MarketDataUpdateDocument, options);
+}
 export type MarketDataUpdateSubscriptionHookResult = ReturnType<typeof useMarketDataUpdateSubscription>;
 export type MarketDataUpdateSubscriptionResult = Apollo.SubscriptionResult<MarketDataUpdateSubscription>;
 export const MarketDataDocument = gql`
@@ -174,13 +176,13 @@ export const MarketDataDocument = gql`
  * });
  */
 export function useMarketDataQuery(baseOptions: Apollo.QueryHookOptions<MarketDataQuery, MarketDataQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<MarketDataQuery, MarketDataQueryVariables>(MarketDataDocument, options);
-      }
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useQuery<MarketDataQuery, MarketDataQueryVariables>(MarketDataDocument, options);
+}
 export function useMarketDataLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MarketDataQuery, MarketDataQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<MarketDataQuery, MarketDataQueryVariables>(MarketDataDocument, options);
-        }
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useLazyQuery<MarketDataQuery, MarketDataQueryVariables>(MarketDataDocument, options);
+}
 export type MarketDataQueryHookResult = ReturnType<typeof useMarketDataQuery>;
 export type MarketDataLazyQueryHookResult = ReturnType<typeof useMarketDataLazyQuery>;
 export type MarketDataQueryResult = Apollo.QueryResult<MarketDataQuery, MarketDataQueryVariables>;
