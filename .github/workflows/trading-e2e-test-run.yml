@@ -9,7 +9,7 @@ on:
 
 jobs:
   create-docker-image:
-    name: Create docker image for console-test
+    name: Create docker image for trading-e2e-test
     runs-on: ubuntu-22.04
     timeout-minutes: 45
     steps:
@@ -71,7 +71,7 @@ jobs:
             APP=trading
             ENV_NAME="${{ github.base_ref == 'main' && 'mainnet' || 'stagnet1' }}"
           tags: ci/trading:local
-          outputs: type=docker,dest=/tmp/console-image.tar
+          outputs: type=docker,dest=/tmp/trading-image.tar
 
       - name: Verify docker image created
         run: |
@@ -81,7 +81,7 @@ jobs:
       - name: Upload docker image for trading-e2e-test usage
         uses: actions/upload-artifact@v3
         with:
-          name: console-image
+          name: trading-image
           path: /tmp/trading-image.tar
 
   run-tests:
