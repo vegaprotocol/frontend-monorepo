@@ -107,7 +107,7 @@ export const RefereesTable = ({
                             'Depending on data node retention you may not be able see the full 30 days'
                           )}
                         >
-                          <span>last 30 epochs</span>
+                          last 30 epochs
                         </Tooltip>,
                       ]}
                       values={{
