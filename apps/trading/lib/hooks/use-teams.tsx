@@ -21,7 +21,7 @@ type Team = Omit<
   TeamsFieldsFragment & TeamStatisticsFieldsFragment,
   '__typename'
 >;
-export type TeamWithRank = Team & { rank: number };
+export type TeamWithRank = Team & { rank?: number };
 
 export const useTeams = (aggregationEpochs = TEAMS_STATS_EPOCHS) => {
   const {
@@ -59,7 +59,7 @@ export const useTeams = (aggregationEpochs = TEAMS_STATS_EPOCHS) => {
         ...t,
         ...(stats.find((s) => s.teamId === t.teamId) || EMPTY_STATS),
       })),
-      [(d) => Number(d.totalQuantumRewards || 0), 'name'],
+      [(d) => Number(d.totalQuantumRewards || 0), (d) => d.name.toUpperCase()],
       ['desc', 'asc']
     );
 
@@ -68,6 +68,9 @@ export const useTeams = (aggregationEpochs = TEAMS_STATS_EPOCHS) => {
         ...omit(entry, '__typename'),
         rank: i + 1,
       };
+      if (Number(entry.totalQuantumRewards) === 0) {
+        ranked.rank = undefined;
+      }
       if (i > 0) {
         const prev = all[i - 1];
         if (prev.totalQuantumRewards === entry.totalQuantumRewards) {
