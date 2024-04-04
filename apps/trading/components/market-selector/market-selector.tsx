@@ -191,7 +191,7 @@ const MarketList = ({
         <div className="w-2/6 sm:w-1/6 text-right" role="columnheader">
           {t('24h volume')}
         </div>
-        <div className="hidden sm:w-1/6" role="columnheader" />
+        <div className="sm:w-1/6" role="columnheader" />
       </div>
       <div ref={listRef}>
         <List
