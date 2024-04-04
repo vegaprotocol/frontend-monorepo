@@ -5,6 +5,7 @@ fragment MarketsDataFields on MarketData {
   bestBidPrice
   bestOfferPrice
   markPrice
+  lastTradedPrice
   trigger
   staticMidPrice
   marketState
