@@ -44,10 +44,12 @@ export const CompetitionsHome = () => {
     games: myTeamGames,
     rank: myTeamRank,
     role: myRole,
+    teamId: myTeamId,
   } = useMyTeam();
 
   type event = { preventDefault: () => void };
 
+  /** Action A */
   let createTeamBtnProps: ComponentProps<typeof ActionButton> = {
     intent: Intent.Primary,
     children: t('Create a public team'),
@@ -60,6 +62,7 @@ export const CompetitionsHome = () => {
     testId: 'create-public-team-button',
   };
 
+  /** Action B */
   let createPrivateTeamBtnProps: ComponentProps<typeof ActionButton> = {
     intent: Intent.Primary,
     children: t('Create a private team'),
@@ -72,6 +75,7 @@ export const CompetitionsHome = () => {
     testId: 'create-private-team-button',
   };
 
+  /** Action C */
   let chooseTeamBtnProps: ComponentProps<typeof ActionButton> = {
     intent: Intent.Primary,
     children: t('Choose a team'),
@@ -85,16 +89,21 @@ export const CompetitionsHome = () => {
   };
 
   if (myRole === Role.NOT_IN_TEAM_BUT_REFERRER) {
+    /** A */
     createTeamBtnProps = {
       ...createTeamBtnProps,
       children: t('Upgrade to team'),
       tooltip: t('Upgrade your existing referral set to a team'),
+      disabled: myTeamId == null,
     };
+    /** B */
     createPrivateTeamBtnProps = {
       ...createPrivateTeamBtnProps,
-      children: t('Upgrade to a private team'),
+      children: t('Upgrade to private team'),
       tooltip: t('Upgrade your existing referral set to a private team'),
+      disabled: myTeamId == null,
     };
+    /** C */
     chooseTeamBtnProps = {
       ...chooseTeamBtnProps,
       disabled: true,
@@ -105,6 +114,7 @@ export const CompetitionsHome = () => {
   }
 
   if (myRole === Role.NOT_IN_TEAM_BUT_REFEREE) {
+    /** A */
     createTeamBtnProps = {
       ...createTeamBtnProps,
       disabled: true,
@@ -112,6 +122,7 @@ export const CompetitionsHome = () => {
         'As a member of a referral set you cannot create a team, but you can join one.'
       ),
     };
+    /** B */
     createPrivateTeamBtnProps = {
       ...createPrivateTeamBtnProps,
       disabled: true,

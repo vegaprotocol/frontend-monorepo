@@ -50,6 +50,6 @@ export const ActionButton = ({
   testId?: string;
 }) => (
   <Tooltip description={tooltip}>
-    <TradingButton data-test-id={testId} {...buttonProps} />
+    <TradingButton data-testid={testId} {...buttonProps} />
   </Tooltip>
 );

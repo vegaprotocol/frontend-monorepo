@@ -1,28 +1,34 @@
 import orderBy from 'lodash/orderBy';
-import { useMemo } from 'react';
-import { useTeamsQuery } from './__generated__/Teams';
-import { useTeamsStatisticsQuery } from './__generated__/TeamsStatistics';
-import compact from 'lodash/compact';
+import { useCallback, useMemo } from 'react';
+import { type TeamsFieldsFragment, useTeamsQuery } from './__generated__/Teams';
 import {
-  type TeamFieldsFragment,
-  type TeamStatsFieldsFragment,
-} from './__generated__/Team';
+  type TeamStatisticsFieldsFragment,
+  useTeamsStatisticsQuery,
+} from './__generated__/TeamsStatistics';
 import { TEAMS_STATS_EPOCHS } from './constants';
+import omit from 'lodash/omit';
 import { removePaginationWrapper } from '@vegaprotocol/utils';
 
-const EMPTY_STATS: Partial<TeamStatsFieldsFragment> = {
-  totalQuantumVolume: '0',
-  totalQuantumRewards: '0',
-  totalGamesPlayed: 0,
-  gamesPlayed: [],
-  quantumRewards: [],
-};
+const EMPTY_STATS: Omit<TeamStatisticsFieldsFragment, '__typename' | 'teamId'> =
+  {
+    totalQuantumVolume: '0',
+    totalQuantumRewards: '0',
+    totalGamesPlayed: 0,
+    gamesPlayed: [],
+  };
+
+type Team = Omit<
+  TeamsFieldsFragment & TeamStatisticsFieldsFragment,
+  '__typename'
+>;
+export type TeamWithRank = Team & { rank: number };
 
 export const useTeams = (aggregationEpochs = TEAMS_STATS_EPOCHS) => {
   const {
     data: teamsData,
     loading: teamsLoading,
     error: teamsError,
+    refetch: teamsRefetch,
   } = useTeamsQuery({
     fetchPolicy: 'cache-and-network',
   });
@@ -31,6 +37,7 @@ export const useTeams = (aggregationEpochs = TEAMS_STATS_EPOCHS) => {
     data: statsData,
     loading: statsLoading,
     error: statsError,
+    refetch: statsRefetch,
   } = useTeamsStatisticsQuery({
     variables: {
       aggregationEpochs,
@@ -38,26 +45,44 @@ export const useTeams = (aggregationEpochs = TEAMS_STATS_EPOCHS) => {
     fetchPolicy: 'cache-and-network',
   });
 
-  const teams = compact(teamsData?.teams?.edges).map((e) => e.node);
-  const stats = compact(statsData?.teamsStatistics?.edges).map((e) => e.node);
+  const refetch = useCallback(() => {
+    teamsRefetch();
+    statsRefetch();
+  }, [statsRefetch, teamsRefetch]);
+
+  const teams = removePaginationWrapper(teamsData?.teams?.edges);
+  const stats = removePaginationWrapper(statsData?.teamsStatistics?.edges);
 
   const data = useMemo(() => {
-    const data = teams.map((t) => ({
-      ...t,
-      ...(stats.find((s) => s.teamId === t.teamId) || EMPTY_STATS),
-    }));
-
-    return orderBy(
-      data,
+    const data: Team[] = orderBy(
+      teams.map((t) => ({
+        ...t,
+        ...(stats.find((s) => s.teamId === t.teamId) || EMPTY_STATS),
+      })),
       [(d) => Number(d.totalQuantumRewards || 0), 'name'],
       ['desc', 'asc']
-    ).map((d, i) => ({ ...d, rank: i + 1 }));
+    );
+
+    return data.reduce((all, entry, i) => {
+      const ranked: TeamWithRank = {
+        ...omit(entry, '__typename'),
+        rank: i + 1,
+      };
+      if (i > 0) {
+        const prev = all[i - 1];
+        if (prev.totalQuantumRewards === entry.totalQuantumRewards) {
+          ranked.rank = prev.rank;
+        }
+      }
+      return [...all, ranked];
+    }, [] as TeamWithRank[]);
   }, [teams, stats]);
 
   return {
     data,
     loading: teamsLoading && statsLoading,
     error: teamsError || statsError,
+    refetch,
   };
 };
 
@@ -65,9 +90,9 @@ export const useTeamsMap = () => {
   const { data: teamsData, loading } = useTeamsQuery();
   const teams = removePaginationWrapper(teamsData?.teams?.edges).reduce(
     (all, t) => {
-      return { ...all, [t.teamId]: t } as Record<string, TeamFieldsFragment>;
+      return { ...all, [t.teamId]: t } as Record<string, TeamsFieldsFragment>;
     },
-    {} as Record<string, TeamFieldsFragment>
+    {} as Record<string, TeamsFieldsFragment>
   );
 
   return { data: teams, loading };

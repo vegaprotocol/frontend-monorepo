@@ -3,6 +3,8 @@ import * as Types from '@vegaprotocol/types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
+export type TeamStatisticsFieldsFragment = { __typename?: 'TeamStatistics', teamId: string, totalQuantumVolume: string, totalQuantumRewards: string, totalGamesPlayed: number, gamesPlayed: Array<string> };
+
 export type TeamsStatisticsQueryVariables = Types.Exact<{
   teamId?: Types.InputMaybe<Types.Scalars['ID']>;
   aggregationEpochs?: Types.InputMaybe<Types.Scalars['Int']>;
@@ -11,22 +13,26 @@ export type TeamsStatisticsQueryVariables = Types.Exact<{
 
 export type TeamsStatisticsQuery = { __typename?: 'Query', teamsStatistics?: { __typename?: 'TeamsStatisticsConnection', edges: Array<{ __typename?: 'TeamStatisticsEdge', node: { __typename?: 'TeamStatistics', teamId: string, totalQuantumVolume: string, totalQuantumRewards: string, totalGamesPlayed: number, gamesPlayed: Array<string> } }> } | null };
 
-
+export const TeamStatisticsFieldsFragmentDoc = gql`
+    fragment TeamStatisticsFields on TeamStatistics {
+  teamId
+  totalQuantumVolume
+  totalQuantumRewards
+  totalGamesPlayed
+  gamesPlayed
+}
+    `;
 export const TeamsStatisticsDocument = gql`
     query TeamsStatistics($teamId: ID, $aggregationEpochs: Int) {
   teamsStatistics(teamId: $teamId, aggregationEpochs: $aggregationEpochs) {
     edges {
       node {
-        teamId
-        totalQuantumVolume
-        totalQuantumRewards
-        totalGamesPlayed
-        gamesPlayed
+        ...TeamStatisticsFields
       }
     }
   }
 }
-    `;
+    ${TeamStatisticsFieldsFragmentDoc}`;
 
 /**
  * __useTeamsStatisticsQuery__

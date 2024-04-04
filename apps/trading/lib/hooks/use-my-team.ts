@@ -5,6 +5,7 @@ import { useTeam } from './use-team';
 import { useTeams } from './use-teams';
 import { areTeamGames, useGames } from './use-games';
 import { removePaginationWrapper } from '@vegaprotocol/utils';
+import { useCallback } from 'react';
 
 export enum Role {
   /** A pubkey is a member of a team */
@@ -25,9 +26,19 @@ export enum Role {
 
 export const useMyTeam = () => {
   const { pubKey } = useVegaWallet();
-  const { data: teams } = useTeams();
+  const {
+    data: teams,
+    loading: teamsLoading,
+    error: teamsError,
+    refetch: teamsRefetch,
+  } = useTeams();
 
-  const { data } = useTeamsQuery({
+  const {
+    data,
+    loading,
+    error,
+    refetch: myRefetch,
+  } = useTeamsQuery({
     variables: {
       partyId: pubKey,
       checkReferrals: true,
@@ -36,8 +47,13 @@ export const useMyTeam = () => {
     fetchPolicy: 'cache-and-network',
   });
 
+  const refetch = useCallback(() => {
+    teamsRefetch();
+    myRefetch();
+  }, [myRefetch, teamsRefetch]);
+
   const team = first(removePaginationWrapper(data?.teams?.edges));
-  const rank = teams.findIndex((t) => t.teamId === team?.teamId) + 1;
+  const rank = teams.find((t) => t.teamId === team?.teamId)?.rank;
   const { stats } = useTeam(team?.teamId);
   const { data: games } = useGames({ teamId: team?.teamId });
   const role = determineRole(pubKey, data);
@@ -46,8 +62,28 @@ export const useMyTeam = () => {
     team,
     stats,
     games: areTeamGames(games) ? games : undefined,
+
+    /**
+     * The overall rank of the found team compared to the others,
+     * see `useTeams` hook.
+     */
     rank,
+
+    /**
+     * A role of a given pubKey in relation to a found competition team
+     * associated with that key.
+     */
     role,
+
+    /**
+     * The team id derived from the found team data for given pubKey
+     * or from the referral set (set id).
+     */
+    teamId: getTeamId(data),
+
+    loading: loading || teamsLoading,
+    error: error || teamsError,
+    refetch,
   };
 };
 
@@ -75,4 +111,12 @@ const determineRole = (
   }
 
   return undefined;
+};
+
+const getTeamId = (data?: TeamsQuery) => {
+  if (!data) return undefined;
+
+  const team = first(removePaginationWrapper(data.teams?.edges))?.teamId;
+  const referrer = first(removePaginationWrapper(data?.referrer?.edges))?.id;
+  return team || referrer;
 };

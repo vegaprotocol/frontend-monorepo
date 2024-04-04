@@ -34,6 +34,8 @@ export type FormFields = {
 export enum TransactionType {
   CreateReferralSet = 'CreateReferralSet',
   UpdateReferralSet = 'UpdateReferralSet',
+  /** A special case when a referral set has been created before team */
+  UpgradeFromReferralSet = 'UpgradeFromReferralSet',
 }
 
 const prepareTransaction = (
@@ -57,6 +59,7 @@ const prepareTransaction = (
         },
       };
     case TransactionType.UpdateReferralSet:
+    case TransactionType.UpgradeFromReferralSet:
       return {
         updateReferralSet: {
           id: fields.id,
@@ -265,10 +268,16 @@ const SubmitButton = ({
   if (type === TransactionType.UpdateReferralSet) {
     text = t('Update');
   }
+  if (type === TransactionType.UpgradeFromReferralSet) {
+    text = t('Upgrade');
+  }
 
   let confirmedText = t('Created');
   if (type === TransactionType.UpdateReferralSet) {
     confirmedText = t('Updated');
+  }
+  if (type === TransactionType.UpgradeFromReferralSet) {
+    confirmedText = t('Upgraded');
   }
 
   if (status === 'requested') {

@@ -1,12 +1,13 @@
 fragment TeamsFields on Team {
-  teamId
-  referrer
-  name
-  teamUrl
+  allowList
   avatarUrl
+  closed
   createdAt
   createdAtEpoch
-  closed
+  name
+  referrer
+  teamId
+  teamUrl
   totalMembers
 }
 

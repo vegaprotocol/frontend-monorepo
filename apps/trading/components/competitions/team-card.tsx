@@ -21,7 +21,7 @@ export const TeamCard = ({
   stats,
   games,
 }: {
-  rank: number;
+  rank?: number;
   team: TeamsFieldsFragment;
   stats?: TeamStats;
   games?: TeamGame[];
@@ -79,7 +79,7 @@ export const TeamCard = ({
         >
           <Stat
             className="flex flex-col-reverse"
-            value={rank}
+            value={rank || t('None')}
             label={t('Rank')}
             valueTestId="team-rank"
           />
