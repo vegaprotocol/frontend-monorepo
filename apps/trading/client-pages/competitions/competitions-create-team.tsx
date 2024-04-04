@@ -131,7 +131,7 @@ const CreateTeamFormContainer = ({
                   className="font-mono break-all bg-rainbow bg-clip-text text-transparent text-2xl"
                   data-testid="team-id-display"
                 >
-                  {code}
+                  {isUpgrade ? teamId : code}
                 </span>
               </dl>
             </dl>
