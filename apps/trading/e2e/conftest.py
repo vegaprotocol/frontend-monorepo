@@ -164,6 +164,7 @@ def init_page(vega: VegaServiceNull, browser: Browser, request: pytest.FixtureRe
             )
             window_env = f"window._env_ = Object.assign({{}}, window._env_, {env})"
             page.add_init_script(script=window_env)
+            page.add_init_script(script="console.log(window._env_)")
             yield page
         finally:
             try:
