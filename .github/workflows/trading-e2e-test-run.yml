@@ -71,7 +71,7 @@ jobs:
             APP=trading
             ENV_NAME="${{ github.base_ref == 'main' && 'mainnet' || 'stagnet1' }}"
           tags: ci/trading:local
-          outputs: type=docker,dest=/tmp/trading-image.tar
+          outputs: type=docker,dest=/tmp/console-image.tar
 
       - name: Verify docker image created
         run: |
@@ -81,8 +81,8 @@ jobs:
       - name: Upload docker image for trading-e2e-test usage
         uses: actions/upload-artifact@v3
         with:
-          name: trading-image
-          path: /tmp/trading-image.tar
+          name: console-image
+          path: /tmp/console-image.tar
 
   run-tests:
     name: run-tests
@@ -96,12 +96,12 @@ jobs:
       - name: Download docker image from previous job
         uses: actions/download-artifact@v3
         with:
-          name: trading-image
+          name: console-image
           path: /tmp
 
       - name: Load Docker image
         run: |
-          docker load --input trading-image.tar
+          docker load --input console-image.tar
           docker image ls -a
       #----------------------------------------------
       #       check-out frontend-monorepo
