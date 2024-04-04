@@ -279,17 +279,29 @@ jobs:
             * tools: ${{ needs.build-sources.outputs.preview_tools }}
 
   # Report single result at the end, to avoid mess with required checks in PR
-  cypress-check:
-    name: '(CI) cypress - check'
+  test-check:
+    name: '(CI) Final Tests check'
     if: ${{ always() }}
-    needs: cypress
+    needs: [cypress, trading-e2e]
     runs-on: ubuntu-22.04
     steps:
-      - run: |
+      - name: Check Cypress Tests Result
+        run: |
           result="${{ needs.cypress.result }}"
-          echo "Result: $result"
-          if [[ $result == "success" || $result == "skipped" ]]; then
-            exit 0
-          else
+          echo "Cypress Tests Result: $result"
+          if [[ $result != "success" && $result != "skipped" ]]; then
+            echo "Failing due to Cypress tests."
             exit 1
           fi
+
+      - name: Check Trading E2E Tests Result
+        run: |
+          result="${{ needs.trading-e2e.result }}"
+          echo "Trading E2E Tests Result: $result"
+          if [[ $result != "success" && $result != "skipped" ]]; then
+            echo "Failing due to Trading E2E tests."
+            exit 1
+          fi
+
+      - name: All Tests Passed
+        run: echo "All specified tests have passed successfully."
