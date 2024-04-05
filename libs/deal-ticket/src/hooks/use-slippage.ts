@@ -2,15 +2,21 @@ import { useOrderbook } from '@vegaprotocol/market-depth';
 import { Side, type OrderType } from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
 
+export interface Slippage {
+  slippage: string;
+  slippagePct: string;
+  weightedAveragePrice: string;
+}
+
 export const useSlippage = (
   order: { type: OrderType; side: Side; size: string; price?: string },
   marketId: string
-) => {
+): Slippage => {
   const { data } = useOrderbook(marketId);
 
   if (order.side === Side.SIDE_BUY) {
     if (!data?.depth.sell?.length) {
-      return { slippage: '', weightedAveragePrice: '' };
+      return { slippage: '', slippagePct: '', weightedAveragePrice: '' };
     }
 
     const lowestAsk = data.depth.sell[0].price;
@@ -25,7 +31,7 @@ export const useSlippage = (
 
   if (order.side === Side.SIDE_SELL) {
     if (!data?.depth.buy?.length) {
-      return { slippage: '', weightedAveragePrice: '' };
+      return { slippage: '', slippagePct: '', weightedAveragePrice: '' };
     }
 
     const highestBid = data.depth.buy[0].price;
@@ -38,7 +44,7 @@ export const useSlippage = (
     });
   }
 
-  return { slippage: '', weightedAveragePrice: '' };
+  return { slippage: '', slippagePct: '', weightedAveragePrice: '' };
 };
 
 export const calcSlippage = ({
@@ -53,7 +59,7 @@ export const calcSlippage = ({
   limitPrice?: string;
 }) => {
   if (size === '0') {
-    return { slippage: '0', weightedAveragePrice: price };
+    return { slippage: '0', slippagePct: '0', weightedAveragePrice: price };
   }
 
   let remainingSize = new BigNumber(size);
@@ -78,14 +84,14 @@ export const calcSlippage = ({
   }
 
   if (totalVolume.isZero()) {
-    return { slippage: '0', weightedAveragePrice: price };
+    return { slippage: '0', slippagePct: '0', weightedAveragePrice: price };
   }
 
   const weightedAveragePrice = weightedSum.dividedBy(totalVolume);
   const slippage = weightedAveragePrice.minus(price);
-
   return {
     slippage: slippage.toString(),
+    slippagePct: slippage.dividedBy(price).times(100).toString(),
     weightedAveragePrice: weightedAveragePrice.toString(),
   };
 };

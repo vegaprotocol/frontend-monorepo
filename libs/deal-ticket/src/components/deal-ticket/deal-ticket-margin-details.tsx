@@ -2,7 +2,12 @@ import { useCallback, useState } from 'react';
 import { getAsset, getQuoteName } from '@vegaprotocol/markets';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { AccountBreakdownDialog } from '@vegaprotocol/accounts';
-import { formatRange, formatValue } from '@vegaprotocol/utils';
+import {
+  addDecimalsFormatNumber,
+  formatNumber,
+  formatRange,
+  formatValue,
+} from '@vegaprotocol/utils';
 import * as Schema from '@vegaprotocol/types';
 import {
   LIQUIDATION_PRICE_ESTIMATE_TOOLTIP_TEXT,
@@ -15,6 +20,7 @@ import { Trans } from 'react-i18next';
 import type { Market } from '@vegaprotocol/markets';
 import { emptyValue } from './deal-ticket-fee-details';
 import type { EstimatePositionQuery } from '@vegaprotocol/positions';
+import type { Slippage } from '../../hooks/use-slippage';
 
 export interface DealTicketMarginDetailsProps {
   generalAccountBalance: string;
@@ -25,7 +31,7 @@ export interface DealTicketMarginDetailsProps {
   assetSymbol: string;
   positionEstimate: EstimatePositionQuery['estimatePosition'];
   side: Schema.Side;
-  slippage: string;
+  slippage: Slippage;
 }
 
 export const DealTicketMarginDetails = ({
@@ -111,9 +117,19 @@ export const DealTicketMarginDetails = ({
 
   const quoteName = getQuoteName(market);
 
+  const slippageVal = addDecimalsFormatNumber(
+    slippage.slippage,
+    market.decimalPlaces
+  );
+  const slippagePct = formatNumber(slippage.slippagePct, 5);
+
   return (
     <div className="flex flex-col w-full gap-2 mt-2">
-      <KeyValue label={t('Slippage')} formattedValue={slippage} symbol="" />
+      <KeyValue
+        label={t('Slippage')}
+        formattedValue={`${slippagePct}% (${slippageVal})`}
+        symbol=""
+      />
       <KeyValue
         label={t('Current margin')}
         onClick={

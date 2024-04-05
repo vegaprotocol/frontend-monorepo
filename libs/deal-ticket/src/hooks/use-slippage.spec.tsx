@@ -1,5 +1,15 @@
-import { OrderType, Side } from '@vegaprotocol/types';
+import { renderHook, waitFor } from '@testing-library/react';
+import { OrderType, type PriceLevel, Side } from '@vegaprotocol/types';
 import { calcSlippage, useSlippage } from './use-slippage';
+import { MockedProvider, type MockedResponse } from '@apollo/client/testing';
+import { type ReactNode } from 'react';
+import {
+  MarketDepthDocument,
+  MarketDepthUpdateDocument,
+  type MarketDepthQuery,
+  type MarketDepthQueryVariables,
+} from '@vegaprotocol/market-depth';
+import { InMemoryCache } from '@apollo/client';
 
 const data = {
   market: {
@@ -42,7 +52,7 @@ const data = {
   },
 };
 
-describe.only('calcSlippage', () => {
+describe('calcSlippage', () => {
   describe('basic', () => {
     it('long', () => {
       expect(
@@ -299,27 +309,98 @@ describe.only('calcSlippage', () => {
 });
 
 describe('useSlippage', () => {
-  it('uses the correct side of the book', () => {
-    expect(
-      useSlippage(data.market.depth, {
+  const setup = (
+    marketId: string,
+    order: Parameters<typeof useSlippage>[0],
+    book: { sell: PriceLevel[]; buy: PriceLevel[] }
+  ) => {
+    const mock: MockedResponse<MarketDepthQuery, MarketDepthQueryVariables> = {
+      request: {
+        query: MarketDepthDocument,
+        variables: { marketId },
+      },
+      result: {
+        data: {
+          market: {
+            __typename: 'Market',
+            id: marketId,
+            depth: {
+              __typename: 'MarketDepth',
+              buy: book.buy,
+              sell: book.sell,
+              sequenceNumber: '1',
+            },
+          },
+        },
+      },
+    };
+
+    const mockSub = {
+      request: {
+        query: MarketDepthUpdateDocument,
+        variables: { marketId },
+      },
+      result: undefined,
+    };
+
+    return renderHook(() => useSlippage(order, marketId), {
+      wrapper: ({ children }: { children: ReactNode }) => (
+        <MockedProvider
+          cache={
+            new InMemoryCache({
+              typePolicies: {
+                Market: { keyFields: false },
+                PriceLevel: {
+                  keyFields: false,
+                },
+              },
+            })
+          }
+          mocks={[mock, mockSub]}
+        >
+          {children}
+        </MockedProvider>
+      ),
+    });
+  };
+
+  it('returns slippage for buy order', async () => {
+    const marketId = 'market-id';
+    const { result } = setup(
+      marketId,
+      {
         type: OrderType.TYPE_MARKET,
         side: Side.SIDE_BUY,
         size: '1',
-      })
-    ).toMatchObject({
-      slippage: '0',
-      weightedAveragePrice: '100',
-    });
+      },
+      data.market.depth
+    );
 
-    expect(
-      useSlippage(data.market.depth, {
+    await waitFor(() => {
+      expect(result.current).toMatchObject({
+        slippage: '0',
+        weightedAveragePrice: '100',
+      });
+    });
+  });
+
+  it('returns slippage for sell order', async () => {
+    const marketId = 'market-id';
+    const { result } = setup(
+      marketId,
+      {
         type: OrderType.TYPE_MARKET,
         side: Side.SIDE_SELL,
         size: '1',
-      })
-    ).toMatchObject({
-      slippage: '0',
-      weightedAveragePrice: '90',
+      },
+      data.market.depth
+    );
+
+    await waitFor(() => {
+      expect(result.current).toMatchObject({
+        slippage: '0',
+        weightedAveragePrice: '90',
+      });
     });
   });
 });
