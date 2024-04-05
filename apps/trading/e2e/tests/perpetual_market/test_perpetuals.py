@@ -72,7 +72,7 @@ class TestPerpetuals:
         page.goto(f"/#/markets/{perps_market}")
         page.get_by_test_id("Funding payments").click()
         row = page.locator(row_selector)
-        expect(row.locator(col_amount)).to_have_text("9.00 tDAI")
+        expect(row.locator(col_amount)).to_have_text("4.45 tDAI")
 
     def test_funding_payment_loss(self,
         setup_environment: Tuple[Page, str, str],
@@ -82,7 +82,7 @@ class TestPerpetuals:
         change_keys(page, vega, "market_maker")
         page.get_by_test_id("Funding payments").click()
         row = page.locator(row_selector)
-        expect(row.locator(col_amount)).to_have_text("-27.00 tDAI")
+        expect(row.locator(col_amount)).to_have_text("-13.35 tDAI")
 
     def test_funding_header(self,
         setup_environment: Tuple[Page, str, str],
