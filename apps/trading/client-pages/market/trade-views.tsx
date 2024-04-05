@@ -1,4 +1,4 @@
-// import { DepthChartContainer } from '@vegaprotocol/market-depth';
+import { DepthChartContainer } from '@vegaprotocol/market-depth';
 import { Filter, OpenOrdersMenu } from '@vegaprotocol/orders';
 import {
   TradesContainer,
@@ -43,7 +43,7 @@ export const TradingViews = {
     menu: ChartMenu,
   },
   depth: {
-    component: () => <div>Fix me</div>, // DepthChartContainer,
+    component: DepthChartContainer,
   },
   liquidity: {
     component: LiquidityContainer,

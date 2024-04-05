@@ -55,11 +55,11 @@ const MainGrid = memo(
                       <TradingViews.chart.component marketId={market.id} />
                     </ErrorBoundary>
                   </Tab>
-                  {/* <Tab id="depth" name={t('Depth')}>
+                  <Tab id="depth" name={t('Depth')}>
                     <ErrorBoundary feature="depth">
                       <TradingViews.depth.component marketId={market.id} />
                     </ErrorBoundary>
-                  </Tab> */}
+                  </Tab>
                   <Tab id="liquidity" name={t('Liquidity')}>
                     <ErrorBoundary feature="liquidity">
                       <TradingViews.liquidity.component marketId={market.id} />
