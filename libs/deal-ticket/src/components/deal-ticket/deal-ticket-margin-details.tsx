@@ -25,6 +25,7 @@ export interface DealTicketMarginDetailsProps {
   assetSymbol: string;
   positionEstimate: EstimatePositionQuery['estimatePosition'];
   side: Schema.Side;
+  slippage: string;
 }
 
 export const DealTicketMarginDetails = ({
@@ -36,6 +37,7 @@ export const DealTicketMarginDetails = ({
   onMarketClick,
   positionEstimate,
   side,
+  slippage,
 }: DealTicketMarginDetailsProps) => {
   const t = useT();
   const [breakdownDialog, setBreakdownDialog] = useState(false);
@@ -111,6 +113,7 @@ export const DealTicketMarginDetails = ({
 
   return (
     <div className="flex flex-col w-full gap-2 mt-2">
+      <KeyValue label={t('Slippage')} formattedValue={slippage} symbol="" />
       <KeyValue
         label={t('Current margin')}
         onClick={

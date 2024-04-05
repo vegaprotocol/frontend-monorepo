@@ -1,34 +1,44 @@
-import { Side, type PriceLevel, type OrderType } from '@vegaprotocol/types';
+import { useOrderbook } from '@vegaprotocol/market-depth';
+import { Side, type OrderType } from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
 
 export const useSlippage = (
-  book: {
-    sell: PriceLevel[];
-    buy: PriceLevel[];
-  },
-  order: { type: OrderType; side: Side; size: string; price: string }
+  order: { type: OrderType; side: Side; size: string; price?: string },
+  marketId: string
 ) => {
+  const { data } = useOrderbook(marketId);
+
   if (order.side === Side.SIDE_BUY) {
-    const lowestAsk = book.sell[0].price;
+    if (!data?.depth.sell?.length) {
+      return { slippage: '', weightedAveragePrice: '' };
+    }
+
+    const lowestAsk = data.depth.sell[0].price;
+
     return calcSlippage({
       price: lowestAsk,
       limitPrice: order.price,
       size: order.size,
-      priceLevels: book.sell,
+      priceLevels: data.depth.sell,
     });
   }
 
   if (order.side === Side.SIDE_SELL) {
-    const highestBid = book.buy[0].price;
+    if (!data?.depth.buy?.length) {
+      return { slippage: '', weightedAveragePrice: '' };
+    }
+
+    const highestBid = data.depth.buy[0].price;
+
     return calcSlippage({
       price: highestBid,
       limitPrice: order.price,
       size: order.size,
-      priceLevels: book.buy,
+      priceLevels: data.depth.buy,
     });
   }
 
-  return { slippage: '0', weightedAveragePrice: '0' };
+  return { slippage: '', weightedAveragePrice: '' };
 };
 
 export const calcSlippage = ({
@@ -42,6 +52,10 @@ export const calcSlippage = ({
   priceLevels: Array<{ volume: string; price: string }>;
   limitPrice?: string;
 }) => {
+  if (size === '0') {
+    return { slippage: '0', weightedAveragePrice: price };
+  }
+
   let remainingSize = new BigNumber(size);
   let totalVolume = new BigNumber(0);
   let weightedSum = new BigNumber(0);
@@ -61,6 +75,10 @@ export const calcSlippage = ({
     remainingSize = remainingSize.minus(volume);
     totalVolume = totalVolume.plus(volume);
     weightedSum = weightedSum.plus(volume.times(price));
+  }
+
+  if (totalVolume.isZero()) {
+    return { slippage: '0', weightedAveragePrice: price };
   }
 
   const weightedAveragePrice = weightedSum.dividedBy(totalVolume);

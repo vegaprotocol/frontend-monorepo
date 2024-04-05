@@ -85,6 +85,7 @@ import {
   isStopOrderType,
   useDealTicketFormValues,
 } from '@vegaprotocol/react-helpers';
+import { useSlippage } from '../../hooks/use-slippage';
 
 export const REDUCE_ONLY_TOOLTIP =
   '"Reduce only" will ensure that this order will not increase the size of an open position. When the order is matched, it will only trade enough volume to bring your open volume towards 0 but never change the direction of your position. If applied to a limit order that is not instantly filled, the order will be stopped.';
@@ -302,6 +303,8 @@ export const DealTicket = ({
         (!normalizedOrder.price || normalizedOrder.price === '0')) ||
       normalizedOrder.size === '0'
   );
+
+  const { slippage } = useSlippage(normalizedOrder, market.id);
 
   const assetSymbol = getAsset(market).symbol;
 
@@ -863,6 +866,7 @@ export const DealTicket = ({
         generalAccountBalance={generalAccountBalance}
         positionEstimate={positionEstimate?.estimatePosition}
         market={market}
+        slippage={slippage}
       />
     </form>
   );

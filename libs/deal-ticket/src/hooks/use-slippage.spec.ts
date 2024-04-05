@@ -42,7 +42,7 @@ const data = {
   },
 };
 
-describe('calcSlippage', () => {
+describe.only('calcSlippage', () => {
   describe('basic', () => {
     it('long', () => {
       expect(
