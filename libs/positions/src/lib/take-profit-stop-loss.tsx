@@ -3,8 +3,10 @@ import * as Schema from '@vegaprotocol/types';
 import {
   TradingButton as Button,
   ButtonLink,
+  FormGroup,
   TradingInput as Input,
   InputError,
+  Intent,
   Pill,
   VegaIcon,
   VegaIconNames,
@@ -39,6 +41,7 @@ import {
   removeDecimal,
   toBigNum,
   useValidateAmount,
+  volumePrefix,
 } from '@vegaprotocol/utils';
 import {
   type Market,
@@ -51,6 +54,7 @@ import { useT } from '../use-t';
 import { signedNumberCssClass } from '@vegaprotocol/datagrid';
 import { Trans } from 'react-i18next';
 import { Controller, useForm } from 'react-hook-form';
+import classNames from 'classnames';
 
 interface TakeProfitStopLossDialogProps {
   open: boolean;
@@ -120,7 +124,7 @@ export const Setup = ({
   marketPrice: string | null;
 }) => {
   const t = useT();
-  const { handleSubmit, control, watch } = useForm<FormValues>();
+  const { handleSubmit, control, watch, setValue } = useForm<FormValues>();
   const price = watch('price');
   const size = watch('size');
   const validateAmount = useValidateAmount();
@@ -217,11 +221,14 @@ export const Setup = ({
     info = (
       <p className="text-xs mb-2">
         <Trans
-          i18nKey={takeProfit ? 'takeProfitSummary' : 'stopLossSummary'}
           defaults={
             takeProfit
-              ? 'When the mark price rises above {{ price }} {{ symbol }} it will trigger a Take Profit order to close this position for an estimated profit of <0/> {{ symbol }}.'
-              : 'When the mark price falls below {{ price }} {{ symbol }} it will trigger a Stop Loss order to close this position with an estimated loss of <0/> {{ symbol }}.'
+              ? side === Schema.Side.SIDE_SELL
+                ? 'When the mark price rises above {{ price }} {{ symbol }} it will trigger a Take Profit order to close this position for an estimated profit of <0/> {{ symbol }}.'
+                : 'When the mark price falls below {{ price }} {{ symbol }} it will trigger a Take Profit order to close this position for an estimated profit of <0/> {{ symbol }}.'
+              : side === Schema.Side.SIDE_SELL
+              ? 'When the mark price falls below {{ price }} {{ symbol }} it will trigger a Stop Loss order to close this position with an estimated loss of <0/> {{ symbol }}.'
+              : 'When the mark price rises above {{ price }} {{ symbol }} it will trigger a Stop Loss order to close this position with an estimated loss of <0/> {{ symbol }}.'
           }
           values={values}
           components={components}
@@ -231,6 +238,7 @@ export const Setup = ({
   }
 
   const sizeStep = 0.1;
+  const maxSize = 100 - (allocation ?? 0) * 100;
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -269,16 +277,22 @@ export const Setup = ({
               }
               return (
                 <>
-                  <Input
-                    type="number"
-                    id="price-input"
-                    className="w-full"
-                    min={priceStep}
-                    step={priceStep}
-                    appendElement={<Pill size="xs">{quoteName}</Pill>}
-                    hasError={!!fieldState.error}
-                    {...field}
-                  />
+                  <FormGroup
+                    label={t('Price')}
+                    labelFor="tpsl-price-input"
+                    compact
+                  >
+                    <Input
+                      type="number"
+                      id="tpsl-price-input"
+                      className="w-full"
+                      min={priceStep}
+                      step={priceStep}
+                      appendElement={<Pill size="xs">{quoteName}</Pill>}
+                      hasError={!!fieldState.error}
+                      {...field}
+                    />
+                  </FormGroup>
                   {fieldState.error && (
                     <InputError testId="tpsl-error-message-price">
                       {fieldState.error.message}
@@ -313,16 +327,36 @@ export const Setup = ({
             }}
             render={({ field, fieldState }) => (
               <>
-                <Input
-                  type="number"
-                  className="w-full"
-                  min={sizeStep}
-                  max={100 - (allocation ?? 0) * 100}
-                  step={sizeStep}
-                  appendElement={<Pill size="xs">%</Pill>}
-                  hasError={!!fieldState.error}
-                  {...field}
-                />
+                <FormGroup
+                  label={t('Quantity')}
+                  labelFor="tpsl-size-input"
+                  compact
+                >
+                  <Input
+                    id="tpsl-size-input"
+                    type="number"
+                    className="w-full"
+                    min={sizeStep}
+                    max={maxSize}
+                    step={sizeStep}
+                    appendElement={
+                      <>
+                        <Pill size="xs">%</Pill>
+                        <button
+                          type="button"
+                          className="flex ml-1"
+                          onClick={() => setValue('size', maxSize.toString())}
+                        >
+                          <Pill size="xs" intent={Intent.Success}>
+                            {t('Use Max')}
+                          </Pill>
+                        </button>
+                      </>
+                    }
+                    hasError={!!fieldState.error}
+                    {...field}
+                  />
+                </FormGroup>
                 {fieldState.error && (
                   <InputError testId="tpsl-error-message-size">
                     {fieldState.error.message}
@@ -481,9 +515,8 @@ const filterAndSort = (
   orderBy(
     stopOrders?.filter(
       (order) =>
-        /*order.sizeOverrideSetting ===
-      Schema.StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION &&*/
-        (order.sizeOverrideValue = '0.5') &&
+        order.sizeOverrideSetting ===
+          Schema.StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION &&
         order.triggerDirection === triggerDirection
     ),
     (stopOrder) => BigInt((stopOrder.trigger as Schema.StopOrderPrice).price),
@@ -562,6 +595,25 @@ export const TakeProfitStopLoss = ({
         </dt>
         <dd className="text-right">
           {market?.tradableInstrument.instrument.code}
+        </dd>
+        <dt className="text-vega-clight-100 dark:text-vega-cdark-100">
+          {t('Position')}
+        </dt>
+        <dd
+          className={classNames(
+            'text-right',
+            openVolume?.openVolume &&
+              signedNumberCssClass(openVolume.openVolume)
+          )}
+        >
+          {openVolume?.openVolume && market
+            ? volumePrefix(
+                addDecimalsFormatNumber(
+                  openVolume.openVolume,
+                  market.positionDecimalPlaces
+                )
+              )
+            : '-'}
         </dd>
         <dt className="text-vega-clight-100 dark:text-vega-cdark-100">
           {t('Entry price')}
