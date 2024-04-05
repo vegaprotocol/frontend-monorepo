@@ -164,7 +164,10 @@ describe('calcSlippage', () => {
           size: '20',
           priceLevels: data.market.depth.sell,
         })
-      ).toMatchObject({ slippage: '5', weightedAveragePrice: '105' });
+      ).toMatchObject({
+        slippage: '5',
+        weightedAveragePrice: '105',
+      });
 
       expect(
         calcSlippage({
@@ -172,7 +175,10 @@ describe('calcSlippage', () => {
           size: '30',
           priceLevels: data.market.depth.sell,
         })
-      ).toMatchObject({ slippage: '10', weightedAveragePrice: '110' });
+      ).toMatchObject({
+        slippage: '10',
+        weightedAveragePrice: '110',
+      });
 
       expect(
         calcSlippage({
@@ -180,7 +186,10 @@ describe('calcSlippage', () => {
           size: '25',
           priceLevels: data.market.depth.sell,
         })
-      ).toMatchObject({ slippage: '8', weightedAveragePrice: '108' });
+      ).toMatchObject({
+        slippage: '8',
+        weightedAveragePrice: '108',
+      });
     });
 
     it('short', () => {
@@ -190,7 +199,10 @@ describe('calcSlippage', () => {
           size: '1',
           priceLevels: data.market.depth.buy,
         })
-      ).toMatchObject({ slippage: '0' });
+      ).toMatchObject({
+        slippage: '0',
+        weightedAveragePrice: '90',
+      });
 
       expect(
         calcSlippage({
@@ -209,7 +221,79 @@ describe('calcSlippage', () => {
           size: '100',
           priceLevels: data.market.depth.buy,
         })
-      ).toMatchObject({ slippage: '-9' });
+      ).toMatchObject({
+        slippage: '-9',
+        weightedAveragePrice: '81',
+      });
+    });
+  });
+
+  describe('limit', () => {
+    const data = {
+      market: {
+        depth: {
+          sell: [
+            {
+              price: '100',
+              numberOfOrders: '1',
+              volume: '1',
+            },
+            {
+              price: '110',
+              numberOfOrders: '1',
+              volume: '1',
+            },
+            {
+              price: '120',
+              numberOfOrders: '1',
+              volume: '1',
+            },
+          ],
+          buy: [
+            {
+              price: '90',
+              numberOfOrders: '1',
+              volume: '1',
+            },
+            {
+              price: '80',
+              numberOfOrders: '1',
+              volume: '1',
+            },
+            {
+              price: '70',
+              numberOfOrders: '1',
+              volume: '1',
+            },
+          ],
+        },
+      },
+    };
+
+    it('works', () => {
+      expect(
+        calcSlippage({
+          price: '100',
+          limitPrice: '120',
+          size: '3',
+          priceLevels: data.market.depth.sell,
+        })
+      ).toMatchObject({
+        slippage: '10',
+        weightedAveragePrice: '110',
+      });
+
+      expect(
+        calcSlippage({
+          price: '100',
+          limitPrice: '110',
+          size: '3',
+          priceLevels: data.market.depth.sell,
+        })
+      ).toMatchObject({
+        slippage: '5',
+        weightedAveragePrice: '105',
+      });
     });
   });
 });

@@ -33,10 +33,12 @@ export const calcSlippage = ({
   price,
   size,
   priceLevels,
+  limitPrice,
 }: {
   price: string;
   size: string;
   priceLevels: Array<{ volume: string; price: string }>;
+  limitPrice?: string;
 }) => {
   let remainingSize = new BigNumber(size);
   let totalVolume = new BigNumber(0);
@@ -47,9 +49,12 @@ export const calcSlippage = ({
       break;
     }
 
-    // const volume = new BigNumber(lvl.volume);
     const volume = BigNumber.min(remainingSize, lvl.volume);
     const price = new BigNumber(lvl.price);
+
+    if (limitPrice !== undefined && price.isGreaterThan(limitPrice)) {
+      break;
+    }
 
     remainingSize = remainingSize.minus(volume);
     totalVolume = totalVolume.plus(volume);
