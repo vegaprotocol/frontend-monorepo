@@ -53,7 +53,7 @@ def test_liquidity_provision_amendment(
     expect(
         page.get_by_test_id("liquidity-learn-more").get_by_test_id("external-link")
     ).to_have_attribute(
-        "href", "https://docs.vega.xyz/testnet/concepts/liquidity/provision"
+        "href", "https://docs.vega.xyz/mainnet/concepts/liquidity/provision"
     )
 
     vega.submit_simple_liquidity(

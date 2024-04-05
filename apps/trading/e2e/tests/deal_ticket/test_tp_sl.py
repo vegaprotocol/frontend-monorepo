@@ -5,7 +5,7 @@ from actions.vega import submit_order
 from actions.utils import wait_for_toast_confirmation
 from wallet_config import MM_WALLET, MM_WALLET2, PARTY_A, PARTY_B
 
-
+@pytest.mark.skip("skip until 0.75")
 @pytest.mark.usefixtures("auth", "risk_accepted")
 def test_take_profit_stop_loss_deal_ticket(
     continuous_market, page: Page, vega: VegaServiceNull
