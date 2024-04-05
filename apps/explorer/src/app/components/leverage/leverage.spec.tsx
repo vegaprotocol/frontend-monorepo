@@ -8,9 +8,7 @@ describe('Leverage', () => {
     );
     expect(container.firstChild).toBeNull();
 
-    const { container: container2 } = render(
-      <Leverage marginFactor={0 as unknown as string} />
-    );
+    const { container: container2 } = render(<Leverage marginFactor={'0'} />);
     expect(container2.firstChild).toBeNull();
   });
 
