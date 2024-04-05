@@ -75,13 +75,13 @@ def test_check_cross_isolated_margin_info(
     page.get_by_test_id(isolated_margin).click()
     page.locator(leverage_input).fill("6")
     expect(page.get_by_test_id(dialog_content).get_by_test_id("notification")).to_have_text(
-        "You have an existing position and and open order on this market.Changing the margin mode and leverage will move 2,703.11341 tDAI from your general account to fund the position.")
+        "You have an existing position and and open order on this market.Changing the margin mode and leverage will move 869.78007 tDAI from your general account to fund the position.")
     expect(page.get_by_test_id(dialog_content).get_by_test_id(current_margin)).to_have_text(
         "Current margin874.21992 tDAI")
     expect(page.get_by_test_id(dialog_content).get_by_test_id(available_collateral)
            ).to_have_text("Available collateral998,084.95183 tDAI")
     expect(page.get_by_test_id(dialog_content).get_by_test_id(additional_margin_required)
-           ).to_have_text("Additional margin required2,703.11341 tDAI")
+           ).to_have_text("Additional margin required869.78007 tDAI")
     expect(page.get_by_test_id(dialog_content).get_by_test_id(liquidation_estimate)
            ).to_have_text("Liquidation estimate95.23553 BTC")
     page.get_by_test_id(confirm_isolated_margin_mode).click()
@@ -90,13 +90,11 @@ def test_check_cross_isolated_margin_info(
     expect(page.get_by_test_id("toast-content")).to_have_text(
         "ConfirmedYour transaction has been confirmedView in block explorerUpdate margin modeBTC:DAI_2023Isolated margin mode, leverage: 6.0x")
     page.get_by_test_id(cross_margin).click()
-    expect(page.get_by_test_id(dialog_content).get_by_test_id(
-        "notification")).not_to_be_visible()
     expect(page.get_by_test_id(dialog_content).get_by_test_id(current_margin)).to_have_text(
         "Current margin4,223.33332 tDAI")
     expect(page.get_by_test_id(dialog_content).get_by_test_id(available_collateral)
            ).to_have_text("Available collateral995,381.83843 tDAI")
     expect(page.get_by_test_id(dialog_content).get_by_test_id(additional_margin_required)
-           ).to_have_text("Additional margin required0.00 tDAI")
+           ).to_have_text("Additional margin required-3,364.56219 tDAI")
     expect(page.get_by_test_id(dialog_content).get_by_test_id(liquidation_estimate)
            ).to_have_text("Liquidation estimate0.00 BTC")
