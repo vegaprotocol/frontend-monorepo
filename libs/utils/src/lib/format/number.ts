@@ -165,6 +165,16 @@ export const quantumDecimalPlaces = (
   return Math.ceil(formatDecimals);
 };
 
+export const getFormatDecimalsFromQuantum = (
+  decimalPlaces: number,
+  quantum: number | string
+) => {
+  return Math.max(
+    MIN_FRACTION_DIGITS,
+    Math.ceil(Math.abs(Math.log10(toBigNum(quantum, decimalPlaces).toNumber())))
+  );
+};
+
 export const addDecimalsFormatNumberQuantum = (
   rawValue: string | number,
   decimalPlaces: number,
@@ -173,13 +183,10 @@ export const addDecimalsFormatNumberQuantum = (
   if (isNaN(Number(quantum))) {
     return addDecimalsFormatNumber(rawValue, decimalPlaces);
   }
-  const numberDP = Math.ceil(
-    Math.abs(Math.log10(toBigNum(quantum, decimalPlaces).toNumber()))
-  );
   return addDecimalsFormatNumber(
     rawValue,
     decimalPlaces,
-    Math.max(MIN_FRACTION_DIGITS, numberDP)
+    getFormatDecimalsFromQuantum(decimalPlaces, quantum)
   );
 };
 

@@ -35,6 +35,7 @@ import {
   addDecimalsFormatNumber,
   determinePriceStep,
   formatNumber,
+  getFormatDecimalsFromQuantum,
   removeDecimal,
   toBigNum,
   useValidateAmount,
@@ -44,6 +45,7 @@ import {
   markPriceProvider,
   useMarket,
   getQuoteName,
+  getAsset,
 } from '@vegaprotocol/markets';
 import { useT } from '../use-t';
 import { signedNumberCssClass } from '@vegaprotocol/datagrid';
@@ -64,6 +66,8 @@ const ProfitAndLoss = ({
   size,
   decimalPlaces,
   positionDecimalPlaces,
+  decimals,
+  quantum,
 }: {
   averageEntryPrice?: string;
   exitPrice: string;
@@ -71,6 +75,8 @@ const ProfitAndLoss = ({
   size: string;
   decimalPlaces: number;
   positionDecimalPlaces: number;
+  decimals: number;
+  quantum: string;
 }) => {
   const profitAndLoss = toBigNum(exitPrice || 0, decimalPlaces)
     .minus(toBigNum(averageEntryPrice || 0, decimalPlaces))
@@ -81,7 +87,10 @@ const ProfitAndLoss = ({
     '-'
   ) : (
     <span className={signedNumberCssClass(profitAndLoss.toNumber())}>
-      {formatNumber(profitAndLoss)}
+      {formatNumber(
+        profitAndLoss,
+        getFormatDecimalsFromQuantum(decimals, quantum)
+      )}
     </span>
   );
 };
@@ -181,6 +190,7 @@ export const Setup = ({
 
   let info: ReactNode = null;
   if (averageEntryPrice && openVolume && price && size) {
+    const asset = getAsset(market);
     const values = {
       price,
       symbol: quoteName,
@@ -193,6 +203,8 @@ export const Setup = ({
         exitPrice={removeDecimal(price, market.decimalPlaces)}
         positionDecimalPlaces={market.positionDecimalPlaces}
         size={(Number(size) / 100).toString()}
+        decimals={asset.decimals}
+        quantum={asset.quantum}
       />,
     ];
     const takeProfit =
@@ -351,6 +363,7 @@ const StopOrder = ({
   averageEntryPrice?: string;
   openVolume?: string;
 }) => {
+  const asset = getAsset(market);
   const symbol = getQuoteName(market);
   const price = (stopOrder.trigger as Schema.StopOrderPrice).price;
   const t = useT();
@@ -376,6 +389,8 @@ const StopOrder = ({
               exitPrice={price || '0'}
               positionDecimalPlaces={market.positionDecimalPlaces}
               size={stopOrder.sizeOverrideValue || '0'}
+              decimals={asset.decimals}
+              quantum={asset.quantum}
             />,
           ]}
         />
@@ -420,7 +435,7 @@ const StopOrdersList = ({
       <div className="flex justify-between text-xs px-3 pb-1.5">
         <span>
           {t('Allocation: {{percentage}}%', {
-            percentage: (allocation * 100).toFixed(),
+            percentage: ((allocation ?? 0) * 100).toFixed(),
           })}
         </span>
         <ButtonLink
@@ -468,7 +483,7 @@ const filterAndSort = (
       (order) =>
         /*order.sizeOverrideSetting ===
       Schema.StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION &&*/
-        (order.sizeOverrideValue = '0.1') &&
+        (order.sizeOverrideValue = '0.5') &&
         order.triggerDirection === triggerDirection
     ),
     (stopOrder) => BigInt((stopOrder.trigger as Schema.StopOrderPrice).price),
@@ -480,12 +495,10 @@ const getAllocation = (stopOrders: StopOrderFieldsFragment[] | undefined) =>
     return allocation + (Number(stopOrder.sizeOverrideValue) || 0);
   }, 0) || 0;
 
-export const TakeProfitStopLossDialog = ({
+export const TakeProfitStopLoss = ({
   marketId,
-  open,
-  onClose,
   create,
-}: TakeProfitStopLossDialogProps) => {
+}: Pick<TakeProfitStopLossDialogProps, 'marketId' | 'create'>) => {
   const [visibleForm, setVisibleForm] = useState<'sl' | 'tp' | undefined>(
     undefined
   );
@@ -540,17 +553,9 @@ export const TakeProfitStopLossDialog = ({
   });
 
   const t = useT();
+
   return (
-    <Dialog
-      title={t('TP/SL for entire position')}
-      size="small"
-      open={open}
-      onChange={(isOpen) => {
-        if (!isOpen) {
-          onClose();
-        }
-      }}
-    >
+    <>
       <dl className="mb-6 grid grid-cols-2 gap-1 font-alpha text-vega-clight-50 dark:text-vega-cdark-50">
         <dt className="text-vega-clight-100 dark:text-vega-cdark-100">
           {t('Symbol')}
@@ -594,7 +599,7 @@ export const TakeProfitStopLossDialog = ({
             averageEntryPrice={openVolume?.averageEntryPrice}
           />
         )}
-        {visibleForm !== 'tp' ? (
+        {takeProfitAllocation === 1 ? null : visibleForm !== 'tp' ? (
           <Button
             className="w-full"
             type="button"
@@ -631,7 +636,7 @@ export const TakeProfitStopLossDialog = ({
             averageEntryPrice={openVolume?.averageEntryPrice}
           />
         )}
-        {visibleForm !== 'sl' ? (
+        {stopLossAllocation === 1 ? null : visibleForm !== 'sl' ? (
           <Button
             className="w-full"
             type="button"
@@ -655,6 +660,28 @@ export const TakeProfitStopLossDialog = ({
           )
         )}
       </div>
+    </>
+  );
+};
+
+export const TakeProfitStopLossDialog = ({
+  open,
+  onClose,
+  ...props
+}: TakeProfitStopLossDialogProps) => {
+  const t = useT();
+  return (
+    <Dialog
+      title={t('Manage TP / SL for position')}
+      size="small"
+      open={open}
+      onChange={(isOpen) => {
+        if (!isOpen) {
+          onClose();
+        }
+      }}
+    >
+      <TakeProfitStopLoss {...props} />
     </Dialog>
   );
 };
