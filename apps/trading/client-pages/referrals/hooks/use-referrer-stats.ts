@@ -1,7 +1,7 @@
 import { useReferralSetStatsQuery } from './__generated__/ReferralSetStats';
 import BigNumber from 'bignumber.js';
 import { useReferees } from './use-referees';
-import { type StatValue } from '../constants';
+import { DEFAULT_AGGREGATION_DAYS, type StatValue } from '../constants';
 
 export type ReferrerStats = {
   /** the base commission -> `rewardFactor` ~ `referralRewardFactor` */
@@ -38,7 +38,14 @@ export const useReferrerStats = (
     data: refereesData,
     loading: refereesLoading,
     error: refereesError,
-  } = useReferees(setId, aggregationEpochs);
+  } = useReferees(setId, aggregationEpochs, {
+    properties: [
+      'totalRefereeGeneratedRewards',
+      'totalRefereeNotionalTakerVolume',
+    ],
+    // get _30_ days for total commission
+    aggregationEpochs: DEFAULT_AGGREGATION_DAYS,
+  });
 
   const statsAvailable = data?.referralSetStats.edges[0]?.node;
 

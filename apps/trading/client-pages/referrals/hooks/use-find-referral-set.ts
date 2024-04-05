@@ -4,6 +4,8 @@ import {
   useReferralSetsQuery,
 } from './__generated__/ReferralSets';
 import { useStakeAvailable } from '../../../lib/hooks/use-stake-available';
+import { removePaginationWrapper } from '@vegaprotocol/utils';
+import first from 'lodash/first';
 
 export type Role = 'referrer' | 'referee';
 type Args = (
@@ -70,9 +72,14 @@ export const useFindReferralSet = (pubKey?: string) => {
     fetchPolicy: 'cache-and-network',
   });
 
-  const set =
-    referrerData?.referralSets.edges[0]?.node ||
-    refereeData?.referralSets.edges[0]?.node;
+  const referrer = first(
+    removePaginationWrapper(referrerData?.referralSets.edges)
+  );
+  const referee = first(
+    removePaginationWrapper(refereeData?.referralSets.edges)
+  );
+
+  const set = referrer || referee;
   const role: Role | undefined = set
     ? set?.referrer === pubKey
       ? 'referrer'

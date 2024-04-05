@@ -1,4 +1,8 @@
-import { addDecimalsFormatNumber, getDateFormat } from '@vegaprotocol/utils';
+import {
+  addDecimalsFormatNumber,
+  formatNumber,
+  getDateFormat,
+} from '@vegaprotocol/utils';
 import { useStakeAvailable } from '../../lib/hooks/use-stake-available';
 import { useT } from '../../lib/use-t';
 import BigNumber from 'bignumber.js';
@@ -27,7 +31,9 @@ const percentageFormatter = (value: BigNumber) =>
 const compactFormatter =
   (maximumFractionDigits = 2) =>
   (value: BigNumber) =>
-    COMPACT_NUMBER_FORMAT(maximumFractionDigits).format(value.toNumber());
+    value.isGreaterThan(99999)
+      ? COMPACT_NUMBER_FORMAT(maximumFractionDigits).format(value.toNumber())
+      : formatNumber(value, maximumFractionDigits);
 
 const valueFormatter = (noValueLabel: string) => (value: BigNumber) => {
   if (value.isNaN() || value.isZero()) {

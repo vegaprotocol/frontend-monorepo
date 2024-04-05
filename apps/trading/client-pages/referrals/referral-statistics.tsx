@@ -27,7 +27,7 @@ export const ReferralStatistics = () => {
   const aggregationEpochs =
     program.details?.windowLength || DEFAULT_AGGREGATION_DAYS;
 
-  if (referralSet?.id && role === 'referrer') {
+  if (pubKey && referralSet?.id && role === 'referrer') {
     return (
       <>
         <ReferrerStatistics
