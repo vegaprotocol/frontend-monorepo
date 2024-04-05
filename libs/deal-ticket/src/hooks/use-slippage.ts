@@ -6,12 +6,13 @@ export const useSlippage = (
     sell: PriceLevel[];
     buy: PriceLevel[];
   },
-  order: { type: OrderType; side: Side; size: string }
+  order: { type: OrderType; side: Side; size: string; price: string }
 ) => {
   if (order.side === Side.SIDE_BUY) {
     const lowestAsk = book.sell[0].price;
     return calcSlippage({
       price: lowestAsk,
+      limitPrice: order.price,
       size: order.size,
       priceLevels: book.sell,
     });
@@ -21,6 +22,7 @@ export const useSlippage = (
     const highestBid = book.buy[0].price;
     return calcSlippage({
       price: highestBid,
+      limitPrice: order.price,
       size: order.size,
       priceLevels: book.buy,
     });
