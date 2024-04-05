@@ -1,48 +1,49 @@
-import { calcSlippage } from './use-slippage';
+import { OrderType, Side } from '@vegaprotocol/types';
+import { calcSlippage, useSlippage } from './use-slippage';
+
+const data = {
+  market: {
+    depth: {
+      sell: [
+        {
+          price: '100',
+          numberOfOrders: '1',
+          volume: '1',
+        },
+        {
+          price: '110',
+          numberOfOrders: '1',
+          volume: '1',
+        },
+        {
+          price: '120',
+          numberOfOrders: '1',
+          volume: '1',
+        },
+      ],
+      buy: [
+        {
+          price: '90',
+          numberOfOrders: '1',
+          volume: '1',
+        },
+        {
+          price: '80',
+          numberOfOrders: '1',
+          volume: '1',
+        },
+        {
+          price: '70',
+          numberOfOrders: '1',
+          volume: '1',
+        },
+      ],
+    },
+  },
+};
 
 describe('calcSlippage', () => {
   describe('basic', () => {
-    const data = {
-      market: {
-        depth: {
-          sell: [
-            {
-              price: '100',
-              numberOfOrders: '1',
-              volume: '1',
-            },
-            {
-              price: '110',
-              numberOfOrders: '1',
-              volume: '1',
-            },
-            {
-              price: '120',
-              numberOfOrders: '1',
-              volume: '1',
-            },
-          ],
-          buy: [
-            {
-              price: '90',
-              numberOfOrders: '1',
-              volume: '1',
-            },
-            {
-              price: '80',
-              numberOfOrders: '1',
-              volume: '1',
-            },
-            {
-              price: '70',
-              numberOfOrders: '1',
-              volume: '1',
-            },
-          ],
-        },
-      },
-    };
-
     it('long', () => {
       expect(
         calcSlippage({
@@ -209,6 +210,32 @@ describe('calcSlippage', () => {
           priceLevels: data.market.depth.buy,
         })
       ).toMatchObject({ slippage: '-9' });
+    });
+  });
+});
+
+describe('useSlippage', () => {
+  it('uses the correct side of the book', () => {
+    expect(
+      useSlippage(data.market.depth, {
+        type: OrderType.TYPE_MARKET,
+        side: Side.SIDE_BUY,
+        size: '1',
+      })
+    ).toMatchObject({
+      slippage: '0',
+      weightedAveragePrice: '100',
+    });
+
+    expect(
+      useSlippage(data.market.depth, {
+        type: OrderType.TYPE_MARKET,
+        side: Side.SIDE_SELL,
+        size: '1',
+      })
+    ).toMatchObject({
+      slippage: '0',
+      weightedAveragePrice: '90',
     });
   });
 });

@@ -26,7 +26,7 @@ export const useSlippage = (
     });
   }
 
-  return { slippage: '0' };
+  return { slippage: '0', weightedAveragePrice: '0' };
 };
 
 export const calcSlippage = ({
