@@ -8,6 +8,7 @@ import type {
   ProposalEventFieldsFragment,
   VegaTxState,
 } from '@vegaprotocol/proposals';
+import { ProposalRejectionReasonMapping } from '@vegaprotocol/types';
 
 interface ProposalFormTransactionDialogProps {
   finalizedProposal: ProposalEventFieldsFragment | null;
@@ -24,7 +25,7 @@ export const ProposalFormTransactionDialog = ({
   // Render a custom complete UI if the proposal was rejected otherwise
   // pass undefined so that the default vega transaction dialog UI gets used
   const completeContent = finalizedProposal?.rejectionReason ? (
-    <p>{finalizedProposal.rejectionReason}</p>
+    <p>{ProposalRejectionReasonMapping[finalizedProposal.rejectionReason]}</p>
   ) : undefined;
 
   return (

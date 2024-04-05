@@ -90,28 +90,30 @@ export const ProposeNewAsset = () => {
     );
 
     return {
-      rationale: {
-        title: fields.proposalTitle,
-        description: fields.proposalDescription,
-      },
-      terms: {
-        newAsset: fields.proposalTerms
-          ? { ...JSON.parse(fields.proposalTerms) }
-          : {},
-        closingTimestamp: getClosingTimestamp(
-          fields.proposalVoteDeadline,
-          isVoteDeadlineAtMinimum,
-          isVoteDeadlineAtMaximum
-        ),
-        enactmentTimestamp: getEnactmentTimestamp(
-          fields.proposalEnactmentDeadline,
-          isEnactmentDeadlineAtMinimum,
-          isEnactmentDeadlineAtMaximum
-        ),
-        validationTimestamp: getValidationTimestamp(
-          fields.proposalValidationDeadline,
-          isValidationDeadlineAtMaximum
-        ),
+      proposalSubmission: {
+        rationale: {
+          title: fields.proposalTitle,
+          description: fields.proposalDescription,
+        },
+        terms: {
+          newAsset: fields.proposalTerms
+            ? { ...JSON.parse(fields.proposalTerms) }
+            : {},
+          closingTimestamp: getClosingTimestamp(
+            fields.proposalVoteDeadline,
+            isVoteDeadlineAtMinimum,
+            isVoteDeadlineAtMaximum
+          ),
+          enactmentTimestamp: getEnactmentTimestamp(
+            fields.proposalEnactmentDeadline,
+            isEnactmentDeadlineAtMinimum,
+            isEnactmentDeadlineAtMaximum
+          ),
+          validationTimestamp: getValidationTimestamp(
+            fields.proposalValidationDeadline,
+            isValidationDeadlineAtMaximum
+          ),
+        },
       },
     };
   };
