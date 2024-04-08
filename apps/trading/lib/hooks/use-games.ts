@@ -154,9 +154,9 @@ export const useGames = ({
    * set of data.
    */
   useEffect(() => {
-    if (loading || games || variables.length === 0) return;
-    if (!loading) setLoading(true);
+    if (loading || games || variables.length === 0 || error) return;
     const processChunks = async () => {
+      setLoading(true);
       const chunks = variables.map((v) =>
         client
           .query<GamesQuery>({
@@ -172,7 +172,11 @@ export const useGames = ({
       try {
         const results = await Promise.allSettled(chunks);
         const games = results.reduce((all, r) => {
-          if (r.status === 'fulfilled' && r.value) {
+          if (r.status === 'fulfilled') {
+            if (!r.value) {
+              setError(new Error('could not retrieve data'));
+              return all;
+            }
             const { data, error } = r.value;
             if (error) setError(error);
             const allGames = removePaginationWrapper(data?.games.edges);
@@ -197,7 +201,7 @@ export const useGames = ({
       }
     };
     processChunks();
-  }, [client, games, loading, teamId, variables]);
+  }, [client, error, games, loading, teamId, variables]);
 
   return {
     data: games,
