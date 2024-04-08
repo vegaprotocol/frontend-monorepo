@@ -1,4 +1,3 @@
-import { useDataProvider } from '@vegaprotocol/data-provider';
 import * as Schema from '@vegaprotocol/types';
 import {
   TradingButton as Button,
@@ -14,7 +13,7 @@ import {
 import {
   SizeOverrideSetting,
   isStopOrdersSubmissionTransaction,
-  type StopOrderSetup,
+  type StopOrderTakeProfitStopLossSetup,
   type StopOrdersSubmission,
 } from '@vegaprotocol/wallet';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
@@ -104,7 +103,7 @@ interface FormValues {
   price: string;
 }
 
-export const Setup = ({
+export const TakeProfitStopLossSetup = ({
   allocation,
   averageEntryPrice,
   openVolume,
@@ -142,7 +141,7 @@ export const Setup = ({
     ) {
       return false;
     }
-    const setup =
+    const TakeProfitStopLossSetup =
       transaction.body.stopOrdersSubmission[
         triggerDirection ===
         Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE
@@ -150,8 +149,8 @@ export const Setup = ({
           : 'fallsBelow'
       ];
     if (
-      !setup ||
-      setup.sizeOverrideSetting !==
+      !TakeProfitStopLossSetup ||
+      TakeProfitStopLossSetup.sizeOverrideSetting !==
         SizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION
     ) {
       return false;
@@ -166,7 +165,7 @@ export const Setup = ({
       risesAbove: undefined,
       fallsBelow: undefined,
     };
-    const stopOrderSetup: StopOrderSetup = {
+    const stopOrderTakeProfitStopLossSetup: StopOrderTakeProfitStopLossSetup = {
       sizeOverrideSetting: SizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION,
       sizeOverrideValue: { percentage: (Number(values.size) / 100).toString() },
       price: removeDecimal(values.price, market.decimalPlaces),
@@ -183,9 +182,9 @@ export const Setup = ({
       triggerDirection ===
       Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE
     ) {
-      stopOrdersSubmission.risesAbove = stopOrderSetup;
+      stopOrdersSubmission.risesAbove = stopOrderTakeProfitStopLossSetup;
     } else {
-      stopOrdersSubmission.fallsBelow = stopOrderSetup;
+      stopOrdersSubmission.fallsBelow = stopOrderTakeProfitStopLossSetup;
     }
     create({
       stopOrdersSubmission,
@@ -241,7 +240,10 @@ export const Setup = ({
   const maxSize = 100 - (allocation ?? 0) * 100;
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      data-testId="TakeProfitStopLossSetup-form"
+    >
       <div className="flex gap-2 mb-2">
         <div className="w-1/2">
           <Controller
@@ -402,7 +404,10 @@ const StopOrder = ({
   const price = (stopOrder.trigger as Schema.StopOrderPrice).price;
   const t = useT();
   return (
-    <div className="flex justify-between text-xs items-center gap-3 px-3 py-1.5 dark:bg-vega-cdark-800 bg-vega-clight-800 mb-0.5">
+    <div
+      className="flex justify-between text-xs items-center gap-3 px-3 py-1.5 dark:bg-vega-cdark-800 bg-vega-clight-800 mb-0.5"
+      data-testId="stop-order"
+    >
       <span>
         <Trans
           i18nKey={'tpSlOrder'}
@@ -430,7 +435,7 @@ const StopOrder = ({
         />
       </span>
       <ButtonLink
-        data-testid="cancel-stop-order"
+        data-testId="cancel-stop-order"
         onClick={() =>
           create({
             stopOrdersCancellation: {
@@ -439,7 +444,7 @@ const StopOrder = ({
             },
           })
         }
-        title={t('Close position')}
+        title={t('Cancel stop order')}
       >
         <VegaIcon name={VegaIconNames.CROSS} size={16} />
       </ButtonLink>
@@ -465,9 +470,9 @@ const StopOrdersList = ({
     return null;
   }
   return (
-    <div className="mb-3">
+    <div className="mb-3" data-testId="stop-orders-list">
       <div className="flex justify-between text-xs px-3 pb-1.5">
-        <span>
+        <span data-testId="allocation">
           {t('Allocation: {{percentage}}%', {
             percentage: ((allocation ?? 0) * 100).toFixed(),
           })}
@@ -581,13 +586,14 @@ export const TakeProfitStopLoss = ({
         <dt className="text-vega-clight-100 dark:text-vega-cdark-100">
           {t('Symbol')}
         </dt>
-        <dd className="text-right">
+        <dd className="text-right" data-testId="instrument-code">
           {market?.tradableInstrument.instrument.code}
         </dd>
         <dt className="text-vega-clight-100 dark:text-vega-cdark-100">
           {t('Position')}
         </dt>
         <dd
+          data-testId="open-volume"
           className={classNames(
             'text-right',
             openVolume?.openVolume &&
@@ -606,7 +612,7 @@ export const TakeProfitStopLoss = ({
         <dt className="text-vega-clight-100 dark:text-vega-cdark-100">
           {t('Entry price')}
         </dt>
-        <dd className="text-right">
+        <dd className="text-right" data-testId="average-entry-price">
           {openVolume?.averageEntryPrice &&
             market &&
             `${addDecimalsFormatNumber(
@@ -617,7 +623,7 @@ export const TakeProfitStopLoss = ({
         <dt className="text-vega-clight-100 dark:text-vega-cdark-100">
           {t('Mark price')}
         </dt>
-        <dd className="text-right">
+        <dd className="text-right" data-testId="mark-price">
           {markPrice &&
             market &&
             `${addDecimalsFormatNumber(
@@ -628,7 +634,7 @@ export const TakeProfitStopLoss = ({
       </dl>
       <hr className="border-vega-clight-500 dark:border-vega-cdark-500 mb-6" />
       <div className="mb-1">{t('Take profit')}</div>
-      <div className="mb-6">
+      <div className="mb-6" data-testId="take-profit">
         {market && (
           <StopOrdersList
             allocation={takeProfitAllocation}
@@ -643,14 +649,14 @@ export const TakeProfitStopLoss = ({
           <Button
             className="w-full"
             type="button"
-            data-testid="add-sl"
+            data-testid="add-take-profit"
             onClick={() => setVisibleForm('tp')}
           >
             {t('Add TP')}
           </Button>
         ) : (
           market && (
-            <Setup
+            <TakeProfitStopLossSetup
               allocation={takeProfitAllocation}
               create={create}
               market={market}
@@ -665,7 +671,7 @@ export const TakeProfitStopLoss = ({
       </div>
       <hr className="border-vega-clight-500 dark:border-vega-cdark-500 mb-6" />
       <div className="mb-1">{t('Stop loss')}</div>
-      <div className="mb-6">
+      <div className="mb-6" data-testId="stop-loss">
         {market && (
           <StopOrdersList
             allocation={stopLossAllocation}
@@ -680,14 +686,14 @@ export const TakeProfitStopLoss = ({
           <Button
             className="w-full"
             type="button"
-            data-testid="add-sl"
+            data-testid="add-stop-loss"
             onClick={() => setVisibleForm('sl')}
           >
             {t('Add SL')}
           </Button>
         ) : (
           market && (
-            <Setup
+            <TakeProfitStopLossSetup
               allocation={stopLossAllocation}
               create={create}
               market={market}
