@@ -91,7 +91,7 @@ import type {
 import { formatDuration } from 'date-fns';
 import * as AccordionPrimitive from '@radix-ui/react-accordion';
 import { useT } from '../../use-t';
-import { isPerpetual } from '../../product';
+import { isPerpetual, isSpot } from '../../product';
 import omit from 'lodash/omit';
 import orderBy from 'lodash/orderBy';
 import groupBy from 'lodash/groupBy';
@@ -184,12 +184,14 @@ export const MarketPriceInfoPanel = ({ market }: MarketInfoProps) => {
         }}
         decimalPlaces={market.decimalPlaces}
       />
-      <p className="mt-2 text-xs">
-        {t(
-          'There is 1 unit of the settlement asset ({{assetSymbol}}) to every 1 quote unit ({{quoteUnit}}).',
-          { assetSymbol, quoteUnit }
-        )}
-      </p>
+      {!isSpot(market.tradableInstrument.instrument.product) && (
+        <p className="mt-2 text-xs">
+          {t(
+            'There is 1 unit of the settlement asset ({{assetSymbol}}) to every 1 quote unit ({{quoteUnit}}).',
+            { assetSymbol, quoteUnit }
+          )}
+        </p>
+      )}
     </>
   );
 };
@@ -571,12 +573,14 @@ export const BaseAssetInfoPanel = ({ market }: MarketInfoProps) => {
         dtClassName="text-black dark:text-white text-ui !px-0 text-xs"
         ddClassName="text-black dark:text-white text-ui !px-0 max-w-full text-xs"
       />
-      <p className="mt-4 text-xs">
-        {t(
-          'There is 1 unit of the base asset ({{assetSymbol}}) to every 1 quote asset ({{quoteUnit}}).',
-          { assetSymbol, quoteUnit: quoteAsset }
-        )}
-      </p>
+      {!isSpot(market.tradableInstrument.instrument.product) && (
+        <p className="mt-4 text-xs">
+          {t(
+            'There is 1 unit of the base asset ({{assetSymbol}}) to every 1 quote asset ({{quoteUnit}}).',
+            { assetSymbol, quoteUnit: quoteAsset }
+          )}
+        </p>
+      )}
     </>
   ) : (
     <Splash>{t('No data')}</Splash>
@@ -599,12 +603,14 @@ export const QuoteAssetInfoPanel = ({ market }: MarketInfoProps) => {
         dtClassName="text-black dark:text-white text-ui !px-0 text-xs"
         ddClassName="text-black dark:text-white text-ui !px-0 max-w-full text-xs"
       />
-      <p className="mt-4 text-xs">
-        {t(
-          'There is 1 unit of the base asset ({{assetSymbol}}) to every 1 quote asset ({{quoteUnit}}).',
-          { assetSymbol, quoteUnit: quoteAsset }
-        )}
-      </p>
+      {!isSpot(market.tradableInstrument.instrument.product) && (
+        <p className="mt-4 text-xs">
+          {t(
+            'There is 1 unit of the base asset ({{assetSymbol}}) to every 1 quote asset ({{quoteUnit}}).',
+            { assetSymbol, quoteUnit: quoteAsset }
+          )}
+        </p>
+      )}
     </>
   ) : (
     <Splash>{t('No data')}</Splash>
@@ -627,12 +633,14 @@ export const SettlementAssetInfoPanel = ({ market }: MarketInfoProps) => {
         dtClassName="text-black dark:text-white text-ui !px-0 text-xs"
         ddClassName="text-black dark:text-white text-ui !px-0 max-w-full text-xs"
       />
-      <p className="mt-4 text-xs">
-        {t(
-          'There is 1 unit of the settlement asset ({{assetSymbol}}) to every 1 quote unit ({{quoteUnit}}).',
-          { assetSymbol, quoteUnit }
-        )}
-      </p>
+      {!isSpot(market.tradableInstrument.instrument.product) && (
+        <p className="mt-4 text-xs">
+          {t(
+            'There is 1 unit of the settlement asset ({{assetSymbol}}) to every 1 quote unit ({{quoteUnit}}).',
+            { assetSymbol, quoteUnit }
+          )}
+        </p>
+      )}
     </>
   ) : (
     <Splash>{t('No data')}</Splash>
