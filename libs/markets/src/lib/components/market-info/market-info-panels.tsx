@@ -402,7 +402,7 @@ export const KeyDetailsInfoPanel = ({
                 parentMarket.tradingMode as MarketTradingMode
               ],
             marketDecimalPlaces: parentMarket?.decimalPlaces,
-            positionDecimalPlaces: parentMarket?.positionDecimalPlaces,
+            sizeDecimalPlaces: parentMarket?.positionDecimalPlaces,
             assetDecimalPlaces: assetDecimals,
           }
         }
