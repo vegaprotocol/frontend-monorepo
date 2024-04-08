@@ -29,7 +29,7 @@ import { type ReactNode, useState } from 'react';
 import { useOpenVolume } from './use-open-volume';
 import {
   type StopOrderFieldsFragment,
-  stopOrdersProvider,
+  useActiveStopOrders,
 } from '@vegaprotocol/orders';
 import orderBy from 'lodash/orderBy';
 
@@ -45,7 +45,7 @@ import {
 } from '@vegaprotocol/utils';
 import {
   type Market,
-  markPriceProvider,
+  useMarkPrice,
   useMarket,
   getQuoteName,
   getAsset,
@@ -537,16 +537,7 @@ export const TakeProfitStopLoss = ({
   );
   const { data: market } = useMarket(marketId);
   const { pubKey } = useVegaWallet();
-  const { data: activeStopOrders } = useDataProvider({
-    dataProvider: stopOrdersProvider,
-    variables: {
-      filter: {
-        parties: pubKey ? [pubKey] : [],
-        markets: [marketId],
-        liveOnly: true,
-      },
-    },
-  });
+  const { data: activeStopOrders } = useActiveStopOrders(pubKey, marketId);
   const quoteName = market && getQuoteName(market);
   const openVolume = useOpenVolume(pubKey, marketId);
   const side = openVolume?.openVolume.startsWith('-')
@@ -580,10 +571,7 @@ export const TakeProfitStopLoss = ({
 
   const stopLossAllocation = getAllocation(stopLossStopOrders);
 
-  const { data: markPrice } = useDataProvider({
-    dataProvider: markPriceProvider,
-    variables: { marketId },
-  });
+  const { data: markPrice } = useMarkPrice(marketId);
 
   const t = useT();
 

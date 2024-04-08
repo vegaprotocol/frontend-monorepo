@@ -74,16 +74,6 @@ const numberOfActiveOrdersLimit = 'stop-order-warning-limit';
 
 const ocoPostfix = (id: string, postfix = true) => (postfix ? `${id}-oco` : id);
 
-const mockDataProvider = jest.fn(() => ({
-  data: Array(0),
-  reload: jest.fn(),
-}));
-jest.mock('@vegaprotocol/data-provider', () => ({
-  ...jest.requireActual('@vegaprotocol/data-provider'),
-  // @ts-ignore doesn't like spreading args here
-  useDataProvider: jest.fn((...args) => mockDataProvider(...args)),
-}));
-
 const mockUseOpenVolume = jest.fn(() => ({
   openVolume: '0',
 }));
@@ -95,9 +85,16 @@ jest.mock('@vegaprotocol/positions', () => ({
 
 const mockActiveOrders = jest.fn(() => ({}));
 
+const mockActiveStopOrders = jest.fn((partyId, marketId, skip) => ({
+  data: Array(0),
+}));
+
 jest.mock('@vegaprotocol/orders', () => ({
   ...jest.requireActual('@vegaprotocol/orders'),
   useActiveOrders: jest.fn(() => mockActiveOrders()),
+  useActiveStopOrders: jest.fn((partyId, marketId, skip) =>
+    mockActiveStopOrders(partyId, marketId, skip)
+  ),
 }));
 
 describe('StopOrder', () => {
@@ -568,21 +565,19 @@ describe('StopOrder', () => {
   });
 
   it('shows limit of active stop orders number', async () => {
-    mockDataProvider.mockReturnValue({
-      reload: jest.fn(),
+    mockActiveStopOrders.mockReturnValue({
       data: Array(4),
     });
     render(generateJsx());
-    expect((mockDataProvider as jest.Mock).mock.lastCall?.[0].skip).toBe(true);
+    expect((mockActiveStopOrders as jest.Mock).mock.lastCall?.[2]).toBe(true);
     await userEvent.type(screen.getByTestId(sizeInput), '0.01');
-    expect((mockDataProvider as jest.Mock).mock.lastCall?.[0].skip).toBe(false);
+    expect((mockActiveStopOrders as jest.Mock).mock.lastCall?.[2]).toBe(false);
     // 7002-SORD-011
     expect(screen.getByTestId(numberOfActiveOrdersLimit)).toBeInTheDocument();
   });
 
   it('counts oco as two orders', async () => {
-    mockDataProvider.mockReturnValue({
-      reload: jest.fn(),
+    mockActiveStopOrders.mockReturnValue({
       data: Array(3),
     });
     render(generateJsx());

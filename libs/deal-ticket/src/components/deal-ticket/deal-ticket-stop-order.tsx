@@ -55,8 +55,7 @@ import { DealTicketFeeDetails } from './deal-ticket-fee-details';
 import { validateExpiration } from '../../utils';
 import { NOTIONAL_SIZE_TOOLTIP_TEXT } from '../../constants';
 import { KeyValue } from './key-value';
-import { useDataProvider } from '@vegaprotocol/data-provider';
-import { useActiveOrders, stopOrdersProvider } from '@vegaprotocol/orders';
+import { useActiveOrders, useActiveStopOrders } from '@vegaprotocol/orders';
 import { useT } from '../../use-t';
 import { determinePriceStep, determineSizeStep } from '@vegaprotocol/utils';
 import { useOpenVolume } from '@vegaprotocol/positions';
@@ -898,17 +897,11 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
   const triggerTrailingPercentOffset = watch('triggerTrailingPercentOffset');
   const triggerType = watch('triggerType');
 
-  const { data: activeStopOrders } = useDataProvider({
-    dataProvider: stopOrdersProvider,
-    variables: {
-      filter: {
-        parties: pubKey ? [pubKey] : [],
-        markets: [market.id],
-        liveOnly: true,
-      },
-    },
-    skip: !(pubKey && (formState.isDirty || formState.submitCount)),
-  });
+  const { data: activeStopOrders } = useActiveStopOrders(
+    pubKey,
+    market.id,
+    !formState.isDirty && !formState.submitCount
+  );
 
   useEffect(() => {
     const storedSize = storedFormValues?.[dealTicketType]?.size;
