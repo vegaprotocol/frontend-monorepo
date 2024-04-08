@@ -1,21 +1,21 @@
-import { DepthChart } from 'pennant';
+import { DepthChart, type DepthChartProps } from 'pennant';
 import throttle from 'lodash/throttle';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { addDecimal, formatNumber } from '@vegaprotocol/utils';
 import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
 import { useDataProvider } from '@vegaprotocol/data-provider';
-import { marketDepthProvider } from './market-depth-provider';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { marketDataProvider, marketProvider } from '@vegaprotocol/markets';
-import { type MarketData } from '@vegaprotocol/markets';
 import {
+  marketDepthProvider,
+  parseLevel,
+  updateLevels,
   type MarketDepthQuery,
   type MarketDepthUpdateSubscription,
   type PriceLevelFieldsFragment,
-} from './__generated__/MarketDepth';
-import { type DepthChartProps } from 'pennant';
-import { parseLevel, updateLevels } from './depth-chart-utils';
-import { useT } from './use-t';
+} from '@vegaprotocol/market-depth';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { marketDataProvider, marketProvider } from '@vegaprotocol/markets';
+import { type MarketData } from '@vegaprotocol/markets';
+import { useT } from '../../lib/use-t';
 
 interface DepthChartManagerProps {
   marketId: string;

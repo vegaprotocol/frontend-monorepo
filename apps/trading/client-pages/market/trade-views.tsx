@@ -1,4 +1,4 @@
-import { DepthChartContainer } from '@vegaprotocol/market-depth';
+import { DepthChartContainer } from '../../components/depth-chart-container';
 import { Filter, OpenOrdersMenu } from '@vegaprotocol/orders';
 import {
   TradesContainer,
