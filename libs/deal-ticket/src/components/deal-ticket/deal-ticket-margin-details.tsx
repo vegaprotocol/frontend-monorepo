@@ -31,7 +31,7 @@ export interface DealTicketMarginDetailsProps {
   assetSymbol: string;
   positionEstimate: EstimatePositionQuery['estimatePosition'];
   side: Schema.Side;
-  slippage: Slippage;
+  slippage?: Slippage;
 }
 
 export const DealTicketMarginDetails = ({
@@ -117,19 +117,20 @@ export const DealTicketMarginDetails = ({
 
   const quoteName = getQuoteName(market);
 
-  const slippageVal = addDecimalsFormatNumber(
-    slippage.slippage,
-    market.decimalPlaces
-  );
-  const slippagePct = formatNumber(slippage.slippagePct, 5);
+  const slippageVal =
+    slippage &&
+    addDecimalsFormatNumber(slippage.slippage, market.decimalPlaces);
+  const slippagePct = slippage && formatNumber(slippage.slippagePct, 5);
 
   return (
     <div className="flex flex-col w-full gap-2 mt-2">
-      <KeyValue
-        label={t('Slippage')}
-        formattedValue={`${slippagePct}% (${slippageVal})`}
-        symbol=""
-      />
+      {slippageVal && slippagePct && (
+        <KeyValue
+          label={t('Slippage')}
+          formattedValue={`${slippagePct}% (${slippageVal})`}
+          symbol=""
+        />
+      )}
       <KeyValue
         label={t('Current margin')}
         onClick={
