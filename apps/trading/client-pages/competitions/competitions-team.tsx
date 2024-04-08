@@ -79,7 +79,7 @@ const TeamPageContainer = ({ teamId }: { teamId: string | undefined }) => {
     pubKey || undefined
   );
 
-  const { data: games, loading: gamesLoading } = useGames(teamId);
+  const { data: games, loading: gamesLoading } = useGames({ teamId });
 
   const { data: transfersData, loading: transfersLoading } = useRewards({
     onlyActive: false,
@@ -302,7 +302,6 @@ const Games = ({
           { name: 'daily', displayName: t('Daily reward amount') },
           { name: 'rank', displayName: t('Rank') },
           { name: 'amount', displayName: t('Amount earned this epoch') },
-          { name: 'total', displayName: t('Cumulative amount earned') },
           {
             name: 'participatingTeams',
             displayName: t('No. of participating teams'),

@@ -94,7 +94,7 @@ describe('Open', () => {
       'Settlement asset',
       'Trading mode',
       'Status',
-      'Mark price',
+      'Price',
       '24h volume',
       'Open Interest',
       'Spread',

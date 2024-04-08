@@ -10,7 +10,7 @@ import * as PopoverPrimitive from '@radix-ui/react-popover';
 import { useState } from 'react';
 import { useT } from '../../lib/use-t';
 import classNames from 'classnames';
-import { MarketHeaderStats } from '../../client-pages/market/market-header-stats';
+import { MarketHeaderSwitch } from './market-header-switch';
 import { MarketMarkPrice } from '../market-mark-price';
 import { MarketBanner } from '../market-banner';
 /**
@@ -112,7 +112,7 @@ export const MobileMarketHeader = () => {
           <div>
             <MarketBanner market={data} />
             <div className="px-3 py-6 text-sm grid grid-cols-2 items-center gap-x-4 gap-y-6">
-              <MarketHeaderStats market={data} />
+              <MarketHeaderSwitch market={data} />
             </div>
           </div>
         )}

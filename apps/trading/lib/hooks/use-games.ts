@@ -12,11 +12,19 @@ import { TEAMS_STATS_EPOCHS } from './constants';
 import { useEffect, useMemo, useState } from 'react';
 
 const findTeam = (entities: GameFieldsFragment['entities'], teamId: string) => {
-  const team = entities.find(
-    (ent) => ent.__typename === 'TeamGameEntity' && ent.team.teamId === teamId
-  );
-  if (team?.__typename === 'TeamGameEntity') return team; // drops __typename === 'IndividualGameEntity' from team object
-  return undefined;
+  const teamEntities = entities.filter(
+    (ent) => ent.__typename === 'TeamGameEntity'
+  ) as TeamEntityFragment[];
+
+  const team = teamEntities.find((ent) => ent.team.teamId === teamId);
+
+  return team
+    ? // determine rank based on the results of the all teams within an epoch
+      ({
+        ...team,
+        rank: determineRank(teamEntities, team),
+      } as TeamEntityFragment)
+    : undefined;
 };
 
 export type Game = GameFieldsFragment & {
@@ -48,6 +56,7 @@ const MAX_EPOCHS = 30;
  */
 const prepareVariables = (
   teamId?: string,
+  gameId?: string,
   epochFrom?: number,
   epochTo?: number
 ) => {
@@ -59,6 +68,7 @@ const prepareVariables = (
   let variables = [
     {
       teamId,
+      gameId,
       epochFrom: from,
       epochTo: to,
     },
@@ -77,6 +87,7 @@ const prepareVariables = (
           if (segmentTo > to) segmentTo = to;
           return {
             teamId,
+            gameId,
             epochFrom: segmentFrom,
             epochTo: segmentTo,
           };
@@ -87,11 +98,17 @@ const prepareVariables = (
   return variables;
 };
 
-export const useGames = (
-  teamId?: string,
-  epochFrom?: number,
-  epochTo?: number
-): GamesData => {
+export const useGames = ({
+  teamId,
+  gameId,
+  epochFrom,
+  epochTo,
+}: {
+  teamId?: string;
+  gameId?: string;
+  epochFrom?: number;
+  epochTo?: number;
+}): GamesData => {
   const client = useApolloClient();
 
   const {
@@ -119,8 +136,12 @@ export const useGames = (
     }
 
     if (!from) return [];
-    return prepareVariables(teamId, from, to);
-  }, [epochData?.epoch.id, epochFrom, epochTo, teamId]);
+    return (
+      prepareVariables(teamId, gameId, from, to)
+        // allow only variables that have specified `teamId` or `gameId`
+        .filter((v) => v.teamId || v.gameId)
+    );
+  }, [epochData?.epoch.id, epochFrom, epochTo, teamId, gameId]);
 
   /**
    * Because of the games API limitation to alway return max up to 30 epochs
@@ -133,9 +154,9 @@ export const useGames = (
    * set of data.
    */
   useEffect(() => {
-    if (loading || games || variables.length === 0) return;
-    if (!loading) setLoading(true);
+    if (loading || games || variables.length === 0 || error) return;
     const processChunks = async () => {
+      setLoading(true);
       const chunks = variables.map((v) =>
         client
           .query<GamesQuery>({
@@ -151,7 +172,11 @@ export const useGames = (
       try {
         const results = await Promise.allSettled(chunks);
         const games = results.reduce((all, r) => {
-          if (r.status === 'fulfilled' && r.value) {
+          if (r.status === 'fulfilled') {
+            if (!r.value) {
+              setError(new Error('could not retrieve data'));
+              return all;
+            }
             const { data, error } = r.value;
             if (error) setError(error);
             const allGames = removePaginationWrapper(data?.games.edges);
@@ -176,11 +201,39 @@ export const useGames = (
       }
     };
     processChunks();
-  }, [client, games, loading, teamId, variables]);
+  }, [client, error, games, loading, teamId, variables]);
 
   return {
     data: games,
     loading: loading || epochLoading,
     error: error || epochError,
   };
+};
+
+/**
+ * Determines a rank of a given entity based on the rewards earned
+ * by all.
+ */
+export const determineRank = (
+  entities: Pick<TeamEntityFragment, 'rewardEarned'>[],
+  entity: Pick<TeamEntityFragment, 'rewardEarned'>
+) => {
+  const rewards = entities
+    .map((ent) => Number(ent.rewardEarned))
+    .sort((a, b) => b - a);
+  const ranks = rewards.reduce((all, cur, i) => {
+    let rank = 0;
+    if (i === 0) rank = 1;
+    if (i > 0) {
+      const prevRank = all[i - 1];
+      const prev = rewards[i - 1];
+      if (prev === cur) rank = prevRank;
+      else rank = i + 1;
+    }
+
+    all.push(rank);
+    return all;
+  }, [] as number[]);
+
+  return ranks[rewards.findIndex((r) => r === Number(entity.rewardEarned))];
 };

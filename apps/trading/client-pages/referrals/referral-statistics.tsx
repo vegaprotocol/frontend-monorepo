@@ -578,7 +578,7 @@ export const RefereesTable = ({
 
 const Team = ({ teamId }: { teamId?: string }) => {
   const { team, members } = useTeam(teamId);
-  const { data: games } = useGames(teamId);
+  const { data: games } = useGames({ teamId });
 
   if (!team) return null;
 

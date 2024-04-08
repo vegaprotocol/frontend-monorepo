@@ -18,6 +18,7 @@ export type ActiveRewardsQueryVariables = Types.Exact<{
   isReward?: Types.InputMaybe<Types.Scalars['Boolean']>;
   partyId?: Types.InputMaybe<Types.Scalars['ID']>;
   direction?: Types.InputMaybe<Types.TransferDirection>;
+  gameId?: Types.InputMaybe<Types.Scalars['ID']>;
   pagination?: Types.InputMaybe<Types.Pagination>;
 }>;
 
@@ -48,7 +49,7 @@ export type RewardsHistoryQuery = { __typename?: 'Query', epochRewardSummaries?:
 export type RewardsEpochQueryVariables = Types.Exact<{ [key: string]: never; }>;
 
 
-export type RewardsEpochQuery = { __typename?: 'Query', epoch: { __typename?: 'Epoch', id: string } };
+export type RewardsEpochQuery = { __typename?: 'Query', epoch: { __typename?: 'Epoch', id: string, timestamps: { __typename?: 'EpochTimestamps', start?: any | null, end?: any | null, expiry?: any | null } } };
 
 export type MarketForRewardsQueryVariables = Types.Exact<{
   marketId: Types.Scalars['ID'];
@@ -178,11 +179,12 @@ export type RewardsPageQueryHookResult = ReturnType<typeof useRewardsPageQuery>;
 export type RewardsPageLazyQueryHookResult = ReturnType<typeof useRewardsPageLazyQuery>;
 export type RewardsPageQueryResult = Apollo.QueryResult<RewardsPageQuery, RewardsPageQueryVariables>;
 export const ActiveRewardsDocument = gql`
-    query ActiveRewards($isReward: Boolean, $partyId: ID, $direction: TransferDirection, $pagination: Pagination) {
+    query ActiveRewards($isReward: Boolean, $partyId: ID, $direction: TransferDirection, $gameId: ID, $pagination: Pagination) {
   transfersConnection(
     partyId: $partyId
     isReward: $isReward
     direction: $direction
+    gameId: $gameId
     pagination: $pagination
   ) {
     edges {
@@ -243,6 +245,7 @@ ${RecurringGovernanceTransferFieldsFragmentDoc}`;
  *      isReward: // value for 'isReward'
  *      partyId: // value for 'partyId'
  *      direction: // value for 'direction'
+ *      gameId: // value for 'gameId'
  *      pagination: // value for 'pagination'
  *   },
  * });
@@ -388,6 +391,11 @@ export const RewardsEpochDocument = gql`
     query RewardsEpoch {
   epoch {
     id
+    timestamps {
+      start
+      end
+      expiry
+    }
   }
 }
     `;

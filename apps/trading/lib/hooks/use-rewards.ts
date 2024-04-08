@@ -22,6 +22,7 @@ import compact from 'lodash/compact';
 import { useEpochInfoQuery } from './__generated__/Epoch';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { removePaginationWrapper } from '@vegaprotocol/utils';
+import first from 'lodash/first';
 
 export type RewardTransfer = TransferNode & {
   transfer: {
@@ -181,5 +182,75 @@ export const useRewards = ({
     data: enriched,
     loading: loading || assetsLoading || marketsLoading || epochLoading,
     error: error || assetsError || marketsError || epochError,
+  };
+};
+
+export const useReward = (gameId?: string) => {
+  const { data, loading, error } = useActiveRewardsQuery({
+    variables: {
+      gameId,
+    },
+    skip: !gameId,
+    fetchPolicy: 'cache-and-network',
+  });
+
+  const {
+    data: assets,
+    loading: assetsLoading,
+    error: assetsError,
+  } = useAssetsMapProvider();
+
+  const {
+    data: markets,
+    loading: marketsLoading,
+    error: marketsError,
+  } = useDataProvider({
+    dataProvider: marketsWithDataProvider,
+    variables: undefined,
+  });
+
+  const enriched = compact(
+    data?.transfersConnection?.edges?.map((n) => n?.node)
+  )
+    .map((n) => n as TransferNode)
+    .filter(isReward)
+    .map((node) => {
+      if (!node.transfer.kind.dispatchStrategy) return node;
+      const dispatchAsset =
+        (assets &&
+          assets[node.transfer.kind.dispatchStrategy.dispatchMetricAssetId]) ||
+        undefined;
+      const marketsInScope = compact(
+        node.transfer.kind.dispatchStrategy.marketIdsInScope?.map(
+          (id) => markets && markets.find((m) => m.id === id)
+        )
+      );
+      const isAssetTraded =
+        markets &&
+        Object.values(markets).some((m) => {
+          try {
+            const mAsset = getAsset(m);
+            return (
+              mAsset.id ===
+                node.transfer.kind.dispatchStrategy.dispatchMetricAssetId &&
+              m.data?.marketState === MarketState.STATE_ACTIVE
+            );
+          } catch {
+            // NOOP
+          }
+          return false;
+        });
+      return {
+        ...node,
+        dispatchAsset,
+        isAssetTraded: isAssetTraded != null ? isAssetTraded : undefined,
+        markets: marketsInScope?.length > 0 ? marketsInScope : undefined,
+      };
+    });
+
+  return {
+    data: first(enriched),
+    loading: loading || assetsLoading || marketsLoading,
+    error: error || assetsError || marketsError,
   };
 };

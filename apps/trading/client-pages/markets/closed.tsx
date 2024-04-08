@@ -216,7 +216,7 @@ const ClosedMarketsDataGrid = ({
         },
       },
       {
-        headerName: t('Mark price'),
+        headerName: t('Price'),
         field: 'markPrice',
         cellClass: 'font-mono ag-right-aligned-cell',
         type: 'numericColumn',
