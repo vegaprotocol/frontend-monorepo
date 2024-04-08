@@ -238,7 +238,7 @@ export const DepthChartContainer = ({ marketId }: DepthChartManagerProps) => {
           volumeFormat={volumeFormat}
           priceFormat={priceFormat}
           notEnoughDataText={
-            <span className="text-center text-xs">{t('No open orders')}</span>
+            <span className="text-center text-xs">{t('No data')}</span>
           }
         />
       )}
