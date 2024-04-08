@@ -33,6 +33,7 @@ export const useSlippage = (
 
   if (order.side === Side.SIDE_BUY) {
     return calcSlippage({
+      side: order.side,
       price: mid,
       limitPrice: order.price
         ? toBigNum(order.price, market.decimalPlaces)
@@ -46,6 +47,7 @@ export const useSlippage = (
 
   if (order.side === Side.SIDE_SELL) {
     return calcSlippage({
+      side: order.side,
       price: mid,
       limitPrice: order.price
         ? toBigNum(order.price, market.decimalPlaces)
@@ -61,6 +63,7 @@ export const useSlippage = (
 };
 
 export const calcSlippage = ({
+  side,
   price,
   size,
   priceLevels,
@@ -68,6 +71,7 @@ export const calcSlippage = ({
   marketDecimals,
   positionDecimals,
 }: {
+  side: Side;
   price: BigNumber;
   size: BigNumber;
   priceLevels: Array<{ volume: string; price: string }>;
@@ -99,8 +103,14 @@ export const calcSlippage = ({
     );
     const price = toBigNum(lvl.price, marketDecimals);
 
-    if (limitPrice !== undefined && price.isGreaterThan(limitPrice)) {
-      break;
+    if (side === Side.SIDE_BUY) {
+      if (limitPrice !== undefined && price.isGreaterThan(limitPrice)) {
+        break;
+      }
+    } else if (side === Side.SIDE_SELL) {
+      if (limitPrice !== undefined && price.isLessThan(limitPrice)) {
+        break;
+      }
     }
 
     remainingSize = remainingSize.minus(volume);
