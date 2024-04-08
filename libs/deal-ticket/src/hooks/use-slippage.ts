@@ -1,5 +1,4 @@
 import { useOrderbook } from '@vegaprotocol/market-depth';
-import { useMarket } from '@vegaprotocol/markets';
 import { type OrderType, Side } from '@vegaprotocol/types';
 import { toBigNum } from '@vegaprotocol/utils';
 import BigNumber from 'bignumber.js';
@@ -13,10 +12,13 @@ export interface Slippage {
 
 export const useSlippage = (
   order: { type: OrderType; side: Side; size: string; price?: string },
-  marketId: string
+  market: {
+    id: string;
+    decimalPlaces: number;
+    positionDecimalPlaces: number;
+  }
 ): Slippage => {
-  const { data: book } = useOrderbook(marketId);
-  const { data: market } = useMarket(marketId);
+  const { data: book } = useOrderbook(market.id);
 
   if (!market || !book?.depth.sell?.length || !book?.depth.buy?.length) {
     return {

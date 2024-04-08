@@ -10,6 +10,7 @@ import {
 import { OrderType, type PriceLevel, Side } from '@vegaprotocol/types';
 import type { ReactNode } from 'react';
 import { calcSlippage, useSlippage } from './use-slippage';
+import BigNumber from 'bignumber.js';
 
 const data = {
   market: {
@@ -57,9 +58,12 @@ describe('calcSlippage', () => {
     it('long', () => {
       expect(
         calcSlippage({
-          price: '100',
-          size: '1',
+          side: Side.SIDE_BUY,
+          price: new BigNumber('100'),
+          size: new BigNumber('1'),
           priceLevels: data.market.depth.sell,
+          marketDecimals: 0,
+          positionDecimals: 0,
         })
       ).toMatchObject({
         slippage: '0',
@@ -69,9 +73,12 @@ describe('calcSlippage', () => {
 
       expect(
         calcSlippage({
-          price: '100',
-          size: '2',
+          side: Side.SIDE_BUY,
+          price: new BigNumber('100'),
+          size: new BigNumber('2'),
           priceLevels: data.market.depth.sell,
+          marketDecimals: 0,
+          positionDecimals: 0,
         })
       ).toMatchObject({
         slippage: '5',
@@ -81,9 +88,12 @@ describe('calcSlippage', () => {
 
       expect(
         calcSlippage({
-          price: '100',
-          size: '3',
+          side: Side.SIDE_BUY,
+          price: new BigNumber('100'),
+          size: new BigNumber('3'),
           priceLevels: data.market.depth.sell,
+          marketDecimals: 0,
+          positionDecimals: 0,
         })
       ).toMatchObject({
         slippage: '10',
@@ -95,9 +105,12 @@ describe('calcSlippage', () => {
     it('short', () => {
       expect(
         calcSlippage({
-          price: '90',
-          size: '1',
+          side: Side.SIDE_SELL,
+          price: new BigNumber('90'),
+          size: new BigNumber('1'),
           priceLevels: data.market.depth.buy,
+          marketDecimals: 0,
+          positionDecimals: 0,
         })
       ).toMatchObject({
         slippage: '0',
@@ -107,25 +120,31 @@ describe('calcSlippage', () => {
 
       expect(
         calcSlippage({
-          price: '90',
-          size: '2',
+          side: Side.SIDE_SELL,
+          price: new BigNumber('90'),
+          size: new BigNumber('2'),
           priceLevels: data.market.depth.buy,
+          marketDecimals: 0,
+          positionDecimals: 0,
         })
       ).toMatchObject({
-        slippage: '-5',
-        slippagePct: '-5.555555555555555556',
+        slippage: '5',
+        slippagePct: '5.555555555555555556',
         weightedAveragePrice: '85',
       });
 
       expect(
         calcSlippage({
-          price: '90',
-          size: '3',
+          side: Side.SIDE_SELL,
+          price: new BigNumber('90'),
+          size: new BigNumber('3'),
           priceLevels: data.market.depth.buy,
+          marketDecimals: 0,
+          positionDecimals: 0,
         })
       ).toMatchObject({
-        slippage: '-10',
-        slippagePct: '-11.111111111111111111',
+        slippage: '10',
+        slippagePct: '11.111111111111111111',
         weightedAveragePrice: '80',
       });
     });
@@ -176,9 +195,12 @@ describe('calcSlippage', () => {
     it('long', () => {
       expect(
         calcSlippage({
-          price: '100',
-          size: '20',
+          side: Side.SIDE_BUY,
+          price: new BigNumber('100'),
+          size: new BigNumber('20'),
           priceLevels: data.market.depth.sell,
+          marketDecimals: 0,
+          positionDecimals: 0,
         })
       ).toMatchObject({
         slippage: '5',
@@ -188,9 +210,12 @@ describe('calcSlippage', () => {
 
       expect(
         calcSlippage({
-          price: '100',
-          size: '30',
+          side: Side.SIDE_BUY,
+          price: new BigNumber('100'),
+          size: new BigNumber('30'),
           priceLevels: data.market.depth.sell,
+          marketDecimals: 0,
+          positionDecimals: 0,
         })
       ).toMatchObject({
         slippage: '10',
@@ -200,9 +225,12 @@ describe('calcSlippage', () => {
 
       expect(
         calcSlippage({
-          price: '100',
-          size: '25',
+          side: Side.SIDE_BUY,
+          price: new BigNumber('100'),
+          size: new BigNumber('25'),
           priceLevels: data.market.depth.sell,
+          marketDecimals: 0,
+          positionDecimals: 0,
         })
       ).toMatchObject({
         slippage: '8',
@@ -214,9 +242,12 @@ describe('calcSlippage', () => {
     it('short', () => {
       expect(
         calcSlippage({
-          price: '90',
-          size: '1',
+          side: Side.SIDE_SELL,
+          price: new BigNumber('90'),
+          size: new BigNumber('1'),
           priceLevels: data.market.depth.buy,
+          marketDecimals: 0,
+          positionDecimals: 0,
         })
       ).toMatchObject({
         slippage: '0',
@@ -226,25 +257,31 @@ describe('calcSlippage', () => {
 
       expect(
         calcSlippage({
-          price: '90',
-          size: '11',
+          side: Side.SIDE_SELL,
+          price: new BigNumber('90'),
+          size: new BigNumber('11'),
           priceLevels: data.market.depth.buy,
+          marketDecimals: 0,
+          positionDecimals: 0,
         })
       ).toMatchObject({
-        slippage: '-0.90909090909090909091',
-        slippagePct: '-1.010101010101010101',
+        slippage: '0.90909090909090909091',
+        slippagePct: '1.010101010101010101',
         weightedAveragePrice: '89.09090909090909090909',
       });
 
       expect(
         calcSlippage({
-          price: '90',
-          size: '100',
+          side: Side.SIDE_SELL,
+          price: new BigNumber('90'),
+          size: new BigNumber('100'),
           priceLevels: data.market.depth.buy,
+          marketDecimals: 0,
+          positionDecimals: 0,
         })
       ).toMatchObject({
-        slippage: '-9',
-        slippagePct: '-10',
+        slippage: '9',
+        slippagePct: '10',
         weightedAveragePrice: '81',
       });
     });
@@ -295,28 +332,53 @@ describe('calcSlippage', () => {
     it('works', () => {
       expect(
         calcSlippage({
-          price: '100',
-          limitPrice: '120',
-          size: '3',
+          side: Side.SIDE_BUY,
+          price: new BigNumber('100'),
+          limitPrice: new BigNumber('120'),
+          size: new BigNumber('3'),
           priceLevels: data.market.depth.sell,
+          marketDecimals: 0,
+          positionDecimals: 0,
         })
       ).toMatchObject({
         slippage: '10',
         slippagePct: '10',
         weightedAveragePrice: '110',
+        totalVolume: '3',
       });
 
       expect(
         calcSlippage({
-          price: '100',
-          limitPrice: '110',
-          size: '3',
+          side: Side.SIDE_BUY,
+          price: new BigNumber('100'),
+          limitPrice: new BigNumber('110'),
+          size: new BigNumber('3'),
           priceLevels: data.market.depth.sell,
+          marketDecimals: 0,
+          positionDecimals: 0,
         })
       ).toMatchObject({
         slippage: '5',
         slippagePct: '5',
         weightedAveragePrice: '105',
+        totalVolume: '2',
+      });
+
+      expect(
+        calcSlippage({
+          side: Side.SIDE_SELL, // Deliberate wrong side of book totalVol should be 0
+          price: new BigNumber('100'),
+          limitPrice: new BigNumber('110'),
+          size: new BigNumber('3'),
+          priceLevels: data.market.depth.sell,
+          marketDecimals: 0,
+          positionDecimals: 0,
+        })
+      ).toMatchObject({
+        slippage: '0',
+        slippagePct: '0',
+        weightedAveragePrice: '0',
+        totalVolume: '0',
       });
     });
   });
@@ -357,25 +419,33 @@ describe('useSlippage', () => {
       result: undefined,
     };
 
-    return renderHook(() => useSlippage(order, marketId), {
-      wrapper: ({ children }: { children: ReactNode }) => (
-        <MockedProvider
-          cache={
-            new InMemoryCache({
-              typePolicies: {
-                Market: { keyFields: false },
-                PriceLevel: {
-                  keyFields: false,
+    return renderHook(
+      () =>
+        useSlippage(order, {
+          id: marketId,
+          decimalPlaces: 0,
+          positionDecimalPlaces: 0,
+        }),
+      {
+        wrapper: ({ children }: { children: ReactNode }) => (
+          <MockedProvider
+            cache={
+              new InMemoryCache({
+                typePolicies: {
+                  Market: { keyFields: false },
+                  PriceLevel: {
+                    keyFields: false,
+                  },
                 },
-              },
-            })
-          }
-          mocks={[mock, mockSub]}
-        >
-          {children}
-        </MockedProvider>
-      ),
-    });
+              })
+            }
+            mocks={[mock, mockSub]}
+          >
+            {children}
+          </MockedProvider>
+        ),
+      }
+    );
   };
 
   it('returns slippage for buy order', async () => {
@@ -392,9 +462,10 @@ describe('useSlippage', () => {
 
     await waitFor(() => {
       expect(result.current).toMatchObject({
-        slippage: '0',
-        slippagePct: '0',
+        slippage: '5',
+        slippagePct: '5.263157894736842105',
         weightedAveragePrice: '100',
+        totalVolume: '1',
       });
     });
   });
@@ -413,9 +484,10 @@ describe('useSlippage', () => {
 
     await waitFor(() => {
       expect(result.current).toMatchObject({
-        slippage: '0',
-        slippagePct: '0',
+        slippage: '5',
+        slippagePct: '5.263157894736842105',
         weightedAveragePrice: '90',
+        totalVolume: '1',
       });
     });
   });

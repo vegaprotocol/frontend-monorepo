@@ -304,7 +304,7 @@ export const DealTicket = ({
       normalizedOrder.size === '0'
   );
 
-  const slippage = useSlippage(normalizedOrder, market.id);
+  const slippage = useSlippage(normalizedOrder, market);
 
   const assetSymbol = getAsset(market).symbol;
 
