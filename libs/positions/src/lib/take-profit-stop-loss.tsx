@@ -103,6 +103,38 @@ interface FormValues {
   price: string;
 }
 
+const usePendingTransaction = (
+  marketId: string,
+  triggerDirection: Schema.StopOrderTriggerDirection
+) =>
+  useVegaTransactionStore((state) => state.transactions).find((transaction) => {
+    if (
+      !transaction ||
+      ![VegaTxStatus.Requested, VegaTxStatus.Pending].includes(
+        transaction.status
+      ) ||
+      !isStopOrdersSubmissionTransaction(transaction?.body)
+    ) {
+      return false;
+    }
+    const stopOrderSetup =
+      transaction.body.stopOrdersSubmission[
+        triggerDirection ===
+        Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE
+          ? 'risesAbove'
+          : 'fallsBelow'
+      ];
+    if (
+      !stopOrderSetup ||
+      stopOrderSetup.orderSubmission.marketId !== marketId ||
+      stopOrderSetup.sizeOverrideSetting !==
+        SizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION
+    ) {
+      return false;
+    }
+    return true;
+  });
+
 export const TakeProfitStopLossSetup = ({
   allocation,
   averageEntryPrice,
@@ -129,34 +161,7 @@ export const TakeProfitStopLossSetup = ({
   const validateAmount = useValidateAmount();
   const priceStep = determinePriceStep(market);
   const quoteName = getQuoteName(market);
-  const transaction = useVegaTransactionStore(
-    (state) => state.transactions
-  ).find((transaction) => {
-    if (
-      !transaction ||
-      ![VegaTxStatus.Requested, VegaTxStatus.Pending].includes(
-        transaction.status
-      ) ||
-      !isStopOrdersSubmissionTransaction(transaction?.body)
-    ) {
-      return false;
-    }
-    const TakeProfitStopLossSetup =
-      transaction.body.stopOrdersSubmission[
-        triggerDirection ===
-        Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE
-          ? 'risesAbove'
-          : 'fallsBelow'
-      ];
-    if (
-      !TakeProfitStopLossSetup ||
-      TakeProfitStopLossSetup.sizeOverrideSetting !==
-        SizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION
-    ) {
-      return false;
-    }
-    return true;
-  });
+  const transaction = usePendingTransaction(market.id, triggerDirection);
   const onSubmit = (values: FormValues) => {
     if (transaction) {
       return;
@@ -329,13 +334,10 @@ export const TakeProfitStopLossSetup = ({
             }}
             render={({ field, fieldState }) => (
               <>
-                <FormGroup
-                  label={t('Quantity')}
-                  labelFor="tpsl-size-input"
-                  compact
-                >
+                <FormGroup label={t('Quantity')} labelFor="size-input" compact>
                   <Input
-                    id="tpsl-size-input"
+                    id="size-input"
+                    data-testId="size-input"
                     type="number"
                     className="w-full"
                     min={sizeStep}
@@ -345,6 +347,7 @@ export const TakeProfitStopLossSetup = ({
                       <>
                         <Pill size="xs">%</Pill>
                         <button
+                          data-testId="use-max"
                           type="button"
                           className="flex ml-1"
                           onClick={() => setValue('size', maxSize.toString())}

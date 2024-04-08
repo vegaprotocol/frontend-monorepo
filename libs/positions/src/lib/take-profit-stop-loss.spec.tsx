@@ -13,7 +13,10 @@ import {
   mockConfig,
 } from '@vegaprotocol/wallet-react/testing';
 
-import { TakeProfitStopLoss } from './take-profit-stop-loss';
+import {
+  TakeProfitStopLoss,
+  TakeProfitStopLossSetup,
+} from './take-profit-stop-loss';
 import type { Market } from '@vegaprotocol/markets';
 import { type StopOrderFieldsFragment } from '@vegaprotocol/orders';
 
@@ -201,6 +204,8 @@ const stopOrders: StopOrderFieldsFragment[] = [
   },
 ];
 
+const mockMarkPrice = jest.fn(() => '700000');
+
 const mockActiveStopOrders = jest.fn<{ data: StopOrderFieldsFragment[] }, []>(
   () => ({
     data: stopOrders,
@@ -224,7 +229,7 @@ jest.mock('@vegaprotocol/orders', () => ({
 jest.mock('@vegaprotocol/markets', () => ({
   ...jest.requireActual('@vegaprotocol/markets'),
   useMarket: () => ({ data: mockMarket() }),
-  useMarkPrice: () => ({ data: '700000' }),
+  useMarkPrice: () => ({ data: mockMarkPrice() }),
 }));
 
 const mockTransactions = jest.fn(() => []);
@@ -234,14 +239,15 @@ jest.mock('@vegaprotocol/web3', () => ({
   useVegaTransactionStore: jest.fn(() => mockTransactions()),
 }));
 
-const generateJsx = () => {
-  return (
-    <MockedWalletProvider>
-      <TakeProfitStopLoss marketId={mockMarket().id} create={mockCreate} />
-    </MockedWalletProvider>
-  );
-};
 describe('TakeProfitStopLoss', () => {
+  const generateJsx = () => {
+    return (
+      <MockedWalletProvider>
+        <TakeProfitStopLoss marketId={mockMarket().id} create={mockCreate} />
+      </MockedWalletProvider>
+    );
+  };
+
   beforeEach(() => {
     jest.clearAllMocks();
     mockConfig.store.setState({ pubKey: partyId });
@@ -377,8 +383,28 @@ describe('TakeProfitStopLoss', () => {
 });
 
 describe('TakeProfitStopLossSetup', () => {
-  it('sets max quantity', () => {
-    expect(true).toBe(true);
+  const generateJsx = (
+    side = Schema.Side.SIDE_BUY,
+    triggerDirection = Schema.StopOrderTriggerDirection
+      .TRIGGER_DIRECTION_FALLS_BELOW
+  ) => {
+    return (
+      <TakeProfitStopLossSetup
+        create={mockCreate}
+        market={mockMarket()}
+        marketPrice={mockMarkPrice()}
+        side={side}
+        triggerDirection={triggerDirection}
+        allocation={0.3}
+        averageEntryPrice={mockUseOpenVolume().averageEntryPrice}
+        openVolume={mockUseOpenVolume().openVolume}
+      />
+    );
+  };
+  it('sets max quantity', async () => {
+    render(generateJsx());
+    await userEvent.click(screen.getByTestId('use-max'));
+    expect(screen.getByTestId('size-input')).toHaveValue(70);
   });
 
   it('displays orders summary message', () => {
@@ -394,6 +420,14 @@ describe('TakeProfitStopLossSetup', () => {
   });
 
   it('shows immediate trigger warning', () => {
+    expect(true).toBe(true);
+  });
+
+  it('create transaction on submit', () => {
+    expect(true).toBe(true);
+  });
+
+  it('if pending transaction exist do not submit and shows transaction', () => {
     expect(true).toBe(true);
   });
 });
