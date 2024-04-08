@@ -373,8 +373,8 @@ export const KeyDetailsInfoPanel = ({
                   market.tradingMode &&
                   MarketTradingModeMapping[market.tradingMode],
                 marketDecimalPlaces: market.decimalPlaces,
-                positionDecimalPlaces: market.positionDecimalPlaces,
-                settlementAssetDecimalPlaces: assetDecimals,
+                sizeDecimalPlaces: market.positionDecimalPlaces,
+                assetDecimalPlaces: assetDecimals,
                 tickSize: determinePriceStep(market),
               }
             : {
@@ -384,8 +384,8 @@ export const KeyDetailsInfoPanel = ({
                   market.tradingMode &&
                   MarketTradingModeMapping[market.tradingMode],
                 marketDecimalPlaces: market.decimalPlaces,
-                positionDecimalPlaces: market.positionDecimalPlaces,
-                settlementAssetDecimalPlaces: assetDecimals,
+                sizeDecimalPlaces: market.positionDecimalPlaces,
+                assetDecimalPlaces: assetDecimals,
                 tickSize: determinePriceStep(market),
               }
         }
@@ -403,7 +403,7 @@ export const KeyDetailsInfoPanel = ({
               ],
             marketDecimalPlaces: parentMarket?.decimalPlaces,
             positionDecimalPlaces: parentMarket?.positionDecimalPlaces,
-            settlementAssetDecimalPlaces: assetDecimals,
+            assetDecimalPlaces: assetDecimals,
           }
         }
       />
