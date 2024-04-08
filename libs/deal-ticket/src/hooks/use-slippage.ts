@@ -122,7 +122,7 @@ export const calcSlippage = ({
     return {
       slippage: '0',
       slippagePct: '0',
-      weightedAveragePrice: price.toString(),
+      weightedAveragePrice: '0',
       totalVolume: '0',
     };
   }

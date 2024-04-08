@@ -112,32 +112,9 @@ export const DealTicketMarginDetails = ({
 
   const quoteName = getQuoteName(market);
 
-  const slippageVal =
-    slippage && formatNumber(slippage.slippage, market.decimalPlaces);
-  const slippagePct = slippage && formatNumber(slippage.slippagePct, 5);
-  const weightedPrice =
-    slippage &&
-    formatNumber(slippage.weightedAveragePrice, market.decimalPlaces);
-  const totalVolume =
-    slippage &&
-    formatNumber(slippage.totalVolume, market.positionDecimalPlaces);
-
   return (
     <div className="flex flex-col w-full gap-2 mt-2">
-      {totalVolume && weightedPrice && (
-        <KeyValue
-          label={t('Projected trade')}
-          formattedValue={`${totalVolume} @ ${weightedPrice}`}
-          symbol=""
-        />
-      )}
-      {slippageVal && slippagePct && (
-        <KeyValue
-          label={t('Slippage')}
-          formattedValue={`${slippagePct}% (${slippageVal})`}
-          symbol=""
-        />
-      )}
+      <TradeInfo slippage={slippage} market={market} />
       <KeyValue
         label={t('Current margin')}
         onClick={
@@ -219,5 +196,44 @@ export const DealTicketMarginDetails = ({
         />
       )}
     </div>
+  );
+};
+
+const TradeInfo = ({
+  slippage,
+  market,
+}: {
+  slippage?: Slippage;
+  market: Market;
+}) => {
+  const t = useT();
+
+  if (!slippage) return null;
+
+  const slippageVal = formatNumber(slippage.slippage, market.decimalPlaces);
+  const slippagePct = formatNumber(slippage.slippagePct, 5);
+  const weightedPrice =
+    slippage.totalVolume === '0'
+      ? 'N/A'
+      : formatNumber(slippage.weightedAveragePrice, market.decimalPlaces);
+  const totalVolume = formatNumber(
+    slippage.totalVolume,
+    market.positionDecimalPlaces
+  );
+
+  return (
+    <>
+      <KeyValue
+        label={t('Projected trade')}
+        formattedValue={`${totalVolume} @ ${weightedPrice}`}
+        symbol=""
+      />
+
+      <KeyValue
+        label={t('Slippage')}
+        formattedValue={`${slippagePct}% (${slippageVal})`}
+        symbol=""
+      />
+    </>
   );
 };
