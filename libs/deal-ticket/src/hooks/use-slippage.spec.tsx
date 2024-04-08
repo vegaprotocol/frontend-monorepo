@@ -1,15 +1,15 @@
-import { renderHook, waitFor } from '@testing-library/react';
-import { OrderType, type PriceLevel, Side } from '@vegaprotocol/types';
-import { calcSlippage, useSlippage } from './use-slippage';
+import { InMemoryCache } from '@apollo/client';
 import { MockedProvider, type MockedResponse } from '@apollo/client/testing';
-import { type ReactNode } from 'react';
+import { renderHook, waitFor } from '@testing-library/react';
 import {
   MarketDepthDocument,
-  MarketDepthUpdateDocument,
   type MarketDepthQuery,
   type MarketDepthQueryVariables,
+  MarketDepthUpdateDocument,
 } from '@vegaprotocol/market-depth';
-import { InMemoryCache } from '@apollo/client';
+import { OrderType, type PriceLevel, Side } from '@vegaprotocol/types';
+import type { ReactNode } from 'react';
+import { calcSlippage, useSlippage } from './use-slippage';
 
 const data = {
   market: {
@@ -63,6 +63,7 @@ describe('calcSlippage', () => {
         })
       ).toMatchObject({
         slippage: '0',
+        slippagePct: '0',
         weightedAveragePrice: '100',
       });
 
@@ -74,6 +75,7 @@ describe('calcSlippage', () => {
         })
       ).toMatchObject({
         slippage: '5',
+        slippagePct: '5',
         weightedAveragePrice: '105',
       });
 
@@ -85,6 +87,7 @@ describe('calcSlippage', () => {
         })
       ).toMatchObject({
         slippage: '10',
+        slippagePct: '10',
         weightedAveragePrice: '110',
       });
     });
@@ -98,6 +101,7 @@ describe('calcSlippage', () => {
         })
       ).toMatchObject({
         slippage: '0',
+        slippagePct: '0',
         weightedAveragePrice: '90',
       });
 
@@ -109,6 +113,7 @@ describe('calcSlippage', () => {
         })
       ).toMatchObject({
         slippage: '-5',
+        slippagePct: '-5.555555555555555556',
         weightedAveragePrice: '85',
       });
 
@@ -120,6 +125,7 @@ describe('calcSlippage', () => {
         })
       ).toMatchObject({
         slippage: '-10',
+        slippagePct: '-11.111111111111111111',
         weightedAveragePrice: '80',
       });
     });
@@ -176,6 +182,7 @@ describe('calcSlippage', () => {
         })
       ).toMatchObject({
         slippage: '5',
+        slippagePct: '5',
         weightedAveragePrice: '105',
       });
 
@@ -187,6 +194,7 @@ describe('calcSlippage', () => {
         })
       ).toMatchObject({
         slippage: '10',
+        slippagePct: '10',
         weightedAveragePrice: '110',
       });
 
@@ -198,6 +206,7 @@ describe('calcSlippage', () => {
         })
       ).toMatchObject({
         slippage: '8',
+        slippagePct: '8',
         weightedAveragePrice: '108',
       });
     });
@@ -211,6 +220,7 @@ describe('calcSlippage', () => {
         })
       ).toMatchObject({
         slippage: '0',
+        slippagePct: '0',
         weightedAveragePrice: '90',
       });
 
@@ -222,6 +232,7 @@ describe('calcSlippage', () => {
         })
       ).toMatchObject({
         slippage: '-0.90909090909090909091',
+        slippagePct: '-1.010101010101010101',
         weightedAveragePrice: '89.09090909090909090909',
       });
 
@@ -233,6 +244,7 @@ describe('calcSlippage', () => {
         })
       ).toMatchObject({
         slippage: '-9',
+        slippagePct: '-10',
         weightedAveragePrice: '81',
       });
     });
@@ -290,6 +302,7 @@ describe('calcSlippage', () => {
         })
       ).toMatchObject({
         slippage: '10',
+        slippagePct: '10',
         weightedAveragePrice: '110',
       });
 
@@ -302,6 +315,7 @@ describe('calcSlippage', () => {
         })
       ).toMatchObject({
         slippage: '5',
+        slippagePct: '5',
         weightedAveragePrice: '105',
       });
     });
@@ -379,6 +393,7 @@ describe('useSlippage', () => {
     await waitFor(() => {
       expect(result.current).toMatchObject({
         slippage: '0',
+        slippagePct: '0',
         weightedAveragePrice: '100',
       });
     });
@@ -399,6 +414,7 @@ describe('useSlippage', () => {
     await waitFor(() => {
       expect(result.current).toMatchObject({
         slippage: '0',
+        slippagePct: '0',
         weightedAveragePrice: '90',
       });
     });

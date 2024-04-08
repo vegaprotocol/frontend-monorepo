@@ -1,5 +1,5 @@
 import { useOrderbook } from '@vegaprotocol/market-depth';
-import { Side, type OrderType } from '@vegaprotocol/types';
+import { type OrderType, Side } from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
 
 export interface Slippage {
