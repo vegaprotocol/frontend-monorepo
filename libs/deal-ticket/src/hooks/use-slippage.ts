@@ -1,50 +1,63 @@
 import { useOrderbook } from '@vegaprotocol/market-depth';
+import { useMarket } from '@vegaprotocol/markets';
 import { type OrderType, Side } from '@vegaprotocol/types';
+import { toBigNum } from '@vegaprotocol/utils';
 import BigNumber from 'bignumber.js';
 
 export interface Slippage {
   slippage: string;
   slippagePct: string;
   weightedAveragePrice: string;
+  totalVolume: string;
 }
 
 export const useSlippage = (
   order: { type: OrderType; side: Side; size: string; price?: string },
   marketId: string
 ): Slippage => {
-  const { data } = useOrderbook(marketId);
+  const { data: book } = useOrderbook(marketId);
+  const { data: market } = useMarket(marketId);
+
+  if (!market || !book?.depth.sell?.length || !book?.depth.buy?.length) {
+    return {
+      slippage: '0',
+      slippagePct: '0',
+      weightedAveragePrice: '0',
+      totalVolume: '0',
+    };
+  }
+
+  const lowestAsk = toBigNum(book.depth.sell[0].price, market.decimalPlaces);
+  const highestBid = toBigNum(book.depth.buy[0].price, market.decimalPlaces);
+  const mid = lowestAsk.plus(highestBid).dividedBy(2);
 
   if (order.side === Side.SIDE_BUY) {
-    if (!data?.depth.sell?.length) {
-      return { slippage: '', slippagePct: '', weightedAveragePrice: '' };
-    }
-
-    const lowestAsk = data.depth.sell[0].price;
-
     return calcSlippage({
-      price: lowestAsk,
-      limitPrice: order.price,
-      size: order.size,
-      priceLevels: data.depth.sell,
+      price: mid,
+      limitPrice: order.price
+        ? toBigNum(order.price, market.decimalPlaces)
+        : undefined,
+      size: toBigNum(order.size, market.positionDecimalPlaces),
+      priceLevels: book.depth.sell,
+      marketDecimals: market.decimalPlaces,
+      positionDecimals: market.positionDecimalPlaces,
     });
   }
 
   if (order.side === Side.SIDE_SELL) {
-    if (!data?.depth.buy?.length) {
-      return { slippage: '', slippagePct: '', weightedAveragePrice: '' };
-    }
-
-    const highestBid = data.depth.buy[0].price;
-
     return calcSlippage({
-      price: highestBid,
-      limitPrice: order.price,
-      size: order.size,
-      priceLevels: data.depth.buy,
+      price: mid,
+      limitPrice: order.price
+        ? toBigNum(order.price, market.decimalPlaces)
+        : undefined,
+      size: toBigNum(order.size, market.positionDecimalPlaces),
+      priceLevels: book.depth.buy,
+      marketDecimals: market.decimalPlaces,
+      positionDecimals: market.positionDecimalPlaces,
     });
   }
 
-  return { slippage: '', slippagePct: '', weightedAveragePrice: '' };
+  throw new Error('invalid order side');
 };
 
 export const calcSlippage = ({
@@ -52,17 +65,26 @@ export const calcSlippage = ({
   size,
   priceLevels,
   limitPrice,
+  marketDecimals,
+  positionDecimals,
 }: {
-  price: string;
-  size: string;
+  price: BigNumber;
+  size: BigNumber;
   priceLevels: Array<{ volume: string; price: string }>;
-  limitPrice?: string;
+  limitPrice?: BigNumber;
+  marketDecimals: number;
+  positionDecimals: number;
 }) => {
-  if (size === '0') {
-    return { slippage: '0', slippagePct: '0', weightedAveragePrice: price };
+  if (size.isLessThanOrEqualTo(0)) {
+    return {
+      slippage: '0',
+      slippagePct: '0',
+      weightedAveragePrice: '0',
+      totalVolume: '0',
+    };
   }
 
-  let remainingSize = new BigNumber(size);
+  let remainingSize = size;
   let totalVolume = new BigNumber(0);
   let weightedSum = new BigNumber(0);
 
@@ -71,8 +93,11 @@ export const calcSlippage = ({
       break;
     }
 
-    const volume = BigNumber.min(remainingSize, lvl.volume);
-    const price = new BigNumber(lvl.price);
+    const volume = BigNumber.min(
+      remainingSize,
+      toBigNum(lvl.volume, positionDecimals)
+    );
+    const price = toBigNum(lvl.price, marketDecimals);
 
     if (limitPrice !== undefined && price.isGreaterThan(limitPrice)) {
       break;
@@ -84,14 +109,21 @@ export const calcSlippage = ({
   }
 
   if (totalVolume.isZero()) {
-    return { slippage: '0', slippagePct: '0', weightedAveragePrice: price };
+    return {
+      slippage: '0',
+      slippagePct: '0',
+      weightedAveragePrice: price.toString(),
+      totalVolume: '0',
+    };
   }
 
   const weightedAveragePrice = weightedSum.dividedBy(totalVolume);
   const slippage = weightedAveragePrice.minus(price);
+
   return {
-    slippage: slippage.toString(),
-    slippagePct: slippage.dividedBy(price).times(100).toString(),
+    slippage: slippage.abs().toString(),
+    slippagePct: slippage.dividedBy(price).times(100).abs().toString(),
     weightedAveragePrice: weightedAveragePrice.toString(),
+    totalVolume: totalVolume.toString(),
   };
 };

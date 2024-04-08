@@ -2,12 +2,7 @@ import { useCallback, useState } from 'react';
 import { getAsset, getQuoteName } from '@vegaprotocol/markets';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { AccountBreakdownDialog } from '@vegaprotocol/accounts';
-import {
-  addDecimalsFormatNumber,
-  formatNumber,
-  formatRange,
-  formatValue,
-} from '@vegaprotocol/utils';
+import { formatNumber, formatRange, formatValue } from '@vegaprotocol/utils';
 import * as Schema from '@vegaprotocol/types';
 import {
   LIQUIDATION_PRICE_ESTIMATE_TOOLTIP_TEXT,
@@ -118,12 +113,24 @@ export const DealTicketMarginDetails = ({
   const quoteName = getQuoteName(market);
 
   const slippageVal =
-    slippage &&
-    addDecimalsFormatNumber(slippage.slippage, market.decimalPlaces);
+    slippage && formatNumber(slippage.slippage, market.decimalPlaces);
   const slippagePct = slippage && formatNumber(slippage.slippagePct, 5);
+  const weightedPrice =
+    slippage &&
+    formatNumber(slippage.weightedAveragePrice, market.decimalPlaces);
+  const totalVolume =
+    slippage &&
+    formatNumber(slippage.totalVolume, market.positionDecimalPlaces);
 
   return (
     <div className="flex flex-col w-full gap-2 mt-2">
+      {totalVolume && weightedPrice && (
+        <KeyValue
+          label={t('Projected trade')}
+          formattedValue={`${totalVolume} @ ${weightedPrice}`}
+          symbol=""
+        />
+      )}
       {slippageVal && slippagePct && (
         <KeyValue
           label={t('Slippage')}
