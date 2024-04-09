@@ -173,6 +173,7 @@ export const MarketPriceInfoPanel = ({ market }: MarketInfoProps) => {
     dataProvider: marketDataProvider,
     variables: { marketId: market.id },
   });
+  const isSpotMarket = isSpot(market.tradableInstrument.instrument.product);
   return (
     <>
       <MarketInfoTable
@@ -184,7 +185,7 @@ export const MarketPriceInfoPanel = ({ market }: MarketInfoProps) => {
         }}
         decimalPlaces={market.decimalPlaces}
       />
-      {!isSpot(market.tradableInstrument.instrument.product) && (
+      {!isSpotMarket && (
         <p className="mt-2 text-xs">
           {t(
             'There is 1 unit of the settlement asset ({{assetSymbol}}) to every 1 quote unit ({{quoteUnit}}).',
@@ -601,6 +602,7 @@ export const BaseAssetInfoPanel = ({ market }: MarketInfoProps) => {
   const assetId = useMemo(() => getBaseAsset(market).id, [market]);
 
   const { data: asset } = useAssetDataProvider(assetId ?? '');
+  const isSpotMarket = isSpot(market.tradableInstrument.instrument.product);
   return asset ? (
     <>
       <AssetDetailsTable
@@ -610,7 +612,7 @@ export const BaseAssetInfoPanel = ({ market }: MarketInfoProps) => {
         dtClassName="text-black dark:text-white text-ui !px-0 text-xs"
         ddClassName="text-black dark:text-white text-ui !px-0 max-w-full text-xs"
       />
-      {!isSpot(market.tradableInstrument.instrument.product) && (
+      {!isSpotMarket && (
         <p className="mt-4 text-xs">
           {t(
             'There is 1 unit of the base asset ({{assetSymbol}}) to every 1 quote asset ({{quoteUnit}}).',
@@ -631,6 +633,7 @@ export const QuoteAssetInfoPanel = ({ market }: MarketInfoProps) => {
   const assetId = useMemo(() => getQuoteAsset(market).id, [market]);
 
   const { data: asset } = useAssetDataProvider(assetId ?? '');
+  const isSpotMarket = isSpot(market.tradableInstrument.instrument.product);
   return asset ? (
     <>
       <AssetDetailsTable
@@ -640,7 +643,7 @@ export const QuoteAssetInfoPanel = ({ market }: MarketInfoProps) => {
         dtClassName="text-black dark:text-white text-ui !px-0 text-xs"
         ddClassName="text-black dark:text-white text-ui !px-0 max-w-full text-xs"
       />
-      {!isSpot(market.tradableInstrument.instrument.product) && (
+      {!isSpotMarket && (
         <p className="mt-4 text-xs">
           {t(
             'There is 1 unit of the base asset ({{assetSymbol}}) to every 1 quote asset ({{quoteUnit}}).',
@@ -661,6 +664,7 @@ export const SettlementAssetInfoPanel = ({ market }: MarketInfoProps) => {
   const assetId = useMemo(() => getAsset(market).id, [market]);
 
   const { data: asset } = useAssetDataProvider(assetId ?? '');
+  const isSpotMarket = isSpot(market.tradableInstrument.instrument.product);
   return asset ? (
     <>
       <AssetDetailsTable
@@ -670,7 +674,7 @@ export const SettlementAssetInfoPanel = ({ market }: MarketInfoProps) => {
         dtClassName="text-black dark:text-white text-ui !px-0 text-xs"
         ddClassName="text-black dark:text-white text-ui !px-0 max-w-full text-xs"
       />
-      {!isSpot(market.tradableInstrument.instrument.product) && (
+      {!isSpotMarket && (
         <p className="mt-4 text-xs">
           {t(
             'There is 1 unit of the settlement asset ({{assetSymbol}}) to every 1 quote unit ({{quoteUnit}}).',
