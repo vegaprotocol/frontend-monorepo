@@ -13,7 +13,7 @@ import {
 import {
   SizeOverrideSetting,
   isStopOrdersSubmissionTransaction,
-  type StopOrderTakeProfitStopLossSetup,
+  type StopOrderSetup,
   type StopOrdersSubmission,
 } from '@vegaprotocol/wallet';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
@@ -40,6 +40,7 @@ import {
   removeDecimal,
   toBigNum,
   useValidateAmount,
+  validateAgainstStep,
   volumePrefix,
 } from '@vegaprotocol/utils';
 import {
@@ -170,7 +171,7 @@ export const TakeProfitStopLossSetup = ({
       risesAbove: undefined,
       fallsBelow: undefined,
     };
-    const stopOrderTakeProfitStopLossSetup: StopOrderTakeProfitStopLossSetup = {
+    const stopOrderSetup: StopOrderSetup = {
       sizeOverrideSetting: SizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION,
       sizeOverrideValue: { percentage: (Number(values.size) / 100).toString() },
       price: removeDecimal(values.price, market.decimalPlaces),
@@ -187,9 +188,9 @@ export const TakeProfitStopLossSetup = ({
       triggerDirection ===
       Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE
     ) {
-      stopOrdersSubmission.risesAbove = stopOrderTakeProfitStopLossSetup;
+      stopOrdersSubmission.risesAbove = stopOrderSetup;
     } else {
-      stopOrdersSubmission.fallsBelow = stopOrderTakeProfitStopLossSetup;
+      stopOrdersSubmission.fallsBelow = stopOrderSetup;
     }
     create({
       stopOrdersSubmission,
@@ -224,7 +225,7 @@ export const TakeProfitStopLossSetup = ({
         triggerDirection ===
           Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_FALLS_BELOW);
     info = (
-      <p className="text-xs mb-2" data-testId="summary-message">
+      <p className="text-xs mb-2" data-testid="summary-message">
         <Trans
           defaults={
             takeProfit
@@ -242,18 +243,18 @@ export const TakeProfitStopLossSetup = ({
     );
   }
 
-  const sizeStep = 0.1;
+  const sizeStep = 1;
   const maxSize = 100 - (allocation ?? 0) * 100;
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onSubmit)} noValidate data-testid="setup-form">
       <div className="flex gap-2 mb-2">
         <div className="w-1/2">
           <Controller
             name="price"
             control={control}
             rules={{
-              required: t('You need provide a price'),
+              required: t('You need to provide a price'),
               min: {
                 value: priceStep,
                 message: t('Price cannot be lower than {{priceStep}}', {
@@ -286,24 +287,25 @@ export const TakeProfitStopLossSetup = ({
                     <Input
                       type="number"
                       id="price-input"
-                      data-testId="price-input"
+                      data-testid="price-input"
                       className="w-full"
                       min={priceStep}
                       step={priceStep}
                       appendElement={<Pill size="xs">{quoteName}</Pill>}
                       hasError={!!fieldState.error}
                       {...field}
+                      value={field.value || ''}
                     />
                   </FormGroup>
                   {fieldState.error && (
-                    <InputError testId="error-message-price">
+                    <InputError testId="price-error-message">
                       {fieldState.error.message}
                     </InputError>
                   )}
                   {!fieldState.error && triggerWarning && (
                     <InputError
                       intent="warning"
-                      testId="warning-message-trigger-price"
+                      testId="price-trigger-warning-message"
                     >
                       {t('Stop order will be triggered immediately')}
                     </InputError>
@@ -318,21 +320,35 @@ export const TakeProfitStopLossSetup = ({
             name={'size'}
             control={control}
             rules={{
-              required: t('You need to provide a size'),
+              required: t('You need to provide a quantity'),
               min: {
                 value: sizeStep,
-                message: t('Size cannot be lower than {{sizeStep}}', {
+                message: t('Quantity cannot be lower than {{sizeStep}}', {
                   sizeStep,
                 }),
               },
-              validate: validateAmount(sizeStep, 'Size'),
+              max: {
+                value: maxSize,
+                message: t('Quantity cannot be greater than {{maxSize}}', {
+                  maxSize,
+                }),
+              },
+              validate: (value?: string) => {
+                const isValid = value
+                  ? validateAgainstStep(sizeStep, value)
+                  : true;
+                if (!isValid) {
+                  return t('Quantity must be whole numbers');
+                }
+                return true;
+              },
             }}
             render={({ field, fieldState }) => (
               <>
                 <FormGroup label={t('Quantity')} labelFor="size-input" compact>
                   <Input
                     id="size-input"
-                    data-testId="size-input"
+                    data-testid="size-input"
                     type="number"
                     className="w-full"
                     min={sizeStep}
@@ -342,7 +358,7 @@ export const TakeProfitStopLossSetup = ({
                       <>
                         <Pill size="xs">%</Pill>
                         <button
-                          data-testId="use-max"
+                          data-testid="use-max"
                           type="button"
                           className="flex ml-1"
                           onClick={() => setValue('size', maxSize.toString())}
@@ -355,10 +371,11 @@ export const TakeProfitStopLossSetup = ({
                     }
                     hasError={!!fieldState.error}
                     {...field}
+                    value={field.value || ''}
                   />
                 </FormGroup>
                 {fieldState.error && (
-                  <InputError testId="error-message-size">
+                  <InputError testId="size-error-message">
                     {fieldState.error.message}
                   </InputError>
                 )}
@@ -372,7 +389,7 @@ export const TakeProfitStopLossSetup = ({
         disabled={!!transaction}
         className="w-full"
         type="submit"
-        data-testid="submit-tpsl"
+        data-testid="submit"
       >
         {transaction
           ? transaction.status === VegaTxStatus.Requested
@@ -404,7 +421,7 @@ const StopOrder = ({
   return (
     <div
       className="flex justify-between text-xs items-center gap-3 px-3 py-1.5 dark:bg-vega-cdark-800 bg-vega-clight-800 mb-0.5"
-      data-testId="stop-order"
+      data-testid="stop-order"
     >
       <span>
         <Trans
@@ -433,7 +450,7 @@ const StopOrder = ({
         />
       </span>
       <ButtonLink
-        data-testId="cancel-stop-order"
+        data-testid="cancel-stop-order"
         onClick={() =>
           create({
             stopOrdersCancellation: {
@@ -468,9 +485,9 @@ const StopOrdersList = ({
     return null;
   }
   return (
-    <div className="mb-3" data-testId="stop-orders-list">
+    <div className="mb-3" data-testid="stop-orders-list">
       <div className="flex justify-between text-xs px-3 pb-1.5">
-        <span data-testId="allocation">
+        <span data-testid="allocation">
           {t('Allocation: {{percentage}}%', {
             percentage: ((allocation ?? 0) * 100).toFixed(),
           })}
@@ -504,7 +521,12 @@ const StopOrdersList = ({
         </ButtonLink>
       </div>
       {stopOrders?.map((stopOrder) => (
-        <StopOrder stopOrder={stopOrder} create={create} {...props} />
+        <StopOrder
+          stopOrder={stopOrder}
+          create={create}
+          {...props}
+          key={stopOrder.id}
+        />
       ))}
     </div>
   );
@@ -584,14 +606,14 @@ export const TakeProfitStopLoss = ({
         <dt className="text-vega-clight-100 dark:text-vega-cdark-100">
           {t('Symbol')}
         </dt>
-        <dd className="text-right" data-testId="instrument-code">
+        <dd className="text-right" data-testid="instrument-code">
           {market?.tradableInstrument.instrument.code}
         </dd>
         <dt className="text-vega-clight-100 dark:text-vega-cdark-100">
           {t('Position')}
         </dt>
         <dd
-          data-testId="open-volume"
+          data-testid="open-volume"
           className={classNames(
             'text-right',
             openVolume?.openVolume &&
@@ -610,7 +632,7 @@ export const TakeProfitStopLoss = ({
         <dt className="text-vega-clight-100 dark:text-vega-cdark-100">
           {t('Entry price')}
         </dt>
-        <dd className="text-right" data-testId="average-entry-price">
+        <dd className="text-right" data-testid="average-entry-price">
           {openVolume?.averageEntryPrice &&
             market &&
             `${addDecimalsFormatNumber(
@@ -621,7 +643,7 @@ export const TakeProfitStopLoss = ({
         <dt className="text-vega-clight-100 dark:text-vega-cdark-100">
           {t('Mark price')}
         </dt>
-        <dd className="text-right" data-testId="mark-price">
+        <dd className="text-right" data-testid="mark-price">
           {markPrice &&
             market &&
             `${addDecimalsFormatNumber(
@@ -632,7 +654,7 @@ export const TakeProfitStopLoss = ({
       </dl>
       <hr className="border-vega-clight-500 dark:border-vega-cdark-500 mb-6" />
       <div className="mb-1">{t('Take profit')}</div>
-      <div className="mb-6" data-testId="take-profit">
+      <div className="mb-6" data-testid="take-profit">
         {market && (
           <StopOrdersList
             allocation={takeProfitAllocation}
@@ -669,7 +691,7 @@ export const TakeProfitStopLoss = ({
       </div>
       <hr className="border-vega-clight-500 dark:border-vega-cdark-500 mb-6" />
       <div className="mb-1">{t('Stop loss')}</div>
-      <div className="mb-6" data-testId="stop-loss">
+      <div className="mb-6" data-testid="stop-loss">
         {market && (
           <StopOrdersList
             allocation={stopLossAllocation}

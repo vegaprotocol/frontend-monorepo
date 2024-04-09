@@ -1,11 +1,4 @@
-import {
-  // act,
-  fireEvent,
-  render,
-  screen,
-  // waitFor,
-  within,
-} from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import * as Schema from '@vegaprotocol/types';
 import userEvent from '@testing-library/user-event';
 import {
@@ -407,43 +400,35 @@ describe('TakeProfitStopLossSetup', () => {
     expect(screen.getByTestId('size-input')).toHaveValue(70);
   });
 
-  it('displays orders summary message long position take profit', () => {
+  it('displays orders summary message long position take profit', async () => {
     render(
       generateJsx(
         Schema.Side.SIDE_SELL,
         Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE
       )
     );
-    fireEvent.change(screen.getByTestId<HTMLInputElement>('price-input'), {
-      target: { value: '80000' },
-    });
-    fireEvent.change(screen.getByTestId<HTMLInputElement>('size-input'), {
-      target: { value: '10' },
-    });
+    await userEvent.type(screen.getByTestId('price-input'), '80000');
+    await userEvent.type(screen.getByTestId('size-input'), '10');
     expect(screen.getByTestId('summary-message')).toHaveTextContent(
       'When the mark price rises above 80000 USDT it will trigger a Take Profit order to close 10% of this position for an estimated PNL of 2,000.00 USDT.'
     );
   });
 
-  it('displays orders summary message long position stop loss', () => {
+  it('displays orders summary message long position stop loss', async () => {
     render(
       generateJsx(
         Schema.Side.SIDE_SELL,
         Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_FALLS_BELOW
       )
     );
-    fireEvent.change(screen.getByTestId<HTMLInputElement>('price-input'), {
-      target: { value: '55000' },
-    });
-    fireEvent.change(screen.getByTestId<HTMLInputElement>('size-input'), {
-      target: { value: '5' },
-    });
+    await userEvent.type(screen.getByTestId('price-input'), '55000');
+    await userEvent.type(screen.getByTestId('size-input'), '5');
     expect(screen.getByTestId('summary-message')).toHaveTextContent(
-      'When the mark price falls below 55000 USDT it will trigger a Stop Loss order to close 5% of this position with an estimated PNL of -500.00 USDT.'
+      'When the mark price falls below 55000 USDT it will trigger a Stop Loss order to close 5% of this position with an estimated PNL of -250.00 USDT.'
     );
   });
 
-  it('displays orders summary message short position take profit', () => {
+  it('displays orders summary message short position take profit', async () => {
     mockUseOpenVolume.mockReturnValue({
       openVolume: '-10000',
       averageEntryPrice: '600000',
@@ -454,18 +439,14 @@ describe('TakeProfitStopLossSetup', () => {
         Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_FALLS_BELOW
       )
     );
-    fireEvent.change(screen.getByTestId<HTMLInputElement>('price-input'), {
-      target: { value: '40000' },
-    });
-    fireEvent.change(screen.getByTestId<HTMLInputElement>('size-input'), {
-      target: { value: '20' },
-    });
+    await userEvent.type(screen.getByTestId('price-input'), '40000');
+    await userEvent.type(screen.getByTestId('size-input'), '20');
     expect(screen.getByTestId('summary-message')).toHaveTextContent(
       'When the mark price falls below 40000 USDT it will trigger a Take Profit order to close 20% of this position for an estimated PNL of 4,000.00 USDT.'
     );
   });
 
-  it('displays orders summary message short position stop loss', () => {
+  it('displays orders summary message short position stop loss', async () => {
     mockUseOpenVolume.mockReturnValue({
       openVolume: '-10000',
       averageEntryPrice: '600000',
@@ -476,27 +457,70 @@ describe('TakeProfitStopLossSetup', () => {
         Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE
       )
     );
-    fireEvent.change(screen.getByTestId<HTMLInputElement>('price-input'), {
-      target: { value: '70000' },
-    });
-    fireEvent.change(screen.getByTestId<HTMLInputElement>('size-input'), {
-      target: { value: '20' },
-    });
+    await userEvent.type(screen.getByTestId('price-input'), '70000');
+    await userEvent.type(screen.getByTestId('size-input'), '20');
     expect(screen.getByTestId('summary-message')).toHaveTextContent(
       'When the mark price rises above 70000 USDT it will trigger a Stop Loss order to close 20% of this position with an estimated PNL of -2,000.00 USDT.'
     );
   });
 
-  it('validates price field', () => {
-    expect(true).toBe(true);
+  it('validates quantity field', async () => {
+    render(generateJsx());
+    await userEvent.click(screen.getByTestId('submit'));
+    expect(screen.getByTestId('size-error-message')).toHaveTextContent(
+      'You need to provide a quantity'
+    );
+    await userEvent.type(screen.getByTestId('size-input'), '100');
+    expect(screen.getByTestId('size-error-message')).toHaveTextContent(
+      'Quantity cannot be greater than 70'
+    );
+    await userEvent.clear(screen.getByTestId('size-input'));
+    await userEvent.type(screen.getByTestId('size-input'), '0.1');
+    expect(screen.getByTestId('size-error-message')).toHaveTextContent(
+      'Quantity cannot be lower than 1'
+    );
+    await userEvent.clear(screen.getByTestId('size-input'));
+    await userEvent.type(screen.getByTestId('size-input'), '1.1');
+    expect(screen.getByTestId('size-error-message')).toHaveTextContent(
+      'Quantity must be whole numbers'
+    );
   });
 
-  it('validates quantity field', () => {
-    expect(true).toBe(true);
+  it('validates price field', async () => {
+    render(generateJsx());
+    await userEvent.click(screen.getByTestId('submit'));
+    expect(screen.getByTestId('price-error-message')).toHaveTextContent(
+      'You need to provide a price'
+    );
+    await userEvent.clear(screen.getByTestId('price-input'));
+    await userEvent.type(screen.getByTestId('price-input'), '0.01');
+    expect(screen.getByTestId('price-error-message')).toHaveTextContent(
+      'Price cannot be lower than 0.1'
+    );
+    await userEvent.clear(screen.getByTestId('price-input'));
+    await userEvent.type(screen.getByTestId('price-input'), '1.01');
+    expect(screen.getByTestId('price-error-message')).toHaveTextContent(
+      'Price must be a multiple of 0.1 for this market'
+    );
   });
 
-  it('shows immediate trigger warning', () => {
-    expect(true).toBe(true);
+  it('shows immediate trigger warning', async () => {
+    const result = render(generateJsx());
+    await userEvent.click(screen.getByTestId('submit'));
+    await userEvent.type(screen.getByTestId('price-input'), '69999');
+    expect(
+      screen.getByTestId('price-trigger-warning-message')
+    ).toBeInTheDocument();
+    result.rerender(
+      generateJsx(
+        Schema.Side.SIDE_BUY,
+        Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_FALLS_BELOW
+      )
+    );
+    await userEvent.type(screen.getByTestId('price-input'), '70001');
+    expect(
+      screen.getByTestId('price-trigger-warning-message')
+    ).toBeInTheDocument();
   });
 
   it('create transaction on submit', () => {

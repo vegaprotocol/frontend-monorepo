@@ -158,7 +158,7 @@ const Trigger = ({
           <Controller
             name={oco ? 'ocoTriggerPrice' : 'triggerPrice'}
             rules={{
-              required: t('You need provide a price'),
+              required: t('You need to provide a price'),
               min: {
                 value: priceStep,
                 message: t('Price cannot be lower than {{priceStep}}', {
@@ -242,7 +242,7 @@ const Trigger = ({
             }
             control={control}
             rules={{
-              required: t('You need provide a trailing percent offset'),
+              required: t('You need to provide a trailing percent offset'),
               min: {
                 value: trailingPercentOffsetStep,
                 message: t(
@@ -412,7 +412,7 @@ const Price = ({
       control={control}
       rules={{
         deps: 'type',
-        required: t('You need provide a price'),
+        required: t('You need to provide a price'),
         min: {
           value: priceStep,
           message: t('Price cannot be lower than {{priceStep}}', { priceStep }),
@@ -1177,7 +1177,7 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
               name="expiresAt"
               control={control}
               rules={{
-                required: t('You need provide a expiry time/date'),
+                required: t('You need to provide a expiry time/date'),
                 validate: validateExpiration(
                   t(
                     'The expiry date that you have entered appears to be in the past'
