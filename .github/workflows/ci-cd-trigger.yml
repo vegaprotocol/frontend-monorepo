@@ -203,15 +203,6 @@ jobs:
       projects: ${{ needs.build-sources.outputs.projects-e2e }}
       tags: '@smoke'
 
-  console-e2e:
-    needs: [build-sources, check-e2e-needed]
-    name: '(CI) trading e2e python'
-    uses: ./.github/workflows/console-test-run.yml
-    secrets: inherit
-    if: needs.check-e2e-needed.outputs.run-tests == 'true' && contains(needs.build-sources.outputs.projects, 'trading')
-    with:
-      github-sha: ${{ github.event.pull_request.head.sha || github.sha }}
-
   publish-dist:
     needs: build-sources
     name: '(CD) publish dist'
@@ -220,6 +211,15 @@ jobs:
     secrets: inherit
     with:
       projects: ${{ needs.build-sources.outputs.projects }}
+
+  trading-e2e:
+    needs: [build-sources, check-e2e-needed]
+    name: '(CI) trading e2e python'
+    uses: ./.github/workflows/trading-e2e-test-run.yml
+    secrets: inherit
+    if: needs.check-e2e-needed.outputs.run-tests == 'true' && contains(needs.build-sources.outputs.projects, 'trading')
+    with:
+      github-sha: ${{ github.event.pull_request.head.sha || github.sha }}
 
   dist-check:
     runs-on: ubuntu-latest
@@ -279,17 +279,29 @@ jobs:
             * tools: ${{ needs.build-sources.outputs.preview_tools }}
 
   # Report single result at the end, to avoid mess with required checks in PR
-  cypress-check:
-    name: '(CI) cypress - check'
+  test-check:
+    name: '(CI) Final Tests check'
     if: ${{ always() }}
-    needs: cypress
+    needs: [cypress, trading-e2e]
     runs-on: ubuntu-22.04
     steps:
-      - run: |
+      - name: Check Cypress Tests Result
+        run: |
           result="${{ needs.cypress.result }}"
-          echo "Result: $result"
-          if [[ $result == "success" || $result == "skipped" ]]; then
-            exit 0
-          else
+          echo "Cypress Tests Result: $result"
+          if [[ $result != "success" && $result != "skipped" ]]; then
+            echo "Failing due to Cypress tests."
             exit 1
           fi
+
+      - name: Check Trading E2E Tests Result
+        run: |
+          result="${{ needs.trading-e2e.result }}"
+          echo "Trading E2E Tests Result: $result"
+          if [[ $result != "success" && $result != "skipped" ]]; then
+            echo "Failing due to Trading E2E tests."
+            exit 1
+          fi
+
+      - name: All Tests Passed
+        run: echo "All specified tests have passed successfully."
