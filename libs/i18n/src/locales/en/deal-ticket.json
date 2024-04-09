@@ -101,6 +101,7 @@
   "Size": "Size",
   "Size cannot be lower than {{sizeStep}}": "Size cannot be lower than {{sizeStep}}",
   "sizeAtPrice-market": "market",
+  "Amount that will trade at the average weighted price": "Amount that will trade at the average weighted price",
   "Stagnet": "Stagnet",
   "Stop": "Stop",
   "Stop Limit": "Stop Limit",

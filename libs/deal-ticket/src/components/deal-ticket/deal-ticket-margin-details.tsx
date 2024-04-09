@@ -1,21 +1,21 @@
-import { useCallback, useState } from 'react';
-import { getAsset, getQuoteName } from '@vegaprotocol/markets';
-import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { AccountBreakdownDialog } from '@vegaprotocol/accounts';
-import { formatNumber, formatRange, formatValue } from '@vegaprotocol/utils';
+import { getAsset, getQuoteName } from '@vegaprotocol/markets';
+import type { Market } from '@vegaprotocol/markets';
+import type { EstimatePositionQuery } from '@vegaprotocol/positions';
 import * as Schema from '@vegaprotocol/types';
+import { ExternalLink } from '@vegaprotocol/ui-toolkit';
+import { formatNumber, formatRange, formatValue } from '@vegaprotocol/utils';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
+import { useCallback, useState } from 'react';
+import { Trans } from 'react-i18next';
 import {
   LIQUIDATION_PRICE_ESTIMATE_TOOLTIP_TEXT,
   MARGIN_ACCOUNT_TOOLTIP_TEXT,
 } from '../../constants';
-import { KeyValue } from './key-value';
-import { ExternalLink } from '@vegaprotocol/ui-toolkit';
-import { useT, ns } from '../../use-t';
-import { Trans } from 'react-i18next';
-import type { Market } from '@vegaprotocol/markets';
-import { emptyValue } from './deal-ticket-fee-details';
-import type { EstimatePositionQuery } from '@vegaprotocol/positions';
 import type { Slippage } from '../../hooks/use-slippage';
+import { ns, useT } from '../../use-t';
+import { emptyValue } from './deal-ticket-fee-details';
+import { KeyValue } from './key-value';
 
 export interface DealTicketMarginDetailsProps {
   generalAccountBalance: string;
@@ -114,7 +114,7 @@ export const DealTicketMarginDetails = ({
 
   return (
     <div className="flex flex-col w-full gap-2 mt-2">
-      <TradeInfo slippage={slippage} market={market} />
+      <SlippageAndTradeInfo slippage={slippage} market={market} />
       <KeyValue
         label={t('Current margin')}
         onClick={
@@ -199,7 +199,7 @@ export const DealTicketMarginDetails = ({
   );
 };
 
-const TradeInfo = ({
+const SlippageAndTradeInfo = ({
   slippage,
   market,
 }: {
@@ -226,13 +226,14 @@ const TradeInfo = ({
       <KeyValue
         label={t('Projected trade')}
         formattedValue={`${totalVolume} @ ${weightedPrice}`}
-        symbol=""
+        labelDescription={t(
+          'Amount that will trade at the average weighted price'
+        )}
       />
 
       <KeyValue
         label={t('Slippage')}
         formattedValue={`${slippagePct}% (${slippageVal})`}
-        symbol=""
       />
     </>
   );
