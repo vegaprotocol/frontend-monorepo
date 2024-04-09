@@ -115,6 +115,8 @@ const CreateTeamFormContainer = ({
       },
     });
 
+  const teamCode = (isUpgrade ? teamId : code) || '';
+
   if (status === 'confirmed') {
     return (
       <div
@@ -131,12 +133,12 @@ const CreateTeamFormContainer = ({
                   className="font-mono break-all bg-rainbow bg-clip-text text-transparent text-2xl"
                   data-testid="team-id-display"
                 >
-                  {isUpgrade ? teamId : code}
+                  {teamCode}
                 </span>
               </dl>
             </dl>
             <TradingAnchorButton
-              href={Links.COMPETITIONS_TEAM(code)}
+              href={Links.COMPETITIONS_TEAM(teamCode)}
               intent={Intent.Info}
               size="small"
               data-testid="view-team-button"
