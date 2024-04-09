@@ -200,6 +200,7 @@ export const TakeProfitStopLossSetup = ({
   if (averageEntryPrice && openVolume && price && size) {
     const asset = getAsset(market);
     const values = {
+      size,
       price,
       symbol: quoteName,
     };
@@ -223,16 +224,16 @@ export const TakeProfitStopLossSetup = ({
         triggerDirection ===
           Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_FALLS_BELOW);
     info = (
-      <p className="text-xs mb-2">
+      <p className="text-xs mb-2" data-testId="summary-message">
         <Trans
           defaults={
             takeProfit
               ? side === Schema.Side.SIDE_SELL
-                ? 'When the mark price rises above {{ price }} {{ symbol }} it will trigger a Take Profit order to close this position for an estimated profit of <0/> {{ symbol }}.'
-                : 'When the mark price falls below {{ price }} {{ symbol }} it will trigger a Take Profit order to close this position for an estimated profit of <0/> {{ symbol }}.'
+                ? 'When the mark price rises above {{ price }} {{ symbol }} it will trigger a Take Profit order to close {{size}}% of this position for an estimated PNL of <0/> {{ symbol }}.'
+                : 'When the mark price falls below {{ price }} {{ symbol }} it will trigger a Take Profit order to close {{size}}% of this position for an estimated PNL of <0/> {{ symbol }}.'
               : side === Schema.Side.SIDE_SELL
-              ? 'When the mark price falls below {{ price }} {{ symbol }} it will trigger a Stop Loss order to close this position with an estimated loss of <0/> {{ symbol }}.'
-              : 'When the mark price rises above {{ price }} {{ symbol }} it will trigger a Stop Loss order to close this position with an estimated loss of <0/> {{ symbol }}.'
+              ? 'When the mark price falls below {{ price }} {{ symbol }} it will trigger a Stop Loss order to close {{size}}% of this position with an estimated PNL of <0/> {{ symbol }}.'
+              : 'When the mark price rises above {{ price }} {{ symbol }} it will trigger a Stop Loss order to close {{size}}% of this position with an estimated PNL of <0/> {{ symbol }}.'
           }
           values={values}
           components={components}
@@ -245,10 +246,7 @@ export const TakeProfitStopLossSetup = ({
   const maxSize = 100 - (allocation ?? 0) * 100;
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      data-testId="TakeProfitStopLossSetup-form"
-    >
+    <form onSubmit={handleSubmit(onSubmit)}>
       <div className="flex gap-2 mb-2">
         <div className="w-1/2">
           <Controller
@@ -284,14 +282,11 @@ export const TakeProfitStopLossSetup = ({
               }
               return (
                 <>
-                  <FormGroup
-                    label={t('Price')}
-                    labelFor="tpsl-price-input"
-                    compact
-                  >
+                  <FormGroup label={t('Price')} labelFor="price-input" compact>
                     <Input
                       type="number"
-                      id="tpsl-price-input"
+                      id="price-input"
+                      data-testId="price-input"
                       className="w-full"
                       min={priceStep}
                       step={priceStep}
@@ -301,14 +296,14 @@ export const TakeProfitStopLossSetup = ({
                     />
                   </FormGroup>
                   {fieldState.error && (
-                    <InputError testId="tpsl-error-message-price">
+                    <InputError testId="error-message-price">
                       {fieldState.error.message}
                     </InputError>
                   )}
                   {!fieldState.error && triggerWarning && (
                     <InputError
                       intent="warning"
-                      testId="tpsl-warning-message-trigger-price"
+                      testId="warning-message-trigger-price"
                     >
                       {t('Stop order will be triggered immediately')}
                     </InputError>
@@ -363,7 +358,7 @@ export const TakeProfitStopLossSetup = ({
                   />
                 </FormGroup>
                 {fieldState.error && (
-                  <InputError testId="tpsl-error-message-size">
+                  <InputError testId="error-message-size">
                     {fieldState.error.message}
                   </InputError>
                 )}

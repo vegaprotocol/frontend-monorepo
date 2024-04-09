@@ -1,6 +1,6 @@
 import {
   // act,
-  // fireEvent,
+  fireEvent,
   render,
   screen,
   // waitFor,
@@ -384,9 +384,9 @@ describe('TakeProfitStopLoss', () => {
 
 describe('TakeProfitStopLossSetup', () => {
   const generateJsx = (
-    side = Schema.Side.SIDE_BUY,
+    side = Schema.Side.SIDE_SELL,
     triggerDirection = Schema.StopOrderTriggerDirection
-      .TRIGGER_DIRECTION_FALLS_BELOW
+      .TRIGGER_DIRECTION_RISES_ABOVE
   ) => {
     return (
       <TakeProfitStopLossSetup
@@ -407,8 +407,84 @@ describe('TakeProfitStopLossSetup', () => {
     expect(screen.getByTestId('size-input')).toHaveValue(70);
   });
 
-  it('displays orders summary message', () => {
-    expect(true).toBe(true);
+  it('displays orders summary message long position take profit', () => {
+    render(
+      generateJsx(
+        Schema.Side.SIDE_SELL,
+        Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE
+      )
+    );
+    fireEvent.change(screen.getByTestId<HTMLInputElement>('price-input'), {
+      target: { value: '80000' },
+    });
+    fireEvent.change(screen.getByTestId<HTMLInputElement>('size-input'), {
+      target: { value: '10' },
+    });
+    expect(screen.getByTestId('summary-message')).toHaveTextContent(
+      'When the mark price rises above 80000 USDT it will trigger a Take Profit order to close 10% of this position for an estimated PNL of 2,000.00 USDT.'
+    );
+  });
+
+  it('displays orders summary message long position stop loss', () => {
+    render(
+      generateJsx(
+        Schema.Side.SIDE_SELL,
+        Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_FALLS_BELOW
+      )
+    );
+    fireEvent.change(screen.getByTestId<HTMLInputElement>('price-input'), {
+      target: { value: '55000' },
+    });
+    fireEvent.change(screen.getByTestId<HTMLInputElement>('size-input'), {
+      target: { value: '5' },
+    });
+    expect(screen.getByTestId('summary-message')).toHaveTextContent(
+      'When the mark price falls below 55000 USDT it will trigger a Stop Loss order to close 5% of this position with an estimated PNL of -500.00 USDT.'
+    );
+  });
+
+  it('displays orders summary message short position take profit', () => {
+    mockUseOpenVolume.mockReturnValue({
+      openVolume: '-10000',
+      averageEntryPrice: '600000',
+    });
+    render(
+      generateJsx(
+        Schema.Side.SIDE_BUY,
+        Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_FALLS_BELOW
+      )
+    );
+    fireEvent.change(screen.getByTestId<HTMLInputElement>('price-input'), {
+      target: { value: '40000' },
+    });
+    fireEvent.change(screen.getByTestId<HTMLInputElement>('size-input'), {
+      target: { value: '20' },
+    });
+    expect(screen.getByTestId('summary-message')).toHaveTextContent(
+      'When the mark price falls below 40000 USDT it will trigger a Take Profit order to close 20% of this position for an estimated PNL of 4,000.00 USDT.'
+    );
+  });
+
+  it('displays orders summary message short position stop loss', () => {
+    mockUseOpenVolume.mockReturnValue({
+      openVolume: '-10000',
+      averageEntryPrice: '600000',
+    });
+    render(
+      generateJsx(
+        Schema.Side.SIDE_BUY,
+        Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE
+      )
+    );
+    fireEvent.change(screen.getByTestId<HTMLInputElement>('price-input'), {
+      target: { value: '70000' },
+    });
+    fireEvent.change(screen.getByTestId<HTMLInputElement>('size-input'), {
+      target: { value: '20' },
+    });
+    expect(screen.getByTestId('summary-message')).toHaveTextContent(
+      'When the mark price rises above 70000 USDT it will trigger a Stop Loss order to close 20% of this position with an estimated PNL of -2,000.00 USDT.'
+    );
   });
 
   it('validates price field', () => {
