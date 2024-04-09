@@ -12,7 +12,7 @@ import {
 } from './take-profit-stop-loss';
 import type { Market } from '@vegaprotocol/markets';
 import { type StopOrderFieldsFragment } from '@vegaprotocol/orders';
-import { VegaStoredTxState, VegaTxStatus } from '@vegaprotocol/web3';
+import { type VegaStoredTxState, VegaTxStatus } from '@vegaprotocol/web3';
 import {
   SizeOverrideSetting,
   type StopOrdersSubmissionBody,

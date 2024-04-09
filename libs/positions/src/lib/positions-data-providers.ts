@@ -405,8 +405,8 @@ export const positionsMetricsProvider = makeDerivedDataProvider<
           stopOrders as StopOrderFieldsFragment[] | null
         )?.filter(
           (stopOrder) =>
-            /*stopOrder.sizeOverrideSetting ===
-              StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION &&*/
+            stopOrder.sizeOverrideSetting ===
+              StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION &&
             stopOrder.marketId === position.marketId &&
             stopOrder.partyId === position.partyId
         ))
