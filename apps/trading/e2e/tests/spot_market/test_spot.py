@@ -153,13 +153,13 @@ def test_market_spot_info_price_monitoring_bounds(page: Page):
     page.get_by_test_id(market_title_test_id).get_by_text(
         "Price monitoring bounds"
     ).click()
-    expect(page.get_by_test_id(market_accordion_content).locator(
-        ".w-full").nth(1)).to_contain_text("90.001")
-    expect(page.get_by_test_id(market_accordion_content).locator(".w-full").nth(2)
+    expect(page.get_by_test_id(market_accordion_content).get_by_test_id("bounds-percent-price").nth(1)
+           ).to_contain_text("90.001")
+    expect(page.get_by_test_id(market_accordion_content).get_by_test_id("bounds-price-time").nth(0)
            ).to_contain_text("within 15m")
-    expect(page.get_by_test_id(market_accordion_content).locator(".text-left").nth(0)
+    expect(page.get_by_test_id(market_accordion_content).get_by_test_id("text-left-alignment").nth(0)
            ).to_contain_text("104.7")
-    expect(page.get_by_test_id(market_accordion_content).locator(".text-right").nth(0)
+    expect(page.get_by_test_id(market_accordion_content).get_by_test_id("text-right-alignment").nth(0)
            ).to_contain_text("110.3")
 
 
