@@ -80,11 +80,13 @@ export const CompetitionsCreateTeam = () => {
                 </RainbowButton>
               </>
             )}
-            <p className="text-sm mt-1">
-              {t(
-                'Note that your existing referees will not be automatically added to your team. Share your team profile to have them join you in competitions. You will still earn commission from their trading even if they do not join.'
-              )}
-            </p>
+            {isUpgrade && (
+              <p className="text-sm mt-1">
+                {t(
+                  'Note that your existing referees will not be automatically added to your team. Share your team profile to have them join you in competitions. You will still earn commission from their trading even if they do not join.'
+                )}
+              </p>
+            )}
           </Box>
         </div>
       </LayoutWithGradient>
