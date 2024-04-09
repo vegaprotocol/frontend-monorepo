@@ -12,6 +12,11 @@ import {
 } from './take-profit-stop-loss';
 import type { Market } from '@vegaprotocol/markets';
 import { type StopOrderFieldsFragment } from '@vegaprotocol/orders';
+import { VegaStoredTxState, VegaTxStatus } from '@vegaprotocol/web3';
+import {
+  SizeOverrideSetting,
+  type StopOrdersSubmissionBody,
+} from '@vegaprotocol/wallet';
 
 const partyId = 'pubKey';
 const quoteName = 'USDT';
@@ -160,7 +165,9 @@ jest.mock('@vegaprotocol/markets', () => ({
   useMarkPrice: () => ({ data: mockMarkPrice() }),
 }));
 
-const mockTransactions = jest.fn(() => []);
+const mockTransactions = jest.fn<(VegaStoredTxState | undefined)[], []>(
+  () => []
+);
 
 jest.mock('@vegaprotocol/web3', () => ({
   ...jest.requireActual('@vegaprotocol/web3'),
@@ -287,13 +294,11 @@ describe('TakeProfitStopLoss', () => {
       batchMarketInstructions: {
         stopOrdersCancellation: [
           {
-            marketId:
-              '3c8bb69401830572bcb8240681df78261e4966dda817fe298a7453ecdb7bf8c8',
+            marketId,
             stopOrderId: '2',
           },
           {
-            marketId:
-              '3c8bb69401830572bcb8240681df78261e4966dda817fe298a7453ecdb7bf8c8',
+            marketId,
             stopOrderId: '1',
           },
         ],
@@ -329,6 +334,11 @@ describe('TakeProfitStopLossSetup', () => {
       />
     );
   };
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('sets max quantity', async () => {
     render(generateJsx());
     await userEvent.click(screen.getByTestId('use-max'));
@@ -458,11 +468,69 @@ describe('TakeProfitStopLossSetup', () => {
     ).toBeInTheDocument();
   });
 
-  it('create transaction on submit', () => {
-    expect(true).toBe(true);
+  it('create transaction on submit', async () => {
+    render(generateJsx());
+    await userEvent.type(screen.getByTestId('price-input'), '80000');
+    await userEvent.type(screen.getByTestId('size-input'), '10');
+    await userEvent.click(screen.getByTestId('submit'));
+    expect(mockCreate).toHaveBeenLastCalledWith({
+      stopOrdersSubmission: {
+        fallsBelow: undefined,
+        risesAbove: {
+          orderSubmission: {
+            marketId,
+            reduceOnly: true,
+            side: 'SIDE_SELL',
+            size: '1',
+            timeInForce: 'TIME_IN_FORCE_FOK',
+            type: 'TYPE_MARKET',
+          },
+          price: '800000',
+          sizeOverrideSetting:
+            SizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION,
+          sizeOverrideValue: {
+            percentage: '0.1',
+          },
+        },
+      },
+    });
   });
 
-  it('if pending transaction exist do not submit and shows transaction', () => {
-    expect(true).toBe(true);
+  it('if pending transaction exist do not submit and shows transaction', async () => {
+    const transaction = {
+      body: {
+        stopOrdersSubmission: {
+          risesAbove: {
+            sizeOverrideSetting:
+              SizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION,
+            orderSubmission: {
+              marketId,
+              side: Schema.Side.SIDE_SELL,
+            },
+          },
+        },
+      } as StopOrdersSubmissionBody,
+      status: VegaTxStatus.Requested,
+    } as VegaStoredTxState;
+
+    mockTransactions.mockReturnValue([transaction]);
+    const result = render(generateJsx());
+    expect(screen.getByTestId('submit')).toHaveTextContent('Action required');
+
+    transaction.status = VegaTxStatus.Pending;
+    result.rerender(generateJsx());
+    expect(screen.getByTestId('submit')).toHaveTextContent(
+      'Awaiting confirmation'
+    );
+
+    await userEvent.type(screen.getByTestId('price-input'), '80000');
+    await userEvent.type(screen.getByTestId('size-input'), '10');
+    await userEvent.click(screen.getByTestId('submit'));
+    expect(mockCreate).not.toBeCalled();
+
+    transaction.status = VegaTxStatus.Complete;
+    result.rerender(generateJsx());
+    await userEvent.click(screen.getByTestId('submit'));
+    expect(mockCreate).toBeCalled();
   });
 });
