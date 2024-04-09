@@ -30,6 +30,7 @@ import {
 import {
   getAsset,
   getDerivedPrice,
+  getProductType,
   getQuoteName,
   type Market,
 } from '@vegaprotocol/markets';
@@ -945,6 +946,7 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
   const assetUnit = getBaseQuoteUnit(
     market.tradableInstrument.instrument.metadata.tags
   );
+  const productType = getProductType(market);
 
   const sizeStep = determineSizeStep(market);
   const priceStep = determinePriceStep(market);
@@ -986,7 +988,11 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
         name="side"
         control={control}
         render={({ field }) => (
-          <SideSelector value={field.value} onValueChange={field.onChange} />
+          <SideSelector
+            productType={productType}
+            value={field.value}
+            onValueChange={field.onChange}
+          />
         )}
       />
       <Trigger
@@ -1022,9 +1028,11 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
         type={type}
       />
       <TimeInForce control={control} />
-      <div className="flex justify-end gap-2 pb-3">
-        <ReduceOnly />
-      </div>
+      {productType !== 'Spot' && (
+        <div className="flex justify-end gap-2 pb-3">
+          <ReduceOnly />
+        </div>
+      )}
       <hr className="border-vega-clight-500 dark:border-vega-cdark-500 mb-4" />
       <div className="flex justify-between gap-2 pb-2">
         <Controller
@@ -1122,9 +1130,11 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
             type={ocoType}
           />
           <TimeInForce control={control} oco />
-          <div className="mb-2 flex justify-end gap-2">
-            <ReduceOnly />
-          </div>
+          {productType !== 'Spot' && (
+            <div className="mb-2 flex justify-end gap-2">
+              <ReduceOnly />
+            </div>
+          )}
         </>
       )}
       <div className="mb-2">
