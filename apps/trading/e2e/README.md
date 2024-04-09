@@ -46,7 +46,7 @@ Pull Docker images for your environment:
 
 ```bash
 ./docker/prepare-dist.sh
-docker build -f docker/node-outside-docker.Dockerfile --build-arg APP=trading --build-arg ENV_NAME=stagnet1 -t vegaprotocol/trading:latest .
+docker build -f docker/node-outside-docker.Dockerfile --build-arg APP=trading --build-arg ENV_NAME=mainnet -t vegaprotocol/trading:main .
 ```
 
 ## Running Tests
