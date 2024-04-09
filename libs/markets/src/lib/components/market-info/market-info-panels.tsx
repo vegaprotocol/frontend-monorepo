@@ -340,6 +340,43 @@ export const KeyDetailsInfoPanel = ({
   }
 
   const assetDecimals = getAsset(market).decimals;
+  const isSpotMarket = isSpot(market.tradableInstrument.instrument.product);
+
+  if (isSpotMarket) {
+    return (
+      <>
+        <KeyValueTable>
+          <KeyValueTableRow noBorder className="text-xs">
+            <div>{t('Market ID')}</div>
+            <CopyWithTooltip text={market.id}>
+              <button
+                data-testid="copy-eth-oracle-address"
+                className="text-right uppercase"
+              >
+                <span className="flex gap-1">
+                  {truncateMiddle(market.id)}
+                  <VegaIcon name={VegaIconNames.COPY} size={16} />
+                </span>
+              </button>
+            </CopyWithTooltip>
+          </KeyValueTableRow>
+        </KeyValueTable>
+        <MarketInfoTable
+          data={{
+            name: market.tradableInstrument.instrument.name,
+            status: market.state && MarketStateMapping[market.state],
+            tradingMode:
+              market.tradingMode &&
+              MarketTradingModeMapping[market.tradingMode],
+            priceDecimalPlaces: market.decimalPlaces,
+            sizeDecimalPlaces: market.positionDecimalPlaces,
+            quoteAssetDecimalPlaces: assetDecimals,
+            tickSize: determinePriceStep(market),
+          }}
+        />
+      </>
+    );
+  }
 
   return (
     <>
@@ -373,8 +410,8 @@ export const KeyDetailsInfoPanel = ({
                   market.tradingMode &&
                   MarketTradingModeMapping[market.tradingMode],
                 marketDecimalPlaces: market.decimalPlaces,
-                sizeDecimalPlaces: market.positionDecimalPlaces,
-                assetDecimalPlaces: assetDecimals,
+                positionDecimalPlaces: market.positionDecimalPlaces,
+                settlementAssetDecimalPlaces: assetDecimals,
                 tickSize: determinePriceStep(market),
               }
             : {
@@ -384,8 +421,8 @@ export const KeyDetailsInfoPanel = ({
                   market.tradingMode &&
                   MarketTradingModeMapping[market.tradingMode],
                 marketDecimalPlaces: market.decimalPlaces,
-                sizeDecimalPlaces: market.positionDecimalPlaces,
-                assetDecimalPlaces: assetDecimals,
+                positionDecimalPlaces: market.positionDecimalPlaces,
+                settlementAssetDecimalPlaces: assetDecimals,
                 tickSize: determinePriceStep(market),
               }
         }
@@ -402,8 +439,8 @@ export const KeyDetailsInfoPanel = ({
                 parentMarket.tradingMode as MarketTradingMode
               ],
             marketDecimalPlaces: parentMarket?.decimalPlaces,
-            sizeDecimalPlaces: parentMarket?.positionDecimalPlaces,
-            assetDecimalPlaces: assetDecimals,
+            positionDecimalPlaces: parentMarket?.positionDecimalPlaces,
+            settlementAssetDecimalPlaces: assetDecimals,
           }
         }
       />
