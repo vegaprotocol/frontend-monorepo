@@ -49,152 +49,87 @@ const mockMarket = jest.fn(
 
 const mockCreate = jest.fn();
 
+const generateStopOrder = ({
+  id,
+  triggerDirection,
+  sizeOverrideValue,
+  price,
+  side,
+}: {
+  id: string;
+  triggerDirection: Schema.StopOrderTriggerDirection;
+  sizeOverrideValue: string;
+  price: string;
+  side: Schema.Side.SIDE_SELL;
+}): StopOrderFieldsFragment => ({
+  id,
+  ocoLinkId: null,
+  expiresAt: null,
+  expiryStrategy: null,
+  triggerDirection,
+  sizeOverrideSetting:
+    Schema.StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION,
+  sizeOverrideValue,
+  status: Schema.StopOrderStatus.STATUS_PENDING,
+  createdAt: '2024-04-08T13:12:51.139187Z',
+  updatedAt: null,
+  partyId,
+  marketId,
+  order: null,
+  trigger: {
+    price,
+    __typename: 'StopOrderPrice',
+  },
+  submission: {
+    marketId,
+    price: '0',
+    size: '1',
+    side,
+    timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_FOK,
+    expiresAt: null,
+    type: Schema.OrderType.TYPE_MARKET,
+    reference: '',
+    peggedOrder: null,
+    postOnly: false,
+    reduceOnly: true,
+    __typename: 'OrderSubmission',
+  },
+  __typename: 'StopOrder',
+});
+
 const stopOrders: StopOrderFieldsFragment[] = [
-  {
+  generateStopOrder({
     id: '1',
-    ocoLinkId: null,
-    expiresAt: null,
-    expiryStrategy: null,
+    price: '900000',
+    side: Schema.Side.SIDE_SELL,
     triggerDirection:
       Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE,
-    sizeOverrideSetting:
-      Schema.StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION,
     sizeOverrideValue: '0.2',
-    status: Schema.StopOrderStatus.STATUS_PENDING,
-    createdAt: '2024-04-08T13:12:51.139187Z',
-    updatedAt: null,
-    partyId,
-    marketId,
-    order: null,
-    trigger: {
-      price: '900000',
-      __typename: 'StopOrderPrice',
-    },
-    submission: {
-      marketId,
-      price: '0',
-      size: '1',
-      side: Schema.Side.SIDE_SELL,
-      timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_FOK,
-      expiresAt: null,
-      type: Schema.OrderType.TYPE_MARKET,
-      reference: '',
-      peggedOrder: null,
-      postOnly: false,
-      reduceOnly: true,
-      __typename: 'OrderSubmission',
-    },
-    __typename: 'StopOrder',
-  },
-  {
+  }),
+  generateStopOrder({
     id: '2',
-    ocoLinkId: null,
-    expiresAt: null,
-    expiryStrategy: null,
+    price: '800000',
+    side: Schema.Side.SIDE_SELL,
     triggerDirection:
       Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE,
-    sizeOverrideSetting:
-      Schema.StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION,
     sizeOverrideValue: '0.1',
-    status: Schema.StopOrderStatus.STATUS_PENDING,
-    createdAt: '2024-04-08T13:12:40.494271Z',
-    updatedAt: null,
-    partyId,
-    marketId,
-    order: null,
-    trigger: {
-      price: '800000',
-      __typename: 'StopOrderPrice',
-    },
-    submission: {
-      marketId,
-      price: '0',
-      size: '1',
-      side: Schema.Side.SIDE_SELL,
-      timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_FOK,
-      expiresAt: null,
-      type: Schema.OrderType.TYPE_MARKET,
-      reference: '',
-      peggedOrder: null,
-      postOnly: false,
-      reduceOnly: true,
-      __typename: 'OrderSubmission',
-    },
-    __typename: 'StopOrder',
-  },
-  {
+  }),
+  generateStopOrder({
     id: '3',
-    ocoLinkId: null,
-    expiresAt: null,
-    expiryStrategy: null,
+    price: '500000',
+    side: Schema.Side.SIDE_SELL,
     triggerDirection:
       Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_FALLS_BELOW,
-    sizeOverrideSetting:
-      Schema.StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION,
     sizeOverrideValue: '0.15',
-    status: Schema.StopOrderStatus.STATUS_PENDING,
-    createdAt: '2024-04-05T13:37:36.289227Z',
-    updatedAt: null,
-    partyId,
-    marketId,
-    order: null,
-    trigger: {
-      price: '500000',
-      __typename: 'StopOrderPrice',
-    },
-    submission: {
-      marketId,
-      price: '0',
-      size: '1',
-      side: Schema.Side.SIDE_SELL,
-      timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_FOK,
-      expiresAt: null,
-      type: Schema.OrderType.TYPE_MARKET,
-      reference: '',
-      peggedOrder: null,
-      postOnly: false,
-      reduceOnly: true,
-      __typename: 'OrderSubmission',
-    },
-    __typename: 'StopOrder',
-  },
-  {
+  }),
+  generateStopOrder({
     id: '4',
-    ocoLinkId: null,
-    expiresAt: null,
-    expiryStrategy: null,
+    price: '400000',
+    side: Schema.Side.SIDE_SELL,
     triggerDirection:
       Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_FALLS_BELOW,
-    sizeOverrideSetting:
-      Schema.StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION,
     sizeOverrideValue: '0.25',
-    status: Schema.StopOrderStatus.STATUS_PENDING,
-    createdAt: '2024-04-04T15:30:22.082074Z',
-    updatedAt: null,
-    partyId: '02eceaba4df2bef76ea10caf728d8a099a2aa846cced25737cccaa9812342f65',
-    marketId:
-      '3c8bb69401830572bcb8240681df78261e4966dda817fe298a7453ecdb7bf8c8',
-    order: null,
-    trigger: {
-      price: '400000',
-      __typename: 'StopOrderPrice',
-    },
-    submission: {
-      marketId,
-      price: '0',
-      size: '1',
-      side: Schema.Side.SIDE_SELL,
-      timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_FOK,
-      expiresAt: null,
-      type: Schema.OrderType.TYPE_MARKET,
-      reference: '',
-      peggedOrder: null,
-      postOnly: false,
-      reduceOnly: true,
-      __typename: 'OrderSubmission',
-    },
-    __typename: 'StopOrder',
-  },
+  }),
 ];
 
 const mockMarkPrice = jest.fn(() => '700000');
