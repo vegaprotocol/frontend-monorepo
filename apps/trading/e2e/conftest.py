@@ -21,6 +21,7 @@ from fixtures.market import (
     setup_opening_auction_market,
     setup_continuous_market,
     setup_perps_market,
+    setup_spot_market,
 )
 
 
@@ -329,6 +330,13 @@ def perps_market(vega, request):
     if hasattr(request, "param"):
         kwargs.update(request.param)
     return setup_perps_market(vega, **kwargs)
+
+@pytest.fixture(scope="function")
+def spot_market(vega, request):
+    kwargs = {}
+    if hasattr(request, "param"):
+        kwargs.update(request.param)
+    return setup_spot_market(vega, **kwargs)
 
 
 @pytest.fixture(autouse=True)
