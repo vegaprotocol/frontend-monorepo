@@ -931,6 +931,9 @@ export const PriceMonitoringBoundsInfoPanel = ({ market }: MarketInfoProps) => {
           'text-left': direction === 'min',
           'text-right': direction === 'max',
         })}
+        data-testid={
+          direction === 'min' ? 'text-left-alignment' : 'text-right-alignment'
+        }
       >
         {price} <span>{quoteUnit}</span>
       </div>
@@ -965,10 +968,13 @@ export const PriceMonitoringBoundsInfoPanel = ({ market }: MarketInfoProps) => {
             )}
           >
             <div aria-hidden className="w-full text-center text-[10px]">
-              <div className="border-b-[2px] border-dashed border-vega-clight-500 dark:border-vega-cdark-500 w-full h-1/2 translate-y-[1px]">
+              <div
+                data-testid="bounds-percent-price"
+                className="border-b-[2px] border-dashed border-vega-clight-500 dark:border-vega-cdark-500 w-full h-1/2 translate-y-[1px]"
+              >
                 {probability}
               </div>
-              <div className="w-full">
+              <div data-testid="bounds-price-time" className="w-full">
                 {t('within {{duration}}', {
                   duration: within,
                 })}
