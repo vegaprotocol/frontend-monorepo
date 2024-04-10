@@ -221,3 +221,10 @@ def test_market_spot_info_proposal(page: Page, vega: VegaServiceNull):
         "href", re.compile(r"(\/proposals\/propose\/update-market)")
     )
 
+def test_market_spot_ticket(page: Page):
+    page.get_by_test_id("Order").click()
+    expect(page.get_by_test_id("order-side-SIDE_BUY")).to_have_text("Buy")
+    expect(page.get_by_test_id("order-side-SIDE_SELL")).to_have_text("Sell")
+    expect(page.get_by_test_id("reduce-only")).not_to_be_attached()
+    expect(page.get_by_test_id("deal-ticket-fee-current-margin")).not_to_be_attached()
+    expect(page.get_by_test_id("deal-ticket-fee-liquidation-estimate")).not_to_be_attached()
