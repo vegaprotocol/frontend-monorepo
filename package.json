@@ -21,7 +21,7 @@
   },
   "private": true,
   "dependencies": {
-    "@0xsquid/widget": "2.0.0-beta.14",
+    "@0xsquid/checkout-widget": "1.0.1-beta.11",
     "@apollo/client": "^3.5.8",
     "@blueprintjs/icons": "^3.32.0",
     "@coinbase/wallet-sdk": "^3.6.5",

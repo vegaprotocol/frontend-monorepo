@@ -3,70 +3,51 @@ import { Networks, useEnvironment } from '@vegaprotocol/environment';
 import { AsyncRendererInline } from '@vegaprotocol/ui-toolkit';
 import { DepositManager } from './deposit-manager';
 import { useEnabledAssets } from '@vegaprotocol/assets';
-import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
-import { SquidWidget } from '@0xsquid/widget';
-import { type AppConfig as NormalConfig } from '@0xsquid/widget/widget/core/types/config';
-
-//import { SquidStakingWidget } from '@0xsquid/staking-widget';
-// import { type AppConfig as StakingConfig } from '@0xsquid/staking-widget/widget/core/types/config';
-
-//import { SquidcheckoutWidget } from '@0xsquid/checkout-widget';
-// import { type AppConfig } from '@0xsquid/checkout-widget/widget/core/types/config';
+import { SquidcheckoutWidget } from '@0xsquid/checkout-widget';
+import { type AppConfig } from '@0xsquid/checkout-widget/widget/core/types/config';
 
 // Customize here
 // https://widget.squidrouter.com/
-const lightStyle = {
-  neutralContent: '#7a6eaa',
-  baseContent: '#280d5f',
-  base100: '#eeeaf4',
-  base200: '#ffffff',
-  base300: '#ffffff',
-  error: '#ed4b9e',
-  warning: '#ffb237',
-  success: '#31d0aa',
-  primary: '#1fc7d4',
-  secondary: '#1fc7d4',
-  secondaryContent: '#280d5f',
-  neutral: '#FFFFFF',
-  roundedBtn: '26px',
-  roundedBox: '1rem',
-  roundedDropDown: '20rem',
-  displayDivider: false,
-};
+// const lightStyle = {
+//   neutralContent: '#7a6eaa',
+//   baseContent: '#280d5f',
+//   base100: '#eeeaf4',
+//   base200: '#ffffff',
+//   base300: '#ffffff',
+//   error: '#ed4b9e',
+//   warning: '#ffb237',
+//   success: '#31d0aa',
+//   primary: '#1fc7d4',
+//   secondary: '#1fc7d4',
+//   secondaryContent: '#280d5f',
+//   neutral: '#FFFFFF',
+//   roundedBtn: '26px',
+//   roundedBox: '1rem',
+//   roundedDropDown: '20rem',
+//   displayDivider: false,
+// };
 
-const darkStyle = {
-  neutralContent: '#b8add2',
-  baseContent: '#ffffff',
-  base100: '#372f47',
-  base200: '#26272c',
-  base300: '#26272c',
-  error: '#ed4b9e',
-  warning: '#ffb237',
-  success: '#31d0aa',
-  primary: '#1fc7d4',
-  secondary: '#1fc7d4',
-  secondaryContent: '#280d5f',
-  neutral: '#26272c',
-  roundedBtn: '26px',
-  roundedBox: '1rem',
-  roundedDropDown: '20rem',
-  displayDivider: false,
-};
+// const darkStyle = {
+//   neutralContent: '#b8add2',
+//   baseContent: '#ffffff',
+//   base100: '#372f47',
+//   base200: '#26272c',
+//   base300: '#26272c',
+//   error: '#ed4b9e',
+//   warning: '#ffb237',
+//   success: '#31d0aa',
+//   primary: '#1fc7d4',
+//   secondary: '#1fc7d4',
+//   secondaryContent: '#280d5f',
+//   neutral: '#26272c',
+//   roundedBtn: '26px',
+//   roundedBox: '1rem',
+//   roundedDropDown: '20rem',
+//   displayDivider: false,
+// };
 
-const v2config = {
-  integratorId: 'vega-swap-widget',
-  apiUrl: 'https://testnet.api.squidrouter.com',
-};
 export const DepositContainer = () => {
-  return (
-    <div>
-      <SquidWidget config={v2config} />
-    </div>
-  );
-};
-
-export const DepositContainer2 = () => {
-  const { theme } = useThemeSwitcher();
+  // const { theme } = useThemeSwitcher();
 
   const checkoutConfig = useMemo(() => {
     const config: AppConfig = {
@@ -86,7 +67,7 @@ export const DepositContainer2 = () => {
         // introPage: {
         //   title: 'Deposit for vega',
         //   description: 'foo bar buzz quz',
-        //   logoUrl:
+        // //   logoUrl:
         //     'https://icon.vega.xyz/vega/vega-stagnet1-202307191148/asset/fc7fd956078fb1fc9db5c19b88f0874c4299b2a7639ad05a47a28c0aef291b55/logo.svg',
         // },
         checkoutContract: {
@@ -127,53 +108,21 @@ export const DepositContainer2 = () => {
     };
 
     return config;
-  }, [theme]);
+  }, []);
 
   return (
     <div className="flex gap-10">
       <div className="w-[500px]">
         <SquidcheckoutWidget config={checkoutConfig} />
       </div>
-      <div className="w-[500px]">
+      {/* <div className="w-[500px]">
         <SquidWidget config={normalConfig} />
-      </div>
-      <div className="w-[500px]">
+      </div> */}
+      {/* <div className="w-[500px]">
         <SquidStakingWidget config={stakingConfig} />
-      </div>
+      </div> */}
     </div>
   );
-};
-
-const stakingConfig: StakingConfig = {
-  integratorId: 'vega-swap-widget',
-  environment: 'testnet',
-  stakeConfig: {
-    tokensConfig: [
-      {
-        stakedToken: {
-          chainId: 11155111,
-          address: '',
-          name: 'aUSDC',
-          symbol: 'aUSDC',
-          decimals: 6,
-          logoURI: '',
-          coingeckoId: '',
-        },
-        tokenToStake: {
-          chainId: 11155111,
-          address: '',
-        },
-        customContractCalls: [],
-        logoUrl:
-          'https://icon.vega.xyz/vega/vega-stagnet1-202307191148/asset/fc7fd956078fb1fc9db5c19b88f0874c4299b2a7639ad05a47a28c0aef291b55/logo.svg',
-      },
-    ],
-  },
-};
-
-const normalConfig: NormalConfig = {
-  integratorId: 'vega-swap-widget',
-  environment: 'testnet',
 };
 
 /**
