@@ -27,6 +27,7 @@ import { AssetOption, Balance } from '@vegaprotocol/assets';
 import { AccountType, AccountTypeMapping } from '@vegaprotocol/types';
 import { useTransferFeeQuery } from './__generated__/TransferFee';
 import { normalizeTransfer } from './utils';
+import { usePartyProfilesQuery } from './__generated__/Accounts';
 
 interface FormFields {
   toVegaKey: string;
@@ -83,6 +84,14 @@ export const TransferForm = ({
       toVegaKey: pubKey || '',
     },
   });
+
+  const { data: profiles } = usePartyProfilesQuery({
+    variables: { partyIds: pubKeys },
+    skip: !!pubKeys && pubKeys.length <= 0,
+    fetchPolicy: 'cache-and-network',
+  });
+
+  // const
 
   const [toVegaKeyMode, setToVegaKeyMode] = useState<ToVegaKeyMode>('select');
 
@@ -329,14 +338,18 @@ export const TransferForm = ({
                 {t('Please select')}
               </option>
               {pubKeys?.map((pk) => {
+                const profile = profiles?.partiesProfilesConnection?.edges.find(
+                  (e) => e.node.partyId === pk
+                )?.node;
+                const alias = profile?.alias || '';
                 const text =
                   pk === pubKey
-                    ? t('Current key: {{pubKey}}', { pubKey: pk }) + pk
+                    ? t('Current key: {{pubKey}}', { pubKey: pk })
                     : pk;
 
                 return (
                   <option key={pk} value={pk}>
-                    {text}
+                    {alias ? `${alias}: ${text}` : text}
                   </option>
                 );
               })}
