@@ -340,10 +340,11 @@ export const KeyDetailsInfoPanel = ({
         : undefined;
   }
 
-  const assetDecimals = getAsset(market).decimals;
   const isSpotMarket = isSpot(market.tradableInstrument.instrument.product);
 
   if (isSpotMarket) {
+    const quoteAssetDecimals = getQuoteAsset(market).decimals;
+    const baseAssetDecimals = getBaseAsset(market).decimals;
     return (
       <>
         <KeyValueTable>
@@ -371,13 +372,16 @@ export const KeyDetailsInfoPanel = ({
               MarketTradingModeMapping[market.tradingMode],
             priceDecimalPlaces: market.decimalPlaces,
             sizeDecimalPlaces: market.positionDecimalPlaces,
-            quoteAssetDecimalPlaces: assetDecimals,
+            quoteAssetDecimalPlaces: quoteAssetDecimals,
+            baseAssetDecimalPlaces: baseAssetDecimals,
             tickSize: determinePriceStep(market),
           }}
         />
       </>
     );
   }
+
+  const assetDecimals = getAsset(market).decimals;
 
   return (
     <>
