@@ -287,13 +287,15 @@ def test_leaderboard(competitions_page: Tuple[Page, str, VegaServiceNull]):
     page, team_name, vega = competitions_page
     page.reload()
     expect(page.get_by_test_id("rank-0").locator(".text-yellow-300")).to_have_count(1)
+    # the 1st place is shared between the 2 participants in this case
     expect(
-        page.get_by_test_id("rank-1").locator(".text-vega-clight-500")
+        page.get_by_test_id("rank-1").locator(".text-yellow-300")
     ).to_have_count(1)
-    expect(page.get_by_test_id("team-1")).to_have_text(team_name)
-    expect(page.get_by_test_id("status-1")).to_have_text("Public")
-    expect(page.get_by_test_id("earned-1")).to_have_text("500")
-    expect(page.get_by_test_id("games-1")).to_have_text("1")
+    # page.pause()
+    expect(page.get_by_test_id("team-0")).to_have_text(team_name)
+    expect(page.get_by_test_id("status-0")).to_have_text("Public")
+    expect(page.get_by_test_id("earned-0")).to_have_text("500")
+    expect(page.get_by_test_id("games-0")).to_have_text("1")
 
     # TODO  still odd that this is 0
     expect(page.get_by_test_id("volume-0")).to_have_text("0")
