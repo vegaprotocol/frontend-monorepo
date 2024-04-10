@@ -49,18 +49,14 @@ export const MarketsTable = ({ data }: MarketsTableProps) => {
         field: 'tradableInstrument.instrument.code',
         cellRenderer: ({
           value,
+          data,
         }: VegaICellRendererParams<MarketMaybeWithData, 'id'>) => {
-          return <span>{value}</span>;
-        },
-      },
-      {
-        colId: 'logos',
-        headerName: t('Logos'),
-        field: 'id',
-        cellRenderer: ({
-          value,
-        }: VegaICellRendererParams<MarketMaybeWithData, 'id'>) => {
-          return value ? <Emblem market={value} /> : null;
+          return (
+            <span>
+              {data && data.id ? <Emblem market={data.id} /> : null}
+              {value}
+            </span>
+          );
         },
       },
       {

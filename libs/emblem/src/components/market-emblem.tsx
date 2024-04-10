@@ -31,12 +31,12 @@ export function EmblemByMarket(p: EmblemByMarketProps) {
     <span className="mr-2">
       <EmblemBase
         src={base}
-        className="inline-block w-5 h-5 z-10 relative rounded-full"
+        className="inline-block w-5 h-5 z-10 relative rounded-full bg-white"
         {...p}
       />
       <EmblemBase
         src={quote}
-        className="inline-block w-5 h-5 rounded-full ml-[-10px]"
+        className="inline-block w-5 h-5 rounded-full ml-[-8px]"
         {...p}
       />
     </span>
