@@ -285,7 +285,7 @@ def test_submit_stop_oco_limit_order_pending(
     trigger_value_list = ["Limit < 102.00", "Limit > 103.00"]
     assert trigger_price_list.sort() == trigger_value_list.sort()
 
-""" 
+
 @pytest.mark.usefixtures("auth", "risk_accepted")
 def test_submit_stop_oco_limit_order_cancel(
     continuous_market, vega: VegaServiceNull, page: Page
@@ -310,13 +310,13 @@ def test_submit_stop_oco_limit_order_cancel(
     page.get_by_test_id(order_limit_price_oco).fill("99")
     page.get_by_test_id(submit_stop_order).click()
     wait_for_toast_confirmation(page)
-    vega.wait_fn(1)
+    vega.wait_fn(2)
     vega.wait_for_total_catchup()
     page.get_by_test_id(close_toast).click()
     page.get_by_test_id(stop_orders_tab).click()
     page.get_by_test_id(cancel).first.click()
     wait_for_toast_confirmation(page)
-    vega.wait_fn(1)
+    vega.wait_fn(2)
     vega.wait_for_total_catchup()
     expect(
         page.locator(".ag-center-cols-container").locator('[col-id="status"]').first
@@ -324,4 +324,3 @@ def test_submit_stop_oco_limit_order_cancel(
     expect(
         page.locator(".ag-center-cols-container").locator('[col-id="status"]').last
     ).to_have_text("CancelledOCO")
- """

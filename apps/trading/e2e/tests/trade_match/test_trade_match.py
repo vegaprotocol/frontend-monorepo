@@ -1,13 +1,15 @@
-""" import pytest
+import pytest
 from playwright.sync_api import expect, Page
 from vega_sim.null_service import VegaServiceNull
+import time
 
 from actions.vega import submit_multiple_orders
 
 
-@pytest.mark.skip("tbd")
 @pytest.mark.usefixtures("auth", "risk_accepted")
-def test_trade_match_table(opening_auction_market: str, vega: VegaServiceNull, page: Page):
+def test_trade_match_table(
+    opening_auction_market: str, vega: VegaServiceNull, page: Page
+):
     row_locator = ".ag-center-cols-container .ag-row"
     page.goto(f"/#/markets/{opening_auction_market}")
 
@@ -54,8 +56,8 @@ def test_trade_match_table(opening_auction_market: str, vega: VegaServiceNull, p
         "notional": "220.00",
         "average_entry_price": "110.00",
         "mark_price": "110.00",
-        "margin": "93.52953",
-        "leverage": "1.0x",
+        "margin": "93.85953",
+        "leverage": "Cross1.0x",
         "liquidation": "0.00",
         "realised_pnl": "0.00",
         "unrealised_pnl": "0.00",
@@ -67,8 +69,7 @@ def test_trade_match_table(opening_auction_market: str, vega: VegaServiceNull, p
     secondary_id = "stack-cell-secondary"
 
     tab = page.get_by_test_id("tab-positions")
-    table = tab.locator(".ag-center-cols-container")
-
+    table = tab.locator(".ag-body-viewport")
     market = table.locator("[col-id='marketCode']")
     expect(market.get_by_test_id(primary_id)).to_have_text(position["market_code"])
     expect(market.get_by_test_id(secondary_id)).to_have_text(
@@ -109,36 +110,27 @@ def test_trade_match_table(opening_auction_market: str, vega: VegaServiceNull, p
     # Open
     page.get_by_test_id("Open").click()
     rows = page.get_by_test_id("tab-open-orders").locator(row_locator).all()
-    expect(rows[0]).to_contain_text(
-        "BTC:DAI_2023Futr" + "0" + "-1" + "Limit" + "Active" + "150.00" + "GTC"
-    )
-    expect(rows[1]).to_contain_text(
-        "BTC:DAI_2023Futr" + "0" + "+1" + "Limit" + "Active" + "50.00" + "GTC"
-    )
-    expect(rows[2]).to_contain_text(
-        "BTC:DAI_2023Futr" + "0" + "+5" + "Limit" + "Active" + "105.00" + "GTC"
-    )
+    expect(rows[0]).to_contain_text("0" + "-1" + "Limit" + "Active" + "150.00" + "GTC")
+    expect(rows[1]).to_contain_text("0" + "+1" + "Limit" + "Active" + "50.00" + "GTC")
+    expect(rows[2]).to_contain_text("0" + "+5" + "Limit" + "Active" + "105.00" + "GTC")
 
     # Closed
     page.get_by_test_id("Closed").click()
     rows = page.get_by_test_id("tab-closed-orders").locator(row_locator).all()
     expect(rows[0]).to_contain_text(
-        "BTC:DAI_2023Futr" + "0" + "-5" + "Limit" + "Filled" + "95.00" + "GTC"
+        "0" + "-5" + "Limit" + "Stopped: Self trading" + "95.00" + "GTC"
     )
     expect(rows[1]).to_contain_text(
-        "BTC:DAI_2023Futr" + "5" + "-5" + "Limit" + "Filled" + "90.00" + "GTC"
-    )
-    expect(rows[2]).to_contain_text(
-        "BTC:DAI_2023Futr" + "5" + "+5" + "Limit" + "Filled" + "110.00" + "GTC"
+        "0" + "-5" + "Limit" + "Stopped: Self trading" + "90.00" + "GTC"
     )
 
     # Rejected
     page.get_by_test_id("Rejected").click()
+    time.sleep(0.5)
     expect(
         page.get_by_test_id("tab-rejected-orders").locator(row_locator)
     ).to_contain_text(
-        "BTC:DAI_2023Futr"
-        + "0"
+        "0"
         + "+1"
         + "Limit"
         + "Rejected: Margin check failed"
@@ -149,32 +141,23 @@ def test_trade_match_table(opening_auction_market: str, vega: VegaServiceNull, p
     # All
     page.get_by_test_id("All").click()
     rows = page.get_by_test_id("tab-orders").locator(row_locator).all()
-    expect(rows[0]).to_contain_text(
-        "BTC:DAI_2023Futr" + "0" + "-1" + "Limit" + "Active" + "150.00" + "GTC"
-    )
+    expect(rows[0]).to_contain_text("0" + "-1" + "Limit" + "Active" + "150.00" + "GTC")
     expect(rows[1]).to_contain_text(
-        "BTC:DAI_2023Futr" + "5" + "-5" + "Limit" + "Filled" + "95.00" + "GTC"
+        "0" + "-5" + "Limit" + "Stopped: Self trading" + "95.00" + "GTC"
     )
     expect(rows[2]).to_contain_text(
-        "BTC:DAI_2023Futr" + "5" + "-5" + "Limit" + "Filled" + "90.00" + "GTC"
+        "0" + "-5" + "Limit" + "Stopped: Self trading" + "90.00" + "GTC"
     )
-    expect(rows[3]).to_contain_text(
-        "BTC:DAI_2023Futr"
-        + "0"
+    expect(rows[3]).to_contain_text("0" + "+1" + "Limit" + "Active" + "50.00" + "GTC")
+    expect(rows[4]).to_contain_text("0" + "+5" + "Limit" + "Active" + "105.00" + "GTC")
+    expect(rows[5]).to_contain_text("2" + "+5" + "Limit" + "Active" + "110.00" + "GTC")
+    expect(rows[6]).to_contain_text(
+        "0"
         + "+1"
         + "Limit"
         + "Rejected: Margin check failed"
         + "10,000,000,000,000,000.00"
         + "GTC"
-    )
-    expect(rows[4]).to_contain_text(
-        "BTC:DAI_2023Futr" + "0" + "+1" + "Limit" + "Active" + "50.00" + "GTC"
-    )
-    expect(rows[5]).to_contain_text(
-        "BTC:DAI_2023Futr" + "1" + "+5" + "Limit" + "Active" + "105.00" + "GTC"
-    )
-    expect(rows[6]).to_contain_text(
-        "BTC:DAI_2023Futr" + "5" + "+5" + "Limit" + "Filled" + "110.00" + "GTC"
     )
 
     # Stop Orders
@@ -188,23 +171,14 @@ def test_trade_match_table(opening_auction_market: str, vega: VegaServiceNull, p
     page.get_by_test_id("Fills").click()
     rows = page.get_by_test_id("tab-fills").locator(row_locator).all()
     expect(rows[0]).to_contain_text(
-        "BTC:DAI_2023Futr"
-        + "-5"
-        + "106.50 tDAI"
-        + "532.50 tDAI"
-        + "Taker"
-        + "53.51625 tDAI"
+        "+1" + "110.00 tDAI" + "110.00 tDAI" + "-" + "0.00 tDAI"
     )
     expect(rows[1]).to_contain_text(
-        "BTC:DAI_2023Futr" + "+1" + "105.00 tDAI" + "105.00 tDAI" + "-" + "0.00 tDAI"
-    )
-    expect(rows[2]).to_contain_text(
-        "BTC:DAI_2023Futr" + "+5" + "105.00 tDAI" + "525.00 tDAI" + "-" + "0.00 tDAI"
+        "+1" + "110.00 tDAI" + "110.00 tDAI" + "-" + "0.00 tDAI"
     )
 
     # Collateral
     page.get_by_test_id("Collateral").click()
     expect(
         page.get_by_test_id("tab-accounts").locator(".ag-floating-top-viewport .ag-row")
-    ).to_contain_text("tDAI" + "43.94338" + "0.00%" + "999,904.04037" + "999,947.98375")
- """
+    ).to_contain_text("93.85953" + "0.01%" + "999,906.14047" + "1,000,000.00")
