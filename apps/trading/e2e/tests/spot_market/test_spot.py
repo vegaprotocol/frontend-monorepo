@@ -91,10 +91,11 @@ def test_market_spot_info_key_details(page: Page, vega: VegaServiceNull):
         ["Name", "Bitcoin / Tether USD (Spot)"],
         ["Status", "Active"],
         ["Trading Mode", "Continuous"],
-        ["Market Decimal Places", "1"],
-        ["Position Decimal Places", "2"],
-        ["Settlement Asset Decimal Places", "5"], # need to be remove after resolve this one  #6183
-        [" Tick Size", "1"]
+        ["Price Decimal Places", "1"],
+        ["Size Decimal Places", "2"],
+        ["Quote Asset Decimal Places", "5"],
+        ["Base Asset Decimal Places", "5"],
+        ["Tick Size", "1"]
     ]
     validate_info_section(page, fields)
 
