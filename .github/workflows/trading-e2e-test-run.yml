@@ -11,6 +11,8 @@ jobs:
   create-docker-image:
     name: Create docker image for trading-e2e-test
     runs-on: ubuntu-22.04
+    container:
+      image: mcr.microsoft.com/playwright/python:v1.42.0-jammy
     timeout-minutes: 45
     steps:
       #----------------------------------------------
@@ -139,13 +141,6 @@ jobs:
         run: |
           export VEGA_VERSION=$(grep VEGA_VERSION .env | cut -d '=' -f2)
           poetry run python -m vega_sim.tools.load_binaries --force --version $VEGA_VERSION
-        working-directory: apps/trading/e2e
-
-      #----------------------------------------------
-      # install playwrightworking-directory: apps/trading/e2e
-      #----------------------------------------------
-      - name: install playwright
-        run: poetry run playwright install --with-deps chromium
         working-directory: apps/trading/e2e
       #----------------------------------------------
       # run tests
