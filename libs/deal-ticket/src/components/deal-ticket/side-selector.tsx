@@ -1,5 +1,5 @@
-import * as Schema from '@vegaprotocol/types';
 import * as RadioGroup from '@radix-ui/react-radio-group';
+import * as Schema from '@vegaprotocol/types';
 import classNames from 'classnames';
 import { useT } from '../../use-t';
 
@@ -9,14 +9,14 @@ interface SideSelectorProps {
   productType: Schema.ProductType;
 }
 
-export const SideSelector = (props: SideSelectorProps) => {
+export const SideSelector = ({ productType, ...props }: SideSelectorProps) => {
   const t = useT();
   let toggles = [
     { label: t('Long'), value: Schema.Side.SIDE_BUY },
     { label: t('Short'), value: Schema.Side.SIDE_SELL },
   ];
 
-  if (props.productType === 'Spot') {
+  if (productType === 'Spot') {
     toggles = [
       { label: t('Buy'), value: Schema.Side.SIDE_BUY },
       { label: t('Sell'), value: Schema.Side.SIDE_SELL },
