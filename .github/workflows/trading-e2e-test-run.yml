@@ -11,8 +11,6 @@ jobs:
   create-docker-image:
     name: Create docker image for trading-e2e-test
     runs-on: ubuntu-22.04
-    container:
-      image: mcr.microsoft.com/playwright/python:v1.42.0-jammy
     timeout-minutes: 45
     steps:
       #----------------------------------------------
@@ -89,6 +87,8 @@ jobs:
   run-tests:
     name: run-tests
     runs-on: 8-cores
+    container:
+      image: mcr.microsoft.com/playwright/python:v1.42.0-jammy
     needs: create-docker-image
     timeout-minutes: 45
     steps:
