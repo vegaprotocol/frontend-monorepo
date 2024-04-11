@@ -231,7 +231,7 @@ describe('TakeProfitStopLoss', () => {
     render(generateJsx());
     const takeProfit = [
       'Reduce 10% at 80,000.0 USDT for estimated PnL of 2,000.00 USDT',
-      'Reduce 20% at 90,000.0 USDT for estimated PnL of 6,000.00 USDT',
+      'Reduce 20% at 90,000.0 USDT for estimated PnL of 5,400.00 USDT',
     ];
     within(screen.getByTestId('take-profit'))
       .getAllByTestId('stop-order')
@@ -240,7 +240,7 @@ describe('TakeProfitStopLoss', () => {
       });
     const stopLoss = [
       'Reduce 15% at 50,000.0 USDT for estimated PnL of -1,500.00 USDT',
-      'Reduce 25% at 40,000.0 USDT for estimated PnL of -5,000.00 USDT',
+      'Reduce 25% at 40,000.0 USDT for estimated PnL of -4,250.00 USDT',
     ];
     within(screen.getByTestId('stop-loss'))
       .getAllByTestId('stop-order')
@@ -257,7 +257,7 @@ describe('TakeProfitStopLoss', () => {
     render(generateJsx());
     const takeProfit = [
       'Reduce 15% at 50,000.0 USDT for estimated PnL of 1,500.00 USDT',
-      'Reduce 25% at 40,000.0 USDT for estimated PnL of 5,000.00 USDT',
+      'Reduce 25% at 40,000.0 USDT for estimated PnL of 4,250.00 USDT',
     ];
     within(screen.getByTestId('take-profit'))
       .getAllByTestId('stop-order')
@@ -266,23 +266,13 @@ describe('TakeProfitStopLoss', () => {
       });
     const stopLoss = [
       'Reduce 10% at 80,000.0 USDT for estimated PnL of -2,000.00 USDT',
-      'Reduce 20% at 90,000.0 USDT for estimated PnL of -6,000.00 USDT',
+      'Reduce 20% at 90,000.0 USDT for estimated PnL of -5,400.00 USDT',
     ];
     within(screen.getByTestId('stop-loss'))
       .getAllByTestId('stop-order')
       .forEach((stopOrder, i) => {
         expect(stopOrder).toHaveTextContent(stopLoss[i]);
       });
-  });
-
-  it('shows allocation', () => {
-    render(generateJsx());
-    expect(
-      within(screen.getByTestId('take-profit')).getByTestId('allocation')
-    ).toHaveTextContent('Allocation: 30%');
-    expect(
-      within(screen.getByTestId('stop-loss')).getByTestId('allocation')
-    ).toHaveTextContent('Allocation: 40%');
   });
 
   it('displays cancel and cancel all buttons and creates transaction on click', async () => {
@@ -330,6 +320,7 @@ describe('TakeProfitStopLossSetup', () => {
     side = Schema.Side.SIDE_SELL,
     triggerDirection = Schema.StopOrderTriggerDirection
       .TRIGGER_DIRECTION_RISES_ABOVE,
+    activeStopOrders?: StopOrderFieldsFragment[],
     numberOfActiveStopOrders = 0
   ) => {
     return (
@@ -339,10 +330,10 @@ describe('TakeProfitStopLossSetup', () => {
         marketPrice={mockMarkPrice()}
         side={side}
         triggerDirection={triggerDirection}
-        allocation={0.3}
         averageEntryPrice={mockUseOpenVolume().averageEntryPrice}
         openVolume={mockUseOpenVolume().openVolume}
         numberOfActiveStopOrders={numberOfActiveStopOrders}
+        activeStopOrders={activeStopOrders}
       />
     );
   };
@@ -351,23 +342,35 @@ describe('TakeProfitStopLossSetup', () => {
     jest.clearAllMocks();
   });
 
-  it('sets max quantity', async () => {
-    render(generateJsx());
-    await userEvent.click(screen.getByTestId('use-max'));
-    expect(screen.getByTestId('size-input')).toHaveValue(70);
-  });
-
   it('displays orders summary message long position take profit', async () => {
     render(
       generateJsx(
         Schema.Side.SIDE_SELL,
-        Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE
+        Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE,
+        [
+          generateStopOrder({
+            id: '1',
+            triggerDirection:
+              Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE,
+            price: '750000',
+            side: Schema.Side.SIDE_SELL,
+            sizeOverrideValue: '0.5',
+          }),
+          generateStopOrder({
+            id: '2',
+            triggerDirection:
+              Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE,
+            price: '850000',
+            side: Schema.Side.SIDE_SELL,
+            sizeOverrideValue: '0.5',
+          }),
+        ]
       )
     );
     await userEvent.type(screen.getByTestId('price-input'), '80000');
     await userEvent.type(screen.getByTestId('size-input'), '10');
     expect(screen.getByTestId('summary-message')).toHaveTextContent(
-      'When the mark price rises above 80000 USDT it will trigger a Take Profit order to close 10% of this position for an estimated PNL of 2,000.00 USDT.'
+      'When the mark price rises above 80000 USDT it will trigger an order to reduce 10% of remaining position for an estimated PNL of 1,000.00 USDT.'
     );
   });
 
@@ -375,13 +378,31 @@ describe('TakeProfitStopLossSetup', () => {
     render(
       generateJsx(
         Schema.Side.SIDE_SELL,
-        Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_FALLS_BELOW
+        Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_FALLS_BELOW,
+        [
+          generateStopOrder({
+            id: '1',
+            triggerDirection:
+              Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE,
+            price: '600000',
+            side: Schema.Side.SIDE_SELL,
+            sizeOverrideValue: '0.5',
+          }),
+          generateStopOrder({
+            id: '2',
+            triggerDirection:
+              Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE,
+            price: '450000',
+            side: Schema.Side.SIDE_SELL,
+            sizeOverrideValue: '0.5',
+          }),
+        ]
       )
     );
     await userEvent.type(screen.getByTestId('price-input'), '55000');
     await userEvent.type(screen.getByTestId('size-input'), '5');
     expect(screen.getByTestId('summary-message')).toHaveTextContent(
-      'When the mark price falls below 55000 USDT it will trigger a Stop Loss order to close 5% of this position with an estimated PNL of -250.00 USDT.'
+      'When the mark price falls below 55000 USDT it will trigger an order to reduce 5% of remaining position for an estimated PNL of -125.00 USDT.'
     );
   });
 
@@ -399,7 +420,7 @@ describe('TakeProfitStopLossSetup', () => {
     await userEvent.type(screen.getByTestId('price-input'), '40000');
     await userEvent.type(screen.getByTestId('size-input'), '20');
     expect(screen.getByTestId('summary-message')).toHaveTextContent(
-      'When the mark price falls below 40000 USDT it will trigger a Take Profit order to close 20% of this position for an estimated PNL of 4,000.00 USDT.'
+      'When the mark price falls below 40000 USDT it will trigger an order to reduce 20% of remaining position for an estimated PNL of 4,000.00 USDT.'
     );
   });
 
@@ -417,7 +438,7 @@ describe('TakeProfitStopLossSetup', () => {
     await userEvent.type(screen.getByTestId('price-input'), '70000');
     await userEvent.type(screen.getByTestId('size-input'), '20');
     expect(screen.getByTestId('summary-message')).toHaveTextContent(
-      'When the mark price rises above 70000 USDT it will trigger a Stop Loss order to close 20% of this position with an estimated PNL of -2,000.00 USDT.'
+      'When the mark price rises above 70000 USDT it will trigger an order to reduce 20% of remaining position for an estimated PNL of -2,000.00 USDT.'
     );
   });
 
@@ -427,9 +448,9 @@ describe('TakeProfitStopLossSetup', () => {
     expect(screen.getByTestId('size-error-message')).toHaveTextContent(
       'You need to provide a quantity'
     );
-    await userEvent.type(screen.getByTestId('size-input'), '100');
+    await userEvent.type(screen.getByTestId('size-input'), '1001');
     expect(screen.getByTestId('size-error-message')).toHaveTextContent(
-      'Quantity cannot be greater than 70'
+      'Quantity cannot be greater than 100'
     );
     await userEvent.clear(screen.getByTestId('size-input'));
     await userEvent.type(screen.getByTestId('size-input'), '0.1');
@@ -513,6 +534,7 @@ describe('TakeProfitStopLossSetup', () => {
       generateJsx(
         Schema.Side.SIDE_BUY,
         Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE,
+        undefined,
         4
       )
     );

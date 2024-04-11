@@ -139,7 +139,6 @@ const usePendingTransaction = (
   });
 
 export const TakeProfitStopLossSetup = ({
-  allocation,
   averageEntryPrice,
   openVolume,
   create,
@@ -148,6 +147,7 @@ export const TakeProfitStopLossSetup = ({
   triggerDirection,
   marketPrice,
   numberOfActiveStopOrders,
+  activeStopOrders,
 }: {
   create: VegaTransactionStore['create'];
   market: Market;
@@ -155,9 +155,9 @@ export const TakeProfitStopLossSetup = ({
   triggerDirection: Schema.StopOrderTriggerDirection;
   averageEntryPrice?: string;
   openVolume?: string;
-  allocation?: number;
   marketPrice: string | null;
   numberOfActiveStopOrders: number;
+  activeStopOrders: StopOrderFieldsFragment[] | undefined;
 }) => {
   const t = useT();
   const maxNumberOfOrders = useNetworkParamQuery({
@@ -165,7 +165,7 @@ export const TakeProfitStopLossSetup = ({
       key: 'spam.protection.max.stopOrdersPerMarket',
     },
   }).data?.networkParameter?.value;
-  const { handleSubmit, control, watch, setValue } = useForm<FormValues>();
+  const { handleSubmit, control, watch } = useForm<FormValues>();
   const price = watch('price');
   const size = watch('size');
   const validateAmount = useValidateAmount();
@@ -214,10 +214,24 @@ export const TakeProfitStopLossSetup = ({
       price,
       symbol: quoteName,
     };
+    const precedingStopOrders = activeStopOrders?.filter((stopOrder) => {
+      const triggerPrice = toBigNum(
+        (stopOrder.trigger as Schema.StopOrderPrice).price,
+        market.decimalPlaces
+      );
+      return triggerDirection ===
+        Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE
+        ? triggerPrice.isLessThanOrEqualTo(price)
+        : triggerPrice.isGreaterThanOrEqualTo(price);
+    });
+    const remainingOpenVolume = getRemainingOpenVolume(
+      precedingStopOrders,
+      openVolume
+    );
     const components = [
       <ProfitAndLoss
         averageEntryPrice={averageEntryPrice}
-        openVolume={openVolume}
+        openVolume={remainingOpenVolume}
         decimalPlaces={market.decimalPlaces}
         exitPrice={removeDecimal(price, market.decimalPlaces)}
         positionDecimalPlaces={market.positionDecimalPlaces}
@@ -226,24 +240,14 @@ export const TakeProfitStopLossSetup = ({
         quantum={asset.quantum}
       />,
     ];
-    const takeProfit =
-      (side === Schema.Side.SIDE_SELL &&
-        triggerDirection ===
-          Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE) ||
-      (side === Schema.Side.SIDE_BUY &&
-        triggerDirection ===
-          Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_FALLS_BELOW);
     info = (
       <p className="text-xs mb-2" data-testid="summary-message">
         <Trans
           defaults={
-            takeProfit
-              ? side === Schema.Side.SIDE_SELL
-                ? 'When the mark price rises above {{ price }} {{ symbol }} it will trigger a Take Profit order to close {{size}}% of this position for an estimated PNL of <0/> {{ symbol }}.'
-                : 'When the mark price falls below {{ price }} {{ symbol }} it will trigger a Take Profit order to close {{size}}% of this position for an estimated PNL of <0/> {{ symbol }}.'
-              : side === Schema.Side.SIDE_SELL
-              ? 'When the mark price falls below {{ price }} {{ symbol }} it will trigger a Stop Loss order to close {{size}}% of this position with an estimated PNL of <0/> {{ symbol }}.'
-              : 'When the mark price rises above {{ price }} {{ symbol }} it will trigger a Stop Loss order to close {{size}}% of this position with an estimated PNL of <0/> {{ symbol }}.'
+            triggerDirection ===
+            Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE
+              ? 'When the mark price rises above {{ price }} {{ symbol }} it will trigger an order to reduce {{size}}% of remaining position for an estimated PNL of <0/> {{ symbol }}.'
+              : 'When the mark price falls below {{ price }} {{ symbol }} it will trigger an order to reduce {{size}}% of remaining position for an estimated PNL of <0/> {{ symbol }}.'
           }
           values={values}
           components={components}
@@ -253,11 +257,11 @@ export const TakeProfitStopLossSetup = ({
   }
 
   const sizeStep = 1;
-  const maxSize = 100 - (allocation ?? 0) * 100;
+  const maxSize = 100;
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate data-testid="setup-form">
-      <div className="flex gap-2 mb-2">
+      <div className="flex gap-2 mb-2 clear-both">
         <div className="w-1/2">
           <Controller
             name="price"
@@ -363,21 +367,7 @@ export const TakeProfitStopLossSetup = ({
                     min={sizeStep}
                     max={maxSize}
                     step={sizeStep}
-                    appendElement={
-                      <>
-                        <Pill size="xs">%</Pill>
-                        <button
-                          data-testid="use-max"
-                          type="button"
-                          className="flex ml-1"
-                          onClick={() => setValue('size', maxSize.toString())}
-                        >
-                          <Pill size="xs" intent={Intent.Success}>
-                            {t('Use Max')}
-                          </Pill>
-                        </button>
-                      </>
-                    }
+                    appendElement={<Pill size="xs">%</Pill>}
                     hasError={!!fieldState.error}
                     {...field}
                     value={field.value || ''}
@@ -492,14 +482,13 @@ const StopOrder = ({
 };
 
 const StopOrdersList = ({
-  allocation,
   stopOrders,
   create,
+  openVolume,
   ...props
 }: {
   stopOrders?: StopOrderFieldsFragment[];
   create: VegaTransactionStore['create'];
-  allocation?: number;
   market: Market;
   averageEntryPrice?: string;
   openVolume?: string;
@@ -508,50 +497,54 @@ const StopOrdersList = ({
   if (!stopOrders?.length) {
     return null;
   }
+  let openVolumeLeft = toBigNum(openVolume ?? '0', 0);
   return (
     <div className="mb-3" data-testid="stop-orders-list">
-      <div className="flex justify-between text-xs px-3 pb-1.5">
-        <span data-testid="allocation">
-          {t('Allocation: {{percentage}}%', {
-            percentage: ((allocation ?? 0) * 100).toFixed(),
-          })}
-        </span>
-        <ButtonLink
-          data-testid="cancel-all"
-          onClick={() =>
-            create(
-              stopOrders.length > 1
-                ? {
-                    batchMarketInstructions: {
-                      stopOrdersCancellation: stopOrders?.map(
-                        ({ id: stopOrderId }) => ({
-                          stopOrderId,
-                          marketId: props.market.id,
-                        })
-                      ),
-                    },
-                  }
-                : {
-                    stopOrdersCancellation: {
-                      stopOrderId: stopOrders[0].id,
-                      marketId: props.market.id,
-                    },
-                  }
-            )
-          }
-          title={t('Cancel all')}
-        >
-          {t('Cancel all')}
-        </ButtonLink>
+      <ButtonLink
+        data-testid="cancel-all"
+        className="text-xs float-right mt-1"
+        onClick={() =>
+          create(
+            stopOrders.length > 1
+              ? {
+                  batchMarketInstructions: {
+                    stopOrdersCancellation: stopOrders?.map(
+                      ({ id: stopOrderId }) => ({
+                        stopOrderId,
+                        marketId: props.market.id,
+                      })
+                    ),
+                  },
+                }
+              : {
+                  stopOrdersCancellation: {
+                    stopOrderId: stopOrders[0].id,
+                    marketId: props.market.id,
+                  },
+                }
+          )
+        }
+        title={t('Cancel all')}
+      >
+        {t('Cancel all')}
+      </ButtonLink>
+      <div className="clear-both">
+        {stopOrders?.map((stopOrder) => {
+          const element = (
+            <StopOrder
+              stopOrder={stopOrder}
+              create={create}
+              {...props}
+              key={stopOrder.id}
+              openVolume={openVolumeLeft.toFixed()}
+            />
+          );
+          openVolumeLeft = openVolumeLeft.multipliedBy(
+            1 - Number(stopOrder.sizeOverrideValue ?? 0)
+          );
+          return element;
+        })}
       </div>
-      {stopOrders?.map((stopOrder) => (
-        <StopOrder
-          stopOrder={stopOrder}
-          create={create}
-          {...props}
-          key={stopOrder.id}
-        />
-      ))}
     </div>
   );
 };
@@ -572,10 +565,19 @@ const filterAndSort = (
     order
   );
 
-const getAllocation = (stopOrders: StopOrderFieldsFragment[] | undefined) =>
-  stopOrders?.reduce((allocation, stopOrder) => {
-    return allocation + (Number(stopOrder.sizeOverrideValue) || 0);
-  }, 0) || 0;
+const getRemainingOpenVolume = (
+  stopOrders: StopOrderFieldsFragment[] | undefined,
+  openVolume: string | undefined
+) =>
+  toBigNum(openVolume || 0, 0)
+    .multipliedBy(
+      stopOrders?.reduce(
+        (remaining, stopOrder) =>
+          remaining * (1 - (Number(stopOrder.sizeOverrideValue) || 0)),
+        1
+      ) ?? 1
+    )
+    .toFixed();
 
 export const TakeProfitStopLoss = ({
   marketId,
@@ -610,15 +612,11 @@ export const TakeProfitStopLoss = ({
     side === Schema.Side.SIDE_SELL ? 'asc' : 'desc'
   );
 
-  const takeProfitAllocation = getAllocation(takeProfitStopOrders);
-
   const stopLossStopOrders = filterAndSort(
     activeStopOrders,
     stopLossTrigger,
     side === Schema.Side.SIDE_SELL ? 'desc' : 'asc'
   );
-
-  const stopLossAllocation = getAllocation(stopLossStopOrders);
 
   const { data: markPrice } = useMarkPrice(marketId);
 
@@ -677,11 +675,10 @@ export const TakeProfitStopLoss = ({
         </dd>
       </dl>
       <hr className="border-vega-clight-500 dark:border-vega-cdark-500 mb-6" />
-      <div className="mb-1">{t('Take profit')}</div>
+      <div className="mb-1 float-left">{t('Take profit')}</div>
       <div className="mb-6" data-testid="take-profit">
         {market && (
           <StopOrdersList
-            allocation={takeProfitAllocation}
             stopOrders={takeProfitStopOrders}
             create={create}
             market={market}
@@ -689,9 +686,9 @@ export const TakeProfitStopLoss = ({
             averageEntryPrice={openVolume?.averageEntryPrice}
           />
         )}
-        {takeProfitAllocation === 1 ? null : visibleForm !== 'tp' ? (
+        {visibleForm !== 'tp' ? (
           <Button
-            className="w-full"
+            className="w-full clear-both"
             type="button"
             data-testid="add-take-profit"
             onClick={() => setVisibleForm('tp')}
@@ -701,13 +698,13 @@ export const TakeProfitStopLoss = ({
         ) : (
           market && (
             <TakeProfitStopLossSetup
-              allocation={takeProfitAllocation}
               create={create}
               market={market}
               marketPrice={markPrice}
               side={side}
               triggerDirection={takeProfitTrigger}
               openVolume={openVolume?.openVolume}
+              activeStopOrders={takeProfitStopOrders}
               averageEntryPrice={openVolume?.averageEntryPrice}
               numberOfActiveStopOrders={activeStopOrders?.length ?? 0}
             />
@@ -719,7 +716,6 @@ export const TakeProfitStopLoss = ({
       <div className="mb-6" data-testid="stop-loss">
         {market && (
           <StopOrdersList
-            allocation={stopLossAllocation}
             stopOrders={stopLossStopOrders}
             create={create}
             market={market}
@@ -727,7 +723,7 @@ export const TakeProfitStopLoss = ({
             averageEntryPrice={openVolume?.averageEntryPrice}
           />
         )}
-        {stopLossAllocation === 1 ? null : visibleForm !== 'sl' ? (
+        {visibleForm !== 'sl' ? (
           <Button
             className="w-full"
             type="button"
@@ -739,13 +735,13 @@ export const TakeProfitStopLoss = ({
         ) : (
           market && (
             <TakeProfitStopLossSetup
-              allocation={stopLossAllocation}
               create={create}
               market={market}
               marketPrice={markPrice}
               side={side}
               triggerDirection={stopLossTrigger}
               openVolume={openVolume?.openVolume}
+              activeStopOrders={stopLossStopOrders}
               averageEntryPrice={openVolume?.averageEntryPrice}
               numberOfActiveStopOrders={activeStopOrders?.length ?? 0}
             />
