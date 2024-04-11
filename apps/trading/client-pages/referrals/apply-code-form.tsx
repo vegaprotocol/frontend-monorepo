@@ -16,9 +16,7 @@ import {
   useVegaWallet,
   useDialogStore,
 } from '@vegaprotocol/wallet-react';
-import { useIsInReferralSet, useReferral } from './hooks/use-referral';
 import { Routes } from '../../lib/links';
-import { Statistics, useStats } from './referral-statistics';
 import { useReferralProgram } from './hooks/use-referral-program';
 import { ns, useT } from '../../lib/use-t';
 import { useFundsAvailable } from './hooks/use-funds-available';
@@ -26,6 +24,12 @@ import { ViewType, useSidebar } from '../../components/sidebar';
 import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
 import { QUSDTooltip } from './qusd-tooltip';
 import { Trans } from 'react-i18next';
+import { PreviewRefereeStatistics } from './referee-statistics';
+import {
+  useReferralSet,
+  useIsInReferralSet,
+} from './hooks/use-find-referral-set';
+import minBy from 'lodash/minBy';
 
 const RELOAD_DELAY = 3000;
 
@@ -106,9 +110,11 @@ export const ApplyCodeForm = ({ onSuccess }: { onSuccess?: () => void }) => {
 
   const codeField = watch('code');
 
-  const { data: previewData, loading: previewLoading } = useReferral({
-    code: validateCode(codeField, t) ? codeField : undefined,
-  });
+  const {
+    data: previewData,
+    loading: previewLoading,
+    isEligible: isPreviewEligible,
+  } = useReferralSet(validateCode(codeField, t) ? codeField : undefined);
 
   const { send, status } = useSimpleTransaction({
     onSuccess: () => {
@@ -141,19 +147,14 @@ export const ApplyCodeForm = ({ onSuccess }: { onSuccess?: () => void }) => {
    * Validates the set a user tries to apply to.
    */
   const validateSet = useCallback(() => {
-    if (
-      codeField &&
-      !previewLoading &&
-      previewData &&
-      !previewData.isEligible
-    ) {
+    if (codeField && !previewLoading && previewData && !isPreviewEligible) {
       return t('The code is no longer valid.');
     }
     if (codeField && !previewLoading && !previewData) {
       return t('The code is invalid');
     }
     return true;
-  }, [codeField, previewData, previewLoading, t]);
+  }, [codeField, isPreviewEligible, previewData, previewLoading, t]);
 
   const noFunds = validateFundsAvailable() !== true ? true : false;
 
@@ -199,8 +200,6 @@ export const ApplyCodeForm = ({ onSuccess }: { onSuccess?: () => void }) => {
     //     }
     //   });
   };
-
-  const { epochsValue, nextBenefitTierValue } = useStats({ program });
 
   // show "code applied" message when successfully applied
   if (status === 'confirmed') {
@@ -264,9 +263,10 @@ export const ApplyCodeForm = ({ onSuccess }: { onSuccess?: () => void }) => {
     };
   };
 
-  const nextBenefitTierEpochsValue = nextBenefitTierValue
-    ? nextBenefitTierValue.epochs - epochsValue
-    : 0;
+  // calculate minimum amount of epochs a referee has to be in a set in order
+  // to benefit from it
+  const firstBenefitTier = minBy(program.benefitTiers, (bt) => bt.epochs);
+  const minEpochs = firstBenefitTier ? firstBenefitTier.epochs : 0;
 
   return (
     <>
@@ -335,17 +335,17 @@ export const ApplyCodeForm = ({ onSuccess }: { onSuccess?: () => void }) => {
           <Loader />
         </div>
       ) : null}
-      {/* TODO: Re-check plural forms once i18n is updated */}
-      {previewData && previewData.isEligible ? (
+
+      {previewData && isPreviewEligible ? (
         <div className="mt-10">
           <h2 className="mb-5 text-2xl">
             {t(
               'youAreJoiningTheGroup',
               'You are joining the group shown, but will not have access to benefits until you have completed at least {{count}} epochs.',
-              { count: nextBenefitTierEpochsValue }
+              { count: minEpochs }
             )}
           </h2>
-          <Statistics data={previewData} program={program} as="referee" />
+          <PreviewRefereeStatistics setId={codeField} />
         </div>
       ) : null}
     </>

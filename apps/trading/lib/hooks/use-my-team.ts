@@ -1,6 +1,10 @@
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import first from 'lodash/first';
-import { type TeamsQuery, useTeamsQuery } from './__generated__/Teams';
+import {
+  type TeamsQueryVariables,
+  useTeamsQuery,
+  type TeamsQuery,
+} from './__generated__/Teams';
 import { useTeam } from './use-team';
 import { useTeams } from './use-teams';
 import { areTeamGames, useGames } from './use-games';
@@ -20,11 +24,36 @@ export enum Role {
   /** A pubkey is not in team but it is a referee */
   NOT_IN_TEAM_BUT_REFEREE = 'NOT_IN_TEAM_BUT_REFEREE',
 
-  /** A pubkey is neither in team nor a part of referral */
+  /** A pubkey is neither in team nor a part of a referral */
   NONE = 'NONE',
 }
 
-export const useMyTeam = () => {
+type UseMyTeamArgs = {
+  teamId?: string;
+};
+
+const prepareVariables = (
+  args?: UseMyTeamArgs,
+  pubKey?: string
+): [TeamsQueryVariables, boolean] => {
+  let variables: TeamsQueryVariables = {
+    partyId: pubKey,
+    checkReferrals: true,
+  };
+  let skip = !pubKey;
+
+  if (args) {
+    variables = {
+      teamId: args.teamId,
+      checkReferrals: true,
+    };
+    skip = !args.teamId;
+  }
+
+  return [variables, skip];
+};
+
+export const useMyTeam = (args?: UseMyTeamArgs) => {
   const { pubKey } = useVegaWallet();
   const {
     data: teams,
@@ -33,17 +62,15 @@ export const useMyTeam = () => {
     refetch: teamsRefetch,
   } = useTeams();
 
+  const [variables, skip] = prepareVariables(args, pubKey);
   const {
     data,
     loading,
     error,
     refetch: myRefetch,
   } = useTeamsQuery({
-    variables: {
-      partyId: pubKey,
-      checkReferrals: true,
-    },
-    skip: !pubKey,
+    variables,
+    skip,
     fetchPolicy: 'cache-and-network',
   });
 
