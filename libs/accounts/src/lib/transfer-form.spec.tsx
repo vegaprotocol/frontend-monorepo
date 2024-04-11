@@ -16,8 +16,10 @@ import {
 import { AccountType, AccountTypeMapping } from '@vegaprotocol/types';
 import { removeDecimal } from '@vegaprotocol/utils';
 import type { TransferFeeQuery } from './__generated__/TransferFee';
+import type { PartyProfilesQuery } from './__generated__/Accounts';
 
 const feeFactor = 0.001;
+
 const mockUseTransferFeeQuery = jest.fn(
   ({
     variables: { amount },
@@ -35,9 +37,38 @@ const mockUseTransferFeeQuery = jest.fn(
   }
 );
 
+const mockUsePartyProfilesQuery = jest.fn(
+  ({
+    variables: { partyIds },
+  }: {
+    variables: { partyIds: string[] };
+  }): { data: PartyProfilesQuery } => {
+    return {
+      data: {
+        partiesProfilesConnection: {
+          edges: [
+            {
+              node: {
+                partyId: partyIds[0],
+                alias: 'alias01',
+                metadata: [],
+              },
+            },
+          ],
+        },
+      },
+    };
+  }
+);
+
 jest.mock('./__generated__/TransferFee', () => ({
   useTransferFeeQuery: (props: { variables: { amount: string } }) =>
     mockUseTransferFeeQuery(props),
+}));
+
+jest.mock('./__generated__/Accounts', () => ({
+  usePartyProfilesQuery: (props: { variables: { partyIds: ['party01'] } }) =>
+    mockUsePartyProfilesQuery(props),
 }));
 
 describe('TransferForm', () => {
