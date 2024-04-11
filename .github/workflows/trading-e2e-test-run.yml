@@ -130,7 +130,6 @@ jobs:
       # Cache Playwright browsers
       #----------------------------------------------
       - name: Cache Playwright dependencies
-        id: cache-deps
         uses: actions/cache@v2
         with:
           path: |
@@ -139,6 +138,7 @@ jobs:
           key: ${{ runner.os }}-playwright-${{ hashFiles('**/pyproject.toml') }}
           restore-keys: |
             ${{ runner.os }}-playwright-
+        working-directory: apps/trading/e2e
       #----------------------------------------------
       # install python dependencies
       #----------------------------------------------
@@ -153,7 +153,6 @@ jobs:
           export VEGA_VERSION=$(grep VEGA_VERSION .env | cut -d '=' -f2)
           poetry run python -m vega_sim.tools.load_binaries --force --version $VEGA_VERSION
         working-directory: apps/trading/e2e
-
       #----------------------------------------------
       # Install Playwright only if not cached
       #----------------------------------------------
