@@ -1,4 +1,4 @@
-# Trading Market-Sim End-To-End Tests
+# Trading Market-Sim End-To-End Tests test
 
 This directory contains end-to-end tests for the Trading application using Vega-market-sim. This guide will help you set up your environment and run the tests efficiently.
 
@@ -41,6 +41,7 @@ Pull Docker images for your environment:
 
 - **Development**: `docker pull vegaprotocol/trading:develop`
 - **Production**: `docker pull vegaprotocol/trading:main`
+  docker pull --platform linux/amd64 vegaprotocol/trading:main
 
 ### 4. Build a Docker Image of Your Locally Built Trading App
 
