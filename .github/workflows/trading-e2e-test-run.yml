@@ -127,6 +127,16 @@ jobs:
           virtualenvs-in-project: true
           virtualenvs-path: .venv
       #----------------------------------------------
+      # Cache Playwright browsers
+      #----------------------------------------------
+      - name: Cache Playwright browsers
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('**/lockfiles') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
+      #----------------------------------------------
       # install python dependencies
       #----------------------------------------------
       - name: Install dependencies
@@ -142,9 +152,10 @@ jobs:
         working-directory: apps/trading/e2e
 
       #----------------------------------------------
-      # install playwrightworking-directory: apps/trading/e2e
+      # Install Playwright only if not cached
       #----------------------------------------------
-      - name: install playwright
+      - name: Install Playwright
+        if: steps.cache-playwright.outputs.cache-hit != 'true'
         run: poetry run playwright install --with-deps chromium
         working-directory: apps/trading/e2e
       #----------------------------------------------
