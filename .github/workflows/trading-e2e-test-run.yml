@@ -129,11 +129,14 @@ jobs:
       #----------------------------------------------
       # Cache Playwright browsers
       #----------------------------------------------
-      - name: Cache Playwright browsers
+      - name: Cache Playwright dependencies
+        id: cache-deps
         uses: actions/cache@v2
         with:
-          path: ~/.cache/ms-playwright
-          key: ${{ runner.os }}-playwright-${{ hashFiles('**/lockfiles') }}
+          path: |
+            ~/.cache/ms-playwright
+            !~/.cache/ms-playwright/*/tmp
+          key: ${{ runner.os }}-playwright-${{ hashFiles('**/pyproject.toml') }}
           restore-keys: |
             ${{ runner.os }}-playwright-
       #----------------------------------------------
@@ -155,8 +158,8 @@ jobs:
       # Install Playwright only if not cached
       #----------------------------------------------
       - name: Install Playwright
-        if: steps.cache-playwright.outputs.cache-hit != 'true'
         run: poetry run playwright install --with-deps chromium
+        if: steps.cache-deps.outputs.cache-hit != 'true'
         working-directory: apps/trading/e2e
       #----------------------------------------------
       # run tests
