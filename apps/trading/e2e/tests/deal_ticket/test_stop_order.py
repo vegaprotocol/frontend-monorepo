@@ -293,6 +293,6 @@ class TestStopOcoValidation:
             if page.get_by_test_id(close_toast).is_visible():
                 page.get_by_test_id(close_toast).click()
         # 7002-SORD-011
-        expect(page.get_by_test_id("stop-order-warning-limit")).to_have_text(
+        expect(page.get_by_test_id("stop-order-limit-warning")).to_have_text(
             "There is a limit of 4 active stop orders per market. Orders submitted above the limit will be immediately rejected."
         )

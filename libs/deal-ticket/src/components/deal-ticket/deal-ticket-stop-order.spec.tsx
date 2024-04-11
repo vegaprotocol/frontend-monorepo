@@ -70,7 +70,7 @@ const triggerPriceWarningMessage = 'stop-order-warning-message-trigger-price';
 const triggerTrailingPercentOffsetErrorMessage =
   'stop-order-error-message-trigger-trailing-percent-offset';
 
-const numberOfActiveOrdersLimit = 'stop-order-warning-limit';
+const numberOfActiveOrdersLimit = 'stop-order-limit-warning';
 
 const ocoPostfix = (id: string, postfix = true) => (postfix ? `${id}-oco` : id);
 
@@ -95,6 +95,16 @@ jest.mock('@vegaprotocol/orders', () => ({
   useActiveStopOrders: jest.fn((partyId, marketId, skip) =>
     mockActiveStopOrders(partyId, marketId, skip)
   ),
+}));
+
+jest.mock('@vegaprotocol/network-parameters', () => ({
+  useNetworkParamQuery: jest.fn(() => ({
+    data: {
+      networkParameter: {
+        value: '4',
+      },
+    },
+  })),
 }));
 
 describe('StopOrder', () => {

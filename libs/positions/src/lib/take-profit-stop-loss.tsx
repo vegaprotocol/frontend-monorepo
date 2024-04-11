@@ -6,6 +6,7 @@ import {
   TradingInput as Input,
   InputError,
   Intent,
+  Notification,
   Pill,
   VegaIcon,
   VegaIconNames,
@@ -17,6 +18,7 @@ import {
   type StopOrdersSubmission,
 } from '@vegaprotocol/wallet';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
+import { useNetworkParamQuery } from '@vegaprotocol/network-parameters';
 import {
   type VegaTransactionStore,
   useVegaTransactionStore,
@@ -145,6 +147,7 @@ export const TakeProfitStopLossSetup = ({
   side,
   triggerDirection,
   marketPrice,
+  numberOfActiveStopOrders,
 }: {
   create: VegaTransactionStore['create'];
   market: Market;
@@ -154,8 +157,14 @@ export const TakeProfitStopLossSetup = ({
   openVolume?: string;
   allocation?: number;
   marketPrice: string | null;
+  numberOfActiveStopOrders: number;
 }) => {
   const t = useT();
+  const maxNumberOfOrders = useNetworkParamQuery({
+    variables: {
+      key: 'spam.protection.max.stopOrdersPerMarket',
+    },
+  }).data?.networkParameter?.value;
   const { handleSubmit, control, watch, setValue } = useForm<FormValues>();
   const price = watch('price');
   const size = watch('size');
@@ -385,6 +394,21 @@ export const TakeProfitStopLossSetup = ({
         </div>
       </div>
       {info}
+      {maxNumberOfOrders &&
+      numberOfActiveStopOrders >= Number(maxNumberOfOrders) ? (
+        <div className="mb-2">
+          <Notification
+            intent={Intent.Warning}
+            testId={'stop-order-limit-warning'}
+            message={t(
+              'There is a limit of {{maxNumberOfOrders}} active stop orders per market. Orders submitted above the limit will be immediately rejected.',
+              {
+                maxNumberOfOrders,
+              }
+            )}
+          />
+        </div>
+      ) : null}
       <Button
         disabled={!!transaction}
         className="w-full"
@@ -685,6 +709,7 @@ export const TakeProfitStopLoss = ({
               triggerDirection={takeProfitTrigger}
               openVolume={openVolume?.openVolume}
               averageEntryPrice={openVolume?.averageEntryPrice}
+              numberOfActiveStopOrders={activeStopOrders?.length ?? 0}
             />
           )
         )}
@@ -722,6 +747,7 @@ export const TakeProfitStopLoss = ({
               triggerDirection={stopLossTrigger}
               openVolume={openVolume?.openVolume}
               averageEntryPrice={openVolume?.averageEntryPrice}
+              numberOfActiveStopOrders={activeStopOrders?.length ?? 0}
             />
           )
         )}

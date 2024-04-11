@@ -174,6 +174,16 @@ jest.mock('@vegaprotocol/web3', () => ({
   useVegaTransactionStore: jest.fn(() => mockTransactions()),
 }));
 
+jest.mock('@vegaprotocol/network-parameters', () => ({
+  useNetworkParamQuery: jest.fn(() => ({
+    data: {
+      networkParameter: {
+        value: '4',
+      },
+    },
+  })),
+}));
+
 describe('TakeProfitStopLoss', () => {
   const generateJsx = () => {
     return (
@@ -319,7 +329,8 @@ describe('TakeProfitStopLossSetup', () => {
   const generateJsx = (
     side = Schema.Side.SIDE_SELL,
     triggerDirection = Schema.StopOrderTriggerDirection
-      .TRIGGER_DIRECTION_RISES_ABOVE
+      .TRIGGER_DIRECTION_RISES_ABOVE,
+    numberOfActiveStopOrders = 0
   ) => {
     return (
       <TakeProfitStopLossSetup
@@ -331,6 +342,7 @@ describe('TakeProfitStopLossSetup', () => {
         allocation={0.3}
         averageEntryPrice={mockUseOpenVolume().averageEntryPrice}
         openVolume={mockUseOpenVolume().openVolume}
+        numberOfActiveStopOrders={numberOfActiveStopOrders}
       />
     );
   };
@@ -494,6 +506,17 @@ describe('TakeProfitStopLossSetup', () => {
         },
       },
     });
+  });
+
+  it('shows limit of active stop orders number', async () => {
+    render(
+      generateJsx(
+        Schema.Side.SIDE_BUY,
+        Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE,
+        4
+      )
+    );
+    expect(screen.getByTestId('stop-order-limit-warning')).toBeInTheDocument();
   });
 
   it('if pending transaction exist do not submit and shows transaction', async () => {

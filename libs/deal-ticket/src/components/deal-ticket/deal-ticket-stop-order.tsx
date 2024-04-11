@@ -59,6 +59,7 @@ import { useActiveOrders, useActiveStopOrders } from '@vegaprotocol/orders';
 import { useT } from '../../use-t';
 import { determinePriceStep, determineSizeStep } from '@vegaprotocol/utils';
 import { useOpenVolume } from '@vegaprotocol/positions';
+import { useNetworkParamQuery } from '@vegaprotocol/network-parameters';
 
 export interface StopOrderProps {
   market: Market;
@@ -66,7 +67,6 @@ export interface StopOrderProps {
   submit: (order: StopOrdersSubmission) => void;
 }
 
-const MAX_NUMBER_OF_ACTIVE_STOP_ORDERS = 4;
 const trailingPercentOffsetStep = '0.1';
 
 const getDefaultValues = (
@@ -843,6 +843,11 @@ const SubmitButton = ({
 export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
   const t = useT();
   const { pubKey, isReadOnly } = useVegaWallet();
+  const maxNumberOfOrders = useNetworkParamQuery({
+    variables: {
+      key: 'spam.protection.max.stopOrdersPerMarket',
+    },
+  }).data?.networkParameter?.value;
   const setType = useDealTicketFormValues((state) => state.setType);
   const updateStoredFormValues = useDealTicketFormValues(
     (state) => state.updateStopOrder
@@ -1199,16 +1204,17 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
         </>
       )}
       <NoWalletWarning isReadOnly={isReadOnly} />
-      {(activeStopOrders?.length ?? 0) + (oco ? 2 : 1) >
-      MAX_NUMBER_OF_ACTIVE_STOP_ORDERS ? (
+      {maxNumberOfOrders &&
+      (activeStopOrders?.length ?? 0) + (oco ? 2 : 1) >
+        Number(maxNumberOfOrders) ? (
         <div className="mb-2">
           <Notification
             intent={Intent.Warning}
-            testId={'stop-order-warning-limit'}
+            testId={'stop-order-limit-warning'}
             message={t(
               'There is a limit of {{maxNumberOfOrders}} active stop orders per market. Orders submitted above the limit will be immediately rejected.',
               {
-                maxNumberOfOrders: MAX_NUMBER_OF_ACTIVE_STOP_ORDERS.toString(),
+                maxNumberOfOrders,
               }
             )}
           />
