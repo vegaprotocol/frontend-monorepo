@@ -75,7 +75,7 @@ def test_check_cross_isolated_margin_info(
     page.get_by_test_id(isolated_margin).click()
     page.locator(leverage_input).fill("6")
     expect(page.get_by_test_id(dialog_content).get_by_test_id("notification")).to_have_text(
-        "You have an existing position and and open order on this market.Changing the margin mode and leverage will move 869.78007 tDAI from your general account to fund the position.")
+        "You have an existing position and open order on this market.Changing the margin mode and leverage will move 869.78007 tDAI from your general account to fund the position.")
     expect(page.get_by_test_id(dialog_content).get_by_test_id(current_margin)).to_have_text(
         "Current margin874.21992 tDAI")
     expect(page.get_by_test_id(dialog_content).get_by_test_id(available_collateral)
