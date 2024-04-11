@@ -138,7 +138,6 @@ jobs:
           key: ${{ runner.os }}-playwright-${{ hashFiles('**/pyproject.toml') }}
           restore-keys: |
             ${{ runner.os }}-playwright-
-        working-directory: apps/trading/e2e
       #----------------------------------------------
       # install python dependencies
       #----------------------------------------------
