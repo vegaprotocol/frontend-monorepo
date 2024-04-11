@@ -20,7 +20,6 @@ import { generatePath, Link } from 'react-router-dom';
 import { marketInfoProvider } from './market-info-data-provider';
 
 import type { MarketInfo } from './market-info-data-provider';
-import { MarketProposalNotification } from '@vegaprotocol/proposals';
 import {
   BaseAssetInfoPanel,
   CurrentFeesInfoPanel,
@@ -145,7 +144,6 @@ export const MarketInfoAccordion = ({
         </Accordion>
       </div>
       <div className="mb-8">
-        <MarketProposalNotification marketId={market.id} />
         <h3 className={headerClassName}>{t('Market specification')}</h3>
         <Accordion>
           <AccordionItem
