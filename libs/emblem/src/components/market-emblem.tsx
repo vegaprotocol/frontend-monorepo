@@ -5,8 +5,11 @@ import { useMarketInfo } from './hooks/use-market-info';
 export type EmblemByMarketProps = {
   market: string;
   vegaChain?: string;
+  showBase?: boolean;
+  showQuote?: boolean;
   contract?: never;
   asset?: never;
+  wrapperClass?: string;
 };
 
 /**
@@ -16,9 +19,12 @@ export type EmblemByMarketProps = {
  * @param vegaChain string the vega chain ID (default: Vega Mainnet)
  * @returns React.Node
  */
-export function EmblemByMarket(p: EmblemByMarketProps) {
-  const chain = p.vegaChain ? p.vegaChain : DEFAULT_VEGA_CHAIN;
-  const data = useMarketInfo(chain, p.market);
+export function EmblemByMarket(props: EmblemByMarketProps) {
+  const chain = props.vegaChain ? props.vegaChain : DEFAULT_VEGA_CHAIN;
+  const data = useMarketInfo(chain, props.market);
+  const showBase = props.showBase ?? true;
+  const showQuote = props.showQuote ?? true;
+  const wrapperClass = props.wrapperClass ?? 'mr-2';
 
   const base = data.data?.baseLogo
     ? `${URL_BASE}${data.data.baseLogo}`
@@ -28,17 +34,23 @@ export function EmblemByMarket(p: EmblemByMarketProps) {
     : `${URL_BASE}/missing.svg`;
 
   return (
-    <span className="mr-2">
-      <EmblemBase
-        src={base}
-        className="inline-block w-5 h-5 z-10 relative rounded-full bg-white"
-        {...p}
-      />
-      <EmblemBase
-        src={quote}
-        className="inline-block w-5 h-5 rounded-full ml-[-8px]"
-        {...p}
-      />
+    <span className={wrapperClass}>
+      {showBase && (
+        <EmblemBase
+          src={base}
+          className="inline-block w-5 h-5 z-10 relative rounded-full bg-white"
+          {...props}
+        />
+      )}
+      {showQuote && (
+        <EmblemBase
+          src={quote}
+          className={`inline-block w-5 h-5 rounded-full ${
+            showBase ? 'ml-[-8px]' : ''
+          }`}
+          {...props}
+        />
+      )}
     </span>
   );
 }

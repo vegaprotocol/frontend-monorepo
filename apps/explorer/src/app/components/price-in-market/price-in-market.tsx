@@ -3,6 +3,7 @@ import { t } from '@vegaprotocol/i18n';
 import isUndefined from 'lodash/isUndefined';
 import { useExplorerMarketQuery } from '../links/market-link/__generated__/Market';
 import get from 'lodash/get';
+import { Emblem } from '@vegaprotocol/emblem';
 
 export type DecimalSource = 'MARKET' | 'SETTLEMENT_ASSET';
 
@@ -61,6 +62,7 @@ const PriceInMarket = ({
     return (
       <label>
         <span>{label}</span> <span>{suffix}</span>
+        <Emblem market={marketId} showBase={false} wrapperClass="mx-1" />
       </label>
     );
   }
