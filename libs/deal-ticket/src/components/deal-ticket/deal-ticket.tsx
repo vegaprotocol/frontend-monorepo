@@ -980,7 +980,7 @@ const SummaryMessage = memo(
       return (
         <div className="mb-2">
           <Notification
-            intent={Intent.Warning}
+            intent={Intent.Primary}
             testId={'deal-ticket-warning-auction'}
             message={t(
               'Any orders placed now will not trade until the auction ends'
