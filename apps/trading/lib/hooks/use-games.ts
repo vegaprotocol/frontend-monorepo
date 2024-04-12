@@ -43,7 +43,11 @@ type GamesData = {
   error?: Error | ApolloError;
 };
 
-const MAX_EPOCHS = 30;
+// FIXME: Temporary changed to 1 from 30 because of the mainnet issue with
+// missing data for certain epochs which caused the whole query (within the
+// given range) to err and getting the games data 1 epoch by 1 epoch mitigates
+// that problem.
+const MAX_EPOCHS = 1;
 /**
  * Converts the given variables (`teamId`, `epochFrom`, `epochTo`) of
  * `GamesQuery` into chunks so that the maximum difference between given
@@ -163,6 +167,7 @@ export const useGames = ({
             query: GamesDocument,
             variables: v,
             context: { isEnlargedTimeout: true },
+            fetchPolicy: 'cache-first',
           })
           .then(({ data, loading, error }) => ({ data, loading, error }))
           .catch(() => {
