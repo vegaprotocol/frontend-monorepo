@@ -60,6 +60,7 @@
   "Make a deposit": "Make a deposit",
   "Maker fee": "Maker fee",
   "Margin required": "Margin required",
+  "Market orders cannot be placed while in auction, click to switch to limit orders": "Market orders cannot be placed while in auction, click to switch to limit orders",
   "MARGIN_ACCOUNT_TOOLTIP_TEXT": "Margin account balance.",
   "MARGIN_DIFF_TOOLTIP_TEXT": "The additional margin required for your new position (taking into account volume and open orders), compared to your current margin. Measured in the market's settlement asset ({{assetSymbol}}).",
   "Market": "Market",
