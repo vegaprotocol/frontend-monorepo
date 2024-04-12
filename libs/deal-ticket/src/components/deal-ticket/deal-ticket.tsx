@@ -40,6 +40,7 @@ import { useActiveOrders } from '@vegaprotocol/orders';
 import {
   getAsset,
   getDerivedPrice,
+  getProductType,
   getQuoteName,
   isMarketInAuction,
 } from '@vegaprotocol/markets';
@@ -182,6 +183,13 @@ export const DealTicket = ({
   const lastSubmitTime = useRef(0);
 
   const asset = getAsset(market);
+  const assetSymbol = asset.symbol;
+  const productType = getProductType(market);
+  const quoteName = getQuoteName(market);
+  const baseQuote = getBaseQuoteUnit(
+    market.tradableInstrument.instrument.metadata.tags
+  );
+
   const {
     orderMarginAccountBalance,
     marginAccountBalance,
@@ -301,12 +309,6 @@ export const DealTicket = ({
       (normalizedOrder.type !== Schema.OrderType.TYPE_MARKET &&
         (!normalizedOrder.price || normalizedOrder.price === '0')) ||
       normalizedOrder.size === '0'
-  );
-
-  const assetSymbol = getAsset(market).symbol;
-
-  const baseQuote = getBaseQuoteUnit(
-    market.tradableInstrument.instrument.metadata.tags
   );
 
   const summaryError = useMemo(() => {
@@ -454,7 +456,6 @@ export const DealTicket = ({
     },
   });
 
-  const quoteName = getQuoteName(market);
   const isLimitType = type === Schema.OrderType.TYPE_LIMIT;
 
   const priceStep = determinePriceStep(market);
@@ -490,7 +491,11 @@ export const DealTicket = ({
         name="side"
         control={control}
         render={({ field }) => (
-          <SideSelector value={field.value} onValueChange={field.onChange} />
+          <SideSelector
+            productType={productType}
+            value={field.value}
+            onValueChange={field.onChange}
+          />
         )}
       />
 
@@ -720,41 +725,43 @@ export const DealTicket = ({
         </div>
 
         <div className="flex flex-col gap-2">
-          <Controller
-            name="reduceOnly"
-            control={control}
-            render={({ field }) => (
-              <Tooltip
-                description={
-                  <>
-                    <span>
-                      {disableReduceOnlyCheckbox
-                        ? t(
-                            '"Reduce only" can be used only with non-persistent orders, such as "Fill or Kill" or "Immediate or Cancel".'
-                          )
-                        : t(REDUCE_ONLY_TOOLTIP)}
-                    </span>{' '}
-                    <ExternalLink href={DocsLinks?.POST_REDUCE_ONLY}>
-                      {t('Find out more')}
-                    </ExternalLink>
-                  </>
-                }
-              >
-                <div>
-                  <Checkbox
-                    name="reduce-only"
-                    checked={!disableReduceOnlyCheckbox && field.value}
-                    disabled={disableReduceOnlyCheckbox}
-                    onCheckedChange={(reduceOnly) => {
-                      field.onChange(reduceOnly);
-                      setValue('postOnly', false);
-                    }}
-                    label={t('Reduce only')}
-                  />
-                </div>
-              </Tooltip>
-            )}
-          />
+          {productType !== 'Spot' && (
+            <Controller
+              name="reduceOnly"
+              control={control}
+              render={({ field }) => (
+                <Tooltip
+                  description={
+                    <>
+                      <span>
+                        {disableReduceOnlyCheckbox
+                          ? t(
+                              '"Reduce only" can be used only with non-persistent orders, such as "Fill or Kill" or "Immediate or Cancel".'
+                            )
+                          : t(REDUCE_ONLY_TOOLTIP)}
+                      </span>{' '}
+                      <ExternalLink href={DocsLinks?.POST_REDUCE_ONLY}>
+                        {t('Find out more')}
+                      </ExternalLink>
+                    </>
+                  }
+                >
+                  <div>
+                    <Checkbox
+                      name="reduce-only"
+                      checked={!disableReduceOnlyCheckbox && field.value}
+                      disabled={disableReduceOnlyCheckbox}
+                      onCheckedChange={(reduceOnly) => {
+                        field.onChange(reduceOnly);
+                        setValue('postOnly', false);
+                      }}
+                      label={t('Reduce only')}
+                    />
+                  </div>
+                </Tooltip>
+              )}
+            />
+          )}
           {isLimitType && (
             <Controller
               name="postOnly"
