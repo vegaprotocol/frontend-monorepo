@@ -3,35 +3,53 @@ import * as Types from '@vegaprotocol/types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
-export type TeamsFieldsFragment = { __typename?: 'Team', teamId: string, referrer: string, name: string, teamUrl: string, avatarUrl: string, createdAt: any, createdAtEpoch: number, closed: boolean, totalMembers: number };
+export type TeamsFieldsFragment = { __typename?: 'Team', allowList: Array<string>, avatarUrl: string, closed: boolean, createdAt: any, createdAtEpoch: number, name: string, referrer: string, teamId: string, teamUrl: string, totalMembers: number };
 
 export type TeamsQueryVariables = Types.Exact<{
   teamId?: Types.InputMaybe<Types.Scalars['ID']>;
   partyId?: Types.InputMaybe<Types.Scalars['ID']>;
+  checkReferrals?: Types.InputMaybe<Types.Scalars['Boolean']>;
 }>;
 
 
-export type TeamsQuery = { __typename?: 'Query', teams?: { __typename?: 'TeamConnection', edges: Array<{ __typename?: 'TeamEdge', node: { __typename?: 'Team', teamId: string, referrer: string, name: string, teamUrl: string, avatarUrl: string, createdAt: any, createdAtEpoch: number, closed: boolean, totalMembers: number } }> } | null };
+export type TeamsQuery = { __typename?: 'Query', teams?: { __typename?: 'TeamConnection', edges: Array<{ __typename?: 'TeamEdge', node: { __typename?: 'Team', allowList: Array<string>, avatarUrl: string, closed: boolean, createdAt: any, createdAtEpoch: number, name: string, referrer: string, teamId: string, teamUrl: string, totalMembers: number } }> } | null, referrer: { __typename?: 'ReferralSetConnection', edges: Array<{ __typename?: 'ReferralSetEdge', node: { __typename?: 'ReferralSet', id: string, referrer: string } } | null> }, referee: { __typename?: 'ReferralSetConnection', edges: Array<{ __typename?: 'ReferralSetEdge', node: { __typename?: 'ReferralSet', id: string, referrer: string } } | null> } };
 
 export const TeamsFieldsFragmentDoc = gql`
     fragment TeamsFields on Team {
-  teamId
-  referrer
-  name
-  teamUrl
+  allowList
   avatarUrl
+  closed
   createdAt
   createdAtEpoch
-  closed
+  name
+  referrer
+  teamId
+  teamUrl
   totalMembers
 }
     `;
 export const TeamsDocument = gql`
-    query Teams($teamId: ID, $partyId: ID) {
+    query Teams($teamId: ID, $partyId: ID, $checkReferrals: Boolean = false) {
   teams(teamId: $teamId, partyId: $partyId) {
     edges {
       node {
         ...TeamsFields
+      }
+    }
+  }
+  referrer: referralSets(referrer: $partyId) @include(if: $checkReferrals) {
+    edges {
+      node {
+        id
+        referrer
+      }
+    }
+  }
+  referee: referralSets(referee: $partyId) @include(if: $checkReferrals) {
+    edges {
+      node {
+        id
+        referrer
       }
     }
   }
@@ -52,6 +70,7 @@ export const TeamsDocument = gql`
  *   variables: {
  *      teamId: // value for 'teamId'
  *      partyId: // value for 'partyId'
+ *      checkReferrals: // value for 'checkReferrals'
  *   },
  * });
  */

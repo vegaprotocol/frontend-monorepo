@@ -27,7 +27,7 @@ import {
 import { useMaxLeverage, useOpenVolume } from '@vegaprotocol/positions';
 import { useActiveOrders } from '@vegaprotocol/orders';
 import { usePositionEstimate } from '../../hooks/use-position-estimate';
-import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
+import { addDecimalsFormatNumberQuantum } from '@vegaprotocol/utils';
 import { getAsset, useMarket } from '@vegaprotocol/markets';
 import { NoWalletWarning } from './deal-ticket';
 import { DealTicketMarginDetails } from './deal-ticket-margin-details';
@@ -96,7 +96,7 @@ export const MarginChange = ({
     return null;
   }
   const collateralIncreaseEstimate = BigInt(
-    estimateMargin.estimatePosition.collateralIncreaseEstimate.worstCase
+    estimateMargin.estimatePosition.collateralIncreaseEstimate.bestCase
   );
 
   let positionWarning = '';
@@ -122,22 +122,34 @@ export const MarginChange = ({
       );
     }
 
-    const amount = addDecimalsFormatNumber(
-      collateralIncreaseEstimate.toString(),
-      asset?.decimals
+    const isCollateralIncreased = collateralIncreaseEstimate > BigInt(0);
+    const amount = addDecimalsFormatNumberQuantum(
+      collateralIncreaseEstimate.toString().replace('-', ''),
+      asset?.decimals,
+      asset?.quantum
     );
     const { symbol } = asset;
     const interpolation = { amount, symbol };
     if (marginMode === Schema.MarginMode.MARGIN_MODE_CROSS_MARGIN) {
-      marginChangeWarning = t(
-        'Changing the margin mode will move {{amount}} {{symbol}} from your general account to fund the position.',
-        interpolation
-      );
+      marginChangeWarning = isCollateralIncreased
+        ? t(
+            'Changing the margin mode will move {{amount}} {{symbol}} from your general account to fund the position.',
+            interpolation
+          )
+        : t(
+            'Changing the margin mode will release {{amount}} {{symbol}} to your general account.',
+            interpolation
+          );
     } else {
-      marginChangeWarning = t(
-        'Changing the margin mode and leverage will move {{amount}} {{symbol}} from your general account to fund the position.',
-        interpolation
-      );
+      marginChangeWarning = isCollateralIncreased
+        ? t(
+            'Changing the margin mode and leverage will move {{amount}} {{symbol}} from your general account to fund the position.',
+            interpolation
+          )
+        : t(
+            'Changing the margin mode and leverage will release {{amount}} {{symbol}} to your general account.',
+            interpolation
+          );
     }
   }
   return (

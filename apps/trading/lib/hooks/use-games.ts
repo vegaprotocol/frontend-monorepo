@@ -43,7 +43,11 @@ type GamesData = {
   error?: Error | ApolloError;
 };
 
-const MAX_EPOCHS = 30;
+// FIXME: Temporary changed to 1 from 30 because of the mainnet issue with
+// missing data for certain epochs which caused the whole query (within the
+// given range) to err and getting the games data 1 epoch by 1 epoch mitigates
+// that problem.
+const MAX_EPOCHS = 1;
 /**
  * Converts the given variables (`teamId`, `epochFrom`, `epochTo`) of
  * `GamesQuery` into chunks so that the maximum difference between given
@@ -154,15 +158,16 @@ export const useGames = ({
    * set of data.
    */
   useEffect(() => {
-    if (loading || games || variables.length === 0) return;
-    if (!loading) setLoading(true);
+    if (loading || games || variables.length === 0 || error) return;
     const processChunks = async () => {
+      setLoading(true);
       const chunks = variables.map((v) =>
         client
           .query<GamesQuery>({
             query: GamesDocument,
             variables: v,
             context: { isEnlargedTimeout: true },
+            fetchPolicy: 'cache-first',
           })
           .then(({ data, loading, error }) => ({ data, loading, error }))
           .catch(() => {
@@ -172,7 +177,11 @@ export const useGames = ({
       try {
         const results = await Promise.allSettled(chunks);
         const games = results.reduce((all, r) => {
-          if (r.status === 'fulfilled' && r.value) {
+          if (r.status === 'fulfilled') {
+            if (!r.value) {
+              setError(new Error('could not retrieve data'));
+              return all;
+            }
             const { data, error } = r.value;
             if (error) setError(error);
             const allGames = removePaginationWrapper(data?.games.edges);
@@ -197,7 +206,7 @@ export const useGames = ({
       }
     };
     processChunks();
-  }, [client, games, loading, teamId, variables]);
+  }, [client, error, games, loading, teamId, variables]);
 
   return {
     data: games,

@@ -5,6 +5,7 @@ import { TxDetailsShared } from './shared/tx-details-shared';
 import { TableCell, TableRow, TableWithTbody } from '../../table';
 import type { components } from '../../../../types/explorer';
 import { MarketLink } from '../../links';
+import { Leverage } from '../../leverage/leverage';
 
 interface TxDetailsUpdateMarginModeProps {
   txData: BlockExplorerTransactionResult | undefined;
@@ -52,7 +53,13 @@ export const TxDetailsUpdateMarginMode = ({
       {u.marginFactor && (
         <TableRow modifier="bordered">
           <TableCell>{t('Margin factor')}</TableCell>
-          <TableCell>{u.marginFactor}</TableCell>
+          <TableCell>
+            {u.marginFactor}
+            <span className="mx-1">&mdash;</span>
+            <Leverage marginFactor={u.marginFactor} />
+            &nbsp;
+            {t('leverage')}
+          </TableCell>
         </TableRow>
       )}
     </TableWithTbody>

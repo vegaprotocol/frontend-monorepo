@@ -107,18 +107,20 @@ def test_reward_multiplier(
     expect(page.get_by_test_id(HOARDER_REWARD_MULTIPLIER_VALUE)).to_have_text("1x")
 
 
-"""
+
 def test_activity_streak(
-    page: Page,
-):
+    setup_environment: Tuple[Page, str, str],
+) -> None:
+    page, tDAI_market, tDAI_asset_id = setup_environment
     expect(page.get_by_test_id(EPOCH_STREAK)).to_have_text(
         "Active trader: 1 epochs so far "
     )
 
 
-def test_reward_history(
-    page: Page,
-):
+def test_reward_history_foo(
+    setup_environment: Tuple[Page, str, str],
+) -> None:
+    page, tDAI_market, tDAI_asset_id = setup_environment
     page.locator('[name="fromEpoch"]').fill("1")
     expect((page.get_by_role(ROW).locator(PRICE_TAKING_COL_ID)).nth(1)).to_have_text(
         "100.00100.00%"
@@ -126,4 +128,3 @@ def test_reward_history(
     expect((page.get_by_role(ROW).locator(TOTAL_COL_ID)).nth(1)).to_have_text("100.00")
     page.get_by_test_id(EARNED_BY_ME_BUTTON).click()
     expect((page.get_by_role(ROW).locator(TOTAL_COL_ID)).nth(1)).to_have_text("50.00")
- """

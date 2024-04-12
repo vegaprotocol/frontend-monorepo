@@ -12,6 +12,21 @@ fragment AccountFields on AccountBalance {
   }
 }
 
+query PartyProfiles($partyIds: [ID!]) {
+  partiesProfilesConnection(ids: $partyIds) {
+    edges {
+      node {
+        partyId
+        alias
+        metadata {
+          key
+          value
+        }
+      }
+    }
+  }
+}
+
 query Accounts($partyId: ID!) {
   party(id: $partyId) {
     id

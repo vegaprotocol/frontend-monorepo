@@ -1,12 +1,16 @@
+fragment TeamStatisticsFields on TeamStatistics {
+  teamId
+  totalQuantumVolume
+  totalQuantumRewards
+  totalGamesPlayed
+  gamesPlayed
+}
+
 query TeamsStatistics($teamId: ID, $aggregationEpochs: Int) {
   teamsStatistics(teamId: $teamId, aggregationEpochs: $aggregationEpochs) {
     edges {
       node {
-        teamId
-        totalQuantumVolume
-        totalQuantumRewards
-        totalGamesPlayed
-        gamesPlayed
+        ...TeamStatisticsFields
       }
     }
   }

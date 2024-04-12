@@ -1,5 +1,6 @@
 import pytest
 import re
+from datetime import timedelta, datetime
 from playwright.sync_api import Page, expect
 from vega_sim.null_service import VegaServiceNull
 from vega_sim.service import PeggedOrder, MarketStateUpdateType
@@ -17,18 +18,15 @@ def test_market_lifecycle(proposed_market, vega: VegaServiceNull, page: Page):
     trading_mode = page.get_by_test_id("market-trading-mode").get_by_test_id(
         "item-value"
     )
-    market_state = page.get_by_test_id(
-        "market-state").get_by_test_id("item-value")
+    market_state = page.get_by_test_id("market-state").get_by_test_id("item-value")
 
     # setup market in proposed step, without liquidity provided
     market_id = proposed_market
     page.goto(f"/#/markets/{market_id}")
     # 6002-MDET-001
-    expect(page.get_by_test_id("header-title")
-           ).to_have_text("BTC:DAI_2023Futr")
+    expect(page.get_by_test_id("header-title")).to_have_text("BTC:DAI_2023Futr")
     # 6002-MDET-002
-    expect(page.get_by_test_id("market-expiry")
-           ).to_have_text("ExpiryNot time-based")
+    expect(page.get_by_test_id("market-expiry")).to_have_text("ExpiryNot time-based")
     page.get_by_test_id("market-expiry").hover()
     expect(page.get_by_test_id("expiry-tooltip").first).to_have_text(
         "This market expires when triggered by its oracle, not on a set date.View oracle specification"
@@ -130,31 +128,32 @@ def test_market_lifecycle(proposed_market, vega: VegaServiceNull, page: Page):
         market_id=market_id,
         proposal_key=MM_WALLET.name,
         market_state=MarketStateUpdateType.Suspend,
-        forward_time_to_enactment=False
+        forward_time_to_enactment=False,
     )
 
     expect(
-        page
-        .get_by_test_id("market-banner")
-        .get_by_test_id(f"update-state-banner-{market_id}")
+        page.get_by_test_id("market-banner").get_by_test_id(
+            f"update-state-banner-{market_id}"
+        )
     ).to_be_visible()
 
     next_epoch(vega=vega)
 
-    expect(
-        page.get_by_test_id("market-banner")
-    ).to_have_text("Market was suspended by governance")
+    expect(page.get_by_test_id("market-banner")).to_have_text(
+        "Market was suspended by governance"
+    )
 
     # banner should not show after resume
     vega.update_market_state(
         market_id=market_id,
         proposal_key=MM_WALLET.name,
         market_state=MarketStateUpdateType.Resume,
-        forward_time_to_enactment=False
+        forward_time_to_enactment=False,
     )
 
-    expect(page.get_by_test_id("market-banner")
-           ).to_have_text(" Trading on market BTC:DAI_2023 was suspended by governance. There are open proposals to resume trading on this market.View proposals1/2")
+    expect(page.get_by_test_id("market-banner")).to_have_text(
+        " Trading on market BTC:DAI_2023 was suspended by governance. There are open proposals to resume trading on this market.View proposals1/2"
+    )
     next_epoch(vega=vega)
 
     expect(page.get_by_test_id("market-banner")).not_to_be_visible()
@@ -185,13 +184,13 @@ def test_market_lifecycle(proposed_market, vega: VegaServiceNull, page: Page):
     # check market state is now settled
     expect(trading_mode).to_have_text("No trading")
     expect(market_state).to_have_text("Settled")
-    expect(
-        page.get_by_test_id("market-banner")
-    ).to_have_text("This market has been settled")
+    expect(page.get_by_test_id("market-banner")).to_have_text(
+        "This market has been settled"
+    )
 
 
-""" @pytest.mark.usefixtures("page", "risk_accepted", "continuous_market")
-def test_market_closing_banners(page: Page, continuous_market, vega: VegaService):
+@pytest.mark.usefixtures("page", "risk_accepted", "continuous_market")
+def test_market_closing_banners(page: Page, continuous_market, vega: VegaServiceNull):
     market_id = continuous_market
     page.goto(f"/#/markets/{market_id}")
     proposalID = vega.update_market_state(
@@ -199,37 +198,24 @@ def test_market_closing_banners(page: Page, continuous_market, vega: VegaService
         "market_maker",
         MarketStateUpdateType.Terminate,
         approve_proposal=False,
-        vote_enactment_time = datetime.now() + timedelta(weeks=1),
-        forward_time_to_enactment = False,
+        vote_enactment_time=datetime.now() + timedelta(weeks=1),
+        forward_time_to_enactment=False,
         price=107,
     )
-    may_close_warning_pattern = r"TRADING ON MARKET BTC:DAI_2023 MAY STOP ON \d+ \w+\.\s*THERE IS OPEN PROPOSAL TO CLOSE THIS MARKET\.\nProposed final price is 107\.00 BTC\.\nView proposal"
-    match_result = re.fullmatch(may_close_warning_pattern, page.locator(".grow").inner_text())
-    assert match_result is not None
+    may_close_warning_pattern = r"Trading on market BTC:DAI_2023 may close on \d+ \w+\.\s*There is an open proposal to close this market.\s*Proposed final price is 107\.00 BTC\.\s*View proposal"
+    banner_locator = page.get_by_test_id(f"update-state-banner-{market_id}")
+    banner_text = banner_locator.inner_text()
+    match_result = re.fullmatch(may_close_warning_pattern, banner_text)
 
-    vega.update_market_state(
-        continuous_market,
-        "market_maker",
-        MarketStateUpdateType.Terminate,
-        approve_proposal=False,
-        vote_enactment_time = datetime.now() + timedelta(weeks=1),
-        forward_time_to_enactment = False,
-        price=110,
-    )
-
-    expect(page.locator(".grow")).to_have_text("Trading on Market BTC:DAI_2023 may stop. There are open proposals to close this marketView proposals")
+    assert match_result is not None, f"Banner text did not match expected pattern. Expected pattern: '{may_close_warning_pattern}'. Actual text: '{banner_text}'"
 
     governance.approve_proposal(
-        proposal_id=proposalID,
-        wallet=vega.wallet,
-        key_name="market_maker"
-
+        proposal_id=proposalID, wallet=vega.wallet, key_name="market_maker"
     )
-    vega.forward("60s")
-    vega.wait_fn(10)
+    vega.wait_fn(60)
     vega.wait_for_total_catchup()
-
-    will_close_pattern = r"TRADING ON MARKET BTC:DAI_2023 WILL STOP ON \d+ \w+\nYou will no longer be able to hold a position on this market when it closes in \d+ days \d+ hours\. The final price will be 107\.00 BTC\."
-    match_result = re.fullmatch(will_close_pattern, page.locator(".grow").inner_text())
-    assert match_result is not None
-     """
+    will_close_pattern = r"TRADING ON MARKET BTC:DAI_2023 WILL CLOSE ON \d+ \w+\s+You will no longer be able to hold a position on this market when it terminates in \d+ days \d+ hours\. The final price will be 107\.00 BTC\."
+    banner_locator = page.get_by_test_id(f"update-state-banner-{market_id}")
+    actual_text = banner_locator.inner_text()
+    match_result = re.fullmatch(will_close_pattern, actual_text)
+    assert match_result is not None, f"Banner text did not match expected pattern. Expected pattern: '{will_close_pattern}'. Actual text: '{actual_text}'"
