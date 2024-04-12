@@ -4,9 +4,11 @@ import {
   AccountType,
   AssetStatus,
   DispatchMetric,
+  type DispatchStrategy,
   DistributionStrategy,
   EntityScope,
   IndividualScope,
+  type StakingDispatchStrategy,
   TransferStatus,
   type Transfer,
 } from '@vegaprotocol/types';
@@ -24,7 +26,9 @@ jest.mock('../../lib/hooks/__generated__/Rewards', () => ({
 }));
 
 describe('ActiveRewards', () => {
-  const reward: EnrichedRewardTransfer = {
+  const reward: EnrichedRewardTransfer<
+    DispatchStrategy | StakingDispatchStrategy
+  > = {
     __typename: 'TransferNode',
     transfer: {
       __typename: 'Transfer',

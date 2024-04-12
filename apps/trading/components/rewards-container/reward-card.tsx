@@ -50,6 +50,7 @@ import { Link } from 'react-router-dom';
 import max from 'lodash/max';
 import min from 'lodash/min';
 import flatten from 'lodash/flatten';
+import sum from 'lodash/sum';
 
 const Tick = () => (
   <VegaIcon
@@ -998,7 +999,7 @@ export const GroupRewardCard = ({
   const rewardAmounts = transferNodes.map((n) =>
     toBigNum(n.transfer.amount, n.transfer.asset?.decimals || 0).toNumber()
   );
-  const maxRewardAmount = max(rewardAmounts) as number;
+  const maxRewardAmount = sum(rewardAmounts) as number;
   const rewardAmount = formatNumber(maxRewardAmount, 6);
 
   const transferAsset = transferNodes[0].transfer.asset || undefined;
