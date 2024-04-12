@@ -78,13 +78,13 @@ export const ProtocolUpgradeProposalNotification = ({
       }}
     >
       <div className="uppercase ">
-        {t('The network will upgrade to {{vegaReleaseTag}} in {{countdown}}', {
-          vegaReleaseTag: data.vegaReleaseTag,
-          countdown,
-        })}
+        <Trans
+          defaults="The network will upgrade to {{vegaReleaseTag}} in <0/>"
+          values={{ vegaReleaseTag: data.vegaReleaseTag }}
+          components={[countdown]}
+        />
       </div>
       <div>
-        <Trans />
         {t(
           'Trading activity will be interrupted, manage your risk appropriately.'
         )}{' '}

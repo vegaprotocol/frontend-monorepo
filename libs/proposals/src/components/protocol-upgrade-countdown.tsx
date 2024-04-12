@@ -96,7 +96,12 @@ export const ProtocolUpgradeCountdown = ({
       >
         <VegaIcon name={VegaIconNames.EXCLAMATION_MARK} size={12} />{' '}
         <span className="flex flex-nowrap gap-1 whitespace-nowrap">
-          <span>{t('Network upgrade in {{countdown}}', { countdown })} </span>
+          <span>
+            <Trans
+              defaults="Network upgrade in <0/>"
+              components={[countdown]}
+            />
+          </span>
         </span>
       </div>
     </a>

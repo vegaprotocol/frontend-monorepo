@@ -23,7 +23,7 @@ export const Rewards = () => {
               <EpochCountdown
                 id={epochData.epoch.id}
                 startDate={new Date(epochData.epoch.timestamps.start)}
-                endDate={new Date(epochData.epoch.timestamps.end)}
+                endDate={new Date(epochData.epoch.timestamps.expiry)}
               />
             )}
           </Card>

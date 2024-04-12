@@ -17,6 +17,7 @@ import { Box } from '../../components/competitions/box';
 import { LayoutWithGradient } from '../../components/layouts-inner';
 import { Links } from '../../lib/links';
 import { TeamForm, TransactionType } from './team-form';
+import { Role, useMyTeam } from '../../lib/hooks/use-my-team';
 
 export const CompetitionsCreateTeam = () => {
   const [searchParams] = useSearchParams();
@@ -27,6 +28,20 @@ export const CompetitionsCreateTeam = () => {
 
   const { isReadOnly, pubKey } = useVegaWallet();
   const openWalletDialog = useDialogStore((store) => store.open);
+
+  const canShowForm = pubKey && !isReadOnly;
+
+  const { role, teamId } = useMyTeam();
+  const isUpgrade = Boolean(teamId && role === Role.NOT_IN_TEAM_BUT_REFERRER);
+
+  let title = t('Create a team');
+  if (isUpgrade) title = t('Upgrade to team');
+  if (isSolo) {
+    title = t('Create solo team');
+    if (isUpgrade) {
+      title = t('Upgrade to solo team');
+    }
+  }
 
   return (
     <ErrorBoundary feature="create-team">
@@ -46,11 +61,13 @@ export const CompetitionsCreateTeam = () => {
                 {t('Go back to the competitions')}
               </span>
             </Link>
-            <h1 className="calt text-2xl lg:text-3xl xl:text-4xl">
-              {isSolo ? t('Create solo team') : t('Create a team')}
-            </h1>
-            {pubKey && !isReadOnly ? (
-              <CreateTeamFormContainer isSolo={isSolo} />
+            <h1 className="calt text-2xl lg:text-3xl xl:text-4xl">{title}</h1>
+            {canShowForm ? (
+              <CreateTeamFormContainer
+                isSolo={isSolo}
+                isUpgrade={isUpgrade}
+                teamId={teamId}
+              />
             ) : (
               <>
                 <p>
@@ -63,6 +80,13 @@ export const CompetitionsCreateTeam = () => {
                 </RainbowButton>
               </>
             )}
+            {isUpgrade && (
+              <p className="text-sm mt-1">
+                {t(
+                  'Note that your existing referees will not be automatically added to your team. Share your team profile to have them join you in competitions. You will still earn commission from their trading even if they do not join.'
+                )}
+              </p>
+            )}
           </Box>
         </div>
       </LayoutWithGradient>
@@ -70,7 +94,15 @@ export const CompetitionsCreateTeam = () => {
   );
 };
 
-const CreateTeamFormContainer = ({ isSolo }: { isSolo: boolean }) => {
+const CreateTeamFormContainer = ({
+  isSolo,
+  isUpgrade,
+  teamId,
+}: {
+  isSolo: boolean;
+  isUpgrade: boolean;
+  teamId?: string;
+}) => {
   const t = useT();
   const createLink = useLinks(DApp.Governance);
 
@@ -84,6 +116,8 @@ const CreateTeamFormContainer = ({ isSolo }: { isSolo: boolean }) => {
         // navigate(Links.COMPETITIONS_TEAM(code));
       },
     });
+
+  const teamCode = (isUpgrade ? teamId : code) || '';
 
   if (status === 'confirmed') {
     return (
@@ -101,12 +135,12 @@ const CreateTeamFormContainer = ({ isSolo }: { isSolo: boolean }) => {
                   className="font-mono break-all bg-rainbow bg-clip-text text-transparent text-2xl"
                   data-testid="team-id-display"
                 >
-                  {code}
+                  {teamCode}
                 </span>
               </dl>
             </dl>
             <TradingAnchorButton
-              href={Links.COMPETITIONS_TEAM(code)}
+              href={Links.COMPETITIONS_TEAM(teamCode)}
               intent={Intent.Info}
               size="small"
               data-testid="view-team-button"
@@ -148,11 +182,27 @@ const CreateTeamFormContainer = ({ isSolo }: { isSolo: boolean }) => {
 
   return (
     <TeamForm
-      type={TransactionType.CreateReferralSet}
+      type={
+        isUpgrade
+          ? TransactionType.UpgradeFromReferralSet
+          : TransactionType.CreateReferralSet
+      }
       onSubmit={onSubmit}
       status={status}
       err={err}
       isCreatingSoloTeam={isSolo}
+      defaultValues={
+        isUpgrade && teamId
+          ? {
+              allowList: '',
+              avatarUrl: '',
+              id: teamId,
+              name: '',
+              private: isSolo,
+              url: '',
+            }
+          : undefined
+      }
     />
   );
 };

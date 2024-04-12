@@ -1,20 +1,21 @@
-import { useCallback, useState } from 'react';
-import { getAsset, getProductType, getQuoteName } from '@vegaprotocol/markets';
-import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { AccountBreakdownDialog } from '@vegaprotocol/accounts';
-import { formatRange, formatValue } from '@vegaprotocol/utils';
+import { getAsset, getProductType, getQuoteName } from '@vegaprotocol/markets';
+import type { Market } from '@vegaprotocol/markets';
+import type { EstimatePositionQuery } from '@vegaprotocol/positions';
 import * as Schema from '@vegaprotocol/types';
+import { ExternalLink } from '@vegaprotocol/ui-toolkit';
+import { formatNumber, formatRange, formatValue } from '@vegaprotocol/utils';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
+import { useCallback, useState } from 'react';
+import { Trans } from 'react-i18next';
 import {
   LIQUIDATION_PRICE_ESTIMATE_TOOLTIP_TEXT,
   MARGIN_ACCOUNT_TOOLTIP_TEXT,
 } from '../../constants';
-import { KeyValue } from './key-value';
-import { ExternalLink } from '@vegaprotocol/ui-toolkit';
-import { useT, ns } from '../../use-t';
-import { Trans } from 'react-i18next';
-import type { Market } from '@vegaprotocol/markets';
+import type { Slippage } from '../../hooks/use-slippage';
+import { ns, useT } from '../../use-t';
 import { emptyValue } from './deal-ticket-fee-details';
-import type { EstimatePositionQuery } from '@vegaprotocol/positions';
+import { KeyValue } from './key-value';
 
 export interface DealTicketMarginDetailsProps {
   generalAccountBalance: string;
@@ -25,6 +26,7 @@ export interface DealTicketMarginDetailsProps {
   assetSymbol: string;
   positionEstimate: EstimatePositionQuery['estimatePosition'];
   side: Schema.Side;
+  slippage?: Slippage;
 }
 
 export const DealTicketMarginDetails = ({
@@ -36,6 +38,7 @@ export const DealTicketMarginDetails = ({
   onMarketClick,
   positionEstimate,
   side,
+  slippage,
 }: DealTicketMarginDetailsProps) => {
   const t = useT();
   const [breakdownDialog, setBreakdownDialog] = useState(false);
@@ -113,6 +116,7 @@ export const DealTicketMarginDetails = ({
 
   return (
     <div className="flex flex-col w-full gap-2 mt-2">
+      <SlippageAndTradeInfo slippage={slippage} market={market} />
       {productType !== 'Spot' && (
         <KeyValue
           label={t('Current margin')}
@@ -203,5 +207,45 @@ export const DealTicketMarginDetails = ({
         />
       )}
     </div>
+  );
+};
+
+const SlippageAndTradeInfo = ({
+  slippage,
+  market,
+}: {
+  slippage?: Slippage;
+  market: Market;
+}) => {
+  const t = useT();
+
+  if (!slippage) return null;
+
+  const slippageVal = formatNumber(slippage.slippage, market.decimalPlaces);
+  const slippagePct = formatNumber(slippage.slippagePct, 5);
+  const weightedPrice =
+    slippage.totalVolume === '0'
+      ? 'N/A'
+      : formatNumber(slippage.weightedAveragePrice, market.decimalPlaces);
+  const totalVolume = formatNumber(
+    slippage.totalVolume,
+    market.positionDecimalPlaces
+  );
+
+  return (
+    <>
+      <KeyValue
+        label={t('Projected trade')}
+        formattedValue={`${totalVolume} @ ${weightedPrice}`}
+        labelDescription={t(
+          'Amount that will trade at the average weighted price'
+        )}
+      />
+
+      <KeyValue
+        label={t('Slippage')}
+        formattedValue={`${slippagePct}% (${slippageVal})`}
+      />
+    </>
   );
 };

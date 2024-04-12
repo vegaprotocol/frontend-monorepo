@@ -134,7 +134,7 @@ const MOCK_REFERREE_SET: ReferralSetsQuery = {
           createdAt: '2023-11-26T05:58:24.045158Z',
           id: '3772e570fbab89e50e563036b01dd949c554e5b5fe7908449672dfce9a8adffa',
           referrer:
-            '1111111111111111111111111111111111111111111111111111111111111111',
+            '2222222222222222222222222222222222222222222222222222222222222222',
           updatedAt: '2023-11-26T05:58:24.045158Z',
         },
       },
@@ -333,11 +333,13 @@ describe('ReferralStatistics', () => {
     mockConfig.reset();
   });
 
-  it('displays apply code when no data has been found for given pubkey', () => {
+  it('displays apply code when no data has been found for given pubkey', async () => {
     renderComponent([]);
-    expect(
-      screen.queryByTestId('referral-apply-code-form')
-    ).toBeInTheDocument();
+    await waitFor(() => {
+      expect(
+        screen.queryByTestId('referral-apply-code-form')
+      ).toBeInTheDocument();
+    });
   });
 
   it('displays referrer stats when given pubkey is a referrer', async () => {
@@ -358,7 +360,7 @@ describe('ReferralStatistics', () => {
       expect(screen.queryByTestId('referral-statistics')?.dataset.as).toEqual(
         'referrer'
       );
-      // gets commision from 30 epochs query
+      // gets commission from 30 epochs query
       expect(screen.queryByTestId('total-commission-value')).toHaveTextContent(
         '12,340'
       );

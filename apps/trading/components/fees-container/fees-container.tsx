@@ -5,7 +5,7 @@ import {
   useNetworkParams,
   NetworkParams,
 } from '@vegaprotocol/network-parameters';
-import { useMarketList } from '@vegaprotocol/markets';
+import { activeMarketsProvider } from '@vegaprotocol/markets';
 import { formatNumber, formatNumberRounded } from '@vegaprotocol/utils';
 import { useDiscountProgramsQuery, useFeesQuery } from './__generated__/Fees';
 import { Card, CardStat, CardTable, CardTableTD, CardTableTH } from '../card';
@@ -26,6 +26,7 @@ import {
 import { useT } from '../../lib/use-t';
 import classNames from 'classnames';
 import { getTierGradient } from '../helpers/tiers';
+import { useDataProvider } from '@vegaprotocol/data-provider';
 
 export const FeesContainer = () => {
   const t = useT();
@@ -35,7 +36,10 @@ export const FeesContainer = () => {
     NetworkParams.market_fee_factors_infrastructureFee,
   ]);
 
-  const { data: markets, loading: marketsLoading } = useMarketList();
+  const { data: markets, loading: marketsLoading } = useDataProvider({
+    dataProvider: activeMarketsProvider,
+    variables: undefined,
+  });
 
   const { data: programData, loading: programLoading } =
     useDiscountProgramsQuery({
