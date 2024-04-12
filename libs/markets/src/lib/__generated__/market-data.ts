@@ -140,9 +140,9 @@ export const MarketDataUpdateDocument = gql`
  * });
  */
 export function useMarketDataUpdateSubscription(baseOptions: Apollo.SubscriptionHookOptions<MarketDataUpdateSubscription, MarketDataUpdateSubscriptionVariables>) {
-  const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useSubscription<MarketDataUpdateSubscription, MarketDataUpdateSubscriptionVariables>(MarketDataUpdateDocument, options);
-}
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useSubscription<MarketDataUpdateSubscription, MarketDataUpdateSubscriptionVariables>(MarketDataUpdateDocument, options);
+      }
 export type MarketDataUpdateSubscriptionHookResult = ReturnType<typeof useMarketDataUpdateSubscription>;
 export type MarketDataUpdateSubscriptionResult = Apollo.SubscriptionResult<MarketDataUpdateSubscription>;
 export const MarketDataDocument = gql`
@@ -176,13 +176,13 @@ export const MarketDataDocument = gql`
  * });
  */
 export function useMarketDataQuery(baseOptions: Apollo.QueryHookOptions<MarketDataQuery, MarketDataQueryVariables>) {
-  const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useQuery<MarketDataQuery, MarketDataQueryVariables>(MarketDataDocument, options);
-}
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<MarketDataQuery, MarketDataQueryVariables>(MarketDataDocument, options);
+      }
 export function useMarketDataLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MarketDataQuery, MarketDataQueryVariables>) {
-  const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useLazyQuery<MarketDataQuery, MarketDataQueryVariables>(MarketDataDocument, options);
-}
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<MarketDataQuery, MarketDataQueryVariables>(MarketDataDocument, options);
+        }
 export type MarketDataQueryHookResult = ReturnType<typeof useMarketDataQuery>;
 export type MarketDataLazyQueryHookResult = ReturnType<typeof useMarketDataLazyQuery>;
 export type MarketDataQueryResult = Apollo.QueryResult<MarketDataQuery, MarketDataQueryVariables>;
