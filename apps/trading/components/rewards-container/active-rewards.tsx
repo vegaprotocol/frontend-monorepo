@@ -9,16 +9,26 @@ import {
   DispatchMetricLabels,
   EntityScopeLabelMapping,
   AccountType,
+  type DispatchStrategy,
+  type StakingDispatchStrategy,
 } from '@vegaprotocol/types';
 import { Card } from '../card/card';
 import { useState } from 'react';
 import { type AssetFieldsFragment } from '@vegaprotocol/assets';
 import { type MarketFieldsFragment } from '@vegaprotocol/markets';
-import { useRewards } from '../../lib/hooks/use-rewards';
+import {
+  type EnrichedRewardTransfer,
+  useRewards,
+} from '../../lib/hooks/use-rewards';
 import { useMyTeam } from '../../lib/hooks/use-my-team';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useStakeAvailable } from '../../lib/hooks/use-stake-available';
-import { ActiveRewardCard, areAllMarketsSettled } from './reward-card';
+import {
+  ActiveRewardCard,
+  GroupRewardCard,
+  areAllMarketsSettled,
+} from './reward-card';
+import { groupBy } from 'lodash';
 
 export type Filter = {
   searchTerm: string;
@@ -99,6 +109,14 @@ export const ActiveRewards = ({ currentEpoch }: { currentEpoch: number }) => {
 
   if (!data || !data.length) return null;
 
+  const cards = data
+    .filter((n) => applyFilter(n, filter))
+    // filter out the cards (rewards) for which all of the markets
+    // are settled
+    .filter((n) => !areAllMarketsSettled(n));
+
+  const groupedCards = Object.values(groupBy(cards, determineCardGroup));
+
   return (
     <Card
       title={t('Active rewards')}
@@ -123,20 +141,44 @@ export const ActiveRewards = ({ currentEpoch }: { currentEpoch: number }) => {
       )}
       {/** CARDS */}
       <div className="grid gap-x-8 gap-y-10 h-fit grid-cols-[repeat(auto-fill,_minmax(230px,_1fr))] md:grid-cols-[repeat(auto-fill,_minmax(230px,_1fr))] lg:grid-cols-[repeat(auto-fill,_minmax(320px,_1fr))] xl:grid-cols-[repeat(auto-fill,_minmax(335px,_1fr))] pr-2">
-        {data
-          .filter((n) => applyFilter(n, filter))
-          // filter out the cards (rewards) for which all of the markets
-          // are settled
-          .filter((n) => !areAllMarketsSettled(n))
-          .map((node, i) => (
-            <ActiveRewardCard
-              key={i}
-              transferNode={node}
-              currentEpoch={currentEpoch}
-              requirements={requirements}
-            />
-          ))}
+        {groupedCards.map((group, i) => {
+          if (group.length === 0) return;
+          if (group.length === 1) {
+            return (
+              <ActiveRewardCard
+                key={i}
+                transferNode={group[0]}
+                currentEpoch={currentEpoch}
+                requirements={requirements}
+              />
+            );
+          } else {
+            return (
+              <GroupRewardCard
+                key={i}
+                transferNodes={group}
+                currentEpoch={currentEpoch}
+                requirements={requirements}
+              />
+            );
+          }
+        })}
       </div>
     </Card>
   );
 };
+
+const determineCardGroup = (
+  reward: EnrichedRewardTransfer<DispatchStrategy | StakingDispatchStrategy>
+) =>
+  [
+    // groups by:
+    // reward asset (usually VEGA)
+    reward.transfer.asset?.symbol,
+    // reward for (dispatch metric)
+    reward.transfer.kind.dispatchStrategy.dispatchMetric,
+    // reward scope (teams vs individuals)
+    reward.transfer.kind.dispatchStrategy.entityScope,
+    // reward distribution strategy
+    reward.transfer.kind.dispatchStrategy.distributionStrategy,
+  ].join('-');

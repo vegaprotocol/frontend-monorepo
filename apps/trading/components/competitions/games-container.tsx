@@ -20,6 +20,8 @@ import {
   DispatchMetricLabels,
   EntityScopeLabelMapping,
   AccountType,
+  type DispatchStrategy,
+  type StakingDispatchStrategy,
 } from '@vegaprotocol/types';
 
 export type Filter = {
@@ -81,7 +83,7 @@ export const GamesContainer = ({
   data,
   currentEpoch,
 }: {
-  data: EnrichedRewardTransfer[];
+  data: EnrichedRewardTransfer<DispatchStrategy | StakingDispatchStrategy>[];
   currentEpoch: number;
 }) => {
   const t = useT();
