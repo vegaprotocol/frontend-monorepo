@@ -833,6 +833,7 @@ export const DealTicket = ({
         isReadOnly={isReadOnly}
         pubKey={pubKey}
         onDeposit={onDeposit}
+        type={type}
       />
       <Button
         data-testid="place-order"
@@ -885,6 +886,7 @@ interface SummaryMessageProps {
   isReadOnly: boolean;
   pubKey: string | undefined;
   onDeposit: (assetId: string) => void;
+  type: Schema.OrderType;
 }
 
 export const NoWalletWarning = ({
@@ -927,6 +929,7 @@ const SummaryMessage = memo(
     isReadOnly,
     pubKey,
     onDeposit,
+    type,
   }: SummaryMessageProps) => {
     const t = useT();
     // Specific error UI for if balance is so we can
@@ -977,10 +980,23 @@ const SummaryMessage = memo(
         Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
       ].includes(marketTradingMode)
     ) {
+      if (type === Schema.OrderType.TYPE_MARKET) {
+        return (
+          <div className="mb-2">
+            <Notification
+              intent={Intent.Primary}
+              testId={'deal-ticket-warning-auction'}
+              message={t(
+                'Market orders cannot be placed while in auction, click to switch to limit orders'
+              )}
+            />
+          </div>
+        );
+      }
       return (
         <div className="mb-2">
           <Notification
-            intent={Intent.Warning}
+            intent={Intent.Primary}
             testId={'deal-ticket-warning-auction'}
             message={t(
               'Any orders placed now will not trade until the auction ends'
