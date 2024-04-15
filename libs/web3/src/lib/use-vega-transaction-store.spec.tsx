@@ -1,6 +1,7 @@
 import { useVegaTransactionStore } from './use-vega-transaction-store';
 import type { VegaStoredTxState } from './use-vega-transaction-store';
 import type {
+  BatchMarketInstructionSubmissionBody,
   OrderAmendmentBody,
   OrderCancellationBody,
   WithdrawSubmissionBody,
@@ -12,6 +13,7 @@ import {
   Side,
 } from '@vegaprotocol/types';
 import { VegaTxStatus } from './types';
+import { HALFMAXGOINT64 } from '@vegaprotocol/utils';
 
 jest.mock('@vegaprotocol/wallet', () => ({
   ...jest.requireActual('@vegaprotocol/wallet'),
@@ -32,19 +34,43 @@ describe('useVegaTransactionStore', () => {
     },
   };
 
+  const marketId =
+    '3aa2a828687cc3d59e92445d294891cbbd40e2165bbfb15674158ef5d4e8848d';
+  const orderId =
+    '6a4fcd0ba478df2f284ef5f6d3c64a478cb8043d3afe36f66f92c0ed92631e64';
+
   const orderAmendment: OrderAmendmentBody = {
     orderAmendment: {
-      orderId:
-        '6a4fcd0ba478df2f284ef5f6d3c64a478cb8043d3afe36f66f92c0ed92631e64',
-      marketId:
-        '3aa2a828687cc3d59e92445d294891cbbd40e2165bbfb15674158ef5d4e8848d',
+      orderId,
+      marketId,
       price: '1122',
       timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
       sizeDelta: 0,
     },
   };
 
-  const originalOrder = {
+  const closePosition: BatchMarketInstructionSubmissionBody = {
+    batchMarketInstructions: {
+      cancellations: [
+        {
+          marketId,
+          orderId: '',
+        },
+      ],
+      submissions: [
+        {
+          marketId: marketId,
+          type: OrderType.TYPE_MARKET as const,
+          timeInForce: OrderTimeInForce.TIME_IN_FORCE_IOC as const,
+          side: Side.SIDE_SELL,
+          size: HALFMAXGOINT64, // improvement for avoiding leftovers filled in the meantime when close request has been sent
+          reduceOnly: true,
+        },
+      ],
+    },
+  };
+
+  const order = {
     type: OrderType.TYPE_LIMIT,
     id: '6902dea1fa01f0b98cceb382cb9c95df244747fa27ba591de084cdd876d2f7c2',
     status: OrderStatus.STATUS_ACTIVE,
@@ -54,8 +80,7 @@ describe('useVegaTransactionStore', () => {
     timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
     expiresAt: null,
     side: Side.SIDE_BUY,
-    marketId:
-      '3aa2a828687cc3d59e92445d294891cbbd40e2165bbfb15674158ef5d4e8848d',
+    marketId,
     remaining: '12',
   };
 
@@ -100,9 +125,9 @@ describe('useVegaTransactionStore', () => {
   });
 
   it('updates an order with order amendment', () => {
-    useVegaTransactionStore.getState().create(orderAmendment, originalOrder);
-    useVegaTransactionStore.getState().create(orderAmendment, originalOrder);
-    useVegaTransactionStore.getState().create(orderAmendment, originalOrder);
+    useVegaTransactionStore.getState().create(orderAmendment, { order });
+    useVegaTransactionStore.getState().create(orderAmendment, { order });
+    useVegaTransactionStore.getState().create(orderAmendment, { order });
     const transaction = useVegaTransactionStore.getState().transactions[1];
     useVegaTransactionStore
       .getState()
@@ -123,10 +148,8 @@ describe('useVegaTransactionStore', () => {
 
     const result = {
       orderAmendment: {
-        marketId:
-          '3aa2a828687cc3d59e92445d294891cbbd40e2165bbfb15674158ef5d4e8848d',
-        orderId:
-          '6a4fcd0ba478df2f284ef5f6d3c64a478cb8043d3afe36f66f92c0ed92631e64',
+        marketId,
+        orderId,
         price: '1122',
         sizeDelta: 0,
         timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
@@ -168,5 +191,24 @@ describe('useVegaTransactionStore', () => {
     const transaction = useVegaTransactionStore.getState().transactions[0];
     expect(transaction?.withdrawalApproval).toEqual(withdrawalApproval);
     expect(transaction?.withdrawal).toEqual(withdrawal);
+  });
+
+  it('updates openVolume', () => {
+    useVegaTransactionStore
+      .getState()
+      .create(closePosition, { isClosePosition: true });
+    const openVolume = '0';
+    useVegaTransactionStore.getState().update(0, processedTransactionUpdate);
+    useVegaTransactionStore.getState().updatePosition({ marketId, openVolume });
+    expect(
+      useVegaTransactionStore.getState().transactions[0]?.openVolume
+    ).toBeUndefined();
+    useVegaTransactionStore
+      .getState()
+      .updateTransactionResult(transactionResult);
+    useVegaTransactionStore.getState().updatePosition({ marketId, openVolume });
+    expect(
+      useVegaTransactionStore.getState().transactions[0]?.openVolume
+    ).toEqual(openVolume);
   });
 });
