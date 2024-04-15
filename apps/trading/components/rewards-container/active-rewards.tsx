@@ -19,6 +19,7 @@ import { type MarketFieldsFragment } from '@vegaprotocol/markets';
 import {
   type EnrichedRewardTransfer,
   useRewards,
+  isScopedToTeams,
 } from '../../lib/hooks/use-rewards';
 import { useMyTeam } from '../../lib/hooks/use-my-team';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
@@ -87,9 +88,13 @@ export const applyFilter = (
 
 export const ActiveRewards = ({ currentEpoch }: { currentEpoch: number }) => {
   const t = useT();
-  const { data } = useRewards({
+  const { data: allRewards } = useRewards({
     onlyActive: true,
   });
+  // filter out the rewards that are scoped to teams on this page
+  // we display those on the `Competitions` page
+  const data = allRewards.filter((r) => !isScopedToTeams(r));
+
   const { pubKey } = useVegaWallet();
   const { team } = useMyTeam();
   const { stakeAvailable, isEligible, requiredStake } = useStakeAvailable();
