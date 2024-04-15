@@ -8,6 +8,7 @@ export {
   fairground,
   validatorsTestnet,
   stagnet,
+  mainnetMirror,
   mockChain,
   type Chain,
 } from './chains';
