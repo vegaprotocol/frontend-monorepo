@@ -100,10 +100,10 @@ const GroupCard = ({
   const t = useT();
 
   return (
-    <div data-reward-card>
+    <div data-reward-card className="min-h-[366px] h-full">
       <div
         className={classNames(
-          'bg-gradient-to-r col-span-full p-0.5 lg:col-auto h-full min-h-[360px]',
+          'bg-gradient-to-r col-span-full p-0.5 lg:col-auto h-full',
           'rounded-lg',
           CardColourStyles[colour].gradientClassName
         )}
@@ -264,7 +264,7 @@ const RewardCard = ({
   const t = useT();
 
   return (
-    <div data-reward-card className="h-full">
+    <div data-reward-card className="min-h-[366px] h-full">
       <div
         className={classNames(
           'bg-gradient-to-r col-span-full p-0.5 lg:col-auto h-full',
@@ -365,78 +365,80 @@ const RewardCard = ({
             </div>
           </div>
 
-          {/** DISPATCH METRIC */}
-          <div>
-            {dispatchMetricInfo ? (
-              dispatchMetricInfo
-            ) : (
-              <span data-testid="dispatch-metric-info">
-                {DispatchMetricLabels[dispatchStrategy.dispatchMetric]}
-              </span>
-            )}
-          </div>
+          <div className="h-full flex flex-col gap-4">
+            {/** DISPATCH METRIC */}
+            <div>
+              {dispatchMetricInfo ? (
+                dispatchMetricInfo
+              ) : (
+                <span data-testid="dispatch-metric-info">
+                  {DispatchMetricLabels[dispatchStrategy.dispatchMetric]}
+                </span>
+              )}
+            </div>
 
-          <div className="flex items-center gap-8 flex-wrap">
-            {/** ENDS IN or STARTS IN */}
-            {startsIn ? (
+            <div className="flex items-center gap-8 flex-wrap">
+              {/** ENDS IN or STARTS IN */}
+              {startsIn ? (
+                <span className="flex flex-col">
+                  <span className="text-muted text-xs">{t('Starts in')} </span>
+                  <span data-testid="starts-in" data-startsin={startsIn}>
+                    {t('numberEpochs', '{{count}} epochs', {
+                      count: startsIn,
+                    })}
+                  </span>
+                </span>
+              ) : (
+                endsIn && (
+                  <span className="flex flex-col">
+                    <span className="text-muted text-xs">{t('Ends in')} </span>
+                    <span data-testid="ends-in" data-endsin={endsIn}>
+                      {endsIn >= 0
+                        ? t('numberEpochs', '{{count}} epochs', {
+                            count: endsIn,
+                          })
+                        : t('Ended')}
+                    </span>
+                  </span>
+                )
+              )}
+              {/** WINDOW LENGTH */}
               <span className="flex flex-col">
-                <span className="text-muted text-xs">{t('Starts in')} </span>
-                <span data-testid="starts-in" data-startsin={startsIn}>
+                <span className="text-muted text-xs">{t('Assessed over')}</span>
+                <span data-testid="assessed-over">
                   {t('numberEpochs', '{{count}} epochs', {
-                    count: startsIn,
+                    count: dispatchStrategy.windowLength,
                   })}
                 </span>
               </span>
-            ) : (
-              endsIn && (
+              {/** CAPPED AT */}
+              {dispatchStrategy.capRewardFeeMultiple && (
                 <span className="flex flex-col">
-                  <span className="text-muted text-xs">{t('Ends in')} </span>
-                  <span data-testid="ends-in" data-endsin={endsIn}>
-                    {endsIn >= 0
-                      ? t('numberEpochs', '{{count}} epochs', {
-                          count: endsIn,
-                        })
-                      : t('Ended')}
-                  </span>
+                  <span className="text-muted text-xs">{t('Capped at')}</span>
+                  <Tooltip
+                    description={t(
+                      'Reward will be capped at {{capRewardFeeMultiple}} X of taker fees paid in the epoch',
+                      {
+                        capRewardFeeMultiple:
+                          dispatchStrategy.capRewardFeeMultiple,
+                      }
+                    )}
+                  >
+                    <span data-testid="cappedAt">
+                      x{dispatchStrategy.capRewardFeeMultiple}
+                    </span>
+                  </Tooltip>
                 </span>
-              )
-            )}
-            {/** WINDOW LENGTH */}
-            <span className="flex flex-col">
-              <span className="text-muted text-xs">{t('Assessed over')}</span>
-              <span data-testid="assessed-over">
-                {t('numberEpochs', '{{count}} epochs', {
-                  count: dispatchStrategy.windowLength,
-                })}
-              </span>
-            </span>
-            {/** CAPPED AT */}
-            {dispatchStrategy.capRewardFeeMultiple && (
-              <span className="flex flex-col">
-                <span className="text-muted text-xs">{t('Capped at')}</span>
-                <Tooltip
-                  description={t(
-                    'Reward will be capped at {{capRewardFeeMultiple}} X of taker fees paid in the epoch',
-                    {
-                      capRewardFeeMultiple:
-                        dispatchStrategy.capRewardFeeMultiple,
-                    }
-                  )}
-                >
-                  <span data-testid="cappedAt">
-                    x{dispatchStrategy.capRewardFeeMultiple}
-                  </span>
-                </Tooltip>
-              </span>
+              )}
+            </div>
+
+            {/** DISPATCH METRIC DESCRIPTION */}
+            {dispatchStrategy?.dispatchMetric && (
+              <p className="text-muted text-sm">
+                {t(DispatchMetricDescription[dispatchStrategy?.dispatchMetric])}
+              </p>
             )}
           </div>
-
-          {/** DISPATCH METRIC DESCRIPTION */}
-          {dispatchStrategy?.dispatchMetric && (
-            <p className="text-muted text-sm">
-              {t(DispatchMetricDescription[dispatchStrategy?.dispatchMetric])}
-            </p>
-          )}
 
           {/** REQUIREMENTS */}
           {dispatchStrategy && (
