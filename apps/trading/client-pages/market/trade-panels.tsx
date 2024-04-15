@@ -126,9 +126,7 @@ export const TradePanels = ({ market, pinnedAsset }: TradePanelsProps) => {
           {[
             'positions',
             'activeOrders',
-            'closedOrders',
-            'rejectedOrders',
-            'orders',
+            'inactiveOrders',
             'stopOrders',
             'collateral',
             'fills',
@@ -197,13 +195,11 @@ const useViewLabel = (view: TradingView) => {
     orderbook: t('Orderbook'),
     trades: t('Trades'),
     positions: t('Positions'),
-    activeOrders: t('Active'),
-    closedOrders: t('Closed'),
-    rejectedOrders: t('Rejected'),
-    orders: t('All'),
-    stopOrders: t('Stop'),
+    activeOrders: t('Open'),
+    inactiveOrders: t('Order history'),
+    stopOrders: t('Advanced orders'),
     collateral: t('Collateral'),
-    fills: t('Fills'),
+    fills: t('Trades'),
   };
 
   return labels[view];

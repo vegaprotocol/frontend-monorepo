@@ -18,10 +18,8 @@ const resolveNoRowsMessage = (
   switch (filter) {
     case Filter.Open:
       return t('No open orders');
-    case Filter.Closed:
-      return t('No closed orders');
-    case Filter.Rejected:
-      return t('No rejected orders');
+    case Filter.Inactive:
+      return t('No order history');
     default:
       return t('No orders');
   }
@@ -29,14 +27,14 @@ const resolveNoRowsMessage = (
 
 export const FilterStatusValue = {
   [Filter.Open]: [OrderStatus.STATUS_ACTIVE, OrderStatus.STATUS_PARKED],
-  [Filter.Closed]: [
+  [Filter.Inactive]: [
     OrderStatus.STATUS_CANCELLED,
     OrderStatus.STATUS_EXPIRED,
     OrderStatus.STATUS_FILLED,
     OrderStatus.STATUS_PARTIALLY_FILLED,
     OrderStatus.STATUS_STOPPED,
+    OrderStatus.STATUS_REJECTED,
   ],
-  [Filter.Rejected]: [OrderStatus.STATUS_REJECTED],
 };
 
 export const DefaultFilterModel = {
@@ -45,14 +43,9 @@ export const DefaultFilterModel = {
       value: FilterStatusValue[Filter.Open],
     },
   },
-  [Filter.Closed]: {
+  [Filter.Inactive]: {
     status: {
-      value: FilterStatusValue[Filter.Closed],
-    },
-  },
-  [Filter.Rejected]: {
-    status: {
-      value: FilterStatusValue[Filter.Rejected],
+      value: FilterStatusValue[Filter.Inactive],
     },
   },
 };
@@ -102,16 +95,14 @@ export const OrdersContainer = ({ filter }: OrderContainerProps) => {
 export const STORAGE_KEY = 'vega_order_list_store';
 export const useOrderListStore = create<{
   open: DataGridStore;
-  closed: DataGridStore;
-  rejected: DataGridStore;
+  inactive: DataGridStore;
   all: DataGridStore;
   update: (filter: Filter | undefined, gridStore: DataGridStore) => void;
 }>()(
   persist(
     (set) => ({
       open: {},
-      closed: {},
-      rejected: {},
+      inactive: {},
       all: {},
       update: (filter, newStore) => {
         switch (filter) {
@@ -124,19 +115,10 @@ export const useOrderListStore = create<{
             }));
             return;
           }
-          case Filter.Closed: {
+          case Filter.Inactive: {
             set((curr) => ({
-              closed: {
-                ...curr.closed,
-                ...newStore,
-              },
-            }));
-            return;
-          }
-          case Filter.Rejected: {
-            set((curr) => ({
-              rejected: {
-                ...curr.rejected,
+              inactive: {
+                ...curr.inactive,
                 ...newStore,
               },
             }));
@@ -172,16 +154,10 @@ export const useOrderListGridState = (filter: Filter | undefined) => {
           filterModel: store.open.filterModel,
         };
       }
-      case Filter.Closed: {
+      case Filter.Inactive: {
         return {
-          columnState: store.closed.columnState,
-          filterModel: store.closed.filterModel,
-        };
-      }
-      case Filter.Rejected: {
-        return {
-          columnState: store.rejected.columnState,
-          filterModel: store.rejected.filterModel,
+          columnState: store.inactive.columnState,
+          filterModel: store.inactive.filterModel,
         };
       }
       default: {
