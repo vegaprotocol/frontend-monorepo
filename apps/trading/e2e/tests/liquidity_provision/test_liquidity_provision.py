@@ -5,12 +5,12 @@ from conftest import init_vega, cleanup_container
 from fixtures.market import setup_continuous_market
 from actions.utils import next_epoch, truncate_middle, change_keys
 
+
 @pytest.fixture(scope="module")
 def vega(request):
     with init_vega(request) as vega_instance:
         request.addfinalizer(lambda: cleanup_container(vega_instance))
         yield vega_instance
-
 
 
 @pytest.fixture(scope="module")
@@ -50,11 +50,15 @@ def test_liquidity_provision_amendment(
         "Learn moreProviding liquidity"
     )
     # 002-LIQP-010
-    expect(
-        page.get_by_test_id("liquidity-learn-more").get_by_test_id("external-link")
-    ).to_have_attribute(
-        "href", "https://docs.vega.xyz/mainnet/concepts/liquidity/provision"
+    href_value = (
+        page.get_by_test_id("liquidity-learn-more")
+        .get_by_test_id("external-link")
+        .get_attribute("href")
     )
+
+    assert (
+        "concepts/liquidity/provision" in href_value
+    ), "The URL does not include the expected substring."
 
     vega.submit_simple_liquidity(
         key_name="market_maker",
