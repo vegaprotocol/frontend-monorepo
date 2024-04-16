@@ -198,7 +198,7 @@ describe('MarketSelector', () => {
     await userEvent.click(screen.getByTestId('product-Spot'));
     expect(screen.queryAllByTestId(/market-\d/)).toHaveLength(0);
     expect(screen.getByTestId('no-items')).toHaveTextContent(
-      'Spot markets coming soon.'
+      'No spot markets.'
     );
 
     await userEvent.click(screen.getByTestId('product-Perpetual'));
