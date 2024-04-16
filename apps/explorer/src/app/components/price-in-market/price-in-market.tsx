@@ -62,7 +62,11 @@ const PriceInMarket = ({
     return (
       <label>
         <span>{label}</span> <span>{suffix}</span>
-        <EmblemWithChain market={marketId} marketLogos={'QUOTE'} />
+        <EmblemWithChain
+          market={marketId}
+          wrapperClass="ml-1"
+          marketLogos={'QUOTE'}
+        />
       </label>
     );
   }

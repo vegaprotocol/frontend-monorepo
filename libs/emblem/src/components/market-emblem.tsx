@@ -34,12 +34,15 @@ export type EmblemByMarketProps = {
  * @returns React.Node
  */
 export function EmblemByMarket(props: EmblemByMarketProps) {
-  const chain = getVegaChain(props.vegaChain);
-  const data = useMarketInfo(chain, props.market);
-  const { showBase, showQuote, logoCount } = chooseLogos(props.marketLogos);
-  const wrapperClass = `relative mx-1 inline-block ${
+  const { vegaChain, marketLogos, market, wrapperClass = '' } = props;
+  const chain = getVegaChain(vegaChain);
+
+  const data = useMarketInfo(chain, market);
+  const { showBase, showQuote, logoCount } = chooseLogos(marketLogos);
+
+  const wrapperClassString = `relative inline-block ${
     logoCount === 2 ? 'w-8' : 'w-5'
-  } ${props.wrapperClass ?? ''}`;
+  } ${wrapperClass ?? ''}`;
 
   const base = data.data?.baseLogo
     ? `${URL_BASE}${data.data.baseLogo}`
@@ -49,7 +52,7 @@ export function EmblemByMarket(props: EmblemByMarketProps) {
     : `${URL_BASE}/missing.svg`;
 
   return (
-    <div className={wrapperClass}>
+    <div className={wrapperClassString}>
       {showBase && (
         <EmblemBase
           src={base}
