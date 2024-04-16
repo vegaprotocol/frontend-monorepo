@@ -217,4 +217,4 @@ def test_staking_reward(
     expect(staking_reward_card.get_by_test_id(
         "staking-requirement")).to_have_text("1.00")
     expect(staking_reward_card.get_by_test_id(
-        "average-position")).to_have_text("0.00")
+        "average-position")).to_have_text("-")
