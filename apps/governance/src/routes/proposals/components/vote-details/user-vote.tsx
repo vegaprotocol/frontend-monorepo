@@ -13,6 +13,7 @@ import { type Proposal, type BatchProposal } from '../../types';
 interface UserVoteProps {
   proposal: Proposal | BatchProposal;
   transaction: VegaTxState;
+  setTransaction?: (update: Partial<VegaTxState>) => void;
   submit: (voteValue: VoteValue, proposalId: string | null) => Promise<void>;
   voteState: VoteState | null;
   voteDatetime: Date | null;
@@ -22,6 +23,7 @@ export const UserVote = ({
   proposal,
   submit,
   transaction,
+  setTransaction,
   voteState,
   voteDatetime,
 }: UserVoteProps) => {
@@ -54,6 +56,7 @@ export const UserVote = ({
             className="flex"
             submit={submit}
             transaction={transaction}
+            setTransaction={setTransaction}
           />
         )
       ) : (

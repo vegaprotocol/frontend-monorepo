@@ -8,6 +8,7 @@ import {
 interface VoteTransactionDialogProps {
   voteState: VoteState;
   transaction: VegaTxState;
+  setTransaction?: (update: Partial<VegaTxState>) => void;
 }
 
 const dialogTitle = (voteState: VoteState): string | undefined => {
@@ -24,6 +25,7 @@ const dialogTitle = (voteState: VoteState): string | undefined => {
 export const VoteTransactionDialog = ({
   voteState,
   transaction,
+  setTransaction,
 }: VoteTransactionDialogProps) => {
   // Render a custom message if the voting fails otherwise
   // pass undefined so that the default vega transaction dialog UI gets used
@@ -41,6 +43,9 @@ export const VoteTransactionDialog = ({
           Complete: customMessage,
         }}
         isOpen={transaction.dialogOpen}
+        onChange={(isOpen) => {
+          if (setTransaction) setTransaction({ dialogOpen: isOpen });
+        }}
       />
     </div>
   );
