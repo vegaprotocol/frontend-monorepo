@@ -59,8 +59,7 @@ export const usePollForDelegations = () => {
     let mounted = true;
 
     if (pubKey) {
-      // start polling for delegation
-      interval = setInterval(() => {
+      const retrieveData = () => {
         client
           .query<DelegationsQuery, DelegationsQueryVariables>({
             query: DelegationsDocument,
@@ -232,7 +231,11 @@ export const usePollForDelegations = () => {
             // will just continue to fail
             clearInterval(interval);
           });
-      }, 20000);
+      };
+
+      retrieveData();
+      // start polling for delegation
+      interval = setInterval(retrieveData, 20000);
     }
 
     return () => {
