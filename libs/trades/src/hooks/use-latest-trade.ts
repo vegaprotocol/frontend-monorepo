@@ -1,17 +1,16 @@
 import { useDataProvider } from '@vegaprotocol/data-provider';
-import { tradesProvider } from '../lib/trades-data-provider';
-import first from 'lodash/first';
+import { lastTradeProvider } from '../lib/trades-data-provider';
 
-export const useLatestTrade = (marketId?: string, partyId?: string) => {
-  const { data, loading, error } = useDataProvider({
-    dataProvider: tradesProvider,
+export const useLatestTrade = (
+  marketId?: string,
+  partyId?: string,
+  skip = false
+) =>
+  useDataProvider({
+    dataProvider: lastTradeProvider,
     variables: {
       marketIds: [marketId || ''],
       partyIds: [partyId || ''],
     },
-    skip: !marketId || !partyId,
+    skip: skip || !marketId || !partyId,
   });
-
-  const latest = first(data);
-  return { data: latest, loading, error };
-};
