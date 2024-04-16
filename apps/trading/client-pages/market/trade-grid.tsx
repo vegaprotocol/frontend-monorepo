@@ -145,37 +145,19 @@ const MainGrid = memo(
                 </ErrorBoundary>
               </Tab>
               <Tab
-                id="closed-orders"
-                name={t('Closed')}
-                settings={<TradingViews.closedOrders.settings />}
+                id="inactive-orders"
+                name={t('Order history')}
+                menu={<TradingViews.inactiveOrders.menu />}
+                settings={<TradingViews.inactiveOrders.settings />}
               >
-                <ErrorBoundary feature="closedOrders">
-                  <TradingViews.closedOrders.component />
-                </ErrorBoundary>
-              </Tab>
-              <Tab
-                id="rejected-orders"
-                name={t('Rejected')}
-                settings={<TradingViews.rejectedOrders.settings />}
-              >
-                <ErrorBoundary feature="rejectedOrders">
-                  <TradingViews.rejectedOrders.component />
-                </ErrorBoundary>
-              </Tab>
-              <Tab
-                id="orders"
-                name={t('All')}
-                menu={<TradingViews.orders.menu />}
-                settings={<TradingViews.orders.settings />}
-              >
-                <ErrorBoundary feature="orders">
-                  <TradingViews.orders.component />
+                <ErrorBoundary feature="inactiveOrders">
+                  <TradingViews.inactiveOrders.component />
                 </ErrorBoundary>
               </Tab>
               {featureFlags.STOP_ORDERS ? (
                 <Tab
                   id="stop-orders"
-                  name={t('Stop orders')}
+                  name={t('Advanced orders')}
                   settings={<TradingViews.stopOrders.settings />}
                 >
                   <ErrorBoundary feature="stop-orders">
@@ -185,7 +167,7 @@ const MainGrid = memo(
               ) : null}
               <Tab
                 id="fills"
-                name={t('Fills')}
+                name={t('Trades')}
                 settings={<TradingViews.fills.settings />}
               >
                 <TradingViews.fills.component />

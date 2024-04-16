@@ -36,9 +36,9 @@ def test_take_profit_stop_loss_deal_ticket(
     wait_for_toast_confirmation(page)
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
-    page.get_by_test_id("All").click()
+    page.get_by_test_id("Order history").click()
     expect(page.get_by_role("row").nth(5)).to_contain_text("0+1LimitActive100.00GTC")
-    page.get_by_test_id("Stop orders").click()
+    page.get_by_test_id("Advanced orders").click()
     text_locator_mark_under_95_pending = "Mark < 95.00-1MarketPendingOCO-FOK"
     text_locator_mark_over_200_pending = "Mark > 200.00-1MarketPendingOCO-FOK"
 
@@ -50,15 +50,15 @@ def test_take_profit_stop_loss_deal_ticket(
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
 
-    page.get_by_test_id("All").click()
+    page.get_by_test_id("Order history").click()
     expect(page.get_by_role("row").nth(5)).to_contain_text("1+1LimitFilled100.00GTC")
     submit_order(vega, MM_WALLET.name, continuous_market, "SIDE_SELL", 100, 80)
     submit_order(vega, MM_WALLET2.name, continuous_market, "SIDE_BUY", 100, 90)
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
-    page.get_by_test_id("All").click()
+    page.get_by_test_id("Order history").click()
     expect(page.get_by_role("row").nth(8)).to_contain_text("1-1MarketFilled-FOK")
-    page.get_by_test_id("Stop orders").click()
+    page.get_by_test_id("Advanced orders").click()
     text_locator_mark_under_95_triggered = "Mark < 95.00-1MarketTriggeredOCO-FOK"
     text_locator_mark_over_200_stopped = "Mark > 200.00-1MarketStoppedOCO-FOK"
 

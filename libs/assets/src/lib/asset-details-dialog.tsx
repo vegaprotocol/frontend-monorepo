@@ -1,6 +1,5 @@
 import { useT } from './use-t';
 import {
-  Button,
   Dialog,
   Splash,
   SyntaxHighlighter,
@@ -105,16 +104,6 @@ export const AssetDetailsDialog = ({
           { assetSymbol }
         )}
       </p>
-      <div className="w-1/4">
-        <Button
-          data-testid="close-asset-details-dialog"
-          fill={true}
-          size="sm"
-          onClick={() => onChange(false)}
-        >
-          {t('Close')}
-        </Button>
-      </div>
     </Dialog>
   );
 };

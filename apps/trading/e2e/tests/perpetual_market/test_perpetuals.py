@@ -156,7 +156,6 @@ def test_perps_market_terminated(page: Page, vega: VegaServiceNull):
     vega.wait_for_total_catchup()
 
     page.goto(f"/#/markets/{perpetual_market}")
-    page.pause()
     # TODO change back to have text once bug #5465 is fixed
     expect(page.get_by_test_id("market-price")
            ).to_have_text("Mark Price100.00")
