@@ -3,18 +3,31 @@ import { EmblemBase } from './emblem-base';
 import { useMarketInfo } from './hooks/use-market-info';
 import { getVegaChain } from './lib/get-chain';
 
+// Allows the specification of one or both logos. Undefined means both logos are shown
+type marketLogos = 'BASE' | 'QUOTE' | 'BOTH' | undefined;
+
 export type EmblemByMarketProps = {
+  // The ID of the market to display logos for
   market: string;
+  // The vega chain that the market is on
   vegaChain?: string;
-  showBase?: boolean;
-  showQuote?: boolean;
+  // Allows the Market Emblem component to display both or just one of the asset logos
+  marketLogos?: marketLogos;
+  // A market never has an underlying off chain contract, that's what EmblemByContract is for
   contract?: never;
+  // A market never has an asset specified, that's what EmblemByAsset is for
   asset?: never;
+  // Optional parameter used to configure the wrapper that contains the emblems
   wrapperClass?: string;
 };
 
 /**
- * Given a Vega Market ID...
+ * Given a Vega Market ID, displays the base asset logo slightly overlapping
+ * the quote asset logo. If the logos are not found, it will display a black
+ * circle instead.
+ *
+ * The optional marketLogos param restrict which logos are shown, in case only
+ * the quote or base is required, when only the market ID is available.
  *
  * @param market string the market ID
  * @param vegaChain string the vega chain ID (default: Vega Mainnet)
@@ -23,9 +36,10 @@ export type EmblemByMarketProps = {
 export function EmblemByMarket(props: EmblemByMarketProps) {
   const chain = getVegaChain(props.vegaChain);
   const data = useMarketInfo(chain, props.market);
-  const showBase = props.showBase ?? true;
-  const showQuote = props.showQuote ?? true;
-  const wrapperClass = props.wrapperClass ?? 'mr-2';
+  const { showBase, showQuote, logoCount } = chooseLogos(props.marketLogos);
+  const wrapperClass = `relative mx-1 inline-block ${
+    logoCount === 2 ? 'w-8' : 'w-5'
+  } ${props.wrapperClass ?? ''}`;
 
   const base = data.data?.baseLogo
     ? `${URL_BASE}${data.data.baseLogo}`
@@ -35,7 +49,7 @@ export function EmblemByMarket(props: EmblemByMarketProps) {
     : `${URL_BASE}/missing.svg`;
 
   return (
-    <span className={wrapperClass}>
+    <div className={wrapperClass}>
       {showBase && (
         <EmblemBase
           src={base}
@@ -47,11 +61,29 @@ export function EmblemByMarket(props: EmblemByMarketProps) {
         <EmblemBase
           src={quote}
           className={`inline-block w-5 h-5 rounded-full ${
-            showBase ? 'ml-[-8px]' : ''
+            showBase ? 'left-3 absolute z-1 top-1 ' : ''
           }`}
           {...props}
         />
       )}
-    </span>
+    </div>
   );
+}
+
+/**
+ * Parses the marketLogos options so that
+ * @param selected
+ * @returns
+ */
+export function chooseLogos(selected: marketLogos) {
+  const showBase =
+    selected === 'BASE' || selected === 'BOTH' || selected === undefined;
+  const showQuote =
+    selected === 'QUOTE' || selected === 'BOTH' || selected === undefined;
+
+  return {
+    showBase,
+    showQuote,
+    logoCount: (showBase ? 1 : 0) + (showQuote ? 1 : 0),
+  };
 }
