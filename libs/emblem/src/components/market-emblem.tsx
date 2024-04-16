@@ -1,6 +1,7 @@
-import { URL_BASE, DEFAULT_VEGA_CHAIN } from '../config';
+import { URL_BASE } from '../config';
 import { EmblemBase } from './emblem-base';
 import { useMarketInfo } from './hooks/use-market-info';
+import { getVegaChain } from './lib/get-chain';
 
 export type EmblemByMarketProps = {
   market: string;
@@ -20,7 +21,7 @@ export type EmblemByMarketProps = {
  * @returns React.Node
  */
 export function EmblemByMarket(props: EmblemByMarketProps) {
-  const chain = props.vegaChain ? props.vegaChain : DEFAULT_VEGA_CHAIN;
+  const chain = getVegaChain(props.vegaChain);
   const data = useMarketInfo(chain, props.market);
   const showBase = props.showBase ?? true;
   const showQuote = props.showQuote ?? true;

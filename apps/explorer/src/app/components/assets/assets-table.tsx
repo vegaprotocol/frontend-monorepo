@@ -14,8 +14,8 @@ import { BREAKPOINT_MD } from '../../config/breakpoints';
 import { useNavigate } from 'react-router-dom';
 import { type ColDef } from 'ag-grid-community';
 import type { RowClickedEvent } from 'ag-grid-community';
-import { Emblem } from '@vegaprotocol/emblem';
 import type { Asset } from '@vegaprotocol/types';
+import { EmblemWithChain } from '../emblem/emblem';
 
 type AssetsTableProps = {
   data: AssetFieldsFragment[] | null;
@@ -50,7 +50,7 @@ export const AssetsTable = ({ data }: AssetsTableProps) => {
         }: VegaICellRendererParams<Asset, 'symbol'>) => {
           return (
             <span>
-              {data && data.id ? <Emblem asset={data.id} /> : null}
+              {data && data.id ? <EmblemWithChain asset={data.id} /> : null}
               {value}
             </span>
           );

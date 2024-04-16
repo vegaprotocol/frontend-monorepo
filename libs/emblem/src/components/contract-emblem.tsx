@@ -1,10 +1,12 @@
-import { URL_BASE, DEFAULT_CHAIN, FILENAME } from '../config';
+import { URL_BASE, FILENAME } from '../config';
 import { EmblemBase } from './emblem-base';
+import { getVegaChain } from './lib/get-chain';
 
 export type EmblemByContractProps = {
   contract: string;
   chainId?: string;
   asset?: never;
+  vegaChain?: string | undefined;
 };
 
 /**
@@ -14,7 +16,7 @@ export type EmblemByContractProps = {
  * @returns React.Node
  */
 export function EmblemByContract(p: EmblemByContractProps) {
-  const chain = p.chainId ? p.chainId : DEFAULT_CHAIN;
+  const chain = getVegaChain(p.vegaChain);
   const url = `${URL_BASE}/chain/${chain}/asset/${p.contract}/${FILENAME}`;
 
   return <EmblemBase src={url} {...p} />;

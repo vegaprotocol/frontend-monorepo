@@ -15,7 +15,7 @@ import { MarketStateMapping } from '@vegaprotocol/types';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import { type RowClickedEvent } from 'ag-grid-community';
 import { Link, useNavigate } from 'react-router-dom';
-import { Emblem } from '@vegaprotocol/emblem';
+import { EmblemWithChain } from '../emblem/emblem';
 
 type MarketsTableProps = {
   data: MarketMaybeWithData[] | null;
@@ -53,7 +53,7 @@ export const MarketsTable = ({ data }: MarketsTableProps) => {
         }: VegaICellRendererParams<MarketMaybeWithData, 'id'>) => {
           return (
             <span>
-              {data && data.id ? <Emblem market={data.id} /> : null}
+              {data && data.id ? <EmblemWithChain market={data.id} /> : null}
               {value}
             </span>
           );
