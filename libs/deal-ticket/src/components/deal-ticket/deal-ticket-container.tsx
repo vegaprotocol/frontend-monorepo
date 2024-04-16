@@ -9,6 +9,7 @@ import {
   useMarketPrice,
   marketInfoProvider,
   markPriceProvider,
+  getProductType,
 } from '@vegaprotocol/markets';
 import { AsyncRendererInline } from '@vegaprotocol/ui-toolkit';
 import { DealTicket } from './deal-ticket';
@@ -53,6 +54,9 @@ export const DealTicketContainer = ({
     variables: { marketId },
   });
   const create = useVegaTransactionStore((state) => state.create);
+
+  const productType = market && getProductType(market);
+
   return (
     <AsyncRendererInline
       data={market && marketData}
@@ -62,7 +66,7 @@ export const DealTicketContainer = ({
     >
       {market && marketData ? (
         <>
-          {featureFlags.ISOLATED_MARGIN && (
+          {featureFlags.ISOLATED_MARGIN && productType !== 'Spot' && (
             <>
               <MarginModeSelector marketId={marketId} />
               <hr className="border-vega-clight-500 dark:border-vega-cdark-500 mb-4" />
