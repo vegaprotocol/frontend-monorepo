@@ -317,9 +317,9 @@ def test_submit_stop_oco_limit_order_cancel(
     page.get_by_test_id(cancel).first.click()
     wait_for_toast_confirmation(page)
     page.reload()
-    vega.wait_fn(10)
+    vega.wait_fn(15)
     vega.wait_for_total_catchup()
-    
+    page.reload()
     expect(
         page.locator(".ag-center-cols-container").locator('[col-id="status"]').first
     ).to_have_text("CancelledOCO")
