@@ -72,18 +72,10 @@ export const TradingViews = {
     menu: OpenOrdersMenu,
     settings: () => <OrdersSettings filter={Filter.Open} />,
   },
-  closedOrders: {
-    component: () => <OrdersContainer filter={Filter.Closed} />,
-    settings: () => <OrdersSettings filter={Filter.Closed} />,
-  },
-  rejectedOrders: {
-    component: () => <OrdersContainer filter={Filter.Rejected} />,
-    settings: () => <OrdersSettings filter={Filter.Rejected} />,
-  },
-  orders: {
-    component: OrdersContainer,
+  inactiveOrders: {
+    component: () => <OrdersContainer filter={Filter.Inactive} />,
     menu: OpenOrdersMenu,
-    settings: OrdersSettings,
+    settings: () => <OrdersSettings filter={Filter.Inactive} />,
   },
   stopOrders: {
     component: StopOrdersContainer,

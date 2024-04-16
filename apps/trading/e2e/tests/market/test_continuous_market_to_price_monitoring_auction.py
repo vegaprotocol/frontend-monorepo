@@ -4,7 +4,13 @@ from playwright.sync_api import Page, expect
 from vega_sim.service import PeggedOrder
 from actions.vega import submit_order
 from fixtures.market import setup_continuous_market
-from conftest import init_vega, cleanup_container, init_page, auth_setup, risk_accepted_setup
+from conftest import (
+    init_vega,
+    cleanup_container,
+    init_page,
+    auth_setup,
+    risk_accepted_setup,
+)
 from wallet_config import MM_WALLET, MM_WALLET2
 
 
@@ -23,8 +29,7 @@ def setup_environment(request, browser) -> Generator[Tuple[Page, str, str], None
             side="SIDE_BUY",
             volume=10,
             price=60,
-            pegged_order=PeggedOrder(
-                reference="PEGGED_REFERENCE_MID", offset=1),
+            pegged_order=PeggedOrder(reference="PEGGED_REFERENCE_MID", offset=1),
         )
         vega.wait_fn(1)
         vega.wait_for_total_catchup()
@@ -68,8 +73,7 @@ def setup_environment(request, browser) -> Generator[Tuple[Page, str, str], None
             1,
             1 + 0.1 / 2,
         )
-        submit_order(vega, MM_WALLET.name, market_id,
-                     "SIDE_SELL", 1, 1 + 0.1 / 2)
+        submit_order(vega, MM_WALLET.name, market_id, "SIDE_SELL", 1, 1 + 0.1 / 2)
         submit_order(vega, MM_WALLET2.name, market_id, "SIDE_SELL", 1, 1)
 
         vega.wait_fn(1)
@@ -95,34 +99,44 @@ def setup_environment(request, browser) -> Generator[Tuple[Page, str, str], None
 def test_parked_order(
     setup_environment: Tuple[Page, str, str],
 ) -> None:
-    page, market_id, = setup_environment
+    (
+        page,
+        market_id,
+    ) = setup_environment
     page.goto(f"/#/markets/{market_id}")
-    page.get_by_test_id("All").click()
-    expect(page.get_by_role("row").nth(5)).to_contain_text(
-        "0+10Mid - 1.00 Peg limitParked0.00GTC")
+    page.get_by_test_id("Open").click()
+    expect(page.get_by_role("row").nth(4)).to_contain_text(
+        "0+10Mid - 1.00 Peg limitParked0.00GTC"
+    )
 
 
 def test_trading_mode(
     setup_environment: Tuple[Page, str, str],
 ) -> None:
-    page, market_id, = setup_environment
+    (
+        page,
+        market_id,
+    ) = setup_environment
     page.goto(f"/#/markets/{market_id}")
-    expect(page.get_by_test_id("market-trading-mode")
-           ).to_have_text("Trading modeMonitoring auction - price")
+    expect(page.get_by_test_id("market-trading-mode")).to_have_text(
+        "Trading modeMonitoring auction - price"
+    )
     expect(page.get_by_test_id("market-state")).to_have_text("StatusSuspended")
 
 
 def test_market_info_price_monitoring_asd(
     setup_environment: Tuple[Page, str, str],
 ) -> None:
-    page, market_id, = setup_environment
+    (
+        page,
+        market_id,
+    ) = setup_environment
     page.goto(f"/#/markets/{market_id}")
     page.get_by_test_id("Info").click()
-    page.get_by_test_id("accordion-title").get_by_text(
-        "Key details").click()
-    expect(
-        page.get_by_test_id(
-            "key-value-table-row").nth(2)).to_contain_text("Suspended")
-    expect(
-        page.get_by_test_id(
-            "key-value-table-row").nth(3)).to_contain_text("Monitoring auction")
+    page.get_by_test_id("accordion-title").get_by_text("Key details").click()
+    expect(page.get_by_test_id("key-value-table-row").nth(2)).to_contain_text(
+        "Suspended"
+    )
+    expect(page.get_by_test_id("key-value-table-row").nth(3)).to_contain_text(
+        "Monitoring auction"
+    )

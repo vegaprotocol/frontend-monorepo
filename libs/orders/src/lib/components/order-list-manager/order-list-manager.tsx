@@ -15,8 +15,7 @@ import { normalizeOrderAmendment } from '../../utils';
 
 export enum Filter {
   'Open' = 'Open',
-  'Closed' = 'Closed',
-  'Rejected' = 'Rejected',
+  'Inactive' = 'Inactive',
 }
 
 export interface OrderListManagerProps {

@@ -34,6 +34,7 @@ def setup_market_with_reward_program(vega: VegaServiceNull):
     vega.mint(key_name=PARTY_C.name, asset=tDAI_asset_id, amount=100000)
     vega.mint(key_name=PARTY_A.name, asset=tDAI_asset_id, amount=100000)
     vega.mint(key_name=PARTY_D.name, asset=tDAI_asset_id, amount=100000)
+    tDAI_market2 = setup_continuous_market(vega, custom_asset_name="tDAI2", custom_market_name="BTC:DAI2", custom_asset_symbol="tDAI2")
     next_epoch(vega=vega)
     vega.update_network_parameter(
         proposal_key=MM_WALLET.name,
@@ -51,6 +52,7 @@ def setup_market_with_reward_program(vega: VegaServiceNull):
     next_epoch(vega=vega)
 
     tDAI_asset_id = vega.find_asset_id(symbol="tDAI")
+    print(tDAI_asset_id)
     vega.update_network_parameter(
         MM_WALLET.name, parameter="reward.asset", new_value=tDAI_asset_id
     )
@@ -77,6 +79,45 @@ def setup_market_with_reward_program(vega: VegaServiceNull):
         amount=100,
         factor=1.0,
     )
+    vega.wait_fn(1)
+    vega.wait_for_total_catchup()
+    tDAI_asset_id2 = vega.find_asset_id(symbol="tDAI2")
+    vega.mint(key_name=PARTY_B.name, asset=tDAI_asset_id2, amount=100000)
+    vega.wait_fn(1)
+    vega.wait_for_total_catchup()
+    vega.recurring_transfer(
+        from_key_name=PARTY_A.name,
+        from_account_type=vega_protos.vega.ACCOUNT_TYPE_GENERAL,
+        to_account_type=vega_protos.vega.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES,
+        asset=tDAI_asset_id,
+        reference="reward",
+        markets=[tDAI_market2],
+        asset_for_metric=tDAI_asset_id2,
+        metric=vega_protos.vega.DISPATCH_METRIC_MAKER_FEES_PAID,
+        amount=100,
+        factor=1.0,
+    )
+    current_epoch = vega.statistics().epoch_seq
+    game_start = current_epoch + 1
+    game_end = current_epoch + 14
+    vega.recurring_transfer(
+        from_key_name=PARTY_B.name,
+        from_account_type=vega_protos.vega.ACCOUNT_TYPE_GENERAL,
+        to_account_type=vega_protos.vega.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES,
+        asset=tDAI_asset_id,
+        reference="reward",
+        asset_for_metric=tDAI_asset_id,
+        metric=vega_protos.vega.DISPATCH_METRIC_MAKER_FEES_PAID,
+        entity_scope=vega_protos.vega.ENTITY_SCOPE_TEAMS,
+        n_top_performers=1,
+        amount=100,
+        factor=1.0,
+        start_epoch=game_start,
+        end_epoch=game_end,
+        window_length=15,
+    )
+    vega.wait_fn(1)
+    vega.wait_for_total_catchup()
     vega.submit_order(
         trading_key=PARTY_B.name,
         market_id=tDAI_market,
@@ -148,73 +189,78 @@ def setup_market_with_reward_program(vega: VegaServiceNull):
     next_epoch(vega=vega)
     return tDAI_market, tDAI_asset_id
 
-
-def test_network_reward_pot(setup_environment: Tuple[Page, str, str],
-                            ) -> None:
-    page, tDAI_market, tDAI_asset_id = setup_environment
-    expect(page.get_by_test_id(TOTAL_REWARDS)).to_have_text("183.33333 tDAI")
-
-
-def test_reward_multiplier(
-    setup_environment: Tuple[Page, str, str],
-) -> None:
-    page, tDAI_market, tDAI_asset_id = setup_environment
-    expect(page.get_by_test_id(COMBINED_MULTIPLIERS)).to_have_text("4x")
-    expect(page.get_by_test_id(STREAK_REWARD_MULTIPLIER_VALUE)).to_have_text(
-        "2x"
-    )
-    expect(page.get_by_test_id(HOARDER_REWARD_MULTIPLIER_VALUE)).to_have_text(
-        "2x"
-    )
-
-
-def test_reward_history(
-    setup_environment: Tuple[Page, str, str],
-) -> None:
-    page, tDAI_market, tDAI_asset_id = setup_environment
-    page.locator('[name="fromEpoch"]').fill("1")
-    
-    expect((page.get_by_role(ROW).locator(PRICE_TAKING_COL_ID)).nth(1)).to_have_text(
-        "299.99999100.00%"
-    )
-    expect((page.get_by_role(ROW).locator(TOTAL_COL_ID)).nth(
-        1)).to_have_text("299.99999")
-    page.get_by_test_id(EARNED_BY_ME_BUTTON).click()
-    expect((page.get_by_role(ROW).locator(TOTAL_COL_ID)).nth(1)).to_have_text(
-        "183.33333"
-    )
-
-
-def test_epoch_counter(
-    setup_environment: Tuple[Page, str, str],
-) -> None:
-    page, tDAI_market, tDAI_asset_id = setup_environment
-    expect(page.get_by_test_id("epoch-countdown")).to_have_text("Epoch 14Awaiting next epoch")
-
-
-def test_staking_reward(
+def test_reward_group_card(
     setup_environment: Tuple[Page, str, str],
 ):
     page, tDAI_market, tDAI_asset_id = setup_environment
     expect(page.get_by_test_id("active-rewards-card")).to_have_count(2)
-    staking_reward_card = page.get_by_test_id("active-rewards-card").nth(1)
-    expect(staking_reward_card).to_be_visible()
-    expect(staking_reward_card.get_by_test_id(
+    reward_group_card = page.get_by_test_id("active-rewards-card").first
+    expect(reward_group_card).to_be_visible()
+    expect(reward_group_card.get_by_test_id(
         "entity-scope")).to_have_text("Individual")
-    expect(staking_reward_card.get_by_test_id(
-        "locked-for")).to_have_text("0 epochs")
-    expect(staking_reward_card.get_by_test_id(
-        "reward-value")).to_have_text("100.00")
-    expect(staking_reward_card.get_by_test_id(
+    expect(reward_group_card.get_by_test_id(
+        "locked-for")).to_have_text("1 epoch")
+    expect(reward_group_card.get_by_test_id(
+        "reward-value")).to_have_text("200.00")
+    expect(reward_group_card.get_by_test_id(
         "distribution-strategy")).to_have_text("Pro rata")
-    expect(staking_reward_card.get_by_test_id("dispatch-metric-info")).to_have_text(
-        "Staking rewards • tDAI"
+    expect(reward_group_card.get_by_test_id("dispatch-metric-info")).to_have_text(
+        "Price maker fees paid"
     )
-    expect(staking_reward_card.get_by_test_id(
-        "assessed-over")).to_have_text("1 epoch")
-    expect(staking_reward_card.get_by_test_id(
-        "scope")).to_have_text("Not eligible ")
-    expect(staking_reward_card.get_by_test_id(
-        "staking-requirement")).to_have_text("1.00")
-    expect(staking_reward_card.get_by_test_id(
+    expect(reward_group_card.locator("button")).to_have_text(
+        "See details of 2 rewards"
+    )
+
+def test_reward_group_popup(
+    setup_environment: Tuple[Page, str, str],
+):
+    page, tDAI_market, tDAI_asset_id = setup_environment
+    expect(page.get_by_test_id("active-rewards-card")).to_have_count(2)
+    staking_reward_card = page.get_by_test_id("active-rewards-card").first
+    staking_reward_card.locator("button").click()
+
+    expect(page.get_by_test_id("dialog-content").first).to_be_visible()
+    reward_popup = page.get_by_test_id("dialog-content").first
+    expect(reward_popup.get_by_test_id("dialog-title")).to_have_text("Price maker fees paid")
+
+    expect(reward_popup.get_by_test_id("active-rewards-card")).to_have_count(2)
+    popup_reward_card_1 = reward_popup.get_by_test_id("active-rewards-card").first
+    expect(popup_reward_card_1).to_be_visible()
+    expect(popup_reward_card_1.get_by_test_id(
+        "entity-scope")).to_have_text("Individual")
+    expect(popup_reward_card_1.get_by_test_id(
+        "locked-for")).to_have_text("1 epoch")
+    expect(popup_reward_card_1.get_by_test_id(
+        "reward-value")).to_have_text("100.00")
+    expect(popup_reward_card_1.get_by_test_id(
+        "distribution-strategy")).to_have_text("Pro rata")
+    expect(popup_reward_card_1.get_by_test_id("dispatch-metric-info")).to_have_text(
+        "Price maker fees paid • BTC:DAI2"
+    )
+    expect(popup_reward_card_1.get_by_test_id(
+        "scope")).to_have_text("Eligible")
+    expect(popup_reward_card_1.get_by_test_id(
+        "staking-requirement")).to_have_text("-")
+    expect(popup_reward_card_1.get_by_test_id(
         "average-position")).to_have_text("-")
+    
+    popup_reward_card_2 = reward_popup.get_by_test_id("active-rewards-card").nth(1)
+    expect(popup_reward_card_2).to_be_visible()
+    expect(popup_reward_card_2.get_by_test_id(
+        "entity-scope")).to_have_text("Individual")
+    expect(popup_reward_card_2.get_by_test_id(
+        "locked-for")).to_have_text("1 epoch")
+    expect(popup_reward_card_2.get_by_test_id(
+        "reward-value")).to_have_text("100.00")
+    expect(popup_reward_card_2.get_by_test_id(
+        "distribution-strategy")).to_have_text("Pro rata")
+    expect(popup_reward_card_2.get_by_test_id("dispatch-metric-info")).to_have_text(
+        "Price maker fees paid • tDAI"
+    )
+    expect(popup_reward_card_2.get_by_test_id(
+        "scope")).to_have_text("Eligible")
+    expect(popup_reward_card_2.get_by_test_id(
+        "staking-requirement")).to_have_text("-")
+    expect(popup_reward_card_2.get_by_test_id(
+        "average-position")).to_have_text("-")
+
