@@ -10,7 +10,7 @@ import { Link } from 'react-router-dom';
 
 type TradingButtonProps = {
   size?: 'large' | 'medium' | 'small' | 'extra-small';
-  intent?: Intent;
+  intent?: Intent | null;
   children?: ReactNode;
   icon?: ReactNode;
   subLabel?: ReactNode;

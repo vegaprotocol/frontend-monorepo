@@ -12,32 +12,33 @@ import {
 } from './__generated__/types';
 import type {
   AccountType,
+  DispatchStrategy,
   StopOrderRejectionReason,
 } from './__generated__/types';
-import type {
-  AuctionTrigger,
-  DataSourceSpecStatus,
-  DepositStatus,
-  Interval,
-  LiquidityProvisionStatus,
-  MarketState,
-  MarketTradingMode,
-  NodeStatus,
-  OrderRejectionReason,
-  OrderStatus,
-  OrderTimeInForce,
-  OrderType,
-  PositionStatus,
-  ProposalRejectionReason,
-  ProposalState,
-  Side,
-  StakeLinkingStatus,
-  TransferType,
-  ValidatorStatus,
-  VoteValue,
-  WithdrawalStatus,
-  DispatchMetric,
-  StopOrderStatus,
+import {
+  type AuctionTrigger,
+  type DataSourceSpecStatus,
+  type DepositStatus,
+  type Interval,
+  type LiquidityProvisionStatus,
+  type MarketState,
+  type MarketTradingMode,
+  type NodeStatus,
+  type OrderRejectionReason,
+  type OrderStatus,
+  type OrderTimeInForce,
+  type OrderType,
+  type PositionStatus,
+  type ProposalRejectionReason,
+  type ProposalState,
+  type Side,
+  type StakeLinkingStatus,
+  type TransferType,
+  type ValidatorStatus,
+  type VoteValue,
+  type WithdrawalStatus,
+  type DispatchMetric,
+  type StopOrderStatus,
 } from './__generated__/types';
 import type { ProductType, ProposalProductType } from './product';
 
@@ -636,8 +637,24 @@ export const GovernanceTransferKindMapping: GovernanceTransferKindMap = {
   RecurringGovernanceTransfer: 'Recurring',
 };
 
+/**
+ * The below dispatch metric labels are extended by additional
+ * `StakingRewardMetric` which handles the case when a reward (transfer)
+ * has undefined dispatch strategy and it targetted to
+ * `AccountType.ACCOUNT_TYPE_GLOBAL_REWARD`.
+ */
+
+export type StakingRewardMetric = 'STAKING_REWARD_METRIC';
+
+export type StakingDispatchStrategy = Omit<
+  DispatchStrategy,
+  'dispatchMetric'
+> & {
+  dispatchMetric: StakingRewardMetric;
+};
+
 type DispatchMetricLabel = {
-  [T in DispatchMetric]: string;
+  [T in DispatchMetric | StakingRewardMetric]: string;
 };
 
 export const DispatchMetricLabels: DispatchMetricLabel = {
@@ -649,6 +666,7 @@ export const DispatchMetricLabels: DispatchMetricLabel = {
   DISPATCH_METRIC_RELATIVE_RETURN: 'Relative return',
   DISPATCH_METRIC_RETURN_VOLATILITY: 'Return volatility',
   DISPATCH_METRIC_VALIDATOR_RANKING: 'Validator ranking',
+  STAKING_REWARD_METRIC: 'Staking rewards',
 };
 
 export const DispatchMetricDescription: DispatchMetricLabel = {
@@ -667,6 +685,8 @@ export const DispatchMetricDescription: DispatchMetricLabel = {
     'Get rewards for having the least amount of variance in your returns while you have a position open during the rewards window.',
   DISPATCH_METRIC_VALIDATOR_RANKING:
     'Get rewards if you run a validator node with a high ranking score.',
+  STAKING_REWARD_METRIC:
+    'Global staking reward for staking $VEGA on the network via the Governance app',
 };
 
 export const PositionStatusMapping: {

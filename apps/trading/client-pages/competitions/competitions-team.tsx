@@ -14,7 +14,12 @@ import {
   Intent,
   CopyWithTooltip,
 } from '@vegaprotocol/ui-toolkit';
-import { TransferStatus, type Asset } from '@vegaprotocol/types';
+import {
+  type DispatchStrategy,
+  type StakingDispatchStrategy,
+  TransferStatus,
+  type Asset,
+} from '@vegaprotocol/types';
 import classNames from 'classnames';
 import { useT } from '../../lib/use-t';
 import { Table } from '../../components/table';
@@ -139,7 +144,9 @@ const TeamPage = ({
   members?: Member[];
   games?: TeamGame[];
   gamesLoading?: boolean;
-  transfers?: EnrichedRewardTransfer[];
+  transfers?: EnrichedRewardTransfer<
+    DispatchStrategy | StakingDispatchStrategy
+  >[];
   transfersLoading?: boolean;
   allMarkets?: MarketMap;
   refetch: () => void;
@@ -259,7 +266,9 @@ const Games = ({
 }: {
   games?: TeamGame[];
   gamesLoading?: boolean;
-  transfers?: EnrichedRewardTransfer[];
+  transfers?: EnrichedRewardTransfer<
+    DispatchStrategy | StakingDispatchStrategy
+  >[];
   transfersLoading?: boolean;
   allMarkets?: MarketMap;
 }) => {
@@ -539,7 +548,7 @@ const GameTypeCell = ({
   transfer,
   allMarkets,
 }: {
-  transfer?: EnrichedRewardTransfer;
+  transfer?: EnrichedRewardTransfer<DispatchStrategy | StakingDispatchStrategy>;
   allMarkets?: MarketMap;
 }) => {
   const [open, setOpen] = useState(false);
@@ -578,7 +587,7 @@ const ActiveRewardCardDialog = ({
   open: boolean;
   onChange: (isOpen: boolean) => void;
   trigger?: HTMLElement | null;
-  transfer: EnrichedRewardTransfer;
+  transfer: EnrichedRewardTransfer<DispatchStrategy | StakingDispatchStrategy>;
   allMarkets?: MarketMap;
 }) => {
   const t = useT();
