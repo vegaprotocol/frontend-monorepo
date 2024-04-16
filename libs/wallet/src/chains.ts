@@ -10,11 +10,12 @@ export const mainnet = {
   name: 'Fairground',
 };
 
-export const mainnetMirror = {
+export const mirror = {
   id: 'vega-mainnet-mirror-202306231148',
-  testnet: false,
-  name: 'Mainnet Mirror',
+  testnet: true,
+  name: 'Mirror',
 };
+
 export const fairground = {
   id: 'vega-fairground-202305051805',
   testnet: true,
