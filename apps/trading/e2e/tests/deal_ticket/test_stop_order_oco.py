@@ -22,7 +22,7 @@ expiry_strategy_submit = "expiryStrategy-submit"
 expiry_strategy_cancel = "expiryStrategy-cancel"
 date_picker_field = "date-picker-field"
 submit_stop_order = "place-order"
-stop_orders_tab = "Stop orders"
+stop_orders_tab = "Advanced orders"
 row_table = "row"
 cancel = "cancel"
 market_name_col = '[col-id="market.tradableInstrument.instrument.code"]'

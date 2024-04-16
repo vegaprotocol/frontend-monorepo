@@ -29,7 +29,7 @@ def test_iceberg_submit(continuous_market, vega: VegaServiceNull, page: Page):
     expect(page.get_by_test_id("toast-content")).to_have_text(
         "Order filledYour transaction has been confirmedView in block explorerSubmit order - filledBTC:DAI_2023+3 @ 107.00 tDAI"
     )
-    page.get_by_test_id("All").click()
+    page.get_by_test_id("Order history").click()
     expect(
         (page.get_by_role("row").locator('[col-id="type"]')).nth(1)
     ).to_have_text("Limit (Iceberg)")
@@ -65,8 +65,8 @@ def test_iceberg_open_order(continuous_market, vega: VegaServiceNull, page: Page
     ).to_have_text("Active")
     expect(page.get_by_test_id("price-10100000")).to_be_visible
     expect(page.get_by_test_id("ask-vol-10100000")).to_have_text("3")
-    page.get_by_test_id("Trades").click()
-    expect(page.locator('[id^="cell-price-"]').first).to_have_text("101.50")
+    page.get_by_test_id("Trades").nth(1).click()
+    expect(page.locator('[id^="cell-price-"]').first).to_have_text("101.50 tDAI")
     expect(page.locator('[id^="cell-size-"]').first).to_have_text("99")
 
     submit_order(vega, MM_WALLET2.name, continuous_market, "SIDE_BUY", 103, 101)

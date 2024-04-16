@@ -114,44 +114,18 @@ def test_trade_match_table(
     expect(rows[1]).to_contain_text("0" + "+1" + "Limit" + "Active" + "50.00" + "GTC")
     expect(rows[2]).to_contain_text("0" + "+5" + "Limit" + "Active" + "105.00" + "GTC")
 
-    # Closed
-    page.get_by_test_id("Closed").click()
-    rows = page.get_by_test_id("tab-closed-orders").locator(row_locator).all()
+
+    # Order history
+    page.get_by_test_id("Order history").click()    
+    rows = page.locator(row_locator).all()
     expect(rows[0]).to_contain_text(
         "0" + "-5" + "Limit" + "Stopped: Self trading" + "95.00" + "GTC"
     )
     expect(rows[1]).to_contain_text(
-        "0" + "-5" + "Limit" + "Stopped: Self trading" + "90.00" + "GTC"
+        "0" + "-5" + "Limit"     + "Stopped: Self trading" + "90.00" + "GTC"
     )
 
-    # Rejected
-    page.get_by_test_id("Rejected").click()
-    time.sleep(0.5)
-    expect(
-        page.get_by_test_id("tab-rejected-orders").locator(row_locator)
-    ).to_contain_text(
-        "0"
-        + "+1"
-        + "Limit"
-        + "Rejected: Margin check failed"
-        + "10,000,000,000,000,000.00"
-        + "GTC"
-    )
-
-    # All
-    page.get_by_test_id("All").click()
-    rows = page.get_by_test_id("tab-orders").locator(row_locator).all()
-    expect(rows[0]).to_contain_text("0" + "-1" + "Limit" + "Active" + "150.00" + "GTC")
-    expect(rows[1]).to_contain_text(
-        "0" + "-5" + "Limit" + "Stopped: Self trading" + "95.00" + "GTC"
-    )
     expect(rows[2]).to_contain_text(
-        "0" + "-5" + "Limit" + "Stopped: Self trading" + "90.00" + "GTC"
-    )
-    expect(rows[3]).to_contain_text("0" + "+1" + "Limit" + "Active" + "50.00" + "GTC")
-    expect(rows[4]).to_contain_text("0" + "+5" + "Limit" + "Active" + "105.00" + "GTC")
-    expect(rows[5]).to_contain_text("2" + "+5" + "Limit" + "Active" + "110.00" + "GTC")
-    expect(rows[6]).to_contain_text(
         "0"
         + "+1"
         + "Limit"
@@ -161,15 +135,15 @@ def test_trade_match_table(
     )
 
     # Stop Orders
-    page.get_by_test_id("Stop orders").click()
+    page.get_by_test_id("Advanced orders").click()
     expect(page.get_by_test_id("tab-stop-orders")).to_be_visible()
     expect(page.get_by_test_id("tab-stop-orders").locator(row_locator)).to_be_visible(
         visible=False
     )
 
-    # Fills
-    page.get_by_test_id("Fills").click()
-    rows = page.get_by_test_id("tab-fills").locator(row_locator).all()
+    # Trades
+    page.get_by_test_id("Trades").nth(1).click()
+    rows = page.locator(row_locator).all()
     expect(rows[0]).to_contain_text(
         "+1" + "110.00 tDAI" + "110.00 tDAI" + "-" + "0.00 tDAI"
     )

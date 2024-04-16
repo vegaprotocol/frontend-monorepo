@@ -1,4 +1,5 @@
 import pytest
+import re
 from playwright.sync_api import Page, expect
 from vega_sim.null_service import VegaServiceNull
 from conftest import init_vega, cleanup_container
@@ -50,11 +51,9 @@ def test_liquidity_provision_amendment(
         "Learn moreProviding liquidity"
     )
     # 002-LIQP-010
-    expect(
-        page.get_by_test_id("liquidity-learn-more").get_by_test_id("external-link")
-    ).to_have_attribute(
-        "href", "https://docs.vega.xyz/mainnet/concepts/liquidity/provision"
-    )
+    expected_pattern = re.compile(r"https://docs\.vega\.xyz/.*/concepts/liquidity/provision")
+    actual_href = page.get_by_test_id("liquidity-learn-more").get_by_test_id("external-link").get_attribute("href")
+    assert expected_pattern.match(actual_href), f"Expected href to match {expected_pattern.pattern}, but got {actual_href}"
 
     vega.submit_simple_liquidity(
         key_name="market_maker",
