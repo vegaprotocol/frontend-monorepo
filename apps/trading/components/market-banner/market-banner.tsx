@@ -2,9 +2,10 @@ import {
   type Market,
   useMaliciousOracle,
   useMarketState,
+  useMarketTradingMode,
 } from '@vegaprotocol/markets';
 import type { ProposalFragment } from '@vegaprotocol/proposals';
-import { MarketState } from '@vegaprotocol/types';
+import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
 import { Intent, NotificationBanner } from '@vegaprotocol/ui-toolkit';
 import compact from 'lodash/compact';
 import { useState } from 'react';
@@ -19,6 +20,7 @@ import {
   useUpdateMarketProposals,
   useUpdateMarketStateProposals,
 } from './use-market-proposals';
+import { MarketAuctionBanner } from './market-monitoring-auction';
 
 type UpdateMarketBanner = {
   kind: 'UpdateMarket';
@@ -45,6 +47,11 @@ type SuspendedBanner = {
   market: Market;
 };
 
+type MonitoringAuctionBanner = {
+  kind: 'MonitoringAuction';
+  market: Market;
+};
+
 type OracleBanner = {
   kind: 'Oracle';
   oracle: Oracle;
@@ -56,10 +63,12 @@ type Banner =
   | NewMarketBanner
   | SettledBanner
   | SuspendedBanner
+  | MonitoringAuctionBanner
   | OracleBanner;
 
 export const MarketBanner = ({ market }: { market: Market }) => {
   const { data: marketState } = useMarketState(market.id);
+  const { data: marketTradingMode } = useMarketTradingMode(market.id);
 
   const { proposals: successorProposals, loading: successorLoading } =
     useSuccessorMarketProposals(market.id);
@@ -117,6 +126,13 @@ export const MarketBanner = ({ market }: { market: Market }) => {
           market,
         }
       : undefined,
+    marketState === MarketState.STATE_SUSPENDED &&
+    marketTradingMode === MarketTradingMode.TRADING_MODE_MONITORING_AUCTION
+      ? {
+          kind: 'MonitoringAuction' as const,
+          market,
+        }
+      : undefined,
     maliciousOracle !== undefined
       ? {
           kind: 'Oracle' as const,
@@ -167,6 +183,11 @@ const BannerQueue = ({
     case 'Suspended': {
       content = <MarketSuspendedBanner />;
       intent = Intent.Warning;
+      break;
+    }
+    case 'MonitoringAuction': {
+      content = <MarketAuctionBanner market={market} />;
+      intent = Intent.Primary;
       break;
     }
     case 'Oracle': {
