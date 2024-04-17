@@ -7,7 +7,7 @@ import {
 } from '@vegaprotocol/assets';
 import { useNavigate } from 'react-router-dom';
 import { Routes } from '../../../routes/route-names';
-import { EmblemWithChain } from '../../emblem/emblem';
+import { EmblemWithChain } from '../../emblem-with-chain/emblem-with-chain';
 
 export type AssetLinkProps = Partial<ComponentProps<typeof ButtonLink>> & {
   assetId: string;

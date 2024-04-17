@@ -4,7 +4,7 @@ import type { EmblemByMarketProps } from '../market-emblem';
 
 /**
  * Type guard for generic Emblem component, which ends up rendering either an EmblemByContract
- * or EmblemByAsset depending on the arguments
+ * EmblemByAsset, or EmblemByMarket depending on the arguments
  */
 export function isEmblemByAsset(
   args: EmblemByAssetProps | EmblemByContractProps | EmblemByMarketProps
@@ -12,6 +12,10 @@ export function isEmblemByAsset(
   return (args as EmblemByAssetProps).asset !== undefined;
 }
 
+/**
+ * Type guard for the generic Emblem component, which will check if the props match the required
+ * props for the EmblemByMarket component
+ */
 export function isEmblemByMarket(
   args: EmblemByAssetProps | EmblemByContractProps | EmblemByMarketProps
 ): args is EmblemByMarketProps {

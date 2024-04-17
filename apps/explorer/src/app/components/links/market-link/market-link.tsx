@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import type { ComponentProps } from 'react';
 import { t } from '@vegaprotocol/i18n';
 import Hash from '../hash';
-import { EmblemWithChain } from '../../emblem/emblem';
+import { EmblemWithChain } from '../../emblem-with-chain/emblem-with-chain';
 
 export type MarketLinkProps = Partial<ComponentProps<typeof Link>> & {
   id: string;

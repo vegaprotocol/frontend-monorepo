@@ -4,7 +4,7 @@ import { useMarketInfo } from './hooks/use-market-info';
 import { getVegaChain } from './lib/get-chain';
 
 // Allows the specification of one or both logos. Undefined means both logos are shown
-type marketLogos = 'BASE' | 'QUOTE' | 'BOTH' | undefined;
+type MarketLogos = 'BASE' | 'QUOTE' | 'BOTH' | undefined;
 
 export type EmblemByMarketProps = {
   // The ID of the market to display logos for
@@ -12,11 +12,7 @@ export type EmblemByMarketProps = {
   // The vega chain that the market is on
   vegaChain?: string;
   // Allows the Market Emblem component to display both or just one of the asset logos
-  marketLogos?: marketLogos;
-  // A market never has an underlying off chain contract, that's what EmblemByContract is for
-  contract?: never;
-  // A market never has an asset specified, that's what EmblemByAsset is for
-  asset?: never;
+  marketLogos?: MarketLogos;
   // Optional parameter used to configure the wrapper that contains the emblems
   wrapperClass?: string;
 };
@@ -35,21 +31,21 @@ export type EmblemByMarketProps = {
  */
 export function EmblemByMarket(props: EmblemByMarketProps) {
   const { vegaChain, marketLogos, market, wrapperClass = '' } = props;
-  const chain = getVegaChain(vegaChain);
-
-  const data = useMarketInfo(chain, market);
   const { showBase, showQuote, logoCount } = chooseLogos(marketLogos);
 
+  const chain = getVegaChain(vegaChain);
+  const data = useMarketInfo(chain, market);
+  const { base, quote } = getLogoPaths(
+    data.data?.baseLogo,
+    data.data?.quoteLogo
+  );
+
+  // Widths are calculated here as they are required for using absolute positioning to
+  // render the logos as overlapping. Moving to blocks with negative margins should work
+  // and could remove this calculation, but was not working reliably cross platform.
   const wrapperClassString = `relative inline-block ${
     logoCount === 2 ? 'w-8' : 'w-5'
   } ${wrapperClass ?? ''}`;
-
-  const base = data.data?.baseLogo
-    ? `${URL_BASE}${data.data.baseLogo}`
-    : `${URL_BASE}/missing.svg`;
-  const quote = data.data?.quoteLogo
-    ? `${URL_BASE}${data.data.quoteLogo}`
-    : `${URL_BASE}/missing.svg`;
 
   return (
     <div className={wrapperClassString}>
@@ -73,12 +69,46 @@ export function EmblemByMarket(props: EmblemByMarketProps) {
   );
 }
 
+type LogoPaths = {
+  base: string;
+  quote: string;
+};
+
 /**
- * Parses the marketLogos options so that
- * @param selected
- * @returns
+ * Returns the full URL for the base and quote logos, substituting
+ * the default `missing` path if either logo is not defined
+ *
+ * @param baseLogo
+ * @param quoteLogo
+ * @returns LogoPaths object containing the full URL for the base and quote logos
  */
-export function chooseLogos(selected: marketLogos) {
+export function getLogoPaths(baseLogo?: string, quoteLogo?: string): LogoPaths {
+  const base = baseLogo ? `${URL_BASE}${baseLogo}` : `${URL_BASE}/missing.svg`;
+  const quote = quoteLogo
+    ? `${URL_BASE}${quoteLogo}`
+    : `${URL_BASE}/missing.svg`;
+
+  return {
+    base,
+    quote,
+  };
+}
+
+type LogoOptions = {
+  showBase: boolean;
+  showQuote: boolean;
+  logoCount: number;
+};
+
+/**
+ * Parses the marketLogos options, correctly inferring defaults
+ * and calculating the size the container needs to be based on
+ * how many logos are shown
+ *
+ * @param selected
+ * @returns LogoOptions
+ */
+export function chooseLogos(selected: MarketLogos): LogoOptions {
   const showBase =
     selected === 'BASE' || selected === 'BOTH' || selected === undefined;
   const showQuote =

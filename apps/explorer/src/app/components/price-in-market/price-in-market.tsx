@@ -3,7 +3,7 @@ import { t } from '@vegaprotocol/i18n';
 import isUndefined from 'lodash/isUndefined';
 import { useExplorerMarketQuery } from '../links/market-link/__generated__/Market';
 import get from 'lodash/get';
-import { EmblemWithChain } from '../emblem/emblem';
+import { EmblemWithChain } from '../emblem-with-chain/emblem-with-chain';
 
 export type DecimalSource = 'MARKET' | 'SETTLEMENT_ASSET';
 

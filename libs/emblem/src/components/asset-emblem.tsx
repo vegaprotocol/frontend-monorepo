@@ -5,7 +5,6 @@ import { getVegaChain } from './lib/get-chain';
 export type EmblemByAssetProps = {
   asset: string;
   vegaChain?: string;
-  contract?: never;
 };
 
 /**

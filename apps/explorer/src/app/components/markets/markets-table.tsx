@@ -15,7 +15,7 @@ import { MarketStateMapping } from '@vegaprotocol/types';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import { type RowClickedEvent } from 'ag-grid-community';
 import { Link, useNavigate } from 'react-router-dom';
-import { EmblemWithChain } from '../emblem/emblem';
+import { EmblemWithChain } from '../emblem-with-chain/emblem-with-chain';
 
 type MarketsTableProps = {
   data: MarketMaybeWithData[] | null;

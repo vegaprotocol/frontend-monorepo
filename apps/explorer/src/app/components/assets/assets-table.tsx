@@ -15,7 +15,7 @@ import { useNavigate } from 'react-router-dom';
 import { type ColDef } from 'ag-grid-community';
 import type { RowClickedEvent } from 'ag-grid-community';
 import type { Asset } from '@vegaprotocol/types';
-import { EmblemWithChain } from '../emblem/emblem';
+import { EmblemWithChain } from '../emblem-with-chain/emblem-with-chain';
 
 type AssetsTableProps = {
   data: AssetFieldsFragment[] | null;
