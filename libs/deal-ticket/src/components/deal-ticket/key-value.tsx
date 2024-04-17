@@ -4,8 +4,8 @@ import type { ReactNode } from 'react';
 export interface KeyValuePros {
   id?: string;
   label: ReactNode;
-  value?: string | null | undefined;
-  symbol: string;
+  value?: ReactNode;
+  symbol?: string;
   indent?: boolean | undefined;
   labelDescription?: ReactNode;
   formattedValue?: ReactNode;
@@ -26,6 +26,7 @@ export const KeyValue = ({
       {formattedValue || '-'} {symbol || ''}
     </>
   );
+
   const valueElement = onClick ? (
     <button type="button" onClick={onClick} className="font-mono ml-auto">
       {displayValue}
@@ -33,6 +34,7 @@ export const KeyValue = ({
   ) : (
     <div className="font-mono ml-auto">{displayValue}</div>
   );
+
   return (
     <div
       data-testid={`deal-ticket-fee-${
@@ -46,7 +48,7 @@ export const KeyValue = ({
       <Tooltip description={labelDescription}>
         <div className="text-muted text-left">{label}</div>
       </Tooltip>
-      <Tooltip description={`${value ?? '-'} ${symbol || ''}`}>
+      <Tooltip description={value && `${value} ${symbol || ''}`}>
         {valueElement}
       </Tooltip>
     </div>

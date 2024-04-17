@@ -1,6 +1,7 @@
 import { Box } from './box';
 import { type ComponentProps, type ReactElement, type ReactNode } from 'react';
 import { DudeBadge } from './graphics/dude-badge';
+import { Tooltip, TradingButton } from '@vegaprotocol/ui-toolkit';
 
 export const CompetitionsActionsContainer = ({
   children,
@@ -39,3 +40,14 @@ export const CompetitionsAction = ({
     </Box>
   );
 };
+
+export const ActionButton = ({
+  tooltip,
+  ...buttonProps
+}: ComponentProps<typeof TradingButton> & {
+  tooltip?: string;
+}) => (
+  <Tooltip description={tooltip}>
+    <TradingButton {...buttonProps} />
+  </Tooltip>
+);

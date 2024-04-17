@@ -144,30 +144,6 @@ const cacheConfig: InMemoryCacheConfig = {
     Product: {
       keyFields: ['settlementAsset', ['id']],
     },
-    Market: {
-      fields: {
-        /**
-         * Intercept cache field for tickSize because mainnet specific queries have been
-         * set up, marking this field as client only. The following can be removed when mainnet
-         * supports ticksize:
-         *
-         * 1. The typePolicy for tickSize below
-         * 2. The MarketInfoMainnet query in libs/markets/src/lib/components/market-info/MarketInfo.graphql
-         * 3. The ternary to switch queries in libs/markets/src/lib/components/market-info/market-info-data-provider.ts
-         * 4. The MarketsMainnet query in libs/markets/src/lib/markets.graphql
-         * 5. The ternary to switch queries in libs/markets/src/lib/markets-provider.ts
-         */
-        tickSize: {
-          read(value) {
-            // value is not present, we have probably marked tickSize as a client only field
-            if (!value) return '1';
-
-            // Use fetch response value
-            return value;
-          },
-        },
-      },
-    },
     MarketData: {
       keyFields: ['market', ['id']],
     },

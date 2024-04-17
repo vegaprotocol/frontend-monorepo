@@ -54,7 +54,7 @@ export const AccountTypeMapping: {
   ACCOUNT_TYPE_GLOBAL_REWARD: 'Global reward account',
   ACCOUNT_TYPE_INSURANCE: 'Insurance account',
   ACCOUNT_TYPE_MARGIN: 'Margin account',
-  ACCOUNT_TYPE_ORDER_MARGIN: 'Per asset market account',
+  ACCOUNT_TYPE_ORDER_MARGIN: 'Order margin account',
   ACCOUNT_TYPE_PENDING_TRANSFERS: 'Pending transfers account',
   ACCOUNT_TYPE_PENDING_FEE_REFERRAL_REWARD:
     'Pending fee referral reward account',
@@ -438,6 +438,10 @@ export const ProposalRejectionReasonMapping: {
   PROPOSAL_ERROR_INVALID_PERPETUAL_PRODUCT: 'Invalid perpetual product',
   PROPOSAL_ERROR_INVALID_SLA_PARAMS: 'Invalid SLA params',
   PROPOSAL_ERROR_MISSING_SLA_PARAMS: 'Missing SLA params',
+  // TODO: check and remove ts-expect-error when schema is correct
+  // @ts-expect-error this rejection reason is not yet in the schema but does exist
+  PROPOSAL_ERROR_PROPOSAL_IN_BATCH_REJECTED:
+    'One or more sub proposals are invalid',
 };
 
 /**

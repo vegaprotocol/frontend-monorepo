@@ -40,6 +40,7 @@ import { useActiveOrders } from '@vegaprotocol/orders';
 import {
   getAsset,
   getDerivedPrice,
+  getProductType,
   getQuoteName,
   isMarketInAuction,
 } from '@vegaprotocol/markets';
@@ -85,6 +86,7 @@ import {
   isStopOrderType,
   useDealTicketFormValues,
 } from '@vegaprotocol/react-helpers';
+import { useSlippage } from '../../hooks/use-slippage';
 
 export const REDUCE_ONLY_TOOLTIP =
   '"Reduce only" will ensure that this order will not increase the size of an open position. When the order is matched, it will only trade enough volume to bring your open volume towards 0 but never change the direction of your position. If applied to a limit order that is not instantly filled, the order will be stopped.';
@@ -182,6 +184,13 @@ export const DealTicket = ({
   const lastSubmitTime = useRef(0);
 
   const asset = getAsset(market);
+  const assetSymbol = asset.symbol;
+  const productType = getProductType(market);
+  const quoteName = getQuoteName(market);
+  const baseQuote = getBaseQuoteUnit(
+    market.tradableInstrument.instrument.metadata.tags
+  );
+
   const {
     orderMarginAccountBalance,
     marginAccountBalance,
@@ -303,11 +312,7 @@ export const DealTicket = ({
       normalizedOrder.size === '0'
   );
 
-  const assetSymbol = getAsset(market).symbol;
-
-  const baseQuote = getBaseQuoteUnit(
-    market.tradableInstrument.instrument.metadata.tags
-  );
+  const slippage = useSlippage(normalizedOrder, market);
 
   const summaryError = useMemo(() => {
     if (!pubKey) {
@@ -454,7 +459,6 @@ export const DealTicket = ({
     },
   });
 
-  const quoteName = getQuoteName(market);
   const isLimitType = type === Schema.OrderType.TYPE_LIMIT;
 
   const priceStep = determinePriceStep(market);
@@ -490,7 +494,11 @@ export const DealTicket = ({
         name="side"
         control={control}
         render={({ field }) => (
-          <SideSelector value={field.value} onValueChange={field.onChange} />
+          <SideSelector
+            productType={productType}
+            value={field.value}
+            onValueChange={field.onChange}
+          />
         )}
       />
 
@@ -720,41 +728,43 @@ export const DealTicket = ({
         </div>
 
         <div className="flex flex-col gap-2">
-          <Controller
-            name="reduceOnly"
-            control={control}
-            render={({ field }) => (
-              <Tooltip
-                description={
-                  <>
-                    <span>
-                      {disableReduceOnlyCheckbox
-                        ? t(
-                            '"Reduce only" can be used only with non-persistent orders, such as "Fill or Kill" or "Immediate or Cancel".'
-                          )
-                        : t(REDUCE_ONLY_TOOLTIP)}
-                    </span>{' '}
-                    <ExternalLink href={DocsLinks?.POST_REDUCE_ONLY}>
-                      {t('Find out more')}
-                    </ExternalLink>
-                  </>
-                }
-              >
-                <div>
-                  <Checkbox
-                    name="reduce-only"
-                    checked={!disableReduceOnlyCheckbox && field.value}
-                    disabled={disableReduceOnlyCheckbox}
-                    onCheckedChange={(reduceOnly) => {
-                      field.onChange(reduceOnly);
-                      setValue('postOnly', false);
-                    }}
-                    label={t('Reduce only')}
-                  />
-                </div>
-              </Tooltip>
-            )}
-          />
+          {productType !== 'Spot' && (
+            <Controller
+              name="reduceOnly"
+              control={control}
+              render={({ field }) => (
+                <Tooltip
+                  description={
+                    <>
+                      <span>
+                        {disableReduceOnlyCheckbox
+                          ? t(
+                              '"Reduce only" can be used only with non-persistent orders, such as "Fill or Kill" or "Immediate or Cancel".'
+                            )
+                          : t(REDUCE_ONLY_TOOLTIP)}
+                      </span>{' '}
+                      <ExternalLink href={DocsLinks?.POST_REDUCE_ONLY}>
+                        {t('Find out more')}
+                      </ExternalLink>
+                    </>
+                  }
+                >
+                  <div>
+                    <Checkbox
+                      name="reduce-only"
+                      checked={!disableReduceOnlyCheckbox && field.value}
+                      disabled={disableReduceOnlyCheckbox}
+                      onCheckedChange={(reduceOnly) => {
+                        field.onChange(reduceOnly);
+                        setValue('postOnly', false);
+                      }}
+                      label={t('Reduce only')}
+                    />
+                  </div>
+                </Tooltip>
+              )}
+            />
+          )}
           {isLimitType && (
             <Controller
               name="postOnly"
@@ -830,6 +840,7 @@ export const DealTicket = ({
         isReadOnly={isReadOnly}
         pubKey={pubKey}
         onDeposit={onDeposit}
+        type={type}
       />
       <Button
         data-testid="place-order"
@@ -863,6 +874,7 @@ export const DealTicket = ({
         generalAccountBalance={generalAccountBalance}
         positionEstimate={positionEstimate?.estimatePosition}
         market={market}
+        slippage={slippage}
       />
     </form>
   );
@@ -881,6 +893,7 @@ interface SummaryMessageProps {
   isReadOnly: boolean;
   pubKey: string | undefined;
   onDeposit: (assetId: string) => void;
+  type: Schema.OrderType;
 }
 
 export const NoWalletWarning = ({
@@ -923,6 +936,7 @@ const SummaryMessage = memo(
     isReadOnly,
     pubKey,
     onDeposit,
+    type,
   }: SummaryMessageProps) => {
     const t = useT();
     // Specific error UI for if balance is so we can
@@ -973,10 +987,23 @@ const SummaryMessage = memo(
         Schema.MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
       ].includes(marketTradingMode)
     ) {
+      if (type === Schema.OrderType.TYPE_MARKET) {
+        return (
+          <div className="mb-2">
+            <Notification
+              intent={Intent.Primary}
+              testId={'deal-ticket-warning-auction'}
+              message={t(
+                'Market orders cannot be placed while in auction, click to switch to limit orders'
+              )}
+            />
+          </div>
+        );
+      }
       return (
         <div className="mb-2">
           <Notification
-            intent={Intent.Warning}
+            intent={Intent.Primary}
             testId={'deal-ticket-warning-auction'}
             message={t(
               'Any orders placed now will not trade until the auction ends'

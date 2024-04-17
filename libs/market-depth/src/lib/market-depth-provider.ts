@@ -1,4 +1,4 @@
-import { type Update } from '@vegaprotocol/data-provider';
+import { useDataProvider, type Update } from '@vegaprotocol/data-provider';
 import { makeDataProvider } from '@vegaprotocol/data-provider';
 import { updateLevels } from './orderbook-data';
 import { captureException } from '@sentry/react';
@@ -80,3 +80,10 @@ export const marketDepthProvider = makeDataProvider<
   getData,
   getDelta,
 });
+
+export const useOrderbook = (marketId: string) => {
+  return useDataProvider({
+    dataProvider: marketDepthProvider,
+    variables: { marketId },
+  });
+};

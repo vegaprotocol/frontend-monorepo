@@ -91,7 +91,7 @@ import type {
 import { formatDuration } from 'date-fns';
 import * as AccordionPrimitive from '@radix-ui/react-accordion';
 import { useT } from '../../use-t';
-import { isPerpetual } from '../../product';
+import { isPerpetual, isSpot } from '../../product';
 import omit from 'lodash/omit';
 import orderBy from 'lodash/orderBy';
 import groupBy from 'lodash/groupBy';
@@ -173,6 +173,7 @@ export const MarketPriceInfoPanel = ({ market }: MarketInfoProps) => {
     dataProvider: marketDataProvider,
     variables: { marketId: market.id },
   });
+  const isSpotMarket = isSpot(market.tradableInstrument.instrument.product);
   return (
     <>
       <MarketInfoTable
@@ -184,12 +185,14 @@ export const MarketPriceInfoPanel = ({ market }: MarketInfoProps) => {
         }}
         decimalPlaces={market.decimalPlaces}
       />
-      <p className="mt-2 text-xs">
-        {t(
-          'There is 1 unit of the settlement asset ({{assetSymbol}}) to every 1 quote unit ({{quoteUnit}}).',
-          { assetSymbol, quoteUnit }
-        )}
-      </p>
+      {!isSpotMarket && (
+        <p className="mt-2 text-xs">
+          {t(
+            'There is 1 unit of the settlement asset ({{assetSymbol}}) to every 1 quote unit ({{quoteUnit}}).',
+            { assetSymbol, quoteUnit }
+          )}
+        </p>
+      )}
     </>
   );
 };
@@ -335,6 +338,47 @@ export const KeyDetailsInfoPanel = ({
       subTerms?.change.__typename === 'NewMarket'
         ? subTerms.change.successorConfiguration || undefined
         : undefined;
+  }
+
+  const isSpotMarket = isSpot(market.tradableInstrument.instrument.product);
+
+  if (isSpotMarket) {
+    const quoteAssetDecimals = getQuoteAsset(market).decimals;
+    const baseAssetDecimals = getBaseAsset(market).decimals;
+    return (
+      <>
+        <KeyValueTable>
+          <KeyValueTableRow noBorder className="text-xs">
+            <div>{t('Market ID')}</div>
+            <CopyWithTooltip text={market.id}>
+              <button
+                data-testid="copy-eth-oracle-address"
+                className="text-right uppercase"
+              >
+                <span className="flex gap-1">
+                  {truncateMiddle(market.id)}
+                  <VegaIcon name={VegaIconNames.COPY} size={16} />
+                </span>
+              </button>
+            </CopyWithTooltip>
+          </KeyValueTableRow>
+        </KeyValueTable>
+        <MarketInfoTable
+          data={{
+            name: market.tradableInstrument.instrument.name,
+            status: market.state && MarketStateMapping[market.state],
+            tradingMode:
+              market.tradingMode &&
+              MarketTradingModeMapping[market.tradingMode],
+            priceDecimalPlaces: market.decimalPlaces,
+            sizeDecimalPlaces: market.positionDecimalPlaces,
+            quoteAssetDecimalPlaces: quoteAssetDecimals,
+            baseAssetDecimalPlaces: baseAssetDecimals,
+            tickSize: determinePriceStep(market),
+          }}
+        />
+      </>
+    );
   }
 
   const assetDecimals = getAsset(market).decimals;
@@ -562,6 +606,7 @@ export const BaseAssetInfoPanel = ({ market }: MarketInfoProps) => {
   const assetId = useMemo(() => getBaseAsset(market).id, [market]);
 
   const { data: asset } = useAssetDataProvider(assetId ?? '');
+  const isSpotMarket = isSpot(market.tradableInstrument.instrument.product);
   return asset ? (
     <>
       <AssetDetailsTable
@@ -571,12 +616,14 @@ export const BaseAssetInfoPanel = ({ market }: MarketInfoProps) => {
         dtClassName="text-black dark:text-white text-ui !px-0 text-xs"
         ddClassName="text-black dark:text-white text-ui !px-0 max-w-full text-xs"
       />
-      <p className="mt-4 text-xs">
-        {t(
-          'There is 1 unit of the base asset ({{assetSymbol}}) to every 1 quote asset ({{quoteUnit}}).',
-          { assetSymbol, quoteUnit: quoteAsset }
-        )}
-      </p>
+      {!isSpotMarket && (
+        <p className="mt-4 text-xs">
+          {t(
+            'There is 1 unit of the base asset ({{assetSymbol}}) to every 1 quote asset ({{quoteUnit}}).',
+            { assetSymbol, quoteUnit: quoteAsset }
+          )}
+        </p>
+      )}
     </>
   ) : (
     <Splash>{t('No data')}</Splash>
@@ -590,6 +637,7 @@ export const QuoteAssetInfoPanel = ({ market }: MarketInfoProps) => {
   const assetId = useMemo(() => getQuoteAsset(market).id, [market]);
 
   const { data: asset } = useAssetDataProvider(assetId ?? '');
+  const isSpotMarket = isSpot(market.tradableInstrument.instrument.product);
   return asset ? (
     <>
       <AssetDetailsTable
@@ -599,12 +647,14 @@ export const QuoteAssetInfoPanel = ({ market }: MarketInfoProps) => {
         dtClassName="text-black dark:text-white text-ui !px-0 text-xs"
         ddClassName="text-black dark:text-white text-ui !px-0 max-w-full text-xs"
       />
-      <p className="mt-4 text-xs">
-        {t(
-          'There is 1 unit of the base asset ({{assetSymbol}}) to every 1 quote asset ({{quoteUnit}}).',
-          { assetSymbol, quoteUnit: quoteAsset }
-        )}
-      </p>
+      {!isSpotMarket && (
+        <p className="mt-4 text-xs">
+          {t(
+            'There is 1 unit of the base asset ({{assetSymbol}}) to every 1 quote asset ({{quoteUnit}}).',
+            { assetSymbol, quoteUnit: quoteAsset }
+          )}
+        </p>
+      )}
     </>
   ) : (
     <Splash>{t('No data')}</Splash>
@@ -618,6 +668,7 @@ export const SettlementAssetInfoPanel = ({ market }: MarketInfoProps) => {
   const assetId = useMemo(() => getAsset(market).id, [market]);
 
   const { data: asset } = useAssetDataProvider(assetId ?? '');
+  const isSpotMarket = isSpot(market.tradableInstrument.instrument.product);
   return asset ? (
     <>
       <AssetDetailsTable
@@ -627,12 +678,14 @@ export const SettlementAssetInfoPanel = ({ market }: MarketInfoProps) => {
         dtClassName="text-black dark:text-white text-ui !px-0 text-xs"
         ddClassName="text-black dark:text-white text-ui !px-0 max-w-full text-xs"
       />
-      <p className="mt-4 text-xs">
-        {t(
-          'There is 1 unit of the settlement asset ({{assetSymbol}}) to every 1 quote unit ({{quoteUnit}}).',
-          { assetSymbol, quoteUnit }
-        )}
-      </p>
+      {!isSpotMarket && (
+        <p className="mt-4 text-xs">
+          {t(
+            'There is 1 unit of the settlement asset ({{assetSymbol}}) to every 1 quote unit ({{quoteUnit}}).',
+            { assetSymbol, quoteUnit }
+          )}
+        </p>
+      )}
     </>
   ) : (
     <Splash>{t('No data')}</Splash>
@@ -931,6 +984,9 @@ export const PriceMonitoringBoundsInfoPanel = ({ market }: MarketInfoProps) => {
           'text-left': direction === 'min',
           'text-right': direction === 'max',
         })}
+        data-testid={
+          direction === 'min' ? 'text-left-alignment' : 'text-right-alignment'
+        }
       >
         {price} <span>{quoteUnit}</span>
       </div>
@@ -965,10 +1021,13 @@ export const PriceMonitoringBoundsInfoPanel = ({ market }: MarketInfoProps) => {
             )}
           >
             <div aria-hidden className="w-full text-center text-[10px]">
-              <div className="border-b-[2px] border-dashed border-vega-clight-500 dark:border-vega-cdark-500 w-full h-1/2 translate-y-[1px]">
+              <div
+                data-testid="bounds-percent-price"
+                className="border-b-[2px] border-dashed border-vega-clight-500 dark:border-vega-cdark-500 w-full h-1/2 translate-y-[1px]"
+              >
                 {probability}
               </div>
-              <div className="w-full">
+              <div data-testid="bounds-price-time" className="w-full">
                 {t('within {{duration}}', {
                   duration: within,
                 })}

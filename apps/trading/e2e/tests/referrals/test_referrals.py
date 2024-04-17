@@ -19,7 +19,6 @@ def vega(request):
         yield vega_instance
 
 
-
 @pytest.fixture(scope="module")
 def continuous_market(vega):
     market = setup_simple_market(vega, custom_quantum=100000)
@@ -126,41 +125,42 @@ def test_can_traverse_up_and_down_through_tiers(continuous_market, vega: VegaSer
     submit_order(vega, PARTY_B.name, continuous_market, "SIDE_BUY", 1, 115)
     forward_time(vega, True)
     check_tile_values(page, generate_referral_expected_value_dic(
-        "110", "1", "1%", "1", "1"))
+        "110", "1", "1.00%", "1", "1"))
 
     change_keys(page, vega, PARTY_A.name)
     check_tile_values(page, generate_referrer_expected_value_dic(
-        "1%", "1", "1%", "0", "1", "0"))
+        "1.00%", "1", "1.00%", "0", "1", "0"))
 
     change_keys(page, vega, PARTY_B.name)
     submit_order(vega, PARTY_B.name, continuous_market, "SIDE_BUY", 2, 115)
     forward_time(vega, True)
     check_tile_values(page, generate_referral_expected_value_dic(
-        "221", "2", "2%", "2", "1"))
+        "221", "2", "2.00%", "2", "1"))
 
     change_keys(page, vega, PARTY_A.name)
     check_tile_values(page, generate_referrer_expected_value_dic(
-        "2%", "1", "2%", "0", "1", "0"))
-
+        "2.00%", "1", "2.00%", "0", "1", "0"))
     change_keys(page, vega, PARTY_B.name)
     submit_order(vega, PARTY_B.name, continuous_market, "SIDE_BUY", 3, 115)
     forward_time(vega, True)
+    page.pause()
     check_tile_values(page, generate_referral_expected_value_dic(
-        "331", "3", "3%", "3", "0"))
+        "331", "3", "3.00%", "3", "-"))
 
     change_keys(page, vega, PARTY_A.name)
     check_tile_values(page, generate_referrer_expected_value_dic(
-        "3%", "1", "3%", "0", "1", "1"))
+        "3.00%", "1", "3.00%", "0", "1", "1"))
 
     change_keys(page, vega, PARTY_B.name)
     submit_order(vega, PARTY_B.name, continuous_market, "SIDE_BUY", 1, 115)
     forward_time(vega, True)
+    page.pause()
     check_tile_values(page, generate_referral_expected_value_dic(
-        "110", "1", "1%", "4", "0"))
+        "110", "1", "1.00%", "4", "0"))
 
     change_keys(page, vega, PARTY_A.name)
     check_tile_values(page, generate_referrer_expected_value_dic(
-        "1%", "1", "1%", "0", "1", "1"))
+        "1.00%", "1", "1.00%", "0", "1", "1"))
 
 
 @pytest.mark.usefixtures("auth", "risk_accepted")
@@ -170,8 +170,8 @@ def test_does_not_move_up_tiers_when_not_enough_epochs(continuous_market, vega: 
     submit_order(vega, PARTY_B.name, continuous_market, "SIDE_BUY", 2, 115)
     forward_time(vega, True)
     check_tile_values(page, generate_referral_expected_value_dic(
-        "221", "1", "1%", "1", "1"))
+        "221", "1", "1.00%", "1", "1"))
 
     change_keys(page, vega, PARTY_A.name)
     check_tile_values(page, generate_referrer_expected_value_dic(
-        "2%", "1", "2%", "0", "1", "0"))
+        "2.00%", "1", "2.00%", "0", "1", "0"))

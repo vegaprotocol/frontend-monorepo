@@ -32,6 +32,7 @@ def next_epoch(vega: VegaServiceNull):
     epoch_seq = vega.statistics().epoch_seq
     while epoch_seq == vega.statistics().epoch_seq:
         vega.wait_fn(1)
+        vega.wait_for_total_catchup()
         forwards += 1
         if forwards > 2 * 10 * 60:
             raise Exception(

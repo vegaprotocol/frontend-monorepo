@@ -68,17 +68,19 @@ export const ProposeFreeform = () => {
       ).toString();
 
     return {
-      rationale: {
-        title: fields.proposalTitle,
-        description: fields.proposalDescription,
-      },
-      terms: {
-        newFreeform: {},
-        closingTimestamp: getClosingTimestamp(
-          fields.proposalVoteDeadline,
-          isVoteDeadlineAtMinimum,
-          isVoteDeadlineAtMaximum
-        ),
+      proposalSubmission: {
+        rationale: {
+          title: fields.proposalTitle,
+          description: fields.proposalDescription,
+        },
+        terms: {
+          newFreeform: {},
+          closingTimestamp: getClosingTimestamp(
+            fields.proposalVoteDeadline,
+            isVoteDeadlineAtMinimum,
+            isVoteDeadlineAtMaximum
+          ),
+        },
       },
     };
   };

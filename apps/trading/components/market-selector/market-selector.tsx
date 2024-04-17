@@ -56,7 +56,7 @@ export const MarketSelector = ({
   }, [reload]);
 
   return (
-    <div data-testid="market-selector" className="md:w-[580px]">
+    <div data-testid="market-selector" className="md:w-[680px]">
       <div className="px-2 pt-2 mb-2">
         <ProductSelector
           product={filter.product}
@@ -129,7 +129,7 @@ export const MarketSelector = ({
             filter.product === Product.Perpetual
               ? t('No perpetual markets.')
               : filter.product === Product.Spot
-              ? t('Spot markets coming soon.')
+              ? t('No spot markets.')
               : filter.product === Product.Future
               ? t('No future markets.')
               : t('No markets.')
@@ -191,7 +191,7 @@ const MarketList = ({
         <div className="w-2/6 sm:w-1/6 text-right" role="columnheader">
           {t('24h volume')}
         </div>
-        <div className="hidden sm:w-1/6" role="columnheader" />
+        <div className="sm:w-1/6" role="columnheader" />
       </div>
       <div ref={listRef}>
         <List

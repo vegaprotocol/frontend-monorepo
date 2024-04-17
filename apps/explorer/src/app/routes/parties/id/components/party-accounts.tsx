@@ -1,7 +1,11 @@
 import { useExplorerPartyAssetsQuery } from '../__generated__/Party-assets';
 import { AssetLink, MarketLink } from '../../../../components/links';
 import AssetBalance from '../../../../components/asset-balance/asset-balance';
-import { AccountTypeMapping } from '@vegaprotocol/types';
+import { AccountTypeMapping, MarginMode } from '@vegaprotocol/types';
+import { t } from '@vegaprotocol/i18n';
+import { Emblem } from '@vegaprotocol/emblem';
+import { ENV } from '../../../../config/env';
+import { Leverage } from '../../../../components/leverage/leverage';
 
 interface PartyAccountsProps {
   partyId: string;
@@ -20,16 +24,15 @@ export const PartyAccounts = ({ partyId }: PartyAccountsProps) => {
   const party = data?.partiesConnection?.edges[0]?.node;
   const accounts =
     party?.accountsConnection?.edges?.filter((edge) => edge?.node) || [];
-
   return (
     <div className="block min-h-44 h-60 4 w-full border-red-800 relative">
       <table>
         <thead>
           <tr>
-            <th className="text-right px-4">Balance</th>
-            <th className="text-left px-4">Type</th>
-            <th className="text-left px-4">Market</th>
-            <th className="text-left px-4">Asset</th>
+            <th className="text-right px-4">{t('Balance')}</th>
+            <th className="text-left px-4">{t('Type')}</th>
+            <th className="text-left px-4">{t('Market')}</th>
+            <th className="text-left px-4">{t('Asset')}</th>
           </tr>
         </thead>
         <tbody>
@@ -57,6 +60,24 @@ export const PartyAccounts = ({ partyId }: PartyAccountsProps) => {
               if (!e) return null;
               const { type, asset, balance, market } = e.node;
 
+              // Blank by default, as most accounts do not relate to a market
+              let marginFactor = undefined;
+
+              let marginLabel =
+                MarginLabels[MarginMode.MARGIN_MODE_UNSPECIFIED];
+              if (market?.id && party?.marginsConnection) {
+                const m = party?.marginsConnection?.edges?.find(
+                  (e) => e.node.market.id === market.id
+                );
+                if (m) {
+                  marginLabel = MarginLabels[m.node.marginMode];
+                  marginFactor =
+                    m?.node?.marginFactor !== '0'
+                      ? m.node.marginFactor
+                      : undefined;
+                }
+              }
+
               return (
                 <tr className="border-t border-neutral-300 dark:border-neutral-600">
                   <td className="px-4 text-right">
@@ -66,11 +87,22 @@ export const PartyAccounts = ({ partyId }: PartyAccountsProps) => {
                       showAssetSymbol={true}
                     />
                   </td>
-                  <td className="px-4">{AccountTypeMapping[type]}</td>
+                  <td className="px-4">
+                    {marginLabel}
+                    {marginLabel.length > 0
+                      ? AccountTypeMapping[type].toLowerCase()
+                      : AccountTypeMapping[type]}
+                    {marginFactor && type === 'ACCOUNT_TYPE_ORDER_MARGIN' && (
+                      <span className="ml-1">
+                        (<Leverage marginFactor={marginFactor} />)
+                      </span>
+                    )}
+                  </td>
                   <td className="px-4">
                     {market?.id ? <MarketLink id={market.id} /> : '-'}
                   </td>
                   <td className="px-4">
+                    <Emblem asset={asset.id} vegaChain={ENV.vegaChainId} />
                     <AssetLink assetId={asset.id} />
                   </td>
                 </tr>
@@ -80,4 +112,10 @@ export const PartyAccounts = ({ partyId }: PartyAccountsProps) => {
       </table>
     </div>
   );
+};
+
+const MarginLabels: Record<MarginMode, string> = {
+  [MarginMode.MARGIN_MODE_CROSS_MARGIN]: 'Cross ',
+  [MarginMode.MARGIN_MODE_ISOLATED_MARGIN]: 'Isolated ',
+  [MarginMode.MARGIN_MODE_UNSPECIFIED]: '',
 };
