@@ -68,7 +68,7 @@ const ProposalTypeTag = ({ terms }: { terms: ProposalTermsFieldsFragment }) => {
   const { t } = useTranslation();
 
   switch (terms.change.__typename) {
-    // Speical case for markets where we want to show the product type in the tag
+    // Special case for markets where we want to show the product type in the tag
     case 'NewMarket': {
       return (
         <ProposalInfoLabel variant="secondary">
@@ -94,6 +94,7 @@ const ProposalDetails = ({
   proposal,
 }: {
   proposal: Proposal | BatchProposal;
+  restData?: ProposalNode | null;
 }) => {
   const { t } = useTranslation();
   const featureFlags = useFeatureFlags((store) => store.flags);
@@ -101,6 +102,13 @@ const ProposalDetails = ({
 
   const renderDetails = (terms: ProposalTermsFieldsFragment) => {
     switch (terms.change?.__typename) {
+      case 'NewSpotMarket': {
+        return (
+          <span>
+            {t('New spot market:')} <span>{terms.change.instrument.code}</span>
+          </span>
+        );
+      }
       case 'NewMarket': {
         const getAsset = (terms: ProposalTermsFieldsFragment) => {
           if (
@@ -124,7 +132,7 @@ const ProposalDetails = ({
               />
             )}
             <span>
-              {t('Code')}: {terms.change.instrument.code}.
+              {t('New market')}: {terms.change.instrument.code}.
             </span>{' '}
             {terms && getAsset(terms)?.symbol ? (
               <>
@@ -597,7 +605,7 @@ export const ProposalHeader = ({
           <Heading title={titleContent || fallbackTitle} />
         )}
       </div>
-      <ProposalDetails proposal={proposal} />
+      <ProposalDetails proposal={proposal} restData={restData} />
       <VoteBreakdown proposal={proposal} restData={restData} />
     </>
   );

@@ -13,6 +13,7 @@ export const MarketName = ({
       marketId: marketId || '',
     },
     skip: !marketId,
+    errorPolicy: 'ignore',
   });
 
   const id = truncate ? truncateMiddle(marketId || '') : marketId;

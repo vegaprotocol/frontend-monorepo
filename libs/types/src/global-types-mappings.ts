@@ -442,6 +442,8 @@ export const ProposalRejectionReasonMapping: {
   PROPOSAL_ERROR_INVALID_PERPETUAL_PRODUCT: 'Invalid perpetual product',
   PROPOSAL_ERROR_INVALID_SLA_PARAMS: 'Invalid SLA params',
   PROPOSAL_ERROR_MISSING_SLA_PARAMS: 'Missing SLA params',
+  PROPOSAL_ERROR_PROPOSAL_IN_BATCH_REJECTED:
+    'One or more proposals in a batch has been rejected',
   PROPOSAL_ERROR_INVALID_REFERRAL_PROGRAM:
     'Referral program proposal is invalid',
   PROPOSAL_ERROR_INVALID_SIZE_DECIMAL_PLACES:
@@ -456,14 +458,8 @@ export const ProposalRejectionReasonMapping: {
     'LP price range must not be larger than 100',
   PROPOSAL_ERROR_PROPOSAL_IN_BATCH_DECLINED:
     'One or more proposals in a batch has been declined',
-  PROPOSAL_ERROR_PROPOSAL_IN_BATCH_REJECTED:
-    'One or more proposals in a batch has been rejected',
   PROPOSAL_ERROR_QUADRATIC_SLIPPAGE_FACTOR_OUT_OF_RANGE:
     'Quadratic slippage factor is out of range, either negative or too large',
-  // TODO: check and remove ts-expect-error when schema is correct
-  // @ts-expect-error this rejection reason is not yet in the schema but does exist
-  PROPOSAL_ERROR_PROPOSAL_IN_BATCH_REJECTED:
-    'One or more sub proposals are invalid',
 };
 
 /**

@@ -79,7 +79,6 @@ export const Proposal = ({ proposal, restData }: ProposalProps) => {
                 proposal={proposal}
                 terms={p.terms}
                 restData={restData}
-                termsCount={proposal.subProposals?.length}
               />
             );
           })
