@@ -2,15 +2,14 @@ import { useMemo } from 'react';
 import { ethers } from 'ethers';
 import { ERC20_ABI, BRIDGE_ABI } from '@vegaprotocol/smart-contracts';
 import { SquidcheckoutWidget } from '@0xsquid/checkout-widget';
-// import { SquidWidget } from '@0xsquid/widget';
-// import { type AppConfig } from '@0xsquid/widget/widget/core/types/config';
-import { type AppConfig as CheckouAppConfig } from '@0xsquid/checkout-widget/widget/core/types/config';
+import {
+  type AppConfig as CheckouAppConfig,
+  type CheckoutMode,
+} from '@0xsquid/checkout-widget/widget/core/types/config';
 import { useWeb3React } from '@web3-react/core';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 
 export const DepositContainer = () => {
-  // https://widget.squidrouter.com/
-  // const { theme } = useThemeSwitcher();
   const { provider } = useWeb3React();
   const { pubKey } = useVegaWallet();
 
@@ -30,11 +29,13 @@ export const DepositContainer = () => {
       provider?.getSigner()
     );
 
+    // call data for approval
     const approveEncodeData = ausdcContract.interface.encodeFunctionData(
       'approve',
       [stagBridge, 0]
     );
 
+    // call data for deposit
     const depositEncodedData = bridgeContract.interface.encodeFunctionData(
       'deposit_asset',
       [stagAUSDC, 0, '0x' + pubKey]
@@ -44,47 +45,56 @@ export const DepositContainer = () => {
       companyName: 'Vega',
       integratorId: 'vega-swap-widget',
       slippage: 1,
-      // @ts-ignore instantExec does not exist on AppConfig, BUT its in the examples, should be fine?
-      instantExec: true,
       infiniteApproval: false,
       apiUrl: 'https://testnet.api.squidrouter.com',
       availableChains: {
         destination: [11155111],
       },
-      environment: 'testnet',
       checkoutConfig: {
         checkoutContract: {
-          address: '0xdb10bF403771E44D0456F6C51EE655bb67AB05d9',
-          explorerLink: 'https://sepolia.etherscan.io',
+          // I've put our bridge contract here, but not sure thats correct
+          address: stagBridge,
+          explorerLink:
+            'https://sepolia.etherscan.io/address/0x3152207Cb8B251AdF88628554a1422AA2b734F61',
         },
-        checkoutMode: 'buy',
-        // prefetchData: async () => 1,
+        item: {
+          title: pubKey || 'Select key',
+          subTitle: 'Deposit to',
+          imageUrl:
+            'https://icon.vega.xyz/vega/vega-stagnet1-202307191148/asset/fc7fd956078fb1fc9db5c19b88f0874c4299b2a7639ad05a47a28c0aef291b55/logo.svg',
+        },
+        checkoutMode: 'buy' as CheckoutMode.BUY,
+
+        // Not sure how this should be set up for our use case
         payment: {
           token: {
-            chainId: 1,
-            address: '0x',
-            symbol: 'ETH',
+            chainId: 11155111,
+            address: '0x0158031158Bb4dF2AD02eAA31e8963E84EA978a4',
+            symbol: 'tEURO',
           },
-          unitPrice: '',
+          unitPrice: '1',
           nbOfItems: 1,
         },
         customContractCalls: [
+          // approve deposits
           {
-            callType: SquidCallType.FULL_TOKEN_BALANCE,
-            target: stagAUSDC,
+            callType: 1,
+            target: () => stagAUSDC,
             value: '0', // native value to be sent with call
-            callData: approveEncodeData,
+            callData: () => approveEncodeData,
             payload: {
-              tokenAddress: stagAUSDC, // balance of this token replaces 0 on line 13
+              tokenAddress: stagAUSDC,
               inputPos: 1,
             },
             estimatedGas: '50000',
           },
+
+          // call deposit_asset on vega collateral beridge
           {
-            callType: SquidCallType.FULL_TOKEN_BALANCE,
-            target: stagBridge,
+            callType: 1,
+            target: () => stagBridge,
             value: '0',
-            callData: depositEncodedData,
+            callData: () => depositEncodedData,
             payload: {
               tokenAddress: stagAUSDC,
               inputPos: 1,
@@ -96,14 +106,12 @@ export const DepositContainer = () => {
     };
 
     return config;
-  }, [provider]);
+  }, [provider, pubKey]);
 
   return (
     <div className="w-[500px]">
+      <div>Sending to: {pubKey}</div>
       <SquidcheckoutWidget config={checkoutConfig} />
-      {/* <SquidWidget config={{
-        integratorId: 'vega-swap-widget',
-      }} /> */}
     </div>
   );
 };
