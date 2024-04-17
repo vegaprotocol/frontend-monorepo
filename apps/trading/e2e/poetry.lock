@@ -1229,8 +1229,8 @@ profile = ["pytest-profiling", "snakeviz"]
 [package.source]
 type = "git"
 url = "https://github.com/vegaprotocol/vega-market-sim.git/"
-reference = "HEAD"
-resolved_reference = "b359210eac7e9b15c6cbec8c594ab901165045fc"
+reference = "pre-release/vega-v0.76.0-preview.3"
+resolved_reference = "e0187ae500b6bd69b8037eadd88b377df6280a60"
 
 [[package]]
 name = "websocket"
@@ -1496,4 +1496,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<3.11"
-content-hash = "39ce8400de7bf060857447281ef27bd78c9b1d9639da063b051e3ae6e7887a67"
+content-hash = "c290b0c69b90561b2c87427e12bbc4719694a6b73f5c62a4921b388b1bfd818c"
