@@ -8,6 +8,8 @@ describe('useMaxSize', () => {
   const decimalPlaces = 2;
   const accountDecimals = 3;
   const initialProps: UseMaxSizeProps = {
+    baseAssetAccountBalance: '',
+    productType: 'Perpetual',
     openVolume: '0',
     positionDecimalPlaces,
     generalAccountBalance: removeDecimal('100', accountDecimals),

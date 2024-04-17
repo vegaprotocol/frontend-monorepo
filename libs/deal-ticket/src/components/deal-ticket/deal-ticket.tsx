@@ -39,6 +39,7 @@ import {
 import { useActiveOrders } from '@vegaprotocol/orders';
 import {
   getAsset,
+  getBaseAsset,
   getDerivedPrice,
   getProductType,
   getQuoteName,
@@ -186,6 +187,7 @@ export const DealTicket = ({
   const asset = getAsset(market);
   const assetSymbol = asset.symbol;
   const productType = getProductType(market);
+  const baseAsset = productType === 'Spot' ? getBaseAsset(market) : undefined;
   const quoteName = getQuoteName(market);
   const baseQuote = getBaseQuoteUnit(
     market.tradableInstrument.instrument.metadata.tags
@@ -202,6 +204,12 @@ export const DealTicket = ({
     accountDecimals,
     loading: loadingGeneralAccountBalance,
   } = useAccountBalance(asset.id);
+
+  const {
+    accountBalance: baseAssetAccountBalance,
+    accountDecimals: baseAssetDecimals,
+    loading: loadingBaseAssetAccount,
+  } = useAccountBalance(baseAsset?.id);
 
   const { marketState, marketTradingMode } = marketData;
   const timeInForce = watch('timeInForce');
@@ -352,12 +360,17 @@ export const DealTicket = ({
     }
 
     const hasNoBalance =
+      !BigInt(baseAssetAccountBalance) &&
       !BigInt(generalAccountBalance) &&
       !BigInt(marginAccountBalance) &&
       !BigInt(orderMarginAccountBalance);
     if (
       hasNoBalance &&
-      !(loadingMarginAccountBalance || loadingGeneralAccountBalance)
+      !(
+        loadingMarginAccountBalance ||
+        loadingGeneralAccountBalance ||
+        loadingBaseAssetAccount
+      )
     ) {
       return {
         message: SummaryValidationType.NoCollateral,
@@ -384,9 +397,11 @@ export const DealTicket = ({
     marketTradingMode,
     generalAccountBalance,
     marginAccountBalance,
+    baseAssetAccountBalance,
     orderMarginAccountBalance,
     loadingMarginAccountBalance,
     loadingGeneralAccountBalance,
+    loadingBaseAssetAccount,
     pubKey,
   ]);
 
@@ -402,6 +417,8 @@ export const DealTicket = ({
     accountDecimals: accountDecimals ?? undefined,
     activeOrders: activeOrders ?? undefined,
     decimalPlaces: market.decimalPlaces,
+    baseAssetAccountBalance,
+    baseAssetDecimals: baseAssetDecimals ?? undefined,
     marginAccountBalance,
     orderMarginAccountBalance,
     marginFactor: margin?.marginFactor,
@@ -416,6 +433,7 @@ export const DealTicket = ({
     openVolume,
     positionDecimalPlaces: market.positionDecimalPlaces,
     marketIsInAuction,
+    productType,
   });
 
   const onSubmit = useCallback(
