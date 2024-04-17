@@ -1,56 +1,46 @@
 import { useMemo } from 'react';
-import { Networks, useEnvironment } from '@vegaprotocol/environment';
-import { AsyncRendererInline } from '@vegaprotocol/ui-toolkit';
-import { DepositManager } from './deposit-manager';
-import { useEnabledAssets } from '@vegaprotocol/assets';
+import { ethers } from 'ethers';
+import { ERC20_ABI, BRIDGE_ABI } from '@vegaprotocol/smart-contracts';
 import { SquidcheckoutWidget } from '@0xsquid/checkout-widget';
-import { type AppConfig } from '@0xsquid/checkout-widget/widget/core/types/config';
-
-// Customize here
-// https://widget.squidrouter.com/
-// const lightStyle = {
-//   neutralContent: '#7a6eaa',
-//   baseContent: '#280d5f',
-//   base100: '#eeeaf4',
-//   base200: '#ffffff',
-//   base300: '#ffffff',
-//   error: '#ed4b9e',
-//   warning: '#ffb237',
-//   success: '#31d0aa',
-//   primary: '#1fc7d4',
-//   secondary: '#1fc7d4',
-//   secondaryContent: '#280d5f',
-//   neutral: '#FFFFFF',
-//   roundedBtn: '26px',
-//   roundedBox: '1rem',
-//   roundedDropDown: '20rem',
-//   displayDivider: false,
-// };
-
-// const darkStyle = {
-//   neutralContent: '#b8add2',
-//   baseContent: '#ffffff',
-//   base100: '#372f47',
-//   base200: '#26272c',
-//   base300: '#26272c',
-//   error: '#ed4b9e',
-//   warning: '#ffb237',
-//   success: '#31d0aa',
-//   primary: '#1fc7d4',
-//   secondary: '#1fc7d4',
-//   secondaryContent: '#280d5f',
-//   neutral: '#26272c',
-//   roundedBtn: '26px',
-//   roundedBox: '1rem',
-//   roundedDropDown: '20rem',
-//   displayDivider: false,
-// };
+// import { SquidWidget } from '@0xsquid/widget';
+// import { type AppConfig } from '@0xsquid/widget/widget/core/types/config';
+import { type AppConfig as CheckouAppConfig } from '@0xsquid/checkout-widget/widget/core/types/config';
+import { useWeb3React } from '@web3-react/core';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 
 export const DepositContainer = () => {
+  // https://widget.squidrouter.com/
   // const { theme } = useThemeSwitcher();
+  const { provider } = useWeb3React();
+  const { pubKey } = useVegaWallet();
 
   const checkoutConfig = useMemo(() => {
-    const config: AppConfig = {
+    const stagBridge = '0x3152207Cb8B251AdF88628554a1422AA2b734F61';
+    const stagAUSDC = '0x254d06f33bDc5b8ee05b2ea472107E300226659A';
+
+    const ausdcContract = new ethers.Contract(
+      stagAUSDC,
+      ERC20_ABI,
+      provider?.getSigner()
+    );
+
+    const bridgeContract = new ethers.Contract(
+      stagBridge,
+      BRIDGE_ABI,
+      provider?.getSigner()
+    );
+
+    const approveEncodeData = ausdcContract.interface.encodeFunctionData(
+      'approve',
+      [stagBridge, 0]
+    );
+
+    const depositEncodedData = bridgeContract.interface.encodeFunctionData(
+      'deposit_asset',
+      [stagAUSDC, 0, '0x' + pubKey]
+    );
+
+    const config: CheckouAppConfig = {
       companyName: 'Vega',
       integratorId: 'vega-swap-widget',
       slippage: 1,
@@ -58,29 +48,16 @@ export const DepositContainer = () => {
       instantExec: true,
       infiniteApproval: false,
       apiUrl: 'https://testnet.api.squidrouter.com',
-      // style: theme === 'dark' ? darkStyle : lightStyle,
       availableChains: {
         destination: [11155111],
       },
       environment: 'testnet',
       checkoutConfig: {
-        // introPage: {
-        //   title: 'Deposit for vega',
-        //   description: 'foo bar buzz quz',
-        // //   logoUrl:
-        //     'https://icon.vega.xyz/vega/vega-stagnet1-202307191148/asset/fc7fd956078fb1fc9db5c19b88f0874c4299b2a7639ad05a47a28c0aef291b55/logo.svg',
-        // },
         checkoutContract: {
           address: '0xdb10bF403771E44D0456F6C51EE655bb67AB05d9',
           explorerLink: 'https://sepolia.etherscan.io',
         },
         checkoutMode: 'buy',
-        item: {
-          title: 'Deposit',
-          subTitle: 'Deposit to Vega via Squid',
-          imageUrl:
-            'https://icon.vega.xyz/vega/vega-stagnet1-202307191148/asset/fc7fd956078fb1fc9db5c19b88f0874c4299b2a7639ad05a47a28c0aef291b55/logo.svg',
-        },
         // prefetchData: async () => 1,
         payment: {
           token: {
@@ -92,55 +69,41 @@ export const DepositContainer = () => {
           nbOfItems: 1,
         },
         customContractCalls: [
-          // {
-          //   callType: 1;
-          //   target: string;
-          //   value?: string;
-          //   callData: string;
-          //   payload?: {
-          //       tokenAddress: string;
-          //       inputPos: number;
-          //   };
-          //   estimatedGas: '5000',
-          // }
+          {
+            callType: SquidCallType.FULL_TOKEN_BALANCE,
+            target: stagAUSDC,
+            value: '0', // native value to be sent with call
+            callData: approveEncodeData,
+            payload: {
+              tokenAddress: stagAUSDC, // balance of this token replaces 0 on line 13
+              inputPos: 1,
+            },
+            estimatedGas: '50000',
+          },
+          {
+            callType: SquidCallType.FULL_TOKEN_BALANCE,
+            target: stagBridge,
+            value: '0',
+            callData: depositEncodedData,
+            payload: {
+              tokenAddress: stagAUSDC,
+              inputPos: 1,
+            },
+            estimatedGas: '50000',
+          },
         ],
       },
     };
 
     return config;
-  }, []);
+  }, [provider]);
 
   return (
-    <div className="flex gap-10">
-      <div className="w-[500px]">
-        <SquidcheckoutWidget config={checkoutConfig} />
-      </div>
-      {/* <div className="w-[500px]">
-        <SquidWidget config={normalConfig} />
-      </div> */}
-      {/* <div className="w-[500px]">
-        <SquidStakingWidget config={stakingConfig} />
-      </div> */}
+    <div className="w-[500px]">
+      <SquidcheckoutWidget config={checkoutConfig} />
+      {/* <SquidWidget config={{
+        integratorId: 'vega-swap-widget',
+      }} /> */}
     </div>
-  );
-};
-
-/**
- *  Fetches data required for the Deposit page
- */
-export const DepositContainerOld = ({ assetId }: { assetId?: string }) => {
-  const { VEGA_ENV } = useEnvironment();
-  const { data, error, loading } = useEnabledAssets();
-
-  return (
-    <AsyncRendererInline data={data} loading={loading} error={error}>
-      {data && data.length && (
-        <DepositManager
-          assetId={assetId}
-          assets={data}
-          isFaucetable={VEGA_ENV !== Networks.MAINNET}
-        />
-      )}
-    </AsyncRendererInline>
   );
 };
