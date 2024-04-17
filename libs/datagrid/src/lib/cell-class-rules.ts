@@ -8,7 +8,7 @@ export const zeroClassNames = 'text-vega-orange dark:text-vega-orange';
 
 const isPositive = ({ value }: { value: string | bigint | number }) =>
   !!value &&
-  ((typeof value === 'string' && !value.startsWith('-')) ||
+  ((typeof value === 'string' && !value.startsWith('-') && value !== '0') ||
     ((typeof value === 'number' || typeof value === 'bigint') && value > 0));
 
 const isNegative = ({ value }: { value: string | bigint | number }) =>

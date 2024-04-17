@@ -25,9 +25,12 @@ def create_position(vega: VegaServiceNull, market_id):
     submit_order(vega, "Key 1", market_id, "SIDE_BUY", 100, 110)
     vega.wait_fn(1)
     vega.wait_for_total_catchup
+
+
 @pytest.mark.usefixtures("auth", "risk_accepted")
 def test_switch_cross_isolated_margin(
-        continuous_market, vega: VegaServiceNull, page: Page):
+    continuous_market, vega: VegaServiceNull, page: Page
+):
     create_position(vega, continuous_market)
     page.goto(f"/#/markets/{continuous_market}")
     expect(page.locator(margin_row).nth(1)).to_have_text("874.21992Cross1.0x")
@@ -43,9 +46,9 @@ def test_switch_cross_isolated_margin(
     wait_for_toast_confirmation(page)
     next_epoch(vega=vega)
     expect(page.get_by_test_id("toast-content")).to_have_text(
-        "ConfirmedYour transaction has been confirmedView in block explorerUpdate margin modeBTC:DAI_2023Isolated margin mode, leverage: 1.0x")
-    expect(page.locator(margin_row).nth(1)
-           ).to_have_text("22,109.99996Isolated1.0x")
+        "ConfirmedYour transaction has been confirmedView in block explorerUpdate margin modeBTC:DAI_2023Isolated margin mode, leverage: 1.0x"
+    )
+    expect(page.locator(margin_row).nth(1)).to_have_text("22,109.99996Isolated1.0x")
     # tbd - tooltip is not visible without this wait
     page.wait_for_timeout(1000)
     page.get_by_test_id(tab_positions).get_by_text("Isolated").hover()
@@ -56,32 +59,37 @@ def test_switch_cross_isolated_margin(
     page.get_by_test_id(confirm_cross_margin_mode).click()
     wait_for_toast_confirmation(page)
     next_epoch(vega=vega)
-    expect(page.locator(margin_row).nth(1)).to_have_text(
-        "22,109.99996Cross1.0x")
-    
+    expect(page.locator(margin_row).nth(1)).to_have_text("22,109.99996Cross1.0x")
+
+
 @pytest.mark.usefixtures("auth", "risk_accepted")
 def test_check_cross_isolated_margin_info(
-        continuous_market, vega: VegaServiceNull, page: Page):
+    continuous_market, vega: VegaServiceNull, page: Page
+):
     create_position(vega, continuous_market)
     page.goto(f"/#/markets/{continuous_market}")
     expect(page.get_by_test_id(current_margin)).to_have_text(
-        "Current margin874.21992 tDAI")
-    expect(page.get_by_test_id(available_collateral)
-           ).to_have_text("Available collateral998,084.95183 tDAI")
-    expect(page.get_by_test_id(additional_margin_required)
-           ).to_have_text("Additional margin required0.00 tDAI")
-    expect(page.get_by_test_id(liquidation_estimate)
-           ).to_have_text("Liquidation estimate- BTC")
+        "Current margin874.21992 tDAI"
+    )
+    expect(page.get_by_test_id(available_collateral)).to_have_text(
+        "Available collateral998,084.95183 tDAI"
+    )
+    expect(page.get_by_test_id(additional_margin_required)).to_have_text(
+        "Additional margin required0.00 tDAI"
+    )
+    expect(page.get_by_test_id(liquidation_estimate)).to_have_text(
+        "Liquidation estimate- BTC"
+    )
     page.get_by_test_id(isolated_margin).click()
     page.locator(leverage_input).fill("6")
-    #comment because of different data develop and mainnet 
+    #comment because of different data develop and mainnet
     # expect(page.get_by_test_id(dialog_content).get_by_test_id("notification")).to_have_text(
     #     "You have an existing position and open order on this market.Changing the margin mode and leverage will move 869.78007 tDAI from your general account to fund the position.")
     expect(page.get_by_test_id(dialog_content).get_by_test_id(current_margin)).to_have_text(
         "Current margin874.21992 tDAI")
     expect(page.get_by_test_id(dialog_content).get_by_test_id(available_collateral)
            ).to_have_text("Available collateral998,084.95183 tDAI")
-    #comment because of different data develop and mainnet 
+    #comment because of different data develop and mainnet
     # expect(page.get_by_test_id(dialog_content).get_by_test_id(additional_margin_required)
     #        ).to_have_text("Additional margin required869.78007 tDAI")
     expect(page.get_by_test_id(dialog_content).get_by_test_id(liquidation_estimate)
@@ -90,13 +98,18 @@ def test_check_cross_isolated_margin_info(
     wait_for_toast_confirmation(page)
     next_epoch(vega=vega)
     expect(page.get_by_test_id("toast-content")).to_have_text(
-        "ConfirmedYour transaction has been confirmedView in block explorerUpdate margin modeBTC:DAI_2023Isolated margin mode, leverage: 6.0x")
+        "ConfirmedYour transaction has been confirmedView in block explorerUpdate margin modeBTC:DAI_2023Isolated margin mode, leverage: 6.0x"
+    )
     page.get_by_test_id(cross_margin).click()
-    expect(page.get_by_test_id(dialog_content).get_by_test_id(current_margin)).to_have_text(
-        "Current margin4,223.33332 tDAI")
-    expect(page.get_by_test_id(dialog_content).get_by_test_id(available_collateral)
-           ).to_have_text("Available collateral995,381.83843 tDAI")
-    expect(page.get_by_test_id(dialog_content).get_by_test_id(additional_margin_required)
-           ).to_have_text("Additional margin required-3,364.56219 tDAI")
-    expect(page.get_by_test_id(dialog_content).get_by_test_id(liquidation_estimate)
-           ).to_have_text("Liquidation estimate0.00 BTC")
+    expect(
+        page.get_by_test_id(dialog_content).get_by_test_id(current_margin)
+    ).to_have_text("Current margin4,223.33332 tDAI")
+    expect(
+        page.get_by_test_id(dialog_content).get_by_test_id(available_collateral)
+    ).to_have_text("Available collateral995,381.83843 tDAI")
+    expect(
+        page.get_by_test_id(dialog_content).get_by_test_id(additional_margin_required)
+    ).to_have_text("Additional margin required-3,364.56219 tDAI")
+    expect(
+        page.get_by_test_id(dialog_content).get_by_test_id(liquidation_estimate)
+    ).to_have_text("Liquidation estimate0.00 BTC")

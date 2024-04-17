@@ -1,4 +1,5 @@
 import pytest
+import re
 from playwright.sync_api import Page, expect
 from vega_sim.null_service import VegaServiceNull
 from conftest import init_vega, cleanup_container

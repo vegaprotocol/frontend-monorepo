@@ -7,8 +7,8 @@ import {
   fairground,
   validatorsTestnet,
   mainnet,
+  mirror,
   stagnet,
-  mainnetMirror,
 } from '@vegaprotocol/wallet';
 import { CHAIN_IDS, useEnvironment } from '@vegaprotocol/environment';
 import { useMemo } from 'react';
@@ -38,7 +38,7 @@ export const useVegaWalletConfig = () => {
     const viewParty = new ViewPartyConnector();
 
     const config = createConfig({
-      chains: [mainnet, fairground, validatorsTestnet, stagnet, mainnetMirror],
+      chains: [mainnet, mirror, fairground, validatorsTestnet, stagnet],
       defaultChainId: CHAIN_IDS[VEGA_ENV],
       connectors: [injected, snap, jsonRpc, viewParty],
     });

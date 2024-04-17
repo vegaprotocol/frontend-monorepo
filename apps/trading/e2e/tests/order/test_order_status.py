@@ -1,4 +1,5 @@
 import pytest
+import time
 from playwright.sync_api import Page, expect
 from vega_sim.service import PeggedOrder
 from conftest import (
@@ -204,7 +205,6 @@ def page(setup_environment, browser, request):
         risk_accepted_setup(page)
         auth_setup(vega, page)
         page.goto("/")
-        page.get_by_test_id("All").click()
         yield page
 
 
@@ -220,6 +220,7 @@ def after_each(page: Page):
 
 def test_order_status_active(page: Page):
     # 7002-SORD-041
+    page.get_by_test_id("Open").click()
     expect(page.locator('[row-index="2"]').first).to_contain_text("market-1Futr")
     expect(page.locator('[row-index="2"]').nth(1)).to_contain_text(
         "0" + "-10" + "Limit" + "Active" + "150.00" + "GTC"
@@ -228,25 +229,27 @@ def test_order_status_active(page: Page):
 
 def test_status_expired(page: Page):
     # 7002-SORD-042
-    expect(page.locator('[row-index="7"]').first).to_contain_text("market-1Futr")
-    expect(page.locator('[row-index="7"]').nth(1)).to_contain_text(
+    page.get_by_test_id("Order history").click()
+    expect(page.locator('[row-index="0"]').first).to_contain_text("market-1Futr")
+    expect(page.locator('[row-index="0"]').nth(1)).to_contain_text(
         "0" + "-10" + "Limit" + "Expired" + "120.00" + "GTT:"
     )
 
 
 def test_order_status_Stopped(page: Page):
     # 7002-SORD-044
-    expect(page.locator('[row-index="12"]').first).to_contain_text("market-1Futr")
-    expect(page.locator('[row-index="12"]').nth(1)).to_contain_text(
+    page.get_by_test_id("Order history").click()
+    expect(page.locator('[row-index="5"]').first).to_contain_text("market-1Futr")
+    expect(page.locator('[row-index="5"]').nth(1)).to_contain_text(
         "0" + "-100" + "Limit" + "Stopped" + "130.00" + "IOC"
     )
 
 
 def test_order_status_partially_filled(page: Page):
     # 7002-SORD-045
-    page.pause()
-    expect(page.locator('[row-index="10"]').first).to_contain_text("market-1Futr")
-    expect(page.locator('[row-index="10"]').nth(1)).to_contain_text(
+    page.get_by_test_id("Order history").click()
+    expect(page.locator('[row-index="3"]').first).to_contain_text("market-1Futr")
+    expect(page.locator('[row-index="3"]').nth(1)).to_contain_text(
         "1" + "-100" + "Limit" + "Partially Filled" + "88.00" + "IOC"
     )
 
@@ -254,8 +257,9 @@ def test_order_status_partially_filled(page: Page):
 def test_order_status_filled(page: Page):
     # 7002-SORD-046
     # 7003-MORD-020
-    expect(page.locator('[row-index="11"]').first).to_contain_text("market-1Futr")
-    expect(page.locator('[row-index="11"]').nth(1)).to_contain_text(
+    page.get_by_test_id("Order history").click()
+    expect(page.locator('[row-index="4"]').first).to_contain_text("market-1Futr")
+    expect(page.locator('[row-index="4"]').nth(1)).to_contain_text(
         "100" + "-100" + "Limit" + "Filled" + "88.00" + "GTC"
     )
 
@@ -263,8 +267,9 @@ def test_order_status_filled(page: Page):
 def test_order_status_rejected(page: Page):
     # 7002-SORD-047
     # 7003-MORD-018
-    expect(page.locator('[row-index="9"]').first).to_contain_text("market-1Futr")
-    expect(page.locator('[row-index="9"]').nth(1)).to_contain_text(
+    page.get_by_test_id("Order history").click()
+    expect(page.locator('[row-index="2"]').first).to_contain_text("market-1Futr")
+    expect(page.locator('[row-index="2"]').nth(1)).to_contain_text(
         "0"
         + "-10,000,000,000"
         + "Limit"
@@ -276,14 +281,16 @@ def test_order_status_rejected(page: Page):
 
 def test_order_status_pegged_ask(page: Page):
     #  7003-MORD-016
-    expect(page.locator('[row-index="4"]').first).to_contain_text("market-1Futr")
-    expect(page.locator('[row-index="4"]').nth(1)).to_contain_text(
+    page.get_by_test_id("Open").click()
+    expect(page.locator('[row-index="3"]').first).to_contain_text("market-1Futr")
+    expect(page.locator('[row-index="3"]').nth(1)).to_contain_text(
         "0" + "-60" + "Ask + 15.00 Peg limit" + "Active" + "125.00" + "GTC"
     )
 
 
 def test_order_status_pegged_bid(page: Page):
     #  7003-MORD-016
+    page.get_by_test_id("Open").click()
     expect(page.locator('[row-index="5"]').first).to_contain_text("market-1Futr")
     expect(page.locator('[row-index="5"]').nth(1)).to_contain_text(
         "0" + "+40" + "Bid - 10.00 Peg limit" + "Active" + "50.00" + "GTC"
@@ -292,6 +299,7 @@ def test_order_status_pegged_bid(page: Page):
 
 def test_order_status_pegged_mid(page: Page):
     #  7003-MORD-016
+    page.get_by_test_id("Open").click()
     expect(page.locator('[row-index="6"]').first).to_contain_text("market-1Futr")
     expect(page.locator('[row-index="6"]').nth(1)).to_contain_text(
         "0" + "+20" + "Mid - 5.00 Peg limit" + "Active" + "80.00" + "GTC"
@@ -304,6 +312,7 @@ def test_order_amend_order(setup_environment, page: Page):
     #  7003-MORD-012
     #  7003-MORD-014
     #  7003-MORD-015
+    page.get_by_test_id("Open").click()
     page.get_by_test_id("edit").nth(1).click()
     page.locator("#limitPrice").fill("170")
     page.locator("#size").fill("15")
@@ -324,10 +333,12 @@ def test_order_cancel_single_order(setup_environment, page: Page):
     #  7003-MORD-010
     #  7003-MORD-011
     #  7002-SORD-043
+    page.get_by_test_id("Open").click()
     page.get_by_test_id("cancel").first.click()
     wait_for_toast_confirmation(page, timeout=5000)
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
+    page.get_by_test_id("Order history").click()
     expect(page.locator('[row-index="0"]').first).to_contain_text("market-1Futr")
     expect(page.locator('[row-index="0"]').nth(1)).to_contain_text(
         "0" + "+10" + "Limit" + "Cancelled" + "60.00" + "GTC"
@@ -340,15 +351,17 @@ def test_order_cancel_all_orders(setup_environment, page: Page):
     #  7003-MORD-010
     #  7003-MORD-011
     #  7002-SORD-043
-
+    page.get_by_test_id("Open").click()
     page.get_by_test_id("cancelAll").click()
 
     wait_for_toast_confirmation(page, timeout=5000)
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
-
+    time.sleep(0.5)
+    page.get_by_test_id("Open").click()
     expect(page.get_by_test_id("cancelAll")).not_to_be_visible()
     expect(page.get_by_test_id("cancel")).not_to_be_visible()
+    page.get_by_test_id("Order history").click()
     expect(
         page.locator('.ag-cell[col-id="status"]', has_text="Cancelled")
     ).to_have_count(7)

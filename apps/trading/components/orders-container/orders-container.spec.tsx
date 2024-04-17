@@ -48,8 +48,7 @@ describe('useOrderListGridState', () => {
 
       const storeKeyMap = {
         [Filter.Open]: 'open',
-        [Filter.Rejected]: 'rejected',
-        [Filter.Closed]: 'closed',
+        [Filter.Inactive]: 'inactive',
       };
 
       expect(JSON.parse(localStorage.getItem(STORAGE_KEY) || '')).toMatchObject(

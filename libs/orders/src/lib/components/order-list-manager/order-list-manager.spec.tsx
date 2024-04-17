@@ -78,7 +78,7 @@ describe('OrderListManager', () => {
     });
 
     render(
-      generateJsx({ filter: Filter.Closed, noRowsMessage: 'no rows message' })
+      generateJsx({ filter: Filter.Inactive, noRowsMessage: 'no rows message' })
     );
 
     expect(screen.getByText('no rows message')).toBeInTheDocument();

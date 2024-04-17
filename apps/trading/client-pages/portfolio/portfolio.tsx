@@ -94,7 +94,7 @@ export const Portfolio = () => {
                   <OrdersContainer />
                 </ErrorBoundary>
               </Tab>
-              <Tab id="fills" name={t('Fills')} settings={<FillsSettings />}>
+              <Tab id="fills" name={t('Trades')} settings={<FillsSettings />}>
                 <ErrorBoundary feature="portfolio-fills">
                   <FillsContainer />
                 </ErrorBoundary>

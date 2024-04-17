@@ -291,7 +291,6 @@ def test_leaderboard(competitions_page: Tuple[Page, str, VegaServiceNull]):
     expect(
         page.get_by_test_id("rank-1").locator(".text-yellow-300")
     ).to_have_count(1)
-    # page.pause()
     expect(page.get_by_test_id("team-0")).to_have_text(team_name)
     expect(page.get_by_test_id("status-0")).to_have_text("Public")
     expect(page.get_by_test_id("earned-0")).to_have_text("500")

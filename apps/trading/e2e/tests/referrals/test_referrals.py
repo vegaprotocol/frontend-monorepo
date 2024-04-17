@@ -143,7 +143,6 @@ def test_can_traverse_up_and_down_through_tiers(continuous_market, vega: VegaSer
     change_keys(page, vega, PARTY_B.name)
     submit_order(vega, PARTY_B.name, continuous_market, "SIDE_BUY", 3, 115)
     forward_time(vega, True)
-    page.pause()
     check_tile_values(page, generate_referral_expected_value_dic(
         "331", "3", "3.00%", "3", "-"))
 
@@ -154,7 +153,6 @@ def test_can_traverse_up_and_down_through_tiers(continuous_market, vega: VegaSer
     change_keys(page, vega, PARTY_B.name)
     submit_order(vega, PARTY_B.name, continuous_market, "SIDE_BUY", 1, 115)
     forward_time(vega, True)
-    page.pause()
     check_tile_values(page, generate_referral_expected_value_dic(
         "110", "1", "1.00%", "4", "0"))
 
