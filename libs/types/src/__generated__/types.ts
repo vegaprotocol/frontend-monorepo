@@ -504,7 +504,7 @@ export type Candle = {
   lastUpdateInPeriod: Scalars['Timestamp'];
   /** Low price (uint64) */
   low: Scalars['String'];
-  /** Total notional value of trades (uint64) */
+  /** Total notional value of trades. This value is determined by multiplying price, using market decimal places, by size, using position decimal places. The number of decimal places needed to convert this value to a decimal is market decimal places plus position decimal places. (uint64) */
   notional: Scalars['String'];
   /** Open price (uint64) */
   open: Scalars['String'];
@@ -978,6 +978,8 @@ export enum DistributionStrategy {
 /** An asset originated from an Ethereum ERC20 Token */
 export type ERC20 = {
   __typename?: 'ERC20';
+  /** The chain ID the asset originates from. */
+  chainId: Scalars['String'];
   /** The address of the ERC20 contract */
   contractAddress: Scalars['String'];
   /**
@@ -995,6 +997,8 @@ export type ERC20 = {
 
 export type ERC20MultiSigSignerAddedBundle = {
   __typename?: 'ERC20MultiSigSignerAddedBundle';
+  /** The ID of the EVM chain this signature bundle is valid for */
+  chainID: Scalars['String'];
   /** The epoch in which the validator was added */
   epochSeq: Scalars['String'];
   /** The ethereum address of the signer to be added */
@@ -1024,6 +1028,8 @@ export type ERC20MultiSigSignerAddedConnection = {
 
 export type ERC20MultiSigSignerRemovedBundle = {
   __typename?: 'ERC20MultiSigSignerRemovedBundle';
+  /** The chain ID of the EVM blockchain this signature bundle is valid for */
+  chainID: Scalars['String'];
   /** The epoch in which the validator was removed */
   epochSeq: Scalars['String'];
   /** The nonce used in the signing operation */
@@ -1267,7 +1273,7 @@ export type Erc20WithdrawalApproval = {
   __typename?: 'Erc20WithdrawalApproval';
   /** The amount to be withdrawn */
   amount: Scalars['String'];
-  /** The source asset in the ethereum network */
+  /** The source asset on the bridged EVM chain */
   assetSource: Scalars['String'];
   /** RFC3339Nano timestamp at which the withdrawal was created */
   creation: Scalars['String'];
@@ -1278,6 +1284,8 @@ export type Erc20WithdrawalApproval = {
    * 0x + sig1 + sig2 + ... + sigN
    */
   signatures: Scalars['String'];
+  /** The chain ID of the bridged EVM chain */
+  sourceChainId: Scalars['String'];
   /** The target address that will receive the funds */
   targetAddress: Scalars['String'];
 };
@@ -2314,7 +2322,7 @@ export type Market = {
   data?: Maybe<MarketData>;
   /**
    * The number of decimal places that an integer must be shifted by in order to get a correct
-   * number denominated in the currency of the market. (uint64)
+   * number denominated in the currency of the market. On spot markets, also called price decimal places. (uint64)
    *
    * Examples:
    * Currency     Balance  decimalPlaces  Real Balance
@@ -2374,7 +2382,8 @@ export type Market = {
    * The number of decimal places that an integer must be shifted in order to get a correct size (uint64).
    * i.e. 0 means there are no fractional orders for the market, and order sizes are always whole sizes.
    * 2 means sizes given as 10^2 * desired size, e.g. a desired size of 1.23 is represented as 123 in this market.
-   * This sets how big the smallest order / position on the market can be.
+   * This sets how big the smallest order / position on the market can be. On spot markets, used for order size
+   * and also known as size decimal places.
    */
   positionDecimalPlaces: Scalars['Int'];
   /** Price monitoring settings for the market */
@@ -2829,8 +2838,6 @@ export type NewMarket = {
 /** Configuration for a new spot market on Vega */
 export type NewSpotMarket = {
   __typename?: 'NewSpotMarket';
-  /** Decimal places used for the new market, sets the smallest price increment on the book */
-  decimal_places: Scalars['Int'];
   /** New spot market instrument configuration */
   instrument: InstrumentConfiguration;
   /** Specifies how the liquidity fee for the market will be calculated */
@@ -2839,12 +2846,14 @@ export type NewSpotMarket = {
   liquiditySLAParams: LiquiditySLAParameters;
   /** Optional spot market metadata tags */
   metadata: Array<Scalars['String']>;
-  /** Decimal places for order sizes, sets what size the smallest order / position on the spot market can be */
-  positionDecimalPlaces: Scalars['Int'];
+  /** Decimal places used for the new market, sets the smallest price increment on the book */
+  priceDecimalPlaces: Scalars['Int'];
   /** Price monitoring parameters */
   priceMonitoringParameters: PriceMonitoringParameters;
   /** New spot market risk model parameters */
   riskParameters?: Maybe<RiskModel>;
+  /** Decimal places for order sizes, sets what size the smallest order / position on the spot market can be */
+  sizeDecimalPlaces: Scalars['Int'];
   /** Specifies parameters related to liquidity target stake calculation */
   targetStakeParameters: TargetStakeParameters;
   /** The market minimum tick size */
@@ -4515,16 +4524,28 @@ export enum ProposalRejectionReason {
   PROPOSAL_ERROR_INVALID_MARKET_STATE_UPDATE = 'PROPOSAL_ERROR_INVALID_MARKET_STATE_UPDATE',
   /** Perpetual market proposal contained invalid product definition */
   PROPOSAL_ERROR_INVALID_PERPETUAL_PRODUCT = 'PROPOSAL_ERROR_INVALID_PERPETUAL_PRODUCT',
+  /** Referral program proposal is invalid */
+  PROPOSAL_ERROR_INVALID_REFERRAL_PROGRAM = 'PROPOSAL_ERROR_INVALID_REFERRAL_PROGRAM',
   /** Market proposal uses an invalid risk parameter */
   PROPOSAL_ERROR_INVALID_RISK_PARAMETER = 'PROPOSAL_ERROR_INVALID_RISK_PARAMETER',
   /** Market proposal has one or more invalid liquidity shapes */
   PROPOSAL_ERROR_INVALID_SHAPE = 'PROPOSAL_ERROR_INVALID_SHAPE',
+  /** Spot market proposal contains too many size decimal places */
+  PROPOSAL_ERROR_INVALID_SIZE_DECIMAL_PLACES = 'PROPOSAL_ERROR_INVALID_SIZE_DECIMAL_PLACES',
   /** Mandatory liquidity provision SLA parameters are missing from the proposal */
   PROPOSAL_ERROR_INVALID_SLA_PARAMS = 'PROPOSAL_ERROR_INVALID_SLA_PARAMS',
   /** Validation of spot market proposal failed */
   PROPOSAL_ERROR_INVALID_SPOT = 'PROPOSAL_ERROR_INVALID_SPOT',
   /** Validation of successor market has failed */
   PROPOSAL_ERROR_INVALID_SUCCESSOR_MARKET = 'PROPOSAL_ERROR_INVALID_SUCCESSOR_MARKET',
+  /** Volume discount program proposal is invalid */
+  PROPOSAL_ERROR_INVALID_VOLUME_DISCOUNT_PROGRAM = 'PROPOSAL_ERROR_INVALID_VOLUME_DISCOUNT_PROGRAM',
+  /** Linear slippage factor is out of range, either negative or too large */
+  PROPOSAL_ERROR_LINEAR_SLIPPAGE_FACTOR_OUT_OF_RANGE = 'PROPOSAL_ERROR_LINEAR_SLIPPAGE_FACTOR_OUT_OF_RANGE',
+  /** LP price range must be larger than 0 */
+  PROPOSAL_ERROR_LP_PRICE_RANGE_NONPOSITIVE = 'PROPOSAL_ERROR_LP_PRICE_RANGE_NONPOSITIVE',
+  /** LP price range must not be larger than 100 */
+  PROPOSAL_ERROR_LP_PRICE_RANGE_TOO_LARGE = 'PROPOSAL_ERROR_LP_PRICE_RANGE_TOO_LARGE',
   /** Proposal declined because the majority threshold was not reached */
   PROPOSAL_ERROR_MAJORITY_THRESHOLD_NOT_REACHED = 'PROPOSAL_ERROR_MAJORITY_THRESHOLD_NOT_REACHED',
   /** Market proposal is missing a liquidity commitment */
@@ -4557,6 +4578,12 @@ export enum ProposalRejectionReason {
   PROPOSAL_ERROR_OPENING_AUCTION_DURATION_TOO_SMALL = 'PROPOSAL_ERROR_OPENING_AUCTION_DURATION_TOO_SMALL',
   /** Proposal declined because the participation threshold was not reached */
   PROPOSAL_ERROR_PARTICIPATION_THRESHOLD_NOT_REACHED = 'PROPOSAL_ERROR_PARTICIPATION_THRESHOLD_NOT_REACHED',
+  /** One or more proposals in a batch has been declined */
+  PROPOSAL_ERROR_PROPOSAL_IN_BATCH_DECLINED = 'PROPOSAL_ERROR_PROPOSAL_IN_BATCH_DECLINED',
+  /** One or more proposals in a batch has been rejected */
+  PROPOSAL_ERROR_PROPOSAL_IN_BATCH_REJECTED = 'PROPOSAL_ERROR_PROPOSAL_IN_BATCH_REJECTED',
+  /** Quadratic slippage factor is out of range, either negative or too large */
+  PROPOSAL_ERROR_QUADRATIC_SLIPPAGE_FACTOR_OUT_OF_RANGE = 'PROPOSAL_ERROR_QUADRATIC_SLIPPAGE_FACTOR_OUT_OF_RANGE',
   /** Spot trading is disabled */
   PROPOSAL_ERROR_SPOT_PRODUCT_DISABLED = 'PROPOSAL_ERROR_SPOT_PRODUCT_DISABLED',
   /** Too many decimal places specified in market */
@@ -5048,6 +5075,7 @@ export type Queryerc20ListAssetBundleArgs = {
 
 /** Queries allow a caller to read data and filter data via GraphQL. */
 export type Queryerc20MultiSigSignerAddedBundlesArgs = {
+  chainID?: InputMaybe<Scalars['String']>;
   epochSeq?: InputMaybe<Scalars['String']>;
   nodeId: Scalars['ID'];
   pagination?: InputMaybe<Pagination>;
@@ -5057,6 +5085,7 @@ export type Queryerc20MultiSigSignerAddedBundlesArgs = {
 
 /** Queries allow a caller to read data and filter data via GraphQL. */
 export type Queryerc20MultiSigSignerRemovedBundlesArgs = {
+  chainID?: InputMaybe<Scalars['String']>;
   epochSeq?: InputMaybe<Scalars['String']>;
   nodeId: Scalars['ID'];
   pagination?: InputMaybe<Pagination>;
@@ -7189,6 +7218,14 @@ export type UpdateReferralProgram = {
   windowLength: Scalars['Int'];
 };
 
+export type UpdateSpotInstrumentConfiguration = {
+  __typename?: 'UpdateSpotInstrumentConfiguration';
+  /** Instrument code, human-readable shortcode used to describe the instrument. */
+  code: Scalars['String'];
+  /** Instrument name */
+  name: Scalars['String'];
+};
+
 /** Update an existing spot market on Vega */
 export type UpdateSpotMarket = {
   __typename?: 'UpdateSpotMarket';
@@ -7200,6 +7237,8 @@ export type UpdateSpotMarket = {
 
 export type UpdateSpotMarketConfiguration = {
   __typename?: 'UpdateSpotMarketConfiguration';
+  /** Updated spot market instrument configuration. */
+  instrument: UpdateSpotInstrumentConfiguration;
   /** Specifies how the liquidity fee for the market will be calculated */
   liquidityFeeSettings?: Maybe<LiquidityFeeSettings>;
   /** Specifies the liquidity provision SLA parameters */
