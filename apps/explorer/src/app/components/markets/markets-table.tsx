@@ -52,10 +52,10 @@ export const MarketsTable = ({ data }: MarketsTableProps) => {
           data,
         }: VegaICellRendererParams<MarketMaybeWithData, 'id'>) => {
           return (
-            <span>
+            <div>
               {data && data.id ? <EmblemWithChain market={data.id} /> : null}
-              {value}
-            </span>
+              <span className="ml-1">{value}</span>
+            </div>
           );
         },
       },

@@ -49,10 +49,10 @@ export const AssetsTable = ({ data }: AssetsTableProps) => {
           data,
         }: VegaICellRendererParams<Asset, 'symbol'>) => {
           return (
-            <span>
+            <div>
               {data && data.id ? <EmblemWithChain asset={data.id} /> : null}
-              {value}
-            </span>
+              <span className="ml-2">{value}</span>
+            </div>
           );
         },
       },

@@ -50,7 +50,9 @@ export const AssetLink = ({
       {...props}
     >
       <EmblemWithChain asset={assetId} />
-      <Hash text={label} />
+      <div className="ml-1 inline-block">
+        <Hash text={label} />
+      </div>
     </ButtonLink>
   );
 };
