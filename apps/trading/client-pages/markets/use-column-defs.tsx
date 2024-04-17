@@ -27,6 +27,46 @@ import {
 } from '@vegaprotocol/markets';
 import { useT } from '../../lib/use-t';
 
+export const priceChangeRenderer = (
+  data: MarketMaybeWithDataAndCandles | undefined
+) => {
+  if (!data) return null;
+  const candles =
+    data.candles?.filter((c) => c.close).map((c) => Number(c.close)) || [];
+  return (
+    <div className="flex flex-row gap-2">
+      <Last24hPriceChange
+        marketId={data.id}
+        decimalPlaces={data.decimalPlaces}
+        orientation="vertical"
+        fallback={<span />} // don't render anything so price is vertically centered
+      />
+      <Sparkline width={80} height={20} data={candles} />
+    </div>
+  );
+};
+
+export const priceValueFormatter = (
+  data: MarketMaybeWithData | undefined
+): string => {
+  if (data?.tradableInstrument.instrument.product.__typename === 'Spot') {
+    const quoteAsset = data && getQuoteAsset(data);
+    return data?.data?.lastTradedPrice === undefined
+      ? '-'
+      : `${addDecimalsFormatNumber(
+          data.data.lastTradedPrice,
+          data.decimalPlaces
+        )} ${quoteAsset?.symbol}`;
+  }
+  const quoteName = data && getQuoteName(data);
+  return data?.data?.bestOfferPrice === undefined
+    ? '-'
+    : `${addDecimalsFormatNumber(
+        data.data.markPrice,
+        data.decimalPlaces
+      )} ${quoteName}`;
+};
+
 export const useMarketsColumnDefs = () => {
   const t = useT();
 
@@ -74,47 +114,17 @@ export const useMarketsColumnDefs = () => {
         valueFormatter: ({
           data,
         }: VegaValueFormatterParams<MarketMaybeWithData, 'data.markPrice'>) => {
-          if (
-            data?.tradableInstrument.instrument.product.__typename === 'Spot'
-          ) {
-            const quoteAsset = data && getQuoteAsset(data);
-            return data?.data?.lastTradedPrice === undefined
-              ? '-'
-              : `${addDecimalsFormatNumber(
-                  data.data.lastTradedPrice,
-                  data.decimalPlaces
-                )} ${quoteAsset?.symbol}`;
-          }
-          const quoteName = data && getQuoteName(data);
-          return data?.data?.bestOfferPrice === undefined
-            ? '-'
-            : `${addDecimalsFormatNumber(
-                data.data.markPrice,
-                data.decimalPlaces
-              )} ${quoteName}`;
+          return priceValueFormatter(data);
         },
       },
       {
         headerName: '24h Change',
         field: 'data.candles',
+        type: 'rightAligned',
         cellRenderer: ({
           data,
         }: ValueFormatterParams<MarketMaybeWithDataAndCandles, 'candles'>) => {
-          if (!data) return null;
-          const candles =
-            data.candles?.filter((c) => c.close).map((c) => Number(c.close)) ||
-            [];
-          return (
-            <div className="flex flex-row gap-2">
-              <Last24hPriceChange
-                marketId={data.id}
-                decimalPlaces={data.decimalPlaces}
-                orientation="vertical"
-                fallback={<span />} // don't render anything so price is vertically centered
-              />
-              <Sparkline width={80} height={20} data={candles} />
-            </div>
-          );
+          return priceChangeRenderer(data);
         },
       },
       {

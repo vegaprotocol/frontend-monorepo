@@ -16,11 +16,45 @@ import { ErrorBoundary } from '../../components/error-boundary';
 import { MarketsSettings } from './markets-settings';
 import { usePageTitle } from '../../lib/hooks/use-page-title';
 import { Card } from '../../components/card';
+import { useDataProvider } from '@vegaprotocol/data-provider';
+import { activeMarketsWithCandlesProvider } from '@vegaprotocol/markets';
+import { useYesterday } from '@vegaprotocol/react-helpers';
+import { useEffect } from 'react';
+import { Interval } from '@vegaprotocol/types';
+import { priceChangeRenderer, priceValueFormatter } from './use-column-defs';
+
+const POLLING_TIME = 2000;
 
 export const MarketsPage = () => {
   const t = useT();
   const governanceLink = useLinks(DApp.Governance);
   const externalLink = governanceLink(TOKEN_NEW_MARKET_PROPOSAL);
+
+  const yesterday = useYesterday();
+  const {
+    data: activeMarkets,
+    error,
+    reload,
+  } = useDataProvider({
+    dataProvider: activeMarketsWithCandlesProvider,
+    variables: {
+      since: new Date(yesterday).toISOString(),
+      interval: Interval.INTERVAL_I1H,
+    },
+  });
+
+  // TODO get top gainers and new listings
+  const topGainers = activeMarkets?.slice(0, 3);
+  const newListings = activeMarkets?.slice(3, 6);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      reload();
+    }, POLLING_TIME);
+    return () => {
+      clearInterval(interval);
+    };
+  }, [reload]);
 
   usePageTitle(t('Markets'));
 
@@ -37,10 +71,30 @@ export const MarketsPage = () => {
             </Card>
           </div>
           <Card key="top-gainers" title={t('Top gainers')}>
-            <div>Top gainers</div>
+            <div className="grid auto-rows-min grid-cols-3 gap-3 text-sm">
+              {topGainers?.map((market) => {
+                return (
+                  <>
+                    <span>{market.tradableInstrument.instrument.name}</span>
+                    <span>{priceValueFormatter(market)}</span>
+                    <span>{priceChangeRenderer(market)}</span>
+                  </>
+                );
+              })}
+            </div>
           </Card>
           <Card key="new-listings" title={t('New listings')}>
-            New listings
+            <div className="grid auto-rows-min grid-cols-3 gap-3 text-sm">
+              {newListings?.map((market) => {
+                return (
+                  <>
+                    <span>{market.tradableInstrument.instrument.name}</span>
+                    <span>{priceValueFormatter(market)}</span>
+                    <span>{priceChangeRenderer(market)}</span>
+                  </>
+                );
+              })}
+            </div>
           </Card>
         </div>
       </div>
@@ -53,7 +107,7 @@ export const MarketsPage = () => {
               settings={<MarketsSettings />}
             >
               <ErrorBoundary feature="markets-open">
-                <OpenMarkets />
+                <OpenMarkets data={activeMarkets} error={error} />
               </ErrorBoundary>
             </Tab>
             <Tab
