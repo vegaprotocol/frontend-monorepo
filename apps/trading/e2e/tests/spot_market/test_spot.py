@@ -181,7 +181,7 @@ def test_market_spot_info_liquidity(page: Page):
         "Liquidity", exact=True
     ).click()
     fields = [
-        ["Target Stake", "100.00 USDT"],
+        ["Target Stake", "10,000.00 USDT"],
         ["Supplied Stake", "10,000.00 USDT"],
     ]
     validate_info_section(page, fields)
