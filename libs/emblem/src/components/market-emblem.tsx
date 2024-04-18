@@ -1,3 +1,4 @@
+import classNames = require('classnames');
 import { URL_BASE } from '../config';
 import { EmblemBase } from './emblem-base';
 import { useMarketInfo } from './hooks/use-market-info';
@@ -13,8 +14,6 @@ export type EmblemByMarketProps = {
   vegaChain?: string;
   // Allows the Market Emblem component to display both or just one of the asset logos
   marketLogos?: MarketLogos;
-  // Optional parameter used to configure the wrapper that contains the emblems
-  wrapperClass?: string;
 };
 
 /**
@@ -30,7 +29,7 @@ export type EmblemByMarketProps = {
  * @returns React.Node
  */
 export function EmblemByMarket(props: EmblemByMarketProps) {
-  const { vegaChain, marketLogos, market, wrapperClass = '' } = props;
+  const { vegaChain, marketLogos, market } = props;
   const { showBase, showQuote, logoCount } = chooseLogos(marketLogos);
 
   const chain = getVegaChain(vegaChain);
@@ -43,9 +42,10 @@ export function EmblemByMarket(props: EmblemByMarketProps) {
   // Widths are calculated here as they are required for using absolute positioning to
   // render the logos as overlapping. Moving to blocks with negative margins should work
   // and could remove this calculation, but was not working reliably cross platform.
-  const wrapperClassString = `relative inline-block ${
-    logoCount === 2 ? 'w-8' : 'w-5'
-  } ${wrapperClass ?? ''}`;
+  const wrapperClassString = classNames('relative inline-block', {
+    'w-8': logoCount === 2,
+    'w-5': logoCount === 1,
+  });
 
   return (
     <div className={wrapperClassString}>
