@@ -17,7 +17,7 @@ order_details = [
         "order-created-label",
         "Created",
         "order-created-value",
-        r"^\d{1,2}/\d{1,2}/\d{4}, \d{1,2}:\d{2}:\d{2}$",
+        r'^\d{1,2}/\d{1,2}/\d{4}, \d{1,2}:\d{2}:\d{2}( (AM|PM))?$',
         True,
     ),
     (
