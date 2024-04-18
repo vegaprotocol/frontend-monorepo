@@ -468,23 +468,23 @@ fragment IUpdateSpotMarket on UpdateSpotMarket {
         auctionExtensionSecs
       }
     }
-    spotRiskParameter: riskParameters {
-      ... on SimpleRiskModel {
-        params {
-          factorLong
-          factorShort
-        }
-      }
-      ... on LogNormalRiskModel {
-        riskAversionParameter
-        tau
-        params {
-          r
-          sigma
-          mu
-        }
-      }
-    }
+    # spotRiskParameter: riskParameters {
+    #   ... on SimpleRiskModel {
+    #     params {
+    #       factorLong
+    #       factorShort
+    #     }
+    #   }
+    #   ... on LogNormalRiskModel {
+    #     riskAversionParameter
+    #     tau
+    #     params {
+    #       r
+    #       sigma
+    #       mu
+    #     }
+    #   }
+    # }
     liquiditySLAParams {
       priceRange
       commitmentMinTimeFraction

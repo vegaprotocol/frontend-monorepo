@@ -21,10 +21,15 @@ import {
 import { MarketName } from '../proposal/market-name';
 
 const immutableKeys = [
+  // immutable fields from UpdateMarket proposal
   'decimalPlaces',
   'positionDecimalPlaces',
   'instrument.name',
   'instrument.future.settlementAsset',
+  // immutable fields from UpdateSpotMarket proposal
+  'instrument.spot',
+  'priceDecimalPlaces',
+  'sizeDecimalPlaces',
 ];
 
 export const applyImmutableKeysFromEarlierVersion = (

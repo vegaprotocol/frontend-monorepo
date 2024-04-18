@@ -188,6 +188,7 @@ const ProposalDetails = ({
           </span>
         );
       }
+      case 'UpdateSpotMarket':
       case 'UpdateMarket': {
         const marketPageLink = consoleLink(
           CONSOLE_MARKET_PAGE.replace(':marketId', terms.change.marketId)
