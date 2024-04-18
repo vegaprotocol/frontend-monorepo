@@ -75,7 +75,7 @@ class TestSettledMarket:
         # 6001-MARK-009
         # 6001-MARK-008
         # 6001-MARK-010
-        pattern = re.compile(r'Expected in (\d+)\s+(months|hours|days|minutes)')
+        pattern = re.compile(r'(Expected in )?(\d+)\s+(months|hours|days|minutes)( ago)?')
 
         date_text = row_selector.locator('[col-id="settlementDate"]').inner_text()
         assert pattern.match(

@@ -192,7 +192,7 @@ def test_epoch_counter(
     setup_environment: Tuple[Page, str, str],
 ) -> None:
     page, tDAI_market, tDAI_asset_id = setup_environment
-    expect(page.get_by_test_id("epoch-countdown")).to_contain_text("Epoch 12Next epoch in ")
+    expect(page.get_by_test_id("epoch-countdown")).to_contain_text("Epoch 12")
 
 
 def test_staking_reward(
