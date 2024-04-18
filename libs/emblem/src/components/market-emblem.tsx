@@ -1,8 +1,8 @@
-import classNames = require('classnames');
 import { URL_BASE } from '../config';
 import { EmblemBase } from './emblem-base';
 import { useMarketInfo } from './hooks/use-market-info';
 import { getVegaChain } from './lib/get-chain';
+import classNames from 'classnames';
 
 // Allows the specification of one or both logos. Undefined means both logos are shown
 type MarketLogos = 'BASE' | 'QUOTE' | 'BOTH' | undefined;

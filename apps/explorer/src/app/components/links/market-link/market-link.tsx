@@ -53,14 +53,18 @@ const MarketLink = ({
         to={`/${Routes.MARKETS}/${id}`}
         title={id}
       >
-        <EmblemWithChain market={id} wrapperClass="mr-1" />
+        <span className="mr-1">
+          <EmblemWithChain market={id} />
+        </span>
         {label}
       </Link>
     );
   } else {
     return (
       <Link className="underline" {...props} to={`/${Routes.MARKETS}/${id}`}>
-        <EmblemWithChain market={id} wrapperClass="mr-1" />
+        <span className="mr-1">
+          <EmblemWithChain market={id} />
+        </span>
         <Hash text={id} />
       </Link>
     );
