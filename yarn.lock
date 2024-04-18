@@ -48,6 +48,19 @@
     ethereum-multicall "2.21.0"
     ethers "^5.7.1"
 
+"@0xsquid/sdk@1.14.15":
+  version "1.14.15"
+  resolved "https://registry.yarnpkg.com/@0xsquid/sdk/-/sdk-1.14.15.tgz#ce74445b838a8f1321a96c796940a2106a58ada6"
+  integrity sha512-MJUoKYnlqqrkUb1h+6tePPL1luf/ppG9fxD2IrTcTuN1Z/2NYfAlF2jd2J+0MpMVKXpSZishzbW3sBFPjPej8Q==
+  dependencies:
+    "@cosmjs/cosmwasm-stargate" "^0.32.2"
+    "@cosmjs/encoding" "^0.32.2"
+    "@cosmjs/stargate" "^0.32.2"
+    axios "^0.27.2"
+    cosmjs-types "^0.9.0"
+    ethereum-multicall "2.23.0"
+    ethers "^5.7.1"
+
 "@0xsquid/sdk@1.14.16":
   version "1.14.16"
   resolved "https://registry.yarnpkg.com/@0xsquid/sdk/-/sdk-1.14.16.tgz#f244907c6e0dd36bb272705897d7c011c072be00"
@@ -69,6 +82,36 @@
     "@axelar-network/axelarjs-sdk" "^0.13.6"
     "@ethersproject/providers" "^5.7.2"
     typescript "*"
+
+"@0xsquid/staking-widget@^1.0.6":
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/@0xsquid/staking-widget/-/staking-widget-1.0.6.tgz#fcfe3b2c4e7651ea8b536f59bb3fbff0894dbad5"
+  integrity sha512-DfJZhD80LCBe+CQIu79uLRHqcSQw9ZYWMDDAMzEx0wsvLgE1A7VzrbtalMjMqNlenoVbjrdIw1HS1WhkwAaoCw==
+  dependencies:
+    "@0xsquid/sdk" "1.14.15"
+    "@cosmjs/cosmwasm-stargate" "0.32.2"
+    "@cosmjs/stargate" "0.32.2"
+    "@floating-ui/react-dom" "^1.0.1"
+    "@floating-ui/react-dom-interactions" "^0.12.0"
+    "@ledgerhq/iframe-provider" "^0.4.3"
+    "@lottiefiles/react-lottie-player" "^3.5.0"
+    "@tanstack/react-query" "^4.3.9"
+    "@tanstack/react-query-devtools" "^4.3.9"
+    "@types/color" "^3.0.3"
+    "@types/lodash" "^4.14.186"
+    "@wagmi/connectors" "0.3.16"
+    axios "^0.27.2"
+    bignumber.js "^9.1.1"
+    clsx "^1.2.1"
+    color "^4.2.3"
+    date-fns "^2.29.3"
+    fuse.js "^6.6.2"
+    lodash "^4.17.21"
+    react-content-loader "^6.2.0"
+    react-icons "^4.7.1"
+    secretjs "^1.8.1"
+    wagmi "^0.12.13"
+    zustand "^4.1.1"
 
 "@0xsquid/widget@^1.7.7":
   version "1.7.7"
@@ -7871,7 +7914,7 @@
   dependencies:
     "@tanstack/query-persist-client-core" "4.36.1"
 
-"@tanstack/react-query-devtools@4.36.1":
+"@tanstack/react-query-devtools@4.36.1", "@tanstack/react-query-devtools@^4.3.9":
   version "4.36.1"
   resolved "https://registry.yarnpkg.com/@tanstack/react-query-devtools/-/react-query-devtools-4.36.1.tgz#7e63601135902a993ca9af73507b125233b1554e"
   integrity sha512-WYku83CKP3OevnYSG8Y/QO9g0rT75v1om5IvcWUwiUZJ4LanYGLVCZ8TdFG5jfsq4Ej/lu2wwDAULEUnRIMBSw==
@@ -7887,7 +7930,7 @@
   dependencies:
     "@tanstack/query-persist-client-core" "4.36.1"
 
-"@tanstack/react-query@4.36.1", "@tanstack/react-query@^4.28.0", "@tanstack/react-query@^4.32.6":
+"@tanstack/react-query@4.36.1", "@tanstack/react-query@^4.28.0", "@tanstack/react-query@^4.3.9", "@tanstack/react-query@^4.32.6":
   version "4.36.1"
   resolved "https://registry.yarnpkg.com/@tanstack/react-query/-/react-query-4.36.1.tgz#acb589fab4085060e2e78013164868c9c785e5d2"
   integrity sha512-y7ySVHFyyQblPl3J3eQBWpXZkliroki3ARnBKsdJchlgt7yJLRDUcf4B8soufgiYt3pEQIkBWBx1N9/ZPIeUWw==
@@ -21789,7 +21832,7 @@ react-colorful@^5.1.2:
   resolved "https://registry.yarnpkg.com/react-colorful/-/react-colorful-5.6.1.tgz#7dc2aed2d7c72fac89694e834d179e32f3da563b"
   integrity sha512-1exovf0uGTGyq5mXQT0zgQ80uvj2PCwvF8zY1RN9/vbJVSjSo3fsB/4L3ObbF7u70NduSiK4xu4Y6q1MHoUGEw==
 
-react-content-loader@6.2.1, react-content-loader@^6.2.1:
+react-content-loader@6.2.1, react-content-loader@^6.2.0, react-content-loader@^6.2.1:
   version "6.2.1"
   resolved "https://registry.yarnpkg.com/react-content-loader/-/react-content-loader-6.2.1.tgz#8feb733c2d2495002e1b216f13707f2b5f2a8ead"
   integrity sha512-6ONbFX+Hi3SHuP66JB8CPvJn372pj+qwltJV0J8z/8MFrq98I1cbFdZuhDWeQXu3CFxiiDTXJn7DFxx2ZvrO7g==
@@ -25296,7 +25339,7 @@ wagmi@0.12.13:
     abitype "^0.3.0"
     use-sync-external-store "^1.2.0"
 
-wagmi@0.12.19:
+wagmi@0.12.19, wagmi@^0.12.13:
   version "0.12.19"
   resolved "https://registry.yarnpkg.com/wagmi/-/wagmi-0.12.19.tgz#5f5038330907f70c033ea51ef8a9136289567256"
   integrity sha512-S/el9BDb/HNeQWh1v8TvntMPX/CgKLDAoJqDb8i7jifLfWPqFL7gor3vnI1Vs6ZlB8uh7m+K1Qyg+mKhbITuDQ==

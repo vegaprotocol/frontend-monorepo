@@ -22,6 +22,7 @@
   "private": true,
   "dependencies": {
     "@0xsquid/checkout-widget": "1.0.1-beta.11",
+    "@0xsquid/staking-widget": "^1.0.6",
     "@0xsquid/widget": "^1.7.7",
     "@apollo/client": "^3.5.8",
     "@blueprintjs/icons": "^3.32.0",
