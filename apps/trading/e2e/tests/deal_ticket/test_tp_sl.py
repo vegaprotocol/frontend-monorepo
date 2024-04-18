@@ -5,7 +5,7 @@ from actions.vega import submit_order
 from actions.utils import wait_for_toast_confirmation
 from wallet_config import MM_WALLET, MM_WALLET2, PARTY_A, PARTY_B
 
-@pytest.mark.skip("skip until 0.75")
+
 @pytest.mark.usefixtures("auth", "risk_accepted")
 def test_take_profit_stop_loss_deal_ticket(
     continuous_market, page: Page, vega: VegaServiceNull
@@ -36,8 +36,8 @@ def test_take_profit_stop_loss_deal_ticket(
     wait_for_toast_confirmation(page)
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
-    page.get_by_test_id("Order history").click()
-    expect(page.get_by_role("row").nth(5)).to_contain_text("0+1LimitActive100.00GTC")
+    page.get_by_test_id("Open").click()
+    expect(page.get_by_role("row").nth(4)).to_contain_text("0+1LimitActive100.00GTC")
     page.get_by_test_id("Advanced orders").click()
     text_locator_mark_under_95_pending = "Mark < 95.00-1MarketPendingOCO-FOK"
     text_locator_mark_over_200_pending = "Mark > 200.00-1MarketPendingOCO-FOK"
