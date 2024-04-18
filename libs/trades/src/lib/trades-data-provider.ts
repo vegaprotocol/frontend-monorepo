@@ -18,7 +18,7 @@ import {
   type TradesUpdateSubscriptionVariables,
 } from './__generated__/Trades';
 
-export const MAX_TRADES = 10;
+export const MAX_TRADES = 500;
 
 const getData = (
   responseData: TradesQuery | null
