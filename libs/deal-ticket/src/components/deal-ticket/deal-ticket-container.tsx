@@ -8,7 +8,7 @@ import {
   useStaticMarketData,
   useMarketPrice,
   marketInfoProvider,
-  markPriceProvider,
+  useMarkPrice,
   getProductType,
 } from '@vegaprotocol/markets';
 import { AsyncRendererInline } from '@vegaprotocol/ui-toolkit';
@@ -49,10 +49,7 @@ export const DealTicketContainer = ({
     reload,
   } = useStaticMarketData(marketId);
   const { data: marketPrice } = useMarketPrice(marketId);
-  const { data: markPrice } = useDataProvider({
-    dataProvider: markPriceProvider,
-    variables: { marketId },
-  });
+  const { data: markPrice } = useMarkPrice(marketId);
   const create = useVegaTransactionStore((state) => state.create);
 
   const productType = market && getProductType(market);

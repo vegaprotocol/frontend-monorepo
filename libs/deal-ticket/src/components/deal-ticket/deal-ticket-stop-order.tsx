@@ -56,11 +56,11 @@ import { DealTicketFeeDetails } from './deal-ticket-fee-details';
 import { validateExpiration } from '../../utils';
 import { NOTIONAL_SIZE_TOOLTIP_TEXT } from '../../constants';
 import { KeyValue } from './key-value';
-import { useDataProvider } from '@vegaprotocol/data-provider';
-import { useActiveOrders, stopOrdersProvider } from '@vegaprotocol/orders';
+import { useActiveOrders, useActiveStopOrders } from '@vegaprotocol/orders';
 import { useT } from '../../use-t';
 import { determinePriceStep, determineSizeStep } from '@vegaprotocol/utils';
 import { useOpenVolume } from '@vegaprotocol/positions';
+import { useNetworkParamQuery } from '@vegaprotocol/network-parameters';
 
 export interface StopOrderProps {
   market: Market;
@@ -68,8 +68,6 @@ export interface StopOrderProps {
   submit: (order: StopOrdersSubmission) => void;
 }
 
-const MAX_NUMBER_OF_ACTIVE_STOP_ORDERS = 4;
-const POLLING_TIME = 2000;
 const trailingPercentOffsetStep = '0.1';
 
 const getDefaultValues = (
@@ -161,7 +159,7 @@ const Trigger = ({
           <Controller
             name={oco ? 'ocoTriggerPrice' : 'triggerPrice'}
             rules={{
-              required: t('You need provide a price'),
+              required: t('You need to provide a price'),
               min: {
                 value: priceStep,
                 message: t('Price cannot be lower than {{priceStep}}', {
@@ -245,7 +243,7 @@ const Trigger = ({
             }
             control={control}
             rules={{
-              required: t('You need provide a trailing percent offset'),
+              required: t('You need to provide a trailing percent offset'),
               min: {
                 value: trailingPercentOffsetStep,
                 message: t(
@@ -415,7 +413,7 @@ const Price = ({
       control={control}
       rules={{
         deps: 'type',
-        required: t('You need provide a price'),
+        required: t('You need to provide a price'),
         min: {
           value: priceStep,
           message: t('Price cannot be lower than {{priceStep}}', { priceStep }),
@@ -846,6 +844,11 @@ const SubmitButton = ({
 export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
   const t = useT();
   const { pubKey, isReadOnly } = useVegaWallet();
+  const maxNumberOfOrders = useNetworkParamQuery({
+    variables: {
+      key: 'spam.protection.max.stopOrdersPerMarket',
+    },
+  }).data?.networkParameter?.value;
   const setType = useDealTicketFormValues((state) => state.setType);
   const updateStoredFormValues = useDealTicketFormValues(
     (state) => state.updateStopOrder
@@ -900,26 +903,11 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
   const triggerTrailingPercentOffset = watch('triggerTrailingPercentOffset');
   const triggerType = watch('triggerType');
 
-  const { data: activeStopOrders, reload } = useDataProvider({
-    dataProvider: stopOrdersProvider,
-    variables: {
-      filter: {
-        parties: pubKey ? [pubKey] : [],
-        markets: [market.id],
-        liveOnly: true,
-      },
-    },
-    skip: !(pubKey && (formState.isDirty || formState.submitCount)),
-  });
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      reload();
-    }, POLLING_TIME);
-    return () => {
-      clearInterval(interval);
-    };
-  }, [reload]);
+  const { data: activeStopOrders } = useActiveStopOrders(
+    pubKey,
+    market.id,
+    !formState.isDirty && !formState.submitCount
+  );
 
   useEffect(() => {
     const storedSize = storedFormValues?.[dealTicketType]?.size;
@@ -1204,7 +1192,7 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
               name="expiresAt"
               control={control}
               rules={{
-                required: t('You need provide a expiry time/date'),
+                required: t('You need to provide a expiry time/date'),
                 validate: validateExpiration(
                   t(
                     'The expiry date that you have entered appears to be in the past'
@@ -1226,16 +1214,17 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
         </>
       )}
       <NoWalletWarning isReadOnly={isReadOnly} />
-      {(activeStopOrders?.length ?? 0) + (oco ? 2 : 1) >
-      MAX_NUMBER_OF_ACTIVE_STOP_ORDERS ? (
+      {maxNumberOfOrders &&
+      (activeStopOrders?.length ?? 0) + (oco ? 2 : 1) >
+        Number(maxNumberOfOrders) ? (
         <div className="mb-2">
           <Notification
             intent={Intent.Warning}
-            testId={'stop-order-warning-limit'}
+            testId={'stop-order-limit-warning'}
             message={t(
               'There is a limit of {{maxNumberOfOrders}} active stop orders per market. Orders submitted above the limit will be immediately rejected.',
               {
-                maxNumberOfOrders: MAX_NUMBER_OF_ACTIVE_STOP_ORDERS.toString(),
+                maxNumberOfOrders,
               }
             )}
           />

@@ -33,6 +33,7 @@ def competitions_page(
         risk_accepted_setup(page)
         auth_setup(vega_instance, page)
         page.goto(COMPETITIONS_URL)
+        change_keys(page, vega_instance, PARTY_A.name)
         yield page, team_name, vega_instance
 
 
@@ -54,6 +55,7 @@ def setup_teams_and_games(vega: VegaServiceNull):
     tDAI_market = setup_continuous_market(vega, custom_quantum=100000)
     tDAI_asset_id = vega.find_asset_id(symbol="tDAI")
     vega.mint(key_name=PARTY_B.name, asset=tDAI_asset_id, amount=100000)
+    vega.mint(key_name=MM_WALLET2.name, asset=tDAI_asset_id, amount=100000)
     vega.mint(key_name=PARTY_C.name, asset=tDAI_asset_id, amount=100000)
     vega.mint(key_name=PARTY_A.name, asset=tDAI_asset_id, amount=100000)
     vega.mint(key_name=PARTY_D.name, asset=tDAI_asset_id, amount=100000)
@@ -78,6 +80,7 @@ def setup_teams_and_games(vega: VegaServiceNull):
     vega.wait_for_total_catchup()
     VEGA_asset_id = vega.find_asset_id(symbol="VEGA")
     vega.mint(PARTY_A.name, VEGA_asset_id, 1e5)
+    vega.mint(MM_WALLET2.name, VEGA_asset_id, 1e5)
     vega.mint(PARTY_B.name, VEGA_asset_id, 1e5)
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
@@ -89,7 +92,7 @@ def setup_teams_and_games(vega: VegaServiceNull):
     # list_teams actually returns a dictionary {"team_id": Team}
     team_id = list(teams.keys())[0]
     vega.create_referral_set(
-        key_name="market_maker",
+        key_name=PARTY_D.name,
         name="test",
         team_url="https://vega.xyz",
         closed=False,
@@ -98,9 +101,9 @@ def setup_teams_and_games(vega: VegaServiceNull):
     teams = vega.list_teams()
 
     team_id_2 = list(teams.keys())[0]
-    vega.apply_referral_code("Key 1", team_id_2)
+    vega.apply_referral_code(PARTY_B.name, team_id_2)
 
-    vega.apply_referral_code(PARTY_B.name, team_id)
+    #vega.apply_referral_code(PARTY_B.name, team_id)
 
     # go to next epoch so we can check joinedAt and joinedAtEpoch appropriately
     next_epoch(vega)
@@ -109,14 +112,14 @@ def setup_teams_and_games(vega: VegaServiceNull):
 
     next_epoch(vega)
 
-    vega.apply_referral_code(PARTY_D.name, team_id)
+    #vega.apply_referral_code(PARTY_D.name, team_id)
 
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
 
     current_epoch = vega.statistics().epoch_seq
-    game_start = current_epoch + 1
-    game_end = current_epoch + 14
+    game_start = current_epoch + 2
+    game_end = current_epoch + 15
 
     current_epoch = vega.statistics().epoch_seq
     print(f"[EPOCH: {current_epoch}] creating recurring transfer")
@@ -124,7 +127,7 @@ def setup_teams_and_games(vega: VegaServiceNull):
     print(f"Game game end: {game_end}")
 
     vega.recurring_transfer(
-        from_key_name=PARTY_A.name,
+        from_key_name=MM_WALLET2.name,
         from_account_type=vega_protos.vega.ACCOUNT_TYPE_GENERAL,
         to_account_type=vega_protos.vega.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES,
         asset=VEGA_asset_id,
@@ -139,10 +142,8 @@ def setup_teams_and_games(vega: VegaServiceNull):
         end_epoch=game_end,
         window_length=15,
     )
-    vega.wait_fn(1)
-    vega.wait_for_total_catchup()
     vega.recurring_transfer(
-        from_key_name=PARTY_B.name,
+        from_key_name="Key 1",
         from_account_type=vega_protos.vega.ACCOUNT_TYPE_GENERAL,
         to_account_type=vega_protos.vega.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES,
         asset=VEGA_asset_id,
@@ -156,10 +157,8 @@ def setup_teams_and_games(vega: VegaServiceNull):
         factor=1.0,
         window_length=5,
     )
-    vega.wait_fn(1)
-    vega.wait_for_total_catchup()
     vega.recurring_transfer(
-        from_key_name=PARTY_C.name,
+        from_key_name=MM_WALLET.name,
         from_account_type=vega_protos.vega.ACCOUNT_TYPE_GENERAL,
         to_account_type=vega_protos.vega.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES,
         asset=tDAI_asset_id,
@@ -184,6 +183,22 @@ def setup_teams_and_games(vega: VegaServiceNull):
     # Create trading activity for 10 epochs (which is the default)
     for i in range(10):
         vega.submit_order(
+            trading_key=PARTY_D.name,
+            market_id=tDAI_market,
+            order_type="TYPE_MARKET",
+            time_in_force="TIME_IN_FORCE_IOC",
+            side="SIDE_BUY",
+            volume=1,
+        )
+        vega.submit_order(
+            trading_key=PARTY_C.name,
+            market_id=tDAI_market,
+            order_type="TYPE_MARKET",
+            time_in_force="TIME_IN_FORCE_IOC",
+            side="SIDE_BUY",
+            volume=1,
+        )
+        vega.submit_order(
             trading_key=PARTY_B.name,
             market_id=tDAI_market,
             order_type="TYPE_MARKET",
@@ -193,22 +208,6 @@ def setup_teams_and_games(vega: VegaServiceNull):
         )
         vega.submit_order(
             trading_key=PARTY_A.name,
-            market_id=tDAI_market,
-            order_type="TYPE_MARKET",
-            time_in_force="TIME_IN_FORCE_IOC",
-            side="SIDE_BUY",
-            volume=1,
-        )
-        vega.submit_order(
-            trading_key="Key 1",
-            market_id=tDAI_market,
-            order_type="TYPE_MARKET",
-            time_in_force="TIME_IN_FORCE_IOC",
-            side="SIDE_BUY",
-            volume=1,
-        )
-        vega.submit_order(
-            trading_key="market_maker",
             market_id=tDAI_market,
             order_type="TYPE_MARKET",
             time_in_force="TIME_IN_FORCE_IOC",
@@ -242,7 +241,7 @@ def create_team(vega: VegaServiceNull):
 def test_team_page_games_table(team_page: Tuple[Page, str, str, VegaServiceNull]):
     page, team_name, team_id, vega = team_page
     page.get_by_test_id("games-toggle").click()
-    expect(page.get_by_test_id("games-toggle")).to_have_text("Results (10)")
+    expect(page.get_by_test_id("games-toggle")).to_have_text("Results (9)")
     expect(page.get_by_test_id("rank-0")).to_have_text("1")
     expect(page.get_by_test_id("epoch-0")).to_have_text("19")
     expect(page.get_by_test_id("endtime-0")).to_be_visible()
@@ -252,19 +251,20 @@ def test_team_page_games_table(team_page: Tuple[Page, str, str, VegaServiceNull]
     expect(page.get_by_test_id("rank-0")).to_have_text("1")
     expect(page.get_by_test_id("amount-0")).to_have_text("50.00")
     expect(page.get_by_test_id("participatingTeams-0")).to_have_text("2")
-    expect(page.get_by_test_id("participatingMembers-0")).to_have_text("3")
+    expect(page.get_by_test_id("participatingMembers-0")).to_have_text("4")
 
 def test_team_page_members_table(team_page: Tuple[Page, str, str, VegaServiceNull]):
     page, team_name, team_id, vega = team_page
+    change_keys(page, vega, PARTY_A.name)
     page.get_by_test_id("members-toggle").click()
-    expect(page.get_by_test_id("members-toggle")).to_have_text("Members (4)")
+    expect(page.get_by_test_id("members-toggle")).to_have_text("Members (2)")
     expect(page.get_by_test_id("referee-0")).to_be_visible()
     expect(page.get_by_test_id("icon-question-mark").nth(0)).to_be_visible()
-    expect(page.get_by_test_id("referee-3").locator(".text-muted").nth(1)).to_have_text(
+    expect(page.get_by_test_id("referee-1").locator(".text-muted").nth(1)).to_have_text(
         "Owner"
     )
     expect(page.get_by_test_id("joinedAt-0")).to_be_visible()
-    expect(page.get_by_test_id("joinedAtEpoch-0")).to_have_text("9")
+    expect(page.get_by_test_id("joinedAtEpoch-0")).to_have_text("8")
 
 
 def test_team_page_headline(team_page: Tuple[Page, str, str, VegaServiceNull]):
@@ -272,14 +272,14 @@ def test_team_page_headline(team_page: Tuple[Page, str, str, VegaServiceNull]):
     expect(page.get_by_test_id("team-name")).to_have_text(team_name)
     expect(page.get_by_test_id("icon-open-external").nth(1)).to_be_visible()
     expect(page.get_by_test_id("icon-copy")).to_be_visible()
-    expect(page.get_by_test_id("members-count-stat")).to_have_text("4")
+    expect(page.get_by_test_id("members-count-stat")).to_have_text("2")
 
     expect(page.get_by_test_id("total-games-stat")).to_have_text("1")
 
     # TODO this still seems wrong as its always 0
     expect(page.get_by_test_id("total-volume-stat")).to_have_text("0")
 
-    expect(page.get_by_test_id("rewards-paid-stat")).to_have_text("500")
+    expect(page.get_by_test_id("rewards-paid-stat")).to_have_text("450")
 
 
 
@@ -288,12 +288,13 @@ def test_leaderboard(competitions_page: Tuple[Page, str, VegaServiceNull]):
     page.reload()
     expect(page.get_by_test_id("rank-0").locator(".text-yellow-300")).to_have_count(1)
     # the 1st place is shared between the 2 participants in this case
+    
     expect(
         page.get_by_test_id("rank-1").locator(".text-yellow-300")
     ).to_have_count(1)
     expect(page.get_by_test_id("team-0")).to_have_text(team_name)
     expect(page.get_by_test_id("status-0")).to_have_text("Public")
-    expect(page.get_by_test_id("earned-0")).to_have_text("500")
+    expect(page.get_by_test_id("earned-0")).to_have_text("450")
     expect(page.get_by_test_id("games-0")).to_have_text("1")
 
     # TODO  still odd that this is 0
@@ -347,6 +348,7 @@ def test_game_results_page(competitions_page: Tuple[Page, str, VegaServiceNull])
 
 def test_switch_teams(team_page: Tuple[Page, str, str, VegaServiceNull]):
     page, team_name, team_id, vega = team_page
+    change_keys(page, vega, PARTY_B.name)
     page.get_by_test_id("switch-team-button").click()
     page.get_by_test_id("confirm-switch-button").click()
     expect(page.get_by_test_id("dialog-content").first).to_be_visible()
@@ -354,7 +356,7 @@ def test_switch_teams(team_page: Tuple[Page, str, str, VegaServiceNull]):
     vega.wait_for_total_catchup()
     next_epoch(vega=vega)
     page.reload()
-    expect(page.get_by_test_id("members-count-stat")).to_have_text("5")
+    expect(page.get_by_test_id("members-count-stat")).to_have_text("3")
 
 def test_create_team(competitions_page: Tuple[Page, str, VegaServiceNull]):
     page, team_id, vega = competitions_page

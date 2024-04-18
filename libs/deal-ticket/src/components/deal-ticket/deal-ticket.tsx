@@ -567,7 +567,7 @@ export const DealTicket = ({
           name="price"
           control={control}
           rules={{
-            required: t('You need provide a price'),
+            required: t('You need to provide a price'),
             min: {
               value: priceStep,
               message: t('Price cannot be lower than {{priceStep}}', {
@@ -669,7 +669,7 @@ export const DealTicket = ({
             name="expiresAt"
             control={control}
             rules={{
-              required: t('You need provide a expiry time/date'),
+              required: t('You need to provide a expiry time/date'),
               validate: validateExpiration(
                 t(
                   'The expiry date that you have entered appears to be in the past'

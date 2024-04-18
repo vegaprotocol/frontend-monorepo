@@ -8,6 +8,7 @@ import type { ICellRendererParams } from 'ag-grid-community';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { singleRow } from './positions.mock';
 import { useLatestTrade } from '@vegaprotocol/trades';
+import { type StopOrderFieldsFragment } from '@vegaprotocol/orders';
 
 jest.mock('./liquidation-price', () => ({
   LiquidationPrice: () => (
@@ -16,9 +17,19 @@ jest.mock('./liquidation-price', () => ({
 }));
 
 describe('Positions', () => {
+  const mockClose = jest.fn();
+  const mockEditTPSL = jest.fn();
   const renderComponent = async (rowData: Position) => {
     await act(async () => {
-      render(<PositionsTable rowData={[rowData]} isReadOnly={false} />);
+      render(
+        <PositionsTable
+          rowData={[rowData]}
+          pubKey={rowData.partyId}
+          isReadOnly={false}
+          onClose={mockClose}
+          onEditTPSL={mockEditTPSL}
+        />
+      );
     });
   };
 
@@ -40,6 +51,8 @@ describe('Positions', () => {
       'Liquidation',
       'Realised PNL',
       'Unrealised PNL',
+      'Manage TP / SL',
+      '',
     ];
 
     await renderComponent(singleRow);
@@ -162,19 +175,7 @@ describe('Positions', () => {
   });
 
   it('displays close button', async () => {
-    await act(async () => {
-      render(
-        <PositionsTable
-          rowData={[singleRow]}
-          pubKey={singleRow.partyId}
-          onClose={() => {
-            return;
-          }}
-          isReadOnly={false}
-        />
-      );
-    });
-
+    await renderComponent(singleRow);
     expect(screen.getByTestId('close-position')).toBeInTheDocument();
   });
 
@@ -196,6 +197,26 @@ describe('Positions', () => {
     expect(within(cell).getByTestId('stack-cell-primary')).toHaveTextContent(
       '-20,000,000'
     );
+  });
+
+  it('renders add button if there are no stop orders', async () => {
+    await renderComponent(singleRow);
+    expect(screen.getByTestId('edit-tpsl')).toHaveTextContent('Add');
+  });
+
+  it('renders edit button if there are stop orders', async () => {
+    await renderComponent({
+      ...singleRow,
+      stopOrders: [{} as StopOrderFieldsFragment],
+    });
+    expect(screen.getByTestId('edit-tpsl')).toHaveTextContent('Edit');
+  });
+
+  it('do not display edit button if openVolume is zero', async () => {
+    await renderComponent({ ...singleRow, openVolume: '0' });
+    expect(
+      screen.queryByRole('button', { name: 'Add' })
+    ).not.toBeInTheDocument();
   });
 
   describe('PNLCell', () => {

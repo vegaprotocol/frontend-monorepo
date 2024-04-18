@@ -375,8 +375,8 @@ def setup_spot_market(
         market_code="BTC/USDT-SPOT",
         base_asset_id=vega.find_asset_id(symbol=custom_base_asset_symbol),
         quote_asset_id=vega.find_asset_id(symbol=custom_quote_asset_symbol),
-        market_decimal_places=1,
-        position_decimal_places=2,
+        price_decimal_places=1,
+        size_decimal_places=2,
         tick_size=10,
     )
 

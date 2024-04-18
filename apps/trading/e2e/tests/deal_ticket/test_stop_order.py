@@ -54,7 +54,7 @@ def test_stop_order_form_error_validation(continuous_market, page: Page):
     page.get_by_test_id(order_side_sell).click()
     page.get_by_test_id(submit_stop_order).click()
     expect(page.get_by_test_id("stop-order-error-message-trigger-price")).to_have_text(
-        "You need provide a price"
+        "You need to provide a price"
     )
     expect(page.get_by_test_id("stop-order-error-message-size")).to_have_text(
         "Size cannot be lower than 1"
@@ -293,6 +293,6 @@ class TestStopOcoValidation:
             if page.get_by_test_id(close_toast).is_visible():
                 page.get_by_test_id(close_toast).click()
         # 7002-SORD-011
-        expect(page.get_by_test_id("stop-order-warning-limit")).to_have_text(
+        expect(page.get_by_test_id("stop-order-limit-warning")).to_have_text(
             "There is a limit of 4 active stop orders per market. Orders submitted above the limit will be immediately rejected."
         )
