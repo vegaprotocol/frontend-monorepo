@@ -28,6 +28,7 @@ interface TypeSelectorProps {
   market: Market;
   marketData: StaticMarketData;
   errorMessage?: string;
+  showStopOrders: boolean;
 }
 
 const useToggles = () => {
@@ -48,18 +49,20 @@ const useOptions = () => {
 export const TypeToggle = ({
   value,
   onValueChange,
-}: Pick<TypeSelectorProps, 'onValueChange' | 'value'>) => {
+  showStopOrders,
+}: Pick<TypeSelectorProps, 'onValueChange' | 'value' | 'showStopOrders'>) => {
   const featureFlags = useFeatureFlags((state) => state.flags);
   const t = useT();
   const options = useOptions();
   const toggles = useToggles();
   const selectedOption = options.find((t) => t.value === value);
+  const showStopOrdersDropdown = showStopOrders && featureFlags.STOP_ORDERS;
   return (
     <RadioGroup.Root
       name="order-type"
       className={classNames('mb-2 grid h-8 leading-8 font-alpha text-xs', {
-        'grid-cols-3': featureFlags.STOP_ORDERS,
-        'grid-cols-2': !featureFlags.STOP_ORDERS,
+        'grid-cols-3': showStopOrdersDropdown,
+        'grid-cols-2': !showStopOrdersDropdown,
       })}
       value={value}
       onValueChange={onValueChange}
@@ -81,7 +84,7 @@ export const TypeToggle = ({
           </button>
         </RadioGroup.Item>
       ))}
-      {featureFlags.STOP_ORDERS && (
+      {showStopOrdersDropdown && (
         <TradingDropdown
           trigger={
             <TradingDropdownTrigger
@@ -137,6 +140,7 @@ export const TypeSelector = ({
   market,
   marketData,
   errorMessage,
+  showStopOrders,
 }: TypeSelectorProps) => {
   const t = useT();
   const renderError = (errorType: MarketModeValidationType) => {
@@ -198,6 +202,7 @@ export const TypeSelector = ({
           onValueChange(value as DealTicketType);
         }}
         value={value}
+        showStopOrders={showStopOrders}
       />
       {errorMessage && (
         <TradingInputError testId="deal-ticket-error-message-type">

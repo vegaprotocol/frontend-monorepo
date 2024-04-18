@@ -9,7 +9,7 @@ describe('useMaxSize', () => {
   const accountDecimals = 3;
   const initialProps: UseMaxSizeProps = {
     baseAssetAccountBalance: '',
-    productType: 'Perpetual',
+    isSpotMarket: false,
     openVolume: '0',
     positionDecimalPlaces,
     generalAccountBalance: removeDecimal('100', accountDecimals),
@@ -39,6 +39,37 @@ describe('useMaxSize', () => {
     renderHook((props: UseMaxSizeProps) => useMaxSize(props), {
       initialProps,
     });
+
+  describe('for spot markets', () => {
+    it('calculates maxSize = generalAccountBalance / price for buy orders', () => {
+      const { result, rerender } = renderUseMaxSizeHook({
+        ...initialProps,
+        isSpotMarket: true,
+      });
+      // generalAccountBalance / markPrice = 100 / 10 = 10
+      expect(result.current).toEqual(10);
+      rerender({
+        ...initialProps,
+        type: OrderType.TYPE_LIMIT,
+        isSpotMarket: true,
+      });
+      // generalAccountBalance / price = 100 / 8 = 10
+      expect(result.current).toEqual(12.5);
+    });
+
+    it('calculates maxSize = baseAssetAccountBalance for sell orders', () => {
+      const baseAssetDecimals = 4;
+      const { result } = renderUseMaxSizeHook({
+        ...initialProps,
+        side: Side.SIDE_SELL,
+        baseAssetAccountBalance: removeDecimal('50', baseAssetDecimals),
+        baseAssetDecimals,
+        isSpotMarket: true,
+      });
+      expect(result.current).toEqual(50);
+    });
+  });
+
   describe('in MARGIN_MODE_ISOLATED_MARGIN', () => {
     it('calculates maxSize = collateral / marginFactor / price', () => {
       const { result } = renderUseMaxSizeHook({ ...initialProps });

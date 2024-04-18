@@ -24,6 +24,7 @@ import {
   calcCandleVolumePrice,
   getAsset,
   getQuoteName,
+  isSpot,
 } from '@vegaprotocol/markets';
 import { MarketCodeCell } from './market-code-cell';
 import { useT } from '../../lib/use-t';
@@ -142,9 +143,7 @@ export const useMarketsColumnDefs = () => {
         cellRenderer: 'PriceFlashCell',
         filter: 'agNumberColumnFilter',
         valueGetter: ({ data }: VegaValueGetterParams<MarketMaybeWithData>) => {
-          if (
-            data?.tradableInstrument.instrument.product.__typename === 'Spot'
-          ) {
+          if (data && isSpot(data.tradableInstrument.instrument.product)) {
             return data?.data?.lastTradedPrice === undefined
               ? undefined
               : toBigNum(
@@ -159,9 +158,7 @@ export const useMarketsColumnDefs = () => {
         valueFormatter: ({
           data,
         }: VegaValueFormatterParams<MarketMaybeWithData, 'data.markPrice'>) => {
-          if (
-            data?.tradableInstrument.instrument.product.__typename === 'Spot'
-          ) {
+          if (data && isSpot(data.tradableInstrument.instrument.product)) {
             return data?.data?.lastTradedPrice === undefined
               ? '-'
               : addDecimalsFormatNumber(

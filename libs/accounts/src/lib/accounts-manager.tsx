@@ -104,7 +104,7 @@ interface AccountManagerProps {
   onClickTransfer?: (assetId?: string) => void;
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
   isReadOnly: boolean;
-  pinnedAsset?: PinnedAsset;
+  pinnedAssets?: PinnedAsset[];
   gridProps?: ReturnType<typeof useDataGridEvents>;
 }
 
@@ -115,7 +115,7 @@ export const AccountManager = ({
   onClickTransfer,
   partyId,
   isReadOnly,
-  pinnedAsset,
+  pinnedAssets,
   onMarketClick,
   gridProps,
 }: AccountManagerProps) => {
@@ -146,7 +146,7 @@ export const AccountManager = ({
         onClickTransfer={onClickTransfer}
         onClickBreakdown={setBreakdownAssetId}
         isReadOnly={isReadOnly}
-        pinnedAsset={pinnedAsset}
+        pinnedAssets={pinnedAssets}
         overlayNoRowsTemplate={error ? error.message : t('No accounts')}
         {...gridProps}
       />

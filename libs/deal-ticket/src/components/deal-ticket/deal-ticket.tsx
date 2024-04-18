@@ -44,6 +44,7 @@ import {
   getProductType,
   getQuoteName,
   isMarketInAuction,
+  isSpot,
 } from '@vegaprotocol/markets';
 import {
   validateExpiration,
@@ -171,6 +172,8 @@ export const DealTicket = ({
   );
   const dealTicketType = storedFormValues?.type ?? DealTicketType.Limit;
   const type = dealTicketTypeToOrderType(dealTicketType);
+  const productType = getProductType(market);
+  const isSpotMarket = isSpot(market.tradableInstrument.instrument.product);
 
   const {
     control,
@@ -186,8 +189,7 @@ export const DealTicket = ({
 
   const asset = getAsset(market);
   const assetSymbol = asset.symbol;
-  const productType = getProductType(market);
-  const baseAsset = productType === 'Spot' ? getBaseAsset(market) : undefined;
+  const baseAsset = isSpotMarket ? getBaseAsset(market) : undefined;
   const quoteName = getQuoteName(market);
   const baseQuote = getBaseQuoteUnit(
     market.tradableInstrument.instrument.metadata.tags
@@ -321,6 +323,7 @@ export const DealTicket = ({
   );
 
   const slippage = useSlippage(normalizedOrder, market);
+  const useBaseAsset = isSpotMarket && side === Schema.Side.SIDE_SELL;
 
   const summaryError = useMemo(() => {
     if (!pubKey) {
@@ -358,18 +361,15 @@ export const DealTicket = ({
         type: SummaryValidationType.MarketState,
       };
     }
-
     const hasNoBalance =
-      !BigInt(baseAssetAccountBalance) &&
-      !BigInt(generalAccountBalance) &&
+      !BigInt(useBaseAsset ? baseAssetAccountBalance : generalAccountBalance) &&
       !BigInt(marginAccountBalance) &&
       !BigInt(orderMarginAccountBalance);
     if (
       hasNoBalance &&
       !(
         loadingMarginAccountBalance ||
-        loadingGeneralAccountBalance ||
-        loadingBaseAssetAccount
+        (useBaseAsset ? loadingBaseAssetAccount : loadingGeneralAccountBalance)
       )
     ) {
       return {
@@ -403,6 +403,7 @@ export const DealTicket = ({
     loadingGeneralAccountBalance,
     loadingBaseAssetAccount,
     pubKey,
+    useBaseAsset,
   ]);
 
   const nonPersistentOrder = isNonPersistentOrder(timeInForce);
@@ -433,7 +434,7 @@ export const DealTicket = ({
     openVolume,
     positionDecimalPlaces: market.positionDecimalPlaces,
     marketIsInAuction,
-    productType,
+    isSpotMarket,
   });
 
   const onSubmit = useCallback(
@@ -507,13 +508,14 @@ export const DealTicket = ({
         market={market}
         marketData={marketData}
         errorMessage={errors.type?.message}
+        showStopOrders={!isSpotMarket}
       />
       <Controller
         name="side"
         control={control}
         render={({ field }) => (
           <SideSelector
-            productType={productType}
+            isSpotMarket={isSpotMarket}
             value={field.value}
             onValueChange={field.onChange}
           />
@@ -688,7 +690,7 @@ export const DealTicket = ({
 
       <div className="flex justify-between gap-2 mb-4">
         <div className="flex flex-col gap-2">
-          {featureFlags.TAKE_PROFIT_STOP_LOSS && (
+          {featureFlags.TAKE_PROFIT_STOP_LOSS && !isSpotMarket && (
             <Controller
               name="tpSl"
               control={control}
@@ -848,7 +850,7 @@ export const DealTicket = ({
 
       <SummaryMessage
         error={summaryError}
-        asset={asset}
+        asset={(useBaseAsset && baseAsset) || asset}
         marketTradingMode={marketData.marketTradingMode}
         balance={generalAccountBalance}
         margin={
