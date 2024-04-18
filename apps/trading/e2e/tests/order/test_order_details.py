@@ -60,8 +60,7 @@ def test_order_details_are_correctly_displayed(
     page.goto(f"/#/markets/{continuous_market}")
     submit_order(vega, "Key 1", vega.all_markets()[0].id, "SIDE_SELL", 102, 101, 2, 1)
     page.get_by_test_id("Open").click()
-    page.pause()
-    page.get_by_test_id("icon-kebab").click()
+    page.get_by_test_id("icon-kebab").first.click()
     page.get_by_test_id("view-order").click()
     for detail in order_details:
         label_id, label_text, value_id, value_text, is_regex = (*detail, False)[:5]
