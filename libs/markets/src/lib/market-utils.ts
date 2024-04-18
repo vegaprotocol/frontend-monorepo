@@ -236,7 +236,7 @@ export const calcCandleVolumePrice = (
   candles.reduce(
     (acc, c) =>
       new BigNumber(acc)
-        // Using notional both price and size need conversion with decimals, we can acheive the same result by just combining them
+        // Using notional both price and size need conversion with decimals, we can achieve the same result by just combining them
         .plus(toBigNum(c.notional, marketDecimals + positionDecimals))
         .toString(),
     '0'

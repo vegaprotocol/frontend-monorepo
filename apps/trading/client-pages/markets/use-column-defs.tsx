@@ -76,7 +76,7 @@ export const useMarketsColumnDefs = () => {
         headerName: t('Market'),
         field: 'tradableInstrument.instrument.code',
         pinned: true,
-        minWidth: 250,
+        minWidth: 200,
         cellRenderer: ({
           value,
           data,
