@@ -34,7 +34,7 @@ export const priceChangeRenderer = (
   const candles =
     data.candles?.filter((c) => c.close).map((c) => Number(c.close)) || [];
   return (
-    <div className="flex flex-row gap-2">
+    <div className="flex flex-row gap-2 justify-end">
       <Last24hPriceChange
         marketId={data.id}
         decimalPlaces={data.decimalPlaces}
