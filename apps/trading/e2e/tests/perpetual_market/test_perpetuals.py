@@ -95,23 +95,6 @@ class TestPerpetuals:
         expect(page.get_by_test_id("index-price")
                ).to_have_text("Index Price110.00")
 
-    @pytest.mark.skip("Skipped due to issue #5421")
-    def test_funding_payment_history(perps_market, page: Page, vega):
-        page.goto(f"/#/markets/{perps_market}")
-        change_keys(page, vega, "market_maker")
-        page.get_by_test_id("Funding history").click()
-        element = page.get_by_test_id("tab-funding-history")
-        # Get the bounding box of the element
-        bounding_box = element.bounding_box()
-        if bounding_box:
-            bottom_right_x = bounding_box["x"] + bounding_box["width"]
-            bottom_right_y = bounding_box["y"] + bounding_box["height"]
-
-            # Hover over the bottom-right corner of the element
-            element.hover(position={"x": bottom_right_x, "y": bottom_right_y})
-        else:
-            print("Bounding box not found for the element")
-
 
 @pytest.mark.usefixtures("risk_accepted", "auth")
 def test_perps_market_termination_proposed(page: Page, vega: VegaServiceNull):

@@ -88,15 +88,13 @@ def test_renders_markets_correctly(proposed_market, page: Page):
         re.compile(r"\/proposals\/[a-f0-9]{64}$"),
     )
 
-    # temporary skip
-    # 6001-MARK-060
-    # proposed_markets_tab = page.get_by_test_id("tab-proposed-markets")
-    # external_links = proposed_markets_tab.locator("font-alpha")
-    # last_link = external_links.last
-    # assert last_link.inner_text() == 'Propose a new market'
-
-    # expected_href = f"https://governance.stagnet1.vega.rocks/proposals/propose/new-market"
-    # assert last_link.get_attribute('href') == expected_href
+    #6001-MARK-060
+    expect(page.get_by_test_id("propose-new-market")).to_be_visible()
+    propose_new_market = page.get_by_test_id("propose-new-market")
+    expect(propose_new_market).to_have_attribute(
+        "href",
+        re.compile(r"\/proposals\/propose\/new-market"),
+    )
 
 @pytest.mark.skip("markets list page")
 @pytest.mark.usefixtures("risk_accepted")

@@ -140,7 +140,6 @@ class TestGetStarted:
         # Assert dialog isn't visible
         expect(page.get_by_test_id("welcome-dialog")).not_to_be_visible()
 
-    @pytest.mark.skip("TODO: this test is flakey, needs fixing")
     @pytest.mark.usefixtures("risk_accepted")
     def test_get_started_seen_already(self, simple_market, page: Page):
         page.goto(f"/#/markets/{simple_market}")
@@ -154,7 +153,6 @@ class TestGetStarted:
         # 0007-FUGS-007
         expect(page.get_by_test_id("dialog-content").nth(1)).to_be_visible()
 
-    @pytest.mark.skip("tbd-market-sim")
     def test_redirect_default_market(
         self, continuous_market, vega: VegaServiceNull, page: Page
     ):
