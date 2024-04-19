@@ -30,28 +30,12 @@ const assetFields: AssetFieldsFragment[] = [
     },
     quantum: '1',
     status: Types.AssetStatus.STATUS_ENABLED,
-    infrastructureFeeAccount: {
+    networkTreasuryAccount: {
       balance: '1',
       __typename: 'AccountBalance',
     },
-    globalRewardPoolAccount: {
+    globalInsuranceAccount: {
       balance: '2',
-      __typename: 'AccountBalance',
-    },
-    takerFeeRewardAccount: {
-      balance: '3',
-      __typename: 'AccountBalance',
-    },
-    makerFeeRewardAccount: {
-      balance: '4',
-      __typename: 'AccountBalance',
-    },
-    lpFeeRewardAccount: {
-      balance: '5',
-      __typename: 'AccountBalance',
-    },
-    marketProposerRewardAccount: {
-      balance: '6',
       __typename: 'AccountBalance',
     },
   },
