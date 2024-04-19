@@ -162,6 +162,9 @@ export const DepositContainerInner = ({
       stakeConfig: {
         tokensConfig: compact(tokensConfig),
       },
+      titles: {
+        swap: 'Deposit',
+      },
     };
 
     return config;
