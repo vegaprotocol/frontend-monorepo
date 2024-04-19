@@ -155,29 +155,26 @@ def setup_market_with_reward_program(vega: VegaServiceNull):
     return tDAI_market, tDAI_asset_id
 
 
-@pytest.mark.skip("skip until 0.75")
 def test_network_reward_pot_capped(
     setup_environment: Tuple[Page, str, str],
 ) -> None:
     page, tDAI_market, tDAI_asset_id = setup_environment
-    expect(page.get_by_test_id(TOTAL_REWARDS)).to_have_text("31.05 tDAI")
+    expect(page.get_by_test_id(TOTAL_REWARDS)).to_have_text("31.20525 tDAI")
 
 
-@pytest.mark.skip("skip until 0.75")
 def test_reward_history_capped(
     setup_environment: Tuple[Page, str, str],
 ) -> None:
     page, tDAI_market, tDAI_asset_id = setup_environment
     page.locator('[name="fromEpoch"]').fill("1")
     expect((page.get_by_role(ROW).locator(PRICE_TAKING_COL_ID)).nth(1)).to_have_text(
-        "62.10100.00%"
+        "62.4105100.00%"
     )
-    expect((page.get_by_role(ROW).locator(TOTAL_COL_ID)).nth(1)).to_have_text("62.10")
+    expect((page.get_by_role(ROW).locator(TOTAL_COL_ID)).nth(1)).to_have_text("62.4105")
     page.get_by_test_id(EARNED_BY_ME_BUTTON).click()
-    expect((page.get_by_role(ROW).locator(TOTAL_COL_ID)).nth(1)).to_have_text("31.05")
+    expect((page.get_by_role(ROW).locator(TOTAL_COL_ID)).nth(1)).to_have_text("31.20525")
 
 
-@pytest.mark.skip("skip until 0.75")
 def test_reward_card_capped(
     setup_environment: Tuple[Page, str, str],
 ) -> None:
