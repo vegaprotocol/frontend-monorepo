@@ -178,28 +178,7 @@ const GroupCard = ({
             </div>
 
             {/** DISTRIBUTION DELAY */}
-            <div className="flex flex-col gap-2 items-center text-center">
-              <CardIcon
-                iconName={VegaIconNames.LOCK}
-                tooltip={t(
-                  'Number of epochs after distribution to delay vesting of rewards by'
-                )}
-              />
-              <span
-                className="text-muted text-xs whitespace-nowrap"
-                data-testid="locked-for"
-              >
-                {typeof distributionDelay === 'number'
-                  ? t('numberEpochs', '{{count}} epochs', {
-                      count: distributionDelay,
-                    })
-                  : t('numberEpochs', '{{count}} epochs', {
-                      replace: {
-                        count: distributionDelay,
-                      },
-                    })}
-              </span>
-            </div>
+            <DistributionDelay value={distributionDelay} />
           </div>
 
           <div className={classNames('flex flex-col gap-3 h-full')}>
@@ -347,22 +326,7 @@ const RewardCard = ({
             </div>
 
             {/** DISTRIBUTION DELAY */}
-            <div className="flex flex-col gap-2 items-center text-center">
-              <CardIcon
-                iconName={VegaIconNames.LOCK}
-                tooltip={t(
-                  'Number of epochs after distribution to delay vesting of rewards by'
-                )}
-              />
-              <span
-                className="text-muted text-xs whitespace-nowrap"
-                data-testid="locked-for"
-              >
-                {t('numberEpochs', '{{count}} epochs', {
-                  count: dispatchStrategy.lockPeriod,
-                })}
-              </span>
-            </div>
+            <DistributionDelay value={dispatchStrategy.lockPeriod} />
           </div>
 
           <div className="h-full flex flex-col gap-4">
@@ -466,25 +430,67 @@ export const DispatchMetricInfo = ({
 }) => {
   const t = useT();
   const dispatchMetric = reward.transfer.kind.dispatchStrategy?.dispatchMetric;
-  const marketNames = compact(
-    reward.markets?.map((m) => m.tradableInstrument.instrument.name)
+  const markets = compact(
+    reward.markets?.map((m, i) => [
+      m.tradableInstrument.instrument.code,
+      m.tradableInstrument.instrument.name,
+      <Link className="underline" key={i} to={Links.MARKET(m.id)}>
+        {m.tradableInstrument.instrument.name}
+      </Link>,
+    ])
   );
 
   let additionalDispatchMetricInfo = null;
 
   // if asset found then display asset symbol
-  if (reward.dispatchAsset) {
-    additionalDispatchMetricInfo = <span>{reward.dispatchAsset.symbol}</span>;
+  if (
+    reward.dispatchAsset &&
+    reward.transfer.kind.dispatchStrategy.dispatchMetric !==
+      'STAKING_REWARD_METRIC'
+  ) {
+    additionalDispatchMetricInfo = (
+      <Tooltip
+        description={t(
+          'This reward is scoped to the markets settled in {{asset}}',
+          {
+            asset: reward.dispatchAsset.symbol,
+          }
+        )}
+      >
+        <span className="underline cursor-help">
+          {reward.dispatchAsset.symbol}
+        </span>
+      </Tooltip>
+    );
   }
   // but if scoped to only one market then display market name
-  if (marketNames.length === 1) {
-    additionalDispatchMetricInfo = <span>{marketNames[0]}</span>;
+  if (markets.length === 1) {
+    const [code, , link] = markets[0];
+    additionalDispatchMetricInfo = (
+      <Tooltip
+        description={t('This reward is scoped to {{market}} market', {
+          market: code,
+        })}
+      >
+        <span>{link}</span>
+      </Tooltip>
+    );
   }
   // or if scoped to many markets then indicate it's scoped to "specific markets"
-  if (marketNames.length > 1) {
+  if (markets.length > 1) {
+    const description = (
+      <div>
+        <p>{t('This reward is scoped to the following markets')}:</p>
+        <ol className="list-decimal pl-3">
+          {markets.map(([, , link], i) => (
+            <li key={i}>{link}</li>
+          ))}
+        </ol>
+      </div>
+    );
     additionalDispatchMetricInfo = (
-      <Tooltip description={marketNames.join(', ')}>
-        <span>{t('Specific markets')}</span>
+      <Tooltip description={description}>
+        <span className="underline cursor-help">{t('Specific markets')}</span>
       </Tooltip>
     );
   }
@@ -1115,28 +1121,26 @@ export const ActiveRewardCard = ({
   }
 
   return (
-    <LinkToGame reward={transferNode}>
-      <RewardCard
-        colour={colour}
-        rewardAmount={addDecimalsFormatNumber(
-          transferNode.transfer.amount,
-          transferNode.transfer.asset?.decimals || 0,
-          6
-        )}
-        dispatchAsset={transferNode.dispatchAsset}
-        transferAsset={transferNode.transfer.asset || undefined}
-        startsIn={startsIn > 0 ? startsIn : undefined}
-        endsIn={endsIn}
-        dispatchStrategy={dispatchStrategy}
-        dispatchMetricInfo={<DispatchMetricInfo reward={transferNode} />}
-        requirements={requirements}
-        gameId={transferNode.transfer.gameId}
-      />
-    </LinkToGame>
+    <RewardCard
+      colour={colour}
+      rewardAmount={addDecimalsFormatNumber(
+        transferNode.transfer.amount,
+        transferNode.transfer.asset?.decimals || 0,
+        6
+      )}
+      dispatchAsset={transferNode.dispatchAsset}
+      transferAsset={transferNode.transfer.asset || undefined}
+      startsIn={startsIn > 0 ? startsIn : undefined}
+      endsIn={endsIn}
+      dispatchStrategy={dispatchStrategy}
+      dispatchMetricInfo={<DispatchMetricInfo reward={transferNode} />}
+      requirements={requirements}
+      gameId={transferNode.transfer.gameId}
+    />
   );
 };
 
-const LinkToGame = ({
+export const LinkToGame = ({
   reward,
   children,
 }: {
@@ -1149,4 +1153,33 @@ const LinkToGame = ({
     return <Link to={Links.COMPETITIONS_GAME(gameId)}>{children}</Link>;
   }
   return children;
+};
+
+const DistributionDelay = ({ value = 0 }: { value?: number | string }) => {
+  const t = useT();
+  return (
+    <div className="flex flex-col gap-2 items-center text-center">
+      <CardIcon
+        iconName={VegaIconNames.LOCK}
+        tooltip={t(
+          // 'Number of epochs after distribution to delay vesting of rewards by'
+          'After rewards are distributed, they will be vested after this number of epochs has passed.'
+        )}
+      />
+      <span
+        className="text-muted text-xs whitespace-nowrap"
+        data-testid="locked-for"
+      >
+        {typeof value === 'number'
+          ? t('numberEpochs', '{{count}} epochs', {
+              count: value,
+            })
+          : t('numberEpochs', '{{count}} epochs', {
+              replace: {
+                count: value,
+              },
+            })}
+      </span>
+    </div>
+  );
 };
