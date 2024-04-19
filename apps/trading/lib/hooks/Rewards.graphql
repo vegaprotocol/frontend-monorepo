@@ -45,6 +45,7 @@ fragment RecurringTransferFields on RecurringTransfer {
   startEpoch
   endEpoch
   dispatchStrategy {
+    capRewardFeeMultiple
     dispatchMetric
     dispatchMetricAssetId
     marketIdsInScope
