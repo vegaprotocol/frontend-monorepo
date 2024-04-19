@@ -7,7 +7,6 @@ import AssetBalance from '../../../components/asset-balance/asset-balance';
 import { AssetLink } from '../../../components/links';
 import { useMemo } from 'react';
 import { useScreenDimensions } from '@vegaprotocol/react-helpers';
-import { AssetIcon } from './asset-icon';
 import { type NonZeroAccount } from '../network-treasury';
 import { AccountType } from '@vegaprotocol/types';
 import { removePaginationWrapper } from '@vegaprotocol/utils';
@@ -39,9 +38,6 @@ export const NetworkAccountsTable = () => {
               >
                 <div className="bg-white rounded overflow-hidden shadow-lg dark:bg-black dark:border-slate-500 dark:border">
                   <div className="text-center p-6 bg-gray-100 dark:bg-slate-900 border-b dark:border-slate-500">
-                    <p className="flex justify-center">
-                      <AssetIcon symbol={a.assetId} />
-                    </p>
                     <p className="mt-3" data-testid="name">
                       <AssetLink assetId={a.assetId} />
                     </p>
