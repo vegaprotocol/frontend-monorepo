@@ -25,9 +25,10 @@ import {
 } from '@vegaprotocol/markets';
 import { useYesterday } from '@vegaprotocol/react-helpers';
 import { useEffect } from 'react';
-import { Interval } from '@vegaprotocol/types';
+import { AccountType, Interval } from '@vegaprotocol/types';
 import { priceChangeRenderer, priceValueFormatter } from './use-column-defs';
 import {
+  addDecimal,
   formatNumber,
   priceChangePercentage,
   toBigNum,
@@ -129,7 +130,16 @@ export const MarketsPage = () => {
     <Sparkline width={80} height={20} data={totalVolume24hCandles || []} />
   );
 
-  // TODO get TVL data and sparkline
+  const tvl = activeMarkets?.reduce((acc, market) => {
+    const accounts = market.accountsConnection?.edges
+      ?.filter((e) => e?.node?.type === AccountType.ACCOUNT_TYPE_INSURANCE)
+      .map((e) => e?.node);
+    const balance = accounts?.reduce((acc, a) => {
+      return acc + Number(addDecimal(a?.balance || 0, a?.asset.decimals || 0));
+    }, 0);
+    if (!balance) return acc;
+    return acc + balance;
+  }, 0);
 
   const totalVolume24h = activeMarkets?.reduce((acc, market) => {
     return (
@@ -177,10 +187,11 @@ export const MarketsPage = () => {
               <div className="flex items-center justify-center h-full w-full">
                 <div className="flex items-center gap-2 justify-between w-full">
                   <div className="flex flex-col">
-                    <span className="text-xl">TVL</span>
+                    <span className="text-xl">
+                      {tvl && formatNumber(tvl, 2)} USDT
+                    </span>
                     <span className="text-xs">TVL</span>
                   </div>
-                  <div>{sparkline}</div>
                 </div>
               </div>
             </Card>

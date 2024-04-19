@@ -5,6 +5,18 @@ fragment MarketFields on Market {
   tickSize
   parentMarketID
   successorMarketID
+  accountsConnection {
+    edges {
+      node {
+        type
+        asset {
+          id
+          decimals
+        }
+        balance
+      }
+    }
+  }
   markPriceConfiguration {
     ...PriceConfiguration
   }
