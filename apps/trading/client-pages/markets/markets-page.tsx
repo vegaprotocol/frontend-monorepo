@@ -80,8 +80,17 @@ export const MarketsPage = () => {
       interval: Interval.INTERVAL_I1H,
     },
   });
+  useEffect(() => {
+    const interval = setInterval(() => {
+      reload();
+    }, POLLING_TIME);
+    return () => {
+      clearInterval(interval);
+    };
+  }, [reload]);
 
-  // TODO get top gainers and new listings
+  usePageTitle(t('Markets'));
+
   const topGainers = orderBy(
     activeMarkets,
     [
@@ -103,7 +112,6 @@ export const MarketsPage = () => {
     ['desc']
   ).slice(0, 3);
 
-  // total volume in the last 24 hours in usdt for all candles
   const totalVolume24hCandles = [];
   for (let i = 1; i < 24; i++) {
     const totalVolume24hr = activeMarkets?.reduce((acc, market) => {
@@ -153,17 +161,6 @@ export const MarketsPage = () => {
       )
     );
   }, 0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      reload();
-    }, POLLING_TIME);
-    return () => {
-      clearInterval(interval);
-    };
-  }, [reload]);
-
-  usePageTitle(t('Markets'));
 
   return (
     <>
