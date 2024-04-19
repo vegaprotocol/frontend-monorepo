@@ -204,29 +204,31 @@ export const useVegaTransactionStore = create<VegaTransactionStore>()(
           );
           if (transaction) {
             transaction.transactionResult = transactionResult;
+            if (transactionResult.error) {
+              transaction.status = VegaTxStatus.Error;
+              transaction.error = new Error(transactionResult.error);
+            } else {
+              const isConfirmedOrderCancellation =
+                isOrderCancellationTransaction(transaction.body) &&
+                !transaction.body.orderCancellation.orderId;
+              const isConfirmedTransfer = isTransferTransaction(
+                transaction.body
+              );
+              const isConfirmedStopOrderCancellation =
+                isStopOrdersCancellationTransaction(transaction.body);
+              const isConfirmedStopOrderSubmission =
+                isStopOrdersSubmissionTransaction(transaction.body);
+              const isConfirmedMarginModeTransaction =
+                isMarginModeUpdateTransaction(transaction.body);
 
-            const isConfirmedOrderCancellation =
-              isOrderCancellationTransaction(transaction.body) &&
-              !transaction.body.orderCancellation.orderId;
-            const isConfirmedTransfer = isTransferTransaction(transaction.body);
-            const isConfirmedStopOrderCancellation =
-              isStopOrdersCancellationTransaction(transaction.body);
-            const isConfirmedStopOrderSubmission =
-              isStopOrdersSubmissionTransaction(transaction.body);
-            const isConfirmedMarginModeTransaction =
-              isMarginModeUpdateTransaction(transaction.body);
-
-            if (
-              isConfirmedOrderCancellation ||
-              isConfirmedTransfer ||
-              isConfirmedStopOrderCancellation ||
-              isConfirmedStopOrderSubmission ||
-              isConfirmedMarginModeTransaction
-            ) {
-              if (transactionResult.error) {
-                transaction.status = VegaTxStatus.Error;
-                transaction.error = new Error(transactionResult.error);
-              } else if (transactionResult.status) {
+              if (
+                (isConfirmedOrderCancellation ||
+                  isConfirmedTransfer ||
+                  isConfirmedStopOrderCancellation ||
+                  isConfirmedStopOrderSubmission ||
+                  isConfirmedMarginModeTransaction) &&
+                transactionResult.status
+              ) {
                 transaction.status = VegaTxStatus.Complete;
               }
             }

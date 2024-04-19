@@ -8,7 +8,37 @@ import { render } from '@testing-library/react';
 import { ExplorerMarketDocument } from '../links/market-link/__generated__/Market';
 
 type Order = components['schemas']['v1OrderSubmission'];
-
+const mock = {
+  request: {
+    query: ExplorerMarketDocument,
+    variables: {
+      id: '123',
+    },
+  },
+  result: {
+    data: {
+      market: {
+        id: '123',
+        decimalPlaces: 2,
+        positionDecimalPlaces: 2,
+        state: 'irrelevant-test-data',
+        tradableInstrument: {
+          instrument: {
+            name: 'TEST',
+            product: {
+              __typename: 'Future',
+              quoteName: 'TEST',
+              settlementAsset: {
+                __typeName: 'SettlementAsset',
+                decimals: 18,
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+};
 function renderComponent(order: Order, mocks?: MockedResponse[]) {
   return render(
     <MockedProvider mocks={mocks}>
@@ -40,7 +70,8 @@ describe('Order TX Summary component', () => {
       type: 'TYPE_LIMIT',
       size: '10',
     };
-    const res = renderComponent(o);
+
+    const res = renderComponent(o, [mock]);
     expect(res.queryByText('Market Price')).toBeInTheDocument();
   });
 
@@ -78,37 +109,6 @@ describe('Order TX Summary component', () => {
       price: '333',
     };
 
-    const mock = {
-      request: {
-        query: ExplorerMarketDocument,
-        variables: {
-          id: '123',
-        },
-      },
-      result: {
-        data: {
-          market: {
-            id: '123',
-            decimalPlaces: 2,
-            positionDecimalPlaces: 2,
-            state: 'irrelevant-test-data',
-            tradableInstrument: {
-              instrument: {
-                name: 'TEST',
-                product: {
-                  __typename: 'Future',
-                  quoteName: 'TEST',
-                  settlementAsset: {
-                    __typeName: 'SettlementAsset',
-                    decimals: 18,
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
-    };
     const res = renderComponent(o, [mock]);
     expect(res.queryByTestId('order-summary')).toBeInTheDocument();
     expect(res.getByText('Buy')).toBeInTheDocument();

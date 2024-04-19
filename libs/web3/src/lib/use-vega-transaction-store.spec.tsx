@@ -156,6 +156,20 @@ describe('useVegaTransactionStore', () => {
     ).toEqual(transactionResult);
   });
 
+  it('sets status to Error if transaction result status is error', () => {
+    useVegaTransactionStore.getState().create(withdrawSubmission);
+    useVegaTransactionStore.getState().update(0, processedTransactionUpdate);
+    const error = 'error';
+    useVegaTransactionStore.getState().updateTransactionResult({
+      ...transactionResult,
+      status: false,
+      error,
+    });
+    const transaction = useVegaTransactionStore.getState().transactions[0];
+    expect(transaction?.status).toEqual(VegaTxStatus.Error);
+    expect(transaction?.error?.message).toEqual(error);
+  });
+
   it('updates withdrawal', () => {
     useVegaTransactionStore.getState().create(withdrawSubmission);
     useVegaTransactionStore.getState().update(0, processedTransactionUpdate);

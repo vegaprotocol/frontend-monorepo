@@ -102,7 +102,7 @@ export const tradesProvider = makeDataProvider<
   pagination: {
     getPageInfo,
     append,
-    last: MAX_TRADES,
+    first: MAX_TRADES,
   },
   fetchPolicy: 'no-cache',
   getSubscriptionVariables: ({ marketIds, partyIds }) => ({
@@ -137,3 +137,32 @@ export const tradesWithMarketProvider = makeDerivedDataProvider<
     );
   }
 );
+
+export const lastTradeProvider = makeDataProvider<
+  TradesQuery,
+  TradeFieldsFragment | undefined,
+  Parameters<typeof getDelta>['0'],
+  ReturnType<typeof getDelta>,
+  TradesQueryVariables,
+  TradesUpdateSubscriptionVariables
+>({
+  query: TradesDocument,
+  subscriptionQuery: TradesUpdateDocument,
+  update: (data, delta) =>
+    (delta.length &&
+      mapTradeUpdateToTrade(
+        delta.length === 1 ? delta[0] : orderBy(delta, 'createdAt', 'desc')[0]
+      )) ||
+    data,
+  getData: (queryData) => queryData?.trades?.edges[0].node,
+  getDelta,
+  getQueryVariables: ({ marketIds, partyIds }) => ({
+    marketIds,
+    partyIds,
+    pagination: { first: 1 },
+  }),
+  getSubscriptionVariables: ({ marketIds, partyIds }) => ({
+    marketIds,
+    partyIds,
+  }),
+});

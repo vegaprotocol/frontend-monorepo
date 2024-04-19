@@ -33,6 +33,7 @@ interface VoteButtonsContainerProps {
   proposalState: ProposalState;
   submit: (voteValue: VoteValue, proposalId: string | null) => Promise<void>;
   transaction: VegaTxState;
+  setTransaction?: (update: Partial<VegaTxState>) => void;
   className?: string;
 }
 
@@ -145,6 +146,7 @@ export interface VoteButtonsProps {
   spamProtectionMinTokens: string | null;
   submit: (voteValue: VoteValue, proposalId: string | null) => Promise<void>;
   transaction: VegaTxState;
+  setTransaction?: (update: Partial<VegaTxState>) => void;
 }
 
 export const VoteButtons = ({
@@ -157,6 +159,7 @@ export const VoteButtons = ({
   spamProtectionMinTokens,
   submit,
   transaction,
+  setTransaction,
 }: VoteButtonsProps) => {
   const { t } = useTranslation();
   const { pubKey } = useVegaWallet();
@@ -292,7 +295,11 @@ export const VoteButtons = ({
           </p>
         )
       )}
-      <VoteTransactionDialog voteState={voteState} transaction={transaction} />
+      <VoteTransactionDialog
+        voteState={voteState}
+        transaction={transaction}
+        setTransaction={setTransaction}
+      />
     </>
   );
 };
