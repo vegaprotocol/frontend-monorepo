@@ -157,7 +157,7 @@ export const MarketsPage = () => {
 
   return (
     <>
-      <div className="flex flex-col w-full gap-3 p-3 md:px-40">
+      <div className="flex flex-col w-full gap-3 p-3 lg:px-40">
         <div className="grid auto-rows-min grid-cols-3 gap-3 w-full">
           <div className="flex flex-col gap-2 col-span-full lg:col-auto">
             <Card key="24h-vol" className="grow">
@@ -193,7 +193,7 @@ export const MarketsPage = () => {
           </Card>
         </div>
       </div>
-      <div className="h-[70%] pt-0.5 pb-3 px-1.5 md:px-40">
+      <div className="h-[70%] pt-0.5 pb-3 px-1.5 lg:px-40">
         <div className="h-full my-1 border rounded border-default">
           <Tabs storageKey="console-markets">
             <Tab
