@@ -62,7 +62,7 @@ const PriceInMarket = ({
     return (
       <label>
         <span>{label}</span> <span>{suffix}</span>
-        <div className="ml-1">
+        <div className="ml-1 inline-block">
           <EmblemWithChain market={marketId} marketLogos={'QUOTE'} />
         </div>
       </label>
