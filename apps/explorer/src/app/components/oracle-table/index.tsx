@@ -7,13 +7,13 @@ import type {
   ExplorerOracleFormMarketsQuery,
 } from '../../routes/oracles/__generated__/OraclesForMarkets';
 import { useState } from 'react';
+import { t } from '@vegaprotocol/i18n';
 
 export type OraclesTableProps = {
   data?: ExplorerOracleFormMarketsQuery | ExplorerOracleForMarketQuery;
 };
 
 const cellSpacing = 'px-3';
-
 export function OraclesTable({ data }: OraclesTableProps) {
   const [hoveredOracle, setHoveredOracle] = useState('');
 
@@ -21,11 +21,11 @@ export function OraclesTable({ data }: OraclesTableProps) {
     <table className="text-left">
       <thead>
         <tr>
-          <th className={cellSpacing}>Market</th>
-          <th className={cellSpacing}>Type</th>
-          <th className={cellSpacing}>State</th>
-          <th className={cellSpacing}>Settlement</th>
-          <th className={cellSpacing}>Termination</th>
+          <th className={cellSpacing}>{t('Market')}</th>
+          <th className={cellSpacing}>{t('Type')}</th>
+          <th className={cellSpacing}>{t('State')}</th>
+          <th className={cellSpacing}>{t('Settlement')}</th>
+          <th className={cellSpacing}>{t('Schedule')}</th>
         </tr>
       </thead>
       <tbody>
