@@ -5,7 +5,7 @@ import React from 'react';
 describe('EmblemByContract', () => {
   it('should render successfully', () => {
     const props = {
-      chainId: 'custom-chain',
+      vegaChain: 'custom-chain',
       contract: '123',
       alt: 'Emblem',
     };
@@ -34,7 +34,7 @@ describe('EmblemByContract', () => {
     expect(emblemImage).toBeInTheDocument();
     expect(emblemImage).toHaveAttribute(
       'src',
-      'https://icon.vega.xyz/chain/1/asset/123/logo.svg'
+      'https://icon.vega.xyz/chain/vega-mainnet-0011/asset/123/logo.svg'
     );
   });
 });
