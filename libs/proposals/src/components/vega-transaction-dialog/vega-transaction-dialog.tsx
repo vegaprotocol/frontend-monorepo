@@ -95,6 +95,18 @@ export const VegaDialog = ({ transaction }: VegaDialogProps) => {
   const { VEGA_ENV } = useEnvironment();
   const link = useLinks(DApp.Explorer);
 
+  const explorerLink = transaction.txHash ? (
+    <a
+      className="underline"
+      data-testid="tx-block-explorer"
+      href={link(EXPLORER_TX.replace(':hash', transaction.txHash))}
+      target="_blank"
+      rel="noreferrer"
+    >
+      {t('View in block explorer')}
+    </a>
+  ) : null;
+
   let content = null;
   if (transaction.status === VegaTxStatus.Requested) {
     content = (
@@ -118,6 +130,7 @@ export const VegaDialog = ({ transaction }: VegaDialogProps) => {
       <div data-testid={transaction.status} className="first-letter:capitalize">
         <p>{transaction.error?.message}</p>
         <p>{transaction.error?.data}</p>
+        {explorerLink && <p>{explorerLink}</p>}
       </div>
     );
   }
@@ -127,17 +140,7 @@ export const VegaDialog = ({ transaction }: VegaDialogProps) => {
       <div data-testid={transaction.status}>
         <p className="break-all">
           {t('Please wait for your transaction to be confirmed')} - &nbsp;
-          {transaction.txHash && (
-            <a
-              className="underline"
-              data-testid="tx-block-explorer"
-              href={link(EXPLORER_TX.replace(':hash', transaction.txHash))}
-              target="_blank"
-              rel="noreferrer"
-            >
-              {t('View in block explorer')}
-            </a>
-          )}
+          {explorerLink}
         </p>
       </div>
     );
@@ -148,17 +151,7 @@ export const VegaDialog = ({ transaction }: VegaDialogProps) => {
       <div data-testid={transaction.status}>
         <p className="break-all">
           {t('Your transaction has been confirmed')} - &nbsp;
-          {transaction.txHash && (
-            <a
-              className="underline"
-              data-testid="tx-block-explorer"
-              href={link(EXPLORER_TX.replace(':hash', transaction.txHash))}
-              target="_blank"
-              rel="noreferrer"
-            >
-              {t('View in block explorer')}
-            </a>
-          )}
+          {explorerLink}
         </p>
       </div>
     );
