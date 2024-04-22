@@ -27,7 +27,6 @@ import {
   OrdersSettings,
 } from '../../components/orders-container';
 import { LedgerContainer } from '../../components/ledger-container';
-import { DepositContainer } from '@vegaprotocol/deposits';
 import {
   ResizableGrid,
   ResizableGridPanel,
@@ -40,9 +39,11 @@ import { WithdrawalsMenu } from '../../components/withdrawals-menu';
 import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
 import { useT } from '../../lib/use-t';
 import { ErrorBoundary } from '../../components/error-boundary';
-import { WithdrawContainer } from '../../components/withdraw-container';
 import { usePageTitle } from '../../lib/hooks/use-page-title';
+
+import { DepositContainer } from '@vegaprotocol/deposits';
 import { TransferContainer } from '@vegaprotocol/accounts';
+import { WithdrawContainer } from '../../components/withdraw-container';
 
 const WithdrawalsIndicator = () => {
   const { ready } = useIncompleteWithdrawals();
@@ -92,6 +93,9 @@ export const Portfolio = () => {
               <Tab id="deposit" name={t('Deposit')}>
                 <ErrorBoundary feature="portfolio-deposit">
                   <div className="p-2">
+                    <p className="text-sm mb-4">
+                      {t('Deposit from your Ethereum wallet')}
+                    </p>
                     <DepositContainer />
                   </div>
                 </ErrorBoundary>
