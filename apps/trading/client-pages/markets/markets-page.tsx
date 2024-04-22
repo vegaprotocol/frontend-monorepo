@@ -36,6 +36,8 @@ import {
 import { Link } from 'react-router-dom';
 import orderBy from 'lodash/orderBy';
 import BigNumber from 'bignumber.js';
+import { EmblemByMarket } from '@vegaprotocol/emblem';
+import { useChainId } from '@vegaprotocol/wallet-react';
 
 const POLLING_TIME = 2000;
 
@@ -44,13 +46,17 @@ export const TopThreeMarkets = ({
 }: {
   markets?: MarketMaybeWithCandles[];
 }) => {
+  const { chainId } = useChainId();
   return (
-    <div className="grid auto-rows-min grid-cols-5 gap-3 text-sm">
+    <div className="grid auto-rows-min grid-cols-6 gap-3 text-sm">
       {markets?.map((market) => {
         return (
           <>
-            <span className="col-span-2">
+            <span className="col-span-3">
               <Link to={`/markets/${market.id}`}>
+                <span className="pr-1">
+                  <EmblemByMarket market={market.id} vegaChain={chainId} />
+                </span>
                 {market.tradableInstrument.instrument.name}
               </Link>
             </span>
