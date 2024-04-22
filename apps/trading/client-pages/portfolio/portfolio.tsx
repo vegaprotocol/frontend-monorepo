@@ -27,6 +27,7 @@ import {
   OrdersSettings,
 } from '../../components/orders-container';
 import { LedgerContainer } from '../../components/ledger-container';
+import { DepositContainer } from '@vegaprotocol/deposits';
 import {
   ResizableGrid,
   ResizableGridPanel,
@@ -39,7 +40,9 @@ import { WithdrawalsMenu } from '../../components/withdrawals-menu';
 import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
 import { useT } from '../../lib/use-t';
 import { ErrorBoundary } from '../../components/error-boundary';
+import { WithdrawContainer } from '../../components/withdraw-container';
 import { usePageTitle } from '../../lib/hooks/use-page-title';
+import { TransferContainer } from '@vegaprotocol/accounts';
 
 const WithdrawalsIndicator = () => {
   const { ready } = useIncompleteWithdrawals();
@@ -82,23 +85,29 @@ export const Portfolio = () => {
       <ResizableGrid onChange={handleOnHorizontalChange}>
         <ResizableGridPanel
           minSize={340}
-          preferredSize={sizesHorizontal[0] || 340}
+          preferredSize={sizesHorizontal[0] || 460}
         >
           <PortfolioGridChild>
             <Tabs storageKey="portfolio-sidebar">
               <Tab id="deposit" name={t('Deposit')}>
                 <ErrorBoundary feature="portfolio-deposit">
-                  <div>Deposit</div>
+                  <div className="p-2">
+                    <DepositContainer />
+                  </div>
                 </ErrorBoundary>
               </Tab>
               <Tab id="withdraw" name={t('Withdraw')}>
                 <ErrorBoundary feature="portfolio-withdraw">
-                  <div>Withdraw</div>
+                  <div className="p-2">
+                    <WithdrawContainer />
+                  </div>
                 </ErrorBoundary>
               </Tab>
               <Tab id="transfer" name={t('Transfer')}>
                 <ErrorBoundary feature="portfolio-transfer">
-                  <div>Transfer</div>
+                  <div className="p-2">
+                    <TransferContainer />
+                  </div>
                 </ErrorBoundary>
               </Tab>
             </Tabs>
