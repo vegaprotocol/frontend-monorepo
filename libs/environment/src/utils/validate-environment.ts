@@ -53,6 +53,8 @@ export const envSchema = z
     MOZILLA_EXTENSION_URL: z.optional(z.string()),
     CHARTING_LIBRARY_PATH: z.optional(z.string()),
     CHARTING_LIBRARY_HASH: z.optional(z.string()),
+    SQUID_INTEGRATOR_ID: z.optional(z.string()),
+    SQUID_API_URL: z.optional(z.string()),
   })
   .refine(
     (data) => {
