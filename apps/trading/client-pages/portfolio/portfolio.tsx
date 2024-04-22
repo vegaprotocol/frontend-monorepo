@@ -45,6 +45,7 @@ import { usePageTitle } from '../../lib/hooks/use-page-title';
 import { DepositContainer } from '@vegaprotocol/deposits';
 import { TransferContainer } from '@vegaprotocol/accounts';
 import { WithdrawContainer } from '../../components/withdraw-container';
+import { SquidContainer } from '../../components/squid-container';
 
 const WithdrawalsIndicator = () => {
   const { ready } = useIncompleteWithdrawals();
@@ -174,6 +175,13 @@ const PortfolioActionTabs = () => {
         <ErrorBoundary feature="portfolio-transfer">
           <div className="p-2">
             <TransferContainer />
+          </div>
+        </ErrorBoundary>
+      </Tab>
+      <Tab id="cross-chain-deposit" name={t('Cross chain deposit')}>
+        <ErrorBoundary feature="portfolio-transfer">
+          <div className="p-2">
+            <SquidContainer />
           </div>
         </ErrorBoundary>
       </Tab>
