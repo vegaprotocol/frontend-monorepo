@@ -15,6 +15,7 @@ export const useVegaWallet = () => {
     isReadOnly: store.current === 'viewParty',
     disconnect: config.disconnect,
     refreshKeys: config.refreshKeys,
+    chainId: store.chainId,
     sendTx: (pubKey: string, transaction: Transaction) => {
       return config.sendTransaction({
         publicKey: pubKey,
