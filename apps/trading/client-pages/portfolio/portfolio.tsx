@@ -71,85 +71,113 @@ export const Portfolio = () => {
   usePageTitle(t('Portfolio'));
 
   const [sizes, handleOnLayoutChange] = usePaneLayout({ id: 'portfolio' });
+  const [sizesHorizontal, handleOnHorizontalChange] = usePaneLayout({
+    id: 'portfolio-horizontal',
+  });
+
   const wrapperClasses = 'p-0.5 h-full max-h-full flex flex-col';
   return (
     <div className={wrapperClasses}>
       <SidebarViewInitializer />
-      <ResizableGrid vertical onChange={handleOnLayoutChange}>
-        <ResizableGridPanel minSize={75}>
-          <PortfolioGridChild>
-            <Tabs storageKey="console-portfolio-top-1">
-              <Tab
-                id="positions"
-                name={t('Positions')}
-                menu={<PositionsMenu />}
-                settings={<PositionsSettings />}
-              >
-                <ErrorBoundary feature="portfolio-positions">
-                  <PositionsContainer allKeys />
-                </ErrorBoundary>
-              </Tab>
-              <Tab id="orders" name={t('Orders')} settings={<OrdersSettings />}>
-                <ErrorBoundary feature="portfolio-orders">
-                  <OrdersContainer />
-                </ErrorBoundary>
-              </Tab>
-              <Tab id="fills" name={t('Trades')} settings={<FillsSettings />}>
-                <ErrorBoundary feature="portfolio-fills">
-                  <FillsContainer />
-                </ErrorBoundary>
-              </Tab>
-              <Tab
-                id="funding-payments"
-                name={t('Funding payments')}
-                settings={<FundingPaymentsSettings />}
-              >
-                <ErrorBoundary feature="portfolio-funding-payments">
-                  <FundingPaymentsContainer />
-                </ErrorBoundary>
-              </Tab>
-              <Tab id="ledger-entries" name={t('Ledger entries')}>
-                <ErrorBoundary feature="portfolio-ledger">
-                  <LedgerContainer />
-                </ErrorBoundary>
-              </Tab>
-            </Tabs>
-          </PortfolioGridChild>
-        </ResizableGridPanel>
+      <ResizableGrid onChange={handleOnHorizontalChange}>
         <ResizableGridPanel
-          priority={LayoutPriority.Low}
-          preferredSize={sizes[1] || 300}
-          minSize={50}
+          minSize={340}
+          preferredSize={sizesHorizontal[0] || 340}
         >
           <PortfolioGridChild>
-            <Tabs storageKey="console-portfolio-bottom">
-              <Tab
-                id="collateral"
-                name={t('Collateral')}
-                settings={<AccountsSettings />}
-                menu={<AccountsMenu />}
-              >
-                <ErrorBoundary feature="portfolio-accounts">
-                  <AccountsContainer />
-                </ErrorBoundary>
-              </Tab>
-              <Tab id="deposits" name={t('Deposits')} menu={<DepositsMenu />}>
-                <ErrorBoundary feature="portfolio-deposit">
-                  <DepositsContainer />
-                </ErrorBoundary>
-              </Tab>
-              <Tab
-                id="withdrawals"
-                name={t('Withdrawals')}
-                indicator={<WithdrawalsIndicator />}
-                menu={<WithdrawalsMenu />}
-              >
-                <ErrorBoundary feature="portfolio-deposit">
-                  <WithdrawalsContainer />
-                </ErrorBoundary>
-              </Tab>
-            </Tabs>
+            <div>Side</div>
           </PortfolioGridChild>
+        </ResizableGridPanel>
+        <ResizableGridPanel>
+          <ResizableGrid vertical onChange={handleOnLayoutChange}>
+            <ResizableGridPanel minSize={75}>
+              <PortfolioGridChild>
+                <Tabs storageKey="console-portfolio-top-1">
+                  <Tab
+                    id="positions"
+                    name={t('Positions')}
+                    menu={<PositionsMenu />}
+                    settings={<PositionsSettings />}
+                  >
+                    <ErrorBoundary feature="portfolio-positions">
+                      <PositionsContainer allKeys />
+                    </ErrorBoundary>
+                  </Tab>
+                  <Tab
+                    id="orders"
+                    name={t('Orders')}
+                    settings={<OrdersSettings />}
+                  >
+                    <ErrorBoundary feature="portfolio-orders">
+                      <OrdersContainer />
+                    </ErrorBoundary>
+                  </Tab>
+                  <Tab
+                    id="fills"
+                    name={t('Trades')}
+                    settings={<FillsSettings />}
+                  >
+                    <ErrorBoundary feature="portfolio-fills">
+                      <FillsContainer />
+                    </ErrorBoundary>
+                  </Tab>
+                  <Tab
+                    id="funding-payments"
+                    name={t('Funding payments')}
+                    settings={<FundingPaymentsSettings />}
+                  >
+                    <ErrorBoundary feature="portfolio-funding-payments">
+                      <FundingPaymentsContainer />
+                    </ErrorBoundary>
+                  </Tab>
+                  <Tab id="ledger-entries" name={t('Ledger entries')}>
+                    <ErrorBoundary feature="portfolio-ledger">
+                      <LedgerContainer />
+                    </ErrorBoundary>
+                  </Tab>
+                </Tabs>
+              </PortfolioGridChild>
+            </ResizableGridPanel>
+            <ResizableGridPanel
+              priority={LayoutPriority.Low}
+              preferredSize={sizes[1] || 300}
+              minSize={50}
+            >
+              <PortfolioGridChild>
+                <Tabs storageKey="console-portfolio-bottom">
+                  <Tab
+                    id="collateral"
+                    name={t('Collateral')}
+                    settings={<AccountsSettings />}
+                    menu={<AccountsMenu />}
+                  >
+                    <ErrorBoundary feature="portfolio-accounts">
+                      <AccountsContainer />
+                    </ErrorBoundary>
+                  </Tab>
+                  <Tab
+                    id="deposits"
+                    name={t('Deposits')}
+                    menu={<DepositsMenu />}
+                  >
+                    <ErrorBoundary feature="portfolio-deposit">
+                      <DepositsContainer />
+                    </ErrorBoundary>
+                  </Tab>
+                  <Tab
+                    id="withdrawals"
+                    name={t('Withdrawals')}
+                    indicator={<WithdrawalsIndicator />}
+                    menu={<WithdrawalsMenu />}
+                  >
+                    <ErrorBoundary feature="portfolio-deposit">
+                      <WithdrawalsContainer />
+                    </ErrorBoundary>
+                  </Tab>
+                </Tabs>
+              </PortfolioGridChild>
+            </ResizableGridPanel>
+          </ResizableGrid>
         </ResizableGridPanel>
       </ResizableGrid>
     </div>
