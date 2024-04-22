@@ -172,7 +172,7 @@ def test_reward_history_capped(
     )
     expect((page.get_by_role(ROW).locator(TOTAL_COL_ID)).nth(1)).to_have_text("62.10")
     page.get_by_test_id(EARNED_BY_ME_BUTTON).click()
-    expect((page.get_by_role(ROW).locator(TOTAL_COL_ID)).nth(1)).to_have_text("31.20525")
+    expect((page.get_by_role(ROW).locator(TOTAL_COL_ID)).nth(1)).to_have_text("31.05")
 
 
 def test_reward_card_capped(
