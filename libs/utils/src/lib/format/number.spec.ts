@@ -36,6 +36,7 @@ describe('number utils', () => {
     { v: '1235000000000000000', d: 18, q: '1000000000000000000', o: '1.24' }, //vega
     { v: '1230012', d: 6, q: '1000000', o: '1.23' }, // USDT
     { v: '1234560000000000000', d: 18, q: '500000000000000', o: '1.2346' }, // WEth
+    { v: '87355895794255', d: 18, q: '5000000000000000', o: '0.00009' },
   ])(
     'formats with addDecimalsFormatNumberQuantum given number correctly',
     ({ v, d, o, q }) => {
