@@ -329,6 +329,14 @@ const compileEnvVars = () => {
       'NX_CHARTING_LIBRARY_HASH',
       process.env['NX_CHARTING_LIBRARY_HASH']
     ),
+    SQUID_INTEGRATOR_ID: windowOrDefault(
+      'NX_SQUID_INTEGRATOR_ID',
+      process.env['NX_SQUID_INTEGRATOR_ID']
+    ),
+    SQUID_API_URL: windowOrDefault(
+      'NX_SQUID_API_URL',
+      process.env['NX_SQUID_API_URL']
+    ),
   };
 
   return env;
