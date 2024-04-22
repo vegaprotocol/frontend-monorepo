@@ -1,5 +1,5 @@
 import type { RouteObject } from 'react-router-dom';
-import { Navigate, useRoutes } from 'react-router-dom';
+import { Navigate, Outlet, useRoutes } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
 import { Loader, Splash } from '@vegaprotocol/ui-toolkit';
 import { LayoutWithSidebar, LayoutCentered } from '../components/layouts';
@@ -8,6 +8,7 @@ import { Home } from '../client-pages/home';
 import { Liquidity } from '../client-pages/liquidity';
 import { MarketsPage } from '../client-pages/markets';
 import { Disclaimer } from '../client-pages/disclaimer';
+import { Portfolio } from '../client-pages/portfolio';
 import { Assets } from '../client-pages/assets';
 import { Deposit } from '../client-pages/deposit';
 import { Withdraw } from '../client-pages/withdraw';
@@ -43,7 +44,6 @@ import { CompetitionsGame } from '../client-pages/competitions/competitions-game
 // These must remain dynamically imported as pennant cannot be compiled by Next.js due to ESM
 // Using dynamic imports is a workaround for this until pennant is published as ESM
 const MarketPage = lazy(() => import('../client-pages/market'));
-const Portfolio = lazy(() => import('../client-pages/portfolio'));
 
 const NotFound = () => {
   const t = useT();
@@ -196,7 +196,7 @@ export const useRouterConfig = (): RouteObject[] => {
     },
     {
       path: 'portfolio/*',
-      element: <LayoutWithSidebar sidebar={portfolioSidebar} />,
+      element: <Outlet />,
       children: [
         {
           index: true,
