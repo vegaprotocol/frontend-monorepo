@@ -85,7 +85,23 @@ export const Portfolio = () => {
           preferredSize={sizesHorizontal[0] || 340}
         >
           <PortfolioGridChild>
-            <div>Side</div>
+            <Tabs storageKey="portfolio-sidebar">
+              <Tab id="deposit" name={t('Deposit')}>
+                <ErrorBoundary feature="portfolio-deposit">
+                  <div>Deposit</div>
+                </ErrorBoundary>
+              </Tab>
+              <Tab id="withdraw" name={t('Withdraw')}>
+                <ErrorBoundary feature="portfolio-withdraw">
+                  <div>Withdraw</div>
+                </ErrorBoundary>
+              </Tab>
+              <Tab id="transfer" name={t('Transfer')}>
+                <ErrorBoundary feature="portfolio-transfer">
+                  <div>Transfer</div>
+                </ErrorBoundary>
+              </Tab>
+            </Tabs>
           </PortfolioGridChild>
         </ResizableGridPanel>
         <ResizableGridPanel>
