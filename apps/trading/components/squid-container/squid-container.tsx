@@ -174,6 +174,10 @@ const SquidWidget = ({
       slippage: 1,
       infiniteApproval: false,
       apiUrl,
+      availableChains: {
+        // Bridges available on ethereum mainnet and arbitrum
+        destination: [1, 42161],
+      },
       stakeConfig: {
         tokensConfig: compact(tokensConfig),
       },
