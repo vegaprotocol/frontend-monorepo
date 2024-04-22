@@ -155,7 +155,6 @@ def setup_market_with_reward_program(vega: VegaServiceNull):
     return tDAI_market, tDAI_asset_id
 
 
-@pytest.mark.skip("skip until 0.75")
 def test_network_reward_pot_capped(
     setup_environment: Tuple[Page, str, str],
 ) -> None:
@@ -163,7 +162,6 @@ def test_network_reward_pot_capped(
     expect(page.get_by_test_id(TOTAL_REWARDS)).to_have_text("31.05 tDAI")
 
 
-@pytest.mark.skip("skip until 0.75")
 def test_reward_history_capped(
     setup_environment: Tuple[Page, str, str],
 ) -> None:
@@ -177,7 +175,6 @@ def test_reward_history_capped(
     expect((page.get_by_role(ROW).locator(TOTAL_COL_ID)).nth(1)).to_have_text("31.05")
 
 
-@pytest.mark.skip("skip until 0.75")
 def test_reward_card_capped(
     setup_environment: Tuple[Page, str, str],
 ) -> None:
