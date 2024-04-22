@@ -8,7 +8,9 @@ import {
   formatForInput,
   formatValue,
   removeDecimal,
+  toBigNum,
   useValidateAmount,
+  validateAgainstStep,
 } from '@vegaprotocol/utils';
 import {
   type UseFormSetValue,
@@ -31,6 +33,7 @@ import {
   Intent,
   Notification,
   ExternalLink,
+  Slider,
 } from '@vegaprotocol/ui-toolkit';
 import {
   getAsset,
@@ -96,10 +99,14 @@ const getDefaultValues = (
     Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE,
   expire: false,
   expiryStrategy: Schema.StopOrderExpiryStrategy.EXPIRY_STRATEGY_SUBMIT,
+  sizeOverrideSetting:
+    Schema.StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_NONE,
   size: '0',
   oco: false,
   ocoType: type,
   ocoTimeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_FOK,
+  ocoSizeOverrideSetting:
+    Schema.StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_NONE,
   ocoTriggerType: 'price',
   ocoSize: '0',
   ...storedValues,
@@ -403,6 +410,77 @@ const Size = ({
   );
 };
 
+const SizeOverrideValue = ({
+  control,
+  oco,
+}: {
+  control: Control<StopOrderFormValues>;
+  oco?: boolean;
+}) => {
+  const t = useT();
+  const sizeStep = 1;
+  const maxSize = 100;
+  return (
+    <Controller
+      name={oco ? 'ocoSizeOverrideValue' : 'sizeOverrideValue'}
+      control={control}
+      rules={{
+        required: t('You need to provide a quantity'),
+        min: {
+          value: sizeStep,
+          message: t('Quantity cannot be lower than {{sizeStep}}', {
+            sizeStep,
+          }),
+        },
+        max: {
+          value: maxSize,
+          message: t('Quantity cannot be greater than {{maxSize}}', {
+            maxSize,
+          }),
+        },
+        validate: (value?: string) => {
+          const isValid = value ? validateAgainstStep(sizeStep, value) : true;
+          if (!isValid) {
+            return t('Quantity must be whole numbers');
+          }
+          return true;
+        },
+      }}
+      render={({ field, fieldState }) => (
+        <>
+          <FormGroup label={t('Quantity')} labelFor="size-input" compact>
+            <Input
+              id="size-input"
+              data-testid="size-input"
+              type="number"
+              className="w-full"
+              min={sizeStep}
+              max={maxSize}
+              step={sizeStep}
+              appendElement={<Pill size="xs">%</Pill>}
+              hasError={!!fieldState.error}
+              {...field}
+              value={field.value || ''}
+            />
+            <Slider
+              min={0}
+              max={100}
+              step={1}
+              value={[Number(field.value)]}
+              onValueChange={([value]) => field.onChange(value)}
+            />
+          </FormGroup>
+          {fieldState.error && (
+            <InputError testId="size-error-message">
+              {fieldState.error.message}
+            </InputError>
+          )}
+        </>
+      )}
+    />
+  );
+};
+
 const Price = ({
   control,
   watch,
@@ -461,6 +539,49 @@ const Price = ({
               </InputError>
             )}
           </div>
+        );
+      }}
+    />
+  );
+};
+
+const SizeOverrideSetting = ({
+  control,
+  oco,
+}: {
+  control: Control<StopOrderFormValues>;
+  oco?: boolean;
+}) => {
+  const t = useT();
+  return (
+    <Controller
+      name={oco ? 'ocoSizeOverrideSetting' : 'sizeOverrideSetting'}
+      control={control}
+      render={({ field }) => {
+        const { onChange, value } = field;
+        return (
+          <RadioGroup
+            onChange={onChange}
+            value={value}
+            orientation="horizontal"
+            className="mb-2"
+          >
+            <Radio
+              value={
+                Schema.StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_NONE
+              }
+              id={`sizeOverrideSetting-none${oco ? '-oco' : ''}`}
+              label={t('Amount')}
+            />
+            <Radio
+              value={
+                Schema.StopOrderSizeOverrideSetting
+                  .SIZE_OVERRIDE_SETTING_POSITION
+              }
+              id={`sizeOverrideSetting-position${oco ? '-oco' : ''}`}
+              label={t('Percentage')}
+            />
+          </RadioGroup>
         );
       }}
     />
@@ -758,10 +879,13 @@ const formatSizeAtPrice = (
     positionDecimalPlaces,
     price,
     quoteName,
-    side,
+    sizeOverrideValue,
     size,
     type,
-  }: Pick<StopOrderFormValues, 'price' | 'side' | 'size' | 'type'> & {
+  }: Pick<
+    StopOrderFormValues,
+    'price' | 'sizeOverrideValue' | 'size' | 'type'
+  > & {
     assetUnit?: string;
     decimalPlaces: number;
     positionDecimalPlaces: number;
@@ -769,10 +893,14 @@ const formatSizeAtPrice = (
   },
   t: ReturnType<typeof useT>
 ) =>
-  `${formatValue(
-    removeDecimal(size, positionDecimalPlaces),
-    positionDecimalPlaces
-  )} ${assetUnit} @ ${
+  `${
+    sizeOverrideValue
+      ? `${(Number(sizeOverrideValue) * 100).toFixed()}%`
+      : formatValue(
+          removeDecimal(size || '0', positionDecimalPlaces),
+          positionDecimalPlaces
+        )
+  } ${assetUnit} @ ${
     type === Schema.OrderType.TYPE_MARKET
       ? t('sizeAtPrice-market', 'market')
       : `${formatValue(
@@ -869,7 +997,6 @@ const SubmitButton = ({
           positionDecimalPlaces: market.positionDecimalPlaces,
           price: risesAbove ? price : ocoPrice,
           quoteName,
-          side,
           size: risesAbove ? size : ocoSize,
           type,
         },
@@ -897,7 +1024,6 @@ const SubmitButton = ({
           positionDecimalPlaces: market.positionDecimalPlaces,
           price: !risesAbove ? price : ocoPrice,
           quoteName,
-          side,
           size: !risesAbove ? size : ocoSize,
           type: ocoType,
         },
@@ -927,7 +1053,6 @@ const SubmitButton = ({
           positionDecimalPlaces: market.positionDecimalPlaces,
           price,
           quoteName,
-          side,
           size,
           type,
         },
@@ -1021,6 +1146,7 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
   const oco = watch('oco');
   const ocoPrice = watch('ocoPrice');
   const ocoSize = watch('ocoSize');
+  const ocoSizeOverrideSetting = watch('ocoSizeOverrideSetting');
   const ocoTimeInForce = watch('ocoTimeInForce');
   const ocoOrderExpiresAt = watch('ocoOrderExpiresAt');
   const ocoTriggerPrice = watch('ocoTriggerPrice');
@@ -1032,6 +1158,7 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
   const price = watch('price');
   const side = watch('side');
   const size = watch('size');
+  const sizeOverrideSetting = watch('sizeOverrideSetting');
   const timeInForce = watch('timeInForce');
   const orderExpiresAt = watch('orderExpiresAt');
   const triggerDirection = watch('triggerDirection');
@@ -1044,6 +1171,8 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
     market.id,
     !formState.isDirty && !formState.submitCount
   );
+
+  const { openVolume } = useOpenVolume(pubKey, market.id) || {};
 
   useEffect(() => {
     const storedSize = storedFormValues?.[dealTicketType]?.size;
@@ -1080,7 +1209,10 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
 
   const normalizedPrice = price && removeDecimal(price, market.decimalPlaces);
   const normalizedSize =
-    size && removeDecimal(size, market.positionDecimalPlaces);
+    sizeOverrideSetting ===
+    Schema.StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION
+      ? toBigNum(openVolume || '0', market.positionDecimalPlaces)
+      : removeDecimal(size || '0', market.positionDecimalPlaces);
 
   return (
     <form
@@ -1126,12 +1258,18 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
         decimalPlaces={market.decimalPlaces}
       />
       <hr className="border-vega-clight-500 dark:border-vega-cdark-500 mb-4" />
-      <Size
-        control={control}
-        sizeStep={sizeStep}
-        isLimitType={type === Schema.OrderType.TYPE_LIMIT}
-        assetUnit={assetUnit}
-      />
+      {sizeOverrideSetting ===
+      Schema.StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION ? (
+        <SizeOverrideValue control={control} />
+      ) : (
+        <Size
+          control={control}
+          sizeStep={sizeStep}
+          isLimitType={type === Schema.OrderType.TYPE_LIMIT}
+          assetUnit={assetUnit}
+        />
+      )}
+      <SizeOverrideSetting control={control} />
       <Price
         control={control}
         watch={watch}
@@ -1244,13 +1382,19 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
             oco
           />
           <hr className="border-vega-clight-500 dark:border-vega-cdark-500 mb-2" />
-          <Size
-            control={control}
-            sizeStep={sizeStep}
-            assetUnit={assetUnit}
-            oco
-            isLimitType={ocoType === Schema.OrderType.TYPE_LIMIT}
-          />
+          {ocoSizeOverrideSetting ===
+          Schema.StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION ? (
+            <SizeOverrideValue control={control} oco />
+          ) : (
+            <Size
+              control={control}
+              sizeStep={sizeStep}
+              isLimitType={ocoType === Schema.OrderType.TYPE_LIMIT}
+              assetUnit={assetUnit}
+              oco
+            />
+          )}
+          <SizeOverrideSetting control={control} oco />
           <Price
             control={control}
             watch={watch}

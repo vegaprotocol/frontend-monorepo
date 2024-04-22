@@ -1,7 +1,8 @@
-import type {
-  OrderSubmission,
-  StopOrderSetup,
-  StopOrdersSubmission,
+import {
+  SizeOverrideSetting,
+  type OrderSubmission,
+  type StopOrderSetup,
+  type StopOrdersSubmission,
 } from '@vegaprotocol/wallet';
 import type {
   OrderFormValues,
@@ -92,12 +93,15 @@ export const mapFormValuesToStopOrdersSubmission = (
     risesAbove: undefined,
     fallsBelow: undefined,
   };
+  const useSizeOverride =
+    data.sizeOverrideSetting ===
+    Schema.StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION;
   const stopOrderSetup: StopOrderSetup = {
     orderSubmission: mapFormValuesToOrderSubmission(
       {
         type: data.type,
         side: data.side,
-        size: data.size,
+        size: useSizeOverride ? '1' : data.size || '',
         timeInForce: data.timeInForce,
         price: data.price,
         reduceOnly: !isSpotMarket,
@@ -109,6 +113,12 @@ export const mapFormValuesToStopOrdersSubmission = (
       positionDecimalPlaces,
       reference
     ),
+    sizeOverrideSetting: useSizeOverride
+      ? SizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION
+      : SizeOverrideSetting.SIZE_OVERRIDE_SETTING_NONE,
+    sizeOverrideValue: useSizeOverride
+      ? { percentage: (Number(data.sizeOverrideValue) / 100).toString() }
+      : undefined,
   };
   setTrigger(
     stopOrderSetup,
@@ -119,6 +129,9 @@ export const mapFormValuesToStopOrdersSubmission = (
   );
   let oppositeStopOrderSetup: StopOrderSetup | undefined = undefined;
   if (data.oco) {
+    const useSizeOverride =
+      data.ocoSizeOverrideSetting ===
+      Schema.StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION;
     oppositeStopOrderSetup = {
       orderSubmission: mapFormValuesToOrderSubmission(
         {
@@ -136,6 +149,12 @@ export const mapFormValuesToStopOrdersSubmission = (
         positionDecimalPlaces,
         reference
       ),
+      sizeOverrideSetting: useSizeOverride
+        ? SizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION
+        : SizeOverrideSetting.SIZE_OVERRIDE_SETTING_NONE,
+      sizeOverrideValue: useSizeOverride
+        ? { percentage: (Number(data.ocoSizeOverrideValue) / 100).toString() }
+        : undefined,
     };
     setTrigger(
       oppositeStopOrderSetup,

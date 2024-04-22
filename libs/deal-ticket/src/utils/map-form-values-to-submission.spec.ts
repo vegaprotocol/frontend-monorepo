@@ -1,6 +1,7 @@
-import type {
-  OrderSubmissionBody,
-  StopOrdersSubmission,
+import {
+  SizeOverrideSetting,
+  type OrderSubmissionBody,
+  type StopOrdersSubmission,
 } from '@vegaprotocol/wallet';
 import {
   mapFormValuesToOrderSubmission,
@@ -252,10 +253,12 @@ describe('mapFormValuesToTakeProfitAndStopLoss', () => {
               type: OrderType.TYPE_MARKET,
             },
             price: '600000',
+            sizeOverrideSetting: SizeOverrideSetting.SIZE_OVERRIDE_SETTING_NONE,
           },
           risesAbove: {
             orderSubmission: {
               expiresAt: undefined,
+              icebergOpts: undefined,
               marketId: 'marketId',
               postOnly: false,
               price: undefined,
@@ -267,6 +270,7 @@ describe('mapFormValuesToTakeProfitAndStopLoss', () => {
               type: OrderType.TYPE_MARKET,
             },
             price: '700000',
+            sizeOverrideSetting: SizeOverrideSetting.SIZE_OVERRIDE_SETTING_NONE,
           },
         },
       ],
@@ -356,6 +360,8 @@ describe('mapFormValuesToTakeProfitAndStopLoss', () => {
               type: OrderType.TYPE_MARKET,
             },
             price: '700000',
+            sizeOverrideSetting: SizeOverrideSetting.SIZE_OVERRIDE_SETTING_NONE,
+            sizeOverrideValue: undefined,
           },
           fallsBelow: undefined,
         },
@@ -410,6 +416,7 @@ describe('mapFormValuesToTakeProfitAndStopLoss', () => {
               type: OrderType.TYPE_MARKET,
             },
             price: '600000',
+            sizeOverrideSetting: SizeOverrideSetting.SIZE_OVERRIDE_SETTING_NONE,
           },
           risesAbove: undefined,
         },
