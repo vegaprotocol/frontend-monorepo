@@ -153,12 +153,12 @@ def test_get_started_seen_already(simple_market, page: Page):
     expect(page.get_by_test_id("dialog-content").nth(1)).to_be_visible()
 
 def test_redirect_default_market(
-    continuous_market, vega: VegaServiceNull, page: Page
+    simple_market, vega: VegaServiceNull, page: Page
 ):
     page.goto("/")
     # 0007-FUGS-012
     expect(page).to_have_url(
-        f"http://localhost:{vega.console_port}/#/markets/{continuous_market}"
+        f"http://localhost:{vega.console_port}/#/markets/{simple_market}"
     )
     page.get_by_test_id("icon-cross").click()
     # 0007-FUGS-018
