@@ -1,5 +1,9 @@
 import { Trans, useTranslation } from 'react-i18next';
-import { type ProposalTermsFieldsFragment } from '../../__generated__/Proposals';
+import {
+  type BatchProposalFieldsFragment,
+  type ProposalFieldsFragment,
+  type ProposalTermsFieldsFragment,
+} from '../../__generated__/Proposals';
 import { type Proposal, type BatchProposal } from '../../types';
 import { ListAsset } from '../list-asset';
 import { ProposalAssetDetails } from '../proposal-asset-details';
@@ -17,20 +21,17 @@ import { type ProposalNode } from './proposal-utils';
 import { Lozenge } from '@vegaprotocol/ui-toolkit';
 import { Indicator } from './indicator';
 import { SubHeading } from '../../../../components/heading';
-import { determineId } from '@vegaprotocol/wallet';
 
 export const ProposalChangeDetails = ({
   proposal,
   terms,
   restData,
   indicator,
-  termsCount = 0,
 }: {
   proposal: Proposal | BatchProposal;
   terms: ProposalTermsFieldsFragment;
   restData: ProposalNode | null;
   indicator?: number;
-  termsCount?: number;
 }) => {
   const { t } = useTranslation();
   let details = null;
@@ -62,28 +63,26 @@ export const ProposalChangeDetails = ({
       }
       break;
     }
+    case 'NewSpotMarket':
     case 'NewMarket': {
       if (proposal.id) {
-        let marketId = proposal.id;
-
-        // TODO: when https://github.com/vegaprotocol/vega/issues/11005 gets merged
-        // this will need to be updated to loop forward from 0. Right now subProposals
-        // are returned (when using GQL) in the reverse order
-        if (proposal.__typename === 'BatchProposal') {
-          for (let i = termsCount - 1; i >= 0; i--) {
-            marketId = determineId(marketId);
-          }
-        }
-
-        details = <ProposalMarketData marketId={marketId} />;
+        const marketId = getMarketId(proposal, indicator);
+        details =
+          marketId.length > 0 ? (
+            <ProposalMarketData
+              marketId={marketId}
+              code={terms.change.instrument.code}
+            />
+          ) : null;
       }
       break;
     }
+    case 'UpdateSpotMarket':
     case 'UpdateMarket': {
       if (proposal.id) {
         details = (
           <div className="flex flex-col gap-4">
-            <ProposalMarketData marketId={proposal.id} />
+            <ProposalMarketData marketId={terms.change.marketId} />
             <ProposalMarketChanges
               indicator={indicator}
               marketId={terms.change.marketId}
@@ -150,8 +149,6 @@ export const ProposalChangeDetails = ({
       break;
     }
     case 'NewFreeform':
-    case 'NewSpotMarket':
-    case 'UpdateSpotMarket':
     default: {
       break;
     }
@@ -169,4 +166,20 @@ export const ProposalChangeDetails = ({
   }
 
   return details;
+};
+
+const getMarketId = (
+  proposal: ProposalFieldsFragment | BatchProposalFieldsFragment,
+  indicator?: number
+) => {
+  let marketId = proposal.id;
+
+  // if it's a batch proposal then each sub proposal has its own id
+  // which corresponds to the new market id
+  if (proposal.__typename === 'BatchProposal' && indicator != null) {
+    marketId =
+      (proposal.subProposals && proposal.subProposals[indicator - 1]?.id) || '';
+  }
+
+  return marketId || '';
 };
