@@ -91,14 +91,16 @@ export const MarketsPage = () => {
     <>
       <div className="flex flex-col w-full gap-3 p-3 lg:px-40">
         <div className="grid auto-rows-min grid-cols-3 gap-3 w-full">
-          <div className="flex flex-col gap-2 col-span-full lg:col-auto">
+          <div className="flex flex-col gap-2 col-span-1 lg:col-auto">
             <Card key="24h-vol" className="grow">
               <div className="flex items-center justify-center h-full w-full">
                 <div className="flex items-center gap-2 justify-between w-full">
                   <div className="flex flex-col">
-                    <span className="text-xl">
-                      {totalVolume24h && formatNumber(totalVolume24h, 2)} USDT
-                    </span>
+                    {totalVolume24h && (
+                      <span className="text-xl">
+                        ${formatNumber(totalVolume24h, 2)}
+                      </span>
+                    )}
                     <span className="text-xs">{t('24h volume')}</span>
                   </div>
                   <div>{totalVolumeSparkline}</div>
@@ -109,19 +111,27 @@ export const MarketsPage = () => {
               <div className="flex items-center justify-center h-full w-full">
                 <div className="flex items-center gap-2 justify-between w-full">
                   <div className="flex flex-col">
-                    <span className="text-xl">
-                      {tvl && formatNumber(tvl, 2)} USDT
-                    </span>
+                    {tvl && (
+                      <span className="text-xl">${formatNumber(tvl, 2)}</span>
+                    )}
                     <span className="text-xs">TVL</span>
                   </div>
                 </div>
               </div>
             </Card>
           </div>
-          <Card key="top-gainers" title={t('Top gainers')}>
+          <Card
+            key="top-gainers"
+            title={t('Top gainers')}
+            className="col-span-1"
+          >
             <TopMarketList markets={topGainers} />
           </Card>
-          <Card key="new-listings" title={t('New listings')}>
+          <Card
+            key="new-listings"
+            title={t('New listings')}
+            className="col-span-1"
+          >
             <TopMarketList markets={newListings} />
           </Card>
         </div>
