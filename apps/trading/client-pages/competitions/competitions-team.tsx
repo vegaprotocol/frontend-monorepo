@@ -214,6 +214,19 @@ const TeamPage = ({
               </span>{' '}
               ({t('epoch')}: {team.createdAtEpoch})
             </div>
+            <div>
+              <span>
+                {t('ID')}:{' '}
+                <span className="text-vega-cdark-600 dark:text-vega-clight-600 ">
+                  {truncateMiddle(team.teamId)}
+                </span>{' '}
+              </span>
+              <CopyWithTooltip text={team.teamId}>
+                <button className="h-4 w-4">
+                  <VegaIcon name={VegaIconNames.COPY} size={14} />
+                </button>
+              </CopyWithTooltip>
+            </div>
           </div>
         </div>
       </header>
