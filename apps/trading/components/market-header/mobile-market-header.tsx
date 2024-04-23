@@ -47,7 +47,7 @@ export const MobileMarketHeader = () => {
             <h1 className="whitespace-nowrap overflow-hidden text-ellipsis items-center">
               <span className="">
                 {marketId && (
-                  <span className="pr-1">
+                  <span className="mr-2">
                     <EmblemByMarket market={marketId} vegaChain={chainId} />
                   </span>
                 )}

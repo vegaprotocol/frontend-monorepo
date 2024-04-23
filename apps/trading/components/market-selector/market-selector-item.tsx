@@ -104,7 +104,7 @@ const MarketData = ({
         <h3 className="flex items-baseline">
           <span className="overflow-hidden text-xs md:text-sm lg:text-base text-ellipsis whitespace-nowrap">
             {
-              <span className="pr-1">
+              <span className="mr-2">
                 <EmblemByMarket market={market.id} vegaChain={chainId} />
               </span>
             }
