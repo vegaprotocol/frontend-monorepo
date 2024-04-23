@@ -70,8 +70,125 @@ const SquidWidget = ({
   const { theme } = useThemeSwitcher();
 
   const config = useMemo(() => {
+    const arbitrumBridgeAddress = '0xd459fac6647059100ebe45543e1da73b3b70ffba';
+
+    // Create a token config for assets on arbitrum, hardcoded for now
+    const arbitrumTokensConfig = [
+      {
+        id: 'arbitrum-tehter',
+        name: 'Tether',
+        symbol: 'aUSDT',
+        decimals: 6,
+        quantum: '1000000',
+        source: {
+          contractAddress: '0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9',
+        },
+        status: AssetStatus.STATUS_ENABLED,
+      },
+      {
+        id: 'arbitrum-tehter',
+        name: 'Link',
+        symbol: 'aLINK',
+        decimals: 6,
+        quantum: '1000000',
+        source: {
+          contractAddress: '0xf97f4df75117a78c1A5a0DBb814Af92458539FB4',
+        },
+        status: AssetStatus.STATUS_ENABLED,
+      },
+    ].map((asset) => {
+      const logoURI = `https://icon.vega.xyz/vega/${chainId}/asset/${asset.id}/logo.svg`;
+
+      const cfg: DestinationTokenConfig = {
+        // This should just be the end token being deposited
+        stakedToken: {
+          // TODO: assets now have a chainId property under the source field, need to use it here
+          chainId: 42161,
+          address: asset.source.contractAddress,
+          name: asset.name,
+          symbol: asset.symbol,
+          decimals: asset.decimals,
+          logoURI,
+          // It appears fine for the coingeckoId to be omitted
+          coingeckoId: '',
+        },
+        stakedTokenExchangeRateGetter: () => Promise.resolve(1),
+
+        // this is the token that will be swapped TO
+        tokenToStake: {
+          chainId: 42161, // TODO: use chainId of appropriate asset
+          address: asset.source.contractAddress,
+        },
+        logoUrl: logoURI,
+
+        // TODO: these might need to change depending on what chain the asset is. The below will
+        // work for the ethereum bridge, will need to check this with the arbitrum bridge.
+        customContractCalls: [
+          // approve deposits
+          {
+            callType: 1,
+            target: asset.source.contractAddress,
+            value: '0', // native value to be sent with call
+            callData: () => {
+              const contract = new ethers.Contract(
+                asset.source.contractAddress,
+                ERC20_ABI
+              );
+
+              // call data for approval
+              const approveEncodedData = contract.interface.encodeFunctionData(
+                'approve',
+                [arbitrumBridgeAddress, 0]
+              );
+
+              return approveEncodedData;
+            },
+            payload: {
+              tokenAddress: asset.source.contractAddress,
+              inputPos: 1,
+            },
+            estimatedGas: '50000',
+          },
+
+          // call deposit_asset on vega collateral beridge
+          {
+            callType: 1,
+            target: arbitrumBridgeAddress,
+            value: '0',
+            callData: (...args) => {
+              console.log(args);
+              const bridgeContract = new ethers.Contract(
+                arbitrumBridgeAddress,
+                ARBITRUM_BRIDGE_ABI
+              );
+
+              // call data for deposit
+              const depositEncodedData =
+                bridgeContract.interface.encodeFunctionData('deposit', [
+                  // note different function name from normal bridge
+                  asset.source.contractAddress,
+                  0, // deposit amount of 0 will get replaced given the payload obj below
+                  '0x' + pubKey,
+                  // TODO: recovery address: set this from wallet
+                  '0x72c22822A19D20DE7e426fB84aa047399Ddd8853',
+                ]);
+
+              return depositEncodedData;
+            },
+            payload: {
+              tokenAddress: asset.source.contractAddress,
+              inputPos: 1,
+            },
+            estimatedGas: '50000',
+          },
+        ],
+      };
+
+      return cfg;
+    });
+
     // Create a token config for each available asset on the network
-    const tokensConfig = assets.map((asset) => {
+    const erc20TokensConfig = assets.map((asset) => {
       if (asset.source.__typename !== 'ERC20') return null;
 
       const logoURI = `https://icon.vega.xyz/vega/${chainId}/asset/${asset.id}/logo.svg`;
@@ -179,7 +296,8 @@ const SquidWidget = ({
         destination: [1, 42161],
       },
       stakeConfig: {
-        tokensConfig: compact(tokensConfig),
+        // tokensConfig: compact(erc20TokensConfig),
+        tokensConfig: arbitrumTokensConfig,
       },
       titles: {
         swap: 'Deposit',
@@ -232,3 +350,34 @@ const darkStyle = {
   secondaryContent: theme.colors.vega.cdark['100'],
   neutral: theme.colors.vega.cdark['900'],
 } as const;
+
+const ARBITRUM_BRIDGE_ABI = [
+  {
+    inputs: [
+      {
+        internalType: 'contract IERC20',
+        name: 'asset',
+        type: 'address',
+      },
+      {
+        internalType: 'uint256',
+        name: 'amount',
+        type: 'uint256',
+      },
+      {
+        internalType: 'bytes32',
+        name: 'vegaPubkey',
+        type: 'bytes32',
+      },
+      {
+        internalType: 'address',
+        name: 'recovery',
+        type: 'address',
+      },
+    ],
+    name: 'deposit',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+];
