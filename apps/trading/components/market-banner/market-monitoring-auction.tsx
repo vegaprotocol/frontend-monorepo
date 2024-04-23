@@ -5,7 +5,11 @@ import {
 import { useT } from '../../lib/use-t';
 import { DocsLinks } from '@vegaprotocol/environment';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
-import { getDateTimeFormat, getTimeFormat } from '@vegaprotocol/utils';
+import {
+  getCurrentTimeInUTC,
+  getDateTimeFormat,
+  getTimeFormat,
+} from '@vegaprotocol/utils';
 import { useThrottledDataProvider } from '@vegaprotocol/data-provider';
 
 export const MarketAuctionBanner = ({
@@ -30,7 +34,7 @@ export const MarketAuctionBanner = ({
     auctionEnd && getDateTimeFormat().format(new Date(auctionEnd));
 
   const remaining = auctionEnd
-    ? new Date(auctionEnd).getTime() - Date.now()
+    ? new Date(auctionEnd).getTime() - getCurrentTimeInUTC().getTime()
     : 0;
 
   const timeRemaining =
