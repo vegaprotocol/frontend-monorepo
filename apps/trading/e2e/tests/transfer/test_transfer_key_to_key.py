@@ -77,7 +77,8 @@ def test_transfer_vesting_below_minimum(
     vega.wait_for_total_catchup()
 
     asset_id = vega.find_asset_id(symbol="tDAI")
-    next_epoch(vega=vega)
+    vega.wait_fn(1)
+    vega.wait_for_total_catchup()
 
     vega.recurring_transfer(
         from_key_name=PARTY_A.name,
@@ -112,6 +113,7 @@ def test_transfer_vesting_below_minimum(
     next_epoch(vega=vega)
     next_epoch(vega=vega)
     page.goto("/#/portfolio")
+    page.get_by_test_id("Transfer").click()
     expect(page.get_by_test_id("transfer-form")).to_be_visible
 
     change_keys(page, vega, "party_b")
