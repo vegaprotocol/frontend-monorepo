@@ -585,7 +585,9 @@ export const PositionsTable = ({
                     <ButtonLink
                       data-testid="close-position"
                       onClick={() => data && onClose(data)}
-                      title={t('Close position')}
+                      title={t(
+                        'Close this position at market price and cancel all open orders on this market'
+                      )}
                     >
                       <VegaIcon name={VegaIconNames.CROSS} size={16} />
                     </ButtonLink>

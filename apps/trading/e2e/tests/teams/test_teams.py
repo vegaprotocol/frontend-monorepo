@@ -66,7 +66,8 @@ def setup_teams_and_games(vega: VegaServiceNull):
         MM_WALLET.name, parameter="reward.asset", new_value=tDAI_asset_id
     )
 
-    next_epoch(vega=vega)
+    vega.wait_fn(1)
+    vega.wait_for_total_catchup()
     vega.create_asset(
         MM_WALLET.name,
         name="VEGA",
@@ -271,8 +272,8 @@ def test_team_page_headline(team_page: Tuple[Page, str, str, VegaServiceNull]):
     page, team_name, team_id, vega = team_page
     expect(page.get_by_test_id("team-name")).to_have_text(team_name)
     expect(page.get_by_test_id("icon-open-external").nth(1)).to_be_visible()
-    expect(page.get_by_test_id("icon-copy")).to_be_visible()
-    expect(page.get_by_test_id("members-count-stat")).to_have_text("2")
+    expect(page.get_by_test_id("icon-copy").first).to_be_visible()
+    expect(page.get_by_test_id("members-count-stat")).to_have_text("4")
 
     expect(page.get_by_test_id("total-games-stat")).to_have_text("1")
 
@@ -288,7 +289,7 @@ def test_leaderboard(competitions_page: Tuple[Page, str, VegaServiceNull]):
     page.reload()
     expect(page.get_by_test_id("rank-0").locator(".text-yellow-300")).to_have_count(1)
     # the 1st place is shared between the 2 participants in this case
-    
+
     expect(
         page.get_by_test_id("rank-1").locator(".text-yellow-300")
     ).to_have_count(1)

@@ -183,10 +183,13 @@ export const addDecimalsFormatNumberQuantum = (
   if (isNaN(Number(quantum))) {
     return addDecimalsFormatNumber(rawValue, decimalPlaces);
   }
+  const length = (typeof rawValue === 'number' ? rawValue.toFixed() : rawValue)
+    .length;
+  const formatDecimals = getFormatDecimalsFromQuantum(decimalPlaces, quantum);
   return addDecimalsFormatNumber(
     rawValue,
     decimalPlaces,
-    getFormatDecimalsFromQuantum(decimalPlaces, quantum)
+    Math.max(decimalPlaces - length + 1, formatDecimals)
   );
 };
 

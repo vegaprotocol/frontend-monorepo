@@ -54,7 +54,7 @@ export const TransferContainer = ({ assetId }: { assetId?: string }) => {
       </p>
       <TransferForm
         pubKey={pubKey}
-        pubKeys={pubKeys ? pubKeys?.map((pk) => pk.publicKey) : null}
+        pubKeys={pubKeys}
         isReadOnly={isReadOnly}
         assetId={assetId}
         minQuantumMultiple={params.transfer_minTransferQuantumMultiple}

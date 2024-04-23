@@ -17,30 +17,6 @@ export const generateERC20Asset = (
     __typename: 'ERC20',
   },
   status: status,
-  infrastructureFeeAccount: {
-    balance: '1',
-    __typename: 'AccountBalance',
-  },
-  globalRewardPoolAccount: {
-    balance: '2',
-    __typename: 'AccountBalance',
-  },
-  takerFeeRewardAccount: {
-    balance: '3',
-    __typename: 'AccountBalance',
-  },
-  makerFeeRewardAccount: {
-    balance: '4',
-    __typename: 'AccountBalance',
-  },
-  lpFeeRewardAccount: {
-    balance: '5',
-    __typename: 'AccountBalance',
-  },
-  marketProposerRewardAccount: {
-    balance: '6',
-    __typename: 'AccountBalance',
-  },
   __typename: 'Asset',
 });
 
@@ -58,14 +34,5 @@ export const generateBuiltinAsset = (
     __typename: 'BuiltinAsset',
   },
   status: status,
-  infrastructureFeeAccount: {
-    balance: '0',
-    __typename: 'AccountBalance',
-  },
-  globalRewardPoolAccount: null,
-  takerFeeRewardAccount: null,
-  makerFeeRewardAccount: null,
-  lpFeeRewardAccount: null,
-  marketProposerRewardAccount: null,
   __typename: 'Asset',
 });

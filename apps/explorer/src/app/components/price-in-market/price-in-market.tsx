@@ -3,6 +3,7 @@ import { t } from '@vegaprotocol/i18n';
 import isUndefined from 'lodash/isUndefined';
 import { useExplorerMarketQuery } from '../links/market-link/__generated__/Market';
 import get from 'lodash/get';
+import { EmblemWithChain } from '../emblem-with-chain/emblem-with-chain';
 
 export type DecimalSource = 'MARKET' | 'SETTLEMENT_ASSET';
 
@@ -10,6 +11,7 @@ export type PriceInMarketProps = {
   marketId: string;
   price: string;
   decimalSource?: DecimalSource;
+  assetIcon?: boolean;
 };
 
 /**
@@ -20,6 +22,7 @@ const PriceInMarket = ({
   marketId,
   price,
   decimalSource = 'MARKET',
+  assetIcon = true,
 }: PriceInMarketProps) => {
   const { data } = useExplorerMarketQuery({
     variables: { id: marketId },
@@ -61,6 +64,11 @@ const PriceInMarket = ({
     return (
       <label>
         <span>{label}</span> <span>{suffix}</span>
+        {assetIcon && (
+          <div className="ml-1 inline-block">
+            <EmblemWithChain market={marketId} marketLogos={'QUOTE'} />
+          </div>
+        )}
       </label>
     );
   }

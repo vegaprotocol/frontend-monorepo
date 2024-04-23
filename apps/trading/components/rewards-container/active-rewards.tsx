@@ -27,6 +27,7 @@ import { useStakeAvailable } from '../../lib/hooks/use-stake-available';
 import {
   ActiveRewardCard,
   GroupRewardCard,
+  LinkToGame,
   areAllMarketsSettled,
 } from './reward-card';
 import { groupBy } from 'lodash';
@@ -150,12 +151,13 @@ export const ActiveRewards = ({ currentEpoch }: { currentEpoch: number }) => {
           if (group.length === 0) return;
           if (group.length === 1) {
             return (
-              <ActiveRewardCard
-                key={i}
-                transferNode={group[0]}
-                currentEpoch={currentEpoch}
-                requirements={requirements}
-              />
+              <LinkToGame key={i} reward={group[0]}>
+                <ActiveRewardCard
+                  transferNode={group[0]}
+                  currentEpoch={currentEpoch}
+                  requirements={requirements}
+                />
+              </LinkToGame>
             );
           } else {
             return (

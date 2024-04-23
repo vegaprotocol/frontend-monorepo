@@ -47,12 +47,11 @@ describe('ActiveRewards', () => {
         quantum: '1',
         status: AssetStatus.STATUS_ENABLED,
         source: {
-          chainId: 'chain-id',
           __typename: 'ERC20' as const,
           contractAddress: '0x123',
           lifetimeLimit: '100',
           withdrawThreshold: '100',
-          chainId: '',
+          chainId: 'chain-id',
         },
       },
       reference: 'reward',

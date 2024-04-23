@@ -4,6 +4,7 @@ import {
   useOrderTxUpdateSubscription,
   useWithdrawalBusEventSubscription,
   useTransactionEventSubscription,
+  usePositionUpdateSubscription,
 } from './__generated__/TransactionResult';
 import { useVegaTransactionStore } from './use-vega-transaction-store';
 import { waitForWithdrawalApproval } from './wait-for-withdrawal-approval';
@@ -24,6 +25,9 @@ export const useVegaTransactionUpdater = () => {
     (state) => state.updateWithdrawal
   );
   const updateOrder = useVegaTransactionStore((state) => state.updateOrder);
+  const updatePosition = useVegaTransactionStore(
+    (state) => state.updatePosition
+  );
   const updateTransaction = useVegaTransactionStore(
     (state) => state.updateTransactionResult
   );
@@ -42,6 +46,16 @@ export const useVegaTransactionUpdater = () => {
     onData: ({ data: result }) =>
       result.data?.orders?.forEach((order) => {
         updateOrder(order);
+      }),
+  });
+
+  usePositionUpdateSubscription({
+    variables,
+    skip,
+    fetchPolicy: 'no-cache',
+    onData: ({ data: result }) =>
+      result.data?.positions.forEach((position) => {
+        updatePosition(position);
       }),
   });
 
@@ -64,7 +78,7 @@ export const useVegaTransactionUpdater = () => {
     variables,
     skip,
     fetchPolicy: 'no-cache',
-    onData: ({ data: result }) => {
+    onData: ({ data: result }) =>
       result.data?.busEvents?.forEach(({ event }) => {
         if (event.__typename === 'TransactionResult') {
           let updateImmediately = true;
@@ -100,7 +114,6 @@ export const useVegaTransactionUpdater = () => {
             updateTransaction(event);
           }
         }
-      });
-    },
+      }),
   });
 };

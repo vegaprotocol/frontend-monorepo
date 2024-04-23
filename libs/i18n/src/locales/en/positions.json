@@ -8,7 +8,7 @@
   "Cancel stop order": "Cancel stop order",
   "Confirm": "Confirm",
   "Cross": "Cross",
-  "Close position": "Close position",
+  "Close this position at market price and cancel all open orders on this market": "Close this position at market price and cancel all open orders on this market",
   "Entry / Mark": "Entry / Mark",
   "Entry price": "Entry price",
   "General account: {{balance}}": "General account: {{balance}}",
