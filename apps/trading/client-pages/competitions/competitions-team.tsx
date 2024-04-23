@@ -62,6 +62,10 @@ import {
   DispatchMetricInfo,
 } from '../../components/rewards-container/reward-card';
 import { usePartyProfilesQuery } from '../../components/vega-wallet-connect-button/__generated__/PartyProfiles';
+import { PreviewRefereeStatistics } from '../referrals/referee-statistics';
+import { Trans } from 'react-i18next';
+import { Links } from '../../lib/links';
+import { useFindReferralSet } from '../referrals/hooks/use-find-referral-set';
 
 const formatDate = (date: Date) => format(date, 'yyyy/MM/dd hh:mm:ss');
 
@@ -126,6 +130,12 @@ const TeamPageContainer = ({ teamId }: { teamId: string | undefined }) => {
   );
 };
 
+enum Tab {
+  Results = 'Results',
+  Members = 'Members',
+  Benefits = 'Benefits',
+}
+
 const TeamPage = ({
   team,
   partyTeam,
@@ -152,7 +162,7 @@ const TeamPage = ({
   refetch: () => void;
 }) => {
   const t = useT();
-  const [showGames, setShowGames] = useState(true);
+  const [tab, setTab] = useState<Tab>(Tab.Results);
 
   const createdAt = new Date(team.createdAt);
 
@@ -221,8 +231,8 @@ const TeamPage = ({
       <section>
         <div className="flex gap-4 lg:gap-8 mb-4 border-b border-default">
           <ToggleButton
-            active={showGames}
-            onClick={() => setShowGames(true)}
+            active={tab === Tab.Results}
+            onClick={() => setTab(Tab.Results)}
             data-testid="games-toggle"
           >
             {t('Results {{games}}', {
@@ -232,16 +242,23 @@ const TeamPage = ({
             })}
           </ToggleButton>
           <ToggleButton
-            active={!showGames}
-            onClick={() => setShowGames(false)}
+            active={tab === Tab.Members}
+            onClick={() => setTab(Tab.Members)}
             data-testid="members-toggle"
           >
             {t('Members ({{count}})', {
               count: members ? members.length : 0,
             })}
           </ToggleButton>
+          <ToggleButton
+            active={tab === Tab.Benefits}
+            onClick={() => setTab(Tab.Benefits)}
+            data-testid="benefits-toggle"
+          >
+            {t('Referral benefits')}
+          </ToggleButton>
         </div>
-        {showGames ? (
+        {tab === Tab.Results && (
           <Games
             games={games}
             gamesLoading={gamesLoading}
@@ -249,11 +266,51 @@ const TeamPage = ({
             transfersLoading={transfersLoading}
             allMarkets={allMarkets}
           />
-        ) : (
-          <Members members={members} />
         )}
+        {tab === Tab.Members && <Members members={members} />}
+        {tab === Tab.Benefits && <Benefits teamId={team.teamId} />}
       </section>
     </LayoutWithGradient>
+  );
+};
+
+const Benefits = ({ teamId }: { teamId: string }) => {
+  const { pubKey } = useVegaWallet();
+  const { role } = useFindReferralSet(pubKey);
+
+  if (pubKey && role != null) {
+    return (
+      <p className="text-muted text-sm">
+        Since you are already part of a referral set, you cannot leave it. You
+        can trade and play in this team but your referral discounts will be
+        based on the original set, and any commission earned will go to your
+        original referrer.
+      </p>
+    );
+  }
+
+  return (
+    <div>
+      <PreviewRefereeStatistics
+        setId={teamId}
+        withTeamTile={false}
+        className="!mb-5"
+      />
+      <p className="text-sm">
+        <Trans
+          i18nKey="By joining this team you are joining the above referral set and will enjoy the benefits shown, see <0>Referrals</0> for more details."
+          components={[
+            <Link
+              key="link-to-program-details"
+              className="underline"
+              to={Links.REFERRALS()}
+            >
+              Referrals
+            </Link>,
+          ]}
+        />
+      </p>
+    </div>
   );
 };
 
