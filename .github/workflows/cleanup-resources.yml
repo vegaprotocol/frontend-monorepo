@@ -1,14 +1,14 @@
 # https://docs.github.com/en/actions/using-workflows/caching-dependencies-to-speed-up-workflows#managing-caches
-name: cleanup caches by a branch
+name: Cleanup branch resources
 on:
   pull_request:
     types:
       - closed
 jobs:
-  cleanup:
+  cleanup-cache:
     runs-on: ubuntu-latest
     steps:
-      - name: Cleanup
+      - name: Cleanup cache
         run: |
           gh extension install actions/gh-actions-cache
 
@@ -27,3 +27,25 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPO: ${{ github.repository }}
           BRANCH: refs/pull/${{ github.event.pull_request.number }}/merge
+
+  cleanup-previews:
+    strategy:
+      fail-fast: false
+      matrix:
+        app:
+          - trading
+          - governance
+          - explorer
+          - multisig-signer
+    name: ${{ matrix.app }}
+    runs-on: ubuntu-22.04
+    env:
+      APP_BUCKET_NAME: pr-${{ github.event.number }}.${{ matrix.app }}.previews.vega.rocks
+    steps:
+      - name: Delete ${{ matrix.app }} preview app
+        run: |
+          bucket_exists=$(aws s3api list-buckets | jq -c --arg bucket $APP_BUCKET_NAME 'any(.Buckets[]; .Name == $bucket)')
+          if [[ "$bucket_exists" == "true" ]]
+          then
+            aws s3 rb s3://$APP_BUCKET_NAME --force
+          fi

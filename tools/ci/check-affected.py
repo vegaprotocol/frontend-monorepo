@@ -6,19 +6,7 @@ import json
 projects = []
 projects_e2e = []
 
-previews = {
-    'governance': 'not deployed',
-    'explorer': 'not deployed',
-    'trading': 'not deployed',
-    'tools': 'not deployed',
-}
-
 main_apps = ['governance', 'explorer', 'trading']
-
-preview_governance = "not deployed"
-preview_trading = "not deployed"
-preview_explorer = "not deployed"
-preview_tools = "not deployed"
 
 # take input from the pipeline
 parser = ArgumentParser()
@@ -47,13 +35,9 @@ print(">>>> eof debug")
 # define affection actions -> add to projects arrays and generate preview link
 
 
-def affect_app(app, preview_name=None):
+def affect_app(app):
     print(f"{app} is affected")
     projects.append(app)
-    if not preview_name:
-        preview_name = app
-    previews[app] = f'https://{preview_name}.{args.branch_slug}.vega.rocks'
-
 
 # check appearance in the affected string for main apps
 for app in main_apps:
@@ -75,7 +59,7 @@ if "trading-e2e" in projects_e2e:
 # check affection for multisig-signer which is deployed only from develop and pull requests
 if args.event_name == 'pull_request' or 'develop' in args.github_ref:
     if 'multisig-signer' in affected:
-        affect_app('multisig-signer', 'tools')
+        affect_app('multisig-signer')
 
 # now parse apps that are deployed from develop but don't have previews
 if 'develop' in args.github_ref:
@@ -98,17 +82,8 @@ projects_e2e = json.dumps(projects_e2e)
 print(f'Projects: {projects}')
 print(f'Projects E2E: {projects_e2e}')
 
-print('>> Previews')
-for preview, preview_value in previews.items():
-    print(f'{preview}: {preview_value}')
-print('>> EOF Previews')
-
 
 lines_to_write = [
-    f'PREVIEW_GOVERNANCE={previews["governance"]}',
-    f'PREVIEW_EXPLORER={previews["explorer"]}',
-    f'PREVIEW_TRADING={previews["trading"]}',
-    f'PREVIEW_TOOLS={previews["tools"]}',
     f'PROJECTS={projects}',
     f'PROJECTS_E2E={projects_e2e}',
 ]
