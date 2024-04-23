@@ -864,6 +864,8 @@ const DispatchMetricColourMap: Record<
   [DispatchMetric.DISPATCH_METRIC_RETURN_VOLATILITY]: CardColour.YELLOW,
   // Validator ranking
   [DispatchMetric.DISPATCH_METRIC_VALIDATOR_RANKING]: CardColour.WHITE,
+  // Realised return
+  [DispatchMetric.DISPATCH_METRIC_REALISED_RETURN]: CardColour.GREEN,
   STAKING_REWARD_METRIC: CardColour.WHITE,
 };
 

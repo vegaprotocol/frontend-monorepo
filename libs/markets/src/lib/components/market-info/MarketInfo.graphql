@@ -165,7 +165,6 @@ fragment Spot on Spot {
   quoteAsset {
     ...AssetListFields
   }
-  name
 }
 
 query MarketInfo($marketId: ID!) {

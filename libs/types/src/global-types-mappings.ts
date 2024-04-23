@@ -62,6 +62,7 @@ export const AccountTypeMapping: {
   ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES: 'LP received fees reward account',
   ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES: 'Maker received fees reward account',
   ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS: 'Market proposers reward account',
+  ACCOUNT_TYPE_REWARD_REALISED_RETURN: 'Realised return reward account',
   ACCOUNT_TYPE_REWARD_AVERAGE_POSITION: 'Average position reward account',
   ACCOUNT_TYPE_REWARD_RELATIVE_RETURN: 'Relative return reward account',
   ACCOUNT_TYPE_REWARD_RETURN_VOLATILITY: 'Volatility return reward account',
@@ -312,6 +313,8 @@ export const StopOrderRejectionReasonMapping: {
     'Stop order cannot have matching OCO expiry times',
   REJECTION_REASON_STOP_ORDER_LINKED_PERCENTAGE_INVALID:
     'The percentage value for the linked stop order is invalid',
+  REJECTION_REASON_STOP_ORDER_SIZE_OVERRIDE_UNSUPPORTED_FOR_SPOT:
+    'Position percentage stop order is not supported for spot market',
 };
 
 /**
@@ -439,6 +442,24 @@ export const ProposalRejectionReasonMapping: {
   PROPOSAL_ERROR_INVALID_PERPETUAL_PRODUCT: 'Invalid perpetual product',
   PROPOSAL_ERROR_INVALID_SLA_PARAMS: 'Invalid SLA params',
   PROPOSAL_ERROR_MISSING_SLA_PARAMS: 'Missing SLA params',
+  PROPOSAL_ERROR_INVALID_REFERRAL_PROGRAM:
+    'Referral program proposal is invalid',
+  PROPOSAL_ERROR_INVALID_SIZE_DECIMAL_PLACES:
+    'Spot market proposal contains too many size decimal places',
+  PROPOSAL_ERROR_INVALID_VOLUME_DISCOUNT_PROGRAM:
+    'Volume discount program proposal is invalid',
+  PROPOSAL_ERROR_LINEAR_SLIPPAGE_FACTOR_OUT_OF_RANGE:
+    'Linear slippage factor is out of range, either negative or too large',
+  PROPOSAL_ERROR_LP_PRICE_RANGE_NONPOSITIVE:
+    'LP price range must be larger than 0',
+  PROPOSAL_ERROR_LP_PRICE_RANGE_TOO_LARGE:
+    'LP price range must not be larger than 100',
+  PROPOSAL_ERROR_PROPOSAL_IN_BATCH_DECLINED:
+    'One or more proposals in a batch has been declined',
+  PROPOSAL_ERROR_PROPOSAL_IN_BATCH_REJECTED:
+    'One or more proposals in a batch has been rejected',
+  PROPOSAL_ERROR_QUADRATIC_SLIPPAGE_FACTOR_OUT_OF_RANGE:
+    'Quadratic slippage factor is out of range, either negative or too large',
   // TODO: check and remove ts-expect-error when schema is correct
   // @ts-expect-error this rejection reason is not yet in the schema but does exist
   PROPOSAL_ERROR_PROPOSAL_IN_BATCH_REJECTED:
@@ -666,6 +687,7 @@ export const DispatchMetricLabels: DispatchMetricLabel = {
   DISPATCH_METRIC_RELATIVE_RETURN: 'Relative return',
   DISPATCH_METRIC_RETURN_VOLATILITY: 'Return volatility',
   DISPATCH_METRIC_VALIDATOR_RANKING: 'Validator ranking',
+  DISPATCH_METRIC_REALISED_RETURN: 'Realised return',
   STAKING_REWARD_METRIC: 'Staking rewards',
 };
 
@@ -685,6 +707,8 @@ export const DispatchMetricDescription: DispatchMetricLabel = {
     'Get rewards for having the least amount of variance in your returns while you have a position open during the rewards window.',
   DISPATCH_METRIC_VALIDATOR_RANKING:
     'Get rewards if you run a validator node with a high ranking score.',
+  DISPATCH_METRIC_REALISED_RETURN:
+    'Dispatch metric that uses the realised return of the party in the market',
   STAKING_REWARD_METRIC:
     'Global staking reward for staking $VEGA on the network via the Governance app',
 };
