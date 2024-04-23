@@ -245,13 +245,6 @@ const TeamPage = ({
               count: members ? members.length : 0,
             })}
           </ToggleButton>
-          <ToggleButton
-            active={tab === Tab.Benefits}
-            onClick={() => setTab(Tab.Benefits)}
-            data-testid="benefits-toggle"
-          >
-            {t('Referral benefits')}
-          </ToggleButton>
         </div>
         {tab === Tab.Results && (
           <Games
