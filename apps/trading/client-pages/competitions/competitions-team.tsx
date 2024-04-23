@@ -62,10 +62,6 @@ import {
   DispatchMetricInfo,
 } from '../../components/rewards-container/reward-card';
 import { usePartyProfilesQuery } from '../../components/vega-wallet-connect-button/__generated__/PartyProfiles';
-import { PreviewRefereeStatistics } from '../referrals/referee-statistics';
-import { Trans } from 'react-i18next';
-import { Links } from '../../lib/links';
-import { useFindReferralSet } from '../referrals/hooks/use-find-referral-set';
 
 const formatDate = (date: Date) => format(date, 'yyyy/MM/dd hh:mm:ss');
 
@@ -268,49 +264,8 @@ const TeamPage = ({
           />
         )}
         {tab === Tab.Members && <Members members={members} />}
-        {tab === Tab.Benefits && <Benefits teamId={team.teamId} />}
       </section>
     </LayoutWithGradient>
-  );
-};
-
-const Benefits = ({ teamId }: { teamId: string }) => {
-  const { pubKey } = useVegaWallet();
-  const { role } = useFindReferralSet(pubKey);
-
-  if (pubKey && role != null) {
-    return (
-      <p className="text-muted text-sm">
-        Since you are already part of a referral set, you cannot leave it. You
-        can trade and play in this team but your referral discounts will be
-        based on the original set, and any commission earned will go to your
-        original referrer.
-      </p>
-    );
-  }
-
-  return (
-    <div>
-      <PreviewRefereeStatistics
-        setId={teamId}
-        withTeamTile={false}
-        className="!mb-5"
-      />
-      <p className="text-sm">
-        <Trans
-          i18nKey="By joining this team you are joining the above referral set and will enjoy the benefits shown, see <0>Referrals</0> for more details."
-          components={[
-            <Link
-              key="link-to-program-details"
-              className="underline"
-              to={Links.REFERRALS()}
-            >
-              Referrals
-            </Link>,
-          ]}
-        />
-      </p>
-    </div>
   );
 };
 
