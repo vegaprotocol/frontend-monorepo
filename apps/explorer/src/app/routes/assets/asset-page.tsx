@@ -8,6 +8,7 @@ import { useParams } from 'react-router-dom';
 import { JsonViewerDialog } from '../../components/dialogs/json-viewer-dialog';
 import { useState } from 'react';
 import { PageTitle } from '../../components/page-helpers/page-title';
+import { AssetMarkets } from './components/asset-markets';
 
 type Params = { assetId: string };
 
@@ -43,8 +44,9 @@ export const AssetPage = () => {
           loading={loading}
           error={error}
         >
-          <div className="relative h-full">
+          <div className="relative h-full max-w-2xl">
             <AssetDetailsTable asset={data as AssetFieldsFragment} />
+            {assetId && <AssetMarkets asset={assetId} />}
           </div>
         </AsyncRenderer>
       </section>
