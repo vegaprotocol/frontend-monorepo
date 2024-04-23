@@ -72,12 +72,15 @@ describe('Open', () => {
 
   const renderComponent = async () => {
     await act(async () => {
+      const markets = marketsQueryData.marketsConnection?.edges.map(
+        (e) => e.node
+      ) as MarketFieldsFragment[];
       render(
         <MemoryRouter>
           <MockedProvider
             mocks={[marketsMock, marketsCandlesMock, marketsDataMock]}
           >
-            <OpenMarkets />
+            <OpenMarkets data={markets} error={undefined} />
           </MockedProvider>
         </MemoryRouter>
       );
@@ -90,14 +93,10 @@ describe('Open', () => {
     const headers = screen.getAllByRole('columnheader');
     const expectedHeaders = [
       'Market',
-      'Description',
-      'Settlement asset',
-      'Trading mode',
-      'Status',
       'Price',
-      '24h volume',
-      'Open Interest',
-      'Spread',
+      '24h Change',
+      '24h Volume',
+      'Open interest',
       '', // Action row
     ];
     expect(headers).toHaveLength(expectedHeaders.length);

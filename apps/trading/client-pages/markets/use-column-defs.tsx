@@ -128,7 +128,7 @@ export const useMarketsColumnDefs = () => {
         },
       },
       {
-        headerName: t('24h volume'),
+        headerName: t('24h Volume'),
         type: 'rightAligned',
         field: 'data.candles',
         valueGetter: ({
@@ -172,7 +172,7 @@ export const useMarketsColumnDefs = () => {
         },
       },
       {
-        headerName: t('Open Interest'),
+        headerName: t('Open interest'),
         field: 'data.openInterest',
         type: 'rightAligned',
         cellRenderer: ({
