@@ -13,6 +13,8 @@ import classNames from 'classnames';
 import { MarketHeaderSwitch } from './market-header-switch';
 import { MarketMarkPrice } from '../market-mark-price';
 import { MarketBanner } from '../market-banner';
+import { EmblemByMarket } from '@vegaprotocol/emblem';
+import { useChainId } from '@vegaprotocol/wallet-react';
 /**
  * This is only rendered for the mobile navigation
  */
@@ -22,6 +24,7 @@ export const MobileMarketHeader = () => {
   const { data } = useMarket(marketId);
   const [openMarket, setOpenMarket] = useState(false);
   const [openPrice, setOpenPrice] = useState(false);
+  const { chainId } = useChainId();
 
   // Ensure that markets are kept cached so opening the list
   // shows all markets instantly
@@ -43,6 +46,11 @@ export const MobileMarketHeader = () => {
           >
             <h1 className="whitespace-nowrap overflow-hidden text-ellipsis items-center">
               <span className="">
+                {marketId && (
+                  <span className="mr-2">
+                    <EmblemByMarket market={marketId} vegaChain={chainId} />
+                  </span>
+                )}
                 {data
                   ? data.tradableInstrument.instrument.code
                   : t('Select market')}

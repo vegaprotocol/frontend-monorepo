@@ -60,7 +60,7 @@ export function EmblemByMarket(props: EmblemByMarketProps) {
         <EmblemBase
           src={quote}
           className={`inline-block w-5 h-5 rounded-full ${
-            showBase ? 'left-3 absolute z-1 top-1 ' : ''
+            showBase ? ' -ml-1 ' : ''
           }`}
           {...props}
         />

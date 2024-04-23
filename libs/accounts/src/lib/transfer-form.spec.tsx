@@ -16,7 +16,6 @@ import {
 import { AccountType, AccountTypeMapping } from '@vegaprotocol/types';
 import { removeDecimal } from '@vegaprotocol/utils';
 import type { TransferFeeQuery } from './__generated__/TransferFee';
-import type { PartyProfilesQuery } from './__generated__/Accounts';
 
 const feeFactor = 0.001;
 
@@ -37,38 +36,9 @@ const mockUseTransferFeeQuery = jest.fn(
   }
 );
 
-const mockUsePartyProfilesQuery = jest.fn(
-  ({
-    variables: { partyIds },
-  }: {
-    variables: { partyIds: string[] };
-  }): { data: PartyProfilesQuery } => {
-    return {
-      data: {
-        partiesProfilesConnection: {
-          edges: [
-            {
-              node: {
-                partyId: partyIds[0],
-                alias: 'alias01',
-                metadata: [],
-              },
-            },
-          ],
-        },
-      },
-    };
-  }
-);
-
 jest.mock('./__generated__/TransferFee', () => ({
   useTransferFeeQuery: (props: { variables: { amount: string } }) =>
     mockUseTransferFeeQuery(props),
-}));
-
-jest.mock('./__generated__/Accounts', () => ({
-  usePartyProfilesQuery: (props: { variables: { partyIds: ['party01'] } }) =>
-    mockUsePartyProfilesQuery(props),
 }));
 
 describe('TransferForm', () => {
@@ -110,7 +80,10 @@ describe('TransferForm', () => {
   };
   const props = {
     pubKey,
-    pubKeys: [pubKey, '2'.repeat(64)],
+    pubKeys: [
+      { publicKey: pubKey, name: 'name-1' },
+      { publicKey: '2'.repeat(64), name: 'name-2' },
+    ],
     submitTransfer: jest.fn(),
     accounts: [
       {
@@ -130,8 +103,12 @@ describe('TransferForm', () => {
   const propsNoAssets = {
     pubKey,
     pubKeys: [
-      pubKey,
-      'a4b6e3de5d7ef4e31ae1b090be49d1a2ef7bcefff60cccf7658a0d4922651cce',
+      { publicKey: pubKey, name: 'name-1' },
+      {
+        publicKey:
+          'a4b6e3de5d7ef4e31ae1b090be49d1a2ef7bcefff60cccf7658a0d4922651cce',
+        name: 'name-2',
+      },
     ],
     submitTransfer: jest.fn(),
     accounts: [],
@@ -164,7 +141,7 @@ describe('TransferForm', () => {
     // Select a pubkey
     await userEvent.selectOptions(
       screen.getByLabelText('To Vega key'),
-      props.pubKeys[1]
+      props.pubKeys[1].publicKey
     );
 
     // Select asset
@@ -222,7 +199,7 @@ describe('TransferForm', () => {
     expect(Array.from(keySelect.options).map((o) => o.value)).toEqual([
       '',
       pubKey,
-      props.pubKeys[1],
+      props.pubKeys[1].publicKey,
     ]);
 
     await submit();
@@ -231,7 +208,7 @@ describe('TransferForm', () => {
     // Select a pubkey
     await userEvent.selectOptions(
       screen.getByLabelText('To Vega key'),
-      props.pubKeys[1]
+      props.pubKeys[1].publicKey
     );
 
     // Select asset
@@ -273,7 +250,7 @@ describe('TransferForm', () => {
       expect(props.submitTransfer).toHaveBeenCalledWith({
         fromAccountType: AccountType.ACCOUNT_TYPE_GENERAL,
         toAccountType: AccountType.ACCOUNT_TYPE_GENERAL,
-        to: props.pubKeys[1],
+        to: props.pubKeys[1].publicKey,
         asset: asset.id,
         amount: removeDecimal(amount, asset.decimals),
         oneOff: {},
@@ -291,7 +268,7 @@ describe('TransferForm', () => {
 
     // check current pubkey not shown
     const keySelect: HTMLSelectElement = screen.getByLabelText('To Vega key');
-    const pubKeyOptions = ['', pubKey, props.pubKeys[1]];
+    const pubKeyOptions = ['', pubKey, props.pubKeys[1].publicKey];
     expect(keySelect.children).toHaveLength(pubKeyOptions.length);
     expect(Array.from(keySelect.options).map((o) => o.value)).toEqual(
       pubKeyOptions
@@ -303,7 +280,7 @@ describe('TransferForm', () => {
     // Select a pubkey
     await userEvent.selectOptions(
       screen.getByLabelText('To Vega key'),
-      props.pubKeys[1] // Use not current pubkey so we can check it switches to current pubkey later
+      props.pubKeys[1].publicKey // Use not current pubkey so we can check it switches to current pubkey later
     );
 
     // Select asset
@@ -382,7 +359,7 @@ describe('TransferForm', () => {
     // Select a pubkey
     await userEvent.selectOptions(
       screen.getByLabelText('To Vega key'),
-      props.pubKeys[1] // Use not current pubkey so we can check it switches to current pubkey later
+      props.pubKeys[1].publicKey // Use not current pubkey so we can check it switches to current pubkey later
     );
 
     // Select asset
@@ -439,7 +416,7 @@ describe('TransferForm', () => {
 
     // check current pubkey not shown
     const keySelect: HTMLSelectElement = screen.getByLabelText('To Vega key');
-    const pubKeyOptions = ['', pubKey, props.pubKeys[1]];
+    const pubKeyOptions = ['', pubKey, props.pubKeys[1].publicKey];
     expect(keySelect.children).toHaveLength(pubKeyOptions.length);
     expect(Array.from(keySelect.options).map((o) => o.value)).toEqual(
       pubKeyOptions
@@ -451,7 +428,7 @@ describe('TransferForm', () => {
     // Select a pubkey
     await userEvent.selectOptions(
       screen.getByLabelText('To Vega key'),
-      props.pubKeys[1]
+      props.pubKeys[1].publicKey
     );
 
     // Select asset
