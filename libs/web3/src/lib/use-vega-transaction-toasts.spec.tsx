@@ -310,6 +310,7 @@ const closePosition: VegaStoredTxState = {
   id: 0,
   createdAt: new Date(),
   updatedAt: new Date(),
+  isClosePosition: true,
   body: {
     batchMarketInstructions: {
       cancellations: [{ marketId: 'market-1', orderId: '' }],

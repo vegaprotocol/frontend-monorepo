@@ -14,7 +14,7 @@ The Vega block explorer provides an interface that allows users to search for an
 
 The trading interface built based on a component toolkit. It will provide a way for participants to interact with markets and provide resources for others to build additional open-source user interfaces.
 
-### [Token](./apps/token)
+### [Governance](./apps/governance)
 
 The utility dApp for interacting with the Vega token and using its' utility. This includes; delegation, nomination, governance and redemption of tokens.
 

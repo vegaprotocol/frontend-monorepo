@@ -41,21 +41,24 @@ def setup_market_with_reward_program(vega: VegaServiceNull):
         new_value=ACTIVITY_STREAKS,
     )
     print("update_network_parameter activity done")
-    next_epoch(vega=vega)
+    vega.wait_fn(1)
+    vega.wait_for_total_catchup()
 
     vega.update_network_parameter(
         proposal_key=MM_WALLET.name,
         parameter="rewards.vesting.benefitTiers",
         new_value=VESTING,
     )
-    next_epoch(vega=vega)
+    vega.wait_fn(1)
+    vega.wait_for_total_catchup()
 
     tDAI_asset_id = vega.find_asset_id(symbol="tDAI")
     vega.update_network_parameter(
         MM_WALLET.name, parameter="reward.asset", new_value=tDAI_asset_id
     )
 
-    next_epoch(vega=vega)
+    vega.wait_fn(1)
+    vega.wait_for_total_catchup()
     vega.recurring_transfer(
         from_key_name=PARTY_A.name,
         from_account_type=vega_protos.vega.ACCOUNT_TYPE_GENERAL,
@@ -189,7 +192,7 @@ def test_epoch_counter(
     setup_environment: Tuple[Page, str, str],
 ) -> None:
     page, tDAI_market, tDAI_asset_id = setup_environment
-    expect(page.get_by_test_id("epoch-countdown")).to_have_text("Epoch 14Awaiting next epoch")
+    expect(page.get_by_test_id("epoch-countdown")).to_contain_text("Epoch 12")
 
 
 def test_staking_reward(

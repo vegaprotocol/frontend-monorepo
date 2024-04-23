@@ -66,6 +66,7 @@ def test_transfer_vesting_below_minimum(
         parameter="transfer.minTransferQuantumMultiple",
         new_value="100000",
     )
+    vega.wait_fn(1)
     vega.wait_for_total_catchup()
 
     create_and_faucet_wallet(vega=vega, wallet=PARTY_A, amount=1e3)

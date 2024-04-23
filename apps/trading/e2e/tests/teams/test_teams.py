@@ -64,7 +64,8 @@ def setup_teams_and_games(vega: VegaServiceNull):
         MM_WALLET.name, parameter="reward.asset", new_value=tDAI_asset_id
     )
 
-    next_epoch(vega=vega)
+    vega.wait_fn(1)
+    vega.wait_for_total_catchup()
     vega.create_asset(
         MM_WALLET.name,
         name="VEGA",
