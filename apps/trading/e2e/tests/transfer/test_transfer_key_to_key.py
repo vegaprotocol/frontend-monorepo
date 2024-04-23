@@ -36,7 +36,6 @@ def test_transfer_submit(continuous_market, vega: VegaServiceNull, page: Page):
 
     expected_asset_text = re.compile(r"tDAI tDAI999991.49731 tDAI.{6}….{4}")
     actual_asset_text = page.get_by_test_id("select-asset").text_content().strip()
-    page.pause()
     assert expected_asset_text.search(
         actual_asset_text
     ), f"Expected pattern not found in {actual_asset_text}"
