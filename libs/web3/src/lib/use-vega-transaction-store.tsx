@@ -34,11 +34,16 @@ export interface VegaStoredTxState extends VegaTxState {
   withdrawal?: WithdrawalBusEventFieldsFragment;
   withdrawalApproval?: WithdrawalApprovalQuery['erc20WithdrawalApproval'];
   order?: OrderTxUpdateFieldsFragment;
+  isClosePosition?: boolean;
+  openVolume?: string;
 }
 
 export interface VegaTransactionStore {
   transactions: (VegaStoredTxState | undefined)[];
-  create: (tx: Transaction, order?: OrderTxUpdateFieldsFragment) => number;
+  create: (
+    tx: Transaction,
+    props?: Pick<VegaStoredTxState, 'order' | 'isClosePosition'>
+  ) => number;
   update: (
     index: number,
     update: Partial<
@@ -53,6 +58,7 @@ export interface VegaTransactionStore {
     withdrawalApproval: NonNullable<VegaStoredTxState['withdrawalApproval']>
   ) => void;
   updateOrder: (order: OrderTxUpdateFieldsFragment) => void;
+  updatePosition: (position: { marketId: string; openVolume: string }) => void;
   updateTransactionResult: (
     transactionResult: TransactionEventFieldsFragment
   ) => void;
@@ -67,7 +73,10 @@ export const useVegaTransactionStore = create<VegaTransactionStore>()(
           transaction?.txHash && transaction.txHash.toLowerCase() === txHash
       );
     },
-    create: (body: Transaction, order?: OrderTxUpdateFieldsFragment) => {
+    create: (
+      body: Transaction,
+      props?: Pick<VegaStoredTxState, 'order' | 'isClosePosition'>
+    ) => {
       const transactions = get().transactions;
       const now = new Date();
       const transaction: VegaStoredTxState = {
@@ -80,7 +89,7 @@ export const useVegaTransactionStore = create<VegaTransactionStore>()(
         signature: null,
         status: VegaTxStatus.Requested,
         dialogOpen: true,
-        order,
+        ...props,
       };
       set({ transactions: transactions.concat(transaction) });
 
@@ -136,6 +145,29 @@ export const useVegaTransactionStore = create<VegaTransactionStore>()(
             transaction.status = VegaTxStatus.Complete;
             transaction.dialogOpen = true;
             transaction.updatedAt = new Date();
+          }
+        })
+      );
+    },
+    updatePosition: (position) => {
+      set(
+        produce((state: VegaTransactionStore) => {
+          const transaction = state.transactions.find((transaction) => {
+            if (
+              transaction &&
+              transaction?.isClosePosition &&
+              isBatchMarketInstructionsTransaction(transaction?.body) &&
+              transaction.body.batchMarketInstructions.cancellations?.[0]
+                ?.marketId === position.marketId &&
+              (transaction.order || transaction.transactionResult) &&
+              !transaction.openVolume
+            ) {
+              return true;
+            }
+            return false;
+          });
+          if (transaction) {
+            transaction.openVolume = position.openVolume;
           }
         })
       );
