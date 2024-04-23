@@ -389,7 +389,6 @@ fragment INewSpotMarket on NewSpotMarket {
     code
     product {
       ... on SpotProduct {
-        name
         baseAsset {
           id
           name
