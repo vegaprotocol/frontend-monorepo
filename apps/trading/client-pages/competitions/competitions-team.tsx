@@ -129,7 +129,6 @@ const TeamPageContainer = ({ teamId }: { teamId: string | undefined }) => {
 enum Tab {
   Results = 'Results',
   Members = 'Members',
-  Benefits = 'Benefits',
 }
 
 const TeamPage = ({
