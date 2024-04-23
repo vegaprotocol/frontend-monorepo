@@ -13,6 +13,8 @@ import {
 } from '@vegaprotocol/types';
 import { MarketProductPill } from '@vegaprotocol/datagrid';
 import { useT } from '../../lib/use-t';
+import { EmblemByMarket } from '@vegaprotocol/emblem';
+import { useChainId } from '@vegaprotocol/wallet-react';
 
 export const MarketSelectorItem = ({
   market,
@@ -85,6 +87,7 @@ const MarketData = ({
       : '';
 
   const { oneDayCandles } = useCandles({ marketId: market.id });
+  const { chainId } = useChainId();
 
   const vol = oneDayCandles ? calcCandleVolume(oneDayCandles) : '0';
   const volume =
@@ -100,6 +103,11 @@ const MarketData = ({
       <div className="w-2/6" role="gridcell">
         <h3 className="flex items-baseline">
           <span className="overflow-hidden text-xs md:text-sm lg:text-base text-ellipsis whitespace-nowrap">
+            {
+              <span className="pr-1">
+                <EmblemByMarket market={market.id} vegaChain={chainId} />
+              </span>
+            }
             {market.tradableInstrument.instrument.code}
           </span>
           {allProducts && productType && (

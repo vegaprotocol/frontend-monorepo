@@ -24,6 +24,8 @@ import {
 } from '@vegaprotocol/liquidity';
 import { useParams } from 'react-router-dom';
 import { useT } from '../../lib/use-t';
+import { EmblemByMarket } from '@vegaprotocol/emblem';
+import { useChainId } from '@vegaprotocol/wallet-react';
 
 export const LiquidityHeader = () => {
   const t = useT();
@@ -34,6 +36,7 @@ export const LiquidityHeader = () => {
   const { data: feesPaidRes } = usePaidFeesQuery({
     variables: { marketId: marketId || '' },
   });
+  const { chainId } = useChainId();
   const targetStake = marketData?.targetStake;
   const suppliedStake = marketData?.suppliedStake;
 
@@ -57,6 +60,11 @@ export const LiquidityHeader = () => {
         market?.tradableInstrument.instrument.code &&
         marketId && (
           <HeaderTitle>
+            {marketId && (
+              <span className="pr-1">
+                <EmblemByMarket market={marketId} vegaChain={chainId} />
+              </span>
+            )}
             {market.tradableInstrument.instrument.code &&
               t('{{instrumentCode}} liquidity provision', {
                 instrumentCode: market.tradableInstrument.instrument.code,

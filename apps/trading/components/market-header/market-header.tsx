@@ -6,11 +6,14 @@ import { useMarket, useMarketList } from '@vegaprotocol/markets';
 import { useState } from 'react';
 import { ProductTypeShortName } from '@vegaprotocol/types';
 import { MarketHeaderSwitch } from './market-header-switch';
+import { EmblemByMarket } from '@vegaprotocol/emblem';
+import { useChainId } from '@vegaprotocol/wallet-react';
 
 export const MarketHeader = () => {
   const { marketId } = useParams();
   const { data } = useMarket(marketId);
   const [open, setOpen] = useState(false);
+  const { chainId } = useChainId();
 
   // Ensure that markets are kept cached so opening the list
   // shows all markets instantly
@@ -31,6 +34,14 @@ export const MarketHeader = () => {
                 trigger={
                   <HeaderTitle>
                     <span>
+                      {marketId && (
+                        <span className="pr-1">
+                          <EmblemByMarket
+                            market={marketId}
+                            vegaChain={chainId}
+                          />
+                        </span>
+                      )}
                       {data.tradableInstrument.instrument.code}
                       <span className="ml-1 text-xs uppercase text-muted">
                         {data.tradableInstrument.instrument.product
