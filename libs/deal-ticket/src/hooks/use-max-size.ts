@@ -1,4 +1,4 @@
-import type { MarketInfo, getProductType } from '@vegaprotocol/markets';
+import type { MarketInfo } from '@vegaprotocol/markets';
 import type { OrderFieldsFragment } from '@vegaprotocol/orders';
 import { MarginMode, OrderType, Side } from '@vegaprotocol/types';
 import { determineSizeStep, toBigNum } from '@vegaprotocol/utils';
@@ -33,7 +33,7 @@ export interface UseMaxSizeProps {
   side: Side;
   type: OrderType;
   marketIsInAuction: boolean;
-  productType: ReturnType<typeof getProductType>;
+  isSpotMarket: boolean;
 }
 
 export const useMaxSize = ({
@@ -54,13 +54,13 @@ export const useMaxSize = ({
   scalingFactors,
   markPrice,
   marketIsInAuction,
-  productType,
+  isSpotMarket,
   baseAssetAccountBalance,
   baseAssetDecimals,
 }: UseMaxSizeProps) =>
   useMemo(() => {
     let maxSize = new BigNumber(0);
-    if (productType === 'Spot') {
+    if (isSpotMarket) {
       const effectivePrice = type === OrderType.TYPE_LIMIT ? price : markPrice;
       if (side === Side.SIDE_BUY) {
         if (accountDecimals !== undefined && effectivePrice) {
@@ -189,5 +189,5 @@ export const useMaxSize = ({
     marketIsInAuction,
     baseAssetAccountBalance,
     baseAssetDecimals,
-    productType,
+    isSpotMarket,
   ]);

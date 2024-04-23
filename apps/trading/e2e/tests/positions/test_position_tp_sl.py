@@ -13,7 +13,6 @@ summary_message = "summary-message"
 submit_btn = "submit"
 add_stop_loss = "add-stop-loss"
 stop_order_info = "stop-order"
-stop_orders_tab = "Stop orders"
 
 def create_position(vega: VegaServiceNull, market_id):
     submit_order(vega, "Key 1", market_id, "SIDE_SELL", 100, 110)
@@ -48,7 +47,7 @@ def test_add_tp_sl_to_position(continuous_market, page: Page, vega: VegaServiceN
     vega.wait_for_total_catchup()
     expect(page.get_by_test_id(stop_order_info).nth(1)).to_have_text("Reduce 30% at 100.00 BTC for estimated PnL of -2.25 BTC")
     page.get_by_test_id("dialog-close").get_by_test_id("icon-cross").click()
-    page.get_by_test_id(stop_orders_tab ).click()
+    page.get_by_test_id("Advanced orders").click()
     text_locator_mark_under_100_pending = "Mark < 100.0030%MarketPending-FOK"
     text_locator_mark_over_120_pending = "Mark > 120.0030%MarketPending-FOK"
 

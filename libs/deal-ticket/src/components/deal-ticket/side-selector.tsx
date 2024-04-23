@@ -6,17 +6,20 @@ import { useT } from '../../use-t';
 interface SideSelectorProps {
   value: Schema.Side;
   onValueChange: (side: Schema.Side) => void;
-  productType: Schema.ProductType;
+  isSpotMarket?: boolean;
 }
 
-export const SideSelector = ({ productType, ...props }: SideSelectorProps) => {
+export const SideSelector = ({
+  isSpotMarket = false,
+  ...props
+}: SideSelectorProps) => {
   const t = useT();
   let toggles = [
     { label: t('Long'), value: Schema.Side.SIDE_BUY },
     { label: t('Short'), value: Schema.Side.SIDE_SELL },
   ];
 
-  if (productType === 'Spot') {
+  if (isSpotMarket) {
     toggles = [
       { label: t('Buy'), value: Schema.Side.SIDE_BUY },
       { label: t('Sell'), value: Schema.Side.SIDE_SELL },
