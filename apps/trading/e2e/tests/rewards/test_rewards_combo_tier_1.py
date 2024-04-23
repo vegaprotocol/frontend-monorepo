@@ -211,12 +211,12 @@ def test_staking_reward(
     expect(staking_reward_card.get_by_test_id(
         "distribution-strategy")).to_have_text("Pro rata")
     expect(staking_reward_card.get_by_test_id("dispatch-metric-info")).to_have_text(
-        "Staking rewards • tDAI"
+        "Staking rewards"
     )
     expect(staking_reward_card.get_by_test_id(
         "assessed-over")).to_have_text("1 epoch")
     expect(staking_reward_card.get_by_test_id(
-        "scope")).to_have_text("Not eligible ")
+        "scope")).to_have_text("Eligible ")
     expect(staking_reward_card.get_by_test_id(
         "staking-requirement")).to_have_text("1.00")
     expect(staking_reward_card.get_by_test_id(
