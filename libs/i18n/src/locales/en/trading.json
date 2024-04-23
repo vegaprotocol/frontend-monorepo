@@ -446,6 +446,7 @@
   "Tier {{tier}}": "Tier {{tier}}",
   "Tier {{userTier}}": "Tier {{userTier}}",
   "Tier": "Tier",
+  "Time remaining: {{timeRemaining}} (from {{startDate}} to {{endDate}})": "Time remaining: {{timeRemaining}} (from {{startDate}} to {{endDate}})",
   "To protect the network from spam, you must have at least {{requiredFunds}} qUSD of any asset on the network to proceed.": "To protect the network from spam, you must have at least {{requiredFunds}} qUSD of any asset on the network to proceed.",
   "Toast location": "Toast location",
   "Total amount of rewards paid out to this team in qUSD": "Total amount of rewards paid out to this team in qUSD",
