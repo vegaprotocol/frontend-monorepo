@@ -21,53 +21,20 @@ import { useDataProvider } from '@vegaprotocol/data-provider';
 import {
   activeMarketsWithCandlesProvider,
   calcCandleVolumePrice,
-  type MarketMaybeWithCandles,
 } from '@vegaprotocol/markets';
 import { useYesterday } from '@vegaprotocol/react-helpers';
 import { useEffect } from 'react';
-import { AccountType, Interval } from '@vegaprotocol/types';
-import { priceChangeRenderer, priceValueFormatter } from './use-column-defs';
+import { Interval } from '@vegaprotocol/types';
+import { formatNumber } from '@vegaprotocol/utils';
+import { TopMarketList } from './top-market-list';
 import {
-  addDecimal,
-  formatNumber,
-  priceChangePercentage,
-  toBigNum,
-} from '@vegaprotocol/utils';
-import { Link } from 'react-router-dom';
-import orderBy from 'lodash/orderBy';
-import BigNumber from 'bignumber.js';
-import { EmblemByMarket } from '@vegaprotocol/emblem';
-import { useChainId } from '@vegaprotocol/wallet-react';
+  useNewListings,
+  useTVL,
+  useTopGainers,
+  useTotalVolume24hCandles,
+} from './use-markets-stats';
 
 const POLLING_TIME = 2000;
-
-export const TopThreeMarkets = ({
-  markets,
-}: {
-  markets?: MarketMaybeWithCandles[];
-}) => {
-  const { chainId } = useChainId();
-  return (
-    <div className="grid auto-rows-min grid-cols-6 gap-3 text-sm">
-      {markets?.map((market) => {
-        return (
-          <>
-            <span className="col-span-3">
-              <Link to={`/markets/${market.id}`}>
-                <span className="pr-1">
-                  <EmblemByMarket market={market.id} vegaChain={chainId} />
-                </span>
-                {market.tradableInstrument.instrument.name}
-              </Link>
-            </span>
-            <span className="col-span-1">{priceValueFormatter(market)}</span>
-            <span className="col-span-2">{priceChangeRenderer(market)}</span>
-          </>
-        );
-      })}
-    </div>
-  );
-};
 
 export const MarketsPage = () => {
   const t = useT();
@@ -97,63 +64,15 @@ export const MarketsPage = () => {
 
   usePageTitle(t('Markets'));
 
-  const topGainers = orderBy(
-    activeMarkets,
-    [
-      (m) => {
-        if (!m.candles?.length) return 0;
-        return Number(
-          priceChangePercentage(
-            m.candles.filter((c) => c.close !== '').map((c) => c.close)
-          )
-        );
-      },
-    ],
-    ['desc']
-  ).slice(0, 3);
+  const topGainers = useTopGainers(activeMarkets);
+  const newListings = useNewListings(activeMarkets);
+  const totalVolume24hCandles = useTotalVolume24hCandles(activeMarkets);
 
-  const newListings = orderBy(
-    activeMarkets,
-    [(m) => new Date(m.marketTimestamps.open).getTime()],
-    ['desc']
-  ).slice(0, 3);
-
-  const totalVolume24hCandles = [];
-  for (let i = 1; i < 24; i++) {
-    const totalVolume24hr = activeMarkets?.reduce((acc, market) => {
-      const c = market.candles?.[i];
-      if (!c) return acc;
-      return (
-        acc +
-        new BigNumber(acc)
-          // Using notional both price and size need conversion with decimals,
-          // we can achieve the same result by just combining them
-          .plus(
-            toBigNum(
-              c.notional,
-              market.decimalPlaces + market.positionDecimalPlaces
-            )
-          )
-          .toNumber()
-      );
-    }, 0);
-    totalVolume24hCandles.push(totalVolume24hr || 0);
-  }
-
-  const sparkline = (
+  const totalVolumeSparkline = (
     <Sparkline width={80} height={20} data={totalVolume24hCandles || []} />
   );
 
-  const tvl = activeMarkets?.reduce((acc, market) => {
-    const accounts = market.accountsConnection?.edges
-      ?.filter((e) => e?.node?.type === AccountType.ACCOUNT_TYPE_INSURANCE)
-      .map((e) => e?.node);
-    const balance = accounts?.reduce((acc, a) => {
-      return acc + Number(addDecimal(a?.balance || 0, a?.asset.decimals || 0));
-    }, 0);
-    if (!balance) return acc;
-    return acc + balance;
-  }, 0);
+  const tvl = useTVL(activeMarkets);
 
   const totalVolume24h = activeMarkets?.reduce((acc, market) => {
     return (
@@ -182,7 +101,7 @@ export const MarketsPage = () => {
                     </span>
                     <span className="text-xs">{t('24h volume')}</span>
                   </div>
-                  <div>{sparkline}</div>
+                  <div>{totalVolumeSparkline}</div>
                 </div>
               </div>
             </Card>
@@ -200,10 +119,10 @@ export const MarketsPage = () => {
             </Card>
           </div>
           <Card key="top-gainers" title={t('Top gainers')}>
-            <TopThreeMarkets markets={topGainers} />
+            <TopMarketList markets={topGainers} />
           </Card>
           <Card key="new-listings" title={t('New listings')}>
-            <TopThreeMarkets markets={newListings} />
+            <TopMarketList markets={newListings} />
           </Card>
         </div>
       </div>
