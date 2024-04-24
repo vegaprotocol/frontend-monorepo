@@ -142,7 +142,7 @@ export const OrderListManager = ({
               fields.limitPrice,
               fields.size
             );
-            const originalOrder: OrderTxUpdateFieldsFragment = {
+            const order: OrderTxUpdateFieldsFragment = {
               type: editOrder.type,
               id: editOrder.id,
               status: editOrder.status,
@@ -155,7 +155,7 @@ export const OrderListManager = ({
               marketId: editOrder.market.id,
               remaining: editOrder.remaining,
             };
-            create({ orderAmendment }, originalOrder);
+            create({ orderAmendment }, { order });
             setEditOrder(null);
           }}
         />

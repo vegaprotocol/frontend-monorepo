@@ -74,6 +74,13 @@ subscription OrderTxUpdate($partyId: ID!) {
   }
 }
 
+subscription PositionUpdate($partyId: ID!) {
+  positions(partyId: $partyId) {
+    marketId
+    openVolume
+  }
+}
+
 fragment DepositBusEventFields on Deposit {
   id
   status

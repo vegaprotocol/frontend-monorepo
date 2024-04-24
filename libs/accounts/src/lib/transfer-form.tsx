@@ -18,7 +18,7 @@ import {
   Tooltip,
   TradingButton,
 } from '@vegaprotocol/ui-toolkit';
-import type { Transfer } from '@vegaprotocol/wallet';
+import type { Key, Transfer } from '@vegaprotocol/wallet';
 import BigNumber from 'bignumber.js';
 import type { ReactNode } from 'react';
 import { useCallback, useEffect, useState } from 'react';
@@ -27,7 +27,6 @@ import { AssetOption, Balance } from '@vegaprotocol/assets';
 import { AccountType, AccountTypeMapping } from '@vegaprotocol/types';
 import { useTransferFeeQuery } from './__generated__/TransferFee';
 import { normalizeTransfer } from './utils';
-import { usePartyProfilesQuery } from './__generated__/Accounts';
 
 interface FormFields {
   toVegaKey: string;
@@ -46,7 +45,7 @@ interface Asset {
 
 export interface TransferFormProps {
   pubKey: string | undefined;
-  pubKeys: string[] | null;
+  pubKeys: Key[];
   isReadOnly?: boolean;
   accounts: Array<{
     type: AccountType;
@@ -84,14 +83,6 @@ export const TransferForm = ({
       toVegaKey: pubKey || '',
     },
   });
-
-  const { data: profiles } = usePartyProfilesQuery({
-    variables: { partyIds: pubKeys },
-    skip: !!pubKeys && pubKeys.length <= 0,
-    fetchPolicy: 'cache-and-network',
-  });
-
-  // const
 
   const [toVegaKeyMode, setToVegaKeyMode] = useState<ToVegaKeyMode>('select');
 
@@ -337,11 +328,8 @@ export const TransferForm = ({
               <option value="" disabled={true}>
                 {t('Please select')}
               </option>
-              {pubKeys?.map((pk) => {
-                const profile = profiles?.partiesProfilesConnection?.edges.find(
-                  (e) => e.node.partyId === pk
-                )?.node;
-                const alias = profile?.alias || '';
+              {pubKeys?.map(({ publicKey: pk, name }) => {
+                const alias = name || '';
                 const text =
                   pk === pubKey
                     ? t('Current key: {{pubKey}}', { pubKey: pk })
@@ -380,7 +368,7 @@ export const TransferForm = ({
         )}
         {toVegaKeyMode === 'input' &&
           selectedPubKey &&
-          !pubKeys?.includes(selectedPubKey) && (
+          !pubKeys?.map((p) => p.publicKey).includes(selectedPubKey) && (
             <TradingInputError forInput="toVegaKey" intent="warning">
               {t('You do not own this Vega public key')}
             </TradingInputError>

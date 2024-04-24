@@ -35,21 +35,24 @@ def setup_market_with_reward_program(vega: VegaServiceNull):
     vega.mint(key_name=PARTY_A.name, asset=tDAI_asset_id, amount=100000)
     vega.mint(key_name=PARTY_D.name, asset=tDAI_asset_id, amount=100000)
     tDAI_market2 = setup_continuous_market(vega, custom_asset_name="tDAI2", custom_market_name="BTC:DAI2", custom_asset_symbol="tDAI2")
-    next_epoch(vega=vega)
+    vega.wait_fn(1)
+    vega.wait_for_total_catchup()
     vega.update_network_parameter(
         proposal_key=MM_WALLET.name,
         parameter="rewards.activityStreak.benefitTiers",
         new_value=ACTIVITY_STREAKS,
     )
     print("update_network_parameter activity done")
-    next_epoch(vega=vega)
+    vega.wait_fn(1)
+    vega.wait_for_total_catchup()
 
     vega.update_network_parameter(
         proposal_key=MM_WALLET.name,
         parameter="rewards.vesting.benefitTiers",
         new_value=VESTING,
     )
-    next_epoch(vega=vega)
+    vega.wait_fn(1)
+    vega.wait_for_total_catchup()
 
     tDAI_asset_id = vega.find_asset_id(symbol="tDAI")
     print(tDAI_asset_id)
@@ -57,7 +60,8 @@ def setup_market_with_reward_program(vega: VegaServiceNull):
         MM_WALLET.name, parameter="reward.asset", new_value=tDAI_asset_id
     )
 
-    next_epoch(vega=vega)
+    vega.wait_fn(1)
+    vega.wait_for_total_catchup()
     vega.recurring_transfer(
         from_key_name=PARTY_A.name,
         from_account_type=vega_protos.vega.ACCOUNT_TYPE_GENERAL,

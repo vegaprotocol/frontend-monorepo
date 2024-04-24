@@ -39,7 +39,8 @@ describe('Market link component', () => {
     expect(res.getByText('456')).toBeInTheDocument();
 
     // The emoji
-    expect(await res.findByRole('img')).toBeInTheDocument();
+    const icons = await res.findAllByRole('img');
+    expect(icons.length).toBe(2);
   });
 
   it('Renders the market name when the query returns a result', async () => {

@@ -41,7 +41,6 @@ import {
   toBigNum,
   truncateByChars,
   useFormatTrigger,
-  HALFMAXGOINT64,
 } from '@vegaprotocol/utils';
 import { useAssetsMapProvider } from '@vegaprotocol/assets';
 import { useEthWithdrawApprovalsStore } from './use-ethereum-withdraw-approvals-store';
@@ -142,25 +141,7 @@ const intentMap: { [s in VegaTxStatus]: Intent } = {
 };
 
 const isClosePositionTransaction = (tx: VegaStoredTxState) => {
-  if (isBatchMarketInstructionsTransaction(tx.body)) {
-    const amendments =
-      tx.body.batchMarketInstructions.amendments &&
-      tx.body.batchMarketInstructions.amendments?.length > 0;
-
-    const cancellation =
-      tx.body.batchMarketInstructions.cancellations?.length === 1 &&
-      tx.body.batchMarketInstructions.cancellations[0].orderId === '' &&
-      tx.body.batchMarketInstructions.cancellations[0];
-
-    const submission =
-      cancellation &&
-      tx.body.batchMarketInstructions.submissions?.length === 1 &&
-      tx.body.batchMarketInstructions.submissions[0].marketId ===
-        cancellation.marketId;
-
-    return !amendments && cancellation && submission;
-  }
-  return false;
+  return tx.isClosePosition;
 };
 
 const isTransactionTypeSupported = (tx: VegaStoredTxState) => {
@@ -641,23 +622,19 @@ export const VegaTransactionDetails = ({ tx }: { tx: VegaStoredTxState }) => {
               instrumentCode: market.tradableInstrument.instrument.code,
             }}
           />
-          {tx.order?.remaining && (
+          {tx.openVolume && tx.openVolume !== '0' ? (
             <p>
-              {t('Filled')}{' '}
-              <SizeAtPrice
-                meta={{
-                  positionDecimalPlaces: market.positionDecimalPlaces,
-                  decimalPlaces: market.decimalPlaces,
-                  asset: getAsset(market).symbol,
-                }}
-                side={tx.order.side}
-                size={(
-                  BigInt(tx.order.size) - BigInt(tx.order.remaining)
-                ).toString()}
-                price={tx.order.price}
-              />
+              {t(
+                'Position could not be completely closed, {{openVolume}} remaining',
+                {
+                  openVolume: addDecimalsFormatNumber(
+                    tx.openVolume,
+                    market.positionDecimalPlaces
+                  ),
+                }
+              )}
             </p>
-          )}
+          ) : null}
         </Panel>
       );
     }
@@ -798,7 +775,7 @@ const VegaTxCompleteToastsContent = ({ tx }: VegaTxToastContentProps) => {
     );
   }
 
-  if (tx.order && tx.order.rejectionReason) {
+  if (tx.order && tx.order.rejectionReason && !isClosePositionTransaction(tx)) {
     const rejectionReason = getRejectionReason(tx.order, t);
     return (
       <>
@@ -878,7 +855,7 @@ const VegaTxCompleteToastsContent = ({ tx }: VegaTxToastContentProps) => {
   return (
     <>
       <ToastHeading>
-        {tx.order?.status
+        {tx.order?.status && !isClosePositionTransaction(tx)
           ? getOrderToastTitle(tx.order.status, t)
           : t('Confirmed')}
       </ToastHeading>
@@ -1027,6 +1004,7 @@ export const getVegaTransactionContentIntent = (tx: VegaStoredTxState) => {
   // Transaction can be successful but the order can be rejected by the network
   const intentForRejectedOrder =
     tx.order &&
+    !tx.isClosePosition &&
     !isOrderAmendmentTransaction(tx.body) &&
     getOrderToastIntent(tx.order.status);
 
@@ -1037,16 +1015,8 @@ export const getVegaTransactionContentIntent = (tx: VegaStoredTxState) => {
     isWithdrawTransaction(tx.body) &&
     Intent.Warning;
 
-  // Toast for an IOC should go green when it is stopped,
-  // because stopping an IOC once all available volume has filled is the correct behaviour (it is immediate or cancel),
-  // this behaviour should apply to all IOC, not just those created due to "Close position"
   const intentForClosedPosition =
-    tx.order &&
-    tx.order.status === Schema.OrderStatus.STATUS_STOPPED &&
-    tx.order.timeInForce === Schema.OrderTimeInForce.TIME_IN_FORCE_IOC &&
-    tx.order.size >= HALFMAXGOINT64 &&
-    // isClosePositionTransaction(tx) &&
-    Intent.Success;
+    tx.isClosePosition && tx.order && tx.openVolume !== '0' && Intent.Warning;
 
   const intent =
     intentForClosedPosition ||

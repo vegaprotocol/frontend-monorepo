@@ -443,23 +443,22 @@ export const ProposalRejectionReasonMapping: {
   PROPOSAL_ERROR_INVALID_SLA_PARAMS: 'Invalid SLA params',
   PROPOSAL_ERROR_MISSING_SLA_PARAMS: 'Missing SLA params',
   PROPOSAL_ERROR_PROPOSAL_IN_BATCH_REJECTED:
-    'One or more proposals in a batch has been rejected',
+    'One or more sub proposals are invalid',
   PROPOSAL_ERROR_INVALID_REFERRAL_PROGRAM:
-    'Referral program proposal is invalid',
-  PROPOSAL_ERROR_INVALID_SIZE_DECIMAL_PLACES:
-    'Spot market proposal contains too many size decimal places',
+    'Proposal error invalid referral program',
+  PROPOSAL_ERROR_INVALID_SIZE_DECIMAL_PLACES: 'Invalid size decimal places',
   PROPOSAL_ERROR_INVALID_VOLUME_DISCOUNT_PROGRAM:
-    'Volume discount program proposal is invalid',
+    'Proposal error invalid volume discount program',
   PROPOSAL_ERROR_LINEAR_SLIPPAGE_FACTOR_OUT_OF_RANGE:
-    'Linear slippage factor is out of range, either negative or too large',
+    'Proposal error linear slippage factor out of range',
   PROPOSAL_ERROR_LP_PRICE_RANGE_NONPOSITIVE:
-    'LP price range must be larger than 0',
+    'Proposal error LP price range non-positive',
   PROPOSAL_ERROR_LP_PRICE_RANGE_TOO_LARGE:
-    'LP price range must not be larger than 100',
+    'Proposal error LP price range too large',
   PROPOSAL_ERROR_PROPOSAL_IN_BATCH_DECLINED:
-    'One or more proposals in a batch has been declined',
+    'Proposal error proposal in batch declined',
   PROPOSAL_ERROR_QUADRATIC_SLIPPAGE_FACTOR_OUT_OF_RANGE:
-    'Quadratic slippage factor is out of range, either negative or too large',
+    'Proposal error quadratic slippage factor out of range',
 };
 
 /**
@@ -798,9 +797,8 @@ export enum DistributionStrategyMapping {
 }
 
 export enum DistributionStrategyDescriptionMapping {
-  DISTRIBUTION_STRATEGY_PRO_RATA = `Rewards funded using the pro-rata strategy should be distributed pro-rata by each entity's reward metric scaled by any active multipliers that party has`,
-  /** Rewards funded using the rank strategy */
-  DISTRIBUTION_STRATEGY_RANK = 'Rewards funded using the rank strategy',
+  DISTRIBUTION_STRATEGY_PRO_RATA = "Rewards funded using the pro-rata strategy are distributed pro-rata by each party's reward score scaled by any active multipliers they have.",
+  DISTRIBUTION_STRATEGY_RANK = 'Rewards funded using the rank strategy.',
 }
 
 export const ProposalProductTypeShortName: Record<ProposalProductType, string> =

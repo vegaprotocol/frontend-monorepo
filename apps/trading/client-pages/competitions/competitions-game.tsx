@@ -115,10 +115,12 @@ export const CompetitionsGame = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
         <div>
           {showCard ? (
-            <ActiveRewardCard
-              transferNode={cardData}
-              currentEpoch={currentEpoch || 0}
-            />
+            <div>
+              <ActiveRewardCard
+                transferNode={cardData}
+                currentEpoch={currentEpoch || 0}
+              />
+            </div>
           ) : (
             <Loader size="small" />
           )}

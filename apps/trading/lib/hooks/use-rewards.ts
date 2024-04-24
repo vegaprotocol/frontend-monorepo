@@ -19,6 +19,7 @@ import {
   DispatchMetric,
   type StakingDispatchStrategy,
   DistributionStrategy,
+  IndividualScope,
 } from '@vegaprotocol/types';
 import { type ApolloError } from '@apollo/client';
 import compact from 'lodash/compact';
@@ -45,6 +46,7 @@ const STAKING_DISPATCH_STRATEGY: StakingDispatchStrategy = {
   dispatchMetricAssetId: '', // <-- replace empty string here with correct value of the reward asset
   distributionStrategy: DistributionStrategy.DISTRIBUTION_STRATEGY_PRO_RATA,
   entityScope: EntityScope.ENTITY_SCOPE_INDIVIDUALS,
+  individualScope: IndividualScope.INDIVIDUAL_SCOPE_ALL,
   lockPeriod: 0,
   notionalTimeWeightedAveragePositionRequirement: '',
   stakingRequirement: '1000000000000000000', // 1 VEGA

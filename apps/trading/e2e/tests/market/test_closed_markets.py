@@ -75,12 +75,13 @@ class TestSettledMarket:
         # 6001-MARK-009
         # 6001-MARK-008
         # 6001-MARK-010
-        pattern = r"(\d+)\s+(months|hours|days|minutes)\s+ago"
-        date_text = row_selector.locator(
-            '[col-id="settlementDate"]').inner_text()
-        assert re.match(
-            pattern, date_text
-        ), f"Expected text to match pattern but got {date_text}"
+        pattern = re.compile(r'(Expected in )?(\d+)\s+(months|hours|days|minutes)( ago)?')
+
+        date_text = row_selector.locator('[col-id="settlementDate"]').inner_text()
+        assert pattern.match(
+            date_text
+        ), f"Expected href to match {pattern}, but got {date_text}"
+
 
         expected_pattern = re.compile(r"https://.*?/oracles/[a-f0-9]{64}")
         actual_href = row_selector.locator(

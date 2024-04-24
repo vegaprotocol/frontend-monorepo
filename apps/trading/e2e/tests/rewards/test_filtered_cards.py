@@ -16,7 +16,8 @@ def test_filtered_cards(continuous_market, vega: VegaServiceNull, page: Page):
     )
     vega.mint(key_name=PARTY_B.name, asset=tDAI_asset_id, amount=100000)
     vega.mint(key_name=PARTY_A.name, asset=tDAI_asset_id, amount=100000)
-    next_epoch(vega=vega)
+    vega.wait_fn(1)
+    vega.wait_for_total_catchup()
     vega.recurring_transfer(
         from_key_name=PARTY_A.name,
         from_account_type=vega_protos.vega.ACCOUNT_TYPE_GENERAL,
@@ -56,7 +57,8 @@ def test_filtered_cards(continuous_market, vega: VegaServiceNull, page: Page):
         market_state=MarketStateUpdateType.Suspend,
         forward_time_to_enactment=True,
     )
-    next_epoch(vega=vega)
+    vega.wait_fn(1)
+    vega.wait_for_total_catchup()
 
     page.reload()
     expect(page.get_by_test_id("active-rewards-card")
@@ -66,7 +68,8 @@ def test_filtered_cards(continuous_market, vega: VegaServiceNull, page: Page):
         payload={"trading.terminated": "true"},
         key_name="FJMKnwfZdd48C8NqvYrG",
     )
-    next_epoch(vega=vega)
+    vega.wait_fn(1)
+    vega.wait_for_total_catchup()
     page.reload()
     expect(page.get_by_test_id("active-rewards-card")).not_to_be_in_viewport()
 
@@ -79,7 +82,8 @@ def test_filtered_future_cards(continuous_market, vega: VegaServiceNull, page: P
     )
     vega.mint(key_name=PARTY_B.name, asset=tDAI_asset_id, amount=100000)
     vega.mint(key_name=PARTY_A.name, asset=tDAI_asset_id, amount=100000)
-    next_epoch(vega=vega)
+    vega.wait_fn(1)
+    vega.wait_for_total_catchup()
     vega.recurring_transfer(
         from_key_name=PARTY_A.name,
         from_account_type=vega_protos.vega.ACCOUNT_TYPE_GENERAL,
@@ -115,6 +119,6 @@ def test_filtered_future_cards(continuous_market, vega: VegaServiceNull, page: P
     page.goto("/#/rewards")
     card = page.get_by_test_id("active-rewards-card")
     expect(card).to_be_visible(timeout=15000)
-    expect(page.get_by_test_id("starts-in")).to_have_text("6 epochs")
+    expect(page.get_by_test_id("starts-in")).to_have_text("7 epochs")
     color = card.evaluate("element => getComputedStyle(element).color")
     assert color == "rgb(4, 4, 5)", f"Unexpected color: {color}"

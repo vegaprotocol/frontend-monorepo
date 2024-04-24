@@ -85,7 +85,7 @@ export function getLabel(
     case settlementId:
       return 'Settlement for';
     case terminationId:
-      return 'Termination for';
+      return 'Schedule for';
     case settlementScheduleId:
       return 'Settlement schedule for';
     default:

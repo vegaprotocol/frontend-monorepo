@@ -37,12 +37,8 @@ export enum AssetDetail {
   // builtin details:
   MAX_FAUCET_AMOUNT_MINT,
   // balances:
-  INFRASTRUCTURE_FEE_ACCOUNT_BALANCE,
-  GLOBAL_REWARD_POOL_ACCOUNT_BALANCE,
-  MAKER_PAID_FEES_ACCOUNT_BALANCE, // account type: ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES
-  MAKER_RECEIVED_FEES_ACCOUNT_BALANCE, // account type: ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES
-  LP_FEE_REWARD_ACCOUNT_BALANCE,
-  MARKET_PROPOSER_REWARD_ACCOUNT_BALANCE,
+  NETWORK_TREASURY_ACCOUNT_BALANCE,
+  GLOBAL_INSURANCE_ACCOUNT_BALANCE,
 }
 
 type Mapping = { [key in string]: { value: string; tooltip: string } };
@@ -221,49 +217,16 @@ export const useRows = () => {
           num(asset, (asset.source as Schema.BuiltinAsset).maxFaucetAmountMint),
       },
       {
-        key: AssetDetail.INFRASTRUCTURE_FEE_ACCOUNT_BALANCE,
-        label: t('Infrastructure fee account balance'),
-        tooltip: t('The infrastructure fee account in this asset'),
-        value: (asset) => num(asset, asset.infrastructureFeeAccount?.balance),
+        key: AssetDetail.GLOBAL_INSURANCE_ACCOUNT_BALANCE,
+        label: t('Global insurance account balance'),
+        tooltip: t('The global insurance account balance in this asset'),
+        value: (asset) => num(asset, asset.globalInsuranceAccount?.balance),
       },
       {
-        key: AssetDetail.GLOBAL_REWARD_POOL_ACCOUNT_BALANCE,
-        label: t('Global reward pool account balance'),
-        tooltip: t('The global rewards acquired in this asset'),
-        value: (asset) => num(asset, asset.globalRewardPoolAccount?.balance),
-      },
-      {
-        key: AssetDetail.MAKER_PAID_FEES_ACCOUNT_BALANCE,
-        label: t('Maker paid fees account balance'),
-        tooltip: t(
-          'The rewards acquired based on the fees paid to makers in this asset'
-        ),
-        value: (asset) => num(asset, asset.takerFeeRewardAccount?.balance),
-      },
-      {
-        key: AssetDetail.MAKER_RECEIVED_FEES_ACCOUNT_BALANCE,
-        label: t('Maker received fees account balance'),
-        tooltip: t(
-          'The rewards acquired based on fees received for being a maker on trades'
-        ),
-        value: (asset) => num(asset, asset.makerFeeRewardAccount?.balance),
-      },
-      {
-        key: AssetDetail.LP_FEE_REWARD_ACCOUNT_BALANCE,
-        label: t('Liquidity provision fee reward account balance'),
-        tooltip: t(
-          'The rewards acquired based on the liquidity provision fees in this asset'
-        ),
-        value: (asset) => num(asset, asset.lpFeeRewardAccount?.balance),
-      },
-      {
-        key: AssetDetail.MARKET_PROPOSER_REWARD_ACCOUNT_BALANCE,
-        label: t('Market proposer reward account balance'),
-        tooltip: t(
-          'The rewards acquired based on the market proposer reward in this asset'
-        ),
-        value: (asset) =>
-          num(asset, asset.marketProposerRewardAccount?.balance),
+        key: AssetDetail.NETWORK_TREASURY_ACCOUNT_BALANCE,
+        label: t('Network Treasury account balance'),
+        tooltip: t('The network treasury account balance in this asset'),
+        value: (asset) => num(asset, asset.networkTreasuryAccount?.balance),
       },
     ],
     [t, AssetTypeMapping, AssetStatusMapping]

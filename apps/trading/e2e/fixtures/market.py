@@ -256,7 +256,7 @@ def setup_perps_market(
         parameter="limits.markets.proposePerpetualEnabled",
         new_value="1",
     )
-
+    vega.wait_fn(1)
     vega.wait_for_total_catchup()
 
     market_id = vega.create_simple_perps_market(

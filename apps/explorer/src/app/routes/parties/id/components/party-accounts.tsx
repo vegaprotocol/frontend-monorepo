@@ -3,8 +3,6 @@ import { AssetLink, MarketLink } from '../../../../components/links';
 import AssetBalance from '../../../../components/asset-balance/asset-balance';
 import { AccountTypeMapping, MarginMode } from '@vegaprotocol/types';
 import { t } from '@vegaprotocol/i18n';
-import { Emblem } from '@vegaprotocol/emblem';
-import { ENV } from '../../../../config/env';
 import { Leverage } from '../../../../components/leverage/leverage';
 
 interface PartyAccountsProps {
@@ -102,7 +100,6 @@ export const PartyAccounts = ({ partyId }: PartyAccountsProps) => {
                     {market?.id ? <MarketLink id={market.id} /> : '-'}
                   </td>
                   <td className="px-4">
-                    <Emblem asset={asset.id} vegaChain={ENV.vegaChainId} />
                     <AssetLink assetId={asset.id} />
                   </td>
                 </tr>

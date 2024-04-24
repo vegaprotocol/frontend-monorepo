@@ -21,6 +21,10 @@ import {
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { subDays } from 'date-fns';
 
+jest.mock('@vegaprotocol/wallet-react', () => ({
+  useChainId: jest.fn(() => '1'),
+}));
+
 describe('MarketSelectorItem', () => {
   const yesterday = new Date();
   yesterday.setHours(yesterday.getHours() - 20);

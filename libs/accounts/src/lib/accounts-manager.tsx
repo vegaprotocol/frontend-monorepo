@@ -12,6 +12,7 @@ import { AccountTable } from './accounts-table';
 import { Dialog } from '@vegaprotocol/ui-toolkit';
 import BreakdownTable from './breakdown-table';
 import { type useDataGridEvents } from '@vegaprotocol/datagrid';
+import { useAssetsMapProvider } from '@vegaprotocol/assets';
 
 const AccountBreakdown = ({
   assetId,
@@ -23,17 +24,12 @@ const AccountBreakdown = ({
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
 }) => {
   const t = useT();
+  const { data: assets } = useAssetsMapProvider();
+  const asset = assets?.[assetId];
   const gridRef = useRef<AgGridReact>(null);
-  const { data } = useDataProvider({
+  const { data, loading } = useDataProvider({
     dataProvider: aggregatedAccountDataProvider,
     variables: { partyId, assetId },
-    update: ({ data }) => {
-      if (gridRef.current?.api && data?.breakdown) {
-        gridRef.current?.api.setGridOption('rowData', data?.breakdown);
-        return true;
-      }
-      return false;
-    },
   });
 
   return (
@@ -42,19 +38,22 @@ const AccountBreakdown = ({
       data-testid="usage-breakdown"
     >
       <h1 className="mb-4 text-xl">
-        {data?.asset?.symbol} {t('usage breakdown')}
+        {asset?.symbol} {t('usage breakdown')}
       </h1>
-      {data && (
+      {
         <p className="mb-2 text-sm">
           {t('You have {{value}} {{symbol}} in total.', {
-            value: addDecimalsFormatNumber(data.total, data.asset.decimals),
-            symbol: data.asset.symbol,
+            value:
+              data && asset
+                ? addDecimalsFormatNumber(data.total, asset.decimals)
+                : '0',
+            symbol: asset?.symbol,
           })}
         </p>
-      )}
+      }
       <BreakdownTable
         ref={gridRef}
-        data={data?.breakdown || null}
+        data={data?.breakdown || (loading ? null : [])}
         domLayout="autoHeight"
         onMarketClick={onMarketClick}
       />

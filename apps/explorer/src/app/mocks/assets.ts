@@ -15,27 +15,11 @@ const A1: AssetFieldsFragment = {
     __typename: 'BuiltinAsset',
     maxFaucetAmountMint: '',
   },
-  infrastructureFeeAccount: {
+  globalInsuranceAccount: {
     __typename: 'AccountBalance',
     balance: '',
   },
-  globalRewardPoolAccount: {
-    __typename: 'AccountBalance',
-    balance: '',
-  },
-  lpFeeRewardAccount: {
-    __typename: 'AccountBalance',
-    balance: '',
-  },
-  makerFeeRewardAccount: {
-    __typename: 'AccountBalance',
-    balance: '',
-  },
-  marketProposerRewardAccount: {
-    __typename: 'AccountBalance',
-    balance: '',
-  },
-  takerFeeRewardAccount: {
+  networkTreasuryAccount: {
     __typename: 'AccountBalance',
     balance: '',
   },
@@ -53,27 +37,11 @@ const A2: AssetFieldsFragment = {
     __typename: 'BuiltinAsset',
     maxFaucetAmountMint: '',
   },
-  infrastructureFeeAccount: {
+  globalInsuranceAccount: {
     __typename: 'AccountBalance',
     balance: '',
   },
-  globalRewardPoolAccount: {
-    __typename: 'AccountBalance',
-    balance: '',
-  },
-  lpFeeRewardAccount: {
-    __typename: 'AccountBalance',
-    balance: '',
-  },
-  makerFeeRewardAccount: {
-    __typename: 'AccountBalance',
-    balance: '',
-  },
-  marketProposerRewardAccount: {
-    __typename: 'AccountBalance',
-    balance: '',
-  },
-  takerFeeRewardAccount: {
+  networkTreasuryAccount: {
     __typename: 'AccountBalance',
     balance: '',
   },
