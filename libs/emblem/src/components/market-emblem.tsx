@@ -42,7 +42,8 @@ export function EmblemByMarket(props: EmblemByMarketProps) {
   // Widths are calculated here as they are required for using absolute positioning to
   // render the logos as overlapping. Moving to blocks with negative margins should work
   // and could remove this calculation, but was not working reliably cross platform.
-  const wrapperClassString = classNames('relative flex items-center', {
+  // const wrapperClassString = classNames('relative flex items-center', {
+  const wrapperClassString = classNames('relative inline-block h-6', {
     'w-8': logoCount === 2,
     'w-5': logoCount === 1,
   });
