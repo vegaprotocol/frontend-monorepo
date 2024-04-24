@@ -1,8 +1,3 @@
-// import { SquidStakingWidget } from '@0xsquid/staking-widget';
-// import type {
-//   AppConfig,
-//   DestinationTokenConfig,
-// } from '@0xsquid/staking-widget/widget/core/types/config';
 import { Squid } from '@0xsquid/sdk';
 import {
   type ChainData,
@@ -10,6 +5,7 @@ import {
   SquidCallType,
   TransactionResponse,
   ChainType,
+  RouteRequest,
 } from '@0xsquid/sdk/dist/types';
 import compact from 'lodash/compact';
 import {
@@ -18,7 +14,7 @@ import {
   BRIDGE_ABI,
 } from '@vegaprotocol/smart-contracts';
 import { ethers } from 'ethers';
-import { FormEvent, useEffect, useMemo, useRef, useState } from 'react';
+import { FormEvent, useEffect, useRef, useState } from 'react';
 import {
   type AssetFieldsFragment,
   useAssetsDataProvider,
@@ -27,24 +23,32 @@ import { useEthereumConfig, useWeb3ConnectStore } from '@vegaprotocol/web3';
 import { AssetStatus } from '@vegaprotocol/types';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useEnvironment } from '@vegaprotocol/environment';
-import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
-import { theme } from '@vegaprotocol/tailwindcss-config';
 import { useWeb3React } from '@web3-react/core';
-import { TradingButton } from '@vegaprotocol/ui-toolkit';
+import {
+  FormGroup,
+  TradingButton,
+  TradingInput,
+  TradingSelect,
+  truncateMiddle,
+} from '@vegaprotocol/ui-toolkit';
 
-const BRIDGES: { [chainId: string]: string } = {
+const TO_CHAINS = ['1', '42161'] as const;
+
+type ToChains = typeof TO_CHAINS[number];
+
+const BRIDGES: { [C in ToChains]: string } = {
   '1': '0x23872549cE10B40e31D6577e0A920088B0E0666a',
   '42161': '0xd459fac6647059100ebe45543e1da73b3b70ffba',
 };
 
-const BRIDGE_ABIS: { [chainId: string]: any } = {
+const BRIDGE_ABIS: { [C in ToChains]: any } = {
   '1': BRIDGE_ABI,
   '42161': BRIDGE_ARBITRUM_ABI,
 };
 
 export const SquidContainer = () => {
   const { SQUID_INTEGRATOR_ID, SQUID_API_URL } = useEnvironment();
-  const { pubKey, chainId } = useVegaWallet();
+  const { chainId } = useVegaWallet();
   const { data } = useAssetsDataProvider();
   const { config } = useEthereumConfig();
   const assets = compact(data).filter(
@@ -55,8 +59,6 @@ export const SquidContainer = () => {
 
   if (!config) return <p>No config</p>;
 
-  if (!pubKey) return <p>No pubkey</p>;
-
   if (!assets.length) return <p>No assets</p>;
 
   return (
@@ -64,7 +66,6 @@ export const SquidContainer = () => {
       apiUrl={SQUID_API_URL}
       integratorId={SQUID_INTEGRATOR_ID}
       chainId={chainId}
-      pubKey={pubKey}
       assets={assets}
       // bridgeAddress={config.collateral_bridge_contract.address}
     />
@@ -75,39 +76,39 @@ const SquidDeposit = ({
   apiUrl,
   integratorId,
   chainId,
-  pubKey,
   assets,
-}: // bridgeAddress,
-{
+}: {
   apiUrl: string;
   integratorId: string;
   chainId: string;
-  pubKey: string;
   assets: AssetFieldsFragment[];
-  // bridgeAddress: string;
 }) => {
+  const { pubKeys } = useVegaWallet();
   const { account, provider } = useWeb3React();
   const openDialog = useWeb3ConnectStore((store) => store.open);
 
   const squid = useRef(
     new Squid({
       baseUrl: 'https://v2.api.squidrouter.com',
-      integratorId: 'vega-swap-widget',
+      integratorId,
     })
   );
   const formRef = useRef<HTMLFormElement>(null);
-  const [ready, setready] = useState(false);
+  const [ready, setReady] = useState(false);
   const [chains, setChains] = useState<ChainData[]>([]);
   const [tokens, setTokens] = useState<Token[]>([]);
 
   const [fromChain, setFromChain] = useState<string>();
+  const [toChain, setToChain] = useState<string>();
 
   useEffect(() => {
     const run = async () => {
       await squid.current.init();
-      setready(true);
+      setReady(true);
       setChains(squid.current.chains);
       setTokens(squid.current.tokens);
+      setFromChain('1');
+      setToChain('1');
     };
 
     run();
@@ -123,46 +124,52 @@ const SquidDeposit = ({
     if (!provider) return;
     if (!account) return;
 
-    if (!pubKey) return;
-
     if (!formRef.current) return;
     if (!squid.current) return;
 
-    if (!account) {
-      alert('Connect wallet');
-      return;
-    }
+    if (!account) return;
 
     const formData = new FormData(formRef.current);
 
-    const fromChain = formData.get('chain')?.toString();
-    const fromToken = formData.get('token')?.toString();
+    const toKey = formData.get('toKey')?.toString();
+    const fromChain = formData.get('fromChain')?.toString();
+    const fromTokenAddress = formData.get('fromToken')?.toString();
+    const toChain = formData.get('toChain')?.toString();
+    const toTokenAddress = formData.get('toToken')?.toString();
     const fromAmount = formData.get('amount')?.toString();
 
+    if (!toKey) return;
     if (!fromChain) return;
-    if (!fromToken) return;
+    if (!fromTokenAddress) return;
+    if (!toChain) return;
+    if (!toTokenAddress) return;
     if (!fromAmount) return;
 
-    const bridgeAddress = BRIDGES[fromChain];
+    const bridgeAddress = BRIDGES[toChain as ToChains];
 
     if (!bridgeAddress) {
-      throw new Error(`No bridge for chain: ${fromChain}`);
+      throw new Error(`No bridge for chain: ${toChain}`);
     }
 
-    const token = tokens.find((t) => t.address === fromToken);
+    const fromToken = tokens.find((t) => t.address === fromTokenAddress);
+    const toToken = tokens.find((t) => t.address === toTokenAddress);
 
-    if (!token) {
-      throw new Error(`No token ${fromToken} for chain ${fromChain}`);
+    if (!fromToken) {
+      throw new Error(`No token ${fromTokenAddress} for chain ${fromChain}`);
     }
 
-    const bridgeAbi = BRIDGE_ABIS[fromChain];
+    if (!toToken) {
+      throw new Error(`No to token ${toTokenAddress} for chain ${toChain}`);
+    }
+
+    const bridgeAbi = BRIDGE_ABIS[toChain as ToChains];
 
     if (!bridgeAbi) {
       throw new Error(`No bridge abi for ${fromChain}`);
     }
 
     const tokenContract = new ethers.Contract(
-      token.address,
+      toToken.address,
       ERC20_ABI,
       provider.getSigner()
     );
@@ -178,43 +185,42 @@ const SquidDeposit = ({
       [bridgeAddress, 0]
     );
 
-    const method = fromChain === '42161' ? 'deposit' : 'deposit_asset';
+    const method = toChain === '42161' ? 'deposit' : 'deposit_asset';
 
     const args =
-      fromChain === '42161'
-        ? [token.address, 0, '0x' + pubKey]
-        : [token.address, 0, '0x' + pubKey, account];
+      toChain === '42161'
+        ? [toToken.address, 0, '0x' + toKey, account] // Arbitrum bridge requries a 4th argument for the recover account address
+        : [toToken.address, 0, '0x' + toKey];
 
     const depositEncodedData = bridgeContract.interface.encodeFunctionData(
       method,
       args
     );
 
-    const { route, ...rest } = await squid.current.getRoute({
+    const routeConfig: RouteRequest = {
       fromChain,
-      fromToken,
+      fromToken: fromToken.address,
       fromAmount,
-      toChain: '1',
-      toToken: token.address,
+      toChain,
+      toToken: toToken.address,
       fromAddress: account,
       toAddress: account,
       slippageConfig: {
         autoMode: 1, // 1 is "normal" slippage.
       },
+      // @ts-expect-error fundAmount and fundToken are not required for postHook
       postHook: {
         chainType: ChainType.EVM,
-        fundAmount: '0', // unused in postHook
-        fundToken: '0x', // unused in postHook
         description: 'Deposit to Vega bridge',
         calls: [
           {
             chainType: ChainType.EVM,
             callType: SquidCallType.FULL_TOKEN_BALANCE,
-            target: token.address,
+            target: toToken.address,
             value: '0',
             callData: approveEncodeData,
             payload: {
-              tokenAddress: token.address,
+              tokenAddress: toToken.address,
               inputPos: 1,
             },
             estimatedGas: '5000',
@@ -226,14 +232,16 @@ const SquidDeposit = ({
             value: '0',
             callData: depositEncodedData,
             payload: {
-              tokenAddress: token.address,
+              tokenAddress: toToken.address,
               inputPos: 1,
             },
             estimatedGas: '50000',
           },
         ],
       },
-    });
+    };
+
+    const { route, ...rest } = await squid.current.getRoute(routeConfig);
 
     console.log('router', 'rest');
     console.log(route, rest);
@@ -252,62 +260,107 @@ const SquidDeposit = ({
     console.log(txReceipt);
   };
 
+  const availableTokens: { [C in ToChains]: string[] } = {
+    '1': compact(
+      assets
+        .filter((a) => a.source.__typename === 'ERC20')
+        .map((a) => {
+          if (a.source.__typename !== 'ERC20') return null;
+          return a.source.contractAddress;
+        })
+    ),
+    // TODO: get these from API when available
+    '42161': [
+      '0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9', // tether
+      '0xf97f4df75117a78c1A5a0DBb814Af92458539FB4', // chainlink
+    ],
+  };
+
   return (
-    <>
-      {account && pubKey ? (
-        <>
-          <p>{account}</p>
-          <p>{pubKey}</p>
-        </>
-      ) : (
-        <div>
-          <button onClick={openDialog}>Connect</button>
-        </div>
-      )}
-      <form
-        onSubmit={handleSubmit}
-        ref={formRef}
-        className="flex flex-col gap-4"
-      >
-        <div>
-          <label>From chain</label>
-          <select
-            name="chain"
-            className="p-1 border w-full"
-            value={fromChain}
-            onChange={(e) => setFromChain(e.target.value)}
-          >
-            {chains?.map((c) => (
+    <form onSubmit={handleSubmit} ref={formRef}>
+      <FormGroup label="To key" labelFor="toKey">
+        <TradingSelect
+          name="toKey"
+          value={fromChain}
+          onChange={(e) => setFromChain(e.target.value)}
+        >
+          {pubKeys?.map((p) => (
+            <option key={p.publicKey} value={p.publicKey}>
+              {p.name} ({truncateMiddle(p.publicKey)})
+            </option>
+          ))}
+        </TradingSelect>
+      </FormGroup>
+      <FormGroup label="From chain" labelFor="fromChain">
+        <TradingSelect
+          name="fromChain"
+          value={fromChain}
+          onChange={(e) => setFromChain(e.target.value)}
+        >
+          {chains?.map((c) => (
+            <option key={c.chainId} value={c.chainId}>
+              {c.networkName} ({c.chainId})
+            </option>
+          ))}
+        </TradingSelect>
+      </FormGroup>
+      <FormGroup label="From token" labelFor="fromToken">
+        <TradingSelect name="fromToken">
+          {tokens
+            ?.filter((t) => t.chainId.toString() === fromChain?.toString())
+            .map((t) => (
+              <option key={t.address} value={t.address}>
+                {t.name} ({t.address})
+              </option>
+            ))}
+        </TradingSelect>
+      </FormGroup>
+      <FormGroup label="To chain" labelFor="toChain">
+        <TradingSelect
+          name="toChain"
+          value={toChain}
+          onChange={(e) => setToChain(e.target.value)}
+        >
+          {chains
+            ?.filter((c) => TO_CHAINS.includes(c.chainId as ToChains))
+            .map((c) => (
               <option key={c.chainId} value={c.chainId}>
                 {c.networkName} ({c.chainId})
               </option>
             ))}
-          </select>
-        </div>
-        <div>
-          <label>From token</label>
-          <select name="token" className="p-1 border w-full">
-            {tokens
-              ?.filter((t) => t.chainId.toString() === fromChain?.toString())
-              .map((t) => (
-                <option key={t.address} value={t.address}>
-                  {t.name} ({t.address})
-                </option>
-              ))}
-          </select>
-        </div>
-        <div>
-          <label>Amount</label>
-          <input
-            name="amount"
-            type="text"
-            className="p-1 border w-full"
-            defaultValue="1000000000000000000"
-          />
-        </div>
-        <TradingButton type="submit">Submit</TradingButton>
-      </form>
-    </>
+        </TradingSelect>
+      </FormGroup>
+      <FormGroup label={'To token'} labelFor="toToken">
+        <TradingSelect name="toToken">
+          {tokens
+            ?.filter((t) => {
+              console.log(t, toChain, availableTokens);
+              if (!toChain) return false;
+
+              const tokensForChain = availableTokens[toChain as ToChains];
+
+              if (tokensForChain.includes(t.address)) {
+                return true;
+              }
+
+              return false;
+            })
+            .map((t) => (
+              <option key={t.address} value={t.address}>
+                {t.name} ({t.address})
+              </option>
+            ))}
+        </TradingSelect>
+      </FormGroup>
+      <FormGroup label="Amount" labelFor="amount">
+        <TradingInput
+          name="amount"
+          type="text"
+          defaultValue="1000000000000000000"
+        />
+      </FormGroup>
+      <TradingButton type="submit">Submit</TradingButton>
+    </form>
   );
 };
 
