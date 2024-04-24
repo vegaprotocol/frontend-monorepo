@@ -118,6 +118,7 @@ export const ValidatorsPage = () => {
   const tmValidators = useMemo(() => {
     return tmData?.result.validators.map((v) => {
       const data = {
+        address: v.address,
         key: v.pub_key.value,
         votingPower: new BigNumber(v.voting_power),
         proposerPriority: new BigNumber(v.proposer_priority),
@@ -231,7 +232,7 @@ export const ValidatorsPage = () => {
                         <KeyValueTableRow>
                           <div>{t('Key')}</div>
                           <div className="break-all text-xs">
-                            <Hash id={v.pubkey} />
+                            <Hash text={v.pubkey} />
                           </div>
                         </KeyValueTableRow>
                         <KeyValueTableRow>
@@ -251,6 +252,14 @@ export const ValidatorsPage = () => {
                             {v.tmPubkey}
                           </div>
                         </KeyValueTableRow>
+                        {tm?.address && (
+                          <KeyValueTableRow>
+                            <div>{t('Tendermint address')}</div>
+                            <div className="break-all text-xs">
+                              <Hash text={tm?.address} />
+                            </div>
+                          </KeyValueTableRow>
+                        )}
 
                         <KeyValueTableRow>
                           <div>{t('Voting power')}</div>
