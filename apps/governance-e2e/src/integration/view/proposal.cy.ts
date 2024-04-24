@@ -32,13 +32,13 @@ context(
     it('should have governance tab highlighted', function () {
       verifyTabHighlighted(navigation.proposals);
     });
-
-    it('should have GOVERNANCE header visible', function () {
+    // need capsule update - 76.preview.5
+    it.skip('should have GOVERNANCE header visible', function () {
       verifyPageHeader('Proposals');
     });
-
+    // need capsule update - 76.preview.5
     // 3002-PROP-023 3004-PMAC-002 3005-PASN-002 3006-PASC-002 3007-PNEC-002 3008-PFRO-003
-    it('new proposal page should have button for link to more information on proposals', function () {
+    it.skip('new proposal page should have button for link to more information on proposals', function () {
       cy.getByTestId('new-proposal-link').click();
       cy.url().should('include', '/proposals/propose/raw');
       cy.contains('To see Explorer data on proposals visit').within(() => {
@@ -72,8 +72,8 @@ context(
       cy.getByTestId('connect-to-vega-wallet-btn').should('exist');
       navigateTo(navigation.proposals);
     });
-
-    it('should be able to see a working link for - find out more about Vega governance', function () {
+    // need capsule update - 76.preview.5
+    it.skip('should be able to see a working link for - find out more about Vega governance', function () {
       // 3001-VOTE-001  // 3002-PROP-001
       cy.getByTestId(proposalDocumentationLink)
         .should('be.visible')
