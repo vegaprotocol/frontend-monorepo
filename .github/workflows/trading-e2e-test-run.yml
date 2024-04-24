@@ -10,7 +10,7 @@ on:
 jobs:
   create-docker-image:
     name: Create docker image for trading-e2e-test
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-20.04
     timeout-minutes: 45
     steps:
       #----------------------------------------------
