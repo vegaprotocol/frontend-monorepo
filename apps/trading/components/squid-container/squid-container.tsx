@@ -61,7 +61,8 @@ const TO_CHAINS = ['1', '42161'] as const;
 
 type ToChains = typeof TO_CHAINS[number];
 
-const BRIDGE_ABIS: { [C in ToChains]: object } = {
+// eslint-disable-next-line
+const BRIDGE_ABIS: { [C in ToChains]: any } = {
   '1': BRIDGE_ABI,
   '42161': BRIDGE_ARBITRUM_ABI,
 };
@@ -135,7 +136,7 @@ const SquidDeposit = ({
       fromChain: '42161',
       fromToken: '0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9',
       toChain: '42161',
-      toToken: '0xf97f4df75117a78c1A5a0DBb814Af92458539FB4',
+      toToken: '0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9',
       amount: '1',
     },
   });
@@ -165,6 +166,10 @@ const SquidDeposit = ({
   const toChain = useWatch({ name: 'toChain', control });
   const toToken = useWatch({ name: 'toToken', control });
   const amount = useWatch({ name: 'amount', control });
+
+  const isSameChain = fromChain === toChain;
+  const isSameToken = fromToken === toToken;
+  const noSwap = isSameChain && isSameToken;
 
   useEffect(() => {
     const run = async () => {
@@ -319,13 +324,68 @@ const SquidDeposit = ({
     amount,
   ]);
 
-  if (!ready) {
-    return <div>Loading</div>;
-  }
-
-  const onSubmit = async () => {
+  const onSubmit = async (fields: FormFields) => {
     if (!provider) {
       throw new Error('No provider');
+    }
+
+    // No swap needed if same chain and token
+    if (noSwap) {
+      const chain = fields.fromChain;
+      const token = fields.fromToken;
+
+      const bridgeAddress = BRIDGES[chain as ToChains];
+      const bridgeAbi = BRIDGE_ABIS[chain as ToChains];
+
+      if (!bridgeAddress) {
+        throw new Error(`No bridge for chain: ${fields.toChain}`);
+      }
+
+      if (!bridgeAbi) {
+        throw new Error(`No bridge abi for ${fields.fromChain}`);
+      }
+
+      const bridgeContract = new ethers.Contract(
+        bridgeAddress,
+        bridgeAbi,
+        provider.getSigner()
+      );
+
+      const method = chain === '42161' ? 'deposit' : 'deposit_asset';
+
+      const args =
+        chain === '42161'
+          ? [token, 0, '0x' + fields.toKey, account] // Arbitrum bridge requries a 4th argument for the recover account address
+          : [token, 0, '0x' + fields.toKey];
+
+      try {
+        setTxReceipt(undefined);
+        setTxStatus('confirming');
+
+        const tx = await bridgeContract[method](...args);
+        // eslint-disable-next-line
+        console.log(tx);
+        setTx(tx);
+        setTxStatus('pending');
+
+        const receipt = await tx.wait();
+        // eslint-disable-next-line
+        console.log(receipt);
+        setTxReceipt(receipt);
+        setTxStatus('complete');
+      } catch (err) {
+        if (
+          err instanceof Error &&
+          'code' in err &&
+          err.code === 'ACTION_REJECTED'
+        ) {
+          setTxStatus('idle');
+        } else {
+          console.error(err);
+        }
+      }
+
+      return;
     }
 
     if (!routeResponse) {
@@ -345,8 +405,8 @@ const SquidDeposit = ({
       console.log(tx);
       setTx(tx);
       setTxStatus('pending');
-      const receipt = await tx.wait();
 
+      const receipt = await tx.wait();
       // eslint-disable-next-line
       console.log(receipt);
       setTxReceipt(receipt);
@@ -363,6 +423,10 @@ const SquidDeposit = ({
       }
     }
   };
+
+  if (!ready) {
+    return <div>Loading</div>;
+  }
 
   const availableTokens: { [C in ToChains]: string[] } = {
     '1': compact(
@@ -493,7 +557,7 @@ const SquidDeposit = ({
           {errors.amount?.message && (
             <InputError>{errors.amount.message}</InputError>
           )}
-          {routeResponse && routeStatus !== 'fetching' && (
+          {!noSwap && routeResponse && routeStatus !== 'fetching' && (
             <ConvertedAmount
               tokens={tokens}
               toToken={toToken}
@@ -502,12 +566,15 @@ const SquidDeposit = ({
             />
           )}
         </FormGroup>
-        {routeResponse && routeStatus !== 'fetching' && (
+        {!noSwap && routeResponse && routeStatus !== 'fetching' && (
           <RouteDetails routeResponse={routeResponse} />
         )}
         <TradingButton
           type="submit"
-          disabled={routeStatus === 'fetching' || routeResponse === undefined}
+          disabled={
+            !noSwap &&
+            (routeStatus === 'fetching' || routeResponse === undefined)
+          }
           fill={true}
         >
           {routeStatus === 'fetching'
