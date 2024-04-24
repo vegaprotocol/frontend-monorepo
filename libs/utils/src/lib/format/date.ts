@@ -5,6 +5,17 @@ import { getUserLocale } from '../get-user-locale';
 export const isValidDate = (date: Date) =>
   date instanceof Date && !isNaN(date.getTime());
 
+export const getCurrentTimeInLocal = () => {
+  const offset = new Date().getTimezoneOffset() * 60000; // Get local time offset in milliseconds
+  return new Date(Date.now() - offset); // Adjust UTC to local time
+};
+
+export const getCurrentTimeInUTC = () => {
+  const currentTime = new Date(Date.now());
+  const utcOffset = currentTime.getTimezoneOffset() * 60000; // offset in milliseconds
+  return new Date(currentTime.getTime() + utcOffset); // Adjust to UTC
+};
+
 export const getTimeFormat = once(
   () =>
     new Intl.DateTimeFormat(getUserLocale(), {
