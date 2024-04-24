@@ -5,6 +5,7 @@ import { useStakeAvailable } from '../../lib/hooks/use-stake-available';
 import { useMyTeam } from '../../lib/hooks/use-my-team';
 import {
   ActiveRewardCard,
+  LinkToGame,
   areAllMarketsSettled,
 } from '../rewards-container/reward-card';
 import {
@@ -139,18 +140,18 @@ export const GamesContainer = ({
           // are settled
           .filter((n) => !areAllMarketsSettled(n))
           .map((game, i) => {
-            // TODO: Remove `kind` prop from ActiveRewardCard
             const { transfer } = game;
             if (!transfer.kind.dispatchStrategy?.dispatchMetric) {
               return null;
             }
             return (
-              <ActiveRewardCard
-                key={i}
-                transferNode={game}
-                currentEpoch={currentEpoch}
-                requirements={requirements}
-              />
+              <LinkToGame key={i} reward={game}>
+                <ActiveRewardCard
+                  transferNode={game}
+                  currentEpoch={currentEpoch}
+                  requirements={requirements}
+                />
+              </LinkToGame>
             );
           })}
       </div>

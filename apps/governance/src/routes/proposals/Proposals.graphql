@@ -455,7 +455,10 @@ fragment BatchProposalFields on BatchProposal {
     }
   }
   subProposals {
+    id
     datetime
+    rejectionReason
+    errorDetails
     terms {
       ...ProposalTermsFields
     }

@@ -25,6 +25,8 @@ def test_transfer_submit(continuous_market, vega: VegaServiceNull, page: Page):
     page.goto("/#/portfolio")
 
     expect(page.get_by_test_id("transfer-form")).to_be_visible
+    
+    page.get_by_test_id("Transfer").click()
     page.get_by_test_id("select-asset").click()
     expect(page.get_by_test_id("rich-select-option")).to_have_count(1)
 
@@ -34,7 +36,6 @@ def test_transfer_submit(continuous_market, vega: VegaServiceNull, page: Page):
 
     expected_asset_text = re.compile(r"tDAI tDAI999991.49731 tDAI.{6}….{4}")
     actual_asset_text = page.get_by_test_id("select-asset").text_content().strip()
-
     assert expected_asset_text.search(
         actual_asset_text
     ), f"Expected pattern not found in {actual_asset_text}"
@@ -75,7 +76,8 @@ def test_transfer_vesting_below_minimum(
     vega.wait_for_total_catchup()
 
     asset_id = vega.find_asset_id(symbol="tDAI")
-    next_epoch(vega=vega)
+    vega.wait_fn(1)
+    vega.wait_for_total_catchup()
 
     vega.recurring_transfer(
         from_key_name=PARTY_A.name,
@@ -110,6 +112,7 @@ def test_transfer_vesting_below_minimum(
     next_epoch(vega=vega)
     next_epoch(vega=vega)
     page.goto("/#/portfolio")
+    page.get_by_test_id("Transfer").click()
     expect(page.get_by_test_id("transfer-form")).to_be_visible
 
     change_keys(page, vega, "party_b")

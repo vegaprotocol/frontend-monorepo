@@ -19,30 +19,6 @@ export const generateAsset = (override?: PartialDeep<Asset>) => {
       withdrawThreshold: '50',
       __typename: 'ERC20',
     },
-    infrastructureFeeAccount: {
-      balance: '1',
-      __typename: 'AccountBalance',
-    },
-    globalRewardPoolAccount: {
-      balance: '2',
-      __typename: 'AccountBalance',
-    },
-    takerFeeRewardAccount: {
-      balance: '3',
-      __typename: 'AccountBalance',
-    },
-    makerFeeRewardAccount: {
-      balance: '4',
-      __typename: 'AccountBalance',
-    },
-    lpFeeRewardAccount: {
-      balance: '5',
-      __typename: 'AccountBalance',
-    },
-    marketProposerRewardAccount: {
-      balance: '6',
-      __typename: 'AccountBalance',
-    },
     __typename: 'Asset',
   };
   return merge(defaultAsset, override);

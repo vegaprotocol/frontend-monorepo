@@ -1,0 +1,25 @@
+query AssetMarkets {
+  marketsConnection(includeSettled: false) {
+    edges {
+      node {
+        id
+        tradableInstrument {
+          instrument {
+            name
+          }
+        }
+        accountsConnection {
+          edges {
+            node {
+              type
+              asset {
+                id
+              }
+              balance
+            }
+          }
+        }
+      }
+    }
+  }
+}
