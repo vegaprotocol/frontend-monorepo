@@ -126,6 +126,14 @@ jobs:
           virtualenvs-create: true
           virtualenvs-in-project: true
           virtualenvs-path: .venv
+      #------------------------------------------------
+      #  -----  fix for playwright install error  -----
+      #------------------------------------------------
+      - name: Remove Microsoft APT and  Update Packages
+        run: |
+          sudo rm /etc/apt/sources.list.d/microsoft-prod.list
+          sudo apt-get update || true
+
       #----------------------------------------------
       # Cache Playwright browsers
       #----------------------------------------------
@@ -153,7 +161,6 @@ jobs:
           export VEGA_VERSION=$(grep VEGA_VERSION .env | cut -d '=' -f2)
           poetry run python -m vega_sim.tools.load_binaries --force --version $VEGA_VERSION
         working-directory: apps/trading/e2e
-
       #----------------------------------------------
       # Install Playwright only if not cached
       #----------------------------------------------
