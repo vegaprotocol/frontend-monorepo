@@ -17,7 +17,7 @@ import { useDocumentTitle } from '../../../hooks/use-document-title';
 import EmptyList from '../../../components/empty-list/empty-list';
 import { useExplorerEpochForBlockQuery } from '../../../components/links/block-link/__generated__/EpochByBlock';
 import EpochOverview from '../../../components/epoch-overview/epoch';
-import Hash from '../../../components/links/hash';
+import TendermintNodeLink from '../../../components/links/node-link/tendermint-node-link';
 
 type Params = { block: string };
 
@@ -30,6 +30,7 @@ const Block = () => {
 
   const { data } = useExplorerEpochForBlockQuery({
     errorPolicy: 'ignore',
+    fetchPolicy: 'cache-first',
     variables: { block: block?.toString() || '' },
   });
 
@@ -86,9 +87,8 @@ const Block = () => {
                 <TableRow modifier="bordered">
                   <TableHeader scope="row">Mined by</TableHeader>
                   <TableCell modifier="bordered">
-                    <Hash
-                      text={blockData.result.block.header.proposer_address}
-                      data-testid="block-validator"
+                    <TendermintNodeLink
+                      id={blockData.result.block.header.proposer_address}
                     />
                   </TableCell>
                 </TableRow>
