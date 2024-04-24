@@ -28,7 +28,7 @@ import {
 } from '@vegaprotocol/environment';
 import classNames from 'classnames';
 import { NodeStatus, NodeStatusMapping } from '@vegaprotocol/types';
-import { PartyLink } from '../../components/links';
+import Hash from '../../components/links/hash';
 
 type RateProps = {
   value: BigNumber | number | undefined;
@@ -231,7 +231,7 @@ export const ValidatorsPage = () => {
                         <KeyValueTableRow>
                           <div>{t('Key')}</div>
                           <div className="break-all text-xs">
-                            <PartyLink id={v.pubkey} />
+                            <Hash id={v.pubkey} />
                           </div>
                         </KeyValueTableRow>
                         <KeyValueTableRow>
