@@ -86,7 +86,7 @@ const Block = () => {
 
                 <TableRow modifier="bordered">
                   <TableHeader scope="row">Mined by</TableHeader>
-                  <TableCell modifier="bordered">
+                  <TableCell modifier="bordered" data-testid="block-validator">
                     <TendermintNodeLink
                       id={blockData.result.block.header.proposer_address}
                     />
