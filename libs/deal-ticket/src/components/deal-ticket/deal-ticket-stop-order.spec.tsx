@@ -11,7 +11,7 @@ import {
   useDealTicketFormValues,
 } from '@vegaprotocol/react-helpers';
 import { useFeatureFlags } from '@vegaprotocol/environment';
-import { formatForInput } from '@vegaprotocol/utils';
+import { formatForInput, removeDecimal } from '@vegaprotocol/utils';
 import {
   MockedWalletProvider,
   mockConfig,
@@ -38,6 +38,7 @@ function generateJsx() {
 
 const submitButton = 'place-order';
 const sizeInput = 'order-size';
+const sizeOverrideValueInput = 'sizeOverrideValue';
 const priceInput = 'order-price';
 const triggerPriceInput = 'triggerPrice';
 const triggerTrailingPercentOffsetInput = 'triggerTrailingPercentOffset';
@@ -55,6 +56,9 @@ const triggerDirectionFallsBelow = 'triggerDirection-fallsBelow';
 const expiryStrategySubmit = 'expiryStrategy-submit';
 const expiryStrategyCancel = 'expiryStrategy-cancel';
 
+const sizeOverrideSettingNone = 'sizeOverrideSetting-none';
+const sizeOverrideSettingPosition = 'sizeOverrideSetting-position';
+
 const triggerTypePrice = 'triggerType-price';
 const triggerTypeTrailingPercentOffset = 'triggerType-trailingPercentOffset';
 
@@ -64,6 +68,8 @@ const datePicker = 'date-picker-field';
 const timeInForce = 'order-tif';
 
 const sizeErrorMessage = 'stop-order-error-message-size';
+const sizeOverrideValueErrorMessage =
+  'stop-order-error-message-sizeOverrideValue';
 const priceErrorMessage = 'stop-order-error-message-price';
 const triggerPriceErrorMessage = 'stop-order-error-message-trigger-price';
 const triggerPriceWarningMessage = 'stop-order-warning-message-trigger-price';
@@ -130,6 +136,9 @@ describe('StopOrder', () => {
     expect(screen.getByTestId(orderTypeLimit).dataset.state).toEqual('checked');
     await userEvent.click(screen.getByTestId(orderTypeLimit));
     expect(screen.getByTestId(orderSideBuy).dataset.state).toEqual('checked');
+    expect(screen.getByTestId(sizeOverrideSettingNone).dataset.state).toEqual(
+      'checked'
+    );
     expect(screen.getByTestId(sizeInput)).toHaveDisplayValue('0');
     expect(screen.getByTestId(timeInForce)).toHaveValue(
       Schema.OrderTimeInForce.TIME_IN_FORCE_FOK
@@ -166,6 +175,9 @@ describe('StopOrder', () => {
     );
     await userEvent.click(screen.getByTestId(orderTypeMarket));
     expect(screen.getByTestId(orderSideBuy).dataset.state).toEqual('checked');
+    expect(screen.getByTestId(sizeOverrideSettingNone).dataset.state).toEqual(
+      'checked'
+    );
     expect(screen.getByTestId(sizeInput)).toHaveDisplayValue('0');
     expect(screen.getByTestId(timeInForce)).toHaveValue(
       Schema.OrderTimeInForce.TIME_IN_FORCE_FOK
@@ -192,15 +204,26 @@ describe('StopOrder', () => {
   });
 
   it('calculate notional for market limit', async () => {
+    mockUseOpenVolume.mockReturnValue({
+      openVolume: removeDecimal('10', market.positionDecimalPlaces),
+    });
     render(generateJsx());
     await userEvent.type(screen.getByTestId(sizeInput), '10');
     await userEvent.type(screen.getByTestId(priceInput), '10');
     expect(screen.getByTestId('deal-ticket-fee-notional')).toHaveTextContent(
       'Notional100.00 BTC'
     );
+    await userEvent.click(screen.getByTestId(sizeOverrideSettingPosition));
+    await userEvent.type(screen.getByTestId(sizeOverrideValueInput), '50');
+    expect(screen.getByTestId('deal-ticket-fee-notional')).toHaveTextContent(
+      'Notional50.00 BTC'
+    );
   });
 
   it('calculates notional for limit order', async () => {
+    mockUseOpenVolume.mockReturnValue({
+      openVolume: removeDecimal('10', market.positionDecimalPlaces),
+    });
     render(generateJsx());
     await userEvent.click(screen.getByTestId(orderTypeTrigger));
     await userEvent.click(screen.getByTestId(orderTypeMarket));
@@ -214,6 +237,13 @@ describe('StopOrder', () => {
     // calculate base on size and price trigger
     expect(screen.getByTestId('deal-ticket-fee-notional')).toHaveTextContent(
       'Notional30.00 BTC'
+    );
+
+    await userEvent.click(screen.getByTestId(sizeOverrideSettingPosition));
+    await userEvent.type(screen.getByTestId(sizeOverrideValueInput), '50');
+    // calculate base on openVolume*sizeOverride and price trigger
+    expect(screen.getByTestId('deal-ticket-fee-notional')).toHaveTextContent(
+      'Notional15.00 BTC'
     );
   });
 
@@ -330,6 +360,36 @@ describe('StopOrder', () => {
       expect(queryByTestId(sizeErrorMessage)).toBeNull();
     }
   );
+
+  it.each([
+    { fieldName: 'sizeOverrideValue', ocoValue: false },
+    { fieldName: 'ocoSizeOverrideValue', ocoValue: true },
+  ])('validates $fieldName field 123', async ({ ocoValue }) => {
+    render(generateJsx());
+    if (ocoValue) {
+      await userEvent.click(screen.getByTestId(oco));
+    }
+    const getByTestId = (id: string) =>
+      screen.getByTestId(ocoPostfix(id, ocoValue));
+    const queryByTestId = (id: string) =>
+      screen.queryByTestId(ocoPostfix(id, ocoValue));
+    await userEvent.click(getByTestId(sizeOverrideSettingPosition));
+    await userEvent.click(screen.getByTestId(submitButton));
+
+    // default value should be invalid
+    expect(getByTestId(sizeOverrideValueErrorMessage)).toBeInTheDocument();
+    // to small value should be invalid
+    await userEvent.type(getByTestId(sizeOverrideValueInput), '0.1');
+    expect(getByTestId(sizeOverrideValueErrorMessage)).toBeInTheDocument();
+    // to big value should be invalid
+    await userEvent.type(getByTestId(sizeOverrideValueInput), '101');
+    expect(getByTestId(sizeOverrideValueErrorMessage)).toBeInTheDocument();
+
+    // clear and fill using valid value
+    await userEvent.clear(getByTestId(sizeOverrideValueInput));
+    await userEvent.type(getByTestId(sizeOverrideValueInput), '10');
+    expect(queryByTestId(sizeOverrideValueErrorMessage)).toBeNull();
+  });
 
   it.each([
     { fieldName: 'price', ocoValue: false },

@@ -446,37 +446,44 @@ const SizeOverrideValue = ({
           return true;
         },
       }}
-      render={({ field, fieldState }) => (
-        <>
-          <FormGroup label={t('Quantity')} labelFor="size-input" compact>
-            <Input
-              id="size-input"
-              data-testid="size-input"
-              type="number"
-              className="w-full"
-              min={sizeStep}
-              max={maxSize}
-              step={sizeStep}
-              appendElement={<Pill size="xs">%</Pill>}
-              hasError={!!fieldState.error}
-              {...field}
-              value={field.value || ''}
-            />
-            <Slider
-              min={0}
-              max={100}
-              step={1}
-              value={[Number(field.value)]}
-              onValueChange={([value]) => field.onChange(value)}
-            />
-          </FormGroup>
-          {fieldState.error && (
-            <InputError testId="size-error-message">
-              {fieldState.error.message}
-            </InputError>
-          )}
-        </>
-      )}
+      render={({ field, fieldState }) => {
+        const id = `sizeOverrideValue${oco ? '-oco' : ''}`;
+        return (
+          <>
+            <FormGroup label={t('Quantity')} labelFor={id} compact>
+              <Input
+                id={id}
+                data-testid={id}
+                type="number"
+                className="w-full"
+                min={sizeStep}
+                max={maxSize}
+                step={sizeStep}
+                appendElement={<Pill size="xs">%</Pill>}
+                hasError={!!fieldState.error}
+                {...field}
+                value={field.value || ''}
+              />
+              <Slider
+                min={0}
+                max={100}
+                step={1}
+                value={[Number(field.value)]}
+                onValueChange={([value]) => field.onChange(value)}
+              />
+            </FormGroup>
+            {fieldState.error && (
+              <InputError
+                testId={`stop-order-error-message-sizeOverrideValue${
+                  oco ? '-oco' : ''
+                }`}
+              >
+                {fieldState.error.message}
+              </InputError>
+            )}
+          </>
+        );
+      }}
     />
   );
 };
@@ -1159,6 +1166,7 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
   const side = watch('side');
   const size = watch('size');
   const sizeOverrideSetting = watch('sizeOverrideSetting');
+  const sizeOverrideValue = watch('sizeOverrideValue');
   const timeInForce = watch('timeInForce');
   const orderExpiresAt = watch('orderExpiresAt');
   const triggerDirection = watch('triggerDirection');
@@ -1211,7 +1219,9 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
   const normalizedSize =
     sizeOverrideSetting ===
     Schema.StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION
-      ? toBigNum(openVolume || '0', market.positionDecimalPlaces)
+      ? toBigNum(openVolume || '0', 0)
+          .multipliedBy((Number(sizeOverrideValue) || 0) / 100)
+          .toFixed(0)
       : removeDecimal(size || '0', market.positionDecimalPlaces);
 
   return (
