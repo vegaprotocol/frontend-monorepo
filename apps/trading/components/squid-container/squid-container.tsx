@@ -9,9 +9,14 @@ import {
   type Token,
   SquidCallType,
   TransactionResponse,
+  ChainType,
 } from '@0xsquid/sdk/dist/types';
 import compact from 'lodash/compact';
-import { ERC20_ABI, BRIDGE_ABI } from '@vegaprotocol/smart-contracts';
+import {
+  ERC20_ABI,
+  BRIDGE_ARBITRUM_ABI,
+  BRIDGE_ABI,
+} from '@vegaprotocol/smart-contracts';
 import { ethers } from 'ethers';
 import { FormEvent, useEffect, useMemo, useRef, useState } from 'react';
 import {
@@ -26,6 +31,16 @@ import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
 import { theme } from '@vegaprotocol/tailwindcss-config';
 import { useWeb3React } from '@web3-react/core';
 import { TradingButton } from '@vegaprotocol/ui-toolkit';
+
+const BRIDGES: { [chainId: string]: string } = {
+  '1': '0x23872549cE10B40e31D6577e0A920088B0E0666a',
+  '42161': '0xd459fac6647059100ebe45543e1da73b3b70ffba',
+};
+
+const BRIDGE_ABIS: { [chainId: string]: any } = {
+  '1': BRIDGE_ABI,
+  '42161': BRIDGE_ARBITRUM_ABI,
+};
 
 export const SquidContainer = () => {
   const { SQUID_INTEGRATOR_ID, SQUID_API_URL } = useEnvironment();
@@ -51,7 +66,7 @@ export const SquidContainer = () => {
       chainId={chainId}
       pubKey={pubKey}
       assets={assets}
-      bridgeAddress={config.collateral_bridge_contract.address}
+      // bridgeAddress={config.collateral_bridge_contract.address}
     />
   );
 };
@@ -62,14 +77,14 @@ const SquidDeposit = ({
   chainId,
   pubKey,
   assets,
-  bridgeAddress,
-}: {
+}: // bridgeAddress,
+{
   apiUrl: string;
   integratorId: string;
   chainId: string;
   pubKey: string;
   assets: AssetFieldsFragment[];
-  bridgeAddress: string;
+  // bridgeAddress: string;
 }) => {
   const { account, provider } = useWeb3React();
   const openDialog = useWeb3ConnectStore((store) => store.open);
@@ -90,9 +105,7 @@ const SquidDeposit = ({
   useEffect(() => {
     const run = async () => {
       await squid.current.init();
-      console.log('squid inited');
       setready(true);
-
       setChains(squid.current.chains);
       setTokens(squid.current.tokens);
     };
@@ -130,36 +143,51 @@ const SquidDeposit = ({
     if (!fromToken) return;
     if (!fromAmount) return;
 
-    console.log(
-      chains,
-      tokens?.filter((t) => t.chainId.toString() === fromChain?.toString()),
-      fromChain,
-      fromToken
-    );
+    const bridgeAddress = BRIDGES[fromChain];
 
-    const bridgeAddress = '0x23872549cE10B40e31D6577e0A920088B0E0666a';
-    const USDCMainnet = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
+    if (!bridgeAddress) {
+      throw new Error(`No bridge for chain: ${fromChain}`);
+    }
 
-    const usdcMainnetContract = new ethers.Contract(
-      USDCMainnet,
+    const token = tokens.find((t) => t.address === fromToken);
+
+    if (!token) {
+      throw new Error(`No token ${fromToken} for chain ${fromChain}`);
+    }
+
+    const bridgeAbi = BRIDGE_ABIS[fromChain];
+
+    if (!bridgeAbi) {
+      throw new Error(`No bridge abi for ${fromChain}`);
+    }
+
+    const tokenContract = new ethers.Contract(
+      token.address,
       ERC20_ABI,
       provider.getSigner()
     );
 
     const bridgeContract = new ethers.Contract(
       bridgeAddress,
-      BRIDGE_ABI,
+      bridgeAbi,
       provider.getSigner()
     );
 
-    const approveEncodeData = usdcMainnetContract.interface.encodeFunctionData(
+    const approveEncodeData = tokenContract.interface.encodeFunctionData(
       'approve',
       [bridgeAddress, 0]
     );
 
+    const method = fromChain === '42161' ? 'deposit' : 'deposit_asset';
+
+    const args =
+      fromChain === '42161'
+        ? [token.address, 0, '0x' + pubKey]
+        : [token.address, 0, '0x' + pubKey, account];
+
     const depositEncodedData = bridgeContract.interface.encodeFunctionData(
-      'deposit_asset',
-      [USDCMainnet, 0, '0x' + pubKey]
+      method,
+      args
     );
 
     const { route, ...rest } = await squid.current.getRoute({
@@ -167,34 +195,44 @@ const SquidDeposit = ({
       fromToken,
       fromAmount,
       toChain: '1',
-      toToken: USDCMainnet,
+      toToken: token.address,
       fromAddress: account,
       toAddress: account,
-      slippage: 1,
-      customContractCalls: [
-        {
-          callType: SquidCallType.FULL_TOKEN_BALANCE,
-          target: USDCMainnet,
-          value: '0', // native value to be sent with call
-          callData: approveEncodeData,
-          payload: {
-            tokenAddress: USDCMainnet, // balance of this token replaces 0 on line 13
-            inputPos: 1,
+      slippageConfig: {
+        autoMode: 1, // 1 is "normal" slippage.
+      },
+      postHook: {
+        chainType: ChainType.EVM,
+        fundAmount: '0', // unused in postHook
+        fundToken: '0x', // unused in postHook
+        description: 'Deposit to Vega bridge',
+        calls: [
+          {
+            chainType: ChainType.EVM,
+            callType: SquidCallType.FULL_TOKEN_BALANCE,
+            target: token.address,
+            value: '0',
+            callData: approveEncodeData,
+            payload: {
+              tokenAddress: token.address,
+              inputPos: 1,
+            },
+            estimatedGas: '5000',
           },
-          estimatedGas: '50000',
-        },
-        {
-          callType: SquidCallType.FULL_TOKEN_BALANCE,
-          target: bridgeAddress,
-          value: '0',
-          callData: depositEncodedData,
-          payload: {
-            tokenAddress: USDCMainnet,
-            inputPos: 1,
+          {
+            chainType: ChainType.EVM,
+            callType: SquidCallType.FULL_TOKEN_BALANCE,
+            target: bridgeAddress,
+            value: '0',
+            callData: depositEncodedData,
+            payload: {
+              tokenAddress: token.address,
+              inputPos: 1,
+            },
+            estimatedGas: '50000',
           },
-          estimatedGas: '50000',
-        },
-      ],
+        ],
+      },
     });
 
     console.log('router', 'rest');
@@ -251,7 +289,7 @@ const SquidDeposit = ({
           <select name="token" className="p-1 border w-full">
             {tokens
               ?.filter((t) => t.chainId.toString() === fromChain?.toString())
-              .map((t, i) => (
+              .map((t) => (
                 <option key={t.address} value={t.address}>
                   {t.name} ({t.address})
                 </option>
@@ -578,34 +616,3 @@ const SquidWidget = ({
 //   secondaryContent: theme.colors.vega.cdark['100'],
 //   neutral: theme.colors.vega.cdark['900'],
 // } as const;
-
-const ARBITRUM_BRIDGE_ABI = [
-  {
-    inputs: [
-      {
-        internalType: 'contract IERC20',
-        name: 'asset',
-        type: 'address',
-      },
-      {
-        internalType: 'uint256',
-        name: 'amount',
-        type: 'uint256',
-      },
-      {
-        internalType: 'bytes32',
-        name: 'vegaPubkey',
-        type: 'bytes32',
-      },
-      {
-        internalType: 'address',
-        name: 'recovery',
-        type: 'address',
-      },
-    ],
-    name: 'deposit',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-];
