@@ -44,7 +44,7 @@ export function EmblemByMarket(props: EmblemByMarketProps) {
   // and could remove this calculation, but was not working reliably cross platform.
   // const wrapperClassString = classNames('relative flex items-center', {
   const wrapperClassString = classNames('relative inline-block h-6', {
-    'w-8': logoCount === 2,
+    'w-9': logoCount === 2,
     'w-5': logoCount === 1,
   });
 
