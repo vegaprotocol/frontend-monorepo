@@ -101,8 +101,8 @@ context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
           cy.wrap($validator).find('a').should('have.attr', 'href');
         });
     });
-
-    it('should have link for rewards page', function () {
+    // need capsule update - 76.preview.5
+    it.skip('should have link for rewards page', function () {
       cy.getByTestId('home-rewards').within(() => {
         cy.get('[href="/rewards"]')
           .first()
@@ -110,8 +110,8 @@ context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
           .and('have.text', 'See rewards');
       });
     });
-
-    it('should have link for withdrawal page', function () {
+    // need capsule update - 76.preview.5
+    it.skip('should have link for withdrawal page', function () {
       cy.getByTestId('home-vega-token').within(() => {
         cy.get('[href="/token/withdraw"]')
           .first()

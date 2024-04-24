@@ -123,8 +123,8 @@ def test_market_spot_info_base_asset(page: Page, vega: VegaServiceNull):
         ["Quantum", "0.00001"],
         ["Status", "Enabled"],
         ["Max faucet amount", "10,000,000,000.00"],
-        ["Infrastructure fee account balance", "0.003"],
-        ["Global reward pool account balance", "0.00"],
+        ["Global insurance account balance", "0.00"],
+        ["Network Treasury account balance", "0.00"],
     ]
     validate_info_section(page, fields)
 
@@ -142,8 +142,8 @@ def test_market_spot_info_quote_data(page: Page, vega: VegaServiceNull):
         ["Quantum", "0.00001"],
         ["Status", "Enabled"],
         ["Max faucet amount", "10,000,000,000.00"],
-        ["Infrastructure fee account balance", "0.003"],
-        ["Global reward pool account balance", "0.00"],
+        ["Global insurance account balance", "0.00"],
+        ["Network Treasury account balance", "0.00"],
     ]
     validate_info_section(page, fields)
 
