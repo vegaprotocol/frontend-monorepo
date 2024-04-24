@@ -3,12 +3,12 @@ import { Squid } from '@0xsquid/sdk';
 import {
   type ChainData,
   type Token,
-  SquidCallType,
-  TransactionResponse,
+  type TransactionResponse,
+  type RouteRequest,
+  type RouteResponse,
+  type SquidError,
   ChainType,
-  RouteRequest,
-  RouteResponse,
-  SquidError,
+  SquidCallType,
 } from '@0xsquid/sdk/dist/types';
 import compact from 'lodash/compact';
 import {
@@ -22,7 +22,7 @@ import {
   type AssetFieldsFragment,
   useAssetsDataProvider,
 } from '@vegaprotocol/assets';
-import { useEthereumConfig, useWeb3ConnectStore } from '@vegaprotocol/web3';
+import { useEthereumConfig } from '@vegaprotocol/web3';
 import { AssetStatus } from '@vegaprotocol/types';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useEnvironment } from '@vegaprotocol/environment';
@@ -36,39 +36,38 @@ import {
   truncateMiddle,
 } from '@vegaprotocol/ui-toolkit';
 import { useForm, useWatch } from 'react-hook-form';
-import { removeDecimal, toBigNum, useRequired } from '@vegaprotocol/utils';
+import { removeDecimal, useRequired } from '@vegaprotocol/utils';
 import BigNumber from 'bignumber.js';
 
 interface SquidResponseError {
   code: string;
-  config: any;
+  config: object;
   message: string;
   response: {
-    config: any;
+    config: object;
     data: {
       errors: Array<SquidError>;
     };
   };
 }
 
+const BRIDGES: { [C in ToChains]: string } = {
+  '1': '0x23872549cE10B40e31D6577e0A920088B0E0666a',
+  // TODO: get from API when available
+  '42161': '0xd459fac6647059100ebe45543e1da73b3b70ffba',
+};
+
 const TO_CHAINS = ['1', '42161'] as const;
 
 type ToChains = typeof TO_CHAINS[number];
 
-// TODO: get from API when available
-const BRIDGES: { [C in ToChains]: string } = {
-  '1': '0x23872549cE10B40e31D6577e0A920088B0E0666a',
-  '42161': '0xd459fac6647059100ebe45543e1da73b3b70ffba',
-};
-
-const BRIDGE_ABIS: { [C in ToChains]: any } = {
+const BRIDGE_ABIS: { [C in ToChains]: object } = {
   '1': BRIDGE_ABI,
   '42161': BRIDGE_ARBITRUM_ABI,
 };
 
 export const SquidContainer = () => {
   const { SQUID_INTEGRATOR_ID, SQUID_API_URL } = useEnvironment();
-  const { chainId } = useVegaWallet();
   const { data } = useAssetsDataProvider();
   const { config } = useEthereumConfig();
   const assets = compact(data).filter(
@@ -85,12 +84,14 @@ export const SquidContainer = () => {
     <SquidDeposit
       apiUrl={SQUID_API_URL}
       integratorId={SQUID_INTEGRATOR_ID}
-      chainId={chainId}
       assets={assets}
+      // TODO: revert to using this
       // bridgeAddress={config.collateral_bridge_contract.address}
     />
   );
 };
+
+type TxStatus = 'idle' | 'confirming' | 'pending' | 'complete';
 
 interface FormFields {
   toKey: string;
@@ -104,21 +105,21 @@ interface FormFields {
 const SquidDeposit = ({
   apiUrl,
   integratorId,
-  chainId,
   assets,
-}: {
+}: // bridgeAddress,
+{
   apiUrl: string;
   integratorId: string;
-  chainId: string;
   assets: AssetFieldsFragment[];
+  // bridgeAddress: string;
 }) => {
   const { pubKeys } = useVegaWallet();
   const { account, provider } = useWeb3React();
-  const openDialog = useWeb3ConnectStore((store) => store.open);
+  // const openDialog = useWeb3ConnectStore((store) => store.open);
 
   const squid = useRef(
     new Squid({
-      baseUrl: 'https://v2.api.squidrouter.com',
+      baseUrl: apiUrl,
       integratorId,
     })
   );
@@ -149,6 +150,13 @@ const SquidDeposit = ({
   const [routeStatus, setRouteStatus] = useState<'idle' | 'fetching'>('idle');
   const [routeErr, setRouteErr] = useState<SquidResponseError>();
   const [routeResponse, setRouteResponse] = useState<RouteResponse>();
+
+  const [tracking, setTracking] = useState(false);
+  const [txStatus, setTxStatus] = useState<TxStatus>('idle');
+  // eslint-disable-next-line
+  const [tx, setTx] = useState<any>();
+  // eslint-disable-next-line
+  const [txReceipt, setTxReceipt] = useState<any>();
 
   // We need to watch all fields to refetch (debounced) the route if anything changes
   const toKey = useWatch({ name: 'toKey', control });
@@ -295,7 +303,7 @@ const SquidDeposit = ({
           setRouteStatus('idle');
         }
       }, 1000),
-    [provider, tokens]
+    [provider, tokens, account]
   );
 
   useEffect(() => {
@@ -315,8 +323,7 @@ const SquidDeposit = ({
     return <div>Loading</div>;
   }
 
-  const onSubmit = async (fields: FormFields) => {
-    console.log('submitting', fields);
+  const onSubmit = async () => {
     if (!provider) {
       throw new Error('No provider');
     }
@@ -325,18 +332,36 @@ const SquidDeposit = ({
       throw new Error('No route response');
     }
 
-    // Execute the swap transaction
-    const tx = (await squid.current.executeRoute({
-      signer: provider.getSigner(),
-      route: routeResponse.route,
-    })) as unknown as TransactionResponse;
+    try {
+      setTxReceipt(undefined);
+      setTxStatus('confirming');
 
-    console.log('tx');
-    console.log(tx);
+      const tx = (await squid.current.executeRoute({
+        signer: provider.getSigner(),
+        route: routeResponse.route,
+      })) as unknown as TransactionResponse;
 
-    const txReceipt = await tx.wait();
-    console.log('txReceipt');
-    console.log(txReceipt);
+      // eslint-disable-next-line
+      console.log(tx);
+      setTx(tx);
+      setTxStatus('pending');
+      const receipt = await tx.wait();
+
+      // eslint-disable-next-line
+      console.log(receipt);
+      setTxReceipt(receipt);
+      setTxStatus('complete');
+    } catch (err) {
+      if (
+        err instanceof Error &&
+        'code' in err &&
+        err.code === 'ACTION_REJECTED'
+      ) {
+        setTxStatus('idle');
+      } else {
+        console.error(err);
+      }
+    }
   };
 
   const availableTokens: { [C in ToChains]: string[] } = {
@@ -356,125 +381,157 @@ const SquidDeposit = ({
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      {routeErr && (
-        <div className="text-sm text-danger">
-          {isSquidError(routeErr) ? (
-            <div>
-              <p>Route failed</p>
-              {routeErr.response.data.errors.map((e, i) => {
-                return (
-                  <p key={i} className="text-xs">
-                    {e.errorType} {e.message} {e.reason}
-                  </p>
-                );
-              })}
-            </div>
-          ) : (
-            <p>Route failed</p>
-          )}
-        </div>
+    <>
+      {tracking && (
+        <TxOverlay
+          status={txStatus}
+          tx={tx}
+          receipt={txReceipt}
+          onCancel={() => {
+            setTxStatus('idle');
+            setTracking(false);
+          }}
+        />
       )}
-      <FormGroup label="To key" labelFor="toKey">
-        <TradingSelect {...register('toKey', { validate: { required } })}>
-          {pubKeys?.map((p) => (
-            <option key={p.publicKey} value={p.publicKey}>
-              {p.name} ({truncateMiddle(p.publicKey)})
-            </option>
-          ))}
-        </TradingSelect>
-        {errors.toKey?.message && (
-          <InputError>{errors.toKey.message}</InputError>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        {routeErr && (
+          <div className="text-sm text-danger">
+            {isSquidError(routeErr) ? (
+              <div>
+                <p>Route failed</p>
+                {routeErr.response.data.errors.map((e, i) => {
+                  return (
+                    <p key={i} className="text-xs">
+                      {e.errorType} {e.message} {e.reason}
+                    </p>
+                  );
+                })}
+              </div>
+            ) : (
+              <p>Route failed</p>
+            )}
+          </div>
         )}
-      </FormGroup>
-      <FormGroup label="From chain" labelFor="fromChain">
-        <TradingSelect {...register('fromChain', { validate: { required } })}>
-          {chains?.map((c) => (
-            <option key={c.chainId} value={c.chainId}>
-              {c.networkName} ({c.chainId})
-            </option>
-          ))}
-        </TradingSelect>
-        {errors.fromChain?.message && (
-          <InputError>{errors.fromChain.message}</InputError>
-        )}
-      </FormGroup>
-      <FormGroup label="From token" labelFor="fromToken">
-        <TradingSelect {...register('fromToken', { validate: { required } })}>
-          {tokens
-            ?.filter((t) => t.chainId.toString() === fromChain?.toString())
-            .map((t) => (
-              <option key={t.address} value={t.address}>
-                {t.name} ({t.address})
+        <FormGroup label="To key" labelFor="toKey">
+          <TradingSelect {...register('toKey', { validate: { required } })}>
+            {pubKeys?.map((p) => (
+              <option key={p.publicKey} value={p.publicKey}>
+                {p.name} ({truncateMiddle(p.publicKey)})
               </option>
             ))}
-        </TradingSelect>
-        {errors.fromToken?.message && (
-          <InputError>{errors.fromToken.message}</InputError>
-        )}
-      </FormGroup>
-      <FormGroup label="To chain" labelFor="toChain">
-        <TradingSelect {...register('toChain', { validate: { required } })}>
-          {chains
-            ?.filter((c) => TO_CHAINS.includes(c.chainId as ToChains))
-            .map((c) => (
+          </TradingSelect>
+          {errors.toKey?.message && (
+            <InputError>{errors.toKey.message}</InputError>
+          )}
+        </FormGroup>
+        <FormGroup label="From chain" labelFor="fromChain">
+          <TradingSelect {...register('fromChain', { validate: { required } })}>
+            {chains?.map((c) => (
               <option key={c.chainId} value={c.chainId}>
                 {c.networkName} ({c.chainId})
               </option>
             ))}
-        </TradingSelect>
-        {errors.toChain?.message && (
-          <InputError>{errors.toChain.message}</InputError>
-        )}
-      </FormGroup>
-      <FormGroup label={'To token'} labelFor="toToken">
-        <TradingSelect {...register('toToken', { validate: { required } })}>
-          {tokens
-            ?.filter((t) => {
-              if (!toChain) return false;
+          </TradingSelect>
+          {errors.fromChain?.message && (
+            <InputError>{errors.fromChain.message}</InputError>
+          )}
+        </FormGroup>
+        <FormGroup label="From token" labelFor="fromToken">
+          <TradingSelect {...register('fromToken', { validate: { required } })}>
+            {tokens
+              ?.filter((t) => t.chainId.toString() === fromChain?.toString())
+              .map((t) => (
+                <option key={t.address} value={t.address}>
+                  {t.name} ({t.address})
+                </option>
+              ))}
+          </TradingSelect>
+          {errors.fromToken?.message && (
+            <InputError>{errors.fromToken.message}</InputError>
+          )}
+        </FormGroup>
+        <FormGroup label="To chain" labelFor="toChain">
+          <TradingSelect {...register('toChain', { validate: { required } })}>
+            {chains
+              ?.filter((c) => TO_CHAINS.includes(c.chainId as ToChains))
+              .map((c) => (
+                <option key={c.chainId} value={c.chainId}>
+                  {c.networkName} ({c.chainId})
+                </option>
+              ))}
+          </TradingSelect>
+          {errors.toChain?.message && (
+            <InputError>{errors.toChain.message}</InputError>
+          )}
+        </FormGroup>
+        <FormGroup label={'To token'} labelFor="toToken">
+          <TradingSelect {...register('toToken', { validate: { required } })}>
+            {tokens
+              ?.filter((t) => {
+                if (!toChain) return false;
 
-              const tokensForChain = availableTokens[toChain as ToChains];
+                const tokensForChain = availableTokens[toChain as ToChains];
 
-              if (tokensForChain.includes(t.address)) {
-                return true;
-              }
+                if (tokensForChain.includes(t.address)) {
+                  return true;
+                }
 
-              return false;
-            })
-            .map((t) => (
-              <option key={t.address} value={t.address}>
-                {t.name} ({t.address})
-              </option>
-            ))}
-        </TradingSelect>
-        {errors.toToken?.message && (
-          <InputError>{errors.toToken.message}</InputError>
-        )}
-      </FormGroup>
-      <FormGroup label="Amount" labelFor="amount">
-        <TradingInput {...register('amount', { validate: { required } })} />
-        {errors.amount?.message && (
-          <InputError>{errors.amount.message}</InputError>
-        )}
+                return false;
+              })
+              .map((t) => (
+                <option key={t.address} value={t.address}>
+                  {t.name} ({t.address})
+                </option>
+              ))}
+          </TradingSelect>
+          {errors.toToken?.message && (
+            <InputError>{errors.toToken.message}</InputError>
+          )}
+        </FormGroup>
+        <FormGroup label="Amount" labelFor="amount">
+          <TradingInput {...register('amount', { validate: { required } })} />
+          {errors.amount?.message && (
+            <InputError>{errors.amount.message}</InputError>
+          )}
+          {routeResponse && routeStatus !== 'fetching' && (
+            <ConvertedAmount
+              tokens={tokens}
+              toToken={toToken}
+              amount={amount}
+              exchangeRate={routeResponse.route.estimate.exchangeRate}
+            />
+          )}
+        </FormGroup>
         {routeResponse && routeStatus !== 'fetching' && (
-          <ConvertedAmount
-            tokens={tokens}
-            toToken={toToken}
-            amount={amount}
-            exchangeRate={routeResponse.route.estimate.exchangeRate}
-          />
+          <RouteDetails routeResponse={routeResponse} />
         )}
-      </FormGroup>
-      {routeResponse && routeStatus !== 'fetching' && (
-        <RouteDetails routeResponse={routeResponse} />
-      )}
-      <TradingButton
-        type="submit"
-        disabled={routeStatus === 'fetching' || routeResponse === undefined}
-      >
-        {routeStatus === 'fetching' ? 'Fetching route...' : 'Swap and deposit'}
-      </TradingButton>
-    </form>
+        <TradingButton
+          type="submit"
+          disabled={routeStatus === 'fetching' || routeResponse === undefined}
+          fill={true}
+        >
+          {routeStatus === 'fetching'
+            ? 'Fetching route...'
+            : 'Swap and deposit'}
+        </TradingButton>
+        {txStatus !== 'idle' && (
+          <div className="flex flex-col items-center pt-2 text-sm">
+            <p>
+              {txStatus === 'confirming'
+                ? 'Confirm in wallet...'
+                : 'Transaction sent!'}
+            </p>
+            <button
+              type="button"
+              className="underline underline-offset-4"
+              onClick={() => setTracking(true)}
+            >
+              View details
+            </button>
+          </div>
+        )}
+      </form>
+    </>
   );
 };
 
@@ -497,7 +554,7 @@ const ConvertedAmount = ({
   return (
     <div className="flex justify-end text-muted text-xs pt-1">
       {value.isGreaterThan(0)
-        ? value.times(exchangeRate).toString()
+        ? `${value.times(exchangeRate).toString()} ${to.symbol}`
         : `0 ${to.symbol}`}
     </div>
   );
@@ -534,7 +591,7 @@ const RouteDetails = ({ routeResponse }: { routeResponse: RouteResponse }) => {
           {routeResponse.route.estimate.actions.map((a, i) => {
             if (!a) return null;
             return (
-              <li key={i} className="flex flex-col gap-2">
+              <li key={i} className="flex justify-between gap-2">
                 <p>{a.description}</p>
                 {a.priceImpact && (
                   <p className="text-muted">Price impact: {a.priceImpact}</p>
@@ -544,6 +601,51 @@ const RouteDetails = ({ routeResponse }: { routeResponse: RouteResponse }) => {
           })}
         </ul>
       </div>
+    </div>
+  );
+};
+
+const TxOverlay = ({
+  status,
+  tx,
+  receipt,
+  onCancel,
+}: {
+  status: TxStatus;
+  // eslint-disable-next-line
+  tx: any;
+  // eslint-disable-next-line
+  receipt: any;
+  onCancel: () => void;
+}) => {
+  let content = null;
+
+  if (status === 'idle') return null;
+
+  if (status === 'confirming') {
+    content = <span>Confirm in wallet...</span>;
+  } else if (status === 'pending') {
+    content = <span>Awaiting transaction...</span>;
+  } else if (status === 'complete') {
+    content = <span>Complete</span>;
+  }
+
+  return (
+    <div className="flex flex-col gap-2 absolute top-0 left-0 w-full h-full bg-white dark:bg-black p-2 text-sm z-20">
+      <div>
+        <button className="underline underline-offset-4" onClick={onCancel}>
+          Back
+        </button>
+      </div>
+      <div>
+        <p>{content}</p>
+      </div>
+      {tx && (
+        <div>
+          <p>Tx hash: {tx.hash}</p>
+        </div>
+      )}
+      {receipt && <pre>{JSON.stringify(receipt, null, 2)}</pre>}
     </div>
   );
 };
