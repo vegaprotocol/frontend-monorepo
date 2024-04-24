@@ -98,3 +98,5 @@ If IntelliSense is not working in VSCode, follow these steps:
 
 1. Find the Poetry environment's Python binary: `poetry run which python`
 2. In VSCode, open the command menu (`cmd + shift + p`), search for `Python: Select Interpreter`, select `Enter interpreter path`, and paste the path from step 1.
+
+## Trigger CI
