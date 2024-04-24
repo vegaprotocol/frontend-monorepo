@@ -1,3 +1,4 @@
+import debounce from 'lodash/debounce';
 import { Squid } from '@0xsquid/sdk';
 import {
   type ChainData,
@@ -6,6 +7,8 @@ import {
   TransactionResponse,
   ChainType,
   RouteRequest,
+  RouteResponse,
+  SquidError,
 } from '@0xsquid/sdk/dist/types';
 import compact from 'lodash/compact';
 import {
@@ -14,7 +17,7 @@ import {
   BRIDGE_ABI,
 } from '@vegaprotocol/smart-contracts';
 import { ethers } from 'ethers';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   type AssetFieldsFragment,
   useAssetsDataProvider,
@@ -33,7 +36,20 @@ import {
   truncateMiddle,
 } from '@vegaprotocol/ui-toolkit';
 import { useForm, useWatch } from 'react-hook-form';
-import { useRequired } from '@vegaprotocol/utils';
+import { removeDecimal, toBigNum, useRequired } from '@vegaprotocol/utils';
+import BigNumber from 'bignumber.js';
+
+interface SquidResponseError {
+  code: string;
+  config: any;
+  message: string;
+  response: {
+    config: any;
+    data: {
+      errors: Array<SquidError>;
+    };
+  };
+}
 
 const TO_CHAINS = ['1', '42161'] as const;
 
@@ -109,158 +125,210 @@ const SquidDeposit = ({
 
   const {
     register,
-    control,
     handleSubmit,
-    setValue,
-    formState: { errors },
-  } = useForm<FormFields>();
+    control,
+    formState: { errors, isValid },
+  } = useForm<FormFields>({
+    defaultValues: {
+      toKey: '1e619862533c319e5e22d1cf0414a07c354d98ebaca1dc0d5246205e1e26fe5c',
+      fromChain: '42161',
+      fromToken: '0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9',
+      toChain: '42161',
+      toToken: '0xf97f4df75117a78c1A5a0DBb814Af92458539FB4',
+      amount: '1',
+    },
+  });
   const required = useRequired();
 
-  const formRef = useRef<HTMLFormElement>(null);
+  // Squid state
   const [ready, setReady] = useState(false);
   const [chains, setChains] = useState<ChainData[]>([]);
+  // all tokens across all chains
   const [tokens, setTokens] = useState<Token[]>([]);
 
+  const [routeStatus, setRouteStatus] = useState<'idle' | 'fetching'>('idle');
+  const [routeErr, setRouteErr] = useState<SquidResponseError>();
+  const [routeResponse, setRouteResponse] = useState<RouteResponse>();
+
+  // We need to watch all fields to refetch (debounced) the route if anything changes
+  const toKey = useWatch({ name: 'toKey', control });
   const fromChain = useWatch({ name: 'fromChain', control });
+  const fromToken = useWatch({ name: 'fromToken', control });
   const toChain = useWatch({ name: 'toChain', control });
+  const toToken = useWatch({ name: 'toToken', control });
+  const amount = useWatch({ name: 'amount', control });
 
   useEffect(() => {
     const run = async () => {
       await squid.current.init();
-      setReady(true);
       setChains(squid.current.chains);
       setTokens(squid.current.tokens);
-      setValue('fromChain', '1');
-      setValue('toChain', '1');
+      setReady(true);
     };
 
     run();
   }, []);
+
+  const getRoute = useMemo(
+    () =>
+      // TODO: fix any race conditions during route fetch
+      debounce(async (fields: FormFields) => {
+        if (!provider) return;
+        if (!account) return;
+        if (!tokens.length) return;
+        if (!squid.current) return;
+        if (!account) return;
+
+        if (!fields.toKey) return;
+        if (!fields.fromChain) return;
+        if (!fields.fromToken) return;
+        if (!fields.toChain) return;
+        if (!fields.toToken) return;
+        if (!fields.amount) return;
+
+        if (fields.fromToken === fields.toToken) return;
+
+        const fromToken = tokens.find((t) => t.address === fields.fromToken);
+        const toToken = tokens.find((t) => t.address === fields.toToken);
+
+        if (!fromToken) {
+          throw new Error(`No fromToken ${fields.fromToken} found`);
+        }
+        if (!toToken) {
+          throw new Error(`No toToken ${fields.toToken} found`);
+        }
+
+        const bridgeAddress = BRIDGES[fields.toChain as ToChains];
+
+        if (!bridgeAddress) {
+          throw new Error(`No bridge for chain: ${fields.toChain}`);
+        }
+
+        const bridgeAbi = BRIDGE_ABIS[fields.toChain as ToChains];
+
+        if (!bridgeAbi) {
+          throw new Error(`No bridge abi for ${fields.fromChain}`);
+        }
+
+        const tokenContract = new ethers.Contract(
+          fields.toToken,
+          ERC20_ABI,
+          provider.getSigner()
+        );
+
+        const bridgeContract = new ethers.Contract(
+          bridgeAddress,
+          bridgeAbi,
+          provider.getSigner()
+        );
+
+        const approveEncodeData = tokenContract.interface.encodeFunctionData(
+          'approve',
+          [bridgeAddress, 0]
+        );
+
+        const method = fields.toChain === '42161' ? 'deposit' : 'deposit_asset';
+
+        const args =
+          fields.toChain === '42161'
+            ? [fields.toToken, 0, '0x' + fields.toKey, account] // Arbitrum bridge requries a 4th argument for the recover account address
+            : [fields.toToken, 0, '0x' + fields.toKey];
+
+        const depositEncodedData = bridgeContract.interface.encodeFunctionData(
+          method,
+          args
+        );
+
+        const routeConfig: RouteRequest = {
+          fromChain: fields.fromChain,
+          fromToken: fields.fromToken,
+          fromAmount: removeDecimal(fields.amount, fromToken.decimals),
+          toChain: fields.toChain,
+          toToken: fields.toToken,
+          fromAddress: account,
+          toAddress: account,
+          slippageConfig: {
+            autoMode: 1, // 1 is "normal" slippage.
+          },
+          // @ts-expect-error fundAmount and fundToken are not required for postHook
+          postHook: {
+            chainType: ChainType.EVM,
+            description: 'Deposit to Vega bridge',
+            calls: [
+              {
+                chainType: ChainType.EVM,
+                callType: SquidCallType.FULL_TOKEN_BALANCE,
+                target: fields.toToken,
+                value: '0',
+                callData: approveEncodeData,
+                payload: {
+                  tokenAddress: fields.toToken,
+                  inputPos: 1,
+                },
+                estimatedGas: '5000',
+              },
+              {
+                chainType: ChainType.EVM,
+                callType: SquidCallType.FULL_TOKEN_BALANCE,
+                target: bridgeAddress,
+                value: '0',
+                callData: depositEncodedData,
+                payload: {
+                  tokenAddress: fields.toToken,
+                  inputPos: 1,
+                },
+                estimatedGas: '50000',
+              },
+            ],
+          },
+        };
+
+        try {
+          setRouteErr(undefined);
+          setRouteResponse(undefined);
+          setRouteStatus('fetching');
+          const routeResponse = await squid.current.getRoute(routeConfig);
+          setRouteResponse(routeResponse);
+        } catch (err) {
+          setRouteErr(err as SquidResponseError);
+        } finally {
+          setRouteStatus('idle');
+        }
+      }, 1000),
+    [provider, tokens]
+  );
+
+  useEffect(() => {
+    getRoute({ toKey, fromChain, fromToken, toChain, toToken, amount });
+  }, [
+    getRoute,
+    isValid,
+    toKey,
+    fromChain,
+    fromToken,
+    toChain,
+    toToken,
+    amount,
+  ]);
 
   if (!ready) {
     return <div>Loading</div>;
   }
 
   const onSubmit = async (fields: FormFields) => {
-    console.log(fields);
-
-    if (!provider) return;
-    if (!account) return;
-
-    if (!formRef.current) return;
-    if (!squid.current) return;
-
-    if (!account) return;
-
-    const bridgeAddress = BRIDGES[toChain as ToChains];
-
-    if (!bridgeAddress) {
-      throw new Error(`No bridge for chain: ${toChain}`);
+    console.log('submitting', fields);
+    if (!provider) {
+      throw new Error('No provider');
     }
 
-    const fromToken = tokens.find((t) => t.address === fields.fromToken);
-    const toToken = tokens.find((t) => t.address === fields.toToken);
-
-    if (!fromToken) {
-      throw new Error(
-        `No token ${fields.fromToken} for chain ${fields.fromChain}`
-      );
+    if (!routeResponse) {
+      throw new Error('No route response');
     }
-
-    if (!toToken) {
-      throw new Error(
-        `No to token ${fields.toToken} for chain ${fields.toChain}`
-      );
-    }
-
-    const bridgeAbi = BRIDGE_ABIS[toChain as ToChains];
-
-    if (!bridgeAbi) {
-      throw new Error(`No bridge abi for ${fromChain}`);
-    }
-
-    const tokenContract = new ethers.Contract(
-      toToken.address,
-      ERC20_ABI,
-      provider.getSigner()
-    );
-
-    const bridgeContract = new ethers.Contract(
-      bridgeAddress,
-      bridgeAbi,
-      provider.getSigner()
-    );
-
-    const approveEncodeData = tokenContract.interface.encodeFunctionData(
-      'approve',
-      [bridgeAddress, 0]
-    );
-
-    const method = toChain === '42161' ? 'deposit' : 'deposit_asset';
-
-    const args =
-      toChain === '42161'
-        ? [toToken.address, 0, '0x' + fields.toKey, account] // Arbitrum bridge requries a 4th argument for the recover account address
-        : [toToken.address, 0, '0x' + fields.toKey];
-
-    const depositEncodedData = bridgeContract.interface.encodeFunctionData(
-      method,
-      args
-    );
-
-    const routeConfig: RouteRequest = {
-      fromChain,
-      fromToken: fromToken.address,
-      fromAmount: fields.amount,
-      toChain,
-      toToken: toToken.address,
-      fromAddress: account,
-      toAddress: account,
-      slippageConfig: {
-        autoMode: 1, // 1 is "normal" slippage.
-      },
-      // @ts-expect-error fundAmount and fundToken are not required for postHook
-      postHook: {
-        chainType: ChainType.EVM,
-        description: 'Deposit to Vega bridge',
-        calls: [
-          {
-            chainType: ChainType.EVM,
-            callType: SquidCallType.FULL_TOKEN_BALANCE,
-            target: toToken.address,
-            value: '0',
-            callData: approveEncodeData,
-            payload: {
-              tokenAddress: toToken.address,
-              inputPos: 1,
-            },
-            estimatedGas: '5000',
-          },
-          {
-            chainType: ChainType.EVM,
-            callType: SquidCallType.FULL_TOKEN_BALANCE,
-            target: bridgeAddress,
-            value: '0',
-            callData: depositEncodedData,
-            payload: {
-              tokenAddress: toToken.address,
-              inputPos: 1,
-            },
-            estimatedGas: '50000',
-          },
-        ],
-      },
-    };
-
-    const { route, ...rest } = await squid.current.getRoute(routeConfig);
-
-    console.log('router', 'rest');
-    console.log(route, rest);
 
     // Execute the swap transaction
     const tx = (await squid.current.executeRoute({
       signer: provider.getSigner(),
-      route,
+      route: routeResponse.route,
     })) as unknown as TransactionResponse;
 
     console.log('tx');
@@ -288,9 +356,27 @@ const SquidDeposit = ({
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} ref={formRef}>
+    <form onSubmit={handleSubmit(onSubmit)}>
+      {routeErr && (
+        <div className="text-sm text-danger">
+          {isSquidError(routeErr) ? (
+            <div>
+              <p>Route failed</p>
+              {routeErr.response.data.errors.map((e, i) => {
+                return (
+                  <p key={i} className="text-xs">
+                    {e.errorType} {e.message} {e.reason}
+                  </p>
+                );
+              })}
+            </div>
+          ) : (
+            <p>Route failed</p>
+          )}
+        </div>
+      )}
       <FormGroup label="To key" labelFor="toKey">
-        <TradingSelect {...(register('toKey'), { validate: { required } })}>
+        <TradingSelect {...register('toKey', { validate: { required } })}>
           {pubKeys?.map((p) => (
             <option key={p.publicKey} value={p.publicKey}>
               {p.name} ({truncateMiddle(p.publicKey)})
@@ -302,7 +388,7 @@ const SquidDeposit = ({
         )}
       </FormGroup>
       <FormGroup label="From chain" labelFor="fromChain">
-        <TradingSelect {...register('fromChain')}>
+        <TradingSelect {...register('fromChain', { validate: { required } })}>
           {chains?.map((c) => (
             <option key={c.chainId} value={c.chainId}>
               {c.networkName} ({c.chainId})
@@ -314,7 +400,7 @@ const SquidDeposit = ({
         )}
       </FormGroup>
       <FormGroup label="From token" labelFor="fromToken">
-        <TradingSelect {...register('fromToken')}>
+        <TradingSelect {...register('fromToken', { validate: { required } })}>
           {tokens
             ?.filter((t) => t.chainId.toString() === fromChain?.toString())
             .map((t) => (
@@ -328,7 +414,7 @@ const SquidDeposit = ({
         )}
       </FormGroup>
       <FormGroup label="To chain" labelFor="toChain">
-        <TradingSelect {...register('toChain')}>
+        <TradingSelect {...register('toChain', { validate: { required } })}>
           {chains
             ?.filter((c) => TO_CHAINS.includes(c.chainId as ToChains))
             .map((c) => (
@@ -342,10 +428,9 @@ const SquidDeposit = ({
         )}
       </FormGroup>
       <FormGroup label={'To token'} labelFor="toToken">
-        <TradingSelect {...register('toToken')}>
+        <TradingSelect {...register('toToken', { validate: { required } })}>
           {tokens
             ?.filter((t) => {
-              console.log(t, toChain, availableTokens);
               if (!toChain) return false;
 
               const tokensForChain = availableTokens[toChain as ToChains];
@@ -371,8 +456,102 @@ const SquidDeposit = ({
         {errors.amount?.message && (
           <InputError>{errors.amount.message}</InputError>
         )}
+        {routeResponse && routeStatus !== 'fetching' && (
+          <ConvertedAmount
+            tokens={tokens}
+            toToken={toToken}
+            amount={amount}
+            exchangeRate={routeResponse.route.estimate.exchangeRate}
+          />
+        )}
       </FormGroup>
-      <TradingButton type="submit">Submit</TradingButton>
+      {routeResponse && routeStatus !== 'fetching' && (
+        <RouteDetails routeResponse={routeResponse} />
+      )}
+      <TradingButton
+        type="submit"
+        disabled={routeStatus === 'fetching' || routeResponse === undefined}
+      >
+        {routeStatus === 'fetching' ? 'Fetching route...' : 'Swap and deposit'}
+      </TradingButton>
     </form>
   );
+};
+
+const ConvertedAmount = ({
+  tokens,
+  toToken,
+  amount,
+  exchangeRate,
+}: {
+  tokens: Token[];
+  toToken: string;
+  amount: string;
+  exchangeRate: string;
+}) => {
+  const to = tokens.find((t) => t.address === toToken);
+  if (!to) return null;
+
+  const value = new BigNumber(amount);
+
+  return (
+    <div className="flex justify-end text-muted text-xs pt-1">
+      {value.isGreaterThan(0)
+        ? value.times(exchangeRate).toString()
+        : `0 ${to.symbol}`}
+    </div>
+  );
+};
+
+const RouteDetails = ({ routeResponse }: { routeResponse: RouteResponse }) => {
+  return (
+    <div className="mb-3 flex flex-col gap-2">
+      <div>
+        <h3>Details</h3>
+        <dl className="text-xs">
+          <div className="flex justify-between">
+            <dt>Agg. price impact</dt>
+            <dd>{routeResponse.route.estimate.aggregatePriceImpact}</dd>
+          </div>
+          <div className="flex justify-between">
+            <dt>Agg. slippage</dt>
+            <dd>
+              {
+                // @ts-expect-error not on type
+                routeResponse.route.estimate.aggregateSlippage
+              }
+            </dd>
+          </div>
+          <div className="flex justify-between">
+            <dt>Exchange rate</dt>
+            <dd>{routeResponse.route.estimate.exchangeRate}</dd>
+          </div>
+        </dl>
+      </div>
+      <div>
+        <h3>Swap route</h3>
+        <ul className="text-xs">
+          {routeResponse.route.estimate.actions.map((a, i) => {
+            if (!a) return null;
+            return (
+              <li key={i} className="flex flex-col gap-2">
+                <p>{a.description}</p>
+                {a.priceImpact && (
+                  <p className="text-muted">Price impact: {a.priceImpact}</p>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    </div>
+  );
+};
+
+const isSquidError = (err: unknown): err is SquidResponseError => {
+  if (err !== null && typeof err === 'object' && 'response' in err) {
+    return true;
+  }
+
+  return false;
 };
