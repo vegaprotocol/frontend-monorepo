@@ -51,7 +51,6 @@ describe('ActiveRewards', () => {
           contractAddress: '0x123',
           lifetimeLimit: '100',
           withdrawThreshold: '100',
-          chainId: '1', // Add the missing chainId property
         },
       },
       reference: 'reward',
