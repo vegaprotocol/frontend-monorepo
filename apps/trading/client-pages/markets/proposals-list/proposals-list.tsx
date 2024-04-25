@@ -28,10 +28,13 @@ export const ProposalsList = ({ cellRenderers }: ProposalListProps) => {
       columnDefs={columnDefs}
       rowData={data}
       defaultColDef={defaultColDef}
+      rowHeight={45}
+      headerHeight={40}
+      pagination={true}
+      paginationPageSize={10}
       getRowId={({ data }) => data.id}
       overlayNoRowsTemplate={t('No proposed markets')}
       components={cellRenderers}
-      rowHeight={45}
     />
   );
 };

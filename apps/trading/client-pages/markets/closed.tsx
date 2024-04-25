@@ -300,7 +300,7 @@ const ClosedMarketsDataGrid = ({
         },
       },
     ];
-  }, [openAssetDialog, t]);
+  }, [chainId, openAssetDialog, t]);
 
   return (
     <AgGrid
@@ -311,11 +311,14 @@ const ClosedMarketsDataGrid = ({
       overlayNoRowsTemplate={error ? error.message : t('No markets')}
       components={components}
       rowHeight={45}
+      headerHeight={40}
+      pagination={true}
+      paginationPageSize={10}
       onCellClicked={({ data, column, event }: CellClickedEvent<Row>) => {
         if (!data) return;
 
         // prevent navigating to the market page if any of the below cells are clicked
-        // event.preventDefault or event.stopPropagation dont seem to apply for aggird
+        // event.preventDefault or event.stopPropagation don't seem to apply for ag-gird
         const colId = column.getColId();
 
         if (
