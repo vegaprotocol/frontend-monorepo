@@ -52,15 +52,15 @@ export function EmblemByMarket(props: EmblemByMarketProps) {
       {showBase && (
         <EmblemBase
           src={base}
-          className="inline-block w-5 h-5 z-10 relative rounded-full bg-white"
+          className="inline-block w-5 h-5 z-10 relative rounded-full bg-white border-2 border-vega-clight-600 dark:border-white"
           {...props}
         />
       )}
       {showQuote && (
         <EmblemBase
           src={quote}
-          className={`inline-block w-5 h-5 rounded-full ${
-            showBase ? '-ml-1' : ''
+          className={`inline-block w-5 h-5 rounded-full bg-white border-2 border-vega-clight-600 dark:border-white ${
+            showBase ? '-ml-2' : ''
           }`}
           {...props}
         />

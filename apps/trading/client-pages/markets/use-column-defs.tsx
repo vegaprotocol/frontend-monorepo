@@ -9,6 +9,7 @@ import { COL_DEFS, StackedCell } from '@vegaprotocol/datagrid';
 import {
   addDecimalsFormatNumber,
   formatNumber,
+  priceChange,
   toBigNum,
 } from '@vegaprotocol/utils';
 import { Sparkline } from '@vegaprotocol/ui-toolkit';
@@ -26,24 +27,43 @@ import {
   getQuoteName,
 } from '@vegaprotocol/markets';
 import { useT } from '../../lib/use-t';
+import { EmblemByMarket } from '@vegaprotocol/emblem';
+import { useChainId } from '@vegaprotocol/wallet-react';
 
 export const priceChangeRenderer = (
   data: MarketMaybeWithDataAndCandles | undefined
 ) => {
   if (!data) return null;
-  const candles =
-    data.candles?.filter((c) => c.close).map((c) => Number(c.close)) || [];
   return (
-    <div className="flex flex-row gap-2 justify-end">
-      <Last24hPriceChange
-        marketId={data.id}
-        decimalPlaces={data.decimalPlaces}
-        orientation="vertical"
-        fallback={<span />} // don't render anything so price is vertically centered
-      />
-      <Sparkline width={80} height={20} data={candles} />
-    </div>
+    <Last24hPriceChange
+      marketId={data.id}
+      decimalPlaces={data.decimalPlaces}
+      orientation="vertical"
+      fallback={
+        <span className="leading-4">
+          <div className="text-ellipsis whitespace-nowrap overflow-hidden">
+            <span data-testid="price-change-percentage">{'0.00%'}</span>
+          </div>
+          <span
+            data-testid="price-change"
+            className="text-ellipsis whitespace-nowrap overflow-hidden text-muted"
+          >
+            ({'0.00'})
+          </span>
+        </span>
+      }
+    />
   );
+};
+
+export const priceChangeSparklineRenderer = (
+  data: MarketMaybeWithDataAndCandles | undefined
+) => {
+  if (!data) return null;
+  const candles = data.candles
+    ?.filter((c) => c.close)
+    .map((c) => Number(c.close));
+  return <Sparkline width={80} height={20} data={candles || [0]} />;
 };
 
 export const priceValueFormatter = (
@@ -69,26 +89,33 @@ export const priceValueFormatter = (
 
 export const useMarketsColumnDefs = () => {
   const t = useT();
+  const { chainId } = useChainId();
 
   return useMemo<ColDef[]>(
     () => [
       {
         headerName: t('Market'),
         field: 'tradableInstrument.instrument.code',
-        pinned: true,
-        minWidth: 200,
+        minWidth: 150,
         cellRenderer: ({
           value,
           data,
         }: VegaICellRendererParams<
           MarketMaybeWithData,
           'tradableInstrument.instrument.code'
-        >) => (
-          <StackedCell
-            primary={value}
-            secondary={data?.tradableInstrument.instrument.name}
-          />
-        ),
+        >) => {
+          return (
+            <span className="flex items-center gap-2">
+              <span className="mr-2">
+                <EmblemByMarket market={data?.id || ''} vegaChain={chainId} />
+              </span>
+              <StackedCell
+                primary={value}
+                secondary={data?.tradableInstrument.instrument.name}
+              />
+            </span>
+          );
+        },
       },
       {
         headerName: t('Price'),
@@ -124,7 +151,20 @@ export const useMarketsColumnDefs = () => {
         cellRenderer: ({
           data,
         }: ValueFormatterParams<MarketMaybeWithDataAndCandles, 'candles'>) => {
-          return priceChangeRenderer(data);
+          return (
+            <div className="flex flex-row gap-2 justify-end">
+              <span>{priceChangeRenderer(data)}</span>
+              <span>{priceChangeSparklineRenderer(data)}</span>
+            </div>
+          );
+        },
+        valueGetter: ({
+          data,
+        }: VegaValueGetterParams<MarketMaybeWithDataAndCandles>) => {
+          if (!data) return 0;
+          const candles = data?.candles?.map((c) => c.close);
+          const change = candles ? priceChange(candles) : 0;
+          return change;
         },
       },
       {
@@ -215,6 +255,6 @@ export const useMarketsColumnDefs = () => {
         },
       },
     ],
-    [t]
+    [chainId, t]
   );
 };
