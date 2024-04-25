@@ -15,6 +15,7 @@ import { useDataProvider } from '@vegaprotocol/data-provider';
 import {
   activeMarketsWithCandlesProvider,
   calcCandleVolumePrice,
+  type MarketMaybeWithCandles,
 } from '@vegaprotocol/markets';
 import { useYesterday } from '@vegaprotocol/react-helpers';
 import { useEffect, useState } from 'react';
@@ -33,27 +34,6 @@ const POLLING_TIME = 2000;
 
 export const MarketsPage = () => {
   const t = useT();
-  const governanceLink = useLinks(DApp.Governance);
-  const externalLink = governanceLink(TOKEN_NEW_MARKET_PROPOSAL);
-  const [activeTab, setActiveTab] = useState('open-markets');
-
-  const marketTabs: {
-    [key: string]: { id: string; name: string };
-  } = {
-    open: {
-      id: 'open-markets',
-      name: t('Open'),
-    },
-    proposed: {
-      id: 'proposed-markets',
-      name: t('Proposed'),
-    },
-    closed: {
-      id: 'closed-markets',
-      name: t('Closed'),
-    },
-  };
-
   const yesterday = useYesterday();
   const {
     data: activeMarkets,
@@ -149,59 +129,94 @@ export const MarketsPage = () => {
             </Card>
           </div>
         </div>
-        <div className="h-[600px] pt-0.5 pb-3 px-1.5 xxl:px-[5.5rem]">
-          <div className="flex justify-between">
-            <div className="flex gap-2">
-              {Object.keys(marketTabs).map((key: string) => (
-                <button
-                  key={key}
-                  className={classNames(
-                    'border border-default rounded-lg px-3 py-1.5 my-1 text-sm',
-                    {
-                      'bg-vega-cdark-800': activeTab === marketTabs[key].id,
-                      'text-muted': activeTab !== marketTabs[key].id,
-                    }
-                  )}
-                  id={marketTabs[key].id}
-                  onClick={() => setActiveTab(marketTabs[key].id)}
-                >
-                  {marketTabs[key].name}
-                </button>
-              ))}
-            </div>
-            <div className="flex">
-              {activeTab === 'proposed-markets' && (
-                <a
-                  className="border border-default rounded-lg px-3 py-1.5 my-1 text-sm"
-                  data-testid="propose-new-market"
-                  href={externalLink}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  {t('Propose a new market')}
-                </a>
-              )}
-            </div>
-          </div>
-          <div className="h-full my-1 border rounded border-default">
-            {activeTab === 'open-markets' && (
-              <ErrorBoundary feature="markets-open">
-                <OpenMarkets data={activeMarkets} error={error} />
-              </ErrorBoundary>
-            )}
-            {activeTab === 'proposed-markets' && (
-              <ErrorBoundary feature="markets-proposed">
-                <Proposed />
-              </ErrorBoundary>
-            )}
-            {activeTab === 'closed-markets' && (
-              <ErrorBoundary feature="markets-closed">
-                <Closed />
-              </ErrorBoundary>
-            )}
-          </div>
-        </div>
+        <MarketTables activeMarkets={activeMarkets} error={error} />
       </TinyScroll>
     </ErrorBoundary>
+  );
+};
+
+export const MarketTables = ({
+  activeMarkets,
+  error,
+}: {
+  activeMarkets: MarketMaybeWithCandles[] | null;
+  error: Error | undefined;
+}) => {
+  const t = useT();
+  const governanceLink = useLinks(DApp.Governance);
+  const externalLink = governanceLink(TOKEN_NEW_MARKET_PROPOSAL);
+  const [activeTab, setActiveTab] = useState('open-markets');
+
+  const marketTabs: {
+    [key: string]: { id: string; name: string };
+  } = {
+    open: {
+      id: 'open-markets',
+      name: t('Open'),
+    },
+    proposed: {
+      id: 'proposed-markets',
+      name: t('Proposed'),
+    },
+    closed: {
+      id: 'closed-markets',
+      name: t('Closed'),
+    },
+  };
+
+  return (
+    <div className="pt-0.5 pb-3 px-1.5 xxl:px-[5.5rem]">
+      <div className="flex justify-between">
+        <div className="flex gap-2">
+          {Object.keys(marketTabs).map((key: string) => (
+            <button
+              key={key}
+              className={classNames(
+                'border border-default rounded-lg px-3 py-1.5 my-1 text-sm',
+                {
+                  'dark:bg-vega-cdark-800 bg-vega-clight-800':
+                    activeTab === marketTabs[key].id,
+                  'text-muted': activeTab !== marketTabs[key].id,
+                }
+              )}
+              id={marketTabs[key].id}
+              onClick={() => setActiveTab(marketTabs[key].id)}
+            >
+              {marketTabs[key].name}
+            </button>
+          ))}
+        </div>
+        <div className="flex">
+          {activeTab === 'proposed-markets' && (
+            <a
+              className="border border-default rounded-lg px-3 py-1.5 my-1 text-sm"
+              data-testid="propose-new-market"
+              href={externalLink}
+              target="_blank"
+              rel="noreferrer"
+            >
+              {t('Propose a new market')}
+            </a>
+          )}
+        </div>
+      </div>
+      <div className="h-full my-1 border rounded border-default">
+        {activeTab === 'open-markets' && (
+          <ErrorBoundary feature="markets-open">
+            <OpenMarkets data={activeMarkets} error={error} />
+          </ErrorBoundary>
+        )}
+        {activeTab === 'proposed-markets' && (
+          <ErrorBoundary feature="markets-proposed">
+            <Proposed />
+          </ErrorBoundary>
+        )}
+        {activeTab === 'closed-markets' && (
+          <ErrorBoundary feature="markets-closed">
+            <Closed />
+          </ErrorBoundary>
+        )}
+      </div>
+    </div>
   );
 };
