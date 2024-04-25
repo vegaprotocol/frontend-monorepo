@@ -17,12 +17,9 @@ import {
 } from '@vegaprotocol/utils';
 import { closedMarketsProvider, getAsset } from '@vegaprotocol/markets';
 import type { DataSourceFilterFragment } from '@vegaprotocol/markets';
-import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import { useMarketClickHandler } from '../../lib/hooks/use-market-click-handler';
 import { SettlementDateCell } from './settlement-date-cell';
-import { SettlementPriceCell } from './settlement-price-cell';
 import { MarketCodeCell } from './market-code-cell';
-import { MarketActionsDropdown } from './market-table-actions';
 import { useT } from '../../lib/use-t';
 import { EmblemByMarket } from '@vegaprotocol/emblem';
 import { useChainId } from '@vegaprotocol/wallet-react';
@@ -131,7 +128,6 @@ const ClosedMarketsDataGrid = ({
 }) => {
   const t = useT();
   const handleOnSelect = useMarketClickHandler();
-  const openAssetDialog = useAssetDetailsDialogStore((store) => store.open);
   const { chainId } = useChainId();
 
   const colDefs = useMemo(() => {
@@ -251,56 +247,8 @@ const ClosedMarketsDataGrid = ({
           return addDecimalsFormatNumber(value, data.decimalPlaces);
         },
       },
-      {
-        headerName: t('Settlement price'),
-        type: 'numericColumn',
-        field: 'settlementDataOracleId',
-        // 'tradableInstrument.instrument.product.dataSourceSpecForSettlementData.id',
-        cellRenderer: ({
-          value,
-          data,
-        }: VegaICellRendererParams<Row, 'settlementDataOracleId'>) => (
-          <SettlementPriceCell
-            oracleSpecId={value}
-            settlementDataSpecBinding={data?.settlementDataSpecBinding}
-            filter={data?.settlementDataSourceFilter}
-          />
-        ),
-      },
-      {
-        headerName: t('Settlement asset'),
-        field: 'settlementAsset',
-        cellRenderer: ({
-          value,
-        }: VegaValueFormatterParams<Row, 'settlementAsset'>) => (
-          <button
-            className="underline"
-            onClick={() => {
-              if (!value) return;
-              openAssetDialog(value.id);
-            }}
-          >
-            {value ? value.symbol : '-'}
-          </button>
-        ),
-      },
-      {
-        colId: 'market-actions',
-        ...COL_DEFS.actions,
-        cellRenderer: ({ data }: VegaICellRendererParams<Row>) => {
-          if (!data) return null;
-          return (
-            <MarketActionsDropdown
-              marketId={data.id}
-              assetId={data.settlementAsset.id}
-              successorMarketID={data.successorMarketID}
-              parentMarketID={data.parentMarketID}
-            />
-          );
-        },
-      },
     ];
-  }, [chainId, openAssetDialog, t]);
+  }, [chainId, t]);
 
   return (
     <AgGrid
@@ -312,8 +260,7 @@ const ClosedMarketsDataGrid = ({
       components={components}
       rowHeight={45}
       headerHeight={40}
-      pagination={true}
-      paginationPageSize={10}
+      domLayout="autoHeight"
       onCellClicked={({ data, column, event }: CellClickedEvent<Row>) => {
         if (!data) return;
 

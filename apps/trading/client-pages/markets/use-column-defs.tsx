@@ -5,7 +5,7 @@ import type {
   VegaValueFormatterParams,
   VegaValueGetterParams,
 } from '@vegaprotocol/datagrid';
-import { COL_DEFS, StackedCell } from '@vegaprotocol/datagrid';
+import { StackedCell } from '@vegaprotocol/datagrid';
 import {
   addDecimalsFormatNumber,
   formatNumber,
@@ -17,18 +17,43 @@ import type {
   MarketMaybeWithData,
   MarketMaybeWithDataAndCandles,
 } from '@vegaprotocol/markets';
-import { MarketActionsDropdown } from './market-table-actions';
 import {
   Last24hPriceChange,
   calcCandleVolume,
   calcCandleVolumePrice,
-  getAsset,
   getQuoteAsset,
   getQuoteName,
 } from '@vegaprotocol/markets';
 import { useT } from '../../lib/use-t';
 import { EmblemByMarket } from '@vegaprotocol/emblem';
 import { useChainId } from '@vegaprotocol/wallet-react';
+
+const openInterestRenderer = (data: MarketMaybeWithData | undefined) => {
+  if (!data) return '-';
+  const { data: marketData, positionDecimalPlaces, decimalPlaces } = data;
+  if (!marketData) return '-';
+  const { openInterest, markPrice } = marketData;
+  const quoteName = getQuoteName(data);
+  const openInterestPosition =
+    openInterest === undefined
+      ? '-'
+      : addDecimalsFormatNumber(openInterest, positionDecimalPlaces);
+  const openInterestValue = toBigNum(
+    openInterest,
+    positionDecimalPlaces
+  ).multipliedBy(toBigNum(markPrice, decimalPlaces));
+
+  const openInterestNotional =
+    quoteName === 'USDT'
+      ? `$${formatNumber(openInterestValue, 2)}`
+      : `${formatNumber(openInterestValue, 2)} ${quoteName}`;
+  return (
+    <StackedCell
+      primary={openInterestPosition}
+      secondary={openInterestNotional}
+    />
+  );
+};
 
 export const priceChangeRenderer = (
   data: MarketMaybeWithDataAndCandles | undefined
@@ -79,8 +104,11 @@ export const priceValueFormatter = (
         )} ${quoteAsset?.symbol}`;
   }
   const quoteName = data && getQuoteName(data);
+
   return data?.data?.bestOfferPrice === undefined
     ? '-'
+    : quoteName === 'USDT'
+    ? `$${addDecimalsFormatNumber(data.data.markPrice, data.decimalPlaces)}`
     : `${addDecimalsFormatNumber(
         data.data.markPrice,
         data.decimalPlaces
@@ -204,7 +232,11 @@ export const useMarketsColumnDefs = () => {
           return volumePrice ? (
             <StackedCell
               primary={volume}
-              secondary={`${volumePrice} ${quoteName}`}
+              secondary={
+                quoteName === 'USDT'
+                  ? `$${volumePrice}`
+                  : `${volumePrice} ${quoteName}`
+              }
             />
           ) : (
             <StackedCell primary={volume} secondary={''} />
@@ -221,37 +253,7 @@ export const useMarketsColumnDefs = () => {
           MarketMaybeWithData,
           'data.openInterest'
         >) => {
-          const openInterest =
-            data?.data?.openInterest === undefined
-              ? '-'
-              : addDecimalsFormatNumber(
-                  data?.data?.openInterest,
-                  data?.positionDecimalPlaces
-                );
-          // TODO: calculate USDT value
-          // const markPrice = data?.data?.markPrice;
-          const openInterestValue = openInterest;
-          return (
-            <StackedCell primary={openInterest} secondary={openInterestValue} />
-          );
-        },
-      },
-      {
-        colId: 'market-actions',
-        field: 'id',
-        ...COL_DEFS.actions,
-        cellRenderer: ({
-          data,
-        }: VegaICellRendererParams<MarketMaybeWithData>) => {
-          if (!data) return null;
-          return (
-            <MarketActionsDropdown
-              marketId={data.id}
-              assetId={getAsset(data).id}
-              successorMarketID={data.successorMarketID}
-              parentMarketID={data.parentMarketID}
-            />
-          );
+          return openInterestRenderer(data);
         },
       },
     ],
