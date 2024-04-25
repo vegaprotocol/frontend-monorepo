@@ -1,8 +1,4 @@
-import {
-  TradingAnchorButton,
-  Sparkline,
-  TinyScroll,
-} from '@vegaprotocol/ui-toolkit';
+import { Sparkline, TinyScroll } from '@vegaprotocol/ui-toolkit';
 import { OpenMarkets } from './open-markets';
 import { Proposed } from './proposed';
 import { Closed } from './closed';
@@ -106,7 +102,7 @@ export const MarketsPage = () => {
   return (
     <ErrorBoundary feature="rewards">
       <TinyScroll className="p-2 max-h-full overflow-auto">
-        <div className="flex flex-col w-full gap-3 p-3 xxl:px-[7.5rem]">
+        <div className="flex flex-col w-full gap-3 p-3 xxl:px-[5.5rem]">
           <div className="grid auto-rows-min grid-cols-3 lg:grid-cols-5 xl:grid-cols-3 gap-3 w-full">
             <div className="flex flex-col gap-2 col-span-full lg:col-span-1">
               <Card key="24h-vol" className="grow">
@@ -153,14 +149,14 @@ export const MarketsPage = () => {
             </Card>
           </div>
         </div>
-        <div className="h-[600px] pt-0.5 pb-3 px-1.5 xxl:px-[7.5rem]">
+        <div className="h-[600px] pt-0.5 pb-3 px-1.5 xxl:px-[5.5rem]">
           <div className="flex justify-between">
             <div className="flex gap-2">
               {Object.keys(marketTabs).map((key: string) => (
                 <button
                   key={key}
                   className={classNames(
-                    'border border-default rounded-lg px-3 py-1.5 my-1',
+                    'border border-default rounded-lg px-3 py-1.5 my-1 text-sm',
                     {
                       'bg-vega-cdark-800': activeTab === marketTabs[key].id,
                       'text-muted': activeTab !== marketTabs[key].id,
@@ -173,16 +169,17 @@ export const MarketsPage = () => {
                 </button>
               ))}
             </div>
-            <div>
+            <div className="flex">
               {activeTab === 'proposed-markets' && (
-                <TradingAnchorButton
-                  size="medium"
+                <a
+                  className="border border-default rounded-lg px-3 py-1.5 my-1 text-sm"
                   data-testid="propose-new-market"
                   href={externalLink}
                   target="_blank"
+                  rel="noreferrer"
                 >
                   {t('Propose a new market')}
-                </TradingAnchorButton>
+                </a>
               )}
             </div>
           </div>

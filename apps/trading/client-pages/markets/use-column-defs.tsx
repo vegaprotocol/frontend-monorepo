@@ -92,7 +92,8 @@ export const priceChangeSparklineRenderer = (
 };
 
 export const priceValueFormatter = (
-  data: MarketMaybeWithData | undefined
+  data: MarketMaybeWithData | undefined,
+  formatDecimalPlaces?: number
 ): string => {
   if (data?.tradableInstrument.instrument.product.__typename === 'Spot') {
     const quoteAsset = data && getQuoteAsset(data);
@@ -108,10 +109,15 @@ export const priceValueFormatter = (
   return data?.data?.bestOfferPrice === undefined
     ? '-'
     : quoteName === 'USDT'
-    ? `$${addDecimalsFormatNumber(data.data.markPrice, data.decimalPlaces)}`
+    ? `$${addDecimalsFormatNumber(
+        data.data.markPrice,
+        data.decimalPlaces,
+        formatDecimalPlaces
+      )}`
     : `${addDecimalsFormatNumber(
         data.data.markPrice,
-        data.decimalPlaces
+        data.decimalPlaces,
+        formatDecimalPlaces
       )} ${quoteName}`;
 };
 
