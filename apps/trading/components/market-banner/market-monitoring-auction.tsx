@@ -59,7 +59,7 @@ export const MarketAuctionBanner = ({
           'This market is in auction due to high price volatility, but you can still place orders. '
         )}
       </span>
-      {timeRemaining && (
+      {remaining && (
         <span>
           {t(
             'Time remaining: {{timeRemaining}} (from {{startDate}} to {{endDate}})',
