@@ -20,9 +20,17 @@
 	{{if .FaucetPublicKey}}
 	BlockchainQueueAllowlist = ["{{ .FaucetPublicKey }}"]
 	{{end}}
+    [[EvtForward.EVMBridges]]
+      Level = "Info"
+      PollEventRetryDuration = "500ms"
+      ChainID = "{{.SecondaryBridgeChainID}}"
 
 [Ethereum]
   RPCEndpoint = "{{.ETHEndpoint}}"
+
+  [[Ethereum.EVMBridgeConfigs]]
+    RPCEndpoint = "{{.SecondaryETHEndpoint}}"
+    ChainID = "{{.SecondaryBridgeChainID}}"
 
 [Processor]
 	[Processor.Ratelimit]
