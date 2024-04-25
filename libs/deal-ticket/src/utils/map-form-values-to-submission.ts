@@ -9,7 +9,7 @@ import type {
   StopOrderFormValues,
 } from '@vegaprotocol/react-helpers';
 import * as Schema from '@vegaprotocol/types';
-import { removeDecimal, toNanoSeconds } from '@vegaprotocol/utils';
+import { addDecimal, removeDecimal, toNanoSeconds } from '@vegaprotocol/utils';
 import { isPersistentOrder } from './time-in-force-persistence';
 import { isSpot, type MarketFieldsFragment } from '@vegaprotocol/markets';
 
@@ -101,7 +101,9 @@ export const mapFormValuesToStopOrdersSubmission = (
       {
         type: data.type,
         side: data.side,
-        size: useSizeOverride ? '1' : data.size || '',
+        size: useSizeOverride
+          ? addDecimal('1', positionDecimalPlaces)
+          : data.size || '',
         timeInForce: data.timeInForce,
         price: data.price,
         reduceOnly: !isSpotMarket,
@@ -137,7 +139,9 @@ export const mapFormValuesToStopOrdersSubmission = (
         {
           type: data.ocoType,
           side: data.side,
-          size: data.ocoSize,
+          size: useSizeOverride
+            ? addDecimal('1', positionDecimalPlaces)
+            : data.ocoSize || '',
           timeInForce: data.ocoTimeInForce,
           price: data.ocoPrice,
           reduceOnly: !isSpotMarket,

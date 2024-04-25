@@ -5,11 +5,15 @@ import {
 } from '@vegaprotocol/wallet';
 import {
   mapFormValuesToOrderSubmission,
+  mapFormValuesToStopOrdersSubmission,
   mapFormValuesToTakeProfitAndStopLoss,
 } from './map-form-values-to-submission';
 import * as Schema from '@vegaprotocol/types';
 import { OrderTimeInForce, OrderType } from '@vegaprotocol/types';
-import type { OrderFormValues } from '@vegaprotocol/react-helpers';
+import type {
+  OrderFormValues,
+  StopOrderFormValues,
+} from '@vegaprotocol/react-helpers';
 import { type MarketFieldsFragment } from '@vegaprotocol/markets';
 
 describe('mapFormValuesToOrderSubmission', () => {
@@ -224,6 +228,39 @@ const orderFormValues: OrderFormValues = {
   takeProfit: '70000',
   stopLoss: '60000',
 };
+
+describe('mapFormValuesToStopOrdersSubmission', () => {
+  it('sets and formats sizeOverrideValue', () => {
+    const { risesAbove, fallsBelow } = mapFormValuesToStopOrdersSubmission(
+      {
+        triggerDirection:
+          Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE,
+        sizeOverrideSetting:
+          Schema.StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION,
+        sizeOverrideValue: '10',
+        size: '999',
+        oco: true,
+        ocoSizeOverrideSetting:
+          Schema.StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION,
+        ocoSizeOverrideValue: '20',
+        ocoSize: '666',
+      } as StopOrderFormValues,
+      'marketId',
+      2,
+      2
+    );
+    expect(risesAbove?.sizeOverrideSetting).toEqual(
+      SizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION
+    );
+    expect(risesAbove?.sizeOverrideValue?.percentage).toEqual('0.1');
+    expect(risesAbove?.orderSubmission.size).toEqual('1');
+    expect(fallsBelow?.sizeOverrideSetting).toEqual(
+      SizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION
+    );
+    expect(fallsBelow?.sizeOverrideValue?.percentage).toEqual('0.2');
+    expect(fallsBelow?.orderSubmission.size).toEqual('1');
+  });
+});
 
 describe('mapFormValuesToTakeProfitAndStopLoss', () => {
   it('creates batch market instructions for a normal order created with TP and SL', () => {

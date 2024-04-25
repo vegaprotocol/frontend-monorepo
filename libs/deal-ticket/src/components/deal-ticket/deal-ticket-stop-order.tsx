@@ -33,7 +33,7 @@ import {
   Intent,
   Notification,
   ExternalLink,
-  Slider,
+  PercentageSlider as Slider,
 } from '@vegaprotocol/ui-toolkit';
 import {
   getAsset,
@@ -887,11 +887,12 @@ const formatSizeAtPrice = (
     price,
     quoteName,
     sizeOverrideValue,
+    sizeOverrideSetting,
     size,
     type,
   }: Pick<
     StopOrderFormValues,
-    'price' | 'sizeOverrideValue' | 'size' | 'type'
+    'price' | 'sizeOverrideValue' | 'sizeOverrideSetting' | 'size' | 'type'
   > & {
     assetUnit?: string;
     decimalPlaces: number;
@@ -901,13 +902,14 @@ const formatSizeAtPrice = (
   t: ReturnType<typeof useT>
 ) =>
   `${
-    sizeOverrideValue
-      ? `${(Number(sizeOverrideValue) * 100).toFixed()}%`
-      : formatValue(
+    sizeOverrideSetting ===
+    Schema.StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION
+      ? `${((Number(sizeOverrideValue) || 0) * 100).toFixed()}%`
+      : `${formatValue(
           removeDecimal(size || '0', positionDecimalPlaces),
           positionDecimalPlaces
-        )
-  } ${assetUnit} @ ${
+        )} ${assetUnit}`
+  } @ ${
     type === Schema.OrderType.TYPE_MARKET
       ? t('sizeAtPrice-market', 'market')
       : `${formatValue(
@@ -959,6 +961,8 @@ const SubmitButton = ({
   oco,
   ocoPrice,
   ocoSize,
+  ocoSizeOverrideSetting,
+  ocoSizeOverrideValue,
   ocoTriggerPrice,
   ocoTriggerTrailingPercentOffset,
   ocoTriggerType,
@@ -966,6 +970,8 @@ const SubmitButton = ({
   price,
   side,
   size,
+  sizeOverrideSetting,
+  sizeOverrideValue,
   triggerDirection,
   triggerPrice,
   triggerTrailingPercentOffset,
@@ -976,6 +982,8 @@ const SubmitButton = ({
   | 'oco'
   | 'ocoPrice'
   | 'ocoSize'
+  | 'ocoSizeOverrideSetting'
+  | 'ocoSizeOverrideValue'
   | 'ocoTriggerPrice'
   | 'ocoTriggerTrailingPercentOffset'
   | 'ocoTriggerType'
@@ -983,6 +991,8 @@ const SubmitButton = ({
   | 'price'
   | 'side'
   | 'size'
+  | 'sizeOverrideSetting'
+  | 'sizeOverrideValue'
   | 'triggerDirection'
   | 'triggerPrice'
   | 'triggerTrailingPercentOffset'
@@ -999,6 +1009,12 @@ const SubmitButton = ({
     <>
       {formatSizeAtPrice(
         {
+          sizeOverrideValue: risesAbove
+            ? sizeOverrideValue
+            : ocoSizeOverrideValue,
+          sizeOverrideSetting: risesAbove
+            ? sizeOverrideSetting
+            : ocoSizeOverrideSetting,
           assetUnit,
           decimalPlaces: market.decimalPlaces,
           positionDecimalPlaces: market.positionDecimalPlaces,
@@ -1026,6 +1042,12 @@ const SubmitButton = ({
       <br />
       {formatSizeAtPrice(
         {
+          sizeOverrideValue: !risesAbove
+            ? sizeOverrideValue
+            : ocoSizeOverrideValue,
+          sizeOverrideSetting: !risesAbove
+            ? sizeOverrideSetting
+            : ocoSizeOverrideSetting,
           assetUnit,
           decimalPlaces: market.decimalPlaces,
           positionDecimalPlaces: market.positionDecimalPlaces,
@@ -1055,6 +1077,8 @@ const SubmitButton = ({
     <>
       {formatSizeAtPrice(
         {
+          sizeOverrideSetting,
+          sizeOverrideValue,
           assetUnit,
           decimalPlaces: market.decimalPlaces,
           positionDecimalPlaces: market.positionDecimalPlaces,
@@ -1154,6 +1178,7 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
   const ocoPrice = watch('ocoPrice');
   const ocoSize = watch('ocoSize');
   const ocoSizeOverrideSetting = watch('ocoSizeOverrideSetting');
+  const ocoSizeOverrideValue = watch('ocoSizeOverrideValue');
   const ocoTimeInForce = watch('ocoTimeInForce');
   const ocoOrderExpiresAt = watch('ocoOrderExpiresAt');
   const ocoTriggerPrice = watch('ocoTriggerPrice');
@@ -1575,6 +1600,11 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
         oco={oco}
         ocoPrice={ocoPrice}
         ocoSize={ocoSize}
+        ocoSizeOverrideSetting={ocoSizeOverrideSetting}
+        ocoSizeOverrideValue={
+          ocoSizeOverrideValue &&
+          (Number(ocoSizeOverrideValue) / 100).toString()
+        }
         ocoTriggerPrice={ocoTriggerPrice}
         ocoTriggerTrailingPercentOffset={ocoTriggerTrailingPercentOffset}
         ocoTriggerType={ocoTriggerType}
@@ -1582,6 +1612,10 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
         price={price}
         side={side}
         size={size}
+        sizeOverrideSetting={sizeOverrideSetting}
+        sizeOverrideValue={
+          sizeOverrideValue && (Number(sizeOverrideValue) / 100).toString()
+        }
         triggerDirection={triggerDirection}
         triggerPrice={triggerPrice}
         triggerTrailingPercentOffset={triggerTrailingPercentOffset}

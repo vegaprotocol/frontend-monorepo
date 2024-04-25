@@ -429,7 +429,12 @@ const getTriggerPrice = (
     marketPrice
   ) {
     price = BigNumber(marketPrice)
-      .multipliedBy(1 - Number(stopOrder.trigger.trailingPercentOffset))
+      .multipliedBy(
+        stopOrder.triggerDirection ===
+          Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_FALLS_BELOW
+          ? 1 - Number(stopOrder.trigger.trailingPercentOffset)
+          : 1 + Number(stopOrder.trigger.trailingPercentOffset)
+      )
       .toFixed(0);
   }
   return price;
@@ -452,8 +457,18 @@ const StopOrder = ({
 }) => {
   const asset = getAsset(market);
   const symbol = getQuoteName(market);
-  const price = getTriggerPrice(stopOrder, marketPrice);
-
+  const triggerPrice = getTriggerPrice(stopOrder, marketPrice);
+  const isLimitOrder =
+    stopOrder.submission.type === Schema.OrderType.TYPE_LIMIT;
+  const { price } = stopOrder.submission;
+  const values = {
+    value: (Number(stopOrder.sizeOverrideValue) * 100).toFixed(),
+    triggerPrice:
+      triggerPrice &&
+      addDecimalsFormatNumber(triggerPrice, market.decimalPlaces),
+    symbol,
+    price: price && addDecimalsFormatNumber(price, market.decimalPlaces),
+  };
   const t = useT();
   return (
     <div
@@ -462,22 +477,19 @@ const StopOrder = ({
     >
       <span>
         <Trans
-          i18nKey={'tpSlOrder'}
+          i18nKey={isLimitOrder ? 'tpSlLimitOrder' : 'tpSlOrder'}
           defaults={
-            'Reduce {{value}}% at {{price}} {{symbol}} for estimated PnL of <0/> {{symbol}}'
+            isLimitOrder
+              ? 'Reduce {{value}}% at {{price}} {{symbol}} (triggered at {{triggerPrice}} {{symbol}}) for estimated PnL of <0/> {{symbol}}'
+              : 'Reduce {{value}}% at {{triggerPrice}} {{symbol}} for estimated PnL of <0/> {{symbol}}'
           }
-          values={{
-            value: (Number(stopOrder.sizeOverrideValue) * 100).toFixed(),
-            price:
-              price && addDecimalsFormatNumber(price, market.decimalPlaces),
-            symbol,
-          }}
+          values={values}
           components={[
             <ProfitAndLoss
               averageEntryPrice={averageEntryPrice}
               openVolume={openVolume}
               decimalPlaces={market.decimalPlaces}
-              exitPrice={price || '0'}
+              exitPrice={(isLimitOrder ? price : triggerPrice) || '0'}
               positionDecimalPlaces={market.positionDecimalPlaces}
               size={stopOrder.sizeOverrideValue || '0'}
               decimals={asset.decimals}
@@ -625,6 +637,7 @@ export const TakeProfitStopLoss = ({
   const side = openVolume?.openVolume.startsWith('-')
     ? Schema.Side.SIDE_BUY
     : Schema.Side.SIDE_SELL;
+  const { data: markPrice } = useMarkPrice(marketId);
 
   const takeProfitTrigger =
     side === Schema.Side.SIDE_SELL
@@ -640,17 +653,16 @@ export const TakeProfitStopLoss = ({
   const takeProfitStopOrders = filterAndSort(
     activeStopOrders,
     takeProfitTrigger,
-    side === Schema.Side.SIDE_SELL ? 'asc' : 'desc'
+    side === Schema.Side.SIDE_SELL ? 'asc' : 'desc',
+    markPrice ?? undefined
   );
 
   const stopLossStopOrders = filterAndSort(
     activeStopOrders,
     stopLossTrigger,
-    side === Schema.Side.SIDE_SELL ? 'desc' : 'asc'
+    side === Schema.Side.SIDE_SELL ? 'desc' : 'asc',
+    markPrice ?? undefined
   );
-
-  const { data: markPrice } = useMarkPrice(marketId);
-
   const t = useT();
 
   return (
@@ -732,7 +744,7 @@ export const TakeProfitStopLoss = ({
             <TakeProfitStopLossSetup
               create={create}
               market={market}
-              marketPrice={markPrice}
+              marketPrice={markPrice ?? undefined}
               side={side}
               triggerDirection={takeProfitTrigger}
               openVolume={openVolume?.openVolume}
@@ -753,6 +765,7 @@ export const TakeProfitStopLoss = ({
             market={market}
             openVolume={openVolume?.openVolume}
             averageEntryPrice={openVolume?.averageEntryPrice}
+            marketPrice={markPrice ?? undefined}
           />
         )}
         {visibleForm !== 'sl' ? (
@@ -769,7 +782,7 @@ export const TakeProfitStopLoss = ({
             <TakeProfitStopLossSetup
               create={create}
               market={market}
-              marketPrice={markPrice}
+              marketPrice={markPrice ?? undefined}
               side={side}
               triggerDirection={stopLossTrigger}
               openVolume={openVolume?.openVolume}
