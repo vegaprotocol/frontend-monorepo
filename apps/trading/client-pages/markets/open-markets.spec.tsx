@@ -22,6 +22,10 @@ import {
 } from '@vegaprotocol/mock';
 import userEvent from '@testing-library/user-event';
 
+jest.mock('@vegaprotocol/wallet-react', () => ({
+  useChainId: jest.fn(() => '1'),
+}));
+
 describe('Open', () => {
   let originalNow: typeof Date.now;
   const mockNowTimestamp = 1672531200000;
@@ -97,7 +101,6 @@ describe('Open', () => {
       '24h Change',
       '24h Volume',
       'Open interest',
-      '', // Action row
     ];
     expect(headers).toHaveLength(expectedHeaders.length);
     expect(headers.map((h) => h.textContent?.trim())).toEqual(expectedHeaders);
