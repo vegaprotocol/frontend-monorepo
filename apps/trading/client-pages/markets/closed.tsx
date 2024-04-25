@@ -24,6 +24,8 @@ import { SettlementPriceCell } from './settlement-price-cell';
 import { MarketCodeCell } from './market-code-cell';
 import { MarketActionsDropdown } from './market-table-actions';
 import { useT } from '../../lib/use-t';
+import { EmblemByMarket } from '@vegaprotocol/emblem';
+import { useChainId } from '@vegaprotocol/wallet-react';
 
 type SettlementAsset = Pick<
   Asset,
@@ -130,14 +132,35 @@ const ClosedMarketsDataGrid = ({
   const t = useT();
   const handleOnSelect = useMarketClickHandler();
   const openAssetDialog = useAssetDetailsDialogStore((store) => store.open);
+  const { chainId } = useChainId();
 
   const colDefs = useMemo(() => {
     return [
       {
         headerName: t('Market'),
         field: 'code',
-        cellRenderer: 'MarketCodeCell',
-        width: 150,
+        minWidth: 150,
+        cellRenderer: ({
+          value,
+          data,
+        }: VegaICellRendererParams<Row, 'code'>) => {
+          if (!data) return null;
+          return (
+            <span className="flex items-center gap-2">
+              <span className="mr-2">
+                <EmblemByMarket market={data?.id || ''} vegaChain={chainId} />
+              </span>
+              <MarketCodeCell
+                value={value}
+                data={{
+                  productType: data.productType,
+                  parentMarketID: data.parentMarketID,
+                  successorMarketID: data.successorMarketID,
+                }}
+              />
+            </span>
+          );
+        },
         resizable: true,
       },
       {
