@@ -33,7 +33,7 @@ export const TopMarketList = ({
                 </span>
               </Link>
             </span>
-            <span className="col-span-2 text-right">
+            <span className="col-span-2 text-right font-mono">
               {priceValueFormatter(market, 2)}
             </span>
             <span className="col-span-3 flex justify-end gap-1 text-xs">
