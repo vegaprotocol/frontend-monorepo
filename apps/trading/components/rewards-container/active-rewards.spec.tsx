@@ -51,6 +51,7 @@ describe('ActiveRewards', () => {
           contractAddress: '0x123',
           lifetimeLimit: '100',
           withdrawThreshold: '100',
+          chainId: '1',
         },
       },
       reference: 'reward',
@@ -78,6 +79,7 @@ describe('ActiveRewards', () => {
           distributionStrategy:
             DistributionStrategy.DISTRIBUTION_STRATEGY_PRO_RATA,
           rankTable: null,
+          transfer_interval: 1,
         },
       },
       reason: null,

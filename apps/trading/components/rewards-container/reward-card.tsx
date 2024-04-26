@@ -871,6 +871,7 @@ const DispatchMetricColourMap: Record<
   // Validator ranking
   [DispatchMetric.DISPATCH_METRIC_VALIDATOR_RANKING]: CardColour.WHITE,
   STAKING_REWARD_METRIC: CardColour.WHITE,
+  [DispatchMetric.DISPATCH_METRIC_REALISED_RETURN]: CardColour.BLUE,
 };
 
 const CardIcon = ({
