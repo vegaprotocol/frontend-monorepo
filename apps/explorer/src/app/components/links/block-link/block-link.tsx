@@ -26,6 +26,7 @@ const BlockLink = ({ height, showEpoch = false, ...props }: BlockLinkProps) => {
 export function EpochForBlock(props: { block: string }) {
   const { error, data, loading } = useExplorerEpochForBlockQuery({
     errorPolicy: 'ignore',
+    fetchPolicy: 'cache-first',
     variables: { block: props.block },
   });
 

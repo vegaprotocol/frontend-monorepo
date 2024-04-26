@@ -131,7 +131,15 @@ export const RefereeStatistics = ({
   );
 };
 
-export const PreviewRefereeStatistics = ({ setId }: { setId: string }) => {
+export const PreviewRefereeStatistics = ({
+  setId,
+  withTeamTile = true,
+  className,
+}: {
+  setId: string;
+  withTeamTile?: boolean;
+  className?: classNames.Argument;
+}) => {
   const program = useReferralProgram();
   const aggregationEpochs =
     program.details?.windowLength || DEFAULT_AGGREGATION_DAYS;
@@ -140,11 +148,13 @@ export const PreviewRefereeStatistics = ({ setId }: { setId: string }) => {
 
   const { data: referralSet, loading } = useReferralSet(setId);
 
-  const { epochs, runningVolume } = useRefereeStats(
-    pubKey || '',
-    referralSet?.id || '',
-    aggregationEpochs
-  );
+  const {
+    epochs,
+    runningVolume,
+    benefitTier,
+    nextBenefitTier,
+    discountFactor,
+  } = useRefereeStats(pubKey || '', referralSet?.id || '', aggregationEpochs);
 
   if (loading) {
     return (
@@ -171,7 +181,7 @@ export const PreviewRefereeStatistics = ({ setId }: { setId: string }) => {
 
   const firstBenefitTier = stat(minBy(program.benefitTiers, (bt) => bt.epochs));
 
-  const nextBenefitTier = stat(
+  const secondBenefitTier = stat(
     program.benefitTiers.find(
       (bt) =>
         bt.tier ===
@@ -181,7 +191,7 @@ export const PreviewRefereeStatistics = ({ setId }: { setId: string }) => {
     )
   );
 
-  const discountFactor = stat(
+  const firstDiscountFactor = stat(
     firstBenefitTier.value?.discountFactor
       ? BigNumber(firstBenefitTier.value?.discountFactor)
       : BigNumber(0)
@@ -192,16 +202,20 @@ export const PreviewRefereeStatistics = ({ setId }: { setId: string }) => {
       data-testid="referral-statistics"
       data-as="referee"
       data-preview
-      className="relative mx-auto mb-20"
+      className={classNames('relative mx-auto mb-20', className)}
     >
       <div className={classNames('grid grid-cols-1 grid-rows-1 gap-5')}>
         {/** TEAM TILE - referral set id is the same as team id */}
-        <TeamTile teamId={setId} />
+        {withTeamTile && <TeamTile teamId={setId} />}
         {/** TILES ROW 1 */}
         <div className="grid grid-rows-1 gap-5 grid-cols-1 md:grid-cols-3">
           <BenefitTierTile
-            benefitTier={firstBenefitTier}
-            nextBenefitTier={nextBenefitTier}
+            benefitTier={
+              benefitTier.value != null ? benefitTier : firstBenefitTier
+            }
+            nextBenefitTier={
+              benefitTier.value != null ? nextBenefitTier : secondBenefitTier
+            }
           />
           <RunningVolumeTile
             aggregationEpochs={aggregationEpochs}
@@ -211,15 +225,25 @@ export const PreviewRefereeStatistics = ({ setId }: { setId: string }) => {
         </div>
         {/** TILES ROW 2 */}
         <div className="grid grid-rows-1 gap-5 grid-cols-1 sm:grid-cols-2 xl:grid-cols-4">
-          <DiscountTile discountFactor={discountFactor} />
+          <DiscountTile
+            discountFactor={
+              !discountFactor.value.isZero()
+                ? discountFactor
+                : firstDiscountFactor || stat(BigNumber(0))
+            }
+          />
           <NextTierVolumeTile
-            nextBenefitTier={nextBenefitTier}
+            nextBenefitTier={
+              benefitTier.value != null ? nextBenefitTier : secondBenefitTier
+            }
             runningVolume={runningVolume}
           />
-          <EpochsTile epochs={epochs} />
+          <EpochsTile epochs={pubKey ? epochs : stat(BigNumber(0))} />
           <NextTierEpochsTile
-            epochs={epochs}
-            nextBenefitTier={nextBenefitTier}
+            epochs={pubKey ? epochs : stat(BigNumber(0))}
+            nextBenefitTier={
+              benefitTier.value != null ? nextBenefitTier : secondBenefitTier
+            }
           />
         </div>
       </div>

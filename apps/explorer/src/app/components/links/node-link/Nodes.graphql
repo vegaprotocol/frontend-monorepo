@@ -1,0 +1,13 @@
+query ExplorerNodes {
+  nodesConnection {
+    edges {
+      node {
+        id
+        name
+        status
+        tmPubkey
+        pubkey
+      }
+    }
+  }
+}

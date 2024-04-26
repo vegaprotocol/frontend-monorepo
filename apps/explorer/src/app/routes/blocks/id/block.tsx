@@ -13,11 +13,11 @@ import { AsyncRenderer, Button } from '@vegaprotocol/ui-toolkit';
 import { Routes } from '../../route-names';
 import { t } from '@vegaprotocol/i18n';
 import { useBlockInfo } from '@vegaprotocol/tendermint';
-import { NodeLink } from '../../../components/links';
 import { useDocumentTitle } from '../../../hooks/use-document-title';
 import EmptyList from '../../../components/empty-list/empty-list';
 import { useExplorerEpochForBlockQuery } from '../../../components/links/block-link/__generated__/EpochByBlock';
 import EpochOverview from '../../../components/epoch-overview/epoch';
+import TendermintNodeLink from '../../../components/links/node-link/tendermint-node-link';
 
 type Params = { block: string };
 
@@ -30,6 +30,7 @@ const Block = () => {
 
   const { data } = useExplorerEpochForBlockQuery({
     errorPolicy: 'ignore',
+    fetchPolicy: 'cache-first',
     variables: { block: block?.toString() || '' },
   });
 
@@ -85,10 +86,9 @@ const Block = () => {
 
                 <TableRow modifier="bordered">
                   <TableHeader scope="row">Mined by</TableHeader>
-                  <TableCell modifier="bordered">
-                    <NodeLink
+                  <TableCell modifier="bordered" data-testid="block-validator">
+                    <TendermintNodeLink
                       id={blockData.result.block.header.proposer_address}
-                      data-testid="block-validator"
                     />
                   </TableCell>
                 </TableRow>
