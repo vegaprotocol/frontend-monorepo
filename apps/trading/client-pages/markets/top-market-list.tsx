@@ -36,7 +36,7 @@ export const TopMarketList = ({
             <span className="col-span-2 text-right">
               {priceValueFormatter(market, 2)}
             </span>
-            <span className="col-span-3 flex justify-end gap-1">
+            <span className="col-span-3 flex justify-end gap-1 text-xs">
               {priceChangeRenderer(market)}
               {priceChangeSparklineRenderer(market)}
             </span>

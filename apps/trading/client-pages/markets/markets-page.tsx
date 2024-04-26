@@ -82,52 +82,46 @@ export const MarketsPage = () => {
   return (
     <ErrorBoundary feature="rewards">
       <TinyScroll className="p-2 max-h-full overflow-auto">
-        <div className="flex flex-col w-full gap-3 p-3 xxl:px-[5.5rem]">
-          <div className="grid auto-rows-min grid-cols-3 lg:grid-cols-5 xl:grid-cols-3 gap-3 w-full">
-            <div className="flex flex-col gap-2 col-span-full lg:col-span-1">
-              <Card key="24h-vol" className="grow">
-                <div className="flex items-center justify-center w-full">
-                  <div className="flex items-center gap-2 justify-between w-full flex-wrap">
-                    <div className="flex flex-col">
-                      {totalVolume24h && (
-                        <span className="text-xl">
-                          ${formatNumber(totalVolume24h, 2)}
-                        </span>
-                      )}
-                      <span className="text-xs">{t('24h volume')}</span>
-                    </div>
-                    <div>{totalVolumeSparkline}</div>
-                  </div>
+        <div className="grid auto-rows-min grid-cols-3 lg:grid-cols-5 xl:grid-cols-3 gap-3 p-3 xxl:px-[5.5rem]">
+          <div className="flex flex-col gap-2 col-span-full lg:col-span-1">
+            <Card key="24h-vol" className="grow">
+              <div className="flex items-center gap-2 justify-between flex-wrap">
+                <div className="flex flex-col">
+                  {totalVolume24h && (
+                    <span className="text-xl">
+                      ${formatNumber(totalVolume24h, 2)}
+                    </span>
+                  )}
+                  <span>{t('24h volume')}</span>
                 </div>
-              </Card>
-              <Card key="tvl" className="grow">
-                <div className="flex items-center justify-center w-full">
-                  <div className="flex items-center gap-2 justify-between w-full">
-                    <div className="flex flex-col">
-                      {tvl && (
-                        <span className="text-xl">${formatNumber(tvl, 2)}</span>
-                      )}
-                      <span className="text-xs">TVL</span>
-                    </div>
-                  </div>
-                </div>
-              </Card>
-            </div>
-            <Card
-              key="top-gainers"
-              title={t('Top gainers')}
-              className="col-span-full lg:col-span-2 xl:col-span-1"
-            >
-              <TopMarketList markets={topGainers} />
+                <div>{totalVolumeSparkline}</div>
+              </div>
             </Card>
-            <Card
-              key="new-listings"
-              title={t('New listings')}
-              className="col-span-full lg:col-span-2 xl:col-span-1"
-            >
-              <TopMarketList markets={newListings} />
+            <Card key="tvl" className="grow">
+              <div className="flex items-center gap-2 justify-between">
+                <div className="flex flex-col">
+                  {tvl && (
+                    <span className="text-xl">${formatNumber(tvl, 2)}</span>
+                  )}
+                  <span>{t('TVL')}</span>
+                </div>
+              </div>
             </Card>
           </div>
+          <Card
+            key="top-gainers"
+            title={t('Top gainers')}
+            className="col-span-full lg:col-span-2 xl:col-span-1"
+          >
+            <TopMarketList markets={topGainers} />
+          </Card>
+          <Card
+            key="new-listings"
+            title={t('New listings')}
+            className="col-span-full lg:col-span-2 xl:col-span-1"
+          >
+            <TopMarketList markets={newListings} />
+          </Card>
         </div>
         <MarketTables activeMarkets={activeMarkets} error={error} />
       </TinyScroll>
