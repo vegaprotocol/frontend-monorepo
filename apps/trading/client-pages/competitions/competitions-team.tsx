@@ -126,6 +126,11 @@ const TeamPageContainer = ({ teamId }: { teamId: string | undefined }) => {
   );
 };
 
+enum Tab {
+  Results = 'Results',
+  Members = 'Members',
+}
+
 const TeamPage = ({
   team,
   partyTeam,
@@ -152,7 +157,7 @@ const TeamPage = ({
   refetch: () => void;
 }) => {
   const t = useT();
-  const [showGames, setShowGames] = useState(true);
+  const [tab, setTab] = useState<Tab>(Tab.Results);
 
   const createdAt = new Date(team.createdAt);
 
@@ -234,8 +239,8 @@ const TeamPage = ({
       <section>
         <div className="flex gap-4 lg:gap-8 mb-4 border-b border-default">
           <ToggleButton
-            active={showGames}
-            onClick={() => setShowGames(true)}
+            active={tab === Tab.Results}
+            onClick={() => setTab(Tab.Results)}
             data-testid="games-toggle"
           >
             {t('Results {{games}}', {
@@ -245,8 +250,8 @@ const TeamPage = ({
             })}
           </ToggleButton>
           <ToggleButton
-            active={!showGames}
-            onClick={() => setShowGames(false)}
+            active={tab === Tab.Members}
+            onClick={() => setTab(Tab.Members)}
             data-testid="members-toggle"
           >
             {t('Members ({{count}})', {
@@ -254,7 +259,7 @@ const TeamPage = ({
             })}
           </ToggleButton>
         </div>
-        {showGames ? (
+        {tab === Tab.Results && (
           <Games
             games={games}
             gamesLoading={gamesLoading}
@@ -262,9 +267,8 @@ const TeamPage = ({
             transfersLoading={transfersLoading}
             allMarkets={allMarkets}
           />
-        ) : (
-          <Members members={members} />
         )}
+        {tab === Tab.Members && <Members members={members} />}
       </section>
     </LayoutWithGradient>
   );

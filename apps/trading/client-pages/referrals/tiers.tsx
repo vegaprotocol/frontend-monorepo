@@ -143,7 +143,10 @@ export const TiersContainer = () => {
 
   return (
     <>
-      <h2 className="text-3xl mt-10 font-alpha calt">
+      <h2
+        className="text-3xl mt-10 font-alpha calt"
+        id="current-program-details"
+      >
         {t('Current program details')}
       </h2>
       {details?.id && (
