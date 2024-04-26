@@ -73,6 +73,7 @@ const SquidWidget = ({
     const arbitrumBridgeAddress = '0xd459fac6647059100ebe45543e1da73b3b70ffba';
 
     // Create a token config for assets on arbitrum, hardcoded for now
+    // TODO: get these tokens from the API
     const arbitrumTokensConfig = [
       {
         id: 'arbitrum-tehter',
@@ -86,7 +87,7 @@ const SquidWidget = ({
         status: AssetStatus.STATUS_ENABLED,
       },
       {
-        id: 'arbitrum-tehter',
+        id: 'arbitrum-chainlink',
         name: 'Link',
         symbol: 'aLINK',
         decimals: 6,
@@ -170,6 +171,7 @@ const SquidWidget = ({
                   0, // deposit amount of 0 will get replaced given the payload obj below
                   '0x' + pubKey,
                   // TODO: recovery address: set this from wallet
+                  // TODO: unhardcode and need to grab this from callData args
                   '0x72c22822A19D20DE7e426fB84aa047399Ddd8853',
                 ]);
 
@@ -191,13 +193,15 @@ const SquidWidget = ({
     const erc20TokensConfig = assets.map((asset) => {
       if (asset.source.__typename !== 'ERC20') return null;
 
+      // TODO: handle different chainIDs for each asset
+
       const logoURI = `https://icon.vega.xyz/vega/${chainId}/asset/${asset.id}/logo.svg`;
 
       const cfg: DestinationTokenConfig = {
         // This should just be the end token being deposited
         stakedToken: {
           // TODO: assets now have a chainId property under the source field, need to use it here
-          chainId: 1,
+          chainId: 1, // asset.source.chainID
           address: asset.source.contractAddress,
           name: asset.name,
           symbol: asset.symbol,
@@ -293,7 +297,7 @@ const SquidWidget = ({
       apiUrl,
       availableChains: {
         // Bridges available on ethereum mainnet and arbitrum
-        destination: [1, 42161],
+        destination: [1, 42161], // TODO: get all chainIDs from assets in API
       },
       stakeConfig: {
         // tokensConfig: compact(erc20TokensConfig),
