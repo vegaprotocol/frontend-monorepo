@@ -24,6 +24,7 @@ export interface UseMaxSizeProps {
   positionDecimalPlaces: number;
   price?: string;
   riskFactors: MarketInfo['riskFactors'];
+  feesFactors: MarketInfo['fees']['factors'];
   scalingFactors?: Pick<
     NonNullable<
       MarketInfo['tradableInstrument']['marginCalculator']
@@ -57,6 +58,7 @@ export const useMaxSize = ({
   isSpotMarket,
   baseAssetAccountBalance,
   baseAssetDecimals,
+  feesFactors,
 }: UseMaxSizeProps) =>
   useMemo(() => {
     let maxSize = new BigNumber(0);
@@ -73,6 +75,12 @@ export const useMaxSize = ({
           maxSize = toBigNum(baseAssetAccountBalance, baseAssetDecimals);
         }
       }
+      maxSize = maxSize.multipliedBy(
+        1 -
+          Number(feesFactors.infrastructureFee) -
+          Number(feesFactors.liquidityFee) -
+          Number(feesFactors.makerFee)
+      );
       // round to size step
       maxSize = maxSize.minus(
         maxSize.mod(determineSizeStep({ positionDecimalPlaces }))
@@ -190,4 +198,7 @@ export const useMaxSize = ({
     baseAssetAccountBalance,
     baseAssetDecimals,
     isSpotMarket,
+    feesFactors.infrastructureFee,
+    feesFactors.liquidityFee,
+    feesFactors.makerFee,
   ]);

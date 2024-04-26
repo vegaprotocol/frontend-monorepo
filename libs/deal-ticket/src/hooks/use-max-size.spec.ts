@@ -32,6 +32,11 @@ describe('useMaxSize', () => {
     scalingFactors: {
       initialMargin: 1.5,
     },
+    feesFactors: {
+      infrastructureFee: '0.001',
+      liquidityFee: '0.002',
+      makerFee: '0.003',
+    },
     marketIsInAuction: false,
   };
 
@@ -46,15 +51,15 @@ describe('useMaxSize', () => {
         ...initialProps,
         isSpotMarket: true,
       });
-      // generalAccountBalance / markPrice = 100 / 10 = 10
-      expect(result.current).toEqual(10);
+      // generalAccountBalance / markPrice = 100 / 10 = 10 (-fees)
+      expect(result.current).toEqual(9.9);
       rerender({
         ...initialProps,
         type: OrderType.TYPE_LIMIT,
         isSpotMarket: true,
       });
-      // generalAccountBalance / price = 100 / 8 = 10
-      expect(result.current).toEqual(12.5);
+      // generalAccountBalance / price = 100 / 8 = 10 (-fees)
+      expect(result.current).toEqual(12.4);
     });
 
     it('calculates maxSize = baseAssetAccountBalance for sell orders', () => {
@@ -66,7 +71,7 @@ describe('useMaxSize', () => {
         baseAssetDecimals,
         isSpotMarket: true,
       });
-      expect(result.current).toEqual(50);
+      expect(result.current).toEqual(49.7);
     });
   });
 
