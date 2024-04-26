@@ -81,6 +81,8 @@ export const BatchItem = ({ item }: BatchItemProps) => {
     );
   } else if (item.updateVolumeDiscountProgram) {
     return <span>{t('Update volume discount program')}</span>;
+  } else if (item.newAsset) {
+    return <span>{t('New asset')}</span>;
   }
 
   return <span>{t('Unknown proposal type')}</span>;

@@ -572,6 +572,8 @@ export interface components {
      * The generated signatures can only be submitted to the contract by the Ethereum addresses included in the command.
      */
     readonly v1IssueSignatures: {
+      /** @description Chain ID of the bridge to generate signatures for. */
+      readonly chainId?: string;
       /** @description What kind of signatures to generate, namely for whether a signer is being added or removed. */
       readonly kind?: components['schemas']['v1NodeSignatureKind'];
       /** @description Ethereum address which will submit the signatures to the smart contract. */
@@ -1131,6 +1133,7 @@ export interface components {
      *  - ACCOUNT_TYPE_REWARD_VALIDATOR_RANKING: Per asset market reward account given to validators by their ranking
      *  - ACCOUNT_TYPE_PENDING_FEE_REFERRAL_REWARD: Per asset account for pending fee referral reward payouts
      *  - ACCOUNT_TYPE_ORDER_MARGIN: Per asset market account for party in isolated margin mode
+     *  - ACCOUNT_TYPE_REWARD_REALISED_RETURN: Per asset market reward account for realised return
      * @default ACCOUNT_TYPE_UNSPECIFIED
      * @enum {string}
      */
@@ -1163,7 +1166,8 @@ export interface components {
       | 'ACCOUNT_TYPE_REWARD_RETURN_VOLATILITY'
       | 'ACCOUNT_TYPE_REWARD_VALIDATOR_RANKING'
       | 'ACCOUNT_TYPE_PENDING_FEE_REFERRAL_REWARD'
-      | 'ACCOUNT_TYPE_ORDER_MARGIN';
+      | 'ACCOUNT_TYPE_ORDER_MARGIN'
+      | 'ACCOUNT_TYPE_REWARD_REALISED_RETURN';
     /** Vega representation of an external asset */
     readonly vegaAssetDetails: {
       /** @description Vega built-in asset. */
@@ -1199,6 +1203,8 @@ export interface components {
        * constrained by `minEnact` and `maxEnact` network parameters.
        */
       readonly enactmentTimestamp?: string;
+      /** @description Proposal change for adding a new asset. */
+      readonly newAsset?: components['schemas']['vegaNewAsset'];
       /**
        * @description Proposal change for a freeform request, which can be voted on but does not change the behaviour of the system,
        * and can be used to gauge community sentiment.
@@ -1224,6 +1230,11 @@ export interface components {
       readonly updateSpotMarket?: components['schemas']['vegaUpdateSpotMarket'];
       /** @description Proposal change for updating the volume discount program. */
       readonly updateVolumeDiscountProgram?: components['schemas']['vegaUpdateVolumeDiscountProgram'];
+      /**
+       * Format: int64
+       * @description Validation timestamp as Unix time in seconds.
+       */
+      readonly validationTimestamp?: string;
     };
     readonly vegaBenefitTier: {
       /**
@@ -1285,7 +1296,7 @@ export interface components {
       readonly cashAmount?: string;
       /** @description Which method is used for the calculation of the composite price for the market. */
       readonly compositePriceType?: components['schemas']['vegaCompositePriceType'];
-      /** @description Additional price sources to be used for index price calculation. */
+      /** @description Additional price sources to be used for internal composite price calculation. */
       readonly dataSourcesSpec?: readonly components['schemas']['vegaDataSourceDefinition'][];
       /** List of each price source and its corresponding binding */
       readonly dataSourcesSpecBinding?: readonly components['schemas']['vegaSpecBindingForCompositePrice'][];
@@ -1411,6 +1422,7 @@ export interface components {
      *  - DISPATCH_METRIC_RELATIVE_RETURN: Dispatch metric that uses the relative PNL of the party in the market
      *  - DISPATCH_METRIC_RETURN_VOLATILITY: Dispatch metric that uses return volatility of the party in the market
      *  - DISPATCH_METRIC_VALIDATOR_RANKING: Dispatch metric that uses the validator ranking of the validator as metric
+     *  - DISPATCH_METRIC_REALISED_RETURN: Dispatch metric that uses the realised return of the party in a market
      * @default DISPATCH_METRIC_UNSPECIFIED
      * @enum {string}
      */
@@ -1423,10 +1435,13 @@ export interface components {
       | 'DISPATCH_METRIC_AVERAGE_POSITION'
       | 'DISPATCH_METRIC_RELATIVE_RETURN'
       | 'DISPATCH_METRIC_RETURN_VOLATILITY'
-      | 'DISPATCH_METRIC_VALIDATOR_RANKING';
+      | 'DISPATCH_METRIC_VALIDATOR_RANKING'
+      | 'DISPATCH_METRIC_REALISED_RETURN';
     readonly vegaDispatchStrategy: {
       /** @description Asset to use for metric. */
       readonly assetForMetric?: string;
+      /** @description If set, the actual amount of rewards transferred to each public key during distribution for this transfer will be `min(calculated_reward_in_quantum, cap_reward_fee_multiple × fees_paid_this_epoch_in_quantum). */
+      readonly capRewardFeeMultiple?: string;
       /** Controls how the reward is distributed between qualifying parties */
       readonly distributionStrategy?: components['schemas']['vegaDistributionStrategy'];
       /** @description Mandatory enum that defines the entities within scope. */
@@ -1453,6 +1468,11 @@ export interface components {
       /** Optional list applicable if the reward type has a scope of teams, which allows the funder to define a list of team IDs that are eligible to be rewarded from this transfer */
       readonly teamScope?: readonly string[];
       /**
+       * Format: int32
+       * @description Number of epochs between transfers, i.e. when 4, funds will be transferred every 4 epochs with the first transfer occurring 4 epochs after the transaction is processed.
+       */
+      readonly transferInterval?: number;
+      /**
        * Number of epochs to evaluate the metric on
        * Format: uint64
        */
@@ -1470,6 +1490,8 @@ export interface components {
       | 'DISTRIBUTION_STRATEGY_RANK';
     /** ERC20 token based asset, living on the ethereum network */
     readonly vegaERC20: {
+      /** @description Chain ID the asset originated from. */
+      readonly chainId?: string;
       /** @description Address of the contract for the token, on the ethereum network. */
       readonly contractAddress?: string;
       /**
@@ -1534,6 +1556,8 @@ export interface components {
       readonly bridgeResumed?: boolean;
       /** @description Bridge operations has been stopped. */
       readonly bridgeStopped?: boolean;
+      /** @description ID of the source chain for this event. */
+      readonly chainId?: string;
       /** @description Deposit ERC20 asset. */
       readonly deposit?: components['schemas']['vegaERC20Deposit'];
       /**
@@ -1551,6 +1575,8 @@ export interface components {
        * Format: uint64
        */
       readonly block?: string;
+      /** @description ID of the source chain for this event. */
+      readonly chainId?: string;
       /**
        * Index of the log in the transaction
        * Format: uint64
@@ -1707,6 +1733,8 @@ export interface components {
       readonly blockTime?: string;
       /** @description Error message if the call failed. */
       readonly error?: string;
+      /** @description If true the event does not correspond to a contract call and is only a notification to core of the last checked block height. */
+      readonly heartbeat?: boolean;
       /**
        * Format: byte
        * @description Result of contract call, packed according to the ABI stored in the associated data source spec.
@@ -1799,6 +1827,11 @@ export interface components {
     readonly vegaLiquidationStrategy: {
       /** @description Fraction of the open position the market will try to close in a single attempt; range 0 through 1. */
       readonly disposalFraction?: string;
+      /**
+       * @description Decimal > 0 specifying the range range above and below the mid price within which the network will trade to dispose of its position.
+       * The value can be > 1. For example, if set to 1.5, the minimum price will be 0, ie max(0, mid_price * (1 - 1.5)), and the maximum price will be mid_price * (1 + 1.5).
+       */
+      readonly disposalSlippageRange?: string;
       /**
        * Format: int64
        * @description Interval, in seconds, at which the network will attempt to close its position.
@@ -1982,6 +2015,8 @@ export interface components {
       readonly simple?: components['schemas']['vegaSimpleModelParams'];
       /** @description Successor configuration. If this proposal is meant to succeed a given market, then this should be set. */
       readonly successor?: components['schemas']['vegaSuccessorConfiguration'];
+      /** The market tick size defines the minimum change in quote price for the market */
+      readonly tickSize?: string;
     };
     /** New spot market on Vega */
     readonly vegaNewSpotMarket: {
@@ -1990,11 +2025,6 @@ export interface components {
     };
     /** Configuration for a new spot market on Vega */
     readonly vegaNewSpotMarketConfiguration: {
-      /**
-       * Format: uint64
-       * @description Decimal places used for the new spot market, sets the smallest price increment on the book.
-       */
-      readonly decimalPlaces?: string;
       /** @description New spot market instrument configuration. */
       readonly instrument?: components['schemas']['vegaInstrumentConfiguration'];
       /** @description Specifies how the liquidity fee for the market will be calculated. */
@@ -2004,18 +2034,25 @@ export interface components {
       /** @description Optional new spot market metadata, tags. */
       readonly metadata?: readonly string[];
       /**
-       * Format: int64
-       * @description Decimal places for order sizes, sets what size the smallest order / position on the spot market can be.
+       * Format: uint64
+       * @description Decimal places used for the new spot market, sets the smallest price increment on the book.
        */
-      readonly positionDecimalPlaces?: string;
+      readonly priceDecimalPlaces?: string;
       /** @description Price monitoring parameters. */
       readonly priceMonitoringParameters?: components['schemas']['vegaPriceMonitoringParameters'];
       /** @description Simple risk model parameters, valid only if MODEL_SIMPLE is selected. */
       readonly simple?: components['schemas']['vegaSimpleModelParams'];
+      /**
+       * Format: int64
+       * @description Decimal places for order sizes, sets what size the smallest order / position on the spot market can be.
+       */
+      readonly sizeDecimalPlaces?: string;
       /** @description Specifies the liquidity provision SLA parameters. */
       readonly slaParams?: components['schemas']['vegaLiquiditySLAParameters'];
       /** @description Specifies parameters related to target stake calculation. */
       readonly targetStakeParameters?: components['schemas']['vegaTargetStakeParameters'];
+      /** The market tick size defines the minimum change in quote price for the market */
+      readonly tickSize?: string;
     };
     /** New governance transfer */
     readonly vegaNewTransfer: {
@@ -2120,10 +2157,10 @@ export interface components {
       readonly fundingRateScalingFactor?: string;
       /** @description Upper bound for the funding-rate such that the funding-rate will never be higher than this value. */
       readonly fundingRateUpperBound?: string;
-      /** @description Composite price configuration to drive the calculation of the index price used for funding payments. If undefined the default mark price of the market is used. */
-      readonly indexPriceConfiguration?: components['schemas']['vegaCompositePriceConfiguration'];
       /** @description Continuously compounded interest rate used in funding rate calculation, in the range [-1, 1]. */
       readonly interestRate?: string;
+      /** @description Composite price configuration to drive the calculation of the internal composite price used for funding payments. If undefined the default mark price of the market is used. */
+      readonly internalCompositePriceConfiguration?: components['schemas']['vegaCompositePriceConfiguration'];
       /** @description Controls how much the upcoming funding payment liability contributes to party's margin, in the range [0, 1]. */
       readonly marginFundingFactor?: string;
       /** @description Product quote name. */
@@ -2311,8 +2348,6 @@ export interface components {
     readonly vegaSpotProduct: {
       /** @description Base asset ID. */
       readonly baseAsset?: string;
-      /** @description Product name. */
-      readonly name?: string;
       /** @description Quote asset ID. */
       readonly quoteAsset?: string;
     };
@@ -2481,6 +2516,8 @@ export interface components {
       readonly quadraticSlippageFactor?: string;
       /** @description Simple risk model parameters, valid only if MODEL_SIMPLE is selected. */
       readonly simple?: components['schemas']['vegaSimpleModelParams'];
+      /** The market tick size defines the minimum change in quote price for the market */
+      readonly tickSize?: string;
     };
     readonly vegaUpdateMarketState: {
       /** Configuration for governance-initiated change of a market's state */
@@ -2517,10 +2554,10 @@ export interface components {
       readonly fundingRateScalingFactor?: string;
       /** @description Upper bound for the funding-rate such that the funding-rate will never be higher than this value. */
       readonly fundingRateUpperBound?: string;
-      /** @description Configuration for the index price used in funding payment calculation. */
-      readonly indexPriceConfiguration?: components['schemas']['vegaCompositePriceConfiguration'];
       /** @description Continuously compounded interest rate used in funding rate calculation, in the range [-1, 1]. */
       readonly interestRate?: string;
+      /** @description Configuration for the internal composite price used in funding payment calculation. */
+      readonly internalCompositePriceConfiguration?: components['schemas']['vegaCompositePriceConfiguration'];
       /** @description Controls how much the upcoming funding payment liability contributes to party's margin, in the range [0, 1]. */
       readonly marginFundingFactor?: string;
       /** @description Human-readable name/abbreviation of the quote name. */
@@ -2529,6 +2566,12 @@ export interface components {
     readonly vegaUpdateReferralProgram: {
       /** @description Configuration for change to update a referral program. */
       readonly changes?: components['schemas']['vegaReferralProgramChanges'];
+    };
+    readonly vegaUpdateSpotInstrumentConfiguration: {
+      /** @description Instrument code, human-readable shortcode used to describe the instrument. */
+      readonly code?: string;
+      /** Instrument name */
+      readonly name?: string;
     };
     /** Update an existing spot market on Vega */
     readonly vegaUpdateSpotMarket: {
@@ -2539,6 +2582,8 @@ export interface components {
     };
     /** Configuration to update a spot market on Vega */
     readonly vegaUpdateSpotMarketConfiguration: {
+      /** @description Specifies the name and code of the spot instrument. */
+      readonly instrument?: components['schemas']['vegaUpdateSpotInstrumentConfiguration'];
       /** @description Specifies how the liquidity fee for the market will be calculated. */
       readonly liquidityFeeSettings?: components['schemas']['vegaLiquidityFeeSettings'];
       /** @description Log normal risk model parameters, valid only if MODEL_LOG_NORMAL is selected. */
@@ -2553,6 +2598,8 @@ export interface components {
       readonly slaParams?: components['schemas']['vegaLiquiditySLAParameters'];
       /** @description Specifies parameters related to target stake calculation. */
       readonly targetStakeParameters?: components['schemas']['vegaTargetStakeParameters'];
+      /** The market tick size defines the minimum change in quote price for the market */
+      readonly tickSize?: string;
     };
     readonly vegaUpdateVolumeDiscountProgram: {
       /** Configuration for a change to update a volume discount program */
