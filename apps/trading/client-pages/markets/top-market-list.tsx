@@ -8,6 +8,7 @@ import {
   priceChangeSparklineRenderer,
 } from './use-column-defs';
 import { StackedCell } from '@vegaprotocol/datagrid';
+import { Links } from '../../lib/links';
 
 export const TopMarketList = ({
   markets,
@@ -24,7 +25,7 @@ export const TopMarketList = ({
             key={market.id}
           >
             <span className="col-span-3 overflow-hidden">
-              <Link to={`/markets/${market.id}`}>
+              <Link to={Links.MARKET(market.id)}>
                 <span className="flex items-center">
                   <span className="pr-1">
                     <EmblemByMarket market={market.id} vegaChain={chainId} />
