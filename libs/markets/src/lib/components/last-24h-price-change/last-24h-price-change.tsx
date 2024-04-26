@@ -16,6 +16,7 @@ interface Props {
   decimalPlaces: number;
   fallback?: ReactNode;
   orientation?: 'horizontal' | 'vertical';
+  showChangeValue?: boolean;
 }
 
 export const Last24hPriceChange = ({
@@ -23,6 +24,7 @@ export const Last24hPriceChange = ({
   decimalPlaces,
   fallback,
   orientation = 'horizontal',
+  showChangeValue = true,
 }: Props) => {
   const { oneDayCandles, fiveDaysCandles, error } = useCandles({
     marketId,
@@ -51,12 +53,15 @@ export const Last24hPriceChange = ({
             )}
           </span>
         </div>
-        <span
-          data-testid="price-change"
-          className="text-ellipsis whitespace-nowrap overflow-hidden text-muted"
-        >
-          ({addDecimalsFormatNumber(change.toString(), decimalPlaces ?? 0, 3)})
-        </span>
+        {showChangeValue && (
+          <span
+            data-testid="price-change"
+            className="text-ellipsis whitespace-nowrap overflow-hidden text-muted"
+          >
+            ({addDecimalsFormatNumber(change.toString(), decimalPlaces ?? 0, 3)}
+            )
+          </span>
+        )}
       </span>
     );
   }

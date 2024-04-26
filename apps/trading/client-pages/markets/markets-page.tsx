@@ -110,17 +110,21 @@ export const MarketsPage = () => {
           </div>
           <Card
             key="top-gainers"
-            title={t('Top gainers')}
             className="col-span-full lg:col-span-2 xl:col-span-1"
           >
-            <TopMarketList markets={topGainers} />
+            <div className="flex flex-col h-full gap-3">
+              <h2 className="mb-3">Top gainers</h2>
+              <TopMarketList markets={topGainers} />
+            </div>
           </Card>
           <Card
             key="new-listings"
-            title={t('New listings')}
             className="col-span-full lg:col-span-2 xl:col-span-1"
           >
-            <TopMarketList markets={newListings} />
+            <div className="flex flex-col h-full gap-3">
+              <h2 className="mb-3">New listings</h2>
+              <TopMarketList markets={newListings} />
+            </div>
           </Card>
         </div>
         <MarketTables activeMarkets={activeMarkets} error={error} />

@@ -56,7 +56,8 @@ const openInterestRenderer = (data: MarketMaybeWithData | undefined) => {
 };
 
 export const priceChangeRenderer = (
-  data: MarketMaybeWithDataAndCandles | undefined
+  data: MarketMaybeWithDataAndCandles | undefined,
+  showChangeValue = true
 ) => {
   if (!data) return null;
   return (
@@ -64,17 +65,20 @@ export const priceChangeRenderer = (
       marketId={data.id}
       decimalPlaces={data.decimalPlaces}
       orientation="vertical"
+      showChangeValue={showChangeValue}
       fallback={
         <span className="leading-4">
           <div className="text-ellipsis whitespace-nowrap overflow-hidden">
             <span data-testid="price-change-percentage">{'0.00%'}</span>
           </div>
-          <span
-            data-testid="price-change"
-            className="text-ellipsis whitespace-nowrap overflow-hidden text-muted"
-          >
-            ({'0.00'})
-          </span>
+          {showChangeValue && (
+            <span
+              data-testid="price-change"
+              className="text-ellipsis whitespace-nowrap overflow-hidden text-muted"
+            >
+              ({'0.00'})
+            </span>
+          )}
         </span>
       }
     />
@@ -236,14 +240,16 @@ export const useMarketsColumnDefs = () => {
             volPrice && formatNumber(volPrice, data?.decimalPlaces);
 
           return volumePrice ? (
-            <StackedCell
-              primary={volume}
-              secondary={
-                quoteName === 'USDT'
-                  ? `$${volumePrice}`
-                  : `${volumePrice} ${quoteName}`
-              }
-            />
+            <span className="font-mono">
+              <StackedCell
+                primary={volume}
+                secondary={
+                  quoteName === 'USDT'
+                    ? `$${volumePrice}`
+                    : `${volumePrice} ${quoteName}`
+                }
+              />
+            </span>
           ) : (
             <StackedCell primary={volume} secondary={''} />
           );
@@ -259,7 +265,9 @@ export const useMarketsColumnDefs = () => {
           MarketMaybeWithData,
           'data.openInterest'
         >) => {
-          return openInterestRenderer(data);
+          return (
+            <span className="font-mono">{openInterestRenderer(data)}</span>
+          );
         },
       },
     ],

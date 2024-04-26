@@ -16,7 +16,7 @@ export const TopMarketList = ({
 }) => {
   const { chainId } = useChainId();
   return (
-    <>
+    <div className="flex flex-col justify-between grow gap-2">
       {markets?.map((market) => {
         return (
           <div
@@ -37,12 +37,12 @@ export const TopMarketList = ({
               {priceValueFormatter(market, 2)}
             </span>
             <span className="col-span-3 flex justify-end gap-1 text-xs">
-              {priceChangeRenderer(market)}
+              {priceChangeRenderer(market, false)}
               {priceChangeSparklineRenderer(market)}
             </span>
           </div>
         );
       })}
-    </>
+    </div>
   );
 };
