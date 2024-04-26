@@ -3,7 +3,7 @@ import { useNewListings } from './use-markets-stats';
 
 import { useTotalVolume24hCandles } from './use-markets-stats';
 
-import { useTVL } from './use-markets-stats';
+import { useTotalVolumeLocked } from './use-markets-stats';
 import { addDecimal } from '@vegaprotocol/utils';
 
 jest.mock('@vegaprotocol/utils', () => ({
@@ -16,9 +16,9 @@ jest.mock('@vegaprotocol/utils', () => ({
 }));
 
 describe('Market page stats', () => {
-  describe('useTVL', () => {
+  describe('useTotalVolumeLocked', () => {
     it('handles null input', () => {
-      expect(useTVL(null)).toEqual(undefined);
+      expect(useTotalVolumeLocked(null)).toEqual(undefined);
     });
 
     it('calculates TVL correctly', () => {
@@ -44,7 +44,7 @@ describe('Market page stats', () => {
           },
         },
       ] as MarketMaybeWithCandles[];
-      expect(useTVL(markets)).toEqual(30);
+      expect(useTotalVolumeLocked(markets)).toEqual(30);
     });
   });
 

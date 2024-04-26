@@ -76,13 +76,15 @@ export const useNewListings = (
 };
 
 /**
- * useTVL returns the total value locked in the network
+ * useTotalVolumeLocked returns the total value locked in the network
  * by summing the balances of all insurance accounts
  *
  * @param activeMarkets
  * @returns MarketMaybeWithCandles[] | null
  */
-export const useTVL = (activeMarkets: MarketMaybeWithCandles[] | null) => {
+export const useTotalVolumeLocked = (
+  activeMarkets: MarketMaybeWithCandles[] | null
+) => {
   return activeMarkets?.reduce((acc, market) => {
     const accounts = market.accountsConnection?.edges
       ?.filter((e) => e?.node?.type === AccountType.ACCOUNT_TYPE_INSURANCE)

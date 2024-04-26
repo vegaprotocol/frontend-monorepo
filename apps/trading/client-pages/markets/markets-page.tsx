@@ -24,7 +24,7 @@ import { formatNumber } from '@vegaprotocol/utils';
 import { TopMarketList } from './top-market-list';
 import {
   useNewListings,
-  useTVL,
+  useTotalVolumeLocked,
   useTopGainers,
   useTotalVolume24hCandles,
 } from './use-markets-stats';
@@ -64,7 +64,7 @@ export const MarketsPage = () => {
   const totalVolumeSparkline = (
     <Sparkline width={80} height={20} data={totalVolume24hCandles} />
   );
-  const tvl = useTVL(activeMarkets);
+  const tvl = useTotalVolumeLocked(activeMarkets);
 
   const totalVolume24h = activeMarkets?.reduce((acc, market) => {
     return (
