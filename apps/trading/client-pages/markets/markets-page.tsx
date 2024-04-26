@@ -189,7 +189,7 @@ export const MarketTables = ({
               target="_blank"
               rel="noreferrer"
             >
-              {t('Propose a new market')}
+              {t('Propose market')}
             </a>
           )}
         </div>
