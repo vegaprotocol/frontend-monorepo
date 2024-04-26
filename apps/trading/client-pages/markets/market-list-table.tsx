@@ -17,6 +17,7 @@ const defaultColDef = {
   filter: true,
   resizable: true,
   filterParams: { buttons: ['reset'] },
+  minWidth: 100,
 };
 
 const components = {
