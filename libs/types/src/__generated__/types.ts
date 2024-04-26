@@ -155,8 +155,6 @@ export enum AccountType {
   ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES = 'ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES',
   /** RewardMarketProposers - an account holding rewards for market proposers */
   ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS = 'ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS',
-  /** Realised return reward account is per asset per reward scheme */
-  ACCOUNT_TYPE_REWARD_REALISED_RETURN = 'ACCOUNT_TYPE_REWARD_REALISED_RETURN',
   /** Relative return reward account is a per asset per market account for relative return reward funds */
   ACCOUNT_TYPE_REWARD_RELATIVE_RETURN = 'ACCOUNT_TYPE_REWARD_RELATIVE_RETURN',
   /** Return volatility reward account is a per asset per market account for return volatility reward funds */
@@ -443,8 +441,6 @@ export type BatchProposalTermsChange = {
    * Constrained by "minEnactInSeconds" and "maxEnactInSeconds" network parameters.
    */
   enactmentDatetime?: Maybe<Scalars['Timestamp']>;
-  /** RFC3339Nano time and date allocated to the validator to validate the proposal. */
-  validationDatetime?: Maybe<Scalars['Timestamp']>;
 };
 
 export type BenefitTier = {
@@ -931,8 +927,6 @@ export enum DispatchMetric {
   DISPATCH_METRIC_MAKER_FEES_RECEIVED = 'DISPATCH_METRIC_MAKER_FEES_RECEIVED',
   /** Dispatch metric that uses the total value of the market if above the required threshold and not paid given proposer bonus yet */
   DISPATCH_METRIC_MARKET_VALUE = 'DISPATCH_METRIC_MARKET_VALUE',
-  /** Dispatch metric that uses the realised return of the party in the market */
-  DISPATCH_METRIC_REALISED_RETURN = 'DISPATCH_METRIC_REALISED_RETURN',
   /** Dispatch metric that uses the relative PNL of the party in the market */
   DISPATCH_METRIC_RELATIVE_RETURN = 'DISPATCH_METRIC_RELATIVE_RETURN',
   /** Dispatch metric that uses return volatility of the party in the market */
@@ -970,8 +964,6 @@ export type DispatchStrategy = {
   stakingRequirement: Scalars['String'];
   /** The teams in scope for the reward, if the entity is teams */
   teamScope?: Maybe<Array<Maybe<Scalars['ID']>>>;
-  /** Interval for the distribution of the transfer */
-  transfer_interval: Scalars['Int'];
   /** Number of epochs to evaluate the metric on */
   windowLength: Scalars['Int'];
 };
@@ -1929,8 +1921,6 @@ export type LiquidationStrategy = {
   __typename?: 'LiquidationStrategy';
   /** Specifies the fraction of its position the network will try to reduce its position by in a single disposal attempt. */
   disposalFraction: Scalars['String'];
-  /** Specifies the slippage relative to the mid prige within which the network will place orders to dispose of its position. */
-  disposalSlippageRange: Scalars['String'];
   /** Specifies the interval, in seconds, at which point the network will try to unload its position. */
   disposalTimeStep: Scalars['Int'];
   /** Specifies the size of the position held by the network that it will try to dispose of in one attempt. */
@@ -5960,6 +5950,8 @@ export type Spot = {
   __typename?: 'Spot';
   /** Underlying base asset for the spot product */
   baseAsset: Asset;
+  /** Name of the instrument */
+  name: Scalars['String'];
   /** Underlying quote asset for the spot product */
   quoteAsset: Asset;
 };
@@ -5968,6 +5960,8 @@ export type SpotProduct = {
   __typename?: 'SpotProduct';
   /** Underlying base asset for the spot product */
   baseAsset: Asset;
+  /** Name of the instrument */
+  name: Scalars['String'];
   /** Underlying quote asset for the spot product */
   quoteAsset: Asset;
 };
@@ -6229,8 +6223,6 @@ export enum StopOrderRejectionReason {
   REJECTION_REASON_STOP_ORDER_NOT_ALLOWED_WITHOUT_A_POSITION = 'REJECTION_REASON_STOP_ORDER_NOT_ALLOWED_WITHOUT_A_POSITION',
   /** This stop order does not close the position */
   REJECTION_REASON_STOP_ORDER_NOT_CLOSING_THE_POSITION = 'REJECTION_REASON_STOP_ORDER_NOT_CLOSING_THE_POSITION',
-  /** Stop orders on spot markets cannot have a position size override */
-  REJECTION_REASON_STOP_ORDER_SIZE_OVERRIDE_UNSUPPORTED_FOR_SPOT = 'REJECTION_REASON_STOP_ORDER_SIZE_OVERRIDE_UNSUPPORTED_FOR_SPOT',
   /** Trading is not allowed yet */
   REJECTION_REASON_TRADING_NOT_ALLOWED = 'REJECTION_REASON_TRADING_NOT_ALLOWED'
 }
