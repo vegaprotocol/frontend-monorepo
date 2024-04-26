@@ -4,16 +4,6 @@ import { useNewListings } from './use-markets-stats';
 import { useTotalVolume24hCandles } from './use-markets-stats';
 
 import { useTotalVolumeLocked } from './use-markets-stats';
-import { addDecimal } from '@vegaprotocol/utils';
-
-jest.mock('@vegaprotocol/utils', () => ({
-  addDecimal: jest
-    .fn()
-    .mockImplementation(
-      (value: string, decimals: number) =>
-        Number(value) * Math.pow(10, -decimals)
-    ),
-}));
 
 describe('Market page stats', () => {
   describe('useTotalVolumeLocked', () => {
@@ -68,10 +58,20 @@ describe('Market page stats', () => {
           ),
           decimalPlaces: 2,
           positionDecimalPlaces: 1,
+          tradableInstrument: {
+            instrument: {
+              product: {
+                __typename: 'Future',
+                settlementAsset: {
+                  decimals: 3,
+                },
+              },
+            },
+          },
         },
       ] as MarketMaybeWithCandles[];
 
-      const expectedVolumes = Array(24).fill(addDecimal('100', 3));
+      const expectedVolumes = Array(24).fill(0.1);
       expect(useTotalVolume24hCandles(markets)).toEqual(expectedVolumes);
     });
   });

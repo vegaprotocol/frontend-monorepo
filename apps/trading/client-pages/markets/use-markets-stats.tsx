@@ -21,7 +21,7 @@ export const useTotalVolume24hCandles = (
       const c = market.candles?.[i];
       if (!c) return acc;
       const asset = getAsset(market);
-      const notional = toQUSD(c.notional, asset.decimals);
+      const notional = toQUSD(c.notional, asset.quantum || 1);
       return toBigNum(
         notional,
         market.decimalPlaces + market.positionDecimalPlaces
@@ -88,7 +88,7 @@ export const useTotalVolumeLocked = (
       ?.filter((e) => e?.node?.type === AccountType.ACCOUNT_TYPE_INSURANCE)
       .map((e) => e?.node);
     const balance = accounts?.reduce((acc, a) => {
-      const balance = toQUSD(a?.balance || 0, a?.asset.decimals || 0);
+      const balance = toQUSD(a?.balance || 0, a?.asset.quantum || 1);
       return toBigNum(balance || 0, a?.asset.decimals || 0).plus(acc);
     }, new BigNumber(0));
     if (!balance) return acc;

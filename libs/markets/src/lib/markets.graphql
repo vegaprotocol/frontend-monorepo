@@ -10,8 +10,7 @@ fragment MarketFields on Market {
       node {
         type
         asset {
-          id
-          decimals
+          ...AssetFields
         }
         balance
       }
