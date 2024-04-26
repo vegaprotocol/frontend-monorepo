@@ -142,7 +142,7 @@ const ClosedMarketsDataGrid = ({
         }: VegaICellRendererParams<Row, 'code'>) => {
           if (!data) return null;
           return (
-            <span className="flex items-center gap-2">
+            <span className="flex items-center gap-2 cursor-pointer">
               <span className="mr-2">
                 <EmblemByMarket market={data?.id || ''} vegaChain={chainId} />
               </span>
