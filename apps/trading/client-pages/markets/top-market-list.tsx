@@ -7,7 +7,6 @@ import {
   priceChangeRenderer,
   priceChangeSparklineRenderer,
 } from './use-column-defs';
-import { StackedCell } from '@vegaprotocol/datagrid';
 import { Links } from '../../lib/links';
 
 export const TopMarketList = ({
@@ -21,7 +20,7 @@ export const TopMarketList = ({
       {markets?.map((market) => {
         return (
           <div
-            className="grid auto-rows-min grid-cols-7 gap-3 text-xs"
+            className="grid auto-rows-min grid-cols-8 gap-3 text-sm"
             key={market.id}
           >
             <span className="col-span-3 overflow-hidden">
@@ -30,18 +29,15 @@ export const TopMarketList = ({
                   <span className="pr-1">
                     <EmblemByMarket market={market.id} vegaChain={chainId} />
                   </span>
-                  <StackedCell
-                    primary={market.tradableInstrument.instrument.code}
-                    secondary={market.tradableInstrument.instrument.name}
-                  />
+                  <span>{market.tradableInstrument.instrument.code}</span>
                 </span>
               </Link>
             </span>
-            <span className="col-span-1">{priceValueFormatter(market, 2)}</span>
-            <span className="col-span-1 flex justify-end">
-              {priceChangeRenderer(market)}
+            <span className="col-span-2 text-right">
+              {priceValueFormatter(market, 2)}
             </span>
-            <span className="col-span-2 flex justify-end">
+            <span className="col-span-3 flex justify-end gap-1">
+              {priceChangeRenderer(market)}
               {priceChangeSparklineRenderer(market)}
             </span>
           </div>
