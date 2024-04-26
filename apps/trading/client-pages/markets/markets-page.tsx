@@ -2,11 +2,6 @@ import { Sparkline, TinyScroll } from '@vegaprotocol/ui-toolkit';
 import { OpenMarkets } from './open-markets';
 import { Proposed } from './proposed';
 import { Closed } from './closed';
-import {
-  DApp,
-  TOKEN_NEW_MARKET_PROPOSAL,
-  useLinks,
-} from '@vegaprotocol/environment';
 import { useT } from '../../lib/use-t';
 import { ErrorBoundary } from '../../components/error-boundary';
 import { usePageTitle } from '../../lib/hooks/use-page-title';
@@ -141,8 +136,6 @@ export const MarketTables = ({
   error: Error | undefined;
 }) => {
   const t = useT();
-  const governanceLink = useLinks(DApp.Governance);
-  const externalLink = governanceLink(TOKEN_NEW_MARKET_PROPOSAL);
   const [activeTab, setActiveTab] = useState('open-markets');
 
   const marketTabs: {
@@ -164,40 +157,26 @@ export const MarketTables = ({
 
   return (
     <div className="pt-0.5 pb-3 px-1.5 xxl:px-[5.5rem]">
-      <div className="flex justify-between">
-        <div className="flex gap-2">
-          {Object.keys(marketTabs).map((key: string) => (
-            <button
-              key={key}
-              className={classNames(
-                'border border-default rounded-lg px-3 py-1.5 my-1 text-sm',
-                {
-                  'dark:bg-vega-cdark-800 bg-vega-clight-800':
-                    activeTab === marketTabs[key].id,
-                  'text-muted': activeTab !== marketTabs[key].id,
-                }
-              )}
-              id={marketTabs[key].id}
-              onClick={() => setActiveTab(marketTabs[key].id)}
-            >
-              {marketTabs[key].name}
-            </button>
-          ))}
-        </div>
-        <div className="flex">
-          {activeTab === 'proposed-markets' && (
-            <a
-              className="border border-default rounded-lg px-3 py-1.5 my-1 text-sm"
-              data-testid="propose-new-market"
-              href={externalLink}
-              target="_blank"
-              rel="noreferrer"
-            >
-              {t('Propose market')}
-            </a>
-          )}
-        </div>
+      <div className="flex gap-2">
+        {Object.keys(marketTabs).map((key: string) => (
+          <button
+            key={key}
+            className={classNames(
+              'border border-default rounded-lg px-3 py-1.5 my-1 text-sm',
+              {
+                'dark:bg-vega-cdark-800 bg-vega-clight-800':
+                  activeTab === marketTabs[key].id,
+                'text-muted': activeTab !== marketTabs[key].id,
+              }
+            )}
+            id={marketTabs[key].id}
+            onClick={() => setActiveTab(marketTabs[key].id)}
+          >
+            {marketTabs[key].name}
+          </button>
+        ))}
       </div>
+
       <div className="h-full my-1 border rounded border-default">
         {activeTab === 'open-markets' && (
           <ErrorBoundary feature="markets-open">
