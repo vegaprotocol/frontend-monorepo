@@ -1,6 +1,7 @@
-import type { MarketMaybeWithCandles } from '@vegaprotocol/markets';
+import { getAsset, type MarketMaybeWithCandles } from '@vegaprotocol/markets';
 import { AccountType } from '@vegaprotocol/types';
-import { addDecimal, priceChangePercentage } from '@vegaprotocol/utils';
+import { priceChangePercentage, toBigNum, toQUSD } from '@vegaprotocol/utils';
+import BigNumber from 'bignumber.js';
 import { orderBy } from 'lodash';
 
 /**
@@ -12,24 +13,21 @@ import { orderBy } from 'lodash';
  */
 export const useTotalVolume24hCandles = (
   activeMarkets: MarketMaybeWithCandles[] | null
-) => {
+): number[] => {
   const candles = [];
   if (!activeMarkets || activeMarkets.length === 0) return [];
   for (let i = 0; i < 24; i++) {
     const totalVolume24hr = activeMarkets.reduce((acc, market) => {
       const c = market.candles?.[i];
       if (!c) return acc;
-      return (
-        acc +
-        Number(
-          addDecimal(
-            c.notional,
-            market.decimalPlaces + market.positionDecimalPlaces
-          )
-        )
-      );
-    }, 0);
-    candles.push(totalVolume24hr);
+      const asset = getAsset(market);
+      const notional = toQUSD(c.notional, asset.decimals);
+      return toBigNum(
+        notional,
+        market.decimalPlaces + market.positionDecimalPlaces
+      ).plus(acc);
+    }, new BigNumber(0));
+    candles.push(totalVolume24hr.toNumber());
   }
   return candles;
 };
@@ -85,14 +83,16 @@ export const useNewListings = (
 export const useTotalVolumeLocked = (
   activeMarkets: MarketMaybeWithCandles[] | null
 ) => {
-  return activeMarkets?.reduce((acc, market) => {
+  const tvl = activeMarkets?.reduce((acc, market) => {
     const accounts = market.accountsConnection?.edges
       ?.filter((e) => e?.node?.type === AccountType.ACCOUNT_TYPE_INSURANCE)
       .map((e) => e?.node);
     const balance = accounts?.reduce((acc, a) => {
-      return acc + Number(addDecimal(a?.balance || 0, a?.asset.decimals || 0));
-    }, 0);
+      const balance = toQUSD(a?.balance || 0, a?.asset.decimals || 0);
+      return toBigNum(balance || 0, a?.asset.decimals || 0).plus(acc);
+    }, new BigNumber(0));
     if (!balance) return acc;
-    return acc + balance;
-  }, 0);
+    return balance.plus(acc);
+  }, new BigNumber(0));
+  return tvl?.toNumber();
 };
