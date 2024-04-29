@@ -585,8 +585,14 @@ fragment BatchProposalFields on BatchProposal {
   }
 }
 
-query Proposals {
-  proposalsConnection {
+query Proposals($pagination: Pagination) {
+  proposalsConnection(pagination: $pagination) {
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
     edges {
       proposalNode {
         __typename

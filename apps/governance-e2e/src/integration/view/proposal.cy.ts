@@ -16,8 +16,7 @@ const connectToVegaWalletButton = 'connect-to-vega-wallet-btn';
 const governanceDocsUrl = 'https://vega.xyz/governance';
 const networkUpgradeProposalListItem = 'protocol-upgrade-proposals-list-item';
 const proposalUpgradeBlockHeight = 'protocol-upgrade-proposal-block-height';
-const closedProposals = 'closed-proposals';
-const closedProposalToggle = 'closed-proposals-toggle-networkUpgrades';
+const listItems = 'proposal-list-items';
 const protocolUpgradeTime = 'protocol-upgrade-time';
 
 context(
@@ -182,11 +181,11 @@ context(
             );
           });
       });
-      cy.getByTestId(closedProposals).within(() => {
+      cy.getByTestId(listItems).within(() => {
         cy.getByTestId(networkUpgradeProposalListItem).should('not.exist');
       });
-      cy.getByTestId(closedProposalToggle).click();
-      cy.getByTestId(closedProposals).within(() => {
+
+      cy.getByTestId(listItems).within(() => {
         cy.getByTestId(networkUpgradeProposalListItem).should('have.length', 2);
         cy.getByTestId(networkUpgradeProposalListItem)
           .first()
@@ -239,19 +238,6 @@ context(
           }
         );
       });
-    });
-
-    it('filtering proposal should not display any network upgrade proposals', function () {
-      const proposalId =
-        'd848fc7881f13d366df5f61ab139d5fcfa72bf838151bb51b54381870e357931';
-
-      mockNetworkUpgradeProposal();
-      navigateTo(navigation.proposals);
-      cy.get('[data-testid="proposal-filter-toggle"]').click();
-      cy.get('[data-testid="filter-input"]').type(proposalId);
-      cy.getByTestId(closedProposals).should('have.length', 1);
-      cy.getByTestId(networkUpgradeProposalListItem).should('not.exist');
-      cy.getByTestId(closedProposalToggle).should('not.exist');
     });
 
     // 3009-NTWU-001 3009-NTWU-002 3009-NTWU-006 3009-NTWU-009
