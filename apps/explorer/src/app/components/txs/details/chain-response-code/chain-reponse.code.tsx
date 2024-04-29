@@ -60,9 +60,9 @@ export const ChainResponseCode = ({
         </span>
       }
     >
-      <div className="mt-[-1px] inline-block">
+      <div className="mt-[-1px] inline-block leading-none">
         <span
-          className="mr-2"
+          className="mr-2 align-text-top"
           aria-label={isSuccess ? 'Success' : 'Warning'}
           role="img"
         >

@@ -5,6 +5,7 @@ export * from './transaction-types';
 // Core
 export {
   mainnet,
+  mirror,
   fairground,
   validatorsTestnet,
   stagnet,

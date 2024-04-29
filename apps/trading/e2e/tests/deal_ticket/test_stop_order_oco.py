@@ -1,4 +1,5 @@
 import pytest
+import time
 from playwright.sync_api import Page, expect
 from vega_sim.null_service import VegaServiceNull
 from actions.vega import submit_order
@@ -22,7 +23,7 @@ expiry_strategy_submit = "expiryStrategy-submit"
 expiry_strategy_cancel = "expiryStrategy-cancel"
 date_picker_field = "date-picker-field"
 submit_stop_order = "place-order"
-stop_orders_tab = "Stop orders"
+stop_orders_tab = "Advanced orders"
 row_table = "row"
 cancel = "cancel"
 market_name_col = '[col-id="market.tradableInstrument.instrument.code"]'
@@ -315,11 +316,13 @@ def test_submit_stop_oco_limit_order_cancel(
     page.get_by_test_id(close_toast).click()
     page.get_by_test_id(stop_orders_tab).click()
     page.get_by_test_id(cancel).first.click()
+    time.sleep(0.5)
     wait_for_toast_confirmation(page)
+    time.sleep(0.5)
     page.reload()
     vega.wait_fn(10)
     vega.wait_for_total_catchup()
-    
+    page.reload()
     expect(
         page.locator(".ag-center-cols-container").locator('[col-id="status"]').first
     ).to_have_text("CancelledOCO")

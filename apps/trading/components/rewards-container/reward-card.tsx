@@ -1,5 +1,9 @@
 import { useT } from '../../lib/use-t';
-import { addDecimalsFormatNumber, formatNumber } from '@vegaprotocol/utils';
+import {
+  addDecimalsFormatNumber,
+  formatNumber,
+  toBigNum,
+} from '@vegaprotocol/utils';
 import classNames from 'classnames';
 import {
   type VegaIconSize,
@@ -7,6 +11,8 @@ import {
   VegaIcon,
   VegaIconNames,
   truncateMiddle,
+  TradingButton,
+  Dialog,
 } from '@vegaprotocol/ui-toolkit';
 import {
   DistributionStrategyDescriptionMapping,
@@ -20,16 +26,20 @@ import {
   MarketState,
   type DispatchStrategy,
   IndividualScopeDescriptionMapping,
-  AccountType,
-  DistributionStrategy,
   IndividualScope,
   type Asset,
   type Team,
   IndividualScopeMapping,
+  type StakingRewardMetric,
+  type StakingDispatchStrategy,
+  type DistributionStrategy,
 } from '@vegaprotocol/types';
-import { type ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 import { type BasicAssetDetails } from '@vegaprotocol/assets';
-import { type EnrichedRewardTransfer } from '../../lib/hooks/use-rewards';
+import {
+  isScopedToTeams,
+  type EnrichedRewardTransfer,
+} from '../../lib/hooks/use-rewards';
 import compact from 'lodash/compact';
 import BigNumber from 'bignumber.js';
 import { useTWAPQuery } from '../../lib/hooks/__generated__/Rewards';
@@ -37,6 +47,10 @@ import { RankPayoutTable } from './rank-table';
 import { useFeatureFlags } from '@vegaprotocol/environment';
 import { Links } from '../../lib/links';
 import { Link } from 'react-router-dom';
+import max from 'lodash/max';
+import min from 'lodash/min';
+import flatten from 'lodash/flatten';
+import sum from 'lodash/sum';
 
 const Tick = () => (
   <VegaIcon
@@ -62,10 +76,141 @@ export type Requirements = {
   pubKey: string;
 };
 
+const GroupCard = ({
+  colour,
+  rewardAmount,
+  dispatchMetric,
+  transferAsset,
+  entityScope,
+  distributionStrategy,
+  distributionDelay,
+  count,
+  onClick,
+}: {
+  colour: CardColour;
+  rewardAmount: string;
+  dispatchMetric: DispatchMetric | StakingDispatchStrategy['dispatchMetric'];
+  transferAsset?: Asset | undefined;
+  entityScope?: EntityScope;
+  distributionStrategy?: DistributionStrategy;
+  distributionDelay?: string | number;
+  count: number;
+  onClick: () => void;
+}) => {
+  const t = useT();
+
+  return (
+    <div data-reward-card className="min-h-[366px] h-full">
+      <div
+        className={classNames(
+          'bg-gradient-to-r col-span-full p-0.5 lg:col-auto h-full',
+          'rounded-lg',
+          CardColourStyles[colour].gradientClassName
+        )}
+        data-testid="active-rewards-card"
+      >
+        <div
+          className={classNames(
+            CardColourStyles[colour].mainClassName,
+            'bg-gradient-to-b bg-vega-clight-800 dark:bg-vega-cdark-800 h-full w-full rounded-md p-4',
+            'flex flex-col gap-4 justify-items-start'
+          )}
+        >
+          <div
+            className={classNames(
+              'flex justify-between gap-2',
+              'pb-3 border-b-[0.5px] dark:border-vega-cdark-500 border-vega-clight-500'
+            )}
+          >
+            {/** ENTITY SCOPE */}
+            <div className="flex flex-col gap-2 items-center text-center">
+              {entityScope && (
+                <>
+                  <EntityIcon entityScope={entityScope} />
+                  <span
+                    className="text-muted text-xs"
+                    data-testid="entity-scope"
+                  >
+                    {EntityScopeLabelMapping[entityScope] || t('Unspecified')}
+                  </span>
+                </>
+              )}
+            </div>
+
+            {/** AMOUNT AND DISTRIBUTION STRATEGY */}
+            <div className="flex flex-col gap-2 items-center text-center">
+              {/** AMOUNT */}
+              <h3 className="flex flex-col gap-1 text-2xl shrink-1 text-center">
+                <span>
+                  {t('Up to')}{' '}
+                  <span className="font-glitch" data-testid="reward-value">
+                    {rewardAmount}
+                  </span>
+                </span>
+
+                <span className="font-alpha" data-testid="reward-asset">
+                  {transferAsset?.symbol || ''}
+                </span>
+              </h3>
+
+              {/** DISTRIBUTION STRATEGY */}
+              {distributionStrategy && (
+                <Tooltip
+                  description={
+                    <div className="flex flex-col gap-4">
+                      <p>
+                        {t(
+                          DistributionStrategyDescriptionMapping[
+                            distributionStrategy
+                          ]
+                        )}
+                        .
+                      </p>
+                    </div>
+                  }
+                  underline={true}
+                >
+                  <span className="text-xs" data-testid="distribution-strategy">
+                    {DistributionStrategyMapping[distributionStrategy]}
+                  </span>
+                </Tooltip>
+              )}
+            </div>
+
+            {/** DISTRIBUTION DELAY */}
+            <DistributionDelay value={distributionDelay} />
+          </div>
+
+          <div className={classNames('flex flex-col gap-3 h-full')}>
+            {/** DISPATCH METRIC */}
+            <span data-testid="dispatch-metric-info">
+              {DispatchMetricLabels[dispatchMetric]}
+            </span>
+            {/** DISPATCH METRIC DESCRIPTION */}
+            <p className="text-muted text-sm">
+              {t(DispatchMetricDescription[dispatchMetric])}
+            </p>
+          </div>
+
+          <div>
+            <TradingButton
+              intent={null}
+              className={classNames(CardColourStyles[colour].btn, 'w-full')}
+              onClick={onClick}
+            >
+              {t('See details of {{count}} rewards', { count })}
+            </TradingButton>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const RewardCard = ({
   colour,
   rewardAmount,
-  rewardAsset,
+  dispatchAsset,
   transferAsset,
   vegaAsset,
   dispatchStrategy,
@@ -78,13 +223,13 @@ const RewardCard = ({
   colour: CardColour;
   rewardAmount: string;
   /** The asset linked to the dispatch strategy via `dispatchMetricAssetId` property. */
-  rewardAsset?: BasicAssetDetails;
+  dispatchAsset?: BasicAssetDetails;
   /** The VEGA asset details, required to format the min staking amount. */
   transferAsset?: Asset | undefined;
   /** The VEGA asset details, required to format the min staking amount. */
   vegaAsset?: BasicAssetDetails;
   /** The transfer's dispatch strategy. */
-  dispatchStrategy: DispatchStrategy;
+  dispatchStrategy: DispatchStrategy | StakingDispatchStrategy;
   /** The number of epochs until the transfer starts. */
   startsIn?: number;
   /** The number of epochs until the transfer stops. */
@@ -98,7 +243,7 @@ const RewardCard = ({
   const t = useT();
 
   return (
-    <div>
+    <div data-reward-card className="min-h-[366px] h-full">
       <div
         className={classNames(
           'bg-gradient-to-r col-span-full p-0.5 lg:col-auto h-full',
@@ -113,7 +258,12 @@ const RewardCard = ({
             'bg-gradient-to-b bg-vega-clight-800 dark:bg-vega-cdark-800 h-full w-full rounded-md p-4 flex flex-col gap-4'
           )}
         >
-          <div className="flex justify-between gap-4">
+          <div
+            className={classNames(
+              'flex justify-between gap-4',
+              'pb-4 border-b-[0.5px] dark:border-vega-cdark-500 border-vega-clight-500'
+            )}
+          >
             {/** ENTITY SCOPE */}
             <div className="flex flex-col gap-2 items-center text-center">
               <EntityIcon entityScope={dispatchStrategy.entityScope} />
@@ -176,336 +326,97 @@ const RewardCard = ({
             </div>
 
             {/** DISTRIBUTION DELAY */}
-            <div className="flex flex-col gap-2 items-center text-center">
-              <CardIcon
-                iconName={VegaIconNames.LOCK}
-                tooltip={t(
-                  'Number of epochs after distribution to delay vesting of rewards by'
-                )}
-              />
-              <span
-                className="text-muted text-xs whitespace-nowrap"
-                data-testid="locked-for"
-              >
-                {t('numberEpochs', '{{count}} epochs', {
-                  count: dispatchStrategy.lockPeriod,
-                })}
-              </span>
-            </div>
+            <DistributionDelay value={dispatchStrategy.lockPeriod} />
           </div>
 
-          <span className="border-[0.5px] dark:border-vega-cdark-500 border-vega-clight-500" />
-          {/** DISPATCH METRIC */}
-          {dispatchMetricInfo ? (
-            dispatchMetricInfo
-          ) : (
-            <span data-testid="dispatch-metric-info">
-              {DispatchMetricLabels[dispatchStrategy.dispatchMetric]}
-            </span>
-          )}
+          <div className="h-full flex flex-col gap-4">
+            {/** DISPATCH METRIC */}
+            <div>
+              {dispatchMetricInfo ? (
+                dispatchMetricInfo
+              ) : (
+                <span data-testid="dispatch-metric-info">
+                  {DispatchMetricLabels[dispatchStrategy.dispatchMetric]}
+                </span>
+              )}
+            </div>
 
-          <div className="flex items-center gap-8 flex-wrap">
-            {/** ENDS IN or STARTS IN */}
-            {startsIn ? (
+            <div className="flex items-center gap-8 flex-wrap">
+              {/** ENDS IN or STARTS IN */}
+              {startsIn ? (
+                <span className="flex flex-col">
+                  <span className="text-muted text-xs">{t('Starts in')} </span>
+                  <span data-testid="starts-in" data-startsin={startsIn}>
+                    {t('numberEpochs', '{{count}} epochs', {
+                      count: startsIn,
+                    })}
+                  </span>
+                </span>
+              ) : (
+                endsIn && (
+                  <span className="flex flex-col">
+                    <span className="text-muted text-xs">{t('Ends in')} </span>
+                    <span data-testid="ends-in" data-endsin={endsIn}>
+                      {endsIn >= 0
+                        ? t('numberEpochs', '{{count}} epochs', {
+                            count: endsIn,
+                          })
+                        : t('Ended')}
+                    </span>
+                  </span>
+                )
+              )}
+              {/** WINDOW LENGTH */}
               <span className="flex flex-col">
-                <span className="text-muted text-xs">{t('Starts in')} </span>
-                <span data-testid="starts-in" data-startsin={startsIn}>
+                <span className="text-muted text-xs">{t('Assessed over')}</span>
+                <span data-testid="assessed-over">
                   {t('numberEpochs', '{{count}} epochs', {
-                    count: startsIn,
+                    count: dispatchStrategy.windowLength,
                   })}
                 </span>
               </span>
-            ) : (
-              endsIn && (
+              {/** CAPPED AT */}
+              {dispatchStrategy.capRewardFeeMultiple && (
                 <span className="flex flex-col">
-                  <span className="text-muted text-xs">{t('Ends in')} </span>
-                  <span data-testid="ends-in" data-endsin={endsIn}>
-                    {endsIn >= 0
-                      ? t('numberEpochs', '{{count}} epochs', {
-                          count: endsIn,
-                        })
-                      : t('Ended')}
-                  </span>
+                  <span className="text-muted text-xs">{t('Capped at')}</span>
+                  <Tooltip
+                    description={t(
+                      'Reward will be capped at {{capRewardFeeMultiple}} X of taker fees paid in the epoch',
+                      {
+                        capRewardFeeMultiple:
+                          dispatchStrategy.capRewardFeeMultiple,
+                      }
+                    )}
+                  >
+                    <span data-testid="cappedAt">
+                      x{dispatchStrategy.capRewardFeeMultiple}
+                    </span>
+                  </Tooltip>
                 </span>
-              )
-            )}
-            {/** WINDOW LENGTH */}
-            <span className="flex flex-col">
-              <span className="text-muted text-xs">{t('Assessed over')}</span>
-              <span data-testid="assessed-over">
-                {t('numberEpochs', '{{count}} epochs', {
-                  count: dispatchStrategy.windowLength,
-                })}
-              </span>
-            </span>
-            {/** CAPPED AT */}
-            {dispatchStrategy.capRewardFeeMultiple && (
-              <span className="flex flex-col">
-                <span className="text-muted text-xs">{t('Capped at')}</span>
-                <Tooltip
-                  description={t(
-                    'Reward will be capped at {{capRewardFeeMultiple}} X of taker fees paid in the epoch',
-                    {
-                      capRewardFeeMultiple:
-                        dispatchStrategy.capRewardFeeMultiple,
-                    }
-                  )}
-                >
-                  <span data-testid="cappedAt">
-                    x{dispatchStrategy.capRewardFeeMultiple}
-                  </span>
-                </Tooltip>
-              </span>
+              )}
+            </div>
+
+            {/** DISPATCH METRIC DESCRIPTION */}
+            {dispatchStrategy?.dispatchMetric && (
+              <p className="text-muted text-sm">
+                {t(DispatchMetricDescription[dispatchStrategy?.dispatchMetric])}
+              </p>
             )}
           </div>
 
-          {/** DISPATCH METRIC DESCRIPTION */}
-          {dispatchStrategy?.dispatchMetric && (
-            <p className="text-muted text-sm h-16">
-              {t(DispatchMetricDescription[dispatchStrategy?.dispatchMetric])}
-            </p>
-          )}
-          <span className="border-[0.5px] dark:border-vega-cdark-500 border-vega-clight-500" />
           {/** REQUIREMENTS */}
           {dispatchStrategy && (
-            <RewardRequirements
-              dispatchStrategy={dispatchStrategy}
-              rewardAsset={rewardAsset}
-              vegaAsset={vegaAsset}
-              requirements={requirements}
-              gameId={gameId}
-              startsIn={startsIn}
-            />
-          )}
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const StakingRewardCard = ({
-  colour,
-  rewardAmount,
-  rewardAsset,
-  startsIn,
-  endsIn,
-  requirements,
-  vegaAsset,
-  gameId,
-}: {
-  colour: CardColour;
-  rewardAmount: string;
-  /** The asset linked to the dispatch strategy via `dispatchMetricAssetId` property. */
-  rewardAsset?: Asset;
-  /** The number of epochs until the transfer starts. */
-  startsIn?: number;
-  /** The number of epochs until the transfer stops. */
-  endsIn?: number;
-  /** The VEGA asset details, required to format the min staking amount. */
-  vegaAsset?: BasicAssetDetails;
-  /** Eligibility requirements for rewards */
-  requirements?: Requirements;
-  /** The game id of the transfer */
-  gameId?: string | null;
-}) => {
-  const t = useT();
-  const stakeAvailable = requirements?.stakeAvailable;
-  const tickOrCross = requirements ? (
-    stakeAvailable && stakeAvailable > 1 ? (
-      <Tick />
-    ) : (
-      <Cross />
-    )
-  ) : null;
-  return (
-    <div>
-      <div
-        className={classNames(
-          'bg-gradient-to-r col-span-full p-0.5 lg:col-auto h-full',
-          'rounded-lg',
-          CardColourStyles[colour].gradientClassName
-        )}
-        data-testid="active-rewards-card"
-      >
-        <div
-          className={classNames(
-            CardColourStyles[colour].mainClassName,
-            'bg-gradient-to-b bg-vega-clight-800 dark:bg-vega-cdark-800 h-full w-full rounded-md p-4 flex flex-col gap-4'
-          )}
-        >
-          <div className="flex justify-between gap-4">
-            {/** ENTITY SCOPE */}
-            <div className="flex flex-col gap-2 items-center text-center">
-              <EntityIcon entityScope={EntityScope.ENTITY_SCOPE_INDIVIDUALS} />
-              {
-                <span className="text-muted text-xs" data-testid="entity-scope">
-                  {EntityScopeLabelMapping[
-                    EntityScope.ENTITY_SCOPE_INDIVIDUALS
-                  ] || t('Unspecified')}
-                </span>
-              }
-            </div>
-
-            {/** AMOUNT AND DISTRIBUTION STRATEGY */}
-            <div className="flex flex-col gap-2 items-center text-center">
-              {/** AMOUNT */}
-              <h3 className="flex flex-col gap-1 text-2xl shrink-1 text-center">
-                <span className="font-glitch" data-testid="reward-value">
-                  {rewardAmount}
-                </span>
-
-                <span className="font-alpha">{rewardAsset?.symbol || ''}</span>
-              </h3>
-
-              {/** DISTRIBUTION STRATEGY */}
-              <Tooltip
-                description={t(
-                  DistributionStrategyDescriptionMapping[
-                    DistributionStrategy.DISTRIBUTION_STRATEGY_PRO_RATA
-                  ]
-                )}
-                underline={true}
-              >
-                <span className="text-xs" data-testid="distribution-strategy">
-                  {
-                    DistributionStrategyMapping[
-                      DistributionStrategy.DISTRIBUTION_STRATEGY_PRO_RATA
-                    ]
-                  }
-                </span>
-              </Tooltip>
-            </div>
-
-            {/** DISTRIBUTION DELAY */}
-            <div className="flex flex-col gap-2 items-center text-center">
-              <CardIcon
-                iconName={VegaIconNames.LOCK}
-                tooltip={t(
-                  'Number of epochs after distribution to delay vesting of rewards by'
-                )}
+            <div className="pt-4 border-t-[0.5px] dark:border-vega-cdark-500 border-vega-clight-500">
+              <RewardRequirements
+                dispatchStrategy={dispatchStrategy}
+                dispatchAsset={dispatchAsset}
+                vegaAsset={vegaAsset}
+                requirements={requirements}
+                gameId={gameId}
+                startsIn={startsIn}
               />
-              <span
-                className="text-muted text-xs whitespace-nowrap"
-                data-testid="locked-for"
-              >
-                {t('numberEpochs', '{{count}} epochs', {
-                  count: 0,
-                })}
-              </span>
             </div>
-          </div>
-
-          <span className="border-[0.5px] dark:border-vega-cdark-500 border-vega-clight-500" />
-          {/** DISPATCH METRIC */}
-          {
-            <span data-testid="dispatch-metric-info">
-              {t('Staking rewards')}
-            </span>
-          }
-          <div className="flex items-center gap-8 flex-wrap">
-            {/** ENDS IN or STARTS IN */}
-            {startsIn ? (
-              <span className="flex flex-col">
-                <span className="text-muted text-xs">{t('Starts in')} </span>
-                <span data-testid="starts-in" data-startsin={startsIn}>
-                  {t('numberEpochs', '{{count}} epochs', {
-                    count: startsIn,
-                  })}
-                </span>
-              </span>
-            ) : (
-              endsIn && (
-                <span className="flex flex-col">
-                  <span className="text-muted text-xs">{t('Ends in')} </span>
-                  <span data-testid="ends-in" data-endsin={endsIn}>
-                    {endsIn >= 0
-                      ? t('numberEpochs', '{{count}} epochs', {
-                          count: endsIn,
-                        })
-                      : t('Ended')}
-                  </span>
-                </span>
-              )
-            )}
-
-            {/** WINDOW LENGTH */}
-            <span className="flex flex-col">
-              <span className="text-muted text-xs">{t('Assessed over')}</span>
-              <span data-testid="assessed-over">
-                {t('numberEpochs', '{{count}} epochs', {
-                  count: 1,
-                })}
-              </span>
-            </span>
-          </div>
-          {/** DISPATCH METRIC DESCRIPTION */}
-          {
-            <p className="text-muted text-sm h-16">
-              {t(
-                'Global staking reward for staking $VEGA on the network via the Governance app'
-              )}
-            </p>
-          }
-          <span className="border-[0.5px] dark:border-vega-cdark-500 border-vega-clight-500" />
-          {/** REQUIREMENTS */}
-          <dl className="flex justify-between flex-wrap items-center gap-3 text-xs">
-            <div className="flex flex-col gap-1">
-              <dt className="flex items-center gap-1 text-muted">
-                {t('Team scope')}
-              </dt>
-              <dd className="flex items-center gap-1" data-testid="scope">
-                <Tooltip
-                  description={
-                    IndividualScopeDescriptionMapping[
-                      IndividualScope.INDIVIDUAL_SCOPE_ALL
-                    ]
-                  }
-                >
-                  <span>
-                    {tickOrCross} {t('Individual')}
-                  </span>
-                </Tooltip>
-              </dd>
-            </div>
-            <div className="flex flex-col gap-1">
-              <dt className="flex items-center gap-1 text-muted">
-                {t('Staked VEGA')}
-              </dt>
-              <dd
-                className="flex items-center gap-1"
-                data-testid="staking-requirement"
-              >
-                {stakeAvailable ? (
-                  stakeAvailable > 1 ? (
-                    <Tick />
-                  ) : (
-                    <Cross />
-                  )
-                ) : undefined}
-                {stakeAvailable
-                  ? addDecimalsFormatNumber(
-                      stakeAvailable?.toString() || '0',
-                      vegaAsset?.decimals || 18, // vega asset decimals
-                      6
-                    )
-                  : '1.00'}
-              </dd>
-            </div>
-
-            <div className="flex flex-col gap-1">
-              <dt className="flex items-center gap-1 text-muted">
-                {t('Average position')}
-              </dt>
-              <dd
-                className="flex items-center gap-1"
-                data-testid="average-position"
-              >
-                {' '}
-                {tickOrCross}
-                {formatNumber(0, 2)}
-              </dd>
-            </div>
-          </dl>
+          )}
         </div>
       </div>
     </div>
@@ -515,36 +426,78 @@ const StakingRewardCard = ({
 export const DispatchMetricInfo = ({
   reward,
 }: {
-  reward: EnrichedRewardTransfer;
+  reward: EnrichedRewardTransfer<DispatchStrategy | StakingDispatchStrategy>;
 }) => {
   const t = useT();
-  const dispatchStrategy = reward.transfer.kind.dispatchStrategy;
-  const marketNames = compact(
-    reward.markets?.map((m) => m.tradableInstrument.instrument.name)
+  const dispatchMetric = reward.transfer.kind.dispatchStrategy?.dispatchMetric;
+  const markets = compact(
+    reward.markets?.map((m, i) => [
+      m.tradableInstrument.instrument.code,
+      m.tradableInstrument.instrument.name,
+      <Link className="underline" key={i} to={Links.MARKET(m.id)}>
+        {m.tradableInstrument.instrument.name}
+      </Link>,
+    ])
   );
 
   let additionalDispatchMetricInfo = null;
 
   // if asset found then display asset symbol
-  if (reward.dispatchAsset) {
-    additionalDispatchMetricInfo = <span>{reward.dispatchAsset.symbol}</span>;
+  if (
+    reward.dispatchAsset &&
+    reward.transfer.kind.dispatchStrategy.dispatchMetric !==
+      'STAKING_REWARD_METRIC'
+  ) {
+    additionalDispatchMetricInfo = (
+      <Tooltip
+        description={t(
+          'This reward is scoped to the markets settled in {{asset}}',
+          {
+            asset: reward.dispatchAsset.symbol,
+          }
+        )}
+      >
+        <span className="underline cursor-help">
+          {reward.dispatchAsset.symbol}
+        </span>
+      </Tooltip>
+    );
   }
   // but if scoped to only one market then display market name
-  if (marketNames.length === 1) {
-    additionalDispatchMetricInfo = <span>{marketNames[0]}</span>;
+  if (markets.length === 1) {
+    const [code, , link] = markets[0];
+    additionalDispatchMetricInfo = (
+      <Tooltip
+        description={t('This reward is scoped to {{market}} market', {
+          market: code,
+        })}
+      >
+        <span>{link}</span>
+      </Tooltip>
+    );
   }
   // or if scoped to many markets then indicate it's scoped to "specific markets"
-  if (marketNames.length > 1) {
+  if (markets.length > 1) {
+    const description = (
+      <div>
+        <p>{t('This reward is scoped to the following markets')}:</p>
+        <ol className="list-decimal pl-3">
+          {markets.map(([, , link], i) => (
+            <li key={i}>{link}</li>
+          ))}
+        </ol>
+      </div>
+    );
     additionalDispatchMetricInfo = (
-      <Tooltip description={marketNames.join(', ')}>
-        <span>{t('Specific markets')}</span>
+      <Tooltip description={description}>
+        <span className="underline cursor-help">{t('Specific markets')}</span>
       </Tooltip>
     );
   }
 
   return (
     <span data-testid="dispatch-metric-info" className="h-12">
-      {DispatchMetricLabels[dispatchStrategy.dispatchMetric]}
+      {dispatchMetric ? DispatchMetricLabels[dispatchMetric] : t('Unknown')}
       {additionalDispatchMetricInfo != null && (
         <> • {additionalDispatchMetricInfo}</>
       )}
@@ -554,14 +507,14 @@ export const DispatchMetricInfo = ({
 
 const RewardRequirements = ({
   dispatchStrategy,
-  rewardAsset,
+  dispatchAsset,
   vegaAsset,
   requirements,
   gameId,
   startsIn,
 }: {
-  dispatchStrategy: DispatchStrategy;
-  rewardAsset?: BasicAssetDetails;
+  dispatchStrategy: DispatchStrategy | StakingDispatchStrategy;
+  dispatchAsset?: BasicAssetDetails;
   vegaAsset?: BasicAssetDetails;
   requirements?: Requirements;
   gameId?: string | null;
@@ -582,7 +535,7 @@ const RewardRequirements = ({
     variables: {
       gameId: gameId || '',
       partyId: requirements?.pubKey || '',
-      assetId: rewardAsset?.id || '',
+      assetId: dispatchAsset?.id || '',
     },
     skip: !featureFlags.TWAP_REWARDS || !requirements,
     errorPolicy: 'ignore',
@@ -592,17 +545,18 @@ const RewardRequirements = ({
 
   const averagePositionFormatted =
     averagePosition &&
-    addDecimalsFormatNumber(averagePosition, rewardAsset?.decimals || 0);
+    addDecimalsFormatNumber(averagePosition, dispatchAsset?.decimals || 0);
 
   const averagePositionRequirementsFormatted =
     averagePositionRequirements &&
     addDecimalsFormatNumber(
       averagePositionRequirements,
-      rewardAsset?.decimals || 0
+      dispatchAsset?.decimals || 0
     );
 
   return (
     <dl className="flex justify-between flex-wrap items-center gap-3 text-xs">
+      {/** SCOPE */}
       <div className="flex flex-col gap-1">
         <dt className="flex items-center gap-1 text-muted">
           {entityLabel
@@ -619,6 +573,7 @@ const RewardRequirements = ({
         </dd>
       </div>
 
+      {/** STAKING REQUIREMENT */}
       <div className="flex flex-col gap-1">
         <dt className="flex items-center gap-1 text-muted">
           {t('Staked VEGA')}
@@ -651,6 +606,7 @@ const RewardRequirements = ({
         </dd>
       </div>
 
+      {/** AVERAGE POSITION REQUIREMENT */}
       <div className="flex flex-col gap-1">
         <dt className="flex items-center gap-1 text-muted">
           {t('Average position')}
@@ -705,7 +661,7 @@ const RewardEntityScope = ({
   dispatchStrategy,
   requirements,
 }: {
-  dispatchStrategy: DispatchStrategy;
+  dispatchStrategy: DispatchStrategy | StakingDispatchStrategy;
   requirements?: Requirements;
 }) => {
   const t = useT();
@@ -849,44 +805,55 @@ enum CardColour {
 
 const CardColourStyles: Record<
   CardColour,
-  { gradientClassName: string; mainClassName: string }
+  { gradientClassName: string; mainClassName: string; btn: string }
 > = {
   [CardColour.BLUE]: {
     gradientClassName: 'from-vega-blue-500 to-vega-green-400',
     mainClassName: 'from-vega-blue-400 dark:from-vega-blue-600 to-20%',
+    btn: '!bg-gradient-to-br from-vega-blue-500 from-50% to-vega-green-400 !text-white',
   },
   [CardColour.GREEN]: {
     gradientClassName: 'from-vega-green-500 to-vega-yellow-500',
     mainClassName: 'from-vega-green-400 dark:from-vega-green-600 to-20%',
+    btn: '!bg-gradient-to-br from-vega-green-500 from-50% to-vega-yellow-400 !text-black',
   },
   [CardColour.GREY]: {
     gradientClassName: 'from-vega-cdark-500 to-vega-clight-200',
     mainClassName: 'from-vega-cdark-400 dark:from-vega-cdark-600 to-20%',
+    btn: '!bg-gradient-to-br from-vega-cdark-500 from-50% to-vega-clight-200 !text-white',
   },
   [CardColour.ORANGE]: {
     gradientClassName: 'from-vega-orange-500 to-vega-pink-400',
     mainClassName: 'from-vega-orange-400 dark:from-vega-orange-600 to-20%',
+    btn: '!bg-gradient-to-br from-vega-orange-500 from-50% to-vega-pink-600 !text-black',
   },
   [CardColour.PINK]: {
     gradientClassName: 'from-vega-pink-500 to-vega-purple-400',
     mainClassName: 'from-vega-pink-400 dark:from-vega-pink-600 to-20%',
+    btn: '!bg-gradient-to-br from-vega-pink-500 from-50% to-vega-purple-600 !text-white',
   },
   [CardColour.PURPLE]: {
     gradientClassName: 'from-vega-purple-500 to-vega-blue-400',
     mainClassName: 'from-vega-purple-400 dark:from-vega-purple-600 to-20%',
+    btn: '!bg-gradient-to-br from-vega-purple-500 from-50% to-vega-blue-600 !text-white',
   },
   [CardColour.WHITE]: {
     gradientClassName:
       'from-vega-clight-600 dark:from-vega-clight-900 to-vega-yellow-500 dark:to-vega-yellow-400',
     mainClassName: 'from-white dark:from-vega-clight-100 to-20%',
+    btn: '!bg-gradient-to-br from-white from-50% to-vega-yellow-500 !text-black',
   },
   [CardColour.YELLOW]: {
     gradientClassName: 'from-vega-yellow-500 to-vega-orange-400',
     mainClassName: 'from-vega-yellow-400 dark:from-vega-yellow-600 to-20%',
+    btn: '!bg-gradient-to-br from-vega-yellow-500 from-50% to-vega-orange-400 !text-black',
   },
 };
 
-const DispatchMetricColourMap: Record<DispatchMetric, CardColour> = {
+const DispatchMetricColourMap: Record<
+  DispatchMetric | StakingRewardMetric,
+  CardColour
+> = {
   // Liquidity provision fees received
   [DispatchMetric.DISPATCH_METRIC_LP_FEES_RECEIVED]: CardColour.BLUE,
   // Price maker fees paid
@@ -903,6 +870,8 @@ const DispatchMetricColourMap: Record<DispatchMetric, CardColour> = {
   [DispatchMetric.DISPATCH_METRIC_RETURN_VOLATILITY]: CardColour.YELLOW,
   // Validator ranking
   [DispatchMetric.DISPATCH_METRIC_VALIDATOR_RANKING]: CardColour.WHITE,
+  STAKING_REWARD_METRIC: CardColour.WHITE,
+  [DispatchMetric.DISPATCH_METRIC_REALISED_RETURN]: CardColour.BLUE,
 };
 
 const CardIcon = ({
@@ -951,7 +920,12 @@ const EntityIcon = ({
   );
 };
 
-export const areAllMarketsSettled = (transferNode: EnrichedRewardTransfer) => {
+export const areAllMarketsSettled = (
+  transferNode: Pick<
+    EnrichedRewardTransfer<DispatchStrategy | StakingDispatchStrategy>,
+    'markets'
+  >
+) => {
   const settledMarkets = transferNode.markets?.filter(
     (m) =>
       m?.data?.marketState &&
@@ -970,7 +944,10 @@ export const areAllMarketsSettled = (transferNode: EnrichedRewardTransfer) => {
 };
 
 export const areAllMarketsSuspended = (
-  transferNode: EnrichedRewardTransfer
+  transferNode: Pick<
+    EnrichedRewardTransfer<DispatchStrategy | StakingDispatchStrategy>,
+    'markets'
+  >
 ) => {
   return (
     transferNode.markets?.filter(
@@ -982,12 +959,137 @@ export const areAllMarketsSuspended = (
   );
 };
 
+export const GroupRewardCard = ({
+  transferNodes,
+  currentEpoch,
+  requirements,
+}: {
+  transferNodes: EnrichedRewardTransfer<
+    DispatchStrategy | StakingDispatchStrategy
+  >[];
+  currentEpoch: number;
+  requirements?: Requirements;
+}) => {
+  const startsIns = transferNodes.map(
+    (n) => n.transfer.kind.startEpoch - currentEpoch
+  );
+  const allNotStarted =
+    startsIns.filter((s) => s > 0).length === startsIns.length &&
+    startsIns.length > 0;
+  const allNotTraded =
+    transferNodes.filter((n) => !n.isAssetTraded).length ===
+    transferNodes.length;
+  const markets = compact(flatten(transferNodes.map((n) => n.markets)));
+
+  const dispatchStrategies = transferNodes.map(
+    (n) => n.transfer.kind.dispatchStrategy
+  );
+
+  let colour = DispatchMetricColourMap[dispatchStrategies[0].dispatchMetric];
+
+  /**
+   * Display the card as grey if any of the condition is `true`:
+   *
+   * - all markets scoped to the reward are settled
+   * - all markets scoped to the reward are suspended
+   * - the reward's asset is not actively traded on any of the active markets
+   * - it start in the future
+   *
+   */
+  if (
+    areAllMarketsSettled({ markets }) ||
+    areAllMarketsSuspended({ markets }) ||
+    allNotTraded ||
+    allNotStarted
+  ) {
+    colour = CardColour.GREY;
+  }
+
+  const rewardAmounts = transferNodes.map((n) =>
+    toBigNum(n.transfer.amount, n.transfer.asset?.decimals || 0).toNumber()
+  );
+  const maxRewardAmount = sum(rewardAmounts) as number;
+  const rewardAmount = formatNumber(maxRewardAmount, 6);
+
+  const transferAsset = transferNodes[0].transfer.asset || undefined;
+
+  const dispatchMetric =
+    transferNodes[0].transfer.kind.dispatchStrategy.dispatchMetric;
+
+  const entityScope =
+    transferNodes[0].transfer.kind.dispatchStrategy.entityScope;
+
+  const distributionStrategy =
+    transferNodes[0].transfer.kind.dispatchStrategy.distributionStrategy;
+
+  const delays = transferNodes.map(
+    (n) => n.transfer.kind.dispatchStrategy.lockPeriod
+  );
+  const minDelay = min(delays) || 0;
+  const maxDelay = max(delays) || 0;
+
+  const distributionDelay =
+    minDelay === maxDelay ? minDelay : `${minDelay} - ${maxDelay}`;
+
+  const [open, setOpen] = useState(false);
+
+  return (
+    <>
+      <GroupCard
+        colour={colour}
+        rewardAmount={rewardAmount}
+        transferAsset={transferAsset}
+        dispatchMetric={dispatchMetric}
+        entityScope={entityScope}
+        distributionStrategy={distributionStrategy}
+        distributionDelay={distributionDelay}
+        count={transferNodes.length}
+        onClick={() => {
+          setOpen(true);
+        }}
+      />
+      <Dialog
+        size="large"
+        open={open}
+        onChange={(isOpen) => {
+          setOpen(isOpen);
+        }}
+        title={
+          DispatchMetricLabels[
+            transferNodes[0].transfer.kind.dispatchStrategy.dispatchMetric
+          ]
+        }
+      >
+        <div
+          data-card-from-group
+          className={classNames(
+            'pt-4',
+
+            'grid gap-x-8 gap-y-10 h-fit grid-cols-[repeat(auto-fill,_minmax(230px,_1fr))] md:grid-cols-[repeat(auto-fill,_minmax(230px,_1fr))] lg:grid-cols-[repeat(auto-fill,_minmax(320px,_1fr))] xl:grid-cols-[repeat(auto-fill,_minmax(335px,_1fr))]'
+          )}
+        >
+          {transferNodes.map((n, i) => (
+            <ActiveRewardCard
+              key={i}
+              transferNode={n}
+              currentEpoch={currentEpoch}
+              requirements={requirements}
+            />
+          ))}
+        </div>
+      </Dialog>
+    </>
+  );
+};
+
 export const ActiveRewardCard = ({
   transferNode,
   currentEpoch,
   requirements,
 }: {
-  transferNode: EnrichedRewardTransfer;
+  transferNode: EnrichedRewardTransfer<
+    DispatchStrategy | StakingDispatchStrategy
+  >;
   currentEpoch: number;
   requirements?: Requirements;
 }) => {
@@ -997,34 +1099,9 @@ export const ActiveRewardCard = ({
       ? transferNode.transfer.kind.endEpoch - currentEpoch
       : undefined;
 
-  if (
-    !transferNode.transfer.kind.dispatchStrategy &&
-    transferNode.transfer.toAccountType ===
-      AccountType.ACCOUNT_TYPE_GLOBAL_REWARD
-  ) {
-    return (
-      <LinkToGame gameId={transferNode.transfer.gameId}>
-        <StakingRewardCard
-          colour={CardColour.WHITE}
-          rewardAmount={addDecimalsFormatNumber(
-            transferNode.transfer.amount,
-            transferNode.transfer.asset?.decimals || 0,
-            6
-          )}
-          rewardAsset={transferNode.transfer.asset || undefined}
-          startsIn={startsIn > 0 ? startsIn : undefined}
-          endsIn={endsIn}
-          requirements={requirements}
-          gameId={transferNode.transfer.gameId}
-        />
-      </LinkToGame>
-    );
-  }
+  const dispatchStrategy = transferNode.transfer.kind.dispatchStrategy;
 
-  let colour =
-    DispatchMetricColourMap[
-      transferNode.transfer.kind.dispatchStrategy.dispatchMetric
-    ];
+  let colour = DispatchMetricColourMap[dispatchStrategy.dispatchMetric];
 
   /**
    * Display the card as grey if any of the condition is `true`:
@@ -1045,36 +1122,65 @@ export const ActiveRewardCard = ({
   }
 
   return (
-    <LinkToGame gameId={transferNode.transfer.gameId}>
-      <RewardCard
-        colour={colour}
-        rewardAmount={addDecimalsFormatNumber(
-          transferNode.transfer.amount,
-          transferNode.transfer.asset?.decimals || 0,
-          6
-        )}
-        rewardAsset={transferNode.dispatchAsset}
-        transferAsset={transferNode.transfer.asset || undefined}
-        startsIn={startsIn > 0 ? startsIn : undefined}
-        endsIn={endsIn}
-        dispatchStrategy={transferNode.transfer.kind.dispatchStrategy}
-        dispatchMetricInfo={<DispatchMetricInfo reward={transferNode} />}
-        requirements={requirements}
-        gameId={transferNode.transfer.gameId}
-      />
-    </LinkToGame>
+    <RewardCard
+      colour={colour}
+      rewardAmount={addDecimalsFormatNumber(
+        transferNode.transfer.amount,
+        transferNode.transfer.asset?.decimals || 0,
+        6
+      )}
+      dispatchAsset={transferNode.dispatchAsset}
+      transferAsset={transferNode.transfer.asset || undefined}
+      startsIn={startsIn > 0 ? startsIn : undefined}
+      endsIn={endsIn}
+      dispatchStrategy={dispatchStrategy}
+      dispatchMetricInfo={<DispatchMetricInfo reward={transferNode} />}
+      requirements={requirements}
+      gameId={transferNode.transfer.gameId}
+    />
   );
 };
 
-const LinkToGame = ({
-  gameId,
+export const LinkToGame = ({
+  reward,
   children,
 }: {
-  gameId?: string | null;
+  reward: EnrichedRewardTransfer<DispatchStrategy | StakingDispatchStrategy>;
   children: ReactNode;
 }) => {
-  if (gameId && gameId.length > 0) {
+  const gameId = reward.transfer.gameId;
+  const scoped = isScopedToTeams(reward);
+  if (scoped && gameId && gameId.length > 0) {
     return <Link to={Links.COMPETITIONS_GAME(gameId)}>{children}</Link>;
   }
   return children;
+};
+
+const DistributionDelay = ({ value = 0 }: { value?: number | string }) => {
+  const t = useT();
+  return (
+    <div className="flex flex-col gap-2 items-center text-center">
+      <CardIcon
+        iconName={VegaIconNames.LOCK}
+        tooltip={t(
+          // 'Number of epochs after distribution to delay vesting of rewards by'
+          'After rewards are distributed, they will be vested after this number of epochs has passed.'
+        )}
+      />
+      <span
+        className="text-muted text-xs whitespace-nowrap"
+        data-testid="locked-for"
+      >
+        {typeof value === 'number'
+          ? t('numberEpochs', '{{count}} epochs', {
+              count: value,
+            })
+          : t('numberEpochs', '{{count}} epochs', {
+              replace: {
+                count: value,
+              },
+            })}
+      </span>
+    </div>
+  );
 };

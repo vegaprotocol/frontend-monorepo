@@ -10,7 +10,8 @@ export type FinalizedVote = VoteEventFieldsFragment & { pubKey: string };
 
 export const useVoteSubmit = () => {
   const { pubKey } = useVegaWallet();
-  const { send, transaction, setComplete } = useVegaTransaction();
+  const { send, transaction, setComplete, setTransaction } =
+    useVegaTransaction();
   const waitForVoteEvent = useVoteEvent(transaction);
 
   const [finalizedVote, setFinalizedVote] = useState<FinalizedVote | null>(
@@ -48,6 +49,7 @@ export const useVoteSubmit = () => {
 
   return {
     transaction,
+    setTransaction,
     finalizedVote,
     submit,
   };

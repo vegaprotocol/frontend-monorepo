@@ -17,7 +17,7 @@ export const TxsPerBlock = ({ blockHeight, txCount }: TxsPerBlockProps) => {
   const url = getTxsDataUrl({ filters, count: txCount });
   const {
     state: { data, loading, error },
-  } = useFetch<BlockExplorerTransactions>(url);
+  } = useFetch<BlockExplorerTransactions>(url, { cache: 'force-cache' });
 
   return (
     <AsyncRenderer data={data} error={error} loading={!!loading}>

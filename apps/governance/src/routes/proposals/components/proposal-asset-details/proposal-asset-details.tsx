@@ -64,15 +64,7 @@ export const ProposalAssetDetails = ({
           <AssetDetailsTable
             asset={asset}
             originalAsset={originalAsset}
-            omitRows={[
-              AssetDetail.STATUS,
-              AssetDetail.INFRASTRUCTURE_FEE_ACCOUNT_BALANCE,
-              AssetDetail.GLOBAL_REWARD_POOL_ACCOUNT_BALANCE,
-              AssetDetail.MAKER_PAID_FEES_ACCOUNT_BALANCE,
-              AssetDetail.MAKER_RECEIVED_FEES_ACCOUNT_BALANCE,
-              AssetDetail.LP_FEE_REWARD_ACCOUNT_BALANCE,
-              AssetDetail.MARKET_PROPOSER_REWARD_ACCOUNT_BALANCE,
-            ]}
+            omitRows={[AssetDetail.STATUS]}
             inline={true}
             noBorder={true}
             dtClassName="text-black dark:text-white text-ui !px-0 !font-normal"

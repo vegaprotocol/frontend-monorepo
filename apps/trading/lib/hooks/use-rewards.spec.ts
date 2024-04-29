@@ -5,6 +5,7 @@ import {
   type TransferKind,
   TransferStatus,
   IndividualScope,
+  type StakingDispatchStrategy,
 } from '@vegaprotocol/types';
 import {
   type RewardTransfer,
@@ -28,7 +29,7 @@ const makeReward = (
   endEpoch?: number,
   dispatchStrategy?: DispatchStrategy,
   kind: TransferKind['__typename'] = 'OneOffTransfer'
-): RewardTransfer =>
+): RewardTransfer<DispatchStrategy | StakingDispatchStrategy> =>
   ({
     transfer: {
       status,
@@ -39,7 +40,7 @@ const makeReward = (
         endEpoch,
       },
     },
-  } as RewardTransfer);
+  } as RewardTransfer<DispatchStrategy | StakingDispatchStrategy>);
 
 describe('isReward', () => {
   it.each([

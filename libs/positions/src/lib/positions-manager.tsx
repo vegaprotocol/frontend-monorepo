@@ -36,28 +36,31 @@ export const PositionsManager = ({
 
   const onClose = useCallback(
     ({ marketId, openVolume }: { marketId: string; openVolume: string }) =>
-      create({
-        batchMarketInstructions: {
-          cancellations: [
-            {
-              marketId,
-              orderId: '', // omit order id to cancel all active orders
-            },
-          ],
-          submissions: [
-            {
-              marketId: marketId,
-              type: Schema.OrderType.TYPE_MARKET as const,
-              timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_IOC as const,
-              side: openVolume.startsWith('-')
-                ? Schema.Side.SIDE_BUY
-                : Schema.Side.SIDE_SELL,
-              size: HALFMAXGOINT64, // improvement for avoiding leftovers filled in the meantime when close request has been sent
-              reduceOnly: true,
-            },
-          ],
+      create(
+        {
+          batchMarketInstructions: {
+            cancellations: [
+              {
+                marketId,
+                orderId: '', // omit order id to cancel all active orders
+              },
+            ],
+            submissions: [
+              {
+                marketId: marketId,
+                type: Schema.OrderType.TYPE_MARKET as const,
+                timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_IOC as const,
+                side: openVolume.startsWith('-')
+                  ? Schema.Side.SIDE_BUY
+                  : Schema.Side.SIDE_SELL,
+                size: HALFMAXGOINT64, // improvement for avoiding leftovers filled in the meantime when close request has been sent
+                reduceOnly: true,
+              },
+            ],
+          },
         },
-      }),
+        { isClosePosition: true }
+      ),
     [create]
   );
 

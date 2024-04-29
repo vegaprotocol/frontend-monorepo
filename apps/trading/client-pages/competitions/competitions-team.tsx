@@ -14,7 +14,12 @@ import {
   Intent,
   CopyWithTooltip,
 } from '@vegaprotocol/ui-toolkit';
-import { TransferStatus, type Asset } from '@vegaprotocol/types';
+import {
+  type DispatchStrategy,
+  type StakingDispatchStrategy,
+  TransferStatus,
+  type Asset,
+} from '@vegaprotocol/types';
 import classNames from 'classnames';
 import { useT } from '../../lib/use-t';
 import { Table } from '../../components/table';
@@ -121,6 +126,11 @@ const TeamPageContainer = ({ teamId }: { teamId: string | undefined }) => {
   );
 };
 
+enum Tab {
+  Results = 'Results',
+  Members = 'Members',
+}
+
 const TeamPage = ({
   team,
   partyTeam,
@@ -139,13 +149,15 @@ const TeamPage = ({
   members?: Member[];
   games?: TeamGame[];
   gamesLoading?: boolean;
-  transfers?: EnrichedRewardTransfer[];
+  transfers?: EnrichedRewardTransfer<
+    DispatchStrategy | StakingDispatchStrategy
+  >[];
   transfersLoading?: boolean;
   allMarkets?: MarketMap;
   refetch: () => void;
 }) => {
   const t = useT();
-  const [showGames, setShowGames] = useState(true);
+  const [tab, setTab] = useState<Tab>(Tab.Results);
 
   const createdAt = new Date(team.createdAt);
 
@@ -207,6 +219,19 @@ const TeamPage = ({
               </span>{' '}
               ({t('epoch')}: {team.createdAtEpoch})
             </div>
+            <div>
+              <span>
+                {t('ID')}:{' '}
+                <span className="text-vega-cdark-600 dark:text-vega-clight-600 ">
+                  {truncateMiddle(team.teamId)}
+                </span>{' '}
+              </span>
+              <CopyWithTooltip text={team.teamId}>
+                <button className="h-4 w-4">
+                  <VegaIcon name={VegaIconNames.COPY} size={14} />
+                </button>
+              </CopyWithTooltip>
+            </div>
           </div>
         </div>
       </header>
@@ -214,8 +239,8 @@ const TeamPage = ({
       <section>
         <div className="flex gap-4 lg:gap-8 mb-4 border-b border-default">
           <ToggleButton
-            active={showGames}
-            onClick={() => setShowGames(true)}
+            active={tab === Tab.Results}
+            onClick={() => setTab(Tab.Results)}
             data-testid="games-toggle"
           >
             {t('Results {{games}}', {
@@ -225,8 +250,8 @@ const TeamPage = ({
             })}
           </ToggleButton>
           <ToggleButton
-            active={!showGames}
-            onClick={() => setShowGames(false)}
+            active={tab === Tab.Members}
+            onClick={() => setTab(Tab.Members)}
             data-testid="members-toggle"
           >
             {t('Members ({{count}})', {
@@ -234,7 +259,7 @@ const TeamPage = ({
             })}
           </ToggleButton>
         </div>
-        {showGames ? (
+        {tab === Tab.Results && (
           <Games
             games={games}
             gamesLoading={gamesLoading}
@@ -242,9 +267,8 @@ const TeamPage = ({
             transfersLoading={transfersLoading}
             allMarkets={allMarkets}
           />
-        ) : (
-          <Members members={members} />
         )}
+        {tab === Tab.Members && <Members members={members} />}
       </section>
     </LayoutWithGradient>
   );
@@ -259,7 +283,9 @@ const Games = ({
 }: {
   games?: TeamGame[];
   gamesLoading?: boolean;
-  transfers?: EnrichedRewardTransfer[];
+  transfers?: EnrichedRewardTransfer<
+    DispatchStrategy | StakingDispatchStrategy
+  >[];
   transfersLoading?: boolean;
   allMarkets?: MarketMap;
 }) => {
@@ -539,7 +565,7 @@ const GameTypeCell = ({
   transfer,
   allMarkets,
 }: {
-  transfer?: EnrichedRewardTransfer;
+  transfer?: EnrichedRewardTransfer<DispatchStrategy | StakingDispatchStrategy>;
   allMarkets?: MarketMap;
 }) => {
   const [open, setOpen] = useState(false);
@@ -578,7 +604,7 @@ const ActiveRewardCardDialog = ({
   open: boolean;
   onChange: (isOpen: boolean) => void;
   trigger?: HTMLElement | null;
-  transfer: EnrichedRewardTransfer;
+  transfer: EnrichedRewardTransfer<DispatchStrategy | StakingDispatchStrategy>;
   allMarkets?: MarketMap;
 }) => {
   const t = useT();

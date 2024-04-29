@@ -16,22 +16,10 @@ fragment AssetFields on Asset {
     }
   }
   status
-  infrastructureFeeAccount {
+  networkTreasuryAccount {
     balance
   }
-  globalRewardPoolAccount {
-    balance
-  }
-  takerFeeRewardAccount {
-    balance
-  }
-  makerFeeRewardAccount {
-    balance
-  }
-  lpFeeRewardAccount {
-    balance
-  }
-  marketProposerRewardAccount {
+  globalInsuranceAccount {
     balance
   }
 }

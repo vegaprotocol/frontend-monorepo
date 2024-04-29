@@ -15,8 +15,7 @@ import { normalizeOrderAmendment } from '../../utils';
 
 export enum Filter {
   'Open' = 'Open',
-  'Closed' = 'Closed',
-  'Rejected' = 'Rejected',
+  'Inactive' = 'Inactive',
 }
 
 export interface OrderListManagerProps {
@@ -143,7 +142,7 @@ export const OrderListManager = ({
               fields.limitPrice,
               fields.size
             );
-            const originalOrder: OrderTxUpdateFieldsFragment = {
+            const order: OrderTxUpdateFieldsFragment = {
               type: editOrder.type,
               id: editOrder.id,
               status: editOrder.status,
@@ -156,7 +155,7 @@ export const OrderListManager = ({
               marketId: editOrder.market.id,
               remaining: editOrder.remaining,
             };
-            create({ orderAmendment }, originalOrder);
+            create({ orderAmendment }, { order });
             setEditOrder(null);
           }}
         />

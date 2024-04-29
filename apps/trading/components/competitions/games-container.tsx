@@ -5,6 +5,7 @@ import { useStakeAvailable } from '../../lib/hooks/use-stake-available';
 import { useMyTeam } from '../../lib/hooks/use-my-team';
 import {
   ActiveRewardCard,
+  LinkToGame,
   areAllMarketsSettled,
 } from '../rewards-container/reward-card';
 import {
@@ -20,6 +21,8 @@ import {
   DispatchMetricLabels,
   EntityScopeLabelMapping,
   AccountType,
+  type DispatchStrategy,
+  type StakingDispatchStrategy,
 } from '@vegaprotocol/types';
 
 export type Filter = {
@@ -81,7 +84,7 @@ export const GamesContainer = ({
   data,
   currentEpoch,
 }: {
-  data: EnrichedRewardTransfer[];
+  data: EnrichedRewardTransfer<DispatchStrategy | StakingDispatchStrategy>[];
   currentEpoch: number;
 }) => {
   const t = useT();
@@ -137,18 +140,18 @@ export const GamesContainer = ({
           // are settled
           .filter((n) => !areAllMarketsSettled(n))
           .map((game, i) => {
-            // TODO: Remove `kind` prop from ActiveRewardCard
             const { transfer } = game;
             if (!transfer.kind.dispatchStrategy?.dispatchMetric) {
               return null;
             }
             return (
-              <ActiveRewardCard
-                key={i}
-                transferNode={game}
-                currentEpoch={currentEpoch}
-                requirements={requirements}
-              />
+              <LinkToGame key={i} reward={game}>
+                <ActiveRewardCard
+                  transferNode={game}
+                  currentEpoch={currentEpoch}
+                  requirements={requirements}
+                />
+              </LinkToGame>
             );
           })}
       </div>

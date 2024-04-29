@@ -4,8 +4,10 @@ import { findReferee, useReferees } from './use-referees';
 import BigNumber from 'bignumber.js';
 import { type BenefitTier, useReferralProgram } from './use-referral-program';
 import { type StatValue } from '../constants';
+import last from 'lodash/last';
 import minBy from 'lodash/minBy';
 import { useEpochInfoQuery } from '../../../lib/hooks/__generated__/Epoch';
+import first from 'lodash/first';
 
 export type RefereeStats = {
   /** the discount factor -> `discountFactor` ~ `referralDiscountFactor` */
@@ -31,7 +33,7 @@ export const useRefereeStats = (
     variables: {
       code: setId,
     },
-    skip: !setId || setId.length === 0 || !pubKey || pubKey.length === 0,
+    skip: !setId || setId.length === 0,
     fetchPolicy: 'cache-and-network',
   });
 
@@ -60,19 +62,52 @@ export const useRefereeStats = (
     (s) => s.partyId === pubKey
   );
 
+  /** This is a running combined volume of a set. It's not user specific. */
+  const vol = first(
+    removePaginationWrapper(data?.referralSetStats.edges)
+  )?.referralSetRunningNotionalTakerVolume;
+  const runningVolume = {
+    value: vol ? BigNumber(vol) : ZERO,
+    loading,
+    error,
+  };
+
   const discountFactor = {
     value: stats?.discountFactor ? BigNumber(stats.discountFactor) : ZERO,
     loading: loading || refereesLoading,
     error: error || refereesError,
   };
 
-  const benefitTier = {
-    value: benefitTiers.find(
+  const joinedAtEpoch = BigNumber(referee?.atEpoch || '');
+  const currentEpoch = BigNumber(epochData?.epoch.id || '');
+
+  const epochs = {
+    value:
+      !currentEpoch.isNaN() && !joinedAtEpoch.isNaN()
+        ? currentEpoch.minus(joinedAtEpoch)
+        : ZERO,
+    loading: refereesLoading || epochsLoading,
+    error: refereesError || epochsError,
+  };
+
+  const tierByAllRequirements = last(
+    benefitTiers.filter(
       (t) =>
-        !discountFactor.value.isNaN() &&
-        !isNaN(t.discountFactor) &&
-        t.discountFactor === discountFactor.value.toNumber()
-    ),
+        t.discountFactor === discountFactor.value.toNumber() &&
+        runningVolume.value.isGreaterThanOrEqualTo(t.minimumVolume) &&
+        epochs.value.isGreaterThanOrEqualTo(t.epochs)
+    )
+  );
+  const tierByDiscount = benefitTiers.find(
+    (t) =>
+      !discountFactor.value.isNaN() &&
+      !isNaN(t.discountFactor) &&
+      t.discountFactor === discountFactor.value.toNumber() &&
+      runningVolume.value.isGreaterThan(t.minimumVolume)
+  );
+
+  const benefitTier = {
+    value: tierByAllRequirements || tierByDiscount,
     loading: programLoading || discountFactor.loading,
     error: programError || discountFactor.error,
   };
@@ -86,25 +121,6 @@ export const useRefereeStats = (
       : minBy(benefitTiers, (t) => t.tier), //  min tier number is lowest tier
     loading: benefitTier.loading,
     error: benefitTier.error,
-  };
-
-  const runningVolume = {
-    value: stats?.referralSetRunningNotionalTakerVolume
-      ? BigNumber(stats.referralSetRunningNotionalTakerVolume)
-      : ZERO,
-    loading,
-    error,
-  };
-
-  const joinedAtEpoch = BigNumber(referee?.atEpoch || '');
-  const currentEpoch = BigNumber(epochData?.epoch.id || '');
-  const epochs = {
-    value:
-      !currentEpoch.isNaN() && !joinedAtEpoch.isNaN()
-        ? currentEpoch.minus(joinedAtEpoch)
-        : ZERO,
-    loading: refereesLoading || epochsLoading,
-    error: refereesError || epochsError,
   };
 
   return {

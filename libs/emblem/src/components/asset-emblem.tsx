@@ -1,10 +1,10 @@
-import { URL_BASE, DEFAULT_VEGA_CHAIN, FILENAME } from '../config';
+import { URL_BASE, FILENAME } from '../config';
 import { EmblemBase } from './emblem-base';
+import { getVegaChain } from './lib/get-chain';
 
 export type EmblemByAssetProps = {
   asset: string;
   vegaChain?: string;
-  contract?: never;
 };
 
 /**
@@ -15,7 +15,7 @@ export type EmblemByAssetProps = {
  * @returns React.Node
  */
 export function EmblemByAsset(p: EmblemByAssetProps) {
-  const chain = p.vegaChain ? p.vegaChain : DEFAULT_VEGA_CHAIN;
+  const chain = getVegaChain(p.vegaChain);
   const url = `${URL_BASE}/vega/${chain}/asset/${p.asset}/${FILENAME}`;
 
   return <EmblemBase src={url} {...p} />;

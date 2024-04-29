@@ -32,10 +32,6 @@ function generateAsset(): AssetFieldsFragment {
       lifetimeLimit: '',
       withdrawThreshold: '',
     },
-    infrastructureFeeAccount: {
-      balance: '1',
-      __typename: 'AccountBalance',
-    },
   };
 }
 

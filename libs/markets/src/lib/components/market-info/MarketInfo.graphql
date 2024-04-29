@@ -165,7 +165,6 @@ fragment Spot on Spot {
   quoteAsset {
     ...AssetListFields
   }
-  name
 }
 
 query MarketInfo($marketId: ID!) {
@@ -207,6 +206,7 @@ query MarketInfo($marketId: ID!) {
           type
           asset {
             id
+            decimals
           }
           balance
         }

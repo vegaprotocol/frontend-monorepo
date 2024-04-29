@@ -14,7 +14,6 @@ import {
   type TypedDataAgGrid,
   type VegaICellRendererParams,
   zeroClassNames,
-  isZero,
 } from '@vegaprotocol/datagrid';
 import {
   ButtonLink,
@@ -264,7 +263,6 @@ export const PositionsTable = ({
         cellClass: 'font-mono text-right',
         cellClassRules: {
           ...signedNumberCssClassRules,
-          [zeroClassNames]: isZero,
         },
         filter: 'agNumberColumnFilter',
         sortable: false,
@@ -554,7 +552,9 @@ export const PositionsTable = ({
                     <ButtonLink
                       data-testid="close-position"
                       onClick={() => data && onClose(data)}
-                      title={t('Close position')}
+                      title={t(
+                        'Close this position at market price and cancel all open orders on this market'
+                      )}
                     >
                       <VegaIcon name={VegaIconNames.CROSS} size={16} />
                     </ButtonLink>
@@ -625,7 +625,11 @@ export const OpenVolumeCell = ({
 }: VegaICellRendererParams<Position, 'openVolume'>) => {
   const t = useT();
 
-  const { data: latestTrade } = useLatestTrade(data?.marketId, data?.partyId);
+  const { data: latestTrade } = useLatestTrade(
+    data?.marketId,
+    data?.partyId,
+    data?.openVolume !== '0'
+  );
 
   if (!valueFormatted || !data || !data.notional) {
     return <>-</>;
@@ -644,7 +648,17 @@ export const OpenVolumeCell = ({
   );
 
   const cellContent = (
-    <StackedCell primary={valueFormatted} secondary={notional} />
+    <StackedCell
+      primary={
+        positionStatus === PositionStatus.POSITION_STATUS_CLOSED_OUT &&
+        data.openVolume === '0' ? (
+          <span className={zeroClassNames}>{valueFormatted}</span>
+        ) : (
+          valueFormatted
+        )
+      }
+      secondary={notional}
+    />
   );
 
   if (positionStatus !== PositionStatus.POSITION_STATUS_CLOSED_OUT) {

@@ -8,13 +8,13 @@ export type HashProps = React.HTMLProps<HTMLSpanElement> & {
  * are broken when they need to wrap. This will remove the need
  * for a lot of the overflow scrolling that currently exists.
  */
-const Hash = ({ text, truncate = false }: HashProps) => {
+const Hash = ({ className, text, truncate = false }: HashProps) => {
   const h = truncate ? text.slice(0, 6) : text;
 
   return (
     <code
       title={text}
-      className="break-all font-mono"
+      className={`break-all font-mono ${className}`}
       style={{ wordWrap: 'break-word' }}
     >
       {h}

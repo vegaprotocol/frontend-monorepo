@@ -7,6 +7,7 @@ import {
 } from '@vegaprotocol/assets';
 import { useNavigate } from 'react-router-dom';
 import { Routes } from '../../../routes/route-names';
+import { EmblemWithChain } from '../../emblem-with-chain/emblem-with-chain';
 
 export type AssetLinkProps = Partial<ComponentProps<typeof ButtonLink>> & {
   assetId: string;
@@ -48,7 +49,10 @@ export const AssetLink = ({
       }}
       {...props}
     >
-      <Hash text={label} />
+      <EmblemWithChain asset={assetId} />
+      <div className="ml-1 inline-block">
+        <Hash text={label} />
+      </div>
     </ButtonLink>
   );
 };

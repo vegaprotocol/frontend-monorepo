@@ -12,32 +12,33 @@ import {
 } from './__generated__/types';
 import type {
   AccountType,
+  DispatchStrategy,
   StopOrderRejectionReason,
 } from './__generated__/types';
-import type {
-  AuctionTrigger,
-  DataSourceSpecStatus,
-  DepositStatus,
-  Interval,
-  LiquidityProvisionStatus,
-  MarketState,
-  MarketTradingMode,
-  NodeStatus,
-  OrderRejectionReason,
-  OrderStatus,
-  OrderTimeInForce,
-  OrderType,
-  PositionStatus,
-  ProposalRejectionReason,
-  ProposalState,
-  Side,
-  StakeLinkingStatus,
-  TransferType,
-  ValidatorStatus,
-  VoteValue,
-  WithdrawalStatus,
-  DispatchMetric,
-  StopOrderStatus,
+import {
+  type AuctionTrigger,
+  type DataSourceSpecStatus,
+  type DepositStatus,
+  type Interval,
+  type LiquidityProvisionStatus,
+  type MarketState,
+  type MarketTradingMode,
+  type NodeStatus,
+  type OrderRejectionReason,
+  type OrderStatus,
+  type OrderTimeInForce,
+  type OrderType,
+  type PositionStatus,
+  type ProposalRejectionReason,
+  type ProposalState,
+  type Side,
+  type StakeLinkingStatus,
+  type TransferType,
+  type ValidatorStatus,
+  type VoteValue,
+  type WithdrawalStatus,
+  type DispatchMetric,
+  type StopOrderStatus,
 } from './__generated__/types';
 import type { ProductType, ProposalProductType } from './product';
 
@@ -72,6 +73,7 @@ export const AccountTypeMapping: {
   ACCOUNT_TYPE_HOLDING: 'Holding account',
   ACCOUNT_TYPE_LP_LIQUIDITY_FEES: 'LP liquidity fees account',
   ACCOUNT_TYPE_NETWORK_TREASURY: 'Network treasury account',
+  ACCOUNT_TYPE_REWARD_REALISED_RETURN: 'Realised return reward account',
 };
 
 /**
@@ -311,6 +313,8 @@ export const StopOrderRejectionReasonMapping: {
     'Stop order cannot have matching OCO expiry times',
   REJECTION_REASON_STOP_ORDER_LINKED_PERCENTAGE_INVALID:
     'The percentage value for the linked stop order is invalid',
+  REJECTION_REASON_STOP_ORDER_SIZE_OVERRIDE_UNSUPPORTED_FOR_SPOT:
+    'Stop order size override is not supported for spot markets',
 };
 
 /**
@@ -438,10 +442,24 @@ export const ProposalRejectionReasonMapping: {
   PROPOSAL_ERROR_INVALID_PERPETUAL_PRODUCT: 'Invalid perpetual product',
   PROPOSAL_ERROR_INVALID_SLA_PARAMS: 'Invalid SLA params',
   PROPOSAL_ERROR_MISSING_SLA_PARAMS: 'Missing SLA params',
-  // TODO: check and remove ts-expect-error when schema is correct
-  // @ts-expect-error this rejection reason is not yet in the schema but does exist
+  // @ts-ignore - temporarily suppressing this as it's a valid value
   PROPOSAL_ERROR_PROPOSAL_IN_BATCH_REJECTED:
     'One or more sub proposals are invalid',
+  PROPOSAL_ERROR_INVALID_REFERRAL_PROGRAM:
+    'Proposal error invalid referral program',
+  PROPOSAL_ERROR_INVALID_SIZE_DECIMAL_PLACES: 'Invalid size decimal places',
+  PROPOSAL_ERROR_INVALID_VOLUME_DISCOUNT_PROGRAM:
+    'Proposal error invalid volume discount program',
+  PROPOSAL_ERROR_LINEAR_SLIPPAGE_FACTOR_OUT_OF_RANGE:
+    'Proposal error linear slippage factor out of range',
+  PROPOSAL_ERROR_LP_PRICE_RANGE_NONPOSITIVE:
+    'Proposal error LP price range non-positive',
+  PROPOSAL_ERROR_LP_PRICE_RANGE_TOO_LARGE:
+    'Proposal error LP price range too large',
+  PROPOSAL_ERROR_PROPOSAL_IN_BATCH_DECLINED:
+    'Proposal error proposal in batch declined',
+  PROPOSAL_ERROR_QUADRATIC_SLIPPAGE_FACTOR_OUT_OF_RANGE:
+    'Proposal error quadratic slippage factor out of range',
 };
 
 /**
@@ -636,8 +654,24 @@ export const GovernanceTransferKindMapping: GovernanceTransferKindMap = {
   RecurringGovernanceTransfer: 'Recurring',
 };
 
+/**
+ * The below dispatch metric labels are extended by additional
+ * `StakingRewardMetric` which handles the case when a reward (transfer)
+ * has undefined dispatch strategy and it targetted to
+ * `AccountType.ACCOUNT_TYPE_GLOBAL_REWARD`.
+ */
+
+export type StakingRewardMetric = 'STAKING_REWARD_METRIC';
+
+export type StakingDispatchStrategy = Omit<
+  DispatchStrategy,
+  'dispatchMetric'
+> & {
+  dispatchMetric: StakingRewardMetric;
+};
+
 type DispatchMetricLabel = {
-  [T in DispatchMetric]: string;
+  [T in DispatchMetric | StakingRewardMetric]: string;
 };
 
 export const DispatchMetricLabels: DispatchMetricLabel = {
@@ -649,6 +683,8 @@ export const DispatchMetricLabels: DispatchMetricLabel = {
   DISPATCH_METRIC_RELATIVE_RETURN: 'Relative return',
   DISPATCH_METRIC_RETURN_VOLATILITY: 'Return volatility',
   DISPATCH_METRIC_VALIDATOR_RANKING: 'Validator ranking',
+  STAKING_REWARD_METRIC: 'Staking rewards',
+  DISPATCH_METRIC_REALISED_RETURN: 'Realised return',
 };
 
 export const DispatchMetricDescription: DispatchMetricLabel = {
@@ -667,6 +703,10 @@ export const DispatchMetricDescription: DispatchMetricLabel = {
     'Get rewards for having the least amount of variance in your returns while you have a position open during the rewards window.',
   DISPATCH_METRIC_VALIDATOR_RANKING:
     'Get rewards if you run a validator node with a high ranking score.',
+  STAKING_REWARD_METRIC:
+    'Global staking reward for staking $VEGA on the network via the Governance app',
+  DISPATCH_METRIC_REALISED_RETURN:
+    'Get rewards for having a high profit in relation to your position size.',
 };
 
 export const PositionStatusMapping: {
@@ -758,9 +798,8 @@ export enum DistributionStrategyMapping {
 }
 
 export enum DistributionStrategyDescriptionMapping {
-  DISTRIBUTION_STRATEGY_PRO_RATA = `Rewards funded using the pro-rata strategy should be distributed pro-rata by each entity's reward metric scaled by any active multipliers that party has`,
-  /** Rewards funded using the rank strategy */
-  DISTRIBUTION_STRATEGY_RANK = 'Rewards funded using the rank strategy',
+  DISTRIBUTION_STRATEGY_PRO_RATA = "Rewards funded using the pro-rata strategy are distributed pro-rata by each party's reward score scaled by any active multipliers they have.",
+  DISTRIBUTION_STRATEGY_RANK = 'Rewards funded using the rank strategy.',
 }
 
 export const ProposalProductTypeShortName: Record<ProposalProductType, string> =

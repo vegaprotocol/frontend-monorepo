@@ -159,13 +159,13 @@ def test_deal_ticket_discount_program(
     expect(tooltip.get_by_test_id(TOTAL_FEE_VALUE)).to_have_text("0.09045 tDAI")
 
 
-def test_fills_taker_discount_program(
+def test_fills_taker_discount_program_foo(
     setup_environment: Tuple[VegaServiceNull, str, Page],
 ) -> None:
     vega, market, page = setup_environment
     page.goto(f"/#/markets/{market}")
-    page.get_by_test_id(FILLS).click()
-    row = page.get_by_test_id(TAB_FILLS).locator(ROW_LOCATOR).first
+    page.get_by_test_id(TRADES).nth(1).click()
+    row = page.locator(ROW_LOCATOR).first
     expect(row.locator(COL_SIZE)).to_have_text("+1")
     expect(row.locator(COL_PRICE)).to_have_text("103.50 tDAI")
     expect(row.locator(COL_PRICE_1)).to_have_text("103.50 tDAI")
@@ -180,8 +180,8 @@ def test_fills_maker_discount_program(
     vega, market, page = setup_environment
     page.goto(f"/#/markets/{market}")
     change_keys(page, vega, MM_WALLET.name)
-    page.get_by_test_id(FILLS).click()
-    row = page.get_by_test_id(TAB_FILLS).locator(ROW_LOCATOR).first
+    page.get_by_test_id(TRADES).nth(1).click()
+    row = page.locator(ROW_LOCATOR).first
     expect(row.locator(COL_SIZE)).to_have_text("-1")
     expect(row.locator(COL_PRICE)).to_have_text("103.50 tDAI")
     expect(row.locator(COL_PRICE_1)).to_have_text("103.50 tDAI")
@@ -196,8 +196,8 @@ def test_fills_maker_fee_tooltip_discount_program(
     vega, market, page = setup_environment
     page.goto(f"/#/markets/{market}")
     change_keys(page, vega, MM_WALLET.name)
-    page.get_by_test_id(FILLS).click()
-    row = page.get_by_test_id(TAB_FILLS).locator(ROW_LOCATOR).first
+    page.get_by_test_id(TRADES).nth(1).click()
+    row = page.locator(ROW_LOCATOR).first
     # tbd - tooltip is not visible without this wait
     page.wait_for_timeout(1000)
     row.locator(COL_FEE).hover()
@@ -211,8 +211,8 @@ def test_fills_taker_fee_tooltip_discount_program(
 ) -> None:
     vega, market, page = setup_environment
     page.goto(f"/#/markets/{market}")
-    page.get_by_test_id(FILLS).click()
-    row = page.get_by_test_id(TAB_FILLS).locator(ROW_LOCATOR).first
+    page.get_by_test_id(TRADES).nth(1).click()
+    row = page.locator(ROW_LOCATOR).first
     # tbd - tooltip is not visible without this wait
     page.wait_for_timeout(1000)
     row.locator(COL_FEE).hover()

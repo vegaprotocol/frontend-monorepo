@@ -119,7 +119,7 @@ describe('Oracle Markets component', () => {
       },
     };
     const res = render(renderComponent('789', [mock]));
-    expect(await res.findByText('Termination for')).toBeInTheDocument();
+    expect(await res.findByText('Schedule for')).toBeInTheDocument();
     expect(await res.findByTestId('m-123')).toBeInTheDocument();
   });
 

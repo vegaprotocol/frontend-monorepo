@@ -115,7 +115,7 @@ def test_market_monitoring_auction_price_volatility_limit_order(
     wait_for_toast_confirmation(page)
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
-    page.get_by_test_id("All").click()
+    page.get_by_test_id("Open").click()
     expect(page.get_by_role("row").nth(4)).to_contain_text(
         "0+1LimitActive110.00GTC"
     )
@@ -157,7 +157,7 @@ def test_market_price_volatility(
 def test_auction_uncross_fees(simple_market, vega: VegaServiceNull, page: Page):
     page.goto(f"/#/markets/{simple_market}")
     change_keys(page, vega, "market_maker")
-    page.get_by_test_id("Fills").click()
+    page.get_by_test_id("Trades").nth(1).click()
     row = page.locator('[row-index="3"]').nth(1)
     expect(row.locator('[col-id="fee"]')).to_have_text("0.00 tDAI")
     # tbd - tooltip is not visible without this wait
