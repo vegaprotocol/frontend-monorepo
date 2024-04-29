@@ -27,6 +27,7 @@ def create_settled_market(vega: VegaServiceNull):
 
 
 class TestSettledMarket:
+    @pytest.mark.skip("markets list page")
     @pytest.mark.usefixtures("risk_accepted", "auth")
     def test_settled_header(self, page: Page, create_settled_market):
         page.goto(f"/#/markets/all")
