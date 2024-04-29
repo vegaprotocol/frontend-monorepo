@@ -1,11 +1,15 @@
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { Button, RoundedWrapper } from '@vegaprotocol/ui-toolkit';
-import { stripFullStops } from '@vegaprotocol/utils';
+import {
+  formatDateWithLocalTimezone,
+  stripFullStops,
+} from '@vegaprotocol/utils';
 import { SubHeading } from '../../../../components/heading';
 import { ProposalInfoLabel } from '../proposal-info-label';
 import Routes from '../../../routes';
 import type { ProtocolUpgradeProposalFieldsFragment } from '@vegaprotocol/proposals';
+import { CurrentProposalState } from '../current-proposal-state';
 
 interface ProtocolProposalsListItemProps {
   proposal: ProtocolUpgradeProposalFieldsFragment;
@@ -17,6 +21,13 @@ export const ProtocolUpgradeProposalsListItem = ({
   const { t } = useTranslation();
   if (!proposal || !proposal.upgradeBlockHeight) return null;
 
+  const timestamp =
+    'timestamp' in proposal ? (
+      <span className="text-vega-cdark-300">
+        ({formatDateWithLocalTimezone(new Date(proposal.timestamp as string))})
+      </span>
+    ) : null;
+
   return (
     <li
       id={proposal.upgradeBlockHeight}
@@ -25,11 +36,15 @@ export const ProtocolUpgradeProposalsListItem = ({
       <RoundedWrapper paddingBottom={true} heightFull={true}>
         <div
           data-testid="protocol-upgrade-proposal-type"
-          className="flex items-center gap-2 mb-4 text-sm"
+          className="flex items-center gap-2 mb-4 text-sm justify-between"
         >
           <ProposalInfoLabel variant="highlight">
             {t('networkUpgrade')}
           </ProposalInfoLabel>
+
+          <div data-testid="proposal-status">
+            <CurrentProposalState proposalState={proposal.status} />
+          </div>
         </div>
 
         <div
@@ -53,7 +68,7 @@ export const ProtocolUpgradeProposalsListItem = ({
             className="mb-2"
           >
             <span>{t('upgradeBlockHeight')}:</span>{' '}
-            <span>{proposal.upgradeBlockHeight}</span>
+            <span>{proposal.upgradeBlockHeight}</span> {timestamp}
           </div>
         </div>
 
