@@ -73,6 +73,7 @@ export const AccountTypeMapping: {
   ACCOUNT_TYPE_HOLDING: 'Holding account',
   ACCOUNT_TYPE_LP_LIQUIDITY_FEES: 'LP liquidity fees account',
   ACCOUNT_TYPE_NETWORK_TREASURY: 'Network treasury account',
+  ACCOUNT_TYPE_REWARD_REALISED_RETURN: 'Realised return reward account',
 };
 
 /**
@@ -312,6 +313,8 @@ export const StopOrderRejectionReasonMapping: {
     'Stop order cannot have matching OCO expiry times',
   REJECTION_REASON_STOP_ORDER_LINKED_PERCENTAGE_INVALID:
     'The percentage value for the linked stop order is invalid',
+  REJECTION_REASON_STOP_ORDER_SIZE_OVERRIDE_UNSUPPORTED_FOR_SPOT:
+    'Stop order size override is not supported for spot markets',
 };
 
 /**
@@ -439,6 +442,7 @@ export const ProposalRejectionReasonMapping: {
   PROPOSAL_ERROR_INVALID_PERPETUAL_PRODUCT: 'Invalid perpetual product',
   PROPOSAL_ERROR_INVALID_SLA_PARAMS: 'Invalid SLA params',
   PROPOSAL_ERROR_MISSING_SLA_PARAMS: 'Missing SLA params',
+  // @ts-ignore - temporarily suppressing this as it's a valid value
   PROPOSAL_ERROR_PROPOSAL_IN_BATCH_REJECTED:
     'One or more sub proposals are invalid',
   PROPOSAL_ERROR_INVALID_REFERRAL_PROGRAM:
@@ -680,6 +684,7 @@ export const DispatchMetricLabels: DispatchMetricLabel = {
   DISPATCH_METRIC_RETURN_VOLATILITY: 'Return volatility',
   DISPATCH_METRIC_VALIDATOR_RANKING: 'Validator ranking',
   STAKING_REWARD_METRIC: 'Staking rewards',
+  DISPATCH_METRIC_REALISED_RETURN: 'Realised return',
 };
 
 export const DispatchMetricDescription: DispatchMetricLabel = {
@@ -700,6 +705,8 @@ export const DispatchMetricDescription: DispatchMetricLabel = {
     'Get rewards if you run a validator node with a high ranking score.',
   STAKING_REWARD_METRIC:
     'Global staking reward for staking $VEGA on the network via the Governance app',
+  DISPATCH_METRIC_REALISED_RETURN:
+    'Get rewards for having a high profit in relation to your position size.',
 };
 
 export const PositionStatusMapping: {

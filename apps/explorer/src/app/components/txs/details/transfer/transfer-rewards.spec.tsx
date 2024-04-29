@@ -96,7 +96,7 @@ describe('TransferRewards', () => {
   });
 
   it('should render the reward details correctly', () => {
-    const recurring = {
+    const recurring: Recurring = {
       dispatchStrategy: {
         metric: DispatchMetric.DISPATCH_METRIC_AVERAGE_POSITION,
         assetForMetric: '123',

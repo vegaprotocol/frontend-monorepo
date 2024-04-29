@@ -5,134 +5,154 @@ import type {
   VegaValueFormatterParams,
   VegaValueGetterParams,
 } from '@vegaprotocol/datagrid';
-import { COL_DEFS, SetFilter } from '@vegaprotocol/datagrid';
-import * as Schema from '@vegaprotocol/types';
+import { StackedCell } from '@vegaprotocol/datagrid';
 import {
   addDecimalsFormatNumber,
   formatNumber,
+  priceChange,
   toBigNum,
 } from '@vegaprotocol/utils';
-import { ButtonLink, Tooltip } from '@vegaprotocol/ui-toolkit';
-import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
+import { Sparkline } from '@vegaprotocol/ui-toolkit';
 import type {
   MarketMaybeWithData,
   MarketMaybeWithDataAndCandles,
 } from '@vegaprotocol/markets';
-import { MarketActionsDropdown } from './market-table-actions';
 import {
+  Last24hPriceChange,
   calcCandleVolume,
   calcCandleVolumePrice,
-  getAsset,
+  getQuoteAsset,
   getQuoteName,
 } from '@vegaprotocol/markets';
-import { MarketCodeCell } from './market-code-cell';
 import { useT } from '../../lib/use-t';
+import { EmblemByMarket } from '@vegaprotocol/emblem';
+import { useChainId } from '@vegaprotocol/wallet-react';
 
-const { MarketTradingMode, AuctionTrigger } = Schema;
+const openInterestRenderer = (data: MarketMaybeWithData | undefined) => {
+  if (!data) return '-';
+  const { data: marketData, positionDecimalPlaces, decimalPlaces } = data;
+  if (!marketData) return '-';
+  const { openInterest, markPrice } = marketData;
+  const quoteName = getQuoteName(data);
+  const openInterestPosition =
+    openInterest === undefined
+      ? '-'
+      : addDecimalsFormatNumber(openInterest, positionDecimalPlaces);
+  const openInterestValue = toBigNum(
+    openInterest,
+    positionDecimalPlaces
+  ).multipliedBy(toBigNum(markPrice, decimalPlaces));
+
+  const openInterestNotional =
+    quoteName === 'USDT'
+      ? `$${formatNumber(openInterestValue, 2)}`
+      : `${formatNumber(openInterestValue, 2)} ${quoteName}`;
+  return (
+    <StackedCell
+      primary={openInterestPosition}
+      secondary={openInterestNotional}
+    />
+  );
+};
+
+export const priceChangeRenderer = (
+  data: MarketMaybeWithDataAndCandles | undefined,
+  showChangeValue = true
+) => {
+  if (!data) return null;
+  return (
+    <Last24hPriceChange
+      marketId={data.id}
+      decimalPlaces={data.decimalPlaces}
+      orientation="vertical"
+      showChangeValue={showChangeValue}
+      fallback={
+        <span className="leading-4">
+          <div className="text-ellipsis whitespace-nowrap overflow-hidden">
+            <span data-testid="price-change-percentage">{'0.00%'}</span>
+          </div>
+          {showChangeValue && (
+            <span
+              data-testid="price-change"
+              className="text-ellipsis whitespace-nowrap overflow-hidden text-muted"
+            >
+              ({'0.00'})
+            </span>
+          )}
+        </span>
+      }
+    />
+  );
+};
+
+export const priceChangeSparklineRenderer = (
+  data: MarketMaybeWithDataAndCandles | undefined
+) => {
+  if (!data) return null;
+  const candles = data.candles
+    ?.filter((c) => c.close)
+    .map((c) => Number(c.close));
+  return <Sparkline width={80} height={20} data={candles || [0]} />;
+};
+
+export const priceValueFormatter = (
+  data: MarketMaybeWithData | undefined,
+  formatDecimalPlaces?: number
+): string => {
+  if (data?.tradableInstrument.instrument.product.__typename === 'Spot') {
+    const quoteAsset = data && getQuoteAsset(data);
+    return data?.data?.lastTradedPrice === undefined
+      ? '-'
+      : `${addDecimalsFormatNumber(
+          data.data.lastTradedPrice,
+          data.decimalPlaces
+        )} ${quoteAsset?.symbol}`;
+  }
+  const quoteName = data && getQuoteName(data);
+
+  return data?.data?.bestOfferPrice === undefined
+    ? '-'
+    : quoteName === 'USDT'
+    ? `$${addDecimalsFormatNumber(
+        data.data.markPrice,
+        data.decimalPlaces,
+        formatDecimalPlaces
+      )}`
+    : `${addDecimalsFormatNumber(
+        data.data.markPrice,
+        data.decimalPlaces,
+        formatDecimalPlaces
+      )} ${quoteName}`;
+};
 
 export const useMarketsColumnDefs = () => {
   const t = useT();
-  const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
+  const { chainId } = useChainId();
 
   return useMemo<ColDef[]>(
     () => [
       {
         headerName: t('Market'),
         field: 'tradableInstrument.instrument.code',
-        pinned: true,
+        minWidth: 150,
         cellRenderer: ({
           value,
           data,
         }: VegaICellRendererParams<
           MarketMaybeWithData,
           'tradableInstrument.instrument.code'
-        >) => (
-          <MarketCodeCell
-            value={value}
-            data={{
-              productType:
-                data?.tradableInstrument.instrument.product.__typename,
-              successorMarketID: data?.successorMarketID,
-              parentMarketID: data?.parentMarketID,
-            }}
-          />
-        ),
-      },
-      {
-        headerName: t('Description'),
-        field: 'tradableInstrument.instrument.name',
-      },
-      {
-        headerName: t('Settlement asset'),
-        field: 'tradableInstrument.instrument.product.settlementAsset.symbol',
-        cellRenderer: ({
-          data,
-        }: VegaICellRendererParams<
-          MarketMaybeWithData,
-          'tradableInstrument.instrument.product.settlementAsset.symbol'
         >) => {
-          const value = data && getAsset(data);
-          return value ? (
-            <ButtonLink
-              onClick={(e) => {
-                openAssetDetailsDialog(value.id, e.target as HTMLElement);
-              }}
-            >
-              {value.symbol}
-            </ButtonLink>
-          ) : (
-            ''
+          return (
+            <span className="flex items-center gap-2 cursor-pointer">
+              <span className="mr-2">
+                <EmblemByMarket market={data?.id || ''} vegaChain={chainId} />
+              </span>
+              <StackedCell
+                primary={value}
+                secondary={data?.tradableInstrument.instrument.name}
+              />
+            </span>
           );
-        },
-      },
-      {
-        headerName: t('Trading mode'),
-        field: 'tradingMode',
-        cellRenderer: ({
-          data,
-        }: VegaICellRendererParams<MarketMaybeWithData, 'data'>) => {
-          if (!data?.data) return '-';
-          const { trigger, marketTradingMode } = data.data;
-
-          const withTriggerInfo =
-            marketTradingMode ===
-              MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
-            trigger &&
-            trigger !== AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED;
-
-          if (withTriggerInfo) {
-            return (
-              <Tooltip
-                description={`${Schema.MarketTradingModeMapping[marketTradingMode]}
-                - ${Schema.AuctionTriggerMapping[trigger]}`}
-              >
-                <span>
-                  {Schema.MarketTradingModeMapping[marketTradingMode]}
-                </span>
-              </Tooltip>
-            );
-          }
-
-          return Schema.MarketTradingModeMapping[marketTradingMode];
-        },
-        filter: SetFilter,
-        filterParams: {
-          set: Schema.MarketTradingModeMapping,
-        },
-      },
-      {
-        headerName: t('Status'),
-        field: 'state',
-        valueFormatter: ({
-          data,
-        }: VegaValueFormatterParams<MarketMaybeWithData, 'state'>) => {
-          return data?.data?.marketState
-            ? Schema.MarketStateMapping[data?.data?.marketState]
-            : '-';
-        },
-        filter: SetFilter,
-        filterParams: {
-          set: Schema.MarketStateMapping,
         },
       },
       {
@@ -159,23 +179,34 @@ export const useMarketsColumnDefs = () => {
         valueFormatter: ({
           data,
         }: VegaValueFormatterParams<MarketMaybeWithData, 'data.markPrice'>) => {
-          if (
-            data?.tradableInstrument.instrument.product.__typename === 'Spot'
-          ) {
-            return data?.data?.lastTradedPrice === undefined
-              ? '-'
-              : addDecimalsFormatNumber(
-                  data.data.lastTradedPrice,
-                  data.decimalPlaces
-                );
-          }
-          return data?.data?.bestOfferPrice === undefined
-            ? '-'
-            : addDecimalsFormatNumber(data.data.markPrice, data.decimalPlaces);
+          return priceValueFormatter(data);
         },
       },
       {
-        headerName: t('24h volume'),
+        headerName: '24h Change',
+        field: 'data.candles',
+        type: 'rightAligned',
+        cellRenderer: ({
+          data,
+        }: ValueFormatterParams<MarketMaybeWithDataAndCandles, 'candles'>) => {
+          return (
+            <div className="flex flex-row gap-2 justify-end">
+              <span>{priceChangeRenderer(data)}</span>
+              <span>{priceChangeSparklineRenderer(data)}</span>
+            </div>
+          );
+        },
+        valueGetter: ({
+          data,
+        }: VegaValueGetterParams<MarketMaybeWithDataAndCandles>) => {
+          if (!data) return 0;
+          const candles = data?.candles?.map((c) => c.close);
+          const change = candles ? priceChange(candles) : 0;
+          return change;
+        },
+      },
+      {
+        headerName: t('24h Volume'),
         type: 'rightAligned',
         field: 'data.candles',
         valueGetter: ({
@@ -186,7 +217,7 @@ export const useMarketsColumnDefs = () => {
           const vol = candles ? calcCandleVolume(candles) : '0';
           return Number(vol);
         },
-        valueFormatter: ({
+        cellRenderer: ({
           data,
         }: ValueFormatterParams<MarketMaybeWithDataAndCandles, 'candles'>) => {
           if (!data) return '-';
@@ -208,81 +239,38 @@ export const useMarketsColumnDefs = () => {
           const volumePrice =
             volPrice && formatNumber(volPrice, data?.decimalPlaces);
 
-          return volumePrice
-            ? `${volume} (${volumePrice} ${quoteName})`
-            : volume;
+          return volumePrice ? (
+            <span className="font-mono">
+              <StackedCell
+                primary={volume}
+                secondary={
+                  quoteName === 'USDT'
+                    ? `$${volumePrice}`
+                    : `${volumePrice} ${quoteName}`
+                }
+              />
+            </span>
+          ) : (
+            <StackedCell primary={volume} secondary={''} />
+          );
         },
       },
       {
-        headerName: t('Open Interest'),
+        headerName: t('Open interest'),
         field: 'data.openInterest',
         type: 'rightAligned',
-        valueFormatter: ({
+        cellRenderer: ({
           data,
         }: VegaValueFormatterParams<
           MarketMaybeWithData,
           'data.openInterest'
-        >) =>
-          data?.data?.openInterest === undefined
-            ? '-'
-            : addDecimalsFormatNumber(
-                data?.data?.openInterest,
-                data?.positionDecimalPlaces
-              ),
-      },
-      {
-        headerName: t('Spread'),
-        field: 'data.bestBidPrice',
-        type: 'rightAligned',
-        filter: 'agNumberColumnFilter',
-        cellRenderer: 'PriceFlashCell',
-        valueGetter: ({ data }: VegaValueGetterParams<MarketMaybeWithData>) => {
-          if (!data || !data.data?.bestOfferPrice || !data.data?.bestBidPrice) {
-            return undefined;
-          }
-
-          const offer = toBigNum(data.data.bestOfferPrice, data.decimalPlaces);
-          const bid = toBigNum(data.data.bestBidPrice, data.decimalPlaces);
-
-          const spread = offer.minus(bid).toNumber();
-
-          // The calculation above can result in '-0' being rendered after formatting
-          // so return Math.abs to remove it and just render '0'
-          if (spread === 0) {
-            return Math.abs(spread);
-          }
-
-          return spread;
-        },
-        valueFormatter: ({
-          value,
-        }: VegaValueFormatterParams<
-          MarketMaybeWithData,
-          'data.bestBidPrice'
         >) => {
-          if (!value) return '-';
-          return value.toString();
-        },
-      },
-      {
-        colId: 'market-actions',
-        field: 'id',
-        ...COL_DEFS.actions,
-        cellRenderer: ({
-          data,
-        }: VegaICellRendererParams<MarketMaybeWithData>) => {
-          if (!data) return null;
           return (
-            <MarketActionsDropdown
-              marketId={data.id}
-              assetId={getAsset(data).id}
-              successorMarketID={data.successorMarketID}
-              parentMarketID={data.parentMarketID}
-            />
+            <span className="font-mono">{openInterestRenderer(data)}</span>
           );
         },
       },
     ],
-    [openAssetDetailsDialog, t]
+    [chainId, t]
   );
 };
