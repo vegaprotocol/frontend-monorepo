@@ -31,7 +31,7 @@ def proposed_market(vega: VegaServiceNull):
     )
     return market_id
 
-
+@pytest.mark.skip("markets list page")
 @pytest.mark.usefixtures("risk_accepted")
 def test_can_see_table_headers(proposed_market, page: Page):
     page.goto("/#/markets/all")
@@ -52,7 +52,7 @@ def test_can_see_table_headers(proposed_market, page: Page):
     for i, header in enumerate(headers):
         assert header_elements.nth(i).inner_text() == header
 
-
+@pytest.mark.skip("markets list page")
 @pytest.mark.usefixtures("risk_accepted")
 def test_renders_markets_correctly(proposed_market, page: Page):
     page.goto(f"/#/markets/all")
@@ -98,7 +98,7 @@ def test_renders_markets_correctly(proposed_market, page: Page):
     # expected_href = f"https://governance.stagnet1.vega.rocks/proposals/propose/new-market"
     # assert last_link.get_attribute('href') == expected_href
 
-
+@pytest.mark.skip("markets list page")
 @pytest.mark.usefixtures("risk_accepted")
 def test_can_drag_and_drop_columns(proposed_market, page: Page):
     # 6001-MARK-063

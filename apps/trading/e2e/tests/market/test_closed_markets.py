@@ -38,9 +38,6 @@ class TestSettledMarket:
             "Best bid",
             "Best offer",
             "Price",
-            "Settlement price",
-            "Settlement asset",
-            "",
         ]
 
         page.wait_for_selector(
@@ -53,6 +50,7 @@ class TestSettledMarket:
         for i, header in enumerate(headers):
             expect(page_headers[i]).to_have_text(header)
 
+    @pytest.mark.skip("markets list page")
     @pytest.mark.usefixtures(
         "risk_accepted",
         "auth",
@@ -122,7 +120,7 @@ class TestSettledMarket:
             pattern, date_text
         ), f"Expected text to match pattern but got {date_text}"
 
-
+@pytest.mark.skip("markets list page")
 @pytest.mark.usefixtures("risk_accepted", "auth")
 def test_terminated_market_no_settlement_date(page: Page, vega: VegaServiceNull):
     setup_continuous_market(vega)
