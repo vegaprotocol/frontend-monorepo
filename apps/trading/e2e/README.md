@@ -25,9 +25,10 @@ Ensure you're in the tests folder before executing commands.
 ```bash
 poetry shell
 poetry update vega-sim  # Updates to the latest version of the market-sim branch
-poetry install
+poetry install 
 playwright install chromium  # Installs necessary browsers for Playwright
 ```
+
 
 ### 3. Prepare Binaries and Docker Images
 
