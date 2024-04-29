@@ -2,9 +2,11 @@
 latest-release:
 	gh release list | head -n 1 | awk '{print $1}'
 
+
 .PHONY: show-latest-release
 show-latest-release:
 	gh release view `gh release list | head -n 1 | awk '{print $1}'`
+
 
 .PHONY: recalculate-ipfs
 recalculate-ipfs:
@@ -12,6 +14,7 @@ recalculate-ipfs:
 	docker run --rm ${TAG} cat /ipfs-hash
 	echo "recalculating ipfs hash"
 	docker run --rm ${TAG} ipfs add -rQ /usr/share/nginx/html
+
 
 .PHONY: eject-ipfs-hash
 unpack:
