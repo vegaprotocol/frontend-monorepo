@@ -22,6 +22,10 @@ import {
 } from '@vegaprotocol/mock';
 import userEvent from '@testing-library/user-event';
 
+jest.mock('@vegaprotocol/wallet-react', () => ({
+  useChainId: jest.fn(() => '1'),
+}));
+
 describe('Open', () => {
   let originalNow: typeof Date.now;
   const mockNowTimestamp = 1672531200000;
@@ -72,12 +76,15 @@ describe('Open', () => {
 
   const renderComponent = async () => {
     await act(async () => {
+      const markets = marketsQueryData.marketsConnection?.edges.map(
+        (e) => e.node
+      ) as MarketFieldsFragment[];
       render(
         <MemoryRouter>
           <MockedProvider
             mocks={[marketsMock, marketsCandlesMock, marketsDataMock]}
           >
-            <OpenMarkets />
+            <OpenMarkets data={markets} error={undefined} />
           </MockedProvider>
         </MemoryRouter>
       );
@@ -90,15 +97,10 @@ describe('Open', () => {
     const headers = screen.getAllByRole('columnheader');
     const expectedHeaders = [
       'Market',
-      'Description',
-      'Settlement asset',
-      'Trading mode',
-      'Status',
       'Price',
-      '24h volume',
-      'Open Interest',
-      'Spread',
-      '', // Action row
+      '24h Change',
+      '24h Volume',
+      'Open interest',
     ];
     expect(headers).toHaveLength(expectedHeaders.length);
     expect(headers.map((h) => h.textContent?.trim())).toEqual(expectedHeaders);

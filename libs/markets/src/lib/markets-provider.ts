@@ -8,6 +8,7 @@ import {
   MarketsDocument,
   type MarketsQuery,
   type MarketFieldsFragment,
+  type MarketFieldsWithAccountsFragment,
 } from './__generated__/markets';
 import { type MarketsCandlesQueryVariables } from './__generated__/markets-candles';
 
@@ -126,7 +127,9 @@ export const proposedMarketsProvider = makeDerivedDataProvider<
   never
 >([marketsWithDataProvider], ([markets]) => filterProposedMarkets(markets));
 
-export type MarketMaybeWithCandles = Market & { candles?: Candle[] };
+export type MarketMaybeWithCandles = MarketFieldsWithAccountsFragment & {
+  candles?: Candle[];
+};
 
 const addCandles = <T extends Market>(
   markets: T[],

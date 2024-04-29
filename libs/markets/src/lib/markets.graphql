@@ -56,11 +56,26 @@ fragment MarketFields on Market {
   }
 }
 
+fragment MarketFieldsWithAccounts on Market {
+  accountsConnection {
+    edges {
+      node {
+        type
+        asset {
+          ...AssetFields
+        }
+        balance
+      }
+    }
+  }
+  ...MarketFields
+}
+
 query Markets {
   marketsConnection {
     edges {
       node {
-        ...MarketFields
+        ...MarketFieldsWithAccounts
       }
     }
   }

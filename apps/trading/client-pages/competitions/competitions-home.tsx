@@ -218,7 +218,7 @@ export const CompetitionsHome = () => {
       <p className="mb-6 text-sm">
         <Trans
           i18nKey={
-            'See all the live games on the cards below. Every on-chain game is community funded and designed. <0>Find out how to create one</0>.'
+            'See all the live games on the cards below. <0>Find out how to create one</0>.'
           }
           components={[
             <ExternalLink

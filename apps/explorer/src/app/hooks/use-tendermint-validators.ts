@@ -27,12 +27,16 @@ type TendermintValidatorsResponse = {
   result: Result;
 };
 
-export const useTendermintValidators = (pollInterval?: number) => {
+export const useTendermintValidators = (
+  pollInterval?: number,
+  options?: RequestInit
+) => {
   const {
     state: { data, loading, error },
     refetch,
   } = useFetch<TendermintValidatorsResponse>(
-    `${DATA_SOURCES.tendermintUrl}/validators`
+    `${DATA_SOURCES.tendermintUrl}/validators`,
+    options || {}
   );
 
   const ref = useRef<TendermintValidatorsResponse | undefined>(undefined);
