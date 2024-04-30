@@ -89,7 +89,7 @@ export const useTotalVolumeLocked = (
       .map((e) => e?.node);
     const balance = accounts?.reduce((acc, a) => {
       const balance = toQUSD(a?.balance || 0, a?.asset.quantum || 1);
-      return toBigNum(balance || 0, a?.asset.decimals || 0).plus(acc);
+      return balance.plus(acc);
     }, new BigNumber(0));
     if (!balance) return acc;
     return balance.plus(acc);

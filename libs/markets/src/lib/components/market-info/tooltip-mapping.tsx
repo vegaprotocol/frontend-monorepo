@@ -40,10 +40,15 @@ export const useTooltipMapping: () => Record<string, ReactNode> = () => {
     bestStaticOfferVolume: t(
       'The aggregated volume being offered at the best static offer price on the market.'
     ),
-    marketDecimalPlaces: t('The smallest price increment on the book.'),
-    decimalPlaces: t('The smallest price increment on the book.'),
+    decimalPlaces: t(
+      'The number of decimal places supported by the market price.'
+    ),
+    marketDecimalPlaces: t(
+      'The number of decimal places supported by the market price.'
+    ),
+    tickSize: t('The smallest price increment on the book.'),
     positionDecimalPlaces: t(
-      'How big the smallest order / position on the market can be.'
+      'The smallest order / position size on this market is 10^(-pdp).'
     ),
     tradingMode: t('The trading mode the market is currently running.'),
     state: t('The current state of the market'),
