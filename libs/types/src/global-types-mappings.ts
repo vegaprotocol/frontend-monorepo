@@ -74,7 +74,6 @@ export const AccountTypeMapping: {
   ACCOUNT_TYPE_HOLDING: 'Holding account',
   ACCOUNT_TYPE_LP_LIQUIDITY_FEES: 'LP liquidity fees account',
   ACCOUNT_TYPE_NETWORK_TREASURY: 'Network treasury account',
-  ACCOUNT_TYPE_REWARD_REALISED_RETURN: 'Realised return reward account',
 };
 
 /**
