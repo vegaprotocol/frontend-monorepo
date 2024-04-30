@@ -314,7 +314,7 @@ export const StopOrderRejectionReasonMapping: {
   REJECTION_REASON_STOP_ORDER_LINKED_PERCENTAGE_INVALID:
     'The percentage value for the linked stop order is invalid',
   REJECTION_REASON_STOP_ORDER_SIZE_OVERRIDE_UNSUPPORTED_FOR_SPOT:
-    'Stop order size override is not supported for spot markets',
+    'Position percentage stop order is not supported for spot market',
 };
 
 /**
