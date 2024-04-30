@@ -79,6 +79,7 @@ export const ProposalsContainer = () => {
     // pollInterval: 5000,
     fetchPolicy: 'network-only',
     errorPolicy: 'ignore',
+    context: { isEnlargedTimeout: true },
   });
 
   const {
@@ -89,6 +90,7 @@ export const ProposalsContainer = () => {
     // pollInterval: 5000,
     fetchPolicy: 'network-only',
     errorPolicy: 'ignore',
+    context: { isEnlargedTimeout: true },
   });
 
   const protocolUpgradeProposals = compact(

@@ -157,7 +157,7 @@ context(
     it('should see network upgrade proposals in proposals list', function () {
       mockNetworkUpgradeProposal();
       navigateTo(navigation.proposals);
-      cy.getByTestId('open-proposals').within(() => {
+      cy.getByTestId('proposal-list-items').within(() => {
         cy.get('li')
           .eq(0)
           .should('have.attr', 'data-testid', networkUpgradeProposalListItem)
