@@ -19,7 +19,6 @@ import { formatNumber } from '@vegaprotocol/utils';
 import { TopMarketList } from './top-market-list';
 import {
   useNewListings,
-  useTotalVolumeLocked,
   useTopGainers,
   useTotalVolume24hCandles,
 } from './use-markets-stats';
@@ -59,7 +58,8 @@ export const MarketsPage = () => {
   const totalVolumeSparkline = (
     <Sparkline width={80} height={20} data={totalVolume24hCandles} />
   );
-  const tvl = useTotalVolumeLocked(activeMarkets);
+  // TODO show TVL when a decision is made regarding the formula
+  // const tvl = useTotalVolumeLocked(activeMarkets);
 
   const totalVolume24h = activeMarkets?.reduce((acc, market) => {
     return (
@@ -79,20 +79,21 @@ export const MarketsPage = () => {
       <TinyScroll className="p-2 max-h-full overflow-auto">
         <div className="grid auto-rows-min grid-cols-3 lg:grid-cols-5 xl:grid-cols-3 gap-3 p-3 xxl:px-[5.5rem]">
           <div className="flex flex-col gap-2 col-span-full lg:col-span-1">
-            <Card key="24h-vol" className="grow">
-              <div className="flex items-center gap-2 justify-between flex-wrap">
-                <div className="flex flex-col">
+            <Card key="24h-vol" className="flex grow">
+              <div className="flex flex-col h-full">
+                <h2 className="mb-3">24h volume</h2>
+                <div className="flex items-center gap-2 justify-between flex-wrap grow">
                   {totalVolume24h && (
                     <span className="text-xl">
                       ${formatNumber(totalVolume24h, 2)}
                     </span>
                   )}
-                  <span>{t('24h volume')}</span>
+                  <div>{totalVolumeSparkline}</div>
                 </div>
-                <div>{totalVolumeSparkline}</div>
               </div>
             </Card>
-            <Card key="tvl" className="grow">
+            {/* Do not show TVL until a decision is made regarding the formula */}
+            {/* <Card key="tvl" className="grow">
               <div className="flex items-center gap-2 justify-between">
                 <div className="flex flex-col">
                   {tvl && (
@@ -101,7 +102,7 @@ export const MarketsPage = () => {
                   <span>{t('TVL')}</span>
                 </div>
               </div>
-            </Card>
+            </Card> */}
           </div>
           <Card
             key="top-gainers"
