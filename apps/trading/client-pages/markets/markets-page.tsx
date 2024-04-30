@@ -17,12 +17,13 @@ import { useEffect, useState } from 'react';
 import { Interval } from '@vegaprotocol/types';
 import { formatNumber } from '@vegaprotocol/utils';
 import { TopMarketList } from './top-market-list';
+import classNames from 'classnames';
 import {
   useNewListings,
   useTopGainers,
   useTotalVolume24hCandles,
-} from './use-markets-stats';
-import classNames from 'classnames';
+} from '../../lib/hooks/use-markets-stats';
+import { useTotalValueLocked } from '../../lib/hooks/use-total-volume-locked';
 
 const POLLING_TIME = 2000;
 
@@ -58,8 +59,7 @@ export const MarketsPage = () => {
   const totalVolumeSparkline = (
     <Sparkline width={80} height={20} data={totalVolume24hCandles} />
   );
-  // TODO show TVL when a decision is made regarding the formula
-  // const tvl = useTotalVolumeLocked(activeMarkets);
+  const { tvl, loading: tvlLoading } = useTotalValueLocked();
 
   const totalVolume24h = activeMarkets?.reduce((acc, market) => {
     return (
@@ -81,7 +81,7 @@ export const MarketsPage = () => {
           <div className="flex flex-col gap-2 col-span-full lg:col-span-1">
             <Card key="24h-vol" className="flex grow">
               <div className="flex flex-col h-full">
-                <h2 className="mb-3">24h volume</h2>
+                <h2 className="mb-3">{t('24h Volume')}</h2>
                 <div className="flex items-center gap-2 justify-between flex-wrap grow">
                   {totalVolume24h && (
                     <span className="text-xl">
@@ -92,17 +92,18 @@ export const MarketsPage = () => {
                 </div>
               </div>
             </Card>
-            {/* Do not show TVL until a decision is made regarding the formula */}
-            {/* <Card key="tvl" className="grow">
-              <div className="flex items-center gap-2 justify-between">
-                <div className="flex flex-col">
-                  {tvl && (
-                    <span className="text-xl">${formatNumber(tvl, 2)}</span>
-                  )}
-                  <span>{t('TVL')}</span>
-                </div>
+            <Card
+              key="24h-vol"
+              className="flex grow"
+              loading={tvlLoading}
+              title={t('TVL')}
+            >
+              <div className="flex flex-col h-full">
+                {tvl && (
+                  <span className="text-xl">${formatNumber(tvl, 2)}</span>
+                )}
               </div>
-            </Card> */}
+            </Card>
           </div>
           <Card
             key="top-gainers"

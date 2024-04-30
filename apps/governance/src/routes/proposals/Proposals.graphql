@@ -573,8 +573,6 @@ fragment BatchProposalFields on BatchProposal {
   }
   subProposals {
     id
-    batchId
-    id
     datetime
     rejectionReason
     errorDetails
