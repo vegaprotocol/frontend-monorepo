@@ -34,7 +34,7 @@ describe('Market page stats', () => {
           },
         },
       ] as MarketMaybeWithCandles[];
-      expect(useTotalVolumeLocked(markets)).toEqual(30);
+      expect(useTotalVolumeLocked(markets)).toEqual(3000);
     });
   });
 
