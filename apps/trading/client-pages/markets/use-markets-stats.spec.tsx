@@ -3,41 +3,7 @@ import { useNewListings } from './use-markets-stats';
 
 import { useTotalVolume24hCandles } from './use-markets-stats';
 
-import { useTotalVolumeLocked } from './use-markets-stats';
-
 describe('Market page stats', () => {
-  describe('useTotalVolumeLocked', () => {
-    it('handles null input', () => {
-      expect(useTotalVolumeLocked(null)).toEqual(undefined);
-    });
-
-    it('calculates TVL correctly', () => {
-      const markets = [
-        {
-          accountsConnection: {
-            edges: [
-              {
-                node: {
-                  type: 'ACCOUNT_TYPE_INSURANCE',
-                  balance: '1000',
-                  asset: { decimals: 2 },
-                },
-              },
-              {
-                node: {
-                  type: 'ACCOUNT_TYPE_INSURANCE',
-                  balance: '2000',
-                  asset: { decimals: 2 },
-                },
-              },
-            ],
-          },
-        },
-      ] as MarketMaybeWithCandles[];
-      expect(useTotalVolumeLocked(markets)).toEqual(30);
-    });
-  });
-
   describe('useTotalVolume24hCandles', () => {
     it('returns empty array for each hour when input is null', () => {
       expect(useTotalVolume24hCandles(null)).toEqual([]);

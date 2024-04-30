@@ -1,0 +1,20 @@
+query TotalVolumeLocked {
+  partiesConnection(pagination: { first: 5000 }) {
+    edges {
+      node {
+        accountsConnection(pagination: { first: 5000 }) {
+          edges {
+            node {
+              type
+              balance
+              asset {
+                symbol
+                quantum
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
