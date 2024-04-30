@@ -1,11 +1,11 @@
 import { removePaginationWrapper } from '@vegaprotocol/utils';
-import { useTotalVolumeLockedQuery } from './__generated__/TotalVolumeLocked';
+import { useTotalValueLockedQuery } from './__generated__/TotalVolumeLocked';
 import flatten from 'lodash/flatten';
 import BigNumber from 'bignumber.js';
 import { useMemo } from 'react';
 
-export const useTotalVolumeLocked = () => {
-  const { data, loading, error } = useTotalVolumeLockedQuery({
+export const useTotalValueLocked = () => {
+  const { data, loading, error } = useTotalValueLockedQuery({
     context: {
       isEnlargedTimeout: true,
     },

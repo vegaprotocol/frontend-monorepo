@@ -1,4 +1,4 @@
-query TotalVolumeLocked {
+query TotalValueLocked {
   partiesConnection(pagination: { first: 5000 }) {
     edges {
       node {

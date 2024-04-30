@@ -1,12 +1,12 @@
 import { renderHook } from '@testing-library/react';
-import { useTotalVolumeLockedQuery } from './__generated__/TotalVolumeLocked';
-import { useTotalVolumeLocked } from './use-total-volume-locked';
+import { useTotalValueLockedQuery } from './__generated__/TotalVolumeLocked';
+import { useTotalValueLocked } from './use-total-volume-locked';
 
 jest.mock('./__generated__/TotalVolumeLocked.ts');
-const mockUseTotalVolumeLocked = useTotalVolumeLockedQuery as jest.Mock;
+const mockUseTotalValueLocked = useTotalValueLockedQuery as jest.Mock;
 
-describe('useTotalVolumeLocked', () => {
-  mockUseTotalVolumeLocked.mockReturnValue({
+describe('useTotalValueLocked', () => {
+  mockUseTotalValueLocked.mockReturnValue({
     data: {
       partiesConnection: {
         edges: [
@@ -60,8 +60,9 @@ describe('useTotalVolumeLocked', () => {
     loading: false,
     error: null,
   });
+
   it('calculates TVL correctly', () => {
-    const { result } = renderHook(() => useTotalVolumeLocked());
+    const { result } = renderHook(() => useTotalValueLocked());
     expect(result.current.tvl.toNumber()).toEqual(30);
   });
 });

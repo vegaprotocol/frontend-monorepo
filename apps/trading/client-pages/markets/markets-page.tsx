@@ -23,7 +23,7 @@ import {
   useTopGainers,
   useTotalVolume24hCandles,
 } from '../../lib/hooks/use-markets-stats';
-import { useTotalVolumeLocked } from '../../lib/hooks/use-total-volume-locked';
+import { useTotalValueLocked } from '../../lib/hooks/use-total-volume-locked';
 
 const POLLING_TIME = 2000;
 
@@ -59,7 +59,7 @@ export const MarketsPage = () => {
   const totalVolumeSparkline = (
     <Sparkline width={80} height={20} data={totalVolume24hCandles} />
   );
-  const { tvl, loading: tvlLoading } = useTotalVolumeLocked();
+  const { tvl, loading: tvlLoading } = useTotalValueLocked();
 
   const totalVolume24h = activeMarkets?.reduce((acc, market) => {
     return (
