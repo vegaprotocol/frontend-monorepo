@@ -87,7 +87,10 @@ export const mapFormValuesToStopOrdersSubmission = (
   positionDecimalPlaces: number,
   reference?: string
 ): StopOrdersSubmission => {
-  const submission: StopOrdersSubmission = {};
+  const submission: StopOrdersSubmission = {
+    risesAbove: undefined,
+    fallsBelow: undefined,
+  };
   const stopOrderSetup: StopOrderSetup = {
     orderSubmission: mapFormValuesToOrderSubmission(
       {

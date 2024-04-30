@@ -16,10 +16,10 @@ import { type TradingView } from './trade-views';
 import { TradingViews } from './trade-views';
 interface TradePanelsProps {
   market: Market;
-  pinnedAsset?: PinnedAsset;
+  pinnedAssets?: PinnedAsset[];
 }
 
-export const TradePanels = ({ market, pinnedAsset }: TradePanelsProps) => {
+export const TradePanels = ({ market, pinnedAssets }: TradePanelsProps) => {
   const [topView, setTopView] = useState<TradingView>('chart');
   const topViewCfg = TradingViews[topView];
   const [bottomView, setBottomView] = useState<TradingView>('positions');
@@ -38,7 +38,7 @@ export const TradePanels = ({ market, pinnedAsset }: TradePanelsProps) => {
     // so watch out for clashes in props
     return (
       <ErrorBoundary feature={view}>
-        <Component marketId={market?.id} pinnedAsset={pinnedAsset} />
+        <Component marketId={market?.id} pinnedAssets={pinnedAssets} />
       </ErrorBoundary>
     );
   };

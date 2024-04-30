@@ -62,6 +62,7 @@ export const AccountTypeMapping: {
   ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES: 'LP received fees reward account',
   ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES: 'Maker received fees reward account',
   ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS: 'Market proposers reward account',
+  ACCOUNT_TYPE_REWARD_REALISED_RETURN: 'Realised return reward account',
   ACCOUNT_TYPE_REWARD_AVERAGE_POSITION: 'Average position reward account',
   ACCOUNT_TYPE_REWARD_RELATIVE_RETURN: 'Relative return reward account',
   ACCOUNT_TYPE_REWARD_RETURN_VOLATILITY: 'Volatility return reward account',
@@ -683,8 +684,8 @@ export const DispatchMetricLabels: DispatchMetricLabel = {
   DISPATCH_METRIC_RELATIVE_RETURN: 'Relative return',
   DISPATCH_METRIC_RETURN_VOLATILITY: 'Return volatility',
   DISPATCH_METRIC_VALIDATOR_RANKING: 'Validator ranking',
-  STAKING_REWARD_METRIC: 'Staking rewards',
   DISPATCH_METRIC_REALISED_RETURN: 'Realised return',
+  STAKING_REWARD_METRIC: 'Staking rewards',
 };
 
 export const DispatchMetricDescription: DispatchMetricLabel = {
@@ -703,10 +704,10 @@ export const DispatchMetricDescription: DispatchMetricLabel = {
     'Get rewards for having the least amount of variance in your returns while you have a position open during the rewards window.',
   DISPATCH_METRIC_VALIDATOR_RANKING:
     'Get rewards if you run a validator node with a high ranking score.',
+  DISPATCH_METRIC_REALISED_RETURN:
+    'Dispatch metric that uses the realised return of the party in the market',
   STAKING_REWARD_METRIC:
     'Global staking reward for staking $VEGA on the network via the Governance app',
-  DISPATCH_METRIC_REALISED_RETURN:
-    'Get rewards for having a high profit in relation to your position size.',
 };
 
 export const PositionStatusMapping: {

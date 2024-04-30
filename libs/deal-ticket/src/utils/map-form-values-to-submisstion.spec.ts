@@ -347,6 +347,7 @@ describe('mapFormValuesToTakeProfitAndStopLoss', () => {
             },
             price: '700000',
           },
+          fallsBelow: undefined,
         },
       ],
       submissions: [
@@ -400,6 +401,7 @@ describe('mapFormValuesToTakeProfitAndStopLoss', () => {
             },
             price: '600000',
           },
+          risesAbove: undefined,
         },
       ],
       submissions: [

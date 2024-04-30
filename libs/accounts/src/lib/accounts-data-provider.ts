@@ -112,6 +112,7 @@ const USE_ACCOUNT_TYPES = [
   AccountType.ACCOUNT_TYPE_FEES_LIQUIDITY,
   AccountType.ACCOUNT_TYPE_FEES_MAKER,
   AccountType.ACCOUNT_TYPE_PENDING_TRANSFERS,
+  AccountType.ACCOUNT_TYPE_HOLDING,
 ];
 
 const getAssetIds = (data: Account[]) =>

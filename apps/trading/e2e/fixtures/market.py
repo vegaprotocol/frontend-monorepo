@@ -1,5 +1,6 @@
 from vega_sim.service import VegaService
 from actions.vega import submit_multiple_orders, submit_order, submit_liquidity
+from actions.utils import next_epoch
 from wallet_config import MM_WALLET, MM_WALLET2, TERMINATE_WALLET, wallets
 import logging
 
@@ -282,6 +283,116 @@ def setup_perps_market(
 
     return market_id
 
+def setup_spot_market(
+    vega: VegaService,
+    custom_base_asset_name="BTC",
+    custom_base_asset_symbol="BTC",
+    custom_quote_asset_name="USDT",
+    custom_quote_asset_symbol="USDT",
+    custom_quantum=1,
+):
+    for wallet in wallets:
+        vega.create_key(wallet.name)
+
+    vega.mint(
+        MM_WALLET.name,
+        asset=vega.find_asset_id(symbol="VOTE", enabled=True),
+        amount=mint_amount,
+    )
+
+    vega.update_network_parameter(
+        MM_WALLET.name, parameter="market.fee.factors.makerFee", new_value="0.1"
+    )
+    next_epoch(vega=vega)
+
+    vega.create_asset(
+        MM_WALLET.name,
+        name=custom_base_asset_name,
+        symbol=custom_base_asset_symbol,
+        decimals=5,
+        max_faucet_amount=1e10,
+        quantum=custom_quantum,
+    )
+    vega.wait_fn(1)
+    vega.wait_for_total_catchup()
+    btc_id = vega.find_asset_id(symbol=custom_base_asset_symbol)
+    logger.info(f"Created asset: {custom_base_asset_symbol}")
+
+    vega.create_asset(
+        MM_WALLET.name,
+        name=custom_quote_asset_name,
+        symbol=custom_quote_asset_symbol,
+        decimals=5,
+        max_faucet_amount=1e10,
+        quantum=custom_quantum,
+    )
+    vega.wait_fn(1)
+    vega.wait_for_total_catchup()
+    usdt_id = vega.find_asset_id(symbol=custom_quote_asset_symbol)
+    logger.info(f"Created asset: {custom_quote_asset_symbol}")
+
+    vega.mint(
+        "Key 1",
+        asset=btc_id,
+        amount=mint_amount,
+    )
+
+    vega.mint(
+        "Key 1",
+        asset=usdt_id,
+        amount=mint_amount,
+    )
+
+    vega.mint(
+        MM_WALLET.name,
+        asset=btc_id,
+        amount=mint_amount,
+    )
+
+    vega.mint(
+        MM_WALLET.name,
+        asset=usdt_id,
+        amount=mint_amount,
+    )
+
+    vega.mint(
+        MM_WALLET2.name,
+        asset=btc_id,
+        amount=mint_amount,
+    )
+
+    vega.mint(
+        MM_WALLET2.name,
+        asset=usdt_id,
+        amount=mint_amount,
+    )
+    vega.wait_fn(1)
+    vega.wait_for_total_catchup()
+
+    market_id = vega.create_simple_spot_market(
+        proposal_key_name=MM_WALLET.name,
+        market_name="Bitcoin / Tether USD (Spot)",
+        market_code="BTC/USDT-SPOT",
+        base_asset_id=vega.find_asset_id(symbol=custom_base_asset_symbol),
+        quote_asset_id=vega.find_asset_id(symbol=custom_quote_asset_symbol),
+        price_decimal_places=1,
+        size_decimal_places=2,
+        tick_size=10,
+    )
+
+    next_epoch(vega=vega)
+
+    submit_liquidity(vega, MM_WALLET.name, market_id)
+    submit_multiple_orders(
+        vega, MM_WALLET.name, market_id, "SIDE_SELL", [[1, 110], [1, 105]]
+    )
+    submit_multiple_orders(
+        vega, MM_WALLET2.name, market_id, "SIDE_BUY", [[1, 90], [1, 95]]
+    )
+    submit_order(vega, "Key 1", market_id, "SIDE_BUY", 1, 110)
+    next_epoch(vega=vega)
+
+    return market_id
 
 def market_exists(vega: VegaService, market_id: str):
     if market_id is None:

@@ -93,11 +93,13 @@ export interface StopOrderSetup {
   expiryStrategy?: StopOrderExpiryStrategy;
   price?: string;
   trailingPercentOffset?: string;
+  sizeOverrideSetting?: SizeOverrideSetting;
+  sizeOverrideValue?: { percentage: string };
 }
 
 export interface StopOrdersSubmission {
-  risesAbove?: StopOrderSetup;
-  fallsBelow?: StopOrderSetup;
+  risesAbove: StopOrderSetup | undefined;
+  fallsBelow: StopOrderSetup | undefined;
 }
 
 export interface StopOrdersCancellation {
@@ -527,6 +529,11 @@ export type UpdateReferralSet = {
 export enum MarginMode {
   MARGIN_MODE_CROSS_MARGIN = 1,
   MARGIN_MODE_ISOLATED_MARGIN,
+}
+
+export enum SizeOverrideSetting {
+  SIZE_OVERRIDE_SETTING_NONE = 1,
+  SIZE_OVERRIDE_SETTING_POSITION,
 }
 export interface UpdateMarginMode {
   marketId: string;
