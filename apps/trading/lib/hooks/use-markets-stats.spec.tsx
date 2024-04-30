@@ -3,7 +3,7 @@ import { useNewListings } from './use-markets-stats';
 
 import { useTotalVolume24hCandles } from './use-markets-stats';
 
-describe('Market page stats', () => {
+describe('Hooks for market stats', () => {
   describe('useTotalVolume24hCandles', () => {
     it('returns empty array for each hour when input is null', () => {
       expect(useTotalVolume24hCandles(null)).toEqual([]);
