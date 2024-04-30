@@ -88,7 +88,8 @@ export const useTotalVolumeLocked = (
       ?.filter((e) => e?.node?.type === AccountType.ACCOUNT_TYPE_INSURANCE)
       .map((e) => e?.node);
     const balance = accounts?.reduce((acc, a) => {
-      return toBigNum(a?.balance || 0, a?.asset.decimals || 0).plus(acc);
+      const balance = toQUSD(a?.balance || 0, a?.asset.quantum || 1);
+      return balance.plus(acc);
     }, new BigNumber(0));
     if (!balance) return acc;
     return balance.plus(acc);
