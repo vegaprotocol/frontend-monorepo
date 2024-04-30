@@ -44,7 +44,7 @@ jobs:
         run: yarn install --pure-lockfile
 
   lint-format:
-    timeout-minutes: 20
+    timeout-minutes: 10
     needs: node-modules
     runs-on: ubuntu-22.04
     name: '(CI) lint + format check'
