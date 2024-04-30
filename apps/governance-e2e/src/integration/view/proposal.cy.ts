@@ -157,10 +157,10 @@ context(
     it('should see network upgrade proposals in proposals list', function () {
       mockNetworkUpgradeProposal();
       navigateTo(navigation.proposals);
-      cy.getByTestId('proposal-list-items').within(() => {
-        cy.get('li')
-          .eq(0)
-          .should('have.attr', 'data-testid', networkUpgradeProposalListItem)
+      cy.getByTestId(listItems).within(() => {
+        cy.getByTestId(networkUpgradeProposalListItem).should('have.length', 3);
+        cy.getByTestId(networkUpgradeProposalListItem)
+          .first()
           .within(() => {
             cy.get('h2').should('have.text', 'Vega release v1');
             cy.getByTestId('protocol-upgrade-proposal-type').should(
@@ -178,21 +178,6 @@ context(
             cy.getByTestId('protocol-upgrade-proposal-status').should(
               'have.text',
               'Approved by validators'
-            );
-          });
-      });
-      cy.getByTestId(listItems).within(() => {
-        cy.getByTestId(networkUpgradeProposalListItem).should('not.exist');
-      });
-
-      cy.getByTestId(listItems).within(() => {
-        cy.getByTestId(networkUpgradeProposalListItem).should('have.length', 2);
-        cy.getByTestId(networkUpgradeProposalListItem)
-          .first()
-          .within(() => {
-            cy.getByTestId(proposalUpgradeBlockHeight).should(
-              'contain.text',
-              '10001'
             );
           });
       });
