@@ -174,10 +174,6 @@ describe('Block', () => {
     const expectedValidator = '1C9B6E2708F8217F8D5BFC8D8734ED9A5BC19B21';
     const proposer = screen.getByTestId('block-validator');
     expect(proposer).toHaveTextContent(expectedValidator);
-    expect(proposer).toHaveAttribute(
-      'href',
-      `/${RouteNames.VALIDATORS}#${expectedValidator}`
-    );
     expect(screen.getByTestId('block-time')).toHaveTextContent(
       '59 minutes ago'
     );

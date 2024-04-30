@@ -15,12 +15,16 @@ interface Props {
   marketId?: string;
   decimalPlaces: number;
   fallback?: ReactNode;
+  orientation?: 'horizontal' | 'vertical';
+  showChangeValue?: boolean;
 }
 
 export const Last24hPriceChange = ({
   marketId,
   decimalPlaces,
   fallback,
+  orientation = 'horizontal',
+  showChangeValue = true,
 }: Props) => {
   const { oneDayCandles, fiveDaysCandles, error } = useCandles({
     marketId,
@@ -36,6 +40,31 @@ export const Last24hPriceChange = ({
     oneDayCandles.map((c) => c.close).filter((c) => c !== '') || [];
   const change = priceChange(candles);
   const changePercentage = priceChangePercentage(candles);
+
+  if (orientation === 'vertical') {
+    return (
+      <span className={classNames('leading-4', signedNumberCssClass(change))}>
+        <div className="text-ellipsis whitespace-nowrap overflow-hidden">
+          <Arrow value={change} />
+          <span data-testid="price-change-percentage">
+            {formatNumberPercentage(
+              new BigNumber(changePercentage.toString()),
+              2
+            )}
+          </span>
+        </div>
+        {showChangeValue && (
+          <span
+            data-testid="price-change"
+            className="text-ellipsis whitespace-nowrap overflow-hidden text-muted"
+          >
+            ({addDecimalsFormatNumber(change.toString(), decimalPlaces ?? 0, 3)}
+            )
+          </span>
+        )}
+      </span>
+    );
+  }
 
   return (
     <span

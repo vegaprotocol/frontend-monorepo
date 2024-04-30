@@ -273,7 +273,7 @@ def test_team_page_headline(team_page: Tuple[Page, str, str, VegaServiceNull]):
     expect(page.get_by_test_id("team-name")).to_have_text(team_name)
     expect(page.get_by_test_id("icon-open-external").nth(1)).to_be_visible()
     expect(page.get_by_test_id("icon-copy").first).to_be_visible()
-    # expect(page.get_by_test_id("members-count-stat")).to_have_text("4")
+    expect(page.get_by_test_id("members-count-stat")).to_have_text("2")
 
     expect(page.get_by_test_id("total-games-stat")).to_have_text("1")
 

@@ -135,6 +135,7 @@
   "The scaling between the liquidity demand estimate, based on open interest and target stake.": "The scaling between the liquidity demand estimate, based on open interest and target stake.",
   "The second currency in a pair for a currency-based derivatives market.": "The second currency in a pair for a currency-based derivatives market.",
   "The smallest price increment on the book.": "The smallest price increment on the book.",
+  "The smallest order / position size on this market is 10^(-pdp).": "The smallest order / position size on this market is 10^(-pdp).",
   "The total number of contracts traded in the last 24 hours.": "The total number of contracts traded in the last 24 hours.",
   "The trading mode the market is currently running.": "The trading mode the market is currently running.",
   "The triggering ratio for entering liquidity auction.": "The triggering ratio for entering liquidity auction.",

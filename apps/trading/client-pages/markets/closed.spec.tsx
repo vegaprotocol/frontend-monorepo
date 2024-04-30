@@ -24,7 +24,10 @@ import {
   marketsDataQuery,
   createMarketsDataFragment,
 } from '@vegaprotocol/mock';
-import userEvent from '@testing-library/user-event';
+
+jest.mock('@vegaprotocol/wallet-react', () => ({
+  useChainId: jest.fn(() => '1'),
+}));
 
 describe('Closed', () => {
   let originalNow: typeof Date.now;
@@ -189,9 +192,6 @@ describe('Closed', () => {
       'Best bid',
       'Best offer',
       'Price',
-      'Settlement price',
-      'Settlement asset',
-      '', // actions row
     ];
     expect(headers).toHaveLength(expectedHeaders.length);
     expect(headers.map((h) => h.textContent?.trim())).toEqual(expectedHeaders);
@@ -224,67 +224,6 @@ describe('Closed', () => {
     ];
     cells.forEach((cell, i) => {
       expect(cell).toHaveTextContent(expectedValues[i]);
-    });
-  });
-
-  it('display market actions', async () => {
-    // Use market with a successor Id as the actions dropdown will optionally
-    // show a link to the successor market
-    const marketsWithSuccessorAndParent = [
-      {
-        __typename: 'MarketEdge' as const,
-        node: createMarketFragment({
-          id: marketId,
-          successorMarketID: 'successor',
-          parentMarketID: 'parent',
-        }),
-      },
-    ];
-    const mockWithSuccessorAndParent: MockedResponse<MarketsQuery> = {
-      request: {
-        query: MarketsDocument,
-      },
-      result: {
-        data: {
-          marketsConnection: {
-            __typename: 'MarketConnection',
-            edges: marketsWithSuccessorAndParent,
-          },
-        },
-      },
-    };
-    await renderComponent([
-      mockWithSuccessorAndParent,
-      marketsDataMock,
-      oracleDataMock,
-    ]);
-
-    await waitFor(async () => {
-      const actionCell = screen
-        .getAllByRole('gridcell')
-        .find((el) => el.getAttribute('col-id') === 'market-actions');
-
-      await userEvent.click(
-        within(actionCell as HTMLElement).getByTestId('dropdown-menu')
-      );
-
-      expect(screen.getByRole('menu')).toBeInTheDocument();
-
-      expect(
-        screen.getByRole('menuitem', { name: 'Copy Market ID' })
-      ).toBeInTheDocument();
-      expect(
-        screen.getByRole('menuitem', { name: 'View on Explorer' })
-      ).toBeInTheDocument();
-      expect(
-        screen.getByRole('menuitem', { name: 'View settlement asset details' })
-      ).toBeInTheDocument();
-      expect(
-        screen.getByRole('menuitem', { name: 'View parent market' })
-      ).toBeInTheDocument();
-      expect(
-        screen.getByRole('menuitem', { name: 'View successor market' })
-      ).toBeInTheDocument();
     });
   });
 

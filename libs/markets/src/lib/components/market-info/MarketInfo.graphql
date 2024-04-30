@@ -206,6 +206,7 @@ query MarketInfo($marketId: ID!) {
           type
           asset {
             id
+            decimals
           }
           balance
         }
