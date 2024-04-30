@@ -25,6 +25,7 @@ export interface StopOrderFormValues {
   timeInForce: OrderTimeInForce;
   price?: string;
   postOnly?: boolean;
+  orderExpiresAt?: string;
 
   expire: boolean;
   expiryStrategy?: Schema.StopOrderExpiryStrategy;
@@ -41,6 +42,7 @@ export interface StopOrderFormValues {
   ocoTimeInForce: OrderTimeInForce;
   ocoPrice?: string;
   ocoPostOnly?: boolean;
+  ocoOrderExpiresAt?: string;
 }
 
 export type OrderFormValues = {

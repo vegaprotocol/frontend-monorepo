@@ -10,7 +10,11 @@ import {
   removeDecimal,
   useValidateAmount,
 } from '@vegaprotocol/utils';
-import { type Control, type UseFormWatch } from 'react-hook-form';
+import {
+  type UseFormSetValue,
+  type Control,
+  type UseFormWatch,
+} from 'react-hook-form';
 import { useForm, Controller, useController } from 'react-hook-form';
 import * as Schema from '@vegaprotocol/types';
 import {
@@ -514,11 +518,15 @@ const TimeInForce = ({
   oco,
   orderType,
   isSpotMarket,
+  setValue,
+  expiresAt,
 }: {
   control: Control<StopOrderFormValues>;
   oco?: boolean;
   orderType: Schema.OrderType;
   isSpotMarket: boolean;
+  setValue: UseFormSetValue<StopOrderFormValues>;
+  expiresAt?: string;
 }) => {
   const t = useT();
   const options =
@@ -529,7 +537,7 @@ const TimeInForce = ({
     <Controller
       name={oco ? 'ocoTimeInForce' : 'timeInForce'}
       control={control}
-      render={({ field, fieldState }) => {
+      render={({ field: { onChange, ...field }, fieldState }) => {
         const id = `order-tif${oco ? '-oco' : ''}`;
         return (
           <div className="mb-2">
@@ -540,6 +548,25 @@ const TimeInForce = ({
                 data-testid={id}
                 hasError={!!fieldState.error}
                 {...field}
+                onChange={(e) => {
+                  const value = e.target.value as Schema.OrderTimeInForce;
+                  // If GTT is selected and no expiresAt time is set, or its
+                  // behind current time then reset the value to current time
+                  const now = Date.now();
+                  if (
+                    value === Schema.OrderTimeInForce.TIME_IN_FORCE_GTT &&
+                    (!expiresAt || new Date(expiresAt).getTime() < now)
+                  ) {
+                    setValue(
+                      oco ? 'ocoOrderExpiresAt' : 'orderExpiresAt',
+                      formatForInput(new Date(now)),
+                      {
+                        shouldValidate: true,
+                      }
+                    );
+                  }
+                  onChange(value);
+                }}
               >
                 {options.map(([key, value]) => (
                   <TimeInForceOption key={key} value={value} />
@@ -555,6 +582,42 @@ const TimeInForce = ({
         );
       }}
     />
+  );
+};
+
+const OrderExpiry = ({
+  control,
+  oco,
+  orderType,
+  timeInForce,
+}: {
+  control: Control<StopOrderFormValues>;
+  oco?: boolean;
+  orderType: Schema.OrderType;
+  timeInForce: Schema.OrderTimeInForce;
+}) => {
+  const t = useT();
+  return (
+    orderType === Schema.OrderType.TYPE_LIMIT &&
+    timeInForce === Schema.OrderTimeInForce.TIME_IN_FORCE_GTT && (
+      <Controller
+        name={oco ? 'ocoOrderExpiresAt' : 'orderExpiresAt'}
+        control={control}
+        rules={{
+          required: t('You need to provide a expiry time/date'),
+          validate: validateExpiration(
+            t('The expiry date that you have entered appears to be in the past')
+          ),
+        }}
+        render={({ field, fieldState: { error } }) => (
+          <ExpirySelector
+            value={field.value}
+            onSelect={(expiresAt) => field.onChange(expiresAt)}
+            errorMessage={error?.message}
+          />
+        )}
+      />
+    )
   );
 };
 
@@ -959,6 +1022,7 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
   const ocoPrice = watch('ocoPrice');
   const ocoSize = watch('ocoSize');
   const ocoTimeInForce = watch('ocoTimeInForce');
+  const ocoOrderExpiresAt = watch('ocoOrderExpiresAt');
   const ocoTriggerPrice = watch('ocoTriggerPrice');
   const ocoTriggerTrailingPercentOffset = watch(
     'ocoTriggerTrailingPercentOffset'
@@ -969,6 +1033,7 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
   const side = watch('side');
   const size = watch('size');
   const timeInForce = watch('timeInForce');
+  const orderExpiresAt = watch('orderExpiresAt');
   const triggerDirection = watch('triggerDirection');
   const triggerPrice = watch('triggerPrice');
   const triggerTrailingPercentOffset = watch('triggerTrailingPercentOffset');
@@ -1084,6 +1149,13 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
         control={control}
         orderType={type}
         isSpotMarket={isSpotMarket}
+        setValue={setValue}
+        expiresAt={orderExpiresAt}
+      />
+      <OrderExpiry
+        control={control}
+        orderType={type}
+        timeInForce={timeInForce}
       />
 
       <div className="flex justify-end gap-2 pb-3">
@@ -1200,6 +1272,14 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
             oco
             orderType={ocoType}
             isSpotMarket={isSpotMarket}
+            setValue={setValue}
+            expiresAt={ocoOrderExpiresAt}
+          />
+          <OrderExpiry
+            control={control}
+            oco
+            orderType={ocoType}
+            timeInForce={ocoTimeInForce}
           />
           {
             <div className="mb-2 flex justify-end gap-2">
