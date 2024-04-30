@@ -10,7 +10,7 @@ import type {
 import { isSpot, isPerpetual, isFuture } from './product';
 import type { Candle } from './market-candles-provider';
 
-export const getAsset = (market: Partial<Market>) => {
+export const getAsset = (market: Pick<Market, 'tradableInstrument'>) => {
   if (!market.tradableInstrument?.instrument.product) {
     throw new Error('Failed to retrieve asset. Invalid tradable instrument');
   }
@@ -28,7 +28,7 @@ export const getAsset = (market: Partial<Market>) => {
   throw new Error('Failed to retrieve asset. Invalid product type');
 };
 
-export const getBaseAsset = (market: Partial<Market>) => {
+export const getBaseAsset = (market: Pick<Market, 'tradableInstrument'>) => {
   if (!market.tradableInstrument?.instrument.product) {
     throw new Error('Failed to retrieve asset. Invalid tradable instrument');
   }
@@ -44,7 +44,7 @@ export const getBaseAsset = (market: Partial<Market>) => {
   );
 };
 
-export const getQuoteAsset = (market: Partial<Market>) => {
+export const getQuoteAsset = (market: Pick<Market, 'tradableInstrument'>) => {
   if (!market.tradableInstrument?.instrument.product) {
     throw new Error('Failed to retrieve asset. Invalid tradable instrument');
   }
@@ -60,7 +60,7 @@ export const getQuoteAsset = (market: Partial<Market>) => {
   );
 };
 
-export const getProductType = (market: Partial<Market>) => {
+export const getProductType = (market: Pick<Market, 'tradableInstrument'>) => {
   if (!market.tradableInstrument?.instrument.product) {
     throw new Error(
       'Failed to retrieve product type. Invalid tradable instrument'
@@ -76,7 +76,7 @@ export const getProductType = (market: Partial<Market>) => {
   return type;
 };
 
-export const getQuoteName = (market: Partial<Market>) => {
+export const getQuoteName = (market: Pick<Market, 'tradableInstrument'>) => {
   if (!market.tradableInstrument?.instrument.product) {
     throw new Error(
       'Failed to retrieve quoteName. Invalid tradable instrument'
@@ -237,7 +237,7 @@ export const calcCandleVolumePrice = (
   candles.reduce(
     (acc, c) =>
       new BigNumber(acc)
-        // Using notional both price and size need conversion with decimals, we can acheive the same result by just combining them
+        // Using notional both price and size need conversion with decimals, we can achieve the same result by just combining them
         .plus(toBigNum(c.notional, marketDecimals + positionDecimals))
         .toString(),
     '0'

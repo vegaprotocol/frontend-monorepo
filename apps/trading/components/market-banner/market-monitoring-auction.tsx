@@ -5,8 +5,9 @@ import {
 import { useT } from '../../lib/use-t';
 import { DocsLinks } from '@vegaprotocol/environment';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
-import { getDateTimeFormat, getTimeFormat } from '@vegaprotocol/utils';
+import { getDateTimeFormat } from '@vegaprotocol/utils';
 import { useThrottledDataProvider } from '@vegaprotocol/data-provider';
+import { formatDuration } from 'date-fns';
 
 export const MarketAuctionBanner = ({
   market,
@@ -33,8 +34,20 @@ export const MarketAuctionBanner = ({
     ? new Date(auctionEnd).getTime() - Date.now()
     : 0;
 
-  const timeRemaining =
-    remaining > 0 ? getTimeFormat().format(new Date(remaining)) : 0;
+  const formatRemaining = (remaining: number) => {
+    if (remaining <= 0) return undefined;
+
+    let seconds = Math.floor(remaining / 1000);
+    let minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+
+    seconds = seconds % 60;
+    minutes = minutes % 60;
+
+    return formatDuration({ hours, minutes, seconds });
+  };
+
+  const timeRemaining = formatRemaining(remaining);
 
   return (
     <p>

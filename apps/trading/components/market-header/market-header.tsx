@@ -35,7 +35,7 @@ export const MarketHeader = () => {
                   <HeaderTitle>
                     <span>
                       {marketId && (
-                        <span className="mr-2">
+                        <span className="mr-4">
                           <EmblemByMarket
                             market={marketId}
                             vegaChain={chainId}

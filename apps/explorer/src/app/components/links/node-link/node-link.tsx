@@ -10,6 +10,10 @@ export type NodeLinkProps = Partial<ComponentProps<typeof Link>> & {
   id: string;
 };
 
+/**
+ * Given a Vega Public key, renders the name of a validator (or the key if no name is available)
+ * See also TMNodeLink which does the same for Tendermint node IDs
+ */
 const NodeLink = ({ id, ...props }: NodeLinkProps) => {
   const { data } = useExplorerNodeQuery({
     variables: { id },

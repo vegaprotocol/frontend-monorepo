@@ -17,13 +17,12 @@ import {
 } from '@vegaprotocol/utils';
 import { closedMarketsProvider, getAsset } from '@vegaprotocol/markets';
 import type { DataSourceFilterFragment } from '@vegaprotocol/markets';
-import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import { useMarketClickHandler } from '../../lib/hooks/use-market-click-handler';
 import { SettlementDateCell } from './settlement-date-cell';
-import { SettlementPriceCell } from './settlement-price-cell';
 import { MarketCodeCell } from './market-code-cell';
-import { MarketActionsDropdown } from './market-table-actions';
 import { useT } from '../../lib/use-t';
+import { EmblemByMarket } from '@vegaprotocol/emblem';
+import { useChainId } from '@vegaprotocol/wallet-react';
 
 type SettlementAsset = Pick<
   Asset,
@@ -129,15 +128,35 @@ const ClosedMarketsDataGrid = ({
 }) => {
   const t = useT();
   const handleOnSelect = useMarketClickHandler();
-  const openAssetDialog = useAssetDetailsDialogStore((store) => store.open);
+  const { chainId } = useChainId();
 
   const colDefs = useMemo(() => {
     return [
       {
         headerName: t('Market'),
         field: 'code',
-        cellRenderer: 'MarketCodeCell',
-        width: 150,
+        minWidth: 150,
+        cellRenderer: ({
+          value,
+          data,
+        }: VegaICellRendererParams<Row, 'code'>) => {
+          if (!data) return null;
+          return (
+            <span className="flex items-center gap-2 cursor-pointer">
+              <span className="mr-2">
+                <EmblemByMarket market={data?.id || ''} vegaChain={chainId} />
+              </span>
+              <MarketCodeCell
+                value={value}
+                data={{
+                  productType: data.productType,
+                  parentMarketID: data.parentMarketID,
+                  successorMarketID: data.successorMarketID,
+                }}
+              />
+            </span>
+          );
+        },
         resizable: true,
       },
       {
@@ -228,56 +247,8 @@ const ClosedMarketsDataGrid = ({
           return addDecimalsFormatNumber(value, data.decimalPlaces);
         },
       },
-      {
-        headerName: t('Settlement price'),
-        type: 'numericColumn',
-        field: 'settlementDataOracleId',
-        // 'tradableInstrument.instrument.product.dataSourceSpecForSettlementData.id',
-        cellRenderer: ({
-          value,
-          data,
-        }: VegaICellRendererParams<Row, 'settlementDataOracleId'>) => (
-          <SettlementPriceCell
-            oracleSpecId={value}
-            settlementDataSpecBinding={data?.settlementDataSpecBinding}
-            filter={data?.settlementDataSourceFilter}
-          />
-        ),
-      },
-      {
-        headerName: t('Settlement asset'),
-        field: 'settlementAsset',
-        cellRenderer: ({
-          value,
-        }: VegaValueFormatterParams<Row, 'settlementAsset'>) => (
-          <button
-            className="underline"
-            onClick={() => {
-              if (!value) return;
-              openAssetDialog(value.id);
-            }}
-          >
-            {value ? value.symbol : '-'}
-          </button>
-        ),
-      },
-      {
-        colId: 'market-actions',
-        ...COL_DEFS.actions,
-        cellRenderer: ({ data }: VegaICellRendererParams<Row>) => {
-          if (!data) return null;
-          return (
-            <MarketActionsDropdown
-              marketId={data.id}
-              assetId={data.settlementAsset.id}
-              successorMarketID={data.successorMarketID}
-              parentMarketID={data.parentMarketID}
-            />
-          );
-        },
-      },
     ];
-  }, [openAssetDialog, t]);
+  }, [chainId, t]);
 
   return (
     <AgGrid
@@ -288,11 +259,13 @@ const ClosedMarketsDataGrid = ({
       overlayNoRowsTemplate={error ? error.message : t('No markets')}
       components={components}
       rowHeight={45}
+      headerHeight={40}
+      domLayout="autoHeight"
       onCellClicked={({ data, column, event }: CellClickedEvent<Row>) => {
         if (!data) return;
 
         // prevent navigating to the market page if any of the below cells are clicked
-        // event.preventDefault or event.stopPropagation dont seem to apply for aggird
+        // event.preventDefault or event.stopPropagation don't seem to apply for ag-gird
         const colId = column.getColId();
 
         if (

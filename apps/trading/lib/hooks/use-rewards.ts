@@ -51,6 +51,7 @@ const STAKING_DISPATCH_STRATEGY: StakingDispatchStrategy = {
   notionalTimeWeightedAveragePositionRequirement: '',
   stakingRequirement: '1000000000000000000', // 1 VEGA
   windowLength: 1,
+  transfer_interval: 1,
 };
 
 /**

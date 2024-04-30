@@ -17,7 +17,7 @@ const defaultColDef = {
   filter: true,
   resizable: true,
   filterParams: { buttons: ['reset'] },
-  minWidth: 120,
+  minWidth: 100,
 };
 
 const components = {
@@ -65,6 +65,8 @@ export const MarketListTable = (props: Props) => {
       columnDefs={columnDefs}
       components={components}
       rowHeight={45}
+      headerHeight={40}
+      domLayout="autoHeight"
       {...gridStoreCallbacks}
       {...props}
     />
