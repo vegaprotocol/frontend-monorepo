@@ -31,6 +31,7 @@ import {
   getAsset,
   getDerivedPrice,
   getQuoteName,
+  isSpot,
   type Market,
 } from '@vegaprotocol/markets';
 import { ExpirySelector } from './expiry-selector';
@@ -543,14 +544,14 @@ const TimeInForce = ({
   );
 };
 
-const ReduceOnly = () => {
+const ReduceOnly = ({ checked = true }) => {
   const t = useT();
   return (
     <Tooltip description={<span>{t(REDUCE_ONLY_TOOLTIP)}</span>}>
       <div>
         <Checkbox
           name="reduce-only"
-          checked={true}
+          checked={checked}
           disabled={true}
           label={t('Reduce only')}
         />
@@ -863,6 +864,7 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
     });
   const { errors } = formState;
   const lastSubmitTime = useRef(0);
+  const isSpotMarket = isSpot(market.tradableInstrument.instrument.product);
   const onSubmit = useCallback(
     (data: StopOrderFormValues) => {
       const now = new Date().getTime();
@@ -874,12 +876,19 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
           data,
           market.id,
           market.decimalPlaces,
-          market.positionDecimalPlaces
+          market.positionDecimalPlaces,
+          isSpotMarket
         )
       );
       lastSubmitTime.current = now;
     },
-    [market.id, market.decimalPlaces, market.positionDecimalPlaces, submit]
+    [
+      market.id,
+      market.decimalPlaces,
+      market.positionDecimalPlaces,
+      submit,
+      isSpotMarket,
+    ]
   );
   const expire = watch('expire');
   const expiresAt = watch('expiresAt');
@@ -952,7 +961,6 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
     >
       <TypeToggle
         value={dealTicketType}
-        showStopOrders
         onValueChange={(dealTicketType) => {
           setType(market.id, dealTicketType);
           if (isStopOrderType(dealTicketType)) {
@@ -1010,11 +1018,11 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
         type={type}
       />
       <TimeInForce control={control} />
-      {
-        <div className="flex justify-end gap-2 pb-3">
-          <ReduceOnly />
-        </div>
-      }
+
+      <div className="flex justify-end gap-2 pb-3">
+        <ReduceOnly checked={!isSpotMarket} />
+      </div>
+
       <hr className="border-vega-clight-500 dark:border-vega-cdark-500 mb-4" />
       <div className="flex justify-between gap-2 pb-2">
         <Controller
@@ -1114,7 +1122,7 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
           <TimeInForce control={control} oco />
           {
             <div className="mb-2 flex justify-end gap-2">
-              <ReduceOnly />
+              <ReduceOnly checked={!isSpotMarket} />
             </div>
           }
         </>
@@ -1224,11 +1232,13 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
           />
         </div>
       ) : (
-        <NoOpenVolumeWarning
-          side={side}
-          partyId={pubKey}
-          marketId={market.id}
-        />
+        !isSpotMarket && (
+          <NoOpenVolumeWarning
+            side={side}
+            partyId={pubKey}
+            marketId={market.id}
+          />
+        )
       )}
       <SubmitButton
         assetUnit={assetUnit}

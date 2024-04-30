@@ -49,14 +49,13 @@ const useOptions = () => {
 export const TypeToggle = ({
   value,
   onValueChange,
-  showStopOrders,
-}: Pick<TypeSelectorProps, 'onValueChange' | 'value' | 'showStopOrders'>) => {
+}: Pick<TypeSelectorProps, 'onValueChange' | 'value'>) => {
   const featureFlags = useFeatureFlags((state) => state.flags);
   const t = useT();
   const options = useOptions();
   const toggles = useToggles();
   const selectedOption = options.find((t) => t.value === value);
-  const showStopOrdersDropdown = showStopOrders && featureFlags.STOP_ORDERS;
+  const showStopOrdersDropdown = featureFlags.STOP_ORDERS;
   return (
     <RadioGroup.Root
       name="order-type"
@@ -202,7 +201,6 @@ export const TypeSelector = ({
           onValueChange(value as DealTicketType);
         }}
         value={value}
-        showStopOrders={showStopOrders}
       />
       {errorMessage && (
         <TradingInputError testId="deal-ticket-error-message-type">

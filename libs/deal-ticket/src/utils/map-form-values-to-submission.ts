@@ -10,7 +10,7 @@ import type {
 import * as Schema from '@vegaprotocol/types';
 import { removeDecimal, toNanoSeconds } from '@vegaprotocol/utils';
 import { isPersistentOrder } from './time-in-force-persistence';
-import { type MarketFieldsFragment } from '@vegaprotocol/markets';
+import { isSpot, type MarketFieldsFragment } from '@vegaprotocol/markets';
 
 export const mapFormValuesToOrderSubmission = (
   order: OrderFormValues,
@@ -85,6 +85,7 @@ export const mapFormValuesToStopOrdersSubmission = (
   marketId: string,
   decimalPlaces: number,
   positionDecimalPlaces: number,
+  isSpotMarket = false,
   reference?: string
 ): StopOrdersSubmission => {
   const submission: StopOrdersSubmission = {
@@ -99,7 +100,7 @@ export const mapFormValuesToStopOrdersSubmission = (
         size: data.size,
         timeInForce: data.timeInForce,
         price: data.price,
-        reduceOnly: true,
+        reduceOnly: !isSpotMarket,
       },
       marketId,
       decimalPlaces,
@@ -124,7 +125,7 @@ export const mapFormValuesToStopOrdersSubmission = (
           size: data.ocoSize,
           timeInForce: data.ocoTimeInForce,
           price: data.ocoPrice,
-          reduceOnly: true,
+          reduceOnly: !isSpotMarket,
         },
         marketId,
         decimalPlaces,
@@ -231,6 +232,7 @@ export const mapFormValuesToTakeProfitAndStopLoss = (
       market.id,
       market.decimalPlaces,
       market.positionDecimalPlaces,
+      isSpot(market.tradableInstrument.instrument.product),
       reference
     );
     stopOrdersSubmission.push(ocoStopOrderSubmission);
@@ -255,6 +257,7 @@ export const mapFormValuesToTakeProfitAndStopLoss = (
       market.id,
       market.decimalPlaces,
       market.positionDecimalPlaces,
+      isSpot(market.tradableInstrument.instrument.product),
       reference
     );
     stopOrdersSubmission.push(takeProfitStopOrderSubmission);
@@ -279,6 +282,7 @@ export const mapFormValuesToTakeProfitAndStopLoss = (
       market.id,
       market.decimalPlaces,
       market.positionDecimalPlaces,
+      isSpot(market.tradableInstrument.instrument.product),
       reference
     );
     stopOrdersSubmission.push(stopLossStopOrderSubmission);

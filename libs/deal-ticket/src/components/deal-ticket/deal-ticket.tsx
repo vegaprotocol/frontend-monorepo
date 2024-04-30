@@ -690,7 +690,7 @@ export const DealTicket = ({
 
       <div className="flex justify-between gap-2 mb-4">
         <div className="flex flex-col gap-2">
-          {featureFlags.TAKE_PROFIT_STOP_LOSS && !isSpotMarket && (
+          {featureFlags.TAKE_PROFIT_STOP_LOSS && (
             <Controller
               name="tpSl"
               control={control}

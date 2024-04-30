@@ -70,7 +70,7 @@ export const DealTicketContainer = ({
               <hr className="border-vega-clight-500 dark:border-vega-cdark-500 mb-4" />
             </>
           )}
-          {featureFlags.STOP_ORDERS && showStopOrder && !isSpotMarket ? (
+          {featureFlags.STOP_ORDERS && showStopOrder ? (
             <StopOrder
               market={market}
               marketPrice={marketPrice}
