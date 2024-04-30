@@ -26,6 +26,7 @@ import {
   Pill,
   Intent,
   Notification,
+  ExternalLink,
 } from '@vegaprotocol/ui-toolkit';
 import {
   getAsset,
@@ -61,12 +62,21 @@ import { useT } from '../../use-t';
 import { determinePriceStep, determineSizeStep } from '@vegaprotocol/utils';
 import { useOpenVolume } from '@vegaprotocol/positions';
 import { useNetworkParamQuery } from '@vegaprotocol/network-parameters';
+import { DocsLinks } from '@vegaprotocol/environment';
+import { isNonPersistentOrder } from '../../utils/time-in-force-persistence';
 
 export interface StopOrderProps {
   market: Market;
   marketPrice?: string | null;
   submit: (order: StopOrdersSubmission) => void;
 }
+
+const typeLimitOptions = Object.entries(Schema.OrderTimeInForce);
+const typeMarketOptions = typeLimitOptions.filter(
+  ([_, timeInForce]) =>
+    timeInForce === Schema.OrderTimeInForce.TIME_IN_FORCE_FOK ||
+    timeInForce === Schema.OrderTimeInForce.TIME_IN_FORCE_IOC
+);
 
 const trailingPercentOffsetStep = '0.1';
 
@@ -494,14 +504,27 @@ export const NoOpenVolumeWarning = ({
   );
 };
 
+const TimeInForceOption = ({ value }: { value: Schema.OrderTimeInForce }) => {
+  const t = useT();
+  return <option value={value}>{t(value)}</option>;
+};
+
 const TimeInForce = ({
   control,
   oco,
+  orderType,
+  isSpotMarket,
 }: {
   control: Control<StopOrderFormValues>;
   oco?: boolean;
+  orderType: Schema.OrderType;
+  isSpotMarket: boolean;
 }) => {
   const t = useT();
+  const options =
+    orderType === Schema.OrderType.TYPE_LIMIT && isSpotMarket
+      ? typeLimitOptions
+      : typeMarketOptions;
   return (
     <Controller
       name={oco ? 'ocoTimeInForce' : 'timeInForce'}
@@ -518,18 +541,9 @@ const TimeInForce = ({
                 hasError={!!fieldState.error}
                 {...field}
               >
-                <option
-                  key={Schema.OrderTimeInForce.TIME_IN_FORCE_IOC}
-                  value={Schema.OrderTimeInForce.TIME_IN_FORCE_IOC}
-                >
-                  {t(Schema.OrderTimeInForce.TIME_IN_FORCE_IOC)}
-                </option>
-                <option
-                  key={Schema.OrderTimeInForce.TIME_IN_FORCE_FOK}
-                  value={Schema.OrderTimeInForce.TIME_IN_FORCE_FOK}
-                >
-                  {t(Schema.OrderTimeInForce.TIME_IN_FORCE_FOK)}
-                </option>
+                {options.map(([key, value]) => (
+                  <TimeInForceOption key={key} value={value} />
+                ))}
               </Select>
             </FormGroup>
             {fieldState.error && (
@@ -544,19 +558,68 @@ const TimeInForce = ({
   );
 };
 
-const ReduceOnly = ({ checked = true }) => {
+const ReduceOnly = () => {
   const t = useT();
   return (
     <Tooltip description={<span>{t(REDUCE_ONLY_TOOLTIP)}</span>}>
       <div>
         <Checkbox
           name="reduce-only"
-          checked={checked}
+          checked={true}
           disabled={true}
           label={t('Reduce only')}
         />
       </div>
     </Tooltip>
+  );
+};
+
+const PostOnly = ({
+  control,
+  oco,
+  disabled,
+}: {
+  control: Control<StopOrderFormValues>;
+  oco?: boolean;
+  disabled?: boolean;
+}) => {
+  const t = useT();
+  const name = oco ? 'ocoPostOnly' : 'postOnly';
+  return (
+    <Controller
+      name={name}
+      control={control}
+      render={({ field }) => (
+        <Tooltip
+          description={
+            <>
+              <span>
+                {disabled
+                  ? t(
+                      '"Post only" can not be used on "Fill or Kill" or "Immediate or Cancel" orders.'
+                    )
+                  : t(
+                      '"Post only" will ensure the order is not filled immediately but is placed on the order book as a passive order. When the order is processed it is either stopped (if it would not be filled immediately), or placed in the order book as a passive order until the price taker matches with it.'
+                    )}
+              </span>{' '}
+              <ExternalLink href={DocsLinks?.POST_REDUCE_ONLY}>
+                {t('Find out more')}
+              </ExternalLink>
+            </>
+          }
+        >
+          <div>
+            <Checkbox
+              name={name}
+              checked={!disabled && field.value}
+              disabled={disabled}
+              onCheckedChange={field.onChange}
+              label={t('Post only')}
+            />
+          </div>
+        </Tooltip>
+      )}
+    />
   );
 };
 
@@ -1017,10 +1080,23 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
         triggerType={triggerType}
         type={type}
       />
-      <TimeInForce control={control} />
+      <TimeInForce
+        control={control}
+        orderType={type}
+        isSpotMarket={isSpotMarket}
+      />
 
       <div className="flex justify-end gap-2 pb-3">
-        <ReduceOnly checked={!isSpotMarket} />
+        {isSpotMarket ? (
+          type === Schema.OrderType.TYPE_LIMIT && (
+            <PostOnly
+              control={control}
+              disabled={isNonPersistentOrder(timeInForce)}
+            />
+          )
+        ) : (
+          <ReduceOnly />
+        )}
       </div>
 
       <hr className="border-vega-clight-500 dark:border-vega-cdark-500 mb-4" />
@@ -1119,10 +1195,25 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
             triggerType={ocoTriggerType}
             type={ocoType}
           />
-          <TimeInForce control={control} oco />
+          <TimeInForce
+            control={control}
+            oco
+            orderType={ocoType}
+            isSpotMarket={isSpotMarket}
+          />
           {
             <div className="mb-2 flex justify-end gap-2">
-              <ReduceOnly checked={!isSpotMarket} />
+              {isSpotMarket ? (
+                ocoType === Schema.OrderType.TYPE_LIMIT && (
+                  <PostOnly
+                    control={control}
+                    oco
+                    disabled={isNonPersistentOrder(ocoTimeInForce)}
+                  />
+                )
+              ) : (
+                <ReduceOnly />
+              )}
             </div>
           }
         </>
