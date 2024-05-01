@@ -42,6 +42,7 @@ const AccountType: Record<AccountTypes, string> = {
   ACCOUNT_TYPE_REWARD_VALIDATOR_RANKING: 'Reward Validator Ranking',
   ACCOUNT_TYPE_PENDING_FEE_REFERRAL_REWARD: 'Pending Fee Referral Reward',
   ACCOUNT_TYPE_ORDER_MARGIN: 'Order Margin',
+  ACCOUNT_TYPE_REWARD_REALISED_RETURN: 'Reward Realised Return',
 };
 
 export type TransferFee = {

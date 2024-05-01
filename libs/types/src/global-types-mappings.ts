@@ -62,7 +62,6 @@ export const AccountTypeMapping: {
   ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES: 'LP received fees reward account',
   ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES: 'Maker received fees reward account',
   ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS: 'Market proposers reward account',
-  ACCOUNT_TYPE_REWARD_REALISED_RETURN: 'Realised return reward account',
   ACCOUNT_TYPE_REWARD_AVERAGE_POSITION: 'Average position reward account',
   ACCOUNT_TYPE_REWARD_RELATIVE_RETURN: 'Relative return reward account',
   ACCOUNT_TYPE_REWARD_RETURN_VOLATILITY: 'Volatility return reward account',
@@ -74,6 +73,7 @@ export const AccountTypeMapping: {
   ACCOUNT_TYPE_HOLDING: 'Holding account',
   ACCOUNT_TYPE_LP_LIQUIDITY_FEES: 'LP liquidity fees account',
   ACCOUNT_TYPE_NETWORK_TREASURY: 'Network treasury account',
+  ACCOUNT_TYPE_REWARD_REALISED_RETURN: 'Realised return reward account',
 };
 
 /**
@@ -314,7 +314,7 @@ export const StopOrderRejectionReasonMapping: {
   REJECTION_REASON_STOP_ORDER_LINKED_PERCENTAGE_INVALID:
     'The percentage value for the linked stop order is invalid',
   REJECTION_REASON_STOP_ORDER_SIZE_OVERRIDE_UNSUPPORTED_FOR_SPOT:
-    'Position percentage stop order is not supported for spot market',
+    'Stop order size override is not supported for spot markets',
 };
 
 /**
@@ -683,8 +683,8 @@ export const DispatchMetricLabels: DispatchMetricLabel = {
   DISPATCH_METRIC_RELATIVE_RETURN: 'Relative return',
   DISPATCH_METRIC_RETURN_VOLATILITY: 'Return volatility',
   DISPATCH_METRIC_VALIDATOR_RANKING: 'Validator ranking',
-  DISPATCH_METRIC_REALISED_RETURN: 'Realised return',
   STAKING_REWARD_METRIC: 'Staking rewards',
+  DISPATCH_METRIC_REALISED_RETURN: 'Realised return',
 };
 
 export const DispatchMetricDescription: DispatchMetricLabel = {
@@ -703,10 +703,10 @@ export const DispatchMetricDescription: DispatchMetricLabel = {
     'Get rewards for having the least amount of variance in your returns while you have a position open during the rewards window.',
   DISPATCH_METRIC_VALIDATOR_RANKING:
     'Get rewards if you run a validator node with a high ranking score.',
-  DISPATCH_METRIC_REALISED_RETURN:
-    'Dispatch metric that uses the realised return of the party in the market',
   STAKING_REWARD_METRIC:
     'Global staking reward for staking $VEGA on the network via the Governance app',
+  DISPATCH_METRIC_REALISED_RETURN:
+    'Get rewards for having a high profit in relation to your position size.',
 };
 
 export const PositionStatusMapping: {

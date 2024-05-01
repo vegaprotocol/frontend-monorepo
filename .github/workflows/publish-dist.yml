@@ -24,28 +24,10 @@ jobs:
 
       - name: Init variables
         run: |
-          echo IS_PR=false >> $GITHUB_ENV
           echo IS_MAINNET_RELEASE=false >> $GITHUB_ENV
           echo IS_TESTNET_RELEASE=false >> $GITHUB_ENV
           echo IS_IPFS_RELEASE=false >> $GITHUB_ENV
           echo IS_S3_RELEASE=false >> $GITHUB_ENV
-          echo IS_DEV_IMAGE=false >> $GITHUB_ENV
-          echo IS_MAIN_IMAGE=false >> $GITHUB_ENV
-
-      - name: Is dev image
-        if: ${{ github.ref_name == 'develop' && github.event_name == 'push' && matrix.app == 'trading' }}
-        run: |
-          echo IS_DEV_IMAGE=true >> $GITHUB_ENV
-
-      - name: Is main image
-        if: ${{ github.ref_name == 'main' && github.event_name == 'push' && matrix.app == 'trading' }}
-        run: |
-          echo IS_MAIN_IMAGE=true >> $GITHUB_ENV
-
-      - name: Is PR
-        if: ${{ github.event_name == 'pull_request' }}
-        run: |
-          echo IS_PR=true >> $GITHUB_ENV
 
       - name: Is mainnet release
         if: ${{ contains(github.ref, 'release/mainnet') && !contains(github.ref, 'mirror') }}
@@ -77,17 +59,9 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      - name: Log in to the Container registry (ghcr)
-        if: ${{ env.IS_PR == 'true' }}
-        uses: docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Log in to the Container registry (docker hub)
         uses: docker/login-action@v2
-        if: ${{ env.IS_IPFS_RELEASE == 'true' || env.IS_DEV_IMAGE == 'true' || env.IS_MAIN_IMAGE == 'true' }}
+        if: ${{ env.IS_IPFS_RELEASE == 'true' }}
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -96,7 +70,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
-          # https://stackoverflow.com/questions/61010294/how-to-cache-yarn-packages-in-github-actions
           cache: yarn
 
       - name: Cache node modules
@@ -141,51 +114,11 @@ jobs:
           mv $DIST_LOCATION dist-result
           tree dist-result
 
-      - name: Build and export to local Docker
-        id: docker_build
-        uses: docker/build-push-action@v3
-        with:
-          context: .
-          file: docker/node-outside-docker.Dockerfile
-          load: true
-          build-args: |
-            APP=${{ matrix.app }}
-            ENV_NAME=${{ env.ENV_NAME }}
-          tags: |
-            ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:local
-
-      - name: Image digest
-        if: ${{ env.IS_PR == 'true' }}
-        run: echo ${{ steps.docker_build.outputs.digest }}
-
-      - name: Sanity check docker image
-        run: |
-          echo "Check ipfs-hash"
-          docker run --rm ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:local /bin/sh -c 'cat /ipfs-hash'
-          docker run --rm ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:local /bin/sh -c 'cat /ipfs-hash' > ${{ matrix.app }}-ipfs-hash
-          echo "List html directory"
-          docker run --rm ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:local /bin/sh -c 'apk add --update tree; tree /usr/share/nginx/html'
-
-      - name: Publish dist as docker image (ghcr)
-        uses: docker/build-push-action@v3
-        continue-on-error: true
-        id: ghcr-push
-        if: ${{ env.IS_PR == 'true' }}
-        with:
-          context: .
-          file: docker/node-outside-docker.Dockerfile
-          push: true
-          build-args: |
-            APP=${{ matrix.app }}
-            ENV_NAME=${{ env.ENV_NAME }}
-          tags: |
-            ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:${{ github.event.pull_request.head.sha || github.sha }}
-
       - name: Publish dist as docker image (docker hub)
         uses: docker/build-push-action@v3
         continue-on-error: true
         id: dockerhub-push
-        if: ${{ env.IS_IPFS_RELEASE == 'true' || env.IS_DEV_IMAGE == 'true' || env.IS_MAIN_IMAGE == 'true' }}
+        if: ${{ env.IS_IPFS_RELEASE == 'true' }}
         with:
           context: .
           file: docker/node-outside-docker.Dockerfile
@@ -195,20 +128,7 @@ jobs:
             ENV_NAME=${{ env.ENV_NAME }}
           tags: |
             vegaprotocol/${{ matrix.app }}:${{ github.sha }}
-            vegaprotocol/${{ matrix.app }}:${{ env.IS_MAINNET_RELEASE == 'true' && 'mainnet' || env.IS_TESTNET_RELEASE == 'true' && 'testnet' || env.IS_DEV_IMAGE == 'true' && 'develop' || env.IS_MAIN_IMAGE == 'true' && 'main' || '' }}
-
-      - name: Publish dist as docker image (ghcr - retry)
-        uses: docker/build-push-action@v3
-        if: ${{ steps.ghcr-push.outcome == 'failure' }}
-        with:
-          context: .
-          file: docker/node-outside-docker.Dockerfile
-          push: true
-          build-args: |
-            APP=${{ matrix.app }}
-            ENV_NAME=${{ env.ENV_NAME }}
-          tags: |
-            ghcr.io/vegaprotocol/frontend/${{ matrix.app }}:${{ github.event.pull_request.head.sha || github.sha }}
+            vegaprotocol/${{ matrix.app }}:${{ env.IS_MAINNET_RELEASE == 'true' && 'mainnet' || env.IS_TESTNET_RELEASE == 'true' && 'testnet' || '' }}
 
       - name: Publish dist as docker image (docker hub - retry)
         uses: docker/build-push-action@v3
@@ -222,7 +142,15 @@ jobs:
             ENV_NAME=${{ env.ENV_NAME }}
           tags: |
             vegaprotocol/${{ matrix.app }}:${{ github.sha }}
-            vegaprotocol/${{ matrix.app }}:${{ env.IS_MAINNET_RELEASE == 'true' && 'mainnet' || env.IS_TESTNET_RELEASE == 'true' && 'testnet' || env.IS_DEV_IMAGE == 'true' && 'develop' || env.IS_MAIN_IMAGE == 'true' && 'main' || '' }}
+            vegaprotocol/${{ matrix.app }}:${{ env.IS_MAINNET_RELEASE == 'true' && 'mainnet' || env.IS_TESTNET_RELEASE == 'true' && 'testnet' || '' }}
+
+      - name: Sanity check docker image
+        run: |
+          echo "Check ipfs-hash"
+          docker run --rm vegaprotocol/${{ matrix.app }}:${{ github.sha }} /bin/sh -c 'cat /ipfs-hash'
+          docker run --rm vegaprotocol/${{ matrix.app }}:${{ github.sha }} /bin/sh -c 'cat /ipfs-hash' > ${{ matrix.app }}-ipfs-hash
+          echo "List html directory"
+          docker run --rm vegaprotocol/${{ matrix.app }}:${{ github.sha }} /bin/sh -c 'apk add --update tree; tree /usr/share/nginx/html'
 
       # bucket creation in github.com/vegaprotocol/terraform//frontend
       - name: Publish dist to s3
@@ -253,13 +181,6 @@ jobs:
           id=$(aws cloudfront list-distributions | jq -Mrc '.DistributionList.Items | .[] | select(.DefaultCacheBehavior.TargetOriginId == "${{ env.BUCKET_NAME }}") | .Id')
           echo "Found id is: ${id}"
           aws cloudfront create-invalidation --distribution-id $id --paths "/*"
-
-      - name: Add preview label
-        uses: actions-ecosystem/action-add-labels@v1
-        if: ${{ env.IS_PR == 'true' }}
-        with:
-          labels: ${{ matrix.app }}-preview
-          number: ${{ github.event.number }}
 
       - name: Trigger fleek deployment
         # release to ipfs happens only on mainnet (represented by main branch) for trading

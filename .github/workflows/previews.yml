@@ -1,0 +1,127 @@
+name: Previews
+
+on:
+  workflow_call:
+    inputs:
+      projects:
+        required: true
+        type: string
+
+jobs:
+  deploy-previews:
+    strategy:
+      fail-fast: false
+      matrix:
+        app: ${{ fromJSON(inputs.projects) }}
+    name: ${{ matrix.app }}
+    runs-on: ubuntu-22.04
+    timeout-minutes: 25
+    env:
+      APP_BUCKET_NAME: pr-${{ github.event.number }}.${{ matrix.app }}.previews.vega.rocks
+      APP_ENDPOINT: http://pr-${{ github.event.number }}.${{ matrix.app }}.previews.vega.rocks.s3-website.eu-west-1.amazonaws.com
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: 'eu-west-1'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Cache node modules
+        id: cache
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-cache-node-modules-${{ hashFiles('yarn.lock') }}
+          # comment out "restore-keys" if you need to rebuild yarn from 0
+          restore-keys: |
+            ${{ runner.os }}-cache-node-modules-
+
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: yarn
+
+      - name: yarn install
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: yarn install --pure-lockfile
+
+      - name: Select mainnet-mirror environment config for preview
+        if: github.base_ref == 'main'
+        run: echo "APP_ENV_FILE=.env.mainnet-mirror" >> "$GITHUB_ENV"
+
+      - name: Select stagnet1 environment config for preview
+        if: github.base_ref != 'main'
+        run: echo "APP_ENV_FILE=.env.stagnet1" >> "$GITHUB_ENV"
+
+      - name: Build trading app
+        if: ${{ matrix.app == 'trading' }} # Trading app requires a call to `nx export`
+        run: yarn env-cmd -f ./apps/trading/$APP_ENV_FILE yarn nx export trading
+
+      - name: Build ${{ matrix.app }} app
+        if: ${{ matrix.app != 'trading' }} # Trading app requires a call to `nx export`
+        run: |
+          if [[ "${{ matrix.app }}" == "trading" ]]; then
+            yarn env-cmd -f ./apps/trading/$APP_ENV_FILE yarn nx export trading
+          else
+            yarn env-cmd -f ./apps/${{ matrix.app }}/$APP_ENV_FILE yarn nx build ${{ matrix.app }}
+          fi
+
+      - name: Deploy ${{ matrix.app }} preview
+        run: |
+          bucket_exists=$(aws s3api list-buckets | jq -c --arg bucket $APP_BUCKET_NAME 'any(.Buckets[]; .Name == $bucket)')
+          if [[ "$bucket_exists" == "false" ]]; then
+            aws s3api create-bucket --bucket $APP_BUCKET_NAME --region eu-west-1 --create-bucket-configuration LocationConstraint=eu-west-1
+            aws s3api put-public-access-block --bucket $APP_BUCKET_NAME --public-access-block-configuration "BlockPublicPolicy=false"
+            aws s3api put-bucket-policy --bucket $APP_BUCKET_NAME --policy "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"PublicReadGetObject\",\"Effect\":\"Allow\",\"Principal\":\"*\",\"Action\":[\"s3:GetObject\"],\"Resource\":[\"arn:aws:s3:::$APP_BUCKET_NAME/*\"]}]}"
+            aws s3 website s3://$APP_BUCKET_NAME --index index.html --error index.html
+          fi
+          if [[ "${{ matrix.app }}" == "trading" ]]; then
+            aws s3 sync ./dist/apps/trading/exported s3://$APP_BUCKET_NAME
+          else
+            aws s3 sync ./dist/apps/${{ matrix.app }} s3://$APP_BUCKET_NAME
+          fi
+      - name: Wait for ${{ matrix.app }} preview deployment
+        run: |
+          until curl --insecure --location --fail $APP_ENDPOINT; do
+            echo "Waiting for ${{ matrix.app }} preview: $APP_ENDPOINT"
+            sleep 5
+          done
+
+  link-previews:
+    runs-on: ubuntu-22.04
+    name: 'Link previews'
+    needs: [deploy-previews]
+    steps:
+      - name: Find comment with links
+        uses: peter-evans/find-comment@v2
+        id: fc
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body-includes: '# Previews'
+
+      - name: Build links table
+        id: links-table
+        run: |
+          echo -e "# Previews\n| App | Preview |\n|---|---|" > comment.md
+          for app in $(echo '${{ inputs.projects }}' | jq -r ".[]"); do
+           echo -e "| **$app** | http://pr-${{ github.event.number }}.$app.previews.vega.rocks.s3-website.eu-west-1.amazonaws.com |" >> comment.md
+          done
+
+      - name: Create previews comment
+        uses: peter-evans/create-or-update-comment@v4
+        if: ${{ steps.fc.outputs.comment-id == 0 }}
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body-path: comment.md
+
+      - name: Update previews comment
+        uses: peter-evans/create-or-update-comment@v4
+        if: ${{ steps.fc.outputs.comment-id != 0 }}
+        with:
+          edit-mode: replace
+          comment-id: ${{ steps.fc.outputs.comment-id }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body-path: comment.md
