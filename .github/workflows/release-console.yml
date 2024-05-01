@@ -14,9 +14,14 @@ on:
         required: true
         default: 'main'
 
+env:
+  E2E_TEST_WORKFLOW: ./.github/workflows/ci-trading-python-tests.yml
+
 jobs:
-  release:
+  setup_release_branch:
     runs-on: ubuntu-latest
+    outputs:
+      branch_name: ${{ steps.prepare_branch.outputs.branch_name }}
     steps:
       - name: Checkout code at commit hash
         uses: actions/checkout@v3
@@ -30,14 +35,37 @@ jobs:
         run: git push origin ${{ github.event.inputs.releaseVersion }}
 
       - name: Prepare release branch
+        id: prepare_branch
         run: |
           BRANCH_NAME="release/${{ github.event.inputs.environment }}/${{ github.event.inputs.releaseVersion }}"
+          echo "::set-output name=branch_name::$BRANCH_NAME"
           git fetch --all
           git checkout -b $BRANCH_NAME origin/${{ github.event.inputs.environment }}
           git reset --hard ${{ github.event.inputs.commitHash }}
           git push --force --set-upstream origin $BRANCH_NAME
         if: ${{ github.event.inputs.environment == 'testnet' }}
 
+  run_e2e_tests:
+    needs: setup_release_branch
+    uses: ${{ env.E2E_TEST_WORKFLOW }}
+    with:
+      github-sha: ${{ needs.setup_release_branch.outputs.branch_name }}
+
+  await_approval:
+    needs: run_e2e_tests
+    runs-on: ubuntu-latest
+    if: ${{ always() && github.event.inputs.environment == 'testnet' }}
+    environment:
+      name: release-approval
+    steps:
+      - name: Await Manual Approval
+        run: |
+          echo "Awaiting manual approval to proceed with the release."
+
+  release:
+    needs: [setup_release_branch, await_approval]
+    runs-on: ubuntu-latest
+    steps:
       - name: Generate release notes
         id: release_notes
         uses: octokit/request-action@v2.3.0
