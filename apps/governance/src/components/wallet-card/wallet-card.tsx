@@ -243,12 +243,12 @@ const CurrencyValue = ({
         {Schema.AccountTypeMapping[type]}{' '}
         {DocsLinks && (
           <ExternalLink
-            href={DocsLinks.REWARDS_GUIDE}
+            href={DocsLinks.HOW_REWARDS_ARE_PAID}
             target="_blank"
             data-testid="rewards-guide-link"
             className="text-white"
           >
-            {t('seeHowRewardsAreCalculated')}
+            {t('Learn more')}
           </ExternalLink>
         )}
       </span>
