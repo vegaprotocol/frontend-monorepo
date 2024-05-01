@@ -51,7 +51,7 @@ jobs:
 
       # Checkout front ends
       - name: Checkout frontend mono repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
           path: './frontend-monorepo'
@@ -67,7 +67,7 @@ jobs:
       # Restore node_modules from cache if possible
       - name: Restore node_modules from cache
         id: cache-node-modules
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             frontend-monorepo/node_modules
@@ -121,13 +121,13 @@ jobs:
         if: ${{ always() }}
         run: ls -alsh /home/runner/.vegacapsule/testnet/logs/
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         if: ${{ failure() }}
         with:
           name: logs-${{ matrix.project }}
           path: /home/runner/.vegacapsule/testnet/logs
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         if: ${{ failure() }}
         with:
           name: test-report-${{ matrix.project }}
