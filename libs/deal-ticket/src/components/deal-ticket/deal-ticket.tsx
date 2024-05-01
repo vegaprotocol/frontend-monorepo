@@ -25,7 +25,7 @@ import {
   TradingButton as Button,
   Pill,
   ExternalLink,
-  Slider,
+  PercentageSlider as Slider,
 } from '@vegaprotocol/ui-toolkit';
 
 import { useOpenVolume } from '@vegaprotocol/positions';
