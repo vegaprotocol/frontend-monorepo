@@ -873,7 +873,6 @@ const DispatchMetricColourMap: Record<
   // Realised return
   [DispatchMetric.DISPATCH_METRIC_REALISED_RETURN]: CardColour.GREEN,
   STAKING_REWARD_METRIC: CardColour.WHITE,
-  [DispatchMetric.DISPATCH_METRIC_REALISED_RETURN]: CardColour.BLUE,
 };
 
 const CardIcon = ({
