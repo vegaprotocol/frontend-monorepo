@@ -2,17 +2,19 @@ import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 
 import { useAnimateValue } from '../../hooks/use-animate-value';
-import type { BigNumber } from '../../lib/bignumber';
+import { BigNumber } from '../../lib/bignumber';
 import { useNumberParts } from '@vegaprotocol/react-helpers';
 import * as Schema from '@vegaprotocol/types';
 import { useTranslation } from 'react-i18next';
-import { AnchorButton, Tooltip } from '@vegaprotocol/ui-toolkit';
+import { AnchorButton, ExternalLink, Tooltip } from '@vegaprotocol/ui-toolkit';
 import {
   CONSOLE_TRANSFER_ASSET,
   DApp,
+  DocsLinks,
   useLinks,
 } from '@vegaprotocol/environment';
 import { useNetworkParam } from '@vegaprotocol/network-parameters';
+import { formatNumberPercentage } from '@vegaprotocol/utils';
 
 interface WalletCardProps {
   children: React.ReactNode;
@@ -202,7 +204,9 @@ const useAccountTypeTooltip = (type?: Schema.AccountType) => {
       return t('VestedRewardsTooltip');
     }
     if (type === Schema.AccountType.ACCOUNT_TYPE_VESTING_REWARDS && baseRate) {
-      return t('VestingRewardsTooltip', { baseRate });
+      return t('VestingRewardsTooltip', {
+        baseRate: formatNumberPercentage(new BigNumber(baseRate).times(100)),
+      });
     }
 
     return null;
@@ -236,7 +240,17 @@ const CurrencyValue = ({
   const accountType = type && (
     <Tooltip description={accountTypeTooltip}>
       <span className="px-2 py-1 leading-none text-xs bg-vega-cdark-700 rounded">
-        {Schema.AccountTypeMapping[type]}
+        {Schema.AccountTypeMapping[type]}{' '}
+        {DocsLinks && (
+          <ExternalLink
+            href={DocsLinks.REWARDS_GUIDE}
+            target="_blank"
+            data-testid="rewards-guide-link"
+            className="text-white"
+          >
+            {t('seeHowRewardsAreCalculated')}
+          </ExternalLink>
+        )}
       </span>
     </Tooltip>
   );
