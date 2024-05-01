@@ -21,10 +21,15 @@ import {
 import { MarketName } from '../proposal/market-name';
 
 const immutableKeys = [
+  // immutable fields from UpdateMarket proposal
   'decimalPlaces',
   'positionDecimalPlaces',
   'instrument.name',
   'instrument.future.settlementAsset',
+  // immutable fields from UpdateSpotMarket proposal
+  'instrument.spot',
+  'priceDecimalPlaces',
+  'sizeDecimalPlaces',
 ];
 
 export const applyImmutableKeysFromEarlierVersion = (
@@ -76,11 +81,17 @@ export const ProposalMarketChanges = ({
     proposalType: 'TYPE_UPDATE_MARKET',
   });
 
+  const { data: enactedSpotProposalsData } = useFetchProposals({
+    proposalState: 'STATE_ENACTED',
+    proposalType: 'TYPE_UPDATE_SPOT_MARKET',
+  });
+
   let updateProposal: SingleProposalData | SubProposalData | undefined;
   if (isBatchProposalNode(updateProposalNode)) {
     updateProposal = updateProposalNode.proposals.find(
       (p, i) =>
-        p.terms.updateMarket?.marketId === marketId &&
+        (p.terms.updateMarket?.marketId === marketId ||
+          p.terms.updateSpotMarket?.marketId === marketId) &&
         (indicator != null ? i === indicator - 1 : true)
     );
   }
@@ -91,16 +102,20 @@ export const ProposalMarketChanges = ({
   // this should get the proposal before the current one
   const enactedUpdateMarketProposals = orderBy(
     compact(
-      flatten(enactedProposalsData).filter((enacted) => {
-        const related = enacted.terms.updateMarket?.marketId === marketId;
-        const notCurrent =
-          enacted.id !== updateProposal?.id ||
-          ('batchId' in enacted && enacted.batchId !== updateProposal.id);
-        const beforeCurrent =
-          Number(enacted.terms.enactmentTimestamp) <
-          Number(updateProposal?.terms.enactmentTimestamp);
-        return related && notCurrent && beforeCurrent;
-      })
+      flatten([...enactedProposalsData, ...enactedSpotProposalsData]).filter(
+        (enacted) => {
+          const related =
+            enacted.terms.updateMarket?.marketId === marketId ||
+            enacted.terms.updateSpotMarket?.marketId === marketId;
+          const notCurrent =
+            enacted.id !== updateProposal?.id ||
+            ('batchId' in enacted && enacted.batchId !== updateProposal.id);
+          const beforeCurrent =
+            Number(enacted.terms.enactmentTimestamp) <
+            Number(updateProposal?.terms.enactmentTimestamp);
+          return related && notCurrent && beforeCurrent;
+        }
+      )
     ),
     [(proposal) => Number(proposal.terms.enactmentTimestamp)],
     'desc'
@@ -114,7 +129,10 @@ export const ProposalMarketChanges = ({
   let originalProposal;
   if (isBatchProposalNode(originalProposalData)) {
     originalProposal = originalProposalData.proposals.find(
-      (proposal) => proposal.id === marketId && proposal.terms.newMarket != null
+      (proposal) =>
+        proposal.id === marketId &&
+        (proposal.terms.newMarket != null ||
+          proposal.terms.newSpotMarket != null)
     );
   }
   if (isSingleProposalNode(originalProposalData)) {
@@ -125,12 +143,15 @@ export const ProposalMarketChanges = ({
   // or original new market proposal
   const left =
     latestEnactedProposal?.terms.updateMarket?.changes ||
-    originalProposal?.terms.newMarket?.changes;
+    latestEnactedProposal?.terms.updateSpotMarket?.changes ||
+    originalProposal?.terms.newMarket?.changes ||
+    originalProposal?.terms.newSpotMarket?.changes;
 
   // RIGHT SIDE: this update market proposal
   const right = applyImmutableKeysFromEarlierVersion(
     left,
-    updateProposal?.terms.updateMarket?.changes
+    updateProposal?.terms.updateMarket?.changes ||
+      updateProposal?.terms.updateSpotMarket?.changes
   );
 
   return (

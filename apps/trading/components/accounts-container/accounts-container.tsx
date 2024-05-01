@@ -16,9 +16,9 @@ import { useT } from '../../lib/use-t';
 import { usePersistentDepositStore } from '@vegaprotocol/deposits';
 
 export const AccountsContainer = ({
-  pinnedAsset,
+  pinnedAssets,
 }: {
-  pinnedAsset?: PinnedAsset;
+  pinnedAssets?: PinnedAsset[];
 }) => {
   const t = useT();
   const onMarketClick = useMarketClickHandler(true);
@@ -67,7 +67,7 @@ export const AccountsContainer = ({
       }}
       onMarketClick={onMarketClick}
       isReadOnly={isReadOnly}
-      pinnedAsset={pinnedAsset}
+      pinnedAssets={pinnedAssets}
       gridProps={gridStoreCallbacks}
     />
   );

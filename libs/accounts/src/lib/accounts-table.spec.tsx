@@ -103,12 +103,14 @@ describe('AccountsTable', () => {
         onClickAsset={() => null}
         isReadOnly={false}
         onClickDeposit={onClickDepositMock}
-        pinnedAsset={{
-          decimals: 5,
-          id: '5cfa87844724df6069b94e4c8a6f03af21907d7bc251593d08e4251043ee9f7c',
-          symbol: 'tBTC',
-          name: 'tBTC',
-        }}
+        pinnedAssets={[
+          {
+            decimals: 5,
+            id: '5cfa87844724df6069b94e4c8a6f03af21907d7bc251593d08e4251043ee9f7c',
+            symbol: 'tBTC',
+            name: 'tBTC',
+          },
+        ]}
       />
     );
     const depositButton = screen.getByTestId('deposit');
@@ -179,7 +181,7 @@ describe('AccountsTable', () => {
         rowData={singleRowData}
         onClickAsset={() => null}
         isReadOnly={false}
-        pinnedAsset={asset1}
+        pinnedAssets={[asset1]}
       />
     );
     await screen.findAllByRole('rowgroup');
@@ -193,12 +195,14 @@ describe('AccountsTable', () => {
         rowData={singleRowData}
         onClickAsset={() => null}
         isReadOnly={false}
-        pinnedAsset={{
-          decimals: 5,
-          id: '',
-          symbol: 'tBTC',
-          name: 'tBTC',
-        }}
+        pinnedAssets={[
+          {
+            decimals: 5,
+            id: '',
+            symbol: 'tBTC',
+            name: 'tBTC',
+          },
+        ]}
       />
     );
     rows = container.querySelector('.ag-center-cols-container');
