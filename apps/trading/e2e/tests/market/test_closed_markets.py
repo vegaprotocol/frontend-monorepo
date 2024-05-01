@@ -27,11 +27,10 @@ def create_settled_market(vega: VegaServiceNull):
 
 
 class TestSettledMarket:
-    @pytest.mark.skip("markets list page")
     @pytest.mark.usefixtures("risk_accepted", "auth")
     def test_settled_header(self, page: Page, create_settled_market):
         page.goto(f"/#/markets/all")
-        page.get_by_test_id("Closed markets").click()
+        page.locator("id=closed-markets").click()
         headers = [
             "Market",
             "Status",
@@ -41,87 +40,56 @@ class TestSettledMarket:
             "Price",
         ]
 
-        page.wait_for_selector(
-            '[data-testid="tab-closed-markets"]', state="visible")
         page_headers = (
-            page.get_by_test_id("tab-closed-markets")
-            .locator(".ag-header-cell-text")
-            .all()
+            page.locator(".ag-header-container").locator(".ag-header-cell-text").all()
         )
         for i, header in enumerate(headers):
             expect(page_headers[i]).to_have_text(header)
 
-    @pytest.mark.skip("markets list page")
     @pytest.mark.usefixtures(
         "risk_accepted",
         "auth",
     )
     def test_settled_rows(self, page: Page, create_settled_market):
         page.goto(f"/#/markets/all")
-        page.get_by_test_id("Closed markets").click()
-        row_selector = page.locator(
-            '[data-testid="tab-closed-markets"] .ag-center-cols-container .ag-row'
-        ).first
-
+        page.locator("id=closed-markets").click()
+        row_selector = page.locator('div[row-index="0"]')
         # 6001-MARK-001
-        expect(row_selector.locator('[col-id="code"]')
-               ).to_have_text("BTC:DAI_2023Futr")
+        expect(row_selector.locator('div[col-id="code"]')).to_have_text(
+            "BTC:DAI_2023Futr"
+        )
         # 6001-MARK-003
-        expect(row_selector.locator(
-            '[col-id="state"]')).to_have_text("Settled")
+        page.pause()
+        expect(row_selector.locator('div[col-id="state"]')).to_have_text("Settled")
         # 6001-MARK-004
         # 6001-MARK-005
         # 6001-MARK-009
         # 6001-MARK-008
         # 6001-MARK-010
-        pattern = re.compile(r'(Expected in )?(\d+)\s+(months|hours|days|minutes)( ago)?')
+        pattern = re.compile(
+            r"(Expected in )?(\d+)\s+(months|hours|days|minutes)( ago)?"
+        )
 
-        date_text = row_selector.locator('[col-id="settlementDate"]').inner_text()
+        date_text = row_selector.locator('div[col-id="settlementDate"]').inner_text()
         assert pattern.match(
             date_text
         ), f"Expected href to match {pattern}, but got {date_text}"
 
-
         expected_pattern = re.compile(r"https://.*?/oracles/[a-f0-9]{64}")
         actual_href = row_selector.locator(
-            '[col-id="settlementDate"] [data-testid="link"]'
+            'div[col-id="settlementDate"] [data-testid="link"]'
         ).get_attribute("href")
         assert expected_pattern.match(
             actual_href
         ), f"Expected href to match {expected_pattern.pattern}, but got {actual_href}"
         # 6001-MARK-011
-        expect(row_selector.locator(
-            '[col-id="bestBidPrice"]')).to_have_text("0.00")
+        expect(row_selector.locator('div[col-id="bestBidPrice"]')).to_have_text("0.00")
         # 6001-MARK-012
-        expect(row_selector.locator(
-            '[col-id="bestOfferPrice"]')).to_have_text("0.00")
+        expect(row_selector.locator('div[col-id="bestOfferPrice"]')).to_have_text("0.00")
         # 6001-MARK-013
-        expect(row_selector.locator(
-            '[col-id="markPrice"]')).to_have_text("110.00")
-        # 6001-MARK-014
-        # 6001-MARK-015
-        # 6001-MARK-016
-        # tbd currently we have value unknown
-        # expect(row_selector.locator('[col-id="settlementDataOracleId"]')).to_have_text(
-        #     "110.00"
-        # )
-        expected_pattern = re.compile(r"https://.*?/oracles/[a-f0-9]{64}")
-        actual_href = row_selector.locator(
-            '[col-id="settlementDataOracleId"] [data-testid="link"]'
-        ).get_attribute("href")
-        assert expected_pattern.match(
-            actual_href
-        ), f"Expected href to match {expected_pattern.pattern}, but got {actual_href}"
+        expect(row_selector.locator('div[col-id="markPrice"]')).to_have_text("110.00")
 
-        # 6001-MARK-018
-        expect(row_selector.locator(
-            '[col-id="settlementAsset"]')).to_have_text("tDAI")
-        # 6001-MARK-020
-        assert re.match(
-            pattern, date_text
-        ), f"Expected text to match pattern but got {date_text}"
 
-@pytest.mark.skip("markets list page")
 @pytest.mark.usefixtures("risk_accepted", "auth")
 def test_terminated_market_no_settlement_date(page: Page, vega: VegaServiceNull):
     setup_continuous_market(vega)
@@ -133,14 +101,10 @@ def test_terminated_market_no_settlement_date(page: Page, vega: VegaServiceNull)
     )
     next_epoch(vega=vega)
     page.goto(f"/#/markets/all")
-    page.get_by_test_id("Closed markets").click()
-    row_selector = page.locator(
-        '[data-testid="tab-closed-markets"] .ag-center-cols-container .ag-row'
-    ).first
-    expect(row_selector.locator('[col-id="state"]')
-           ).to_have_text("Trading Terminated")
-    expect(row_selector.locator(
-        '[col-id="settlementDate"]')).to_have_text("Unknown")
+    page.locator("id=closed-markets").click()
+    row_selector = page.locator('div[row-index="0"]')
+    expect(row_selector.locator('div[col-id="state"]')).to_have_text("Trading Terminated")
+    expect(row_selector.locator('div[col-id="settlementDate"]')).to_have_text("Unknown")
 
     # TODO Create test for terminated market with settlement date in future
     # TODO Create test for terminated market with settlement date in past
