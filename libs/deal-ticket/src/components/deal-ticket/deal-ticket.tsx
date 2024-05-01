@@ -435,6 +435,7 @@ export const DealTicket = ({
     positionDecimalPlaces: market.positionDecimalPlaces,
     marketIsInAuction,
     isSpotMarket,
+    feesFactors: market.fees.factors,
   });
 
   const onSubmit = useCallback(
@@ -852,10 +853,16 @@ export const DealTicket = ({
         error={summaryError}
         asset={(useBaseAsset && baseAsset) || asset}
         marketTradingMode={marketData.marketTradingMode}
-        balance={generalAccountBalance}
+        balance={useBaseAsset ? baseAssetAccountBalance : generalAccountBalance}
+        isSpotMarket={isSpotMarket}
         margin={
-          positionEstimate?.estimatePosition?.collateralIncreaseEstimate
-            .bestCase || '0'
+          isSpotMarket
+            ? removeDecimal(
+                (useBaseAsset ? normalizedOrder.size : notionalSize) || '0',
+                asset.decimals - market.decimalPlaces
+              )
+            : positionEstimate?.estimatePosition?.collateralIncreaseEstimate
+                .bestCase || '0'
         }
         isReadOnly={isReadOnly}
         pubKey={pubKey}
@@ -905,6 +912,7 @@ export const DealTicket = ({
  * renders warnings about current state of the market
  */
 interface SummaryMessageProps {
+  isSpotMarket?: boolean;
   error?: { message: string; type: string };
   asset: { id: string; symbol: string; name: string; decimals: number };
   marketTradingMode: MarketData['marketTradingMode'];
@@ -948,6 +956,7 @@ export const NoWalletWarning = ({
 
 const SummaryMessage = memo(
   ({
+    isSpotMarket,
     error,
     asset,
     marketTradingMode,
@@ -991,6 +1000,7 @@ const SummaryMessage = memo(
       return (
         <div className="mb-2">
           <MarginWarning
+            isSpotMarket={isSpotMarket}
             balance={balance}
             margin={margin}
             asset={asset}
@@ -999,6 +1009,7 @@ const SummaryMessage = memo(
         </div>
       );
     }
+
     // Show auction mode warning
     if (
       [
