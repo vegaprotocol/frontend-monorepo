@@ -5,6 +5,7 @@ from vega_sim.null_service import VegaServiceNull
 from conftest import init_vega, cleanup_container
 from fixtures.market import setup_continuous_market
 from actions.utils import next_epoch, truncate_middle, change_keys
+import re
 
 @pytest.fixture(scope="module")
 def vega(request):

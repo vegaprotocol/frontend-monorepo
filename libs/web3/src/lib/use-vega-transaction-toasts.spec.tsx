@@ -214,6 +214,7 @@ const submitStopOrder: VegaStoredTxState = {
           type: OrderType.TYPE_MARKET,
         },
       },
+      fallsBelow: undefined,
     },
   },
   status: VegaTxStatus.Default,

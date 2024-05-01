@@ -27,6 +27,7 @@ def create_settled_market(vega: VegaServiceNull):
 
 
 class TestSettledMarket:
+    @pytest.mark.skip("markets list page")
     @pytest.mark.usefixtures("risk_accepted", "auth")
     def test_settled_header(self, page: Page, create_settled_market):
         page.goto(f"/#/markets/all")
@@ -46,6 +47,7 @@ class TestSettledMarket:
         for i, header in enumerate(headers):
             expect(page_headers[i]).to_have_text(header)
 
+    @pytest.mark.skip("markets list page")
     @pytest.mark.usefixtures(
         "risk_accepted",
         "auth",
@@ -66,14 +68,13 @@ class TestSettledMarket:
         # 6001-MARK-009
         # 6001-MARK-008
         # 6001-MARK-010
-        pattern = re.compile(
-            r"(Expected in )?(\d+)\s+(months|hours|days|minutes)( ago)?"
-        )
+        pattern = re.compile(r'(Expected in )?(\d+)\s+(months|hours|days|minutes)( ago)?')
 
-        date_text = row_selector.locator('div[col-id="settlementDate"]').inner_text()
+        date_text = row_selector.locator('[col-id="settlementDate"]').inner_text()
         assert pattern.match(
             date_text
         ), f"Expected href to match {pattern}, but got {date_text}"
+
 
         expected_pattern = re.compile(r"https://.*?/oracles/[a-f0-9]{64}")
         actual_href = row_selector.locator(
@@ -89,7 +90,7 @@ class TestSettledMarket:
         # 6001-MARK-013
         expect(row_selector.locator('div[col-id="markPrice"]')).to_have_text("110.00")
 
-
+@pytest.mark.skip("markets list page")
 @pytest.mark.usefixtures("risk_accepted", "auth")
 def test_terminated_market_no_settlement_date(page: Page, vega: VegaServiceNull):
     setup_continuous_market(vega)

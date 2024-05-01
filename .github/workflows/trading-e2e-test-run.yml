@@ -153,6 +153,7 @@ jobs:
           export VEGA_VERSION=$(grep VEGA_VERSION .env | cut -d '=' -f2)
           poetry run python -m vega_sim.tools.load_binaries --force --version $VEGA_VERSION
         working-directory: apps/trading/e2e
+
       #----------------------------------------------
       # Install Playwright only if not cached
       #----------------------------------------------

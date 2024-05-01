@@ -1,5 +1,5 @@
 import { AccountBreakdownDialog } from '@vegaprotocol/accounts';
-import { getAsset, getQuoteName } from '@vegaprotocol/markets';
+import { getAsset, getProductType, getQuoteName } from '@vegaprotocol/markets';
 import type { Market } from '@vegaprotocol/markets';
 import type { EstimatePositionQuery } from '@vegaprotocol/positions';
 import * as Schema from '@vegaprotocol/types';
@@ -49,6 +49,8 @@ export const DealTicketMarginDetails = ({
     BigInt(orderMarginAccountBalance || '0');
 
   const asset = getAsset(market);
+  const productType = getProductType(market);
+
   const { decimals: assetDecimals, quantum } = asset;
 
   const collateralIncreaseEstimateBestCase = BigInt(
@@ -115,23 +117,28 @@ export const DealTicketMarginDetails = ({
   return (
     <div className="flex flex-col w-full gap-2 mt-2">
       <SlippageAndTradeInfo slippage={slippage} market={market} />
-      <KeyValue
-        label={t('Current margin')}
-        onClick={
-          generalAccountBalance ? () => setBreakdownDialog(true) : undefined
-        }
-        value={formatValue(totalMarginAccountBalance.toString(), assetDecimals)}
-        symbol={assetSymbol}
-        labelDescription={t(
-          'MARGIN_ACCOUNT_TOOLTIP_TEXT',
-          MARGIN_ACCOUNT_TOOLTIP_TEXT
-        )}
-        formattedValue={formatValue(
-          totalMarginAccountBalance.toString(),
-          assetDecimals,
-          quantum
-        )}
-      />
+      {productType !== 'Spot' && (
+        <KeyValue
+          label={t('Current margin')}
+          onClick={
+            generalAccountBalance ? () => setBreakdownDialog(true) : undefined
+          }
+          value={formatValue(
+            totalMarginAccountBalance.toString(),
+            assetDecimals
+          )}
+          symbol={assetSymbol}
+          labelDescription={t(
+            'MARGIN_ACCOUNT_TOOLTIP_TEXT',
+            MARGIN_ACCOUNT_TOOLTIP_TEXT
+          )}
+          formattedValue={formatValue(
+            totalMarginAccountBalance.toString(),
+            assetDecimals,
+            quantum
+          )}
+        />
+      )}
       <KeyValue
         label={t('Available collateral')}
         value={formatValue(generalAccountBalance, assetDecimals)}
@@ -142,51 +149,55 @@ export const DealTicketMarginDetails = ({
         )}
         symbol={assetSymbol}
       />
-      <KeyValue
-        label={t('Additional margin required')}
-        value={formatRange(
-          collateralIncreaseEstimateBestCase.toString(),
-          collateralIncreaseEstimateWorstCase.toString(),
-          assetDecimals
-        )}
-        formattedValue={formatValue(
-          collateralIncreaseEstimateBestCase.toString(),
-          assetDecimals,
-          quantum
-        )}
-        symbol={assetSymbol}
-      />
-      <KeyValue
-        label={t('Liquidation estimate')}
-        value={liquidationPriceEstimateRange}
-        formattedValue={liquidationPriceEstimate}
-        symbol={quoteName}
-        labelDescription={
-          <>
-            <span>
-              {t(
-                'LIQUIDATION_PRICE_ESTIMATE_TOOLTIP_TEXT',
-                LIQUIDATION_PRICE_ESTIMATE_TOOLTIP_TEXT
-              )}
-            </span>{' '}
-            <span>
-              <Trans
-                defaults="For full details please see <0>liquidation price estimate documentation</0>."
-                components={[
-                  <ExternalLink
-                    href={
-                      'https://github.com/vegaprotocol/specs/blob/master/non-protocol-specs/0012-NP-LIPE-liquidation-price-estimate.md'
-                    }
-                  >
-                    liquidation price estimate documentation
-                  </ExternalLink>,
-                ]}
-                ns={ns}
-              />
-            </span>
-          </>
-        }
-      />
+      {productType !== 'Spot' && (
+        <KeyValue
+          label={t('Additional margin required')}
+          value={formatRange(
+            collateralIncreaseEstimateBestCase.toString(),
+            collateralIncreaseEstimateWorstCase.toString(),
+            assetDecimals
+          )}
+          formattedValue={formatValue(
+            collateralIncreaseEstimateBestCase.toString(),
+            assetDecimals,
+            quantum
+          )}
+          symbol={assetSymbol}
+        />
+      )}
+      {productType !== 'Spot' && (
+        <KeyValue
+          label={t('Liquidation estimate')}
+          value={liquidationPriceEstimateRange}
+          formattedValue={liquidationPriceEstimate}
+          symbol={quoteName}
+          labelDescription={
+            <>
+              <span>
+                {t(
+                  'LIQUIDATION_PRICE_ESTIMATE_TOOLTIP_TEXT',
+                  LIQUIDATION_PRICE_ESTIMATE_TOOLTIP_TEXT
+                )}
+              </span>{' '}
+              <span>
+                <Trans
+                  defaults="For full details please see <0>liquidation price estimate documentation</0>."
+                  components={[
+                    <ExternalLink
+                      href={
+                        'https://github.com/vegaprotocol/specs/blob/master/non-protocol-specs/0012-NP-LIPE-liquidation-price-estimate.md'
+                      }
+                    >
+                      liquidation price estimate documentation
+                    </ExternalLink>,
+                  ]}
+                  ns={ns}
+                />
+              </span>
+            </>
+          }
+        />
+      )}
       {partyId && (
         <AccountBreakdownDialog
           assetId={breakdownDialog ? asset.id : undefined}

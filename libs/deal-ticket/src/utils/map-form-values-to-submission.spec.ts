@@ -199,7 +199,17 @@ const mockMarket: MarketFieldsFragment = {
   id: 'marketId',
   decimalPlaces: 1,
   positionDecimalPlaces: 4,
-} as MarketFieldsFragment;
+  tradableInstrument: {
+    instrument: {
+      product: {
+        __typename: 'Perpetual',
+        id: 'productId',
+        name: 'BTC/USD',
+        symbol: 'BTC/USD',
+      },
+    },
+  },
+} as unknown as MarketFieldsFragment;
 
 const orderFormValues: OrderFormValues = {
   type: OrderType.TYPE_LIMIT,
@@ -347,6 +357,7 @@ describe('mapFormValuesToTakeProfitAndStopLoss', () => {
             },
             price: '700000',
           },
+          fallsBelow: undefined,
         },
       ],
       submissions: [
@@ -400,6 +411,7 @@ describe('mapFormValuesToTakeProfitAndStopLoss', () => {
             },
             price: '600000',
           },
+          risesAbove: undefined,
         },
       ],
       submissions: [
