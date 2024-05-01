@@ -152,23 +152,15 @@ jobs:
           echo "List html directory"
           docker run --rm vegaprotocol/${{ matrix.app }}:${{ github.sha }} /bin/sh -c 'apk add --update tree; tree /usr/share/nginx/html'
 
-      # bucket creation in github.com/vegaprotocol/terraform//frontend
+      # bucket creation in github.com/vegaprotocol/terraform/frontend
       - name: Publish dist to s3
-        uses: jakejarvis/s3-sync-action@master
         # s3 releases are not happening for trading on mainnet - it's IPFS
         if: ${{ env.IS_S3_RELEASE == 'true' }}
-        with:
-          args: --acl private --follow-symlinks --delete
         env:
-          AWS_S3_BUCKET: ${{ env.BUCKET_NAME }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: 'eu-west-1'
-          SOURCE_DIR: 'dist-result'
-
-      - name: Install aws CLI
-        if: ${{ env.IS_S3_RELEASE == 'true' }}
-        uses: unfor19/install-aws-cli-action@master
+        run: aws s3 sync --acl private --follow-symlinks --delete ./dist-result s3://$BUCKET_NAME
 
       - name: Perform cache invalidation
         if: ${{ env.IS_S3_RELEASE == 'true' }}
