@@ -17,7 +17,7 @@ jobs:
       #       check-out frontend-monorepo
       #----------------------------------------------
       - name: Checkout frontend-monorepo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: ${{ inputs.github-sha || github.sha }}
       #----------------------------------------------
@@ -31,7 +31,7 @@ jobs:
 
       - name: Cache node modules
         id: cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: node_modules
           key: ${{ runner.os }}-cache-node-modules-${{ hashFiles('yarn.lock') }}
@@ -79,7 +79,7 @@ jobs:
           echo ${{ steps.docker_build.outputs.imageid }}
 
       - name: Upload docker image for trading-e2e-test usage
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: trading-image
           path: /tmp/trading-image.tar
@@ -94,7 +94,7 @@ jobs:
       #       load docker image
       #----------------------------------------------
       - name: Download docker image from previous job
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: trading-image
           path: /tmp
@@ -107,7 +107,7 @@ jobs:
       #       check-out frontend-monorepo
       #----------------------------------------------
       - name: Checkout frontend-monorepo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: ${{ inputs.github-sha || github.sha }}
       #----------------------------------------------
@@ -130,7 +130,7 @@ jobs:
       # Cache Playwright browsers
       #----------------------------------------------
       - name: Cache Playwright dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         id: cache-playwright
         with:
           path: |
@@ -170,7 +170,7 @@ jobs:
       # upload traces
       #----------------------------------------------
       - name: Upload Playwright Trace
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: playwright-trace
@@ -180,7 +180,7 @@ jobs:
       #  -----  upload logs  -----
       #----------------------------------------------
       - name: Upload worker logs
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: worker-logs
@@ -223,7 +223,7 @@ jobs:
         shell: /usr/bin/bash -e {0}
 
       - name: Upload market-sim-logs
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: market-sim-logs
