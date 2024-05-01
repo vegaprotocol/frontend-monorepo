@@ -145,6 +145,7 @@ jobs:
             vegaprotocol/${{ matrix.app }}:${{ env.IS_MAINNET_RELEASE == 'true' && 'mainnet' || env.IS_TESTNET_RELEASE == 'true' && 'testnet' || '' }}
 
       - name: Sanity check docker image
+        if: ${{ env.IS_IPFS_RELEASE == 'true' }}
         run: |
           echo "Check ipfs-hash"
           docker run --rm vegaprotocol/${{ matrix.app }}:${{ github.sha }} /bin/sh -c 'cat /ipfs-hash'
