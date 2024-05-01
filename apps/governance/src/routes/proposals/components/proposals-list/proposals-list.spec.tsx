@@ -177,10 +177,14 @@ describe('Proposals list', () => {
     );
     await screen.findByTestId('proposals-list');
     fireEvent.click(screen.getByTestId('proposal-filter-toggle'));
+
     fireEvent.change(screen.getByTestId('filter-input'), {
       target: { value: 'test' },
     });
-    fireEvent.click(screen.getByTestId('clear-filter'));
+    const clearBtn = screen.getByTestId('clear-filter') as HTMLButtonElement;
+    expect(clearBtn).toBeInTheDocument();
+    fireEvent.click(clearBtn);
+    fireEvent.click(screen.getByTestId('proposal-filter-toggle'));
     expect((screen.getByTestId('filter-input') as HTMLInputElement).value).toBe(
       ''
     );

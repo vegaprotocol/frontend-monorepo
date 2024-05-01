@@ -11,6 +11,7 @@ import { ExternalLinks } from '@vegaprotocol/environment';
 import { type ProtocolUpgradeProposalFieldsFragment } from '@vegaprotocol/proposals';
 import { type BatchProposal, type Proposal } from '../../types';
 import {
+  BASE_FILTER,
   Filters,
   useProposalsFilters,
   useProposalsPagination,
@@ -108,7 +109,20 @@ const ITEMS_PER_PAGE = 20;
 export const ProposalsList = ({ proposals }: ProposalsListProps) => {
   const { t } = useTranslation();
 
-  const filter = useProposalsFilters();
+  const [proposalTypes, proposalStates, proposalId, resetFilters] =
+    useProposalsFilters((state) => [
+      state.types,
+      state.states,
+      state.id,
+      state.reset,
+    ]);
+
+  const filter = {
+    types: proposalTypes.length > 0 ? proposalTypes : BASE_FILTER.types,
+    states: proposalStates.length > 0 ? proposalStates : BASE_FILTER.states,
+    id: proposalId,
+  };
+
   const [page, setPage] = useProposalsPagination((state) => [
     state.page,
     state.setPage,
@@ -119,6 +133,7 @@ export const ProposalsList = ({ proposals }: ProposalsListProps) => {
   });
 
   let filtered = proposals;
+
   // filter by proposal type
   filtered = filtered.filter((proposal) => {
     let types: (ProposalChange['__typename'] | 'NetworkUpgrade')[] = [];
@@ -279,7 +294,7 @@ export const ProposalsList = ({ proposals }: ProposalsListProps) => {
                 <button
                   key="filter-reset-btn"
                   className="underline"
-                  onClick={() => filter.reset()}
+                  onClick={() => resetFilters()}
                 >
                   resetting
                 </button>,

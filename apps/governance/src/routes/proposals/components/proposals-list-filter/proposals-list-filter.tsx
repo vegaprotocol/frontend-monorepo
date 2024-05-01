@@ -23,6 +23,7 @@ import {
   persist,
 } from 'zustand/middleware';
 import { CurrentProposalState } from '../current-proposal-state';
+import flatten from 'lodash/flatten';
 
 const proposalStates: ProposalState[] = [
   ProposalState.STATE_OPEN,
@@ -36,25 +37,25 @@ const proposalStates: ProposalState[] = [
 
 type ProposalType = ProposalChange['__typename'] | 'NetworkUpgrade';
 const proposalTypes: ProposalType[] = [
-  'CancelTransfer',
   'NewAsset',
-  'NewFreeform',
-  'NewMarket',
-  'NewSpotMarket',
-  'NewTransfer',
   'UpdateAsset',
-  'UpdateMarket',
+  'NewMarket',
   'UpdateMarketState',
+  'UpdateMarket',
+  'NewSpotMarket',
+  'UpdateSpotMarket',
+  'NewTransfer',
+  'CancelTransfer',
   'UpdateNetworkParameter',
   'UpdateReferralProgram',
-  'UpdateSpotMarket',
   'UpdateVolumeDiscountProgram',
   'NetworkUpgrade',
+  'NewFreeform',
 ];
 
 export type FilterStore = {
   states: ProposalState[];
-  types: (ProposalChange['__typename'] | 'NetworkUpgrade')[];
+  types: (ProposalType | 'NetworkUpgrade')[];
   id: string;
 };
 export type FilterActions = {
@@ -71,6 +72,12 @@ export type FilterActions = {
 export type Filter = FilterStore & FilterActions;
 
 const DEFAULT_FILTER: FilterStore = {
+  states: [],
+  types: [],
+  id: '',
+};
+
+export const BASE_FILTER: FilterStore = {
   states: [
     ProposalState.STATE_OPEN,
     ProposalState.STATE_ENACTED,
@@ -96,6 +103,20 @@ const DEFAULT_FILTER: FilterStore = {
   ],
   id: '',
 };
+
+const toValue = (state: FilterStore) => {
+  const allowed = ['states', 'types', 'id'];
+  const value = flatten(
+    Object.entries(state)
+      .filter(([key]) => allowed.includes(key))
+      .map(([, value]) => value)
+  )
+    .sort()
+    .join('-');
+  return value;
+};
+
+export const isEmpty = (state: FilterStore) => toValue(state).length === 0;
 
 const getQueryString = (name: string): StorageValue<Filter> | null => {
   const search = globalThis.location.search;
@@ -226,6 +247,13 @@ export const Filters = ({ count }: { count?: number }) => {
   const [showSettings, setShowSettings] = useState<boolean>(false);
 
   const filter = useProposalsFilters();
+  const showLozenges = !isEmpty(filter);
+
+  useProposalsFilters.subscribe((state) => {
+    if (isEmpty(state)) {
+      setShowSettings(false);
+    }
+  });
 
   /**
    * Here's a neat trick that allow the normal backwards / forwards button
@@ -267,44 +295,15 @@ export const Filters = ({ count }: { count?: number }) => {
           <VegaIcon name={VegaIconNames.KEBAB} size={24} />
         </div>
       </button>
-      <ul className="list-none flex gap-1 flex-wrap">
-        {proposalStates
-          .filter((ps) => filter.states.includes(ps))
-          .map((ps, i) => (
-            <li key={i + 'ps'}>
-              <CurrentProposalState proposalState={ps}>
-                <button
-                  onClick={() => filter.removeState(ps)}
-                  className="w-[10px] h-[10px] relative"
-                >
-                  <VegaIcon
-                    name={VegaIconNames.CROSS}
-                    size={10}
-                    className="!block !absolute top-[1px]"
-                  />
-                </button>
-              </CurrentProposalState>
-            </li>
-          ))}
-        {proposalTypes
-          .filter((pt) => filter.types.includes(pt))
-          .map(
-            (pt, i) =>
-              pt != null && (
-                <li
-                  key={i + 'pt'}
-                  className={classNames(
-                    'bg-vega-cdark-600 text-xs px-1 py-[2px] rounded',
-                    'flex items-center gap-1'
-                  )}
-                >
-                  <span>
-                    {pt !== 'NetworkUpgrade'
-                      ? ProposalChangeMapping[pt]
-                      : t('networkUpgrade')}
-                  </span>
+      {showLozenges && (
+        <ul className="list-none flex gap-1 flex-wrap">
+          {proposalStates
+            .filter((ps) => filter.states.includes(ps))
+            .map((ps, i) => (
+              <li key={i + 'ps'}>
+                <CurrentProposalState proposalState={ps}>
                   <button
-                    onClick={() => filter.removeType(pt)}
+                    onClick={() => filter.removeState(ps)}
                     className="w-[10px] h-[10px] relative"
                   >
                     <VegaIcon
@@ -313,33 +312,64 @@ export const Filters = ({ count }: { count?: number }) => {
                       className="!block !absolute top-[1px]"
                     />
                   </button>
-                </li>
-              )
-          )}
-        {filter.id && filter.id.length > 0 && (
-          <li
-            key={'id'}
-            className={classNames(
-              'bg-vega-blue-550 text-xs px-1 py-[2px] rounded',
-              'flex items-center gap-1'
+                </CurrentProposalState>
+              </li>
+            ))}
+          {proposalTypes
+            .filter((pt) => filter.types.includes(pt))
+            .map(
+              (pt, i) =>
+                pt != null && (
+                  <li
+                    key={i + 'pt'}
+                    className={classNames(
+                      'bg-vega-cdark-600 text-xs px-1 py-[2px] rounded',
+                      'flex items-center gap-1'
+                    )}
+                  >
+                    <span>
+                      {pt !== 'NetworkUpgrade'
+                        ? ProposalChangeMapping[pt]
+                        : t('networkUpgrade')}
+                    </span>
+                    <button
+                      onClick={() => filter.removeType(pt)}
+                      className="w-[10px] h-[10px] relative"
+                    >
+                      <VegaIcon
+                        name={VegaIconNames.CROSS}
+                        size={10}
+                        className="!block !absolute top-[1px]"
+                      />
+                    </button>
+                  </li>
+                )
             )}
-          >
-            <span>
-              {t('ID')}: {filter.id}
-            </span>
-            <button
-              onClick={() => filter.setId('')}
-              className="w-[10px] h-[10px] relative"
+          {filter.id && filter.id.length > 0 && (
+            <li
+              key={'id'}
+              className={classNames(
+                'bg-vega-blue-550 text-xs px-1 py-[2px] rounded',
+                'flex items-center gap-1'
+              )}
             >
-              <VegaIcon
-                name={VegaIconNames.CROSS}
-                size={10}
-                className="!block !absolute top-[1px]"
-              />
-            </button>
-          </li>
-        )}
-      </ul>
+              <span>
+                {t('ID')}: {filter.id}
+              </span>
+              <button
+                onClick={() => filter.setId('')}
+                className="w-[10px] h-[10px] relative"
+              >
+                <VegaIcon
+                  name={VegaIconNames.CROSS}
+                  size={10}
+                  className="!block !absolute top-[1px]"
+                />
+              </button>
+            </li>
+          )}
+        </ul>
+      )}
       {showSettings && (
         <div data-testid="filter-settings" className="mt-3">
           <div className="grid md:grid-cols-3 gap-3 text-sm">

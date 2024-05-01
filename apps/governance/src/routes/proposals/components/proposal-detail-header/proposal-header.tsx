@@ -111,7 +111,10 @@ const ProposalDetails = ({
   const featureFlags = useFeatureFlags((store) => store.flags);
   const consoleLink = useLinks(DApp.Console);
 
-  const renderDetails = (terms: ProposalTermsFieldsFragment) => {
+  const renderDetails = (
+    terms: ProposalTermsFieldsFragment,
+    proposalId?: string | null
+  ) => {
     switch (terms.change?.__typename) {
       case 'NewSpotMarket': {
         return (
@@ -295,11 +298,11 @@ const ProposalDetails = ({
       }
       case 'NewTransfer':
         return featureFlags.GOVERNANCE_TRANSFERS ? (
-          <NewTransferSummary proposalId={proposal?.id} />
+          <NewTransferSummary proposalId={proposalId} />
         ) : null;
       case 'CancelTransfer':
         return featureFlags.GOVERNANCE_TRANSFERS ? (
-          <CancelTransferSummary proposalId={proposal?.id} />
+          <CancelTransferSummary proposalId={proposalId} />
         ) : null;
       default: {
         return null;
@@ -312,7 +315,7 @@ const ProposalDetails = ({
   if (proposal.__typename === 'Proposal') {
     details = (
       <div>
-        <div>{renderDetails(proposal.terms)}</div>
+        <div>{renderDetails(proposal.terms, proposal.id)}</div>
         <VoteStateText
           state={proposal.state}
           closingDatetime={proposal.terms.closingDatetime}
@@ -339,7 +342,7 @@ const ProposalDetails = ({
               >
                 <Indicator indicator={i + 1} />
                 <span>
-                  <div>{renderDetails(p.terms)}</div>
+                  <div>{renderDetails(p.terms, p?.id)}</div>
                   <SubProposalStateText
                     state={proposal.state}
                     enactmentDatetime={p.terms.enactmentDatetime}
