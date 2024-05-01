@@ -1,0 +1,54 @@
+name: Manual Release Process
+
+on:
+  workflow_dispatch:
+    inputs:
+      releaseVersion:
+        description: 'Release version (e.g., v1.2.3)'
+        required: true
+      commitHash:
+        description: 'Commit hash to tag'
+        required: true
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code at commit hash
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.inputs.commitHash }}
+
+      - name: Create Tag
+        run: git tag ${{ github.event.inputs.releaseVersion }} ${{ github.event.inputs.commitHash }}
+
+      - name: Push Tag
+        run: git push origin ${{ github.event.inputs.releaseVersion }}
+
+      - name: Reset release branch to tag
+        run: |
+          git fetch --all
+          git checkout -b release/${{ github.event.inputs.releaseVersion }} origin/main
+          git reset --hard ${{ github.event.inputs.releaseVersion }}
+          git push --force
+
+      - name: Generate release notes (Ensure this action or script is available)
+        id: release_notes
+        uses: octokit/request-action@v2.x
+        with:
+          route: POST /repos/:owner/:repo/releases/generate-notes
+          owner: ${{ github.repository_owner }}
+          repo: ${{ github.event.repository.name }}
+          tag_name: ${{ github.event.inputs.releaseVersion }}
+          target_commitish: ${{ github.event.inputs.commitHash }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create GitHub Release (Use an updated and maintained action)
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.event.inputs.releaseVersion }}
+          name: Release ${{ github.event.inputs.releaseVersion }}
+          body: ${{ steps.release_notes.outputs.data.body }}
+          draft: false
+          prerelease: false
