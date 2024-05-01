@@ -93,13 +93,13 @@ const AmendOrderDetails = ({ id, version, amend }: AmendOrderDetailsProps) => {
                 </h5>
               </div>
             ) : null}
-            {o && (
+            {o && amend.sizeDelta && amend.sizeDelta !== '0' && (
               <div className="">
                 <h2 className="text-dark mb-4 text-2xl font-bold">
                   {t('New size')}
                 </h2>
                 <h5 className="mb-0 text-lg font-medium text-gray-500">
-                  {o ? o.size : null}
+                  {o ? Number(o.size) + Number(amend.sizeDelta) : null}
                 </h5>
               </div>
             )}
