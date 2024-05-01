@@ -1,4 +1,4 @@
-name: Manual Release Process
+name: Release Console
 
 on:
   workflow_dispatch:
@@ -9,6 +9,10 @@ on:
       commitHash:
         description: 'Commit hash to tag'
         required: true
+      environment:
+        description: 'Deployment environment (main or testnet)'
+        required: true
+        default: 'main'
 
 jobs:
   release:
@@ -25,16 +29,18 @@ jobs:
       - name: Push Tag
         run: git push origin ${{ github.event.inputs.releaseVersion }}
 
-      - name: Reset release branch to tag
+      - name: Prepare release branch
         run: |
+          BRANCH_NAME="release/${{ github.event.inputs.environment }}/${{ github.event.inputs.releaseVersion }}"
           git fetch --all
-          git checkout -b release/${{ github.event.inputs.releaseVersion }} origin/main
-          git reset --hard ${{ github.event.inputs.releaseVersion }}
-          git push --force
+          git checkout -b $BRANCH_NAME origin/${{ github.event.inputs.environment }}
+          git reset --hard ${{ github.event.inputs.commitHash }}
+          git push --force --set-upstream origin $BRANCH_NAME
+        if: ${{ github.event.inputs.environment == 'testnet' }}
 
-      - name: Generate release notes (Ensure this action or script is available)
+      - name: Generate release notes
         id: release_notes
-        uses: octokit/request-action@v2.x
+        uses: octokit/request-action@v2.3.0
         with:
           route: POST /repos/:owner/:repo/releases/generate-notes
           owner: ${{ github.repository_owner }}
@@ -44,11 +50,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Create GitHub Release (Use an updated and maintained action)
-        uses: softprops/action-gh-release@v1
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2.0.4
         with:
           tag_name: ${{ github.event.inputs.releaseVersion }}
           name: Release ${{ github.event.inputs.releaseVersion }}
           body: ${{ steps.release_notes.outputs.data.body }}
           draft: false
-          prerelease: false
+          prerelease: ${{ github.event.inputs.environment == 'testnet' }}
