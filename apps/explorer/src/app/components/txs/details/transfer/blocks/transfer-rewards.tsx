@@ -17,7 +17,6 @@ export const headerClasses =
 
 const metricLabels: Record<Metric, string> = {
   DISPATCH_METRIC_UNSPECIFIED: 'Unknown metric',
-  DISPATCH_METRIC_REALISED_RETURN: 'Realised return',
   ...DispatchMetricLabels,
 };
 
