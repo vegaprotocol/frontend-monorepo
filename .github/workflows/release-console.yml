@@ -15,16 +15,16 @@ on:
         default: 'main'
 
 env:
-  E2E_TEST_WORKFLOW: ./.github/workflows/ci-trading-python-tests.yml
+  E2E_TEST_WORKFLOW: ./.github/workflows/trading-e2e-test-run.yml
 
 jobs:
   setup_release_branch:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     outputs:
       branch_name: ${{ steps.prepare_branch.outputs.branch_name }}
     steps:
       - name: Checkout code at commit hash
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: ${{ github.event.inputs.commitHash }}
 
@@ -38,23 +38,19 @@ jobs:
         id: prepare_branch
         run: |
           BRANCH_NAME="release/${{ github.event.inputs.environment }}/${{ github.event.inputs.releaseVersion }}"
-          echo "::set-output name=branch_name::$BRANCH_NAME"
+          echo "branch_name=$BRANCH_NAME" >> $GITHUB_STATE
           git fetch --all
           git checkout -b $BRANCH_NAME origin/${{ github.event.inputs.environment }}
-          git reset --hard ${{ github.event.inputs.commitHash }}
-          git push --force --set-upstream origin $BRANCH_NAME
-        if: ${{ github.event.inputs.environment == 'testnet' }}
 
   run_e2e_tests:
     needs: setup_release_branch
-    uses: ${{ env.E2E_TEST_WORKFLOW }}
+    uses: ./.github/workflows/trading-e2e-test-run.yml
     with:
       github-sha: ${{ needs.setup_release_branch.outputs.branch_name }}
 
   await_approval:
-    needs: run_e2e_tests
     runs-on: ubuntu-latest
-    if: ${{ always() && github.event.inputs.environment == 'testnet' }}
+    if: always()
     environment:
       name: release-approval
     steps:
@@ -62,27 +58,44 @@ jobs:
         run: |
           echo "Awaiting manual approval to proceed with the release."
 
-  release:
+  deploy:
     needs: [setup_release_branch, await_approval]
+    runs-on: ubuntu-22.04
+    if: ${{ needs.await_approval.result == 'success' }}
+    steps:
+      - name: Checkout code at commit hash
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.setup_release_branch.outputs.branch_name }}
+
+      - name: Reset and push release branch
+        run: |
+          BRANCH_NAME="${{ needs.setup_release_branch.outputs.branch_name }}"
+          git reset --hard ${{ github.event.inputs.commitHash }}
+          git push --force --set-upstream origin $BRANCH_NAME
+
+  generate_release_notes:
+    needs: deploy
     runs-on: ubuntu-latest
     steps:
       - name: Generate release notes
         id: release_notes
         uses: octokit/request-action@v2.3.0
         with:
-          route: POST /repos/:owner/:repo/releases/generate-notes
-          owner: ${{ github.repository_owner }}
-          repo: ${{ github.event.repository.name }}
-          tag_name: ${{ github.event.inputs.releaseVersion }}
-          target_commitish: ${{ github.event.inputs.commitHash }}
+          route: POST /repos/${{ github.repository }}/releases/generate-notes
+          data: '{"tag_name": "${{ github.event.inputs.releaseVersion }}", "target_commitish": "${{ github.event.inputs.commitHash }}"}'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+  release:
+    needs: generate_release_notes
+    runs-on: ubuntu-latest
+    steps:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2.0.4
         with:
           tag_name: ${{ github.event.inputs.releaseVersion }}
           name: Release ${{ github.event.inputs.releaseVersion }}
-          body: ${{ steps.release_notes.outputs.data.body }}
+          body: ${{ steps.generate_release_notes.outputs.data.body }}
           draft: false
           prerelease: ${{ github.event.inputs.environment == 'testnet' }}
