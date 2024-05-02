@@ -168,8 +168,22 @@ export const ProposalsList = ({ proposals }: ProposalsListProps) => {
   // filter by proposal id
   filtered = filtered.filter((proposal) => {
     if (filter.id.length > 0) {
-      const term = filter.id.toLowerCase();
-      let ids: string[] = [];
+      let term = filter.id.trim().toLowerCase();
+      const negate = term.startsWith('!');
+      if (negate) term = term.substring(1);
+
+      const yesVotes =
+        proposal.__typename === 'Proposal' ||
+        proposal.__typename === 'BatchProposal'
+          ? proposal.votes.yes.votes?.map((v) => v.party.id) || []
+          : [];
+      const noVotes =
+        proposal.__typename === 'Proposal' ||
+        proposal.__typename === 'BatchProposal'
+          ? proposal.votes.no.votes?.map((v) => v.party.id) || []
+          : [];
+
+      let ids: string[] = [...yesVotes, ...noVotes];
       if (proposal.__typename === 'Proposal') {
         ids = compact([
           proposal?.id?.toLowerCase(),
@@ -178,8 +192,8 @@ export const ProposalsList = ({ proposals }: ProposalsListProps) => {
             proposal.terms.change.marketId,
           proposal.terms.change.__typename === 'UpdateMarketState' &&
             proposal.terms.change.market.id,
-          // TODO: Enable spot market filtering
-          // proposal.terms.change.__typename === 'UpdateSpotMarket' && proposal.terms.change.marketId
+          proposal.terms.change.__typename === 'UpdateSpotMarket' &&
+            proposal.terms.change.marketId,
         ]);
       } else if (proposal.__typename === 'BatchProposal') {
         const subs = compact(
@@ -190,8 +204,8 @@ export const ProposalsList = ({ proposals }: ProposalsListProps) => {
                 sub.terms.change.marketId,
               sub?.terms?.change.__typename === 'UpdateMarketState' &&
                 sub.terms.change.market.id,
-              // TODO: Enable spot market filtering
-              // sub?.terms?.change.__typename === 'UpdateSpotMarket' && sub.terms.change.marketId
+              sub?.terms?.change.__typename === 'UpdateSpotMarket' &&
+                sub.terms.change.marketId,
             ])
           )
         );
@@ -201,7 +215,8 @@ export const ProposalsList = ({ proposals }: ProposalsListProps) => {
           ...subs,
         ]);
       }
-      return ids.some((id) => id.includes(term));
+      const has = ids.some((id) => id.includes(term));
+      return negate ? !has : has;
     }
     return true;
   });

@@ -230,7 +230,7 @@
   "failedToRemovePendingStake": "Failed to remove pending stake of {{pendingAmount}} $VEGA",
   "fairgroundTitle": "Fairground token",
   "FilterProposals": "Filter proposals",
-  "FilterProposalsDescription": "Filter by proposal ID, proposer ID or related market ID",
+  "FilterProposalsDescription": "Filter by proposal ID, proposer ID, related market ID or voted pubkey",
   "finalOutcomeMayDiffer": "Final outcome may differ",
   "Find out more about Staking.": "Use your $VEGA tokens to nominate a validator, earn rewards and participate in governance of the Vega network.",
   "findOutMoreAboutHowToVote": "Find out more about how to vote on Vega",

@@ -503,11 +503,21 @@ fragment VoteFields on ProposalVotes {
     totalTokens
     totalNumber
     totalEquityLikeShareWeight
+    votes {
+      party {
+        id
+      }
+    }
   }
   no {
     totalTokens
     totalNumber
     totalEquityLikeShareWeight
+    votes {
+      party {
+        id
+      }
+    }
   }
 }
 
