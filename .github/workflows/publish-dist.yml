@@ -78,7 +78,6 @@ jobs:
           path: node_modules
           key: ${{ runner.os }}-cache-node-modules-${{ hashFiles('yarn.lock') }}
 
-      # https://docs.github.com/en/actions/learn-github-actions/contexts
       - name: Define dist variables
         if: github.event_name == 'push'
         run: |
