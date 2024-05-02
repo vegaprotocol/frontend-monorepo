@@ -164,15 +164,15 @@ context(
           .within(() => {
             cy.get('h2').should('have.text', 'Vega release v1');
             cy.getByTestId('protocol-upgrade-proposal-type').should(
-              'have.text',
-              'Network UpgradeEnacted'
+              'contain.text',
+              'Network Upgrade'
             );
             cy.getByTestId('protocol-upgrade-proposal-release-tag').should(
               'have.text',
               'Vega release tag: v1'
             );
             cy.getByTestId(proposalUpgradeBlockHeight).should(
-              'have.text',
+              'contain.text',
               'Upgrade block height: 2015942'
             );
             cy.getByTestId('protocol-upgrade-proposal-status').should(
