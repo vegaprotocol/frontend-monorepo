@@ -59,7 +59,7 @@ export const MarketsPage = () => {
   const totalVolumeSparkline = (
     <Sparkline width={80} height={20} data={totalVolume24hCandles} />
   );
-  const { tvl, loading: tvlLoading } = useTotalValueLocked();
+  const { tvl, loading: tvlLoading, error: tvlError } = useTotalValueLocked();
 
   const totalVolume24h = activeMarkets?.reduce((acc, market) => {
     return (
@@ -95,7 +95,7 @@ export const MarketsPage = () => {
             <Card
               key="24h-vol"
               className="flex grow"
-              loading={tvlLoading}
+              loading={tvlLoading || tvl.isNaN() || !!tvlError}
               title={t('TVL')}
             >
               <div className="flex flex-col h-full">
