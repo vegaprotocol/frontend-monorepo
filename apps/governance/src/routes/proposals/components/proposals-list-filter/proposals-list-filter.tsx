@@ -1,4 +1,4 @@
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { useEffect, useState } from 'react';
 import {
   Checkbox,
@@ -30,9 +30,9 @@ const proposalStates: ProposalState[] = [
   ProposalState.STATE_ENACTED,
   ProposalState.STATE_PASSED,
   ProposalState.STATE_DECLINED,
+  ProposalState.STATE_WAITING_FOR_NODE_VOTE,
   ProposalState.STATE_FAILED,
   ProposalState.STATE_REJECTED,
-  ProposalState.STATE_WAITING_FOR_NODE_VOTE,
 ];
 
 type ProposalType = ProposalChange['__typename'] | 'NetworkUpgrade';
@@ -405,7 +405,34 @@ export const Filters = ({ count }: { count?: number }) => {
                           checked ? filter.addState(ps) : filter.removeState(ps)
                         }
                       />{' '}
-                      {ProposalStateMapping[ps]}
+                      <Tooltip
+                        description={
+                          !filter.states.includes(ps) &&
+                          !BASE_FILTER.states.includes(ps) ? (
+                            <Trans
+                              i18nKey={
+                                'The <0>{{state}}</0> state is excluded by default. The <0>{{state}}</0> proposals will not be included in the results unless checked.'
+                              }
+                              values={{ state: ProposalStateMapping[ps] }}
+                              components={[
+                                <span className="lowercase">
+                                  {ProposalStateMapping[ps]}
+                                </span>,
+                              ]}
+                            />
+                          ) : null
+                        }
+                      >
+                        <span
+                          className={classNames({
+                            ' text-vega-cdark-100 cursor-help':
+                              !filter.states.includes(ps) &&
+                              !BASE_FILTER.states.includes(ps),
+                          })}
+                        >
+                          {ProposalStateMapping[ps]}
+                        </span>
+                      </Tooltip>
                     </label>
                   </li>
                 ))}

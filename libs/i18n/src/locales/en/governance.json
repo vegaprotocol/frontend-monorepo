@@ -737,6 +737,7 @@
   "Symbol": "Symbol",
   "Team": "Team",
   "TelemetryModalIntro": "Help us identify bugs and improve Vega Governance by sharing anonymous usage data.",
+  "The <0>{{state}}</0> state is excluded by default. The <0>{{state}}</0> proposals will not be included in the results unless checked.": "The <0>{{state}}</0> state is excluded by default. The <0>{{state}}</0> proposals will not be included in the results unless checked.",
   "The contract is deployed at the following address": "The contract is deployed at the following address:",
   "the holder": "the holder",
   "The token address is {{address}}. Hit the add token button in your ERC20 wallet and enter this address.": "The token address is {{address}}. Hit the add token button in your ERC20 wallet and enter this address.",
