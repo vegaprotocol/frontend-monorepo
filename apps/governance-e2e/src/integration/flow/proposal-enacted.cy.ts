@@ -19,11 +19,10 @@ import { ethereumWalletConnect } from '../../support/wallet-eth.functions';
 import { vegaWalletSetSpecifiedApprovalAmount } from '../../support/wallet-functions';
 
 const proposalListItem = '[data-testid="proposals-list-item"]';
-const closedProposals = 'closed-proposals';
+const listItems = 'proposal-list-items';
 const proposalStatus = 'proposal-status';
 const viewProposalButton = 'view-proposal-btn';
 const votesTable = 'user-vote';
-const openProposals = 'open-proposals';
 const majorityVoteReached = 'token-majority-met';
 const minParticipationReached = 'token-participation-met';
 const proposalTimeout = { timeout: 8000 };
@@ -57,7 +56,7 @@ context(
       cy.createMarket();
       cy.reload();
       waitForSpinner();
-      cy.getByTestId(closedProposals).within(() => {
+      cy.getByTestId(listItems).within(() => {
         cy.contains(proposalTitle)
           .parentsUntil(proposalListItem)
           .last()
@@ -85,7 +84,7 @@ context(
       navigateTo(navigation.proposals);
       cy.reload();
       waitForSpinner();
-      cy.getByTestId(openProposals).within(() => {
+      cy.getByTestId(listItems).within(() => {
         cy.contains(proposalTitle)
           .parentsUntil(proposalListItem)
           .last()
@@ -132,7 +131,7 @@ context(
       navigateTo(navigation.proposals);
       cy.reload();
       waitForSpinner();
-      cy.getByTestId(openProposals, { timeout: 6000 }).within(() => {
+      cy.getByTestId(listItems, { timeout: 6000 }).within(() => {
         cy.contains(proposalTitle)
           .parentsUntil(proposalListItem)
           .last()
@@ -154,7 +153,7 @@ context(
       navigateTo(navigation.proposals);
       cy.reload();
       waitForSpinner();
-      cy.getByTestId(openProposals).within(() => {
+      cy.getByTestId(listItems).within(() => {
         cy.contains(proposalTitle)
           .parentsUntil(proposalListItem)
           .last()

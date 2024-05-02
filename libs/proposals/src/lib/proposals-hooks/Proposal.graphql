@@ -114,6 +114,18 @@ query NewTransferDetails($proposalId: ID!) {
         }
       }
     }
+    ... on BatchProposal {
+      subProposals {
+        id
+        terms {
+          change {
+            ... on NewTransfer {
+              ...NewTransferFields
+            }
+          }
+        }
+      }
+    }
   }
 }
 
@@ -125,6 +137,18 @@ query CancelTransferDetails($proposalId: ID!) {
         change {
           ... on CancelTransfer {
             ...CancelTransferFields
+          }
+        }
+      }
+    }
+    ... on BatchProposal {
+      subProposals {
+        id
+        terms {
+          change {
+            ... on CancelTransfer {
+              ...CancelTransferFields
+            }
           }
         }
       }

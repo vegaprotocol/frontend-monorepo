@@ -95,13 +95,23 @@ export const ProposalChangeDetails = ({
       break;
     }
     case 'NewTransfer': {
-      if (proposal.id) {
+      if (proposal.__typename === 'BatchProposal' && indicator) {
+        const proposalId = proposal.subProposals?.[indicator - 1]?.id;
+        if (proposalId) {
+          details = <ProposalTransferDetails proposalId={proposalId} />;
+        }
+      } else if (proposal.id) {
         details = <ProposalTransferDetails proposalId={proposal.id} />;
       }
       break;
     }
     case 'CancelTransfer': {
-      if (proposal.id) {
+      if (proposal.__typename === 'BatchProposal' && indicator) {
+        const proposalId = proposal.subProposals?.[indicator - 1]?.id;
+        if (proposalId) {
+          details = <ProposalCancelTransferDetails proposalId={proposalId} />;
+        }
+      } else if (proposal.id) {
         details = <ProposalCancelTransferDetails proposalId={proposal.id} />;
       }
       break;

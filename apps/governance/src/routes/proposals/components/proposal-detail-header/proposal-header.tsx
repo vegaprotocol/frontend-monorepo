@@ -45,6 +45,8 @@ const ProposalTypeTags = ({
 }: {
   proposal: Proposal | BatchProposal;
 }) => {
+  const { t } = useTranslation();
+
   if (proposal.__typename === 'Proposal') {
     return (
       <div data-testid="proposal-type">
@@ -56,7 +58,12 @@ const ProposalTypeTags = ({
   if (proposal.__typename === 'BatchProposal') {
     return (
       <div data-testid="proposal-type">
-        <ProposalInfoLabel variant="secondary">BatchProposal</ProposalInfoLabel>
+        <ProposalInfoLabel variant="secondary">
+          <span>{t('Batch Proposal')}</span>
+          <span className="bg-vega-cdark-600 rounded-full px-1 text-center font-glitch">
+            {proposal.subProposals?.length || 0}
+          </span>
+        </ProposalInfoLabel>
       </div>
     );
   }
@@ -64,7 +71,11 @@ const ProposalTypeTags = ({
   return null;
 };
 
-const ProposalTypeTag = ({ terms }: { terms: ProposalTermsFieldsFragment }) => {
+const ProposalTypeTag = ({
+  terms,
+}: {
+  terms: Pick<ProposalTermsFieldsFragment, 'change'>;
+}) => {
   const { t } = useTranslation();
 
   switch (terms.change.__typename) {
@@ -100,7 +111,10 @@ const ProposalDetails = ({
   const featureFlags = useFeatureFlags((store) => store.flags);
   const consoleLink = useLinks(DApp.Console);
 
-  const renderDetails = (terms: ProposalTermsFieldsFragment) => {
+  const renderDetails = (
+    terms: ProposalTermsFieldsFragment,
+    proposalId?: string | null
+  ) => {
     switch (terms.change?.__typename) {
       case 'NewSpotMarket': {
         return (
@@ -284,11 +298,11 @@ const ProposalDetails = ({
       }
       case 'NewTransfer':
         return featureFlags.GOVERNANCE_TRANSFERS ? (
-          <NewTransferSummary proposalId={proposal?.id} />
+          <NewTransferSummary proposalId={proposalId} />
         ) : null;
       case 'CancelTransfer':
         return featureFlags.GOVERNANCE_TRANSFERS ? (
-          <CancelTransferSummary proposalId={proposal?.id} />
+          <CancelTransferSummary proposalId={proposalId} />
         ) : null;
       default: {
         return null;
@@ -301,7 +315,7 @@ const ProposalDetails = ({
   if (proposal.__typename === 'Proposal') {
     details = (
       <div>
-        <div>{renderDetails(proposal.terms)}</div>
+        <div>{renderDetails(proposal.terms, proposal.id)}</div>
         <VoteStateText
           state={proposal.state}
           closingDatetime={proposal.terms.closingDatetime}
@@ -328,7 +342,7 @@ const ProposalDetails = ({
               >
                 <Indicator indicator={i + 1} />
                 <span>
-                  <div>{renderDetails(p.terms)}</div>
+                  <div>{renderDetails(p.terms, p?.id)}</div>
                   <SubProposalStateText
                     state={proposal.state}
                     enactmentDatetime={p.terms.enactmentDatetime}
@@ -592,7 +606,7 @@ export const ProposalHeader = ({
           )}
 
           <div data-testid="proposal-status">
-            <CurrentProposalState proposal={proposal} />
+            <CurrentProposalState proposalState={proposal.state} />
           </div>
         </div>
       </div>
