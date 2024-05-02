@@ -45,7 +45,7 @@ jobs:
           echo IS_IPFS_RELEASE=true >> $GITHUB_ENV
 
       - name: Is S3 Release
-        if: env.IS_IPFS_RELEASE == 'false' && github.event_name == 'push' && github.ref_name != 'main
+        if: env.IS_IPFS_RELEASE == 'false' && github.event_name == 'push' && github.ref_name != 'main'
         run: |
           echo IS_S3_RELEASE=true >> $GITHUB_ENV
 
