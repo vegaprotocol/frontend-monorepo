@@ -165,7 +165,7 @@ context(
             cy.get('h2').should('have.text', 'Vega release v1');
             cy.getByTestId('protocol-upgrade-proposal-type').should(
               'have.text',
-              'Network Upgrade'
+              'Network UpgradeEnacted'
             );
             cy.getByTestId('protocol-upgrade-proposal-release-tag').should(
               'have.text',
