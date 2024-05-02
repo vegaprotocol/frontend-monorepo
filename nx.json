@@ -13,7 +13,8 @@
           "echo $NX_TENDERMINT_WEBSOCKET_URL",
           "echo $NX_ETHEREUM_PROVIDER_URL",
           "echo $NX_CHARTING_LIBRARY_PATH",
-          "echo $NX_CHARTING_LIBRARY_HASH"
+          "echo $NX_CHARTING_LIBRARY_HASH",
+          "echo $GIT_COMMIT_HASH"
         ]
       }
     }
