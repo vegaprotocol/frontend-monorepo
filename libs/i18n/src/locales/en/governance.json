@@ -875,7 +875,7 @@
   "Vesting from": "Vesting from {{fromDate}} to {{endDate}}",
   "Vesting VEGA": "Vesting VEGA",
   "VESTING VEGA TOKENS": "in vesting contract",
-  "VestingRewardsTooltip": "Vesting rewards will be moved to vested account at a rate of {{baseRate}} per epoch.",
+  "VestingRewardsTooltip": "After they unlock, vesting rewards will be moved to your vested account at a rate of {{baseRate}} per epoch.",
   "viaContract": "via vesting",
   "viaWallet": "via wallet",
   "View": "View",
