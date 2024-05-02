@@ -35,9 +35,7 @@ jobs:
         with:
           path: node_modules
           key: ${{ runner.os }}-cache-node-modules-${{ hashFiles('yarn.lock') }}
-          # comment out "restore-keys" if you need to rebuild yarn from 0
-          restore-keys: |
-            ${{ runner.os }}-cache-node-modules-
+
       #----------------------------------------------
       #       install deps if cache missing
       #----------------------------------------------
@@ -153,6 +151,7 @@ jobs:
           export VEGA_VERSION=$(grep VEGA_VERSION .env | cut -d '=' -f2)
           poetry run python -m vega_sim.tools.load_binaries --force --version $VEGA_VERSION
         working-directory: apps/trading/e2e
+
       #----------------------------------------------
       # Install Playwright only if not cached
       #----------------------------------------------
