@@ -1,6 +1,7 @@
 import {
   addDecimalsFormatNumber,
   formatNumberPercentage,
+  getUserLocale,
 } from '@vegaprotocol/utils';
 import {
   Intent,
@@ -60,7 +61,10 @@ export const Row = ({
     if (assetSymbol) {
       return `${Number(value).toLocaleString()} ${assetSymbol}`;
     }
-    return Number(value).toLocaleString();
+    return Number(value).toLocaleString(getUserLocale(), {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 18,
+    });
   };
 
   const formattedValue = getFormattedValue(value);
