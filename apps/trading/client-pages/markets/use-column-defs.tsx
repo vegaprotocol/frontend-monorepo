@@ -12,7 +12,12 @@ import {
   priceChange,
   toBigNum,
 } from '@vegaprotocol/utils';
-import { Sparkline } from '@vegaprotocol/ui-toolkit';
+import {
+  Sparkline,
+  Tooltip,
+  VegaIcon,
+  VegaIconNames,
+} from '@vegaprotocol/ui-toolkit';
 import type {
   MarketMaybeWithData,
   MarketMaybeWithDataAndCandles,
@@ -27,6 +32,60 @@ import {
 import { useT } from '../../lib/use-t';
 import { EmblemByMarket } from '@vegaprotocol/emblem';
 import { useChainId } from '@vegaprotocol/wallet-react';
+import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
+
+const getTradingModeIcon = (
+  tradingMode: MarketTradingMode,
+  state?: MarketState
+): VegaIconNames | null => {
+  switch (tradingMode) {
+    case MarketTradingMode.TRADING_MODE_MONITORING_AUCTION:
+    case MarketTradingMode.TRADING_MODE_OPENING_AUCTION:
+    case MarketTradingMode.TRADING_MODE_BATCH_AUCTION:
+      return VegaIconNames.HAMMER;
+    case MarketTradingMode.TRADING_MODE_SUSPENDED_VIA_GOVERNANCE:
+      return VegaIconNames.PAUSE;
+    case MarketTradingMode.TRADING_MODE_NO_TRADING:
+      switch (state) {
+        case MarketState.STATE_PENDING:
+        case MarketState.STATE_PROPOSED:
+          return VegaIconNames.MONITOR;
+        default:
+          return VegaIconNames.CLOSED;
+      }
+    default:
+      return null;
+  }
+};
+
+const getTradingModeTooltip = (
+  tradingMode?: MarketTradingMode,
+  state?: MarketState
+): string => {
+  switch (tradingMode) {
+    case MarketTradingMode.TRADING_MODE_MONITORING_AUCTION:
+      return 'In protective auction due to large price movement, crossed orders are required to set price and restart trading';
+    case MarketTradingMode.TRADING_MODE_OPENING_AUCTION:
+      return 'In opening auction, liquidity and crossed orders are required to set an opening price and start trading';
+    case MarketTradingMode.TRADING_MODE_SUSPENDED_VIA_GOVERNANCE:
+      return 'Trading is suspended due to governance';
+    case MarketTradingMode.TRADING_MODE_BATCH_AUCTION:
+      return 'Market is in batch auction';
+    case MarketTradingMode.TRADING_MODE_NO_TRADING:
+      switch (state) {
+        case MarketState.STATE_SETTLED:
+          return 'Market is settled and all positions are closed';
+        case MarketState.STATE_PENDING:
+        case MarketState.STATE_PROPOSED:
+          return 'Voting is in progress on this proposed market';
+        default:
+          return 'Market is terminated and awaiting settlement data';
+      }
+    case MarketTradingMode.TRADING_MODE_CONTINUOUS:
+    default:
+      return '';
+  }
+};
 
 const openInterestRenderer = (data: MarketMaybeWithData | undefined) => {
   if (!data) return '-';
@@ -142,6 +201,10 @@ export const useMarketsColumnDefs = () => {
           MarketMaybeWithData,
           'tradableInstrument.instrument.code'
         >) => {
+          const tradingMode = data?.data?.marketTradingMode;
+          const state = data?.data?.marketState;
+          const icon = tradingMode && getTradingModeIcon(tradingMode, state);
+          const tooltip = getTradingModeTooltip(tradingMode, state);
           return (
             <span className="flex items-center gap-2 cursor-pointer">
               <span className="mr-2">
@@ -150,6 +213,13 @@ export const useMarketsColumnDefs = () => {
               <StackedCell
                 primary={value}
                 secondary={data?.tradableInstrument.instrument.name}
+                primaryIcon={
+                  icon ? (
+                    <Tooltip description={t(tooltip)}>
+                      <VegaIcon name={icon} size={14} className="ml-1" />
+                    </Tooltip>
+                  ) : undefined
+                }
               />
             </span>
           );
