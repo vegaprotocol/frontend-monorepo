@@ -14,7 +14,11 @@ export const useVegaWallet = () => {
     selectPubKey: (pubKey: string) => config.store.setState({ pubKey }),
     isReadOnly: store.current === 'viewParty',
     disconnect: () => {
-      config.store.setState({ pubKey: undefined });
+      config.store.setState({
+        current: undefined,
+        keys: [],
+        pubKey: undefined,
+      });
       return config.disconnect();
     },
     refreshKeys: config.refreshKeys,
