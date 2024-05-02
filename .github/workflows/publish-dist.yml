@@ -30,22 +30,22 @@ jobs:
           echo IS_S3_RELEASE=false >> $GITHUB_ENV
 
       - name: Is mainnet release
-        if: ${{ contains(github.ref, 'release/mainnet') && !contains(github.ref, 'mirror') }}
+        if: contains(github.ref, 'release/mainnet') && !contains(github.ref, 'mirror')
         run: |
           echo IS_MAINNET_RELEASE=true >> $GITHUB_ENV
 
       - name: Is testnet release
-        if: ${{ contains(github.ref, 'release/testnet') }}
+        if: contains(github.ref, 'release/testnet')
         run: |
           echo IS_TESTNET_RELEASE=true >> $GITHUB_ENV
 
       - name: Is IPFS Release
-        if: ${{ matrix.app == 'trading' && github.event_name == 'push' && ( env.IS_MAINNET_RELEASE == 'true' || env.IS_TESTNET_RELEASE == 'true' ) }}
+        if: matrix.app == 'trading' && github.event_name == 'push' && ( env.IS_MAINNET_RELEASE == 'true' || env.IS_TESTNET_RELEASE == 'true' )
         run: |
           echo IS_IPFS_RELEASE=true >> $GITHUB_ENV
 
       - name: Is S3 Release
-        if: ${{ env.IS_IPFS_RELEASE == 'false' && github.event_name == 'push' && github.ref_name != 'main'}}
+        if: env.IS_IPFS_RELEASE == 'false' && github.event_name == 'push' && github.ref_name != 'main
         run: |
           echo IS_S3_RELEASE=true >> $GITHUB_ENV
 
@@ -61,7 +61,7 @@ jobs:
 
       - name: Log in to the Container registry (docker hub)
         uses: docker/login-action@v3
-        if: ${{ env.IS_IPFS_RELEASE == 'true' }}
+        if: env.IS_IPFS_RELEASE == 'true'
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -78,14 +78,13 @@ jobs:
           path: node_modules
           key: ${{ runner.os }}-cache-node-modules-${{ hashFiles('yarn.lock') }}
 
-      # https://docs.github.com/en/actions/learn-github-actions/contexts
       - name: Define dist variables
-        if: ${{ github.event_name == 'push' }}
+        if: github.event_name == 'push'
         run: |
           python3 tools/ci/define-dist-variables.py --github-ref="${{ github.ref }}" --app="${{ matrix.app }}"
 
       - name: Verify script result
-        if: ${{ github.event_name == 'push' }}
+        if: github.event_name == 'push'
         run: |
           echo "BUCKET_NAME=${{ env.BUCKET_NAME }}"
           echo "ENV_NAME=${{ env.ENV_NAME }}"
@@ -118,7 +117,7 @@ jobs:
         uses: docker/build-push-action@v5
         continue-on-error: true
         id: dockerhub-push
-        if: ${{ env.IS_IPFS_RELEASE == 'true' }}
+        if: env.IS_IPFS_RELEASE == 'true'
         with:
           context: .
           file: docker/node-outside-docker.Dockerfile
@@ -132,7 +131,7 @@ jobs:
 
       - name: Publish dist as docker image (docker hub - retry)
         uses: docker/build-push-action@v5
-        if: ${{ steps.dockerhub-push.outcome == 'failure' }}
+        if: steps.dockerhub-push.outcome == 'failure'
         with:
           context: .
           file: docker/node-outside-docker.Dockerfile
@@ -145,7 +144,7 @@ jobs:
             vegaprotocol/${{ matrix.app }}:${{ env.IS_MAINNET_RELEASE == 'true' && 'mainnet' || env.IS_TESTNET_RELEASE == 'true' && 'testnet' || '' }}
 
       - name: Sanity check docker image
-        if: ${{ env.IS_IPFS_RELEASE == 'true' }}
+        if: env.IS_IPFS_RELEASE == 'true'
         run: |
           echo "Check ipfs-hash"
           docker run --rm vegaprotocol/${{ matrix.app }}:${{ github.sha }} /bin/sh -c 'cat /ipfs-hash'
@@ -156,7 +155,7 @@ jobs:
       # bucket creation in github.com/vegaprotocol/terraform/frontend
       - name: Publish dist to s3
         # s3 releases are not happening for trading on mainnet - it's IPFS
-        if: ${{ env.IS_S3_RELEASE == 'true' }}
+        if: env.IS_S3_RELEASE == 'true'
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -164,7 +163,7 @@ jobs:
         run: aws s3 sync --acl private --follow-symlinks --delete ./dist-result s3://$BUCKET_NAME
 
       - name: Perform cache invalidation
-        if: ${{ env.IS_S3_RELEASE == 'true' }}
+        if: env.IS_S3_RELEASE == 'true'
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -177,7 +176,7 @@ jobs:
 
       - name: Trigger fleek deployment
         # release to ipfs happens only on mainnet (represented by main branch) for trading
-        if: ${{ env.IS_IPFS_RELEASE == 'true' }}
+        if: env.IS_IPFS_RELEASE == 'true'
         run: |
           if [[ "${{ env.IS_MAINNET_RELEASE }}" = "true" ]]; then
             # display info about app
@@ -207,7 +206,7 @@ jobs:
           fi
 
       - name: Check out ipfs-redirect
-        if: ${{ env.IS_IPFS_RELEASE == 'true' }}
+        if: env.IS_IPFS_RELEASE == 'true'
         uses: actions/checkout@v4
         with:
           repository: 'vegaprotocol/ipfs-redirect'
@@ -216,7 +215,7 @@ jobs:
           token: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
 
       - name: Update interstitial page to point to the new console
-        if: ${{ env.IS_IPFS_RELEASE == 'true' }}
+        if: env.IS_IPFS_RELEASE == 'true'
         env:
           GH_TOKEN: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
         run: |
