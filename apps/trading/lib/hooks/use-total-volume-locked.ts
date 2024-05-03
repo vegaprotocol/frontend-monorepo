@@ -10,6 +10,7 @@ export const useTotalValueLocked = () => {
       isEnlargedTimeout: true,
     },
     fetchPolicy: 'cache-and-network',
+    errorPolicy: 'ignore',
     pollInterval: 1000 * 60 * 60, // 1h - no need
   });
 
