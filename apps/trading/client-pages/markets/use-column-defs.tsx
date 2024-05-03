@@ -234,6 +234,7 @@ export const useMarketsColumnDefs = () => {
         type: 'rightAligned',
         cellRenderer: 'PriceFlashCell',
         filter: 'agNumberColumnFilter',
+        maxWidth: 150,
         valueGetter: ({ data }: VegaValueGetterParams<MarketMaybeWithData>) => {
           if (
             data?.tradableInstrument.instrument.product.__typename === 'Spot'
