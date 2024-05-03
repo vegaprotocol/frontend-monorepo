@@ -89,6 +89,7 @@ export const DocsLinks = VEGA_DOCS_URL
       REFERRALS: `${VEGA_DOCS_URL}/tutorials/proposals/referral-program-proposal`,
       LIQUIDITY_FEE_PERCENTAGE: `${VEGA_DOCS_URL}/concepts/liquidity/rewards-penalties#determining-the-liquidity-fee-percentage`,
       ASSET_TRANSFER_PROPOSAL: `${VEGA_DOCS_URL}/tutorials/proposals/asset-transfer-proposal`,
+      HOW_REWARDS_ARE_PAID: `${VEGA_DOCS_URL}/concepts/trading-on-vega/discounts-rewards#how-rewards-are-paid`,
     }
   : undefined;
 
