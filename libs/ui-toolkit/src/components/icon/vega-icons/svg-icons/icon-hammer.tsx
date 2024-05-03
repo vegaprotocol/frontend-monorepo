@@ -13,7 +13,7 @@ export const IconHammer = ({ size = 16 }: { size: number }) => {
         width="12"
         height="4.49049"
         transform="rotate(135 12.6606 13.3119)"
-        stroke="white"
+        stroke="currentColor"
         stroke-linejoin="round"
       />
       <rect
@@ -22,7 +22,7 @@ export const IconHammer = ({ size = 16 }: { size: number }) => {
         width="14"
         height="8"
         transform="rotate(45 11.6919 1)"
-        stroke="white"
+        stroke="currentColor"
         stroke-linejoin="round"
       />
     </svg>

@@ -12,19 +12,19 @@ export const IconMonitor = ({ size = 16 }: { size: number }) => {
         y="5"
         width="12"
         height="10"
-        stroke="white"
+        stroke="currentColor"
         stroke-linecap="round"
         stroke-linejoin="round"
       />
       <path
         d="M3 15V18H21V15"
-        stroke="white"
+        stroke="currentColor"
         stroke-linecap="round"
         stroke-linejoin="round"
       />
       <path
         d="M9 10L11 12L15 8"
-        stroke="white"
+        stroke="currentColor"
         stroke-linecap="round"
         stroke-linejoin="round"
       />
