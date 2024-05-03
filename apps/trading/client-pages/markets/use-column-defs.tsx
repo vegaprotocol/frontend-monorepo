@@ -14,7 +14,7 @@ import {
 } from '@vegaprotocol/utils';
 import {
   Sparkline,
-  Tooltip,
+  TooltipCellComponent,
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
@@ -194,6 +194,14 @@ export const useMarketsColumnDefs = () => {
         headerName: t('Market'),
         field: 'tradableInstrument.instrument.code',
         minWidth: 150,
+        pinned: true,
+        tooltipComponent: TooltipCellComponent,
+        tooltipValueGetter: ({ value, data }) => {
+          const tradingMode = data?.data?.marketTradingMode;
+          const state = data?.data?.marketState;
+          const tooltip = getTradingModeTooltip(tradingMode, state);
+          return t(tooltip);
+        },
         cellRenderer: ({
           value,
           data,
@@ -204,7 +212,6 @@ export const useMarketsColumnDefs = () => {
           const tradingMode = data?.data?.marketTradingMode;
           const state = data?.data?.marketState;
           const icon = tradingMode && getTradingModeIcon(tradingMode, state);
-          const tooltip = getTradingModeTooltip(tradingMode, state);
           return (
             <span className="flex items-center gap-2 cursor-pointer">
               <span className="mr-2">
@@ -214,11 +221,7 @@ export const useMarketsColumnDefs = () => {
                 primary={value}
                 secondary={data?.tradableInstrument.instrument.name}
                 primaryIcon={
-                  icon ? (
-                    <Tooltip description={t(tooltip)}>
-                      <VegaIcon name={icon} size={14} className="ml-1" />
-                    </Tooltip>
-                  ) : undefined
+                  icon && <VegaIcon name={icon} size={14} className="ml-1" />
                 }
               />
             </span>
