@@ -67,6 +67,7 @@ class CustomHttpRequestHandler(http.server.SimpleHTTPRequestHandler):
 @contextmanager
 def init_vega(request=None):
     local_server = os.getenv("LOCAL_SERVER", "false").lower() == "true"
+    console_image_name = os.getenv("CONSOLE_IMAGE_NAME", "default_image_name")
     port_config = None
     if local_server:
         port_config = {
@@ -97,34 +98,37 @@ def init_vega(request=None):
 
     if port_config is not None:
         vega_service_args["port_config"] = port_config
-
+    container = None 
     with VegaServiceNull(**vega_service_args) as vega:
-        try:
-            container = docker_client.containers.run(
-                console_image_name, detach=True, ports={"80/tcp": vega.console_port}
-            )
+        if not local_server:
+            try:
+                container = docker_client.containers.run(
+                    console_image_name, detach=True, ports={"80/tcp": vega.console_port}
+                )
+                if not isinstance(container, Container):
+                    raise Exception("container instance invalid")
 
-            if not isinstance(container, Container):
-                raise Exception("container instance invalid")
-
-            logger.info(
-                f"Container {container.id} started",
-                extra={"worker_id": os.environ.get("PYTEST_XDIST_WORKER")},
-            )
-            vega.container = container
-            logger.info(f"Container ID: {container.id}, Name: {container.name}, Status: {container.status}")
+                logger.info(
+                    f"Container {container.id} started",
+                    extra={"worker_id": os.environ.get("PYTEST_XDIST_WORKER")},
+                )
+                vega.container = container
+                logger.info(f"Container ID: {container.id}, Name: {container.name}, Status: {container.status}")
+                yield vega
+            except APIError as e:
+                logger.info(f"Container creation failed.")
+                logger.info(e)
+                raise e
+            finally:
+                if container:
+                    logger.info(f"Stopping container {container.id}")
+                    container.stop()
+                    logger.info(f"Container ID: {container.id}, Name: {container.name}, Status: {container.status}")
+                    logger.info(f"Removing container {container.id}")
+                    container.remove()
+                    logger.info(f"Container ID: {container.id}, Name: {container.name}, Status: {container.status}")
+        else:
             yield vega
-        except APIError as e:
-            logger.info(f"Container creation failed.")
-            logger.info(e)
-            raise e
-        finally:
-            logger.info(f"Stopping container {container.id}")
-            container.stop()
-            logger.info(f"Container ID: {container.id}, Name: {container.name}, Status: {container.status}")
-            logger.info(f"Removing container {container.id}")
-            container.remove()
-            logger.info(f"Container ID: {container.id}, Name: {container.name}, Status: {container.status}")
 
 
 @contextmanager
