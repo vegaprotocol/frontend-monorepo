@@ -10,6 +10,10 @@ export const PercentageSlider = (
 ) => {
   const markers = [0, 25, 50, 75, 100];
   const value = props.value?.[0] || props.defaultValue?.[0];
+  const percentageValue =
+    value !== undefined
+      ? `${(((value - props.min) / (props.max - props.min)) * 100).toFixed(1)}%`
+      : undefined;
   return (
     <div className="relative">
       <SliderPrimitive.Root
@@ -47,7 +51,7 @@ export const PercentageSlider = (
             })}
           </span>
         </SliderPrimitive.Track>
-        <SliderThumb />
+        <SliderThumb tooltip={percentageValue} />
       </SliderPrimitive.Root>
       <span className="block absolute top-[15px] left-[8px] right-[8px]">
         {markers.map((v, i) => {
