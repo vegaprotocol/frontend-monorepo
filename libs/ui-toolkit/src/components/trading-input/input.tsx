@@ -80,14 +80,10 @@ const getAffixElement = ({
   appendIconName,
   appendIconDescription,
 }: Pick<TradingInputProps, keyof AffixProps>) => {
-  const className = classNames(
-    'absolute z-10 top-0 bottom-0 flex items-center',
-    {
-      'fill-black dark:fill-white': prependIconName || appendIconName,
-      'left-3': prependIconName || prependElement,
-      'right-3': appendIconName || appendElement,
-    }
-  );
+  const className = classNames('absolute top-0 bottom-0 flex items-center', {
+    'left-3': prependIconName || prependElement,
+    'right-3': appendIconName || appendElement,
+  });
 
   const element = prependElement || appendElement;
   const iconName = prependIconName || appendIconName;
@@ -99,12 +95,14 @@ const getAffixElement = ({
 
   if (iconName) {
     return (
-      <Icon
-        name={iconName}
-        className={className}
-        aria-label={iconDescription}
-        aria-hidden={!iconDescription}
-      />
+      <span className={className}>
+        <Icon
+          name={iconName}
+          className="fill-black dark:fill-white"
+          aria-label={iconDescription}
+          aria-hidden={!iconDescription}
+        />
+      </span>
     );
   }
 
