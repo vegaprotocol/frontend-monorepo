@@ -155,8 +155,6 @@ export const FundingPaymentsTable = forwardRef<AgGridReact, Props>(
           `${data?.marketId}-${data?.fundingPeriodSeq}`
         }
         components={{ MarketNameCell }}
-        tooltipHideDelay={10000}
-        tooltipShowDelay={10}
         {...props}
       />
     );
