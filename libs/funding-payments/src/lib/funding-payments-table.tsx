@@ -30,6 +30,7 @@ import type { FundingPayment } from './funding-payments-data-provider';
 import { getAsset } from '@vegaprotocol/markets';
 import classNames from 'classnames';
 import { useT } from './use-t';
+import { TooltipCellComponent } from '@vegaprotocol/ui-toolkit';
 
 const defaultColDef = {
   resizable: true,
@@ -38,6 +39,7 @@ const defaultColDef = {
 
 export type Props = (AgGridReactProps | AgReactUiProps) & {
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
+  fundingRate?: string | null;
 };
 
 const formatAmount = ({
@@ -72,6 +74,33 @@ export const FundingPaymentsTable = forwardRef<AgGridReact, Props>(
           valueFormatter: formatAmount,
           type: 'rightAligned',
           filter: 'agNumberColumnFilter',
+          tooltipComponent: TooltipCellComponent,
+          tooltipValueGetter: ({ value, data }) => {
+            const positive = !data?.amount?.startsWith('-');
+            const negative = !!data?.amount?.startsWith('-');
+            const fundingRateValue = props.fundingRate
+              ? `${(Number(props.fundingRate) * 100).toFixed(4)}%`
+              : '-';
+            if (positive) {
+              return t(
+                `The funding rate represents the difference between the mark price and the index price and drives alignment between the two.
+                At the next funding settlement, longs will pay shorts at a rate of {{fundingRate}}.`,
+                {
+                  fundingRate: fundingRateValue,
+                }
+              );
+            }
+            if (negative) {
+              return t(
+                `The funding rate represents the difference between the mark price and the index price and drives alignment between the two.
+                 At the next funding settlement, shorts will pay longs at a rate of {{fundingRate}}.`,
+                {
+                  fundingRate: fundingRateValue,
+                }
+              );
+            }
+            return null;
+          },
           valueGetter: ({ data }: VegaValueGetterParams<FundingPayment>) =>
             data?.amount && data?.market
               ? toBigNum(data.amount, getAsset(data.market).decimals).toNumber()
@@ -114,7 +143,7 @@ export const FundingPaymentsTable = forwardRef<AgGridReact, Props>(
           },
         },
       ],
-      [onMarketClick, t]
+      [onMarketClick, props.fundingRate, t]
     );
     return (
       <AgGrid
@@ -126,6 +155,8 @@ export const FundingPaymentsTable = forwardRef<AgGridReact, Props>(
           `${data?.marketId}-${data?.fundingPeriodSeq}`
         }
         components={{ MarketNameCell }}
+        tooltipHideDelay={10000}
+        tooltipShowDelay={10}
         {...props}
       />
     );
