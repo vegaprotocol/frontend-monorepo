@@ -82,13 +82,16 @@ export const OrderbookMid = ({
   lastTradedPrice: string;
   decimalPlaces: number;
   assetSymbol: string;
-  bestAskPrice: string;
-  bestBidPrice: string;
+  bestAskPrice?: string;
+  bestBidPrice?: string;
 }) => {
   const t = useT();
   const previousLastTradedPrice = usePrevious(lastTradedPrice);
   const priceChangeRef = useRef<'up' | 'down' | 'none'>('none');
-  const spread = (BigInt(bestAskPrice) - BigInt(bestBidPrice)).toString();
+  const spread =
+    bestAskPrice !== undefined &&
+    bestBidPrice !== undefined &&
+    (BigInt(bestAskPrice) - BigInt(bestBidPrice)).toString();
 
   if (previousLastTradedPrice !== lastTradedPrice) {
     priceChangeRef.current =
@@ -124,13 +127,15 @@ export const OrderbookMid = ({
         {addDecimalsFormatNumber(lastTradedPrice, decimalPlaces)}
       </span>
       <span>{assetSymbol}</span>
-      <span
-        title={t('Spread')}
-        className="font-mono text-xs text-muted"
-        data-testid="spread"
-      >
-        ({addDecimalsFormatNumber(spread, decimalPlaces)})
-      </span>
+      {spread && (
+        <span
+          title={t('Spread')}
+          className="font-mono text-xs text-muted"
+          data-testid="spread"
+        >
+          ({addDecimalsFormatNumber(spread, decimalPlaces)})
+        </span>
+      )}
     </div>
   );
 };
@@ -167,8 +172,8 @@ export const Orderbook = ({
 
   // get the best bid/ask, note that we are using the pre aggregated
   // values so we can render the most accurate spread in the mid section
-  const bestAskPrice = asks[0] ? asks[0].price : '0';
-  const bestBidPrice = bids[0] ? bids[0].price : '0';
+  const bestAskPrice = asks[0]?.price;
+  const bestBidPrice = bids[0]?.price;
 
   // we'll want to only display a relevant number of dps based on the
   // current resolution selection
