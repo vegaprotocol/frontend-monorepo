@@ -129,7 +129,7 @@ const MarketData = ({
         {price} {symbol}
       </div>
       <div
-        className="hidden sm:w-1/6 overflow-hidden text-xs lg:text-sm whitespace-nowrap text-ellipsis text-right"
+        className="hidden sm:w-1/6 sm:flex justify-end overflow-hidden text-xs lg:text-sm whitespace-nowrap text-ellipsis text-right"
         title={t('24h vol')}
         data-testid="market-selector-volume"
         role="gridcell"
