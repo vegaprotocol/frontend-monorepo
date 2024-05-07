@@ -15,6 +15,7 @@ import { MarketProductPill } from '@vegaprotocol/datagrid';
 import { useT } from '../../lib/use-t';
 import { EmblemByMarket } from '@vegaprotocol/emblem';
 import { useChainId } from '@vegaprotocol/wallet-react';
+import { MarketIcon } from '../../client-pages/markets/market-icon';
 
 export const MarketSelectorItem = ({
   market,
@@ -113,6 +114,7 @@ const MarketData = ({
           {allProducts && productType && (
             <MarketProductPill productType={productType} />
           )}
+          <MarketIcon data={market} />
         </h3>
         {mode && (
           <p className="text-xs text-vega-orange-500 dark:text-vega-orange-550 whitespace-nowrap">
