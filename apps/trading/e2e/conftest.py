@@ -166,6 +166,7 @@ def init_page(vega: VegaServiceNull, browser: Browser, request: pytest.FixtureRe
                     "VEGA_ENV": vega_env,
                 }
             )
+            print(vega.wallet_port)
             window_env = f"window._env_ = Object.assign({{}}, window._env_, {env})"
             page.add_init_script(script=window_env)
             page.add_init_script(script="console.log(window._env_)")
