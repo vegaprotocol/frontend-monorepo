@@ -83,8 +83,7 @@ export const FundingPaymentsTable = forwardRef<AgGridReact, Props>(
               : '-';
             if (positive) {
               return t(
-                `The funding rate represents the difference between the mark price and the index price and drives alignment between the two.
-                At the next funding settlement, longs will pay shorts at a rate of {{fundingRate}}.`,
+                `The funding rate represents the difference between the mark price and the index price and drives alignment between the two. At the next funding settlement, longs will pay shorts at a rate of {{fundingRate}}.`,
                 {
                   fundingRate: fundingRateValue,
                 }
@@ -92,8 +91,7 @@ export const FundingPaymentsTable = forwardRef<AgGridReact, Props>(
             }
             if (negative) {
               return t(
-                `The funding rate represents the difference between the mark price and the index price and drives alignment between the two.
-                 At the next funding settlement, shorts will pay longs at a rate of {{fundingRate}}.`,
+                `The funding rate represents the difference between the mark price and the index price and drives alignment between the two. At the next funding settlement, shorts will pay longs at a rate of {{fundingRate}}.`,
                 {
                   fundingRate: fundingRateValue,
                 }
