@@ -1,9 +1,5 @@
-import { type SingleProposal } from '../../types';
 import { type CancelTransferFieldsFragment } from '../proposals-data-provider';
-import {
-  useCancelTransferDetailsQuery,
-  type CancelTransferDetailsQuery,
-} from './__generated__/Proposal';
+import { useCancelTransferDetailsQuery } from './__generated__/Proposal';
 
 export const useCancelTransferProposalDetails = (
   proposalId?: string | null
@@ -15,12 +11,20 @@ export const useCancelTransferProposalDetails = (
     skip: !proposalId || proposalId.length === 0,
   });
 
-  const proposal = data?.proposal as SingleProposal<
-    CancelTransferDetailsQuery['proposal']
-  >;
+  const proposal = data?.proposal;
 
-  if (proposal?.terms.change.__typename === 'CancelTransfer') {
-    return proposal?.terms.change as CancelTransferFieldsFragment;
+  if (
+    proposal?.__typename === 'Proposal' &&
+    proposal.terms.change.__typename === 'CancelTransfer'
+  ) {
+    return proposal.terms.change as CancelTransferFieldsFragment;
+  }
+
+  if (proposal?.__typename === 'BatchProposal') {
+    const p = proposal.subProposals?.find((sub) => sub?.id === proposalId);
+    if (p && p.terms?.change.__typename === 'CancelTransfer') {
+      return p.terms.change as CancelTransferFieldsFragment;
+    }
   }
 
   return undefined;
