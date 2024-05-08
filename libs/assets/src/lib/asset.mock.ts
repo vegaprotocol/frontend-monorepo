@@ -26,6 +26,7 @@ const assetFields: AssetFieldsFragment[] = [
       contractAddress: '0x0158031158Bb4dF2AD02eAA31e8963E84EA978a4',
       lifetimeLimit: '123000000',
       withdrawThreshold: '50',
+      chainId: '1',
       __typename: 'ERC20',
       chainId: '11',
     },
