@@ -100,8 +100,14 @@ const GOVERNANCE_FLAGS = {
   GOVERNANCE_NETWORK_LIMITS: z.optional(z.boolean()),
 };
 
+const EXPERIMENTAL_FLAGS = {
+  CROSS_CHAIN_DEPOSITS: z.optional(z.boolean()),
+  CROSS_CHAIN_DEPOSITS_TEST: z.optional(z.boolean()),
+};
+
 export const featureFlagsSchema = z.object({
   ...COSMIC_ELEVATOR_FLAGS,
   ...EXPLORER_FLAGS,
   ...GOVERNANCE_FLAGS,
+  ...EXPERIMENTAL_FLAGS,
 });

@@ -1,5 +1,5 @@
 import type { RouteObject } from 'react-router-dom';
-import { Navigate, Outlet, useRoutes } from 'react-router-dom';
+import { Navigate, useRoutes } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
 import { Loader, Splash } from '@vegaprotocol/ui-toolkit';
 import { LayoutWithSidebar, LayoutCentered } from '../components/layouts';
@@ -196,7 +196,7 @@ export const useRouterConfig = (): RouteObject[] => {
     },
     {
       path: 'portfolio/*',
-      element: <Outlet />,
+      element: <LayoutWithSidebar sidebar={null} />,
       children: [
         {
           index: true,

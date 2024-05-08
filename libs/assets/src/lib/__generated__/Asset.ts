@@ -25,6 +25,7 @@ export const AssetFieldsFragmentDoc = gql`
       contractAddress
       lifetimeLimit
       withdrawThreshold
+      chainId
     }
     ... on BuiltinAsset {
       maxFaucetAmountMint
