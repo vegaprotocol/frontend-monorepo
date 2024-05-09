@@ -163,13 +163,17 @@ jobs:
     outputs:
       run-tests: ${{ steps.check-test.outputs.e2e-needed }}
     steps:
-      - name: Check branch
+      - name: Check branch and title
         id: check-test
         run: |
-          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
-            echo "e2e-needed=true" >> $GITHUB_OUTPUT
-          else
-            echo "e2e-needed=false" >> $GITHUB_OUTPUT
+          echo "e2e-needed=false" >> $GITHUB_ENV
+          if [[ "${{ github.event_name }}" == 'pull_request' && 
+                (contains(github.event.pull_request.title, 'governance') || contains(github.event.pull_request.title, 'explorer')) ]]; then
+            echo "e2e-needed=true" >> $GITHUB_ENV
+          elif [[ "${{ github.event_name }}" == 'push' && 
+                  (contains(github.ref, 'refs/heads/main') || contains(github.ref, 'refs/heads/develop')) &&
+                  (contains(needs.build-sources.outputs.projects, 'governance') || contains(needs.build-sources.outputs.projects, 'explorer')) ]]; then
+            echo "e2e-needed=true" >> $GITHUB_ENV
           fi
       - name: Print result
         run: |
@@ -204,11 +208,11 @@ jobs:
       projects: ${{ needs.build-sources.outputs.projects }}
 
   trading-e2e:
-    needs: [build-sources, check-e2e-needed]
+    needs: [build-sources]
     name: '(CI) trading e2e python'
     uses: ./.github/workflows/trading-e2e-test-run.yml
     secrets: inherit
-    if: needs.check-e2e-needed.outputs.run-tests == 'true' && contains(needs.build-sources.outputs.projects, 'trading')
+    if: contains(needs.build-sources.outputs.projects, 'trading')
     with:
       github-sha: ${{ github.event.pull_request.head.sha || github.sha }}
 
