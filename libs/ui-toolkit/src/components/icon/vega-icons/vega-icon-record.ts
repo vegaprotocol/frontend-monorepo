@@ -44,6 +44,10 @@ import { IconWithdraw } from './svg-icons/icon-withdraw';
 import { IconMan } from './svg-icons/icon-man';
 import { IconTeam } from './svg-icons/icon-team';
 import { IconStreak } from './svg-icons/icon-streak';
+import { IconHammer } from './svg-icons/icon-hammer';
+import { IconMonitor } from './svg-icons/icon-monitor';
+import { IconPause } from './svg-icons/icon-pause';
+import { IconClosed } from './svg-icons/icon-closed';
 
 export enum VegaIconNames {
   ARROW_DOWN = 'arrow-down',
@@ -92,6 +96,10 @@ export enum VegaIconNames {
   WARNING = 'warning',
   MAN = 'man',
   TEAM = 'team',
+  MONITOR = 'monitor',
+  HAMMER = 'hammer',
+  PAUSE = 'pause',
+  CLOSED = 'closed',
 }
 
 export const VegaIconNameMap: Record<
@@ -144,4 +152,8 @@ export const VegaIconNameMap: Record<
   man: IconMan,
   team: IconTeam,
   streak: IconStreak,
+  hammer: IconHammer,
+  monitor: IconMonitor,
+  pause: IconPause,
+  closed: IconClosed,
 };
