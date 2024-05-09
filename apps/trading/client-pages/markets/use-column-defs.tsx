@@ -5,14 +5,14 @@ import type {
   VegaValueFormatterParams,
   VegaValueGetterParams,
 } from '@vegaprotocol/datagrid';
-import { StackedCell } from '@vegaprotocol/datagrid';
+import { MarketProductPill, StackedCell } from '@vegaprotocol/datagrid';
 import {
   addDecimalsFormatNumber,
   formatNumber,
   priceChange,
   toBigNum,
 } from '@vegaprotocol/utils';
-import { Sparkline, TooltipCellComponent } from '@vegaprotocol/ui-toolkit';
+import { Sparkline, Tooltip } from '@vegaprotocol/ui-toolkit';
 import type {
   MarketMaybeWithData,
   MarketMaybeWithDataAndCandles,
@@ -137,13 +137,6 @@ export const useMarketsColumnDefs = () => {
         field: 'tradableInstrument.instrument.code',
         minWidth: 150,
         pinned: true,
-        tooltipComponent: TooltipCellComponent,
-        tooltipValueGetter: ({ value, data }) => {
-          const tradingMode = data?.data?.marketTradingMode;
-          const state = data?.data?.marketState;
-          const tooltip = getTradingModeTooltip(tradingMode, state);
-          return t(tooltip);
-        },
         cellRenderer: ({
           value,
           data,
@@ -151,17 +144,33 @@ export const useMarketsColumnDefs = () => {
           MarketMaybeWithData,
           'tradableInstrument.instrument.code'
         >) => {
+          const tradingMode = data?.data?.marketTradingMode;
+          const state = data?.data?.marketState;
+          const tooltip = getTradingModeTooltip(state, tradingMode);
+          const productType =
+            data?.tradableInstrument.instrument.product.__typename;
           return (
-            <span className="flex items-center gap-2 cursor-pointer">
-              <span className="mr-2">
-                <EmblemByMarket market={data?.id || ''} vegaChain={chainId} />
+            <Tooltip description={t(tooltip)}>
+              <span className="flex items-center gap-2 cursor-pointer">
+                <span className="mr-2">
+                  <EmblemByMarket market={data?.id || ''} vegaChain={chainId} />
+                </span>
+                <StackedCell
+                  primary={value}
+                  secondary={data?.tradableInstrument.instrument.name}
+                  primaryIcon={
+                    <>
+                      <span>
+                        <MarketIcon data={data} />
+                      </span>
+                      <span className="ml-0.5">
+                        <MarketProductPill productType={productType} />
+                      </span>
+                    </>
+                  }
+                />
               </span>
-              <StackedCell
-                primary={value}
-                secondary={data?.tradableInstrument.instrument.name}
-                primaryIcon={<MarketIcon data={data} />}
-              />
-            </span>
+            </Tooltip>
           );
         },
       },
