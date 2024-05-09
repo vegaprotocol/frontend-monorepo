@@ -170,9 +170,10 @@ jobs:
           PR_TITLE="${{ github.event.pull_request.title }}"
           if [[ "$PR_TITLE" =~ \(governance\): || "$PR_TITLE" =~ \(explorer\): ]]; then
             echo "e2e-needed=true" >> $GITHUB_ENV
-          elif [[ "${{ github.event_name }}" == 'push' && 
-                  (contains('${{ github.ref }}', 'refs/heads/main') || contains('${{ github.ref }}', 'refs/heads/develop')) &&
-                  (contains('${{ needs.build-sources.outputs.projects }}', 'governance') || contains('${{ needs.build-sources.outputs.projects }}', 'explorer')) ]]; then
+          fi
+          if [[ "${{ github.event_name }}" == 'push' ]] && 
+            ([[ "${{ github.ref }}" == 'refs/heads/main' ]] || [[ "${{ github.ref }}" == 'refs/heads/develop' ]]) &&
+            ([[ "${{ needs.build-sources.outputs.projects }}" == *"governance"* ]] || [[ "${{ needs.build-sources.outputs.projects }}" == *"explorer"* ]]); then
             echo "e2e-needed=true" >> $GITHUB_ENV
           fi
       - name: Print result
