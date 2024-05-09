@@ -435,6 +435,7 @@
   "The successor market <0>{{instrumentName}}</0> has a 24h trading volume of {{successorVolume}}": "The successor market <0>{{instrumentName}}</0> has a 24h trading volume of {{successorVolume}}",
   "The successor market is <0>{{instrumentName}}</0>": "The successor market is <0>{{instrumentName}}</0>",
   "The transaction could not be sent": "The transaction could not be sent",
+  "There are {{count}} open proposals to change this market.": "There are {{count}} open proposals to change this market.",
   "This market expires in {{duration}}.": "This market expires in {{duration}}.",
   "This market expires when triggered by its oracle, not on a set date.": "This market expires when triggered by its oracle, not on a set date.",
   "This market has been settled": "This market has been settled",

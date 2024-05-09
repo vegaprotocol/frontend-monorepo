@@ -32,9 +32,9 @@ export const MarketUpdateBanner = ({
   if (openProposals.length > 1) {
     content = (
       <p>
-        {t('There are {{count}} open proposals to change this market', {
+        {t('There are {{count}} open proposals to change this market.', {
           count: openProposals.length,
-        })}
+        })}{' '}
         <ExternalLink href={governanceLink(TOKEN_PROPOSALS)}>
           {t('View proposals')}
         </ExternalLink>
