@@ -27,7 +27,7 @@ import {
 import { useT } from '../../lib/use-t';
 import { EmblemByMarket } from '@vegaprotocol/emblem';
 import { useChainId } from '@vegaprotocol/wallet-react';
-import { MarketIcon, getTradingModeTooltip } from './market-icon';
+import { MarketIcon, getMarketStateTooltip } from './market-icon';
 
 const openInterestRenderer = (data: MarketMaybeWithData | undefined) => {
   if (!data) return '-';
@@ -146,7 +146,7 @@ export const useMarketsColumnDefs = () => {
         >) => {
           const tradingMode = data?.data?.marketTradingMode;
           const state = data?.data?.marketState;
-          const tooltip = getTradingModeTooltip(state, tradingMode);
+          const tooltip = getMarketStateTooltip(state, tradingMode);
           const productType =
             data?.tradableInstrument.instrument.product.__typename;
           return (
@@ -161,10 +161,10 @@ export const useMarketsColumnDefs = () => {
                   primaryIcon={
                     <>
                       <span>
-                        <MarketIcon data={data} />
+                        <MarketProductPill productType={productType} />
                       </span>
                       <span className="ml-0.5">
-                        <MarketProductPill productType={productType} />
+                        <MarketIcon data={data} />
                       </span>
                     </>
                   }

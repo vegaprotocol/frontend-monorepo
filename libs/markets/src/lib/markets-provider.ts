@@ -92,6 +92,15 @@ export const useMarket = (marketId?: string) => {
     skip: !marketId,
   });
 };
+
+export const useMarketWithData = (marketId?: string) => {
+  const variables = useMemo(() => ({ marketId: marketId || '' }), [marketId]);
+  return useDataProvider({
+    dataProvider: marketWithDataProvider,
+    variables,
+    skip: !marketId,
+  });
+};
 export type MarketWithData = Market & { data: MarketData };
 
 export const marketWithDataProvider = makeDerivedDataProvider<

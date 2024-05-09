@@ -3,7 +3,7 @@ import { MarketTradingMode, MarketState } from '@vegaprotocol/types';
 import { VegaIconNames, VegaIcon, Tooltip } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../lib/use-t';
 
-export const getTradingModeIcon = (
+export const getMarketStateIcon = (
   state?: MarketState
 ): VegaIconNames | null => {
   switch (state) {
@@ -27,7 +27,7 @@ export const getTradingModeIcon = (
   }
 };
 
-export const getTradingModeTooltip = (
+export const getMarketStateTooltip = (
   state?: MarketState,
   tradingMode?: MarketTradingMode
 ): string => {
@@ -69,8 +69,8 @@ export const MarketIcon = ({ data }: { data?: MarketMaybeWithData | null }) => {
   const t = useT();
   const tradingMode = data?.data?.marketTradingMode;
   const state = data?.data?.marketState;
-  const icon = getTradingModeIcon(state);
-  const tooltip = getTradingModeTooltip(state, tradingMode);
+  const icon = getMarketStateIcon(state);
+  const tooltip = getMarketStateTooltip(state, tradingMode);
 
   if (!icon) return null;
   return (
