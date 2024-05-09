@@ -112,9 +112,13 @@ const MarketData = ({
             {market.tradableInstrument.instrument.code}
           </span>
           {allProducts && productType && (
-            <MarketProductPill productType={productType} />
+            <>
+              <MarketProductPill productType={productType} />{' '}
+              <span className="pt-1">
+                <MarketIcon data={market} />
+              </span>
+            </>
           )}
-          <MarketIcon data={market} />
         </h3>
         {mode && (
           <p className="text-xs text-vega-orange-500 dark:text-vega-orange-550 whitespace-nowrap">
