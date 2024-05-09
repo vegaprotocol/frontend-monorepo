@@ -18,8 +18,10 @@ export const getTradingModeIcon = (
     case MarketState.STATE_SETTLED:
     case MarketState.STATE_CLOSED:
     case MarketState.STATE_TRADING_TERMINATED:
+    case MarketState.STATE_CANCELLED:
     case MarketState.STATE_REJECTED:
       return VegaIconNames.CLOSED;
+    case MarketState.STATE_ACTIVE:
     default:
       return null;
   }
@@ -33,12 +35,19 @@ export const getTradingModeTooltip = (
     case MarketState.STATE_SETTLED:
       return 'Market is settled and all positions are closed';
     case MarketState.STATE_PENDING:
+      return 'Governance vote passed, market is pending trading';
     case MarketState.STATE_PROPOSED:
       return 'Voting is in progress on this proposed market';
     case MarketState.STATE_TRADING_TERMINATED:
       return 'Market is terminated and awaiting settlement data';
     case MarketState.STATE_SUSPENDED_VIA_GOVERNANCE:
       return 'Trading is suspended due to governance';
+    case MarketState.STATE_CANCELLED:
+      return 'Market is cancelled';
+    case MarketState.STATE_REJECTED:
+      return 'Market is rejected';
+    case MarketState.STATE_CLOSED:
+      return 'Market is closed';
     case MarketState.STATE_SUSPENDED:
       switch (tradingMode) {
         case MarketTradingMode.TRADING_MODE_MONITORING_AUCTION:
@@ -50,6 +59,7 @@ export const getTradingModeTooltip = (
         default:
           return '';
       }
+    case MarketState.STATE_ACTIVE:
     default:
       return '';
   }
