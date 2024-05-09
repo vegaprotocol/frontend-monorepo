@@ -1110,7 +1110,11 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
         name="side"
         control={control}
         render={({ field }) => (
-          <SideSelector value={field.value} onValueChange={field.onChange} />
+          <SideSelector
+            value={field.value}
+            onValueChange={field.onChange}
+            isSpotMarket={isSpotMarket}
+          />
         )}
       />
       <Trigger
