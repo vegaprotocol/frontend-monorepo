@@ -58,6 +58,7 @@ fragment RecurringTransferFields on RecurringTransfer {
     windowLength
     lockPeriod
     distributionStrategy
+    transferInterval
     rankTable {
       startRank
       shareRatio
@@ -83,6 +84,7 @@ fragment RecurringGovernanceTransferFields on RecurringGovernanceTransfer {
     windowLength
     lockPeriod
     distributionStrategy
+    transferInterval
     rankTable {
       startRank
       shareRatio
