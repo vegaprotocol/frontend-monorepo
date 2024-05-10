@@ -5,14 +5,14 @@ import type {
   VegaValueFormatterParams,
   VegaValueGetterParams,
 } from '@vegaprotocol/datagrid';
-import { StackedCell } from '@vegaprotocol/datagrid';
+import { MarketProductPill, StackedCell } from '@vegaprotocol/datagrid';
 import {
   addDecimalsFormatNumber,
   formatNumber,
   priceChange,
   toBigNum,
 } from '@vegaprotocol/utils';
-import { Sparkline } from '@vegaprotocol/ui-toolkit';
+import { Sparkline, Tooltip } from '@vegaprotocol/ui-toolkit';
 import type {
   MarketMaybeWithData,
   MarketMaybeWithDataAndCandles,
@@ -28,6 +28,7 @@ import {
 import { useT } from '../../lib/use-t';
 import { EmblemByMarket } from '@vegaprotocol/emblem';
 import { useChainId } from '@vegaprotocol/wallet-react';
+import { MarketIcon, getMarketStateTooltip } from './market-icon';
 
 const openInterestRenderer = (data: MarketMaybeWithData | undefined) => {
   if (!data) return '-';
@@ -136,6 +137,7 @@ export const useMarketsColumnDefs = () => {
         headerName: t('Market'),
         field: 'tradableInstrument.instrument.code',
         minWidth: 150,
+        pinned: true,
         cellRenderer: ({
           value,
           data,
@@ -143,16 +145,33 @@ export const useMarketsColumnDefs = () => {
           MarketMaybeWithData,
           'tradableInstrument.instrument.code'
         >) => {
+          const tradingMode = data?.data?.marketTradingMode;
+          const state = data?.data?.marketState;
+          const tooltip = getMarketStateTooltip(state, tradingMode);
+          const productType =
+            data?.tradableInstrument.instrument.product.__typename;
           return (
-            <span className="flex items-center gap-2 cursor-pointer">
-              <span className="mr-2">
-                <EmblemByMarket market={data?.id || ''} vegaChain={chainId} />
+            <Tooltip description={t(tooltip)}>
+              <span className="flex items-center gap-2 cursor-pointer">
+                <span className="mr-2">
+                  <EmblemByMarket market={data?.id || ''} vegaChain={chainId} />
+                </span>
+                <StackedCell
+                  primary={value}
+                  secondary={data?.tradableInstrument.instrument.name}
+                  primaryIcon={
+                    <>
+                      <span>
+                        <MarketProductPill productType={productType} />
+                      </span>
+                      <span className="ml-0.5">
+                        <MarketIcon data={data} />
+                      </span>
+                    </>
+                  }
+                />
               </span>
-              <StackedCell
-                primary={value}
-                secondary={data?.tradableInstrument.instrument.name}
-              />
-            </span>
+            </Tooltip>
           );
         },
       },
@@ -162,6 +181,7 @@ export const useMarketsColumnDefs = () => {
         type: 'rightAligned',
         cellRenderer: 'PriceFlashCell',
         filter: 'agNumberColumnFilter',
+        maxWidth: 150,
         valueGetter: ({ data }: VegaValueGetterParams<MarketMaybeWithData>) => {
           if (data && isSpot(data.tradableInstrument.instrument.product)) {
             return data?.data?.lastTradedPrice === undefined
@@ -233,10 +253,9 @@ export const useMarketsColumnDefs = () => {
 
           const volume =
             data && vol && vol !== '0'
-              ? addDecimalsFormatNumber(vol, data.positionDecimalPlaces)
+              ? addDecimalsFormatNumber(vol, data.positionDecimalPlaces, 2)
               : '0.00';
-          const volumePrice =
-            volPrice && formatNumber(volPrice, data?.decimalPlaces);
+          const volumePrice = volPrice && formatNumber(volPrice, 2);
 
           return volumePrice ? (
             <span className="font-mono">

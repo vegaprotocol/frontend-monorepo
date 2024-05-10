@@ -1,25 +1,41 @@
-import { Popover, VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
+import {
+  Popover,
+  Tooltip,
+  VegaIcon,
+  VegaIconNames,
+} from '@vegaprotocol/ui-toolkit';
 import { Header, HeaderTitle } from '../header';
 import { Route, Routes, useParams } from 'react-router-dom';
 import { MarketSelector } from '../../components/market-selector/market-selector';
-import { useMarket, useMarketList } from '@vegaprotocol/markets';
+import { useMarketList, useMarketWithData } from '@vegaprotocol/markets';
 import { useState } from 'react';
 import { ProductTypeShortName } from '@vegaprotocol/types';
 import { MarketHeaderSwitch } from './market-header-switch';
 import { EmblemByMarket } from '@vegaprotocol/emblem';
 import { useChainId } from '@vegaprotocol/wallet-react';
+import {
+  MarketIcon,
+  getMarketStateTooltip,
+} from '../../client-pages/markets/market-icon';
+import { useT } from '../../lib/use-t';
 
 export const MarketHeader = () => {
   const { marketId } = useParams();
-  const { data } = useMarket(marketId);
+  const { data } = useMarketWithData(marketId);
   const [open, setOpen] = useState(false);
   const { chainId } = useChainId();
+  const t = useT();
 
   // Ensure that markets are kept cached so opening the list
   // shows all markets instantly
   useMarketList();
 
   if (!data) return null;
+
+  const tooltip = getMarketStateTooltip(
+    data.data.marketState,
+    data.data.marketTradingMode
+  );
 
   return (
     <Routes>
@@ -33,25 +49,32 @@ export const MarketHeader = () => {
                 onOpenChange={setOpen}
                 trigger={
                   <HeaderTitle>
-                    <span>
-                      {marketId && (
-                        <span className="mr-4">
-                          <EmblemByMarket
-                            market={marketId}
-                            vegaChain={chainId}
-                          />
+                    <Tooltip description={<span>{t(tooltip)}</span>}>
+                      <span>
+                        {marketId && (
+                          <span className="mr-4">
+                            <EmblemByMarket
+                              market={marketId}
+                              vegaChain={chainId}
+                            />
+                          </span>
+                        )}
+
+                        <span> {data.tradableInstrument.instrument.code}</span>
+
+                        <span className="ml-1 text-xs uppercase text-muted">
+                          {data.tradableInstrument.instrument.product
+                            .__typename &&
+                            ProductTypeShortName[
+                              data.tradableInstrument.instrument.product
+                                .__typename
+                            ]}
                         </span>
-                      )}
-                      {data.tradableInstrument.instrument.code}
-                      <span className="ml-1 text-xs uppercase text-muted">
-                        {data.tradableInstrument.instrument.product
-                          .__typename &&
-                          ProductTypeShortName[
-                            data.tradableInstrument.instrument.product
-                              .__typename
-                          ]}
+                        <span className="ml-1">
+                          <MarketIcon data={data} />
+                        </span>
                       </span>
-                    </span>
+                    </Tooltip>
                     <VegaIcon name={VegaIconNames.CHEVRON_DOWN} size={14} />
                   </HeaderTitle>
                 }

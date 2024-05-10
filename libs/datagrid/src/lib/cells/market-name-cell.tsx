@@ -19,7 +19,7 @@ export const MarketProductPill = ({
   }
   return (
     <Pill
-      size="xxs"
+      size="xs"
       className="uppercase ml-0.5"
       title={ProductTypeMapping[productType]}
     >

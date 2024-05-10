@@ -6,6 +6,7 @@ import { type useDataGridEvents } from '@vegaprotocol/datagrid';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { fundingPaymentsWithMarketProvider } from './funding-payments-data-provider';
 import { useT } from './use-t';
+import { useFundingRate } from '@vegaprotocol/markets';
 
 interface FundingPaymentsManagerProps {
   partyId: string;
@@ -43,6 +44,7 @@ export const FundingPaymentsManager = ({
     },
     variables: { partyId, marketId },
   });
+  const { data: fundingRate } = useFundingRate(marketId);
 
   return (
     <div className="flex h-full flex-col">
@@ -50,6 +52,7 @@ export const FundingPaymentsManager = ({
         ref={gridRef}
         rowData={data}
         onMarketClick={onMarketClick}
+        fundingRate={fundingRate}
         onFilterChanged={(event) => {
           onRowDataUpdated(event);
           onFilterChanged(event);

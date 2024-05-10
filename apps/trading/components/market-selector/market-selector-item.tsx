@@ -7,14 +7,11 @@ import { calcCandleVolume, getAsset } from '@vegaprotocol/markets';
 import { useCandles } from '@vegaprotocol/markets';
 import { useMarketDataUpdateSubscription } from '@vegaprotocol/markets';
 import { Sparkline } from '@vegaprotocol/ui-toolkit';
-import {
-  MarketTradingMode,
-  MarketTradingModeMapping,
-} from '@vegaprotocol/types';
 import { MarketProductPill } from '@vegaprotocol/datagrid';
 import { useT } from '../../lib/use-t';
 import { EmblemByMarket } from '@vegaprotocol/emblem';
 import { useChainId } from '@vegaprotocol/wallet-react';
+import { MarketIcon } from '../../client-pages/markets/market-icon';
 
 export const MarketSelectorItem = ({
   market,
@@ -72,20 +69,6 @@ const MarketData = ({
     ? addDecimalsFormatNumber(market.data.markPrice, market.decimalPlaces)
     : '-';
 
-  const marketTradingMode = marketData
-    ? marketData.marketTradingMode
-    : market.data?.marketTradingMode;
-
-  const mode =
-    marketTradingMode &&
-    [
-      MarketTradingMode.TRADING_MODE_BATCH_AUCTION,
-      MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
-      MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
-    ].includes(marketTradingMode)
-      ? MarketTradingModeMapping[marketTradingMode]
-      : '';
-
   const { oneDayCandles } = useCandles({ marketId: market.id });
   const { chainId } = useChainId();
 
@@ -100,7 +83,7 @@ const MarketData = ({
 
   return (
     <>
-      <div className="w-2/6" role="gridcell">
+      <div className="w-4/6 sm:w-2/6" role="gridcell">
         <h3 className="flex items-baseline">
           <span className="overflow-hidden text-xs md:text-sm lg:text-base text-ellipsis whitespace-nowrap">
             {
@@ -113,12 +96,10 @@ const MarketData = ({
           {allProducts && productType && (
             <MarketProductPill productType={productType} />
           )}
+          <span className="ml-0.5">
+            <MarketIcon data={market} />
+          </span>
         </h3>
-        {mode && (
-          <p className="text-xs text-vega-orange-500 dark:text-vega-orange-550 whitespace-nowrap">
-            {mode}
-          </p>
-        )}
       </div>
       <div
         className="w-2/6 overflow-hidden text-xs lg:text-sm whitespace-nowrap text-ellipsis text-right"
@@ -129,7 +110,7 @@ const MarketData = ({
         {price} {symbol}
       </div>
       <div
-        className="w-2/6 sm:w-1/6 overflow-hidden text-xs lg:text-sm whitespace-nowrap text-ellipsis text-right"
+        className="hidden sm:w-1/6 sm:flex justify-end overflow-hidden text-xs lg:text-sm whitespace-nowrap text-ellipsis text-right"
         title={t('24h vol')}
         data-testid="market-selector-volume"
         role="gridcell"
