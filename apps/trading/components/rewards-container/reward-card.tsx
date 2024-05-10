@@ -375,6 +375,17 @@ const RewardCard = ({
                   })}
                 </span>
               </span>
+              {/** PAYS EVERY */}
+              {dispatchStrategy.transferInterval && (
+                <span className="flex flex-col">
+                  <span className="text-muted text-xs">{t('Pays every')}</span>
+                  <span data-testid="pays-every">
+                    {t('numberEpochs', '{{count}} epochs', {
+                      count: dispatchStrategy.transferInterval,
+                    })}
+                  </span>
+                </span>
+              )}
               {/** CAPPED AT */}
               {dispatchStrategy.capRewardFeeMultiple && (
                 <span className="flex flex-col">

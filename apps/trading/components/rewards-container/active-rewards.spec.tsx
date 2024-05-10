@@ -96,9 +96,11 @@ describe('ActiveRewards', () => {
     expect(screen.getByText('Individual scope')).toBeInTheDocument();
     expect(screen.getByText('Average position')).toBeInTheDocument();
     expect(screen.getByText('Ends in')).toBeInTheDocument();
-    expect(screen.getByText('1 epoch')).toBeInTheDocument();
+    expect(screen.getByText('Pays every')).toBeInTheDocument();
     expect(screen.getByText('Assessed over')).toBeInTheDocument();
-    expect(screen.getByText('1 epoch')).toBeInTheDocument();
+    expect(screen.getByTestId('assessed-over')).toHaveTextContent('1 epoch');
+    expect(screen.getByTestId('pays-every')).toHaveTextContent('1 epoch');
+    expect(screen.getByTestId('ends-in')).toHaveTextContent('Ended');
   });
 
   describe('applyFilter', () => {
