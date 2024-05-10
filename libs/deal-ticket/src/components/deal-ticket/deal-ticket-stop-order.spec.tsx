@@ -22,6 +22,8 @@ jest.mock('./deal-ticket-fee-details', () => ({
   DealTicketFeeDetails: () => <div data-testid="deal-ticket-fee-details" />,
 }));
 
+const onDeposit = jest.fn();
+
 const marketPrice = '200';
 const market = generateMarket();
 const submit = jest.fn();
@@ -30,7 +32,12 @@ function generateJsx() {
   return (
     <MockedProvider>
       <MockedWalletProvider>
-        <StopOrder market={market} marketPrice={marketPrice} submit={submit} />
+        <StopOrder
+          market={market}
+          marketPrice={marketPrice}
+          submit={submit}
+          onDeposit={onDeposit}
+        />
       </MockedWalletProvider>
     </MockedProvider>
   );
