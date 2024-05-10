@@ -77,6 +77,9 @@ export const getRewards = (
       relativeReturns: totals.get(
         AccountType.ACCOUNT_TYPE_REWARD_RELATIVE_RETURN
       ),
+      realisedReturns: totals.get(
+        AccountType.ACCOUNT_TYPE_REWARD_REALISED_RETURN
+      ),
       returnsVolatility: totals.get(
         AccountType.ACCOUNT_TYPE_REWARD_RETURN_VOLATILITY
       ),
