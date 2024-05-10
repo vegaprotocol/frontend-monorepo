@@ -23,6 +23,7 @@ import {
   calcCandleVolumePrice,
   getQuoteAsset,
   getQuoteName,
+  isSpot,
 } from '@vegaprotocol/markets';
 import { useT } from '../../lib/use-t';
 import { EmblemByMarket } from '@vegaprotocol/emblem';
@@ -182,9 +183,7 @@ export const useMarketsColumnDefs = () => {
         filter: 'agNumberColumnFilter',
         maxWidth: 150,
         valueGetter: ({ data }: VegaValueGetterParams<MarketMaybeWithData>) => {
-          if (
-            data?.tradableInstrument.instrument.product.__typename === 'Spot'
-          ) {
+          if (data && isSpot(data.tradableInstrument.instrument.product)) {
             return data?.data?.lastTradedPrice === undefined
               ? undefined
               : toBigNum(

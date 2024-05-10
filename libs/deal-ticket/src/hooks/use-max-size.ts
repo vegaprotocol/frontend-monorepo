@@ -15,6 +15,8 @@ export interface UseMaxSizeProps {
   generalAccountBalance: string;
   marginAccountBalance: string;
   orderMarginAccountBalance: string;
+  baseAssetAccountBalance: string;
+  baseAssetDecimals?: number;
   marginFactor?: string;
   marginMode?: MarginMode;
   markPrice?: string;
@@ -22,6 +24,7 @@ export interface UseMaxSizeProps {
   positionDecimalPlaces: number;
   price?: string;
   riskFactors: MarketInfo['riskFactors'];
+  feesFactors: MarketInfo['fees']['factors'];
   scalingFactors?: Pick<
     NonNullable<
       MarketInfo['tradableInstrument']['marginCalculator']
@@ -31,6 +34,7 @@ export interface UseMaxSizeProps {
   side: Side;
   type: OrderType;
   marketIsInAuction: boolean;
+  isSpotMarket: boolean;
 }
 
 export const useMaxSize = ({
@@ -51,9 +55,38 @@ export const useMaxSize = ({
   scalingFactors,
   markPrice,
   marketIsInAuction,
+  isSpotMarket,
+  baseAssetAccountBalance,
+  baseAssetDecimals,
+  feesFactors,
 }: UseMaxSizeProps) =>
   useMemo(() => {
     let maxSize = new BigNumber(0);
+    if (isSpotMarket) {
+      const effectivePrice = type === OrderType.TYPE_LIMIT ? price : markPrice;
+      if (side === Side.SIDE_BUY) {
+        if (accountDecimals !== undefined && effectivePrice) {
+          maxSize = toBigNum(generalAccountBalance, accountDecimals).dividedBy(
+            toBigNum(effectivePrice, decimalPlaces)
+          );
+        }
+      } else {
+        if (baseAssetDecimals !== undefined && effectivePrice) {
+          maxSize = toBigNum(baseAssetAccountBalance, baseAssetDecimals);
+        }
+      }
+      maxSize = maxSize.multipliedBy(
+        1 -
+          Number(feesFactors.infrastructureFee) -
+          Number(feesFactors.liquidityFee) -
+          Number(feesFactors.makerFee)
+      );
+      // round to size step
+      maxSize = maxSize.minus(
+        maxSize.mod(determineSizeStep({ positionDecimalPlaces }))
+      );
+      return maxSize.toNumber();
+    }
     const volume = toBigNum(openVolume, positionDecimalPlaces);
     const reducingPosition =
       (openVolume.startsWith('-') && side === Side.SIDE_BUY) ||
@@ -162,4 +195,10 @@ export const useMaxSize = ({
     scalingFactors,
     markPrice,
     marketIsInAuction,
+    baseAssetAccountBalance,
+    baseAssetDecimals,
+    isSpotMarket,
+    feesFactors.infrastructureFee,
+    feesFactors.liquidityFee,
+    feesFactors.makerFee,
   ]);

@@ -375,6 +375,17 @@ const RewardCard = ({
                   })}
                 </span>
               </span>
+              {/** PAYS EVERY */}
+              {dispatchStrategy.transferInterval && (
+                <span className="flex flex-col">
+                  <span className="text-muted text-xs">{t('Pays every')}</span>
+                  <span data-testid="pays-every">
+                    {t('numberEpochs', '{{count}} epochs', {
+                      count: dispatchStrategy.transferInterval,
+                    })}
+                  </span>
+                </span>
+              )}
               {/** CAPPED AT */}
               {dispatchStrategy.capRewardFeeMultiple && (
                 <span className="flex flex-col">
@@ -870,8 +881,9 @@ const DispatchMetricColourMap: Record<
   [DispatchMetric.DISPATCH_METRIC_RETURN_VOLATILITY]: CardColour.YELLOW,
   // Validator ranking
   [DispatchMetric.DISPATCH_METRIC_VALIDATOR_RANKING]: CardColour.WHITE,
+  // Realised return
+  [DispatchMetric.DISPATCH_METRIC_REALISED_RETURN]: CardColour.GREEN,
   STAKING_REWARD_METRIC: CardColour.WHITE,
-  [DispatchMetric.DISPATCH_METRIC_REALISED_RETURN]: CardColour.BLUE,
 };
 
 const CardIcon = ({

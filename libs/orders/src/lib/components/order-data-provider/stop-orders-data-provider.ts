@@ -1,6 +1,7 @@
 import {
   makeDataProvider,
   makeDerivedDataProvider,
+  useDataProvider,
 } from '@vegaprotocol/data-provider';
 import { type Market } from '@vegaprotocol/markets';
 import { marketsMapProvider } from '@vegaprotocol/markets';
@@ -29,9 +30,27 @@ export const stopOrdersProvider = makeDataProvider<
   never,
   StopOrdersQueryVariables
 >({
+  pollInterval: 2000,
   query: StopOrdersDocument,
   getData,
 });
+
+export const useActiveStopOrders = (
+  partyId: string | undefined,
+  marketId: string,
+  skip = false
+) =>
+  useDataProvider({
+    dataProvider: stopOrdersProvider,
+    variables: {
+      filter: {
+        parties: partyId ? [partyId] : [],
+        markets: [marketId],
+        liveOnly: true,
+      },
+    },
+    skip: skip || !partyId,
+  });
 
 export const stopOrdersWithMarketProvider = makeDerivedDataProvider<
   StopOrder[],

@@ -10,7 +10,11 @@ import {
   removeDecimal,
   useValidateAmount,
 } from '@vegaprotocol/utils';
-import { type Control, type UseFormWatch } from 'react-hook-form';
+import {
+  type UseFormSetValue,
+  type Control,
+  type UseFormWatch,
+} from 'react-hook-form';
 import { useForm, Controller, useController } from 'react-hook-form';
 import * as Schema from '@vegaprotocol/types';
 import {
@@ -26,11 +30,13 @@ import {
   Pill,
   Intent,
   Notification,
+  ExternalLink,
 } from '@vegaprotocol/ui-toolkit';
 import {
   getAsset,
   getDerivedPrice,
   getQuoteName,
+  isSpot,
   type Market,
 } from '@vegaprotocol/markets';
 import { ExpirySelector } from './expiry-selector';
@@ -55,11 +61,13 @@ import { DealTicketFeeDetails } from './deal-ticket-fee-details';
 import { validateExpiration } from '../../utils';
 import { NOTIONAL_SIZE_TOOLTIP_TEXT } from '../../constants';
 import { KeyValue } from './key-value';
-import { useDataProvider } from '@vegaprotocol/data-provider';
-import { useActiveOrders, stopOrdersProvider } from '@vegaprotocol/orders';
+import { useActiveOrders, useActiveStopOrders } from '@vegaprotocol/orders';
 import { useT } from '../../use-t';
 import { determinePriceStep, determineSizeStep } from '@vegaprotocol/utils';
 import { useOpenVolume } from '@vegaprotocol/positions';
+import { useNetworkParamQuery } from '@vegaprotocol/network-parameters';
+import { DocsLinks } from '@vegaprotocol/environment';
+import { isNonPersistentOrder } from '../../utils/time-in-force-persistence';
 
 export interface StopOrderProps {
   market: Market;
@@ -67,8 +75,13 @@ export interface StopOrderProps {
   submit: (order: StopOrdersSubmission) => void;
 }
 
-const MAX_NUMBER_OF_ACTIVE_STOP_ORDERS = 4;
-const POLLING_TIME = 2000;
+const typeLimitOptions = Object.entries(Schema.OrderTimeInForce);
+const typeMarketOptions = typeLimitOptions.filter(
+  ([_, timeInForce]) =>
+    timeInForce === Schema.OrderTimeInForce.TIME_IN_FORCE_FOK ||
+    timeInForce === Schema.OrderTimeInForce.TIME_IN_FORCE_IOC
+);
+
 const trailingPercentOffsetStep = '0.1';
 
 const getDefaultValues = (
@@ -160,7 +173,7 @@ const Trigger = ({
           <Controller
             name={oco ? 'ocoTriggerPrice' : 'triggerPrice'}
             rules={{
-              required: t('You need provide a price'),
+              required: t('You need to provide a price'),
               min: {
                 value: priceStep,
                 message: t('Price cannot be lower than {{priceStep}}', {
@@ -244,7 +257,7 @@ const Trigger = ({
             }
             control={control}
             rules={{
-              required: t('You need provide a trailing percent offset'),
+              required: t('You need to provide a trailing percent offset'),
               min: {
                 value: trailingPercentOffsetStep,
                 message: t(
@@ -414,7 +427,7 @@ const Price = ({
       control={control}
       rules={{
         deps: 'type',
-        required: t('You need provide a price'),
+        required: t('You need to provide a price'),
         min: {
           value: priceStep,
           message: t('Price cannot be lower than {{priceStep}}', { priceStep }),
@@ -495,19 +508,36 @@ export const NoOpenVolumeWarning = ({
   );
 };
 
+const TimeInForceOption = ({ value }: { value: Schema.OrderTimeInForce }) => {
+  const t = useT();
+  return <option value={value}>{t(value)}</option>;
+};
+
 const TimeInForce = ({
   control,
   oco,
+  orderType,
+  isSpotMarket,
+  setValue,
+  expiresAt,
 }: {
   control: Control<StopOrderFormValues>;
   oco?: boolean;
+  orderType: Schema.OrderType;
+  isSpotMarket: boolean;
+  setValue: UseFormSetValue<StopOrderFormValues>;
+  expiresAt?: string;
 }) => {
   const t = useT();
+  const options =
+    orderType === Schema.OrderType.TYPE_LIMIT && isSpotMarket
+      ? typeLimitOptions
+      : typeMarketOptions;
   return (
     <Controller
       name={oco ? 'ocoTimeInForce' : 'timeInForce'}
       control={control}
-      render={({ field, fieldState }) => {
+      render={({ field: { onChange, ...field }, fieldState }) => {
         const id = `order-tif${oco ? '-oco' : ''}`;
         return (
           <div className="mb-2">
@@ -518,19 +548,29 @@ const TimeInForce = ({
                 data-testid={id}
                 hasError={!!fieldState.error}
                 {...field}
+                onChange={(e) => {
+                  const value = e.target.value as Schema.OrderTimeInForce;
+                  // If GTT is selected and no expiresAt time is set, or its
+                  // behind current time then reset the value to current time
+                  const now = Date.now();
+                  if (
+                    value === Schema.OrderTimeInForce.TIME_IN_FORCE_GTT &&
+                    (!expiresAt || new Date(expiresAt).getTime() < now)
+                  ) {
+                    setValue(
+                      oco ? 'ocoOrderExpiresAt' : 'orderExpiresAt',
+                      formatForInput(new Date(now)),
+                      {
+                        shouldValidate: true,
+                      }
+                    );
+                  }
+                  onChange(value);
+                }}
               >
-                <option
-                  key={Schema.OrderTimeInForce.TIME_IN_FORCE_IOC}
-                  value={Schema.OrderTimeInForce.TIME_IN_FORCE_IOC}
-                >
-                  {t(Schema.OrderTimeInForce.TIME_IN_FORCE_IOC)}
-                </option>
-                <option
-                  key={Schema.OrderTimeInForce.TIME_IN_FORCE_FOK}
-                  value={Schema.OrderTimeInForce.TIME_IN_FORCE_FOK}
-                >
-                  {t(Schema.OrderTimeInForce.TIME_IN_FORCE_FOK)}
-                </option>
+                {options.map(([key, value]) => (
+                  <TimeInForceOption key={key} value={value} />
+                ))}
               </Select>
             </FormGroup>
             {fieldState.error && (
@@ -542,6 +582,42 @@ const TimeInForce = ({
         );
       }}
     />
+  );
+};
+
+const OrderExpiry = ({
+  control,
+  oco,
+  orderType,
+  timeInForce,
+}: {
+  control: Control<StopOrderFormValues>;
+  oco?: boolean;
+  orderType: Schema.OrderType;
+  timeInForce: Schema.OrderTimeInForce;
+}) => {
+  const t = useT();
+  return (
+    orderType === Schema.OrderType.TYPE_LIMIT &&
+    timeInForce === Schema.OrderTimeInForce.TIME_IN_FORCE_GTT && (
+      <Controller
+        name={oco ? 'ocoOrderExpiresAt' : 'orderExpiresAt'}
+        control={control}
+        rules={{
+          required: t('You need to provide a expiry time/date'),
+          validate: validateExpiration(
+            t('The expiry date that you have entered appears to be in the past')
+          ),
+        }}
+        render={({ field, fieldState: { error } }) => (
+          <ExpirySelector
+            value={field.value}
+            onSelect={(expiresAt) => field.onChange(expiresAt)}
+            errorMessage={error?.message}
+          />
+        )}
+      />
+    )
   );
 };
 
@@ -558,6 +634,55 @@ const ReduceOnly = () => {
         />
       </div>
     </Tooltip>
+  );
+};
+
+const PostOnly = ({
+  control,
+  oco,
+  disabled,
+}: {
+  control: Control<StopOrderFormValues>;
+  oco?: boolean;
+  disabled?: boolean;
+}) => {
+  const t = useT();
+  const name = oco ? 'ocoPostOnly' : 'postOnly';
+  return (
+    <Controller
+      name={name}
+      control={control}
+      render={({ field }) => (
+        <Tooltip
+          description={
+            <>
+              <span>
+                {disabled
+                  ? t(
+                      '"Post only" can not be used on "Fill or Kill" or "Immediate or Cancel" orders.'
+                    )
+                  : t(
+                      '"Post only" will ensure the order is not filled immediately but is placed on the order book as a passive order. When the order is processed it is either stopped (if it would not be filled immediately), or placed in the order book as a passive order until the price taker matches with it.'
+                    )}
+              </span>{' '}
+              <ExternalLink href={DocsLinks?.POST_REDUCE_ONLY}>
+                {t('Find out more')}
+              </ExternalLink>
+            </>
+          }
+        >
+          <div>
+            <Checkbox
+              name={name}
+              checked={!disabled && field.value}
+              disabled={disabled}
+              onCheckedChange={field.onChange}
+              label={t('Post only')}
+            />
+          </div>
+        </Tooltip>
+      )}
+    />
   );
 };
 
@@ -845,6 +970,11 @@ const SubmitButton = ({
 export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
   const t = useT();
   const { pubKey, isReadOnly } = useVegaWallet();
+  const maxNumberOfOrders = useNetworkParamQuery({
+    variables: {
+      key: 'spam.protection.max.stopOrdersPerMarket',
+    },
+  }).data?.networkParameter?.value;
   const setType = useDealTicketFormValues((state) => state.setType);
   const updateStoredFormValues = useDealTicketFormValues(
     (state) => state.updateStopOrder
@@ -860,6 +990,7 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
     });
   const { errors } = formState;
   const lastSubmitTime = useRef(0);
+  const isSpotMarket = isSpot(market.tradableInstrument.instrument.product);
   const onSubmit = useCallback(
     (data: StopOrderFormValues) => {
       const now = new Date().getTime();
@@ -871,12 +1002,19 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
           data,
           market.id,
           market.decimalPlaces,
-          market.positionDecimalPlaces
+          market.positionDecimalPlaces,
+          isSpotMarket
         )
       );
       lastSubmitTime.current = now;
     },
-    [market.id, market.decimalPlaces, market.positionDecimalPlaces, submit]
+    [
+      market.id,
+      market.decimalPlaces,
+      market.positionDecimalPlaces,
+      submit,
+      isSpotMarket,
+    ]
   );
   const expire = watch('expire');
   const expiresAt = watch('expiresAt');
@@ -884,6 +1022,7 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
   const ocoPrice = watch('ocoPrice');
   const ocoSize = watch('ocoSize');
   const ocoTimeInForce = watch('ocoTimeInForce');
+  const ocoOrderExpiresAt = watch('ocoOrderExpiresAt');
   const ocoTriggerPrice = watch('ocoTriggerPrice');
   const ocoTriggerTrailingPercentOffset = watch(
     'ocoTriggerTrailingPercentOffset'
@@ -894,31 +1033,17 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
   const side = watch('side');
   const size = watch('size');
   const timeInForce = watch('timeInForce');
+  const orderExpiresAt = watch('orderExpiresAt');
   const triggerDirection = watch('triggerDirection');
   const triggerPrice = watch('triggerPrice');
   const triggerTrailingPercentOffset = watch('triggerTrailingPercentOffset');
   const triggerType = watch('triggerType');
 
-  const { data: activeStopOrders, reload } = useDataProvider({
-    dataProvider: stopOrdersProvider,
-    variables: {
-      filter: {
-        parties: pubKey ? [pubKey] : [],
-        markets: [market.id],
-        liveOnly: true,
-      },
-    },
-    skip: !(pubKey && (formState.isDirty || formState.submitCount)),
-  });
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      reload();
-    }, POLLING_TIME);
-    return () => {
-      clearInterval(interval);
-    };
-  }, [reload]);
+  const { data: activeStopOrders } = useActiveStopOrders(
+    pubKey,
+    market.id,
+    !formState.isDirty && !formState.submitCount
+  );
 
   useEffect(() => {
     const storedSize = storedFormValues?.[dealTicketType]?.size;
@@ -945,7 +1070,6 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
   const assetUnit = getBaseQuoteUnit(
     market.tradableInstrument.instrument.metadata.tags
   );
-
   const sizeStep = determineSizeStep(market);
   const priceStep = determinePriceStep(market);
 
@@ -986,7 +1110,11 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
         name="side"
         control={control}
         render={({ field }) => (
-          <SideSelector value={field.value} onValueChange={field.onChange} />
+          <SideSelector
+            value={field.value}
+            onValueChange={field.onChange}
+            isSpotMarket={isSpotMarket}
+          />
         )}
       />
       <Trigger
@@ -1021,10 +1149,32 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
         triggerType={triggerType}
         type={type}
       />
-      <TimeInForce control={control} />
+      <TimeInForce
+        control={control}
+        orderType={type}
+        isSpotMarket={isSpotMarket}
+        setValue={setValue}
+        expiresAt={orderExpiresAt}
+      />
+      <OrderExpiry
+        control={control}
+        orderType={type}
+        timeInForce={timeInForce}
+      />
+
       <div className="flex justify-end gap-2 pb-3">
-        <ReduceOnly />
+        {isSpotMarket ? (
+          type === Schema.OrderType.TYPE_LIMIT && (
+            <PostOnly
+              control={control}
+              disabled={isNonPersistentOrder(timeInForce)}
+            />
+          )
+        ) : (
+          <ReduceOnly />
+        )}
       </div>
+
       <hr className="border-vega-clight-500 dark:border-vega-cdark-500 mb-4" />
       <div className="flex justify-between gap-2 pb-2">
         <Controller
@@ -1121,10 +1271,35 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
             triggerType={ocoTriggerType}
             type={ocoType}
           />
-          <TimeInForce control={control} oco />
-          <div className="mb-2 flex justify-end gap-2">
-            <ReduceOnly />
-          </div>
+          <TimeInForce
+            control={control}
+            oco
+            orderType={ocoType}
+            isSpotMarket={isSpotMarket}
+            setValue={setValue}
+            expiresAt={ocoOrderExpiresAt}
+          />
+          <OrderExpiry
+            control={control}
+            oco
+            orderType={ocoType}
+            timeInForce={ocoTimeInForce}
+          />
+          {
+            <div className="mb-2 flex justify-end gap-2">
+              {isSpotMarket ? (
+                ocoType === Schema.OrderType.TYPE_LIMIT && (
+                  <PostOnly
+                    control={control}
+                    oco
+                    disabled={isNonPersistentOrder(ocoTimeInForce)}
+                  />
+                )
+              ) : (
+                <ReduceOnly />
+              )}
+            </div>
+          }
         </>
       )}
       <div className="mb-2">
@@ -1194,7 +1369,7 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
               name="expiresAt"
               control={control}
               rules={{
-                required: t('You need provide a expiry time/date'),
+                required: t('You need to provide a expiry time/date'),
                 validate: validateExpiration(
                   t(
                     'The expiry date that you have entered appears to be in the past'
@@ -1216,26 +1391,29 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
         </>
       )}
       <NoWalletWarning isReadOnly={isReadOnly} />
-      {(activeStopOrders?.length ?? 0) + (oco ? 2 : 1) >
-      MAX_NUMBER_OF_ACTIVE_STOP_ORDERS ? (
+      {maxNumberOfOrders &&
+      (activeStopOrders?.length ?? 0) + (oco ? 2 : 1) >
+        Number(maxNumberOfOrders) ? (
         <div className="mb-2">
           <Notification
             intent={Intent.Warning}
-            testId={'stop-order-warning-limit'}
+            testId={'stop-order-limit-warning'}
             message={t(
               'There is a limit of {{maxNumberOfOrders}} active stop orders per market. Orders submitted above the limit will be immediately rejected.',
               {
-                maxNumberOfOrders: MAX_NUMBER_OF_ACTIVE_STOP_ORDERS.toString(),
+                maxNumberOfOrders,
               }
             )}
           />
         </div>
       ) : (
-        <NoOpenVolumeWarning
-          side={side}
-          partyId={pubKey}
-          marketId={market.id}
-        />
+        !isSpotMarket && (
+          <NoOpenVolumeWarning
+            side={side}
+            partyId={pubKey}
+            marketId={market.id}
+          />
+        )
       )}
       <SubmitButton
         assetUnit={assetUnit}

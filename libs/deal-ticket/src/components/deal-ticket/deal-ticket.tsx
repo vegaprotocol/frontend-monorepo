@@ -25,7 +25,7 @@ import {
   TradingButton as Button,
   Pill,
   ExternalLink,
-  Slider,
+  PercentageSlider as Slider,
 } from '@vegaprotocol/ui-toolkit';
 
 import { useOpenVolume } from '@vegaprotocol/positions';
@@ -39,9 +39,12 @@ import {
 import { useActiveOrders } from '@vegaprotocol/orders';
 import {
   getAsset,
+  getBaseAsset,
   getDerivedPrice,
+  getProductType,
   getQuoteName,
   isMarketInAuction,
+  isSpot,
 } from '@vegaprotocol/markets';
 import {
   validateExpiration,
@@ -169,6 +172,8 @@ export const DealTicket = ({
   );
   const dealTicketType = storedFormValues?.type ?? DealTicketType.Limit;
   const type = dealTicketTypeToOrderType(dealTicketType);
+  const productType = getProductType(market);
+  const isSpotMarket = isSpot(market.tradableInstrument.instrument.product);
 
   const {
     control,
@@ -183,6 +188,13 @@ export const DealTicket = ({
   const lastSubmitTime = useRef(0);
 
   const asset = getAsset(market);
+  const assetSymbol = asset.symbol;
+  const baseAsset = isSpotMarket ? getBaseAsset(market) : undefined;
+  const quoteName = getQuoteName(market);
+  const baseQuote = getBaseQuoteUnit(
+    market.tradableInstrument.instrument.metadata.tags
+  );
+
   const {
     orderMarginAccountBalance,
     marginAccountBalance,
@@ -194,6 +206,12 @@ export const DealTicket = ({
     accountDecimals,
     loading: loadingGeneralAccountBalance,
   } = useAccountBalance(asset.id);
+
+  const {
+    accountBalance: baseAssetAccountBalance,
+    accountDecimals: baseAssetDecimals,
+    loading: loadingBaseAssetAccount,
+  } = useAccountBalance(baseAsset?.id);
 
   const { marketState, marketTradingMode } = marketData;
   const timeInForce = watch('timeInForce');
@@ -305,12 +323,7 @@ export const DealTicket = ({
   );
 
   const slippage = useSlippage(normalizedOrder, market);
-
-  const assetSymbol = getAsset(market).symbol;
-
-  const baseQuote = getBaseQuoteUnit(
-    market.tradableInstrument.instrument.metadata.tags
-  );
+  const useBaseAsset = isSpotMarket && side === Schema.Side.SIDE_SELL;
 
   const summaryError = useMemo(() => {
     if (!pubKey) {
@@ -348,14 +361,16 @@ export const DealTicket = ({
         type: SummaryValidationType.MarketState,
       };
     }
-
     const hasNoBalance =
-      !BigInt(generalAccountBalance) &&
+      !BigInt(useBaseAsset ? baseAssetAccountBalance : generalAccountBalance) &&
       !BigInt(marginAccountBalance) &&
       !BigInt(orderMarginAccountBalance);
     if (
       hasNoBalance &&
-      !(loadingMarginAccountBalance || loadingGeneralAccountBalance)
+      !(
+        loadingMarginAccountBalance ||
+        (useBaseAsset ? loadingBaseAssetAccount : loadingGeneralAccountBalance)
+      )
     ) {
       return {
         message: SummaryValidationType.NoCollateral,
@@ -382,10 +397,13 @@ export const DealTicket = ({
     marketTradingMode,
     generalAccountBalance,
     marginAccountBalance,
+    baseAssetAccountBalance,
     orderMarginAccountBalance,
     loadingMarginAccountBalance,
     loadingGeneralAccountBalance,
+    loadingBaseAssetAccount,
     pubKey,
+    useBaseAsset,
   ]);
 
   const nonPersistentOrder = isNonPersistentOrder(timeInForce);
@@ -400,6 +418,8 @@ export const DealTicket = ({
     accountDecimals: accountDecimals ?? undefined,
     activeOrders: activeOrders ?? undefined,
     decimalPlaces: market.decimalPlaces,
+    baseAssetAccountBalance,
+    baseAssetDecimals: baseAssetDecimals ?? undefined,
     marginAccountBalance,
     orderMarginAccountBalance,
     marginFactor: margin?.marginFactor,
@@ -414,6 +434,8 @@ export const DealTicket = ({
     openVolume,
     positionDecimalPlaces: market.positionDecimalPlaces,
     marketIsInAuction,
+    isSpotMarket,
+    feesFactors: market.fees.factors,
   });
 
   const onSubmit = useCallback(
@@ -457,7 +479,6 @@ export const DealTicket = ({
     },
   });
 
-  const quoteName = getQuoteName(market);
   const isLimitType = type === Schema.OrderType.TYPE_LIMIT;
 
   const priceStep = determinePriceStep(market);
@@ -488,12 +509,17 @@ export const DealTicket = ({
         market={market}
         marketData={marketData}
         errorMessage={errors.type?.message}
+        showStopOrders={!isSpotMarket}
       />
       <Controller
         name="side"
         control={control}
         render={({ field }) => (
-          <SideSelector value={field.value} onValueChange={field.onChange} />
+          <SideSelector
+            isSpotMarket={isSpotMarket}
+            value={field.value}
+            onValueChange={field.onChange}
+          />
         )}
       />
 
@@ -544,7 +570,7 @@ export const DealTicket = ({
           name="price"
           control={control}
           rules={{
-            required: t('You need provide a price'),
+            required: t('You need to provide a price'),
             min: {
               value: priceStep,
               message: t('Price cannot be lower than {{priceStep}}', {
@@ -646,7 +672,7 @@ export const DealTicket = ({
             name="expiresAt"
             control={control}
             rules={{
-              required: t('You need provide a expiry time/date'),
+              required: t('You need to provide a expiry time/date'),
               validate: validateExpiration(
                 t(
                   'The expiry date that you have entered appears to be in the past'
@@ -723,41 +749,43 @@ export const DealTicket = ({
         </div>
 
         <div className="flex flex-col gap-2">
-          <Controller
-            name="reduceOnly"
-            control={control}
-            render={({ field }) => (
-              <Tooltip
-                description={
-                  <>
-                    <span>
-                      {disableReduceOnlyCheckbox
-                        ? t(
-                            '"Reduce only" can be used only with non-persistent orders, such as "Fill or Kill" or "Immediate or Cancel".'
-                          )
-                        : t(REDUCE_ONLY_TOOLTIP)}
-                    </span>{' '}
-                    <ExternalLink href={DocsLinks?.POST_REDUCE_ONLY}>
-                      {t('Find out more')}
-                    </ExternalLink>
-                  </>
-                }
-              >
-                <div>
-                  <Checkbox
-                    name="reduce-only"
-                    checked={!disableReduceOnlyCheckbox && field.value}
-                    disabled={disableReduceOnlyCheckbox}
-                    onCheckedChange={(reduceOnly) => {
-                      field.onChange(reduceOnly);
-                      setValue('postOnly', false);
-                    }}
-                    label={t('Reduce only')}
-                  />
-                </div>
-              </Tooltip>
-            )}
-          />
+          {productType !== 'Spot' && (
+            <Controller
+              name="reduceOnly"
+              control={control}
+              render={({ field }) => (
+                <Tooltip
+                  description={
+                    <>
+                      <span>
+                        {disableReduceOnlyCheckbox
+                          ? t(
+                              '"Reduce only" can be used only with non-persistent orders, such as "Fill or Kill" or "Immediate or Cancel".'
+                            )
+                          : t(REDUCE_ONLY_TOOLTIP)}
+                      </span>{' '}
+                      <ExternalLink href={DocsLinks?.POST_REDUCE_ONLY}>
+                        {t('Find out more')}
+                      </ExternalLink>
+                    </>
+                  }
+                >
+                  <div>
+                    <Checkbox
+                      name="reduce-only"
+                      checked={!disableReduceOnlyCheckbox && field.value}
+                      disabled={disableReduceOnlyCheckbox}
+                      onCheckedChange={(reduceOnly) => {
+                        field.onChange(reduceOnly);
+                        setValue('postOnly', false);
+                      }}
+                      label={t('Reduce only')}
+                    />
+                  </div>
+                </Tooltip>
+              )}
+            />
+          )}
           {isLimitType && (
             <Controller
               name="postOnly"
@@ -823,12 +851,18 @@ export const DealTicket = ({
 
       <SummaryMessage
         error={summaryError}
-        asset={asset}
+        asset={(useBaseAsset && baseAsset) || asset}
         marketTradingMode={marketData.marketTradingMode}
-        balance={generalAccountBalance}
+        balance={useBaseAsset ? baseAssetAccountBalance : generalAccountBalance}
+        isSpotMarket={isSpotMarket}
         margin={
-          positionEstimate?.estimatePosition?.collateralIncreaseEstimate
-            .bestCase || '0'
+          isSpotMarket
+            ? removeDecimal(
+                (useBaseAsset ? normalizedOrder.size : notionalSize) || '0',
+                asset.decimals - market.decimalPlaces
+              )
+            : positionEstimate?.estimatePosition?.collateralIncreaseEstimate
+                .bestCase || '0'
         }
         isReadOnly={isReadOnly}
         pubKey={pubKey}
@@ -878,6 +912,7 @@ export const DealTicket = ({
  * renders warnings about current state of the market
  */
 interface SummaryMessageProps {
+  isSpotMarket?: boolean;
   error?: { message: string; type: string };
   asset: { id: string; symbol: string; name: string; decimals: number };
   marketTradingMode: MarketData['marketTradingMode'];
@@ -921,6 +956,7 @@ export const NoWalletWarning = ({
 
 const SummaryMessage = memo(
   ({
+    isSpotMarket,
     error,
     asset,
     marketTradingMode,
@@ -964,6 +1000,7 @@ const SummaryMessage = memo(
       return (
         <div className="mb-2">
           <MarginWarning
+            isSpotMarket={isSpotMarket}
             balance={balance}
             margin={margin}
             asset={asset}
@@ -972,6 +1009,7 @@ const SummaryMessage = memo(
         </div>
       );
     }
+
     // Show auction mode warning
     if (
       [

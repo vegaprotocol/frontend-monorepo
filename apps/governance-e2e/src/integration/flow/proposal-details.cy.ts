@@ -51,7 +51,7 @@ const totalVotedPercentage = 'total-voted-percentage';
 const changeVoteButton = 'change-vote-button';
 const proposalDetailsTitle = 'proposal-title';
 const proposalDetailsDescription = 'proposal-description';
-const openProposals = 'open-proposals';
+const listItems = 'proposal-list-items';
 const viewProposalButton = 'view-proposal-btn';
 const proposalTermsToggle = 'proposal-json-toggle';
 const marketDataToggle = 'proposal-market-data-toggle';
@@ -68,7 +68,7 @@ describe(
       ethereumWalletConnect();
       cy.createMarket();
       navigateTo(navigation.proposals);
-      cy.getByTestId('closed-proposals').within(() => {
+      cy.getByTestId('proposal-list-items').within(() => {
         cy.contains('Add Lorem Ipsum market')
           .parentsUntil(proposalListItem)
           .last()
@@ -102,7 +102,7 @@ describe(
         proposalDescription: proposalDetails,
       });
       cy.get<testFreeformProposal>('@rawProposal').then((rawProposal) => {
-        cy.getByTestId(openProposals).within(() => {
+        cy.getByTestId(listItems).within(() => {
           getProposalFromTitle(rawProposal.rationale.title).within(() => {
             cy.getByTestId(viewProposalButton).should('be.visible').click();
           });
@@ -316,7 +316,7 @@ describe(
     });
 
     it('Able to see successor market details with new and updated values', function () {
-      cy.getByTestId('closed-proposals').within(() => {
+      cy.getByTestId('proposal-list-items').within(() => {
         cy.contains('Add Lorem Ipsum market')
           .parentsUntil(proposalListItem)
           .last()

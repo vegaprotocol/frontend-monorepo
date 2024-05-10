@@ -45,6 +45,8 @@ const ProposalTypeTags = ({
 }: {
   proposal: Proposal | BatchProposal;
 }) => {
+  const { t } = useTranslation();
+
   if (proposal.__typename === 'Proposal') {
     return (
       <div data-testid="proposal-type">
@@ -56,7 +58,12 @@ const ProposalTypeTags = ({
   if (proposal.__typename === 'BatchProposal') {
     return (
       <div data-testid="proposal-type">
-        <ProposalInfoLabel variant="secondary">BatchProposal</ProposalInfoLabel>
+        <ProposalInfoLabel variant="secondary">
+          <span>{t('Batch Proposal')}</span>
+          <span className="bg-vega-cdark-600 rounded-full px-1 text-center font-glitch">
+            {proposal.subProposals?.length || 0}
+          </span>
+        </ProposalInfoLabel>
       </div>
     );
   }
@@ -64,11 +71,15 @@ const ProposalTypeTags = ({
   return null;
 };
 
-const ProposalTypeTag = ({ terms }: { terms: ProposalTermsFieldsFragment }) => {
+const ProposalTypeTag = ({
+  terms,
+}: {
+  terms: Pick<ProposalTermsFieldsFragment, 'change'>;
+}) => {
   const { t } = useTranslation();
 
   switch (terms.change.__typename) {
-    // Speical case for markets where we want to show the product type in the tag
+    // Special case for markets where we want to show the product type in the tag
     case 'NewMarket': {
       return (
         <ProposalInfoLabel variant="secondary">
@@ -94,6 +105,7 @@ const ProposalDetails = ({
   proposal,
 }: {
   proposal: Proposal | BatchProposal;
+  restData?: ProposalNode | null;
 }) => {
   const { t } = useTranslation();
   const featureFlags = useFeatureFlags((store) => store.flags);
@@ -104,6 +116,13 @@ const ProposalDetails = ({
     proposalId?: string | null
   ) => {
     switch (terms.change?.__typename) {
+      case 'NewSpotMarket': {
+        return (
+          <span>
+            {t('New spot market:')} <span>{terms.change.instrument.code}</span>
+          </span>
+        );
+      }
       case 'NewMarket': {
         const getAsset = (terms: ProposalTermsFieldsFragment) => {
           if (
@@ -127,7 +146,7 @@ const ProposalDetails = ({
               />
             )}
             <span>
-              {t('Code')}: {terms.change.instrument.code}.
+              {t('New market')}: {terms.change.instrument.code}.
             </span>{' '}
             {terms && getAsset(terms)?.symbol ? (
               <>
@@ -183,6 +202,7 @@ const ProposalDetails = ({
           </span>
         );
       }
+      case 'UpdateSpotMarket':
       case 'UpdateMarket': {
         const marketPageLink = consoleLink(
           CONSOLE_MARKET_PAGE.replace(':marketId', terms.change.marketId)
@@ -322,7 +342,7 @@ const ProposalDetails = ({
               >
                 <Indicator indicator={i + 1} />
                 <span>
-                  <div>{renderDetails(p.terms, p.id)}</div>
+                  <div>{renderDetails(p.terms, p?.id)}</div>
                   <SubProposalStateText
                     state={proposal.state}
                     enactmentDatetime={p.terms.enactmentDatetime}
@@ -586,7 +606,7 @@ export const ProposalHeader = ({
           )}
 
           <div data-testid="proposal-status">
-            <CurrentProposalState proposal={proposal} />
+            <CurrentProposalState proposalState={proposal.state} />
           </div>
         </div>
       </div>
@@ -600,7 +620,7 @@ export const ProposalHeader = ({
           <Heading title={titleContent || fallbackTitle} />
         )}
       </div>
-      <ProposalDetails proposal={proposal} />
+      <ProposalDetails proposal={proposal} restData={restData} />
       <VoteBreakdown proposal={proposal} restData={restData} />
     </>
   );

@@ -129,7 +129,7 @@ export const MarketSelector = ({
             filter.product === Product.Perpetual
               ? t('No perpetual markets.')
               : filter.product === Product.Spot
-              ? t('Spot markets coming soon.')
+              ? t('No spot markets.')
               : filter.product === Product.Future
               ? t('No future markets.')
               : t('No markets.')

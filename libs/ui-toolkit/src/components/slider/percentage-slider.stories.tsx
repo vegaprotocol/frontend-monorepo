@@ -1,10 +1,10 @@
 import type { Story, Meta } from '@storybook/react';
-import { LeverageSlider } from './leverage-slider';
+import { PercentageSlider } from './percentage-slider';
 import { useState } from 'react';
 
 export default {
-  component: LeverageSlider,
-  title: 'LeverageSlider',
+  component: PercentageSlider,
+  title: 'PercentageSlider',
 } as Meta;
 
 const Template: Story = ({ value: val, min, max, ...args }) => {
@@ -16,10 +16,10 @@ const Template: Story = ({ value: val, min, max, ...args }) => {
 
   return (
     <>
-      <LeverageSlider
+      <PercentageSlider
         onValueChange={onValueChange}
         value={value}
-        min={0}
+        min={min}
         max={max}
         {...args}
       />
@@ -32,6 +32,7 @@ export const Default = Template.bind({});
 
 Default.args = {
   max: 100,
+  min: 20,
   step: 0.1,
-  value: [100],
+  value: [55],
 };

@@ -7,7 +7,6 @@ import { ProposalChangeTable } from '../proposal-change-table';
 import { ProposalJson } from '../proposal-json';
 import { UserVote } from '../vote-details';
 import Routes from '../../../routes';
-import { ProposalState } from '@vegaprotocol/types';
 import { type ProposalNode } from './proposal-utils';
 import { useVoteSubmit } from '@vegaprotocol/proposals';
 import { useUserVote } from '../vote-details/use-user-vote';
@@ -32,19 +31,11 @@ export const Proposal = ({ proposal, restData }: ProposalProps) => {
       <div className="flex items-center gap-1 mb-6">
         <Icon name={'chevron-left'} />
 
-        {proposal.state === ProposalState.STATE_REJECTED ? (
-          <div data-testid="rejected-proposals-link">
-            <Link className="underline" to={Routes.PROPOSALS_REJECTED}>
-              {t('RejectedProposals')}
-            </Link>
-          </div>
-        ) : (
-          <div data-testid="all-proposals-link">
-            <Link className="underline" to={Routes.PROPOSALS}>
-              {t('AllProposals')}
-            </Link>
-          </div>
-        )}
+        <div data-testid="all-proposals-link">
+          <Link className="underline" to={Routes.PROPOSALS}>
+            {t('AllProposals')}
+          </Link>
+        </div>
       </div>
 
       <ProposalHeader
@@ -79,7 +70,6 @@ export const Proposal = ({ proposal, restData }: ProposalProps) => {
                 proposal={proposal}
                 terms={p.terms}
                 restData={restData}
-                termsCount={proposal.subProposals?.length}
               />
             );
           })

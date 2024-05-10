@@ -1,6 +1,7 @@
 import * as SliderPrimitive from '@radix-ui/react-slider';
 import type { SliderProps } from '@radix-ui/react-slider';
 import classNames from 'classnames';
+import { SliderThumb } from './slider';
 
 export const LeverageSlider = (
   props: Omit<SliderProps, 'min' | 'max'> &
@@ -11,56 +12,78 @@ export const LeverageSlider = (
   );
   const value = props.value?.[0] || props.defaultValue?.[0];
   return (
-    <SliderPrimitive.Root
-      {...props}
-      className="relative flex items-center select-none touch-none h-10 pb-5 w-full"
-    >
-      <SliderPrimitive.Track className=" relative grow h-[4px]">
-        <span className="bg-vega-clight-700 dark:bg-vega-cdark-700 absolute left-2 right-2 top-0 bottom-0"></span>
-        <SliderPrimitive.Range className="absolute h-full">
-          <span className="absolute left-2 right-0 h-full bg-vega-clight-100 dark:bg-vega-cdark-100"></span>
-        </SliderPrimitive.Range>
-        <span className="block absolute top-[-3px] left-[8px] right-[8px]">
-          {step &&
-            new Array(Math.floor(props.max / step) + 1)
-              .fill(null)
-              .map((v, i) => {
-                const labelValue = step * i || 1;
-                const higherThanValue = value && labelValue > value;
-                if (labelValue > props.max) {
-                  return null;
-                }
-                return (
-                  <span
-                    key={labelValue}
-                    className="absolute flex flex-col items-center translate-x-[-50%]"
-                    style={{
-                      left: `${
-                        ((labelValue - props.min) / (props.max - props.min)) *
-                        100
-                      }%`,
-                    }}
-                  >
+    <div className="relative">
+      <SliderPrimitive.Root
+        {...props}
+        className="relative flex items-center select-none touch-none h-10 pb-5 w-full"
+      >
+        <SliderPrimitive.Track className="relative grow h-[4px]">
+          <span className="bg-vega-clight-700 dark:bg-vega-cdark-700 absolute left-2 right-2 top-0 bottom-0"></span>
+          <SliderPrimitive.Range className="absolute h-full">
+            <span className="absolute left-2 right-0 h-full bg-vega-clight-100 dark:bg-vega-cdark-100"></span>
+          </SliderPrimitive.Range>
+          <span className="absolute top-[-3px] left-[8px] right-[8px]">
+            {step &&
+              new Array(Math.floor(props.max / step) + 1)
+                .fill(null)
+                .map((v, i) => {
+                  const labelValue = step * i || 1;
+                  const lowerThanValue = value && labelValue < value;
+                  if (labelValue > props.max) {
+                    return null;
+                  }
+                  const left = `${
+                    ((labelValue - props.min) / (props.max - props.min)) * 100
+                  }%`;
+                  return (
                     <span
+                      key={left}
                       className={classNames(
-                        'block w-[10px] h-[10px] rounded-full',
+                        'absolute translate-x-[-50%] block w-[10px] h-[10px] rounded-full',
                         {
                           'bg-vega-clight-500 dark:bg-vega-cdark-500':
-                            higherThanValue,
+                            !lowerThanValue,
                           'bg-vega-clight-50 dark:bg-vega-cdark-50':
-                            !higherThanValue,
+                            !!lowerThanValue,
                         }
                       )}
-                    ></span>
-                    <span className="text-xs font-alpha mt-1 text-vega-clight-100 dark:text-vega-cdark-100 ">
-                      {labelValue.toFixed(labelValue < 1 ? 1 : 0)}x
-                    </span>
-                  </span>
-                );
-              })}
-        </span>
-      </SliderPrimitive.Track>
-      <SliderPrimitive.Thumb className="block w-[18px] h-[18px] border-[2px] rounded-full border-white dark:border-vega-cdark-900 bg-vega-clight-50 dark:bg-vega-cdark-50 focus-visible:outline-0" />
-    </SliderPrimitive.Root>
+                      style={{
+                        left,
+                      }}
+                    />
+                  );
+                })}
+          </span>
+        </SliderPrimitive.Track>
+        <SliderThumb />
+      </SliderPrimitive.Root>
+      <span className="block absolute top-[15px] left-[8px] right-[8px]">
+        {step &&
+          new Array(Math.floor(props.max / step) + 1).fill(null).map((v, i) => {
+            const labelValue = step * i || 1;
+            if (labelValue > props.max) {
+              return null;
+            }
+            const left = `${
+              ((labelValue - props.min) / (props.max - props.min)) * 100
+            }%`;
+            return (
+              <button
+                type="button"
+                onClick={() =>
+                  props.onValueChange && props.onValueChange([labelValue])
+                }
+                key={labelValue}
+                className="absolute translate-x-[-50%] text-xs font-alpha mt-1 text-vega-clight-100 dark:text-vega-cdark-100"
+                style={{
+                  left,
+                }}
+              >
+                {labelValue.toFixed(labelValue < 1 ? 1 : 0)}x
+              </button>
+            );
+          })}
+      </span>
+    </div>
   );
 };

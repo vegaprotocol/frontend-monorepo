@@ -16,6 +16,8 @@ export const generateStopOrder = (
     trigger: {
       trailingPercentOffset: '5',
     },
+    sizeOverrideSetting:
+      Schema.StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_NONE,
     ocoLinkId: undefined,
     market: {
       __typename: 'Market',
