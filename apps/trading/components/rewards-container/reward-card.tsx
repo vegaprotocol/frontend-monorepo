@@ -379,7 +379,7 @@ const RewardCard = ({
               {dispatchStrategy.transferInterval && (
                 <span className="flex flex-col">
                   <span className="text-muted text-xs">{t('Pays every')}</span>
-                  <span data-testid="assessed-over">
+                  <span data-testid="pays-every">
                     {t('numberEpochs', '{{count}} epochs', {
                       count: dispatchStrategy.transferInterval,
                     })}
