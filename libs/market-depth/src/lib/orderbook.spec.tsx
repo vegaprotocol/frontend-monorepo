@@ -225,6 +225,19 @@ describe('OrderbookMid', () => {
     rerender(<OrderbookMid {...props} lastTradedPrice="100" />);
     expect(screen.getByTestId('icon-arrow-down')).toBeInTheDocument();
   });
+
+  it('do not render spread if bestAskPrice or bestBidPrice is undefined', () => {
+    const { rerender } = render(
+      <OrderbookMid {...props} bestAskPrice={undefined} />
+    );
+    expect(screen.queryByTestId('spread')).not.toBeInTheDocument();
+
+    rerender(<OrderbookMid {...props} bestBidPrice={undefined} />);
+    expect(screen.queryByTestId('spread')).not.toBeInTheDocument();
+
+    rerender(<OrderbookMid {...props} />);
+    expect(screen.getByTestId('spread')).toBeInTheDocument();
+  });
 });
 
 describe('createResolutions', () => {

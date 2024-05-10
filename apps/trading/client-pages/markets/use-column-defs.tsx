@@ -254,10 +254,9 @@ export const useMarketsColumnDefs = () => {
 
           const volume =
             data && vol && vol !== '0'
-              ? addDecimalsFormatNumber(vol, data.positionDecimalPlaces)
+              ? addDecimalsFormatNumber(vol, data.positionDecimalPlaces, 2)
               : '0.00';
-          const volumePrice =
-            volPrice && formatNumber(volPrice, data?.decimalPlaces);
+          const volumePrice = volPrice && formatNumber(volPrice, 2);
 
           return volumePrice ? (
             <span className="font-mono">
