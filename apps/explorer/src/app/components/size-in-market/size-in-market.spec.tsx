@@ -58,12 +58,12 @@ const fullMock = {
 
 describe('Size in Market component', () => {
   it('Renders a dash size when there is no size', () => {
-    const res = render(renderComponent(undefined, '123', []));
+    const res = render(renderComponent(undefined, '123', [fullMock]));
     expect(res.getByText('-')).toBeInTheDocument();
   });
 
   it('Renders the raw size when there is no market data', () => {
-    const res = render(renderComponent('100', '123', []));
+    const res = render(renderComponent('100', '123', [fullMock]));
     expect(res.getByText('100')).toBeInTheDocument();
   });
 

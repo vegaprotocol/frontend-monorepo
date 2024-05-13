@@ -5,6 +5,7 @@ import { render } from '@testing-library/react';
 import MarketLink from './market-link';
 import { ExplorerMarketDocument } from './__generated__/Market';
 import { GraphQLError } from 'graphql';
+import { ExplorerMarket456 } from '../../../mocks/links';
 
 function renderComponent(id: string, mocks: MockedResponse[]) {
   return (
@@ -18,8 +19,8 @@ function renderComponent(id: string, mocks: MockedResponse[]) {
 
 describe('Market link component', () => {
   it('Renders the ID at first', () => {
-    const res = render(renderComponent('123', []));
-    expect(res.getByText('123')).toBeInTheDocument();
+    const res = render(renderComponent('456', [ExplorerMarket456]));
+    expect(res.getByText('456')).toBeInTheDocument();
   });
 
   it('Renders the ID with an emoji on error', async () => {
@@ -34,6 +35,7 @@ describe('Market link component', () => {
         errors: [new GraphQLError('No such market')],
       },
     };
+
     const res = render(renderComponent('456', [mock]));
     // The ID
     expect(res.getByText('456')).toBeInTheDocument();

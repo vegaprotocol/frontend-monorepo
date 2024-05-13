@@ -16,30 +16,30 @@ function renderComponent(id: string, mock: MockedResponse[]) {
 }
 
 describe('Node link component', () => {
+  const mock = {
+    request: {
+      query: ExplorerNodeDocument,
+      variables: {
+        id: '123',
+      },
+    },
+    result: {
+      data: {
+        node: {
+          id: '123',
+          status: 'irrelevant-test-data',
+          name: 'test-label',
+        },
+      },
+    },
+  };
+
   it('Renders the ID at first', () => {
-    const res = render(renderComponent('123', []));
+    const res = render(renderComponent('123', [mock]));
     expect(res.getByText('123')).toBeInTheDocument();
   });
 
   it('Renders the node name when the query returns a result', async () => {
-    const mock = {
-      request: {
-        query: ExplorerNodeDocument,
-        variables: {
-          id: '123',
-        },
-      },
-      result: {
-        data: {
-          node: {
-            id: '123',
-            status: 'irrelevant-test-data',
-            name: 'test-label',
-          },
-        },
-      },
-    };
-
     const res = render(renderComponent('123', [mock]));
     expect(res.getByText('123')).toBeInTheDocument();
     expect(await res.findByText('test-label')).toBeInTheDocument();

@@ -6,6 +6,7 @@ import type {
 } from '../../../routes/types/block-explorer-response';
 import { MemoryRouter } from 'react-router-dom';
 import { MockedProvider } from '@apollo/client/testing';
+import { commonLinkMocks } from '../../../mocks/links';
 
 // Note: Long enough that there is a truncated output and a full output
 const pubKey =
@@ -31,7 +32,7 @@ const txData: BlockExplorerTransactionResult = {
 
 const renderComponent = (txData: BlockExplorerTransactionResult) => (
   <MemoryRouter>
-    <MockedProvider>
+    <MockedProvider mocks={commonLinkMocks}>
       <TxDetails txData={txData} pubKey={pubKey} />
     </MockedProvider>
   </MemoryRouter>
