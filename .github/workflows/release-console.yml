@@ -39,7 +39,8 @@ jobs:
         id: prepare_branch
         run: |
           BRANCH_NAME="release/${{ github.event.inputs.environment }}/${{ github.event.inputs.releaseVersion }}"
-          echo "branch_name=$BRANCH_NAME" >> $GITHUB_STATE
+          echo "branch_name=$BRANCH_NAME" >> $GITHUB_ENV
+          echo "::set-output name=branch_name::$BRANCH_NAME"
           git fetch --all
           git checkout -b $BRANCH_NAME origin/${{ github.event.inputs.environment }}
           git push --set-upstream origin $BRANCH_NAME
