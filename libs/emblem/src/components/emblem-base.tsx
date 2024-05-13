@@ -28,12 +28,9 @@ export function EmblemBase(p: ImgProps) {
         src={p.src || FALLBACK_URL}
         onError={renderFallback}
         alt={p.alt || 'Emblem'}
-        width={p.width || '20'}
-        height={p.height || '20'}
-        className={
-          p.className ||
-          `-5 h-5 align-text-top ${loading ? 'display-none' : 'inline-block'}`
-        }
+        width="30"
+        height="30"
+        className={`${p.className} h-inherit`}
         onLoad={() => setLoading(false)}
       />
     </>

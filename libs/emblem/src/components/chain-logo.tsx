@@ -28,12 +28,9 @@ export function ChainLogo(p: ImgProps) {
         src={p.src || FALLBACK_URL}
         onError={renderFallback}
         alt={p.alt || 'Chain'}
-        width={p.width || '10'}
-        height={p.height || '10'}
-        className={
-          p.className ||
-          `-5 h-5 align-text-top ${loading ? 'display-none' : 'inline-block'}`
-        }
+        width={p.width || '12'}
+        height={p.height || '12'}
+        className={p.className}
         onLoad={() => setLoading(false)}
       />
     </>

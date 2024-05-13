@@ -3,18 +3,12 @@ import { EmblemBase } from './emblem-base';
 import { useMarketInfo } from './hooks/use-market-info';
 import { getVegaChain } from './lib/get-chain';
 import { ChainLogo } from './chain-logo';
-import classNames from 'classnames';
-
-// Allows the specification of one or both logos. Undefined means both logos are shown
-type MarketLogos = 'BASE' | 'QUOTE' | 'BOTH' | undefined;
 
 export type EmblemByMarketProps = {
   // The ID of the market to display logos for
   market: string;
   // The vega chain that the market is on
   vegaChain?: string;
-  // Allows the Market Emblem component to display both or just one of the asset logos
-  marketLogos?: MarketLogos;
   // Overlays the icon for the source chain, if available and applicable
   showSourceChain?: boolean;
 };
@@ -32,8 +26,7 @@ export type EmblemByMarketProps = {
  * @returns React.Node
  */
 export function EmblemByMarket(props: EmblemByMarketProps) {
-  const { vegaChain, marketLogos, market } = props;
-  const { showBase, showQuote, logoCount } = chooseLogos(marketLogos);
+  const { vegaChain, market } = props;
 
   const chain = getVegaChain(vegaChain);
   const data = useMarketInfo(chain, market);
@@ -45,34 +38,31 @@ export function EmblemByMarket(props: EmblemByMarketProps) {
     data.data?.settlementChainLogo
   );
 
-  // Widths are calculated here as they are required for using absolute positioning to
-  // render the logos as overlapping. Moving to blocks with negative margins should work
-  // and could remove this calculation, but was not working reliably cross platform.
-  const wrapperClassString = classNames('relative inline-block h-6', {
-    'w-9': logoCount === 2,
-    'w-5': logoCount === 1,
-  });
-
   return (
-    <div className={wrapperClassString}>
-      {showBase && (
-        <EmblemBase
-          src={base}
-          className="inline-block w-5 h-5 z-10 relative rounded-full bg-white border-2 border-vega-clight-600 dark:border-white"
-          {...props}
+    <div className="relative inline-block h-8 w-14 leading-[0]">
+      <EmblemBase
+        src={base}
+        className="inline-block z-10 relative rounded-full bg-white border-2 border-vega-light-600 dark:border-white"
+        {...props}
+      />
+
+      {props.showSourceChain !== false && baseChain && (
+        <ChainLogo
+          src={baseChain}
+          className={`z-20 align-text-top absolute bottom-0 left-4`}
         />
       )}
-      {showQuote && (
-        <EmblemBase
-          src={quote}
-          className={`inline-block w-5 h-5 rounded-full bg-white border-2 border-vega-clight-600 dark:border-white ${
-            showBase ? '-ml-2' : ''
-          }`}
-          {...props}
-        />
-      )}
+
+      <EmblemBase
+        src={quote}
+        className={`inline-block ml-[-9px] z-1 rounded-full bg-white border-2 border-vega-light-600 dark:border-white`}
+        {...props}
+      />
       {props.showSourceChain !== false && (
-        <ChainLogo src={baseChain || quoteChain || settlementChain} />
+        <ChainLogo
+          src={quoteChain || settlementChain}
+          className={`align-text-top absolute bottom-0 right-1`}
+        />
       )}
     </div>
   );
@@ -111,32 +101,5 @@ export function getLogoPaths(
     settlementChain: settlementChainLogo
       ? `${URL_BASE}${settlementChainLogo}`
       : undefined,
-  };
-}
-
-type LogoOptions = {
-  showBase: boolean;
-  showQuote: boolean;
-  logoCount: number;
-};
-
-/**
- * Parses the marketLogos options, correctly inferring defaults
- * and calculating the size the container needs to be based on
- * how many logos are shown
- *
- * @param selected
- * @returns LogoOptions
- */
-export function chooseLogos(selected: MarketLogos): LogoOptions {
-  const showBase =
-    selected === 'BASE' || selected === 'BOTH' || selected === undefined;
-  const showQuote =
-    selected === 'QUOTE' || selected === 'BOTH' || selected === undefined;
-
-  return {
-    showBase,
-    showQuote,
-    logoCount: (showBase ? 1 : 0) + (showQuote ? 1 : 0),
   };
 }
