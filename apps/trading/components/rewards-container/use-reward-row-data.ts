@@ -16,6 +16,7 @@ const REWARD_ACCOUNT_TYPES = [
   AccountType.ACCOUNT_TYPE_REWARD_RELATIVE_RETURN,
   AccountType.ACCOUNT_TYPE_REWARD_RETURN_VOLATILITY,
   AccountType.ACCOUNT_TYPE_REWARD_VALIDATOR_RANKING,
+  AccountType.ACCOUNT_TYPE_REWARD_REALISED_RETURN,
   AccountType.ACCOUNT_TYPE_FEES_INFRASTRUCTURE,
 ];
 
@@ -76,6 +77,9 @@ export const getRewards = (
       ),
       relativeReturns: totals.get(
         AccountType.ACCOUNT_TYPE_REWARD_RELATIVE_RETURN
+      ),
+      realisedReturns: totals.get(
+        AccountType.ACCOUNT_TYPE_REWARD_REALISED_RETURN
       ),
       returnsVolatility: totals.get(
         AccountType.ACCOUNT_TYPE_REWARD_RETURN_VOLATILITY
