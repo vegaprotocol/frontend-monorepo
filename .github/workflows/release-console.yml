@@ -27,6 +27,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: ${{ github.event.inputs.commitHash }}
+          token: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
 
       - name: Create Tag
         run: git tag ${{ github.event.inputs.releaseVersion }} ${{ github.event.inputs.commitHash }}
@@ -41,6 +42,7 @@ jobs:
           echo "branch_name=$BRANCH_NAME" >> $GITHUB_STATE
           git fetch --all
           git checkout -b $BRANCH_NAME origin/${{ github.event.inputs.environment }}
+          git push --set-upstream origin $BRANCH_NAME
 
   run_e2e_tests:
     needs: setup_release_branch
@@ -67,6 +69,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: ${{ needs.setup_release_branch.outputs.branch_name }}
+          token: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
 
       - name: Reset and push release branch
         run: |
