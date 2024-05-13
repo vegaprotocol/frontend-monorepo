@@ -27,10 +27,10 @@ export function EmblemBase(p: ImgProps) {
       <img
         src={p.src || FALLBACK_URL}
         onError={renderFallback}
-        alt={p.alt || 'Emblem'}
+        alt={p.alt ? p.alt : 'Emblem'}
         width="30"
         height="30"
-        className={`${p.className} h-inherit`}
+        className={`${p.className || ''} h-inherit`}
         onLoad={() => setLoading(false)}
       />
     </>

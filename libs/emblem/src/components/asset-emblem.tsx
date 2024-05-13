@@ -1,5 +1,5 @@
+import { t } from '@vegaprotocol/i18n';
 import { URL_BASE, FILENAME, CHAIN_FILENAME } from '../config';
-import { ChainEmblem } from './chain-emblem';
 import { EmblemBase } from './emblem-base';
 import { getVegaChain } from './lib/get-chain';
 
@@ -24,8 +24,11 @@ export function EmblemByAsset(p: EmblemByAssetProps) {
     <div className="relative inline-block">
       <EmblemBase src={`${baseUrl}${FILENAME}`} {...p} />
       {p.showSourceChain !== false && (
-        <ChainEmblem
+        <EmblemBase
           src={`${baseUrl}${CHAIN_FILENAME}`}
+          width={12}
+          height={12}
+          alt={t('Chain logo')}
           className={`align-text-top absolute bottom-0 right-0`}
         />
       )}
