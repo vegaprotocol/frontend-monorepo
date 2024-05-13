@@ -16,6 +16,18 @@ from wallet_config import MM_WALLET
 from vega_sim.null_service import VegaServiceNull
 
 
+def keys(vega):
+    PARTY_A = WalletConfig("PARTY_A", "PARTY_A")
+    create_and_faucet_wallet(vega=vega, wallet=PARTY_A)
+    PARTY_B = WalletConfig("PARTY_B", "PARTY_B")
+    create_and_faucet_wallet(vega=vega, wallet=PARTY_B)
+    PARTY_C = WalletConfig("PARTY_C", "PARTY_C")
+    create_and_faucet_wallet(vega=vega, wallet=PARTY_C)
+    PARTY_D = WalletConfig("PARTY_D", "PARTY_D")
+    create_and_faucet_wallet(vega=vega, wallet=PARTY_D)
+    return PARTY_A, PARTY_B, PARTY_C, PARTY_D
+
+
 @pytest.fixture(scope="module")
 def setup_environment(request, browser) -> Generator[Tuple[Page, str, str], None, None]:
     with init_vega(request) as vega_instance:
@@ -59,11 +71,11 @@ def setup_market_with_reward_program(vega: VegaServiceNull):
     vega.recurring_transfer(
         from_key_name=PARTY_A.name,
         from_account_type=vega_protos.vega.ACCOUNT_TYPE_GENERAL,
-        to_account_type=vega_protos.vega.ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES,
+        to_account_type=vega_protos.vega.ACCOUNT_TYPE_REWARD_REALISED_RETURN,
         asset=tDAI_asset_id,
         reference="reward",
         asset_for_metric=tDAI_asset_id,
-        metric=vega_protos.vega.DISPATCH_METRIC_MAKER_FEES_PAID,
+        metric=vega_protos.vega.DISPATCH_METRIC_REALISED_RETURN,
         amount=100,
         factor=1.0,
     )
@@ -90,10 +102,11 @@ def setup_market_with_reward_program(vega: VegaServiceNull):
     return tDAI_market, tDAI_asset_id
 
 
-def test_network_reward_pot(
+def test_network_reward_pot_foo(
     setup_environment: Tuple[Page, str, str],
 ) -> None:
     page, tDAI_market, tDAI_asset_id = setup_environment
+    page.pause()
     expect(page.get_by_test_id(TOTAL_REWARDS)).to_have_text("50.00 tDAI")
 
 

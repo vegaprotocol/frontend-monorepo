@@ -2,6 +2,7 @@ from vega_sim.service import VegaService
 from actions.vega import submit_multiple_orders, submit_order, submit_liquidity
 from actions.utils import next_epoch
 from wallet_config import MM_WALLET, MM_WALLET2, TERMINATE_WALLET, wallets
+import vega_sim.proto.vega as vega_protos
 import logging
 
 logger = logging.getLogger()
@@ -83,7 +84,28 @@ def setup_simple_market(
     vega.forward("10s")
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
+    tDAI_asset_id = vega.find_asset_id(symbol="tDAI")
+    vega.update_network_parameter(
+        MM_WALLET.name, parameter="reward.asset", new_value=tDAI_asset_id
+    )
 
+    vega.wait_fn(1)
+    vega.wait_for_total_catchup()
+    vega.recurring_transfer(
+        from_key_name=MM_WALLET.name,
+        from_account_type=vega_protos.vega.ACCOUNT_TYPE_GENERAL,
+        to_account_type=vega_protos.vega.ACCOUNT_TYPE_REWARD_REALISED_RETURN,
+        asset=tDAI_asset_id,
+        reference="reward",
+        asset_for_metric=tDAI_asset_id,
+        metric=vega_protos.vega.DISPATCH_METRIC_REALISED_RETURN,
+        amount=100,
+        factor=1.0,
+    )
+    vega.wait_fn(1)
+    vega.wait_for_total_catchup()
+
+    next_epoch(vega=vega)
     return market_id
 
 
