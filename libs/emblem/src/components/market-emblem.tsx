@@ -2,6 +2,7 @@ import { URL_BASE } from '../config';
 import { EmblemBase } from './emblem-base';
 import { useMarketInfo } from './hooks/use-market-info';
 import { getVegaChain } from './lib/get-chain';
+import { ChainLogo } from './chain-logo';
 import classNames from 'classnames';
 
 // Allows the specification of one or both logos. Undefined means both logos are shown
@@ -14,6 +15,8 @@ export type EmblemByMarketProps = {
   vegaChain?: string;
   // Allows the Market Emblem component to display both or just one of the asset logos
   marketLogos?: MarketLogos;
+  // Overlays the icon for the source chain, if available and applicable
+  showSourceChain?: boolean;
 };
 
 /**
@@ -34,9 +37,12 @@ export function EmblemByMarket(props: EmblemByMarketProps) {
 
   const chain = getVegaChain(vegaChain);
   const data = useMarketInfo(chain, market);
-  const { base, quote } = getLogoPaths(
+  const { base, quote, baseChain, quoteChain, settlementChain } = getLogoPaths(
     data.data?.baseLogo,
-    data.data?.quoteLogo
+    data.data?.quoteLogo,
+    data.data?.baseChainLogo,
+    data.data?.quoteChainLogo,
+    data.data?.settlementChainLogo
   );
 
   // Widths are calculated here as they are required for using absolute positioning to
@@ -65,13 +71,19 @@ export function EmblemByMarket(props: EmblemByMarketProps) {
           {...props}
         />
       )}
+      {props.showSourceChain !== false && (
+        <ChainLogo src={baseChain || quoteChain || settlementChain} />
+      )}
     </div>
   );
 }
 
 type LogoPaths = {
-  base: string;
   quote: string;
+  quoteChain?: string;
+  base: string;
+  baseChain?: string;
+  settlementChain?: string;
 };
 
 /**
@@ -82,15 +94,23 @@ type LogoPaths = {
  * @param quoteLogo
  * @returns LogoPaths object containing the full URL for the base and quote logos
  */
-export function getLogoPaths(baseLogo?: string, quoteLogo?: string): LogoPaths {
-  const base = baseLogo ? `${URL_BASE}${baseLogo}` : `${URL_BASE}/missing.svg`;
-  const quote = quoteLogo
-    ? `${URL_BASE}${quoteLogo}`
-    : `${URL_BASE}/missing.svg`;
+export function getLogoPaths(
+  baseLogo?: string,
+  quoteLogo?: string,
+  baseChainLogo?: string,
+  quoteChainLogo?: string,
+  settlementChainLogo?: string
+): LogoPaths {
+  const missing = `${URL_BASE}/missing.svg`;
 
   return {
-    base,
-    quote,
+    base: baseLogo ? `${URL_BASE}${baseLogo}` : missing,
+    quote: quoteLogo ? `${URL_BASE}${quoteLogo}` : missing,
+    quoteChain: quoteChainLogo ? `${URL_BASE}${quoteChainLogo}` : undefined,
+    baseChain: quoteChainLogo ? `${URL_BASE}${quoteChainLogo}` : undefined,
+    settlementChain: settlementChainLogo
+      ? `${URL_BASE}${settlementChainLogo}`
+      : undefined,
   };
 }
 

@@ -8,7 +8,7 @@ export type ImgProps = ImgHTMLAttributes<HTMLImageElement>;
  * @param url string the URL of the emblem, probably calculated in EmblemByAsset or EmblemByContract
  * @returns React.Node
  */
-export function EmblemBase(p: ImgProps) {
+export function ChainLogo(p: ImgProps) {
   // Used to render a holding image while the emblem is loading
   const [loading, setLoading] = useState(true);
 
@@ -27,9 +27,9 @@ export function EmblemBase(p: ImgProps) {
       <img
         src={p.src || FALLBACK_URL}
         onError={renderFallback}
-        alt={p.alt || 'Emblem'}
-        width={p.width || '20'}
-        height={p.height || '20'}
+        alt={p.alt || 'Chain'}
+        width={p.width || '10'}
+        height={p.height || '10'}
         className={
           p.className ||
           `-5 h-5 align-text-top ${loading ? 'display-none' : 'inline-block'}`
