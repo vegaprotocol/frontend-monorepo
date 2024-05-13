@@ -83,6 +83,7 @@ export const PartyAccounts = ({ partyId }: PartyAccountsProps) => {
                       assetId={asset.id}
                       price={balance}
                       showAssetSymbol={true}
+                      hideLabel={true}
                     />
                   </td>
                   <td className="px-4">
