@@ -64,7 +64,7 @@ export const MarketListTable = (props: Props) => {
       defaultColDef={defaultColDef}
       columnDefs={columnDefs}
       components={components}
-      rowHeight={45}
+      rowHeight={60}
       headerHeight={40}
       domLayout="autoHeight"
       {...gridStoreCallbacks}

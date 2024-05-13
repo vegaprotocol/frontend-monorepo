@@ -5,7 +5,7 @@ import type {
   VegaICellRendererParams,
   VegaValueFormatterParams,
 } from '@vegaprotocol/datagrid';
-import { AgGrid, COL_DEFS } from '@vegaprotocol/datagrid';
+import { AgGrid, COL_DEFS, useDataGridEvents } from '@vegaprotocol/datagrid';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { useMemo } from 'react';
 import type { Asset } from '@vegaprotocol/types';
@@ -23,6 +23,7 @@ import { MarketCodeCell } from './market-code-cell';
 import { useT } from '../../lib/use-t';
 import { EmblemByMarket } from '@vegaprotocol/emblem';
 import { useChainId } from '@vegaprotocol/wallet-react';
+import { useMarketsStore } from './market-list-table';
 
 type SettlementAsset = Pick<
   Asset,
@@ -250,17 +251,25 @@ const ClosedMarketsDataGrid = ({
     ];
   }, [chainId, t]);
 
+  const gridStore = useMarketsStore((store) => store.gridStore);
+  const updateGridStore = useMarketsStore((store) => store.updateGridStore);
+
+  const gridStoreCallbacks = useDataGridEvents(gridStore, (colState) => {
+    updateGridStore(colState);
+  });
+
   return (
     <AgGrid
       rowData={rowData}
       defaultColDef={COL_DEFS.default}
       columnDefs={colDefs}
+      domLayout="autoHeight"
       getRowId={({ data }) => data.id}
       overlayNoRowsTemplate={error ? error.message : t('No markets')}
       components={components}
-      rowHeight={45}
+      rowHeight={60}
       headerHeight={40}
-      domLayout="autoHeight"
+      {...gridStoreCallbacks}
       onCellClicked={({ data, column, event }: CellClickedEvent<Row>) => {
         if (!data) return;
 
