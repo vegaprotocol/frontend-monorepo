@@ -1,4 +1,5 @@
-import { URL_BASE, FILENAME } from '../config';
+import { URL_BASE, FILENAME, CHAIN_FILENAME } from '../config';
+import { ChainEmblem } from './chain-emblem';
 import { EmblemBase } from './emblem-base';
 import { getVegaChain } from './lib/get-chain';
 
@@ -17,7 +18,17 @@ export type EmblemByAssetProps = {
  */
 export function EmblemByAsset(p: EmblemByAssetProps) {
   const chain = getVegaChain(p.vegaChain);
-  const url = `${URL_BASE}/vega/${chain}/asset/${p.asset}/${FILENAME}`;
+  const baseUrl = `${URL_BASE}/vega/${chain}/asset/${p.asset}/`;
 
-  return <EmblemBase src={url} {...p} />;
+  return (
+    <div className="relative inline-block">
+      <EmblemBase src={`${baseUrl}${FILENAME}`} {...p} />
+      {p.showSourceChain !== false && (
+        <ChainEmblem
+          src={`${baseUrl}${CHAIN_FILENAME}`}
+          className={`align-text-top absolute bottom-0 right-0`}
+        />
+      )}
+    </div>
+  );
 }

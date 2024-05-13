@@ -8,7 +8,7 @@ export type ImgProps = ImgHTMLAttributes<HTMLImageElement>;
  * @param url string the URL of the emblem, probably calculated in EmblemByAsset or EmblemByContract
  * @returns React.Node
  */
-export function ChainLogo(p: ImgProps) {
+export function ChainEmblem(p: ImgProps) {
   // Used to render a holding image while the emblem is loading
   const [loading, setLoading] = useState(true);
 

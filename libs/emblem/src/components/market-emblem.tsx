@@ -2,7 +2,7 @@ import { URL_BASE } from '../config';
 import { EmblemBase } from './emblem-base';
 import { useMarketInfo } from './hooks/use-market-info';
 import { getVegaChain } from './lib/get-chain';
-import { ChainLogo } from './chain-logo';
+import { ChainEmblem } from './chain-emblem';
 
 export type EmblemByMarketProps = {
   // The ID of the market to display logos for
@@ -47,7 +47,7 @@ export function EmblemByMarket(props: EmblemByMarketProps) {
       />
 
       {props.showSourceChain !== false && baseChain && (
-        <ChainLogo
+        <ChainEmblem
           src={baseChain}
           className={`z-20 align-text-top absolute bottom-0 left-4`}
         />
@@ -59,7 +59,7 @@ export function EmblemByMarket(props: EmblemByMarketProps) {
         {...props}
       />
       {props.showSourceChain !== false && (
-        <ChainLogo
+        <ChainEmblem
           src={quoteChain || settlementChain}
           className={`align-text-top absolute bottom-0 right-1`}
         />
