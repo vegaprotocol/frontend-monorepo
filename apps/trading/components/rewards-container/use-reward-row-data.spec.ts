@@ -81,6 +81,11 @@ const testData = {
       amount: '5501',
     },
     {
+      rewardType: Schema.AccountType.ACCOUNT_TYPE_REWARD_REALISED_RETURN,
+      assetId: 'asset4',
+      amount: '10',
+    },
+    {
       rewardType: Schema.AccountType.ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES,
       assetId: 'asset4',
       amount: '456',
@@ -153,10 +158,10 @@ describe('getRewards', () => {
         marketCreation: 0,
         averagePosition: 0,
         relativeReturns: 0,
-        realisedReturns: 0,
+        realisedReturns: 10,
         returnsVolatility: 0,
         validatorRanking: 4565,
-        total: 10522,
+        total: 10532,
       },
     ]);
   });
