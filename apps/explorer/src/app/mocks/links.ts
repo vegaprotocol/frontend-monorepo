@@ -3,25 +3,26 @@ import { ExplorerNodeNamesDocument } from '../routes/validators/__generated__/No
 import type { MockedResponse } from '@apollo/client/testing';
 import { ExplorerMarketDocument } from '../components/links/market-link/__generated__/Market';
 import { ExplorerNodeDocument } from '../components/links/node-link/__generated__/Node';
+import { AssetMarketsDocument } from '../routes/assets/components/__generated__/Asset-Markets';
 
-export const NodeNamesMock: MockedResponse = {
+export const MockNodeNames: MockedResponse = {
   request: {
     query: ExplorerNodeNamesDocument,
   },
   result: { data: null },
 };
 
-export const ExplorerEpochForBlock: MockedResponse = {
+export const MockExplorerEpochForBlock: MockedResponse = {
   request: {
     query: ExplorerEpochForBlockDocument,
     variables: {
-      block: '52987',
+      block: '1',
     },
   },
   result: { data: null },
 };
 
-export const ExplorerMarket123: MockedResponse = {
+export const MockExplorerMarket123: MockedResponse = {
   request: {
     query: ExplorerMarketDocument,
     variables: {
@@ -31,7 +32,7 @@ export const ExplorerMarket123: MockedResponse = {
   result: { data: { market: { id: '123' } } },
 };
 
-export const ExplorerMarket456: MockedResponse = {
+export const MockExplorerMarket456: MockedResponse = {
   request: {
     query: ExplorerMarketDocument,
     variables: {
@@ -41,7 +42,7 @@ export const ExplorerMarket456: MockedResponse = {
   result: { data: { market: { id: '456' } } },
 };
 
-export const ExplorerNode: MockedResponse = {
+export const MockExplorerNode: MockedResponse = {
   request: {
     query: ExplorerNodeDocument,
     variables: {
@@ -51,9 +52,17 @@ export const ExplorerNode: MockedResponse = {
   result: { data: null },
 };
 
+export const MockAssetMarkets: MockedResponse = {
+  request: {
+    query: AssetMarketsDocument,
+  },
+  result: { data: null },
+};
+
 export const commonLinkMocks: MockedResponse[] = [
-  NodeNamesMock,
-  ExplorerEpochForBlock,
-  ExplorerMarket123,
-  ExplorerNode,
+  MockNodeNames,
+  MockExplorerEpochForBlock,
+  MockExplorerMarket123,
+  MockExplorerNode,
+  MockAssetMarkets,
 ];

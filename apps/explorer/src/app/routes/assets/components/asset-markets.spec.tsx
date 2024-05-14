@@ -4,6 +4,7 @@ import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import type { AssetMarketsQuery } from './__generated__/Asset-Markets';
 import { AccountType } from '@vegaprotocol/types';
+import { MockAssetMarkets } from '../../../mocks/links';
 
 jest.mock('../../../components/links');
 jest.mock('../../../components/price-in-market/price-in-market');
@@ -148,7 +149,7 @@ describe('transformAssetMarketsQuery', () => {
 describe('AssetMarkets', () => {
   it('should render the component', () => {
     render(
-      <MockedProvider>
+      <MockedProvider mocks={[MockAssetMarkets]}>
         <MemoryRouter>
           <AssetMarkets asset="assetId" />
         </MemoryRouter>
@@ -160,7 +161,7 @@ describe('AssetMarkets', () => {
 
   it('should display a message when there are no markets with an insurance account balance in the asset', () => {
     render(
-      <MockedProvider>
+      <MockedProvider mocks={[MockAssetMarkets]}>
         <MemoryRouter>
           <AssetMarkets asset="assetId" />
         </MemoryRouter>

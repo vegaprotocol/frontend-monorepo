@@ -5,7 +5,7 @@ import { render } from '@testing-library/react';
 import MarketLink from './market-link';
 import { ExplorerMarketDocument } from './__generated__/Market';
 import { GraphQLError } from 'graphql';
-import { ExplorerMarket456 } from '../../../mocks/links';
+import { MockExplorerMarket456 } from '../../../mocks/links';
 
 function renderComponent(id: string, mocks: MockedResponse[]) {
   return (
@@ -21,7 +21,7 @@ jest.mock('../../emblem-with-chain/emblem-with-chain');
 
 describe('Market link component', () => {
   it('Renders the ID at first', () => {
-    const res = render(renderComponent('456', [ExplorerMarket456]));
+    const res = render(renderComponent('456', [MockExplorerMarket456]));
     expect(res.getByText('456')).toBeInTheDocument();
   });
 
