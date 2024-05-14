@@ -72,4 +72,53 @@ describe('Emblem', () => {
       '/vega/'
     );
   });
+
+  it('sets a default width and height if not provided', () => {
+    const props = {
+      contract: '456',
+      alt: 'Emblem',
+    };
+
+    const { getByAltText } = render(
+      <Emblem data-testId="emblem-by-contract" {...props} />
+    );
+    const emblemByContractComponent = getByAltText('Emblem');
+
+    expect(emblemByContractComponent.getAttribute('width')).toBe('30');
+    expect(emblemByContractComponent.getAttribute('height')).toBe('30');
+  });
+
+  it('allows the default width and height to be overridden', () => {
+    const props = {
+      contract: '456',
+      alt: 'Emblem',
+      width: '100',
+      height: '100',
+    };
+
+    const { getByAltText } = render(
+      <Emblem data-testId="emblem-by-contract" {...props} />
+    );
+    const emblemByContractComponent = getByAltText('Emblem');
+
+    expect(emblemByContractComponent.getAttribute('width')).toBe('100');
+    expect(emblemByContractComponent.getAttribute('height')).toBe('100');
+  });
+
+  it('passes through classnames', () => {
+    const props = {
+      contract: '456',
+      alt: 'Emblem',
+      className: 'test-class',
+    };
+
+    const { getByAltText } = render(
+      <Emblem data-testId="emblem-by-contract" {...props} />
+    );
+    const emblemByContractComponent = getByAltText('Emblem');
+
+    expect(emblemByContractComponent.getAttribute('class')).toContain(
+      'test-class'
+    );
+  });
 });
