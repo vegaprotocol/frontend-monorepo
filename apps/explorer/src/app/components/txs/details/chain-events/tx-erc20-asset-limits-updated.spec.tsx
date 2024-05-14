@@ -16,6 +16,8 @@ const fullMock: AssetLimitsUpdated = {
   withdrawThreshold: '60',
 };
 
+jest.mock('../../../links/asset-link/asset-link');
+
 describe('Chain Event: ERC20 Asset limits updated', () => {
   it('Renders nothing if no good data is provided', () => {
     const mock = undefined as unknown as AssetLimitsUpdated;

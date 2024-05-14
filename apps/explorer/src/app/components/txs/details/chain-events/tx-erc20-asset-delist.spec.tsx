@@ -13,6 +13,8 @@ const fullMock: Delist = {
   vegaAssetId: 'asset123',
 };
 
+jest.mock('../../../links/asset-link/asset-link');
+
 describe('Chain Event: ERC20 Asset Delist', () => {
   it('Renders nothing if no good data is provided', () => {
     const mock = undefined as unknown as Delist;
