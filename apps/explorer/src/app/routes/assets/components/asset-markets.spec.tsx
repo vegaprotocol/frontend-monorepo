@@ -5,6 +5,9 @@ import { MemoryRouter } from 'react-router-dom';
 import type { AssetMarketsQuery } from './__generated__/Asset-Markets';
 import { AccountType } from '@vegaprotocol/types';
 
+jest.mock('../../../components/links');
+jest.mock('../../../components/price-in-market/price-in-market');
+
 describe('transformAssetMarketsQuery', () => {
   it('should return an empty array if data is undefined', () => {
     const result = transformAssetMarketsQuery(undefined, 'assetId');

@@ -17,6 +17,8 @@ function renderComponent(id: string, mocks: MockedResponse[]) {
   );
 }
 
+jest.mock('../../emblem-with-chain/emblem-with-chain');
+
 describe('Market link component', () => {
   it('Renders the ID at first', () => {
     const res = render(renderComponent('456', [ExplorerMarket456]));
