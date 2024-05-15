@@ -56,6 +56,7 @@ const mock = {
     },
   },
 };
+
 function renderComponent(
   id: string,
   mocks: MockedResponse[],
@@ -67,6 +68,9 @@ function renderComponent(
     </MockedProvider>
   );
 }
+
+jest.mock('../price-in-market/price-in-market');
+jest.mock('../size-in-market/size-in-market');
 
 describe('Order Summary component', () => {
   it('side, size are present', async () => {

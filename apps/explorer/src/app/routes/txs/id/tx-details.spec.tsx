@@ -12,7 +12,7 @@ import { commonLinkMocks } from '../../../mocks/links';
 const pubKey =
   '67755549e43e95f0697f83b2bf419c6ccc18eee32a8a61b8ba6f59471b86fbef';
 const hash = '7416753a30622a9e24a06f0172d6c33a95186b36806d96345c6dc5a23fa3f283';
-const height = '52987';
+const height = '1';
 
 const txData: BlockExplorerTransactionResult = {
   hash,
