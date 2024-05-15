@@ -5,6 +5,10 @@ import {
   SidebarAccordionItem,
   SidebarAccordionTrigger,
 } from './sidebar-accordion';
+import { DealTicketContainer } from '@vegaprotocol/deal-ticket';
+import { MarketInfoAccordionContainer } from '@vegaprotocol/markets';
+import { useParams } from 'react-router-dom';
+import { ErrorBoundary } from '../error-boundary';
 
 // TODO: Delete this and all references to it
 export enum ViewType {
@@ -46,19 +50,39 @@ export type BarView =
     };
 
 export const Sidebar = () => {
+  const params = useParams();
   return (
-    <div className="p-1 h-full">
-      <SidebarAccordion type="single" defaultValue="trade" className="h-full">
+    <div className="grid grid-rows-[1fr_min-content] p-1 h-full">
+      <SidebarAccordion
+        type="single"
+        defaultValue="trade"
+        className="h-full min-h-0"
+      >
         <SidebarAccordionItem value="trade">
           <SidebarAccordionTrigger>Trade</SidebarAccordionTrigger>
           <SidebarAccordionContent>
-            <div>Trade content</div>
+            <ErrorBoundary feature="deal-ticket">
+              {params.marketId ? (
+                <DealTicketContainer
+                  marketId={params.marketId}
+                  onDeposit={() => alert('TODO: handle on deposit')}
+                />
+              ) : (
+                <div>No market Id</div>
+              )}
+            </ErrorBoundary>
           </SidebarAccordionContent>
         </SidebarAccordionItem>
         <SidebarAccordionItem value="info">
           <SidebarAccordionTrigger>Market info</SidebarAccordionTrigger>
           <SidebarAccordionContent>
-            <div>Market info content</div>
+            <ErrorBoundary feature="market-info">
+              {params.marketId ? (
+                <MarketInfoAccordionContainer marketId={params.marketId} />
+              ) : (
+                <div>No market Id</div>
+              )}
+            </ErrorBoundary>
           </SidebarAccordionContent>
         </SidebarAccordionItem>
         <SidebarAccordionItem value="assets">
@@ -68,6 +92,7 @@ export const Sidebar = () => {
           </SidebarAccordionContent>
         </SidebarAccordionItem>
       </SidebarAccordion>
+      <div className="p-2 text-sm text-right">Stuff</div>
     </div>
   );
 };
