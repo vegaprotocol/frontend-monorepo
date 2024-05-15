@@ -168,7 +168,7 @@ jobs:
         run: |
           echo "e2e-needed=false" >> $GITHUB_ENV
           PR_TITLE="${{ github.event.pull_request.title }}"
-          if [[ "$PR_TITLE" =~ governance: ]] || [[ "$PR_TITLE" =~ explorer: ]]; then
+          if [[ "$PR_TITLE" =~ governance: || "$PR_TITLE" =~ explorer: ]]; then
             echo "e2e-needed=true" >> $GITHUB_ENV
           fi
       - name: Print result
