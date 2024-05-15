@@ -10,9 +10,9 @@ on:
       - ready_for_review
       - reopened
       - synchronize
+
 jobs:
   node-modules:
-    # All jobs depend on node_modules, so none should run if the PR is in draft
     if: github.event.pull_request.draft == false
     runs-on: ubuntu-22.04
     name: 'Cache yarn modules'
@@ -21,20 +21,17 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
-
       - name: Setup node
         uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
           cache: yarn
-
       - name: Cache node modules
         id: cache
         uses: actions/cache@v4
         with:
           path: node_modules
           key: ${{ runner.os }}-cache-node-modules-${{ hashFiles('yarn.lock') }}
-
       - name: yarn install
         if: steps.cache.outputs.cache-hit != 'true'
         run: yarn install --pure-lockfile
@@ -50,30 +47,24 @@ jobs:
         with:
           fetch-depth: 0
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
-
       - name: Setup node
         uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
           cache: yarn
-
       - name: Cache node modules
         uses: actions/cache@v4
         with:
           path: node_modules
           key: ${{ runner.os }}-cache-node-modules-${{ hashFiles('yarn.lock') }}
-
       - name: Derive appropriate SHAs for base and head for `nx affected` commands
         uses: nrwl/nx-set-shas@v4
         with:
           main-branch-name: develop
-
       - name: Check formatting
         run: yarn nx format:check
-
       - name: Lint affected
         run: yarn nx affected:lint --max-warnings=0
-
       - name: Build affected spec
         run: yarn nx affected --target=build-spec
 
@@ -88,24 +79,20 @@ jobs:
         with:
           fetch-depth: 0
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
-
       - name: Setup node
         uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
           cache: yarn
-
       - name: Cache node modules
         uses: actions/cache@v4
         with:
           path: node_modules
           key: ${{ runner.os }}-cache-node-modules-${{ hashFiles('yarn.lock') }}
-
       - name: Derive appropriate SHAs for base and head for `nx affected` commands
         uses: nrwl/nx-set-shas@v4
         with:
           main-branch-name: develop
-
       - name: Test affected
         run: yarn nx affected:test
 
@@ -120,36 +107,29 @@ jobs:
         with:
           fetch-depth: 0
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
-
       - name: Setup node
         uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
           cache: yarn
-
       - name: Cache node modules
         uses: actions/cache@v4
         with:
           path: node_modules
           key: ${{ runner.os }}-cache-node-modules-${{ hashFiles('yarn.lock') }}
-
       - name: Derive appropriate SHAs for base and head for `nx affected` commands
         uses: nrwl/nx-set-shas@v4
         with:
           main-branch-name: develop
-
-      # See affected apps
       - name: See affected apps
         run: |
           branch_slug="$(echo '${{ github.head_ref || github.ref_name }}' | sed -r s/[^a-zA-Z0-9]+/-/g | sed -r s/^-+\|-+$//g | cut -c 1-50 )"
           python3 tools/ci/check-affected.py --github-ref="${{ github.ref }}" --branch-slug="$branch_slug" --event-name="${{ github.event_name }}"
-
       - name: Verify script result
         run: |
           echo "Check outputs from script"
           echo "projects: ${{ env.PROJECTS }}"
           echo "projects-e2e: ${{ env.PROJECTS_E2E }}"
-
       - name: Build affected
         run: yarn nx affected:build || (yarn install && yarn nx affected:build)
     outputs:
@@ -161,7 +141,7 @@ jobs:
     needs: build-sources
     name: '(CI) check if e2e needed'
     outputs:
-      run-tests: ${{ steps.check-test.outputs.e2e-needed }}
+      e2e-needed: ${{ steps.check-test.outputs.e2e-needed }}
     steps:
       - name: Check PR title for governance or explorer
         id: check-test
@@ -171,16 +151,18 @@ jobs:
           if [[ "$PR_TITLE" =~ "governance" ]] || [[ "$PR_TITLE" =~ "explorer" ]]; then
             echo "e2e-needed=true" >> $GITHUB_ENV
           fi
+        env:
+          e2e-needed: ${{ steps.check-test.outputs.e2e-needed }}
       - name: Print result
         run: |
-          echo "e2e-needed: ${{ steps.check-test.outputs.e2e-needed }}"
+          echo "e2e-needed: ${{ env.e2e-needed }}"
 
   cypress:
     needs: [build-sources, check-e2e-needed]
     name: '(CI) cypress'
     uses: ./.github/workflows/cypress-run.yml
     secrets: inherit
-    if: needs.check-e2e-needed.outputs.run-tests == 'true' && (contains(needs.build-sources.outputs.projects, 'governance') || contains(needs.build-sources.outputs.projects, 'explorer'))
+    if: needs.check-e2e-needed.outputs.e2e-needed == 'true' && (contains(needs.build-sources.outputs.projects, 'governance') || contains(needs.build-sources.outputs.projects, 'explorer'))
     with:
       projects: ${{ needs.build-sources.outputs.projects-e2e }}
       tags: '@smoke'
@@ -212,7 +194,6 @@ jobs:
     with:
       github-sha: ${{ github.event.pull_request.head.sha || github.sha }}
 
-  # Report single result at the end, to avoid mess with required checks in PR
   test-check:
     name: '(CI) Final Tests check'
     if: ${{ always() }}
@@ -226,8 +207,6 @@ jobs:
           if [[ $result != "success" && $result != "skipped" ]]; then
             echo "Failing due to Cypress tests."
             exit 1
-          fi
-
       - name: Check Trading E2E Tests Result
         run: |
           result="${{ needs.trading-e2e.result }}"
@@ -235,7 +214,5 @@ jobs:
           if [[ $result != "success" && $result != "skipped" ]]; then
             echo "Failing due to Trading E2E tests."
             exit 1
-          fi
-
       - name: All Tests Passed
         run: echo "All specified tests have passed successfully."
