@@ -14,6 +14,8 @@ import { useT } from '../../lib/use-t';
 import { ErrorBoundary } from '../../components/error-boundary';
 import { type TradingView } from './trade-views';
 import { TradingViews } from './trade-views';
+import { MobileMarketHeader } from '../../components/market-header';
+
 interface TradePanelsProps {
   market: Market;
   pinnedAsset?: PinnedAsset;
@@ -69,7 +71,10 @@ export const TradePanels = ({ market, pinnedAsset }: TradePanelsProps) => {
   };
 
   return (
-    <div className="h-full flex flex-col lg:grid grid-rows-[min-content_min-content_1fr_min-content]">
+    <div className="h-full flex flex-col">
+      <MobileMarketHeader />
+
+      {/* Top section */}
       <div className="flex flex-col w-full overflow-hidden">
         <div className="flex flex-nowrap overflow-x-auto max-w-full border-t border-default">
           {[
@@ -120,7 +125,9 @@ export const TradePanels = ({ market, pinnedAsset }: TradePanelsProps) => {
           <div className="overflow-auto h-full">{renderView(topView)}</div>
         </div>
       </div>
+      {/* END: Top section */}
 
+      {/* Bottom section */}
       <div className="flex flex-col w-full grow">
         <div className="flex flex-nowrap overflow-x-auto max-w-full border-t border-default">
           {[
@@ -150,6 +157,7 @@ export const TradePanels = ({ market, pinnedAsset }: TradePanelsProps) => {
           <div className="overflow-auto h-full">{renderView(bottomView)}</div>
         </div>
       </div>
+      {/* END: Bottom section */}
     </div>
   );
 };
