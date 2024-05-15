@@ -1,4 +1,10 @@
 import { create } from 'zustand';
+import {
+  SidebarAccordion,
+  SidebarAccordionContent,
+  SidebarAccordionItem,
+  SidebarAccordionTrigger,
+} from './sidebar-accordion';
 
 // TODO: Delete this and all references to it
 export enum ViewType {
@@ -40,7 +46,30 @@ export type BarView =
     };
 
 export const Sidebar = () => {
-  return <div>Sidebar</div>;
+  return (
+    <div className="p-1 h-full">
+      <SidebarAccordion type="single" defaultValue="trade" className="h-full">
+        <SidebarAccordionItem value="trade">
+          <SidebarAccordionTrigger>Trade</SidebarAccordionTrigger>
+          <SidebarAccordionContent>
+            <div>Trade content</div>
+          </SidebarAccordionContent>
+        </SidebarAccordionItem>
+        <SidebarAccordionItem value="info">
+          <SidebarAccordionTrigger>Market info</SidebarAccordionTrigger>
+          <SidebarAccordionContent>
+            <div>Market info content</div>
+          </SidebarAccordionContent>
+        </SidebarAccordionItem>
+        <SidebarAccordionItem value="assets">
+          <SidebarAccordionTrigger>Assets</SidebarAccordionTrigger>
+          <SidebarAccordionContent>
+            <div>Assets content</div>
+          </SidebarAccordionContent>
+        </SidebarAccordionItem>
+      </SidebarAccordion>
+    </div>
+  );
 };
 
 // TODO: Delete this and ensure all usage of this hook instead navigate to new pages
