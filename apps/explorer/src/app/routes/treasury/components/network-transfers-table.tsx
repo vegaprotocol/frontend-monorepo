@@ -1,5 +1,5 @@
 import { AsyncRenderer, Icon } from '@vegaprotocol/ui-toolkit';
-import AssetBalance from '../../../components/asset-balance/asset-balance';
+import { AssetBalance } from '../../../components/asset-balance/asset-balance';
 import { AccountType, AccountTypeMapping } from '@vegaprotocol/types';
 import { AssetLink, PartyLink } from '../../../components/links';
 import {
@@ -12,7 +12,7 @@ import { t } from '@vegaprotocol/i18n';
 import { IconNames } from '@blueprintjs/icons';
 import { useMemo } from 'react';
 import { useScreenDimensions } from '@vegaprotocol/react-helpers';
-import ProposalLink from '../../../components/links/proposal-link/proposal-link';
+import { ProposalLink } from '../../../components/links/proposal-link/proposal-link';
 
 export const colours = {
   INCOMING: '!fill-vega-green-600 text-vega-green-600 mr-2',
@@ -158,7 +158,7 @@ export const NetworkTransfersTable = () => {
                     a?.toAccountType ===
                     AccountType.ACCOUNT_TYPE_NETWORK_TREASURY;
                   return (
-                    <tr>
+                    <tr key={a?.id}>
                       {a && a.amount && a.asset && (
                         <td
                           className={`px-2 py-1 border whitespace-nowrap text-right ${
