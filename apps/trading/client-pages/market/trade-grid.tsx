@@ -15,6 +15,7 @@ import { TradingViews } from './trade-views';
 import { useT } from '../../lib/use-t';
 import { ErrorBoundary } from '../../components/error-boundary';
 import { MarketBanner } from '../../components/market-banner';
+import { MarketHeader } from '../../components/market-header';
 
 interface TradeGridProps {
   market: Market;
@@ -205,11 +206,14 @@ MainGrid.displayName = 'MainGrid';
 export const TradeGrid = ({ market, pinnedAssets }: TradeGridProps) => {
   const wrapperClasses = classNames(
     'h-full grid',
-    'grid-rows-[min-content_1fr]'
+    'grid-rows-[min-content_min-content_1fr]'
   );
 
   return (
     <div className={wrapperClasses}>
+      <div>
+        <MarketHeader />
+      </div>
       <div>
         <MarketBanner market={market} />
       </div>

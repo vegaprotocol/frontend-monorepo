@@ -7,6 +7,7 @@ import { useParams } from 'react-router-dom';
 import { LiquidityContainer } from '../../components/liquidity-container';
 import { useT } from '../../lib/use-t';
 import { ErrorBoundary } from '../../components/error-boundary';
+import { LiquidityHeader } from '../../components/liquidity-header';
 
 const enum LiquidityTabs {
   Active = 'active',
@@ -51,8 +52,12 @@ export const LiquidityViewContainer = ({
   }, [data, pubKey]);
 
   return (
-    <div className="h-full p-1.5">
-      <div className="h-full border border-default">
+    <div className="h-full grid grid-rows-[min-content_1fr]">
+      <div>
+        {/* TODO: check this renders correctly */}
+        <LiquidityHeader />
+      </div>
+      <div className="h-full p-1.5">
         <Tabs value={tab || LiquidityTabs.Active} onValueChange={setTab}>
           <Tab
             id={LiquidityTabs.MyLiquidityProvision}
