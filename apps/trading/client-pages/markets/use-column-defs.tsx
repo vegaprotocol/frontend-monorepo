@@ -50,7 +50,11 @@ const openInterestValues = (data: MarketMaybeWithData) => {
   };
 };
 
-const openInterestRenderer = (data: MarketMaybeWithData | undefined) => {
+const OpenInterestCell = ({
+  data,
+}: {
+  data: MarketMaybeWithData | undefined;
+}) => {
   const openInterestData = data && openInterestValues(data);
   if (!openInterestData) return null;
   const { openInterest, openInterestNotional } = openInterestData;
@@ -309,7 +313,9 @@ export const useMarketsColumnDefs = () => {
           'data.openInterest'
         >) => {
           return (
-            <span className="font-mono">{openInterestRenderer(data)}</span>
+            <span className="font-mono">
+              <OpenInterestCell data={data} />
+            </span>
           );
         },
       },
