@@ -21,7 +21,10 @@ const SidebarAccordionItem = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <AccordionPrimitive.Item
     ref={ref}
-    className={classNames('border border-default', className)}
+    className={classNames(
+      'data-[state=open]:grow data-[state=closed]:shrink-0 border border-default flex flex-col min-h-0',
+      className
+    )}
     {...props}
   />
 ));
@@ -35,7 +38,7 @@ const SidebarAccordionTrigger = React.forwardRef<
     <AccordionPrimitive.Trigger
       ref={ref}
       className={classNames(
-        'flex flex-1 items-center justify-between text-sm p-2 bg-vega-clight-600 dark:bg-vega-dark-600 border-b border-default',
+        'flex flex-1 items-center justify-between text-sm p-2 bg-vega-clight-600 dark:bg-vega-dark-600 hover:bg-vega-clight-500 dark:hover:bg-vega-cdark-500 border-b border-default',
         className
       )}
       {...props}
@@ -52,10 +55,12 @@ const SidebarAccordionContent = React.forwardRef<
 >(({ className, children, ...props }, ref) => (
   <AccordionPrimitive.Content
     ref={ref}
-    className="overflow-hidden text-sm transition-all data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down"
+    className="text-sm grow overflow-hidden"
     {...props}
   >
-    <div className={classNames('pb-4 pt-0', className)}>{children}</div>
+    <div className={classNames('p-2 h-full overflow-y-auto', className)}>
+      {children}
+    </div>
   </AccordionPrimitive.Content>
 ));
 
