@@ -162,11 +162,14 @@ jobs:
     name: '(CI) check if e2e needed'
     outputs:
       run-tests: ${{ steps.check-test.outputs.e2e-needed }}
+      pr-title: ${{ steps.check-test.outputs.pr-title }}
     steps:
-      - name: Check branch
+      - name: Check branch and title for keywords
         id: check-test
         run: |
-          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+          title="${{ github.event.pull_request.title }}"
+          echo "pr-title=$title" >> $GITHUB_OUTPUT
+          if [[ "${{ github.event_name }}" == "pull_request" ]] && ([[ "$title" == *"explorer"* ]] || [[ "$title" == *"governance"* ]]); then
             echo "e2e-needed=true" >> $GITHUB_OUTPUT
           else
             echo "e2e-needed=false" >> $GITHUB_OUTPUT
@@ -174,13 +177,19 @@ jobs:
       - name: Print result
         run: |
           echo "e2e-needed: ${{ steps.check-test.outputs.e2e-needed }}"
+          echo "PR Title: ${{ steps.check-test.outputs.pr-title }}"
 
   cypress:
     needs: [build-sources, check-e2e-needed]
     name: '(CI) cypress'
     uses: ./.github/workflows/cypress-run.yml
     secrets: inherit
-    if: needs.check-e2e-needed.outputs.run-tests == 'true' && (contains(needs.build-sources.outputs.projects, 'governance') || contains(needs.build-sources.outputs.projects, 'explorer'))
+    if: |
+      needs.check-e2e-needed.outputs.run-tests == 'true' &&
+      (
+        (contains(github.event.pull_request.title, 'governance') && contains(needs.build-sources.outputs.projects, 'governance')) ||
+        (contains(github.event.pull_request.title, 'explorer') && contains(needs.build-sources.outputs.projects, 'explorer'))
+      )
     with:
       projects: ${{ needs.build-sources.outputs.projects-e2e }}
       tags: '@smoke'
