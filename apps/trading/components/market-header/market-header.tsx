@@ -50,7 +50,7 @@ export const MarketHeader = () => {
                 trigger={
                   <HeaderTitle>
                     <Tooltip description={t(tooltip)}>
-                      <span>
+                      <span className="flex items-center">
                         {marketId && (
                           <span className="mr-4">
                             <EmblemByMarket
