@@ -4,7 +4,10 @@ import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { Routes as RouteNames } from '../../route-names';
 import { useFetch } from '@vegaprotocol/react-helpers';
 import { MockedProvider } from '@apollo/client/testing';
-import { MockExplorerEpochForBlock } from '../../../mocks/links';
+import {
+  MockExplorerEpoch,
+  MockExplorerEpochForBlock,
+} from '../../../mocks/links';
 
 jest.mock('@vegaprotocol/react-helpers', () => {
   const original = jest.requireActual('@vegaprotocol/react-helpers');
@@ -14,15 +17,9 @@ jest.mock('@vegaprotocol/react-helpers', () => {
   };
 });
 
-jest.mock('../../../components/links/node-link/tendermint-node-link', () => ({
-  ...jest.requireActual(
-    '../../../components/links/node-link/tendermint-node-link'
-  ),
-  __esModule: true,
-  default: (props: { id: string }) => <div>{props.id}</div>,
-}));
+jest.mock('../../../components/links/node-link/tendermint-node-link');
 
-const blockId = 1085890;
+const blockId = 1;
 
 const createBlockResponse = (id: number = blockId) => {
   return {
@@ -131,7 +128,7 @@ const createBlockResponse = (id: number = blockId) => {
 
 const renderComponent = (id: number = blockId) => {
   return (
-    <MockedProvider mocks={[MockExplorerEpochForBlock]}>
+    <MockedProvider mocks={[MockExplorerEpochForBlock, MockExplorerEpoch]}>
       <MemoryRouter initialEntries={[`/${RouteNames.BLOCKS}/${id}`]}>
         <Routes>
           <Route path={`/${RouteNames.BLOCKS}/:block`} element={<Block />} />
@@ -149,6 +146,8 @@ afterEach(() => {
   jest.clearAllMocks();
   jest.useRealTimers();
 });
+
+jest.mock('../../../components/links/node-link/tendermint-node-link');
 
 describe('Block', () => {
   it('renders error state if error is present', async () => {

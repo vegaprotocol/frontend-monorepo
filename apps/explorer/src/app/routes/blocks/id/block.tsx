@@ -17,7 +17,7 @@ import { useDocumentTitle } from '../../../hooks/use-document-title';
 import EmptyList from '../../../components/empty-list/empty-list';
 import { useExplorerEpochForBlockQuery } from '../../../components/links/block-link/__generated__/EpochByBlock';
 import EpochOverview from '../../../components/epoch-overview/epoch';
-import TendermintNodeLink from '../../../components/links/node-link/tendermint-node-link';
+import { TendermintNodeLink } from '../../../components/links/node-link/tendermint-node-link';
 
 type Params = { block: string };
 

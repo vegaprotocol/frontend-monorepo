@@ -5,12 +5,33 @@ import { ExplorerMarketDocument } from '../components/links/market-link/__genera
 import { ExplorerNodeDocument } from '../components/links/node-link/__generated__/Node';
 import { AssetMarketsDocument } from '../routes/assets/components/__generated__/Asset-Markets';
 import { AssetsDocument } from '@vegaprotocol/assets';
+import { ExplorerEpochDocument } from '../components/epoch-overview/__generated__/Epoch';
 
 export const MockNodeNames: MockedResponse = {
   request: {
     query: ExplorerNodeNamesDocument,
   },
   result: { data: null },
+};
+export const MockExplorerEpoch: MockedResponse = {
+  request: {
+    query: ExplorerEpochDocument,
+    variables: {
+      id: '1',
+    },
+  },
+  result: {
+    data: {
+      epoch: {
+        id: '1',
+        timestamps: {
+          start: '2022-03-24T11:03:40.014303953Z',
+          end: '2022-03-24T11:03:40.014303953Z',
+          lastBlock: '1',
+        },
+      },
+    },
+  },
 };
 
 export const MockExplorerEpochForBlock: MockedResponse = {
@@ -20,7 +41,18 @@ export const MockExplorerEpochForBlock: MockedResponse = {
       block: '1',
     },
   },
-  result: { data: null },
+  result: {
+    data: {
+      epoch: {
+        id: '1',
+        timestamps: {
+          start: '2022-03-24T11:03:40.014303953Z',
+          end: '2022-03-24T11:03:40.014303953Z',
+          lastBlock: '1',
+        },
+      },
+    },
+  },
 };
 
 export const MockExplorerMarket123: MockedResponse = {
@@ -98,4 +130,5 @@ export const commonLinkMocks: MockedResponse[] = [
   MockExplorerNode,
   MockAssetMarkets,
   MockAsset,
+  MockExplorerEpoch,
 ];
