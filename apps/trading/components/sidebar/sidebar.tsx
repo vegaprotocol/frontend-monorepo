@@ -55,11 +55,7 @@ export const Sidebar = () => {
   const params = useParams();
   return (
     <div className="grid grid-rows-[1fr_min-content] p-1 h-full">
-      <SidebarAccordion
-        type="single"
-        defaultValue="trade"
-        className="h-full min-h-0"
-      >
+      <SidebarAccordion type="single" defaultValue="trade">
         <SidebarAccordionItem value="trade">
           <SidebarAccordionTrigger>Trade</SidebarAccordionTrigger>
           <SidebarAccordionContent>
@@ -92,7 +88,7 @@ export const Sidebar = () => {
             <AssetCard marketId={params.marketId} />
           </SidebarAccordionTrigger>
           <SidebarAccordionContent>
-            <div>Assets content</div>
+            <div>Asset list</div>
           </SidebarAccordionContent>
         </SidebarAccordionItem>
       </SidebarAccordion>
