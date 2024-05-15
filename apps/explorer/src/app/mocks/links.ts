@@ -55,6 +55,27 @@ export const MockExplorerEpochForBlock: MockedResponse = {
   },
 };
 
+export const MockExplorerEpochForBlockBlank: MockedResponse = {
+  request: {
+    query: ExplorerEpochForBlockDocument,
+    variables: {
+      block: '',
+    },
+  },
+  result: {
+    data: {
+      epoch: {
+        id: '1',
+        timestamps: {
+          start: '2022-03-24T11:03:40.014303953Z',
+          end: '2022-03-24T11:03:40.014303953Z',
+          lastBlock: '1',
+        },
+      },
+    },
+  },
+};
+
 export const MockExplorerMarket123: MockedResponse = {
   request: {
     query: ExplorerMarketDocument,
