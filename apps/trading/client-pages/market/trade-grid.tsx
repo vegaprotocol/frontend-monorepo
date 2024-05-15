@@ -16,6 +16,7 @@ import { useT } from '../../lib/use-t';
 import { ErrorBoundary } from '../../components/error-boundary';
 import { MarketBanner } from '../../components/market-banner';
 import { MarketHeader } from '../../components/market-header';
+import { Sidebar } from '../../components/sidebar';
 
 interface TradeGridProps {
   market: Market;
@@ -199,7 +200,7 @@ const MainGrid = memo(
           </ResizableGrid>
         </ResizableGridPanel>
         <ResizableGridPanel minSize={320} preferredSize={320}>
-          <div>Sidebar</div>
+          <Sidebar />
         </ResizableGridPanel>
       </ResizableGrid>
     );
