@@ -12,7 +12,7 @@ export const StackedCell = ({
   return (
     <div className="leading-4">
       <div
-        className="text-ellipsis whitespace-nowrap overflow-hidden"
+        className="text-ellipsis whitespace-nowrap overflow-hidden text-sm"
         data-testid="stack-cell-primary"
       >
         <span>{primary}</span>
@@ -20,7 +20,7 @@ export const StackedCell = ({
       </div>
       <div
         data-testid="stack-cell-secondary"
-        className="text-ellipsis whitespace-nowrap overflow-hidden text-muted"
+        className="text-ellipsis whitespace-nowrap overflow-hidden text-muted text-xs"
       >
         {secondary}
       </div>

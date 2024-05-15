@@ -1,9 +1,5 @@
 import type { TypedDataAgGrid } from '@vegaprotocol/datagrid';
-import {
-  AgGrid,
-  PriceFlashCell,
-  useDataGridEvents,
-} from '@vegaprotocol/datagrid';
+import { AgGrid, PriceFlashCell } from '@vegaprotocol/datagrid';
 import type { MarketMaybeWithData } from '@vegaprotocol/markets';
 import { useMarketsColumnDefs } from './use-column-defs';
 import type { DataGridStore } from '../../stores/datagrid-store-slice';
@@ -51,12 +47,6 @@ export const useMarketsStore = create<DataGridSlice>()(
 
 export const MarketListTable = (props: Props) => {
   const columnDefs = useMarketsColumnDefs();
-  const gridStore = useMarketsStore((store) => store.gridStore);
-  const updateGridStore = useMarketsStore((store) => store.updateGridStore);
-
-  const gridStoreCallbacks = useDataGridEvents(gridStore, (colState) => {
-    updateGridStore(colState);
-  });
 
   return (
     <AgGrid
@@ -67,7 +57,9 @@ export const MarketListTable = (props: Props) => {
       rowHeight={60}
       headerHeight={40}
       domLayout="autoHeight"
-      {...gridStoreCallbacks}
+      autoSizeStrategy={{
+        type: 'fitGridWidth',
+      }}
       {...props}
     />
   );
