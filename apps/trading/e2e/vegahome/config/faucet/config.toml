@@ -1,0 +1,13 @@
+Level = "Debug"
+WalletName = "vega.1643100690865690276"
+Port = "TO_BE_SET"
+IP = "0.0.0.0"
+
+[RateLimit]
+  CoolDown = "0m0s"
+  AllowList = ["10.0.0.0/8", "127.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16", "fe80::/10"]
+
+[Node]
+  Port = "TO_BE_SET"
+  IP = "localhost"
+  Retries = 5

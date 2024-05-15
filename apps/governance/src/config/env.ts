@@ -24,6 +24,7 @@ export const ContractAddresses: {
   CUSTOM: {
     claimAddress: customClaimAddress ?? '0x0',
     lockedAddress: customLockedAddress ?? '0x0',
+    tokenVestingAddress: '0xadFcb7f93a24F8743a8e548d74d2ecB373c92866',
   },
   MAINNET_MIRROR: {
     claimAddress: '0x8Cef746ab7C83B61F6461cC92882bD61AB65a994', // TODO not deployed to this env, but random address so app doesn't error

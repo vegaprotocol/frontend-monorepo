@@ -94,6 +94,7 @@ def init_vega(request=None):
         "transactions_per_block": 1000,
         "seconds_per_block": seconds_per_block,
         "genesis_time": datetime.now() - timedelta(hours=1),
+        "custom_vega_home_path": "vegahome"
     }
 
     if port_config is not None:
@@ -166,6 +167,7 @@ def init_page(vega: VegaServiceNull, browser: Browser, request: pytest.FixtureRe
                     "VEGA_ENV": vega_env,
                 }
             )
+            print(vega.wallet_port)
             window_env = f"window._env_ = Object.assign({{}}, window._env_, {env})"
             page.add_init_script(script=window_env)
             page.add_init_script(script="console.log(window._env_)")

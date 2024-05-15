@@ -1,0 +1,160 @@
+GatewayEnabled = true
+# Set the max number of open files (see: ulimit -n)
+UlimitNOFile = 8192
+
+[API]
+  Level = "Info"
+  Timeout = "5s"
+  Port = "TO_BE_SET"
+  IP = "0.0.0.0"
+  StreamRetries = 3
+  CoreNodeIP = "localhost"
+  CoreNodeGRPCPort = "TO_BE_SET"
+  [API.RateLimit]
+    Enabled = false
+    
+[Accounts]
+  Level = "Info"
+
+[Candles]
+  Level = "Info"
+
+[Logging]
+  Environment = "dev"
+  # This section takes effect only when Environment is set to "custom".
+  [Logging.Custom]
+    [Logging.Custom.Zap]
+      Level = -1
+      Development = true
+      Encoding = "console"
+      OutputPaths = ["stdout"]
+      ErrorOutputPaths = ["stderr"]
+    [Logging.Custom.ZapEncoder]
+      CallerKey = "C"
+      EncodeCaller = "short"
+      EncodeDuration = "string"
+      EncodeLevel = "capital"
+      EncodeName = "full"
+      EncodeTime = "iso8601"
+      LevelKey = "L"
+      LineEnding = "\n"
+      MessageKey = "M"
+      NameKey = "N"
+      TimeKey = "T"
+
+[Markets]
+  Level = "Info"
+
+[Oracles]
+  Level = "Info"
+
+[Orders]
+  Level = "Info"
+
+[Liquidity]
+  Level = "Info"
+
+[Parties]
+  Level = "Info"
+
+[Risk]
+  Level = "Info"
+
+[Trades]
+  Level = "Info"
+  PageSizeDefault = 200
+  PageSizeMaximum = 200
+
+[Time]
+  Level = "Info"
+
+[Gateway]
+  Level = "Info"
+  Timeout = "5s"
+  SubscriptionRetries = 3
+  GraphQLPlaygroundEnabled = true
+  Port = "TO_BE_SET"
+  IP = "0.0.0.0"
+  [Gateway.Node]
+    Port = "TO_BE_SET"
+    IP = "0.0.0.0"
+  [Gateway.GraphQL]
+    Enabled = true
+    ComplexityLimit = 0
+  [Gateway.REST]
+    Enabled = true
+    APMEnabled = true
+  [Gateway.RateLimits]
+    Enabled = false
+
+[Metrics]
+  Level = "Info"
+  Timeout = "5s"
+  Port = "TO_BE_SET"
+  Path = "/metrics"
+  Enabled = true
+
+[Transfers]
+  Level = "Info"
+
+[Governance]
+  Level = "Info"
+
+[Assets]
+  Level = "Info"
+
+[Notary]
+  Level = "Info"
+
+[Subscribers]
+  OrderEventLogLevel = "Info"
+  MarketEventLogLevel = "Info"
+
+[Fee]
+  Level = "Info"
+
+[Broker]
+  Level = "Info"
+  [Broker.SocketConfig]
+    IP = "0.0.0.0"
+    Port = "TO_BE_SET"
+    MaxReceiveTimeouts = 3
+    TransportType = "tcp"
+
+[Nodes]
+  Level = "Info"
+
+[Epochs]
+  Level = "Info"
+
+[Delegations]
+  Level = "Info"
+
+[Checkpoint]
+  Level = "Info"
+
+[NetworkParameters]
+  Level = "Info"
+
+[Pprof]
+  Level = "Info"
+  Enabled = true
+  Port = "TO_BE_SET"
+  ProfilesDir = "/tmp"
+  BlockProfileRate = 0
+  MutexProfileFraction = 0
+
+[SQLStore]
+  Enabled = true
+  WipeOnStartup = true
+  UseEmbedded = false
+  [SQLStore.ConnectionConfig]
+    Host = "localhost"
+    Port = "TO_BE_SET"
+    Username = "vega"
+    Password = "vega"
+    Database = "vega"
+    UseTransactions = false
+
+[NetworkHistory]
+  Enabled = false
