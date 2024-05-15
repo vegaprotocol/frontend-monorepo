@@ -10,6 +10,7 @@ import { MarketInfoAccordionContainer } from '@vegaprotocol/markets';
 import { useParams } from 'react-router-dom';
 import { ErrorBoundary } from '../error-boundary';
 import { NodeHealthContainer } from '../node-health';
+import { AssetCard } from '../asset-card';
 
 // TODO: Delete this and all references to it
 export enum ViewType {
@@ -87,7 +88,9 @@ export const Sidebar = () => {
           </SidebarAccordionContent>
         </SidebarAccordionItem>
         <SidebarAccordionItem value="assets">
-          <SidebarAccordionTrigger>Assets</SidebarAccordionTrigger>
+          <SidebarAccordionTrigger>
+            <AssetCard marketId={params.marketId} />
+          </SidebarAccordionTrigger>
           <SidebarAccordionContent>
             <div>Assets content</div>
           </SidebarAccordionContent>
