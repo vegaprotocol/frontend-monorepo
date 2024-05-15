@@ -148,14 +148,16 @@ jobs:
         run: |
           echo "e2e-needed=false" >> $GITHUB_ENV
           PR_TITLE="${{ github.event.pull_request.title }}"
+          echo "PR_TITLE: $PR_TITLE"
           if [[ "$PR_TITLE" =~ "governance" ]] || [[ "$PR_TITLE" =~ "explorer" ]]; then
             echo "e2e-needed=true" >> $GITHUB_ENV
           fi
+          cat $GITHUB_ENV
         env:
           e2e-needed: ${{ steps.check-test.outputs.e2e-needed }}
       - name: Print result
         run: |
-          echo "e2e-needed: ${{ env.e2e-needed }}"
+          echo "e2e-needed: $(cat $GITHUB_ENV | grep e2e-needed | cut -d '=' -f 2)"
 
   cypress:
     needs: [build-sources, check-e2e-needed]
@@ -166,6 +168,11 @@ jobs:
     with:
       projects: ${{ needs.build-sources.outputs.projects-e2e }}
       tags: '@smoke'
+    steps:
+      - name: Print debug info
+        run: |
+          echo "e2e-needed: ${{ needs.check-e2e-needed.outputs.e2e-needed }}"
+          echo "projects: ${{ needs.build-sources.outputs.projects }}"
 
   publish-dist:
     needs: build-sources
