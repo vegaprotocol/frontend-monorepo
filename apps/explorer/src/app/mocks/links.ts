@@ -4,6 +4,7 @@ import type { MockedResponse } from '@apollo/client/testing';
 import { ExplorerMarketDocument } from '../components/links/market-link/__generated__/Market';
 import { ExplorerNodeDocument } from '../components/links/node-link/__generated__/Node';
 import { AssetMarketsDocument } from '../routes/assets/components/__generated__/Asset-Markets';
+import { AssetsDocument } from '@vegaprotocol/assets';
 
 export const MockNodeNames: MockedResponse = {
   request: {
@@ -39,7 +40,28 @@ export const MockExplorerMarket456: MockedResponse = {
       id: '456',
     },
   },
-  result: { data: { market: { id: '456' } } },
+  result: {
+    data: {
+      market: {
+        id: '456',
+        decimalPlaces: 5,
+        positionDecimalPlaces: 2,
+        state: 'irrelevant-test-data',
+        tradableInstrument: {
+          instrument: {
+            name: 'test-label',
+            product: {
+              __typename: 'Future',
+              quoteName: 'dai',
+              settlementAsset: {
+                decimals: 8,
+              },
+            },
+          },
+        },
+      },
+    },
+  },
 };
 
 export const MockExplorerNode: MockedResponse = {
@@ -59,10 +81,21 @@ export const MockAssetMarkets: MockedResponse = {
   result: { data: null },
 };
 
+export const MockAsset: MockedResponse = {
+  request: {
+    query: AssetsDocument,
+    variables: {
+      assetId: 'asset1',
+    },
+  },
+  result: { data: null },
+};
+
 export const commonLinkMocks: MockedResponse[] = [
   MockNodeNames,
   MockExplorerEpochForBlock,
   MockExplorerMarket123,
   MockExplorerNode,
   MockAssetMarkets,
+  MockAsset,
 ];
