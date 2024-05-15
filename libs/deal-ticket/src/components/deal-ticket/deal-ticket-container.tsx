@@ -77,6 +77,7 @@ export const DealTicketContainer = ({
               submit={(stopOrdersSubmission) =>
                 create({ stopOrdersSubmission })
               }
+              onDeposit={props.onDeposit}
             />
           ) : (
             <DealTicket

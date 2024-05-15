@@ -47,6 +47,8 @@ query StopOrderById($stopOrderId: ID!) {
     updatedAt
     partyId
     marketId
+    sizeOverrideValue
+    sizeOverrideSetting
     trigger {
       ... on StopOrderPrice {
         price

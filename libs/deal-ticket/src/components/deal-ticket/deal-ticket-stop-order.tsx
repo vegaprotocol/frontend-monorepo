@@ -8,7 +8,9 @@ import {
   formatForInput,
   formatValue,
   removeDecimal,
+  toBigNum,
   useValidateAmount,
+  validateAgainstStep,
 } from '@vegaprotocol/utils';
 import {
   type UseFormSetValue,
@@ -31,9 +33,11 @@ import {
   Intent,
   Notification,
   ExternalLink,
+  PercentageSlider as Slider,
 } from '@vegaprotocol/ui-toolkit';
 import {
   getAsset,
+  getBaseAsset,
   getDerivedPrice,
   getQuoteName,
   isSpot,
@@ -68,11 +72,15 @@ import { useOpenVolume } from '@vegaprotocol/positions';
 import { useNetworkParamQuery } from '@vegaprotocol/network-parameters';
 import { DocsLinks } from '@vegaprotocol/environment';
 import { isNonPersistentOrder } from '../../utils/time-in-force-persistence';
+import { useAccountBalance } from '@vegaprotocol/accounts';
+import { ZeroBalanceError } from '../deal-ticket-validation/zero-balance-error';
+import { MarginWarning } from '../deal-ticket-validation';
 
 export interface StopOrderProps {
   market: Market;
   marketPrice?: string | null;
   submit: (order: StopOrdersSubmission) => void;
+  onDeposit: (assetId: string) => void;
 }
 
 const typeLimitOptions = Object.entries(Schema.OrderTimeInForce);
@@ -96,10 +104,14 @@ const getDefaultValues = (
     Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE,
   expire: false,
   expiryStrategy: Schema.StopOrderExpiryStrategy.EXPIRY_STRATEGY_SUBMIT,
+  sizeOverrideSetting:
+    Schema.StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_NONE,
   size: '0',
   oco: false,
   ocoType: type,
   ocoTimeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_FOK,
+  ocoSizeOverrideSetting:
+    Schema.StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_NONE,
   ocoTriggerType: 'price',
   ocoSize: '0',
   ...storedValues,
@@ -403,6 +415,84 @@ const Size = ({
   );
 };
 
+const SizeOverrideValue = ({
+  control,
+  oco,
+}: {
+  control: Control<StopOrderFormValues>;
+  oco?: boolean;
+}) => {
+  const t = useT();
+  const sizeStep = 1;
+  const maxSize = 100;
+  return (
+    <Controller
+      name={oco ? 'ocoSizeOverrideValue' : 'sizeOverrideValue'}
+      control={control}
+      rules={{
+        required: t('You need to provide a quantity'),
+        min: {
+          value: sizeStep,
+          message: t('Quantity cannot be lower than {{sizeStep}}', {
+            sizeStep,
+          }),
+        },
+        max: {
+          value: maxSize,
+          message: t('Quantity cannot be greater than {{maxSize}}', {
+            maxSize,
+          }),
+        },
+        validate: (value?: string) => {
+          const isValid = value ? validateAgainstStep(sizeStep, value) : true;
+          if (!isValid) {
+            return t('Quantity must be whole numbers');
+          }
+          return true;
+        },
+      }}
+      render={({ field, fieldState }) => {
+        const id = `sizeOverrideValue${oco ? '-oco' : ''}`;
+        return (
+          <>
+            <FormGroup label={t('Quantity')} labelFor={id} compact>
+              <Input
+                id={id}
+                data-testid={id}
+                type="number"
+                className="w-full"
+                min={sizeStep}
+                max={maxSize}
+                step={sizeStep}
+                appendElement={<Pill size="xs">%</Pill>}
+                hasError={!!fieldState.error}
+                {...field}
+                value={field.value || ''}
+              />
+              <Slider
+                min={0}
+                max={100}
+                step={1}
+                value={[Number(field.value)]}
+                onValueChange={([value]) => field.onChange(value)}
+              />
+            </FormGroup>
+            {fieldState.error && (
+              <InputError
+                testId={`stop-order-error-message-sizeOverrideValue${
+                  oco ? '-oco' : ''
+                }`}
+              >
+                {fieldState.error.message}
+              </InputError>
+            )}
+          </>
+        );
+      }}
+    />
+  );
+};
+
 const Price = ({
   control,
   watch,
@@ -465,6 +555,109 @@ const Price = ({
       }}
     />
   );
+};
+
+const SizeOverrideSetting = ({
+  control,
+  oco,
+}: {
+  control: Control<StopOrderFormValues>;
+  oco?: boolean;
+}) => {
+  const t = useT();
+  return (
+    <Controller
+      name={oco ? 'ocoSizeOverrideSetting' : 'sizeOverrideSetting'}
+      control={control}
+      render={({ field }) => {
+        const { onChange, value } = field;
+        return (
+          <RadioGroup
+            onChange={onChange}
+            value={value}
+            orientation="horizontal"
+            className="mb-2"
+          >
+            <Radio
+              value={
+                Schema.StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_NONE
+              }
+              id={`sizeOverrideSetting-none${oco ? '-oco' : ''}`}
+              label={t('Amount')}
+            />
+            <Radio
+              value={
+                Schema.StopOrderSizeOverrideSetting
+                  .SIZE_OVERRIDE_SETTING_POSITION
+              }
+              id={`sizeOverrideSetting-position${oco ? '-oco' : ''}`}
+              label={t('Percentage')}
+            />
+          </RadioGroup>
+        );
+      }}
+    />
+  );
+};
+
+const NotEnoughBalanceWarning = ({
+  market,
+  useBaseAsset,
+  onDeposit,
+  size,
+}: {
+  market: Market;
+  useBaseAsset?: boolean;
+  onDeposit: (assetId: string) => void;
+  size?: string;
+}) => {
+  const asset = getAsset(market);
+  const baseAsset = getBaseAsset(market);
+
+  const {
+    accountBalance: generalAccountBalance,
+    // accountDecimals,
+    loading: loadingGeneralAccountBalance,
+  } = useAccountBalance(asset.id);
+
+  const {
+    accountBalance: baseAssetAccountBalance,
+    // accountDecimals: baseAssetDecimals,
+    loading: loadingBaseAssetAccount,
+  } = useAccountBalance(baseAsset?.id);
+
+  const balance = useBaseAsset
+    ? baseAssetAccountBalance
+    : generalAccountBalance;
+
+  const hasNoBalance = !BigInt(balance);
+  const loading = useBaseAsset
+    ? loadingBaseAssetAccount
+    : loadingGeneralAccountBalance;
+  if (hasNoBalance && !loading) {
+    return (
+      <ZeroBalanceError
+        asset={useBaseAsset ? baseAsset : asset}
+        onDeposit={onDeposit}
+      />
+    );
+  }
+  const margin = removeDecimal(
+    size || '0',
+    asset.decimals - market.decimalPlaces
+  );
+  if (BigInt(balance) < BigInt(margin)) {
+    return (
+      <MarginWarning
+        isSpotMarket={true}
+        balance={balance}
+        margin={margin}
+        asset={asset}
+        onDeposit={onDeposit}
+      />
+    );
+  }
+  return null;
 };
 
 export const NoOpenVolumeWarning = ({
@@ -688,40 +881,22 @@ const PostOnly = ({
 
 const NotionalAndFees = ({
   market,
-  marketPrice,
   side,
   size,
+  notionalSize,
   price,
   timeInForce,
-  triggerPrice,
-  triggerType,
   type,
 }: Pick<
   OrderSubmissionBody['orderSubmission'],
   'side' | 'size' | 'timeInForce' | 'type' | 'price'
 > &
-  Pick<StopOrderProps, 'market' | 'marketPrice'> &
-  Pick<StopOrderFormValues, 'triggerType' | 'triggerPrice'>) => {
+  Pick<StopOrderProps, 'market' | 'marketPrice'> & {
+    notionalSize?: string;
+  }) => {
   const t = useT();
   const quoteName = getQuoteName(market);
   const asset = getAsset(market);
-  const isPriceTrigger = triggerType === 'price';
-  const derivedPrice = getDerivedPrice(
-    {
-      type,
-      price,
-    },
-    type === Schema.OrderType.TYPE_MARKET && isPriceTrigger && triggerPrice
-      ? removeDecimal(triggerPrice, market.decimalPlaces)
-      : marketPrice || '0'
-  );
-
-  const notionalSize = getNotionalSize(
-    derivedPrice,
-    size,
-    market.decimalPlaces,
-    market.positionDecimalPlaces
-  );
   return (
     <div className="mb-4 flex w-full flex-col gap-2">
       <KeyValue
@@ -738,7 +913,7 @@ const NotionalAndFees = ({
       <DealTicketFeeDetails
         order={{
           marketId: market.id,
-          price: derivedPrice,
+          price,
           side,
           size,
           timeInForce,
@@ -758,10 +933,14 @@ const formatSizeAtPrice = (
     positionDecimalPlaces,
     price,
     quoteName,
-    side,
+    sizeOverrideValue,
+    sizeOverrideSetting,
     size,
     type,
-  }: Pick<StopOrderFormValues, 'price' | 'side' | 'size' | 'type'> & {
+  }: Pick<
+    StopOrderFormValues,
+    'price' | 'sizeOverrideValue' | 'sizeOverrideSetting' | 'size' | 'type'
+  > & {
     assetUnit?: string;
     decimalPlaces: number;
     positionDecimalPlaces: number;
@@ -769,10 +948,15 @@ const formatSizeAtPrice = (
   },
   t: ReturnType<typeof useT>
 ) =>
-  `${formatValue(
-    removeDecimal(size, positionDecimalPlaces),
-    positionDecimalPlaces
-  )} ${assetUnit} @ ${
+  `${
+    sizeOverrideSetting ===
+    Schema.StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION
+      ? `${((Number(sizeOverrideValue) || 0) * 100).toFixed()}%`
+      : `${formatValue(
+          removeDecimal(size || '0', positionDecimalPlaces),
+          positionDecimalPlaces
+        )} ${assetUnit}`
+  } @ ${
     type === Schema.OrderType.TYPE_MARKET
       ? t('sizeAtPrice-market', 'market')
       : `${formatValue(
@@ -824,6 +1008,8 @@ const SubmitButton = ({
   oco,
   ocoPrice,
   ocoSize,
+  ocoSizeOverrideSetting,
+  ocoSizeOverrideValue,
   ocoTriggerPrice,
   ocoTriggerTrailingPercentOffset,
   ocoTriggerType,
@@ -831,6 +1017,8 @@ const SubmitButton = ({
   price,
   side,
   size,
+  sizeOverrideSetting,
+  sizeOverrideValue,
   triggerDirection,
   triggerPrice,
   triggerTrailingPercentOffset,
@@ -841,6 +1029,8 @@ const SubmitButton = ({
   | 'oco'
   | 'ocoPrice'
   | 'ocoSize'
+  | 'ocoSizeOverrideSetting'
+  | 'ocoSizeOverrideValue'
   | 'ocoTriggerPrice'
   | 'ocoTriggerTrailingPercentOffset'
   | 'ocoTriggerType'
@@ -848,6 +1038,8 @@ const SubmitButton = ({
   | 'price'
   | 'side'
   | 'size'
+  | 'sizeOverrideSetting'
+  | 'sizeOverrideValue'
   | 'triggerDirection'
   | 'triggerPrice'
   | 'triggerTrailingPercentOffset'
@@ -864,12 +1056,17 @@ const SubmitButton = ({
     <>
       {formatSizeAtPrice(
         {
+          sizeOverrideValue: risesAbove
+            ? sizeOverrideValue
+            : ocoSizeOverrideValue,
+          sizeOverrideSetting: risesAbove
+            ? sizeOverrideSetting
+            : ocoSizeOverrideSetting,
           assetUnit,
           decimalPlaces: market.decimalPlaces,
           positionDecimalPlaces: market.positionDecimalPlaces,
           price: risesAbove ? price : ocoPrice,
           quoteName,
-          side,
           size: risesAbove ? size : ocoSize,
           type,
         },
@@ -892,12 +1089,17 @@ const SubmitButton = ({
       <br />
       {formatSizeAtPrice(
         {
+          sizeOverrideValue: !risesAbove
+            ? sizeOverrideValue
+            : ocoSizeOverrideValue,
+          sizeOverrideSetting: !risesAbove
+            ? sizeOverrideSetting
+            : ocoSizeOverrideSetting,
           assetUnit,
           decimalPlaces: market.decimalPlaces,
           positionDecimalPlaces: market.positionDecimalPlaces,
           price: !risesAbove ? price : ocoPrice,
           quoteName,
-          side,
           size: !risesAbove ? size : ocoSize,
           type: ocoType,
         },
@@ -922,12 +1124,13 @@ const SubmitButton = ({
     <>
       {formatSizeAtPrice(
         {
+          sizeOverrideSetting,
+          sizeOverrideValue,
           assetUnit,
           decimalPlaces: market.decimalPlaces,
           positionDecimalPlaces: market.positionDecimalPlaces,
           price,
           quoteName,
-          side,
           size,
           type,
         },
@@ -967,7 +1170,68 @@ const SubmitButton = ({
   );
 };
 
-export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
+const getDerivedPriceAndNotional = ({
+  size,
+  price,
+  positionDecimalPlaces,
+  decimalPlaces,
+  triggerType,
+  triggerPrice,
+  marketPrice,
+  type,
+}: {
+  size?: string;
+  price?: string;
+  positionDecimalPlaces: number;
+  decimalPlaces: number;
+  triggerType: StopOrderFormValues['triggerType'];
+  type: StopOrderFormValues['type'];
+  marketPrice?: string | null;
+  triggerPrice: StopOrderFormValues['triggerPrice'];
+}) => {
+  const isPriceTrigger = triggerType === 'price';
+  const derivedPrice = getDerivedPrice(
+    {
+      type,
+      price,
+    },
+    type === Schema.OrderType.TYPE_MARKET && isPriceTrigger && triggerPrice
+      ? removeDecimal(triggerPrice, decimalPlaces)
+      : marketPrice || '0'
+  );
+
+  const notionalSize = getNotionalSize(
+    derivedPrice,
+    size,
+    decimalPlaces,
+    positionDecimalPlaces
+  );
+  return { notionalSize, derivedPrice };
+};
+
+const normalizePrice = (price: string | undefined, decimalPlaces: number) =>
+  price && removeDecimal(price, decimalPlaces);
+
+const normalizeSize = (
+  size: string | undefined,
+  positionDecimalPlaces: number,
+  sizeOverrideSetting: Schema.StopOrderSizeOverrideSetting | undefined,
+  sizeOverrideValue: string | undefined,
+  openVolume: string | undefined
+) =>
+  sizeOverrideSetting ===
+  Schema.StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION
+    ? toBigNum(openVolume || '0', 0)
+        .multipliedBy((Number(sizeOverrideValue) || 0) / 100)
+        .toFixed(0)
+    : removeDecimal(size || '0', positionDecimalPlaces);
+
+export const StopOrder = ({
+  market,
+  marketPrice,
+  submit,
+  onDeposit,
+}: StopOrderProps) => {
   const t = useT();
   const { pubKey, isReadOnly } = useVegaWallet();
   const maxNumberOfOrders = useNetworkParamQuery({
@@ -1021,6 +1285,10 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
   const oco = watch('oco');
   const ocoPrice = watch('ocoPrice');
   const ocoSize = watch('ocoSize');
+  const ocoSizeOverrideSetting = isSpotMarket
+    ? Schema.StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_NONE
+    : watch('ocoSizeOverrideSetting');
+  const ocoSizeOverrideValue = watch('ocoSizeOverrideValue');
   const ocoTimeInForce = watch('ocoTimeInForce');
   const ocoOrderExpiresAt = watch('ocoOrderExpiresAt');
   const ocoTriggerPrice = watch('ocoTriggerPrice');
@@ -1032,6 +1300,10 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
   const price = watch('price');
   const side = watch('side');
   const size = watch('size');
+  const sizeOverrideSetting = isSpotMarket
+    ? Schema.StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_NONE
+    : watch('sizeOverrideSetting');
+  const sizeOverrideValue = watch('sizeOverrideValue');
   const timeInForce = watch('timeInForce');
   const orderExpiresAt = watch('orderExpiresAt');
   const triggerDirection = watch('triggerDirection');
@@ -1044,6 +1316,8 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
     market.id,
     !formState.isDirty && !formState.submitCount
   );
+
+  const { openVolume } = useOpenVolume(pubKey, market.id) || {};
 
   useEffect(() => {
     const storedSize = storedFormValues?.[dealTicketType]?.size;
@@ -1078,9 +1352,46 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
     control,
   });
 
-  const normalizedPrice = price && removeDecimal(price, market.decimalPlaces);
-  const normalizedSize =
-    size && removeDecimal(size, market.positionDecimalPlaces);
+  const normalizedPrice = normalizePrice(price, market.decimalPlaces);
+  const normalizedSize = normalizeSize(
+    size,
+    market.positionDecimalPlaces,
+    sizeOverrideSetting,
+    sizeOverrideValue,
+    openVolume
+  );
+
+  const { derivedPrice, notionalSize } = getDerivedPriceAndNotional({
+    price: normalizedPrice,
+    decimalPlaces: market.decimalPlaces,
+    marketPrice,
+    positionDecimalPlaces: market.positionDecimalPlaces,
+    size: normalizedSize,
+    triggerPrice,
+    triggerType,
+    type,
+  });
+
+  const ocoNormalizedPrice = normalizePrice(price, market.decimalPlaces);
+  const ocoNormalizedSize = normalizeSize(
+    size,
+    market.positionDecimalPlaces,
+    sizeOverrideSetting,
+    sizeOverrideValue,
+    openVolume
+  );
+  const { derivedPrice: ocoDerivedPrice, notionalSize: ocoNotionalSize } =
+    getDerivedPriceAndNotional({
+      price: ocoNormalizedPrice,
+      decimalPlaces: market.decimalPlaces,
+      marketPrice,
+      positionDecimalPlaces: market.positionDecimalPlaces,
+      size: ocoNormalizedSize,
+      triggerPrice: ocoTriggerPrice,
+      triggerType: ocoTriggerType,
+      type: ocoType,
+    });
+  const useBaseAsset = isSpotMarket && side === Schema.Side.SIDE_SELL;
 
   return (
     <form
@@ -1126,12 +1437,18 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
         decimalPlaces={market.decimalPlaces}
       />
       <hr className="border-vega-clight-500 dark:border-vega-cdark-500 mb-4" />
-      <Size
-        control={control}
-        sizeStep={sizeStep}
-        isLimitType={type === Schema.OrderType.TYPE_LIMIT}
-        assetUnit={assetUnit}
-      />
+      {sizeOverrideSetting ===
+      Schema.StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION ? (
+        <SizeOverrideValue control={control} />
+      ) : (
+        <Size
+          control={control}
+          sizeStep={sizeStep}
+          isLimitType={type === Schema.OrderType.TYPE_LIMIT}
+          assetUnit={assetUnit}
+        />
+      )}
+      {!isSpotMarket && <SizeOverrideSetting control={control} />}
       <Price
         control={control}
         watch={watch}
@@ -1141,13 +1458,12 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
       <NotionalAndFees
         market={market}
         marketPrice={marketPrice}
-        price={normalizedPrice}
+        price={derivedPrice}
         side={side}
         size={normalizedSize}
         timeInForce={timeInForce}
-        triggerPrice={triggerPrice}
-        triggerType={triggerType}
         type={type}
+        notionalSize={notionalSize}
       />
       <TimeInForce
         control={control}
@@ -1244,13 +1560,19 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
             oco
           />
           <hr className="border-vega-clight-500 dark:border-vega-cdark-500 mb-2" />
-          <Size
-            control={control}
-            sizeStep={sizeStep}
-            assetUnit={assetUnit}
-            oco
-            isLimitType={ocoType === Schema.OrderType.TYPE_LIMIT}
-          />
+          {ocoSizeOverrideSetting ===
+          Schema.StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION ? (
+            <SizeOverrideValue control={control} oco />
+          ) : (
+            <Size
+              control={control}
+              sizeStep={sizeStep}
+              isLimitType={ocoType === Schema.OrderType.TYPE_LIMIT}
+              assetUnit={assetUnit}
+              oco
+            />
+          )}
+          {!isSpotMarket && <SizeOverrideSetting control={control} oco />}
           <Price
             control={control}
             watch={watch}
@@ -1261,15 +1583,12 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
           <NotionalAndFees
             market={market}
             marketPrice={marketPrice}
-            price={ocoPrice && removeDecimal(ocoPrice, market.decimalPlaces)}
+            price={ocoDerivedPrice}
             side={side}
-            size={
-              ocoSize && removeDecimal(ocoSize, market.positionDecimalPlaces)
-            }
+            size={ocoNormalizedSize}
             timeInForce={ocoTimeInForce}
-            triggerPrice={ocoTriggerPrice}
-            triggerType={ocoTriggerType}
             type={ocoType}
+            notionalSize={ocoNotionalSize}
           />
           <TimeInForce
             control={control}
@@ -1406,14 +1725,35 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
             )}
           />
         </div>
-      ) : (
-        !isSpotMarket && (
-          <NoOpenVolumeWarning
-            side={side}
-            partyId={pubKey}
-            marketId={market.id}
+      ) : isSpotMarket ? (
+        <div className="mb-2">
+          <NotEnoughBalanceWarning
+            market={market}
+            useBaseAsset={useBaseAsset}
+            onDeposit={onDeposit}
+            size={
+              useBaseAsset
+                ? oco &&
+                  ocoNormalizedSize &&
+                  normalizedSize &&
+                  BigInt(ocoNormalizedSize) > BigInt(normalizedSize)
+                  ? ocoNormalizedSize
+                  : normalizedSize
+                : oco &&
+                  ocoNotionalSize &&
+                  notionalSize &&
+                  BigInt(ocoNotionalSize) > BigInt(notionalSize)
+                ? ocoNotionalSize
+                : notionalSize
+            }
           />
-        )
+        </div>
+      ) : (
+        <NoOpenVolumeWarning
+          side={side}
+          partyId={pubKey}
+          marketId={market.id}
+        />
       )}
       <SubmitButton
         assetUnit={assetUnit}
@@ -1421,6 +1761,11 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
         oco={oco}
         ocoPrice={ocoPrice}
         ocoSize={ocoSize}
+        ocoSizeOverrideSetting={ocoSizeOverrideSetting}
+        ocoSizeOverrideValue={
+          ocoSizeOverrideValue &&
+          (Number(ocoSizeOverrideValue) / 100).toString()
+        }
         ocoTriggerPrice={ocoTriggerPrice}
         ocoTriggerTrailingPercentOffset={ocoTriggerTrailingPercentOffset}
         ocoTriggerType={ocoTriggerType}
@@ -1428,6 +1773,10 @@ export const StopOrder = ({ market, marketPrice, submit }: StopOrderProps) => {
         price={price}
         side={side}
         size={size}
+        sizeOverrideSetting={sizeOverrideSetting}
+        sizeOverrideValue={
+          sizeOverrideValue && (Number(sizeOverrideValue) / 100).toString()
+        }
         triggerDirection={triggerDirection}
         triggerPrice={triggerPrice}
         triggerTrailingPercentOffset={triggerTrailingPercentOffset}

@@ -172,18 +172,29 @@ const isTransactionTypeSupported = (tx: VegaStoredTxState) => {
 type SizeAtPriceProps = {
   side: Side;
   size: string;
+  sizeOverrideValue?: string;
   price: string | undefined;
   meta: { positionDecimalPlaces: number; decimalPlaces: number; asset: string };
 };
-const SizeAtPrice = ({ side, size, price, meta }: SizeAtPriceProps) => {
+const SizeAtPrice = ({
+  side,
+  size,
+  price,
+  meta,
+  sizeOverrideValue,
+}: SizeAtPriceProps) => {
   return (
     <>
-      <Size
-        side={side}
-        value={size}
-        positionDecimalPlaces={meta.positionDecimalPlaces}
-        forceTheme="light"
-      />{' '}
+      {sizeOverrideValue ? (
+        `${Number(sizeOverrideValue) * 100}%`
+      ) : (
+        <Size
+          side={side}
+          value={size}
+          positionDecimalPlaces={meta.positionDecimalPlaces}
+          forceTheme="light"
+        />
+      )}{' '}
       {price && price !== '0' && meta.decimalPlaces
         ? `@ ${addDecimalsFormatNumber(price, meta.decimalPlaces)} ${
             meta.asset
@@ -267,6 +278,7 @@ const SubmitStopOrderSetup = ({
         }}
         side={side}
         size={size}
+        sizeOverrideValue={stopOrderSetup.sizeOverrideValue?.percentage}
         price={price}
       />
       <br />
@@ -469,6 +481,7 @@ const CancelStopOrderDetails = ({ stopOrderId }: { stopOrderId: string }) => {
         side={originalOrder.submission.side}
         size={originalOrder.submission.size}
         price={originalOrder.submission.price}
+        sizeOverrideValue={originalOrder.sizeOverrideValue ?? undefined}
         meta={{
           positionDecimalPlaces: market.positionDecimalPlaces,
           decimalPlaces: market.decimalPlaces,

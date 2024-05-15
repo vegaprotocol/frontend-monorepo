@@ -121,7 +121,7 @@ export const getNotionalSize = (
       decimalPlaces
     );
   }
-  return null;
+  return undefined;
 };
 
 export const stopSubmit: FormEventHandler = (e) => e.preventDefault();

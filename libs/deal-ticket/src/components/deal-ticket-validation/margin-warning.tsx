@@ -64,9 +64,7 @@ export const MarginWarning = ({
           <VegaIcon name={VegaIconNames.WARNING} />
         </span>
         {isSpotMarket
-          ? t(
-              'You may not have enough balance available to complete this order.'
-            )
+          ? t('You may not have enough balance to make this trade.')
           : t(
               'You may not have enough margin available to open this position.'
             )}

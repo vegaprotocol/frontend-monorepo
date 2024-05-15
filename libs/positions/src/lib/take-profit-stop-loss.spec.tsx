@@ -58,14 +58,18 @@ const generateStopOrder = ({
   id,
   triggerDirection,
   sizeOverrideValue,
-  price,
   side,
+  trigger,
+  type = Schema.OrderType.TYPE_MARKET,
+  price = '0',
 }: {
   id: string;
   triggerDirection: Schema.StopOrderTriggerDirection;
   sizeOverrideValue: string;
-  price: string;
   side: Schema.Side.SIDE_SELL;
+  trigger: StopOrderFieldsFragment['trigger'];
+  type?: Schema.OrderType;
+  price?: string;
 }): StopOrderFieldsFragment => ({
   id,
   ocoLinkId: null,
@@ -81,18 +85,15 @@ const generateStopOrder = ({
   partyId,
   marketId,
   order: null,
-  trigger: {
-    price,
-    __typename: 'StopOrderPrice',
-  },
+  trigger,
   submission: {
     marketId,
-    price: '0',
+    price,
     size: '1',
     side,
     timeInForce: Schema.OrderTimeInForce.TIME_IN_FORCE_FOK,
     expiresAt: null,
-    type: Schema.OrderType.TYPE_MARKET,
+    type,
     reference: '',
     peggedOrder: null,
     postOnly: false,
@@ -105,15 +106,21 @@ const generateStopOrder = ({
 const stopOrders: StopOrderFieldsFragment[] = [
   generateStopOrder({
     id: '1',
-    price: '900000',
+    trigger: { price: '890000', __typename: 'StopOrderPrice' },
     side: Schema.Side.SIDE_SELL,
     triggerDirection:
       Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE,
     sizeOverrideValue: '0.2',
+    type: Schema.OrderType.TYPE_LIMIT,
+    price: '900000',
   }),
   generateStopOrder({
     id: '2',
-    price: '800000',
+    trigger: {
+      // 70000 * 1-15 = 80500
+      trailingPercentOffset: '0.15',
+      __typename: 'StopOrderTrailingPercentOffset',
+    },
     side: Schema.Side.SIDE_SELL,
     triggerDirection:
       Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE,
@@ -121,7 +128,11 @@ const stopOrders: StopOrderFieldsFragment[] = [
   }),
   generateStopOrder({
     id: '3',
-    price: '500000',
+    trigger: {
+      // 70000 * 0.7 = 49000
+      trailingPercentOffset: '0.3',
+      __typename: 'StopOrderTrailingPercentOffset',
+    },
     side: Schema.Side.SIDE_SELL,
     triggerDirection:
       Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_FALLS_BELOW,
@@ -129,7 +140,7 @@ const stopOrders: StopOrderFieldsFragment[] = [
   }),
   generateStopOrder({
     id: '4',
-    price: '400000',
+    trigger: { price: '400000', __typename: 'StopOrderPrice' },
     side: Schema.Side.SIDE_SELL,
     triggerDirection:
       Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_FALLS_BELOW,
@@ -230,8 +241,8 @@ describe('TakeProfitStopLoss', () => {
   it('lists orders in proper order for positive open volume', () => {
     render(generateJsx());
     const takeProfit = [
-      'Reduce 10% at 80,000.0 USDT for estimated PnL of 2,000.00 USDT',
-      'Reduce 20% at 90,000.0 USDT for estimated PnL of 5,400.00 USDT',
+      'Reduce 10% at 80,500.0 USDT for estimated PnL of 2,050.00 USDT',
+      'Reduce 20% at 90,000.0 USDT (triggered at 89,000.0 USDT) for estimated PnL of 5,400.00 USDT',
     ];
     within(screen.getByTestId('take-profit'))
       .getAllByTestId('stop-order')
@@ -239,7 +250,7 @@ describe('TakeProfitStopLoss', () => {
         expect(stopOrder).toHaveTextContent(takeProfit[i]);
       });
     const stopLoss = [
-      'Reduce 15% at 50,000.0 USDT for estimated PnL of -1,500.00 USDT',
+      'Reduce 15% at 49,000.0 USDT for estimated PnL of -1,650.00 USDT',
       'Reduce 25% at 40,000.0 USDT for estimated PnL of -4,250.00 USDT',
     ];
     within(screen.getByTestId('stop-loss'))
@@ -256,7 +267,7 @@ describe('TakeProfitStopLoss', () => {
     });
     render(generateJsx());
     const takeProfit = [
-      'Reduce 15% at 50,000.0 USDT for estimated PnL of 1,500.00 USDT',
+      'Reduce 15% at 49,000.0 USDT for estimated PnL of 1,650.00 USDT',
       'Reduce 25% at 40,000.0 USDT for estimated PnL of 4,250.00 USDT',
     ];
     within(screen.getByTestId('take-profit'))
@@ -265,8 +276,8 @@ describe('TakeProfitStopLoss', () => {
         expect(stopOrder).toHaveTextContent(takeProfit[i]);
       });
     const stopLoss = [
-      'Reduce 10% at 80,000.0 USDT for estimated PnL of -2,000.00 USDT',
-      'Reduce 20% at 90,000.0 USDT for estimated PnL of -5,400.00 USDT',
+      'Reduce 10% at 80,500.0 USDT for estimated PnL of -2,050.00 USDT',
+      'Reduce 20% at 90,000.0 USDT (triggered at 89,000.0 USDT) for estimated PnL of -5,400.00 USDT',
     ];
     within(screen.getByTestId('stop-loss'))
       .getAllByTestId('stop-order')
@@ -352,7 +363,7 @@ describe('TakeProfitStopLossSetup', () => {
             id: '1',
             triggerDirection:
               Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE,
-            price: '750000',
+            trigger: { price: '750000', __typename: 'StopOrderPrice' },
             side: Schema.Side.SIDE_SELL,
             sizeOverrideValue: '0.5',
           }),
@@ -360,7 +371,7 @@ describe('TakeProfitStopLossSetup', () => {
             id: '2',
             triggerDirection:
               Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE,
-            price: '850000',
+            trigger: { price: '850000', __typename: 'StopOrderPrice' },
             side: Schema.Side.SIDE_SELL,
             sizeOverrideValue: '0.5',
           }),
@@ -384,7 +395,7 @@ describe('TakeProfitStopLossSetup', () => {
             id: '1',
             triggerDirection:
               Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE,
-            price: '600000',
+            trigger: { price: '600000', __typename: 'StopOrderPrice' },
             side: Schema.Side.SIDE_SELL,
             sizeOverrideValue: '0.5',
           }),
@@ -392,7 +403,7 @@ describe('TakeProfitStopLossSetup', () => {
             id: '2',
             triggerDirection:
               Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE,
-            price: '450000',
+            trigger: { price: '450000', __typename: 'StopOrderPrice' },
             side: Schema.Side.SIDE_SELL,
             sizeOverrideValue: '0.5',
           }),
