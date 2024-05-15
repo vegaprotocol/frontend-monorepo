@@ -163,17 +163,12 @@ jobs:
     outputs:
       run-tests: ${{ steps.check-test.outputs.e2e-needed }}
     steps:
-      - name: Check branch and title
+      - name: Check PR title for governance or explorer
         id: check-test
         run: |
           echo "e2e-needed=false" >> $GITHUB_ENV
           PR_TITLE="${{ github.event.pull_request.title }}"
-          if [[ "$PR_TITLE" =~ \(governance\): || "$PR_TITLE" =~ \(explorer\): ]]; then
-            echo "e2e-needed=true" >> $GITHUB_ENV
-          fi
-          if [[ "${{ github.event_name }}" == 'push' ]] && 
-            ([[ "${{ github.ref }}" == 'refs/heads/main' ]] || [[ "${{ github.ref }}" == 'refs/heads/develop' ]]) &&
-            ([[ "${{ needs.build-sources.outputs.projects }}" == *"governance"* ]] || [[ "${{ needs.build-sources.outputs.projects }}" == *"explorer"* ]]); then
+          if [[ "$PR_TITLE" =~ governance ]] || [[ "$PR_TITLE" =~ explorer ]]; then
             echo "e2e-needed=true" >> $GITHUB_ENV
           fi
       - name: Print result
