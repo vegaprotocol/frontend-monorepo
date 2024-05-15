@@ -3,8 +3,7 @@ import {
   useNodeHealth,
   useNodeSwitcherStore,
 } from '@vegaprotocol/environment';
-import { Indicator, ExternalLink } from '@vegaprotocol/ui-toolkit';
-import { Tooltip } from '../../components/tooltip';
+import { Indicator, ExternalLink, Tooltip } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../lib/use-t';
 
 export const NodeHealthContainer = () => {
@@ -40,13 +39,13 @@ export const NodeHealthContainer = () => {
       align="end"
       side="left"
       sideOffset={18}
-      arrow={false}
     >
       <button
-        className="flex justify-center items-center p-2 rounded hover:bg-vega-light-200 hover:dark:bg-vega-dark-200"
+        className="flex justify-center items-center gap-2 p-2 rounded hover:bg-vega-light-200 hover:dark:bg-vega-dark-200 text-xs"
         onClick={() => setNodeSwitcher(true)}
         data-testid="node-health-trigger"
       >
+        {VEGA_URL && <NodeUrl url={VEGA_URL} />}
         <Indicator variant={intent} size="lg" />
       </button>
     </Tooltip>

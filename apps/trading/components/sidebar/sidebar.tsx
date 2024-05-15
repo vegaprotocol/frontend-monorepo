@@ -9,6 +9,7 @@ import { DealTicketContainer } from '@vegaprotocol/deal-ticket';
 import { MarketInfoAccordionContainer } from '@vegaprotocol/markets';
 import { useParams } from 'react-router-dom';
 import { ErrorBoundary } from '../error-boundary';
+import { NodeHealthContainer } from '../node-health';
 
 // TODO: Delete this and all references to it
 export enum ViewType {
@@ -92,7 +93,9 @@ export const Sidebar = () => {
           </SidebarAccordionContent>
         </SidebarAccordionItem>
       </SidebarAccordion>
-      <div className="p-2 text-sm text-right">Stuff</div>
+      <div className="py-1 flex justify-end">
+        <NodeHealthContainer />
+      </div>
     </div>
   );
 };
