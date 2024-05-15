@@ -45,6 +45,8 @@ const generateTxs = (number: number): BlockExplorerTransactionResult[] => {
   }));
 };
 
+jest.mock('../links');
+
 describe('Txs infinite list', () => {
   it('should display a "no items" message when no items provided', () => {
     render(

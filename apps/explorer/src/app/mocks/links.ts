@@ -75,7 +75,6 @@ export const MockExplorerEpochForBlockBlank: MockedResponse = {
     },
   },
 };
-
 export const MockExplorerMarket123: MockedResponse = {
   request: {
     query: ExplorerMarketDocument,

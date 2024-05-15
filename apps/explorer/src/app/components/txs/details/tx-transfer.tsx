@@ -6,7 +6,7 @@ import { TableRow, TableCell, TableWithTbody } from '../../table';
 
 import type { components } from '../../../../types/explorer';
 import { PartyLink } from '../../links';
-import SizeInAsset from '../../size-in-asset/size-in-asset';
+import { SizeInAsset } from '../../size-in-asset/size-in-asset';
 import { TransferDetails } from './transfer/transfer-details';
 import {
   SPECIAL_CASE_NETWORK,

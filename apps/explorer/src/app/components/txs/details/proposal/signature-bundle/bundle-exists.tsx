@@ -1,5 +1,5 @@
 import { t } from '@vegaprotocol/i18n';
-import ProposalLink from '../../../../links/proposal-link/proposal-link';
+import { ProposalLink } from '../../../../links/proposal-link/proposal-link';
 import { IconForBundleStatus } from './bundle-icon';
 import type { AssetStatus } from '@vegaprotocol/types';
 import type { ProposalTerms } from '../../tx-proposal';
