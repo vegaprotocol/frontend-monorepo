@@ -68,7 +68,6 @@ function renderComponent(
     </MockedProvider>
   );
 }
-
 jest.mock('../price-in-market/price-in-market');
 jest.mock('../size-in-market/size-in-market');
 
