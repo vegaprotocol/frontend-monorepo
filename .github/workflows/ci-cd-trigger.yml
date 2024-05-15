@@ -10,9 +10,9 @@ on:
       - ready_for_review
       - reopened
       - synchronize
+
 jobs:
   node-modules:
-    # All jobs depend on node_modules, so none should run if the PR is in draft
     if: github.event.pull_request.draft == false
     runs-on: ubuntu-22.04
     name: 'Cache yarn modules'
@@ -162,14 +162,11 @@ jobs:
     name: '(CI) check if e2e needed'
     outputs:
       run-tests: ${{ steps.check-test.outputs.e2e-needed }}
-      pr-title: ${{ steps.check-test.outputs.pr-title }}
     steps:
-      - name: Check branch and title for keywords
+      - name: Check branch
         id: check-test
         run: |
-          title="${{ github.event.pull_request.title }}"
-          echo "pr-title=$title" >> $GITHUB_OUTPUT
-          if [[ "${{ github.event_name }}" == "pull_request" ]] && ([[ "$title" == *"explorer"* ]] || [[ "$title" == *"governance"* ]]); then
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
             echo "e2e-needed=true" >> $GITHUB_OUTPUT
           else
             echo "e2e-needed=false" >> $GITHUB_OUTPUT
@@ -177,19 +174,13 @@ jobs:
       - name: Print result
         run: |
           echo "e2e-needed: ${{ steps.check-test.outputs.e2e-needed }}"
-          echo "PR Title: ${{ steps.check-test.outputs.pr-title }}"
 
   cypress:
     needs: [build-sources, check-e2e-needed]
     name: '(CI) cypress'
     uses: ./.github/workflows/cypress-run.yml
     secrets: inherit
-    if: |
-      needs.check-e2e-needed.outputs.run-tests == 'true' &&
-      (
-        (contains(github.event.pull_request.title, 'governance') && contains(needs.build-sources.outputs.projects, 'governance')) ||
-        (contains(github.event.pull_request.title, 'explorer') && contains(needs.build-sources.outputs.projects, 'explorer'))
-      )
+    if: needs.check-e2e-needed.outputs.run-tests == 'true' && (contains(github.event.pull_request.title, 'governance') || contains(github.event.pull_request.title, 'explorer'))
     with:
       projects: ${{ needs.build-sources.outputs.projects-e2e }}
       tags: '@smoke'
@@ -221,7 +212,6 @@ jobs:
     with:
       github-sha: ${{ github.event.pull_request.head.sha || github.sha }}
 
-  # Report single result at the end, to avoid mess with required checks in PR
   test-check:
     name: '(CI) Final Tests check'
     if: ${{ always() }}
