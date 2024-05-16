@@ -1,4 +1,8 @@
-import { forwardRef, type ElementRef, type ComponentPropsWithoutRef } from 'react';
+import {
+  forwardRef,
+  type ElementRef,
+  type ComponentPropsWithoutRef,
+} from 'react';
 import * as AccordionPrimitive from '@radix-ui/react-accordion';
 import classNames from 'classnames';
 
@@ -22,7 +26,7 @@ const SidebarAccordionItem = forwardRef<
   <AccordionPrimitive.Item
     ref={ref}
     className={classNames(
-      'data-[state=open]:flex-[1] data-[state=closed]:flex-[0_1_auto] border border-default transition-[flex] flex flex-col min-h-[39px]',
+      'data-[state=open]:flex-[1] data-[state=closed]:flex-[0_1_auto] border border-default transition-[flex] flex flex-col min-h-[39px] rounded-sm',
       className
     )}
     {...props}
