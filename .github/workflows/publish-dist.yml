@@ -26,6 +26,7 @@ jobs:
         run: |
           echo IS_MAINNET_RELEASE=false >> $GITHUB_ENV
           echo IS_TESTNET_RELEASE=false >> $GITHUB_ENV
+          echo IS_VALIDATORS_TESTNET_RELEASE=false >> $GITHUB_ENV
           echo IS_IPFS_RELEASE=false >> $GITHUB_ENV
           echo IS_S3_RELEASE=false >> $GITHUB_ENV
 
@@ -39,13 +40,13 @@ jobs:
         run: |
           echo IS_TESTNET_RELEASE=true >> $GITHUB_ENV
 
-      - name: Is validators-testnet release
+      - name: Is validators testnet release
         if: contains(github.ref, 'release/validators-testnet')
         run: |
-          echo IS_TESTNET_RELEASE=true >> $GITHUB_ENV
+          echo IS_VALIDATORS_TESTNET_RELEASE=true >> $GITHUB_ENV
 
       - name: Is IPFS Release
-        if: matrix.app == 'trading' && github.event_name == 'push' && ( env.IS_MAINNET_RELEASE == 'true' || env.IS_TESTNET_RELEASE == 'true' )
+        if: matrix.app == 'trading' && github.event_name == 'push' && ( env.IS_MAINNET_RELEASE == 'true' || env.IS_TESTNET_RELEASE == 'true' || env.IS_VALIDATORS_TESTNET_RELEASE == 'true' )
         run: |
           echo IS_IPFS_RELEASE=true >> $GITHUB_ENV
 
@@ -132,7 +133,7 @@ jobs:
             ENV_NAME=${{ env.ENV_NAME }}
           tags: |
             vegaprotocol/${{ matrix.app }}:${{ github.sha }}
-            vegaprotocol/${{ matrix.app }}:${{ env.IS_MAINNET_RELEASE == 'true' && 'mainnet' || env.IS_TESTNET_RELEASE == 'true' && 'testnet' || '' }}
+            vegaprotocol/${{ matrix.app }}:${{ env.IS_MAINNET_RELEASE == 'true' && 'mainnet' || env.IS_TESTNET_RELEASE == 'true' && 'testnet' || env.IS_VALIDATORS_TESTNET_RELEASE == 'true' && 'validators-testnet' || '' }}
 
       - name: Publish dist as docker image (docker hub - retry)
         uses: docker/build-push-action@v5
@@ -146,7 +147,7 @@ jobs:
             ENV_NAME=${{ env.ENV_NAME }}
           tags: |
             vegaprotocol/${{ matrix.app }}:${{ github.sha }}
-            vegaprotocol/${{ matrix.app }}:${{ env.IS_MAINNET_RELEASE == 'true' && 'mainnet' || env.IS_TESTNET_RELEASE == 'true' && 'testnet' || '' }}
+            vegaprotocol/${{ matrix.app }}:${{ env.IS_MAINNET_RELEASE == 'true' && 'mainnet' || env.IS_TESTNET_RELEASE == 'true' && 'testnet' || env.IS_VALIDATORS_TESTNET_RELEASE == 'true' && 'validators-testnet' || '' }}
 
       - name: Sanity check docker image
         if: env.IS_IPFS_RELEASE == 'true'
@@ -203,10 +204,23 @@ jobs:
               -d '{"query": "query{getSiteById(siteId:\"79baaeca-1952-4ae7-a256-f668cfc1d68e\"){id latestDeploy{id status}}}"}' \
               https://api.fleek.co/graphql
 
-            # trigger new deployment as base image is always set to vegaprotocol/trading:mainnet
+            # trigger new deployment as base image is always set to vegaprotocol/trading:testnet
             curl --fail -H "Authorization: ${{ secrets.FLEEK_API_KEY }}" \
               -H "Content-Type: application/json" \
               -d '{"query": "mutation{triggerDeploy(siteId:\"79baaeca-1952-4ae7-a256-f668cfc1d68e\"){id status}}"}' \
+              https://api.fleek.co/graphql
+
+          elif [[ "${{ env.IS_VALIDATORS_TESTNET_RELEASE }}" = "true" ]]; then
+            # display info about app
+            curl --fail -H "Authorization: ${{ secrets.FLEEK_API_KEY }}" \
+              -H "Content-Type: application/json" \
+              -d '{"query": "query{getSiteById(siteId:\"78f2a9c9-4a73-4523-b386-2b52c832280f\"){id latestDeploy{id status}}}"}' \
+              https://api.fleek.co/graphql
+
+            # trigger new deployment as base image is always set to vegaprotocol/trading:validators-testnet
+            curl --fail -H "Authorization: ${{ secrets.FLEEK_API_KEY }}" \
+              -H "Content-Type: application/json" \
+              -d '{"query": "mutation{triggerDeploy(siteId:\"78f2a9c9-4a73-4523-b386-2b52c832280f\"){id status}}"}' \
               https://api.fleek.co/graphql
           fi
 
@@ -246,10 +260,16 @@ jobs:
               echo $new_hash > cidv0-mainnet.txt
               echo $new_cid > cidv1-mainnet.txt
               git add cidv0-mainnet.txt cidv1-mainnet.txt
+
             elif [[ "${{ env.IS_TESTNET_RELEASE }}" = "true" ]]; then
               echo $new_hash > cidv0-fairground.txt
               echo $new_cid > cidv1-fairground.txt
               git add cidv0-fairground.txt cidv1-fairground.txt
+
+            elif [[ "${{ env.IS_VALIDATORS_TESTNET_RELEASE }}" = "true" ]]; then
+              echo $new_hash > cidv0-validators-testnet.txt
+              echo $new_cid > cidv1-validators-testnet.txt
+              git add cidv0-validators-testnet.txt cidv1-validators-testnet.txt
             fi
 
             # create commit

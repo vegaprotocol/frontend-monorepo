@@ -97,7 +97,7 @@ const Content = ({
     {subLabel && (
       <span
         data-sub-label
-        className="mt-0.5 font-mono text-xs leading-tight"
+        className="mt-0.5 font-mono text-xs leading-tight [word-break:break-word]"
         key="trading-button-sub-label"
       >
         {subLabel}

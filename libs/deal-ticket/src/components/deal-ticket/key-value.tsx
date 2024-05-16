@@ -28,11 +28,17 @@ export const KeyValue = ({
   );
 
   const valueElement = onClick ? (
-    <button type="button" onClick={onClick} className="font-mono ml-auto">
+    <button
+      type="button"
+      onClick={onClick}
+      className="font-mono ml-auto [word-break:break-word]"
+    >
       {displayValue}
     </button>
   ) : (
-    <div className="font-mono ml-auto">{displayValue}</div>
+    <div className="font-mono ml-auto [word-break:break-word]">
+      {displayValue}
+    </div>
   );
 
   return (
