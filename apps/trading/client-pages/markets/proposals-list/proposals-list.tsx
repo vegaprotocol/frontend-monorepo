@@ -28,12 +28,15 @@ export const ProposalsList = ({ cellRenderers }: ProposalListProps) => {
       columnDefs={columnDefs}
       rowData={data}
       defaultColDef={defaultColDef}
-      rowHeight={45}
+      rowHeight={60}
       headerHeight={40}
       domLayout="autoHeight"
       getRowId={({ data }) => data.id}
       overlayNoRowsTemplate={t('No proposed markets')}
       components={cellRenderers}
+      autoSizeStrategy={{
+        type: 'fitGridWidth',
+      }}
     />
   );
 };

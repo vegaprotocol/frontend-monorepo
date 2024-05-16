@@ -12,15 +12,15 @@ export const StackedCell = ({
   return (
     <div className="leading-4">
       <div
-        className="text-ellipsis whitespace-nowrap overflow-hidden"
+        className="text-ellipsis whitespace-nowrap overflow-hidden text-sm flex"
         data-testid="stack-cell-primary"
       >
         <span>{primary}</span>
-        {primaryIcon && <span>{primaryIcon}</span>}
+        {primaryIcon && <span className="flex pb-0.5">{primaryIcon}</span>}
       </div>
       <div
         data-testid="stack-cell-secondary"
-        className="text-ellipsis whitespace-nowrap overflow-hidden text-muted"
+        className="text-ellipsis whitespace-nowrap overflow-hidden text-muted text-xs"
       >
         {secondary}
       </div>

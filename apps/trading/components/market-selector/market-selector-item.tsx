@@ -84,21 +84,17 @@ const MarketData = ({
   return (
     <>
       <div className="w-4/6 sm:w-2/6" role="gridcell">
-        <h3 className="flex items-baseline">
+        <h3 className="flex items-center gap-1">
           <span className="overflow-hidden text-xs md:text-sm lg:text-base text-ellipsis whitespace-nowrap">
-            {
-              <span className="mr-4">
-                <EmblemByMarket market={market.id} vegaChain={chainId} />
-              </span>
-            }
+            <EmblemByMarket market={market.id} vegaChain={chainId} />
             {market.tradableInstrument.instrument.code}
           </span>
           {allProducts && productType && (
-            <MarketProductPill productType={productType} />
+            <span className="mb-0.5 mr-0.5">
+              <MarketProductPill productType={productType} />
+            </span>
           )}
-          <span className="ml-0.5">
-            <MarketIcon data={market} />
-          </span>
+          <MarketIcon data={market} />
         </h3>
       </div>
       <div
