@@ -642,16 +642,12 @@ const NotEnoughBalanceWarning = ({
       />
     );
   }
-  const margin = removeDecimal(
-    size || '0',
-    asset.decimals - market.decimalPlaces
-  );
-  if (BigInt(balance) < BigInt(margin)) {
+  if (size && size !== '0' && BigInt(balance) < BigInt(size)) {
     return (
       <MarginWarning
         isSpotMarket={true}
         balance={balance}
-        margin={margin}
+        margin={size}
         asset={asset}
         onDeposit={onDeposit}
       />
