@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import type { ReactNode } from 'react';
 import { LayoutPriority } from 'allotment';
 import { useIncompleteWithdrawals } from '@vegaprotocol/withdraws';
@@ -33,11 +32,9 @@ import {
   ResizableGridPanel,
   usePaneLayout,
 } from '../../components/resizable-grid';
-import { ViewType, useSidebar } from '../../components/sidebar';
 import { AccountsMenu } from '../../components/accounts-menu';
 import { DepositsMenu } from '../../components/deposits-menu';
 import { WithdrawalsMenu } from '../../components/withdrawals-menu';
-import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
 import { useT } from '../../lib/use-t';
 import { ErrorBoundary } from '../../components/error-boundary';
 import { usePageTitle } from '../../lib/hooks/use-page-title';
@@ -56,19 +53,6 @@ const WithdrawalsIndicator = () => {
       {ready.length}
     </span>
   );
-};
-
-const SidebarViewInitializer = () => {
-  const currentRouteId = useGetCurrentRouteId();
-  const { getView, setViews } = useSidebar();
-  const view = getView(currentRouteId);
-  // Make transfer sidebar open by default
-  useEffect(() => {
-    if (view === undefined) {
-      setViews({ type: ViewType.Transfer }, currentRouteId);
-    }
-  }, [view, setViews, currentRouteId]);
-  return null;
 };
 
 export const Portfolio = () => {
@@ -100,7 +84,6 @@ const PortfolioGrid = () => {
   });
   return (
     <div className="p-0.5 h-full max-h-full flex flex-col">
-      <SidebarViewInitializer />
       <ResizableGrid onChange={handleOnHorizontalChange}>
         <ResizableGridPanel
           minSize={340}
