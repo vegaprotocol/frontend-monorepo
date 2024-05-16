@@ -549,7 +549,7 @@ export const compileFeatureFlags = (refresh = false): FeatureFlags => {
       windowOrDefault(
         'NX_CROSS_CHAIN_DEPOSITS_ENABLED',
         process.env['NX_CROSS_CHAIN_DEPOSITS_ENABLED']
-      )
+      ) as string
     ),
     CROSS_CHAIN_DEPOSITS: TRUTHY.includes(
       windowOrDefault(
