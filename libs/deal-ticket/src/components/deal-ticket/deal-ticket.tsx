@@ -422,15 +422,21 @@ export const DealTicket = ({
   const disableIcebergCheckbox = nonPersistentOrder;
   const featureFlags = useFeatureFlags((state) => state.flags);
   const sizeStep = determineSizeStep(market);
-  const notionalPrice = (!price || price === '0' ? markPrice : price) || '0';
-  const minNotional = toBigNum(notionalPrice, market.decimalPlaces)
-    .multipliedBy(sizeStep)
-    .toNumber();
+  const notionalPrice = !price || price === '0' ? markPrice : price;
+  const minNotional = notionalPrice
+    ? toBigNum(notionalPrice, market.decimalPlaces)
+        .multipliedBy(sizeStep)
+        .toNumber()
+    : undefined;
 
-  const notionalDecimals = Math.floor(Math.log10(minNotional)) * -1;
-  const notionalStep = toDecimal(notionalDecimals);
+  const notionalDecimals =
+    minNotional && Math.floor(Math.log10(minNotional)) * -1;
+  const notionalStep = notionalDecimals ? toDecimal(notionalDecimals) : '1';
 
   useEffect(() => {
+    if (!notionalPrice || typeof notionalDecimals !== 'number') {
+      return;
+    }
     if (useNotional) {
       const size =
         !notional || notional === '0'
