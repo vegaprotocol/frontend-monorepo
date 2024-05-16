@@ -30,6 +30,7 @@ import { WalletIcon } from '../icons/wallet';
 import { ProtocolUpgradeCountdown } from '@vegaprotocol/proposals';
 import { useT, useI18n } from '../../lib/use-t';
 import { supportedLngs } from '../../lib/i18n';
+import { SettingsPopover } from '../settings';
 
 type MenuState = 'wallet' | 'nav' | null;
 type Theme = 'system' | 'yellow';
@@ -73,8 +74,9 @@ export const Navbar = ({ theme = 'system' }: { theme?: Theme }) => {
       {/* Right section */}
       <div className="ml-auto flex items-center justify-end gap-2">
         <ProtocolUpgradeCountdown />
-        <div className="flex">
+        <div className="flex items-center">
           <ThemeSwitcher />
+          <SettingsPopover />
           {supportedLngs.length > 1 ? (
             <LanguageSelector
               languages={supportedLngs}
