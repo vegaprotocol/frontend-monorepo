@@ -121,42 +121,46 @@ export const Settings = () => {
         </dl>
       </SettingsGroup>
 
-      <h3 className="mb-4 flex items-center gap-3">
-        <span>{t('Experimental features')}</span>
-        <Tooltip
-          description={t(
-            'The below features are experimental and it is not guaranteed that they will work correctly. Use at your own risk.'
-          )}
-        >
-          <span className="w-3 h-3 relative text-vega-red">
-            <VegaIcon
-              name={VegaIconNames.WARNING}
-              size={12}
-              className="absolute top-0 left-0"
-            />
-          </span>
-        </Tooltip>
-      </h3>
-      <div className="border-2 rounded border-vega-red bg-vega-red-300 dark:bg-vega-red-700 px-2 pt-4 pb-0">
-        <SettingsGroup
-          label={t('Cross chain deposits')}
-          helpText={t(
-            'Enables the cross chain deposit functionality via the Squid Router'
-          )}
-        >
-          <FeatureFlagSwitch flag={'CROSS_CHAIN_DEPOSITS'} />
-        </SettingsGroup>
-        {flags.CROSS_CHAIN_DEPOSITS && (
-          <SettingsGroup
-            label={t('Use test Arbitrum bridge')}
-            helpText={t(
-              'Uses hardcoded assets and Arbitrum bridge (address: 0xd459fac6647059100ebe45543e1da73b3b70ffba). FUNDS MAY BE LOST!'
+      {flags.CROSS_CHAIN_DEPOSITS_ENABLED && (
+        <>
+          <h3 className="mb-4 flex items-center gap-3">
+            <span>{t('Experimental features')}</span>
+            <Tooltip
+              description={t(
+                'The below features are experimental and it is not guaranteed that they will work correctly. Use at your own risk.'
+              )}
+            >
+              <span className="w-3 h-3 relative text-vega-red">
+                <VegaIcon
+                  name={VegaIconNames.WARNING}
+                  size={12}
+                  className="absolute top-0 left-0"
+                />
+              </span>
+            </Tooltip>
+          </h3>
+          <div className="border-2 rounded border-vega-red bg-vega-red-300 dark:bg-vega-red-700 px-2 pt-4 pb-0">
+            <SettingsGroup
+              label={t('Cross chain deposits')}
+              helpText={t(
+                'Enables the cross chain deposit functionality via the Squid Router'
+              )}
+            >
+              <FeatureFlagSwitch flag={'CROSS_CHAIN_DEPOSITS'} />
+            </SettingsGroup>
+            {flags.CROSS_CHAIN_DEPOSITS && (
+              <SettingsGroup
+                label={t('Use test Arbitrum bridge')}
+                helpText={t(
+                  'Uses hardcoded assets and Arbitrum bridge (address: 0xd459fac6647059100ebe45543e1da73b3b70ffba). FUNDS MAY BE LOST!'
+                )}
+              >
+                <FeatureFlagSwitch flag={'CROSS_CHAIN_DEPOSITS_TEST'} />
+              </SettingsGroup>
             )}
-          >
-            <FeatureFlagSwitch flag={'CROSS_CHAIN_DEPOSITS_TEST'} />
-          </SettingsGroup>
-        )}
-      </div>
+          </div>
+        </>
+      )}
     </div>
   );
 };

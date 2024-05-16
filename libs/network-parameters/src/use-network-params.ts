@@ -7,6 +7,7 @@ import {
 
 export const NetworkParams = {
   blockchains_ethereumConfig: 'blockchains_ethereumConfig',
+  blockchains_evmBridgeConfigs: 'blockchains_evmBridgeConfigs',
   reward_asset: 'reward_asset',
   rewards_activityStreak_benefitTiers: 'rewards_activityStreak_benefitTiers',
   rewards_activityStreak_inactivityLimit:

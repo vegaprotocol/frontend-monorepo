@@ -3,14 +3,14 @@ import * as Types from '@vegaprotocol/types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
-export type AssetFieldsFragment = { __typename?: 'Asset', id: string, name: string, symbol: string, decimals: number, quantum: string, status: Types.AssetStatus, source: { __typename: 'BuiltinAsset', maxFaucetAmountMint: string } | { __typename: 'ERC20', contractAddress: string, lifetimeLimit: string, withdrawThreshold: string }, networkTreasuryAccount?: { __typename?: 'AccountBalance', balance: string } | null, globalInsuranceAccount?: { __typename?: 'AccountBalance', balance: string } | null };
+export type AssetFieldsFragment = { __typename?: 'Asset', id: string, name: string, symbol: string, decimals: number, quantum: string, status: Types.AssetStatus, source: { __typename: 'BuiltinAsset', maxFaucetAmountMint: string } | { __typename: 'ERC20', contractAddress: string, lifetimeLimit: string, withdrawThreshold: string, chainId: string }, networkTreasuryAccount?: { __typename?: 'AccountBalance', balance: string } | null, globalInsuranceAccount?: { __typename?: 'AccountBalance', balance: string } | null };
 
 export type AssetQueryVariables = Types.Exact<{
   assetId: Types.Scalars['ID'];
 }>;
 
 
-export type AssetQuery = { __typename?: 'Query', assetsConnection?: { __typename?: 'AssetsConnection', edges?: Array<{ __typename?: 'AssetEdge', node: { __typename?: 'Asset', id: string, name: string, symbol: string, decimals: number, quantum: string, status: Types.AssetStatus, source: { __typename: 'BuiltinAsset', maxFaucetAmountMint: string } | { __typename: 'ERC20', contractAddress: string, lifetimeLimit: string, withdrawThreshold: string }, networkTreasuryAccount?: { __typename?: 'AccountBalance', balance: string } | null, globalInsuranceAccount?: { __typename?: 'AccountBalance', balance: string } | null } } | null> | null } | null };
+export type AssetQuery = { __typename?: 'Query', assetsConnection?: { __typename?: 'AssetsConnection', edges?: Array<{ __typename?: 'AssetEdge', node: { __typename?: 'Asset', id: string, name: string, symbol: string, decimals: number, quantum: string, status: Types.AssetStatus, source: { __typename: 'BuiltinAsset', maxFaucetAmountMint: string } | { __typename: 'ERC20', contractAddress: string, lifetimeLimit: string, withdrawThreshold: string, chainId: string }, networkTreasuryAccount?: { __typename?: 'AccountBalance', balance: string } | null, globalInsuranceAccount?: { __typename?: 'AccountBalance', balance: string } | null } } | null> | null } | null };
 
 export const AssetFieldsFragmentDoc = gql`
     fragment AssetFields on Asset {
@@ -25,7 +25,7 @@ export const AssetFieldsFragmentDoc = gql`
       contractAddress
       lifetimeLimit
       withdrawThreshold
-      chainId
+      # chainId
     }
     ... on BuiltinAsset {
       maxFaucetAmountMint
