@@ -293,6 +293,7 @@ export const useSquidRouterConfig = (): {
       },
       titles: {
         swap: 'Deposit',
+        stakedTokens: 'Available tokens',
       },
       // @ts-expect-error theme declarations don't appease
       // `#${string}${string}${string}${string}${string}${string}` type

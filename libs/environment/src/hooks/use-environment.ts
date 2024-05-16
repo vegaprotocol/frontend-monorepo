@@ -545,6 +545,12 @@ export const compileFeatureFlags = (refresh = false): FeatureFlags => {
   };
 
   const EXPERIMENTAL_FLAGS = {
+    CROSS_CHAIN_DEPOSITS_ENABLED: TRUTHY.includes(
+      windowOrDefault(
+        'NX_CROSS_CHAIN_DEPOSITS_ENABLED',
+        process.env['NX_CROSS_CHAIN_DEPOSITS_ENABLED']
+      )
+    ),
     CROSS_CHAIN_DEPOSITS: TRUTHY.includes(
       windowOrDefault(
         'NX_CROSS_CHAIN_DEPOSITS',

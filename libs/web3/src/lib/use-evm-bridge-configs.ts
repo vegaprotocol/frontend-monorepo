@@ -1,5 +1,4 @@
-import { useNetworkParamsQuery } from '@vegaprotocol/network-parameters';
-import { removePaginationWrapper } from '@vegaprotocol/utils';
+import { useNetworkParam } from '@vegaprotocol/network-parameters';
 import { useMemo } from 'react';
 import { ARBITRUM_CHAIN_ID } from './constants';
 
@@ -59,24 +58,22 @@ type EVMBridgeConfigs = {
 };
 
 export const useEVMBridgeConfigs = () => {
-  const { data, loading, error } = useNetworkParamsQuery();
+  const { param, loading, error } = useNetworkParam(
+    'blockchains_evmBridgeConfigs'
+  );
 
   const configs = useMemo(() => {
-    if (!data) return null;
-    const param = removePaginationWrapper(
-      data.networkParametersConnection.edges
-    )?.find(({ key }) => key === 'blockchains.evmBridgeConfigs');
     if (!param) return null;
 
     let parsedConfigs: EVMBridgeConfigs;
     try {
-      parsedConfigs = JSON.parse(param.value);
+      parsedConfigs = JSON.parse(param);
     } catch {
       return null;
     }
 
     return parsedConfigs.configs;
-  }, [data]);
+  }, [param]);
 
   return { configs, loading, error };
 };
