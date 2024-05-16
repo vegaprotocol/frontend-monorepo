@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { truncateByChars } from '@vegaprotocol/utils';
 import {
@@ -20,11 +21,10 @@ import { isBrowserWalletInstalled, type Key } from '@vegaprotocol/wallet';
 import { useDialogStore, useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useCopyTimeout } from '@vegaprotocol/react-helpers';
 import classNames from 'classnames';
-import { ViewType, useSidebar } from '../sidebar';
-import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
 import { useT } from '../../lib/use-t';
 import { usePartyProfilesQuery } from './__generated__/PartyProfiles';
 import { useProfileDialogStore } from '../../stores/profile-dialog-store';
+import { Links } from '../../lib/links';
 
 export const VegaWalletConnectButton = ({
   intent = Intent.None,
@@ -34,10 +34,9 @@ export const VegaWalletConnectButton = ({
   onClick?: () => void;
 }) => {
   const t = useT();
+  const navigate = useNavigate();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const openVegaWalletDialog = useDialogStore((store) => store.open);
-  const currentRouteId = useGetCurrentRouteId();
-  const setViews = useSidebar((store) => store.setViews);
   const {
     status,
     pubKeys,
@@ -102,9 +101,10 @@ export const VegaWalletConnectButton = ({
             {!isReadOnly && (
               <TradingDropdownItem
                 data-testid="wallet-transfer"
+                role="link"
                 onClick={() => {
-                  setViews({ type: ViewType.Transfer }, currentRouteId);
                   setDropdownOpen(false);
+                  navigate(Links.TRANSFER());
                 }}
               >
                 {t('Transfer')}

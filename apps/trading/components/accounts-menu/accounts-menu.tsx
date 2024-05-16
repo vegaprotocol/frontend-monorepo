@@ -1,25 +1,26 @@
+import { useNavigate } from 'react-router-dom';
 import { TradingButton } from '@vegaprotocol/ui-toolkit';
-import { ViewType, useSidebar } from '../sidebar';
-import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
 import { useT } from '../../lib/use-t';
+import { Links } from '../../lib/links';
 
 export const AccountsMenu = () => {
   const t = useT();
-  const currentRouteId = useGetCurrentRouteId();
-  const setViews = useSidebar((store) => store.setViews);
+  const navigate = useNavigate();
 
   return (
     <>
       <TradingButton
         size="extra-small"
         data-testid="open-transfer"
-        onClick={() => setViews({ type: ViewType.Transfer }, currentRouteId)}
+        role="link"
+        onClick={() => navigate(Links.TRANSFER())}
       >
         {t('Transfer')}
       </TradingButton>
       <TradingButton
         size="extra-small"
-        onClick={() => setViews({ type: ViewType.Deposit }, currentRouteId)}
+        role="link"
+        onClick={() => navigate(Links.DEPOSIT())}
       >
         {t('Deposit')}
       </TradingButton>

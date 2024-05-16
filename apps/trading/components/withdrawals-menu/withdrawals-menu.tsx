@@ -1,16 +1,15 @@
+import { useNavigate } from 'react-router-dom';
 import { TradingButton } from '@vegaprotocol/ui-toolkit';
-import { ViewType, useSidebar } from '../sidebar';
-import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
 import { useT } from '../../lib/use-t';
+import { Links } from '../../lib/links';
 
 export const WithdrawalsMenu = () => {
   const t = useT();
-  const setViews = useSidebar((store) => store.setViews);
-  const currentRouteId = useGetCurrentRouteId();
+  const navigate = useNavigate();
   return (
     <TradingButton
       size="extra-small"
-      onClick={() => setViews({ type: ViewType.Withdraw }, currentRouteId)}
+      onClick={() => navigate(Links.WITHDRAW())}
       data-testid="withdraw-dialog-button"
     >
       {t('Make withdrawal')}
