@@ -214,13 +214,13 @@ jobs:
             # display info about app
             curl --fail -H "Authorization: ${{ secrets.FLEEK_API_KEY }}" \
               -H "Content-Type: application/json" \
-              -d '{"query": "query{getSiteById(siteId:\"<FLEEK_SITE_ID_HERE>\"){id latestDeploy{id status}}}"}' \
+              -d '{"query": "query{getSiteById(siteId:\"78f2a9c9-4a73-4523-b386-2b52c832280f\"){id latestDeploy{id status}}}"}' \
               https://api.fleek.co/graphql
 
             # trigger new deployment as base image is always set to vegaprotocol/trading:validators-testnet
             curl --fail -H "Authorization: ${{ secrets.FLEEK_API_KEY }}" \
               -H "Content-Type: application/json" \
-              -d '{"query": "mutation{triggerDeploy(siteId:\"<FLEEK_SITE_ID_HERE>\"){id status}}"}' \
+              -d '{"query": "mutation{triggerDeploy(siteId:\"78f2a9c9-4a73-4523-b386-2b52c832280f\"){id status}}"}' \
               https://api.fleek.co/graphql
           fi
 
