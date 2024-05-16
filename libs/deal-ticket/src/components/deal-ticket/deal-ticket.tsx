@@ -92,7 +92,6 @@ import {
 } from '@vegaprotocol/react-helpers';
 import { useSlippage } from '../../hooks/use-slippage';
 import BigNumber from 'bignumber.js';
-import classNames from 'classnames';
 
 export const REDUCE_ONLY_TOOLTIP =
   '"Reduce only" will ensure that this order will not increase the size of an open position. When the order is matched, it will only trade enough volume to bring your open volume towards 0 but never change the direction of your position. If applied to a limit order that is not instantly filled, the order will be stopped.';
@@ -422,7 +421,7 @@ export const DealTicket = ({
   const disableIcebergCheckbox = nonPersistentOrder;
   const featureFlags = useFeatureFlags((state) => state.flags);
   const sizeStep = determineSizeStep(market);
-  const notionalPrice = !price || price === '0' ? markPrice : price;
+  const notionalPrice = !price || price === '0' ? marketPrice : price;
   const minNotional = notionalPrice
     ? toBigNum(notionalPrice, market.decimalPlaces)
         .multipliedBy(sizeStep)
@@ -433,11 +432,12 @@ export const DealTicket = ({
     minNotional && Math.floor(Math.log10(minNotional)) * -1;
   const notionalStep = notionalDecimals ? toDecimal(notionalDecimals) : '1';
 
+  const sliderUsed = useRef(false);
   useEffect(() => {
     if (!notionalPrice || typeof notionalDecimals !== 'number') {
       return;
     }
-    if (useNotional) {
+    if (useNotional && !sliderUsed.current) {
       const size =
         !notional || notional === '0'
           ? '0'
@@ -455,6 +455,7 @@ export const DealTicket = ({
               .toFixed(Math.max(notionalDecimals, 0));
       setValue('notional', notional);
     }
+    sliderUsed.current = false;
   }, [
     market.decimalPlaces,
     market.positionDecimalPlaces,
@@ -595,6 +596,7 @@ export const DealTicket = ({
                   appendElement={
                     quoteName && (
                       <button
+                        data-testid="useSize"
                         type="button"
                         onClick={() => setValue('useNotional', false)}
                       >
@@ -632,42 +634,43 @@ export const DealTicket = ({
           }}
           render={({ field, fieldState }) => (
             <>
-              <FormGroup
-                label={t('Size')}
-                labelFor="order-size"
-                compact
-                className={classNames({ hidden: useNotional })}
-              >
-                <Input
-                  id="order-size"
-                  className="w-full"
-                  type="number"
-                  appendElement={
-                    baseQuote && (
-                      <button
-                        type="button"
-                        onClick={() => setValue('useNotional', true)}
-                      >
-                        <Pill size="xs">
-                          {baseQuote}{' '}
-                          <VegaIcon name={VegaIconNames.TRANSFER} size={16} />
-                        </Pill>
-                      </button>
-                    )
-                  }
-                  step={sizeStep}
-                  min={sizeStep}
-                  data-testid="order-size"
-                  onWheel={(e) => e.currentTarget.blur()}
-                  {...field}
-                />
-              </FormGroup>
+              {!useNotional && (
+                <FormGroup label={t('Size')} labelFor="order-size" compact>
+                  <Input
+                    id="order-size"
+                    className="w-full"
+                    type="number"
+                    appendElement={
+                      baseQuote && (
+                        <button
+                          data-testid="useNotional"
+                          type="button"
+                          onClick={() => setValue('useNotional', true)}
+                        >
+                          <Pill size="xs">
+                            {baseQuote}{' '}
+                            <VegaIcon name={VegaIconNames.TRANSFER} size={16} />
+                          </Pill>
+                        </button>
+                      )
+                    }
+                    step={sizeStep}
+                    min={sizeStep}
+                    data-testid="order-size"
+                    onWheel={(e) => e.currentTarget.blur()}
+                    {...field}
+                  />
+                </FormGroup>
+              )}
               <Slider
                 min={0}
                 max={maxSize}
                 step={Number(sizeStep)}
                 value={[Number(field.value)]}
-                onValueChange={([value]) => field.onChange(value.toString())}
+                onValueChange={([value]) => {
+                  sliderUsed.current = true;
+                  field.onChange(value.toString());
+                }}
               />
               {fieldState.error && (
                 <InputError testId="deal-ticket-error-message-size">
