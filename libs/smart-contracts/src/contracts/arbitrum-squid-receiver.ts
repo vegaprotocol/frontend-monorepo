@@ -19,7 +19,7 @@ export class ArbitrumSquidReceiver {
 
   async deposit(
     asset: string,
-    amount: number,
+    amount: string,
     vegaPubKey: string,
     recovery: string
   ) {
@@ -28,7 +28,7 @@ export class ArbitrumSquidReceiver {
 
   encodeDepositData(
     asset: string,
-    amount: number,
+    amount: string,
     vegaPubKey: string,
     recovery: string
   ) {
