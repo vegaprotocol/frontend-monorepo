@@ -10,9 +10,9 @@ on:
       - ready_for_review
       - reopened
       - synchronize
+
 jobs:
   node-modules:
-    # All jobs depend on node_modules, so none should run if the PR is in draft
     if: github.event.pull_request.draft == false
     runs-on: ubuntu-22.04
     name: 'Cache yarn modules'
@@ -180,7 +180,7 @@ jobs:
     name: '(CI) cypress'
     uses: ./.github/workflows/cypress-run.yml
     secrets: inherit
-    if: needs.check-e2e-needed.outputs.run-tests == 'true' && (contains(needs.build-sources.outputs.projects, 'governance') || contains(needs.build-sources.outputs.projects, 'explorer'))
+    if: needs.check-e2e-needed.outputs.run-tests == 'true' && (contains(github.event.pull_request.title, 'governance') || contains(github.event.pull_request.title, 'explorer'))
     with:
       projects: ${{ needs.build-sources.outputs.projects-e2e }}
       tags: '@smoke'
@@ -188,7 +188,7 @@ jobs:
   publish-dist:
     needs: build-sources
     name: '(CD) publish dist'
-    if: github.event_name != 'pull_request' && ((contains(github.ref, 'release/mainnet') && !contains(github.ref, 'mirror')) || contains(github.ref, 'release/testnet'))
+    if: github.event_name != 'pull_request' && ((contains(github.ref, 'release/mainnet') && !contains(github.ref, 'mirror')) || contains(github.ref, 'release/testnet') || contains(github.ref, 'release/validators-testnet'))
     uses: ./.github/workflows/publish-dist.yml
     secrets: inherit
     with:
@@ -212,7 +212,6 @@ jobs:
     with:
       github-sha: ${{ github.event.pull_request.head.sha || github.sha }}
 
-  # Report single result at the end, to avoid mess with required checks in PR
   test-check:
     name: '(CI) Final Tests check'
     if: ${{ always() }}
