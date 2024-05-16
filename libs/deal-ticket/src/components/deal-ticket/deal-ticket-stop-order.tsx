@@ -901,8 +901,12 @@ const NotionalAndFees = ({
     <div className="mb-4 flex w-full flex-col gap-2">
       <KeyValue
         label={t('Notional')}
-        value={formatValue(notionalSize, market.decimalPlaces)}
-        formattedValue={formatValue(notionalSize, market.decimalPlaces)}
+        value={formatValue(notionalSize, asset.decimals)}
+        formattedValue={formatValue(
+          notionalSize,
+          asset.decimals,
+          asset.quantum
+        )}
         symbol={quoteName}
         labelDescription={t(
           'NOTIONAL_SIZE_TOOLTIP_TEXT',
@@ -1175,6 +1179,7 @@ const getDerivedPriceAndNotional = ({
   price,
   positionDecimalPlaces,
   decimalPlaces,
+  decimals,
   triggerType,
   triggerPrice,
   marketPrice,
@@ -1184,6 +1189,7 @@ const getDerivedPriceAndNotional = ({
   price?: string;
   positionDecimalPlaces: number;
   decimalPlaces: number;
+  decimals: number;
   triggerType: StopOrderFormValues['triggerType'];
   type: StopOrderFormValues['type'];
   marketPrice?: string | null;
@@ -1204,7 +1210,8 @@ const getDerivedPriceAndNotional = ({
     derivedPrice,
     size,
     decimalPlaces,
-    positionDecimalPlaces
+    positionDecimalPlaces,
+    decimals
   );
   return { notionalSize, derivedPrice };
 };
@@ -1340,6 +1347,7 @@ export const StopOrder = ({
     return () => subscription.unsubscribe();
   }, [watch, market.id, updateStoredFormValues]);
 
+  const asset = getAsset(market);
   const quoteName = getQuoteName(market);
   const assetUnit = getBaseQuoteUnit(
     market.tradableInstrument.instrument.metadata.tags
@@ -1366,6 +1374,7 @@ export const StopOrder = ({
     decimalPlaces: market.decimalPlaces,
     marketPrice,
     positionDecimalPlaces: market.positionDecimalPlaces,
+    decimals: asset.decimals,
     size: normalizedSize,
     triggerPrice,
     triggerType,
@@ -1386,6 +1395,7 @@ export const StopOrder = ({
       decimalPlaces: market.decimalPlaces,
       marketPrice,
       positionDecimalPlaces: market.positionDecimalPlaces,
+      decimals: asset.decimals,
       size: ocoNormalizedSize,
       triggerPrice: ocoTriggerPrice,
       triggerType: ocoTriggerType,

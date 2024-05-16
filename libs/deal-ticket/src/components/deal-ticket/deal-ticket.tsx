@@ -74,6 +74,7 @@ import { useDataProvider } from '@vegaprotocol/data-provider';
 import { usePositionEstimate } from '../../hooks';
 import { DealTicketSizeIceberg } from './deal-ticket-size-iceberg';
 import noop from 'lodash/noop';
+import { VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import { isNonPersistentOrder } from '../../utils/time-in-force-persistence';
 import { KeyValue } from './key-value';
 import { DocsLinks, useFeatureFlags } from '@vegaprotocol/environment';
@@ -114,14 +115,15 @@ export const getNotionalSize = (
   price: string | null | undefined,
   size: string | undefined,
   decimalPlaces: number,
-  positionDecimalPlaces: number
+  positionDecimalPlaces: number,
+  decimals: number
 ) => {
   if (price && size) {
     return removeDecimal(
       toBigNum(size, positionDecimalPlaces).multipliedBy(
         toBigNum(price, decimalPlaces)
       ),
-      decimalPlaces
+      decimals
     );
   }
   return undefined;
@@ -230,6 +232,7 @@ export const DealTicket = ({
   const expiresAt = watch('expiresAt');
   const postOnly = watch('postOnly');
   const useNotional = watch('useNotional');
+  const notional = watch('notional');
 
   useEffect(() => {
     const size = storedFormValues?.[dealTicketType]?.size;
@@ -274,7 +277,8 @@ export const DealTicket = ({
     price,
     normalizedOrder?.size,
     market.decimalPlaces,
-    market.positionDecimalPlaces
+    market.positionDecimalPlaces,
+    asset.decimals
   );
 
   const { data: activeOrders } = useActiveOrders(pubKey, market.id);
@@ -418,12 +422,44 @@ export const DealTicket = ({
   const disableIcebergCheckbox = nonPersistentOrder;
   const featureFlags = useFeatureFlags((state) => state.flags);
   const sizeStep = determineSizeStep(market);
-  const minNotional = toBigNum(price || '0', market.decimalPlaces).multipliedBy(
-    sizeStep
-  );
-  const notionalStep = toDecimal(
-    Math.floor(Math.log10(minNotional.toNumber())) * -1
-  );
+  const notionalPrice = (!price || price === '0' ? markPrice : price) || '0';
+  const minNotional = toBigNum(notionalPrice, market.decimalPlaces)
+    .multipliedBy(sizeStep)
+    .toNumber();
+
+  const notionalDecimals = Math.floor(Math.log10(minNotional)) * -1;
+  const notionalStep = toDecimal(notionalDecimals);
+
+  useEffect(() => {
+    if (useNotional) {
+      const size =
+        !notional || notional === '0'
+          ? '0'
+          : BigNumber(notional)
+              .dividedBy(toBigNum(notionalPrice, market.decimalPlaces))
+              .toFixed(market.positionDecimalPlaces);
+
+      setValue('size', size);
+    } else {
+      const notional =
+        !rawSize || rawSize === '0'
+          ? '0'
+          : BigNumber(rawSize)
+              .multipliedBy(toBigNum(notionalPrice, market.decimalPlaces))
+              .toFixed(Math.max(notionalDecimals, 0));
+      setValue('notional', notional);
+    }
+  }, [
+    market.decimalPlaces,
+    market.positionDecimalPlaces,
+    notional,
+    notionalPrice,
+    rawSize,
+    setValue,
+    useNotional,
+    notionalDecimals,
+  ]);
+
   const marketIsInAuction = isMarketInAuction(marketData.marketTradingMode);
 
   const maxSize = useMaxSize({
@@ -540,61 +576,37 @@ export const DealTicket = ({
             key="notional"
             name="notional"
             control={control}
-            rules={{
-              required: t('You need to provide a size'),
-              min: {
-                value: minNotional.toString(),
-                message: t('Notional cannot be lower than {{minNotional}}', {
-                  minNotional: minNotional.toString(),
-                }),
-              },
-              validate: validateAmount(sizeStep, 'Size'),
-              deps: ['peakSize', 'minimumVisibleSize'],
-            }}
-            render={({ field: { onChange, ...field }, fieldState }) => {
-              const onNotionalChange = (value: string) => {
-                onChange(value);
-                if (!price || !value) {
-                  return;
-                }
-                const size =
-                  value === '0'
-                    ? '0'
-                    : BigNumber(value)
-                        .dividedBy(toBigNum(price, market.decimalPlaces))
-                        .toFixed(market.positionDecimalPlaces);
-                setValue('size', size);
-              };
-              return (
-                <FormGroup
-                  label={t('Notional')}
-                  labelFor="order-notional"
-                  compact
-                >
-                  <Input
-                    id="order-notional"
-                    className="w-full"
-                    type="number"
-                    appendElement={
-                      quoteName && (
-                        <button
-                          type="button"
-                          onClick={() => setValue('useNotional', false)}
-                        >
-                          <Pill size="xs">{quoteName}</Pill>
-                        </button>
-                      )
-                    }
-                    step={notionalStep}
-                    min={notionalStep}
-                    data-testid="order-notional"
-                    onWheel={(e) => e.currentTarget.blur()}
-                    {...field}
-                    onChange={(event) => onNotionalChange(event.target.value)}
-                  />
-                </FormGroup>
-              );
-            }}
+            render={({ field }) => (
+              <FormGroup
+                label={t('Notional')}
+                labelFor="order-notional"
+                compact
+              >
+                <Input
+                  id="order-notional"
+                  className="w-full"
+                  type="number"
+                  appendElement={
+                    quoteName && (
+                      <button
+                        type="button"
+                        onClick={() => setValue('useNotional', false)}
+                      >
+                        <Pill size="xs">
+                          {quoteName}{' '}
+                          <VegaIcon name={VegaIconNames.TRANSFER} size={16} />
+                        </Pill>
+                      </button>
+                    )
+                  }
+                  step={notionalStep}
+                  min={notionalStep}
+                  data-testid="order-notional"
+                  onWheel={(e) => e.currentTarget.blur()}
+                  {...field}
+                />
+              </FormGroup>
+            )}
           />
         )}
         <Controller
@@ -612,68 +624,52 @@ export const DealTicket = ({
             validate: validateAmount(sizeStep, 'Size'),
             deps: ['peakSize', 'minimumVisibleSize'],
           }}
-          render={({ field: { onChange, ...field }, fieldState }) => {
-            const onSizeChange = (value: string) => {
-              onChange(value);
-              if (!price || !value) {
-                return;
-              }
-              setValue(
-                'notional',
-                value === '0'
-                  ? '0'
-                  : BigNumber(value)
-                      .multipliedBy(toBigNum(price, market.decimalPlaces))
-                      .toFixed(market.positionDecimalPlaces)
-              );
-            };
-            return (
-              <>
-                <FormGroup
-                  label={t('Size')}
-                  labelFor="order-size"
-                  compact
-                  className={classNames({ hidden: useNotional })}
-                >
-                  <Input
-                    id="order-size"
-                    className="w-full"
-                    type="number"
-                    appendElement={
-                      baseQuote && (
-                        <button
-                          type="button"
-                          onClick={() => setValue('useNotional', true)}
-                        >
-                          <Pill size="xs">{baseQuote}</Pill>
-                        </button>
-                      )
-                    }
-                    step={sizeStep}
-                    min={sizeStep}
-                    data-testid="order-size"
-                    onWheel={(e) => e.currentTarget.blur()}
-                    {...field}
-                    onChange={(event) => {
-                      onSizeChange(event.target.value);
-                    }}
-                  />
-                </FormGroup>
-                <Slider
-                  min={0}
-                  max={maxSize}
-                  step={Number(sizeStep)}
-                  value={[Number(field.value)]}
-                  onValueChange={([value]) => onSizeChange(value.toString())}
+          render={({ field, fieldState }) => (
+            <>
+              <FormGroup
+                label={t('Size')}
+                labelFor="order-size"
+                compact
+                className={classNames({ hidden: useNotional })}
+              >
+                <Input
+                  id="order-size"
+                  className="w-full"
+                  type="number"
+                  appendElement={
+                    baseQuote && (
+                      <button
+                        type="button"
+                        onClick={() => setValue('useNotional', true)}
+                      >
+                        <Pill size="xs">
+                          {baseQuote}{' '}
+                          <VegaIcon name={VegaIconNames.TRANSFER} size={16} />
+                        </Pill>
+                      </button>
+                    )
+                  }
+                  step={sizeStep}
+                  min={sizeStep}
+                  data-testid="order-size"
+                  onWheel={(e) => e.currentTarget.blur()}
+                  {...field}
                 />
-                {fieldState.error && (
-                  <InputError testId="deal-ticket-error-message-size">
-                    {fieldState.error.message}
-                  </InputError>
-                )}
-              </>
-            );
-          }}
+              </FormGroup>
+              <Slider
+                min={0}
+                max={maxSize}
+                step={Number(sizeStep)}
+                value={[Number(field.value)]}
+                onValueChange={([value]) => field.onChange(value.toString())}
+              />
+              {fieldState.error && (
+                <InputError testId="deal-ticket-error-message-size">
+                  {fieldState.error.message}
+                </InputError>
+              )}
+            </>
+          )}
         />
       </div>
       {isLimitType && (
@@ -725,12 +721,21 @@ export const DealTicket = ({
               normalizedOrder?.size || '0',
               market.positionDecimalPlaces
             )}
+            value={formatValue(
+              normalizedOrder?.size || '0',
+              market.positionDecimalPlaces
+            )}
             symbol={baseQuote}
           />
         ) : (
           <KeyValue
             label={t('Notional')}
-            value={formatValue(notionalSize, market.decimalPlaces)}
+            formattedValue={formatValue(
+              notionalSize,
+              asset.decimals,
+              asset.quantum
+            )}
+            value={formatValue(notionalSize, asset.decimals)}
             symbol={quoteName}
             labelDescription={t(
               'NOTIONAL_SIZE_TOOLTIP_TEXT',
