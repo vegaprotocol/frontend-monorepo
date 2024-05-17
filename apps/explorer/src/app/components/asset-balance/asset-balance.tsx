@@ -8,6 +8,7 @@ export type AssetBalanceProps = {
   showAssetLink?: boolean;
   showAssetSymbol?: boolean;
   rounded?: boolean;
+  hideLabel?: boolean;
 };
 
 /**
@@ -20,6 +21,7 @@ const AssetBalance = ({
   showAssetLink = true,
   showAssetSymbol = false,
   rounded = false,
+  hideLabel = false,
 }: AssetBalanceProps) => {
   const { data: asset, loading } = useAssetDataProvider(assetId);
 
@@ -36,7 +38,11 @@ const AssetBalance = ({
     <div className="inline-block">
       <span className="font-mono">{label}</span>{' '}
       {showAssetLink && asset?.id ? (
-        <AssetLink showAssetSymbol={showAssetSymbol} assetId={assetId} />
+        <AssetLink
+          showAssetSymbol={showAssetSymbol}
+          assetId={assetId}
+          hideLabel={hideLabel}
+        />
       ) : null}
     </div>
   );

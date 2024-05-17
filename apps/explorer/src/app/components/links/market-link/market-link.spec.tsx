@@ -38,9 +38,9 @@ describe('Market link component', () => {
     // The ID
     expect(res.getByText('456')).toBeInTheDocument();
 
-    // The emoji
     const icons = await res.findAllByRole('img');
-    expect(icons.length).toBe(2);
+    // Two market icons and a chain icon
+    expect(icons.length).toBe(3);
   });
 
   it('Renders the market name when the query returns a result', async () => {

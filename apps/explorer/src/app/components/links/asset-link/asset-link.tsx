@@ -13,6 +13,7 @@ export type AssetLinkProps = Partial<ComponentProps<typeof ButtonLink>> & {
   assetId: string;
   asDialog?: boolean;
   showAssetSymbol?: boolean;
+  hideLabel?: boolean;
 };
 
 /**
@@ -23,6 +24,7 @@ export type AssetLinkProps = Partial<ComponentProps<typeof ButtonLink>> & {
 export const AssetLink = ({
   assetId,
   asDialog,
+  hideLabel = false,
   showAssetSymbol = false,
   ...props
 }: AssetLinkProps) => {
@@ -49,10 +51,12 @@ export const AssetLink = ({
       }}
       {...props}
     >
-      <EmblemWithChain asset={assetId} />
-      <div className="ml-1 inline-block">
-        <Hash text={label} />
-      </div>
+      <EmblemWithChain asset={assetId} className="inline-block" />
+      {hideLabel === false && (
+        <div className="ml-1 inline-block">
+          <Hash text={label} />
+        </div>
+      )}
     </ButtonLink>
   );
 };

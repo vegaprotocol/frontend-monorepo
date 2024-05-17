@@ -4,12 +4,18 @@ import { URL_BASE } from '../../config';
 // This is a subset of the fields available in the JSON, but these
 // are the only fields required by the Emblem components
 export type MarketInfo = {
-  // Full URL to the logo for the quote asset
+  // Full path to the logo for the quote asset
   quoteLogo: string;
-  // Full URL to the logo for the settlement asset
+  // Full path to the logo for the settlement asset
+  quoteChainLogo: string;
+  // Full path to the logo for the settlement asset
   settlementLogo?: string;
-  // Full URL to the logo for the base asset
+  // Chain logo
+  settlementChainLogo?: string;
+  // Full path to the logo for the base asset
   baseLogo: string;
+  // Full path to the logo for the chain
+  baseChainLogo?: string;
 };
 
 export type MarketInfoState = {
