@@ -51,11 +51,18 @@ export type BarView =
       type: ViewType.Close;
     };
 
+type SidebarView = 'trade' | 'info' | 'assets';
+
 export const Sidebar = () => {
   const params = useParams();
+  const { view, setView } = useSidebar();
   return (
     <div className="grid grid-rows-[1fr_min-content] p-1 h-full">
-      <SidebarAccordion type="single" defaultValue="trade">
+      <SidebarAccordion
+        type="single"
+        value={view}
+        onValueChange={(x: SidebarView) => setView(x)}
+      >
         <SidebarAccordionItem value="trade">
           <SidebarAccordionTrigger>Trade</SidebarAccordionTrigger>
           <SidebarAccordionContent>
@@ -99,14 +106,10 @@ export const Sidebar = () => {
   );
 };
 
-// TODO: Delete this and ensure all usage of this hook instead navigate to new pages
 export const useSidebar = create<{
-  views: { [key: string]: BarView | null };
-  setViews: (view: BarView | null, routeId: string) => void;
-  getView: (routeId: string) => BarView | null | undefined;
-}>()((set, get) => ({
-  views: {},
-  setViews: (x, routeId) =>
-    set(({ views }) => ({ views: { ...views, [routeId]: x } })),
-  getView: (routeId) => get().views[routeId],
+  view: SidebarView;
+  setView: (view: SidebarView) => void;
+}>()((set) => ({
+  view: 'trade',
+  setView: (view) => set({ view }),
 }));
