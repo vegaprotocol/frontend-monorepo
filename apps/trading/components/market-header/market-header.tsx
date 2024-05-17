@@ -49,8 +49,8 @@ export const MarketHeader = () => {
                 onOpenChange={setOpen}
                 trigger={
                   <HeaderTitle>
-                    <Tooltip description={<span>{t(tooltip)}</span>}>
-                      <span>
+                    <Tooltip description={t(tooltip)}>
+                      <span className="flex items-center">
                         {marketId && (
                           <span className="mr-4">
                             <EmblemByMarket

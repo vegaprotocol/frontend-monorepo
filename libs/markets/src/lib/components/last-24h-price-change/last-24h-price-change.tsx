@@ -46,7 +46,7 @@ export const Last24hPriceChange = ({
       <span className={classNames('leading-4', signedNumberCssClass(change))}>
         <div className="text-ellipsis whitespace-nowrap overflow-hidden">
           <Arrow value={change} />
-          <span data-testid="price-change-percentage">
+          <span data-testid="price-change-percentage" className="text-sm">
             {formatNumberPercentage(
               new BigNumber(changePercentage.toString()),
               2

@@ -9,7 +9,7 @@ import { MarketProductPill, StackedCell } from '@vegaprotocol/datagrid';
 import {
   addDecimalsFormatNumber,
   formatNumber,
-  priceChange,
+  priceChangePercentage,
   toBigNum,
 } from '@vegaprotocol/utils';
 import { Sparkline, Tooltip } from '@vegaprotocol/ui-toolkit';
@@ -30,29 +30,44 @@ import { EmblemByMarket } from '@vegaprotocol/emblem';
 import { useChainId } from '@vegaprotocol/wallet-react';
 import { MarketIcon, getMarketStateTooltip } from './market-icon';
 
-const openInterestRenderer = (data: MarketMaybeWithData | undefined) => {
-  if (!data) return '-';
+const openInterestValues = (data: MarketMaybeWithData) => {
+  if (!data) return null;
   const { data: marketData, positionDecimalPlaces, decimalPlaces } = data;
-  if (!marketData) return '-';
+  if (!marketData) return null;
   const { openInterest, markPrice } = marketData;
-  const quoteName = getQuoteName(data);
+
   const openInterestPosition =
     openInterest === undefined
       ? '-'
       : addDecimalsFormatNumber(openInterest, positionDecimalPlaces);
-  const openInterestValue = toBigNum(
+  const openInterestNotional = toBigNum(
     openInterest,
     positionDecimalPlaces
   ).multipliedBy(toBigNum(markPrice, decimalPlaces));
 
-  const openInterestNotional =
+  return {
+    openInterest: openInterestPosition,
+    openInterestNotional,
+  };
+};
+
+const OpenInterestCell = ({
+  data,
+}: {
+  data: MarketMaybeWithData | undefined;
+}) => {
+  const openInterestData = data && openInterestValues(data);
+  if (!openInterestData) return null;
+  const { openInterest, openInterestNotional } = openInterestData;
+  const quoteName = getQuoteName(data);
+  const openInterestNotionalFormatted =
     quoteName === 'USDT'
-      ? `$${formatNumber(openInterestValue, 2)}`
-      : `${formatNumber(openInterestValue, 2)} ${quoteName}`;
+      ? `$${formatNumber(openInterestNotional, 0)}`
+      : `${formatNumber(openInterestNotional, 0)} ${quoteName}`;
   return (
     <StackedCell
-      primary={openInterestPosition}
-      secondary={openInterestNotional}
+      primary={openInterest}
+      secondary={openInterestNotionalFormatted}
     />
   );
 };
@@ -220,8 +235,8 @@ export const useMarketsColumnDefs = () => {
         }: VegaValueGetterParams<MarketMaybeWithDataAndCandles>) => {
           if (!data) return 0;
           const candles = data?.candles?.map((c) => c.close);
-          const change = candles ? priceChange(candles) : 0;
-          return change;
+          const change = candles ? priceChangePercentage(candles) : 0;
+          return Number(change);
         },
       },
       {
@@ -233,8 +248,15 @@ export const useMarketsColumnDefs = () => {
         }: VegaValueGetterParams<MarketMaybeWithDataAndCandles>) => {
           if (!data) return 0;
           const candles = data?.candles;
-          const vol = candles ? calcCandleVolume(candles) : '0';
-          return Number(vol);
+          const volPrice =
+            candles &&
+            calcCandleVolumePrice(
+              candles,
+              data.decimalPlaces,
+              data.positionDecimalPlaces
+            );
+          if (!volPrice) return 0;
+          return Number(volPrice);
         },
         cellRenderer: ({
           data,
@@ -243,19 +265,19 @@ export const useMarketsColumnDefs = () => {
           const candles = data.candles;
           const vol = candles ? calcCandleVolume(candles) : '0';
           const quoteName = getQuoteName(data);
-          const volPrice =
-            candles &&
-            calcCandleVolumePrice(
-              candles,
-              data.decimalPlaces,
-              data.positionDecimalPlaces
-            );
+          const volPrice = candles
+            ? calcCandleVolumePrice(
+                candles,
+                data.decimalPlaces,
+                data.positionDecimalPlaces
+              )
+            : '0';
 
           const volume =
             data && vol && vol !== '0'
               ? addDecimalsFormatNumber(vol, data.positionDecimalPlaces, 2)
               : '0.00';
-          const volumePrice = volPrice && formatNumber(volPrice, 2);
+          const volumePrice = volPrice && formatNumber(volPrice, 0);
 
           return volumePrice ? (
             <span className="font-mono">
@@ -277,6 +299,12 @@ export const useMarketsColumnDefs = () => {
         headerName: t('Open interest'),
         field: 'data.openInterest',
         type: 'rightAligned',
+        valueGetter: ({ data }: VegaValueGetterParams<MarketMaybeWithData>) => {
+          const openInterestData = data && openInterestValues(data);
+          if (!openInterestData) return 0;
+          const { openInterestNotional } = openInterestData;
+          return openInterestNotional.toNumber();
+        },
         cellRenderer: ({
           data,
         }: VegaValueFormatterParams<
@@ -284,7 +312,9 @@ export const useMarketsColumnDefs = () => {
           'data.openInterest'
         >) => {
           return (
-            <span className="font-mono">{openInterestRenderer(data)}</span>
+            <span className="font-mono">
+              <OpenInterestCell data={data} />
+            </span>
           );
         },
       },

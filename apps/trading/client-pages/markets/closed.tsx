@@ -255,12 +255,15 @@ const ClosedMarketsDataGrid = ({
       rowData={rowData}
       defaultColDef={COL_DEFS.default}
       columnDefs={colDefs}
+      domLayout="autoHeight"
       getRowId={({ data }) => data.id}
       overlayNoRowsTemplate={error ? error.message : t('No markets')}
       components={components}
-      rowHeight={45}
+      rowHeight={60}
       headerHeight={40}
-      domLayout="autoHeight"
+      autoSizeStrategy={{
+        type: 'fitGridWidth',
+      }}
       onCellClicked={({ data, column, event }: CellClickedEvent<Row>) => {
         if (!data) return;
 
