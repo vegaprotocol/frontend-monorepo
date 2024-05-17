@@ -18,6 +18,7 @@ import { Links } from '../../lib/links';
 import { useGlobalStore } from '../../stores';
 import { useT } from '../../lib/use-t';
 import { Trans } from 'react-i18next';
+import { useSidebar } from '../sidebar';
 
 interface Props {
   lead?: string;
@@ -30,6 +31,7 @@ const GetStartedButton = ({ step }: { step: OnboardingStep }) => {
   const setDialog = useOnboardingStore((store) => store.setDialog);
   const risk = useOnboardingStore((store) => store.risk);
   const marketId = useGlobalStore((store) => store.marketId);
+  const setView = useSidebar((store) => store.setView);
 
   const buttonProps = {
     size: 'small' as const,
@@ -68,7 +70,10 @@ const GetStartedButton = ({ step }: { step: OnboardingStep }) => {
       <TradingAnchorButton
         {...buttonProps}
         href={link}
-        onClick={() => dismiss()}
+        onClick={() => {
+          setView('trade');
+          dismiss();
+        }}
       >
         {t('Ready to trade')}
       </TradingAnchorButton>
