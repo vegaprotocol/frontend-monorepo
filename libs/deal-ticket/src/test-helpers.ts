@@ -33,7 +33,7 @@ export function generateMarket(override?: PartialDeep<Market>): Market {
         name: 'ACTIVE MARKET',
         metadata: {
           __typename: 'InstrumentMetadata',
-          tags: [],
+          tags: ['base:tDAI'],
         },
         product: {
           __typename: 'Future',

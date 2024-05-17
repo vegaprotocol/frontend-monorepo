@@ -53,6 +53,8 @@ export type OrderFormValues = {
   type: OrderType;
   side: Side;
   size: string;
+  notional?: string;
+  useNotional?: boolean;
   timeInForce: OrderTimeInForce;
   price?: string;
   expiresAt?: string | undefined;

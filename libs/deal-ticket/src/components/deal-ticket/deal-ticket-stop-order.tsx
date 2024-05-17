@@ -642,16 +642,12 @@ const NotEnoughBalanceWarning = ({
       />
     );
   }
-  const margin = removeDecimal(
-    size || '0',
-    asset.decimals - market.decimalPlaces
-  );
-  if (BigInt(balance) < BigInt(margin)) {
+  if (size && size !== '0' && BigInt(balance) < BigInt(size)) {
     return (
       <MarginWarning
         isSpotMarket={true}
         balance={balance}
-        margin={margin}
+        margin={size}
         asset={asset}
         onDeposit={onDeposit}
       />
@@ -901,8 +897,12 @@ const NotionalAndFees = ({
     <div className="mb-4 flex w-full flex-col gap-2">
       <KeyValue
         label={t('Notional')}
-        value={formatValue(notionalSize, market.decimalPlaces)}
-        formattedValue={formatValue(notionalSize, market.decimalPlaces)}
+        value={formatValue(notionalSize, asset.decimals)}
+        formattedValue={formatValue(
+          notionalSize,
+          asset.decimals,
+          asset.quantum
+        )}
         symbol={quoteName}
         labelDescription={t(
           'NOTIONAL_SIZE_TOOLTIP_TEXT',
@@ -1175,6 +1175,7 @@ const getDerivedPriceAndNotional = ({
   price,
   positionDecimalPlaces,
   decimalPlaces,
+  decimals,
   triggerType,
   triggerPrice,
   marketPrice,
@@ -1184,6 +1185,7 @@ const getDerivedPriceAndNotional = ({
   price?: string;
   positionDecimalPlaces: number;
   decimalPlaces: number;
+  decimals: number;
   triggerType: StopOrderFormValues['triggerType'];
   type: StopOrderFormValues['type'];
   marketPrice?: string | null;
@@ -1204,7 +1206,8 @@ const getDerivedPriceAndNotional = ({
     derivedPrice,
     size,
     decimalPlaces,
-    positionDecimalPlaces
+    positionDecimalPlaces,
+    decimals
   );
   return { notionalSize, derivedPrice };
 };
@@ -1340,6 +1343,7 @@ export const StopOrder = ({
     return () => subscription.unsubscribe();
   }, [watch, market.id, updateStoredFormValues]);
 
+  const asset = getAsset(market);
   const quoteName = getQuoteName(market);
   const assetUnit = getBaseQuoteUnit(
     market.tradableInstrument.instrument.metadata.tags
@@ -1366,6 +1370,7 @@ export const StopOrder = ({
     decimalPlaces: market.decimalPlaces,
     marketPrice,
     positionDecimalPlaces: market.positionDecimalPlaces,
+    decimals: asset.decimals,
     size: normalizedSize,
     triggerPrice,
     triggerType,
@@ -1386,6 +1391,7 @@ export const StopOrder = ({
       decimalPlaces: market.decimalPlaces,
       marketPrice,
       positionDecimalPlaces: market.positionDecimalPlaces,
+      decimals: asset.decimals,
       size: ocoNormalizedSize,
       triggerPrice: ocoTriggerPrice,
       triggerType: ocoTriggerType,
