@@ -27,13 +27,10 @@ export function EmblemBase(p: ImgProps) {
       <img
         src={p.src || FALLBACK_URL}
         onError={renderFallback}
-        alt={p.alt || 'Emblem'}
-        width="20"
-        height="20"
-        className={
-          p.className ||
-          `-5 h-5 align-text-top ${loading ? 'display-none' : 'inline-block'}`
-        }
+        alt={p.alt ? p.alt : 'Emblem'}
+        width={p.width || '30'}
+        height={p.height || '30'}
+        className={p.className || ''}
         onLoad={() => setLoading(false)}
       />
     </>

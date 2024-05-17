@@ -5,6 +5,7 @@ import { getVegaChain } from './lib/get-chain';
 export type EmblemByContractProps = {
   contract: string;
   vegaChain?: string | undefined;
+  showSourceChain?: boolean;
 };
 
 /**

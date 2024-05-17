@@ -143,7 +143,7 @@ const ClosedMarketsDataGrid = ({
           if (!data) return null;
           return (
             <span className="flex items-center gap-2 cursor-pointer">
-              <span className="mr-2">
+              <span className="mr-1">
                 <EmblemByMarket market={data?.id || ''} vegaChain={chainId} />
               </span>
               <MarketCodeCell

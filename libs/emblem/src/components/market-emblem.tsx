@@ -2,18 +2,15 @@ import { URL_BASE } from '../config';
 import { EmblemBase } from './emblem-base';
 import { useMarketInfo } from './hooks/use-market-info';
 import { getVegaChain } from './lib/get-chain';
-import classNames from 'classnames';
-
-// Allows the specification of one or both logos. Undefined means both logos are shown
-type MarketLogos = 'BASE' | 'QUOTE' | 'BOTH' | undefined;
+import { t } from 'i18next';
 
 export type EmblemByMarketProps = {
   // The ID of the market to display logos for
   market: string;
   // The vega chain that the market is on
   vegaChain?: string;
-  // Allows the Market Emblem component to display both or just one of the asset logos
-  marketLogos?: MarketLogos;
+  // Overlays the icon for the source chain, if available and applicable
+  showSourceChain?: boolean;
 };
 
 /**
@@ -29,40 +26,48 @@ export type EmblemByMarketProps = {
  * @returns React.Node
  */
 export function EmblemByMarket(props: EmblemByMarketProps) {
-  const { vegaChain, marketLogos, market } = props;
-  const { showBase, showQuote, logoCount } = chooseLogos(marketLogos);
+  const { vegaChain, market } = props;
 
   const chain = getVegaChain(vegaChain);
   const data = useMarketInfo(chain, market);
-  const { base, quote } = getLogoPaths(
+  const { base, quote, baseChain, quoteChain, settlementChain } = getLogoPaths(
     data.data?.baseLogo,
-    data.data?.quoteLogo
+    data.data?.quoteLogo,
+    data.data?.baseChainLogo,
+    data.data?.quoteChainLogo,
+    data.data?.settlementChainLogo
   );
 
-  // Widths are calculated here as they are required for using absolute positioning to
-  // render the logos as overlapping. Moving to blocks with negative margins should work
-  // and could remove this calculation, but was not working reliably cross platform.
-  const wrapperClassString = classNames('relative inline-block h-6', {
-    'w-9': logoCount === 2,
-    'w-5': logoCount === 1,
-  });
-
   return (
-    <div className={wrapperClassString}>
-      {showBase && (
+    <div className="relative inline-block h-8 w-14 leading-[0]">
+      <EmblemBase
+        src={base}
+        className="inline-block z-10 relative rounded-full bg-white border-2 border-vega-light-600 dark:border-white"
+        {...props}
+      />
+
+      {props.showSourceChain !== false && baseChain && (
         <EmblemBase
-          src={base}
-          className="inline-block w-5 h-5 z-10 relative rounded-full bg-white border-2 border-vega-clight-600 dark:border-white"
-          {...props}
+          src={baseChain}
+          width={12}
+          height={12}
+          alt={t('Chain logo')}
+          className={`z-20 align-text-top absolute bottom-0 left-4`}
         />
       )}
-      {showQuote && (
+
+      <EmblemBase
+        src={quote}
+        className={`inline-block ml-[-9px] z-1 rounded-full bg-white border-2 border-vega-light-600 dark:border-white`}
+        {...props}
+      />
+      {props.showSourceChain !== false && (
         <EmblemBase
-          src={quote}
-          className={`inline-block w-5 h-5 rounded-full bg-white border-2 border-vega-clight-600 dark:border-white ${
-            showBase ? '-ml-2' : ''
-          }`}
-          {...props}
+          src={quoteChain || settlementChain}
+          width={12}
+          height={12}
+          alt={t('Chain logo')}
+          className={`align-text-top absolute bottom-0 right-1`}
         />
       )}
     </div>
@@ -70,8 +75,11 @@ export function EmblemByMarket(props: EmblemByMarketProps) {
 }
 
 type LogoPaths = {
-  base: string;
   quote: string;
+  quoteChain?: string;
+  base: string;
+  baseChain?: string;
+  settlementChain?: string;
 };
 
 /**
@@ -82,41 +90,22 @@ type LogoPaths = {
  * @param quoteLogo
  * @returns LogoPaths object containing the full URL for the base and quote logos
  */
-export function getLogoPaths(baseLogo?: string, quoteLogo?: string): LogoPaths {
-  const base = baseLogo ? `${URL_BASE}${baseLogo}` : `${URL_BASE}/missing.svg`;
-  const quote = quoteLogo
-    ? `${URL_BASE}${quoteLogo}`
-    : `${URL_BASE}/missing.svg`;
+export function getLogoPaths(
+  baseLogo?: string,
+  quoteLogo?: string,
+  baseChainLogo?: string,
+  quoteChainLogo?: string,
+  settlementChainLogo?: string
+): LogoPaths {
+  const missing = `${URL_BASE}/missing.svg`;
 
   return {
-    base,
-    quote,
-  };
-}
-
-type LogoOptions = {
-  showBase: boolean;
-  showQuote: boolean;
-  logoCount: number;
-};
-
-/**
- * Parses the marketLogos options, correctly inferring defaults
- * and calculating the size the container needs to be based on
- * how many logos are shown
- *
- * @param selected
- * @returns LogoOptions
- */
-export function chooseLogos(selected: MarketLogos): LogoOptions {
-  const showBase =
-    selected === 'BASE' || selected === 'BOTH' || selected === undefined;
-  const showQuote =
-    selected === 'QUOTE' || selected === 'BOTH' || selected === undefined;
-
-  return {
-    showBase,
-    showQuote,
-    logoCount: (showBase ? 1 : 0) + (showQuote ? 1 : 0),
+    base: baseLogo ? `${URL_BASE}${baseLogo}` : missing,
+    quote: quoteLogo ? `${URL_BASE}${quoteLogo}` : missing,
+    quoteChain: quoteChainLogo ? `${URL_BASE}${quoteChainLogo}` : undefined,
+    baseChain: quoteChainLogo ? `${URL_BASE}${quoteChainLogo}` : undefined,
+    settlementChain: settlementChainLogo
+      ? `${URL_BASE}${settlementChainLogo}`
+      : undefined,
   };
 }

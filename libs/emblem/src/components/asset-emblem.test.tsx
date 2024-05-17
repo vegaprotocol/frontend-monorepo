@@ -8,6 +8,7 @@ describe('EmblemByAsset', () => {
       vegaChain: 'vega-chain',
       asset: '123',
       alt: 'Emblem',
+      showSourceChain: false,
     };
 
     const { getByAltText } = render(<EmblemByAsset {...props} />);
@@ -24,6 +25,7 @@ describe('EmblemByAsset', () => {
   it('should use default vega chain if vegaChain prop is not provided', () => {
     const props = {
       asset: '123',
+      showSourceChain: false,
     };
 
     const { getByAltText } = render(<EmblemByAsset {...props} />);
@@ -34,6 +36,22 @@ describe('EmblemByAsset', () => {
     expect(emblemImage).toHaveAttribute(
       'src',
       'https://icon.vega.xyz/vega/vega-mainnet-0011/asset/123/logo.svg'
+    );
+  });
+
+  it('renders a source chain icon by default', () => {
+    const props = {
+      asset: '123',
+    };
+
+    const { getByAltText } = render(<EmblemByAsset {...props} />);
+
+    const chainImage = getByAltText('Chain logo');
+
+    expect(chainImage).toBeInTheDocument();
+    expect(chainImage).toHaveAttribute(
+      'src',
+      'https://icon.vega.xyz/vega/vega-mainnet-0011/asset/123/chain.svg'
     );
   });
 });
