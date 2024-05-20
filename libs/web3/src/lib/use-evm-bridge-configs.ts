@@ -1,4 +1,4 @@
-import { useNetworkParam } from '@vegaprotocol/network-parameters';
+import { useNetworkParams } from '@vegaprotocol/network-parameters';
 import { useMemo } from 'react';
 import { ARBITRUM_CHAIN_ID } from './constants';
 
@@ -58,9 +58,10 @@ type EVMBridgeConfigs = {
 };
 
 export const useEVMBridgeConfigs = () => {
-  const { param, loading, error } = useNetworkParam(
-    'blockchains_evmBridgeConfigs'
-  );
+  // Used this so it can be compatible with mainnet for now.
+  // TODO: Change this to `useNetworkPars('blockchains_evmBridgeConfigs')`
+  const { params, loading, error } = useNetworkParams();
+  const param = params['blockchains_evmBridgeConfigs'];
 
   const configs = useMemo(() => {
     if (!param) return null;
