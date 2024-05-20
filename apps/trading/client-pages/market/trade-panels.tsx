@@ -15,6 +15,7 @@ import { ErrorBoundary } from '../../components/error-boundary';
 import { type TradingView } from './trade-views';
 import { TradingViews } from './trade-views';
 import { MobileMarketHeader } from '../../components/market-header';
+import { MarketActionDrawer } from '../markets/mobile-buttons';
 
 interface TradePanelsProps {
   market: Market;
@@ -71,12 +72,12 @@ export const TradePanels = ({ market, pinnedAssets }: TradePanelsProps) => {
   };
 
   return (
-    <div className="h-full flex flex-col">
+    <div className="h-full grid grid-rows-[min-content_50vh_1fr_min-content]">
       <MobileMarketHeader />
 
       {/* Top section */}
-      <div className="flex flex-col w-full overflow-hidden">
-        <div className="flex flex-nowrap overflow-x-auto max-w-full border-t border-default">
+      <div className="flex flex-col overflow-hidden">
+        <div className="flex flex-nowrap overflow-x-auto border-t border-default">
           {[
             'chart',
             'orderbook',
@@ -120,7 +121,7 @@ export const TradePanels = ({ market, pinnedAssets }: TradePanelsProps) => {
               );
             })}
         </div>
-        <div className="h-[50vh] lg:h-full relative">
+        <div className="h-full relative">
           <div>{renderMenu(topViewCfg)}</div>
           <div className="overflow-auto h-full">{renderView(topView)}</div>
         </div>
@@ -128,7 +129,7 @@ export const TradePanels = ({ market, pinnedAssets }: TradePanelsProps) => {
       {/* END: Top section */}
 
       {/* Bottom section */}
-      <div className="flex flex-col w-full grow">
+      <div className="flex flex-col overflow-hidden">
         <div className="flex flex-nowrap overflow-x-auto max-w-full border-t border-default">
           {[
             'positions',
@@ -152,12 +153,16 @@ export const TradePanels = ({ market, pinnedAssets }: TradePanelsProps) => {
             );
           })}
         </div>
-        <div className="relative grow">
-          <div className="flex flex-col">{renderMenu(bottomViewCfg)}</div>
-          <div className="overflow-auto h-full">{renderView(bottomView)}</div>
+        <div className="relative grow flex flex-col">
+          <div>{renderMenu(bottomViewCfg)}</div>
+          <div className="overflow-auto grow">{renderView(bottomView)}</div>
         </div>
       </div>
       {/* END: Bottom section */}
+
+      <div>
+        <MarketActionDrawer />
+      </div>
     </div>
   );
 };
