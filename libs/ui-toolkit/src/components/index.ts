@@ -3,6 +3,7 @@ export * from './announcement-banner';
 export * from './arrows';
 export * from './async-renderer';
 export * from './background-video';
+export * from './bottom-drawer';
 export * from './breadcrumbs';
 export * from './button';
 export * from './callout';

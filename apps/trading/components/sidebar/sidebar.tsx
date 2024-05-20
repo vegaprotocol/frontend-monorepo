@@ -51,7 +51,7 @@ export type BarView =
       type: ViewType.Close;
     };
 
-type SidebarView = 'trade' | 'info' | 'assets';
+export type SidebarView = 'trade' | 'info' | 'assets';
 
 export const Sidebar = () => {
   const params = useParams();
