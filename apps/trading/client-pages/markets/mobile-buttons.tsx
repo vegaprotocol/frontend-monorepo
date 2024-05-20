@@ -21,19 +21,20 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { Links } from '../../lib/links';
 import { useState } from 'react';
 
-type DrawerView =
-  | 'trade'
-  | 'info'
-  | 'deposit'
-  | 'withdraw'
-  | 'transfer'
-  | undefined;
+enum DrawerView {
+  Trade = 'Trade',
+  Info = 'Info',
+  Deposit = 'Deposit',
+  Withdraw = 'Withdraw',
+  Transfer = 'Transfer',
+  Closed = 'Closed',
+}
 
 export const MarketActionDrawer = () => {
   const t = useT();
   const { pubKeys, isReadOnly } = useVegaWallet();
   const openVegaWalletDialog = useDialogStore((store) => store.open);
-  const [drawer, setDrawer] = useState<DrawerView>();
+  const [drawer, setDrawer] = useState<DrawerView>(DrawerView.Closed);
 
   return (
     <>
@@ -53,7 +54,10 @@ export const MarketActionDrawer = () => {
               </TradingButton>
             </div>
             <div className="flex-1">
-              <TradingButton onClick={() => setDrawer('trade')} fill={true}>
+              <TradingButton
+                onClick={() => setDrawer(DrawerView.Trade)}
+                fill={true}
+              >
                 {t('Trade')}
               </TradingButton>
             </div>
@@ -61,13 +65,16 @@ export const MarketActionDrawer = () => {
         ) : (
           <>
             <div className="flex-1">
-              <TradingButton onClick={() => setDrawer('trade')} fill={true}>
+              <TradingButton
+                onClick={() => setDrawer(DrawerView.Trade)}
+                fill={true}
+              >
                 {t('Trade')}
               </TradingButton>
             </div>
             <div className="flex-1">
               <TradingButton
-                onClick={() => setDrawer('deposit')}
+                onClick={() => setDrawer(DrawerView.Deposit)}
                 role="link"
                 fill={true}
               >
@@ -87,23 +94,23 @@ export const MarketActionDrawer = () => {
             <TradingDropdownContent>
               <TradingDropdownItem
                 role="link"
-                onClick={() => setDrawer('deposit')}
+                onClick={() => setDrawer(DrawerView.Deposit)}
               >
                 <VegaIcon name={VegaIconNames.DEPOSIT} /> {t('Deposit')}
               </TradingDropdownItem>
               <TradingDropdownItem
                 role="link"
-                onClick={() => setDrawer('withdraw')}
+                onClick={() => setDrawer(DrawerView.Withdraw)}
               >
                 <VegaIcon name={VegaIconNames.WITHDRAW} /> {t('Withdraw')}
               </TradingDropdownItem>
               <TradingDropdownItem
                 role="link"
-                onClick={() => setDrawer('transfer')}
+                onClick={() => setDrawer(DrawerView.Transfer)}
               >
                 <VegaIcon name={VegaIconNames.TRANSFER} /> {t('Transfer')}
               </TradingDropdownItem>
-              <TradingDropdownItem onClick={() => setDrawer('info')}>
+              <TradingDropdownItem onClick={() => setDrawer(DrawerView.Info)}>
                 <VegaIcon name={VegaIconNames.BREAKDOWN} />{' '}
                 {t('Market speicification')}
               </TradingDropdownItem>
@@ -127,7 +134,7 @@ const TradeDrawer = ({
   const navigate = useNavigate();
 
   const renderContent = () => {
-    if (drawer === 'trade') {
+    if (drawer === DrawerView.Trade) {
       if (params.marketId) {
         return (
           <DealTicketContainer
@@ -138,21 +145,21 @@ const TradeDrawer = ({
       }
     }
 
-    if (drawer === 'info') {
+    if (drawer === DrawerView.Info) {
       if (params.marketId) {
         return <MarketInfoAccordionContainer marketId={params.marketId} />;
       }
     }
 
-    if (drawer === 'deposit') {
+    if (drawer === DrawerView.Deposit) {
       return <DepositContainer />;
     }
 
-    if (drawer === 'withdraw') {
+    if (drawer === DrawerView.Withdraw) {
       return <WithdrawContainer />;
     }
 
-    if (drawer === 'transfer') {
+    if (drawer === DrawerView.Transfer) {
       return <TransferContainer />;
     }
 
@@ -160,7 +167,10 @@ const TradeDrawer = ({
   };
 
   return (
-    <BottomDrawer open={Boolean(drawer)} onClose={() => setDrawer(undefined)}>
+    <BottomDrawer
+      open={drawer !== DrawerView.Closed}
+      onClose={() => setDrawer(DrawerView.Closed)}
+    >
       <BottomDrawerContent>
         <div className="p-4 min-h-[742px]">{renderContent()}</div>
       </BottomDrawerContent>

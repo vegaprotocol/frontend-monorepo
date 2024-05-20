@@ -18,7 +18,7 @@ import { Links } from '../../lib/links';
 import { useGlobalStore } from '../../stores';
 import { useT } from '../../lib/use-t';
 import { Trans } from 'react-i18next';
-import { useSidebar } from '../sidebar';
+import { ViewType, useSidebar } from '../sidebar';
 
 interface Props {
   lead?: string;
@@ -71,7 +71,7 @@ const GetStartedButton = ({ step }: { step: OnboardingStep }) => {
         {...buttonProps}
         href={link}
         onClick={() => {
-          setView('trade');
+          setView(ViewType.Trade);
           dismiss();
         }}
       >
