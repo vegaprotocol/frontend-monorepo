@@ -14,19 +14,19 @@ export const IconMonitor = ({ size = 16 }: { size?: number }) => {
         height="10"
         stroke="currentColor"
         stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinejoin="round"
       />
       <path
         d="M3 15V18H21V15"
         stroke="currentColor"
         stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinejoin="round"
       />
       <path
         d="M9 10L11 12L15 8"
         stroke="currentColor"
         stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinejoin="round"
       />
     </svg>
   );
