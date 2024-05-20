@@ -1,5 +1,5 @@
 import { OrderbookManager } from '@vegaprotocol/market-depth';
-import { useSidebar } from '../sidebar';
+import { ViewType, useSidebar } from '../sidebar';
 import { useDealTicketFormValues } from '@vegaprotocol/react-helpers';
 
 export const OrderbookContainer = ({ marketId }: { marketId: string }) => {
@@ -10,7 +10,7 @@ export const OrderbookContainer = ({ marketId }: { marketId: string }) => {
       marketId={marketId}
       onClick={(values) => {
         update(marketId, values);
-        setView('trade');
+        setView(ViewType.Trade);
       }}
     />
   );

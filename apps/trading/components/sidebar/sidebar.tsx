@@ -7,90 +7,53 @@ import {
 } from './sidebar-accordion';
 import { DealTicketContainer } from '@vegaprotocol/deal-ticket';
 import { MarketInfoAccordionContainer } from '@vegaprotocol/markets';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { ErrorBoundary } from '../error-boundary';
 import { NodeHealthContainer } from '../node-health';
 import { AssetCard } from '../asset-card';
+import { Links } from '../../lib/links';
 
-// TODO: Delete this and all references to it
 export enum ViewType {
-  Order = 'Order',
+  Trade = 'Trade',
   Info = 'Info',
-  Deposit = 'Deposit',
-  Withdraw = 'Withdraw',
-  Transfer = 'Transfer',
-  Settings = 'Settings',
-  ViewAs = 'ViewAs',
-  Close = 'Close',
+  Assets = 'Assets',
 }
-
-// TODO: Delete this and all references to it
-export type BarView =
-  | {
-      type: ViewType.Deposit;
-      assetId?: string;
-    }
-  | {
-      type: ViewType.Withdraw;
-      assetId?: string;
-    }
-  | {
-      type: ViewType.Transfer;
-      assetId?: string;
-    }
-  | {
-      type: ViewType.Order;
-    }
-  | {
-      type: ViewType.Info;
-    }
-  | {
-      type: ViewType.Settings;
-    }
-  | {
-      type: ViewType.Close;
-    };
-
-export type SidebarView = 'trade' | 'info' | 'assets';
 
 export const Sidebar = () => {
   const params = useParams();
+  const navigate = useNavigate();
   const { view, setView } = useSidebar();
   return (
     <div className="grid grid-rows-[1fr_min-content] p-1 h-full">
       <SidebarAccordion
         type="single"
         value={view}
-        onValueChange={(x: SidebarView) => setView(x)}
+        onValueChange={(x: ViewType) => setView(x)}
       >
-        <SidebarAccordionItem value="trade">
+        <SidebarAccordionItem value={ViewType.Trade}>
           <SidebarAccordionTrigger>Trade</SidebarAccordionTrigger>
           <SidebarAccordionContent>
             <ErrorBoundary feature="deal-ticket">
-              {params.marketId ? (
+              {params.marketId && (
                 <DealTicketContainer
                   marketId={params.marketId}
-                  onDeposit={() => alert('TODO: handle on deposit')}
+                  onDeposit={() => navigate(Links.DEPOSIT())}
                 />
-              ) : (
-                <div>No market Id</div>
               )}
             </ErrorBoundary>
           </SidebarAccordionContent>
         </SidebarAccordionItem>
-        <SidebarAccordionItem value="info">
+        <SidebarAccordionItem value={ViewType.Info}>
           <SidebarAccordionTrigger>Market info</SidebarAccordionTrigger>
           <SidebarAccordionContent>
             <ErrorBoundary feature="market-info">
-              {params.marketId ? (
+              {params.marketId && (
                 <MarketInfoAccordionContainer marketId={params.marketId} />
-              ) : (
-                <div>No market Id</div>
               )}
             </ErrorBoundary>
           </SidebarAccordionContent>
         </SidebarAccordionItem>
-        <SidebarAccordionItem value="assets">
+        <SidebarAccordionItem value={ViewType.Assets}>
           <SidebarAccordionTrigger>
             <AssetCard marketId={params.marketId} />
           </SidebarAccordionTrigger>
@@ -107,9 +70,9 @@ export const Sidebar = () => {
 };
 
 export const useSidebar = create<{
-  view: SidebarView;
-  setView: (view: SidebarView) => void;
+  view: ViewType;
+  setView: (view: ViewType) => void;
 }>()((set) => ({
-  view: 'trade',
+  view: ViewType.Trade,
   setView: (view) => set({ view }),
 }));
