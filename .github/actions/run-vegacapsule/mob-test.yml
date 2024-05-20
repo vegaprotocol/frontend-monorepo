@@ -1,0 +1,26 @@
+name: Slack Notification
+
+on:
+  workflow_call:
+    inputs:
+      release_number:
+        required: true
+        type: string
+      preview_link:
+        required: true
+        type: string
+      github_link:
+        required: true
+        type: string
+
+jobs:
+  send_notification:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Slack notification
+        run: |
+          curl -X POST -H 'Content-type: application/json' --data '{
+            "release_number": "${{ inputs.release_number }}",
+            "preview_link": "${{ inputs.preview_link }}",
+            "github_link": "${{ inputs.github_link }}"
+          }' https://hooks.slack.com/triggers/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
