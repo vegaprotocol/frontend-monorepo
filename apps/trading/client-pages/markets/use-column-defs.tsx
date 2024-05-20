@@ -171,18 +171,14 @@ export const useMarketsColumnDefs = () => {
                   <EmblemByMarket market={data?.id || ''} vegaChain={chainId} />
                 </span>
                 <StackedCell
-                  primary={value}
-                  secondary={data?.tradableInstrument.instrument.name}
-                  primaryIcon={
-                    <>
-                      <span>
-                        <MarketProductPill productType={productType} />
-                      </span>
-                      <span className="ml-0.5">
-                        <MarketIcon data={data} />
-                      </span>
-                    </>
+                  primary={
+                    <span className="flex gap-1">
+                      {value}
+                      <MarketProductPill productType={productType} />
+                      <MarketIcon data={data} />
+                    </span>
                   }
+                  secondary={data?.tradableInstrument.instrument.name}
                 />
               </span>
             </Tooltip>
@@ -234,10 +230,11 @@ export const useMarketsColumnDefs = () => {
         valueGetter: ({
           data,
         }: VegaValueGetterParams<MarketMaybeWithDataAndCandles>) => {
-          if (!data) return 0;
-          const candles = data?.candles?.map((c) => c.close);
-          const change = candles ? priceChangePercentage(candles) : 0;
-          return Number(change);
+          if (!data?.candles) return 0;
+          const candles = data.candles.map((c) => c.close);
+          const change = priceChangePercentage(candles);
+          if (!change) return 0;
+          return change;
         },
       },
       {
