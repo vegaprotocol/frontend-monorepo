@@ -10,7 +10,7 @@ export const StackedCell = ({
   return (
     <div className="leading-4">
       <div
-        className="text-ellipsis whitespace-nowrap overflow-hidden text-sm "
+        className="text-ellipsis whitespace-nowrap overflow-hidden text-sm"
         data-testid="stack-cell-primary"
       >
         <span>{primary}</span>
