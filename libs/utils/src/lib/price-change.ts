@@ -7,10 +7,16 @@ export const priceChangePercentage = (candles: string[]) => {
 
   const change = priceChange(candles);
 
-  return new BigNumber(change.toString())
-    .dividedBy(new BigNumber(candles[0]))
-    .multipliedBy(100)
-    .toNumber();
+  const firstCandle = new BigNumber(candles[0]);
+  if (firstCandle.isZero() || firstCandle.isNaN()) {
+    return 0;
+  }
+
+  const result = new BigNumber(change.toString())
+    .dividedBy(firstCandle)
+    .multipliedBy(100);
+
+  return result.isNaN() ? 0 : result.toNumber();
 };
 
 export const priceChange = (candles: string[]) => {

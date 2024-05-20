@@ -5,7 +5,11 @@ import type {
   VegaValueFormatterParams,
   VegaValueGetterParams,
 } from '@vegaprotocol/datagrid';
-import { MarketProductPill, StackedCell } from '@vegaprotocol/datagrid';
+import {
+  MarketProductPill,
+  StackedCell,
+  StackedCellWithIcon,
+} from '@vegaprotocol/datagrid';
 import {
   addDecimalsFormatNumber,
   formatNumber,
@@ -170,7 +174,7 @@ export const useMarketsColumnDefs = () => {
                 <span className="mr-1">
                   <EmblemByMarket market={data?.id || ''} vegaChain={chainId} />
                 </span>
-                <StackedCell
+                <StackedCellWithIcon
                   primary={value}
                   secondary={data?.tradableInstrument.instrument.name}
                   primaryIcon={
@@ -237,7 +241,7 @@ export const useMarketsColumnDefs = () => {
           if (!data) return 0;
           const candles = data?.candles?.map((c) => c.close);
           const change = candles ? priceChangePercentage(candles) : 0;
-          return Number(change);
+          return change;
         },
       },
       {
