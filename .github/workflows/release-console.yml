@@ -144,7 +144,7 @@ jobs:
 
   notify_slack:
     runs-on: ubuntu-latest
-    needs: [deploy]
+    needs: [setup_release_branch]
     steps:
       - name: Post mob test to slack
         uses: ./.github/workflows/slack-notification.yml
