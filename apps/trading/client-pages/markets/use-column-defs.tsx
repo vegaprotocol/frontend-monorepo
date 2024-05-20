@@ -230,9 +230,10 @@ export const useMarketsColumnDefs = () => {
         valueGetter: ({
           data,
         }: VegaValueGetterParams<MarketMaybeWithDataAndCandles>) => {
-          if (!data) return 0;
-          const candles = data?.candles?.map((c) => c.close);
-          const change = candles ? priceChangePercentage(candles) : 0;
+          if (!data?.candles) return 0;
+          const candles = data.candles.map((c) => c.close);
+          const change = priceChangePercentage(candles);
+          if (!change) return 0;
           return change;
         },
       },
