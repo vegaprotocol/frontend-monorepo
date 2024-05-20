@@ -5,11 +5,7 @@ import type {
   VegaValueFormatterParams,
   VegaValueGetterParams,
 } from '@vegaprotocol/datagrid';
-import {
-  MarketProductPill,
-  StackedCell,
-  StackedCellWithIcon,
-} from '@vegaprotocol/datagrid';
+import { MarketProductPill, StackedCell } from '@vegaprotocol/datagrid';
 import {
   addDecimalsFormatNumber,
   formatNumber,
@@ -174,19 +170,15 @@ export const useMarketsColumnDefs = () => {
                 <span className="mr-1">
                   <EmblemByMarket market={data?.id || ''} vegaChain={chainId} />
                 </span>
-                <StackedCellWithIcon
-                  primary={value}
-                  secondary={data?.tradableInstrument.instrument.name}
-                  primaryIcon={
-                    <>
-                      <span>
-                        <MarketProductPill productType={productType} />
-                      </span>
-                      <span className="ml-0.5">
-                        <MarketIcon data={data} />
-                      </span>
-                    </>
+                <StackedCell
+                  primary={
+                    <span className="flex gap-1">
+                      {value}
+                      <MarketProductPill productType={productType} />
+                      <MarketIcon data={data} />
+                    </span>
                   }
+                  secondary={data?.tradableInstrument.instrument.name}
                 />
               </span>
             </Tooltip>
