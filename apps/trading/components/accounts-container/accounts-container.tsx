@@ -39,6 +39,15 @@ export const AccountsContainer = ({
     [openAssetDetailsDialog]
   );
 
+  const navigateToAssetAction = (path: string, assetId: string | undefined) => {
+    let params = '';
+    if (assetId) {
+      searchParams.append('assetId', assetId);
+      params = `?${searchParams.toString()}`;
+    }
+    navigate(path + params);
+  };
+
   if (!pubKey) {
     return (
       <Splash>
@@ -51,31 +60,15 @@ export const AccountsContainer = ({
     <AccountManager
       partyId={pubKey}
       onClickAsset={onClickAsset}
-      // TODO: make sure asset is set
-      onClickWithdraw={(assetId) => {
-        let params = '';
-        if (assetId) {
-          searchParams.append('assetId', assetId);
-          params = `?${searchParams.toString()}`;
-        }
-        navigate(Links.WITHDRAW() + params);
-      }}
-      onClickDeposit={(assetId) => {
-        let params = '';
-        if (assetId) {
-          searchParams.append('assetId', assetId);
-          params = `?${searchParams.toString()}`;
-        }
-        navigate(Links.DEPOSIT() + params);
-      }}
-      onClickTransfer={(assetId) => {
-        let params = '';
-        if (assetId) {
-          searchParams.append('assetId', assetId);
-          params = `?${searchParams.toString()}`;
-        }
-        navigate(Links.TRANSFER() + params);
-      }}
+      onClickWithdraw={(assetId) =>
+        navigateToAssetAction(Links.WITHDRAW(), assetId)
+      }
+      onClickDeposit={(assetId) =>
+        navigateToAssetAction(Links.DEPOSIT(), assetId)
+      }
+      onClickTransfer={(assetId) =>
+        navigateToAssetAction(Links.TRANSFER(), assetId)
+      }
       onMarketClick={onMarketClick}
       isReadOnly={isReadOnly}
       pinnedAsset={pinnedAsset}
