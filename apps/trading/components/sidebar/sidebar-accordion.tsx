@@ -5,6 +5,7 @@ import {
 } from 'react';
 import * as AccordionPrimitive from '@radix-ui/react-accordion';
 import classNames from 'classnames';
+import { TinyScroll } from '@vegaprotocol/ui-toolkit';
 
 const SidebarAccordion = forwardRef<
   ElementRef<typeof AccordionPrimitive.Root>,
@@ -64,7 +65,9 @@ const SidebarAccordionContent = forwardRef<
     className="flex-1 text-sm min-h-0"
     {...props}
   >
-    <div className="overflow-auto h-full p-2">{children}</div>
+    <TinyScroll className="overflow-y-auto overflow-x-hidden h-full p-2">
+      {children}
+    </TinyScroll>
   </AccordionPrimitive.Content>
 ));
 
