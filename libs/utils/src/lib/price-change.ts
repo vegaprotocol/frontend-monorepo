@@ -22,8 +22,9 @@ export const priceChangePercentage = (candles: string[]) => {
 
 export const priceChange = (candles: string[]) => {
   const firstCandle = candles.find((candle) => candle !== '' && candle);
-  const reversedCandles = [...candles].reverse();
-  const lastCandle = reversedCandles.find((candle) => candle !== '' && candle);
+  const lastCandle = [...candles]
+    .reverse()
+    .find((candle) => candle !== '' && candle);
   return candles && lastCandle !== undefined && firstCandle !== undefined
     ? BigInt(lastCandle ?? 0) - BigInt(firstCandle ?? 0)
     : 0;
