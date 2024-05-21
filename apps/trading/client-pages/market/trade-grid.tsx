@@ -185,18 +185,6 @@ const MainGrid = memo(
                   >
                     <TradingViews.fills.component marketId={market.id} />
                   </Tab>
-                  <Tab
-                    id="accounts"
-                    name={t('Collateral')}
-                    menu={<TradingViews.collateral.menu />}
-                    settings={<TradingViews.collateral.settings />}
-                  >
-                    <ErrorBoundary feature="collateral">
-                      <TradingViews.collateral.component
-                        pinnedAssets={pinnedAssets}
-                      />
-                    </ErrorBoundary>
-                  </Tab>
                   {market &&
                   market.tradableInstrument.instrument.product.__typename ===
                     'Perpetual' ? (
@@ -219,7 +207,7 @@ const MainGrid = memo(
           </ResizableGrid>
         </ResizableGridPanel>
         <ResizableGridPanel minSize={320} preferredSize={320}>
-          <Sidebar />
+          <Sidebar pinnedAssets={pinnedAssets} />
         </ResizableGridPanel>
       </ResizableGrid>
     );

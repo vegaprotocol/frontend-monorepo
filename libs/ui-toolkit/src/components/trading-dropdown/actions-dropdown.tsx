@@ -5,11 +5,19 @@ import {
   TradingDropdownTrigger,
 } from './trading-dropdown';
 
-export const ActionsDropdownTrigger = () => {
+export const ActionsDropdownTrigger = ({
+  vertical,
+}: {
+  vertical?: boolean;
+}) => {
   return (
     <TradingDropdownTrigger data-testid="dropdown-menu">
       <button type="button">
-        <VegaIcon name={VegaIconNames.KEBAB} />
+        <VegaIcon
+          name={VegaIconNames.KEBAB}
+          size={vertical ? 24 : undefined}
+          className={vertical ? 'rotate-90' : undefined}
+        />
       </button>
     </TradingDropdownTrigger>
   );
@@ -17,11 +25,14 @@ export const ActionsDropdownTrigger = () => {
 
 type ActionMenuContentProps = React.ComponentProps<
   typeof TradingDropdownContent
->;
+> & { vertical?: boolean };
 
-export const ActionsDropdown = (props: ActionMenuContentProps) => {
+export const ActionsDropdown = ({
+  vertical,
+  ...props
+}: ActionMenuContentProps) => {
   return (
-    <TradingDropdown trigger={<ActionsDropdownTrigger />}>
+    <TradingDropdown trigger={<ActionsDropdownTrigger vertical={vertical} />}>
       <TradingDropdownContent {...props} side="bottom" align="end" />
     </TradingDropdown>
   );
