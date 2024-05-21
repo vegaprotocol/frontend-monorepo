@@ -7,40 +7,56 @@ on:
         description: 'Release version (e.g., v1.2.3)'
         required: true
       commitHash:
-        description: 'Commit hash to tag'
-        required: true
+        description: 'Commit hash to tag (leave empty if using existing tag)'
+        required: false
+      tag:
+        description: 'Existing tag to deploy (leave empty if using commit hash)'
+        required: false
       environment:
-        description: 'Deployment environment (main or testnet)'
+        description: 'Deployment environment'
         required: true
-        default: 'main'
+        default: 'mainnet'
+        type: choice
+        options:
+          - mainnet
+          - testnet
+          - validators-testnet
+          - mainnet-mirror
 
 env:
   E2E_TEST_WORKFLOW: ./.github/workflows/trading-e2e-test-run.yml
 
 jobs:
+  validate_inputs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate commitHash or tag input
+        run: |
+          if [[ -z "${{ github.event.inputs.commitHash }}" && -z "${{ github.event.inputs.tag }}" ]]; then
+            echo "Error: Either commitHash or tag must be provided."
+            exit 1
+          fi
+
   setup_release_branch:
     runs-on: ubuntu-22.04
+    needs: validate_inputs
     outputs:
       branch_name: ${{ steps.prepare_branch.outputs.branch_name }}
     steps:
-      - name: Checkout code at commit hash
+      - name: Checkout code at commit hash or tag
+        id: checkout_code
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.inputs.commitHash }}
-          fetch-depth: 50
+          ref: ${{ github.event.inputs.tag || github.event.inputs.commitHash }}
+          fetch-depth: 200
           token: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
 
-      - name: Ensure commit is available
-        run: |
-          if ! git cat-file -e ${{ github.event.inputs.commitHash }}^{commit}; then
-            echo "Commit not found, deepening fetch..."
-            git fetch --deepen=100
-          fi
-
       - name: Create Tag
+        if: ${{ github.event.inputs.commitHash != '' }}
         run: git tag ${{ github.event.inputs.releaseVersion }} ${{ github.event.inputs.commitHash }}
 
       - name: Push Tag
+        if: ${{ github.event.inputs.commitHash != '' }}
         run: git push origin tag ${{ github.event.inputs.releaseVersion }}
 
       - name: Prepare release branch
@@ -50,11 +66,33 @@ jobs:
           echo "branch_name=$BRANCH_NAME" >> $GITHUB_ENV
           echo "::set-output name=branch_name::$BRANCH_NAME"
           git fetch --all
-          git checkout $BRANCH_NAME || git checkout -b $BRANCH_NAME ${{ github.event.inputs.commitHash }}
+          if [ -n "${{ github.event.inputs.commitHash }}" ]; then
+            git checkout $BRANCH_NAME || git checkout -b $BRANCH_NAME ${{ github.event.inputs.commitHash }}
+          else
+            git checkout $BRANCH_NAME || git checkout -b $BRANCH_NAME ${{ github.event.inputs.tag }}
+          fi
           git push --set-upstream origin $BRANCH_NAME
 
-  run_e2e_tests:
+  deploy_previews:
     needs: setup_release_branch
+    uses: ./.github/workflows/previews.yml
+    with:
+      projects: '["trading"]'
+
+  notify_slack:
+    runs-on: ubuntu-latest
+    needs: [setup_release_branch, deploy_previews]
+    steps:
+      - name: Post mob test to slack
+        uses: ./.github/workflows/slack-notification.yml
+        with:
+          release_number: ${{ github.event.inputs.releaseVersion }}
+          preview_link: 'http://pr-${{ github.event.number }}.trading.previews.vega.rocks.s3-website.eu-west-1.amazonaws.com'
+          github_link: 'https://github.com/${{ github.repository }}/releases/tag/${{ github.event.inputs.releaseVersion }}'
+          environment: ${{ github.event.inputs.environment }}
+
+  run_e2e_tests:
+    needs: deploy_previews
     uses: ./.github/workflows/trading-e2e-test-run.yml
     with:
       github-sha: ${{ needs.setup_release_branch.outputs.branch_name }}
@@ -70,42 +108,56 @@ jobs:
           echo "Awaiting manual approval to proceed with the release."
 
   deploy:
-    needs: [setup_release_branch, await_approval]
+    needs: [setup_release_branch, await_approval, run_e2e_tests]
     runs-on: ubuntu-22.04
     if: ${{ needs.await_approval.result == 'success' }}
     steps:
-      - name: Checkout code at commit hash
+      - name: Checkout previously prepared branch
         uses: actions/checkout@v4
         with:
           ref: ${{ needs.setup_release_branch.outputs.branch_name }}
-          fetch-depth: 50
+          fetch-depth: 200
           token: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
 
       - name: Ensure commit is available
         run: |
-          if ! git cat-file -e ${{ github.event.inputs.commitHash }}^{commit}; then
-            echo "Commit not found, deepening fetch..."
-            git fetch --deepen=100
+          if [ -n "${{ github.event.inputs.commitHash }}" ]]; then
+            if ! git cat-file -e ${{ github.event.inputs.commitHash }}^{commit}; then
+              echo "Commit not found, deepening fetch..."
+              git fetch --deepen=100
+            fi
+          else
+            if ! git rev-parse -q --verify "refs/tags/${{ github.event.inputs.tag }}"; then
+              echo "Tag not found, deepening fetch..."
+              git fetch --tags
+            fi
           fi
 
       - name: Reset and push release branch
         run: |
           BRANCH_NAME="${{ needs.setup_release_branch.outputs.branch_name }}"
-          git reset --hard ${{ github.event.inputs.commitHash }}
+          if [ -n "${{ github.event.inputs.commitHash }}" ]; then
+            git reset --hard ${{ github.event.inputs.commitHash }}
+          else
+            git reset --hard ${{ github.event.inputs.tag }}
+          fi
           git push --force --set-upstream origin $BRANCH_NAME
 
   generate_release_notes:
     needs: deploy
     runs-on: ubuntu-latest
     steps:
+      - name: Setup Release Data
+        run: |
+          echo 'REQUEST_BODY={"tag_name": "${{ github.event.inputs.releaseVersion }}", "target_commitish": "${{ github.event.inputs.commitHash || github.event.inputs.tag }}"}' >> $GITHUB_ENV
       - name: Generate release notes
         id: release_notes
         uses: octokit/request-action@v2.3.0
         with:
           route: POST /repos/${{ github.repository }}/releases/generate-notes
-          data: '{"tag_name": "${{ github.event.inputs.releaseVersion }}", "target_commitish": "${{ github.event.inputs.commitHash }}"}'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          INPUT_DATA: ${{ env.REQUEST_BODY }}
 
   release:
     needs: generate_release_notes
@@ -116,6 +168,6 @@ jobs:
         with:
           tag_name: ${{ github.event.inputs.releaseVersion }}
           name: Release ${{ github.event.inputs.releaseVersion }}
-          body: ${{ steps.generate_release_notes.outputs.data.body }}
+          body: ${{ steps.release_notes.outputs.data.body }}
           draft: false
           prerelease: ${{ github.event.inputs.environment == 'testnet' }}

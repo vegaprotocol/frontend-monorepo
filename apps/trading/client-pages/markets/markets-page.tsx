@@ -93,7 +93,7 @@ export const MarketsPage = () => {
               </div>
             </Card>
             <Card
-              key="24h-vol"
+              key="tvl"
               className="flex grow"
               loading={tvlLoading || tvl.isNaN() || !!tvlError}
               title={t('TVL')}
