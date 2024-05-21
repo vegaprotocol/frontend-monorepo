@@ -23,6 +23,7 @@ export const Sidebar = () => {
   const params = useParams();
   const navigate = useNavigate();
   const { view, setView } = useSidebar();
+
   return (
     <div className="grid grid-rows-[1fr_min-content] p-1 h-full">
       <SidebarAccordion
