@@ -15,7 +15,7 @@ export const Rewards = () => {
 
   return (
     <ErrorBoundary feature="rewards">
-      <TinyScroll className="p-2 max-h-full overflow-auto">
+      <TinyScroll className="p-2">
         <div className="flex flex-row w-full pb-2 justify-between">
           <h1 className="md:px-4 pb-4 p-2 text-2xl">{title}</h1>
           <Card loading={loading}>

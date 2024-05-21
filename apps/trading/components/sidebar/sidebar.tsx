@@ -283,14 +283,9 @@ const ContentWrapper = ({
   title?: string;
 }) => {
   return (
-    <TinyScroll
-      // panes have p-1, since sidebar is on the right make pl less to account for additional pane space
-      data-testid="sidebar-content"
-    >
-      <div className="py-4 px-3">
-        {title && <h2 className="mb-4">{title}</h2>}
-        {children}
-      </div>
+    <TinyScroll className="py-4 px-3" data-testid="sidebar-content">
+      {title && <h2 className="mb-4">{title}</h2>}
+      {children}
     </TinyScroll>
   );
 };
