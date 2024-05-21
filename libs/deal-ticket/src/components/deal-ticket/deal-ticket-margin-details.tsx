@@ -1,12 +1,9 @@
-import { AccountBreakdownDialog } from '@vegaprotocol/accounts';
 import { getAsset, getQuoteName } from '@vegaprotocol/markets';
 import type { Market } from '@vegaprotocol/markets';
 import type { EstimatePositionQuery } from '@vegaprotocol/positions';
 import * as Schema from '@vegaprotocol/types';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 import { formatNumber, formatRange, formatValue } from '@vegaprotocol/utils';
-import { useVegaWallet } from '@vegaprotocol/wallet-react';
-import { useCallback, useState } from 'react';
 import { Trans } from 'react-i18next';
 import {
   LIQUIDATION_PRICE_ESTIMATE_TOOLTIP_TEXT,
@@ -22,7 +19,6 @@ export interface DealTicketMarginDetailsProps {
   marginAccountBalance: string;
   orderMarginAccountBalance: string;
   market: Market;
-  onMarketClick?: (marketId: string, metaKey?: boolean) => void;
   assetSymbol: string;
   positionEstimate: EstimatePositionQuery['estimatePosition'];
   side: Schema.Side;
@@ -35,14 +31,11 @@ export const DealTicketMarginDetails = ({
   orderMarginAccountBalance,
   assetSymbol,
   market,
-  onMarketClick,
   positionEstimate,
   side,
   slippage,
 }: DealTicketMarginDetailsProps) => {
   const t = useT();
-  const [breakdownDialog, setBreakdownDialog] = useState(false);
-  const { pubKey: partyId } = useVegaWallet();
   const liquidationEstimate = positionEstimate?.liquidation;
   const totalMarginAccountBalance =
     BigInt(marginAccountBalance || '0') +
@@ -105,11 +98,6 @@ export const DealTicketMarginDetails = ({
     );
   }
 
-  const onAccountBreakdownDialogClose = useCallback(
-    () => setBreakdownDialog(false),
-    []
-  );
-
   const quoteName = getQuoteName(market);
 
   return (
@@ -117,9 +105,6 @@ export const DealTicketMarginDetails = ({
       <SlippageAndTradeInfo slippage={slippage} market={market} />
       <KeyValue
         label={t('Current margin')}
-        onClick={
-          generalAccountBalance ? () => setBreakdownDialog(true) : undefined
-        }
         value={formatValue(totalMarginAccountBalance.toString(), assetDecimals)}
         symbol={assetSymbol}
         labelDescription={t(
@@ -187,14 +172,6 @@ export const DealTicketMarginDetails = ({
           </>
         }
       />
-      {partyId && (
-        <AccountBreakdownDialog
-          assetId={breakdownDialog ? asset.id : undefined}
-          partyId={partyId}
-          onMarketClick={onMarketClick}
-          onClose={onAccountBreakdownDialogClose}
-        />
-      )}
     </div>
   );
 };

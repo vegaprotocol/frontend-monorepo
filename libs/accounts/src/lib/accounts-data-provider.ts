@@ -1,4 +1,4 @@
-import { assetsMapProvider } from '@vegaprotocol/assets';
+import { assetsMapProvider, assetsProvider } from '@vegaprotocol/assets';
 import { removePaginationWrapper } from '@vegaprotocol/utils';
 import { marketsMapProvider } from '@vegaprotocol/markets';
 import {
@@ -120,12 +120,16 @@ const getAssetIds = (data: Account[]) =>
 const getTotalBalance = (accounts: AccountFieldsFragment[]) =>
   accounts.reduce((acc, a) => acc + BigInt(a.balance), BigInt(0));
 
-export const getAccountData = (data: Account[]): AccountFields[] => {
-  return getAssetIds(data).map((assetId) => {
-    const accounts = data.filter((a) => a.asset.id === assetId);
-    return accounts && getAssetAccountAggregation(accounts, assetId);
-  });
-};
+type AccountsMap = Record<string, AccountFields>;
+
+export const getAccountData = (data: Account[]): AccountsMap =>
+  getAssetIds(data).reduce((accounts, assetId) => {
+    accounts[assetId] = getAssetAccountAggregation(
+      data.filter((a) => a.asset.id === assetId),
+      assetId
+    );
+    return accounts;
+  }, {} as AccountsMap);
 
 const getAssetAccountAggregation = (
   accountList: Account[],
@@ -198,8 +202,32 @@ export const aggregatedAccountsDataProvider = makeDerivedDataProvider<
   never,
   AccountsQueryVariables
 >(
-  [accountsDataProvider],
-  (parts) => parts[0] && getAccountData(parts[0] as Account[])
+  [
+    accountsDataProvider,
+    (callback, client, variables) =>
+      assetsProvider(callback, client, undefined),
+  ],
+  (parts) => {
+    const accounts = getAccountData(parts[0] as Account[]);
+    return (
+      (parts[1] as Asset[])
+        //.filter((asset) => asset.status === Schema.AssetStatus.STATUS_ENABLED)
+        .map((asset) => {
+          if (accounts[asset.id]) {
+            return accounts[asset.id];
+          }
+          const account: AccountFields = {
+            asset,
+            available: '0',
+            used: '0',
+            total: '0',
+            balance: '0',
+            type: AccountType.ACCOUNT_TYPE_GENERAL,
+          };
+          return account;
+        })
+    );
+  }
 );
 
 export const aggregatedAccountDataProvider = makeDerivedDataProvider<

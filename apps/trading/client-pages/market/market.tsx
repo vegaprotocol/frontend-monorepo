@@ -3,7 +3,13 @@ import { addDecimalsFormatNumber, titlefy } from '@vegaprotocol/utils';
 import { useScreenDimensions } from '@vegaprotocol/react-helpers';
 import { useThrottledDataProvider } from '@vegaprotocol/data-provider';
 import { Link, Loader, Splash } from '@vegaprotocol/ui-toolkit';
-import { getAsset, marketDataProvider, useMarket } from '@vegaprotocol/markets';
+import {
+  getAsset,
+  getBaseAsset,
+  isSpot,
+  marketDataProvider,
+  useMarket,
+} from '@vegaprotocol/markets';
 import { useGlobalStore, usePageTitleStore } from '../../stores';
 import { TradeGrid } from './trade-grid';
 import { TradePanels } from './trade-panels';
@@ -107,7 +113,10 @@ export const MarketPage = () => {
     );
   }
 
-  const pinnedAsset = data && getAsset(data);
+  const pinnedAssets =
+    data && isSpot(data.tradableInstrument.instrument.product)
+      ? [getAsset(data).id, getBaseAsset(data).id]
+      : [getAsset(data).id];
 
   return (
     <>
@@ -117,9 +126,9 @@ export const MarketPage = () => {
         decimalPlaces={data?.decimalPlaces}
       />
       {largeScreen ? (
-        <TradeGrid market={data} pinnedAsset={pinnedAsset} />
+        <TradeGrid market={data} pinnedAssets={pinnedAssets} />
       ) : (
-        <TradePanels market={data} pinnedAsset={pinnedAsset} />
+        <TradePanels market={data} pinnedAssets={pinnedAssets} />
       )}
     </>
   );

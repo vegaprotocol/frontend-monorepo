@@ -20,11 +20,17 @@ import { Sidebar } from '../../components/sidebar';
 
 interface TradeGridProps {
   market: Market;
-  pinnedAsset?: PinnedAsset | undefined;
+  pinnedAssets?: PinnedAsset[] | undefined;
 }
 
 const MainGrid = memo(
-  ({ market, pinnedAsset }: { market: Market; pinnedAsset?: PinnedAsset }) => {
+  ({
+    market,
+    pinnedAssets,
+  }: {
+    market: Market;
+    pinnedAssets?: PinnedAsset[];
+  }) => {
     const featureFlags = useFeatureFlags((state) => state.flags);
     const t = useT();
     const [sizes, handleOnLayoutChange] = usePaneLayout({ id: 'top' });
@@ -182,25 +188,13 @@ const MainGrid = memo(
                   >
                     <TradingViews.fills.component />
                   </Tab>
-                  <Tab
-                    id="accounts"
-                    name={t('Collateral')}
-                    menu={<TradingViews.collateral.menu />}
-                    settings={<TradingViews.collateral.settings />}
-                  >
-                    <ErrorBoundary feature="collateral">
-                      <TradingViews.collateral.component
-                        pinnedAsset={pinnedAsset}
-                      />
-                    </ErrorBoundary>
-                  </Tab>
                 </Tabs>
               </TradeGridChild>
             </ResizableGridPanel>
           </ResizableGrid>
         </ResizableGridPanel>
         <ResizableGridPanel minSize={320} preferredSize={320}>
-          <Sidebar />
+          <Sidebar pinnedAssets={pinnedAssets} />
         </ResizableGridPanel>
       </ResizableGrid>
     );
@@ -208,7 +202,7 @@ const MainGrid = memo(
 );
 MainGrid.displayName = 'MainGrid';
 
-export const TradeGrid = ({ market, pinnedAsset }: TradeGridProps) => {
+export const TradeGrid = ({ market, pinnedAssets }: TradeGridProps) => {
   const wrapperClasses = classNames(
     'h-full grid',
     'grid-rows-[min-content_min-content_1fr]'
@@ -221,7 +215,7 @@ export const TradeGrid = ({ market, pinnedAsset }: TradeGridProps) => {
         <MarketBanner market={market} />
       </div>
       <div className="min-h-0 p-0.5">
-        <MainGrid market={market} pinnedAsset={pinnedAsset} />
+        <MainGrid market={market} pinnedAssets={pinnedAssets} />
       </div>
     </div>
   );

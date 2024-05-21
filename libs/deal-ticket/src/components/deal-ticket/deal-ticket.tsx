@@ -150,7 +150,6 @@ export const DealTicket = ({
   market,
   riskFactors,
   scalingFactors,
-  onMarketClick,
   marketData,
   marketPrice,
   markPrice,
@@ -860,7 +859,6 @@ export const DealTicket = ({
       </Button>
       <DealTicketMarginDetails
         side={normalizedOrder.side}
-        onMarketClick={onMarketClick}
         assetSymbol={asset.symbol}
         marginAccountBalance={marginAccountBalance}
         orderMarginAccountBalance={orderMarginAccountBalance}
