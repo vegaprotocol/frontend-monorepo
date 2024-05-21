@@ -39,6 +39,8 @@ import { DATE_FORMAT_DETAILED } from '../../../../lib/date-formats';
 import { MarketName } from '../proposal/market-name';
 import { Indicator } from '../proposal/indicator';
 import { type ProposalNode } from '../proposal/proposal-utils';
+import compact from 'lodash/compact';
+import { AdditionalProposalState } from '../current-proposal-state/current-proposal-state';
 
 const ProposalTypeTags = ({
   proposal,
@@ -584,6 +586,24 @@ export const ProposalHeader = ({
   );
   const titleContent = shorten(title ?? '', 100);
 
+  let overallProposalState: ProposalState | AdditionalProposalState =
+    proposal.state;
+
+  // Mark proposal as "passed with errors" if batch is passed but any of the
+  // sub-proposal errored.
+  if (
+    proposal.state === ProposalState.STATE_PASSED &&
+    proposal.__typename === 'BatchProposal'
+  ) {
+    const subStates = compact(proposal.subProposals?.map((sub) => sub?.state));
+    const subPassed = subStates.filter(
+      (s) =>
+        s === ProposalState.STATE_PASSED || s === ProposalState.STATE_ENACTED
+    );
+    if (subPassed.length !== subStates.length) {
+      overallProposalState = AdditionalProposalState.PASSED_WITH_ERRORS;
+    }
+  }
   return (
     <>
       <div className="flex items-center justify-between gap-4 mb-6 text-sm">
@@ -606,7 +626,7 @@ export const ProposalHeader = ({
           )}
 
           <div data-testid="proposal-status">
-            <CurrentProposalState proposalState={proposal.state} />
+            <CurrentProposalState proposalState={overallProposalState} />
           </div>
         </div>
       </div>

@@ -583,6 +583,7 @@ fragment BatchProposalFields on BatchProposal {
   }
   subProposals {
     id
+    state
     datetime
     rejectionReason
     errorDetails

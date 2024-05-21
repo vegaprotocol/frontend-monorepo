@@ -7,7 +7,10 @@ import { Trans, useTranslation } from 'react-i18next';
 import { useVoteInformation } from '../../hooks';
 import { Tooltip, VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import { formatNumber } from '@vegaprotocol/utils';
-import { ProposalState } from '@vegaprotocol/types';
+import {
+  ProposalRejectionReasonMapping,
+  ProposalState,
+} from '@vegaprotocol/types';
 import { CompactNumber } from '@vegaprotocol/react-helpers';
 import { type Proposal, type BatchProposal } from '../../types';
 import {
@@ -248,6 +251,34 @@ const VoteBreakdownBatch = ({
     proposal.state === ProposalState.STATE_DECLINED ||
     proposal.state === ProposalState.STATE_PASSED
   ) {
+    let description = t(
+      'Proposal passed: conditions met for {{count}} of {{total}} proposals',
+      {
+        count: passingCount['true'] || 0,
+        total: voteInfo.length,
+      }
+    );
+    let descriptionIconColor = 'text-vega-green';
+    if (proposal.__typename === 'BatchProposal') {
+      const subStates = compact(
+        proposal?.subProposals?.map((sub) => sub?.state)
+      );
+      const subPassed = subStates.filter(
+        (s) =>
+          s === ProposalState.STATE_PASSED || s === ProposalState.STATE_ENACTED
+      );
+      if (subPassed.length !== subStates.length) {
+        description = t(
+          'Proposal passed: conditions met for {{count}} of {{total}} proposals, but some proposals failed in execution',
+          {
+            count: passingCount['true'] || 0,
+            total: voteInfo.length,
+          }
+        );
+        descriptionIconColor = 'text-vega-yellow';
+      }
+    }
+
     return (
       <div className="flex flex-col gap-2">
         <div className="flex items-center justify-between gap-2">
@@ -255,16 +286,10 @@ const VoteBreakdownBatch = ({
             <p className="flex gap-2 m-0 items-center">
               <VegaIcon
                 name={VegaIconNames.TICK}
-                className="text-vega-green"
+                className={descriptionIconColor}
                 size={20}
               />
-              {t(
-                'Proposal passed: conditions met for {{count}} of {{total}} proposals',
-                {
-                  count: passingCount['true'] || 0,
-                  total: voteInfo.length,
-                }
-              )}
+              {description}
             </p>
           ) : (
             <p className="flex gap-2 m-0 items-center">
@@ -370,6 +395,13 @@ const VoteBreakdownBatchSubProposal = ({
 
   const indicatorElement = indicator && <Indicator indicator={indicator} />;
 
+  const errorDetails = indicator
+    ? proposal?.subProposals?.[indicator - 1]?.errorDetails || undefined
+    : undefined;
+  const rejectionReason = indicator
+    ? proposal?.subProposals?.[indicator - 1]?.rejectionReason || undefined
+    : undefined;
+
   return (
     <div className="mb-6">
       <div className="flex items-center gap-3 mb-3">
@@ -385,6 +417,14 @@ const VoteBreakdownBatchSubProposal = ({
           isUpdateMarket={isUpdateMarket}
         />
       </div>
+      {errorDetails ? (
+        <div className="rounded-sm bg-vega-red-600 text-white text-xs p-1 mt-1">
+          {rejectionReason
+            ? `${ProposalRejectionReasonMapping[rejectionReason]}: `
+            : null}{' '}
+          {errorDetails}
+        </div>
+      ) : null}
     </div>
   );
 };
