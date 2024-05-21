@@ -38,15 +38,16 @@ export const NodeHealthContainer = () => {
       }
       align="end"
       side="left"
-      sideOffset={18}
+      sideOffset={5}
+      alignOffset={0}
     >
       <button
-        className="flex justify-center items-center gap-2 p-2 rounded hover:bg-vega-light-200 hover:dark:bg-vega-dark-200 text-xs"
+        className="flex justify-center items-center gap-2 py-1 p-2 rounded hover:bg-vega-light-200 hover:dark:bg-vega-dark-200 text-xs"
         onClick={() => setNodeSwitcher(true)}
         data-testid="node-health-trigger"
       >
         {VEGA_URL && <NodeUrl url={VEGA_URL} />}
-        <Indicator variant={intent} size="lg" />
+        <Indicator variant={intent} size="md" />
       </button>
     </Tooltip>
   );

@@ -19,6 +19,7 @@ export interface TooltipProps {
   align?: 'start' | 'center' | 'end';
   side?: 'top' | 'right' | 'bottom' | 'left';
   sideOffset?: number;
+  alignOffset?: number;
   underline?: boolean;
   delayDuration?: number;
 }
@@ -35,6 +36,7 @@ export const Tooltip = ({
   description,
   open,
   sideOffset,
+  alignOffset = 8,
   align = 'start',
   side = 'bottom',
   underline,
@@ -51,7 +53,7 @@ export const Tooltip = ({
             <Content
               align={align}
               side={side}
-              alignOffset={8}
+              alignOffset={alignOffset}
               className={tooltipContentClasses}
               sideOffset={sideOffset}
             >
