@@ -11,10 +11,6 @@ import {
   type PartyProfilesQuery,
 } from './__generated__/PartyProfiles';
 
-jest.mock('../../lib/hooks/use-get-current-route-id', () => ({
-  useGetCurrentRouteId: jest.fn().mockReturnValue('current-route-id'),
-}));
-
 const key = { publicKey: '123456__123456', name: 'test' };
 const key2 = { publicKey: 'abcdef__abcdef', name: 'test2' };
 const keys = [key, key2];
