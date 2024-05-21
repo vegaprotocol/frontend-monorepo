@@ -53,10 +53,7 @@ export const LiquidityViewContainer = ({
 
   return (
     <div className="h-full grid grid-rows-[min-content_1fr]">
-      <div>
-        {/* TODO: check this renders correctly */}
-        <LiquidityHeader />
-      </div>
+      <LiquidityHeader />
       <div className="h-full p-1.5">
         <Tabs value={tab || LiquidityTabs.Active} onValueChange={setTab}>
           <Tab
