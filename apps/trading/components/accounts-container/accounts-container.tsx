@@ -39,6 +39,15 @@ export const AccountsContainer = ({
     [openAssetDetailsDialog]
   );
 
+  const navigateToAssetAction = (path: string, assetId: string | undefined) => {
+    let params = '';
+    if (assetId) {
+      searchParams.append('assetId', assetId);
+      params = `?${searchParams.toString()}`;
+    }
+    navigate(path + params);
+  };
+
   if (!pubKey) {
     return (
       <Splash>
@@ -51,14 +60,9 @@ export const AccountsContainer = ({
     <AccountManager
       partyId={pubKey}
       onClickAsset={onClickAsset}
-      onClickDeposit={(assetId) => {
-        let params = '';
-        if (assetId) {
-          searchParams.append('assetId', assetId);
-          params = `?${searchParams.toString()}`;
-        }
-        navigate(Links.DEPOSIT() + params);
-      }}
+      onClickDeposit={(assetId) =>
+        navigateToAssetAction(Links.DEPOSIT(), assetId)
+      }
       onMarketClick={onMarketClick}
       isReadOnly={isReadOnly}
       pinnedAssets={pinnedAssets}
