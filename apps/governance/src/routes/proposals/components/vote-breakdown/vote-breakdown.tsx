@@ -440,6 +440,9 @@ const VoteBreakdownNormal = ({ proposal }: { proposal: Proposal }) => {
     proposal?.terms?.change?.__typename === 'UpdateMarket' ||
     proposal?.terms?.change?.__typename === 'UpdateSpotMarket';
 
+  const errorDetails = proposal.errorDetails;
+  const rejectionReason = proposal.rejectionReason;
+
   return (
     <div className="mb-6">
       <VoteBreakDownUI
@@ -447,6 +450,14 @@ const VoteBreakdownNormal = ({ proposal }: { proposal: Proposal }) => {
         isProposalOpen={isProposalOpen}
         isUpdateMarket={isUpdateMarket}
       />
+      {errorDetails ? (
+        <div className="rounded-sm bg-vega-red-600 text-white text-xs p-1 mt-1">
+          {rejectionReason
+            ? `${ProposalRejectionReasonMapping[rejectionReason]}: `
+            : null}{' '}
+          {errorDetails}
+        </div>
+      ) : null}
     </div>
   );
 };

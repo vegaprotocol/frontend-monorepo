@@ -20,7 +20,7 @@ export const ProposalsListItem = ({ proposal }: ProposalsListItemProps) => {
         heightFull={true}
         className={
           proposal.state === ProposalState.STATE_OPEN
-            ? 'border border-vega-green-550'
+            ? 'border border-white'
             : null
         }
       >
