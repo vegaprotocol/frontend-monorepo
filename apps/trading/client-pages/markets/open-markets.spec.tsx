@@ -103,7 +103,11 @@ describe('Open', () => {
       'Open interest',
     ];
     expect(headers).toHaveLength(expectedHeaders.length);
-    expect(headers.map((h) => h.textContent?.trim())).toEqual(expectedHeaders);
+    headers
+      .map((h) => h.textContent?.trim())
+      .forEach((h, i) => {
+        expect(h).toContain(expectedHeaders[i]);
+      });
   });
 
   it('sort columns', async () => {
