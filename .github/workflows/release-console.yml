@@ -62,7 +62,7 @@ jobs:
       - name: Prepare release branch
         id: prepare_branch
         run: |
-          BRANCH_NAME="release/${{ github.event.inputs.environment }}/${{ github.event.inputs.releaseVersion }}"
+          BRANCH_NAME="release-${{ github.event.inputs.environment }}-${{ github.event.inputs.releaseVersion }}"
           echo "branch_name=$BRANCH_NAME" >> $GITHUB_ENV
           echo "::set-output name=branch_name::$BRANCH_NAME"
           git fetch --all
