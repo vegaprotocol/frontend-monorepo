@@ -543,10 +543,11 @@ export const PositionsTable = ({
       },
       onEditTPSL && !isReadOnly
         ? {
-            headerName: t('Manage TP / SL'),
+            headerName: t('TP / SL'),
             sortable: false,
             resizable: false,
             filter: false,
+            maxWidth: 80,
             type: 'rightAligned',
             colId: 'tpsl',
             cellRenderer: ({ data }: VegaICellRendererParams<Position>) => {

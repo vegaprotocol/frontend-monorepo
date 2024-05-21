@@ -10,8 +10,6 @@ import { persist } from 'zustand/middleware';
 import { useMarketClickHandler } from '../../lib/hooks/use-market-click-handler';
 import { useT } from '../../lib/use-t';
 
-const AUTO_SIZE_COLUMNS = ['marketCode'];
-
 export const PositionsContainer = ({ allKeys }: { allKeys?: boolean }) => {
   const t = useT();
   const onMarketClick = useMarketClickHandler(true);
@@ -20,11 +18,7 @@ export const PositionsContainer = ({ allKeys }: { allKeys?: boolean }) => {
   const showClosed = usePositionsStore((store) => store.showClosedMarkets);
   const gridStore = usePositionsStore((store) => store.gridStore);
   const updateGridStore = usePositionsStore((store) => store.updateGridStore);
-  const gridStoreCallbacks = useDataGridEvents(
-    gridStore,
-    updateGridStore,
-    AUTO_SIZE_COLUMNS
-  );
+  const gridStoreCallbacks = useDataGridEvents(gridStore, updateGridStore);
 
   if (!pubKey) {
     return (
