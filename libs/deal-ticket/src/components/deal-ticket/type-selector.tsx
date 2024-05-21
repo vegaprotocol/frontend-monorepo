@@ -105,7 +105,7 @@ export const TypeToggle = ({
           }
         >
           <TradingDropdownPortal>
-            <TradingDropdownContent>
+            <TradingDropdownContent align="end">
               <TradingDropdownRadioGroup
                 onValueChange={(value) =>
                   onValueChange(value as DealTicketType)
