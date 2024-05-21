@@ -12,6 +12,7 @@ import { ErrorBoundary } from '../error-boundary';
 import { NodeHealthContainer } from '../node-health';
 import { AssetCard } from '../asset-card';
 import { Links } from '../../lib/links';
+import { useT } from '../../lib/use-t';
 
 export enum ViewType {
   Trade = 'Trade',
@@ -20,6 +21,7 @@ export enum ViewType {
 }
 
 export const Sidebar = () => {
+  const t = useT();
   const params = useParams();
   const navigate = useNavigate();
   const { view, setView } = useSidebar();
@@ -32,7 +34,7 @@ export const Sidebar = () => {
         onValueChange={(x: ViewType) => setView(x)}
       >
         <SidebarAccordionItem value={ViewType.Trade}>
-          <SidebarAccordionTrigger>Trade</SidebarAccordionTrigger>
+          <SidebarAccordionTrigger>{t('Trade')}</SidebarAccordionTrigger>
           <SidebarAccordionContent>
             <ErrorBoundary feature="deal-ticket">
               {params.marketId && (
@@ -45,7 +47,7 @@ export const Sidebar = () => {
           </SidebarAccordionContent>
         </SidebarAccordionItem>
         <SidebarAccordionItem value={ViewType.Info}>
-          <SidebarAccordionTrigger>Market info</SidebarAccordionTrigger>
+          <SidebarAccordionTrigger>{t('Market info')}</SidebarAccordionTrigger>
           <SidebarAccordionContent>
             <ErrorBoundary feature="market-info">
               {params.marketId && (
