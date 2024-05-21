@@ -7,22 +7,25 @@ export const priceChangePercentage = (candles: string[]) => {
 
   const change = priceChange(candles);
 
-  const firstCandle = new BigNumber(candles[0]);
-  if (firstCandle.isZero() || firstCandle.isNaN()) {
+  // choose the first candle that is not empty
+  const firstCandle = candles.find((candle) => candle !== '' && candle);
+  if (!firstCandle) {
     return 0;
   }
 
   const result = new BigNumber(change.toString())
-    .dividedBy(firstCandle)
+    .dividedBy(firstCandle !== '0' ? firstCandle : '1')
     .multipliedBy(100);
 
   return result.isNaN() ? 0 : result.toNumber();
 };
 
 export const priceChange = (candles: string[]) => {
-  return candles &&
-    candles[candles.length - 1] !== undefined &&
-    candles[0] !== undefined
-    ? BigInt(candles[candles.length - 1] ?? 0) - BigInt(candles[0] ?? 0)
+  const firstCandle = candles.find((candle) => candle !== '' && candle);
+  const lastCandle = [...candles]
+    .reverse()
+    .find((candle) => candle !== '' && candle);
+  return candles && lastCandle !== undefined && firstCandle !== undefined
+    ? BigInt(lastCandle ?? 0) - BigInt(firstCandle ?? 0)
     : 0;
 };
