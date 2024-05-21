@@ -547,7 +547,7 @@ export const PositionsTable = ({
             sortable: false,
             resizable: false,
             filter: false,
-            maxWidth: 110,
+            maxWidth: 80,
             pinned: 'right',
             type: 'rightAligned',
             colId: 'tpsl',
@@ -630,6 +630,9 @@ export const PositionsTable = ({
         PriceFlashCell,
         ProgressBarCell,
         MarketNameCell,
+      }}
+      autoSizeStrategy={{
+        type: 'fitGridWidth',
       }}
       rowHeight={45}
       columnDefs={colDefs}
