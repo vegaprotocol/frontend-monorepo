@@ -12,6 +12,7 @@ import {
   type INewAssetFieldsFragment,
   type IUpdateAssetFieldsFragment,
 } from '../../__generated__/Proposals';
+import { Lozenge } from '@vegaprotocol/ui-toolkit';
 
 export const ProposalAssetDetails = ({
   change,
@@ -49,6 +50,13 @@ export const ProposalAssetDetails = ({
     }
   }
 
+  const title = (
+    <span>
+      <Lozenge className="text-lg !font-alpha">{asset.symbol}</Lozenge>{' '}
+      <span className="lowercase">{t('assetSpecification')}</span>
+    </span>
+  );
+
   return (
     <section data-testid="proposal-asset-details">
       <CollapsibleToggle
@@ -56,7 +64,7 @@ export const ProposalAssetDetails = ({
         setToggleState={setShowAssetDetails}
         dataTestId={'proposal-asset-details-toggle'}
       >
-        <SubHeading title={t('assetSpecification')} />
+        <SubHeading title={title} />
       </CollapsibleToggle>
 
       {showAssetDetails && (
