@@ -51,7 +51,7 @@ describe('Positions', () => {
       'Liquidation',
       'Realised PNL',
       'Unrealised PNL',
-      'Manage TP / SL',
+      'TP / SL',
       '',
     ];
 
