@@ -7,8 +7,6 @@ import {
   EthExplorerLinkTypes,
 } from '../../../links/external-explorer-link/external-explorer-link';
 
-jest.mock('../../../links/asset-link/asset-link');
-
 interface TxDetailsChainEventWithdrawalProps {
   withdrawal: components['schemas']['vegaERC20Withdrawal'];
 }
