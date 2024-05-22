@@ -169,7 +169,7 @@
   "You need {{symbol}} in your wallet to trade in this market.": "You need {{symbol}} in your wallet to trade in this market.",
   "You need a Vega wallet to start trading on this market": "You need a Vega wallet to start trading on this market",
   "You need provide a expiry time/date": "You need provide a expiry time/date",
-  "You need provide a price": "You need provide a price",
+  "You need to provide a price": "You need to provide a price",
   "You need provide a trailing percent offset": "You need provide a trailing percent offset",
   "You need to connect your own wallet to start trading on this market": "You need to connect your own wallet to start trading on this market",
   "You need to provide a minimum visible size": "You need to provide a minimum visible size",

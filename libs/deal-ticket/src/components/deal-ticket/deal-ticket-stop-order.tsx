@@ -160,7 +160,7 @@ const Trigger = ({
           <Controller
             name={oco ? 'ocoTriggerPrice' : 'triggerPrice'}
             rules={{
-              required: t('You need provide a price'),
+              required: t('You need to provide a price'),
               min: {
                 value: priceStep,
                 message: t('Price cannot be lower than {{priceStep}}', {
@@ -414,7 +414,7 @@ const Price = ({
       control={control}
       rules={{
         deps: 'type',
-        required: t('You need provide a price'),
+        required: t('You need to provide a price'),
         min: {
           value: priceStep,
           message: t('Price cannot be lower than {{priceStep}}', { priceStep }),
