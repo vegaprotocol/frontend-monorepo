@@ -48,19 +48,19 @@ const BreakdownItem = ({ data }: { data: AccountFields }) => {
 
   return (
     <div className="mb-2">
-      <div className="flex items-center">
-        <div className="text-xs font-alpha text-vega-clight-200 dark:text-vega-cdark-200">
+      <dl className="flex items-center">
+        <dt className="text-xs font-alpha text-vega-clight-200 dark:text-vega-cdark-200">
           {AccountTypeMapping[data.type]}
           {data.market && `(${data.market.tradableInstrument.instrument.code})`}
-        </div>
-        <div className="text-right grow text-base leading-tight font-alpha">
+        </dt>
+        <dd className="text-right grow text-base leading-tight font-alpha">
           {addDecimalsFormatNumberQuantum(
             data.used,
             data.asset.decimals,
             data.asset.quantum
           )}
-        </div>
-      </div>
+        </dd>
+      </dl>
       <ProgressBar compact value={value} intent={intent} />
     </div>
   );
@@ -79,56 +79,68 @@ export const AccountCard = ({
   partyId?: string;
 } & AssetActions) => {
   const t = useT();
-  const [expanded, setExpanded] = useState(initialExpanded);
+  const expandable = !!partyId && !isReadOnly;
+  const [expanded, setExpanded] = useState(initialExpanded && expandable);
   const { data } = useDataProvider({
     dataProvider: aggregatedAccountDataProvider,
     variables: { partyId: partyId || '', assetId: asset.id },
     skip: !partyId,
   });
   return (
-    <div
-      className={classNames('p-3 border-b border-default relative', {
-        'bg-vega-clight-800 dark:bg-vega-cdark-800': expanded,
+    <section
+      className={classNames('p-3 border-b border-default', {
+        'bg-vega-clight-800 dark:bg-vega-cdark-800': expandable && expanded,
       })}
     >
-      <div className="flex items-center mb-3">
-        <Emblem asset={asset.id} />
-        <span className="grow ml-2 text-lg">{asset.symbol}</span>
-        <div className="z-10">
-          <AccountsActionsDropdown
-            isReadOnly={isReadOnly}
-            assetId={asset.id}
-            assetContractAddress={
-              asset.source?.__typename === 'ERC20'
-                ? asset.source.contractAddress
-                : undefined
-            }
-            onClickDeposit={() => {
-              actions.onClickDeposit?.(asset.id);
-            }}
-            onClickWithdraw={() => {
-              actions.onClickWithdraw?.(asset.id);
-            }}
-            onClickTransfer={() => {
-              actions.onClickTransfer?.(asset.id);
-            }}
-          />
-        </div>
+      <div className="relative">
+        <header className="flex items-center mb-3">
+          <Emblem asset={asset.id} />
+          <span className="grow ml-2 text-lg">{asset.symbol}</span>
+          <div className="z-10">
+            <AccountsActionsDropdown
+              isReadOnly={isReadOnly}
+              assetId={asset.id}
+              assetContractAddress={
+                asset.source?.__typename === 'ERC20'
+                  ? asset.source.contractAddress
+                  : undefined
+              }
+              onClickDeposit={() => {
+                actions.onClickDeposit?.(asset.id);
+              }}
+              onClickWithdraw={() => {
+                actions.onClickWithdraw?.(asset.id);
+              }}
+              onClickTransfer={() => {
+                actions.onClickTransfer?.(asset.id);
+              }}
+            />
+          </div>
+        </header>
+        {data?.breakdown?.map((data) => (
+          <BreakdownItem data={data} />
+        ))}
+        <dl className="flex items-center mt-3">
+          <dt className="text-base font-alpha">{t('Total')}</dt>
+          <dd className="text-right leading-tight font-alpha grow text-base">
+            {addDecimalsFormatNumberQuantum(
+              data?.total || '0',
+              asset.decimals,
+              asset.quantum
+            )}
+          </dd>
+        </dl>
+        {expandable && (
+          <button
+            type="button"
+            className="absolute inset-0"
+            onClick={() => setExpanded((expanded) => !expanded)}
+          >
+            <span className="sr-only">{t('Show asset actions')}</span>
+          </button>
+        )}
       </div>
-      {data?.breakdown?.map((data) => (
-        <BreakdownItem data={data} />
-      ))}
-      <div className="flex items-center mt-3">
-        <div className="text-base font-alpha">{t('Total')}</div>
-        <div className="text-right leading-tight font-alpha grow text-base">
-          {addDecimalsFormatNumberQuantum(
-            data?.total || '0',
-            asset.decimals,
-            asset.quantum
-          )}
-        </div>
-      </div>
-      {expanded ? (
+      {expandable && expanded ? (
         <div className="grid gap-1 grid-cols-4 mt-3">
           <Button
             onClick={() => actions.onClickDeposit?.(asset.id)}
@@ -151,12 +163,7 @@ export const AccountCard = ({
             icon={VegaIconNames.WITHDRAW}
           />
         </div>
-      ) : (
-        <button
-          className="absolute inset-0"
-          onClick={() => setExpanded(true)}
-        ></button>
-      )}
-    </div>
+      ) : null}
+    </section>
   );
 };
