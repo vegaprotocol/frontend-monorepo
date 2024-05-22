@@ -10,3 +10,4 @@ export * from './use-margin-account-balance';
 export * from './__generated__/Margins';
 export * from './margin-data-provider';
 export * from './transfer-container';
+export { useTransfers } from './transfers-data-provider';

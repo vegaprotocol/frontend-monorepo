@@ -4,21 +4,21 @@ import { gql } from '@apollo/client';
 import { AssetFieldsFragmentDoc } from '../../../../assets/src/lib/__generated__/Asset';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
-export type DepositFieldsFragment = { __typename?: 'Deposit', id: string, status: Types.DepositStatus, amount: string, createdTimestamp: any, creditedTimestamp?: any | null, txHash?: string | null, asset: { __typename?: 'Asset', id: string, name: string, symbol: string, decimals: number, quantum: string, status: Types.AssetStatus, source: { __typename: 'BuiltinAsset', maxFaucetAmountMint: string } | { __typename: 'ERC20', contractAddress: string, lifetimeLimit: string, withdrawThreshold: string }, networkTreasuryAccount?: { __typename?: 'AccountBalance', balance: string } | null, globalInsuranceAccount?: { __typename?: 'AccountBalance', balance: string } | null } };
+export type DepositFieldsFragment = { __typename?: 'Deposit', id: string, status: Types.DepositStatus, amount: string, createdTimestamp: any, creditedTimestamp?: any | null, txHash?: string | null, asset: { __typename?: 'Asset', id: string, name: string, symbol: string, decimals: number, quantum: string, status: Types.AssetStatus, source: { __typename: 'BuiltinAsset', maxFaucetAmountMint: string } | { __typename: 'ERC20', contractAddress: string, lifetimeLimit: string, withdrawThreshold: string }, networkTreasuryAccount?: { __typename?: 'AccountBalance', balance: string } | null, globalInsuranceAccount?: { __typename?: 'AccountBalance', balance: string } | null }, party: { __typename?: 'Party', id: string } };
 
 export type DepositsQueryVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
 }>;
 
 
-export type DepositsQuery = { __typename?: 'Query', party?: { __typename?: 'Party', id: string, depositsConnection?: { __typename?: 'DepositsConnection', edges?: Array<{ __typename?: 'DepositEdge', node: { __typename?: 'Deposit', id: string, status: Types.DepositStatus, amount: string, createdTimestamp: any, creditedTimestamp?: any | null, txHash?: string | null, asset: { __typename?: 'Asset', id: string, name: string, symbol: string, decimals: number, quantum: string, status: Types.AssetStatus, source: { __typename: 'BuiltinAsset', maxFaucetAmountMint: string } | { __typename: 'ERC20', contractAddress: string, lifetimeLimit: string, withdrawThreshold: string }, networkTreasuryAccount?: { __typename?: 'AccountBalance', balance: string } | null, globalInsuranceAccount?: { __typename?: 'AccountBalance', balance: string } | null } } } | null> | null } | null } | null };
+export type DepositsQuery = { __typename?: 'Query', party?: { __typename?: 'Party', id: string, depositsConnection?: { __typename?: 'DepositsConnection', edges?: Array<{ __typename?: 'DepositEdge', node: { __typename?: 'Deposit', id: string, status: Types.DepositStatus, amount: string, createdTimestamp: any, creditedTimestamp?: any | null, txHash?: string | null, asset: { __typename?: 'Asset', id: string, name: string, symbol: string, decimals: number, quantum: string, status: Types.AssetStatus, source: { __typename: 'BuiltinAsset', maxFaucetAmountMint: string } | { __typename: 'ERC20', contractAddress: string, lifetimeLimit: string, withdrawThreshold: string }, networkTreasuryAccount?: { __typename?: 'AccountBalance', balance: string } | null, globalInsuranceAccount?: { __typename?: 'AccountBalance', balance: string } | null }, party: { __typename?: 'Party', id: string } } } | null> | null } | null } | null };
 
 export type DepositEventSubscriptionVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
 }>;
 
 
-export type DepositEventSubscription = { __typename?: 'Subscription', busEvents?: Array<{ __typename?: 'BusEvent', event: { __typename?: 'Deposit', id: string, status: Types.DepositStatus, amount: string, createdTimestamp: any, creditedTimestamp?: any | null, txHash?: string | null, asset: { __typename?: 'Asset', id: string, name: string, symbol: string, decimals: number, quantum: string, status: Types.AssetStatus, source: { __typename: 'BuiltinAsset', maxFaucetAmountMint: string } | { __typename: 'ERC20', contractAddress: string, lifetimeLimit: string, withdrawThreshold: string }, networkTreasuryAccount?: { __typename?: 'AccountBalance', balance: string } | null, globalInsuranceAccount?: { __typename?: 'AccountBalance', balance: string } | null } } | { __typename?: 'TimeUpdate' } | { __typename?: 'TransactionResult' } | { __typename?: 'Withdrawal' } }> | null };
+export type DepositEventSubscription = { __typename?: 'Subscription', busEvents?: Array<{ __typename?: 'BusEvent', event: { __typename?: 'Deposit', id: string, status: Types.DepositStatus, amount: string, createdTimestamp: any, creditedTimestamp?: any | null, txHash?: string | null, asset: { __typename?: 'Asset', id: string, name: string, symbol: string, decimals: number, quantum: string, status: Types.AssetStatus, source: { __typename: 'BuiltinAsset', maxFaucetAmountMint: string } | { __typename: 'ERC20', contractAddress: string, lifetimeLimit: string, withdrawThreshold: string }, networkTreasuryAccount?: { __typename?: 'AccountBalance', balance: string } | null, globalInsuranceAccount?: { __typename?: 'AccountBalance', balance: string } | null }, party: { __typename?: 'Party', id: string } } | { __typename?: 'TimeUpdate' } | { __typename?: 'TransactionResult' } | { __typename?: 'Withdrawal' } }> | null };
 
 export const DepositFieldsFragmentDoc = gql`
     fragment DepositFields on Deposit {
@@ -31,6 +31,9 @@ export const DepositFieldsFragmentDoc = gql`
   createdTimestamp
   creditedTimestamp
   txHash
+  party {
+    id
+  }
 }
     ${AssetFieldsFragmentDoc}`;
 export const DepositsDocument = gql`

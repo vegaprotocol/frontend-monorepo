@@ -8,6 +8,9 @@ fragment DepositFields on Deposit {
   createdTimestamp
   creditedTimestamp
   txHash
+  party {
+    id
+  }
 }
 
 query Deposits($partyId: ID!) {
