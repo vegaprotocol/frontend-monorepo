@@ -230,7 +230,7 @@ export const SwapContainer = () => {
           />
           <span>%</span>
           <button
-            className="ml-4 dark:bg-vega-cdark-700 bg-vega-clight-700 p-2 rounded-lg text-sm"
+            className="ml-4 dark:bg-vega-cdark-700 bg-vega-clight-700 hover:bg-vega-clight-800 hover:dark:bg-vega-cdark-800 p-2 rounded-lg text-sm"
             onClick={() =>
               priceImpactType === 'auto'
                 ? setPriceImpactType('custom')
