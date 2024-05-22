@@ -19,21 +19,8 @@ import { AccountsActionsDropdown } from './accounts-actions-dropdown';
 import { type AssetFieldsFragment } from '@vegaprotocol/assets';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { useState } from 'react';
-
-export type PinnedAsset = string;
-
-interface Actions {
-  onClickAsset: (assetId: string) => void;
-  onClickWithdraw?: (assetId: string) => void;
-  onClickDeposit?: (assetId: string) => void;
-  onClickSwap?: (assetId: string) => void;
-  onClickTransfer?: (assetId: string) => void;
-}
-export interface AccountTableProps extends Actions {
-  rowData?: AssetFieldsFragment[] | null;
-  isReadOnly: boolean;
-  pinnedAssets?: PinnedAsset[];
-}
+import classNames from 'classnames';
+import type { AssetActions } from './accounts-manager';
 
 const Button = ({
   onClick,
@@ -83,21 +70,27 @@ export const AccountCard = ({
   asset,
   isReadOnly,
   partyId,
+  expanded: initialExpanded,
   ...actions
 }: {
+  expanded?: boolean;
   asset: AssetFieldsFragment;
   isReadOnly?: boolean;
   partyId?: string;
-} & Actions) => {
+} & AssetActions) => {
   const t = useT();
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(initialExpanded);
   const { data } = useDataProvider({
     dataProvider: aggregatedAccountDataProvider,
     variables: { partyId: partyId || '', assetId: asset.id },
     skip: !partyId,
   });
   return (
-    <div className="p-3 border-b border-default relative">
+    <div
+      className={classNames('p-3 border-b border-default relative', {
+        'bg-vega-clight-800 dark:bg-vega-cdark-800': expanded,
+      })}
+    >
       <div className="flex items-center mb-3">
         <Emblem asset={asset.id} />
         <span className="grow ml-2 text-lg">{asset.symbol}</span>
@@ -165,23 +158,5 @@ export const AccountCard = ({
         ></button>
       )}
     </div>
-  );
-};
-export const AccountTable = ({
-  rowData,
-  pinnedAssets,
-  ...props
-}: AccountTableProps) => {
-  return (
-    rowData &&
-    (pinnedAssets && pinnedAssets.length
-      ? [
-        ...rowData.filter((asset) => pinnedAssets?.includes(asset.id)),
-        ...rowData.filter((asset) => !pinnedAssets?.includes(asset.id)),
-      ]
-      : rowData
-    ).map((asset) => {
-      return <AccountCard asset={asset} key={asset.id} {...props} />;
-    })
   );
 };
