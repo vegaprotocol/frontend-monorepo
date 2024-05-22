@@ -1,0 +1,30 @@
+fragment TransferFields on Transfer {
+  amount
+  id
+  from
+  fromAccountType
+  to
+  toAccountType
+  asset {
+    ...AssetFields
+  }
+  reference
+  status
+  timestamp
+}
+
+query Transfers($partyId: ID, $pagination: Pagination) {
+  transfersConnection(
+    partyId: $partyId
+    direction: ToOrFrom
+    pagination: $pagination
+  ) {
+    edges {
+      node {
+        transfer {
+          ...TransferFields
+        }
+      }
+    }
+  }
+}
