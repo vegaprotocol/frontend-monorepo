@@ -1,17 +1,20 @@
 import { memo } from 'react';
 import { useDataProvider } from '@vegaprotocol/data-provider';
-import { type PinnedAsset } from './accounts-table';
-import { AccountTable } from './accounts-table';
+import { type PinnedAsset } from './accounts-list';
+import { AccountsList } from './accounts-list';
 import { type useDataGridEvents } from '@vegaprotocol/datagrid';
 import { assetsProvider } from '@vegaprotocol/assets';
 
-interface AccountManagerProps {
-  partyId?: string;
+export interface AssetActions {
   onClickAsset: (assetId: string) => void;
-  onClickWithdraw?: (assetId?: string) => void;
-  onClickDeposit?: (assetId?: string) => void;
-  onClickTransfer?: (assetId?: string) => void;
-  onClickSwap?: (assetId?: string) => void;
+  onClickWithdraw?: (assetId: string) => void;
+  onClickDeposit?: (assetId: string) => void;
+  onClickSwap?: (assetId: string) => void;
+  onClickTransfer?: (assetId: string) => void;
+}
+
+interface AccountManagerProps extends AssetActions {
+  partyId?: string;
   isReadOnly: boolean;
   pinnedAssets?: PinnedAsset[];
   gridProps?: ReturnType<typeof useDataGridEvents>;
@@ -28,7 +31,7 @@ export const AccountManager = ({
 
   return (
     <div className="relative h-full">
-      <AccountTable rowData={data} pinnedAssets={pinnedAssets} {...props} />
+      <AccountsList rowData={data} pinnedAssets={pinnedAssets} {...props} />
     </div>
   );
 };

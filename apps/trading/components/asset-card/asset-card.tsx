@@ -28,7 +28,7 @@ export const AssetCard = ({
   }
 
   return (
-    <div className="p-3 border-b border-default text-left">
+    <div className="p-3 border-b border-default text-left bg-vega-clight-800 dark:bg-vega-cdark-800">
       <div className="flex items-center mb-3">
         <Emblem asset={asset.id} />
         <span className="grow ml-2 text-lg">{asset.symbol}</span>
