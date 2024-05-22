@@ -17,7 +17,7 @@ order_details = [
         "order-created-label",
         "Created",
         "order-created-value",
-        r"^\d{1,2}/\d{1,2}/\d{4}, \d{1,2}:\d{2}:\d{2}$",
+        r'^\d{1,2}/\d{1,2}/\d{4}, \d{1,2}:\d{2}:\d{2}( (AM|PM))?$',
         True,
     ),
     (
@@ -53,7 +53,6 @@ def verify_order_value(
         expect(element).to_have_text(expected_text)
 
 
-@pytest.mark.skip("tbd")
 @pytest.mark.usefixtures("auth", "risk_accepted")
 def test_order_details_are_correctly_displayed(
     continuous_market, vega: VegaServiceNull, page: Page
@@ -61,7 +60,7 @@ def test_order_details_are_correctly_displayed(
     page.goto(f"/#/markets/{continuous_market}")
     submit_order(vega, "Key 1", vega.all_markets()[0].id, "SIDE_SELL", 102, 101, 2, 1)
     page.get_by_test_id("Open").click()
-    page.get_by_test_id("icon-kebab").click()
+    page.get_by_test_id("icon-kebab").first.click()
     page.get_by_test_id("view-order").click()
     for detail in order_details:
         label_id, label_text, value_id, value_text, is_regex = (*detail, False)[:5]
