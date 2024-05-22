@@ -64,6 +64,9 @@ export const SwapContainer = () => {
   const [baseAsset, setBaseAsset] = useState<AssetFieldsFragment>();
   const [marketId, setMarketId] = useState<string>(markets?.[0]?.id || '');
 
+  const [priceImpactType, setPriceImpactType] = useState<'auto' | 'custom'>(
+    'custom'
+  );
   //  filter asset ids based on existent accounts
   const { data: accounts } = useAccounts(pubKey);
 
@@ -226,8 +229,15 @@ export const SwapContainer = () => {
             className="w-16 dark:bg-vega-cdark-800 bg-vega-clight-800 p-2 rounded-lg mr-2 text-center"
           />
           <span>%</span>
-          <button className="ml-4 dark:bg-vega-cdark-700 bg-vega-clight-700 p-2 rounded-lg">
-            {t('AUTO')}
+          <button
+            className="ml-4 dark:bg-vega-cdark-700 bg-vega-clight-700 p-2 rounded-lg text-sm"
+            onClick={() =>
+              priceImpactType === 'auto'
+                ? setPriceImpactType('custom')
+                : setPriceImpactType('auto')
+            }
+          >
+            {t(priceImpactType === 'auto' ? 'AUTO' : 'CUSTOM')}
           </button>
         </div>
       </div>
