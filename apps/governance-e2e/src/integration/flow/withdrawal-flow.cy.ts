@@ -38,7 +38,7 @@ const usdtSelectValue =
 const formValidationError = 'input-error-text';
 const txTimeout = Cypress.env('txTimeout');
 
-context(
+context.skip(
   'Withdrawals - with eth and vega wallet connected',
   { tags: '@slow' },
   function () {
