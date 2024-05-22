@@ -2,7 +2,7 @@
   {
     "inputs": [
       {
-        "internalType": "contract ERC20_Bridge_Logic_Restricted",
+        "internalType": "contract IERC20_Bridge_Logic_Restricted",
         "name": "_bridge",
         "type": "address"
       }
@@ -46,7 +46,7 @@
     "name": "bridge",
     "outputs": [
       {
-        "internalType": "contract ERC20_Bridge_Logic_Restricted",
+        "internalType": "contract IERC20_Bridge_Logic_Restricted",
         "name": "",
         "type": "address"
       }
