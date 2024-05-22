@@ -68,15 +68,17 @@ export const SwapContainer = () => {
   const quoteAssetBalance = 0.797;
   const baseAssetBalance = 82.0;
 
+  // Set base and quote assets based on accounts
   useEffect(() => {
-    if (accounts && accounts.length > 0) {
+    // Set base and quote assets based on accounts initially
+    if (!baseAsset && !quoteAsset && accounts && accounts.length > 0) {
       setBaseAsset(accounts[0].asset);
       setQuoteAsset(accounts[1].asset);
     }
     // Set marketId based on base and quote assets
     const market =
       baseAsset && quoteAsset && chooseMarket(markets, baseAsset, quoteAsset);
-    if (market) {
+    if (market && isSpot(market.tradableInstrument.instrument.product)) {
       setMarketId(market.id);
     }
   }, [accounts, baseAsset, markets, quoteAsset]);
@@ -101,38 +103,35 @@ export const SwapContainer = () => {
     <div className="max-w-md mx-auto p-5 rounded-lg shadow-lg">
       <div className="flex justify-between items-center mb-4">
         <h1>{t('Swap')}</h1>
-        <Link
-          href={`/#/markets/${marketId}`}
-          className="text-sm text-vega-cdark-400"
-        >
+        <Link href={`/#/markets/${marketId}`} className="text-sm text-gray-500">
           {marketId && <EmblemByMarket market={marketId} />}
           {t('Go to market')} <VegaIcon name={VegaIconNames.ARROW_RIGHT} />
         </Link>
       </div>
 
       <div className="flex flex-col w-full gap-2">
-        {/* Quote Asset dropdown */}
-        <div className="dark:bg-vega-cdark-700 bg-vega-clight-700 p-4 rounded-lg border-gray-400 border">
-          <div className="flex justify-between items-center mb-2">
-            <span>{t('You receive')}</span>
-            <span>
-              {t('Balance: {{balance}}', {
-                balance: quoteAssetBalance,
-              })}
-            </span>
-          </div>
+        {/* Base Asset dropdown */}
+        <div className="dark:bg-vega-cdark-700 bg-vega-clight-700 p-4 rounded-lg border-gray-700 border flex flex-col gap-2">
+          <span className="text-gray-500">{t('You pay')}</span>
           <div className="flex items-center justify-between">
             <input
               type="number"
-              value={quoteAmount}
               onChange={(e) => {
-                setValue('quoteAmount', e.target.value);
+                setValue('baseAmount', e.target.value);
               }}
-              className="w-24 dark:bg-vega-cdark-800 bg-vega-clight-800 p-2 rounded-lg mr-2 text-center "
+              value={baseAmount}
+              className="w-24 dark:bg-vega-cdark-800 bg-vega-clight-800 p-2 rounded-lg mr-2 text-center text-xxl"
             />
-            <DropdownAsset assetId={quoteAsset?.id} onSelect={setQuoteAsset} />
+            <DropdownAsset assetId={baseAsset?.id} onSelect={setBaseAsset} />
           </div>
-          <span className="text-left">{quoteAmount && `$${quoteAmount}`}</span>
+          <div className="flex justify-between items-center text-gray-500 text-sm">
+            <span className="text-left">{baseAmount && `$${baseAmount}`}</span>
+            <span className="text-right">
+              {t('Balance: {{balance}}', {
+                balance: baseAssetBalance,
+              })}
+            </span>
+          </div>
         </div>
 
         {/* Swap icon */}
@@ -145,33 +144,33 @@ export const SwapContainer = () => {
           <VegaIcon name={VegaIconNames.SWAP} size={18} />
         </button>
 
-        {/* Base Asset dropdown */}
-        <div className="dark:bg-vega-cdark-700 bg-vega-clight-700 p-4 rounded-lg border-gray-400 border">
-          <div className="flex justify-between items-center mb-2">
-            <span>{t('You pay')}</span>
-            <span className="text-right">
-              {t('Balance: {{balance}}', {
-                balance: baseAssetBalance,
-              })}
-            </span>
-          </div>
+        {/* Quote Asset dropdown */}
+        <div className="dark:bg-vega-cdark-700 bg-vega-clight-700 p-4 rounded-lg border-gray-700 border flex flex-col gap-2">
+          <span className="text-gray-500">{t('You receive')}</span>
           <div className="flex items-center justify-between">
             <input
               type="number"
+              value={quoteAmount}
               onChange={(e) => {
-                setValue('baseAmount', e.target.value);
+                setValue('quoteAmount', e.target.value);
               }}
-              value={baseAmount}
-              className="w-24 dark:bg-vega-cdark-800 bg-vega-clight-800 p-2 rounded-lg mr-2 text-center text-xxl"
+              className="w-24 dark:bg-vega-cdark-800 bg-vega-clight-800 p-2 rounded-lg mr-2 text-center "
             />
-            <DropdownAsset assetId={baseAsset?.id} onSelect={setBaseAsset} />
+            <DropdownAsset assetId={quoteAsset?.id} onSelect={setQuoteAsset} />
           </div>
-          <span className="text-left">{baseAmount && `$${baseAmount}`}</span>
+          <div className="flex justify-between items-center text-gray-500 text-sm">
+            <span>{quoteAmount && `$${quoteAmount}`}</span>
+            <span>
+              {t('Balance: {{balance}}', {
+                balance: quoteAssetBalance,
+              })}
+            </span>
+          </div>
         </div>
       </div>
 
       <div className="mb-4">
-        <div className="flex justify-between items-center mb-2 mt-2">
+        <div className="flex justify-between items-center mb-2 mt-2 text-gray-500">
           <span>{t('Price impact tolerance')}</span>
         </div>
         <div className="flex items-center">
@@ -195,7 +194,7 @@ export const SwapContainer = () => {
       </button>
 
       {/* TODO calculate notional and estimations */}
-      <div className="mt-4 text-center dark:text-vega-cdark-400 text-vega-clight-400">
+      <div className="mt-4 text-center text-gray-500">
         1 ETH = 3,116.84 USDC ($3,100.48)
       </div>
     </div>
@@ -214,16 +213,17 @@ const DropdownAsset = ({
   return (
     <DropdownMenu
       trigger={
-        <DropdownMenuTrigger asChild>
-          <button className="inline-flex items-center px-4 py-2 border-gray-400 border rounded-full">
-            {asset && <EmblemByAsset asset={asset.id} />}
-            <span className="pl-2">{asset ? asset.symbol : 'Select coin'}</span>
-            <VegaIcon
-              name={VegaIconNames.CHEVRON_DOWN}
-              size={14}
-              className="w-5 h-5 ml-2"
-            />
-          </button>
+        <DropdownMenuTrigger
+          asChild
+          className="flex items-center px-2 py-2 border-gray-400 border rounded-full"
+        >
+          {asset && <EmblemByAsset asset={asset.id} />}
+          <span className="pl-2">{asset ? asset.symbol : 'Select coin'}</span>
+          <VegaIcon
+            name={VegaIconNames.CHEVRON_DOWN}
+            size={14}
+            className="w-5 h-5 ml-2 flex items-center justify-center"
+          />
         </DropdownMenuTrigger>
       }
     >
