@@ -136,7 +136,7 @@ export const TradePanels = ({ market, pinnedAssets }: TradePanelsProps) => {
             'activeOrders',
             'inactiveOrders',
             'stopOrders',
-            'collateral',
+            'assets',
             'fills',
           ].map((_key) => {
             const key = _key as TradingView;
@@ -211,7 +211,7 @@ const useViewLabel = (view: TradingView) => {
     activeOrders: t('Open'),
     inactiveOrders: t('Order history'),
     stopOrders: t('Advanced orders'),
-    collateral: t('Collateral'),
+    assets: t('Assets'),
     fills: t('Trades'),
   };
 
