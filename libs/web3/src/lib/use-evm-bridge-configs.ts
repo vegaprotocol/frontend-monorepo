@@ -81,12 +81,14 @@ export const useEVMBridgeConfigs = () => {
 
 /**
  * FIXME: Remove this stub once the configuration is on the network
+ * Test bridge: 0xd459fac6647059100ebe45543e1da73b3b70ffba
+ * Prod bridge: 0xE7477a9aDb9BA0d00Af8f4d8e5E53A532C650ffa
  */
 export const ARBITRUM_BRIDGE_CONFIG: EVMBridgeConfig = {
   network_id: '42161',
   chain_id: '42161',
   collateral_bridge_contract: {
-    address: '0xd459fac6647059100ebe45543e1da73b3b70ffba',
+    address: '0xE7477a9aDb9BA0d00Af8f4d8e5E53A532C650ffa',
     deployment_block_height: 0,
   },
   confirmations: 3,
