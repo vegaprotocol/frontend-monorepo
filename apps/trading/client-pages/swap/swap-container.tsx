@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import {
   useAssetsMapProvider,
@@ -54,19 +54,44 @@ export const SwapContainer = () => {
   const t = useT();
   const { watch, setValue } = useForm<SwapFields>();
 
-  const { baseAmount, quoteAmount } = watch();
+  const { baseAmount, quoteAmount, priceImpactTolerance } = watch();
 
   const { pubKey } = useVegaWallet();
-  const { data: accounts } = useAccounts(pubKey);
+
   const { data: markets } = useMarketsMapProvider();
 
   const [quoteAsset, setQuoteAsset] = useState<AssetFieldsFragment>();
   const [baseAsset, setBaseAsset] = useState<AssetFieldsFragment>();
   const [marketId, setMarketId] = useState<string>(markets?.[0]?.id || '');
 
+  //  filter asset ids based on existent accounts
+  const { data: accounts } = useAccounts(pubKey);
+
+  // create a record from assets only those that are in accounts
+  const { data: assets } = useAssetsMapProvider();
+  const accountAssetIds = accounts?.map((a) => a.asset.id);
+
+  // You pay = in quote asset
+  // You receive - base asset
+
   // TODO get balance from wallet
-  const quoteAssetBalance = 0.797;
-  const baseAssetBalance = 82.0;
+  const quoteAssetBalance = useMemo(() => {
+    if (!quoteAsset) return undefined;
+    const account = accounts?.find((a) => a.asset.id === quoteAsset.id);
+    if (account) {
+      return account.balance;
+    }
+    return undefined;
+  }, [accounts, quoteAsset]);
+
+  const baseAssetBalance = useMemo(() => {
+    if (!baseAsset) return undefined;
+    const account = accounts?.find((a) => a.asset.id === baseAsset.id);
+    if (account) {
+      return account.balance;
+    }
+    return undefined;
+  }, [accounts, baseAsset]);
 
   // Set base and quote assets based on accounts
   useEffect(() => {
@@ -110,27 +135,40 @@ export const SwapContainer = () => {
       </div>
 
       <div className="flex flex-col w-full gap-2">
-        {/* Base Asset dropdown */}
-        <div className="dark:bg-vega-cdark-700 bg-vega-clight-700 p-4 rounded-lg border-gray-700 border flex flex-col gap-2">
+        {/* Quote Asset dropdown */}
+        <div className="dark:bg-vega-cdark-700 bg-vega-clight-700 p-4 rounded-lg border-gray-700 border flex flex-col gap-1">
           <span className="text-gray-500">{t('You pay')}</span>
           <div className="flex items-center justify-between">
             <input
               type="number"
+              value={quoteAmount}
               onChange={(e) => {
-                setValue('baseAmount', e.target.value);
+                setValue('quoteAmount', e.target.value);
               }}
-              value={baseAmount}
-              className="w-24 dark:bg-vega-cdark-800 bg-vega-clight-800 p-2 rounded-lg mr-2 text-center text-xxl"
+              className="w-24 dark:bg-vega-cdark-800 bg-vega-clight-800 p-2 rounded-lg mr-2 text-center "
             />
-            <DropdownAsset assetId={baseAsset?.id} onSelect={setBaseAsset} />
+            <DropdownAsset
+              assetId={quoteAsset?.id}
+              onSelect={setQuoteAsset}
+              assets={assets}
+            />
           </div>
           <div className="flex justify-between items-center text-gray-500 text-sm">
-            <span className="text-left">{baseAmount && `$${baseAmount}`}</span>
-            <span className="text-right">
-              {t('Balance: {{balance}}', {
-                balance: baseAssetBalance,
-              })}
-            </span>
+            <span>{quoteAmount && `$${quoteAmount}`}</span>
+            {accountAssetIds &&
+            quoteAsset &&
+            !accountAssetIds.includes(quoteAsset.id) ? (
+              <span className="text-warning text-xs">
+                {t(`You do not have this asset in your account`)}
+              </span>
+            ) : (
+              <span>
+                {quoteAssetBalance &&
+                  t('Balance: {{balance}}', {
+                    balance: quoteAssetBalance,
+                  })}
+              </span>
+            )}
           </div>
         </div>
 
@@ -144,25 +182,29 @@ export const SwapContainer = () => {
           <VegaIcon name={VegaIconNames.SWAP} size={18} />
         </button>
 
-        {/* Quote Asset dropdown */}
+        {/* Base Asset dropdown */}
         <div className="dark:bg-vega-cdark-700 bg-vega-clight-700 p-4 rounded-lg border-gray-700 border flex flex-col gap-2">
           <span className="text-gray-500">{t('You receive')}</span>
           <div className="flex items-center justify-between">
             <input
               type="number"
-              value={quoteAmount}
               onChange={(e) => {
-                setValue('quoteAmount', e.target.value);
+                setValue('baseAmount', e.target.value);
               }}
-              className="w-24 dark:bg-vega-cdark-800 bg-vega-clight-800 p-2 rounded-lg mr-2 text-center "
+              value={baseAmount}
+              className="w-24 dark:bg-vega-cdark-800 bg-vega-clight-800 p-2 rounded-lg mr-2 text-center text-xxl"
             />
-            <DropdownAsset assetId={quoteAsset?.id} onSelect={setQuoteAsset} />
+            <DropdownAsset
+              assetId={baseAsset?.id}
+              onSelect={setBaseAsset}
+              assets={assets}
+            />
           </div>
           <div className="flex justify-between items-center text-gray-500 text-sm">
-            <span>{quoteAmount && `$${quoteAmount}`}</span>
-            <span>
+            <span className="text-left">{baseAmount && `$${baseAmount}`}</span>
+            <span className="text-right">
               {t('Balance: {{balance}}', {
-                balance: quoteAssetBalance,
+                balance: baseAssetBalance,
               })}
             </span>
           </div>
@@ -176,7 +218,10 @@ export const SwapContainer = () => {
         <div className="flex items-center">
           <input
             type="number"
-            value="0.5"
+            value={priceImpactTolerance}
+            onChange={(e) => {
+              setValue('priceImpactTolerance', e.target.value);
+            }}
             className="w-16 dark:bg-vega-cdark-800 bg-vega-clight-800 p-2 rounded-lg mr-2 text-center"
           />
           <span>%</span>
@@ -204,11 +249,12 @@ export const SwapContainer = () => {
 const DropdownAsset = ({
   assetId,
   onSelect,
+  assets,
 }: {
   assetId?: string;
   onSelect: (asset: AssetFieldsFragment) => void;
+  assets: Record<string, AssetFieldsFragment> | null;
 }) => {
-  const { data: assets } = useAssetsMapProvider();
   const asset = assetId ? assets?.[assetId] : null;
   return (
     <DropdownMenu
