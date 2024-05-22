@@ -1,21 +1,16 @@
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import {
-  withdrawalProvider,
   WithdrawalsTable,
   useIncompleteWithdrawals,
+  useWithdrawals,
 } from '@vegaprotocol/withdraws';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
-import { useDataProvider } from '@vegaprotocol/data-provider';
 import { useT } from '../../lib/use-t';
 
 export const WithdrawalsContainer = () => {
   const t = useT();
   const { pubKey } = useVegaWallet();
-  const { data, error } = useDataProvider({
-    dataProvider: withdrawalProvider,
-    variables: { partyId: pubKey || '' },
-    skip: !pubKey,
-  });
+  const { data, error } = useWithdrawals({ pubKey });
   const { ready, delayed } = useIncompleteWithdrawals();
   if (!pubKey) {
     return <Splash>{t('Please connect Vega wallet')}</Splash>;

@@ -45,6 +45,7 @@ import { usePageTitle } from '../../lib/hooks/use-page-title';
 import { DepositContainer } from '@vegaprotocol/deposits';
 import { TransferContainer } from '@vegaprotocol/accounts';
 import { WithdrawContainer } from '../../components/withdraw-container';
+import { AssetMovements } from '../../components/asset-movements';
 
 const WithdrawalsIndicator = () => {
   const { ready } = useIncompleteWithdrawals();
@@ -228,6 +229,11 @@ const PortfolioBottomTabs = () => {
   const t = useT();
   return (
     <Tabs storageKey="console-portfolio-bottom">
+      <Tab id="asset-movements" name={t('Asset movements')}>
+        <ErrorBoundary feature="portfolio-asset-movements">
+          <AssetMovements />
+        </ErrorBoundary>
+      </Tab>
       <Tab
         id="collateral"
         name={t('Collateral')}

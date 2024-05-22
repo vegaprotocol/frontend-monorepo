@@ -1,7 +1,7 @@
 import uniqBy from 'lodash/uniqBy';
 import orderBy from 'lodash/orderBy';
 import { getEvents, removePaginationWrapper } from '@vegaprotocol/utils';
-import { makeDataProvider } from '@vegaprotocol/data-provider';
+import { makeDataProvider, useDataProvider } from '@vegaprotocol/data-provider';
 import { BusEventType } from '@vegaprotocol/types';
 import {
   DepositsDocument,
@@ -42,3 +42,11 @@ export const depositsProvider = makeDataProvider<
     return uniqBy([...incoming, ...(data || [])], 'id');
   },
 });
+
+export const useDeposits = ({ pubKey }: { pubKey?: string }) => {
+  return useDataProvider({
+    dataProvider: depositsProvider,
+    variables: { partyId: pubKey || '' },
+    skip: !pubKey,
+  });
+};
