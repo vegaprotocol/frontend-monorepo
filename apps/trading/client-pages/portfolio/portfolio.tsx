@@ -7,11 +7,9 @@ import {
   Notification,
   Tab,
   LocalStoragePersistTabs as Tabs,
+  TinyScroll,
 } from '@vegaprotocol/ui-toolkit';
-import {
-  AccountsContainer,
-  AccountsSettings,
-} from '../../components/accounts-container';
+import { AccountsContainer } from '../../components/accounts-container';
 import { DepositsContainer } from '../../components/deposits-container';
 import {
   FillsContainer,
@@ -37,7 +35,6 @@ import {
   ResizableGridPanel,
   usePaneLayout,
 } from '../../components/resizable-grid';
-import { AccountsMenu } from '../../components/accounts-menu';
 import { DepositsMenu } from '../../components/deposits-menu';
 import { WithdrawalsMenu } from '../../components/withdrawals-menu';
 import { useT } from '../../lib/use-t';
@@ -197,6 +194,13 @@ const PortfolioActionTabs = () => {
           </ErrorBoundary>
         </Tab>
       ) : null}
+      <Tab id="assets" name={t('Assets')}>
+        <ErrorBoundary feature="portfolio-assets">
+          <TinyScroll className="overflow-y-auto overflow-x-hidden h-full">
+            <AccountsContainer />
+          </TinyScroll>
+        </ErrorBoundary>
+      </Tab>
     </Tabs>
   );
 };
@@ -248,16 +252,6 @@ const PortfolioBottomTabs = () => {
   const t = useT();
   return (
     <Tabs storageKey="console-portfolio-bottom">
-      <Tab
-        id="collateral"
-        name={t('Collateral')}
-        settings={<AccountsSettings />}
-        menu={<AccountsMenu />}
-      >
-        <ErrorBoundary feature="portfolio-accounts">
-          <AccountsContainer />
-        </ErrorBoundary>
-      </Tab>
       <Tab id="deposits" name={t('Deposits')} menu={<DepositsMenu />}>
         <ErrorBoundary feature="portfolio-deposit">
           <DepositsContainer />
