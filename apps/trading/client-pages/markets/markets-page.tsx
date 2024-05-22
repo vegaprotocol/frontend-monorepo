@@ -76,7 +76,7 @@ export const MarketsPage = () => {
 
   return (
     <ErrorBoundary feature="rewards">
-      <TinyScroll className="p-2 max-h-full overflow-auto">
+      <TinyScroll className="p-2">
         <div className="grid auto-rows-min grid-cols-3 lg:grid-cols-5 xl:grid-cols-3 gap-3 p-3 xxl:px-[5.5rem]">
           <div className="flex flex-col gap-2 col-span-full lg:col-span-1">
             <Card key="24h-vol" className="flex grow">

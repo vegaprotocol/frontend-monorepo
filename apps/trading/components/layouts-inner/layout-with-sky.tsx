@@ -31,9 +31,7 @@ export const LayoutWithSky = ({
   ...props
 }: HTMLAttributes<HTMLDivElement>) => {
   return (
-    <TinyScroll
-      className={classNames('max-h-full overflow-auto', SKY_BACKGROUND)}
-    >
+    <TinyScroll className={classNames(SKY_BACKGROUND)}>
       <Layout className={className} {...props} />
     </TinyScroll>
   );

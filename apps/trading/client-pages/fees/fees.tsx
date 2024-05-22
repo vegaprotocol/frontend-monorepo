@@ -11,7 +11,7 @@ export const Fees = () => {
 
   return (
     <ErrorBoundary feature="fees">
-      <TinyScroll className="p-4 max-h-full overflow-auto">
+      <TinyScroll className="p-4">
         <h1 className="md:px-4 pb-4 text-2xl">{title}</h1>
         <FeesContainer />
       </TinyScroll>
