@@ -53,7 +53,7 @@ export const ToastsContainer = ({
       ref={ref as Ref<HTMLDivElement>}
       className={classNames(
         'group',
-        'absolute z-20',
+        'absolute z-30',
         { 'bottom-0 right-0': position === ToastPosition.BottomRight },
         { 'bottom-0 left-0': position === ToastPosition.BottomLeft },
         { 'left-0 top-0': position === ToastPosition.TopLeft },
