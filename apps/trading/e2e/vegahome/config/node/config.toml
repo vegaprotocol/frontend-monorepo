@@ -1,0 +1,217 @@
+NodeMode = "validator"
+# Set the max number of open files (see: ulimit -n)
+UlimitNOFile = 8192
+
+[API]
+  Level = "Debug"
+  Timeout = "5s"
+  Port = "TO_BE_SET"
+  IP = "0.0.0.0"
+  StreamRetries = 3
+  DisableTxCommit = true
+  [API.REST]
+    Port = "TO_BE_SET"
+    IP = "0.0.0.0"
+    Enabled = true
+    APMEnabled = true
+
+[Blockchain]
+  Level = "Info"
+  LogTimeDebug = true
+  LogOrderSubmitDebug = false
+  LogOrderAmendDebug = false
+  LogOrderCancelDebug = false
+  ChainProvider = "nullchain"
+  [Blockchain.Tendermint]
+    Level = "Debug"
+    LogTimeDebug = true
+    ClientAddr = "tcp://0.0.0.0:26657"
+    ClientEndpoint = "/websocket"
+    ServerPort = 26658
+    ServerAddr = "localhost"
+    ABCIRecordDir = ""
+    ABCIReplayFile = ""
+  [Blockchain.Null]
+    Level = "Debug"
+    BlockDuration = "TO_BE_SET"
+    TransactionsPerBlock = "TO_BE_SET"
+    GenesisFile = "./null-blockchain/node-startup/vegahome/genesis.json"
+    IP = "0.0.0.0"
+    Port = "TO_BE_SET"
+
+[Collateral]
+  Level = "Info"
+
+[CoreAPI]
+  LogLevel = "Info"
+  Accounts = true
+  Assets = true
+  NetworkParameters = true
+  NetworkLimits = true
+  Parties = true
+  Validators = true
+  Proposals = true
+  Markets = true
+  Votes = true
+  MarketsData = true
+  PartiesStake = true
+  Delegations = true
+
+[Execution]
+  Level = "Debug"
+  [Execution.Matching]
+    Level = "Info"
+    LogPriceLevelsDebug = false
+    LogRemovedOrdersDebug = false
+  [Execution.Risk]
+    Level = "Info"
+    LogMarginUpdate = true
+  [Execution.Position]
+    Level = "Info"
+    LogPositionUpdate = true
+  [Execution.Settlement]
+    Level = "Info"
+  [Execution.Fee]
+    Level = "Info"
+  [Execution.Liquidity]
+    Level = "Info"
+
+[Processor]
+  Level = "Debug"
+  LogOrderSubmitDebug = true
+  LogOrderAmendDebug = true
+  LogOrderCancelDebug = true
+  [Processor.Ratelimit]
+    Requests = 500
+    PerNBlocks = 10
+
+[Logging]
+  Environment = "dev"
+  # This section takes effect only when Environment is set to "custom".
+  [Logging.Custom]
+    [Logging.Custom.Zap]
+      Level = -1
+      Development = true
+      Encoding = "console"
+      OutputPaths = ["stdout"]
+      ErrorOutputPaths = ["stderr"]
+    [Logging.Custom.ZapEncoder]
+      CallerKey = "C"
+      EncodeCaller = "short"
+      EncodeDuration = "string"
+      EncodeLevel = "capital"
+      EncodeName = "full"
+      EncodeTime = "iso8601"
+      LevelKey = "L"
+      LineEnding = "\n"
+      MessageKey = "M"
+      NameKey = "N"
+      TimeKey = "T"
+
+[Oracles]
+  Level = "Info"
+
+[Time]
+  Level = "Info"
+
+[Epoch]
+  Level = "Info"
+
+[Monitoring]
+  Level = "Info"
+  Interval = "500ms"
+  Retries = 5
+
+[Metrics]
+  Level = "Info"
+  Timeout = "5s"
+  Port = "TO_BE_SET"
+  Path = "/metrics"
+  Enabled = true
+
+[Governance]
+  Level = "Debug"
+
+[NodeWallet]
+  Level = "Info"
+  [NodeWallet.ETH]
+    Level = "Info"
+    Address = "http://127.0.0.1:545"
+    ClefAddress = ""
+
+[Assets]
+  Level = "Info"
+
+[Notary]
+  Level = "Info"
+
+[EvtForward]
+  Level = "Info"
+  RetryRate = "10s"
+  BlockchainQueueAllowlist = ["8b4f12b0d3919ea6e433b9736218dca036443aa08fd10f978a1fbede9621073f"]
+
+[Genesis]
+  Level = "Info"
+
+[Validators]
+  Level = "Debug"
+
+[Banking]
+  Level = "Info"
+
+[Stats]
+  Level = "Info"
+
+[NetworkParameters]
+  Level = "Info"
+
+[Limits]
+  Level = "Info"
+
+[Checkpoint]
+  Level = "Info"
+
+[Staking]
+  Level = "Info"
+
+[Broker]
+  Level = "Info"
+  [Broker.Socket]
+    DialTimeout = "2m0s"
+    DialRetryInterval = "5s"
+    SocketQueueTimeout = "3s"
+    EventChannelBufferSize = 10000000
+    SocketChannelBufferSize = 1000000
+    MaxSendTimeouts = 10
+    Address = "localhost"
+    Port = "TO_BE_SET"
+    Enabled = true
+    Transport = "tcp"
+
+[Rewards]
+  Level = "Info"
+
+[Delegation]
+  Level = "Info"
+
+[Spam]
+  Level = "Info"
+
+[Snapshot]
+  Level = "Info"
+  KeepRecent = 1000
+  RetryLimit = 5
+  Storage = "GOLevelDB"
+  DBPath = ""
+  StartHeight = 0
+
+[StateVar]
+  Level = "Info"
+
+[Pprof]
+  Level = "Info"
+  Enabled = false
+  Port = "TO_BE_SET"
+  ProfilesDir = "/tmp"
+  BlockProfileRate = 0
+  MutexProfileFraction = 0

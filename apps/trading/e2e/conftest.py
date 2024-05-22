@@ -94,6 +94,7 @@ def init_vega(request=None):
         "transactions_per_block": 1000,
         "seconds_per_block": seconds_per_block,
         "genesis_time": datetime.now() - timedelta(hours=1),
+        "custom_vega_home_path": "vegahome"
     }
 
     if port_config is not None:
