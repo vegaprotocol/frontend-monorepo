@@ -104,7 +104,7 @@ export interface AccountFields extends Account {
 
 // The total balance of these accounts will be used for the 'used' column in the
 // collateral table
-const USE_ACCOUNT_TYPES = [
+export const USE_ACCOUNT_TYPES = [
   AccountType.ACCOUNT_TYPE_ORDER_MARGIN,
   AccountType.ACCOUNT_TYPE_MARGIN,
   AccountType.ACCOUNT_TYPE_BOND,

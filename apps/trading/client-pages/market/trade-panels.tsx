@@ -50,7 +50,7 @@ export const TradePanels = ({ market, pinnedAssets }: TradePanelsProps) => {
   const renderMenu = (viewCfg: any) => {
     if ('menu' in viewCfg || 'settings' in viewCfg) {
       return (
-        <div className="flex items-center justify-end gap-1 p-1 bg-vega-clight-800 dark:bg-vega-cdark-800 border-b border-default">
+        <div className="flex items-center justify-end gap-1 p-1 bg-vega-clight-800 dark:bg-vega-cdark-800 border-b border-default shrink-0">
           {'menu' in viewCfg ? <viewCfg.menu /> : null}
           {'settings' in viewCfg ? (
             <Popover
@@ -77,7 +77,7 @@ export const TradePanels = ({ market, pinnedAssets }: TradePanelsProps) => {
 
       {/* Top section */}
       <div className="flex flex-col overflow-hidden">
-        <div className="flex flex-nowrap overflow-x-auto border-t border-default">
+        <div className="flex flex-nowrap overflow-x-auto border-t border-default shrink-0">
           {[
             'chart',
             'orderbook',
@@ -122,7 +122,7 @@ export const TradePanels = ({ market, pinnedAssets }: TradePanelsProps) => {
             })}
         </div>
         <div className="h-full relative">
-          <div>{renderMenu(topViewCfg)}</div>
+          {renderMenu(topViewCfg)}
           <div className="overflow-auto h-full">{renderView(topView)}</div>
         </div>
       </div>
@@ -130,7 +130,7 @@ export const TradePanels = ({ market, pinnedAssets }: TradePanelsProps) => {
 
       {/* Bottom section */}
       <div className="flex flex-col overflow-hidden">
-        <div className="flex flex-nowrap overflow-x-auto max-w-full border-t border-default">
+        <div className="flex flex-nowrap overflow-x-auto border-t border-default shrink-0">
           {[
             'positions',
             'activeOrders',
@@ -153,8 +153,8 @@ export const TradePanels = ({ market, pinnedAssets }: TradePanelsProps) => {
             );
           })}
         </div>
-        <div className="relative grow flex flex-col">
-          <div>{renderMenu(bottomViewCfg)}</div>
+        <div className="relative grow flex flex-col overflow-hidden">
+          {renderMenu(bottomViewCfg)}
           <div className="overflow-auto grow">{renderView(bottomView)}</div>
         </div>
       </div>

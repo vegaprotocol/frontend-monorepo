@@ -1,6 +1,7 @@
 import { type AssetFieldsFragment } from '@vegaprotocol/assets';
 import { AccountCard } from './account-card';
 import type { AssetActions } from './accounts-manager';
+import sortBy from 'lodash/sortBy';
 
 export type PinnedAsset = string;
 
@@ -18,10 +19,10 @@ export const AccountsList = ({
   return (
     rowData &&
     (pinnedAssets && pinnedAssets.length
-      ? [
-          ...rowData.filter((asset) => pinnedAssets?.includes(asset.id)),
-          ...rowData.filter((asset) => !pinnedAssets?.includes(asset.id)),
-        ]
+      ? sortBy(rowData, (asset) => {
+          if (pinnedAssets.includes(asset.id)) return -1;
+          return 1;
+        })
       : rowData
     ).map((asset) => {
       return (
