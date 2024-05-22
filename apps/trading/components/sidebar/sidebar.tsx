@@ -28,6 +28,7 @@ export enum ViewType {
   Settings = 'Settings',
   ViewAs = 'ViewAs',
   Close = 'Close',
+  Swap = 'Swap',
 }
 
 export type BarView =
