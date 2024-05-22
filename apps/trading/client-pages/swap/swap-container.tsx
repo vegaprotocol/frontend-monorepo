@@ -203,9 +203,10 @@ export const SwapContainer = () => {
           <div className="flex justify-between items-center text-gray-500 text-sm">
             <span className="text-left">{baseAmount && `$${baseAmount}`}</span>
             <span className="text-right">
-              {t('Balance: {{balance}}', {
-                balance: baseAssetBalance,
-              })}
+              {baseAssetBalance &&
+                t('Balance: {{balance}}', {
+                  balance: baseAssetBalance,
+                })}
             </span>
           </div>
         </div>
