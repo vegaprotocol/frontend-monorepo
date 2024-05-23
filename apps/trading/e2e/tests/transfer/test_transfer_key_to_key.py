@@ -139,13 +139,13 @@ def test_transfer_vesting_below_minimum(
         from_account_type=vega_protos.vega.AccountType.ACCOUNT_TYPE_VESTED_REWARDS,
         to_account_type=vega_protos.vega.AccountType.ACCOUNT_TYPE_GENERAL,
         asset=asset_id,
-        amount=24.999999,
+        amount=27.49999,
     )
     vega.wait_fn(10)
     vega.wait_for_total_catchup()
 
     page.get_by_test_id("use-max-button").first.click()
-    page.locator('[data-testid=transfer-form] [type="submit"]').click()
+    page.locator('[type="submit"]').click()
     wait_for_toast_confirmation(page)
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
