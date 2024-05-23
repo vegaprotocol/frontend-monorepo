@@ -99,7 +99,11 @@ const WithdrawDelayNotification = ({
               }
             ),
         DocsLinks?.WITHDRAWAL_LIMITS ? (
-          <ExternalLink className="ml-1" href={DocsLinks.WITHDRAWAL_LIMITS}>
+          <ExternalLink
+            className="ml-1"
+            key="read-more-link"
+            href={DocsLinks.WITHDRAWAL_LIMITS}
+          >
             {t('Read more')}
           </ExternalLink>
         ) : (

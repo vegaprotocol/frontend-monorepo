@@ -37,3 +37,4 @@ export * from './lib/web3-connectors';
 export * from './lib/web3-provider';
 export * from './lib/withdrawal-approval-dialog';
 export * from './lib/withdrawal-approval-status';
+export { useTransactionReceipt } from './lib/use-transaction-receipt';
