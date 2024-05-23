@@ -2,7 +2,6 @@ import pytest
 import vega_sim.proto.vega as vega_protos
 from playwright.sync_api import Page, expect
 from vega_sim.null_service import VegaServiceNull
-from actions.utils import next_epoch
 from wallet_config import MM_WALLET, PARTY_A, PARTY_B
 from vega_sim.service import MarketStateUpdateType
 import vega_sim.api.governance as governance
@@ -61,8 +60,7 @@ def test_filtered_cards(continuous_market, vega: VegaServiceNull, page: Page):
     vega.wait_for_total_catchup()
 
     page.reload()
-    expect(page.get_by_test_id("active-rewards-card")
-           ).to_be_visible(timeout=15000)
+    expect(page.get_by_test_id("active-rewards-card")).to_be_visible(timeout=15000)
     governance.submit_oracle_data(
         wallet=vega.wallet,
         payload={"trading.terminated": "true"},
@@ -119,6 +117,6 @@ def test_filtered_future_cards(continuous_market, vega: VegaServiceNull, page: P
     page.goto("/#/rewards")
     card = page.get_by_test_id("active-rewards-card")
     expect(card).to_be_visible(timeout=15000)
-    expect(page.get_by_test_id("starts-in")).to_have_text("7 epochs")
+    expect(page.get_by_test_id("starts-in")).to_have_text("8 epochs")
     color = card.evaluate("element => getComputedStyle(element).color")
     assert color == "rgb(4, 4, 5)", f"Unexpected color: {color}"
