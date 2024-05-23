@@ -162,7 +162,7 @@ const PortfolioActionTabs = () => {
       </Tab>
       <Tab id="assets" name={t('Assets')}>
         <ErrorBoundary feature="portfolio-assets">
-          <TinyScroll className="overflow-y-auto overflow-x-hidden h-full">
+          <TinyScroll>
             <AccountsContainer />
           </TinyScroll>
         </ErrorBoundary>
