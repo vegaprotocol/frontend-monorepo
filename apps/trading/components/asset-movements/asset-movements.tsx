@@ -1,5 +1,5 @@
 import type { ColDef } from 'ag-grid-community';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import compact from 'lodash/compact';
 
 import { AgGrid, COL_DEFS } from '@vegaprotocol/datagrid';
@@ -17,22 +17,22 @@ import {
   type TransferFieldsFragment,
   useTransfers,
 } from '@vegaprotocol/accounts';
-import { getDateTimeFormat } from '@vegaprotocol/utils';
+import { DAY, getDateTimeFormat, getTimeFormat } from '@vegaprotocol/utils';
 import {
   DepositStatus,
   DepositStatusMapping,
   TransferStatusMapping,
-  WithdrawalStatus,
   WithdrawalStatusMapping,
 } from '@vegaprotocol/types';
 import {
+  ApprovalStatus,
+  useEthWithdrawApprovalsStore,
   useEthereumConfig,
   useGetWithdrawDelay,
   useGetWithdrawThreshold,
   useTransactionReceipt,
 } from '@vegaprotocol/web3';
 import { useT } from '../../lib/use-t';
-import { Withdraw } from 'apps/trading/client-pages/withdraw';
 
 interface RowBase {
   asset: AssetFieldsFragment | undefined;
@@ -237,21 +237,106 @@ const WithdrawalStatusCell = ({ data }: { data: RowWithdrawal }) => {
     return <WithdrawalStatusOpen data={data} />;
   }
 
-  return <>{WithdrawalStatus[data.detail.status]}</>;
+  return <>{WithdrawalStatusMapping[data.detail.status]}</>;
 };
 
 const WithdrawalStatusOpen = ({ data }: { data: RowWithdrawal }) => {
+  const { status, readyAt } = useWithdrawalStatus({
+    withdrawal: data.detail,
+  });
+
+  if (status === ApprovalStatus.Idle) {
+    return null;
+  }
+
+  if (status === ApprovalStatus.Delayed) {
+    const showDate = readyAt && readyAt.getTime() > Date.now() + DAY;
+
+    return (
+      <>
+        {status} until{' '}
+        {showDate
+          ? getDateTimeFormat().format(readyAt)
+          : getTimeFormat().format(readyAt)}
+      </>
+    );
+  }
+
+  if (status === ApprovalStatus.Ready) {
+    return <WithdrawalStatusReady withdrawal={data.detail} />;
+  }
+
+  return <>{status}</>;
+};
+
+const WithdrawalStatusReady = ({
+  withdrawal,
+}: {
+  withdrawal: WithdrawalFieldsFragment;
+}) => {
+  const t = useT();
+  const createWithdrawApproval = useEthWithdrawApprovalsStore(
+    (store) => store.create
+  );
+
+  return (
+    <>
+      {ApprovalStatus.Ready}{' '}
+      <button
+        onClick={() => createWithdrawApproval(withdrawal)}
+        className="underline underline-offset-4"
+      >
+        {t('Complete')}
+      </button>
+    </>
+  );
+};
+
+const useWithdrawalStatus = ({
+  withdrawal,
+}: {
+  withdrawal: WithdrawalFieldsFragment;
+}) => {
+  const [status, setStatus] = useState<ApprovalStatus>(ApprovalStatus.Idle);
+  const [readyAt, setReadyAt] = useState<Date>();
   const getThreshold = useGetWithdrawThreshold();
   const getDelay = useGetWithdrawDelay();
+  const timeoutRef = useRef<NodeJS.Timeout>();
 
   useEffect(() => {
-    async () => {
-      console.log('get');
-      const threshold = await getThreshold(data.detail.asset);
-      const delay = await getDelay();
-      console.log(threshold, delay);
-    };
-  }, [getThreshold, getDelay]);
+    // Checks if withdrawal is ready for completion and if it isn't
+    // starts a time to check again after the delay time has passed
+    const checkStatus = async () => {
+      const threshold = await getThreshold(withdrawal.asset);
 
-  return <>hello</>;
+      if (threshold) {
+        const delaySecs = await getDelay();
+
+        if (delaySecs) {
+          const readyTimestamp =
+            new Date(withdrawal.createdTimestamp).getTime() +
+            (delaySecs + 3) * 1000; // add a buffer of 3 seconds
+          const now = Date.now();
+          setReadyAt(new Date(readyTimestamp));
+
+          if (now < readyTimestamp) {
+            setStatus(ApprovalStatus.Delayed);
+
+            // Check again when delay time has passed
+            timeoutRef.current = setTimeout(checkStatus, readyTimestamp - now);
+          } else {
+            setStatus(ApprovalStatus.Ready);
+          }
+        }
+      }
+    };
+
+    checkStatus();
+
+    return () => {
+      clearTimeout(timeoutRef.current);
+    };
+  }, [getThreshold, getDelay, withdrawal]);
+
+  return { status, readyAt };
 };
