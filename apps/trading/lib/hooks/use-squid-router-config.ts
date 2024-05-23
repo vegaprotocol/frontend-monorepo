@@ -16,6 +16,8 @@ import {
   getTokenContract,
   useEVMBridgeConfigs,
   useEthereumConfig,
+  SQUID_RECEIVER_CONTRACT_ADDRESS,
+  type ChainId,
 } from '@vegaprotocol/web3';
 import { theme } from '@vegaprotocol/tailwindcss-config';
 import {
@@ -30,6 +32,15 @@ import {
   prepend0x,
 } from '@vegaprotocol/smart-contracts';
 import { AssetStatus } from '@vegaprotocol/types';
+
+/**
+ * A flag determining whether the final deposit via SquidRouter should be done
+ * via the SquidReceiver bridge or not.
+ *
+ * If set to `true` then the asset will be deposited to via the receiver,
+ * otherwise it will be deposited via the collateral bridge (not recommended).
+ */
+const USE_SQUID_RECEIVER_BRIDGE = true;
 
 type SquidFriendlyAsset = Omit<AssetFieldsFragment, 'source'> & {
   source: {
@@ -63,7 +74,7 @@ const HARDCODED_EVM_CONFIGS: EVMBridgeConfig[] = [
     chain_id: String(ARBITRUM_CHAIN_ID),
     network_id: String(ARBITRUM_CHAIN_ID),
     collateral_bridge_contract: {
-      address: '0xd459fac6647059100ebe45543e1da73b3b70ffba',
+      address: '0x475B597652bCb2769949FD6787b1DC6916518407',
       deployment_block_height: 0,
     },
     confirmations: 0,
@@ -206,12 +217,21 @@ export const useEnrichedSquidFriendlyAssets = () => {
             const arbitrumConfig = evmConfigs?.find(
               (c) => c.chain_id === chainId
             );
-            if (arbitrumConfig) {
+            const squidReceiverAddress =
+              SQUID_RECEIVER_CONTRACT_ADDRESS[Number(chainId) as ChainId];
+
+            if (USE_SQUID_RECEIVER_BRIDGE && squidReceiverAddress) {
+              return {
+                chainId,
+                bridgeAddress: squidReceiverAddress,
+                contract: new ArbitrumSquidReceiver(squidReceiverAddress),
+              };
+            } else if (arbitrumConfig) {
               return {
                 chainId,
                 bridgeAddress:
                   arbitrumConfig.collateral_bridge_contract.address,
-                contract: new ArbitrumSquidReceiver(
+                contract: new CollateralBridge(
                   arbitrumConfig.collateral_bridge_contract.address
                 ),
               };
@@ -392,7 +412,10 @@ const mapAssetToDestinationTokenConfig = (
       value: '0',
       callData: (args) => {
         if (asset.contract instanceof ArbitrumSquidReceiver) {
-          // deposit on arbitrum bridge
+          // DEPOSIT ON ARBITRUM BRIDGE
+          // NOTE: This should be calling the SquidReceiver contract `deposit`
+          // method instead of the `deposit_asset` on Arbitrum's collateral
+          // bridge.
           const recovery = args.destinationAddress || '';
           const data = asset.contract.encodeDepositData(
             asset.source.contractAddress,
@@ -402,7 +425,10 @@ const mapAssetToDestinationTokenConfig = (
           );
           return data;
         } else {
-          // deposit on ethereum bridge
+          // DEPOSIT ON ETHEREUM BRIDGE
+          // NOTE: This is a direct call on to the ethereum collateral bridge.
+          // This will call the `deposit_asset` method.
+          // Although it also should have it's own squid receiver on Ethereum.
           const data = asset.contract.encodeDepositData(
             asset.source.contractAddress,
             '0',
