@@ -88,14 +88,14 @@ export const AccountCard = ({
   });
   return (
     <section
-      className={classNames('p-3 border-b border-default', {
+      className={classNames('border-b border-default', {
         'bg-vega-clight-800 dark:bg-vega-cdark-800': expandable && expanded,
       })}
     >
-      <div className="relative">
+      <div className="relative p-3">
         <header className="flex items-center mb-3">
           <Emblem asset={asset.id} />
-          <span className="grow ml-2 text-lg">{asset.symbol}</span>
+          <span className="grow ml-2 text-lg">{asset.name}</span>
           <div className="z-10">
             <AccountsActionsDropdown
               isReadOnly={isReadOnly}
@@ -133,7 +133,7 @@ export const AccountCard = ({
         {expandable && (
           <button
             type="button"
-            className="absolute inset-0"
+            className="absolute inset-0 before:hidden before:content-[''] hover:before:block focus:before:block before:absolute before:inset-0 before:bg-vega-clight-800 before:dark:bg-vega-cdark-800 before:-z-10"
             onClick={() => setExpanded((expanded) => !expanded)}
           >
             <span className="sr-only">{t('Show asset actions')}</span>
@@ -141,7 +141,7 @@ export const AccountCard = ({
         )}
       </div>
       {expandable && expanded ? (
-        <div className="grid gap-1 grid-cols-4 mt-3">
+        <div className="grid gap-1 grid-cols-3 p-3 pt-0">
           <Button
             onClick={() => actions.onClickDeposit?.(asset.id)}
             label={t('Deposit')}
