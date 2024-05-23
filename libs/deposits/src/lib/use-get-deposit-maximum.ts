@@ -16,7 +16,7 @@ export const useGetDepositMaximum = (
     const logger = localLoggerFactory({ application: 'deposits' });
     try {
       logger.info('get deposit maximum', { asset: asset.id });
-      const res = await contract.get_deposit_maximum(
+      const res = await contract.get_asset_deposit_lifetime_limit(
         asset.source.contractAddress
       );
       const max = new BigNumber(addDecimal(res.toString(), asset.decimals));
