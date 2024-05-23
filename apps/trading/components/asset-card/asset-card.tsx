@@ -28,7 +28,10 @@ export const AssetCard = ({
   }
 
   return (
-    <section className="p-3 border-b border-default text-left bg-vega-clight-800 dark:bg-vega-cdark-800">
+    <section
+      className="p-3 border-b border-default text-left bg-vega-clight-800 dark:bg-vega-cdark-800"
+      data-testid="asset-card"
+    >
       <header className="flex items-center mb-3">
         <Emblem asset={asset.id} />
         <span className="grow ml-2 text-lg">{asset.symbol}</span>

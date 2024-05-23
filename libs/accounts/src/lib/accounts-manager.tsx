@@ -30,7 +30,7 @@ export const AccountManager = ({
   });
 
   return (
-    <div className="relative h-full">
+    <div className="relative h-full" data-testid="accounts-list">
       <AccountsList rowData={data} pinnedAssets={pinnedAssets} {...props} />
     </div>
   );

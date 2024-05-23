@@ -147,11 +147,13 @@ export const AccountCard = ({
             label={t('Deposit')}
             icon={VegaIconNames.DEPOSIT}
           />
+          {/*
           <Button
             onClick={() => actions.onClickSwap?.(asset.id)}
             label={t('Swap')}
             icon={VegaIconNames.SWAP}
           />
+          */}
           <Button
             onClick={() => actions.onClickTransfer?.(asset.id)}
             label={t('Transfer')}
