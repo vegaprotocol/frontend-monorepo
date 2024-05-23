@@ -22,9 +22,21 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { EmblemByAsset, EmblemByMarket } from '@vegaprotocol/emblem';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
-import { useAccounts } from '@vegaprotocol/accounts';
+import { useAccounts, type Account } from '@vegaprotocol/accounts';
 import { useT } from '../../lib/use-t';
 import { addDecimalsFormatNumber, formatNumber } from '@vegaprotocol/utils';
+
+const assetBalance = (
+  asset?: AssetFieldsFragment,
+  accounts?: Account[] | null
+) => {
+  if (!asset || !accounts) return undefined;
+  const account = accounts.find((a) => a.asset.id === asset.id);
+  if (account) {
+    return account.balance;
+  }
+  return undefined;
+};
 
 const chooseMarket = (
   markets: MarketFieldsFragment[] | undefined,
@@ -61,9 +73,15 @@ export const SwapContainer = () => {
   const { baseAmount, quoteAmount, priceImpactTolerance } = watch();
 
   const { pubKey } = useVegaWallet();
-
   const { data: markets } = useMarketsMapProvider();
   const { data: assetsData } = useAssetsMapProvider();
+  const { data: accounts } = useAccounts(pubKey);
+  const [quoteAsset, setQuoteAsset] = useState<AssetFieldsFragment>();
+  const [baseAsset, setBaseAsset] = useState<AssetFieldsFragment>();
+  const [marketId, setMarketId] = useState<string>(markets?.[0]?.id || '');
+  const [priceImpactType, setPriceImpactType] = useState<'auto' | 'custom'>(
+    'custom'
+  );
 
   const { spotMarkets, spotAssets } = useMemo(() => {
     const spotAssets: Record<string, AssetFieldsFragment> = {};
@@ -85,33 +103,14 @@ export const SwapContainer = () => {
     });
     return { spotMarkets, spotAssets };
   }, [assetsData, markets]);
-
-  const [quoteAsset, setQuoteAsset] = useState<AssetFieldsFragment>();
-  const [baseAsset, setBaseAsset] = useState<AssetFieldsFragment>();
-  const [marketId, setMarketId] = useState<string>(markets?.[0]?.id || '');
-
-  const [priceImpactType, setPriceImpactType] = useState<'auto' | 'custom'>(
-    'custom'
-  );
-  const { data: accounts } = useAccounts(pubKey);
   const accountAssetIds = accounts?.map((a) => a.asset.id);
 
   const quoteAssetBalance = useMemo(() => {
-    if (!quoteAsset) return undefined;
-    const account = accounts?.find((a) => a.asset.id === quoteAsset.id);
-    if (account) {
-      return account.balance;
-    }
-    return undefined;
+    return assetBalance(quoteAsset, accounts);
   }, [accounts, quoteAsset]);
 
   const baseAssetBalance = useMemo(() => {
-    if (!baseAsset) return undefined;
-    const account = accounts?.find((a) => a.asset.id === baseAsset.id);
-    if (account) {
-      return account.balance;
-    }
-    return undefined;
+    return assetBalance(baseAsset, accounts);
   }, [accounts, baseAsset]);
 
   // Set base and quote assets based on accounts
@@ -194,8 +193,8 @@ export const SwapContainer = () => {
               </span>
             ) : (
               <span>
-                {quoteAssetBalance &&
-                  quoteAsset &&
+                {quoteAssetBalance !== undefined &&
+                  quoteAsset !== undefined &&
                   t('Balance: {{balance}}', {
                     balance: addDecimalsFormatNumber(
                       quoteAssetBalance,
