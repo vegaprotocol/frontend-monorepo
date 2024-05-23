@@ -8,8 +8,9 @@ const DEFAULT_INTERVAL = 15000; // 15 seconds
 /**
  * These are the hex values of the collateral bridge contract methods.
  *
- * Collateral bridge address: 0x23872549cE10B40e31D6577e0A920088B0E0666a
- * Etherscan: https://etherscan.io/address/0x23872549cE10B40e31D6577e0A920088B0E0666a#writeContract
+ * Supported contracts:
+ * Ethereum: https://etherscan.io/address/0x23872549cE10B40e31D6577e0A920088B0E0666a#writeContract
+ * Arbitrum: https://arbiscan.io/address/0x475B597652bCb2769949FD6787b1DC6916518407#writeContract
  */
 export enum ContractMethod {
   DEPOSIT_ASSET = '0xf7683932',
