@@ -64,7 +64,7 @@ export function Dialog({
           <div
             className={classNames(
               // Positions the modal in the center of screen
-              'z-20 relative rounded top-[5vw] lg:top-[10vw] pb-3'
+              'z-20 relative rounded top-[5vw] pb-3'
             )}
           >
             <div className={wrapperClasses}>
