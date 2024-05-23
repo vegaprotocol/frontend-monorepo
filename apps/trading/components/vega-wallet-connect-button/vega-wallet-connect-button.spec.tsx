@@ -1,4 +1,5 @@
 import { act, fireEvent, render, screen, within } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import { VegaWalletConnectButton } from './vega-wallet-connect-button';
 import userEvent from '@testing-library/user-event';
 import {
@@ -43,11 +44,13 @@ const renderComponent = (mockOnClick = jest.fn()) => {
   };
 
   return (
-    <MockedProvider mocks={[partyProfilesMock]}>
-      <MockedWalletProvider>
-        <VegaWalletConnectButton onClick={mockOnClick} />
-      </MockedWalletProvider>
-    </MockedProvider>
+    <MemoryRouter>
+      <MockedProvider mocks={[partyProfilesMock]}>
+        <MockedWalletProvider>
+          <VegaWalletConnectButton onClick={mockOnClick} />
+        </MockedWalletProvider>
+      </MockedProvider>
+    </MemoryRouter>
   );
 };
 

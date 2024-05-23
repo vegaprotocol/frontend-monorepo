@@ -1,11 +1,9 @@
 import { useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import type { PinnedAsset } from '@vegaprotocol/accounts';
 import { AccountManager } from '@vegaprotocol/accounts';
-import { useT } from '../../lib/use-t';
 import { Links } from '../../lib/links';
 
 export const AccountCardContainer = ({ assetId }: { assetId: string }) => {};
@@ -15,7 +13,6 @@ export const AccountsContainer = ({
 }: {
   pinnedAssets?: PinnedAsset[];
 }) => {
-  const t = useT();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { pubKey, isReadOnly } = useVegaWallet();
@@ -36,14 +33,6 @@ export const AccountsContainer = ({
     }
     navigate(path + params);
   };
-
-  if (!pubKey) {
-    return (
-      <Splash>
-        <p>{t('Please connect Vega wallet')}</p>
-      </Splash>
-    );
-  }
 
   return (
     <AccountManager

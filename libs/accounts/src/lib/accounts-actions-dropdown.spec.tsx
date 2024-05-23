@@ -6,13 +6,11 @@ import userEvent from '@testing-library/user-event';
 describe('AccountsActionsDropdown', () => {
   let onClickDeposit: jest.Mock;
   let onClickWithdraw: jest.Mock;
-  let onClickBreakdown: jest.Mock;
   let onClickTransfer: jest.Mock;
 
   beforeEach(() => {
     onClickDeposit = jest.fn();
     onClickWithdraw = jest.fn();
-    onClickBreakdown = jest.fn();
     onClickTransfer = jest.fn();
   });
 
@@ -26,7 +24,6 @@ describe('AccountsActionsDropdown', () => {
         assetContractAddress="testAssetContractAddress"
         onClickDeposit={onClickDeposit}
         onClickWithdraw={onClickWithdraw}
-        onClickBreakdown={onClickBreakdown}
         onClickTransfer={onClickTransfer}
       />
     );
@@ -36,9 +33,6 @@ describe('AccountsActionsDropdown', () => {
     expect(screen.getByTestId('deposit')).toHaveTextContent('Deposit');
     expect(screen.getByTestId('withdraw')).toHaveTextContent('Withdraw');
     expect(screen.getByTestId('transfer')).toHaveTextContent('Transfer');
-    expect(screen.getByTestId('breakdown')).toHaveTextContent(
-      'View usage breakdown'
-    );
     expect(screen.getByText('View asset details')).toBeInTheDocument();
     expect(screen.getByText('Copy asset ID')).toBeInTheDocument();
     expect(screen.getByText('View on Etherscan')).toBeInTheDocument();
@@ -51,7 +45,6 @@ describe('AccountsActionsDropdown', () => {
         assetContractAddress="testAssetContractAddress"
         onClickDeposit={onClickDeposit}
         onClickWithdraw={onClickWithdraw}
-        onClickBreakdown={onClickBreakdown}
         onClickTransfer={onClickTransfer}
       />
     );
@@ -67,9 +60,5 @@ describe('AccountsActionsDropdown', () => {
     await userEvent.click(screen.getByTestId('icon-kebab'));
     await userEvent.click(screen.getByTestId('transfer'));
     expect(onClickTransfer).toHaveBeenCalledTimes(1);
-
-    await userEvent.click(screen.getByTestId('icon-kebab'));
-    await userEvent.click(screen.getByTestId('breakdown'));
-    expect(onClickBreakdown).toHaveBeenCalledTimes(1);
   });
 });

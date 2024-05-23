@@ -25,6 +25,10 @@ jest.mock('../asset-card', () => ({
   ),
 }));
 
+jest.mock('../accounts-container', () => ({
+  AccountsContainer: () => <div data-testid="accounts-list"></div>,
+}));
+
 describe('Sidebar', () => {
   const marketId = 'market-id';
 
@@ -53,10 +57,8 @@ describe('Sidebar', () => {
 
     expect(screen.getByTestId('market-info')).toHaveTextContent(marketId);
 
-    await user.click(
-      screen.getByRole('button', { name: new RegExp(`Asset: ${marketId}`) })
-    );
+    await user.click(screen.getByRole('button', { name: 'Assets' }));
 
-    expect(screen.getByText('Asset list')).toBeInTheDocument();
+    expect(screen.getByTestId('accounts-list')).toBeInTheDocument();
   });
 });
