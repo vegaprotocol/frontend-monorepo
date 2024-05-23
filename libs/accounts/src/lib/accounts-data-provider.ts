@@ -102,16 +102,11 @@ export interface AccountFields extends Account {
   breakdown?: AccountFields[];
 }
 
-// The total balance of these accounts will be used for the 'used' column in the
-// collateral table
-export const USE_ACCOUNT_TYPES = [
-  AccountType.ACCOUNT_TYPE_ORDER_MARGIN,
-  AccountType.ACCOUNT_TYPE_MARGIN,
-  AccountType.ACCOUNT_TYPE_BOND,
+// Those accounts will be excluded from asset account aggregation
+export const IGNORE_ACCOUNT_TYPES = [
   AccountType.ACCOUNT_TYPE_FEES_INFRASTRUCTURE,
   AccountType.ACCOUNT_TYPE_FEES_LIQUIDITY,
   AccountType.ACCOUNT_TYPE_FEES_MAKER,
-  AccountType.ACCOUNT_TYPE_PENDING_TRANSFERS,
 ];
 
 const getAssetIds = (data: Account[]) =>
@@ -131,22 +126,22 @@ const getAssetAccountAggregation = (
   accountList: Account[],
   assetId: string
 ): AccountFields => {
-  const accounts = accountList.filter((a) => a.asset.id === assetId);
+  const accounts = accountList.filter(
+    (a) => a.asset.id === assetId && !IGNORE_ACCOUNT_TYPES.includes(a.type)
+  );
   const available = getTotalBalance(
     accounts.filter((a) => a.type === AccountType.ACCOUNT_TYPE_GENERAL)
   );
 
-  const used = getTotalBalance(
-    accounts.filter((a) => USE_ACCOUNT_TYPES.includes(a.type))
-  );
+  const total = getTotalBalance(accounts);
 
   const balanceAccount: AccountFields = {
     asset: accounts[0].asset,
     balance: available.toString(),
     type: AccountType.ACCOUNT_TYPE_GENERAL,
     available: available.toString(),
-    used: used.toString(),
-    total: (available + used).toString(),
+    used: (total - available).toString(),
+    total: total.toString(),
   };
 
   const breakdown = accounts
