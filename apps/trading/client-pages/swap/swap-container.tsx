@@ -19,8 +19,8 @@ import {
   VegaIconNames,
   Link,
 } from '@vegaprotocol/ui-toolkit';
-import { EmblemByAsset, EmblemByMarket } from '@vegaprotocol/emblem';
-import { useVegaWallet } from '@vegaprotocol/wallet-react';
+import { EmblemByAsset } from '@vegaprotocol/emblem';
+import { useChainId, useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useAccounts, type Account } from '@vegaprotocol/accounts';
 import { useT } from '../../lib/use-t';
 import {
@@ -62,6 +62,9 @@ export const SwapContainer = () => {
   const { data: markets } = useMarketsMapProvider();
   const { data: assetsData } = useAssetsMapProvider();
   const { data: accounts } = useAccounts(pubKey);
+  const { chainId } = useChainId();
+  const create = useVegaTransactionStore((state) => state.create);
+
   const [quoteAsset, setQuoteAsset] = useState<AssetFieldsFragment>();
   const [baseAsset, setBaseAsset] = useState<AssetFieldsFragment>();
   const [marketId, setMarketId] = useState<string>(markets?.[0]?.id || '');
@@ -69,7 +72,6 @@ export const SwapContainer = () => {
     'custom'
   );
   const [side, setSide] = useState<Side>();
-  const create = useVegaTransactionStore((state) => state.create);
 
   const { spotMarkets, spotAssets } = useMemo(() => {
     const spotAssets: Record<string, AssetFieldsFragment> = {};
@@ -175,7 +177,7 @@ export const SwapContainer = () => {
               href={`/#/markets/${marketId}`}
               className="text-sm text-gray-500"
             >
-              {<EmblemByMarket market={marketId} />}
+              {/* {<EmblemByMarket market={marketId} vegaChain={chainId} />} */}
               {t('Go to market')} <VegaIcon name={VegaIconNames.ARROW_RIGHT} />
             </Link>
           )}
@@ -198,10 +200,11 @@ export const SwapContainer = () => {
                 assetId={quoteAsset?.id}
                 onSelect={setQuoteAsset}
                 assets={spotAssets}
+                chainId={chainId}
               />
             </div>
             <div className="flex justify-between items-center text-gray-500 text-sm">
-              <span>{quoteAmount && `$${quoteAmount}`}</span>
+              <span>{/* {quoteAmount && `$${quoteAmount}`} */}</span>
               {accountAssetIds &&
               quoteAsset &&
               !accountAssetIds.includes(quoteAsset.id) ? (
@@ -225,6 +228,7 @@ export const SwapContainer = () => {
 
           {/* Swap button */}
           <button
+            type="button"
             className="flex justify-center p-2 w-fit rounded-full bg-vega-clight-700 dark:bg-black self-center -my-5 z-10 hover:bg-vega-clight-800 hover:dark:bg-vega-cdark-800 border-gray-400 border"
             onClick={() => {
               switchAssets();
@@ -250,11 +254,12 @@ export const SwapContainer = () => {
                 assetId={baseAsset?.id}
                 onSelect={setBaseAsset}
                 assets={spotAssets}
+                chainId={chainId}
               />
             </div>
             <div className="flex justify-between items-center text-gray-500 text-sm">
               <span className="text-left">
-                {baseAmount && `$${baseAmount}`}
+                {/* {baseAmount && `$${baseAmount}`} */}
               </span>
               <span className="text-right">
                 {baseAssetBalance &&
@@ -285,6 +290,7 @@ export const SwapContainer = () => {
             />
             <span>%</span>
             <button
+              type="button"
               className="ml-4 dark:bg-vega-cdark-700 bg-vega-clight-700 hover:bg-vega-clight-800 hover:dark:bg-vega-cdark-800 p-2 rounded-lg text-sm"
               onClick={() =>
                 priceImpactType === 'auto'
@@ -321,10 +327,12 @@ const DropdownAsset = ({
   assetId,
   onSelect,
   assets,
+  chainId,
 }: {
   assetId?: string;
   onSelect: (asset: AssetFieldsFragment) => void;
   assets?: Record<string, AssetFieldsFragment>;
+  chainId?: string;
 }) => {
   const asset = assetId ? assets?.[assetId] : null;
   return (
@@ -334,7 +342,7 @@ const DropdownAsset = ({
           asChild
           className="flex items-center px-2 py-2 border-gray-400 border rounded-full"
         >
-          {asset && <EmblemByAsset asset={asset.id} />}
+          {asset && <EmblemByAsset asset={asset.id} vegaChain={chainId} />}
           <span className="pl-2">{asset ? asset.symbol : 'Select coin'}</span>
           <VegaIcon
             name={VegaIconNames.CHEVRON_DOWN}
@@ -356,7 +364,7 @@ const DropdownAsset = ({
               key={asset.id}
               className="px-4 py-2 dark:text-gray-200 hover:bg-gray-600 flex items-center"
             >
-              <EmblemByAsset asset={asset.id} />
+              <EmblemByAsset asset={asset.id} vegaChain={chainId} />
               {asset.symbol}
             </DropdownMenuItem>
           ))}
