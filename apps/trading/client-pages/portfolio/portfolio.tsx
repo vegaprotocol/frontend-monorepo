@@ -46,6 +46,7 @@ import { DepositContainer } from '@vegaprotocol/deposits';
 import { TransferContainer } from '@vegaprotocol/accounts';
 import { WithdrawContainer } from '../../components/withdraw-container';
 import { SwapContainer } from '../swap/swap-container';
+import { useFeatureFlags } from '@vegaprotocol/environment';
 
 const WithdrawalsIndicator = () => {
   const { ready } = useIncompleteWithdrawals();
@@ -152,6 +153,7 @@ const PortfolioSmall = () => {
 
 const PortfolioActionTabs = () => {
   const t = useT();
+  const featureFlags = useFeatureFlags((state) => state.flags);
   return (
     <Tabs storageKey="portfolio-sidebar">
       <Tab id="deposit" name={t('Deposit')}>
@@ -178,13 +180,15 @@ const PortfolioActionTabs = () => {
           </div>
         </ErrorBoundary>
       </Tab>
-      <Tab id="swap" name={t('Swap')}>
-        <ErrorBoundary feature="assets-swap">
-          <div className="p-2">
-            <SwapContainer />
-          </div>
-        </ErrorBoundary>
-      </Tab>
+      {featureFlags.SWAP ? (
+        <Tab id="swap" name={t('Swap')}>
+          <ErrorBoundary feature="assets-swap">
+            <div className="p-2">
+              <SwapContainer />
+            </div>
+          </ErrorBoundary>
+        </Tab>
+      ) : null}
     </Tabs>
   );
 };
