@@ -7,8 +7,7 @@ context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
   });
 
   describe('Links and buttons', function () {
-    // need capsule update - 76.preview.5
-    it.skip('should have link for proposal page', function () {
+    it('should have link for proposal page', function () {
       cy.getByTestId('home-proposals').within(() => {
         cy.get('[href="/proposals"]')
           .should('exist')
@@ -51,16 +50,14 @@ context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
           cy.getByTestId('view-proposal-btn').should('be.visible');
         });
     });
-    // need capsule update - 76.preview.5
-    it.skip('should have external link for governance', function () {
+    it('should have external link for governance', function () {
       cy.getByTestId('home-proposals').within(() => {
         cy.getByTestId('external-link')
           .should('have.attr', 'href')
           .and('contain', 'https://vega.xyz/governance');
       });
     });
-    // need capsule update - 76.preview.5
-    it.skip('should have link for validator page', function () {
+    it('should have link for validator page', function () {
       cy.getByTestId('home-validators').within(() => {
         cy.get('[href="/validators"]')
           .first()
@@ -68,8 +65,7 @@ context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
           .and('have.text', 'Browse, and stake');
       });
     });
-    // need capsule update - 76.preview.5
-    it.skip('should have external link for validators', function () {
+    it('should have external link for validators', function () {
       cy.getByTestId('home-validators').within(() => {
         cy.getByTestId('external-link')
           .should('have.attr', 'href')
@@ -101,8 +97,7 @@ context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
           cy.wrap($validator).find('a').should('have.attr', 'href');
         });
     });
-    // need capsule update - 76.preview.5
-    it.skip('should have link for rewards page', function () {
+    it('should have link for rewards page', function () {
       cy.getByTestId('home-rewards').within(() => {
         cy.get('[href="/rewards"]')
           .first()
@@ -110,8 +105,7 @@ context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
           .and('have.text', 'See rewards');
       });
     });
-    // need capsule update - 76.preview.5
-    it.skip('should have link for withdrawal page', function () {
+    it('should have link for withdrawal page', function () {
       cy.getByTestId('home-vega-token').within(() => {
         cy.get('[href="/token/withdraw"]')
           .first()
@@ -210,8 +204,7 @@ context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
           .and('have.text', 'Validators');
       });
     });
-    // need capsule update - 76.preview.5
-    it.skip('should have link for rewards page', function () {
+    it('should have link for rewards page', function () {
       cy.getByTestId('menu-drawer').within(() => {
         cy.get('[href="/rewards"]')
           .first()
@@ -219,8 +212,7 @@ context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
           .and('have.text', 'Rewards');
       });
     });
-    // need capsule update - 76.preview.5
-    it.skip('should have link for withdrawal page', function () {
+    it('should have link for withdrawal page', function () {
       cy.getByTestId('menu-drawer').within(() => {
         cy.get('[href="/token/withdraw"]')
           .first()
