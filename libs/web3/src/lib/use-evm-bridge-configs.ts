@@ -1,6 +1,12 @@
 import { useNetworkParams } from '@vegaprotocol/network-parameters';
 import { useMemo } from 'react';
-import { ARBITRUM_CHAIN_ID } from './constants';
+import {
+  ARBITRUM_CHAIN_ID,
+  ARBITRUM_SEPOLIA_CHAIN_ID,
+  type ChainId,
+  ETHEREUM_CHAIN_ID,
+  ETHEREUM_SEPOLIA_CHAIN_ID,
+} from './constants';
 
 export type EthereumContractConfig = {
   /**
@@ -51,6 +57,8 @@ export type EVMBridgeConfig = {
    * Display name of this network.
    */
   name: string;
+  /** Squid receiver */
+  squid_receiver?: EthereumContractConfig;
 };
 
 type EVMBridgeConfigs = {
@@ -79,27 +87,6 @@ export const useEVMBridgeConfigs = () => {
   return { configs, loading, error };
 };
 
-/**
- * FIXME: Remove this stub once the configuration is on the network
- * Test bridge: 0xd459fac6647059100ebe45543e1da73b3b70ffba
- * Prod bridge: 0xE7477a9aDb9BA0d00Af8f4d8e5E53A532C650ffa
- */
-export const ARBITRUM_BRIDGE_CONFIG: EVMBridgeConfig = {
-  network_id: '42161',
-  chain_id: '42161',
-  collateral_bridge_contract: {
-    address: '0xE7477a9aDb9BA0d00Af8f4d8e5E53A532C650ffa',
-    deployment_block_height: 0,
-  },
-  confirmations: 3,
-  multisig_control_contract: {
-    address: '',
-    deployment_block_height: 0,
-  },
-  block_time: '',
-  name: 'Arbitrum',
-};
-
 export const useArbitrumConfig = (desiredChainId?: string) => {
   const { configs, loading, error } = useEVMBridgeConfigs();
 
@@ -111,4 +98,20 @@ export const useArbitrumConfig = (desiredChainId?: string) => {
   }, [chainId, configs]);
 
   return { config, loading, error };
+};
+
+/**
+ * SquidReceiver contracts:
+ * Arbitrum One (test) bridge: 0xd459fac6647059100ebe45543e1da73b3b70ffba
+ * Arbitrum One (prod) bridge: 0xE7477a9aDb9BA0d00Af8f4d8e5E53A532C650ffa
+ */
+
+export const SQUID_RECEIVER_CONTRACT_ADDRESS: Record<
+  ChainId,
+  string | undefined
+> = {
+  [ETHEREUM_CHAIN_ID]: undefined,
+  [ETHEREUM_SEPOLIA_CHAIN_ID]: undefined,
+  [ARBITRUM_CHAIN_ID]: '0xE7477a9aDb9BA0d00Af8f4d8e5E53A532C650ffa',
+  [ARBITRUM_SEPOLIA_CHAIN_ID]: undefined,
 };
