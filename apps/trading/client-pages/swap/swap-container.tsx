@@ -9,7 +9,7 @@ import {
   getQuoteAsset,
   isSpot,
   useMarketsMapProvider,
-  type MarketMap,
+  type MarketFieldsFragment,
 } from '@vegaprotocol/markets';
 import {
   DropdownMenu,
@@ -24,20 +24,24 @@ import { EmblemByAsset, EmblemByMarket } from '@vegaprotocol/emblem';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useAccounts } from '@vegaprotocol/accounts';
 import { useT } from '../../lib/use-t';
+import { addDecimalsFormatNumber, formatNumber } from '@vegaprotocol/utils';
 
 const chooseMarket = (
-  markets: MarketMap | null,
+  markets: MarketFieldsFragment[] | undefined,
   baseAsset: AssetFieldsFragment,
   quoteAsset: AssetFieldsFragment
 ) => {
   if (!markets) return;
-  const market = Object.values(markets)?.find((m) => {
+  const market = markets.find((m) => {
     if (!isSpot(m.tradableInstrument.instrument.product)) {
       return false;
     }
     const mBaseAsset = getBaseAsset(m);
     const mQuoteAsset = getQuoteAsset(m);
-    return mBaseAsset.id === baseAsset.id && mQuoteAsset.id === quoteAsset.id;
+    return (
+      (mBaseAsset.id === baseAsset.id && mQuoteAsset.id === quoteAsset.id) ||
+      (mBaseAsset.id === quoteAsset.id && mQuoteAsset.id === baseAsset.id)
+    );
   });
   return market;
 };
@@ -59,6 +63,28 @@ export const SwapContainer = () => {
   const { pubKey } = useVegaWallet();
 
   const { data: markets } = useMarketsMapProvider();
+  const { data: assetsData } = useAssetsMapProvider();
+
+  const { spotMarkets, spotAssets } = useMemo(() => {
+    const spotAssets: Record<string, AssetFieldsFragment> = {};
+    if (!markets) return {};
+    const spotMarkets = Object.values(markets).filter((m) => {
+      if (isSpot(m.tradableInstrument.instrument.product)) {
+        const baseAsset = getBaseAsset(m);
+        const quoteAsset = getQuoteAsset(m);
+
+        if (baseAsset && assetsData) {
+          spotAssets[baseAsset.id] = assetsData[baseAsset.id];
+        }
+        if (quoteAsset && assetsData) {
+          spotAssets[quoteAsset.id] = assetsData[quoteAsset.id];
+        }
+        return true;
+      }
+      return false;
+    });
+    return { spotMarkets, spotAssets };
+  }, [assetsData, markets]);
 
   const [quoteAsset, setQuoteAsset] = useState<AssetFieldsFragment>();
   const [baseAsset, setBaseAsset] = useState<AssetFieldsFragment>();
@@ -67,17 +93,9 @@ export const SwapContainer = () => {
   const [priceImpactType, setPriceImpactType] = useState<'auto' | 'custom'>(
     'custom'
   );
-  //  filter asset ids based on existent accounts
   const { data: accounts } = useAccounts(pubKey);
-
-  // create a record from assets only those that are in accounts
-  const { data: assets } = useAssetsMapProvider();
   const accountAssetIds = accounts?.map((a) => a.asset.id);
 
-  // You pay = in quote asset
-  // You receive - base asset
-
-  // TODO get balance from wallet
   const quoteAssetBalance = useMemo(() => {
     if (!quoteAsset) return undefined;
     const account = accounts?.find((a) => a.asset.id === quoteAsset.id);
@@ -105,11 +123,15 @@ export const SwapContainer = () => {
     }
     // Set marketId based on base and quote assets
     const market =
-      baseAsset && quoteAsset && chooseMarket(markets, baseAsset, quoteAsset);
+      baseAsset &&
+      quoteAsset &&
+      chooseMarket(spotMarkets, baseAsset, quoteAsset);
     if (market && isSpot(market.tradableInstrument.instrument.product)) {
       setMarketId(market.id);
+    } else {
+      setMarketId('');
     }
-  }, [accounts, baseAsset, markets, quoteAsset]);
+  }, [accounts, baseAsset, quoteAsset, spotMarkets]);
 
   const switchAssets = () => {
     const newBaseAsset = quoteAsset;
@@ -118,9 +140,10 @@ export const SwapContainer = () => {
     setQuoteAsset(newQuoteAsset);
     newBaseAsset &&
       newQuoteAsset &&
-      chooseMarket(markets, newBaseAsset, newQuoteAsset);
+      chooseMarket(spotMarkets, newBaseAsset, newQuoteAsset);
+  };
 
-    // switch amounts
+  const switchAmounts = () => {
     const newBaseAmount = quoteAmount;
     const newQuoteAmount = baseAmount;
     setValue('baseAmount', newBaseAmount);
@@ -131,14 +154,19 @@ export const SwapContainer = () => {
     <div className="max-w-md mx-auto p-5 rounded-lg shadow-lg">
       <div className="flex justify-between items-center mb-4">
         <h1>{t('Swap')}</h1>
-        <Link href={`/#/markets/${marketId}`} className="text-sm text-gray-500">
-          {marketId && <EmblemByMarket market={marketId} />}
-          {t('Go to market')} <VegaIcon name={VegaIconNames.ARROW_RIGHT} />
-        </Link>
+        {marketId && (
+          <Link
+            href={`/#/markets/${marketId}`}
+            className="text-sm text-gray-500"
+          >
+            {<EmblemByMarket market={marketId} />}
+            {t('Go to market')} <VegaIcon name={VegaIconNames.ARROW_RIGHT} />
+          </Link>
+        )}
       </div>
 
       <div className="flex flex-col w-full gap-2">
-        {/* Quote Asset dropdown */}
+        {/* You pay - in Quote asset */}
         <div className="dark:bg-vega-cdark-700 bg-vega-clight-700 p-4 rounded-lg border-gray-700 border flex flex-col gap-1">
           <span className="text-gray-500">{t('You pay')}</span>
           <div className="flex items-center justify-between">
@@ -153,7 +181,7 @@ export const SwapContainer = () => {
             <DropdownAsset
               assetId={quoteAsset?.id}
               onSelect={setQuoteAsset}
-              assets={assets}
+              assets={spotAssets}
             />
           </div>
           <div className="flex justify-between items-center text-gray-500 text-sm">
@@ -167,25 +195,30 @@ export const SwapContainer = () => {
             ) : (
               <span>
                 {quoteAssetBalance &&
+                  quoteAsset &&
                   t('Balance: {{balance}}', {
-                    balance: quoteAssetBalance,
+                    balance: addDecimalsFormatNumber(
+                      quoteAssetBalance,
+                      quoteAsset.decimals
+                    ),
                   })}
               </span>
             )}
           </div>
         </div>
 
-        {/* Swap icon */}
+        {/* Swap button */}
         <button
           className="flex justify-center p-2 w-fit rounded-full bg-vega-clight-700 dark:bg-black self-center -my-5 z-10 hover:bg-vega-clight-800 hover:dark:bg-vega-cdark-800 border-gray-400 border"
           onClick={() => {
             switchAssets();
+            switchAmounts();
           }}
         >
           <VegaIcon name={VegaIconNames.SWAP} size={18} />
         </button>
 
-        {/* Base Asset dropdown */}
+        {/* You receive - in Base asset */}
         <div className="dark:bg-vega-cdark-700 bg-vega-clight-700 p-4 rounded-lg border-gray-700 border flex flex-col gap-2">
           <span className="text-gray-500">{t('You receive')}</span>
           <div className="flex items-center justify-between">
@@ -200,15 +233,19 @@ export const SwapContainer = () => {
             <DropdownAsset
               assetId={baseAsset?.id}
               onSelect={setBaseAsset}
-              assets={assets}
+              assets={spotAssets}
             />
           </div>
           <div className="flex justify-between items-center text-gray-500 text-sm">
             <span className="text-left">{baseAmount && `$${baseAmount}`}</span>
             <span className="text-right">
               {baseAssetBalance &&
+                baseAsset &&
                 t('Balance: {{balance}}', {
-                  balance: baseAssetBalance,
+                  balance: addDecimalsFormatNumber(
+                    baseAssetBalance,
+                    baseAsset.decimals
+                  ),
                 })}
             </span>
           </div>
@@ -248,10 +285,14 @@ export const SwapContainer = () => {
       >
         {t('Swap now')}
       </button>
-
-      {/* TODO calculate notional and estimations */}
       <div className="mt-4 text-center text-gray-500">
-        1 ETH = 3,116.84 USDC ($3,100.48)
+        {quoteAsset &&
+          quoteAmount &&
+          baseAsset &&
+          baseAmount &&
+          `${formatNumber(quoteAmount)} ${quoteAsset?.symbol} = ${formatNumber(
+            baseAmount
+          )} ${baseAsset?.symbol}`}
       </div>
     </div>
   );
@@ -264,7 +305,7 @@ const DropdownAsset = ({
 }: {
   assetId?: string;
   onSelect: (asset: AssetFieldsFragment) => void;
-  assets: Record<string, AssetFieldsFragment> | null;
+  assets?: Record<string, AssetFieldsFragment>;
 }) => {
   const asset = assetId ? assets?.[assetId] : null;
   return (
