@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import {
   useAssetsMapProvider,
@@ -9,7 +9,6 @@ import {
   getQuoteAsset,
   isSpot,
   useMarketsMapProvider,
-  type MarketFieldsFragment,
 } from '@vegaprotocol/markets';
 import {
   DropdownMenu,
@@ -24,7 +23,14 @@ import { EmblemByAsset, EmblemByMarket } from '@vegaprotocol/emblem';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useAccounts, type Account } from '@vegaprotocol/accounts';
 import { useT } from '../../lib/use-t';
-import { addDecimalsFormatNumber, formatNumber } from '@vegaprotocol/utils';
+import {
+  addDecimalsFormatNumber,
+  formatNumber,
+  removeDecimal,
+} from '@vegaprotocol/utils';
+import { OrderTimeInForce, OrderType, Side } from '@vegaprotocol/types';
+import { useVegaTransactionStore } from '@vegaprotocol/web3';
+import noop from 'lodash/noop';
 
 const assetBalance = (
   asset?: AssetFieldsFragment,
@@ -38,26 +44,6 @@ const assetBalance = (
   return undefined;
 };
 
-const chooseMarket = (
-  markets: MarketFieldsFragment[] | undefined,
-  baseAsset: AssetFieldsFragment,
-  quoteAsset: AssetFieldsFragment
-) => {
-  if (!markets) return;
-  const market = markets.find((m) => {
-    if (!isSpot(m.tradableInstrument.instrument.product)) {
-      return false;
-    }
-    const mBaseAsset = getBaseAsset(m);
-    const mQuoteAsset = getQuoteAsset(m);
-    return (
-      (mBaseAsset.id === baseAsset.id && mQuoteAsset.id === quoteAsset.id) ||
-      (mBaseAsset.id === quoteAsset.id && mQuoteAsset.id === baseAsset.id)
-    );
-  });
-  return market;
-};
-
 export interface SwapFields {
   baseId: string;
   quoteId: string;
@@ -68,11 +54,11 @@ export interface SwapFields {
 
 export const SwapContainer = () => {
   const t = useT();
-  const { watch, setValue } = useForm<SwapFields>();
+  const { watch, setValue, handleSubmit } = useForm<SwapFields>();
 
   const { baseAmount, quoteAmount, priceImpactTolerance } = watch();
 
-  const { pubKey } = useVegaWallet();
+  const { pubKey, isReadOnly } = useVegaWallet();
   const { data: markets } = useMarketsMapProvider();
   const { data: assetsData } = useAssetsMapProvider();
   const { data: accounts } = useAccounts(pubKey);
@@ -82,6 +68,8 @@ export const SwapContainer = () => {
   const [priceImpactType, setPriceImpactType] = useState<'auto' | 'custom'>(
     'custom'
   );
+  const [side, setSide] = useState<Side>();
+  const create = useVegaTransactionStore((state) => state.create);
 
   const { spotMarkets, spotAssets } = useMemo(() => {
     const spotAssets: Record<string, AssetFieldsFragment> = {};
@@ -103,6 +91,31 @@ export const SwapContainer = () => {
     });
     return { spotMarkets, spotAssets };
   }, [assetsData, markets]);
+
+  const chooseMarket = useCallback(() => {
+    if (!spotMarkets || !baseAsset || !quoteAsset) return;
+    const market = spotMarkets.find((m) => {
+      if (!isSpot(m.tradableInstrument.instrument.product)) {
+        return false;
+      }
+      const mBaseAsset = getBaseAsset(m);
+      const mQuoteAsset = getQuoteAsset(m);
+      if (!mBaseAsset || !mQuoteAsset) {
+        return false;
+      }
+      if (mBaseAsset.id === baseAsset.id && mQuoteAsset.id === quoteAsset.id) {
+        setSide(Side.SIDE_BUY);
+        return true;
+      }
+      if (mBaseAsset.id === quoteAsset.id && mQuoteAsset.id === baseAsset.id) {
+        setSide(Side.SIDE_SELL);
+        return true;
+      }
+      return false;
+    });
+    return market;
+  }, [baseAsset, quoteAsset, spotMarkets]);
+
   const accountAssetIds = accounts?.map((a) => a.asset.id);
 
   const quoteAssetBalance = useMemo(() => {
@@ -114,25 +127,16 @@ export const SwapContainer = () => {
   }, [accounts, baseAsset]);
 
   useEffect(() => {
-    const market =
-      baseAsset &&
-      quoteAsset &&
-      chooseMarket(spotMarkets, baseAsset, quoteAsset);
-    if (market && isSpot(market.tradableInstrument.instrument.product)) {
-      setMarketId(market.id);
-    } else {
-      setMarketId('');
-    }
-  }, [accounts, baseAsset, quoteAsset, spotMarkets]);
+    const market = chooseMarket();
+    setMarketId(market?.id || '');
+  }, [baseAsset, quoteAsset, chooseMarket]);
 
   const switchAssets = () => {
     const newBaseAsset = quoteAsset;
     const newQuoteAsset = baseAsset;
     setBaseAsset(newBaseAsset);
     setQuoteAsset(newQuoteAsset);
-    newBaseAsset &&
-      newQuoteAsset &&
-      chooseMarket(spotMarkets, newBaseAsset, newQuoteAsset);
+    newBaseAsset && newQuoteAsset && chooseMarket();
   };
 
   const switchAmounts = () => {
@@ -142,151 +146,174 @@ export const SwapContainer = () => {
     setValue('quoteAmount', newQuoteAmount);
   };
 
-  return (
-    <div className="max-w-md mx-auto p-5 rounded-lg shadow-lg">
-      <div className="flex justify-between items-center mb-4">
-        <h1>{t('Swap')}</h1>
-        {marketId && (
-          <Link
-            href={`/#/markets/${marketId}`}
-            className="text-sm text-gray-500"
-          >
-            {<EmblemByMarket market={marketId} />}
-            {t('Go to market')} <VegaIcon name={VegaIconNames.ARROW_RIGHT} />
-          </Link>
-        )}
-      </div>
+  const onSubmit = useCallback(() => {
+    if (!marketId || !side) return;
+    const market = markets?.[marketId];
+    if (!market) return;
+    const orderSubmission = {
+      marketId: marketId,
+      type: OrderType.TYPE_MARKET,
+      side,
+      timeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK,
+      size: removeDecimal(quoteAmount, market.positionDecimalPlaces),
+      expiresAt: undefined,
+    };
+    create({ orderSubmission });
+  }, [marketId, markets, quoteAmount, side, create]);
 
-      <div className="flex flex-col w-full gap-2">
-        {/* You pay - in Quote asset */}
-        <div className="dark:bg-vega-cdark-700 bg-vega-clight-700 p-4 rounded-lg border-gray-700 border flex flex-col gap-1">
-          <span className="text-gray-500">{t('You pay')}</span>
-          <div className="flex items-center justify-between">
-            <input
-              type="number"
-              value={quoteAmount}
-              onChange={(e) => {
-                setValue('quoteAmount', e.target.value);
-              }}
-              className="w-24 dark:bg-vega-cdark-800 bg-vega-clight-800 p-2 rounded-lg mr-2 text-center "
-            />
-            <DropdownAsset
-              assetId={quoteAsset?.id}
-              onSelect={setQuoteAsset}
-              assets={spotAssets}
-            />
+  return (
+    <form
+      onSubmit={!isReadOnly && pubKey ? handleSubmit(onSubmit) : noop}
+      noValidate
+      data-testid="deal-ticket-form"
+    >
+      <div className="max-w-md mx-auto p-5 rounded-lg shadow-lg">
+        <div className="flex justify-between items-center mb-4">
+          <h1>{t('Swap')}</h1>
+          {marketId && (
+            <Link
+              href={`/#/markets/${marketId}`}
+              className="text-sm text-gray-500"
+            >
+              {<EmblemByMarket market={marketId} />}
+              {t('Go to market')} <VegaIcon name={VegaIconNames.ARROW_RIGHT} />
+            </Link>
+          )}
+        </div>
+
+        <div className="flex flex-col w-full gap-2">
+          {/* You pay - in Quote asset */}
+          <div className="dark:bg-vega-cdark-700 bg-vega-clight-700 p-4 rounded-lg border-gray-700 border flex flex-col gap-1">
+            <span className="text-gray-500">{t('You pay')}</span>
+            <div className="flex items-center justify-between">
+              <input
+                type="number"
+                value={quoteAmount}
+                onChange={(e) => {
+                  setValue('quoteAmount', e.target.value);
+                }}
+                className="w-24 dark:bg-vega-cdark-800 bg-vega-clight-800 p-2 rounded-lg mr-2 text-center "
+              />
+              <DropdownAsset
+                assetId={quoteAsset?.id}
+                onSelect={setQuoteAsset}
+                assets={spotAssets}
+              />
+            </div>
+            <div className="flex justify-between items-center text-gray-500 text-sm">
+              <span>{quoteAmount && `$${quoteAmount}`}</span>
+              {accountAssetIds &&
+              quoteAsset &&
+              !accountAssetIds.includes(quoteAsset.id) ? (
+                <span className="text-warning text-xs">
+                  {t(`You do not have this asset in your account`)}
+                </span>
+              ) : (
+                <span>
+                  {quoteAssetBalance !== undefined &&
+                    quoteAsset !== undefined &&
+                    t('Balance: {{balance}}', {
+                      balance: addDecimalsFormatNumber(
+                        quoteAssetBalance,
+                        quoteAsset.decimals
+                      ),
+                    })}
+                </span>
+              )}
+            </div>
           </div>
-          <div className="flex justify-between items-center text-gray-500 text-sm">
-            <span>{quoteAmount && `$${quoteAmount}`}</span>
-            {accountAssetIds &&
-            quoteAsset &&
-            !accountAssetIds.includes(quoteAsset.id) ? (
-              <span className="text-warning text-xs">
-                {t(`You do not have this asset in your account`)}
+
+          {/* Swap button */}
+          <button
+            className="flex justify-center p-2 w-fit rounded-full bg-vega-clight-700 dark:bg-black self-center -my-5 z-10 hover:bg-vega-clight-800 hover:dark:bg-vega-cdark-800 border-gray-400 border"
+            onClick={() => {
+              switchAssets();
+              switchAmounts();
+            }}
+          >
+            <VegaIcon name={VegaIconNames.SWAP} size={18} />
+          </button>
+
+          {/* You receive - in Base asset */}
+          <div className="dark:bg-vega-cdark-700 bg-vega-clight-700 p-4 rounded-lg border-gray-700 border flex flex-col gap-2">
+            <span className="text-gray-500">{t('You receive')}</span>
+            <div className="flex items-center justify-between">
+              <input
+                type="number"
+                onChange={(e) => {
+                  setValue('baseAmount', e.target.value);
+                }}
+                value={baseAmount}
+                className="w-24 dark:bg-vega-cdark-800 bg-vega-clight-800 p-2 rounded-lg mr-2 text-center text-xxl"
+              />
+              <DropdownAsset
+                assetId={baseAsset?.id}
+                onSelect={setBaseAsset}
+                assets={spotAssets}
+              />
+            </div>
+            <div className="flex justify-between items-center text-gray-500 text-sm">
+              <span className="text-left">
+                {baseAmount && `$${baseAmount}`}
               </span>
-            ) : (
-              <span>
-                {quoteAssetBalance !== undefined &&
-                  quoteAsset !== undefined &&
+              <span className="text-right">
+                {baseAssetBalance &&
+                  baseAsset &&
                   t('Balance: {{balance}}', {
                     balance: addDecimalsFormatNumber(
-                      quoteAssetBalance,
-                      quoteAsset.decimals
+                      baseAssetBalance,
+                      baseAsset.decimals
                     ),
                   })}
               </span>
-            )}
+            </div>
           </div>
         </div>
 
-        {/* Swap button */}
-        <button
-          className="flex justify-center p-2 w-fit rounded-full bg-vega-clight-700 dark:bg-black self-center -my-5 z-10 hover:bg-vega-clight-800 hover:dark:bg-vega-cdark-800 border-gray-400 border"
-          onClick={() => {
-            switchAssets();
-            switchAmounts();
-          }}
-        >
-          <VegaIcon name={VegaIconNames.SWAP} size={18} />
-        </button>
-
-        {/* You receive - in Base asset */}
-        <div className="dark:bg-vega-cdark-700 bg-vega-clight-700 p-4 rounded-lg border-gray-700 border flex flex-col gap-2">
-          <span className="text-gray-500">{t('You receive')}</span>
-          <div className="flex items-center justify-between">
+        <div className="mb-4">
+          <div className="flex justify-between items-center mb-2 mt-2 text-gray-500">
+            <span>{t('Price impact tolerance')}</span>
+          </div>
+          <div className="flex items-center">
             <input
               type="number"
+              value={priceImpactTolerance}
               onChange={(e) => {
-                setValue('baseAmount', e.target.value);
+                setValue('priceImpactTolerance', e.target.value);
               }}
-              value={baseAmount}
-              className="w-24 dark:bg-vega-cdark-800 bg-vega-clight-800 p-2 rounded-lg mr-2 text-center text-xxl"
+              className="w-16 dark:bg-vega-cdark-800 bg-vega-clight-800 p-2 rounded-lg mr-2 text-center"
             />
-            <DropdownAsset
-              assetId={baseAsset?.id}
-              onSelect={setBaseAsset}
-              assets={spotAssets}
-            />
-          </div>
-          <div className="flex justify-between items-center text-gray-500 text-sm">
-            <span className="text-left">{baseAmount && `$${baseAmount}`}</span>
-            <span className="text-right">
-              {baseAssetBalance &&
-                baseAsset &&
-                t('Balance: {{balance}}', {
-                  balance: addDecimalsFormatNumber(
-                    baseAssetBalance,
-                    baseAsset.decimals
-                  ),
-                })}
-            </span>
+            <span>%</span>
+            <button
+              className="ml-4 dark:bg-vega-cdark-700 bg-vega-clight-700 hover:bg-vega-clight-800 hover:dark:bg-vega-cdark-800 p-2 rounded-lg text-sm"
+              onClick={() =>
+                priceImpactType === 'auto'
+                  ? setPriceImpactType('custom')
+                  : setPriceImpactType('auto')
+              }
+            >
+              {t(priceImpactType === 'auto' ? 'AUTO' : 'CUSTOM')}
+            </button>
           </div>
         </div>
-      </div>
 
-      <div className="mb-4">
-        <div className="flex justify-between items-center mb-2 mt-2 text-gray-500">
-          <span>{t('Price impact tolerance')}</span>
-        </div>
-        <div className="flex items-center">
-          <input
-            type="number"
-            value={priceImpactTolerance}
-            onChange={(e) => {
-              setValue('priceImpactTolerance', e.target.value);
-            }}
-            className="w-16 dark:bg-vega-cdark-800 bg-vega-clight-800 p-2 rounded-lg mr-2 text-center"
-          />
-          <span>%</span>
-          <button
-            className="ml-4 dark:bg-vega-cdark-700 bg-vega-clight-700 hover:bg-vega-clight-800 hover:dark:bg-vega-cdark-800 p-2 rounded-lg text-sm"
-            onClick={() =>
-              priceImpactType === 'auto'
-                ? setPriceImpactType('custom')
-                : setPriceImpactType('auto')
-            }
-          >
-            {t(priceImpactType === 'auto' ? 'AUTO' : 'CUSTOM')}
-          </button>
+        <button
+          type="submit"
+          className="w-full dark:bg-vega-cdark-700 bg-vega-clight-700 hover:bg-vega-clight-800 hover:dark:bg-vega-cdark-800 p-4 rounded-lg "
+        >
+          {t('Swap now')}
+        </button>
+        <div className="mt-4 text-center text-gray-500">
+          {quoteAsset &&
+            quoteAmount &&
+            baseAsset &&
+            baseAmount &&
+            `${formatNumber(quoteAmount)} ${
+              quoteAsset?.symbol
+            } = ${formatNumber(baseAmount)} ${baseAsset?.symbol}`}
         </div>
       </div>
-
-      <button
-        type="submit"
-        className="w-full dark:bg-vega-cdark-700 bg-vega-clight-700 hover:bg-vega-clight-800 hover:dark:bg-vega-cdark-800 p-4 rounded-lg "
-      >
-        {t('Swap now')}
-      </button>
-      <div className="mt-4 text-center text-gray-500">
-        {quoteAsset &&
-          quoteAmount &&
-          baseAsset &&
-          baseAmount &&
-          `${formatNumber(quoteAmount)} ${quoteAsset?.symbol} = ${formatNumber(
-            baseAmount
-          )} ${baseAsset?.symbol}`}
-      </div>
-    </div>
+    </form>
   );
 };
 
