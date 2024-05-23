@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import * as DialogPrimitives from '@radix-ui/react-dialog';
 import classNames from 'classnames';
 
@@ -49,14 +48,6 @@ export function Dialog({
     }
   );
 
-  useEffect(() => {
-    if (open) {
-      document.body.classList.add('overflow-hidden');
-    } else {
-      document.body.classList.remove('overflow-hidden');
-    }
-  }, [open]);
-
   return (
     <DialogPrimitives.Root open={open} onOpenChange={(x) => onChange?.(x)}>
       <DialogPrimitives.Portal>
@@ -73,7 +64,7 @@ export function Dialog({
           <div
             className={classNames(
               // Positions the modal in the center of screen
-              'z-20 relative rounded top-[5vw] pb-[5vw] lg:top-[10vh] lg:pb-[10vh]'
+              'z-20 relative rounded top-[5vw] lg:top-[10vw] pb-3'
             )}
           >
             <div className={wrapperClasses}>
