@@ -146,7 +146,7 @@ export const SwapContainer = () => {
     setValue('quoteAmount', newQuoteAmount);
   };
 
-  const onSubmit = useCallback(() => {
+  const onSubmit = () => {
     if (!marketId || !side) return;
     const market = markets?.[marketId];
     if (!market) return;
@@ -159,13 +159,13 @@ export const SwapContainer = () => {
       expiresAt: undefined,
     };
     create({ orderSubmission });
-  }, [marketId, markets, quoteAmount, side, create]);
+  };
 
   return (
     <form
       onSubmit={!isReadOnly && pubKey ? handleSubmit(onSubmit) : noop}
       noValidate
-      data-testid="deal-ticket-form"
+      data-testid="swap-form"
     >
       <div className="max-w-md mx-auto p-5 rounded-lg shadow-lg">
         <div className="flex justify-between items-center mb-4">
