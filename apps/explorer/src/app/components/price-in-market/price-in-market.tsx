@@ -17,7 +17,7 @@ export type PriceInMarketProps = {
  * Given a market ID and a price it will fetch the market
  * and format the price in that market's decimal places.
  */
-const PriceInMarket = ({
+export const PriceInMarket = ({
   marketId,
   price,
   decimalSource = 'MARKET',

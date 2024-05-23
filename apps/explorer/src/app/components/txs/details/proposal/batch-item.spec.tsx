@@ -5,6 +5,8 @@ import { MockedProvider } from '@apollo/client/testing';
 import type { components } from '../../../../../types/explorer';
 type Item = components['schemas']['vegaBatchProposalTermsChange'];
 
+jest.mock('../../../links');
+
 describe('BatchItem', () => {
   it('Renders "Unknown proposal type" by default', () => {
     const item = {};

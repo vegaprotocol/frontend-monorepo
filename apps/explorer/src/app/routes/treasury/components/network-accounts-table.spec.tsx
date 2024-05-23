@@ -104,6 +104,9 @@ describe('parseResultsToAccounts', () => {
   });
 });
 
+jest.mock('../../../components/links');
+jest.mock('../../../components/asset-balance/asset-balance');
+
 describe('NetworkAccountsTable', () => {
   const mockData: ExplorerTreasuryQuery = {
     assetsConnection: {

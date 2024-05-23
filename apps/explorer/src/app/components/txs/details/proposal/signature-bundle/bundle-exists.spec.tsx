@@ -4,6 +4,9 @@ import { AssetStatus } from '@vegaprotocol/types';
 import { MemoryRouter } from 'react-router-dom';
 import { BundleExists } from './bundle-exists';
 
+jest.mock('../../../../links/proposal-link/proposal-link');
+jest.mock('./bundle-signers');
+
 describe('Bundle Exists', () => {
   const NON_ENABLED_STATUS: AssetStatus[] = [
     AssetStatus.STATUS_PENDING_LISTING,

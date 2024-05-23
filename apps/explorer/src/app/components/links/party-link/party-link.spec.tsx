@@ -44,7 +44,7 @@ const mocks = [
 describe('PartyLink', () => {
   it('renders Network for 000.000 party', () => {
     const screen = render(
-      <MockedProvider>
+      <MockedProvider mocks={mocks}>
         <PartyLink id={zeroes} />
       </MockedProvider>
     );
@@ -53,7 +53,7 @@ describe('PartyLink', () => {
 
   it('renders Network for network party', () => {
     const screen = render(
-      <MockedProvider>
+      <MockedProvider mocks={mocks}>
         <PartyLink id="network" />
       </MockedProvider>
     );
@@ -62,7 +62,7 @@ describe('PartyLink', () => {
 
   it('renders ID with no link for invalid party', () => {
     const screen = render(
-      <MockedProvider>
+      <MockedProvider mocks={mocks}>
         <PartyLink id="this-party-is-not-valid" />
       </MockedProvider>
     );
@@ -88,7 +88,7 @@ describe('PartyLink', () => {
       '13464e35bcb8e8a2900ca0f87acaf252d50cf2ab2fc73694845a16b7c8a0dc6e';
 
     const screen = render(
-      <MockedProvider>
+      <MockedProvider mocks={mocks}>
         <MemoryRouter>
           <PartyLink id={aValidParty} />
         </MemoryRouter>

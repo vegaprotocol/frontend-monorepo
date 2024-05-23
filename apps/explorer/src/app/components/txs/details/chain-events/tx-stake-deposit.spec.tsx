@@ -17,6 +17,8 @@ const fullMock: Deposit = {
     '0000000000000000000000000000000000000000000000000000000000000001',
 };
 
+jest.mock('../../../links/party-link/party-link');
+
 describe('Chain Event: Stake deposit', () => {
   it('Renders nothing if no good data is provided', () => {
     const mock = undefined as unknown as Deposit;
@@ -68,8 +70,8 @@ describe('Chain Event: Stake deposit', () => {
     if (!partyLink.parentElement) {
       throw new Error('Party link does not exist');
     }
-    expect(partyLink.parentElement.tagName).toEqual('A');
-    expect(partyLink.parentElement.getAttribute('href')).toEqual(
+    expect(partyLink.tagName).toEqual('A');
+    expect(partyLink.getAttribute('href')).toEqual(
       `/parties/${fullMock.vegaPublicKey}`
     );
 

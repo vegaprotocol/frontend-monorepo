@@ -13,7 +13,7 @@ export type SizeInMarketProps = {
  * Given a market ID and an order size it will fetch the market
  * order size, and format the size accordingly
  */
-const SizeInMarket = ({
+export const SizeInMarket = ({
   marketId,
   size,
   decimalSource = 'MARKET',

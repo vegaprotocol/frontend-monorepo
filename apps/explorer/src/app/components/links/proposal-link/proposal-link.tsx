@@ -15,7 +15,7 @@ export type ProposalLinkProps = {
  * Given a proposal ID, generates an external link over to
  * the Governance page for more information
  */
-const ProposalLink = ({ id, text }: ProposalLinkProps) => {
+export const ProposalLink = ({ id, text }: ProposalLinkProps) => {
   const { data } = useExplorerProposalQuery({
     variables: { id },
   });

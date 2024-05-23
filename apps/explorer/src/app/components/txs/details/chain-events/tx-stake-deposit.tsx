@@ -1,7 +1,7 @@
 import { t } from '@vegaprotocol/i18n';
 import { TableRow, TableCell } from '../../../table';
 import type { components } from '../../../../../types/explorer';
-import { PartyLink } from '../../../links';
+import { PartyLink } from '../../../links/party-link/party-link';
 import {
   ExternalExplorerLink,
   EthExplorerLinkTypes,

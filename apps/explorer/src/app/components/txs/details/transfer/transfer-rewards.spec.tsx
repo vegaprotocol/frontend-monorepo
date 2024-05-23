@@ -80,6 +80,8 @@ describe('getRewardTitle', () => {
   });
 });
 
+jest.mock('../../../links');
+
 describe('TransferRewards', () => {
   it('should render nothing if recurring dispatchStrategy is not provided', () => {
     const { container } = render(

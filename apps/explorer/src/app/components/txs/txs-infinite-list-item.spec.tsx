@@ -3,6 +3,8 @@ import { TxsInfiniteListItem } from './txs-infinite-list-item';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 
+jest.mock('../links');
+
 describe('Txs infinite list item', () => {
   it('should display "missing vital data" if "type" data missing', () => {
     render(

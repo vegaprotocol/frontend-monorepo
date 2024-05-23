@@ -20,9 +20,33 @@ function renderComponent(id: string, mocks: MockedResponse[]) {
   );
 }
 
+const successMock: MockedResponse<
+  ExplorerProposalQuery,
+  ExplorerProposalQueryVariables
+> = {
+  request: {
+    query: ExplorerProposalDocument,
+    variables: {
+      id: '123',
+    },
+  },
+  result: {
+    data: {
+      proposal: {
+        __typename: 'Proposal',
+        id: '123',
+        rationale: {
+          title: 'test-title',
+          description: 'test description',
+        },
+      },
+    },
+  },
+};
+
 describe('Proposal link component', () => {
   it('Renders the ID at first', () => {
-    const res = render(renderComponent('123', []));
+    const res = render(renderComponent('123', [successMock]));
     expect(res.getByText('123')).toBeInTheDocument();
   });
 
@@ -48,31 +72,8 @@ describe('Proposal link component', () => {
 
   it('Renders the proposal title when the query returns a result', async () => {
     const proposalId = '123';
-    const mock: MockedResponse<
-      ExplorerProposalQuery,
-      ExplorerProposalQueryVariables
-    > = {
-      request: {
-        query: ExplorerProposalDocument,
-        variables: {
-          id: proposalId,
-        },
-      },
-      result: {
-        data: {
-          proposal: {
-            __typename: 'Proposal',
-            id: proposalId,
-            rationale: {
-              title: 'test-title',
-              description: 'test description',
-            },
-          },
-        },
-      },
-    };
 
-    const res = render(renderComponent(proposalId, [mock]));
+    const res = render(renderComponent(proposalId, [successMock]));
     expect(res.getByText(proposalId)).toBeInTheDocument();
     expect(await res.findByText('test-title')).toBeInTheDocument();
   });

@@ -1,9 +1,9 @@
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider, type MockedResponse } from '@apollo/client/testing';
 import { render } from '@testing-library/react';
 import EpochMissingOverview, { calculateEpochData } from './epoch-missing';
 import { getSecondsFromInterval } from '@vegaprotocol/utils';
+import { ExplorerFutureEpochDocument } from './__generated__/Epoch';
 const START_DATE_PAST = 'Monday, 17 February 2022 11:44:09';
-
 describe('getSecondsFromInterval', () => {
   it('returns 0 for bad data', () => {
     expect(getSecondsFromInterval(null as unknown as string)).toEqual(0);
@@ -110,8 +110,27 @@ describe('calculateEpochData', () => {
 
 describe('EpochMissingOverview', () => {
   function renderComponent(missingEpochId: string) {
+    const mock: MockedResponse = {
+      request: {
+        query: ExplorerFutureEpochDocument,
+      },
+      result: {
+        data: {
+          epoch: {
+            id: '10',
+            timestamps: {
+              start: START_DATE_PAST,
+            },
+          },
+          networkParameter: {
+            value: '1s',
+          },
+        },
+      },
+    };
+
     return render(
-      <MockedProvider>
+      <MockedProvider mocks={[mock]}>
         <EpochMissingOverview missingEpochId={missingEpochId} />
       </MockedProvider>
     );
