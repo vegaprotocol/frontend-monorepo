@@ -80,7 +80,6 @@ def test_market_lifecycle(proposed_market, vega: VegaServiceNull, page: Page):
     next_epoch(vega=vega)
     next_epoch(vega=vega)
     # check that market is in pending state
-    page.pause()
     expect(trading_mode).to_have_text("Opening auction")
     expect(market_state).to_have_text("Pending")
 
