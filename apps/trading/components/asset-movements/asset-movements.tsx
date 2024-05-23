@@ -1,5 +1,5 @@
 import type { ColDef } from 'ag-grid-community';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import compact from 'lodash/compact';
 
 import { AgGrid, COL_DEFS } from '@vegaprotocol/datagrid';
@@ -13,10 +13,26 @@ import {
 } from '@vegaprotocol/withdraws';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import type { AssetFieldsFragment } from '@vegaprotocol/assets';
-import { useTransfers } from '@vegaprotocol/accounts';
-import { TransferFieldsFragment } from 'libs/accounts/src/lib/__generated__/Transfers';
+import {
+  type TransferFieldsFragment,
+  useTransfers,
+} from '@vegaprotocol/accounts';
 import { getDateTimeFormat } from '@vegaprotocol/utils';
-import { TransferStatusMapping } from '@vegaprotocol/types';
+import {
+  DepositStatus,
+  DepositStatusMapping,
+  TransferStatusMapping,
+  WithdrawalStatus,
+  WithdrawalStatusMapping,
+} from '@vegaprotocol/types';
+import {
+  useEthereumConfig,
+  useGetWithdrawDelay,
+  useGetWithdrawThreshold,
+  useTransactionReceipt,
+} from '@vegaprotocol/web3';
+import { useT } from '../../lib/use-t';
+import { Withdraw } from 'apps/trading/client-pages/withdraw';
 
 interface RowBase {
   asset: AssetFieldsFragment | undefined;
@@ -53,10 +69,6 @@ export const AssetMovements = () => {
     )
   );
 
-  console.log(deposits);
-  console.log(transfers);
-  console.log(rowData);
-
   return <AssetMovementsDatagrid partyId={pubKey} rowData={rowData} />;
 };
 
@@ -67,10 +79,11 @@ export const AssetMovementsDatagrid = ({
   partyId?: string;
   rowData: Row[];
 }) => {
+  const t = useT();
   const columnDefs = useMemo<ColDef[]>(
     () => [
       {
-        headerName: 'Type',
+        headerName: t('Type'),
         field: 'type',
         valueFormatter: ({ value, data }: { value: string; data: Row }) => {
           let postfix = '';
@@ -78,32 +91,32 @@ export const AssetMovementsDatagrid = ({
           // show direction of transfer
           if (data.type === 'Transfer') {
             if (data.detail.to === partyId) {
-              postfix = ' in';
+              postfix = ' from';
             } else if (data.detail.from === partyId) {
-              postfix = ' out';
+              postfix = ' to';
             }
           }
 
           return `${value}${postfix}`;
         },
       },
-      { headerName: 'Asset', field: 'asset.symbol' },
+      { headerName: t('Asset'), field: 'asset.symbol' },
 
       {
-        headerName: 'Created at',
+        headerName: t('Created at'),
         field: 'createdTimestamp',
         valueFormatter: ({ value }) => getDateTimeFormat().format(value),
         sort: 'desc',
       },
       {
-        headerName: 'Amount',
+        headerName: t('Amount'),
         field: 'amount',
       },
       {
-        headerName: 'To/From',
+        headerName: t('To/From'),
         field: 'type',
         valueFormatter: ({ data }: { data: Row }) => {
-          // TODO: provide link to Etherscan
+          // TODO: provide link to etherscan
           if (data.type === 'Deposit') {
             return `Tx: ${data.detail.txHash}`;
           }
@@ -114,9 +127,9 @@ export const AssetMovementsDatagrid = ({
 
           if (data.type === 'Transfer') {
             if (data.detail.to === partyId) {
-              return `Sender: ${data.detail.from}`;
+              return `From: ${data.detail.from}`;
             } else if (data.detail.from === partyId) {
-              return `Receiver ${data.detail.to}`;
+              return `To: ${data.detail.to}`;
             }
           }
 
@@ -126,15 +139,14 @@ export const AssetMovementsDatagrid = ({
       {
         headerName: 'Status',
         field: 'type',
-        valueFormatter: ({ data }: { data: Row }) => {
+        cellRenderer: ({ data }: { data: Row }) => {
           if (data.type === 'Deposit') {
-            // TODO: show confirmations/complete
-            return '-';
+            return <DepositStatusCell data={data} />;
           }
 
           if (data.type === 'Withdrawal') {
             // TODO: show pending approve/pending network/complete
-            return '-';
+            return <WithdrawalStatusCell data={data} />;
           }
 
           if (data.type === 'Transfer') {
@@ -145,7 +157,7 @@ export const AssetMovementsDatagrid = ({
         },
       },
     ],
-    []
+    [partyId, t]
   );
 
   return (
@@ -184,7 +196,6 @@ const normalizeItem = (
   }
 
   if (item.__typename === 'Transfer') {
-    console.log(item);
     return {
       // @ts-ignore TODO: fix me
       asset: item.asset,
@@ -196,4 +207,51 @@ const normalizeItem = (
   }
 
   return null;
+};
+
+const DepositStatusCell = ({ data }: { data: RowDeposit }) => {
+  const t = useT();
+  const { config } = useEthereumConfig();
+
+  const { receipt } = useTransactionReceipt({
+    txHash: data.detail.txHash,
+    enabled: data.detail.status === DepositStatus.STATUS_OPEN,
+    confirmations: config?.confirmations,
+  });
+
+  if (data.detail.status === DepositStatus.STATUS_OPEN) {
+    return (
+      <>
+        {DepositStatusMapping[data.detail.status]} ({receipt?.confirmations}{' '}
+        {t('Confirmations')})
+      </>
+    );
+  }
+
+  return <>{DepositStatusMapping[data.detail.status]}</>;
+};
+
+const WithdrawalStatusCell = ({ data }: { data: RowWithdrawal }) => {
+  if (!data.detail.txHash) {
+    // TODO: add click to complete
+    return <WithdrawalStatusOpen data={data} />;
+  }
+
+  return <>{WithdrawalStatus[data.detail.status]}</>;
+};
+
+const WithdrawalStatusOpen = ({ data }: { data: RowWithdrawal }) => {
+  const getThreshold = useGetWithdrawThreshold();
+  const getDelay = useGetWithdrawDelay();
+
+  useEffect(() => {
+    async () => {
+      console.log('get');
+      const threshold = await getThreshold(data.detail.asset);
+      const delay = await getDelay();
+      console.log(threshold, delay);
+    };
+  }, [getThreshold, getDelay]);
+
+  return <>hello</>;
 };

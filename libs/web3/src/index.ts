@@ -38,3 +38,4 @@ export * from './lib/web3-provider';
 export * from './lib/withdrawal-approval-dialog';
 export * from './lib/withdrawal-approval-status';
 export * from './lib/use-evm-bridge-configs';
+export { useTransactionReceipt } from './lib/use-transaction-receipt';
