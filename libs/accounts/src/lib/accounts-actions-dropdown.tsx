@@ -56,16 +56,17 @@ export const AccountsActionsDropdown = ({
             <VegaIcon name={VegaIconNames.TRANSFER} size={16} />
             {t('Transfer')}
           </TradingDropdownItem>
-          <TradingDropdownItem
-            onClick={(e) => {
-              openAssetDialog(assetId, e.target as HTMLElement);
-            }}
-          >
-            <VegaIcon name={VegaIconNames.INFO} size={16} />
-            {t('View asset details')}
-          </TradingDropdownItem>
         </>
       )}
+      <TradingDropdownItem
+        onClick={(e) => {
+          openAssetDialog(assetId, e.target as HTMLElement);
+        }}
+      >
+        <VegaIcon name={VegaIconNames.INFO} size={16} />
+        {t('View asset details')}
+      </TradingDropdownItem>
+
       <TradingDropdownCopyItem value={assetId} text={t('Copy asset ID')} />
       {assetContractAddress && (
         <TradingDropdownItem>

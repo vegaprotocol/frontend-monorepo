@@ -98,7 +98,7 @@ export const AccountCard = ({
           <span className="grow ml-2 text-lg">{asset.name}</span>
           <div className="z-10">
             <AccountsActionsDropdown
-              isReadOnly={isReadOnly}
+              isReadOnly={isReadOnly || !partyId}
               assetId={asset.id}
               assetContractAddress={
                 asset.source?.__typename === 'ERC20'
@@ -133,7 +133,7 @@ export const AccountCard = ({
         {expandable && (
           <button
             type="button"
-            className="absolute inset-0 before:hidden before:content-[''] hover:before:block focus:before:block before:absolute before:inset-0 before:bg-vega-clight-800 before:dark:bg-vega-cdark-800 before:-z-10"
+            className="absolute inset-0 before:hidden before:content-[''] hover:before:block before:absolute before:inset-0 before:bg-vega-clight-800 before:dark:bg-vega-cdark-800 before:-z-10"
             onClick={() => setExpanded((expanded) => !expanded)}
           >
             <span className="sr-only">{t('Show asset actions')}</span>
