@@ -113,14 +113,7 @@ export const SwapContainer = () => {
     return assetBalance(baseAsset, accounts);
   }, [accounts, baseAsset]);
 
-  // Set base and quote assets based on accounts
   useEffect(() => {
-    // Set base and quote assets based on accounts initially
-    if (!baseAsset && !quoteAsset && accounts && accounts.length > 0) {
-      setBaseAsset(accounts[0].asset);
-      setQuoteAsset(accounts[1].asset);
-    }
-    // Set marketId based on base and quote assets
     const market =
       baseAsset &&
       quoteAsset &&
