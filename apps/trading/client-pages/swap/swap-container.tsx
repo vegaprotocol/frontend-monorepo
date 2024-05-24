@@ -66,6 +66,7 @@ export const SwapContainer = () => {
   const { data: marketData, reload: reloadMarketData } = useDataProvider({
     dataProvider: marketDataProvider,
     variables: { marketId },
+    skip: !marketId,
   });
   const { data: accounts, reload: reloadAccounts } = useAccounts(pubKey);
 
