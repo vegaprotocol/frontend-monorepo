@@ -103,7 +103,11 @@ jobs:
           fi
 
           if [ "${{ matrix.app }}" = "trading" ]; then
-            $envCmd yarn nx export trading || (yarn install && $envCmd yarn nx export trading)
+            # expost implicitly runs build, but nx:cloud is incorrectly giving us a cached
+            # build when only a nested dependency is changed, so running build separately
+            # *may* help, or at least provide output that will help
+            $envCmd yarn nx build trading || (yarn install && $envCmd yarn nx build trading)
+            $envCmd yarn nx export trading
             DIST_LOCATION=dist/apps/trading/exported
           elif [ "${{ matrix.app }}" = "ui-toolkit" ]; then
             NODE_ENV=production yarn nx run ui-toolkit:build-storybook

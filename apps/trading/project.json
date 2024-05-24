@@ -5,7 +5,6 @@
   "projectType": "application",
   "targets": {
     "build": {
-      "inputs": ["default", { "runtime": "git rev-parse HEAD" }],
       "executor": "@nx/next:build",
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
