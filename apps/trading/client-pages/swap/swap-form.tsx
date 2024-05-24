@@ -22,6 +22,7 @@ export const AssetInput = ({
   assets,
   onAmountChange,
   onAssetChange,
+  accountWarning = true,
 }: {
   label: string;
   amount: string;
@@ -31,6 +32,7 @@ export const AssetInput = ({
   assets?: Record<string, AssetFieldsFragment>;
   onAmountChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onAssetChange: (asset: AssetFieldsFragment) => void;
+  accountWarning?: boolean;
 }) => {
   const t = useT();
   const [amount, setAmount] = useState(initialAmount);
@@ -59,7 +61,10 @@ export const AssetInput = ({
       </div>
       <div className="flex justify-between items-center text-gray-500 text-sm">
         <span>{/* {quoteAmount && `$${quoteAmount}`} */}</span>
-        {accountAssetIds && asset && !accountAssetIds.includes(asset.id) ? (
+        {accountWarning &&
+        accountAssetIds &&
+        asset &&
+        !accountAssetIds.includes(asset.id) ? (
           <span className="text-warning text-xs">
             {t(`You do not have this asset in your account`)}
           </span>

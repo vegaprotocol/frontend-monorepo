@@ -229,6 +229,7 @@ export const SwapContainer = () => {
             assets={spotAssets}
             onAssetChange={setBaseAsset}
             onAmountChange={(e) => setValue('baseAmount', e.target.value)}
+            accountWarning={false}
           />
         </div>
         <PriceImpactInput
