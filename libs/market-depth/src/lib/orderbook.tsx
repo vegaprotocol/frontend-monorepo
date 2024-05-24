@@ -5,7 +5,12 @@ import { usePrevious } from '@vegaprotocol/react-helpers';
 import { OrderbookRow } from './orderbook-row';
 import type { OrderbookRowData } from './orderbook-data';
 import { compactRows, VolumeType } from './orderbook-data';
-import { Splash, VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
+import {
+  Splash,
+  Tooltip,
+  VegaIcon,
+  VegaIconNames,
+} from '@vegaprotocol/ui-toolkit';
 import classNames from 'classnames';
 import type { PriceLevelFieldsFragment } from './__generated__/MarketDepth';
 import { OrderbookControls } from './orderbook-controls';
@@ -165,6 +170,20 @@ export const OrderbookMid = ({
           >
             ({addDecimalsFormatNumber(spread, decimalPlaces)})
           </span>
+        )}
+        {isMarketInAuction && (
+          <Tooltip
+            description={t(
+              'Market is in auction. Crossed orders are highlighted on the book, currently estimated to uncross at {{price}}',
+              {
+                price: addDecimalsFormatNumber(lastTradedPrice, decimalPlaces),
+              }
+            )}
+          >
+            <span>
+              <VegaIcon name={VegaIconNames.HAMMER} />
+            </span>
+          </Tooltip>
         )}
       </div>
     </div>
