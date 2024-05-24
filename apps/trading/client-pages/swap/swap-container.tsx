@@ -156,8 +156,7 @@ export const SwapContainer = () => {
   };
 
   const switchAmounts = () => {
-    const newQuoteAmount = baseAmount;
-    setValue('quoteAmount', newQuoteAmount);
+    setValue('quoteAmount', baseAmount);
   };
 
   const onSubmit = () => {
@@ -174,14 +173,13 @@ export const SwapContainer = () => {
         market.decimalPlaces,
         market.positionDecimalPlaces
       );
-      const baseAmount = notionalSize
-        ? addDecimal(notionalSize, market.decimalPlaces)
-        : '';
-      setValue('baseAmount', baseAmount);
+      const baseAmount =
+        notionalSize && addDecimal(notionalSize, market.decimalPlaces);
+      setValue('baseAmount', baseAmount || '');
     } else if (side === Side.SIDE_BUY) {
       const price =
         marketPrice && addDecimal(marketPrice, market.decimalPlaces);
-      const baseAmount = Number(quoteAmount) / (Number(price || 1) || 1);
+      const baseAmount = Number(quoteAmount) / (Number(price) || 1);
       setValue('baseAmount', baseAmount.toString());
     }
   }, [market, marketPrice, quoteAmount, side, setValue, orderSubmission]);
