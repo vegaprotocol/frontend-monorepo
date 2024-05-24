@@ -19,6 +19,7 @@ interface OrderbookRowProps {
   type: VolumeType;
   width: number;
   maxVol: number;
+  crossed?: boolean;
 }
 
 export const OrderbookRow = memo(
@@ -33,13 +34,18 @@ export const OrderbookRow = memo(
     type,
     width,
     maxVol,
+    crossed,
   }: OrderbookRowProps) => {
     const txtId = type === VolumeType.bid ? 'bid' : 'ask';
     const cols =
       width >= HIDE_CUMULATIVE_VOL_WIDTH ? 3 : width >= HIDE_VOL_WIDTH ? 2 : 1;
 
     return (
-      <div className="relative px-1">
+      <div
+        className={classNames('relative px-1', {
+          'bg-vega-clight-800 dark:bg-vega-cdark-800': crossed,
+        })}
+      >
         <CumulationBar
           cumulativeVolume={cumulativeVolume}
           type={type}

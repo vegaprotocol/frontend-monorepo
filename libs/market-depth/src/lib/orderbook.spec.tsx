@@ -38,12 +38,8 @@ describe('Orderbook', () => {
         onClick={jest.fn()}
       />
     );
-    await waitFor(() =>
-      screen.getByTestId(`last-traded-${params.lastTradedPrice}`)
-    );
-    expect(
-      screen.getByTestId(`last-traded-${params.lastTradedPrice}`)
-    ).toHaveTextContent('122.90');
+    await waitFor(() => screen.getByTestId('current-price'));
+    expect(screen.getByTestId('current-price')).toHaveTextContent('122.90');
   });
 
   it('should format correctly the numbers on resolution change', async () => {
@@ -59,9 +55,7 @@ describe('Orderbook', () => {
         assetSymbol="USD"
       />
     );
-    expect(
-      await screen.findByTestId(`last-traded-${params.lastTradedPrice}`)
-    ).toBeInTheDocument();
+    expect(await screen.findByTestId('current-price')).toBeInTheDocument();
 
     // Before resolution change the price is 122.934
     await userEvent.click(screen.getByTestId('price-122901'));
@@ -189,11 +183,13 @@ describe('OrderbookMid', () => {
     assetSymbol: 'BTC',
     bestAskPrice: '101',
     bestBidPrice: '99',
+    indicativePrice: '0',
+    isMarketInAuction: false,
   };
 
   it('renders no change until lastTradedPrice changes', () => {
     const { rerender } = render(<OrderbookMid {...props} />);
-    expect(screen.getByTestId(/last-traded/)).toHaveTextContent(
+    expect(screen.getByTestId('current-price')).toHaveTextContent(
       props.lastTradedPrice
     );
     expect(screen.getByText(props.assetSymbol)).toBeInTheDocument();

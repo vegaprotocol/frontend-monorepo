@@ -138,11 +138,13 @@ export const generateMockData = ({
   let matrix = new Array(numberOfSellRows).fill(undefined);
   let price =
     Number(lastTradedPrice) + (numberOfSellRows - Math.ceil(overlap / 2) + 1);
-  const sell: PriceLevelFieldsFragment[] = matrix.map((row, i) => ({
-    price: (price -= 1).toString(),
-    volume: (numberOfSellRows - i + 1).toString(),
-    numberOfOrders: '',
-  }));
+  const sell: PriceLevelFieldsFragment[] = matrix
+    .map((row, i) => ({
+      price: (price -= 1).toString(),
+      volume: (numberOfSellRows - i + 1).toString(),
+      numberOfOrders: '',
+    }))
+    .reverse();
   price += overlap;
   matrix = new Array(numberOfBuyRows).fill(undefined);
   const buy: PriceLevelFieldsFragment[] = matrix.map((row, i) => ({
@@ -156,5 +158,7 @@ export const generateMockData = ({
     lastTradedPrice,
     bestStaticBidPrice: bestStaticBidPrice.toString(),
     bestStaticOfferPrice: bestStaticOfferPrice.toString(),
+    indicativePrice: lastTradedPrice,
+    isMarketInAuction: !!overlap,
   };
 };
