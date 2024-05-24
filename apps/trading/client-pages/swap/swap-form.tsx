@@ -51,7 +51,7 @@ export const AssetInput = ({
             setAmount(e.target.value);
             onAmountChange(e);
           }}
-          className="w-24 dark:bg-vega-cdark-800 bg-vega-clight-800 p-2 rounded-lg mr-2 text-center"
+          className="w-[120px] dark:bg-vega-cdark-800 bg-vega-clight-500 p-2 rounded-lg mr-2 text-center"
         />
         <DropdownAsset
           assetId={asset?.id}
@@ -114,12 +114,12 @@ export const PriceImpactInput = ({
           type="number"
           value={value}
           onChange={onValueChange}
-          className="w-16 dark:bg-vega-cdark-800 bg-vega-clight-800 p-2 rounded-lg mr-2 text-center"
+          className="w-16 dark:bg-vega-cdark-800 bg-vega-clight-500 p-2 rounded-lg mr-2 text-center"
         />
         <span>%</span>
         <button
           type="button"
-          className="ml-4 dark:bg-vega-cdark-700 bg-vega-clight-700 hover:bg-vega-clight-800 hover:dark:bg-vega-cdark-800 p-2 rounded-lg text-sm"
+          className="ml-4 dark:bg-vega-cdark-700 bg-vega-clight-600 hover:bg-vega-clight-800 hover:dark:bg-vega-cdark-800 p-2 rounded-lg text-sm"
           onClick={onTypeToggle}
         >
           {t(priceImpactType === 'auto' ? 'AUTO' : 'CUSTOM')}
@@ -145,7 +145,7 @@ export const DropdownAsset = ({
       trigger={
         <DropdownMenuTrigger
           asChild
-          className="flex items-center px-2 py-2 border-gray-400 border rounded-full"
+          className="flex items-center px-2 py-2 border-gray-400 border rounded-full h-12"
         >
           {asset && <EmblemByAsset asset={asset.id} vegaChain={chainId} />}
           <span className="pl-2">{asset ? asset.symbol : 'Select coin'}</span>

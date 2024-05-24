@@ -244,7 +244,7 @@ export const SwapContainer = () => {
         />
         <button
           type="submit"
-          className="w-full dark:bg-vega-cdark-700 bg-vega-clight-700 hover:bg-vega-clight-800 hover:dark:bg-vega-cdark-800 p-4 rounded-lg"
+          className="w-full dark:bg-vega-cdark-700 bg-vega-clight-500 hover:bg-vega-clight-800 hover:dark:bg-vega-cdark-800 p-4 rounded-lg"
         >
           {t('Swap now')}
         </button>
