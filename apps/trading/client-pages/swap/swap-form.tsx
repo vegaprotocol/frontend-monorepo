@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import type { AssetFieldsFragment } from '@vegaprotocol/assets';
 import { EmblemByAsset } from '@vegaprotocol/emblem';
 import {
@@ -14,7 +15,7 @@ import { useT } from '../../lib/use-t';
 
 export const AssetInput = ({
   label,
-  amount,
+  amount: initialAmount,
   asset,
   balance,
   accountAssetIds,
@@ -32,14 +33,22 @@ export const AssetInput = ({
   onAssetChange: (asset: AssetFieldsFragment) => void;
 }) => {
   const t = useT();
+  const [amount, setAmount] = useState(initialAmount);
+
+  useEffect(() => {
+    setAmount(initialAmount);
+  }, [initialAmount]);
+
   return (
     <div className="dark:bg-vega-cdark-700 bg-vega-clight-700 p-4 rounded-lg border-gray-700 border flex flex-col gap-1">
       <span className="text-gray-500">{label}</span>
       <div className="flex items-center justify-between">
         <input
-          type="number"
           value={amount}
-          onChange={onAmountChange}
+          onChange={(e) => {
+            setAmount(e.target.value);
+            onAmountChange(e);
+          }}
           className="w-24 dark:bg-vega-cdark-800 bg-vega-clight-800 p-2 rounded-lg mr-2 text-center"
         />
         <DropdownAsset
