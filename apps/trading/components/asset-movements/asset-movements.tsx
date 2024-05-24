@@ -33,6 +33,14 @@ import {
   useTransactionReceipt,
 } from '@vegaprotocol/web3';
 import { useT } from '../../lib/use-t';
+import { Link } from 'react-router-dom';
+import {
+  DApp,
+  ETHERSCAN_ADDRESS,
+  EXPLORER_PARTIES,
+  useEtherscanLink,
+  useLinks,
+} from '@vegaprotocol/environment';
 
 interface RowBase {
   asset: AssetFieldsFragment | undefined;
@@ -115,22 +123,17 @@ export const AssetMovementsDatagrid = ({
       {
         headerName: t('To/From'),
         field: 'type',
-        valueFormatter: ({ data }: { data: Row }) => {
-          // TODO: provide link to etherscan
+        cellRenderer: ({ data }: { data: Row }) => {
           if (data.type === 'Deposit') {
-            return `Tx: ${data.detail.txHash}`;
+            return <DepositToFromCell data={data} />;
           }
 
           if (data.type === 'Withdrawal') {
-            return `To: ${data.detail.details?.receiverAddress}`;
+            return <WithdrawalToFromCell data={data} />;
           }
 
           if (data.type === 'Transfer') {
-            if (data.detail.to === partyId) {
-              return `From: ${data.detail.from}`;
-            } else if (data.detail.from === partyId) {
-              return `To: ${data.detail.to}`;
-            }
+            return <TransferToFromCell data={data} partyId={partyId} />;
           }
 
           return '-';
@@ -209,6 +212,96 @@ const normalizeItem = (
   return null;
 };
 
+const TransferToFromCell = ({
+  data,
+  partyId,
+}: {
+  data: RowTransfer;
+  partyId?: string;
+}) => {
+  const t = useT();
+  const linkCreator = useLinks(DApp.Explorer);
+
+  if (data.detail.to === partyId) {
+    return (
+      <>
+        {t('From')}:{' '}
+        <Link
+          to={linkCreator(EXPLORER_PARTIES.replace(':id', data.detail.from))}
+          target="_blank"
+          className="underline underline-offset-4"
+        >
+          {data.detail.from}
+        </Link>
+      </>
+    );
+  } else if (data.detail.from === partyId) {
+    return (
+      <>
+        {t('To')}:{' '}
+        <Link
+          to={linkCreator(EXPLORER_PARTIES.replace(':id', data.detail.to))}
+          target="_blank"
+          className="underline underline-offset-4"
+        >
+          {data.detail.from}
+        </Link>
+      </>
+    );
+  }
+
+  return <>-</>;
+};
+
+const WithdrawalToFromCell = ({ data }: { data: RowWithdrawal }) => {
+  const t = useT();
+  const { config } = useEthereumConfig();
+  const etherscanLink = useEtherscanLink(Number(config?.chain_id || 1));
+  const receiverAddress = data.detail.details?.receiverAddress;
+
+  if (!receiverAddress) return <>-</>;
+
+  return (
+    <>
+      {t('To')}:{' '}
+      <Link
+        to={etherscanLink(ETHERSCAN_ADDRESS.replace(':hash', receiverAddress))}
+        className="underline underline-offset-4"
+        target="_blank"
+      >
+        {receiverAddress}
+      </Link>
+    </>
+  );
+};
+
+const DepositToFromCell = ({ data }: { data: RowDeposit }) => {
+  const t = useT();
+  const { config } = useEthereumConfig();
+  const etherscanLink = useEtherscanLink(Number(config?.chain_id || 1));
+
+  const { receipt } = useTransactionReceipt({
+    txHash: data.detail.txHash,
+    enabled: true,
+    confirmations: 1, // dont refetch this one, we only need receipt.from
+  });
+
+  if (!receipt) return null;
+
+  return (
+    <>
+      {t('From')}:{' '}
+      <Link
+        to={etherscanLink(ETHERSCAN_ADDRESS.replace(':hash', receipt.from))}
+        className="underline underline-offset-4"
+        target="_blank"
+      >
+        {receipt.from}
+      </Link>
+    </>
+  );
+};
+
 const DepositStatusCell = ({ data }: { data: RowDeposit }) => {
   const t = useT();
   const { config } = useEthereumConfig();
@@ -222,8 +315,9 @@ const DepositStatusCell = ({ data }: { data: RowDeposit }) => {
   if (data.detail.status === DepositStatus.STATUS_OPEN) {
     return (
       <>
-        {DepositStatusMapping[data.detail.status]} ({receipt?.confirmations}{' '}
-        {t('Confirmations')})
+        {DepositStatusMapping[data.detail.status]} ({receipt?.confirmations}
+        {'/'}
+        {config?.confirmations} {t('Confirmations')})
       </>
     );
   }
