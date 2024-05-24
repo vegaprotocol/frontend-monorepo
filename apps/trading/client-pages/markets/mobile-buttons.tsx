@@ -112,7 +112,7 @@ export const MarketActionDrawer = () => {
               </TradingDropdownItem>
               <TradingDropdownItem onClick={() => setDrawer(DrawerView.Info)}>
                 <VegaIcon name={VegaIconNames.BREAKDOWN} />{' '}
-                {t('Market speicification')}
+                {t('Market specification')}
               </TradingDropdownItem>
             </TradingDropdownContent>
           </TradingDropdown>
