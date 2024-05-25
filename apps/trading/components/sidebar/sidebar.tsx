@@ -53,7 +53,9 @@ export const Sidebar = ({ pinnedAssets }: { pinnedAssets?: PinnedAsset[] }) => {
           </SidebarAccordionContent>
         </SidebarAccordionItem>
         <SidebarAccordionItem value={ViewType.Info}>
-          <SidebarAccordionTrigger>{t('Market info')}</SidebarAccordionTrigger>
+          <SidebarAccordionTrigger data-testid="Info">
+            {t('Market info')}
+          </SidebarAccordionTrigger>
           <SidebarAccordionContent>
             <div className="p-2">
               <ErrorBoundary feature="market-info">
