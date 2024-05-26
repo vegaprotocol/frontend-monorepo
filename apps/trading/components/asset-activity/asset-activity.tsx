@@ -1,17 +1,9 @@
 import type { ColDef } from 'ag-grid-community';
 import type BigNumber from 'bignumber.js';
 import { useMemo } from 'react';
-import { Link } from 'react-router-dom';
 import compact from 'lodash/compact';
 
 import { AgGrid, COL_DEFS } from '@vegaprotocol/datagrid';
-import {
-  DApp,
-  ETHERSCAN_ADDRESS,
-  EXPLORER_PARTIES,
-  useEtherscanLink,
-  useLinks,
-} from '@vegaprotocol/environment';
 import {
   type DepositFieldsFragment,
   useDeposits,
@@ -35,11 +27,13 @@ import {
   toBigNum,
 } from '@vegaprotocol/utils';
 import { TransferStatusMapping } from '@vegaprotocol/types';
-import { useEthereumConfig, useTransactionReceipt } from '@vegaprotocol/web3';
 
 import { useT } from '../../lib/use-t';
 import { DepositStatusCell } from './deposit-status-cell';
 import { WithdrawalStatusCell } from './withdrawal-status-cell';
+import { DepositToFromCell } from './deposit-to-from-cell';
+import { WithdrawalToFromCell } from './withdrawal-to-form-cell';
+import { TransferToFromCell } from './transfer-to-from-cell';
 
 export interface RowBase {
   asset: AssetFieldsFragment | undefined;
@@ -236,93 +230,4 @@ const normalizeItem = (
   }
 
   return null;
-};
-
-const TransferToFromCell = ({
-  data,
-  partyId,
-}: {
-  data: RowTransfer;
-  partyId?: string;
-}) => {
-  const t = useT();
-  const linkCreator = useLinks(DApp.Explorer);
-
-  if (data.detail.to === partyId) {
-    return (
-      <>
-        {t('From')}:{' '}
-        <Link
-          to={linkCreator(EXPLORER_PARTIES.replace(':id', data.detail.from))}
-          target="_blank"
-          className="underline underline-offset-4"
-        >
-          {data.detail.from}
-        </Link>
-      </>
-    );
-  } else if (data.detail.from === partyId) {
-    return (
-      <>
-        {t('To')}:{' '}
-        <Link
-          to={linkCreator(EXPLORER_PARTIES.replace(':id', data.detail.to))}
-          target="_blank"
-          className="underline underline-offset-4"
-        >
-          {data.detail.from}
-        </Link>
-      </>
-    );
-  }
-
-  return <>-</>;
-};
-
-const WithdrawalToFromCell = ({ data }: { data: RowWithdrawal }) => {
-  const t = useT();
-  const { config } = useEthereumConfig();
-  const etherscanLink = useEtherscanLink(Number(config?.chain_id || 1));
-  const receiverAddress = data.detail.details?.receiverAddress;
-
-  if (!receiverAddress) return <>-</>;
-
-  return (
-    <>
-      {t('To')}:{' '}
-      <Link
-        to={etherscanLink(ETHERSCAN_ADDRESS.replace(':hash', receiverAddress))}
-        className="underline underline-offset-4"
-        target="_blank"
-      >
-        {receiverAddress}
-      </Link>
-    </>
-  );
-};
-
-const DepositToFromCell = ({ data }: { data: RowDeposit }) => {
-  const t = useT();
-  const { config } = useEthereumConfig();
-  const etherscanLink = useEtherscanLink(Number(config?.chain_id || 1));
-
-  const { receipt } = useTransactionReceipt({
-    txHash: data.detail.txHash,
-    enabled: true,
-  });
-
-  if (!receipt) return null;
-
-  return (
-    <>
-      {t('From')}:{' '}
-      <Link
-        to={etherscanLink(ETHERSCAN_ADDRESS.replace(':hash', receipt.from))}
-        className="underline underline-offset-4"
-        target="_blank"
-      >
-        {receipt.from}
-      </Link>
-    </>
-  );
 };
