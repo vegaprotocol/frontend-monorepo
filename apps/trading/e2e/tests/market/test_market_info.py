@@ -30,8 +30,8 @@ def page(vega, browser, request):
 def after_each(page: Page):
     yield
     opened_element = page.locator('h3[data-state="open"]')
-    if opened_element.all() and opened_element.get_by_role("button").is_visible():
-        opened_element.get_by_role("button").click()
+    if opened_element.all() and opened_element.get_by_role("button").nth(1).is_visible():
+        opened_element.get_by_role("button").nth(1).click()
 
 
 def validate_info_section(page: Page, fields: [[str, str]]):
@@ -75,7 +75,9 @@ def test_market_info_market_price(page: Page):
 
 def test_market_info_market_volume(page: Page):
     # 6002-MDET-103
-    page.get_by_test_id(market_title_test_id).get_by_text("Market volume").click()
+    page.get_by_test_id(market_title_test_id).get_by_text(
+        "Market volume").click()
+    page.pause()
     fields = [
         ["24 Hour Volume", "1(108 BTC)"],
         ["Open Interest", "1"],
@@ -84,7 +86,7 @@ def test_market_info_market_volume(page: Page):
         ["Best Static Bid Volume", "1"],
         ["Best Static Offer Volume", "1"],
     ]
-    validate_info_section(page, fields) 
+    validate_info_section(page, fields)
 
 
 def test_market_info_liquidation_strategy(page: Page):
