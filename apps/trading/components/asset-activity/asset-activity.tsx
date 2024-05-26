@@ -1,5 +1,6 @@
 import type { ColDef } from 'ag-grid-community';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 import compact from 'lodash/compact';
 
 import { AgGrid, COL_DEFS } from '@vegaprotocol/datagrid';
@@ -21,6 +22,13 @@ import {
   useTransfers,
 } from '@vegaprotocol/accounts';
 import {
+  DApp,
+  ETHERSCAN_ADDRESS,
+  EXPLORER_PARTIES,
+  useEtherscanLink,
+  useLinks,
+} from '@vegaprotocol/environment';
+import {
   DAY,
   addDecimalsFormatNumber,
   getDateTimeFormat,
@@ -40,15 +48,8 @@ import {
   useGetWithdrawThreshold,
   useTransactionReceipt,
 } from '@vegaprotocol/web3';
+
 import { useT } from '../../lib/use-t';
-import { Link } from 'react-router-dom';
-import {
-  DApp,
-  ETHERSCAN_ADDRESS,
-  EXPLORER_PARTIES,
-  useEtherscanLink,
-  useLinks,
-} from '@vegaprotocol/environment';
 
 interface RowBase {
   asset: AssetFieldsFragment | undefined;
