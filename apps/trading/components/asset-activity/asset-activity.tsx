@@ -17,7 +17,12 @@ import {
   type TransferFieldsFragment,
   useTransfers,
 } from '@vegaprotocol/accounts';
-import { DAY, getDateTimeFormat, getTimeFormat } from '@vegaprotocol/utils';
+import {
+  DAY,
+  addDecimalsFormatNumber,
+  getDateTimeFormat,
+  getTimeFormat,
+} from '@vegaprotocol/utils';
 import {
   DepositStatus,
   DepositStatusMapping,
@@ -119,6 +124,10 @@ export const AssetActivityDatagrid = ({
       {
         headerName: t('Amount'),
         field: 'amount',
+        valueFormatter: ({ value, data }: { value: string; data: Row }) => {
+          if (!value || !data.asset) return '-';
+          return addDecimalsFormatNumber(value, data.asset.decimals);
+        },
       },
       {
         headerName: t('To/From'),
