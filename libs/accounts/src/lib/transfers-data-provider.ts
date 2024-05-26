@@ -6,6 +6,7 @@ import {
   type TransfersQueryVariables,
 } from './__generated__/Transfers';
 import { removePaginationWrapper } from '@vegaprotocol/utils';
+import { useEffect } from 'react';
 
 export const transfersProvider = makeDataProvider<
   TransfersQuery,
@@ -23,9 +24,17 @@ export const transfersProvider = makeDataProvider<
 });
 
 export const useTransfers = ({ pubKey }: { pubKey?: string }) => {
-  return useDataProvider({
+  const queryResult = useDataProvider({
     dataProvider: transfersProvider,
     variables: { partyId: pubKey || '', pagination: { first: 10 } },
     skip: !pubKey,
   });
+
+  // No subscription exists for updating transfers
+  useEffect(() => {
+    const interval = setInterval(queryResult.reload, 5000);
+    return () => clearInterval(interval);
+  }, [queryResult.reload]);
+
+  return queryResult;
 };
