@@ -47,7 +47,7 @@ import { TransferContainer } from '@vegaprotocol/accounts';
 import { WithdrawContainer } from '../../components/withdraw-container';
 import { SquidContainer } from '../../components/squid-container';
 import { useFeatureFlags } from '@vegaprotocol/environment';
-import { AssetMovements } from '../../components/asset-movements';
+import { AssetActivity } from '../../components/asset-activity';
 
 const WithdrawalsIndicator = () => {
   const { ready } = useIncompleteWithdrawals();
@@ -243,7 +243,7 @@ const PortfolioBottomTabs = () => {
     <Tabs storageKey="console-portfolio-bottom">
       <Tab id="asset-movements" name={t('Asset movements')}>
         <ErrorBoundary feature="portfolio-asset-movements">
-          <AssetMovements />
+          <AssetActivity />
         </ErrorBoundary>
       </Tab>
       <Tab
