@@ -12,7 +12,10 @@ import {
   useWithdrawals,
 } from '@vegaprotocol/withdraws';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
-import type { AssetFieldsFragment } from '@vegaprotocol/assets';
+import {
+  useAssetDetailsDialogStore,
+  type AssetFieldsFragment,
+} from '@vegaprotocol/assets';
 import {
   type TransferFieldsFragment,
   useTransfers,
@@ -93,6 +96,7 @@ export const AssetActivityDatagrid = ({
   rowData: Row[];
 }) => {
   const t = useT();
+  const open = useAssetDetailsDialogStore((store) => store.open);
   const columnDefs = useMemo<ColDef[]>(
     () => [
       {
@@ -113,7 +117,15 @@ export const AssetActivityDatagrid = ({
           return `${value}${postfix}`;
         },
       },
-      { headerName: t('Asset'), field: 'asset.symbol' },
+      {
+        headerName: t('Asset'),
+        field: 'asset.symbol',
+        cellClass: 'underline',
+        onCellClicked: ({ data }: { data: Row }) => {
+          if (!data.asset) return;
+          open(data.asset.id);
+        },
+      },
 
       {
         headerName: t('Created at'),
@@ -169,7 +181,7 @@ export const AssetActivityDatagrid = ({
         },
       },
     ],
-    [partyId, t]
+    [partyId, t, open]
   );
 
   return (
