@@ -110,7 +110,7 @@ export const DepositStatusMapping: {
   [T in DepositStatus]: string;
 } = {
   STATUS_CANCELLED: 'Cancelled',
-  STATUS_FINALIZED: 'Finalized',
+  STATUS_FINALIZED: 'Complete',
   STATUS_DUPLICATE_REJECTED: 'Duplicate rejected',
   STATUS_OPEN: 'Open',
 };
@@ -524,7 +524,7 @@ export const VoteValueMapping: {
 export const WithdrawalStatusMapping: {
   [T in WithdrawalStatus]: string;
 } = {
-  STATUS_FINALIZED: 'Finalized',
+  STATUS_FINALIZED: 'Complete',
   STATUS_OPEN: 'Open',
   STATUS_REJECTED: 'Rejected',
 };
@@ -721,7 +721,7 @@ export const PositionStatusMapping: {
 export const TransferStatusMapping: {
   [T in TransferStatus]: string;
 } = {
-  STATUS_DONE: 'Done',
+  STATUS_DONE: 'Complete',
   STATUS_PENDING: 'Pending',
   STATUS_REJECTED: 'Rejected',
   STATUS_CANCELLED: 'Cancelled',
