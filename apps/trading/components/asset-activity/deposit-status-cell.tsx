@@ -2,7 +2,7 @@ import { DepositStatus, DepositStatusMapping } from '@vegaprotocol/types';
 import { useEthereumConfig, useTransactionReceipt } from '@vegaprotocol/web3';
 
 import { useT } from '../../lib/use-t';
-import { RowDeposit } from './asset-activity';
+import { type RowDeposit } from './asset-activity';
 
 export const DepositStatusCell = ({ data }: { data: RowDeposit }) => {
   const t = useT();
