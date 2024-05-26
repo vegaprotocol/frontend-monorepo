@@ -65,7 +65,7 @@ interface RowTransfer extends RowBase {
 
 type Row = RowDeposit | RowWithdrawal | RowTransfer;
 
-export const AssetMovements = () => {
+export const AssetActivity = () => {
   const { pubKey } = useVegaWallet();
   const { data: deposits } = useDeposits({ pubKey });
   const { data: withdrawals } = useWithdrawals({ pubKey });
@@ -77,10 +77,10 @@ export const AssetMovements = () => {
     )
   );
 
-  return <AssetMovementsDatagrid partyId={pubKey} rowData={rowData} />;
+  return <AssetActivityDatagrid partyId={pubKey} rowData={rowData} />;
 };
 
-export const AssetMovementsDatagrid = ({
+export const AssetActivityDatagrid = ({
   partyId,
   rowData,
 }: {
