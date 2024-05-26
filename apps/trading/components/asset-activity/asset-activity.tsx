@@ -1,9 +1,17 @@
 import type { ColDef } from 'ag-grid-community';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import type BigNumber from 'bignumber.js';
+import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import compact from 'lodash/compact';
 
 import { AgGrid, COL_DEFS } from '@vegaprotocol/datagrid';
+import {
+  DApp,
+  ETHERSCAN_ADDRESS,
+  EXPLORER_PARTIES,
+  useEtherscanLink,
+  useLinks,
+} from '@vegaprotocol/environment';
 import {
   type DepositFieldsFragment,
   useDeposits,
@@ -22,57 +30,40 @@ import {
   useTransfers,
 } from '@vegaprotocol/accounts';
 import {
-  DApp,
-  ETHERSCAN_ADDRESS,
-  EXPLORER_PARTIES,
-  useEtherscanLink,
-  useLinks,
-} from '@vegaprotocol/environment';
-import {
-  DAY,
   addDecimalsFormatNumber,
   getDateTimeFormat,
-  getTimeFormat,
+  toBigNum,
 } from '@vegaprotocol/utils';
-import {
-  DepositStatus,
-  DepositStatusMapping,
-  TransferStatusMapping,
-  WithdrawalStatusMapping,
-} from '@vegaprotocol/types';
-import {
-  ApprovalStatus,
-  useEthWithdrawApprovalsStore,
-  useEthereumConfig,
-  useGetWithdrawDelay,
-  useGetWithdrawThreshold,
-  useTransactionReceipt,
-} from '@vegaprotocol/web3';
+import { TransferStatusMapping } from '@vegaprotocol/types';
+import { useEthereumConfig, useTransactionReceipt } from '@vegaprotocol/web3';
 
 import { useT } from '../../lib/use-t';
+import { DepositStatusCell } from './deposit-status-cell';
+import { WithdrawalStatusCell } from './withdrawal-status-cell';
 
-interface RowBase {
+export interface RowBase {
   asset: AssetFieldsFragment | undefined;
   amount: string;
+  bAmount: BigNumber;
   createdTimestamp: Date;
 }
 
-interface RowDeposit extends RowBase {
+export interface RowDeposit extends RowBase {
   type: 'Deposit';
   detail: DepositFieldsFragment;
 }
 
-interface RowWithdrawal extends RowBase {
+export interface RowWithdrawal extends RowBase {
   type: 'Withdrawal';
   detail: WithdrawalFieldsFragment;
 }
 
-interface RowTransfer extends RowBase {
+export interface RowTransfer extends RowBase {
   type: 'Transfer';
   detail: TransferFieldsFragment;
 }
 
-type Row = RowDeposit | RowWithdrawal | RowTransfer;
+export type Row = RowDeposit | RowWithdrawal | RowTransfer;
 
 export const AssetActivity = () => {
   const { pubKey } = useVegaWallet();
@@ -103,6 +94,7 @@ export const AssetActivityDatagrid = ({
       {
         headerName: t('Type'),
         field: 'type',
+        filter: 'agSetColumnFilter',
         valueFormatter: ({ value, data }: { value: string; data: Row }) => {
           let postfix = '';
 
@@ -121,7 +113,8 @@ export const AssetActivityDatagrid = ({
       {
         headerName: t('Asset'),
         field: 'asset.symbol',
-        cellClass: 'underline',
+        cellClass: 'underline underline-offset-4',
+        filter: 'agTextColumnFilter',
         onCellClicked: ({ data }: { data: Row }) => {
           if (!data.asset) return;
           open(data.asset.id);
@@ -131,15 +124,20 @@ export const AssetActivityDatagrid = ({
       {
         headerName: t('Created at'),
         field: 'createdTimestamp',
+        filter: 'agDateColumnFilter',
         valueFormatter: ({ value }) => getDateTimeFormat().format(value),
         sort: 'desc',
       },
       {
         headerName: t('Amount'),
         field: 'amount',
-        valueFormatter: ({ value, data }: { value: string; data: Row }) => {
-          if (!value || !data.asset) return '-';
-          return addDecimalsFormatNumber(value, data.asset.decimals);
+        filter: 'agNumberColumnFilter',
+        valueGetter: ({ data }: { data: Row }) => {
+          return data.bAmount.toNumber();
+        },
+        valueFormatter: ({ data }: { data: Row }) => {
+          if (!data.amount || !data.asset) return '-';
+          return addDecimalsFormatNumber(data.amount, data.asset.decimals);
         },
       },
       {
@@ -164,13 +162,13 @@ export const AssetActivityDatagrid = ({
       {
         headerName: 'Status',
         field: 'type',
+        filter: 'agSetColumnFilter',
         cellRenderer: ({ data }: { data: Row }) => {
           if (data.type === 'Deposit') {
             return <DepositStatusCell data={data} />;
           }
 
           if (data.type === 'Withdrawal') {
-            // TODO: show pending approve/pending network/complete
             return <WithdrawalStatusCell data={data} />;
           }
 
@@ -200,11 +198,16 @@ const normalizeItem = (
     | WithdrawalFieldsFragment
     | TransferFieldsFragment
 ): Row | null => {
+  if (!item.asset) return null;
+
+  const bAmount = toBigNum(item.amount, item.asset.decimals);
+
   if (item.__typename === 'Withdrawal') {
     return {
       asset: item.asset,
       type: 'Withdrawal',
       amount: item.amount,
+      bAmount,
       createdTimestamp: new Date(item.createdTimestamp),
       detail: item,
     };
@@ -215,6 +218,7 @@ const normalizeItem = (
       asset: item.asset,
       type: 'Deposit',
       amount: item.amount,
+      bAmount,
       createdTimestamp: new Date(item.createdTimestamp),
       detail: item,
     };
@@ -222,10 +226,10 @@ const normalizeItem = (
 
   if (item.__typename === 'Transfer') {
     return {
-      // @ts-ignore TODO: fix me
       asset: item.asset,
       type: 'Transfer',
       amount: item.amount,
+      bAmount,
       createdTimestamp: new Date(item.timestamp),
       detail: item,
     };
@@ -305,7 +309,6 @@ const DepositToFromCell = ({ data }: { data: RowDeposit }) => {
   const { receipt } = useTransactionReceipt({
     txHash: data.detail.txHash,
     enabled: true,
-    confirmations: 1, // dont refetch this one, we only need receipt.from
   });
 
   if (!receipt) return null;
@@ -322,137 +325,4 @@ const DepositToFromCell = ({ data }: { data: RowDeposit }) => {
       </Link>
     </>
   );
-};
-
-const DepositStatusCell = ({ data }: { data: RowDeposit }) => {
-  const t = useT();
-  const { config } = useEthereumConfig();
-
-  const { receipt } = useTransactionReceipt({
-    txHash: data.detail.txHash,
-    enabled: data.detail.status === DepositStatus.STATUS_OPEN,
-    confirmations: config?.confirmations,
-  });
-
-  if (data.detail.status === DepositStatus.STATUS_OPEN) {
-    return (
-      <>
-        {DepositStatusMapping[data.detail.status]} ({receipt?.confirmations}
-        {'/'}
-        {config?.confirmations} {t('Confirmations')})
-      </>
-    );
-  }
-
-  return <>{DepositStatusMapping[data.detail.status]}</>;
-};
-
-const WithdrawalStatusCell = ({ data }: { data: RowWithdrawal }) => {
-  if (!data.detail.txHash) {
-    // TODO: add click to complete
-    return <WithdrawalStatusOpen data={data} />;
-  }
-
-  return <>{WithdrawalStatusMapping[data.detail.status]}</>;
-};
-
-const WithdrawalStatusOpen = ({ data }: { data: RowWithdrawal }) => {
-  const { status, readyAt } = useWithdrawalStatus({
-    withdrawal: data.detail,
-  });
-
-  if (status === ApprovalStatus.Idle) {
-    return null;
-  }
-
-  if (status === ApprovalStatus.Delayed) {
-    const showDate = readyAt && readyAt.getTime() > Date.now() + DAY;
-
-    return (
-      <>
-        {status} until{' '}
-        {showDate
-          ? getDateTimeFormat().format(readyAt)
-          : getTimeFormat().format(readyAt)}
-      </>
-    );
-  }
-
-  if (status === ApprovalStatus.Ready) {
-    return <WithdrawalStatusReady withdrawal={data.detail} />;
-  }
-
-  return <>{status}</>;
-};
-
-const WithdrawalStatusReady = ({
-  withdrawal,
-}: {
-  withdrawal: WithdrawalFieldsFragment;
-}) => {
-  const t = useT();
-  const createWithdrawApproval = useEthWithdrawApprovalsStore(
-    (store) => store.create
-  );
-
-  return (
-    <>
-      {ApprovalStatus.Ready}{' '}
-      <button
-        onClick={() => createWithdrawApproval(withdrawal)}
-        className="underline underline-offset-4"
-      >
-        {t('Complete')}
-      </button>
-    </>
-  );
-};
-
-const useWithdrawalStatus = ({
-  withdrawal,
-}: {
-  withdrawal: WithdrawalFieldsFragment;
-}) => {
-  const [status, setStatus] = useState<ApprovalStatus>(ApprovalStatus.Idle);
-  const [readyAt, setReadyAt] = useState<Date>();
-  const getThreshold = useGetWithdrawThreshold();
-  const getDelay = useGetWithdrawDelay();
-  const timeoutRef = useRef<NodeJS.Timeout>();
-
-  useEffect(() => {
-    // Checks if withdrawal is ready for completion and if it isn't
-    // starts a time to check again after the delay time has passed
-    const checkStatus = async () => {
-      const threshold = await getThreshold(withdrawal.asset);
-
-      if (threshold) {
-        const delaySecs = await getDelay();
-
-        if (delaySecs) {
-          const readyTimestamp =
-            new Date(withdrawal.createdTimestamp).getTime() +
-            (delaySecs + 3) * 1000; // add a buffer of 3 seconds
-          const now = Date.now();
-          setReadyAt(new Date(readyTimestamp));
-
-          if (now < readyTimestamp) {
-            setStatus(ApprovalStatus.Delayed);
-
-            // Check again when delay time has passed
-            timeoutRef.current = setTimeout(checkStatus, readyTimestamp - now);
-          } else {
-            setStatus(ApprovalStatus.Ready);
-          }
-        }
-      }
-    };
-
-    checkStatus();
-
-    return () => {
-      clearTimeout(timeoutRef.current);
-    };
-  }, [getThreshold, getDelay, withdrawal]);
-
-  return { status, readyAt };
 };
