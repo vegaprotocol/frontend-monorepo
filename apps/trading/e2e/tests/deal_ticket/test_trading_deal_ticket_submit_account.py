@@ -38,7 +38,8 @@ def test_should_display_info_and_button_for_deposit(continuous_market, page: Pag
         "1,661,888.12901 tDAI is currently required.You have only 999,991.49731.Deposit tDAI"
     )
     page.get_by_test_id(deal_ticket_deposit_dialog_button).nth(0).click()
-    expect(page.get_by_test_id("sidebar-content")).to_contain_text("DepositFrom")
+    expect(page.get_by_test_id("pathname-/portfolio/assets/deposit")
+           ).to_be_visible()
 
 
 @pytest.mark.usefixtures("auth", "risk_accepted")

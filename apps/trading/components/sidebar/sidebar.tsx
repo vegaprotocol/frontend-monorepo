@@ -68,7 +68,9 @@ export const Sidebar = ({ pinnedAssets }: { pinnedAssets?: PinnedAsset[] }) => {
         </SidebarAccordionItem>
         <SidebarAccordionItem value={ViewType.Assets}>
           {!pinnedAssets?.length || view === ViewType.Assets ? (
-            <SidebarAccordionTrigger>{t('Assets')}</SidebarAccordionTrigger>
+            <SidebarAccordionTrigger data-testid="Assets">
+              {t('Assets')}
+            </SidebarAccordionTrigger>
           ) : (
             <AccordionPrimitive.Header>
               <AccordionPrimitive.Trigger

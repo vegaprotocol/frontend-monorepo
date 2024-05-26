@@ -63,8 +63,10 @@ def tooltip(page: Page, index: int, test_id: str, tooltip: str):
 
 @pytest.mark.usefixtures("continuous_market", "auth", "risk_accepted")
 def test_asset_details(page: Page):
-    page.goto("/#/portfolio")
-    page.locator('[data-testid="tab-collateral"] >> text=tDAI').click()
+    page.goto("/")
+    page.get_by_test_id("asset-card").click()
+    page.get_by_test_id("dropdown-menu").nth(1).click()
+    page.get_by_role("menuitem", name="View asset details").click()
 
     for index, pair in enumerate(label_value_tooltip_pairs):
         if index in [7, 8, 9]:  # Skip indices 7, 8, and 9.

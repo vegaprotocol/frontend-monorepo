@@ -71,12 +71,14 @@ def test_trade_match_table(
     tab = page.get_by_test_id("tab-positions")
     table = tab.locator(".ag-body-viewport")
     market = table.locator("[col-id='marketCode']")
-    expect(market.get_by_test_id(primary_id)).to_have_text(position["market_code"])
+    expect(market.get_by_test_id(primary_id)
+           ).to_have_text(position["market_code"])
     expect(market.get_by_test_id(secondary_id)).to_have_text(
         position["settlement_asset"] + position["product_type"]
     )
     size_and_notional = table.locator("[col-id='openVolume']")
-    expect(size_and_notional.get_by_test_id(primary_id)).to_have_text(position["size"])
+    expect(size_and_notional.get_by_test_id(
+        primary_id)).to_have_text(position["size"])
     expect(size_and_notional.get_by_test_id(secondary_id)).to_have_text(
         position["notional"]
     )
@@ -110,19 +112,21 @@ def test_trade_match_table(
     # Open
     page.get_by_test_id("Open").click()
     rows = page.get_by_test_id("tab-open-orders").locator(row_locator).all()
-    expect(rows[0]).to_contain_text("0" + "-1" + "Limit" + "Active" + "150.00" + "GTC")
-    expect(rows[1]).to_contain_text("0" + "+1" + "Limit" + "Active" + "50.00" + "GTC")
-    expect(rows[2]).to_contain_text("0" + "+5" + "Limit" + "Active" + "105.00" + "GTC")
-
+    expect(rows[0]).to_contain_text("0" + "-1" +
+                                    "Limit" + "Active" + "150.00" + "GTC")
+    expect(rows[1]).to_contain_text(
+        "0" + "+1" + "Limit" + "Active" + "50.00" + "GTC")
+    expect(rows[2]).to_contain_text("0" + "+5" +
+                                    "Limit" + "Active" + "105.00" + "GTC")
 
     # Order history
-    page.get_by_test_id("Order history").click()    
+    page.get_by_test_id("Order history").click()
     rows = page.locator(row_locator).all()
     expect(rows[0]).to_contain_text(
         "0" + "-5" + "Limit" + "Stopped: Self trading" + "95.00" + "GTC"
     )
     expect(rows[1]).to_contain_text(
-        "0" + "-5" + "Limit"     + "Stopped: Self trading" + "90.00" + "GTC"
+        "0" + "-5" + "Limit" + "Stopped: Self trading" + "90.00" + "GTC"
     )
 
     expect(rows[2]).to_contain_text(
@@ -152,7 +156,6 @@ def test_trade_match_table(
     )
 
     # Collateral
-    page.get_by_test_id("Collateral").click()
-    expect(
-        page.get_by_test_id("tab-accounts").locator(".ag-floating-top-viewport .ag-row")
-    ).to_contain_text("93.85953" + "0.01%" + "999,906.14047" + "1,000,000.00")
+    page.get_by_test_id("asset-card").click()
+    expect(page.get_by_test_id("accounts-list")).to_contain_text(
+        "tDAIGeneral account999,906.14047Margin account(BTC:DAI_2023)93.85953Total1,000,000.00")

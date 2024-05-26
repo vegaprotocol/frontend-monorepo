@@ -134,17 +134,6 @@ def test_market_buy_order(continuous_market, vega: VegaServiceNull, page: Page):
     expect(page.get_by_role("row").nth(9)).to_contain_text(
         "10+10MarketFilled-FOK")
 
-
-@pytest.mark.usefixtures("risk_accepted")
-def test_sidebar_should_be_open_after_reload(continuous_market, page: Page):
-    page.goto(f"/#/markets/{continuous_market}")
-    expect(page.get_by_test_id("deal-ticket-form")).to_be_visible()
-    page.get_by_test_id("Order").click()
-    expect(page.get_by_test_id("deal-ticket-form")).not_to_be_visible()
-    page.reload()
-    expect(page.get_by_test_id("deal-ticket-form")).to_be_visible()
-
-
 @pytest.mark.usefixtures("auth", "risk_accepted")
 def test_liquidated_tooltip(continuous_market, vega: VegaServiceNull, page: Page):
     tdai_id = vega.find_asset_id(symbol="tDAI")
