@@ -114,7 +114,7 @@ const Web3Container = ({
           ETH_LOCAL_PROVIDER_URL,
           ETH_WALLET_MNEMONIC
         ),
-        Number(chainId)
+        [Number(chainId)]
       );
     }
   }, [

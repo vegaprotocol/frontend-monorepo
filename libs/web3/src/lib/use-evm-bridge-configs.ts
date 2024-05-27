@@ -18,7 +18,7 @@ export type EthereumContractConfig = {
    * Block height at which the stacking contract has been deployed for this
    * Ethereum network.
    */
-  deployment_block_height: number;
+  deployment_block_height?: number;
 };
 
 export type EVMBridgeConfig = {
@@ -69,7 +69,7 @@ export const useEVMBridgeConfigs = () => {
   // Used this so it can be compatible with mainnet for now.
   // TODO: Change this to `useNetworkPars('blockchains_evmBridgeConfigs')`
   const { params, loading, error } = useNetworkParams();
-  const param = params['blockchains_evmBridgeConfigs'];
+  const param = params?.['blockchains_evmBridgeConfigs'];
 
   const configs = useMemo(() => {
     if (!param) return null;

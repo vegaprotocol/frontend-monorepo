@@ -2,7 +2,7 @@ import { MaxUint256 } from '@ethersproject/constants';
 import { isAssetTypeERC20 } from '@vegaprotocol/utils';
 import {
   EthTxStatus,
-  useEthereumConfig,
+  useCollateralBridge,
   useEthTransactionStore,
   useTokenContract,
 } from '@vegaprotocol/web3';
@@ -18,10 +18,15 @@ export const useSubmitApproval = (
   const tx = useEthTransactionStore((state) => {
     return state.transactions.find((t) => t?.id === id);
   });
-  const { config } = useEthereumConfig();
-  const contract = useTokenContract(
-    isAssetTypeERC20(asset) ? asset.source.contractAddress : undefined
-  );
+
+  const assetData = isAssetTypeERC20(asset)
+    ? {
+        contractAddress: asset.source.contractAddress,
+        chainId: Number(asset.source.chainId),
+      }
+    : undefined;
+  const { contract: tokenContract } = useTokenContract(assetData);
+  const { address } = useCollateralBridge(assetData?.chainId);
 
   // When tx is confirmed refresh balances
   useEffect(() => {
@@ -36,12 +41,13 @@ export const useSubmitApproval = (
       setId(null);
     },
     perform: (amount?: string) => {
-      if (!asset || !config) return;
-      const id = createEthTransaction(contract, 'approve', [
-        config?.collateral_bridge_contract.address,
+      if (!asset || !address || !tokenContract) return;
+      const id = createEthTransaction(tokenContract, 'approve', [
+        address,
         amount ? amount : MaxUint256.toString(),
       ]);
       setId(id);
+      return;
     },
   };
 };

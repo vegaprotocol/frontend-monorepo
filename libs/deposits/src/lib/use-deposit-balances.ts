@@ -1,5 +1,9 @@
-import { useBridgeContract, useTokenContract } from '@vegaprotocol/web3';
-import { useCallback, useEffect, useState } from 'react';
+import {
+  useCollateralBridge,
+  useProvider,
+  useTokenContract,
+} from '@vegaprotocol/web3';
+import { useCallback, useMemo, useState } from 'react';
 import BigNumber from 'bignumber.js';
 import { useGetAllowance } from './use-get-allowance';
 import { useGetBalanceOfERC20Token } from './use-get-balance-of-erc20-token';
@@ -8,9 +12,7 @@ import {
   useIsExemptDepositor,
 } from './use-get-deposit-maximum';
 import { useGetDepositedAmount } from './use-get-deposited-amount';
-import { isAssetTypeERC20 } from '@vegaprotocol/utils';
 import { localLoggerFactory } from '@vegaprotocol/logger';
-import { useAccountBalance } from '@vegaprotocol/accounts';
 import type { Asset } from '@vegaprotocol/assets';
 import { useWeb3React } from '@web3-react/core';
 
@@ -36,24 +38,64 @@ const initialState: DepositBalances = {
  */
 export const useDepositBalances = (asset: Asset | undefined) => {
   const { account } = useWeb3React();
-  const tokenContract = useTokenContract(
-    isAssetTypeERC20(asset) ? asset.source.contractAddress : undefined
+
+  const assetData = useMemo(() => {
+    const assetChainId =
+      asset?.source.__typename === 'ERC20'
+        ? Number(asset.source.chainId)
+        : undefined;
+    const assetSource =
+      asset?.source.__typename === 'ERC20'
+        ? asset.source.contractAddress
+        : undefined;
+    const assetData =
+      assetChainId && assetSource
+        ? {
+            chainId: assetChainId,
+            contractAddress: assetSource,
+          }
+        : undefined;
+    return assetData;
+  }, [asset]);
+
+  const { provider, error: providerError } = useProvider(assetData?.chainId);
+
+  const {
+    contract: collateralBridgeContract,
+    address: collateralBridgeContractAddress,
+    error: collateralBridgeContractError,
+  } = useCollateralBridge(assetData?.chainId);
+  const { contract: tokenContract, error: tokenContractError } =
+    useTokenContract(assetData);
+
+  const getAllowance = useGetAllowance(
+    tokenContract,
+    collateralBridgeContractAddress,
+    account
   );
-  const bridgeContract = useBridgeContract();
-  const getAllowance = useGetAllowance(tokenContract, asset);
-  const getBalance = useGetBalanceOfERC20Token(tokenContract, asset);
-  const getDepositMaximum = useGetDepositMaximum(bridgeContract, asset);
-  const isExemptDepositor = useIsExemptDepositor(bridgeContract, account);
-  const getDepositedAmount = useGetDepositedAmount(asset);
+  const getBalance = useGetBalanceOfERC20Token(tokenContract, account);
+  const getDepositMaximum = useGetDepositMaximum(
+    collateralBridgeContract,
+    assetData?.contractAddress
+  );
+  const isExemptDepositor = useIsExemptDepositor(
+    collateralBridgeContract,
+    account
+  );
+  const getDepositedAmount = useGetDepositedAmount(
+    provider,
+    assetData?.contractAddress,
+    collateralBridgeContractAddress,
+    account
+  );
+
   const [state, setState] = useState<DepositBalances | null>(null);
 
-  const { accountBalance } = useAccountBalance(asset?.id);
-
   const getBalances = useCallback(async () => {
-    if (!asset) return;
+    if (!assetData) return;
     const logger = localLoggerFactory({ application: 'deposits' });
     try {
-      logger.info('get deposit balances', { asset: asset.id });
+      logger.info('get deposit balances', { asset: assetData });
       setState(null);
       const [max, deposited, balance, allowance, exempt] = await Promise.all([
         getDepositMaximum(),
@@ -63,33 +105,35 @@ export const useDepositBalances = (asset: Asset | undefined) => {
         isExemptDepositor(),
       ]);
 
-      setState({
+      const state = {
         max: max ?? initialState.max,
         deposited: deposited ?? initialState.deposited,
         balance: balance ?? initialState.balance,
         allowance: allowance ?? initialState.allowance,
         exempt,
-      });
+      };
+      logger.info('get deposit balances', { state });
+
+      setState(state);
     } catch (err) {
       logger.error('get deposit balances', err);
       setState(null);
     }
   }, [
-    asset,
+    assetData,
     getAllowance,
     getBalance,
     getDepositMaximum,
     getDepositedAmount,
     isExemptDepositor,
   ]);
-
   const reset = useCallback(() => {
     setState(null);
   }, []);
-
-  useEffect(() => {
-    getBalances();
-  }, [asset, getBalances, accountBalance]);
-
-  return { balances: state, getBalances, reset };
+  return {
+    balances: state,
+    getBalances,
+    reset,
+    error: providerError || tokenContractError || collateralBridgeContractError,
+  };
 };

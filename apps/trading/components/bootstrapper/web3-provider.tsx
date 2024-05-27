@@ -1,15 +1,19 @@
 import type { DefaultWeb3ProviderContextShape } from '@vegaprotocol/web3';
 import {
   useEthereumConfig,
-  createConnectors,
   Web3Provider as Web3ProviderInternal,
   useWeb3ConnectStore,
   createDefaultProvider,
+  useEVMBridgeConfigs,
+  TRANSPORTS,
+  isSupportedChainId,
+  createMultiChainConnectors,
 } from '@vegaprotocol/web3';
 import { useEnvironment } from '@vegaprotocol/environment';
 import type { ReactNode } from 'react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useEffect } from 'react';
+import compact from 'lodash/compact';
 
 export const Web3Provider = ({
   children,
@@ -21,52 +25,78 @@ export const Web3Provider = ({
   failure: ReactNode;
 }) => {
   const { config, loading, error } = useEthereumConfig();
-  const { ETHEREUM_PROVIDER_URL, ETH_LOCAL_PROVIDER_URL, ETH_WALLET_MNEMONIC } =
-    useEnvironment();
+  const {
+    configs,
+    loading: evmLoading,
+    error: evmError,
+  } = useEVMBridgeConfigs();
+
+  const { ETH_LOCAL_PROVIDER_URL, ETH_WALLET_MNEMONIC } = useEnvironment();
+
+  /** A per chain id list of rpc providers */
+  const transports = useMemo(() => {
+    const ethereumChainId = config?.chain_id;
+    const evmChains = compact(configs?.map((c) => c.chain_id));
+    const chains = compact([ethereumChainId, ...evmChains])
+      .map((ch) => Number(ch))
+      .filter(isSupportedChainId);
+    const map: { [chainId: number]: string } = {};
+    for (const chain of chains) {
+      const rpc = TRANSPORTS[chain];
+      if (rpc) {
+        map[chain] = rpc;
+      }
+    }
+    return map;
+  }, [config?.chain_id, configs]);
 
   const connectors = useWeb3ConnectStore((store) => store.connectors);
   const initializeConnectors = useWeb3ConnectStore((store) => store.initialize);
-  const [defaultProvider, setDefaultProvider] = useState<
-    DefaultWeb3ProviderContextShape['provider'] | undefined
+  const [defaultProviders, setDefaultProviders] = useState<
+    DefaultWeb3ProviderContextShape['providers'] | undefined
   >(undefined);
 
   useEffect(() => {
-    if (config?.chain_id) {
+    const chains = Object.keys(transports).map((c) => Number(c));
+    if (chains.length > 0) {
+      // initialise and create the wallet connectors
       initializeConnectors(
-        createConnectors(
-          ETHEREUM_PROVIDER_URL,
-          Number(config?.chain_id),
+        createMultiChainConnectors(
+          transports,
           ETH_LOCAL_PROVIDER_URL,
           ETH_WALLET_MNEMONIC
         ),
-        Number(config.chain_id)
+        chains
       );
-      const defaultProvider = createDefaultProvider(
-        ETHEREUM_PROVIDER_URL,
-        Number(config?.chain_id)
-      );
-      setDefaultProvider(defaultProvider);
+      // create default json rpc providers per chain
+      const defaultProviders: DefaultWeb3ProviderContextShape['providers'] = {};
+      for (const [chainId, rpcUrl] of Object.entries(transports)) {
+        defaultProviders[Number(chainId)] = createDefaultProvider(
+          rpcUrl,
+          Number(chainId)
+        );
+      }
+      setDefaultProviders(defaultProviders);
     }
   }, [
-    config?.chain_id,
-    ETHEREUM_PROVIDER_URL,
-    initializeConnectors,
     ETH_LOCAL_PROVIDER_URL,
     ETH_WALLET_MNEMONIC,
+    initializeConnectors,
+    transports,
   ]);
 
-  if (error) {
+  if (error || evmError) {
     return <>{failure}</>;
   }
 
-  if (loading || !connectors.length) {
+  if (loading || evmLoading || !connectors.length) {
     return <>{skeleton}</>;
   }
 
   return (
     <Web3ProviderInternal
       connectors={connectors}
-      defaultProvider={defaultProvider}
+      defaultProviders={defaultProviders}
     >
       <>{children}</>
     </Web3ProviderInternal>

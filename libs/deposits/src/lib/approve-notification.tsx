@@ -161,8 +161,15 @@ const ApprovalTxFeedback = ({
   const t = useT();
   if (!tx) return null;
 
+  const chainId =
+    selectedAsset.source.__typename === 'ERC20'
+      ? Number(selectedAsset.source.chainId)
+      : undefined;
+
   const txLink = tx.txHash && (
-    <EtherscanLink tx={tx.txHash}>{t('View on Etherscan')}</EtherscanLink>
+    <EtherscanLink sourceChainId={chainId} tx={tx.txHash}>
+      {t('View on Etherscan')}
+    </EtherscanLink>
   );
 
   if (tx.status === EthTxStatus.Error) {

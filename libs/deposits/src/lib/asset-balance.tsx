@@ -1,30 +1,49 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { useGetBalanceOfERC20Token } from './use-get-balance-of-erc20-token';
 import type { AssetFieldsFragment } from '@vegaprotocol/assets';
 import { useBalancesStore } from '@vegaprotocol/assets';
 import { Balance } from '@vegaprotocol/assets';
-import { isAssetTypeERC20 } from '@vegaprotocol/utils';
 import { useTokenContract } from '@vegaprotocol/web3';
+import { useWeb3React } from '@web3-react/core';
+import { isAssetTypeERC20, toBigNum } from '@vegaprotocol/utils';
 
 const REFETCH_DELAY = 5000;
 
 export const AssetBalance = ({ asset }: { asset: AssetFieldsFragment }) => {
+  const { account } = useWeb3React();
+
+  const assetData = useMemo(
+    () =>
+      isAssetTypeERC20(asset)
+        ? {
+            id: asset.id,
+            contractAddress: asset.source.contractAddress,
+            chainId: Number(asset.source.chainId),
+            decimals: asset.decimals,
+          }
+        : undefined,
+    [asset]
+  );
+
+  const { contract } = useTokenContract(assetData, true);
+
   const [setBalance, getBalance] = useBalancesStore((state) => [
     state.setBalance,
     state.getBalance,
   ]);
 
-  const tokenContract = useTokenContract(
-    isAssetTypeERC20(asset) ? asset.source.contractAddress : undefined
-  );
-  const ethBalanceFetcher = useGetBalanceOfERC20Token(tokenContract, asset);
+  const ethBalanceFetcher = useGetBalanceOfERC20Token(contract, account);
 
   const fetchFromEth = useCallback(async () => {
+    if (!assetData) return;
+
     const balance = await ethBalanceFetcher();
-    if (balance) {
-      setBalance({ asset, balanceOnEth: balance, ethBalanceFetcher });
-    }
-  }, [asset, ethBalanceFetcher, setBalance]);
+    setBalance({
+      asset: assetData,
+      balanceOnEth: balance ? toBigNum(balance, asset.decimals) : undefined,
+      ethBalanceFetcher,
+    });
+  }, [asset.decimals, assetData, ethBalanceFetcher, setBalance]);
 
   useEffect(() => {
     const balance = getBalance(asset.id);

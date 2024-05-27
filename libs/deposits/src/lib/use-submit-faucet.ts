@@ -17,9 +17,14 @@ export const useSubmitFaucet = (
   const tx = useEthTransactionStore((state) => {
     return state.transactions.find((t) => t?.id === id);
   });
-  const contract = useTokenContract(
-    isAssetTypeERC20(asset) ? asset.source.contractAddress : undefined
-  );
+
+  const assetData = isAssetTypeERC20(asset)
+    ? {
+        contractAddress: asset.source.contractAddress,
+        chainId: Number(asset.source.chainId),
+      }
+    : undefined;
+  const { contract } = useTokenContract(assetData);
 
   // When tx is confirmed refresh balances
   useEffect(() => {
@@ -35,6 +40,7 @@ export const useSubmitFaucet = (
       setId(null);
     },
     perform: () => {
+      if (!contract) return;
       const id = createEthTransaction(contract, 'faucet', []);
       setId(id);
     },
