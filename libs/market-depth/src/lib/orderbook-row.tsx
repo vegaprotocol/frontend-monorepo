@@ -53,7 +53,10 @@ export const OrderbookRow = memo(
         />
         <div
           data-testid={`${txtId}-rows-container`}
-          className={classNames('grid gap-1 text-right', `grid-cols-${cols}`)}
+          className={classNames(
+            'grid gap-1 text-right relative',
+            `grid-cols-${cols}`
+          )}
         >
           <OrderBookRowCell
             onClick={() => onClick({ price: addDecimal(price, decimalPlaces) })}

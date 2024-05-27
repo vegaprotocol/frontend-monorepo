@@ -180,7 +180,7 @@ export const OrderbookMid = ({
               }
             )}
           >
-            <span>
+            <span className="flex items-center justify-center">
               <VegaIcon name={VegaIconNames.HAMMER} />
             </span>
           </Tooltip>
