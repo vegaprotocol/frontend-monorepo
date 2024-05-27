@@ -153,6 +153,7 @@ const EthTxConfirmedToastContent = ({ tx }: EthTxToastContentProps) => {
 const EthTxCompletedToastContent = ({ tx }: EthTxToastContentProps) => {
   const t = useT();
   const isDeposit = isDepositTransaction(tx);
+
   return (
     <>
       <ToastHeading>

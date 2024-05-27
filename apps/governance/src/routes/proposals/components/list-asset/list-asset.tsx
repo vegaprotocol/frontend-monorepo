@@ -10,12 +10,6 @@ import {
 import { EthWalletContainer } from '../../../../components/eth-wallet-container';
 
 const useListAsset = (assetId: string) => {
-  const bridgeContract = useBridgeContract();
-
-  const transaction = useEthereumTransaction<CollateralBridge, 'list_asset'>(
-    bridgeContract,
-    'list_asset'
-  );
   const {
     data,
     loading: loadingAsset,
@@ -25,6 +19,15 @@ const useListAsset = (assetId: string) => {
       assetId,
     },
   });
+
+  // const chainId =
+
+  const bridgeContract = useBridgeContract();
+
+  const transaction = useEthereumTransaction<CollateralBridge, 'list_asset'>(
+    bridgeContract,
+    'list_asset'
+  );
 
   const {
     data: assetData,

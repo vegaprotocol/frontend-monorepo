@@ -5,13 +5,12 @@ import { prepend0x } from '@vegaprotocol/smart-contracts';
 import sortBy from 'lodash/sortBy';
 import { useSubmitApproval } from './use-submit-approval';
 import { useSubmitFaucet } from './use-submit-faucet';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { useDepositBalances } from './use-deposit-balances';
 import type { Asset } from '@vegaprotocol/assets';
 import {
   useEthTransactionStore,
-  useBridgeContract,
-  useEthereumConfig,
+  useCollateralBridge,
 } from '@vegaprotocol/web3';
 import { usePersistentDeposit } from './use-persistent-deposit';
 
@@ -27,14 +26,34 @@ export const DepositManager = ({
   isFaucetable,
 }: DepositManagerProps) => {
   const createEthTransaction = useEthTransactionStore((state) => state.create);
-  const { config } = useEthereumConfig();
+
   const [persistentDeposit, savePersistentDeposit] =
     usePersistentDeposit(initialAssetId);
   const assetId = persistentDeposit?.assetId;
   const asset = assets.find((a) => a.id === assetId);
-  const bridgeContract = useBridgeContract();
+
+  const assetData = useMemo(
+    () =>
+      asset?.source.__typename === 'ERC20'
+        ? {
+            chainId: Number(asset.source.chainId),
+            contractAddress: asset.source.contractAddress,
+          }
+        : undefined,
+    [asset]
+  );
+
+  const { contract, config } = useCollateralBridge(assetData?.chainId);
 
   const { getBalances, reset, balances } = useDepositBalances(asset);
+  // const getBalances = () => undefined;
+  // const reset = () => undefined;
+  // const balances = undefined;
+  // const error = undefined;
+
+  useEffect(() => {
+    if (asset?.symbol) getBalances();
+  }, [asset?.symbol, getBalances]);
 
   // Set up approve transaction
   const approve = useSubmitApproval(asset, getBalances);
@@ -45,11 +64,11 @@ export const DepositManager = ({
   const submitDeposit = (
     args: Parameters<DepositFormProps['submitDeposit']>['0']
   ) => {
-    if (!asset) {
+    if (!asset || !contract) {
       return;
     }
     createEthTransaction(
-      bridgeContract,
+      contract,
       'deposit_asset',
       [
         args.assetSource,
@@ -82,7 +101,11 @@ export const DepositManager = ({
     <DepositForm
       selectedAsset={asset}
       onDisconnect={reset}
-      onSelectAsset={(assetId) => savePersistentDeposit({ assetId })}
+      onSelectAsset={(assetId) => {
+        if (assetId) {
+          savePersistentDeposit({ assetId });
+        }
+      }}
       handleAmountChange={onAmountChange}
       assets={sortBy(assets, 'name')}
       submitApprove={approve.perform}

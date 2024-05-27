@@ -1,18 +1,39 @@
 import { Token } from '@vegaprotocol/smart-contracts';
-import { useWeb3React } from '@web3-react/core';
 import { type ethers } from 'ethers';
 import { useMemo } from 'react';
+import { useProvider } from './use-bridge-contract';
 
-export const useTokenContract = (address?: string) => {
-  const { provider } = useWeb3React();
+type AssetData = {
+  contractAddress: string;
+  chainId: number;
+};
+
+export const useTokenContract = (
+  assetData?: AssetData,
+  allowDefaultProvider: boolean = false
+) => {
+  const { provider, error: providerError } = useProvider(
+    assetData?.chainId,
+    allowDefaultProvider
+  );
+
+  const signer = useMemo(() => {
+    return provider ? provider?.getSigner() : undefined;
+  }, [provider]);
 
   const contract = useMemo(() => {
-    if (!address || !provider) return null;
-    const signer = provider?.getSigner();
-    return getTokenContract(address, signer || provider);
-  }, [address, provider]);
+    if (assetData && provider) {
+      return getTokenContract(assetData.contractAddress, signer || provider);
+    }
+    return undefined;
+  }, [assetData, provider, signer]);
 
-  return contract;
+  return {
+    contract,
+    chainId: assetData?.chainId,
+    address: assetData?.contractAddress,
+    error: providerError,
+  };
 };
 
 export const getTokenContract = (

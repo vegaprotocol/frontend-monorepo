@@ -32,7 +32,7 @@ export const AssetListFieldsFragmentDoc = gql`
       contractAddress
       lifetimeLimit
       withdrawThreshold
-      # chainId
+      chainId
     }
   }
   status
