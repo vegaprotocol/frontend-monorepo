@@ -61,7 +61,8 @@ const WithdrawalStatusReady = ({
 
   return (
     <>
-      {ApprovalStatus.Ready}{' '}
+      {ApprovalStatus.Pending}
+      {' | '}
       <button
         onClick={() => createWithdrawApproval(withdrawal)}
         className="underline underline-offset-4"

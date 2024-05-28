@@ -26,7 +26,12 @@ import {
   getDateTimeFormat,
   toBigNum,
 } from '@vegaprotocol/utils';
-import { TransferStatusMapping } from '@vegaprotocol/types';
+import {
+  DepositStatus,
+  TransferStatus,
+  TransferStatusMapping,
+  WithdrawalStatus,
+} from '@vegaprotocol/types';
 
 import { useT } from '../../lib/use-t';
 import { DepositStatusCell } from './deposit-status-cell';
@@ -58,6 +63,15 @@ export interface RowTransfer extends RowBase {
 }
 
 export type Row = RowDeposit | RowWithdrawal | RowTransfer;
+
+/** Used for making all status between deposits/withdraws/transfers consistent */
+export const StatusSet = {
+  Pending: 'Pending',
+  Failed: 'Failed',
+  Complete: 'Complete',
+  Cancelled: 'Cancelled',
+  Stopped: 'Stopped',
+} as const;
 
 export const AssetActivity = () => {
   const { pubKey } = useVegaWallet();
@@ -163,7 +177,64 @@ export const AssetActivityDatagrid = ({
       {
         headerName: 'Status',
         field: 'type',
-        filter: 'agSetColumnFilter',
+        filter: SetFilter,
+        filterParams: {
+          set: StatusSet,
+        },
+        // Make all status values consistent between different row types
+        valueGetter: ({ data }: { data: Row }) => {
+          if (data.type === 'Deposit') {
+            if (data.detail.status === DepositStatus.STATUS_FINALIZED) {
+              return StatusSet.Complete;
+            }
+
+            if (data.detail.status === DepositStatus.STATUS_OPEN) {
+              return StatusSet.Pending;
+            }
+
+            if (data.detail.status === DepositStatus.STATUS_CANCELLED) {
+              return StatusSet.Cancelled;
+            }
+
+            return StatusSet.Failed;
+          }
+
+          if (data.type === 'Withdrawal') {
+            if (data.detail.txHash) {
+              return StatusSet.Complete;
+            }
+
+            // Finalized but no txHash, withdrawal is awaiting Ethereum transaction for completion
+            if (
+              data.detail.status === WithdrawalStatus.STATUS_FINALIZED ||
+              data.detail.status === WithdrawalStatus.STATUS_OPEN
+            ) {
+              return StatusSet.Pending;
+            }
+
+            return StatusSet.Failed;
+          }
+
+          if (data.type === 'Transfer') {
+            if (data.detail.status === TransferStatus.STATUS_DONE) {
+              return StatusSet.Complete;
+            }
+
+            if (data.detail.status === TransferStatus.STATUS_PENDING) {
+              return StatusSet.Pending;
+            }
+
+            if (data.detail.status === TransferStatus.STATUS_CANCELLED) {
+              return StatusSet.Cancelled;
+            }
+
+            if (data.detail.status === TransferStatus.STATUS_STOPPED) {
+              return StatusSet.Cancelled;
+            }
+
+            return StatusSet.Failed;
+          }
+        },
         cellRenderer: ({ data }: { data: Row }) => {
           if (data.type === 'Deposit') {
             return <DepositStatusCell data={data} />;
