@@ -23,5 +23,13 @@ export const DepositStatusCell = ({ data }: { data: RowDeposit }) => {
     );
   }
 
+  if (data.detail.status === DepositStatus.STATUS_DUPLICATE_REJECTED) {
+    return (
+      <>
+        {t('Failed')}: {DepositStatusMapping[data.detail.status]}
+      </>
+    );
+  }
+
   return <>{DepositStatusMapping[data.detail.status]}</>;
 };
