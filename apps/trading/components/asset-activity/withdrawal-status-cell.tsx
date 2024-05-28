@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { type WithdrawalFieldsFragment } from '@vegaprotocol/withdraws';
+import type { WithdrawalFieldsFragment } from '@vegaprotocol/withdraws';
 import { DAY, getDateTimeFormat, getTimeFormat } from '@vegaprotocol/utils';
 import { WithdrawalStatusMapping } from '@vegaprotocol/types';
 import {
@@ -10,7 +10,7 @@ import {
 } from '@vegaprotocol/web3';
 
 import { useT } from '../../lib/use-t';
-import { RowWithdrawal } from './asset-activity';
+import type { RowWithdrawal } from './asset-activity';
 
 export const WithdrawalStatusCell = ({ data }: { data: RowWithdrawal }) => {
   if (!data.detail.txHash) {
