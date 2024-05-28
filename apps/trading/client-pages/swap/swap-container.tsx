@@ -129,7 +129,8 @@ export const SwapContainer = () => {
   const marketPrice =
     (side === Side.SIDE_BUY
       ? marketData?.bestOfferPrice // best ask price
-      : marketData?.bestBidPrice) || marketData?.lastTradedPrice; // best bid price
+      : marketData?.bestBidPrice) || // best bid price
+    marketData?.lastTradedPrice;
 
   const orderSubmission = useMemo(() => {
     if (!market || !side) return;
