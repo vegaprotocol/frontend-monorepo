@@ -1,12 +1,17 @@
-import { makeDataProvider, useDataProvider } from '@vegaprotocol/data-provider';
+import compact from 'lodash/compact';
+import {
+  makeDataProvider,
+  useDataProvider,
+  defaultAppend as append,
+} from '@vegaprotocol/data-provider';
 import {
   TransfersDocument,
   type TransfersQuery,
   type TransferFieldsFragment,
   type TransfersQueryVariables,
 } from './__generated__/Transfers';
-import { removePaginationWrapper } from '@vegaprotocol/utils';
 import { useEffect } from 'react';
+import { type Pagination } from '@vegaprotocol/types';
 
 export const transfersProvider = makeDataProvider<
   TransfersQuery,
@@ -17,22 +22,37 @@ export const transfersProvider = makeDataProvider<
 >({
   query: TransfersDocument,
   getData: (responseData) => {
-    return removePaginationWrapper(
-      responseData?.transfersConnection?.edges || []
-    ).map((t) => t.transfer);
+    if (!responseData?.transfersConnection?.edges?.length) return [];
+
+    return compact(responseData.transfersConnection.edges).map((edge) => ({
+      ...edge.node.transfer,
+      cursor: edge.cursor,
+    }));
+  },
+  pagination: {
+    getPageInfo: (responseData: TransfersQuery) =>
+      responseData?.transfersConnection?.pageInfo || null,
+    append,
+    first: 3,
   },
 });
 
-export const useTransfers = ({ pubKey }: { pubKey?: string }) => {
+export const useTransfers = ({
+  pubKey,
+  pagination,
+}: {
+  pubKey?: string;
+  pagination?: Pagination;
+}) => {
   const queryResult = useDataProvider({
     dataProvider: transfersProvider,
-    variables: { partyId: pubKey || '', pagination: { first: 10 } },
+    variables: { partyId: pubKey || '', pagination },
     skip: !pubKey,
   });
 
   // No subscription exists for updating transfers
   useEffect(() => {
-    const interval = setInterval(queryResult.reload, 5000);
+    const interval = setInterval(queryResult.reload, 10000);
     return () => clearInterval(interval);
   }, [queryResult.reload]);
 

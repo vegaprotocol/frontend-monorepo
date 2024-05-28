@@ -173,7 +173,7 @@ export const ordersProvider = makeDataProvider<
   pagination: {
     getPageInfo,
     append,
-    first: 1000,
+    first: 2,
   },
   resetDelay: 1000,
   additionalContext: { isEnlargedTimeout: true },

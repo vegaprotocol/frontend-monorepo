@@ -25,6 +25,13 @@ query Transfers($partyId: ID, $pagination: Pagination) {
           ...TransferFields
         }
       }
+      cursor
+    }
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
     }
   }
 }

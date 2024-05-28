@@ -24,14 +24,25 @@ fragment WithdrawalFields on Withdrawal {
   pendingOnForeignChain @client
 }
 
-query Withdrawals($partyId: ID!) {
+query Withdrawals(
+  $partyId: ID!
+  $pagination: Pagination
+  $dateRange: DateRange
+) {
   party(id: $partyId) {
     id
-    withdrawalsConnection {
+    withdrawalsConnection(pagination: $pagination, dateRange: $dateRange) {
       edges {
         node {
           ...WithdrawalFields
         }
+        cursor
+      }
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        endCursor
       }
     }
   }

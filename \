@@ -108,13 +108,11 @@ export const AssetActivity = () => {
 
   console.log(hasNextPage);
 
-  const rowData = useMemo(() => {
-    return compact(
-      [...(deposits || []), ...(withdrawals || []), ...(transfers || [])].map(
-        normalizeItem
-      )
-    );
-  }, [deposits, withdrawals, transfers]);
+  const rowData = compact(
+    [...(deposits || []), ...(withdrawals || []), ...(transfers || [])].map(
+      normalizeItem
+    )
+  );
 
   return (
     <AssetActivityDatagrid
@@ -122,6 +120,7 @@ export const AssetActivity = () => {
       rowData={rowData}
       pageInfo={{ hasNextPage }}
       load={() => {
+        setRowsToLoad((curr) => curr + 3);
         loadDeposits();
         loadWithdrawals();
         loadTransfers();

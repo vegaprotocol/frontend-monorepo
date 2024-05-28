@@ -13,14 +13,21 @@ fragment DepositFields on Deposit {
   }
 }
 
-query Deposits($partyId: ID!) {
+query Deposits($partyId: ID!, $pagination: Pagination, $dateRange: DateRange) {
   party(id: $partyId) {
     id
-    depositsConnection {
+    depositsConnection(pagination: $pagination, dateRange: $dateRange) {
       edges {
         node {
           ...DepositFields
         }
+        cursor
+      }
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        endCursor
       }
     }
   }
