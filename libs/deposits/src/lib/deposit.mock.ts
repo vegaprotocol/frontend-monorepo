@@ -20,6 +20,7 @@ export const depositsQuery = (
         edges: depositFields.map((node) => ({
           __typename: 'DepositEdge',
           node,
+          cursor: '1',
         })),
       },
     },
@@ -36,8 +37,8 @@ const depositFields: DepositFieldsFragment[] = [
     asset: {
       __typename: 'Asset',
       id: 'asset-0',
+      name: 'Asset 0',
       symbol: 'BTC',
-      name: 'Bitcoin',
       decimals: 8,
       quantum: '1',
       status: Schema.AssetStatus.STATUS_ENABLED,
@@ -48,6 +49,9 @@ const depositFields: DepositFieldsFragment[] = [
         withdrawThreshold: '1',
         chainId: '1',
       },
+    },
+    party: {
+      id: 'party-id',
     },
     createdTimestamp: '2021-06-01T00:00:00.000Z',
   },
