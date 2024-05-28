@@ -971,7 +971,7 @@ export type DispatchStrategy = {
   /** The teams in scope for the reward, if the entity is teams */
   teamScope?: Maybe<Array<Maybe<Scalars['ID']>>>;
   /** Interval for the distribution of the transfer */
-  transferInterval?: Maybe<Scalars['Int']>;
+  transfer_interval: Scalars['Int'];
   /** Number of epochs to evaluate the metric on */
   windowLength: Scalars['Int'];
 };
