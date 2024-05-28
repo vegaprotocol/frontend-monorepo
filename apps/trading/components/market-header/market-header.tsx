@@ -50,29 +50,31 @@ export const MarketHeader = () => {
                 trigger={
                   <HeaderTitle>
                     <Tooltip description={t(tooltip)}>
-                      <span className="flex items-center">
+                      <span className="flex items-center gap-4">
                         {marketId && (
-                          <span className="mr-4">
+                          <span>
                             <EmblemByMarket
                               market={marketId}
                               vegaChain={chainId}
                             />
                           </span>
                         )}
-
-                        <span> {data.tradableInstrument.instrument.code}</span>
-
-                        <span className="ml-1 text-xs uppercase text-muted">
-                          {data.tradableInstrument.instrument.product
-                            .__typename &&
-                            ProductTypeShortName[
-                              data.tradableInstrument.instrument.product
-                                .__typename
-                            ]}
-                        </span>
-                        <span className="ml-1">
-                          <MarketIcon data={data} />
-                        </span>
+                        <div>
+                          <div className="text-lg leading-none">
+                            {data.tradableInstrument.instrument.code}
+                          </div>
+                          <div className="flex items-center">
+                            <span className="text-xs uppercase text-muted mr-1">
+                              {data.tradableInstrument.instrument.product
+                                .__typename &&
+                                ProductTypeShortName[
+                                  data.tradableInstrument.instrument.product
+                                    .__typename
+                                ]}
+                            </span>
+                            <MarketIcon data={data} />
+                          </div>
+                        </div>
                       </span>
                     </Tooltip>
                     <VegaIcon name={VegaIconNames.CHEVRON_DOWN} size={14} />
