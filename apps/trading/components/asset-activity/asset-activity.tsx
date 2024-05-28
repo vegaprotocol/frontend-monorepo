@@ -3,7 +3,7 @@ import type BigNumber from 'bignumber.js';
 import { useMemo } from 'react';
 import compact from 'lodash/compact';
 
-import { AgGrid, COL_DEFS } from '@vegaprotocol/datagrid';
+import { AgGrid, COL_DEFS, SetFilter } from '@vegaprotocol/datagrid';
 import {
   type DepositFieldsFragment,
   useDeposits,
@@ -88,7 +88,14 @@ export const AssetActivityDatagrid = ({
       {
         headerName: t('Type'),
         field: 'type',
-        filter: 'agSetColumnFilter',
+        filter: SetFilter,
+        filterParams: {
+          set: {
+            Deposit: t('Deposit'),
+            Withdrawal: t('Withdrawal'),
+            Transfer: t('Transfer'),
+          },
+        },
         valueFormatter: ({ value, data }: { value: string; data: Row }) => {
           let postfix = '';
 

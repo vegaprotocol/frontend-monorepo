@@ -241,8 +241,8 @@ const PortfolioBottomTabs = () => {
   const t = useT();
   return (
     <Tabs storageKey="console-portfolio-bottom">
-      <Tab id="asset-movements" name={t('Asset movements')}>
-        <ErrorBoundary feature="portfolio-asset-movements">
+      <Tab id="asset-movements" name={t('Asset activity')}>
+        <ErrorBoundary feature="portfolio-asset-activity">
           <AssetActivity />
         </ErrorBoundary>
       </Tab>
