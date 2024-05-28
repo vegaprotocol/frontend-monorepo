@@ -21,6 +21,7 @@ import { useDataProvider } from '@vegaprotocol/data-provider';
 import { useState } from 'react';
 import classNames from 'classnames';
 import type { AssetActions } from './accounts-manager';
+import { useChainId } from '@vegaprotocol/wallet-react';
 
 const Button = ({
   onClick,
@@ -82,6 +83,7 @@ export const AccountCard = ({
   const t = useT();
   const expandable = !!partyId && !isReadOnly;
   const [expanded, setExpanded] = useState(initialExpanded && expandable);
+  const { chainId } = useChainId();
   const { data } = useDataProvider({
     dataProvider: aggregatedAccountDataProvider,
     variables: { partyId: partyId || '', assetId: asset.id },
@@ -95,7 +97,7 @@ export const AccountCard = ({
     >
       <div className="relative p-3">
         <header className="flex items-center mb-3">
-          <Emblem asset={asset.id} />
+          <Emblem asset={asset.id} vegaChain={chainId} />
           <span className="grow ml-2 text-lg">{asset.name}</span>
           <div className="z-10">
             <AccountsActionsDropdown

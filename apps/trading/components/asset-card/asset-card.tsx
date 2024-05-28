@@ -1,7 +1,7 @@
 import { useT } from '../../lib/use-t';
 import { Emblem } from '@vegaprotocol/emblem';
 import { useAssetsMapProvider } from '@vegaprotocol/assets';
-import { useVegaWallet } from '@vegaprotocol/wallet-react';
+import { useChainId, useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { aggregatedAccountDataProvider } from '@vegaprotocol/accounts';
 import { addDecimalsFormatNumberQuantum } from '@vegaprotocol/utils';
@@ -15,6 +15,7 @@ export const AssetCard = ({
 }) => {
   const t = useT();
   const { pubKey } = useVegaWallet();
+  const { chainId } = useChainId();
   const { data: account } = useDataProvider({
     dataProvider: aggregatedAccountDataProvider,
     variables: { partyId: pubKey || '', assetId },
@@ -33,7 +34,7 @@ export const AssetCard = ({
       data-testid="asset-card"
     >
       <header className="flex items-center mb-3">
-        <Emblem asset={asset.id} />
+        <Emblem asset={asset.id} vegaChain={chainId} />
         <span className="grow ml-2 text-lg">{asset.symbol}</span>
       </header>
       <div className="flex justify-between">
