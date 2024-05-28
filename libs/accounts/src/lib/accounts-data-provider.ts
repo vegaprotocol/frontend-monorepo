@@ -152,7 +152,22 @@ const getAssetAccountAggregation = (
       available: balanceAccount.available,
       used: a.balance,
     }))
-    .filter((a) => a.used !== '0');
+    .filter((a) => a.used !== '0')
+    .sort((a, b) => {
+      if (a.type === b.type) {
+        if (!a.market || !b.market || a.market.id === b.market.id) {
+          return 0;
+        }
+        return a.market.tradableInstrument.instrument.code >
+          b.market.tradableInstrument.instrument.code
+          ? 1
+          : -1;
+      }
+      if (a.type !== b.type) {
+        return a.type > b.type ? 1 : -1;
+      }
+      return 0;
+    });
   return { ...balanceAccount, breakdown };
 };
 

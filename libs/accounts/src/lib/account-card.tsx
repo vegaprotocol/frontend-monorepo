@@ -51,7 +51,8 @@ const BreakdownItem = ({ data }: { data: AccountFields }) => {
       <dl className="flex items-center">
         <dt className="text-xs font-alpha text-vega-clight-200 dark:text-vega-cdark-200">
           {AccountTypeMapping[data.type]}
-          {data.market && `(${data.market.tradableInstrument.instrument.code})`}
+          {data.market &&
+            ` (${data.market.tradableInstrument.instrument.code})`}
         </dt>
         <dd className="text-right grow text-base leading-tight font-alpha">
           {addDecimalsFormatNumberQuantum(
