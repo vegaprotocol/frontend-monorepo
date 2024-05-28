@@ -1,0 +1,43 @@
+query ExplorerPartyDepositsWithdrawals($partyId: ID!) {
+  partiesConnection(id: $partyId) {
+    edges {
+      node {
+        depositsConnection {
+          edges {
+            node {
+              id
+              asset {
+                id
+              }
+              amount
+              createdTimestamp
+              creditedTimestamp
+              status
+              txHash
+            }
+          }
+        }
+        withdrawalsConnection {
+          edges {
+            node {
+              id
+              createdTimestamp
+              withdrawnTimestamp
+              asset {
+                id
+              }
+              amount
+              status
+              txHash
+              details {
+                ... on Erc20WithdrawalDetails {
+                  receiverAddress
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
