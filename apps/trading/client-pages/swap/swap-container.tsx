@@ -23,6 +23,7 @@ import noop from 'lodash/noop';
 import { getNotionalSize } from '@vegaprotocol/deal-ticket';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { AssetInput, SwapButton, PriceImpactInput } from './swap-form';
+import BigNumber from 'bignumber.js';
 
 const POLLING_TIME = 5000;
 
@@ -76,8 +77,6 @@ export const SwapContainer = () => {
     };
   }, [reloadAccounts, reloadMarketData]);
 
-  const marketPrice = marketData?.lastTradedPrice;
-
   const { spotMarkets, spotAssets } = useMemo(() => {
     const spotAssets: Record<string, AssetFieldsFragment> = {};
     if (!markets) return {};
@@ -127,17 +126,33 @@ export const SwapContainer = () => {
     [accounts, baseAsset]
   );
 
+  const marketPrice =
+    (side === Side.SIDE_BUY
+      ? marketData?.bestOfferPrice // best ask price
+      : marketData?.bestBidPrice) || marketData?.lastTradedPrice; // best bid price
+
   const orderSubmission = useMemo(() => {
     if (!market || !side) return;
+
+    const toleranceFactor = priceImpactTolerance
+      ? Number(priceImpactTolerance) / 100
+      : 0;
+
+    const price =
+      marketPrice &&
+      (side === Side.SIDE_BUY
+        ? new BigNumber(marketPrice).times(1 + toleranceFactor)
+        : new BigNumber(marketPrice).times(1 - toleranceFactor));
+
     return {
       marketId,
       side,
-      type: OrderType.TYPE_LIMIT,
-      price: marketPrice,
+      type: price ? OrderType.TYPE_LIMIT : OrderType.TYPE_MARKET,
+      price: price ? price.toFixed(0) : undefined,
       timeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK,
       size: removeDecimal(quoteAmount, market.positionDecimalPlaces),
     };
-  }, [market, side, marketId, marketPrice, quoteAmount]);
+  }, [market, marketId, marketPrice, priceImpactTolerance, quoteAmount, side]);
 
   useEffect(() => {
     const market = chooseMarket();
