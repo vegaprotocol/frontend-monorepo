@@ -1,6 +1,11 @@
 import uniqBy from 'lodash/uniqBy';
+import compact from 'lodash/compact';
 import { removePaginationWrapper, getEvents } from '@vegaprotocol/utils';
-import { makeDataProvider, useDataProvider } from '@vegaprotocol/data-provider';
+import {
+  makeDataProvider,
+  useDataProvider,
+  defaultAppend as append,
+} from '@vegaprotocol/data-provider';
 import * as Schema from '@vegaprotocol/types';
 import {
   WithdrawalsDocument,
@@ -21,6 +26,10 @@ const sortWithdrawals = (data: WithdrawalFieldsFragment[]) =>
     );
   });
 
+const getPageInfo = (responseData: any) => {
+  return responseData?.party?.withdrawalsConnection?.pageInfo || null;
+};
+
 export const withdrawalProvider = makeDataProvider<
   WithdrawalsQuery,
   WithdrawalFieldsFragment[],
@@ -30,10 +39,15 @@ export const withdrawalProvider = makeDataProvider<
 >({
   query: WithdrawalsDocument,
   subscriptionQuery: WithdrawalEventDocument,
-  getData: (data: WithdrawalsQuery | null) =>
-    sortWithdrawals(
-      removePaginationWrapper(data?.party?.withdrawalsConnection?.edges || [])
-    ),
+  getData: (responseData: WithdrawalsQuery | null) => {
+    if (!responseData?.party?.withdrawalsConnection?.edges?.length) return [];
+
+    const data = compact(responseData.party.withdrawalsConnection.edges).map(
+      (edge) => ({ ...edge.node, cursor: edge.cursor })
+    );
+
+    return sortWithdrawals(data);
+  },
   getDelta: (data: WithdrawalEventSubscription) => data,
   update: (
     data: WithdrawalFieldsFragment[] | null,
@@ -48,12 +62,25 @@ export const withdrawalProvider = makeDataProvider<
     );
     return uniqBy([...incoming, ...(data || [])], 'id');
   },
+  pagination: {
+    getPageInfo,
+    append,
+    first: 3,
+  },
 });
 
-export const useWithdrawals = ({ pubKey }: { pubKey?: string }) => {
+export const useWithdrawals = ({
+  pubKey,
+  dateRange,
+  pagination,
+}: {
+  pubKey?: string;
+  dateRange?: Schema.DateRange;
+  pagination?: Schema.Pagination;
+}) => {
   return useDataProvider({
     dataProvider: withdrawalProvider,
-    variables: { partyId: pubKey || '' },
+    variables: { partyId: pubKey || '', dateRange, pagination },
     skip: !pubKey,
   });
 };

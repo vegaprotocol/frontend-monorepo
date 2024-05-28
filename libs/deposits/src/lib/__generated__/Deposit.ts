@@ -8,10 +8,12 @@ export type DepositFieldsFragment = { __typename?: 'Deposit', id: string, status
 
 export type DepositsQueryVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
+  pagination?: Types.InputMaybe<Types.Pagination>;
+  dateRange?: Types.InputMaybe<Types.DateRange>;
 }>;
 
 
-export type DepositsQuery = { __typename?: 'Query', party?: { __typename?: 'Party', id: string, depositsConnection?: { __typename?: 'DepositsConnection', edges?: Array<{ __typename?: 'DepositEdge', node: { __typename?: 'Deposit', id: string, status: Types.DepositStatus, amount: string, createdTimestamp: any, creditedTimestamp?: any | null, txHash?: string | null, asset: { __typename?: 'Asset', id: string, name: string, symbol: string, decimals: number, quantum: string, status: Types.AssetStatus, source: { __typename: 'BuiltinAsset', maxFaucetAmountMint: string } | { __typename: 'ERC20', contractAddress: string, lifetimeLimit: string, withdrawThreshold: string }, networkTreasuryAccount?: { __typename?: 'AccountBalance', balance: string } | null, globalInsuranceAccount?: { __typename?: 'AccountBalance', balance: string } | null }, party: { __typename?: 'Party', id: string } } } | null> | null } | null } | null };
+export type DepositsQuery = { __typename?: 'Query', party?: { __typename?: 'Party', id: string, depositsConnection?: { __typename?: 'DepositsConnection', edges?: Array<{ __typename?: 'DepositEdge', cursor: string, node: { __typename?: 'Deposit', id: string, status: Types.DepositStatus, amount: string, createdTimestamp: any, creditedTimestamp?: any | null, txHash?: string | null, asset: { __typename?: 'Asset', id: string, name: string, symbol: string, decimals: number, quantum: string, status: Types.AssetStatus, source: { __typename: 'BuiltinAsset', maxFaucetAmountMint: string } | { __typename: 'ERC20', contractAddress: string, lifetimeLimit: string, withdrawThreshold: string }, networkTreasuryAccount?: { __typename?: 'AccountBalance', balance: string } | null, globalInsuranceAccount?: { __typename?: 'AccountBalance', balance: string } | null }, party: { __typename?: 'Party', id: string } } } | null> | null, pageInfo?: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor: string, endCursor: string } | null } | null } | null };
 
 export type DepositEventSubscriptionVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
@@ -37,14 +39,21 @@ export const DepositFieldsFragmentDoc = gql`
 }
     ${AssetFieldsFragmentDoc}`;
 export const DepositsDocument = gql`
-    query Deposits($partyId: ID!) {
+    query Deposits($partyId: ID!, $pagination: Pagination, $dateRange: DateRange) {
   party(id: $partyId) {
     id
-    depositsConnection {
+    depositsConnection(pagination: $pagination, dateRange: $dateRange) {
       edges {
         node {
           ...DepositFields
         }
+        cursor
+      }
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        endCursor
       }
     }
   }
@@ -64,6 +73,8 @@ export const DepositsDocument = gql`
  * const { data, loading, error } = useDepositsQuery({
  *   variables: {
  *      partyId: // value for 'partyId'
+ *      pagination: // value for 'pagination'
+ *      dateRange: // value for 'dateRange'
  *   },
  * });
  */

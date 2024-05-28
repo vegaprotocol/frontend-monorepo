@@ -10,10 +10,12 @@ export type WithdrawalFieldsFragment = { __typename?: 'Withdrawal', id: string, 
 
 export type WithdrawalsQueryVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
+  pagination?: Types.InputMaybe<Types.Pagination>;
+  dateRange?: Types.InputMaybe<Types.DateRange>;
 }>;
 
 
-export type WithdrawalsQuery = { __typename?: 'Query', party?: { __typename?: 'Party', id: string, withdrawalsConnection?: { __typename?: 'WithdrawalsConnection', edges?: Array<{ __typename?: 'WithdrawalEdge', node: { __typename?: 'Withdrawal', id: string, status: Types.WithdrawalStatus, amount: string, createdTimestamp: any, withdrawnTimestamp?: any | null, txHash?: string | null, pendingOnForeignChain: boolean, asset: { __typename?: 'Asset', id: string, name: string, symbol: string, decimals: number, quantum: string, status: Types.AssetStatus, source: { __typename: 'BuiltinAsset', maxFaucetAmountMint: string } | { __typename: 'ERC20', contractAddress: string, lifetimeLimit: string, withdrawThreshold: string }, networkTreasuryAccount?: { __typename?: 'AccountBalance', balance: string } | null, globalInsuranceAccount?: { __typename?: 'AccountBalance', balance: string } | null }, details?: { __typename?: 'Erc20WithdrawalDetails', receiverAddress: string } | null, party: { __typename?: 'Party', id: string } } } | null> | null } | null } | null };
+export type WithdrawalsQuery = { __typename?: 'Query', party?: { __typename?: 'Party', id: string, withdrawalsConnection?: { __typename?: 'WithdrawalsConnection', edges?: Array<{ __typename?: 'WithdrawalEdge', cursor: string, node: { __typename?: 'Withdrawal', id: string, status: Types.WithdrawalStatus, amount: string, createdTimestamp: any, withdrawnTimestamp?: any | null, txHash?: string | null, pendingOnForeignChain: boolean, asset: { __typename?: 'Asset', id: string, name: string, symbol: string, decimals: number, quantum: string, status: Types.AssetStatus, source: { __typename: 'BuiltinAsset', maxFaucetAmountMint: string } | { __typename: 'ERC20', contractAddress: string, lifetimeLimit: string, withdrawThreshold: string }, networkTreasuryAccount?: { __typename?: 'AccountBalance', balance: string } | null, globalInsuranceAccount?: { __typename?: 'AccountBalance', balance: string } | null }, details?: { __typename?: 'Erc20WithdrawalDetails', receiverAddress: string } | null, party: { __typename?: 'Party', id: string } } } | null> | null, pageInfo?: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor: string, endCursor: string } | null } | null } | null };
 
 export type WithdrawalEventSubscriptionVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
@@ -51,14 +53,21 @@ export const WithdrawalFieldsFragmentDoc = gql`
 }
     ${AssetFieldsFragmentDoc}`;
 export const WithdrawalsDocument = gql`
-    query Withdrawals($partyId: ID!) {
+    query Withdrawals($partyId: ID!, $pagination: Pagination, $dateRange: DateRange) {
   party(id: $partyId) {
     id
-    withdrawalsConnection {
+    withdrawalsConnection(pagination: $pagination, dateRange: $dateRange) {
       edges {
         node {
           ...WithdrawalFields
         }
+        cursor
+      }
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        endCursor
       }
     }
   }
@@ -78,6 +87,8 @@ export const WithdrawalsDocument = gql`
  * const { data, loading, error } = useWithdrawalsQuery({
  *   variables: {
  *      partyId: // value for 'partyId'
+ *      pagination: // value for 'pagination'
+ *      dateRange: // value for 'dateRange'
  *   },
  * });
  */
