@@ -28,7 +28,6 @@ import {
 } from '@vegaprotocol/utils';
 import {
   DepositStatus,
-  PageInfo,
   TransferStatus,
   TransferStatusMapping,
   WithdrawalStatus,
@@ -66,6 +65,8 @@ export interface RowTransfer extends RowBase {
 
 export type Row = RowDeposit | RowWithdrawal | RowTransfer;
 
+const PAGE_SIZE = 1000;
+
 /** Used for making all status between deposits/withdraws/transfers consistent */
 export const StatusSet = {
   Pending: 'Pending',
@@ -77,27 +78,19 @@ export const StatusSet = {
 
 export const AssetActivity = () => {
   const { pubKey } = useVegaWallet();
+  const [first, setFirst] = useState(PAGE_SIZE);
 
-  const {
-    data: deposits,
-    pageInfo: depositsPageInfo,
-    load: loadDeposits,
-  } = useDeposits({
+  const { data: deposits, pageInfo: depositsPageInfo } = useDeposits({
     pubKey,
+    pagination: { first },
   });
-  const {
-    data: withdrawals,
-    pageInfo: withdrawalsPageInfo,
-    load: loadWithdrawals,
-  } = useWithdrawals({
+  const { data: withdrawals, pageInfo: withdrawalsPageInfo } = useWithdrawals({
     pubKey,
+    pagination: { first },
   });
-  const {
-    data: transfers,
-    pageInfo: transfersPageInfo,
-    load: loadTransfers,
-  } = useTransfers({
+  const { data: transfers, pageInfo: transfersPageInfo } = useTransfers({
     pubKey,
+    pagination: { first },
   });
 
   const hasNextPage = [
@@ -105,8 +98,6 @@ export const AssetActivity = () => {
     withdrawalsPageInfo?.hasNextPage,
     transfersPageInfo?.hasNextPage,
   ].some((hasNextPage) => hasNextPage);
-
-  console.log(hasNextPage);
 
   const rowData = useMemo(() => {
     return compact(
@@ -122,9 +113,7 @@ export const AssetActivity = () => {
       rowData={rowData}
       pageInfo={{ hasNextPage }}
       load={() => {
-        loadDeposits();
-        loadWithdrawals();
-        loadTransfers();
+        setFirst((curr) => curr + PAGE_SIZE);
       }}
     />
   );
@@ -138,7 +127,7 @@ export const AssetActivityDatagrid = ({
 }: {
   partyId?: string;
   rowData: Row[];
-  pageInfo: { hasNextPage?: boolean | null };
+  pageInfo: { hasNextPage?: boolean };
   load: () => void;
 }) => {
   const t = useT();

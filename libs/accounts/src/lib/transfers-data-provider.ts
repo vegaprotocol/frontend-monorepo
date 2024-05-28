@@ -3,6 +3,7 @@ import {
   makeDataProvider,
   useDataProvider,
   defaultAppend as append,
+  type Cursor,
 } from '@vegaprotocol/data-provider';
 import {
   TransfersDocument,
@@ -15,7 +16,7 @@ import { type Pagination } from '@vegaprotocol/types';
 
 export const transfersProvider = makeDataProvider<
   TransfersQuery,
-  TransferFieldsFragment[],
+  Array<TransferFieldsFragment & Cursor>,
   never,
   never,
   TransfersQueryVariables
@@ -33,7 +34,7 @@ export const transfersProvider = makeDataProvider<
     getPageInfo: (responseData: TransfersQuery) =>
       responseData?.transfersConnection?.pageInfo || null,
     append,
-    first: 3,
+    first: 1000,
   },
 });
 

@@ -6,6 +6,7 @@ import {
   makeDataProvider,
   useDataProvider,
   defaultAppend as append,
+  type Cursor,
 } from '@vegaprotocol/data-provider';
 import {
   BusEventType,
@@ -21,12 +22,12 @@ import {
   type DepositEventSubscriptionVariables,
 } from './__generated__/Deposit';
 
-const getPageInfo = (responseData: any) =>
+const getPageInfo = (responseData: DepositsQuery) =>
   responseData?.party?.depositsConnection?.pageInfo || null;
 
 export const depositsProvider = makeDataProvider<
   DepositsQuery,
-  DepositFieldsFragment[],
+  Array<DepositFieldsFragment & Cursor>,
   DepositEventSubscription,
   DepositEventSubscription,
   DepositEventSubscriptionVariables
@@ -62,7 +63,7 @@ export const depositsProvider = makeDataProvider<
   pagination: {
     getPageInfo,
     append,
-    first: 3,
+    first: 1000,
   },
 });
 

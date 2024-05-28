@@ -1,10 +1,11 @@
 import uniqBy from 'lodash/uniqBy';
 import compact from 'lodash/compact';
-import { removePaginationWrapper, getEvents } from '@vegaprotocol/utils';
+import { getEvents } from '@vegaprotocol/utils';
 import {
   makeDataProvider,
   useDataProvider,
   defaultAppend as append,
+  type Cursor,
 } from '@vegaprotocol/data-provider';
 import * as Schema from '@vegaprotocol/types';
 import {
@@ -26,13 +27,13 @@ const sortWithdrawals = (data: WithdrawalFieldsFragment[]) =>
     );
   });
 
-const getPageInfo = (responseData: any) => {
+const getPageInfo = (responseData: WithdrawalsQuery) => {
   return responseData?.party?.withdrawalsConnection?.pageInfo || null;
 };
 
 export const withdrawalProvider = makeDataProvider<
   WithdrawalsQuery,
-  WithdrawalFieldsFragment[],
+  Array<WithdrawalFieldsFragment & Cursor>,
   WithdrawalEventSubscription,
   WithdrawalEventSubscription,
   WithdrawalEventSubscriptionVariables
@@ -65,7 +66,7 @@ export const withdrawalProvider = makeDataProvider<
   pagination: {
     getPageInfo,
     append,
-    first: 3,
+    first: 1000,
   },
 });
 
