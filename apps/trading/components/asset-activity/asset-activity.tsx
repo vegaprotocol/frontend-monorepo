@@ -1,34 +1,15 @@
-import type { ColDef } from 'ag-grid-community';
-import type BigNumber from 'bignumber.js';
+import { type ColDef, type GridApi } from 'ag-grid-community';
 import { useMemo, useState } from 'react';
-import compact from 'lodash/compact';
 
 import { AgGrid, COL_DEFS, SetFilter } from '@vegaprotocol/datagrid';
-import {
-  type DepositFieldsFragment,
-  useDeposits,
-} from '@vegaprotocol/deposits';
-import {
-  type WithdrawalFieldsFragment,
-  useWithdrawals,
-} from '@vegaprotocol/withdraws';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
-import {
-  useAssetDetailsDialogStore,
-  type AssetFieldsFragment,
-} from '@vegaprotocol/assets';
-import {
-  type TransferFieldsFragment,
-  useTransfers,
-} from '@vegaprotocol/accounts';
+import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import {
   addDecimalsFormatNumber,
   getDateTimeFormat,
-  toBigNum,
 } from '@vegaprotocol/utils';
 import {
   DepositStatus,
-  PageInfo,
   TransferStatus,
   TransferStatusMapping,
   WithdrawalStatus,
@@ -41,30 +22,7 @@ import { DepositToFromCell } from './deposit-to-from-cell';
 import { WithdrawalToFromCell } from './withdrawal-to-form-cell';
 import { TransferToFromCell } from './transfer-to-from-cell';
 import { Pagination } from '@vegaprotocol/datagrid';
-
-export interface RowBase {
-  asset: AssetFieldsFragment | undefined;
-  amount: string;
-  bAmount: BigNumber;
-  createdTimestamp: Date;
-}
-
-export interface RowDeposit extends RowBase {
-  type: 'Deposit';
-  detail: DepositFieldsFragment;
-}
-
-export interface RowWithdrawal extends RowBase {
-  type: 'Withdrawal';
-  detail: WithdrawalFieldsFragment;
-}
-
-export interface RowTransfer extends RowBase {
-  type: 'Transfer';
-  detail: TransferFieldsFragment;
-}
-
-export type Row = RowDeposit | RowWithdrawal | RowTransfer;
+import { type Row, useAssetActivity } from './use-asset-activity';
 
 /** Used for making all status between deposits/withdraws/transfers consistent */
 export const StatusSet = {
@@ -78,54 +36,14 @@ export const StatusSet = {
 export const AssetActivity = () => {
   const { pubKey } = useVegaWallet();
 
-  const {
-    data: deposits,
-    pageInfo: depositsPageInfo,
-    load: loadDeposits,
-  } = useDeposits({
-    pubKey,
-  });
-  const {
-    data: withdrawals,
-    pageInfo: withdrawalsPageInfo,
-    load: loadWithdrawals,
-  } = useWithdrawals({
-    pubKey,
-  });
-  const {
-    data: transfers,
-    pageInfo: transfersPageInfo,
-    load: loadTransfers,
-  } = useTransfers({
-    pubKey,
-  });
-
-  const hasNextPage = [
-    depositsPageInfo?.hasNextPage,
-    withdrawalsPageInfo?.hasNextPage,
-    transfersPageInfo?.hasNextPage,
-  ].some((hasNextPage) => hasNextPage);
-
-  console.log(hasNextPage);
-
-  const rowData = useMemo(() => {
-    return compact(
-      [...(deposits || []), ...(withdrawals || []), ...(transfers || [])].map(
-        normalizeItem
-      )
-    );
-  }, [deposits, withdrawals, transfers]);
+  const { data, pageInfo, loadMore } = useAssetActivity();
 
   return (
     <AssetActivityDatagrid
       partyId={pubKey}
-      rowData={rowData}
-      pageInfo={{ hasNextPage }}
-      load={() => {
-        loadDeposits();
-        loadWithdrawals();
-        loadTransfers();
-      }}
+      rowData={data}
+      pageInfo={pageInfo}
+      load={loadMore}
     />
   );
 };
@@ -138,11 +56,12 @@ export const AssetActivityDatagrid = ({
 }: {
   partyId?: string;
   rowData: Row[];
-  pageInfo: { hasNextPage?: boolean | null };
+  pageInfo: { hasNextPage?: boolean };
   load: () => void;
 }) => {
   const t = useT();
   const open = useAssetDetailsDialogStore((store) => store.open);
+  const [hasDisplayedRows, setHasDisplayedRows] = useState(true);
   const columnDefs = useMemo<ColDef[]>(
     () => [
       {
@@ -302,65 +221,25 @@ export const AssetActivityDatagrid = ({
   );
 
   return (
-    <div className="h-full flex flex-col">
+    <div className="relative h-full flex flex-col">
       <AgGrid
         columnDefs={columnDefs}
         defaultColDef={COL_DEFS.default}
         rowData={rowData}
+        onFilterChanged={({ api }: { api: GridApi }) => {
+          setHasDisplayedRows(!!api.getDisplayedRowCount());
+        }}
+        onRowDataUpdated={({ api }: { api: GridApi }) => {
+          setHasDisplayedRows(!!api.getDisplayedRowCount());
+        }}
       />
       <Pagination
         count={rowData.length}
         pageInfo={pageInfo}
         onLoad={load}
-        hasDisplayedRows={true}
+        hasDisplayedRows={hasDisplayedRows}
         showRetentionMessage={true}
       />
     </div>
   );
-};
-
-const normalizeItem = (
-  item:
-    | DepositFieldsFragment
-    | WithdrawalFieldsFragment
-    | TransferFieldsFragment
-): Row | null => {
-  if (!item.asset) return null;
-
-  const bAmount = toBigNum(item.amount, item.asset.decimals);
-
-  if (item.__typename === 'Withdrawal') {
-    return {
-      asset: item.asset,
-      type: 'Withdrawal',
-      amount: item.amount,
-      bAmount,
-      createdTimestamp: new Date(item.createdTimestamp),
-      detail: item,
-    };
-  }
-
-  if (item.__typename === 'Deposit') {
-    return {
-      asset: item.asset,
-      type: 'Deposit',
-      amount: item.amount,
-      bAmount,
-      createdTimestamp: new Date(item.createdTimestamp),
-      detail: item,
-    };
-  }
-
-  if (item.__typename === 'Transfer') {
-    return {
-      asset: item.asset,
-      type: 'Transfer',
-      amount: item.amount,
-      bAmount,
-      createdTimestamp: new Date(item.timestamp),
-      detail: item,
-    };
-  }
-
-  return null;
 };
