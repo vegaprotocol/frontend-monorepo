@@ -17,7 +17,7 @@ const useFeesTableColumnDefs = (): ColDef[] => {
       [
         {
           field: 'code',
-          cellRenderer: 'MarketCodeCell',
+          cellRenderer: MarketCodeCell,
           pinned: 'left',
           width: 150,
         },
@@ -71,43 +71,44 @@ export const MarketFees = ({
   volumeDiscount: number;
 }) => {
   const navigateWithMeta = useNavigateWithMeta();
-
   const colDef = useFeesTableColumnDefs();
 
-  const rows = compact(markets || []).map((m) => {
-    const infraFee = new BigNumber(m.fees.factors.infrastructureFee);
-    const makerFee = new BigNumber(m.fees.factors.makerFee);
-    const liquidityFee = new BigNumber(m.fees.factors.liquidityFee);
-    const totalFee = infraFee.plus(makerFee).plus(liquidityFee);
+  const rows = compact(markets || []).map(
+    (m: MarketMaybeWithDataAndCandles) => {
+      const infraFee = new BigNumber(m.fees.factors.infrastructureFee);
+      const makerFee = new BigNumber(m.fees.factors.makerFee);
+      const liquidityFee = new BigNumber(m.fees.factors.liquidityFee);
+      const totalFee = infraFee.plus(makerFee).plus(liquidityFee);
 
-    const feeAfterDiscount = getAdjustedFee(
-      [infraFee, makerFee, liquidityFee],
-      [new BigNumber(referralDiscount), new BigNumber(volumeDiscount)]
-    );
+      const feeAfterDiscount = getAdjustedFee(
+        [infraFee, makerFee, liquidityFee],
+        [new BigNumber(referralDiscount), new BigNumber(volumeDiscount)]
+      );
 
-    return {
-      id: m.id,
-      code: m.tradableInstrument.instrument.code,
-      productType: m.tradableInstrument.instrument.product.__typename,
-      infraFee: formatPercentage(infraFee.toNumber()),
-      makerFee: formatPercentage(makerFee.toNumber()),
-      liquidityFee: formatPercentage(liquidityFee.toNumber()),
-      totalFee: formatPercentage(totalFee.toNumber()),
-      feeAfterDiscount: formatPercentage(feeAfterDiscount),
-      parentMarketID: m.parentMarketID,
-      successorMarketID: m.successorMarketID,
-    };
-  });
+      return {
+        id: m.id,
+        code: m.tradableInstrument.instrument.code,
+        productType: m.tradableInstrument.instrument.product.__typename,
+        infraFee: formatPercentage(infraFee.toNumber()),
+        makerFee: formatPercentage(makerFee.toNumber()),
+        liquidityFee: formatPercentage(liquidityFee.toNumber()),
+        totalFee: formatPercentage(totalFee.toNumber()),
+        feeAfterDiscount: formatPercentage(feeAfterDiscount),
+        parentMarketID: m.parentMarketID,
+        successorMarketID: m.successorMarketID,
+      };
+    }
+  );
 
   return (
     <div className="border rounded-lg md:rounded-sm overflow-hidden border-default">
       <AgGrid
         columnDefs={colDef}
         rowData={rows}
+        components={components}
         getRowId={({ data }) => data.id}
         defaultColDef={feesTableDefaultColDef}
         domLayout="autoHeight"
-        components={components}
         rowHeight={45}
         rowClass="cursor-pointer"
         onRowClicked={({ data, event }) => {
