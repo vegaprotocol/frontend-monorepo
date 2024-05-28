@@ -40,7 +40,6 @@ const Title = () => {
   const envTriggerMapping = useEnvTriggerMapping();
   const { VEGA_ENV } = useEnvironment();
   const networkName = envTriggerMapping[VEGA_ENV];
-
   const title = useMemo(() => {
     if (!pageTitle) return DEFAULT_TITLE;
     if (networkName) return `${pageTitle} [${networkName}]`;
