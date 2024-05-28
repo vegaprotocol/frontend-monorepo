@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import type { AssetFieldsFragment } from '@vegaprotocol/assets';
 import { EmblemByAsset } from '@vegaprotocol/emblem';
 import {
@@ -6,6 +6,8 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  Pill,
+  TradingInput,
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
@@ -15,7 +17,7 @@ import { useT } from '../../lib/use-t';
 
 export const AssetInput = ({
   label,
-  amount: initialAmount,
+  amount,
   asset,
   balance,
   accountAssetIds,
@@ -23,6 +25,7 @@ export const AssetInput = ({
   onAmountChange,
   onAssetChange,
   accountWarning = true,
+  pubKey,
 }: {
   label: string;
   amount: string;
@@ -33,13 +36,9 @@ export const AssetInput = ({
   onAmountChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onAssetChange: (asset: AssetFieldsFragment) => void;
   accountWarning?: boolean;
+  pubKey?: string;
 }) => {
   const t = useT();
-  const [amount, setAmount] = useState(initialAmount);
-
-  useEffect(() => {
-    setAmount(initialAmount);
-  }, [initialAmount]);
 
   return (
     <div className="dark:bg-vega-cdark-700 bg-vega-clight-700 p-4 rounded-lg border-gray-700 border flex flex-col gap-1">
@@ -48,7 +47,6 @@ export const AssetInput = ({
         <input
           value={amount}
           onChange={(e) => {
-            setAmount(e.target.value);
             onAmountChange(e);
           }}
           className="w-[120px] dark:bg-vega-cdark-800 bg-vega-clight-500 p-2 rounded-lg mr-2 text-center"
@@ -63,6 +61,7 @@ export const AssetInput = ({
         <span>{/* {quoteAmount && `$${quoteAmount}`} */}</span>
         {accountWarning &&
         accountAssetIds &&
+        !!pubKey &&
         asset &&
         !accountAssetIds.includes(asset.id) ? (
           <span className="text-warning text-xs">
@@ -94,36 +93,56 @@ export const SwapButton = ({ onClick }: { onClick: () => void }) => (
 
 export const PriceImpactInput = ({
   value,
-  priceImpactType,
   onValueChange,
-  onTypeToggle,
 }: {
   value: string;
-  priceImpactType: 'auto' | 'custom';
-  onValueChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onTypeToggle: () => void;
+  onValueChange: (value: string) => void;
 }) => {
   const t = useT();
+  const [priceImpactType, setPriceImpactType] = useState<'custom' | 'auto'>(
+    'custom'
+  );
+  const autoValues = ['0.1', '0.5', '1'];
+
   return (
     <div className="mb-4">
-      <div className="flex justify-between items-center mb-2 mt-2 text-gray-500">
+      <div className="flex justify-between items-center mb-2 mt-2 text-gray-500 text-sm">
         <span>{t('Price impact tolerance')}</span>
       </div>
+      <div className="flex items-center pb-1">
+        <span className="w-16 h-10 p-2 rounded-lg mr-2 text-center text-md">
+          {value || '0'}
+        </span>
+        <span>%</span>
+        <Pill className="ml-4 dark:bg-vega-cdark-700 bg-vega-clight-600 hover:bg-vega-clight-800 hover:dark:bg-vega-cdark-800 p-2 rounded-lg text-sm">
+          {t(priceImpactType === 'auto' ? 'AUTO' : 'CUSTOM')}
+        </Pill>
+      </div>
       <div className="flex items-center">
-        <input
+        {autoValues.map((val) => (
+          <button
+            key={val}
+            type="button"
+            value={value}
+            onClick={() => {
+              onValueChange(val);
+              setPriceImpactType('auto');
+            }}
+            className="w-16 h-8 text-md dark:bg-vega-cdark-800 bg-vega-clight-500 p-1 rounded-lg mr-2 text-center"
+          >
+            {val} %
+          </button>
+        ))}
+        <TradingInput
           type="number"
           value={value}
-          onChange={onValueChange}
-          className="w-16 dark:bg-vega-cdark-800 bg-vega-clight-500 p-2 rounded-lg mr-2 text-center"
+          onChange={(e) => {
+            onValueChange(e.target.value);
+            setPriceImpactType('custom');
+          }}
+          appendElement="%"
+          className="w-20 h-10 text-md dark:bg-vega-cdark-800 bg-vega-clight-500 p-2 rounded-lg mr-2 text-center"
         />
-        <span>%</span>
-        <button
-          type="button"
-          className="ml-4 dark:bg-vega-cdark-700 bg-vega-clight-600 hover:bg-vega-clight-800 hover:dark:bg-vega-cdark-800 p-2 rounded-lg text-sm"
-          onClick={onTypeToggle}
-        >
-          {t(priceImpactType === 'auto' ? 'AUTO' : 'CUSTOM')}
-        </button>
       </div>
     </div>
   );

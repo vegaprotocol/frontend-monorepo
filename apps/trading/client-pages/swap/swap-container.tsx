@@ -56,9 +56,6 @@ export const SwapContainer = () => {
 
   const [quoteAsset, setQuoteAsset] = useState<AssetFieldsFragment>();
   const [baseAsset, setBaseAsset] = useState<AssetFieldsFragment>();
-  const [priceImpactType, setPriceImpactType] = useState<'auto' | 'custom'>(
-    'custom'
-  );
   const [side, setSide] = useState<Side>();
   const [marketId, setMarketId] = useState<string>('');
   const [market, setMarket] = useState<MarketFieldsFragment>();
@@ -206,13 +203,14 @@ export const SwapContainer = () => {
         <div className="flex flex-col w-full gap-2">
           <AssetInput
             label={t('You pay')}
-            amount={quoteAmount}
+            amount={quoteAmount || ''}
             onAmountChange={(e) => setValue('quoteAmount', e.target.value)}
             asset={quoteAsset}
             onAssetChange={setQuoteAsset}
             balance={quoteAssetBalance}
             accountAssetIds={accountAssetIds}
             assets={spotAssets}
+            pubKey={pubKey}
           />
           <SwapButton
             onClick={() => {
@@ -222,7 +220,7 @@ export const SwapContainer = () => {
           />
           <AssetInput
             label={t('You receive')}
-            amount={baseAmount}
+            amount={baseAmount || ''}
             asset={baseAsset}
             balance={baseAssetBalance}
             accountAssetIds={accountAssetIds}
@@ -230,17 +228,12 @@ export const SwapContainer = () => {
             onAssetChange={setBaseAsset}
             onAmountChange={(e) => setValue('baseAmount', e.target.value)}
             accountWarning={false}
+            pubKey={pubKey}
           />
         </div>
         <PriceImpactInput
-          value={priceImpactTolerance}
-          onValueChange={(e) =>
-            setValue('priceImpactTolerance', e.target.value)
-          }
-          priceImpactType={priceImpactType}
-          onTypeToggle={() =>
-            setPriceImpactType(priceImpactType === 'auto' ? 'custom' : 'auto')
-          }
+          value={priceImpactTolerance || ''}
+          onValueChange={(e) => setValue('priceImpactTolerance', e)}
         />
         <button
           type="submit"
@@ -259,7 +252,7 @@ export const SwapContainer = () => {
         </div>
 
         <div className="mt-4 text-center text-gray-500">
-          {`TESTING: Side ${side} at market price ${marketPrice}`}
+          {`TESTING: Side ${side} at market price ${marketPrice} at price tolerance ${priceImpactTolerance}`}
         </div>
       </div>
     </form>
