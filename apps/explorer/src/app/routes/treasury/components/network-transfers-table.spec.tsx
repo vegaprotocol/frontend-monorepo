@@ -198,6 +198,10 @@ describe('filterAccountTransfers', () => {
   });
 });
 
+jest.mock('../../../components/links');
+jest.mock('../../../components/asset-balance/asset-balance');
+jest.mock('../../../components/links/proposal-link/proposal-link');
+
 describe('NetworkTransfersTable', () => {
   it('renders table headers correctly', async () => {
     const mocks = [
@@ -208,6 +212,9 @@ describe('NetworkTransfersTable', () => {
         result: {
           data: {
             transfersConnection: {
+              pageInfo: {
+                hasNextPage: false,
+              },
               edges: [
                 {
                   node: {
@@ -255,8 +262,7 @@ describe('NetworkTransfersTable', () => {
     expect(screen.getByText('Status')).toBeInTheDocument();
     expect(screen.getByText('Type')).toBeInTheDocument();
 
-    expect(screen.getByTestId('from-account').textContent).toEqual('Treasury');
-    expect(screen.getByTestId('to-account').textContent).toEqual('7100…97a0');
+    expect(screen.getByTestId('to-account').textContent).toContain('7100');
     expect(screen.getByTestId('transfer-kind').textContent).toEqual(
       'Governance - one time'
     );

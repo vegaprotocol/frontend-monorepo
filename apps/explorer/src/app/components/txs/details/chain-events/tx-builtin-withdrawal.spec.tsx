@@ -15,6 +15,8 @@ const fullMock: Withdrawal = {
   amount: 'amount123',
 };
 
+jest.mock('../../../links/');
+
 describe('Chain Event: Builtin asset withdrawal', () => {
   it('Renders nothing if no good data is provided', () => {
     const mock = undefined as unknown as Withdrawal;
@@ -73,8 +75,8 @@ describe('Chain Event: Builtin asset withdrawal', () => {
       throw new Error('Party link does not exist');
     }
 
-    expect(partyLink.parentElement.tagName).toEqual('A');
-    expect(partyLink.parentElement.getAttribute('href')).toEqual(
+    expect(partyLink.tagName).toEqual('A');
+    expect(partyLink.getAttribute('href')).toEqual(
       `/parties/${fullMock.partyId}`
     );
 
@@ -83,6 +85,6 @@ describe('Chain Event: Builtin asset withdrawal', () => {
     if (!assetLink.parentElement) {
       throw new Error('Asset link does not exist');
     }
-    expect(assetLink.parentElement.textContent).toEqual(fullMock.vegaAssetId);
+    expect(assetLink.textContent).toEqual(fullMock.vegaAssetId);
   });
 });

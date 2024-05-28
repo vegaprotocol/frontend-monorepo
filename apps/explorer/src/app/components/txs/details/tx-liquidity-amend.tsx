@@ -5,7 +5,7 @@ import type { TendermintBlocksResponse } from '../../../routes/blocks/tendermint
 import { TxDetailsShared } from './shared/tx-details-shared';
 import { TableCell, TableRow, TableWithTbody } from '../../table';
 import type { components } from '../../../../types/explorer';
-import PriceInMarket from '../../price-in-market/price-in-market';
+import { PriceInMarket } from '../../price-in-market/price-in-market';
 import BigNumber from 'bignumber.js';
 
 export type LiquidityAmendment =

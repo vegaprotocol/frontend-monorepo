@@ -2,6 +2,7 @@ import { render } from '@testing-library/react';
 import { ReferralTeam } from './team';
 import type { CreateReferralSet } from './team';
 import { MockedProvider } from '@apollo/client/testing';
+import { MockNodeNames } from '../../../../mocks/links';
 
 describe('ReferralTeam', () => {
   const team = {
@@ -18,9 +19,11 @@ describe('ReferralTeam', () => {
   const mockId = '123456';
   const mockCreator = 'JohnDoe';
 
+  jest.mock('../../../links');
+
   it('should render the team name', () => {
     const { getByText } = render(
-      <MockedProvider>
+      <MockedProvider mocks={[MockNodeNames]}>
         <ReferralTeam tx={mockTx} id={mockId} creator={mockCreator} />
       </MockedProvider>
     );
@@ -29,7 +32,7 @@ describe('ReferralTeam', () => {
 
   it('should render the team ID', () => {
     const { getByText } = render(
-      <MockedProvider>
+      <MockedProvider mocks={[MockNodeNames]}>
         <ReferralTeam tx={mockTx} id={mockId} creator={mockCreator} />
       </MockedProvider>
     );
@@ -39,7 +42,7 @@ describe('ReferralTeam', () => {
 
   it('should render the creator', () => {
     const { getByText } = render(
-      <MockedProvider>
+      <MockedProvider mocks={[MockNodeNames]}>
         <ReferralTeam tx={mockTx} id={mockId} creator={mockCreator} />
       </MockedProvider>
     );
@@ -49,7 +52,7 @@ describe('ReferralTeam', () => {
 
   it('should render the team URL', () => {
     const { getByText } = render(
-      <MockedProvider>
+      <MockedProvider mocks={[MockNodeNames]}>
         <ReferralTeam tx={mockTx} id={mockId} creator={mockCreator} />
       </MockedProvider>
     );
@@ -59,7 +62,7 @@ describe('ReferralTeam', () => {
 
   it('should render the avatar URL', () => {
     const { getByText } = render(
-      <MockedProvider>
+      <MockedProvider mocks={[MockNodeNames]}>
         <ReferralTeam tx={mockTx} id={mockId} creator={mockCreator} />
       </MockedProvider>
     );
@@ -69,7 +72,7 @@ describe('ReferralTeam', () => {
 
   it('should render the open status as a tick if closed is falsy', () => {
     const { getByTestId } = render(
-      <MockedProvider>
+      <MockedProvider mocks={[MockNodeNames]}>
         <ReferralTeam tx={mockTx} id={mockId} creator={mockCreator} />
       </MockedProvider>
     );
@@ -84,7 +87,7 @@ describe('ReferralTeam', () => {
     };
 
     const { getByTestId } = render(
-      <MockedProvider>
+      <MockedProvider mocks={[MockNodeNames]}>
         <ReferralTeam tx={m} id={mockId} creator={mockCreator} />
       </MockedProvider>
     );

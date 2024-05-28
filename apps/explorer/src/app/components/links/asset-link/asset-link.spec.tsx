@@ -15,9 +15,11 @@ function renderComponent(id: string, mock: MockedResponse[]) {
   );
 }
 
+jest.mock('../../emblem-with-chain/emblem-with-chain');
+
 describe('AssetLink', () => {
   it('renders the asset id when not found and makes the button disabled', async () => {
-    const res = render(renderComponent('123', []));
+    const res = render(renderComponent('123', [mockAssetA1]));
     expect(res.getByText('123')).toBeInTheDocument();
     expect(await res.findByTestId('asset-link')).toBeDisabled();
     await waitFor(async () => {

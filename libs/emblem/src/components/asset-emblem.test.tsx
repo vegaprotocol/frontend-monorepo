@@ -15,7 +15,6 @@ describe('EmblemByAsset', () => {
 
     const emblemImage = getByAltText('Emblem');
 
-    expect(emblemImage).toBeInTheDocument();
     expect(emblemImage).toHaveAttribute(
       'src',
       'https://icon.vega.xyz/vega/vega-chain/asset/123/logo.svg'
@@ -32,7 +31,6 @@ describe('EmblemByAsset', () => {
 
     const emblemImage = getByAltText('Emblem');
 
-    expect(emblemImage).toBeInTheDocument();
     expect(emblemImage).toHaveAttribute(
       'src',
       'https://icon.vega.xyz/vega/vega-mainnet-0011/asset/123/logo.svg'

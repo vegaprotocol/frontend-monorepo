@@ -3,7 +3,13 @@ from rewards_test_ids import *
 from typing import Tuple, Generator
 import vega_sim.proto.vega as vega_protos
 from playwright.sync_api import Page, expect
-from conftest import init_vega, init_page, auth_setup, risk_accepted_setup, cleanup_container
+from conftest import (
+    init_vega,
+    init_page,
+    auth_setup,
+    risk_accepted_setup,
+    cleanup_container,
+)
 from fixtures.market import setup_continuous_market
 from actions.utils import next_epoch, change_keys
 from wallet_config import MM_WALLET
@@ -15,8 +21,7 @@ def setup_environment(request, browser) -> Generator[Tuple[Page, str, str], None
     with init_vega(request) as vega_instance:
         request.addfinalizer(lambda: cleanup_container(vega_instance))
 
-        tDAI_market, tDAI_asset_id = setup_market_with_reward_program(
-            vega_instance)
+        tDAI_market, tDAI_asset_id = setup_market_with_reward_program(vega_instance)
 
         with init_page(vega_instance, browser, request) as page:
             risk_accepted_setup(page)
@@ -35,22 +40,6 @@ def setup_market_with_reward_program(vega: VegaServiceNull):
     vega.mint(key_name=PARTY_A.name, asset=tDAI_asset_id, amount=100000)
     vega.mint(key_name=PARTY_D.name, asset=tDAI_asset_id, amount=100000)
     next_epoch(vega=vega)
-    vega.update_network_parameter(
-        proposal_key=MM_WALLET.name,
-        parameter="rewards.activityStreak.benefitTiers",
-        new_value=ACTIVITY_STREAKS,
-    )
-    print("update_network_parameter activity done")
-    vega.wait_fn(1)
-    vega.wait_for_total_catchup()
-
-    vega.update_network_parameter(
-        proposal_key=MM_WALLET.name,
-        parameter="rewards.vesting.benefitTiers",
-        new_value=VESTING,
-    )
-    vega.wait_fn(1)
-    vega.wait_for_total_catchup()
 
     tDAI_asset_id = vega.find_asset_id(symbol="tDAI")
     vega.update_network_parameter(
@@ -152,8 +141,9 @@ def setup_market_with_reward_program(vega: VegaServiceNull):
     return tDAI_market, tDAI_asset_id
 
 
-def test_network_reward_pot(setup_environment: Tuple[Page, str, str],
-                            ) -> None:
+def test_network_reward_pot(
+    setup_environment: Tuple[Page, str, str],
+) -> None:
     page, tDAI_market, tDAI_asset_id = setup_environment
     expect(page.get_by_test_id(TOTAL_REWARDS)).to_have_text("183.33333 tDAI")
 
@@ -163,11 +153,25 @@ def test_reward_multiplier(
 ) -> None:
     page, tDAI_market, tDAI_asset_id = setup_environment
     expect(page.get_by_test_id(COMBINED_MULTIPLIERS)).to_have_text("4x")
-    expect(page.get_by_test_id(STREAK_REWARD_MULTIPLIER_VALUE)).to_have_text(
-        "2x"
+    expect(page.get_by_test_id(STREAK_REWARD_MULTIPLIER_VALUE)).to_have_text("2x")
+    expect(page.get_by_test_id(HOARDER_REWARD_MULTIPLIER_VALUE)).to_have_text("2x")
+
+
+def test_hoarder_bonus(
+    setup_environment: Tuple[Page, str, str],
+) -> None:
+    page, tDAI_market, tDAI_asset_id = setup_environment
+    expect(page.get_by_test_id(HOARDER_BONUS_TOTAL_HOARDED)).to_contain_text(
+        "18,333,333"
     )
-    expect(page.get_by_test_id(HOARDER_REWARD_MULTIPLIER_VALUE)).to_have_text(
-        "2x"
+
+
+def test_activity_streak(
+    setup_environment: Tuple[Page, str, str],
+) -> None:
+    page, tDAI_market, tDAI_asset_id = setup_environment
+    expect(page.get_by_test_id(EPOCH_STREAK)).to_have_text(
+        "Active trader: 7 epochs so far (Tier 1 as of last epoch)"
     )
 
 
@@ -176,12 +180,13 @@ def test_reward_history(
 ) -> None:
     page, tDAI_market, tDAI_asset_id = setup_environment
     page.locator('[name="fromEpoch"]').fill("1")
-    
+
     expect((page.get_by_role(ROW).locator(PRICE_TAKING_COL_ID)).nth(1)).to_have_text(
         "299.99999100.00%"
     )
-    expect((page.get_by_role(ROW).locator(TOTAL_COL_ID)).nth(
-        1)).to_have_text("299.99999")
+    expect((page.get_by_role(ROW).locator(TOTAL_COL_ID)).nth(1)).to_have_text(
+        "299.99999"
+    )
     page.get_by_test_id(EARNED_BY_ME_BUTTON).click()
     expect((page.get_by_role(ROW).locator(TOTAL_COL_ID)).nth(1)).to_have_text(
         "183.33333"
@@ -192,7 +197,7 @@ def test_epoch_counter(
     setup_environment: Tuple[Page, str, str],
 ) -> None:
     page, tDAI_market, tDAI_asset_id = setup_environment
-    expect(page.get_by_test_id("epoch-countdown")).to_contain_text("Epoch 12")
+    expect(page.get_by_test_id("epoch-countdown")).to_contain_text("Epoch 10")
 
 
 def test_staking_reward(
@@ -202,22 +207,40 @@ def test_staking_reward(
     expect(page.get_by_test_id("active-rewards-card")).to_have_count(2)
     staking_reward_card = page.get_by_test_id("active-rewards-card").nth(1)
     expect(staking_reward_card).to_be_visible()
-    expect(staking_reward_card.get_by_test_id(
-        "entity-scope")).to_have_text("Individual")
-    expect(staking_reward_card.get_by_test_id(
-        "locked-for")).to_have_text("0 epochs")
-    expect(staking_reward_card.get_by_test_id(
-        "reward-value")).to_have_text("100.00")
-    expect(staking_reward_card.get_by_test_id(
-        "distribution-strategy")).to_have_text("Pro rata")
+    expect(staking_reward_card.get_by_test_id("entity-scope")).to_have_text(
+        "Individual"
+    )
+    expect(staking_reward_card.get_by_test_id("locked-for")).to_have_text("0 epochs")
+    expect(staking_reward_card.get_by_test_id("reward-value")).to_have_text("100.00")
+    expect(staking_reward_card.get_by_test_id("distribution-strategy")).to_have_text(
+        "Pro rata"
+    )
     expect(staking_reward_card.get_by_test_id("dispatch-metric-info")).to_have_text(
         "Staking rewards"
     )
-    expect(staking_reward_card.get_by_test_id(
-        "assessed-over")).to_have_text("1 epoch")
-    expect(staking_reward_card.get_by_test_id(
-        "scope")).to_have_text("Eligible ")
-    expect(staking_reward_card.get_by_test_id(
-        "staking-requirement")).to_have_text("1.00")
-    expect(staking_reward_card.get_by_test_id(
-        "average-position")).to_have_text("-")
+    expect(staking_reward_card.get_by_test_id("assessed-over")).to_have_text("1 epoch")
+    expect(staking_reward_card.get_by_test_id("scope")).to_have_text("Eligible ")
+    expect(staking_reward_card.get_by_test_id("staking-requirement")).to_have_text(
+        "1.00"
+    )
+    expect(staking_reward_card.get_by_test_id("average-position")).to_have_text("-")
+
+
+def test_redeem(
+    setup_environment: Tuple[Page, str, str],
+) -> None:
+    page, tDAI_market, tDAI_asset_id = setup_environment
+    page.get_by_test_id("redeem-rewards-button").click()
+    available_to_withdraw = page.get_by_test_id(
+        "available-to-withdraw-value"
+    ).text_content()
+    option_value = page.locator(
+        '[data-testid="transfer-form"] [name="fromAccount"] option[value^="ACCOUNT_TYPE_VESTED_REWARDS"]'
+    ).first.get_attribute("value")
+
+    page.select_option(
+        '[data-testid="transfer-form"] [name="fromAccount"]', option_value
+    )
+
+    page.get_by_test_id("use-max-button").first.click()
+    expect(page.get_by_test_id(TRANSFER_AMOUNT)).to_have_text(available_to_withdraw)

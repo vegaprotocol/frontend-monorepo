@@ -74,7 +74,10 @@ def test_market_lifecycle(proposed_market, vega: VegaServiceNull, page: Page):
         wallet=vega.wallet,
     )
 
+    vega.wait_fn(1)
+    vega.wait_for_total_catchup()
     # "wait" for market to be approved and enacted
+    next_epoch(vega=vega)
     next_epoch(vega=vega)
     # check that market is in pending state
     expect(trading_mode).to_have_text("Opening auction")

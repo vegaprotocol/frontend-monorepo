@@ -162,6 +162,36 @@ function renderExistingAmend(
         },
       },
     },
+    {
+      request: {
+        query: ExplorerMarketDocument,
+        variables: {
+          id: '789',
+        },
+      },
+      result: {
+        data: {
+          market: {
+            id: '789',
+            decimalPlaces: 0,
+            positionDecimalPlaces: 2,
+            state: 'irrelevant-test-data',
+            tradableInstrument: {
+              instrument: {
+                name: 'test-label',
+                product: {
+                  __typename: 'Future',
+                  quoteName: 'dai',
+                  settlementAsset: {
+                    decimals: 8,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
   ];
 
   return renderAmendOrderDetails(id, version, amend, mocks);

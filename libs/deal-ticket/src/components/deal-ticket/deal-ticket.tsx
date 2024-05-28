@@ -544,7 +544,7 @@ export const DealTicket = ({
           name="price"
           control={control}
           rules={{
-            required: t('You need provide a price'),
+            required: t('You need to provide a price'),
             min: {
               value: priceStep,
               message: t('Price cannot be lower than {{priceStep}}', {

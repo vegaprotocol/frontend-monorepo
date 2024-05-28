@@ -42,14 +42,6 @@ def setup_market_with_reward_program(vega: VegaServiceNull):
     vega.mint(key_name=PARTY_D.name, asset=tDAI_asset_id, amount=100000)
     next_epoch(vega=vega)
 
-    vega.update_network_parameter(
-        proposal_key=MM_WALLET.name,
-        parameter="rewards.vesting.benefitTiers",
-        new_value=VESTING,
-    )
-    vega.wait_fn(1)
-    vega.wait_for_total_catchup()
-
     tDAI_asset_id = vega.find_asset_id(symbol="tDAI")
     vega.update_network_parameter(
         MM_WALLET.name, parameter="reward.asset", new_value=tDAI_asset_id
@@ -86,58 +78,6 @@ def setup_market_with_reward_program(vega: VegaServiceNull):
     )
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
-
-    next_epoch(vega=vega)
-    vega.submit_order(
-        trading_key=PARTY_B.name,
-        market_id=tDAI_market,
-        order_type="TYPE_LIMIT",
-        time_in_force="TIME_IN_FORCE_GTC",
-        side="SIDE_BUY",
-        price=1,
-        volume=1,
-    )
-    next_epoch(vega=vega)
-    vega.submit_order(
-        trading_key=PARTY_B.name,
-        market_id=tDAI_market,
-        order_type="TYPE_MARKET",
-        time_in_force="TIME_IN_FORCE_IOC",
-        side="SIDE_BUY",
-        volume=1,
-    )
-    vega.submit_order(
-        trading_key=PARTY_D.name,
-        market_id=tDAI_market,
-        order_type="TYPE_MARKET",
-        time_in_force="TIME_IN_FORCE_IOC",
-        side="SIDE_BUY",
-        volume=1,
-    )
-    vega.wait_fn(1)
-    vega.wait_for_total_catchup()
-    next_epoch(vega=vega)
-    next_epoch(vega=vega)
-    vega.submit_order(
-        trading_key=PARTY_B.name,
-        market_id=tDAI_market,
-        order_type="TYPE_MARKET",
-        time_in_force="TIME_IN_FORCE_IOC",
-        side="SIDE_BUY",
-        volume=1,
-    )
-    vega.submit_order(
-        trading_key=PARTY_D.name,
-        market_id=tDAI_market,
-        order_type="TYPE_MARKET",
-        time_in_force="TIME_IN_FORCE_IOC",
-        side="SIDE_BUY",
-        volume=1,
-    )
-    vega.wait_fn(1)
-    vega.wait_for_total_catchup()
-    next_epoch(vega=vega)
-    next_epoch(vega=vega)
     next_epoch(vega=vega)
     return tDAI_market, tDAI_asset_id
 
@@ -146,16 +86,25 @@ def test_network_reward_pot(
     setup_environment: Tuple[Page, str, str],
 ) -> None:
     page, tDAI_market, tDAI_asset_id = setup_environment
-    expect(page.get_by_test_id(TOTAL_REWARDS)).to_have_text("166.66666 tDAI")
+    expect(page.get_by_test_id(TOTAL_REWARDS)).to_have_text("50.00 tDAI")
 
 
 def test_reward_multiplier(
     setup_environment: Tuple[Page, str, str],
 ) -> None:
     page, tDAI_market, tDAI_asset_id = setup_environment
-    expect(page.get_by_test_id(COMBINED_MULTIPLIERS)).to_have_text("2x")
+    expect(page.get_by_test_id(COMBINED_MULTIPLIERS)).to_have_text("1x")
     expect(page.get_by_test_id(STREAK_REWARD_MULTIPLIER_VALUE)).to_have_text("1x")
-    expect(page.get_by_test_id(HOARDER_REWARD_MULTIPLIER_VALUE)).to_have_text("2x")
+    expect(page.get_by_test_id(HOARDER_REWARD_MULTIPLIER_VALUE)).to_have_text("1x")
+
+
+def test_activity_streak(
+    setup_environment: Tuple[Page, str, str],
+) -> None:
+    page, tDAI_market, tDAI_asset_id = setup_environment
+    expect(page.get_by_test_id(EPOCH_STREAK)).to_have_text(
+        "Active trader: 1 epochs so far "
+    )
 
 
 def test_hoarder_bonus(
@@ -163,7 +112,7 @@ def test_hoarder_bonus(
 ) -> None:
     page, tDAI_market, tDAI_asset_id = setup_environment
     expect(page.get_by_test_id(HOARDER_BONUS_TOTAL_HOARDED)).to_contain_text(
-        "16,666,666"
+        "5,000,000"
     )
 
 
@@ -173,12 +122,8 @@ def test_reward_history(
     page, tDAI_market, tDAI_asset_id = setup_environment
     page.locator('[name="fromEpoch"]').fill("1")
     expect((page.get_by_role(ROW).locator(PRICE_TAKING_COL_ID)).nth(1)).to_have_text(
-        "299.99999100.00%"
+        "100.00100.00%"
     )
-    expect((page.get_by_role(ROW).locator(TOTAL_COL_ID)).nth(1)).to_have_text(
-        "299.99999"
-    )
+    expect((page.get_by_role(ROW).locator(TOTAL_COL_ID)).nth(1)).to_have_text("100.00")
     page.get_by_test_id(EARNED_BY_ME_BUTTON).click()
-    expect((page.get_by_role(ROW).locator(TOTAL_COL_ID)).nth(1)).to_have_text(
-        "166.66666"
-    )
+    expect((page.get_by_role(ROW).locator(TOTAL_COL_ID)).nth(1)).to_have_text("50.00")

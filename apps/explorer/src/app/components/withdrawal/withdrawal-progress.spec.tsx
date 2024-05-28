@@ -14,8 +14,34 @@ function renderComponent(id: string, status: number, mock: MockedResponse[]) {
 }
 
 describe('Withdrawal Progress component', () => {
+  const mock = {
+    request: {
+      query: ExplorerWithdrawalDocument,
+      variables: {
+        id: '123',
+      },
+    },
+    result: {
+      data: {
+        withdrawal: {
+          __typename: 'Withdrawal',
+          id: '123',
+          status: 'STATUS_OPEN',
+          createdTimestamp: '2022-03-24T11:03:40.026173466Z',
+          withdrawnTimestamp: null,
+          ref: 'irrelevant',
+          txHash: '0x123456890',
+          details: {
+            __typename: 'Erc20WithdrawalDetails',
+            receiverAddress: '0x5435345432342423',
+          },
+        },
+      },
+    },
+  };
+
   it('Renders success for the first indicator if txStatus is 0', () => {
-    const res = render(renderComponent('123', 0, []));
+    const res = render(renderComponent('123', 0, [mock]));
     expect(res.getByText('Requested')).toBeInTheDocument();
 
     // Steps 2 and three should not be complete also
@@ -24,7 +50,7 @@ describe('Withdrawal Progress component', () => {
   });
 
   it('Renders success for the first indicator if txStatus is anything except 0', () => {
-    const res = render(renderComponent('123', 20, []));
+    const res = render(renderComponent('123', 20, [mock]));
     expect(res.getByText('Rejected')).toBeInTheDocument();
 
     // Steps 2 and three should not be complete also
@@ -33,32 +59,6 @@ describe('Withdrawal Progress component', () => {
   });
 
   it('Renders success for the second indicator if a date can be fetched', async () => {
-    const mock = {
-      request: {
-        query: ExplorerWithdrawalDocument,
-        variables: {
-          id: '123',
-        },
-      },
-      result: {
-        data: {
-          withdrawal: {
-            __typename: 'Withdrawal',
-            id: '123',
-            status: 'STATUS_OPEN',
-            createdTimestamp: '2022-03-24T11:03:40.026173466Z',
-            withdrawnTimestamp: null,
-            ref: 'irrelevant',
-            txHash: '0x123456890',
-            details: {
-              __typename: 'Erc20WithdrawalDetails',
-              receiverAddress: '0x5435345432342423',
-            },
-          },
-        },
-      },
-    };
-
     const res = render(renderComponent('123', 0, [mock]));
     // Step 1 should be filled in
     expect(res.getByText('Requested')).toBeInTheDocument();

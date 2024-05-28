@@ -14,7 +14,7 @@ export type SizeInAssetProps = {
  * Given a market ID and an order size it will fetch the market
  * order size, and format the size accordingly
  */
-const SizeInAsset = ({
+export const SizeInAsset = ({
   assetId,
   size,
   decimalSource = 'ASSET',

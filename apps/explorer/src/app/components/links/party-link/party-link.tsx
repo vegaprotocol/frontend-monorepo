@@ -36,7 +36,7 @@ export type PartyLinkProps = Partial<ComponentProps<typeof Link>> & {
   truncateLength?: number;
 };
 
-const PartyLink = ({
+export const PartyLink = ({
   id,
   truncate = false,
   truncateLength = 4,

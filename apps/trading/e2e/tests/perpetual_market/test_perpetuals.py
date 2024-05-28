@@ -29,8 +29,7 @@ def setup_environment(
         request.addfinalizer(lambda: cleanup_container(vega))
         perps_market = setup_perps_market(vega)
         submit_multiple_orders(
-            vega, MM_WALLET.name, perps_market, "SIDE_SELL", [
-                [1, 110], [1, 105]]
+            vega, MM_WALLET.name, perps_market, "SIDE_SELL", [[1, 110], [1, 105]]
         )
         submit_multiple_orders(
             vega, MM_WALLET2.name, perps_market, "SIDE_BUY", [[1, 90], [1, 95]]
@@ -43,12 +42,10 @@ def setup_environment(
         vega.wait_fn(1)
         vega.wait_for_total_catchup()
         submit_multiple_orders(
-            vega, MM_WALLET.name, perps_market, "SIDE_SELL", [
-                [1, 110], [1, 105]]
+            vega, MM_WALLET.name, perps_market, "SIDE_SELL", [[1, 110], [1, 105]]
         )
         submit_multiple_orders(
-            vega, MM_WALLET2.name, perps_market, "SIDE_BUY", [
-                [1, 112], [1, 115]]
+            vega, MM_WALLET2.name, perps_market, "SIDE_BUY", [[1, 112], [1, 115]]
         )
         vega.submit_settlement_data(
             settlement_key=TERMINATE_WALLET.name,
@@ -65,7 +62,8 @@ def setup_environment(
 
 
 class TestPerpetuals:
-    def test_funding_payment_profit(self,
+    def test_funding_payment_profit(
+        self,
         setup_environment: Tuple[Page, str, str],
     ) -> None:
         page, vega, perps_market = setup_environment
@@ -74,7 +72,8 @@ class TestPerpetuals:
         row = page.locator(row_selector)
         expect(row.locator(col_amount)).to_have_text("4.45 tDAI")
 
-    def test_funding_payment_loss(self,
+    def test_funding_payment_loss(
+        self,
         setup_environment: Tuple[Page, str, str],
     ) -> None:
         page, vega, perps_market = setup_environment
@@ -84,7 +83,8 @@ class TestPerpetuals:
         row = page.locator(row_selector)
         expect(row.locator(col_amount)).to_have_text("-13.35 tDAI")
 
-    def test_funding_header(self,
+    def test_funding_header(
+        self,
         setup_environment: Tuple[Page, str, str],
     ) -> None:
         page, vega, perps_market = setup_environment
@@ -92,25 +92,7 @@ class TestPerpetuals:
         expect(page.get_by_test_id("market-funding")).to_contain_text(
             "Funding Rate / Countdown-8.1818%"
         )
-        expect(page.get_by_test_id("index-price")
-               ).to_have_text("Index Price110.00")
-
-    @pytest.mark.skip("Skipped due to issue #5421")
-    def test_funding_payment_history(perps_market, page: Page, vega):
-        page.goto(f"/#/markets/{perps_market}")
-        change_keys(page, vega, "market_maker")
-        page.get_by_test_id("Funding history").click()
-        element = page.get_by_test_id("tab-funding-history")
-        # Get the bounding box of the element
-        bounding_box = element.bounding_box()
-        if bounding_box:
-            bottom_right_x = bounding_box["x"] + bounding_box["width"]
-            bottom_right_y = bounding_box["y"] + bounding_box["height"]
-
-            # Hover over the bottom-right corner of the element
-            element.hover(position={"x": bottom_right_x, "y": bottom_right_y})
-        else:
-            print("Bounding box not found for the element")
+        expect(page.get_by_test_id("index-price")).to_have_text("Index Price110.00")
 
 
 @pytest.mark.usefixtures("risk_accepted", "auth")
@@ -122,8 +104,14 @@ def test_perps_market_termination_proposed(page: Page, vega: VegaServiceNull):
         market_id=perpetual_market,
         market_state=MarketStateUpdateType.Terminate,
         price=100,
-        vote_closing_time=datetime.fromtimestamp(vega.get_blockchain_time(in_seconds=True)) + timedelta(seconds=30),
-        vote_enactment_time=datetime.fromtimestamp(vega.get_blockchain_time(in_seconds=True)) + timedelta(seconds=60),
+        vote_closing_time=datetime.fromtimestamp(
+            vega.get_blockchain_time(in_seconds=True)
+        )
+        + timedelta(seconds=30),
+        vote_enactment_time=datetime.fromtimestamp(
+            vega.get_blockchain_time(in_seconds=True)
+        )
+        + timedelta(seconds=60),
         approve_proposal=True,
         forward_time_to_enactment=False,
     )
@@ -157,12 +145,9 @@ def test_perps_market_terminated(page: Page, vega: VegaServiceNull):
 
     page.goto(f"/#/markets/{perpetual_market}")
     # TODO change back to have text once bug #5465 is fixed
-    expect(page.get_by_test_id("market-price")
-           ).to_have_text("Mark Price100.00")
-    expect(page.get_by_test_id("market-change")
-           ).to_contain_text("Change (24h)")
-    expect(page.get_by_test_id("market-volume")
-           ).to_contain_text("Volume (24h)")
+    expect(page.get_by_test_id("market-price")).to_have_text("Mark Price100.00")
+    expect(page.get_by_test_id("market-change")).to_contain_text("Change (24h)")
+    expect(page.get_by_test_id("market-volume")).to_contain_text("Volume (24h)")
     expect(page.get_by_test_id("market-trading-mode")).to_have_text(
         "Trading modeNo trading"
     )

@@ -5,7 +5,7 @@ import {
   SPECIAL_CASE_NETWORK,
   SPECIAL_CASE_NETWORK_ID,
 } from '../../../../links/party-link/party-link';
-import SizeInAsset from '../../../../size-in-asset/size-in-asset';
+import { SizeInAsset } from '../../../../size-in-asset/size-in-asset';
 import { headerClasses, wrapperClasses } from '../transfer-details';
 import type { components } from '../../../../../../types/explorer';
 

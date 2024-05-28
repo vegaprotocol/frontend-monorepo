@@ -12,11 +12,19 @@ const renderComponent = (
   return render(
     <MockedProvider mocks={mocks}>
       <MemoryRouter>
-        <ReferralCodeOwner {...props} />
+        <table>
+          <tbody>
+            <tr>
+              <ReferralCodeOwner {...props} />
+            </tr>
+          </tbody>
+        </table>
       </MemoryRouter>
     </MockedProvider>
   );
 };
+
+jest.mock('../../../links/');
 
 describe('ReferralCodeOwner', () => {
   it('should render loading state', () => {
