@@ -180,12 +180,13 @@ export const SwapContainer = () => {
 
   useEffect(() => {
     if (!orderSubmission || !market) return;
-    if (side === Side.SIDE_SELL) {
+    if (side === Side.SIDE_SELL && quoteAsset) {
       const notionalSize = getNotionalSize(
         marketPrice,
         orderSubmission.size,
         market.decimalPlaces,
-        market.positionDecimalPlaces
+        market.positionDecimalPlaces,
+        quoteAsset.decimals
       );
       const baseAmount =
         notionalSize && addDecimal(notionalSize, market.decimalPlaces);
@@ -196,7 +197,15 @@ export const SwapContainer = () => {
       const baseAmount = Number(quoteAmount) / (Number(price) || 1);
       setValue('baseAmount', baseAmount.toString());
     }
-  }, [market, marketPrice, quoteAmount, side, setValue, orderSubmission]);
+  }, [
+    market,
+    marketPrice,
+    quoteAmount,
+    side,
+    setValue,
+    orderSubmission,
+    quoteAsset,
+  ]);
 
   return (
     <form
