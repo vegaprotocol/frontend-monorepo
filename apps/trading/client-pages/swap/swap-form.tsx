@@ -49,7 +49,7 @@ export const AssetInput = ({
           onChange={(e) => {
             onAmountChange(e);
           }}
-          className="w-[120px] dark:bg-vega-cdark-800 bg-vega-clight-500 p-2 rounded-lg mr-2 text-center"
+          className="w-[140px] dark:bg-vega-cdark-800 bg-vega-clight-500 p-2 rounded-lg mr-2 text-center"
         />
         <DropdownAsset
           assetId={asset?.id}
