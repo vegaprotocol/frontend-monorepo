@@ -111,7 +111,7 @@ export const PriceImpactInput = ({
       </div>
       <div className="flex items-center pb-1">
         <span className="w-16 h-10 p-2 rounded-lg mr-2 text-center text-md">
-          {value || '0'}
+          {value || ''}
         </span>
         <span>%</span>
         <Pill className="ml-4 dark:bg-vega-cdark-700 bg-vega-clight-600 hover:bg-vega-clight-800 hover:dark:bg-vega-cdark-800 p-2 rounded-lg text-sm">
