@@ -8,6 +8,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { formatNumber, toBigNum } from '@vegaprotocol/utils';
 import { useNavigate } from 'react-router-dom';
 import {
+  toAssetData,
   useEthWithdrawApprovalsStore,
   useGetWithdrawDelay,
   useGetWithdrawThreshold,
@@ -61,7 +62,7 @@ export const useIncompleteWithdrawals = () => {
     // trigger thresholds
     return await Promise.all([
       getDelay(),
-      ...assets.map((asset) => getThreshold(asset)),
+      ...assets.map((asset) => getThreshold(toAssetData(asset))),
     ]).then(([delay, ...thresholds]) => ({
       delay,
       thresholds: assets.reduce<Record<string, BigNumber | undefined>>(

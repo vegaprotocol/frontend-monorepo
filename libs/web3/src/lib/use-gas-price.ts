@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useWeb3React } from '@web3-react/core';
-import { useEthereumConfig } from './use-ethereum-config';
 import BigNumber from 'bignumber.js';
+import { useCollateralBridge, useProvider } from './use-bridge-contract';
 
 const DEFAULT_INTERVAL = 15000; // 15 seconds
 
@@ -72,26 +72,29 @@ const retrieveGasData = async (
  */
 export const useGasPrice = (
   method: ContractMethod,
+  chainId?: number,
   interval = DEFAULT_INTERVAL
 ): GasData | undefined => {
   const [gas, setGas] = useState<GasData | undefined>(undefined);
-  const { provider, account } = useWeb3React();
-  const { config } = useEthereumConfig();
+
+  const { provider } = useProvider(chainId, false);
+  const { config } = useCollateralBridge(chainId);
+  const { account } = useWeb3React();
 
   useEffect(() => {
-    if (!provider || !config || !account) return;
+    if (!provider || !config || !account) {
+      if (gas != null) setGas(undefined);
+      return;
+    }
 
     const retrieve = async () => {
-      retrieveGasData(
-        provider,
-        account,
-        config.collateral_bridge_contract.address,
-        method
-      ).then((gasData) => {
-        if (gasData) {
-          setGas(gasData);
+      retrieveGasData(provider, account, config.address, method).then(
+        (gasData) => {
+          if (gasData) {
+            setGas(gasData);
+          }
         }
-      });
+      );
     };
     retrieve();
 
@@ -106,7 +109,7 @@ export const useGasPrice = (
     return () => {
       if (i) clearInterval(i);
     };
-  }, [account, config, interval, method, provider]);
+  }, [account, config, gas, interval, method, provider]);
 
   return gas;
 };
