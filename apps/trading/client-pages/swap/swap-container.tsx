@@ -218,76 +218,73 @@ export const SwapContainer = () => {
       noValidate
       data-testid="swap-form"
     >
-      <div className="max-w-md mx-auto p-5 rounded-lg shadow-lg">
-        <div className="flex justify-between items-center mb-4">
-          <h1>{t('Swap')}</h1>
-          {marketId && (
-            <Link
-              href={`/#/markets/${marketId}`}
-              className="text-sm text-gray-500"
-            >
-              {t('Go to market')} <VegaIcon name={VegaIconNames.ARROW_RIGHT} />
-            </Link>
-          )}
-        </div>
-        <div className="flex flex-col w-full gap-2">
-          <AssetInput
-            label={t('You pay')}
-            amount={quoteAmount || ''}
-            onAmountChange={(e) => setValue('quoteAmount', e.target.value)}
-            asset={quoteAsset}
-            onAssetChange={setQuoteAsset}
-            balance={quoteAssetBalance}
-            accountAssetIds={accountAssetIds}
-            assets={spotAssets}
-            pubKey={pubKey}
-          />
-          <SwapButton
-            onClick={() => {
-              switchAssets();
-              switchAmounts();
-            }}
-          />
-          <AssetInput
-            label={t('You receive')}
-            amount={baseAmount || ''}
-            asset={baseAsset}
-            balance={baseAssetBalance}
-            accountAssetIds={accountAssetIds}
-            assets={spotAssets}
-            onAssetChange={setBaseAsset}
-            onAmountChange={(e) => setValue('baseAmount', e.target.value)}
-            accountWarning={false}
-            pubKey={pubKey}
-          />
-        </div>
-        <PriceImpactInput
-          value={priceImpactTolerance || ''}
-          onValueChange={(e) => setValue('priceImpactTolerance', e)}
+      <div className="flex justify-between items-center mb-4">
+        {marketId && (
+          <Link
+            href={`/#/markets/${marketId}`}
+            className="text-sm text-gray-500 text-right"
+          >
+            {t('Go to market')} <VegaIcon name={VegaIconNames.ARROW_RIGHT} />
+          </Link>
+        )}
+      </div>
+      <div className="flex flex-col w-full gap-2">
+        <AssetInput
+          label={t('You pay')}
+          amount={quoteAmount || ''}
+          onAmountChange={(e) => setValue('quoteAmount', e.target.value)}
+          asset={quoteAsset}
+          onAssetChange={setQuoteAsset}
+          balance={quoteAssetBalance}
+          accountAssetIds={accountAssetIds}
+          assets={spotAssets}
+          pubKey={pubKey}
         />
-        <button
-          type="submit"
-          className="w-full dark:bg-vega-cdark-700 bg-vega-clight-500 hover:bg-vega-clight-800 hover:dark:bg-vega-cdark-800 p-4 rounded-lg"
-        >
-          {t('Swap now')}
-        </button>
-        <div className="mt-4 text-left text-gray-500">
-          {quoteAsset &&
-            quoteAmount &&
-            baseAsset &&
-            baseAmount &&
-            `${formatNumber(quoteAmount, 4)} ${
-              quoteAsset.symbol
-            } = ${formatNumber(baseAmount, 4)} ${baseAsset.symbol}`}
-        </div>
+        <SwapButton
+          onClick={() => {
+            switchAssets();
+            switchAmounts();
+          }}
+        />
+        <AssetInput
+          label={t('You receive')}
+          amount={baseAmount || ''}
+          asset={baseAsset}
+          balance={baseAssetBalance}
+          accountAssetIds={accountAssetIds}
+          assets={spotAssets}
+          onAssetChange={setBaseAsset}
+          onAmountChange={(e) => setValue('baseAmount', e.target.value)}
+          accountWarning={false}
+          pubKey={pubKey}
+        />
+      </div>
+      <PriceImpactInput
+        value={priceImpactTolerance || ''}
+        onValueChange={(e) => setValue('priceImpactTolerance', e)}
+      />
+      <button
+        type="submit"
+        className="w-full dark:bg-vega-cdark-700 bg-vega-clight-500 hover:bg-vega-clight-800 hover:dark:bg-vega-cdark-800 p-4 rounded-lg"
+      >
+        {t('Swap now')}
+      </button>
+      <div className="mt-4 text-left text-gray-500">
+        {quoteAsset &&
+          quoteAmount &&
+          baseAsset &&
+          baseAmount &&
+          `${formatNumber(quoteAmount, 4)} ${
+            quoteAsset.symbol
+          } = ${formatNumber(baseAmount, 4)} ${baseAsset.symbol}`}
+      </div>
 
-        <div className="mt-2 text-left text-gray-500">
-          {marketPrice &&
-            market &&
-            `TESTING: Market price ${
-              market?.tradableInstrument.instrument.code
-            }: ${addDecimalsFormatNumber(marketPrice, market.decimalPlaces)}`}
-        </div>
+      <div className="mt-2 text-left text-gray-500">
+        {marketPrice &&
+          market &&
+          `Market price ${
+            market?.tradableInstrument.instrument.code
+          }: ${addDecimalsFormatNumber(marketPrice, market.decimalPlaces)}`}
       </div>
     </form>
   );

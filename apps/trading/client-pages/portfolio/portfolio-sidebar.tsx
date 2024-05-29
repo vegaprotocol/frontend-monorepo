@@ -30,7 +30,7 @@ export const PortfolioSidebar = () => {
       />
       <SidebarButton
         view={ViewType.Swap}
-        icon={VegaIconNames.TRANSFER}
+        icon={VegaIconNames.SWAP}
         tooltip={t('Swap')}
         routeId={currentRouteId}
       />

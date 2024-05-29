@@ -43,7 +43,7 @@ export const AssetInput = ({
   return (
     <div className="dark:bg-vega-cdark-700 bg-vega-clight-700 p-4 rounded-lg border-gray-700 border flex flex-col gap-1">
       <span className="text-gray-500">{label}</span>
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap gap-2">
         <input
           value={amount}
           onChange={(e) => {
@@ -102,7 +102,7 @@ export const PriceImpactInput = ({
   const [priceImpactType, setPriceImpactType] = useState<'custom' | 'auto'>(
     'custom'
   );
-  const autoValues = ['0.1', '0.5', '1'];
+  const autoValues = ['0.1', '0.5', '1.0'];
 
   return (
     <div className="mb-4">
@@ -118,7 +118,7 @@ export const PriceImpactInput = ({
           {t(priceImpactType === 'auto' ? 'AUTO' : 'CUSTOM')}
         </Pill>
       </div>
-      <div className="flex items-center">
+      <div className="flex items-center flex-wrap">
         {autoValues.map((val) => (
           <button
             key={val}
@@ -128,21 +128,24 @@ export const PriceImpactInput = ({
               onValueChange(val);
               setPriceImpactType('auto');
             }}
-            className="w-16 h-8 text-md dark:bg-vega-cdark-800 bg-vega-clight-500 p-1 rounded-lg mr-2 text-center"
+            className="h-8 text-md dark:bg-vega-cdark-800 bg-vega-clight-500 p-2 rounded-lg mr-2 text-center text-sm"
           >
             {val} %
           </button>
         ))}
-        <TradingInput
-          type="number"
-          value={value}
-          onChange={(e) => {
-            onValueChange(e.target.value);
-            setPriceImpactType('custom');
-          }}
-          appendElement="%"
-          className="w-20 h-10 text-md dark:bg-vega-cdark-800 bg-vega-clight-500 p-2 rounded-lg mr-2 text-center"
-        />
+
+        <div className="flex flex-1">
+          <TradingInput
+            type="number"
+            value={value}
+            onChange={(e) => {
+              onValueChange(e.target.value);
+              setPriceImpactType('custom');
+            }}
+            appendElement="%"
+            className="w-20 h-10 text-md dark:bg-vega-cdark-800 bg-vega-clight-500 p-2 rounded-lg mr-2 text-center"
+          />
+        </div>
       </div>
     </div>
   );

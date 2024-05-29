@@ -49,6 +49,12 @@ export const MarketsSidebar = () => {
         tooltip={t('Transfer')}
         routeId={currentRouteId}
       />
+      <SidebarButton
+        view={ViewType.Swap}
+        icon={VegaIconNames.SWAP}
+        tooltip={t('Swap')}
+        routeId={currentRouteId}
+      />
       <Routes>
         <Route
           path=":marketId"
