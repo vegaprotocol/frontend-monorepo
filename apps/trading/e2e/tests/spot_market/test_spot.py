@@ -63,7 +63,7 @@ def test_market_spot_info_market_price(page: Page):
         "Market price").click()
     fields = [
         ["Mark Price", "107.5"],
-        ["Best Bid Price", "101.5"],
+        ["Best Bid Price", "102.0"],
         ["Best Offer Price", "103.5"],
         ["Quote Unit", "USDT"],
     ]
