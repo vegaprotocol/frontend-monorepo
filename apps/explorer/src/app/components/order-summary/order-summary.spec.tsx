@@ -5,6 +5,7 @@ import OrderSummary from './order-summary';
 import type { OrderSummaryModifier } from './order-summary';
 import { render } from '@testing-library/react';
 import { ExplorerDeterministicOrderDocument } from '../order-details/__generated__/Order';
+import { commonLinkMocks } from '../../mocks/links';
 
 const mock = {
   request: {
@@ -55,17 +56,20 @@ const mock = {
     },
   },
 };
+
 function renderComponent(
   id: string,
-  mocks?: MockedResponse[],
+  mocks: MockedResponse[],
   modifier?: OrderSummaryModifier
 ) {
   return render(
-    <MockedProvider mocks={mocks}>
+    <MockedProvider mocks={[...mocks, ...commonLinkMocks]}>
       <OrderSummary id={id} modifier={modifier} />
     </MockedProvider>
   );
 }
+jest.mock('../price-in-market/price-in-market');
+jest.mock('../size-in-market/size-in-market');
 
 describe('Order Summary component', () => {
   it('side, size are present', async () => {

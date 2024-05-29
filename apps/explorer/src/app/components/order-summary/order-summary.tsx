@@ -1,7 +1,7 @@
 import { useExplorerDeterministicOrderQuery } from '../order-details/__generated__/Order';
-import PriceInMarket from '../price-in-market/price-in-market';
+import { PriceInMarket } from '../price-in-market/price-in-market';
 import { sideText } from '../order-details/lib/order-labels';
-import SizeInMarket from '../size-in-market/size-in-market';
+import { SizeInMarket } from '../size-in-market/size-in-market';
 
 // Note: Edited has no style currently
 export type OrderSummaryModifier = 'cancelled' | 'edited';

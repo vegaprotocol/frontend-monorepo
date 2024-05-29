@@ -1,0 +1,45 @@
+# This exists because some actions might be creating resources AFTER the branch cleanup happened like with the previews.
+# As a result, we need to check for dangling previews daily and clean them up.
+name: Cleanup branch resources (Daily)
+on:
+  schedule:
+    - cron: '0 2 * * *' # Every day at 2 am
+jobs:
+  cleanup-previews:
+    name: Clean up dandling previews
+    runs-on: ubuntu-22.04
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: 'eu-west-1'
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Clean up dandling previews
+        run: |
+          # Retrieve all preview buckets
+          aws s3api list-buckets | jq -c -r '[.Buckets[] | select(.Name | contains("previews.vega.rocks"))]' > all_buckets
+          printf "Preview buckets on AWS S3:\n$(jq -r '.[].Name' all_buckets)\n\n"
+
+          # Retrieve all PR numbers from the bucket names
+          jq -c -r '.[] | .Name | capture("pr-(?<number>[0-9]+)") | .number' all_buckets | uniq | sort > pr_numbers_in_buckets
+          printf "PRs referenced in AWS S3:\n$(cat pr_numbers_in_buckets)\\n\n"
+
+          # Retrieve all opened PR numbers from GitHub
+          gh pr list --json number --jq ".[] | .number" | sort > github_pr_numbers
+          printf "Opened PRs on GitHub:\n$(cat github_pr_numbers)\n\n"
+
+          # Find the PR numbers that only appears in bucket names.
+          # The reason is that some PR may not generate a preview, but if a bucket has a PR number that doesn't show up
+          # in the opened PR, it's a dangling previews.
+          # The content for the variable is an equivalent to a bash array.
+          dandling_previews=$(comm -13 github_pr_numbers pr_numbers_in_buckets)
+          printf "PRs with dandling previews:\n$dandling_previews\n\n"
+
+          for pr_number in "${dandling_previews[@]}"; do
+            buckets_for_pr=$(jq -r '.[].Name' all_buckets | grep "$pr_number")
+            printf "Removing dandling previews:\n$buckets_for_pr\n\n"
+            for bucket in "${buckets_for_pr[@]}"; do
+              aws s3 rb s3://$bucket --force
+            done
+            printf "\n\n"
+          done

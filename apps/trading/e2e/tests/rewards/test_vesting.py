@@ -52,7 +52,7 @@ def test_vesting(continuous_market, vega: VegaServiceNull, page: Page):
     page.reload()
 
     expect(page.get_by_test_id("locked-value")).to_have_text("50.00")
-    
+
     # Proceed through the 5 epoch lock period
     next_epoch(vega=vega)
     next_epoch(vega=vega)
@@ -62,5 +62,5 @@ def test_vesting(continuous_market, vega: VegaServiceNull, page: Page):
     page.reload()
 
     expect(page.get_by_test_id("locked-value")).to_have_text("0.00")
-    expect(page.get_by_test_id("vesting-value")).to_have_text("37.50")
-    expect(page.get_by_test_id("available-to-withdraw-value")).to_have_text("12.50")
+    expect(page.get_by_test_id("vesting-value")).to_have_text("36.25")
+    expect(page.get_by_test_id("available-to-withdraw-value")).to_have_text("13.75")

@@ -3,7 +3,7 @@ import {
   type ExplorerTreasuryQuery,
   useExplorerTreasuryQuery,
 } from '../__generated__/Treasury';
-import AssetBalance from '../../../components/asset-balance/asset-balance';
+import { AssetBalance } from '../../../components/asset-balance/asset-balance';
 import { AssetLink } from '../../../components/links';
 import { useMemo } from 'react';
 import { useScreenDimensions } from '@vegaprotocol/react-helpers';

@@ -6,6 +6,7 @@ import omit from 'lodash/omit';
 import { MockedProvider } from '@apollo/client/testing';
 import { MemoryRouter } from 'react-router-dom';
 import { TxDetailsChainEventStakeRemove } from './tx-stake-remove';
+import { commonLinkMocks } from '../../../../mocks/links';
 
 type Remove = components['schemas']['vegaStakeRemoved'];
 
@@ -42,7 +43,7 @@ describe('Chain Event: Stake remove', () => {
 
   it('Renders TableRows if all data is provided', () => {
     const screen = render(
-      <MockedProvider>
+      <MockedProvider mocks={commonLinkMocks}>
         <MemoryRouter>
           <table>
             <tbody>

@@ -26,7 +26,7 @@ export type EpochOverviewProps = {
  *
  * The details are hidden in a tooltip, behind the epoch number
  */
-const EpochOverview = ({ id, icon = true }: EpochOverviewProps) => {
+export const EpochOverview = ({ id, icon = true }: EpochOverviewProps) => {
   const { data, error, loading } = useExplorerEpochQuery({
     variables: { id: id || '' },
   });

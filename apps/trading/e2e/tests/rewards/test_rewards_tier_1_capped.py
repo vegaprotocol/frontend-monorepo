@@ -18,7 +18,6 @@ from vega_sim.null_service import VegaServiceNull
 
 @pytest.fixture(scope="module")
 def setup_environment(request, browser) -> Generator[Tuple[Page, str, str], None, None]:
-
     with init_vega(request) as vega_instance:
         request.addfinalizer(lambda: cleanup_container(vega_instance))
 
@@ -42,19 +41,21 @@ def setup_market_with_reward_program(vega: VegaServiceNull):
     vega.mint(key_name=PARTY_D.name, asset=tDAI_asset_id, amount=100000)
     next_epoch(vega=vega)
 
-    vega.update_network_parameter(
-        proposal_key=MM_WALLET.name,
-        parameter="rewards.vesting.benefitTiers",
-        new_value=VESTING,
-    )
-    vega.wait_fn(1)
-    vega.wait_for_total_catchup()
-
     tDAI_asset_id = vega.find_asset_id(symbol="tDAI")
     vega.update_network_parameter(
         MM_WALLET.name, parameter="reward.asset", new_value=tDAI_asset_id
     )
 
+    vega.wait_fn(1)
+    vega.wait_for_total_catchup()
+    vega.recurring_transfer(
+        from_key_name=PARTY_A.name,
+        from_account_type=vega_protos.vega.ACCOUNT_TYPE_GENERAL,
+        to_account_type=vega_protos.vega.ACCOUNT_TYPE_GLOBAL_REWARD,
+        asset=tDAI_asset_id,
+        amount=100,
+        factor=1.0,
+    )
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
     vega.recurring_transfer(
@@ -67,6 +68,7 @@ def setup_market_with_reward_program(vega: VegaServiceNull):
         metric=vega_protos.vega.DISPATCH_METRIC_MAKER_FEES_PAID,
         amount=100,
         factor=1.0,
+        cap_reward_fee_multiple=1,
     )
     vega.submit_order(
         trading_key=PARTY_B.name,
@@ -86,7 +88,6 @@ def setup_market_with_reward_program(vega: VegaServiceNull):
     )
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
-
     next_epoch(vega=vega)
     vega.submit_order(
         trading_key=PARTY_B.name,
@@ -134,7 +135,6 @@ def setup_market_with_reward_program(vega: VegaServiceNull):
         side="SIDE_BUY",
         volume=1,
     )
-    vega.wait_fn(1)
     vega.wait_for_total_catchup()
     next_epoch(vega=vega)
     next_epoch(vega=vega)
@@ -142,43 +142,31 @@ def setup_market_with_reward_program(vega: VegaServiceNull):
     return tDAI_market, tDAI_asset_id
 
 
-def test_network_reward_pot(
+def test_network_reward_pot_capped(
     setup_environment: Tuple[Page, str, str],
 ) -> None:
     page, tDAI_market, tDAI_asset_id = setup_environment
-    expect(page.get_by_test_id(TOTAL_REWARDS)).to_have_text("166.66666 tDAI")
+    expect(page.get_by_test_id(TOTAL_REWARDS)).to_have_text("31.20525 tDAI ")
 
 
-def test_reward_multiplier(
-    setup_environment: Tuple[Page, str, str],
-) -> None:
-    page, tDAI_market, tDAI_asset_id = setup_environment
-    expect(page.get_by_test_id(COMBINED_MULTIPLIERS)).to_have_text("2x")
-    expect(page.get_by_test_id(STREAK_REWARD_MULTIPLIER_VALUE)).to_have_text("1x")
-    expect(page.get_by_test_id(HOARDER_REWARD_MULTIPLIER_VALUE)).to_have_text("2x")
-
-
-def test_hoarder_bonus(
-    setup_environment: Tuple[Page, str, str],
-) -> None:
-    page, tDAI_market, tDAI_asset_id = setup_environment
-    expect(page.get_by_test_id(HOARDER_BONUS_TOTAL_HOARDED)).to_contain_text(
-        "16,666,666"
-    )
-
-
-def test_reward_history(
+def test_reward_history_capped(
     setup_environment: Tuple[Page, str, str],
 ) -> None:
     page, tDAI_market, tDAI_asset_id = setup_environment
     page.locator('[name="fromEpoch"]').fill("1")
     expect((page.get_by_role(ROW).locator(PRICE_TAKING_COL_ID)).nth(1)).to_have_text(
-        "299.99999100.00%"
+        "62.4105100.00% "
     )
-    expect((page.get_by_role(ROW).locator(TOTAL_COL_ID)).nth(1)).to_have_text(
-        "299.99999"
-    )
+    expect((page.get_by_role(ROW).locator(TOTAL_COL_ID)).nth(1)).to_have_text("62.4105")
     page.get_by_test_id(EARNED_BY_ME_BUTTON).click()
-    expect((page.get_by_role(ROW).locator(TOTAL_COL_ID)).nth(1)).to_have_text(
-        "166.66666"
-    )
+    expect((page.get_by_role(ROW).locator(TOTAL_COL_ID)).nth(1)).to_have_text("31.20525")
+
+
+def test_reward_card_capped(
+    setup_environment: Tuple[Page, str, str],
+) -> None:
+    page, tDAI_market, tDAI_asset_id = setup_environment
+    expect(page.get_by_test_id("active-rewards-card")).to_have_count(2)
+    game_1 = page.get_by_test_id("active-rewards-card").first
+    expect(game_1).to_be_visible()
+    expect(game_1.get_by_test_id("cappedAt")).to_have_text("x1")

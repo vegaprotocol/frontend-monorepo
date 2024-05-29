@@ -19,7 +19,10 @@ export type TendermintNodeLinkProps = Partial<ComponentProps<typeof Link>> & {
  * Both queries have forced caching on, which was quicker than adding a context just for this data
  * and works fine.
  */
-const TendermintNodeLink = ({ id, ...props }: TendermintNodeLinkProps) => {
+export const TendermintNodeLink = ({
+  id,
+  ...props
+}: TendermintNodeLinkProps) => {
   const { data: tmData } = useTendermintValidators(0, { cache: 'force-cache' });
   const { data: vegaData } = useExplorerNodesQuery({
     fetchPolicy: 'cache-first',

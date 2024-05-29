@@ -1,6 +1,6 @@
 import { KeyValueTable, KeyValueTableRow } from '@vegaprotocol/ui-toolkit';
 import { MarketLink } from '../../../components/links';
-import PriceInMarket from '../../../components/price-in-market/price-in-market';
+import { PriceInMarket } from '../../../components/price-in-market/price-in-market';
 import type { AssetMarketsQuery } from './__generated__/Asset-Markets';
 import { useAssetMarketsQuery } from './__generated__/Asset-Markets';
 import { t } from '@vegaprotocol/i18n';

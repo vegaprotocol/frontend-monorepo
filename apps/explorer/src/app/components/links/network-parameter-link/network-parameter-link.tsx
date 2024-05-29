@@ -12,7 +12,7 @@ export type NetworkParameterLinkProps = Partial<ComponentProps<typeof Link>> & {
 /**
  * Links a given network parameter to the relevant page and anchor on the page
  */
-const NetworkParameterLink = ({
+export const NetworkParameterLink = ({
   parameter,
   ...props
 }: NetworkParameterLinkProps) => {

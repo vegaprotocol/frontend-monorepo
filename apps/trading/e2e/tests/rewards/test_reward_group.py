@@ -37,22 +37,6 @@ def setup_market_with_reward_program(vega: VegaServiceNull):
     tDAI_market2 = setup_continuous_market(vega, custom_asset_name="tDAI2", custom_market_name="BTC:DAI2", custom_asset_symbol="tDAI2")
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
-    vega.update_network_parameter(
-        proposal_key=MM_WALLET.name,
-        parameter="rewards.activityStreak.benefitTiers",
-        new_value=ACTIVITY_STREAKS,
-    )
-    print("update_network_parameter activity done")
-    vega.wait_fn(1)
-    vega.wait_for_total_catchup()
-
-    vega.update_network_parameter(
-        proposal_key=MM_WALLET.name,
-        parameter="rewards.vesting.benefitTiers",
-        new_value=VESTING,
-    )
-    vega.wait_fn(1)
-    vega.wait_for_total_catchup()
 
     tDAI_asset_id = vega.find_asset_id(symbol="tDAI")
     print(tDAI_asset_id)

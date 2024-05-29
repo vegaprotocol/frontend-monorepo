@@ -30,13 +30,6 @@ def setup_simple_market(
         amount=mint_amount,
     )
 
-    vega.update_network_parameter(
-        MM_WALLET.name, parameter="market.fee.factors.makerFee", new_value="0.1"
-    )
-    vega.forward("10s")
-    vega.wait_fn(1)
-    vega.wait_for_total_catchup()
-
     vega.create_asset(
         MM_WALLET.name,
         name=custom_asset_name,
@@ -212,13 +205,6 @@ def setup_perps_market(
         amount=mint_amount,
     )
 
-    vega.update_network_parameter(
-        MM_WALLET.name, parameter="market.fee.factors.makerFee", new_value="0.1"
-    )
-    vega.forward("10s")
-    vega.wait_fn(1)
-    vega.wait_for_total_catchup()
-
     vega.create_asset(
         MM_WALLET.name,
         name=custom_asset_name,
@@ -251,13 +237,6 @@ def setup_perps_market(
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
 
-    vega.update_network_parameter(
-        proposal_key=MM_WALLET.name,
-        parameter="limits.markets.proposePerpetualEnabled",
-        new_value="1",
-    )
-    vega.wait_fn(1)
-    vega.wait_for_total_catchup()
 
     market_id = vega.create_simple_perps_market(
         market_name="BTC:DAI_Perpetual",
