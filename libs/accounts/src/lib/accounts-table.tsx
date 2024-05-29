@@ -74,6 +74,9 @@ export interface GetRowsParams extends Omit<IGetRowsParams, 'successCallback'> {
 }
 
 export type PinnedAsset = Pick<Asset, 'symbol' | 'name' | 'id' | 'decimals'>;
+type PinnedRowData = Omit<AccountFields, 'asset' | 'type'> & {
+  asset: PinnedAsset;
+};
 
 export interface AccountTableProps extends AgGridReactProps {
   rowData?: AccountFields[] | null;
@@ -83,7 +86,7 @@ export interface AccountTableProps extends AgGridReactProps {
   onClickBreakdown?: (assetId: string) => void;
   onClickTransfer?: (assetId: string) => void;
   isReadOnly: boolean;
-  pinnedAsset?: PinnedAsset;
+  pinnedAssets?: PinnedAsset[];
 }
 
 export const AccountTable = ({
@@ -94,28 +97,35 @@ export const AccountTable = ({
   onClickTransfer,
   rowData,
   isReadOnly,
-  pinnedAsset,
+  pinnedAssets,
   ...props
 }: AccountTableProps) => {
   const t = useT();
-  const pinnedRow = useMemo(() => {
-    if (!pinnedAsset) {
-      return;
+  const { pinnedRows, rows } = useMemo((): {
+    rows: typeof rowData;
+    pinnedRows?: PinnedRowData[];
+  } => {
+    if (!pinnedAssets) {
+      return { rows: rowData };
     }
-    const currentPinnedAssetRow = rowData?.find(
-      (row) => row.asset.id === pinnedAsset?.id
-    );
-    if (!currentPinnedAssetRow) {
-      return {
-        asset: pinnedAsset,
-        available: '0',
-        used: '0',
-        total: '0',
-        balance: '0',
-      };
-    }
-    return currentPinnedAssetRow;
-  }, [pinnedAsset, rowData]);
+    const rows = rowData ? [...rowData] : rowData;
+    const pinnedRows: PinnedRowData[] = [];
+    pinnedAssets.forEach((pinnedAsset) => {
+      const index = rows?.findIndex((row) => row.asset.id === pinnedAsset?.id);
+      if (rows && index !== -1 && index !== undefined) {
+        pinnedRows.push(...rows.splice(index, 1));
+      } else {
+        pinnedRows.push({
+          asset: pinnedAsset,
+          available: '0',
+          used: '0',
+          total: '0',
+          balance: '0',
+        });
+      }
+    });
+    return { pinnedRows, rows };
+  }, [pinnedAssets, rowData]);
 
   const { getRowHeight } = props;
 
@@ -123,17 +133,21 @@ export const AccountTable = ({
     (params: RowHeightParams) => {
       if (
         params.node.rowPinned &&
-        params.data.asset.id === pinnedAsset?.id &&
+        pinnedAssets?.some(
+          (pinnedAsset) => params.data.asset.id === pinnedAsset?.id
+        ) &&
         new BigNumber(params.data.total).isLessThanOrEqualTo(0)
       ) {
         return 32;
       }
       return getRowHeight ? getRowHeight(params) : undefined;
     },
-    [pinnedAsset?.id, getRowHeight]
+    [pinnedAssets, getRowHeight]
   );
 
-  const showDepositButton = pinnedRow?.balance === '0';
+  const showDepositButton = pinnedRows?.some(
+    (pinnedRow) => pinnedRow.balance === '0'
+  );
 
   const colDefs = useMemo(() => {
     const defs: ColDef[] = [
@@ -316,14 +330,12 @@ export const AccountTable = ({
     showDepositButton,
     t,
   ]);
-
-  const data = rowData?.filter((data) => data.asset.id !== pinnedAsset?.id);
   return (
     <AgGrid
       {...props}
       getRowId={({ data }: { data: AccountFields }) => data.asset.id}
       tooltipShowDelay={500}
-      rowData={data}
+      rowData={rows}
       defaultColDef={defaultColDef}
       columnDefs={colDefs}
       overlayNoRowsTemplate={
@@ -334,7 +346,7 @@ export const AccountTable = ({
         rowData?.length ? '<span />' : props.overlayNoRowsTemplate
       }
       getRowHeight={getPinnedAssetRowHeight}
-      pinnedTopRowData={pinnedRow ? [pinnedRow] : undefined}
+      pinnedTopRowData={pinnedRows ? pinnedRows : undefined}
     />
   );
 };

@@ -1,38 +1,74 @@
 import orderBy from 'lodash/orderBy';
-import { isFuture } from 'date-fns';
-import { useState, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Heading, SubHeading } from '../../../../components/heading';
+import { Trans, useTranslation } from 'react-i18next';
+import { Heading } from '../../../../components/heading';
 import { ProposalsListItem } from '../proposals-list-item';
 import { ProtocolUpgradeProposalsListItem } from '../protocol-upgrade-proposals-list-item/protocol-upgrade-proposals-list-item';
-import { ProposalsListFilter } from '../proposals-list-filter';
 import Routes from '../../../routes';
-import { Button, Toggle } from '@vegaprotocol/ui-toolkit';
+import { Button, Pagination } from '@vegaprotocol/ui-toolkit';
 import { Link } from 'react-router-dom';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 import { ExternalLinks } from '@vegaprotocol/environment';
 import { type ProtocolUpgradeProposalFieldsFragment } from '@vegaprotocol/proposals';
 import { type BatchProposal, type Proposal } from '../../types';
+import {
+  BASE_FILTER,
+  Filters,
+  useProposalsFilters,
+  useProposalsPagination,
+} from '../proposals-list-filter/proposals-list-filter';
+import { type ProposalChange, type ProposalState } from '@vegaprotocol/types';
+import intersection from 'lodash/intersection';
+import compact from 'lodash/compact';
+import last from 'lodash/last';
+import sortBy from 'lodash/sortBy';
+import flatten from 'lodash/flatten';
+import { UPGRADE_STATUS_PROPOSAL_STATE_MAP } from '../current-proposal-state/current-proposal-state';
 
-type Proposals = Array<Proposal | BatchProposal>;
+type EnrichedProtocolUpgradeProposals =
+  ProtocolUpgradeProposalFieldsFragment & { timestamp: string };
+
+export type Proposals = Array<
+  Proposal | BatchProposal | EnrichedProtocolUpgradeProposals
+>;
+
+/**
+ * Gets from the sortable parameter value from a given proposal
+ * (single, batch or upgrade).
+ */
+export const getSortableTerm = (
+  p: Proposal | BatchProposal | EnrichedProtocolUpgradeProposals
+) => {
+  let date: string = '';
+  if (p.__typename === 'Proposal') {
+    date = p.terms.enactmentDatetime ? p.terms.enactmentDatetime : p.datetime;
+  }
+  if (p.__typename === 'ProtocolUpgradeProposal') {
+    date = p.timestamp;
+  }
+  if (p.__typename === 'BatchProposal') {
+    date = p.datetime;
+    const mostRecentEnactmentDatetime = last(
+      sortBy(
+        compact(
+          p.subProposals?.map(
+            (sub) => sub?.terms?.enactmentDatetime as string | null
+          )
+        ),
+        (x) => new Date(x).getTime()
+      )
+    );
+    if (mostRecentEnactmentDatetime) date = mostRecentEnactmentDatetime;
+  }
+
+  return new Date(date).getTime();
+};
 
 interface ProposalsListProps {
   proposals: Proposals;
-  protocolUpgradeProposals: ProtocolUpgradeProposalFieldsFragment[];
   lastBlockHeight?: string;
 }
 
-interface SortedProposalsProps {
-  open: Proposals;
-  closed: Proposals;
-}
-
-interface SortedProtocolUpgradeProposalsProps {
-  open: ProtocolUpgradeProposalFieldsFragment[];
-  closed: ProtocolUpgradeProposalFieldsFragment[];
-}
-
-export const orderByDate = (arr: Proposals) =>
+export const orderByDate = (arr: Array<Proposal | BatchProposal>) =>
   orderBy(
     arr,
     [
@@ -69,95 +105,130 @@ export const orderByUpgradeBlockHeight = (
     ['desc', 'desc']
   );
 
-enum ClosedProposalsViewOptions {
-  NetworkGovernance = 'networkGovernance',
-  NetworkUpgrades = 'networkUpgrades',
-}
-
-export const ProposalsList = ({
-  proposals,
-  protocolUpgradeProposals,
-  lastBlockHeight,
-}: ProposalsListProps) => {
+const ITEMS_PER_PAGE = 20;
+export const ProposalsList = ({ proposals }: ProposalsListProps) => {
   const { t } = useTranslation();
-  const [filterString, setFilterString] = useState('');
-  const [closedProposalsView, setClosedProposalsView] =
-    useState<ClosedProposalsViewOptions>(
-      ClosedProposalsViewOptions.NetworkGovernance
-    );
 
-  const sortedProposals: SortedProposalsProps = useMemo(() => {
-    const initialSorting = proposals.reduce(
-      (acc, proposal) => {
-        if (proposal.__typename === 'Proposal') {
-          if (isFuture(new Date(proposal?.terms.closingDatetime))) {
-            acc.open.push(proposal);
-          } else {
-            acc.closed.push(proposal);
-          }
-          return acc;
-        }
+  const [proposalTypes, proposalStates, proposalId, resetFilters] =
+    useProposalsFilters((state) => [
+      state.types,
+      state.states,
+      state.id,
+      state.reset,
+    ]);
 
-        if (proposal.__typename === 'BatchProposal') {
-          if (
-            // this could be improved by sorting by soonest enactment date of all the
-            // sub proposals
-            isFuture(
-              new Date(
-                proposal.batchTerms?.closingDatetime || proposal.datetime
-              )
-            )
-          ) {
-            acc.open.push(proposal);
-          } else {
-            acc.closed.push(proposal);
-          }
+  const filter = {
+    types: proposalTypes.length > 0 ? proposalTypes : BASE_FILTER.types,
+    states: proposalStates.length > 0 ? proposalStates : BASE_FILTER.states,
+    id: proposalId,
+  };
 
-          return acc;
-        }
+  const [page, setPage] = useProposalsPagination((state) => [
+    state.page,
+    state.setPage,
+  ]);
 
-        return acc;
-      },
-      {
-        open: [],
-        closed: [],
-      } as SortedProposalsProps
-    );
-    return {
-      open:
-        initialSorting.open.length > 0 ? orderByDate(initialSorting.open) : [],
-      closed:
-        initialSorting.closed.length > 0
-          ? orderByDate(initialSorting.closed).reverse()
-          : [],
-    };
-  }, [proposals]);
+  useProposalsFilters.subscribe(() => {
+    setPage(1);
+  });
 
-  const sortedProtocolUpgradeProposals: SortedProtocolUpgradeProposalsProps =
-    useMemo(() => {
-      const initialSorting = protocolUpgradeProposals.reduce(
-        (acc: SortedProtocolUpgradeProposalsProps, proposal) => {
-          if (Number(proposal?.upgradeBlockHeight) > Number(lastBlockHeight)) {
-            acc.open.push(proposal);
-          } else {
-            acc.closed.push(proposal);
-          }
-          return acc;
-        },
-        {
-          open: [],
-          closed: [],
-        }
-      );
-      return {
-        open: orderByUpgradeBlockHeight(initialSorting.open),
-        closed: orderByUpgradeBlockHeight(initialSorting.closed),
-      };
-    }, [protocolUpgradeProposals, lastBlockHeight]);
+  let filtered = proposals;
 
-  const filterPredicate = (p: Proposal | BatchProposal) =>
-    p?.id?.includes(filterString) ||
-    p?.party?.id?.toString().includes(filterString);
+  // filter by proposal type
+  filtered = filtered.filter((proposal) => {
+    let types: (ProposalChange['__typename'] | 'NetworkUpgrade')[] = [];
+    if (proposal.__typename === 'Proposal') {
+      types = [proposal.terms.change.__typename];
+    }
+    if (proposal.__typename === 'BatchProposal') {
+      types = proposal.subProposals
+        ? proposal.subProposals.map((sub) => sub?.terms?.change.__typename)
+        : [];
+    }
+    if (proposal.__typename === 'ProtocolUpgradeProposal') {
+      types = ['NetworkUpgrade'];
+    }
+    return intersection(filter.types, types).length > 0;
+  });
+  // filter by proposal state
+  filtered = filtered.filter((proposal) => {
+    let states: ProposalState[] = [];
+    if (
+      proposal.__typename === 'Proposal' ||
+      proposal.__typename === 'BatchProposal'
+    ) {
+      states = [proposal.state];
+    }
+    if (proposal.__typename === 'ProtocolUpgradeProposal') {
+      const upgradeState = proposal.status;
+      states = [UPGRADE_STATUS_PROPOSAL_STATE_MAP[upgradeState]];
+    }
+    return intersection(filter.states, states).length > 0;
+  });
+  // filter by proposal id
+  filtered = filtered.filter((proposal) => {
+    if (filter.id.length > 0) {
+      let term = filter.id.trim().toLowerCase();
+      const negate = term.startsWith('!');
+      if (negate) term = term.substring(1);
+
+      const yesVotes =
+        proposal.__typename === 'Proposal' ||
+        proposal.__typename === 'BatchProposal'
+          ? proposal.votes.yes.votes?.map((v) => v.party.id) || []
+          : [];
+      const noVotes =
+        proposal.__typename === 'Proposal' ||
+        proposal.__typename === 'BatchProposal'
+          ? proposal.votes.no.votes?.map((v) => v.party.id) || []
+          : [];
+
+      let ids: string[] = [...yesVotes, ...noVotes];
+      if (proposal.__typename === 'Proposal') {
+        ids = compact([
+          proposal?.id?.toLowerCase(),
+          proposal?.party?.id?.toString().toLowerCase(),
+          proposal.terms.change.__typename === 'UpdateMarket' &&
+            proposal.terms.change.marketId,
+          proposal.terms.change.__typename === 'UpdateMarketState' &&
+            proposal.terms.change.market.id,
+          proposal.terms.change.__typename === 'UpdateSpotMarket' &&
+            proposal.terms.change.marketId,
+        ]);
+      } else if (proposal.__typename === 'BatchProposal') {
+        const subs = compact(
+          flatten(
+            proposal.subProposals?.map((sub) => [
+              sub?.id?.toLowerCase(),
+              sub?.terms?.change.__typename === 'UpdateMarket' &&
+                sub.terms.change.marketId,
+              sub?.terms?.change.__typename === 'UpdateMarketState' &&
+                sub.terms.change.market.id,
+              sub?.terms?.change.__typename === 'UpdateSpotMarket' &&
+                sub.terms.change.marketId,
+            ])
+          )
+        );
+        ids = compact([
+          proposal?.id?.toLowerCase(),
+          proposal?.party?.id?.toString().toLowerCase(),
+          ...subs,
+        ]);
+      }
+      const has = ids.some((id) => id.includes(term));
+      return negate ? !has : has;
+    }
+    return true;
+  });
+
+  const filteredAndSorted = orderBy(filtered, getSortableTerm, 'desc');
+
+  const PROPOSALS_COUNT = filtered.length;
+  const HAS_NEXT = page * ITEMS_PER_PAGE < PROPOSALS_COUNT;
+  const HAS_PREV = page > 1;
+
+  const SLICE_START = (page - 1) * ITEMS_PER_PAGE;
+  const SLICE_END = page * ITEMS_PER_PAGE;
 
   return (
     <div data-testid="proposals-list">
@@ -190,131 +261,77 @@ export const ProposalsList = ({
         </ExternalLink>
       </p>
 
-      {proposals.length > 0 && (
-        <ProposalsListFilter
-          filterString={filterString}
-          setFilterString={(value) => {
-            setFilterString(value);
-            if (value.length > 0) {
-              // If the filter is engaged, ensure the user is viewing governance proposals,
-              // as network upgrades do not have IDs to filter by and will be excluded.
-              setClosedProposalsView(
-                ClosedProposalsViewOptions.NetworkGovernance
-              );
-            }
-          }}
-        />
-      )}
+      <Filters count={PROPOSALS_COUNT} />
 
-      <section className="-mx-4 p-4 mb-8 bg-vega-cdark-900 rounded-l-sm">
-        <SubHeading title={t('openProposals')} />
-
-        {sortedProposals.open.length > 0 ||
-        sortedProtocolUpgradeProposals.open.length > 0 ? (
-          <ul data-testid="open-proposals">
-            {filterString.length < 1 &&
-              sortedProtocolUpgradeProposals.open.map((proposal) => (
-                <ProtocolUpgradeProposalsListItem
-                  key={proposal.upgradeBlockHeight}
-                  proposal={proposal}
-                />
-              ))}
-
-            {sortedProposals.open.filter(filterPredicate).map((proposal) => (
-              <ProposalsListItem key={proposal?.id} proposal={proposal} />
-            ))}
-          </ul>
-        ) : (
-          <p className="mb-0" data-testid="no-open-proposals">
-            {t('noOpenProposals')}
-          </p>
-        )}
-      </section>
+      <Pagination
+        hasPrevPage={HAS_PREV}
+        hasNextPage={HAS_NEXT}
+        onBack={() => {
+          setPage(page - 1);
+        }}
+        onNext={() => {
+          setPage(page + 1);
+        }}
+        onFirst={() => setPage(1)}
+        onLast={() => setPage(Math.ceil(PROPOSALS_COUNT / ITEMS_PER_PAGE))}
+      >
+        {t('Page')} {page}
+      </Pagination>
 
       <section className="relative">
-        <SubHeading title={t('closedProposals')} />
-        {sortedProposals.closed.length > 0 ||
-        sortedProtocolUpgradeProposals.closed.length > 0 ? (
-          <>
-            {
-              // We need both the closed proposals and closed protocol upgrade
-              // proposals to be present for there to be a toggle. It also gets
-              // hidden if the user has filtered the list, as the upgrade proposals
-              // do not have the necessary fields for filtering.
-              sortedProposals.closed.length > 0 &&
-                sortedProtocolUpgradeProposals.closed.length > 0 &&
-                filterString.length < 1 && (
-                  <div
-                    className="flex justify-end xl:-mt-12 pb-6"
-                    data-testid="toggle-closed-proposals"
-                  >
-                    <div className="w-full max-w-[420px]">
-                      <Toggle
-                        name="closed-proposals-toggle"
-                        toggles={[
-                          {
-                            label: t(
-                              ClosedProposalsViewOptions.NetworkGovernance
-                            ),
-                            value: ClosedProposalsViewOptions.NetworkGovernance,
-                          },
-                          {
-                            label: t(
-                              ClosedProposalsViewOptions.NetworkUpgrades
-                            ),
-                            value: ClosedProposalsViewOptions.NetworkUpgrades,
-                          },
-                        ]}
-                        checkedValue={closedProposalsView}
-                        onChange={(e) =>
-                          setClosedProposalsView(
-                            e.target.value as ClosedProposalsViewOptions
-                          )
-                        }
-                      />
-                    </div>
-                  </div>
-                )
-            }
-
-            <ul data-testid="closed-proposals">
-              {closedProposalsView ===
-                ClosedProposalsViewOptions.NetworkUpgrades && (
-                <div data-testid="closed-upgrade-proposals">
-                  {sortedProtocolUpgradeProposals.closed.map((proposal) => (
+        {PROPOSALS_COUNT > 0 ? (
+          <ul className="list-none" data-testid="proposal-list-items">
+            {filteredAndSorted
+              .slice(SLICE_START, SLICE_END)
+              .map((proposal, i) => {
+                if (
+                  proposal.__typename === 'Proposal' ||
+                  proposal.__typename === 'BatchProposal'
+                ) {
+                  return <ProposalsListItem key={i} proposal={proposal} />;
+                }
+                if (proposal.__typename === 'ProtocolUpgradeProposal') {
+                  return (
                     <ProtocolUpgradeProposalsListItem
-                      key={proposal.upgradeBlockHeight}
+                      key={i}
                       proposal={proposal}
                     />
-                  ))}
-                </div>
-              )}
-
-              {closedProposalsView ===
-                ClosedProposalsViewOptions.NetworkGovernance && (
-                <div data-testid="closed-governance-proposals">
-                  {sortedProposals.closed
-                    .filter(filterPredicate)
-                    .map((proposal) => (
-                      <ProposalsListItem
-                        key={proposal?.id}
-                        proposal={proposal}
-                      />
-                    ))}
-                </div>
-              )}
-            </ul>
-          </>
+                  );
+                }
+                return null;
+              })}
+          </ul>
         ) : (
-          <p className="mb-0" data-testid="no-closed-proposals">
-            {t('noClosedProposals')}
-          </p>
+          <div className="text-center text-sm py-3" data-testid="no-proposals">
+            <Trans
+              i18nKey="No proposals found that are matching the given criteria, try <0>resetting</0> the filters."
+              components={[
+                <button
+                  key="filter-reset-btn"
+                  className="underline"
+                  onClick={() => resetFilters()}
+                >
+                  resetting
+                </button>,
+              ]}
+            />
+          </div>
         )}
       </section>
-
-      <Link className="underline" to={Routes.PROPOSALS_REJECTED}>
-        {t('seeRejectedProposals')}
-      </Link>
+      <Pagination
+        hasPrevPage={HAS_PREV}
+        hasNextPage={HAS_NEXT}
+        onBack={() => {
+          setPage(page - 1);
+        }}
+        onNext={() => {
+          setPage(page + 1);
+        }}
+        onFirst={() => setPage(1)}
+        onLast={() => setPage(Math.ceil(PROPOSALS_COUNT / ITEMS_PER_PAGE))}
+      >
+        {t('Page')} {page}
+      </Pagination>
     </div>
   );
 };

@@ -227,14 +227,14 @@ def test_market_info_price_monitoring_bounds(page: Page):
     page.get_by_test_id(market_title_test_id).get_by_text(
         "Price monitoring bounds"
     ).click()
-    expect(page.get_by_test_id(market_accordion_content).locator(
-        ".w-full").nth(1)).to_contain_text("99.9999%")
-    expect(page.get_by_test_id(market_accordion_content).locator(".w-full").nth(2)
-           ).to_contain_text("within 1d")
-    expect(page.get_by_test_id(market_accordion_content).locator(".text-left")
-           ).to_contain_text("83.11038 BTC")
-    expect(page.get_by_test_id(market_accordion_content).locator(".text-right")
-           ).to_contain_text("138.66685 BTC")
+    expect(page.get_by_test_id(market_accordion_content).get_by_test_id("bounds-percent-price")
+            ).to_contain_text("99.9999%")
+    expect(page.get_by_test_id(market_accordion_content).get_by_test_id("bounds-price-time")
+            ).to_contain_text("within 1d")
+    expect(page.get_by_test_id(market_accordion_content).get_by_test_id("text-left-alignment")
+            ).to_contain_text("83.11038 BTC")
+    expect(page.get_by_test_id(market_accordion_content).get_by_test_id("text-right-alignment")
+            ).to_contain_text("138.66685 BTC")
 
 
 def test_market_info_liquidity_monitoring_parameters(page: Page):

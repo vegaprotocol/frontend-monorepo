@@ -19,6 +19,7 @@ const Template: Story = ({ value: val, min, max, ...args }) => {
       <LeverageSlider
         onValueChange={onValueChange}
         value={value}
+        min={0}
         max={max}
         {...args}
       />

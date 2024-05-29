@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { StopOrdersTable } from '../stop-orders-table/stop-orders-table';
 import { type useDataGridEvents } from '@vegaprotocol/datagrid';
 import { type StopOrder } from '../order-data-provider/stop-orders-data-provider';
@@ -19,8 +19,6 @@ export interface StopOrdersManagerProps {
   gridProps?: ReturnType<typeof useDataGridEvents>;
 }
 
-const POLLING_TIME = 2000;
-
 export const StopOrdersManager = ({
   partyId,
   onMarketClick,
@@ -36,19 +34,10 @@ export const StopOrdersManager = ({
     },
   };
 
-  const { data, error, reload } = useDataProvider({
+  const { data, error } = useDataProvider({
     dataProvider: stopOrdersWithMarketProvider,
     variables,
   });
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      reload();
-    }, POLLING_TIME);
-    return () => {
-      clearInterval(interval);
-    };
-  }, [reload]);
 
   const cancel = useCallback(
     (order: StopOrder) => {

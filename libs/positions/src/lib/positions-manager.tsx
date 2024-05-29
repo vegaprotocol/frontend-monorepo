@@ -7,11 +7,12 @@ import {
 } from './positions-data-providers';
 import type { useDataGridEvents } from '@vegaprotocol/datagrid';
 import { useT } from '../use-t';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import * as Schema from '@vegaprotocol/types';
 import { useVegaTransactionStore } from '@vegaprotocol/web3';
 import { HALFMAXGOINT64 } from '@vegaprotocol/utils';
 import { useFeatureFlags } from '@vegaprotocol/environment';
+import { TakeProfitStopLossDialog } from './take-profit-stop-loss';
 
 interface PositionsManagerProps {
   partyIds: string[];
@@ -31,6 +32,7 @@ export const PositionsManager = ({
   const featureFlags = useFeatureFlags((state) => state.flags);
   const t = useT();
   const { pubKeys, pubKey } = useVegaWallet();
+  const [editTPSL, setEditTPSL] = useState<string | null>(null);
   const create = useVegaTransactionStore((store) => store.create);
   const disableClosePositionsButton = featureFlags.DISABLE_CLOSE_POSITION;
 
@@ -76,16 +78,27 @@ export const PositionsManager = ({
   });
 
   return (
-    <PositionsTable
-      pubKey={pubKey}
-      pubKeys={pubKeys}
-      rowData={data}
-      onMarketClick={onMarketClick}
-      onClose={disableClosePositionsButton ? undefined : onClose}
-      isReadOnly={isReadOnly}
-      multipleKeys={partyIds.length > 1}
-      overlayNoRowsTemplate={error ? error.message : t('No positions')}
-      {...gridProps}
-    />
+    <>
+      <PositionsTable
+        pubKey={pubKey}
+        pubKeys={pubKeys}
+        rowData={data}
+        onMarketClick={onMarketClick}
+        onClose={disableClosePositionsButton ? undefined : onClose}
+        onEditTPSL={setEditTPSL}
+        isReadOnly={isReadOnly}
+        multipleKeys={partyIds.length > 1}
+        overlayNoRowsTemplate={error ? error.message : t('No positions')}
+        {...gridProps}
+      />
+      {editTPSL && (
+        <TakeProfitStopLossDialog
+          open={Boolean(editTPSL)}
+          marketId={editTPSL}
+          create={create}
+          onClose={() => setEditTPSL(null)}
+        />
+      )}
+    </>
   );
 };

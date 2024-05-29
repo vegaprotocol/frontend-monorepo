@@ -1,20 +1,25 @@
-import { type Market, getProductType } from '@vegaprotocol/markets';
+import {
+  type Market,
+  isSpot,
+  isFuture,
+  isPerpetual,
+} from '@vegaprotocol/markets';
 import { MarketHeaderSpot } from './market-header-spot';
 import { MarketHeaderFuture } from './market-header-future';
 import { MarketHeaderPerp } from './market-header-perp';
 
 export const MarketHeaderSwitch = ({ market }: { market: Market }) => {
-  const productType = getProductType(market);
+  const { product } = market.tradableInstrument.instrument;
 
-  if (productType === 'Spot') {
+  if (isSpot(product)) {
     return <MarketHeaderSpot market={market} />;
   }
 
-  if (productType === 'Future') {
+  if (isFuture(product)) {
     return <MarketHeaderFuture market={market} />;
   }
 
-  if (productType === 'Perpetual') {
+  if (isPerpetual(product)) {
     return <MarketHeaderPerp market={market} />;
   }
 

@@ -50,7 +50,6 @@ context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
           cy.getByTestId('view-proposal-btn').should('be.visible');
         });
     });
-
     it('should have external link for governance', function () {
       cy.getByTestId('home-proposals').within(() => {
         cy.getByTestId('external-link')
@@ -58,7 +57,6 @@ context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
           .and('contain', 'https://vega.xyz/governance');
       });
     });
-
     it('should have link for validator page', function () {
       cy.getByTestId('home-validators').within(() => {
         cy.get('[href="/validators"]')
@@ -67,7 +65,6 @@ context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
           .and('have.text', 'Browse, and stake');
       });
     });
-
     it('should have external link for validators', function () {
       cy.getByTestId('home-validators').within(() => {
         cy.getByTestId('external-link')
@@ -100,7 +97,6 @@ context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
           cy.wrap($validator).find('a').should('have.attr', 'href');
         });
     });
-
     it('should have link for rewards page', function () {
       cy.getByTestId('home-rewards').within(() => {
         cy.get('[href="/rewards"]')
@@ -109,7 +105,6 @@ context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
           .and('have.text', 'See rewards');
       });
     });
-
     it('should have link for withdrawal page', function () {
       cy.getByTestId('home-vega-token').within(() => {
         cy.get('[href="/token/withdraw"]')
@@ -209,7 +204,6 @@ context('Home Page - verify elements on page', { tags: '@smoke' }, function () {
           .and('have.text', 'Validators');
       });
     });
-
     it('should have link for rewards page', function () {
       cy.getByTestId('menu-drawer').within(() => {
         cy.get('[href="/rewards"]')

@@ -107,6 +107,7 @@ interface RewardRow {
   marketCreation: number;
   averagePosition: number;
   relativeReturns: number;
+  realisedReturns: number;
   returnsVolatility: number;
   validatorRanking: number;
   total: number;
@@ -236,6 +237,11 @@ export const RewardHistoryTable = ({
       },
       {
         field: 'relativeReturns',
+        valueFormatter: rewardValueFormatter,
+        cellRenderer: rewardCellRenderer,
+      },
+      {
+        field: 'realisedReturns',
         valueFormatter: rewardValueFormatter,
         cellRenderer: rewardCellRenderer,
       },

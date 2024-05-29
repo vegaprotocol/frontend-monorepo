@@ -53,7 +53,7 @@ export const parseDuration = (input: string) => {
   return H + M + S;
 };
 
-const useAverageBlockDuration = (polls = DEFAULT_POLLS) => {
+export const useAverageBlockDuration = (polls = DEFAULT_POLLS) => {
   const [avg, setAvg] = useState<number | undefined>(undefined);
   const { data, startPolling, stopPolling, error } = useBlockStatisticsQuery({
     fetchPolicy: 'network-only',

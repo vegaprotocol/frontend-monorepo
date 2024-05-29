@@ -383,16 +383,141 @@ fragment IUpdateNetworkParameterFields on UpdateNetworkParameter {
   }
 }
 
+fragment INewSpotMarket on NewSpotMarket {
+  instrument {
+    name
+    code
+    product {
+      ... on SpotProduct {
+        baseAsset {
+          id
+          name
+          symbol
+          decimals
+          quantum
+        }
+        quoteAsset {
+          id
+          name
+          symbol
+          decimals
+          quantum
+        }
+      }
+    }
+  }
+  priceDecimalPlaces
+  spotMetadata: metadata
+  priceMonitoringParameters {
+    triggers {
+      horizonSecs
+      probability
+      auctionExtensionSecs
+    }
+  }
+  targetStakeParameters {
+    timeWindow
+    scalingFactor
+  }
+  spotRiskParameter: riskParameters {
+    ... on SimpleRiskModel {
+      params {
+        factorLong
+        factorShort
+      }
+    }
+    ... on LogNormalRiskModel {
+      riskAversionParameter
+      tau
+      params {
+        mu
+        r
+        sigma
+      }
+    }
+  }
+  sizeDecimalPlaces
+  liquiditySLAParams {
+    priceRange
+    commitmentMinTimeFraction
+    performanceHysteresisEpochs
+    slaCompetitionFactor
+  }
+  liquidityFeeSettings {
+    method
+    feeConstant
+  }
+  tickSize
+}
+
+fragment IUpdateSpotMarket on UpdateSpotMarket {
+  marketId
+  updateSpotMarketConfiguration {
+    instrument {
+      ... on UpdateSpotInstrumentConfiguration {
+        code
+        name
+      }
+    }
+    spotMetadata: metadata
+    priceMonitoringParameters {
+      triggers {
+        horizonSecs
+        probability
+        auctionExtensionSecs
+      }
+    }
+    # spotRiskParameter: riskParameters {
+    #   ... on SimpleRiskModel {
+    #     params {
+    #       factorLong
+    #       factorShort
+    #     }
+    #   }
+    #   ... on LogNormalRiskModel {
+    #     riskAversionParameter
+    #     tau
+    #     params {
+    #       r
+    #       sigma
+    #       mu
+    #     }
+    #   }
+    # }
+    liquiditySLAParams {
+      priceRange
+      commitmentMinTimeFraction
+      performanceHysteresisEpochs
+      slaCompetitionFactor
+    }
+    liquidityFeeSettings {
+      method
+      feeConstant
+    }
+    tickSize
+  }
+}
+
 fragment VoteFields on ProposalVotes {
   yes {
     totalTokens
     totalNumber
     totalEquityLikeShareWeight
+    votes {
+      party {
+        id
+      }
+    }
   }
   no {
     totalTokens
     totalNumber
     totalEquityLikeShareWeight
+    votes {
+      party {
+        id
+      }
+    }
   }
 }
 
@@ -409,6 +534,8 @@ fragment ProposalTermsFields on ProposalTerms {
     ...INewAssetFields
     ...IUpdateNetworkParameterFields
     ...IUpdateAssetFields
+    ...INewSpotMarket
+    ...IUpdateSpotMarket
   }
 }
 
@@ -468,8 +595,14 @@ fragment BatchProposalFields on BatchProposal {
   }
 }
 
-query Proposals {
-  proposalsConnection {
+query Proposals($pagination: Pagination) {
+  proposalsConnection(pagination: $pagination) {
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
     edges {
       proposalNode {
         __typename

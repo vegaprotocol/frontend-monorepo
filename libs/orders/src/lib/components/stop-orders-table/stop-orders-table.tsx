@@ -110,6 +110,12 @@ export const StopOrdersTable = memo(
               data?.submission.size === Schema.Side.SIDE_SELL,
           },
           valueGetter: ({ data }: VegaValueGetterParams<StopOrder>) => {
+            if (
+              data?.sizeOverrideSetting ===
+              Schema.StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION
+            ) {
+              return undefined;
+            }
             return data?.submission.size && data.market
               ? toBigNum(
                   data.submission.size,
@@ -126,6 +132,14 @@ export const StopOrdersTable = memo(
           }: VegaValueFormatterParams<StopOrder, 'size'>) => {
             if (!data) {
               return '';
+            }
+            if (
+              data?.sizeOverrideSetting ===
+              Schema.StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION
+            ) {
+              return data.sizeOverrideValue
+                ? `${(Number(data.sizeOverrideValue) * 100).toFixed()}%`
+                : '';
             }
             if (!data?.market || !isNumeric(data.submission.size)) {
               return '-';

@@ -21,9 +21,13 @@ export interface StopOrderFormValues {
   triggerTrailingPercentOffset?: string;
 
   type: OrderType;
-  size: string;
+  sizeOverrideSetting?: Schema.StopOrderSizeOverrideSetting;
+  sizeOverrideValue?: string;
+  size?: string;
   timeInForce: OrderTimeInForce;
   price?: string;
+  postOnly?: boolean;
+  orderExpiresAt?: string;
 
   expire: boolean;
   expiryStrategy?: Schema.StopOrderExpiryStrategy;
@@ -36,15 +40,21 @@ export interface StopOrderFormValues {
   ocoTriggerTrailingPercentOffset?: string;
 
   ocoType: OrderType;
+  ocoSizeOverrideSetting?: Schema.StopOrderSizeOverrideSetting;
+  ocoSizeOverrideValue?: string;
   ocoSize: string;
   ocoTimeInForce: OrderTimeInForce;
   ocoPrice?: string;
+  ocoPostOnly?: boolean;
+  ocoOrderExpiresAt?: string;
 }
 
 export type OrderFormValues = {
   type: OrderType;
   side: Side;
   size: string;
+  notional?: string;
+  useNotional?: boolean;
   timeInForce: OrderTimeInForce;
   price?: string;
   expiresAt?: string | undefined;

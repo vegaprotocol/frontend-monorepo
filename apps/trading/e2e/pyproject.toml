@@ -14,7 +14,7 @@ docker = "6.0.0"
 requests = "2.26.0"
 pytest-xdist = "^3.3.1"
 python-dotenv = "^1.0.0"
-vega-sim = { git = "https://github.com/vegaprotocol/vega-market-sim.git/", branch = "pre-release/vega-v0.75.8"}
+vega-sim = { git = "https://github.com/vegaprotocol/vega-market-sim.git/", branch = "release/vega-v0.76.1" }
 
 [build-system]
 requires = ["poetry-core"]
