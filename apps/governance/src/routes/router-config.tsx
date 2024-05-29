@@ -124,13 +124,6 @@ const LazyProposalsList = React.lazy(
     )
 );
 
-const LazyRejectedProposalsList = React.lazy(
-  () =>
-    import(
-      /* webpackChunkName: "route-governance-proposals", webpackPrefetch: true */ './proposals/rejected'
-    )
-);
-
 const LazyPropose = React.lazy(
   () =>
     import(
@@ -276,7 +269,6 @@ const routerConfig = [
       },
       { path: 'proposals', element: <LazyProposalsList /> },
       { path: ':proposalId', element: <LazyProposal /> },
-      { path: 'rejected', element: <LazyRejectedProposalsList /> },
     ],
   },
   {

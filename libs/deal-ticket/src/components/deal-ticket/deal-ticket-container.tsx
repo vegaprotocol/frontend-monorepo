@@ -8,7 +8,8 @@ import {
   useStaticMarketData,
   useMarketPrice,
   marketInfoProvider,
-  markPriceProvider,
+  useMarkPrice,
+  isSpot,
 } from '@vegaprotocol/markets';
 import { AsyncRendererInline } from '@vegaprotocol/ui-toolkit';
 import { DealTicket } from './deal-ticket';
@@ -48,11 +49,12 @@ export const DealTicketContainer = ({
     reload,
   } = useStaticMarketData(marketId);
   const { data: marketPrice } = useMarketPrice(marketId);
-  const { data: markPrice } = useDataProvider({
-    dataProvider: markPriceProvider,
-    variables: { marketId },
-  });
+  const { data: markPrice } = useMarkPrice(marketId);
   const create = useVegaTransactionStore((state) => state.create);
+
+  const isSpotMarket =
+    market && isSpot(market.tradableInstrument.instrument.product);
+
   return (
     <AsyncRendererInline
       data={market && marketData}
@@ -62,7 +64,7 @@ export const DealTicketContainer = ({
     >
       {market && marketData ? (
         <>
-          {featureFlags.ISOLATED_MARGIN && (
+          {featureFlags.ISOLATED_MARGIN && !isSpotMarket && (
             <>
               <MarginModeSelector marketId={marketId} />
               <hr className="border-vega-clight-500 dark:border-vega-cdark-500 mb-4" />
@@ -75,6 +77,7 @@ export const DealTicketContainer = ({
               submit={(stopOrdersSubmission) =>
                 create({ stopOrdersSubmission })
               }
+              onDeposit={props.onDeposit}
             />
           ) : (
             <DealTicket

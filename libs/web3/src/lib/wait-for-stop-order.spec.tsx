@@ -8,6 +8,7 @@ import {
   OrderTimeInForce,
   OrderType,
   Side,
+  StopOrderSizeOverrideSetting,
   StopOrderStatus,
   StopOrderTriggerDirection,
 } from '@vegaprotocol/types';
@@ -17,6 +18,7 @@ const stopOrderId =
 
 const stopOrder: StopOrderByIdQuery['stopOrder'] = {
   __typename: 'StopOrder',
+  sizeOverrideSetting: StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_NONE,
   id: stopOrderId,
   ocoLinkId: null,
   expiresAt: null,

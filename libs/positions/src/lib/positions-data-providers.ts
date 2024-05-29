@@ -35,10 +35,15 @@ import {
   AccountType,
   MarginMode,
   MarketState,
+  StopOrderSizeOverrideSetting,
   type MarketTradingMode,
   type PositionStatus,
   type ProductType,
 } from '@vegaprotocol/types';
+import {
+  type StopOrderFieldsFragment,
+  stopOrdersProvider,
+} from '@vegaprotocol/orders';
 
 export interface Position {
   marginMode: MarginFieldsFragment['marginMode'];
@@ -71,6 +76,7 @@ export interface Position {
   unrealisedPNL: string;
   updatedAt: string | null;
   productType: ProductType;
+  stopOrders?: StopOrderFieldsFragment[] | null;
 }
 
 export const getMetrics = (
@@ -377,13 +383,33 @@ export const positionsMetricsProvider = makeDerivedDataProvider<
       marginsDataProvider(callback, client, {
         partyId: firstOrSelf(variables.partyIds),
       }),
+    (callback, client, variables) =>
+      stopOrdersProvider(callback, client, {
+        filter: {
+          parties: [firstOrSelf(variables.partyIds)],
+          markets: variables.marketIds,
+          liveOnly: true,
+        },
+      }),
   ],
-  ([positions, accounts, marketsData, margins], variables) => {
+  ([positions, accounts, marketsData, margins, stopOrders], variables) => {
     const positionsData = rejoinPositionData(positions, marketsData);
     const metrics = getMetrics(
       positionsData,
       accounts as Account[] | null,
       margins
+    );
+    metrics.forEach(
+      (position) =>
+        (position.stopOrders = (
+          stopOrders as StopOrderFieldsFragment[] | null
+        )?.filter(
+          (stopOrder) =>
+            stopOrder.sizeOverrideSetting ===
+              StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION &&
+            stopOrder.marketId === position.marketId &&
+            stopOrder.partyId === position.partyId
+        ))
     );
     return preparePositions(metrics, variables.showClosed);
   },

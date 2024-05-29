@@ -8,7 +8,7 @@ import { initReactI18next } from 'react-i18next';
 
 export const supportedLngs = ['en'];
 
-const isInDev = process.env.NODE_ENV === 'development';
+const isInDev = false;
 const useLocize = isInDev && !!process.env.NX_USE_LOCIZE;
 
 const backend = useLocize

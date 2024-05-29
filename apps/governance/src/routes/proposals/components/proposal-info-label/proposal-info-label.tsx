@@ -7,7 +7,7 @@ export type ProposalInfoLabelVariant =
   | 'tertiary'
   | 'highlight';
 
-const base = 'rounded-full px-3 py-1 font-alpha';
+const base = 'rounded px-1 py-[2px] font-alpha text-xs flex items-center gap-1';
 const primary = 'bg-vega-green text-black';
 const secondary = 'bg-vega-dark-200 text-vega-light-200';
 const tertiary = 'bg-vega-dark-150 text-vega-light-200';

@@ -58,6 +58,13 @@ export const markPriceProvider = makeDerivedDataProvider<
   MarketDataQueryVariables
 >([marketDataProvider], ([marketData]) => (marketData as MarketData).markPrice);
 
+export const useMarkPrice = (marketId?: string, skip?: boolean) =>
+  useDataProvider({
+    dataProvider: markPriceProvider,
+    variables: { marketId: marketId || '' },
+    skip: skip || !marketId,
+  });
+
 export const marketPriceProvider = makeDerivedDataProvider<
   string | undefined,
   never,

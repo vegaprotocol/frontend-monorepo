@@ -3,7 +3,6 @@ import { MockedProvider } from '@apollo/client/testing';
 import { render, screen } from '@testing-library/react';
 import { generateProposal } from '../../test-helpers/generate-proposals';
 import { Proposal } from './proposal';
-import { ProposalState } from '@vegaprotocol/types';
 import { type Proposal as IProposal } from '../../types';
 import { AppStateProvider } from '../../../../contexts/app-state/app-state-provider';
 import { MockedWalletProvider } from '@vegaprotocol/wallet-react/testing';
@@ -79,17 +78,6 @@ it('Renders with a link back to "all proposals"', async () => {
   renderComponent(proposal);
 
   expect(await screen.findByTestId('all-proposals-link')).toBeInTheDocument();
-});
-
-it('Renders a rejected proposals with a link back to "rejected proposals"', async () => {
-  const proposal = generateProposal({
-    state: ProposalState.STATE_REJECTED,
-  });
-  renderComponent(proposal);
-
-  expect(
-    await screen.findByTestId('rejected-proposals-link')
-  ).toBeInTheDocument();
 });
 
 it('renders each section', async () => {

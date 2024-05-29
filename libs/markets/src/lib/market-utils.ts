@@ -4,23 +4,24 @@ import BigNumber from 'bignumber.js';
 import orderBy from 'lodash/orderBy';
 import type {
   Market,
-  Candle,
   MarketMaybeWithData,
   MarketMaybeWithDataAndCandles,
-} from '../';
+} from './markets-provider';
+import { isSpot, isPerpetual, isFuture } from './product';
+import type { Candle } from './market-candles-provider';
 
 export const getAsset = (market: Pick<Market, 'tradableInstrument'>) => {
   if (!market.tradableInstrument?.instrument.product) {
     throw new Error('Failed to retrieve asset. Invalid tradable instrument');
   }
 
-  const product = market.tradableInstrument.instrument.product;
+  const { product } = market.tradableInstrument.instrument;
 
-  if (product.__typename === 'Perpetual' || product.__typename === 'Future') {
+  if (isPerpetual(product) || isFuture(product)) {
     return product.settlementAsset;
   }
 
-  if (product.__typename === 'Spot') {
+  if (isSpot(product)) {
     return product.quoteAsset;
   }
 
@@ -34,7 +35,7 @@ export const getBaseAsset = (market: Pick<Market, 'tradableInstrument'>) => {
 
   const product = market.tradableInstrument.instrument.product;
 
-  if (product.__typename === 'Spot') {
+  if (isSpot(product)) {
     return product.baseAsset;
   }
 
@@ -48,9 +49,9 @@ export const getQuoteAsset = (market: Pick<Market, 'tradableInstrument'>) => {
     throw new Error('Failed to retrieve asset. Invalid tradable instrument');
   }
 
-  const product = market.tradableInstrument.instrument.product;
+  const { product } = market.tradableInstrument.instrument;
 
-  if (product.__typename === 'Spot') {
+  if (isSpot(product)) {
     return product.quoteAsset;
   }
 
@@ -82,13 +83,13 @@ export const getQuoteName = (market: Pick<Market, 'tradableInstrument'>) => {
     );
   }
 
-  const product = market.tradableInstrument.instrument.product;
+  const { product } = market.tradableInstrument.instrument;
 
-  if (product.__typename === 'Perpetual' || product.__typename === 'Future') {
+  if (isPerpetual(product) || isFuture(product)) {
     return product.quoteName;
   }
 
-  if (product.__typename === 'Spot') {
+  if (isSpot(product)) {
     return product.quoteAsset.symbol;
   }
 

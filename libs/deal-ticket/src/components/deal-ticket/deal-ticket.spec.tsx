@@ -943,4 +943,39 @@ describe('DealTicket', () => {
       );
     });
   });
+
+  it('toggle of size between base and quote asset', async () => {
+    // Render component
+    render(generateJsx());
+
+    let orderSizeField = screen.getByTestId('order-size');
+    await userEvent.type(orderSizeField, '1');
+    await userEvent.click(screen.getByTestId('useNotional'));
+    let orderNotionalField = screen.getByTestId('order-notional');
+    // market price is 2 order size is 1 => notional is 2
+    expect(orderNotionalField).toHaveDisplayValue('2.0');
+
+    await userEvent.clear(orderNotionalField);
+    await userEvent.type(orderNotionalField, '4');
+    await userEvent.click(screen.getByTestId('useSize'));
+    orderSizeField = screen.getByTestId('order-size');
+    // market price is 2 notional is 4  => size is 2
+    expect(orderSizeField).toHaveDisplayValue('2.0');
+
+    userEvent.click(screen.getByTestId('order-type-Limit'));
+    const orderPriceField = screen.getByTestId('order-price');
+    await userEvent.clear(orderPriceField);
+    await userEvent.type(orderPriceField, '4');
+    await userEvent.click(screen.getByTestId('useNotional'));
+    // limit price is 4 size is 2 => notional 8
+    orderNotionalField = screen.getByTestId('order-notional');
+    expect(screen.getByTestId('order-notional')).toHaveDisplayValue('8.0');
+
+    await userEvent.clear(orderNotionalField);
+    await userEvent.type(orderNotionalField, '16');
+    await userEvent.click(screen.getByTestId('useSize'));
+    orderSizeField = screen.getByTestId('order-size');
+    // market price is 4 notional is 16  => size is 4
+    expect(orderSizeField).toHaveDisplayValue('4.0');
+  });
 });

@@ -11,7 +11,7 @@ import {
   useDealTicketFormValues,
 } from '@vegaprotocol/react-helpers';
 import { useFeatureFlags } from '@vegaprotocol/environment';
-import { formatForInput } from '@vegaprotocol/utils';
+import { formatForInput, removeDecimal } from '@vegaprotocol/utils';
 import {
   MockedWalletProvider,
   mockConfig,
@@ -22,6 +22,8 @@ jest.mock('./deal-ticket-fee-details', () => ({
   DealTicketFeeDetails: () => <div data-testid="deal-ticket-fee-details" />,
 }));
 
+const onDeposit = jest.fn();
+
 const marketPrice = '200';
 const market = generateMarket();
 const submit = jest.fn();
@@ -30,7 +32,12 @@ function generateJsx() {
   return (
     <MockedProvider>
       <MockedWalletProvider>
-        <StopOrder market={market} marketPrice={marketPrice} submit={submit} />
+        <StopOrder
+          market={market}
+          marketPrice={marketPrice}
+          submit={submit}
+          onDeposit={onDeposit}
+        />
       </MockedWalletProvider>
     </MockedProvider>
   );
@@ -38,6 +45,7 @@ function generateJsx() {
 
 const submitButton = 'place-order';
 const sizeInput = 'order-size';
+const sizeOverrideValueInput = 'sizeOverrideValue';
 const priceInput = 'order-price';
 const triggerPriceInput = 'triggerPrice';
 const triggerTrailingPercentOffsetInput = 'triggerTrailingPercentOffset';
@@ -55,6 +63,9 @@ const triggerDirectionFallsBelow = 'triggerDirection-fallsBelow';
 const expiryStrategySubmit = 'expiryStrategy-submit';
 const expiryStrategyCancel = 'expiryStrategy-cancel';
 
+const sizeOverrideSettingNone = 'sizeOverrideSetting-none';
+const sizeOverrideSettingPosition = 'sizeOverrideSetting-position';
+
 const triggerTypePrice = 'triggerType-price';
 const triggerTypeTrailingPercentOffset = 'triggerType-trailingPercentOffset';
 
@@ -64,25 +75,17 @@ const datePicker = 'date-picker-field';
 const timeInForce = 'order-tif';
 
 const sizeErrorMessage = 'stop-order-error-message-size';
+const sizeOverrideValueErrorMessage =
+  'stop-order-error-message-sizeOverrideValue';
 const priceErrorMessage = 'stop-order-error-message-price';
 const triggerPriceErrorMessage = 'stop-order-error-message-trigger-price';
 const triggerPriceWarningMessage = 'stop-order-warning-message-trigger-price';
 const triggerTrailingPercentOffsetErrorMessage =
   'stop-order-error-message-trigger-trailing-percent-offset';
 
-const numberOfActiveOrdersLimit = 'stop-order-warning-limit';
+const numberOfActiveOrdersLimit = 'stop-order-limit-warning';
 
 const ocoPostfix = (id: string, postfix = true) => (postfix ? `${id}-oco` : id);
-
-const mockDataProvider = jest.fn(() => ({
-  data: Array(0),
-  reload: jest.fn(),
-}));
-jest.mock('@vegaprotocol/data-provider', () => ({
-  ...jest.requireActual('@vegaprotocol/data-provider'),
-  // @ts-ignore doesn't like spreading args here
-  useDataProvider: jest.fn((...args) => mockDataProvider(...args)),
-}));
 
 const mockUseOpenVolume = jest.fn(() => ({
   openVolume: '0',
@@ -95,9 +98,26 @@ jest.mock('@vegaprotocol/positions', () => ({
 
 const mockActiveOrders = jest.fn(() => ({}));
 
+const mockActiveStopOrders = jest.fn((partyId, marketId, skip) => ({
+  data: Array(0),
+}));
+
 jest.mock('@vegaprotocol/orders', () => ({
   ...jest.requireActual('@vegaprotocol/orders'),
   useActiveOrders: jest.fn(() => mockActiveOrders()),
+  useActiveStopOrders: jest.fn((partyId, marketId, skip) =>
+    mockActiveStopOrders(partyId, marketId, skip)
+  ),
+}));
+
+jest.mock('@vegaprotocol/network-parameters', () => ({
+  useNetworkParamQuery: jest.fn(() => ({
+    data: {
+      networkParameter: {
+        value: '4',
+      },
+    },
+  })),
 }));
 
 describe('StopOrder', () => {
@@ -123,6 +143,9 @@ describe('StopOrder', () => {
     expect(screen.getByTestId(orderTypeLimit).dataset.state).toEqual('checked');
     await userEvent.click(screen.getByTestId(orderTypeLimit));
     expect(screen.getByTestId(orderSideBuy).dataset.state).toEqual('checked');
+    expect(screen.getByTestId(sizeOverrideSettingNone).dataset.state).toEqual(
+      'checked'
+    );
     expect(screen.getByTestId(sizeInput)).toHaveDisplayValue('0');
     expect(screen.getByTestId(timeInForce)).toHaveValue(
       Schema.OrderTimeInForce.TIME_IN_FORCE_FOK
@@ -159,6 +182,9 @@ describe('StopOrder', () => {
     );
     await userEvent.click(screen.getByTestId(orderTypeMarket));
     expect(screen.getByTestId(orderSideBuy).dataset.state).toEqual('checked');
+    expect(screen.getByTestId(sizeOverrideSettingNone).dataset.state).toEqual(
+      'checked'
+    );
     expect(screen.getByTestId(sizeInput)).toHaveDisplayValue('0');
     expect(screen.getByTestId(timeInForce)).toHaveValue(
       Schema.OrderTimeInForce.TIME_IN_FORCE_FOK
@@ -185,15 +211,26 @@ describe('StopOrder', () => {
   });
 
   it('calculate notional for market limit', async () => {
+    mockUseOpenVolume.mockReturnValue({
+      openVolume: removeDecimal('10', market.positionDecimalPlaces),
+    });
     render(generateJsx());
     await userEvent.type(screen.getByTestId(sizeInput), '10');
     await userEvent.type(screen.getByTestId(priceInput), '10');
     expect(screen.getByTestId('deal-ticket-fee-notional')).toHaveTextContent(
       'Notional100.00 BTC'
     );
+    await userEvent.click(screen.getByTestId(sizeOverrideSettingPosition));
+    await userEvent.type(screen.getByTestId(sizeOverrideValueInput), '50');
+    expect(screen.getByTestId('deal-ticket-fee-notional')).toHaveTextContent(
+      'Notional50.00 BTC'
+    );
   });
 
   it('calculates notional for limit order', async () => {
+    mockUseOpenVolume.mockReturnValue({
+      openVolume: removeDecimal('10', market.positionDecimalPlaces),
+    });
     render(generateJsx());
     await userEvent.click(screen.getByTestId(orderTypeTrigger));
     await userEvent.click(screen.getByTestId(orderTypeMarket));
@@ -207,6 +244,13 @@ describe('StopOrder', () => {
     // calculate base on size and price trigger
     expect(screen.getByTestId('deal-ticket-fee-notional')).toHaveTextContent(
       'Notional30.00 BTC'
+    );
+
+    await userEvent.click(screen.getByTestId(sizeOverrideSettingPosition));
+    await userEvent.type(screen.getByTestId(sizeOverrideValueInput), '50');
+    // calculate base on openVolume*sizeOverride and price trigger
+    expect(screen.getByTestId('deal-ticket-fee-notional')).toHaveTextContent(
+      'Notional15.00 BTC'
     );
   });
 
@@ -323,6 +367,36 @@ describe('StopOrder', () => {
       expect(queryByTestId(sizeErrorMessage)).toBeNull();
     }
   );
+
+  it.each([
+    { fieldName: 'sizeOverrideValue', ocoValue: false },
+    { fieldName: 'ocoSizeOverrideValue', ocoValue: true },
+  ])('validates $fieldName field 123', async ({ ocoValue }) => {
+    render(generateJsx());
+    if (ocoValue) {
+      await userEvent.click(screen.getByTestId(oco));
+    }
+    const getByTestId = (id: string) =>
+      screen.getByTestId(ocoPostfix(id, ocoValue));
+    const queryByTestId = (id: string) =>
+      screen.queryByTestId(ocoPostfix(id, ocoValue));
+    await userEvent.click(getByTestId(sizeOverrideSettingPosition));
+    await userEvent.click(screen.getByTestId(submitButton));
+
+    // default value should be invalid
+    expect(getByTestId(sizeOverrideValueErrorMessage)).toBeInTheDocument();
+    // to small value should be invalid
+    await userEvent.type(getByTestId(sizeOverrideValueInput), '0.1');
+    expect(getByTestId(sizeOverrideValueErrorMessage)).toBeInTheDocument();
+    // to big value should be invalid
+    await userEvent.type(getByTestId(sizeOverrideValueInput), '101');
+    expect(getByTestId(sizeOverrideValueErrorMessage)).toBeInTheDocument();
+
+    // clear and fill using valid value
+    await userEvent.clear(getByTestId(sizeOverrideValueInput));
+    await userEvent.type(getByTestId(sizeOverrideValueInput), '10');
+    expect(queryByTestId(sizeOverrideValueErrorMessage)).toBeNull();
+  });
 
   it.each([
     { fieldName: 'price', ocoValue: false },
@@ -568,21 +642,19 @@ describe('StopOrder', () => {
   });
 
   it('shows limit of active stop orders number', async () => {
-    mockDataProvider.mockReturnValue({
-      reload: jest.fn(),
+    mockActiveStopOrders.mockReturnValue({
       data: Array(4),
     });
     render(generateJsx());
-    expect((mockDataProvider as jest.Mock).mock.lastCall?.[0].skip).toBe(true);
+    expect((mockActiveStopOrders as jest.Mock).mock.lastCall?.[2]).toBe(true);
     await userEvent.type(screen.getByTestId(sizeInput), '0.01');
-    expect((mockDataProvider as jest.Mock).mock.lastCall?.[0].skip).toBe(false);
+    expect((mockActiveStopOrders as jest.Mock).mock.lastCall?.[2]).toBe(false);
     // 7002-SORD-011
     expect(screen.getByTestId(numberOfActiveOrdersLimit)).toBeInTheDocument();
   });
 
   it('counts oco as two orders', async () => {
-    mockDataProvider.mockReturnValue({
-      reload: jest.fn(),
+    mockActiveStopOrders.mockReturnValue({
       data: Array(3),
     });
     render(generateJsx());

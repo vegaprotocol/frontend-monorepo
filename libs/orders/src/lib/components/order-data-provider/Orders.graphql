@@ -117,6 +117,8 @@ fragment StopOrderFields on StopOrder {
   expiresAt
   expiryStrategy
   triggerDirection
+  sizeOverrideSetting
+  sizeOverrideValue
   status
   createdAt
   updatedAt

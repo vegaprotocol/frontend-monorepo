@@ -329,14 +329,28 @@ const VoteBreakdownBatchSubProposal = ({
   const { t } = useTranslation();
 
   const isProposalOpen = proposal?.state === ProposalState.STATE_OPEN;
-  const isUpdateMarket = terms?.change?.__typename === 'UpdateMarket';
+  const isUpdateMarket =
+    terms?.change?.__typename === 'UpdateMarket' ||
+    terms?.change.__typename === 'UpdateSpotMarket';
 
   let marketId = undefined;
-  if (terms?.change?.__typename === 'UpdateMarket') {
+  if (
+    terms?.change?.__typename === 'UpdateMarket' ||
+    terms?.change?.__typename === 'UpdateSpotMarket'
+  ) {
     marketId = terms.change.marketId;
   }
   if (terms?.change?.__typename === 'UpdateMarketState') {
     marketId = terms.change.market.id;
+  }
+  if (
+    (terms?.change?.__typename === 'NewMarket' ||
+      terms?.change?.__typename === 'NewSpotMarket') &&
+    indicator &&
+    proposal?.subProposals &&
+    proposal?.subProposals.length > 0
+  ) {
+    marketId = proposal.subProposals?.[indicator - 1]?.id;
   }
 
   const voteInfo = useVoteInformation({
@@ -382,7 +396,9 @@ const VoteBreakdownNormal = ({ proposal }: { proposal: Proposal }) => {
   });
 
   const isProposalOpen = proposal?.state === ProposalState.STATE_OPEN;
-  const isUpdateMarket = proposal?.terms?.change?.__typename === 'UpdateMarket';
+  const isUpdateMarket =
+    proposal?.terms?.change?.__typename === 'UpdateMarket' ||
+    proposal?.terms?.change?.__typename === 'UpdateSpotMarket';
 
   return (
     <div className="mb-6">

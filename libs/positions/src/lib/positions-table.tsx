@@ -50,6 +50,7 @@ import { useLatestTrade } from '@vegaprotocol/trades';
 interface Props extends TypedDataAgGrid<Position> {
   onClose?: (data: Position) => void;
   onMarketClick?: (id: string, metaKey?: boolean) => void;
+  onEditTPSL?: (id: string) => void;
   style?: CSSProperties;
   isReadOnly: boolean;
   multipleKeys?: boolean;
@@ -207,6 +208,7 @@ const PositionMargin = ({ data }: { data: Position }) => {
 export const PositionsTable = ({
   onClose,
   onMarketClick,
+  onEditTPSL,
   multipleKeys,
   isReadOnly,
   pubKeys,
@@ -539,6 +541,38 @@ export const PositionsTable = ({
           'Unrealised profit is the current profit on your open position. Margin is still allocated to your position.'
         ),
       },
+      onEditTPSL && !isReadOnly
+        ? {
+            headerName: t('TP / SL'),
+            sortable: false,
+            resizable: false,
+            filter: false,
+            maxWidth: 80,
+            type: 'rightAligned',
+            colId: 'tpsl',
+            cellRenderer: ({ data }: VegaICellRendererParams<Position>) => {
+              return (
+                <div className="flex items-center justify-end gap-2">
+                  {data?.openVolume &&
+                  data?.openVolume !== '0' &&
+                  data.partyId === pubKey ? (
+                    <ButtonLink
+                      data-testid="edit-tpsl"
+                      onClick={() => onEditTPSL(data.marketId)}
+                      title={
+                        data.stopOrders?.length
+                          ? t('Edit TP / SL')
+                          : t('Add TP / SL')
+                      }
+                    >
+                      {data.stopOrders?.length ? t('Edit') : t('Add')}
+                    </ButtonLink>
+                  ) : null}
+                </div>
+              );
+            },
+          }
+        : null,
       onClose && !isReadOnly
         ? {
             ...COL_DEFS.actions,
@@ -574,6 +608,7 @@ export const PositionsTable = ({
       (colDef: ColDef | null): colDef is ColDef => colDef !== null
     );
   }, [
+    onEditTPSL,
     isReadOnly,
     multipleKeys,
     onClose,
