@@ -15,6 +15,7 @@ export const generateERC20Asset = (
     lifetimeLimit: '123000000',
     withdrawThreshold: '50',
     __typename: 'ERC20',
+    chainId: '11',
   },
   status: status,
   __typename: 'Asset',
