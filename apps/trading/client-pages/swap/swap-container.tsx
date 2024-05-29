@@ -16,7 +16,12 @@ import { VegaIcon, VegaIconNames, Link } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useAccounts, type Account } from '@vegaprotocol/accounts';
 import { useT } from '../../lib/use-t';
-import { addDecimal, formatNumber, removeDecimal } from '@vegaprotocol/utils';
+import {
+  addDecimal,
+  addDecimalsFormatNumber,
+  formatNumber,
+  removeDecimal,
+} from '@vegaprotocol/utils';
 import { OrderTimeInForce, OrderType, Side } from '@vegaprotocol/types';
 import { useVegaTransactionStore } from '@vegaprotocol/web3';
 import noop from 'lodash/noop';
@@ -186,7 +191,7 @@ export const SwapContainer = () => {
         orderSubmission.size,
         market.decimalPlaces,
         market.positionDecimalPlaces,
-        quoteAsset.decimals
+        market.decimalPlaces
       );
       const baseAmount =
         notionalSize && addDecimal(notionalSize, market.decimalPlaces);
@@ -266,7 +271,7 @@ export const SwapContainer = () => {
         >
           {t('Swap now')}
         </button>
-        <div className="mt-4 text-center text-gray-500">
+        <div className="mt-4 text-left text-gray-500">
           {quoteAsset &&
             quoteAmount &&
             baseAsset &&
@@ -276,8 +281,12 @@ export const SwapContainer = () => {
             } = ${formatNumber(baseAmount, 4)} ${baseAsset.symbol}`}
         </div>
 
-        <div className="mt-4 text-center text-gray-500">
-          {`TESTING: Side ${side} at market price ${marketPrice} at price tolerance ${priceImpactTolerance}`}
+        <div className="mt-2 text-left text-gray-500">
+          {marketPrice &&
+            market &&
+            `TESTING: Market price ${
+              market?.tradableInstrument.instrument.code
+            }: ${addDecimalsFormatNumber(marketPrice, market.decimalPlaces)}`}
         </div>
       </div>
     </form>
