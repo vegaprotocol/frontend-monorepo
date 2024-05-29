@@ -8,7 +8,7 @@ export type ExplorerPartyDepositsWithdrawalsQueryVariables = Types.Exact<{
 }>;
 
 
-export type ExplorerPartyDepositsWithdrawalsQuery = { __typename?: 'Query', partiesConnection?: { __typename?: 'PartyConnection', edges: Array<{ __typename?: 'PartyEdge', node: { __typename?: 'Party', depositsConnection?: { __typename?: 'DepositsConnection', edges?: Array<{ __typename?: 'DepositEdge', node: { __typename?: 'Deposit', id: string, amount: string, createdTimestamp: any, creditedTimestamp?: any | null, status: Types.DepositStatus, txHash?: string | null, asset: { __typename?: 'Asset', id: string } } } | null> | null } | null, withdrawalsConnection?: { __typename?: 'WithdrawalsConnection', edges?: Array<{ __typename?: 'WithdrawalEdge', node: { __typename?: 'Withdrawal', id: string, createdTimestamp: any, withdrawnTimestamp?: any | null, amount: string, status: Types.WithdrawalStatus, txHash?: string | null, asset: { __typename?: 'Asset', id: string }, details?: { __typename?: 'Erc20WithdrawalDetails', receiverAddress: string } | null } } | null> | null } | null } }> } | null };
+export type ExplorerPartyDepositsWithdrawalsQuery = { __typename?: 'Query', partiesConnection?: { __typename?: 'PartyConnection', edges: Array<{ __typename?: 'PartyEdge', node: { __typename?: 'Party', depositsConnection?: { __typename?: 'DepositsConnection', edges?: Array<{ __typename?: 'DepositEdge', node: { __typename?: 'Deposit', id: string, amount: string, createdTimestamp: any, creditedTimestamp?: any | null, status: Types.DepositStatus, txHash?: string | null, asset: { __typename?: 'Asset', id: string, source: { __typename?: 'BuiltinAsset' } | { __typename?: 'ERC20', contractAddress: string, chainId: string } } } } | null> | null } | null, withdrawalsConnection?: { __typename?: 'WithdrawalsConnection', edges?: Array<{ __typename?: 'WithdrawalEdge', node: { __typename?: 'Withdrawal', id: string, createdTimestamp: any, withdrawnTimestamp?: any | null, amount: string, status: Types.WithdrawalStatus, txHash?: string | null, asset: { __typename?: 'Asset', id: string, source: { __typename?: 'BuiltinAsset' } | { __typename?: 'ERC20', contractAddress: string, chainId: string } }, details?: { __typename?: 'Erc20WithdrawalDetails', receiverAddress: string } | null } } | null> | null } | null } }> } | null };
 
 
 export const ExplorerPartyDepositsWithdrawalsDocument = gql`
@@ -16,12 +16,18 @@ export const ExplorerPartyDepositsWithdrawalsDocument = gql`
   partiesConnection(id: $partyId) {
     edges {
       node {
-        depositsConnection {
+        depositsConnection(pagination: {first: 10}) {
           edges {
             node {
               id
               asset {
                 id
+                source {
+                  ... on ERC20 {
+                    contractAddress
+                    chainId
+                  }
+                }
               }
               amount
               createdTimestamp
@@ -31,7 +37,7 @@ export const ExplorerPartyDepositsWithdrawalsDocument = gql`
             }
           }
         }
-        withdrawalsConnection {
+        withdrawalsConnection(pagination: {first: 10}) {
           edges {
             node {
               id
@@ -39,6 +45,12 @@ export const ExplorerPartyDepositsWithdrawalsDocument = gql`
               withdrawnTimestamp
               asset {
                 id
+                source {
+                  ... on ERC20 {
+                    contractAddress
+                    chainId
+                  }
+                }
               }
               amount
               status
