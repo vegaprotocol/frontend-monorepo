@@ -258,7 +258,7 @@ export const hasActiveOrderProvider = makeDerivedDataProvider<
 export const hasAmendableOrderProvider = makeDerivedDataProvider<
   boolean,
   never,
-  { partyId: string }
+  { partyId: string; marketId?: string }
 >([activeOrdersProvider], (parts) => {
   const activeOrders = parts[0] as ReturnType<typeof getData>;
   const hasAmendableOrder = activeOrders.some(

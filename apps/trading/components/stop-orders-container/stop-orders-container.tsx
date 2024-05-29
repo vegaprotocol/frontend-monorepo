@@ -8,10 +8,12 @@ import { persist } from 'zustand/middleware';
 import type { DataGridSlice } from '../../stores/datagrid-store-slice';
 import { createDataGridSlice } from '../../stores/datagrid-store-slice';
 import { useT } from '../../lib/use-t';
+import { useShowCurrentMarketOnly } from '../orders-container';
 
-export const StopOrdersContainer = () => {
+export const StopOrdersContainer = ({ marketId }: { marketId?: string }) => {
   const t = useT();
   const { pubKey, isReadOnly } = useVegaWallet();
+  const showCurrentMarketOnly = useShowCurrentMarketOnly();
   const onMarketClick = useMarketClickHandler(true);
 
   const gridStore = useStopOrdersStore((store) => store.gridStore);
@@ -28,6 +30,7 @@ export const StopOrdersContainer = () => {
   return (
     <StopOrdersManager
       partyId={pubKey}
+      marketId={showCurrentMarketOnly ? marketId : undefined}
       onMarketClick={onMarketClick}
       isReadOnly={isReadOnly}
       gridProps={gridStoreCallbacks}

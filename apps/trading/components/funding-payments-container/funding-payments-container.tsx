@@ -8,6 +8,7 @@ import type { DataGridSlice } from '../../stores/datagrid-store-slice';
 import { createDataGridSlice } from '../../stores/datagrid-store-slice';
 import { useMarketClickHandler } from '../../lib/hooks/use-market-click-handler';
 import { useT } from '../../lib/use-t';
+import { useShowCurrentMarketOnly } from '../orders-container';
 
 export const FundingPaymentsContainer = ({
   marketId,
@@ -17,7 +18,7 @@ export const FundingPaymentsContainer = ({
   const t = useT();
   const onMarketClick = useMarketClickHandler(true);
   const { pubKey } = useVegaWallet();
-
+  const showCurrentMarketOnly = useShowCurrentMarketOnly();
   const gridStore = useFundingPaymentsStore((store) => store.gridStore);
   const updateGridStore = useFundingPaymentsStore(
     (store) => store.updateGridStore
@@ -38,7 +39,7 @@ export const FundingPaymentsContainer = ({
   return (
     <FundingPaymentsManager
       partyId={pubKey}
-      marketId={marketId}
+      marketId={showCurrentMarketOnly ? marketId : undefined}
       onMarketClick={onMarketClick}
       gridProps={gridStoreCallbacks}
     />

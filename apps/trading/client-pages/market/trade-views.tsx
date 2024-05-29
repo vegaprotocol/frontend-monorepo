@@ -1,5 +1,5 @@
 import { DepthChartContainer } from '../../components/depth-chart-container';
-import { Filter, OpenOrdersMenu } from '@vegaprotocol/orders';
+import { Filter } from '@vegaprotocol/orders';
 import {
   TradesContainer,
   TradesSettings,
@@ -26,6 +26,7 @@ import {
 import {
   OrdersContainer,
   OrdersSettings,
+  ShowCurrentMarketOnly,
 } from '../../components/orders-container';
 import {
   StopOrdersContainer,
@@ -34,6 +35,7 @@ import {
 import { AccountsMenu } from '../../components/accounts-menu';
 import { PositionsMenu } from '../../components/positions-menu';
 import { ChartContainer, ChartMenu } from '../../components/chart-container';
+import { OpenOrdersMenu } from '../../components/open-orders-menu';
 
 export type TradingView = keyof typeof TradingViews;
 
@@ -54,6 +56,7 @@ export const TradingViews = {
   fundingPayments: {
     component: FundingPaymentsContainer,
     settings: FundingPaymentsSettings,
+    menu: ShowCurrentMarketOnly,
   },
   orderbook: {
     component: OrderbookContainer,
@@ -61,6 +64,7 @@ export const TradingViews = {
   trades: {
     component: TradesContainer,
     settings: TradesSettings,
+    menu: ShowCurrentMarketOnly,
   },
   positions: {
     component: PositionsContainer,
@@ -68,23 +72,32 @@ export const TradingViews = {
     settings: PositionsSettings,
   },
   activeOrders: {
-    component: () => <OrdersContainer filter={Filter.Open} />,
+    component: (props: { marketId: string }) => (
+      <OrdersContainer filter={Filter.Open} {...props} />
+    ),
     menu: OpenOrdersMenu,
     settings: () => <OrdersSettings filter={Filter.Open} />,
   },
   inactiveOrders: {
-    component: () => <OrdersContainer filter={Filter.Inactive} />,
+    component: (props: { marketId: string }) => (
+      <OrdersContainer filter={Filter.Inactive} {...props} />
+    ),
     menu: OpenOrdersMenu,
     settings: () => <OrdersSettings filter={Filter.Inactive} />,
   },
   stopOrders: {
     component: StopOrdersContainer,
     settings: StopOrdersSettings,
+    menu: ShowCurrentMarketOnly,
   },
   collateral: {
     component: AccountsContainer,
     menu: AccountsMenu,
     settings: AccountsSettings,
   },
-  fills: { component: FillsContainer, settings: FillsSettings },
+  fills: {
+    component: FillsContainer,
+    settings: FillsSettings,
+    menu: ShowCurrentMarketOnly,
+  },
 } as const;

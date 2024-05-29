@@ -1,6 +1,6 @@
 import { useDataGridEvents } from '@vegaprotocol/datagrid';
 import { Filter, OrderListManager } from '@vegaprotocol/orders';
-import { Splash } from '@vegaprotocol/ui-toolkit';
+import { Splash, TradingCheckbox } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useNavigateWithMeta } from '../../lib/hooks/use-market-click-handler';
 import { create } from 'zustand';
@@ -52,12 +52,14 @@ export const DefaultFilterModel = {
 
 export interface OrderContainerProps {
   filter?: Filter;
+  marketId?: string;
 }
 
 const AUTO_SIZE_COLUMNS = ['instrument-code'];
 
-export const OrdersContainer = ({ filter }: OrderContainerProps) => {
+export const OrdersContainer = ({ filter, marketId }: OrderContainerProps) => {
   const t = useT();
+  const showCurrentMarketOnly = useShowCurrentMarketOnly();
   const { pubKey, isReadOnly } = useVegaWallet();
   const navigate = useNavigateWithMeta();
   const { gridState, updateGridState } = useOrderListGridState(filter);
@@ -78,6 +80,7 @@ export const OrdersContainer = ({ filter }: OrderContainerProps) => {
   return (
     <OrderListManager
       partyId={pubKey}
+      marketId={showCurrentMarketOnly ? marketId : undefined}
       filter={filter}
       onMarketClick={(marketId, metaKey) => {
         navigate(Links.MARKET(marketId), metaKey);
@@ -169,13 +172,55 @@ export const useOrderListGridState = (filter: Filter | undefined) => {
   return { gridState, updateGridState };
 };
 
+export const useShowCurrentMarketOnly = () =>
+  useShowCurrentMarketOnlyStore((state) => state.showCurrentMarketOnly);
+
+export const useShowCurrentMarketOnlyStore = create<{
+  showCurrentMarketOnly: boolean;
+  toggleShowCurrentMarketOnly: () => void;
+}>()(
+  persist(
+    (set) => ({
+      showCurrentMarketOnly: false,
+      toggleShowCurrentMarketOnly: () => {
+        set((curr) => {
+          return {
+            showCurrentMarketOnly: !curr.showCurrentMarketOnly,
+          };
+        });
+      },
+    }),
+    {
+      name: 'vega_positions_store',
+    }
+  )
+);
+
+export const ShowCurrentMarketOnly = () => {
+  const t = useT();
+  const showCurrentMarketOnly = useShowCurrentMarketOnly();
+  const toggleShowCurrentMarketOnly = useShowCurrentMarketOnlyStore(
+    (state) => state.toggleShowCurrentMarketOnly
+  );
+  return (
+    <TradingCheckbox
+      label={t('Show current market only')}
+      checked={showCurrentMarketOnly}
+      onCheckedChange={toggleShowCurrentMarketOnly}
+    />
+  );
+};
+
 export const OrdersSettings = ({ filter }: { filter?: Filter }) => {
   const updateGridState = useOrderListStore((state) => state.update);
   return (
-    <GridSettings
-      updateGridStore={(gridStore: DataGridStore) =>
-        updateGridState(filter, gridStore)
-      }
-    />
+    <div className="flex items-center">
+      <ShowCurrentMarketOnly />
+      <GridSettings
+        updateGridStore={(gridStore: DataGridStore) =>
+          updateGridState(filter, gridStore)
+        }
+      />
+    </div>
   );
 };

@@ -1,18 +1,19 @@
-import { TradingButton } from '@vegaprotocol/ui-toolkit';
+import { TradingCheckbox } from '@vegaprotocol/ui-toolkit';
 import { usePositionsStore } from '../positions-container';
 import { useT } from '../../lib/use-t';
 
 export const PositionsMenu = () => {
   const t = useT();
-  const showClosed = usePositionsStore((store) => store.showClosedMarkets);
-  const toggle = usePositionsStore((store) => store.toggleClosedMarkets);
+  const checked = usePositionsStore((store) => store.showClosedMarkets);
+  const onCheckedChange = usePositionsStore(
+    (store) => store.toggleClosedMarkets
+  );
   return (
-    <TradingButton
-      size="extra-small"
-      data-testid="open-transfer"
-      onClick={toggle}
-    >
-      {showClosed ? t('Hide closed markets') : t('Show closed markets')}
-    </TradingButton>
+    <TradingCheckbox
+      data-testid="toggle-show-closed-positions"
+      label={t('Show closed positions')}
+      checked={checked}
+      onCheckedChange={onCheckedChange}
+    />
   );
 };
