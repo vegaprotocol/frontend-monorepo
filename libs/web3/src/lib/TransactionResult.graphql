@@ -25,10 +25,12 @@ fragment WithdrawalBusEventFields on Withdrawal {
     name
     symbol
     decimals
+    quantum
     status
     source {
       ... on ERC20 {
         contractAddress
+        chainId
       }
     }
   }

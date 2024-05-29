@@ -6,6 +6,7 @@ import BigNumber from 'bignumber.js';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import type { AccountFieldsFragment } from '@vegaprotocol/accounts';
 import {
+  toAssetData,
   useGetWithdrawDelay,
   useGetWithdrawThreshold,
 } from '@vegaprotocol/web3';
@@ -19,8 +20,9 @@ export const useWithdrawAsset = (
 ) => {
   const { asset, balance, min, threshold, delay, update } = useWithdrawStore();
   const currentAssetId = useRef(asset?.id);
-  const getThreshold = useGetWithdrawThreshold();
-  const getDelay = useGetWithdrawDelay();
+
+  const getThreshold = useGetWithdrawThreshold(asset?.chainId);
+  const getDelay = useGetWithdrawDelay(asset?.chainId);
   const { param } = useNetworkParam(
     'spam_protection_minimumWithdrawalQuantumMultiple'
   );
@@ -37,7 +39,8 @@ export const useWithdrawAsset = (
   // account, balance, min viable amount and delay threshold
   const handleSelectAsset = useCallback(
     async (id: string) => {
-      const asset = assets.find((a) => a.id === id);
+      const asset = toAssetData(assets.find((a) => a.id === id));
+
       const account = accounts.find(
         (a) =>
           a.type === Schema.AccountType.ACCOUNT_TYPE_GENERAL &&

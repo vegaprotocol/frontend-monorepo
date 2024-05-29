@@ -459,7 +459,7 @@ export const DepositForm = ({
           )}
         </TradingFormGroup>
       )}
-      {wrongChain ? (
+      {isActive && wrongChain ? (
         <div className="mb-4">
           <Notification
             intent={Intent.Danger}
