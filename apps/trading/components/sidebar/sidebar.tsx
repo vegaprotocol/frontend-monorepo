@@ -261,7 +261,7 @@ export const SidebarContent = () => {
 
   if (view.type === ViewType.Swap && featureFlags.SWAP) {
     return (
-      <ContentWrapper title={t('Swap')}>
+      <ContentWrapper title={''}>
         <ErrorBoundary feature="swap">
           <SwapContainer />
         </ErrorBoundary>

@@ -6,7 +6,6 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-  Pill,
   TradingInput,
   VegaIcon,
   VegaIconNames,
@@ -14,6 +13,7 @@ import {
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { useChainId } from '@vegaprotocol/wallet-react';
 import { useT } from '../../lib/use-t';
+import classNames from 'classnames';
 
 export const AssetInput = ({
   label,
@@ -99,24 +99,18 @@ export const PriceImpactInput = ({
   onValueChange: (value: string) => void;
 }) => {
   const t = useT();
-  const [priceImpactType, setPriceImpactType] = useState<'custom' | 'auto'>(
-    'custom'
-  );
+  const [, setPriceImpactType] = useState<'custom' | 'auto'>('custom');
   const autoValues = ['0.1', '0.5', '1.0'];
 
   return (
     <div className="mb-4">
-      <div className="flex justify-between items-center mb-2 mt-2 text-gray-500 text-sm">
+      <div className="flex justify-between items-center mb-1 mt-2 text-gray-500 text-sm">
         <span>{t('Price impact tolerance')}</span>
       </div>
-      <div className="flex items-center pb-1">
-        <span className="w-16 h-10 p-2 rounded-lg mr-2 text-center text-md">
-          {value || ''}
+      <div className="flex items-center">
+        <span className="w-16 h-10 rounded-lg mr-2 text-center text-md">
+          {value || ''} %
         </span>
-        <span>%</span>
-        <Pill className="ml-4 dark:bg-vega-cdark-700 bg-vega-clight-600 hover:bg-vega-clight-800 hover:dark:bg-vega-cdark-800 p-2 rounded-lg text-sm">
-          {t(priceImpactType === 'auto' ? 'AUTO' : 'CUSTOM')}
-        </Pill>
       </div>
       <div className="flex items-center flex-wrap">
         {autoValues.map((val) => (
@@ -128,13 +122,19 @@ export const PriceImpactInput = ({
               onValueChange(val);
               setPriceImpactType('auto');
             }}
-            className="h-8 text-md dark:bg-vega-cdark-800 bg-vega-clight-500 p-2 rounded-lg mr-2 text-center text-sm"
+            className={classNames(
+              'h-8 text-md dark:bg-vega-cdark-500 bg-vega-clight-500 p-2 rounded-lg mr-2 text-center text-sm',
+              {
+                'dark:bg-vega-cdark-700 bg-vega-clight-700': val === value,
+              }
+            )}
           >
             {val} %
           </button>
         ))}
 
         <div className="flex flex-1">
+          <p className="pt-2 pr-2 text-sm">{t('Custom')}: </p>
           <TradingInput
             type="number"
             value={value}
@@ -143,7 +143,7 @@ export const PriceImpactInput = ({
               setPriceImpactType('custom');
             }}
             appendElement="%"
-            className="w-20 h-10 text-md dark:bg-vega-cdark-800 bg-vega-clight-500 p-2 rounded-lg mr-2 text-center"
+            className="h-10 text-md dark:bg-vega-cdark-800 bg-vega-clight-500 p-2 rounded-lg mr-2 text-center"
           />
         </div>
       </div>

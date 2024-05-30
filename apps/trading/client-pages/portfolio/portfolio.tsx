@@ -183,7 +183,7 @@ const PortfolioActionTabs = () => {
       {featureFlags.SWAP ? (
         <Tab id="swap" name={t('Swap')}>
           <ErrorBoundary feature="assets-swap">
-            <div className="p-2">
+            <div className="p-4">
               <SwapContainer />
             </div>
           </ErrorBoundary>

@@ -131,11 +131,14 @@ export const SwapContainer = () => {
     [accounts, baseAsset]
   );
 
-  const marketPrice =
-    (side === Side.SIDE_BUY
-      ? marketData?.bestOfferPrice // best ask price
-      : marketData?.bestBidPrice) || // best bid price
-    marketData?.lastTradedPrice;
+  const marketPrice = useMemo(() => {
+    return (
+      (side === Side.SIDE_BUY
+        ? marketData?.bestOfferPrice // best ask
+        : marketData?.bestBidPrice) || // best bid
+      marketData?.lastTradedPrice
+    );
+  }, [marketData, side]);
 
   const orderSubmission = useMemo(() => {
     if (!market || !side) return;
@@ -145,10 +148,10 @@ export const SwapContainer = () => {
       : 0;
 
     const price =
-      marketPrice &&
+      marketData &&
       (side === Side.SIDE_BUY
-        ? new BigNumber(marketPrice).times(1 + toleranceFactor)
-        : new BigNumber(marketPrice).times(1 - toleranceFactor));
+        ? new BigNumber(marketData.bestOfferPrice).times(1 + toleranceFactor)
+        : new BigNumber(marketData.bestBidPrice).times(1 - toleranceFactor));
 
     return {
       marketId,
@@ -158,7 +161,7 @@ export const SwapContainer = () => {
       timeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK,
       size: removeDecimal(quoteAmount, market.positionDecimalPlaces),
     };
-  }, [market, marketId, marketPrice, priceImpactTolerance, quoteAmount, side]);
+  }, [market, marketData, marketId, priceImpactTolerance, quoteAmount, side]);
 
   useEffect(() => {
     const market = chooseMarket();
@@ -219,6 +222,7 @@ export const SwapContainer = () => {
       data-testid="swap-form"
     >
       <div className="flex justify-between items-center mb-4">
+        <h3 className="text-lg">{t('Swap')}</h3>
         {marketId && (
           <Link
             href={`/#/markets/${marketId}`}
@@ -265,7 +269,7 @@ export const SwapContainer = () => {
       />
       <button
         type="submit"
-        className="w-full dark:bg-vega-cdark-700 bg-vega-clight-500 hover:bg-vega-clight-800 hover:dark:bg-vega-cdark-800 p-4 rounded-lg"
+        className="w-full hover:bg-vega-blue-600 bg-vega-blue-500 p-4 rounded-lg text-white"
       >
         {t('Swap now')}
       </button>
@@ -282,7 +286,7 @@ export const SwapContainer = () => {
       <div className="mt-2 text-left text-gray-500">
         {marketPrice &&
           market &&
-          `Market price ${
+          `${side === Side.SIDE_BUY ? t('Best ask') : t('Best bid')} ${
             market?.tradableInstrument.instrument.code
           }: ${addDecimalsFormatNumber(marketPrice, market.decimalPlaces)}`}
       </div>
