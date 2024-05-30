@@ -14,6 +14,10 @@ jobs:
       AWS_DEFAULT_REGION: 'eu-west-1'
       GH_TOKEN: ${{ github.token }}
     steps:
+      # Get the repo so `gh` command works.
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Clean up dandling previews
         run: |
           # Retrieve all preview buckets
