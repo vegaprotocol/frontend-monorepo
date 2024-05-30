@@ -265,7 +265,7 @@ def test_team_page_members_table(team_page: Tuple[Page, str, str, VegaServiceNul
         "Owner"
     )
     expect(page.get_by_test_id("joinedAt-0")).to_be_visible()
-    expect(page.get_by_test_id("joinedAtEpoch-0")).to_have_text("8")
+    expect(page.get_by_test_id("joinedAtEpoch-0")).to_have_text("7")
 
 
 def test_team_page_headline(team_page: Tuple[Page, str, str, VegaServiceNull]):

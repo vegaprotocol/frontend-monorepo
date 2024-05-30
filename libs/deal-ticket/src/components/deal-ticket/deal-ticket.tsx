@@ -438,13 +438,21 @@ export const DealTicket = ({
       return;
     }
     if (useNotional && !sliderUsed.current) {
-      const size =
-        !notional || notional === '0'
-          ? '0'
-          : BigNumber(notional)
-              .dividedBy(toBigNum(notionalPrice, market.decimalPlaces))
-              .toFixed(market.positionDecimalPlaces);
-
+      let size = '0';
+      if (notional && notional !== '0') {
+        const s = BigNumber(notional).dividedBy(
+          toBigNum(notionalPrice, market.decimalPlaces)
+        );
+        if (market.positionDecimalPlaces >= 0) {
+          size = s.toFixed(market.positionDecimalPlaces);
+        } else {
+          const p = market.positionDecimalPlaces * -1;
+          size = `${s.dividedBy(Math.pow(10, p)).toFixed(0)}${''.padEnd(
+            p,
+            '0'
+          )}`;
+        }
+      }
       setValue('size', size);
     } else {
       const notional =
