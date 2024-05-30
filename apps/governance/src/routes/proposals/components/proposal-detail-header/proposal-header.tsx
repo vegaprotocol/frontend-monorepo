@@ -1,7 +1,6 @@
 import { Trans, useTranslation } from 'react-i18next';
 import {
   CopyWithTooltip,
-  Lozenge,
   Tooltip,
   VegaIcon,
   VegaIconNames,
@@ -39,6 +38,7 @@ import { DATE_FORMAT_DETAILED } from '../../../../lib/date-formats';
 import { MarketName } from '../proposal/market-name';
 import { Indicator } from '../proposal/indicator';
 import { type ProposalNode } from '../proposal/proposal-utils';
+import { type ReactNode } from 'react';
 
 const ProposalTypeTags = ({
   proposal,
@@ -247,18 +247,17 @@ const ProposalDetails = ({
       case 'NewAsset': {
         return (
           <>
-            <span>{t('Symbol')}:</span>{' '}
-            <Lozenge>{terms.change.symbol}.</Lozenge>{' '}
+            <span>{t('Symbol')}:</span> <Badge>{terms.change.symbol}</Badge>.{' '}
             {terms.change.source.__typename === 'ERC20' && (
               <>
                 <span>{t('ERC20ContractAddress')}:</span>{' '}
-                <Lozenge>{terms.change.source.contractAddress}</Lozenge>
+                <Badge>{terms.change.source.contractAddress}</Badge>
               </>
             )}{' '}
             {terms.change.source.__typename === 'BuiltinAsset' && (
               <>
                 <span>{t('MaxFaucetAmountMint')}:</span>{' '}
-                <Lozenge>{terms.change.source.maxFaucetAmountMint}</Lozenge>
+                <Badge>{terms.change.source.maxFaucetAmountMint}</Badge>
               </>
             )}
           </>
@@ -267,14 +266,14 @@ const ProposalDetails = ({
       case 'UpdateNetworkParameter': {
         return (
           <Trans
-            i18nKey="Change <lozenge>{{key}}</lozenge> to <lozenge>{{value}}</lozenge>"
+            i18nKey="Change <lozenge>{{key}}</Badge> to <lozenge>{{value}}</lozenge>"
             values={{
               key: terms.change.networkParameter.key,
               value: terms.change.networkParameter.value,
             }}
             components={{
               // @ts-ignore children passed by i18next
-              lozenge: <Lozenge className="text-xs" />,
+              lozenge: <Badge />,
             }}
           />
         );
@@ -291,7 +290,7 @@ const ProposalDetails = ({
             }}
             components={{
               // @ts-ignore children passed by i18next
-              lozenge: <Lozenge />,
+              lozenge: <Badge />,
             }}
           />
         );
@@ -667,17 +666,17 @@ export const NewTransferSummary = ({
     <span>
       {GovernanceTransferKindMapping[details.kind.__typename]}{' '}
       {t('transfer from')}{' '}
-      <Lozenge>
+      <Badge>
         {details.source
           ? truncateMiddle(details.source)
           : t(details.sourceType)}
-      </Lozenge>{' '}
+      </Badge>{' '}
       {t('to')}{' '}
-      <Lozenge>
+      <Badge>
         {details.destination
           ? truncateMiddle(details.destination)
           : t(details.destinationType)}
-      </Lozenge>
+      </Badge>
     </span>
   );
 };
@@ -695,7 +694,13 @@ export const CancelTransferSummary = ({
   return (
     <span>
       {t('Cancel transfer: ')}{' '}
-      <Lozenge>{truncateMiddle(details.transferId)}</Lozenge>
+      <Badge>{truncateMiddle(details.transferId)}</Badge>
     </span>
   );
 };
+
+const Badge = ({ children }: { children: ReactNode }) => (
+  <div className="rounded px-1 py-[2px] font-alpha text-xs items-center gap-1 inline-flex bg-vega-dark-200 text-vega-light-200">
+    {children}
+  </div>
+);
