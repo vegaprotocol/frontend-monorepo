@@ -30,8 +30,8 @@ def page(vega, browser, request):
 def after_each(page: Page):
     yield
     opened_element = page.locator('h3[data-state="open"]')
-    if opened_element.all() and opened_element.get_by_role("button").nth(1).is_visible():
-        opened_element.get_by_role("button").nth(1).click()
+    if opened_element.all() and opened_element.get_by_role("button").is_visible():
+        opened_element.get_by_role("button").click()
 
 
 def validate_info_section(page: Page, fields: [[str, str]]):
