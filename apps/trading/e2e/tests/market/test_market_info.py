@@ -73,19 +73,18 @@ def test_market_info_market_price(page: Page):
     validate_info_section(page, fields)
 
 
-# TODO: remove skip once volume is fixed
-""" def test_market_info_market_volume(page: Page):
+def test_market_info_market_volume(page: Page):
     # 6002-MDET-103
     page.get_by_test_id(market_title_test_id).get_by_text("Market volume").click()
     fields = [
-        ["24 Hour Volume", "0 (0 )"],
+        ["24 Hour Volume", "1(108 BTC)"],
         ["Open Interest", "1"],
         ["Best Bid Volume", "99"],
         ["Best Offer Volume", "99"],
         ["Best Static Bid Volume", "1"],
         ["Best Static Offer Volume", "1"],
     ]
-    validate_info_section(page, fields) """
+    validate_info_section(page, fields) 
 
 
 def test_market_info_liquidation_strategy(page: Page):

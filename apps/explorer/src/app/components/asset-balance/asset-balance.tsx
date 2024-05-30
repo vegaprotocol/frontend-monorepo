@@ -15,7 +15,7 @@ export type AssetBalanceProps = {
  * Given a market ID and a price it will fetch the market
  * and format the price in that market's decimal places.
  */
-const AssetBalance = ({
+export const AssetBalance = ({
   assetId,
   price,
   showAssetLink = true,

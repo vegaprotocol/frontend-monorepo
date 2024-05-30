@@ -14,6 +14,8 @@ const fullMock: List = {
   assetSource: 'eth123',
 };
 
+jest.mock('../../../links/');
+
 describe('Chain Event: ERC20 Asset List', () => {
   it('Renders nothing if no good data is provided', () => {
     const mock = undefined as unknown as List;

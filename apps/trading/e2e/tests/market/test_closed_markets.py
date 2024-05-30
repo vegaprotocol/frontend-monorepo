@@ -61,7 +61,6 @@ class TestSettledMarket:
             "BTC:DAI_2023Futr"
         )
         # 6001-MARK-003
-        page.pause()
         expect(row_selector.locator('div[col-id="state"]')).to_have_text("Settled")
         # 6001-MARK-004
         # 6001-MARK-005

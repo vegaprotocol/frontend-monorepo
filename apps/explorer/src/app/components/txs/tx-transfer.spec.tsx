@@ -6,9 +6,11 @@ import {
   TxDetailsTransfer,
   getTypeLabelForTransfer,
 } from './details/tx-transfer';
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider, type MockedResponse } from '@apollo/client/testing';
 import { MemoryRouter } from 'react-router-dom';
 import { render } from '@testing-library/react';
+import { ExplorerTransferStatusDocument } from './details/transfer/__generated__/Transfer';
+import { ExplorerEpochForBlockDocument } from '../links/block-link/__generated__/EpochByBlock';
 
 type Transfer = components['schemas']['commandsv1Transfer'];
 
@@ -66,6 +68,55 @@ describe('TX: Transfer: getLabelForTransfer', () => {
   });
 });
 
+jest.mock('../links');
+jest.mock('../size-in-asset/size-in-asset');
+jest.mock('../epoch-overview/epoch');
+
+const MockTransferDetails: MockedResponse = {
+  request: {
+    query: ExplorerTransferStatusDocument,
+    variables: {
+      id: '51f3bab5eb2637651012507a64d497790a734248792c16e5cf36df8984074fbd',
+    },
+  },
+  result: {
+    data: {
+      transfer: {
+        transfer: {
+          status: 'STATUS_ACCEPTED',
+        },
+        fees: [
+          {
+            amount: '0',
+            epoch: 0,
+          },
+        ],
+      },
+    },
+  },
+};
+
+const MockExplorerEpochForBlock: MockedResponse = {
+  request: {
+    query: ExplorerEpochForBlockDocument,
+    variables: {
+      block: '100',
+    },
+  },
+  result: {
+    data: {
+      epoch: {
+        id: '100',
+        timestamps: {
+          start: '2022-03-24T11:03:40.014303953Z',
+          end: '2022-03-24T11:03:40.014303953Z',
+          lastBlock: '1',
+        },
+      },
+    },
+  },
+};
+
 describe('TxDetailsTransfer', () => {
   const mockBlockData = {
     result: {
@@ -108,7 +159,7 @@ describe('TxDetailsTransfer', () => {
 
   it('renders basic transfer details', () => {
     const { getByTestId } = render(
-      <MockedProvider>
+      <MockedProvider mocks={[MockTransferDetails, MockExplorerEpochForBlock]}>
         <MemoryRouter>
           <TxDetailsTransfer
             txData={mockTxData as BlockExplorerTransactionResult}

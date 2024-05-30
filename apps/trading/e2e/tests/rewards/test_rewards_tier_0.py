@@ -32,8 +32,6 @@ def setup_environment(request, browser) -> Generator[Tuple[Page, str, str], None
             yield page, tDAI_market, tDAI_asset_id
 
 
-
-
 def setup_market_with_reward_program(vega: VegaServiceNull):
     tDAI_market = setup_continuous_market(vega)
     PARTY_A, PARTY_B, PARTY_C, PARTY_D = keys(vega)
@@ -43,15 +41,6 @@ def setup_market_with_reward_program(vega: VegaServiceNull):
     vega.mint(key_name=PARTY_A.name, asset=tDAI_asset_id, amount=100000)
     vega.mint(key_name=PARTY_D.name, asset=tDAI_asset_id, amount=100000)
     next_epoch(vega=vega)
-
-    vega.update_network_parameter(
-        proposal_key=MM_WALLET.name,
-        parameter="rewards.activityStreak.benefitTiers",
-        new_value=ACTIVITY_STREAKS,
-    )
-    print("update_network_parameter activity done")
-    vega.wait_fn(1)
-    vega.wait_for_total_catchup()
 
     tDAI_asset_id = vega.find_asset_id(symbol="tDAI")
     vega.update_network_parameter(
@@ -109,7 +98,6 @@ def test_reward_multiplier(
     expect(page.get_by_test_id(HOARDER_REWARD_MULTIPLIER_VALUE)).to_have_text("1x")
 
 
-
 def test_activity_streak(
     setup_environment: Tuple[Page, str, str],
 ) -> None:
@@ -119,7 +107,16 @@ def test_activity_streak(
     )
 
 
-def test_reward_history_foo(
+def test_hoarder_bonus(
+    setup_environment: Tuple[Page, str, str],
+) -> None:
+    page, tDAI_market, tDAI_asset_id = setup_environment
+    expect(page.get_by_test_id(HOARDER_BONUS_TOTAL_HOARDED)).to_contain_text(
+        "5,000,000"
+    )
+
+
+def test_reward_history(
     setup_environment: Tuple[Page, str, str],
 ) -> None:
     page, tDAI_market, tDAI_asset_id = setup_environment

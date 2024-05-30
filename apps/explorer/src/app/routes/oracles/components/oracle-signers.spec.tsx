@@ -22,6 +22,8 @@ function renderComponentWrapped(sourceType: SourceType) {
   );
 }
 
+jest.mock('../../../components/links');
+
 describe('Oracle Signers component', () => {
   it('returns empty if there are no signers (null)', () => {
     const res = render(renderComponent({} as SourceType));

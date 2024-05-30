@@ -24,7 +24,6 @@ def vega(request):
         yield vega_instance
 
 
-
 @pytest.fixture(scope="module")
 def continuous_market(vega):
     return setup_continuous_market(vega)
@@ -130,6 +129,7 @@ def test_market_buy_order(continuous_market, vega: VegaServiceNull, page: Page):
     # 0003-WTXN-003
     expect(page.get_by_role("row").nth(9)).to_contain_text("10+10MarketFilled-FOK")
 
+
 @pytest.mark.usefixtures("risk_accepted")
 def test_sidebar_should_be_open_after_reload(continuous_market, page: Page):
     page.goto(f"/#/markets/{continuous_market}")
@@ -138,19 +138,6 @@ def test_sidebar_should_be_open_after_reload(continuous_market, page: Page):
     expect(page.get_by_test_id("deal-ticket-form")).not_to_be_visible()
     page.reload()
     expect(page.get_by_test_id("deal-ticket-form")).to_be_visible()
-
-@pytest.mark.skip("We currently can't approve wallet connection through Sim")
-@pytest.mark.usefixtures("risk_accepted")
-def test_connect_vega_wallet(continuous_market, page: Page):
-    page.goto(f"/#/markets/{continuous_market}")
-    page.get_by_test_id("order-price").fill("101")
-    page.get_by_test_id("order-connect-wallet").click()
-    expect(page.locator('[role="dialog"]')).to_be_visible()
-    page.get_by_test_id("connector-jsonRpc").click()
-    expect(page.get_by_test_id("wallet-dialog-title")).to_be_visible()
-    # TODO: accept wallet connection and assert wallet is connected.
-    expect(page.get_by_test_id("order-type-Limit")).to_be_checked()
-    expect(page.get_by_test_id("order-price")).to_have_value("101")
 
 
 @pytest.mark.usefixtures("auth", "risk_accepted")

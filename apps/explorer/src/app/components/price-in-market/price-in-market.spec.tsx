@@ -56,9 +56,11 @@ const fullMock = {
   },
 };
 
+jest.mock('../emblem-with-chain/emblem-with-chain');
+
 describe('Price in Market component', () => {
-  it('Renders the raw price when there is no market data', () => {
-    const res = render(renderComponent('100', '123', []));
+  it('Renders the raw price before there is no market data', () => {
+    const res = render(renderComponent('100', '123', [fullMock]));
     expect(res.getByText('100')).toBeInTheDocument();
   });
 
@@ -92,19 +94,19 @@ describe('Price in Market component', () => {
   });
 
   it('Renders `Market` instead of a price for market orders: 0 price', () => {
-    const res = render(renderComponent('0', '123', []));
+    const res = render(renderComponent('0', '123', [fullMock]));
     expect(res.getByText('Market')).toBeInTheDocument();
   });
 
   it('Renders `Market` instead of a price for market orders: undefined price', () => {
     const res = render(
-      renderComponent(undefined as unknown as string, '123', [])
+      renderComponent(undefined as unknown as string, '123', [fullMock])
     );
     expect(res.getByText('Market')).toBeInTheDocument();
   });
 
   it('Renders `Market` instead of a price for market orders: empty price', () => {
-    const res = render(renderComponent('', '123', []));
+    const res = render(renderComponent('', '123', [fullMock]));
     expect(res.getByText('Market')).toBeInTheDocument();
   });
 });

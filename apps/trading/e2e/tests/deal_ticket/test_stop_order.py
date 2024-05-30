@@ -3,8 +3,7 @@ from playwright.sync_api import Page, expect
 from vega_sim.null_service import VegaServiceNull
 from actions.vega import submit_order
 from datetime import datetime, timedelta
-from conftest import init_vega, cleanup_container
-from fixtures.market import setup_continuous_market
+from actions.utils import wait_for_toast_confirmation
 
 stop_order_btn = "order-type-Stop"
 stop_limit_order_btn = "order-type-StopLimit"
@@ -38,11 +37,13 @@ timeInForce_col = '[col-id="submission.timeInForce"]'
 updatedAt_col = '[col-id="updatedAt"]'
 close_toast = "toast-close"
 
+
 def create_position(vega: VegaServiceNull, market_id):
     submit_order(vega, "Key 1", market_id, "SIDE_SELL", 100, 110)
     submit_order(vega, "Key 1", market_id, "SIDE_BUY", 100, 110)
     vega.wait_fn(1)
     vega.wait_for_total_catchup
+
 
 @pytest.mark.usefixtures("auth", "risk_accepted")
 def test_stop_order_form_error_validation(continuous_market, page: Page):
@@ -66,9 +67,11 @@ def test_stop_order_form_error_validation(continuous_market, page: Page):
         "Price cannot be lower than 0.00001"
     )
 
-@pytest.mark.skip("core issue")
+
 @pytest.mark.usefixtures("auth", "risk_accepted")
-def test_submit_stop_order_rejected(continuous_market, vega: VegaServiceNull, page: Page):
+def test_submit_stop_order_rejected(
+    continuous_market, vega: VegaServiceNull, page: Page
+):
     page.goto(f"/#/markets/{continuous_market}")
     page.get_by_test_id(stop_orders_tab).click()
     page.get_by_test_id(stop_order_btn).click()
@@ -77,33 +80,14 @@ def test_submit_stop_order_rejected(continuous_market, vega: VegaServiceNull, pa
     page.get_by_test_id(trigger_price).fill("103")
     page.get_by_test_id(order_size).fill("3")
     page.get_by_test_id(submit_stop_order).click()
+    wait_for_toast_confirmation(page)
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
-    page.get_by_test_id(close_toast).click()
-    page.get_by_role(row_table).locator(market_name_col).nth(1).is_visible()
-    expect((page.get_by_role(row_table).locator(market_name_col)).nth(1)).to_have_text(
-        "BTC:DAI_2023Futr"
+    expect(page.get_by_role("row").nth(4)).to_contain_text(
+        "Mark > 103.00+3MarketRejected-FOK"
     )
-    expect((page.get_by_role(row_table).locator(trigger_col)).nth(1)).to_have_text(
-        "Mark > 103.00"
-    )
-    expect((page.get_by_role(row_table).locator(expiresAt_col)).nth(1)).to_have_text("")
-    expect((page.get_by_role(row_table).locator(size_col)).nth(1)).to_have_text("+3")
-    expect((page.get_by_role(row_table).locator(submission_type)).nth(1)).to_have_text(
-        "Market"
-    )
-    expect((page.get_by_role(row_table).locator(status_col)).nth(1)).to_have_text(
-        "Rejected"
-    )
-    expect((page.get_by_role(row_table).locator(price_col)).nth(1)).to_have_text("-")
-    expect((page.get_by_role(row_table).locator(timeInForce_col)).nth(1)).to_have_text(
-        "FOK"
-    )
-    expect(
-        (page.get_by_role(row_table).locator(updatedAt_col)).nth(1)
-    ).not_to_be_empty()
 
-@pytest.mark.skip("core issue")
+
 @pytest.mark.usefixtures("auth", "risk_accepted")
 def test_submit_stop_market_order_triggered(
     continuous_market, vega: VegaServiceNull, page: Page
@@ -128,40 +112,15 @@ def test_submit_stop_market_order_triggered(
     expires_at = datetime.now() + timedelta(days=1)
     expires_at_input_value = expires_at.strftime("%Y-%m-%dT%H:%M:%S")
     page.get_by_test_id("date-picker-field").fill(expires_at_input_value)
-    page.get_by_test_id(expiry_strategy_cancel).click()
+    page.get_by_test_id(expiry_strategy_cancel).type(" ")
     page.get_by_test_id(submit_stop_order).click()
-    vega.forward("10s")
+    wait_for_toast_confirmation(page)
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
-    page.wait_for_selector('[data-testid="toast-close"]', state="visible")
-    page.get_by_test_id(close_toast).click()
+    expect(page.get_by_role("row").nth(4)).to_contain_text("Mark > 103.00Cancels")
+    expect(page.get_by_role("row").nth(4)).to_contain_text("-1MarketTriggered-FOK")
 
-    page.get_by_role(row_table).locator(market_name_col).nth(1).is_visible()
-    expect((page.get_by_role(row_table).locator(market_name_col)).nth(1)).to_have_text(
-        "BTC:DAI_2023Futr"
-    )
-    expect((page.get_by_role(row_table).locator(trigger_col)).nth(1)).to_have_text(
-        "Mark > 103.00"
-    )
-    expect((page.get_by_role(row_table).locator(expiresAt_col)).nth(1)).to_contain_text(
-        "Cancels"
-    )
-    expect((page.get_by_role(row_table).locator(size_col)).nth(1)).to_have_text("-1")
-    expect((page.get_by_role(row_table).locator(submission_type)).nth(1)).to_have_text(
-        "Market"
-    )
-    expect((page.get_by_role(row_table).locator(status_col)).nth(1)).to_have_text(
-        "Triggered"
-    )
-    expect((page.get_by_role(row_table).locator(price_col)).nth(1)).to_have_text("-")
-    expect((page.get_by_role(row_table).locator(timeInForce_col)).nth(1)).to_have_text(
-        "FOK"
-    )
-    expect(
-        (page.get_by_role(row_table).locator(updatedAt_col)).nth(1)
-    ).not_to_be_empty()
 
-@pytest.mark.skip("core issue")
 @pytest.mark.usefixtures("auth", "risk_accepted")
 def test_submit_stop_limit_order_pending(
     continuous_market, vega: VegaServiceNull, page: Page
@@ -179,7 +138,7 @@ def test_submit_stop_limit_order_pending(
     page.get_by_test_id(stop_limit_order_btn).is_visible()
     page.get_by_test_id(stop_limit_order_btn).click()
     page.get_by_test_id(order_side_sell).click()
-    page.get_by_test_id(trigger_below).click()
+    page.get_by_test_id(trigger_below).type(" ")
     page.get_by_test_id(trigger_price).fill("102")
     page.get_by_test_id(order_price).fill("99")
     page.get_by_test_id(order_size).fill("1")
@@ -189,40 +148,13 @@ def test_submit_stop_limit_order_pending(
     expires_at_input_value = expires_at.strftime("%Y-%m-%dT%H:%M:%S")
     page.get_by_test_id("date-picker-field").fill(expires_at_input_value)
     page.get_by_test_id(submit_stop_order).click()
-    vega.forward("10s")
+    wait_for_toast_confirmation(page)
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
+    expect(page.get_by_role("row").nth(4)).to_contain_text("Mark < 102.00Submit")
+    expect(page.get_by_role("row").nth(4)).to_contain_text("-1LimitPending99.00IOC")
 
-    page.wait_for_selector('[data-testid="toast-close"]', state="visible")
-    page.get_by_test_id(close_toast).click()
-    page.get_by_role(row_table).locator(market_name_col).nth(1).is_visible()
-    expect((page.get_by_role(row_table).locator(market_name_col)).nth(1)).to_have_text(
-        "BTC:DAI_2023Futr"
-    )
-    expect((page.get_by_role(row_table).locator(trigger_col)).nth(1)).to_have_text(
-        "Mark < 102.00"
-    )
-    expect((page.get_by_role(row_table).locator(expiresAt_col)).nth(1)).to_contain_text(
-        "Submit"
-    )
-    expect((page.get_by_role(row_table).locator(size_col)).nth(1)).to_have_text("-1")
-    expect((page.get_by_role(row_table).locator(submission_type)).nth(1)).to_have_text(
-        "Limit"
-    )
-    expect((page.get_by_role(row_table).locator(status_col)).nth(1)).to_have_text(
-        "Pending"
-    )
-    expect((page.get_by_role(row_table).locator(price_col)).nth(1)).to_have_text(
-        "99.00"
-    )
-    expect((page.get_by_role(row_table).locator(timeInForce_col)).nth(1)).to_have_text(
-        "IOC"
-    )
-    expect(
-        (page.get_by_role(row_table).locator(updatedAt_col)).nth(1)
-    ).not_to_be_empty()
 
-@pytest.mark.skip("core issue")
 @pytest.mark.usefixtures("auth", "risk_accepted")
 def test_submit_stop_limit_order_cancel(
     continuous_market, vega: VegaServiceNull, page: Page
@@ -236,63 +168,20 @@ def test_submit_stop_limit_order_cancel(
     page.get_by_test_id(stop_limit_order_btn).is_visible()
     page.get_by_test_id(stop_limit_order_btn).click()
     page.get_by_test_id(order_side_sell).click()
-    page.get_by_test_id(trigger_below).click()
+    page.get_by_test_id(trigger_below).type(" ")
     page.get_by_test_id(trigger_price).fill("102")
     page.get_by_test_id(order_price).fill("99")
     page.get_by_test_id(order_size).fill("1")
     page.get_by_test_id(submit_stop_order).click()
-    vega.forward("10s")
+
+    wait_for_toast_confirmation(page)
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
-
     page.get_by_test_id(close_toast).first.click()
     page.get_by_test_id(cancel).click()
-    vega.forward("10s")
+    wait_for_toast_confirmation(page)
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
     page.get_by_test_id(close_toast).first.click()
 
-    expect(
-        (page.get_by_role(row_table).locator('[col-id="status"]')).nth(1)
-    ).to_have_text("Cancelled")
-
-
-class TestStopOcoValidation:
-    @pytest.fixture(scope="class")
-    def vega(request):
-        with init_vega(request) as vega_instance:
-            request.addfinalizer(lambda: cleanup_container(vega_instance))
-            yield vega_instance
-
-    @pytest.fixture(scope="class")
-    def continuous_market(self, vega):
-        return setup_continuous_market(vega)
-
-    @pytest.mark.skip("core issue")
-    @pytest.mark.usefixtures("auth", "risk_accepted")
-    def test_maximum_number_of_active_stop_orders(
-        self, continuous_market, vega: VegaServiceNull, page: Page
-    ):
-        page.goto(f"/#/markets/{continuous_market}")
-        page.get_by_test_id(stop_orders_tab).click()
-        # create a position because stop order is reduce only type
-        create_position(vega, continuous_market)
-        for i in range(4):
-            page.get_by_test_id(stop_order_btn).click()
-            page.get_by_test_id(stop_limit_order_btn).is_visible()
-            page.get_by_test_id(stop_limit_order_btn).click()
-            page.get_by_test_id(order_side_sell).click()
-            page.get_by_test_id(trigger_below).click()
-            page.get_by_test_id(trigger_price).fill("102")
-            page.get_by_test_id(order_price).fill("99")
-            page.get_by_test_id(order_size).fill("1")
-            page.get_by_test_id(submit_stop_order).click()
-            vega.forward("10s")
-            vega.wait_fn(1)
-            vega.wait_for_total_catchup()
-            if page.get_by_test_id(close_toast).is_visible():
-                page.get_by_test_id(close_toast).click()
-        # 7002-SORD-011
-        expect(page.get_by_test_id("stop-order-limit-warning")).to_have_text(
-            "There is a limit of 4 active stop orders per market. Orders submitted above the limit will be immediately rejected."
-        )
+    expect(page.get_by_role("row").nth(4)).to_contain_text("Cancelled")

@@ -10,10 +10,11 @@ packages = [{include = "trading market-sim e2e"}]
 python = ">=3.9,<3.11"
 psutil = "^5.9.5"
 pytest-playwright = "^0.4.2"
-docker = "^6.1.3"
+docker = "6.0.0"
+requests = "2.26.0"
 pytest-xdist = "^3.3.1"
 python-dotenv = "^1.0.0"
-vega-sim = { git = "https://github.com/vegaprotocol/vega-market-sim.git/", branch = "release/vega-v0.76.1" }
+vega-sim = { git = "https://github.com/vegaprotocol/vega-market-sim.git/", branch = "pre-release/vega-v0.76.8" }
 
 [build-system]
 requires = ["poetry-core"]

@@ -240,6 +240,7 @@ export const useMarketsColumnDefs = () => {
         headerName: t('24h Volume'),
         type: 'rightAligned',
         field: 'data.candles',
+        sort: 'desc',
         valueGetter: ({
           data,
         }: VegaValueGetterParams<MarketMaybeWithDataAndCandles>) => {

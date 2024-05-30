@@ -4,6 +4,10 @@ import type { TendermintBlocksResponse } from '../../../routes/blocks/tendermint
 import type { BlockExplorerTransactionResult } from '../../../routes/types/block-explorer-response';
 import { MockedProvider } from '@apollo/client/testing';
 import { MemoryRouter } from 'react-router-dom';
+import { MockExplorerEpochForBlockBlank } from '../../../mocks/links';
+
+jest.mock('../../../components/links/');
+jest.mock('../../../components/price-in-market/price-in-market');
 
 describe('TxDetailsLiquidityAmendment', () => {
   const mockTxData = {
@@ -29,7 +33,7 @@ describe('TxDetailsLiquidityAmendment', () => {
 
   it('should render the component with correct data', () => {
     const { getByText } = render(
-      <MockedProvider>
+      <MockedProvider mocks={[MockExplorerEpochForBlockBlank]}>
         <MemoryRouter>
           <TxDetailsLiquidityAmendment
             txData={mockTxData as BlockExplorerTransactionResult}

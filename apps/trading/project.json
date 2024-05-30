@@ -6,6 +6,7 @@
   "targets": {
     "build": {
       "executor": "@nx/next:build",
+      "inputs": ["default", "^production"],
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
@@ -33,6 +34,7 @@
     },
     "export": {
       "executor": "@nx/next:export",
+      "inputs": ["default", "^production"],
       "options": {
         "buildTarget": "trading:build:production"
       }

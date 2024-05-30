@@ -1,0 +1,8 @@
+LogLevel = "info"
+
+[Server]
+  Port = "TO_BE_SET"
+  Host = "127.0.0.1"
+
+[APIV1]
+  MaximumTokenDuration = "168h0m0s"

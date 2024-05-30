@@ -5,6 +5,7 @@ import { render } from '@testing-library/react';
 import MarketLink from './market-link';
 import { ExplorerMarketDocument } from './__generated__/Market';
 import { GraphQLError } from 'graphql';
+import { MockExplorerMarket456 } from '../../../mocks/links';
 
 function renderComponent(id: string, mocks: MockedResponse[]) {
   return (
@@ -16,10 +17,12 @@ function renderComponent(id: string, mocks: MockedResponse[]) {
   );
 }
 
+jest.mock('../../emblem-with-chain/emblem-with-chain');
+
 describe('Market link component', () => {
   it('Renders the ID at first', () => {
-    const res = render(renderComponent('123', []));
-    expect(res.getByText('123')).toBeInTheDocument();
+    const res = render(renderComponent('456', [MockExplorerMarket456]));
+    expect(res.getByText('456')).toBeInTheDocument();
   });
 
   it('Renders the ID with an emoji on error', async () => {
@@ -34,13 +37,10 @@ describe('Market link component', () => {
         errors: [new GraphQLError('No such market')],
       },
     };
+
     const res = render(renderComponent('456', [mock]));
     // The ID
     expect(res.getByText('456')).toBeInTheDocument();
-
-    const icons = await res.findAllByRole('img');
-    // Two market icons and a chain icon
-    expect(icons.length).toBe(3);
   });
 
   it('Renders the market name when the query returns a result', async () => {

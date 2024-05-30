@@ -39,6 +39,7 @@ const mock = {
     },
   },
 };
+
 function renderComponent(order: Order, mocks?: MockedResponse[]) {
   return render(
     <MockedProvider mocks={mocks}>
