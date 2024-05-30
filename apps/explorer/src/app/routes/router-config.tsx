@@ -27,6 +27,7 @@ import { AssetLink, MarketLink } from '../components/links';
 import { truncateMiddle } from '@vegaprotocol/ui-toolkit';
 import { remove0x } from '@vegaprotocol/utils';
 import { PartyAccountsByAsset } from './parties/id/accounts';
+import { PartyDepositsWithdrawals } from './parties/id/deposits-withdrawals';
 import { Disclaimer } from './pages/disclaimer';
 import { useFeatureFlags } from '@vegaprotocol/environment';
 import RestrictedPage from './restricted';
@@ -112,6 +113,28 @@ export const useRouterConfig = () => {
                       handle: {
                         breadcrumb: () => {
                           return t('Assets');
+                        },
+                      },
+                    },
+                  ],
+                },
+                {
+                  path: 'deposits-withdrawals',
+                  element: <Outlet />,
+                  handle: {
+                    breadcrumb: (params: Params<string>) => (
+                      <Link to={linkTo(Routes.PARTIES, params.party)}>
+                        {truncateMiddle(params.party as string)}
+                      </Link>
+                    ),
+                  },
+                  children: [
+                    {
+                      index: true,
+                      element: <PartyDepositsWithdrawals />,
+                      handle: {
+                        breadcrumb: () => {
+                          return t('Deposits & Withdrawals');
                         },
                       },
                     },

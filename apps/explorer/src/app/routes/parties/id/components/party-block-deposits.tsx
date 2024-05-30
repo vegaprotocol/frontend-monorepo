@@ -34,10 +34,9 @@ export interface PartyBlockAccountProps {
 }
 
 /**
- * Displays an overview of a party's assets. This uses existing data
- * providers to structure the details by asset, rather than looking at
- * it by account. The assumption is that this is a more natural way to
- * get an idea of the assets and activity of a party.
+ * Displays deposits & withdrawals for a party, sorted most-recent-first, with a button to show all.
+ * By default it is limited to 5 entries on the party by ID page, then in a nested route it can show
+ * all of them in
  */
 export const PartyBlockDeposits = ({
   partyId,
@@ -59,7 +58,9 @@ export const PartyBlockDeposits = ({
   const action = shouldShowActionButton ? (
     <Button
       size="sm"
-      onClick={() => navigate(`/${Routes.PARTIES}/${partyId}/assets`)}
+      onClick={() =>
+        navigate(`/${Routes.PARTIES}/${partyId}/deposits-withdrawals`)
+      }
     >
       {t('Show all')}
     </Button>
@@ -103,11 +104,15 @@ export const PartyBlockDeposits = ({
                   <TableCell>{status}</TableCell>
                   <TableCell>
                     {ledger?.txHash && (
-                      <ExternalExplorerLink
-                        id={ledger?.txHash}
-                        type={EthExplorerLinkTypes.tx}
-                        chain={chain}
-                      />
+                      <>
+                        <ExternalExplorerLink
+                          truncate={true}
+                          id={ledger?.txHash}
+                          type={EthExplorerLinkTypes.tx}
+                          chain={chain}
+                        />
+                        &hellip;
+                      </>
                     )}
                   </TableCell>
                 </TableRow>

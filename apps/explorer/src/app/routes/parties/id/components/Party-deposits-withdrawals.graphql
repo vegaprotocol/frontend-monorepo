@@ -1,8 +1,8 @@
-query ExplorerPartyDepositsWithdrawals($partyId: ID!) {
+query ExplorerPartyDepositsWithdrawals($partyId: ID!, $first: Int = 3) {
   partiesConnection(id: $partyId) {
     edges {
       node {
-        depositsConnection(pagination: { first: 10 }) {
+        depositsConnection(pagination: { first: $first }) {
           edges {
             node {
               id
@@ -23,7 +23,7 @@ query ExplorerPartyDepositsWithdrawals($partyId: ID!) {
             }
           }
         }
-        withdrawalsConnection(pagination: { first: 10 }) {
+        withdrawalsConnection(pagination: { first: $first }) {
           edges {
             node {
               id

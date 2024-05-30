@@ -5,6 +5,7 @@ import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
 export type ExplorerPartyDepositsWithdrawalsQueryVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
+  first?: Types.InputMaybe<Types.Scalars['Int']>;
 }>;
 
 
@@ -12,11 +13,11 @@ export type ExplorerPartyDepositsWithdrawalsQuery = { __typename?: 'Query', part
 
 
 export const ExplorerPartyDepositsWithdrawalsDocument = gql`
-    query ExplorerPartyDepositsWithdrawals($partyId: ID!) {
+    query ExplorerPartyDepositsWithdrawals($partyId: ID!, $first: Int = 3) {
   partiesConnection(id: $partyId) {
     edges {
       node {
-        depositsConnection(pagination: {first: 10}) {
+        depositsConnection(pagination: {first: $first}) {
           edges {
             node {
               id
@@ -37,7 +38,7 @@ export const ExplorerPartyDepositsWithdrawalsDocument = gql`
             }
           }
         }
-        withdrawalsConnection(pagination: {first: 10}) {
+        withdrawalsConnection(pagination: {first: $first}) {
           edges {
             node {
               id
@@ -82,6 +83,7 @@ export const ExplorerPartyDepositsWithdrawalsDocument = gql`
  * const { data, loading, error } = useExplorerPartyDepositsWithdrawalsQuery({
  *   variables: {
  *      partyId: // value for 'partyId'
+ *      first: // value for 'first'
  *   },
  * });
  */

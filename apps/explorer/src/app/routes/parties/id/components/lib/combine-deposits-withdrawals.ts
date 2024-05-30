@@ -6,7 +6,8 @@ import {
 import type { ExplorerPartyDepositsWithdrawalsQuery } from '../__generated__/Party-deposits-withdrawals';
 
 export function combineDepositsWithdrawals(
-  data: ExplorerPartyDepositsWithdrawalsQuery
+  data: ExplorerPartyDepositsWithdrawalsQuery,
+  limit: number = 3
 ) {
   const transfers =
     data?.partiesConnection?.edges?.flatMap((edge) => {
@@ -26,7 +27,7 @@ export function combineDepositsWithdrawals(
     .sort((a, b) => {
       return b?.createdTimestamp.localeCompare(a?.createdTimestamp);
     })
-    .slice(0, 5);
+    .slice(0, limit);
 }
 
 export function isDepositStatus(
