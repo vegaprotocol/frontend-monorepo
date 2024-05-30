@@ -39,10 +39,10 @@ jobs:
           dandling_previews=$(comm -13 github_pr_numbers pr_numbers_in_buckets)
           printf "PRs with dandling previews:\n$dandling_previews\n\n"
 
-          for pr_number in "${dandling_previews[@]}"; do
+          for pr_number in ${dandling_previews[@]}; do
             buckets_for_pr=$(jq -r '.[].Name' all_buckets | grep "$pr_number")
             printf "Removing dandling previews:\n$buckets_for_pr\n\n"
-            for bucket in "${buckets_for_pr[@]}"; do
+            for bucket in ${buckets_for_pr[@]}; do
               aws s3 rb s3://$bucket --force
             done
             printf "\n\n"
