@@ -11,6 +11,7 @@ import {
   useWalletDisconnectedToasts,
 } from '@vegaprotocol/web3';
 import { VegaWalletConnectButton } from '../components/vega-wallet-connect-button';
+import { usePositionCloseoutNotification } from '../lib/hooks/use-position-closeout-notification';
 
 const WalletDisconnectAdditionalContent = () => {
   const { hideToast } = useWalletDisconnectToastActions();
@@ -35,6 +36,7 @@ export const ToastsManager = () => {
   useReadyToWithdrawalToasts({
     withdrawalsLink: Links.PORTFOLIO(),
   });
+  usePositionCloseoutNotification();
   useReferralToasts();
   useWalletDisconnectedToasts(<WalletDisconnectAdditionalContent />);
 
