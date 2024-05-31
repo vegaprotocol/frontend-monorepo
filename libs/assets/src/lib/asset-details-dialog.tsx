@@ -1,15 +1,11 @@
 import { useT } from './use-t';
-import {
-  Dialog,
-  Splash,
-  SyntaxHighlighter,
-  VegaIcon,
-  VegaIconNames,
-} from '@vegaprotocol/ui-toolkit';
+import { Dialog, Splash, SyntaxHighlighter } from '@vegaprotocol/ui-toolkit';
 import { create } from 'zustand';
 import { AssetDetailsTable } from './asset-details-table';
 import { AssetProposalNotification } from '@vegaprotocol/proposals';
 import { useAssetDataProvider } from './asset-data-provider';
+import { Emblem } from '@vegaprotocol/emblem';
+import { useChainId } from '@vegaprotocol/wallet-react';
 
 export type AssetDetailsDialogStore = {
   isOpen: boolean;
@@ -80,10 +76,12 @@ export const AssetDetailsDialog = ({
     ? t('Asset details - {{symbol}}', asset)
     : t('Asset not found');
 
+  const { chainId } = useChainId();
+
   return (
     <Dialog
       title={title}
-      icon={<VegaIcon name={VegaIconNames.INFO} />}
+      icon={<Emblem asset={assetId} vegaChain={chainId} />}
       open={open}
       onChange={(isOpen) => onChange(isOpen)}
       onCloseAutoFocus={(e) => {
