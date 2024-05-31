@@ -148,16 +148,6 @@ export const Settings = () => {
             >
               <FeatureFlagSwitch flag={'CROSS_CHAIN_DEPOSITS'} />
             </SettingsGroup>
-            {flags.CROSS_CHAIN_DEPOSITS && (
-              <SettingsGroup
-                label={t('Use test Arbitrum bridge')}
-                helpText={t(
-                  'Uses hardcoded assets and Arbitrum bridge (address: 0xd459fac6647059100ebe45543e1da73b3b70ffba). FUNDS MAY BE LOST!'
-                )}
-              >
-                <FeatureFlagSwitch flag={'CROSS_CHAIN_DEPOSITS_TEST'} />
-              </SettingsGroup>
-            )}
           </div>
         </>
       )}
