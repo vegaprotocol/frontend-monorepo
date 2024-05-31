@@ -5,7 +5,12 @@ import { usePrevious } from '@vegaprotocol/react-helpers';
 import { OrderbookRow } from './orderbook-row';
 import type { OrderbookRowData } from './orderbook-data';
 import { compactRows, VolumeType } from './orderbook-data';
-import { Splash, VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
+import {
+  Splash,
+  Tooltip,
+  VegaIcon,
+  VegaIconNames,
+} from '@vegaprotocol/ui-toolkit';
 import classNames from 'classnames';
 import type { PriceLevelFieldsFragment } from './__generated__/MarketDepth';
 import { OrderbookControls } from './orderbook-controls';
@@ -19,7 +24,6 @@ const midHeight = 30;
 
 const OrderbookSide = ({
   rows,
-  resolution,
   type,
   decimalPlaces,
   positionDecimalPlaces,
@@ -27,9 +31,10 @@ const OrderbookSide = ({
   onClick,
   width,
   maxVol,
+  bestAskPrice,
+  bestBidPrice,
 }: {
   rows: OrderbookRowData[];
-  resolution: number;
   decimalPlaces: number;
   positionDecimalPlaces: number;
   priceFormatDecimalPlaces: number;
@@ -37,6 +42,8 @@ const OrderbookSide = ({
   onClick: (args: { price?: string; size?: string }) => void;
   width: number;
   maxVol: number;
+  bestAskPrice: string;
+  bestBidPrice: string;
 }) => {
   return (
     <div
@@ -65,6 +72,13 @@ const OrderbookSide = ({
             type={type}
             width={width}
             maxVol={maxVol}
+            crossed={
+              !!bestBidPrice &&
+              !!bestAskPrice &&
+              (type === VolumeType.ask
+                ? BigInt(bestBidPrice) >= BigInt(data.price)
+                : BigInt(bestAskPrice) <= BigInt(data.price))
+            }
           />
         ))}
       </div>
@@ -78,64 +92,100 @@ export const OrderbookMid = ({
   assetSymbol,
   bestAskPrice,
   bestBidPrice,
+  indicativePrice,
+  isMarketInAuction,
 }: {
   lastTradedPrice: string;
   decimalPlaces: number;
   assetSymbol: string;
   bestAskPrice?: string;
   bestBidPrice?: string;
+  indicativePrice: string;
+  isMarketInAuction: boolean;
 }) => {
   const t = useT();
-  const previousLastTradedPrice = usePrevious(lastTradedPrice);
+  const currentPrice = isMarketInAuction ? indicativePrice : lastTradedPrice;
+  const previousPrice = usePrevious(currentPrice);
   const priceChangeRef = useRef<'up' | 'down' | 'none'>('none');
   const spread =
     bestAskPrice !== undefined &&
     bestBidPrice !== undefined &&
     (BigInt(bestAskPrice) - BigInt(bestBidPrice)).toString();
 
-  if (previousLastTradedPrice !== lastTradedPrice) {
+  if (previousPrice !== currentPrice) {
     priceChangeRef.current =
-      Number(previousLastTradedPrice) > Number(lastTradedPrice) ? 'down' : 'up';
+      Number(previousPrice) > Number(currentPrice) ? 'down' : 'up';
   }
 
   return (
-    <div className="flex items-center justify-center text-base gap-2">
-      {priceChangeRef.current !== 'none' && (
-        <span
-          className={classNames('flex flex-col justify-center', {
-            'text-market-green-600 dark:text-market-green':
-              priceChangeRef.current === 'up',
-            'text-market-red dark:text-market-red':
-              priceChangeRef.current === 'down',
-          })}
-        >
-          <VegaIcon
-            name={
-              priceChangeRef.current === 'up'
-                ? VegaIconNames.ARROW_UP
-                : VegaIconNames.ARROW_DOWN
-            }
-          />
-        </span>
-      )}
-      <span
-        // monospace sizing doesn't quite align with alpha
-        className="font-mono text-[15px]"
-        data-testid={`last-traded-${lastTradedPrice}`}
-        title={t('Last traded price')}
+    <div className="flex py-[1px]">
+      <div
+        className={classNames(
+          'flex grow items-center justify-center text-base gap-2',
+          {
+            'bg-vega-clight-800 dark:bg-vega-cdark-800':
+              isMarketInAuction &&
+              bestAskPrice &&
+              bestBidPrice &&
+              BigInt(bestAskPrice) < BigInt(bestBidPrice),
+          }
+        )}
       >
-        {addDecimalsFormatNumber(lastTradedPrice, decimalPlaces)}
-      </span>
-      <span>{assetSymbol}</span>
-      {spread && (
+        {priceChangeRef.current !== 'none' && (
+          <span
+            className={classNames('flex flex-col justify-center', {
+              'text-market-green-600 dark:text-market-green':
+                priceChangeRef.current === 'up',
+              'text-market-red dark:text-market-red':
+                priceChangeRef.current === 'down',
+            })}
+          >
+            <VegaIcon
+              name={
+                priceChangeRef.current === 'up'
+                  ? VegaIconNames.ARROW_UP
+                  : VegaIconNames.ARROW_DOWN
+              }
+            />
+          </span>
+        )}
         <span
-          title={t('Spread')}
-          className="font-mono text-xs text-muted"
-          data-testid="spread"
+          // monospace sizing doesn't quite align with alpha
+          className="font-mono text-[15px]"
+          data-testid="current-price"
+          title={
+            isMarketInAuction
+              ? t('Estimated uncrossing price')
+              : t('Last traded price')
+          }
         >
-          ({addDecimalsFormatNumber(spread, decimalPlaces)})
+          {addDecimalsFormatNumber(lastTradedPrice, decimalPlaces)}
         </span>
-      )}
+        <span>{assetSymbol}</span>
+        {spread && !spread.startsWith('-') && (
+          <span
+            title={t('Spread')}
+            className="font-mono text-xs text-muted"
+            data-testid="spread"
+          >
+            ({addDecimalsFormatNumber(spread, decimalPlaces)})
+          </span>
+        )}
+        {isMarketInAuction && (
+          <Tooltip
+            description={t(
+              'Market is in auction. Crossed orders are highlighted on the book, currently estimated to uncross at {{price}}',
+              {
+                price: addDecimalsFormatNumber(lastTradedPrice, decimalPlaces),
+              }
+            )}
+          >
+            <span className="flex items-center justify-center">
+              <VegaIcon name={VegaIconNames.HAMMER} />
+            </span>
+          </Tooltip>
+        )}
+      </div>
     </div>
   );
 };
@@ -148,6 +198,8 @@ interface OrderbookProps {
   bids: PriceLevelFieldsFragment[];
   asks: PriceLevelFieldsFragment[];
   assetSymbol: string;
+  indicativePrice: string;
+  isMarketInAuction: boolean;
 }
 
 export const Orderbook = ({
@@ -158,10 +210,11 @@ export const Orderbook = ({
   asks,
   bids,
   assetSymbol,
+  isMarketInAuction,
+  indicativePrice,
 }: OrderbookProps) => {
   const t = useT();
   const [resolution, setResolution] = useState(1);
-
   const groupedAsks = useMemo(() => {
     return compactRows(asks, VolumeType.ask, resolution);
   }, [asks, resolution]);
@@ -216,13 +269,14 @@ export const Orderbook = ({
                     <OrderbookSide
                       rows={askRows}
                       type={VolumeType.ask}
-                      resolution={resolution}
                       decimalPlaces={decimalPlaces}
                       positionDecimalPlaces={positionDecimalPlaces}
                       priceFormatDecimalPlaces={priceFormatDecimalPlaces}
                       onClick={onClick}
                       width={width}
                       maxVol={maxVol}
+                      bestAskPrice={askRows[askRows.length - 1]?.price}
+                      bestBidPrice={bidRows[0]?.price}
                     />
                     <OrderbookMid
                       lastTradedPrice={lastTradedPrice}
@@ -230,17 +284,20 @@ export const Orderbook = ({
                       assetSymbol={assetSymbol}
                       bestAskPrice={bestAskPrice}
                       bestBidPrice={bestBidPrice}
+                      indicativePrice={indicativePrice}
+                      isMarketInAuction={isMarketInAuction}
                     />
                     <OrderbookSide
                       rows={bidRows}
                       type={VolumeType.bid}
-                      resolution={resolution}
                       decimalPlaces={decimalPlaces}
                       positionDecimalPlaces={positionDecimalPlaces}
                       priceFormatDecimalPlaces={priceFormatDecimalPlaces}
                       onClick={onClick}
                       width={width}
                       maxVol={maxVol}
+                      bestAskPrice={askRows[askRows.length - 1]?.price}
+                      bestBidPrice={bidRows[0]?.price}
                     />
                   </>
                 ) : (
