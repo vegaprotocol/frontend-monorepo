@@ -60,6 +60,7 @@ const WrappedAssetDetailsDialog = ({ assetId }: { assetId: string }) => (
         assetId={assetId}
         open={true}
         onChange={() => false}
+        vegaChain="vega-mainnet-0011"
       ></AssetDetailsDialog>
     </MockedWalletProvider>
   </MockedProvider>
