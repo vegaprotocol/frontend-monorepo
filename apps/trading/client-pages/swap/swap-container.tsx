@@ -20,10 +20,8 @@ import { useT } from '../../lib/use-t';
 import {
   addDecimal,
   addDecimalsFormatNumber,
-  determinePriceStep,
   formatNumber,
   removeDecimal,
-  validateAgainstStep,
 } from '@vegaprotocol/utils';
 import { OrderTimeInForce, OrderType, Side } from '@vegaprotocol/types';
 import { useVegaTransactionStore } from '@vegaprotocol/web3';
@@ -64,19 +62,19 @@ const derivePrice = (
       ? new BigNumber(marketData.bestOfferPrice).times(1 + toleranceFactor)
       : new BigNumber(marketData.bestBidPrice).times(1 - toleranceFactor);
 
-  const priceStep = determinePriceStep(market);
+  // const priceStep = determinePriceStep(market);
 
-  while (
-    price &&
-    !validateAgainstStep(priceStep, price.toString()) &&
-    toleranceFactor > 0
-  ) {
-    if (side === Side.SIDE_BUY) {
-      price.plus(1);
-    } else {
-      price.minus(1);
-    }
-  }
+  // while (
+  //   price &&
+  //   !validateAgainstStep(priceStep, price.toString()) &&
+  //   toleranceFactor > 0
+  // ) {
+  //   if (side === Side.SIDE_BUY) {
+  //     price.plus(1);
+  //   } else {
+  //     price.minus(1);
+  //   }
+  // }
   return price;
 };
 
