@@ -1,10 +1,11 @@
-import re
 from typing import Generator, Tuple
 import pytest
-from playwright.sync_api import Page, expect
+import re
+from playwright.sync_api import Page
 from vega_sim.null_service import VegaServiceNull
 from fixtures.market import setup_spot_market
 from conftest import init_page, init_vega, risk_accepted_setup, cleanup_container, auth_setup
+from actions.utils import wait_for_toast_confirmation,
 
 @pytest.fixture(scope="module")
 def vega(request):
@@ -29,13 +30,26 @@ def setup_environment(vega, browser, request) -> Generator[Tuple[Page, VegaServi
 @pytest.mark.skip("WIP")
 def test_swap(setup_environment: Tuple[Page, VegaServiceNull]):
     page, vega = setup_environment  
-    page.pause()
-    page.get_by_test_id("icon-chevron-down").first.click()
+    page.get_by_test_id("you-pay-dropdown-trigger").click()
     page.get_by_role("menuitem", name="USDT").click()
-    page.get_by_test_id("icon-chevron-down").nth(1).click()
+
+    #This is required to close the drop down
+    page.get_by_test_id("Collateral").click(force=True)
+
+    page.get_by_test_id("you-receive-dropdown-trigger").click()
     page.get_by_role("menuitem", name="BTC").click()
-    page.pause()  
-    vega.wait_fn(1)  
-    vega.wait_for_total_catchup()  
-    page.pause() 
-    expect(page).to_have_text("Expected text on the page")
+
+    #This is required to close the drop down
+    page.get_by_test_id("Collateral").click(force=True)
+    page.get_by_test_id("you-pay-amount-input").fill("1")
+    page.get_by_test_id("swap-now-button").click()
+    wait_for_toast_confirmation(page)
+    vega.wait_fn(1)
+    vega.wait_for_total_catchup()
+    expected_confirmation_text = re.compile(
+        r"Transfer completeYour transaction has been confirmedView in block explorerTransferTo .{6}….{6}1\.00 tDAI"
+    )
+    actual_confirmation_text = page.get_by_test_id("toast-content").text_content()
+    assert expected_confirmation_text.search(
+        actual_confirmation_text
+    ), f"Expected pattern not found in {actual_confirmation_text}"
