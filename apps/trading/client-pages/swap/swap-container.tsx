@@ -10,6 +10,7 @@ import {
   isSpot,
   marketDataProvider,
   useMarketsMapProvider,
+  type MarketDataFieldsFragment,
   type MarketFieldsFragment,
 } from '@vegaprotocol/markets';
 import { VegaIcon, VegaIconNames, Link } from '@vegaprotocol/ui-toolkit';
@@ -19,8 +20,10 @@ import { useT } from '../../lib/use-t';
 import {
   addDecimal,
   addDecimalsFormatNumber,
+  determinePriceStep,
   formatNumber,
   removeDecimal,
+  validateAgainstStep,
 } from '@vegaprotocol/utils';
 import { OrderTimeInForce, OrderType, Side } from '@vegaprotocol/types';
 import { useVegaTransactionStore } from '@vegaprotocol/web3';
@@ -48,6 +51,34 @@ export interface SwapFields {
   quoteAmount: string;
   priceImpactTolerance: string;
 }
+
+const derivePrice = (
+  marketData: MarketDataFieldsFragment | null,
+  side: Side,
+  toleranceFactor: number,
+  market: MarketFieldsFragment
+) => {
+  if (!marketData) return;
+  const price =
+    side === Side.SIDE_BUY
+      ? new BigNumber(marketData.bestOfferPrice).times(1 + toleranceFactor)
+      : new BigNumber(marketData.bestBidPrice).times(1 - toleranceFactor);
+
+  const priceStep = determinePriceStep(market);
+
+  while (
+    price &&
+    !validateAgainstStep(priceStep, price.toString()) &&
+    toleranceFactor > 0
+  ) {
+    if (side === Side.SIDE_BUY) {
+      price.plus(1);
+    } else {
+      price.minus(1);
+    }
+  }
+  return price;
+};
 
 export const SwapContainer = () => {
   const t = useT();
@@ -141,17 +172,13 @@ export const SwapContainer = () => {
   }, [marketData, side]);
 
   const orderSubmission = useMemo(() => {
-    if (!market || !side) return;
+    if (!market || !side || !quoteAmount || quoteAmount === '0') return;
 
     const toleranceFactor = priceImpactTolerance
       ? Number(priceImpactTolerance) / 100
       : 0;
 
-    const price =
-      marketData &&
-      (side === Side.SIDE_BUY
-        ? new BigNumber(marketData.bestOfferPrice).times(1 + toleranceFactor)
-        : new BigNumber(marketData.bestBidPrice).times(1 - toleranceFactor));
+    const price = derivePrice(marketData, side, toleranceFactor, market);
 
     return {
       marketId,
