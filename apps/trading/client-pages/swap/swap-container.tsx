@@ -268,12 +268,14 @@ export const SwapContainer = () => {
           accountAssetIds={accountAssetIds}
           assets={spotAssets}
           pubKey={pubKey}
+          testId="you-pay"
         />
         <SwapButton
           onClick={() => {
             switchAssets();
             switchAmounts();
           }}
+          data-testid="swap-button"
         />
         <AssetInput
           label={t('You receive')}
@@ -286,15 +288,18 @@ export const SwapContainer = () => {
           onAmountChange={(e) => setValue('baseAmount', e.target.value)}
           accountWarning={false}
           pubKey={pubKey}
+          testId="you-receive"
         />
       </div>
       <PriceImpactInput
         value={priceImpactTolerance || ''}
         onValueChange={(e) => setValue('priceImpactTolerance', e)}
+        data-testid="price-impact-input"
       />
       <button
         type="submit"
         className="w-full hover:bg-vega-blue-600 bg-vega-blue-500 p-4 rounded-lg text-white"
+        data-testid="swap-now-button"
       >
         {t('Swap now')}
       </button>
