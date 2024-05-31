@@ -1,10 +1,7 @@
 import type { CellClickedEvent } from 'ag-grid-community';
 import compact from 'lodash/compact';
 import { isAfter } from 'date-fns';
-import type {
-  VegaICellRendererParams,
-  VegaValueFormatterParams,
-} from '@vegaprotocol/datagrid';
+import type { VegaValueFormatterParams } from '@vegaprotocol/datagrid';
 import { AgGrid, COL_DEFS } from '@vegaprotocol/datagrid';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { useMemo } from 'react';
@@ -21,8 +18,6 @@ import { useMarketClickHandler } from '../../lib/hooks/use-market-click-handler'
 import { SettlementDateCell } from './settlement-date-cell';
 import { MarketCodeCell } from './market-code-cell';
 import { useT } from '../../lib/use-t';
-import { EmblemByMarket } from '@vegaprotocol/emblem';
-import { useChainId } from '@vegaprotocol/wallet-react';
 
 type SettlementAsset = Pick<
   Asset,
@@ -128,7 +123,6 @@ const ClosedMarketsDataGrid = ({
 }) => {
   const t = useT();
   const handleOnSelect = useMarketClickHandler();
-  const { chainId } = useChainId();
 
   const colDefs = useMemo(() => {
     return [
@@ -136,27 +130,7 @@ const ClosedMarketsDataGrid = ({
         headerName: t('Market'),
         field: 'code',
         minWidth: 150,
-        cellRenderer: ({
-          value,
-          data,
-        }: VegaICellRendererParams<Row, 'code'>) => {
-          if (!data) return null;
-          return (
-            <span className="flex items-center gap-2 cursor-pointer">
-              <span className="mr-1">
-                <EmblemByMarket market={data?.id || ''} vegaChain={chainId} />
-              </span>
-              <MarketCodeCell
-                value={value}
-                data={{
-                  productType: data.productType,
-                  parentMarketID: data.parentMarketID,
-                  successorMarketID: data.successorMarketID,
-                }}
-              />
-            </span>
-          );
-        },
+        cellRenderer: MarketCodeCell,
         resizable: true,
       },
       {
@@ -248,7 +222,7 @@ const ClosedMarketsDataGrid = ({
         },
       },
     ];
-  }, [chainId, t]);
+  }, [t]);
 
   return (
     <AgGrid
