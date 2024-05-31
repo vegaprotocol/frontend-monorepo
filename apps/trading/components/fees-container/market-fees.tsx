@@ -19,7 +19,7 @@ const useFeesTableColumnDefs = (): ColDef[] => {
           field: 'code',
           cellRenderer: MarketCodeCell,
           pinned: 'left',
-          width: 150,
+          width: 214,
         },
         {
           field: 'feeAfterDiscount',
