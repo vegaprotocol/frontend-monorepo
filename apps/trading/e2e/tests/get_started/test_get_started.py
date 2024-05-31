@@ -11,14 +11,12 @@ import logging
 logger = logging.getLogger()
 
 
-@pytest.fixture(scope="module")
 def vega(request):
     with init_vega(request) as vega_instance:
         request.addfinalizer(lambda: cleanup_container(vega_instance))
         yield vega_instance
 
 
-@pytest.fixture(scope="module")
 def simple_market(vega: VegaServiceNull):
     return setup_simple_market(vega)
 
@@ -42,15 +40,15 @@ def test_get_started_interactive(vega: VegaServiceNull, page: Page):
 
     # Set token to localStorage so eager connect hook picks it up and immediately connects
     wallet_config = json.dumps(
-    {
-        "state":{
-            "chainId":"CUSTOM",
-            "current":"jsonRpc",
-            "jsonRpcToken": f"VWT {wallet_api_token}",
-        },
-        "version":0
-    }
-)
+        {
+            "state": {
+                "chainId": "CUSTOM",
+                "current": "jsonRpc",
+                "jsonRpcToken": f"VWT {wallet_api_token}",
+            },
+            "version": 0,
+        }
+    )
 
     storage_javascript = [
         # Store wallet config so eager connection is initiated
@@ -139,6 +137,7 @@ def test_get_started_interactive(vega: VegaServiceNull, page: Page):
     # Assert dialog isn't visible
     expect(page.get_by_test_id("welcome-dialog")).not_to_be_visible()
 
+
 @pytest.mark.usefixtures("risk_accepted")
 def test_get_started_seen_already(simple_market, page: Page):
     page.goto(f"/#/markets/{simple_market}")
@@ -152,9 +151,8 @@ def test_get_started_seen_already(simple_market, page: Page):
     # 0007-FUGS-007
     expect(page.get_by_test_id("dialog-content").nth(1)).to_be_visible()
 
-def test_redirect_default_market(
-    simple_market, vega: VegaServiceNull, page: Page
-):
+
+def test_redirect_default_market(simple_market, vega: VegaServiceNull, page: Page):
     page.goto("/")
     # 0007-FUGS-012
     expect(page).to_have_url(
