@@ -62,19 +62,6 @@ const derivePrice = (
       ? new BigNumber(marketData.bestOfferPrice).times(1 + toleranceFactor)
       : new BigNumber(marketData.bestBidPrice).times(1 - toleranceFactor);
 
-  // const priceStep = determinePriceStep(market);
-
-  // while (
-  //   price &&
-  //   !validateAgainstStep(priceStep, price.toString()) &&
-  //   toleranceFactor > 0
-  // ) {
-  //   if (side === Side.SIDE_BUY) {
-  //     price.plus(1);
-  //   } else {
-  //     price.minus(1);
-  //   }
-  // }
   return price;
 };
 
