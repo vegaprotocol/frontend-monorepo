@@ -30,8 +30,8 @@ import { getNotionalSize } from '@vegaprotocol/deal-ticket';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { AssetInput, SwapButton, PriceImpactInput } from './swap-form';
 import BigNumber from 'bignumber.js';
-
-const POLLING_TIME = 5000;
+import { Links } from '../../lib/links';
+import { useNavigate } from 'react-router-dom';
 
 const assetBalance = (
   asset?: AssetFieldsFragment,
@@ -82,21 +82,13 @@ export const SwapContainer = () => {
   const [marketId, setMarketId] = useState<string>('');
   const [market, setMarket] = useState<MarketFieldsFragment>();
 
-  const { data: marketData, reload: reloadMarketData } = useDataProvider({
+  const { data: marketData } = useDataProvider({
     dataProvider: marketDataProvider,
     variables: { marketId },
     skip: !marketId,
   });
-  const { data: accounts, reload: reloadAccounts } = useAccounts(pubKey);
-
-  useEffect(() => {
-    const intervalAccounts = setInterval(reloadAccounts, POLLING_TIME);
-    const intervalMarketData = setInterval(reloadMarketData, POLLING_TIME);
-    return () => {
-      clearInterval(intervalAccounts);
-      clearInterval(intervalMarketData);
-    };
-  }, [reloadAccounts, reloadMarketData]);
+  const { data: accounts } = useAccounts(pubKey);
+  const navigate = useNavigate();
 
   const { spotMarkets, spotAssets } = useMemo(() => {
     const spotAssets: Record<string, AssetFieldsFragment> = {};
@@ -222,9 +214,9 @@ export const SwapContainer = () => {
     marketPrice,
     quoteAmount,
     side,
-    setValue,
     orderSubmission,
     quoteAsset,
+    setValue,
   ]);
 
   return (
@@ -237,7 +229,7 @@ export const SwapContainer = () => {
         <h3 className="text-lg">{t('Swap')}</h3>
         {marketId && (
           <Link
-            href={`/#/markets/${marketId}`}
+            onClick={() => navigate(Links.MARKET(marketId))}
             className="text-sm text-gray-500 text-right"
           >
             {t('Go to market')} <VegaIcon name={VegaIconNames.ARROW_RIGHT} />

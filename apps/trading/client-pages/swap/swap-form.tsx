@@ -64,7 +64,7 @@ export const AssetInput = ({
         !!pubKey &&
         asset &&
         !accountAssetIds.includes(asset.id) ? (
-          <span className="text-warning text-xs">
+          <span className="text-xs">
             {t(`You do not have this asset in your account`)}
           </span>
         ) : (
@@ -183,9 +183,7 @@ export const DropdownAsset = ({
         {assets &&
           Object.values(assets).map((asset) => (
             <DropdownMenuItem
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
+              onClick={() => {
                 onSelect(asset);
               }}
               key={asset.id}
