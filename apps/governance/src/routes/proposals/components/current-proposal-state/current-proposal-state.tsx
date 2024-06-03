@@ -5,15 +5,27 @@ import {
 } from '@vegaprotocol/types';
 import { type ReactNode } from 'react';
 import classNames from 'classnames';
+import { Tooltip } from '@vegaprotocol/ui-toolkit';
 
-const PROPOSAL_STATE_COLOR_MAP: { [state in ProposalState]: string } = {
-  [ProposalState.STATE_OPEN]: 'bg-vega-green text-black',
-  [ProposalState.STATE_ENACTED]: 'bg-vega-green-650',
-  [ProposalState.STATE_PASSED]: 'bg-vega-green-650',
-  [ProposalState.STATE_DECLINED]: 'bg-vega-red',
-  [ProposalState.STATE_FAILED]: 'bg-vega-red-600',
-  [ProposalState.STATE_REJECTED]: 'bg-vega-red-600',
+export enum AdditionalProposalState {
+  /**
+   * Used for overall state of a batch proposal when any of the sub-proposals
+   * didn't pass.
+   */
+  PASSED_WITH_ERRORS = 'PASSED_WITH_ERRORS',
+}
+
+type State = ProposalState | AdditionalProposalState;
+
+const PROPOSAL_STATE_COLOR_MAP: { [state in State]: string } = {
+  [ProposalState.STATE_OPEN]: 'bg-white text-black',
+  [ProposalState.STATE_ENACTED]: 'bg-vega-green-500 text-black',
+  [ProposalState.STATE_PASSED]: 'bg-vega-green-500 text-black',
+  [ProposalState.STATE_DECLINED]: 'bg-vega-red-500',
+  [ProposalState.STATE_FAILED]: 'bg-vega-red-500',
+  [ProposalState.STATE_REJECTED]: 'bg-vega-red-500',
   [ProposalState.STATE_WAITING_FOR_NODE_VOTE]: 'bg-vega-blue-650',
+  [AdditionalProposalState.PASSED_WITH_ERRORS]: 'bg-vega-yellow-500 text-black',
 };
 
 export const UPGRADE_STATUS_PROPOSAL_STATE_MAP = {
@@ -30,23 +42,28 @@ export const UPGRADE_STATUS_PROPOSAL_STATE_MAP = {
 export const CurrentProposalState = ({
   proposalState,
   className,
+  tooltip,
   children,
 }: {
-  proposalState: ProposalState | ProtocolUpgradeProposalStatus;
+  proposalState:
+    | ProposalState
+    | AdditionalProposalState
+    | ProtocolUpgradeProposalStatus;
   className?: classNames.Argument;
+  tooltip?: ReactNode;
   children?: ReactNode;
 }) => {
   const { t } = useTranslation();
   let proposalStatus: ReactNode;
 
-  let state: ProposalState;
+  let state: ProposalState | AdditionalProposalState;
   if (Object.keys(UPGRADE_STATUS_PROPOSAL_STATE_MAP).includes(proposalState)) {
     state =
       UPGRADE_STATUS_PROPOSAL_STATE_MAP[
         proposalState as ProtocolUpgradeProposalStatus
       ];
   } else {
-    state = proposalState as ProposalState;
+    state = proposalState as ProposalState | AdditionalProposalState;
   }
 
   switch (state) {
@@ -78,6 +95,18 @@ export const CurrentProposalState = ({
       proposalStatus = t('voteState_Failed');
       break;
     }
+    case AdditionalProposalState.PASSED_WITH_ERRORS: {
+      proposalStatus = t('voteState_PassedWithErrors');
+      break;
+    }
+  }
+
+  if (tooltip) {
+    proposalStatus = (
+      <Tooltip description={tooltip}>
+        <span>{proposalStatus}</span>
+      </Tooltip>
+    );
   }
 
   return (
@@ -87,6 +116,7 @@ export const CurrentProposalState = ({
         'font-alpha text-xs',
         'flex items-center gap-1',
         PROPOSAL_STATE_COLOR_MAP[state],
+        { 'cursor-help': Boolean(tooltip) },
         className
       )}
     >
