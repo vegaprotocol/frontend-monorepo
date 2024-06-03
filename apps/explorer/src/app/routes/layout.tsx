@@ -27,6 +27,7 @@ import {
   ProtocolUpgradeInProgressNotification,
   ProtocolUpgradeProposalNotification,
 } from '@vegaprotocol/proposals';
+import { ENV } from '../config/env';
 
 const DialogsContainer = () => {
   const { isOpen, id, trigger, asJson, setOpen } = useAssetDetailsDialogStore();
@@ -37,6 +38,7 @@ const DialogsContainer = () => {
       asJson={asJson}
       open={isOpen}
       onChange={setOpen}
+      vegaChain={ENV.vegaChainId}
     />
   );
 };

@@ -5,7 +5,6 @@ import { AssetDetailsTable } from './asset-details-table';
 import { AssetProposalNotification } from '@vegaprotocol/proposals';
 import { useAssetDataProvider } from './asset-data-provider';
 import { Emblem } from '@vegaprotocol/emblem';
-import { useChainId } from '@vegaprotocol/wallet-react';
 
 export type AssetDetailsDialogStore = {
   isOpen: boolean;
@@ -42,6 +41,8 @@ export interface AssetDetailsDialogProps {
   open: boolean;
   onChange: (open: boolean) => void;
   asJson?: boolean;
+  // Used to fetch the correct asset icon for the current chain
+  vegaChain: string;
 }
 
 export const AssetDetailsDialog = ({
@@ -50,6 +51,7 @@ export const AssetDetailsDialog = ({
   open,
   onChange,
   asJson = false,
+  vegaChain,
 }: AssetDetailsDialogProps) => {
   const t = useT();
   const { data: asset } = useAssetDataProvider(assetId);
@@ -76,12 +78,10 @@ export const AssetDetailsDialog = ({
     ? t('Asset details - {{symbol}}', asset)
     : t('Asset not found');
 
-  const { chainId } = useChainId();
-
   return (
     <Dialog
       title={title}
-      icon={<Emblem asset={assetId} vegaChain={chainId} />}
+      icon={<Emblem asset={assetId} vegaChain={vegaChain} />}
       open={open}
       onChange={(isOpen) => onChange(isOpen)}
       onCloseAutoFocus={(e) => {
