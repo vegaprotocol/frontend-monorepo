@@ -20,9 +20,13 @@ const NO_THRESHOLD_ASSET: Asset = {
   symbol: 'NTA',
   decimals: 1,
   status: Types.AssetStatus.STATUS_ENABLED,
+  quantum: '1',
   source: {
     __typename: 'ERC20',
     contractAddress: '0xnta',
+    chainId: '1',
+    lifetimeLimit: '1',
+    withdrawThreshold: '1',
   },
 };
 
@@ -33,9 +37,13 @@ const LOW_THRESHOLD_ASSET: Asset = {
   symbol: 'LTA',
   decimals: 1,
   status: Types.AssetStatus.STATUS_ENABLED,
+  quantum: '1',
   source: {
     __typename: 'ERC20',
     contractAddress: '0xlta',
+    chainId: '1',
+    lifetimeLimit: '1',
+    withdrawThreshold: '1',
   },
 };
 
@@ -46,9 +54,13 @@ const HIGH_THRESHOLD_ASSET: Asset = {
   symbol: 'HTA',
   decimals: 1,
   status: Types.AssetStatus.STATUS_ENABLED,
+  quantum: '1',
   source: {
     __typename: 'ERC20',
     contractAddress: '0xhta',
+    chainId: '1',
+    lifetimeLimit: '1',
+    withdrawThreshold: '1',
   },
 };
 
@@ -73,6 +85,9 @@ const mockIncompleteW1: Withdrawal = {
   withdrawnTimestamp: null,
   txHash: null,
   asset: NO_THRESHOLD_ASSET,
+  party: {
+    id: 'party-id',
+  },
 };
 
 // delay (10 + 1000 < 5000), ready
@@ -85,6 +100,9 @@ const mockIncompleteW2: Withdrawal = {
   withdrawnTimestamp: null,
   txHash: null,
   asset: LOW_THRESHOLD_ASSET,
+  party: {
+    id: 'party-id',
+  },
 };
 // delay (4500 + 1000 > 5000), below threshold, ready
 const mockIncompleteW3: Withdrawal = {
@@ -96,6 +114,9 @@ const mockIncompleteW3: Withdrawal = {
   withdrawnTimestamp: null,
   txHash: null,
   asset: HIGH_THRESHOLD_ASSET,
+  party: {
+    id: 'party-id',
+  },
 };
 // delay (5000 + 1000 > 5000), delayed
 const mockIncompleteW4: Withdrawal = {
@@ -107,6 +128,9 @@ const mockIncompleteW4: Withdrawal = {
   withdrawnTimestamp: null,
   txHash: null,
   asset: HIGH_THRESHOLD_ASSET,
+  party: {
+    id: 'party-id',
+  },
 };
 // delay (4001 + 1000 > 5000), delayed
 const mockIncompleteW5: Withdrawal = {
@@ -118,6 +142,9 @@ const mockIncompleteW5: Withdrawal = {
   withdrawnTimestamp: null,
   txHash: null,
   asset: HIGH_THRESHOLD_ASSET,
+  party: {
+    id: 'party-id',
+  },
 };
 // completed
 const mockCompleteW1: Withdrawal = {
@@ -129,6 +156,9 @@ const mockCompleteW1: Withdrawal = {
   withdrawnTimestamp: ts(11),
   txHash: '0xcompleted',
   asset: HIGH_THRESHOLD_ASSET,
+  party: {
+    id: 'party-id',
+  },
 };
 
 jest.mock('@vegaprotocol/data-provider', () => ({

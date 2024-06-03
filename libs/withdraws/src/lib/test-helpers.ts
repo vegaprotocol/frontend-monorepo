@@ -59,6 +59,7 @@ export const generateWithdrawal = (
         contractAddress: '0x123',
         lifetimeLimit: '1',
         withdrawThreshold: '1',
+        chainId: '1',
       },
     },
     party: {
