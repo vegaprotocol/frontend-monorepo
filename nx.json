@@ -2,23 +2,6 @@
   "affected": {
     "defaultBase": "develop"
   },
-  "tasksRunnerOptions": {
-    "default": {
-      "options": {
-        "runtimeCacheInputs": [
-          "echo $NX_VEGA_NETWORKS",
-          "echo $NX_VEGA_ENV",
-          "echo $NX_VEGA_URL",
-          "echo $NX_TENDERMINT_URL",
-          "echo $NX_TENDERMINT_WEBSOCKET_URL",
-          "echo $NX_ETHEREUM_PROVIDER_URL",
-          "echo $NX_CHARTING_LIBRARY_PATH",
-          "echo $NX_CHARTING_LIBRARY_HASH",
-          "echo $GIT_COMMIT_HASH"
-        ]
-      }
-    }
-  },
   "generators": {
     "@nx/web:application": {
       "style": "scss",
@@ -108,5 +91,5 @@
       "!{projectRoot}/tsconfig.storybook.json"
     ]
   },
-  "nxCloudAccessToken": "OTY4ZjdlZTItNGIwNy00NDcyLTllZjctOWIzYTg1NWE0Yzg1fHJlYWQtd3JpdGU="
+  "nxCloudAccessToken": "ZDIzZTQ0YjAtZTRkMC00NDVlLTk2MjYtZjhlYjA4NzIzYzkyfHJlYWQ="
 }

@@ -30,7 +30,8 @@ const proposalStates: ProposalState[] = [
   ProposalState.STATE_ENACTED,
   ProposalState.STATE_PASSED,
   ProposalState.STATE_DECLINED,
-  ProposalState.STATE_WAITING_FOR_NODE_VOTE,
+  // Note: STATE_WAITING_FOR_NODE_VOTE is attached to STATE_OPEN in filtering
+  // ProposalState.STATE_WAITING_FOR_NODE_VOTE,
   ProposalState.STATE_FAILED,
   ProposalState.STATE_REJECTED,
 ];
@@ -42,8 +43,9 @@ const proposalTypes: ProposalType[] = [
   'NewMarket',
   'UpdateMarketState',
   'UpdateMarket',
-  'NewSpotMarket',
-  'UpdateSpotMarket',
+  // Note: spot market related types are attached to generic new/update types in filtering
+  // 'NewSpotMarket',
+  // 'UpdateSpotMarket',
   'NewTransfer',
   'CancelTransfer',
   'UpdateNetworkParameter',
@@ -371,122 +373,126 @@ export const Filters = ({ count }: { count?: number }) => {
         </ul>
       )}
       {showSettings && (
-        <div data-testid="filter-settings" className="mt-3">
-          <div className="grid md:grid-cols-3 gap-3 text-sm">
-            <div>
-              <div className="flex gap-2">
-                <span className="font-semibold">
-                  {t('Include proposal states')}
-                </span>
-                <button
-                  className="text-xs text-vega-cdark-200 hover:text-vega-cdark-50"
-                  onClick={() => {
-                    proposalStates.forEach((ps) => filter.addState(ps));
-                  }}
-                >
-                  select all
-                </button>
-                <button
-                  className="text-xs text-vega-cdark-200 hover:text-vega-cdark-50"
-                  onClick={() => {
-                    filter.clearStates();
-                  }}
-                >
-                  deselect all
-                </button>
-              </div>
-              <ul className="list-none">
-                {proposalStates.map((ps, i) => (
+        <div
+          data-testid="filter-settings"
+          className="mt-3 flex flex-col gap-3 text-sm"
+        >
+          {/** States: */}
+          <div>
+            <div className="flex gap-2">
+              <span className="font-semibold">
+                {t('Include proposal states')}
+              </span>
+              <button
+                className="text-xs text-vega-cdark-200 hover:text-vega-cdark-50"
+                onClick={() => {
+                  proposalStates.forEach((ps) => filter.addState(ps));
+                }}
+              >
+                select all
+              </button>
+              <button
+                className="text-xs text-vega-cdark-200 hover:text-vega-cdark-50"
+                onClick={() => {
+                  filter.clearStates();
+                }}
+              >
+                deselect all
+              </button>
+            </div>
+            <ul className="list-none grid grid-cols-1 md:grid-cols-3">
+              {proposalStates.map((ps, i) => (
+                <li key={i}>
+                  <label className="flex gap-1">
+                    <Checkbox
+                      checked={filter.states.includes(ps)}
+                      onCheckedChange={(checked) =>
+                        checked ? filter.addState(ps) : filter.removeState(ps)
+                      }
+                    />{' '}
+                    <Tooltip
+                      description={
+                        !filter.states.includes(ps) &&
+                        !BASE_FILTER.states.includes(ps) ? (
+                          <Trans
+                            i18nKey={
+                              'The <0>{{state}}</0> state is excluded by default. The <0>{{state}}</0> proposals will not be included in the results unless checked.'
+                            }
+                            values={{ state: ProposalStateMapping[ps] }}
+                            components={[
+                              <span className="lowercase">
+                                {ProposalStateMapping[ps]}
+                              </span>,
+                            ]}
+                          />
+                        ) : null
+                      }
+                    >
+                      <span
+                        className={classNames({
+                          ' text-vega-cdark-100 cursor-help':
+                            !filter.states.includes(ps) &&
+                            !BASE_FILTER.states.includes(ps),
+                        })}
+                      >
+                        {ProposalStateMapping[ps]}
+                      </span>
+                    </Tooltip>
+                  </label>
+                </li>
+              ))}
+            </ul>
+          </div>
+          {/** Types: */}
+          <div>
+            <div className="flex gap-2">
+              <span className="font-semibold">
+                {t('Include proposal types')}
+              </span>
+
+              <button
+                className="text-xs text-vega-cdark-200 hover:text-vega-cdark-50"
+                onClick={() => {
+                  proposalTypes.forEach((pt) => filter.addType(pt));
+                }}
+              >
+                select all
+              </button>
+              <button
+                className="text-xs text-vega-cdark-200 hover:text-vega-cdark-50"
+                onClick={() => {
+                  filter.clearTypes();
+                }}
+              >
+                deselect all
+              </button>
+            </div>
+            <ul className="list-none grid grid-cols-1 md:grid-cols-3">
+              {proposalTypes.map((pt, i) => {
+                if (!pt) return null;
+                const label =
+                  pt !== 'NetworkUpgrade'
+                    ? ProposalChangeMapping[pt]
+                    : t('networkUpgrade');
+
+                return (
                   <li key={i}>
                     <label className="flex gap-1">
                       <Checkbox
-                        checked={filter.states.includes(ps)}
+                        checked={filter.types.includes(pt)}
                         onCheckedChange={(checked) =>
-                          checked ? filter.addState(ps) : filter.removeState(ps)
+                          checked ? filter.addType(pt) : filter.removeType(pt)
                         }
                       />{' '}
-                      <Tooltip
-                        description={
-                          !filter.states.includes(ps) &&
-                          !BASE_FILTER.states.includes(ps) ? (
-                            <Trans
-                              i18nKey={
-                                'The <0>{{state}}</0> state is excluded by default. The <0>{{state}}</0> proposals will not be included in the results unless checked.'
-                              }
-                              values={{ state: ProposalStateMapping[ps] }}
-                              components={[
-                                <span className="lowercase">
-                                  {ProposalStateMapping[ps]}
-                                </span>,
-                              ]}
-                            />
-                          ) : null
-                        }
-                      >
-                        <span
-                          className={classNames({
-                            ' text-vega-cdark-100 cursor-help':
-                              !filter.states.includes(ps) &&
-                              !BASE_FILTER.states.includes(ps),
-                          })}
-                        >
-                          {ProposalStateMapping[ps]}
-                        </span>
-                      </Tooltip>
+                      {label}
                     </label>
                   </li>
-                ))}
-              </ul>
-            </div>
-            <div className="col-span-2">
-              <div className="flex gap-2">
-                <span className="font-semibold">
-                  {t('Include proposal types')}
-                </span>
-
-                <button
-                  className="text-xs text-vega-cdark-200 hover:text-vega-cdark-50"
-                  onClick={() => {
-                    proposalTypes.forEach((pt) => filter.addType(pt));
-                  }}
-                >
-                  select all
-                </button>
-                <button
-                  className="text-xs text-vega-cdark-200 hover:text-vega-cdark-50"
-                  onClick={() => {
-                    filter.clearTypes();
-                  }}
-                >
-                  deselect all
-                </button>
-              </div>
-              <ul className="list-none grid grid-cols-2">
-                {proposalTypes.map((pt, i) => {
-                  if (!pt) return null;
-                  const label =
-                    pt !== 'NetworkUpgrade'
-                      ? ProposalChangeMapping[pt]
-                      : t('networkUpgrade');
-
-                  return (
-                    <li key={i}>
-                      <label className="flex gap-1">
-                        <Checkbox
-                          checked={filter.types.includes(pt)}
-                          onCheckedChange={(checked) =>
-                            checked ? filter.addType(pt) : filter.removeType(pt)
-                          }
-                        />{' '}
-                        {label}
-                      </label>
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
+                );
+              })}
+            </ul>
           </div>
-          <div className="mt-1">
+          {/** IDs: */}
+          <div>
             <label>
               <span className="text-sm font-semibold">
                 {t('FilterProposalsDescription')}

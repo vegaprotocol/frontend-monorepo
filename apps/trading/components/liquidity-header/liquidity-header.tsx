@@ -61,14 +61,14 @@ export const LiquidityHeader = () => {
         marketId && (
           <HeaderTitle>
             {marketId && (
-              <span className="mr-2">
-                <EmblemByMarket market={marketId} vegaChain={chainId} />
-              </span>
+              <EmblemByMarket market={marketId} vegaChain={chainId} />
             )}
-            {market.tradableInstrument.instrument.code &&
-              t('{{instrumentCode}} liquidity provision', {
-                instrumentCode: market.tradableInstrument.instrument.code,
-              })}
+            <span className="text-lg">
+              {market.tradableInstrument.instrument.code &&
+                t('{{instrumentCode}} liquidity provision', {
+                  instrumentCode: market.tradableInstrument.instrument.code,
+                })}
+            </span>
           </HeaderTitle>
         )
       }

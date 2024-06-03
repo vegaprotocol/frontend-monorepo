@@ -7,11 +7,11 @@ import { calcCandleVolume, getAsset } from '@vegaprotocol/markets';
 import { useCandles } from '@vegaprotocol/markets';
 import { useMarketDataUpdateSubscription } from '@vegaprotocol/markets';
 import { Sparkline } from '@vegaprotocol/ui-toolkit';
-import { MarketProductPill } from '@vegaprotocol/datagrid';
 import { useT } from '../../lib/use-t';
 import { EmblemByMarket } from '@vegaprotocol/emblem';
 import { useChainId } from '@vegaprotocol/wallet-react';
 import { MarketIcon } from '../../client-pages/markets/market-icon';
+import { ProductTypeShortName } from '@vegaprotocol/types';
 
 export const MarketSelectorItem = ({
   market,
@@ -85,16 +85,22 @@ const MarketData = ({
     <>
       <div className="w-4/6 sm:w-2/6" role="gridcell">
         <h3 className="flex items-center gap-1">
-          <span className="overflow-hidden text-xs md:text-sm lg:text-base text-ellipsis whitespace-nowrap">
+          <span className="shrink-0">
             <EmblemByMarket market={market.id} vegaChain={chainId} />
-            {market.tradableInstrument.instrument.code}
           </span>
-          {allProducts && productType && (
-            <span className="mb-0.5 mr-0.5">
-              <MarketProductPill productType={productType} />
+          <div>
+            <span className="overflow-hidden text-xs md:text-sm lg:text-base text-ellipsis whitespace-nowrap leading-none">
+              {market.tradableInstrument.instrument.code}
             </span>
-          )}
-          <MarketIcon data={market} />
+            <div className="flex items-center">
+              {allProducts && productType && (
+                <span className="text-xs uppercase text-muted mr-1">
+                  {productType && ProductTypeShortName[productType]}
+                </span>
+              )}
+              <MarketIcon data={market} />
+            </div>
+          </div>
         </h3>
       </div>
       <div

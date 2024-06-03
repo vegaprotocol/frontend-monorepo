@@ -21,6 +21,7 @@ const rewardAsset = {
     contractAddress: '0x123',
     lifetimeLimit: '100',
     withdrawThreshold: '100',
+    chainId: '11',
   },
 };
 
@@ -60,6 +61,7 @@ describe('RewardPot', () => {
         contractAddress: '0x123',
         lifetimeLimit: '100',
         withdrawThreshold: '100',
+        chainId: '11',
       },
     };
 

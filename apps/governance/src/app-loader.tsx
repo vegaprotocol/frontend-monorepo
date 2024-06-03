@@ -25,10 +25,7 @@ export const AppLoader = ({ children }: { children: React.ReactElement }) => {
   const { appDispatch } = useAppState();
   const { token, staking, vesting } = useContracts();
   const setAssociatedBalances = useRefreshAssociatedBalances();
-  const [balancesLoaded, setBalancesLoaded] = React.useState(false);
-  const vegaWalletStatus = useEagerConnect();
-
-  const loaded = balancesLoaded && vegaWalletStatus !== 'connecting';
+  useEagerConnect();
 
   React.useEffect(() => {
     const run = async () => {
@@ -61,7 +58,6 @@ export const AppLoader = ({ children }: { children: React.ReactElement }) => {
           totalSupply,
           totalAssociated: totalWallet.plus(totalVesting),
         });
-        setBalancesLoaded(true);
       } catch (err) {
         Sentry.captureException(err);
       }
@@ -164,9 +160,6 @@ export const AppLoader = ({ children }: { children: React.ReactElement }) => {
     </Splash>
   );
 
-  if (!loaded) {
-    return loading;
-  }
   return <Suspense fallback={loading}>{children}</Suspense>;
 };
 

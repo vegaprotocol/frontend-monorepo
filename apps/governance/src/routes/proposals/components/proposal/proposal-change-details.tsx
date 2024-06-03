@@ -36,17 +36,22 @@ export const ProposalChangeDetails = ({
   const { t } = useTranslation();
   let details = null;
 
+  let proposalId: string | undefined = proposal.id || undefined;
+  if (proposal.__typename === 'BatchProposal' && indicator) {
+    proposalId = proposal.subProposals?.[indicator - 1]?.id || undefined;
+  }
+
   switch (terms.change.__typename) {
     case 'NewAsset': {
-      if (proposal.id && terms.change.source.__typename === 'ERC20') {
+      if (proposalId && terms.change.source.__typename === 'ERC20') {
         details = (
           <div>
             <ListAsset
-              assetId={proposal.id}
+              assetId={proposalId}
               withdrawalThreshold={terms.change.source.withdrawThreshold}
               lifetimeLimit={terms.change.source.lifetimeLimit}
             />
-            <ProposalAssetDetails change={terms.change} assetId={proposal.id} />
+            <ProposalAssetDetails change={terms.change} assetId={proposalId} />
           </div>
         );
       }
@@ -95,24 +100,14 @@ export const ProposalChangeDetails = ({
       break;
     }
     case 'NewTransfer': {
-      if (proposal.__typename === 'BatchProposal' && indicator) {
-        const proposalId = proposal.subProposals?.[indicator - 1]?.id;
-        if (proposalId) {
-          details = <ProposalTransferDetails proposalId={proposalId} />;
-        }
-      } else if (proposal.id) {
-        details = <ProposalTransferDetails proposalId={proposal.id} />;
+      if (proposalId) {
+        details = <ProposalTransferDetails proposalId={proposalId} />;
       }
       break;
     }
     case 'CancelTransfer': {
-      if (proposal.__typename === 'BatchProposal' && indicator) {
-        const proposalId = proposal.subProposals?.[indicator - 1]?.id;
-        if (proposalId) {
-          details = <ProposalCancelTransferDetails proposalId={proposalId} />;
-        }
-      } else if (proposal.id) {
-        details = <ProposalCancelTransferDetails proposalId={proposal.id} />;
+      if (proposalId) {
+        details = <ProposalCancelTransferDetails proposalId={proposalId} />;
       }
       break;
     }

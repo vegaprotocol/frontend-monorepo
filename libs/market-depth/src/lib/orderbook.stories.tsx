@@ -40,6 +40,7 @@ Continuous.args = {
   numberOfSellRows: 100,
   numberOfBuyRows: 100,
   bestStaticBidPrice: 1000,
+  lastTradedPrice: '1000',
   bestStaticOfferPrice: 1000,
   decimalPlaces: 3,
   overlap: -1,
@@ -50,6 +51,7 @@ Auction.args = {
   numberOfSellRows: 100,
   numberOfBuyRows: 100,
   bestStaticBidPrice: 122905,
+  lastTradedPrice: '122905',
   bestStaticOfferPrice: 122895,
   decimalPlaces: 3,
   overlap: 10,
@@ -61,6 +63,7 @@ Empty.args = {
   numberOfBuyRows: 0,
   bestStaticBidPrice: 0,
   bestStaticOfferPrice: 0,
+  lastTradedPrice: '0',
   decimalPlaces: 3,
   overlap: 0,
 };

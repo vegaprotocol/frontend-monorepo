@@ -141,14 +141,7 @@ const Web3Container = ({
               <BalanceManager>
                 <>
                   <AppLayout>
-                    <TemplateSidebar
-                      sidebar={
-                        <>
-                          <EthWallet />
-                          <VegaWallet />
-                        </>
-                      }
-                    >
+                    <TemplateSidebar sidebar={[<EthWallet />, <VegaWallet />]}>
                       <AppRouter />
                     </TemplateSidebar>
                     <footer className="p-4 break-all border-t border-neutral-700">
