@@ -2,10 +2,8 @@ import { TradingButton } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useVegaTransactionStore } from '@vegaprotocol/web3';
 import { useHasAmendableOrder } from '@vegaprotocol/orders';
-import {
-  ShowCurrentMarketOnly,
-  useShowCurrentMarketOnlyStore,
-} from '../orders-container';
+import { ShowCurrentMarketOnly } from '../show-current-market-only';
+import { useShowCurrentMarketOnlyStore } from '../../lib/hooks/use-show-current-market-only';
 import { useT } from '../../lib/use-t';
 
 export const OpenOrdersMenu = ({ marketId }: { marketId: string }) => {

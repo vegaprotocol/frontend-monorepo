@@ -26,8 +26,8 @@ import {
 import {
   OrdersContainer,
   OrdersSettings,
-  ShowCurrentMarketOnly,
 } from '../../components/orders-container';
+import { ShowCurrentMarketOnly } from '../../components/show-current-market-only';
 import {
   StopOrdersContainer,
   StopOrdersSettings,

@@ -8,7 +8,7 @@ import { persist } from 'zustand/middleware';
 import type { DataGridSlice } from '../../stores/datagrid-store-slice';
 import { createDataGridSlice } from '../../stores/datagrid-store-slice';
 import { useT } from '../../lib/use-t';
-import { useShowCurrentMarketOnly } from '../orders-container';
+import { useShowCurrentMarketOnly } from '../../lib/hooks/use-show-current-market-only';
 
 export const StopOrdersContainer = ({ marketId }: { marketId?: string }) => {
   const t = useT();

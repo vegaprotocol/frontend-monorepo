@@ -1,6 +1,6 @@
 import { useDataGridEvents } from '@vegaprotocol/datagrid';
 import { Filter, OrderListManager } from '@vegaprotocol/orders';
-import { Splash, TradingCheckbox } from '@vegaprotocol/ui-toolkit';
+import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useNavigateWithMeta } from '../../lib/hooks/use-market-click-handler';
 import { create } from 'zustand';
@@ -10,6 +10,8 @@ import { OrderStatus } from '@vegaprotocol/types';
 import { Links } from '../../lib/links';
 import { useT } from '../../lib/use-t';
 import { GridSettings } from '../grid-settings/grid-settings';
+import { useShowCurrentMarketOnly } from '../../lib/hooks/use-show-current-market-only';
+import { ShowCurrentMarketOnly } from '../show-current-market-only';
 
 const resolveNoRowsMessage = (
   filter: Filter | undefined,
@@ -172,49 +174,10 @@ export const useOrderListGridState = (filter: Filter | undefined) => {
   return { gridState, updateGridState };
 };
 
-export const useShowCurrentMarketOnly = () =>
-  useShowCurrentMarketOnlyStore((state) => state.showCurrentMarketOnly);
-
-export const useShowCurrentMarketOnlyStore = create<{
-  showCurrentMarketOnly: boolean;
-  toggleShowCurrentMarketOnly: () => void;
-}>()(
-  persist(
-    (set) => ({
-      showCurrentMarketOnly: false,
-      toggleShowCurrentMarketOnly: () => {
-        set((curr) => {
-          return {
-            showCurrentMarketOnly: !curr.showCurrentMarketOnly,
-          };
-        });
-      },
-    }),
-    {
-      name: 'vega_positions_store',
-    }
-  )
-);
-
-export const ShowCurrentMarketOnly = () => {
-  const t = useT();
-  const showCurrentMarketOnly = useShowCurrentMarketOnly();
-  const toggleShowCurrentMarketOnly = useShowCurrentMarketOnlyStore(
-    (state) => state.toggleShowCurrentMarketOnly
-  );
-  return (
-    <TradingCheckbox
-      label={t('Show current market only')}
-      checked={showCurrentMarketOnly}
-      onCheckedChange={toggleShowCurrentMarketOnly}
-    />
-  );
-};
-
 export const OrdersSettings = ({ filter }: { filter?: Filter }) => {
   const updateGridState = useOrderListStore((state) => state.update);
   return (
-    <div className="flex items-center">
+    <div className="flex flex-col gap-2">
       <ShowCurrentMarketOnly />
       <GridSettings
         updateGridStore={(gridStore: DataGridStore) =>

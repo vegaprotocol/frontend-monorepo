@@ -8,7 +8,7 @@ import type { DataGridSlice } from '../../stores/datagrid-store-slice';
 import { createDataGridSlice } from '../../stores/datagrid-store-slice';
 import { useMarketClickHandler } from '../../lib/hooks/use-market-click-handler';
 import { useT } from '../../lib/use-t';
-import { useShowCurrentMarketOnly } from '../orders-container';
+import { useShowCurrentMarketOnly } from '../../lib/hooks/use-show-current-market-only';
 
 export const FundingPaymentsContainer = ({
   marketId,
