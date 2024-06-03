@@ -115,7 +115,7 @@ export const Tabs = ({
                       </span>
                     }
                   >
-                    <div className="p-2 lg:p-4 lg:min-w-[290px] flex justify-end">
+                    <div className="p-2 lg:p-4 flex justify-end">
                       {child.props.settings}
                     </div>
                   </Popover>

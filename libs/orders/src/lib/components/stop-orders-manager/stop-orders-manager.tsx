@@ -14,6 +14,7 @@ import { useT } from '../../use-t';
 
 export interface StopOrdersManagerProps {
   partyId: string;
+  marketId?: string;
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
   isReadOnly: boolean;
   gridProps?: ReturnType<typeof useDataGridEvents>;
@@ -21,6 +22,7 @@ export interface StopOrdersManagerProps {
 
 export const StopOrdersManager = ({
   partyId,
+  marketId,
   onMarketClick,
   isReadOnly,
   gridProps,
@@ -31,6 +33,7 @@ export const StopOrdersManager = ({
   const variables: StopOrdersQueryVariables = {
     filter: {
       parties: [partyId],
+      markets: marketId ? [marketId] : undefined,
     },
   };
 

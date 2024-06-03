@@ -330,6 +330,10 @@ export const preparePositions = (metrics: Position[], showClosed: boolean) => {
       return true;
     }
 
+    if (p.openVolume === '0') {
+      return false;
+    }
+
     if (
       p.marketState &&
       [

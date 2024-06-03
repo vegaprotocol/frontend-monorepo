@@ -8,10 +8,12 @@ import type { DataGridSlice } from '../../stores/datagrid-store-slice';
 import { createDataGridSlice } from '../../stores/datagrid-store-slice';
 import { useMarketClickHandler } from '../../lib/hooks/use-market-click-handler';
 import { useT } from '../../lib/use-t';
+import { useShowCurrentMarketOnly } from '../../lib/hooks/use-show-current-market-only';
 
-export const FillsContainer = () => {
+export const FillsContainer = ({ marketId }: { marketId?: string }) => {
   const t = useT();
   const onMarketClick = useMarketClickHandler(true);
+  const showCurrentMarketOnly = useShowCurrentMarketOnly();
   const { pubKey } = useVegaWallet();
 
   const gridStore = useFillsStore((store) => store.gridStore);
@@ -32,6 +34,7 @@ export const FillsContainer = () => {
   return (
     <FillsManager
       partyId={pubKey}
+      marketId={showCurrentMarketOnly ? marketId : undefined}
       onMarketClick={onMarketClick}
       gridProps={gridStoreCallbacks}
     />

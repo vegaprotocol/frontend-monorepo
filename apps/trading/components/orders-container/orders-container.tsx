@@ -10,6 +10,8 @@ import { OrderStatus } from '@vegaprotocol/types';
 import { Links } from '../../lib/links';
 import { useT } from '../../lib/use-t';
 import { GridSettings } from '../grid-settings/grid-settings';
+import { useShowCurrentMarketOnly } from '../../lib/hooks/use-show-current-market-only';
+import { ShowCurrentMarketOnly } from '../show-current-market-only';
 
 const resolveNoRowsMessage = (
   filter: Filter | undefined,
@@ -52,12 +54,14 @@ export const DefaultFilterModel = {
 
 export interface OrderContainerProps {
   filter?: Filter;
+  marketId?: string;
 }
 
 const AUTO_SIZE_COLUMNS = ['instrument-code'];
 
-export const OrdersContainer = ({ filter }: OrderContainerProps) => {
+export const OrdersContainer = ({ filter, marketId }: OrderContainerProps) => {
   const t = useT();
+  const showCurrentMarketOnly = useShowCurrentMarketOnly();
   const { pubKey, isReadOnly } = useVegaWallet();
   const navigate = useNavigateWithMeta();
   const { gridState, updateGridState } = useOrderListGridState(filter);
@@ -78,6 +82,7 @@ export const OrdersContainer = ({ filter }: OrderContainerProps) => {
   return (
     <OrderListManager
       partyId={pubKey}
+      marketId={showCurrentMarketOnly ? marketId : undefined}
       filter={filter}
       onMarketClick={(marketId, metaKey) => {
         navigate(Links.MARKET(marketId), metaKey);
@@ -172,10 +177,13 @@ export const useOrderListGridState = (filter: Filter | undefined) => {
 export const OrdersSettings = ({ filter }: { filter?: Filter }) => {
   const updateGridState = useOrderListStore((state) => state.update);
   return (
-    <GridSettings
-      updateGridStore={(gridStore: DataGridStore) =>
-        updateGridState(filter, gridStore)
-      }
-    />
+    <div className="flex flex-col gap-2">
+      <ShowCurrentMarketOnly />
+      <GridSettings
+        updateGridStore={(gridStore: DataGridStore) =>
+          updateGridState(filter, gridStore)
+        }
+      />
+    </div>
   );
 };

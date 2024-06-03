@@ -13,12 +13,14 @@ import { useT } from './use-t';
 
 interface FillsManagerProps {
   partyId: string;
+  marketId?: string;
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
   gridProps: ReturnType<typeof useDataGridEvents>;
 }
 
 export const FillsManager = ({
   partyId,
+  marketId,
   onMarketClick,
   gridProps,
 }: FillsManagerProps) => {
@@ -26,6 +28,7 @@ export const FillsManager = ({
   const gridRef = useRef<AgGridReact | null>(null);
   const filter: TradesFilter | TradesSubscriptionFilter = {
     partyIds: [partyId],
+    marketIds: marketId ? [marketId] : undefined,
   };
   const [hasDisplayedRow, setHasDisplayedRow] = useState<boolean | undefined>(
     undefined
