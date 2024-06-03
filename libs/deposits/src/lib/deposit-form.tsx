@@ -110,7 +110,8 @@ export const DepositForm = ({
 
   // indicates if connected currently to the wrong chain that is not the same
   // as chosen asset
-  const wrongChain = selectedAssetChainId !== chainId;
+  const wrongChain =
+    selectedAssetChainId && chainId && selectedAssetChainId !== chainId;
 
   const {
     register,

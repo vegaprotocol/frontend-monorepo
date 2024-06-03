@@ -21,8 +21,8 @@ export const useWithdrawAsset = (
   const { asset, balance, min, threshold, delay, update } = useWithdrawStore();
   const currentAssetId = useRef(asset?.id);
 
-  const getThreshold = useGetWithdrawThreshold(asset?.chainId);
-  const getDelay = useGetWithdrawDelay(asset?.chainId);
+  const getThreshold = useGetWithdrawThreshold();
+  const getDelay = useGetWithdrawDelay();
   const { param } = useNetworkParam(
     'spam_protection_minimumWithdrawalQuantumMultiple'
   );
@@ -60,6 +60,8 @@ export const useWithdrawAsset = (
         : new BigNumber(0);
       currentAssetId.current = asset?.id;
       update({ asset, balance, min, threshold: undefined, delay: undefined });
+
+      if (!asset) return;
       // Query collateral bridge for threshold for selected asset
       // and subsequent delay if withdrawal amount is larger than it
       let threshold = new BigNumber(0);
@@ -67,7 +69,10 @@ export const useWithdrawAsset = (
       const logger = localLoggerFactory({ application: 'withdraws' });
       try {
         logger.info('get withdraw asset data', { asset: asset?.id });
-        const result = await Promise.all([getThreshold(asset), getDelay()]);
+        const result = await Promise.all([
+          getThreshold(asset),
+          getDelay(asset.chainId),
+        ]);
         if (result[0] != null) threshold = result[0];
         if (result[1] != null) delay = result[1];
       } catch (err) {

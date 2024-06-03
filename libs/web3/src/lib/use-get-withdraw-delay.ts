@@ -1,4 +1,4 @@
-import { useCollateralBridge } from './use-bridge-contract';
+import { useGetCollateralBridge } from './use-bridge-contract';
 import { useCallback } from 'react';
 import { localLoggerFactory } from '@vegaprotocol/logger';
 
@@ -39,29 +39,35 @@ const setCachedDelay = (chainId: number, value: number) => {
  * withdrawal amount is over the withdrawal threshold
  * (contract.get_withdraw_threshold)
  */
-export const useGetWithdrawDelay = (chainId?: number) => {
+export const useGetWithdrawDelay = () => {
   const logger = localLoggerFactory({ application: 'web3' });
-  const { contract } = useCollateralBridge(chainId);
 
-  const getDelay = useCallback(async () => {
-    const delay = getCachedDelay(chainId);
-    if (delay && delay.value != null && Date.now() - delay.ts <= MAX_AGE) {
-      return delay.value;
-    }
-    if (!contract || !chainId) {
-      logger.info('could not get withdraw delay: no bridge contract');
-      return undefined;
-    }
-    try {
-      const res = await contract?.default_withdraw_delay();
-      logger.info(`retrieved withdraw delay: ${res} seconds`);
-      setCachedDelay(chainId, res.toNumber());
-      return res.toNumber() as number;
-    } catch (err) {
-      logger.error('could not get withdraw delay', err);
-      return undefined;
-    }
-  }, [contract, logger, chainId]);
+  const getCollateralBridge = useGetCollateralBridge();
+
+  const getDelay = useCallback(
+    async (chainId: number) => {
+      const delay = getCachedDelay(chainId);
+      if (delay && delay.value != null && Date.now() - delay.ts <= MAX_AGE) {
+        return delay.value;
+      }
+
+      const contract = getCollateralBridge(chainId);
+      if (!contract) {
+        logger.info('could not get withdraw delay: no bridge contract');
+        return undefined;
+      }
+      try {
+        const res = await contract?.default_withdraw_delay();
+        logger.info(`retrieved withdraw delay: ${res} seconds`);
+        setCachedDelay(chainId, res.toNumber());
+        return res.toNumber() as number;
+      } catch (err) {
+        logger.error('could not get withdraw delay', err);
+        return undefined;
+      }
+    },
+    [getCollateralBridge, logger]
+  );
 
   return getDelay;
 };

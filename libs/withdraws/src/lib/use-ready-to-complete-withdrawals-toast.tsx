@@ -18,6 +18,8 @@ import { withdrawalProvider } from './withdrawals-provider';
 import type { WithdrawalFieldsFragment } from './__generated__/Withdrawal';
 import uniqBy from 'lodash/uniqBy';
 import { useT } from './use-t';
+import uniq from 'lodash/uniq';
+import compact from 'lodash/compact';
 
 const CHECK_INTERVAL = 1000;
 const ON_APP_START_TOAST_ID = `ready-to-withdraw`;
@@ -58,35 +60,57 @@ export const useIncompleteWithdrawals = () => {
 
   const checkWithdraws = useCallback(async () => {
     if (assets.length === 0) return;
-    // trigger delay
-    // trigger thresholds
-    return await Promise.all([
-      getDelay(),
-      ...assets.map((asset) => getThreshold(toAssetData(asset))),
-    ]).then(([delay, ...thresholds]) => ({
-      delay,
-      thresholds: assets.reduce<Record<string, BigNumber | undefined>>(
+
+    const chainIds = uniq(
+      compact(
+        assets.map((a) =>
+          a.source.__typename === 'ERC20' ? Number(a.source.chainId) : null
+        )
+      )
+    );
+
+    const delays = await Promise.all(
+      chainIds.map((chainId) => getDelay(chainId))
+    ).then((delays) =>
+      chainIds.reduce<Record<number, number | undefined>>(
+        (all, chainId, index) =>
+          Object.assign(all, { [chainId]: delays[index] }),
+        {}
+      )
+    );
+
+    const thresholds = await Promise.all(
+      assets.map((asset) => getThreshold(toAssetData(asset)))
+    ).then((thresholds) =>
+      assets.reduce<Record<string, BigNumber | undefined>>(
         (all, asset, index) =>
           Object.assign(all, { [asset.id]: thresholds[index] }),
         {}
-      ),
-    }));
+      )
+    );
+
+    return { delays, thresholds };
   }, [assets, getDelay, getThreshold]);
 
   useEffect(() => {
     checkWithdraws().then((retrieved) => {
       if (
         !retrieved ||
-        retrieved.delay === undefined ||
+        Object.keys(retrieved.delays).length === 0 ||
         !incompleteWithdrawals
       ) {
         return;
       }
-      const { thresholds, delay } = retrieved;
+      const { thresholds, delays } = retrieved;
       const timestamped = incompleteWithdrawals.map((w) => {
         let timestamp = undefined;
+        const assetChainId =
+          w.asset.source.__typename === 'ERC20'
+            ? Number(w.asset.source.chainId)
+            : undefined;
         const threshold = thresholds[w.asset.id];
-        if (threshold) {
+        if (threshold && assetChainId && delays[assetChainId] != null) {
+          const delay = delays[assetChainId];
           timestamp = 0;
           if (new BigNumber(w.amount).isGreaterThan(threshold)) {
             const created = w.createdTimestamp;

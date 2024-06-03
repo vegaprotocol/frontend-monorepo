@@ -1,6 +1,6 @@
 import { CollateralBridge } from '@vegaprotocol/smart-contracts';
 import { useWeb3React } from '@web3-react/core';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useEthereumConfig } from './use-ethereum-config';
 import { useDefaultWeb3Providers } from './default-web3-provider';
 import { localLoggerFactory } from '@vegaprotocol/logger';
@@ -181,4 +181,47 @@ export const useProvider = (chainId?: number, allowDefaultProvider = false) => {
   }, [activeChainId, chainId]);
 
   return { provider, error };
+};
+
+export const useGetProvider = () => {
+  const { provider: activeProvider, chainId: activeChainId } = useWeb3React();
+  const { providers: defaultProviders } = useDefaultWeb3Providers();
+
+  const getProvider = useCallback(
+    (chainId: number) => {
+      if (activeChainId === chainId) {
+        return activeProvider;
+      }
+      if (defaultProviders) {
+        return defaultProviders[chainId];
+      }
+      return undefined;
+    },
+    [activeChainId, activeProvider, defaultProviders]
+  );
+
+  return getProvider;
+};
+
+export const useGetCollateralBridge = () => {
+  const getProvider = useGetProvider();
+  const { configs } = useCollateralBridgeConfigs();
+
+  const getCollateralBridge = useCallback(
+    (chainId: number) => {
+      const config = configs.find((c) => c.chainId === chainId);
+      if (!config) return undefined;
+
+      const provider = getProvider(chainId);
+      if (!provider) return undefined;
+
+      return new CollateralBridge(
+        config.address,
+        provider.getSigner() || provider
+      );
+    },
+    [configs, getProvider]
+  );
+
+  return getCollateralBridge;
 };
