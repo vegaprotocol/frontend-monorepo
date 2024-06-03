@@ -19,7 +19,6 @@ export const generateAsset = (override?: PartialDeep<Asset>) => {
       withdrawThreshold: '50',
       chainId: '1',
       __typename: 'ERC20',
-      chainId: '11',
     },
     __typename: 'Asset',
   };

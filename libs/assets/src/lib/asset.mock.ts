@@ -28,7 +28,6 @@ const assetFields: AssetFieldsFragment[] = [
       withdrawThreshold: '50',
       chainId: '1',
       __typename: 'ERC20',
-      chainId: '11',
     },
     quantum: '1',
     status: Types.AssetStatus.STATUS_ENABLED,

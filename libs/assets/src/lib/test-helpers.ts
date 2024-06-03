@@ -16,7 +16,6 @@ export const generateERC20Asset = (
     withdrawThreshold: '50',
     chainId: '1',
     __typename: 'ERC20',
-    chainId: '11',
   },
   status: status,
   __typename: 'Asset',
