@@ -367,6 +367,18 @@ export const WithdrawForm = ({
             </div>
           )}
         </TradingFormGroup>
+
+        {wrongChain && (
+          <div className="mb-4">
+            <Notification
+              intent={Intent.Danger}
+              message={t('Switch network in your wallet to {{chain}}', {
+                chain: getChainName(Number(selectedAsset?.chainId)),
+              })}
+            />
+          </div>
+        )}
+
         <TradingButton
           data-testid="submit-withdrawal"
           type="submit"

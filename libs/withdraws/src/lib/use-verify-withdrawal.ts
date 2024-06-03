@@ -4,6 +4,7 @@ import { addDecimal } from '@vegaprotocol/utils';
 import { localLoggerFactory } from '@vegaprotocol/logger';
 import {
   ApprovalStatus,
+  toAssetData,
   useGetWithdrawDelay,
   useGetWithdrawThreshold,
 } from '@vegaprotocol/web3';
@@ -79,10 +80,13 @@ export const useVerifyWithdrawal = () => {
           addDecimal(withdrawal.amount, withdrawal.asset.decimals)
         );
 
-        const threshold = await getThreshold(withdrawal.asset);
+        const assetData = toAssetData(withdrawal.asset);
+        if (!assetData) return false;
+
+        const threshold = await getThreshold(assetData);
 
         if (threshold && amount.isGreaterThan(threshold)) {
-          const delaySecs = await getDelay();
+          const delaySecs = await getDelay(assetData.chainId);
           if (delaySecs != null) {
             const completeTimestamp =
               new Date(withdrawal.createdTimestamp).getTime() +
