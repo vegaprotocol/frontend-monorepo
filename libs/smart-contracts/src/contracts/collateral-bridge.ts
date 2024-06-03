@@ -9,7 +9,7 @@ export class CollateralBridge {
 
   constructor(
     address: string,
-    signerOrProvider: ethers.Signer | ethers.providers.Provider
+    signerOrProvider?: ethers.Signer | ethers.providers.Provider
   ) {
     this.contract = new ethers.Contract(address, abi, signerOrProvider);
   }
@@ -29,6 +29,15 @@ export class CollateralBridge {
       gasLimit,
     });
   }
+
+  encodeDepositData(token: string, amount: string, vegaPubKey: string) {
+    return this.contract.interface.encodeFunctionData('deposit_asset', [
+      token,
+      amount,
+      vegaPubKey,
+    ]);
+  }
+
   get_asset_source(vegaAssetId: string) {
     return this.contract.get_asset_source(vegaAssetId);
   }

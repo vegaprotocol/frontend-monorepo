@@ -53,6 +53,8 @@ export const envSchema = z
     MOZILLA_EXTENSION_URL: z.optional(z.string()),
     CHARTING_LIBRARY_PATH: z.optional(z.string()),
     CHARTING_LIBRARY_HASH: z.optional(z.string()),
+    SQUID_INTEGRATOR_ID: z.optional(z.string()),
+    SQUID_API_URL: z.optional(z.string()),
   })
   .refine(
     (data) => {
@@ -98,8 +100,15 @@ const GOVERNANCE_FLAGS = {
   GOVERNANCE_NETWORK_LIMITS: z.optional(z.boolean()),
 };
 
+const EXPERIMENTAL_FLAGS = {
+  CROSS_CHAIN_DEPOSITS_ENABLED: z.optional(z.boolean()),
+  CROSS_CHAIN_DEPOSITS: z.optional(z.boolean()),
+  CROSS_CHAIN_DEPOSITS_TEST: z.optional(z.boolean()),
+};
+
 export const featureFlagsSchema = z.object({
   ...COSMIC_ELEVATOR_FLAGS,
   ...EXPLORER_FLAGS,
   ...GOVERNANCE_FLAGS,
+  ...EXPERIMENTAL_FLAGS,
 });

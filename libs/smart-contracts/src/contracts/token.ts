@@ -12,7 +12,7 @@ export class Token {
 
   constructor(
     address: string,
-    signerOrProvider: ethers.Signer | ethers.providers.Provider
+    signerOrProvider?: ethers.Signer | ethers.providers.Provider
   ) {
     let abi: typeof erc20Abi | typeof erc20AbiTether = erc20Abi;
     // USDT (Tether) has a different ABI
@@ -37,6 +37,14 @@ export class Token {
     const res = await this.contract.estimateGas.approve(spender, amount);
     const gasLimit = calcGasBuffer(res);
     return this.contract.approve(spender, amount, { gasLimit });
+  }
+
+  encodeApproveData(spender: string, amount: string) {
+    const data = this.contract.interface.encodeFunctionData('approve', [
+      spender,
+      amount,
+    ]);
+    return data;
   }
   decimals(): Promise<number> {
     return this.contract.decimals();
