@@ -22,6 +22,7 @@ import {
   addDecimalsFormatNumber,
   formatNumber,
   removeDecimal,
+  roundUpToTickSize,
 } from '@vegaprotocol/utils';
 import { OrderTimeInForce, OrderType, Side } from '@vegaprotocol/types';
 import { useVegaTransactionStore } from '@vegaprotocol/web3';
@@ -57,12 +58,11 @@ const derivePrice = (
   market: MarketFieldsFragment
 ) => {
   if (!marketData) return;
-  const price =
-    side === Side.SIDE_BUY
-      ? new BigNumber(marketData.bestOfferPrice).times(1 + toleranceFactor)
-      : new BigNumber(marketData.bestBidPrice).times(1 - toleranceFactor);
-
-  return price;
+  const isBid = side === Side.SIDE_SELL;
+  const price = isBid
+    ? new BigNumber(marketData.bestBidPrice).times(1 - toleranceFactor)
+    : new BigNumber(marketData.bestOfferPrice).times(1 + toleranceFactor);
+  return roundUpToTickSize(price, market.tickSize, isBid);
 };
 
 export const SwapContainer = () => {
