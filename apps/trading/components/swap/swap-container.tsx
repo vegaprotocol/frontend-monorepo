@@ -90,7 +90,6 @@ export const SwapContainer = () => {
       quoteAsset={quoteAsset}
       setQuoteAsset={setQuoteAsset}
       side={side}
-      setSide={setSide}
       market={market}
       navigate={navigate}
       accounts={accounts}

@@ -65,7 +65,6 @@ export const SwapForm = ({
   market,
   accounts,
   assets: spotAssets,
-  setSide,
   setBaseAsset,
   setQuoteAsset,
   navigate,
@@ -82,7 +81,6 @@ export const SwapForm = ({
   chooseMarket: () => void;
   setBaseAsset: (asset?: AssetFieldsFragment) => void;
   setQuoteAsset: (asset?: AssetFieldsFragment) => void;
-  setSide: (side: Side) => void;
   navigate: ReturnType<typeof useNavigate>;
 }) => {
   const t = useT();
