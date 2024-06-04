@@ -39,6 +39,7 @@ const nextConfig = {
     GIT_COMMIT: commitHash,
     GIT_TAG: tag,
   },
+  transpilePackages: ['@0xsquid/staking-widget'],
 };
 
 module.exports = SENTRY_AUTH_TOKEN

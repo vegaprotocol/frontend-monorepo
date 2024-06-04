@@ -1,8 +1,24 @@
+export const ETHEREUM_CHAIN_ID = 1;
+export const ETHEREUM_SEPOLIA_CHAIN_ID = 11155111;
+export const ARBITRUM_CHAIN_ID = 42161;
+export const ARBITRUM_SEPOLIA_CHAIN_ID = 421614;
+
+export const SUPPORTED_CHAINS = [
+  ETHEREUM_CHAIN_ID,
+  ETHEREUM_SEPOLIA_CHAIN_ID,
+  ARBITRUM_CHAIN_ID,
+  ARBITRUM_SEPOLIA_CHAIN_ID,
+] as const;
+
+export type ChainId = typeof SUPPORTED_CHAINS[number];
+
 export const ChainIdMap: {
   [id: number]: string;
 } = {
-  11155111: 'Sepolia',
-  1: 'Mainnet',
+  [ETHEREUM_SEPOLIA_CHAIN_ID]: 'Sepolia',
+  [ETHEREUM_CHAIN_ID]: 'Mainnet',
+  [ARBITRUM_CHAIN_ID]: 'Arbitrum',
+  [ARBITRUM_SEPOLIA_CHAIN_ID]: 'Arbitrum (Sepolia)',
 };
 
 export const getChainName = (chainId: number | null | undefined) => {

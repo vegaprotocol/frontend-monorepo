@@ -3,7 +3,10 @@ import {
   Intent,
   Switch,
   ToastPositionSetter,
+  Tooltip,
   TradingButton,
+  VegaIcon,
+  VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
 import { useTelemetryApproval } from '../../lib/hooks/use-telemetry-approval';
@@ -15,9 +18,13 @@ import { useFeatureFlags, type FeatureFlags } from '@vegaprotocol/environment';
 export const FeatureFlagSwitch = ({ flag }: { flag: keyof FeatureFlags }) => {
   const flags = useFeatureFlags((state) => state.flags);
   const setFeatureFlag = useFeatureFlags((state) => state.setFeatureFlag);
+
   return (
     <Switch
-      onCheckedChange={(checked) => setFeatureFlag(flag, !!checked)}
+      name={`feature-flag-${flag}`}
+      onCheckedChange={(checked) => {
+        setFeatureFlag(flag, !!checked);
+      }}
       checked={flags[flag]}
     />
   );
@@ -28,6 +35,8 @@ export const Settings = () => {
   const { theme, setTheme } = useThemeSwitcher();
   const [isApproved, setIsApproved] = useTelemetryApproval();
   const [open, setOpen] = useState(false);
+  const flags = useFeatureFlags((state) => state.flags);
+
   return (
     <div>
       <SettingsGroup label={t('Dark mode')}>
@@ -111,6 +120,37 @@ export const Settings = () => {
           <dd className="break-words">{process.env.GIT_COMMIT}</dd>
         </dl>
       </SettingsGroup>
+
+      {flags.CROSS_CHAIN_DEPOSITS_ENABLED && (
+        <>
+          <h3 className="mb-4 flex items-center gap-3">
+            <span>{t('Experimental features')}</span>
+            <Tooltip
+              description={t(
+                'The below features are experimental and it is not guaranteed that they will work correctly. Use at your own risk.'
+              )}
+            >
+              <span className="w-3 h-3 relative text-vega-red">
+                <VegaIcon
+                  name={VegaIconNames.WARNING}
+                  size={12}
+                  className="absolute top-0 left-0"
+                />
+              </span>
+            </Tooltip>
+          </h3>
+          <div className="border-2 rounded border-vega-red bg-vega-red-300 dark:bg-vega-red-700 px-2 pt-4 pb-0">
+            <SettingsGroup
+              label={t('Cross chain deposits')}
+              helpText={t(
+                'Enables the cross chain deposit functionality via the Squid Router'
+              )}
+            >
+              <FeatureFlagSwitch flag={'CROSS_CHAIN_DEPOSITS'} />
+            </SettingsGroup>
+          </div>
+        </>
+      )}
     </div>
   );
 };

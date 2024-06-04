@@ -210,7 +210,10 @@ const testSubscription = (
   });
 };
 
-export const userControllableFeatureFlags: (keyof FeatureFlags)[] = [];
+export const userControllableFeatureFlags: (keyof FeatureFlags)[] = [
+  'CROSS_CHAIN_DEPOSITS',
+  'CROSS_CHAIN_DEPOSITS_TEST',
+];
 
 /**
  * Retrieve env vars, parsing where needed some type casting is needed
@@ -328,6 +331,14 @@ const compileEnvVars = () => {
     CHARTING_LIBRARY_HASH: windowOrDefault(
       'NX_CHARTING_LIBRARY_HASH',
       process.env['NX_CHARTING_LIBRARY_HASH']
+    ),
+    SQUID_INTEGRATOR_ID: windowOrDefault(
+      'NX_SQUID_INTEGRATOR_ID',
+      process.env['NX_SQUID_INTEGRATOR_ID']
+    ),
+    SQUID_API_URL: windowOrDefault(
+      'NX_SQUID_API_URL',
+      process.env['NX_SQUID_API_URL']
     ),
   };
 
@@ -535,10 +546,33 @@ export const compileFeatureFlags = (refresh = false): FeatureFlags => {
       ) as string
     ),
   };
+
+  const EXPERIMENTAL_FLAGS = {
+    CROSS_CHAIN_DEPOSITS_ENABLED: TRUTHY.includes(
+      windowOrDefault(
+        'NX_CROSS_CHAIN_DEPOSITS_ENABLED',
+        process.env['NX_CROSS_CHAIN_DEPOSITS_ENABLED']
+      ) as string
+    ),
+    CROSS_CHAIN_DEPOSITS: TRUTHY.includes(
+      windowOrDefault(
+        'NX_CROSS_CHAIN_DEPOSITS',
+        process.env['NX_CROSS_CHAIN_DEPOSITS']
+      ) as string
+    ),
+    CROSS_CHAIN_DEPOSITS_TEST: TRUTHY.includes(
+      windowOrDefault(
+        'NX_CROSS_CHAIN_DEPOSITS_TEST',
+        process.env['NX_CROSS_CHAIN_DEPOSITS_TEST']
+      ) as string
+    ),
+  };
+
   const flags = {
     ...COSMIC_ELEVATOR_FLAGS,
     ...EXPLORER_FLAGS,
     ...GOVERNANCE_FLAGS,
+    ...EXPERIMENTAL_FLAGS,
   };
   getUserEnabledFeatureFlags(refresh).forEach((flag) => (flags[flag] = true));
   return flags;

@@ -31,7 +31,7 @@ function generateAsset(): AssetFieldsFragment {
       contractAddress: 'contract-address',
       lifetimeLimit: '',
       withdrawThreshold: '',
-      chainId: '11',
+      chainId: '1',
     },
   };
 }
