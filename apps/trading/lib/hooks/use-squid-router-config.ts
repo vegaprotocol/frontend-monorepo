@@ -32,6 +32,7 @@ import {
   prepend0x,
 } from '@vegaprotocol/smart-contracts';
 import { AssetStatus } from '@vegaprotocol/types';
+import { getVegaAssetLogoUrl } from '@vegaprotocol/emblem';
 
 /**
  * A flag determining whether the final deposit via SquidRouter should be done
@@ -370,7 +371,7 @@ const mapAssetToDestinationTokenConfig = (
   const tokenContractAddress = asset.source.contractAddress;
 
   // FIXME: Could use some better icon getting
-  const assetLogo = `https://icon.vega.xyz/vega/${vegaChainId}/asset/${asset.id}/logo.svg`;
+  const assetLogo = getVegaAssetLogoUrl(vegaChainId, asset.id);
 
   const route: DestinationTokenConfig['customContractCalls'] = [
     // 0: SWAP
