@@ -33,7 +33,7 @@ export interface SwapFields {
   priceImpactTolerance: string;
 }
 
-const assetBalance = (
+const getQuoteAssetBalance = (
   asset?: AssetFieldsFragment,
   accounts?: Account[] | null
 ) => {
@@ -90,14 +90,8 @@ export const SwapForm = ({
   const { pubKey, isReadOnly } = useVegaWallet();
   const create = useVegaTransactionStore((state) => state.create);
 
-  const quoteAssetBalance = useMemo(
-    () => assetBalance(quoteAsset, accounts),
-    [accounts, quoteAsset]
-  );
-  const baseAssetBalance = useMemo(
-    () => assetBalance(baseAsset, accounts),
-    [accounts, baseAsset]
-  );
+  const quoteAssetBalance = getQuoteAssetBalance(quoteAsset, accounts);
+  const baseAssetBalance = getQuoteAssetBalance(baseAsset, accounts);
 
   const marketPrice = useMemo(() => {
     return (
