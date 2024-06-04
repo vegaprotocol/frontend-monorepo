@@ -26,6 +26,7 @@ export const AssetInput = ({
   onAssetChange,
   accountWarning = true,
   pubKey,
+  testId,
 }: {
   label: string;
   amount: string;
@@ -37,11 +38,15 @@ export const AssetInput = ({
   onAssetChange: (asset: AssetFieldsFragment) => void;
   accountWarning?: boolean;
   pubKey?: string;
+  testId: string;
 }) => {
   const t = useT();
 
   return (
-    <div className="dark:bg-vega-cdark-700 bg-vega-clight-700 p-4 rounded-lg border-gray-700 border flex flex-col gap-1">
+    <div
+      className="dark:bg-vega-cdark-700 bg-vega-clight-700 p-4 rounded-lg border-gray-700 border flex flex-col gap-1"
+      data-testid={testId}
+    >
       <span className="text-gray-500">{label}</span>
       <div className="flex items-center justify-between flex-wrap gap-2">
         <input
@@ -50,11 +55,13 @@ export const AssetInput = ({
             onAmountChange(e);
           }}
           className="w-[140px] dark:bg-vega-cdark-800 bg-vega-clight-500 p-2 rounded-lg mr-2 text-center"
+          data-testid={`${testId}-amount-input`}
         />
         <DropdownAsset
           assetId={asset?.id}
           onSelect={onAssetChange}
           assets={assets}
+          testId={`${testId}-dropdown`}
         />
       </div>
       <div className="flex justify-between items-center text-gray-500 text-sm">
@@ -86,6 +93,7 @@ export const SwapButton = ({ onClick }: { onClick: () => void }) => (
     type="button"
     className="flex justify-center p-2 w-fit rounded-full bg-vega-clight-700 dark:bg-black self-center -my-5 z-10 hover:bg-vega-clight-800 hover:dark:bg-vega-cdark-800 border-gray-400 border"
     onClick={onClick}
+    data-testid="swap-button"
   >
     <VegaIcon name={VegaIconNames.SWAP} size={18} />
   </button>
@@ -128,6 +136,7 @@ export const PriceImpactInput = ({
                 'dark:bg-vega-cdark-700 bg-vega-clight-700': val === value,
               }
             )}
+            data-testid={`auto-value-${val}`}
           >
             {val} %
           </button>
@@ -144,6 +153,7 @@ export const PriceImpactInput = ({
             }}
             appendElement="%"
             className="h-10 text-md dark:bg-vega-cdark-800 bg-vega-clight-500 p-2 rounded-lg mr-2 text-center"
+            data-testid="custom-price-impact-input"
           />
         </div>
       </div>
@@ -155,10 +165,12 @@ export const DropdownAsset = ({
   assetId,
   onSelect,
   assets,
+  testId,
 }: {
   assetId?: string;
   onSelect: (asset: AssetFieldsFragment) => void;
   assets?: Record<string, AssetFieldsFragment> | null;
+  testId: string;
 }) => {
   const { chainId } = useChainId();
   const asset = assetId ? assets?.[assetId] : null;
@@ -168,6 +180,7 @@ export const DropdownAsset = ({
         <DropdownMenuTrigger
           asChild
           className="flex items-center px-2 py-2 border-gray-400 border rounded-full h-12"
+          data-testid={`${testId}-trigger`}
         >
           {asset && <EmblemByAsset asset={asset.id} vegaChain={chainId} />}
           <span className="pl-2">{asset ? asset.symbol : 'Select coin'}</span>
@@ -179,7 +192,10 @@ export const DropdownAsset = ({
         </DropdownMenuTrigger>
       }
     >
-      <DropdownMenuContent className="bg-gray-700 rounded-md mt-2">
+      <DropdownMenuContent
+        className="bg-gray-700 rounded-md mt-2"
+        data-testid={`${testId}-dropdown-content`}
+      >
         {assets &&
           Object.values(assets).map((asset) => (
             <DropdownMenuItem
@@ -188,6 +204,7 @@ export const DropdownAsset = ({
               }}
               key={asset.id}
               className="px-4 py-2 dark:text-gray-200 hover:bg-gray-600 flex items-center"
+              data-testid={`${testId}-asset-${asset.id}`}
             >
               <EmblemByAsset asset={asset.id} vegaChain={chainId} />
               {asset.symbol}

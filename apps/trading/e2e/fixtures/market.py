@@ -363,12 +363,12 @@ def setup_spot_market(
 
     submit_liquidity(vega, MM_WALLET.name, market_id)
     submit_multiple_orders(
-        vega, MM_WALLET.name, market_id, "SIDE_SELL", [[1, 110], [1, 105]]
+        vega, MM_WALLET.name, market_id, "SIDE_SELL", [[10, 107], [10, 107]]
     )
     submit_multiple_orders(
-        vega, MM_WALLET2.name, market_id, "SIDE_BUY", [[1, 90], [1, 95]]
+        vega, MM_WALLET2.name, market_id, "SIDE_BUY", [[50, 106], [500, 106.5]]
     )
-    submit_order(vega, "Key 1", market_id, "SIDE_BUY", 1, 110)
+    submit_order(vega, "Key 1", market_id, "SIDE_BUY", 10, 110)
     next_epoch(vega=vega)
 
     return market_id
