@@ -165,9 +165,6 @@ export const useEnrichedSquidFriendlyAssets = () => {
     ? HARDCODED_EVM_CONFIGS
     : configs;
 
-  // TODO: Re-generate types once chainId is available in the assets.
-  // The `chainId` field is commented out now due to the schema conflict between
-  // testnet and mainnet.
   const {
     data: enabledAssets,
     loading: enablesAssetsLoading,
@@ -176,15 +173,7 @@ export const useEnrichedSquidFriendlyAssets = () => {
 
   const assets = isArbitrumTestBridgeEnabled
     ? HARDCODED_TEST_ASSETS
-    : compact(enabledAssets)
-        // FIXME: Remove once type are re-generated.
-        // Currently the `chainId` is missing on mainnet hence arbitrary setting
-        // it to `1` (Ethereum)
-        .map((a) => ({
-          ...a,
-          source: { ...a.source, chainId: String(ETHEREUM_CHAIN_ID) },
-        }))
-        .filter(isSquidFriendlyAsset);
+    : compact(enabledAssets).filter(isSquidFriendlyAsset);
 
   const chains: ChainInfo[] = useMemo(
     () =>
