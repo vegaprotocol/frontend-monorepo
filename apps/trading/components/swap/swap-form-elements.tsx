@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type ChangeEvent } from 'react';
 import type { AssetFieldsFragment } from '@vegaprotocol/assets';
 import { EmblemByAsset } from '@vegaprotocol/emblem';
 import {
@@ -34,7 +34,7 @@ export const AssetInput = ({
   balance?: string;
   accountAssetIds?: string[];
   assets?: Record<string, AssetFieldsFragment> | null;
-  onAmountChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onAmountChange: (e: ChangeEvent<HTMLInputElement>) => void;
   onAssetChange: (asset: AssetFieldsFragment) => void;
   accountWarning?: boolean;
   pubKey?: string;
