@@ -206,7 +206,9 @@ export const SwapForm = ({
         onValueChange={(e) => setValue('priceImpactTolerance', e)}
         data-testid="price-impact-input"
       />
+
       <button
+        // TODO: this button should be a TradingButton with a new variant for the rich blue color
         type="submit"
         className="w-full hover:bg-vega-blue-600 bg-vega-blue-500 p-4 rounded-lg text-white"
         data-testid="swap-now-button"
