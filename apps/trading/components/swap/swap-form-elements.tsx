@@ -33,7 +33,7 @@ export const AssetInput = ({
   asset?: AssetFieldsFragment;
   balance?: string;
   accountAssetIds?: string[];
-  assets?: Record<string, AssetFieldsFragment> | null;
+  assets: AssetFieldsFragment[];
   onAmountChange: (e: ChangeEvent<HTMLInputElement>) => void;
   onAssetChange: (asset: AssetFieldsFragment) => void;
   accountWarning?: boolean;
@@ -169,11 +169,11 @@ export const DropdownAsset = ({
 }: {
   assetId?: string;
   onSelect: (asset: AssetFieldsFragment) => void;
-  assets?: Record<string, AssetFieldsFragment> | null;
+  assets: AssetFieldsFragment[];
   testId: string;
 }) => {
   const { chainId } = useChainId();
-  const asset = assetId ? assets?.[assetId] : null;
+  const asset = assetId ? assets.find((a) => a.id === assetId) : null;
   return (
     <DropdownMenu
       trigger={
@@ -196,20 +196,19 @@ export const DropdownAsset = ({
         className="bg-gray-700 rounded-md mt-2"
         data-testid={`${testId}-dropdown-content`}
       >
-        {assets &&
-          Object.values(assets).map((asset) => (
-            <DropdownMenuItem
-              onClick={() => {
-                onSelect(asset);
-              }}
-              key={asset.id}
-              className="px-4 py-2 dark:text-gray-200 hover:bg-gray-600 flex items-center"
-              data-testid={`${testId}-asset-${asset.id}`}
-            >
-              <EmblemByAsset asset={asset.id} vegaChain={chainId} />
-              {asset.symbol}
-            </DropdownMenuItem>
-          ))}
+        {assets.map((asset) => (
+          <DropdownMenuItem
+            onClick={() => {
+              onSelect(asset);
+            }}
+            key={asset.id}
+            className="px-4 py-2 dark:text-gray-200 hover:bg-gray-600 flex items-center"
+            data-testid={`${testId}-asset-${asset.id}`}
+          >
+            <EmblemByAsset asset={asset.id} vegaChain={chainId} />
+            {asset.symbol}
+          </DropdownMenuItem>
+        ))}
       </DropdownMenuContent>
     </DropdownMenu>
   );

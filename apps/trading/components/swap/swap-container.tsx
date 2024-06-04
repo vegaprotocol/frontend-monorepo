@@ -1,8 +1,6 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import {
-  useAssetsMapProvider,
-  type AssetFieldsFragment,
-} from '@vegaprotocol/assets';
+import uniqBy from 'lodash/uniqBy';
+import { useState } from 'react';
+import { type AssetFieldsFragment } from '@vegaprotocol/assets';
 import {
   getBaseAsset,
   getQuoteAsset,
@@ -20,78 +18,103 @@ import { Side } from '@vegaprotocol/types';
 export const SwapContainer = () => {
   const { pubKey } = useVegaWallet();
   const { data: markets } = useMarketsMapProvider();
-  const { data: assetsData } = useAssetsMapProvider();
   const { data: accounts } = useAccounts(pubKey);
 
   const [quoteAsset, setQuoteAsset] = useState<AssetFieldsFragment>();
   const [baseAsset, setBaseAsset] = useState<AssetFieldsFragment>();
-  const [side, setSide] = useState<Side>();
-  const [marketId, setMarketId] = useState<string>('');
-  const [market, setMarket] = useState<MarketFieldsFragment>();
+
+  const spotMarkets = Object.values(markets || {}).filter((m) =>
+    isSpot(m.tradableInstrument.instrument.product)
+  );
+  const assets = spotMarkets
+    .map((m) => {
+      const baseAsset = getBaseAsset(m);
+      const quoteAsset = getQuoteAsset(m);
+      return [baseAsset, quoteAsset];
+    })
+    .flat();
+  const spotAssets = uniqBy(assets, 'id');
+
+  const market = useSwapMarket({ markets: spotMarkets, quoteAsset, baseAsset });
+  const side = useSwapSide({ market, quoteAsset, baseAsset });
 
   const { data: marketData } = useDataProvider({
     dataProvider: marketDataProvider,
-    variables: { marketId },
-    skip: !marketId,
+    variables: { marketId: market?.id || '' },
+    skip: !market?.id,
   });
-
-  const { spotMarkets, spotAssets } = useMemo(() => {
-    const spotAssets: Record<string, AssetFieldsFragment> = {};
-    if (!markets) return {};
-    const spotMarkets = Object.values(markets).filter((m) => {
-      if (isSpot(m.tradableInstrument.instrument.product)) {
-        const baseAsset = getBaseAsset(m);
-        const quoteAsset = getQuoteAsset(m);
-        if (baseAsset && assetsData) {
-          spotAssets[baseAsset.id] = assetsData[baseAsset.id];
-        }
-        if (quoteAsset && assetsData) {
-          spotAssets[quoteAsset.id] = assetsData[quoteAsset.id];
-        }
-        return true;
-      }
-      return false;
-    });
-    return { spotMarkets, spotAssets };
-  }, [assetsData, markets]);
-
-  const chooseMarket = useCallback(() => {
-    if (!spotMarkets || !baseAsset || !quoteAsset) return;
-    return spotMarkets.find((m) => {
-      const mBaseAsset = getBaseAsset(m);
-      const mQuoteAsset = getQuoteAsset(m);
-      if (!mBaseAsset || !mQuoteAsset) return false;
-      if (mBaseAsset.id === baseAsset.id && mQuoteAsset.id === quoteAsset.id) {
-        setSide(Side.SIDE_BUY);
-        return true;
-      }
-      if (mBaseAsset.id === quoteAsset.id && mQuoteAsset.id === baseAsset.id) {
-        setSide(Side.SIDE_SELL);
-        return true;
-      }
-      return false;
-    });
-  }, [baseAsset, quoteAsset, spotMarkets]);
-
-  useEffect(() => {
-    const market = chooseMarket();
-    setMarketId(market?.id || '');
-    setMarket(market);
-  }, [chooseMarket, setMarketId, setMarket]);
 
   return (
     <SwapForm
-      marketId={marketId}
+      market={market}
       marketData={marketData}
+      side={side}
       baseAsset={baseAsset}
       setBaseAsset={setBaseAsset}
       quoteAsset={quoteAsset}
       setQuoteAsset={setQuoteAsset}
-      side={side}
-      market={market}
       accounts={accounts}
-      assets={spotAssets}
-      chooseMarket={chooseMarket}
+      // TODO: Update market queries and assets list query to use AssetFieldsFragment
+      assets={spotAssets as AssetFieldsFragment[]}
     />
   );
+};
+
+/**
+ * Return the spot market that can be used to swap the
+ * two provided assets
+ */
+const useSwapMarket = ({
+  markets,
+  quoteAsset,
+  baseAsset,
+}: {
+  markets: MarketFieldsFragment[];
+  quoteAsset?: AssetFieldsFragment;
+  baseAsset?: AssetFieldsFragment;
+}) => {
+  if (!quoteAsset || !baseAsset) return;
+
+  return markets.find((m) => {
+    const mBaseAsset = getBaseAsset(m);
+    const mQuoteAsset = getQuoteAsset(m);
+
+    if (mBaseAsset.id === baseAsset.id && mQuoteAsset.id === quoteAsset.id) {
+      return true;
+    }
+
+    if (mBaseAsset.id === quoteAsset.id && mQuoteAsset.id === baseAsset.id) {
+      return true;
+    }
+
+    return false;
+  });
+};
+
+/**
+ * Return the side required to fulfill the users swap
+ */
+const useSwapSide = ({
+  market,
+  quoteAsset,
+  baseAsset,
+}: {
+  market?: MarketFieldsFragment;
+  quoteAsset?: AssetFieldsFragment;
+  baseAsset?: AssetFieldsFragment;
+}) => {
+  if (!market) return;
+
+  const mBaseAsset = getBaseAsset(market);
+  const mQuoteAsset = getQuoteAsset(market);
+
+  if (mBaseAsset.id === baseAsset?.id && mQuoteAsset.id === quoteAsset?.id) {
+    return Side.SIDE_BUY;
+  }
+
+  if (mBaseAsset.id === quoteAsset?.id && mQuoteAsset.id === baseAsset?.id) {
+    return Side.SIDE_SELL;
+  }
+
+  return;
 };
