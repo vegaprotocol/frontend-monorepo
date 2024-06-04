@@ -59,7 +59,6 @@ export const generateWithdrawal = (
           __typename: 'ERC20',
           chainId: '1',
           contractAddress: '0x123',
-          chainId: '11',
         },
       },
       createdTimestamp: '2022-04-20T00:00:00',
