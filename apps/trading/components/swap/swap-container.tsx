@@ -13,7 +13,6 @@ import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useAccounts } from '@vegaprotocol/accounts';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { SwapForm } from './swap-form';
-import { Side } from '@vegaprotocol/types';
 
 export const SwapContainer = () => {
   const { pubKey } = useVegaWallet();
@@ -36,7 +35,6 @@ export const SwapContainer = () => {
   const spotAssets = uniqBy(assets, 'id');
 
   const market = useSwapMarket({ markets: spotMarkets, quoteAsset, baseAsset });
-  const side = useSwapSide({ market, quoteAsset, baseAsset });
 
   const { data: marketData } = useDataProvider({
     dataProvider: marketDataProvider,
@@ -48,7 +46,6 @@ export const SwapContainer = () => {
     <SwapForm
       market={market}
       marketData={marketData}
-      side={side}
       baseAsset={baseAsset}
       setBaseAsset={setBaseAsset}
       quoteAsset={quoteAsset}
@@ -89,32 +86,4 @@ const useSwapMarket = ({
 
     return false;
   });
-};
-
-/**
- * Return the side required to fulfill the users swap
- */
-const useSwapSide = ({
-  market,
-  quoteAsset,
-  baseAsset,
-}: {
-  market?: MarketFieldsFragment;
-  quoteAsset?: AssetFieldsFragment;
-  baseAsset?: AssetFieldsFragment;
-}) => {
-  if (!market) return;
-
-  const mBaseAsset = getBaseAsset(market);
-  const mQuoteAsset = getQuoteAsset(market);
-
-  if (mBaseAsset.id === baseAsset?.id && mQuoteAsset.id === quoteAsset?.id) {
-    return Side.SIDE_BUY;
-  }
-
-  if (mBaseAsset.id === quoteAsset?.id && mQuoteAsset.id === baseAsset?.id) {
-    return Side.SIDE_SELL;
-  }
-
-  return;
 };
