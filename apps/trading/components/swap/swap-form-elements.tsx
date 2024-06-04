@@ -47,7 +47,7 @@ export const AssetInput = ({
       className="dark:bg-vega-cdark-700 bg-vega-clight-700 p-4 rounded-lg border-gray-700 border flex flex-col gap-1"
       data-testid={testId}
     >
-      <span className="text-gray-500">{label}</span>
+      <label className="text-gray-500">{label}</label>
       <div className="flex items-center justify-between flex-wrap gap-2">
         <input
           value={amount}
