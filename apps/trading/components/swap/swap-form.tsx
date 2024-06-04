@@ -1,4 +1,4 @@
-import { useMemo, useEffect } from 'react';
+import { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
@@ -87,7 +87,7 @@ export const SwapForm = ({
 }) => {
   const t = useT();
   const { watch, setValue, handleSubmit } = useForm<SwapFields>();
-  const { baseAmount, quoteAmount, priceImpactTolerance } = watch();
+  const { quoteAmount, priceImpactTolerance } = watch();
 
   const { pubKey, isReadOnly } = useVegaWallet();
   const create = useVegaTransactionStore((state) => state.create);
@@ -129,6 +129,27 @@ export const SwapForm = ({
     };
   }, [market, marketData, marketId, priceImpactTolerance, quoteAmount, side]);
 
+  const baseAmount = useMemo(() => {
+    if (!market || !orderSubmission) return '';
+
+    if (side === Side.SIDE_SELL && quoteAsset) {
+      const notionalSize = getNotionalSize(
+        marketPrice,
+        orderSubmission.size,
+        market.decimalPlaces,
+        market.positionDecimalPlaces,
+        market.decimalPlaces
+      );
+      return notionalSize ? addDecimal(notionalSize, market.decimalPlaces) : '';
+    } else if (side === Side.SIDE_BUY) {
+      const price = marketPrice
+        ? addDecimal(marketPrice, market.decimalPlaces)
+        : 0;
+      return (Number(quoteAmount) / (Number(price) || 1)).toString();
+    }
+    return '';
+  }, [market, marketPrice, quoteAmount, side, orderSubmission, quoteAsset]);
+
   const switchAssets = () => {
     const newBaseAsset = quoteAsset;
     const newQuoteAsset = baseAsset;
@@ -145,35 +166,6 @@ export const SwapForm = ({
     if (!marketId || !side || !market || !orderSubmission) return;
     create({ orderSubmission });
   };
-
-  useEffect(() => {
-    if (!orderSubmission || !market) return;
-    if (side === Side.SIDE_SELL && quoteAsset) {
-      const notionalSize = getNotionalSize(
-        marketPrice,
-        orderSubmission.size,
-        market.decimalPlaces,
-        market.positionDecimalPlaces,
-        market.decimalPlaces
-      );
-      const baseAmount =
-        notionalSize && addDecimal(notionalSize, market.decimalPlaces);
-      setValue('baseAmount', baseAmount || '');
-    } else if (side === Side.SIDE_BUY) {
-      const price =
-        marketPrice && addDecimal(marketPrice, market.decimalPlaces);
-      const baseAmount = Number(quoteAmount) / (Number(price) || 1);
-      setValue('baseAmount', baseAmount.toString());
-    }
-  }, [
-    market,
-    marketPrice,
-    quoteAmount,
-    side,
-    orderSubmission,
-    quoteAsset,
-    setValue,
-  ]);
 
   return (
     <form
