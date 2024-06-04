@@ -160,15 +160,16 @@ export const SwapForm = ({
       noValidate
       data-testid="swap-form"
     >
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex justify-between gap-2 items-center mb-4">
         <h3 className="text-lg">{t('Swap')}</h3>
         {marketId && (
-          <Link to={Links.MARKET(marketId)} className="text-sm text-gray-500">
-            {t('Go to market')} <VegaIcon name={VegaIconNames.ARROW_RIGHT} />
+          <Link to={Links.MARKET(marketId)} className="flex items-center gap-2">
+            {t('Go to market')}{' '}
+            <VegaIcon name={VegaIconNames.ARROW_TOP_RIGHT} />
           </Link>
         )}
       </div>
-      <div className="flex flex-col w-full gap-2">
+      <div className="flex flex-col gap-2">
         <AssetInput
           label={t('You pay')}
           amount={quoteAmount || ''}
