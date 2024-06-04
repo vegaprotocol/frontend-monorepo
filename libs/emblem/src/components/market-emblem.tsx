@@ -103,7 +103,7 @@ export function getLogoPaths(
     base: baseLogo ? `${URL_BASE}${baseLogo}` : missing,
     quote: quoteLogo ? `${URL_BASE}${quoteLogo}` : missing,
     quoteChain: quoteChainLogo ? `${URL_BASE}${quoteChainLogo}` : undefined,
-    baseChain: quoteChainLogo ? `${URL_BASE}${quoteChainLogo}` : undefined,
+    baseChain: baseChainLogo ? `${URL_BASE}${baseChainLogo}` : undefined,
     settlementChain: settlementChainLogo
       ? `${URL_BASE}${settlementChainLogo}`
       : undefined,

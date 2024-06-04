@@ -16,7 +16,7 @@ import {
   useProposalsFilters,
   useProposalsPagination,
 } from '../proposals-list-filter/proposals-list-filter';
-import { type ProposalChange, type ProposalState } from '@vegaprotocol/types';
+import { ProposalState, type ProposalChange } from '@vegaprotocol/types';
 import intersection from 'lodash/intersection';
 import compact from 'lodash/compact';
 import last from 'lodash/last';
@@ -136,6 +136,15 @@ export const ProposalsList = ({ proposals }: ProposalsListProps) => {
 
   // filter by proposal type
   filtered = filtered.filter((proposal) => {
+    let desiredTypes = filter.types;
+    // add NewSpotMarket to results when queried for NewMarket
+    if (desiredTypes.includes('NewMarket')) {
+      desiredTypes = [...desiredTypes, 'NewSpotMarket'];
+    }
+    // add UpdateSpotMarket to results when queried for UpdateMarket
+    if (desiredTypes.includes('UpdateMarket')) {
+      desiredTypes = [...desiredTypes, 'UpdateSpotMarket'];
+    }
     let types: (ProposalChange['__typename'] | 'NetworkUpgrade')[] = [];
     if (proposal.__typename === 'Proposal') {
       types = [proposal.terms.change.__typename];
@@ -152,6 +161,14 @@ export const ProposalsList = ({ proposals }: ProposalsListProps) => {
   });
   // filter by proposal state
   filtered = filtered.filter((proposal) => {
+    let desiredStates = filter.states;
+    // add STATE_WAITING_FOR_NODE_VOTE to results when queried for STATE_OPEN
+    if (desiredStates.includes(ProposalState.STATE_OPEN)) {
+      desiredStates = [
+        ...desiredStates,
+        ProposalState.STATE_WAITING_FOR_NODE_VOTE,
+      ];
+    }
     let states: ProposalState[] = [];
     if (
       proposal.__typename === 'Proposal' ||
@@ -163,7 +180,7 @@ export const ProposalsList = ({ proposals }: ProposalsListProps) => {
       const upgradeState = proposal.status;
       states = [UPGRADE_STATUS_PROPOSAL_STATE_MAP[upgradeState]];
     }
-    return intersection(filter.states, states).length > 0;
+    return intersection(desiredStates, states).length > 0;
   });
   // filter by proposal id
   filtered = filtered.filter((proposal) => {

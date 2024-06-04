@@ -10,6 +10,7 @@ fragment AssetFields on Asset {
       contractAddress
       lifetimeLimit
       withdrawThreshold
+      chainId
     }
     ... on BuiltinAsset {
       maxFaucetAmountMint

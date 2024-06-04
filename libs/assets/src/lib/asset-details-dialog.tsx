@@ -1,15 +1,10 @@
 import { useT } from './use-t';
-import {
-  Dialog,
-  Splash,
-  SyntaxHighlighter,
-  VegaIcon,
-  VegaIconNames,
-} from '@vegaprotocol/ui-toolkit';
+import { Dialog, Splash, SyntaxHighlighter } from '@vegaprotocol/ui-toolkit';
 import { create } from 'zustand';
 import { AssetDetailsTable } from './asset-details-table';
 import { AssetProposalNotification } from '@vegaprotocol/proposals';
 import { useAssetDataProvider } from './asset-data-provider';
+import { Emblem } from '@vegaprotocol/emblem';
 
 export type AssetDetailsDialogStore = {
   isOpen: boolean;
@@ -46,6 +41,8 @@ export interface AssetDetailsDialogProps {
   open: boolean;
   onChange: (open: boolean) => void;
   asJson?: boolean;
+  // Used to fetch the correct asset icon for the current chain
+  vegaChain: string;
 }
 
 export const AssetDetailsDialog = ({
@@ -54,6 +51,7 @@ export const AssetDetailsDialog = ({
   open,
   onChange,
   asJson = false,
+  vegaChain,
 }: AssetDetailsDialogProps) => {
   const t = useT();
   const { data: asset } = useAssetDataProvider(assetId);
@@ -83,7 +81,7 @@ export const AssetDetailsDialog = ({
   return (
     <Dialog
       title={title}
-      icon={<VegaIcon name={VegaIconNames.INFO} />}
+      icon={<Emblem asset={assetId} vegaChain={vegaChain} />}
       open={open}
       onChange={(isOpen) => onChange(isOpen)}
       onCloseAutoFocus={(e) => {

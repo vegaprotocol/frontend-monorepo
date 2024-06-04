@@ -5,6 +5,7 @@ import { AssetDetailsDialog } from './asset-details-dialog';
 import { AssetDetail, testId } from './asset-details-table';
 import { AssetDocument } from './__generated__/Asset';
 import { generateBuiltinAsset, generateERC20Asset } from './test-helpers';
+import { MockedWalletProvider } from '@vegaprotocol/wallet-react/testing';
 
 const mockedData = {
   data: {
@@ -53,11 +54,15 @@ const mocks = mockedData.data.assetsConnection.edges.map((mock) => ({
 
 const WrappedAssetDetailsDialog = ({ assetId }: { assetId: string }) => (
   <MockedProvider mocks={mocks}>
-    <AssetDetailsDialog
-      assetId={assetId}
-      open={true}
-      onChange={() => false}
-    ></AssetDetailsDialog>
+    <MockedWalletProvider>
+      .{' '}
+      <AssetDetailsDialog
+        assetId={assetId}
+        open={true}
+        onChange={() => false}
+        vegaChain="vega-mainnet-0011"
+      ></AssetDetailsDialog>
+    </MockedWalletProvider>
   </MockedProvider>
 );
 

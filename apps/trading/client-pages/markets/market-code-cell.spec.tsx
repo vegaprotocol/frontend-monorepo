@@ -3,6 +3,14 @@ import { ProductTypeShortName } from '@vegaprotocol/types';
 import type { MarketCodeCellProps } from './market-code-cell';
 import { MarketCodeCell } from './market-code-cell';
 
+jest.mock('@vegaprotocol/emblem', () => ({
+  EmblemByMarket: () => <span></span>,
+}));
+
+jest.mock('@vegaprotocol/wallet-react', () => ({
+  useChainId: () => ({ chainId: '' }),
+}));
+
 describe('MarketCodeCell', () => {
   const renderComponent = (props: MarketCodeCellProps) => {
     return render(<MarketCodeCell {...props} />);
@@ -14,6 +22,7 @@ describe('MarketCodeCell', () => {
     const props = {
       value: 'code',
       data: {
+        id: '',
         productType,
         parentMarketID: 'foo',
         successorMarketID: undefined,
@@ -38,6 +47,7 @@ describe('MarketCodeCell', () => {
     const props = {
       value: 'code',
       data: {
+        id: '',
         productType,
         parentMarketID: undefined,
         successorMarketID: 'foo',
@@ -62,6 +72,7 @@ describe('MarketCodeCell', () => {
     const props = {
       value: 'code',
       data: {
+        id: '',
         productType,
         parentMarketID: 'foo',
         successorMarketID: 'bar',

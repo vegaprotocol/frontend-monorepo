@@ -45,6 +45,8 @@ import { usePageTitle } from '../../lib/hooks/use-page-title';
 import { DepositContainer } from '@vegaprotocol/deposits';
 import { TransferContainer } from '@vegaprotocol/accounts';
 import { WithdrawContainer } from '../../components/withdraw-container';
+import { SquidContainer } from '../../components/squid-container';
+import { useFeatureFlags } from '@vegaprotocol/environment';
 
 const WithdrawalsIndicator = () => {
   const { ready } = useIncompleteWithdrawals();
@@ -103,7 +105,7 @@ const PortfolioGrid = () => {
       <SidebarViewInitializer />
       <ResizableGrid onChange={handleOnHorizontalChange}>
         <ResizableGridPanel
-          minSize={340}
+          minSize={400}
           preferredSize={sizesHorizontal[0] || 460}
         >
           <PortfolioGridChild>
@@ -151,6 +153,7 @@ const PortfolioSmall = () => {
 
 const PortfolioActionTabs = () => {
   const t = useT();
+  const flags = useFeatureFlags((state) => state.flags);
   return (
     <Tabs storageKey="portfolio-sidebar">
       <Tab id="deposit" name={t('Deposit')}>
@@ -177,6 +180,15 @@ const PortfolioActionTabs = () => {
           </div>
         </ErrorBoundary>
       </Tab>
+      {flags.CROSS_CHAIN_DEPOSITS_ENABLED && flags.CROSS_CHAIN_DEPOSITS ? (
+        <Tab id="cross-chain-deposit" name={t('Cross chain deposit')}>
+          <ErrorBoundary feature="portfolio-transfer">
+            <div className="p-2">
+              <SquidContainer />
+            </div>
+          </ErrorBoundary>
+        </Tab>
+      ) : null}
     </Tabs>
   );
 };

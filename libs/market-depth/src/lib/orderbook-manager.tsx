@@ -4,6 +4,7 @@ import { useDataProvider } from '@vegaprotocol/data-provider';
 import { marketDepthProvider } from './market-depth-provider';
 import {
   getQuoteName,
+  isMarketInAuction,
   marketDataProvider,
   marketProvider,
 } from '@vegaprotocol/markets';
@@ -67,6 +68,8 @@ export const OrderbookManager = ({
           assetSymbol={getQuoteName(market)}
           onClick={onClick}
           lastTradedPrice={marketData.lastTradedPrice}
+          indicativePrice={marketData.indicativePrice}
+          isMarketInAuction={isMarketInAuction(marketData.marketTradingMode)}
         />
       )}
     </AsyncRenderer>

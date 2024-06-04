@@ -5,6 +5,8 @@ import erc20AbiTether from '../abis/erc20_abi_tether.json';
 import { calcGasBuffer } from '../utils';
 
 const TETHER_ADDRESS = '0xdAC17F958D2ee523a2206206994597C13D831ec7';
+// This is a mainnet mirror usdt: https://sepolia.etherscan.io/address/0xeE8FC112037aEF651168665B03b316bFeFA9b39e
+const TETHER_TEST_ADDRESS = '0xeE8FC112037aEF651168665B03b316bFeFA9b39e';
 
 export class Token {
   public contract: ethers.Contract;
@@ -12,11 +14,11 @@ export class Token {
 
   constructor(
     address: string,
-    signerOrProvider: ethers.Signer | ethers.providers.Provider
+    signerOrProvider?: ethers.Signer | ethers.providers.Provider
   ) {
     let abi: typeof erc20Abi | typeof erc20AbiTether = erc20Abi;
     // USDT (Tether) has a different ABI
-    if (address === TETHER_ADDRESS) {
+    if (address === TETHER_ADDRESS || address === TETHER_TEST_ADDRESS) {
       abi = erc20AbiTether;
     }
 
@@ -37,6 +39,14 @@ export class Token {
     const res = await this.contract.estimateGas.approve(spender, amount);
     const gasLimit = calcGasBuffer(res);
     return this.contract.approve(spender, amount, { gasLimit });
+  }
+
+  encodeApproveData(spender: string, amount: string) {
+    const data = this.contract.interface.encodeFunctionData('approve', [
+      spender,
+      amount,
+    ]);
+    return data;
   }
   decimals(): Promise<number> {
     return this.contract.decimals();

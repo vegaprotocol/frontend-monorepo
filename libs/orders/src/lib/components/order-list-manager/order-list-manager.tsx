@@ -6,7 +6,7 @@ import { useDataProvider } from '@vegaprotocol/data-provider';
 import { useVegaTransactionStore } from '@vegaprotocol/web3';
 import type { OrderTxUpdateFieldsFragment } from '@vegaprotocol/web3';
 import { OrderEditDialog } from '../order-list/order-edit-dialog';
-import { type Order } from '../order-data-provider';
+import { type OrdersQueryVariables, type Order } from '../order-data-provider';
 import { OrderViewDialog } from '../order-list/order-view-dialog';
 import { OrderListTable } from '../order-list';
 import { ordersWithMarketProvider } from '../order-data-provider/order-data-provider';
@@ -20,6 +20,7 @@ export enum Filter {
 
 export interface OrderListManagerProps {
   partyId: string;
+  marketId?: string;
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
   onOrderTypeClick?: (marketId: string, metaKey?: boolean) => void;
   isReadOnly: boolean;
@@ -30,6 +31,7 @@ export interface OrderListManagerProps {
 
 export const OrderListManager = ({
   partyId,
+  marketId,
   onMarketClick,
   onOrderTypeClick,
   isReadOnly,
@@ -42,10 +44,13 @@ export const OrderListManager = ({
   const [editOrder, setEditOrder] = useState<Order | null>(null);
   const [viewOrder, setViewOrder] = useState<Order | null>(null);
   const create = useVegaTransactionStore((state) => state.create);
-  const variables =
+  const variables: OrdersQueryVariables =
     filter === Filter.Open
       ? { partyId, filter: { liveOnly: true } }
       : { partyId };
+  if (marketId) {
+    variables.marketIds = [marketId];
+  }
 
   const { data, error, pageInfo, load } = useDataProvider({
     dataProvider: ordersWithMarketProvider,

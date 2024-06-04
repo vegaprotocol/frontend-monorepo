@@ -17,6 +17,7 @@ export const generateAsset = (override?: PartialDeep<Asset>) => {
       contractAddress: 'contract-address',
       lifetimeLimit: '123000000',
       withdrawThreshold: '50',
+      chainId: '1',
       __typename: 'ERC20',
     },
     __typename: 'Asset',
@@ -56,6 +57,7 @@ export const generateWithdrawal = (
         source: {
           __typename: 'ERC20',
           contractAddress: '0x123',
+          chainId: '11',
         },
       },
       createdTimestamp: '2022-04-20T00:00:00',

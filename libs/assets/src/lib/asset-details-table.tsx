@@ -1,4 +1,7 @@
-import { EtherscanLink } from '@vegaprotocol/environment';
+import {
+  EtherscanLink,
+  getExternalChainLabel,
+} from '@vegaprotocol/environment';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { useT } from './use-t';
 import type * as Schema from '@vegaprotocol/types';
@@ -39,6 +42,7 @@ export enum AssetDetail {
   // balances:
   NETWORK_TREASURY_ACCOUNT_BALANCE,
   GLOBAL_INSURANCE_ACCOUNT_BALANCE,
+  SOURCE_CHAIN,
 }
 
 type Mapping = { [key in string]: { value: string; tooltip: string } };
@@ -131,6 +135,22 @@ export const useRows = () => {
         valueTooltip: (asset) => AssetStatusMapping[asset.status].tooltip,
       },
       {
+        key: AssetDetail.SOURCE_CHAIN,
+        label: t('Source chain'),
+        tooltip: t('The ID and name of the source chain'),
+        value: (asset) => {
+          if (asset.source.__typename !== 'ERC20') {
+            return;
+          }
+
+          return (
+            <span title={asset.source.chainId}>
+              {getExternalChainLabel(asset.source.chainId)}
+            </span>
+          );
+        },
+      },
+      {
         key: AssetDetail.CONTRACT_ADDRESS,
         label: t('Contract address'),
         tooltip: t(
@@ -143,7 +163,10 @@ export const useRows = () => {
 
           return (
             <>
-              <EtherscanLink address={asset.source.contractAddress}>
+              <EtherscanLink
+                address={asset.source.contractAddress}
+                sourceChainId={Number(asset.source.chainId)}
+              >
                 {truncateMiddle(asset.source.contractAddress)}
               </EtherscanLink>{' '}
               <CopyWithTooltip text={asset.source.contractAddress}>
