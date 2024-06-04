@@ -4,7 +4,7 @@ import BigNumber from 'bignumber.js';
 import { localLoggerFactory } from '@vegaprotocol/logger';
 
 export const useGetAllowance = (
-  tokenContract: Token | null,
+  tokenContract?: Token,
   collateralBridgeAddress?: string,
   account?: string
 ) => {

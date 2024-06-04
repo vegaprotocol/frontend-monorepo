@@ -54,8 +54,10 @@ export const generateWithdrawal = (
         symbol: 'asset-symbol',
         decimals: 2,
         status: Schema.AssetStatus.STATUS_ENABLED,
+        quantum: '1',
         source: {
           __typename: 'ERC20',
+          chainId: '1',
           contractAddress: '0x123',
           chainId: '11',
         },

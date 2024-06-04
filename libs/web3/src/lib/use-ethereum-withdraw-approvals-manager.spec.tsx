@@ -21,10 +21,13 @@ import {
   NetworkParamsDocument,
   type NetworkParamsQuery,
 } from '@vegaprotocol/network-parameters';
+import { DefaultWeb3ProviderContext } from './default-web3-provider';
+import { ETHEREUM_CHAIN_ID } from './constants';
 
 const mockWeb3Provider = jest.fn();
 
-let mockChainId: number | undefined = 111111;
+let mockChainId: number | undefined = ETHEREUM_CHAIN_ID;
+
 jest.mock('@web3-react/core', () => ({
   useWeb3React: () => ({
     provider: mockWeb3Provider(),
@@ -72,7 +75,7 @@ const mockUseEthereumConfig = {
   collateral_bridge_contract: {
     address: 'address',
   },
-  chain_id: '111111',
+  chain_id: '1',
 };
 
 jest.mock('./use-ethereum-config', () => ({
@@ -99,7 +102,7 @@ const createWithdrawTransaction = (
     status: Schema.WithdrawalStatus.STATUS_OPEN,
     createdTimestamp: '2022-12-12T11:24:40.301Z',
     pendingOnForeignChain: false,
-    amount: '50',
+    amount: '50000000000000000000',
     asset: {
       __typename: 'Asset',
       id: 'fdf0ec118d98393a7702cf72e46fc87ad680b152f64b2aac59e093ac2d688fbb',
@@ -107,9 +110,11 @@ const createWithdrawTransaction = (
       symbol: 'USDT-T',
       decimals: 18,
       status: Schema.AssetStatus.STATUS_ENABLED,
+      quantum: '1',
       source: {
         __typename: 'ERC20',
         contractAddress: 'contractAddress',
+        chainId: '1',
       },
     },
   },
@@ -176,7 +181,13 @@ const render = (
   mocks: MockedResponse[] = [mockedWithdrawalApproval, mockedNetworkParams]
 ) => {
   const wrapper = ({ children }: { children: ReactNode }) => (
-    <MockedProvider mocks={mocks}>{children}</MockedProvider>
+    <DefaultWeb3ProviderContext.Provider
+      value={{
+        providers: { 1: mockWeb3Provider(), 999999: mockWeb3Provider() },
+      }}
+    >
+      <MockedProvider mocks={mocks}>{children}</MockedProvider>
+    </DefaultWeb3ProviderContext.Provider>
   );
   return renderHook(() => useEthWithdrawApprovalsManager(), { wrapper });
 };
@@ -236,7 +247,7 @@ describe('useEthWithdrawApprovalsManager', () => {
 
   it('sets status to delayed if amount is greater than threshold', async () => {
     const transaction = createWithdrawTransaction();
-    mockUseGetWithdrawThreshold.mockReturnValueOnce(() =>
+    mockUseGetWithdrawThreshold.mockReturnValue(() =>
       Promise.resolve(
         new BigNumber(transaction.withdrawal.amount)
           .dividedBy(Math.pow(10, transaction.withdrawal.asset.decimals))
@@ -314,7 +325,7 @@ describe('useEthWithdrawApprovalsManager', () => {
   });
 
   it('detect wrong chainId', () => {
-    mockChainId = 1;
+    mockChainId = 999999;
     const transaction = createWithdrawTransaction();
     mockEthTransactionStoreState.mockReturnValue({ create });
     mockEthWithdrawApprovalsStoreState.mockReturnValue({
@@ -327,7 +338,7 @@ describe('useEthWithdrawApprovalsManager', () => {
     expect(update.mock.calls[0][1].failureReason).toEqual(
       WithdrawalFailure.WrongConnection
     );
-    mockChainId = 111111;
+    mockChainId = ETHEREUM_CHAIN_ID;
   });
 
   it('detect no chainId', () => {
@@ -346,7 +357,7 @@ describe('useEthWithdrawApprovalsManager', () => {
     expect(update.mock.calls[0][1].failureReason).toEqual(
       WithdrawalFailure.NoConnection
     );
-    mockChainId = 111111;
+    mockChainId = ETHEREUM_CHAIN_ID;
   });
 
   it('catch ethereum errors', async () => {

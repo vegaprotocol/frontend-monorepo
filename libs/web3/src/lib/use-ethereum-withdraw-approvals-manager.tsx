@@ -27,8 +27,8 @@ export const useEthWithdrawApprovalsManager = () => {
   const { chainId } = useWeb3React();
   const { contract, chainId: contractChainId } = useCollateralBridge(chainId);
 
-  const getThreshold = useGetWithdrawThreshold(chainId);
-  const getDelay = useGetWithdrawDelay(chainId);
+  const getThreshold = useGetWithdrawThreshold();
+  const getDelay = useGetWithdrawDelay();
 
   const { query } = useApolloClient();
 
@@ -48,6 +48,7 @@ export const useEthWithdrawApprovalsManager = () => {
     }
 
     processed.current.add(transaction.id);
+
     const { withdrawal } = transaction;
     let { approval } = transaction;
     if (withdrawal.asset.source.__typename !== 'ERC20') {
@@ -60,7 +61,8 @@ export const useEthWithdrawApprovalsManager = () => {
       });
       return;
     }
-    if (!chainId || !contract) {
+
+    if (!chainId) {
       update(transaction.id, {
         status: ApprovalStatus.Pending,
         message: t(`Connect wallet to withdraw`),
@@ -68,8 +70,9 @@ export const useEthWithdrawApprovalsManager = () => {
       });
       return;
     }
+
     if (
-      chainId?.toString() !== withdrawal.asset.source.chainId ||
+      (chainId && chainId?.toString() !== withdrawal.asset.source.chainId) ||
       contractChainId?.toString() !== withdrawal.asset.source.chainId
     ) {
       update(transaction.id, {
@@ -90,10 +93,14 @@ export const useEthWithdrawApprovalsManager = () => {
     );
 
     (async () => {
-      const threshold = await getThreshold(toAssetData(withdrawal.asset));
+      const assetData = toAssetData(withdrawal.asset);
+      if (!assetData || !contract) return;
+
+      const threshold = await getThreshold(assetData);
 
       if (threshold && amount.isGreaterThan(threshold)) {
-        const delaySecs = await getDelay();
+        const delaySecs = await getDelay(assetData.chainId);
+
         const completeTimestamp =
           new Date(withdrawal.createdTimestamp).getTime() +
           (delaySecs as number) * 1000;

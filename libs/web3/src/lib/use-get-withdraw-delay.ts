@@ -47,6 +47,7 @@ export const useGetWithdrawDelay = () => {
   const getDelay = useCallback(
     async (chainId: number) => {
       const delay = getCachedDelay(chainId);
+
       if (delay && delay.value != null && Date.now() - delay.ts <= MAX_AGE) {
         return delay.value;
       }
@@ -58,6 +59,7 @@ export const useGetWithdrawDelay = () => {
       }
       try {
         const res = await contract?.default_withdraw_delay();
+
         logger.info(`retrieved withdraw delay: ${res} seconds`);
         setCachedDelay(chainId, res.toNumber());
         return res.toNumber() as number;

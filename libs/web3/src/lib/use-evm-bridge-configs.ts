@@ -66,8 +66,6 @@ type EVMBridgeConfigs = {
 };
 
 export const useEVMBridgeConfigs = () => {
-  // Used this so it can be compatible with mainnet for now.
-  // TODO: Change this to `useNetworkPars('blockchains_evmBridgeConfigs')`
   const { params, loading, error } = useNetworkParams();
   const param = params?.['blockchains_evmBridgeConfigs'];
 
