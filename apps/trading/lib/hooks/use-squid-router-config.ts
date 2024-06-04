@@ -370,10 +370,7 @@ const mapAssetToDestinationTokenConfig = (
   const tokenContractAddress = asset.source.contractAddress;
 
   // FIXME: Could use some better icon getting
-  let assetLogo = `https://icon.vega.xyz/vega/${vegaChainId}/asset/${asset.id}/logo.svg`;
-  if (asset.chainId === String(ARBITRUM_CHAIN_ID)) {
-    assetLogo = 'https://icon.vega.xyz/missing.svg';
-  }
+  const assetLogo = `https://icon.vega.xyz/vega/${vegaChainId}/asset/${asset.id}/logo.svg`;
 
   const route: DestinationTokenConfig['customContractCalls'] = [
     // 0: SWAP
