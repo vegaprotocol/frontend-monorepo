@@ -45,7 +45,7 @@ import { usePageTitle } from '../../lib/hooks/use-page-title';
 import { DepositContainer } from '@vegaprotocol/deposits';
 import { TransferContainer } from '@vegaprotocol/accounts';
 import { WithdrawContainer } from '../../components/withdraw-container';
-import { SwapContainer } from '../swap/swap-container';
+import { SwapContainer } from '../../components/swap/swap-container';
 import { useFeatureFlags } from '@vegaprotocol/environment';
 
 const WithdrawalsIndicator = () => {

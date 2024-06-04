@@ -19,7 +19,7 @@ import { useConnect, usePubKeys } from '@vegaprotocol/wallet-react';
 import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
 import { useT } from '../../lib/use-t';
 import { ErrorBoundary } from '../error-boundary';
-import { SwapContainer } from '../../client-pages/swap';
+import { SwapContainer } from '../swap';
 
 export enum ViewType {
   Order = 'Order',
