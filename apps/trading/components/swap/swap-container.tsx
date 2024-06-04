@@ -14,7 +14,6 @@ import {
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useAccounts } from '@vegaprotocol/accounts';
 import { useDataProvider } from '@vegaprotocol/data-provider';
-import { useNavigate } from 'react-router-dom';
 import { SwapForm } from './swap-form';
 import { Side } from '@vegaprotocol/types';
 
@@ -35,7 +34,6 @@ export const SwapContainer = () => {
     variables: { marketId },
     skip: !marketId,
   });
-  const navigate = useNavigate();
 
   const { spotMarkets, spotAssets } = useMemo(() => {
     const spotAssets: Record<string, AssetFieldsFragment> = {};
@@ -91,7 +89,6 @@ export const SwapContainer = () => {
       setQuoteAsset={setQuoteAsset}
       side={side}
       market={market}
-      navigate={navigate}
       accounts={accounts}
       assets={spotAssets}
       chooseMarket={chooseMarket}

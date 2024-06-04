@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
-import { Link, VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
+import { Link } from 'react-router-dom';
+import { VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useT } from '../../lib/use-t';
 import {
@@ -22,7 +23,6 @@ import type {
   MarketFieldsFragment,
 } from '@vegaprotocol/markets';
 import { noop } from 'lodash';
-import type { useNavigate } from 'react-router-dom';
 import { useVegaTransactionStore } from '@vegaprotocol/web3';
 
 export interface SwapFields {
@@ -67,7 +67,6 @@ export const SwapForm = ({
   assets: spotAssets,
   setBaseAsset,
   setQuoteAsset,
-  navigate,
   chooseMarket,
 }: {
   marketId: string;
@@ -81,7 +80,6 @@ export const SwapForm = ({
   chooseMarket: () => void;
   setBaseAsset: (asset?: AssetFieldsFragment) => void;
   setQuoteAsset: (asset?: AssetFieldsFragment) => void;
-  navigate: ReturnType<typeof useNavigate>;
 }) => {
   const t = useT();
   const { watch, setValue, handleSubmit } = useForm<SwapFields>();
@@ -165,10 +163,7 @@ export const SwapForm = ({
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-lg">{t('Swap')}</h3>
         {marketId && (
-          <Link
-            onClick={() => navigate(Links.MARKET(marketId))}
-            className="text-sm text-gray-500 text-right"
-          >
+          <Link to={Links.MARKET(marketId)} className="text-sm text-gray-500">
             {t('Go to market')} <VegaIcon name={VegaIconNames.ARROW_RIGHT} />
           </Link>
         )}
