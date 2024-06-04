@@ -148,15 +148,12 @@ export const SwapForm = ({
     return '';
   }, [market, marketPrice, quoteAmount, side, orderSubmission, quoteAsset]);
 
-  const switchAssets = () => {
+  const handleSwapAssets = () => {
     const newBaseAsset = quoteAsset;
     const newQuoteAsset = baseAsset;
     setBaseAsset(newBaseAsset);
     setQuoteAsset(newQuoteAsset);
     newBaseAsset && newQuoteAsset && chooseMarket();
-  };
-
-  const switchAmounts = () => {
     setValue('quoteAmount', baseAmount);
   };
 
@@ -195,13 +192,7 @@ export const SwapForm = ({
           pubKey={pubKey}
           testId="you-pay"
         />
-        <SwapButton
-          onClick={() => {
-            switchAssets();
-            switchAmounts();
-          }}
-          data-testid="swap-button"
-        />
+        <SwapButton onClick={handleSwapAssets} data-testid="swap-button" />
         <AssetInput
           label={t('You receive')}
           amount={baseAmount || ''}
