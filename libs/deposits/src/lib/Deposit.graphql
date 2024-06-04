@@ -6,6 +6,12 @@ fragment DepositFields on Deposit {
     id
     symbol
     decimals
+    source {
+      ... on ERC20 {
+        contractAddress
+        chainId
+      }
+    }
   }
   createdTimestamp
   creditedTimestamp

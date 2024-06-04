@@ -79,7 +79,7 @@ describe('ActiveRewards', () => {
           distributionStrategy:
             DistributionStrategy.DISTRIBUTION_STRATEGY_PRO_RATA,
           rankTable: null,
-          transfer_interval: 1,
+          transferInterval: 1,
         },
       },
       reason: null,

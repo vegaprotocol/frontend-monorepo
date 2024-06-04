@@ -4,16 +4,17 @@ import { generateAccount, generateAsset } from './test-helpers';
 import type { WithdrawManagerProps } from './withdraw-manager';
 import { WithdrawManager } from './withdraw-manager';
 import BigNumber from 'bignumber.js';
+import { toAssetData } from '@vegaprotocol/web3';
 
 const asset = generateAsset();
 const ethereumAddress = '0x72c22822A19D20DE7e426fB84aa047399Ddd8853';
 
 jest.mock('@web3-react/core', () => ({
-  useWeb3React: () => ({ account: ethereumAddress }),
+  useWeb3React: () => ({ account: ethereumAddress, chainId: 1 }),
 }));
 
 const withdrawAsset = {
-  asset,
+  asset: toAssetData(asset),
   balance: new BigNumber(1),
   min: new BigNumber(0.0000001),
   threshold: new BigNumber(1000),
@@ -63,11 +64,6 @@ describe('WithdrawManager', () => {
     const { container } = render(generateJsx(props));
     const select = container.querySelector('select[name="asset"]') as Element;
     await userEvent.selectOptions(select, props.assets[0].id);
-    await userEvent.clear(screen.getByLabelText('To (Ethereum address)'));
-    await userEvent.type(
-      screen.getByLabelText('To (Ethereum address)'),
-      ethereumAddress
-    );
     await userEvent.type(screen.getByLabelText('Amount'), '0.01');
     await userEvent.click(screen.getByTestId('submit-withdrawal'));
     expect(props.submit).toHaveBeenCalledWith({
@@ -89,11 +85,6 @@ describe('WithdrawManager', () => {
     const select = container.querySelector('select[name="asset"]') as Element;
     await userEvent.selectOptions(select, props.assets[0].id);
     expect(screen.getByTestId('connect-eth-wallet-btn')).toBeInTheDocument();
-
-    await userEvent.type(
-      screen.getByLabelText('To (Ethereum address)'),
-      ethereumAddress
-    );
 
     // Min amount
     await userEvent.clear(screen.getByLabelText('Amount'));

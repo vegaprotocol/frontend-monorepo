@@ -54,6 +54,7 @@ const DEFAULT__ASSET: ProposalAssetQuery = {
     source: {
       __typename: 'ERC20',
       contractAddress: '0x0',
+      chainId: '1',
     },
   },
 };

@@ -103,11 +103,7 @@ export const useCollateralBridge = (
   chainId?: number,
   allowDefaultProvider = false
 ) => {
-  const {
-    configs,
-    loading,
-    error: configsError,
-  } = useCollateralBridgeConfigs();
+  const { configs, error: configsError } = useCollateralBridgeConfigs();
 
   const { provider, error: providerError } = useProvider(
     chainId,
@@ -115,9 +111,9 @@ export const useCollateralBridge = (
   );
 
   const config = useMemo(() => {
-    if (loading || configsError || !chainId) return undefined;
+    if (configsError || !chainId) return undefined;
     return configs.find((c) => c.chainId === chainId);
-  }, [chainId, configs, configsError, loading]);
+  }, [chainId, configs, configsError]);
 
   const signer = useMemo(() => {
     return provider?.getSigner();

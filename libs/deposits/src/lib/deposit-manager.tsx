@@ -46,10 +46,6 @@ export const DepositManager = ({
   const { contract, config } = useCollateralBridge(assetData?.chainId);
 
   const { getBalances, reset, balances } = useDepositBalances(asset);
-  // const getBalances = () => undefined;
-  // const reset = () => undefined;
-  // const balances = undefined;
-  // const error = undefined;
 
   useEffect(() => {
     if (asset?.symbol) getBalances();

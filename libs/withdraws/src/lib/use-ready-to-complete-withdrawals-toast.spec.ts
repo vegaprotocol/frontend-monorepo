@@ -7,7 +7,13 @@ import { useIncompleteWithdrawals } from './use-ready-to-complete-withdrawals-to
 import { MockedProvider } from '@apollo/client/testing';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 
-jest.mock('@vegaprotocol/web3');
+jest.mock('@vegaprotocol/web3', () => {
+  return {
+    ...jest.requireActual('@vegaprotocol/web3'),
+    useGetWithdrawThreshold: jest.fn(),
+    useGetWithdrawDelay: jest.fn(),
+  };
+});
 jest.mock('@vegaprotocol/wallet-react');
 
 type Asset = WithdrawalFieldsFragment['asset'];
@@ -20,9 +26,11 @@ const NO_THRESHOLD_ASSET: Asset = {
   symbol: 'NTA',
   decimals: 1,
   status: Types.AssetStatus.STATUS_ENABLED,
+  quantum: '1',
   source: {
     __typename: 'ERC20',
     contractAddress: '0xnta',
+    chainId: '1',
   },
 };
 
@@ -33,9 +41,11 @@ const LOW_THRESHOLD_ASSET: Asset = {
   symbol: 'LTA',
   decimals: 1,
   status: Types.AssetStatus.STATUS_ENABLED,
+  quantum: '1',
   source: {
     __typename: 'ERC20',
     contractAddress: '0xlta',
+    chainId: '1',
   },
 };
 
@@ -46,20 +56,22 @@ const HIGH_THRESHOLD_ASSET: Asset = {
   symbol: 'HTA',
   decimals: 1,
   status: Types.AssetStatus.STATUS_ENABLED,
+  quantum: '1',
   source: {
     __typename: 'ERC20',
     contractAddress: '0xhta',
+    chainId: '1',
   },
 };
 
 const NOW = 5000;
 const DELAY = { value: 1, ts: 5000 };
-const THRESHOLDS: Record<string, { value: BigNumber; ts: number }> = {
-  builtin: { value: new BigNumber(Infinity), ts: 5000 },
-  '0xnta': { value: new BigNumber(Infinity), ts: 5000 },
-  '0xlta': { value: new BigNumber(10), ts: 5000 },
-  '0xhta': { value: new BigNumber(1000), ts: 5000 },
-};
+const THRESHOLDS = [
+  { address: 'builtin', chainId: 1, value: new BigNumber(Infinity), ts: 5000 },
+  { address: '0xnta', chainId: 1, value: new BigNumber(Infinity), ts: 5000 },
+  { address: '0xlta', chainId: 1, value: new BigNumber(10), ts: 5000 },
+  { address: '0xhta', chainId: 1, value: new BigNumber(1000), ts: 5000 },
+];
 
 const ts = (ms: number) => new Date(ms).toISOString();
 
@@ -157,11 +169,12 @@ describe('useIncompleteWithdrawals', () => {
     });
 
     (web3.useGetWithdrawThreshold as jest.Mock).mockImplementation(
-      () => (asset: Asset) => {
-        if (asset.source.__typename === 'ERC20') {
-          return Promise.resolve(
-            THRESHOLDS[asset.source.contractAddress].value
+      () => (asset: web3.AssetData) => {
+        if (asset) {
+          const th = THRESHOLDS.find(
+            (t) => t.address === asset.contractAddress
           );
+          if (th) return Promise.resolve(th.value);
         }
         return Promise.resolve(Infinity);
       }
@@ -169,11 +182,6 @@ describe('useIncompleteWithdrawals', () => {
     (web3.useGetWithdrawDelay as jest.Mock).mockImplementation(() => () => {
       return Promise.resolve(DELAY.value);
     });
-    (web3.addr as jest.Mock).mockImplementation((asset: Asset | undefined) =>
-      asset && asset.source.__typename === 'ERC20'
-        ? asset.source.contractAddress
-        : 'builtin'
-    );
   });
   afterAll(() => {
     jest.resetAllMocks();

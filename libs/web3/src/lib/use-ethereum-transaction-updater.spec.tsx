@@ -9,7 +9,7 @@ import {
   type DepositBusEventFieldsFragment,
 } from './__generated__/TransactionResult';
 import { type EthTransactionStore } from './use-ethereum-transaction-store';
-import { DepositStatus } from '@vegaprotocol/types';
+import { AssetStatus, DepositStatus } from '@vegaprotocol/types';
 import {
   MockedWalletProvider,
   mockConfig,
@@ -48,6 +48,14 @@ const depositBusEvent: DepositBusEventFieldsFragment = {
     id: 'asset-id',
     symbol: 'asset-symbol',
     decimals: 2,
+    name: '',
+    quantum: '',
+    status: AssetStatus.STATUS_ENABLED,
+    source: {
+      __typename: 'ERC20',
+      chainId: '1',
+      contractAddress: '0x0',
+    },
   },
   createdTimestamp: '2022-07-05T14:25:47.815283706Z',
   creditedTimestamp: '2022-07-05T14:25:47.815283706Z',

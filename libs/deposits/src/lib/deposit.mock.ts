@@ -38,6 +38,11 @@ const depositFields: DepositFieldsFragment[] = [
       id: 'asset-0',
       symbol: 'BTC',
       decimals: 8,
+      source: {
+        __typename: 'ERC20',
+        chainId: '1',
+        contractAddress: '0x0',
+      },
     },
     createdTimestamp: '2021-06-01T00:00:00.000Z',
   },

@@ -5,15 +5,26 @@ import type { DepositFormProps } from './deposit-form';
 import { DepositForm } from './deposit-form';
 import * as Schema from '@vegaprotocol/types';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
-import { useWeb3ConnectStore } from '@vegaprotocol/web3';
+import {
+  DefaultWeb3ProviderContext,
+  useWeb3ConnectStore,
+} from '@vegaprotocol/web3';
 import { useWeb3React } from '@web3-react/core';
 import type { AssetFieldsFragment } from '@vegaprotocol/assets';
 import type { DepositBalances } from './use-deposit-balances';
 import { truncateMiddle } from '@vegaprotocol/ui-toolkit';
+import { type ReactElement } from 'react-markdown/lib/react-markdown';
 
 jest.mock('@vegaprotocol/wallet-react');
-jest.mock('@vegaprotocol/web3');
+jest.mock('@vegaprotocol/web3', () => {
+  return {
+    ...jest.requireActual('@vegaprotocol/web3'),
+    useWeb3ConnectStore: jest.fn(),
+  };
+});
 jest.mock('@web3-react/core');
+
+const mockWeb3Provider = jest.fn();
 
 const mockConnector = { deactivate: jest.fn() };
 
@@ -24,7 +35,7 @@ function generateAsset(): AssetFieldsFragment {
     symbol: 'asset-symbol',
     name: 'asset-name',
     decimals: 2,
-    quantum: '',
+    quantum: '1',
     status: Schema.AssetStatus.STATUS_ENABLED,
     source: {
       __typename: 'ERC20',
@@ -72,12 +83,39 @@ beforeEach(() => {
     isActive: true,
     account: MOCK_ETH_ADDRESS,
     connector: mockConnector,
+    chainId: 1,
   });
+  (useWeb3React as jest.Mock).mockReturnValue({
+    isActive: true,
+    account: MOCK_ETH_ADDRESS,
+    chainId: 1,
+    provider: mockWeb3Provider(),
+  });
+  (useWeb3ConnectStore as unknown as jest.Mock).mockImplementation(
+    // eslint-disable-next-line
+    (selector: (result: ReturnType<typeof useWeb3ConnectStore>) => any) => {
+      const store = {
+        chains: [1, 11155111],
+        open: jest.fn(),
+      };
+      if (selector) return selector(store);
+      return store;
+    }
+  );
 });
+
+const renderComponent = (ui: ReactElement) =>
+  render(
+    <DefaultWeb3ProviderContext.Provider
+      value={{ providers: { 1: mockWeb3Provider() } }}
+    >
+      {ui}
+    </DefaultWeb3ProviderContext.Provider>
+  );
 
 describe('Deposit form', () => {
   it('renders with default values', async () => {
-    render(<DepositForm {...props} />);
+    renderComponent(<DepositForm {...props} />);
 
     // Assert default values (including) from/to provided by useVegaWallet and useWeb3React
     // Wait for first value to show as form is rendered conditionally based on chainId
@@ -94,7 +132,7 @@ describe('Deposit form', () => {
 
   describe('fields validation', () => {
     it('fails when submitted with empty required fields', async () => {
-      render(<DepositForm {...props} />);
+      renderComponent(<DepositForm {...props} />);
 
       fireEvent.submit(screen.getByTestId('deposit-form'));
 
@@ -111,7 +149,7 @@ describe('Deposit form', () => {
         isActive: false,
         account: '',
       });
-      render(<DepositForm {...props} />);
+      renderComponent(<DepositForm {...props} />);
 
       fireEvent.submit(screen.getByTestId('deposit-form'));
 
@@ -121,7 +159,7 @@ describe('Deposit form', () => {
     });
 
     it('fails when submitted with invalid vega wallet key', async () => {
-      render(<DepositForm {...props} />);
+      renderComponent(<DepositForm {...props} />);
 
       const invalidVegaKey = 'abc';
       fireEvent.change(screen.getByLabelText('To (Vega key)'), {
@@ -133,7 +171,7 @@ describe('Deposit form', () => {
     });
 
     it('fails when submitted amount is more than the amount available in the ethereum wallet', async () => {
-      render(<DepositForm {...props} />);
+      renderComponent(<DepositForm {...props} />);
 
       // Max amount validation
       const amountMoreThanAvailable = '7';
@@ -151,7 +189,7 @@ describe('Deposit form', () => {
     });
 
     it('fails when submitted amount is more than the maximum limit', async () => {
-      render(<DepositForm {...props} selectedAsset={asset} />);
+      renderComponent(<DepositForm {...props} selectedAsset={asset} />);
 
       const amountMoreThanLimit = '21';
       fireEvent.change(screen.getByLabelText('Amount'), {
@@ -167,7 +205,7 @@ describe('Deposit form', () => {
     });
 
     it('fails when submitted amount is more than the approved amount', async () => {
-      render(
+      renderComponent(
         <DepositForm
           {...props}
           balances={{
@@ -194,7 +232,7 @@ describe('Deposit form', () => {
 
     it('fails when submitted amount is less than the minimum limit', async () => {
       // Min amount validation
-      render(<DepositForm {...props} selectedAsset={asset} />); // Render with selected asset so we have asset.decimals
+      renderComponent(<DepositForm {...props} selectedAsset={asset} />); // Render with selected asset so we have asset.decimals
 
       const amountLessThanMinViable = '0.00001';
       fireEvent.change(screen.getByLabelText('Amount'), {
@@ -208,7 +246,7 @@ describe('Deposit form', () => {
     });
 
     it('fails when submitted amount is less than zero', async () => {
-      render(<DepositForm {...props} />);
+      renderComponent(<DepositForm {...props} />);
 
       const amountLessThanZero = '-0.00001';
       fireEvent.change(screen.getByLabelText('Amount'), {
@@ -231,9 +269,10 @@ describe('Deposit form', () => {
       account: MOCK_ETH_ADDRESS,
       isActive: true,
       connector: mockConnector,
+      chainId: 1,
     });
 
-    render(
+    renderComponent(
       <DepositForm
         {...props}
         balances={{
@@ -270,12 +309,13 @@ describe('Deposit form', () => {
       account,
       isActive: true,
       connector: mockConnector,
+      chainId: 1,
     });
 
     const balance = new BigNumber(50);
     const max = new BigNumber(20);
     const deposited = new BigNumber(10);
-    render(
+    renderComponent(
       <DepositForm
         {...props}
         balances={{
@@ -312,12 +352,12 @@ describe('Deposit form', () => {
   });
 
   it('shows "View asset details" button when an asset is selected', async () => {
-    render(<DepositForm {...props} selectedAsset={asset} />);
+    renderComponent(<DepositForm {...props} selectedAsset={asset} />);
     expect(await screen.findByTestId('view-asset-details')).toBeInTheDocument();
   });
 
   it('does not shows "View asset details" button when no asset is selected', async () => {
-    render(<DepositForm {...props} />);
+    renderComponent(<DepositForm {...props} />);
     await waitFor(() => {
       expect(screen.queryAllByTestId('view-asset-details')).toHaveLength(0);
     });
@@ -329,7 +369,7 @@ describe('Deposit form', () => {
       account: '',
     });
 
-    render(<DepositForm {...props} />);
+    renderComponent(<DepositForm {...props} />);
 
     expect(
       await screen.findByRole('button', { name: 'Connect' })
@@ -343,8 +383,9 @@ describe('Deposit form', () => {
     (useWeb3React as jest.Mock).mockReturnValue({
       isActive: true,
       account: MOCK_ETH_ADDRESS,
+      chainId: 1,
     });
-    render(<DepositForm {...props} />);
+    renderComponent(<DepositForm {...props} />);
 
     expect(await screen.findByTestId('deposit-form')).toBeInTheDocument();
     expect(
@@ -361,18 +402,18 @@ describe('Deposit form', () => {
     (useWeb3React as jest.Mock).mockReturnValue({
       isActive: true,
       account: MOCK_ETH_ADDRESS,
-      chainId: 1,
+      chainId: 999999,
     });
     (useWeb3ConnectStore as unknown as jest.Mock).mockImplementationOnce(
       // eslint-disable-next-line
       (selector: (result: ReturnType<typeof useWeb3ConnectStore>) => any) => {
         return selector({
-          desiredChainId: 11155111,
+          chains: [1],
           open: jest.fn(),
         });
       }
     );
-    render(<DepositForm {...props} />);
+    renderComponent(<DepositForm {...props} />);
 
     expect(await screen.findByTestId('chain-error')).toHaveTextContent(
       /this app only works on/i
@@ -382,7 +423,7 @@ describe('Deposit form', () => {
   });
 
   it('Remaining deposit allowance tooltip should be rendered', async () => {
-    render(<DepositForm {...props} selectedAsset={asset} />);
+    renderComponent(<DepositForm {...props} selectedAsset={asset} />);
 
     expect(await screen.findByTestId('deposit-form')).toBeInTheDocument();
 
@@ -396,7 +437,7 @@ describe('Deposit form', () => {
   });
 
   it('Ethereum deposit cap tooltip should be rendered', async () => {
-    render(<DepositForm {...props} selectedAsset={asset} />);
+    renderComponent(<DepositForm {...props} selectedAsset={asset} />);
 
     expect(await screen.findByTestId('deposit-form')).toBeInTheDocument();
 

@@ -64,8 +64,18 @@ export const DepositsTable = (
         }: VegaICellRendererParams<DepositFieldsFragment, 'txHash'>) => {
           if (!data) return null;
           if (!value) return '-';
+
+          const assetChainId =
+            data.asset.source.__typename === 'ERC20'
+              ? Number(data.asset.source.chainId)
+              : undefined;
+
           return (
-            <EtherscanLink tx={value} data-testid="etherscan-link">
+            <EtherscanLink
+              sourceChainId={assetChainId}
+              tx={value}
+              data-testid="etherscan-link"
+            >
               {truncateByChars(value)}
             </EtherscanLink>
           );

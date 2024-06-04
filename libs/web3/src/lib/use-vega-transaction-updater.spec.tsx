@@ -139,9 +139,11 @@ const withdrawalBusEvent: WithdrawalBusEventFieldsFragment = {
     symbol: 'asset-symbol',
     decimals: 2,
     status: AssetStatus.STATUS_ENABLED,
+    quantum: '1',
     source: {
       __typename: 'ERC20',
       contractAddress: '0x123',
+      chainId: '1',
     },
   },
   createdTimestamp: '2022-07-05T14:25:47.815283706Z',

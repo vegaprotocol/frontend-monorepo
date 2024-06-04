@@ -192,10 +192,21 @@ export const CompleteCell = ({ data, complete }: CompleteCellProps) => {
 
 export const EtherscanLinkCell = ({
   value,
+  data,
 }: VegaValueFormatterParams<WithdrawalFieldsFragment, 'txHash'>) => {
   if (!value) return '-';
+
+  const assetChainId =
+    data?.asset.source.__typename === 'ERC20'
+      ? Number(data.asset.source.chainId)
+      : undefined;
+
   return (
-    <EtherscanLink tx={value} data-testid="etherscan-link">
+    <EtherscanLink
+      sourceChainId={assetChainId}
+      tx={value}
+      data-testid="etherscan-link"
+    >
       {truncateByChars(value)}
     </EtherscanLink>
   );
@@ -278,12 +289,22 @@ export const StatusCell = ({
 const RecipientCell = ({
   value,
   valueFormatted,
+  data,
 }: VegaICellRendererParams<
   WithdrawalFieldsFragment,
   'details.receiverAddress'
 >) => {
+  const assetChainId =
+    data?.asset.source.__typename === 'ERC20'
+      ? Number(data.asset.source.chainId)
+      : undefined;
+
   return (
-    <EtherscanLink address={value} data-testid="etherscan-link">
+    <EtherscanLink
+      sourceChainId={assetChainId}
+      address={value}
+      data-testid="etherscan-link"
+    >
       {valueFormatted}
     </EtherscanLink>
   );
