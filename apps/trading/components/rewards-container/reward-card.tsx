@@ -352,20 +352,18 @@ const RewardCard = ({
                     })}
                   </span>
                 </span>
-              ) : (
-                endsIn && (
-                  <span className="flex flex-col">
-                    <span className="text-muted text-xs">{t('Ends in')} </span>
-                    <span data-testid="ends-in" data-endsin={endsIn}>
-                      {endsIn >= 0
-                        ? t('numberEpochs', '{{count}} epochs', {
-                            count: endsIn,
-                          })
-                        : t('Ended')}
-                    </span>
+              ) : endsIn !== undefined ? (
+                <span className="flex flex-col">
+                  <span className="text-muted text-xs">{t('Ends in')} </span>
+                  <span data-testid="ends-in" data-endsin={endsIn}>
+                    {endsIn > 0
+                      ? t('numberEpochs', '{{count}} epochs', {
+                          count: endsIn,
+                        })
+                      : t('Ended')}
                   </span>
-                )
-              )}
+                </span>
+              ) : null}
               {/** WINDOW LENGTH */}
               <span className="flex flex-col">
                 <span className="text-muted text-xs">{t('Assessed over')}</span>
