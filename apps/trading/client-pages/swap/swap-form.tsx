@@ -1,199 +1,255 @@
-import { useState } from 'react';
-import type { AssetFieldsFragment } from '@vegaprotocol/assets';
-import { EmblemByAsset } from '@vegaprotocol/emblem';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-  TradingInput,
-  VegaIcon,
-  VegaIconNames,
-} from '@vegaprotocol/ui-toolkit';
-import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
-import { useChainId } from '@vegaprotocol/wallet-react';
+import { useMemo, useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { Link, VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useT } from '../../lib/use-t';
-import classNames from 'classnames';
+import {
+  addDecimal,
+  addDecimalsFormatNumber,
+  formatNumber,
+  removeDecimal,
+  roundUpToTickSize,
+} from '@vegaprotocol/utils';
+import { OrderTimeInForce, OrderType, Side } from '@vegaprotocol/types';
+import { getNotionalSize } from '@vegaprotocol/deal-ticket';
+import { AssetInput, SwapButton, PriceImpactInput } from './swap-form-elements';
+import BigNumber from 'bignumber.js';
+import { Links } from '../../lib/links';
+import type { Account } from '@vegaprotocol/accounts';
+import type { AssetFieldsFragment } from '@vegaprotocol/assets';
+import type {
+  MarketDataFieldsFragment,
+  MarketFieldsFragment,
+} from '@vegaprotocol/markets';
+import { noop } from 'lodash';
+import type { useNavigate } from 'react-router-dom';
+import { useVegaTransactionStore } from '@vegaprotocol/web3';
 
-export const AssetInput = ({
-  label,
-  amount,
-  asset,
-  balance,
-  accountAssetIds,
-  assets,
-  onAmountChange,
-  onAssetChange,
-  accountWarning = true,
-  pubKey,
+export interface SwapFields {
+  baseId: string;
+  quoteId: string;
+  baseAmount: string;
+  quoteAmount: string;
+  priceImpactTolerance: string;
+}
+
+const assetBalance = (
+  asset?: AssetFieldsFragment,
+  accounts?: Account[] | null
+) => {
+  if (!asset || !accounts) return undefined;
+  const account = accounts.find((a) => a.asset.id === asset.id);
+  return account?.balance;
+};
+
+const derivePrice = (
+  marketData: MarketDataFieldsFragment | null,
+  side: Side,
+  toleranceFactor: number,
+  market: MarketFieldsFragment
+) => {
+  if (!marketData) return;
+  const isBid = side === Side.SIDE_SELL;
+  const price = isBid
+    ? new BigNumber(marketData.bestBidPrice).times(1 - toleranceFactor)
+    : new BigNumber(marketData.bestOfferPrice).times(1 + toleranceFactor);
+  return roundUpToTickSize(price, market.tickSize, isBid);
+};
+
+export const SwapForm = ({
+  marketId,
+  marketData,
+  baseAsset,
+  quoteAsset,
+  side,
+  market,
+  accounts,
+  assets: spotAssets,
+  setSide,
+  setBaseAsset,
+  setQuoteAsset,
+  navigate,
+  chooseMarket,
 }: {
-  label: string;
-  amount: string;
-  asset?: AssetFieldsFragment;
-  balance?: string;
-  accountAssetIds?: string[];
-  assets?: Record<string, AssetFieldsFragment>;
-  onAmountChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onAssetChange: (asset: AssetFieldsFragment) => void;
-  accountWarning?: boolean;
-  pubKey?: string;
+  marketId: string;
+  marketData: MarketDataFieldsFragment | null;
+  assets?: Record<string, AssetFieldsFragment> | null;
+  baseAsset?: AssetFieldsFragment;
+  quoteAsset?: AssetFieldsFragment;
+  side?: Side;
+  market?: MarketFieldsFragment;
+  accounts?: Account[] | null;
+  chooseMarket: () => void;
+  setBaseAsset: (asset?: AssetFieldsFragment) => void;
+  setQuoteAsset: (asset?: AssetFieldsFragment) => void;
+  setSide: (side: Side) => void;
+  navigate: ReturnType<typeof useNavigate>;
 }) => {
   const t = useT();
+  const { watch, setValue, handleSubmit } = useForm<SwapFields>();
+  const { baseAmount, quoteAmount, priceImpactTolerance } = watch();
+
+  const { pubKey, isReadOnly } = useVegaWallet();
+  const create = useVegaTransactionStore((state) => state.create);
+
+  const quoteAssetBalance = useMemo(
+    () => assetBalance(quoteAsset, accounts),
+    [accounts, quoteAsset]
+  );
+  const baseAssetBalance = useMemo(
+    () => assetBalance(baseAsset, accounts),
+    [accounts, baseAsset]
+  );
+
+  const marketPrice = useMemo(() => {
+    return (
+      (side === Side.SIDE_BUY
+        ? marketData?.bestOfferPrice // best ask
+        : marketData?.bestBidPrice) || // best bid
+      marketData?.lastTradedPrice
+    );
+  }, [marketData, side]);
+
+  const orderSubmission = useMemo(() => {
+    if (!market || !side || !quoteAmount || quoteAmount === '0') return;
+
+    const toleranceFactor = priceImpactTolerance
+      ? Number(priceImpactTolerance) / 100
+      : 0;
+
+    const price = derivePrice(marketData, side, toleranceFactor, market);
+
+    return {
+      marketId,
+      side,
+      type: price ? OrderType.TYPE_LIMIT : OrderType.TYPE_MARKET,
+      price: price ? price.toFixed(0) : undefined,
+      timeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK,
+      size: removeDecimal(quoteAmount, market.positionDecimalPlaces),
+    };
+  }, [market, marketData, marketId, priceImpactTolerance, quoteAmount, side]);
+
+  const switchAssets = () => {
+    const newBaseAsset = quoteAsset;
+    const newQuoteAsset = baseAsset;
+    setBaseAsset(newBaseAsset);
+    setQuoteAsset(newQuoteAsset);
+    newBaseAsset && newQuoteAsset && chooseMarket();
+  };
+
+  const switchAmounts = () => {
+    setValue('quoteAmount', baseAmount);
+  };
+
+  const onSubmit = () => {
+    if (!marketId || !side || !market || !orderSubmission) return;
+    create({ orderSubmission });
+  };
+
+  useEffect(() => {
+    if (!orderSubmission || !market) return;
+    if (side === Side.SIDE_SELL && quoteAsset) {
+      const notionalSize = getNotionalSize(
+        marketPrice,
+        orderSubmission.size,
+        market.decimalPlaces,
+        market.positionDecimalPlaces,
+        market.decimalPlaces
+      );
+      const baseAmount =
+        notionalSize && addDecimal(notionalSize, market.decimalPlaces);
+      setValue('baseAmount', baseAmount || '');
+    } else if (side === Side.SIDE_BUY) {
+      const price =
+        marketPrice && addDecimal(marketPrice, market.decimalPlaces);
+      const baseAmount = Number(quoteAmount) / (Number(price) || 1);
+      setValue('baseAmount', baseAmount.toString());
+    }
+  }, [
+    market,
+    marketPrice,
+    quoteAmount,
+    side,
+    orderSubmission,
+    quoteAsset,
+    setValue,
+  ]);
 
   return (
-    <div className="dark:bg-vega-cdark-700 bg-vega-clight-700 p-4 rounded-lg border-gray-700 border flex flex-col gap-1">
-      <span className="text-gray-500">{label}</span>
-      <div className="flex items-center justify-between flex-wrap gap-2">
-        <input
-          value={amount}
-          onChange={(e) => {
-            onAmountChange(e);
-          }}
-          className="w-[140px] dark:bg-vega-cdark-800 bg-vega-clight-500 p-2 rounded-lg mr-2 text-center"
-        />
-        <DropdownAsset
-          assetId={asset?.id}
-          onSelect={onAssetChange}
-          assets={assets}
-        />
-      </div>
-      <div className="flex justify-between items-center text-gray-500 text-sm">
-        <span>{/* {quoteAmount && `$${quoteAmount}`} */}</span>
-        {accountWarning &&
-        accountAssetIds &&
-        !!pubKey &&
-        asset &&
-        !accountAssetIds.includes(asset.id) ? (
-          <span className="text-xs">
-            {t(`You do not have this asset in your account`)}
-          </span>
-        ) : (
-          <span>
-            {balance !== undefined &&
-              asset !== undefined &&
-              t('Balance: {{balance}}', {
-                balance: addDecimalsFormatNumber(balance, asset.decimals),
-              })}
-          </span>
+    <form
+      onSubmit={!isReadOnly && pubKey ? handleSubmit(onSubmit) : noop}
+      noValidate
+      data-testid="swap-form"
+    >
+      <div className="flex justify-between items-center mb-4">
+        <h3 className="text-lg">{t('Swap')}</h3>
+        {marketId && (
+          <Link
+            onClick={() => navigate(Links.MARKET(marketId))}
+            className="text-sm text-gray-500 text-right"
+          >
+            {t('Go to market')} <VegaIcon name={VegaIconNames.ARROW_RIGHT} />
+          </Link>
         )}
       </div>
-    </div>
-  );
-};
-
-export const SwapButton = ({ onClick }: { onClick: () => void }) => (
-  <button
-    type="button"
-    className="flex justify-center p-2 w-fit rounded-full bg-vega-clight-700 dark:bg-black self-center -my-5 z-10 hover:bg-vega-clight-800 hover:dark:bg-vega-cdark-800 border-gray-400 border"
-    onClick={onClick}
-  >
-    <VegaIcon name={VegaIconNames.SWAP} size={18} />
-  </button>
-);
-
-export const PriceImpactInput = ({
-  value,
-  onValueChange,
-}: {
-  value: string;
-  onValueChange: (value: string) => void;
-}) => {
-  const t = useT();
-  const [, setPriceImpactType] = useState<'custom' | 'auto'>('custom');
-  const autoValues = ['0.1', '0.5', '1.0'];
-
-  return (
-    <div className="mb-4">
-      <div className="flex justify-between items-center mb-1 mt-2 text-gray-500 text-sm">
-        <span>{t('Price impact tolerance')}</span>
+      <div className="flex flex-col w-full gap-2">
+        <AssetInput
+          label={t('You pay')}
+          amount={quoteAmount || ''}
+          onAmountChange={(e) => setValue('quoteAmount', e.target.value)}
+          asset={quoteAsset}
+          onAssetChange={setQuoteAsset}
+          balance={quoteAssetBalance}
+          accountAssetIds={accounts?.map((a) => a.asset.id)}
+          assets={spotAssets}
+          pubKey={pubKey}
+        />
+        <SwapButton
+          onClick={() => {
+            switchAssets();
+            switchAmounts();
+          }}
+        />
+        <AssetInput
+          label={t('You receive')}
+          amount={baseAmount || ''}
+          asset={baseAsset}
+          balance={baseAssetBalance}
+          accountAssetIds={accounts?.map((a) => a.asset.id)}
+          assets={spotAssets}
+          onAssetChange={setBaseAsset}
+          onAmountChange={(e) => setValue('baseAmount', e.target.value)}
+          accountWarning={false}
+          pubKey={pubKey}
+        />
       </div>
-      <div className="flex items-center">
-        <span className="w-16 h-10 rounded-lg mr-2 text-center text-md">
-          {value || ''} %
-        </span>
+      <PriceImpactInput
+        value={priceImpactTolerance || ''}
+        onValueChange={(e) => setValue('priceImpactTolerance', e)}
+      />
+      <button
+        type="submit"
+        className="w-full hover:bg-vega-blue-600 bg-vega-blue-500 p-4 rounded-lg text-white"
+      >
+        {t('Swap now')}
+      </button>
+      <div className="mt-4 text-left text-gray-500">
+        {quoteAsset &&
+          quoteAmount &&
+          baseAsset &&
+          baseAmount &&
+          `${formatNumber(quoteAmount, 4)} ${
+            quoteAsset.symbol
+          } = ${formatNumber(baseAmount, 4)} ${baseAsset.symbol}`}
       </div>
-      <div className="flex items-center flex-wrap">
-        {autoValues.map((val) => (
-          <button
-            key={val}
-            type="button"
-            value={value}
-            onClick={() => {
-              onValueChange(val);
-              setPriceImpactType('auto');
-            }}
-            className={classNames(
-              'h-8 text-md dark:bg-vega-cdark-500 bg-vega-clight-500 p-2 rounded-lg mr-2 text-center text-sm',
-              {
-                'dark:bg-vega-cdark-700 bg-vega-clight-700': val === value,
-              }
-            )}
-          >
-            {val} %
-          </button>
-        ))}
 
-        <div className="flex flex-1">
-          <p className="pt-2 pr-2 text-sm">{t('Custom')}: </p>
-          <TradingInput
-            type="number"
-            value={value}
-            onChange={(e) => {
-              onValueChange(e.target.value);
-              setPriceImpactType('custom');
-            }}
-            appendElement="%"
-            className="h-10 text-md dark:bg-vega-cdark-800 bg-vega-clight-500 p-2 rounded-lg mr-2 text-center"
-          />
-        </div>
+      <div className="mt-2 text-left text-gray-500">
+        {marketPrice &&
+          market &&
+          `${side === Side.SIDE_BUY ? t('Best ask') : t('Best bid')} ${
+            market?.tradableInstrument.instrument.code
+          }: ${addDecimalsFormatNumber(marketPrice, market.decimalPlaces)}`}
       </div>
-    </div>
-  );
-};
-
-export const DropdownAsset = ({
-  assetId,
-  onSelect,
-  assets,
-}: {
-  assetId?: string;
-  onSelect: (asset: AssetFieldsFragment) => void;
-  assets?: Record<string, AssetFieldsFragment>;
-}) => {
-  const { chainId } = useChainId();
-  const asset = assetId ? assets?.[assetId] : null;
-  return (
-    <DropdownMenu
-      trigger={
-        <DropdownMenuTrigger
-          asChild
-          className="flex items-center px-2 py-2 border-gray-400 border rounded-full h-12"
-        >
-          {asset && <EmblemByAsset asset={asset.id} vegaChain={chainId} />}
-          <span className="pl-2">{asset ? asset.symbol : 'Select coin'}</span>
-          <VegaIcon
-            name={VegaIconNames.CHEVRON_DOWN}
-            size={14}
-            className="w-5 h-5 ml-2 flex items-center justify-center"
-          />
-        </DropdownMenuTrigger>
-      }
-    >
-      <DropdownMenuContent className="bg-gray-700 rounded-md mt-2">
-        {assets &&
-          Object.values(assets).map((asset) => (
-            <DropdownMenuItem
-              onClick={() => {
-                onSelect(asset);
-              }}
-              key={asset.id}
-              className="px-4 py-2 dark:text-gray-200 hover:bg-gray-600 flex items-center"
-            >
-              <EmblemByAsset asset={asset.id} vegaChain={chainId} />
-              {asset.symbol}
-            </DropdownMenuItem>
-          ))}
-      </DropdownMenuContent>
-    </DropdownMenu>
+    </form>
   );
 };
