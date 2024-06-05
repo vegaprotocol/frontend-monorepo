@@ -33,7 +33,7 @@ const getClassName = (
   className?: string
 ) =>
   classNames(
-    'flex gap-2 items-center justify-center rounded disabled:opacity-40',
+    'flex gap-2 items-center justify-center rounded-lg disabled:opacity-40',
     // size
     {
       'h-12': !subLabel && size === 'large',
@@ -71,11 +71,13 @@ const getClassName = (
         intent === Intent.Danger && minimal,
       'bg-transparent enabled:hover:bg-vega-green-400 dark:enabled:hover:bg-vega-green-600':
         intent === Intent.Success && minimal,
+      'bg-vega-blue-500 enabled:hover:bg-vega-blue-600':
+        intent === Intent.Submit,
     },
     // text
     {
+      'text-white': intent === Intent.Submit,
       'text-vega-clight-50 dark:text-vega-cdark-50': intent !== Intent.Primary,
-
       // If its primary the text must always be dark enough for a yellow background
       'text-vega-clight-50': intent === Intent.Primary,
       '[&_[data-sub-label]]:text-vega-clight-100': intent === Intent.Primary,

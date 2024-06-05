@@ -6,6 +6,8 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  Intent,
+  TradingButton,
   TradingInput,
   VegaIcon,
   VegaIconNames,
@@ -129,7 +131,12 @@ export const PriceImpactInput = ({
       </div>
       <div className="flex items-center flex-wrap">
         {autoValues.map((val) => (
-          <button
+          <TradingButton
+            intent={Intent.None}
+            size="small"
+            className={classNames('mr-2', {
+              'dark:bg-vega-cdark-700 bg-vega-clight-700': val === value,
+            })}
             key={val}
             type="button"
             value={value}
@@ -137,16 +144,10 @@ export const PriceImpactInput = ({
               onValueChange(val);
               setPriceImpactType('auto');
             }}
-            className={classNames(
-              'h-8 text-md dark:bg-vega-cdark-500 bg-vega-clight-500 px-2 rounded-lg mr-2 text-center text-sm',
-              {
-                'dark:bg-vega-cdark-700 bg-vega-clight-700': val === value,
-              }
-            )}
             data-testid={`auto-value-${val}`}
           >
             {val}%
-          </button>
+          </TradingButton>
         ))}
 
         <div className="flex flex-1">

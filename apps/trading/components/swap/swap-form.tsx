@@ -1,6 +1,11 @@
 import { type FormEvent, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
+import {
+  Intent,
+  TradingButton,
+  VegaIcon,
+  VegaIconNames,
+} from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useT } from '../../lib/use-t';
 import {
@@ -211,7 +216,6 @@ export const SwapForm = ({
           asset={quoteAsset}
           onAssetChange={(asset) => {
             setQuoteAsset(asset);
-            // TODO: ensure prices update after asset change
           }}
           balance={quoteAssetBalance}
           accountAssetIds={accounts?.map((a) => a.asset.id)}
@@ -229,7 +233,6 @@ export const SwapForm = ({
           assets={spotAssets}
           onAssetChange={(asset) => {
             setBaseAsset(asset);
-            // TODO: ensure prices update after asset change
           }}
           onAmountChange={(e) => {
             const baseAmount = e.target.value;
@@ -255,14 +258,13 @@ export const SwapForm = ({
         data-testid="price-impact-input"
       />
 
-      <button
-        // TODO: this button should be a TradingButton with a new variant for the rich blue color
+      <TradingButton
         type="submit"
-        className="w-full hover:bg-vega-blue-600 bg-vega-blue-500 p-4 rounded-lg text-white"
+        intent={Intent.Submit}
         data-testid="swap-now-button"
       >
         {t('Swap now')}
-      </button>
+      </TradingButton>
       <div className="text-left text-gray-500">
         {quoteAsset &&
           quoteAmount &&
