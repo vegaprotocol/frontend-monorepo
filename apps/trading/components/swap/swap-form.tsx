@@ -265,22 +265,23 @@ export const SwapForm = ({
       >
         {t('Swap now')}
       </TradingButton>
-      <div className="text-left text-gray-500">
-        {quoteAsset &&
-          quoteAmount &&
-          baseAsset &&
-          baseAmount &&
-          `${formatNumber(quoteAmount, 4)} ${
-            quoteAsset.symbol
-          } = ${formatNumber(baseAmount, 4)} ${baseAsset.symbol}`}
-      </div>
-
-      <div className="text-left text-gray-500">
-        {marketPrice &&
-          market &&
-          `${side === Side.SIDE_BUY ? t('Best ask') : t('Best bid')} ${
-            market?.tradableInstrument.instrument.code
-          }: ${addDecimalsFormatNumber(marketPrice, market.decimalPlaces)}`}
+      <div className="text-left flex flex-col gap-1">
+        <p>
+          {quoteAsset &&
+            quoteAmount &&
+            baseAsset &&
+            baseAmount &&
+            `${formatNumber(quoteAmount, 4)} ${
+              quoteAsset.symbol
+            } = ${formatNumber(baseAmount, 4)} ${baseAsset.symbol}`}
+        </p>
+        <p className="text-secondary">
+          {marketPrice &&
+            market &&
+            `${side === Side.SIDE_BUY ? t('Best ask') : t('Best bid')} ${
+              market?.tradableInstrument.instrument.code
+            }: ${addDecimalsFormatNumber(marketPrice, market.decimalPlaces)}`}
+        </p>
       </div>
     </form>
   );

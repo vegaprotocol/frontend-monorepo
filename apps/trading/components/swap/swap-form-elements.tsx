@@ -59,6 +59,7 @@ export const AssetInput = ({
       <div className="flex items-center gap-px">
         <div className="flex-grow">
           <input
+            type="number"
             ref={inputRef}
             value={amount}
             onChange={(e) => {
@@ -122,14 +123,14 @@ export const PriceImpactInput = ({
   const autoValues = ['0.1', '0.5', '1.0'];
 
   return (
-    <div className="flex flex-col gap-2">
-      <label className="text-secondary">{t('Price impact tolerance')}</label>
-      <div className="flex items-center">
-        <span className="w-16 h-10 rounded-lg mr-2 text-center text-md">
-          {value || ''}%
-        </span>
+    <div className="flex flex-col gap-1">
+      <label className="text-secondary text-xs">
+        {t('Price impact tolerance')}
+      </label>
+      <div className="flex">
+        <span className="text-md">{value || ''}%</span>
       </div>
-      <div className="flex items-center flex-wrap">
+      <div className="flex flex-wrap mt-1">
         {autoValues.map((val) => (
           <TradingButton
             intent={Intent.None}
@@ -151,7 +152,7 @@ export const PriceImpactInput = ({
         ))}
 
         <div className="flex flex-1">
-          <p className="pt-2 pr-2 text-sm">{t('Custom')}: </p>
+          <p className="pt-2 pr-2 text-secondary text-xs">{t('Custom')}: </p>
           <TradingInput
             type="number"
             value={value}
