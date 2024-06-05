@@ -45,6 +45,7 @@ type ToastProps = Toast & {
 export const toastIconMapping: { [i in Intent]: IconName } = {
   [Intent.None]: IconNames.HELP,
   [Intent.Primary]: IconNames.INFO_SIGN,
+  [Intent.Submit]: IconNames.INFO_SIGN,
   [Intent.Info]: IconNames.INFO_SIGN,
   [Intent.Success]: IconNames.TICK_CIRCLE,
   [Intent.Warning]: IconNames.WARNING_SIGN,
