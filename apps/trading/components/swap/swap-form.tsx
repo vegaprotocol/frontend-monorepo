@@ -127,7 +127,10 @@ export const SwapForm = ({
   };
 
   useEffect(() => {
+    // If we haven't derived a side we can't know how to update the amounts
     if (!side) return;
+
+    // Avoid updating amounts if the current derived price has not changed
     if (marketPrice === prevMarketPrice) return;
 
     if (side === Side.SIDE_BUY) {
