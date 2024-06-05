@@ -124,7 +124,7 @@ export const PriceImpactInput = ({
 
   return (
     <div className="flex flex-col gap-1">
-      <label className="text-secondary text-xs">
+      <label className="text-secondary text-sm">
         {t('Price impact tolerance')}
       </label>
       <div className="flex">
@@ -152,7 +152,7 @@ export const PriceImpactInput = ({
         ))}
 
         <div className="flex flex-1">
-          <p className="pt-2 pr-2 text-secondary text-xs">{t('Custom')}: </p>
+          <p className="pt-2 pr-2 text-secondary text-sm">{t('Custom')}: </p>
           <TradingInput
             type="number"
             value={value}
