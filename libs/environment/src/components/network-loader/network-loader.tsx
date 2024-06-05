@@ -4,6 +4,7 @@ import type { InMemoryCacheConfig } from '@apollo/client';
 import { ApolloProvider } from '@apollo/client';
 import { useEnvironment } from '../../hooks';
 import { createClient } from '@vegaprotocol/apollo-client';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 type NetworkLoaderProps = {
   children?: ReactNode;
@@ -11,6 +12,8 @@ type NetworkLoaderProps = {
   failure?: ReactNode;
   cache?: InMemoryCacheConfig;
 };
+
+const queryClient = new QueryClient();
 
 export function NetworkLoader({
   skeleton,
@@ -43,5 +46,9 @@ export function NetworkLoader({
     return <>{skeleton}</>;
   }
 
-  return <ApolloProvider client={client}>{children}</ApolloProvider>;
+  return (
+    <ApolloProvider client={client}>
+      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    </ApolloProvider>
+  );
 }
