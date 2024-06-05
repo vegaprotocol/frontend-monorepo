@@ -3,9 +3,7 @@ fragment DepositFields on Deposit {
   status
   amount
   asset {
-    id
-    symbol
-    decimals
+    ...AssetFields
   }
   createdTimestamp
   creditedTimestamp
