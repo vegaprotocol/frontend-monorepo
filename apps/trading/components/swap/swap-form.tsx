@@ -160,7 +160,17 @@ export const SwapForm = ({
       setQuoteAmount(amount);
       return;
     }
-  }, [side, marketPrice, prevMarketPrice, baseAsset, quoteAsset]);
+  }, [
+    side,
+    marketPrice,
+    prevMarketPrice,
+    baseAsset,
+    quoteAsset,
+    quoteAmount,
+    marketData,
+    market,
+    baseAmount,
+  ]);
 
   return (
     <form
@@ -201,8 +211,7 @@ export const SwapForm = ({
           asset={quoteAsset}
           onAssetChange={(asset) => {
             setQuoteAsset(asset);
-
-            // TODO: ensure prices update after asset changge
+            // TODO: ensure prices update after asset change
           }}
           balance={quoteAssetBalance}
           accountAssetIds={accounts?.map((a) => a.asset.id)}
@@ -220,8 +229,7 @@ export const SwapForm = ({
           assets={spotAssets}
           onAssetChange={(asset) => {
             setBaseAsset(asset);
-
-            // TODO: ensure prices update after asset changge
+            // TODO: ensure prices update after asset change
           }}
           onAmountChange={(e) => {
             const baseAmount = e.target.value;
@@ -255,7 +263,7 @@ export const SwapForm = ({
       >
         {t('Swap now')}
       </button>
-      <div className="mt-4 text-left text-gray-500">
+      <div className="text-left text-gray-500">
         {quoteAsset &&
           quoteAmount &&
           baseAsset &&
@@ -265,7 +273,7 @@ export const SwapForm = ({
           } = ${formatNumber(baseAmount, 4)} ${baseAsset.symbol}`}
       </div>
 
-      <div className="mt-2 text-left text-gray-500">
+      <div className="text-left text-gray-500">
         {marketPrice &&
           market &&
           `${side === Side.SIDE_BUY ? t('Best ask') : t('Best bid')} ${
