@@ -1,7 +1,6 @@
 export enum Intent {
   None,
   Primary,
-  Secondary,
   Submit,
   Danger,
   Info,
