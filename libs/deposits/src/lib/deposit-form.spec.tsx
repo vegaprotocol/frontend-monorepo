@@ -119,9 +119,7 @@ describe('Deposit form', () => {
 
     // Assert default values (including) from/to provided by useVegaWallet and useWeb3React
     // Wait for first value to show as form is rendered conditionally based on chainId
-    expect(
-      await screen.findByText('From (Ethereum address)')
-    ).toBeInTheDocument();
+    expect(screen.queryByTestId('ethereum-address')).toBeInTheDocument();
     expect(screen.getByTestId('ethereum-address')).toHaveTextContent(
       truncateMiddle(MOCK_ETH_ADDRESS)
     );
@@ -374,9 +372,7 @@ describe('Deposit form', () => {
     expect(
       await screen.findByRole('button', { name: 'Connect' })
     ).toBeInTheDocument();
-    expect(
-      screen.queryByLabelText('From (Ethereum address)')
-    ).not.toBeInTheDocument();
+    expect(screen.queryByTestId('ethereum-address')).not.toBeInTheDocument();
   });
 
   it('renders a disabled input if Ethereum wallet is connected', async () => {
@@ -391,7 +387,6 @@ describe('Deposit form', () => {
     expect(
       screen.queryByRole('button', { name: 'Connect' })
     ).not.toBeInTheDocument();
-    expect(screen.getByText('From (Ethereum address)')).toBeInTheDocument();
     expect(screen.getByTestId('ethereum-address')).toHaveTextContent(
       truncateMiddle(MOCK_ETH_ADDRESS)
     );
@@ -441,7 +436,7 @@ describe('Deposit form', () => {
 
     expect(await screen.findByTestId('deposit-form')).toBeInTheDocument();
 
-    await userEvent.hover(screen.getByText('Ethereum deposit cap'));
+    await userEvent.hover(screen.getByText('Deposit cap'));
 
     expect(
       await screen.findByRole('tooltip', {

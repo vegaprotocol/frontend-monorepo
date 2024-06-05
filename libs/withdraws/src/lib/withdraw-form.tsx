@@ -36,6 +36,7 @@ import {
   useWeb3Disconnect,
   getChainName,
   type AssetData,
+  ETHEREUM_CHAIN_ID,
 } from '@vegaprotocol/web3';
 import { AssetBalance } from './asset-balance';
 import { DocsLinks } from '@vegaprotocol/environment';
@@ -232,7 +233,11 @@ export const WithdrawForm = ({
         </TradingFormGroup>
 
         <TradingFormGroup
-          label={t('To (Ethereum address)')}
+          label={t('To ({{chainName}} address)', {
+            chainName: selectedAsset?.chainId
+              ? getChainName(selectedAsset.chainId)
+              : ETHEREUM_CHAIN_ID,
+          })}
           labelFor="ethereum-address"
         >
           <Controller

@@ -22,8 +22,8 @@ export const isSupportedChainId = (chainId: number): chainId is ChainId => {
 };
 
 export const ChainIdMap: Record<ChainId, string> = {
-  [ETHEREUM_SEPOLIA_CHAIN_ID]: 'Sepolia',
-  [ETHEREUM_CHAIN_ID]: 'Mainnet',
+  [ETHEREUM_SEPOLIA_CHAIN_ID]: 'Ethereum (Sepolia)',
+  [ETHEREUM_CHAIN_ID]: 'Ethereum',
   [ARBITRUM_CHAIN_ID]: 'Arbitrum',
   [ARBITRUM_SEPOLIA_CHAIN_ID]: 'Arbitrum (Sepolia)',
 };
