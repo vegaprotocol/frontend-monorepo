@@ -1,4 +1,4 @@
-import { useState, type ChangeEvent } from 'react';
+import { useState, type ChangeEvent, useRef } from 'react';
 import type { AssetFieldsFragment } from '@vegaprotocol/assets';
 import { EmblemByAsset } from '@vegaprotocol/emblem';
 import {
@@ -33,7 +33,7 @@ export const AssetInput = ({
   asset?: AssetFieldsFragment;
   balance?: string;
   accountAssetIds?: string[];
-  assets?: Record<string, AssetFieldsFragment> | null;
+  assets: AssetFieldsFragment[];
   onAmountChange: (e: ChangeEvent<HTMLInputElement>) => void;
   onAssetChange: (asset: AssetFieldsFragment) => void;
   accountWarning?: boolean;
@@ -41,22 +41,31 @@ export const AssetInput = ({
   testId: string;
 }) => {
   const t = useT();
+  const inputRef = useRef<HTMLInputElement>(null);
 
   return (
     <div
-      className="dark:bg-vega-cdark-700 bg-vega-clight-700 p-4 rounded-lg border-gray-700 border flex flex-col gap-1"
+      className="dark:focus-within:bg-vega-cdark-800 focus-within:bg-vega-clight-800 dark:bg-vega-cdark-700 bg-vega-clight-700 py-2 px-4 rounded-lg border-gray-700 border flex flex-col gap-1 cursor-pointer"
       data-testid={testId}
+      role="button"
+      // No need for tabindex as the input can be tabbed to
+      tabIndex={-1}
+      onClick={() => inputRef.current?.focus()}
+      onKeyUp={(e) => e.code === 'Enter' && inputRef.current?.focus()}
     >
-      <span className="text-gray-500">{label}</span>
-      <div className="flex items-center justify-between flex-wrap gap-2">
-        <input
-          value={amount}
-          onChange={(e) => {
-            onAmountChange(e);
-          }}
-          className="w-[140px] dark:bg-vega-cdark-800 bg-vega-clight-500 p-2 rounded-lg mr-2 text-center"
-          data-testid={`${testId}-amount-input`}
-        />
+      <label className="text-sm text-secondary">{label}</label>
+      <div className="flex items-center gap-px">
+        <div className="flex-grow">
+          <input
+            ref={inputRef}
+            value={amount}
+            onChange={(e) => {
+              onAmountChange(e);
+            }}
+            className="w-full bg-transparent p-2 focus:outline-none text-4xl cursor-pointer"
+            data-testid={`${testId}-amount-input`}
+          />
+        </div>
         <DropdownAsset
           assetId={asset?.id}
           onSelect={onAssetChange}
@@ -64,7 +73,7 @@ export const AssetInput = ({
           testId={`${testId}-dropdown`}
         />
       </div>
-      <div className="flex justify-between items-center text-gray-500 text-sm">
+      <div className="flex justify-between items-center text-secondary text-sm">
         <span>{/* {quoteAmount && `$${quoteAmount}`} */}</span>
         {accountWarning &&
         accountAssetIds &&
@@ -111,13 +120,11 @@ export const PriceImpactInput = ({
   const autoValues = ['0.1', '0.5', '1.0'];
 
   return (
-    <div className="mb-4">
-      <div className="flex justify-between items-center mb-1 mt-2 text-gray-500 text-sm">
-        <span>{t('Price impact tolerance')}</span>
-      </div>
+    <div className="flex flex-col gap-2">
+      <label className="text-secondary">{t('Price impact tolerance')}</label>
       <div className="flex items-center">
         <span className="w-16 h-10 rounded-lg mr-2 text-center text-md">
-          {value || ''} %
+          {value || ''}%
         </span>
       </div>
       <div className="flex items-center flex-wrap">
@@ -138,7 +145,7 @@ export const PriceImpactInput = ({
             )}
             data-testid={`auto-value-${val}`}
           >
-            {val} %
+            {val}%
           </button>
         ))}
 
@@ -169,25 +176,34 @@ export const DropdownAsset = ({
 }: {
   assetId?: string;
   onSelect: (asset: AssetFieldsFragment) => void;
-  assets?: Record<string, AssetFieldsFragment> | null;
+  assets: AssetFieldsFragment[];
   testId: string;
 }) => {
+  const t = useT();
   const { chainId } = useChainId();
-  const asset = assetId ? assets?.[assetId] : null;
+  const asset = assetId ? assets.find((a) => a.id === assetId) : null;
   return (
     <DropdownMenu
       trigger={
         <DropdownMenuTrigger
           asChild
-          className="flex items-center px-2 py-2 border-gray-400 border rounded-full h-12"
+          className="flex items-center py-2 px-4 border rounded-full h-12 text-lg"
           data-testid={`${testId}-trigger`}
         >
-          {asset && <EmblemByAsset asset={asset.id} vegaChain={chainId} />}
-          <span className="pl-2">{asset ? asset.symbol : 'Select coin'}</span>
+          {asset ? (
+            <span className="flex items-center gap-2 -ml-2">
+              <span className="w-8 h-8">
+                <EmblemByAsset asset={asset.id} vegaChain={chainId} />
+              </span>
+              <span>{asset.symbol}</span>
+            </span>
+          ) : (
+            <span>{t('Select coin')}</span>
+          )}
           <VegaIcon
             name={VegaIconNames.CHEVRON_DOWN}
             size={14}
-            className="w-5 h-5 ml-2 flex items-center justify-center"
+            className="w-5 h-5 ml-4 flex items-center justify-center"
           />
         </DropdownMenuTrigger>
       }
@@ -196,20 +212,19 @@ export const DropdownAsset = ({
         className="bg-gray-700 rounded-md mt-2"
         data-testid={`${testId}-dropdown-content`}
       >
-        {assets &&
-          Object.values(assets).map((asset) => (
-            <DropdownMenuItem
-              onClick={() => {
-                onSelect(asset);
-              }}
-              key={asset.id}
-              className="px-4 py-2 dark:text-gray-200 hover:bg-gray-600 flex items-center"
-              data-testid={`${testId}-asset-${asset.id}`}
-            >
-              <EmblemByAsset asset={asset.id} vegaChain={chainId} />
-              {asset.symbol}
-            </DropdownMenuItem>
-          ))}
+        {assets.map((asset) => (
+          <DropdownMenuItem
+            onClick={() => {
+              onSelect(asset);
+            }}
+            key={asset.id}
+            className="px-4 py-2 dark:text-gray-200 hover:bg-gray-600 flex items-center"
+            data-testid={`${testId}-asset-${asset.id}`}
+          >
+            <EmblemByAsset asset={asset.id} vegaChain={chainId} />
+            {asset.symbol}
+          </DropdownMenuItem>
+        ))}
       </DropdownMenuContent>
     </DropdownMenu>
   );

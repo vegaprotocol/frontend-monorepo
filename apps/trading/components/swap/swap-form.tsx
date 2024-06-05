@@ -1,6 +1,6 @@
-import { useMemo } from 'react';
-import { useForm } from 'react-hook-form';
-import { Link, VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
+import { type FormEvent, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useT } from '../../lib/use-t';
 import {
@@ -9,31 +9,24 @@ import {
   formatNumber,
   removeDecimal,
   roundUpToTickSize,
+  toBigNum,
 } from '@vegaprotocol/utils';
 import { OrderTimeInForce, OrderType, Side } from '@vegaprotocol/types';
-import { getNotionalSize } from '@vegaprotocol/deal-ticket';
 import { AssetInput, SwapButton, PriceImpactInput } from './swap-form-elements';
 import BigNumber from 'bignumber.js';
 import { Links } from '../../lib/links';
 import type { Account } from '@vegaprotocol/accounts';
 import type { AssetFieldsFragment } from '@vegaprotocol/assets';
-import type {
-  MarketDataFieldsFragment,
-  MarketFieldsFragment,
+import {
+  getBaseAsset,
+  getQuoteAsset,
+  type MarketDataFieldsFragment,
+  type MarketFieldsFragment,
 } from '@vegaprotocol/markets';
-import { noop } from 'lodash';
-import type { useNavigate } from 'react-router-dom';
 import { useVegaTransactionStore } from '@vegaprotocol/web3';
+import { getNotionalSize } from '@vegaprotocol/deal-ticket';
 
-export interface SwapFields {
-  baseId: string;
-  quoteId: string;
-  baseAmount: string;
-  quoteAmount: string;
-  priceImpactTolerance: string;
-}
-
-const assetBalance = (
+const getQuoteAssetBalance = (
   asset?: AssetFieldsFragment,
   accounts?: Account[] | null
 ) => {
@@ -57,153 +50,128 @@ const derivePrice = (
 };
 
 export const SwapForm = ({
-  marketId,
   marketData,
   baseAsset,
   quoteAsset,
-  side,
   market,
   accounts,
   assets: spotAssets,
-  setSide,
   setBaseAsset,
   setQuoteAsset,
-  navigate,
-  chooseMarket,
 }: {
-  marketId: string;
+  market?: MarketFieldsFragment;
   marketData: MarketDataFieldsFragment | null;
-  assets?: Record<string, AssetFieldsFragment> | null;
+  assets: AssetFieldsFragment[];
   baseAsset?: AssetFieldsFragment;
   quoteAsset?: AssetFieldsFragment;
-  side?: Side;
-  market?: MarketFieldsFragment;
   accounts?: Account[] | null;
-  chooseMarket: () => void;
   setBaseAsset: (asset?: AssetFieldsFragment) => void;
   setQuoteAsset: (asset?: AssetFieldsFragment) => void;
-  setSide: (side: Side) => void;
-  navigate: ReturnType<typeof useNavigate>;
 }) => {
   const t = useT();
-  const { watch, setValue, handleSubmit } = useForm<SwapFields>();
-  const { quoteAmount, priceImpactTolerance } = watch();
+
+  const [quoteAmount, setQuoteAmount] = useState('');
+  const [baseAmount, setBaseAmount] = useState('');
+  const [tolerance, setTolerance] = useState('');
 
   const { pubKey, isReadOnly } = useVegaWallet();
   const create = useVegaTransactionStore((state) => state.create);
 
-  const quoteAssetBalance = useMemo(
-    () => assetBalance(quoteAsset, accounts),
-    [accounts, quoteAsset]
-  );
-  const baseAssetBalance = useMemo(
-    () => assetBalance(baseAsset, accounts),
-    [accounts, baseAsset]
-  );
+  const quoteAssetBalance = getQuoteAssetBalance(quoteAsset, accounts);
+  const baseAssetBalance = getQuoteAssetBalance(baseAsset, accounts);
 
-  const marketPrice = useMemo(() => {
-    return (
-      (side === Side.SIDE_BUY
-        ? marketData?.bestOfferPrice // best ask
-        : marketData?.bestBidPrice) || // best bid
-      marketData?.lastTradedPrice
-    );
-  }, [marketData, side]);
+  const side = useSide({ market, baseAsset, quoteAsset });
+  const marketPrice = useMarketPrice({ marketData, side });
 
-  const orderSubmission = useMemo(() => {
-    if (!market || !side || !quoteAmount || quoteAmount === '0') return;
+  const handleSwapAssets = () => {
+    const newBaseAsset = quoteAsset;
+    const newQuoteAsset = baseAsset;
+    setBaseAsset(newBaseAsset);
+    setQuoteAsset(newQuoteAsset);
 
-    const toleranceFactor = priceImpactTolerance
-      ? Number(priceImpactTolerance) / 100
-      : 0;
+    setBaseAmount(quoteAmount);
+    setQuoteAmount(baseAmount);
+  };
+
+  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.stopPropagation();
+
+    // Check users is connected
+    if (isReadOnly || !pubKey) return;
+
+    if (!market) return;
+
+    const toleranceFactor = tolerance ? Number(tolerance) / 100 : 0;
+
+    const side = deriveSide({ market, baseAsset, quoteAsset });
+
+    if (!side) {
+      throw new Error('could not derive side for swap');
+    }
 
     const price = derivePrice(marketData, side, toleranceFactor, market);
 
-    return {
-      marketId,
+    const orderSubmission = {
+      marketId: market.id,
       side,
       type: price ? OrderType.TYPE_LIMIT : OrderType.TYPE_MARKET,
       price: price ? price.toFixed(0) : undefined,
       timeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK,
       size: removeDecimal(quoteAmount, market.positionDecimalPlaces),
     };
-  }, [market, marketData, marketId, priceImpactTolerance, quoteAmount, side]);
 
-  const baseAmount = useMemo(() => {
-    if (!market || !orderSubmission) return '';
-
-    if (side === Side.SIDE_SELL && quoteAsset) {
-      const notionalSize = getNotionalSize(
-        marketPrice,
-        orderSubmission.size,
-        market.decimalPlaces,
-        market.positionDecimalPlaces,
-        market.decimalPlaces
-      );
-      return notionalSize ? addDecimal(notionalSize, market.decimalPlaces) : '';
-    } else if (side === Side.SIDE_BUY) {
-      const price = marketPrice
-        ? addDecimal(marketPrice, market.decimalPlaces)
-        : 0;
-      return (Number(quoteAmount) / (Number(price) || 1)).toString();
-    }
-    return '';
-  }, [market, marketPrice, quoteAmount, side, orderSubmission, quoteAsset]);
-
-  const switchAssets = () => {
-    const newBaseAsset = quoteAsset;
-    const newQuoteAsset = baseAsset;
-    setBaseAsset(newBaseAsset);
-    setQuoteAsset(newQuoteAsset);
-    newBaseAsset && newQuoteAsset && chooseMarket();
-  };
-
-  const switchAmounts = () => {
-    setValue('quoteAmount', baseAmount);
-  };
-
-  const onSubmit = () => {
-    if (!marketId || !side || !market || !orderSubmission) return;
     create({ orderSubmission });
   };
 
   return (
     <form
-      onSubmit={!isReadOnly && pubKey ? handleSubmit(onSubmit) : noop}
+      onSubmit={onSubmit}
       noValidate
       data-testid="swap-form"
+      className="flex flex-col gap-4"
     >
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex justify-between gap-2 items-center">
         <h3 className="text-lg">{t('Swap')}</h3>
-        {marketId && (
+        {market?.id && (
           <Link
-            onClick={() => navigate(Links.MARKET(marketId))}
-            className="text-sm text-gray-500 text-right"
+            to={Links.MARKET(market.id)}
+            className="flex items-center gap-2"
           >
-            {t('Go to market')} <VegaIcon name={VegaIconNames.ARROW_RIGHT} />
+            {t('Go to market')}{' '}
+            <VegaIcon name={VegaIconNames.ARROW_TOP_RIGHT} />
           </Link>
         )}
       </div>
-      <div className="flex flex-col w-full gap-2">
+      <div className="flex flex-col gap-2">
         <AssetInput
           label={t('You pay')}
-          amount={quoteAmount || ''}
-          onAmountChange={(e) => setValue('quoteAmount', e.target.value)}
+          amount={quoteAmount}
+          onAmountChange={(e) => {
+            const quoteAmount = e.target.value;
+            const baseAmount = deriveAmount({
+              amount: quoteAmount,
+              marketData,
+              market,
+              baseAsset,
+              quoteAsset,
+              userValue: 'quote',
+            });
+            setBaseAmount(baseAmount);
+            setQuoteAmount(quoteAmount);
+          }}
           asset={quoteAsset}
-          onAssetChange={setQuoteAsset}
+          onAssetChange={(asset) => {
+            setQuoteAsset(asset);
+
+            // TODO: ensure prices update after asset changge
+          }}
           balance={quoteAssetBalance}
           accountAssetIds={accounts?.map((a) => a.asset.id)}
           assets={spotAssets}
           pubKey={pubKey}
           testId="you-pay"
         />
-        <SwapButton
-          onClick={() => {
-            switchAssets();
-            switchAmounts();
-          }}
-          data-testid="swap-button"
-        />
+        <SwapButton onClick={handleSwapAssets} data-testid="swap-button" />
         <AssetInput
           label={t('You receive')}
           amount={baseAmount || ''}
@@ -211,19 +179,37 @@ export const SwapForm = ({
           balance={baseAssetBalance}
           accountAssetIds={accounts?.map((a) => a.asset.id)}
           assets={spotAssets}
-          onAssetChange={setBaseAsset}
-          onAmountChange={(e) => setValue('baseAmount', e.target.value)}
+          onAssetChange={(asset) => {
+            setBaseAsset(asset);
+
+            // TODO: ensure prices update after asset changge
+          }}
+          onAmountChange={(e) => {
+            const baseAmount = e.target.value;
+            const quoteAmount = deriveAmount({
+              amount: baseAmount,
+              marketData,
+              market,
+              baseAsset,
+              quoteAsset,
+              userValue: 'base',
+            });
+            setQuoteAmount(quoteAmount);
+            setBaseAmount(baseAmount);
+          }}
           accountWarning={false}
           pubKey={pubKey}
           testId="you-receive"
         />
       </div>
       <PriceImpactInput
-        value={priceImpactTolerance || ''}
-        onValueChange={(e) => setValue('priceImpactTolerance', e)}
+        value={tolerance}
+        onValueChange={(value) => setTolerance(value)}
         data-testid="price-impact-input"
       />
+
       <button
+        // TODO: this button should be a TradingButton with a new variant for the rich blue color
         type="submit"
         className="w-full hover:bg-vega-blue-600 bg-vega-blue-500 p-4 rounded-lg text-white"
         data-testid="swap-now-button"
@@ -249,4 +235,126 @@ export const SwapForm = ({
       </div>
     </form>
   );
+};
+
+/** Derive the amount to be received based on best bid/offer prices */
+const deriveAmount = ({
+  marketData,
+  amount,
+  market,
+  baseAsset,
+  quoteAsset,
+  userValue,
+}: {
+  marketData: MarketDataFieldsFragment | null;
+  amount?: string;
+  market?: MarketFieldsFragment;
+  baseAsset?: AssetFieldsFragment;
+  quoteAsset?: AssetFieldsFragment;
+  userValue: 'base' | 'quote';
+}) => {
+  if (!market || !amount) return '';
+
+  const side = deriveSide({ market, baseAsset, quoteAsset, userValue });
+
+  if (side === Side.SIDE_SELL) {
+    const price = marketData?.bestBidPrice || '0';
+    const notionalSize = getNotionalSize(
+      price,
+      removeDecimal(amount, market.positionDecimalPlaces),
+      market.decimalPlaces,
+      market.positionDecimalPlaces,
+      market.decimalPlaces
+    );
+    return notionalSize ? addDecimal(notionalSize, market.decimalPlaces) : '';
+  }
+
+  if (side === Side.SIDE_BUY) {
+    const price = toBigNum(
+      marketData?.bestOfferPrice || '0',
+      market.decimalPlaces
+    );
+    return new BigNumber(amount).dividedBy(price).toString();
+  }
+
+  return '';
+};
+
+const deriveSide = ({
+  market,
+  baseAsset,
+  quoteAsset,
+  userValue,
+}: {
+  market: MarketFieldsFragment;
+  baseAsset?: AssetFieldsFragment;
+  quoteAsset?: AssetFieldsFragment;
+  userValue?: 'base' | 'quote';
+}) => {
+  const mQuoteAsset = getQuoteAsset(market);
+  const mBaseAsset = getBaseAsset(market);
+
+  // Flip direction if deriving price when the user is editing in flipped state
+  if (userValue === 'base') {
+    if (mBaseAsset.id === baseAsset?.id && mQuoteAsset.id === quoteAsset?.id) {
+      return Side.SIDE_SELL;
+    }
+
+    if (mBaseAsset.id === quoteAsset?.id && mQuoteAsset.id === baseAsset?.id) {
+      return Side.SIDE_BUY;
+    }
+  }
+
+  if (mBaseAsset.id === baseAsset?.id && mQuoteAsset.id === quoteAsset?.id) {
+    return Side.SIDE_BUY;
+  }
+
+  if (mBaseAsset.id === quoteAsset?.id && mQuoteAsset.id === baseAsset?.id) {
+    return Side.SIDE_SELL;
+  }
+
+  throw new Error(`could not derive side for swap on ${market.id}`);
+};
+
+const useSide = ({
+  market,
+  baseAsset,
+  quoteAsset,
+}: {
+  market?: MarketFieldsFragment;
+  baseAsset?: AssetFieldsFragment;
+  quoteAsset?: AssetFieldsFragment;
+}) => {
+  if (!market || !baseAsset || !quoteAsset) return;
+  return deriveSide({ market, baseAsset, quoteAsset });
+};
+
+const deriveMarketPrice = ({
+  side,
+  marketData,
+}: {
+  side?: Side;
+  marketData: MarketDataFieldsFragment | null;
+}) => {
+  if (!marketData) return '0';
+
+  if (side === Side.SIDE_SELL) {
+    return marketData.bestBidPrice || '0';
+  }
+
+  if (side === Side.SIDE_BUY) {
+    return marketData.bestOfferPrice || '0';
+  }
+
+  return marketData.lastTradedPrice || '0';
+};
+
+const useMarketPrice = ({
+  side,
+  marketData,
+}: {
+  side?: Side;
+  marketData: MarketDataFieldsFragment | null;
+}) => {
+  return deriveMarketPrice({ side, marketData });
 };
