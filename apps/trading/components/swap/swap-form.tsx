@@ -124,8 +124,13 @@ export const SwapForm = ({
   };
 
   return (
-    <form onSubmit={onSubmit} noValidate data-testid="swap-form">
-      <div className="flex justify-between gap-2 items-center mb-4">
+    <form
+      onSubmit={onSubmit}
+      noValidate
+      data-testid="swap-form"
+      className="flex flex-col gap-4"
+    >
+      <div className="flex justify-between gap-2 items-center">
         <h3 className="text-lg">{t('Swap')}</h3>
         {market?.id && (
           <Link
@@ -155,7 +160,11 @@ export const SwapForm = ({
             setQuoteAmount(quoteAmount);
           }}
           asset={quoteAsset}
-          onAssetChange={setQuoteAsset}
+          onAssetChange={(asset) => {
+            setQuoteAsset(asset);
+
+            // TODO: ensure prices update after asset changge
+          }}
           balance={quoteAssetBalance}
           accountAssetIds={accounts?.map((a) => a.asset.id)}
           assets={spotAssets}
@@ -170,7 +179,11 @@ export const SwapForm = ({
           balance={baseAssetBalance}
           accountAssetIds={accounts?.map((a) => a.asset.id)}
           assets={spotAssets}
-          onAssetChange={setBaseAsset}
+          onAssetChange={(asset) => {
+            setBaseAsset(asset);
+
+            // TODO: ensure prices update after asset changge
+          }}
           onAmountChange={(e) => {
             const baseAmount = e.target.value;
             const quoteAmount = deriveAmount({
