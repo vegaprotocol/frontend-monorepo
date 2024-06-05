@@ -1,4 +1,4 @@
-import { type FormEvent, useState } from 'react';
+import { type FormEvent, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
@@ -25,6 +25,7 @@ import {
 } from '@vegaprotocol/markets';
 import { useVegaTransactionStore } from '@vegaprotocol/web3';
 import { getNotionalSize } from '@vegaprotocol/deal-ticket';
+import { usePrevious } from '@vegaprotocol/react-helpers';
 
 const getQuoteAssetBalance = (
   asset?: AssetFieldsFragment,
@@ -81,7 +82,9 @@ export const SwapForm = ({
   const baseAssetBalance = getQuoteAssetBalance(baseAsset, accounts);
 
   const side = useSide({ market, baseAsset, quoteAsset });
+
   const marketPrice = useMarketPrice({ marketData, side });
+  const prevMarketPrice = usePrevious(marketPrice);
 
   const handleSwapAssets = () => {
     const newBaseAsset = quoteAsset;
@@ -122,6 +125,39 @@ export const SwapForm = ({
 
     create({ orderSubmission });
   };
+
+  useEffect(() => {
+    if (!side) return;
+    if (marketPrice === prevMarketPrice) return;
+
+    if (side === Side.SIDE_BUY) {
+      const amount = deriveAmount({
+        amount: quoteAmount,
+        marketData,
+        market,
+        baseAsset,
+        quoteAsset,
+        userValue: 'quote',
+      });
+
+      setBaseAmount(amount);
+      return;
+    }
+
+    if (side === Side.SIDE_SELL) {
+      const amount = deriveAmount({
+        amount: baseAmount,
+        marketData,
+        market,
+        baseAsset,
+        quoteAsset,
+        userValue: 'base',
+      });
+
+      setQuoteAmount(amount);
+      return;
+    }
+  }, [side, marketPrice, prevMarketPrice, baseAsset, quoteAsset]);
 
   return (
     <form
