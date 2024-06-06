@@ -8,16 +8,7 @@ fragment WithdrawalFields on Withdrawal {
   status
   amount
   asset {
-    id
-    name
-    symbol
-    decimals
-    status
-    source {
-      ... on ERC20 {
-        contractAddress
-      }
-    }
+    ...AssetFields
   }
   createdTimestamp
   withdrawnTimestamp
@@ -27,17 +18,31 @@ fragment WithdrawalFields on Withdrawal {
       receiverAddress
     }
   }
+  party {
+    id
+  }
   pendingOnForeignChain @client
 }
 
-query Withdrawals($partyId: ID!) {
+query Withdrawals(
+  $partyId: ID!
+  $pagination: Pagination
+  $dateRange: DateRange
+) {
   party(id: $partyId) {
     id
-    withdrawalsConnection {
+    withdrawalsConnection(pagination: $pagination, dateRange: $dateRange) {
       edges {
         node {
           ...WithdrawalFields
         }
+        cursor
+      }
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        endCursor
       }
     }
   }

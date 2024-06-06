@@ -1,4 +1,5 @@
 export * from './__generated__/Accounts';
+export * from './__generated__/Transfers';
 export * from './accounts-data-provider';
 export * from './accounts-table';
 export * from './asset-balance';
@@ -10,3 +11,4 @@ export * from './use-margin-account-balance';
 export * from './__generated__/Margins';
 export * from './margin-data-provider';
 export * from './transfer-container';
+export { useTransfers, transfersProvider } from './transfers-data-provider';

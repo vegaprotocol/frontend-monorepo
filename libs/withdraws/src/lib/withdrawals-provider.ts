@@ -1,6 +1,12 @@
 import uniqBy from 'lodash/uniqBy';
-import { removePaginationWrapper, getEvents } from '@vegaprotocol/utils';
-import { makeDataProvider } from '@vegaprotocol/data-provider';
+import compact from 'lodash/compact';
+import { getEvents } from '@vegaprotocol/utils';
+import {
+  makeDataProvider,
+  useDataProvider,
+  defaultAppend as append,
+  type Cursor,
+} from '@vegaprotocol/data-provider';
 import * as Schema from '@vegaprotocol/types';
 import {
   WithdrawalsDocument,
@@ -21,19 +27,28 @@ const sortWithdrawals = (data: WithdrawalFieldsFragment[]) =>
     );
   });
 
+const getPageInfo = (responseData: WithdrawalsQuery) => {
+  return responseData?.party?.withdrawalsConnection?.pageInfo || null;
+};
+
 export const withdrawalProvider = makeDataProvider<
   WithdrawalsQuery,
-  WithdrawalFieldsFragment[],
+  Array<WithdrawalFieldsFragment & Cursor>,
   WithdrawalEventSubscription,
   WithdrawalEventSubscription,
   WithdrawalEventSubscriptionVariables
 >({
   query: WithdrawalsDocument,
   subscriptionQuery: WithdrawalEventDocument,
-  getData: (data: WithdrawalsQuery | null) =>
-    sortWithdrawals(
-      removePaginationWrapper(data?.party?.withdrawalsConnection?.edges || [])
-    ),
+  getData: (responseData: WithdrawalsQuery | null) => {
+    if (!responseData?.party?.withdrawalsConnection?.edges?.length) return [];
+
+    const data = compact(responseData.party.withdrawalsConnection.edges).map(
+      (edge) => ({ ...edge.node, cursor: edge.cursor })
+    );
+
+    return sortWithdrawals(data);
+  },
   getDelta: (data: WithdrawalEventSubscription) => data,
   update: (
     data: WithdrawalFieldsFragment[] | null,
@@ -48,4 +63,25 @@ export const withdrawalProvider = makeDataProvider<
     );
     return uniqBy([...incoming, ...(data || [])], 'id');
   },
+  pagination: {
+    getPageInfo,
+    append,
+    first: 1000,
+  },
 });
+
+export const useWithdrawals = ({
+  pubKey,
+  dateRange,
+  pagination,
+}: {
+  pubKey?: string;
+  dateRange?: Schema.DateRange;
+  pagination?: Schema.Pagination;
+}) => {
+  return useDataProvider({
+    dataProvider: withdrawalProvider,
+    variables: { partyId: pubKey || '', dateRange, pagination },
+    skip: !pubKey,
+  });
+};

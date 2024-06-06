@@ -1,18 +1,12 @@
 import { Splash } from '@vegaprotocol/ui-toolkit';
-import { DepositsTable } from '@vegaprotocol/deposits';
-import { depositsProvider } from '@vegaprotocol/deposits';
-import { useDataProvider } from '@vegaprotocol/data-provider';
+import { DepositsTable, useDeposits } from '@vegaprotocol/deposits';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useT } from '../../lib/use-t';
 
 export const DepositsContainer = () => {
   const t = useT();
   const { pubKey } = useVegaWallet();
-  const { data, error } = useDataProvider({
-    dataProvider: depositsProvider,
-    variables: { partyId: pubKey || '' },
-    skip: !pubKey,
-  });
+  const { data, error } = useDeposits({ pubKey });
   if (!pubKey) {
     return <Splash>{t('Please connect Vega wallet')}</Splash>;
   }

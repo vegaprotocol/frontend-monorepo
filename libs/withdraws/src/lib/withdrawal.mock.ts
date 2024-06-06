@@ -18,6 +18,7 @@ export const withdrawalsQuery = (
         edges: withdrawalFields.map((node) => ({
           __typename: 'WithdrawalEdge',
           node,
+          cursor: '1',
         })),
       },
       __typename: 'Party',
@@ -47,10 +48,16 @@ const withdrawalFields: WithdrawalFieldsFragment[] = [
       symbol: 'AST0',
       decimals: 5,
       status: Schema.AssetStatus.STATUS_ENABLED,
+      quantum: '1',
       source: {
         __typename: 'ERC20',
         contractAddress: '0x123',
+        lifetimeLimit: '1',
+        withdrawThreshold: '1',
       },
+    },
+    party: {
+      id: '123',
     },
     __typename: 'Withdrawal',
   },
@@ -74,10 +81,16 @@ const withdrawalFields: WithdrawalFieldsFragment[] = [
       symbol: 'AST0',
       decimals: 5,
       status: Schema.AssetStatus.STATUS_ENABLED,
+      quantum: '1',
       source: {
         __typename: 'ERC20',
         contractAddress: '0x123',
+        lifetimeLimit: '1',
+        withdrawThreshold: '1',
       },
+    },
+    party: {
+      id: '123',
     },
     __typename: 'Withdrawal',
   },
@@ -111,10 +124,16 @@ export const withdrawalEventSubscription = (
             symbol: 'AST0',
             decimals: 5,
             status: Schema.AssetStatus.STATUS_ENABLED,
+            quantum: '1',
             source: {
               __typename: 'ERC20',
               contractAddress: '0x123',
+              lifetimeLimit: '1',
+              withdrawThreshold: '1',
             },
+          },
+          party: {
+            id: '123',
           },
         },
       },
