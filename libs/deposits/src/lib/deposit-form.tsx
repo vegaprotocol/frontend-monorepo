@@ -104,9 +104,9 @@ export const DepositForm = ({
     useState<Intent>(Intent.Warning);
   const [persistedDeposit] = usePersistentDeposit(selectedAsset?.id);
 
-  const selectedAssetChainId =
-    selectedAsset?.source.__typename === 'ERC20' &&
-    Number(selectedAsset.source.chainId);
+  const assetData = toAssetData(selectedAsset);
+
+  const selectedAssetChainId = assetData?.chainId;
 
   // indicates if connected to the unsupported chain
   const invalidChain = isActive && !desiredChains?.includes(Number(chainId));

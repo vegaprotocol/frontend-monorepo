@@ -13,7 +13,7 @@ import { useT } from './use-t';
 
 const REFETCH_DELAY = 5000;
 
-export const AssetBalance = ({ assetData }: { assetData: AssetData }) => {
+export const AssetBalance = ({ assetData }: { assetData?: AssetData }) => {
   const t = useT();
   const { account } = useWeb3React();
 
@@ -45,6 +45,8 @@ export const AssetBalance = ({ assetData }: { assetData: AssetData }) => {
 
   useEffect(() => {
     let ignore = false;
+
+    if (!assetData) return;
     const balance = getBalance(assetData.id);
     if (!balance || Date.now() - balance.updatedAt > REFETCH_DELAY) {
       fetchFromEth(ignore);
@@ -52,9 +54,13 @@ export const AssetBalance = ({ assetData }: { assetData: AssetData }) => {
     return () => {
       ignore = true;
     };
-  }, [assetData.id, fetchFromEth, getBalance]);
+  }, [assetData, fetchFromEth, getBalance]);
 
-  if (error) {
+  if (!assetData) return null;
+
+  const balance = getBalance(assetData.id)?.balanceOnEth?.toString();
+
+  if (error && !balance) {
     return (
       <span className="text-xs text-muted">
         {t('Requires connection to {{chainName}}', {
@@ -64,10 +70,5 @@ export const AssetBalance = ({ assetData }: { assetData: AssetData }) => {
     );
   }
 
-  return (
-    <Balance
-      balance={getBalance(assetData.id)?.balanceOnEth?.toString()}
-      symbol={assetData.symbol}
-    />
-  );
+  return <Balance balance={balance} symbol={assetData.symbol} />;
 };
