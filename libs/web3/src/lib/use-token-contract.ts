@@ -1,38 +1,34 @@
 import { Token } from '@vegaprotocol/smart-contracts';
 import { type ethers } from 'ethers';
 import { useMemo } from 'react';
-import { useProvider } from './use-bridge-contract';
-
-type AssetData = {
-  contractAddress: string;
-  chainId: number;
-};
+import { useWeb3React } from '@web3-react/core';
+import { type AssetData } from './types';
+import { ERR_WRONG_CHAIN } from './constants';
 
 export const useTokenContract = (
-  assetData?: AssetData,
-  allowDefaultProvider: boolean = false
+  assetData?: Pick<AssetData, 'chainId' | 'contractAddress'>
 ) => {
-  const { provider, error: providerError } = useProvider(
-    assetData?.chainId,
-    allowDefaultProvider
-  );
+  const { provider, chainId: activeChainId } = useWeb3React();
 
   const signer = useMemo(() => {
     return provider ? provider?.getSigner() : undefined;
   }, [provider]);
 
   const contract = useMemo(() => {
-    if (assetData && provider) {
-      return getTokenContract(assetData.contractAddress, signer || provider);
+    if (!assetData || !provider || assetData.chainId !== activeChainId) {
+      return;
     }
-    return undefined;
-  }, [assetData, provider, signer]);
+    return getTokenContract(assetData.contractAddress, signer || provider);
+  }, [activeChainId, assetData, provider, signer]);
 
   return {
     contract,
     chainId: assetData?.chainId,
     address: assetData?.contractAddress,
-    error: providerError,
+    error:
+      assetData && assetData.chainId !== activeChainId
+        ? ERR_WRONG_CHAIN
+        : undefined,
   };
 };
 

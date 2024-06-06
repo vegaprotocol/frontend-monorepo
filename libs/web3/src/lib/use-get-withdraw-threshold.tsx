@@ -19,12 +19,14 @@ type TimestampedThreshold = {
   value: BigNumber;
   ts: number;
 };
-const THRESHOLDS: TimestampedThreshold[] = [];
+type ContractAddress = string;
+
+const THRESHOLDS: Map<ContractAddress, TimestampedThreshold> = new Map();
+
 const getCachedThreshold = (asset: AssetData) => {
-  return THRESHOLDS.find(
-    (th) => th.address === asset.contractAddress && th.chainId === asset.chainId
-  );
+  return THRESHOLDS.get(asset.contractAddress);
 };
+
 const setCachedThreshold = (asset: AssetData, value: BigNumber) => {
   const thresholdData: TimestampedThreshold = {
     address: asset.contractAddress,
@@ -32,15 +34,7 @@ const setCachedThreshold = (asset: AssetData, value: BigNumber) => {
     value: value,
     ts: Date.now(),
   };
-
-  const index = THRESHOLDS.findIndex(
-    (th) => th.address === asset.contractAddress && th.chainId === asset.chainId
-  );
-  if (index >= 0) {
-    THRESHOLDS[index] = thresholdData;
-  } else {
-    THRESHOLDS.push(thresholdData);
-  }
+  THRESHOLDS.set(asset.contractAddress, thresholdData);
 };
 
 /**

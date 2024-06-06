@@ -8,6 +8,7 @@ import {
   TRANSPORTS,
   isSupportedChainId,
   createMultiChainConnectors,
+  SUPPORTED_CHAINS,
 } from '@vegaprotocol/web3';
 import { useEnvironment } from '@vegaprotocol/environment';
 import type { ReactNode } from 'react';
@@ -57,7 +58,12 @@ export const Web3Provider = ({
   >(undefined);
 
   useEffect(() => {
-    const chains = Object.keys(transports).map((c) => Number(c));
+    // keeps order of the desired chains as in SUPPORTED_CHAINS
+    const chains = SUPPORTED_CHAINS.filter((ch) =>
+      Object.keys(transports)
+        .map((c) => Number(c))
+        .includes(ch)
+    );
     if (chains.length > 0) {
       // initialise and create the wallet connectors
       initializeConnectors(

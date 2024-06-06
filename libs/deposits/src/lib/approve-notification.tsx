@@ -21,7 +21,7 @@ interface ApproveNotificationProps {
   selectedAsset?: Asset;
   onApprove: (amount?: string) => void;
   approved: boolean;
-  balances: DepositBalances | null;
+  balances: DepositBalances | null | undefined;
   amount: string;
   approveTxId: number | null;
   intent?: Intent;

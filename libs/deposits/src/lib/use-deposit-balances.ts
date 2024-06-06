@@ -1,20 +1,15 @@
 import {
-  useCollateralBridge,
-  useProvider,
-  useTokenContract,
+  type AssetData,
+  getTokenContract,
+  useCollateralBridgeConfigs,
 } from '@vegaprotocol/web3';
 import { useCallback, useMemo, useState } from 'react';
 import BigNumber from 'bignumber.js';
-import { useGetAllowance } from './use-get-allowance';
-import { useGetBalanceOfERC20Token } from './use-get-balance-of-erc20-token';
-import {
-  useGetDepositMaximum,
-  useIsExemptDepositor,
-} from './use-get-deposit-maximum';
-import { useGetDepositedAmount } from './use-get-deposited-amount';
 import { localLoggerFactory } from '@vegaprotocol/logger';
-import type { Asset } from '@vegaprotocol/assets';
 import { useWeb3React } from '@web3-react/core';
+import { CollateralBridge } from '@vegaprotocol/smart-contracts';
+import { ethers } from 'ethers';
+import { toBigNum } from '@vegaprotocol/utils';
 
 export interface DepositBalances {
   balance: BigNumber; // amount in Ethereum wallet
@@ -24,116 +19,153 @@ export interface DepositBalances {
   exempt: boolean; // if exempt then deposit cap doesn't matter
 }
 
-const initialState: DepositBalances = {
-  balance: new BigNumber(0),
-  allowance: new BigNumber(0),
-  deposited: new BigNumber(0),
-  max: new BigNumber(0),
-  exempt: false,
-};
-
 /**
  * Hook which fetches all the balances required for depositing
  * whenever the asset changes in the form
  */
-export const useDepositBalances = (asset: Asset | undefined) => {
-  const { account } = useWeb3React();
 
-  const assetData = useMemo(() => {
-    const assetChainId =
-      asset?.source.__typename === 'ERC20'
-        ? Number(asset.source.chainId)
-        : undefined;
-    const assetSource =
-      asset?.source.__typename === 'ERC20'
-        ? asset.source.contractAddress
-        : undefined;
-    const assetData =
-      assetChainId && assetSource
-        ? {
-            chainId: assetChainId,
-            contractAddress: assetSource,
-          }
-        : undefined;
-    return assetData;
-  }, [asset]);
+export const useBalances = (assetData?: AssetData) => {
+  const getBalances = useGetBalances();
+  const [balances, setBalances] = useState<
+    DepositBalances | 'loading' | undefined
+  >(undefined);
 
-  const { provider, error: providerError } = useProvider(assetData?.chainId);
-
-  const {
-    contract: collateralBridgeContract,
-    address: collateralBridgeContractAddress,
-    error: collateralBridgeContractError,
-  } = useCollateralBridge(assetData?.chainId);
-  const { contract: tokenContract, error: tokenContractError } =
-    useTokenContract(assetData);
-
-  const getAllowance = useGetAllowance(
-    tokenContract,
-    collateralBridgeContractAddress,
-    account
-  );
-  const getBalance = useGetBalanceOfERC20Token(tokenContract, account);
-  const getDepositMaximum = useGetDepositMaximum(
-    collateralBridgeContract,
-    assetData?.contractAddress
-  );
-  const isExemptDepositor = useIsExemptDepositor(
-    collateralBridgeContract,
-    account
-  );
-  const getDepositedAmount = useGetDepositedAmount(
-    provider,
-    assetData?.contractAddress,
-    collateralBridgeContractAddress,
-    account
-  );
-
-  const [state, setState] = useState<DepositBalances | null>(null);
-
-  const getBalances = useCallback(async () => {
-    if (!assetData) return;
-    const logger = localLoggerFactory({ application: 'deposits' });
-    try {
-      logger.info('get deposit balances', { asset: assetData });
-      setState(null);
-      const [max, deposited, balance, allowance, exempt] = await Promise.all([
-        getDepositMaximum(),
-        getDepositedAmount(),
-        getBalance(),
-        getAllowance(),
-        isExemptDepositor(),
-      ]);
-
-      const state = {
-        max: max ?? initialState.max,
-        deposited: deposited ?? initialState.deposited,
-        balance: balance ?? initialState.balance,
-        allowance: allowance ?? initialState.allowance,
-        exempt,
-      };
-      logger.info('get deposit balances', { state });
-
-      setState(state);
-    } catch (err) {
-      logger.error('get deposit balances', err);
-      setState(null);
-    }
-  }, [
-    assetData,
-    getAllowance,
-    getBalance,
-    getDepositMaximum,
-    getDepositedAmount,
-    isExemptDepositor,
-  ]);
   const reset = useCallback(() => {
-    setState(null);
+    setBalances(undefined);
   }, []);
-  return {
-    balances: state,
-    getBalances,
-    reset,
-    error: providerError || tokenContractError || collateralBridgeContractError,
-  };
+
+  const get = useCallback(
+    (asset?: AssetData) => {
+      const input = asset || assetData;
+      if (!input || !getBalances) return;
+      setBalances('loading');
+      const run = async () => {
+        const balances = await getBalances(input);
+        setBalances(balances);
+      };
+      run();
+    },
+    [assetData, getBalances]
+  );
+
+  return { balances, getBalances: get, reset };
+};
+
+export const useGetBalances = () => {
+  const { account, provider, chainId: activeChainId } = useWeb3React();
+  const { configs } = useCollateralBridgeConfigs();
+
+  const logger = localLoggerFactory({ application: 'deposits' });
+
+  const signer = useMemo(() => {
+    return provider ? provider.getSigner() : undefined;
+  }, [provider]);
+
+  const getData = useCallback(
+    async (assetData?: AssetData) => {
+      if (!assetData) {
+        return;
+      }
+
+      if (!provider || !account) {
+        logger.warn(
+          `unable to get balances of ${assetData.symbol} (not connected)`
+        );
+        return;
+      }
+
+      if (activeChainId !== assetData.chainId) {
+        logger.warn(
+          `unable to get balances of ${assetData.symbol} (chain: ${assetData.chainId}) (wrong chain: ${activeChainId})`
+        );
+        return;
+      }
+
+      // const provider = providers?.[assetData.chainId];
+      const config = configs.find((c) => c.chainId === assetData.chainId);
+      if (!config) return;
+
+      const collateralBridgeContract = new CollateralBridge(
+        config.address,
+        signer || provider
+      );
+      const tokenContract = getTokenContract(
+        assetData.contractAddress,
+        signer || provider
+      );
+
+      try {
+        const allowanceResponse = await tokenContract.allowance(
+          account,
+          config.address
+        );
+        const allowance = toBigNum(
+          allowanceResponse.toString(),
+          assetData.decimals
+        );
+
+        const balanceResponse = await tokenContract.balanceOf(account);
+        const balance = toBigNum(
+          balanceResponse.toString(),
+          assetData.decimals
+        );
+
+        const lifetimeLimitResponse =
+          await collateralBridgeContract.get_asset_deposit_lifetime_limit(
+            assetData.contractAddress
+          );
+        let lifetimeLimit = toBigNum(
+          lifetimeLimitResponse.toString(),
+          assetData.decimals
+        );
+        if (lifetimeLimit.isZero()) lifetimeLimit = new BigNumber(Infinity);
+
+        const isExemptDepositor =
+          await collateralBridgeContract.is_exempt_depositor(account);
+
+        const depositedResponse = await provider.getStorageAt(
+          config.address,
+          depositedAmountStorageLocation(account, assetData.contractAddress)
+        );
+        const deposited = toBigNum(
+          new BigNumber(depositedResponse, 16),
+          assetData.decimals
+        );
+
+        const data: DepositBalances = {
+          balance: balance,
+          allowance: allowance,
+          deposited: deposited,
+          max: lifetimeLimit,
+          exempt: isExemptDepositor,
+        };
+
+        return data;
+      } catch (err) {
+        // NOOP
+        logger.error(
+          `unable to get balances of ${assetData.symbol} (contract error)`,
+          err
+        );
+        return;
+      }
+    },
+    [account, activeChainId, configs, logger, provider, signer]
+  );
+
+  return getData;
+};
+
+const depositedAmountStorageLocation = (
+  account: string,
+  assetSource: string
+) => {
+  const abiCoder = new ethers.utils.AbiCoder();
+  const innerHash = ethers.utils.keccak256(
+    abiCoder.encode(['address', 'uint256'], [account, 4])
+  );
+  const storageLocation = ethers.utils.keccak256(
+    abiCoder.encode(['address', 'bytes32'], [assetSource, innerHash])
+  );
+  return storageLocation;
 };

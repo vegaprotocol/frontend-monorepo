@@ -20,8 +20,6 @@ const useListAsset = (assetId: string) => {
     },
   });
 
-  // const chainId =
-
   const bridgeContract = useBridgeContract();
 
   const transaction = useEthereumTransaction<CollateralBridge, 'list_asset'>(

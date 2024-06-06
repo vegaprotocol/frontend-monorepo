@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useWeb3React } from '@web3-react/core';
 import BigNumber from 'bignumber.js';
-import { useCollateralBridge, useProvider } from './use-bridge-contract';
+import { useCollateralBridge } from './use-bridge-contract';
 
 const DEFAULT_INTERVAL = 15000; // 15 seconds
 
@@ -77,17 +77,18 @@ export const useGasPrice = (
 ): GasData | undefined => {
   const [gas, setGas] = useState<GasData | undefined>(undefined);
 
-  const { provider } = useProvider(chainId, false);
   const { config } = useCollateralBridge(chainId);
-  const { account } = useWeb3React();
+  const { account, provider, chainId: activeChainId } = useWeb3React();
 
   useEffect(() => {
-    if (!provider || !config || !account) {
+    let ignore = false;
+    if (!provider || !config || !account || chainId !== activeChainId) {
       if (gas != null) setGas(undefined);
       return;
     }
 
     const retrieve = async () => {
+      if (ignore) return;
       retrieveGasData(provider, account, config.address, method).then(
         (gasData) => {
           if (gasData) {
@@ -108,8 +109,18 @@ export const useGasPrice = (
 
     return () => {
       if (i) clearInterval(i);
+      ignore = true;
     };
-  }, [account, config, gas, interval, method, provider]);
+  }, [
+    account,
+    activeChainId,
+    chainId,
+    config,
+    gas,
+    interval,
+    method,
+    provider,
+  ]);
 
   return gas;
 };

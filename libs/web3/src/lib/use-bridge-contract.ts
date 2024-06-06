@@ -59,7 +59,7 @@ type CollateralBridgeConfig = {
   confirmations: number;
 };
 
-const useCollateralBridgeConfigs = () => {
+export const useCollateralBridgeConfigs = () => {
   const {
     config: ethConfig,
     loading: ethLoading,
@@ -99,16 +99,9 @@ const useCollateralBridgeConfigs = () => {
   };
 };
 
-export const useCollateralBridge = (
-  chainId?: number,
-  allowDefaultProvider = false
-) => {
+export const useCollateralBridge = (chainId?: number) => {
+  const { provider, chainId: activeChainId } = useWeb3React();
   const { configs, error: configsError } = useCollateralBridgeConfigs();
-
-  const { provider, error: providerError } = useProvider(
-    chainId,
-    allowDefaultProvider
-  );
 
   const config = useMemo(() => {
     if (configsError || !chainId) return undefined;
@@ -120,16 +113,16 @@ export const useCollateralBridge = (
   }, [provider]);
 
   const contract = useMemo(() => {
-    if (!provider || !config) return undefined;
+    if (!provider || !config || chainId !== activeChainId) return undefined;
     return new CollateralBridge(config.address, signer || provider);
-  }, [config, provider, signer]);
+  }, [activeChainId, chainId, config, provider, signer]);
 
   return {
     contract,
     chainId,
     address: config?.address,
     config,
-    error: configsError || providerError,
+    error: chainId && chainId !== activeChainId ? ERR_WRONG_CHAIN : undefined,
   };
 };
 

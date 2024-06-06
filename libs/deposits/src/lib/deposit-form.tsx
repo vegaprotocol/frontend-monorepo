@@ -23,6 +23,7 @@ import {
   TradingButton,
   VegaIcon,
   VegaIconNames,
+  Loader,
 } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useWeb3React } from '@web3-react/core';
@@ -38,6 +39,7 @@ import {
   getChainName,
   useWeb3Disconnect,
   ETHEREUM_CHAIN_ID,
+  toAssetData,
 } from '@vegaprotocol/web3';
 import type { DepositBalances } from './use-deposit-balances';
 import { FaucetNotification } from './faucet-notification';
@@ -56,7 +58,7 @@ interface FormFields {
 export interface DepositFormProps {
   assets: Asset[];
   selectedAsset?: Asset;
-  balances: DepositBalances | null;
+  balances: DepositBalances | 'loading' | null | undefined;
   onSelectAsset: (assetId?: string) => void;
   handleAmountChange: (amount: string) => void;
   onDisconnect: () => void;
@@ -170,7 +172,9 @@ export const DepositForm = ({
   }, [account, setValue, trigger]);
 
   const approved =
-    balances && balances.allowance.isGreaterThan(0) ? true : false;
+    balances && balances !== 'loading' && balances.allowance.isGreaterThan(0)
+      ? true
+      : false;
 
   return invalidChain ? (
     <div className="mb-2">
@@ -337,7 +341,8 @@ export const DepositForm = ({
                   asset={asset}
                   key={asset.id}
                   balance={
-                    isActive && account && <AssetBalance asset={asset} />
+                    isActive &&
+                    account && <AssetBalance assetData={toAssetData(asset)} />
                   }
                 />
               ))}
@@ -372,12 +377,17 @@ export const DepositForm = ({
         selectedAsset={selectedAsset}
         faucetTxId={faucetTxId}
       />
-      {approved && selectedAsset && balances && (
+      {approved && selectedAsset && balances && balances !== 'loading' && (
         <div className="mb-6">
           <DepositLimits {...balances} asset={selectedAsset} />
         </div>
       )}
-      {approved && (
+      {balances === 'loading' && (
+        <div className="mb-6">
+          <Loader size="small" />
+        </div>
+      )}
+      {approved && balances !== 'loading' && (
         <TradingFormGroup label={t('Amount')} labelFor="amount">
           <TradingInput
             type="number"
@@ -483,7 +493,7 @@ export const DepositForm = ({
             submitApprove(amount);
             setApproveNotificationIntent(Intent.Warning);
           }}
-          balances={balances}
+          balances={balances && balances !== 'loading' ? balances : undefined}
           approved={approved}
           intent={approveNotificationIntent}
           amount={amount}

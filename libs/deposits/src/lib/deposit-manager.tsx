@@ -5,14 +5,16 @@ import { prepend0x } from '@vegaprotocol/smart-contracts';
 import sortBy from 'lodash/sortBy';
 import { useSubmitApproval } from './use-submit-approval';
 import { useSubmitFaucet } from './use-submit-faucet';
-import { useCallback, useEffect, useMemo } from 'react';
-import { useDepositBalances } from './use-deposit-balances';
+import { useCallback, useEffect } from 'react';
+import { useBalances } from './use-deposit-balances';
 import type { Asset } from '@vegaprotocol/assets';
 import {
   useEthTransactionStore,
   useCollateralBridge,
+  toAssetData,
 } from '@vegaprotocol/web3';
 import { usePersistentDeposit } from './use-persistent-deposit';
+import { useWeb3React } from '@web3-react/core';
 
 interface DepositManagerProps {
   assetId?: string;
@@ -32,30 +34,23 @@ export const DepositManager = ({
   const assetId = persistentDeposit?.assetId;
   const asset = assets.find((a) => a.id === assetId);
 
-  const assetData = useMemo(
-    () =>
-      asset?.source.__typename === 'ERC20'
-        ? {
-            chainId: Number(asset.source.chainId),
-            contractAddress: asset.source.contractAddress,
-          }
-        : undefined,
-    [asset]
-  );
-
+  const assetData = toAssetData(asset);
   const { contract, config } = useCollateralBridge(assetData?.chainId);
+  const { balances, getBalances, reset } = useBalances();
 
-  const { getBalances, reset, balances } = useDepositBalances(asset);
-
+  const { chainId } = useWeb3React();
   useEffect(() => {
-    if (asset?.symbol) getBalances();
-  }, [asset?.symbol, getBalances]);
+    // gets balances on load and re-trigger balances when chain changed
+    if (assetData?.chainId !== chainId) {
+      reset();
+    }
+    if (assetData && !balances) {
+      getBalances(assetData);
+    }
+  }, [assetData, getBalances, chainId, balances, reset]);
 
-  // Set up approve transaction
-  const approve = useSubmitApproval(asset, getBalances);
-
-  // Set up faucet transaction
-  const faucet = useSubmitFaucet(asset, getBalances);
+  const approve = useSubmitApproval(asset, () => getBalances(assetData));
+  const faucet = useSubmitFaucet(asset, () => getBalances(assetData));
 
   const submitDeposit = (
     args: Parameters<DepositFormProps['submitDeposit']>['0']
@@ -98,8 +93,10 @@ export const DepositManager = ({
       selectedAsset={asset}
       onDisconnect={reset}
       onSelectAsset={(assetId) => {
-        if (assetId) {
-          savePersistentDeposit({ assetId });
+        const selected = toAssetData(assets.find((a) => a.id === assetId));
+        if (selected) {
+          savePersistentDeposit({ assetId: selected.id });
+          getBalances(selected);
         }
       }}
       handleAmountChange={onAmountChange}

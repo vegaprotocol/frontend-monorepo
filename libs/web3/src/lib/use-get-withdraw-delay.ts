@@ -15,10 +15,13 @@ type TimestampedDelay = {
   value: number | undefined;
   ts: number;
 };
-const DELAYS: TimestampedDelay[] = [];
+type ChainId = number;
+
+const DELAYS: Map<ChainId, TimestampedDelay> = new Map();
+
 const getCachedDelay = (chainId?: number) => {
   if (!chainId) return;
-  return DELAYS.find((d) => d.chainId === chainId);
+  return DELAYS.get(chainId);
 };
 const setCachedDelay = (chainId: number, value: number) => {
   const delayData: TimestampedDelay = {
@@ -26,12 +29,7 @@ const setCachedDelay = (chainId: number, value: number) => {
     value,
     ts: Date.now(),
   };
-  const index = DELAYS.findIndex((d) => d.chainId === chainId);
-  if (index) {
-    DELAYS[index] = delayData;
-  } else {
-    DELAYS.push(delayData);
-  }
+  DELAYS.set(chainId, delayData);
 };
 
 /**

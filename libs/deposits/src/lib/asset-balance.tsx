@@ -1,31 +1,23 @@
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useGetBalanceOfERC20Token } from './use-get-balance-of-erc20-token';
-import type { AssetFieldsFragment } from '@vegaprotocol/assets';
 import { useBalancesStore } from '@vegaprotocol/assets';
 import { Balance } from '@vegaprotocol/assets';
-import { useTokenContract } from '@vegaprotocol/web3';
+import {
+  type AssetData,
+  useTokenContract,
+  getChainName,
+} from '@vegaprotocol/web3';
 import { useWeb3React } from '@web3-react/core';
-import { isAssetTypeERC20, toBigNum } from '@vegaprotocol/utils';
+import { toBigNum } from '@vegaprotocol/utils';
+import { useT } from './use-t';
 
 const REFETCH_DELAY = 5000;
 
-export const AssetBalance = ({ asset }: { asset: AssetFieldsFragment }) => {
+export const AssetBalance = ({ assetData }: { assetData: AssetData }) => {
+  const t = useT();
   const { account } = useWeb3React();
 
-  const assetData = useMemo(
-    () =>
-      isAssetTypeERC20(asset)
-        ? {
-            id: asset.id,
-            contractAddress: asset.source.contractAddress,
-            chainId: Number(asset.source.chainId),
-            decimals: asset.decimals,
-          }
-        : undefined,
-    [asset]
-  );
-
-  const { contract } = useTokenContract(assetData, true);
+  const { contract, error } = useTokenContract(assetData);
 
   const [setBalance, getBalance] = useBalancesStore((state) => [
     state.setBalance,
@@ -34,28 +26,48 @@ export const AssetBalance = ({ asset }: { asset: AssetFieldsFragment }) => {
 
   const ethBalanceFetcher = useGetBalanceOfERC20Token(contract, account);
 
-  const fetchFromEth = useCallback(async () => {
-    if (!assetData) return;
+  const fetchFromEth = useCallback(
+    async (ignore = false) => {
+      if (ignore) return;
+      if (!assetData) return;
 
-    const balance = await ethBalanceFetcher();
-    setBalance({
-      asset: assetData,
-      balanceOnEth: balance ? toBigNum(balance, asset.decimals) : undefined,
-      ethBalanceFetcher,
-    });
-  }, [asset.decimals, assetData, ethBalanceFetcher, setBalance]);
+      const balance = await ethBalanceFetcher();
+      setBalance({
+        asset: assetData,
+        balanceOnEth: balance
+          ? toBigNum(balance, assetData.decimals)
+          : undefined,
+        ethBalanceFetcher,
+      });
+    },
+    [assetData, ethBalanceFetcher, setBalance]
+  );
 
   useEffect(() => {
-    const balance = getBalance(asset.id);
+    let ignore = false;
+    const balance = getBalance(assetData.id);
     if (!balance || Date.now() - balance.updatedAt > REFETCH_DELAY) {
-      fetchFromEth();
+      fetchFromEth(ignore);
     }
-  }, [asset.id, fetchFromEth, getBalance]);
+    return () => {
+      ignore = true;
+    };
+  }, [assetData.id, fetchFromEth, getBalance]);
+
+  if (error) {
+    return (
+      <span className="text-xs text-muted">
+        {t('Requires connection to {{chainName}}', {
+          chainName: getChainName(assetData.chainId),
+        })}
+      </span>
+    );
+  }
 
   return (
     <Balance
-      balance={getBalance(asset.id)?.balanceOnEth?.toString()}
-      symbol={asset.symbol}
+      balance={getBalance(assetData.id)?.balanceOnEth?.toString()}
+      symbol={assetData.symbol}
     />
   );
 };

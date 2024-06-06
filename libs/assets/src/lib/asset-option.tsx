@@ -26,10 +26,11 @@ export const Balance = ({
   );
 };
 
-export const AssetOption = ({ asset, balance }: AssetOptionProps) => {
+const AssetLogo = ({ asset }: { asset: AssetFieldsFragment }) => {
   const chainId = asset.source.__typename === 'ERC20' && asset.source.chainId;
   const assetSource =
     asset.source.__typename === 'ERC20' && asset.source.contractAddress;
+
   let assetLogo = 'https://icon.vega.xyz/missing.svg';
   let chainLogo = 'https://icon.vega.xyz/missing.svg';
   if (chainId && assetSource) {
@@ -38,16 +39,25 @@ export const AssetOption = ({ asset, balance }: AssetOptionProps) => {
   }
 
   return (
+    <div className="relative">
+      <img className="w-10 h-10" src={assetLogo} alt={asset.symbol} />
+      <img
+        className="absolute -right-1 -bottom-1 w-4 h-4"
+        src={chainLogo}
+        alt={chainId || ''}
+      />
+    </div>
+  );
+};
+
+export const AssetOption = ({ asset, balance }: AssetOptionProps) => {
+  const assetSource =
+    asset.source.__typename === 'ERC20' && asset.source.contractAddress;
+
+  return (
     <TradingOption key={asset.id} value={asset.id}>
       <div className="flex gap-2 items-center">
-        <div className="relative">
-          <img className="w-10 h-10" src={assetLogo} alt={asset.symbol} />
-          <img
-            className="absolute -right-1 -bottom-1 w-4 h-4"
-            src={chainLogo}
-            alt={chainId || ''}
-          />
-        </div>
+        <AssetLogo asset={asset} />
         <div className="flex flex-col items-start gap-1">
           <div className="">
             <span>{asset.name}</span>
@@ -60,7 +70,7 @@ export const AssetOption = ({ asset, balance }: AssetOptionProps) => {
             className={classNames(
               'bg-vega-clight-500 dark:bg-vega-cdark-500',
               'text-black dark:text-white',
-              'py-[2px] px-[2px] rounded',
+              'p-0.5 rounded',
               'flex gap-[2px] items-start text-xs'
             )}
           >
@@ -68,21 +78,15 @@ export const AssetOption = ({ asset, balance }: AssetOptionProps) => {
               className={classNames(
                 'bg-vega-clight-900 dark:bg-vega-cdark-900',
                 'text-black dark:text-white text-xs',
-                'py-[1px] px-[2px] rounded-sm'
+                'py-px px-0.5 rounded-sm'
               )}
             >
               {asset.symbol}
             </span>
-            <span className={classNames('py-[1px] px-[2px]')}>
+            <span className={classNames('py-px px-0.5')}>
               {truncateMiddle(assetSource || '')}
             </span>
           </div>
-
-          {/* <div className="text-[12px] font-mono w-full text-left break-all">
-          <span className="text-vega-light-300 dark:text-vega-dark-300">
-            {truncateMiddle(assetSource || '')}
-          </span>
-        </div> */}
         </div>
       </div>
     </TradingOption>

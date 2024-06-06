@@ -431,32 +431,3 @@ const DisconnectEthereumButton = ({
     </ButtonLink>
   );
 };
-
-// const EthereumButton = ({ clearAddress }: { clearAddress: () => void }) => {
-//   const t = useT();
-//   const openDialog = useWeb3ConnectStore((state) => state.open);
-//   const { isActive, connector } = useWeb3React();
-//   const [, , removeEagerConnector] = useLocalStorage(ETHEREUM_EAGER_CONNECT);
-//   const disconnect = useWeb3Disconnect(connector);
-
-//   if (!isActive) {
-//     return (
-//       <UseButton onClick={openDialog} data-testid="connect-eth-wallet-btn">
-//         {t('Connect')}
-//       </UseButton>
-//     );
-//   }
-
-//   return (
-//     <UseButton
-//       onClick={() => {
-//         disconnect();
-//         clearAddress();
-//         removeEagerConnector();
-//       }}
-//       data-testid="disconnect-ethereum-wallet"
-//     >
-//       {t('Disconnect')}
-//     </UseButton>
-//   );
-// };
