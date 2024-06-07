@@ -139,33 +139,16 @@ export const SwapForm = ({
     // Avoid updating amounts if the current derived price has not changed
     if (marketPrice === prevMarketPrice) return;
 
-    if (side === Side.SIDE_BUY) {
-      const amount = deriveAmount({
-        amount: quoteAmount,
-        marketData,
-        market,
-        baseAsset,
-        quoteAsset,
-        userValue: 'quote',
-      });
+    const amount = deriveAmount({
+      amount: quoteAmount,
+      marketData,
+      market,
+      baseAsset,
+      quoteAsset,
+      userValue: 'quote',
+    });
 
-      setBaseAmount(amount);
-      return;
-    }
-
-    if (side === Side.SIDE_SELL) {
-      const amount = deriveAmount({
-        amount: baseAmount,
-        marketData,
-        market,
-        baseAsset,
-        quoteAsset,
-        userValue: 'base',
-      });
-
-      setQuoteAmount(amount);
-      return;
-    }
+    setBaseAmount(amount);
   }, [
     side,
     marketPrice,
