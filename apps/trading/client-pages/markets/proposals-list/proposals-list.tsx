@@ -1,9 +1,9 @@
 import type { FC } from 'react';
 import { AgGrid } from '@vegaprotocol/datagrid';
-import { useProposedMarketsList } from '@vegaprotocol/markets';
 import { type ProposalListFieldsFragment } from '@vegaprotocol/proposals';
 import { useColumnDefs } from './use-column-defs';
 import { useT } from '../../../lib/use-t';
+import { useProposedMarkets } from '../../../lib/hooks/use-markets';
 
 const defaultColDef = {
   sortable: true,
@@ -20,7 +20,7 @@ interface ProposalListProps {
 
 export const ProposalsList = ({ cellRenderers }: ProposalListProps) => {
   const t = useT();
-  const { data } = useProposedMarketsList();
+  const { data } = useProposedMarkets();
   const columnDefs = useColumnDefs();
 
   return (

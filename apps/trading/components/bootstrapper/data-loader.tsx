@@ -1,7 +1,12 @@
-import { useAssetsMapProvider } from '@vegaprotocol/assets';
-import { useMarketsMapProvider } from '@vegaprotocol/markets';
+import { useMarkets } from '../../lib/hooks/use-markets';
 import type { ReactNode } from 'react';
+import { localLoggerFactory } from '@vegaprotocol/logger';
 
+const logger = localLoggerFactory({ application: 'data-loader' });
+
+/**
+ * Loads all required static data
+ */
 export const DataLoader = ({
   children,
   failure,
@@ -11,20 +16,20 @@ export const DataLoader = ({
   failure: ReactNode;
   skeleton: ReactNode;
 }) => {
-  // Query all markets and assets to ensure they are cached
-  const { data: markets, error, loading } = useMarketsMapProvider();
-  const {
-    data: assets,
-    error: errorAssets,
-    loading: loadingAssets,
-  } = useAssetsMapProvider();
+  const { status: statusMarkets, error: errorMarkets } = useMarkets();
+  const { status: statusAssets, error: errorAssets } = useMarkets();
 
-  if (loading || loadingAssets) {
+  if ([statusMarkets, statusAssets].some((s) => s === 'pending')) {
     // eslint-disable-next-line
     return <>{skeleton}</>;
   }
 
-  if (error || errorAssets || !markets || !assets) {
+  if ([statusMarkets, statusAssets].some((s) => s === 'error')) {
+    logger.error(
+      'failed to mount app',
+      errorMarkets?.message,
+      errorAssets?.message
+    );
     // eslint-disable-next-line react/jsx-no-useless-fragment
     return <>{failure}</>;
   }

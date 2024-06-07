@@ -10,6 +10,7 @@ import { useDataProvider } from '@vegaprotocol/data-provider';
 import {
   activeMarketsWithCandlesProvider,
   calcCandleVolumePrice,
+  filterAndSortMarkets,
   type MarketMaybeWithCandles,
 } from '@vegaprotocol/markets';
 import { useYesterday } from '@vegaprotocol/react-helpers';
@@ -24,60 +25,39 @@ import {
   useTotalVolume24hCandles,
 } from '../../lib/hooks/use-markets-stats';
 import { useTotalValueLocked } from '../../lib/hooks/use-total-volume-locked';
-
-const POLLING_TIME = 2000;
+import { useMarkets } from '../../lib/hooks/use-markets';
 
 export const MarketsPage = () => {
   const t = useT();
-  const yesterday = useYesterday();
-  const {
-    data: activeMarkets,
-    error,
-    reload,
-  } = useDataProvider({
-    dataProvider: activeMarketsWithCandlesProvider,
-    variables: {
-      since: new Date(yesterday).toISOString(),
-      interval: Interval.INTERVAL_I1H,
-    },
-  });
-  useEffect(() => {
-    const interval = setInterval(() => {
-      reload();
-    }, POLLING_TIME);
-    return () => {
-      clearInterval(interval);
-    };
-  }, [reload]);
 
   usePageTitle(t('Markets'));
 
-  const topGainers = useTopGainers(activeMarkets);
-  const newListings = useNewListings(activeMarkets);
-  const totalVolume24hCandles = useTotalVolume24hCandles(activeMarkets);
+  const topGainers = []; // useTopGainers(activeMarkets);
+  const newListings = []; // useNewListings(activeMarkets);
+  const totalVolume24hCandles: number[] = []; // useTotalVolume24hCandles(activeMarkets);
 
-  const totalVolumeSparkline = (
-    <Sparkline width={80} height={20} data={totalVolume24hCandles} />
-  );
-  const { tvl, loading: tvlLoading, error: tvlError } = useTotalValueLocked();
-
-  const totalVolume24h = activeMarkets?.reduce((acc, market) => {
-    return (
-      acc +
-      Number(
-        calcCandleVolumePrice(
-          market.candles || [],
-          market.decimalPlaces,
-          market.positionDecimalPlaces
-        )
-      )
-    );
-  }, 0);
+  // const totalVolumeSparkline = (
+  //   <Sparkline width={80} height={20} data={totalVolume24hCandles} />
+  // );
+  // const { tvl, loading: tvlLoading, error: tvlError } = useTotalValueLocked();
+  //
+  // const totalVolume24h = activeMarkets?.reduce((acc, market) => {
+  //   return (
+  //     acc +
+  //     Number(
+  //       calcCandleVolumePrice(
+  //         market.candles || [],
+  //         market.decimalPlaces,
+  //         market.positionDecimalPlaces
+  //       )
+  //     )
+  //   );
+  // }, 0);
 
   return (
     <ErrorBoundary feature="rewards">
       <TinyScroll className="p-2">
-        <div className="grid auto-rows-min grid-cols-3 lg:grid-cols-5 xl:grid-cols-3 gap-3 p-3 xxl:px-[5.5rem]">
+        {/* <div className="grid auto-rows-min grid-cols-3 lg:grid-cols-5 xl:grid-cols-3 gap-3 p-3 xxl:px-[5.5rem]">
           <div className="flex flex-col gap-2 col-span-full lg:col-span-1">
             <Card key="24h-vol" className="flex grow">
               <div className="flex flex-col h-full">
@@ -123,20 +103,14 @@ export const MarketsPage = () => {
               <TopMarketList markets={newListings} />
             </div>
           </Card>
-        </div>
-        <MarketTables activeMarkets={activeMarkets} error={error} />
+        </div> */}
+        <MarketTables />
       </TinyScroll>
     </ErrorBoundary>
   );
 };
 
-export const MarketTables = ({
-  activeMarkets,
-  error,
-}: {
-  activeMarkets: MarketMaybeWithCandles[] | null;
-  error: Error | undefined;
-}) => {
+export const MarketTables = () => {
   const t = useT();
   const [activeTab, setActiveTab] = useState('open-markets');
 
@@ -182,7 +156,7 @@ export const MarketTables = ({
       <div className="h-full my-1 border rounded border-default">
         {activeTab === 'open-markets' && (
           <ErrorBoundary feature="markets-open">
-            <OpenMarkets data={activeMarkets} error={error} />
+            <OpenMarkets />
           </ErrorBoundary>
         )}
         {activeTab === 'proposed-markets' && (

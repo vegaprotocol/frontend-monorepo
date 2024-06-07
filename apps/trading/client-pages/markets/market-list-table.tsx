@@ -1,10 +1,10 @@
 import type { TypedDataAgGrid } from '@vegaprotocol/datagrid';
 import { AgGrid, PriceFlashCell } from '@vegaprotocol/datagrid';
-import type { MarketMaybeWithData } from '@vegaprotocol/markets';
 import { useMarketsColumnDefs } from './use-column-defs';
 import type { DataGridStore } from '../../stores/datagrid-store-slice';
 import { type StateCreator, create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { type Market } from '../../lib/hooks/use-markets';
 
 export const getRowId = ({ data }: { data: { id: string } }) => data.id;
 
@@ -20,7 +20,7 @@ const components = {
   PriceFlashCell,
 };
 
-type Props = TypedDataAgGrid<MarketMaybeWithData>;
+type Props = TypedDataAgGrid<Market>;
 
 export type DataGridSlice = {
   gridStore: DataGridStore;

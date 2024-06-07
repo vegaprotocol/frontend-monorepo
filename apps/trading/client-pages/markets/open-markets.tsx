@@ -2,16 +2,10 @@ import type { MarketMaybeWithData } from '@vegaprotocol/markets';
 import type { CellClickedEvent } from 'ag-grid-community';
 import MarketListTable from './market-list-table';
 import { useMarketClickHandler } from '../../lib/hooks/use-market-click-handler';
-import { useT } from '../../lib/use-t';
+import { useActiveMarkets } from '../../lib/hooks/use-markets';
 
-export const OpenMarkets = ({
-  data,
-  error,
-}: {
-  data: MarketMaybeWithData[] | null;
-  error: Error | undefined;
-}) => {
-  const t = useT();
+export const OpenMarkets = () => {
+  const { data } = useActiveMarkets();
   const handleOnSelect = useMarketClickHandler();
 
   return (
@@ -40,7 +34,6 @@ export const OpenMarkets = ({
         // @ts-ignore metaKey exists
         handleOnSelect(data.id, event ? event.metaKey : false);
       }}
-      overlayNoRowsTemplate={error ? error.message : t('No markets')}
     />
   );
 };

@@ -1,0 +1,97 @@
+fragment FutureV2 on Future {
+  quoteName
+  settlementAsset {
+    id
+    symbol
+    name
+    decimals
+    quantum
+  }
+}
+
+fragment PerpetualV2 on Perpetual {
+  quoteName
+  fundingRateScalingFactor
+  fundingRateLowerBound
+  fundingRateUpperBound
+  settlementAsset {
+    id
+    symbol
+    name
+    decimals
+    quantum
+  }
+  internalCompositePriceConfig {
+    ...PriceConfiguration
+  }
+}
+
+fragment SpotV2 on Spot {
+  baseAsset {
+    ...AssetListFields
+  }
+  quoteAsset {
+    ...AssetListFields
+  }
+}
+
+fragment MarketFieldsV2 on Market {
+  id
+  decimalPlaces
+  positionDecimalPlaces
+  tickSize
+  parentMarketID
+  successorMarketID
+  fees {
+    factors {
+      makerFee
+      infrastructureFee
+      liquidityFee
+    }
+    liquidityFeeSettings {
+      feeConstant
+      method
+    }
+  }
+  tradableInstrument {
+    instrument {
+      id
+      name
+      code
+      metadata {
+        tags
+      }
+      product {
+        ... on Future {
+          ...FutureV2
+        }
+        ... on Perpetual {
+          ...PerpetualV2
+        }
+        ... on Spot {
+          ...SpotV2
+        }
+      }
+    }
+  }
+  marketTimestamps {
+    proposed
+    pending
+    open
+    close
+  }
+  data {
+    marketState
+    marketTradingMode
+  }
+}
+
+query MarketsV2 {
+  marketsConnection {
+    edges {
+      node {
+        ...MarketFieldsV2
+      }
+    }
+  }
+}
