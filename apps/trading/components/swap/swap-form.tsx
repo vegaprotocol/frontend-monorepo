@@ -102,6 +102,8 @@ export const SwapForm = ({
   };
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
     // Check users is connected
     if (isReadOnly || !pubKey) return;
 
@@ -260,6 +262,7 @@ export const SwapForm = ({
         type="submit"
         intent={Intent.Submit}
         data-testid="swap-now-button"
+        size="large"
       >
         {t('Swap now')}
       </TradingButton>
