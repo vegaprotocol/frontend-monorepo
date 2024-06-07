@@ -10,7 +10,7 @@ import { useEffect, useState } from 'react';
 
 export const useSubmitFaucet = (
   asset: Asset | undefined,
-  getBalances: () => void
+  onTransactionConfirmed: () => void
 ) => {
   const [id, setId] = useState<number | null>(null);
   const createEthTransaction = useEthTransactionStore((state) => state.create);
@@ -29,10 +29,10 @@ export const useSubmitFaucet = (
   // When tx is confirmed refresh balances
   useEffect(() => {
     if (tx?.status === EthTxStatus.Confirmed) {
-      getBalances();
+      onTransactionConfirmed();
       if (asset) useBalancesStore.getState().refetch(asset.id);
     }
-  }, [tx?.status, getBalances, asset]);
+  }, [tx?.status, onTransactionConfirmed, asset]);
 
   return {
     id,

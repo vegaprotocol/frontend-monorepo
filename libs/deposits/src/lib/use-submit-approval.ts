@@ -11,7 +11,7 @@ import { useEffect, useState } from 'react';
 
 export const useSubmitApproval = (
   asset: Asset | undefined,
-  getBalances: () => void
+  onTransactionConfirmed: () => void
 ) => {
   const [id, setId] = useState<number | null>(null);
   const createEthTransaction = useEthTransactionStore((state) => state.create);
@@ -31,9 +31,9 @@ export const useSubmitApproval = (
   // When tx is confirmed refresh balances
   useEffect(() => {
     if (tx?.status === EthTxStatus.Confirmed) {
-      getBalances();
+      onTransactionConfirmed();
     }
-  }, [tx?.status, getBalances]);
+  }, [tx?.status, onTransactionConfirmed]);
 
   return {
     id,

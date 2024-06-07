@@ -30,14 +30,14 @@ export const useBalances = (assetData?: AssetData) => {
     DepositBalances | 'loading' | undefined
   >(undefined);
 
-  const reset = useCallback(() => {
+  const resetBalances = useCallback(() => {
     setBalances(undefined);
   }, []);
 
   const get = useCallback(
     (asset?: AssetData) => {
       const input = asset || assetData;
-      if (!input || !getBalances) return;
+      if (!input || !getBalances || balances === 'loading') return;
       setBalances('loading');
       const run = async () => {
         const balances = await getBalances(input);
@@ -45,10 +45,10 @@ export const useBalances = (assetData?: AssetData) => {
       };
       run();
     },
-    [assetData, getBalances]
+    [assetData, balances, getBalances]
   );
 
-  return { balances, getBalances: get, reset };
+  return { balances, getBalances: get, resetBalances };
 };
 
 export const useGetBalances = () => {

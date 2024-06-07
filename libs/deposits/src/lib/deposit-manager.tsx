@@ -36,21 +36,21 @@ export const DepositManager = ({
 
   const assetData = toAssetData(asset);
   const { contract, config } = useCollateralBridge(assetData?.chainId);
-  const { balances, getBalances, reset } = useBalances();
+  const { balances, getBalances, resetBalances } = useBalances();
 
   const { chainId } = useWeb3React();
   useEffect(() => {
     // gets balances on load and re-trigger balances when chain changed
     if (assetData?.chainId !== chainId) {
-      reset();
+      resetBalances();
     }
     if (assetData && !balances) {
       getBalances(assetData);
     }
-  }, [assetData, getBalances, chainId, balances, reset]);
+  }, [assetData, balances, chainId, getBalances, resetBalances]);
 
-  const approve = useSubmitApproval(asset, () => getBalances(assetData));
-  const faucet = useSubmitFaucet(asset, () => getBalances(assetData));
+  const approve = useSubmitApproval(asset, resetBalances);
+  const faucet = useSubmitFaucet(asset, resetBalances);
 
   const submitDeposit = (
     args: Parameters<DepositFormProps['submitDeposit']>['0']
@@ -91,7 +91,7 @@ export const DepositManager = ({
   return (
     <DepositForm
       selectedAsset={asset}
-      onDisconnect={reset}
+      onDisconnect={resetBalances}
       onSelectAsset={(assetId) => {
         const selected = toAssetData(assets.find((a) => a.id === assetId));
         if (selected) {

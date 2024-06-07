@@ -2,10 +2,12 @@ import type BigNumber from 'bignumber.js';
 import { create } from 'zustand';
 import * as Sentry from '@sentry/react';
 import { immer } from 'zustand/middleware/immer';
+import { toBigNum } from '@vegaprotocol/utils';
 
 type AssetWithBalance = {
   asset: {
     id: string;
+    decimals: number;
     contractAddress: string;
     chainId: number;
   };
@@ -39,7 +41,10 @@ export const useBalancesStore = create(
               ethBalanceFetcher()
                 .then((balance) => {
                   if (balance) {
-                    get().setBalance({ asset, balanceOnEth: balance });
+                    get().setBalance({
+                      asset,
+                      balanceOnEth: toBigNum(balance, asset.decimals),
+                    });
                   }
                 })
                 .catch((err) => {
