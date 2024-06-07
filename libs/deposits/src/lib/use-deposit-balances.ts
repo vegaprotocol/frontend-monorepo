@@ -81,7 +81,6 @@ export const useGetBalances = () => {
         return;
       }
 
-      // const provider = providers?.[assetData.chainId];
       const config = configs.find((c) => c.chainId === assetData.chainId);
       if (!config) return;
 

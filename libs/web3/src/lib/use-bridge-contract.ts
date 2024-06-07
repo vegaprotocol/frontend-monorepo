@@ -1,17 +1,14 @@
 import { CollateralBridge } from '@vegaprotocol/smart-contracts';
 import { useWeb3React } from '@web3-react/core';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useEthereumConfig } from './use-ethereum-config';
 import { useDefaultWeb3Providers } from './default-web3-provider';
 import { localLoggerFactory } from '@vegaprotocol/logger';
-import {
-  ERR_CHAIN_NOT_SUPPORTED,
-  ERR_WRONG_CHAIN,
-  isSupportedChainId,
-} from './constants';
+import { ERR_WRONG_CHAIN } from './constants';
 import { useEVMBridgeConfigs } from './use-evm-bridge-configs';
 import compact from 'lodash/compact';
 import uniq from 'lodash/uniq';
+import { type JsonRpcProvider } from '@ethersproject/providers';
 
 export const useBridgeContract = (allowDefaultProvider = false) => {
   const { provider: activeProvider, chainId } = useWeb3React();
@@ -103,19 +100,15 @@ export const useCollateralBridge = (chainId?: number) => {
   const { provider, chainId: activeChainId } = useWeb3React();
   const { configs, error: configsError } = useCollateralBridgeConfigs();
 
-  const config = useMemo(() => {
-    if (configsError || !chainId) return undefined;
-    return configs.find((c) => c.chainId === chainId);
-  }, [chainId, configs, configsError]);
+  const config =
+    configsError || !chainId
+      ? undefined
+      : configs.find((c) => c.chainId === chainId);
 
-  const signer = useMemo(() => {
-    return provider?.getSigner();
-  }, [provider]);
-
-  const contract = useMemo(() => {
-    if (!provider || !config || chainId !== activeChainId) return undefined;
-    return new CollateralBridge(config.address, signer || provider);
-  }, [activeChainId, chainId, config, provider, signer]);
+  const contract =
+    !provider || !config || chainId !== activeChainId
+      ? undefined
+      : new CollateralBridge(config.address, provider.getSigner() || provider);
 
   return {
     contract,
@@ -126,90 +119,27 @@ export const useCollateralBridge = (chainId?: number) => {
   };
 };
 
-export const useProvider = (chainId?: number, allowDefaultProvider = false) => {
-  const { provider: activeProvider, chainId: activeChainId } = useWeb3React();
-  const { providers: defaultProviders } = useDefaultWeb3Providers();
-
-  const [error, setError] = useState<Error | undefined>(undefined);
-
-  const defaultProvider = useMemo(() => {
-    if (chainId && defaultProviders) {
-      return defaultProviders[chainId];
-    }
-    return undefined;
-  }, [chainId, defaultProviders]);
-
-  const provider = useMemo(() => {
-    if (chainId && (activeProvider || defaultProvider)) {
-      if (chainId === activeChainId) {
-        return activeProvider;
-      } else if (allowDefaultProvider) {
-        return defaultProvider;
-      }
-    }
-    return undefined;
-  }, [
-    activeChainId,
-    activeProvider,
-    allowDefaultProvider,
-    chainId,
-    defaultProvider,
-  ]);
-
-  useEffect(() => {
-    if (!chainId) return;
-    if (!isSupportedChainId(chainId)) {
-      setError(ERR_CHAIN_NOT_SUPPORTED);
-      return;
-    }
-    if (activeChainId !== chainId) {
-      setError(ERR_WRONG_CHAIN);
-      return;
-    }
-    setError(undefined);
-  }, [activeChainId, chainId]);
-
-  return { provider, error };
-};
-
-export const useGetProvider = () => {
-  const { provider: activeProvider, chainId: activeChainId } = useWeb3React();
-  const { providers: defaultProviders } = useDefaultWeb3Providers();
-
-  const getProvider = useCallback(
-    (chainId: number) => {
-      if (activeChainId === chainId) {
-        return activeProvider;
-      }
-      if (defaultProviders) {
-        return defaultProviders[chainId];
-      }
-      return undefined;
-    },
-    [activeChainId, activeProvider, defaultProviders]
-  );
-
-  return getProvider;
-};
-
 export const useGetCollateralBridge = () => {
-  const getProvider = useGetProvider();
   const { configs } = useCollateralBridgeConfigs();
+  const { provider, chainId: activeChainId } = useWeb3React();
+  const { providers } = useDefaultWeb3Providers();
 
   const getCollateralBridge = useCallback(
     (chainId: number) => {
+      let usingDefaultProvider = false;
       const config = configs.find((c) => c.chainId === chainId);
       if (!config) return undefined;
 
-      const provider = getProvider(chainId);
-      if (!provider) return undefined;
-
-      return new CollateralBridge(
-        config.address,
-        provider.getSigner() || provider
-      );
+      let p: JsonRpcProvider | undefined = provider;
+      if (!p || activeChainId !== chainId) {
+        usingDefaultProvider = true;
+        p = providers?.[chainId];
+      }
+      if (!p) return undefined;
+      const signerOrProvider = usingDefaultProvider ? p : p.getSigner() || p;
+      return new CollateralBridge(config.address, signerOrProvider);
     },
-    [configs, getProvider]
+    [activeChainId, configs, provider, providers]
   );
 
   return getCollateralBridge;

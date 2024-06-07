@@ -106,7 +106,11 @@ const WithdrawDelayNotification = ({
               }
             ),
         DocsLinks?.WITHDRAWAL_LIMITS ? (
-          <ExternalLink className="ml-1" href={DocsLinks.WITHDRAWAL_LIMITS}>
+          <ExternalLink
+            key="withdraw-limit-docs"
+            className="ml-1"
+            href={DocsLinks.WITHDRAWAL_LIMITS}
+          >
             {t('Read more')}
           </ExternalLink>
         ) : (
@@ -133,7 +137,7 @@ export const WithdrawForm = ({
   const required = useRequired();
   const minSafe = useMinSafe();
   const { account, chainId, isActive } = useWeb3React();
-  const wrongChain = selectedAsset?.chainId !== chainId;
+  const wrongChain = selectedAsset && selectedAsset.chainId !== chainId;
   const openDialog = useWeb3ConnectStore((store) => store.open);
 
   const {
@@ -192,46 +196,6 @@ export const WithdrawForm = ({
         noValidate={true}
         data-testid="withdraw-form"
       >
-        <TradingFormGroup label={t('Asset')} labelFor="asset">
-          <Controller
-            control={control}
-            name="asset"
-            rules={{
-              validate: {
-                required: (value) => !!selectedAsset || required(value),
-              },
-            }}
-            render={({ field }) => (
-              <TradingRichSelect
-                data-testid="select-asset"
-                id="asset"
-                name="asset"
-                required
-                onValueChange={(value) => {
-                  onSelectAsset(value);
-                  field.onChange(value);
-                }}
-                placeholder={t('Please select an asset')}
-                value={selectedAsset?.id}
-                hasError={Boolean(errors.asset?.message)}
-              >
-                {assets.filter(isAssetTypeERC20).map((a) => (
-                  <AssetOption
-                    key={a.id}
-                    asset={a}
-                    balance={<AssetBalance asset={a} />}
-                  />
-                ))}
-              </TradingRichSelect>
-            )}
-          />
-          {errors.asset?.message && (
-            <TradingInputError intent="danger">
-              {errors.asset.message}
-            </TradingInputError>
-          )}
-        </TradingFormGroup>
-
         <TradingFormGroup
           label={t('To ({{chainName}} address)', {
             chainName: selectedAsset?.chainId
@@ -313,6 +277,47 @@ export const WithdrawForm = ({
             </TradingInputError>
           )}
         </TradingFormGroup>
+
+        <TradingFormGroup label={t('Asset')} labelFor="asset">
+          <Controller
+            control={control}
+            name="asset"
+            rules={{
+              validate: {
+                required: (value) => !!selectedAsset || required(value),
+              },
+            }}
+            render={({ field }) => (
+              <TradingRichSelect
+                data-testid="select-asset"
+                id="asset"
+                name="asset"
+                required
+                onValueChange={(value) => {
+                  onSelectAsset(value);
+                  field.onChange(value);
+                }}
+                placeholder={t('Please select an asset')}
+                value={selectedAsset?.id}
+                hasError={Boolean(errors.asset?.message)}
+              >
+                {assets.filter(isAssetTypeERC20).map((a) => (
+                  <AssetOption
+                    key={a.id}
+                    asset={a}
+                    balance={<AssetBalance asset={a} />}
+                  />
+                ))}
+              </TradingRichSelect>
+            )}
+          />
+          {errors.asset?.message && (
+            <TradingInputError intent="danger">
+              {errors.asset.message}
+            </TradingInputError>
+          )}
+        </TradingFormGroup>
+
         {selectedAsset && (
           <div className="mb-4">
             <WithdrawLimits
