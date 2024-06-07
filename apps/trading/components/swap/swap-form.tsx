@@ -102,8 +102,6 @@ export const SwapForm = ({
   };
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.stopPropagation();
-
     // Check users is connected
     if (isReadOnly || !pubKey) return;
 
