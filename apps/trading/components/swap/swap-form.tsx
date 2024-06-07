@@ -108,6 +108,8 @@ export const SwapForm = ({
 
     if (!market) return;
 
+    if (!Number(quoteAmount)) return;
+
     const toleranceFactor = tolerance ? Number(tolerance) / 100 : 0;
 
     const side = deriveSide({ market, baseAsset, quoteAsset });
