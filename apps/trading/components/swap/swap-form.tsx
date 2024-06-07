@@ -162,7 +162,7 @@ export const SwapForm = ({
         userValue: 'base',
       });
 
-      setBaseAmount(amount);
+      setQuoteAmount(amount);
       return;
     }
   }, [
