@@ -283,9 +283,9 @@ const ContentWrapper = ({
   title?: string;
 }) => {
   return (
-    <TinyScroll className="py-4 px-3" data-testid="sidebar-content">
-      {title && <h2 className="mb-4">{title}</h2>}
-      {children}
+    <TinyScroll className="py-4" data-testid="sidebar-content">
+      {title && <h2 className="mb-4 px-3">{title}</h2>}
+      <div className="px-3">{children}</div>
     </TinyScroll>
   );
 };
