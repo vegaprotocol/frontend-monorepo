@@ -301,7 +301,7 @@ const deriveAmount = ({
       marketData?.bestOfferPrice || '0',
       market.decimalPlaces
     );
-    return new BigNumber(amount).dividedBy(price).toString();
+    return new BigNumber(amount).dividedBy(price).toFixed(8);
   }
 
   return '';
