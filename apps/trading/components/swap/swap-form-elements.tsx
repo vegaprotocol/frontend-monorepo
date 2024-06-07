@@ -163,7 +163,15 @@ export const PriceImpactInput = ({
               name="custom-price-toleranc"
               type="number"
               value={value}
+              min={0}
+              max={100}
+              step={0.1}
               onChange={(e) => {
+                const valueNum = Number(e.target.value);
+
+                if (valueNum < 0) return;
+                if (valueNum > 100) return;
+
                 onValueChange(e.target.value);
                 setPriceImpactType('custom');
               }}

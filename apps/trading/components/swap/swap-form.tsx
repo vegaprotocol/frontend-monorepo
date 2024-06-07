@@ -78,7 +78,7 @@ export const SwapForm = ({
 
   const [quoteAmount, setQuoteAmount] = useState('');
   const [baseAmount, setBaseAmount] = useState('');
-  const [tolerance, setTolerance] = useState('0');
+  const [tolerance, setTolerance] = useState('');
 
   const { pubKey, isReadOnly } = useVegaWallet();
   const create = useVegaTransactionStore((state) => state.create);
