@@ -10,8 +10,6 @@ import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useT } from '../../lib/use-t';
 import {
   addDecimal,
-  addDecimalsFormatNumber,
-  formatNumber,
   removeDecimal,
   roundUpToTickSize,
   toBigNum,
@@ -31,6 +29,7 @@ import {
 import { useVegaTransactionStore } from '@vegaprotocol/web3';
 import { getNotionalSize } from '@vegaprotocol/deal-ticket';
 import { usePrevious } from '@vegaprotocol/react-helpers';
+import { SpotData } from './spot-data';
 
 const getQuoteAssetBalance = (
   asset?: AssetFieldsFragment,
@@ -140,33 +139,16 @@ export const SwapForm = ({
     // Avoid updating amounts if the current derived price has not changed
     if (marketPrice === prevMarketPrice) return;
 
-    if (side === Side.SIDE_BUY) {
-      const amount = deriveAmount({
-        amount: quoteAmount,
-        marketData,
-        market,
-        baseAsset,
-        quoteAsset,
-        userValue: 'quote',
-      });
+    const amount = deriveAmount({
+      amount: quoteAmount,
+      marketData,
+      market,
+      baseAsset,
+      quoteAsset,
+      userValue: 'quote',
+    });
 
-      setBaseAmount(amount);
-      return;
-    }
-
-    if (side === Side.SIDE_SELL) {
-      const amount = deriveAmount({
-        amount: baseAmount,
-        marketData,
-        market,
-        baseAsset,
-        quoteAsset,
-        userValue: 'base',
-      });
-
-      setQuoteAmount(amount);
-      return;
-    }
+    setBaseAmount(amount);
   }, [
     side,
     marketPrice,
@@ -268,24 +250,15 @@ export const SwapForm = ({
       >
         {t('Swap now')}
       </TradingButton>
-      <div className="text-left flex flex-col gap-1">
-        <p>
-          {quoteAsset &&
-            quoteAmount &&
-            baseAsset &&
-            baseAmount &&
-            `${formatNumber(quoteAmount, 4)} ${
-              quoteAsset.symbol
-            } = ${formatNumber(baseAmount, 4)} ${baseAsset.symbol}`}
-        </p>
-        <p className="text-secondary">
-          {marketPrice &&
-            market &&
-            `${side === Side.SIDE_BUY ? t('Best ask') : t('Best bid')} ${
-              market?.tradableInstrument.instrument.code
-            }: ${addDecimalsFormatNumber(marketPrice, market.decimalPlaces)}`}
-        </p>
-      </div>
+      <SpotData
+        price={marketPrice}
+        market={market}
+        side={side}
+        quoteAmount={quoteAmount}
+        baseAmount={baseAmount}
+        quoteAsset={quoteAsset}
+        baseAsset={baseAsset}
+      />
     </form>
   );
 };
