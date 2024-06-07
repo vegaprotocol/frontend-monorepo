@@ -7,6 +7,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
   Intent,
+  Pill,
   TradingButton,
   TradingInput,
   VegaIcon,
@@ -119,16 +120,21 @@ export const PriceImpactInput = ({
   onValueChange: (value: string) => void;
 }) => {
   const t = useT();
-  const [, setPriceImpactType] = useState<'custom' | 'auto'>('custom');
+  const [impactType, setPriceImpactType] = useState<'custom' | 'auto'>(
+    'custom'
+  );
   const autoValues = ['0.1', '0.5', '1.0'];
 
   return (
-    <div className="flex flex-col gap-1">
-      <label className="text-secondary text-sm">
+    <div className="flex flex-col gap-2">
+      <label htmlFor="price-tolerance" className="text-secondary text-sm">
         {t('Price impact tolerance')}
       </label>
-      <div className="flex">
-        <span className="text-md">{value || ''}%</span>
+      <div className="flex gap-2">
+        {value || '0'}%
+        <Pill size="xs" className="uppercase">
+          {impactType}
+        </Pill>
       </div>
       <div className="flex flex-wrap mt-1">
         {autoValues.map((val) => (
@@ -152,18 +158,19 @@ export const PriceImpactInput = ({
         ))}
 
         <div className="flex flex-1">
-          <p className="pt-2 pr-2 text-secondary text-sm">{t('Custom')}: </p>
-          <TradingInput
-            type="number"
-            value={value}
-            onChange={(e) => {
-              onValueChange(e.target.value);
-              setPriceImpactType('custom');
-            }}
-            appendElement="%"
-            className="h-10 text-md dark:bg-vega-cdark-800 bg-vega-clight-500 p-2 rounded-lg mr-2 text-center"
-            data-testid="custom-price-impact-input"
-          />
+          <div className="max-w-[100px]">
+            <TradingInput
+              name="custom-price-toleranc"
+              type="number"
+              value={value}
+              onChange={(e) => {
+                onValueChange(e.target.value);
+                setPriceImpactType('custom');
+              }}
+              appendElement="%"
+              data-testid="custom-price-impact-input"
+            />
+          </div>
         </div>
       </div>
     </div>
