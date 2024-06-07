@@ -39,7 +39,7 @@ export function PartyDepositsWithdrawals() {
               <th className="text-left px-4">{t('Amount')}</th>
               <th className="text-left px-4">{t('Date')}</th>
               <th className="text-left px-4">{t('Status')}</th>
-              <th className="text-left px-4">-</th>
+              <th className="text-left px-4">Origin</th>
             </tr>
           </thead>
           <tbody>
@@ -52,7 +52,10 @@ export function PartyDepositsWithdrawals() {
                   ledger.asset.source.chainId
                     ? ledger?.asset.source.chainId
                     : undefined;
-                const status = getDepositWithdrawalStatusLabel(ledger?.status);
+                const status = getDepositWithdrawalStatusLabel(
+                  ledger?.status,
+                  ledger?.txHash
+                );
 
                 return (
                   <tr>
@@ -63,7 +66,6 @@ export function PartyDepositsWithdrawals() {
                           hideLabel={true}
                           price={ledger.amount}
                           assetId={ledger?.asset.id}
-                          rounded={true}
                         />
                       )}
                     </td>

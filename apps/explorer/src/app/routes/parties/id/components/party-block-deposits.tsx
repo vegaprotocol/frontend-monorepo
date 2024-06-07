@@ -1,7 +1,7 @@
 import { t } from '@vegaprotocol/i18n';
 import { useNavigate } from 'react-router-dom';
 import { Routes } from '../../../../routes/route-names';
-import { Button, Loader } from '@vegaprotocol/ui-toolkit';
+import { AsyncRenderer, Button } from '@vegaprotocol/ui-toolkit';
 import { PartyBlock } from './party-block';
 import type { AccountFields } from '@vegaprotocol/accounts';
 import { useExplorerPartyDepositsWithdrawalsQuery } from './__generated__/Party-deposits-withdrawals';
@@ -19,7 +19,7 @@ import {
   ExternalExplorerLink,
 } from '../../../../components/links/external-explorer-link/external-explorer-link';
 import AssetBalance from '../../../..//components/asset-balance/asset-balance';
-import type { DepositStatus, WithdrawalStatus } from '@vegaprotocol/types';
+import { type DepositStatus, type WithdrawalStatus } from '@vegaprotocol/types';
 import {
   DepositStatusMapping,
   WithdrawalStatusMapping,
@@ -46,14 +46,17 @@ export const PartyBlockDeposits = ({
 }: PartyBlockAccountProps) => {
   const navigate = useNavigate();
 
-  const { data, loading } = useExplorerPartyDepositsWithdrawalsQuery({
+  const { data, error, loading } = useExplorerPartyDepositsWithdrawalsQuery({
     variables: { partyId },
   });
 
   const sortedData = data ? combineDepositsWithdrawals(data) : [];
 
   const shouldShowActionButton =
-    accountData && accountData.length > 0 && !accountLoading && !accountError;
+    sortedData &&
+    sortedData.length >= 3 &&
+    accountLoading === false &&
+    accountError === undefined;
 
   const action = shouldShowActionButton ? (
     <Button
@@ -68,66 +71,87 @@ export const PartyBlockDeposits = ({
 
   return (
     <PartyBlock title={t('Deposits & Withdrawals')} action={action}>
-      {loading ? (
-        <Loader />
-      ) : (
-        <TableWithTbody>
-          {sortedData
-            .filter((e) => !!e)
-            .flatMap((ledger) => {
-              const chain =
-                ledger?.asset.source.__typename &&
-                ledger.asset.source.__typename === 'ERC20' &&
-                ledger.asset.source.chainId
-                  ? ledger?.asset.source.chainId
-                  : undefined;
-              const status = getDepositWithdrawalStatusLabel(ledger?.status);
+      <AsyncRenderer loading={loading} error={error} data={sortedData}>
+        {sortedData && sortedData.length !== 0 ? (
+          <TableWithTbody>
+            {sortedData
+              .filter((e) => !!e)
+              .flatMap((ledger) => {
+                const chain =
+                  ledger?.asset.source.__typename &&
+                  ledger.asset.source.__typename === 'ERC20' &&
+                  ledger.asset.source.chainId
+                    ? ledger?.asset.source.chainId
+                    : undefined;
+                const status = getDepositWithdrawalStatusLabel(
+                  ledger?.status,
+                  ledger?.txHash
+                );
 
-              return (
-                <TableRow>
-                  <TableCell>{ledger?.__typename}</TableCell>
-                  <TableCell align={'right'}>
-                    {ledger?.asset.id && ledger.amount && (
-                      <AssetBalance
-                        hideLabel={true}
-                        price={ledger.amount}
-                        assetId={ledger?.asset.id}
-                        rounded={true}
-                      />
-                    )}
-                  </TableCell>
-                  <TableCell align={'center'}>
-                    {ledger?.createdTimestamp && (
-                      <Time date={ledger.createdTimestamp} />
-                    )}
-                  </TableCell>
-                  <TableCell>{status}</TableCell>
-                  <TableCell>
-                    {ledger?.txHash && (
-                      <>
-                        <ExternalExplorerLink
-                          truncate={true}
-                          id={ledger?.txHash}
-                          type={EthExplorerLinkTypes.tx}
-                          chain={chain}
+                return (
+                  <TableRow>
+                    <TableCell>{ledger?.__typename}</TableCell>
+                    <TableCell align={'right'}>
+                      {ledger?.asset.id && ledger.amount && (
+                        <AssetBalance
+                          hideLabel={true}
+                          price={ledger.amount}
+                          assetId={ledger?.asset.id}
                         />
-                        &hellip;
-                      </>
-                    )}
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-        </TableWithTbody>
-      )}
+                      )}
+                    </TableCell>
+                    <TableCell align={'center'}>
+                      {ledger?.createdTimestamp && (
+                        <Time date={ledger.createdTimestamp} />
+                      )}
+                    </TableCell>
+                    <TableCell>{status}</TableCell>
+                    <TableCell>
+                      {ledger?.txHash && (
+                        <>
+                          <ExternalExplorerLink
+                            truncate={true}
+                            id={ledger?.txHash}
+                            type={EthExplorerLinkTypes.tx}
+                            chain={chain}
+                          />
+                          &hellip;
+                        </>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+          </TableWithTbody>
+        ) : (
+          <p>There's nothing</p>
+        )}
+      </AsyncRenderer>
     </PartyBlock>
   );
 };
 
+/**
+ * Produces a label based on the status of a deposit or withdrawal. In the
+ * case of a finalized deposit, it will also check if the hash is present
+ * and use that to produce a label that isn't in the standard label mapping.
+ *
+ * @param status
+ * @param hash
+ * @returns string Label to
+ */
 export function getDepositWithdrawalStatusLabel(
-  status?: DepositStatus | WithdrawalStatus
+  status?: DepositStatus | WithdrawalStatus,
+  hash?: string | null
 ) {
   if (status !== undefined) {
+    if (status === 'STATUS_FINALIZED') {
+      if (hash) {
+        return t('Complete');
+      } else {
+        return t('Incomplete');
+      }
+    }
     if (isDepositStatus(status)) {
       return DepositStatusMapping[status];
     } else {
