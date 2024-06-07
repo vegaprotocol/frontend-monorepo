@@ -11,6 +11,7 @@ import {
 import { Time } from '../../../../../app/components/time';
 import { getDepositWithdrawalStatusLabel } from '../components/party-block-deposits';
 import AssetBalance from '../../../../components/asset-balance/asset-balance';
+import { TableCell, TableHeader, TableRow } from '../../../../components/table';
 
 type Params = { party: string };
 
@@ -35,11 +36,15 @@ export function PartyDepositsWithdrawals() {
         <table className="w-full">
           <thead>
             <tr>
-              <th className="text-right px-4">{t('Type')}</th>
-              <th className="text-left px-4">{t('Amount')}</th>
-              <th className="text-left px-4">{t('Date')}</th>
-              <th className="text-left px-4">{t('Status')}</th>
-              <th className="text-left px-4">Origin</th>
+              <TableHeader className="text-right px-4">{t('Type')}</TableHeader>
+              <TableHeader className="text-left px-4">
+                {t('Amount')}
+              </TableHeader>
+              <TableHeader className="text-left px-4">{t('Date')}</TableHeader>
+              <TableHeader className="text-left px-4">
+                {t('Status')}
+              </TableHeader>
+              <TableHeader className="text-left px-4">Origin</TableHeader>
             </tr>
           </thead>
           <tbody>
@@ -58,9 +63,9 @@ export function PartyDepositsWithdrawals() {
                 );
 
                 return (
-                  <tr>
-                    <td>{ledger?.__typename}</td>
-                    <td align={'right'}>
+                  <TableRow>
+                    <TableCell>{ledger?.__typename}</TableCell>
+                    <TableCell align={'right'}>
                       {ledger?.asset.id && ledger.amount && (
                         <AssetBalance
                           hideLabel={true}
@@ -68,14 +73,14 @@ export function PartyDepositsWithdrawals() {
                           assetId={ledger?.asset.id}
                         />
                       )}
-                    </td>
-                    <td align={'center'}>
+                    </TableCell>
+                    <TableCell align={'center'}>
                       {ledger?.createdTimestamp && (
                         <Time date={ledger.createdTimestamp} />
                       )}
-                    </td>
-                    <td>{status}</td>
-                    <td>
+                    </TableCell>
+                    <TableCell>{status}</TableCell>
+                    <TableCell>
                       {ledger?.txHash && (
                         <ExternalExplorerLink
                           id={ledger?.txHash}
@@ -83,8 +88,8 @@ export function PartyDepositsWithdrawals() {
                           chain={chain}
                         />
                       )}
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 );
               })}
           </tbody>
