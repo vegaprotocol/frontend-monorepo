@@ -44,6 +44,7 @@ export const AssetInput = ({
 }) => {
   const t = useT();
   const inputRef = useRef<HTMLInputElement>(null);
+  const inputName = `${testId}-amount`;
 
   return (
     <div
@@ -55,10 +56,13 @@ export const AssetInput = ({
       onClick={() => inputRef.current?.focus()}
       onKeyUp={(e) => e.code === 'Enter' && inputRef.current?.focus()}
     >
-      <label className="text-sm text-secondary">{label}</label>
+      <label htmlFor={inputName} className="text-sm text-secondary">
+        {label}
+      </label>
       <div className="flex items-center gap-px">
         <div className="flex-grow">
           <input
+            name={inputName}
             type="number"
             ref={inputRef}
             value={amount}
@@ -76,7 +80,7 @@ export const AssetInput = ({
           testId={`${testId}-dropdown`}
         />
       </div>
-      <div className="flex justify-between items-center text-secondary text-sm">
+      <div className="flex justify-end items-center text-secondary text-sm">
         {accountWarning &&
         accountAssetIds &&
         !!pubKey &&
