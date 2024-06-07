@@ -13,24 +13,23 @@ import {
   toBigNum,
 } from '@vegaprotocol/utils';
 import { Sparkline, Tooltip } from '@vegaprotocol/ui-toolkit';
-import type {
-  MarketMaybeWithData,
-  MarketMaybeWithDataAndCandles,
-} from '@vegaprotocol/markets';
+import {
+  type Market,
+  getQuoteAsset,
+  getQuoteName,
+  isSpot,
+} from '../../lib/hooks/use-markets';
 import {
   Last24hPriceChange,
   calcCandleVolume,
   calcCandleVolumePrice,
-  getQuoteAsset,
-  getQuoteName,
-  isSpot,
 } from '@vegaprotocol/markets';
 import { useT } from '../../lib/use-t';
 import { EmblemByMarket } from '@vegaprotocol/emblem';
 import { useChainId } from '@vegaprotocol/wallet-react';
 import { MarketIcon, getMarketStateTooltip } from './market-icon';
 
-const openInterestValues = (data: MarketMaybeWithData) => {
+const openInterestValues = (data: Market) => {
   if (!data) return null;
   const { data: marketData, positionDecimalPlaces, decimalPlaces } = data;
   if (!marketData) return null;
@@ -51,11 +50,7 @@ const openInterestValues = (data: MarketMaybeWithData) => {
   };
 };
 
-const OpenInterestCell = ({
-  data,
-}: {
-  data: MarketMaybeWithData | undefined;
-}) => {
+const OpenInterestCell = ({ data }: { data: Market | undefined }) => {
   const openInterestData = data && openInterestValues(data);
   if (!openInterestData) return null;
   const { openInterest, openInterestNotional } = openInterestData;
@@ -72,48 +67,8 @@ const OpenInterestCell = ({
   );
 };
 
-export const priceChangeRenderer = (
-  data: MarketMaybeWithDataAndCandles | undefined,
-  showChangeValue = true
-) => {
-  if (!data) return null;
-  return (
-    <Last24hPriceChange
-      marketId={data.id}
-      decimalPlaces={data.decimalPlaces}
-      orientation="vertical"
-      showChangeValue={showChangeValue}
-      fallback={
-        <span className="leading-4">
-          <div className="text-ellipsis whitespace-nowrap overflow-hidden">
-            <span data-testid="price-change-percentage">{'0.00%'}</span>
-          </div>
-          {showChangeValue && (
-            <span
-              data-testid="price-change"
-              className="text-ellipsis whitespace-nowrap overflow-hidden text-muted"
-            >
-              ({'0.00'})
-            </span>
-          )}
-        </span>
-      }
-    />
-  );
-};
-
-export const priceChangeSparklineRenderer = (
-  data: MarketMaybeWithDataAndCandles | undefined
-) => {
-  if (!data) return null;
-  const candles = data.candles
-    ?.filter((c) => c.close)
-    .map((c) => Number(c.close));
-  return <Sparkline width={80} height={20} data={candles || [0]} />;
-};
-
 export const priceValueFormatter = (
-  data: MarketMaybeWithData | undefined,
+  data: Market | undefined,
   formatDecimalPlaces?: number
 ): string => {
   if (data?.tradableInstrument.instrument.product.__typename === 'Spot') {
@@ -157,7 +112,7 @@ export const useMarketsColumnDefs = () => {
           value,
           data,
         }: VegaICellRendererParams<
-          MarketMaybeWithData,
+          Market,
           'tradableInstrument.instrument.code'
         >) => {
           const tradingMode = data?.data?.marketTradingMode;
@@ -193,7 +148,7 @@ export const useMarketsColumnDefs = () => {
         cellRenderer: 'PriceFlashCell',
         filter: 'agNumberColumnFilter',
         maxWidth: 150,
-        valueGetter: ({ data }: VegaValueGetterParams<MarketMaybeWithData>) => {
+        valueGetter: ({ data }: VegaValueGetterParams<Market>) => {
           if (data && isSpot(data.tradableInstrument.instrument.product)) {
             return data?.data?.lastTradedPrice === undefined
               ? undefined
@@ -208,29 +163,57 @@ export const useMarketsColumnDefs = () => {
         },
         valueFormatter: ({
           data,
-        }: VegaValueFormatterParams<MarketMaybeWithData, 'data.markPrice'>) => {
+        }: VegaValueFormatterParams<Market, 'data.markPrice'>) => {
           return priceValueFormatter(data);
         },
       },
       {
         headerName: '24h Change',
-        field: 'data.candles',
+        field: 'candlesConnection',
         type: 'rightAligned',
-        cellRenderer: ({
-          data,
-        }: ValueFormatterParams<MarketMaybeWithDataAndCandles, 'candles'>) => {
+        cellRenderer: ({ data }: { data: Market }) => {
+          if (!data) return;
+          const candles = data.candlesConnection?.edges
+            ?.map((e) => e!.node)
+            ?.filter((c) => c.close)
+            .map((c) => Number(c.close));
+
           return (
             <div className="flex flex-row gap-2 justify-end">
-              <span>{priceChangeRenderer(data)}</span>
-              <span>{priceChangeSparklineRenderer(data)}</span>
+              <span>
+                <Last24hPriceChange
+                  marketId={data.id}
+                  decimalPlaces={data.decimalPlaces}
+                  orientation="vertical"
+                  showChangeValue={true}
+                  fallback={
+                    <span className="leading-4">
+                      <div className="text-ellipsis whitespace-nowrap overflow-hidden">
+                        <span data-testid="price-change-percentage">
+                          {'0.00%'}
+                        </span>
+                      </div>
+                      <span
+                        data-testid="price-change"
+                        className="text-ellipsis whitespace-nowrap overflow-hidden text-muted"
+                      >
+                        ({'0.00'})
+                      </span>
+                    </span>
+                  }
+                />
+              </span>
+              <span>
+                <Sparkline width={80} height={20} data={candles || [0]} />
+              </span>
             </div>
           );
         },
-        valueGetter: ({
-          data,
-        }: VegaValueGetterParams<MarketMaybeWithDataAndCandles>) => {
-          if (!data?.candles) return 0;
-          const candles = data.candles.map((c) => c.close);
+        valueGetter: ({ data }: VegaValueGetterParams<Market>) => {
+          if (!data?.candlesConnection?.edges?.length) return 0;
+          const candles = data.candlesConnection.edges.map(
+            (c) => c!.node.close
+          );
           const change = priceChangePercentage(candles);
           if (!change) return 0;
           return change;
@@ -239,13 +222,13 @@ export const useMarketsColumnDefs = () => {
       {
         headerName: t('24h Volume'),
         type: 'rightAligned',
-        field: 'data.candles',
+        field: 'candlesConnection',
         sort: 'desc',
-        valueGetter: ({
-          data,
-        }: VegaValueGetterParams<MarketMaybeWithDataAndCandles>) => {
+        valueGetter: ({ data }: VegaValueGetterParams<Market>) => {
           if (!data) return 0;
-          const candles = data?.candles;
+          const candles = data?.candlesConnection?.edges?.length
+            ? data.candlesConnection.edges.map((e) => e!.node)
+            : [];
           const volPrice =
             candles &&
             calcCandleVolumePrice(
@@ -256,11 +239,11 @@ export const useMarketsColumnDefs = () => {
           if (!volPrice) return 0;
           return Number(volPrice);
         },
-        cellRenderer: ({
-          data,
-        }: ValueFormatterParams<MarketMaybeWithDataAndCandles, 'candles'>) => {
+        cellRenderer: ({ data }: ValueFormatterParams<Market>) => {
           if (!data) return '-';
-          const candles = data.candles;
+          const candles = data?.candlesConnection?.edges?.length
+            ? data.candlesConnection.edges.map((e) => e!.node)
+            : [];
           const vol = candles ? calcCandleVolume(candles) : '0';
           const quoteName = getQuoteName(data);
           const volPrice = candles
@@ -297,7 +280,7 @@ export const useMarketsColumnDefs = () => {
         headerName: t('Open interest'),
         field: 'data.openInterest',
         type: 'rightAligned',
-        valueGetter: ({ data }: VegaValueGetterParams<MarketMaybeWithData>) => {
+        valueGetter: ({ data }: VegaValueGetterParams<Market>) => {
           const openInterestData = data && openInterestValues(data);
           if (!openInterestData) return 0;
           const { openInterestNotional } = openInterestData;
@@ -305,10 +288,7 @@ export const useMarketsColumnDefs = () => {
         },
         cellRenderer: ({
           data,
-        }: VegaValueFormatterParams<
-          MarketMaybeWithData,
-          'data.openInterest'
-        >) => {
+        }: VegaValueFormatterParams<Market, 'data.openInterest'>) => {
           return (
             <span className="font-mono">
               <OpenInterestCell data={data} />

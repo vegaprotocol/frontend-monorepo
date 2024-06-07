@@ -1,7 +1,7 @@
-import { type MarketMaybeWithData } from '@vegaprotocol/markets';
 import { MarketTradingMode, MarketState } from '@vegaprotocol/types';
 import { VegaIconNames, VegaIcon, Tooltip } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../lib/use-t';
+import { type Market } from '../../lib/hooks/use-markets';
 
 export const getMarketStateIcon = (
   state?: MarketState
@@ -65,7 +65,7 @@ export const getMarketStateTooltip = (
   }
 };
 
-export const MarketIcon = ({ data }: { data?: MarketMaybeWithData | null }) => {
+export const MarketIcon = ({ data }: { data?: Market }) => {
   const t = useT();
   const tradingMode = data?.data?.marketTradingMode;
   const state = data?.data?.marketState;
@@ -73,6 +73,7 @@ export const MarketIcon = ({ data }: { data?: MarketMaybeWithData | null }) => {
   const tooltip = getMarketStateTooltip(state, tradingMode);
 
   if (!icon) return null;
+
   return (
     <Tooltip description={t(tooltip)}>
       <span className="rounded-full bg-vega-clight-500 dark:bg-vega-cdark-500 p-1 flex items-center">

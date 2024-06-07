@@ -6,11 +6,17 @@ import {
   type MarketFieldsV2Fragment,
   type MarketsV2Query,
   type MarketsV2QueryVariables,
+  type SpotV2Fragment,
+  type FutureV2Fragment,
+  type PerpetualV2Fragment,
 } from './__generated__/Markets';
 import { MarketState } from '@vegaprotocol/types';
 import { MIN } from '@vegaprotocol/utils';
+import { subDays } from 'date-fns';
 
 export type Market = MarketFieldsV2Fragment;
+
+const since = subDays(new Date(), 1).toISOString();
 
 export const useMarkets = () => {
   const client = useApolloClient();
@@ -22,6 +28,9 @@ export const useMarkets = () => {
         MarketsV2QueryVariables
       >({
         query: MarketsV2Document,
+        variables: {
+          since,
+        },
         fetchPolicy: 'no-cache',
       });
 
@@ -115,3 +124,82 @@ const orderMarkets = (markets: Market[]) => {
   // TODO: Also order by trading mode
   return orderBy(markets, ['marketTimestamps.open', 'id'], ['asc', 'asc']);
 };
+
+export const getProductType = (market: Market) => {
+  if (!market.tradableInstrument?.instrument.product) {
+    throw new Error(
+      'Failed to retrieve product type. Invalid tradable instrument'
+    );
+  }
+
+  const type = market.tradableInstrument.instrument.product.__typename;
+
+  if (!type) {
+    throw new Error('Failed to retrieve asset. Invalid product type');
+  }
+
+  return type;
+};
+
+export const getQuoteName = (market: Market) => {
+  if (!market.tradableInstrument?.instrument.product) {
+    throw new Error(
+      'Failed to retrieve quoteName. Invalid tradable instrument'
+    );
+  }
+
+  const { product } = market.tradableInstrument.instrument;
+
+  if (isPerpetual(product) || isFuture(product)) {
+    return product.quoteName;
+  }
+
+  if (isSpot(product)) {
+    return product.quoteAsset.symbol;
+  }
+
+  throw new Error('Failed to retrieve quoteName. Invalid product type');
+};
+
+export const getBaseAsset = (market: Market) => {
+  if (!market.tradableInstrument.instrument.product) {
+    throw new Error('Failed to retrieve asset. Invalid tradable instrument');
+  }
+
+  const product = market.tradableInstrument.instrument.product;
+
+  if (isSpot(product)) {
+    return product.baseAsset;
+  }
+
+  throw new Error(
+    `Failed to retrieve base asset. Invalid product type ${product.__typename}`
+  );
+};
+
+export const getQuoteAsset = (market: Market) => {
+  if (!market.tradableInstrument.instrument.product) {
+    throw new Error('Failed to retrieve asset. Invalid tradable instrument');
+  }
+
+  const { product } = market.tradableInstrument.instrument;
+
+  if (isSpot(product)) {
+    return product.quoteAsset;
+  }
+
+  throw new Error(
+    `Failed to retrieve quote asset. Invalid product type ${product.__typename}`
+  );
+};
+
+type Product = Market['tradableInstrument']['instrument']['product'];
+
+export const isSpot = (product: Product): product is SpotV2Fragment =>
+  product.__typename === 'Spot';
+
+export const isFuture = (product: Product): product is FutureV2Fragment =>
+  product.__typename === 'Future';
+
+export const isPerpetual = (product: Product): product is PerpetualV2Fragment =>
+  product.__typename === 'Perpetual';

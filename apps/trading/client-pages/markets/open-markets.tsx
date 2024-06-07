@@ -1,8 +1,7 @@
-import type { MarketMaybeWithData } from '@vegaprotocol/markets';
 import type { CellClickedEvent } from 'ag-grid-community';
 import MarketListTable from './market-list-table';
 import { useMarketClickHandler } from '../../lib/hooks/use-market-click-handler';
-import { useActiveMarkets } from '../../lib/hooks/use-markets';
+import { useActiveMarkets, type Market } from '../../lib/hooks/use-markets';
 
 export const OpenMarkets = () => {
   const { data } = useActiveMarkets();
@@ -11,11 +10,7 @@ export const OpenMarkets = () => {
   return (
     <MarketListTable
       rowData={data}
-      onCellClicked={({
-        data,
-        column,
-        event,
-      }: CellClickedEvent<MarketMaybeWithData>) => {
+      onCellClicked={({ data, column, event }: CellClickedEvent<Market>) => {
         if (!data) return;
 
         // prevent navigating to the market page if any of the below cells are clicked

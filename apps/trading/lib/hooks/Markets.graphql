@@ -83,10 +83,32 @@ fragment MarketFieldsV2 on Market {
   data {
     marketState
     marketTradingMode
+    markPrice
+    openInterest
+    bestOfferPrice
+    bestBidPrice
+    lastTradedPrice
+  }
+  candlesConnection(
+    since: $since
+    interval: INTERVAL_I1H
+    pagination: { last: 24 }
+  ) {
+    edges {
+      node {
+        periodStart
+        high
+        low
+        open
+        close
+        volume
+        notional
+      }
+    }
   }
 }
 
-query MarketsV2 {
+query MarketsV2($since: String!) {
   marketsConnection {
     edges {
       node {
