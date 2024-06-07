@@ -105,12 +105,11 @@ export const SwapForm = ({
 
     // Check users is connected
     if (isReadOnly || !pubKey) return;
-
-    if (!market) return;
-
     if (!Number(quoteAmount)) return;
 
-    const toleranceFactor = tolerance ? Number(tolerance) / 100 : 0;
+    if (!market) {
+      throw new Error('could not dervie spot market for swap');
+    }
 
     const side = deriveSide({ market, baseAsset, quoteAsset });
 
@@ -118,6 +117,7 @@ export const SwapForm = ({
       throw new Error('could not derive side for swap');
     }
 
+    const toleranceFactor = tolerance ? Number(tolerance) / 100 : 0;
     const price = derivePrice(marketData, side, toleranceFactor, market);
 
     const orderSubmission = {
