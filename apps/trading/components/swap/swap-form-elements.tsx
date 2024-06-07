@@ -1,4 +1,4 @@
-import { useState, type ChangeEvent, useRef } from 'react';
+import { type ChangeEvent, useRef } from 'react';
 import type { AssetFieldsFragment } from '@vegaprotocol/assets';
 import { EmblemByAsset } from '@vegaprotocol/emblem';
 import {
@@ -7,7 +7,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
   Intent,
-  Pill,
   TradingButton,
   TradingInput,
   VegaIcon,
@@ -78,7 +77,6 @@ export const AssetInput = ({
         />
       </div>
       <div className="flex justify-between items-center text-secondary text-sm">
-        <span>{/* {quoteAmount && `$${quoteAmount}`} */}</span>
         {accountWarning &&
         accountAssetIds &&
         !!pubKey &&
@@ -120,9 +118,6 @@ export const PriceImpactInput = ({
   onValueChange: (value: string) => void;
 }) => {
   const t = useT();
-  const [impactType, setPriceImpactType] = useState<'custom' | 'auto'>(
-    'custom'
-  );
   const autoValues = ['0.1', '0.5', '1.0'];
 
   return (
@@ -130,55 +125,46 @@ export const PriceImpactInput = ({
       <label htmlFor="price-tolerance" className="text-secondary text-sm">
         {t('Price impact tolerance')}
       </label>
-      <div className="flex gap-2">
-        {value || '0'}%
-        <Pill size="xs" className="uppercase">
-          {impactType}
-        </Pill>
-      </div>
-      <div className="flex flex-wrap mt-1">
-        {autoValues.map((val) => (
-          <TradingButton
-            intent={Intent.None}
-            size="small"
-            className={classNames('mr-2', {
-              'dark:bg-vega-cdark-700 bg-vega-clight-700': val === value,
-            })}
-            key={val}
-            type="button"
+      <div className="flex items-center gap-2 flex-wrap">
+        <div className="flex-grow min-w-[80px]">
+          <TradingInput
+            name="custom-price-tolerance"
+            type="number"
             value={value}
-            onClick={() => {
-              onValueChange(val);
-              setPriceImpactType('auto');
+            min={0}
+            max={100}
+            step={0.1}
+            onChange={(e) => {
+              const valueNum = Number(e.target.value);
+
+              if (valueNum < 0) return;
+              if (valueNum > 100) return;
+
+              onValueChange(e.target.value);
             }}
-            data-testid={`auto-value-${val}`}
-          >
-            {val}%
-          </TradingButton>
-        ))}
-
-        <div className="flex flex-1">
-          <div className="max-w-[100px]">
-            <TradingInput
-              name="custom-price-toleranc"
-              type="number"
+            appendElement="%"
+            data-testid="custom-price-impact-input"
+          />
+        </div>
+        <div className="flex justify-end">
+          {autoValues.map((val) => (
+            <TradingButton
+              intent={Intent.None}
+              size="small"
+              className={classNames('mr-2', {
+                'dark:bg-vega-cdark-700 bg-vega-clight-700': val === value,
+              })}
+              key={val}
+              type="button"
               value={value}
-              min={0}
-              max={100}
-              step={0.1}
-              onChange={(e) => {
-                const valueNum = Number(e.target.value);
-
-                if (valueNum < 0) return;
-                if (valueNum > 100) return;
-
-                onValueChange(e.target.value);
-                setPriceImpactType('custom');
+              onClick={() => {
+                onValueChange(val);
               }}
-              appendElement="%"
-              data-testid="custom-price-impact-input"
-            />
-          </div>
+              data-testid={`auto-value-${val}`}
+            >
+              {val}%
+            </TradingButton>
+          ))}
         </div>
       </div>
     </div>
