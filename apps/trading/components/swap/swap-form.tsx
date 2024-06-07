@@ -240,6 +240,7 @@ export const SwapForm = ({
         value={tolerance}
         onValueChange={(value) => setTolerance(value)}
         data-testid="price-impact-input"
+        disabled={!market}
       />
 
       <TradingButton

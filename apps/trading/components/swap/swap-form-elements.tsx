@@ -117,9 +117,11 @@ export const SwapButton = ({ onClick }: { onClick: () => void }) => (
 export const PriceImpactInput = ({
   value,
   onValueChange,
+  disabled,
 }: {
   value: string;
   onValueChange: (value: string) => void;
+  disabled?: boolean;
 }) => {
   const t = useT();
   const autoValues = ['0.1', '0.5', '1.0'];
@@ -134,6 +136,7 @@ export const PriceImpactInput = ({
           <TradingInput
             name="custom-price-tolerance"
             type="number"
+            disabled={disabled}
             value={value}
             min={0}
             max={100}
@@ -154,6 +157,7 @@ export const PriceImpactInput = ({
           {autoValues.map((val) => (
             <TradingButton
               intent={Intent.None}
+              disabled={disabled}
               size="small"
               className={classNames('mr-2', {
                 'dark:bg-vega-cdark-700 bg-vega-clight-700': val === value,
