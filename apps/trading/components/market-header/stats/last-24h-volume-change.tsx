@@ -23,6 +23,7 @@ export const Last24hVolumeChangeStat = ({
 }: Last24hVolumeChangeStatProps) => {
   const t = useT();
 
+  // TODO: Change this to use useMarket from apps/trading
   return (
     <HeaderStat heading={t('Volume (24h)')} data-testid="market-volume">
       <Last24hVolume

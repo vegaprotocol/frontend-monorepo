@@ -1,16 +1,11 @@
-import type { RefObject } from 'react';
-import { useInView } from 'react-intersection-observer';
 import { addDecimalsFormatNumber, isNumeric } from '@vegaprotocol/utils';
-import { useThrottledDataProvider } from '@vegaprotocol/data-provider';
 import { PriceCell } from '@vegaprotocol/datagrid';
-import { marketDataProvider } from '@vegaprotocol/markets';
-import { THROTTLE_UPDATE_TIME } from '../constants';
+import { useMarket } from '../../lib/hooks/use-markets';
 
 interface Props {
   marketId?: string;
   decimalPlaces?: number;
   asPriceCell?: boolean;
-  inViewRoot?: RefObject<Element>;
   initialValue?: string;
 }
 
@@ -18,34 +13,22 @@ export const MarketMarkPrice = ({
   marketId,
   decimalPlaces,
   initialValue,
-  inViewRoot,
   asPriceCell,
 }: Props) => {
-  const [ref, inView] = useInView({ root: inViewRoot?.current });
-  const { data } = useThrottledDataProvider(
-    {
-      dataProvider: marketDataProvider,
-      variables: { marketId: marketId || '' },
-      skip: !inView || !marketId,
-    },
-    THROTTLE_UPDATE_TIME
-  );
+  const { data } = useMarket({ marketId });
 
-  const marketPrice = data?.markPrice || initialValue;
+  const marketPrice = data?.data?.markPrice || initialValue;
 
   if (!marketPrice || !isNumeric(decimalPlaces)) {
-    return <span ref={ref}>-</span>;
+    return <span>-</span>;
   }
   if (asPriceCell) {
     return (
       <PriceCell
-        ref={ref}
         value={Number(marketPrice)}
         valueFormatted={addDecimalsFormatNumber(marketPrice, decimalPlaces, 2)}
       />
     );
   }
-  return (
-    <span ref={ref}>{addDecimalsFormatNumber(marketPrice, decimalPlaces)}</span>
-  );
+  return <span>{addDecimalsFormatNumber(marketPrice, decimalPlaces)}</span>;
 };

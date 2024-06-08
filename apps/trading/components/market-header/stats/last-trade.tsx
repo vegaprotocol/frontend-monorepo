@@ -1,10 +1,9 @@
-import { useDataProvider } from '@vegaprotocol/data-provider';
 import { useT } from '../../../lib/use-t';
 import { HeaderStat } from '../../header';
 import { type HTMLAttributes } from 'react';
-import { marketDataProvider } from '@vegaprotocol/markets';
 import { PriceCell } from '@vegaprotocol/datagrid';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
+import { useMarket } from '../../../lib/hooks/use-markets';
 
 type LastTradeStatProps = HTMLAttributes<HTMLDivElement> & {
   marketId: string;
@@ -17,19 +16,16 @@ export const LastTradeStat = ({
   ...props
 }: LastTradeStatProps) => {
   const t = useT();
-  const { data } = useDataProvider({
-    dataProvider: marketDataProvider,
-    variables: { marketId },
-  });
+  const { data } = useMarket({ marketId });
 
   return (
     <HeaderStat heading={t('Last trade')} {...props}>
       <div>
-        {data ? (
+        {data?.data ? (
           <PriceCell
-            value={Number(data.lastTradedPrice)}
+            value={Number(data.data.lastTradedPrice)}
             valueFormatted={addDecimalsFormatNumber(
-              data.lastTradedPrice,
+              data.data.lastTradedPrice,
               decimalPlaces
             )}
           />

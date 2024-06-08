@@ -17,6 +17,7 @@ export const Last24hPriceChangeStat = ({
 }: Last24hPriceChangeStatProps) => {
   const t = useT();
 
+  // TODO: change this to use useMarket
   return (
     <HeaderStat heading={t('Change (24h)')} data-testid="market-change">
       <Last24hPriceChange marketId={marketId} decimalPlaces={decimalPlaces} />

@@ -1,14 +1,14 @@
-import { useMarketState } from '@vegaprotocol/markets';
 import * as Schema from '@vegaprotocol/types';
 import { HeaderStat } from '../../header';
 import { DocsLinks } from '@vegaprotocol/environment';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../../lib/use-t';
+import { useMarket } from '../../../lib/hooks/use-markets';
 
 export const MarketStateStat = ({ marketId }: { marketId?: string }) => {
   const t = useT();
-  const { data: marketState } = useMarketState(marketId);
-
+  const { data } = useMarket({ marketId });
+  const marketState = data?.data?.marketState;
   return (
     <HeaderStat
       heading={t('Status')}

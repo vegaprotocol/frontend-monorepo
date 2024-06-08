@@ -1,5 +1,9 @@
 import { useT } from '../../lib/use-t';
-import type { Market } from '../../lib/hooks/use-markets';
+import {
+  getQuoteAsset,
+  getBaseAsset,
+  type Market,
+} from '../../lib/hooks/use-markets';
 import * as Stats from './stats';
 
 interface MarketHeaderSpotProps {
@@ -12,8 +16,8 @@ export const MarketHeaderSpot = ({ market }: MarketHeaderSpotProps) => {
   }
 
   const t = useT();
-  const quoteAsset = market.tradableInstrument.instrument.product.quoteAsset;
-  const baseAsset = market.tradableInstrument.instrument.product.baseAsset;
+  const quoteAsset = getQuoteAsset(market);
+  const baseAsset = getBaseAsset(market);
 
   return (
     <>

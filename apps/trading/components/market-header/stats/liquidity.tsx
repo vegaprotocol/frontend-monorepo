@@ -2,8 +2,6 @@ import {
   NetworkParams,
   useNetworkParams,
 } from '@vegaprotocol/network-parameters';
-import { useDataProvider } from '@vegaprotocol/data-provider';
-import { marketDataProvider } from '@vegaprotocol/markets';
 import { HeaderStat } from '../../header';
 import {
   ExternalLink,
@@ -23,6 +21,7 @@ import { DocsLinks } from '@vegaprotocol/environment';
 import { Link } from 'react-router-dom';
 import { Links } from '../../../lib/links';
 import { useT } from '../../../lib/use-t';
+import { useMarket } from '../../../lib/hooks/use-markets';
 
 interface LiquidityStatProps {
   marketId: string;
@@ -36,6 +35,9 @@ export const LiquidityStat = ({
   quantum,
 }: LiquidityStatProps) => {
   const t = useT();
+
+  const { data } = useMarket({ marketId });
+
   const { params } = useNetworkParams([
     NetworkParams.market_liquidity_stakeToCcyVolume,
     NetworkParams.market_liquidity_targetstake_triggering_ratio,
@@ -43,14 +45,9 @@ export const LiquidityStat = ({
 
   const stakeToCcyVolume = params.market_liquidity_stakeToCcyVolume;
 
-  const { data: market } = useDataProvider({
-    dataProvider: marketDataProvider,
-    variables: { marketId },
-  });
-
-  const supplied = market?.suppliedStake
+  const supplied = data?.data?.suppliedStake
     ? addDecimalsFormatNumberQuantum(
-        new BigNumber(market?.suppliedStake)
+        new BigNumber(data.data.suppliedStake)
           .multipliedBy(stakeToCcyVolume || 1)
           .toString(),
         assetDecimals,
@@ -59,15 +56,15 @@ export const LiquidityStat = ({
     : '-';
 
   const { percentage, status } = useCheckLiquidityStatus({
-    suppliedStake: market?.suppliedStake || 0,
-    targetStake: market?.targetStake || 0,
+    suppliedStake: data?.data?.suppliedStake || 0,
+    targetStake: data?.data?.targetStake || 0,
   });
 
   const showMessage =
     percentage.gte(100) &&
-    market?.marketTradingMode ===
+    data?.data?.marketTradingMode ===
       MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
-    market.trigger ===
+    data?.data?.trigger ===
       AuctionTrigger.AUCTION_TRIGGER_UNABLE_TO_DEPLOY_LP_ORDERS;
 
   const description = marketId ? (
@@ -77,9 +74,9 @@ export const LiquidityStat = ({
           <KeyValueTableRow>
             <span>{t('Supplied stake')}</span>
             <span>
-              {market?.suppliedStake
+              {data?.data?.suppliedStake
                 ? addDecimalsFormatNumberQuantum(
-                    market?.suppliedStake,
+                    data.data.suppliedStake,
                     assetDecimals,
                     quantum
                   )
@@ -89,9 +86,9 @@ export const LiquidityStat = ({
           <KeyValueTableRow>
             <span>{t('Target stake')}</span>
             <span>
-              {market?.targetStake
+              {data?.data?.targetStake
                 ? addDecimalsFormatNumberQuantum(
-                    market?.targetStake,
+                    data.data.targetStake,
                     assetDecimals,
                     quantum
                   )
