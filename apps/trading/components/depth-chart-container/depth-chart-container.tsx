@@ -13,8 +13,7 @@ import {
   type PriceLevelFieldsFragment,
 } from '@vegaprotocol/market-depth';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { marketDataProvider, marketProvider } from '@vegaprotocol/markets';
-import { type MarketData } from '@vegaprotocol/markets';
+import { useMarket } from '../../lib/hooks/use-markets';
 import { useT } from '../../lib/use-t';
 
 interface DepthChartManagerProps {
@@ -44,7 +43,6 @@ export const DepthChartContainer = ({ marketId }: DepthChartManagerProps) => {
   const variables = useMemo(() => ({ marketId }), [marketId]);
   const [depthData, setDepthData] = useState<DepthData | null>(null);
   const dataRef = useRef<DepthData | null>(null);
-  const marketDataRef = useRef<MarketData | null>(null);
   const rawDataRef = useRef<MarketDepthQuery['market'] | null>(null);
   const deltaRef = useRef<{
     sell: PriceLevelFieldsFragment[];
@@ -56,18 +54,14 @@ export const DepthChartContainer = ({ marketId }: DepthChartManagerProps) => {
 
   const {
     data: market,
+    isLoading: marketLoading,
     error: marketError,
-    loading: marketLoading,
-  } = useDataProvider({
-    dataProvider: marketProvider,
-    skipUpdates: true,
-    variables,
-  });
+  } = useMarket({ marketId });
 
   const updateDepthData = useMemo(
     () =>
       throttle(() => {
-        if (!dataRef.current || !marketDataRef.current || !market) {
+        if (!dataRef.current || !market || !market?.data) {
           return;
         }
         dataRef.current = {
@@ -150,31 +144,8 @@ export const DepthChartContainer = ({ marketId }: DepthChartManagerProps) => {
     variables,
   });
 
-  const marketDataUpdate = useCallback(
-    ({ data }: { data: MarketData | null }) => {
-      marketDataRef.current = data;
-      updateDepthData();
-      return true;
-    },
-    [updateDepthData]
-  );
-
-  const {
-    data: marketData,
-    error: marketDataError,
-    loading: marketDataLoading,
-  } = useDataProvider({
-    dataProvider: marketDataProvider,
-    update: marketDataUpdate,
-    variables,
-  });
-
-  if (!marketDataRef.current && marketData) {
-    marketDataRef.current = marketData;
-  }
-
   useEffect(() => {
-    if (!marketData || !market || !data) {
+    if (!market || !data) {
       return;
     }
     if (!data) {
@@ -212,7 +183,7 @@ export const DepthChartContainer = ({ marketId }: DepthChartManagerProps) => {
     return () => {
       updateDepthData.cancel();
     };
-  }, [data, marketData, market, updateDepthData]);
+  }, [data, market, updateDepthData]);
 
   const volumeFormat = useCallback(
     (volume: number) =>
@@ -227,8 +198,8 @@ export const DepthChartContainer = ({ marketId }: DepthChartManagerProps) => {
 
   return (
     <AsyncRenderer
-      loading={loading || marketLoading || marketDataLoading}
-      error={error || marketError || marketDataError}
+      loading={loading || marketLoading}
+      error={error || marketError}
       data={data}
     >
       {depthData && (
