@@ -1,6 +1,7 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import orderBy from 'lodash/orderBy';
 import compact from 'lodash/compact';
+import isEqual from 'lodash/isEqual';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useApolloClient } from '@apollo/client';
 import {
@@ -27,7 +28,6 @@ type MarketLookup = Map<string, Market>;
 const since = subDays(new Date(), 1).toISOString();
 
 export const useMarkets = () => {
-  const queryClient = useQueryClient();
   const client = useApolloClient();
   const queryResult = useQuery({
     queryKey: ['markets'],
@@ -59,15 +59,27 @@ export const useMarkets = () => {
     staleTime: MIN * 10,
   });
 
+  return queryResult;
+};
+
+/** Called in data-loader once to connect all active markets */
+export const useMarketsSubscription = () => {
+  const ids = useRef<string[] | null>(null);
+  const queryClient = useQueryClient();
+  const client = useApolloClient();
+  const { data } = useMarkets();
+
+  const activeMarketIds = Array.from(data?.values() || [])
+    .filter(isMarketActive)
+    .map((m) => m.id)
+    .sort();
+
   useEffect(() => {
-    if (!queryResult.data) return;
-
-    const activeMarketIds = Array.from(queryResult.data.values())
-      .filter(isMarketActive)
-      .map((m) => m.id);
-
     // There are no active markets, no need to subscribe
     if (!activeMarketIds.length) return;
+    if (isEqual(activeMarketIds, ids.current)) return;
+
+    ids.current = activeMarketIds;
 
     const sub = client
       .subscribe<MarketDataV2Subscription, MarketDataV2SubscriptionVariables>({
@@ -102,9 +114,7 @@ export const useMarkets = () => {
     return () => {
       sub.unsubscribe();
     };
-  }, [client, queryClient, queryResult.data]);
-
-  return queryResult;
+  }, [client, queryClient, activeMarketIds]);
 };
 
 export const useMarket = ({ marketId = '' }: { marketId?: string }) => {

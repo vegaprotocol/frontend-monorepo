@@ -6,6 +6,7 @@ export * from './helpers';
 // New stuff
 export {
   useMarkets,
+  useMarketsSubscription,
   useMarket,
   useActiveMarkets,
   useProposedMarkets,
