@@ -1,10 +1,8 @@
+import compact from 'lodash/compact';
 import type { CSSProperties } from 'react';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
-import type { MarketMaybeWithDataAndCandles } from '@vegaprotocol/markets';
-import { calcCandleVolume, getAsset } from '@vegaprotocol/markets';
-import { useCandles } from '@vegaprotocol/markets';
 import { useMarketDataUpdateSubscription } from '@vegaprotocol/markets';
 import { Sparkline } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../lib/use-t';
@@ -12,6 +10,11 @@ import { EmblemByMarket } from '@vegaprotocol/emblem';
 import { useChainId } from '@vegaprotocol/wallet-react';
 import { MarketIcon } from '../../client-pages/markets/market-icon';
 import { ProductTypeShortName } from '@vegaprotocol/types';
+import {
+  type Market,
+  getAsset,
+  calcCandleVolume,
+} from '../../lib/hooks/use-markets';
 
 export const MarketSelectorItem = ({
   market,
@@ -20,7 +23,7 @@ export const MarketSelectorItem = ({
   onSelect,
   allProducts,
 }: {
-  market: MarketMaybeWithDataAndCandles;
+  market: Market;
   style: CSSProperties;
   currentMarketId?: string;
   onSelect: (marketId: string) => void;
@@ -48,7 +51,7 @@ const MarketData = ({
   market,
   allProducts,
 }: {
-  market: MarketMaybeWithDataAndCandles;
+  market: Market;
   allProducts: boolean;
 }) => {
   const t = useT();
@@ -69,10 +72,10 @@ const MarketData = ({
     ? addDecimalsFormatNumber(market.data.markPrice, market.decimalPlaces)
     : '-';
 
-  const { oneDayCandles } = useCandles({ marketId: market.id });
   const { chainId } = useChainId();
 
-  const vol = oneDayCandles ? calcCandleVolume(oneDayCandles) : '0';
+  const candles = compact(market.candlesConnection?.edges?.map((e) => e?.node));
+  const vol = candles.length ? calcCandleVolume(candles) : '0';
   const volume =
     vol && vol !== '0'
       ? addDecimalsFormatNumber(vol, market.positionDecimalPlaces)
@@ -120,11 +123,11 @@ const MarketData = ({
         {volume}
       </div>
       <div className="hidden sm:w-1/6 sm:flex justify-end" role="gridcell">
-        {oneDayCandles && (
+        {candles && candles.length && (
           <Sparkline
             width={64}
             height={15}
-            data={oneDayCandles.map((c) => Number(c.close))}
+            data={candles.map((c) => Number(c.close))}
           />
         )}
       </div>

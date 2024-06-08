@@ -1,15 +1,16 @@
 import { useMemo } from 'react';
+import compact from 'lodash/compact';
 import orderBy from 'lodash/orderBy';
-import {
-  calcTradedFactor,
-  getAsset,
-  useMarketList,
-} from '@vegaprotocol/markets';
 import { priceChangePercentage } from '@vegaprotocol/utils';
 import type { Filter } from '../../components/market-selector/market-selector';
 import { Sort } from './sort-dropdown';
 import { Product } from './product-selector';
 import { isMarketActive } from '../../lib/utils';
+import {
+  useMarkets,
+  getAsset,
+  calcTradedFactor,
+} from '../../lib/hooks/use-markets';
 
 export const useMarketSelectorList = ({
   product,
@@ -17,11 +18,14 @@ export const useMarketSelectorList = ({
   sort,
   searchTerm,
 }: Filter) => {
-  const { data, loading, error, reload } = useMarketList();
+  const { data, isLoading: loading, error } = useMarkets();
 
   const markets = useMemo(() => {
-    if (!data?.length) return [];
-    const markets = data
+    const d = Array.from(data?.values() || []);
+
+    if (!d.length) return [];
+
+    const markets = d
       // show only active markets, using m.data.marketState as this will be
       // data that will get refreshed when calling reload
       .filter((m) => {
@@ -62,12 +66,12 @@ export const useMarketSelectorList = ({
         markets,
         [
           (m) => {
-            if (!m.candles?.length) return 0;
-            return Number(
-              priceChangePercentage(
-                m.candles.filter((c) => c.close !== '').map((c) => c.close)
-              )
-            );
+            if (!m.candlesConnection?.edges?.length) return 0;
+            const candleData = compact(m.candlesConnection.edges)
+              .map((e) => e.node)
+              .filter((c) => c.close !== '')
+              .map((c) => c.close);
+            return Number(priceChangePercentage(candleData));
           },
         ],
         [dir]
@@ -89,5 +93,5 @@ export const useMarketSelectorList = ({
     return markets;
   }, [data, product, searchTerm, assets, sort]);
 
-  return { markets, data, loading, error, reload };
+  return { markets, data, loading, error };
 };

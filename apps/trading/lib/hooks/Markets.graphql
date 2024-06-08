@@ -1,3 +1,13 @@
+fragment CandleV2 on Candle {
+  periodStart
+  high
+  low
+  open
+  close
+  volume
+  notional
+}
+
 fragment FutureV2 on Future {
   quoteName
   settlementAsset {
@@ -96,13 +106,7 @@ fragment MarketFieldsV2 on Market {
   ) {
     edges {
       node {
-        periodStart
-        high
-        low
-        open
-        close
-        volume
-        notional
+        ...CandleV2
       }
     }
   }

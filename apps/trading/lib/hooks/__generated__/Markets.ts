@@ -5,6 +5,8 @@ import { PriceConfigurationFragmentDoc, FutureFragmentDoc, PerpetualFragmentDoc,
 import { AssetListFieldsFragmentDoc } from '../../../../../libs/assets/src/lib/__generated__/Assets';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
+export type CandleV2Fragment = { __typename?: 'Candle', periodStart: any, high: string, low: string, open: string, close: string, volume: string, notional: string };
+
 export type FutureV2Fragment = { __typename?: 'Future', quoteName: string, settlementAsset: { __typename?: 'Asset', id: string, symbol: string, name: string, decimals: number, quantum: string } };
 
 export type PerpetualV2Fragment = { __typename?: 'Perpetual', quoteName: string, fundingRateScalingFactor?: string | null, fundingRateLowerBound?: string | null, fundingRateUpperBound?: string | null, settlementAsset: { __typename?: 'Asset', id: string, symbol: string, name: string, decimals: number, quantum: string }, internalCompositePriceConfig?: { __typename?: 'CompositePriceConfiguration', decayWeight: string, decayPower: number, cashAmount: string, SourceWeights?: Array<string> | null, SourceStalenessTolerance: Array<string>, CompositePriceType: Types.CompositePriceType, dataSourcesSpec?: Array<{ __typename?: 'DataSourceDefinition', sourceType: { __typename?: 'DataSourceDefinitionExternal', sourceType: { __typename?: 'DataSourceSpecConfiguration', signers?: Array<{ __typename?: 'Signer', signer: { __typename?: 'ETHAddress', address?: string | null } | { __typename?: 'PubKey', key?: string | null } }> | null, filters?: Array<{ __typename?: 'Filter', key: { __typename?: 'PropertyKey', name?: string | null, type: Types.PropertyKeyType, numberDecimalPlaces?: number | null }, conditions?: Array<{ __typename?: 'Condition', value?: string | null, operator: Types.ConditionOperator }> | null }> | null } | { __typename?: 'EthCallSpec', abi?: Array<string> | null, address: string, args?: Array<string> | null, method: string, requiredConfirmations: number, normalisers?: Array<{ __typename?: 'Normaliser', name: string, expression: string }> | null, trigger: { __typename?: 'EthCallTrigger', trigger: { __typename?: 'EthTimeTrigger', initial?: any | null, every?: number | null, until?: any | null } }, filters?: Array<{ __typename?: 'Filter', key: { __typename?: 'PropertyKey', name?: string | null, type: Types.PropertyKeyType, numberDecimalPlaces?: number | null }, conditions?: Array<{ __typename?: 'Condition', value?: string | null, operator: Types.ConditionOperator }> | null }> | null } } | { __typename?: 'DataSourceDefinitionInternal', sourceType: { __typename?: 'DataSourceSpecConfigurationTime', conditions: Array<{ __typename?: 'Condition', operator: Types.ConditionOperator, value?: string | null } | null> } | { __typename: 'DataSourceSpecConfigurationTimeTrigger', triggers: Array<{ __typename?: 'InternalTimeTrigger', initial?: number | null, every?: number | null } | null>, conditions: Array<{ __typename?: 'Condition', operator: Types.ConditionOperator, value?: string | null } | null> } } } | null> | null, dataSourcesSpecBinding?: Array<{ __typename?: 'SpecBindingForCompositePrice', priceSourceProperty: string } | null> | null } | null };
@@ -60,6 +62,17 @@ export const SpotV2FragmentDoc = gql`
   }
 }
     ${AssetListFieldsFragmentDoc}`;
+export const CandleV2FragmentDoc = gql`
+    fragment CandleV2 on Candle {
+  periodStart
+  high
+  low
+  open
+  close
+  volume
+  notional
+}
+    `;
 export const MarketFieldsV2FragmentDoc = gql`
     fragment MarketFieldsV2 on Market {
   id
@@ -118,20 +131,15 @@ export const MarketFieldsV2FragmentDoc = gql`
   candlesConnection(since: $since, interval: INTERVAL_I1H, pagination: {last: 24}) {
     edges {
       node {
-        periodStart
-        high
-        low
-        open
-        close
-        volume
-        notional
+        ...CandleV2
       }
     }
   }
 }
     ${FutureV2FragmentDoc}
 ${PerpetualV2FragmentDoc}
-${SpotV2FragmentDoc}`;
+${SpotV2FragmentDoc}
+${CandleV2FragmentDoc}`;
 export const MarketsV2Document = gql`
     query MarketsV2($since: String!) {
   marketsConnection {

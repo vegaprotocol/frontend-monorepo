@@ -1,4 +1,5 @@
 import orderBy from 'lodash/orderBy';
+import compact from 'lodash/compact';
 import { useQuery } from '@tanstack/react-query';
 import { useApolloClient } from '@apollo/client';
 import {
@@ -9,10 +10,12 @@ import {
   type SpotV2Fragment,
   type FutureV2Fragment,
   type PerpetualV2Fragment,
+  type CandleV2Fragment,
 } from './__generated__/Markets';
 import { MarketState } from '@vegaprotocol/types';
-import { MIN } from '@vegaprotocol/utils';
+import { MIN, toBigNum } from '@vegaprotocol/utils';
 import { subDays } from 'date-fns';
+import BigNumber from 'bignumber.js';
 
 export type Market = MarketFieldsV2Fragment;
 
@@ -161,6 +164,24 @@ export const getQuoteName = (market: Market) => {
   throw new Error('Failed to retrieve quoteName. Invalid product type');
 };
 
+export const getAsset = (market: Market) => {
+  if (!market.tradableInstrument?.instrument.product) {
+    throw new Error('Failed to retrieve asset. Invalid tradable instrument');
+  }
+
+  const { product } = market.tradableInstrument.instrument;
+
+  if (isPerpetual(product) || isFuture(product)) {
+    return product.settlementAsset;
+  }
+
+  if (isSpot(product)) {
+    return product.quoteAsset;
+  }
+
+  throw new Error('Failed to retrieve asset. Invalid product type');
+};
+
 export const getBaseAsset = (market: Market) => {
   if (!market.tradableInstrument.instrument.product) {
     throw new Error('Failed to retrieve asset. Invalid tradable instrument');
@@ -203,3 +224,24 @@ export const isFuture = (product: Product): product is FutureV2Fragment =>
 
 export const isPerpetual = (product: Product): product is PerpetualV2Fragment =>
   product.__typename === 'Perpetual';
+
+export const calcCandleVolume = (
+  candles: CandleV2Fragment[]
+): string | undefined =>
+  candles &&
+  candles.reduce((acc, c) => new BigNumber(acc).plus(c.volume).toString(), '0');
+
+export const calcTradedFactor = (m: Market) => {
+  const candleData = compact(
+    (m.candlesConnection?.edges || []).map((e) => e?.node)
+  );
+  const volume = Number(calcCandleVolume(candleData) || 0);
+  const price = m.data?.markPrice ? Number(m.data.markPrice) : 0;
+  const asset = getAsset(m);
+  const quantum = Number(asset.quantum);
+  const decimals = Number(asset.decimals);
+  const fp = toBigNum(price, decimals);
+  const fq = toBigNum(quantum, decimals);
+  const factor = fq.multipliedBy(fp).multipliedBy(volume);
+  return factor.toNumber();
+};

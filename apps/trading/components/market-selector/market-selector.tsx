@@ -1,16 +1,12 @@
 import uniqBy from 'lodash/uniqBy';
 import {
-  getAsset,
-  type MarketMaybeWithDataAndCandles,
-} from '@vegaprotocol/markets';
-import {
   TradingInput,
   TinyScroll,
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 import type { CSSProperties } from 'react';
-import { useCallback, useState, useMemo, useRef, useEffect } from 'react';
+import { useCallback, useState, useMemo, useRef } from 'react';
 import { FixedSizeList } from 'react-window';
 import { useMarketSelectorList } from './use-market-selector-list';
 import type { ProductType } from './product-selector';
@@ -21,6 +17,7 @@ import { Sort, SortDropdown } from './sort-dropdown';
 import { MarketSelectorItem } from './market-selector-item';
 import classNames from 'classnames';
 import { useT } from '../../lib/use-t';
+import { type Market, getAsset } from '../../lib/hooks/use-markets';
 
 export type Filter = {
   searchTerm: string;
@@ -48,12 +45,7 @@ export const MarketSelector = ({
     assets: [],
   });
   const allProducts = filter.product === Product.All;
-  const { markets, data, loading, error, reload } =
-    useMarketSelectorList(filter);
-
-  useEffect(() => {
-    reload();
-  }, [reload]);
+  const { markets, data, loading, error } = useMarketSelectorList(filter);
 
   return (
     <div data-testid="market-selector" className="md:w-[680px]">
@@ -80,7 +72,7 @@ export const MarketSelector = ({
           </div>
           <AssetDropdown
             assets={uniqBy(
-              data?.map((d) => getAsset(d)),
+              markets.map((m) => getAsset(m)),
               'id'
             )}
             checkedAssets={filter.assets}
@@ -150,8 +142,8 @@ const MarketList = ({
   noItems,
   allProducts,
 }: {
-  data: MarketMaybeWithDataAndCandles[];
-  error: Error | undefined;
+  data: Market[];
+  error: Error | null;
   loading: boolean;
   searchTerm: string;
   currentMarketId?: string;
@@ -213,7 +205,7 @@ const MarketList = ({
 };
 
 interface ListItemData {
-  data: MarketMaybeWithDataAndCandles[];
+  data: Market[];
   onSelect: (marketId: string) => void;
   currentMarketId?: string;
   allProducts: boolean;
