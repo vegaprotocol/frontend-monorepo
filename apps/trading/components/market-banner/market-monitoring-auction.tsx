@@ -1,13 +1,10 @@
-import {
-  marketDataProvider,
-  type MarketFieldsFragment,
-} from '@vegaprotocol/markets';
+import { type MarketFieldsFragment } from '@vegaprotocol/markets';
 import { useT } from '../../lib/use-t';
 import { DocsLinks } from '@vegaprotocol/environment';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 import { getDateTimeFormat } from '@vegaprotocol/utils';
-import { useThrottledDataProvider } from '@vegaprotocol/data-provider';
 import { formatDuration } from 'date-fns';
+import { useMarket } from '../../lib/hooks/use-markets';
 
 export const MarketAuctionBanner = ({
   market,
@@ -15,16 +12,12 @@ export const MarketAuctionBanner = ({
   market: MarketFieldsFragment;
 }) => {
   const t = useT();
-  const { data: marketData } = useThrottledDataProvider(
-    {
-      dataProvider: marketDataProvider,
-      variables: { marketId: market.id },
-      skip: !market.id,
-    },
-    1000
-  );
-  if (!marketData) return null;
-  const { auctionEnd, auctionStart } = marketData;
+  const { data } = useMarket({ marketId: market.id });
+  if (!data) return null;
+
+  const auctionStart = data.data?.auctionStart;
+  const auctionEnd = data.data?.auctionEnd;
+
   const startDate =
     auctionStart && getDateTimeFormat().format(new Date(auctionStart));
   const endDate =
