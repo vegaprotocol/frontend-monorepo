@@ -1,6 +1,7 @@
+import { useEffect } from 'react';
 import orderBy from 'lodash/orderBy';
 import compact from 'lodash/compact';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useApolloClient } from '@apollo/client';
 import {
   MarketsV2Document,
@@ -11,6 +12,9 @@ import {
   type FutureV2Fragment,
   type PerpetualV2Fragment,
   type CandleV2Fragment,
+  MarketDataV2Document,
+  type MarketDataV2Subscription,
+  type MarketDataV2SubscriptionVariables,
 } from './__generated__/Markets';
 import { MarketState } from '@vegaprotocol/types';
 import { MIN, toBigNum } from '@vegaprotocol/utils';
@@ -18,10 +22,12 @@ import { subDays } from 'date-fns';
 import BigNumber from 'bignumber.js';
 
 export type Market = MarketFieldsV2Fragment;
+type MarketLookup = Map<string, Market>;
 
 const since = subDays(new Date(), 1).toISOString();
 
 export const useMarkets = () => {
+  const queryClient = useQueryClient();
   const client = useApolloClient();
   const queryResult = useQuery({
     queryKey: ['markets'],
@@ -37,7 +43,7 @@ export const useMarkets = () => {
         fetchPolicy: 'no-cache',
       });
 
-      const markets = new Map<string, Market>();
+      const markets: MarketLookup = new Map();
 
       if (!result.data.marketsConnection?.edges.length) {
         return markets;
@@ -53,7 +59,61 @@ export const useMarkets = () => {
     staleTime: MIN * 10,
   });
 
+  useEffect(() => {
+    if (!queryResult.data) return;
+
+    const activeMarketIds = Array.from(queryResult.data.values())
+      .filter(isMarketActive)
+      .map((m) => m.id);
+
+    // There are no active markets, no need to subscribe
+    if (!activeMarketIds.length) return;
+
+    const sub = client
+      .subscribe<MarketDataV2Subscription, MarketDataV2SubscriptionVariables>({
+        query: MarketDataV2Document,
+        fetchPolicy: 'no-cache',
+        variables: { marketIds: activeMarketIds },
+      })
+      .subscribe(({ data }) => {
+        queryClient.setQueryData(['markets'], (curr: MarketLookup) => {
+          if (!data) return;
+          if (!curr) return curr;
+
+          const markets = new Map();
+
+          for (const m of curr) {
+            const [marketId, market] = m;
+
+            const update = data.marketsData.find(
+              (d) => d.marketId === marketId
+            );
+
+            markets.set(marketId, {
+              ...market,
+              data: update,
+            });
+          }
+
+          return markets;
+        });
+      });
+
+    return () => {
+      sub.unsubscribe();
+    };
+  }, [client, queryClient, queryResult.data]);
+
   return queryResult;
+};
+
+export const useMarket = ({ marketId = '' }: { marketId?: string }) => {
+  const queryResult = useMarkets();
+  const market = queryResult.data?.get(marketId);
+  return {
+    ...queryResult,
+    data: market,
+  };
 };
 
 export const useActiveMarkets = () => {

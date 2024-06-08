@@ -1,5 +1,5 @@
-import type { Market } from '@vegaprotocol/markets';
 import { useT } from '../../lib/use-t';
+import type { Market } from '../../lib/hooks/use-markets';
 import * as Stats from './stats';
 
 interface MarketHeaderSpotProps {

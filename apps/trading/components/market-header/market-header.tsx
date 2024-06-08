@@ -7,7 +7,6 @@ import {
 import { Header, HeaderTitle } from '../header';
 import { Route, Routes, useParams } from 'react-router-dom';
 import { MarketSelector } from '../../components/market-selector/market-selector';
-import { useMarketList, useMarketWithData } from '@vegaprotocol/markets';
 import { useState } from 'react';
 import { ProductTypeShortName } from '@vegaprotocol/types';
 import { MarketHeaderSwitch } from './market-header-switch';
@@ -18,23 +17,20 @@ import {
   getMarketStateTooltip,
 } from '../../client-pages/markets/market-icon';
 import { useT } from '../../lib/use-t';
+import { useMarket } from '../../lib/hooks/use-markets';
 
 export const MarketHeader = () => {
   const { marketId } = useParams();
-  const { data } = useMarketWithData(marketId);
+  const { data } = useMarket({ marketId });
   const [open, setOpen] = useState(false);
   const { chainId } = useChainId();
   const t = useT();
 
-  // Ensure that markets are kept cached so opening the list
-  // shows all markets instantly
-  useMarketList();
-
   if (!data) return null;
 
   const tooltip = getMarketStateTooltip(
-    data.data.marketState,
-    data.data.marketTradingMode
+    data.data?.marketState,
+    data.data?.marketTradingMode
   );
 
   return (

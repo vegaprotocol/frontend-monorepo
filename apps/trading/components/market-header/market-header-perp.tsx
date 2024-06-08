@@ -1,5 +1,8 @@
-import type { Market } from '@vegaprotocol/markets';
-import { getAsset, getQuoteName } from '@vegaprotocol/markets';
+import {
+  type Market,
+  getAsset,
+  getQuoteName,
+} from '../../lib/hooks/use-markets';
 import { useT } from '../../lib/use-t';
 import * as Stats from './stats';
 

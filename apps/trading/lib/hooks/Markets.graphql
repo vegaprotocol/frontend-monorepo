@@ -1,3 +1,20 @@
+fragment PriceConfigurationV2 on CompositePriceConfiguration {
+  decayWeight
+  decayPower
+  cashAmount
+  SourceWeights
+  SourceStalenessTolerance
+  CompositePriceType
+  dataSourcesSpec {
+    sourceType {
+      ...SourceType
+    }
+  }
+  dataSourcesSpecBinding {
+    priceSourceProperty
+  }
+}
+
 fragment CandleV2 on Candle {
   periodStart
   high
@@ -45,6 +62,50 @@ fragment SpotV2 on Spot {
   }
 }
 
+fragment MarketDataStaticV2 on MarketData {
+  auctionEnd
+  auctionStart
+  bestBidPrice
+  bestBidVolume
+  bestOfferPrice
+  bestOfferVolume
+  bestStaticBidPrice
+  bestStaticBidVolume
+  bestStaticOfferPrice
+  bestStaticOfferVolume
+  productData {
+    ... on PerpetualData {
+      fundingRate
+      fundingPayment
+      externalTwap
+      internalTwap
+    }
+  }
+  indicativePrice
+  indicativeVolume
+  marketState
+  marketTradingMode
+  markPrice
+  lastTradedPrice
+  midPrice
+  openInterest
+  priceMonitoringBounds {
+    minValidPrice
+    maxValidPrice
+    trigger {
+      horizonSecs
+      probability
+      auctionExtensionSecs
+    }
+    referencePrice
+  }
+  staticMidPrice
+  suppliedStake
+  targetStake
+  trigger
+  lastTradedPrice
+}
+
 fragment MarketFieldsV2 on Market {
   id
   decimalPlaces
@@ -90,14 +151,11 @@ fragment MarketFieldsV2 on Market {
     open
     close
   }
+  markPriceConfiguration {
+    ...PriceConfiguration
+  }
   data {
-    marketState
-    marketTradingMode
-    markPrice
-    openInterest
-    bestOfferPrice
-    bestBidPrice
-    lastTradedPrice
+    ...MarketDataStaticV2
   }
   candlesConnection(
     since: $since
@@ -119,5 +177,56 @@ query MarketsV2($since: String!) {
         ...MarketFieldsV2
       }
     }
+  }
+}
+
+fragment MarketDataV2 on ObservableMarketData {
+  marketId
+  auctionEnd
+  auctionStart
+  bestBidPrice
+  bestBidVolume
+  bestOfferPrice
+  bestOfferVolume
+  bestStaticBidPrice
+  bestStaticBidVolume
+  bestStaticOfferPrice
+  bestStaticOfferVolume
+  productData {
+    ... on PerpetualData {
+      fundingRate
+      fundingPayment
+      externalTwap
+      internalTwap
+    }
+  }
+  indicativePrice
+  indicativeVolume
+  marketState
+  marketTradingMode
+  markPrice
+  lastTradedPrice
+  midPrice
+  openInterest
+  priceMonitoringBounds {
+    minValidPrice
+    maxValidPrice
+    trigger {
+      horizonSecs
+      probability
+      auctionExtensionSecs
+    }
+    referencePrice
+  }
+  staticMidPrice
+  suppliedStake
+  targetStake
+  trigger
+  lastTradedPrice
+}
+
+subscription MarketDataV2($marketIds: [ID!]!) {
+  marketsData(marketIds: $marketIds) {
+    ...MarketDataUpdateFields
   }
 }

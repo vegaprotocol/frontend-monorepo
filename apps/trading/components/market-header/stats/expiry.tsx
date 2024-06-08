@@ -5,8 +5,8 @@ import { Link } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../../lib/use-t';
 import { HeaderStat } from '../../header';
 import { type HTMLAttributes } from 'react';
-import { useMarketState, type Market } from '@vegaprotocol/markets';
-
+import { useMarketState } from '@vegaprotocol/markets';
+import { type Market } from '../../../lib/hooks/use-markets';
 type ExpiryStatProps = HTMLAttributes<HTMLDivElement> & {
   market: Market;
 };
