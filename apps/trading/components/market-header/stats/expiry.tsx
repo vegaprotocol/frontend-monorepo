@@ -55,12 +55,10 @@ const ExpiryTooltipContent = ({
 
   const t = useT();
 
-  // TODO: get data source for market
   if (market.marketTimestamps.close === null) {
-    const oracleId = '';
-    // const oracleId =
-    //   market.tradableInstrument.instrument.product
-    //     .dataSourceSpecForTradingTermination.id;
+    const oracleId =
+      market.tradableInstrument.instrument.product
+        .dataSourceSpecForTradingTermination.id;
 
     const metadataExpiryDate = getMarketExpiryDate(
       market.tradableInstrument.instrument.metadata.tags

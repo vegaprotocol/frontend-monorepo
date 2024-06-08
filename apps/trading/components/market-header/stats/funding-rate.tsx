@@ -1,16 +1,18 @@
 import { fromNanoSeconds } from '@vegaprotocol/utils';
 import {
+  FundingPeriodsDocument,
+  type FundingPeriodsQuery,
+  type FundingPeriodsQueryVariables,
   getDataSourceSpecForSettlementSchedule,
   isMarketInAuction,
-  marketInfoProvider,
-  useFundingPeriodsQuery,
-  useFundingRate,
-  useMarketTradingMode,
 } from '@vegaprotocol/markets';
 import { HeaderStat } from '../../../components/header';
 import { useEffect, useState } from 'react';
-import { useDataProvider } from '@vegaprotocol/data-provider';
 import { useT } from '../../../lib/use-t';
+import { useMarket } from '../../../lib/hooks/use-markets';
+import { MarketTradingMode } from '@vegaprotocol/types';
+import { useQuery } from '@tanstack/react-query';
+import { useApolloClient } from '@apollo/client';
 
 export const FundingRateStat = ({ marketId }: { marketId: string }) => {
   const t = useT();
@@ -29,7 +31,17 @@ export const FundingRateStat = ({ marketId }: { marketId: string }) => {
 };
 
 const FundingRate = ({ marketId }: { marketId: string }) => {
-  const { data: fundingRate } = useFundingRate(marketId);
+  const { data } = useMarket({ marketId });
+
+  const fundingRate =
+    data?.data &&
+    ![
+      MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
+      MarketTradingMode.TRADING_MODE_SUSPENDED_VIA_GOVERNANCE,
+    ].includes(data.data.marketTradingMode)
+      ? data.data?.productData?.fundingRate || null
+      : null;
+
   return (
     <div data-testid="funding-rate">
       {fundingRate ? `${(Number(fundingRate) * 100).toFixed(4)}%` : '-'}
@@ -47,16 +59,12 @@ const useNow = () => {
 };
 
 const useEvery = (marketId: string, skip: boolean) => {
-  const { data: marketInfo } = useDataProvider({
-    dataProvider: marketInfoProvider,
-    variables: { marketId },
-    skip,
-  });
+  const { data } = useMarket({ marketId });
   let every: number | undefined = undefined;
   const sourceType =
-    marketInfo &&
+    data &&
     getDataSourceSpecForSettlementSchedule(
-      marketInfo.tradableInstrument.instrument.product
+      data.tradableInstrument.instrument.product
     )?.data.sourceType.sourceType;
 
   if (sourceType?.__typename === 'DataSourceSpecConfigurationTimeTrigger') {
@@ -68,14 +76,41 @@ const useEvery = (marketId: string, skip: boolean) => {
   return every;
 };
 
-const useStartTime = (marketId: string, skip: boolean) => {
-  const { data: fundingPeriods } = useFundingPeriodsQuery({
-    pollInterval: 5000,
-    skip,
-    variables: {
-      marketId: marketId,
-      pagination: { first: 1 },
+const useFundingPeriods = ({
+  marketId,
+  enabled,
+}: {
+  marketId: string;
+  enabled: boolean;
+}) => {
+  const client = useApolloClient();
+
+  const queryResult = useQuery({
+    queryKey: ['fundingPeriods', marketId],
+    queryFn: async () => {
+      const result = await client.query<
+        FundingPeriodsQuery,
+        FundingPeriodsQueryVariables
+      >({
+        query: FundingPeriodsDocument,
+        variables: {
+          marketId,
+          pagination: { first: 1 },
+        },
+      });
+      return result.data;
     },
+    enabled,
+    refetchInterval: 5000,
+  });
+
+  return queryResult;
+};
+
+const useStartTime = (marketId: string, skip: boolean) => {
+  const { data: fundingPeriods } = useFundingPeriods({
+    marketId,
+    enabled: !skip,
   });
   const node = fundingPeriods?.fundingPeriods.edges?.[0]?.node;
   let startTime: number | undefined = undefined;
@@ -105,7 +140,8 @@ const useFormatCountdown = (
 
 export const FundingCountdown = ({ marketId }: { marketId: string }) => {
   const now = useNow();
-  const { data: marketTradingMode } = useMarketTradingMode(marketId);
+  const { data } = useMarket({ marketId });
+  const marketTradingMode = data?.data?.marketTradingMode;
   const skip = !marketTradingMode || isMarketInAuction(marketTradingMode);
   const startTime = useStartTime(marketId, skip);
   const every = useEvery(marketId, skip);

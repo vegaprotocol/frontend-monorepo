@@ -1,13 +1,10 @@
 import { DocsLinks, useEnvironment } from '@vegaprotocol/environment';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
-import {
-  type MarketFieldsFragment,
-  useExternalTwap,
-} from '@vegaprotocol/markets';
 import { PriceCell } from '@vegaprotocol/datagrid';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { HeaderStat } from '../../../components/header';
 import { useT } from '../../../lib/use-t';
+import { type Market, useMarket } from '../../../lib/hooks/use-markets';
 
 export const IndexPriceStat = ({
   marketId,
@@ -16,7 +13,7 @@ export const IndexPriceStat = ({
 }: {
   marketId: string;
   assetDecimals: number;
-  markPriceConfiguration: MarketFieldsFragment['markPriceConfiguration'];
+  markPriceConfiguration: Market['markPriceConfiguration'];
 }) => {
   const { VEGA_EXPLORER_URL } = useEnvironment();
   const t = useT();
@@ -69,7 +66,9 @@ export const IndexPrice = ({
   marketId: string;
   decimalPlaces?: number;
 }) => {
-  const { data: externalTwap } = useExternalTwap(marketId);
+  const { data } = useMarket({ marketId });
+  const externalTwap = data?.data?.productData?.externalTwap;
+
   return externalTwap && decimalPlaces ? (
     <PriceCell
       value={Number(externalTwap)}
