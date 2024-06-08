@@ -6,7 +6,7 @@ import {
   isSpot,
   isFuture,
   isPerpetual,
-} from '../../lib/hooks/use-markets';
+} from '@vegaprotocol/data-provider';
 
 export const MarketHeaderSwitch = ({ market }: { market: Market }) => {
   const { product } = market.tradableInstrument.instrument;

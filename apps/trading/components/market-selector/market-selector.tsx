@@ -17,7 +17,7 @@ import { Sort, SortDropdown } from './sort-dropdown';
 import { MarketSelectorItem } from './market-selector-item';
 import classNames from 'classnames';
 import { useT } from '../../lib/use-t';
-import { type Market, getAsset } from '../../lib/hooks/use-markets';
+import { type Market, getAsset } from '@vegaprotocol/data-provider';
 
 export type Filter = {
   searchTerm: string;

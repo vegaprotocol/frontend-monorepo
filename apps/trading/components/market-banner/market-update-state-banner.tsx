@@ -7,7 +7,7 @@ import { DApp, TOKEN_PROPOSAL, useLinks } from '@vegaprotocol/environment';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { useT } from '../../lib/use-t';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
-import { getQuoteName, type Market } from '../../lib/hooks/use-markets';
+import { getQuoteName, type Market } from '@vegaprotocol/data-provider';
 
 export const MarketUpdateStateBanner = ({
   market,

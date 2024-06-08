@@ -18,7 +18,7 @@ import {
   getQuoteAsset,
   getQuoteName,
   isSpot,
-} from '../../lib/hooks/use-markets';
+} from '@vegaprotocol/data-provider';
 import {
   Last24hPriceChange,
   calcCandleVolume,

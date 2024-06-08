@@ -2,7 +2,7 @@ import {
   type Market,
   getAsset,
   getQuoteName,
-} from '../../lib/hooks/use-markets';
+} from '@vegaprotocol/data-provider';
 import { useT } from '../../lib/use-t';
 import * as Stats from './stats';
 

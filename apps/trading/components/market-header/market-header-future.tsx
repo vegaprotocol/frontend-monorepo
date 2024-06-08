@@ -3,7 +3,7 @@ import {
   getAsset,
   getQuoteName,
   type Market,
-} from '../../lib/hooks/use-markets';
+} from '@vegaprotocol/data-provider';
 import * as Stats from './stats';
 
 interface MarketHeaderFutureProps {

@@ -19,5 +19,7 @@ export {
   calcTradedFactor,
   calcCandleVolume,
   isSpot,
+  isFuture,
+  isPerpetual,
   Market,
 } from './use-markets';

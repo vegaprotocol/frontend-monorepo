@@ -14,7 +14,7 @@ import {
   type Market,
   getAsset,
   calcCandleVolume,
-} from '../../lib/hooks/use-markets';
+} from '@vegaprotocol/data-provider';
 
 export const MarketSelectorItem = ({
   market,
