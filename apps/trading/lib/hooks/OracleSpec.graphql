@@ -1,0 +1,9 @@
+query OracleSpec($oracleSpecId: ID!) {
+  oracleSpec(oracleSpecId: $oracleSpecId) {
+    dataSourceSpec {
+      spec {
+        ...DataSource
+      }
+    }
+  }
+}

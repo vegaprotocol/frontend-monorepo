@@ -1,18 +1,12 @@
 import { fromNanoSeconds } from '@vegaprotocol/utils';
-import {
-  FundingPeriodsDocument,
-  type FundingPeriodsQuery,
-  type FundingPeriodsQueryVariables,
-  getDataSourceSpecForSettlementSchedule,
-  isMarketInAuction,
-} from '@vegaprotocol/markets';
+import { isMarketInAuction } from '@vegaprotocol/markets';
 import { HeaderStat } from '../../../components/header';
 import { useEffect, useState } from 'react';
 import { useT } from '../../../lib/use-t';
-import { useMarket } from '../../../lib/hooks/use-markets';
+import { getProduct, useMarket } from '../../../lib/hooks/use-markets';
 import { MarketTradingMode } from '@vegaprotocol/types';
-import { useQuery } from '@tanstack/react-query';
-import { useApolloClient } from '@apollo/client';
+import { useOracleSpec } from '../../../lib/hooks/use-oracle-spec';
+import { useFundingPeriods } from '../../../lib/hooks/use-funding-periods';
 
 export const FundingRateStat = ({ marketId }: { marketId: string }) => {
   const t = useT();
@@ -60,12 +54,20 @@ const useNow = () => {
 
 const useEvery = (marketId: string, skip: boolean) => {
   const { data } = useMarket({ marketId });
+  const product = data && getProduct(data);
+  const oracleSpecId =
+    product &&
+    product.__typename === 'Perpetual' &&
+    product.dataSourceSpecForSettlementSchedule.id;
+
+  const { data: oracleSpec } = useOracleSpec({
+    oracleSpecId: oracleSpecId || '',
+    enabled: !skip,
+  });
+
   let every: number | undefined = undefined;
-  const sourceType =
-    data &&
-    getDataSourceSpecForSettlementSchedule(
-      data.tradableInstrument.instrument.product
-    )?.data.sourceType.sourceType;
+
+  const sourceType = oracleSpec?.data.sourceType.sourceType;
 
   if (sourceType?.__typename === 'DataSourceSpecConfigurationTimeTrigger') {
     every = sourceType.triggers?.[0]?.every ?? undefined;
@@ -73,38 +75,8 @@ const useEvery = (marketId: string, skip: boolean) => {
       every *= 1000;
     }
   }
+
   return every;
-};
-
-const useFundingPeriods = ({
-  marketId,
-  enabled,
-}: {
-  marketId: string;
-  enabled: boolean;
-}) => {
-  const client = useApolloClient();
-
-  const queryResult = useQuery({
-    queryKey: ['fundingPeriods', marketId],
-    queryFn: async () => {
-      const result = await client.query<
-        FundingPeriodsQuery,
-        FundingPeriodsQueryVariables
-      >({
-        query: FundingPeriodsDocument,
-        variables: {
-          marketId,
-          pagination: { first: 1 },
-        },
-      });
-      return result.data;
-    },
-    enabled,
-    refetchInterval: 5000,
-  });
-
-  return queryResult;
 };
 
 const useStartTime = (marketId: string, skip: boolean) => {

@@ -188,6 +188,14 @@ const orderMarkets = (markets: Market[]) => {
   return orderBy(markets, ['marketTimestamps.open', 'id'], ['asc', 'asc']);
 };
 
+export const getProduct = (market: Market) => {
+  if (!market.tradableInstrument?.instrument.product) {
+    throw new Error('Failed to retrieve product. Invalid tradable instrument');
+  }
+
+  return market.tradableInstrument.instrument.product;
+};
+
 export const getProductType = (market: Market) => {
   if (!market.tradableInstrument?.instrument.product) {
     throw new Error(

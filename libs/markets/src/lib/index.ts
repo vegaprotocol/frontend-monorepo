@@ -13,7 +13,6 @@ export * from './markets-data-provider';
 export * from './markets-provider';
 export * from './product';
 
-export * from './__generated__/funding-periods';
 export * from './__generated__/market-candles';
 export * from './__generated__/markets-candles';
 export * from './__generated__/market-data';
