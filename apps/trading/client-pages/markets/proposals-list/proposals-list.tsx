@@ -3,7 +3,7 @@ import { AgGrid } from '@vegaprotocol/datagrid';
 import { type ProposalListFieldsFragment } from '@vegaprotocol/proposals';
 import { useColumnDefs } from './use-column-defs';
 import { useT } from '../../../lib/use-t';
-import { useProposedMarkets } from '../../../lib/hooks/use-markets';
+import { useProposedMarkets } from '@vegaprotocol/data-provider';
 
 const defaultColDef = {
   sortable: true,

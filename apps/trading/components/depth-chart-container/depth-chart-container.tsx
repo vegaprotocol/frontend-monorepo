@@ -12,8 +12,8 @@ import {
   type MarketDepthUpdateSubscription,
   type PriceLevelFieldsFragment,
 } from '@vegaprotocol/market-depth';
+import { useMarket } from '@vegaprotocol/data-provider';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useMarket } from '../../lib/hooks/use-markets';
 import { useT } from '../../lib/use-t';
 
 interface DepthChartManagerProps {

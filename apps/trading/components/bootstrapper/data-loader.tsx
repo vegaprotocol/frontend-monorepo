@@ -1,6 +1,7 @@
-import { useMarkets } from '../../lib/hooks/use-markets';
+import { useMarkets } from '@vegaprotocol/data-provider';
 import type { ReactNode } from 'react';
 import { localLoggerFactory } from '@vegaprotocol/logger';
+import { useAssets } from '../../lib/hooks/use-assets';
 
 const logger = localLoggerFactory({ application: 'data-loader' });
 
@@ -17,7 +18,7 @@ export const DataLoader = ({
   skeleton: ReactNode;
 }) => {
   const { status: statusMarkets, error: errorMarkets } = useMarkets();
-  const { status: statusAssets, error: errorAssets } = useMarkets();
+  const { status: statusAssets, error: errorAssets } = useAssets();
 
   if ([statusMarkets, statusAssets].some((s) => s === 'pending')) {
     // eslint-disable-next-line

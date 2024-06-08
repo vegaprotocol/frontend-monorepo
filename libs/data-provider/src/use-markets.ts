@@ -11,7 +11,7 @@ import {
   type SpotV2Fragment,
   type FutureV2Fragment,
   type PerpetualV2Fragment,
-  type CandleV2Fragment,
+  type CandleFragment,
   MarketDataV2Document,
   type MarketDataV2Subscription,
   type MarketDataV2SubscriptionVariables,
@@ -294,7 +294,7 @@ export const isPerpetual = (product: Product): product is PerpetualV2Fragment =>
   product.__typename === 'Perpetual';
 
 export const calcCandleVolume = (
-  candles: CandleV2Fragment[]
+  candles: CandleFragment[]
 ): string | undefined =>
   candles &&
   candles.reduce((acc, c) => new BigNumber(acc).plus(c.volume).toString(), '0');

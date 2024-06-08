@@ -1,7 +1,7 @@
 import type { CellClickedEvent } from 'ag-grid-community';
 import MarketListTable from './market-list-table';
 import { useMarketClickHandler } from '../../lib/hooks/use-market-click-handler';
-import { useActiveMarkets, type Market } from '../../lib/hooks/use-markets';
+import { useActiveMarkets, type Market } from '@vegaprotocol/data-provider';
 
 export const OpenMarkets = () => {
   const { data } = useActiveMarkets();

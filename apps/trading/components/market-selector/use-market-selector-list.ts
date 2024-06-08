@@ -10,7 +10,7 @@ import {
   useMarkets,
   getAsset,
   calcTradedFactor,
-} from '../../lib/hooks/use-markets';
+} from '@vegaprotocol/data-provider';
 
 export const useMarketSelectorList = ({
   product,

@@ -3,7 +3,7 @@ import { isMarketInAuction } from '@vegaprotocol/markets';
 import { HeaderStat } from '../../../components/header';
 import { useEffect, useState } from 'react';
 import { useT } from '../../../lib/use-t';
-import { getProduct, useMarket } from '../../../lib/hooks/use-markets';
+import { getProduct, useMarket } from '@vegaprotocol/data-provider';
 import { MarketTradingMode } from '@vegaprotocol/types';
 import { useOracleSpec } from '../../../lib/hooks/use-oracle-spec';
 import { useFundingPeriods } from '../../../lib/hooks/use-funding-periods';

@@ -1,6 +1,6 @@
 import { addDecimalsFormatNumber, isNumeric } from '@vegaprotocol/utils';
 import { PriceCell } from '@vegaprotocol/datagrid';
-import { useMarket } from '../../lib/hooks/use-markets';
+import { useMarket } from '@vegaprotocol/data-provider';
 
 interface Props {
   marketId?: string;

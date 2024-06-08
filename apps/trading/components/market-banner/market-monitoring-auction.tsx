@@ -1,9 +1,9 @@
 import { useT } from '../../lib/use-t';
 import { DocsLinks } from '@vegaprotocol/environment';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
+import { type Market, useMarket } from '@vegaprotocol/data-provider';
 import { getDateTimeFormat } from '@vegaprotocol/utils';
 import { formatDuration } from 'date-fns';
-import { type Market, useMarket } from '../../lib/hooks/use-markets';
 
 export const MarketAuctionBanner = ({ market }: { market: Market }) => {
   const t = useT();

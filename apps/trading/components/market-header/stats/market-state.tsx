@@ -3,7 +3,7 @@ import { HeaderStat } from '../../header';
 import { DocsLinks } from '@vegaprotocol/environment';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../../lib/use-t';
-import { useMarket } from '../../../lib/hooks/use-markets';
+import { useMarket } from '@vegaprotocol/data-provider';
 
 export const MarketStateStat = ({ marketId }: { marketId?: string }) => {
   const t = useT();

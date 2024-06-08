@@ -3,7 +3,7 @@ import compact from 'lodash/compact';
 import { isAfter } from 'date-fns';
 import type { VegaValueFormatterParams } from '@vegaprotocol/datagrid';
 import { AgGrid, COL_DEFS } from '@vegaprotocol/datagrid';
-import { useDataProvider } from '@vegaprotocol/data-provider';
+import { useClosedMarkets, getAsset } from '@vegaprotocol/data-provider';
 import { useMemo } from 'react';
 import type { Asset } from '@vegaprotocol/types';
 import type { ProductType } from '@vegaprotocol/types';
@@ -12,7 +12,6 @@ import {
   addDecimalsFormatNumber,
   getMarketExpiryDate,
 } from '@vegaprotocol/utils';
-import { closedMarketsProvider, getAsset } from '@vegaprotocol/markets';
 import type { DataSourceFilterFragment } from '@vegaprotocol/markets';
 import { useMarketClickHandler } from '../../lib/hooks/use-market-click-handler';
 import { SettlementDateCell } from './settlement-date-cell';
@@ -46,35 +45,34 @@ interface Row {
 }
 
 export const Closed = () => {
-  const { data: marketData, error } = useDataProvider({
-    dataProvider: closedMarketsProvider,
-    variables: undefined,
-  });
+  const { data, error } = useClosedMarkets();
 
-  const rowData = compact(marketData).map((market) => {
+  const rowData = compact(data).map((market) => {
     const instrument = market.tradableInstrument.instrument;
 
-    const spec =
-      (instrument.product.__typename === 'Future' ||
-        instrument.product.__typename === 'Perpetual') &&
-      instrument.product.dataSourceSpecForSettlementData.data.sourceType
-        .__typename === 'DataSourceDefinitionExternal'
-        ? instrument.product.dataSourceSpecForSettlementData.data.sourceType
-            .sourceType
-        : undefined;
-    const filters = (spec && 'filters' in spec && spec.filters) || [];
+    // TODO: get spec in cell
+    // const spec =
+    //   (instrument.product.__typename === 'Future' ||
+    //     instrument.product.__typename === 'Perpetual') &&
+    //   instrument.product.dataSourceSpecForSettlementData.data.sourceType
+    //     .__typename === 'DataSourceDefinitionExternal'
+    //     ? instrument.product.dataSourceSpecForSettlementData.data.sourceType
+    //         .sourceType
+    //     : undefined;
 
-    const settlementDataSpecBinding =
-      instrument.product.__typename === 'Future' ||
-      instrument.product.__typename === 'Perpetual'
-        ? instrument.product.dataSourceSpecBinding.settlementDataProperty
-        : '';
-    const filter =
-      filters && Array.isArray(filters)
-        ? filters?.find((filter) => {
-            return filter.key.name === settlementDataSpecBinding;
-          })
-        : undefined;
+    // const filters = (spec && 'filters' in spec && spec.filters) || [];
+
+    // const settlementDataSpecBinding =
+    //   instrument.product.__typename === 'Future' ||
+    //   instrument.product.__typename === 'Perpetual'
+    //     ? instrument.product.dataSourceSpecBinding.settlementDataProperty
+    //     : '';
+    // const filter =
+    //   filters && Array.isArray(filters)
+    //     ? filters?.find((filter) => {
+    //         return filter.key.name === settlementDataSpecBinding;
+    //       })
+    //     : undefined;
 
     const row: Row = {
       id: market.id,
@@ -92,13 +90,15 @@ export const Closed = () => {
         instrument.product.__typename === 'Perpetual'
           ? instrument.product.dataSourceSpecForSettlementData.id
           : '',
-      settlementDataSpecBinding,
-      settlementDataSourceFilter: filter,
+      // TODO: get proper value in cell
+      settlementDataSpecBinding: '',
+      // @ts-ignore TODO: fix this
+      settlementDataSourceFilter: [],
       tradingTerminationOracleId:
         instrument.product.__typename === 'Future'
           ? instrument.product.dataSourceSpecForTradingTermination.id
           : '',
-      settlementAsset: getAsset({ tradableInstrument: { instrument } }),
+      settlementAsset: getAsset(market),
       productType: instrument.product.__typename,
       successorMarketID: market.successorMarketID,
       parentMarketID: market.parentMarketID,
@@ -119,7 +119,7 @@ const ClosedMarketsDataGrid = ({
   error,
 }: {
   rowData: Row[];
-  error: Error | undefined;
+  error: Error | null;
 }) => {
   const t = useT();
   const handleOnSelect = useMarketClickHandler();

@@ -4,7 +4,7 @@ import { PriceCell } from '@vegaprotocol/datagrid';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { HeaderStat } from '../../../components/header';
 import { useT } from '../../../lib/use-t';
-import { type Market, useMarket } from '../../../lib/hooks/use-markets';
+import { type Market, useMarket } from '@vegaprotocol/data-provider';
 
 export const IndexPriceStat = ({
   marketId,

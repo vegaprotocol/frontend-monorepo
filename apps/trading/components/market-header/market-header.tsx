@@ -17,7 +17,7 @@ import {
   getMarketStateTooltip,
 } from '../../client-pages/markets/market-icon';
 import { useT } from '../../lib/use-t';
-import { useMarket } from '../../lib/hooks/use-markets';
+import { useMarket } from '@vegaprotocol/data-provider';
 
 export const MarketHeader = () => {
   const { marketId } = useParams();

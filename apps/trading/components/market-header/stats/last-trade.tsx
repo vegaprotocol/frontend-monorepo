@@ -3,7 +3,7 @@ import { HeaderStat } from '../../header';
 import { type HTMLAttributes } from 'react';
 import { PriceCell } from '@vegaprotocol/datagrid';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
-import { useMarket } from '../../../lib/hooks/use-markets';
+import { useMarket } from '@vegaprotocol/data-provider';
 
 type LastTradeStatProps = HTMLAttributes<HTMLDivElement> & {
   marketId: string;

@@ -13,7 +13,7 @@ import {
   getAsset,
   getBaseAsset,
   isSpot,
-} from '../../lib/hooks/use-markets';
+} from '@vegaprotocol/data-provider';
 import { Trans } from 'react-i18next';
 
 const calculatePrice = (markPrice?: string, decimalPlaces?: number) => {

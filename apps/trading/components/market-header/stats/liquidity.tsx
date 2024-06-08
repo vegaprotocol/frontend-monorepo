@@ -18,10 +18,10 @@ import {
   formatNumberPercentage,
 } from '@vegaprotocol/utils';
 import { DocsLinks } from '@vegaprotocol/environment';
+import { useMarket } from '@vegaprotocol/data-provider';
 import { Link } from 'react-router-dom';
 import { Links } from '../../../lib/links';
 import { useT } from '../../../lib/use-t';
-import { useMarket } from '../../../lib/hooks/use-markets';
 
 interface LiquidityStatProps {
   marketId: string;

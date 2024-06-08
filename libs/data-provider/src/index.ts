@@ -2,3 +2,22 @@ export * from './use-data-provider';
 export * from './generic-data-provider';
 export * from './pagination';
 export * from './helpers';
+
+// New stuff
+export {
+  useMarkets,
+  useMarket,
+  useActiveMarkets,
+  useProposedMarkets,
+  useClosedMarkets,
+  getAsset,
+  getBaseAsset,
+  getQuoteAsset,
+  getQuoteName,
+  getProduct,
+  getProductType,
+  calcTradedFactor,
+  calcCandleVolume,
+  isSpot,
+  Market,
+} from './use-markets';

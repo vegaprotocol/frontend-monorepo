@@ -5,7 +5,7 @@ import * as Schema from '@vegaprotocol/types';
 import { HeaderStat } from '../../header';
 import { Tooltip } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../../lib/use-t';
-import { useMarket } from '../../../lib/hooks/use-markets';
+import { useMarket } from '@vegaprotocol/data-provider';
 
 const getTradingModeLabel = (
   marketTradingMode?: Schema.MarketTradingMode,
