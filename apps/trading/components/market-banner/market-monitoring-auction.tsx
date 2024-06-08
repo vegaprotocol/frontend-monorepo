@@ -1,16 +1,11 @@
-import { type MarketFieldsFragment } from '@vegaprotocol/markets';
 import { useT } from '../../lib/use-t';
 import { DocsLinks } from '@vegaprotocol/environment';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 import { getDateTimeFormat } from '@vegaprotocol/utils';
 import { formatDuration } from 'date-fns';
-import { useMarket } from '../../lib/hooks/use-markets';
+import { type Market, useMarket } from '../../lib/hooks/use-markets';
 
-export const MarketAuctionBanner = ({
-  market,
-}: {
-  market: MarketFieldsFragment;
-}) => {
+export const MarketAuctionBanner = ({ market }: { market: Market }) => {
   const t = useT();
   const { data } = useMarket({ marketId: market.id });
   if (!data) return null;

@@ -4,10 +4,10 @@ import { format, formatDuration, intervalToDuration } from 'date-fns';
 import { type ProposalFragment } from '@vegaprotocol/proposals';
 import { MarketUpdateType, ProposalState } from '@vegaprotocol/types';
 import { DApp, TOKEN_PROPOSAL, useLinks } from '@vegaprotocol/environment';
-import { getQuoteName, type Market } from '@vegaprotocol/markets';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { useT } from '../../lib/use-t';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
+import { getQuoteName, type Market } from '../../lib/hooks/use-markets';
 
 export const MarketUpdateStateBanner = ({
   market,

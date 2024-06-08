@@ -1,5 +1,4 @@
 import { type PinnedAsset } from '@vegaprotocol/accounts';
-import { type Market } from '@vegaprotocol/markets';
 // TODO: handle oracle banner
 // import { OracleBanner } from '@vegaprotocol/markets';
 import { useState } from 'react';
@@ -14,6 +13,8 @@ import { useT } from '../../lib/use-t';
 import { ErrorBoundary } from '../../components/error-boundary';
 import { type TradingView } from './trade-views';
 import { TradingViews } from './trade-views';
+import { type Market } from '../../lib/hooks/use-markets';
+
 interface TradePanelsProps {
   market: Market;
   pinnedAssets?: PinnedAsset[];

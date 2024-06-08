@@ -4,7 +4,6 @@ import classNames from 'classnames';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { useFeatureFlags } from '@vegaprotocol/environment';
 import { type PinnedAsset } from '@vegaprotocol/accounts';
-import { type Market } from '@vegaprotocol/markets';
 import { Tab, LocalStoragePersistTabs as Tabs } from '@vegaprotocol/ui-toolkit';
 import {
   ResizableGrid,
@@ -15,6 +14,7 @@ import { TradingViews } from './trade-views';
 import { useT } from '../../lib/use-t';
 import { ErrorBoundary } from '../../components/error-boundary';
 import { MarketBanner } from '../../components/market-banner';
+import { type Market } from '../../lib/hooks/use-markets';
 
 interface TradeGridProps {
   market: Market;

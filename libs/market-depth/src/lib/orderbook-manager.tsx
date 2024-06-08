@@ -2,74 +2,56 @@ import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { Orderbook } from './orderbook';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { marketDepthProvider } from './market-depth-provider';
-import {
-  getQuoteName,
-  isMarketInAuction,
-  marketDataProvider,
-  marketProvider,
-} from '@vegaprotocol/markets';
+import { isMarketInAuction } from '@vegaprotocol/markets';
 import {
   type MarketDepthQuery,
   type MarketDepthQueryVariables,
   type MarketDepthUpdateSubscription,
 } from './__generated__/MarketDepth';
+import { type MarketTradingMode } from '@vegaprotocol/types';
 
 interface OrderbookManagerProps {
-  marketId: string;
+  market: {
+    id: string;
+    decimalPlaces: number;
+    positionDecimalPlaces: number;
+    data?: {
+      lastTradedPrice: string;
+      indicativePrice: string;
+      marketTradingMode: MarketTradingMode;
+    };
+  };
+  quoteName: string;
   onClick: (args: { price?: string; size?: string }) => void;
 }
 
 export const OrderbookManager = ({
-  marketId,
+  market,
+  quoteName,
   onClick,
 }: OrderbookManagerProps) => {
-  const variables = { marketId };
-
   const { data, error, loading, reload } = useDataProvider<
     MarketDepthQuery['market'] | undefined,
     MarketDepthUpdateSubscription['marketsDepthUpdate'] | null,
     MarketDepthQueryVariables
   >({
     dataProvider: marketDepthProvider,
-    variables,
+    variables: { marketId: market.id },
   });
 
-  const {
-    data: market,
-    error: marketError,
-    loading: marketLoading,
-  } = useDataProvider({
-    dataProvider: marketProvider,
-    skipUpdates: true,
-    variables,
-  });
-
-  const {
-    data: marketData,
-    error: marketDataError,
-    loading: marketDataLoading,
-  } = useDataProvider({
-    dataProvider: marketDataProvider,
-    variables,
-  });
   return (
-    <AsyncRenderer
-      loading={loading || marketDataLoading || marketLoading}
-      error={error || marketDataError || marketError}
-      data={data}
-      reload={reload}
-    >
-      {market && marketData && (
+    <AsyncRenderer loading={loading} error={error} data={data} reload={reload}>
+      {market && (
         <Orderbook
           bids={data?.depth.buy ?? []}
           asks={data?.depth.sell ?? []}
           decimalPlaces={market.decimalPlaces}
           positionDecimalPlaces={market.positionDecimalPlaces}
-          assetSymbol={getQuoteName(market)}
+          assetSymbol={quoteName}
           onClick={onClick}
-          lastTradedPrice={marketData.lastTradedPrice}
-          indicativePrice={marketData.indicativePrice}
-          isMarketInAuction={isMarketInAuction(marketData.marketTradingMode)}
+          lastTradedPrice={market.data.lastTradedPrice}
+          indicativePrice={market.data.indicativePrice}
+          isMarketInAuction={isMarketInAuction(market.data.marketTradingMode)}
         />
       )}
     </AsyncRenderer>

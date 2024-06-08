@@ -1,5 +1,4 @@
 import {
-  type Market,
   useMaliciousOracle,
   useMarketState,
   useMarketTradingMode,
@@ -21,6 +20,7 @@ import {
   useUpdateMarketStateProposals,
 } from './use-market-proposals';
 import { MarketAuctionBanner } from './market-monitoring-auction';
+import { type Market } from '../../lib/hooks/use-markets';
 
 type UpdateMarketBanner = {
   kind: 'UpdateMarket';

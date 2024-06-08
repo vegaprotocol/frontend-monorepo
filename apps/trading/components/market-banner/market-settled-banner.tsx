@@ -5,7 +5,6 @@ import {
   calcCandleVolume,
   useCandles,
   useSuccessorMarket,
-  type Market,
 } from '@vegaprotocol/markets';
 import {
   addDecimalsFormatNumber,
@@ -14,6 +13,7 @@ import {
 } from '@vegaprotocol/utils';
 import { useT, ns } from '../../lib/use-t';
 import { Links } from '../../lib/links';
+import { type Market } from '../../lib/hooks/use-markets';
 
 const getExpiryDate = (tags: string[], close?: string): Date | null => {
   const expiryDate = getMarketExpiryDate(tags);
