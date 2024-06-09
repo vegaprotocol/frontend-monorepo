@@ -1,0 +1,46 @@
+fragment PositionFieldsV2 on Position {
+  realisedPNL
+  openVolume
+  unrealisedPNL
+  averageEntryPrice
+  updatedAt
+  positionStatus
+  lossSocializationAmount
+  market {
+    id
+    decimalPlaces
+    positionDecimalPlaces
+    tradableInstrument {
+      instrument {
+        code
+      }
+    }
+  }
+  party {
+    id
+  }
+}
+
+query PositionsV2($partyIds: [ID!]!) {
+  positions(filter: { partyIds: $partyIds }) {
+    edges {
+      node {
+        ...PositionFieldsV2
+      }
+    }
+  }
+}
+
+subscription PositionsSubV2($partyId: ID!) {
+  positions(partyId: $partyId) {
+    realisedPNL
+    openVolume
+    unrealisedPNL
+    averageEntryPrice
+    updatedAt
+    marketId
+    lossSocializationAmount
+    positionStatus
+    partyId
+  }
+}

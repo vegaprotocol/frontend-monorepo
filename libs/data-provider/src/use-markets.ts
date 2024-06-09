@@ -23,7 +23,7 @@ import { subDays } from 'date-fns';
 import BigNumber from 'bignumber.js';
 
 export type Market = MarketFieldsV2Fragment;
-type MarketLookup = Map<string, Market>;
+export type MarketLookup = Map<string, Market>;
 
 const since = subDays(new Date(), 1).toISOString();
 

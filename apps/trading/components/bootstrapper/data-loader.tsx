@@ -1,11 +1,10 @@
 import {
   useMarkets,
+  useAssets,
   useMarketsSubscription,
 } from '@vegaprotocol/data-provider';
 import type { ReactNode } from 'react';
 import { localLoggerFactory } from '@vegaprotocol/logger';
-import { useAssets } from '../../lib/hooks/use-assets';
-
 const logger = localLoggerFactory({ application: 'data-loader' });
 
 /**

@@ -24,3 +24,5 @@ export {
   isPerpetual,
   Market,
 } from './use-markets';
+
+export { useAssets } from './use-assets';
