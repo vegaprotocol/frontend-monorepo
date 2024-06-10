@@ -160,10 +160,10 @@ fragment Perpetual on Perpetual {
 
 fragment Spot on Spot {
   baseAsset {
-    ...AssetListFields
+    ...AssetFields
   }
   quoteAsset {
-    ...AssetListFields
+    ...AssetFields
   }
 }
 
