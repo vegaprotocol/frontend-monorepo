@@ -22,7 +22,6 @@ jest.mock('@vegaprotocol/web3', () => {
     ...orig,
     useBridgeContract: jest.fn().mockReturnValue({
       list_asset: jest.fn(),
-      isNewContract: true,
     }),
     useEthereumTransaction: jest.fn(() => mockUseEthTx),
   };
@@ -55,6 +54,7 @@ const DEFAULT__ASSET: ProposalAssetQuery = {
     source: {
       __typename: 'ERC20',
       contractAddress: '0x0',
+      chainId: '1',
     },
   },
 };

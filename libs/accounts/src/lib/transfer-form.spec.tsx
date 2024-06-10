@@ -13,9 +13,14 @@ import {
   TransferForm,
   type TransferFormProps,
 } from './transfer-form';
-import { AccountType, AccountTypeMapping } from '@vegaprotocol/types';
+import {
+  AccountType,
+  AccountTypeMapping,
+  AssetStatus,
+} from '@vegaprotocol/types';
 import { removeDecimal } from '@vegaprotocol/utils';
 import type { TransferFeeQuery } from './__generated__/TransferFee';
+import { type AssetFieldsFragment } from '@vegaprotocol/assets';
 
 const feeFactor = 0.001;
 
@@ -71,12 +76,20 @@ describe('TransferForm', () => {
 
   const amount = '100';
   const pubKey = '1'.repeat(64);
-  const asset = {
+  const asset: AssetFieldsFragment = {
     id: 'eur',
     symbol: '€',
     name: 'EUR',
     decimals: 2,
     quantum: '1',
+    status: AssetStatus.STATUS_ENABLED,
+    source: {
+      __typename: 'ERC20',
+      chainId: '1',
+      contractAddress: '0x0',
+      lifetimeLimit: '',
+      withdrawThreshold: '',
+    },
   };
   const props = {
     pubKey,
@@ -333,12 +346,20 @@ describe('TransferForm', () => {
     const balance = '904195168829277777';
     const expectedBalance = '0.904195168829277777';
 
-    const longDecimalAsset = {
+    const longDecimalAsset: AssetFieldsFragment = {
       id: 'assetId',
       symbol: 'VEGA',
       name: 'VEGA',
       decimals: 18,
       quantum: '1',
+      status: AssetStatus.STATUS_ENABLED,
+      source: {
+        __typename: 'ERC20',
+        chainId: '1',
+        contractAddress: '0x0',
+        lifetimeLimit: '',
+        withdrawThreshold: '',
+      },
     };
 
     const account = {

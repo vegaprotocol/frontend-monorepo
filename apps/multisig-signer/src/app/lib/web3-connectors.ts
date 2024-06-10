@@ -21,7 +21,11 @@ export const createConnectors = (providerUrl: string, chainId: number) => {
   return [
     initializeMetaMaskConnector(),
     initializeCoinbaseConnector(providerUrl),
-    initializeWalletConnector(WALLETCONNECT_PROJECT_ID, chainId, providerUrl),
-    initializeWalletConnectLegacyConnector(chainId, providerUrl),
+    initializeWalletConnector(WALLETCONNECT_PROJECT_ID, {
+      [chainId]: providerUrl,
+    }),
+    initializeWalletConnectLegacyConnector({
+      [chainId]: providerUrl,
+    }),
   ].filter(Boolean) as unknown as [Connector, Web3ReactHooks][];
 };

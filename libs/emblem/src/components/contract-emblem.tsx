@@ -1,6 +1,6 @@
-import { URL_BASE, FILENAME } from '../config';
 import { EmblemBase } from './emblem-base';
 import { getVegaChain } from './lib/get-chain';
+import { getChainAssetLogoUrl } from './lib/url-builder';
 
 export type EmblemByContractProps = {
   contract: string;
@@ -16,7 +16,7 @@ export type EmblemByContractProps = {
  */
 export function EmblemByContract(p: EmblemByContractProps) {
   const chain = getVegaChain(p.vegaChain);
-  const url = `${URL_BASE}/chain/${chain}/asset/${p.contract}/${FILENAME}`;
+  const url = getChainAssetLogoUrl(chain, p.contract);
 
   return <EmblemBase src={url} {...p} />;
 }

@@ -44,9 +44,9 @@ export const Last24hPriceChange = ({
   if (orientation === 'vertical') {
     return (
       <span className={classNames('leading-4', signedNumberCssClass(change))}>
-        <div className="text-ellipsis whitespace-nowrap overflow-hidden">
+        <div className="flex items-center gap-1 text-ellipsis whitespace-nowrap overflow-hidden">
           <Arrow value={change} />
-          <span data-testid="price-change-percentage" className="text-sm">
+          <span data-testid="price-change-percentage">
             {formatNumberPercentage(
               new BigNumber(changePercentage.toString()),
               2
@@ -56,7 +56,7 @@ export const Last24hPriceChange = ({
         {showChangeValue && (
           <span
             data-testid="price-change"
-            className="text-ellipsis whitespace-nowrap overflow-hidden text-muted"
+            className="text-ellipsis whitespace-nowrap overflow-hidden text-muted text-xs"
           >
             ({addDecimalsFormatNumber(change.toString(), decimalPlaces ?? 0, 3)}
             )

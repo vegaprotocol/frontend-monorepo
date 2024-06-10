@@ -12,14 +12,14 @@ export type TransactionEventSubscriptionVariables = Types.Exact<{
 
 export type TransactionEventSubscription = { __typename?: 'Subscription', busEvents?: Array<{ __typename?: 'BusEvent', type: Types.BusEventType, event: { __typename?: 'Deposit' } | { __typename?: 'TimeUpdate' } | { __typename?: 'TransactionResult', partyId: string, hash: string, status: boolean, error?: string | null } | { __typename?: 'Withdrawal' } }> | null };
 
-export type WithdrawalBusEventFieldsFragment = { __typename?: 'Withdrawal', id: string, status: Types.WithdrawalStatus, amount: string, createdTimestamp: any, withdrawnTimestamp?: any | null, txHash?: string | null, pendingOnForeignChain: boolean, asset: { __typename?: 'Asset', id: string, name: string, symbol: string, decimals: number, status: Types.AssetStatus, source: { __typename?: 'BuiltinAsset' } | { __typename?: 'ERC20', contractAddress: string } }, details?: { __typename?: 'Erc20WithdrawalDetails', receiverAddress: string } | null };
+export type WithdrawalBusEventFieldsFragment = { __typename?: 'Withdrawal', id: string, status: Types.WithdrawalStatus, amount: string, createdTimestamp: any, withdrawnTimestamp?: any | null, txHash?: string | null, pendingOnForeignChain: boolean, asset: { __typename?: 'Asset', id: string, name: string, symbol: string, decimals: number, quantum: string, status: Types.AssetStatus, source: { __typename?: 'BuiltinAsset' } | { __typename?: 'ERC20', contractAddress: string, chainId: string } }, details?: { __typename?: 'Erc20WithdrawalDetails', receiverAddress: string } | null };
 
 export type WithdrawalBusEventSubscriptionVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
 }>;
 
 
-export type WithdrawalBusEventSubscription = { __typename?: 'Subscription', busEvents?: Array<{ __typename?: 'BusEvent', event: { __typename?: 'Deposit' } | { __typename?: 'TimeUpdate' } | { __typename?: 'TransactionResult' } | { __typename?: 'Withdrawal', id: string, status: Types.WithdrawalStatus, amount: string, createdTimestamp: any, withdrawnTimestamp?: any | null, txHash?: string | null, pendingOnForeignChain: boolean, asset: { __typename?: 'Asset', id: string, name: string, symbol: string, decimals: number, status: Types.AssetStatus, source: { __typename?: 'BuiltinAsset' } | { __typename?: 'ERC20', contractAddress: string } }, details?: { __typename?: 'Erc20WithdrawalDetails', receiverAddress: string } | null } }> | null };
+export type WithdrawalBusEventSubscription = { __typename?: 'Subscription', busEvents?: Array<{ __typename?: 'BusEvent', event: { __typename?: 'Deposit' } | { __typename?: 'TimeUpdate' } | { __typename?: 'TransactionResult' } | { __typename?: 'Withdrawal', id: string, status: Types.WithdrawalStatus, amount: string, createdTimestamp: any, withdrawnTimestamp?: any | null, txHash?: string | null, pendingOnForeignChain: boolean, asset: { __typename?: 'Asset', id: string, name: string, symbol: string, decimals: number, quantum: string, status: Types.AssetStatus, source: { __typename?: 'BuiltinAsset' } | { __typename?: 'ERC20', contractAddress: string, chainId: string } }, details?: { __typename?: 'Erc20WithdrawalDetails', receiverAddress: string } | null } }> | null };
 
 export type OrderTxUpdateFieldsFragment = { __typename?: 'OrderUpdate', type?: Types.OrderType | null, id: string, status: Types.OrderStatus, rejectionReason?: Types.OrderRejectionReason | null, createdAt: any, size: string, price: string, timeInForce: Types.OrderTimeInForce, expiresAt?: any | null, side: Types.Side, marketId: string, remaining: string };
 
@@ -37,14 +37,14 @@ export type PositionUpdateSubscriptionVariables = Types.Exact<{
 
 export type PositionUpdateSubscription = { __typename?: 'Subscription', positions: Array<{ __typename?: 'PositionUpdate', marketId: string, openVolume: string }> };
 
-export type DepositBusEventFieldsFragment = { __typename?: 'Deposit', id: string, status: Types.DepositStatus, amount: string, createdTimestamp: any, creditedTimestamp?: any | null, txHash?: string | null, asset: { __typename?: 'Asset', id: string, symbol: string, decimals: number } };
+export type DepositBusEventFieldsFragment = { __typename?: 'Deposit', id: string, status: Types.DepositStatus, amount: string, createdTimestamp: any, creditedTimestamp?: any | null, txHash?: string | null, asset: { __typename?: 'Asset', id: string, name: string, symbol: string, decimals: number, quantum: string, status: Types.AssetStatus, source: { __typename?: 'BuiltinAsset' } | { __typename?: 'ERC20', contractAddress: string, chainId: string } } };
 
 export type DepositBusEventSubscriptionVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
 }>;
 
 
-export type DepositBusEventSubscription = { __typename?: 'Subscription', busEvents?: Array<{ __typename?: 'BusEvent', event: { __typename?: 'Deposit', id: string, status: Types.DepositStatus, amount: string, createdTimestamp: any, creditedTimestamp?: any | null, txHash?: string | null, asset: { __typename?: 'Asset', id: string, symbol: string, decimals: number } } | { __typename?: 'TimeUpdate' } | { __typename?: 'TransactionResult' } | { __typename?: 'Withdrawal' } }> | null };
+export type DepositBusEventSubscription = { __typename?: 'Subscription', busEvents?: Array<{ __typename?: 'BusEvent', event: { __typename?: 'Deposit', id: string, status: Types.DepositStatus, amount: string, createdTimestamp: any, creditedTimestamp?: any | null, txHash?: string | null, asset: { __typename?: 'Asset', id: string, name: string, symbol: string, decimals: number, quantum: string, status: Types.AssetStatus, source: { __typename?: 'BuiltinAsset' } | { __typename?: 'ERC20', contractAddress: string, chainId: string } } } | { __typename?: 'TimeUpdate' } | { __typename?: 'TransactionResult' } | { __typename?: 'Withdrawal' } }> | null };
 
 export const TransactionEventFieldsFragmentDoc = gql`
     fragment TransactionEventFields on TransactionResult {
@@ -64,10 +64,12 @@ export const WithdrawalBusEventFieldsFragmentDoc = gql`
     name
     symbol
     decimals
+    quantum
     status
     source {
       ... on ERC20 {
         contractAddress
+        chainId
       }
     }
   }
@@ -105,8 +107,17 @@ export const DepositBusEventFieldsFragmentDoc = gql`
   amount
   asset {
     id
+    name
     symbol
     decimals
+    quantum
+    status
+    source {
+      ... on ERC20 {
+        contractAddress
+        chainId
+      }
+    }
   }
   createdTimestamp
   creditedTimestamp

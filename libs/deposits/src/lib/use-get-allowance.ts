@@ -1,21 +1,15 @@
 import type { Token } from '@vegaprotocol/smart-contracts';
-import { useWeb3React } from '@web3-react/core';
 import { useCallback } from 'react';
-import { useEthereumConfig } from '@vegaprotocol/web3';
 import BigNumber from 'bignumber.js';
-import type { Asset } from '@vegaprotocol/assets';
-import { addDecimal } from '@vegaprotocol/utils';
 import { localLoggerFactory } from '@vegaprotocol/logger';
 
 export const useGetAllowance = (
-  contract: Token | null,
-  asset: Asset | undefined
+  tokenContract?: Token,
+  collateralBridgeAddress?: string,
+  account?: string
 ) => {
-  const { account } = useWeb3React();
-  const { config } = useEthereumConfig();
-
   const getAllowance = useCallback(async () => {
-    if (!contract || !account || !config || !asset) {
+    if (!tokenContract || !account || !collateralBridgeAddress) {
       return;
     }
 
@@ -23,18 +17,18 @@ export const useGetAllowance = (
     try {
       logger.info('get allowance', {
         account,
-        contractAddress: config.collateral_bridge_contract.address,
+        contractAddress: collateralBridgeAddress,
       });
-      const res = await contract.allowance(
+      const res = await tokenContract.allowance(
         account,
-        config.collateral_bridge_contract.address
+        collateralBridgeAddress
       );
-      return new BigNumber(addDecimal(res.toString(), asset.decimals));
+      return new BigNumber(res.toString());
     } catch (err) {
       logger.error('get allowance', err);
       return;
     }
-  }, [contract, account, config, asset]);
+  }, [account, collateralBridgeAddress, tokenContract]);
 
   return getAllowance;
 };

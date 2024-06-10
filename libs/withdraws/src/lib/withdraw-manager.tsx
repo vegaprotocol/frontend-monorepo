@@ -21,7 +21,8 @@ export const WithdrawManager = ({
 }: WithdrawManagerProps) => {
   const { asset, balance, min, threshold, delay, handleSelectAsset } =
     useWithdrawAsset(assets, accounts, assetId);
-  const gasPrice = useGasPrice(ContractMethod.WITHDRAW_ASSET);
+
+  const gasPrice = useGasPrice(ContractMethod.WITHDRAW_ASSET, asset?.chainId);
 
   return (
     <WithdrawForm

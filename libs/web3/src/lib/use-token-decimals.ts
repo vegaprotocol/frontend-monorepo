@@ -2,7 +2,7 @@ import type { Token } from '@vegaprotocol/smart-contracts';
 import { useCallback } from 'react';
 import { useEthereumReadContract } from './use-ethereum-read-contract';
 
-export const useTokenDecimals = (contract: Token | null) => {
+export const useTokenDecimals = (contract?: Token) => {
   const getDecimals = useCallback(async () => {
     if (!contract) {
       return;

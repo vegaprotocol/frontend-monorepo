@@ -32,6 +32,7 @@ import {
   prepend0x,
 } from '@vegaprotocol/smart-contracts';
 import { AssetStatus } from '@vegaprotocol/types';
+import { getVegaAssetLogoUrl } from '@vegaprotocol/emblem';
 
 /**
  * A flag determining whether the final deposit via SquidRouter should be done
@@ -165,9 +166,6 @@ export const useEnrichedSquidFriendlyAssets = () => {
     ? HARDCODED_EVM_CONFIGS
     : configs;
 
-  // TODO: Re-generate types once chainId is available in the assets.
-  // The `chainId` field is commented out now due to the schema conflict between
-  // testnet and mainnet.
   const {
     data: enabledAssets,
     loading: enablesAssetsLoading,
@@ -176,15 +174,7 @@ export const useEnrichedSquidFriendlyAssets = () => {
 
   const assets = isArbitrumTestBridgeEnabled
     ? HARDCODED_TEST_ASSETS
-    : compact(enabledAssets)
-        // FIXME: Remove once type are re-generated.
-        // Currently the `chainId` is missing on mainnet hence arbitrary setting
-        // it to `1` (Ethereum)
-        .map((a) => ({
-          ...a,
-          source: { ...a.source, chainId: String(ETHEREUM_CHAIN_ID) },
-        }))
-        .filter(isSquidFriendlyAsset);
+    : compact(enabledAssets).filter(isSquidFriendlyAsset);
 
   const chains: ChainInfo[] = useMemo(
     () =>
@@ -381,10 +371,7 @@ const mapAssetToDestinationTokenConfig = (
   const tokenContractAddress = asset.source.contractAddress;
 
   // FIXME: Could use some better icon getting
-  let assetLogo = `https://icon.vega.xyz/vega/${vegaChainId}/asset/${asset.id}/logo.svg`;
-  if (asset.chainId === String(ARBITRUM_CHAIN_ID)) {
-    assetLogo = 'https://icon.vega.xyz/missing.svg';
-  }
+  const assetLogo = getVegaAssetLogoUrl(vegaChainId, asset.id);
 
   const route: DestinationTokenConfig['customContractCalls'] = [
     // 0: SWAP
