@@ -1,23 +1,25 @@
+import classNames from 'classnames';
 import type { ReactNode } from 'react';
 
 export const StackedCell = ({
   primary,
   secondary,
+  className,
 }: {
   primary: ReactNode;
   secondary: ReactNode;
+  className?: string;
 }) => {
+  const rowClass = 'text-ellipsis whitespace-nowrap overflow-hidden';
+
   return (
-    <div className="leading-4">
-      <div
-        className="text-ellipsis whitespace-nowrap overflow-hidden text-sm"
-        data-testid="stack-cell-primary"
-      >
+    <div className={classNames('leading-4', className)}>
+      <div className={rowClass} data-testid="stack-cell-primary">
         <span>{primary}</span>
       </div>
       <div
         data-testid="stack-cell-secondary"
-        className="text-ellipsis whitespace-nowrap overflow-hidden text-muted text-xs"
+        className={classNames(rowClass, 'text-xs text-muted')}
       >
         {secondary}
       </div>

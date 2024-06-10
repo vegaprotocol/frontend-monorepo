@@ -13,7 +13,7 @@ export const PriceFlashCell = ({
     return <span data-testid="price">-</span>;
   }
   return (
-    <span className="font-mono text-sm" data-testid="price">
+    <span className="font-mono" data-testid="price">
       <FlashCell value={Number(value)}>{valueFormatted}</FlashCell>
     </span>
   );

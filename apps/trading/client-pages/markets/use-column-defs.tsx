@@ -91,7 +91,7 @@ export const priceChangeRenderer = (
           {showChangeValue && (
             <span
               data-testid="price-change"
-              className="text-ellipsis whitespace-nowrap overflow-hidden text-muted"
+              className="text-ellipsis whitespace-nowrap overflow-hidden text-muted text-xs"
             >
               ({'0.00'})
             </span>
@@ -189,10 +189,10 @@ export const useMarketsColumnDefs = () => {
       {
         headerName: t('Price'),
         field: 'data.markPrice',
-        type: 'rightAligned',
         cellRenderer: 'PriceFlashCell',
         filter: 'agNumberColumnFilter',
         maxWidth: 150,
+        cellClass: 'text-sm text-right',
         valueGetter: ({ data }: VegaValueGetterParams<MarketMaybeWithData>) => {
           if (data && isSpot(data.tradableInstrument.instrument.product)) {
             return data?.data?.lastTradedPrice === undefined
@@ -216,11 +216,12 @@ export const useMarketsColumnDefs = () => {
         headerName: '24h Change',
         field: 'data.candles',
         type: 'rightAligned',
+        cellClass: 'text-sm text-right',
         cellRenderer: ({
           data,
         }: ValueFormatterParams<MarketMaybeWithDataAndCandles, 'candles'>) => {
           return (
-            <div className="flex flex-row gap-2 justify-end">
+            <div className="flex gap-2 justify-end">
               <span>{priceChangeRenderer(data)}</span>
               <span>{priceChangeSparklineRenderer(data)}</span>
             </div>
@@ -241,6 +242,7 @@ export const useMarketsColumnDefs = () => {
         type: 'rightAligned',
         field: 'data.candles',
         sort: 'desc',
+        cellClass: 'text-sm text-right',
         valueGetter: ({
           data,
         }: VegaValueGetterParams<MarketMaybeWithDataAndCandles>) => {
@@ -297,6 +299,7 @@ export const useMarketsColumnDefs = () => {
         headerName: t('Open interest'),
         field: 'data.openInterest',
         type: 'rightAligned',
+        cellClass: 'text-sm text-right',
         valueGetter: ({ data }: VegaValueGetterParams<MarketMaybeWithData>) => {
           const openInterestData = data && openInterestValues(data);
           if (!openInterestData) return 0;
