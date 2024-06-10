@@ -36,9 +36,9 @@ import {
 } from '@vegaprotocol/types';
 import { useState, type ReactNode } from 'react';
 import {
-  AssetFieldsFragment,
-  AssetSymbol,
+  type AssetFieldsFragment,
   type BasicAssetDetails,
+  AssetSymbol,
 } from '@vegaprotocol/assets';
 import {
   isScopedToTeams,

@@ -14,8 +14,7 @@ import {
   getDateTimeFormat,
   toNanoSeconds,
 } from '@vegaprotocol/utils';
-import { type AssetFieldsFragment } from '@vegaprotocol/assets';
-import { type ChainId, ChainIdMapShort } from '@vegaprotocol/web3';
+import { AssetSymbol, type AssetFieldsFragment } from '@vegaprotocol/assets';
 import { localLoggerFactory } from '@vegaprotocol/logger';
 import { useLedgerDownloadFile } from './ledger-download-store';
 import { useT } from './use-t';
@@ -209,19 +208,10 @@ export const LedgerExportForm = ({ partyId, vegaUrl, assets }: Props) => {
               >
                 {Object.keys(assets).map((assetKey) => {
                   const asset = assets[assetKey];
-                  let symbol = asset.symbol;
-
-                  if (asset.source.__typename === 'ERC20') {
-                    symbol = `${asset.symbol} (${
-                      ChainIdMapShort[
-                        asset.source.chainId as unknown as ChainId
-                      ]
-                    })`;
-                  }
 
                   return (
                     <option key={assetKey} value={assetKey}>
-                      {symbol}
+                      <AssetSymbol asset={asset} />
                     </option>
                   );
                 })}

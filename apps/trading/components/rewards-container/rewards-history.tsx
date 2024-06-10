@@ -2,7 +2,7 @@ import debounce from 'lodash/debounce';
 import { useMemo, useState } from 'react';
 import BigNumber from 'bignumber.js';
 import type { ColDef, ValueFormatterFunc } from 'ag-grid-community';
-import { type AssetFieldsFragment } from '@vegaprotocol/assets';
+import { AssetSymbol, type AssetFieldsFragment } from '@vegaprotocol/assets';
 import {
   addDecimalsFormatNumberQuantum,
   formatNumberPercentage,
@@ -19,7 +19,6 @@ import {
 } from '../../lib/hooks/__generated__/Rewards';
 import { useRewardsRowData } from './use-reward-row-data';
 import { useT } from '../../lib/use-t';
-import { type ChainId, ChainIdMapShort } from '@vegaprotocol/web3';
 
 export const RewardsHistoryContainer = ({
   epoch,
@@ -196,15 +195,12 @@ export const RewardHistoryTable = ({
         cellRenderer: ({ value, data }: { value: string; data: RewardRow }) => {
           if (!value || !data) return <span>-</span>;
 
-          let symbol = value;
-
-          if (data.asset.source.__typename === 'ERC20') {
-            symbol = `${data.asset.symbol} (${
-              ChainIdMapShort[data.asset.source.chainId as unknown as ChainId]
-            })`;
-          }
-
-          return <StackedCell primary={symbol} secondary={data.asset.name} />;
+          return (
+            <StackedCell
+              primary={<AssetSymbol asset={data.asset} />}
+              secondary={data.asset.name}
+            />
+          );
         },
         sort: 'desc',
         pinned: 'left',
