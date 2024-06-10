@@ -1,8 +1,9 @@
+import compact from 'lodash/compact';
 import { LedgerExportForm } from '@vegaprotocol/ledger';
 import { Loader, Splash } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useEnvironment } from '@vegaprotocol/environment';
-import type { PartyAssetFieldsFragment } from '@vegaprotocol/assets';
+import type { AssetFieldsFragment } from '@vegaprotocol/assets';
 import { usePartyAssetsQuery } from '@vegaprotocol/assets';
 import { useT } from '../../lib/use-t';
 
@@ -15,12 +16,11 @@ export const LedgerContainer = () => {
     skip: !pubKey,
   });
 
-  const assets = (data?.party?.accountsConnection?.edges ?? [])
+  const assets = compact(data?.party?.accountsConnection?.edges ?? [])
     .map((item) => item?.node?.asset)
-    .filter((asset): asset is PartyAssetFieldsFragment => !!asset?.id)
     .reduce(
-      (aggr, item) => Object.assign(aggr, { [item.id]: item.symbol }),
-      {} as Record<string, string>
+      (aggr, item) => Object.assign(aggr, { [item.id]: item }),
+      {} as Record<string, AssetFieldsFragment>
     );
 
   if (!pubKey) {

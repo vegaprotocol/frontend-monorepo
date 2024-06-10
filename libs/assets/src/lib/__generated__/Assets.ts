@@ -9,23 +9,14 @@ export type AssetsQueryVariables = Types.Exact<{ [key: string]: never; }>;
 
 export type AssetsQuery = { __typename?: 'Query', assetsConnection?: { __typename?: 'AssetsConnection', edges?: Array<{ __typename?: 'AssetEdge', node: { __typename?: 'Asset', id: string, name: string, symbol: string, decimals: number, quantum: string, status: Types.AssetStatus, source: { __typename: 'BuiltinAsset', maxFaucetAmountMint: string } | { __typename: 'ERC20', contractAddress: string, lifetimeLimit: string, withdrawThreshold: string, chainId: string }, networkTreasuryAccount?: { __typename?: 'AccountBalance', balance: string } | null, globalInsuranceAccount?: { __typename?: 'AccountBalance', balance: string } | null } } | null> | null } | null };
 
-export type PartyAssetFieldsFragment = { __typename?: 'Asset', id: string, name: string, symbol: string, status: Types.AssetStatus };
-
 export type PartyAssetsQueryVariables = Types.Exact<{
   partyId: Types.Scalars['ID'];
 }>;
 
 
-export type PartyAssetsQuery = { __typename?: 'Query', party?: { __typename?: 'Party', id: string, accountsConnection?: { __typename?: 'AccountsConnection', edges?: Array<{ __typename?: 'AccountEdge', node: { __typename?: 'AccountBalance', type: Types.AccountType, asset: { __typename?: 'Asset', id: string, name: string, symbol: string, status: Types.AssetStatus } } } | null> | null } | null } | null };
+export type PartyAssetsQuery = { __typename?: 'Query', party?: { __typename?: 'Party', id: string, accountsConnection?: { __typename?: 'AccountsConnection', edges?: Array<{ __typename?: 'AccountEdge', node: { __typename?: 'AccountBalance', type: Types.AccountType, asset: { __typename?: 'Asset', id: string, name: string, symbol: string, decimals: number, quantum: string, status: Types.AssetStatus, source: { __typename: 'BuiltinAsset', maxFaucetAmountMint: string } | { __typename: 'ERC20', contractAddress: string, lifetimeLimit: string, withdrawThreshold: string, chainId: string }, networkTreasuryAccount?: { __typename?: 'AccountBalance', balance: string } | null, globalInsuranceAccount?: { __typename?: 'AccountBalance', balance: string } | null } } } | null> | null } | null } | null };
 
-export const PartyAssetFieldsFragmentDoc = gql`
-    fragment PartyAssetFields on Asset {
-  id
-  name
-  symbol
-  status
-}
-    `;
+
 export const AssetsDocument = gql`
     query Assets {
   assetsConnection {
@@ -73,14 +64,14 @@ export const PartyAssetsDocument = gql`
         node {
           type
           asset {
-            ...PartyAssetFields
+            ...AssetFields
           }
         }
       }
     }
   }
 }
-    ${PartyAssetFieldsFragmentDoc}`;
+    ${AssetFieldsFragmentDoc}`;
 
 /**
  * __usePartyAssetsQuery__

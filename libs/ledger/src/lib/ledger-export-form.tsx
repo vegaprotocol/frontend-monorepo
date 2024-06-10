@@ -14,6 +14,8 @@ import {
   getDateTimeFormat,
   toNanoSeconds,
 } from '@vegaprotocol/utils';
+import { type AssetFieldsFragment } from '@vegaprotocol/assets';
+import { type ChainId, ChainIdMapShort } from '@vegaprotocol/web3';
 import { localLoggerFactory } from '@vegaprotocol/logger';
 import { useLedgerDownloadFile } from './ledger-download-store';
 import { useT } from './use-t';
@@ -66,7 +68,7 @@ export const createDownloadUrl = (
 interface Props {
   partyId: string;
   vegaUrl: string;
-  assets: Record<string, string>;
+  assets: Record<string, AssetFieldsFragment>;
 }
 
 export const LedgerExportForm = ({ partyId, vegaUrl, assets }: Props) => {
@@ -101,7 +103,7 @@ export const LedgerExportForm = ({ partyId, vegaUrl, assets }: Props) => {
       const title = t(
         'Downloading for {{asset}} from {{startDate}} till {{endDate}}',
         {
-          asset: assets[formValues.assetId],
+          asset: assets[formValues.assetId].symbol,
           startDate: dateTimeFormatter.format(new Date(formValues.dateFrom)),
           endDate: dateTimeFormatter.format(
             new Date(formValues.dateTo || Date.now())
@@ -205,11 +207,24 @@ export const LedgerExportForm = ({ partyId, vegaUrl, assets }: Props) => {
                 className="w-full"
                 data-testid="select-ledger-asset"
               >
-                {Object.keys(assets).map((assetKey) => (
-                  <option key={assetKey} value={assetKey}>
-                    {assets[assetKey]}
-                  </option>
-                ))}
+                {Object.keys(assets).map((assetKey) => {
+                  const asset = assets[assetKey];
+                  let symbol = asset.symbol;
+
+                  if (asset.source.__typename === 'ERC20') {
+                    symbol = `${asset.symbol} (${
+                      ChainIdMapShort[
+                        asset.source.chainId as unknown as ChainId
+                      ]
+                    })`;
+                  }
+
+                  return (
+                    <option key={assetKey} value={assetKey}>
+                      {symbol}
+                    </option>
+                  );
+                })}
               </TradingSelect>
             </TradingFormGroup>
             {fieldState.error && (
