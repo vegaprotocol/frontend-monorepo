@@ -19,6 +19,7 @@ import {
 } from '../../lib/hooks/__generated__/Rewards';
 import { useRewardsRowData } from './use-reward-row-data';
 import { useT } from '../../lib/use-t';
+import { type ChainId, ChainIdMapShort } from '@vegaprotocol/web3';
 
 export const RewardsHistoryContainer = ({
   epoch,
@@ -194,7 +195,16 @@ export const RewardHistoryTable = ({
         field: 'asset.symbol',
         cellRenderer: ({ value, data }: { value: string; data: RewardRow }) => {
           if (!value || !data) return <span>-</span>;
-          return <StackedCell primary={value} secondary={data.asset.name} />;
+
+          let symbol = value;
+
+          if (data.asset.source.__typename === 'ERC20') {
+            symbol = `${data.asset.symbol} (${
+              ChainIdMapShort[data.asset.source.chainId as unknown as ChainId]
+            })`;
+          }
+
+          return <StackedCell primary={symbol} secondary={data.asset.name} />;
         },
         sort: 'desc',
         pinned: 'left',
