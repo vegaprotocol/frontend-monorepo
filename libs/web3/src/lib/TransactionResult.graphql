@@ -25,10 +25,12 @@ fragment WithdrawalBusEventFields on Withdrawal {
     name
     symbol
     decimals
+    quantum
     status
     source {
       ... on ERC20 {
         contractAddress
+        chainId
       }
     }
   }
@@ -87,8 +89,17 @@ fragment DepositBusEventFields on Deposit {
   amount
   asset {
     id
+    name
     symbol
     decimals
+    quantum
+    status
+    source {
+      ... on ERC20 {
+        contractAddress
+        chainId
+      }
+    }
   }
   createdTimestamp
   creditedTimestamp

@@ -7,7 +7,6 @@ import {
   useMinSafe,
   useMaxSafe,
   addDecimal,
-  isAssetTypeERC20,
   formatNumber,
 } from '@vegaprotocol/utils';
 import { useLocalStorage } from '@vegaprotocol/react-helpers';
@@ -22,6 +21,9 @@ import {
   TradingSelect,
   truncateMiddle,
   TradingButton,
+  VegaIcon,
+  VegaIconNames,
+  Loader,
 } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useWeb3React } from '@web3-react/core';
@@ -36,6 +38,8 @@ import {
   useWeb3ConnectStore,
   getChainName,
   useWeb3Disconnect,
+  ETHEREUM_CHAIN_ID,
+  toAssetData,
 } from '@vegaprotocol/web3';
 import type { DepositBalances } from './use-deposit-balances';
 import { FaucetNotification } from './faucet-notification';
@@ -54,8 +58,8 @@ interface FormFields {
 export interface DepositFormProps {
   assets: Asset[];
   selectedAsset?: Asset;
-  balances: DepositBalances | null;
-  onSelectAsset: (assetId: string) => void;
+  balances: DepositBalances | 'loading' | null | undefined;
+  onSelectAsset: (assetId?: string) => void;
   handleAmountChange: (amount: string) => void;
   onDisconnect: () => void;
   submitApprove: (amount?: string) => void;
@@ -93,12 +97,25 @@ export const DepositForm = ({
   const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
   const openDialog = useWeb3ConnectStore((store) => store.open);
   const { isActive, account, chainId } = useWeb3React();
-  const desiredChainId = useWeb3ConnectStore((store) => store.desiredChainId);
-  const invalidChain = isActive && chainId !== desiredChainId;
+  const desiredChains = useWeb3ConnectStore((store) => store.chains);
+
   const { pubKey, pubKeys: _pubKeys } = useVegaWallet();
   const [approveNotificationIntent, setApproveNotificationIntent] =
     useState<Intent>(Intent.Warning);
   const [persistedDeposit] = usePersistentDeposit(selectedAsset?.id);
+
+  const assetData = toAssetData(selectedAsset);
+
+  const selectedAssetChainId = assetData?.chainId;
+
+  // indicates if connected to the unsupported chain
+  const invalidChain = isActive && !desiredChains?.includes(Number(chainId));
+
+  // indicates if connected currently to the wrong chain that is not the same
+  // as chosen asset
+  const wrongChain =
+    selectedAssetChainId && chainId && selectedAssetChainId !== chainId;
+
   const {
     register,
     handleSubmit,
@@ -117,6 +134,9 @@ export const DepositForm = ({
   });
 
   const amount = useWatch({ name: 'amount', control });
+  const availableAssets = assets.filter(
+    (asset) => asset.source.__typename === 'ERC20'
+  );
 
   const onSubmit = async (fields: FormFields) => {
     if (!selectedAsset || selectedAsset.source.__typename !== 'ERC20') {
@@ -152,7 +172,9 @@ export const DepositForm = ({
   }, [account, setValue, trigger]);
 
   const approved =
-    balances && balances.allowance.isGreaterThan(0) ? true : false;
+    balances && balances !== 'loading' && balances.allowance.isGreaterThan(0)
+      ? true
+      : false;
 
   return invalidChain ? (
     <div className="mb-2">
@@ -162,7 +184,9 @@ export const DepositForm = ({
         message={t(
           'This app only works on {{chainId}}. Switch your Ethereum wallet to the correct network.',
           {
-            chainId: getChainName(desiredChainId),
+            chainId: desiredChains
+              ?.map((chain) => getChainName(chain))
+              .join(t(' or ')),
           }
         )}
       />
@@ -174,7 +198,11 @@ export const DepositForm = ({
       data-testid="deposit-form"
     >
       <TradingFormGroup
-        label={t('From (Ethereum address)')}
+        label={t('From ({{chainName}} address)', {
+          chainName: selectedAssetChainId
+            ? getChainName(selectedAssetChainId)
+            : ETHEREUM_CHAIN_ID,
+        })}
         labelFor="ethereum-address"
       >
         <Controller
@@ -187,16 +215,40 @@ export const DepositForm = ({
                 return true;
               },
               ethereumAddress,
+              wrongChain: () => (wrongChain ? false : true),
             },
           }}
           defaultValue={account}
           render={() => {
             if (isActive && account) {
+              let chainLogo = 'https://icon.vega.xyz/missing.svg';
+              if (chainId) {
+                chainLogo = `https://icon.vega.xyz/chain/${chainId}/logo.svg`;
+              }
               return (
                 <div className="text-sm" aria-describedby="ethereum-address">
-                  <p className="mb-1 break-all" data-testid="ethereum-address">
-                    {truncateMiddle(account)}
-                  </p>
+                  <div className="flex gap-1 mb-1">
+                    {chainId ? (
+                      <img
+                        className="w-4 h-4"
+                        src={chainLogo}
+                        alt={String(chainId) || ''}
+                      />
+                    ) : null}
+                    <span className="break-all" data-testid="ethereum-address">
+                      {truncateMiddle(account)}
+                    </span>
+                  </div>
+
+                  {wrongChain ? (
+                    <p className="text-xs text-vega-red-500 flex items-center gap-1">
+                      <VegaIcon name={VegaIconNames.WARNING} size={12} />
+                      {t('Switch network in your wallet to {{chain}}', {
+                        chain: getChainName(Number(selectedAssetChainId)),
+                      })}
+                    </p>
+                  ) : null}
+
                   <DisconnectEthereumButton
                     onDisconnect={() => {
                       setValue('from', ''); // clear from value so required ethereum connection validation works
@@ -284,17 +336,16 @@ export const DepositForm = ({
               value={selectedAsset?.id}
               hasError={Boolean(errors.asset?.message)}
             >
-              {assets
-                .filter((asset) => isAssetTypeERC20(asset))
-                .map((asset) => (
-                  <AssetOption
-                    asset={asset}
-                    key={asset.id}
-                    balance={
-                      isActive && account && <AssetBalance asset={asset} />
-                    }
-                  />
-                ))}
+              {availableAssets.map((asset) => (
+                <AssetOption
+                  asset={asset}
+                  key={asset.id}
+                  balance={
+                    isActive &&
+                    account && <AssetBalance assetData={toAssetData(asset)} />
+                  }
+                />
+              ))}
             </TradingRichSelect>
           )}
         />
@@ -326,12 +377,17 @@ export const DepositForm = ({
         selectedAsset={selectedAsset}
         faucetTxId={faucetTxId}
       />
-      {approved && selectedAsset && balances && (
+      {approved && selectedAsset && balances && balances !== 'loading' && (
         <div className="mb-6">
           <DepositLimits {...balances} asset={selectedAsset} />
         </div>
       )}
-      {approved && (
+      {balances === 'loading' && (
+        <div className="mb-6">
+          <Loader size="small" />
+        </div>
+      )}
+      {approved && balances !== 'loading' && (
         <TradingFormGroup label={t('Amount')} labelFor="amount">
           <TradingInput
             type="number"
@@ -419,19 +475,30 @@ export const DepositForm = ({
           )}
         </TradingFormGroup>
       )}
-      <ApproveNotification
-        isActive={isActive}
-        approveTxId={approveTxId}
-        selectedAsset={selectedAsset}
-        onApprove={(amount) => {
-          submitApprove(amount);
-          setApproveNotificationIntent(Intent.Warning);
-        }}
-        balances={balances}
-        approved={approved}
-        intent={approveNotificationIntent}
-        amount={amount}
-      />
+      {isActive && wrongChain ? (
+        <div className="mb-4">
+          <Notification
+            intent={Intent.Danger}
+            message={t('Switch network in your wallet to {{chain}}', {
+              chain: getChainName(Number(selectedAssetChainId)),
+            })}
+          />
+        </div>
+      ) : (
+        <ApproveNotification
+          isActive={isActive}
+          approveTxId={approveTxId}
+          selectedAsset={selectedAsset}
+          onApprove={(amount) => {
+            submitApprove(amount);
+            setApproveNotificationIntent(Intent.Warning);
+          }}
+          balances={balances && balances !== 'loading' ? balances : undefined}
+          approved={approved}
+          intent={approveNotificationIntent}
+          amount={amount}
+        />
+      )}
       <FormButton
         approved={approved}
         isActive={isActive}

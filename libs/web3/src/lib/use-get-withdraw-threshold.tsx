@@ -1,14 +1,9 @@
 import { useCallback } from 'react';
-import { useBridgeContract } from './use-bridge-contract';
+import { useGetCollateralBridge } from './use-bridge-contract';
 import BigNumber from 'bignumber.js';
 import { addDecimal } from '@vegaprotocol/utils';
-import type { WithdrawalBusEventFieldsFragment } from './__generated__/TransactionResult';
 import { localLoggerFactory } from '@vegaprotocol/logger';
-
-type Asset = Pick<
-  WithdrawalBusEventFieldsFragment['asset'],
-  'source' | 'decimals'
->;
+import { type AssetData } from './types';
 
 /**
  * The withdraw threshold is a value set on the contract bridge per asset which
@@ -18,17 +13,29 @@ type Asset = Pick<
 
 const MAX_AGE = 5 * 60 * 1000; // 5 minutes
 
-export const BUILTIN_ASSET_ADDRESS = 'builtin';
-export const BUILTIN_ASSET_THRESHOLD = new BigNumber(Infinity);
-type TimestampedThreshold = { value: BigNumber; ts: number };
-const THRESHOLDS: Record<string, TimestampedThreshold> = {};
-const setThreshold = (address: string, value: BigNumber) =>
-  (THRESHOLDS[address] = { value, ts: Date.now() });
+type TimestampedThreshold = {
+  address: string;
+  chainId: number;
+  value: BigNumber;
+  ts: number;
+};
+type ContractAddress = string;
 
-export const addr = (asset: Asset | undefined) =>
-  asset && asset.source.__typename === 'ERC20'
-    ? asset.source.contractAddress
-    : BUILTIN_ASSET_ADDRESS;
+const THRESHOLDS: Map<ContractAddress, TimestampedThreshold> = new Map();
+
+const getCachedThreshold = (asset: AssetData) => {
+  return THRESHOLDS.get(asset.contractAddress);
+};
+
+const setCachedThreshold = (asset: AssetData, value: BigNumber) => {
+  const thresholdData: TimestampedThreshold = {
+    address: asset.contractAddress,
+    chainId: asset.chainId,
+    value: value,
+    ts: Date.now(),
+  };
+  THRESHOLDS.set(asset.contractAddress, thresholdData);
+};
 
 /**
  * Returns a function to get the threshold amount for a withdrawal.
@@ -38,39 +45,43 @@ export const addr = (asset: Asset | undefined) =>
  */
 export const useGetWithdrawThreshold = () => {
   const logger = localLoggerFactory({ application: 'web3' });
-  const contract = useBridgeContract(true);
+
+  const getCollateralBridge = useGetCollateralBridge();
 
   const getThreshold = useCallback(
-    async (asset: Asset | undefined) => {
-      const contractAddress = addr(asset);
+    async (asset: AssetData | undefined) => {
+      if (!asset) return undefined;
+      const contract = getCollateralBridge(asset.chainId);
+      if (!contract) return undefined;
+
       // return cached value if still valid
-      const thr = THRESHOLDS[contractAddress];
+      const thr = getCachedThreshold(asset);
       if (thr && Date.now() - thr.ts <= MAX_AGE) {
         return thr.value;
       }
-      if (!contract || !asset || contractAddress === BUILTIN_ASSET_ADDRESS) {
-        setThreshold(BUILTIN_ASSET_ADDRESS, BUILTIN_ASSET_THRESHOLD);
-        return BUILTIN_ASSET_THRESHOLD;
-      }
+
       try {
-        const res = await contract.get_withdraw_threshold(contractAddress);
+        const res = await contract.get_withdraw_threshold(
+          asset.contractAddress
+        );
+
         const value = new BigNumber(addDecimal(res.toString(), asset.decimals));
         const threshold = value.isEqualTo(0)
           ? new BigNumber(Infinity)
           : value.minus(new BigNumber(addDecimal('1', asset.decimals)));
         logger.info(
-          `retrieved withdraw threshold for ${addr(
-            asset
-          )}: ${threshold.toString()}`
+          `retrieved withdraw threshold for ${
+            asset.contractAddress
+          }: ${threshold.toString()}`
         );
-        setThreshold(contractAddress, threshold);
+        setCachedThreshold(asset, threshold);
         return threshold;
       } catch (err) {
         logger.error('could not get the withdraw thresholds', err);
         return undefined;
       }
     },
-    [contract, logger]
+    [getCollateralBridge, logger]
   );
 
   return getThreshold;

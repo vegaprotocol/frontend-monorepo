@@ -4,6 +4,7 @@ query ProposalAsset($assetId: ID!) {
     source {
       ... on ERC20 {
         contractAddress
+        chainId
       }
     }
   }

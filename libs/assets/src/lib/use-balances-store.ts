@@ -1,11 +1,16 @@
 import type BigNumber from 'bignumber.js';
-import type { AssetFieldsFragment } from './__generated__/Asset';
 import { create } from 'zustand';
 import * as Sentry from '@sentry/react';
 import { immer } from 'zustand/middleware/immer';
+import { toBigNum } from '@vegaprotocol/utils';
 
 type AssetWithBalance = {
-  asset: AssetFieldsFragment;
+  asset: {
+    id: string;
+    decimals: number;
+    contractAddress: string;
+    chainId: number;
+  };
   balanceOnEth?: BigNumber;
   balanceOnVega?: BigNumber;
   updatedAt: number;
@@ -36,7 +41,10 @@ export const useBalancesStore = create(
               ethBalanceFetcher()
                 .then((balance) => {
                   if (balance) {
-                    get().setBalance({ asset, balanceOnEth: balance });
+                    get().setBalance({
+                      asset,
+                      balanceOnEth: toBigNum(balance, asset.decimals),
+                    });
                   }
                 })
                 .catch((err) => {

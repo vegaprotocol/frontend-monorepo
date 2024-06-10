@@ -1,42 +1,74 @@
 import { useCallback, useEffect } from 'react';
 import { useGetBalanceOfERC20Token } from './use-get-balance-of-erc20-token';
-import type { AssetFieldsFragment } from '@vegaprotocol/assets';
 import { useBalancesStore } from '@vegaprotocol/assets';
 import { Balance } from '@vegaprotocol/assets';
-import { isAssetTypeERC20 } from '@vegaprotocol/utils';
-import { useTokenContract } from '@vegaprotocol/web3';
+import {
+  type AssetData,
+  useTokenContract,
+  getChainName,
+} from '@vegaprotocol/web3';
+import { useWeb3React } from '@web3-react/core';
+import { toBigNum } from '@vegaprotocol/utils';
+import { useT } from './use-t';
 
 const REFETCH_DELAY = 5000;
 
-export const AssetBalance = ({ asset }: { asset: AssetFieldsFragment }) => {
+export const AssetBalance = ({ assetData }: { assetData?: AssetData }) => {
+  const t = useT();
+  const { account } = useWeb3React();
+
+  const { contract, error } = useTokenContract(assetData);
+
   const [setBalance, getBalance] = useBalancesStore((state) => [
     state.setBalance,
     state.getBalance,
   ]);
 
-  const tokenContract = useTokenContract(
-    isAssetTypeERC20(asset) ? asset.source.contractAddress : undefined
-  );
-  const ethBalanceFetcher = useGetBalanceOfERC20Token(tokenContract, asset);
+  const ethBalanceFetcher = useGetBalanceOfERC20Token(contract, account);
 
-  const fetchFromEth = useCallback(async () => {
-    const balance = await ethBalanceFetcher();
-    if (balance) {
-      setBalance({ asset, balanceOnEth: balance, ethBalanceFetcher });
-    }
-  }, [asset, ethBalanceFetcher, setBalance]);
+  const fetchFromEth = useCallback(
+    async (ignore = false) => {
+      if (ignore) return;
+      if (!assetData) return;
+
+      const balance = await ethBalanceFetcher();
+      setBalance({
+        asset: assetData,
+        balanceOnEth: balance
+          ? toBigNum(balance, assetData.decimals)
+          : undefined,
+        ethBalanceFetcher,
+      });
+    },
+    [assetData, ethBalanceFetcher, setBalance]
+  );
 
   useEffect(() => {
-    const balance = getBalance(asset.id);
-    if (!balance || Date.now() - balance.updatedAt > REFETCH_DELAY) {
-      fetchFromEth();
-    }
-  }, [asset.id, fetchFromEth, getBalance]);
+    let ignore = false;
 
-  return (
-    <Balance
-      balance={getBalance(asset.id)?.balanceOnEth?.toString()}
-      symbol={asset.symbol}
-    />
-  );
+    if (!assetData) return;
+    const balance = getBalance(assetData.id);
+    if (!balance || Date.now() - balance.updatedAt > REFETCH_DELAY) {
+      fetchFromEth(ignore);
+    }
+    return () => {
+      ignore = true;
+    };
+  }, [assetData, fetchFromEth, getBalance]);
+
+  if (!assetData) return null;
+
+  const balance = getBalance(assetData.id)?.balanceOnEth?.toString();
+
+  if (error && !balance) {
+    return (
+      <span className="text-xs text-muted">
+        {t('Requires connection to {{chainName}}', {
+          chainName: getChainName(assetData.chainId),
+        })}
+      </span>
+    );
+  }
+
+  return <Balance balance={balance} symbol={assetData.symbol} />;
 };

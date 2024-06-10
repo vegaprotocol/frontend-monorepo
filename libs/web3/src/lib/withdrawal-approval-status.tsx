@@ -9,10 +9,10 @@ import {
   useEthWithdrawApprovalsStore,
   WithdrawalFailure,
 } from './use-ethereum-withdraw-approvals-store';
-import { useEthereumConfig } from './use-ethereum-config';
 import { Button, useToasts } from '@vegaprotocol/ui-toolkit';
 import { useWeb3ConnectStore } from './web3-connect-store';
 import { useT } from './use-t';
+import { toAssetData } from './types';
 
 export const VerificationStatus = ({
   state,
@@ -20,10 +20,12 @@ export const VerificationStatus = ({
   state: EthWithdrawalApprovalState;
 }) => {
   const t = useT();
-  const { config } = useEthereumConfig();
+
   const openDialog = useWeb3ConnectStore((state) => state.open);
   const remove = useToasts((state) => state.remove);
   const deleteTx = useEthWithdrawApprovalsStore((state) => state.delete);
+
+  const assetData = toAssetData(state.withdrawal.asset);
 
   if (state.status === ApprovalStatus.Error) {
     return <p>{state.message || t('Something went wrong')}</p>;
@@ -61,14 +63,16 @@ export const VerificationStatus = ({
     ) : (
       <>
         <p>{t('Your Ethereum wallet is connected to the wrong network.')}</p>
-        <p className="mt-2">
-          {t(
-            'Go to your Ethereum wallet and connect to the network {{networkName}}',
-            {
-              networkName: resolveNetworkName(config?.chain_id),
-            }
-          )}
-        </p>
+        {assetData && (
+          <p className="mt-2">
+            {t(
+              'Go to your Ethereum wallet and connect to the network {{networkName}}',
+              {
+                networkName: resolveNetworkName(assetData.chainId.toString()),
+              }
+            )}
+          </p>
+        )}
       </>
     );
   }

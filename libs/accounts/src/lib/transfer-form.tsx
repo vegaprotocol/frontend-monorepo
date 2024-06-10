@@ -23,7 +23,11 @@ import BigNumber from 'bignumber.js';
 import type { ReactNode } from 'react';
 import { useCallback, useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { AssetOption, Balance } from '@vegaprotocol/assets';
+import {
+  type AssetFieldsFragment,
+  AssetOption,
+  Balance,
+} from '@vegaprotocol/assets';
 import { AccountType, AccountTypeMapping } from '@vegaprotocol/types';
 import { useTransferFeeQuery } from './__generated__/TransferFee';
 import { normalizeTransfer } from './utils';
@@ -35,14 +39,6 @@ interface FormFields {
   fromAccount: string; // AccountType-AssetId
 }
 
-interface Asset {
-  id: string;
-  symbol: string;
-  name: string;
-  decimals: number;
-  quantum: string;
-}
-
 export interface TransferFormProps {
   pubKey: string | undefined;
   pubKeys: Key[];
@@ -50,7 +46,7 @@ export interface TransferFormProps {
   accounts: Array<{
     type: AccountType;
     balance: string;
-    asset: Asset;
+    asset: AssetFieldsFragment;
   }>;
   assetId?: string;
   minQuantumMultiple: string | null;

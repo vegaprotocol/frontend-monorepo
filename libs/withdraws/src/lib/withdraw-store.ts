@@ -1,9 +1,9 @@
-import type { Asset } from '@vegaprotocol/assets';
+import { type AssetData } from '@vegaprotocol/web3';
 import BigNumber from 'bignumber.js';
 import { create } from 'zustand';
 
 export interface WithdrawStore {
-  asset: Asset | undefined;
+  asset: AssetData | undefined;
   balance: BigNumber;
   min: BigNumber;
   threshold: BigNumber;

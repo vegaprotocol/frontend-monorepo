@@ -1,7 +1,10 @@
 import type { ReactNode } from 'react';
 import { useEffect } from 'react';
 import { useAssetsDataProvider } from '@vegaprotocol/assets';
-import { EtherscanLink } from '@vegaprotocol/environment';
+import {
+  EtherscanLink,
+  getExternalChainLabel,
+} from '@vegaprotocol/environment';
 import { formatNumber, toBigNum } from '@vegaprotocol/utils';
 import type { Toast, ToastContent } from '@vegaprotocol/ui-toolkit';
 import { ToastHeading } from '@vegaprotocol/ui-toolkit';
@@ -17,6 +20,7 @@ import { isEthereumError } from './ethereum-error';
 import { TransactionContent } from './ethereum-transaction-dialog';
 import { useEthTransactionStore } from './use-ethereum-transaction-store';
 import { useT } from './use-t';
+import { toAssetData } from './types';
 
 const intentMap: { [s in EthTxStatus]: Intent } = {
   Default: Intent.Primary,
@@ -106,12 +110,27 @@ const EthTxRequestedToastContent = ({ tx }: EthTxToastContentProps) => {
 
 const EthTxPendingToastContent = ({ tx }: EthTxToastContentProps) => {
   const t = useT();
+
+  const { data: assets } = useAssetsDataProvider();
+  const asset =
+    tx.deposit?.asset ||
+    tx.withdrawal?.asset ||
+    assets?.find((a) => a.id === tx.assetId);
+  const assetData = toAssetData(asset);
+  const sourceChainId = assetData?.chainId;
+
   return (
     <>
       <ToastHeading>{t('Awaiting confirmation')}</ToastHeading>
       <p>{t('Please wait for your transaction to be confirmed.')}</p>
       {tx.txHash && (
-        <EtherscanLink tx={tx.txHash}>{t('View on Etherscan')}</EtherscanLink>
+        <EtherscanLink sourceChainId={sourceChainId} tx={tx.txHash}>
+          {t('View on {{chainLabel}}', {
+            chainLabel: sourceChainId
+              ? getExternalChainLabel(String(sourceChainId))
+              : 'Ethereum',
+          })}
+        </EtherscanLink>
       )}
       <EthTransactionDetails tx={tx} />
     </>
@@ -138,12 +157,27 @@ const EthTxErrorToastContent = ({ tx }: EthTxToastContentProps) => {
 
 const EthTxConfirmedToastContent = ({ tx }: EthTxToastContentProps) => {
   const t = useT();
+
+  const { data: assets } = useAssetsDataProvider();
+  const asset =
+    tx.deposit?.asset ||
+    tx.withdrawal?.asset ||
+    assets?.find((a) => a.id === tx.assetId);
+  const assetData = toAssetData(asset);
+  const sourceChainId = assetData?.chainId;
+
   return (
     <>
       <ToastHeading>{t('Transaction confirmed')}</ToastHeading>
       <p>{t('Your transaction has been confirmed.')}</p>
       {tx.txHash && (
-        <EtherscanLink tx={tx.txHash}>{t('View on Etherscan')}</EtherscanLink>
+        <EtherscanLink sourceChainId={sourceChainId} tx={tx.txHash}>
+          {t('View on {{chainLabel}}', {
+            chainLabel: sourceChainId
+              ? getExternalChainLabel(String(sourceChainId))
+              : 'Ethereum',
+          })}
+        </EtherscanLink>
       )}
       <EthTransactionDetails tx={tx} />
     </>
@@ -153,6 +187,15 @@ const EthTxConfirmedToastContent = ({ tx }: EthTxToastContentProps) => {
 const EthTxCompletedToastContent = ({ tx }: EthTxToastContentProps) => {
   const t = useT();
   const isDeposit = isDepositTransaction(tx);
+
+  const { data: assets } = useAssetsDataProvider();
+  const asset =
+    tx.deposit?.asset ||
+    tx.withdrawal?.asset ||
+    assets?.find((a) => a.id === tx.assetId);
+  const assetData = toAssetData(asset);
+  const sourceChainId = assetData?.chainId;
+
   return (
     <>
       <ToastHeading>
@@ -163,7 +206,13 @@ const EthTxCompletedToastContent = ({ tx }: EthTxToastContentProps) => {
         {isDeposit && t('Waiting for deposit confirmation.')}
       </p>
       {tx.txHash && (
-        <EtherscanLink tx={tx.txHash}>{t('View on Etherscan')}</EtherscanLink>
+        <EtherscanLink sourceChainId={sourceChainId} tx={tx.txHash}>
+          {t('View on {{chainLabel}}', {
+            chainLabel: sourceChainId
+              ? getExternalChainLabel(String(sourceChainId))
+              : 'Ethereum',
+          })}
+        </EtherscanLink>
       )}
       <EthTransactionDetails tx={tx} />
     </>
