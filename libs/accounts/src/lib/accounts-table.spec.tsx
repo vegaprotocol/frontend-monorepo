@@ -10,6 +10,10 @@ const asset1 = {
   symbol: 'tBTC',
   decimals: 5,
   name: 'T BTC',
+  source: {
+    __typename: 'ERC20',
+    chainId: '1',
+  },
 };
 const asset2 = {
   __typename: 'Asset',
@@ -129,7 +133,13 @@ describe('AccountsTable', () => {
     );
 
     const cells = await screen.findAllByRole('gridcell');
-    const expectedValues = ['tBTC', '1,256.00', '1,256.00', '2,512.00', ''];
+    const expectedValues = [
+      'tBTC (Eth)',
+      '1,256.00',
+      '1,256.00',
+      '2,512.00',
+      '',
+    ];
     cells.forEach((cell, i) => {
       expect(cell).toHaveTextContent(expectedValues[i]);
     });

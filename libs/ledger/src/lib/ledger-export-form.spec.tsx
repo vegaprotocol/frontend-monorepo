@@ -6,6 +6,8 @@ import {
   useLedgerDownloadFile,
 } from './ledger-download-store';
 import { Intent } from '@vegaprotocol/ui-toolkit';
+import { AssetStatus } from '@vegaprotocol/types';
+import { type AssetFieldsFragment } from '@vegaprotocol/assets';
 
 const mockSetToast = jest.fn();
 jest.mock('@vegaprotocol/ui-toolkit', () => ({
@@ -21,9 +23,37 @@ const mockResponse = {
 };
 global.fetch = jest.fn().mockResolvedValue(mockResponse);
 
-const assetsMock = {
-  ['a'.repeat(64)]: 'symbol asset-id',
-  ['b'.repeat(64)]: 'symbol asset-id-2',
+const assetsMock: Record<string, AssetFieldsFragment> = {
+  ['a'.repeat(64)]: {
+    id: 'a'.repeat(64),
+    symbol: 'symbol asset-id',
+    decimals: 5,
+    name: 'Euro',
+    source: {
+      contractAddress: '0x0158031158Bb4dF2AD02eAA31e8963E84EA978a4',
+      lifetimeLimit: '123000000',
+      withdrawThreshold: '50',
+      chainId: '1',
+      __typename: 'ERC20',
+    },
+    quantum: '1',
+    status: AssetStatus.STATUS_ENABLED,
+  } as AssetFieldsFragment,
+  ['b'.repeat(64)]: {
+    id: 'b'.repeat(64),
+    symbol: 'symbol asset-id-2',
+    decimals: 5,
+    name: 'Euro',
+    source: {
+      contractAddress: '0x0158031158Bb4dF2AD02eAA31e8963E84EA978a4',
+      lifetimeLimit: '123000000',
+      withdrawThreshold: '50',
+      chainId: '1',
+      __typename: 'ERC20',
+    },
+    quantum: '1',
+    status: AssetStatus.STATUS_ENABLED,
+  } as AssetFieldsFragment,
 };
 
 describe('LedgerExportForm', () => {
@@ -50,7 +80,7 @@ describe('LedgerExportForm', () => {
         assets={assetsMock}
       />
     );
-    expect(screen.getByText('symbol asset-id')).toBeInTheDocument();
+    expect(screen.getByText('symbol asset-id (Eth)')).toBeInTheDocument();
 
     // userEvent does not work with faked timers
     fireEvent.click(screen.getByTestId('ledger-download-button'));
@@ -72,13 +102,13 @@ describe('LedgerExportForm', () => {
         assets={assetsMock}
       />
     );
-    expect(screen.getByText('symbol asset-id')).toBeInTheDocument();
+    expect(screen.getByText('symbol asset-id (Eth)')).toBeInTheDocument();
 
     fireEvent.change(screen.getByTestId('select-ledger-asset'), {
       target: { value: Object.keys(assetsMock)[1] },
     });
 
-    expect(screen.getByText('symbol asset-id-2')).toBeInTheDocument();
+    expect(screen.getByText('symbol asset-id-2 (Eth)')).toBeInTheDocument();
 
     fireEvent.click(screen.getByTestId('ledger-download-button'));
 
@@ -212,7 +242,7 @@ describe('LedgerExportForm', () => {
     };
 
     render(<TestWrapper />);
-    expect(screen.getByText('symbol asset-id')).toBeInTheDocument();
+    expect(screen.getByText('symbol asset-id (Eth)')).toBeInTheDocument();
 
     fireEvent.click(screen.getByTestId('ledger-download-button'));
 
