@@ -43,6 +43,7 @@ import {
   getBaseAsset,
   getDerivedPrice,
   getProductType,
+  getQuoteAsset,
   getQuoteName,
   isMarketInAuction,
   isSpot,
@@ -92,6 +93,7 @@ import {
 } from '@vegaprotocol/react-helpers';
 import { useSlippage } from '../../hooks/use-slippage';
 import BigNumber from 'bignumber.js';
+import { AssetSymbol } from '@vegaprotocol/assets';
 
 export const REDUCE_ONLY_TOOLTIP =
   '"Reduce only" will ensure that this order will not increase the size of an open position. When the order is matched, it will only trade enough volume to bring your open volume towards 0 but never change the direction of your position. If applied to a limit order that is not instantly filled, the order will be stopped.';
@@ -197,6 +199,7 @@ export const DealTicket = ({
   const assetSymbol = asset.symbol;
   const baseAsset = isSpotMarket ? getBaseAsset(market) : undefined;
   const quoteName = getQuoteName(market);
+  const quoteAsset = getQuoteAsset(market);
   const baseQuote = getBaseQuoteUnit(
     market.tradableInstrument.instrument.metadata.tags
   );
@@ -609,7 +612,7 @@ export const DealTicket = ({
                         onClick={() => setValue('useNotional', false)}
                       >
                         <Pill size="xs">
-                          {quoteName}{' '}
+                          <AssetSymbol asset={quoteAsset} />{' '}
                           <VegaIcon name={VegaIconNames.TRANSFER} size={16} />
                         </Pill>
                       </button>
@@ -656,7 +659,11 @@ export const DealTicket = ({
                           onClick={() => setValue('useNotional', true)}
                         >
                           <Pill size="xs">
-                            {baseQuote}{' '}
+                            {baseAsset ? (
+                              <AssetSymbol asset={baseAsset} />
+                            ) : (
+                              baseQuote
+                            )}{' '}
                             <VegaIcon name={VegaIconNames.TRANSFER} size={16} />
                           </Pill>
                         </button>
