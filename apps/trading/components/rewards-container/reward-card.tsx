@@ -35,7 +35,11 @@ import {
   type DistributionStrategy,
 } from '@vegaprotocol/types';
 import { useState, type ReactNode } from 'react';
-import { type BasicAssetDetails } from '@vegaprotocol/assets';
+import {
+  AssetFieldsFragment,
+  AssetSymbol,
+  type BasicAssetDetails,
+} from '@vegaprotocol/assets';
 import {
   isScopedToTeams,
   type EnrichedRewardTransfer,
@@ -90,7 +94,7 @@ const GroupCard = ({
   colour: CardColour;
   rewardAmount: string;
   dispatchMetric: DispatchMetric | StakingDispatchStrategy['dispatchMetric'];
-  transferAsset?: Asset | undefined;
+  transferAsset?: AssetFieldsFragment | undefined;
   entityScope?: EntityScope;
   distributionStrategy?: DistributionStrategy;
   distributionDelay?: string | number;
@@ -149,7 +153,7 @@ const GroupCard = ({
                 </span>
 
                 <span className="font-alpha" data-testid="reward-asset">
-                  {transferAsset?.symbol || ''}
+                  <AssetSymbol asset={transferAsset} />
                 </span>
               </h3>
 
@@ -284,7 +288,7 @@ const RewardCard = ({
                 </span>
 
                 <span className="font-alpha" data-testid="reward-asset">
-                  {transferAsset?.symbol || ''}
+                  <AssetSymbol asset={transferAsset as AssetFieldsFragment} />
                 </span>
               </h3>
 
@@ -467,7 +471,7 @@ export const DispatchMetricInfo = ({
         )}
       >
         <span className="underline cursor-help">
-          {reward.dispatchAsset.symbol}
+          <AssetSymbol asset={reward.dispatchAsset} />
         </span>
       </Tooltip>
     );
@@ -1048,7 +1052,8 @@ export const GroupRewardCard = ({
       <GroupCard
         colour={colour}
         rewardAmount={rewardAmount}
-        transferAsset={transferAsset}
+        // TODO: fix the types for the useRewards hook. It just the full type, and not the type created by Rewards.graphql
+        transferAsset={transferAsset as AssetFieldsFragment}
         dispatchMetric={dispatchMetric}
         entityScope={entityScope}
         distributionStrategy={distributionStrategy}
