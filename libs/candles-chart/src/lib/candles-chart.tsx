@@ -73,9 +73,7 @@ export const CandlesChartContainer = ({
                 overlays,
                 studies,
                 notEnoughDataText: (
-                  <span className="text-xs text-center">
-                    {t('No open orders')}
-                  </span>
+                  <span className="text-xs text-center">{t('No data')}</span>
                 ),
                 initialNumCandlesToDisplay: candlesCount,
                 studySize: defaultStudySize,
