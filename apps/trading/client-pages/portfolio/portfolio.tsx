@@ -159,9 +159,7 @@ const PortfolioActionTabs = () => {
       <Tab id="deposit" name={t('Deposit')}>
         <ErrorBoundary feature="portfolio-deposit">
           <div className="p-2">
-            <p className="text-sm mb-4">
-              {t('Deposit from your Ethereum wallet')}
-            </p>
+            <p className="text-sm mb-4">{t('Deposit from your wallet')}</p>
             <DepositContainer />
           </div>
         </ErrorBoundary>

@@ -211,7 +211,7 @@ export const DepositForm = ({
           rules={{
             validate: {
               required: (value) => {
-                if (!value) return t('Connect Ethereum wallet');
+                if (!value) return t('Connect wallet');
                 return true;
               },
               ethereumAddress,
