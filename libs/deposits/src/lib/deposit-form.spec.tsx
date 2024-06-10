@@ -151,9 +151,7 @@ describe('Deposit form', () => {
 
       fireEvent.submit(screen.getByTestId('deposit-form'));
 
-      expect(
-        await screen.findByText('Connect Ethereum wallet')
-      ).toBeInTheDocument();
+      expect(await screen.findByText('Connect wallet')).toBeInTheDocument();
     });
 
     it('fails when submitted with invalid vega wallet key', async () => {
