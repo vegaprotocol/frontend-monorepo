@@ -9,7 +9,6 @@ import { Route, Routes, useParams } from 'react-router-dom';
 import { MarketSelector } from '../../components/market-selector/market-selector';
 import { useMarketList, useMarketWithData } from '@vegaprotocol/markets';
 import { useState } from 'react';
-import { ProductTypeShortName } from '@vegaprotocol/types';
 import { MarketHeaderSwitch } from './market-header-switch';
 import { EmblemByMarket } from '@vegaprotocol/emblem';
 import { useChainId } from '@vegaprotocol/wallet-react';
@@ -18,6 +17,7 @@ import {
   getMarketStateTooltip,
 } from '../../client-pages/markets/market-icon';
 import { useT } from '../../lib/use-t';
+import { MarketProductPill } from '@vegaprotocol/datagrid';
 
 export const MarketHeader = () => {
   const { marketId } = useParams();
@@ -50,32 +50,25 @@ export const MarketHeader = () => {
                 trigger={
                   <HeaderTitle>
                     <Tooltip description={t(tooltip)}>
-                      <span className="flex items-center gap-4">
-                        {marketId && (
-                          <span>
-                            <EmblemByMarket
-                              market={marketId}
-                              vegaChain={chainId}
-                            />
-                          </span>
-                        )}
-                        <div>
-                          <div className="text-lg leading-none">
-                            {data.tradableInstrument.instrument.code}
-                          </div>
-                          <div className="flex items-center">
-                            <span className="text-xs uppercase text-muted mr-1">
-                              {data.tradableInstrument.instrument.product
-                                .__typename &&
-                                ProductTypeShortName[
-                                  data.tradableInstrument.instrument.product
-                                    .__typename
-                                ]}
-                            </span>
-                            <MarketIcon data={data} />
-                          </div>
-                        </div>
-                      </span>
+                      <h3 className="flex items-center gap-1">
+                        <span className="mr-1">
+                          <EmblemByMarket
+                            market={data?.id || ''}
+                            vegaChain={chainId}
+                          />
+                        </span>
+
+                        <span className="flex gap-1 items-center">
+                          {data.tradableInstrument.instrument.code}
+                          <MarketProductPill
+                            productType={
+                              data.tradableInstrument.instrument.product
+                                .__typename
+                            }
+                          />
+                          <MarketIcon data={data} />
+                        </span>
+                      </h3>
                     </Tooltip>
                     <VegaIcon name={VegaIconNames.CHEVRON_DOWN} size={14} />
                   </HeaderTitle>

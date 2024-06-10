@@ -11,7 +11,7 @@ import { useT } from '../../lib/use-t';
 import { EmblemByMarket } from '@vegaprotocol/emblem';
 import { useChainId } from '@vegaprotocol/wallet-react';
 import { MarketIcon } from '../../client-pages/markets/market-icon';
-import { ProductTypeShortName } from '@vegaprotocol/types';
+import { MarketProductPill } from '@vegaprotocol/datagrid';
 
 export const MarketSelectorItem = ({
   market,
@@ -85,22 +85,15 @@ const MarketData = ({
     <>
       <div className="w-4/6 sm:w-2/6" role="gridcell">
         <h3 className="flex items-center gap-1">
-          <span className="shrink-0">
-            <EmblemByMarket market={market.id} vegaChain={chainId} />
+          <span className="mr-1">
+            <EmblemByMarket market={market?.id || ''} vegaChain={chainId} />
           </span>
-          <div>
-            <span className="overflow-hidden text-xs md:text-sm lg:text-base text-ellipsis whitespace-nowrap leading-none">
-              {market.tradableInstrument.instrument.code}
-            </span>
-            <div className="flex items-center">
-              {allProducts && productType && (
-                <span className="text-xs uppercase text-muted mr-1">
-                  {productType && ProductTypeShortName[productType]}
-                </span>
-              )}
-              <MarketIcon data={market} />
-            </div>
-          </div>
+
+          <span className="flex gap-1 items-center">
+            {market.tradableInstrument.instrument.code}
+            <MarketProductPill productType={productType} />
+            <MarketIcon data={market} />
+          </span>
         </h3>
       </div>
       <div

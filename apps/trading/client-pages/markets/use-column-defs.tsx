@@ -173,7 +173,7 @@ export const useMarketsColumnDefs = () => {
                 </span>
                 <StackedCell
                   primary={
-                    <span className="flex gap-1">
+                    <span className="flex gap-1 items-center">
                       {value}
                       <MarketProductPill productType={productType} />
                       <MarketIcon data={data} />
