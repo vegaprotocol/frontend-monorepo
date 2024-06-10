@@ -19,11 +19,7 @@ fragment NewMarketFields on NewMarket {
     product {
       ... on FutureProduct {
         settlementAsset {
-          id
-          name
-          symbol
-          decimals
-          quantum
+          ...AssetFields
         }
         quoteName
         dataSourceSpecForSettlementData {
@@ -93,11 +89,7 @@ fragment NewMarketFields on NewMarket {
       }
       ... on PerpetualProduct {
         settlementAsset {
-          id
-          name
-          symbol
-          decimals
-          quantum
+          ...AssetFields
         }
         quoteName
       }

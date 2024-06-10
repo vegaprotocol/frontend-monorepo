@@ -113,11 +113,7 @@ fragment DataSource on DataSourceSpec {
 fragment Future on Future {
   quoteName
   settlementAsset {
-    id
-    symbol
-    name
-    decimals
-    quantum
+    ...AssetFields
   }
   dataSourceSpecForSettlementData {
     ...DataSource
@@ -137,11 +133,7 @@ fragment Perpetual on Perpetual {
   fundingRateLowerBound
   fundingRateUpperBound
   settlementAsset {
-    id
-    symbol
-    name
-    decimals
-    quantum
+    ...AssetFields
   }
   dataSourceSpecForSettlementData {
     ...DataSource
