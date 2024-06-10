@@ -27,7 +27,11 @@ export const TopMarketList = ({
               <Link to={Links.MARKET(market.id)}>
                 <span className="flex items-center">
                   <span className="pr-1">
-                    <EmblemByMarket market={market.id} vegaChain={chainId} />
+                    <EmblemByMarket
+                      market={market.id}
+                      vegaChain={chainId}
+                      size={28}
+                    />
                   </span>
                   <span>{market.tradableInstrument.instrument.code}</span>
                 </span>

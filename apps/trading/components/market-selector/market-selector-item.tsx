@@ -86,7 +86,11 @@ const MarketData = ({
       <div className="w-4/6 sm:w-2/6" role="gridcell">
         <h3 className="flex items-center gap-1">
           <span className="mr-1">
-            <EmblemByMarket market={market?.id || ''} vegaChain={chainId} />
+            <EmblemByMarket
+              market={market?.id || ''}
+              vegaChain={chainId}
+              size={28}
+            />
           </span>
 
           <span className="flex gap-1 items-center">

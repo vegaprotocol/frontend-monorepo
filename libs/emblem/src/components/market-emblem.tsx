@@ -11,6 +11,8 @@ export type EmblemByMarketProps = {
   vegaChain?: string;
   // Overlays the icon for the source chain, if available and applicable
   showSourceChain?: boolean;
+  // The size of the logo
+  size?: number;
 };
 
 /**
@@ -42,6 +44,8 @@ export function EmblemByMarket(props: EmblemByMarketProps) {
     <div className="relative inline-block h-8 w-14 leading-[0]">
       <EmblemBase
         src={base}
+        width={props.size || 30}
+        height={props.size || 30}
         className="inline-block z-10 relative rounded-full bg-white border-2 border-vega-light-600 dark:border-white"
         {...props}
       />
@@ -60,6 +64,8 @@ export function EmblemByMarket(props: EmblemByMarketProps) {
         src={quote}
         className={`inline-block ml-[-9px] z-1 rounded-full bg-white border-2 border-vega-light-600 dark:border-white`}
         {...props}
+        width={props.size || 30}
+        height={props.size || 30}
       />
       {props.showSourceChain !== false && (
         <EmblemBase
