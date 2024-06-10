@@ -32,6 +32,7 @@ import { CenteredGridCellWrapper } from '@vegaprotocol/datagrid';
 import BigNumber from 'bignumber.js';
 import classNames from 'classnames';
 import { AccountsActionsDropdown } from './accounts-actions-dropdown';
+import { type ChainId, ChainIdMapShort } from '@vegaprotocol/web3';
 
 const colorClass = (percentageUsed: number) => {
   return classNames('text-right', {
@@ -164,6 +165,22 @@ export const AccountTable = ({
           if (data) {
             onClickAsset(data.asset.id);
           }
+        },
+        valueFormatter: ({
+          value,
+          data,
+        }: VegaValueFormatterParams<AccountFields, 'asset.symbol'>) => {
+          if (!data?.asset?.source || !value) {
+            return '-';
+          }
+
+          if (data.asset.source.__typename !== 'ERC20') {
+            return value;
+          }
+
+          return `${value} (${
+            ChainIdMapShort[data.asset.source.chainId as unknown as ChainId]
+          })`;
         },
       },
       {
