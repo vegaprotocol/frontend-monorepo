@@ -151,6 +151,23 @@ export const marketInfoQuery = (
               symbol: 'tBTC',
               name: 'tBTC TEST',
               decimals: 5,
+
+              source: {
+                contractAddress: '0x0158031158Bb4dF2AD02eAA31e8963E84EA978a4',
+                lifetimeLimit: '123000000',
+                withdrawThreshold: '50',
+                chainId: '1',
+                __typename: 'ERC20',
+              },
+              status: Schema.AssetStatus.STATUS_ENABLED,
+              networkTreasuryAccount: {
+                balance: '1',
+                __typename: 'AccountBalance',
+              },
+              globalInsuranceAccount: {
+                balance: '2',
+                __typename: 'AccountBalance',
+              },
             },
             dataSourceSpecForSettlementData: {
               __typename: 'DataSourceSpec',

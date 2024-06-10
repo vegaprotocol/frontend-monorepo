@@ -129,12 +129,28 @@ export const createProposalListFieldsFragment = (
       name: 'ETHUSD',
       product: {
         settlementAsset: {
+          __typename: 'Asset',
           id: 'b340c130096819428a62e5df407fd6abe66e444b89ad64f670beb98621c9c663',
           name: 'tDAI TEST',
           symbol: 'tDAI',
           decimals: 1,
           quantum: '1',
-          __typename: 'Asset',
+          source: {
+            contractAddress: '0x0158031158Bb4dF2AD02eAA31e8963E84EA978a4',
+            lifetimeLimit: '123000000',
+            withdrawThreshold: '50',
+            chainId: '1',
+            __typename: 'ERC20',
+          },
+          status: Schema.AssetStatus.STATUS_ENABLED,
+          networkTreasuryAccount: {
+            balance: '1',
+            __typename: 'AccountBalance',
+          },
+          globalInsuranceAccount: {
+            balance: '2',
+            __typename: 'AccountBalance',
+          },
         },
         quoteName: '',
         dataSourceSpecBinding: {
@@ -263,12 +279,28 @@ const proposalListFields: ProposalListFieldsFragment[] = [
           name: 'ETHUSD',
           product: {
             settlementAsset: {
+              __typename: 'Asset',
               id: 'b340c130096819428a62e5df407fd6abe66e444b89ad64f670beb98621c9c663',
               name: 'tDAI TEST',
               symbol: 'tDAI',
               decimals: 1,
               quantum: '1',
-              __typename: 'Asset',
+              source: {
+                contractAddress: '0x0158031158Bb4dF2AD02eAA31e8963E84EA978a4',
+                lifetimeLimit: '123000000',
+                withdrawThreshold: '50',
+                chainId: '1',
+                __typename: 'ERC20',
+              },
+              status: Schema.AssetStatus.STATUS_ENABLED,
+              networkTreasuryAccount: {
+                balance: '1',
+                __typename: 'AccountBalance',
+              },
+              globalInsuranceAccount: {
+                balance: '2',
+                __typename: 'AccountBalance',
+              },
             },
             quoteName: '',
             dataSourceSpecBinding: {
@@ -353,12 +385,28 @@ const proposalListFields: ProposalListFieldsFragment[] = [
           name: 'LINKUSD',
           product: {
             settlementAsset: {
+              __typename: 'Asset',
               id: 'eb30d55e90e1f9e5c4727d6fa2a5a8cd36ab9ae9738eb8f3faf53e2bee4861ee',
               name: 'mUSDT-II',
               symbol: 'mUSDT-II',
               decimals: 1,
               quantum: '1',
-              __typename: 'Asset',
+              source: {
+                contractAddress: '0x0158031158Bb4dF2AD02eAA31e8963E84EA978a4',
+                lifetimeLimit: '123000000',
+                withdrawThreshold: '50',
+                chainId: '1',
+                __typename: 'ERC20',
+              },
+              status: Schema.AssetStatus.STATUS_ENABLED,
+              networkTreasuryAccount: {
+                balance: '1',
+                __typename: 'AccountBalance',
+              },
+              globalInsuranceAccount: {
+                balance: '2',
+                __typename: 'AccountBalance',
+              },
             },
             quoteName: '',
             dataSourceSpecBinding: {
@@ -443,12 +491,28 @@ const proposalListFields: ProposalListFieldsFragment[] = [
           name: 'LINKUSD',
           product: {
             settlementAsset: {
+              __typename: 'Asset',
               id: 'eb30d55e90e1f9e5c4727d6fa2a5a8cd36ab9ae9738eb8f3faf53e2bee4861ee',
               name: 'mUSDT-II',
               symbol: 'mUSDT-II',
               decimals: 1,
               quantum: '1',
-              __typename: 'Asset',
+              source: {
+                contractAddress: '0x0158031158Bb4dF2AD02eAA31e8963E84EA978a4',
+                lifetimeLimit: '123000000',
+                withdrawThreshold: '50',
+                chainId: '1',
+                __typename: 'ERC20',
+              },
+              status: Schema.AssetStatus.STATUS_ENABLED,
+              networkTreasuryAccount: {
+                balance: '1',
+                __typename: 'AccountBalance',
+              },
+              globalInsuranceAccount: {
+                balance: '2',
+                __typename: 'AccountBalance',
+              },
             },
             quoteName: '',
             dataSourceSpecBinding: {
@@ -533,12 +597,28 @@ const proposalListFields: ProposalListFieldsFragment[] = [
           name: 'ETHUSD',
           product: {
             settlementAsset: {
+              __typename: 'Asset',
               id: 'b340c130096819428a62e5df407fd6abe66e444b89ad64f670beb98621c9c663',
               name: 'tDAI TEST',
               symbol: 'tDAI',
               decimals: 1,
               quantum: '1',
-              __typename: 'Asset',
+              source: {
+                contractAddress: '0x0158031158Bb4dF2AD02eAA31e8963E84EA978a4',
+                lifetimeLimit: '123000000',
+                withdrawThreshold: '50',
+                chainId: '1',
+                __typename: 'ERC20',
+              },
+              status: Schema.AssetStatus.STATUS_ENABLED,
+              networkTreasuryAccount: {
+                balance: '1',
+                __typename: 'AccountBalance',
+              },
+              globalInsuranceAccount: {
+                balance: '2',
+                __typename: 'AccountBalance',
+              },
             },
             quoteName: '',
             dataSourceSpecBinding: {
@@ -623,12 +703,28 @@ const proposalListFields: ProposalListFieldsFragment[] = [
           name: 'LINKUSD',
           product: {
             settlementAsset: {
+              __typename: 'Asset',
               id: 'eb30d55e90e1f9e5c4727d6fa2a5a8cd36ab9ae9738eb8f3faf53e2bee4861ee',
               name: 'mUSDT-II',
               symbol: 'mUSDT-II',
               decimals: 1,
               quantum: '1',
-              __typename: 'Asset',
+              source: {
+                contractAddress: '0x0158031158Bb4dF2AD02eAA31e8963E84EA978a4',
+                lifetimeLimit: '123000000',
+                withdrawThreshold: '50',
+                chainId: '1',
+                __typename: 'ERC20',
+              },
+              status: Schema.AssetStatus.STATUS_ENABLED,
+              networkTreasuryAccount: {
+                balance: '1',
+                __typename: 'AccountBalance',
+              },
+              globalInsuranceAccount: {
+                balance: '2',
+                __typename: 'AccountBalance',
+              },
             },
             quoteName: '',
             dataSourceSpecBinding: {
@@ -713,12 +809,28 @@ const proposalListFields: ProposalListFieldsFragment[] = [
           name: 'ETHDAI Monthly (Dec 2022)',
           product: {
             settlementAsset: {
+              __typename: 'Asset',
               id: 'b340c130096819428a62e5df407fd6abe66e444b89ad64f670beb98621c9c663',
               name: 'tDAI TEST',
               symbol: 'tDAI',
               decimals: 1,
               quantum: '1',
-              __typename: 'Asset',
+              source: {
+                contractAddress: '0x0158031158Bb4dF2AD02eAA31e8963E84EA978a4',
+                lifetimeLimit: '123000000',
+                withdrawThreshold: '50',
+                chainId: '1',
+                __typename: 'ERC20',
+              },
+              status: Schema.AssetStatus.STATUS_ENABLED,
+              networkTreasuryAccount: {
+                balance: '1',
+                __typename: 'AccountBalance',
+              },
+              globalInsuranceAccount: {
+                balance: '2',
+                __typename: 'AccountBalance',
+              },
             },
             quoteName: '',
             dataSourceSpecBinding: {
@@ -803,12 +915,28 @@ const proposalListFields: ProposalListFieldsFragment[] = [
           name: 'Apple Monthly (Dec 2022)',
           product: {
             settlementAsset: {
+              __typename: 'Asset',
               id: 'c9fe6fc24fce121b2cc72680543a886055abb560043fda394ba5376203b7527d',
               name: 'tUSDC TEST',
               symbol: 'tUSDC',
               decimals: 1,
               quantum: '1',
-              __typename: 'Asset',
+              source: {
+                contractAddress: '0x0158031158Bb4dF2AD02eAA31e8963E84EA978a4',
+                lifetimeLimit: '123000000',
+                withdrawThreshold: '50',
+                chainId: '1',
+                __typename: 'ERC20',
+              },
+              status: Schema.AssetStatus.STATUS_ENABLED,
+              networkTreasuryAccount: {
+                balance: '1',
+                __typename: 'AccountBalance',
+              },
+              globalInsuranceAccount: {
+                balance: '2',
+                __typename: 'AccountBalance',
+              },
             },
             quoteName: '',
             dataSourceSpecBinding: {
@@ -893,12 +1021,28 @@ const proposalListFields: ProposalListFieldsFragment[] = [
           name: 'BTCUSD Monthly (Dec 2022)',
           product: {
             settlementAsset: {
+              __typename: 'Asset',
               id: 'b340c130096819428a62e5df407fd6abe66e444b89ad64f670beb98621c9c663',
               name: 'tDAI TEST',
               symbol: 'tDAI',
               decimals: 1,
               quantum: '1',
-              __typename: 'Asset',
+              source: {
+                contractAddress: '0x0158031158Bb4dF2AD02eAA31e8963E84EA978a4',
+                lifetimeLimit: '123000000',
+                withdrawThreshold: '50',
+                chainId: '1',
+                __typename: 'ERC20',
+              },
+              status: Schema.AssetStatus.STATUS_ENABLED,
+              networkTreasuryAccount: {
+                balance: '1',
+                __typename: 'AccountBalance',
+              },
+              globalInsuranceAccount: {
+                balance: '2',
+                __typename: 'AccountBalance',
+              },
             },
             quoteName: '',
             dataSourceSpecBinding: {
@@ -983,12 +1127,28 @@ const proposalListFields: ProposalListFieldsFragment[] = [
           name: 'Tesla Quarterly (Feb 2023)',
           product: {
             settlementAsset: {
+              __typename: 'Asset',
               id: '177e8f6c25a955bd18475084b99b2b1d37f28f3dec393fab7755a7e69c3d8c3b',
               name: 'tEURO TEST',
               symbol: 'tEURO',
               decimals: 1,
               quantum: '1',
-              __typename: 'Asset',
+              source: {
+                contractAddress: '0x0158031158Bb4dF2AD02eAA31e8963E84EA978a4',
+                lifetimeLimit: '123000000',
+                withdrawThreshold: '50',
+                chainId: '1',
+                __typename: 'ERC20',
+              },
+              status: Schema.AssetStatus.STATUS_ENABLED,
+              networkTreasuryAccount: {
+                balance: '1',
+                __typename: 'AccountBalance',
+              },
+              globalInsuranceAccount: {
+                balance: '2',
+                __typename: 'AccountBalance',
+              },
             },
             quoteName: '',
             dataSourceSpecBinding: {
@@ -1073,12 +1233,28 @@ const proposalListFields: ProposalListFieldsFragment[] = [
           name: 'AAVEDAI Monthly (Dec 2022)',
           product: {
             settlementAsset: {
+              __typename: 'Asset',
               id: 'b340c130096819428a62e5df407fd6abe66e444b89ad64f670beb98621c9c663',
               name: 'tDAI TEST',
               symbol: 'tDAI',
               decimals: 1,
               quantum: '1',
-              __typename: 'Asset',
+              source: {
+                contractAddress: '0x0158031158Bb4dF2AD02eAA31e8963E84EA978a4',
+                lifetimeLimit: '123000000',
+                withdrawThreshold: '50',
+                chainId: '1',
+                __typename: 'ERC20',
+              },
+              status: Schema.AssetStatus.STATUS_ENABLED,
+              networkTreasuryAccount: {
+                balance: '1',
+                __typename: 'AccountBalance',
+              },
+              globalInsuranceAccount: {
+                balance: '2',
+                __typename: 'AccountBalance',
+              },
             },
             quoteName: '',
             dataSourceSpecBinding: {
@@ -1163,12 +1339,28 @@ const proposalListFields: ProposalListFieldsFragment[] = [
           name: 'ETHBTC Quarterly (Feb 2023)',
           product: {
             settlementAsset: {
+              __typename: 'Asset',
               id: 'cee709223217281d7893b650850ae8ee8a18b7539b5658f9b4cc24de95dd18ad',
               name: 'tBTC TEST',
               symbol: 'tBTC',
               decimals: 1,
               quantum: '1',
-              __typename: 'Asset',
+              source: {
+                contractAddress: '0x0158031158Bb4dF2AD02eAA31e8963E84EA978a4',
+                lifetimeLimit: '123000000',
+                withdrawThreshold: '50',
+                chainId: '1',
+                __typename: 'ERC20',
+              },
+              status: Schema.AssetStatus.STATUS_ENABLED,
+              networkTreasuryAccount: {
+                balance: '1',
+                __typename: 'AccountBalance',
+              },
+              globalInsuranceAccount: {
+                balance: '2',
+                __typename: 'AccountBalance',
+              },
             },
             quoteName: '',
             dataSourceSpecBinding: {
@@ -1253,12 +1445,28 @@ const proposalListFields: ProposalListFieldsFragment[] = [
           name: 'UNIDAI Monthly (Dec 2022)',
           product: {
             settlementAsset: {
+              __typename: 'Asset',
               id: 'b340c130096819428a62e5df407fd6abe66e444b89ad64f670beb98621c9c663',
               name: 'tDAI TEST',
               symbol: 'tDAI',
               decimals: 1,
               quantum: '1',
-              __typename: 'Asset',
+              source: {
+                contractAddress: '0x0158031158Bb4dF2AD02eAA31e8963E84EA978a4',
+                lifetimeLimit: '123000000',
+                withdrawThreshold: '50',
+                chainId: '1',
+                __typename: 'ERC20',
+              },
+              status: Schema.AssetStatus.STATUS_ENABLED,
+              networkTreasuryAccount: {
+                balance: '1',
+                __typename: 'AccountBalance',
+              },
+              globalInsuranceAccount: {
+                balance: '2',
+                __typename: 'AccountBalance',
+              },
             },
             quoteName: '',
             dataSourceSpecBinding: {

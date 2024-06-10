@@ -31,6 +31,15 @@ const partyAccountFields = [
       symbol: 'tEURO',
       name: 'Euro',
       status: Types.AssetStatus.STATUS_ENABLED,
+      quantum: '1',
+      decimals: 1,
+      source: {
+        __typename: 'ERC20',
+        contractAddress: '0x123',
+        lifetimeLimit: '1',
+        withdrawThreshold: '1',
+        chainId: '1',
+      },
     },
   },
   {
@@ -42,6 +51,15 @@ const partyAccountFields = [
       symbol: 'tDAI',
       name: 'DAI',
       status: Types.AssetStatus.STATUS_ENABLED,
+      quantum: '1',
+      decimals: 1,
+      source: {
+        __typename: 'ERC20',
+        contractAddress: '0x123',
+        lifetimeLimit: '1',
+        withdrawThreshold: '1',
+        chainId: '1',
+      },
     },
   },
 ] as const;
