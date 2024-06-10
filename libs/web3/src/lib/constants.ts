@@ -28,13 +28,6 @@ export const ChainIdMap: Record<ChainId, string> = {
   [ARBITRUM_SEPOLIA_CHAIN_ID]: 'Arbitrum (Sepolia)',
 };
 
-export const ChainIdMapShort: Record<ChainId, string> = {
-  [ETHEREUM_SEPOLIA_CHAIN_ID]: 'Eth (Sepolia)',
-  [ETHEREUM_CHAIN_ID]: 'Eth',
-  [ARBITRUM_CHAIN_ID]: 'Arb',
-  [ARBITRUM_SEPOLIA_CHAIN_ID]: 'Arb (Sepolia)',
-};
-
 export const getChainName = (chainId: number | null | undefined) => {
   const name = chainId ? ChainIdMap[chainId as ChainId] : undefined;
   return name || 'Unknown';

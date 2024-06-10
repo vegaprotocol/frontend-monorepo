@@ -1,5 +1,5 @@
+import { ChainIdMapShort } from '../constants';
 import { type AssetFieldsFragment } from './__generated__/Asset';
-import { type ChainId, ChainIdMapShort } from '@vegaprotocol/web3';
 
 export const AssetSymbol = ({
   asset,
@@ -11,9 +11,7 @@ export const AssetSymbol = ({
   let symbol = asset.symbol;
 
   if (asset.source.__typename === 'ERC20') {
-    symbol = `${asset.symbol} (${
-      ChainIdMapShort[asset.source.chainId as unknown as ChainId]
-    })`;
+    symbol = `${asset.symbol} (${ChainIdMapShort[asset.source.chainId]})`;
   }
 
   return symbol;

@@ -29,10 +29,10 @@ import type { AgGridReactProps } from 'ag-grid-react';
 import type { AccountFields } from './accounts-data-provider';
 import type { Asset } from '@vegaprotocol/types';
 import { CenteredGridCellWrapper } from '@vegaprotocol/datagrid';
+import { ChainIdMapShort } from '@vegaprotocol/assets';
 import BigNumber from 'bignumber.js';
 import classNames from 'classnames';
 import { AccountsActionsDropdown } from './accounts-actions-dropdown';
-import { type ChainId, ChainIdMapShort } from '@vegaprotocol/web3';
 
 const colorClass = (percentageUsed: number) => {
   return classNames('text-right', {
@@ -178,9 +178,7 @@ export const AccountTable = ({
             return value;
           }
 
-          return `${value} (${
-            ChainIdMapShort[data.asset.source.chainId as unknown as ChainId]
-          })`;
+          return `${value} (${ChainIdMapShort[data.asset.source.chainId]})`;
         },
       },
       {

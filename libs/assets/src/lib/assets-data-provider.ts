@@ -33,6 +33,8 @@ export const assetsProvider = makeDataProvider<
   errorPolicy: 'all',
 });
 
+export type AssetMap = Record<string, AssetFieldsFragment>;
+
 export const assetsMapProvider = makeDerivedDataProvider<
   Record<string, Asset>,
   never,
