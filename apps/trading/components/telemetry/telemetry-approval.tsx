@@ -40,16 +40,6 @@ export const TelemetryApproval = ({
         </div>
         <div className="flex flex-col items-center justify-around gap-2">
           <TradingButton
-            onClick={() => setTelemetryValue('false')}
-            size="small"
-            intent={Intent.None}
-            data-testid="do-not-share-data-button"
-            fill
-          >
-            {t('No thanks')}
-          </TradingButton>
-
-          <TradingButton
             onClick={() => setTelemetryValue('true')}
             intent={Intent.Info}
             data-testid="share-data-button"
@@ -59,6 +49,16 @@ export const TelemetryApproval = ({
             {telemetryValue === 'true'
               ? t('Continue sharing data')
               : t('Share data')}
+          </TradingButton>
+
+          <TradingButton
+            onClick={() => setTelemetryValue('false')}
+            size="small"
+            intent={Intent.None}
+            data-testid="do-not-share-data-button"
+            fill
+          >
+            {t('No thanks')}
           </TradingButton>
         </div>
       </div>
