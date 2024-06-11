@@ -723,7 +723,15 @@ export const DealTicket = ({
               >
                 <Input
                   id="input-price-quote"
-                  appendElement={<Pill size="xs">{quoteName}</Pill>}
+                  appendElement={
+                    <PricePill
+                      quoteAsset={quoteAsset}
+                      baseAsset={baseAsset}
+                      quoteName={quoteName}
+                      isNotional={useNotional}
+                      isSpotMarket={isSpotMarket}
+                    />
+                  }
                   className="w-full"
                   type="number"
                   step={priceStep}
@@ -1201,3 +1209,35 @@ const SummaryMessage = memo(
     return null;
   }
 );
+
+const PricePill = ({
+  quoteAsset,
+  baseAsset,
+  quoteName,
+  isSpotMarket,
+  isNotional,
+}: {
+  quoteAsset: AssetFieldsFragment;
+  baseAsset?: AssetFieldsFragment;
+  quoteName: string;
+  isNotional?: boolean;
+  isSpotMarket: boolean;
+}) => {
+  if (isSpotMarket) {
+    if (isNotional) {
+      return (
+        <Pill size="xs">
+          <AssetSymbol asset={baseAsset} />
+        </Pill>
+      );
+    } else {
+      return (
+        <Pill size="xs">
+          <AssetSymbol asset={quoteAsset} />
+        </Pill>
+      );
+    }
+  }
+
+  return <Pill size="xs">{quoteName}</Pill>;
+};
