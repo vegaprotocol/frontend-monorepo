@@ -38,7 +38,6 @@ import {
   useWeb3ConnectStore,
   getChainName,
   useWeb3Disconnect,
-  ETHEREUM_CHAIN_ID,
   toAssetData,
 } from '@vegaprotocol/web3';
 import type { DepositBalances } from './use-deposit-balances';
@@ -198,10 +197,10 @@ export const DepositForm = ({
       data-testid="deposit-form"
     >
       <TradingFormGroup
-        label={t('From ({{chainName}} address)', {
+        label={t('From {{chainName}} address', {
           chainName: selectedAssetChainId
             ? getChainName(selectedAssetChainId)
-            : ETHEREUM_CHAIN_ID,
+            : '',
         })}
         labelFor="ethereum-address"
       >
