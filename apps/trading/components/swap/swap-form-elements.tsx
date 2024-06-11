@@ -130,7 +130,7 @@ export const PriceImpactInput = ({
             disabled={disabled}
             value={value}
             min={0}
-            max={100}
+            max={99}
             step={0.1}
             onChange={(e) => {
               const valueNum = Number(e.target.value);
@@ -165,6 +165,11 @@ export const PriceImpactInput = ({
             </TradingButton>
           ))}
         </div>
+        {Number(value) >= 100 && (
+          <span className="text-warning text-xs">
+            {t('Price impact tolerance must be between 0% and 100%')}
+          </span>
+        )}
       </div>
     </div>
   );
