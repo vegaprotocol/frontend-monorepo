@@ -241,10 +241,9 @@ export const SwapForm = ({
         data-testid="price-impact-input"
         disabled={!market}
       />
-
       <TradingButton
         type="submit"
-        intent={Intent.Submit}
+        intent={Intent.Secondary}
         data-testid="swap-now-button"
         size="large"
       >
