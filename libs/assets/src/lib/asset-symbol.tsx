@@ -1,5 +1,5 @@
-import { ChainIdMapShort } from '../constants';
 import { type AssetFieldsFragment } from './__generated__/Asset';
+import { getAssetSymbol } from './utils';
 
 export const AssetSymbol = ({
   asset,
@@ -8,11 +8,5 @@ export const AssetSymbol = ({
 }) => {
   if (!asset) return null;
 
-  let symbol = asset.symbol;
-
-  if (asset.source.__typename === 'ERC20') {
-    symbol = `${asset.symbol} (${ChainIdMapShort[asset.source.chainId]})`;
-  }
-
-  return symbol;
+  return <>{getAssetSymbol(asset)}</>;
 };

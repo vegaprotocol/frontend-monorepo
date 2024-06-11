@@ -93,7 +93,7 @@ import {
 } from '@vegaprotocol/react-helpers';
 import { useSlippage } from '../../hooks/use-slippage';
 import BigNumber from 'bignumber.js';
-import { AssetSymbol } from '@vegaprotocol/assets';
+import { type AssetFieldsFragment, AssetSymbol } from '@vegaprotocol/assets';
 
 export const REDUCE_ONLY_TOOLTIP =
   '"Reduce only" will ensure that this order will not increase the size of an open position. When the order is matched, it will only trade enough volume to bring your open volume towards 0 but never change the direction of your position. If applied to a limit order that is not instantly filled, the order will be stopped.';
@@ -1064,7 +1064,7 @@ export const DealTicket = ({
 interface SummaryMessageProps {
   isSpotMarket?: boolean;
   error?: { message: string; type: string };
-  asset: { id: string; symbol: string; name: string; decimals: number };
+  asset: AssetFieldsFragment;
   marketTradingMode: MarketData['marketTradingMode'];
   balance: string;
   margin: string;
