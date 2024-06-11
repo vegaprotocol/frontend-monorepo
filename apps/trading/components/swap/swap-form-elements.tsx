@@ -209,7 +209,7 @@ export const DropdownAsset = ({
               <span>{asset.symbol}</span>
             </span>
           ) : (
-            <span>{t('Select coin')}</span>
+            <span>{t('Select asset')}</span>
           )}
           <VegaIcon
             name={VegaIconNames.CHEVRON_DOWN}
