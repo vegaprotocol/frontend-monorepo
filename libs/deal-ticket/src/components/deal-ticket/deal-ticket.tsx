@@ -612,7 +612,11 @@ export const DealTicket = ({
                         onClick={() => setValue('useNotional', false)}
                       >
                         <Pill size="xs">
-                          <AssetSymbol asset={quoteAsset} />{' '}
+                          {isSpotMarket ? (
+                            <AssetSymbol asset={quoteAsset} />
+                          ) : (
+                            quoteAsset.symbol
+                          )}{' '}
                           <VegaIcon name={VegaIconNames.TRANSFER} size={16} />
                         </Pill>
                       </button>
