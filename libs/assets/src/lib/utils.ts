@@ -10,7 +10,7 @@ export const getAssetSymbol = (asset: AssetFieldsFragment) => {
   let symbol = asset.symbol;
 
   if (asset.source.__typename === 'ERC20') {
-    symbol = `${asset.symbol} (${ChainIdMapShort[asset.source.chainId]})`;
+    symbol = `${asset.symbol}(${ChainIdMapShort[asset.source.chainId]})`;
   }
 
   return symbol;
