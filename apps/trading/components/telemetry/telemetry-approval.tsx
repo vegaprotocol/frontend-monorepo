@@ -19,11 +19,7 @@ export const TelemetryApproval = ({
   return (
     <div className="flex flex-col">
       <div className="mr-4" role="form">
-        <p className="mb-4">
-          {t(
-            'Help us identify bugs and improve Vega Governance by sharing anonymous usage data.'
-          )}
-        </p>
+        <p className="mb-4">{t('TelemetryModalIntro')}</p>
         <div className="flex items-start mb-2 gap-3">
           <VegaIcon name={VegaIconNames.EYE_OFF} size={18} />
           <div className="flex flex-col gap-1">
