@@ -1051,7 +1051,7 @@ export const DealTicket = ({
       <DealTicketMarginDetails
         side={normalizedOrder.side}
         onMarketClick={onMarketClick}
-        assetSymbol={asset.symbol}
+        asset={asset}
         marginAccountBalance={marginAccountBalance}
         orderMarginAccountBalance={orderMarginAccountBalance}
         generalAccountBalance={generalAccountBalance}
