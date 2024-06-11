@@ -10,6 +10,7 @@ import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useT } from '../../lib/use-t';
 import {
   addDecimal,
+  determineSizeStep,
   removeDecimal,
   roundUpToTickSize,
   toBigNum,
@@ -163,6 +164,8 @@ export const SwapForm = ({
     bottomAmount,
   ]);
 
+  const sizeStep = market && determineSizeStep(market);
+
   return (
     <form
       onSubmit={onSubmit}
@@ -204,10 +207,9 @@ export const SwapForm = ({
             setTopAsset(asset);
           }}
           balance={topAssetBalance}
-          accountAssetIds={accounts?.map((a) => a.asset.id)}
           assets={spotAssets}
-          pubKey={pubKey}
           testId="you-pay"
+          step={side === Side.SIDE_SELL ? sizeStep : undefined}
         />
         <SwapButton onClick={handleSwapAssets} data-testid="swap-button" />
         <AssetInput
@@ -215,7 +217,6 @@ export const SwapForm = ({
           amount={bottomAmount || ''}
           asset={bottomAsset}
           balance={bottomAssetBalance}
-          accountAssetIds={accounts?.map((a) => a.asset.id)}
           assets={spotAssets}
           onAssetChange={(asset) => {
             setBottomAsset(asset);
@@ -233,8 +234,8 @@ export const SwapForm = ({
             setTopAmount(topAmount);
             setBottomAmount(bottomAmount);
           }}
-          pubKey={pubKey}
           testId="you-receive"
+          step={side === Side.SIDE_BUY ? sizeStep : undefined}
         />
       </div>
       <PriceImpactInput

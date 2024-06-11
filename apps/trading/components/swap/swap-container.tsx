@@ -73,14 +73,14 @@ const useSwapMarket = ({
   if (!topAsset || !bottomAsset) return;
 
   return markets.find((m) => {
-    const mBaseAsset = getBaseAsset(m);
-    const mQuoteAsset = getQuoteAsset(m);
+    const baseAsset = getBaseAsset(m);
+    const quoteAsset = getQuoteAsset(m);
 
-    if (mBaseAsset.id === bottomAsset.id && mQuoteAsset.id === topAsset.id) {
+    if (baseAsset.id === bottomAsset.id && quoteAsset.id === topAsset.id) {
       return true;
     }
 
-    if (mBaseAsset.id === topAsset.id && mQuoteAsset.id === bottomAsset.id) {
+    if (baseAsset.id === topAsset.id && quoteAsset.id === bottomAsset.id) {
       return true;
     }
 

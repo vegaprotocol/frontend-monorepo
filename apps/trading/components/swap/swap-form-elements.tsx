@@ -22,23 +22,21 @@ export const AssetInput = ({
   amount,
   asset,
   balance = '0',
-  accountAssetIds,
   assets,
   onAmountChange,
   onAssetChange,
-  pubKey,
   testId,
+  step,
 }: {
   label: string;
   amount: string;
   asset?: AssetFieldsFragment;
   balance?: string;
-  accountAssetIds?: string[];
   assets: AssetFieldsFragment[];
   onAmountChange: (e: ChangeEvent<HTMLInputElement>) => void;
   onAssetChange: (asset: AssetFieldsFragment) => void;
-  pubKey?: string;
   testId: string;
+  step?: string;
 }) => {
   const t = useT();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -79,12 +77,18 @@ export const AssetInput = ({
         />
       </div>
       <div className="flex justify-end items-center text-secondary text-sm">
-        <span>
-          {asset !== undefined &&
-            t('Balance: {{balance}}', {
-              balance: addDecimalsFormatNumber(balance, asset.decimals),
-            })}
-        </span>
+        {step && amount && amount < step ? (
+          <span className="text-warning pb-1">
+            {t('Amount must be larger than {{step}}', { step })}
+          </span>
+        ) : (
+          <span>
+            {asset !== undefined &&
+              t('Balance: {{balance}}', {
+                balance: addDecimalsFormatNumber(balance, asset.decimals),
+              })}
+          </span>
+        )}
       </div>
     </div>
   );
