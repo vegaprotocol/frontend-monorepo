@@ -168,9 +168,7 @@ export const useMarketsColumnDefs = () => {
           return (
             <Tooltip description={t(tooltip)}>
               <span className="flex items-center gap-2 cursor-pointer">
-                <span className="mr-1">
-                  <EmblemByMarket market={data?.id || ''} vegaChain={chainId} />
-                </span>
+                <EmblemByMarket market={data?.id || ''} vegaChain={chainId} />
                 <StackedCell
                   primary={
                     <span className="flex gap-1 items-center">

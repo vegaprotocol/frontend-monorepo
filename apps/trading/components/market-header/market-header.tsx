@@ -55,20 +55,13 @@ export const MarketHeader = () => {
                   <HeaderTitle>
                     <Tooltip description={t(tooltip)}>
                       <span className="flex items-center gap-1">
-                        <span className="mr-1">
-                          <EmblemByMarket
-                            market={data?.id || ''}
-                            vegaChain={chainId}
-                          />
-                        </span>
-
-                        <span className="flex gap-1 items-center">
-                          {data.tradableInstrument.instrument.code}
-                          <MarketProductPill
-                            productType={getProductType(data)}
-                          />
-                          <MarketIcon data={data} />
-                        </span>
+                        <EmblemByMarket
+                          market={data?.id || ''}
+                          vegaChain={chainId}
+                        />
+                        {data.tradableInstrument.instrument.code}
+                        <MarketProductPill productType={getProductType(data)} />
+                        <MarketIcon data={data} />
                       </span>
                     </Tooltip>
                     <VegaIcon name={VegaIconNames.CHEVRON_DOWN} size={14} />

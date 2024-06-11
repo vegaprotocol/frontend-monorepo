@@ -54,10 +54,10 @@ export const MarketCodeCell = ({ value, data }: MarketCodeCellProps) => {
 
   return (
     <span className="flex items-center gap-2 cursor-pointer">
-      <span className="mr-1">
+      <span className="flex gap-1">
         <EmblemByMarket market={data.id || ''} vegaChain={chainId} />
+        <StackedCell primary={value} secondary={info} />
       </span>
-      <StackedCell primary={value} secondary={info} />
     </span>
   );
 };
