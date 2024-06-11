@@ -219,17 +219,13 @@ export const DropdownAsset = ({
         </DropdownMenuTrigger>
       }
     >
-      <DropdownMenuContent
-        className="bg-gray-700 rounded-md mt-2"
-        data-testid={`${testId}-dropdown-content`}
-      >
+      <DropdownMenuContent data-testid={`${testId}-dropdown-content`}>
         {assets.map((asset) => (
           <DropdownMenuItem
             onClick={() => {
               onSelect(asset);
             }}
             key={asset.id}
-            className="px-4 py-2 dark:text-gray-200 hover:bg-gray-600 flex items-center"
             data-testid={`${testId}-asset-${asset.id}`}
           >
             <EmblemByAsset asset={asset.id} vegaChain={chainId} />
