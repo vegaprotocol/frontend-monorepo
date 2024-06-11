@@ -120,13 +120,15 @@ export const SwapForm = ({
     const toleranceFactor = tolerance ? Number(tolerance) / 100 : 0;
     const price = derivePrice(marketData, side, toleranceFactor, market);
 
+    const size = side === Side.SIDE_SELL ? topAmount : bottomAmount;
+
     const orderSubmission = {
       marketId: market.id,
       side,
       type: price ? OrderType.TYPE_LIMIT : OrderType.TYPE_MARKET,
       price: price ? price.toFixed(0) : undefined,
       timeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK,
-      size: removeDecimal(topAmount, market.positionDecimalPlaces),
+      size: removeDecimal(size, market.positionDecimalPlaces),
     };
 
     create({ orderSubmission });
