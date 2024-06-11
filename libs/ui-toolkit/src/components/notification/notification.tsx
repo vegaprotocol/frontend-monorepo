@@ -25,7 +25,7 @@ const getIcon = (intent: Intent): IconName => {
   const mapping: Record<Intent, string> = {
     [Intent.None]: IconNames.INFO_SIGN,
     [Intent.Info]: IconNames.INFO_SIGN,
-    [Intent.Submit]: IconNames.INFO_SIGN,
+    [Intent.Secondary]: IconNames.INFO_SIGN,
     [Intent.Primary]: IconNames.INFO_SIGN,
     [Intent.Success]: IconNames.TICK_CIRCLE,
     [Intent.Warning]: IconNames.WARNING_SIGN,

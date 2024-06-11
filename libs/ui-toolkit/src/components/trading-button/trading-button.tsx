@@ -33,10 +33,10 @@ const getClassName = (
   className?: string
 ) =>
   classNames(
-    'flex gap-2 items-center justify-center rounded-lg disabled:opacity-40',
+    'flex gap-2 items-center justify-center rounded disabled:opacity-40',
     // size
     {
-      'h-12': !subLabel && size === 'large',
+      'h-12 rounded-lg': !subLabel && size === 'large',
       'h-10': !subLabel && (!size || size === 'medium'),
       'h-8': !subLabel && size === 'small',
       'px-3 text-sm': !subLabel && size === 'small',
@@ -58,6 +58,8 @@ const getClassName = (
         intent === Intent.Danger && !minimal,
       'bg-vega-green-350 enabled:hover:bg-vega-green-400 dark:bg-vega-green-650 dark:enabled:hover:bg-vega-green-600':
         intent === Intent.Success && !minimal,
+      'bg-vega-blue-500 enabled:hover:bg-vega-blue-600':
+        intent === Intent.Secondary && !minimal,
       // Minimal button
       'bg-transparent enabled:hover:bg-vega-yellow-550 dark:enabled:hover:bg-vega-yellow-450':
         intent === Intent.Primary && minimal,
@@ -71,15 +73,23 @@ const getClassName = (
         intent === Intent.Danger && minimal,
       'bg-transparent enabled:hover:bg-vega-green-400 dark:enabled:hover:bg-vega-green-600':
         intent === Intent.Success && minimal,
-      'bg-vega-blue-500 enabled:hover:bg-vega-blue-600':
-        intent === Intent.Submit,
+      'bg-transparent enabled:hover:bg-vega-blue-500 dark:enabled:hover:bg-vega-blue-600':
+        intent === Intent.Secondary && minimal,
     },
     // text
     {
-      'text-white': intent === Intent.Submit,
-      'text-vega-clight-50 dark:text-vega-cdark-50': intent !== Intent.Primary,
+      'text-vega-clight-50 dark:text-vega-cdark-50':
+        (intent !== Intent.Primary && intent !== Intent.Secondary) || minimal,
+
       // If its primary the text must always be dark enough for a yellow background
-      'text-vega-clight-50': intent === Intent.Primary,
+      'text-vega-clight-50': intent === Intent.Primary && !minimal,
+      // If its secondary the text must always be light enough for a blue background
+      'text-vega-clight-900': intent === Intent.Secondary && !minimal,
+
+      'enabled:hover:text-vega-clight-50': intent === Intent.Primary && minimal,
+      'enabled:hover:text-vega-clight-900':
+        intent === Intent.Secondary && minimal,
+
       '[&_[data-sub-label]]:text-vega-clight-100': intent === Intent.Primary,
     },
     { 'w-full': fill },

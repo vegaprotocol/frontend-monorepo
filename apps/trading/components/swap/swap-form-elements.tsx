@@ -21,12 +21,11 @@ export const AssetInput = ({
   label,
   amount,
   asset,
-  balance,
+  balance = '0',
   accountAssetIds,
   assets,
   onAmountChange,
   onAssetChange,
-  accountWarning = true,
   pubKey,
   testId,
 }: {
@@ -38,7 +37,6 @@ export const AssetInput = ({
   assets: AssetFieldsFragment[];
   onAmountChange: (e: ChangeEvent<HTMLInputElement>) => void;
   onAssetChange: (asset: AssetFieldsFragment) => void;
-  accountWarning?: boolean;
   pubKey?: string;
   testId: string;
 }) => {
@@ -81,23 +79,12 @@ export const AssetInput = ({
         />
       </div>
       <div className="flex justify-end items-center text-secondary text-sm">
-        {accountWarning &&
-        accountAssetIds &&
-        !!pubKey &&
-        asset &&
-        !accountAssetIds.includes(asset.id) ? (
-          <span className="text-xs">
-            {t(`You do not have this asset in your account`)}
-          </span>
-        ) : (
-          <span>
-            {balance !== undefined &&
-              asset !== undefined &&
-              t('Balance: {{balance}}', {
-                balance: addDecimalsFormatNumber(balance, asset.decimals),
-              })}
-          </span>
-        )}
+        <span>
+          {asset !== undefined &&
+            t('Balance: {{balance}}', {
+              balance: addDecimalsFormatNumber(balance, asset.decimals),
+            })}
+        </span>
       </div>
     </div>
   );
@@ -209,7 +196,7 @@ export const DropdownAsset = ({
               <span>{asset.symbol}</span>
             </span>
           ) : (
-            <span>{t('Select coin')}</span>
+            <span>{t('Select asset')}</span>
           )}
           <VegaIcon
             name={VegaIconNames.CHEVRON_DOWN}
@@ -219,17 +206,13 @@ export const DropdownAsset = ({
         </DropdownMenuTrigger>
       }
     >
-      <DropdownMenuContent
-        className="bg-gray-700 rounded-md mt-2"
-        data-testid={`${testId}-dropdown-content`}
-      >
+      <DropdownMenuContent data-testid={`${testId}-dropdown-content`}>
         {assets.map((asset) => (
           <DropdownMenuItem
             onClick={() => {
               onSelect(asset);
             }}
             key={asset.id}
-            className="px-4 py-2 dark:text-gray-200 hover:bg-gray-600 flex items-center"
             data-testid={`${testId}-asset-${asset.id}`}
           >
             <EmblemByAsset asset={asset.id} vegaChain={chainId} />
