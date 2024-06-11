@@ -19,8 +19,8 @@ export const SwapContainer = () => {
   const { data: markets } = useMarketsMapProvider();
   const { data: accounts } = useAccounts(pubKey);
 
-  const [quoteAsset, setQuoteAsset] = useState<AssetFieldsFragment>();
-  const [baseAsset, setBaseAsset] = useState<AssetFieldsFragment>();
+  const [topAsset, setTopAsset] = useState<AssetFieldsFragment>();
+  const [bottomAsset, setBottomAsset] = useState<AssetFieldsFragment>();
 
   const spotMarkets = Object.values(markets || {}).filter((m) =>
     isSpot(m.tradableInstrument.instrument.product)
@@ -34,7 +34,7 @@ export const SwapContainer = () => {
     .flat();
   const spotAssets = uniqBy(assets, 'id');
 
-  const market = useSwapMarket({ markets: spotMarkets, quoteAsset, baseAsset });
+  const market = useSwapMarket({ markets: spotMarkets, topAsset, bottomAsset });
 
   const { data: marketData } = useDataProvider({
     dataProvider: marketDataProvider,
@@ -46,10 +46,10 @@ export const SwapContainer = () => {
     <SwapForm
       market={market}
       marketData={marketData}
-      baseAsset={baseAsset}
-      setBaseAsset={setBaseAsset}
-      quoteAsset={quoteAsset}
-      setQuoteAsset={setQuoteAsset}
+      bottomAsset={bottomAsset}
+      setBottomAsset={setBottomAsset}
+      topAsset={topAsset}
+      setTopAsset={setTopAsset}
       accounts={accounts}
       // TODO: Update market queries and assets list query to use AssetFieldsFragment
       assets={spotAssets as AssetFieldsFragment[]}
@@ -63,24 +63,24 @@ export const SwapContainer = () => {
  */
 const useSwapMarket = ({
   markets,
-  quoteAsset,
-  baseAsset,
+  topAsset,
+  bottomAsset,
 }: {
   markets: MarketFieldsFragment[];
-  quoteAsset?: AssetFieldsFragment;
-  baseAsset?: AssetFieldsFragment;
+  topAsset?: AssetFieldsFragment;
+  bottomAsset?: AssetFieldsFragment;
 }) => {
-  if (!quoteAsset || !baseAsset) return;
+  if (!topAsset || !bottomAsset) return;
 
   return markets.find((m) => {
     const mBaseAsset = getBaseAsset(m);
     const mQuoteAsset = getQuoteAsset(m);
 
-    if (mBaseAsset.id === baseAsset.id && mQuoteAsset.id === quoteAsset.id) {
+    if (mBaseAsset.id === bottomAsset.id && mQuoteAsset.id === topAsset.id) {
       return true;
     }
 
-    if (mBaseAsset.id === quoteAsset.id && mQuoteAsset.id === baseAsset.id) {
+    if (mBaseAsset.id === topAsset.id && mQuoteAsset.id === bottomAsset.id) {
       return true;
     }
 

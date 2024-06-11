@@ -14,12 +14,12 @@ type Market = {
 
 export const SpotData = (props: {
   price: string;
-  quoteAmount: string;
-  baseAmount: string;
+  topAmount: string;
+  bottomAmount: string;
   market?: Market;
   side?: Side;
-  quoteAsset?: AssetFieldsFragment;
-  baseAsset?: AssetFieldsFragment;
+  topAsset?: AssetFieldsFragment;
+  bottomAsset?: AssetFieldsFragment;
 }) => {
   return (
     <dl className="text-left flex flex-col gap-1">
@@ -30,27 +30,27 @@ export const SpotData = (props: {
 };
 
 export const Conversion = ({
-  quoteAmount,
-  baseAmount,
-  quoteAsset,
-  baseAsset,
+  topAmount,
+  bottomAmount,
+  topAsset,
+  bottomAsset,
 }: {
-  quoteAmount: string;
-  baseAmount: string;
-  quoteAsset?: AssetFieldsFragment;
-  baseAsset?: AssetFieldsFragment;
+  topAmount: string;
+  bottomAmount: string;
+  topAsset?: AssetFieldsFragment;
+  bottomAsset?: AssetFieldsFragment;
 }) => {
-  if (!quoteAsset || !baseAsset) return null;
-  if (!quoteAmount || !baseAmount) return null;
+  if (!topAsset || !bottomAsset) return null;
+  if (!topAmount || !bottomAmount) return null;
 
   return (
     <div className="flex gap-1">
       <dt>
-        {quoteAmount} {quoteAsset.symbol}
+        {topAmount} {topAsset.symbol}
       </dt>
       <span>=</span>
       <dd>
-        {baseAmount} {baseAsset.symbol}
+        {bottomAmount} {bottomAsset.symbol}
       </dd>
     </div>
   );
