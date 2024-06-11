@@ -21,12 +21,11 @@ export const AssetInput = ({
   label,
   amount,
   asset,
-  balance,
+  balance = '0',
   accountAssetIds,
   assets,
   onAmountChange,
   onAssetChange,
-  accountWarning = true,
   pubKey,
   testId,
 }: {
@@ -38,7 +37,6 @@ export const AssetInput = ({
   assets: AssetFieldsFragment[];
   onAmountChange: (e: ChangeEvent<HTMLInputElement>) => void;
   onAssetChange: (asset: AssetFieldsFragment) => void;
-  accountWarning?: boolean;
   pubKey?: string;
   testId: string;
 }) => {
@@ -81,23 +79,12 @@ export const AssetInput = ({
         />
       </div>
       <div className="flex justify-end items-center text-secondary text-sm">
-        {accountWarning &&
-        accountAssetIds &&
-        !!pubKey &&
-        asset &&
-        !accountAssetIds.includes(asset.id) ? (
-          <span className="text-xs">
-            {t(`You do not have this asset in your account`)}
-          </span>
-        ) : (
-          <span>
-            {balance !== undefined &&
-              asset !== undefined &&
-              t('Balance: {{balance}}', {
-                balance: addDecimalsFormatNumber(balance, asset.decimals),
-              })}
-          </span>
-        )}
+        <span>
+          {asset !== undefined &&
+            t('Balance: {{balance}}', {
+              balance: addDecimalsFormatNumber(balance, asset.decimals),
+            })}
+        </span>
       </div>
     </div>
   );

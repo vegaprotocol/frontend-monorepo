@@ -231,7 +231,6 @@ export const SwapForm = ({
             setQuoteAmount(quoteAmount);
             setBaseAmount(baseAmount);
           }}
-          accountWarning={false}
           pubKey={pubKey}
           testId="you-receive"
         />
