@@ -7,7 +7,11 @@ import {
 import { Header, HeaderTitle } from '../header';
 import { Route, Routes, useParams } from 'react-router-dom';
 import { MarketSelector } from '../../components/market-selector/market-selector';
-import { useMarketList, useMarketWithData } from '@vegaprotocol/markets';
+import {
+  getProductType,
+  useMarketList,
+  useMarketWithData,
+} from '@vegaprotocol/markets';
 import { useState } from 'react';
 import { MarketHeaderSwitch } from './market-header-switch';
 import { EmblemByMarket } from '@vegaprotocol/emblem';
@@ -50,7 +54,7 @@ export const MarketHeader = () => {
                 trigger={
                   <HeaderTitle>
                     <Tooltip description={t(tooltip)}>
-                      <h3 className="flex items-center gap-1">
+                      <span className="flex items-center gap-1">
                         <span className="mr-1">
                           <EmblemByMarket
                             market={data?.id || ''}
@@ -61,14 +65,11 @@ export const MarketHeader = () => {
                         <span className="flex gap-1 items-center">
                           {data.tradableInstrument.instrument.code}
                           <MarketProductPill
-                            productType={
-                              data.tradableInstrument.instrument.product
-                                .__typename
-                            }
+                            productType={getProductType(data)}
                           />
                           <MarketIcon data={data} />
                         </span>
-                      </h3>
+                      </span>
                     </Tooltip>
                     <VegaIcon name={VegaIconNames.CHEVRON_DOWN} size={14} />
                   </HeaderTitle>
