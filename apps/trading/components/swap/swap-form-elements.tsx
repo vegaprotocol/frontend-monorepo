@@ -79,7 +79,7 @@ export const AssetInput = ({
       <div className="flex justify-end items-center text-secondary text-sm">
         {step && amount && amount < step ? (
           <span className="text-warning pb-1">
-            {t('Amount must be larger than {{step}}', { step })}
+            {t('Amount cannot be lower than {{step}}', { step })}
           </span>
         ) : (
           <span>

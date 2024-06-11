@@ -22,6 +22,7 @@
   "All teams are eligible": "All teams are eligible",
   "All teams": "All teams",
   "All": "All",
+  "Amount cannot be lower than {{step}}": "Amount cannot be lower than {{step}}",
   "Amount earned this epoch": "Amount earned this epoch",
   "Amount earned": "Amount earned",
   "Anonymous": "Anonymous",
