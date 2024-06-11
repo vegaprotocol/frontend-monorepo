@@ -6,6 +6,7 @@ import BigNumber from 'bignumber.js';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import type { AccountFieldsFragment } from '@vegaprotocol/accounts';
 import {
+  toAssetData,
   useGetWithdrawDelay,
   useGetWithdrawThreshold,
 } from '@vegaprotocol/web3';
@@ -19,6 +20,7 @@ export const useWithdrawAsset = (
 ) => {
   const { asset, balance, min, threshold, delay, update } = useWithdrawStore();
   const currentAssetId = useRef(asset?.id);
+
   const getThreshold = useGetWithdrawThreshold();
   const getDelay = useGetWithdrawDelay();
   const { param } = useNetworkParam(
@@ -37,7 +39,8 @@ export const useWithdrawAsset = (
   // account, balance, min viable amount and delay threshold
   const handleSelectAsset = useCallback(
     async (id: string) => {
-      const asset = assets.find((a) => a.id === id);
+      const asset = toAssetData(assets.find((a) => a.id === id));
+
       const account = accounts.find(
         (a) =>
           a.type === Schema.AccountType.ACCOUNT_TYPE_GENERAL &&
@@ -57,6 +60,8 @@ export const useWithdrawAsset = (
         : new BigNumber(0);
       currentAssetId.current = asset?.id;
       update({ asset, balance, min, threshold: undefined, delay: undefined });
+
+      if (!asset) return;
       // Query collateral bridge for threshold for selected asset
       // and subsequent delay if withdrawal amount is larger than it
       let threshold = new BigNumber(0);
@@ -64,7 +69,10 @@ export const useWithdrawAsset = (
       const logger = localLoggerFactory({ application: 'withdraws' });
       try {
         logger.info('get withdraw asset data', { asset: asset?.id });
-        const result = await Promise.all([getThreshold(asset), getDelay()]);
+        const result = await Promise.all([
+          getThreshold(asset),
+          getDelay(asset.chainId),
+        ]);
         if (result[0] != null) threshold = result[0];
         if (result[1] != null) delay = result[1];
       } catch (err) {

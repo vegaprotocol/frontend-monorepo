@@ -8,13 +8,13 @@ import { DefaultWeb3ProviderContext } from './default-web3-provider';
 interface Web3ProviderProps {
   children: JSX.Element | JSX.Element[];
   connectors: [Connector, Web3ReactHooks][];
-  defaultProvider?: DefaultWeb3ProviderContextShape['provider'];
+  defaultProviders?: DefaultWeb3ProviderContextShape['providers'];
 }
 
 export const Web3Provider = ({
   children,
   connectors,
-  defaultProvider,
+  defaultProviders,
 }: Web3ProviderProps) => {
   /**
    * The connectors prop passed to Web3ReactProvider must be referentially static.
@@ -27,7 +27,9 @@ export const Web3Provider = ({
   );
 
   return (
-    <DefaultWeb3ProviderContext.Provider value={{ provider: defaultProvider }}>
+    <DefaultWeb3ProviderContext.Provider
+      value={{ providers: defaultProviders }}
+    >
       <Web3ReactProvider key={key} connectors={connectors}>
         {children}
       </Web3ReactProvider>

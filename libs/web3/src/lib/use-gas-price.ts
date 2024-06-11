@@ -1,15 +1,16 @@
 import { useEffect, useState } from 'react';
 import { useWeb3React } from '@web3-react/core';
-import { useEthereumConfig } from './use-ethereum-config';
 import BigNumber from 'bignumber.js';
+import { useCollateralBridge } from './use-bridge-contract';
 
 const DEFAULT_INTERVAL = 15000; // 15 seconds
 
 /**
  * These are the hex values of the collateral bridge contract methods.
  *
- * Collateral bridge address: 0x23872549cE10B40e31D6577e0A920088B0E0666a
- * Etherscan: https://etherscan.io/address/0x23872549cE10B40e31D6577e0A920088B0E0666a#writeContract
+ * Supported contracts:
+ * Ethereum: https://etherscan.io/address/0x23872549cE10B40e31D6577e0A920088B0E0666a#writeContract
+ * Arbitrum: https://arbiscan.io/address/0x475B597652bCb2769949FD6787b1DC6916518407#writeContract
  */
 export enum ContractMethod {
   DEPOSIT_ASSET = '0xf7683932',
@@ -71,26 +72,30 @@ const retrieveGasData = async (
  */
 export const useGasPrice = (
   method: ContractMethod,
+  chainId?: number,
   interval = DEFAULT_INTERVAL
 ): GasData | undefined => {
   const [gas, setGas] = useState<GasData | undefined>(undefined);
-  const { provider, account } = useWeb3React();
-  const { config } = useEthereumConfig();
+
+  const { config } = useCollateralBridge(chainId);
+  const { account, provider, chainId: activeChainId } = useWeb3React();
 
   useEffect(() => {
-    if (!provider || !config || !account) return;
+    let ignore = false;
+    if (!provider || !config || !account || chainId !== activeChainId) {
+      if (gas != null) setGas(undefined);
+      return;
+    }
 
     const retrieve = async () => {
-      retrieveGasData(
-        provider,
-        account,
-        config.collateral_bridge_contract.address,
-        method
-      ).then((gasData) => {
-        if (gasData) {
-          setGas(gasData);
+      if (ignore) return;
+      retrieveGasData(provider, account, config.address, method).then(
+        (gasData) => {
+          if (gasData) {
+            setGas(gasData);
+          }
         }
-      });
+      );
     };
     retrieve();
 
@@ -104,8 +109,18 @@ export const useGasPrice = (
 
     return () => {
       if (i) clearInterval(i);
+      ignore = true;
     };
-  }, [account, config, interval, method, provider]);
+  }, [
+    account,
+    activeChainId,
+    chainId,
+    config,
+    gas,
+    interval,
+    method,
+    provider,
+  ]);
 
   return gas;
 };

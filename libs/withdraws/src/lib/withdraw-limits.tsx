@@ -1,4 +1,3 @@
-import type { Asset } from '@vegaprotocol/assets';
 import { CompactNumber } from '@vegaprotocol/react-helpers';
 import { WITHDRAW_THRESHOLD_TOOLTIP_TEXT, useWETH } from '@vegaprotocol/assets';
 import {
@@ -9,7 +8,7 @@ import {
 import BigNumber from 'bignumber.js';
 import { formatDistanceToNow } from 'date-fns';
 import { useT } from './use-t';
-import { type GasData } from '@vegaprotocol/web3';
+import { type AssetData, type GasData } from '@vegaprotocol/web3';
 import {
   asETH,
   formatEther,
@@ -25,7 +24,7 @@ interface WithdrawLimitsProps {
   threshold: BigNumber | undefined;
   balance: BigNumber;
   delay: number | undefined;
-  asset: Asset;
+  asset: AssetData;
   gas?: GasData;
 }
 

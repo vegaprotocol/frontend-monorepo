@@ -100,7 +100,7 @@ export const DepositLimits = ({
             </p>
           }
         >
-          <button type="button">{t('Ethereum deposit cap')}</button>
+          <button type="button">{t('Deposit cap')}</button>
         </Tooltip>
       ),
       rawValue: allowance,

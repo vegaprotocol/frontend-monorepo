@@ -34,7 +34,7 @@
   "Step 2 - Transfer funds to your Ethereum wallet": "Step 2 - Transfer funds to your Ethereum wallet",
   "There are two steps required to make a withdrawal": "There are two steps required to make a withdrawal",
   "This app only works on {{chainName}}. Please change chain.": "This app only works on {{chainName}}. Please change chain.",
-  "To (Ethereum address)": "To (Ethereum address)",
+  "To ({{chainName}} address)": "To ({{chainName}} address)",
   "Transaction": "Transaction",
   "Use maximum": "Use maximum",
   "Verifying withdrawal approval": "Verifying withdrawal approval",

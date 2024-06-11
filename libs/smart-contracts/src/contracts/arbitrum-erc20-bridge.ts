@@ -1,8 +1,8 @@
 import { type BigNumber, ethers } from 'ethers';
-import abi from '../abis/erc20_bridge_abi.json';
+import abi from '../abis/arbitrum_erc20_bridge_abi.json';
 import { calcGasBuffer } from '../utils';
 
-export class CollateralBridge {
+export class ArbitrumERC20Bridge {
   public contract: ethers.Contract;
 
   constructor(
@@ -109,6 +109,7 @@ export class CollateralBridge {
       { gasLimit }
     );
   }
+
   async withdraw_asset(
     asset_source: string,
     amount: string,

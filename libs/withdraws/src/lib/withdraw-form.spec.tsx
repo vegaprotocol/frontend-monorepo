@@ -5,6 +5,8 @@ import { WithdrawForm } from './withdraw-form';
 import { generateAsset } from './test-helpers';
 import type { WithdrawFormProps } from './withdraw-form';
 import type { Asset } from '@vegaprotocol/assets';
+import { type AssetData, toAssetData } from '@vegaprotocol/web3';
+import { truncateMiddle } from '@vegaprotocol/ui-toolkit';
 
 jest.mock('@web3-react/core');
 
@@ -38,7 +40,11 @@ beforeEach(() => {
     onSelectAsset: jest.fn(),
     submitWithdraw: jest.fn().mockReturnValue(Promise.resolve()),
   };
-  (useWeb3React as jest.Mock).mockReturnValue({ account: MOCK_ETH_ADDRESS });
+  (useWeb3React as jest.Mock).mockReturnValue({
+    account: MOCK_ETH_ADDRESS,
+    chainId: 1,
+    isActive: true,
+  });
 });
 
 describe('Withdrawal form', () => {
@@ -46,8 +52,8 @@ describe('Withdrawal form', () => {
     render(<WithdrawForm {...props} />);
 
     expect(screen.getByLabelText('Asset')).toHaveValue('');
-    expect(screen.getByLabelText('To (Ethereum address)')).toHaveValue(
-      MOCK_ETH_ADDRESS
+    expect(screen.getByTestId('ethereum-address')).toHaveTextContent(
+      truncateMiddle(MOCK_ETH_ADDRESS)
     );
     expect(screen.getByLabelText('Amount')).toHaveValue(null);
   });
@@ -64,7 +70,9 @@ describe('Withdrawal form', () => {
 
     it('fails when submitted with invalid ethereum address', async () => {
       (useWeb3React as jest.Mock).mockReturnValue({ account: '123' });
-      render(<WithdrawForm {...props} selectedAsset={props.assets[0]} />);
+      const asset = toAssetData(props.assets[0]) as AssetData;
+      expect(asset).not.toBeNull();
+      render(<WithdrawForm {...props} selectedAsset={asset} />);
 
       fireEvent.change(screen.getByLabelText('Asset'), {
         target: { value: props.assets[0].id },
@@ -85,7 +93,10 @@ describe('Withdrawal form', () => {
     });
 
     it('fails when submitted amount is less than the minimum limit', async () => {
-      render(<WithdrawForm {...props} selectedAsset={props.assets[0]} />);
+      const asset = toAssetData(props.assets[0]) as AssetData;
+      expect(asset).not.toBeNull();
+
+      render(<WithdrawForm {...props} selectedAsset={asset} />);
 
       fireEvent.change(screen.getByLabelText('Amount'), {
         target: { value: '0.000000000001' },
@@ -99,7 +110,9 @@ describe('Withdrawal form', () => {
     });
 
     it('passes validation with correct field values', async () => {
-      render(<WithdrawForm {...props} selectedAsset={props.assets[0]} />);
+      const asset = toAssetData(props.assets[0]) as AssetData;
+      expect(asset).not.toBeNull();
+      render(<WithdrawForm {...props} selectedAsset={asset} />);
 
       fireEvent.change(screen.getByLabelText('Amount'), {
         target: { value: '40' },
@@ -119,7 +132,9 @@ describe('Withdrawal form', () => {
   });
 
   it('populates amount field with balance value when clicking the "use maximum" button', () => {
-    const asset = props.assets[0];
+    const asset = toAssetData(props.assets[0]) as AssetData;
+    expect(asset).not.toBeNull();
+
     render(<WithdrawForm {...props} selectedAsset={asset} />);
 
     fireEvent.click(screen.getByText('Use maximum'));
