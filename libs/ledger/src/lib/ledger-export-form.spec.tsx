@@ -80,7 +80,7 @@ describe('LedgerExportForm', () => {
         assets={assetsMock}
       />
     );
-    expect(screen.getByText('symbol asset-id (Eth)')).toBeInTheDocument();
+    expect(screen.getByText('symbol asset-id(Eth)')).toBeInTheDocument();
 
     // userEvent does not work with faked timers
     fireEvent.click(screen.getByTestId('ledger-download-button'));
@@ -102,13 +102,13 @@ describe('LedgerExportForm', () => {
         assets={assetsMock}
       />
     );
-    expect(screen.getByText('symbol asset-id (Eth)')).toBeInTheDocument();
+    expect(screen.getByText('symbol asset-id(Eth)')).toBeInTheDocument();
 
     fireEvent.change(screen.getByTestId('select-ledger-asset'), {
       target: { value: Object.keys(assetsMock)[1] },
     });
 
-    expect(screen.getByText('symbol asset-id-2 (Eth)')).toBeInTheDocument();
+    expect(screen.getByText('symbol asset-id-2(Eth)')).toBeInTheDocument();
 
     fireEvent.click(screen.getByTestId('ledger-download-button'));
 
@@ -242,7 +242,7 @@ describe('LedgerExportForm', () => {
     };
 
     render(<TestWrapper />);
-    expect(screen.getByText('symbol asset-id (Eth)')).toBeInTheDocument();
+    expect(screen.getByText('symbol asset-id(Eth)')).toBeInTheDocument();
 
     fireEvent.click(screen.getByTestId('ledger-download-button'));
 
