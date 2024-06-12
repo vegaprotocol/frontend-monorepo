@@ -26,6 +26,7 @@ export interface DepositBalances {
 
 export const useBalances = (assetData?: AssetData) => {
   const getBalances = useGetBalances();
+
   const [balances, setBalances] = useState<
     DepositBalances | 'loading' | undefined
   >(undefined);

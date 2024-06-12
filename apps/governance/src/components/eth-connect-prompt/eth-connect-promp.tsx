@@ -8,7 +8,7 @@ export const EthConnectPrompt = () => {
   return (
     <Button
       variant="default"
-      onClick={open}
+      onClick={() => open()}
       fill={true}
       data-testid="connect-to-eth-btn"
     >

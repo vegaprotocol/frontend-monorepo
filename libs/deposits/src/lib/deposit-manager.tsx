@@ -5,7 +5,7 @@ import { prepend0x } from '@vegaprotocol/smart-contracts';
 import sortBy from 'lodash/sortBy';
 import { useSubmitApproval } from './use-submit-approval';
 import { useSubmitFaucet } from './use-submit-faucet';
-import { useCallback, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useBalances } from './use-deposit-balances';
 import type { Asset } from '@vegaprotocol/assets';
 import {
@@ -13,7 +13,6 @@ import {
   useCollateralBridge,
   toAssetData,
 } from '@vegaprotocol/web3';
-import { usePersistentDeposit } from './use-persistent-deposit';
 import { useWeb3React } from '@web3-react/core';
 
 interface DepositManagerProps {
@@ -29,16 +28,20 @@ export const DepositManager = ({
 }: DepositManagerProps) => {
   const createEthTransaction = useEthTransactionStore((state) => state.create);
 
-  const [persistentDeposit, savePersistentDeposit] =
-    usePersistentDeposit(initialAssetId);
-  const assetId = persistentDeposit?.assetId;
-  const asset = assets.find((a) => a.id === assetId);
+  const initialAsset = assets.find((a) => a.id === initialAssetId);
+
+  const [asset, setAsset] = useState(() => {
+    return initialAsset;
+  });
 
   const assetData = toAssetData(asset);
+
   const { contract, config } = useCollateralBridge(assetData?.chainId);
+
   const { balances, getBalances, resetBalances } = useBalances();
 
   const { chainId } = useWeb3React();
+
   useEffect(() => {
     // gets balances on load and re-trigger balances when chain changed
     if (assetData?.chainId !== chainId) {
@@ -72,34 +75,28 @@ export const DepositManager = ({
     );
   };
 
-  const onAmountChange = useCallback(
-    (amount: string) => {
-      persistentDeposit &&
-        savePersistentDeposit({ ...persistentDeposit, amount });
-    },
-    [savePersistentDeposit, persistentDeposit]
-  );
-
   useEffect(() => {
     // When we change asset, also clear the tracked faucet/approve transactions so
     // we dont render stale UI
     approve.reset();
     faucet.reset();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [assetId]);
+  }, [asset?.id]);
 
   return (
     <DepositForm
       selectedAsset={asset}
       onDisconnect={resetBalances}
       onSelectAsset={(assetId) => {
-        const selected = toAssetData(assets.find((a) => a.id === assetId));
+        const asset = assets.find((a) => a.id === assetId);
+        const selected = toAssetData(asset);
+
         if (selected) {
-          savePersistentDeposit({ assetId: selected.id });
           getBalances(selected);
         }
+
+        setAsset(asset);
       }}
-      handleAmountChange={onAmountChange}
       assets={sortBy(assets, 'name')}
       submitApprove={approve.perform}
       submitDeposit={submitDeposit}
