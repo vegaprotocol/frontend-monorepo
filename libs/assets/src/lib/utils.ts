@@ -11,7 +11,7 @@ export const getAssetSymbol = (asset: AssetFieldsFragment) => {
 
   if (asset.source.__typename === 'ERC20') {
     const chainLabel = getExternalChainShortLabel(asset.source.chainId);
-    symbol = `${asset.symbol}(${chainLabel})`;
+    symbol = `${asset.symbol}${chainLabel ? `(${chainLabel})` : ''}`;
   }
 
   return symbol;

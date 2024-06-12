@@ -58,6 +58,6 @@ export function getExternalChainShortLabel(chainId?: string) {
   if (chainId && SUPPORTED_CHAIN_IDS.includes(chainId)) {
     return SUPPORTED_CHAIN_SHORT_LABELS[chainId];
   } else {
-    return '';
+    return chainId;
   }
 }
