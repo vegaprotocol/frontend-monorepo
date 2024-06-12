@@ -53,6 +53,11 @@ export const useBalances = (asset?: AssetData) => {
   return {
     balances,
     resetBalances: () => setBalances(undefined),
+    refetchBalances: async () => {
+      setBalances(undefined);
+      const balances = await getBalances(asset);
+      setBalances(balances);
+    },
   };
 };
 

@@ -37,10 +37,10 @@ export const DepositManager = ({
 
   const { contract, config } = useCollateralBridge(assetData?.chainId);
 
-  const { balances } = useBalances(assetData);
+  const { balances, resetBalances, refetchBalances } = useBalances(assetData);
 
-  const approve = useSubmitApproval(asset, () => undefined);
-  const faucet = useSubmitFaucet(asset, () => undefined);
+  const approve = useSubmitApproval(asset, refetchBalances);
+  const faucet = useSubmitFaucet(asset, refetchBalances);
 
   const submitDeposit = (
     args: Parameters<DepositFormProps['submitDeposit']>['0']
@@ -73,7 +73,7 @@ export const DepositManager = ({
   return (
     <DepositForm
       selectedAsset={asset}
-      onDisconnect={() => undefined}
+      onDisconnect={resetBalances}
       onSelectAsset={(assetId) => {
         const asset = assets.find((a) => a.id === assetId);
         setAsset(asset);
