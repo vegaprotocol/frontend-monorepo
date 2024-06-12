@@ -135,7 +135,7 @@ export const WithdrawForm = ({
   const ethereumAddress = useEthereumAddress();
   const required = useRequired();
   const minSafe = useMinSafe();
-  const { account, chainId, isActive } = useWeb3React();
+  const { account, chainId, isActive, connector } = useWeb3React();
   const wrongChain = selectedAsset && selectedAsset.chainId !== chainId;
   const openDialog = useWeb3ConnectStore((store) => store.open);
 
@@ -292,9 +292,28 @@ export const WithdrawForm = ({
                 id="asset"
                 name="asset"
                 required
-                onValueChange={(value) => {
+                onValueChange={async (value) => {
                   onSelectAsset(value);
                   field.onChange(value);
+
+                  const asset = assets.find((a) => a.id === value);
+
+                  if (
+                    asset &&
+                    asset.source.__typename === 'ERC20' &&
+                    Number(asset.source.chainId) !== chainId
+                  ) {
+                    await connector.provider?.request({
+                      method: 'wallet_switchEthereumChain',
+                      params: [
+                        {
+                          chainId: `0x${Number(asset.source.chainId).toString(
+                            16
+                          )}`,
+                        },
+                      ],
+                    });
+                  }
                 }}
                 placeholder={t('Please select an asset')}
                 value={selectedAsset?.id}
