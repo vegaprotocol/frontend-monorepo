@@ -134,7 +134,7 @@ describe('AccountsTable', () => {
 
     const cells = await screen.findAllByRole('gridcell');
     const expectedValues = [
-      'tBTC (Eth)',
+      'tBTC(Eth)',
       '1,256.00',
       '1,256.00',
       '2,512.00',
@@ -159,7 +159,7 @@ describe('AccountsTable', () => {
 
     const headerCell = screen
       .getAllByRole('columnheader')
-      .find((h) => h?.getAttribute('col-id') === 'asset.symbol') as HTMLElement;
+      .find((h) => h?.getAttribute('col-id') === 'asset') as HTMLElement;
 
     await userEvent.click(within(headerCell).getByText(/asset/i));
 
