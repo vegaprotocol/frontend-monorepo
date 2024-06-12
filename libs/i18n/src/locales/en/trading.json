@@ -511,6 +511,8 @@
   "URL": "URL",
   "Use a comma separated list to allow only specific public keys to join the team": "Use a comma separated list to allow only specific public keys to join the team",
   "Use test Arbitrum bridge": "Use test Arbitrum bridge",
+  "Use this form to deposit Ethereum or Arbitrum assets to the Vega network": "Use this form to deposit Ethereum or Arbitrum assets to the Vega network",
+  "Use this form to utilise Squid Router to make cross-chain deposits from any supported chain or wallet onto the Vega network. To ensure users enjoy the cheapest fees possible this mode only supports deposits into Arbitrum assets.": "Use this form to utilise Squid Router to make cross-chain deposits from any supported chain or wallet onto the Vega network. To ensure users enjoy the cheapest fees possible this mode only supports deposits into Arbitrum assets.",
   "userActive": "{{active}} trader: {{count}} epochs so far",
   "userInactive": "{{active}} trader: {{count}} epochs so far, you will lose your streak in {{remaining}} epochs!",
   "Uses hardcoded assets and Arbitrum bridge (address: 0xd459fac6647059100ebe45543e1da73b3b70ffba). FUNDS MAY BE LOST!": "Uses hardcoded assets and Arbitrum bridge (address: 0xd459fac6647059100ebe45543e1da73b3b70ffba). FUNDS MAY BE LOST!",
