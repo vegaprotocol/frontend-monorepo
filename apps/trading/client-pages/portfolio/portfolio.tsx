@@ -111,7 +111,7 @@ const PortfolioGrid = () => {
       <SidebarViewInitializer />
       <ResizableGrid onChange={handleOnHorizontalChange}>
         <ResizableGridPanel
-          minSize={500}
+          minSize={475}
           preferredSize={sizesHorizontal[0] || 460}
         >
           <PortfolioGridChild>
