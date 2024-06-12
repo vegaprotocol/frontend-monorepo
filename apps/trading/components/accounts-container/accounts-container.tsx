@@ -53,17 +53,11 @@ export const AccountsContainer = ({
     <AccountManager
       partyId={pubKey}
       onClickAsset={onClickAsset}
-      onClickWithdraw={(assetId) => {
-        setViews({ type: ViewType.Withdraw, assetId }, currentRouteId);
-      }}
       onClickDeposit={(assetId) => {
         setViews({ type: ViewType.Deposit }, currentRouteId);
         if (assetId) {
           setDepositAsset({ assetId });
         }
-      }}
-      onClickTransfer={(assetId) => {
-        setViews({ type: ViewType.Transfer, assetId }, currentRouteId);
       }}
       onMarketClick={onMarketClick}
       isReadOnly={isReadOnly}

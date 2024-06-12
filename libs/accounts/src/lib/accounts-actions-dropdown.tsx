@@ -13,47 +13,17 @@ import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 export const AccountsActionsDropdown = ({
   assetId,
   assetContractAddress,
-  onClickDeposit,
-  onClickWithdraw,
   onClickBreakdown,
-  onClickTransfer,
 }: {
   assetId: string;
   assetContractAddress?: string;
-  onClickDeposit: () => void;
-  onClickWithdraw: () => void;
   onClickBreakdown: () => void;
-  onClickTransfer: () => void;
 }) => {
   const etherscanLink = useEtherscanLink();
   const openAssetDialog = useAssetDetailsDialogStore((store) => store.open);
   const t = useT();
   return (
     <ActionsDropdown>
-      <TradingDropdownItem
-        key={'deposit'}
-        data-testid="deposit"
-        onClick={onClickDeposit}
-      >
-        <VegaIcon name={VegaIconNames.DEPOSIT} size={16} />
-        {t('Deposit')}
-      </TradingDropdownItem>
-      <TradingDropdownItem
-        key={'withdraw'}
-        data-testid="withdraw"
-        onClick={onClickWithdraw}
-      >
-        <VegaIcon name={VegaIconNames.WITHDRAW} size={16} />
-        {t('Withdraw')}
-      </TradingDropdownItem>
-      <TradingDropdownItem
-        key={'transfer'}
-        data-testid="transfer"
-        onClick={onClickTransfer}
-      >
-        <VegaIcon name={VegaIconNames.TRANSFER} size={16} />
-        {t('Transfer')}
-      </TradingDropdownItem>
       <TradingDropdownItem
         key={'breakdown'}
         data-testid="breakdown"
