@@ -15,13 +15,20 @@ import {
 import { type DepositFieldsFragment } from './__generated__/Deposit';
 import { EtherscanLink } from '@vegaprotocol/environment';
 import { DepositStatusMapping } from '@vegaprotocol/types';
+import { getAssetSymbol, type AssetFieldsFragment } from '@vegaprotocol/assets';
 
 export const DepositsTable = (
   props: TypedDataAgGrid<DepositFieldsFragment>
 ) => {
   const columnDefs = useMemo<ColDef[]>(
     () => [
-      { headerName: 'Asset', field: 'asset.symbol', pinned: true },
+      {
+        headerName: 'Asset',
+        field: 'asset',
+        pinned: true,
+        valueFormatter: ({ value }: { value: AssetFieldsFragment }) =>
+          getAssetSymbol(value),
+      },
       {
         headerName: 'Amount',
         field: 'amount',
