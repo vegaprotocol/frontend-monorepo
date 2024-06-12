@@ -3,7 +3,7 @@ import {
   getTokenContract,
   useCollateralBridgeConfigs,
 } from '@vegaprotocol/web3';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import BigNumber from 'bignumber.js';
 import { localLoggerFactory } from '@vegaprotocol/logger';
 import { useWeb3React } from '@web3-react/core';
@@ -24,43 +24,43 @@ export interface DepositBalances {
  * whenever the asset changes in the form
  */
 
-export const useBalances = (assetData?: AssetData) => {
+export const useBalances = (asset?: AssetData) => {
   const getBalances = useGetBalances();
 
   const [balances, setBalances] = useState<
     DepositBalances | 'loading' | undefined
   >(undefined);
 
-  const resetBalances = useCallback(() => {
-    setBalances(undefined);
-  }, []);
+  useEffect(() => {
+    let ignore = false;
 
-  const get = useCallback(
-    (asset?: AssetData) => {
-      const input = asset || assetData;
-      if (!input || !getBalances || balances === 'loading') return;
-      setBalances('loading');
-      const run = async () => {
-        const balances = await getBalances(input);
-        setBalances(balances);
-      };
-      run();
-    },
-    [assetData, balances, getBalances]
-  );
+    const get = async () => {
+      setBalances(undefined);
+      const balances = await getBalances(asset);
 
-  return { balances, getBalances: get, resetBalances };
+      if (ignore) return;
+
+      setBalances(balances);
+    };
+
+    get();
+
+    return () => {
+      ignore = true;
+    };
+  }, [asset, getBalances]);
+
+  return {
+    balances,
+    resetBalances: () => setBalances(undefined),
+  };
 };
+
+const logger = localLoggerFactory({ application: 'deposits' });
 
 export const useGetBalances = () => {
   const { account, provider, chainId: activeChainId } = useWeb3React();
   const { configs } = useCollateralBridgeConfigs();
-
-  const logger = localLoggerFactory({ application: 'deposits' });
-
-  const signer = useMemo(() => {
-    return provider ? provider.getSigner() : undefined;
-  }, [provider]);
 
   const getData = useCallback(
     async (assetData?: AssetData) => {
@@ -74,6 +74,8 @@ export const useGetBalances = () => {
         );
         return;
       }
+
+      const signer = provider.getSigner();
 
       if (activeChainId !== assetData.chainId) {
         logger.warn(
@@ -150,7 +152,7 @@ export const useGetBalances = () => {
         return;
       }
     },
-    [account, activeChainId, configs, logger, provider, signer]
+    [account, activeChainId, configs, provider]
   );
 
   return getData;

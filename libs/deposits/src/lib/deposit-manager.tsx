@@ -5,7 +5,7 @@ import { prepend0x } from '@vegaprotocol/smart-contracts';
 import sortBy from 'lodash/sortBy';
 import { useSubmitApproval } from './use-submit-approval';
 import { useSubmitFaucet } from './use-submit-faucet';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useBalances } from './use-deposit-balances';
 import type { Asset } from '@vegaprotocol/assets';
 import {
@@ -13,7 +13,6 @@ import {
   useCollateralBridge,
   toAssetData,
 } from '@vegaprotocol/web3';
-import { useWeb3React } from '@web3-react/core';
 
 interface DepositManagerProps {
   assetId?: string;
@@ -34,26 +33,14 @@ export const DepositManager = ({
     return initialAsset;
   });
 
-  const assetData = toAssetData(asset);
+  const assetData = useMemo(() => toAssetData(asset), [asset]);
 
   const { contract, config } = useCollateralBridge(assetData?.chainId);
 
-  const { balances, getBalances, resetBalances } = useBalances();
+  const { balances } = useBalances(assetData);
 
-  const { chainId } = useWeb3React();
-
-  useEffect(() => {
-    // gets balances on load and re-trigger balances when chain changed
-    if (assetData?.chainId !== chainId) {
-      resetBalances();
-    }
-    if (assetData && !balances) {
-      getBalances(assetData);
-    }
-  }, [assetData, balances, chainId, getBalances, resetBalances]);
-
-  const approve = useSubmitApproval(asset, resetBalances);
-  const faucet = useSubmitFaucet(asset, resetBalances);
+  const approve = useSubmitApproval(asset, () => undefined);
+  const faucet = useSubmitFaucet(asset, () => undefined);
 
   const submitDeposit = (
     args: Parameters<DepositFormProps['submitDeposit']>['0']
@@ -86,15 +73,9 @@ export const DepositManager = ({
   return (
     <DepositForm
       selectedAsset={asset}
-      onDisconnect={resetBalances}
+      onDisconnect={() => undefined}
       onSelectAsset={(assetId) => {
         const asset = assets.find((a) => a.id === assetId);
-        const selected = toAssetData(asset);
-
-        if (selected) {
-          getBalances(selected);
-        }
-
         setAsset(asset);
       }}
       assets={sortBy(assets, 'name')}
