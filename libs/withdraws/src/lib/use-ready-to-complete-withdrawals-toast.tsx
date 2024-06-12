@@ -300,7 +300,7 @@ const SingleReadyToWithdrawToastContent = ({
               withdrawal,
               approval?.erc20WithdrawalApproval
             );
-          }, 500);
+          }, 300);
         }}
       >
         {t('Complete withdrawal')}
