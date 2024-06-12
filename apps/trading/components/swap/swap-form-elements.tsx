@@ -84,6 +84,7 @@ export const AssetInput = ({
         ) : (
           <span>
             {asset !== undefined &&
+              balance !== undefined &&
               t('Balance: {{balance}}', {
                 balance: addDecimalsFormatNumber(balance, asset.decimals),
               })}

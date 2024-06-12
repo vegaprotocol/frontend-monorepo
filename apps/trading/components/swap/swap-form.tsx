@@ -5,6 +5,7 @@ import {
   TradingButton,
   VegaIcon,
   VegaIconNames,
+  Notification,
 } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useT } from '../../lib/use-t';
@@ -15,7 +16,12 @@ import {
   roundUpToTickSize,
   toBigNum,
 } from '@vegaprotocol/utils';
-import { OrderTimeInForce, OrderType, Side } from '@vegaprotocol/types';
+import {
+  MarketState,
+  OrderTimeInForce,
+  OrderType,
+  Side,
+} from '@vegaprotocol/types';
 import { AssetInput, SwapButton, PriceImpactInput } from './swap-form-elements';
 import BigNumber from 'bignumber.js';
 import { Links } from '../../lib/links';
@@ -107,15 +113,14 @@ export const SwapForm = ({
     // Check users is connected
     if (isReadOnly || !pubKey) return;
     if (!Number(topAmount)) return;
-
-    if (!market) {
-      throw new Error('could not derive spot market for swap');
+    if (!market || marketData?.marketState !== MarketState.STATE_ACTIVE) {
+      return;
     }
 
     const side = deriveSide({ market, bottomAsset, topAsset });
 
     if (!side) {
-      throw new Error('could not derive side for swap');
+      return;
     }
 
     const toleranceFactor = tolerance ? Number(tolerance) / 100 : 0;
@@ -249,18 +254,37 @@ export const SwapForm = ({
         intent={Intent.Secondary}
         data-testid="swap-now-button"
         size="large"
+        disabled={
+          !market || marketData?.marketState !== MarketState.STATE_ACTIVE
+        }
       >
         {t('Swap now')}
       </TradingButton>
-      <SpotData
-        price={marketPrice}
-        market={market}
-        side={side}
-        topAmount={topAmount}
-        bottomAmount={bottomAmount}
-        topAsset={topAsset}
-        bottomAsset={bottomAsset}
-      />
+      <div className="flex flex-col gap-4">
+        {!market?.id && bottomAsset && topAsset && (
+          <Notification
+            intent={Intent.Warning}
+            message={t(
+              'There is no spot market for the pair, you can not swap these assets.'
+            )}
+          />
+        )}
+        {marketData && marketData.marketState !== MarketState.STATE_ACTIVE && (
+          <Notification
+            intent={Intent.Info}
+            message={t('The market is not active, you can not swap assets.')}
+          />
+        )}
+        <SpotData
+          price={marketPrice}
+          market={market}
+          side={side}
+          topAmount={topAmount}
+          bottomAmount={bottomAmount}
+          topAsset={topAsset}
+          bottomAsset={bottomAsset}
+        />
+      </div>
     </form>
   );
 };
