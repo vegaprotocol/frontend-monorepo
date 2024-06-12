@@ -111,7 +111,7 @@ const PortfolioGrid = () => {
       <SidebarViewInitializer />
       <ResizableGrid onChange={handleOnHorizontalChange}>
         <ResizableGridPanel
-          minSize={400}
+          minSize={500}
           preferredSize={sizesHorizontal[0] || 460}
         >
           <PortfolioGridChild>
@@ -162,7 +162,7 @@ const PortfolioActionTabs = () => {
   const flags = useFeatureFlags((state) => state.flags);
   return (
     <Tabs storageKey="portfolio-sidebar">
-      <Tab id="deposit" name={t('Deposit: Basic')}>
+      <Tab id="deposit" name={t('Deposit (Basic)')}>
         <ErrorBoundary feature="portfolio-deposit">
           <div className="p-2 flex flex-col gap-4">
             <Notification
@@ -177,7 +177,7 @@ const PortfolioActionTabs = () => {
         </ErrorBoundary>
       </Tab>
       {flags.CROSS_CHAIN_DEPOSITS_ENABLED && flags.CROSS_CHAIN_DEPOSITS ? (
-        <Tab id="cross-chain-deposit" name={t('Deposit: Cross-chain')}>
+        <Tab id="cross-chain-deposit" name={t('Deposit (Cross-chain)')}>
           <ErrorBoundary feature="portfolio-transfer">
             <div className="p-2 flex flex-col gap-4">
               <Notification
