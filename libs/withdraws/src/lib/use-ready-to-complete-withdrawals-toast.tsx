@@ -20,6 +20,7 @@ import uniqBy from 'lodash/uniqBy';
 import { useT } from './use-t';
 import uniq from 'lodash/uniq';
 import compact from 'lodash/compact';
+import { useWeb3React } from '@web3-react/core';
 
 const CHECK_INTERVAL = 1000;
 const ON_APP_START_TOAST_ID = `ready-to-withdraw`;
@@ -260,6 +261,7 @@ const SingleReadyToWithdrawToastContent = ({
   withdrawal: WithdrawalFieldsFragment;
 }) => {
   const t = useT();
+  const { connector, chainId } = useWeb3React();
   const { createEthWithdrawalApproval } = useEthWithdrawApprovalsStore(
     (state) => ({
       createEthWithdrawalApproval: state.create,
@@ -276,11 +278,29 @@ const SingleReadyToWithdrawToastContent = ({
       <Button
         data-testid="toast-complete-withdrawal"
         size="xs"
-        onClick={() => {
-          createEthWithdrawalApproval(
-            withdrawal,
-            approval?.erc20WithdrawalApproval
-          );
+        onClick={async () => {
+          const asset = withdrawal.asset;
+          if (
+            asset.source.__typename === 'ERC20' &&
+            asset.source.chainId !== String(chainId)
+          ) {
+            await connector.provider?.request({
+              method: 'wallet_switchEthereumChain',
+              params: [
+                {
+                  chainId: `0x${Number(asset.source.chainId).toString(16)}`,
+                },
+              ],
+            });
+          }
+
+          // without this timeout the the complete tx does not trigger, dont know why
+          setTimeout(() => {
+            createEthWithdrawalApproval(
+              withdrawal,
+              approval?.erc20WithdrawalApproval
+            );
+          }, 500);
         }}
       >
         {t('Complete withdrawal')}
