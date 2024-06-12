@@ -72,8 +72,7 @@ const retrieveGasData = async (
  */
 export const useGasPrice = (
   method: ContractMethod,
-  chainId?: number,
-  interval = DEFAULT_INTERVAL
+  chainId?: number
 ): GasData | undefined => {
   const [gas, setGas] = useState<GasData | undefined>(undefined);
 
@@ -82,45 +81,38 @@ export const useGasPrice = (
 
   useEffect(() => {
     let ignore = false;
+
     if (!provider || !config || !account || chainId !== activeChainId) {
-      if (gas != null) setGas(undefined);
       return;
     }
 
     const retrieve = async () => {
-      if (ignore) return;
       retrieveGasData(provider, account, config.address, method).then(
         (gasData) => {
+          if (ignore) return;
           if (gasData) {
             setGas(gasData);
           }
         }
       );
     };
+
     retrieve();
 
     // Retrieves another estimation and prices in [interval] ms.
-    let i: ReturnType<typeof setInterval>;
-    if (interval > 0) {
-      i = setInterval(() => {
-        retrieve();
-      }, interval);
-    }
+    const interval = setInterval(() => {
+      retrieve();
+    }, DEFAULT_INTERVAL);
 
     return () => {
-      if (i) clearInterval(i);
+      clearInterval(interval);
       ignore = true;
     };
-  }, [
-    account,
-    activeChainId,
-    chainId,
-    config,
-    gas,
-    interval,
-    method,
-    provider,
-  ]);
+  }, [account, activeChainId, chainId, config, method, provider]);
+
+  if (!provider || !config || !account || chainId !== activeChainId) {
+    return;
+  }
 
   return gas;
 };

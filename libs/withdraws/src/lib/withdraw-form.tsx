@@ -176,6 +176,29 @@ export const WithdrawForm = ({
     trigger('to');
   }, [account, setValue, trigger]);
 
+  // Trigger wallet network change. This needs to be within an effect because the
+  // asset can be changed from outside the compoonent, for example from the
+  // accounts table
+  useEffect(() => {
+    const promptWalletNetworkChange = async () => {
+      if (!isActive) return;
+      if (!selectedAsset) return;
+
+      if (selectedAsset.chainId !== chainId) {
+        await connector.provider?.request({
+          method: 'wallet_switchEthereumChain',
+          params: [
+            {
+              chainId: `0x${selectedAsset.chainId.toString(16)}`,
+            },
+          ],
+        });
+      }
+    };
+
+    promptWalletNetworkChange();
+  }, [isActive, selectedAsset, chainId, connector.provider]);
+
   const showWithdrawDelayNotification =
     Boolean(delay) &&
     Boolean(selectedAsset) &&
@@ -295,25 +318,6 @@ export const WithdrawForm = ({
                 onValueChange={async (value) => {
                   onSelectAsset(value);
                   field.onChange(value);
-
-                  const asset = assets.find((a) => a.id === value);
-
-                  if (
-                    asset &&
-                    asset.source.__typename === 'ERC20' &&
-                    Number(asset.source.chainId) !== chainId
-                  ) {
-                    await connector.provider?.request({
-                      method: 'wallet_switchEthereumChain',
-                      params: [
-                        {
-                          chainId: `0x${Number(asset.source.chainId).toString(
-                            16
-                          )}`,
-                        },
-                      ],
-                    });
-                  }
                 }}
                 placeholder={t('Please select an asset')}
                 value={selectedAsset?.id}
