@@ -14,7 +14,15 @@ export const SUPPORTED_CHAIN_LABELS: ChainIdMapping = {
   '100': 'Gnosis',
   '42161': 'Arbitrum',
   '421614': 'Arbitrum (Sepolia)',
-  '11155111': 'Sepolia',
+  '11155111': 'Ethereum (Sepolia)',
+};
+
+export const SUPPORTED_CHAIN_SHORT_LABELS: ChainIdMapping = {
+  '1': 'Eth',
+  '100': 'Gno',
+  '42161': 'Arb',
+  '421614': 'Arb Sepolia',
+  '11155111': 'Eth Sepolia',
 };
 
 export function getExternalExplorerLink(chainId: string) {

@@ -1,7 +1,7 @@
 import merge from 'lodash/merge';
 import type { PartialDeep } from 'type-fest';
 import type { FundingPayment } from './funding-payments-data-provider';
-import { CompositePriceType } from '@vegaprotocol/types';
+import { AssetStatus, CompositePriceType } from '@vegaprotocol/types';
 
 export const generateFundingPayment = (
   override?: PartialDeep<FundingPayment>
@@ -62,6 +62,14 @@ export const generateFundingPayment = (
               symbol: 'SYM',
               decimals: 18,
               quantum: '1',
+              status: AssetStatus.STATUS_ENABLED,
+              source: {
+                __typename: 'ERC20' as const,
+                chainId: '1',
+                contractAddress: '0x123',
+                withdrawThreshold: '1',
+                lifetimeLimit: '1',
+              },
             },
             quoteName: '',
             dataSourceSpecForTradingTermination: {

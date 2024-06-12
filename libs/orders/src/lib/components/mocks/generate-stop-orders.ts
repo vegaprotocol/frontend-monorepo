@@ -70,6 +70,20 @@ export const generateStopOrder = (
               symbol: 'XYZ',
               name: 'XYZ',
               quantum: '1',
+              status: Schema.AssetStatus.STATUS_ENABLED,
+              source: {
+                __typename: 'ERC20' as const,
+                chainId: '1',
+                contractAddress: '0x123',
+                withdrawThreshold: '1',
+                lifetimeLimit: '1',
+              },
+              networkTreasuryAccount: {
+                balance: '1',
+              },
+              globalInsuranceAccount: {
+                balance: '1',
+              },
             },
             dataSourceSpecForTradingTermination: {
               __typename: 'DataSourceSpec',

@@ -29,6 +29,7 @@ import type { AgGridReactProps } from 'ag-grid-react';
 import type { AccountFields } from './accounts-data-provider';
 import type { Asset } from '@vegaprotocol/types';
 import { CenteredGridCellWrapper } from '@vegaprotocol/datagrid';
+import { getAssetSymbol } from '@vegaprotocol/assets';
 import BigNumber from 'bignumber.js';
 import classNames from 'classnames';
 import { AccountsActionsDropdown } from './accounts-actions-dropdown';
@@ -153,7 +154,7 @@ export const AccountTable = ({
     const defs: ColDef[] = [
       {
         headerName: t('Asset'),
-        field: 'asset.symbol',
+        field: 'asset',
         pinned: true,
         minWidth: 75,
         headerTooltip: t(
@@ -164,6 +165,16 @@ export const AccountTable = ({
           if (data) {
             onClickAsset(data.asset.id);
           }
+        },
+        valueFormatter: ({
+          value,
+          data,
+        }: VegaValueFormatterParams<AccountFields, 'asset'>) => {
+          if (!data?.asset?.source || !value) {
+            return '-';
+          }
+
+          return getAssetSymbol(value);
         },
       },
       {

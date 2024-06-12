@@ -2,7 +2,7 @@ import debounce from 'lodash/debounce';
 import { useMemo, useState } from 'react';
 import BigNumber from 'bignumber.js';
 import type { ColDef, ValueFormatterFunc } from 'ag-grid-community';
-import { type AssetFieldsFragment } from '@vegaprotocol/assets';
+import { AssetSymbol, type AssetFieldsFragment } from '@vegaprotocol/assets';
 import {
   addDecimalsFormatNumberQuantum,
   formatNumberPercentage,
@@ -194,7 +194,13 @@ export const RewardHistoryTable = ({
         field: 'asset.symbol',
         cellRenderer: ({ value, data }: { value: string; data: RewardRow }) => {
           if (!value || !data) return <span>-</span>;
-          return <StackedCell primary={value} secondary={data.asset.name} />;
+
+          return (
+            <StackedCell
+              primary={<AssetSymbol asset={data.asset} />}
+              secondary={data.asset.name}
+            />
+          );
         },
         sort: 'desc',
         pinned: 'left',

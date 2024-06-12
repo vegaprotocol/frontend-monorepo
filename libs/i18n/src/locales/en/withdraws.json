@@ -11,7 +11,7 @@
   "completeWithdrawals_one": "Complete these {{count}} withdrawal to release your funds",
   "completeWithdrawals_other": "Complete these {{count}} withdrawals to release your funds",
   "Connect": "Connect",
-  "Connect Ethereum wallet to complete": "Connect Ethereum wallet to complete",
+  "Connect wallet to complete": "Connect wallet to complete",
   "Created": "Created",
   "Delay time": "Delay time",
   "Delayed (ready in {{readyIn}})": "Delayed (ready in {{readyIn}})",

@@ -31,6 +31,7 @@ import * as Schema from '@vegaprotocol/types';
 import { type TimestampedWithdrawals } from './use-ready-to-complete-withdrawals-toast';
 import classNames from 'classnames';
 import { useT } from './use-t';
+import { getAssetSymbol } from '@vegaprotocol/assets';
 
 export const WithdrawalsTable = ({
   delayed,
@@ -47,7 +48,17 @@ export const WithdrawalsTable = ({
 
   const columnDefs = useMemo<ColDef[]>(
     () => [
-      { headerName: t('Asset'), field: 'asset.symbol', pinned: true },
+      {
+        headerName: t('Asset'),
+        field: 'asset',
+        pinned: true,
+        valueFormatter: ({
+          value,
+        }: VegaValueFormatterParams<WithdrawalFieldsFragment, 'asset'>) => {
+          if (!value) return '-';
+          return getAssetSymbol(value);
+        },
+      },
       {
         headerName: t('Amount'),
         field: 'amount',

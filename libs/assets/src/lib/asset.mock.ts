@@ -15,8 +15,10 @@ export const assetQuery = (override?: PartialDeep<AssetQuery>): AssetQuery => {
   return merge(defaultAssets, override);
 };
 
-const assetFields: AssetFieldsFragment[] = [
-  {
+export const createAssetFields = (
+  override?: PartialDeep<AssetFieldsFragment>
+) => {
+  const defaultAsset: AssetFieldsFragment = {
     __typename: 'Asset',
     id: 'asset-id',
     symbol: 'tEURO',
@@ -39,5 +41,9 @@ const assetFields: AssetFieldsFragment[] = [
       balance: '2',
       __typename: 'AccountBalance',
     },
-  },
-];
+  };
+
+  return merge(defaultAsset, override);
+};
+
+const assetFields: AssetFieldsFragment[] = [createAssetFields()];

@@ -31,6 +31,8 @@ const NO_THRESHOLD_ASSET: Asset = {
     __typename: 'ERC20',
     contractAddress: '0xnta',
     chainId: '1',
+    lifetimeLimit: '1',
+    withdrawThreshold: '1',
   },
 };
 
@@ -46,6 +48,8 @@ const LOW_THRESHOLD_ASSET: Asset = {
     __typename: 'ERC20',
     contractAddress: '0xlta',
     chainId: '1',
+    lifetimeLimit: '1',
+    withdrawThreshold: '1',
   },
 };
 
@@ -61,6 +65,8 @@ const HIGH_THRESHOLD_ASSET: Asset = {
     __typename: 'ERC20',
     contractAddress: '0xhta',
     chainId: '1',
+    lifetimeLimit: '1',
+    withdrawThreshold: '1',
   },
 };
 
