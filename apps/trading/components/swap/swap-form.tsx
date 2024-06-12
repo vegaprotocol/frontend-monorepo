@@ -263,7 +263,7 @@ export const SwapForm = ({
       <div className="flex flex-col gap-4">
         {!market?.id && bottomAsset && topAsset && (
           <Notification
-            intent={Intent.Warning}
+            intent={Intent.Info}
             message={t(
               'There is no spot market for the pair, you can not swap these assets.'
             )}
