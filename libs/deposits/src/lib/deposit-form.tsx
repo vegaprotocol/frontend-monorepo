@@ -28,7 +28,7 @@ import {
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useWeb3React } from '@web3-react/core';
 import BigNumber from 'bignumber.js';
-import type { ButtonHTMLAttributes, ChangeEvent, ReactNode } from 'react';
+import type { ButtonHTMLAttributes, ReactNode } from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import { useWatch, Controller, useForm } from 'react-hook-form';
 import { DepositLimits } from './deposit-limits';
@@ -43,7 +43,6 @@ import {
 import type { DepositBalances } from './use-deposit-balances';
 import { FaucetNotification } from './faucet-notification';
 import { ApproveNotification } from './approve-notification';
-import { usePersistentDeposit } from './use-persistent-deposit';
 import { AssetBalance } from './asset-balance';
 import { useT } from './use-t';
 
@@ -59,7 +58,6 @@ export interface DepositFormProps {
   selectedAsset?: Asset;
   balances: DepositBalances | 'loading' | null | undefined;
   onSelectAsset: (assetId?: string) => void;
-  handleAmountChange: (amount: string) => void;
   onDisconnect: () => void;
   submitApprove: (amount?: string) => void;
   approveTxId: number | null;
@@ -78,7 +76,6 @@ export const DepositForm = ({
   selectedAsset,
   balances,
   onSelectAsset,
-  handleAmountChange,
   onDisconnect,
   submitApprove,
   submitDeposit,
@@ -101,7 +98,6 @@ export const DepositForm = ({
   const { pubKey, pubKeys: _pubKeys } = useVegaWallet();
   const [approveNotificationIntent, setApproveNotificationIntent] =
     useState<Intent>(Intent.Warning);
-  const [persistedDeposit] = usePersistentDeposit(selectedAsset?.id);
 
   const assetData = toAssetData(selectedAsset);
 
@@ -128,7 +124,7 @@ export const DepositForm = ({
       from: account || '',
       to: pubKey ? pubKey : undefined,
       asset: selectedAsset?.id,
-      amount: persistedDeposit?.amount,
+      amount: '',
     },
   });
 
@@ -259,7 +255,13 @@ export const DepositForm = ({
             }
             return (
               <TradingButton
-                onClick={openDialog}
+                onClick={() => {
+                  const desiredChainId =
+                    selectedAsset && selectedAsset.source.__typename === 'ERC20'
+                      ? Number(selectedAsset.source.chainId)
+                      : 1;
+                  openDialog(desiredChainId);
+                }}
                 intent={Intent.Primary}
                 type="button"
                 data-testid="connect-eth-wallet-btn"
@@ -469,9 +471,6 @@ export const DepositForm = ({
                   return maxSafe(balances?.balance || new BigNumber(0))(v);
                 },
               },
-              onChange: (e: ChangeEvent<HTMLInputElement>) => {
-                handleAmountChange(e.target.value || '');
-              },
             })}
           />
           {errors.amount?.message && (
@@ -484,7 +483,6 @@ export const DepositForm = ({
               onClick={() => {
                 const amount = balances.balance.toFixed(selectedAsset.decimals);
                 setValue('amount', amount);
-                handleAmountChange(amount);
                 clearErrors('amount');
               }}
             >

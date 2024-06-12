@@ -39,7 +39,7 @@ const AssetLogo = ({ asset }: { asset: AssetFieldsFragment }) => {
   }
 
   return (
-    <div className="relative">
+    <div className="relative min-w-[40px]">
       <img className="w-10 h-10" src={assetLogo} alt={asset.symbol} />
       <img
         className="absolute -right-1 -bottom-1 w-4 h-4"

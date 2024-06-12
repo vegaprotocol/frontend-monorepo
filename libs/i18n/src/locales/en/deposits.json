@@ -21,6 +21,7 @@
   "From {{chainName}} address": "From {{chainName}} address",
   "Get {{assetSymbol}}": "Get {{assetSymbol}}",
   "Go to your Ethereum wallet and approve the transaction to enable the use of {{assetSymbol}}": "Go to your Ethereum wallet and approve the transaction to enable the use of {{assetSymbol}}",
+  "Non availalble": "Non availalble",
   "Please select": "Please select",
   "Please select an asset": "Please select an asset",
   "Remaining deposit allowance": "Remaining deposit allowance",
