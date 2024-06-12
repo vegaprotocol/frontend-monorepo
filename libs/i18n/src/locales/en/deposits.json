@@ -18,7 +18,7 @@
   "Deposit cap": "Deposit cap",
   "Exempt": "Exempt",
   "Faucet of {{symbol}} failed": "Faucet of {{symbol}} failed",
-  "From ({{chainName}} address)": "From ({{chainName}} address)",
+  "From {{chainName}} address": "From {{chainName}} address",
   "Get {{assetSymbol}}": "Get {{assetSymbol}}",
   "Go to your Ethereum wallet and approve the transaction to enable the use of {{assetSymbol}}": "Go to your Ethereum wallet and approve the transaction to enable the use of {{assetSymbol}}",
   "Please select": "Please select",

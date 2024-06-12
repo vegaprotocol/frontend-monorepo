@@ -82,20 +82,16 @@ type PinnedRowData = Omit<AccountFields, 'asset' | 'type'> & {
 export interface AccountTableProps extends AgGridReactProps {
   rowData?: AccountFields[] | null;
   onClickAsset: (assetId: string) => void;
-  onClickWithdraw?: (assetId: string) => void;
   onClickDeposit?: (assetId: string) => void;
   onClickBreakdown?: (assetId: string) => void;
-  onClickTransfer?: (assetId: string) => void;
   isReadOnly: boolean;
   pinnedAssets?: PinnedAsset[];
 }
 
 export const AccountTable = ({
   onClickAsset,
-  onClickWithdraw,
   onClickDeposit,
   onClickBreakdown,
-  onClickTransfer,
   rowData,
   isReadOnly,
   pinnedAssets,
@@ -313,17 +309,8 @@ export const AccountTable = ({
                   ? node.data.asset.source.contractAddress
                   : undefined
               }
-              onClickDeposit={() => {
-                onClickDeposit && onClickDeposit(assetId);
-              }}
-              onClickWithdraw={() => {
-                onClickWithdraw && onClickWithdraw(assetId);
-              }}
               onClickBreakdown={() => {
                 onClickBreakdown && onClickBreakdown(assetId);
-              }}
-              onClickTransfer={() => {
-                onClickTransfer && onClickTransfer(assetId);
               }}
             />
           );
@@ -335,8 +322,6 @@ export const AccountTable = ({
     onClickAsset,
     onClickBreakdown,
     onClickDeposit,
-    onClickWithdraw,
-    onClickTransfer,
     isReadOnly,
     showDepositButton,
     t,
