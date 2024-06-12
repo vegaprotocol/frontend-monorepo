@@ -70,6 +70,7 @@ const COSMIC_ELEVATOR_FLAGS = {
   SUCCESSOR_MARKETS: z.optional(z.boolean()),
   STOP_ORDERS: z.optional(z.boolean()),
   TAKE_PROFIT_STOP_LOSS: z.optional(z.boolean()),
+  SWAP: z.optional(z.boolean()),
   TWAP_REWARDS: z.optional(z.boolean()),
   ISOLATED_MARGIN: z.optional(z.boolean()),
   ICEBERG_ORDERS: z.optional(z.boolean()),

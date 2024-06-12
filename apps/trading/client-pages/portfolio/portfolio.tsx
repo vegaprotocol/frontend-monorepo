@@ -45,6 +45,7 @@ import { usePageTitle } from '../../lib/hooks/use-page-title';
 import { DepositContainer } from '@vegaprotocol/deposits';
 import { TransferContainer } from '@vegaprotocol/accounts';
 import { WithdrawContainer } from '../../components/withdraw-container';
+import { SwapContainer } from '../../components/swap/swap-container';
 import { SquidContainer } from '../../components/squid-container';
 import { useFeatureFlags } from '@vegaprotocol/environment';
 
@@ -180,6 +181,15 @@ const PortfolioActionTabs = () => {
           </div>
         </ErrorBoundary>
       </Tab>
+      {flags.SWAP ? (
+        <Tab id="swap" name={t('Swap')}>
+          <ErrorBoundary feature="assets-swap">
+            <div className="p-4">
+              <SwapContainer />
+            </div>
+          </ErrorBoundary>
+        </Tab>
+      ) : null}
       {flags.CROSS_CHAIN_DEPOSITS_ENABLED && flags.CROSS_CHAIN_DEPOSITS ? (
         <Tab id="cross-chain-deposit" name={t('Cross chain deposit')}>
           <ErrorBoundary feature="portfolio-transfer">

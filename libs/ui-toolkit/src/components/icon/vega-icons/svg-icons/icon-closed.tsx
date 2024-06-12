@@ -14,7 +14,7 @@ export const IconClosed = ({ size = 16 }: { size?: number }) => {
         x2="18.364"
         y2="4.92892"
         stroke="currentColor"
-        stroke-linecap="round"
+        strokeLinecap="round"
       />
     </svg>
   );

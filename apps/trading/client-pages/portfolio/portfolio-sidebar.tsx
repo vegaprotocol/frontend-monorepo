@@ -28,6 +28,12 @@ export const PortfolioSidebar = () => {
         tooltip={t('Transfer')}
         routeId={currentRouteId}
       />
+      <SidebarButton
+        view={ViewType.Swap}
+        icon={VegaIconNames.SWAP}
+        tooltip={t('Swap')}
+        routeId={currentRouteId}
+      />
     </>
   );
 };
@@ -51,6 +57,12 @@ export const PortfolioMobileSidebar = () => {
       <MobileButton
         view={ViewType.Transfer}
         tooltip={t('Transfer')}
+        routeId={currentRouteId}
+      />
+      <SidebarButton
+        view={ViewType.Swap}
+        icon={VegaIconNames.SWAP}
+        tooltip={t('Swap')}
         routeId={currentRouteId}
       />
     </div>
