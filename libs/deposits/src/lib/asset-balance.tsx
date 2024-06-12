@@ -2,16 +2,16 @@ import { useEffect } from 'react';
 import { useGetBalanceOfERC20Token } from './use-get-balance-of-erc20-token';
 import { useBalancesStore } from '@vegaprotocol/assets';
 import { Balance } from '@vegaprotocol/assets';
-import { type AssetData, useTokenContract } from '@vegaprotocol/web3';
+import { type AssetData, useTokenContractStatic } from '@vegaprotocol/web3';
 import { useWeb3React } from '@web3-react/core';
 import { toBigNum } from '@vegaprotocol/utils';
 
-const REFETCH_DELAY = 5000;
+const REFETCH_DELAY = 10000;
 
 export const AssetBalance = ({ assetData }: { assetData?: AssetData }) => {
   const { account } = useWeb3React();
 
-  const { contract, error } = useTokenContract(assetData);
+  const { contract } = useTokenContractStatic(assetData);
 
   const [setBalance, getBalance] = useBalancesStore((state) => [
     state.setBalance,
@@ -57,8 +57,8 @@ export const AssetBalance = ({ assetData }: { assetData?: AssetData }) => {
 
   const balance = getBalance(assetData.id)?.balanceOnEth?.toString();
 
-  if (error && !balance) {
-    return <span className="text-xs text-muted">-</span>;
+  if (!balance) {
+    return <span className="text-xs text-muted">0</span>;
   }
 
   return <Balance balance={balance} symbol={assetData.symbol} />;
