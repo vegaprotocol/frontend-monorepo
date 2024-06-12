@@ -84,7 +84,7 @@ export const ProposalSummary = ({
           <h2 className="text-lg pb-1">{t('Changes')}</h2>
           <ol>
             {batch.map((change, index) => (
-              <li className="ml-4 list-decimal" key={`batch-${index}`}>
+              <li className="ml-4 list-decimal my-2" key={`batch-${index}`}>
                 <BatchItem item={change} />
               </li>
             ))}
