@@ -493,16 +493,7 @@ export const DepositForm = ({
           )}
         </TradingFormGroup>
       )}
-      {isActive && wrongChain ? (
-        <div className="mb-4">
-          <Notification
-            intent={Intent.Danger}
-            message={t('Switch network in your wallet to {{chain}}', {
-              chain: getChainName(Number(selectedAssetChainId)),
-            })}
-          />
-        </div>
-      ) : (
+      {isActive && (
         <ApproveNotification
           isActive={isActive}
           approveTxId={approveTxId}
