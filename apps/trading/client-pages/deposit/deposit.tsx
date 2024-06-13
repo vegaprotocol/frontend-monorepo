@@ -1,12 +1,12 @@
 import { type PropsWithChildren, useState } from 'react';
-// import { useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
+import { z } from 'zod';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
   http,
   createConfig,
   WagmiProvider,
-  useReadContract,
   useSwitchChain,
   useChainId,
   useAccount,
@@ -24,8 +24,19 @@ import {
   type AssetFieldsFragment,
   useEnabledAssets,
 } from '@vegaprotocol/assets';
-import { Select } from '@vegaprotocol/ui-toolkit';
+import {
+  FormGroup,
+  TradingSelect as Select,
+  TradingInput as Input,
+  TradingButton,
+  truncateMiddle,
+  TradingInputError,
+} from '@vegaprotocol/ui-toolkit';
 import { BRIDGE_ABI } from '@vegaprotocol/smart-contracts';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
+
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm, useWatch } from 'react-hook-form';
 
 const wagmiConfig = createConfig(
   getDefaultConfig({
@@ -45,15 +56,15 @@ const wagmiConfig = createConfig(
 const queryClient = new QueryClient();
 
 export const Deposit = () => {
-  // const [searchParams] = useSearchParams();
-  // const assetId = searchParams.get('assetId') || undefined;
+  const [searchParams] = useSearchParams();
+  const assetId = searchParams.get('assetId') || '';
+
+  const { data: assets } = useEnabledAssets();
+  const asset = assets?.find((a) => a.id === assetId);
 
   return (
     <Providers>
-      <div className="flex flex-col gap-6">
-        <h1>Deposit</h1>
-        <DepositContainer />
-      </div>
+      <DepositForm assets={assets || []} initialAssetId={asset?.id || ''} />
     </Providers>
   );
 };
@@ -63,21 +74,145 @@ const bridges: { [id: number]: string } = {
   421614: '0xf7989D2902376cad63D0e5B7015efD0CFAd48eB5',
 };
 
-const DepositContainer = () => {
-  const { data: assets } = useEnabledAssets();
+const depositSchema = z.object({
+  assetId: z.string().min(1, 'Required'),
+  toPubKey: z.string().min(1, 'Required'),
+  amount: z.string().min(1, 'Required'),
+});
 
-  const [asset, setAsset] = useState<AssetFieldsFragment>();
+const DepositForm = ({
+  assets,
+  initialAssetId,
+}: {
+  assets: AssetFieldsFragment[];
+  initialAssetId: string;
+}) => {
+  const { pubKeys } = useVegaWallet();
+
+  const form = useForm<z.infer<typeof depositSchema>>({
+    resolver: zodResolver(depositSchema),
+    defaultValues: {
+      assetId: initialAssetId,
+      toPubKey: '',
+      amount: '',
+    },
+  });
+
+  const assetId = useWatch({ name: 'assetId', control: form.control });
+  const asset = assets?.find((a) => a.id === assetId);
+
+  const chainId = useChainId();
+  const { switchChain } = useSwitchChain();
+
+  const { data } = useAssetChainData({ asset });
+
+  if (!assets) return null;
+
+  return (
+    <div>
+      <div>
+        <ConnectKitButton />
+      </div>
+
+      <form
+        onSubmit={form.handleSubmit((fields) => {
+          console.log(fields);
+        })}
+      >
+        <FormGroup label="Asset" labelFor="asset">
+          <Select
+            {...form.register('assetId', {
+              onChange: (e) => {
+                const asset = assets.find((a) => a.id === e.target.value);
+
+                if (
+                  asset?.source.__typename === 'ERC20' &&
+                  Number(asset.source.chainId) !== chainId
+                ) {
+                  switchChain({ chainId: Number(asset.source.chainId) });
+                }
+              },
+            })}
+          >
+            <option value="" disabled>
+              Please select
+            </option>
+            {assets.map((a) => {
+              return (
+                <option key={a.id} value={a.id}>
+                  {a.symbol}{' '}
+                  {a.source.__typename === 'ERC20' && a.source.chainId}
+                </option>
+              );
+            })}
+          </Select>
+          {form.formState.errors.assetId?.message && (
+            <TradingInputError>
+              {form.formState.errors.assetId.message}
+            </TradingInputError>
+          )}
+        </FormGroup>
+        <FormGroup label="To Vega key" labelFor="toPubKey">
+          <Select {...form.register('toPubKey')}>
+            <option value="" disabled>
+              Please select
+            </option>
+            {pubKeys.map((k) => {
+              return (
+                <option key={k.publicKey} value={k.publicKey}>
+                  {k.name} {truncateMiddle(k.publicKey)}
+                </option>
+              );
+            })}
+          </Select>
+          {form.formState.errors.toPubKey?.message && (
+            <TradingInputError>
+              {form.formState.errors.toPubKey.message}
+            </TradingInputError>
+          )}
+        </FormGroup>
+        <FormGroup label="Amount" labelFor="amount">
+          <Input {...form.register('amount')} />
+          {form.formState.errors.amount?.message && (
+            <TradingInputError>
+              {form.formState.errors.amount.message}
+            </TradingInputError>
+          )}
+        </FormGroup>
+        <TradingButton type="submit" size="large" fill={true}>
+          Submit
+        </TradingButton>
+        <div>
+          <div>balanceOf: {data.balanceOf}</div>
+          <div>allowance: {data.allowance}</div>
+          <div>lifetime limit: {data.lifetimeLimit}</div>
+          <div>is exempt: {data.isExempt}</div>
+        </div>
+      </form>
+    </div>
+  );
+};
+
+const Providers = ({ children }: PropsWithChildren) => {
+  return (
+    <WagmiProvider config={wagmiConfig}>
+      <QueryClientProvider client={queryClient}>
+        <ConnectKitProvider>{children}</ConnectKitProvider>
+      </QueryClientProvider>
+    </WagmiProvider>
+  );
+};
+
+const useAssetChainData = ({ asset }: { asset?: AssetFieldsFragment }) => {
+  const { address } = useAccount();
+  const chainId = useChainId();
+  const bridgeAddress = bridges[chainId] as `0x${string}`;
+
   const assetAddress = (
     asset?.source.__typename === 'ERC20' ? asset.source.contractAddress : ''
   ) as `0x${string}`;
 
-  const { address } = useAccount();
-  const chainId = useChainId();
-  const { switchChain } = useSwitchChain();
-
-  const bridgeAddress = bridges[chainId];
-
-  const { data } = useReadContracts({
+  const { data, ...queryResult } = useReadContracts({
     contracts: [
       {
         abi: erc20Abi,
@@ -106,54 +241,13 @@ const DepositContainer = () => {
     ],
   });
 
-  if (!assets) return null;
-
-  return (
-    <div>
-      <div>
-        <ConnectKitButton />
-      </div>
-      <Select
-        value={asset?.id}
-        onChange={(e) => {
-          const asset = assets.find((a) => a.id === e.target.value);
-
-          if (
-            asset?.source.__typename === 'ERC20' &&
-            Number(asset.source.chainId) !== chainId
-          ) {
-            switchChain({ chainId: Number(asset.source.chainId) });
-          }
-
-          setAsset(asset);
-        }}
-      >
-        {assets.map((a) => {
-          return (
-            <option key={a.id} value={a.id}>
-              {a.symbol} {a.source.__typename === 'ERC20' && a.source.chainId}
-            </option>
-          );
-        })}
-      </Select>
-      {data && (
-        <div>
-          <div>balanceOf: {data[0].result?.toString()}</div>
-          <div>allowance: {data[1].result?.toString()}</div>
-          <div>lifetime limit: {data[2].result?.toString()}</div>
-          <div>is exempt: {data[3].result?.toString()}</div>
-        </div>
-      )}
-    </div>
-  );
-};
-
-const Providers = ({ children }: PropsWithChildren) => {
-  return (
-    <WagmiProvider config={wagmiConfig}>
-      <QueryClientProvider client={queryClient}>
-        <ConnectKitProvider>{children}</ConnectKitProvider>
-      </QueryClientProvider>
-    </WagmiProvider>
-  );
+  return {
+    ...queryResult,
+    data: {
+      balanceOf: data && data[0].result?.toString(),
+      allowance: data && data[1].result?.toString(),
+      lifetimeLimit: data && data[2].result?.toString(),
+      isExempt: data && data[3].result?.toString(),
+    },
+  };
 };

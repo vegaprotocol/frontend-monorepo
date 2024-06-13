@@ -24,6 +24,7 @@
     "@apollo/client": "^3.5.8",
     "@blueprintjs/icons": "^3.32.0",
     "@coinbase/wallet-sdk": "^3.6.5",
+    "@hookform/resolvers": "^3.6.0",
     "@radix-ui/react-accordion": "^1.1.0",
     "@radix-ui/react-checkbox": "^1.0.1",
     "@radix-ui/react-dialog": "^1.0.2",
