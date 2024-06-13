@@ -27,8 +27,8 @@ export type EmblemByMarketProps = {
  * @param vegaChain string the vega chain ID (default: Vega Mainnet)
  * @returns React.Node
  */
-export function EmblemByMarket({ size = 30, ...props }: EmblemByMarketProps) {
-  const { vegaChain, market } = props;
+export function EmblemByMarket(props: EmblemByMarketProps) {
+  const { vegaChain, market, size = 30 } = props;
 
   const chain = getVegaChain(vegaChain);
   const data = useMarketInfo(chain, market);
@@ -41,7 +41,7 @@ export function EmblemByMarket({ size = 30, ...props }: EmblemByMarketProps) {
   );
 
   return (
-    <div className="relative inline-block h-8 w-14 leading-[0]">
+    <div className="relative inline-block leading-[0] min-w-fit h-8">
       <EmblemBase
         src={base}
         size={size}
@@ -69,7 +69,7 @@ export function EmblemByMarket({ size = 30, ...props }: EmblemByMarketProps) {
           src={quoteChain || settlementChain}
           size={12}
           alt={t('Chain logo')}
-          className={`align-text-top absolute bottom-0 right-1`}
+          className={`align-text-top absolute bottom-0 right-0`}
         />
       )}
     </div>
