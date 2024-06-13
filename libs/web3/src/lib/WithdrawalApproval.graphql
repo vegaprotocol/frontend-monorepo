@@ -12,6 +12,7 @@ query WithdrawalApproval($withdrawalId: ID!) {
       source {
         ... on ERC20 {
           chainId
+          contractAddress
         }
       }
     }
