@@ -39,7 +39,7 @@ export const LayoutWithSidebar = ({
       <aside
         // min-h-0 is needed as this element is part of a grid, we want the content to be scrollable, without it it will push the grid element taller
         className={classNames(
-          'col-start-1 lg:col-start-2 min-h-0 lg:border-l border-default lg:bg-vega-clight-800 dark:lg:bg-vega-cdark-800',
+          'col-start-1 lg:col-start-2 lg:col-end-2 min-h-0 lg:border-l border-default lg:bg-vega-clight-800 dark:lg:bg-vega-cdark-800',
           {
             hidden: !sidebarOpen,
           }

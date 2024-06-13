@@ -22,6 +22,7 @@ export type CosmicElevatorFlags = Pick<
   | 'ICEBERG_ORDERS'
   | 'ISOLATED_MARGIN'
   | 'TAKE_PROFIT_STOP_LOSS'
+  | 'SWAP'
   | 'TWAP_REWARDS'
   | 'STOP_ORDERS'
   | 'SUCCESSOR_MARKETS'

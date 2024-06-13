@@ -36,7 +36,6 @@ import {
   useWeb3Disconnect,
   getChainName,
   type AssetData,
-  ETHEREUM_CHAIN_ID,
 } from '@vegaprotocol/web3';
 import { AssetBalance } from './asset-balance';
 import { DocsLinks } from '@vegaprotocol/environment';
@@ -136,7 +135,7 @@ export const WithdrawForm = ({
   const ethereumAddress = useEthereumAddress();
   const required = useRequired();
   const minSafe = useMinSafe();
-  const { account, chainId, isActive } = useWeb3React();
+  const { account, chainId, isActive, connector } = useWeb3React();
   const wrongChain = selectedAsset && selectedAsset.chainId !== chainId;
   const openDialog = useWeb3ConnectStore((store) => store.open);
 
@@ -197,10 +196,10 @@ export const WithdrawForm = ({
         data-testid="withdraw-form"
       >
         <TradingFormGroup
-          label={t('To ({{chainName}} address)', {
+          label={t('To {{chainName}} address', {
             chainName: selectedAsset?.chainId
               ? getChainName(selectedAsset.chainId)
-              : ETHEREUM_CHAIN_ID,
+              : '',
           })}
           labelFor="ethereum-address"
         >
@@ -210,7 +209,7 @@ export const WithdrawForm = ({
             rules={{
               validate: {
                 required: (value) => {
-                  if (!value) return t('Connect Ethereum wallet');
+                  if (!value) return t('Connect wallet');
                   return true;
                 },
                 ethereumAddress,
@@ -293,9 +292,28 @@ export const WithdrawForm = ({
                 id="asset"
                 name="asset"
                 required
-                onValueChange={(value) => {
+                onValueChange={async (value) => {
                   onSelectAsset(value);
                   field.onChange(value);
+
+                  const asset = assets.find((a) => a.id === value);
+
+                  if (
+                    asset &&
+                    asset.source.__typename === 'ERC20' &&
+                    Number(asset.source.chainId) !== chainId
+                  ) {
+                    await connector.provider?.request({
+                      method: 'wallet_switchEthereumChain',
+                      params: [
+                        {
+                          chainId: `0x${Number(asset.source.chainId).toString(
+                            16
+                          )}`,
+                        },
+                      ],
+                    });
+                  }
                 }}
                 placeholder={t('Please select an asset')}
                 value={selectedAsset?.id}
@@ -377,17 +395,6 @@ export const WithdrawForm = ({
             </div>
           )}
         </TradingFormGroup>
-
-        {wrongChain && (
-          <div className="mb-4">
-            <Notification
-              intent={Intent.Danger}
-              message={t('Switch network in your wallet to {{chain}}', {
-                chain: getChainName(Number(selectedAsset?.chainId)),
-              })}
-            />
-          </div>
-        )}
 
         <TradingButton
           data-testid="submit-withdrawal"

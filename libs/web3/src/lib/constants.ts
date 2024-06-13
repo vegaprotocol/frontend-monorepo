@@ -62,10 +62,10 @@ export const TRANSPORTS: Record<ChainId, string | undefined> = {
   [ETHEREUM_SEPOLIA_CHAIN_ID]:
     'https://sepolia.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8',
 
-  // TODO: Change the RPCs below to the proper one, these are just a free plan for testing
-  [ARBITRUM_CHAIN_ID]: 'https://arbitrum-one.rpc.grove.city/v1/11e60d54',
+  [ARBITRUM_CHAIN_ID]:
+    'https://arbitrum-one.rpc.grove.city/v1/af6a2d529a11f8158bc8ca2a',
   [ARBITRUM_SEPOLIA_CHAIN_ID]:
-    'https://arbitrum-sepolia-archival.rpc.grove.city/v1/11e60d54',
+    'https://arbitrum-sepolia-archival.rpc.grove.city/v1/af6a2d529a11f8158bc8ca2a',
 };
 
 export const ERR_WRONG_CHAIN = new Error('wrong chain');

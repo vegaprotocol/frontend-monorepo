@@ -413,6 +413,9 @@ export const compileFeatureFlags = (refresh = false): FeatureFlags => {
         process.env['NX_TAKE_PROFIT_STOP_LOSS']
       ) as string
     ),
+    SWAP: TRUTHY.includes(
+      windowOrDefault('NX_SWAP', process.env['NX_SWAP']) as string
+    ),
     ISOLATED_MARGIN: TRUTHY.includes(
       windowOrDefault(
         'NX_ISOLATED_MARGIN',

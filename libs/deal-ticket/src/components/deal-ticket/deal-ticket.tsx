@@ -9,7 +9,7 @@ import { SideSelector } from './side-selector';
 import { TimeInForceSelector } from './time-in-force-selector';
 import { TypeSelector } from './type-selector';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
-import { type Transaction } from '@vegaprotocol/wallet';
+import { type OrderSubmission, type Transaction } from '@vegaprotocol/wallet';
 import {
   mapFormValuesToOrderSubmission,
   mapFormValuesToTakeProfitAndStopLoss,
@@ -43,6 +43,7 @@ import {
   getBaseAsset,
   getDerivedPrice,
   getProductType,
+  getQuoteAsset,
   getQuoteName,
   isMarketInAuction,
   isSpot,
@@ -92,6 +93,11 @@ import {
 } from '@vegaprotocol/react-helpers';
 import { useSlippage } from '../../hooks/use-slippage';
 import BigNumber from 'bignumber.js';
+import {
+  type AssetFieldsFragment,
+  AssetSymbol,
+  getAssetSymbol,
+} from '@vegaprotocol/assets';
 
 export const REDUCE_ONLY_TOOLTIP =
   '"Reduce only" will ensure that this order will not increase the size of an open position. When the order is matched, it will only trade enough volume to bring your open volume towards 0 but never change the direction of your position. If applied to a limit order that is not instantly filled, the order will be stopped.';
@@ -197,6 +203,7 @@ export const DealTicket = ({
   const assetSymbol = asset.symbol;
   const baseAsset = isSpotMarket ? getBaseAsset(market) : undefined;
   const quoteName = getQuoteName(market);
+  const quoteAsset = getQuoteAsset(market);
   const baseQuote = getBaseQuoteUnit(
     market.tradableInstrument.instrument.metadata.tags
   );
@@ -609,7 +616,11 @@ export const DealTicket = ({
                         onClick={() => setValue('useNotional', false)}
                       >
                         <Pill size="xs">
-                          {quoteName}{' '}
+                          {isSpotMarket ? (
+                            <AssetSymbol asset={quoteAsset} />
+                          ) : (
+                            quoteAsset.symbol
+                          )}{' '}
                           <VegaIcon name={VegaIconNames.TRANSFER} size={16} />
                         </Pill>
                       </button>
@@ -656,7 +667,11 @@ export const DealTicket = ({
                           onClick={() => setValue('useNotional', true)}
                         >
                           <Pill size="xs">
-                            {baseQuote}{' '}
+                            {baseAsset ? (
+                              <AssetSymbol asset={baseAsset} />
+                            ) : (
+                              baseQuote
+                            )}{' '}
                             <VegaIcon name={VegaIconNames.TRANSFER} size={16} />
                           </Pill>
                         </button>
@@ -712,7 +727,15 @@ export const DealTicket = ({
               >
                 <Input
                   id="input-price-quote"
-                  appendElement={<Pill size="xs">{quoteName}</Pill>}
+                  appendElement={
+                    <PricePill
+                      quoteAsset={quoteAsset}
+                      baseAsset={baseAsset}
+                      quoteName={quoteName}
+                      isNotional={useNotional}
+                      isSpotMarket={isSpotMarket}
+                    />
+                  }
                   className="w-full"
                   type="number"
                   step={priceStep}
@@ -742,7 +765,9 @@ export const DealTicket = ({
               normalizedOrder?.size || '0',
               market.positionDecimalPlaces
             )}
-            symbol={baseQuote}
+            symbol={
+              isSpotMarket && baseAsset ? getAssetSymbol(baseAsset) : baseQuote
+            }
           />
         ) : (
           <KeyValue
@@ -753,7 +778,7 @@ export const DealTicket = ({
               asset.quantum
             )}
             value={formatValue(notionalSize, asset.decimals)}
-            symbol={quoteName}
+            symbol={isSpotMarket ? getAssetSymbol(quoteAsset) : quoteName}
             labelDescription={t(
               'NOTIONAL_SIZE_TOOLTIP_TEXT',
               NOTIONAL_SIZE_TOOLTIP_TEXT,
@@ -765,7 +790,7 @@ export const DealTicket = ({
           order={
             normalizedOrder && { ...normalizedOrder, price: price || undefined }
           }
-          assetSymbol={assetSymbol}
+          assetSymbol={isSpotMarket ? getAssetSymbol(quoteAsset) : assetSymbol}
           market={market}
           marketIsInAuction={marketIsInAuction}
         />
@@ -1012,33 +1037,21 @@ export const DealTicket = ({
         onDeposit={onDeposit}
         type={type}
       />
-      <Button
-        data-testid="place-order"
-        type="submit"
-        className="w-full"
-        intent={side === Schema.Side.SIDE_BUY ? Intent.Success : Intent.Danger}
-        subLabel={`${formatValue(
-          normalizedOrder.size,
-          market.positionDecimalPlaces
-        )} ${baseQuote || ''} @ ${
-          type === Schema.OrderType.TYPE_MARKET
-            ? 'market'
-            : `${formatValue(
-                normalizedOrder.price,
-                market.decimalPlaces
-              )} ${quoteName}`
-        }`}
-      >
-        {t(
-          type === Schema.OrderType.TYPE_MARKET
-            ? 'Place market order'
-            : 'Place limit order'
-        )}
-      </Button>
+      <PlaceOrderButton
+        isSpotMarket={isSpotMarket}
+        type={type}
+        side={side}
+        baseQuote={baseQuote}
+        quoteName={quoteName}
+        market={market}
+        normalizedOrder={normalizedOrder}
+        baseAsset={baseAsset}
+        quoteAsset={quoteAsset}
+      />
       <DealTicketMarginDetails
         side={normalizedOrder.side}
         onMarketClick={onMarketClick}
-        assetSymbol={asset.symbol}
+        asset={asset}
         marginAccountBalance={marginAccountBalance}
         orderMarginAccountBalance={orderMarginAccountBalance}
         generalAccountBalance={generalAccountBalance}
@@ -1057,7 +1070,7 @@ export const DealTicket = ({
 interface SummaryMessageProps {
   isSpotMarket?: boolean;
   error?: { message: string; type: string };
-  asset: { id: string; symbol: string; name: string; decimals: number };
+  asset: AssetFieldsFragment;
   marketTradingMode: MarketData['marketTradingMode'];
   balance: string;
   margin: string;
@@ -1190,3 +1203,94 @@ const SummaryMessage = memo(
     return null;
   }
 );
+
+const PricePill = ({
+  quoteAsset,
+  baseAsset,
+  quoteName,
+  isSpotMarket,
+  isNotional,
+}: {
+  quoteAsset: AssetFieldsFragment;
+  baseAsset?: AssetFieldsFragment;
+  quoteName: string;
+  isNotional?: boolean;
+  isSpotMarket: boolean;
+}) => {
+  if (isSpotMarket) {
+    if (isNotional) {
+      return (
+        <Pill size="xs">
+          <AssetSymbol asset={baseAsset} />
+        </Pill>
+      );
+    } else {
+      return (
+        <Pill size="xs">
+          <AssetSymbol asset={quoteAsset} />
+        </Pill>
+      );
+    }
+  }
+
+  return <Pill size="xs">{quoteName}</Pill>;
+};
+
+const PlaceOrderButton = ({
+  isSpotMarket,
+  side,
+  type,
+  baseQuote,
+  quoteName,
+  normalizedOrder,
+  market,
+  baseAsset,
+  quoteAsset,
+}: {
+  isSpotMarket: boolean;
+  type: Schema.OrderType;
+  side: Schema.Side;
+  baseQuote?: string;
+  quoteName: string;
+  normalizedOrder: OrderSubmission;
+  market: Market;
+  baseAsset?: AssetFieldsFragment;
+  quoteAsset: AssetFieldsFragment;
+}) => {
+  const t = useT();
+
+  const text = t(
+    type === Schema.OrderType.TYPE_MARKET
+      ? 'Place market order'
+      : 'Place limit order'
+  );
+
+  const size = formatValue(normalizedOrder.size, market.positionDecimalPlaces);
+  const price = formatValue(normalizedOrder.price, market.decimalPlaces);
+
+  let baseText = `${size} ${baseQuote || ''}`;
+  let quoteText = `${price} ${quoteName}`;
+
+  if (isSpotMarket && baseAsset) {
+    baseText = `${size} ${getAssetSymbol(baseAsset)}`;
+    quoteText = `${price} ${getAssetSymbol(quoteAsset)}`;
+  }
+
+  if (type === Schema.OrderType.TYPE_MARKET) {
+    quoteText = 'market';
+  }
+
+  const subLabel = `${baseText} @ ${quoteText}`;
+
+  return (
+    <Button
+      data-testid="place-order"
+      type="submit"
+      className="w-full"
+      intent={side === Schema.Side.SIDE_BUY ? Intent.Success : Intent.Danger}
+      subLabel={subLabel}
+    >
+      {text}
+    </Button>
+  );
+};

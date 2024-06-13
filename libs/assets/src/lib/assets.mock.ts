@@ -1,8 +1,6 @@
 import merge from 'lodash/merge';
-import type {
-  AssetsQuery,
-  AssetListFieldsFragment,
-} from './__generated__/Assets';
+import type { AssetsQuery } from './__generated__/Assets';
+import type { AssetFieldsFragment } from './__generated__/Asset';
 import * as Types from '@vegaprotocol/types';
 import type { PartialDeep } from 'type-fest';
 
@@ -20,7 +18,7 @@ export const assetsQuery = (
   return merge(defaultAssets, override);
 };
 
-const assetFields: AssetListFieldsFragment[] = [
+const assetFields: AssetFieldsFragment[] = [
   {
     __typename: 'Asset',
     id: 'asset-id',
@@ -61,6 +59,7 @@ const assetFields: AssetListFieldsFragment[] = [
     name: 'Asto',
     source: {
       __typename: 'BuiltinAsset',
+      maxFaucetAmountMint: '1',
     },
     quantum: '1',
     status: Types.AssetStatus.STATUS_ENABLED,
@@ -73,6 +72,7 @@ const assetFields: AssetListFieldsFragment[] = [
     name: 'tBTC TEST',
     source: {
       __typename: 'BuiltinAsset',
+      maxFaucetAmountMint: '1',
     },
     quantum: '1',
     status: Types.AssetStatus.STATUS_ENABLED,

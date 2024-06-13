@@ -55,9 +55,15 @@ export const getQuoteAsset = (market: Pick<Market, 'tradableInstrument'>) => {
     return product.quoteAsset;
   }
 
-  throw new Error(
-    `Failed to retrieve quote asset. Invalid product type ${product.__typename}`
-  );
+  if (isFuture(product)) {
+    return product.settlementAsset;
+  }
+
+  if (isPerpetual(product)) {
+    return product.settlementAsset;
+  }
+
+  throw new Error(`Failed to retrieve quote asset.`);
 };
 
 export const getProductType = (market: Pick<Market, 'tradableInstrument'>) => {

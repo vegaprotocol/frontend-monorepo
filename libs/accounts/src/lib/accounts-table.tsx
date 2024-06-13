@@ -29,6 +29,7 @@ import type { AgGridReactProps } from 'ag-grid-react';
 import type { AccountFields } from './accounts-data-provider';
 import type { Asset } from '@vegaprotocol/types';
 import { CenteredGridCellWrapper } from '@vegaprotocol/datagrid';
+import { getAssetSymbol } from '@vegaprotocol/assets';
 import BigNumber from 'bignumber.js';
 import classNames from 'classnames';
 import { AccountsActionsDropdown } from './accounts-actions-dropdown';
@@ -81,20 +82,16 @@ type PinnedRowData = Omit<AccountFields, 'asset' | 'type'> & {
 export interface AccountTableProps extends AgGridReactProps {
   rowData?: AccountFields[] | null;
   onClickAsset: (assetId: string) => void;
-  onClickWithdraw?: (assetId: string) => void;
   onClickDeposit?: (assetId: string) => void;
   onClickBreakdown?: (assetId: string) => void;
-  onClickTransfer?: (assetId: string) => void;
   isReadOnly: boolean;
   pinnedAssets?: PinnedAsset[];
 }
 
 export const AccountTable = ({
   onClickAsset,
-  onClickWithdraw,
   onClickDeposit,
   onClickBreakdown,
-  onClickTransfer,
   rowData,
   isReadOnly,
   pinnedAssets,
@@ -153,7 +150,7 @@ export const AccountTable = ({
     const defs: ColDef[] = [
       {
         headerName: t('Asset'),
-        field: 'asset.symbol',
+        field: 'asset',
         pinned: true,
         minWidth: 75,
         headerTooltip: t(
@@ -164,6 +161,16 @@ export const AccountTable = ({
           if (data) {
             onClickAsset(data.asset.id);
           }
+        },
+        valueFormatter: ({
+          value,
+          data,
+        }: VegaValueFormatterParams<AccountFields, 'asset'>) => {
+          if (!data?.asset?.source || !value) {
+            return '-';
+          }
+
+          return getAssetSymbol(value);
         },
       },
       {
@@ -302,17 +309,8 @@ export const AccountTable = ({
                   ? node.data.asset.source.contractAddress
                   : undefined
               }
-              onClickDeposit={() => {
-                onClickDeposit && onClickDeposit(assetId);
-              }}
-              onClickWithdraw={() => {
-                onClickWithdraw && onClickWithdraw(assetId);
-              }}
               onClickBreakdown={() => {
                 onClickBreakdown && onClickBreakdown(assetId);
-              }}
-              onClickTransfer={() => {
-                onClickTransfer && onClickTransfer(assetId);
               }}
             />
           );
@@ -324,8 +322,6 @@ export const AccountTable = ({
     onClickAsset,
     onClickBreakdown,
     onClickDeposit,
-    onClickWithdraw,
-    onClickTransfer,
     isReadOnly,
     showDepositButton,
     t,

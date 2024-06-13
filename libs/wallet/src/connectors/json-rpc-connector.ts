@@ -21,7 +21,7 @@ const USER_REJECTED_CODE = 3001;
 
 export class JsonRpcConnector implements Connector {
   readonly id = 'jsonRpc';
-  readonly name = 'Command Line Wallet';
+  readonly name = 'CLI/Desktop Wallet';
   readonly description =
     'Connect using the command line wallet or the legacy desktop app.';
 

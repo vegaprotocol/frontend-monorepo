@@ -3,6 +3,7 @@ import { OrderViewDialog } from './order-view-dialog';
 import type { Order } from '../order-data-provider';
 import { BrowserRouter } from 'react-router-dom';
 import {
+  AssetStatus,
   CompositePriceType,
   OrderStatus,
   OrderTimeInForce,
@@ -66,6 +67,20 @@ describe('OrderViewDialog', () => {
                 name: 'tEURO Fairground',
                 decimals: 5,
                 quantum: '1',
+                status: AssetStatus.STATUS_ENABLED,
+                source: {
+                  __typename: 'ERC20' as const,
+                  chainId: '1',
+                  contractAddress: '0x123',
+                  withdrawThreshold: '1',
+                  lifetimeLimit: '1',
+                },
+                networkTreasuryAccount: {
+                  balance: '1',
+                },
+                globalInsuranceAccount: {
+                  balance: '1',
+                },
               },
               quoteName: 'EURO',
               dataSourceSpecForTradingTermination: {

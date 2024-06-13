@@ -1,11 +1,9 @@
 import { Intent, Notification } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../use-t';
+import { getAssetSymbol, type AssetFieldsFragment } from '@vegaprotocol/assets';
 
 interface ZeroBalanceErrorProps {
-  asset: {
-    id: string;
-    symbol: string;
-  };
+  asset: AssetFieldsFragment;
   onDeposit: (assetId: string) => void;
 }
 
@@ -14,16 +12,16 @@ export const ZeroBalanceError = ({
   onDeposit,
 }: ZeroBalanceErrorProps) => {
   const t = useT();
+
   return (
     <Notification
       intent={Intent.Warning}
       testId="deal-ticket-error-message-zero-balance"
       message={
         <>
-          {t(
-            'You need {{symbol}} in your wallet to trade in this market.',
-            asset
-          )}
+          {t('You need {{symbol}} in your wallet to trade in this market.', {
+            symbol: getAssetSymbol(asset),
+          })}
         </>
       }
       buttonProps={{
