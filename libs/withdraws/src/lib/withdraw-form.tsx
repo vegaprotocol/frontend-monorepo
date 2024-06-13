@@ -260,7 +260,10 @@ export const WithdrawForm = ({
               }
               return (
                 <TradingButton
-                  onClick={openDialog}
+                  onClick={() => {
+                    const desiredChainId = selectedAsset?.chainId || 1;
+                    openDialog(desiredChainId);
+                  }}
                   intent={Intent.Primary}
                   type="button"
                   data-testid="connect-eth-wallet-btn"
