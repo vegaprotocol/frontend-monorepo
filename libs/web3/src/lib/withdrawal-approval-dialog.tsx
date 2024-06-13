@@ -13,6 +13,7 @@ import { useWithdrawalApprovalQuery } from './__generated__/WithdrawalApproval';
 import omit from 'lodash/omit';
 import { create } from 'zustand';
 import { useT } from './use-t';
+import { getExternalChainShortLabel } from '@vegaprotocol/environment';
 
 type WithdrawalApprovalDialogProps = {
   withdrawalId: string | undefined;
@@ -137,6 +138,12 @@ const WithdrawalApprovalDialogContent = ({
                 </div>
               </KeyValueTableRow>
             ))}
+            <KeyValueTableRow key={'chain'}>
+              <div data-testid={`chain_label`}>{t('chain')}</div>
+              <div data-testid={`chain_value`} className="break-all">
+                {getExternalChainShortLabel(details.sourceChainId)}
+              </div>
+            </KeyValueTableRow>
           </KeyValueTable>
         </div>
       );

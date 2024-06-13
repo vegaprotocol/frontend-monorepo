@@ -6,5 +6,6 @@ query WithdrawalApproval($withdrawalId: ID!) {
     signatures
     targetAddress
     creation
+    sourceChainId
   }
 }
