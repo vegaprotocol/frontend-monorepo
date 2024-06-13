@@ -1,4 +1,4 @@
-import { type PropsWithChildren, useState } from 'react';
+import { type PropsWithChildren } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { z } from 'zod';
 
@@ -11,6 +11,8 @@ import {
   useChainId,
   useAccount,
   useReadContracts,
+  useDisconnect,
+  useAccountEffect,
 } from 'wagmi';
 import { mainnet, sepolia, arbitrum, arbitrumSepolia } from 'wagmi/chains';
 
@@ -31,12 +33,13 @@ import {
   TradingButton,
   truncateMiddle,
   TradingInputError,
+  Intent,
 } from '@vegaprotocol/ui-toolkit';
 import { BRIDGE_ABI } from '@vegaprotocol/smart-contracts';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm, useWatch } from 'react-hook-form';
+import { Controller, useForm, useWatch } from 'react-hook-form';
 
 const wagmiConfig = createConfig(
   getDefaultConfig({
@@ -75,9 +78,17 @@ const bridges: { [id: number]: string } = {
 };
 
 const depositSchema = z.object({
+  fromAddress: z.string().min(1, 'Connect wallet'),
   assetId: z.string().min(1, 'Required'),
   toPubKey: z.string().min(1, 'Required'),
-  amount: z.string().min(1, 'Required'),
+  // Use a string but parse it as a number for validation
+  amount: z.string().refine(
+    (v) => {
+      const n = Number(v);
+      return !isNaN(n) && n >= 0 && v?.length > 0;
+    },
+    { message: 'Invalid number' }
+  ),
 });
 
 const DepositForm = ({
@@ -89,9 +100,15 @@ const DepositForm = ({
 }) => {
   const { pubKeys } = useVegaWallet();
 
+  const { isConnected, address } = useAccount();
+  const { disconnect } = useDisconnect();
+  const { switchChainAsync } = useSwitchChain();
+  const chainId = useChainId();
+
   const form = useForm<z.infer<typeof depositSchema>>({
     resolver: zodResolver(depositSchema),
     defaultValues: {
+      fromAddress: address,
       assetId: initialAssetId,
       toPubKey: '',
       amount: '',
@@ -101,95 +118,153 @@ const DepositForm = ({
   const assetId = useWatch({ name: 'assetId', control: form.control });
   const asset = assets?.find((a) => a.id === assetId);
 
-  const chainId = useChainId();
-  const { switchChain } = useSwitchChain();
-
   const { data } = useAssetChainData({ asset });
+
+  useAccountEffect({
+    onConnect: ({ address }) =>
+      form.setValue('fromAddress', address, { shouldValidate: true }),
+    onDisconnect: () => form.setValue('fromAddress', ''),
+  });
 
   if (!assets) return null;
 
   return (
-    <div>
+    <form
+      onSubmit={form.handleSubmit(async (fields) => {
+        console.log(fields);
+
+        const asset = assets?.find((a) => a.id === assetId);
+
+        if (!asset || asset.source.__typename !== 'ERC20') {
+          throw new Error('no asset');
+        }
+
+        if (Number(asset.source.chainId) !== chainId) {
+          await switchChainAsync({ chainId: Number(asset.source.chainId) });
+        }
+      })}
+    >
+      <FormGroup label="From address" labelFor="fromAddress">
+        <Controller
+          name="fromAddress"
+          control={form.control}
+          render={() => {
+            if (isConnected) {
+              return (
+                <div className="flex flex-col items-start">
+                  <input
+                    value={address}
+                    readOnly
+                    className="appearance-none text-sm text-muted"
+                  />
+                  <button
+                    type="button"
+                    className="underline underline-offset-4 text-xs"
+                    onClick={() => disconnect()}
+                  >
+                    Disconnect
+                  </button>
+                </div>
+              );
+            }
+
+            return (
+              <ConnectKitButton.Custom>
+                {({ show }) => {
+                  return (
+                    <TradingButton
+                      type="button"
+                      onClick={() => {
+                        if (show) show();
+                      }}
+                      intent={Intent.Info}
+                      size="small"
+                    >
+                      Connect
+                    </TradingButton>
+                  );
+                }}
+              </ConnectKitButton.Custom>
+            );
+          }}
+        />
+        {form.formState.errors.fromAddress?.message && (
+          <TradingInputError>
+            {form.formState.errors.fromAddress.message}
+          </TradingInputError>
+        )}
+      </FormGroup>
+      <FormGroup label="Asset" labelFor="asset">
+        <Select
+          {...form.register('assetId', {
+            onChange: async (e) => {
+              const asset = assets.find((a) => a.id === e.target.value);
+
+              if (
+                asset?.source.__typename === 'ERC20' &&
+                Number(asset.source.chainId) !== chainId
+              ) {
+                await switchChainAsync({
+                  chainId: Number(asset.source.chainId),
+                });
+              }
+            },
+          })}
+        >
+          <option value="" disabled>
+            Please select
+          </option>
+          {assets.map((a) => {
+            return (
+              <option key={a.id} value={a.id}>
+                {a.symbol} {a.source.__typename === 'ERC20' && a.source.chainId}
+              </option>
+            );
+          })}
+        </Select>
+        {form.formState.errors.assetId?.message && (
+          <TradingInputError>
+            {form.formState.errors.assetId.message}
+          </TradingInputError>
+        )}
+      </FormGroup>
+      <FormGroup label="To Vega key" labelFor="toPubKey">
+        <Select {...form.register('toPubKey')}>
+          <option value="" disabled>
+            Please select
+          </option>
+          {pubKeys.map((k) => {
+            return (
+              <option key={k.publicKey} value={k.publicKey}>
+                {k.name} {truncateMiddle(k.publicKey)}
+              </option>
+            );
+          })}
+        </Select>
+        {form.formState.errors.toPubKey?.message && (
+          <TradingInputError>
+            {form.formState.errors.toPubKey.message}
+          </TradingInputError>
+        )}
+      </FormGroup>
+      <FormGroup label="Amount" labelFor="amount">
+        <Input {...form.register('amount')} />
+        {form.formState.errors.amount?.message && (
+          <TradingInputError>
+            {form.formState.errors.amount.message}
+          </TradingInputError>
+        )}
+      </FormGroup>
+      <TradingButton type="submit" size="large" fill={true}>
+        Submit
+      </TradingButton>
       <div>
-        <ConnectKitButton />
+        <div>balanceOf: {data.balanceOf}</div>
+        <div>allowance: {data.allowance}</div>
+        <div>lifetime limit: {data.lifetimeLimit}</div>
+        <div>is exempt: {data.isExempt}</div>
       </div>
-
-      <form
-        onSubmit={form.handleSubmit((fields) => {
-          console.log(fields);
-        })}
-      >
-        <FormGroup label="Asset" labelFor="asset">
-          <Select
-            {...form.register('assetId', {
-              onChange: (e) => {
-                const asset = assets.find((a) => a.id === e.target.value);
-
-                if (
-                  asset?.source.__typename === 'ERC20' &&
-                  Number(asset.source.chainId) !== chainId
-                ) {
-                  switchChain({ chainId: Number(asset.source.chainId) });
-                }
-              },
-            })}
-          >
-            <option value="" disabled>
-              Please select
-            </option>
-            {assets.map((a) => {
-              return (
-                <option key={a.id} value={a.id}>
-                  {a.symbol}{' '}
-                  {a.source.__typename === 'ERC20' && a.source.chainId}
-                </option>
-              );
-            })}
-          </Select>
-          {form.formState.errors.assetId?.message && (
-            <TradingInputError>
-              {form.formState.errors.assetId.message}
-            </TradingInputError>
-          )}
-        </FormGroup>
-        <FormGroup label="To Vega key" labelFor="toPubKey">
-          <Select {...form.register('toPubKey')}>
-            <option value="" disabled>
-              Please select
-            </option>
-            {pubKeys.map((k) => {
-              return (
-                <option key={k.publicKey} value={k.publicKey}>
-                  {k.name} {truncateMiddle(k.publicKey)}
-                </option>
-              );
-            })}
-          </Select>
-          {form.formState.errors.toPubKey?.message && (
-            <TradingInputError>
-              {form.formState.errors.toPubKey.message}
-            </TradingInputError>
-          )}
-        </FormGroup>
-        <FormGroup label="Amount" labelFor="amount">
-          <Input {...form.register('amount')} />
-          {form.formState.errors.amount?.message && (
-            <TradingInputError>
-              {form.formState.errors.amount.message}
-            </TradingInputError>
-          )}
-        </FormGroup>
-        <TradingButton type="submit" size="large" fill={true}>
-          Submit
-        </TradingButton>
-        <div>
-          <div>balanceOf: {data.balanceOf}</div>
-          <div>allowance: {data.allowance}</div>
-          <div>lifetime limit: {data.lifetimeLimit}</div>
-          <div>is exempt: {data.isExempt}</div>
-        </div>
-      </form>
-    </div>
+    </form>
   );
 };
 
@@ -218,13 +293,13 @@ const useAssetChainData = ({ asset }: { asset?: AssetFieldsFragment }) => {
         abi: erc20Abi,
         address: assetAddress,
         functionName: 'balanceOf',
-        args: [address],
+        args: address && [address],
       },
       {
         abi: erc20Abi,
         address: assetAddress,
         functionName: 'allowance',
-        args: [address, bridgeAddress],
+        args: address && [address, bridgeAddress],
       },
       {
         abi: BRIDGE_ABI,
