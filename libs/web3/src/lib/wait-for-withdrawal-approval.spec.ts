@@ -14,7 +14,6 @@ const erc20WithdrawalApproval: WithdrawalApprovalQuery['erc20WithdrawalApproval'
     signatures: 'signatures',
     targetAddress: 'targetAddress',
     creation: '1',
-    sourceChainId: '1',
   };
 
 const withdrawalId =

@@ -142,7 +142,6 @@ const erc20WithdrawalApproval: WithdrawalApprovalQuery['erc20WithdrawalApproval'
     creation: '1',
     signatures: 'signatures',
     targetAddress: 'target-address',
-    sourceChainId: '1',
   };
 
 const mockedNetworkParams: MockedResponse<NetworkParamsQuery> = {
