@@ -16,7 +16,7 @@ export const EthWalletContainer = ({
   if (!account) {
     return (
       <div className="w-full text-center">
-        <Button onClick={open}>{t('connectEthWallet')}</Button>
+        <Button onClick={() => open()}>{t('connectEthWallet')}</Button>
       </div>
     );
   }

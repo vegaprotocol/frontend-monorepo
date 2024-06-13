@@ -215,7 +215,6 @@ def test_orderbook_price_movement(setup_environment: Tuple[Page, VegaServiceNull
     page, vega, market_id = setup_environment
 
     page.goto(f"/#/markets/{market_id}")
-    page.pause()
     page.locator("[data-testid=Orderbook]").click()
 
     book_el = page.locator("[data-testid=orderbook-grid-element]")
@@ -237,7 +236,6 @@ def test_orderbook_price_movement(setup_environment: Tuple[Page, VegaServiceNull
     vega.wait_for_total_catchup()
 
     # 6003-ORDB-013
-    page.pause()
     expect(book_el.locator("[data-testid=icon-arrow-up]")).to_be_attached()
     assert (
         float(page.locator("[data-testid*=current-price]").text_content())
@@ -258,7 +256,6 @@ def test_orderbook_price_movement(setup_environment: Tuple[Page, VegaServiceNull
     vega.wait_for_total_catchup()
 
     expect(book_el.locator("[data-testid=icon-arrow-down]")).to_be_attached()
-    page.pause()
     assert (
         float(page.locator("[data-testid*=current-price]").text_content())
         == matching_order_2[1]

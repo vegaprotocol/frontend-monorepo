@@ -31,6 +31,8 @@ import * as Schema from '@vegaprotocol/types';
 import { type TimestampedWithdrawals } from './use-ready-to-complete-withdrawals-toast';
 import classNames from 'classnames';
 import { useT } from './use-t';
+import { getAssetSymbol } from '@vegaprotocol/assets';
+import { useWeb3React } from '@web3-react/core';
 
 export const WithdrawalsTable = ({
   delayed,
@@ -41,13 +43,24 @@ export const WithdrawalsTable = ({
   delayed?: TimestampedWithdrawals;
 }) => {
   const t = useT();
+  const { chainId, connector } = useWeb3React();
   const createWithdrawApproval = useEthWithdrawApprovalsStore(
     (store) => store.create
   );
 
   const columnDefs = useMemo<ColDef[]>(
     () => [
-      { headerName: t('Asset'), field: 'asset.symbol', pinned: true },
+      {
+        headerName: t('Asset'),
+        field: 'asset',
+        pinned: true,
+        valueFormatter: ({
+          value,
+        }: VegaValueFormatterParams<WithdrawalFieldsFragment, 'asset'>) => {
+          if (!value) return '-';
+          return getAssetSymbol(value);
+        },
+      },
       {
         headerName: t('Amount'),
         field: 'amount',
@@ -119,8 +132,26 @@ export const WithdrawalsTable = ({
         field: 'txHash',
         type: 'rightAligned',
         cellRendererParams: {
-          complete: (withdrawal: WithdrawalFieldsFragment) => {
-            createWithdrawApproval(withdrawal);
+          complete: async (withdrawal: WithdrawalFieldsFragment) => {
+            const asset = withdrawal.asset;
+
+            if (
+              asset.source.__typename === 'ERC20' &&
+              asset.source.chainId !== String(chainId)
+            ) {
+              await connector.provider?.request({
+                method: 'wallet_switchEthereumChain',
+                params: [
+                  {
+                    chainId: `0x${Number(asset.source.chainId).toString(16)}`,
+                  },
+                ],
+              });
+            }
+
+            setTimeout(() => {
+              createWithdrawApproval(withdrawal);
+            }, 300);
           },
         },
         cellRendererSelector: ({
@@ -130,7 +161,7 @@ export const WithdrawalsTable = ({
         }),
       },
     ],
-    [createWithdrawApproval, delayed, ready, t]
+    [createWithdrawApproval, delayed, ready, t, connector, chainId]
   );
   return (
     <AgGrid
@@ -192,10 +223,21 @@ export const CompleteCell = ({ data, complete }: CompleteCellProps) => {
 
 export const EtherscanLinkCell = ({
   value,
+  data,
 }: VegaValueFormatterParams<WithdrawalFieldsFragment, 'txHash'>) => {
   if (!value) return '-';
+
+  const assetChainId =
+    data?.asset.source.__typename === 'ERC20'
+      ? Number(data.asset.source.chainId)
+      : undefined;
+
   return (
-    <EtherscanLink tx={value} data-testid="etherscan-link">
+    <EtherscanLink
+      sourceChainId={assetChainId}
+      tx={value}
+      data-testid="etherscan-link"
+    >
       {truncateByChars(value)}
     </EtherscanLink>
   );
@@ -278,12 +320,22 @@ export const StatusCell = ({
 const RecipientCell = ({
   value,
   valueFormatted,
+  data,
 }: VegaICellRendererParams<
   WithdrawalFieldsFragment,
   'details.receiverAddress'
 >) => {
+  const assetChainId =
+    data?.asset.source.__typename === 'ERC20'
+      ? Number(data.asset.source.chainId)
+      : undefined;
+
   return (
-    <EtherscanLink address={value} data-testid="etherscan-link">
+    <EtherscanLink
+      sourceChainId={assetChainId}
+      address={value}
+      data-testid="etherscan-link"
+    >
       {valueFormatted}
     </EtherscanLink>
   );

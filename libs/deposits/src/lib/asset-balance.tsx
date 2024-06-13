@@ -1,42 +1,65 @@
-import { useCallback, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useGetBalanceOfERC20Token } from './use-get-balance-of-erc20-token';
-import type { AssetFieldsFragment } from '@vegaprotocol/assets';
 import { useBalancesStore } from '@vegaprotocol/assets';
 import { Balance } from '@vegaprotocol/assets';
-import { isAssetTypeERC20 } from '@vegaprotocol/utils';
-import { useTokenContract } from '@vegaprotocol/web3';
+import { type AssetData, useTokenContractStatic } from '@vegaprotocol/web3';
+import { useWeb3React } from '@web3-react/core';
+import { toBigNum } from '@vegaprotocol/utils';
 
-const REFETCH_DELAY = 5000;
+const REFETCH_DELAY = 10000;
 
-export const AssetBalance = ({ asset }: { asset: AssetFieldsFragment }) => {
+export const AssetBalance = ({ assetData }: { assetData?: AssetData }) => {
+  const { account } = useWeb3React();
+
+  const { contract } = useTokenContractStatic(assetData);
+
   const [setBalance, getBalance] = useBalancesStore((state) => [
     state.setBalance,
     state.getBalance,
   ]);
 
-  const tokenContract = useTokenContract(
-    isAssetTypeERC20(asset) ? asset.source.contractAddress : undefined
-  );
-  const ethBalanceFetcher = useGetBalanceOfERC20Token(tokenContract, asset);
-
-  const fetchFromEth = useCallback(async () => {
-    const balance = await ethBalanceFetcher();
-    if (balance) {
-      setBalance({ asset, balanceOnEth: balance, ethBalanceFetcher });
-    }
-  }, [asset, ethBalanceFetcher, setBalance]);
+  const ethBalanceFetcher = useGetBalanceOfERC20Token(contract, account);
 
   useEffect(() => {
-    const balance = getBalance(asset.id);
-    if (!balance || Date.now() - balance.updatedAt > REFETCH_DELAY) {
-      fetchFromEth();
-    }
-  }, [asset.id, fetchFromEth, getBalance]);
+    let ignore = false;
 
-  return (
-    <Balance
-      balance={getBalance(asset.id)?.balanceOnEth?.toString()}
-      symbol={asset.symbol}
-    />
-  );
+    const fetchBalance = async () => {
+      if (!assetData) return;
+
+      const cachedBalance = getBalance(assetData.id);
+
+      if (
+        !cachedBalance ||
+        Date.now() - cachedBalance.updatedAt > REFETCH_DELAY
+      ) {
+        const balance = await ethBalanceFetcher();
+
+        if (ignore) return;
+
+        setBalance({
+          asset: assetData,
+          balanceOnEth: balance
+            ? toBigNum(balance, assetData.decimals)
+            : undefined,
+          ethBalanceFetcher,
+        });
+      }
+    };
+
+    fetchBalance();
+
+    return () => {
+      ignore = true;
+    };
+  }, [assetData, getBalance, ethBalanceFetcher, setBalance]);
+
+  if (!assetData) return null;
+
+  const balance = getBalance(assetData.id)?.balanceOnEth?.toString();
+
+  if (!balance) {
+    return <span className="text-xs text-muted">0</span>;
+  }
+
+  return <Balance balance={balance} symbol={assetData.symbol} />;
 };

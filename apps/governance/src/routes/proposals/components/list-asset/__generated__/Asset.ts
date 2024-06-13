@@ -8,7 +8,7 @@ export type ProposalAssetQueryVariables = Types.Exact<{
 }>;
 
 
-export type ProposalAssetQuery = { __typename?: 'Query', asset?: { __typename?: 'Asset', status: Types.AssetStatus, source: { __typename?: 'BuiltinAsset' } | { __typename?: 'ERC20', contractAddress: string } } | null };
+export type ProposalAssetQuery = { __typename?: 'Query', asset?: { __typename?: 'Asset', status: Types.AssetStatus, source: { __typename?: 'BuiltinAsset' } | { __typename?: 'ERC20', contractAddress: string, chainId: string } } | null };
 
 export type AssetListBundleQueryVariables = Types.Exact<{
   assetId: Types.Scalars['ID'];
@@ -25,6 +25,7 @@ export const ProposalAssetDocument = gql`
     source {
       ... on ERC20 {
         contractAddress
+        chainId
       }
     }
   }

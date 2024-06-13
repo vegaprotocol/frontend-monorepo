@@ -70,7 +70,7 @@ context(
             .should('be.visible')
             .and(
               'have.text',
-              'Get the Vega WalletGet MetaMask>_Command Line WalletView as public key'
+              'Get the Vega WalletGet MetaMask>_CLI/Desktop WalletView as public key'
             );
         });
       });

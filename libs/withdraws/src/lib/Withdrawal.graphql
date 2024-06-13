@@ -8,16 +8,7 @@ fragment WithdrawalFields on Withdrawal {
   status
   amount
   asset {
-    id
-    name
-    symbol
-    decimals
-    status
-    source {
-      ... on ERC20 {
-        contractAddress
-      }
-    }
+    ...AssetFields
   }
   createdTimestamp
   withdrawnTimestamp

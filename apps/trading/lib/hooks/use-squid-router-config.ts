@@ -67,6 +67,7 @@ const isSquidFriendlyAsset = (
   Boolean(
     asset.source.__typename === 'ERC20' &&
       asset.source.chainId &&
+      Number(asset.source.chainId) === ARBITRUM_CHAIN_ID &&
       asset.source.contractAddress
   );
 

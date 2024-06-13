@@ -18,6 +18,10 @@ import {
   ExternalLink,
   Intent,
   TradingButton,
+  truncateMiddle,
+  VegaIcon,
+  VegaIconNames,
+  ButtonLink,
 } from '@vegaprotocol/ui-toolkit';
 import { useWeb3React } from '@web3-react/core';
 import BigNumber from 'bignumber.js';
@@ -30,6 +34,8 @@ import {
   type GasData,
   useWeb3ConnectStore,
   useWeb3Disconnect,
+  getChainName,
+  type AssetData,
 } from '@vegaprotocol/web3';
 import { AssetBalance } from './asset-balance';
 import { DocsLinks } from '@vegaprotocol/environment';
@@ -52,7 +58,7 @@ export interface WithdrawFormProps {
   assets: Asset[];
   min: BigNumber;
   balance: BigNumber;
-  selectedAsset?: Asset;
+  selectedAsset?: AssetData;
   threshold: BigNumber;
   delay: number | undefined;
   onSelectAsset: (assetId: string) => void;
@@ -99,7 +105,11 @@ const WithdrawDelayNotification = ({
               }
             ),
         DocsLinks?.WITHDRAWAL_LIMITS ? (
-          <ExternalLink className="ml-1" href={DocsLinks.WITHDRAWAL_LIMITS}>
+          <ExternalLink
+            key="withdraw-limit-docs"
+            className="ml-1"
+            href={DocsLinks.WITHDRAWAL_LIMITS}
+          >
             {t('Read more')}
           </ExternalLink>
         ) : (
@@ -125,7 +135,10 @@ export const WithdrawForm = ({
   const ethereumAddress = useEthereumAddress();
   const required = useRequired();
   const minSafe = useMinSafe();
-  const { account: address } = useWeb3React();
+  const { account, chainId, isActive, connector } = useWeb3React();
+  const wrongChain = selectedAsset && selectedAsset.chainId !== chainId;
+  const openDialog = useWeb3ConnectStore((store) => store.open);
+
   const {
     register,
     handleSubmit,
@@ -137,7 +150,7 @@ export const WithdrawForm = ({
   } = useForm<FormFields>({
     defaultValues: {
       asset: selectedAsset?.id || '',
-      to: address,
+      to: account,
     },
   });
 
@@ -159,9 +172,9 @@ export const WithdrawForm = ({
   };
 
   useEffect(() => {
-    setValue('to', address || '');
+    setValue('to', account || '');
     trigger('to');
-  }, [address, setValue, trigger]);
+  }, [account, setValue, trigger]);
 
   const showWithdrawDelayNotification =
     Boolean(delay) &&
@@ -182,6 +195,91 @@ export const WithdrawForm = ({
         noValidate={true}
         data-testid="withdraw-form"
       >
+        <TradingFormGroup
+          label={t('To {{chainName}} address', {
+            chainName: selectedAsset?.chainId
+              ? getChainName(selectedAsset.chainId)
+              : '',
+          })}
+          labelFor="ethereum-address"
+        >
+          <Controller
+            name="to"
+            control={control}
+            rules={{
+              validate: {
+                required: (value) => {
+                  if (!value) return t('Connect wallet');
+                  return true;
+                },
+                ethereumAddress,
+                wrongChain: () => (wrongChain ? false : true),
+              },
+            }}
+            defaultValue={account}
+            render={() => {
+              if (isActive && account) {
+                let chainLogo = 'https://icon.vega.xyz/missing.svg';
+                if (chainId) {
+                  chainLogo = `https://icon.vega.xyz/chain/${chainId}/logo.svg`;
+                }
+                return (
+                  <div className="text-sm" aria-describedby="ethereum-address">
+                    <div className="flex gap-1 mb-1">
+                      {chainId ? (
+                        <img
+                          className="w-4 h-4"
+                          src={chainLogo}
+                          alt={String(chainId) || ''}
+                        />
+                      ) : null}
+                      <span
+                        className="break-all"
+                        data-testid="ethereum-address"
+                      >
+                        {truncateMiddle(account)}
+                      </span>
+                    </div>
+
+                    {wrongChain ? (
+                      <p className="text-xs text-vega-red-500 flex items-center gap-1">
+                        <VegaIcon name={VegaIconNames.WARNING} size={12} />
+                        {t('Switch network in your wallet to {{chain}}', {
+                          chain: getChainName(Number(selectedAsset?.chainId)),
+                        })}
+                      </p>
+                    ) : null}
+
+                    <DisconnectEthereumButton
+                      onDisconnect={() => {
+                        setValue('to', ''); // clear to value so required ethereum connection validation works
+                      }}
+                    />
+                  </div>
+                );
+              }
+              return (
+                <TradingButton
+                  onClick={() => {
+                    const desiredChainId = selectedAsset?.chainId || 1;
+                    openDialog(desiredChainId);
+                  }}
+                  intent={Intent.Primary}
+                  type="button"
+                  data-testid="connect-eth-wallet-btn"
+                >
+                  {t('Connect')}
+                </TradingButton>
+              );
+            }}
+          />
+          {errors.to?.message && (
+            <TradingInputError intent="danger">
+              {errors.to.message}
+            </TradingInputError>
+          )}
+        </TradingFormGroup>
+
         <TradingFormGroup label={t('Asset')} labelFor="asset">
           <Controller
             control={control}
@@ -197,9 +295,28 @@ export const WithdrawForm = ({
                 id="asset"
                 name="asset"
                 required
-                onValueChange={(value) => {
+                onValueChange={async (value) => {
                   onSelectAsset(value);
                   field.onChange(value);
+
+                  const asset = assets.find((a) => a.id === value);
+
+                  if (
+                    asset &&
+                    asset.source.__typename === 'ERC20' &&
+                    Number(asset.source.chainId) !== chainId
+                  ) {
+                    await connector.provider?.request({
+                      method: 'wallet_switchEthereumChain',
+                      params: [
+                        {
+                          chainId: `0x${Number(asset.source.chainId).toString(
+                            16
+                          )}`,
+                        },
+                      ],
+                    });
+                  }
                 }}
                 placeholder={t('Please select an asset')}
                 value={selectedAsset?.id}
@@ -221,27 +338,7 @@ export const WithdrawForm = ({
             </TradingInputError>
           )}
         </TradingFormGroup>
-        <TradingFormGroup
-          label={t('To (Ethereum address)')}
-          labelFor="ethereum-address"
-        >
-          <EthereumButton
-            clearAddress={() => {
-              setValue('to', '');
-              clearErrors('to');
-            }}
-          />
-          <TradingInput
-            id="ethereum-address"
-            data-testid="eth-address-input"
-            {...register('to', { validate: { required, ethereumAddress } })}
-          />
-          {errors.to?.message && (
-            <TradingInputError intent="danger">
-              {errors.to.message}
-            </TradingInputError>
-          )}
-        </TradingFormGroup>
+
         {selectedAsset && (
           <div className="mb-4">
             <WithdrawLimits
@@ -301,6 +398,7 @@ export const WithdrawForm = ({
             </div>
           )}
         </TradingFormGroup>
+
         <TradingButton
           data-testid="submit-withdrawal"
           type="submit"
@@ -325,31 +423,26 @@ const UseButton = (props: UseButtonProps) => {
   );
 };
 
-const EthereumButton = ({ clearAddress }: { clearAddress: () => void }) => {
+const DisconnectEthereumButton = ({
+  onDisconnect,
+}: {
+  onDisconnect: () => void;
+}) => {
   const t = useT();
-  const openDialog = useWeb3ConnectStore((state) => state.open);
-  const { isActive, connector } = useWeb3React();
+  const { connector } = useWeb3React();
   const [, , removeEagerConnector] = useLocalStorage(ETHEREUM_EAGER_CONNECT);
   const disconnect = useWeb3Disconnect(connector);
 
-  if (!isActive) {
-    return (
-      <UseButton onClick={openDialog} data-testid="connect-eth-wallet-btn">
-        {t('Connect')}
-      </UseButton>
-    );
-  }
-
   return (
-    <UseButton
+    <ButtonLink
       onClick={() => {
         disconnect();
-        clearAddress();
         removeEagerConnector();
+        onDisconnect();
       }}
       data-testid="disconnect-ethereum-wallet"
     >
       {t('Disconnect')}
-    </UseButton>
+    </ButtonLink>
   );
 };

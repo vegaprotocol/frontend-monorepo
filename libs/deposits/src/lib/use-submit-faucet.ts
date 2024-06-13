@@ -10,24 +10,29 @@ import { useEffect, useState } from 'react';
 
 export const useSubmitFaucet = (
   asset: Asset | undefined,
-  getBalances: () => void
+  onTransactionConfirmed: () => void
 ) => {
   const [id, setId] = useState<number | null>(null);
   const createEthTransaction = useEthTransactionStore((state) => state.create);
   const tx = useEthTransactionStore((state) => {
     return state.transactions.find((t) => t?.id === id);
   });
-  const contract = useTokenContract(
-    isAssetTypeERC20(asset) ? asset.source.contractAddress : undefined
-  );
+
+  const assetData = isAssetTypeERC20(asset)
+    ? {
+        contractAddress: asset.source.contractAddress,
+        chainId: Number(asset.source.chainId),
+      }
+    : undefined;
+  const { contract } = useTokenContract(assetData);
 
   // When tx is confirmed refresh balances
   useEffect(() => {
     if (tx?.status === EthTxStatus.Confirmed) {
-      getBalances();
+      onTransactionConfirmed();
       if (asset) useBalancesStore.getState().refetch(asset.id);
     }
-  }, [tx?.status, getBalances, asset]);
+  }, [tx?.status, onTransactionConfirmed, asset]);
 
   return {
     id,
@@ -35,6 +40,7 @@ export const useSubmitFaucet = (
       setId(null);
     },
     perform: () => {
+      if (!contract) return;
       const id = createEthTransaction(contract, 'faucet', []);
       setId(id);
     },

@@ -109,9 +109,7 @@ const ActionButton = ({
 
   if (!isActive) {
     return (
-      <Button onClick={() => open()}>
-        {t('Connect Ethereum wallet to complete')}
-      </Button>
+      <Button onClick={() => open()}>{t('Connect wallet to complete')}</Button>
     );
   }
 

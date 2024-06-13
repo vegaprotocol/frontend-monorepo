@@ -5,15 +5,14 @@ import { prepend0x } from '@vegaprotocol/smart-contracts';
 import sortBy from 'lodash/sortBy';
 import { useSubmitApproval } from './use-submit-approval';
 import { useSubmitFaucet } from './use-submit-faucet';
-import { useCallback, useEffect } from 'react';
-import { useDepositBalances } from './use-deposit-balances';
+import { useEffect, useMemo, useState } from 'react';
+import { useBalances } from './use-deposit-balances';
 import type { Asset } from '@vegaprotocol/assets';
 import {
   useEthTransactionStore,
-  useBridgeContract,
-  useEthereumConfig,
+  useCollateralBridge,
+  toAssetData,
 } from '@vegaprotocol/web3';
-import { usePersistentDeposit } from './use-persistent-deposit';
 
 interface DepositManagerProps {
   assetId?: string;
@@ -27,29 +26,30 @@ export const DepositManager = ({
   isFaucetable,
 }: DepositManagerProps) => {
   const createEthTransaction = useEthTransactionStore((state) => state.create);
-  const { config } = useEthereumConfig();
-  const [persistentDeposit, savePersistentDeposit] =
-    usePersistentDeposit(initialAssetId);
-  const assetId = persistentDeposit?.assetId;
-  const asset = assets.find((a) => a.id === assetId);
-  const bridgeContract = useBridgeContract();
 
-  const { getBalances, reset, balances } = useDepositBalances(asset);
+  const initialAsset = assets.find((a) => a.id === initialAssetId);
 
-  // Set up approve transaction
-  const approve = useSubmitApproval(asset, getBalances);
+  const [asset, setAsset] = useState(() => {
+    return initialAsset;
+  });
 
-  // Set up faucet transaction
-  const faucet = useSubmitFaucet(asset, getBalances);
+  const assetData = useMemo(() => toAssetData(asset), [asset]);
+
+  const { contract, config } = useCollateralBridge(assetData?.chainId);
+
+  const { balances, resetBalances, refetchBalances } = useBalances(assetData);
+
+  const approve = useSubmitApproval(asset, refetchBalances);
+  const faucet = useSubmitFaucet(asset, refetchBalances);
 
   const submitDeposit = (
     args: Parameters<DepositFormProps['submitDeposit']>['0']
   ) => {
-    if (!asset) {
+    if (!asset || !contract) {
       return;
     }
     createEthTransaction(
-      bridgeContract,
+      contract,
       'deposit_asset',
       [
         args.assetSource,
@@ -62,28 +62,22 @@ export const DepositManager = ({
     );
   };
 
-  const onAmountChange = useCallback(
-    (amount: string) => {
-      persistentDeposit &&
-        savePersistentDeposit({ ...persistentDeposit, amount });
-    },
-    [savePersistentDeposit, persistentDeposit]
-  );
-
   useEffect(() => {
     // When we change asset, also clear the tracked faucet/approve transactions so
     // we dont render stale UI
     approve.reset();
     faucet.reset();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [assetId]);
+  }, [asset?.id]);
 
   return (
     <DepositForm
       selectedAsset={asset}
-      onDisconnect={reset}
-      onSelectAsset={(assetId) => savePersistentDeposit({ assetId })}
-      handleAmountChange={onAmountChange}
+      onDisconnect={resetBalances}
+      onSelectAsset={(assetId) => {
+        const asset = assets.find((a) => a.id === assetId);
+        setAsset(asset);
+      }}
       assets={sortBy(assets, 'name')}
       submitApprove={approve.perform}
       submitDeposit={submitDeposit}

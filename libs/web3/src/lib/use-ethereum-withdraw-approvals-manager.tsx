@@ -6,8 +6,6 @@ import { useGetWithdrawThreshold } from './use-get-withdraw-threshold';
 import { useGetWithdrawDelay } from './use-get-withdraw-delay';
 import { localLoggerFactory } from '@vegaprotocol/logger';
 
-import { CollateralBridge } from '@vegaprotocol/smart-contracts';
-import { useEthereumConfig } from './use-ethereum-config';
 import { useWeb3React } from '@web3-react/core';
 import {
   WithdrawalApprovalDocument,
@@ -21,14 +19,19 @@ import {
   WithdrawalFailure,
 } from './use-ethereum-withdraw-approvals-store';
 import { useT } from './use-t';
+import { toAssetData } from './types';
+import { useCollateralBridge } from './use-bridge-contract';
 
 export const useEthWithdrawApprovalsManager = () => {
   const t = useT();
+  const { chainId } = useWeb3React();
+  const { contract, chainId: contractChainId } = useCollateralBridge(chainId);
+
   const getThreshold = useGetWithdrawThreshold();
   const getDelay = useGetWithdrawDelay();
+
   const { query } = useApolloClient();
-  const { provider, chainId } = useWeb3React();
-  const { config } = useEthereumConfig();
+
   const createEthTransaction = useEthTransactionStore((state) => state.create);
   const update = useEthWithdrawApprovalsStore((state) => state.update);
   const processed = useRef<Set<number>>(new Set());
@@ -45,6 +48,7 @@ export const useEthWithdrawApprovalsManager = () => {
     }
 
     processed.current.add(transaction.id);
+
     const { withdrawal } = transaction;
     let { approval } = transaction;
     if (withdrawal.asset.source.__typename !== 'ERC20') {
@@ -57,6 +61,7 @@ export const useEthWithdrawApprovalsManager = () => {
       });
       return;
     }
+
     if (!chainId) {
       update(transaction.id, {
         status: ApprovalStatus.Pending,
@@ -65,7 +70,11 @@ export const useEthWithdrawApprovalsManager = () => {
       });
       return;
     }
-    if (chainId?.toString() !== config?.chain_id) {
+
+    if (
+      (chainId && chainId?.toString() !== withdrawal.asset.source.chainId) ||
+      contractChainId?.toString() !== withdrawal.asset.source.chainId
+    ) {
       update(transaction.id, {
         status: ApprovalStatus.Pending,
         message: t(`Change network`),
@@ -84,9 +93,14 @@ export const useEthWithdrawApprovalsManager = () => {
     );
 
     (async () => {
-      const threshold = await getThreshold(withdrawal.asset);
+      const assetData = toAssetData(withdrawal.asset);
+      if (!assetData || !contract) return;
+
+      const threshold = await getThreshold(assetData);
+
       if (threshold && amount.isGreaterThan(threshold)) {
-        const delaySecs = await getDelay();
+        const delaySecs = await getDelay(assetData.chainId);
+
         const completeTimestamp =
           new Date(withdrawal.createdTimestamp).getTime() +
           (delaySecs as number) * 1000;
@@ -110,7 +124,7 @@ export const useEthWithdrawApprovalsManager = () => {
         });
         approval = res.data.erc20WithdrawalApproval;
       }
-      if (!(provider && config && approval) || approval.signatures.length < 3) {
+      if (!approval || approval.signatures.length < 3) {
         update(transaction.id, {
           status: ApprovalStatus.Error,
           approval,
@@ -123,12 +137,9 @@ export const useEthWithdrawApprovalsManager = () => {
         approval,
         dialogOpen: true,
       });
-      const signer = provider.getSigner();
+
       createEthTransaction(
-        new CollateralBridge(
-          config.collateral_bridge_contract.address,
-          signer || provider
-        ),
+        contract,
         'withdraw_asset',
         [
           approval.assetSource,
@@ -156,13 +167,13 @@ export const useEthWithdrawApprovalsManager = () => {
   }, [
     getThreshold,
     getDelay,
-    config,
     createEthTransaction,
-    provider,
     query,
     transaction,
     update,
     chainId,
     t,
+    contract,
+    contractChainId,
   ]);
 };

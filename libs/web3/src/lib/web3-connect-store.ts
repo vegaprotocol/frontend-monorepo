@@ -7,10 +7,11 @@ interface State {
   connectors: [Connector, Web3ReactHooks][];
   desiredChainId?: number;
   error?: Error;
+  chains?: number[];
 }
 interface Actions {
-  initialize: (connectors: State['connectors'], desiredChainId: number) => void;
-  open: () => void;
+  initialize: (connectors: State['connectors'], chains: number[]) => void;
+  open: (desiredChainId?: number) => void;
   close: () => void;
   clearError: () => void;
 }
@@ -18,10 +19,10 @@ interface Actions {
 export const useWeb3ConnectStore = create<State & Actions>()((set) => ({
   isOpen: false,
   connectors: [],
-  initialize: (connectors, desiredChainId) => {
-    set({ connectors, desiredChainId });
+  initialize: (connectors, chains) => {
+    set({ connectors, desiredChainId: chains[0] || undefined, chains });
   },
-  open: () => set(() => ({ isOpen: true })),
+  open: (desiredChainId = 1) => set(() => ({ isOpen: true, desiredChainId })),
   close: () => set(() => ({ isOpen: false })),
   clearError: () => set(() => ({ error: undefined })),
 }));

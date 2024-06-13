@@ -61,7 +61,7 @@ export const DepositLimits = ({
               </p>
               <p>
                 {t(
-                  'To date, {{currentDeposit}} {{assetSymbol}} has been deposited from this Ethereum address, so you can deposit up to {{remainingDeposit}} {{assetSymbol}} more.',
+                  'To date, {{currentDeposit}} {{assetSymbol}} has been deposited from this address, so you can deposit up to {{remainingDeposit}} {{assetSymbol}} more.',
                   {
                     currentDeposit: formatNumber(deposited.toString()),
                     assetSymbol: asset.symbol,
@@ -100,7 +100,7 @@ export const DepositLimits = ({
             </p>
           }
         >
-          <button type="button">{t('Ethereum deposit cap')}</button>
+          <button type="button">{t('Deposit cap')}</button>
         </Tooltip>
       ),
       rawValue: allowance,

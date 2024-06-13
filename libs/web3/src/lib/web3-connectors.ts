@@ -32,42 +32,38 @@ export const initializeCoinbaseConnector = (providerUrl: string) =>
       })
   );
 
-export const initializeWalletConnectLegacyConnector = (
-  chainId: number,
-  providerUrl: string
-) =>
-  initializeConnector<WalletConnectLegacy>(
-    (actions) =>
-      new WalletConnectLegacy({
-        actions,
-        options: {
-          rpc: {
-            [chainId]: providerUrl,
-          },
-          qrcode: true,
-        },
-        defaultChainId: chainId,
-      })
-  );
+export const initializeWalletConnectLegacyConnector = (rpcMap: {
+  [chainId: number]: string;
+}) =>
+  Object.values(rpcMap).length > 0
+    ? initializeConnector<WalletConnectLegacy>(
+        (actions) =>
+          new WalletConnectLegacy({
+            actions,
+            options: {
+              rpc: rpcMap,
+              qrcode: true,
+            },
+            defaultChainId: Number(Object.keys(rpcMap)[0]),
+          })
+      )
+    : null;
 
 export const initializeWalletConnector = (
   projectId: string,
-  chainId: number,
-  providerUrl: string
+  rpcMap: { [chainId: number]: string }
 ) =>
-  projectId && projectId.length > 0
+  projectId && projectId.length > 0 && Object.values(rpcMap).length > 0
     ? initializeConnector<WalletConnect>(
         (actions) =>
           new WalletConnect({
             actions,
-            defaultChainId: chainId,
+            defaultChainId: Number(Object.keys(rpcMap)[0]),
             options: {
               projectId: projectId,
-              chains: [chainId],
+              chains: Object.keys(rpcMap).map((id) => Number(id)),
               showQrModal: true,
-              rpcMap: {
-                [chainId]: providerUrl,
-              },
+              rpcMap,
               qrModalOptions: {
                 themeMode: 'dark',
                 themeVariables: {
@@ -118,7 +114,31 @@ export const createConnectors = (
     initializeUrlConnector(localProviderUrl, walletMnemonic),
     initializeMetaMaskConnector(),
     initializeCoinbaseConnector(providerUrl),
-    initializeWalletConnector(WALLETCONNECT_PROJECT_ID, chainId, providerUrl),
-    initializeWalletConnectLegacyConnector(chainId, providerUrl),
+    initializeWalletConnector(WALLETCONNECT_PROJECT_ID, {
+      [chainId]: providerUrl,
+    }),
+    initializeWalletConnectLegacyConnector({
+      [chainId]: providerUrl,
+    }),
+  ].filter(Boolean) as unknown as [Connector, Web3ReactHooks][];
+};
+
+export const createMultiChainConnectors = (
+  transports: { [chainId: number]: string },
+  localProviderUrl?: string,
+  walletMnemonic?: string
+) => {
+  if (Object.values(transports).length === 0) {
+    throw new Error('ERR_CONNECTORS: could not create connectors');
+  }
+
+  return [
+    initializeUrlConnector(localProviderUrl, walletMnemonic),
+    initializeMetaMaskConnector(),
+    // TODO: This needs to be tested out as it only allows single rpc connection
+    // perhaps it changes to its own when switched to another chain.
+    initializeCoinbaseConnector(Object.values(transports)[0]),
+    initializeWalletConnector(WALLETCONNECT_PROJECT_ID, transports),
+    initializeWalletConnectLegacyConnector(transports),
   ].filter(Boolean) as unknown as [Connector, Web3ReactHooks][];
 };

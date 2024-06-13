@@ -20,19 +20,13 @@ query RewardsPage($partyId: ID!) {
       epoch
       vestingBalances {
         asset {
-          id
-          symbol
-          decimals
-          quantum
+          ...AssetFields
         }
         balance
       }
       lockedBalances {
         asset {
-          id
-          symbol
-          decimals
-          quantum
+          ...AssetFields
         }
         balance
         untilEpoch
@@ -91,6 +85,31 @@ fragment RecurringGovernanceTransferFields on RecurringGovernanceTransfer {
   }
 }
 
+fragment ActiveRewardTransferFields on Transfer {
+  amount
+  id
+  from
+  fromAccountType
+  to
+  toAccountType
+  asset {
+    ...AssetFields
+  }
+  reference
+  status
+  timestamp
+  gameId
+  kind {
+    ... on RecurringTransfer {
+      ...RecurringTransferFields
+    }
+    ... on RecurringGovernanceTransfer {
+      ...RecurringGovernanceTransferFields
+    }
+  }
+  reason
+}
+
 query ActiveRewards(
   $isReward: Boolean
   $partyId: ID
@@ -108,33 +127,7 @@ query ActiveRewards(
     edges {
       node {
         transfer {
-          amount
-          id
-          from
-          fromAccountType
-          to
-          toAccountType
-          asset {
-            id
-            symbol
-            decimals
-            name
-            quantum
-            status
-          }
-          reference
-          status
-          timestamp
-          gameId
-          kind {
-            ... on RecurringTransfer {
-              ...RecurringTransferFields
-            }
-            ... on RecurringGovernanceTransfer {
-              ...RecurringGovernanceTransferFields
-            }
-          }
-          reason
+          ...ActiveRewardTransferFields
         }
         fees {
           transferId
@@ -196,10 +189,7 @@ query RewardsHistory(
           receivedAt
           rewardType
           asset {
-            id
-            symbol
-            name
-            decimals
+            ...AssetFields
           }
           party {
             id

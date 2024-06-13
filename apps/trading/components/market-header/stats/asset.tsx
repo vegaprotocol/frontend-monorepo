@@ -1,11 +1,15 @@
 import { ButtonLink } from '@vegaprotocol/ui-toolkit';
 import { HeaderStat } from '../../header';
-import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
+import {
+  type AssetFieldsFragment,
+  useAssetDetailsDialogStore,
+  AssetSymbol,
+} from '@vegaprotocol/assets';
 import { type HTMLAttributes } from 'react';
 
 type AssetStatProps = HTMLAttributes<HTMLDivElement> & {
   heading: string;
-  asset: { id: string; symbol: string };
+  asset: AssetFieldsFragment;
 };
 
 /**
@@ -22,7 +26,7 @@ export const AssetStat = ({ heading, asset, ...props }: AssetStatProps) => {
             openAssetDetailsDialog(asset.id, e.target as HTMLElement);
           }}
         >
-          {asset.symbol}
+          <AssetSymbol asset={asset} />
         </ButtonLink>
       </div>
     </HeaderStat>

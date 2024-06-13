@@ -163,6 +163,14 @@ describe('WithdrawFormContainer', () => {
                   symbol: 'tUSDC',
                   decimals: 5,
                   quantum: '1',
+                  status: Types.AssetStatus.STATUS_ENABLED,
+                  source: {
+                    __typename: 'ERC20' as const,
+                    chainId: '1',
+                    contractAddress: '0x123',
+                    withdrawThreshold: '1',
+                    lifetimeLimit: '1',
+                  },
                 },
                 dataSourceSpecForTradingTermination: {
                   __typename: 'DataSourceSpec',

@@ -77,17 +77,6 @@ export const TelemetryDialog = () => {
       <div className="flex items-center mt-10 gap-4">
         <Button
           onClick={() => {
-            setTelemetryAccepted(false);
-            close();
-          }}
-          variant="default"
-          data-testid="do-not-share-data-button"
-        >
-          {t('NoThanks')}
-        </Button>
-
-        <Button
-          onClick={() => {
             setTelemetryAccepted(true);
             close();
           }}
@@ -95,6 +84,17 @@ export const TelemetryDialog = () => {
           data-testid="share-data-button"
         >
           {telemetryAccepted ? t('ContinueSharingData') : t('ShareData')}
+        </Button>
+
+        <Button
+          onClick={() => {
+            setTelemetryAccepted(false);
+            close();
+          }}
+          variant="default"
+          data-testid="do-not-share-data-button"
+        >
+          {t('NoThanks')}
         </Button>
       </div>
     </Dialog>

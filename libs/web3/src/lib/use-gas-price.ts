@@ -1,15 +1,16 @@
 import { useEffect, useState } from 'react';
 import { useWeb3React } from '@web3-react/core';
-import { useEthereumConfig } from './use-ethereum-config';
 import BigNumber from 'bignumber.js';
+import { useCollateralBridge } from './use-bridge-contract';
 
 const DEFAULT_INTERVAL = 15000; // 15 seconds
 
 /**
  * These are the hex values of the collateral bridge contract methods.
  *
- * Collateral bridge address: 0x23872549cE10B40e31D6577e0A920088B0E0666a
- * Etherscan: https://etherscan.io/address/0x23872549cE10B40e31D6577e0A920088B0E0666a#writeContract
+ * Supported contracts:
+ * Ethereum: https://etherscan.io/address/0x23872549cE10B40e31D6577e0A920088B0E0666a#writeContract
+ * Arbitrum: https://arbiscan.io/address/0x475B597652bCb2769949FD6787b1DC6916518407#writeContract
  */
 export enum ContractMethod {
   DEPOSIT_ASSET = '0xf7683932',
@@ -71,41 +72,47 @@ const retrieveGasData = async (
  */
 export const useGasPrice = (
   method: ContractMethod,
-  interval = DEFAULT_INTERVAL
+  chainId?: number
 ): GasData | undefined => {
   const [gas, setGas] = useState<GasData | undefined>(undefined);
-  const { provider, account } = useWeb3React();
-  const { config } = useEthereumConfig();
+
+  const { config } = useCollateralBridge(chainId);
+  const { account, provider, chainId: activeChainId } = useWeb3React();
 
   useEffect(() => {
-    if (!provider || !config || !account) return;
+    let ignore = false;
+
+    if (!provider || !config || !account || chainId !== activeChainId) {
+      return;
+    }
 
     const retrieve = async () => {
-      retrieveGasData(
-        provider,
-        account,
-        config.collateral_bridge_contract.address,
-        method
-      ).then((gasData) => {
-        if (gasData) {
-          setGas(gasData);
+      retrieveGasData(provider, account, config.address, method).then(
+        (gasData) => {
+          if (ignore) return;
+          if (gasData) {
+            setGas(gasData);
+          }
         }
-      });
+      );
     };
+
     retrieve();
 
     // Retrieves another estimation and prices in [interval] ms.
-    let i: ReturnType<typeof setInterval>;
-    if (interval > 0) {
-      i = setInterval(() => {
-        retrieve();
-      }, interval);
-    }
+    const interval = setInterval(() => {
+      retrieve();
+    }, DEFAULT_INTERVAL);
 
     return () => {
-      if (i) clearInterval(i);
+      clearInterval(interval);
+      ignore = true;
     };
-  }, [account, config, interval, method, provider]);
+  }, [account, activeChainId, chainId, config, method, provider]);
+
+  if (!provider || !config || !account || chainId !== activeChainId) {
+    return;
+  }
 
   return gas;
 };

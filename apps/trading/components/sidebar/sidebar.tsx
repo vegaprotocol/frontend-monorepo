@@ -8,6 +8,8 @@ import { DealTicketContainer } from '@vegaprotocol/deal-ticket';
 import { DepositContainer } from '@vegaprotocol/deposits';
 import { MarketInfoAccordionContainer } from '@vegaprotocol/markets';
 import { TinyScroll, VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
+import { useScreenDimensions } from '@vegaprotocol/react-helpers';
+import { useFeatureFlags } from '@vegaprotocol/environment';
 import { NodeHealthContainer } from '../node-health';
 import { Settings } from '../settings';
 import { Tooltip } from '../../components/tooltip';
@@ -17,7 +19,7 @@ import { useConnect, usePubKeys } from '@vegaprotocol/wallet-react';
 import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
 import { useT } from '../../lib/use-t';
 import { ErrorBoundary } from '../error-boundary';
-import { useScreenDimensions } from '@vegaprotocol/react-helpers';
+import { SwapContainer } from '../swap';
 
 export enum ViewType {
   Order = 'Order',
@@ -28,6 +30,7 @@ export enum ViewType {
   Settings = 'Settings',
   ViewAs = 'ViewAs',
   Close = 'Close',
+  Swap = 'Swap',
 }
 
 export type BarView =
@@ -42,6 +45,9 @@ export type BarView =
   | {
       type: ViewType.Transfer;
       assetId?: string;
+    }
+  | {
+      type: ViewType.Swap;
     }
   | {
       type: ViewType.Order;
@@ -189,6 +195,7 @@ export const SidebarContent = () => {
   const t = useT();
   const params = useParams();
   const currentRouteId = useGetCurrentRouteId();
+  const featureFlags = useFeatureFlags((state) => state.flags);
 
   const { setViews, getView } = useSidebar();
   const view = getView(currentRouteId);
@@ -247,6 +254,16 @@ export const SidebarContent = () => {
       <ContentWrapper title={t('Withdraw')}>
         <ErrorBoundary feature="withdraw">
           <WithdrawContainer assetId={view.assetId} />
+        </ErrorBoundary>
+      </ContentWrapper>
+    );
+  }
+
+  if (view.type === ViewType.Swap && featureFlags.SWAP) {
+    return (
+      <ContentWrapper title={''}>
+        <ErrorBoundary feature="swap">
+          <SwapContainer />
         </ErrorBoundary>
       </ContentWrapper>
     );

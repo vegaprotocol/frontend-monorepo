@@ -1,5 +1,5 @@
 import { AccountBreakdownDialog } from '@vegaprotocol/accounts';
-import { getAsset, getProductType, getQuoteName } from '@vegaprotocol/markets';
+import { getProductType, getQuoteName } from '@vegaprotocol/markets';
 import type { Market } from '@vegaprotocol/markets';
 import type { EstimatePositionQuery } from '@vegaprotocol/positions';
 import * as Schema from '@vegaprotocol/types';
@@ -16,6 +16,7 @@ import type { Slippage } from '../../hooks/use-slippage';
 import { ns, useT } from '../../use-t';
 import { emptyValue } from './deal-ticket-fee-details';
 import { KeyValue } from './key-value';
+import { getAssetSymbol, type AssetFieldsFragment } from '@vegaprotocol/assets';
 
 export interface DealTicketMarginDetailsProps {
   generalAccountBalance: string;
@@ -23,7 +24,7 @@ export interface DealTicketMarginDetailsProps {
   orderMarginAccountBalance: string;
   market: Market;
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
-  assetSymbol: string;
+  asset: AssetFieldsFragment;
   positionEstimate: EstimatePositionQuery['estimatePosition'];
   side: Schema.Side;
   slippage?: Slippage;
@@ -33,7 +34,7 @@ export const DealTicketMarginDetails = ({
   marginAccountBalance,
   generalAccountBalance,
   orderMarginAccountBalance,
-  assetSymbol,
+  asset,
   market,
   onMarketClick,
   positionEstimate,
@@ -48,7 +49,6 @@ export const DealTicketMarginDetails = ({
     BigInt(marginAccountBalance || '0') +
     BigInt(orderMarginAccountBalance || '0');
 
-  const asset = getAsset(market);
   const productType = getProductType(market);
 
   const { decimals: assetDecimals, quantum } = asset;
@@ -127,7 +127,7 @@ export const DealTicketMarginDetails = ({
             totalMarginAccountBalance.toString(),
             assetDecimals
           )}
-          symbol={assetSymbol}
+          symbol={asset.symbol}
           labelDescription={t(
             'MARGIN_ACCOUNT_TOOLTIP_TEXT',
             MARGIN_ACCOUNT_TOOLTIP_TEXT
@@ -147,7 +147,7 @@ export const DealTicketMarginDetails = ({
           assetDecimals,
           quantum
         )}
-        symbol={assetSymbol}
+        symbol={getAssetSymbol(asset)}
       />
       {productType !== 'Spot' && (
         <KeyValue
@@ -162,7 +162,7 @@ export const DealTicketMarginDetails = ({
             assetDecimals,
             quantum
           )}
-          symbol={assetSymbol}
+          symbol={asset.symbol}
         />
       )}
       {productType !== 'Spot' && (

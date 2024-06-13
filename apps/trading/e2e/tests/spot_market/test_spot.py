@@ -63,9 +63,9 @@ def test_market_spot_info_market_price(page: Page):
     page.get_by_test_id(market_title_test_id).get_by_text(
         "Market price").click()
     fields = [
-        ["Mark Price", "107.5"],
-        ["Best Bid Price", "102.0"],
-        ["Best Offer Price", "103.0"],
+        ["Mark Price", "108.5"],
+        ["Best Bid Price", "106.0"],
+        ["Best Offer Price", "107.0"],
         ["Quote Unit", "USDT"],
     ]
     validate_info_section(page, fields)
@@ -75,11 +75,11 @@ def test_market_spot_info_market_volume(page: Page):
     page.get_by_test_id(market_title_test_id).get_by_text(
         "Market volume").click()
     fields = [
-        ["24 Hour Volume", "1.00(108 USDT)"],
+        ["24 Hour Volume", "10.00(1,085 USDT)"],
         ["Open Interest", "-"],
-        ["Best Bid Volume", "99"],
-        ["Best Offer Volume", "99"],
-        ["Best Static Bid Volume", "1"],
+        ["Best Bid Volume", "649.00"],
+        ["Best Offer Volume", "109.00"],
+        ["Best Static Bid Volume", "550.00"],
         ["Best Static Offer Volume", "1"],
     ]
     validate_info_section(page, fields)
@@ -168,9 +168,9 @@ def test_market_spot_info_price_monitoring_bounds(page: Page):
     expect(page.get_by_test_id(market_accordion_content).get_by_test_id("bounds-price-time").nth(0)
            ).to_contain_text("within 15m")
     expect(page.get_by_test_id(market_accordion_content).get_by_test_id("text-left-alignment").nth(0)
-           ).to_contain_text("104.7")
+           ).to_contain_text("105.7")
     expect(page.get_by_test_id(market_accordion_content).get_by_test_id("text-right-alignment").nth(0)
-           ).to_contain_text("110.3")
+           ).to_contain_text("111.3")
 
 
 def test_market_spot_info_liquidity_monitoring_parameters(page: Page):
@@ -202,8 +202,8 @@ def test_market_spot_info_liquidity_price_range(page: Page):
     ).click()
     fields = [
         ["Liquidity Price Range", "50% of mid price "],
-        ["Lowest Price", "51.3"],
-        ["Highest Price", "153.8"],
+        ["Lowest Price", "53.3"],
+        ["Highest Price", "159.8"],
     ]
     validate_info_section(page, fields)
 

@@ -1,11 +1,9 @@
-import type { BigNumber } from 'ethers';
-import { ethers } from 'ethers';
+import { type BigNumber, ethers } from 'ethers';
 import abi from '../abis/erc20_bridge_abi.json';
 import { calcGasBuffer } from '../utils';
 
 export class CollateralBridge {
   public contract: ethers.Contract;
-  public isNewContract = true;
 
   constructor(
     address: string,
@@ -14,85 +12,105 @@ export class CollateralBridge {
     this.contract = new ethers.Contract(address, abi, signerOrProvider);
   }
 
+  /* READ CONTRACT */
+  default_withdraw_delay() {
+    return this.contract.default_withdraw_delay();
+  }
+
+  erc20_asset_pool_address() {
+    return this.contract.erc20_asset_pool_address();
+  }
+
+  get_asset_deposit_lifetime_limit(asset_source: string) {
+    return this.contract.get_asset_deposit_lifetime_limit(asset_source);
+  }
+
+  get_asset_source(vega_asset_id: string) {
+    return this.contract.get_asset_source(vega_asset_id);
+  }
+
+  get_multisig_control_address() {
+    return this.contract.get_multisig_control_address();
+  }
+
+  get_vega_asset_id(asset_source: string) {
+    return this.contract.get_vega_asset_id(asset_source);
+  }
+
+  get_withdraw_threshold(asset_source: string): Promise<BigNumber> {
+    return this.contract.get_withdraw_threshold(asset_source);
+  }
+
+  is_asset_listed(asset_source: string) {
+    return this.contract.is_asset_listed(asset_source);
+  }
+
+  is_exempt_depositor(depositor: string): Promise<boolean> {
+    return this.contract.is_exempt_depositor(depositor);
+  }
+
+  is_stopped() {
+    return this.contract.is_stopped();
+  }
+
+  /* WRITE CONTRACT */
   async deposit_asset(
-    assetSource: string,
+    asset_source: string,
     amount: string,
-    vegaPublicKey: string
+    vega_public_key: string
   ) {
     const res = await this.contract.estimateGas.deposit_asset(
-      assetSource,
+      asset_source,
       amount,
-      vegaPublicKey
+      vega_public_key
     );
     const gasLimit = calcGasBuffer(res);
-    return this.contract.deposit_asset(assetSource, amount, vegaPublicKey, {
+    return this.contract.deposit_asset(asset_source, amount, vega_public_key, {
       gasLimit,
     });
   }
 
-  encodeDepositData(token: string, amount: string, vegaPubKey: string) {
+  encodeDepositData(
+    asset_source: string,
+    amount: string,
+    vega_public_key: string
+  ) {
     return this.contract.interface.encodeFunctionData('deposit_asset', [
-      token,
+      asset_source,
       amount,
-      vegaPubKey,
+      vega_public_key,
     ]);
   }
 
-  get_asset_source(vegaAssetId: string) {
-    return this.contract.get_asset_source(vegaAssetId);
-  }
-  get_deposit_maximum(assetSource: string): Promise<BigNumber> {
-    return this.contract.get_asset_deposit_lifetime_limit(assetSource);
-  }
-  is_exempt_depositor(address: string): Promise<boolean> {
-    return this.contract.is_exempt_depositor(address);
-  }
-  get_multisig_control_address() {
-    return this.contract.get_multisig_control_address();
-  }
-  get_vega_asset_id(address: string) {
-    return this.contract.get_vega_asset_id(address);
-  }
-  is_asset_listed(address: string) {
-    return this.contract.is_asset_listed(address);
-  }
-  get_withdraw_threshold(assetSource: string): Promise<BigNumber> {
-    return this.contract.get_withdraw_threshold(assetSource);
-  }
-  default_withdraw_delay() {
-    return this.contract.default_withdraw_delay();
-  }
   async list_asset(
-    address: string,
-    vegaAssetId: string,
-    lifetimeLimit: string,
+    asset_source: string,
+    vega_asset_id: string,
+    lifetime_limit: string,
     withdraw_threshold: string,
     nonce: string,
     signatures: string
   ) {
     const res = await this.contract.estimateGas.list_asset(
-      address,
-      vegaAssetId,
-      lifetimeLimit,
+      asset_source,
+      vega_asset_id,
+      lifetime_limit,
       withdraw_threshold,
       nonce,
       signatures
     );
     const gasLimit = calcGasBuffer(res);
     return this.contract.list_asset(
-      address,
-      vegaAssetId,
-      lifetimeLimit,
+      asset_source,
+      vega_asset_id,
+      lifetime_limit,
       withdraw_threshold,
       nonce,
       signatures,
-      {
-        gasLimit,
-      }
+      { gasLimit }
     );
   }
   async withdraw_asset(
-    assetSource: string,
+    asset_source: string,
     amount: string,
     target: string,
     creation: string,
@@ -100,7 +118,7 @@ export class CollateralBridge {
     signatures: string
   ) {
     const res = await this.contract.estimateGas.withdraw_asset(
-      assetSource,
+      asset_source,
       amount,
       target,
       creation,
@@ -109,23 +127,13 @@ export class CollateralBridge {
     );
     const gasLimit = calcGasBuffer(res);
     return this.contract.withdraw_asset(
-      assetSource,
+      asset_source,
       amount,
       target,
       creation,
       nonce,
       signatures,
-      {
-        gasLimit,
-      }
+      { gasLimit }
     );
-  }
-
-  is_stopped() {
-    return this.contract.is_stopped();
-  }
-
-  get_erc20_asset_pool_address() {
-    return this.contract.erc20_asset_pool_address();
   }
 }
