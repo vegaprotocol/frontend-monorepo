@@ -107,6 +107,10 @@ const WithdrawalApprovalDialogContent = ({
 
   if (data?.erc20WithdrawalApproval) {
     const details = omit(data.erc20WithdrawalApproval, '__typename');
+    const sourceChainId =
+      data.withdrawal?.asset.source.__typename === 'ERC20'
+        ? data.withdrawal.asset.source.chainId
+        : undefined;
 
     if (asJson) {
       return (
@@ -141,7 +145,7 @@ const WithdrawalApprovalDialogContent = ({
             <KeyValueTableRow key={'chain'}>
               <div data-testid={`chain_label`}>{t('chain')}</div>
               <div data-testid={`chain_value`} className="break-all">
-                {getExternalChainShortLabel(details.sourceChainId)}
+                {getExternalChainShortLabel(sourceChainId)}
               </div>
             </KeyValueTableRow>
           </KeyValueTable>

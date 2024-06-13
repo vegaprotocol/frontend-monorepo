@@ -6,6 +6,14 @@ query WithdrawalApproval($withdrawalId: ID!) {
     signatures
     targetAddress
     creation
-    sourceChainId
+  }
+  withdrawal(id: $withdrawalId) {
+    asset {
+      source {
+        ... on ERC20 {
+          chainId
+        }
+      }
+    }
   }
 }
