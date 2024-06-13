@@ -1,14 +1,14 @@
 import { useState, type ImgHTMLAttributes } from 'react';
 import { FALLBACK_URL } from '../config/index';
 
-export type ImgProps = ImgHTMLAttributes<HTMLImageElement>;
+export type ImgProps = ImgHTMLAttributes<HTMLImageElement> & { size?: number };
 
 /**
  * Renders an image tag with a known fallback if the emblem does not exist.
  * @param url string the URL of the emblem, probably calculated in EmblemByAsset or EmblemByContract
  * @returns React.Node
  */
-export function EmblemBase(p: ImgProps) {
+export function EmblemBase({ size = 30, ...p }: ImgProps) {
   // Used to render a holding image while the emblem is loading
   const [loading, setLoading] = useState(true);
 
@@ -28,8 +28,8 @@ export function EmblemBase(p: ImgProps) {
         src={p.src || FALLBACK_URL}
         onError={renderFallback}
         alt={p.alt ? p.alt : 'Emblem'}
-        width={p.width || '30'}
-        height={p.height || '30'}
+        width={size}
+        height={size}
         className={p.className || ''}
         onLoad={() => setLoading(false)}
       />
