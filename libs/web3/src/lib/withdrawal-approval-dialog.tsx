@@ -142,6 +142,12 @@ const WithdrawalApprovalDialogContent = ({
                 </div>
               </KeyValueTableRow>
             ))}
+            <KeyValueTableRow key={'chainId'}>
+              <div data-testid={`chain_id_label`}>{t('chain ID')}</div>
+              <div data-testid={`chain_id_value`} className="break-all">
+                {sourceChainId}
+              </div>
+            </KeyValueTableRow>
             <KeyValueTableRow key={'chain'}>
               <div data-testid={`chain_label`}>{t('chain')}</div>
               <div data-testid={`chain_value`} className="break-all">
