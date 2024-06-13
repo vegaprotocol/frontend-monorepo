@@ -1,4 +1,4 @@
-import { type PropsWithChildren } from 'react';
+import { type ButtonHTMLAttributes, type PropsWithChildren } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { z } from 'zod';
 
@@ -13,6 +13,8 @@ import {
   useReadContracts,
   useDisconnect,
   useAccountEffect,
+  useWriteContract,
+  useWaitForTransactionReceipt,
 } from 'wagmi';
 import { mainnet, sepolia, arbitrum, arbitrumSepolia } from 'wagmi/chains';
 
@@ -25,6 +27,7 @@ import { erc20Abi } from 'viem';
 import {
   type AssetFieldsFragment,
   useEnabledAssets,
+  useAssetDetailsDialogStore,
 } from '@vegaprotocol/assets';
 import {
   FormGroup,
@@ -34,12 +37,21 @@ import {
   truncateMiddle,
   TradingInputError,
   Intent,
+  KeyValueTable,
+  KeyValueTableRow,
 } from '@vegaprotocol/ui-toolkit';
-import { BRIDGE_ABI } from '@vegaprotocol/smart-contracts';
+import { BRIDGE_ABI, prepend0x } from '@vegaprotocol/smart-contracts';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm, useWatch } from 'react-hook-form';
+import {
+  addDecimalsFormatNumber,
+  formatNumberRounded,
+  removeDecimal,
+  toBigNum,
+} from '@vegaprotocol/utils';
+import { useEVMBridgeConfigs, useEthereumConfig } from '@vegaprotocol/web3';
 
 const wagmiConfig = createConfig(
   getDefaultConfig({
@@ -62,19 +74,32 @@ export const Deposit = () => {
   const [searchParams] = useSearchParams();
   const assetId = searchParams.get('assetId') || '';
 
+  const { config } = useEthereumConfig();
+  const { configs } = useEVMBridgeConfigs();
   const { data: assets } = useEnabledAssets();
+
+  if (!config) return null;
+  if (!configs?.length) return null;
+
+  const bridgeAddresses = new Map<string, string>();
+  bridgeAddresses.set(
+    config.chain_id,
+    config.collateral_bridge_contract.address
+  );
+  for (const c of configs) {
+    bridgeAddresses.set(c.chain_id, c.collateral_bridge_contract.address);
+  }
   const asset = assets?.find((a) => a.id === assetId);
 
   return (
     <Providers>
-      <DepositForm assets={assets || []} initialAssetId={asset?.id || ''} />
+      <DepositForm
+        assets={assets || []}
+        initialAssetId={asset?.id || ''}
+        bridgeAddresses={bridgeAddresses}
+      />
     </Providers>
   );
-};
-
-const bridges: { [id: number]: string } = {
-  11155111: '0xcC68d87cAEF9580E3F383d6438F7B3F2C71E3fe5',
-  421614: '0xf7989D2902376cad63D0e5B7015efD0CFAd48eB5',
 };
 
 const depositSchema = z.object({
@@ -91,23 +116,33 @@ const depositSchema = z.object({
   ),
 });
 
+type FormFields = z.infer<typeof depositSchema>;
+
 const DepositForm = ({
   assets,
   initialAssetId,
+  bridgeAddresses,
 }: {
   assets: AssetFieldsFragment[];
   initialAssetId: string;
+  bridgeAddresses: Map<string, string>;
 }) => {
   const { pubKeys } = useVegaWallet();
+  const { open: openAssetDialog } = useAssetDetailsDialogStore();
 
   const { isConnected, address } = useAccount();
   const { disconnect } = useDisconnect();
   const { switchChainAsync } = useSwitchChain();
   const chainId = useChainId();
 
-  const form = useForm<z.infer<typeof depositSchema>>({
+  const { writeContract, data: hash } = useWriteContract();
+
+  const form = useForm<FormFields>({
     resolver: zodResolver(depositSchema),
     defaultValues: {
+      // fromAddress is just dervied from the connected wallet, but including
+      // it as a form field so its included with the zodResolver validation
+      // and shows up as an error if its not set
       fromAddress: address,
       assetId: initialAssetId,
       toPubKey: '',
@@ -118,7 +153,9 @@ const DepositForm = ({
   const assetId = useWatch({ name: 'assetId', control: form.control });
   const asset = assets?.find((a) => a.id === assetId);
 
-  const { data } = useAssetChainData({ asset });
+  const { data } = useAssetReadContracts({ asset });
+
+  useWriteContract();
 
   useAccountEffect({
     onConnect: ({ address }) =>
@@ -126,24 +163,48 @@ const DepositForm = ({
     onDisconnect: () => form.setValue('fromAddress', ''),
   });
 
-  if (!assets) return null;
+  const receipt = useWaitForTransactionReceipt({
+    hash,
+  });
+
+  const submitDeposit = async (fields: FormFields) => {
+    const asset = assets?.find((a) => a.id === fields.assetId);
+
+    if (!asset || asset.source.__typename !== 'ERC20') {
+      throw new Error('no asset');
+    }
+
+    // Make sure we are on the right chain. Changing asset will trigger a chain
+    // change but its possible to end up on the wrong chain for the selected
+    // asset if the user refreshes the page
+    if (Number(asset.source.chainId) !== chainId) {
+      await switchChainAsync({ chainId: Number(asset.source.chainId) });
+    }
+
+    const assetAddress = asset.source.contractAddress as `0x${string}`;
+    const assetChainId = asset.source.chainId;
+    const bridgeAddress = bridgeAddresses.get(assetChainId) as `0x${string}`;
+
+    if (!bridgeAddress) {
+      throw new Error(`no bridge found for asset ${asset.id}`);
+    }
+
+    const config = {
+      abi: BRIDGE_ABI,
+      address: bridgeAddress,
+      functionName: 'deposit_asset',
+      args: [
+        assetAddress,
+        removeDecimal(fields.amount, asset.decimals),
+        prepend0x(fields.toPubKey),
+      ],
+    };
+
+    writeContract(config);
+  };
 
   return (
-    <form
-      onSubmit={form.handleSubmit(async (fields) => {
-        console.log(fields);
-
-        const asset = assets?.find((a) => a.id === assetId);
-
-        if (!asset || asset.source.__typename !== 'ERC20') {
-          throw new Error('no asset');
-        }
-
-        if (Number(asset.source.chainId) !== chainId) {
-          await switchChainAsync({ chainId: Number(asset.source.chainId) });
-        }
-      })}
-    >
+    <form onSubmit={form.handleSubmit(submitDeposit)}>
       <FormGroup label="From address" labelFor="fromAddress">
         <Controller
           name="fromAddress"
@@ -227,6 +288,11 @@ const DepositForm = ({
             {form.formState.errors.assetId.message}
           </TradingInputError>
         )}
+        {asset && (
+          <UseButton onClick={() => openAssetDialog(asset.id)}>
+            View asset details
+          </UseButton>
+        )}
       </FormGroup>
       <FormGroup label="To Vega key" labelFor="toPubKey">
         <Select {...form.register('toPubKey')}>
@@ -247,6 +313,35 @@ const DepositForm = ({
           </TradingInputError>
         )}
       </FormGroup>
+
+      {data && asset && (
+        <div className="pb-4">
+          <KeyValueTable>
+            <KeyValueTableRow>
+              <div>Balance available</div>
+              <div>
+                {addDecimalsFormatNumber(data.balanceOf || '0', asset.decimals)}
+              </div>
+            </KeyValueTableRow>
+            <KeyValueTableRow>
+              <div>Allowance</div>
+              <div>
+                {formatNumberRounded(
+                  toBigNum(data.allowance || '0', asset.decimals)
+                )}
+              </div>
+            </KeyValueTableRow>
+            <KeyValueTableRow>
+              <div>Deposit cap</div>
+              <div>
+                {formatNumberRounded(
+                  toBigNum(data.lifetimeLimit || '0', asset.decimals)
+                )}
+              </div>
+            </KeyValueTableRow>
+          </KeyValueTable>
+        </div>
+      )}
       <FormGroup label="Amount" labelFor="amount">
         <Input {...form.register('amount')} />
         {form.formState.errors.amount?.message && (
@@ -254,38 +349,43 @@ const DepositForm = ({
             {form.formState.errors.amount.message}
           </TradingInputError>
         )}
+
+        {asset && data && data.balanceOf && (
+          <UseButton
+            onClick={() => {
+              const amount = toBigNum(
+                data.balanceOf || '0',
+                asset.decimals
+              ).toFixed(asset.decimals);
+              form.setValue('amount', amount, { shouldValidate: true });
+            }}
+          >
+            Use maximum
+          </UseButton>
+        )}
       </FormGroup>
       <TradingButton type="submit" size="large" fill={true}>
         Submit
       </TradingButton>
-      <div>
-        <div>balanceOf: {data.balanceOf}</div>
-        <div>allowance: {data.allowance}</div>
-        <div>lifetime limit: {data.lifetimeLimit}</div>
-        <div>is exempt: {data.isExempt}</div>
-      </div>
+      {receipt && (
+        <pre className="text-xs">{JSON.stringify(receipt, null, 2)}</pre>
+      )}
     </form>
   );
 };
 
-const Providers = ({ children }: PropsWithChildren) => {
-  return (
-    <WagmiProvider config={wagmiConfig}>
-      <QueryClientProvider client={queryClient}>
-        <ConnectKitProvider>{children}</ConnectKitProvider>
-      </QueryClientProvider>
-    </WagmiProvider>
-  );
-};
-
-const useAssetChainData = ({ asset }: { asset?: AssetFieldsFragment }) => {
+const useAssetReadContracts = ({ asset }: { asset?: AssetFieldsFragment }) => {
   const { address } = useAccount();
-  const chainId = useChainId();
-  const bridgeAddress = bridges[chainId] as `0x${string}`;
 
-  const assetAddress = (
-    asset?.source.__typename === 'ERC20' ? asset.source.contractAddress : ''
-  ) as `0x${string}`;
+  let assetAddress;
+  let assetChainId;
+  let bridgeAddress;
+
+  if (asset?.source.__typename === 'ERC20') {
+    assetAddress = asset.source.contractAddress as `0x${string}`;
+    assetChainId = Number(asset.source.chainId);
+    bridgeAddress = bridges[assetChainId] as `0x${string}`;
+  }
 
   const { data, ...queryResult } = useReadContracts({
     contracts: [
@@ -299,7 +399,7 @@ const useAssetChainData = ({ asset }: { asset?: AssetFieldsFragment }) => {
         abi: erc20Abi,
         address: assetAddress,
         functionName: 'allowance',
-        args: address && [address, bridgeAddress],
+        args: address && bridgeAddress && [address, bridgeAddress],
       },
       {
         abi: BRIDGE_ABI,
@@ -310,7 +410,7 @@ const useAssetChainData = ({ asset }: { asset?: AssetFieldsFragment }) => {
       {
         abi: BRIDGE_ABI,
         address: bridgeAddress,
-        functionName: 'is_exempte_depositor',
+        functionName: 'is_exempt_depositor',
         args: [address],
       },
     ],
@@ -325,4 +425,24 @@ const useAssetChainData = ({ asset }: { asset?: AssetFieldsFragment }) => {
       isExempt: data && data[3].result?.toString(),
     },
   };
+};
+
+const UseButton = (props: ButtonHTMLAttributes<HTMLButtonElement>) => {
+  return (
+    <button
+      {...props}
+      type="button"
+      className="absolute right-0 top-0 ml-auto text-sm underline"
+    />
+  );
+};
+
+const Providers = ({ children }: PropsWithChildren) => {
+  return (
+    <WagmiProvider config={wagmiConfig}>
+      <QueryClientProvider client={queryClient}>
+        <ConnectKitProvider>{children}</ConnectKitProvider>
+      </QueryClientProvider>
+    </WagmiProvider>
+  );
 };
