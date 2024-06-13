@@ -1,7 +1,6 @@
 import compact from 'lodash/compact';
 import type { ProductType } from '@vegaprotocol/types';
-import { ProductTypeMapping, ProductTypeShortName } from '@vegaprotocol/types';
-import { StackedCell } from '@vegaprotocol/datagrid';
+import { MarketProductPill, StackedCell } from '@vegaprotocol/datagrid';
 import { useT } from '../../lib/use-t';
 import { EmblemByMarket } from '@vegaprotocol/emblem';
 import { useChainId } from '@vegaprotocol/wallet-react';
@@ -25,13 +24,6 @@ export const MarketCodeCell = ({ value, data }: MarketCodeCellProps) => {
     'mr-1 pr-1 uppercase border-r last:pr-0 last:mr-0 last:border-r-0 border-vega-clight-200 dark:border-vega-cdark-200';
 
   const info = compact([
-    <span
-      className={infoSpanClasses}
-      key="productType"
-      title={ProductTypeMapping[data.productType]}
-    >
-      {ProductTypeShortName[data.productType]}
-    </span>,
     data.parentMarketID && (
       <span
         className={infoSpanClasses}
@@ -54,9 +46,17 @@ export const MarketCodeCell = ({ value, data }: MarketCodeCellProps) => {
 
   return (
     <span className="flex items-center gap-2 cursor-pointer">
-      <span className="flex gap-1">
-        <EmblemByMarket market={data.id || ''} vegaChain={chainId} />
-        <StackedCell primary={value} secondary={info} />
+      <EmblemByMarket market={data.id} vegaChain={chainId} />
+      <span className="flex gap-2 items-center">
+        <StackedCell
+          primary={
+            <span className="flex gap-1 items-center">
+              {value}
+              <MarketProductPill productType={data.productType} />
+            </span>
+          }
+          secondary={info}
+        />
       </span>
     </span>
   );
