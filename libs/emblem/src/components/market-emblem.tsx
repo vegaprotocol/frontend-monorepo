@@ -3,6 +3,7 @@ import { EmblemBase } from './emblem-base';
 import { useMarketInfo } from './hooks/use-market-info';
 import { getVegaChain } from './lib/get-chain';
 import { t } from 'i18next';
+import classNames from 'classnames';
 
 export type EmblemByMarketProps = {
   // The ID of the market to display logos for
@@ -12,7 +13,7 @@ export type EmblemByMarketProps = {
   // Overlays the icon for the source chain, if available and applicable
   showSourceChain?: boolean;
   // The size of the logo
-  size?: number;
+  size?: 30 | 26 | 20;
 };
 
 /**
@@ -41,7 +42,13 @@ export function EmblemByMarket(props: EmblemByMarketProps) {
   );
 
   return (
-    <div className="relative inline-block leading-[0] min-w-fit h-8">
+    <div
+      className={classNames('relative inline-block h-8 w-14 leading-[0]', {
+        'w-14': size === 30,
+        'w-10': size === 26,
+        'w-8': size === 20,
+      })}
+    >
       <EmblemBase
         src={base}
         size={size}

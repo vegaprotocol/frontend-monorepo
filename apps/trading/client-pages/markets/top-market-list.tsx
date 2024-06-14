@@ -26,14 +26,16 @@ export const TopMarketList = ({
             <span className="col-span-3 overflow-hidden">
               <Link to={Links.MARKET(market.id)}>
                 <span className="flex items-center">
-                  <span className="pr-1">
+                  <span>
                     <EmblemByMarket
                       market={market.id}
                       vegaChain={chainId}
-                      size={28}
+                      size={20}
                     />
                   </span>
-                  <span>{market.tradableInstrument.instrument.code}</span>
+                  <span className="text-sm overflow:text-ellipsis">
+                    {market.tradableInstrument.instrument.code}
+                  </span>
                 </span>
               </Link>
             </span>
