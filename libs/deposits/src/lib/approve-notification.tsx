@@ -1,6 +1,7 @@
 import { USDT_ID, type Asset } from '@vegaprotocol/assets';
 import {
   EtherscanLink,
+  ArbitrumLink,
   Networks,
   useEnvironment,
 } from '@vegaprotocol/environment';
@@ -11,7 +12,11 @@ import {
   quantumDecimalPlaces,
 } from '@vegaprotocol/utils';
 import type { EthStoredTxState } from '@vegaprotocol/web3';
-import { EthTxStatus, useEthTransactionStore } from '@vegaprotocol/web3';
+import {
+  EthTxStatus,
+  getChainName,
+  useEthTransactionStore,
+} from '@vegaprotocol/web3';
 import BigNumber from 'bignumber.js';
 import type { DepositBalances } from './use-deposit-balances';
 import { useT } from './use-t';
@@ -166,11 +171,19 @@ const ApprovalTxFeedback = ({
       ? Number(selectedAsset.source.chainId)
       : undefined;
 
-  const txLink = tx.txHash && (
-    <EtherscanLink sourceChainId={chainId} tx={tx.txHash}>
-      {t('View on Etherscan')}
-    </EtherscanLink>
-  );
+  const chain = getChainName(chainId);
+
+  const txLink =
+    tx.txHash &&
+    (chain.includes('Ethereum') ? (
+      <EtherscanLink sourceChainId={chainId} tx={tx.txHash}>
+        {t('View on Etherscan')}
+      </EtherscanLink>
+    ) : (
+      <ArbitrumLink sourceChainId={chainId} tx={tx.txHash}>
+        {t('View on Arbitrum')}
+      </ArbitrumLink>
+    ));
 
   if (tx.status === EthTxStatus.Error) {
     return (

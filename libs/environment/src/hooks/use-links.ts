@@ -137,6 +137,22 @@ export const useEtherscanLink = (sourceChainId?: number) => {
   return link;
 };
 
+export const useArbitrumLink = (sourceChainId?: number) => {
+  const { ARBISCAN_URL } = useEnvironment();
+
+  const otherScanUrl = sourceChainId
+    ? getExternalExplorerLink(sourceChainId.toString())
+    : undefined;
+
+  const baseUrl = trim(otherScanUrl || ARBISCAN_URL, '/');
+
+  const link = useCallback(
+    (url?: string) => `${baseUrl}/${trim(url, '/') || ''}`,
+    [baseUrl]
+  );
+  return link;
+};
+
 // Console pages
 export const CONSOLE_TRANSFER = '#/portfolio/assets/transfer';
 export const CONSOLE_TRANSFER_ASSET =
@@ -178,6 +194,10 @@ export const EXPLORER_PARTIES = '/parties/:id';
 // Etherscan pages
 export const ETHERSCAN_ADDRESS = '/address/:hash';
 export const ETHERSCAN_TX = '/tx/:hash';
+
+// Arbitrum pages
+export const ARBITRUM_ADDRESS = '/address/:hash';
+export const ARBITRUM_TX = '/tx/:hash';
 
 export const ExternalLinks = {
   FEEDBACK: 'https://github.com/vegaprotocol/feedback/discussions',
