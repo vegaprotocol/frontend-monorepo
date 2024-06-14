@@ -310,6 +310,9 @@ export const useMarketsColumnDefs = () => {
           MarketMaybeWithData,
           'data.openInterest'
         >) => {
+          if (!data || isSpot(data.tradableInstrument.instrument.product)) {
+            return <span>-</span>;
+          }
           return (
             <span className="font-mono">
               <OpenInterestCell data={data} />
