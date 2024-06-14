@@ -76,7 +76,7 @@ export const AssetInput = ({
           testId={`${testId}-dropdown`}
         />
       </div>
-      <div className="flex justify-end items-center text-secondary text-sm">
+      <div className="flex justify-end items-center text-secondary text-sm pb-1">
         {step && amount && amount < step ? (
           <span className="text-warning pb-1">
             {t('Amount cannot be lower than {{step}}', { step })}
@@ -84,6 +84,7 @@ export const AssetInput = ({
         ) : (
           <span>
             {asset !== undefined &&
+              balance !== undefined &&
               t('Balance: {{balance}}', {
                 balance: addDecimalsFormatNumber(balance, asset.decimals),
               })}

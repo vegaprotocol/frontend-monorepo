@@ -238,7 +238,7 @@ export const EthWallet = () => {
           ) : (
             <Button
               fill={true}
-              onClick={open}
+              onClick={() => open()}
               data-testid="connect-to-eth-wallet-button"
             >
               {t('connectEthWalletToAssociate')}

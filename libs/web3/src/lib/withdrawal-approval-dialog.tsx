@@ -13,6 +13,7 @@ import { useWithdrawalApprovalQuery } from './__generated__/WithdrawalApproval';
 import omit from 'lodash/omit';
 import { create } from 'zustand';
 import { useT } from './use-t';
+import { getExternalChainShortLabel } from '@vegaprotocol/environment';
 
 type WithdrawalApprovalDialogProps = {
   withdrawalId: string | undefined;
@@ -106,6 +107,10 @@ const WithdrawalApprovalDialogContent = ({
 
   if (data?.erc20WithdrawalApproval) {
     const details = omit(data.erc20WithdrawalApproval, '__typename');
+    const sourceChainId =
+      data.withdrawal?.asset.source.__typename === 'ERC20'
+        ? data.withdrawal.asset.source.chainId
+        : undefined;
 
     if (asJson) {
       return (
@@ -137,6 +142,18 @@ const WithdrawalApprovalDialogContent = ({
                 </div>
               </KeyValueTableRow>
             ))}
+            <KeyValueTableRow key={'chainId'}>
+              <div data-testid={`chain_id_label`}>{t('chain ID')}</div>
+              <div data-testid={`chain_id_value`} className="break-all">
+                {sourceChainId}
+              </div>
+            </KeyValueTableRow>
+            <KeyValueTableRow key={'chain'}>
+              <div data-testid={`chain_label`}>{t('chain')}</div>
+              <div data-testid={`chain_value`} className="break-all">
+                {getExternalChainShortLabel(sourceChainId)}
+              </div>
+            </KeyValueTableRow>
           </KeyValueTable>
         </div>
       );

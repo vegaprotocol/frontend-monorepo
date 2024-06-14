@@ -72,7 +72,6 @@ beforeEach(() => {
     submitDeposit: jest.fn(),
     submitFaucet: jest.fn(),
     onDisconnect: jest.fn(),
-    handleAmountChange: jest.fn(),
     approveTxId: null,
     faucetTxId: null,
     isFaucetable: true,

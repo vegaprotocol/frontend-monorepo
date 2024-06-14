@@ -4,6 +4,7 @@ import { useMemo } from 'react';
 import { useWeb3React } from '@web3-react/core';
 import { type AssetData } from './types';
 import { ERR_WRONG_CHAIN } from './constants';
+import { useDefaultWeb3Providers } from './default-web3-provider';
 
 export const useTokenContract = (
   assetData?: Pick<AssetData, 'chainId' | 'contractAddress'>
@@ -29,6 +30,30 @@ export const useTokenContract = (
       assetData && assetData.chainId !== activeChainId
         ? ERR_WRONG_CHAIN
         : undefined,
+  };
+};
+
+export const useTokenContractStatic = (
+  assetData?: Pick<AssetData, 'chainId' | 'contractAddress'>
+) => {
+  const { providers } = useDefaultWeb3Providers();
+
+  const contract = useMemo(() => {
+    if (!assetData || !providers) {
+      return;
+    }
+
+    const provider = providers[assetData.chainId];
+
+    if (!provider) return;
+
+    return getTokenContract(assetData.contractAddress, provider);
+  }, [assetData, providers]);
+
+  return {
+    contract,
+    chainId: assetData?.chainId,
+    address: assetData?.contractAddress,
   };
 };
 

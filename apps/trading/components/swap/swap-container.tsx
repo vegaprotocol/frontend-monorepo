@@ -10,14 +10,14 @@ import {
   type MarketFieldsFragment,
 } from '@vegaprotocol/markets';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
-import { useAccounts } from '@vegaprotocol/accounts';
+import { useAggregatedAccounts } from '@vegaprotocol/accounts';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { SwapForm } from './swap-form';
 
 export const SwapContainer = () => {
   const { pubKey } = useVegaWallet();
   const { data: markets } = useMarketsMapProvider();
-  const { data: accounts } = useAccounts(pubKey);
+  const { data: accounts } = useAggregatedAccounts(pubKey);
 
   const [topAsset, setTopAsset] = useState<AssetFieldsFragment>();
   const [bottomAsset, setBottomAsset] = useState<AssetFieldsFragment>();

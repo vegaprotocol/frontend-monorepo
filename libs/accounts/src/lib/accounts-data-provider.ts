@@ -227,3 +227,13 @@ export const useAccounts = (partyId: string | undefined) => {
     skip: !partyId,
   });
 };
+
+export const useAggregatedAccounts = (partyId: string | undefined) => {
+  return useDataProvider({
+    dataProvider: aggregatedAccountsDataProvider,
+    variables: {
+      partyId: partyId || '',
+    },
+    skip: !partyId,
+  });
+};
