@@ -138,6 +138,8 @@ export function getLabelForProposal(
     return t('Proposal: Transfer');
   } else if (proposal.terms?.cancelTransfer) {
     return t('Proposal: Transfer cancel');
+  } else if (proposal.terms?.newSpotMarket) {
+    return t('Proposal: New spot market');
   } else {
     return t('Proposal');
   }
