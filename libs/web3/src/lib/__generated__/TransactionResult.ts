@@ -40,7 +40,7 @@ export type PositionUpdateSubscription = { __typename?: 'Subscription', position
 export type DepositBusEventFieldsFragment = { __typename?: 'Deposit', id: string, status: Types.DepositStatus, amount: string, createdTimestamp: any, creditedTimestamp?: any | null, txHash?: string | null, asset: { __typename?: 'Asset', id: string, name: string, symbol: string, decimals: number, quantum: string, status: Types.AssetStatus, source: { __typename?: 'BuiltinAsset' } | { __typename?: 'ERC20', contractAddress: string, chainId: string } } };
 
 export type DepositBusEventSubscriptionVariables = Types.Exact<{
-  partyId: Types.Scalars['ID'];
+  partyId?: Types.InputMaybe<Types.Scalars['ID']>;
 }>;
 
 
@@ -255,7 +255,7 @@ export function usePositionUpdateSubscription(baseOptions: Apollo.SubscriptionHo
 export type PositionUpdateSubscriptionHookResult = ReturnType<typeof usePositionUpdateSubscription>;
 export type PositionUpdateSubscriptionResult = Apollo.SubscriptionResult<PositionUpdateSubscription>;
 export const DepositBusEventDocument = gql`
-    subscription DepositBusEvent($partyId: ID!) {
+    subscription DepositBusEvent($partyId: ID) {
   busEvents(partyId: $partyId, batchSize: 0, types: [Deposit]) {
     event {
       ... on Deposit {
@@ -282,7 +282,7 @@ export const DepositBusEventDocument = gql`
  *   },
  * });
  */
-export function useDepositBusEventSubscription(baseOptions: Apollo.SubscriptionHookOptions<DepositBusEventSubscription, DepositBusEventSubscriptionVariables>) {
+export function useDepositBusEventSubscription(baseOptions?: Apollo.SubscriptionHookOptions<DepositBusEventSubscription, DepositBusEventSubscriptionVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useSubscription<DepositBusEventSubscription, DepositBusEventSubscriptionVariables>(DepositBusEventDocument, options);
       }

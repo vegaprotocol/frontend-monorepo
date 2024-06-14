@@ -1,6 +1,8 @@
+import uniqueId from 'lodash/uniqueId';
 import { type ButtonHTMLAttributes, type PropsWithChildren } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { z } from 'zod';
+import { create } from 'zustand';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
@@ -13,9 +15,12 @@ import {
   useReadContracts,
   useDisconnect,
   useAccountEffect,
-  useWriteContract,
-  useWaitForTransactionReceipt,
 } from 'wagmi';
+import {
+  getTransactionConfirmations,
+  writeContract,
+  waitForTransactionReceipt,
+} from '@wagmi/core';
 import { mainnet, sepolia, arbitrum, arbitrumSepolia } from 'wagmi/chains';
 
 import {
@@ -39,6 +44,7 @@ import {
   Intent,
   KeyValueTable,
   KeyValueTableRow,
+  useToasts,
 } from '@vegaprotocol/ui-toolkit';
 import { BRIDGE_ABI, prepend0x } from '@vegaprotocol/smart-contracts';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
@@ -51,14 +57,22 @@ import {
   removeDecimal,
   toBigNum,
 } from '@vegaprotocol/utils';
-import { useEVMBridgeConfigs, useEthereumConfig } from '@vegaprotocol/web3';
+import {
+  DepositBusEventDocument,
+  type DepositBusEventSubscription,
+  type DepositBusEventSubscriptionVariables,
+  useEVMBridgeConfigs,
+  useEthereumConfig,
+} from '@vegaprotocol/web3';
+import { getApolloClient } from '../../lib/apollo-client';
+import { DepositStatus } from '@vegaprotocol/types';
 
 const wagmiConfig = createConfig(
   getDefaultConfig({
     chains: [mainnet, sepolia, arbitrum, arbitrumSepolia],
     transports: {
-      [mainnet.id]: http(),
-      [sepolia.id]: http(),
+      // TODO: add mainnet
+      [sepolia.id]: http(process.env.NX_ETHEREUM_PROVIDER_URL),
       [arbitrum.id]: http(),
       [arbitrumSepolia.id]: http(),
     },
@@ -127,6 +141,8 @@ const DepositForm = ({
   initialAssetId: string;
   bridgeAddresses: Map<string, string>;
 }) => {
+  const writeContract = useTx((store) => store.writeContract);
+
   const { pubKeys } = useVegaWallet();
   const { open: openAssetDialog } = useAssetDetailsDialogStore();
 
@@ -135,7 +151,7 @@ const DepositForm = ({
   const { switchChainAsync } = useSwitchChain();
   const chainId = useChainId();
 
-  const { writeContract, data: hash } = useWriteContract();
+  // const { writeContract, data: hash } = useWriteContract();
 
   const form = useForm<FormFields>({
     resolver: zodResolver(depositSchema),
@@ -153,18 +169,12 @@ const DepositForm = ({
   const assetId = useWatch({ name: 'assetId', control: form.control });
   const asset = assets?.find((a) => a.id === assetId);
 
-  const { data } = useAssetReadContracts({ asset });
-
-  useWriteContract();
+  const { data } = useAssetReadContracts({ asset, bridgeAddresses });
 
   useAccountEffect({
     onConnect: ({ address }) =>
       form.setValue('fromAddress', address, { shouldValidate: true }),
     onDisconnect: () => form.setValue('fromAddress', ''),
-  });
-
-  const receipt = useWaitForTransactionReceipt({
-    hash,
   });
 
   const submitDeposit = async (fields: FormFields) => {
@@ -189,18 +199,19 @@ const DepositForm = ({
       throw new Error(`no bridge found for asset ${asset.id}`);
     }
 
-    const config = {
-      abi: BRIDGE_ABI,
-      address: bridgeAddress,
-      functionName: 'deposit_asset',
-      args: [
-        assetAddress,
-        removeDecimal(fields.amount, asset.decimals),
-        prepend0x(fields.toPubKey),
-      ],
-    };
-
-    writeContract(config);
+    writeContract(
+      {
+        abi: BRIDGE_ABI,
+        address: bridgeAddress,
+        functionName: 'deposit_asset',
+        args: [
+          assetAddress,
+          removeDecimal(fields.amount, asset.decimals),
+          prepend0x(fields.toPubKey),
+        ],
+      },
+      64
+    );
   };
 
   return (
@@ -367,14 +378,17 @@ const DepositForm = ({
       <TradingButton type="submit" size="large" fill={true}>
         Submit
       </TradingButton>
-      {receipt && (
-        <pre className="text-xs">{JSON.stringify(receipt, null, 2)}</pre>
-      )}
     </form>
   );
 };
 
-const useAssetReadContracts = ({ asset }: { asset?: AssetFieldsFragment }) => {
+const useAssetReadContracts = ({
+  asset,
+  bridgeAddresses,
+}: {
+  asset?: AssetFieldsFragment;
+  bridgeAddresses: Map<string, string>;
+}) => {
   const { address } = useAccount();
 
   let assetAddress;
@@ -383,8 +397,8 @@ const useAssetReadContracts = ({ asset }: { asset?: AssetFieldsFragment }) => {
 
   if (asset?.source.__typename === 'ERC20') {
     assetAddress = asset.source.contractAddress as `0x${string}`;
-    assetChainId = Number(asset.source.chainId);
-    bridgeAddress = bridges[assetChainId] as `0x${string}`;
+    assetChainId = asset.source.chainId;
+    bridgeAddress = bridgeAddresses.get(assetChainId) as `0x${string}`;
   }
 
   const { data, ...queryResult } = useReadContracts({
@@ -445,4 +459,167 @@ const Providers = ({ children }: PropsWithChildren) => {
       </QueryClientProvider>
     </WagmiProvider>
   );
+};
+
+type Tx = {
+  hash: string;
+  confirmations: number;
+};
+
+const useTx = create<{
+  txs: Map<string, Tx>;
+  updateTx: (id: string, data: Partial<Tx>) => void;
+  writeContract: (
+    config: Parameters<typeof writeContract>[1],
+    requiredConfirmations?: number
+  ) => void;
+}>()((set, get) => ({
+  txs: new Map(),
+  updateTx: (id, data) => {
+    set((prev) => {
+      const curr = prev.txs.get(id);
+
+      if (curr) {
+        return {
+          txs: new Map(prev.txs).set(id, {
+            ...curr,
+            ...data,
+          }),
+        };
+      }
+
+      return {
+        txs: new Map(prev.txs).set(id, {
+          hash: '',
+          confirmations: 0,
+          ...data,
+        }),
+      };
+    });
+  },
+  writeContract: async (config, requiredConfirmations = 1) => {
+    const id = uniqueId();
+    const txStore = get();
+    const toastStore = useToasts.getState();
+
+    toastStore.setToast({
+      id,
+      intent: Intent.Warning,
+      content: <p>Confirm in wallet</p>,
+    });
+
+    let hash: `0x${string}`;
+
+    try {
+      hash = await writeContract(wagmiConfig, config);
+
+      txStore.updateTx(id, { hash });
+
+      toastStore.update(id, {
+        content: <div>Hash: {truncateMiddle(hash)}</div>,
+      });
+    } catch (err) {
+      // TODO: create a type guard for this
+      if (
+        err !== null &&
+        typeof err === 'object' &&
+        'shortMessage' in err &&
+        typeof err.shortMessage === 'string'
+      ) {
+        toastStore.update(id, {
+          content: <p>{err.shortMessage}</p>,
+          intent: Intent.Danger,
+        });
+      } else {
+        toastStore.update(id, {
+          content: <p>Something went wrong</p>,
+          intent: Intent.Danger,
+        });
+      }
+
+      return;
+    }
+
+    if (!hash) {
+      return;
+    }
+
+    await waitForTransactionReceipt(wagmiConfig, { hash });
+
+    if (requiredConfirmations > 1) {
+      await waitForConfirmations(id, hash, requiredConfirmations);
+    }
+
+    // TODO: subscribe to deposit events here
+    if (config.functionName === 'deposit_asset') {
+      const client = getApolloClient();
+      // poll or subscribe to depoist events
+      const sub = client
+        .subscribe<
+          DepositBusEventSubscription,
+          DepositBusEventSubscriptionVariables
+        >({
+          query: DepositBusEventDocument,
+        })
+        .subscribe(({ data }) => {
+          if (!data?.busEvents?.length) return;
+
+          const event = data.busEvents.find((e) => {
+            if (e.event.__typename === 'Deposit' && e.event.txHash === hash) {
+              return true;
+            }
+            return false;
+          });
+
+          if (event && event.event.__typename === 'Deposit') {
+            if (event.event.status === DepositStatus.STATUS_FINALIZED) {
+              toastStore.update(id, {
+                intent: Intent.Success,
+                content: <p>Deposit confirmed</p>,
+              });
+              sub.unsubscribe();
+            }
+          }
+        });
+    }
+  },
+}));
+
+const waitForConfirmations = (
+  id: string,
+  hash: `0x${string}`,
+  requiredConfirmations: number
+): Promise<bigint> => {
+  return new Promise((resolve, reject) => {
+    const txStore = useTx.getState();
+    const toastStore = useToasts.getState();
+    // Start checking confirmations
+    const interval = setInterval(async () => {
+      try {
+        const confirmations = await getTransactionConfirmations(wagmiConfig, {
+          hash,
+        });
+
+        txStore.updateTx(id, {
+          confirmations: Number(confirmations),
+        });
+
+        toastStore.update(id, {
+          content: (
+            <p>
+              {Number(confirmations)}/{requiredConfirmations}
+            </p>
+          ),
+        });
+
+        if (confirmations >= BigInt(requiredConfirmations)) {
+          clearInterval(interval);
+          resolve(confirmations);
+        }
+      } catch {
+        clearInterval(interval);
+        reject();
+      }
+    }, 1000 * 12);
+  });
 };

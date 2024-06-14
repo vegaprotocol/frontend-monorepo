@@ -106,7 +106,7 @@ fragment DepositBusEventFields on Deposit {
   txHash
 }
 
-subscription DepositBusEvent($partyId: ID!) {
+subscription DepositBusEvent($partyId: ID) {
   busEvents(partyId: $partyId, batchSize: 0, types: [Deposit]) {
     event {
       ... on Deposit {
