@@ -211,7 +211,6 @@ const testSubscription = (
 };
 
 export const userControllableFeatureFlags: (keyof FeatureFlags)[] = [
-  'CROSS_CHAIN_DEPOSITS',
   'CROSS_CHAIN_DEPOSITS_TEST',
 ];
 
@@ -552,12 +551,6 @@ export const compileFeatureFlags = (refresh = false): FeatureFlags => {
       windowOrDefault(
         'NX_CROSS_CHAIN_DEPOSITS_ENABLED',
         process.env['NX_CROSS_CHAIN_DEPOSITS_ENABLED']
-      ) as string
-    ),
-    CROSS_CHAIN_DEPOSITS: TRUTHY.includes(
-      windowOrDefault(
-        'NX_CROSS_CHAIN_DEPOSITS',
-        process.env['NX_CROSS_CHAIN_DEPOSITS']
       ) as string
     ),
     CROSS_CHAIN_DEPOSITS_TEST: TRUTHY.includes(
