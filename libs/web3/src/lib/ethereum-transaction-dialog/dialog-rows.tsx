@@ -1,5 +1,5 @@
 import { Link } from '@vegaprotocol/ui-toolkit';
-import { EtherscanLink, useEnvironment } from '@vegaprotocol/environment';
+import { BlockExplorerLink, useEnvironment } from '@vegaprotocol/environment';
 import { EthTxStatus } from '../use-ethereum-transaction';
 import { useT } from '../use-t';
 
@@ -66,12 +66,12 @@ export const TxRow = ({
       >
         <span>{t('Ethereum transaction complete')}</span>
         {txHash && (
-          <EtherscanLink
+          <BlockExplorerLink
             tx={txHash}
             className="text-vega-pink dark:text-vega-yellow"
           >
             {t('View transaction on Etherscan')}
-          </EtherscanLink>
+          </BlockExplorerLink>
         )}
       </p>
     );

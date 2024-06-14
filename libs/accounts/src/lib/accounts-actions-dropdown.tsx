@@ -1,4 +1,7 @@
-import { ETHERSCAN_ADDRESS, useEtherscanLink } from '@vegaprotocol/environment';
+import {
+  ETHERSCAN_ADDRESS,
+  useExternalExplorerLink,
+} from '@vegaprotocol/environment';
 import { useT } from './use-t';
 import {
   ActionsDropdown,
@@ -19,7 +22,7 @@ export const AccountsActionsDropdown = ({
   assetContractAddress?: string;
   onClickBreakdown: () => void;
 }) => {
-  const etherscanLink = useEtherscanLink();
+  const blockExplorerLink = useExternalExplorerLink();
   const openAssetDialog = useAssetDetailsDialogStore((store) => store.open);
   const t = useT();
   return (
@@ -44,7 +47,7 @@ export const AccountsActionsDropdown = ({
       {assetContractAddress && (
         <TradingDropdownItem>
           <Link
-            href={etherscanLink(
+            href={blockExplorerLink(
               ETHERSCAN_ADDRESS.replace(':hash', assetContractAddress)
             )}
             target="_blank"

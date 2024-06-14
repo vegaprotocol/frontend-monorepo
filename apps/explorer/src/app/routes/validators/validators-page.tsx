@@ -21,7 +21,7 @@ import { JsonViewerDialog } from '../../components/dialogs/json-viewer-dialog';
 import { PageTitle } from '../../components/page-helpers/page-title';
 import BigNumber from 'bignumber.js';
 import {
-  EtherscanLink,
+  BlockExplorerLink,
   DApp,
   TOKEN_VALIDATOR,
   useLinks,
@@ -238,7 +238,7 @@ export const ValidatorsPage = () => {
                         <KeyValueTableRow>
                           <div>{t('Ethereum address')}</div>
                           <div className="break-all text-xs font-mono">
-                            <EtherscanLink address={v.ethereumAddress} />{' '}
+                            <BlockExplorerLink address={v.ethereumAddress} />{' '}
                             <CopyWithTooltip text={v.ethereumAddress}>
                               <button title={t('Copy address to clipboard')}>
                                 <Icon size={3} name="duplicate" />
