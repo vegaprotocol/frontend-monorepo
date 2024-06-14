@@ -1,10 +1,15 @@
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 import type { ComponentProps } from 'react';
-import { ETHERSCAN_ADDRESS, ETHERSCAN_TX, useEtherscanLink } from '../hooks';
+import {
+  ETHERSCAN_ADDRESS,
+  ETHERSCAN_TX,
+  useExternalExplorerLink,
+} from '../hooks';
 import { useT } from '../use-t';
 import { getExternalChainLabel } from '../external-chain';
 
-export const EtherscanLink = ({
+/** BlockExplorerLink (external) directs to any external block explorer links (e.g. etherscan.io or arbiscan.io)  */
+export const BlockExplorerLink = ({
   address,
   tx,
   sourceChainId,
@@ -16,7 +21,7 @@ export const EtherscanLink = ({
   sourceChainId?: number;
 } & ComponentProps<typeof ExternalLink>) => {
   const t = useT();
-  const etherscanLink = useEtherscanLink(sourceChainId);
+  const externalLink = useExternalExplorerLink(sourceChainId);
   let href = '';
 
   if ((!address && !tx) || (address && tx)) {
@@ -24,10 +29,10 @@ export const EtherscanLink = ({
   }
 
   if (address) {
-    href = etherscanLink(ETHERSCAN_ADDRESS.replace(':hash', address));
+    href = externalLink(ETHERSCAN_ADDRESS.replace(':hash', address));
   }
   if (tx) {
-    href = etherscanLink(ETHERSCAN_TX.replace(':hash', tx));
+    href = externalLink(ETHERSCAN_TX.replace(':hash', tx));
   }
 
   return (

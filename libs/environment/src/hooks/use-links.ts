@@ -121,7 +121,7 @@ export const useLinks = (dapp: DApp, network?: Net) => {
   return link;
 };
 
-export const useEtherscanLink = (sourceChainId?: number) => {
+export const useExternalExplorerLink = (sourceChainId?: number) => {
   const { ETHERSCAN_URL } = useEnvironment();
 
   const otherScanUrl = sourceChainId

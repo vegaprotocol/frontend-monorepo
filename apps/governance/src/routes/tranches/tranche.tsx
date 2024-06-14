@@ -10,7 +10,7 @@ import { useParams } from 'react-router';
 import { Navigate } from 'react-router-dom';
 import { formatNumber } from '@vegaprotocol/utils';
 
-import { EtherscanLink } from '@vegaprotocol/environment';
+import { BlockExplorerLink } from '@vegaprotocol/environment';
 import { TrancheItem } from '../redemption/tranche-item';
 import Routes from '../routes';
 import { TrancheLabel } from './tranche-label';
@@ -59,7 +59,7 @@ export const Tranche = () => {
             </KeyValueTableRow>
             {tranche.users.map((user) => (
               <KeyValueTableRow key={user}>
-                <EtherscanLink address={user} data-testid="link" />
+                <BlockExplorerLink address={user} data-testid="link" />
                 <RouterLink
                   className="underline"
                   title={t('View vesting information')}
