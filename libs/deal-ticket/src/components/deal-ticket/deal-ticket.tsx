@@ -55,6 +55,7 @@ import {
   validateType,
 } from '../../utils';
 import { ZeroBalanceError } from '../deal-ticket-validation/zero-balance-error';
+import { NotEnoughError } from '../deal-ticket-validation/not-enough-error';
 import {
   NOTIONAL_SIZE_TOOLTIP_TEXT,
   SummaryValidationType,
@@ -377,8 +378,12 @@ export const DealTicket = ({
         type: SummaryValidationType.MarketState,
       };
     }
+
+    const availableAmount = useBaseAsset
+      ? baseAssetAccountBalance
+      : generalAccountBalance;
     const hasNoBalance =
-      !BigInt(useBaseAsset ? baseAssetAccountBalance : generalAccountBalance) &&
+      !BigInt(availableAmount) &&
       !BigInt(marginAccountBalance) &&
       !BigInt(orderMarginAccountBalance);
     if (
@@ -392,6 +397,27 @@ export const DealTicket = ({
         message: SummaryValidationType.NoCollateral,
         type: SummaryValidationType.NoCollateral,
       };
+    }
+
+    // Check you have enough collateral to make a spot trade
+    if (isSpotMarket && baseAsset) {
+      if (useBaseAsset) {
+        const available = toBigNum(baseAssetAccountBalance, baseAsset.decimals);
+        if (available.isLessThan(rawSize || '0')) {
+          return {
+            message: SummaryValidationType.NotEnoughCollateral,
+            type: SummaryValidationType.NotEnoughCollateral,
+          };
+        }
+      } else {
+        const available = toBigNum(availableAmount, quoteAsset.decimals);
+        if (available.isLessThan(notional || '0')) {
+          return {
+            message: SummaryValidationType.NotEnoughCollateral,
+            type: SummaryValidationType.NotEnoughCollateral,
+          };
+        }
+      }
     }
 
     const marketTradingModeError = validateMarketTradingMode(
@@ -420,6 +446,11 @@ export const DealTicket = ({
     loadingBaseAssetAccount,
     pubKey,
     useBaseAsset,
+    notional,
+    isSpotMarket,
+    baseAsset,
+    quoteAsset,
+    rawSize,
   ]);
 
   const nonPersistentOrder = isNonPersistentOrder(timeInForce);
@@ -1024,13 +1055,8 @@ export const DealTicket = ({
         balance={useBaseAsset ? baseAssetAccountBalance : generalAccountBalance}
         isSpotMarket={isSpotMarket}
         margin={
-          isSpotMarket
-            ? removeDecimal(
-                (useBaseAsset ? normalizedOrder.size : notionalSize) || '0',
-                asset.decimals - market.decimalPlaces
-              )
-            : positionEstimate?.estimatePosition?.collateralIncreaseEstimate
-                .bestCase || '0'
+          positionEstimate?.estimatePosition?.collateralIncreaseEstimate
+            .bestCase || '0'
         }
         isReadOnly={isReadOnly}
         pubKey={pubKey}
@@ -1138,6 +1164,14 @@ const SummaryMessage = memo(
       );
     }
 
+    if (error?.type === SummaryValidationType.NotEnoughCollateral) {
+      return (
+        <div className="mb-2">
+          <NotEnoughError asset={asset} onDeposit={onDeposit} />
+        </div>
+      );
+    }
+
     // If we have any other full error which prevents
     // submission render that first
     if (error?.message) {
@@ -1152,11 +1186,14 @@ const SummaryMessage = memo(
 
     // If there is no blocking error but user doesn't have enough
     // balance render the margin warning, but still allow submission
-    if (BigInt(balance) < BigInt(margin) && BigInt(balance) > BigInt(0)) {
+    if (
+      !isSpotMarket &&
+      BigInt(balance) < BigInt(margin) &&
+      BigInt(balance) > BigInt(0)
+    ) {
       return (
         <div className="mb-2">
           <MarginWarning
-            isSpotMarket={isSpotMarket}
             balance={balance}
             margin={margin}
             asset={asset}
