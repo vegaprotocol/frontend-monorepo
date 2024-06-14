@@ -58,6 +58,7 @@ export const MarketHeader = () => {
                         <EmblemByMarket
                           market={data?.id || ''}
                           vegaChain={chainId}
+                          size={26}
                         />
                         {data.tradableInstrument.instrument.code}
                         <MarketProductPill productType={getProductType(data)} />

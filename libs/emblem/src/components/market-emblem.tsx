@@ -13,7 +13,7 @@ export type EmblemByMarketProps = {
   // Overlays the icon for the source chain, if available and applicable
   showSourceChain?: boolean;
   // The size of the logo
-  size?: 30 | 26 | 20;
+  size?: 30 | 26;
 };
 
 /**
@@ -43,11 +43,13 @@ export function EmblemByMarket(props: EmblemByMarketProps) {
 
   return (
     <div
-      className={classNames('relative inline-block h-8 w-14 leading-[0]', {
-        'w-14': size === 30,
-        'w-10': size === 26,
-        'w-8': size === 20,
-      })}
+      className={classNames(
+        'relative inline-block h-8 w-14 leading-[0] shrink-0',
+        {
+          'w-14': size === 30,
+          'w-10': size === 26,
+        }
+      )}
     >
       <EmblemBase
         src={base}
@@ -61,7 +63,10 @@ export function EmblemByMarket(props: EmblemByMarketProps) {
           src={baseChain}
           size={12}
           alt={t('Chain logo')}
-          className={`z-20 align-text-top absolute bottom-0 left-4`}
+          className={classNames(`z-20 align-text-top absolute left-4`, {
+            'bottom-0': size === 30,
+            'bottom-1': size === 26,
+          })}
         />
       )}
 
@@ -76,7 +81,10 @@ export function EmblemByMarket(props: EmblemByMarketProps) {
           src={quoteChain || settlementChain}
           size={12}
           alt={t('Chain logo')}
-          className={`align-text-top absolute bottom-0 right-0`}
+          className={classNames(`align-text-top absolute  `, {
+            'bottom-0 right-0': size === 30,
+            'bottom-1 right-2': size === 26,
+          })}
         />
       )}
     </div>

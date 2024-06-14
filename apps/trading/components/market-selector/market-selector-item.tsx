@@ -30,12 +30,15 @@ export const MarketSelectorItem = ({
     <div style={style} role="row">
       <Link
         to={`/markets/${market.id}`}
-        className={classNames('h-full flex items-center gap-2 mx-2 px-2', {
-          'hover:bg-vega-clight-700 dark:hover:bg-vega-cdark-700':
-            market.id !== currentMarketId,
-          'bg-vega-clight-600 dark:bg-vega-cdark-600':
-            market.id === currentMarketId,
-        })}
+        className={classNames(
+          'h-full grid grid-cols-6 sm:grid-cols-12 items-center gap-2 mx-2 px-2',
+          {
+            'hover:bg-vega-clight-700 dark:hover:bg-vega-cdark-700':
+              market.id !== currentMarketId,
+            'bg-vega-clight-600 dark:bg-vega-cdark-600':
+              market.id === currentMarketId,
+          }
+        )}
         onClick={() => onSelect(market.id)}
       >
         <MarketData market={market} allProducts={allProducts} />
@@ -83,16 +86,18 @@ const MarketData = ({
 
   return (
     <>
-      <div className="w-4/6 sm:w-2/6" role="gridcell">
+      <div className="col-span-4 sm:col-span-5" role="gridcell">
         <h3 className="flex items-center gap-1">
-          <EmblemByMarket market={market.id} vegaChain={chainId} size={20} />
-          {market.tradableInstrument.instrument.code}
+          <EmblemByMarket market={market.id} vegaChain={chainId} size={26} />
+          <span className="overflow-hidden text-ellipsis">
+            {market.tradableInstrument.instrument.code}
+          </span>
           <MarketProductPill productType={productType} />
           <MarketIcon data={market} />
         </h3>
       </div>
       <div
-        className="w-2/6 overflow-hidden text-xs lg:text-sm whitespace-nowrap text-ellipsis text-right"
+        className="col-span-2 sm:col-span-3 overflow-hidden text-xs lg:text-sm whitespace-nowrap text-ellipsis text-right"
         title={symbol}
         data-testid="market-selector-price"
         role="gridcell"
@@ -100,14 +105,14 @@ const MarketData = ({
         {price} {symbol}
       </div>
       <div
-        className="hidden sm:w-1/6 sm:flex justify-end overflow-hidden text-xs lg:text-sm whitespace-nowrap text-ellipsis text-right"
+        className="hidden col-span-2 sm:flex justify-end overflow-hidden text-xs lg:text-sm whitespace-nowrap text-ellipsis text-right"
         title={t('24h vol')}
         data-testid="market-selector-volume"
         role="gridcell"
       >
         {volume}
       </div>
-      <div className="hidden sm:w-1/6 sm:flex justify-end" role="gridcell">
+      <div className="hidden col-span-2 sm:flex justify-end" role="gridcell">
         {oneDayCandles && (
           <Sparkline
             width={64}
