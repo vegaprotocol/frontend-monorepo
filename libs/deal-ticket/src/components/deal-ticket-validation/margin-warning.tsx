@@ -17,16 +17,9 @@ interface Props {
     decimals: number;
   };
   onDeposit: (assetId: string) => void;
-  isSpotMarket?: boolean;
 }
 
-export const MarginWarning = ({
-  margin,
-  balance,
-  asset,
-  onDeposit,
-  isSpotMarket,
-}: Props) => {
+export const MarginWarning = ({ margin, balance, asset, onDeposit }: Props) => {
   const t = useT();
   const description = (
     <div className="flex flex-col items-start gap-2 p-2">
@@ -63,11 +56,7 @@ export const MarginWarning = ({
         <span className="text-yellow-500 mr-2">
           <VegaIcon name={VegaIconNames.WARNING} />
         </span>
-        {isSpotMarket
-          ? t('You may not have enough balance to make this trade.')
-          : t(
-              'You may not have enough margin available to open this position.'
-            )}
+        {t('You may not have enough margin available to open this position.')}
       </div>
     </Tooltip>
   );

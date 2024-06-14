@@ -37,6 +37,7 @@ export enum MarketModeValidationType {
 export enum SummaryValidationType {
   NoPubKey = 'NoPubKey',
   NoCollateral = 'NoCollateral',
+  NotEnoughCollateral = 'NotEnoughCollateral',
   TradingMode = 'MarketTradingMode',
   MarketState = 'MarketState',
 }
