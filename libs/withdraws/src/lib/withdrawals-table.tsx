@@ -157,7 +157,7 @@ export const WithdrawalsTable = ({
         cellRendererSelector: ({
           data,
         }: VegaICellRendererParams<WithdrawalFieldsFragment>) => ({
-          component: data?.txHash ? 'EtherscanLinkCell' : 'CompleteCell',
+          component: data?.txHash ? 'BlockExplorerLinkCell' : 'CompleteCell',
         }),
       },
     ],
@@ -171,7 +171,7 @@ export const WithdrawalsTable = ({
       components={{
         RecipientCell,
         StatusCell,
-        EtherscanLinkCell,
+        BlockExplorerLinkCell,
         CompleteCell,
       }}
       suppressCellFocus
@@ -221,7 +221,7 @@ export const CompleteCell = ({ data, complete }: CompleteCellProps) => {
   );
 };
 
-export const EtherscanLinkCell = ({
+export const BlockExplorerLinkCell = ({
   value,
   data,
 }: VegaValueFormatterParams<WithdrawalFieldsFragment, 'txHash'>) => {
