@@ -176,7 +176,7 @@ const PortfolioActionTabs = () => {
           </div>
         </ErrorBoundary>
       </Tab>
-      {flags.CROSS_CHAIN_DEPOSITS_ENABLED && flags.CROSS_CHAIN_DEPOSITS ? (
+      {flags.CROSS_CHAIN_DEPOSITS_ENABLED ? (
         <Tab id="cross-chain-deposit" name={t('Deposit (Cross-chain)')}>
           <ErrorBoundary feature="portfolio-transfer">
             <div className="p-2 flex flex-col gap-4">

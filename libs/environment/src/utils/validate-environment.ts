@@ -103,7 +103,6 @@ const GOVERNANCE_FLAGS = {
 
 const EXPERIMENTAL_FLAGS = {
   CROSS_CHAIN_DEPOSITS_ENABLED: z.optional(z.boolean()),
-  CROSS_CHAIN_DEPOSITS: z.optional(z.boolean()),
   CROSS_CHAIN_DEPOSITS_TEST: z.optional(z.boolean()),
 };
 
