@@ -4,14 +4,10 @@ import { PageHeader } from '../../../../components/page-header';
 import { useDocumentTitle } from '../../../../hooks/use-document-title';
 import { useExplorerPartyDepositsWithdrawalsQuery } from '../components/__generated__/Party-deposits-withdrawals';
 import { combineDepositsWithdrawals } from '../components/lib/combine-deposits-withdrawals';
-import {
-  EthExplorerLinkTypes,
-  ExternalExplorerLink,
-} from '../../../../components/links/external-explorer-link/external-explorer-link';
-import { Time } from '../../../../../app/components/time';
-import { getDepositWithdrawalStatusLabel } from '../components/party-block-deposits';
-import AssetBalance from '../../../../components/asset-balance/asset-balance';
-import { TableCell, TableHeader, TableRow } from '../../../../components/table';
+import { TableHeader } from '../../../../components/table';
+import { useScreenDimensions } from '@vegaprotocol/react-helpers';
+import { useMemo } from 'react';
+import { PartyDepositsWithdrawalRow } from '../components/party-block-deposits';
 
 type Params = { party: string };
 
@@ -27,6 +23,16 @@ export function PartyDepositsWithdrawals() {
 
   const sortedData = data ? combineDepositsWithdrawals(data, 50) : [];
 
+  const { screenSize } = useScreenDimensions();
+  const isTruncated = useMemo(
+    () => ['xs', 'sm', 'md', 'lg'].includes(screenSize),
+    [screenSize]
+  );
+  const isRounded = useMemo(
+    () => ['xs', 'sm'].includes(screenSize),
+    [screenSize]
+  );
+
   useDocumentTitle(['Deposits & Withdrawals']);
 
   return (
@@ -36,62 +42,31 @@ export function PartyDepositsWithdrawals() {
         <table className="w-full">
           <thead>
             <tr>
-              <TableHeader className="text-right px-4">{t('Type')}</TableHeader>
-              <TableHeader className="text-left px-4">
-                {t('Amount')}
-              </TableHeader>
-              <TableHeader className="text-left px-4">{t('Date')}</TableHeader>
-              <TableHeader className="text-left px-4">
+              {!isRounded && (
+                <TableHeader className="text-left pr-4">
+                  {t('Type')}
+                </TableHeader>
+              )}
+              <TableHeader className="text-left pr-4">
                 {t('Status')}
               </TableHeader>
-              <TableHeader className="text-left px-4">Origin</TableHeader>
+              <TableHeader className="text-left">{t('Hash')}</TableHeader>
+              <TableHeader className="text-right pl-4">
+                {t('Amount')}
+              </TableHeader>
+              <TableHeader className="text-right pl-4">{t('Date')}</TableHeader>
             </tr>
           </thead>
           <tbody>
             {sortedData
               .filter((e) => !!e)
-              .flatMap((ledger) => {
-                const chain =
-                  ledger?.asset.source.__typename &&
-                  ledger.asset.source.__typename === 'ERC20' &&
-                  ledger.asset.source.chainId
-                    ? ledger?.asset.source.chainId
-                    : undefined;
-                const status = getDepositWithdrawalStatusLabel(
-                  ledger?.status,
-                  ledger?.txHash
-                );
-
-                return (
-                  <TableRow>
-                    <TableCell>{ledger?.__typename}</TableCell>
-                    <TableCell align={'right'}>
-                      {ledger?.asset.id && ledger.amount && (
-                        <AssetBalance
-                          hideLabel={true}
-                          price={ledger.amount}
-                          assetId={ledger?.asset.id}
-                        />
-                      )}
-                    </TableCell>
-                    <TableCell align={'center'}>
-                      {ledger?.createdTimestamp && (
-                        <Time date={ledger.createdTimestamp} />
-                      )}
-                    </TableCell>
-                    <TableCell>{status}</TableCell>
-                    <TableCell>
-                      {ledger?.txHash && (
-                        <ExternalExplorerLink
-                          id={ledger?.txHash}
-                          type={EthExplorerLinkTypes.tx}
-                          chain={chain}
-                        />
-                      )}
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
+              .flatMap((ledger) => (
+                <PartyDepositsWithdrawalRow
+                  isRounded={isRounded}
+                  isTruncated={isTruncated}
+                  ledger={ledger}
+                />
+              ))}
           </tbody>
         </table>
       </div>

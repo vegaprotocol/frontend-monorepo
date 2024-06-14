@@ -6,25 +6,22 @@ import { PartyBlock } from './party-block';
 import type { AccountFields } from '@vegaprotocol/accounts';
 import { useExplorerPartyDepositsWithdrawalsQuery } from './__generated__/Party-deposits-withdrawals';
 import {
+  type DepositOrWithdrawal,
   combineDepositsWithdrawals,
-  isDepositStatus,
 } from './lib/combine-deposits-withdrawals';
-import {
-  TableCell,
-  TableRow,
-  TableWithTbody,
-} from '../../../../components/table';
+import { Table, TableCell, TableRow } from '../../../../components/table';
 import {
   EthExplorerLinkTypes,
   ExternalExplorerLink,
 } from '../../../../components/links/external-explorer-link/external-explorer-link';
 import AssetBalance from '../../../..//components/asset-balance/asset-balance';
-import { type DepositStatus, type WithdrawalStatus } from '@vegaprotocol/types';
-import {
-  DepositStatusMapping,
-  WithdrawalStatusMapping,
-} from '@vegaprotocol/types';
 import { Time } from '../../../../components/time';
+import {
+  DepositWithdrawalStatusIcon,
+  getDepositWithdrawalStatusLabel,
+} from './party-deposits-withdrawals-status-icon';
+import { useScreenDimensions } from '@vegaprotocol/react-helpers';
+import { useMemo } from 'react';
 
 export interface PartyBlockAccountProps {
   partyId: string;
@@ -40,7 +37,6 @@ export interface PartyBlockAccountProps {
  */
 export const PartyBlockDeposits = ({
   partyId,
-  accountData,
   accountLoading,
   accountError,
 }: PartyBlockAccountProps) => {
@@ -51,6 +47,16 @@ export const PartyBlockDeposits = ({
   });
 
   const sortedData = data ? combineDepositsWithdrawals(data) : [];
+
+  const { screenSize } = useScreenDimensions();
+  const isTruncated = useMemo(
+    () => ['xs', 'sm', 'md', 'lg'].includes(screenSize),
+    [screenSize]
+  );
+  const isRounded = useMemo(
+    () => ['xs', 'sm'].includes(screenSize),
+    [screenSize]
+  );
 
   const shouldShowActionButton =
     sortedData &&
@@ -73,56 +79,19 @@ export const PartyBlockDeposits = ({
     <PartyBlock title={t('Deposits & Withdrawals')} action={action}>
       <AsyncRenderer loading={loading} error={error} data={sortedData}>
         {sortedData && sortedData.length !== 0 ? (
-          <TableWithTbody>
-            {sortedData
-              .filter((e) => !!e)
-              .flatMap((ledger) => {
-                const chain =
-                  ledger?.asset.source.__typename &&
-                  ledger.asset.source.__typename === 'ERC20' &&
-                  ledger.asset.source.chainId
-                    ? ledger?.asset.source.chainId
-                    : undefined;
-                const status = getDepositWithdrawalStatusLabel(
-                  ledger?.status,
-                  ledger?.txHash
-                );
-
-                return (
-                  <TableRow>
-                    <TableCell>{ledger?.__typename}</TableCell>
-                    <TableCell align={'right'}>
-                      {ledger?.asset.id && ledger.amount && (
-                        <AssetBalance
-                          hideLabel={true}
-                          price={ledger.amount}
-                          assetId={ledger?.asset.id}
-                        />
-                      )}
-                    </TableCell>
-                    <TableCell align={'center'}>
-                      {ledger?.createdTimestamp && (
-                        <Time date={ledger.createdTimestamp} />
-                      )}
-                    </TableCell>
-                    <TableCell>{status}</TableCell>
-                    <TableCell>
-                      {ledger?.txHash && (
-                        <>
-                          <ExternalExplorerLink
-                            truncate={true}
-                            id={ledger?.txHash}
-                            type={EthExplorerLinkTypes.tx}
-                            chain={chain}
-                          />
-                          &hellip;
-                        </>
-                      )}
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-          </TableWithTbody>
+          <Table>
+            <tbody>
+              {sortedData
+                .filter((e) => !!e)
+                .flatMap((ledger) => (
+                  <PartyDepositsWithdrawalRow
+                    isRounded={isRounded}
+                    isTruncated={isTruncated}
+                    ledger={ledger}
+                  />
+                ))}
+            </tbody>
+          </Table>
         ) : (
           <p>There's nothing</p>
         )}
@@ -131,33 +100,65 @@ export const PartyBlockDeposits = ({
   );
 };
 
-/**
- * Produces a label based on the status of a deposit or withdrawal. In the
- * case of a finalized deposit, it will also check if the hash is present
- * and use that to produce a label that isn't in the standard label mapping.
- *
- * @param status
- * @param hash
- * @returns string Label to
- */
-export function getDepositWithdrawalStatusLabel(
-  status?: DepositStatus | WithdrawalStatus,
-  hash?: string | null
-) {
-  if (status !== undefined) {
-    if (status === 'STATUS_FINALIZED') {
-      if (hash) {
-        return t('Complete');
-      } else {
-        return t('Incomplete');
-      }
-    }
-    if (isDepositStatus(status)) {
-      return DepositStatusMapping[status];
-    } else {
-      return WithdrawalStatusMapping[status];
-    }
-  }
+export type PartyDepositsWithdrawalRowProps = {
+  isRounded: boolean;
+  isTruncated: boolean;
+  ledger: DepositOrWithdrawal;
+};
 
-  return t('Unknown');
-}
+export const PartyDepositsWithdrawalRow = ({
+  isRounded = false,
+  isTruncated = false,
+  ledger,
+}: PartyDepositsWithdrawalRowProps) => {
+  const chain =
+    ledger?.asset.source.__typename &&
+    ledger.asset.source.__typename === 'ERC20' &&
+    ledger.asset.source.chainId
+      ? ledger?.asset.source.chainId
+      : undefined;
+
+  return (
+    <TableRow>
+      {!isRounded && (
+        <TableCell>
+          {ledger?.__typename === 'Deposit' ? t('Deposit') : t('Withdrawal')}
+        </TableCell>
+      )}
+      <TableCell
+        align="left"
+        className="px-2"
+        title={getDepositWithdrawalStatusLabel(ledger?.status, ledger?.txHash)}
+      >
+        <DepositWithdrawalStatusIcon
+          status={ledger?.status}
+          hash={ledger?.txHash}
+        />
+      </TableCell>
+      <TableCell align="left">
+        {ledger?.txHash && (
+          <ExternalExplorerLink
+            truncate={isTruncated}
+            id={ledger?.txHash}
+            type={EthExplorerLinkTypes.tx}
+            chain={chain}
+          />
+        )}
+      </TableCell>
+      <TableCell align={'right'}>
+        {ledger?.__typename === 'Deposit' ? '+' : '-'}
+        {ledger?.asset.id && ledger.amount && (
+          <AssetBalance
+            hideLabel={true}
+            price={ledger.amount}
+            assetId={ledger?.asset.id}
+            rounded={isRounded}
+          />
+        )}
+      </TableCell>
+      <TableCell align={'right'}>
+        {ledger?.createdTimestamp && <Time date={ledger.createdTimestamp} />}
+      </TableCell>
+    </TableRow>
+  );
+};

@@ -1,4 +1,4 @@
-import { getDepositWithdrawalStatusLabel } from '../party-block-deposits';
+import { getDepositWithdrawalStatusLabel } from '../party-deposits-withdrawals-status-icon';
 import { isDepositStatus } from './combine-deposits-withdrawals';
 import { DepositStatus, WithdrawalStatus } from '@vegaprotocol/types';
 

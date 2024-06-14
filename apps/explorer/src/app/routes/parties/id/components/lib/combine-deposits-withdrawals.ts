@@ -3,7 +3,16 @@ import {
   type DepositStatus,
   type WithdrawalStatus,
 } from '@vegaprotocol/types';
-import type { ExplorerPartyDepositsWithdrawalsQuery } from '../__generated__/Party-deposits-withdrawals';
+import type {
+  ExplorerPartyDepositsWithdrawalsQuery,
+  ExplorerPartyDepositFieldsFragment,
+  ExplorerPartyWithdrawalFieldsFragment,
+} from '../__generated__/Party-deposits-withdrawals';
+
+export type DepositOrWithdrawal =
+  | ExplorerPartyDepositFieldsFragment
+  | ExplorerPartyWithdrawalFieldsFragment
+  | undefined;
 
 /**
  * Deposits and Withdrawals are separate types in the array, but when rendering them we want both to appear
@@ -16,7 +25,7 @@ import type { ExplorerPartyDepositsWithdrawalsQuery } from '../__generated__/Par
 export function combineDepositsWithdrawals(
   data: ExplorerPartyDepositsWithdrawalsQuery,
   limit: number = 3
-) {
+): DepositOrWithdrawal[] {
   const transfers =
     data?.partiesConnection?.edges?.flatMap((edge) => {
       return edge.node.depositsConnection?.edges?.map((depositEdge) => {

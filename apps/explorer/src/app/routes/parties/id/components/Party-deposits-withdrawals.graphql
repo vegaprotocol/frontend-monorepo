@@ -1,3 +1,44 @@
+fragment ExplorerPartyDepositFields on Deposit {
+  id
+  asset {
+    id
+    source {
+      ... on ERC20 {
+        contractAddress
+        chainId
+      }
+    }
+  }
+  amount
+  createdTimestamp
+  creditedTimestamp
+  status
+  txHash
+}
+
+fragment ExplorerPartyWithdrawalFields on Withdrawal {
+  id
+  createdTimestamp
+  withdrawnTimestamp
+  asset {
+    id
+    source {
+      ... on ERC20 {
+        contractAddress
+        chainId
+      }
+    }
+  }
+  amount
+  status
+  txHash
+  details {
+    ... on Erc20WithdrawalDetails {
+      receiverAddress
+    }
+  }
+}
+
 query ExplorerPartyDepositsWithdrawals($partyId: ID!, $first: Int = 3) {
   partiesConnection(id: $partyId) {
     edges {
@@ -5,47 +46,14 @@ query ExplorerPartyDepositsWithdrawals($partyId: ID!, $first: Int = 3) {
         depositsConnection(pagination: { first: $first }) {
           edges {
             node {
-              id
-              asset {
-                id
-                source {
-                  ... on ERC20 {
-                    contractAddress
-                    chainId
-                  }
-                }
-              }
-              amount
-              createdTimestamp
-              creditedTimestamp
-              status
-              txHash
+              ...ExplorerPartyDepositFields
             }
           }
         }
         withdrawalsConnection(pagination: { first: $first }) {
           edges {
             node {
-              id
-              createdTimestamp
-              withdrawnTimestamp
-              asset {
-                id
-                source {
-                  ... on ERC20 {
-                    contractAddress
-                    chainId
-                  }
-                }
-              }
-              amount
-              status
-              txHash
-              details {
-                ... on Erc20WithdrawalDetails {
-                  receiverAddress
-                }
-              }
+              ...ExplorerPartyWithdrawalFields
             }
           }
         }
