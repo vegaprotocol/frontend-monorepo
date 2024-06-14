@@ -38,7 +38,7 @@ export const ArbitrumLink = ({
           ? t('View on {{chainLabel}} (opens in a new tab)', {
               chainLabel: getExternalChainLabel(sourceChainId.toString()),
             })
-          : t('View on Etherscan (opens in a new tab)')
+          : t('View on Arbiscan (opens in a new tab)')
       }
       {...props}
     >
