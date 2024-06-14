@@ -58,7 +58,7 @@ import {
 } from '@vegaprotocol/types';
 import {
   DApp,
-  EtherscanLink,
+  BlockExplorerLink,
   useFeatureFlags,
   TOKEN_PROPOSAL,
   useEnvironment,
@@ -1167,7 +1167,7 @@ export const EthOraclePanel = ({ sourceType }: { sourceType: EthCallSpec }) => {
           </KeyValueTable>
 
           <div className="my-2">
-            <EtherscanLink
+            <BlockExplorerLink
               address={sourceType.address}
               sourceChainId={sourceType.sourceChainId}
             >
@@ -1176,7 +1176,7 @@ export const EthOraclePanel = ({ sourceType }: { sourceType: EthCallSpec }) => {
                   (sourceType.sourceChainId || 1).toString()
                 ),
               })}
-            </EtherscanLink>
+            </BlockExplorerLink>
           </div>
         </>
       )}
