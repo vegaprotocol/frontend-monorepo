@@ -7,7 +7,7 @@ import type {
   ExplorerPartyDepositsWithdrawalsQuery,
   ExplorerPartyDepositFieldsFragment,
   ExplorerPartyWithdrawalFieldsFragment,
-} from '../__generated__/Party-deposits-withdrawals';
+} from '../__generated__/PartyDepositsWithdrawals';
 
 export type DepositOrWithdrawal =
   | ExplorerPartyDepositFieldsFragment

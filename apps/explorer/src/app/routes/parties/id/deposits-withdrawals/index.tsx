@@ -2,11 +2,10 @@ import { t } from '@vegaprotocol/i18n';
 import { useParams } from 'react-router-dom';
 import { PageHeader } from '../../../../components/page-header';
 import { useDocumentTitle } from '../../../../hooks/use-document-title';
-import { useExplorerPartyDepositsWithdrawalsQuery } from '../components/__generated__/Party-deposits-withdrawals';
+import { useExplorerPartyDepositsWithdrawalsQuery } from '../components/__generated__/PartyDepositsWithdrawals';
 import { combineDepositsWithdrawals } from '../components/lib/combine-deposits-withdrawals';
 import { TableHeader } from '../../../../components/table';
 import { useScreenDimensions } from '@vegaprotocol/react-helpers';
-import { useMemo } from 'react';
 import { PartyDepositsWithdrawalRow } from '../components/party-block-deposits';
 
 type Params = { party: string };
@@ -24,14 +23,8 @@ export function PartyDepositsWithdrawals() {
   const sortedData = data ? combineDepositsWithdrawals(data, 50) : [];
 
   const { screenSize } = useScreenDimensions();
-  const isTruncated = useMemo(
-    () => ['xs', 'sm', 'md', 'lg'].includes(screenSize),
-    [screenSize]
-  );
-  const isRounded = useMemo(
-    () => ['xs', 'sm'].includes(screenSize),
-    [screenSize]
-  );
+  const isTruncated = ['xs', 'sm', 'md', 'lg'].includes(screenSize);
+  const isRounded = ['xs', 'sm'].includes(screenSize);
 
   useDocumentTitle(['Deposits & Withdrawals']);
 

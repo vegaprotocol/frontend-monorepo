@@ -4,7 +4,7 @@ import { Routes } from '../../../../routes/route-names';
 import { AsyncRenderer, Button } from '@vegaprotocol/ui-toolkit';
 import { PartyBlock } from './party-block';
 import type { AccountFields } from '@vegaprotocol/accounts';
-import { useExplorerPartyDepositsWithdrawalsQuery } from './__generated__/Party-deposits-withdrawals';
+import { useExplorerPartyDepositsWithdrawalsQuery } from './__generated__/PartyDepositsWithdrawals';
 import {
   type DepositOrWithdrawal,
   combineDepositsWithdrawals,
@@ -21,7 +21,6 @@ import {
   getDepositWithdrawalStatusLabel,
 } from './party-deposits-withdrawals-status-icon';
 import { useScreenDimensions } from '@vegaprotocol/react-helpers';
-import { useMemo } from 'react';
 
 export interface PartyBlockAccountProps {
   partyId: string;
@@ -49,14 +48,8 @@ export const PartyBlockDeposits = ({
   const sortedData = data ? combineDepositsWithdrawals(data) : [];
 
   const { screenSize } = useScreenDimensions();
-  const isTruncated = useMemo(
-    () => ['xs', 'sm', 'md', 'lg'].includes(screenSize),
-    [screenSize]
-  );
-  const isRounded = useMemo(
-    () => ['xs', 'sm'].includes(screenSize),
-    [screenSize]
-  );
+  const isTruncated = ['xs', 'sm', 'md', 'lg'].includes(screenSize);
+  const isRounded = ['xs', 'sm'].includes(screenSize);
 
   const shouldShowActionButton =
     sortedData &&
