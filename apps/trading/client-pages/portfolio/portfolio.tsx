@@ -158,7 +158,6 @@ const PortfolioActionTabs = () => {
                 'Use this form to deposit Ethereum or Arbitrum assets to the Vega network'
               )}
             />
-            <p className="text-sm">{t('Deposit from your wallet')}</p>
             <DepositContainer />
           </div>
         </ErrorBoundary>
