@@ -1,11 +1,8 @@
 import { Splash } from '@vegaprotocol/ui-toolkit';
-import {
-  withdrawalProvider,
-  WithdrawalsTable,
-  useIncompleteWithdrawals,
-} from '@vegaprotocol/withdraws';
+import { withdrawalProvider, WithdrawalsTable } from '@vegaprotocol/withdraws';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useDataProvider } from '@vegaprotocol/data-provider';
+import { useIncompleteWithdrawals } from '../../lib/hooks/use-incomplete-withdrawals';
 import { useT } from '../../lib/use-t';
 
 export const WithdrawalsContainer = () => {

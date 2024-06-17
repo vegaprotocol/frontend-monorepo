@@ -3,7 +3,7 @@ import type { WithdrawalFieldsFragment } from '@vegaprotocol/withdraws';
 import BigNumber from 'bignumber.js';
 import * as web3 from '@vegaprotocol/web3';
 import { renderHook, waitFor } from '@testing-library/react';
-import { useIncompleteWithdrawals } from './use-ready-to-complete-withdrawals-toast';
+import { useIncompleteWithdrawals } from './use-incomplete-withdrawals';
 import { MockedProvider } from '@apollo/client/testing';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 
