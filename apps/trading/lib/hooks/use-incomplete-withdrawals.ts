@@ -2,18 +2,15 @@ import { useDataProvider } from '@vegaprotocol/data-provider';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import BigNumber from 'bignumber.js';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import {
-  toAssetData,
-  useGetWithdrawDelay,
-  useGetWithdrawThreshold,
-} from '@vegaprotocol/web3';
+import { toAssetData, useEthereumConfig } from '@vegaprotocol/web3';
 import {
   type WithdrawalFieldsFragment,
   withdrawalProvider,
 } from '@vegaprotocol/withdraws';
 import uniqBy from 'lodash/uniqBy';
-import uniq from 'lodash/uniq';
-import compact from 'lodash/compact';
+import { BRIDGE_ABI } from '@vegaprotocol/smart-contracts';
+import { readContract } from '@wagmi/core';
+import { wagmiConfig } from '../wagmi-config';
 
 export type TimestampedWithdrawals = {
   data: WithdrawalFieldsFragment;
@@ -21,6 +18,8 @@ export type TimestampedWithdrawals = {
 }[];
 
 export const useIncompleteWithdrawals = () => {
+  const { config } = useEthereumConfig();
+
   const [ready, setReady] = useState<TimestampedWithdrawals>([]);
   const [delayed, setDelayed] = useState<TimestampedWithdrawals>([]);
   const { pubKey, isReadOnly } = useVegaWallet();
@@ -29,7 +28,7 @@ export const useIncompleteWithdrawals = () => {
     variables: { partyId: pubKey || '' },
     skip: !pubKey || isReadOnly,
   });
-  const getDelay = useGetWithdrawDelay(); // seconds
+  // const getDelay = useGetWithdrawDelay(); // seconds
   const incompleteWithdrawals = useMemo(
     () => data?.filter((w) => !w.txHash),
     [data]
@@ -44,31 +43,25 @@ export const useIncompleteWithdrawals = () => {
     [incompleteWithdrawals]
   );
 
-  const getThreshold = useGetWithdrawThreshold();
-
   const checkWithdraws = useCallback(async () => {
     if (assets.length === 0) return;
 
-    const chainIds = uniq(
-      compact(
-        assets.map((a) =>
-          a.source.__typename === 'ERC20' ? Number(a.source.chainId) : null
-        )
-      )
-    );
-
-    const delays = await Promise.all(
-      chainIds.map((chainId) => getDelay(chainId))
-    ).then((delays) =>
-      chainIds.reduce<Record<number, number | undefined>>(
-        (all, chainId, index) =>
-          Object.assign(all, { [chainId]: delays[index] }),
-        {}
-      )
-    );
+    // TODO: with default wagmi setup we can only check the delay of the current connected chain
+    const delay = await readContract(wagmiConfig, {
+      abi: BRIDGE_ABI,
+      address: config?.collateral_bridge_contract.address as `0x${string}`,
+      functionName: 'default_withdraw_delay',
+    });
 
     const thresholds = await Promise.all(
-      assets.map((asset) => getThreshold(toAssetData(asset)))
+      assets.map((asset) =>
+        readContract(wagmiConfig, {
+          abi: BRIDGE_ABI,
+          address: config?.collateral_bridge_contract.address as `0x${string}`,
+          functionName: 'get_withdraw_threshold',
+          args: [toAssetData(asset)?.contractAddress],
+        })
+      )
     ).then((thresholds) =>
       assets.reduce<Record<string, BigNumber | undefined>>(
         (all, asset, index) =>
@@ -77,19 +70,15 @@ export const useIncompleteWithdrawals = () => {
       )
     );
 
-    return { delays, thresholds };
-  }, [assets, getDelay, getThreshold]);
+    return { delay, thresholds };
+  }, [assets, config]);
 
   useEffect(() => {
     checkWithdraws().then((retrieved) => {
-      if (
-        !retrieved ||
-        Object.keys(retrieved.delays).length === 0 ||
-        !incompleteWithdrawals
-      ) {
+      if (!retrieved || !incompleteWithdrawals) {
         return;
       }
-      const { thresholds, delays } = retrieved;
+      const { thresholds, delay } = retrieved;
       const timestamped = incompleteWithdrawals.map((w) => {
         let timestamp = undefined;
         const assetChainId =
@@ -97,12 +86,11 @@ export const useIncompleteWithdrawals = () => {
             ? Number(w.asset.source.chainId)
             : undefined;
         const threshold = thresholds[w.asset.id];
-        if (threshold && assetChainId && delays[assetChainId] != null) {
-          const delay = delays[assetChainId];
+        if (threshold && assetChainId && delay) {
           timestamp = 0;
           if (new BigNumber(w.amount).isGreaterThan(threshold)) {
             const created = w.createdTimestamp;
-            timestamp = new Date(created).getTime() + (delay as number) * 1000;
+            timestamp = new Date(created).getTime() + Number(delay) * 1000;
           }
         }
         return {
