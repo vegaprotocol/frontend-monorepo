@@ -3,7 +3,6 @@ import { LayoutPriority } from 'allotment';
 import classNames from 'classnames';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { useFeatureFlags } from '@vegaprotocol/environment';
-import { type PinnedAsset } from '@vegaprotocol/accounts';
 import { type Market } from '@vegaprotocol/markets';
 import { Tab, LocalStoragePersistTabs as Tabs } from '@vegaprotocol/ui-toolkit';
 import {
@@ -20,17 +19,11 @@ import { Sidebar } from '../../components/sidebar';
 
 interface TradeGridProps {
   market: Market;
-  pinnedAssets?: PinnedAsset[] | undefined;
+  pinnedAssets?: string[] | undefined;
 }
 
 const MainGrid = memo(
-  ({
-    market,
-    pinnedAssets,
-  }: {
-    market: Market;
-    pinnedAssets?: PinnedAsset[];
-  }) => {
+  ({ market, pinnedAssets }: { market: Market; pinnedAssets?: string[] }) => {
     const featureFlags = useFeatureFlags((state) => state.flags);
     const t = useT();
     const [sizes, handleOnLayoutChange] = usePaneLayout({ id: 'top' });

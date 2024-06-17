@@ -21,6 +21,7 @@ import { useDataProvider } from '@vegaprotocol/data-provider';
 import { useState } from 'react';
 import classNames from 'classnames';
 import { useChainId } from '@vegaprotocol/wallet-react';
+import { getExternalChainShortLabel } from '@vegaprotocol/environment';
 
 export interface AssetActions {
   onClickAsset: (assetId: string) => void;
@@ -105,7 +106,14 @@ export const AccountCard = ({
       <div className="relative p-3">
         <header className="flex items-center mb-3">
           <Emblem asset={asset.id} vegaChain={chainId} />
-          <span className="grow ml-2 text-lg">{asset.name}</span>
+          <span className="grow ml-2 text-lg min-w-0">
+            <span>{asset.name}</span>
+            {asset.source.__typename === 'ERC20' && (
+              <small className="grow text-muted ml-0.5 truncate tracking-tight">
+                {getExternalChainShortLabel(asset.source.chainId)}
+              </small>
+            )}
+          </span>
           <div className="z-10">
             <AccountsActionsDropdown
               isReadOnly={isReadOnly || !partyId}

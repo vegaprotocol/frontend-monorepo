@@ -38,7 +38,7 @@ export const AssetCard = ({
         <span className="flex items-center shrink-0">
           <Emblem asset={asset.id} vegaChain={chainId} />
         </span>
-        <span className="flex grow text-lg min-w-0">
+        <span className="flex items-end grow text-lg min-w-0">
           <span className="shrink-0">{asset.symbol}</span>
           {asset.source.__typename === 'ERC20' && (
             <small className="grow text-muted ml-0.5 truncate tracking-tight">

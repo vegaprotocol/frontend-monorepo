@@ -1,27 +1,18 @@
-import { useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
-import type { PinnedAsset } from '@vegaprotocol/accounts';
 import { AccountManager } from '@vegaprotocol/accounts';
 import { Links } from '../../lib/links';
 
 export const AccountsContainer = ({
   pinnedAssets,
 }: {
-  pinnedAssets?: PinnedAsset[];
+  pinnedAssets?: string[];
 }) => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { pubKey, isReadOnly } = useVegaWallet();
   const { open: openAssetDetailsDialog } = useAssetDetailsDialogStore();
-
-  const onClickAsset = useCallback(
-    (assetId?: string) => {
-      assetId && openAssetDetailsDialog(assetId);
-    },
-    [openAssetDetailsDialog]
-  );
 
   const navigateToAssetAction = (path: string, assetId: string | undefined) => {
     let params = '';
@@ -35,7 +26,9 @@ export const AccountsContainer = ({
   return (
     <AccountManager
       partyId={pubKey}
-      onClickAsset={onClickAsset}
+      onClickAsset={(assetId?: string) => {
+        assetId && openAssetDetailsDialog(assetId);
+      }}
       onClickWithdraw={(assetId) =>
         navigateToAssetAction(Links.WITHDRAW(), assetId)
       }

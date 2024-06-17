@@ -1,4 +1,3 @@
-import { type PinnedAsset } from '@vegaprotocol/accounts';
 import { type Market } from '@vegaprotocol/markets';
 // TODO: handle oracle banner
 // import { OracleBanner } from '@vegaprotocol/markets';
@@ -19,7 +18,7 @@ import { MarketActionDrawer } from '../markets/mobile-buttons';
 
 interface TradePanelsProps {
   market: Market;
-  pinnedAssets?: PinnedAsset[];
+  pinnedAssets?: string[];
 }
 
 export const TradePanels = ({ market, pinnedAssets }: TradePanelsProps) => {
