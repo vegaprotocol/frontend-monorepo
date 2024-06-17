@@ -23,6 +23,9 @@ export const Assets = () => {
         <NavLink to={Links.TRANSFER()} className={linkClasses}>
           {t('Transfer')}
         </NavLink>
+        <NavLink to={Links.SWAP()} className={linkClasses}>
+          {t('Swap')}
+        </NavLink>
       </nav>
       <div className="pt-4 border-t md:p-6 md:border md:rounded-xl border-default">
         <Outlet />

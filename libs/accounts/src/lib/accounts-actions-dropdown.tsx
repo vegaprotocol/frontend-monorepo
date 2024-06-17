@@ -20,6 +20,7 @@ export const AccountsActionsDropdown = ({
   onClickDeposit,
   onClickWithdraw,
   onClickTransfer,
+  onClickSwap,
 }: {
   isReadOnly?: boolean;
   assetId: string;
@@ -27,6 +28,7 @@ export const AccountsActionsDropdown = ({
   onClickDeposit: () => void;
   onClickWithdraw: () => void;
   onClickTransfer: () => void;
+  onClickSwap: () => void;
 }) => {
   const etherscanLink = useExternalExplorerLink();
   const openAssetDialog = useAssetDetailsDialogStore((store) => store.open);
@@ -58,6 +60,14 @@ export const AccountsActionsDropdown = ({
           >
             <VegaIcon name={VegaIconNames.TRANSFER} size={16} />
             {t('Transfer')}
+          </TradingDropdownItem>
+          <TradingDropdownItem
+            key={'swap'}
+            data-testid="swap"
+            onClick={onClickSwap}
+          >
+            <VegaIcon name={VegaIconNames.SWAP} size={16} />
+            {t('Swap')}
           </TradingDropdownItem>
         </>
       )}

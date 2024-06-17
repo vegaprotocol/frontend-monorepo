@@ -132,6 +132,9 @@ export const AccountCard = ({
               onClickTransfer={() => {
                 actions.onClickTransfer?.(asset.id);
               }}
+              onClickSwap={() => {
+                actions.onClickSwap?.(asset.id);
+              }}
             />
           </div>
         </header>

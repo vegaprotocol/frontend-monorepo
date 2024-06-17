@@ -40,6 +40,7 @@ export const AccountManager = ({
             onClickWithdraw={props.onClickWithdraw}
             onClickDeposit={props.onClickDeposit}
             onClickTransfer={props.onClickTransfer}
+            onClickSwap={props.onClickSwap}
           />
         );
       })}

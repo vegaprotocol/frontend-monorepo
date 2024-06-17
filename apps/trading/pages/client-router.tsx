@@ -29,6 +29,7 @@ import { CompetitionsTeam } from '../client-pages/competitions/competitions-team
 import { CompetitionsCreateTeam } from '../client-pages/competitions/competitions-create-team';
 import { CompetitionsUpdateTeam } from '../client-pages/competitions/competitions-update-team';
 import { CompetitionsGame } from '../client-pages/competitions/competitions-game';
+import { Swap } from '../client-pages/swap/swap';
 
 // These must remain dynamically imported as pennant cannot be compiled by Next.js due to ESM
 // Using dynamic imports is a workaround for this until pennant is published as ESM
@@ -187,6 +188,7 @@ export const useRouterConfig = (): RouteObject[] => {
             { path: 'deposit', element: <Deposit />, id: AppRoutes.DEPOSIT },
             { path: 'withdraw', element: <Withdraw />, id: AppRoutes.WITHDRAW },
             { path: 'transfer', element: <Transfer />, id: AppRoutes.TRANSFER },
+            { path: 'swap', element: <Swap />, id: AppRoutes.SWAP },
           ],
         },
       ],

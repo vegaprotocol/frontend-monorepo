@@ -29,15 +29,18 @@ export const AccountsContainer = ({
       onClickAsset={(assetId?: string) => {
         assetId && openAssetDetailsDialog(assetId);
       }}
-      onClickWithdraw={(assetId) =>
-        navigateToAssetAction(Links.WITHDRAW(), assetId)
-      }
-      onClickDeposit={(assetId) =>
-        navigateToAssetAction(Links.DEPOSIT(), assetId)
-      }
-      onClickTransfer={(assetId) =>
-        navigateToAssetAction(Links.TRANSFER(), assetId)
-      }
+      onClickWithdraw={(assetId) => {
+        navigateToAssetAction(Links.WITHDRAW(), assetId);
+      }}
+      onClickDeposit={(assetId) => {
+        navigateToAssetAction(Links.DEPOSIT(), assetId);
+      }}
+      onClickTransfer={(assetId) => {
+        navigateToAssetAction(Links.TRANSFER(), assetId);
+      }}
+      onClickSwap={(assetId) => {
+        navigateToAssetAction(Links.SWAP(), assetId);
+      }}
       isReadOnly={isReadOnly}
       pinnedAssets={pinnedAssets}
     />
