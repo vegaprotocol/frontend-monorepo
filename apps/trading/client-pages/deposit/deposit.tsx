@@ -49,7 +49,7 @@ import {
   TradingOption,
 } from '@vegaprotocol/ui-toolkit';
 import { BRIDGE_ABI, prepend0x } from '@vegaprotocol/smart-contracts';
-import { useVegaWallet, useWallet } from '@vegaprotocol/wallet-react';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm, useWatch } from 'react-hook-form';
@@ -69,7 +69,7 @@ import {
 import { getApolloClient } from '../../lib/apollo-client';
 import { DepositStatus } from '@vegaprotocol/types';
 import { VegaKeySelect } from './vega-key-select';
-import { EmblemByAsset } from '@vegaprotocol/emblem';
+import { AssetOption } from './asset-option';
 
 const wagmiConfig = createConfig(
   getDefaultConfig({
@@ -145,7 +145,6 @@ const DepositForm = ({
   initialAssetId: string;
   bridgeAddresses: Map<string, string>;
 }) => {
-  const vegaChainId = useWallet((store) => store.chainId);
   const writeContract = useTx((store) => store.writeContract);
 
   const { pubKeys } = useVegaWallet();
@@ -177,8 +176,9 @@ const DepositForm = ({
   const { data } = useAssetReadContracts({ asset, bridgeAddresses });
 
   useAccountEffect({
-    onConnect: ({ address }) =>
-      form.setValue('fromAddress', address, { shouldValidate: true }),
+    onConnect: ({ address }) => {
+      form.setValue('fromAddress', address, { shouldValidate: true });
+    },
     onDisconnect: () => form.setValue('fromAddress', ''),
   });
 
@@ -286,19 +286,7 @@ const DepositForm = ({
                 {assets.map((a) => {
                   return (
                     <TradingOption value={a.id} key={a.id}>
-                      <div className="w-full flex items-start gap-2">
-                        <EmblemByAsset asset={a.id} vegaChain={vegaChainId} />
-                        <div className="text-xs text-left">
-                          <div>{a.name}</div>
-                          <div>
-                            {a.symbol}{' '}
-                            {a.source.__typename === 'ERC20'
-                              ? truncateMiddle(a.source.contractAddress)
-                              : a.source.__typename}
-                          </div>
-                        </div>
-                        <div className="ml-auto">1000.1</div>
-                      </div>
+                      <AssetOption asset={a} />
                     </TradingOption>
                   );
                 })}
