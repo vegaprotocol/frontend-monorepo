@@ -45,9 +45,11 @@ import {
   KeyValueTable,
   KeyValueTableRow,
   useToasts,
+  TradingRichSelect,
+  TradingOption,
 } from '@vegaprotocol/ui-toolkit';
 import { BRIDGE_ABI, prepend0x } from '@vegaprotocol/smart-contracts';
-import { useVegaWallet } from '@vegaprotocol/wallet-react';
+import { useVegaWallet, useWallet } from '@vegaprotocol/wallet-react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm, useWatch } from 'react-hook-form';
@@ -66,6 +68,8 @@ import {
 } from '@vegaprotocol/web3';
 import { getApolloClient } from '../../lib/apollo-client';
 import { DepositStatus } from '@vegaprotocol/types';
+import { VegaKeySelect } from './vega-key-select';
+import { EmblemByAsset } from '@vegaprotocol/emblem';
 
 const wagmiConfig = createConfig(
   getDefaultConfig({
@@ -119,7 +123,7 @@ export const Deposit = () => {
 const depositSchema = z.object({
   fromAddress: z.string().min(1, 'Connect wallet'),
   assetId: z.string().min(1, 'Required'),
-  toPubKey: z.string().min(1, 'Required'),
+  toPubKey: z.string().regex(/^[A-Fa-f0-9]{64}$/i, 'Invalid key'),
   // Use a string but parse it as a number for validation
   amount: z.string().refine(
     (v) => {
@@ -141,6 +145,7 @@ const DepositForm = ({
   initialAssetId: string;
   bridgeAddresses: Map<string, string>;
 }) => {
+  const vegaChainId = useWallet((store) => store.chainId);
   const writeContract = useTx((store) => store.writeContract);
 
   const { pubKeys } = useVegaWallet();
@@ -227,7 +232,8 @@ const DepositForm = ({
                   <input
                     value={address}
                     readOnly
-                    className="appearance-none text-sm text-muted"
+                    className="appearance-none text-sm text-muted w-full focus:outline-none"
+                    tabIndex={-1}
                   />
                   <button
                     type="button"
@@ -267,33 +273,39 @@ const DepositForm = ({
         )}
       </FormGroup>
       <FormGroup label="Asset" labelFor="asset">
-        <Select
-          {...form.register('assetId', {
-            onChange: async (e) => {
-              const asset = assets.find((a) => a.id === e.target.value);
-
-              if (
-                asset?.source.__typename === 'ERC20' &&
-                Number(asset.source.chainId) !== chainId
-              ) {
-                await switchChainAsync({
-                  chainId: Number(asset.source.chainId),
-                });
-              }
-            },
-          })}
-        >
-          <option value="" disabled>
-            Please select
-          </option>
-          {assets.map((a) => {
+        <Controller
+          name="assetId"
+          control={form.control}
+          render={({ field }) => {
             return (
-              <option key={a.id} value={a.id}>
-                {a.symbol} {a.source.__typename === 'ERC20' && a.source.chainId}
-              </option>
+              <TradingRichSelect
+                placeholder="Select asset"
+                value={field.value}
+                onValueChange={field.onChange}
+              >
+                {assets.map((a) => {
+                  return (
+                    <TradingOption value={a.id} key={a.id}>
+                      <div className="w-full flex items-start gap-2">
+                        <EmblemByAsset asset={a.id} vegaChain={vegaChainId} />
+                        <div className="text-xs text-left">
+                          <div>{a.name}</div>
+                          <div>
+                            {a.symbol}{' '}
+                            {a.source.__typename === 'ERC20'
+                              ? truncateMiddle(a.source.contractAddress)
+                              : a.source.__typename}
+                          </div>
+                        </div>
+                        <div className="ml-auto">1000.1</div>
+                      </div>
+                    </TradingOption>
+                  );
+                })}
+              </TradingRichSelect>
             );
-          })}
-        </Select>
+          }}
+        />
         {form.formState.errors.assetId?.message && (
           <TradingInputError>
             {form.formState.errors.assetId.message}
@@ -305,26 +317,30 @@ const DepositForm = ({
           </UseButton>
         )}
       </FormGroup>
-      <FormGroup label="To Vega key" labelFor="toPubKey">
-        <Select {...form.register('toPubKey')}>
-          <option value="" disabled>
-            Please select
-          </option>
-          {pubKeys.map((k) => {
-            return (
-              <option key={k.publicKey} value={k.publicKey}>
-                {k.name} {truncateMiddle(k.publicKey)}
+      <FormGroup label="To (Vega key)" labelFor="toPubKey">
+        <VegaKeySelect
+          input={<Input {...form.register('toPubKey')} />}
+          select={
+            <Select {...form.register('toPubKey')}>
+              <option value="" disabled>
+                Please select
               </option>
-            );
-          })}
-        </Select>
+              {pubKeys.map((k) => {
+                return (
+                  <option key={k.publicKey} value={k.publicKey}>
+                    {k.name} {truncateMiddle(k.publicKey)}
+                  </option>
+                );
+              })}
+            </Select>
+          }
+        />
         {form.formState.errors.toPubKey?.message && (
           <TradingInputError>
             {form.formState.errors.toPubKey.message}
           </TradingInputError>
         )}
       </FormGroup>
-
       {data && asset && (
         <div className="pb-4">
           <KeyValueTable>
@@ -375,7 +391,12 @@ const DepositForm = ({
           </UseButton>
         )}
       </FormGroup>
-      <TradingButton type="submit" size="large" fill={true}>
+      <TradingButton
+        type="submit"
+        size="large"
+        fill={true}
+        intent={Intent.Secondary}
+      >
         Submit
       </TradingButton>
     </form>
@@ -446,7 +467,7 @@ const UseButton = (props: ButtonHTMLAttributes<HTMLButtonElement>) => {
     <button
       {...props}
       type="button"
-      className="absolute right-0 top-0 ml-auto text-sm underline"
+      className="absolute right-0 top-0 pt-0.5 ml-auto text-xs underline underline-offset-4"
     />
   );
 };
@@ -550,7 +571,7 @@ const useTx = create<{
       await waitForConfirmations(id, hash, requiredConfirmations);
     }
 
-    // TODO: subscribe to deposit events here
+    // TODO: ensure toast re-pops if its been closed, but only on confirmation
     if (config.functionName === 'deposit_asset') {
       const client = getApolloClient();
       // poll or subscribe to depoist events
