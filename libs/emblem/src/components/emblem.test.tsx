@@ -92,7 +92,7 @@ describe('Emblem', () => {
     const props = {
       contract: '456',
       alt: 'Emblem',
-      size: '100',
+      size: 100,
     };
 
     const { getByAltText } = render(
