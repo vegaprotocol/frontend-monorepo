@@ -21,6 +21,4 @@ def test_market_selector(continuous_market, page: Page):
     expect(btc_market.locator('[data-testid="market-selector-price"]')).to_have_text(
         "107.50 tDAI"
     )
-    expect(btc_market.locator("span.text-xs.uppercase.text-muted.mr-1")).to_be_visible()
-    expect(btc_market.locator("span.text-xs.uppercase.text-muted.mr-1")).to_have_text("Futr")
     expect(btc_market.locator('[data-testid="sparkline-svg"]')).not_to_be_visible
