@@ -65,11 +65,15 @@ import {
   type DepositBusEventSubscriptionVariables,
   useEVMBridgeConfigs,
   useEthereumConfig,
+  type EVMBridgeConfig,
+  type EthereumConfig,
 } from '@vegaprotocol/web3';
 import { getApolloClient } from '../../lib/apollo-client';
 import { DepositStatus } from '@vegaprotocol/types';
 import { VegaKeySelect } from './vega-key-select';
 import { AssetOption } from './asset-option';
+
+type Configs = Array<EthereumConfig | EVMBridgeConfig>;
 
 const wagmiConfig = createConfig(
   getDefaultConfig({
@@ -99,14 +103,8 @@ export const Deposit = () => {
   if (!config) return null;
   if (!configs?.length) return null;
 
-  const bridgeAddresses = new Map<string, string>();
-  bridgeAddresses.set(
-    config.chain_id,
-    config.collateral_bridge_contract.address
-  );
-  for (const c of configs) {
-    bridgeAddresses.set(c.chain_id, c.collateral_bridge_contract.address);
-  }
+  const allConfigs = [config, ...configs];
+
   const asset = assets?.find((a) => a.id === assetId);
 
   return (
@@ -114,7 +112,7 @@ export const Deposit = () => {
       <DepositForm
         assets={assets || []}
         initialAssetId={asset?.id || ''}
-        bridgeAddresses={bridgeAddresses}
+        configs={allConfigs}
       />
     </Providers>
   );
@@ -139,11 +137,11 @@ type FormFields = z.infer<typeof depositSchema>;
 const DepositForm = ({
   assets,
   initialAssetId,
-  bridgeAddresses,
+  configs,
 }: {
   assets: AssetFieldsFragment[];
   initialAssetId: string;
-  bridgeAddresses: Map<string, string>;
+  configs: Configs;
 }) => {
   const writeContract = useTx((store) => store.writeContract);
 
@@ -173,7 +171,8 @@ const DepositForm = ({
   const assetId = useWatch({ name: 'assetId', control: form.control });
   const asset = assets?.find((a) => a.id === assetId);
 
-  const { data } = useAssetReadContracts({ asset, bridgeAddresses });
+  // Data releating to the select asset, like balance on address, allowance
+  const { data } = useAssetReadContracts({ asset, configs });
 
   useAccountEffect({
     onConnect: ({ address }) => {
@@ -198,7 +197,9 @@ const DepositForm = ({
 
     const assetAddress = asset.source.contractAddress as `0x${string}`;
     const assetChainId = asset.source.chainId;
-    const bridgeAddress = bridgeAddresses.get(assetChainId) as `0x${string}`;
+    const config = configs.find((c) => c.chain_id === assetChainId);
+    const bridgeAddress = config?.collateral_bridge_contract
+      .address as `0x${string}`;
 
     if (!bridgeAddress) {
       throw new Error(`no bridge found for asset ${asset.id}`);
@@ -393,33 +394,36 @@ const DepositForm = ({
 
 const useAssetReadContracts = ({
   asset,
-  bridgeAddresses,
+  configs,
 }: {
   asset?: AssetFieldsFragment;
-  bridgeAddresses: Map<string, string>;
+  configs: Configs;
 }) => {
   const { address } = useAccount();
 
-  let assetAddress;
-  let assetChainId;
-  let bridgeAddress;
+  let assetAddress: `0x${string}`;
+  let assetChainId: string;
+  let bridgeAddress: `0x${string}` | undefined;
 
   if (asset?.source.__typename === 'ERC20') {
     assetAddress = asset.source.contractAddress as `0x${string}`;
     assetChainId = asset.source.chainId;
-    bridgeAddress = bridgeAddresses.get(assetChainId) as `0x${string}`;
+    const config = configs.find((c) => c.chain_id === assetChainId);
+    bridgeAddress = config?.collateral_bridge_contract.address as `0x${string}`;
   }
 
   const { data, ...queryResult } = useReadContracts({
     contracts: [
       {
         abi: erc20Abi,
+        // @ts-ignore TODO: figure out types
         address: assetAddress,
         functionName: 'balanceOf',
         args: address && [address],
       },
       {
         abi: erc20Abi,
+        // @ts-ignore TODO: figure out types
         address: assetAddress,
         functionName: 'allowance',
         args: address && bridgeAddress && [address, bridgeAddress],
@@ -428,6 +432,7 @@ const useAssetReadContracts = ({
         abi: BRIDGE_ABI,
         address: bridgeAddress,
         functionName: 'get_asset_deposit_lifetime_limit',
+        // @ts-ignore TODO: figure out types
         args: [assetAddress],
       },
       {
