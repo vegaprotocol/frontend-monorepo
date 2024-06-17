@@ -1,17 +1,24 @@
 import { ApolloProvider } from '@apollo/client';
+import { QueryClientProvider } from '@tanstack/react-query';
+import { ConnectKitProvider } from 'connectkit';
+import { useEffect, type ReactNode, useState, useMemo } from 'react';
+import { Trans } from 'react-i18next';
+import { WagmiProvider } from 'wagmi';
+
 import {
   useEnvironment,
   useNodeSwitcherStore,
 } from '@vegaprotocol/environment';
-import { useEffect, type ReactNode, useState, useMemo } from 'react';
-import { Web3Provider } from './web3-provider';
-import { useT } from '../../lib/use-t';
-import { DataLoader } from './data-loader';
 import { WalletProvider } from '@vegaprotocol/wallet-react';
-import { useVegaWalletConfig } from '../../lib/hooks/use-vega-wallet-config';
-import { Trans } from 'react-i18next';
 import { Button, Loader, Splash, VLogo } from '@vegaprotocol/ui-toolkit';
+
+import { useT } from '../../lib/use-t';
 import { getApolloClient } from '../../lib/apollo-client';
+import { wagmiConfig } from '../../lib/wagmi-config';
+import { queryClient } from '../../lib/query-client';
+import { useVegaWalletConfig } from '../../lib/hooks/use-vega-wallet-config';
+import { Web3Provider } from './web3-provider';
+import { DataLoader } from './data-loader';
 
 const Failure = ({ reason }: { reason?: ReactNode }) => {
   const t = useT();
@@ -101,23 +108,36 @@ export const Bootstrapper = ({ children }: { children: ReactNode }) => {
   );
 
   return (
-    <ClientProvider skeleton={<Loading />} failure={<Failure reason={error} />}>
-      <DataLoader
-        skeleton={<Loading />}
-        failure={<Failure reason={ERR_DATA_LOADER} />}
-      >
-        <Web3Provider
-          skeleton={<Loading />}
-          failure={<Failure reason={t('Could not configure web3 provider')} />}
-        >
-          {config ? (
-            <WalletProvider config={config}>{children}</WalletProvider>
-          ) : (
-            <Failure reason={t('Could not configure the wallet provider')} />
-          )}
-        </Web3Provider>
-      </DataLoader>
-    </ClientProvider>
+    <WagmiProvider config={wagmiConfig}>
+      <QueryClientProvider client={queryClient}>
+        <ConnectKitProvider>
+          <ClientProvider
+            skeleton={<Loading />}
+            failure={<Failure reason={error} />}
+          >
+            <DataLoader
+              skeleton={<Loading />}
+              failure={<Failure reason={ERR_DATA_LOADER} />}
+            >
+              <Web3Provider
+                skeleton={<Loading />}
+                failure={
+                  <Failure reason={t('Could not configure web3 provider')} />
+                }
+              >
+                {config ? (
+                  <WalletProvider config={config}>{children}</WalletProvider>
+                ) : (
+                  <Failure
+                    reason={t('Could not configure the wallet provider')}
+                  />
+                )}
+              </Web3Provider>
+            </DataLoader>
+          </ClientProvider>
+        </ConnectKitProvider>
+      </QueryClientProvider>
+    </WagmiProvider>
   );
 };
 

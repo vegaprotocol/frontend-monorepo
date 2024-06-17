@@ -1,14 +1,10 @@
 import uniqueId from 'lodash/uniqueId';
-import { type ButtonHTMLAttributes, type PropsWithChildren } from 'react';
+import { type ButtonHTMLAttributes } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { z } from 'zod';
 import { create } from 'zustand';
 
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
-  http,
-  createConfig,
-  WagmiProvider,
   useSwitchChain,
   useChainId,
   useAccount,
@@ -21,13 +17,8 @@ import {
   writeContract,
   waitForTransactionReceipt,
 } from '@wagmi/core';
-import { mainnet, sepolia, arbitrum, arbitrumSepolia } from 'wagmi/chains';
 
-import {
-  ConnectKitButton,
-  ConnectKitProvider,
-  getDefaultConfig,
-} from 'connectkit';
+import { ConnectKitButton } from 'connectkit';
 import { erc20Abi } from 'viem';
 import {
   type AssetFieldsFragment,
@@ -68,29 +59,13 @@ import {
   type EVMBridgeConfig,
   type EthereumConfig,
 } from '@vegaprotocol/web3';
-import { getApolloClient } from '../../lib/apollo-client';
 import { DepositStatus } from '@vegaprotocol/types';
 import { VegaKeySelect } from './vega-key-select';
 import { AssetOption } from './asset-option';
+import { wagmiConfig } from '../../lib/wagmi-config';
+import { getApolloClient } from '../../lib/apollo-client';
 
 type Configs = Array<EthereumConfig | EVMBridgeConfig>;
-
-const wagmiConfig = createConfig(
-  getDefaultConfig({
-    chains: [mainnet, sepolia, arbitrum, arbitrumSepolia],
-    transports: {
-      // TODO: add mainnet
-      [sepolia.id]: http(process.env.NX_ETHEREUM_PROVIDER_URL),
-      [arbitrum.id]: http(),
-      [arbitrumSepolia.id]: http(),
-    },
-    walletConnectProjectId: process.env.NX_WALLETCONNECT_PROJECT_ID as string,
-    appName: 'Vega',
-    appDescription: 'Vega deposits and withdrawals',
-  })
-);
-
-const queryClient = new QueryClient();
 
 export const Deposit = () => {
   const [searchParams] = useSearchParams();
@@ -108,13 +83,11 @@ export const Deposit = () => {
   const asset = assets?.find((a) => a.id === assetId);
 
   return (
-    <Providers>
-      <DepositForm
-        assets={assets || []}
-        initialAssetId={asset?.id || ''}
-        configs={allConfigs}
-      />
-    </Providers>
+    <DepositForm
+      assets={assets || []}
+      initialAssetId={asset?.id || ''}
+      configs={allConfigs}
+    />
   );
 };
 
@@ -462,16 +435,6 @@ const UseButton = (props: ButtonHTMLAttributes<HTMLButtonElement>) => {
       type="button"
       className="absolute right-0 top-0 pt-0.5 ml-auto text-xs underline underline-offset-4"
     />
-  );
-};
-
-const Providers = ({ children }: PropsWithChildren) => {
-  return (
-    <WagmiProvider config={wagmiConfig}>
-      <QueryClientProvider client={queryClient}>
-        <ConnectKitProvider>{children}</ConnectKitProvider>
-      </QueryClientProvider>
-    </WagmiProvider>
   );
 };
 
