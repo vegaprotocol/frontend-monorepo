@@ -36,9 +36,9 @@ export function PartyDepositsWithdrawals() {
   useDocumentTitle(['Deposits & Withdrawals']);
 
   return (
-    <section>
+    <section className="pt-1">
       <PageHeader title={t('Deposits & Withdrawals')} />
-      <div className="block min-h-44 w-full border-red-800 relative">
+      <div className="mt-4 block min-h-44 w-full border-red-800 relative">
         <table className="w-full">
           <thead>
             <tr>

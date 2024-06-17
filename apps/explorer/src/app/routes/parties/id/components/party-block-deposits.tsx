@@ -93,7 +93,7 @@ export const PartyBlockDeposits = ({
             </tbody>
           </Table>
         ) : (
-          <p>There's nothing</p>
+          <p>{t('No recent deposits or withdrawals')}</p>
         )}
       </AsyncRenderer>
     </PartyBlock>
