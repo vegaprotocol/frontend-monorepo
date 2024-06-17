@@ -17,7 +17,6 @@ import { getApolloClient } from '../../lib/apollo-client';
 import { wagmiConfig } from '../../lib/wagmi-config';
 import { queryClient } from '../../lib/query-client';
 import { useVegaWalletConfig } from '../../lib/hooks/use-vega-wallet-config';
-import { Web3Provider } from './web3-provider';
 import { DataLoader } from './data-loader';
 
 const Failure = ({ reason }: { reason?: ReactNode }) => {
@@ -119,20 +118,13 @@ export const Bootstrapper = ({ children }: { children: ReactNode }) => {
               skeleton={<Loading />}
               failure={<Failure reason={ERR_DATA_LOADER} />}
             >
-              <Web3Provider
-                skeleton={<Loading />}
-                failure={
-                  <Failure reason={t('Could not configure web3 provider')} />
-                }
-              >
-                {config ? (
-                  <WalletProvider config={config}>{children}</WalletProvider>
-                ) : (
-                  <Failure
-                    reason={t('Could not configure the wallet provider')}
-                  />
-                )}
-              </Web3Provider>
+              {config ? (
+                <WalletProvider config={config}>{children}</WalletProvider>
+              ) : (
+                <Failure
+                  reason={t('Could not configure the wallet provider')}
+                />
+              )}
             </DataLoader>
           </ClientProvider>
         </ConnectKitProvider>
