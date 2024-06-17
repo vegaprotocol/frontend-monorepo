@@ -15,7 +15,6 @@ import { AssetCard } from '../asset-card';
 import { Links } from '../../lib/links';
 import { useT } from '../../lib/use-t';
 import { AccountsContainer } from '../accounts-container';
-import { type PinnedAsset } from '@vegaprotocol/accounts';
 import classNames from 'classnames';
 
 export enum ViewType {
@@ -24,7 +23,7 @@ export enum ViewType {
   Assets = 'Assets',
 }
 
-export const Sidebar = ({ pinnedAssets }: { pinnedAssets?: PinnedAsset[] }) => {
+export const Sidebar = ({ pinnedAssets }: { pinnedAssets?: string[] }) => {
   const t = useT();
   const params = useParams();
   const navigate = useNavigate();

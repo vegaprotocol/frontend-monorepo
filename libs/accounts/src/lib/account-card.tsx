@@ -57,12 +57,12 @@ const BreakdownItem = ({ data }: { data: AccountFields }) => {
   return (
     <div className="mb-2">
       <dl className="flex items-center">
-        <dt className="text-xs font-alpha text-vega-clight-200 dark:text-vega-cdark-200">
+        <dt className="text-xs text-vega-clight-200 dark:text-vega-cdark-200">
           {AccountTypeMapping[data.type]}
           {data.market &&
             ` (${data.market.tradableInstrument.instrument.code})`}
         </dt>
-        <dd className="text-right grow text-base leading-tight font-alpha">
+        <dd className="text-right grow text-base leading-tight">
           {addDecimalsFormatNumberQuantum(
             data.used,
             data.asset.decimals,
@@ -130,9 +130,9 @@ export const AccountCard = ({
         {data?.breakdown?.map((data) => (
           <BreakdownItem data={data} />
         ))}
-        <dl className="flex items-center mt-3">
-          <dt className="text-base font-alpha">{t('Total')}</dt>
-          <dd className="text-right leading-tight font-alpha grow text-base">
+        <dl className="flex items-center mt-3 text-base">
+          <dt>{t('Total')}</dt>
+          <dd className="text-right leading-tight grow">
             {addDecimalsFormatNumberQuantum(
               data?.total || '0',
               asset.decimals,
@@ -151,19 +151,17 @@ export const AccountCard = ({
         )}
       </div>
       {expandable && expanded ? (
-        <div className="grid gap-1 grid-cols-3 p-3 pt-0">
+        <div className="grid gap-1 grid-cols-4 p-3 pt-0">
           <Button
             onClick={() => actions.onClickDeposit?.(asset.id)}
             label={t('Deposit')}
             icon={VegaIconNames.DEPOSIT}
           />
-          {/*
           <Button
             onClick={() => actions.onClickSwap?.(asset.id)}
             label={t('Swap')}
             icon={VegaIconNames.SWAP}
           />
-          */}
           <Button
             onClick={() => actions.onClickTransfer?.(asset.id)}
             label={t('Transfer')}
