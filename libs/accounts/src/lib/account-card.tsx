@@ -20,8 +20,15 @@ import { type AssetFieldsFragment } from '@vegaprotocol/assets';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { useState } from 'react';
 import classNames from 'classnames';
-import type { AssetActions } from './accounts-manager';
 import { useChainId } from '@vegaprotocol/wallet-react';
+
+export interface AssetActions {
+  onClickAsset: (assetId: string) => void;
+  onClickWithdraw?: (assetId: string) => void;
+  onClickDeposit?: (assetId: string) => void;
+  onClickSwap?: (assetId: string) => void;
+  onClickTransfer?: (assetId: string) => void;
+}
 
 const Button = ({
   onClick,

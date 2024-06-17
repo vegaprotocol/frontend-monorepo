@@ -6,8 +6,6 @@ import type { PinnedAsset } from '@vegaprotocol/accounts';
 import { AccountManager } from '@vegaprotocol/accounts';
 import { Links } from '../../lib/links';
 
-export const AccountCardContainer = ({ assetId }: { assetId: string }) => {};
-
 export const AccountsContainer = ({
   pinnedAssets,
 }: {

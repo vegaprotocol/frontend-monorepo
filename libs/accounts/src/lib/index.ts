@@ -1,6 +1,5 @@
 export * from './__generated__/Accounts';
 export * from './accounts-data-provider';
-export * from './accounts-list';
 export * from './asset-balance';
 export * from './accounts-manager';
 export * from './use-account-balance';

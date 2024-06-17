@@ -1,22 +1,14 @@
 import { memo } from 'react';
+import sortBy from 'lodash/sortBy';
 import { useDataProvider } from '@vegaprotocol/data-provider';
-import { type PinnedAsset } from './accounts-list';
-import { AccountsList } from './accounts-list';
 import { type useDataGridEvents } from '@vegaprotocol/datagrid';
 import { assetsProvider } from '@vegaprotocol/assets';
-
-export interface AssetActions {
-  onClickAsset: (assetId: string) => void;
-  onClickWithdraw?: (assetId: string) => void;
-  onClickDeposit?: (assetId: string) => void;
-  onClickSwap?: (assetId: string) => void;
-  onClickTransfer?: (assetId: string) => void;
-}
+import { AccountCard, type AssetActions } from './account-card';
 
 interface AccountManagerProps extends AssetActions {
   partyId?: string;
   isReadOnly: boolean;
-  pinnedAssets?: PinnedAsset[];
+  pinnedAssets?: string[];
   gridProps?: ReturnType<typeof useDataGridEvents>;
 }
 
@@ -29,9 +21,26 @@ export const AccountManager = ({
     variables: undefined,
   });
 
+  const rows =
+    pinnedAssets && pinnedAssets.length
+      ? sortBy(data, (asset) => {
+          if (pinnedAssets.includes(asset.id)) return -1;
+          return 1;
+        })
+      : data;
+
   return (
     <div className="relative h-full" data-testid="accounts-list">
-      <AccountsList rowData={data} pinnedAssets={pinnedAssets} {...props} />
+      {(rows || []).map((asset) => {
+        return (
+          <AccountCard
+            asset={asset}
+            key={asset.id}
+            {...props}
+            expanded={pinnedAssets?.includes(asset.id)}
+          />
+        );
+      })}
     </div>
   );
 };
