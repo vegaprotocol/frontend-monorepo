@@ -373,6 +373,7 @@ const useAssetReadContracts = ({
     bridgeAddress = config?.collateral_bridge_contract.address as `0x${string}`;
   }
 
+  // TODO: get deposited amount via storage location
   const { data, ...queryResult } = useReadContracts({
     contracts: [
       {

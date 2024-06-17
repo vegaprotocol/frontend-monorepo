@@ -41,12 +41,13 @@ import { useT } from '../../lib/use-t';
 import { ErrorBoundary } from '../../components/error-boundary';
 import { usePageTitle } from '../../lib/hooks/use-page-title';
 import { Links } from '../../lib/links';
+
+import { TransferContainer } from '@vegaprotocol/accounts';
+import { DepositContainer } from '../../components/deposit-container';
 import { WithdrawContainer } from '../../components/withdraw-container';
 import { SwapContainer } from '../../components/swap/swap-container';
 import { SquidContainer } from '../../components/squid-container';
 
-import { DepositContainer } from '@vegaprotocol/deposits';
-import { TransferContainer } from '@vegaprotocol/accounts';
 import { useFeatureFlags } from '@vegaprotocol/environment';
 import { useNavigate } from 'react-router-dom';
 

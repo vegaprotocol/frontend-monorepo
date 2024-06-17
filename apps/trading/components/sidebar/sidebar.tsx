@@ -109,3 +109,4 @@ export const useSidebar = create<{
   view: ViewType.Trade,
   setView: (view) => set({ view }),
 }));
+1;

@@ -29,6 +29,14 @@ jest.mock('../accounts-container', () => ({
   AccountsContainer: () => <div data-testid="accounts-list"></div>,
 }));
 
+jest.mock('../settings', () => ({
+  Settings: () => <div data-testid="settings" />,
+}));
+
+jest.mock('../welcome-dialog', () => ({
+  GetStarted: () => <div data-testid="get-started" />,
+}));
+
 describe('Sidebar', () => {
   const marketId = 'market-id';
 
