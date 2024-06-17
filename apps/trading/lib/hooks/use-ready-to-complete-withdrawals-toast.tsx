@@ -9,24 +9,27 @@ import { formatNumber, toBigNum } from '@vegaprotocol/utils';
 import { useNavigate } from 'react-router-dom';
 import {
   toAssetData,
-  useEthWithdrawApprovalsStore,
+  useEVMBridgeConfigs,
+  useEthereumConfig,
   useGetWithdrawDelay,
   useGetWithdrawThreshold,
   useWithdrawalApprovalQuery,
 } from '@vegaprotocol/web3';
-import { withdrawalProvider } from './withdrawals-provider';
-import type { WithdrawalFieldsFragment } from './__generated__/Withdrawal';
+import {
+  withdrawalProvider,
+  type WithdrawalFieldsFragment,
+} from '@vegaprotocol/withdraws';
 import uniqBy from 'lodash/uniqBy';
-import { useT } from './use-t';
+import { useT } from '../use-t';
 import uniq from 'lodash/uniq';
 import compact from 'lodash/compact';
-import { useWeb3React } from '@web3-react/core';
+import { Links } from '../links';
+import { useChainId, useSwitchChain } from 'wagmi';
+import { useEvmTx } from './use-evm-tx';
+import { BRIDGE_ABI } from '@vegaprotocol/smart-contracts';
 
 const CHECK_INTERVAL = 1000;
 const ON_APP_START_TOAST_ID = `ready-to-withdraw`;
-type UseReadyToWithdrawalToastsOptions = {
-  withdrawalsLink: string;
-};
 
 export type TimestampedWithdrawals = {
   data: WithdrawalFieldsFragment;
@@ -140,9 +143,7 @@ export const useIncompleteWithdrawals = () => {
   return { ready, delayed };
 };
 
-export const useReadyToWithdrawalToasts = ({
-  withdrawalsLink,
-}: UseReadyToWithdrawalToastsOptions) => {
+export const useReadyToWithdrawalToasts = () => {
   const [setToast, hasToast, updateToast, removeToast] = useToasts((store) => [
     store.setToast,
     store.hasToast,
@@ -151,11 +152,6 @@ export const useReadyToWithdrawalToasts = ({
   ]);
 
   const { delayed, ready } = useIncompleteWithdrawals();
-
-  const onClose = useCallback(() => {
-    // hides toast instead of removing is so it won't be re-added on rerender
-    updateToast(ON_APP_START_TOAST_ID, { hidden: true });
-  }, [updateToast]);
 
   useEffect(() => {
     // set on app start toast if there are withdrawals ready to complete
@@ -169,12 +165,9 @@ export const useReadyToWithdrawalToasts = ({
             ready.length === 1 ? (
               <SingleReadyToWithdrawToastContent withdrawal={ready[0].data} />
             ) : (
-              <MultipleReadyToWithdrawToastContent
-                count={ready.length}
-                withdrawalsLink={withdrawalsLink}
-              />
+              <MultipleReadyToWithdrawToastContent count={ready.length} />
             ),
-          onClose,
+          onClose: () => updateToast(ON_APP_START_TOAST_ID, { hidden: true }),
         };
         setToast(appStartToast);
       }
@@ -207,25 +200,10 @@ export const useReadyToWithdrawalToasts = ({
     return () => {
       clearInterval(interval);
     };
-  }, [
-    delayed,
-    hasToast,
-    onClose,
-    ready,
-    removeToast,
-    setToast,
-    updateToast,
-    withdrawalsLink,
-  ]);
+  }, [delayed, hasToast, ready, removeToast, setToast, updateToast]);
 };
 
-const MultipleReadyToWithdrawToastContent = ({
-  count,
-  withdrawalsLink,
-}: {
-  count: number;
-  withdrawalsLink?: string;
-}) => {
+const MultipleReadyToWithdrawToastContent = ({ count }: { count: number }) => {
   const t = useT();
   const navigate = useNavigate();
   return (
@@ -244,9 +222,7 @@ const MultipleReadyToWithdrawToastContent = ({
         <Button
           data-testid="toast-view-withdrawals"
           size="xs"
-          onClick={() =>
-            withdrawalsLink ? navigate(withdrawalsLink) : undefined
-          }
+          onClick={() => navigate(Links.PORTFOLIO())}
         >
           {t('View withdrawals')}
         </Button>
@@ -261,47 +237,75 @@ const SingleReadyToWithdrawToastContent = ({
   withdrawal: WithdrawalFieldsFragment;
 }) => {
   const t = useT();
-  const { connector, chainId } = useWeb3React();
-  const { createEthWithdrawalApproval } = useEthWithdrawApprovalsStore(
-    (state) => ({
-      createEthWithdrawalApproval: state.create,
-    })
-  );
 
-  const { data: approval } = useWithdrawalApprovalQuery({
+  const { config } = useEthereumConfig();
+  const { configs } = useEVMBridgeConfigs();
+
+  const chainId = useChainId();
+  const { switchChainAsync } = useSwitchChain();
+  const writeContract = useEvmTx((store) => store.writeContract);
+
+  const { data } = useWithdrawalApprovalQuery({
     variables: {
       withdrawalId: withdrawal.id,
     },
   });
+
+  const submitWithdrawAsset = async () => {
+    if (!config || !configs) {
+      throw new Error('could not fetch ethereum configs');
+    }
+
+    if (!data?.withdrawal) {
+      throw new Error('no withdrawal');
+    }
+
+    if (!data.erc20WithdrawalApproval) {
+      throw new Error('no withdrawal approval');
+    }
+
+    const asset = data.withdrawal.asset;
+
+    if (asset.source.__typename !== 'ERC20') {
+      throw new Error(
+        `invalid asset type ${withdrawal.asset.source.__typename}`
+      );
+    }
+
+    const cfg = [config, ...configs].find(
+      // @ts-ignore asset is erc20 here
+      (c) => c.chain_id === asset.source.chainId
+    );
+
+    if (!cfg) {
+      throw new Error('could not find evm config for asset');
+    }
+
+    if (asset.source.chainId !== chainId.toString()) {
+      await switchChainAsync({ chainId: Number(asset.source.chainId) });
+    }
+
+    writeContract({
+      abi: BRIDGE_ABI,
+      address: cfg.collateral_bridge_contract.address as `0x${string}`,
+      functionName: 'withdraw_asset',
+      args: [
+        data.erc20WithdrawalApproval.assetSource,
+        data.erc20WithdrawalApproval.amount,
+        data.erc20WithdrawalApproval.targetAddress,
+        data.erc20WithdrawalApproval.creation,
+        data.erc20WithdrawalApproval.nonce,
+        data.erc20WithdrawalApproval.signatures,
+      ],
+    });
+  };
+
   const completeButton = (
     <p className="mt-2">
       <Button
         data-testid="toast-complete-withdrawal"
         size="xs"
-        onClick={async () => {
-          const asset = withdrawal.asset;
-          if (
-            asset.source.__typename === 'ERC20' &&
-            asset.source.chainId !== String(chainId)
-          ) {
-            await connector.provider?.request({
-              method: 'wallet_switchEthereumChain',
-              params: [
-                {
-                  chainId: `0x${Number(asset.source.chainId).toString(16)}`,
-                },
-              ],
-            });
-          }
-
-          // without this timeout the the complete tx does not trigger, dont know why
-          setTimeout(() => {
-            createEthWithdrawalApproval(
-              withdrawal,
-              approval?.erc20WithdrawalApproval
-            );
-          }, 300);
-        }}
+        onClick={submitWithdrawAsset}
       >
         {t('Complete withdrawal')}
       </Button>

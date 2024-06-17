@@ -114,8 +114,6 @@ const DepositForm = ({
   const { switchChainAsync } = useSwitchChain();
   const chainId = useChainId();
 
-  // const { writeContract, data: hash } = useWriteContract();
-
   const form = useForm<FormFields>({
     resolver: zodResolver(depositSchema),
     defaultValues: {
@@ -194,7 +192,7 @@ const DepositForm = ({
                   <input
                     value={address}
                     readOnly
-                    className="appearance-none text-sm text-muted w-full focus:outline-none"
+                    className="appearance-none bg-transparent text-sm text-muted w-full focus:outline-none"
                     tabIndex={-1}
                   />
                   <button

@@ -1,5 +1,5 @@
 import * as Types from '@vegaprotocol/types';
-import type { WithdrawalFieldsFragment } from './__generated__/Withdrawal';
+import type { WithdrawalFieldsFragment } from '@vegaprotocol/withdraws';
 import BigNumber from 'bignumber.js';
 import * as web3 from '@vegaprotocol/web3';
 import { renderHook, waitFor } from '@testing-library/react';
