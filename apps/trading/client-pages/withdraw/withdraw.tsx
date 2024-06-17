@@ -1,10 +1,5 @@
 import { useSearchParams } from 'react-router-dom';
-import {
-  type EVMBridgeConfig,
-  type EthereumConfig,
-  useEVMBridgeConfigs,
-  useEthereumConfig,
-} from '@vegaprotocol/web3';
+import { useVegaTransactionStore } from '@vegaprotocol/web3';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import { z } from 'zod';
 import { Controller, useForm, useWatch } from 'react-hook-form';
@@ -23,43 +18,31 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { ConnectKitButton } from 'connectkit';
 import { type ButtonHTMLAttributes } from 'react';
-import { addDecimalsFormatNumber, toBigNum } from '@vegaprotocol/utils';
+import {
+  addDecimalsFormatNumber,
+  removeDecimal,
+  toBigNum,
+} from '@vegaprotocol/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Account, useAccounts } from '@vegaprotocol/accounts';
+import { type Account, useAccounts } from '@vegaprotocol/accounts';
 import { AccountType } from '@vegaprotocol/types';
 import { EmblemByAsset } from '@vegaprotocol/emblem';
-
-type Configs = Array<EthereumConfig | EVMBridgeConfig>;
 
 export const Withdraw = () => {
   const [searchParams] = useSearchParams();
   const assetId = searchParams.get('assetId') || undefined;
 
   const { pubKey } = useVegaWallet();
-
-  const { config } = useEthereumConfig();
-  const { configs } = useEVMBridgeConfigs();
-
   const { data } = useAccounts(pubKey);
-
-  if (!config) return null;
-  if (!configs?.length) return null;
-
-  const allConfigs = [config, ...configs];
 
   const accounts = data?.filter(
     (a) => a.type === AccountType.ACCOUNT_TYPE_GENERAL
   );
-
   const account = accounts?.find((a) => a.asset.id === assetId);
   const asset = account?.asset;
 
   return (
-    <WithdrawForm
-      accounts={accounts || []}
-      initialAssetId={asset?.id || ''}
-      configs={allConfigs}
-    />
+    <WithdrawForm accounts={accounts || []} initialAssetId={asset?.id || ''} />
   );
 };
 
@@ -82,11 +65,9 @@ type FormFields = z.infer<typeof withdrawSchema>;
 const WithdrawForm = ({
   accounts,
   initialAssetId,
-  configs,
 }: {
   accounts: Account[];
   initialAssetId: string;
-  configs: Configs;
 }) => {
   const vegaChainId = useWallet((store) => store.chainId);
   const { pubKey, pubKeys } = useVegaWallet();
@@ -94,6 +75,8 @@ const WithdrawForm = ({
 
   const { isConnected, address } = useAccount();
   const { disconnect } = useDisconnect();
+
+  const createTransaction = useVegaTransactionStore((state) => state.create);
 
   const form = useForm<FormFields>({
     resolver: zodResolver(withdrawSchema),
@@ -108,7 +91,21 @@ const WithdrawForm = ({
   const account = accounts?.find((a) => a.asset.id === assetId);
 
   const submitDeposit = (fields: FormFields) => {
-    console.log(fields);
+    if (!account) {
+      throw new Error('no account for withdraw');
+    }
+
+    createTransaction({
+      withdrawSubmission: {
+        amount: removeDecimal(fields.amount, account.asset.decimals),
+        asset: fields.assetId,
+        ext: {
+          erc20: {
+            receiverAddress: fields.toAddress,
+          },
+        },
+      },
+    });
   };
 
   useAccountEffect({
