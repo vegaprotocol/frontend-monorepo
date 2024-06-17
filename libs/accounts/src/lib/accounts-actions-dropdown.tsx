@@ -1,4 +1,7 @@
-import { ETHERSCAN_ADDRESS, useExternalExplorerLink } from '@vegaprotocol/environment';
+import {
+  ETHERSCAN_ADDRESS,
+  useExternalExplorerLink,
+} from '@vegaprotocol/environment';
 import { useT } from './use-t';
 import {
   ActionsDropdown,

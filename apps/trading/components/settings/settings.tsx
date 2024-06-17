@@ -6,7 +6,7 @@ import {
   ToastPositionSetter,
   TradingButton,
   VegaIcon,
-  VegaIconNames
+  VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
 import { useTelemetryApproval } from '../../lib/hooks/use-telemetry-approval';

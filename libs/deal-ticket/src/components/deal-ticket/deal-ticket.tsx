@@ -303,11 +303,11 @@ export const DealTicket = ({
   };
   const orders = activeOrders
     ? activeOrders.map<Schema.OrderInfo>((order) => ({
-      isMarketOrder: order.type === Schema.OrderType.TYPE_MARKET,
-      price: order.price,
-      remaining: order.remaining,
-      side: order.side,
-    }))
+        isMarketOrder: order.type === Schema.OrderType.TYPE_MARKET,
+        price: order.price,
+        remaining: order.remaining,
+        side: order.side,
+      }))
     : [];
   if (normalizedOrder) {
     orders.push({
@@ -333,9 +333,9 @@ export const DealTicket = ({
       includeRequiredPositionMarginInAvailableCollateral: true,
     },
     !normalizedOrder ||
-    (normalizedOrder.type !== Schema.OrderType.TYPE_MARKET &&
-      (!normalizedOrder.price || normalizedOrder.price === '0')) ||
-    normalizedOrder.size === '0'
+      (normalizedOrder.type !== Schema.OrderType.TYPE_MARKET &&
+        (!normalizedOrder.price || normalizedOrder.price === '0')) ||
+      normalizedOrder.size === '0'
   );
 
   const slippage = useSlippage(normalizedOrder, market);
@@ -461,8 +461,8 @@ export const DealTicket = ({
   const notionalPrice = !price || price === '0' ? marketPrice : price;
   const minNotional = notionalPrice
     ? toBigNum(notionalPrice, market.decimalPlaces)
-      .multipliedBy(sizeStep)
-      .toNumber()
+        .multipliedBy(sizeStep)
+        .toNumber()
     : undefined;
 
   const notionalDecimals =
@@ -496,8 +496,8 @@ export const DealTicket = ({
         !rawSize || rawSize === '0'
           ? '0'
           : BigNumber(rawSize)
-            .multipliedBy(toBigNum(notionalPrice, market.decimalPlaces))
-            .toFixed(Math.max(notionalDecimals, 0));
+              .multipliedBy(toBigNum(notionalPrice, market.decimalPlaces))
+              .toFixed(Math.max(notionalDecimals, 0));
       setValue('notional', notional);
     }
     sliderUsed.current = false;
@@ -958,8 +958,8 @@ export const DealTicket = ({
                       <span>
                         {disableReduceOnlyCheckbox
                           ? t(
-                            '"Reduce only" can be used only with non-persistent orders, such as "Fill or Kill" or "Immediate or Cancel".'
-                          )
+                              '"Reduce only" can be used only with non-persistent orders, such as "Fill or Kill" or "Immediate or Cancel".'
+                            )
                           : t(REDUCE_ONLY_TOOLTIP)}
                       </span>{' '}
                       <ExternalLink href={DocsLinks?.POST_REDUCE_ONLY}>
@@ -995,11 +995,11 @@ export const DealTicket = ({
                       <span>
                         {disablePostOnlyCheckbox
                           ? t(
-                            '"Post only" can not be used on "Fill or Kill" or "Immediate or Cancel" orders.'
-                          )
+                              '"Post only" can not be used on "Fill or Kill" or "Immediate or Cancel" orders.'
+                            )
                           : t(
-                            '"Post only" will ensure the order is not filled immediately but is placed on the order book as a passive order. When the order is processed it is either stopped (if it would not be filled immediately), or placed in the order book as a passive order until the price taker matches with it.'
-                          )}
+                              '"Post only" will ensure the order is not filled immediately but is placed on the order book as a passive order. When the order is processed it is either stopped (if it would not be filled immediately), or placed in the order book as a passive order until the price taker matches with it.'
+                            )}
                       </span>{' '}
                       <ExternalLink href={DocsLinks?.POST_REDUCE_ONLY}>
                         {t('Find out more')}

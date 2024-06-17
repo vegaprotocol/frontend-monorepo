@@ -49,7 +49,6 @@ import { IconHammer } from './svg-icons/icon-hammer';
 import { IconMonitor } from './svg-icons/icon-monitor';
 import { IconPause } from './svg-icons/icon-pause';
 import { IconClosed } from './svg-icons/icon-closed';
-import { IconSwap } from './svg-icons/icon-swap';
 
 export enum VegaIconNames {
   ARROW_DOWN = 'arrow-down',
@@ -103,7 +102,6 @@ export enum VegaIconNames {
   HAMMER = 'hammer',
   PAUSE = 'pause',
   CLOSED = 'closed',
-  SWAP = 'swap',
 }
 
 export const VegaIconNameMap: Record<
@@ -161,5 +159,4 @@ export const VegaIconNameMap: Record<
   monitor: IconMonitor,
   pause: IconPause,
   closed: IconClosed,
-  swap: IconSwap,
 };
