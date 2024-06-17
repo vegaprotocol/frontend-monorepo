@@ -5,14 +5,10 @@ import {
   useEVMBridgeConfigs,
   useEthereumConfig,
 } from '@vegaprotocol/web3';
-import {
-  AssetFieldsFragment,
-  useAssetDetailsDialogStore,
-  useEnabledAssets,
-} from '@vegaprotocol/assets';
+import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import { z } from 'zod';
 import { Controller, useForm, useWatch } from 'react-hook-form';
-import { useVegaWallet } from '@vegaprotocol/wallet-react';
+import { useVegaWallet, useWallet } from '@vegaprotocol/wallet-react';
 import { useAccount, useAccountEffect, useDisconnect } from 'wagmi';
 import {
   FormGroup,
@@ -27,8 +23,11 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { ConnectKitButton } from 'connectkit';
 import { type ButtonHTMLAttributes } from 'react';
-import { toBigNum } from '@vegaprotocol/utils';
+import { addDecimalsFormatNumber, toBigNum } from '@vegaprotocol/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Account, useAccounts } from '@vegaprotocol/accounts';
+import { AccountType } from '@vegaprotocol/types';
+import { EmblemByAsset } from '@vegaprotocol/emblem';
 
 type Configs = Array<EthereumConfig | EVMBridgeConfig>;
 
@@ -36,20 +35,28 @@ export const Withdraw = () => {
   const [searchParams] = useSearchParams();
   const assetId = searchParams.get('assetId') || undefined;
 
+  const { pubKey } = useVegaWallet();
+
   const { config } = useEthereumConfig();
   const { configs } = useEVMBridgeConfigs();
-  const { data: assets } = useEnabledAssets();
+
+  const { data } = useAccounts(pubKey);
 
   if (!config) return null;
   if (!configs?.length) return null;
 
   const allConfigs = [config, ...configs];
 
-  const asset = assets?.find((a) => a.id === assetId);
+  const accounts = data?.filter(
+    (a) => a.type === AccountType.ACCOUNT_TYPE_GENERAL
+  );
+
+  const account = accounts?.find((a) => a.asset.id === assetId);
+  const asset = account?.asset;
 
   return (
     <WithdrawForm
-      assets={assets || []}
+      accounts={accounts || []}
       initialAssetId={asset?.id || ''}
       configs={allConfigs}
     />
@@ -73,14 +80,15 @@ const withdrawSchema = z.object({
 type FormFields = z.infer<typeof withdrawSchema>;
 
 const WithdrawForm = ({
-  assets,
+  accounts,
   initialAssetId,
   configs,
 }: {
-  assets: AssetFieldsFragment[];
+  accounts: Account[];
   initialAssetId: string;
   configs: Configs;
 }) => {
+  const vegaChainId = useWallet((store) => store.chainId);
   const { pubKey, pubKeys } = useVegaWallet();
   const { open: openAssetDialog } = useAssetDetailsDialogStore();
 
@@ -97,7 +105,7 @@ const WithdrawForm = ({
   });
 
   const assetId = useWatch({ name: 'assetId', control: form.control });
-  const asset = assets?.find((a) => a.id === assetId);
+  const account = accounts?.find((a) => a.asset.id === assetId);
 
   const submitDeposit = (fields: FormFields) => {
     console.log(fields);
@@ -142,10 +150,27 @@ const WithdrawForm = ({
                 value={field.value}
                 onValueChange={field.onChange}
               >
-                {assets.map((a) => {
+                {accounts.map((a) => {
                   return (
-                    <TradingOption value={a.id} key={a.id}>
-                      {a.id}
+                    <TradingOption value={a.asset.id} key={a.asset.id}>
+                      <div className="w-full flex items-start gap-2">
+                        <EmblemByAsset
+                          asset={a.asset.id}
+                          vegaChain={vegaChainId}
+                        />
+                        <div className="text-xs text-left">
+                          <div>{a.asset.name}</div>
+                          <div>
+                            {a.asset.symbol}{' '}
+                            {a.asset.source.__typename === 'ERC20'
+                              ? truncateMiddle(a.asset.source.contractAddress)
+                              : a.asset.source.__typename}
+                          </div>
+                        </div>
+                        <div className="ml-auto self-end text-xs">
+                          {addDecimalsFormatNumber(a.balance, a.asset.decimals)}
+                        </div>
+                      </div>
                     </TradingOption>
                   );
                 })}
@@ -158,8 +183,8 @@ const WithdrawForm = ({
             {form.formState.errors.assetId.message}
           </TradingInputError>
         )}
-        {asset && (
-          <UseButton onClick={() => openAssetDialog(asset.id)}>
+        {account && (
+          <UseButton onClick={() => openAssetDialog(account.asset.id)}>
             View asset details
           </UseButton>
         )}
@@ -208,13 +233,13 @@ const WithdrawForm = ({
           </TradingInputError>
         )}
 
-        {asset && (
+        {account && (
           <UseButton
             onClick={() => {
               const amount = toBigNum(
-                '0', // TODO: get account balance
-                asset.decimals
-              ).toFixed(asset.decimals);
+                account.balance,
+                account.asset.decimals
+              ).toFixed(account.asset.decimals);
               form.setValue('amount', amount, { shouldValidate: true });
             }}
           >
