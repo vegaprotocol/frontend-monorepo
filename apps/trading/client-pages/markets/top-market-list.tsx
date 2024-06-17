@@ -17,7 +17,7 @@ export const TopMarketList = ({
 }) => {
   const { chainId } = useChainId();
   return (
-    <div className="flex flex-col justify-between grow gap-2">
+    <div className="flex flex-col justify-between gap-5">
       {markets?.map((market) => {
         return (
           <div

@@ -44,7 +44,7 @@ export function EmblemByMarket(props: EmblemByMarketProps) {
   return (
     <div
       className={classNames(
-        'relative inline-block h-8 w-14 leading-[0] shrink-0',
+        'relative flex items-center h-8 w-14 leading-[0] shrink-0',
         {
           'w-14': size === 30,
           'w-10': size === 26,
