@@ -1,5 +1,4 @@
 import { render, screen } from '@testing-library/react';
-import { ProductTypeShortName } from '@vegaprotocol/types';
 import type { MarketCodeCellProps } from './market-code-cell';
 import { MarketCodeCell } from './market-code-cell';
 
@@ -31,9 +30,6 @@ describe('MarketCodeCell', () => {
     renderComponent(props);
     expect(screen.getByTestId('stack-cell-primary')).toHaveTextContent(code);
     expect(screen.getByTestId('stack-cell-secondary')).toHaveTextContent(
-      ProductTypeShortName[productType]
-    );
-    expect(screen.getByTestId('stack-cell-secondary')).toHaveTextContent(
       'SCCR'
     );
     expect(screen.getByTestId('stack-cell-secondary')).not.toHaveTextContent(
@@ -56,7 +52,7 @@ describe('MarketCodeCell', () => {
     renderComponent(props);
     expect(screen.getByTestId('stack-cell-primary')).toHaveTextContent(code);
     expect(screen.getByTestId('stack-cell-secondary')).toHaveTextContent(
-      ProductTypeShortName[productType]
+      'PRNT'
     );
     expect(screen.getByTestId('stack-cell-secondary')).toHaveTextContent(
       'PRNT'
@@ -81,7 +77,7 @@ describe('MarketCodeCell', () => {
     renderComponent(props);
     expect(screen.getByTestId('stack-cell-primary')).toHaveTextContent(code);
     expect(screen.getByTestId('stack-cell-secondary')).toHaveTextContent(
-      ProductTypeShortName[productType]
+      'SCCRPRNT'
     );
     expect(screen.getByTestId('stack-cell-secondary')).toHaveTextContent(
       'PRNT'
