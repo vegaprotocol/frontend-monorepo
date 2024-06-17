@@ -31,6 +31,12 @@ export const useBalances = (asset?: AssetData) => {
     DepositBalances | 'loading' | undefined
   >(undefined);
 
+  const refetchBalances = useCallback(async () => {
+    setBalances(undefined);
+    const balances = await getBalances(asset);
+    setBalances(balances);
+  }, [asset, getBalances]);
+
   useEffect(() => {
     let ignore = false;
 
@@ -53,11 +59,7 @@ export const useBalances = (asset?: AssetData) => {
   return {
     balances,
     resetBalances: () => setBalances(undefined),
-    refetchBalances: async () => {
-      setBalances(undefined);
-      const balances = await getBalances(asset);
-      setBalances(balances);
-    },
+    refetchBalances,
   };
 };
 

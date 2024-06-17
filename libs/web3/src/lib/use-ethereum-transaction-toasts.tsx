@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import { useEffect } from 'react';
 import { useAssetsDataProvider } from '@vegaprotocol/assets';
 import {
-  EtherscanLink,
+  BlockExplorerLink,
   getExternalChainLabel,
 } from '@vegaprotocol/environment';
 import { formatNumber, toBigNum } from '@vegaprotocol/utils';
@@ -124,13 +124,13 @@ const EthTxPendingToastContent = ({ tx }: EthTxToastContentProps) => {
       <ToastHeading>{t('Awaiting confirmation')}</ToastHeading>
       <p>{t('Please wait for your transaction to be confirmed.')}</p>
       {tx.txHash && (
-        <EtherscanLink sourceChainId={sourceChainId} tx={tx.txHash}>
+        <BlockExplorerLink sourceChainId={sourceChainId} tx={tx.txHash}>
           {t('View on {{chainLabel}}', {
             chainLabel: sourceChainId
               ? getExternalChainLabel(String(sourceChainId))
               : 'Ethereum',
           })}
-        </EtherscanLink>
+        </BlockExplorerLink>
       )}
       <EthTransactionDetails tx={tx} />
     </>
@@ -171,13 +171,13 @@ const EthTxConfirmedToastContent = ({ tx }: EthTxToastContentProps) => {
       <ToastHeading>{t('Transaction confirmed')}</ToastHeading>
       <p>{t('Your transaction has been confirmed.')}</p>
       {tx.txHash && (
-        <EtherscanLink sourceChainId={sourceChainId} tx={tx.txHash}>
+        <BlockExplorerLink sourceChainId={sourceChainId} tx={tx.txHash}>
           {t('View on {{chainLabel}}', {
             chainLabel: sourceChainId
               ? getExternalChainLabel(String(sourceChainId))
               : 'Ethereum',
           })}
-        </EtherscanLink>
+        </BlockExplorerLink>
       )}
       <EthTransactionDetails tx={tx} />
     </>
@@ -206,13 +206,13 @@ const EthTxCompletedToastContent = ({ tx }: EthTxToastContentProps) => {
         {isDeposit && t('Waiting for deposit confirmation.')}
       </p>
       {tx.txHash && (
-        <EtherscanLink sourceChainId={sourceChainId} tx={tx.txHash}>
+        <BlockExplorerLink sourceChainId={sourceChainId} tx={tx.txHash}>
           {t('View on {{chainLabel}}', {
             chainLabel: sourceChainId
               ? getExternalChainLabel(String(sourceChainId))
               : 'Ethereum',
           })}
-        </EtherscanLink>
+        </BlockExplorerLink>
       )}
       <EthTransactionDetails tx={tx} />
     </>

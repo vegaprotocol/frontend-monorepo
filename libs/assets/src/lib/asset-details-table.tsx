@@ -1,5 +1,5 @@
 import {
-  EtherscanLink,
+  BlockExplorerLink,
   getExternalChainLabel,
 } from '@vegaprotocol/environment';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
@@ -163,12 +163,12 @@ export const useRows = () => {
 
           return (
             <>
-              <EtherscanLink
+              <BlockExplorerLink
                 address={asset.source.contractAddress}
                 sourceChainId={Number(asset.source.chainId)}
               >
                 {truncateMiddle(asset.source.contractAddress)}
-              </EtherscanLink>{' '}
+              </BlockExplorerLink>{' '}
               <CopyWithTooltip text={asset.source.contractAddress}>
                 <button title={t('Copy address to clipboard')}>
                   <VegaIcon size={14} name={VegaIconNames.COPY} />

@@ -21,7 +21,7 @@ import {
   type VegaValueFormatterParams,
 } from '@vegaprotocol/datagrid';
 import { AgGrid } from '@vegaprotocol/datagrid';
-import { EtherscanLink } from '@vegaprotocol/environment';
+import { BlockExplorerLink } from '@vegaprotocol/environment';
 import { type WithdrawalFieldsFragment } from './__generated__/Withdrawal';
 import {
   useEthWithdrawApprovalsStore,
@@ -157,7 +157,7 @@ export const WithdrawalsTable = ({
         cellRendererSelector: ({
           data,
         }: VegaICellRendererParams<WithdrawalFieldsFragment>) => ({
-          component: data?.txHash ? 'EtherscanLinkCell' : 'CompleteCell',
+          component: data?.txHash ? 'BlockExplorerLinkCell' : 'CompleteCell',
         }),
       },
     ],
@@ -171,7 +171,7 @@ export const WithdrawalsTable = ({
       components={{
         RecipientCell,
         StatusCell,
-        EtherscanLinkCell,
+        BlockExplorerLinkCell,
         CompleteCell,
       }}
       suppressCellFocus
@@ -221,7 +221,7 @@ export const CompleteCell = ({ data, complete }: CompleteCellProps) => {
   );
 };
 
-export const EtherscanLinkCell = ({
+export const BlockExplorerLinkCell = ({
   value,
   data,
 }: VegaValueFormatterParams<WithdrawalFieldsFragment, 'txHash'>) => {
@@ -233,13 +233,13 @@ export const EtherscanLinkCell = ({
       : undefined;
 
   return (
-    <EtherscanLink
+    <BlockExplorerLink
       sourceChainId={assetChainId}
       tx={value}
-      data-testid="etherscan-link"
+      data-testid="block-explorer-link"
     >
       {truncateByChars(value)}
-    </EtherscanLink>
+    </BlockExplorerLink>
   );
 };
 
@@ -331,12 +331,12 @@ const RecipientCell = ({
       : undefined;
 
   return (
-    <EtherscanLink
+    <BlockExplorerLink
       sourceChainId={assetChainId}
       address={value}
-      data-testid="etherscan-link"
+      data-testid="block-explorer-link"
     >
       {valueFormatted}
-    </EtherscanLink>
+    </BlockExplorerLink>
   );
 };

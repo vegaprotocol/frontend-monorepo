@@ -1,7 +1,8 @@
 import { USDT_ID, type Asset } from '@vegaprotocol/assets';
 import {
-  EtherscanLink,
+  BlockExplorerLink,
   Networks,
+  getExternalChainLabel,
   useEnvironment,
 } from '@vegaprotocol/environment';
 import { Intent, Notification } from '@vegaprotocol/ui-toolkit';
@@ -167,9 +168,13 @@ const ApprovalTxFeedback = ({
       : undefined;
 
   const txLink = tx.txHash && (
-    <EtherscanLink sourceChainId={chainId} tx={tx.txHash}>
-      {t('View on Etherscan')}
-    </EtherscanLink>
+    <BlockExplorerLink sourceChainId={chainId} tx={tx.txHash}>
+      {t('View on {{chainLabel}}', {
+        chainLabel: chainId
+          ? getExternalChainLabel(chainId.toString())
+          : 'block explorer',
+      })}
+    </BlockExplorerLink>
   );
 
   if (tx.status === EthTxStatus.Error) {

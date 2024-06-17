@@ -29,7 +29,7 @@ describe('BatchItem', () => {
       newSpotMarket: {},
     };
     render(<BatchItem item={item} />);
-    expect(screen.getByText('New spot market')).toBeInTheDocument();
+    expect(screen.getByText('New spot market:')).toBeInTheDocument();
   });
 
   it('Renders "Cancel transfer"', () => {
@@ -68,7 +68,7 @@ describe('BatchItem', () => {
       newMarket: {},
     };
     render(<BatchItem item={item} />);
-    expect(screen.getByText('New market')).toBeInTheDocument();
+    expect(screen.getByText('New market:')).toBeInTheDocument();
   });
 
   it('Renders "New transfer"', () => {

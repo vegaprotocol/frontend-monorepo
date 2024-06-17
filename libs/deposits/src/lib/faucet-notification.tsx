@@ -1,5 +1,5 @@
 import type { Asset } from '@vegaprotocol/assets';
-import { EtherscanLink } from '@vegaprotocol/environment';
+import { BlockExplorerLink } from '@vegaprotocol/environment';
 import { Intent, Notification } from '@vegaprotocol/ui-toolkit';
 import { EthTxStatus, useEthTransactionStore } from '@vegaprotocol/web3';
 import { useGetFaucetError } from './get-faucet-error';
@@ -82,9 +82,9 @@ export const FaucetNotification = ({
               </p>
               {tx.txHash && (
                 <p>
-                  <EtherscanLink tx={tx.txHash}>
-                    {t('View on Etherscan')}
-                  </EtherscanLink>
+                  <BlockExplorerLink tx={tx.txHash}>
+                    {t('View on block explorer')}
+                  </BlockExplorerLink>
                 </p>
               )}
             </>
@@ -112,9 +112,9 @@ export const FaucetNotification = ({
               </p>
               {tx.txHash && (
                 <p>
-                  <EtherscanLink tx={tx.txHash}>
-                    {t('View on Etherscan')}
-                  </EtherscanLink>
+                  <BlockExplorerLink tx={tx.txHash}>
+                    {t('View on block explorer')}
+                  </BlockExplorerLink>
                 </p>
               )}
             </>

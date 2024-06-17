@@ -13,7 +13,7 @@ import {
   type TypedDataAgGrid,
 } from '@vegaprotocol/datagrid';
 import { type DepositFieldsFragment } from './__generated__/Deposit';
-import { EtherscanLink } from '@vegaprotocol/environment';
+import { BlockExplorerLink } from '@vegaprotocol/environment';
 import { DepositStatusMapping } from '@vegaprotocol/types';
 import { getAssetSymbol, type AssetFieldsFragment } from '@vegaprotocol/assets';
 
@@ -78,13 +78,13 @@ export const DepositsTable = (
               : 1;
 
           return (
-            <EtherscanLink
+            <BlockExplorerLink
               tx={value}
               sourceChainId={chainId}
-              data-testid="etherscan-link"
+              data-testid="block-explorer-link"
             >
               {truncateByChars(value)}
-            </EtherscanLink>
+            </BlockExplorerLink>
           );
         },
       },

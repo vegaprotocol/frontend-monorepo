@@ -52,8 +52,7 @@ export const ToastsContainer = ({
     <Portal
       ref={ref as Ref<HTMLDivElement>}
       className={classNames(
-        'group',
-        'absolute z-30',
+        'group absolute z-30 pointer-events-auto',
         { 'bottom-0 right-0': position === ToastPosition.BottomRight },
         { 'bottom-0 left-0': position === ToastPosition.BottomLeft },
         { 'left-0 top-0': position === ToastPosition.TopLeft },

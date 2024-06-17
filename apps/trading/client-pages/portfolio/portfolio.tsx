@@ -3,7 +3,12 @@ import type { ReactNode } from 'react';
 import { LayoutPriority } from 'allotment';
 import { useIncompleteWithdrawals } from '@vegaprotocol/withdraws';
 import { useScreenDimensions } from '@vegaprotocol/react-helpers';
-import { Tab, LocalStoragePersistTabs as Tabs } from '@vegaprotocol/ui-toolkit';
+import {
+  Intent,
+  Notification,
+  Tab,
+  LocalStoragePersistTabs as Tabs,
+} from '@vegaprotocol/ui-toolkit';
 import {
   AccountsContainer,
   AccountsSettings,
@@ -106,7 +111,7 @@ const PortfolioGrid = () => {
       <SidebarViewInitializer />
       <ResizableGrid onChange={handleOnHorizontalChange}>
         <ResizableGridPanel
-          minSize={400}
+          minSize={475}
           preferredSize={sizesHorizontal[0] || 460}
         >
           <PortfolioGridChild>
@@ -157,14 +162,35 @@ const PortfolioActionTabs = () => {
   const flags = useFeatureFlags((state) => state.flags);
   return (
     <Tabs storageKey="portfolio-sidebar">
-      <Tab id="deposit" name={t('Deposit')}>
+      <Tab id="deposit" name={t('Deposit (Basic)')}>
         <ErrorBoundary feature="portfolio-deposit">
-          <div className="p-2">
-            <p className="text-sm mb-4">{t('Deposit from your wallet')}</p>
+          <div className="p-2 flex flex-col gap-4">
+            <Notification
+              intent={Intent.Info}
+              message={t(
+                'Use this form to deposit Ethereum or Arbitrum assets to the Vega network'
+              )}
+            />
+            <p className="text-sm">{t('Deposit from your wallet')}</p>
             <DepositContainer />
           </div>
         </ErrorBoundary>
       </Tab>
+      {flags.CROSS_CHAIN_DEPOSITS_ENABLED ? (
+        <Tab id="cross-chain-deposit" name={t('Deposit (Cross-chain)')}>
+          <ErrorBoundary feature="portfolio-transfer">
+            <div className="p-2 flex flex-col gap-4">
+              <Notification
+                intent={Intent.Info}
+                message={t(
+                  'Use this form to utilise Squid Router to make cross-chain deposits from any supported chain onto Vega. The amount you receive will be deposited directly to the network. To ensure users enjoy the cheapest fees possible this mode only supports deposits into Arbitrum assets'
+                )}
+              />
+              <SquidContainer />
+            </div>
+          </ErrorBoundary>
+        </Tab>
+      ) : null}
       <Tab id="withdraw" name={t('Withdraw')}>
         <ErrorBoundary feature="portfolio-withdraw">
           <div className="p-2">
@@ -184,15 +210,6 @@ const PortfolioActionTabs = () => {
           <ErrorBoundary feature="assets-swap">
             <div className="p-4">
               <SwapContainer />
-            </div>
-          </ErrorBoundary>
-        </Tab>
-      ) : null}
-      {flags.CROSS_CHAIN_DEPOSITS_ENABLED && flags.CROSS_CHAIN_DEPOSITS ? (
-        <Tab id="cross-chain-deposit" name={t('Cross chain deposit')}>
-          <ErrorBoundary feature="portfolio-transfer">
-            <div className="p-2">
-              <SquidContainer />
             </div>
           </ErrorBoundary>
         </Tab>

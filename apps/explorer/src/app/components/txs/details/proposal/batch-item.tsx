@@ -2,6 +2,7 @@ import { t } from '@vegaprotocol/i18n';
 import { AssetLink, MarketLink, NetworkParameterLink } from '../../../links';
 import type { components } from '../../../../../types/explorer';
 import Hash from '../../../links/hash';
+import { MarketUpdateTypeMapping } from '@vegaprotocol/types';
 
 type Item = components['schemas']['vegaBatchProposalTermsChange'];
 
@@ -32,9 +33,17 @@ export const BatchItem = ({ item }: BatchItemProps) => {
   } else if (item.newFreeform) {
     return <span>{t('New freeform proposal')}</span>;
   } else if (item.newMarket) {
-    return <span>{t('New market')}</span>;
+    return (
+      <span>
+        {t('New market')}: {item.newMarket.changes?.instrument?.name}
+      </span>
+    );
   } else if (item.newSpotMarket) {
-    return <span>{t('New spot market')}</span>;
+    return (
+      <span>
+        {t('New spot market')}: {item.newSpotMarket.changes?.instrument?.name}
+      </span>
+    );
   } else if (item.newTransfer) {
     return <span>{t('New transfer')}</span>;
   } else if (item.updateAsset) {
@@ -57,7 +66,9 @@ export const BatchItem = ({ item }: BatchItemProps) => {
     const marketId = item?.updateMarketState?.changes?.marketId || false;
     return (
       <span>
-        {t('Update market state')}
+        {item.updateMarketState.changes?.updateType
+          ? MarketUpdateTypeMapping[item.updateMarketState.changes?.updateType]
+          : t('Update market state')}
         {marketId && <MarketLink className="ml-1" id={marketId} />}
       </span>
     );
@@ -82,7 +93,11 @@ export const BatchItem = ({ item }: BatchItemProps) => {
   } else if (item.updateVolumeDiscountProgram) {
     return <span>{t('Update volume discount program')}</span>;
   } else if (item.newAsset) {
-    return <span>{t('New asset')}</span>;
+    return (
+      <span>
+        {t('New asset')}: {item.newAsset.changes?.name}
+      </span>
+    );
   }
 
   return <span>{t('Unknown proposal type')}</span>;

@@ -3,18 +3,26 @@ import { Lozenge } from '@vegaprotocol/ui-toolkit';
 import type { components } from '../../../../../types/explorer';
 import type { ExplorerProposalStatusQuery } from './__generated__/Proposal';
 import { useExplorerProposalStatusQuery } from './__generated__/Proposal';
+import fromUnixTime from 'date-fns/fromUnixTime';
 
 type Terms = components['schemas']['vegaProposalTerms'];
 
 export function format(date: string | undefined, def: string) {
-  if (!date) {
+  let parsedDate;
+
+  try {
+    parsedDate = fromUnixTime(Number(date));
+    if (parsedDate.toString() === 'Invalid Date') {
+      throw new Error('Invalid Date');
+    }
+  } catch (e) {
     return def;
   }
 
-  return new Date().toLocaleDateString() || def;
+  return parsedDate.toLocaleDateString() || def;
 }
 
-type Proposal = Extract<
+export type Proposal = Extract<
   ExplorerProposalStatusQuery['proposal'],
   { __typename?: 'Proposal' }
 >;

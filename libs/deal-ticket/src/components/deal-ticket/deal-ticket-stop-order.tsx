@@ -645,7 +645,6 @@ const NotEnoughBalanceWarning = ({
   if (size && size !== '0' && BigInt(balance) < BigInt(size)) {
     return (
       <MarginWarning
-        isSpotMarket={true}
         balance={balance}
         margin={size}
         asset={asset}
