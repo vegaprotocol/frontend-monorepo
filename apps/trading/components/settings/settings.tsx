@@ -30,7 +30,7 @@ export const SettingsPopover = () => {
   );
 };
 
-const Settings = () => {
+export const Settings = () => {
   const t = useT();
   const { theme, setTheme } = useThemeSwitcher();
   const [isApproved, setIsApproved] = useTelemetryApproval();

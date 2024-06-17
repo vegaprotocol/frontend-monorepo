@@ -7,11 +7,13 @@ describe('AccountsActionsDropdown', () => {
   let onClickDeposit: jest.Mock;
   let onClickWithdraw: jest.Mock;
   let onClickTransfer: jest.Mock;
+  let onClickSwap: jest.Mock;
 
   beforeEach(() => {
     onClickDeposit = jest.fn();
     onClickWithdraw = jest.fn();
     onClickTransfer = jest.fn();
+    onClickSwap = jest.fn();
   });
 
   it('should render dropdown items correctly', async () => {
@@ -25,6 +27,7 @@ describe('AccountsActionsDropdown', () => {
         onClickDeposit={onClickDeposit}
         onClickWithdraw={onClickWithdraw}
         onClickTransfer={onClickTransfer}
+        onClickSwap={onClickSwap}
       />
     );
 
@@ -46,6 +49,7 @@ describe('AccountsActionsDropdown', () => {
         onClickDeposit={onClickDeposit}
         onClickWithdraw={onClickWithdraw}
         onClickTransfer={onClickTransfer}
+        onClickSwap={onClickSwap}
       />
     );
 
