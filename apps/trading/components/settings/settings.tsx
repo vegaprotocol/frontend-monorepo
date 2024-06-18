@@ -1,29 +1,32 @@
 import {
   Dialog,
   Intent,
+  Popover,
   Switch,
   ToastPositionSetter,
   TradingButton,
+  VegaIcon,
+  VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
 import { useTelemetryApproval } from '../../lib/hooks/use-telemetry-approval';
 import { useState, type ReactNode } from 'react';
 import classNames from 'classnames';
 import { useT } from '../../lib/use-t';
-import { useFeatureFlags, type FeatureFlags } from '@vegaprotocol/environment';
 
-export const FeatureFlagSwitch = ({ flag }: { flag: keyof FeatureFlags }) => {
-  const flags = useFeatureFlags((state) => state.flags);
-  const setFeatureFlag = useFeatureFlags((state) => state.setFeatureFlag);
-
+export const SettingsPopover = () => {
   return (
-    <Switch
-      name={`feature-flag-${flag}`}
-      onCheckedChange={(checked) => {
-        setFeatureFlag(flag, !!checked);
-      }}
-      checked={flags[flag]}
-    />
+    <Popover
+      trigger={
+        <span className="flex items-center justify-center w-7 h-7 hover:bg-vega-clight-500 dark:hover:bg-vega-cdark-500 rounded-full">
+          <VegaIcon name={VegaIconNames.COG} size={18} />
+        </span>
+      }
+      align="end"
+      sideOffset={14}
+    >
+      <Settings />
+    </Popover>
   );
 };
 
@@ -34,7 +37,8 @@ export const Settings = () => {
   const [open, setOpen] = useState(false);
 
   return (
-    <div>
+    <section className="flex flex-col gap-3 p-4 w-96">
+      <h2 className="font-alpha calt uppercase">{t('Settings')}</h2>
       <SettingsGroup label={t('Dark mode')}>
         <Switch
           name="settings-theme-switch"
@@ -116,7 +120,7 @@ export const Settings = () => {
           <dd className="break-words">{process.env.GIT_COMMIT}</dd>
         </dl>
       </SettingsGroup>
-    </div>
+    </section>
   );
 };
 
@@ -133,15 +137,17 @@ const SettingsGroup = ({
 }) => {
   return (
     <div
-      className={classNames('mb-4 gap-2', {
+      className={classNames('gap-2', {
         'flex items-start justify-between gap-2': inline,
       })}
     >
       <div className={classNames({ 'w-3/4': inline, 'mb-2': !inline })}>
-        <div className="text-sm">{label}</div>
+        <label className="text-sm" id={label}>
+          {label}
+        </label>
         {helpText && <p className="text-xs text-muted">{helpText}</p>}
       </div>
-      {children}
+      <div aria-describedby={label}>{children}</div>
     </div>
   );
 };

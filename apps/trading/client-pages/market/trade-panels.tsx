@@ -1,4 +1,3 @@
-import { type PinnedAsset } from '@vegaprotocol/accounts';
 import { type Market } from '@vegaprotocol/markets';
 // TODO: handle oracle banner
 // import { OracleBanner } from '@vegaprotocol/markets';
@@ -14,9 +13,12 @@ import { useT } from '../../lib/use-t';
 import { ErrorBoundary } from '../../components/error-boundary';
 import { type TradingView } from './trade-views';
 import { TradingViews } from './trade-views';
+import { MobileMarketHeader } from '../../components/market-header';
+import { MarketActionDrawer } from '../markets/mobile-buttons';
+
 interface TradePanelsProps {
   market: Market;
-  pinnedAssets?: PinnedAsset[];
+  pinnedAssets?: string[];
 }
 
 export const TradePanels = ({ market, pinnedAssets }: TradePanelsProps) => {
@@ -47,7 +49,7 @@ export const TradePanels = ({ market, pinnedAssets }: TradePanelsProps) => {
   const renderMenu = (viewCfg: any) => {
     if ('menu' in viewCfg || 'settings' in viewCfg) {
       return (
-        <div className="flex items-center justify-end gap-1 p-1 bg-vega-clight-800 dark:bg-vega-cdark-800 border-b border-default">
+        <div className="flex items-center justify-end gap-1 p-1 bg-vega-clight-800 dark:bg-vega-cdark-800 border-b border-default shrink-0">
           {'menu' in viewCfg ? <viewCfg.menu /> : null}
           {'settings' in viewCfg ? (
             <Popover
@@ -69,9 +71,12 @@ export const TradePanels = ({ market, pinnedAssets }: TradePanelsProps) => {
   };
 
   return (
-    <div className="h-full flex flex-col lg:grid grid-rows-[min-content_min-content_1fr_min-content]">
-      <div className="flex flex-col w-full overflow-hidden">
-        <div className="flex flex-nowrap overflow-x-auto max-w-full border-t border-default">
+    <div className="h-full grid grid-rows-[min-content_50vh_1fr_min-content]">
+      <MobileMarketHeader />
+
+      {/* Top section */}
+      <div className="flex flex-col overflow-hidden">
+        <div className="flex flex-nowrap overflow-x-auto border-t border-default shrink-0">
           {[
             'chart',
             'orderbook',
@@ -115,20 +120,22 @@ export const TradePanels = ({ market, pinnedAssets }: TradePanelsProps) => {
               );
             })}
         </div>
-        <div className="h-[50vh] lg:h-full relative">
-          <div>{renderMenu(topViewCfg)}</div>
+        <div className="h-full relative">
+          {renderMenu(topViewCfg)}
           <div className="overflow-auto h-full">{renderView(topView)}</div>
         </div>
       </div>
+      {/* END: Top section */}
 
-      <div className="flex flex-col w-full grow">
-        <div className="flex flex-nowrap overflow-x-auto max-w-full border-t border-default">
+      {/* Bottom section */}
+      <div className="flex flex-col overflow-hidden">
+        <div className="flex flex-nowrap overflow-x-auto border-t border-default shrink-0">
           {[
             'positions',
             'activeOrders',
             'inactiveOrders',
             'stopOrders',
-            'collateral',
+            'assets',
             'fills',
           ].map((_key) => {
             const key = _key as TradingView;
@@ -145,10 +152,15 @@ export const TradePanels = ({ market, pinnedAssets }: TradePanelsProps) => {
             );
           })}
         </div>
-        <div className="relative grow">
-          <div className="flex flex-col">{renderMenu(bottomViewCfg)}</div>
-          <div className="overflow-auto h-full">{renderView(bottomView)}</div>
+        <div className="relative grow flex flex-col overflow-hidden">
+          {renderMenu(bottomViewCfg)}
+          <div className="overflow-auto grow">{renderView(bottomView)}</div>
         </div>
+      </div>
+      {/* END: Bottom section */}
+
+      <div>
+        <MarketActionDrawer />
       </div>
     </div>
   );
@@ -198,7 +210,7 @@ const useViewLabel = (view: TradingView) => {
     activeOrders: t('Open'),
     inactiveOrders: t('Order history'),
     stopOrders: t('Advanced orders'),
-    collateral: t('Collateral'),
+    assets: t('Assets'),
     fills: t('Trades'),
   };
 

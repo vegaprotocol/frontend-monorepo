@@ -1,4 +1,5 @@
 import { act, fireEvent, render, screen, within } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import { VegaWalletConnectButton } from './vega-wallet-connect-button';
 import userEvent from '@testing-library/user-event';
 import {
@@ -10,10 +11,6 @@ import {
   PartyProfilesDocument,
   type PartyProfilesQuery,
 } from './__generated__/PartyProfiles';
-
-jest.mock('../../lib/hooks/use-get-current-route-id', () => ({
-  useGetCurrentRouteId: jest.fn().mockReturnValue('current-route-id'),
-}));
 
 const key = { publicKey: '123456__123456', name: 'test' };
 const key2 = { publicKey: 'abcdef__abcdef', name: 'test2' };
@@ -47,11 +44,13 @@ const renderComponent = (mockOnClick = jest.fn()) => {
   };
 
   return (
-    <MockedProvider mocks={[partyProfilesMock]}>
-      <MockedWalletProvider>
-        <VegaWalletConnectButton onClick={mockOnClick} />
-      </MockedWalletProvider>
-    </MockedProvider>
+    <MemoryRouter>
+      <MockedProvider mocks={[partyProfilesMock]}>
+        <MockedWalletProvider>
+          <VegaWalletConnectButton onClick={mockOnClick} />
+        </MockedWalletProvider>
+      </MockedProvider>
+    </MemoryRouter>
   );
 };
 

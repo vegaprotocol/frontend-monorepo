@@ -20,7 +20,6 @@ import { useDataProvider } from '@vegaprotocol/data-provider';
 
 interface DealTicketContainerProps {
   marketId: string;
-  onMarketClick?: (marketId: string, metaKey?: boolean) => void;
   onDeposit: (assetId: string) => void;
 }
 

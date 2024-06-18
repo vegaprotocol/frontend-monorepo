@@ -32,6 +32,7 @@ import { IconQuestionMark } from './svg-icons/icon-question-mark';
 import { IconSearch } from './svg-icons/icon-search';
 import { IconStar } from './svg-icons/icon-star';
 import { IconSun } from './svg-icons/icon-sun';
+import { IconSwap } from './svg-icons/icon-swap';
 import { IconTick } from './svg-icons/icon-tick';
 import { IconTicket } from './svg-icons/icon-ticket';
 import { IconTransfer } from './svg-icons/icon-transfer';
@@ -48,7 +49,6 @@ import { IconHammer } from './svg-icons/icon-hammer';
 import { IconMonitor } from './svg-icons/icon-monitor';
 import { IconPause } from './svg-icons/icon-pause';
 import { IconClosed } from './svg-icons/icon-closed';
-import { IconSwap } from './svg-icons/icon-swap';
 
 export enum VegaIconNames {
   ARROW_DOWN = 'arrow-down',
@@ -86,6 +86,7 @@ export enum VegaIconNames {
   STAR = 'star',
   STREAK = 'streak',
   SUN = 'sun',
+  SWAP = 'swap',
   TICK = 'tick',
   TICKET = 'ticket',
   TRANSFER = 'transfer',
@@ -101,7 +102,6 @@ export enum VegaIconNames {
   HAMMER = 'hammer',
   PAUSE = 'pause',
   CLOSED = 'closed',
-  SWAP = 'swap',
 }
 
 export const VegaIconNameMap: Record<
@@ -144,6 +144,7 @@ export const VegaIconNameMap: Record<
   search: IconSearch,
   star: IconStar,
   sun: IconSun,
+  swap: IconSwap,
   tick: IconTick,
   ticket: IconTicket,
   transfer: IconTransfer,
@@ -158,5 +159,4 @@ export const VegaIconNameMap: Record<
   monitor: IconMonitor,
   pause: IconPause,
   closed: IconClosed,
-  swap: IconSwap,
 };

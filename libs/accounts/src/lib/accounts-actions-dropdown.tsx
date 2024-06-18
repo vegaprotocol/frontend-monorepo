@@ -14,27 +14,63 @@ import {
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 
 export const AccountsActionsDropdown = ({
+  isReadOnly,
   assetId,
   assetContractAddress,
-  onClickBreakdown,
+  onClickDeposit,
+  onClickWithdraw,
+  onClickTransfer,
+  onClickSwap,
 }: {
+  isReadOnly?: boolean;
   assetId: string;
   assetContractAddress?: string;
-  onClickBreakdown: () => void;
+  onClickDeposit: () => void;
+  onClickWithdraw: () => void;
+  onClickTransfer: () => void;
+  onClickSwap: () => void;
 }) => {
-  const blockExplorerLink = useExternalExplorerLink();
+  const etherscanLink = useExternalExplorerLink();
   const openAssetDialog = useAssetDetailsDialogStore((store) => store.open);
   const t = useT();
   return (
-    <ActionsDropdown>
-      <TradingDropdownItem
-        key={'breakdown'}
-        data-testid="breakdown"
-        onClick={onClickBreakdown}
-      >
-        <VegaIcon name={VegaIconNames.BREAKDOWN} size={16} />
-        {t('View usage breakdown')}
-      </TradingDropdownItem>
+    <ActionsDropdown vertical>
+      {isReadOnly ? null : (
+        <>
+          <TradingDropdownItem
+            key={'deposit'}
+            data-testid="deposit"
+            onClick={onClickDeposit}
+          >
+            <VegaIcon name={VegaIconNames.DEPOSIT} size={16} />
+            {t('Deposit')}
+          </TradingDropdownItem>
+          <TradingDropdownItem
+            key={'withdraw'}
+            data-testid="withdraw"
+            onClick={onClickWithdraw}
+          >
+            <VegaIcon name={VegaIconNames.WITHDRAW} size={16} />
+            {t('Withdraw')}
+          </TradingDropdownItem>
+          <TradingDropdownItem
+            key={'transfer'}
+            data-testid="transfer"
+            onClick={onClickTransfer}
+          >
+            <VegaIcon name={VegaIconNames.TRANSFER} size={16} />
+            {t('Transfer')}
+          </TradingDropdownItem>
+          <TradingDropdownItem
+            key={'swap'}
+            data-testid="swap"
+            onClick={onClickSwap}
+          >
+            <VegaIcon name={VegaIconNames.SWAP} size={16} />
+            {t('Swap')}
+          </TradingDropdownItem>
+        </>
+      )}
       <TradingDropdownItem
         onClick={(e) => {
           openAssetDialog(assetId, e.target as HTMLElement);
@@ -43,11 +79,12 @@ export const AccountsActionsDropdown = ({
         <VegaIcon name={VegaIconNames.INFO} size={16} />
         {t('View asset details')}
       </TradingDropdownItem>
+
       <TradingDropdownCopyItem value={assetId} text={t('Copy asset ID')} />
       {assetContractAddress && (
         <TradingDropdownItem>
           <Link
-            href={blockExplorerLink(
+            href={etherscanLink(
               ETHERSCAN_ADDRESS.replace(':hash', assetContractAddress)
             )}
             target="_blank"

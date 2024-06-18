@@ -1,193 +1,64 @@
-import { act, render, screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import {
-  Sidebar,
-  SidebarButton,
-  SidebarContent,
-  ViewType,
-  useSidebar,
-} from './sidebar';
+import { Sidebar } from './sidebar';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
-import { VegaIconNames } from '@vegaprotocol/ui-toolkit';
-import { Routes as AppRoutes } from '../../lib/links';
-import { MockedWalletProvider } from '@vegaprotocol/wallet-react/testing';
+
+jest.mock('@vegaprotocol/deal-ticket', () => ({
+  DealTicketContainer: ({ marketId }: { marketId: string }) => (
+    <div data-testid="deal-ticket">{marketId}</div>
+  ),
+}));
+
+jest.mock('@vegaprotocol/markets', () => ({
+  MarketInfoAccordionContainer: ({ marketId }: { marketId: string }) => (
+    <div data-testid="market-info">{marketId}</div>
+  ),
+}));
 
 jest.mock('../node-health', () => ({
-  NodeHealthContainer: () => <span data-testid="node-health" />,
+  NodeHealthContainer: () => <div>NodeHealthContainer</div>,
 }));
 
-jest.mock('@vegaprotocol/accounts', () => ({
-  TransferContainer: () => <div data-testid="transfer" />,
+jest.mock('../asset-card', () => ({
+  AssetCard: ({ marketId }: { marketId: string }) => (
+    <span data-testid="asset-card">Asset: {marketId}</span>
+  ),
 }));
 
-jest.mock('@vegaprotocol/deposits', () => ({
-  DepositContainer: () => <div data-testid="deposit" />,
-}));
-
-jest.mock('../settings', () => ({
-  Settings: () => <div data-testid="settings" />,
-}));
-
-jest.mock('../welcome-dialog', () => ({
-  GetStarted: () => <div data-testid="get-started" />,
+jest.mock('../accounts-container', () => ({
+  AccountsContainer: () => <div data-testid="accounts-list"></div>,
 }));
 
 describe('Sidebar', () => {
-  beforeEach(() => {
-    useSidebar.setState({ views: {} });
-  });
+  const marketId = 'market-id';
 
-  it('renders options prop', () => {
-    render(
-      <MemoryRouter>
-        <MockedWalletProvider>
-          <Sidebar options={<div data-testid="options" />} />
-        </MockedWalletProvider>
+  const renderComponent = () => {
+    const user = userEvent.setup();
+    const result = render(
+      <MemoryRouter initialEntries={[`/markets/${marketId}`]}>
+        <Routes>
+          <Route path="/markets/:marketId" element={<Sidebar />} />
+        </Routes>
       </MemoryRouter>
     );
 
-    expect(screen.getByTestId(ViewType.Settings)).toBeInTheDocument();
-    expect(screen.getByTestId('node-health')).toBeInTheDocument();
-    expect(screen.getByTestId('options')).toBeInTheDocument();
+    return {
+      ...result,
+      user,
+    };
+  };
+
+  it('switches between accordion sections', async () => {
+    const { user } = renderComponent();
+    expect(screen.getByTestId('deal-ticket')).toHaveTextContent(marketId);
+    expect(screen.getByText('NodeHealthContainer')).toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: 'Market info' }));
+
+    expect(screen.getByTestId('market-info')).toHaveTextContent(marketId);
+
+    await user.click(screen.getByRole('button', { name: 'Assets' }));
+
+    expect(screen.getByTestId('accounts-list')).toBeInTheDocument();
   });
-
-  it('renders selected state', async () => {
-    const routeId = '/markets/ABC';
-    render(
-      <MemoryRouter initialEntries={[routeId]}>
-        <MockedWalletProvider>
-          <Sidebar
-            options={
-              <SidebarButton
-                view={ViewType.Deposit}
-                icon={VegaIconNames.DEPOSIT}
-                tooltip="Deposit"
-                routeId={'/markets/:marketId'}
-              />
-            }
-          />
-        </MockedWalletProvider>
-      </MemoryRouter>
-    );
-
-    const settingsButton = screen.getByTestId(ViewType.Settings);
-    const depositButton = screen.getByTestId(ViewType.Deposit);
-
-    // select settings first
-    await userEvent.click(settingsButton);
-    expect(settingsButton).toHaveClass('bg-vega-yellow text-black');
-
-    // switch to deposit
-    await userEvent.click(depositButton);
-
-    expect(settingsButton).not.toHaveClass('bg-vega-yellow text-black');
-    expect(depositButton).toHaveClass('bg-vega-yellow text-black');
-
-    // close order
-    await userEvent.click(depositButton);
-    expect(depositButton).not.toHaveClass('bg-vega-yellow text-black');
-  });
-});
-
-describe('SidebarContent', () => {
-  beforeEach(() => {
-    useSidebar.setState({ views: {} });
-  });
-
-  it('renders the correct content', () => {
-    const { container } = render(
-      <MemoryRouter initialEntries={['/markets/ABC']}>
-        <MockedWalletProvider>
-          <Routes>
-            <Route
-              path="/markets/:marketId"
-              id={AppRoutes.MARKET}
-              element={<SidebarContent />}
-            />
-          </Routes>
-        </MockedWalletProvider>
-      </MemoryRouter>
-    );
-
-    expect(container).toBeEmptyDOMElement();
-
-    act(() => {
-      useSidebar.setState({
-        views: { [AppRoutes.MARKET]: { type: ViewType.Transfer } },
-      });
-    });
-
-    expect(screen.getByTestId('transfer')).toBeInTheDocument();
-
-    act(() => {
-      useSidebar.setState({
-        views: { [AppRoutes.MARKET]: { type: ViewType.Deposit } },
-      });
-    });
-
-    expect(screen.getByTestId('deposit')).toBeInTheDocument();
-  });
-
-  it('closes sidebar if market id is required but not present', () => {
-    const { container } = render(
-      <MemoryRouter initialEntries={['/portfolio']}>
-        <MockedWalletProvider>
-          <Routes>
-            <Route
-              path="/portfolio"
-              id={AppRoutes.PORTFOLIO}
-              element={<SidebarContent />}
-            />
-          </Routes>
-        </MockedWalletProvider>
-      </MemoryRouter>
-    );
-
-    act(() => {
-      useSidebar.setState({
-        views: { [AppRoutes.PORTFOLIO]: { type: ViewType.Order } },
-      });
-    });
-
-    expect(container).toBeEmptyDOMElement();
-
-    act(() => {
-      useSidebar.setState({
-        views: { [AppRoutes.PORTFOLIO]: { type: ViewType.Settings } },
-      });
-    });
-
-    expect(screen.getByTestId('settings')).toBeInTheDocument();
-
-    act(() => {
-      useSidebar.setState({
-        views: { [AppRoutes.PORTFOLIO]: { type: ViewType.Info } },
-      });
-    });
-
-    expect(container).toBeEmptyDOMElement();
-  });
-});
-
-describe('SidebarButton', () => {
-  it.each([ViewType.Info, ViewType.Deposit])(
-    'runs given callback regardless of requested view (%s)',
-    async (view) => {
-      const onClick = jest.fn();
-      render(
-        <SidebarButton
-          icon={VegaIconNames.INFO}
-          tooltip="INFO"
-          onClick={onClick}
-          view={view}
-          routeId="current-route-id"
-        />
-      );
-
-      const btn = screen.getByTestId(view);
-      await userEvent.click(btn);
-
-      expect(onClick).toBeCalled();
-    }
-  );
 });

@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import { useCopyTimeout } from '@vegaprotocol/react-helpers';
 import {
   TradingButton as Button,
@@ -9,11 +10,10 @@ import { type Key } from '@vegaprotocol/wallet';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useCallback, useMemo } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
-import { ViewType, useSidebar } from '../sidebar';
-import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
 import { useT } from '../../lib/use-t';
 import { usePartyProfilesQuery } from '../vega-wallet-connect-button/__generated__/PartyProfiles';
 import { useProfileDialogStore } from '../../stores/profile-dialog-store';
+import { Links } from '../../lib/links';
 
 export const VegaWalletMenu = ({
   setMenu,
@@ -21,9 +21,8 @@ export const VegaWalletMenu = ({
   setMenu: (open: 'nav' | 'wallet' | null) => void;
 }) => {
   const t = useT();
+  const navigate = useNavigate();
   const { pubKey, pubKeys, selectPubKey, disconnect } = useVegaWallet();
-  const currentRouteId = useGetCurrentRouteId();
-  const setViews = useSidebar((store) => store.setViews);
 
   const { data } = usePartyProfilesQuery({
     variables: { partyIds: pubKeys.map((pk) => pk.publicKey) },
@@ -65,7 +64,7 @@ export const VegaWalletMenu = ({
       <div className="flex flex-col gap-2 m-4">
         <Button
           onClick={() => {
-            setViews({ type: ViewType.Transfer }, currentRouteId);
+            navigate(Links.TRANSFER());
             setMenu(null);
           }}
         >

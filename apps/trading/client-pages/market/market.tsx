@@ -115,8 +115,8 @@ export const MarketPage = () => {
 
   const pinnedAssets =
     data && isSpot(data.tradableInstrument.instrument.product)
-      ? [getAsset(data), getBaseAsset(data)]
-      : [getAsset(data)];
+      ? [getBaseAsset(data).id, getAsset(data).id]
+      : [getAsset(data).id];
 
   return (
     <>
