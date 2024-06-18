@@ -25,7 +25,7 @@ export const TopMarketList = ({
             key={market.id}
           >
             <span className="col-span-3 overflow-hidden">
-              <Tooltip description={market.tradableInstrument.instrument.code}>
+              <Tooltip description={market.tradableInstrument.instrument.name}>
                 <Link to={Links.MARKET(market.id)}>
                   <span className="flex items-center">
                     <span>
