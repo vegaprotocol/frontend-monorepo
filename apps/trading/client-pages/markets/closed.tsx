@@ -2,7 +2,7 @@ import type { CellClickedEvent } from 'ag-grid-community';
 import compact from 'lodash/compact';
 import { isAfter } from 'date-fns';
 import type { VegaValueFormatterParams } from '@vegaprotocol/datagrid';
-import { AgGrid, COL_DEFS } from '@vegaprotocol/datagrid';
+import { AgGrid, COL_DEFS, MarketProductPill } from '@vegaprotocol/datagrid';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { useMemo } from 'react';
 import type { Asset } from '@vegaprotocol/types';
@@ -16,8 +16,9 @@ import { closedMarketsProvider, getAsset } from '@vegaprotocol/markets';
 import type { DataSourceFilterFragment } from '@vegaprotocol/markets';
 import { useMarketClickHandler } from '../../lib/hooks/use-market-click-handler';
 import { SettlementDateCell } from './settlement-date-cell';
-import { MarketCodeCell } from './market-code-cell';
 import { useT } from '../../lib/use-t';
+import { EmblemByMarket } from '@vegaprotocol/emblem';
+import { useChainId } from '@vegaprotocol/wallet-react';
 
 type SettlementAsset = Pick<
   Asset,
@@ -110,10 +111,6 @@ export const Closed = () => {
   return <ClosedMarketsDataGrid rowData={rowData} error={error} />;
 };
 
-const components = {
-  MarketCodeCell,
-};
-
 const ClosedMarketsDataGrid = ({
   rowData,
   error,
@@ -123,6 +120,7 @@ const ClosedMarketsDataGrid = ({
 }) => {
   const t = useT();
   const handleOnSelect = useMarketClickHandler();
+  const { chainId } = useChainId();
 
   const colDefs = useMemo(() => {
     return [
@@ -130,7 +128,29 @@ const ClosedMarketsDataGrid = ({
         headerName: t('Market'),
         field: 'code',
         minWidth: 150,
-        cellRenderer: MarketCodeCell,
+        cellRenderer: ({
+          value,
+          data,
+        }: {
+          value: string | undefined; // market code
+          data: {
+            id: string;
+            productType: ProductType | undefined;
+            parentMarketID: string | null | undefined;
+            successorMarketID?: string | null | undefined;
+          };
+        }) => {
+          const productType = data?.productType;
+          return (
+            <span className="flex items-center gap-2 cursor-pointer">
+              <EmblemByMarket market={data.id} vegaChain={chainId} />
+              <span className="flex gap-1 items-center">
+                {value}
+                <MarketProductPill productType={productType} />
+              </span>
+            </span>
+          );
+        },
         resizable: true,
       },
       {
@@ -232,7 +252,6 @@ const ClosedMarketsDataGrid = ({
       domLayout="autoHeight"
       getRowId={({ data }) => data.id}
       overlayNoRowsTemplate={error ? error.message : t('No markets')}
-      components={components}
       rowHeight={60}
       headerHeight={40}
       autoSizeStrategy={{
