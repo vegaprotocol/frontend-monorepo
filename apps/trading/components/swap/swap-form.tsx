@@ -318,20 +318,16 @@ export const SwapForm = ({
           topAsset={topAsset}
           bottomAsset={bottomAsset}
         />
-        {(isReadOnly || !pubKey) && <NoWalletWarning isReadOnly={isReadOnly} />}
-        {topAsset && bottomAsset && (
+        {!pubKey && <NoWalletWarning isReadOnly={isReadOnly} />}
+        {pubKey && !isReadOnly && topAsset && (
           <Notification
             intent={Intent.Warning}
             testId="deal-ticket-error-message-zero-balance"
             message={
               <>
-                {t(
-                  'You need {{symbol1}} or {{symbol2}} in your wallet to trade in this market.',
-                  {
-                    symbol1: getAssetSymbol(topAsset),
-                    symbol2: getAssetSymbol(bottomAsset),
-                  }
-                )}
+                {t('You need {{symbol}} in your wallet to swap.', {
+                  symbol: getAssetSymbol(topAsset),
+                })}
               </>
             }
             buttonProps={{
