@@ -14,11 +14,11 @@ import {
   OnboardingStep,
   useGetOnboardingStep,
 } from '../../lib/hooks/use-get-onboarding-step';
-import { Links, Routes } from '../../lib/links';
+import { Links } from '../../lib/links';
 import { useGlobalStore } from '../../stores';
-import { useSidebar, ViewType } from '../sidebar';
 import { useT } from '../../lib/use-t';
 import { Trans } from 'react-i18next';
+import { ViewType, useSidebar } from '../sidebar';
 
 interface Props {
   lead?: string;
@@ -31,7 +31,7 @@ const GetStartedButton = ({ step }: { step: OnboardingStep }) => {
   const setDialog = useOnboardingStore((store) => store.setDialog);
   const risk = useOnboardingStore((store) => store.risk);
   const marketId = useGlobalStore((store) => store.marketId);
-  const setViews = useSidebar((store) => store.setViews);
+  const setView = useSidebar((store) => store.setView);
 
   const buttonProps = {
     size: 'small' as const,
@@ -71,7 +71,7 @@ const GetStartedButton = ({ step }: { step: OnboardingStep }) => {
         {...buttonProps}
         href={link}
         onClick={() => {
-          setViews({ type: ViewType.Order }, Routes.MARKET);
+          setView(ViewType.Trade);
           dismiss();
         }}
       >

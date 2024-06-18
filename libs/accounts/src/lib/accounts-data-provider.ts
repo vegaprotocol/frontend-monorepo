@@ -102,17 +102,11 @@ export interface AccountFields extends Account {
   breakdown?: AccountFields[];
 }
 
-// The total balance of these accounts will be used for the 'used' column in the
-// collateral table
-const USE_ACCOUNT_TYPES = [
-  AccountType.ACCOUNT_TYPE_ORDER_MARGIN,
-  AccountType.ACCOUNT_TYPE_MARGIN,
-  AccountType.ACCOUNT_TYPE_BOND,
+// Those accounts will be excluded from asset account aggregation
+export const IGNORE_ACCOUNT_TYPES = [
   AccountType.ACCOUNT_TYPE_FEES_INFRASTRUCTURE,
   AccountType.ACCOUNT_TYPE_FEES_LIQUIDITY,
   AccountType.ACCOUNT_TYPE_FEES_MAKER,
-  AccountType.ACCOUNT_TYPE_PENDING_TRANSFERS,
-  AccountType.ACCOUNT_TYPE_HOLDING,
 ];
 
 const getAssetIds = (data: Account[]) =>
@@ -132,22 +126,22 @@ const getAssetAccountAggregation = (
   accountList: Account[],
   assetId: string
 ): AccountFields => {
-  const accounts = accountList.filter((a) => a.asset.id === assetId);
+  const accounts = accountList.filter(
+    (a) => a.asset.id === assetId && !IGNORE_ACCOUNT_TYPES.includes(a.type)
+  );
   const available = getTotalBalance(
     accounts.filter((a) => a.type === AccountType.ACCOUNT_TYPE_GENERAL)
   );
 
-  const used = getTotalBalance(
-    accounts.filter((a) => USE_ACCOUNT_TYPES.includes(a.type))
-  );
+  const total = getTotalBalance(accounts);
 
   const balanceAccount: AccountFields = {
     asset: accounts[0].asset,
     balance: available.toString(),
     type: AccountType.ACCOUNT_TYPE_GENERAL,
     available: available.toString(),
-    used: used.toString(),
-    total: (available + used).toString(),
+    used: (total - available).toString(),
+    total: total.toString(),
   };
 
   const breakdown = accounts
@@ -158,7 +152,22 @@ const getAssetAccountAggregation = (
       available: balanceAccount.available,
       used: a.balance,
     }))
-    .filter((a) => a.used !== '0');
+    .filter((a) => a.used !== '0')
+    .sort((a, b) => {
+      if (a.type === b.type) {
+        if (!a.market || !b.market || a.market.id === b.market.id) {
+          return 0;
+        }
+        return a.market.tradableInstrument.instrument.code >
+          b.market.tradableInstrument.instrument.code
+          ? 1
+          : -1;
+      }
+      if (a.type !== b.type) {
+        return a.type > b.type ? 1 : -1;
+      }
+      return 0;
+    });
   return { ...balanceAccount, breakdown };
 };
 

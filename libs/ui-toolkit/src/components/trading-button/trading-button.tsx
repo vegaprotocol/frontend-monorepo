@@ -9,7 +9,7 @@ import { Intent } from '../../utils/intent';
 import { Link } from 'react-router-dom';
 
 type TradingButtonProps = {
-  size?: 'large' | 'medium' | 'small' | 'extra-small';
+  size?: 'large' | 'medium' | 'small' | 'extra-small' | 'custom';
   intent?: Intent | null;
   children?: ReactNode;
   icon?: ReactNode;
@@ -41,7 +41,12 @@ const getClassName = (
       'h-8': !subLabel && size === 'small',
       'px-3 text-sm': !subLabel && size === 'small',
       'h-6 px-2 text-xs': !subLabel && size === 'extra-small',
-      'px-4 text-base': !subLabel && size !== 'small',
+      'text-base': !subLabel && size !== 'small' && size !== 'custom',
+      'px-4':
+        !subLabel &&
+        size !== 'small' &&
+        size !== 'extra-small' &&
+        size !== 'custom',
       'flex-col items-center justify-center px-3 pt-2.5 pb-2': subLabel,
     },
     // colours

@@ -19,7 +19,7 @@ export const Popover = ({
 }: PopoverProps) => {
   return (
     <PopoverPrimitive.Root {...props}>
-      <PopoverPrimitive.Trigger data-testid="popover-trigger">
+      <PopoverPrimitive.Trigger data-testid="Settings">
         {trigger}
       </PopoverPrimitive.Trigger>
       <PopoverPrimitive.Portal>

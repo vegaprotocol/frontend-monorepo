@@ -1,12 +1,9 @@
-import { AccountBreakdownDialog } from '@vegaprotocol/accounts';
 import { getProductType, getQuoteName } from '@vegaprotocol/markets';
 import type { Market } from '@vegaprotocol/markets';
 import type { EstimatePositionQuery } from '@vegaprotocol/positions';
 import * as Schema from '@vegaprotocol/types';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 import { formatNumber, formatRange, formatValue } from '@vegaprotocol/utils';
-import { useVegaWallet } from '@vegaprotocol/wallet-react';
-import { useCallback, useState } from 'react';
 import { Trans } from 'react-i18next';
 import {
   LIQUIDATION_PRICE_ESTIMATE_TOOLTIP_TEXT,
@@ -36,14 +33,11 @@ export const DealTicketMarginDetails = ({
   orderMarginAccountBalance,
   asset,
   market,
-  onMarketClick,
   positionEstimate,
   side,
   slippage,
 }: DealTicketMarginDetailsProps) => {
   const t = useT();
-  const [breakdownDialog, setBreakdownDialog] = useState(false);
-  const { pubKey: partyId } = useVegaWallet();
   const liquidationEstimate = positionEstimate?.liquidation;
   const totalMarginAccountBalance =
     BigInt(marginAccountBalance || '0') +
@@ -107,11 +101,6 @@ export const DealTicketMarginDetails = ({
     );
   }
 
-  const onAccountBreakdownDialogClose = useCallback(
-    () => setBreakdownDialog(false),
-    []
-  );
-
   const quoteName = getQuoteName(market);
 
   return (
@@ -120,9 +109,6 @@ export const DealTicketMarginDetails = ({
       {productType !== 'Spot' && (
         <KeyValue
           label={t('Current margin')}
-          onClick={
-            generalAccountBalance ? () => setBreakdownDialog(true) : undefined
-          }
           value={formatValue(
             totalMarginAccountBalance.toString(),
             assetDecimals
@@ -196,14 +182,6 @@ export const DealTicketMarginDetails = ({
               </span>
             </>
           }
-        />
-      )}
-      {partyId && (
-        <AccountBreakdownDialog
-          assetId={breakdownDialog ? asset.id : undefined}
-          partyId={partyId}
-          onMarketClick={onMarketClick}
-          onClose={onAccountBreakdownDialogClose}
         />
       )}
     </div>

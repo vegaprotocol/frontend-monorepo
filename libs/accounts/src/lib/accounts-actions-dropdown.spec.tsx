@@ -4,10 +4,16 @@ import { AccountsActionsDropdown } from './accounts-actions-dropdown';
 import userEvent from '@testing-library/user-event';
 
 describe('AccountsActionsDropdown', () => {
-  let onClickBreakdown: jest.Mock;
+  let onClickDeposit: jest.Mock;
+  let onClickWithdraw: jest.Mock;
+  let onClickTransfer: jest.Mock;
+  let onClickSwap: jest.Mock;
 
   beforeEach(() => {
-    onClickBreakdown = jest.fn();
+    onClickDeposit = jest.fn();
+    onClickWithdraw = jest.fn();
+    onClickTransfer = jest.fn();
+    onClickSwap = jest.fn();
   });
 
   it('should render dropdown items correctly', async () => {
@@ -18,15 +24,18 @@ describe('AccountsActionsDropdown', () => {
       <AccountsActionsDropdown
         assetId="testAssetId"
         assetContractAddress="testAssetContractAddress"
-        onClickBreakdown={onClickBreakdown}
+        onClickDeposit={onClickDeposit}
+        onClickWithdraw={onClickWithdraw}
+        onClickTransfer={onClickTransfer}
+        onClickSwap={onClickSwap}
       />
     );
 
     await userEvent.click(screen.getByTestId('icon-kebab'));
 
-    expect(screen.getByTestId('breakdown')).toHaveTextContent(
-      'View usage breakdown'
-    );
+    expect(screen.getByTestId('deposit')).toHaveTextContent('Deposit');
+    expect(screen.getByTestId('withdraw')).toHaveTextContent('Withdraw');
+    expect(screen.getByTestId('transfer')).toHaveTextContent('Transfer');
     expect(screen.getByText('View asset details')).toBeInTheDocument();
     expect(screen.getByText('Copy asset ID')).toBeInTheDocument();
     expect(screen.getByText('View on Etherscan')).toBeInTheDocument();
@@ -37,12 +46,23 @@ describe('AccountsActionsDropdown', () => {
       <AccountsActionsDropdown
         assetId="testAssetId"
         assetContractAddress="testAssetContractAddress"
-        onClickBreakdown={onClickBreakdown}
+        onClickDeposit={onClickDeposit}
+        onClickWithdraw={onClickWithdraw}
+        onClickTransfer={onClickTransfer}
+        onClickSwap={onClickSwap}
       />
     );
 
     await userEvent.click(screen.getByTestId('icon-kebab'));
-    await userEvent.click(screen.getByTestId('breakdown'));
-    expect(onClickBreakdown).toHaveBeenCalledTimes(1);
+    await userEvent.click(screen.getByTestId('deposit'));
+    expect(onClickDeposit).toHaveBeenCalledTimes(1);
+
+    await userEvent.click(screen.getByTestId('icon-kebab'));
+    await userEvent.click(screen.getByTestId('withdraw'));
+    expect(onClickWithdraw).toHaveBeenCalledTimes(1);
+
+    await userEvent.click(screen.getByTestId('icon-kebab'));
+    await userEvent.click(screen.getByTestId('transfer'));
+    expect(onClickTransfer).toHaveBeenCalledTimes(1);
   });
 });

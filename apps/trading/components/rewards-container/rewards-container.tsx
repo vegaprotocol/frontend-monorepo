@@ -28,8 +28,6 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { formatPercentage } from '../fees-container/utils';
 import { addDecimalsFormatNumberQuantum } from '@vegaprotocol/utils';
-import { ViewType, useSidebar } from '../sidebar';
-import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
 import { RewardsHistoryContainer } from './rewards-history';
 import { useT } from '../../lib/use-t';
 import { useAssetsMapProvider } from '@vegaprotocol/assets';
@@ -37,6 +35,8 @@ import { ActiveRewards } from './active-rewards';
 import { ActivityStreak } from './streaks/activity-streaks';
 import { RewardHoarderBonus } from './streaks/reward-hoarder-bonus';
 import classNames from 'classnames';
+import { useNavigate } from 'react-router-dom';
+import { Links } from '../../lib/links';
 
 const ASSETS_WITH_INCORRECT_VESTING_REWARD_DATA = [
   'bf1e88d19db4b3ca0d1d5bdb73718a01686b18cf731ca26adedf3c8b83802bba', // USDT mainnet
@@ -325,10 +325,7 @@ export const RewardPot = ({
   vestingBalancesSummary,
 }: RewardPotProps) => {
   const t = useT();
-  // TODO: Opening the sidebar for the first time works, but then clicking on redeem
-  // for a different asset does not update the form
-  const currentRouteId = useGetCurrentRouteId();
-  const setViews = useSidebar((store) => store.setViews);
+  const navigate = useNavigate();
 
   // All vested rewards accounts
   const availableRewardAssetAccounts = accounts
@@ -445,12 +442,7 @@ export const RewardPot = ({
             {totalVestedRewardsByRewardAsset.isGreaterThan(0) && (
               <div>
                 <TradingButton
-                  onClick={() =>
-                    setViews(
-                      { type: ViewType.Transfer, assetId },
-                      currentRouteId
-                    )
-                  }
+                  onClick={() => navigate(Links.TRANSFER())}
                   size="small"
                   data-testid="redeem-rewards-button"
                 >

@@ -13,10 +13,7 @@ import {
   PositionsContainer,
   PositionsSettings,
 } from '../../components/positions-container';
-import {
-  AccountsContainer,
-  AccountsSettings,
-} from '../../components/accounts-container';
+import { AccountsContainer } from '../../components/accounts-container';
 import { LiquidityContainer } from '../../components/liquidity-container';
 import { FundingContainer } from '../../components/funding-container';
 import {
@@ -32,7 +29,6 @@ import {
   StopOrdersContainer,
   StopOrdersSettings,
 } from '../../components/stop-orders-container';
-import { AccountsMenu } from '../../components/accounts-menu';
 import { PositionsMenu } from '../../components/positions-menu';
 import { ChartContainer, ChartMenu } from '../../components/chart-container';
 import { OpenOrdersMenu } from '../../components/open-orders-menu';
@@ -90,10 +86,8 @@ export const TradingViews = {
     settings: StopOrdersSettings,
     menu: ShowCurrentMarketOnly,
   },
-  collateral: {
+  assets: {
     component: AccountsContainer,
-    menu: AccountsMenu,
-    settings: AccountsSettings,
   },
   fills: {
     component: FillsContainer,

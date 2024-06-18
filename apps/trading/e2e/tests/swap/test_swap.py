@@ -24,22 +24,18 @@ def setup_environment(vega, browser, request) -> Generator[Tuple[Page, VegaServi
         yield page, vega 
 
 
-
-
-#@pytest.mark.skip("WIP")
 def test_swap(setup_environment: Tuple[Page, VegaServiceNull]):
     page, vega = setup_environment  
     page.get_by_test_id("you-pay-dropdown-trigger").click()
     page.get_by_role("menuitem", name="USDT").click()
-
     #This is required to close the drop down
-    page.get_by_test_id("Collateral").click(force=True)
+    page.get_by_test_id("Deposits").click(force=True)
 
     page.get_by_test_id("you-receive-dropdown-trigger").click()
     page.get_by_role("menuitem", name="BTC").click()
 
     #This is required to close the drop down
-    page.get_by_test_id("Collateral").click(force=True)
+    page.get_by_test_id("Deposits").click(force=True)
     page.get_by_test_id("you-pay-amount-input").fill("1")
     page.get_by_test_id("swap-now-button").click()
     wait_for_toast_confirmation(page)
