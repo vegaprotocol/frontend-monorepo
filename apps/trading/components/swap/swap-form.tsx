@@ -26,7 +26,7 @@ import { AssetInput, SwapButton, PriceImpactInput } from './swap-form-elements';
 import BigNumber from 'bignumber.js';
 import { Links } from '../../lib/links';
 import type { Account } from '@vegaprotocol/accounts';
-import type { AssetFieldsFragment } from '@vegaprotocol/assets';
+import { getAssetSymbol, type AssetFieldsFragment } from '@vegaprotocol/assets';
 import {
   getBaseAsset,
   getQuoteAsset,
@@ -34,7 +34,7 @@ import {
   type MarketFieldsFragment,
 } from '@vegaprotocol/markets';
 import { useVegaTransactionStore } from '@vegaprotocol/web3';
-import { getNotionalSize } from '@vegaprotocol/deal-ticket';
+import { NoWalletWarning, getNotionalSize } from '@vegaprotocol/deal-ticket';
 import { usePrevious } from '@vegaprotocol/react-helpers';
 import { SpotData } from './spot-data';
 
@@ -68,6 +68,7 @@ export const SwapForm = ({
   accounts,
   assets,
   setCurrentMarketId,
+  onDeposit,
 }: {
   initialAssetId?: string;
   markets: MarketFieldsFragment[];
@@ -75,6 +76,7 @@ export const SwapForm = ({
   assets: AssetFieldsFragment[];
   accounts?: Account[] | null;
   setCurrentMarketId: (marketId: string) => void;
+  onDeposit: (assetId?: string) => void;
 }) => {
   const t = useT();
 
@@ -316,6 +318,32 @@ export const SwapForm = ({
           topAsset={topAsset}
           bottomAsset={bottomAsset}
         />
+        {(isReadOnly || !pubKey) && <NoWalletWarning isReadOnly={isReadOnly} />}
+        {topAsset && bottomAsset && (
+          <Notification
+            intent={Intent.Warning}
+            testId="deal-ticket-error-message-zero-balance"
+            message={
+              <>
+                {t(
+                  'You need {{symbol1}} or {{symbol2}} in your wallet to trade in this market.',
+                  {
+                    symbol1: getAssetSymbol(topAsset),
+                    symbol2: getAssetSymbol(bottomAsset),
+                  }
+                )}
+              </>
+            }
+            buttonProps={{
+              text: t(`Make a deposit`),
+              action: () => {
+                onDeposit(topAsset.id);
+              },
+              dataTestId: 'deal-ticket-deposit-dialog-button',
+              size: 'small',
+            }}
+          />
+        )}
       </div>
     </form>
   );

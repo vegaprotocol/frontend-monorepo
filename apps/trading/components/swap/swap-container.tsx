@@ -14,7 +14,13 @@ import { useDataProvider } from '@vegaprotocol/data-provider';
 import { SwapForm } from './swap-form';
 import { Loader, Splash } from '@vegaprotocol/ui-toolkit';
 
-export const SwapContainer = ({ assetId }: { assetId?: string }) => {
+export const SwapContainer = ({
+  assetId,
+  onDeposit,
+}: {
+  assetId?: string;
+  onDeposit: (assetId?: string) => void;
+}) => {
   const { pubKey } = useVegaWallet();
   const { data: markets, loading } = useMarketsMapProvider();
   const { data: accounts } = useAggregatedAccounts(pubKey);
@@ -56,6 +62,7 @@ export const SwapContainer = ({ assetId }: { assetId?: string }) => {
       // TODO: Update market queries and assets list query to use AssetFieldsFragment
       assets={spotAssets as AssetFieldsFragment[]}
       setCurrentMarketId={(marketId) => setMarketId(marketId)}
+      onDeposit={onDeposit}
     />
   );
 };
