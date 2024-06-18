@@ -242,7 +242,7 @@ const ClosedMarketsDataGrid = ({
         },
       },
     ];
-  }, [t]);
+  }, [chainId, t]);
 
   return (
     <AgGrid

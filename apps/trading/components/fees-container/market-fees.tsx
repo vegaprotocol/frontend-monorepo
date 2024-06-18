@@ -69,7 +69,7 @@ const useFeesTableColumnDefs = (): ColDef[] => {
           valueFormatter: ({ value }: { value: number }) => value + '%',
         },
       ] as ColDef[],
-    [t]
+    [chainId, t]
   );
 };
 
