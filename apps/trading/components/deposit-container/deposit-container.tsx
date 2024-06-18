@@ -8,10 +8,11 @@ import {
   useReadContracts,
   useDisconnect,
   useAccountEffect,
+  useStorageAt,
 } from 'wagmi';
 
 import { ConnectKitButton } from 'connectkit';
-import { erc20Abi } from 'viem';
+import { encodeAbiParameters, erc20Abi, keccak256 } from 'viem';
 import {
   type AssetFieldsFragment,
   useEnabledAssets,
@@ -371,7 +372,12 @@ const useAssetReadContracts = ({
     bridgeAddress = config?.collateral_bridge_contract.address as `0x${string}`;
   }
 
-  // TODO: get deposited amount via storage location
+  // TODO: get deposited amount
+  // const result = useStorageAt({
+  //   address: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',
+  //   slot: '0x0',
+  // });
+
   const { data, ...queryResult } = useReadContracts({
     contracts: [
       {
@@ -423,4 +429,31 @@ const UseButton = (props: ButtonHTMLAttributes<HTMLButtonElement>) => {
       className="absolute right-0 top-0 pt-0.5 ml-auto text-xs underline underline-offset-4"
     />
   );
+};
+
+const depositedAmountStorageLocation = (
+  account: `0x${string}`,
+  assetSource: `0x${string}`
+) => {
+  const innerHash = keccak256(
+    encodeAbiParameters(
+      [
+        { type: 'address', name: 'address' },
+        { type: 'uint256', name: 'amount' },
+      ],
+      [account, BigInt(4)]
+    )
+  );
+
+  const storageLocation = keccak256(
+    encodeAbiParameters(
+      [
+        { type: 'address', name: 'asset' },
+        { type: 'bytes32', name: 'innerHash' },
+      ],
+      [assetSource, innerHash]
+    )
+  );
+
+  return storageLocation;
 };
