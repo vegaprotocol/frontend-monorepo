@@ -1,4 +1,4 @@
-import { type ButtonHTMLAttributes } from 'react';
+import { type HTMLAttributes, type ButtonHTMLAttributes } from 'react';
 import { z } from 'zod';
 
 import {
@@ -31,7 +31,11 @@ import {
   TradingRichSelect,
   TradingOption,
 } from '@vegaprotocol/ui-toolkit';
-import { BRIDGE_ABI, prepend0x } from '@vegaprotocol/smart-contracts';
+import {
+  BRIDGE_ABI,
+  ERC20_ABI,
+  prepend0x,
+} from '@vegaprotocol/smart-contracts';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -53,6 +57,7 @@ import { VegaKeySelect } from './vega-key-select';
 import { AssetOption } from './asset-option';
 import { useEvmTx } from '../../lib/hooks/use-evm-tx';
 import BigNumber from 'bignumber.js';
+import { queryClient } from '../../lib/query-client';
 
 type Configs = Array<EthereumConfig | EVMBridgeConfig>;
 
@@ -137,7 +142,7 @@ const DepositForm = ({
   const asset = assets?.find((a) => a.id === assetId);
 
   // Data releating to the select asset, like balance on address, allowance
-  const { data } = useAssetReadContracts({ asset, configs });
+  const { data, queryKey } = useAssetReadContracts({ asset, configs });
 
   useAccountEffect({
     onConnect: ({ address }) => {
@@ -170,7 +175,7 @@ const DepositForm = ({
       throw new Error(`no bridge found for asset ${asset.id}`);
     }
 
-    writeContract(
+    await writeContract(
       {
         abi: BRIDGE_ABI,
         address: bridgeAddress,
@@ -184,6 +189,31 @@ const DepositForm = ({
       },
       config?.confirmations || 1
     );
+
+    queryClient.invalidateQueries({ queryKey });
+  };
+
+  const submitFaucet = async () => {
+    if (!asset) {
+      throw new Error('no asset selected');
+    }
+
+    if (asset.source.__typename !== 'ERC20') {
+      throw new Error('asset not erc20');
+    }
+
+    if (Number(asset.source.chainId) !== chainId) {
+      await switchChainAsync({ chainId: Number(asset.source.chainId) });
+    }
+
+    await writeContract({
+      abi: ERC20_ABI, // has the faucet method
+      address: asset.source.contractAddress as `0x${string}`,
+      functionName: 'faucet',
+      chainId: Number(asset.source.chainId),
+    });
+
+    queryClient.invalidateQueries({ queryKey });
   };
 
   return (
@@ -267,9 +297,14 @@ const DepositForm = ({
           </TradingInputError>
         )}
         {asset && (
-          <UseButton onClick={() => openAssetDialog(asset.id)}>
-            View asset details
-          </UseButton>
+          <SecondaryActionContainer>
+            <SecondaryAction onClick={() => openAssetDialog(asset.id)}>
+              View asset details
+            </SecondaryAction>
+            <SecondaryAction onClick={() => submitFaucet()}>
+              Get {asset.symbol}
+            </SecondaryAction>
+          </SecondaryActionContainer>
         )}
       </FormGroup>
       <FormGroup label="To (Vega key)" labelFor="toPubKey">
@@ -341,17 +376,19 @@ const DepositForm = ({
         )}
 
         {asset && data && data.balanceOf && (
-          <UseButton
-            onClick={() => {
-              const amount = toBigNum(
-                data.balanceOf || '0',
-                asset.decimals
-              ).toFixed(asset.decimals);
-              form.setValue('amount', amount, { shouldValidate: true });
-            }}
-          >
-            Use maximum
-          </UseButton>
+          <SecondaryActionContainer>
+            <SecondaryAction
+              onClick={() => {
+                const amount = toBigNum(
+                  data.balanceOf || '0',
+                  asset.decimals
+                ).toFixed(asset.decimals);
+                form.setValue('amount', amount, { shouldValidate: true });
+              }}
+            >
+              Use maximum
+            </SecondaryAction>
+          </SecondaryActionContainer>
         )}
       </FormGroup>
       <TradingButton
@@ -446,12 +483,18 @@ const useAssetReadContracts = ({
   };
 };
 
-const UseButton = (props: ButtonHTMLAttributes<HTMLButtonElement>) => {
+const SecondaryActionContainer = (props: HTMLAttributes<HTMLDivElement>) => {
+  return (
+    <div {...props} className="absolute right-0 top-0 pt-0.5 flex gap-2" />
+  );
+};
+
+const SecondaryAction = (props: ButtonHTMLAttributes<HTMLButtonElement>) => {
   return (
     <button
       {...props}
       type="button"
-      className="absolute right-0 top-0 pt-0.5 ml-auto text-xs underline underline-offset-4"
+      className="text-xs underline underline-offset-4"
     />
   );
 };

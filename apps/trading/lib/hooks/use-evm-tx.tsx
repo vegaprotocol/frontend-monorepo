@@ -5,6 +5,7 @@ import {
   writeContract,
   waitForTransactionReceipt,
 } from '@wagmi/core';
+import { type TransactionReceipt } from 'viem';
 
 import { Intent, truncateMiddle, useToasts } from '@vegaprotocol/ui-toolkit';
 import {
@@ -13,6 +14,7 @@ import {
   type DepositBusEventSubscriptionVariables,
 } from '@vegaprotocol/web3';
 import { DepositStatus } from '@vegaprotocol/types';
+
 import { wagmiConfig } from '../wagmi-config';
 import { getApolloClient } from '../apollo-client';
 
@@ -27,7 +29,7 @@ export const useEvmTx = create<{
   writeContract: (
     config: Parameters<typeof writeContract>[1],
     requiredConfirmations?: number
-  ) => void;
+  ) => Promise<TransactionReceipt | undefined>;
 }>()((set, get) => ({
   txs: new Map(),
   updateTx: (id, data) => {
@@ -99,44 +101,50 @@ export const useEvmTx = create<{
       return;
     }
 
-    await waitForTransactionReceipt(wagmiConfig, { hash });
+    const receipt = await waitForTransactionReceipt(wagmiConfig, { hash });
 
     if (requiredConfirmations > 1) {
       await waitForConfirmations(id, hash, requiredConfirmations);
     }
 
-    // TODO: ensure toast re-pops if its been closed, but only on confirmation
+    // If its a deposit, we need to wait until the deposit has arrived on the network
     if (config.functionName === 'deposit_asset') {
-      const client = getApolloClient();
-      // poll or subscribe to depoist events
-      const sub = client
-        .subscribe<
-          DepositBusEventSubscription,
-          DepositBusEventSubscriptionVariables
-        >({
-          query: DepositBusEventDocument,
-        })
-        .subscribe(({ data }) => {
-          if (!data?.busEvents?.length) return;
+      // TODO: ensure toast re-pops if its been closed, but only on confirmation
+      return new Promise((resolve) => {
+        const client = getApolloClient();
+        // poll or subscribe to depoist events
+        const sub = client
+          .subscribe<
+            DepositBusEventSubscription,
+            DepositBusEventSubscriptionVariables
+          >({
+            query: DepositBusEventDocument,
+          })
+          .subscribe(({ data }) => {
+            if (!data?.busEvents?.length) return;
 
-          const event = data.busEvents.find((e) => {
-            if (e.event.__typename === 'Deposit' && e.event.txHash === hash) {
-              return true;
+            const event = data.busEvents.find((e) => {
+              if (e.event.__typename === 'Deposit' && e.event.txHash === hash) {
+                return true;
+              }
+              return false;
+            });
+
+            if (event && event.event.__typename === 'Deposit') {
+              if (event.event.status === DepositStatus.STATUS_FINALIZED) {
+                toastStore.update(id, {
+                  intent: Intent.Success,
+                  content: <p>Deposit confirmed</p>,
+                });
+                sub.unsubscribe();
+                resolve(receipt);
+              }
             }
-            return false;
           });
-
-          if (event && event.event.__typename === 'Deposit') {
-            if (event.event.status === DepositStatus.STATUS_FINALIZED) {
-              toastStore.update(id, {
-                intent: Intent.Success,
-                content: <p>Deposit confirmed</p>,
-              });
-              sub.unsubscribe();
-            }
-          }
-        });
+      });
     }
+
+    return receipt;
   },
 }));
 
