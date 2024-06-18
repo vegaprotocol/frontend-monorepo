@@ -1,5 +1,14 @@
-import { useVegaTransactionStore } from '@vegaprotocol/web3';
-import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
+import {
+  type EVMBridgeConfig,
+  type EthereumConfig,
+  useEVMBridgeConfigs,
+  useEthereumConfig,
+  useVegaTransactionStore,
+} from '@vegaprotocol/web3';
+import {
+  useAssetDetailsDialogStore,
+  type AssetFieldsFragment,
+} from '@vegaprotocol/assets';
 import { z } from 'zod';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import {
@@ -7,7 +16,12 @@ import {
   useVegaWallet,
   useWallet,
 } from '@vegaprotocol/wallet-react';
-import { useAccount, useAccountEffect, useDisconnect } from 'wagmi';
+import {
+  useAccount,
+  useAccountEffect,
+  useDisconnect,
+  useReadContracts,
+} from 'wagmi';
 import {
   FormGroup,
   TradingSelect as Select,
@@ -18,6 +32,8 @@ import {
   Intent,
   TradingRichSelect,
   TradingOption,
+  KeyValueTable,
+  KeyValueTableRow,
 } from '@vegaprotocol/ui-toolkit';
 import { ConnectKitButton } from 'connectkit';
 import { useEffect, type ButtonHTMLAttributes } from 'react';
@@ -30,6 +46,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { type Account, useAccounts } from '@vegaprotocol/accounts';
 import { AccountType } from '@vegaprotocol/types';
 import { EmblemByAsset } from '@vegaprotocol/emblem';
+import { BRIDGE_ABI } from '@vegaprotocol/smart-contracts';
+
+type Configs = Array<EthereumConfig | EVMBridgeConfig>;
 
 export const WithdrawContainer = ({
   initialAssetId,
@@ -39,6 +58,14 @@ export const WithdrawContainer = ({
   const { pubKey } = useVegaWallet();
   const { data } = useAccounts(pubKey);
 
+  const { config } = useEthereumConfig();
+  const { configs } = useEVMBridgeConfigs();
+
+  if (!config) return null;
+  if (!configs?.length) return null;
+
+  const allConfigs = [config, ...configs];
+
   const accounts = data?.filter(
     (a) => a.type === AccountType.ACCOUNT_TYPE_GENERAL
   );
@@ -46,7 +73,11 @@ export const WithdrawContainer = ({
   const asset = account?.asset;
 
   return (
-    <WithdrawForm accounts={accounts || []} initialAssetId={asset?.id || ''} />
+    <WithdrawForm
+      accounts={accounts || []}
+      initialAssetId={asset?.id || ''}
+      configs={allConfigs}
+    />
   );
 };
 
@@ -69,9 +100,11 @@ type FormFields = z.infer<typeof withdrawSchema>;
 const WithdrawForm = ({
   accounts,
   initialAssetId,
+  configs,
 }: {
   accounts: Account[];
   initialAssetId: string;
+  configs: Configs;
 }) => {
   const vegaChainId = useWallet((store) => store.chainId);
   const { pubKey, pubKeys } = useVegaWallet();
@@ -94,6 +127,8 @@ const WithdrawForm = ({
 
   const assetId = useWatch({ name: 'assetId', control: form.control });
   const account = accounts?.find((a) => a.asset.id === assetId);
+
+  const { data } = useReadWithdrawalData({ asset: account?.asset, configs });
 
   const submitDeposit = (fields: FormFields) => {
     if (!account) {
@@ -262,6 +297,33 @@ const WithdrawForm = ({
           </TradingInputError>
         )}
       </FormGroup>
+      {data && account && (
+        <div className="pb-4">
+          <KeyValueTable>
+            <KeyValueTableRow>
+              <div>Balance available</div>
+              <div>
+                {addDecimalsFormatNumber(
+                  account.balance || '0',
+                  account.asset.decimals
+                )}
+              </div>
+            </KeyValueTableRow>
+            <KeyValueTableRow>
+              <div>Delay threshold</div>
+              <div>{data.threshold}</div>
+            </KeyValueTableRow>
+            <KeyValueTableRow>
+              <div>Delay time</div>
+              <div>{data.delay}</div>
+            </KeyValueTableRow>
+            <KeyValueTableRow>
+              <div>Gas</div>
+              <div>{/* TODO: get gas */}</div>
+            </KeyValueTableRow>
+          </KeyValueTable>
+        </div>
+      )}
       <FormGroup label="Amount" labelFor="amount">
         <Input {...form.register('amount')} />
         {form.formState.errors.amount?.message && (
@@ -269,7 +331,6 @@ const WithdrawForm = ({
             {form.formState.errors.amount.message}
           </TradingInputError>
         )}
-
         {account && (
           <UseButton
             onClick={() => {
@@ -304,4 +365,57 @@ const UseButton = (props: ButtonHTMLAttributes<HTMLButtonElement>) => {
       className="absolute right-0 top-0 pt-0.5 ml-auto text-xs underline underline-offset-4"
     />
   );
+};
+
+const useReadWithdrawalData = ({
+  asset,
+  configs,
+}: {
+  asset?: AssetFieldsFragment;
+  configs: Configs;
+}) => {
+  const config = configs.find((c) => {
+    if (
+      asset?.source.__typename === 'ERC20' &&
+      asset.source.chainId === c.chain_id
+    ) {
+      return true;
+    }
+    return false;
+  });
+
+  const assetAddress =
+    asset?.source.__typename === 'ERC20' &&
+    (asset.source.contractAddress as `0x${string}`);
+  const bridgeAddress = config?.collateral_bridge_contract
+    .address as `0x${string}`;
+
+  const enabled = Boolean(assetAddress && bridgeAddress);
+
+  const { data, ...queryResult } = useReadContracts({
+    contracts: [
+      {
+        abi: BRIDGE_ABI,
+        address: bridgeAddress,
+        functionName: 'default_withdraw_delay',
+      },
+      {
+        abi: BRIDGE_ABI,
+        address: bridgeAddress,
+        functionName: 'get_withdraw_threshold',
+        args: [assetAddress],
+      },
+    ],
+    query: {
+      enabled,
+    },
+  });
+
+  return {
+    ...queryResult,
+    data: {
+      delay: data && data[0].result?.toString(),
+      threshold: data && data[1].result?.toString(),
+    },
+  };
 };
