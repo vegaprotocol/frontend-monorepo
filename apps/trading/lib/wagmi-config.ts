@@ -1,12 +1,17 @@
 import { http, createConfig } from 'wagmi';
 import { mainnet, sepolia, arbitrum, arbitrumSepolia } from 'wagmi/chains';
 import { getDefaultConfig } from 'connectkit';
+import { ENV, Networks } from '@vegaprotocol/environment';
 
 import { TRANSPORTS } from '@vegaprotocol/web3';
 
 export const wagmiConfig = createConfig(
   getDefaultConfig({
-    chains: [mainnet, sepolia, arbitrum, arbitrumSepolia],
+    chains:
+      // Provide mainnet chains if on mainnet only
+      ENV.VEGA_ENV === Networks.MAINNET
+        ? [mainnet, arbitrum]
+        : [sepolia, arbitrumSepolia],
     transports: {
       [mainnet.id]: http(TRANSPORTS[mainnet.id]),
       [sepolia.id]: http(TRANSPORTS[sepolia.id]),
