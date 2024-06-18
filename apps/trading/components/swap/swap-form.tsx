@@ -299,7 +299,7 @@ export const SwapForm = ({
       {pubKey && !isReadOnly && topAsset && (
         <Notification
           intent={Intent.Warning}
-          testId="deal-ticket-error-message-zero-balance"
+          testId="balance-warning-swap-top-asset"
           message={
             <>
               {t('You need {{symbol}} in your wallet to swap.', {
