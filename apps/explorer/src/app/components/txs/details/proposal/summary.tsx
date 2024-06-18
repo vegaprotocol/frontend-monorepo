@@ -65,7 +65,7 @@ export const ProposalSummary = ({
     <div className="w-auto max-w-lg border-2 border-solid border-vega-light-100 dark:border-vega-dark-200 p-5">
       {id && <ProposalStatusIcon id={id} />}
       {rationale?.title && (
-        <h1 className="text-xl pb-1 break-all">{rationale.title}</h1>
+        <h1 className="text-xl pb-1 break-word">{rationale.title}</h1>
       )}
       {rationale?.description && (
         <div className="pt-2 text-sm leading-tight">
@@ -84,7 +84,7 @@ export const ProposalSummary = ({
           <h2 className="text-lg pb-1">{t('Changes')}</h2>
           <ol>
             {batch.map((change, index) => (
-              <li className="ml-4 list-decimal" key={`batch-${index}`}>
+              <li className="ml-4 list-decimal my-2" key={`batch-${index}`}>
                 <BatchItem item={change} />
               </li>
             ))}
