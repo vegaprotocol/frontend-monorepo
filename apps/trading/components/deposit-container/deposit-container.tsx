@@ -14,9 +14,9 @@ import {
 import { ConnectKitButton } from 'connectkit';
 import { encodeAbiParameters, erc20Abi, keccak256 } from 'viem';
 import {
-  type AssetFieldsFragment,
   useEnabledAssets,
   useAssetDetailsDialogStore,
+  type AssetERC20,
 } from '@vegaprotocol/assets';
 import {
   FormGroup,
@@ -52,6 +52,7 @@ import {
 import { VegaKeySelect } from './vega-key-select';
 import { AssetOption } from './asset-option';
 import { useEvmTx } from '../../lib/hooks/use-evm-tx';
+import BigNumber from 'bignumber.js';
 
 type Configs = Array<EthereumConfig | EVMBridgeConfig>;
 
@@ -73,7 +74,11 @@ export const DepositContainer = ({
 
   return (
     <DepositForm
-      assets={assets || []}
+      assets={
+        (assets || []).filter(
+          (a) => a.source.__typename === 'ERC20'
+        ) as AssetERC20[]
+      }
       initialAssetId={asset?.id || ''}
       configs={allConfigs}
     />
@@ -101,7 +106,7 @@ const DepositForm = ({
   initialAssetId,
   configs,
 }: {
-  assets: AssetFieldsFragment[];
+  assets: Array<AssetERC20>;
   initialAssetId: string;
   configs: Configs;
 }) => {
@@ -315,6 +320,14 @@ const DepositForm = ({
                 )}
               </div>
             </KeyValueTableRow>
+            <KeyValueTableRow>
+              <div>Deposited</div>
+              <div>
+                {formatNumberRounded(
+                  toBigNum(data.deposited || '0', asset.decimals)
+                )}
+              </div>
+            </KeyValueTableRow>
           </KeyValueTable>
         </div>
       )}
@@ -356,49 +369,50 @@ const useAssetReadContracts = ({
   asset,
   configs,
 }: {
-  asset?: AssetFieldsFragment;
+  asset?: AssetERC20;
   configs: Configs;
 }) => {
   const { address } = useAccount();
 
-  let assetAddress: `0x${string}`;
-  let assetChainId: string;
-  let bridgeAddress: `0x${string}` | undefined;
+  const assetAddress = asset?.source.contractAddress as `0x${string}`;
+  const assetChainId = asset?.source.chainId;
 
-  if (asset?.source.__typename === 'ERC20') {
-    assetAddress = asset.source.contractAddress as `0x${string}`;
-    assetChainId = asset.source.chainId;
-    const config = configs.find((c) => c.chain_id === assetChainId);
-    bridgeAddress = config?.collateral_bridge_contract.address as `0x${string}`;
-  }
+  const config = configs.find((c) => c.chain_id === assetChainId);
 
-  // TODO: get deposited amount
-  // const result = useStorageAt({
-  //   address: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',
-  //   slot: '0x0',
-  // });
+  const bridgeAddress = config?.collateral_bridge_contract
+    .address as `0x${string}`;
+
+  const enabled = Boolean(assetAddress && bridgeAddress && address);
+
+  const slot =
+    address && assetAddress
+      ? depositedAmountStorageLocation(address, assetAddress)
+      : undefined;
+
+  const { data: depositedData } = useStorageAt({
+    address: bridgeAddress as `0x${string}`,
+    slot,
+    query: { enabled },
+  });
 
   const { data, ...queryResult } = useReadContracts({
     contracts: [
       {
         abi: erc20Abi,
-        // @ts-ignore TODO: figure out types
         address: assetAddress,
         functionName: 'balanceOf',
         args: address && [address],
       },
       {
         abi: erc20Abi,
-        // @ts-ignore TODO: figure out types
         address: assetAddress,
         functionName: 'allowance',
-        args: address && bridgeAddress && [address, bridgeAddress],
+        args: address ? [address, bridgeAddress] : undefined,
       },
       {
         abi: BRIDGE_ABI,
         address: bridgeAddress,
         functionName: 'get_asset_deposit_lifetime_limit',
-        // @ts-ignore TODO: figure out types
         args: [assetAddress],
       },
       {
@@ -408,6 +422,9 @@ const useAssetReadContracts = ({
         args: [address],
       },
     ],
+    query: {
+      enabled,
+    },
   });
 
   return {
@@ -417,6 +434,9 @@ const useAssetReadContracts = ({
       allowance: data && data[1].result?.toString(),
       lifetimeLimit: data && data[2].result?.toString(),
       isExempt: data && data[3].result?.toString(),
+      deposited: depositedData
+        ? new BigNumber(depositedData, 16).toString()
+        : '0',
     },
   };
 };
@@ -437,20 +457,14 @@ const depositedAmountStorageLocation = (
 ) => {
   const innerHash = keccak256(
     encodeAbiParameters(
-      [
-        { type: 'address', name: 'address' },
-        { type: 'uint256', name: 'amount' },
-      ],
+      [{ type: 'address' }, { type: 'uint256' }],
       [account, BigInt(4)]
     )
   );
 
   const storageLocation = keccak256(
     encodeAbiParameters(
-      [
-        { type: 'address', name: 'asset' },
-        { type: 'bytes32', name: 'innerHash' },
-      ],
+      [{ type: 'address' }, { type: 'bytes32' }],
       [assetSource, innerHash]
     )
   );
