@@ -37,7 +37,9 @@ export const Sidebar = ({ pinnedAssets }: { pinnedAssets?: string[] }) => {
         onValueChange={(x: ViewType) => setView(x)}
       >
         <SidebarAccordionItem value={ViewType.Trade}>
-          <SidebarAccordionTrigger>{t('Trade')}</SidebarAccordionTrigger>
+          <SidebarAccordionTrigger data-testid="Trade">
+            {t('Trade')}
+          </SidebarAccordionTrigger>
           <SidebarAccordionContent>
             <div className="p-2">
               <ErrorBoundary feature="deal-ticket">
