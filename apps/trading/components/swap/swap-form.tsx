@@ -296,7 +296,7 @@ export const SwapForm = ({
         {t('Swap now')}
       </TradingButton>
       <GetStarted lead={t('Connect wallet')} />
-      {pubKey && !isReadOnly && topAsset && (
+      {pubKey && !isReadOnly && topAsset && !topAssetBalance && (
         <Notification
           intent={Intent.Warning}
           testId="balance-warning-swap-top-asset"
