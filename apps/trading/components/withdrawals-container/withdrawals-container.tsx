@@ -87,7 +87,7 @@ export const WithdrawalsTable = ({
   const { config } = useEthereumConfig();
   const { configs } = useEVMBridgeConfigs();
 
-  const writeContract = useEvmTx((store) => store.writeContract);
+  const { writeContract } = useEvmTx();
   const chainId = useChainId();
   const { switchChainAsync } = useSwitchChain();
 

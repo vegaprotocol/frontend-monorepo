@@ -17,6 +17,7 @@ type NotificationProps = {
     className?: string;
     dataTestId?: string;
     size?: ComponentProps<typeof TradingButton>['size'];
+    disabled?: boolean;
   };
   testId?: string;
 };
@@ -125,6 +126,7 @@ export const Notification = ({
             className={classNames(buttonProps.className)}
             data-testid={buttonProps.dataTestId}
             type="button"
+            disabled={buttonProps.disabled || false}
           >
             {buttonProps.text}
           </TradingButton>

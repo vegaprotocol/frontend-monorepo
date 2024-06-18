@@ -120,7 +120,7 @@ const SingleReadyToWithdrawToastContent = ({
 
   const chainId = useChainId();
   const { switchChainAsync } = useSwitchChain();
-  const writeContract = useEvmTx((store) => store.writeContract);
+  const { writeContract } = useEvmTx();
 
   const { data } = useWithdrawalApprovalQuery({
     variables: {

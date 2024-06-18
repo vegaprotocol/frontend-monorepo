@@ -1,5 +1,7 @@
 import { type HTMLAttributes, type ButtonHTMLAttributes } from 'react';
+import { type QueryKey } from '@tanstack/react-query';
 import { z } from 'zod';
+import BigNumber from 'bignumber.js';
 
 import {
   useSwitchChain,
@@ -30,6 +32,7 @@ import {
   KeyValueTableRow,
   TradingRichSelect,
   TradingOption,
+  Notification,
 } from '@vegaprotocol/ui-toolkit';
 import {
   BRIDGE_ABI,
@@ -42,6 +45,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import {
   addDecimalsFormatNumber,
+  formatNumber,
   formatNumberRounded,
   removeDecimal,
   toBigNum,
@@ -56,8 +60,8 @@ import {
 import { VegaKeySelect } from './vega-key-select';
 import { AssetOption } from './asset-option';
 import { useEvmTx } from '../../lib/hooks/use-evm-tx';
-import BigNumber from 'bignumber.js';
 import { queryClient } from '../../lib/query-client';
+import { useT } from '../../lib/use-t';
 
 type Configs = Array<EthereumConfig | EVMBridgeConfig>;
 
@@ -115,7 +119,8 @@ const DepositForm = ({
   initialAssetId: string;
   configs: Configs;
 }) => {
-  const writeContract = useEvmTx((store) => store.writeContract);
+  const { writeContract: writeFaucet } = useEvmTx();
+  const { writeContract: writeDeposit } = useEvmTx();
 
   const { pubKeys } = useVegaWallet();
   const { open: openAssetDialog } = useAssetDetailsDialogStore();
@@ -138,6 +143,7 @@ const DepositForm = ({
     },
   });
 
+  const amount = useWatch({ name: 'amount', control: form.control });
   const assetId = useWatch({ name: 'assetId', control: form.control });
   const asset = assets?.find((a) => a.id === assetId);
 
@@ -175,7 +181,7 @@ const DepositForm = ({
       throw new Error(`no bridge found for asset ${asset.id}`);
     }
 
-    await writeContract(
+    await writeDeposit(
       {
         abi: BRIDGE_ABI,
         address: bridgeAddress,
@@ -187,7 +193,12 @@ const DepositForm = ({
         ],
         chainId: Number(asset.source.chainId),
       },
-      config?.confirmations || 1
+      {
+        functionName: 'deposit_asset',
+        asset,
+        amount: fields.amount,
+        requiredConfirmations: config?.confirmations || 1,
+      }
     );
 
     queryClient.invalidateQueries({ queryKey });
@@ -206,7 +217,7 @@ const DepositForm = ({
       await switchChainAsync({ chainId: Number(asset.source.chainId) });
     }
 
-    await writeContract({
+    await writeFaucet({
       abi: ERC20_ABI, // has the faucet method
       address: asset.source.contractAddress as `0x${string}`,
       functionName: 'faucet',
@@ -391,6 +402,15 @@ const DepositForm = ({
           </SecondaryActionContainer>
         )}
       </FormGroup>
+      {asset && data && (
+        <Approval
+          asset={asset}
+          amount={amount}
+          data={data}
+          configs={configs}
+          queryKey={queryKey}
+        />
+      )}
       <TradingButton
         type="submit"
         size="large"
@@ -401,6 +421,123 @@ const DepositForm = ({
       </TradingButton>
     </form>
   );
+};
+
+const Approval = ({
+  asset,
+  amount: _amount,
+  data,
+  configs,
+  queryKey,
+}: {
+  asset: AssetERC20;
+  amount: string;
+  data: {
+    balanceOf: string;
+    allowance: string;
+    lifetimeLimit: string;
+    isExempt: string;
+  };
+  configs: Configs;
+  queryKey: QueryKey;
+}) => {
+  const t = useT();
+  const chainId = useChainId();
+  const { switchChainAsync } = useSwitchChain();
+
+  const allowance = toBigNum(data.allowance, asset.decimals);
+  const amount = toBigNum(_amount, 0); // amount is raw user input so no need for decimals
+
+  const { writeContract: writeApprove, data: dataApprove } = useEvmTx();
+
+  const submitApprove = async () => {
+    if (!asset) {
+      throw new Error('no asset selected');
+    }
+
+    if (asset.source.__typename !== 'ERC20') {
+      throw new Error('asset not erc20');
+    }
+
+    const assetAddress = asset.source.contractAddress as `0x${string}`;
+    const assetChainId = asset.source.chainId;
+    const config = configs.find((c) => c.chain_id === assetChainId);
+    const bridgeAddress = config?.collateral_bridge_contract
+      .address as `0x${string}`;
+
+    if (!bridgeAddress) {
+      throw new Error(`no bridge found for asset ${asset.id}`);
+    }
+
+    if (Number(asset.source.chainId) !== chainId) {
+      await switchChainAsync({ chainId: Number(asset.source.chainId) });
+    }
+    const maxUint256 =
+      '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
+
+    await writeApprove({
+      abi: erc20Abi,
+      address: assetAddress,
+      functionName: 'approve',
+      args: [bridgeAddress, maxUint256],
+      chainId: Number(asset.source.chainId),
+    });
+
+    queryClient.invalidateQueries({ queryKey });
+  };
+
+  if (allowance.isZero()) {
+    return (
+      <div className="mb-4">
+        <Notification
+          intent={Intent.Warning}
+          testId="approve-default"
+          message={t(
+            'Before you can make a deposit of your chosen asset, {{assetSymbol}}, you need to approve its use in your Ethereum wallet',
+            { assetSymbol: asset.symbol }
+          )}
+          buttonProps={{
+            size: 'small',
+            text: dataApprove?.isPending
+              ? 'Approval pending'
+              : t('Approve {{assetSymbol}}', {
+                  assetSymbol: asset.symbol,
+                }),
+            action: () => submitApprove(),
+            dataTestId: 'approve-submit',
+            disabled: dataApprove?.isPending,
+          }}
+        />
+      </div>
+    );
+  }
+
+  if (amount.isGreaterThan(allowance)) {
+    return (
+      <div className="mb-4">
+        <Notification
+          intent={Intent.Warning}
+          testId="approve-default"
+          message={t('Approve again to deposit more than {{allowance}}', {
+            allowance: formatNumber(allowance),
+          })}
+          buttonProps={{
+            size: 'small',
+            text: dataApprove?.isPending
+              ? 'Approval pending'
+              : t('Approve {{assetSymbol}}', {
+                  assetSymbol: asset.symbol,
+                }),
+            action: () => submitApprove(),
+            dataTestId: 'approve-submit',
+            disabled: dataApprove?.isPending,
+          }}
+        />
+      </div>
+    );
+  }
+
+  return null;
 };
 
 const useAssetReadContracts = ({
@@ -471,15 +608,17 @@ const useAssetReadContracts = ({
 
   return {
     ...queryResult,
-    data: {
-      balanceOf: data && data[0].result?.toString(),
-      allowance: data && data[1].result?.toString(),
-      lifetimeLimit: data && data[2].result?.toString(),
-      isExempt: data && data[3].result?.toString(),
-      deposited: depositedData
-        ? new BigNumber(depositedData, 16).toString()
-        : '0',
-    },
+    data: data
+      ? {
+          balanceOf: data[0].result ? data[0].result.toString() : '0',
+          allowance: data[1].result ? data[1].result?.toString() : '0',
+          lifetimeLimit: data[2].result ? data[2].result?.toString() : '0',
+          isExempt: data[3].result ? data[3].result?.toString() : '0',
+          deposited: depositedData
+            ? new BigNumber(depositedData, 16).toString()
+            : '0',
+        }
+      : undefined,
   };
 };
 

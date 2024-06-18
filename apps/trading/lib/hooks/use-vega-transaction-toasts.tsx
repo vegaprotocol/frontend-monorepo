@@ -722,7 +722,7 @@ const VegaTxCompleteToastsContent = ({ tx }: VegaTxToastContentProps) => {
   const t = useT();
   const chainId = useChainId();
   const { switchChainAsync } = useSwitchChain();
-  const writeContract = useEvmTx((store) => store.writeContract);
+  const { writeContract } = useEvmTx();
   const explorerLink = useLinks(DApp.Explorer);
   const { config } = useEthereumConfig();
   const { configs } = useEVMBridgeConfigs();

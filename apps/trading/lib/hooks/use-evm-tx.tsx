@@ -1,3 +1,4 @@
+import { useRef } from 'react';
 import uniqueId from 'lodash/uniqueId';
 import { create } from 'zustand';
 import {
@@ -7,7 +8,8 @@ import {
 } from '@wagmi/core';
 import { type TransactionReceipt } from 'viem';
 
-import { Intent, truncateMiddle, useToasts } from '@vegaprotocol/ui-toolkit';
+import { Intent, useToasts } from '@vegaprotocol/ui-toolkit';
+import { type AssetERC20 } from '@vegaprotocol/assets';
 import {
   DepositBusEventDocument,
   type DepositBusEventSubscription,
@@ -17,19 +19,50 @@ import { DepositStatus } from '@vegaprotocol/types';
 
 import { wagmiConfig } from '../wagmi-config';
 import { getApolloClient } from '../apollo-client';
+import * as Toasts from '../../components/toasts';
 
-type Tx = {
+type Config = Parameters<typeof writeContract>[1];
+
+type Status =
+  | 'idle'
+  | 'requested'
+  | 'pending'
+  | 'complete' // complete on foregin chain
+  | 'finalized'; // finalized on vega
+
+type TxMeta =
+  | {
+      functionName: 'deposit_asset';
+      asset: AssetERC20;
+      amount: string;
+      requiredConfirmations: number;
+    }
+  | {
+      functionName: 'withdraw_asset';
+      asset: AssetERC20;
+      amount: string;
+      requiredConfirmations: number;
+    };
+
+export type Tx = {
+  id: string;
   hash: string;
   confirmations: number;
+  receipt: TransactionReceipt | undefined;
+  status: Status;
+  isPending: boolean;
+  chainId: Config['chainId'];
+  meta: TxMeta | undefined;
 };
 
-export const useEvmTx = create<{
+export const useEvmTxStore = create<{
   txs: Map<string, Tx>;
   updateTx: (id: string, data: Partial<Tx>) => void;
   writeContract: (
-    config: Parameters<typeof writeContract>[1],
-    requiredConfirmations?: number
-  ) => Promise<TransactionReceipt | undefined>;
+    id: string,
+    config: Config,
+    meta?: TxMeta
+  ) => Promise<Tx | undefined>;
 }>()((set, get) => ({
   txs: new Map(),
   updateTx: (id, data) => {
@@ -37,32 +70,49 @@ export const useEvmTx = create<{
       const curr = prev.txs.get(id);
 
       if (curr) {
+        const newData = {
+          ...curr,
+          ...data,
+        };
+        newData.isPending =
+          newData.status === 'requested' ||
+          newData.status === 'pending' ||
+          newData.status === 'complete';
         return {
-          txs: new Map(prev.txs).set(id, {
-            ...curr,
-            ...data,
-          }),
+          txs: new Map(prev.txs).set(id, newData),
         };
       }
 
       return {
         txs: new Map(prev.txs).set(id, {
+          id,
           hash: '',
           confirmations: 0,
+          receipt: undefined,
+          status: 'idle',
+          isPending: false,
+          chainId: 1,
+          meta: undefined,
           ...data,
         }),
       };
     });
   },
-  writeContract: async (config, requiredConfirmations = 1) => {
-    const id = uniqueId();
+  writeContract: async (id, config, meta) => {
     const txStore = get();
     const toastStore = useToasts.getState();
+    const requiredConfirmations = meta?.requiredConfirmations || 1;
+
+    txStore.updateTx(id, {
+      status: 'requested',
+      chainId: config.chainId,
+      meta,
+    });
 
     toastStore.setToast({
       id,
       intent: Intent.Warning,
-      content: <p>Confirm in wallet</p>,
+      content: <Toasts.Requested />,
     });
 
     let hash: `0x${string}`;
@@ -70,10 +120,10 @@ export const useEvmTx = create<{
     try {
       hash = await writeContract(wagmiConfig, config);
 
-      txStore.updateTx(id, { hash });
+      txStore.updateTx(id, { hash, status: 'pending' });
 
       toastStore.update(id, {
-        content: <div>Hash: {truncateMiddle(hash)}</div>,
+        content: <Toasts.Pending tx={txStore.txs.get(id)} />,
       });
     } catch (err) {
       // TODO: create a type guard for this
@@ -84,35 +134,66 @@ export const useEvmTx = create<{
         typeof err.shortMessage === 'string'
       ) {
         toastStore.update(id, {
-          content: <p>{err.shortMessage}</p>,
+          content: <Toasts.Error message={err.shortMessage} />,
           intent: Intent.Danger,
         });
       } else {
         toastStore.update(id, {
-          content: <p>Something went wrong</p>,
+          content: <Toasts.Error />,
           intent: Intent.Danger,
         });
       }
 
-      return;
-    }
+      txStore.updateTx(id, { status: 'idle' });
 
-    if (!hash) {
       return;
     }
 
     const receipt = await waitForTransactionReceipt(wagmiConfig, { hash });
 
+    txStore.updateTx(id, { receipt });
+
+    // recursively get confirmations and sleep for 12 seconds before
+    // running again until required confirmations are met
+    const waitForConfirmations = async () => {
+      const c = await getTransactionConfirmations(wagmiConfig, {
+        hash,
+      });
+      const confirmations = Number(c);
+
+      txStore.updateTx(id, { confirmations });
+
+      toastStore.update(id, {
+        content: <Toasts.Pending tx={useEvmTxStore.getState().txs.get(id)} />,
+      });
+
+      if (confirmations >= requiredConfirmations) {
+        return;
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, 1000 * 12));
+
+      await waitForConfirmations();
+    };
+
     if (requiredConfirmations > 1) {
-      await waitForConfirmations(id, hash, requiredConfirmations);
+      await waitForConfirmations();
     }
 
     // If its a deposit, we need to wait until the deposit has arrived on the network
     if (config.functionName === 'deposit_asset') {
+      txStore.updateTx(id, { receipt, status: 'complete' });
+
+      toastStore.update(id, {
+        intent: Intent.Success,
+        content: <Toasts.FinalizedDeposit tx={txStore.txs.get(id)} />,
+      });
+
       // TODO: ensure toast re-pops if its been closed, but only on confirmation
+      const client = getApolloClient();
       return new Promise((resolve) => {
-        const client = getApolloClient();
-        // poll or subscribe to depoist events
+        // subscribe to depoist events and update the tx
+        // once the deposit is seen as finalized
         const sub = client
           .subscribe<
             DepositBusEventSubscription,
@@ -134,55 +215,39 @@ export const useEvmTx = create<{
               if (event.event.status === DepositStatus.STATUS_FINALIZED) {
                 toastStore.update(id, {
                   intent: Intent.Success,
-                  content: <p>Deposit confirmed</p>,
+                  content: <Toasts.FinalizedDeposit tx={txStore.txs.get(id)} />,
                 });
+                txStore.updateTx(id, { receipt, status: 'finalized' });
                 sub.unsubscribe();
-                resolve(receipt);
+                resolve(get().txs.get(id));
               }
             }
           });
       });
     }
 
-    return receipt;
+    txStore.updateTx(id, { receipt, status: 'finalized' });
+
+    toastStore.update(id, {
+      intent: Intent.Success,
+      content: <Toasts.FinalizedGeneric tx={txStore.txs.get(id)} />,
+    });
+
+    return get().txs.get(id);
   },
 }));
 
-const waitForConfirmations = (
-  id: string,
-  hash: `0x${string}`,
-  requiredConfirmations: number
-): Promise<bigint> => {
-  return new Promise((resolve, reject) => {
-    const txStore = useEvmTx.getState();
-    const toastStore = useToasts.getState();
-    // Start checking confirmations
-    const interval = setInterval(async () => {
-      try {
-        const confirmations = await getTransactionConfirmations(wagmiConfig, {
-          hash,
-        });
-
-        txStore.updateTx(id, {
-          confirmations: Number(confirmations),
-        });
-
-        toastStore.update(id, {
-          content: (
-            <p>
-              {Number(confirmations)}/{requiredConfirmations}
-            </p>
-          ),
-        });
-
-        if (confirmations >= BigInt(requiredConfirmations)) {
-          clearInterval(interval);
-          resolve(confirmations);
-        }
-      } catch {
-        clearInterval(interval);
-        reject();
-      }
-    }, 1000 * 12);
+export const useEvmTx = () => {
+  const idRef = useRef<string>(uniqueId());
+  const writeContract = useEvmTxStore((store) => store.writeContract);
+  const transaction = useEvmTxStore((store) => {
+    return store.txs.get(idRef.current);
   });
+
+  return {
+    writeContract: (config: Config, meta?: TxMeta) => {
+      return writeContract(idRef.current, config, meta);
+    },
+    data: transaction,
+  };
 };
