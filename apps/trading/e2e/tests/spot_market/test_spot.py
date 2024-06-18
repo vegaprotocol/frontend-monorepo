@@ -29,7 +29,8 @@ def page(vega, browser, request):
 @pytest.fixture(autouse=True)
 def after_each(page: Page):
     yield
-    opened_element = page.locator('h3[data-state="open"]')
+    opened_element = page
+      .locator('[data-testid="market-info-accordion"] h3[data-state="open"]')
     if opened_element.all() and opened_element.get_by_role("button").is_visible():
         opened_element.get_by_role("button").click()
 
