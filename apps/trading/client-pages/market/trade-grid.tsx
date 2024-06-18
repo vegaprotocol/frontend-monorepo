@@ -26,25 +26,30 @@ const MainGrid = memo(
   ({ market, pinnedAssets }: { market: Market; pinnedAssets?: string[] }) => {
     const featureFlags = useFeatureFlags((state) => state.flags);
     const t = useT();
-    const [sizes, handleOnLayoutChange] = usePaneLayout({ id: 'top' });
-    const [sizesMiddle, handleOnMiddleLayoutChange] = usePaneLayout({
-      id: 'middle-1',
+    const [rowSizes, handleRowSizes] = usePaneLayout({
+      id: 'row',
+    });
+    const [innerRowSizes, handleInnerRowChange] = usePaneLayout({
+      id: 'inner-row',
+    });
+    const [verticalSizes, handleVerticalChange] = usePaneLayout({
+      id: 'col',
     });
 
     return (
-      <ResizableGrid onChange={handleOnLayoutChange}>
-        <ResizableGridPanel>
-          <ResizableGrid vertical onChange={handleOnLayoutChange}>
+      <ResizableGrid onChange={handleRowSizes}>
+        <ResizableGridPanel preferredSize={rowSizes[0]}>
+          <ResizableGrid vertical onChange={handleVerticalChange}>
             <ResizableGridPanel
-              preferredSize={sizes[0]}
+              preferredSize={verticalSizes[0]}
               priority={LayoutPriority.High}
               minSize={200}
             >
-              <ResizableGrid onChange={handleOnMiddleLayoutChange}>
+              <ResizableGrid onChange={handleInnerRowChange}>
                 <ResizableGridPanel
                   priority={LayoutPriority.High}
                   minSize={200}
-                  preferredSize={sizesMiddle[0] || '75%'}
+                  preferredSize={innerRowSizes[0] || '75%'}
                 >
                   <TradeGridChild>
                     <Tabs storageKey="console-trade-grid-main-left">
@@ -86,7 +91,7 @@ const MainGrid = memo(
                 </ResizableGridPanel>
                 <ResizableGridPanel
                   minSize={200}
-                  preferredSize={sizesMiddle[1] || 275}
+                  preferredSize={innerRowSizes[1] || 275}
                 >
                   <TradeGridChild>
                     <Tabs storageKey="console-trade-grid-main-right">
@@ -112,7 +117,7 @@ const MainGrid = memo(
               </ResizableGrid>
             </ResizableGridPanel>
             <ResizableGridPanel
-              preferredSize={sizes[1] || '25%'}
+              preferredSize={verticalSizes[1] || '25%'}
               minSize={50}
               priority={LayoutPriority.Low}
             >
@@ -199,7 +204,11 @@ const MainGrid = memo(
             </ResizableGridPanel>
           </ResizableGrid>
         </ResizableGridPanel>
-        <ResizableGridPanel minSize={340} maxSize={600} preferredSize={340}>
+        <ResizableGridPanel
+          minSize={340}
+          maxSize={600}
+          preferredSize={rowSizes[1] || 340}
+        >
           <Sidebar pinnedAssets={pinnedAssets} />
         </ResizableGridPanel>
       </ResizableGrid>
