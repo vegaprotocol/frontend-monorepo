@@ -11,7 +11,6 @@ import {
   LocalStoragePersistTabs as Tabs,
   TinyScroll,
 } from '@vegaprotocol/ui-toolkit';
-import { DepositContainer } from '@vegaprotocol/deposits';
 import { TransferContainer } from '@vegaprotocol/accounts';
 
 import { AccountsContainer } from '../../components/accounts-container';
@@ -47,6 +46,7 @@ import { ErrorBoundary } from '../../components/error-boundary';
 import { usePageTitle } from '../../lib/hooks/use-page-title';
 import { Links } from '../../lib/links';
 
+import { DepositContainer } from '../../components/deposit-container';
 import { WithdrawContainer } from '../../components/withdraw-container';
 import { SwapContainer } from '../../components/swap/swap-container';
 import { SquidContainer } from '../../components/squid-container';
