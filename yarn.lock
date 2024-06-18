@@ -12393,10 +12393,10 @@ connect-history-api-fallback@^2.0.0:
   resolved "https://registry.yarnpkg.com/connect-history-api-fallback/-/connect-history-api-fallback-2.0.0.tgz#647264845251a0daf25b97ce87834cace0f5f1c8"
   integrity sha512-U73+6lQFmfiNPrYbXqr6kZ1i1wiRqXnp2nhMsINseWXO8lDau0LGEffJ8kQi4EjLZympVgRdvqjAgiZ1tgzDDA==
 
-connectkit@^1.8.0:
-  version "1.8.0"
-  resolved "https://registry.yarnpkg.com/connectkit/-/connectkit-1.8.0.tgz#c1a4850ac56d96552c661dcc81f121e4171b543c"
-  integrity sha512-3QxGpeBhU4k+cDiUZhhzNxDOx0g4tBa99M2LJP2QT+D2Cu/IkQK32qSe+Gn68mNAqrm+n5CYfqELUnXNL+QfAw==
+connectkit@^1.8.1:
+  version "1.8.1"
+  resolved "https://registry.yarnpkg.com/connectkit/-/connectkit-1.8.1.tgz#adb3507f328265896273cd8c7c13d71eaa035793"
+  integrity sha512-Zg/oInF2R3/OpXwN+aVgkX2FwWMG5daqdeDZ//u334mwE2mqsr15Gd3D75ThCqMMi70bDJln4+eT7YufiriKIw==
   dependencies:
     buffer "^6.0.3"
     detect-browser "^5.3.0"
