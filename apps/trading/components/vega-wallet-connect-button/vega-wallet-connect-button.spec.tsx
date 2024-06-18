@@ -11,6 +11,7 @@ import {
   PartyProfilesDocument,
   type PartyProfilesQuery,
 } from './__generated__/PartyProfiles';
+import { MemoryRouter } from 'react-router-dom';
 
 const key = { publicKey: '123456__123456', name: 'test' };
 const key2 = { publicKey: 'abcdef__abcdef', name: 'test2' };
