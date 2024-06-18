@@ -773,6 +773,7 @@ const VegaTxCompleteToastsContent = ({ tx }: VegaTxToastContentProps) => {
         tx.withdrawalApproval.nonce,
         tx.withdrawalApproval.signatures,
       ],
+      chainId: Number(asset.source.chainId),
     });
   };
 

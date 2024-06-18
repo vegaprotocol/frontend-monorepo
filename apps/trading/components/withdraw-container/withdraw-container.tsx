@@ -384,6 +384,8 @@ const useReadWithdrawalData = ({
     return false;
   });
 
+  const assetChainId =
+    asset?.source.__typename === 'ERC20' && asset.source.chainId;
   const assetAddress =
     asset?.source.__typename === 'ERC20' &&
     (asset.source.contractAddress as `0x${string}`);
@@ -398,12 +400,14 @@ const useReadWithdrawalData = ({
         abi: BRIDGE_ABI,
         address: bridgeAddress,
         functionName: 'default_withdraw_delay',
+        chainId: Number(assetChainId),
       },
       {
         abi: BRIDGE_ABI,
         address: bridgeAddress,
         functionName: 'get_withdraw_threshold',
         args: [assetAddress],
+        chainId: Number(assetChainId),
       },
     ],
     query: {

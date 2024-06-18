@@ -7,7 +7,7 @@ import { truncateMiddle } from '@vegaprotocol/ui-toolkit';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { useWallet } from '@vegaprotocol/wallet-react';
 import { erc20Abi } from 'viem';
-import { useAccount, useChainId, useReadContract } from 'wagmi';
+import { useAccount, useReadContract } from 'wagmi';
 
 export const AssetOption = ({ asset }: { asset: AssetFieldsFragment }) => {
   const vegaChainId = useWallet((store) => store.chainId);
@@ -33,29 +33,18 @@ export const AssetOption = ({ asset }: { asset: AssetFieldsFragment }) => {
 
 const ERC20 = ({ asset }: { asset: AssetERC20 }) => {
   const { address } = useAccount();
-  const chainId = useChainId();
-
-  const isSameChain = asset.source.chainId === chainId.toString();
 
   const { data } = useReadContract({
     abi: erc20Abi,
     address: asset.source.contractAddress as `0x${string}`,
     functionName: 'balanceOf',
     args: address && [address],
-    query: {
-      enabled: isSameChain,
-    },
+    chainId: Number(asset.source.chainId),
   });
 
-  let content: string;
-
-  if (!isSameChain) {
-    content = '-';
-  } else if (data) {
-    content = addDecimalsFormatNumber(data.toString(), asset.decimals);
-  } else {
-    content = '0';
-  }
-
-  return <div className="ml-auto self-end text-xs">{content}</div>;
+  return (
+    <div className="ml-auto self-end text-xs">
+      {data ? addDecimalsFormatNumber(data.toString(), asset.decimals) : '0'}
+    </div>
+  );
 };

@@ -180,8 +180,9 @@ const DepositForm = ({
           removeDecimal(fields.amount, asset.decimals),
           prepend0x(fields.toPubKey),
         ],
+        chainId: Number(asset.source.chainId),
       },
-      64
+      config?.confirmations || 1
     );
   };
 
@@ -402,24 +403,28 @@ const useAssetReadContracts = ({
         address: assetAddress,
         functionName: 'balanceOf',
         args: address && [address],
+        chainId: Number(assetChainId),
       },
       {
         abi: erc20Abi,
         address: assetAddress,
         functionName: 'allowance',
         args: address ? [address, bridgeAddress] : undefined,
+        chainId: Number(assetChainId),
       },
       {
         abi: BRIDGE_ABI,
         address: bridgeAddress,
         functionName: 'get_asset_deposit_lifetime_limit',
         args: [assetAddress],
+        chainId: Number(assetChainId),
       },
       {
         abi: BRIDGE_ABI,
         address: bridgeAddress,
         functionName: 'is_exempt_depositor',
         args: [address],
+        chainId: Number(assetChainId),
       },
     ],
     query: {

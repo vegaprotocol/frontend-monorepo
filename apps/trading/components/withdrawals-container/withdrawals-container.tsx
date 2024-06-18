@@ -136,6 +136,7 @@ export const WithdrawalsTable = ({
           approval.nonce,
           approval.signatures,
         ],
+        chainId: Number(asset.source.chainId),
       });
     },
     [chainId, switchChainAsync, config, configs, writeContract]

@@ -174,6 +174,7 @@ const SingleReadyToWithdrawToastContent = ({
         data.erc20WithdrawalApproval.nonce,
         data.erc20WithdrawalApproval.signatures,
       ],
+      chainId: Number(asset.source.chainId),
     });
   };
 
