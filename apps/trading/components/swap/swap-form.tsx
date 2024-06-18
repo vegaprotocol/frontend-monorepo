@@ -34,9 +34,10 @@ import {
   type MarketFieldsFragment,
 } from '@vegaprotocol/markets';
 import { useVegaTransactionStore } from '@vegaprotocol/web3';
-import { NoWalletWarning, getNotionalSize } from '@vegaprotocol/deal-ticket';
+import { getNotionalSize } from '@vegaprotocol/deal-ticket';
 import { usePrevious } from '@vegaprotocol/react-helpers';
 import { SpotData } from './spot-data';
+import { GetStarted } from '../../components/welcome-dialog/get-started';
 
 const getAssetBalance = (
   asset?: AssetFieldsFragment,
@@ -294,6 +295,28 @@ export const SwapForm = ({
       >
         {t('Swap now')}
       </TradingButton>
+      <GetStarted lead={t('Connect wallet')} />
+      {pubKey && !isReadOnly && topAsset && (
+        <Notification
+          intent={Intent.Warning}
+          testId="deal-ticket-error-message-zero-balance"
+          message={
+            <>
+              {t('You need {{symbol}} in your wallet to swap.', {
+                symbol: getAssetSymbol(topAsset),
+              })}
+            </>
+          }
+          buttonProps={{
+            text: t(`Make a deposit`),
+            action: () => {
+              onDeposit(topAsset.id);
+            },
+            dataTestId: 'deal-ticket-deposit-dialog-button',
+            size: 'small',
+          }}
+        />
+      )}
       <div className="flex flex-col gap-4">
         {!market?.id && bottomAsset && topAsset && (
           <Notification
@@ -318,28 +341,6 @@ export const SwapForm = ({
           topAsset={topAsset}
           bottomAsset={bottomAsset}
         />
-        {!pubKey && <NoWalletWarning isReadOnly={isReadOnly} />}
-        {pubKey && !isReadOnly && topAsset && (
-          <Notification
-            intent={Intent.Warning}
-            testId="deal-ticket-error-message-zero-balance"
-            message={
-              <>
-                {t('You need {{symbol}} in your wallet to swap.', {
-                  symbol: getAssetSymbol(topAsset),
-                })}
-              </>
-            }
-            buttonProps={{
-              text: t(`Make a deposit`),
-              action: () => {
-                onDeposit(topAsset.id);
-              },
-              dataTestId: 'deal-ticket-deposit-dialog-button',
-              size: 'small',
-            }}
-          />
-        )}
       </div>
     </form>
   );
