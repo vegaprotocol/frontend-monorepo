@@ -87,13 +87,9 @@ const MultipleReadyToWithdrawToastContent = ({ count }: { count: number }) => {
     <>
       <ToastHeading>{t('Withdrawals ready')}</ToastHeading>
       <p>
-        {t(
-          'completeWithdrawals',
-          'Complete these {{count}} withdrawals to release your funds',
-          {
-            count,
-          }
-        )}
+        {t('Complete these {{count}} withdrawals to release your funds', {
+          count,
+        })}
       </p>
       <p className="mt-2">
         <Button
