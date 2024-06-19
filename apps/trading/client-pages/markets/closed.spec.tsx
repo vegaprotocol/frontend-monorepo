@@ -266,6 +266,6 @@ describe('Closed', () => {
 
     expect(
       within(cell as HTMLElement).getByTestId('stack-cell-secondary')
-    ).toHaveTextContent('PRNT');
+    ).toHaveTextContent('ACTIVE MARKET');
   });
 });
