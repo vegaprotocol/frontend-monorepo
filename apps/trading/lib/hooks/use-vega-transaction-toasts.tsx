@@ -57,9 +57,7 @@ import * as Schema from '@vegaprotocol/types';
 import { Trans } from 'react-i18next';
 import { useT } from '../use-t';
 import { useReconnect } from '@vegaprotocol/wallet-react';
-import { useEvmTx } from './use-evm-tx';
-import { BRIDGE_ABI } from '@vegaprotocol/smart-contracts';
-import { useChainId, useSwitchChain } from 'wagmi';
+import { useEvmWithdraw } from './use-evm-withdraw';
 
 export const getRejectionReason = (
   order: OrderTxUpdateFieldsFragment,
@@ -709,7 +707,7 @@ const VegaTxPendingToastContent = ({ tx }: VegaTxToastContentProps) => {
             href={explorerLink(EXPLORER_TX.replace(':hash', tx.txHash))}
             rel="noreferrer"
           >
-            {t('View in block explorer')}
+            {t('View on explorer')}
           </ExternalLink>
         </p>
       )}
@@ -720,9 +718,7 @@ const VegaTxPendingToastContent = ({ tx }: VegaTxToastContentProps) => {
 
 const VegaTxCompleteToastsContent = ({ tx }: VegaTxToastContentProps) => {
   const t = useT();
-  const chainId = useChainId();
-  const { switchChainAsync } = useSwitchChain();
-  const { writeContract } = useEvmTx();
+  const { submitWithdraw } = useEvmWithdraw();
   const explorerLink = useLinks(DApp.Explorer);
   const { config } = useEthereumConfig();
   const { configs } = useEVMBridgeConfigs();
@@ -757,23 +753,10 @@ const VegaTxCompleteToastsContent = ({ tx }: VegaTxToastContentProps) => {
       throw new Error(`could not find evm config for asset ${asset.id}`);
     }
 
-    if (asset.source.chainId !== chainId.toString()) {
-      await switchChainAsync({ chainId: Number(asset.source.chainId) });
-    }
-
-    writeContract({
-      abi: BRIDGE_ABI,
-      address: cfg.collateral_bridge_contract.address as `0x${string}`,
-      functionName: 'withdraw_asset',
-      args: [
-        tx.withdrawalApproval.assetSource,
-        tx.withdrawalApproval.amount,
-        tx.withdrawalApproval.targetAddress,
-        tx.withdrawalApproval.creation,
-        tx.withdrawalApproval.nonce,
-        tx.withdrawalApproval.signatures,
-      ],
-      chainId: Number(asset.source.chainId),
+    submitWithdraw({
+      bridgeAddress: cfg.collateral_bridge_contract.address as `0x${string}`,
+      approval: tx.withdrawalApproval,
+      asset,
     });
   };
 
@@ -784,6 +767,7 @@ const VegaTxCompleteToastsContent = ({ tx }: VegaTxToastContentProps) => {
           data-testid="toast-complete-withdrawal"
           size="xs"
           onClick={submitWithdrawAsset}
+          disabled={!tx.withdrawalApproval || !tx.withdrawal}
         >
           {t('Complete withdrawal')}
         </Button>
@@ -800,7 +784,7 @@ const VegaTxCompleteToastsContent = ({ tx }: VegaTxToastContentProps) => {
             href={explorerLink(EXPLORER_TX.replace(':hash', tx.txHash))}
             rel="noreferrer"
           >
-            {t('View in block explorer')}
+            {t('View on explorer')}
           </ExternalLink>
         )}
         {/* TODO: Delay message - This withdrawal is subject to a delay. Come back in 5 days to complete the withdrawal. */}
@@ -863,7 +847,7 @@ const VegaTxCompleteToastsContent = ({ tx }: VegaTxToastContentProps) => {
               href={explorerLink(EXPLORER_TX.replace(':hash', tx.txHash))}
               rel="noreferrer"
             >
-              {t('View in block explorer')}
+              {t('View on explorer')}
             </ExternalLink>
           </p>
         )}
@@ -876,14 +860,14 @@ const VegaTxCompleteToastsContent = ({ tx }: VegaTxToastContentProps) => {
     return (
       <div>
         <h3 className="font-bold">{getOrderToastTitle(tx.order.status, t)}</h3>
-        <p>{t('Your order was rejected.')}</p>
+        <p>{t('Your order has been rejected')}</p>
         {tx.txHash && (
           <p className="break-all">
             <ExternalLink
               href={explorerLink(EXPLORER_TX.replace(':hash', tx.txHash))}
               rel="noreferrer"
             >
-              {t('View in block explorer')}
+              {t('View on explorer')}
             </ExternalLink>
           </p>
         )}
@@ -896,14 +880,14 @@ const VegaTxCompleteToastsContent = ({ tx }: VegaTxToastContentProps) => {
     return (
       <div>
         <h3 className="font-bold">{t('Transfer complete')}</h3>
-        <p>{t('Your transaction has been confirmed')}</p>
+        <p>{t('Your transaction has been confirmed.')}</p>
         {tx.txHash && (
           <p className="break-all">
             <ExternalLink
               href={explorerLink(EXPLORER_TX.replace(':hash', tx.txHash))}
               rel="noreferrer"
             >
-              {t('View in block explorer')}
+              {t('View on explorer')}
             </ExternalLink>
           </p>
         )}
@@ -919,14 +903,14 @@ const VegaTxCompleteToastsContent = ({ tx }: VegaTxToastContentProps) => {
           ? getOrderToastTitle(tx.order.status, t)
           : t('Confirmed')}
       </ToastHeading>
-      <p>{t('Your transaction has been confirmed')}</p>
+      <p>{t('Your transaction has been confirmed.')}</p>
       {tx.txHash && (
         <p className="break-all">
           <ExternalLink
             href={explorerLink(EXPLORER_TX.replace(':hash', tx.txHash))}
             rel="noreferrer"
           >
-            {t('View in block explorer')}
+            {t('View on explorer')}
           </ExternalLink>
         </p>
       )}
@@ -966,7 +950,7 @@ const VegaTxErrorToastContent = ({ tx }: VegaTxToastContentProps) => {
 
   if (noConnectionError) {
     label = t('Wallet disconnected');
-    errorMessage = t('The connection to your Vega Wallet has been lost.');
+    errorMessage = t('The connection to the Vega wallet has been lost.');
   }
 
   return (
@@ -976,7 +960,7 @@ const VegaTxErrorToastContent = ({ tx }: VegaTxToastContentProps) => {
       {errorData && <p className="first-letter:uppercase">{errorData}</p>}
       {noConnectionError && (
         <Button size="xs" onClick={reconnectVegaWallet}>
-          {t('Connect vega wallet')}
+          {t('Connect Vega wallet')}
         </Button>
       )}
       <VegaTransactionDetails tx={tx} />

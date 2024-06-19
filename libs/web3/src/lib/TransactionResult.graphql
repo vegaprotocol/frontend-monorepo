@@ -21,18 +21,7 @@ fragment WithdrawalBusEventFields on Withdrawal {
   status
   amount
   asset {
-    id
-    name
-    symbol
-    decimals
-    quantum
-    status
-    source {
-      ... on ERC20 {
-        contractAddress
-        chainId
-      }
-    }
+    ...AssetFields
   }
   createdTimestamp
   withdrawnTimestamp
@@ -88,18 +77,7 @@ fragment DepositBusEventFields on Deposit {
   status
   amount
   asset {
-    id
-    name
-    symbol
-    decimals
-    quantum
-    status
-    source {
-      ... on ERC20 {
-        contractAddress
-        chainId
-      }
-    }
+    ...AssetFields
   }
   createdTimestamp
   creditedTimestamp
