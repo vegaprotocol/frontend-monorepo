@@ -1,4 +1,5 @@
 import { type ReactNode, useState } from 'react';
+import { useT } from '../../lib/use-t';
 
 /** Switch between two render prop children for input or select */
 export const VegaKeySelect = ({
@@ -10,6 +11,7 @@ export const VegaKeySelect = ({
   select: ReactNode;
   onChange: () => void;
 }) => {
+  const t = useT();
   const [isInputVegaKey, setIsInputVegaKey] = useState(false);
 
   return (
@@ -23,7 +25,7 @@ export const VegaKeySelect = ({
         }}
         className="absolute right-0 top-0 pt-0.5 ml-auto text-xs underline underline-offset-4"
       >
-        {isInputVegaKey ? 'Select from wallet' : 'Enter manually'}
+        {isInputVegaKey ? t('Select from wallet') : t('Enter manually')}
       </button>
     </>
   );
