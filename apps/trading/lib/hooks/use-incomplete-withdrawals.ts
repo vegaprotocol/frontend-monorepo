@@ -55,10 +55,18 @@ export const useIncompleteWithdrawals = () => {
     skip: !pubKey || isReadOnly,
   });
 
-  const incompleteWithdrawals = data?.filter((w) => !w.txHash);
+  return getReadyAndDelayed(data || [], delays);
+};
+
+export const getReadyAndDelayed = (
+  withdrawals: WithdrawalFieldsFragment[],
+  delays: Map<number, bigint>
+) => {
+  const incompleteWithdrawals = withdrawals?.filter((w) => !w.txHash);
 
   const timestamped = incompleteWithdrawals?.map((w) => {
     let timestamp = undefined;
+
     const assetChainId =
       w.asset.source.__typename === 'ERC20'
         ? Number(w.asset.source.chainId)
@@ -68,6 +76,7 @@ export const useIncompleteWithdrawals = () => {
       w.asset.source.__typename === 'ERC20'
         ? w.asset.source.withdrawThreshold
         : undefined;
+
     const delay = assetChainId ? delays.get(assetChainId) : undefined;
 
     if (threshold && assetChainId && delay) {
@@ -93,5 +102,8 @@ export const useIncompleteWithdrawals = () => {
       (item) => item.timestamp != null && Date.now() >= item.timestamp
     ) || [];
 
-  return { ready, delayed };
+  return {
+    ready,
+    delayed,
+  };
 };
