@@ -128,7 +128,7 @@ def test_fees_page_discount_program_fees_by_market(
     page.goto("/#/fees")
     pinned = page.locator(PINNED_ROW_LOCATOR)
     row = page.locator(ROW_LOCATOR)
-    expect(pinned.locator(COL_CODE)).to_have_text("BTC:DAI_2023Futr")
+    expect(pinned.locator(COL_CODE)).to_have_text("BTC:DAI_2023FutrBTC:DAI_2023 ")
     expect(row.locator(COL_FEE_AFTER_DISCOUNT)).to_have_text("9.045%")
     expect(row.locator(COL_INFRA_FEE)).to_have_text("0.05%")
     expect(row.locator(COL_MAKER_FEE)).to_have_text("10%")

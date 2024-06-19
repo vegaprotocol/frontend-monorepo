@@ -58,7 +58,7 @@ class TestSettledMarket:
         row_selector = page.locator('div[row-index="0"]')
         # 6001-MARK-001
         expect(row_selector.locator('div[col-id="code"]')).to_have_text(
-            "BTC:DAI_2023Futr"
+            "BTC:DAI_2023FutrBTC:DAI_2023 "
         )
         # 6001-MARK-003
         expect(row_selector.locator('div[col-id="state"]')).to_have_text("Settled")
