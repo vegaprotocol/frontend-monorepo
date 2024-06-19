@@ -76,55 +76,57 @@ export const MarketsPage = () => {
 
   return (
     <ErrorBoundary feature="rewards">
-      <TinyScroll className="p-2">
-        <div className="grid auto-rows-min grid-cols-3 lg:grid-cols-5 xl:grid-cols-3 gap-3 p-3 xxl:px-[5.5rem]">
-          <div className="flex flex-col gap-2 col-span-full lg:col-span-1">
-            <Card key="24h-vol" className="flex grow">
-              <div className="flex flex-col h-full">
-                <h2 className="mb-3">{t('24h Volume')}</h2>
-                <div className="flex items-center gap-2 justify-between flex-wrap grow">
-                  {totalVolume24h && (
-                    <span className="text-xl">
-                      ${formatNumber(totalVolume24h, 2)}
-                    </span>
-                  )}
-                  <div>{totalVolumeSparkline}</div>
+      <TinyScroll>
+        <div className="xl:container mx-auto flex flex-col gap-4 p-4">
+          <div className="grid auto-rows-min grid-cols-3 lg:grid-cols-5 xl:grid-cols-3 gap-3">
+            <div className="flex flex-col gap-2 col-span-full lg:col-span-1">
+              <Card key="24h-vol" className="flex grow">
+                <div className="flex flex-col h-full">
+                  <h2 className="mb-3">{t('24h Volume')}</h2>
+                  <div className="flex items-center gap-2 justify-between flex-wrap grow">
+                    {totalVolume24h && (
+                      <span className="text-xl">
+                        ${formatNumber(totalVolume24h, 2)}
+                      </span>
+                    )}
+                    <div>{totalVolumeSparkline}</div>
+                  </div>
                 </div>
+              </Card>
+              <Card
+                key="tvl"
+                className="flex grow"
+                loading={tvlLoading || tvl.isNaN() || !!tvlError}
+                title={t('TVL')}
+              >
+                <div className="flex flex-col h-full">
+                  {tvl && (
+                    <span className="text-xl">${formatNumber(tvl, 2)}</span>
+                  )}
+                </div>
+              </Card>
+            </div>
+            <Card
+              key="top-gainers"
+              className="col-span-full lg:col-span-2 xl:col-span-1"
+            >
+              <div className="flex flex-col h-full gap-3">
+                <h2 className="mb-3">Top gainers</h2>
+                <TopMarketList markets={topGainers} />
               </div>
             </Card>
             <Card
-              key="tvl"
-              className="flex grow"
-              loading={tvlLoading || tvl.isNaN() || !!tvlError}
-              title={t('TVL')}
+              key="new-listings"
+              className="col-span-full lg:col-span-2 xl:col-span-1"
             >
-              <div className="flex flex-col h-full">
-                {tvl && (
-                  <span className="text-xl">${formatNumber(tvl, 2)}</span>
-                )}
+              <div className="flex flex-col h-full gap-3">
+                <h2 className="mb-3">New listings</h2>
+                <TopMarketList markets={newListings} />
               </div>
             </Card>
           </div>
-          <Card
-            key="top-gainers"
-            className="col-span-full lg:col-span-2 xl:col-span-1"
-          >
-            <div className="flex flex-col h-full gap-3">
-              <h2 className="mb-3">Top gainers</h2>
-              <TopMarketList markets={topGainers} />
-            </div>
-          </Card>
-          <Card
-            key="new-listings"
-            className="col-span-full lg:col-span-2 xl:col-span-1"
-          >
-            <div className="flex flex-col h-full gap-3">
-              <h2 className="mb-3">New listings</h2>
-              <TopMarketList markets={newListings} />
-            </div>
-          </Card>
+          <MarketTables activeMarkets={activeMarkets} error={error} />
         </div>
-        <MarketTables activeMarkets={activeMarkets} error={error} />
       </TinyScroll>
     </ErrorBoundary>
   );
@@ -158,7 +160,7 @@ export const MarketTables = ({
   };
 
   return (
-    <div className="pt-0.5 pb-3 px-1.5 xxl:px-[5.5rem]">
+    <div>
       <div className="flex gap-2">
         {Object.keys(marketTabs).map((key: string) => (
           <button

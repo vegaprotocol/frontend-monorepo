@@ -45,6 +45,7 @@ export const Pill = ({
   return (
     <span
       className={getClasses(size || 'md', intent || Intent.None, className)}
+      data-testid="pill"
       {...props}
     >
       {children}
