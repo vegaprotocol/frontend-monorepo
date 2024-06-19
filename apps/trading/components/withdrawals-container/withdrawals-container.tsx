@@ -1,5 +1,4 @@
-import { useChainId, useSwitchChain } from 'wagmi';
-import { useEffect, useRef, useState, useMemo, useCallback } from 'react';
+import { useEffect, useRef, useState, useMemo } from 'react';
 import classNames from 'classnames';
 
 import { type ColDef } from 'ag-grid-community';
@@ -34,7 +33,6 @@ import {
 } from '@vegaprotocol/datagrid';
 import { BlockExplorerLink } from '@vegaprotocol/environment';
 import {
-  type WithdrawalApprovalQuery,
   useEVMBridgeConfigs,
   useEthereumConfig,
   useWithdrawalApprovalDialog,
@@ -43,13 +41,12 @@ import {
 import * as Schema from '@vegaprotocol/types';
 import { getAssetSymbol } from '@vegaprotocol/assets';
 
-import { useT } from '../../lib/use-t';
 import {
   type TimestampedWithdrawals,
   useIncompleteWithdrawals,
 } from '../../lib/hooks/use-incomplete-withdrawals';
-import { useEvmTx } from '../../lib/hooks/use-evm-tx';
-import { BRIDGE_ABI } from '@vegaprotocol/smart-contracts';
+import { useT } from '../../lib/use-t';
+import { useEvmWithdraw } from '../../lib/hooks/use-evm-withdraw';
 
 export const WithdrawalsContainer = () => {
   const t = useT();
@@ -83,64 +80,6 @@ export const WithdrawalsTable = ({
   delayed?: TimestampedWithdrawals;
 }) => {
   const t = useT();
-
-  const { config } = useEthereumConfig();
-  const { configs } = useEVMBridgeConfigs();
-
-  const { writeContract } = useEvmTx();
-  const chainId = useChainId();
-  const { switchChainAsync } = useSwitchChain();
-
-  const completeWithdraw = useCallback(
-    async (
-      withdrawal: WithdrawalFieldsFragment,
-      approval?: WithdrawalApprovalQuery['erc20WithdrawalApproval']
-    ) => {
-      const asset = withdrawal.asset;
-
-      if (!approval) {
-        // TODO: Its possible the user could click before the approval data has loaded
-        return;
-      }
-
-      if (!config || !configs) {
-        throw new Error('no evm configs');
-      }
-
-      if (asset.source.__typename !== 'ERC20') {
-        throw new Error('asset not ERC20');
-      }
-
-      if (asset.source.chainId !== String(chainId)) {
-        await switchChainAsync({ chainId: Number(asset.source.chainId) });
-      }
-
-      const cfg = [config, ...configs].find(
-        // @ts-ignore erc20 already checked above
-        (c) => c.chain_id === asset.source.chainId
-      );
-
-      if (!cfg) {
-        throw new Error('could not determine bridge config');
-      }
-
-      writeContract({
-        abi: BRIDGE_ABI,
-        address: cfg.collateral_bridge_contract.address as `0x${string}`,
-        functionName: 'withdraw_asset',
-        args: [
-          approval.assetSource,
-          approval.amount,
-          approval.targetAddress,
-          approval.creation,
-          approval.nonce,
-          approval.signatures,
-        ],
-        chainId: Number(asset.source.chainId),
-      });
-    },
-    [chainId, switchChainAsync, config, configs, writeContract]
-  );
 
   const columnDefs = useMemo<ColDef[]>(
     () => [
@@ -225,9 +164,6 @@ export const WithdrawalsTable = ({
         headerName: t('Transaction'),
         field: 'txHash',
         type: 'rightAligned',
-        cellRendererParams: {
-          complete: completeWithdraw,
-        },
         cellRendererSelector: ({
           data,
         }: VegaICellRendererParams<WithdrawalFieldsFragment>) => ({
@@ -235,7 +171,7 @@ export const WithdrawalsTable = ({
         }),
       },
     ],
-    [completeWithdraw, delayed, ready, t]
+    [delayed, ready, t]
   );
   return (
     <AgGrid
@@ -256,13 +192,13 @@ export const WithdrawalsTable = ({
 
 export type CompleteCellProps = {
   data: WithdrawalFieldsFragment;
-  complete: (
-    withdrawal: WithdrawalFieldsFragment,
-    approval?: WithdrawalApprovalQuery['erc20WithdrawalApproval']
-  ) => void;
 };
-export const CompleteCell = ({ data, complete }: CompleteCellProps) => {
+export const CompleteCell = ({ data }: CompleteCellProps) => {
   const t = useT();
+
+  const { config } = useEthereumConfig();
+  const { configs } = useEVMBridgeConfigs();
+
   const open = useWithdrawalApprovalDialog((state) => state.open);
   const ref = useRef<HTMLButtonElement>(null);
 
@@ -272,6 +208,37 @@ export const CompleteCell = ({ data, complete }: CompleteCellProps) => {
     },
     skip: !data.id,
   });
+
+  const { submitWithdraw } = useEvmWithdraw();
+
+  const complete = async () => {
+    if (!data || !approvalData?.erc20WithdrawalApproval) {
+      return;
+    }
+
+    if (!config || !configs) {
+      throw new Error('no evm configs');
+    }
+
+    if (data.asset.source.__typename !== 'ERC20') {
+      throw new Error('asset not erc20');
+    }
+
+    const cfg = [config, ...configs].find(
+      // @ts-ignore asset checked for erc20 above
+      (c) => c.chain_id === data.asset.source.chainId
+    );
+
+    if (!cfg) {
+      throw new Error('could not determine bridge config');
+    }
+
+    submitWithdraw({
+      bridgeAddress: cfg.collateral_bridge_contract.address as `0x${string}`,
+      asset: data.asset,
+      approval: approvalData.erc20WithdrawalApproval,
+    });
+  };
 
   if (!data) {
     return null;
@@ -283,7 +250,8 @@ export const CompleteCell = ({ data, complete }: CompleteCellProps) => {
     <div className="flex justify-end gap-1">
       <ButtonLink
         data-testid="complete-withdrawal"
-        onClick={() => complete(data, approvalData?.erc20WithdrawalApproval)}
+        onClick={() => complete()}
+        disabled={!data || !approvalData?.erc20WithdrawalApproval}
       >
         {t('Complete withdrawal')}
       </ButtonLink>
