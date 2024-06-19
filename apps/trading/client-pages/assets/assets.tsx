@@ -12,16 +12,22 @@ export const Assets = () => {
   };
 
   return (
-    <div className="max-w-[500px] px-4 mx-auto my-8">
+    <div className="max-w-[600px] px-4 mx-auto my-8">
       <nav className="flex mb-6 text-lg gap-4">
         <NavLink to={Links.DEPOSIT()} className={linkClasses}>
           {t('Deposit')}
+        </NavLink>
+        <NavLink to={Links.DEPOSIT_CROSS_CHAIN()} className={linkClasses}>
+          {t('Cross chain deposit')}
         </NavLink>
         <NavLink to={Links.WITHDRAW()} className={linkClasses}>
           {t('Withdraw')}
         </NavLink>
         <NavLink to={Links.TRANSFER()} className={linkClasses}>
           {t('Transfer')}
+        </NavLink>
+        <NavLink to={Links.SWAP()} className={linkClasses}>
+          {t('Swap')}
         </NavLink>
       </nav>
       <div className="pt-4 border-t md:p-6 md:border md:rounded-xl border-default">

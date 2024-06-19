@@ -1,9 +1,21 @@
+import { compact } from 'lodash';
 import type { RouteObject } from 'react-router-dom';
 import { Navigate, Outlet, useRoutes } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
 import { Loader, Splash } from '@vegaprotocol/ui-toolkit';
+
+import { useFeatureFlags } from '@vegaprotocol/environment';
+import { useScreenDimensions } from '@vegaprotocol/react-helpers';
+
+import { useT } from '../lib/use-t';
+import { Routes as AppRoutes } from '../lib/links';
+
 import { LayoutWithSidebar, LayoutCentered } from '../components/layouts';
 import { LayoutWithSky } from '../components/layouts-inner';
+import { LiquidityHeader } from '../components/liquidity-header';
+import { MarketHeader, MobileMarketHeader } from '../components/market-header';
+
+// All pages
 import { Home } from '../client-pages/home';
 import { Liquidity } from '../client-pages/liquidity';
 import { MarketsPage } from '../client-pages/markets';
@@ -14,31 +26,26 @@ import { Withdraw } from '../client-pages/withdraw';
 import { Transfer } from '../client-pages/transfer';
 import { Fees } from '../client-pages/fees';
 import { Rewards } from '../client-pages/rewards';
-import { Routes as AppRoutes } from '../lib/links';
 import { Referrals } from '../client-pages/referrals/referrals';
 import { ReferralStatistics } from '../client-pages/referrals/referral-statistics';
 import { ApplyCodeFormContainer } from '../client-pages/referrals/apply-code-form';
 import { CreateCodeContainer } from '../client-pages/referrals/create-code-form';
 import { NotFound as ReferralNotFound } from '../client-pages/referrals/error-boundary';
-import { compact } from 'lodash';
-import { useFeatureFlags } from '@vegaprotocol/environment';
-import { LiquidityHeader } from '../components/liquidity-header';
-import { MarketHeader, MobileMarketHeader } from '../components/market-header';
 import {
   PortfolioMobileSidebar,
   PortfolioSidebar,
 } from '../client-pages/portfolio/portfolio-sidebar';
 import { LiquiditySidebar } from '../client-pages/liquidity/liquidity-sidebar';
 import { MarketsSidebar } from '../client-pages/markets/markets-sidebar';
-import { useT } from '../lib/use-t';
 import { CompetitionsHome } from '../client-pages/competitions/competitions-home';
 import { CompetitionsTeams } from '../client-pages/competitions/competitions-teams';
 import { CompetitionsTeam } from '../client-pages/competitions/competitions-team';
 import { CompetitionsCreateTeam } from '../client-pages/competitions/competitions-create-team';
 import { CompetitionsUpdateTeam } from '../client-pages/competitions/competitions-update-team';
 import { MarketsMobileSidebar } from '../client-pages/markets/mobile-buttons';
-import { useScreenDimensions } from '@vegaprotocol/react-helpers';
 import { CompetitionsGame } from '../client-pages/competitions/competitions-game';
+import { DepositCrossChain } from '../client-pages/deposit-cross-chain';
+import { Swap } from '../client-pages/swap';
 
 // These must remain dynamically imported as pennant cannot be compiled by Next.js due to ESM
 // Using dynamic imports is a workaround for this until pennant is published as ESM
@@ -212,6 +219,12 @@ export const useRouterConfig = (): RouteObject[] => {
             { path: 'deposit', element: <Deposit />, id: AppRoutes.DEPOSIT },
             { path: 'withdraw', element: <Withdraw />, id: AppRoutes.WITHDRAW },
             { path: 'transfer', element: <Transfer />, id: AppRoutes.TRANSFER },
+            {
+              path: 'deposit-cross-chain',
+              element: <DepositCrossChain />,
+              id: AppRoutes.DEPOSIT_CROSS_CHAIN,
+            },
+            { path: 'swap', element: <Swap />, id: AppRoutes.SWAP },
           ],
         },
       ],
