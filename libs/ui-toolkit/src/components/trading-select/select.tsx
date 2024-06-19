@@ -58,7 +58,7 @@ export const TradingRichSelect = forwardRef<
           data-testid={props['data-testid'] || 'rich-select-trigger'}
           className={classNames(
             defaultSelectElement(hasError, props.disabled),
-            'rounded-md pl-2 pr-11 text-left',
+            'rounded-md pl-2 pr-8 text-left',
             'max-w-full overflow-hidden break-all',
             '[&_>span]:flex-1'
           )}
@@ -110,15 +110,12 @@ export const TradingOption = forwardRef<
       'cursor-pointer outline-none ',
       'hover:bg-neutral-100 dark:hover:bg-neutral-800',
       'focus:bg-neutral-100 dark:focus:bg-neutral-800',
-      'data-selected:bg-vega-yellow dark:data-selected:text-black dark:data-selected:bg-vega-yellow',
+      'data-selected:bg-vega-blue-300 dark:data-selected:bg-vega-blue-600',
       className
     )}
     {...props}
     ref={forwardedRef}
   >
     <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
-    <SelectPrimitive.ItemIndicator className="absolute right-4 top-[50%] translate-y-[-50%]">
-      <VegaIcon name={VegaIconNames.TICK} />
-    </SelectPrimitive.ItemIndicator>
   </SelectPrimitive.Item>
 ));

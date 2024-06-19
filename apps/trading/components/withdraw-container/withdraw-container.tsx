@@ -15,16 +15,16 @@ import {
   useDialogStore,
   useVegaWallet,
   useWallet,
+  useDisconnect as useVegaDisconnect,
 } from '@vegaprotocol/wallet-react';
 import {
   useAccount,
   useAccountEffect,
-  useDisconnect,
+  useDisconnect as useEvmDisconnect,
   useReadContracts,
 } from 'wagmi';
 import {
   FormGroup,
-  TradingSelect as Select,
   TradingInput as Input,
   TradingButton,
   truncateMiddle,
@@ -39,6 +39,7 @@ import { ConnectKitButton } from 'connectkit';
 import { useEffect, type ButtonHTMLAttributes } from 'react';
 import {
   addDecimalsFormatNumber,
+  formatNumberRounded,
   removeDecimal,
   toBigNum,
 } from '@vegaprotocol/utils';
@@ -112,7 +113,9 @@ const WithdrawForm = ({
   const { open: openAssetDialog } = useAssetDetailsDialogStore();
 
   const { isConnected, address } = useAccount();
-  const { disconnect } = useDisconnect();
+  const { disconnect: evmDisconnect } = useEvmDisconnect();
+
+  const { disconnect: vegaDisconnect } = useVegaDisconnect();
 
   const createTransaction = useVegaTransactionStore((state) => state.create);
 
@@ -172,7 +175,7 @@ const WithdrawForm = ({
         <Controller
           name="fromPubKey"
           control={form.control}
-          render={({ field }) => {
+          render={() => {
             if (!pubKeys.length) {
               return (
                 <TradingButton
@@ -186,22 +189,21 @@ const WithdrawForm = ({
             }
 
             return (
-              <Select
-                name="fromPubKey"
-                value={field.value}
-                onChange={field.onChange}
-              >
-                <option value="" disabled>
-                  Please select
-                </option>
-                {pubKeys.map((k) => {
-                  return (
-                    <option key={k.publicKey} value={k.publicKey}>
-                      {k.name} {truncateMiddle(k.publicKey)}
-                    </option>
-                  );
-                })}
-              </Select>
+              <div className="flex flex-col items-start">
+                <input
+                  value={pubKey}
+                  readOnly
+                  className="appearance-none bg-transparent text-sm text-muted w-full focus:outline-none"
+                  tabIndex={-1}
+                />
+                <button
+                  type="button"
+                  className="underline underline-offset-4 text-xs"
+                  onClick={() => vegaDisconnect()}
+                >
+                  Disconnect
+                </button>
+              </div>
             );
           }}
         />
@@ -270,7 +272,9 @@ const WithdrawForm = ({
               <>
                 <Input value={field.value} onChange={field.onChange} />
                 {isConnected ? (
-                  <UseButton onClick={() => disconnect()}>Disconnect</UseButton>
+                  <UseButton onClick={() => evmDisconnect()}>
+                    Disconnect
+                  </UseButton>
                 ) : (
                   <ConnectKitButton.Custom>
                     {({ show }) => {
@@ -311,11 +315,15 @@ const WithdrawForm = ({
             </KeyValueTableRow>
             <KeyValueTableRow>
               <div>Delay threshold</div>
-              <div>{data.threshold}</div>
+              <div>
+                {formatNumberRounded(
+                  toBigNum(data.threshold || '0', account.asset.decimals)
+                )}
+              </div>
             </KeyValueTableRow>
             <KeyValueTableRow>
               <div>Delay time</div>
-              <div>{data.delay}</div>
+              <div>{data.delay}s</div>
             </KeyValueTableRow>
             <KeyValueTableRow>
               <div>Gas</div>
