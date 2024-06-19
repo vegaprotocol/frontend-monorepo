@@ -37,6 +37,7 @@ import {
   type EthereumConfig,
 } from '@vegaprotocol/web3';
 
+import { useT } from '../../lib/use-t';
 import { useEvmDeposit } from '../../lib/hooks/use-evm-deposit';
 import { useEvmFaucet } from '../../lib/hooks/use-evm-faucet';
 
@@ -101,6 +102,7 @@ const DepositForm = ({
   initialAssetId: string;
   configs: Configs;
 }) => {
+  const t = useT();
   const { pubKeys } = useVegaWallet();
   const { open: openAssetDialog } = useAssetDetailsDialogStore();
 
@@ -160,7 +162,7 @@ const DepositForm = ({
         });
       })}
     >
-      <FormGroup label="From address" labelFor="fromAddress">
+      <FormGroup label={t('From address')} labelFor="fromAddress">
         <Controller
           name="fromAddress"
           control={form.control}
@@ -179,7 +181,7 @@ const DepositForm = ({
                     className="underline underline-offset-4 text-xs"
                     onClick={() => disconnect()}
                   >
-                    Disconnect
+                    {t('Disconnect')}
                   </button>
                 </div>
               );
@@ -197,7 +199,7 @@ const DepositForm = ({
                       intent={Intent.Info}
                       size="small"
                     >
-                      Connect
+                      {t('Connect')}
                     </TradingButton>
                   );
                 }}
@@ -241,10 +243,10 @@ const DepositForm = ({
         {asset && (
           <SecondaryActionContainer>
             <SecondaryAction onClick={() => openAssetDialog(asset.id)}>
-              View asset details
+              {t('View asset details')}
             </SecondaryAction>
             <SecondaryAction onClick={() => submitFaucet({ asset })}>
-              Get {asset.symbol}
+              {t('Get {{symbol}}', { symbol: asset.symbol })}
             </SecondaryAction>
           </SecondaryActionContainer>
         )}
@@ -290,13 +292,13 @@ const DepositForm = ({
         <div className="pb-4">
           <KeyValueTable>
             <KeyValueTableRow>
-              <div>Balance available</div>
+              <div>{t('Balance available')}</div>
               <div>
                 {addDecimalsFormatNumber(data.balanceOf || '0', asset.decimals)}
               </div>
             </KeyValueTableRow>
             <KeyValueTableRow>
-              <div>Allowance</div>
+              <div>{t('Allowance')}</div>
               <div>
                 {formatNumberRounded(
                   toBigNum(data.allowance || '0', asset.decimals)
@@ -304,7 +306,7 @@ const DepositForm = ({
               </div>
             </KeyValueTableRow>
             <KeyValueTableRow>
-              <div>Deposit cap</div>
+              <div>{t('Deposit cap')}</div>
               <div>
                 {formatNumberRounded(
                   toBigNum(data.lifetimeLimit || '0', asset.decimals)
@@ -312,7 +314,7 @@ const DepositForm = ({
               </div>
             </KeyValueTableRow>
             <KeyValueTableRow>
-              <div>Deposited</div>
+              <div>{t('Deposited')}</div>
               <div>
                 {formatNumberRounded(
                   toBigNum(data.deposited || '0', asset.decimals)
@@ -341,7 +343,7 @@ const DepositForm = ({
                 form.setValue('amount', amount, { shouldValidate: true });
               }}
             >
-              Use maximum
+              {t('Use maximum')}
             </SecondaryAction>
           </SecondaryActionContainer>
         )}
@@ -361,7 +363,7 @@ const DepositForm = ({
         fill={true}
         intent={Intent.Secondary}
       >
-        Submit
+        {t('Submit')}
       </TradingButton>
     </form>
   );

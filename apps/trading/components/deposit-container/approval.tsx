@@ -58,7 +58,7 @@ export const Approval = ({
           buttonProps={{
             size: 'small',
             text: dataApprove?.isPending
-              ? 'Approval pending'
+              ? t('Approval pending')
               : t('Approve {{assetSymbol}}', {
                   assetSymbol: asset.symbol,
                 }),
@@ -83,7 +83,7 @@ export const Approval = ({
           buttonProps={{
             size: 'small',
             text: dataApprove?.isPending
-              ? 'Approval pending'
+              ? t('Approval pending')
               : t('Approve {{assetSymbol}}', {
                   assetSymbol: asset.symbol,
                 }),

@@ -4,7 +4,7 @@ import { useNetworkParams } from '@vegaprotocol/network-parameters';
 import type { ReactNode } from 'react';
 
 /**
- * Fetche necessary data on startup
+ * Fetch necessary data on startup
  */
 export const DataLoader = ({
   children,
@@ -15,13 +15,13 @@ export const DataLoader = ({
   failure: ReactNode;
   skeleton: ReactNode;
 }) => {
+  // Query all network params, markets and assets, for quick
+  // access throughout the app
   const {
     params,
     error: errorParams,
     loading: loadingParams,
   } = useNetworkParams();
-
-  // Query all markets and assets to ensure they are cached
   const { data: markets, error, loading } = useMarketsMapProvider();
   const {
     data: assets,

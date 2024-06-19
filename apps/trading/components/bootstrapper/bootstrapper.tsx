@@ -110,7 +110,7 @@ export const Bootstrapper = ({ children }: { children: ReactNode }) => {
     <WagmiProvider config={wagmiConfig}>
       <QueryClientProvider client={queryClient}>
         <ConnectKitProvider>
-          <ClientProvider
+          <GraphQLProvider
             skeleton={<Loading />}
             failure={<Failure reason={error} />}
           >
@@ -126,7 +126,7 @@ export const Bootstrapper = ({ children }: { children: ReactNode }) => {
                 />
               )}
             </DataLoader>
-          </ClientProvider>
+          </GraphQLProvider>
         </ConnectKitProvider>
       </QueryClientProvider>
     </WagmiProvider>
@@ -139,11 +139,7 @@ type ClientProviderProps = {
   failure?: ReactNode;
 };
 
-export function ClientProvider({
-  skeleton,
-  failure,
-  children,
-}: ClientProviderProps) {
+function GraphQLProvider({ skeleton, failure, children }: ClientProviderProps) {
   const { status, VEGA_URL } = useEnvironment((store) => ({
     status: store.status,
     VEGA_URL: store.VEGA_URL,
