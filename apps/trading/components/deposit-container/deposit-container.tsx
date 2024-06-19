@@ -11,7 +11,6 @@ import {
 } from '@vegaprotocol/assets';
 import {
   FormGroup,
-  TradingSelect as Select,
   TradingInput as Input,
   TradingButton,
   truncateMiddle,
@@ -252,20 +251,33 @@ const DepositForm = ({
       </FormGroup>
       <FormGroup label="To (Vega key)" labelFor="toPubKey">
         <VegaKeySelect
+          onChange={() => form.setValue('toPubKey', '')}
           input={<Input {...form.register('toPubKey')} />}
           select={
-            <Select {...form.register('toPubKey')}>
-              <option value="" disabled>
-                Please select
-              </option>
-              {pubKeys.map((k) => {
+            <Controller
+              name="toPubKey"
+              control={form.control}
+              render={({ field }) => {
                 return (
-                  <option key={k.publicKey} value={k.publicKey}>
-                    {k.name} {truncateMiddle(k.publicKey)}
-                  </option>
+                  <TradingRichSelect
+                    placeholder="Select public key"
+                    value={field.value}
+                    onValueChange={field.onChange}
+                  >
+                    {pubKeys.map((k) => {
+                      return (
+                        <TradingOption value={k.publicKey} key={k.publicKey}>
+                          <div className="text-xs">
+                            <div>{k.name}</div>
+                            <div>{truncateMiddle(k.publicKey)}</div>
+                          </div>
+                        </TradingOption>
+                      );
+                    })}
+                  </TradingRichSelect>
                 );
-              })}
-            </Select>
+              }}
+            />
           }
         />
         {form.formState.errors.toPubKey?.message && (
