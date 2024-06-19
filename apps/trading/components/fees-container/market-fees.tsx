@@ -50,7 +50,7 @@ const useFeesTableColumnDefs = (): ColDef[] => {
             );
           },
           pinned: 'left',
-          width: 246,
+          minWidth: 300,
         },
         {
           field: 'feeAfterDiscount',
@@ -138,6 +138,9 @@ export const MarketFees = ({
         domLayout="autoHeight"
         rowHeight={55}
         rowClass="cursor-pointer"
+        autoSizeStrategy={{
+          type: 'fitGridWidth',
+        }}
         onRowClicked={({ data, event }) => {
           navigateWithMeta(
             Links.MARKET(data.id),
