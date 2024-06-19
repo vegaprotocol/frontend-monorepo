@@ -186,11 +186,10 @@ export const useEvmTxStore = create<{
       updateTx(id, { receipt, status: 'complete' });
 
       toastStore.update(id, {
-        intent: Intent.Success,
-        content: <Toasts.FinalizedDeposit tx={getTx(id)} />,
+        intent: Intent.Warning,
+        content: <Toasts.ConfirmingDeposit tx={getTx(id)} />,
       });
 
-      // TODO: ensure toast re-pops if its been closed, but only on confirmation
       const client = getApolloClient();
       return new Promise((resolve) => {
         // subscribe to depoist events and update the tx
