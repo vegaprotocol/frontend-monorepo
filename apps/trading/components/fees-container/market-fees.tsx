@@ -50,7 +50,7 @@ const useFeesTableColumnDefs = (): ColDef[] => {
             );
           },
           pinned: 'left',
-          width: 246,
+          minWidth: 300,
         },
         {
           field: 'feeAfterDiscount',
