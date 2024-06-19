@@ -26,7 +26,7 @@ import { AssetInput, SwapButton, PriceImpactInput } from './swap-form-elements';
 import BigNumber from 'bignumber.js';
 import { Links } from '../../lib/links';
 import type { Account } from '@vegaprotocol/accounts';
-import type { AssetFieldsFragment } from '@vegaprotocol/assets';
+import { getAssetSymbol, type AssetFieldsFragment } from '@vegaprotocol/assets';
 import {
   getBaseAsset,
   getQuoteAsset,
@@ -37,6 +37,7 @@ import { useVegaTransactionStore } from '@vegaprotocol/web3';
 import { getNotionalSize } from '@vegaprotocol/deal-ticket';
 import { usePrevious } from '@vegaprotocol/react-helpers';
 import { SpotData } from './spot-data';
+import { GetStarted } from '../../components/welcome-dialog/get-started';
 
 const getAssetBalance = (
   asset?: AssetFieldsFragment,
@@ -68,6 +69,7 @@ export const SwapForm = ({
   accounts,
   assets,
   setCurrentMarketId,
+  onDeposit,
 }: {
   initialAssetId?: string;
   markets: MarketFieldsFragment[];
@@ -75,6 +77,7 @@ export const SwapForm = ({
   assets: AssetFieldsFragment[];
   accounts?: Account[] | null;
   setCurrentMarketId: (marketId: string) => void;
+  onDeposit: (assetId?: string) => void;
 }) => {
   const t = useT();
 
@@ -292,6 +295,28 @@ export const SwapForm = ({
       >
         {t('Swap now')}
       </TradingButton>
+      <GetStarted lead={t('Connect wallet')} />
+      {pubKey && !isReadOnly && topAsset && !topAssetBalance && (
+        <Notification
+          intent={Intent.Warning}
+          testId="balance-warning-swap-top-asset"
+          message={
+            <>
+              {t('You need {{symbol}} in your wallet to swap.', {
+                symbol: getAssetSymbol(topAsset),
+              })}
+            </>
+          }
+          buttonProps={{
+            text: t(`Make a deposit`),
+            action: () => {
+              onDeposit(topAsset.id);
+            },
+            dataTestId: 'deal-ticket-deposit-dialog-button',
+            size: 'small',
+          }}
+        />
+      )}
       <div className="flex flex-col gap-4">
         {!market?.id && bottomAsset && topAsset && (
           <Notification
