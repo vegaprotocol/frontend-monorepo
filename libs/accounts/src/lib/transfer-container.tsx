@@ -46,7 +46,7 @@ export const TransferContainer = ({ assetId }: { assetId?: string }) => {
   const sortedAccounts = sortBy(accounts, (a) => a.asset.symbol.toLowerCase());
 
   return (
-    <>
+    <div>
       <p className="mb-4 text-sm" data-testid="transfer-intro-text">
         {t('TRANSFER_FUNDS_TO_ANOTHER_VEGA_KEY', {
           defaultValue: 'Transfer funds to another Vega key.',
@@ -61,6 +61,6 @@ export const TransferContainer = ({ assetId }: { assetId?: string }) => {
         submitTransfer={transfer}
         accounts={sortedAccounts}
       />
-    </>
+    </div>
   );
 };

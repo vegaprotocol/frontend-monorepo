@@ -74,6 +74,8 @@
   "Confirming transaction...": "Confirming transaction...",
   "Connect wallet": "Connect wallet",
   "Connect your wallet to join the team": "Connect your wallet to join the team",
+  "Connect a <0>Vega wallet</0> to transfer.": "Connect a <0>Vega wallet</0> to transfer.",
+  "Connect a <0>Vega wallet</0> to withdraw.": "Connect a <0>Vega wallet</0> to withdraw.",
   "Connect": "Connect",
   "Connected node": "Connected node",
   "Console": "Console",
