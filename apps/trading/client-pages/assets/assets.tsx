@@ -18,7 +18,7 @@ export const Assets = () => {
           {t('Deposit')}
         </NavLink>
         <NavLink to={Links.DEPOSIT_CROSS_CHAIN()} className={linkClasses}>
-          {t('Cross chain deposit')}
+          {t('Deposit (cross chain)')}
         </NavLink>
         <NavLink to={Links.WITHDRAW()} className={linkClasses}>
           {t('Withdraw')}
