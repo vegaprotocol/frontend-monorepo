@@ -57,7 +57,6 @@ export type Tx = {
 
 export const useEvmTxStore = create<{
   txs: Map<string, Tx>;
-  updateTx: (id: string, data: Partial<Tx>) => void;
   writeContract: (
     id: string,
     config: Config,
@@ -65,45 +64,47 @@ export const useEvmTxStore = create<{
   ) => Promise<Tx | undefined>;
 }>()((set, get) => ({
   txs: new Map(),
-  updateTx: (id, data) => {
-    set((prev) => {
-      const curr = prev.txs.get(id);
-
-      if (curr) {
-        const newData = {
-          ...curr,
-          ...data,
-        };
-        newData.isPending =
-          newData.status === 'requested' ||
-          newData.status === 'pending' ||
-          newData.status === 'complete';
-        return {
-          txs: new Map(prev.txs).set(id, newData),
-        };
-      }
-
-      return {
-        txs: new Map(prev.txs).set(id, {
-          id,
-          hash: '',
-          confirmations: 0,
-          receipt: undefined,
-          status: 'idle',
-          isPending: false,
-          chainId: 1,
-          meta: undefined,
-          ...data,
-        }),
-      };
-    });
-  },
   writeContract: async (id, config, meta) => {
-    const txStore = get();
+    const updateTx = (id: string, data: Partial<Tx>) => {
+      set((prev) => {
+        const curr = prev.txs.get(id);
+
+        if (curr) {
+          const newData = {
+            ...curr,
+            ...data,
+          };
+          newData.isPending =
+            newData.status === 'requested' ||
+            newData.status === 'pending' ||
+            newData.status === 'complete';
+          return {
+            txs: new Map(prev.txs).set(id, newData),
+          };
+        }
+
+        return {
+          txs: new Map(prev.txs).set(id, {
+            id,
+            hash: '',
+            confirmations: 0,
+            receipt: undefined,
+            status: 'idle',
+            isPending: false,
+            chainId: 1,
+            meta: undefined,
+            ...data,
+          }),
+        };
+      });
+    };
+
+    const getTx = (id: string) => get().txs.get(id);
+
     const toastStore = useToasts.getState();
     const requiredConfirmations = meta?.requiredConfirmations || 1;
 
-    txStore.updateTx(id, {
+    updateTx(id, {
       status: 'requested',
       chainId: config.chainId,
       meta,
@@ -120,10 +121,10 @@ export const useEvmTxStore = create<{
     try {
       hash = await writeContract(wagmiConfig, config);
 
-      txStore.updateTx(id, { hash, status: 'pending' });
+      updateTx(id, { hash, status: 'pending' });
 
       toastStore.update(id, {
-        content: <Toasts.Pending tx={txStore.txs.get(id)} />,
+        content: <Toasts.Pending tx={getTx(id)} />,
       });
     } catch (err) {
       // TODO: create a type guard for this
@@ -144,14 +145,14 @@ export const useEvmTxStore = create<{
         });
       }
 
-      txStore.updateTx(id, { status: 'idle' });
+      updateTx(id, { status: 'idle' });
 
       return;
     }
 
     const receipt = await waitForTransactionReceipt(wagmiConfig, { hash });
 
-    txStore.updateTx(id, { receipt });
+    updateTx(id, { receipt });
 
     // recursively get confirmations and sleep for 12 seconds before
     // running again until required confirmations are met
@@ -161,10 +162,10 @@ export const useEvmTxStore = create<{
       });
       const confirmations = Number(c);
 
-      txStore.updateTx(id, { confirmations });
+      updateTx(id, { confirmations });
 
       toastStore.update(id, {
-        content: <Toasts.Pending tx={useEvmTxStore.getState().txs.get(id)} />,
+        content: <Toasts.Pending tx={getTx(id)} />,
       });
 
       if (confirmations >= requiredConfirmations) {
@@ -182,11 +183,11 @@ export const useEvmTxStore = create<{
 
     // If its a deposit, we need to wait until the deposit has arrived on the network
     if (config.functionName === 'deposit_asset') {
-      txStore.updateTx(id, { receipt, status: 'complete' });
+      updateTx(id, { receipt, status: 'complete' });
 
       toastStore.update(id, {
         intent: Intent.Success,
-        content: <Toasts.FinalizedDeposit tx={txStore.txs.get(id)} />,
+        content: <Toasts.FinalizedDeposit tx={getTx(id)} />,
       });
 
       // TODO: ensure toast re-pops if its been closed, but only on confirmation
@@ -215,9 +216,9 @@ export const useEvmTxStore = create<{
               if (event.event.status === DepositStatus.STATUS_FINALIZED) {
                 toastStore.update(id, {
                   intent: Intent.Success,
-                  content: <Toasts.FinalizedDeposit tx={txStore.txs.get(id)} />,
+                  content: <Toasts.FinalizedDeposit tx={getTx(id)} />,
                 });
-                txStore.updateTx(id, { receipt, status: 'finalized' });
+                updateTx(id, { receipt, status: 'finalized' });
                 sub.unsubscribe();
                 resolve(get().txs.get(id));
               }
@@ -226,11 +227,11 @@ export const useEvmTxStore = create<{
       });
     }
 
-    txStore.updateTx(id, { receipt, status: 'finalized' });
+    updateTx(id, { receipt, status: 'finalized' });
 
     toastStore.update(id, {
       intent: Intent.Success,
-      content: <Toasts.FinalizedGeneric tx={txStore.txs.get(id)} />,
+      content: <Toasts.FinalizedGeneric tx={getTx(id)} />,
     });
 
     return get().txs.get(id);
