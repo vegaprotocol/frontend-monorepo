@@ -49,6 +49,8 @@ import { AccountType } from '@vegaprotocol/types';
 import { EmblemByAsset } from '@vegaprotocol/emblem';
 import { BRIDGE_ABI } from '@vegaprotocol/smart-contracts';
 
+import { useT } from '../../lib/use-t';
+
 type Configs = Array<EthereumConfig | EVMBridgeConfig>;
 
 export const WithdrawContainer = ({
@@ -107,6 +109,8 @@ const WithdrawForm = ({
   initialAssetId: string;
   configs: Configs;
 }) => {
+  const t = useT();
+
   const vegaChainId = useWallet((store) => store.chainId);
   const { pubKey, pubKeys } = useVegaWallet();
   const openVegaWalletDialog = useDialogStore((store) => store.open);
@@ -171,7 +175,7 @@ const WithdrawForm = ({
 
   return (
     <form onSubmit={form.handleSubmit(submitDeposit)}>
-      <FormGroup label="From (Vega key)" labelFor="fromPubKey">
+      <FormGroup label={t('From (Vega key)')} labelFor="fromPubKey">
         <Controller
           name="fromPubKey"
           control={form.control}
@@ -183,7 +187,7 @@ const WithdrawForm = ({
                   size="small"
                   onClick={() => openVegaWalletDialog()}
                 >
-                  Connect
+                  {t('Connect')}
                 </TradingButton>
               );
             }
@@ -201,7 +205,7 @@ const WithdrawForm = ({
                   className="underline underline-offset-4 text-xs"
                   onClick={() => vegaDisconnect()}
                 >
-                  Disconnect
+                  {t('Disconnect')}
                 </button>
               </div>
             );
@@ -213,14 +217,14 @@ const WithdrawForm = ({
           </TradingInputError>
         )}
       </FormGroup>
-      <FormGroup label="Asset" labelFor="asset">
+      <FormGroup label={t('Asset')} labelFor="asset">
         <Controller
           name="assetId"
           control={form.control}
           render={({ field }) => {
             return (
               <TradingRichSelect
-                placeholder="Select asset"
+                placeholder={t('Select asset')}
                 value={field.value}
                 onValueChange={field.onChange}
               >
@@ -263,7 +267,7 @@ const WithdrawForm = ({
           </UseButton>
         )}
       </FormGroup>
-      <FormGroup label="To address" labelFor="toAddress">
+      <FormGroup label={t('To address')} labelFor="toAddress">
         <Controller
           name="toAddress"
           control={form.control}
@@ -273,7 +277,7 @@ const WithdrawForm = ({
                 <Input value={field.value} onChange={field.onChange} />
                 {isConnected ? (
                   <UseButton onClick={() => evmDisconnect()}>
-                    Disconnect
+                    {t('Disconnect')}
                   </UseButton>
                 ) : (
                   <ConnectKitButton.Custom>
@@ -285,7 +289,7 @@ const WithdrawForm = ({
                             if (show) show();
                           }}
                         >
-                          Connect
+                          {t('Connect')}
                         </UseButton>
                       );
                     }}
@@ -305,7 +309,7 @@ const WithdrawForm = ({
         <div className="pb-4">
           <KeyValueTable>
             <KeyValueTableRow>
-              <div>Balance available</div>
+              <div>{t('Balance available')}</div>
               <div>
                 {addDecimalsFormatNumber(
                   account.balance || '0',
@@ -314,7 +318,7 @@ const WithdrawForm = ({
               </div>
             </KeyValueTableRow>
             <KeyValueTableRow>
-              <div>Delay threshold</div>
+              <div>{t('Delay threshold')}</div>
               <div>
                 {formatNumberRounded(
                   toBigNum(data.threshold || '0', account.asset.decimals)
@@ -322,7 +326,7 @@ const WithdrawForm = ({
               </div>
             </KeyValueTableRow>
             <KeyValueTableRow>
-              <div>Delay time</div>
+              <div>{t('Delay time')}</div>
               <div>{data.delay}s</div>
             </KeyValueTableRow>
             <KeyValueTableRow>
@@ -332,7 +336,7 @@ const WithdrawForm = ({
           </KeyValueTable>
         </div>
       )}
-      <FormGroup label="Amount" labelFor="amount">
+      <FormGroup label={t('Amount')} labelFor="amount">
         <Input {...form.register('amount')} />
         {form.formState.errors.amount?.message && (
           <TradingInputError>
@@ -349,7 +353,7 @@ const WithdrawForm = ({
               form.setValue('amount', amount, { shouldValidate: true });
             }}
           >
-            Use maximum
+            {t('Use maximum')}
           </UseButton>
         )}
       </FormGroup>
@@ -359,7 +363,7 @@ const WithdrawForm = ({
         fill={true}
         intent={Intent.Secondary}
       >
-        Submit
+        {t('Submit')}
       </TradingButton>
     </form>
   );
