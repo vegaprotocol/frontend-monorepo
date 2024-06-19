@@ -36,8 +36,8 @@ import {
 import { useVegaTransactionStore } from '@vegaprotocol/web3';
 import { getNotionalSize } from '@vegaprotocol/deal-ticket';
 import { usePrevious } from '@vegaprotocol/react-helpers';
-import { SpotData } from './spot-data';
 import { GetStarted } from '../../components/welcome-dialog/get-started';
+import { SpotData } from './spot-data';
 
 const getAssetBalance = (
   asset?: AssetFieldsFragment,
@@ -333,9 +333,8 @@ export const SwapForm = ({
           />
         )}
         <SpotData
-          price={marketPrice}
-          market={market}
           side={side}
+          tolerance={tolerance}
           topAmount={topAmount}
           bottomAmount={bottomAmount}
           topAsset={topAsset}

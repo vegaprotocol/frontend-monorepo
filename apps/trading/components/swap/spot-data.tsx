@@ -1,83 +1,108 @@
 import type { AssetFieldsFragment } from '@vegaprotocol/assets';
 import { Side } from '@vegaprotocol/types';
-import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { useT } from '../../lib/use-t';
+import { Intent, Notification } from '@vegaprotocol/ui-toolkit'; // Import the Notification component
+import { getExternalChainShortLabel } from '@vegaprotocol/environment';
+import BigNumber from 'bignumber.js';
 
-type Market = {
-  decimalPlaces: number;
-  tradableInstrument: {
-    instrument: {
-      code: string;
-    };
-  };
-};
-
-export const SpotData = (props: {
-  price: string;
-  topAmount: string;
-  bottomAmount: string;
-  market?: Market;
-  side?: Side;
-  topAsset?: AssetFieldsFragment;
-  bottomAsset?: AssetFieldsFragment;
-}) => {
-  return (
-    <dl className="text-left flex flex-col gap-1">
-      <Conversion {...props} />
-      <BestPrice {...props} />
-    </dl>
-  );
-};
-
-export const Conversion = ({
+export const SpotData = ({
+  side,
+  tolerance,
   topAmount,
   bottomAmount,
   topAsset,
   bottomAsset,
 }: {
+  side?: Side;
+  tolerance?: string;
   topAmount: string;
   bottomAmount: string;
   topAsset?: AssetFieldsFragment;
   bottomAsset?: AssetFieldsFragment;
 }) => {
+  const t = useT();
   if (!topAsset || !bottomAsset) return null;
   if (!topAmount || !bottomAmount) return null;
 
-  return (
-    <div className="flex gap-1">
-      <dt>
-        {topAmount} {topAsset.symbol}
-      </dt>
-      <span>=</span>
-      <dd>
-        {bottomAmount} {bottomAsset.symbol}
-      </dd>
-    </div>
-  );
-};
+  const topAssetSymbol =
+    topAsset.source.__typename === 'ERC20'
+      ? `${topAsset.symbol} (${getExternalChainShortLabel(
+          topAsset.source.chainId
+        )})`
+      : topAsset.symbol;
 
-export const BestPrice = ({
-  price,
-  market,
-  side,
-}: {
-  price: string;
-  market?: Market;
-  side?: Side;
-}) => {
-  const t = useT();
+  const bottomAssetSymbol =
+    bottomAsset.source.__typename === 'ERC20'
+      ? `${bottomAsset.symbol} (${getExternalChainShortLabel(
+          bottomAsset.source.chainId
+        )})`
+      : bottomAsset.symbol;
 
-  if (!market) return null;
   if (!side) return null;
 
-  const sideLabel = side === Side.SIDE_BUY ? t('Best ask') : t('Best bid');
-  const label = `${market.tradableInstrument.instrument.code} ${sideLabel}`;
+  if (!tolerance || tolerance === '0') {
+    return (
+      <Notification
+        intent={Intent.Info}
+        message={t(
+          'You will pay {{topAmount}} {{topAssetSymbol}} to receive {{bottomAmount}} {{bottomAssetSymbol}} (based on {{bestPrice}} price).',
+          {
+            tolerance: tolerance || 0,
+            topAmount,
+            topAssetSymbol,
+            bottomAmount,
+            bottomAssetSymbol,
+            bestPrice: side === Side.SIDE_BUY ? 'best ask' : 'best bid',
+          }
+        )}
+      />
+    );
+  }
 
-  return (
-    <div className="flex gap-1">
-      <dt>{label}</dt>
-      <span>=</span>
-      <dd>{addDecimalsFormatNumber(price, market.decimalPlaces)}</dd>
-    </div>
-  );
+  const toleranceFactor = tolerance ? Number(tolerance) / 100 : 0;
+
+  if (side === Side.SIDE_SELL) {
+    const bottomAmountWithTolerance = new BigNumber(bottomAmount)
+      .times(1 - toleranceFactor) // best bid
+      .toString();
+    return (
+      <Notification
+        intent={Intent.Info}
+        message={t(
+          'You will pay {{topAmount}} {{topAssetSymbol}} to receive between {{bottomAmount}} {{bottomAssetSymbol}} (best bid) and {{bottomAmountWithTolerance}} {{bottomAssetSymbol}} based on your price tolerance of {{tolerance}}%.',
+          {
+            tolerance,
+            topAmount,
+            topAssetSymbol,
+            bottomAmount,
+            bottomAssetSymbol,
+            bottomAmountWithTolerance,
+          }
+        )}
+      />
+    );
+  }
+
+  if (side === Side.SIDE_BUY) {
+    const topAmountWithTolerance = new BigNumber(topAmount)
+      .times(1 + toleranceFactor) // best ask
+      .toString();
+    return (
+      <Notification
+        intent={Intent.Info}
+        message={t(
+          'You will pay between {{topAmount}} {{topAssetSymbol}} (best ask) and {{topAmountWithTolerance}} {{topAssetSymbol}} to receive {{bottomAmount}} {{bottomAssetSymbol}} based on your price tolerance of {{tolerance}}%.',
+          {
+            tolerance,
+            topAmount,
+            topAssetSymbol,
+            bottomAmount,
+            bottomAssetSymbol,
+            topAmountWithTolerance,
+          }
+        )}
+      />
+    );
+  }
+  return null;
 };
