@@ -13,17 +13,15 @@ import { useAggregatedAccounts } from '@vegaprotocol/accounts';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { SwapForm } from './swap-form';
 import { Loader, Splash } from '@vegaprotocol/ui-toolkit';
+import { useNavigate } from 'react-router-dom';
+import { Links } from '../../lib/links';
 
-export const SwapContainer = ({
-  assetId,
-  onDeposit,
-}: {
-  assetId?: string;
-  onDeposit: (assetId?: string) => void;
-}) => {
+export const SwapContainer = ({ assetId }: { assetId?: string }) => {
   const { pubKey } = useVegaWallet();
   const { data: markets, loading } = useMarketsMapProvider();
   const { data: accounts } = useAggregatedAccounts(pubKey);
+  const navigate = useNavigate();
+  const onDeposit = () => navigate(Links.DEPOSIT());
 
   const [marketId, setMarketId] = useState<string>();
 

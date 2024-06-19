@@ -40,7 +40,6 @@ import { WithdrawalsMenu } from '../../components/withdrawals-menu';
 import { useT } from '../../lib/use-t';
 import { ErrorBoundary } from '../../components/error-boundary';
 import { usePageTitle } from '../../lib/hooks/use-page-title';
-import { Links } from '../../lib/links';
 import { WithdrawContainer } from '../../components/withdraw-container';
 import { SwapContainer } from '../../components/swap/swap-container';
 import { SquidContainer } from '../../components/squid-container';
@@ -48,7 +47,6 @@ import { SquidContainer } from '../../components/squid-container';
 import { DepositContainer } from '@vegaprotocol/deposits';
 import { TransferContainer } from '@vegaprotocol/accounts';
 import { useFeatureFlags } from '@vegaprotocol/environment';
-import { useNavigate } from 'react-router-dom';
 
 const WithdrawalsIndicator = () => {
   const { ready } = useIncompleteWithdrawals();
@@ -142,8 +140,6 @@ const PortfolioSmall = () => {
 const PortfolioActionTabs = () => {
   const t = useT();
   const flags = useFeatureFlags((state) => state.flags);
-  const navigate = useNavigate();
-  const onDeposit = () => navigate(Links.DEPOSIT());
   return (
     <Tabs storageKey="portfolio-sidebar">
       <Tab id="deposit" name={t('Deposit (Basic)')}>
@@ -193,7 +189,7 @@ const PortfolioActionTabs = () => {
         <Tab id="swap" name={t('Swap')}>
           <ErrorBoundary feature="assets-swap">
             <div className="p-4">
-              <SwapContainer onDeposit={onDeposit} />
+              <SwapContainer />
             </div>
           </ErrorBoundary>
         </Tab>
