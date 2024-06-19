@@ -1,7 +1,7 @@
 import type { AssetFieldsFragment } from '@vegaprotocol/assets';
 import { Side } from '@vegaprotocol/types';
 import { useT } from '../../lib/use-t';
-import { Intent, Notification } from '@vegaprotocol/ui-toolkit'; // Import the Notification component
+import { Intent, Notification } from '@vegaprotocol/ui-toolkit';
 import { getExternalChainShortLabel } from '@vegaprotocol/environment';
 import BigNumber from 'bignumber.js';
 
