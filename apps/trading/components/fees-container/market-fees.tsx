@@ -138,6 +138,9 @@ export const MarketFees = ({
         domLayout="autoHeight"
         rowHeight={55}
         rowClass="cursor-pointer"
+        autoSizeStrategy={{
+          type: 'fitGridWidth',
+        }}
         onRowClicked={({ data, event }) => {
           navigateWithMeta(
             Links.MARKET(data.id),
