@@ -1,6 +1,6 @@
 import compact from 'lodash/compact';
 import type { MarketMaybeWithDataAndCandles } from '@vegaprotocol/markets';
-import { AgGrid, MarketProductPill } from '@vegaprotocol/datagrid';
+import { AgGrid, MarketProductPill, StackedCell } from '@vegaprotocol/datagrid';
 import { formatPercentage, getAdjustedFee } from './utils';
 import BigNumber from 'bignumber.js';
 import { useNavigateWithMeta } from '../../lib/hooks/use-market-click-handler';
@@ -30,16 +30,22 @@ const useFeesTableColumnDefs = (): ColDef[] => {
               productType: ProductType | undefined;
               parentMarketID: string | null | undefined;
               successorMarketID?: string | null | undefined;
+              name: string;
             };
           }) => {
             const productType = data?.productType;
             return (
               <span className="flex items-center gap-2 cursor-pointer">
                 <EmblemByMarket market={data.id} vegaChain={chainId} />
-                <span className="flex gap-1 items-center">
-                  {value}
-                  <MarketProductPill productType={productType} />
-                </span>
+                <StackedCell
+                  primary={
+                    <span className="flex gap-1 items-center">
+                      {value}
+                      <MarketProductPill productType={productType} />
+                    </span>
+                  }
+                  secondary={data.name}
+                />
               </span>
             );
           },
@@ -109,6 +115,7 @@ export const MarketFees = ({
       return {
         id: m.id,
         code: m.tradableInstrument.instrument.code,
+        name: m.tradableInstrument.instrument.name,
         productType: m.tradableInstrument.instrument.product.__typename,
         infraFee: formatPercentage(infraFee.toNumber()),
         makerFee: formatPercentage(makerFee.toNumber()),
@@ -129,7 +136,7 @@ export const MarketFees = ({
         getRowId={({ data }) => data.id}
         defaultColDef={feesTableDefaultColDef}
         domLayout="autoHeight"
-        rowHeight={45}
+        rowHeight={55}
         rowClass="cursor-pointer"
         onRowClicked={({ data, event }) => {
           navigateWithMeta(

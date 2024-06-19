@@ -2,7 +2,12 @@ import type { CellClickedEvent } from 'ag-grid-community';
 import compact from 'lodash/compact';
 import { isAfter } from 'date-fns';
 import type { VegaValueFormatterParams } from '@vegaprotocol/datagrid';
-import { AgGrid, COL_DEFS, MarketProductPill } from '@vegaprotocol/datagrid';
+import {
+  AgGrid,
+  COL_DEFS,
+  MarketProductPill,
+  StackedCell,
+} from '@vegaprotocol/datagrid';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { useMemo } from 'react';
 import type { Asset } from '@vegaprotocol/types';
@@ -127,7 +132,7 @@ const ClosedMarketsDataGrid = ({
       {
         headerName: t('Market'),
         field: 'code',
-        minWidth: 150,
+        minWidth: 250,
         cellRenderer: ({
           value,
           data,
@@ -138,16 +143,22 @@ const ClosedMarketsDataGrid = ({
             productType: ProductType | undefined;
             parentMarketID: string | null | undefined;
             successorMarketID?: string | null | undefined;
+            name: string;
           };
         }) => {
           const productType = data?.productType;
           return (
             <span className="flex items-center gap-2 cursor-pointer">
               <EmblemByMarket market={data.id} vegaChain={chainId} />
-              <span className="flex gap-1 items-center">
-                {value}
-                <MarketProductPill productType={productType} />
-              </span>
+              <StackedCell
+                primary={
+                  <span className="flex gap-1 items-center">
+                    {value}
+                    <MarketProductPill productType={productType} />
+                  </span>
+                }
+                secondary={data.name}
+              />
             </span>
           );
         },
