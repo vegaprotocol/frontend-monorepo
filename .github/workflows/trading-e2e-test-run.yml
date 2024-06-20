@@ -46,6 +46,8 @@ jobs:
       #       build trading
       #----------------------------------------------
       - name: Build trading app
+        env:
+          NX_NO_CLOUD: true
         run: |
           ENV_NAME="${{ github.base_ref == 'main' && 'mainnet' || 'stagnet1' }}"
           yarn env-cmd -f ./apps/trading/.env.$ENV_NAME yarn nx export trading
