@@ -188,7 +188,7 @@ jobs:
   publish-dist:
     needs: build-sources
     name: '(CD) publish dist'
-    if: github.event_name != 'pull_request' && ((contains(github.ref, 'release/mainnet') && !contains(github.ref, 'mirror')) || contains(github.ref, 'release/testnet') || contains(github.ref, 'release/validators-testnet'))
+    if: github.event_name != 'pull_request' && ((contains(github.ref, 'release/mainnet') && !contains(github.ref, 'mirror')) || contains(github.ref, 'release/testnet') || contains(github.ref, 'release/validators-testnet') || contains(github.ref, 'release/mainnet-mirror'))
     uses: ./.github/workflows/publish-dist.yml
     secrets: inherit
     with:

@@ -1,4 +1,5 @@
 import pytest
+import time
 from playwright.sync_api import Page, expect
 from vega_sim.null_service import VegaServiceNull
 from actions.vega import submit_order
@@ -178,9 +179,13 @@ def test_submit_stop_limit_order_cancel(
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
     page.get_by_test_id(close_toast).first.click()
+    page.pause()
     page.get_by_test_id(cancel).click()
     wait_for_toast_confirmation(page)
-    vega.wait_fn(1)
+    time.sleep(0.5)
+    vega.wait_fn(10)
+    vega.wait_for_total_catchup()
+    vega.wait_fn(10)
     vega.wait_for_total_catchup()
     page.get_by_test_id(close_toast).first.click()
 
