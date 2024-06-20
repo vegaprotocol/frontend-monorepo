@@ -42,7 +42,7 @@ describe('BatchItem', () => {
     };
     render(<BatchItem item={item} />);
     expect(screen.getByText('Cancel transfer')).toBeInTheDocument();
-    expect(screen.getByText('transf')).toBeInTheDocument();
+    expect(screen.getByText('transfer')).toBeInTheDocument();
   });
 
   it('Renders "Cancel transfer" without an id', () => {

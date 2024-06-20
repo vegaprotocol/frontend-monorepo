@@ -9,7 +9,7 @@ export type HashProps = React.HTMLProps<HTMLSpanElement> & {
  * for a lot of the overflow scrolling that currently exists.
  */
 const Hash = ({ className, text, truncate = false }: HashProps) => {
-  const h = truncate ? text.slice(0, 6) : text;
+  const h = truncate ? text.slice(0, 8) : text;
 
   return (
     <code

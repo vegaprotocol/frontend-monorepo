@@ -20,6 +20,7 @@ import {
   type FilterOption,
 } from '../../../components/txs/tx-filter';
 import { useSearchParams } from 'react-router-dom';
+import { PartyBlockDeposits } from './components/party-block-deposits';
 
 type Params = { party: string };
 
@@ -98,6 +99,14 @@ const Party = () => {
         <PartyBlockStake
           accountError={AccountError}
           accountLoading={AccountLoading}
+          partyId={partyId}
+        />
+      </div>
+      <div className="grid w-full grid-flow-row grid-cols-1 md:space-x-4">
+        <PartyBlockDeposits
+          accountError={AccountError}
+          accountLoading={AccountLoading}
+          accountData={AccountData}
           partyId={partyId}
         />
       </div>

@@ -14,6 +14,7 @@ export type ExternalExplorerLinkProps = Partial<typeof HTMLAnchorElement> & {
   // Defaults to Ethereum Mainnet, as chain support was added late
   chain?: string;
   code?: boolean;
+  truncate?: boolean;
 };
 
 export const ExternalExplorerLink = ({
@@ -21,6 +22,7 @@ export const ExternalExplorerLink = ({
   type,
   chain = '1',
   code = false,
+  truncate = false,
   ...props
 }: ExternalExplorerLinkProps) => {
   const link = `${getExternalExplorerLink(chain)}/${type}/${id}${
@@ -35,7 +37,7 @@ export const ExternalExplorerLink = ({
       href={link}
     >
       <ExternalChainIcon chainId={chain} />
-      <Hash text={id} />
+      <Hash text={id} truncate={truncate} />
     </a>
   );
 };
