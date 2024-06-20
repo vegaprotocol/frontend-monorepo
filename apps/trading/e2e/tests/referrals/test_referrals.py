@@ -99,8 +99,7 @@ def setup_market_and_referral_scheme(vega: VegaServiceNull, continuous_market: s
     vega.create_referral_set(key_name=PARTY_A.name)
     forward_time(vega, True)
 
-    referral_set_id = list(vega.list_referral_sets().keys())[0]
-    vega.apply_referral_code(key_name=PARTY_B.name, id=referral_set_id)
+    
 
     tdai_id = vega.find_asset_id(symbol="tDAI")
     vega.mint(
@@ -116,6 +115,8 @@ def setup_market_and_referral_scheme(vega: VegaServiceNull, continuous_market: s
 
     submit_liquidity(vega, MM_WALLET.name, continuous_market, 100, 100)
     forward_time(vega)
+    referral_set_id = list(vega.list_referral_sets().keys())[0]
+    vega.apply_referral_code(key_name=PARTY_B.name, id=referral_set_id)
 
 
 @pytest.mark.usefixtures("auth", "risk_accepted")
@@ -167,6 +168,7 @@ def test_does_not_move_up_tiers_when_not_enough_epochs(continuous_market, vega: 
     change_keys(page, vega, PARTY_B.name)
     submit_order(vega, PARTY_B.name, continuous_market, "SIDE_BUY", 2, 115)
     forward_time(vega, True)
+    page.pause()
     check_tile_values(page, generate_referral_expected_value_dic(
         "221", "1", "1.00%", "1", "1"))
 

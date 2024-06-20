@@ -250,5 +250,5 @@ def test_reward_group_popup(
     expect(popup_reward_card_2.get_by_test_id(
         "staking-requirement")).to_have_text("-")
     expect(popup_reward_card_2.get_by_test_id(
-        "average-position")).to_have_text("-")
+        "average-position")).to_have_text("310.50")
 

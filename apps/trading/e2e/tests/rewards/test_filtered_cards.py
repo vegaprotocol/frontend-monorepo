@@ -117,6 +117,6 @@ def test_filtered_future_cards(continuous_market, vega: VegaServiceNull, page: P
     page.goto("/#/rewards")
     card = page.get_by_test_id("active-rewards-card")
     expect(card).to_be_visible(timeout=15000)
-    expect(page.get_by_test_id("starts-in")).to_have_text("8 epochs")
+    expect(page.get_by_test_id("starts-in")).to_have_text("6 epochs")
     color = card.evaluate("element => getComputedStyle(element).color")
     assert color == "rgb(4, 4, 5)", f"Unexpected color: {color}"

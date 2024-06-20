@@ -244,7 +244,7 @@ def test_team_page_games_table(team_page: Tuple[Page, str, str, VegaServiceNull]
     page.get_by_test_id("games-toggle").click()
     expect(page.get_by_test_id("games-toggle")).to_have_text("Results (9)")
     expect(page.get_by_test_id("rank-0")).to_have_text("1")
-    expect(page.get_by_test_id("epoch-0")).to_have_text("18")
+    expect(page.get_by_test_id("epoch-0")).to_have_text("19")
     expect(page.get_by_test_id("endtime-0")).to_be_visible()
     expect(page.get_by_test_id("type-0")).to_have_text("Price maker fees paid • tDAI ")
     expect(page.get_by_test_id("asset-0")).to_have_text("VEGA")
@@ -320,14 +320,14 @@ def test_game_card(competitions_page: Tuple[Page, str, VegaServiceNull]):
     expect(game_1.get_by_test_id("assessed-over")).to_have_text("15 epochs")
     expect(game_1.get_by_test_id("scope")).to_have_text("Eligible")
     expect(game_1.get_by_test_id("staking-requirement")).to_have_text("-")
-    expect(game_1.get_by_test_id("average-position")).to_have_text("-")
+    expect(game_1.get_by_test_id("average-position")).to_have_text("1,028.21311")
 
 def test_game_results_page(competitions_page: Tuple[Page, str, VegaServiceNull]):
     page, team_name, vega = competitions_page
     page.goto(COMPETITIONS_URL)
     page.get_by_test_id("active-rewards-card").click()
     expect(page.get_by_test_id("dispatch-metric-info").first).to_have_text("Price maker fees paid • tDAI")
-    expect(page.get_by_test_id("epoch-0")).to_have_text("18")
+    expect(page.get_by_test_id("epoch-0")).to_have_text("19")
     expect(page.get_by_test_id("rank-0")).to_have_text("1")
     expect(page.get_by_test_id("teamName-0")).to_be_visible()
     expect(page.get_by_test_id("amount-0")).to_have_text("50.00")
