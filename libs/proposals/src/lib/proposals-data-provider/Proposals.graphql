@@ -25,6 +25,11 @@ fragment NewMarketFields on NewMarket {
           decimals
           quantum
         }
+        cap {
+          maxPrice
+          binarySettlement
+          fullyCollateralised
+        }
         quoteName
         dataSourceSpecForSettlementData {
           sourceType {

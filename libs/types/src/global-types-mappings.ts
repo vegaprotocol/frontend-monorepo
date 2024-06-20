@@ -257,6 +257,8 @@ export const OrderRejectionReasonMapping: {
   ORDER_ERROR_REDUCE_ONLY_ORDER_WOULD_NOT_REDUCE:
     'Reduce only order would not reduce',
   ORDER_ERROR_TOO_MANY_PEGGED_ORDERS: 'Too many pegged orders',
+  ORDER_ERROR_PRICE_MUST_BE_LESS_THAN_OR_EQUAL_TO_MAX_PRICE:
+    'Prices must be less than or equal to max price',
 };
 
 /**
@@ -577,6 +579,9 @@ export const TransferTypeMapping: TransferTypeMap = {
   TRANSFER_TYPE_SLA_PERFORMANCE_BONUS_DISTRIBUTE:
     'SLA performance bonus distributed',
   TRANSFER_TYPE_SUCCESSOR_INSURANCE_FRACTION: 'Successor insurance fraction',
+  TRANSFER_TYPE_AMM_HIGH: 'AMM high',
+  TRANSFER_TYPE_AMM_LOW: 'AMM low',
+  TRANSFER_TYPE_AMM_RELEASE: 'AMM release',
 };
 
 export const DescriptionTransferTypeMapping: TransferTypeMap = {
@@ -624,6 +629,9 @@ export const DescriptionTransferTypeMapping: TransferTypeMap = {
   TRANSFER_TYPE_SLA_PERFORMANCE_BONUS_DISTRIBUTE:
     'SLA performance bonus distributed',
   TRANSFER_TYPE_SUCCESSOR_INSURANCE_FRACTION: 'Successor insurance fraction',
+  TRANSFER_TYPE_AMM_HIGH: 'AMM high',
+  TRANSFER_TYPE_AMM_LOW: 'AMM low',
+  TRANSFER_TYPE_AMM_RELEASE: 'AMM release',
 };
 
 /**
@@ -742,16 +750,20 @@ export const PeggedReferenceMapping: { [R in PeggedReference]: string } = {
   PEGGED_REFERENCE_MID: 'Mid',
 };
 
-export const ProductTypeMapping: Record<ProductType, string> = {
+type ProductTypeExtended = ProductType | 'FutureCapped';
+
+export const ProductTypeMapping: Record<ProductTypeExtended, string> = {
   Future: 'Future',
   Spot: 'Spot',
   Perpetual: 'Perpetual',
+  FutureCapped: 'FutureCapped',
 };
 
-export const ProductTypeShortName: Record<ProductType, string> = {
+export const ProductTypeShortName: Record<ProductTypeExtended, string> = {
   Future: 'Futr',
   Spot: 'Spot',
   Perpetual: 'Perp',
+  FutureCapped: 'Fcap',
 };
 
 export const ProposalProductTypeMapping: Record<ProposalProductType, string> = {
@@ -780,6 +792,7 @@ export const IndividualScopeMapping: { [e in IndividualScope]: string } = {
   INDIVIDUAL_SCOPE_ALL: 'All',
   INDIVIDUAL_SCOPE_IN_TEAM: 'In team',
   INDIVIDUAL_SCOPE_NOT_IN_TEAM: 'Not in team',
+  INDIVIDUAL_SCOPE_AMM: 'AMM',
 };
 
 export const IndividualScopeDescriptionMapping: {
@@ -788,6 +801,7 @@ export const IndividualScopeDescriptionMapping: {
   INDIVIDUAL_SCOPE_ALL: 'All parties are eligible',
   INDIVIDUAL_SCOPE_IN_TEAM: 'Parties in teams are eligible',
   INDIVIDUAL_SCOPE_NOT_IN_TEAM: 'Only parties not in teams are eligible',
+  INDIVIDUAL_SCOPE_AMM: 'AMM',
 };
 
 export enum DistributionStrategyMapping {

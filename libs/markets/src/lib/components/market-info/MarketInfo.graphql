@@ -125,6 +125,11 @@ fragment Future on Future {
     settlementDataProperty
     tradingTerminationProperty
   }
+  cap {
+    maxPrice
+    binarySettlement
+    fullyCollateralised
+  }
 }
 
 fragment Perpetual on Perpetual {
