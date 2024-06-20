@@ -246,21 +246,15 @@ export const PositionsTable = ({
         }: VegaICellRendererParams<Position, 'marketCode'>) => {
           if (!data || !value) return '-';
           return (
-            <div
-              data-position
-              data-market-id={data.marketId}
-              data-party-id={data.partyId}
-            >
-              <StackedCell
-                primary={value}
-                secondary={
-                  <>
-                    {data?.assetSymbol}
-                    <MarketProductPill productType={data.productType} />
-                  </>
-                }
-              />
-            </div>
+            <StackedCell
+              primary={value}
+              secondary={
+                <>
+                  {data?.assetSymbol}
+                  <MarketProductPill productType={data.productType} />
+                </>
+              }
+            />
           );
         },
       },
