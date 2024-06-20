@@ -77,6 +77,8 @@ jobs:
         run: yarn nx affected:lint --max-warnings=0
 
       - name: Build affected spec
+        env:
+          NX_NO_CLOUD: true
         run: yarn nx affected --target=build-spec
 
   test-affected:
