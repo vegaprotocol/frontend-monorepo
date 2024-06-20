@@ -155,6 +155,8 @@ jobs:
           echo "projects-e2e: ${{ env.PROJECTS_E2E }}"
 
       - name: Build affected
+        env:
+          NX_NO_CLOUD: true
         run: yarn nx affected:build || (yarn install && yarn nx affected:build)
     outputs:
       projects: ${{ env.PROJECTS }}
