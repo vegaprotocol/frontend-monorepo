@@ -585,9 +585,14 @@ export const InstrumentInfoPanel = ({
       data={{
         marketName: market.tradableInstrument.instrument.name,
         code: market.tradableInstrument.instrument.code,
-        productType,
+        productType:
+          market.tradableInstrument.instrument.product.__typename ===
+            'Future' &&
+          market.tradableInstrument.instrument.product.cap?.binarySettlement
+            ? 'Binary Option'
+            : productType,
         quoteName: getQuoteName(market),
-        maxPrice:
+        priceCap:
           market.tradableInstrument.instrument.product.__typename ===
             'Future' &&
           market.tradableInstrument.instrument.product.cap?.maxPrice
