@@ -8,6 +8,12 @@ fragment TradeFields on Trade {
     id
   }
   type
+  buyer {
+    id
+  }
+  seller {
+    id
+  }
 }
 
 query Trades($marketIds: [ID!], $partyIds: [ID!], $pagination: Pagination) {
@@ -38,6 +44,8 @@ fragment TradeUpdateFields on TradeUpdate {
   marketId
   aggressor
   type
+  buyerId
+  sellerId
 }
 
 subscription TradesUpdate($marketIds: [ID!], $partyIds: [ID!]) {
