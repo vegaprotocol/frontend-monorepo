@@ -1,16 +1,17 @@
 import { SquidStakingWidget } from '@0xsquid/staking-widget';
 import type { AppConfig } from '@0xsquid/staking-widget/widget/core/types/config';
-import { VegaWalletConnectButton } from '../vega-wallet-connect-button';
 import { useT } from '../../lib/use-t';
-import { Loader } from '@vegaprotocol/ui-toolkit';
+import { Intent, Loader, Notification } from '@vegaprotocol/ui-toolkit';
 import {
   SquidRouterConfigError,
   useSquidRouterConfig,
 } from '../../lib/hooks/use-squid-router-config';
+import { useDialogStore } from '@vegaprotocol/wallet-react';
 
 export const SquidContainer = () => {
   const t = useT();
   const { config, loading, error } = useSquidRouterConfig();
+  const open = useDialogStore((store) => store.open);
 
   const errorReason: Record<SquidRouterConfigError, string> = {
     [SquidRouterConfigError.NO_SQUID_API_CONFIGURATION]: t(
@@ -28,15 +29,22 @@ export const SquidContainer = () => {
   }
 
   if (error != null || !config) {
+    let intent = Intent.Info;
+    if (
+      error === SquidRouterConfigError.INTERNAL ||
+      error === SquidRouterConfigError.NO_SQUID_API_CONFIGURATION
+    ) {
+      intent = Intent.Danger;
+    }
     return (
-      <>
-        <p className="text-sm mb-1">
-          {error ? errorReason[error] : t('Unable to load widget')}
-        </p>
-        {error === SquidRouterConfigError.NO_VEGA_PUBKEY && (
-          <VegaWalletConnectButton />
-        )}
-      </>
+      <Notification
+        message={error ? errorReason[error] : t('Unable to load widget')}
+        intent={intent}
+        buttonProps={{
+          text: t('Connect wallet'),
+          action: open,
+        }}
+      />
     );
   }
 
