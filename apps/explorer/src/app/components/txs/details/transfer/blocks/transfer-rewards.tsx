@@ -220,4 +220,5 @@ const individualScopeLabels: Record<
   INDIVIDUAL_SCOPE_ALL: '',
   INDIVIDUAL_SCOPE_IN_TEAM: '(in team)',
   INDIVIDUAL_SCOPE_NOT_IN_TEAM: '(not in team)',
+  INDIVIDUAL_SCOPE_AMM: '',
 };
