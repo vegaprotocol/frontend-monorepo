@@ -1,4 +1,3 @@
-import { type HTMLAttributes, type ButtonHTMLAttributes } from 'react';
 import { z } from 'zod';
 
 import { useAccount, useDisconnect, useAccountEffect } from 'wagmi';
@@ -45,6 +44,10 @@ import { VegaKeySelect } from './vega-key-select';
 import { AssetOption } from './asset-option';
 import { Approval } from './approval';
 import { useAssetReadContracts } from './use-asset-read-contracts';
+import {
+  FormSecondaryActionButton,
+  FormSecondaryActionWrapper,
+} from '../form-secondary-action';
 
 type Configs = Array<EthereumConfig | EVMBridgeConfig>;
 
@@ -241,14 +244,16 @@ const DepositForm = ({
           </TradingInputError>
         )}
         {asset && (
-          <SecondaryActionContainer>
-            <SecondaryAction onClick={() => openAssetDialog(asset.id)}>
+          <FormSecondaryActionWrapper>
+            <FormSecondaryActionButton
+              onClick={() => openAssetDialog(asset.id)}
+            >
               {t('View asset details')}
-            </SecondaryAction>
-            <SecondaryAction onClick={() => submitFaucet({ asset })}>
+            </FormSecondaryActionButton>
+            <FormSecondaryActionButton onClick={() => submitFaucet({ asset })}>
               {t('Get {{symbol}}', { symbol: asset.symbol })}
-            </SecondaryAction>
-          </SecondaryActionContainer>
+            </FormSecondaryActionButton>
+          </FormSecondaryActionWrapper>
         )}
       </FormGroup>
       <FormGroup label="To (Vega key)" labelFor="toPubKey">
@@ -333,8 +338,8 @@ const DepositForm = ({
         )}
 
         {asset && data && data.balanceOf && (
-          <SecondaryActionContainer>
-            <SecondaryAction
+          <FormSecondaryActionWrapper>
+            <FormSecondaryActionButton
               onClick={() => {
                 const amount = toBigNum(
                   data.balanceOf || '0',
@@ -344,8 +349,8 @@ const DepositForm = ({
               }}
             >
               {t('Use maximum')}
-            </SecondaryAction>
-          </SecondaryActionContainer>
+            </FormSecondaryActionButton>
+          </FormSecondaryActionWrapper>
         )}
       </FormGroup>
       {asset && data && (
@@ -366,21 +371,5 @@ const DepositForm = ({
         {t('Submit')}
       </TradingButton>
     </form>
-  );
-};
-
-const SecondaryActionContainer = (props: HTMLAttributes<HTMLDivElement>) => {
-  return (
-    <div {...props} className="absolute right-0 top-0 pt-0.5 flex gap-2" />
-  );
-};
-
-const SecondaryAction = (props: ButtonHTMLAttributes<HTMLButtonElement>) => {
-  return (
-    <button
-      {...props}
-      type="button"
-      className="text-xs underline underline-offset-4"
-    />
   );
 };

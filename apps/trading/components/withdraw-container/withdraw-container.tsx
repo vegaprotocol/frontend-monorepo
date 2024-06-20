@@ -36,7 +36,7 @@ import {
   KeyValueTableRow,
 } from '@vegaprotocol/ui-toolkit';
 import { ConnectKitButton } from 'connectkit';
-import { useEffect, type ButtonHTMLAttributes } from 'react';
+import { useEffect } from 'react';
 import {
   addDecimalsFormatNumber,
   formatNumberRounded,
@@ -50,6 +50,10 @@ import { EmblemByAsset } from '@vegaprotocol/emblem';
 import { BRIDGE_ABI } from '@vegaprotocol/smart-contracts';
 
 import { useT } from '../../lib/use-t';
+import {
+  FormSecondaryActionButton,
+  FormSecondaryActionWrapper,
+} from '../form-secondary-action';
 
 type Configs = Array<EthereumConfig | EVMBridgeConfig>;
 
@@ -262,9 +266,13 @@ const WithdrawForm = ({
           </TradingInputError>
         )}
         {account && (
-          <UseButton onClick={() => openAssetDialog(account.asset.id)}>
-            View asset details
-          </UseButton>
+          <FormSecondaryActionWrapper>
+            <FormSecondaryActionButton
+              onClick={() => openAssetDialog(account.asset.id)}
+            >
+              View asset details
+            </FormSecondaryActionButton>
+          </FormSecondaryActionWrapper>
         )}
       </FormGroup>
       <FormGroup label={t('To address')} labelFor="toAddress">
@@ -275,26 +283,28 @@ const WithdrawForm = ({
             return (
               <>
                 <Input value={field.value} onChange={field.onChange} />
-                {isConnected ? (
-                  <UseButton onClick={() => evmDisconnect()}>
-                    {t('Disconnect')}
-                  </UseButton>
-                ) : (
-                  <ConnectKitButton.Custom>
-                    {({ show }) => {
-                      return (
-                        <UseButton
-                          type="button"
-                          onClick={() => {
-                            if (show) show();
-                          }}
-                        >
-                          {t('Connect')}
-                        </UseButton>
-                      );
-                    }}
-                  </ConnectKitButton.Custom>
-                )}
+                <FormSecondaryActionWrapper>
+                  {isConnected ? (
+                    <FormSecondaryActionButton onClick={() => evmDisconnect()}>
+                      {t('Disconnect')}
+                    </FormSecondaryActionButton>
+                  ) : (
+                    <ConnectKitButton.Custom>
+                      {({ show }) => {
+                        return (
+                          <FormSecondaryActionButton
+                            type="button"
+                            onClick={() => {
+                              if (show) show();
+                            }}
+                          >
+                            {t('Connect')}
+                          </FormSecondaryActionButton>
+                        );
+                      }}
+                    </ConnectKitButton.Custom>
+                  )}
+                </FormSecondaryActionWrapper>
               </>
             );
           }}
@@ -344,17 +354,19 @@ const WithdrawForm = ({
           </TradingInputError>
         )}
         {account && (
-          <UseButton
-            onClick={() => {
-              const amount = toBigNum(
-                account.balance,
-                account.asset.decimals
-              ).toFixed(account.asset.decimals);
-              form.setValue('amount', amount, { shouldValidate: true });
-            }}
-          >
-            {t('Use maximum')}
-          </UseButton>
+          <FormSecondaryActionWrapper>
+            <FormSecondaryActionButton
+              onClick={() => {
+                const amount = toBigNum(
+                  account.balance,
+                  account.asset.decimals
+                ).toFixed(account.asset.decimals);
+                form.setValue('amount', amount, { shouldValidate: true });
+              }}
+            >
+              {t('Use maximum')}
+            </FormSecondaryActionButton>
+          </FormSecondaryActionWrapper>
         )}
       </FormGroup>
       <TradingButton
@@ -366,16 +378,6 @@ const WithdrawForm = ({
         {t('Submit')}
       </TradingButton>
     </form>
-  );
-};
-
-const UseButton = (props: ButtonHTMLAttributes<HTMLButtonElement>) => {
-  return (
-    <button
-      {...props}
-      type="button"
-      className="absolute right-0 top-0 pt-0.5 ml-auto text-xs underline underline-offset-4"
-    />
   );
 };
 
