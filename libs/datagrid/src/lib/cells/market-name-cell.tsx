@@ -40,7 +40,7 @@ interface MarketNameCellProps {
 }
 
 const getProductType = (market: Market): ProductTypeExtended | undefined => {
-  if (!market.tradableInstrument?.instrument.product) {
+  if (!market?.tradableInstrument?.instrument.product) {
     return undefined;
   }
 
