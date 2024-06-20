@@ -21,6 +21,7 @@ import {
   Last24hPriceChange,
   calcCandleVolume,
   calcCandleVolumePrice,
+  getProductType,
   getQuoteAsset,
   getQuoteName,
   isSpot,
@@ -165,8 +166,7 @@ export const useMarketsColumnDefs = () => {
           const tradingMode = data?.data?.marketTradingMode;
           const state = data?.data?.marketState;
           const tooltip = getMarketStateTooltip(state, tradingMode);
-          const productType =
-            data?.tradableInstrument.instrument.product.__typename;
+          const productType = data && getProductType(data);
           return (
             <Tooltip description={t(tooltip)}>
               <span className="flex items-center gap-2 cursor-pointer">
