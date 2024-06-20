@@ -80,7 +80,7 @@ export const getProductType = (market: Pick<Market, 'tradableInstrument'>) => {
   }
 
   if (type === 'Future' && market.tradableInstrument.instrument.product.cap) {
-    return 'FutureCapped';
+    return 'CappedFuture';
   }
 
   return type;
