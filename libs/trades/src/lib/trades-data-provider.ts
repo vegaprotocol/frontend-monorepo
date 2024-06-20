@@ -38,13 +38,21 @@ const getDelta = (subscriptionData: TradesUpdateSubscription) =>
 const mapTradeUpdateToTrade = (
   tradeUpdate: TradeUpdateFieldsFragment
 ): TradeFieldsFragment => {
-  const { marketId, ...trade } = tradeUpdate;
+  const { marketId, buyerId, sellerId, ...trade } = tradeUpdate;
   return {
     ...trade,
     __typename: 'Trade',
     market: {
       __typename: 'Market',
       id: marketId,
+    },
+    buyer: {
+      __typename: 'Party',
+      id: buyerId,
+    },
+    seller: {
+      __typename: 'Party',
+      id: sellerId,
     },
   };
 };
