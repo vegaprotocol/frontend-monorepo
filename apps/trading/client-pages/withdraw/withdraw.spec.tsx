@@ -1,5 +1,8 @@
-import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
+import { render, screen } from '@testing-library/react';
+
+import { MockedWalletProvider } from '@vegaprotocol/wallet-react/testing';
+
 import { Withdraw } from './withdraw';
 
 jest.mock('../../components/withdraw-container', () => ({
@@ -8,14 +11,12 @@ jest.mock('../../components/withdraw-container', () => ({
   ),
 }));
 
-jest.mock('../../components/welcome-dialog/get-started', () => ({
-  GetStarted: () => <div>GetStarted</div>,
-}));
-
 const renderJsx = (route = '/withdraw') => {
   render(
     <MemoryRouter initialEntries={[route]}>
-      <Withdraw />
+      <MockedWalletProvider>
+        <Withdraw />
+      </MockedWalletProvider>
     </MemoryRouter>
   );
 };
