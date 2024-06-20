@@ -17,7 +17,6 @@ import {
   removePaginationWrapper,
 } from '@vegaprotocol/utils';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
-import { useCallback } from 'react';
 import { useT } from '../use-t';
 import { useMarketsMapProvider } from '@vegaprotocol/markets';
 import { type AssetFieldsFragment } from '@vegaprotocol/assets';
@@ -30,40 +29,32 @@ import { PORTFOLIO_TOP_TABS } from '../../client-pages/portfolio/portfolio';
 import groupBy from 'lodash/groupBy';
 import orderBy from 'lodash/orderBy';
 import compact from 'lodash/compact';
-
-const LOCAL_STORAGE_KEY = 'vega_position_close_out_notifications';
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 
 const createToastId = (tradeId: string) =>
   `position_close_out_notification_${tradeId}`;
 
-const parseLocalStorageValue = (value: string | null | undefined): string[] => {
-  try {
-    if (value) {
-      const json = JSON.parse(value);
-      if (Array.isArray(json)) {
-        return json.filter((v) => v.match(/^[0-9a-f]{64}$/));
-      }
+type SeenCloseOutToastsStore = {
+  trades: string[];
+  addTrade: (tradeId: string) => void;
+};
+const useSeenCloseOutToastStore = create<SeenCloseOutToastsStore>()(
+  persist(
+    (set) => ({
+      trades: [],
+      addTrade: (tradeId) => {
+        set((state) => {
+          const trades = uniq([...state.trades, tradeId]);
+          return { trades };
+        });
+      },
+    }),
+    {
+      name: 'seen_close_out_positions_toasts',
     }
-  } catch {
-    // NOOP
-  }
-  return [];
-};
-
-const useSeen = () => {
-  const [localStorageValue, setLocalStorageValue] =
-    useLocalStorage(LOCAL_STORAGE_KEY);
-  const seen = parseLocalStorageValue(localStorageValue);
-  const setSeen = useCallback(
-    (tradeId: string) => {
-      const newSeen = uniq([...(seen || []), tradeId]);
-      setLocalStorageValue(JSON.stringify(newSeen));
-    },
-    [seen, setLocalStorageValue]
-  );
-
-  return { seen, setSeen };
-};
+  )
+);
 
 const PositionClosedOutToastContent = ({
   closeOutPrice,
@@ -139,7 +130,10 @@ const determinePubKey = (
 export const usePositionCloseOutNotification = () => {
   const { pubKeys } = useVegaWallet();
   const { data: markets } = useMarketsMapProvider();
-  const { seen, setSeen } = useSeen();
+  const [seenTrades, addTrade] = useSeenCloseOutToastStore((state) => [
+    state.trades,
+    state.addTrade,
+  ]);
 
   const [setToast, hasToast, updateToast] = useToasts((store) => [
     store.setToast,
@@ -149,7 +143,7 @@ export const usePositionCloseOutNotification = () => {
 
   const onClose = (tradeId: string) => () => {
     updateToast(createToastId(tradeId), { hidden: true });
-    setSeen(tradeId);
+    addTrade(tradeId);
   };
 
   const pushNotification = (
@@ -167,7 +161,12 @@ export const usePositionCloseOutNotification = () => {
     const pubKey = determinePubKey(trade);
     const toastId = createToastId(trade.id);
 
-    if (!market || !pubKey || seen.includes(trade.id) || hasToast(toastId)) {
+    if (
+      !market ||
+      !pubKey ||
+      seenTrades.includes(trade.id) ||
+      hasToast(toastId)
+    ) {
       return;
     }
 
