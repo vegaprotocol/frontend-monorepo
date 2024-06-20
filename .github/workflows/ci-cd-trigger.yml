@@ -72,6 +72,8 @@ jobs:
         run: yarn nx format:check
 
       - name: Lint affected
+        env:
+          NX_CLOUD: false
         run: yarn nx affected:lint --max-warnings=0
 
       - name: Build affected spec
