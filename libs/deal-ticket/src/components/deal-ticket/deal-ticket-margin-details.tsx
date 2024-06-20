@@ -154,8 +154,14 @@ export const DealTicketMarginDetails = ({
       {productType !== 'Spot' && (
         <KeyValue
           label={t('Liquidation estimate')}
-          value={liquidationPriceEstimateRange}
-          formattedValue={liquidationPriceEstimate}
+          value={
+            productType !== 'CappedFuture'
+              ? liquidationPriceEstimateRange
+              : undefined
+          }
+          formattedValue={
+            productType !== 'CappedFuture' ? liquidationPriceEstimate : '-'
+          }
           symbol={quoteName}
           labelDescription={
             <>

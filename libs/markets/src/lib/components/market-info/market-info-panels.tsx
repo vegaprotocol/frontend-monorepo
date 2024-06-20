@@ -597,14 +597,13 @@ export const InstrumentInfoPanel = ({
               )
             : undefined,
         binarySettlement:
-          market.tradableInstrument.instrument.product.__typename === 'Future'
-            ? market.tradableInstrument.instrument.product.cap?.binarySettlement
-            : undefined,
+          market.tradableInstrument.instrument.product.__typename ===
+            'Future' &&
+          market.tradableInstrument.instrument.product.cap?.binarySettlement,
         fullyCollateralised:
-          market.tradableInstrument.instrument.product.__typename === 'Future'
-            ? market.tradableInstrument.instrument.product.cap
-                ?.fullyCollateralised
-            : undefined,
+          market.tradableInstrument.instrument.product.__typename ===
+            'Future' &&
+          market.tradableInstrument.instrument.product.cap?.fullyCollateralised,
       }}
       parentData={
         parentMarket && {

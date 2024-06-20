@@ -7,12 +7,13 @@ import {
   type Market,
   type ProductType,
   ProductTypeMapping,
+  type ProductTypeExtended,
 } from '@vegaprotocol/types';
 
 export const MarketProductPill = ({
   productType,
 }: {
-  productType?: ProductType;
+  productType?: ProductTypeExtended;
 }) => {
   if (!productType) {
     return null;
@@ -35,8 +36,22 @@ interface MarketNameCellProps {
     | Market;
   idPath?: string;
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
-  productType?: ProductType;
+  productType?: ProductTypeExtended;
 }
+
+const getProductType = (market: Market): ProductTypeExtended | undefined => {
+  if (!market.tradableInstrument?.instrument.product) {
+    return undefined;
+  }
+
+  const { product } = market.tradableInstrument.instrument;
+
+  if (product.__typename === 'Future' && product.cap) {
+    return 'CappedFuture';
+  }
+
+  return product.__typename;
+};
 
 export const MarketNameCell = ({
   value,
@@ -58,9 +73,9 @@ export const MarketNameCell = ({
   productType =
     productType ||
     (data as { productType?: ProductType }).productType ||
-    (data as Market)?.tradableInstrument?.instrument.product.__typename ||
-    (data as { market: Market })?.market?.tradableInstrument.instrument.product
-      .__typename;
+    ((data as { market: Market }) &&
+      getProductType((data as { market: Market }).market)) ||
+    ((data as Market) && getProductType(data as Market));
 
   if (!value) return null;
   const content = (
