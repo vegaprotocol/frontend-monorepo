@@ -1,9 +1,7 @@
 import { GetStarted } from './get-started';
-import { TradingAnchorButton } from '@vegaprotocol/ui-toolkit';
-import { Links } from '../../lib/links';
+import { TradingButton } from '@vegaprotocol/ui-toolkit';
 import { Networks, useEnvironment } from '@vegaprotocol/environment';
 import type { ReactNode } from 'react';
-import { useTopTradedMarkets } from '../../lib/hooks/use-top-traded-markets';
 import { useOnboardingStore } from '../../stores/onboarding';
 import { useT } from '../../lib/use-t';
 
@@ -12,10 +10,6 @@ export const WelcomeDialogContent = () => {
   const { VEGA_ENV } = useEnvironment();
   const setDialog = useOnboardingStore((store) => store.setDialog);
   const dismiss = useOnboardingStore((store) => store.dismiss);
-
-  const { data } = useTopTradedMarkets();
-  const marketId = data && data[0]?.id;
-  const link = marketId ? Links.MARKET(marketId) : Links.MARKETS();
 
   const lead =
     VEGA_ENV === Networks.MAINNET
@@ -49,8 +43,7 @@ export const WelcomeDialogContent = () => {
               )}
             />
           </ul>
-          <TradingAnchorButton
-            href={link}
+          <TradingButton
             onClick={() => {
               setDialog('inactive');
               dismiss();
@@ -59,7 +52,7 @@ export const WelcomeDialogContent = () => {
             data-testid="browse-markets-button"
           >
             {t('Explore')}
-          </TradingAnchorButton>
+          </TradingButton>
         </div>
         <div className="flex sm:w-1/2 grow">
           <GetStarted lead={lead} />

@@ -1,9 +1,15 @@
-import type { RouteObject } from 'react-router-dom';
-import { Navigate, Outlet, useRoutes } from 'react-router-dom';
+import {
+  type RouteObject,
+  Navigate,
+  Outlet,
+  useRoutes,
+} from 'react-router-dom';
 import { lazy, Suspense } from 'react';
+import { compact } from 'lodash';
+
+import { useFeatureFlags } from '@vegaprotocol/environment';
 import { Loader, Splash } from '@vegaprotocol/ui-toolkit';
-import { LayoutCentered } from '../components/layouts';
-import { LayoutWithSky } from '../components/layouts-inner';
+
 import { Home } from '../client-pages/home';
 import { Liquidity } from '../client-pages/liquidity';
 import { MarketsPage } from '../client-pages/markets';
@@ -14,15 +20,11 @@ import { Withdraw } from '../client-pages/withdraw';
 import { Transfer } from '../client-pages/transfer';
 import { Fees } from '../client-pages/fees';
 import { Rewards } from '../client-pages/rewards';
-import { Routes as AppRoutes } from '../lib/links';
 import { Referrals } from '../client-pages/referrals/referrals';
 import { ReferralStatistics } from '../client-pages/referrals/referral-statistics';
 import { ApplyCodeFormContainer } from '../client-pages/referrals/apply-code-form';
 import { CreateCodeContainer } from '../client-pages/referrals/create-code-form';
 import { NotFound as ReferralNotFound } from '../client-pages/referrals/error-boundary';
-import { compact } from 'lodash';
-import { useFeatureFlags } from '@vegaprotocol/environment';
-import { useT } from '../lib/use-t';
 import { CompetitionsHome } from '../client-pages/competitions/competitions-home';
 import { CompetitionsTeams } from '../client-pages/competitions/competitions-teams';
 import { CompetitionsTeam } from '../client-pages/competitions/competitions-team';
@@ -30,6 +32,13 @@ import { CompetitionsCreateTeam } from '../client-pages/competitions/competition
 import { CompetitionsUpdateTeam } from '../client-pages/competitions/competitions-update-team';
 import { CompetitionsGame } from '../client-pages/competitions/competitions-game';
 import { Swap } from '../client-pages/swap/swap';
+import { DepositCrossChain } from '../client-pages/deposit-cross-chain';
+
+import { LayoutCentered } from '../components/layouts';
+import { LayoutWithSky } from '../components/layouts-inner';
+
+import { Routes as AppRoutes } from '../lib/links';
+import { useT } from '../lib/use-t';
 
 // These must remain dynamically imported as pennant cannot be compiled by Next.js due to ESM
 // Using dynamic imports is a workaround for this until pennant is published as ESM
@@ -188,6 +197,11 @@ export const useRouterConfig = (): RouteObject[] => {
             { path: 'deposit', element: <Deposit />, id: AppRoutes.DEPOSIT },
             { path: 'withdraw', element: <Withdraw />, id: AppRoutes.WITHDRAW },
             { path: 'transfer', element: <Transfer />, id: AppRoutes.TRANSFER },
+            {
+              path: 'deposit-cross-chain',
+              element: <DepositCrossChain />,
+              id: AppRoutes.DEPOSIT_CROSS_CHAIN,
+            },
             { path: 'swap', element: <Swap />, id: AppRoutes.SWAP },
           ],
         },

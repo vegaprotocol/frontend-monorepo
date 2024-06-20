@@ -1,5 +1,8 @@
-import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
+import { render, screen } from '@testing-library/react';
+
+import { MockedWalletProvider } from '@vegaprotocol/wallet-react/testing';
+
 import { Transfer } from './transfer';
 
 jest.mock('@vegaprotocol/accounts', () => ({
@@ -15,7 +18,9 @@ jest.mock('../../components/welcome-dialog/get-started', () => ({
 const renderJsx = (route = '/transfer') => {
   render(
     <MemoryRouter initialEntries={[route]}>
-      <Transfer />
+      <MockedWalletProvider>
+        <Transfer />
+      </MockedWalletProvider>
     </MemoryRouter>
   );
 };
