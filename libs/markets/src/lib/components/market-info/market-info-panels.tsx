@@ -588,8 +588,13 @@ export const InstrumentInfoPanel = ({
         productType,
         quoteName: getQuoteName(market),
         maxPrice:
-          market.tradableInstrument.instrument.product.__typename === 'Future'
-            ? market.tradableInstrument.instrument.product.cap?.maxPrice
+          market.tradableInstrument.instrument.product.__typename ===
+            'Future' &&
+          market.tradableInstrument.instrument.product.cap?.maxPrice
+            ? addDecimalsFormatNumber(
+                market.tradableInstrument.instrument.product.cap.maxPrice,
+                market.decimalPlaces
+              )
             : undefined,
         binarySettlement:
           market.tradableInstrument.instrument.product.__typename === 'Future'
