@@ -1,6 +1,6 @@
 import pytest
 from playwright.sync_api import expect, Page
-import vega_sim.proto.vega as vega_protos
+from vega_python_protos import vega as vega_protos
 from vega_sim.null_service import VegaServiceNull
 from conftest import init_vega, cleanup_container
 from actions.utils import next_epoch, change_keys
