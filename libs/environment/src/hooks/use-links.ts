@@ -174,6 +174,7 @@ export const EXPLORER_TX = '/txs/:hash';
 export const EXPLORER_ORACLE = '/oracles/:id';
 export const EXPLORER_MARKET = '/markets/:id';
 export const EXPLORER_PARTIES = '/parties/:id';
+export const EXPLORER_ASSET = '/assets/:id';
 
 // Etherscan pages
 export const ETHERSCAN_ADDRESS = '/address/:hash';
