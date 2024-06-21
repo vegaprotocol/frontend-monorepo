@@ -16,9 +16,10 @@ export const AssetOption = ({ asset }: { asset: AssetFieldsFragment }) => {
     <div className="w-full flex items-center gap-2">
       <EmblemByAsset asset={asset.id} vegaChain={vegaChainId} />
       <div className="text-xs text-left">
-        <div>{asset.name}</div>
         <div>
-          {asset.symbol}{' '}
+          {asset.name} {asset.symbol}
+        </div>
+        <div>
           {asset.source.__typename === 'ERC20'
             ? truncateMiddle(asset.source.contractAddress)
             : asset.source.__typename}
