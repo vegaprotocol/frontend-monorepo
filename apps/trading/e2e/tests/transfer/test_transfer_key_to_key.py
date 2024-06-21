@@ -8,7 +8,7 @@ from actions.utils import (
     next_epoch,
     change_keys,
 )
-import vega_sim.proto.vega as vega_protos
+from vega_python_protos import vega as vega_protos
 from wallet_config import PARTY_A, PARTY_B, PARTY_C
 
 

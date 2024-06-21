@@ -1,5 +1,5 @@
 import pytest
-import vega_sim.proto.vega as vega_protos
+from vega_python_protos import vega as vega_protos
 from playwright.sync_api import Page, expect
 from vega_sim.null_service import VegaServiceNull
 from wallet_config import MM_WALLET, PARTY_A, PARTY_B
