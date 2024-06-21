@@ -8,6 +8,7 @@ import {
 import {
   useAssetDetailsDialogStore,
   type AssetFieldsFragment,
+  type AssetERC20,
 } from '@vegaprotocol/assets';
 import { z } from 'zod';
 import { Controller, useForm, useWatch } from 'react-hook-form';
@@ -32,14 +33,11 @@ import {
   Intent,
   TradingRichSelect,
   TradingOption,
-  KeyValueTable,
-  KeyValueTableRow,
 } from '@vegaprotocol/ui-toolkit';
 import { ConnectKitButton } from 'connectkit';
 import { useEffect } from 'react';
 import {
   addDecimalsFormatNumber,
-  formatNumberRounded,
   removeDecimal,
   toBigNum,
 } from '@vegaprotocol/utils';
@@ -54,6 +52,7 @@ import {
   FormSecondaryActionButton,
   FormSecondaryActionWrapper,
 } from '../form-secondary-action';
+import { Thresholds } from './thresholds';
 
 type Configs = Array<EthereumConfig | EVMBridgeConfig>;
 
@@ -76,6 +75,7 @@ export const WithdrawContainer = ({
   const accounts = data?.filter(
     (a) => a.type === AccountType.ACCOUNT_TYPE_GENERAL
   );
+
   const account = accounts?.find((a) => a.asset.id === initialAssetId);
   const asset = account?.asset;
 
@@ -142,6 +142,7 @@ const WithdrawForm = ({
   });
 
   const assetId = useWatch({ name: 'assetId', control: form.control });
+  const amount = useWatch({ name: 'amount', control: form.control });
   const account = accounts?.find((a) => a.asset.id === assetId);
 
   const { data } = useReadWithdrawalData({ asset: account?.asset, configs });
@@ -240,21 +241,22 @@ const WithdrawForm = ({
                 {accounts.map((a) => {
                   return (
                     <TradingOption value={a.asset.id} key={a.asset.id}>
-                      <div className="w-full flex items-start gap-2">
+                      <div className="w-full flex items-center gap-2">
                         <EmblemByAsset
                           asset={a.asset.id}
                           vegaChain={vegaChainId}
                         />
-                        <div className="text-xs text-left">
-                          <div>{a.asset.name}</div>
+                        <div className="text-sm text-left leading-4">
                           <div>
-                            {a.asset.symbol}{' '}
+                            {a.asset.name} | {a.asset.symbol}
+                          </div>
+                          <div className="text-secondary text-xs">
                             {a.asset.source.__typename === 'ERC20'
                               ? truncateMiddle(a.asset.source.contractAddress)
                               : a.asset.source.__typename}
                           </div>
                         </div>
-                        <div className="ml-auto self-end text-xs">
+                        <div className="ml-auto text-sm">
                           {addDecimalsFormatNumber(a.balance, a.asset.decimals)}
                         </div>
                       </div>
@@ -320,37 +322,6 @@ const WithdrawForm = ({
           </TradingInputError>
         )}
       </FormGroup>
-      {data && account && (
-        <div className="pb-4">
-          <KeyValueTable>
-            <KeyValueTableRow>
-              <div>{t('Balance available')}</div>
-              <div>
-                {addDecimalsFormatNumber(
-                  account.balance || '0',
-                  account.asset.decimals
-                )}
-              </div>
-            </KeyValueTableRow>
-            <KeyValueTableRow>
-              <div>{t('Delay threshold')}</div>
-              <div>
-                {formatNumberRounded(
-                  toBigNum(data.threshold || '0', account.asset.decimals)
-                )}
-              </div>
-            </KeyValueTableRow>
-            <KeyValueTableRow>
-              <div>{t('Delay time')}</div>
-              <div>{data.delay}s</div>
-            </KeyValueTableRow>
-            <KeyValueTableRow>
-              <div>Gas</div>
-              <div>{/* TODO: get gas */}</div>
-            </KeyValueTableRow>
-          </KeyValueTable>
-        </div>
-      )}
       <FormGroup label={t('Amount')} labelFor="amount">
         <Input {...form.register('amount')} />
         {form.formState.errors.amount?.message && (
@@ -374,6 +345,13 @@ const WithdrawForm = ({
           </FormSecondaryActionWrapper>
         )}
       </FormGroup>
+      {account && data && account.asset.source.__typename === 'ERC20' && (
+        <Thresholds
+          amount={amount}
+          asset={account.asset as AssetERC20}
+          data={data}
+        />
+      )}
       <TradingButton
         type="submit"
         size="large"
@@ -436,9 +414,11 @@ const useReadWithdrawalData = ({
 
   return {
     ...queryResult,
-    data: {
-      delay: data && data[0].result?.toString(),
-      threshold: data && data[1].result?.toString(),
-    },
+    data: data
+      ? {
+          delay: data[0].result?.toString() || '0',
+          threshold: data[1].result?.toString() || '0',
+        }
+      : undefined,
   };
 };

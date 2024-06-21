@@ -59,7 +59,7 @@ export const DepositContainer = ({
 
   const allConfigs = [config, ...configs];
 
-  // Make sure asset is an exsiting enabled asset
+  // Make sure asset is an existing enabled asset
   const asset = assets?.find((a) => a.id === initialAssetId);
 
   return (

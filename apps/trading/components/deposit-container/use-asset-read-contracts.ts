@@ -77,10 +77,10 @@ export const useAssetReadContracts = ({
     ...queryResult,
     data: data
       ? {
-          balanceOf: data[0].result ? data[0].result.toString() : '0',
-          allowance: data[1].result ? data[1].result?.toString() : '0',
-          lifetimeLimit: data[2].result ? data[2].result?.toString() : '0',
-          isExempt: data[3].result ? data[3].result?.toString() : '0',
+          balanceOf: data[0].result?.toString() || '0',
+          allowance: data[1].result?.toString() || '0',
+          lifetimeLimit: data[2].result?.toString() || '0',
+          isExempt: data[3].result?.toString() || '0',
           deposited: depositedData
             ? new BigNumber(depositedData, 16).toString()
             : '0',
