@@ -15,7 +15,7 @@ export const AssetOption = ({ asset }: { asset: AssetFieldsFragment }) => {
   return (
     <div className="w-full flex items-center gap-2">
       <EmblemByAsset asset={asset.id} vegaChain={vegaChainId} />
-      <div className="text-sm text-left">
+      <div className="text-sm text-left leading-4">
         <div>
           {asset.name} | {asset.symbol}
         </div>
