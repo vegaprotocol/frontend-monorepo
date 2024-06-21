@@ -65,6 +65,7 @@ export const DepositContainer = ({
 
   const allConfigs = [config, ...configs];
 
+  // Make sure asset is an exsiting enabled asset
   const asset = assets?.find((a) => a.id === initialAssetId);
 
   return (
@@ -303,7 +304,7 @@ const DepositForm = ({
               </div>
             </KeyValueTableRow>
             <KeyValueTableRow>
-              <div>{t('Allowance')}</div>
+              <div>{t('Approved amount')}</div>
               <div>
                 {formatNumberRounded(
                   toBigNum(data.allowance || '0', asset.decimals)
