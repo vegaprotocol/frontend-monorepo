@@ -357,6 +357,27 @@ fragment UpdateNetworkParameterFields on UpdateNetworkParameter {
   }
 }
 
+fragment DispatchStrategyFields on DispatchStrategy {
+  dispatchMetric
+  dispatchMetricAssetId
+  distributionStrategy
+  marketIdsInScope
+  entityScope
+  individualScope
+  teamScope
+  nTopPerformers
+  stakingRequirement
+  notionalTimeWeightedAveragePositionRequirement
+  windowLength
+  lockPeriod
+  rankTable {
+    startRank
+    shareRatio
+  }
+  capRewardFeeMultiple
+  transferInterval
+}
+
 fragment NewTransferFields on NewTransfer {
   source
   sourceType
@@ -379,6 +400,9 @@ fragment NewTransferFields on NewTransfer {
     ... on RecurringGovernanceTransfer {
       startEpoch
       endEpoch
+      dispatchStrategy {
+        ...DispatchStrategyFields
+      }
     }
   }
 }
