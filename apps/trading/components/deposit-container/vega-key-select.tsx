@@ -25,7 +25,7 @@ export const VegaKeySelect = ({
 
   return (
     <>
-      {isInputVegaKey ? input : select}
+      {status === 'disconnected' || isInputVegaKey ? input : select}
       <FormSecondaryActionWrapper>
         {status === 'connected' ? (
           <FormSecondaryActionButton
