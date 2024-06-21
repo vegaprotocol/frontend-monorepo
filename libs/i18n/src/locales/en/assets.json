@@ -2,7 +2,6 @@
   "A Vega builtin asset": "A Vega builtin asset",
   "An asset originated from an Ethereum ERC20 Token": "An asset originated from an Ethereum ERC20 Token",
   "Asset can be used on the Vega network": "Asset can be used on the Vega network",
-  "Asset details - {{symbol}}": "Asset details - {{symbol}}",
   "Asset has been proposed to the network": "Asset has been proposed to the network",
   "Asset has been rejected": "Asset has been rejected",
   "Asset needs to be added to the Ethereum bridge": "Asset needs to be added to the Ethereum bridge",
