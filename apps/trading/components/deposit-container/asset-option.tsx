@@ -13,7 +13,7 @@ export const AssetOption = ({ asset }: { asset: AssetFieldsFragment }) => {
   const vegaChainId = useWallet((store) => store.chainId);
 
   return (
-    <div className="w-full flex items-start gap-2">
+    <div className="w-full flex items-center gap-2">
       <EmblemByAsset asset={asset.id} vegaChain={vegaChainId} />
       <div className="text-xs text-left">
         <div>{asset.name}</div>
@@ -43,7 +43,7 @@ const ERC20 = ({ asset }: { asset: AssetERC20 }) => {
   });
 
   return (
-    <div className="ml-auto self-end text-xs">
+    <div className="ml-auto text-xs">
       {data ? addDecimalsFormatNumber(data.toString(), asset.decimals) : '0'}
     </div>
   );
