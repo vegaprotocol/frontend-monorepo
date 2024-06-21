@@ -320,7 +320,7 @@ def test_game_card(competitions_page: Tuple[Page, str, VegaServiceNull]):
     expect(game_1.get_by_test_id("assessed-over")).to_have_text("15 epochs")
     expect(game_1.get_by_test_id("scope")).to_have_text("Eligible")
     expect(game_1.get_by_test_id("staking-requirement")).to_have_text("-")
-    expect(game_1.get_by_test_id("average-position")).to_have_text("-")
+    expect(game_1.get_by_test_id("average-position")).to_have_text("1,028.21311")
 
 def test_game_results_page(competitions_page: Tuple[Page, str, VegaServiceNull]):
     page, team_name, vega = competitions_page
