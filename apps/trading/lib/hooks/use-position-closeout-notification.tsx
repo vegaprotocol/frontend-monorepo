@@ -51,7 +51,7 @@ const useSeenCloseOutToastStore = create<SeenCloseOutToastsStore>()(
       },
     }),
     {
-      name: 'seen_close_out_positions_toasts',
+      name: 'vega_seen_close_out_positions_toasts',
     }
   )
 );
