@@ -99,8 +99,6 @@ def setup_market_and_referral_scheme(vega: VegaServiceNull, continuous_market: s
     vega.create_referral_set(key_name=PARTY_A.name)
     forward_time(vega, True)
 
-    referral_set_id = list(vega.list_referral_sets().keys())[0]
-    vega.apply_referral_code(key_name=PARTY_B.name, id=referral_set_id)
 
     tdai_id = vega.find_asset_id(symbol="tDAI")
     vega.mint(
@@ -116,6 +114,8 @@ def setup_market_and_referral_scheme(vega: VegaServiceNull, continuous_market: s
 
     submit_liquidity(vega, MM_WALLET.name, continuous_market, 100, 100)
     forward_time(vega)
+    referral_set_id = list(vega.list_referral_sets().keys())[0]
+    vega.apply_referral_code(key_name=PARTY_B.name, id=referral_set_id)
 
 
 @pytest.mark.usefixtures("auth", "risk_accepted")
