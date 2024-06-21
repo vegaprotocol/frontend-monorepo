@@ -209,11 +209,13 @@ const PortfolioActionTabs = () => {
   );
 };
 
+export const PORTFOLIO_TOP_TABS = 'console-portfolio-top-1';
+
 const PortfolioTopTabs = () => {
   const t = useT();
 
   return (
-    <Tabs storageKey="console-portfolio-top-1">
+    <Tabs storageKey={PORTFOLIO_TOP_TABS}>
       <Tab
         id="positions"
         name={t('Positions')}

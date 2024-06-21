@@ -1,8 +1,8 @@
 import * as TabsPrimitive from '@radix-ui/react-tabs';
 import {
-  useLocalStorageSnapshot,
   getValidItem,
   useResizeObserver,
+  useLocalStorage,
 } from '@vegaprotocol/react-helpers';
 import classNames from 'classnames';
 import type { ReactElement, ReactNode } from 'react';
@@ -160,14 +160,14 @@ export const Tab = ({ children, ...props }: TabProps) => {
   return <div {...props}>{children}</div>;
 };
 
+export const createActiveTabKey = (key: string) => `active-tab-${key}`;
 export const LocalStoragePersistTabs = ({
   storageKey,
   children,
   ...props
 }: Omit<TabsProps, 'value' | 'onValueChange'> & { storageKey: string }) => {
-  const [value, onValueChange] = useLocalStorageSnapshot(
-    `active-tab-${storageKey}`
-  );
+  const [value, setValue] = useLocalStorage(createActiveTabKey(storageKey));
+  const onValueChange = (value: string) => setValue(value);
   return (
     <Tabs
       {...props}

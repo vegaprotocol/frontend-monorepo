@@ -46,6 +46,8 @@ export const tradesUpdateSubscription = (
         marketId: 'market-0',
         aggressor: Side.SIDE_BUY,
         type: TradeType.TYPE_DEFAULT,
+        buyerId: '1',
+        sellerId: '2',
       },
     ],
   };
@@ -65,6 +67,14 @@ const trades: TradeFieldsFragment[] = [
     },
     type: TradeType.TYPE_DEFAULT,
     __typename: 'Trade',
+    buyer: {
+      __typename: 'Party',
+      id: '1',
+    },
+    seller: {
+      __typename: 'Party',
+      id: '2',
+    },
   },
   {
     id: 'FFFFB91453AC8F26EDAC223E2FB6C4A61461B1837946B51D943D675FB94FDF72',
@@ -78,6 +88,14 @@ const trades: TradeFieldsFragment[] = [
     },
     type: TradeType.TYPE_DEFAULT,
     __typename: 'Trade',
+    buyer: {
+      __typename: 'Party',
+      id: '1',
+    },
+    seller: {
+      __typename: 'Party',
+      id: '2',
+    },
   },
   {
     id: 'FFFFBC80005C517A10ACF481F7E6893769471098E696D0CC407F18134044CB16',
@@ -91,5 +109,13 @@ const trades: TradeFieldsFragment[] = [
     },
     type: TradeType.TYPE_DEFAULT,
     __typename: 'Trade',
+    buyer: {
+      __typename: 'Party',
+      id: '1',
+    },
+    seller: {
+      __typename: 'Party',
+      id: '2',
+    },
   },
 ];

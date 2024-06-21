@@ -18,6 +18,14 @@ const trade: Trade = {
     positionDecimalPlaces: 2,
   } as Trade['market'],
   type: TradeType.TYPE_DEFAULT,
+  buyer: {
+    __typename: 'Party',
+    id: '1',
+  },
+  seller: {
+    __typename: 'Party',
+    id: '2',
+  },
 };
 
 describe('TradesTable', () => {
