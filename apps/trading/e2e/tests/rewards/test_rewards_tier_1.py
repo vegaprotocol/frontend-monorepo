@@ -23,7 +23,7 @@ def setup_environment(request, browser) -> Generator[Tuple[Page, str, str], None
 
         tDAI_market, tDAI_asset_id = setup_market_with_reward_program(
             vega_instance)
-
+    
         with init_page(vega_instance, browser, request) as page:
             risk_accepted_setup(page)
             auth_setup(vega_instance, page)
@@ -198,7 +198,7 @@ def test_epoch_counter(
     setup_environment: Tuple[Page, str, str],
 ) -> None:
     page, tDAI_market, tDAI_asset_id = setup_environment
-    expect(page.get_by_test_id("epoch-countdown")).to_contain_text("Epoch 10")
+    expect(page.get_by_test_id("epoch-countdown")).to_contain_text("Epoch 11")
 
 
 def test_staking_reward(
