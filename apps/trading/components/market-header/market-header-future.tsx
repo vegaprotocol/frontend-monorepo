@@ -46,6 +46,10 @@ export const MarketHeaderFuture = ({ market }: MarketHeaderFutureProps) => {
         quantum={asset.quantum}
       />
       <Stats.ExpiryStat market={market} />
+      <Stats.PriceCapStat
+        marketId={market.id}
+        decimalPlaces={market.decimalPlaces}
+      />
     </>
   );
 };

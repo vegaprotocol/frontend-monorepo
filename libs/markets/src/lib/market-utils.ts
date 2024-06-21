@@ -79,6 +79,10 @@ export const getProductType = (market: Pick<Market, 'tradableInstrument'>) => {
     throw new Error('Failed to retrieve asset. Invalid product type');
   }
 
+  if (type === 'Future' && market.tradableInstrument.instrument.product.cap) {
+    return 'CappedFuture';
+  }
+
   return type;
 };
 

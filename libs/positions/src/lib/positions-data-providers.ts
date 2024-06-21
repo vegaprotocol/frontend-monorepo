@@ -21,6 +21,7 @@ import {
   getAsset,
   marketInfoProvider,
   type MarketInfo,
+  getProductType,
 } from '@vegaprotocol/markets';
 import {
   PositionsDocument,
@@ -38,7 +39,7 @@ import {
   StopOrderSizeOverrideSetting,
   type MarketTradingMode,
   type PositionStatus,
-  type ProductType,
+  type ProductTypeExtended,
 } from '@vegaprotocol/types';
 import {
   type StopOrderFieldsFragment,
@@ -75,7 +76,7 @@ export interface Position {
   totalMarginAccountBalance: string;
   unrealisedPNL: string;
   updatedAt: string | null;
-  productType: ProductType;
+  productType: ProductTypeExtended;
   stopOrders?: StopOrderFieldsFragment[] | null;
 }
 
@@ -194,8 +195,7 @@ export const getMetrics = (
         .toFixed(),
       unrealisedPNL: position.unrealisedPNL,
       updatedAt: position.updatedAt || null,
-      productType: market?.tradableInstrument.instrument.product
-        .__typename as ProductType,
+      productType: getProductType(market),
     });
   });
   return metrics;

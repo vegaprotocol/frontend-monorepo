@@ -1803,6 +1803,7 @@ export interface components {
     readonly vegaIndividualScope:
       | 'INDIVIDUAL_SCOPE_UNSPECIFIED'
       | 'INDIVIDUAL_SCOPE_ALL'
+      | 'INDIVIDUAL_SCOPE_AMM'
       | 'INDIVIDUAL_SCOPE_IN_TEAM'
       | 'INDIVIDUAL_SCOPE_NOT_IN_TEAM';
     /** Instrument configuration */

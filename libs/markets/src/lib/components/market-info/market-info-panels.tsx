@@ -5,6 +5,7 @@ import { AssetDetailsTable, useAssetDataProvider } from '@vegaprotocol/assets';
 import { marketDataProvider } from '../../market-data-provider';
 import {
   getBaseAsset,
+  getProductType,
   getQuoteAsset,
   totalFeesFactorsPercentage,
 } from '../../market-utils';
@@ -578,13 +579,36 @@ export const InstrumentInfoPanel = ({
   market,
   parentMarket,
 }: MarketInfoProps) => {
+  const productType = getProductType(market);
   return (
     <MarketInfoTable
       data={{
         marketName: market.tradableInstrument.instrument.name,
         code: market.tradableInstrument.instrument.code,
-        productType: market.tradableInstrument.instrument.product.__typename,
+        productType:
+          market.tradableInstrument.instrument.product.__typename ===
+            'Future' &&
+          market.tradableInstrument.instrument.product.cap?.binarySettlement
+            ? 'Binary Option'
+            : productType,
         quoteName: getQuoteName(market),
+        priceCap:
+          market.tradableInstrument.instrument.product.__typename ===
+            'Future' &&
+          market.tradableInstrument.instrument.product.cap?.maxPrice
+            ? addDecimalsFormatNumber(
+                market.tradableInstrument.instrument.product.cap.maxPrice,
+                market.decimalPlaces
+              )
+            : undefined,
+        binarySettlement:
+          market.tradableInstrument.instrument.product.__typename ===
+            'Future' &&
+          market.tradableInstrument.instrument.product.cap?.binarySettlement,
+        fullyCollateralised:
+          market.tradableInstrument.instrument.product.__typename ===
+            'Future' &&
+          market.tradableInstrument.instrument.product.cap?.fullyCollateralised,
       }}
       parentData={
         parentMarket && {
