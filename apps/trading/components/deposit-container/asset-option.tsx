@@ -15,11 +15,11 @@ export const AssetOption = ({ asset }: { asset: AssetFieldsFragment }) => {
   return (
     <div className="w-full flex items-center gap-2">
       <EmblemByAsset asset={asset.id} vegaChain={vegaChainId} />
-      <div className="text-xs text-left">
+      <div className="text-sm text-left">
         <div>
-          {asset.name} {asset.symbol}
+          {asset.name} | {asset.symbol}
         </div>
-        <div>
+        <div className="text-secondary text-xs">
           {asset.source.__typename === 'ERC20'
             ? truncateMiddle(asset.source.contractAddress)
             : asset.source.__typename}
@@ -44,7 +44,7 @@ const ERC20 = ({ asset }: { asset: AssetERC20 }) => {
   });
 
   return (
-    <div className="ml-auto text-xs">
+    <div className="ml-auto text-sm">
       {data ? addDecimalsFormatNumber(data.toString(), asset.decimals) : '0'}
     </div>
   );
