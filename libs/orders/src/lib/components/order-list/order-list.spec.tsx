@@ -170,9 +170,11 @@ describe('OrderListTable', () => {
     });
     const cells = screen.getAllByRole('gridcell');
     expect(cells[4]).toHaveTextContent(
-      `${Schema.OrderStatusMapping[rejectedOrder.status]}: ${
-        Schema.OrderRejectionReasonMapping[rejectedOrder.rejectionReason]
-      }`
+      `${
+        Schema.OrderStatusMapping[
+          rejectedOrder.status as keyof typeof Schema.OrderStatusMapping
+        ]
+      }: ${Schema.OrderRejectionReasonMapping[rejectedOrder.rejectionReason]}`
     );
   });
 

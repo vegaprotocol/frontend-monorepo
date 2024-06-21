@@ -260,6 +260,11 @@ fragment INewMarketFields on NewMarket {
     code
     product {
       ... on FutureProduct {
+        cap {
+          maxPrice
+          binarySettlement
+          fullyCollateralised
+        }
         settlementAsset {
           id
           name

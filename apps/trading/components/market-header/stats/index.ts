@@ -10,3 +10,4 @@ export { LiquidityStat } from './liquidity';
 export { IndexPriceStat } from './index-price';
 export { FundingRateStat } from './funding-rate';
 export { Oracle } from './oracle';
+export { PriceCapStat } from './price-cap';
