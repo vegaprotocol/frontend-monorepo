@@ -15,8 +15,6 @@ import {
   truncateMiddle,
   TradingInputError,
   Intent,
-  KeyValueTable,
-  KeyValueTableRow,
   TradingRichSelect,
   TradingOption,
 } from '@vegaprotocol/ui-toolkit';
@@ -24,11 +22,7 @@ import { useVegaWallet } from '@vegaprotocol/wallet-react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm, useWatch } from 'react-hook-form';
-import {
-  addDecimalsFormatNumber,
-  formatNumberRounded,
-  toBigNum,
-} from '@vegaprotocol/utils';
+import { toBigNum } from '@vegaprotocol/utils';
 import {
   useEVMBridgeConfigs,
   useEthereumConfig,
@@ -280,9 +274,11 @@ const DepositForm = ({
                     {pubKeys.map((k) => {
                       return (
                         <TradingOption value={k.publicKey} key={k.publicKey}>
-                          <div className="text-xs">
+                          <div className="leading-4">
                             <div>{k.name}</div>
-                            <div>{truncateMiddle(k.publicKey)}</div>
+                            <div className="text-xs text-secondary">
+                              {truncateMiddle(k.publicKey)}
+                            </div>
                           </div>
                         </TradingOption>
                       );
@@ -299,42 +295,6 @@ const DepositForm = ({
           </TradingInputError>
         )}
       </FormGroup>
-      {data && asset && (
-        <div className="pb-4">
-          <KeyValueTable>
-            <KeyValueTableRow>
-              <div>{t('Balance available')}</div>
-              <div>
-                {addDecimalsFormatNumber(data.balanceOf || '0', asset.decimals)}
-              </div>
-            </KeyValueTableRow>
-            <KeyValueTableRow>
-              <div>{t('Approved amount')}</div>
-              <div>
-                {formatNumberRounded(
-                  toBigNum(data.allowance || '0', asset.decimals)
-                )}
-              </div>
-            </KeyValueTableRow>
-            <KeyValueTableRow>
-              <div>{t('Deposit cap')}</div>
-              <div>
-                {formatNumberRounded(
-                  toBigNum(data.lifetimeLimit || '0', asset.decimals)
-                )}
-              </div>
-            </KeyValueTableRow>
-            <KeyValueTableRow>
-              <div>{t('Deposited')}</div>
-              <div>
-                {formatNumberRounded(
-                  toBigNum(data.deposited || '0', asset.decimals)
-                )}
-              </div>
-            </KeyValueTableRow>
-          </KeyValueTable>
-        </div>
-      )}
       <FormGroup label="Amount" labelFor="amount">
         <Input {...form.register('amount')} />
         {form.formState.errors.amount?.message && (

@@ -1,11 +1,12 @@
 import { type QueryKey } from '@tanstack/react-query';
 import { type AssetERC20 } from '@vegaprotocol/assets';
-import { Intent, Notification } from '@vegaprotocol/ui-toolkit';
+import { Intent, Notification, Tooltip } from '@vegaprotocol/ui-toolkit';
 
 import { toBigNum, formatNumber } from '@vegaprotocol/utils';
 import { useT } from '../../lib/use-t';
 import { useEvmApprove } from '../../lib/hooks/use-evm-approve';
 import { type EVMBridgeConfig, type EthereumConfig } from '@vegaprotocol/web3';
+import { Trans } from 'react-i18next';
 
 export const Approval = ({
   asset,
@@ -21,6 +22,7 @@ export const Approval = ({
     allowance: string;
     lifetimeLimit: string;
     isExempt: string;
+    deposited: string;
   };
   configs: Array<EthereumConfig | EVMBridgeConfig>;
   queryKey: QueryKey;
@@ -30,6 +32,8 @@ export const Approval = ({
   const { submitApprove, data: dataApprove } = useEvmApprove({ queryKey });
 
   const allowance = toBigNum(data.allowance, asset.decimals);
+  const deposited = toBigNum(data.deposited, asset.decimals);
+  const cap = toBigNum(data.lifetimeLimit, asset.decimals);
   const amount = toBigNum(_amount, 0); // amount is raw user input so no need for decimals
 
   const handleActionClick = () => {
@@ -44,6 +48,47 @@ export const Approval = ({
 
     submitApprove({ asset, bridgeAddress });
   };
+
+  if (deposited.isGreaterThanOrEqualTo(cap)) {
+    return (
+      <div className="mb-4">
+        <Notification
+          intent={Intent.Warning}
+          testId="deposited-capped"
+          message={
+            <p>
+              <Tooltip
+                description={
+                  <dl className="grid gap-1 grid-cols-[min-content_1fr]">
+                    <dt>{t('Deposited')}</dt>
+                    <dd className="text-right">{formatNumber(deposited)}</dd>
+                    <dt>{t('Capped at')}</dt>
+                    <dd className="text-right break-all">
+                      {formatNumber(cap)}
+                    </dd>
+                  </dl>
+                }
+              >
+                <span>
+                  <Trans
+                    i18nKey="You have deposited more than the <0>lifetime deposit</0> cap for this asset."
+                    components={[
+                      <span
+                        className="underline underline-offset-4"
+                        key="tooltip"
+                      >
+                        lifetime deposit
+                      </span>,
+                    ]}
+                  />
+                </span>
+              </Tooltip>
+            </p>
+          }
+        />
+      </div>
+    );
+  }
 
   if (allowance.isZero()) {
     return (

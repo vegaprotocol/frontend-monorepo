@@ -631,6 +631,7 @@
   "You can opt out any time via settings": "You can opt out any time via settings",
   "You can set your pubkey alias by using the key selector in the top right corner.": "You can set your pubkey alias by using the key selector in the top right corner.",
   "You cannot join a private team": "You cannot join a private team",
+  "You have deposited more than the <0>lifetime deposit</0> cap for this asset.": "You have deposited more than the <0>lifetime deposit</0> cap for this asset.",
   "You may encounter bugs, loss of functionality or loss of assets.": "You may encounter bugs, loss of functionality or loss of assets.",
   "You must be connected to the Vega wallet.": "You must be connected to the Vega wallet.",
   "You need a <0>Vega wallet</0> to start trading in this market.": "You need a <0>Vega wallet</0> to start trading in this market.",

@@ -253,6 +253,8 @@ describe('formatNumberRounded', () => {
 
   it('respects the limit parameter', () => {
     expect(formatNumberRounded(new BigNumber(1_000), '1e3')).toBe('1k');
+    expect(formatNumberRounded(new BigNumber(1_500), '1e3')).toBe('1.5k');
+    expect(formatNumberRounded(new BigNumber(1_523), '1e3')).toBe('1.5k');
     expect(formatNumberRounded(new BigNumber(1_000_000), '1e9')).toBe(
       '1,000,000'
     );
