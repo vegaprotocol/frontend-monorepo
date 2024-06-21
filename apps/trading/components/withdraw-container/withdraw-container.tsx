@@ -207,16 +207,18 @@ const WithdrawForm = ({
                 <input
                   value={pubKey}
                   readOnly
-                  className="appearance-none bg-transparent text-sm text-muted w-full focus:outline-none"
+                  className="appearance-none bg-transparent text-sm text-muted w-full focus:outline-none truncate"
                   tabIndex={-1}
                 />
-                <button
-                  type="button"
-                  className="underline underline-offset-4 text-xs"
-                  onClick={() => vegaDisconnect()}
-                >
-                  {t('Disconnect')}
-                </button>
+                <FormSecondaryActionWrapper>
+                  <FormSecondaryActionButton
+                    type="button"
+                    className="underline underline-offset-4 text-xs"
+                    onClick={() => vegaDisconnect()}
+                  >
+                    {t('Disconnect')}
+                  </FormSecondaryActionButton>
+                </FormSecondaryActionWrapper>
               </div>
             );
           }}
@@ -224,6 +226,46 @@ const WithdrawForm = ({
         {form.formState.errors.fromPubKey?.message && (
           <TradingInputError>
             {form.formState.errors.fromPubKey.message}
+          </TradingInputError>
+        )}
+      </FormGroup>
+      <FormGroup label={t('To address')} labelFor="toAddress">
+        <Controller
+          name="toAddress"
+          control={form.control}
+          render={({ field }) => {
+            return (
+              <>
+                <Input value={field.value} onChange={field.onChange} />
+                <FormSecondaryActionWrapper>
+                  {isConnected ? (
+                    <FormSecondaryActionButton onClick={() => evmDisconnect()}>
+                      {t('Disconnect')}
+                    </FormSecondaryActionButton>
+                  ) : (
+                    <ConnectKitButton.Custom>
+                      {({ show }) => {
+                        return (
+                          <FormSecondaryActionButton
+                            type="button"
+                            onClick={() => {
+                              if (show) show();
+                            }}
+                          >
+                            {t('Connect')}
+                          </FormSecondaryActionButton>
+                        );
+                      }}
+                    </ConnectKitButton.Custom>
+                  )}
+                </FormSecondaryActionWrapper>
+              </>
+            );
+          }}
+        />
+        {form.formState.errors.toAddress?.message && (
+          <TradingInputError>
+            {form.formState.errors.toAddress.message}
           </TradingInputError>
         )}
       </FormGroup>
@@ -280,46 +322,6 @@ const WithdrawForm = ({
               {t('View asset details')}
             </FormSecondaryActionButton>
           </FormSecondaryActionWrapper>
-        )}
-      </FormGroup>
-      <FormGroup label={t('To address')} labelFor="toAddress">
-        <Controller
-          name="toAddress"
-          control={form.control}
-          render={({ field }) => {
-            return (
-              <>
-                <Input value={field.value} onChange={field.onChange} />
-                <FormSecondaryActionWrapper>
-                  {isConnected ? (
-                    <FormSecondaryActionButton onClick={() => evmDisconnect()}>
-                      {t('Disconnect')}
-                    </FormSecondaryActionButton>
-                  ) : (
-                    <ConnectKitButton.Custom>
-                      {({ show }) => {
-                        return (
-                          <FormSecondaryActionButton
-                            type="button"
-                            onClick={() => {
-                              if (show) show();
-                            }}
-                          >
-                            {t('Connect')}
-                          </FormSecondaryActionButton>
-                        );
-                      }}
-                    </ConnectKitButton.Custom>
-                  )}
-                </FormSecondaryActionWrapper>
-              </>
-            );
-          }}
-        />
-        {form.formState.errors.toAddress?.message && (
-          <TradingInputError>
-            {form.formState.errors.toAddress.message}
-          </TradingInputError>
         )}
       </FormGroup>
       <FormGroup label={t('Amount')} labelFor="amount">

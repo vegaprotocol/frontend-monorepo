@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { useAccount, useDisconnect, useAccountEffect } from 'wagmi';
+import { useAccount, useDisconnect, useAccountEffect, useChainId } from 'wagmi';
 
 import { ConnectKitButton } from 'connectkit';
 import {
@@ -19,6 +19,7 @@ import {
   TradingOption,
 } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
+import { Emblem } from '@vegaprotocol/emblem';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm, useWatch } from 'react-hook-form';
@@ -111,6 +112,7 @@ const DepositForm = ({
 
   const { isConnected, address } = useAccount();
   const { disconnect } = useDisconnect();
+  const chainId = useChainId();
 
   const form = useForm<FormFields>({
     resolver: zodResolver(depositSchema),
@@ -172,20 +174,19 @@ const DepositForm = ({
           render={() => {
             if (isConnected) {
               return (
-                <div className="flex flex-col items-start">
+                <div className="flex items-center gap-1">
+                  <Emblem chainId={chainId} />
                   <input
                     value={address}
                     readOnly
                     className="appearance-none bg-transparent text-sm text-muted w-full focus:outline-none"
                     tabIndex={-1}
                   />
-                  <button
-                    type="button"
-                    className="underline underline-offset-4 text-xs"
-                    onClick={() => disconnect()}
-                  >
-                    {t('Disconnect')}
-                  </button>
+                  <FormSecondaryActionWrapper>
+                    <FormSecondaryActionButton onClick={() => disconnect()}>
+                      {t('Disconnect')}
+                    </FormSecondaryActionButton>
+                  </FormSecondaryActionWrapper>
                 </div>
               );
             }
