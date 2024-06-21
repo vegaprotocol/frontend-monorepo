@@ -96,7 +96,12 @@ const withdrawSchema = z.object({
   amount: z.string().refine(
     (v) => {
       const n = Number(v);
-      return !isNaN(n) && n >= 0 && v?.length > 0;
+
+      if (v?.length <= 0) return false;
+      if (isNaN(n)) return false;
+      if (n <= 0) return false;
+
+      return true;
     },
     { message: 'Invalid number' }
   ),
