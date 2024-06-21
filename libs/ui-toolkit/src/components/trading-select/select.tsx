@@ -1,5 +1,4 @@
-import type { Ref, SelectHTMLAttributes } from 'react';
-import { useRef } from 'react';
+import type { SelectHTMLAttributes } from 'react';
 import { forwardRef } from 'react';
 import classNames from 'classnames';
 import { VegaIcon, VegaIconNames } from '../icon';
@@ -45,57 +44,48 @@ export const TradingRichSelect = forwardRef<
   React.ElementRef<typeof SelectPrimitive.Trigger>,
   TradingRichSelectProps
 >(({ id, children, placeholder, hasError, ...props }, forwardedRef) => {
-  const containerRef = useRef<HTMLDivElement>();
-  const contentRef = useRef<HTMLDivElement>();
-
   return (
-    <div
-      ref={containerRef as Ref<HTMLDivElement>}
-      className="relative flex items-center"
-    >
-      <SelectPrimitive.Root {...props} defaultOpen={false}>
-        <SelectPrimitive.Trigger
-          data-testid={props['data-testid'] || 'rich-select-trigger'}
+    <SelectPrimitive.Root {...props} defaultOpen={false}>
+      <SelectPrimitive.Trigger
+        data-testid={props['data-testid'] || 'rich-select-trigger'}
+        className={classNames(
+          defaultSelectElement(hasError, props.disabled),
+          'relative rounded-md pl-2 pr-8 text-left h-10',
+          'max-w-full overflow-hidden break-all',
+          '[&_>span]:flex-1'
+        )}
+        id={id}
+        ref={forwardedRef}
+      >
+        <SelectPrimitive.Value placeholder={placeholder} />
+        <SelectPrimitive.Icon className={classNames('absolute right-2')}>
+          <VegaIcon name={VegaIconNames.CHEVRON_DOWN} />
+        </SelectPrimitive.Icon>
+      </SelectPrimitive.Trigger>
+      <SelectPrimitive.Portal>
+        <SelectPrimitive.Content
           className={classNames(
-            defaultSelectElement(hasError, props.disabled),
-            'rounded-md pl-2 pr-8 text-left',
-            'max-w-full overflow-hidden break-all',
-            '[&_>span]:flex-1'
+            'relative w-full',
+            'z-20',
+            'bg-white dark:bg-black',
+            'border border-default rounded',
+            'overflow-hidden',
+            'shadow-lg'
           )}
-          id={id}
-          ref={forwardedRef}
+          position="item-aligned"
+          align="start"
+          side="bottom"
         >
-          <SelectPrimitive.Value placeholder={placeholder} />
-          <SelectPrimitive.Icon className={classNames('absolute right-2')}>
+          <SelectPrimitive.ScrollUpButton className="flex items-center justify-center w-full h-6 py-1 bg-gradient-to-t from-transparent to-neutral-50 dark:to-neutral-900">
+            <VegaIcon name={VegaIconNames.CHEVRON_UP} />
+          </SelectPrimitive.ScrollUpButton>
+          <SelectPrimitive.Viewport>{children}</SelectPrimitive.Viewport>
+          <SelectPrimitive.ScrollDownButton className="flex items-center justify-center w-full h-6 py-1 bg-gradient-to-b from-transparent to-neutral-50 dark:to-neutral-900">
             <VegaIcon name={VegaIconNames.CHEVRON_DOWN} />
-          </SelectPrimitive.Icon>
-        </SelectPrimitive.Trigger>
-        <SelectPrimitive.Portal container={containerRef.current}>
-          <SelectPrimitive.Content
-            ref={contentRef as Ref<HTMLDivElement>}
-            className={classNames(
-              'relative',
-              'z-20',
-              'bg-white dark:bg-black',
-              'border border-default rounded',
-              'overflow-hidden',
-              'shadow-lg'
-            )}
-            position={'item-aligned'}
-            side={'bottom'}
-            align={'center'}
-          >
-            <SelectPrimitive.ScrollUpButton className="absolute z-20 flex items-center justify-center w-full h-6 py-1 bg-gradient-to-t from-transparent to-neutral-50 dark:to-neutral-900">
-              <VegaIcon name={VegaIconNames.CHEVRON_UP} />
-            </SelectPrimitive.ScrollUpButton>
-            <SelectPrimitive.Viewport>{children}</SelectPrimitive.Viewport>
-            <SelectPrimitive.ScrollDownButton className="absolute bottom-0 z-20 flex items-center justify-center w-full h-6 py-1 bg-gradient-to-b from-transparent to-neutral-50 dark:to-neutral-900">
-              <VegaIcon name={VegaIconNames.CHEVRON_DOWN} />
-            </SelectPrimitive.ScrollDownButton>
-          </SelectPrimitive.Content>
-        </SelectPrimitive.Portal>
-      </SelectPrimitive.Root>
-    </div>
+          </SelectPrimitive.ScrollDownButton>
+        </SelectPrimitive.Content>
+      </SelectPrimitive.Portal>
+    </SelectPrimitive.Root>
   );
 });
 

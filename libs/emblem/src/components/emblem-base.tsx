@@ -1,5 +1,6 @@
 import { useState, type ImgHTMLAttributes } from 'react';
 import { FALLBACK_URL } from '../config/index';
+import className from 'classnames';
 
 export type ImgProps = ImgHTMLAttributes<HTMLImageElement> & { size?: number };
 
@@ -30,7 +31,10 @@ export function EmblemBase({ size = 30, ...p }: ImgProps) {
         alt={p.alt ? p.alt : 'Emblem'}
         width={size}
         height={size}
-        className={p.className || ''}
+        className={className(
+          'rounded-full bg-white border-2 border-vega-light-600 dark:border-white',
+          p.className
+        )}
         onLoad={() => setLoading(false)}
       />
     </>

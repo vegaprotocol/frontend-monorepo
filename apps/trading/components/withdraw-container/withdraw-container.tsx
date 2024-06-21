@@ -277,7 +277,7 @@ const WithdrawForm = ({
             <FormSecondaryActionButton
               onClick={() => openAssetDialog(account.asset.id)}
             >
-              View asset details
+              {t('View asset details')}
             </FormSecondaryActionButton>
           </FormSecondaryActionWrapper>
         )}
