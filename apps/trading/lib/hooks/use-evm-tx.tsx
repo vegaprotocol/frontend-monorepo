@@ -125,6 +125,7 @@ export const useEvmTxStore = create<{
 
       toastStore.update(id, {
         content: <Toasts.Pending tx={getTx(id)} />,
+        loader: true,
       });
     } catch (err) {
       // TODO: create a type guard for this
@@ -137,11 +138,13 @@ export const useEvmTxStore = create<{
         toastStore.update(id, {
           content: <Toasts.Error message={err.shortMessage} />,
           intent: Intent.Danger,
+          loader: false,
         });
       } else {
         toastStore.update(id, {
           content: <Toasts.Error />,
           intent: Intent.Danger,
+          loader: false,
         });
       }
 
@@ -231,6 +234,7 @@ export const useEvmTxStore = create<{
     toastStore.update(id, {
       intent: Intent.Success,
       content: <Toasts.FinalizedGeneric tx={getTx(id)} />,
+      loader: false,
     });
 
     return get().txs.get(id);
