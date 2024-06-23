@@ -2,10 +2,12 @@ import BigNumber from 'bignumber.js';
 
 import { useAccount, useReadContracts, useStorageAt } from 'wagmi';
 
-import { encodeAbiParameters, erc20Abi, keccak256 } from 'viem';
+import { encodeAbiParameters, keccak256 } from 'viem';
 import { type AssetERC20 } from '@vegaprotocol/assets';
 import { BRIDGE_ABI } from '@vegaprotocol/smart-contracts';
 import { type EVMBridgeConfig, type EthereumConfig } from '@vegaprotocol/web3';
+
+import { getErc20Abi } from '../../lib/hooks/get-erc20-abi';
 
 export const useAssetReadContracts = ({
   asset,
@@ -37,17 +39,19 @@ export const useAssetReadContracts = ({
     query: { enabled },
   });
 
+  const tokenAbi = getErc20Abi({ address: assetAddress });
+
   const { data, ...queryResult } = useReadContracts({
     contracts: [
       {
-        abi: erc20Abi,
+        abi: tokenAbi,
         address: assetAddress,
         functionName: 'balanceOf',
         args: address && [address],
         chainId: Number(assetChainId),
       },
       {
-        abi: erc20Abi,
+        abi: tokenAbi,
         address: assetAddress,
         functionName: 'allowance',
         args: address ? [address, bridgeAddress] : undefined,

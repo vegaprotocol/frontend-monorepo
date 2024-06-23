@@ -1,3 +1,5 @@
+import { useAccount, useReadContract } from 'wagmi';
+
 import {
   type AssetERC20,
   type AssetFieldsFragment,
@@ -6,8 +8,7 @@ import { EmblemByAsset } from '@vegaprotocol/emblem';
 import { truncateMiddle } from '@vegaprotocol/ui-toolkit';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { useWallet } from '@vegaprotocol/wallet-react';
-import { erc20Abi } from 'viem';
-import { useAccount, useReadContract } from 'wagmi';
+import { getErc20Abi } from '../../lib/hooks/get-erc20-abi';
 
 export const AssetOption = ({ asset }: { asset: AssetFieldsFragment }) => {
   const vegaChainId = useWallet((store) => store.chainId);
@@ -34,10 +35,11 @@ export const AssetOption = ({ asset }: { asset: AssetFieldsFragment }) => {
 
 const ERC20 = ({ asset }: { asset: AssetERC20 }) => {
   const { address } = useAccount();
+  const assetAddress = asset.source.contractAddress as `0x${string}`;
 
   const { data } = useReadContract({
-    abi: erc20Abi,
-    address: asset.source.contractAddress as `0x${string}`,
+    abi: getErc20Abi({ address: assetAddress }),
+    address: assetAddress,
     functionName: 'balanceOf',
     args: address && [address],
     chainId: Number(asset.source.chainId),
