@@ -219,6 +219,7 @@ export const useEvmTxStore = create<{
                 toastStore.update(id, {
                   intent: Intent.Success,
                   content: <Toasts.FinalizedDeposit tx={getTx(id)} />,
+                  loader: false,
                 });
                 updateTx(id, { receipt, status: 'finalized' });
                 sub.unsubscribe();
