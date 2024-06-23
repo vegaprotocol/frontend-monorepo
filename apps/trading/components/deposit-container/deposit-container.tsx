@@ -1,10 +1,10 @@
+import { Controller, useForm, useWatch } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-
 import { useAccount, useDisconnect, useAccountEffect, useChainId } from 'wagmi';
-
 import { ConnectKitButton } from 'connectkit';
+
 import {
-  useEnabledAssets,
   useAssetDetailsDialogStore,
   type AssetERC20,
 } from '@vegaprotocol/assets';
@@ -20,9 +20,6 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { Emblem } from '@vegaprotocol/emblem';
-
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Controller, useForm, useWatch } from 'react-hook-form';
 import { toBigNum } from '@vegaprotocol/utils';
 import {
   useEVMBridgeConfigs,
@@ -33,16 +30,17 @@ import {
 
 import { useT } from '../../lib/use-t';
 import { useEvmDeposit } from '../../lib/hooks/use-evm-deposit';
-import { useEvmFaucet } from '../../lib/hooks/use-evm-faucet';
+import { useAssetsWithBalance } from '../../lib/hooks/use-assets-with-balance';
 
-import { VegaKeySelect } from './vega-key-select';
-import { AssetOption } from './asset-option';
-import { Approval } from './approval';
-import { useAssetReadContracts } from './use-asset-read-contracts';
 import {
   FormSecondaryActionButton,
   FormSecondaryActionWrapper,
 } from '../form-secondary-action';
+import { VegaKeySelect } from './vega-key-select';
+import { AssetOption } from './asset-option';
+import { Approval } from './approval';
+import { useAssetReadContracts } from './use-asset-read-contracts';
+import { Faucet } from './faucet';
 
 type Configs = Array<EthereumConfig | EVMBridgeConfig>;
 
@@ -53,7 +51,7 @@ export const DepositContainer = ({
 }) => {
   const { config } = useEthereumConfig();
   const { configs } = useEVMBridgeConfigs();
-  const { data: assets } = useEnabledAssets();
+  const { data: assets } = useAssetsWithBalance();
 
   if (!config) return null;
   if (!configs?.length) return null;
@@ -65,11 +63,7 @@ export const DepositContainer = ({
 
   return (
     <DepositForm
-      assets={
-        (assets || []).filter(
-          (a) => a.source.__typename === 'ERC20'
-        ) as AssetERC20[]
-      }
+      assets={assets}
       initialAssetId={asset?.id || ''}
       configs={allConfigs}
     />
@@ -102,7 +96,7 @@ const DepositForm = ({
   initialAssetId,
   configs,
 }: {
-  assets: Array<AssetERC20>;
+  assets: Array<AssetERC20 & { balance: string }>;
   initialAssetId: string;
   configs: Configs;
 }) => {
@@ -134,7 +128,6 @@ const DepositForm = ({
   // Data releating to the select asset, like balance on address, allowance
   const { data, queryKey } = useAssetReadContracts({ asset, configs });
 
-  const { submitFaucet } = useEvmFaucet({ queryKey });
   const { submitDeposit } = useEvmDeposit({ queryKey });
 
   useAccountEffect({
@@ -251,9 +244,7 @@ const DepositForm = ({
             >
               {t('View asset details')}
             </FormSecondaryActionButton>
-            <FormSecondaryActionButton onClick={() => submitFaucet({ asset })}>
-              {t('Get {{symbol}}', { symbol: asset.symbol })}
-            </FormSecondaryActionButton>
+            <Faucet asset={asset} queryKey={queryKey} />
           </FormSecondaryActionWrapper>
         )}
       </FormGroup>

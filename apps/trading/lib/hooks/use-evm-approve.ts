@@ -4,7 +4,7 @@ import { useChainId, useSwitchChain } from 'wagmi';
 import { type AssetFieldsFragment } from '@vegaprotocol/assets';
 
 import { useEvmTx } from './use-evm-tx';
-import { getErc20Abi } from './get-erc20-abi';
+import { getErc20Abi } from '../utils/get-erc20-abi';
 
 export const useEvmApprove = ({ queryKey }: { queryKey: QueryKey }) => {
   const queryClient = useQueryClient();
