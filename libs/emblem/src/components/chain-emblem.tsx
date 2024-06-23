@@ -14,7 +14,7 @@ export function EmblemByChain(p: EmblemByChainProps) {
   const src = `https://icon.vega.xyz/chain/${p.chainId}/logo.svg`;
   return (
     <div className="relative inline-block">
-      <EmblemBase src={src} {...p} />
+      <EmblemBase src={src} className="border-2" {...p} />
     </div>
   );
 }

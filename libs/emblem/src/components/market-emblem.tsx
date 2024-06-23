@@ -54,7 +54,7 @@ export function EmblemByMarket(props: EmblemByMarketProps) {
       <EmblemBase
         src={base}
         size={size}
-        className="inline-block z-10 relative "
+        className="inline-block z-10 relative border-2"
         {...props}
       />
 
@@ -73,7 +73,7 @@ export function EmblemByMarket(props: EmblemByMarketProps) {
       <EmblemBase
         src={quote}
         size={size}
-        className={`inline-block ml-[-9px] z-1`}
+        className={`inline-block ml-[-9px] z-1 border-2`}
         {...props}
       />
       {props.showSourceChain !== false && (
