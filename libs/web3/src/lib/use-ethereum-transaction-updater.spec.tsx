@@ -55,6 +55,8 @@ const depositBusEvent: DepositBusEventFieldsFragment = {
       __typename: 'ERC20',
       chainId: '1',
       contractAddress: '0x0',
+      lifetimeLimit: '1',
+      withdrawThreshold: '1',
     },
   },
   createdTimestamp: '2022-07-05T14:25:47.815283706Z',
