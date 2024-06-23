@@ -4,7 +4,7 @@ import { useT } from '../../lib/use-t';
 import { type Tx } from '../../lib/hooks/use-evm-tx';
 import {
   BlockExplorerLink,
-  getExternalChainShortLabel,
+  getExternalChainLabel,
 } from '@vegaprotocol/environment';
 
 type Props = { tx?: Tx };
@@ -29,15 +29,7 @@ export const Pending = ({ tx }: Props) => {
     <>
       <ToastHeading>{t('Awaiting confirmation')}</ToastHeading>
       <p>{t('Please wait for your transaction to be confirmed.')}</p>
-      {tx && (
-        <p>
-          <BlockExplorerLink sourceChainId={tx.chainId} tx={tx.hash}>
-            {t('View on {{chainLabel}}', {
-              chainLabel: getExternalChainShortLabel(String(tx.chainId)),
-            })}
-          </BlockExplorerLink>
-        </p>
-      )}
+      <Link tx={tx} />
       <Confirmations tx={tx} />
     </>
   );
@@ -67,13 +59,7 @@ export const ConfirmingDeposit = ({ tx }: Props) => {
         {t('Your transaction has been completed.')}{' '}
         {t('Waiting for deposit confirmation.')}
       </p>
-      {tx && (
-        <BlockExplorerLink sourceChainId={tx.chainId} tx={tx.hash}>
-          {t('View on {{chainLabel}}', {
-            chainLabel: getExternalChainShortLabel(String(tx.chainId)),
-          })}
-        </BlockExplorerLink>
-      )}
+      <Link tx={tx} />
     </>
   );
 };
@@ -84,13 +70,7 @@ export const FinalizedGeneric = ({ tx }: Props) => {
     <>
       <ToastHeading>{t('Transaction confirmed')}</ToastHeading>
       <p>{t('Your transaction has been confirmed.')}</p>
-      {tx && (
-        <BlockExplorerLink sourceChainId={tx.chainId} tx={tx.hash}>
-          {t('View on {{chainLabel}}', {
-            chainLabel: getExternalChainShortLabel(String(tx.chainId)),
-          })}
-        </BlockExplorerLink>
-      )}
+      <Link tx={tx} />
     </>
   );
 };
@@ -102,13 +82,7 @@ export const FinalizedDeposit = ({ tx }: Props) => {
     <>
       <ToastHeading>{t('Deposit complete')}</ToastHeading>
       <p>{t('Your transaction has been completed.')} </p>
-      {tx && (
-        <BlockExplorerLink sourceChainId={tx.chainId} tx={tx.hash}>
-          {t('View on {{chainLabel}}', {
-            chainLabel: getExternalChainShortLabel(String(tx.chainId)),
-          })}
-        </BlockExplorerLink>
-      )}
+      <Link tx={tx} />
     </>
   );
 };
@@ -147,4 +121,18 @@ const Confirmations = ({ tx }: { tx?: Tx }) => {
   }
 
   return null;
+};
+
+const Link = ({ tx }: { tx?: Tx }) => {
+  const t = useT();
+
+  if (!tx) return null;
+
+  return (
+    <BlockExplorerLink sourceChainId={tx.chainId} tx={tx.hash}>
+      {t('View on {{chainLabel}}', {
+        chainLabel: getExternalChainLabel(String(tx.chainId)),
+      })}
+    </BlockExplorerLink>
+  );
 };
