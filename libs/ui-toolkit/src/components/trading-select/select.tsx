@@ -1,6 +1,5 @@
 import type { SelectHTMLAttributes } from 'react';
 import { forwardRef } from 'react';
-import classNames from 'classnames';
 import { VegaIcon, VegaIconNames } from '../icon';
 import { defaultSelectElement } from '../../utils/shared';
 import * as SelectPrimitive from '@radix-ui/react-select';
@@ -19,11 +18,11 @@ export const TradingSelect = forwardRef<HTMLSelectElement, TradingSelectProps>(
       <select
         ref={ref}
         {...props}
-        className={classNames(
+        className={[
           defaultSelectElement(hasError, props.disabled),
           className,
-          'appearance-none rounded-md'
-        )}
+          'appearance-none rounded-md',
+        ].join(' ')}
       />
       <span className="absolute z-10 flex items-center pointer-events-none right-2">
         <VegaIcon name={VegaIconNames.CHEVRON_DOWN} />
@@ -48,30 +47,23 @@ export const TradingRichSelect = forwardRef<
     <SelectPrimitive.Root {...props} defaultOpen={false}>
       <SelectPrimitive.Trigger
         data-testid={props['data-testid'] || 'rich-select-trigger'}
-        className={classNames(
+        className={[
           defaultSelectElement(hasError, props.disabled),
           'relative rounded-md pl-2 pr-8 text-left h-10',
           'max-w-full overflow-hidden break-all',
-          '[&_>span]:flex-1'
-        )}
+          '[&_>span]:flex-1',
+        ].join(' ')}
         id={id}
         ref={forwardedRef}
       >
         <SelectPrimitive.Value placeholder={placeholder} />
-        <SelectPrimitive.Icon className={classNames('absolute right-2')}>
+        <SelectPrimitive.Icon className="absolute right-2">
           <VegaIcon name={VegaIconNames.CHEVRON_DOWN} />
         </SelectPrimitive.Icon>
       </SelectPrimitive.Trigger>
       <SelectPrimitive.Portal>
         <SelectPrimitive.Content
-          className={classNames(
-            'relative w-full',
-            'z-20',
-            'bg-white dark:bg-black',
-            'border border-default rounded',
-            'overflow-hidden',
-            'shadow-lg'
-          )}
+          className="relative w-full z-20 bg-white dark:bg-black border border-default rounded overflow-hidden shadow-lg"
           position="item-aligned"
           align="start"
           side="bottom"
@@ -95,14 +87,14 @@ export const TradingOption = forwardRef<
 >(({ children, className, ...props }, forwardedRef) => (
   <SelectPrimitive.Item
     data-testid="rich-select-option"
-    className={classNames(
+    className={[
       'relative text-sm w-full p-2',
       'cursor-pointer outline-none ',
       'hover:bg-neutral-100 dark:hover:bg-neutral-800',
       'focus:bg-neutral-100 dark:focus:bg-neutral-800',
       'data-selected:bg-vega-blue-300 dark:data-selected:bg-vega-blue-600',
-      className
-    )}
+      className,
+    ].join(' ')}
     {...props}
     ref={forwardedRef}
   >

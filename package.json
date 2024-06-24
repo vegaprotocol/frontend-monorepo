@@ -46,7 +46,8 @@
     "@sentry/tracing": "^6.19.2",
     "@swc/helpers": "~0.5.2",
     "@tanstack/react-query": "^5.45.0",
-    "@wagmi/connectors": "5.0.14",
+    "@wagmi/connectors": "^5.0.17",
+    "@wagmi/core": "^2.11.5",
     "@walletconnect/ethereum-provider": "^2.6.0",
     "@web3-react/coinbase-wallet": "8.1.2-beta.0",
     "@web3-react/core": "^8.1.2-beta.0",
@@ -59,7 +60,7 @@
     "alpha-lyrae": "vegaprotocol/alpha-lyrae",
     "apollo-link-timeout": "^4.0.0",
     "bignumber.js": "^9.0.2",
-    "classnames": "^2.3.1",
+    "classnames": "^2.5.1",
     "connectkit": "^1.8.1",
     "core-js": "^3.6.5",
     "d3-array": "^3.2.4",
@@ -250,6 +251,9 @@
   "resolutions": {
     "graphql": "15.8.0",
     "//": "workaround storybook issue: https://github.com/storybookjs/storybook/issues/21642",
-    "@storybook/react-docgen-typescript-plugin": "1.0.6--canary.9.cd77847.0"
+    "@storybook/react-docgen-typescript-plugin": "1.0.6--canary.9.cd77847.0",
+    "@0xsquid/staking-widget/@wagmi/core": "0.10.11",
+    "@0xsquid/staking-widget/@wagmi/connectors": "0.3.16",
+    "@0xsquid/staking-widget/wagmi": "0.12.13"
   }
 }
