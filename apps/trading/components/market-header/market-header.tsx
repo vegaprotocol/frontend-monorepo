@@ -22,6 +22,7 @@ import {
 } from '../../client-pages/markets/market-icon';
 import { useT } from '../../lib/use-t';
 import { MarketProductPill } from '@vegaprotocol/datagrid';
+import { OracleBranding } from './oracle-branding';
 
 export const MarketHeader = () => {
   const { marketId } = useParams();
@@ -72,7 +73,10 @@ export const MarketHeader = () => {
         </Popover>
       }
     >
-      <MarketHeaderSwitch market={data} />
+      <>
+        <MarketHeaderSwitch market={data} />
+        <OracleBranding marketId={data.id} />
+      </>
     </Header>
   );
 };
