@@ -15,6 +15,7 @@ import { MarketMarkPrice } from '../market-mark-price';
 import { MarketBanner } from '../market-banner';
 import { EmblemByMarket } from '@vegaprotocol/emblem';
 import { useChainId } from '@vegaprotocol/wallet-react';
+import { OracleBranding } from './oracle-branding';
 /**
  * This is only rendered for the mobile navigation
  */
@@ -121,6 +122,7 @@ export const MobileMarketHeader = () => {
             <MarketBanner market={data} />
             <div className="px-3 py-6 text-sm grid grid-cols-2 items-center gap-x-4 gap-y-6">
               <MarketHeaderSwitch market={data} />
+              <OracleBranding marketId={data.id} />
             </div>
           </div>
         )}

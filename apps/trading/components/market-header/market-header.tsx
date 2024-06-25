@@ -75,7 +75,9 @@ export const MarketHeader = () => {
     >
       <>
         <MarketHeaderSwitch market={data} />
-        <OracleBranding marketId={data.id} />
+        <div className="ml-auto">
+          <OracleBranding marketId={data.id} />
+        </div>
       </>
     </Header>
   );
