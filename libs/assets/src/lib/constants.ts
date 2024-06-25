@@ -1,3 +1,19 @@
+import { type AssetFieldsFragment } from './__generated__/Asset';
+
+export type AssetERC20 = AssetFieldsFragment & {
+  source: {
+    __typename: 'ERC20';
+    contractAddress: string;
+    lifetimeLimit: string;
+    withdrawThreshold: string;
+    chainId: string;
+  };
+};
+
+export type AssetBuiltin = AssetFieldsFragment & {
+  source: { __typename: 'BuiltinAsset'; maxFaucetAmountMint: string };
+};
+
 export const WITHDRAW_THRESHOLD_TOOLTIP_TEXT =
   "The maximum you can withdraw instantly. There's no limit on the size of a withdrawal, but all withdrawals over the threshold will have a delay time added to them";
 

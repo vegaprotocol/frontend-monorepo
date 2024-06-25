@@ -1,5 +1,6 @@
 import groupBy from 'lodash/groupBy';
 import uniq from 'lodash/uniq';
+import { useNavigate } from 'react-router-dom';
 import type { Account } from '@vegaprotocol/accounts';
 import { useAccounts } from '@vegaprotocol/accounts';
 import {
@@ -35,7 +36,6 @@ import { ActiveRewards } from './active-rewards';
 import { ActivityStreak } from './streaks/activity-streaks';
 import { RewardHoarderBonus } from './streaks/reward-hoarder-bonus';
 import classNames from 'classnames';
-import { useNavigate } from 'react-router-dom';
 import { Links } from '../../lib/links';
 
 const ASSETS_WITH_INCORRECT_VESTING_REWARD_DATA = [

@@ -40,7 +40,7 @@ export const useDataGridEvents = (
         }
       }
       if (!state.filterModel) {
-        apiRef.current.setFilterModel(defaultFilterModel);
+        apiRef.current.setFilterModel(defaultFilterModel || null);
       }
     }
     hasStateRef.current = hasState;

@@ -4,6 +4,7 @@ export type { EmblemProps } from './components/emblem';
 export { EmblemByContract } from './components/contract-emblem';
 export { EmblemByAsset } from './components/asset-emblem';
 export { EmblemByMarket } from './components/market-emblem';
+export { EmblemByChain } from './components/chain-emblem';
 export {
   getChainAssetLogoUrl,
   getVegaAssetLogoUrl,

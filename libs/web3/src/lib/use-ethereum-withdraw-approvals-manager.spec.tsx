@@ -115,6 +115,8 @@ const createWithdrawTransaction = (
         __typename: 'ERC20',
         contractAddress: 'contractAddress',
         chainId: '1',
+        withdrawThreshold: '1',
+        lifetimeLimit: '1',
       },
     },
   },

@@ -21,18 +21,7 @@ fragment WithdrawalBusEventFields on Withdrawal {
   status
   amount
   asset {
-    id
-    name
-    symbol
-    decimals
-    quantum
-    status
-    source {
-      ... on ERC20 {
-        contractAddress
-        chainId
-      }
-    }
+    ...AssetFields
   }
   createdTimestamp
   withdrawnTimestamp
@@ -88,25 +77,14 @@ fragment DepositBusEventFields on Deposit {
   status
   amount
   asset {
-    id
-    name
-    symbol
-    decimals
-    quantum
-    status
-    source {
-      ... on ERC20 {
-        contractAddress
-        chainId
-      }
-    }
+    ...AssetFields
   }
   createdTimestamp
   creditedTimestamp
   txHash
 }
 
-subscription DepositBusEvent($partyId: ID!) {
+subscription DepositBusEvent($partyId: ID) {
   busEvents(partyId: $partyId, batchSize: 0, types: [Deposit]) {
     event {
       ... on Deposit {
