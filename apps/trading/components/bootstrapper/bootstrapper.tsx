@@ -1,17 +1,23 @@
-import type { InMemoryCacheConfig } from '@apollo/client';
+import { ApolloProvider } from '@apollo/client';
+import { QueryClientProvider } from '@tanstack/react-query';
+import { ConnectKitProvider } from 'connectkit';
+import { useEffect, type ReactNode, useState, useMemo } from 'react';
+import { Trans } from 'react-i18next';
+import { WagmiProvider } from 'wagmi';
+
 import {
-  NetworkLoader,
   useEnvironment,
   useNodeSwitcherStore,
 } from '@vegaprotocol/environment';
-import { useEffect, type ReactNode, useState } from 'react';
-import { Web3Provider } from './web3-provider';
-import { useT } from '../../lib/use-t';
-import { DataLoader } from './data-loader';
 import { WalletProvider } from '@vegaprotocol/wallet-react';
-import { useVegaWalletConfig } from '../../lib/hooks/use-vega-wallet-config';
-import { Trans } from 'react-i18next';
 import { Button, Loader, Splash, VLogo } from '@vegaprotocol/ui-toolkit';
+
+import { useT } from '../../lib/use-t';
+import { getApolloClient } from '../../lib/apollo-client';
+import { wagmiConfig } from '../../lib/wagmi-config';
+import { queryClient } from '../../lib/query-client';
+import { useVegaWalletConfig } from '../../lib/hooks/use-vega-wallet-config';
+import { DataLoader } from './data-loader';
 
 const Failure = ({ reason }: { reason?: ReactNode }) => {
   const t = useT();
@@ -83,6 +89,7 @@ export const Bootstrapper = ({ children }: { children: ReactNode }) => {
     error: state.error,
     VEGA_URL: state.VEGA_URL,
   }));
+
   const config = useVegaWalletConfig();
 
   const ERR_DATA_LOADER = (
@@ -100,105 +107,60 @@ export const Bootstrapper = ({ children }: { children: ReactNode }) => {
   );
 
   return (
-    <NetworkLoader
-      cache={cacheConfig}
-      skeleton={<Loading />}
-      failure={<Failure reason={error} />}
-    >
-      <DataLoader
-        skeleton={<Loading />}
-        failure={<Failure reason={ERR_DATA_LOADER} />}
-      >
-        <Web3Provider
-          skeleton={<Loading />}
-          failure={<Failure reason={t('Could not configure web3 provider')} />}
-        >
-          {config ? (
-            <WalletProvider config={config}>{children}</WalletProvider>
-          ) : (
-            <Failure reason={t('Could not configure the wallet provider')} />
-          )}
-        </Web3Provider>
-      </DataLoader>
-    </NetworkLoader>
+    <WagmiProvider config={wagmiConfig}>
+      <QueryClientProvider client={queryClient}>
+        <ConnectKitProvider>
+          <GraphQLProvider
+            skeleton={<Loading />}
+            failure={<Failure reason={error} />}
+          >
+            <DataLoader
+              skeleton={<Loading />}
+              failure={<Failure reason={ERR_DATA_LOADER} />}
+            >
+              {config ? (
+                <WalletProvider config={config}>{children}</WalletProvider>
+              ) : (
+                <Failure
+                  reason={t('Could not configure the wallet provider')}
+                />
+              )}
+            </DataLoader>
+          </GraphQLProvider>
+        </ConnectKitProvider>
+      </QueryClientProvider>
+    </WagmiProvider>
   );
 };
 
-const cacheConfig: InMemoryCacheConfig = {
-  typePolicies: {
-    Statistics: {
-      merge: true,
-    },
-    Account: {
-      keyFields: false,
-      fields: {
-        balanceFormatted: {},
-      },
-    },
-    Instrument: {
-      keyFields: false,
-    },
-    TradableInstrument: {
-      keyFields: false,
-    },
-    Product: {
-      keyFields: ['settlementAsset', ['id']],
-    },
-    MarketData: {
-      keyFields: ['market', ['id']],
-    },
-    Node: {
-      keyFields: false,
-    },
-    Withdrawal: {
-      fields: {
-        pendingOnForeignChain: {
-          read: (isPending = false) => isPending,
-        },
-      },
-    },
-    ERC20: {
-      keyFields: ['contractAddress'],
-    },
-    Party: {
-      keyFields: false,
-    },
-    Position: {
-      keyFields: ['market', ['id'], 'party', ['id']],
-    },
-    Fees: {
-      keyFields: false,
-    },
-    PartyProfile: {
-      keyFields: ['partyId'],
-    },
-    // The folling types are cached by the data provider and not by apollo
-    PositionUpdate: {
-      keyFields: false,
-    },
-    TradeUpdate: {
-      keyFields: false,
-    },
-    AccountUpdate: {
-      keyFields: false,
-    },
-    OrderUpdate: {
-      keyFields: false,
-    },
-    Game: {
-      keyFields: false,
-    },
-    RecurringTransfer: {
-      keyFields: false,
-    },
-    RecurringGovernanceTransfer: {
-      keyFields: false,
-    },
-    TeamGameEntity: {
-      keyFields: false,
-    },
-    TeamEntity: {
-      keyFields: false,
-    },
-  },
+type ClientProviderProps = {
+  children?: ReactNode;
+  skeleton?: ReactNode;
+  failure?: ReactNode;
 };
+
+function GraphQLProvider({ skeleton, failure, children }: ClientProviderProps) {
+  const { status, VEGA_URL } = useEnvironment((store) => ({
+    status: store.status,
+    VEGA_URL: store.VEGA_URL,
+  }));
+
+  const client = useMemo(() => {
+    if (status === 'success' && VEGA_URL) {
+      return getApolloClient(VEGA_URL);
+    }
+    return undefined;
+  }, [VEGA_URL, status]);
+
+  if (status === 'failed') {
+    // eslint-disable-next-line react/jsx-no-useless-fragment
+    return <>{failure}</>;
+  }
+
+  if (status === 'default' || status === 'pending' || !client) {
+    // eslint-disable-next-line react/jsx-no-useless-fragment
+    return <>{skeleton}</>;
+  }
+
+  return <ApolloProvider client={client}>{children}</ApolloProvider>;
+}

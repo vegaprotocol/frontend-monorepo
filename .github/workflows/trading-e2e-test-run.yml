@@ -89,14 +89,6 @@ jobs:
     timeout-minutes: 45
     steps:
       #----------------------------------------------
-      #       Install dependencies
-      #----------------------------------------------
-      - name: Install vega & vegacapsule
-        run: |
-          sudo install-vega v0.76.8
-          sudo install-vegacapsule v0.76.0-preview.6
-
-      #----------------------------------------------
       #       load docker image
       #----------------------------------------------
       - name: Download docker image from previous job

@@ -64,8 +64,8 @@ export const VegaWalletMenu = ({
       <div className="flex flex-col gap-2 m-4">
         <Button
           onClick={() => {
-            navigate(Links.TRANSFER());
             setMenu(null);
+            navigate(Links.TRANSFER());
           }}
         >
           {t('Transfer')}

@@ -18,5 +18,5 @@ export function EmblemByContract(p: EmblemByContractProps) {
   const chain = getVegaChain(p.vegaChain);
   const url = getChainAssetLogoUrl(chain, p.contract);
 
-  return <EmblemBase src={url} {...p} />;
+  return <EmblemBase src={url} className="border-2" {...p} />;
 }

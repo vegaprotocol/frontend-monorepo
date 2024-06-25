@@ -60,7 +60,6 @@
   "Please go to your Vega wallet application and approve or reject the transaction.": "Please go to your Vega wallet application and approve or reject the transaction.",
   "Please go to your wallet application and approve or reject the transaction.": "Please go to your wallet application and approve or reject the transaction.",
   "Please wait for your transaction to be confirmed": "Please wait for your transaction to be confirmed",
-  "Please wait for your transaction to be confirmed.": "Please wait for your transaction to be confirmed.",
   "Processing": "Processing",
   "Processing deposit": "Processing deposit",
   "Return": "Return",
@@ -107,6 +106,5 @@
   "Your order has been stopped because: {{rejectionReason}}": "Your order has been stopped because: {{rejectionReason}}",
   "Your order was rejected.": "Your order was rejected.",
   "Your transaction has been completed.": "Your transaction has been completed.",
-  "Your transaction has been confirmed": "Your transaction has been confirmed",
   "Your transaction has been confirmed.": "Your transaction has been confirmed."
 }
