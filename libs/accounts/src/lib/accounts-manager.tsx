@@ -1,7 +1,6 @@
 import orderBy from 'lodash/orderBy';
 import sortBy from 'lodash/sortBy';
-import { useDataProvider } from '@vegaprotocol/data-provider';
-import { assetsProvider } from '@vegaprotocol/assets';
+import { useEnabledAssets } from '@vegaprotocol/assets';
 import { AccountCard, type AssetActions } from './account-card';
 
 interface AccountManagerProps extends AssetActions {
@@ -14,11 +13,7 @@ export const AccountManager = ({
   pinnedAssets,
   ...props
 }: AccountManagerProps) => {
-  const { data } = useDataProvider({
-    dataProvider: assetsProvider,
-    variables: undefined,
-  });
-
+  const { data } = useEnabledAssets();
   const orderedData = orderBy(data || [], 'name', 'asc');
   const rows = sortBy(orderedData, (asset) => {
     if (!pinnedAssets) return 0;
