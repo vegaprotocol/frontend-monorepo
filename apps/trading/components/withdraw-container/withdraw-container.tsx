@@ -91,7 +91,7 @@ export const WithdrawContainer = ({
 };
 
 const withdrawSchema = z.object({
-  assetId: z.string().min(1, 'Required'),
+  assetId: z.string().regex(VEGA_ID_REGEX, 'Required'),
   fromPubKey: z.string().regex(VEGA_ID_REGEX, 'Connect Vega wallet'),
   toAddress: z
     .string()
