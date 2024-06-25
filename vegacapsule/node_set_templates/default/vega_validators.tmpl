@@ -20,8 +20,14 @@
 	{{if .FaucetPublicKey}}
 	BlockchainQueueAllowlist = ["{{ .FaucetPublicKey }}"]
 	{{end}}
+
+    [EvtForward.Ethereum]
+        Level = "Info"
+        SkipClientVerification = true
+        PollEventRetryDuration = "500ms"
     [[EvtForward.EVMBridges]]
       Level = "Info"
+	  SkipClientVerification = true
       PollEventRetryDuration = "500ms"
       ChainID = "{{.SecondaryBridgeChainID}}"
 
