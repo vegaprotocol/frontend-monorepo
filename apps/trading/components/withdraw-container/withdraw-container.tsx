@@ -91,7 +91,9 @@ export const WithdrawContainer = ({
 const withdrawSchema = z.object({
   assetId: z.string().min(1, 'Required'),
   fromPubKey: z.string().regex(/^[A-Fa-f0-9]{64}$/i, 'Connect Vega wallet'),
-  toAddress: z.string().min(1, 'Enter address or connect wallet'),
+  toAddress: z
+    .string()
+    .regex(/^0x[A-Fa-f0-9]{40}$/i, 'Invalid Ethereum address'),
   // Use a string but parse it as a number for validation
   amount: z.string().refine(
     (v) => {
@@ -366,6 +368,7 @@ const WithdrawForm = ({
   );
 };
 
+// TODO: move to own file
 const useReadWithdrawalData = ({
   asset,
   configs,
