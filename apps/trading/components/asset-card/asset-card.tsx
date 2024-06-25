@@ -4,8 +4,12 @@ import { useAssetsMapProvider } from '@vegaprotocol/assets';
 import { useChainId, useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { aggregatedAccountDataProvider } from '@vegaprotocol/accounts';
-import { addDecimalsFormatNumberQuantum } from '@vegaprotocol/utils';
+import {
+  addDecimalsFormatNumberQuantum,
+  formatNumber,
+} from '@vegaprotocol/utils';
 import { getExternalChainShortLabel } from '@vegaprotocol/environment';
+import BigNumber from 'bignumber.js';
 
 export const AssetCard = ({
   assetId,
@@ -27,6 +31,13 @@ export const AssetCard = ({
 
   if (!asset) {
     return null;
+  }
+
+  let allocatedRatio: BigNumber | undefined = undefined;
+  if (account?.used != null && account?.available != null) {
+    const deployed = BigNumber(account.used);
+    const total = BigNumber(account.total);
+    allocatedRatio = deployed.dividedBy(total);
   }
 
   return (
@@ -51,7 +62,7 @@ export const AssetCard = ({
         {!showAllocation ? null : (
           <dl>
             <dt className="text-xs text-vega-clight-200 dark:text-vega-cdark-200">
-              {t('Allocation')}
+              {t('Deployed')}
             </dt>
             <dd className="text-base">
               {addDecimalsFormatNumberQuantum(
@@ -59,6 +70,7 @@ export const AssetCard = ({
                 asset.decimals,
                 asset.quantum
               )}
+              {allocatedRatio && ` (${formatNumber(allocatedRatio)}%)`}
             </dd>
           </dl>
         )}

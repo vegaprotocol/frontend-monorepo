@@ -63,7 +63,7 @@ const BreakdownItem = ({ data }: { data: AccountFields }) => {
           {data.market &&
             ` (${data.market.tradableInstrument.instrument.code})`}
         </dt>
-        <dd className="text-right grow text-base leading-tight">
+        <dd className="text-right grow text-sm leading-tight">
           {addDecimalsFormatNumberQuantum(
             data.used,
             data.asset.decimals,
@@ -138,9 +138,9 @@ export const AccountCard = ({
             />
           </div>
         </header>
-        {data?.breakdown?.map((data) => (
-          <BreakdownItem data={data} />
-        ))}
+        {expandable &&
+          expanded &&
+          data?.breakdown?.map((data) => <BreakdownItem data={data} />)}
         <dl className="flex items-center mt-3 text-base">
           <dt>{t('Total')}</dt>
           <dd className="text-right leading-tight grow">

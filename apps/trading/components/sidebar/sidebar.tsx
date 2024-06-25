@@ -14,7 +14,7 @@ import { NodeHealthContainer } from '../node-health';
 import { AssetCard } from '../asset-card';
 import { Links } from '../../lib/links';
 import { useT } from '../../lib/use-t';
-import { AccountsContainer } from '../accounts-container';
+import { SidebarAccountsContainer } from '../accounts-container';
 import classNames from 'classnames';
 
 export enum ViewType {
@@ -34,7 +34,12 @@ export const Sidebar = ({ pinnedAssets }: { pinnedAssets?: string[] }) => {
       <SidebarAccordion
         type="single"
         value={view}
-        onValueChange={(x: ViewType) => setView(x)}
+        onValueChange={(view: ViewType) => {
+          let desiredView = view;
+          if (!desiredView) desiredView = ViewType.Trade;
+          setView(desiredView);
+        }}
+        collapsible
       >
         <SidebarAccordionItem value={ViewType.Trade}>
           <SidebarAccordionTrigger data-testid="Trade">
@@ -91,7 +96,7 @@ export const Sidebar = ({ pinnedAssets }: { pinnedAssets?: string[] }) => {
             </AccordionPrimitive.Header>
           )}
           <SidebarAccordionContent>
-            <AccountsContainer pinnedAssets={pinnedAssets} />
+            <SidebarAccountsContainer pinnedAssets={pinnedAssets} />
           </SidebarAccordionContent>
         </SidebarAccordionItem>
       </SidebarAccordion>
