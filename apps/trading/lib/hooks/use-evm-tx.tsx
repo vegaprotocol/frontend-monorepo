@@ -124,6 +124,7 @@ export const useEvmTxStore = create<{
       updateTx(id, { hash, status: 'pending' });
 
       toastStore.update(id, {
+        intent: Intent.Warning,
         content: <Toasts.Pending tx={getTx(id)} />,
         loader: true,
       });
@@ -168,6 +169,7 @@ export const useEvmTxStore = create<{
       updateTx(id, { confirmations });
 
       toastStore.update(id, {
+        intent: Intent.Warning,
         content: <Toasts.Pending tx={getTx(id)} />,
       });
 
