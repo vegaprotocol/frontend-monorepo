@@ -54,7 +54,7 @@ export function EmblemByMarket(props: EmblemByMarketProps) {
       <EmblemBase
         src={base}
         size={size}
-        className="inline-block z-10 relative rounded-full bg-white border-2 border-vega-light-600 dark:border-white"
+        className="inline-block z-10 relative border-2"
         {...props}
       />
 
@@ -73,7 +73,7 @@ export function EmblemByMarket(props: EmblemByMarketProps) {
       <EmblemBase
         src={quote}
         size={size}
-        className={`inline-block ml-[-9px] z-1 rounded-full bg-white border-2 border-vega-light-600 dark:border-white`}
+        className={`inline-block ml-[-9px] z-1 border-2`}
         {...props}
       />
       {props.showSourceChain !== false && (
@@ -81,7 +81,7 @@ export function EmblemByMarket(props: EmblemByMarketProps) {
           src={quoteChain || settlementChain}
           size={12}
           alt={t('Chain logo')}
-          className={classNames(`align-text-top absolute  `, {
+          className={classNames(`align-text-top absolute`, {
             'bottom-0 right-0': size === 30,
             'bottom-1 right-2': size === 26,
           })}

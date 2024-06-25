@@ -1,6 +1,6 @@
 {
   "name": "nx-monorepo",
-  "version": "0.27.0-preview.0",
+  "version": "0.27.0-preview.1",
   "license": "MIT",
   "scripts": {
     "start": "nx serve",
@@ -25,6 +25,7 @@
     "@apollo/client": "^3.5.8",
     "@blueprintjs/icons": "^3.32.0",
     "@coinbase/wallet-sdk": "^3.6.5",
+    "@hookform/resolvers": "^3.6.0",
     "@radix-ui/react-accordion": "^1.1.0",
     "@radix-ui/react-checkbox": "^1.0.1",
     "@radix-ui/react-dialog": "^1.0.2",
@@ -44,6 +45,9 @@
     "@sentry/react": "^6.19.2",
     "@sentry/tracing": "^6.19.2",
     "@swc/helpers": "~0.5.2",
+    "@tanstack/react-query": "^5.45.0",
+    "@wagmi/connectors": "^5.0.17",
+    "@wagmi/core": "^2.11.5",
     "@walletconnect/ethereum-provider": "^2.6.0",
     "@web3-react/coinbase-wallet": "8.1.2-beta.0",
     "@web3-react/core": "^8.1.2-beta.0",
@@ -56,7 +60,8 @@
     "alpha-lyrae": "vegaprotocol/alpha-lyrae",
     "apollo-link-timeout": "^4.0.0",
     "bignumber.js": "^9.0.2",
-    "classnames": "^2.3.1",
+    "classnames": "^2.5.1",
+    "connectkit": "^1.8.1",
     "core-js": "^3.6.5",
     "d3-array": "^3.2.4",
     "d3-scale": "^4.0.2",
@@ -79,6 +84,7 @@
     "jsondiffpatch": "^0.4.1",
     "lodash": "^4.17.21",
     "next": "13.3.0",
+    "node-gyp": "^10.1.0",
     "pennant": "^1.17.0",
     "react": "18.2.0",
     "react-copy-to-clipboard": "5.1.0",
@@ -100,6 +106,8 @@
     "tslib": "^2.3.0",
     "uuid": "^8.3.2",
     "vaul": "^0.9.1",
+    "viem": "^2.13.8",
+    "wagmi": "^2.10.2",
     "web-vitals": "^2.1.4",
     "zod": "^3.20.3",
     "zustand": "^4.5.0"
@@ -243,6 +251,9 @@
   "resolutions": {
     "graphql": "15.8.0",
     "//": "workaround storybook issue: https://github.com/storybookjs/storybook/issues/21642",
-    "@storybook/react-docgen-typescript-plugin": "1.0.6--canary.9.cd77847.0"
+    "@storybook/react-docgen-typescript-plugin": "1.0.6--canary.9.cd77847.0",
+    "@0xsquid/staking-widget/@wagmi/core": "0.10.11",
+    "@0xsquid/staking-widget/@wagmi/connectors": "0.3.16",
+    "@0xsquid/staking-widget/wagmi": "0.12.13"
   }
 }

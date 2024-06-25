@@ -1,20 +1,6 @@
 import * as Types from '@vegaprotocol/types';
-import type { WithdrawalFieldsFragment } from './__generated__/Withdrawal';
-import BigNumber from 'bignumber.js';
-import * as web3 from '@vegaprotocol/web3';
-import { renderHook, waitFor } from '@testing-library/react';
-import { useIncompleteWithdrawals } from './use-ready-to-complete-withdrawals-toast';
-import { MockedProvider } from '@apollo/client/testing';
-import { useVegaWallet } from '@vegaprotocol/wallet-react';
-
-jest.mock('@vegaprotocol/web3', () => {
-  return {
-    ...jest.requireActual('@vegaprotocol/web3'),
-    useGetWithdrawThreshold: jest.fn(),
-    useGetWithdrawDelay: jest.fn(),
-  };
-});
-jest.mock('@vegaprotocol/wallet-react');
+import type { WithdrawalFieldsFragment } from '@vegaprotocol/withdraws';
+import { getReadyAndDelayed } from './use-incomplete-withdrawals';
 
 type Asset = WithdrawalFieldsFragment['asset'];
 type Withdrawal = WithdrawalFieldsFragment;
@@ -32,7 +18,7 @@ const NO_THRESHOLD_ASSET: Asset = {
     contractAddress: '0xnta',
     chainId: '1',
     lifetimeLimit: '1',
-    withdrawThreshold: '1',
+    withdrawThreshold: '0',
   },
 };
 
@@ -49,7 +35,7 @@ const LOW_THRESHOLD_ASSET: Asset = {
     contractAddress: '0xlta',
     chainId: '1',
     lifetimeLimit: '1',
-    withdrawThreshold: '1',
+    withdrawThreshold: '10',
   },
 };
 
@@ -66,18 +52,9 @@ const HIGH_THRESHOLD_ASSET: Asset = {
     contractAddress: '0xhta',
     chainId: '1',
     lifetimeLimit: '1',
-    withdrawThreshold: '1',
+    withdrawThreshold: '1000',
   },
 };
-
-const NOW = 5000;
-const DELAY = { value: 1, ts: 5000 };
-const THRESHOLDS = [
-  { address: 'builtin', chainId: 1, value: new BigNumber(Infinity), ts: 5000 },
-  { address: '0xnta', chainId: 1, value: new BigNumber(Infinity), ts: 5000 },
-  { address: '0xlta', chainId: 1, value: new BigNumber(10), ts: 5000 },
-  { address: '0xhta', chainId: 1, value: new BigNumber(1000), ts: 5000 },
-];
 
 const ts = (ms: number) => new Date(ms).toISOString();
 
@@ -149,73 +126,39 @@ const mockCompleteW1: Withdrawal = {
   asset: HIGH_THRESHOLD_ASSET,
 };
 
-jest.mock('@vegaprotocol/data-provider', () => ({
-  ...jest.requireActual('@vegaprotocol/data-provider'),
-  useDataProvider: () => ({
-    data: [
-      mockIncompleteW1,
-      mockIncompleteW2,
-      mockIncompleteW3,
-      mockIncompleteW4,
-      mockIncompleteW5,
-      mockCompleteW1,
-    ],
-  }),
-}));
+describe('getReadyAndDelayed', () => {
+  const withdrawals = [
+    mockIncompleteW1,
+    mockIncompleteW2,
+    mockIncompleteW3,
+    mockIncompleteW4,
+    mockIncompleteW5,
+    mockCompleteW1,
+  ];
+  const delays = new Map([[1, BigInt(1)]]);
+  let now: jest.SpyInstance<number, []>;
 
-describe('useIncompleteWithdrawals', () => {
-  let DATE_NOW: jest.SpyInstance<number, []>;
   beforeAll(() => {
-    // mocks Date.now() to always return the same point in time.
-    DATE_NOW = jest.spyOn(Date, 'now').mockImplementation(() => NOW);
-
-    (useVegaWallet as jest.Mock).mockReturnValue({
-      pubKey: '0xpubkey',
-      isReadOnly: false,
-    });
-
-    (web3.useGetWithdrawThreshold as jest.Mock).mockImplementation(
-      () => (asset: web3.AssetData) => {
-        if (asset) {
-          const th = THRESHOLDS.find(
-            (t) => t.address === asset.contractAddress
-          );
-          if (th) return Promise.resolve(th.value);
-        }
-        return Promise.resolve(Infinity);
-      }
-    );
-    (web3.useGetWithdrawDelay as jest.Mock).mockImplementation(() => () => {
-      return Promise.resolve(DELAY.value);
-    });
+    now = jest.spyOn(Date, 'now').mockImplementation(() => 5000);
   });
+
   afterAll(() => {
     jest.resetAllMocks();
-    DATE_NOW.mockRestore();
+    now.mockRestore();
   });
 
   it('returns a collection of ready to complete withdrawals', async () => {
-    const { result } = renderHook(() => useIncompleteWithdrawals(), {
-      wrapper: MockedProvider,
-    });
-    await waitFor(async () => {
-      const { ready } = result.current;
-      expect(ready).toHaveLength(3);
-      expect(ready.map((w) => w.data.id)).toContain(mockIncompleteW1.id);
-      expect(ready.map((w) => w.data.id)).toContain(mockIncompleteW2.id);
-      expect(ready.map((w) => w.data.id)).toContain(mockIncompleteW3.id);
-    });
+    const { ready } = getReadyAndDelayed(withdrawals, delays);
+    expect(ready).toHaveLength(3);
+    expect(ready.map((w) => w.data.id)).toContain(mockIncompleteW1.id);
+    expect(ready.map((w) => w.data.id)).toContain(mockIncompleteW2.id);
+    expect(ready.map((w) => w.data.id)).toContain(mockIncompleteW3.id);
   });
 
   it('returns a collection of delayed withdrawals', async () => {
-    const { result } = renderHook(() => useIncompleteWithdrawals(), {
-      wrapper: MockedProvider,
-    });
-    await waitFor(async () => {
-      const { delayed } = result.current;
-      expect(delayed).toHaveLength(2);
-      expect(delayed.map((w) => w.data.id)).toContain(mockIncompleteW4.id);
-      expect(delayed.map((w) => w.data.id)).toContain(mockIncompleteW5.id);
-    });
+    const { delayed } = getReadyAndDelayed(withdrawals, delays);
+    expect(delayed).toHaveLength(2);
+    expect(delayed.map((w) => w.data.id)).toContain(mockIncompleteW4.id);
+    expect(delayed.map((w) => w.data.id)).toContain(mockIncompleteW5.id);
   });
 });

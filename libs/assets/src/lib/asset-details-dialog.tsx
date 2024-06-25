@@ -75,7 +75,7 @@ export const AssetDetailsDialog = ({
     </div>
   );
   const title = asset
-    ? t('Asset details - {{symbol}}', asset)
+    ? `${asset.name} | ${asset.symbol}`
     : t('Asset not found');
 
   return (

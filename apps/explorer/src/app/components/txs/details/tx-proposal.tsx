@@ -57,6 +57,7 @@ export function proposalTypeLabel(terms?: ProposalTerms): string {
   } else if (has(terms, 'updateAsset')) {
     return t('Update asset proposal');
   } else if (has(terms, 'newMarket')) {
+    // @ts-ignore TODO: figure out this type error, changes will be present
     if (terms?.newMarket?.changes?.successor) {
       return t('Successor market proposal');
     } else {

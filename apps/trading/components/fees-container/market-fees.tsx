@@ -10,7 +10,7 @@ import { useNavigateWithMeta } from '../../lib/hooks/use-market-click-handler';
 import { Links } from '../../lib/links';
 import { useT } from '../../lib/use-t';
 import { useMemo } from 'react';
-import { type ColDef } from 'ag-grid-community/dist/lib/entities/colDef';
+import { type ColDef } from 'ag-grid-community';
 import { EmblemByMarket } from '@vegaprotocol/emblem';
 import { useChainId } from '@vegaprotocol/wallet-react';
 import type { ProductType } from '@vegaprotocol/types';

@@ -1,5 +1,6 @@
 export * from './lib/__generated__/TransactionResult';
 export * from './lib/__generated__/WithdrawalApproval';
+export * from './lib/__generated__/Orders';
 export * from './lib/constants';
 export * from './lib/default-web3-provider';
 export * from './lib/eip-1193-custom-bridge';

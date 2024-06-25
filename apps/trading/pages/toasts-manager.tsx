@@ -1,16 +1,15 @@
 import { Intent, ToastsContainer, useToasts } from '@vegaprotocol/ui-toolkit';
 import { useProposalToasts } from '@vegaprotocol/proposals';
-import { useVegaTransactionToasts } from '@vegaprotocol/web3';
-import { useEthereumTransactionToasts } from '@vegaprotocol/web3';
-import { useEthereumWithdrawApprovalsToasts } from '@vegaprotocol/web3';
-import { useReadyToWithdrawalToasts } from '@vegaprotocol/withdraws';
-import { Links } from '../lib/links';
 import { useReferralToasts } from '../client-pages/referrals/hooks/use-referral-toasts';
 import {
   useWalletDisconnectToastActions,
   useWalletDisconnectedToasts,
 } from '@vegaprotocol/web3';
 import { VegaWalletConnectButton } from '../components/vega-wallet-connect-button';
+import { usePositionCloseOutNotification } from '../lib/hooks/use-position-closeout-notification';
+
+import { useVegaTransactionToasts } from '../lib/hooks/use-vega-transaction-toasts';
+import { useReadyToWithdrawalToasts } from '../lib/hooks/use-ready-to-complete-withdrawals-toast';
 
 const WalletDisconnectAdditionalContent = () => {
   const { hideToast } = useWalletDisconnectToastActions();
@@ -30,13 +29,10 @@ const WalletDisconnectAdditionalContent = () => {
 export const ToastsManager = () => {
   useProposalToasts();
   useVegaTransactionToasts();
-  useEthereumTransactionToasts();
-  useEthereumWithdrawApprovalsToasts();
-  useReadyToWithdrawalToasts({
-    withdrawalsLink: Links.PORTFOLIO(),
-  });
+  useReadyToWithdrawalToasts();
   useReferralToasts();
   useWalletDisconnectedToasts(<WalletDisconnectAdditionalContent />);
+  usePositionCloseOutNotification();
 
   const toasts = useToasts((store) => store.toasts);
   return <ToastsContainer order="desc" toasts={toasts} />;

@@ -15,11 +15,12 @@ export const useRequired = () => {
   );
 };
 
+export const ETHEREUM_ADDRESS_REGEX = /^0x[0-9a-fA-F]{40}$/i;
 export const useEthereumAddress = () => {
   const t = useT();
   return useCallback(
     (value: string) => {
-      if (!/^0x[0-9a-fA-F]{40}$/i.test(value)) {
+      if (!ETHEREUM_ADDRESS_REGEX.test(value)) {
         return t('Invalid Ethereum address');
       }
       return true;

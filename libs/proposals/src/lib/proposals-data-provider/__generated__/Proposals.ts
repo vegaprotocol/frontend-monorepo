@@ -15,7 +15,9 @@ export type UpdateAssetFieldsFragment = { __typename?: 'UpdateAsset', assetId: s
 
 export type UpdateNetworkParameterFieldsFragment = { __typename?: 'UpdateNetworkParameter', networkParameter: { __typename?: 'NetworkParameter', key: string, value: string } };
 
-export type NewTransferFieldsFragment = { __typename?: 'NewTransfer', source: string, sourceType: Types.AccountType, destination: string, destinationType: Types.AccountType, fraction_of_balance: string, amount: string, transferType: Types.GovernanceTransferType, asset: { __typename?: 'Asset', id: string, symbol: string, decimals: number, quantum: string }, kind: { __typename: 'OneOffGovernanceTransfer', deliverOn?: any | null } | { __typename: 'RecurringGovernanceTransfer', startEpoch: number, endEpoch?: number | null } };
+export type DispatchStrategyFieldsFragment = { __typename?: 'DispatchStrategy', dispatchMetric: Types.DispatchMetric, dispatchMetricAssetId: string, distributionStrategy: Types.DistributionStrategy, marketIdsInScope?: Array<string> | null, entityScope: Types.EntityScope, individualScope?: Types.IndividualScope | null, teamScope?: Array<string | null> | null, nTopPerformers?: string | null, stakingRequirement: string, notionalTimeWeightedAveragePositionRequirement: string, windowLength: number, lockPeriod: number, capRewardFeeMultiple?: string | null, transferInterval?: number | null, rankTable?: Array<{ __typename?: 'RankTable', startRank: number, shareRatio: number } | null> | null };
+
+export type NewTransferFieldsFragment = { __typename?: 'NewTransfer', source: string, sourceType: Types.AccountType, destination: string, destinationType: Types.AccountType, fraction_of_balance: string, amount: string, transferType: Types.GovernanceTransferType, asset: { __typename?: 'Asset', id: string, symbol: string, decimals: number, quantum: string }, kind: { __typename: 'OneOffGovernanceTransfer', deliverOn?: any | null } | { __typename: 'RecurringGovernanceTransfer', startEpoch: number, endEpoch?: number | null, dispatchStrategy?: { __typename?: 'DispatchStrategy', dispatchMetric: Types.DispatchMetric, dispatchMetricAssetId: string, distributionStrategy: Types.DistributionStrategy, marketIdsInScope?: Array<string> | null, entityScope: Types.EntityScope, individualScope?: Types.IndividualScope | null, teamScope?: Array<string | null> | null, nTopPerformers?: string | null, stakingRequirement: string, notionalTimeWeightedAveragePositionRequirement: string, windowLength: number, lockPeriod: number, capRewardFeeMultiple?: string | null, transferInterval?: number | null, rankTable?: Array<{ __typename?: 'RankTable', startRank: number, shareRatio: number } | null> | null } | null } };
 
 export type CancelTransferFieldsFragment = { __typename?: 'CancelTransfer', transferId: string };
 
@@ -48,6 +50,28 @@ export type MarketViewLiveProposalsSubscriptionVariables = Types.Exact<{ [key: s
 
 export type MarketViewLiveProposalsSubscription = { __typename?: 'Subscription', proposals: { __typename?: 'Proposal', id?: string | null, state: Types.ProposalState, terms: { __typename?: 'ProposalTerms', closingDatetime: any, enactmentDatetime?: any | null, change: { __typename: 'CancelTransfer' } | { __typename: 'NewAsset' } | { __typename: 'NewFreeform' } | { __typename: 'NewMarket', instrument: { __typename?: 'InstrumentConfiguration', name: string }, successorConfiguration?: { __typename?: 'SuccessorConfiguration', parentMarketId: string } | null } | { __typename: 'NewSpotMarket' } | { __typename: 'NewTransfer' } | { __typename: 'UpdateAsset' } | { __typename: 'UpdateMarket', marketId: string, updateMarketConfiguration: { __typename?: 'UpdateMarketConfiguration', metadata?: Array<string | null> | null, instrument: { __typename?: 'UpdateInstrumentConfiguration', code: string, product: { __typename?: 'UpdateFutureProduct', quoteName: string, dataSourceSpecForSettlementData: { __typename?: 'DataSourceDefinition', sourceType: { __typename?: 'DataSourceDefinitionExternal', sourceType: { __typename?: 'DataSourceSpecConfiguration', signers?: Array<{ __typename?: 'Signer', signer: { __typename?: 'ETHAddress', address?: string | null } | { __typename?: 'PubKey', key?: string | null } }> | null, filters?: Array<{ __typename?: 'Filter', key: { __typename?: 'PropertyKey', name?: string | null, type: Types.PropertyKeyType }, conditions?: Array<{ __typename?: 'Condition', operator: Types.ConditionOperator, value?: string | null }> | null }> | null } | { __typename?: 'EthCallSpec' } } | { __typename?: 'DataSourceDefinitionInternal' } }, dataSourceSpecForTradingTermination: { __typename?: 'DataSourceDefinition', sourceType: { __typename?: 'DataSourceDefinitionExternal', sourceType: { __typename?: 'DataSourceSpecConfiguration', signers?: Array<{ __typename?: 'Signer', signer: { __typename?: 'ETHAddress', address?: string | null } | { __typename?: 'PubKey', key?: string | null } }> | null, filters?: Array<{ __typename?: 'Filter', key: { __typename?: 'PropertyKey', name?: string | null, type: Types.PropertyKeyType }, conditions?: Array<{ __typename?: 'Condition', operator: Types.ConditionOperator, value?: string | null }> | null }> | null } | { __typename?: 'EthCallSpec' } } | { __typename?: 'DataSourceDefinitionInternal' } }, dataSourceSpecBinding: { __typename?: 'DataSourceSpecToFutureBinding', settlementDataProperty: string, tradingTerminationProperty: string } } | { __typename?: 'UpdatePerpetualProduct', quoteName: string, dataSourceSpecForSettlementData: { __typename?: 'DataSourceDefinition', sourceType: { __typename?: 'DataSourceDefinitionExternal', sourceType: { __typename?: 'DataSourceSpecConfiguration', signers?: Array<{ __typename?: 'Signer', signer: { __typename?: 'ETHAddress', address?: string | null } | { __typename?: 'PubKey', key?: string | null } }> | null, filters?: Array<{ __typename?: 'Filter', key: { __typename?: 'PropertyKey', name?: string | null, type: Types.PropertyKeyType }, conditions?: Array<{ __typename?: 'Condition', operator: Types.ConditionOperator, value?: string | null }> | null }> | null } | { __typename?: 'EthCallSpec' } } | { __typename?: 'DataSourceDefinitionInternal' } }, dataSourceSpecForSettlementSchedule: { __typename?: 'DataSourceDefinition', sourceType: { __typename?: 'DataSourceDefinitionExternal', sourceType: { __typename?: 'DataSourceSpecConfiguration', signers?: Array<{ __typename?: 'Signer', signer: { __typename?: 'ETHAddress', address?: string | null } | { __typename?: 'PubKey', key?: string | null } }> | null, filters?: Array<{ __typename?: 'Filter', key: { __typename?: 'PropertyKey', name?: string | null, type: Types.PropertyKeyType }, conditions?: Array<{ __typename?: 'Condition', operator: Types.ConditionOperator, value?: string | null }> | null }> | null } | { __typename?: 'EthCallSpec' } } | { __typename?: 'DataSourceDefinitionInternal' } }, dataSourceSpecBinding: { __typename?: 'DataSourceSpecPerpetualBinding', settlementDataProperty: string, settlementScheduleProperty: string } } }, priceMonitoringParameters: { __typename?: 'PriceMonitoringParameters', triggers?: Array<{ __typename?: 'PriceMonitoringTrigger', horizonSecs: number, probability: number, auctionExtensionSecs: number }> | null }, liquidityMonitoringParameters: { __typename?: 'LiquidityMonitoringParameters', targetStakeParameters: { __typename?: 'TargetStakeParameters', timeWindow: number, scalingFactor: number } }, riskParameters: { __typename: 'UpdateMarketLogNormalRiskModel', logNormal?: { __typename?: 'LogNormalRiskModel', riskAversionParameter: number, tau: number, params: { __typename?: 'LogNormalModelParams', mu: number, r: number, sigma: number } } | null } | { __typename: 'UpdateMarketSimpleRiskModel', simple?: { __typename?: 'SimpleRiskModelParams', factorLong: number, factorShort: number } | null } } } | { __typename: 'UpdateMarketState', updateType: Types.MarketUpdateType, price?: string | null, market: { __typename?: 'Market', id: string, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', name: string, code: string } } } } | { __typename: 'UpdateNetworkParameter' } | { __typename: 'UpdateReferralProgram' } | { __typename: 'UpdateSpotMarket' } | { __typename: 'UpdateVolumeDiscountProgram' } } } };
 
+export const DispatchStrategyFieldsFragmentDoc = gql`
+    fragment DispatchStrategyFields on DispatchStrategy {
+  dispatchMetric
+  dispatchMetricAssetId
+  distributionStrategy
+  marketIdsInScope
+  entityScope
+  individualScope
+  teamScope
+  nTopPerformers
+  stakingRequirement
+  notionalTimeWeightedAveragePositionRequirement
+  windowLength
+  lockPeriod
+  rankTable {
+    startRank
+    shareRatio
+  }
+  capRewardFeeMultiple
+  transferInterval
+}
+    `;
 export const NewTransferFieldsFragmentDoc = gql`
     fragment NewTransferFields on NewTransfer {
   source
@@ -71,10 +95,13 @@ export const NewTransferFieldsFragmentDoc = gql`
     ... on RecurringGovernanceTransfer {
       startEpoch
       endEpoch
+      dispatchStrategy {
+        ...DispatchStrategyFields
+      }
     }
   }
 }
-    `;
+    ${DispatchStrategyFieldsFragmentDoc}`;
 export const CancelTransferFieldsFragmentDoc = gql`
     fragment CancelTransferFields on CancelTransfer {
   transferId

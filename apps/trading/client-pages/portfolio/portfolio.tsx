@@ -1,7 +1,9 @@
 import type { ReactNode } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { LayoutPriority } from 'allotment';
-import { useIncompleteWithdrawals } from '@vegaprotocol/withdraws';
 import { useScreenDimensions } from '@vegaprotocol/react-helpers';
+
+import { useFeatureFlags } from '@vegaprotocol/environment';
 import {
   Intent,
   Notification,
@@ -9,6 +11,8 @@ import {
   LocalStoragePersistTabs as Tabs,
   TinyScroll,
 } from '@vegaprotocol/ui-toolkit';
+import { TransferContainer } from '@vegaprotocol/accounts';
+
 import { AccountsContainer } from '../../components/accounts-container';
 import { DepositsContainer } from '../../components/deposits-container';
 import {
@@ -41,14 +45,13 @@ import { useT } from '../../lib/use-t';
 import { ErrorBoundary } from '../../components/error-boundary';
 import { usePageTitle } from '../../lib/hooks/use-page-title';
 import { Links } from '../../lib/links';
+
+import { DepositContainer } from '../../components/deposit-container';
 import { WithdrawContainer } from '../../components/withdraw-container';
 import { SwapContainer } from '../../components/swap/swap-container';
 import { SquidContainer } from '../../components/squid-container';
 
-import { DepositContainer } from '@vegaprotocol/deposits';
-import { TransferContainer } from '@vegaprotocol/accounts';
-import { useFeatureFlags } from '@vegaprotocol/environment';
-import { useNavigate } from 'react-router-dom';
+import { useIncompleteWithdrawals } from '../../lib/hooks/use-incomplete-withdrawals';
 
 const WithdrawalsIndicator = () => {
   const { ready } = useIncompleteWithdrawals();
@@ -155,7 +158,6 @@ const PortfolioActionTabs = () => {
                 'Use this form to deposit Ethereum or Arbitrum assets to the Vega network'
               )}
             />
-            <p className="text-sm">{t('Deposit from your wallet')}</p>
             <DepositContainer />
           </div>
         </ErrorBoundary>
@@ -209,11 +211,13 @@ const PortfolioActionTabs = () => {
   );
 };
 
+export const PORTFOLIO_TOP_TABS = 'console-portfolio-top-1';
+
 const PortfolioTopTabs = () => {
   const t = useT();
 
   return (
-    <Tabs storageKey="console-portfolio-top-1">
+    <Tabs storageKey={PORTFOLIO_TOP_TABS}>
       <Tab
         id="positions"
         name={t('Positions')}

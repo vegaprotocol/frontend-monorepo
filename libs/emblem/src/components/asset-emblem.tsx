@@ -22,14 +22,17 @@ export function EmblemByAsset(p: EmblemByAssetProps) {
 
   return (
     <div className="relative inline-block">
-      <EmblemBase src={getVegaAssetLogoUrl(chain, p.asset)} {...p} />
+      <EmblemBase
+        src={getVegaAssetLogoUrl(chain, p.asset)}
+        className="border-2"
+        {...p}
+      />
       {p.showSourceChain !== false && (
         <EmblemBase
           src={getVegaAssetLogoUrl(chain, p.asset, CHAIN_FILENAME)}
-          width={12}
-          height={12}
+          size={12}
           alt={t('Chain logo')}
-          className={`align-text-top absolute bottom-0 right-0`}
+          className={`align-text-top absolute bottom-0 -right-0`}
         />
       )}
     </div>
