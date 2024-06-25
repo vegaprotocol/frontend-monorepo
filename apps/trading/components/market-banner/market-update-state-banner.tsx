@@ -152,7 +152,7 @@ const PassedProposalContent = ({
       : undefined;
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-1">
       <p className="uppercase">
         {t('Trading on market {{name}} will {{action}} on {{date}}', {
           name: market.tradableInstrument.instrument.code,
