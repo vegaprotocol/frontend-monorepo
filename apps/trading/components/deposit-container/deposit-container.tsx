@@ -20,7 +20,7 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { Emblem } from '@vegaprotocol/emblem';
-import { toBigNum } from '@vegaprotocol/utils';
+import { VEGA_ID_REGEX, toBigNum } from '@vegaprotocol/utils';
 import {
   useEVMBridgeConfigs,
   useEthereumConfig,
@@ -73,7 +73,7 @@ export const DepositContainer = ({
 const depositSchema = z.object({
   fromAddress: z.string().min(1, 'Connect wallet'),
   assetId: z.string().min(1, 'Required'),
-  toPubKey: z.string().regex(/^[A-Fa-f0-9]{64}$/i, 'Invalid key'),
+  toPubKey: z.string().regex(VEGA_ID_REGEX, 'Invalid key'),
   // Use a string but parse it as a number for validation
   amount: z.string().refine(
     (v) => {
