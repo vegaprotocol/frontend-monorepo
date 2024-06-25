@@ -16,12 +16,10 @@ import {
   useVegaWallet,
   useDialogStore,
 } from '@vegaprotocol/wallet-react';
-import { Routes } from '../../lib/links';
+import { Links, Routes } from '../../lib/links';
 import { useReferralProgram } from './hooks/use-referral-program';
 import { ns, useT } from '../../lib/use-t';
 import { useFundsAvailable } from './hooks/use-funds-available';
-import { ViewType, useSidebar } from '../../components/sidebar';
-import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
 import { QUSDTooltip } from './qusd-tooltip';
 import { Trans } from 'react-i18next';
 import { PreviewRefereeStatistics } from './referee-statistics';
@@ -91,9 +89,6 @@ export const ApplyCodeForm = ({ onSuccess }: { onSuccess?: () => void }) => {
 
   const { isReadOnly, pubKey } = useVegaWallet();
   const { isEligible, requiredFunds } = useFundsAvailable();
-
-  const currentRouteId = useGetCurrentRouteId();
-  const setViews = useSidebar((s) => s.setViews);
 
   const [params] = useSearchParams();
   const {
@@ -243,7 +238,7 @@ export const ApplyCodeForm = ({ onSuccess }: { onSuccess?: () => void }) => {
         type: 'button' as ButtonHTMLAttributes<HTMLButtonElement>['type'],
         onClick: ((event) => {
           event.preventDefault();
-          setViews({ type: ViewType.Deposit }, currentRouteId);
+          navigate(Links.DEPOSIT());
         }) as MouseEventHandler,
       };
     }

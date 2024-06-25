@@ -201,6 +201,21 @@ const accountResult = [
     breakdown: [
       {
         __typename: 'AccountBalance',
+        type: 'ACCOUNT_TYPE_GENERAL',
+        balance: '5000593078',
+        market: null,
+        asset: {
+          __typename: 'Asset',
+          id: '6d9d35f657589e40ddfb448b7ad4a7463b66efb307527fedd2aa7df1bbd5ea61',
+          symbol: 'tDAI',
+          decimals: 5,
+        },
+        total: '5001000000',
+        available: '5000593078',
+        used: '5000593078',
+      },
+      {
+        __typename: 'AccountBalance',
         type: 'ACCOUNT_TYPE_MARGIN',
         balance: '406922',
         market: {
@@ -224,21 +239,6 @@ const accountResult = [
         available: '5000593078',
         used: '406922',
       },
-      {
-        __typename: 'AccountBalance',
-        type: 'ACCOUNT_TYPE_GENERAL',
-        balance: '5000593078',
-        market: null,
-        asset: {
-          __typename: 'Asset',
-          id: '6d9d35f657589e40ddfb448b7ad4a7463b66efb307527fedd2aa7df1bbd5ea61',
-          symbol: 'tDAI',
-          decimals: 5,
-        },
-        total: '5001000000',
-        available: '5000593078',
-        used: '5000593078',
-      },
     ],
   },
   {
@@ -254,6 +254,21 @@ const accountResult = [
     used: '2781397',
     total: '2999000000',
     breakdown: [
+      {
+        __typename: 'AccountBalance',
+        type: 'ACCOUNT_TYPE_GENERAL',
+        balance: '2996218603',
+        market: null,
+        asset: {
+          __typename: 'Asset',
+          id: '8b52d4a3a4b0ffe733cddbc2b67be273816cfeb6ca4c8b339bac03ffba08e4e4',
+          symbol: 'tEURO',
+          decimals: 5,
+        },
+        total: '2999000000',
+        available: '2996218603',
+        used: '2996218603',
+      },
       {
         __typename: 'AccountBalance',
         type: 'ACCOUNT_TYPE_MARGIN',
@@ -278,21 +293,6 @@ const accountResult = [
         total: '2999000000',
         available: '2996218603',
         used: '2781397',
-      },
-      {
-        __typename: 'AccountBalance',
-        type: 'ACCOUNT_TYPE_GENERAL',
-        balance: '2996218603',
-        market: null,
-        asset: {
-          __typename: 'Asset',
-          id: '8b52d4a3a4b0ffe733cddbc2b67be273816cfeb6ca4c8b339bac03ffba08e4e4',
-          symbol: 'tEURO',
-          decimals: 5,
-        },
-        total: '2999000000',
-        available: '2996218603',
-        used: '2996218603',
       },
     ],
   },

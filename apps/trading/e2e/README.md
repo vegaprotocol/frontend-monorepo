@@ -44,6 +44,8 @@ Pull Docker images for your environment:
 
 ### 4. Build a Docker Image of Your Locally Built Trading App
 
+Ensure to enter the ENV_NAME for the environment you want to test against.
+
 ```bash
 ./docker/prepare-dist.sh
 docker build -f docker/node-outside-docker.Dockerfile --build-arg APP=trading --build-arg ENV_NAME=stagnet1 -t vegaprotocol/trading:develop .
@@ -59,9 +61,11 @@ Ensure the Docker daemon is running. Update the `.env` file with the correct tra
 
   In one terminal window, build and serve the trading console:
 
+  Ensure to serve the environment you want to test against
+
   ```bash
   yarn nx build trading
-  yarn nx serve trading
+  yarn env-cmd -f ./apps/trading/.env.mainnet yarn nx run trading:serve
   ```
 
   Once the console is served, update the `.env` file to set `local_server=true`. You can then run your tests using the same commands as above.
@@ -89,6 +93,8 @@ def vega(request):
 
 For running tests in parallel:
 
+Running more than 4 threads at a time can cause instability. If this is the case, change `--numprocesses` to 2 or 4.
+
 - **Within the e2e folder**: `poetry run pytest -s --numprocesses auto --dist loadfile`
 - **From anywhere**: `yarn trading:test:all`
 
@@ -98,3 +104,15 @@ If IntelliSense is not working in VSCode, follow these steps:
 
 1. Find the Poetry environment's Python binary: `poetry run which python`
 2. In VSCode, open the command menu (`cmd + shift + p`), search for `Python: Select Interpreter`, select `Enter interpreter path`, and paste the path from step 1.
+
+# Maintenance
+
+## Running against different versions of VEGA
+
+UPDATING THE .ENV FILE IS NOT ENOUGH
+
+Vega Market Sim will need branches created for whatever version of core you want to run against.
+
+This branch will need to be updated in the `pyproject.toml` file.
+
+This core version will then need to be specified in the .env files.

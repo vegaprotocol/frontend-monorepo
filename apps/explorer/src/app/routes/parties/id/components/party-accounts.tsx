@@ -23,7 +23,7 @@ export const PartyAccounts = ({ partyId }: PartyAccountsProps) => {
   const accounts =
     party?.accountsConnection?.edges?.filter((edge) => edge?.node) || [];
   return (
-    <div className="block min-h-44 h-60 4 w-full border-red-800 relative">
+    <div className="block min-h-44 4 w-full relative">
       <table>
         <thead>
           <tr>

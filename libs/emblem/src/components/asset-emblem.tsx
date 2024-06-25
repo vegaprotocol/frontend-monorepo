@@ -26,10 +26,9 @@ export function EmblemByAsset(p: EmblemByAssetProps) {
       {p.showSourceChain !== false && (
         <EmblemBase
           src={getVegaAssetLogoUrl(chain, p.asset, CHAIN_FILENAME)}
-          width={12}
-          height={12}
+          size={12}
           alt={t('Chain logo')}
-          className={`align-text-top absolute bottom-0 right-0`}
+          className={`align-text-top absolute -bottom-1 -right-1`}
         />
       )}
     </div>

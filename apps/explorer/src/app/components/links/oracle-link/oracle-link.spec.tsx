@@ -24,7 +24,7 @@ describe('OracleLink', () => {
         </MemoryRouter>
       </MockedProvider>
     );
-    const idElement = screen.getByText(id.slice(0, 6));
+    const idElement = screen.getByText(id.slice(0, 8));
     expect(idElement).toBeInTheDocument();
     expect(idElement).toHaveAttribute('title', id);
   });

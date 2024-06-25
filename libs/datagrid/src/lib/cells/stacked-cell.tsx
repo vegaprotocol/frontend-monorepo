@@ -7,7 +7,7 @@ export const StackedCell = ({
   className,
 }: {
   primary: ReactNode;
-  secondary: ReactNode;
+  secondary?: ReactNode;
   className?: string;
 }) => {
   const rowClass = 'text-ellipsis whitespace-nowrap overflow-hidden';
@@ -17,12 +17,14 @@ export const StackedCell = ({
       <div className={rowClass} data-testid="stack-cell-primary">
         <span>{primary}</span>
       </div>
-      <div
-        data-testid="stack-cell-secondary"
-        className={classNames(rowClass, 'text-xs text-muted')}
-      >
-        {secondary}
-      </div>
+      {secondary && (
+        <div
+          data-testid="stack-cell-secondary"
+          className={classNames(rowClass, 'text-xs text-muted')}
+        >
+          {secondary}
+        </div>
+      )}
     </div>
   );
 };

@@ -109,6 +109,7 @@ export const priceChangeSparklineRenderer = (
   const candles = data.candles
     ?.filter((c) => c.close)
     .map((c) => Number(c.close));
+  if (!candles?.length) return null;
   return <Sparkline width={80} height={20} data={candles || [0]} />;
 };
 
@@ -153,6 +154,7 @@ export const useMarketsColumnDefs = () => {
         field: 'tradableInstrument.instrument.code',
         minWidth: 150,
         pinned: true,
+        cellClass: 'text-base',
         cellRenderer: ({
           value,
           data,
@@ -168,12 +170,10 @@ export const useMarketsColumnDefs = () => {
           return (
             <Tooltip description={t(tooltip)}>
               <span className="flex items-center gap-2 cursor-pointer">
-                <span className="mr-1">
-                  <EmblemByMarket market={data?.id || ''} vegaChain={chainId} />
-                </span>
+                <EmblemByMarket market={data?.id || ''} vegaChain={chainId} />
                 <StackedCell
                   primary={
-                    <span className="flex gap-1">
+                    <span className="flex gap-1 items-center">
                       {value}
                       <MarketProductPill productType={productType} />
                       <MarketIcon data={data} />
@@ -216,14 +216,14 @@ export const useMarketsColumnDefs = () => {
         headerName: '24h Change',
         field: 'data.candles',
         type: 'rightAligned',
-        cellClass: 'text-sm text-right',
+        cellClass: 'text-sm text-right font-mono',
         cellRenderer: ({
           data,
         }: ValueFormatterParams<MarketMaybeWithDataAndCandles, 'candles'>) => {
           return (
             <div className="flex gap-2 justify-end">
-              <span>{priceChangeRenderer(data)}</span>
               <span>{priceChangeSparklineRenderer(data)}</span>
+              <span>{priceChangeRenderer(data)}</span>
             </div>
           );
         },

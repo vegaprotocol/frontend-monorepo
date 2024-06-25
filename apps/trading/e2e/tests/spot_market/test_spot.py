@@ -29,7 +29,7 @@ def page(vega, browser, request):
 @pytest.fixture(autouse=True)
 def after_each(page: Page):
     yield
-    opened_element = page.locator('h3[data-state="open"]')
+    opened_element = page.locator('[data-testid="market-info-accordion"] h3[data-state="open"]')
     if opened_element.all() and opened_element.get_by_role("button").is_visible():
         opened_element.get_by_role("button").click()
 
@@ -232,7 +232,7 @@ def test_market_spot_info_proposal(page: Page, vega: VegaServiceNull):
 
 
 def test_market_spot_ticket(page: Page):
-    page.get_by_test_id("Order").click()
+    page.get_by_test_id("Trade").click()
     expect(page.get_by_test_id("order-side-SIDE_BUY")).to_have_text("Buy")
     expect(page.get_by_test_id("order-side-SIDE_SELL")).to_have_text("Sell")
     expect(page.get_by_test_id("reduce-only")).not_to_be_attached()

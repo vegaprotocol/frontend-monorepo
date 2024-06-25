@@ -8,6 +8,7 @@ import {
   priceChangeSparklineRenderer,
 } from './use-column-defs';
 import { Links } from '../../lib/links';
+import { Tooltip } from '@vegaprotocol/ui-toolkit';
 
 export const TopMarketList = ({
   markets,
@@ -16,7 +17,7 @@ export const TopMarketList = ({
 }) => {
   const { chainId } = useChainId();
   return (
-    <div className="flex flex-col justify-between grow gap-2">
+    <div className="flex flex-col justify-between gap-5">
       {markets?.map((market) => {
         return (
           <div
@@ -24,14 +25,22 @@ export const TopMarketList = ({
             key={market.id}
           >
             <span className="col-span-3 overflow-hidden">
-              <Link to={Links.MARKET(market.id)}>
-                <span className="flex items-center">
-                  <span className="pr-1">
-                    <EmblemByMarket market={market.id} vegaChain={chainId} />
+              <Tooltip description={market.tradableInstrument.instrument.name}>
+                <Link to={Links.MARKET(market.id)}>
+                  <span className="flex items-center">
+                    <span>
+                      <EmblemByMarket
+                        market={market.id}
+                        vegaChain={chainId}
+                        size={26}
+                      />
+                    </span>
+                    <span className="text-sm overflow-hidden text-ellipsis">
+                      {market.tradableInstrument.instrument.code}
+                    </span>
                   </span>
-                  <span>{market.tradableInstrument.instrument.code}</span>
-                </span>
-              </Link>
+                </Link>
+              </Tooltip>
             </span>
             <span className="col-span-2 text-right font-mono">
               {priceValueFormatter(market, 2)}

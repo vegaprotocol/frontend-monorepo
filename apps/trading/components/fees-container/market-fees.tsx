@@ -1,25 +1,56 @@
 import compact from 'lodash/compact';
 import type { MarketMaybeWithDataAndCandles } from '@vegaprotocol/markets';
-import { AgGrid } from '@vegaprotocol/datagrid';
+import { AgGrid, MarketProductPill, StackedCell } from '@vegaprotocol/datagrid';
 import { formatPercentage, getAdjustedFee } from './utils';
-import { MarketCodeCell } from '../../client-pages/markets/market-code-cell';
 import BigNumber from 'bignumber.js';
 import { useNavigateWithMeta } from '../../lib/hooks/use-market-click-handler';
 import { Links } from '../../lib/links';
 import { useT } from '../../lib/use-t';
 import { useMemo } from 'react';
 import { type ColDef } from 'ag-grid-community/dist/lib/entities/colDef';
+import { EmblemByMarket } from '@vegaprotocol/emblem';
+import { useChainId } from '@vegaprotocol/wallet-react';
+import type { ProductType } from '@vegaprotocol/types';
 
 const useFeesTableColumnDefs = (): ColDef[] => {
   const t = useT();
+  const { chainId } = useChainId();
   return useMemo(
     () =>
       [
         {
           field: 'code',
-          cellRenderer: MarketCodeCell,
+          cellRenderer: ({
+            value,
+            data,
+          }: {
+            value: string | undefined; // market code
+            data: {
+              id: string;
+              productType: ProductType | undefined;
+              parentMarketID: string | null | undefined;
+              successorMarketID?: string | null | undefined;
+              name: string;
+            };
+          }) => {
+            const productType = data?.productType;
+            return (
+              <span className="flex items-center gap-2 cursor-pointer">
+                <EmblemByMarket market={data.id} vegaChain={chainId} />
+                <StackedCell
+                  primary={
+                    <span className="flex gap-1 items-center">
+                      {value}
+                      <MarketProductPill productType={productType} />
+                    </span>
+                  }
+                  secondary={data.name}
+                />
+              </span>
+            );
+          },
           pinned: 'left',
-          width: 246,
+          minWidth: 300,
         },
         {
           field: 'feeAfterDiscount',
@@ -44,7 +75,7 @@ const useFeesTableColumnDefs = (): ColDef[] => {
           valueFormatter: ({ value }: { value: number }) => value + '%',
         },
       ] as ColDef[],
-    [t]
+    [chainId, t]
   );
 };
 
@@ -55,10 +86,6 @@ const feesTableDefaultColDef = {
   sortable: true,
   suppressMovable: true,
   pinned: false,
-};
-
-const components = {
-  MarketCodeCell,
 };
 
 export const MarketFees = ({
@@ -88,6 +115,7 @@ export const MarketFees = ({
       return {
         id: m.id,
         code: m.tradableInstrument.instrument.code,
+        name: m.tradableInstrument.instrument.name,
         productType: m.tradableInstrument.instrument.product.__typename,
         infraFee: formatPercentage(infraFee.toNumber()),
         makerFee: formatPercentage(makerFee.toNumber()),
@@ -105,12 +133,14 @@ export const MarketFees = ({
       <AgGrid
         columnDefs={colDef}
         rowData={rows}
-        components={components}
         getRowId={({ data }) => data.id}
         defaultColDef={feesTableDefaultColDef}
         domLayout="autoHeight"
-        rowHeight={45}
+        rowHeight={55}
         rowClass="cursor-pointer"
+        autoSizeStrategy={{
+          type: 'fitGridWidth',
+        }}
         onRowClicked={({ data, event }) => {
           navigateWithMeta(
             Links.MARKET(data.id),

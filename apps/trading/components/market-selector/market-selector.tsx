@@ -177,24 +177,27 @@ const MarketList = ({
     <TinyScroll>
       <div
         className={classNames(
-          'flex gap-2',
+          'grid grid-cols-6 sm:grid-cols-12 gap-2',
           'bg-vega-clight-700 dark:bg-vega-cdark-700',
           'p-2 mx-2 border-b border-default text-xs text-secondary'
         )}
       >
-        <div className="w-4/6 sm:w-2/6" role="columnheader">
+        <div className="col-span-4 sm:col-span-5" role="columnheader">
           {t('Name')}
         </div>
-        <div className="w-2/6 text-right pr-4" role="columnheader">
+        <div
+          className="col-span-2 sm:col-span-3 text-right"
+          role="columnheader"
+        >
           {t('Price')}
         </div>
         <div
-          className="hidden sm:w-1/6 sm:flex justify-end text-right"
+          className="hidden col-span-2 sm:flex justify-end text-right"
           role="columnheader"
         >
           {t('24h volume')}
         </div>
-        <div className="sm:w-1/6" role="columnheader" />
+        <div className="hidden sm:flex col-span-2" role="columnheader" />
       </div>
       <div ref={listRef}>
         <List

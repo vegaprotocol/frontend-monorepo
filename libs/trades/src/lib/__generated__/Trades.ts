@@ -3,7 +3,7 @@ import * as Types from '@vegaprotocol/types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
-export type TradeFieldsFragment = { __typename?: 'Trade', id: string, price: string, size: string, createdAt: any, aggressor: Types.Side, type: Types.TradeType, market: { __typename?: 'Market', id: string } };
+export type TradeFieldsFragment = { __typename?: 'Trade', id: string, price: string, size: string, createdAt: any, aggressor: Types.Side, type: Types.TradeType, market: { __typename?: 'Market', id: string }, buyer: { __typename?: 'Party', id: string }, seller: { __typename?: 'Party', id: string } };
 
 export type TradesQueryVariables = Types.Exact<{
   marketIds?: Types.InputMaybe<Array<Types.Scalars['ID']> | Types.Scalars['ID']>;
@@ -12,9 +12,9 @@ export type TradesQueryVariables = Types.Exact<{
 }>;
 
 
-export type TradesQuery = { __typename?: 'Query', trades?: { __typename?: 'TradeConnection', edges: Array<{ __typename?: 'TradeEdge', cursor: string, node: { __typename?: 'Trade', id: string, price: string, size: string, createdAt: any, aggressor: Types.Side, type: Types.TradeType, market: { __typename?: 'Market', id: string } } }>, pageInfo: { __typename?: 'PageInfo', startCursor: string, endCursor: string, hasNextPage: boolean, hasPreviousPage: boolean } } | null };
+export type TradesQuery = { __typename?: 'Query', trades?: { __typename?: 'TradeConnection', edges: Array<{ __typename?: 'TradeEdge', cursor: string, node: { __typename?: 'Trade', id: string, price: string, size: string, createdAt: any, aggressor: Types.Side, type: Types.TradeType, market: { __typename?: 'Market', id: string }, buyer: { __typename?: 'Party', id: string }, seller: { __typename?: 'Party', id: string } } }>, pageInfo: { __typename?: 'PageInfo', startCursor: string, endCursor: string, hasNextPage: boolean, hasPreviousPage: boolean } } | null };
 
-export type TradeUpdateFieldsFragment = { __typename?: 'TradeUpdate', id: string, price: string, size: string, createdAt: any, marketId: string, aggressor: Types.Side, type: Types.TradeType };
+export type TradeUpdateFieldsFragment = { __typename?: 'TradeUpdate', id: string, price: string, size: string, createdAt: any, marketId: string, aggressor: Types.Side, type: Types.TradeType, buyerId: string, sellerId: string };
 
 export type TradesUpdateSubscriptionVariables = Types.Exact<{
   marketIds?: Types.InputMaybe<Array<Types.Scalars['ID']> | Types.Scalars['ID']>;
@@ -22,7 +22,7 @@ export type TradesUpdateSubscriptionVariables = Types.Exact<{
 }>;
 
 
-export type TradesUpdateSubscription = { __typename?: 'Subscription', tradesStream?: Array<{ __typename?: 'TradeUpdate', id: string, price: string, size: string, createdAt: any, marketId: string, aggressor: Types.Side, type: Types.TradeType }> | null };
+export type TradesUpdateSubscription = { __typename?: 'Subscription', tradesStream?: Array<{ __typename?: 'TradeUpdate', id: string, price: string, size: string, createdAt: any, marketId: string, aggressor: Types.Side, type: Types.TradeType, buyerId: string, sellerId: string }> | null };
 
 export const TradeFieldsFragmentDoc = gql`
     fragment TradeFields on Trade {
@@ -35,6 +35,12 @@ export const TradeFieldsFragmentDoc = gql`
     id
   }
   type
+  buyer {
+    id
+  }
+  seller {
+    id
+  }
 }
     `;
 export const TradeUpdateFieldsFragmentDoc = gql`
@@ -46,6 +52,8 @@ export const TradeUpdateFieldsFragmentDoc = gql`
   marketId
   aggressor
   type
+  buyerId
+  sellerId
 }
     `;
 export const TradesDocument = gql`

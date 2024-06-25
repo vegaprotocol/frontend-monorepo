@@ -107,7 +107,7 @@ export const MarketInfoAccordion = ({
     getDataSourceSpecForSettlementSchedule(product);
 
   return (
-    <div>
+    <div data-testid="market-info-accordion">
       <div className="mb-8">
         <h3 className={headerClassName}>{t('Market data')}</h3>
         <Accordion>

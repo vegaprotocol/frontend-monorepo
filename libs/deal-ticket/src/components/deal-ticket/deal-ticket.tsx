@@ -166,7 +166,6 @@ export const DealTicket = ({
   market,
   riskFactors,
   scalingFactors,
-  onMarketClick,
   marketData,
   marketPrice,
   markPrice,
@@ -1051,6 +1050,7 @@ export const DealTicket = ({
       <SummaryMessage
         error={summaryError}
         asset={(useBaseAsset && baseAsset) || asset}
+        baseAsset={baseAsset}
         marketTradingMode={marketData.marketTradingMode}
         balance={useBaseAsset ? baseAssetAccountBalance : generalAccountBalance}
         isSpotMarket={isSpotMarket}
@@ -1076,7 +1076,6 @@ export const DealTicket = ({
       />
       <DealTicketMarginDetails
         side={normalizedOrder.side}
-        onMarketClick={onMarketClick}
         asset={asset}
         marginAccountBalance={marginAccountBalance}
         orderMarginAccountBalance={orderMarginAccountBalance}
@@ -1097,6 +1096,7 @@ interface SummaryMessageProps {
   isSpotMarket?: boolean;
   error?: { message: string; type: string };
   asset: AssetFieldsFragment;
+  baseAsset?: AssetFieldsFragment;
   marketTradingMode: MarketData['marketTradingMode'];
   balance: string;
   margin: string;
@@ -1141,6 +1141,7 @@ const SummaryMessage = memo(
     isSpotMarket,
     error,
     asset,
+    baseAsset,
     marketTradingMode,
     balance,
     margin,
@@ -1157,6 +1158,17 @@ const SummaryMessage = memo(
     }
 
     if (error?.type === SummaryValidationType.NoCollateral) {
+      if (isSpotMarket) {
+        return (
+          <div className="mb-2">
+            <ZeroBalanceError
+              asset={asset}
+              baseAsset={baseAsset}
+              onDeposit={onDeposit}
+            />
+          </div>
+        );
+      }
       return (
         <div className="mb-2">
           <ZeroBalanceError asset={asset} onDeposit={onDeposit} />

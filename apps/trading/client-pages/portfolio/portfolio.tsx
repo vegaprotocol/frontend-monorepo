@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import type { ReactNode } from 'react';
 import { LayoutPriority } from 'allotment';
 import { useIncompleteWithdrawals } from '@vegaprotocol/withdraws';
@@ -8,11 +7,9 @@ import {
   Notification,
   Tab,
   LocalStoragePersistTabs as Tabs,
+  TinyScroll,
 } from '@vegaprotocol/ui-toolkit';
-import {
-  AccountsContainer,
-  AccountsSettings,
-} from '../../components/accounts-container';
+import { AccountsContainer } from '../../components/accounts-container';
 import { DepositsContainer } from '../../components/deposits-container';
 import {
   FillsContainer,
@@ -38,21 +35,20 @@ import {
   ResizableGridPanel,
   usePaneLayout,
 } from '../../components/resizable-grid';
-import { ViewType, useSidebar } from '../../components/sidebar';
-import { AccountsMenu } from '../../components/accounts-menu';
 import { DepositsMenu } from '../../components/deposits-menu';
 import { WithdrawalsMenu } from '../../components/withdrawals-menu';
-import { useGetCurrentRouteId } from '../../lib/hooks/use-get-current-route-id';
 import { useT } from '../../lib/use-t';
 import { ErrorBoundary } from '../../components/error-boundary';
 import { usePageTitle } from '../../lib/hooks/use-page-title';
-
-import { DepositContainer } from '@vegaprotocol/deposits';
-import { TransferContainer } from '@vegaprotocol/accounts';
+import { Links } from '../../lib/links';
 import { WithdrawContainer } from '../../components/withdraw-container';
 import { SwapContainer } from '../../components/swap/swap-container';
 import { SquidContainer } from '../../components/squid-container';
+
+import { DepositContainer } from '@vegaprotocol/deposits';
+import { TransferContainer } from '@vegaprotocol/accounts';
 import { useFeatureFlags } from '@vegaprotocol/environment';
+import { useNavigate } from 'react-router-dom';
 
 const WithdrawalsIndicator = () => {
   const { ready } = useIncompleteWithdrawals();
@@ -64,19 +60,6 @@ const WithdrawalsIndicator = () => {
       {ready.length}
     </span>
   );
-};
-
-const SidebarViewInitializer = () => {
-  const currentRouteId = useGetCurrentRouteId();
-  const { getView, setViews } = useSidebar();
-  const view = getView(currentRouteId);
-  // Make transfer sidebar open by default
-  useEffect(() => {
-    if (view === undefined) {
-      setViews({ type: ViewType.Transfer }, currentRouteId);
-    }
-  }, [view, setViews, currentRouteId]);
-  return null;
 };
 
 export const Portfolio = () => {
@@ -108,7 +91,6 @@ const PortfolioGrid = () => {
   });
   return (
     <div className="p-0.5 h-full max-h-full flex flex-col">
-      <SidebarViewInitializer />
       <ResizableGrid onChange={handleOnHorizontalChange}>
         <ResizableGridPanel
           minSize={475}
@@ -160,6 +142,8 @@ const PortfolioSmall = () => {
 const PortfolioActionTabs = () => {
   const t = useT();
   const flags = useFeatureFlags((state) => state.flags);
+  const navigate = useNavigate();
+  const onDeposit = () => navigate(Links.DEPOSIT());
   return (
     <Tabs storageKey="portfolio-sidebar">
       <Tab id="deposit" name={t('Deposit (Basic)')}>
@@ -209,20 +193,29 @@ const PortfolioActionTabs = () => {
         <Tab id="swap" name={t('Swap')}>
           <ErrorBoundary feature="assets-swap">
             <div className="p-4">
-              <SwapContainer />
+              <SwapContainer onDeposit={onDeposit} />
             </div>
           </ErrorBoundary>
         </Tab>
       ) : null}
+      <Tab id="assets" name={t('Assets')}>
+        <ErrorBoundary feature="portfolio-assets">
+          <TinyScroll>
+            <AccountsContainer />
+          </TinyScroll>
+        </ErrorBoundary>
+      </Tab>
     </Tabs>
   );
 };
+
+export const PORTFOLIO_TOP_TABS = 'console-portfolio-top-1';
 
 const PortfolioTopTabs = () => {
   const t = useT();
 
   return (
-    <Tabs storageKey="console-portfolio-top-1">
+    <Tabs storageKey={PORTFOLIO_TOP_TABS}>
       <Tab
         id="positions"
         name={t('Positions')}
@@ -265,16 +258,6 @@ const PortfolioBottomTabs = () => {
   const t = useT();
   return (
     <Tabs storageKey="console-portfolio-bottom">
-      <Tab
-        id="collateral"
-        name={t('Collateral')}
-        settings={<AccountsSettings />}
-        menu={<AccountsMenu />}
-      >
-        <ErrorBoundary feature="portfolio-accounts">
-          <AccountsContainer />
-        </ErrorBoundary>
-      </Tab>
       <Tab id="deposits" name={t('Deposits')} menu={<DepositsMenu />}>
         <ErrorBoundary feature="portfolio-deposit">
           <DepositsContainer />

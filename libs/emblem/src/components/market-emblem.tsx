@@ -3,6 +3,7 @@ import { EmblemBase } from './emblem-base';
 import { useMarketInfo } from './hooks/use-market-info';
 import { getVegaChain } from './lib/get-chain';
 import { t } from 'i18next';
+import classNames from 'classnames';
 
 export type EmblemByMarketProps = {
   // The ID of the market to display logos for
@@ -11,6 +12,8 @@ export type EmblemByMarketProps = {
   vegaChain?: string;
   // Overlays the icon for the source chain, if available and applicable
   showSourceChain?: boolean;
+  // The size of the logo
+  size?: 30 | 26;
 };
 
 /**
@@ -26,7 +29,7 @@ export type EmblemByMarketProps = {
  * @returns React.Node
  */
 export function EmblemByMarket(props: EmblemByMarketProps) {
-  const { vegaChain, market } = props;
+  const { vegaChain, market, size = 30 } = props;
 
   const chain = getVegaChain(vegaChain);
   const data = useMarketInfo(chain, market);
@@ -39,9 +42,18 @@ export function EmblemByMarket(props: EmblemByMarketProps) {
   );
 
   return (
-    <div className="relative inline-block h-8 w-14 leading-[0]">
+    <div
+      className={classNames(
+        'relative flex items-center h-8 w-14 leading-[0] shrink-0',
+        {
+          'w-14': size === 30,
+          'w-10': size === 26,
+        }
+      )}
+    >
       <EmblemBase
         src={base}
+        size={size}
         className="inline-block z-10 relative rounded-full bg-white border-2 border-vega-light-600 dark:border-white"
         {...props}
       />
@@ -49,25 +61,30 @@ export function EmblemByMarket(props: EmblemByMarketProps) {
       {props.showSourceChain !== false && baseChain && (
         <EmblemBase
           src={baseChain}
-          width={12}
-          height={12}
+          size={12}
           alt={t('Chain logo')}
-          className={`z-20 align-text-top absolute bottom-0 left-4`}
+          className={classNames(`z-20 align-text-top absolute left-4`, {
+            'bottom-0': size === 30,
+            'bottom-1': size === 26,
+          })}
         />
       )}
 
       <EmblemBase
         src={quote}
+        size={size}
         className={`inline-block ml-[-9px] z-1 rounded-full bg-white border-2 border-vega-light-600 dark:border-white`}
         {...props}
       />
       {props.showSourceChain !== false && (
         <EmblemBase
           src={quoteChain || settlementChain}
-          width={12}
-          height={12}
+          size={12}
           alt={t('Chain logo')}
-          className={`align-text-top absolute bottom-0 right-1`}
+          className={classNames(`align-text-top absolute  `, {
+            'bottom-0 right-0': size === 30,
+            'bottom-1 right-2': size === 26,
+          })}
         />
       )}
     </div>

@@ -1,21 +1,15 @@
-import { compact } from 'lodash';
-import type { RouteObject } from 'react-router-dom';
-import { Navigate, Outlet, useRoutes } from 'react-router-dom';
+import {
+  type RouteObject,
+  Navigate,
+  Outlet,
+  useRoutes,
+} from 'react-router-dom';
 import { lazy, Suspense } from 'react';
-import { Loader, Splash } from '@vegaprotocol/ui-toolkit';
+import { compact } from 'lodash';
 
 import { useFeatureFlags } from '@vegaprotocol/environment';
-import { useScreenDimensions } from '@vegaprotocol/react-helpers';
+import { Loader, Splash } from '@vegaprotocol/ui-toolkit';
 
-import { useT } from '../lib/use-t';
-import { Routes as AppRoutes } from '../lib/links';
-
-import { LayoutWithSidebar, LayoutCentered } from '../components/layouts';
-import { LayoutWithSky } from '../components/layouts-inner';
-import { LiquidityHeader } from '../components/liquidity-header';
-import { MarketHeader, MobileMarketHeader } from '../components/market-header';
-
-// All pages
 import { Home } from '../client-pages/home';
 import { Liquidity } from '../client-pages/liquidity';
 import { MarketsPage } from '../client-pages/markets';
@@ -31,21 +25,20 @@ import { ReferralStatistics } from '../client-pages/referrals/referral-statistic
 import { ApplyCodeFormContainer } from '../client-pages/referrals/apply-code-form';
 import { CreateCodeContainer } from '../client-pages/referrals/create-code-form';
 import { NotFound as ReferralNotFound } from '../client-pages/referrals/error-boundary';
-import {
-  PortfolioMobileSidebar,
-  PortfolioSidebar,
-} from '../client-pages/portfolio/portfolio-sidebar';
-import { LiquiditySidebar } from '../client-pages/liquidity/liquidity-sidebar';
-import { MarketsSidebar } from '../client-pages/markets/markets-sidebar';
 import { CompetitionsHome } from '../client-pages/competitions/competitions-home';
 import { CompetitionsTeams } from '../client-pages/competitions/competitions-teams';
 import { CompetitionsTeam } from '../client-pages/competitions/competitions-team';
 import { CompetitionsCreateTeam } from '../client-pages/competitions/competitions-create-team';
 import { CompetitionsUpdateTeam } from '../client-pages/competitions/competitions-update-team';
-import { MarketsMobileSidebar } from '../client-pages/markets/mobile-buttons';
 import { CompetitionsGame } from '../client-pages/competitions/competitions-game';
+import { Swap } from '../client-pages/swap/swap';
 import { DepositCrossChain } from '../client-pages/deposit-cross-chain';
-import { Swap } from '../client-pages/swap';
+
+import { LayoutCentered } from '../components/layouts';
+import { LayoutWithSky } from '../components/layouts-inner';
+
+import { Routes as AppRoutes } from '../lib/links';
+import { useT } from '../lib/use-t';
 
 // These must remain dynamically imported as pennant cannot be compiled by Next.js due to ESM
 // Using dynamic imports is a workaround for this until pennant is published as ESM
@@ -63,19 +56,6 @@ const NotFound = () => {
 
 export const useRouterConfig = (): RouteObject[] => {
   const featureFlags = useFeatureFlags((state) => state.flags);
-  const { screenSize } = useScreenDimensions();
-  const largeScreen = ['lg', 'xl', 'xxl', 'xxxl'].includes(screenSize);
-  const marketHeader = largeScreen ? <MarketHeader /> : <MobileMarketHeader />;
-  const marketsSidebar = largeScreen ? (
-    <MarketsSidebar />
-  ) : (
-    <MarketsMobileSidebar />
-  );
-  const portfolioSidebar = largeScreen ? (
-    <PortfolioSidebar />
-  ) : (
-    <PortfolioMobileSidebar />
-  );
 
   const routeConfig = compact([
     {
@@ -93,7 +73,7 @@ export const useRouterConfig = (): RouteObject[] => {
     featureFlags.REFERRALS
       ? {
           path: AppRoutes.REFERRALS,
-          element: <LayoutWithSidebar sidebar={portfolioSidebar} />,
+          element: <Outlet />,
           children: [
             {
               element: (
@@ -126,7 +106,7 @@ export const useRouterConfig = (): RouteObject[] => {
     featureFlags.TEAM_COMPETITION
       ? {
           path: AppRoutes.COMPETITIONS,
-          element: <LayoutWithSidebar sidebar={portfolioSidebar} />,
+          element: <Outlet />,
           children: [
             // pages with planets and stars
             {
@@ -161,7 +141,7 @@ export const useRouterConfig = (): RouteObject[] => {
       : undefined,
     {
       path: 'fees/*',
-      element: <LayoutWithSidebar sidebar={portfolioSidebar} />,
+      element: <Outlet />,
       children: [
         {
           index: true,
@@ -171,7 +151,7 @@ export const useRouterConfig = (): RouteObject[] => {
     },
     {
       path: 'rewards/*',
-      element: <LayoutWithSidebar sidebar={portfolioSidebar} />,
+      element: <Outlet />,
       children: [
         {
           index: true,
@@ -181,9 +161,7 @@ export const useRouterConfig = (): RouteObject[] => {
     },
     {
       path: 'markets/*',
-      element: (
-        <LayoutWithSidebar header={marketHeader} sidebar={marketsSidebar} />
-      ),
+      element: <Outlet />,
       children: [
         {
           index: true,
@@ -232,12 +210,7 @@ export const useRouterConfig = (): RouteObject[] => {
 
     {
       path: 'liquidity/*',
-      element: (
-        <LayoutWithSidebar
-          header={<LiquidityHeader />}
-          sidebar={<LiquiditySidebar />}
-        />
-      ),
+      element: <Outlet />,
       id: AppRoutes.LIQUIDITY,
       children: [
         {
