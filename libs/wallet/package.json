@@ -4,7 +4,8 @@
   "dependencies": {
     "@vegaprotocol/types": "0.0.7",
     "eventemitter3": "^5.0.1",
-    "js-sha3": "^0.8.0"
+    "js-sha3": "^0.8.0",
+    "zustand": "^4.5.0"
   },
   "type": "module",
   "module": "./index.js"
