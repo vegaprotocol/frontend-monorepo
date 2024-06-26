@@ -26,48 +26,48 @@ export const SidebarAccountsContainer = ({
   const t = useT();
   const [innerView, setInnerView] = useState<InnerView | undefined>(undefined);
 
-  if (innerView) {
-    const [view] = innerView;
-    return (
-      <div className="p-2">
-        <header className="text-lg">
-          <button
-            className="flex gap-1 items-center"
-            onClick={() => {
-              setInnerView(undefined);
-            }}
-          >
-            <span className="text-muted inline-flex items-center">
-              <VegaIcon name={VegaIconNames.CHEVRON_LEFT} />
-            </span>
-            <span>{t(view)}</span>
-          </button>
-        </header>
-        <div className="mt-2">
-          <InnerContainer innerView={innerView} setInnerView={setInnerView} />
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <AccountsContainer
-      pinnedAssets={pinnedAssets}
-      orderByBalance
-      hideZeroBalance
-      onClickDeposit={(assetId) => {
-        setInnerView([View.Deposit, assetId]);
-      }}
-      onClickSwap={(assetId) => {
-        setInnerView([View.Swap, assetId]);
-      }}
-      onClickTransfer={(assetId) => {
-        setInnerView([View.Transfer, assetId]);
-      }}
-      onClickWithdraw={(assetId) => {
-        setInnerView([View.Withdraw, assetId]);
-      }}
-    />
+    <>
+      {innerView && (
+        <div className="p-2">
+          <header className="text-lg">
+            <button
+              className="flex gap-1 items-center"
+              onClick={() => {
+                setInnerView(undefined);
+              }}
+            >
+              <span className="text-muted inline-flex items-center">
+                <VegaIcon name={VegaIconNames.CHEVRON_LEFT} />
+              </span>
+              <span>{t(innerView[0])}</span>
+            </button>
+          </header>
+          <div className="mt-2">
+            <InnerContainer innerView={innerView} setInnerView={setInnerView} />
+          </div>
+        </div>
+      )}
+      <div className={innerView ? 'hidden' : 'block'}>
+        <AccountsContainer
+          pinnedAssets={pinnedAssets}
+          orderByBalance
+          hideZeroBalance
+          onClickDeposit={(assetId) => {
+            setInnerView([View.Deposit, assetId]);
+          }}
+          onClickSwap={(assetId) => {
+            setInnerView([View.Swap, assetId]);
+          }}
+          onClickTransfer={(assetId) => {
+            setInnerView([View.Transfer, assetId]);
+          }}
+          onClickWithdraw={(assetId) => {
+            setInnerView([View.Withdraw, assetId]);
+          }}
+        />
+      </div>
+    </>
   );
 };
 
