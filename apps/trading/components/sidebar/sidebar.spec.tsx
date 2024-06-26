@@ -2,6 +2,8 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Sidebar } from './sidebar';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
+import { MockedWalletProvider } from '@vegaprotocol/wallet-react/testing';
+import { MockedProvider } from '@apollo/react-testing';
 
 jest.mock('@vegaprotocol/deal-ticket', () => ({
   DealTicketContainer: ({ marketId }: { marketId: string }) => (
@@ -35,11 +37,15 @@ describe('Sidebar', () => {
   const renderComponent = () => {
     const user = userEvent.setup();
     const result = render(
-      <MemoryRouter initialEntries={[`/markets/${marketId}`]}>
-        <Routes>
-          <Route path="/markets/:marketId" element={<Sidebar />} />
-        </Routes>
-      </MemoryRouter>
+      <MockedProvider>
+        <MockedWalletProvider>
+          <MemoryRouter initialEntries={[`/markets/${marketId}`]}>
+            <Routes>
+              <Route path="/markets/:marketId" element={<Sidebar />} />
+            </Routes>
+          </MemoryRouter>
+        </MockedWalletProvider>
+      </MockedProvider>
     );
 
     return {
