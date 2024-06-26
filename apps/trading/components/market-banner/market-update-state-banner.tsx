@@ -62,8 +62,8 @@ export const MarketUpdateStateBanner = ({
 
   if (openTradingProposals.length >= 1) {
     content = (
-      <>
-        <p className="mb-1">
+      <div className="flex flex-col gap-1">
+        <p>
           {t(
             'Trading on market {{name}} was suspended by governance. There are open proposals to resume trading on this market.',
             { name }
@@ -74,7 +74,7 @@ export const MarketUpdateStateBanner = ({
             {t('View proposals')}
           </ExternalLink>
         </p>
-      </>
+      </div>
     );
   } else if (passedProposals.length) {
     content = (
@@ -111,8 +111,8 @@ const OpenProposalContent = ({
       : undefined;
 
   return (
-    <>
-      <p className="mb-1">
+    <div className="flex flex-col gap-1">
+      <p>
         {t(
           'Trading on market {{name}} may {{action}} on {{date}}. There is an open proposal to {{action}} this market.',
           { name: market.tradableInstrument.instrument.code, action, date }
@@ -130,7 +130,7 @@ const OpenProposalContent = ({
           <ExternalLink href={proposalLink}>{t('View proposal')}</ExternalLink>
         </p>
       )}
-    </>
+    </div>
   );
 };
 
@@ -152,8 +152,8 @@ const PassedProposalContent = ({
       : undefined;
 
   return (
-    <>
-      <p className="uppercase mb-1">
+    <div className="flex flex-col gap-1">
+      <p className="uppercase">
         {t('Trading on market {{name}} will {{action}} on {{date}}', {
           name: market.tradableInstrument.instrument.code,
           date,
@@ -175,7 +175,7 @@ const PassedProposalContent = ({
             })}
         </p>
       )}
-    </>
+    </div>
   );
 };
 
