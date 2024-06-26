@@ -140,7 +140,14 @@ export const AccountCard = ({
         </header>
         {expandable &&
           expanded &&
-          data?.breakdown?.map((data) => <BreakdownItem data={data} />)}
+          data?.breakdown?.map((data) => (
+            <BreakdownItem
+              key={`${data.asset.id}-${data.type}-${
+                data.market ? data.market.id : ''
+              }`}
+              data={data}
+            />
+          ))}
         <dl className="flex items-center mt-3 text-base">
           <dt>{t('Total')}</dt>
           <dd className="text-right leading-tight grow">

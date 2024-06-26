@@ -74,10 +74,10 @@ export const AccountManager = ({
       {rows.map((asset) => {
         return (
           <AccountCard
+            key={asset.id}
             partyId={props.partyId}
             isReadOnly={props.isReadOnly}
             asset={asset}
-            key={asset.id}
             expanded={pinnedAssets?.includes(asset.id)}
             onClickAsset={props.onClickAsset}
             onClickWithdraw={props.onClickWithdraw}
