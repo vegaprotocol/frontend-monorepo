@@ -8,7 +8,7 @@ export const TinyScroll = ({
   orientation = 'vertical',
   ...props
 }: ComponentPropsWithoutRef<typeof ScrollArea.Root> & {
-  orientation: TinyScrollBarProps['orientation'];
+  orientation?: TinyScrollBarProps['orientation'];
 }) => (
   <ScrollArea.Root
     className={cn(
