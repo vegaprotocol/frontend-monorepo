@@ -7,7 +7,7 @@ import {
   type AccountsContainerProps,
 } from '../accounts-container/accounts-container';
 import React from 'react';
-import { DepositContainer } from '@vegaprotocol/deposits';
+import { DepositContainer } from '../deposit-container';
 import { TransferContainer } from '@vegaprotocol/accounts';
 import { VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
 
@@ -81,7 +81,7 @@ const InnerContainer = ({
   const [view, assetId] = innerView;
   switch (view) {
     case View.Deposit:
-      return <DepositContainer assetId={assetId} />;
+      return <DepositContainer initialAssetId={assetId} />;
 
     case View.Swap:
       return (
@@ -98,6 +98,6 @@ const InnerContainer = ({
       return <TransferContainer assetId={assetId} />;
 
     case View.Withdraw:
-      return <WithdrawContainer assetId={assetId} />;
+      return <WithdrawContainer initialAssetId={assetId} />;
   }
 };

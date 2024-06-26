@@ -51,10 +51,10 @@ def test_market_spot_info_current_fees(page: Page):
     page.get_by_test_id(market_title_test_id).get_by_text(
         "Current fees").click()
     fields = [
-        ["Maker Fee", "10%"],
-        ["Infrastructure Fee", "0.05%"],
-        ["Liquidity Fee", "0%"],
-        ["Total Fees", "10.05%"],
+        ["Maker fee", "10%"],
+        ["Infrastructure fee", "0.05%"],
+        ["Liquidity fee", "0%"],
+        ["Total fees", "10.05%"],
     ]
     validate_info_section(page, fields)
 
@@ -63,10 +63,10 @@ def test_market_spot_info_market_price(page: Page):
     page.get_by_test_id(market_title_test_id).get_by_text(
         "Market price").click()
     fields = [
-        ["Mark Price", "108.5"],
-        ["Best Bid Price", "106.0"],
-        ["Best Offer Price", "107.0"],
-        ["Quote Unit", "USDT"],
+        ["Mark price", "108.5"],
+        ["Best bid price", "106.0"],
+        ["Best offer price", "107.0"],
+        ["Quote unit", "USDT"],
     ]
     validate_info_section(page, fields)
 
@@ -75,12 +75,12 @@ def test_market_spot_info_market_volume(page: Page):
     page.get_by_test_id(market_title_test_id).get_by_text(
         "Market volume").click()
     fields = [
-        ["24 Hour Volume", "10.00(1,085 USDT)"],
-        ["Open Interest", "-"],
-        ["Best Bid Volume", "649.00"],
-        ["Best Offer Volume", "109.00"],
-        ["Best Static Bid Volume", "550.00"],
-        ["Best Static Offer Volume", "1"],
+        ["24 hour volume", "10.00(1,085 USDT)"],
+        ["Open interest", "-"],
+        ["Best bid volume", "649.00"],
+        ["Best offer volume", "109.00"],
+        ["Best static bid volume", "550.00"],
+        ["Best static offer volume", "1"],
     ]
     validate_info_section(page, fields)
 
@@ -94,12 +94,12 @@ def test_market_spot_info_key_details(page: Page, vega: VegaServiceNull):
         ["Market ID", short_market_id],
         ["Name", "Bitcoin / Tether USD (Spot)"],
         ["Status", "Active"],
-        ["Trading Mode", "Continuous"],
-        ["Price Decimal Places", "1"],
-        ["Size Decimal Places", "2"],
-        ["Quote Asset Decimal Places", "5"],
-        ["Base Asset Decimal Places", "5"],
-        ["Tick Size", "1"]
+        ["Trading mode", "Continuous"],
+        ["Price decimal places", "1"],
+        ["Size decimal places", "2"],
+        ["Quote asset secimal places", "5"],
+        ["Base asset decimal places", "5"],
+        ["Tick size", "1"]
     ]
     validate_info_section(page, fields)
 
@@ -107,10 +107,10 @@ def test_market_spot_info_key_details(page: Page, vega: VegaServiceNull):
 def test_market_spot_info_instrument(page: Page):
     page.get_by_test_id(market_title_test_id).get_by_text("Instrument").click()
     fields = [
-        ["Market Name", "Bitcoin / Tether USD (Spot)"],
+        ["Market name", "Bitcoin / Tether USD (Spot)"],
         ["Code", "BTC/USDT-SPOT"],
-        ["Product Type", "Spot"],
-        ["Quote Name", "USDT"],
+        ["Product type", "Spot"],
+        ["Quote name", "USDT"],
     ]
     validate_info_section(page, fields)
 
@@ -130,7 +130,7 @@ def test_market_spot_info_base_asset(page: Page, vega: VegaServiceNull):
         ["Status", "Enabled"],
         ["Max faucet amount", "10,000,000,000.00"],
         ["Global insurance account balance", "0.00"],
-        ["Network Treasury account balance", "0.00"],
+        ["Network treasury account balance", "0.00"],
     ]
     validate_info_section(page, fields)
 
@@ -150,7 +150,7 @@ def test_market_spot_info_quote_data(page: Page, vega: VegaServiceNull):
         ["Status", "Enabled"],
         ["Max faucet amount", "10,000,000,000.00"],
         ["Global insurance account balance", "0.00"],
-        ["Network Treasury account balance", "0.00"],
+        ["Network treasury account balance", "0.00"],
     ]
     validate_info_section(page, fields)
 
@@ -178,8 +178,8 @@ def test_market_spot_info_liquidity_monitoring_parameters(page: Page):
         "Liquidity monitoring parameters"
     ).click()
     fields = [
-        ["Time Window", "3,600"],
-        ["Scaling Factor", "1"],
+        ["Time window", "3,600"],
+        ["Scaling factor", "1"],
     ]
     validate_info_section(page, fields)
 
@@ -190,8 +190,8 @@ def test_market_spot_info_liquidity(page: Page):
         "Liquidity", exact=True
     ).click()
     fields = [
-        ["Target Stake", "10,000.00 USDT"],
-        ["Supplied Stake", "10,000.00 USDT"],
+        ["Target stake", "10,000.00 USDT"],
+        ["Supplied stake", "10,000.00 USDT"],
     ]
     validate_info_section(page, fields)
 
@@ -201,9 +201,9 @@ def test_market_spot_info_liquidity_price_range(page: Page):
         "Liquidity price range"
     ).click()
     fields = [
-        ["Liquidity Price Range", "50% of mid price "],
-        ["Lowest Price", "53.3"],
-        ["Highest Price", "159.8"],
+        ["Liquidity price range", "50% of mid price "],
+        ["Lowest price", "53.3"],
+        ["Highest price", "159.8"],
     ]
     validate_info_section(page, fields)
 
