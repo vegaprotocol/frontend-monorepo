@@ -15,7 +15,6 @@ import { Controller, useForm, useWatch } from 'react-hook-form';
 import {
   useDialogStore,
   useVegaWallet,
-  useWallet,
   useDisconnect as useVegaDisconnect,
 } from '@vegaprotocol/wallet-react';
 import {
@@ -28,7 +27,6 @@ import {
   FormGroup,
   TradingInput as Input,
   TradingButton,
-  truncateMiddle,
   TradingInputError,
   Intent,
   TradingRichSelect,
@@ -39,14 +37,12 @@ import { useEffect } from 'react';
 import {
   ETHEREUM_ADDRESS_REGEX,
   VEGA_ID_REGEX,
-  addDecimalsFormatNumber,
   removeDecimal,
   toBigNum,
 } from '@vegaprotocol/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { type Account, useAccounts } from '@vegaprotocol/accounts';
 import { AccountType } from '@vegaprotocol/types';
-import { EmblemByAsset } from '@vegaprotocol/emblem';
 import { BRIDGE_ABI } from '@vegaprotocol/smart-contracts';
 
 import { useT } from '../../lib/use-t';
@@ -55,6 +51,7 @@ import {
   FormSecondaryActionWrapper,
 } from '../form-secondary-action';
 import { Thresholds } from './thresholds';
+import { AssetOption } from '../asset-option';
 
 type Configs = Array<EthereumConfig | EVMBridgeConfig>;
 
@@ -64,7 +61,7 @@ export const WithdrawContainer = ({
   initialAssetId?: string;
 }) => {
   const { pubKey } = useVegaWallet();
-  const { data } = useAccounts(pubKey);
+  const { data, loading } = useAccounts(pubKey);
 
   const { config } = useEthereumConfig();
   const { configs } = useEVMBridgeConfigs();
@@ -80,6 +77,10 @@ export const WithdrawContainer = ({
 
   const account = accounts?.find((a) => a.asset.id === initialAssetId);
   const asset = account?.asset;
+
+  if (loading) {
+    return null;
+  }
 
   return (
     <WithdrawForm
@@ -124,7 +125,6 @@ const WithdrawForm = ({
 }) => {
   const t = useT();
 
-  const vegaChainId = useWallet((store) => store.chainId);
   const { pubKey, pubKeys } = useVegaWallet();
   const openVegaWalletDialog = useDialogStore((store) => store.open);
   const { open: openAssetDialog } = useAssetDetailsDialogStore();
@@ -285,27 +285,10 @@ const WithdrawForm = ({
                 onValueChange={field.onChange}
               >
                 {accounts.map((a) => {
+                  const asset = a.asset as AssetERC20;
                   return (
-                    <TradingOption value={a.asset.id} key={a.asset.id}>
-                      <div className="w-full flex items-center gap-2">
-                        <EmblemByAsset
-                          asset={a.asset.id}
-                          vegaChain={vegaChainId}
-                        />
-                        <div className="text-sm text-left leading-4">
-                          <div>
-                            {a.asset.name} | {a.asset.symbol}
-                          </div>
-                          <div className="text-secondary text-xs">
-                            {a.asset.source.__typename === 'ERC20'
-                              ? truncateMiddle(a.asset.source.contractAddress)
-                              : a.asset.source.__typename}
-                          </div>
-                        </div>
-                        <div className="ml-auto text-sm">
-                          {addDecimalsFormatNumber(a.balance, a.asset.decimals)}
-                        </div>
-                      </div>
+                    <TradingOption value={asset.id} key={asset.id}>
+                      <AssetOption asset={{ ...asset, balance: a.balance }} />
                     </TradingOption>
                   );
                 })}
