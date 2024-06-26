@@ -49,7 +49,7 @@ def test_transfer_submit(continuous_market, vega: VegaServiceNull, page: Page):
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
     expected_confirmation_text = re.compile(
-        r"Transfer completeYour transaction has been confirmedView in block explorerTransferTo .{6}….{6}1\.00 tDAI"
+        r"Transfer completeYour transaction has been confirmed.View on explorerTransferTo .{6}….{6}1\.00 tDAI"
     )
     actual_confirmation_text = page.get_by_test_id("toast-content").text_content()
     assert expected_confirmation_text.search(
@@ -149,7 +149,7 @@ def test_transfer_vesting_below_minimum(
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
     expected_confirmation_text = re.compile(
-        r"Transfer completeYour transaction has been confirmedView in block explorerTransferTo .{6}….{6}0\.00001 tDAI"
+        r"Transfer completeYour transaction has been confirmed.View on explorerTransferTo .{6}….{6}0\.00001 tDAI"
     )
     actual_confirmation_text = page.get_by_test_id("toast-content").text_content()
     assert expected_confirmation_text.search(
