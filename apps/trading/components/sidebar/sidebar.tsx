@@ -34,10 +34,12 @@ export const Sidebar = ({ pinnedAssets }: { pinnedAssets?: string[] }) => {
       <SidebarAccordion
         type="single"
         value={view}
-        onValueChange={(view: ViewType) => {
-          let desiredView = view;
-          if (!desiredView) desiredView = ViewType.Trade;
-          setView(desiredView);
+        onValueChange={(view) => {
+          if (!view) {
+            setView(ViewType.Trade);
+          } else {
+            setView(view as ViewType);
+          }
         }}
         collapsible
       >
