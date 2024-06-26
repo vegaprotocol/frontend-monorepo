@@ -593,6 +593,17 @@ export const DealTicket = ({
       noValidate
       data-testid="deal-ticket-form"
     >
+      <Controller
+        name="side"
+        control={control}
+        render={({ field }) => (
+          <SideSelector
+            isSpotMarket={isSpotMarket}
+            value={field.value}
+            onValueChange={field.onChange}
+          />
+        )}
+      />
       <TypeSelector
         value={dealTicketType}
         onValueChange={(dealTicketType) => {
@@ -610,17 +621,6 @@ export const DealTicket = ({
         marketData={marketData}
         errorMessage={errors.type?.message}
         showStopOrders={!isSpotMarket}
-      />
-      <Controller
-        name="side"
-        control={control}
-        render={({ field }) => (
-          <SideSelector
-            isSpotMarket={isSpotMarket}
-            value={field.value}
-            onValueChange={field.onChange}
-          />
-        )}
       />
       <div className={isLimitType ? 'mb-4' : 'mb-2'}>
         {useNotional && (
