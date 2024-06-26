@@ -41,10 +41,7 @@ export const AssetCard = ({
   }
 
   return (
-    <section
-      className="p-3 border-b border-default text-left bg-vega-clight-800 dark:bg-vega-cdark-800"
-      data-testid="asset-card"
-    >
+    <section className="p-3 text-left" data-testid="asset-card">
       <header className="flex gap-2 items-center mb-3">
         <span className="flex items-center shrink-0">
           <Emblem asset={asset.id} vegaChain={chainId} />

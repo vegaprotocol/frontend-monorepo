@@ -94,7 +94,7 @@ html [data-theme='light'] {
 
 html [data-theme='light'] {
   --separator-border: theme(colors.vega.clight.400);
-  --pennant-background-surface-color: theme(colors.vega.clight.900);
+  --pennant-background-surface-color: theme(colors.vega.clight.800);
 
   /* candles */
   --pennant-color-buy-fill: theme(colors.market.green.DEFAULT);
@@ -117,7 +117,7 @@ html [data-theme='light'] {
 
 html [data-theme='dark'] {
   --separator-border: theme(colors.vega.cdark.400);
-  --pennant-background-surface-color: theme('colors.vega.cdark.900');
+  --pennant-background-surface-color: theme(colors.vega.cdark.800);
 
   /* candles */
   --pennant-color-buy-fill: theme(colors.market.green.600);
@@ -186,7 +186,7 @@ html [data-theme='dark'] {
 
 /* Light variables */
 .ag-theme-balham {
-  --ag-background-color: theme(colors.vega.clight.900);
+  --ag-background-color: transparent;
   --ag-border-color: theme(colors.vega.clight.600);
   --ag-header-background-color: theme(colors.vega.clight.700);
   --ag-odd-row-background-color: transparent;
@@ -198,7 +198,7 @@ html [data-theme='dark'] {
 
 /* Dark variables */
 .ag-theme-balham-dark {
-  --ag-background-color: theme(colors.vega.cdark.900);
+  --ag-background-color: transparent;
   --ag-border-color: theme(colors.vega.cdark.600);
   --ag-header-background-color: theme(colors.vega.cdark.700);
   --ag-odd-row-background-color: transparent;

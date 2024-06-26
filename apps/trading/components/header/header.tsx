@@ -1,4 +1,4 @@
-import { Tooltip } from '@vegaprotocol/ui-toolkit';
+import { TinyScroll, Tooltip } from '@vegaprotocol/ui-toolkit';
 import classNames from 'classnames';
 import type { HTMLAttributes, ReactNode } from 'react';
 
@@ -8,22 +8,17 @@ interface TradeMarketHeaderProps {
 }
 
 export const Header = ({ title, children }: TradeMarketHeaderProps) => {
-  const headerClasses = classNames(
-    'grid',
-    'grid-rows-[min-content_min-content]',
-    'xl:grid-cols-[min-content_1fr]',
-    'border-b border-default',
-    'bg-vega-clight-800 dark:bg-vega-cdark-800'
-  );
   return (
-    <header className={headerClasses}>
-      <div className="flex-col items-start justify-center hidden pt-2 pb-0 pl-3 lg:flex lg:pl-4 xl:pb-2">
+    <header className="h-full flex items-center">
+      <div className="flex flex-col items-start justify-center pl-2">
         {title}
       </div>
-      <div data-testid="header-summary" className="min-w-0">
-        <div className="flex items-center px-3 py-2 overflow-x-auto text-xs lg:px-4 flex-nowrap gap-6">
-          {children}
-        </div>
+      <div data-testid="header-summary" className="grow min-w-0">
+        <TinyScroll orientation="horizontal">
+          <div className="flex items-center px-3 py-1 text-xs lg:px-4 flex-nowrap gap-6">
+            {children}
+          </div>
+        </TinyScroll>
       </div>
     </header>
   );
@@ -42,14 +37,15 @@ export const HeaderStat = ({
   description,
   ...props
 }: HeaderStatProps) => {
-  const itemClass = classNames(
-    'text-muted',
-    'min-w-min last:pr-0 whitespace-nowrap'
-  );
-  const itemValueClasses = 'text-default';
-
   return (
-    <div {...props} className={classNames(itemClass, props.className)}>
+    <div
+      {...props}
+      className={classNames(
+        'text-muted',
+        'min-w-min last:pr-0 whitespace-nowrap',
+        props.className
+      )}
+    >
       <div data-testid="item-header" id={id}>
         {heading}
       </div>
@@ -57,7 +53,7 @@ export const HeaderStat = ({
         <div
           data-testid="item-value"
           aria-labelledby={id}
-          className={itemValueClasses}
+          className="text-default"
         >
           {children}
         </div>

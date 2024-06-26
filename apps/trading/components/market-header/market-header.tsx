@@ -40,6 +40,7 @@ export const MarketHeader = () => {
     data.data.marketState,
     data.data.marketTradingMode
   );
+
   return (
     <Header
       title={
