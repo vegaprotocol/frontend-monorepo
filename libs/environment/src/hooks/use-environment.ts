@@ -668,14 +668,15 @@ export const useEnvironment = create<EnvStore>()((set, get) => ({
 
     const state = get();
 
-    // Skip picking up the best node if VEGA_URL env variable is set
-    // this will set status to 'success' allowing app to render
+    // Set the node url if available, but then continue with
+    // getting node config
     if (state.VEGA_URL && isValidUrl(state.VEGA_URL)) {
       state.setUrl(state.VEGA_URL);
     }
 
     // Start fetching nodes in the background
-    let nodes: string[] | undefined;
+    let nodes: string[] = [];
+
     try {
       nodes = uniq(
         compact([
@@ -690,9 +691,14 @@ export const useEnvironment = create<EnvStore>()((set, get) => ({
       console.warn(`Could not fetch node config from ${state.VEGA_CONFIG_URL}`);
     }
 
+    // We have a node and nodes have been fetched for the network switcher
+    if (state.VEGA_URL) {
+      return;
+    }
+
     // No url found in env vars or localStorage, AND no nodes were found in
     // the config fetched from VEGA_CONFIG_URL, app initialization has failed
-    if (!nodes || !nodes.length) {
+    if (!nodes.length) {
       set({
         status: 'failed',
         error: `Failed to fetch node config from ${state.VEGA_CONFIG_URL}`,
@@ -700,24 +706,15 @@ export const useEnvironment = create<EnvStore>()((set, get) => ({
       return;
     }
 
+    // Not node set yet, determine the healthiest node
     const healthyNodes = await findHealthyNodes(nodes);
-
     const bestNode = first(healthyNodes);
-    const requestedNode = healthyNodes.find((n) => n.url === state.VEGA_URL);
-    if (!requestedNode) {
-      // remove unhealthy node url from local storage
-      LocalStorage.removeItem(STORAGE_KEY);
-    }
-    // A node's url (VEGA_URL) is either the requested node (previously
-    // connected or taken form env variable) or the currently best available
-    // node.
-    const url = requestedNode?.url || bestNode?.url;
-
-    if (url != null) {
-      state.setUrl(url);
+    if (bestNode) {
+      state.setUrl(bestNode.url);
       return;
     }
 
+    // Could not find a health node, all failed
     set({
       status: 'failed',
       error: 'No suitable node found',
