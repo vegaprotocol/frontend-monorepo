@@ -12,6 +12,7 @@ import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useEffect, useState } from 'react';
 import { useMaxLeverage } from '@vegaprotocol/positions';
 import { MarginChange } from './margin-change';
+import { NoWalletWarning } from '@vegaprotocol/deal-ticket';
 
 export const IsolatedDialog = ({
   open,
@@ -79,15 +80,15 @@ export const IsolatedDialog = ({
       </div>
       <form
         onSubmit={() => {
-          partyId &&
-            !isReadOnly &&
-            create({
-              updateMarginMode: {
-                marketId,
-                mode: MarginModeTx.MARGIN_MODE_ISOLATED_MARGIN,
-                marginFactor: `${1 / leverage}`,
-              },
-            });
+          if (isReadOnly) return;
+          if (!partyId) return;
+          create({
+            updateMarginMode: {
+              marketId,
+              mode: MarginModeTx.MARGIN_MODE_ISOLATED_MARGIN,
+              marginFactor: `${1 / leverage}`,
+            },
+          });
           onClose();
         }}
       >
@@ -117,13 +118,12 @@ export const IsolatedDialog = ({
           marginMode={MarginMode.MARGIN_MODE_ISOLATED_MARGIN}
           marginFactor={`${1 / leverage}`}
         />
-        {/*
-        TODO: get this working
-        <NoWalletWarning noWalletConnected={!partyId} isReadOnly={isReadOnly} /> */}
+        <NoWalletWarning noWalletConnected={!partyId} isReadOnly={isReadOnly} />
         <Button
           className="w-full"
           type="submit"
           data-testid="confirm-isolated-margin-mode"
+          disabled={isReadOnly || !partyId}
         >
           {t('Confirm')}
         </Button>

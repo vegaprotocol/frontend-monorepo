@@ -2,11 +2,19 @@ import {
   useAccountBalance,
   useMarginAccountBalance,
 } from '@vegaprotocol/accounts';
-import { usePositionEstimate } from '@vegaprotocol/deal-ticket';
+import {
+  DealTicketMarginDetails,
+  usePositionEstimate,
+} from '@vegaprotocol/deal-ticket';
 import { getAsset, useMarket } from '@vegaprotocol/markets';
 import { useActiveOrders } from '@vegaprotocol/orders';
 import { useOpenVolume } from '@vegaprotocol/positions';
-import { type OrderInfo, MarginMode, OrderType } from '@vegaprotocol/types';
+import {
+  type OrderInfo,
+  MarginMode,
+  OrderType,
+  Side,
+} from '@vegaprotocol/types';
 import { Intent, Notification } from '@vegaprotocol/ui-toolkit';
 import { addDecimalsFormatNumberQuantum } from '@vegaprotocol/utils';
 import { useT } from '../../lib/use-t';
@@ -142,8 +150,6 @@ export const MarginChange = ({
           }
         />
       )}
-      {/*
-      // TODO: Fix this
       <DealTicketMarginDetails
         marginAccountBalance={marginAccountBalance}
         generalAccountBalance={generalAccountBalance}
@@ -151,12 +157,8 @@ export const MarginChange = ({
         asset={asset}
         market={market}
         positionEstimate={estimateMargin.estimatePosition}
-        side={
-          openVolume.startsWith('-')
-            ? Schema.Side.SIDE_SELL
-            : Schema.Side.SIDE_BUY
-        }
-      /> */}
+        side={openVolume.startsWith('-') ? Side.SIDE_SELL : Side.SIDE_BUY}
+      />
     </div>
   );
 };

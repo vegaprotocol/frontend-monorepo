@@ -4,6 +4,7 @@ import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useT } from '../../lib/use-t';
 import { TradingButton as Button, Dialog } from '@vegaprotocol/ui-toolkit';
 import { MarginChange } from './margin-change';
+import { NoWalletWarning } from '@vegaprotocol/deal-ticket';
 
 export const CrossDialog = ({
   open,
@@ -55,21 +56,20 @@ export const CrossDialog = ({
         marginMode={MarginMode.MARGIN_MODE_CROSS_MARGIN}
         marginFactor="1"
       />
-      {/*
-      // TODO: fix this
-      <NoWalletWarning noWalletConnected={!partyId} isReadOnly={isReadOnly} /> */}
+      <NoWalletWarning noWalletConnected={!partyId} isReadOnly={isReadOnly} />
       <Button
         className="w-full"
         data-testid="confirm-cross-margin-mode"
+        disabled={isReadOnly || !partyId}
         onClick={() => {
-          partyId &&
-            !isReadOnly &&
-            create({
-              updateMarginMode: {
-                marketId,
-                mode: MarginModeTx.MARGIN_MODE_CROSS_MARGIN,
-              },
-            });
+          if (isReadOnly) return;
+          if (!partyId) return;
+          create({
+            updateMarginMode: {
+              marketId,
+              mode: MarginModeTx.MARGIN_MODE_CROSS_MARGIN,
+            },
+          });
           onClose();
         }}
       >

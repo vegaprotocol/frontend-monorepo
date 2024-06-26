@@ -8,6 +8,7 @@ import { useVegaTransactionStore } from '@vegaprotocol/web3';
 import { IsolatedDialog } from './isolated-dialog';
 import { CrossDialog } from './cross-dialog';
 import { MarginMode } from '@vegaprotocol/types';
+import { useT } from '../../lib/use-t';
 
 const DEFAULT_LEVERAGE = 10;
 
@@ -29,15 +30,14 @@ export const MarginModeToggle = () => {
       ? margin?.marginFactor
       : undefined;
   const onClose = () => setDialog(undefined);
-  // const enabledModeClassName = 'bg-vega-clight-500 dark:bg-vega-cdark-500';
 
   if (!params.marketId) return null;
-  if (!partyId) return null;
 
   return (
     <>
       <Toggle
         mode={marginMode}
+        factor={marginFactor}
         onValueChange={(mode) => {
           if (mode === '') return;
           setDialog(mode as MarginMode);
@@ -64,15 +64,20 @@ export const MarginModeToggle = () => {
 
 const Toggle = ({
   mode,
+  factor,
   onValueChange,
 }: {
   mode: MarginMode;
+  factor?: string;
   onValueChange: (value: string) => void;
 }) => {
+  const t = useT();
   const itemClass = classNames('relative py-px px-2 text-xs', '');
   const indicator = (
     <span className="absolute -top-0.5 -right-0.5 -bottom-0.5 -left-0.5 bg-vega-clight-500 dark:bg-vega-cdark-500 rounded" />
   );
+  const leverage = factor ? (1 / Number(factor)).toFixed(1) : DEFAULT_LEVERAGE;
+
   return (
     <ToggleGroup.Root
       type="single"
@@ -92,7 +97,16 @@ const Toggle = ({
         className={itemClass}
       >
         {mode === MarginMode.MARGIN_MODE_ISOLATED_MARGIN && indicator}
-        <span className="relative">Isolated</span>
+        {mode === MarginMode.MARGIN_MODE_ISOLATED_MARGIN ? (
+          <span className="relative flex items-center gap-1">
+            {t('Isolated')}
+            <span className="py-px px-1 rounded text-2xs bg-vega-green-700 text-vega-green">
+              {leverage}x
+            </span>
+          </span>
+        ) : (
+          <span className="relative">{t('Isolated')}</span>
+        )}
       </ToggleGroup.Item>
     </ToggleGroup.Root>
   );
