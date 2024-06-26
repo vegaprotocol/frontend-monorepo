@@ -65,6 +65,7 @@ export const MarketHeader = () => {
             </HeaderTitle>
           }
           alignOffset={-10}
+          sideOffset={12}
         >
           <MarketSelector
             currentMarketId={marketId}

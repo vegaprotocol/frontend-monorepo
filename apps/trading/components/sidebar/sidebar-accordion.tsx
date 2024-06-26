@@ -45,7 +45,7 @@ const SidebarAccordionTrigger = forwardRef<
     <AccordionPrimitive.Trigger
       ref={ref}
       className={classNames(
-        'flex flex-1 items-center justify-between text-sm px-2 py-3 leading-4',
+        'flex flex-1 items-center justify-between text-sm px-2 py-3 h-10',
         'bg-vega-clight-700 dark:bg-vega-cdark-700',
         'hover:bg-vega-clight-600 dark:hover:bg-vega-cdark-600',
         'data-[state=open]:bg-vega-clight-600 dark:data-[state=open]:bg-vega-cdark-600',
