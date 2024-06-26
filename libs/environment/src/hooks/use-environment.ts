@@ -224,8 +224,15 @@ const compileEnvVars = () => {
     process.env['NX_VEGA_ENV']
   ) as Networks;
 
+  let vegaUrl = LocalStorage.getItem(STORAGE_KEY);
+
+  if (!isValidUrl(vegaUrl)) {
+    vegaUrl = windowOrDefault('VEGA_URL', process.env['NX_VEGA_URL']) as string;
+    LocalStorage.removeItem(STORAGE_KEY);
+  }
+
   const env: Environment = {
-    VEGA_URL: windowOrDefault('VEGA_URL', process.env['NX_VEGA_URL']),
+    VEGA_URL: vegaUrl,
     VEGA_ENV,
     VEGA_CONFIG_URL: windowOrDefault(
       'VEGA_CONFIG_URL',
@@ -661,19 +668,17 @@ export const useEnvironment = create<EnvStore>()((set, get) => ({
 
     const state = get();
 
-    let storedUrl = LocalStorage.getItem(STORAGE_KEY);
-    if (!isValidUrl(storedUrl)) {
-      // remove invalid data from local storage
-      LocalStorage.removeItem(STORAGE_KEY);
-      storedUrl = null;
+    // Skip picking up the best node if VEGA_URL env variable is set
+    // this will set status to 'success' allowing app to render
+    if (state.VEGA_URL && isValidUrl(state.VEGA_URL)) {
+      state.setUrl(state.VEGA_URL);
     }
 
+    // Start fetching nodes in the background
     let nodes: string[] | undefined;
     try {
       nodes = uniq(
         compact([
-          // url from local storage
-          storedUrl,
           // url from state (if set via env var)
           state.VEGA_URL,
           // urls from network configuration
@@ -683,12 +688,6 @@ export const useEnvironment = create<EnvStore>()((set, get) => ({
       set({ nodes });
     } catch (err) {
       console.warn(`Could not fetch node config from ${state.VEGA_CONFIG_URL}`);
-    }
-
-    // skip picking up the best node if VEGA_URL env variable is set
-    if (state.VEGA_URL && isValidUrl(state.VEGA_URL)) {
-      state.setUrl(state.VEGA_URL);
-      return;
     }
 
     // No url found in env vars or localStorage, AND no nodes were found in
@@ -703,14 +702,8 @@ export const useEnvironment = create<EnvStore>()((set, get) => ({
 
     const healthyNodes = await findHealthyNodes(nodes);
 
-    // A requested node is a node to which the app was previously connected
-    // or the one set via env variable.
-    const requestedNodeUrl = storedUrl || state.VEGA_URL;
-
     const bestNode = first(healthyNodes);
-    const requestedNode = healthyNodes.find(
-      (n) => requestedNodeUrl && n.url === requestedNodeUrl
-    );
+    const requestedNode = healthyNodes.find((n) => n.url === state.VEGA_URL);
     if (!requestedNode) {
       // remove unhealthy node url from local storage
       LocalStorage.removeItem(STORAGE_KEY);
