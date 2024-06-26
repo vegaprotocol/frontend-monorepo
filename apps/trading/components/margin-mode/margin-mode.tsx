@@ -9,6 +9,7 @@ import { IsolatedDialog } from './isolated-dialog';
 import { CrossDialog } from './cross-dialog';
 import { MarginMode } from '@vegaprotocol/types';
 import { useT } from '../../lib/use-t';
+import { isSpot, useMarket } from '@vegaprotocol/markets';
 
 const DEFAULT_LEVERAGE = 10;
 
@@ -18,20 +19,23 @@ export const MarginModeToggle = () => {
   const [dialog, setDialog] = useState<MarginMode>();
   const { pubKey: partyId } = useVegaWallet();
 
+  const { data: market } = useMarket(params.marketId);
   const { data: margin } = useMarginMode({
     partyId,
     marketId: params.marketId,
   });
 
   const create = useVegaTransactionStore((state) => state.create);
+
+  if (!market) return null;
+  if (isSpot(market.tradableInstrument.instrument.product)) return null;
+
   const marginMode = margin?.marginMode || MarginMode.MARGIN_MODE_CROSS_MARGIN;
   const marginFactor =
     margin?.marginFactor && margin?.marginFactor !== '0'
       ? margin?.marginFactor
       : undefined;
   const onClose = () => setDialog(undefined);
-
-  if (!params.marketId) return null;
 
   return (
     <>
@@ -46,14 +50,14 @@ export const MarginModeToggle = () => {
       <CrossDialog
         open={dialog === MarginMode.MARGIN_MODE_CROSS_MARGIN}
         onClose={onClose}
-        marketId={params.marketId}
+        marketId={market.id}
         // @ts-ignore TODO: fix this type
         create={create}
       />
       <IsolatedDialog
         open={dialog === MarginMode.MARGIN_MODE_ISOLATED_MARGIN}
         onClose={onClose}
-        marketId={params.marketId}
+        marketId={market.id}
         // @ts-ignore TODO: fix this type
         create={create}
         marginFactor={marginFactor || `${1 / DEFAULT_LEVERAGE}`}
