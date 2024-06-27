@@ -13,6 +13,10 @@ import { useTelemetryApproval } from '../../lib/hooks/use-telemetry-approval';
 import { useState, type ReactNode } from 'react';
 import classNames from 'classnames';
 import { useT } from '../../lib/use-t';
+import {
+  useEnvironment,
+  useNodeSwitcherStore,
+} from '@vegaprotocol/environment';
 
 export const SettingsPopover = () => {
   return (
@@ -120,6 +124,9 @@ export const Settings = () => {
           <dd className="break-words">{process.env.GIT_COMMIT}</dd>
         </dl>
       </SettingsGroup>
+      <SettingsGroup inline={true} label={t('Connected node')}>
+        <ConnectedNodeInfo />
+      </SettingsGroup>
     </section>
   );
 };
@@ -148,6 +155,29 @@ const SettingsGroup = ({
         {helpText && <p className="text-xs text-muted">{helpText}</p>}
       </div>
       <div aria-describedby={label}>{children}</div>
+    </div>
+  );
+};
+
+const ConnectedNodeInfo = () => {
+  const t = useT();
+  const { VEGA_URL } = useEnvironment();
+  const setNodeSwitcher = useNodeSwitcherStore((store) => store.setDialogOpen);
+
+  return (
+    <div className="flex flex-col gap-1 mt-1.5">
+      <span className="text-xs">{VEGA_URL}</span>
+      <span className="flex justify-end">
+        <TradingButton
+          size="extra-small"
+          intent={Intent.None}
+          onClick={() => {
+            setNodeSwitcher(true);
+          }}
+        >
+          {t('Change')}
+        </TradingButton>
+      </span>
     </div>
   );
 };

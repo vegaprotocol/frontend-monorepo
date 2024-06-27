@@ -5,8 +5,13 @@ import {
 } from '@vegaprotocol/environment';
 import { Indicator, ExternalLink, Tooltip } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../lib/use-t';
+import classNames from 'classnames';
 
-export const NodeHealthContainer = () => {
+export const NodeHealthContainer = ({
+  variant = 'normal',
+}: {
+  variant?: 'compact' | 'normal';
+}) => {
   const t = useT();
   const { VEGA_URL, VEGA_INCIDENT_URL } = useEnvironment();
   const setNodeSwitcher = useNodeSwitcherStore((store) => store.setDialogOpen);
@@ -42,12 +47,21 @@ export const NodeHealthContainer = () => {
       alignOffset={0}
     >
       <button
-        className="flex justify-center items-center gap-2 py-1 p-2 rounded hover:bg-vega-light-200 hover:dark:bg-vega-dark-200 text-xs"
+        className={classNames({
+          'flex justify-center items-center gap-2 py-1 p-2 rounded hover:bg-vega-light-200 hover:dark:bg-vega-dark-200 text-xs':
+            variant === 'normal',
+          'flex w-3 h-3': variant === 'compact',
+        })}
         onClick={() => setNodeSwitcher(true)}
         data-testid="node-health-trigger"
       >
-        {VEGA_URL && <NodeUrl url={VEGA_URL} />}
-        <Indicator variant={intent} size="md" />
+        {variant === 'normal' && (
+          <span>{VEGA_URL && <NodeUrl url={VEGA_URL} />}</span>
+        )}
+        <Indicator
+          variant={intent}
+          size={variant === 'compact' ? 'lg' : 'md'}
+        />
       </button>
     </Tooltip>
   );
