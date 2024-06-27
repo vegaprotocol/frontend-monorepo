@@ -1,9 +1,9 @@
 import {
-  TradingFormGroup,
   TradingInputError,
-  TradingSelect,
   TextChildrenTooltip as Tooltip,
   SimpleGrid,
+  MiniSelect,
+  MiniSelectOption,
 } from '@vegaprotocol/ui-toolkit';
 import * as Schema from '@vegaprotocol/types';
 import { compileGridData } from '../trading-mode-tooltip';
@@ -97,37 +97,28 @@ export const TimeInForceSelector = ({
   };
 
   return (
-    <div className="mb-4">
-      <TradingFormGroup
-        label={t('Time in force')}
-        labelFor="select-time-in-force"
-        compact={true}
+    <div className="flex items-center gap-1 justify-end text-xs">
+      <label className="text-muted">{t('TIF')}</label>
+      <MiniSelect
+        placeholder="Select"
+        value={value}
+        onValueChange={(value) => {
+          onSelect(value as Schema.OrderTimeInForce);
+        }}
+        id="select-time-in-force"
+        data-testid="order-tif"
       >
-        <TradingSelect
-          id="select-time-in-force"
-          value={value}
-          onChange={(e) => {
-            onSelect(e.target.value as Schema.OrderTimeInForce);
-          }}
-          className="w-full"
-          data-testid="order-tif"
-          hasError={!!errorMessage}
-        >
-          {options.map(([key, value]) => (
-            <TimeInForceOption key={key} value={value} />
-          ))}
-        </TradingSelect>
-        {errorMessage && (
-          <TradingInputError testId="deal-ticket-error-message-tif">
-            {renderError(errorMessage)}
-          </TradingInputError>
-        )}
-      </TradingFormGroup>
+        {options.map(([key, value]) => (
+          <MiniSelectOption key={key} value={value}>
+            {Schema.OrderTimeInForceCode[value]}
+          </MiniSelectOption>
+        ))}
+      </MiniSelect>
+      {errorMessage && (
+        <TradingInputError testId="deal-ticket-error-message-tif">
+          {renderError(errorMessage)}
+        </TradingInputError>
+      )}
     </div>
   );
-};
-
-const TimeInForceOption = ({ value }: { value: Schema.OrderTimeInForce }) => {
-  const t = useT();
-  return <option value={value}>{t(value)}</option>;
 };

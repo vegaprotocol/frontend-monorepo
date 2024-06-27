@@ -41,7 +41,6 @@ import {
   getAsset,
   getBaseAsset,
   getDerivedPrice,
-  getProductType,
   getQuoteAsset,
   getQuoteName,
   isMarketInAuction,
@@ -184,8 +183,8 @@ export const DealTicket = ({
   );
   const dealTicketType = storedFormValues?.type ?? DealTicketType.Limit;
   const type = dealTicketTypeToOrderType(dealTicketType);
-  const productType = getProductType(market);
   const isSpotMarket = isSpot(market.tradableInstrument.instrument.product);
+  const isLimitType = type === Schema.OrderType.TYPE_LIMIT;
 
   const {
     control,
@@ -453,9 +452,9 @@ export const DealTicket = ({
   ]);
 
   const nonPersistentOrder = isNonPersistentOrder(timeInForce);
-  const disablePostOnlyCheckbox = nonPersistentOrder;
-  const disableReduceOnlyCheckbox = !nonPersistentOrder;
-  const disableIcebergCheckbox = nonPersistentOrder;
+  const enablePostOnly = isLimitType && !nonPersistentOrder;
+  const enableReduceOnly = !isSpotMarket && nonPersistentOrder;
+  const enableIceberg = isLimitType && !nonPersistentOrder;
   const featureFlags = useFeatureFlags((state) => state.flags);
   const sizeStep = determineSizeStep(market);
   const notionalPrice = !price || price === '0' ? marketPrice : price;
@@ -578,8 +577,6 @@ export const DealTicket = ({
       validate: validateType(marketData.marketTradingMode, marketData.trigger),
     },
   });
-
-  const isLimitType = type === Schema.OrderType.TYPE_LIMIT;
 
   const priceStep = determinePriceStep(market);
 
@@ -791,112 +788,8 @@ export const DealTicket = ({
           )}
         />
       </div>
-      <div className="mb-4 flex w-full flex-col gap-2">
-        {useNotional ? (
-          <KeyValue
-            label={t('Size')}
-            formattedValue={formatValue(
-              normalizedOrder?.size || '0',
-              market.positionDecimalPlaces
-            )}
-            value={formatValue(
-              normalizedOrder?.size || '0',
-              market.positionDecimalPlaces
-            )}
-            symbol={
-              isSpotMarket && baseAsset ? getAssetSymbol(baseAsset) : baseQuote
-            }
-          />
-        ) : (
-          <KeyValue
-            label={t('Notional')}
-            formattedValue={formatValue(
-              notionalSize,
-              asset.decimals,
-              asset.quantum
-            )}
-            value={formatValue(notionalSize, asset.decimals)}
-            symbol={isSpotMarket ? getAssetSymbol(quoteAsset) : quoteName}
-            labelDescription={t(
-              'NOTIONAL_SIZE_TOOLTIP_TEXT',
-              NOTIONAL_SIZE_TOOLTIP_TEXT,
-              { quoteName }
-            )}
-          />
-        )}
-        <DealTicketFeeDetails
-          order={
-            normalizedOrder && { ...normalizedOrder, price: price || undefined }
-          }
-          assetSymbol={isSpotMarket ? getAssetSymbol(quoteAsset) : assetSymbol}
-          market={market}
-          marketIsInAuction={marketIsInAuction}
-        />
-      </div>
-      <Controller
-        name="timeInForce"
-        control={control}
-        rules={{
-          validate: validateTimeInForce(
-            marketData.marketTradingMode,
-            marketData.trigger
-          ),
-        }}
-        render={({ field }) => (
-          <TimeInForceSelector
-            value={field.value}
-            orderType={type}
-            onSelect={(value: Schema.OrderTimeInForce) => {
-              // If GTT is selected and no expiresAt time is set, or its
-              // behind current time then reset the value to current time
-              const now = Date.now();
-              if (
-                value === Schema.OrderTimeInForce.TIME_IN_FORCE_GTT &&
-                (!expiresAt || new Date(expiresAt).getTime() < now)
-              ) {
-                setValue('expiresAt', formatForInput(new Date(now)), {
-                  shouldValidate: true,
-                });
-              }
-
-              // iceberg orders must be persistent orders, so if user
-              // switches to a non persistent tif value, remove iceberg selection
-              if (iceberg && isNonPersistentOrder(value)) {
-                setValue('iceberg', false);
-              }
-              field.onChange(value);
-            }}
-            market={market}
-            marketData={marketData}
-            errorMessage={errors.timeInForce?.message}
-          />
-        )}
-      />
-      {isLimitType &&
-        timeInForce === Schema.OrderTimeInForce.TIME_IN_FORCE_GTT && (
-          <Controller
-            name="expiresAt"
-            control={control}
-            rules={{
-              required: t('You need to provide a expiry time/date'),
-              validate: validateExpiration(
-                t(
-                  'The expiry date that you have entered appears to be in the past'
-                )
-              ),
-            }}
-            render={({ field }) => (
-              <ExpirySelector
-                value={field.value}
-                onSelect={(expiresAt) => field.onChange(expiresAt)}
-                errorMessage={errors.expiresAt?.message}
-              />
-            )}
-          />
-        )}
-
-      <div className="flex justify-between gap-2 mb-4">
-        <div className="flex flex-col gap-2">
+      <div className="flex gap-2 mb-4">
+        <div className="flex-1 flex flex-col items-start gap-1">
           {featureFlags.TAKE_PROFIT_STOP_LOSS && (
             <Controller
               name="tpSl"
@@ -920,8 +813,71 @@ export const DealTicket = ({
               )}
             />
           )}
-
-          {isLimitType && (
+          {enablePostOnly && (
+            <Controller
+              name="postOnly"
+              control={control}
+              render={({ field }) => (
+                <Tooltip
+                  description={
+                    <>
+                      <span>
+                        {t(
+                          '"Post only" will ensure the order is not filled immediately but is placed on the order book as a passive order. When the order is processed it is either stopped (if it would not be filled immediately), or placed in the order book as a passive order until the price taker matches with it.'
+                        )}
+                      </span>{' '}
+                      <ExternalLink href={DocsLinks?.POST_REDUCE_ONLY}>
+                        {t('Find out more')}
+                      </ExternalLink>
+                    </>
+                  }
+                >
+                  <div>
+                    <Checkbox
+                      name="post-only"
+                      checked={field.value}
+                      onCheckedChange={(postOnly) => {
+                        field.onChange(postOnly);
+                        setValue('reduceOnly', false);
+                      }}
+                      label={t('Post only')}
+                    />
+                  </div>
+                </Tooltip>
+              )}
+            />
+          )}
+          {enableReduceOnly && (
+            <Controller
+              name="reduceOnly"
+              control={control}
+              render={({ field }) => (
+                <Tooltip
+                  description={
+                    <>
+                      <span>{t(REDUCE_ONLY_TOOLTIP)}</span>{' '}
+                      <ExternalLink href={DocsLinks?.POST_REDUCE_ONLY}>
+                        {t('Find out more')}
+                      </ExternalLink>
+                    </>
+                  }
+                >
+                  <div>
+                    <Checkbox
+                      name="reduce-only"
+                      checked={field.value}
+                      onCheckedChange={(reduceOnly) => {
+                        field.onChange(reduceOnly);
+                        setValue('postOnly', false);
+                      }}
+                      label={t('Reduce only')}
+                    />
+                  </div>
+                </Tooltip>
+              )}
+            />
+          )}
+          {enableIceberg && (
             <Controller
               name="iceberg"
               control={control}
@@ -944,7 +900,6 @@ export const DealTicket = ({
                       name="iceberg"
                       checked={field.value}
                       onCheckedChange={field.onChange}
-                      disabled={disableIcebergCheckbox}
                       label={t('Iceberg')}
                     />
                   </div>
@@ -953,87 +908,71 @@ export const DealTicket = ({
             />
           )}
         </div>
+        <div className="flex-1">
+          <Controller
+            name="timeInForce"
+            control={control}
+            rules={{
+              validate: validateTimeInForce(
+                marketData.marketTradingMode,
+                marketData.trigger
+              ),
+            }}
+            render={({ field }) => (
+              <TimeInForceSelector
+                value={field.value}
+                orderType={type}
+                onSelect={(value: Schema.OrderTimeInForce) => {
+                  // If GTT is selected and no expiresAt time is set, or its
+                  // behind current time then reset the value to current time
+                  const now = Date.now();
+                  if (
+                    value === Schema.OrderTimeInForce.TIME_IN_FORCE_GTT &&
+                    (!expiresAt || new Date(expiresAt).getTime() < now)
+                  ) {
+                    setValue('expiresAt', formatForInput(new Date(now)), {
+                      shouldValidate: true,
+                    });
+                  }
 
-        <div className="flex flex-col gap-2">
-          {productType !== 'Spot' && (
-            <Controller
-              name="reduceOnly"
-              control={control}
-              render={({ field }) => (
-                <Tooltip
-                  description={
-                    <>
-                      <span>
-                        {disableReduceOnlyCheckbox
-                          ? t(
-                              '"Reduce only" can be used only with non-persistent orders, such as "Fill or Kill" or "Immediate or Cancel".'
-                            )
-                          : t(REDUCE_ONLY_TOOLTIP)}
-                      </span>{' '}
-                      <ExternalLink href={DocsLinks?.POST_REDUCE_ONLY}>
-                        {t('Find out more')}
-                      </ExternalLink>
-                    </>
+                  // iceberg orders must be persistent orders, so if user
+                  // switches to a non persistent tif value, remove iceberg selection
+                  if (iceberg && isNonPersistentOrder(value)) {
+                    setValue('iceberg', false);
                   }
-                >
-                  <div>
-                    <Checkbox
-                      name="reduce-only"
-                      checked={!disableReduceOnlyCheckbox && field.value}
-                      disabled={disableReduceOnlyCheckbox}
-                      onCheckedChange={(reduceOnly) => {
-                        field.onChange(reduceOnly);
-                        setValue('postOnly', false);
-                      }}
-                      label={t('Reduce only')}
-                    />
-                  </div>
-                </Tooltip>
-              )}
-            />
-          )}
-          {isLimitType && (
-            <Controller
-              name="postOnly"
-              control={control}
-              render={({ field }) => (
-                <Tooltip
-                  description={
-                    <>
-                      <span>
-                        {disablePostOnlyCheckbox
-                          ? t(
-                              '"Post only" can not be used on "Fill or Kill" or "Immediate or Cancel" orders.'
-                            )
-                          : t(
-                              '"Post only" will ensure the order is not filled immediately but is placed on the order book as a passive order. When the order is processed it is either stopped (if it would not be filled immediately), or placed in the order book as a passive order until the price taker matches with it.'
-                            )}
-                      </span>{' '}
-                      <ExternalLink href={DocsLinks?.POST_REDUCE_ONLY}>
-                        {t('Find out more')}
-                      </ExternalLink>
-                    </>
-                  }
-                >
-                  <div>
-                    <Checkbox
-                      name="post-only"
-                      checked={!disablePostOnlyCheckbox && field.value}
-                      disabled={disablePostOnlyCheckbox}
-                      onCheckedChange={(postOnly) => {
-                        field.onChange(postOnly);
-                        setValue('reduceOnly', false);
-                      }}
-                      label={t('Post only')}
-                    />
-                  </div>
-                </Tooltip>
-              )}
-            />
-          )}
+                  field.onChange(value);
+                }}
+                market={market}
+                marketData={marketData}
+                errorMessage={errors.timeInForce?.message}
+              />
+            )}
+          />
         </div>
       </div>
 
+      {isLimitType &&
+        timeInForce === Schema.OrderTimeInForce.TIME_IN_FORCE_GTT && (
+          <Controller
+            name="expiresAt"
+            control={control}
+            rules={{
+              required: t('You need to provide a expiry time/date'),
+              validate: validateExpiration(
+                t(
+                  'The expiry date that you have entered appears to be in the past'
+                )
+              ),
+            }}
+            render={({ field }) => (
+              <ExpirySelector
+                value={field.value}
+                onSelect={(expiresAt) => field.onChange(expiresAt)}
+                errorMessage={errors.expiresAt?.message}
+              />
+            )}
+          />
+        )}
       {isLimitType && iceberg && (
         <DealTicketSizeIceberg
           market={market}
@@ -1082,6 +1021,48 @@ export const DealTicket = ({
         baseAsset={baseAsset}
         quoteAsset={quoteAsset}
       />
+      <div className="my-2 flex w-full flex-col gap-1.5">
+        {useNotional ? (
+          <KeyValue
+            label={t('Size')}
+            formattedValue={formatValue(
+              normalizedOrder?.size || '0',
+              market.positionDecimalPlaces
+            )}
+            value={formatValue(
+              normalizedOrder?.size || '0',
+              market.positionDecimalPlaces
+            )}
+            symbol={
+              isSpotMarket && baseAsset ? getAssetSymbol(baseAsset) : baseQuote
+            }
+          />
+        ) : (
+          <KeyValue
+            label={t('Notional')}
+            formattedValue={formatValue(
+              notionalSize,
+              asset.decimals,
+              asset.quantum
+            )}
+            value={formatValue(notionalSize, asset.decimals)}
+            symbol={isSpotMarket ? getAssetSymbol(quoteAsset) : quoteName}
+            labelDescription={t(
+              'NOTIONAL_SIZE_TOOLTIP_TEXT',
+              NOTIONAL_SIZE_TOOLTIP_TEXT,
+              { quoteName }
+            )}
+          />
+        )}
+        <DealTicketFeeDetails
+          order={
+            normalizedOrder && { ...normalizedOrder, price: price || undefined }
+          }
+          assetSymbol={isSpotMarket ? getAssetSymbol(quoteAsset) : assetSymbol}
+          market={market}
+          marketIsInAuction={marketIsInAuction}
+        />
+      </div>
       <DealTicketMarginDetails
         side={normalizedOrder.side}
         asset={asset}
