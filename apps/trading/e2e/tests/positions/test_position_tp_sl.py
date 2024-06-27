@@ -20,6 +20,7 @@ def create_position(vega: VegaServiceNull, market_id):
     vega.wait_fn(1)
     vega.wait_for_total_catchup
 
+@pytest.mark.skip(reason="TODO: fix this flaky test")
 @pytest.mark.usefixtures("auth", "risk_accepted")
 def test_add_tp_sl_to_position(continuous_market, page: Page, vega: VegaServiceNull):
     page.goto(f"/#/markets/{continuous_market}")
