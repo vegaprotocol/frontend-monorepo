@@ -11,7 +11,7 @@ import {
   type LastBarSubscription,
   type LastBarSubscriptionVariables,
 } from './__generated__/Bars';
-import { Interval } from '@vegaprotocol/types';
+import { Interval, MarketState } from '@vegaprotocol/types';
 import {
   SymbolDocument,
   type SymbolQuery,
@@ -113,15 +113,19 @@ export const useDatafeed = (marketId: string) => {
             ? Math.floor(expirationDate.getTime() / 1000)
             : undefined;
 
+          const expired = expirationDate
+            ? Date.now() > expirationDate.getTime()
+            : market.state !== MarketState.STATE_ACTIVE &&
+              market.state !== MarketState.STATE_SUSPENDED;
+
           const symbolInfo: LibrarySymbolInfo = {
             ticker: market.id, // use ticker as our unique identifier so that code/name can be used for name/description
             name: instrument.code,
             full_name: `${EXCHANGE}:${instrument.code}`,
             description: instrument.name,
             listed_exchange: EXCHANGE,
-            expired: productType === 'Perpetual' ? false : true,
+            expired,
             expiration_date: expirationTimestamp,
-
             format: 'price',
             type,
             session: '24x7',
