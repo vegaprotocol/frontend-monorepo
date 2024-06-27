@@ -97,7 +97,7 @@ def test_market_spot_info_key_details(page: Page, vega: VegaServiceNull):
         ["Trading mode", "Continuous"],
         ["Price decimal places", "1"],
         ["Size decimal places", "2"],
-        ["Quote asset secimal places", "5"],
+        ["Quote asset decimal places", "5"],
         ["Base asset decimal places", "5"],
         ["Tick size", "1"]
     ]

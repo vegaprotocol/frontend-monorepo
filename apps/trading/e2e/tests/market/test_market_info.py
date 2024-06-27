@@ -142,7 +142,7 @@ def test_market_info_instrument(page: Page):
 def test_market_info_mark_price(page: Page):
     page.get_by_test_id(market_title_test_id).get_by_text("Mark Price").click()
     fields = [
-        ["Composite price type", "Last Trade"],
+        ["Composite price type", "Last trade"],
         ["Staleness tolerance", "-"],
         ["Decay weight", "0"],
         ["Decay power", "0"],
@@ -200,7 +200,7 @@ def test_market_info_margin_scaling_factors(page: Page):
         "Margin scaling factors"
     ).click()
     fields = [
-        ["Linear slippage Factor", "0.001"],
+        ["Linear slippage factor", "0.001"],
         ["Search level", "1.1"],
         ["Initial margin", "1.5"],
         ["Collateral release", "1.7"],

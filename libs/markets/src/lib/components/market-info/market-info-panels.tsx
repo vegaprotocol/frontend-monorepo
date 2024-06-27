@@ -1502,7 +1502,7 @@ export const FundingInfoPanel = ({
       />
       {indexPrice && (
         <>
-          <div className="my-1">{t('Index Price')}</div>
+          <div className="my-1">{t('Index price')}</div>
           {indexPrice}
         </>
       )}
@@ -1925,7 +1925,7 @@ const SourceWeight = ({ sourceWeight }: { sourceWeight?: number }) => {
   return (
     sourceWeight && (
       <KeyValueTableRow noBorder className="text-xs">
-        <div>{t('Source Weight')}</div>
+        <div>{t('Source weight')}</div>
         <div>{sourceWeight.toFixed(2)}%</div>
       </KeyValueTableRow>
     )
@@ -2118,13 +2118,13 @@ export const PriceConfigurationPanel = ({
   } = {
     [CompositePriceType.COMPOSITE_PRICE_TYPE_WEIGHTED]: t('Weighted'),
     [CompositePriceType.COMPOSITE_PRICE_TYPE_MEDIAN]: t('Median'),
-    [CompositePriceType.COMPOSITE_PRICE_TYPE_LAST_TRADE]: t('Last Trade'),
+    [CompositePriceType.COMPOSITE_PRICE_TYPE_LAST_TRADE]: t('Last trade'),
   };
   return (
     <>
       <KeyValueTable>
         <KeyValueTableRow noBorder className="text-xs">
-          <div>{t('Composite Price Type')}</div>
+          <div>{t('Composite price type')}</div>
           <div>{typeLabel[priceConfiguration.CompositePriceType]}</div>
         </KeyValueTableRow>
       </KeyValueTable>
