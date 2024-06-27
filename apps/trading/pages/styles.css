@@ -95,6 +95,12 @@ html [data-theme='light'] {
 html [data-theme='light'] {
   --separator-border: theme(colors.vega.clight.400);
   --pennant-background-surface-color: theme(colors.vega.clight.800);
+  --pennant-hover-overlay: rgba(
+    244,
+    244,
+    244,
+    0.5
+  ); /* theme(colors.vega.clight.800) in rgba with opacity */
 
   /* candles */
   --pennant-color-buy-fill: theme(colors.market.green.DEFAULT);
@@ -118,6 +124,12 @@ html [data-theme='light'] {
 html [data-theme='dark'] {
   --separator-border: theme(colors.vega.cdark.400);
   --pennant-background-surface-color: theme(colors.vega.cdark.800);
+  --pennant-hover-overlay: rgba(
+    23,
+    25,
+    30,
+    0.5
+  ); /* theme(colors.vega.cdark.800) in rgba with opacity */
 
   /* candles */
   --pennant-color-buy-fill: theme(colors.market.green.600);
