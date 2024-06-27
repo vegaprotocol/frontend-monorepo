@@ -973,16 +973,6 @@ export const DealTicket = ({
             )}
           />
         )}
-      {isLimitType && iceberg && (
-        <DealTicketSizeIceberg
-          market={market}
-          peakSizeError={errors.peakSize?.message}
-          minimumVisibleSizeError={errors.minimumVisibleSize?.message}
-          control={control}
-          size={rawSize}
-          peakSize={peakSize}
-        />
-      )}
 
       {featureFlags.TAKE_PROFIT_STOP_LOSS && tpSl && (
         <DealTicketPriceTakeProfitStopLoss
@@ -991,6 +981,17 @@ export const DealTicket = ({
           stopLossError={errors.stopLoss?.message}
           control={control}
           quoteName={quoteName}
+        />
+      )}
+
+      {isLimitType && iceberg && (
+        <DealTicketSizeIceberg
+          market={market}
+          peakSizeError={errors.peakSize?.message}
+          minimumVisibleSizeError={errors.minimumVisibleSize?.message}
+          control={control}
+          size={rawSize}
+          peakSize={peakSize}
         />
       )}
 

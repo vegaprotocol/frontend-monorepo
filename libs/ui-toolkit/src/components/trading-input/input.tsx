@@ -3,7 +3,7 @@ import { forwardRef } from 'react';
 import classNames from 'classnames';
 import type { IconName } from '../icon';
 import { Icon } from '../icon';
-import { defaultFormElement } from '../../utils/shared';
+import { defaultFormElement } from '../../utils/trading-shared';
 
 type InputRootProps = InputHTMLAttributes<HTMLInputElement> & {
   hasError?: boolean;
