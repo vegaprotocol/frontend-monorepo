@@ -34,7 +34,10 @@ import {
 } from '@vegaprotocol/utils';
 import { RewardsHistoryContainer } from './rewards-history';
 import { useT } from '../../lib/use-t';
-import { useAssetsMapProvider } from '@vegaprotocol/assets';
+import {
+  type AssetFieldsFragment,
+  useAssetsMapProvider,
+} from '@vegaprotocol/assets';
 import { ActiveRewards } from './active-rewards';
 import { ActivityStreak } from './streaks/activity-streaks';
 import { RewardHoarderBonus } from './streaks/reward-hoarder-bonus';
@@ -368,7 +371,7 @@ export const RewardPot = ({
     .plus(totalVesting)
     .plus(totalVestedRewardsByRewardAsset);
 
-  let rewardAsset = undefined;
+  let rewardAsset: AssetFieldsFragment | undefined = undefined;
 
   if (availableRewardAssetAccounts.length) {
     rewardAsset = availableRewardAssetAccounts[0].asset;
@@ -451,6 +454,7 @@ export const RewardPot = ({
                 >
                   <TradingButton
                     onClick={() => {
+                      if (!rewardAsset) return;
                       const transfer = normalizeTransfer(
                         pubKey,
                         addDecimal(
