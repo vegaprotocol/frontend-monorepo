@@ -47,10 +47,10 @@ export const NodeHealthContainer = ({
       alignOffset={0}
     >
       <button
-        className={classNames({
-          'flex justify-center items-center gap-2 py-1 p-2 rounded hover:bg-vega-light-200 hover:dark:bg-vega-dark-200 text-xs':
+        className={classNames('flex justify-center items-center gap-2', {
+          'h-4 p-1 rounded hover:bg-vega-light-200 hover:dark:bg-vega-dark-200 text-xs':
             variant === 'normal',
-          'flex w-3 h-3': variant === 'compact',
+          'flex w-2 h-2': variant === 'compact',
         })}
         onClick={() => setNodeSwitcher(true)}
         data-testid="node-health-trigger"
@@ -58,10 +58,8 @@ export const NodeHealthContainer = ({
         {variant === 'normal' && (
           <span>{VEGA_URL && <NodeUrl url={VEGA_URL} />}</span>
         )}
-        <Indicator
-          variant={intent}
-          size={variant === 'compact' ? 'lg' : 'md'}
-        />
+
+        <Indicator variant={intent} size="md" />
       </button>
     </Tooltip>
   );

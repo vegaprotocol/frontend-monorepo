@@ -10,7 +10,7 @@ export const LayoutWithNodeHealth = () => {
         className={classNames(
           'hidden lg:block',
           'absolute bottom-1.5 right-1.5 z-10',
-          'w-5 h-5 p-1',
+          'w-4 h-4 p-1',
           'bg-vega-clight-500 dark:bg-vega-cdark-500 rounded',
           'flex'
         )}
