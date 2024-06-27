@@ -34,7 +34,7 @@ import { CompetitionsGame } from '../client-pages/competitions/competitions-game
 import { Swap } from '../client-pages/swap/swap';
 import { DepositCrossChain } from '../client-pages/deposit-cross-chain';
 
-import { LayoutCentered } from '../components/layouts';
+import { LayoutCentered, LayoutWithNodeHealth } from '../components/layouts';
 import { LayoutWithSky } from '../components/layouts-inner';
 
 import { Routes as AppRoutes } from '../lib/links';
@@ -73,7 +73,7 @@ export const useRouterConfig = (): RouteObject[] => {
     featureFlags.REFERRALS
       ? {
           path: AppRoutes.REFERRALS,
-          element: <Outlet />,
+          element: <LayoutWithNodeHealth />,
           children: [
             {
               element: (
@@ -106,7 +106,7 @@ export const useRouterConfig = (): RouteObject[] => {
     featureFlags.TEAM_COMPETITION
       ? {
           path: AppRoutes.COMPETITIONS,
-          element: <Outlet />,
+          element: <LayoutWithNodeHealth />,
           children: [
             // pages with planets and stars
             {
@@ -141,7 +141,7 @@ export const useRouterConfig = (): RouteObject[] => {
       : undefined,
     {
       path: 'fees/*',
-      element: <Outlet />,
+      element: <LayoutWithNodeHealth />,
       children: [
         {
           index: true,
@@ -151,7 +151,7 @@ export const useRouterConfig = (): RouteObject[] => {
     },
     {
       path: 'rewards/*',
-      element: <Outlet />,
+      element: <LayoutWithNodeHealth />,
       children: [
         {
           index: true,
@@ -164,9 +164,10 @@ export const useRouterConfig = (): RouteObject[] => {
       element: <Outlet />,
       children: [
         {
-          index: true,
-          element: <MarketsPage />,
-          id: AppRoutes.MARKETS,
+          element: <LayoutWithNodeHealth />,
+          children: [
+            { id: AppRoutes.MARKETS, index: true, element: <MarketsPage /> },
+          ],
         },
         {
           path: 'all',
@@ -181,7 +182,7 @@ export const useRouterConfig = (): RouteObject[] => {
     },
     {
       path: 'portfolio/*',
-      element: <Outlet />,
+      element: <LayoutWithNodeHealth />,
       children: [
         {
           index: true,
