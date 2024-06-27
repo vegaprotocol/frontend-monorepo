@@ -5,6 +5,7 @@ import {
   titlefy,
   stripFullStops,
   ensureSuffix,
+  fromCamelCase,
 } from './strings';
 
 describe('truncateByChars', () => {
@@ -99,5 +100,17 @@ describe('ensureSuffix', () => {
     ['🥪', '🍞+🔪=', '🍞+🔪=🥪'],
   ])('ensures "%s" at the end of "%s": "%s"', (suffix, input, expected) => {
     expect(ensureSuffix(input, suffix)).toEqual(expected);
+  });
+});
+
+describe('fromCamelCase', () => {
+  it.each([
+    ['camelCase', 'Camel case'],
+    ['anotherCamelCaseString', 'Another camel case string'],
+    ['mixedCase string abc', 'Mixed case string abc'],
+    ['not camel case', 'Not camel case'],
+    ['', ''],
+  ])('converts camel case string "%s" to "%s"', (input, expected) => {
+    expect(fromCamelCase(input)).toEqual(expected);
   });
 });

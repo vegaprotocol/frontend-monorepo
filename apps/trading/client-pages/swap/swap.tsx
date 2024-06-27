@@ -9,7 +9,7 @@ export const Swap = () => {
   const onDeposit = () => navigate(Links.DEPOSIT());
   return (
     <div className="flex flex-col gap-6">
-      <SwapContainer assetId={assetId} onDeposit={onDeposit} />;
+      <SwapContainer assetId={assetId} onDeposit={onDeposit} />
     </div>
   );
 };

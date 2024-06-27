@@ -88,8 +88,8 @@ export const TradingOption = forwardRef<
   <SelectPrimitive.Item
     data-testid="rich-select-option"
     className={[
-      'relative text-sm w-full p-2',
-      'cursor-pointer outline-none ',
+      'relative text-sm w-full p-2 h-14 overflow-hidden',
+      'cursor-pointer outline-none',
       'hover:bg-neutral-100 dark:hover:bg-neutral-800',
       'focus:bg-neutral-100 dark:focus:bg-neutral-800',
       'data-selected:bg-vega-blue-300 dark:data-selected:bg-vega-blue-600',

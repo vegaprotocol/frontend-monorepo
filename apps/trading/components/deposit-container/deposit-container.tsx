@@ -41,7 +41,7 @@ import {
   FormSecondaryActionWrapper,
 } from '../form-secondary-action';
 import { VegaKeySelect } from './vega-key-select';
-import { AssetOption } from './asset-option';
+import { AssetOption } from '../asset-option';
 import { Approval } from './approval';
 import { useAssetReadContracts } from './use-asset-read-contracts';
 import { Faucet } from './faucet';
@@ -55,7 +55,7 @@ export const DepositContainer = ({
 }) => {
   const { config } = useEthereumConfig();
   const { configs } = useEVMBridgeConfigs();
-  const { data: assets } = useAssetsWithBalance();
+  const { data: assets, loading } = useAssetsWithBalance();
 
   if (!config) return null;
   if (!configs?.length) return null;
@@ -64,6 +64,10 @@ export const DepositContainer = ({
 
   // Make sure asset is an existing enabled asset
   const asset = assets?.find((a) => a.id === initialAssetId);
+
+  if (loading) {
+    return null;
+  }
 
   return (
     <DepositForm
@@ -115,7 +119,7 @@ const DepositForm = ({
   const form = useForm<FormFields>({
     resolver: zodResolver(depositSchema),
     defaultValues: {
-      // fromAddress is just dervied from the connected wallet, but including
+      // fromAddress is just derived from the connected wallet, but including
       // it as a form field so its included with the zodResolver validation
       // and shows up as an error if its not set
       fromAddress: address,
@@ -129,7 +133,7 @@ const DepositForm = ({
   const assetId = useWatch({ name: 'assetId', control: form.control });
   const asset = assets?.find((a) => a.id === assetId);
 
-  // Data releating to the select asset, like balance on address, allowance
+  // Data relating to the select asset, like balance on address, allowance
   const { data, queryKey } = useAssetReadContracts({ asset, configs });
 
   const { submitDeposit } = useEvmDeposit({ queryKey });

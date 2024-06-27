@@ -1,14 +1,25 @@
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
-import { AccountManager } from '@vegaprotocol/accounts';
 import { Links } from '../../lib/links';
+import { AccountManager, type AssetActions } from '@vegaprotocol/accounts';
+
+export type AccountsContainerProps = Partial<AssetActions> & {
+  pinnedAssets?: string[];
+  orderByBalance?: boolean;
+  hideZeroBalance?: boolean;
+};
 
 export const AccountsContainer = ({
   pinnedAssets,
-}: {
-  pinnedAssets?: string[];
-}) => {
+  orderByBalance,
+  hideZeroBalance,
+  onClickAsset,
+  onClickDeposit,
+  onClickSwap,
+  onClickTransfer,
+  onClickWithdraw,
+}: AccountsContainerProps) => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { pubKey, isReadOnly } = useVegaWallet();
@@ -23,26 +34,36 @@ export const AccountsContainer = ({
     navigate(path + params);
   };
 
+  const defaultActions: AssetActions = {
+    onClickAsset: (assetId?: string) => {
+      assetId && openAssetDetailsDialog(assetId);
+    },
+    onClickDeposit: (assetId) => {
+      navigateToAssetAction(Links.DEPOSIT(), assetId);
+    },
+    onClickSwap: (assetId) => {
+      navigateToAssetAction(Links.SWAP(), assetId);
+    },
+    onClickTransfer: (assetId) => {
+      navigateToAssetAction(Links.TRANSFER(), assetId);
+    },
+    onClickWithdraw: (assetId) => {
+      navigateToAssetAction(Links.WITHDRAW(), assetId);
+    },
+  };
+
   return (
     <AccountManager
       partyId={pubKey}
-      onClickAsset={(assetId?: string) => {
-        assetId && openAssetDetailsDialog(assetId);
-      }}
-      onClickWithdraw={(assetId) => {
-        navigateToAssetAction(Links.WITHDRAW(), assetId);
-      }}
-      onClickDeposit={(assetId) => {
-        navigateToAssetAction(Links.DEPOSIT(), assetId);
-      }}
-      onClickTransfer={(assetId) => {
-        navigateToAssetAction(Links.TRANSFER(), assetId);
-      }}
-      onClickSwap={(assetId) => {
-        navigateToAssetAction(Links.SWAP(), assetId);
-      }}
+      onClickAsset={onClickAsset || defaultActions.onClickAsset}
+      onClickWithdraw={onClickWithdraw || defaultActions.onClickWithdraw}
+      onClickDeposit={onClickDeposit || defaultActions.onClickDeposit}
+      onClickTransfer={onClickTransfer || defaultActions.onClickTransfer}
+      onClickSwap={onClickSwap || defaultActions.onClickSwap}
       isReadOnly={isReadOnly}
       pinnedAssets={pinnedAssets}
+      orderByBalance={orderByBalance}
+      hideZeroBalance={hideZeroBalance}
     />
   );
 };
