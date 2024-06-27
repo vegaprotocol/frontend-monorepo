@@ -7,8 +7,6 @@ export const defaultFormElement = (hasError?: boolean, disabled?: boolean) =>
   classnames(
     'flex items-center w-full text-sm',
     'p-2 rounded whitespace-nowrap text-ellipsis overflow-hidden',
-    'border',
-    'focus:border-vega-clight-400 dark:focus:border-vega-cdark-400',
     {
       'bg-vega-clight-700 dark:bg-vega-cdark-700': !disabled && !hasError,
       'bg-transparent': disabled || hasError,

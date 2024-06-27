@@ -28,7 +28,7 @@ export const SubmitButton = ({
     >
       <span>{text}</span>
       <span
-        className="text-xs font-mono leading-4 text-vega-clight-800/60"
+        className="text-xs font-mono leading-4 text-vega-clight-800/60 break-all"
         key="trading-button-sub-label"
       >
         {subLabel}

@@ -147,10 +147,10 @@ const getDefaultValues = (
     type === Schema.OrderType.TYPE_LIMIT
       ? Schema.OrderTimeInForce.TIME_IN_FORCE_GTC
       : Schema.OrderTimeInForce.TIME_IN_FORCE_IOC,
-  size: '0',
+  size: '',
   notional: '0',
   useNotional: false,
-  price: '0',
+  price: '',
   expiresAt: undefined,
   postOnly: false,
   reduceOnly: false,
@@ -625,6 +625,52 @@ export const DealTicket = ({
           errorMessage={errors.type?.message}
         />
       </FormGroup>
+      {isLimitType && (
+        <FormGroup labelFor="input-price-quote" label={t('Price')} hideLabel>
+          <Controller
+            name="price"
+            control={control}
+            rules={{
+              required: t('You need to provide a price'),
+              min: {
+                value: priceStep,
+                message: t('Price cannot be lower than {{priceStep}}', {
+                  priceStep,
+                }),
+              },
+              validate: validateAmount(priceStep, 'Price'),
+            }}
+            render={({ field, fieldState }) => (
+              <>
+                <Input
+                  placeholder={t('Price')}
+                  id="input-price-quote"
+                  appendElement={
+                    <PricePill
+                      quoteAsset={quoteAsset}
+                      baseAsset={baseAsset}
+                      quoteName={quoteName}
+                      isNotional={useNotional}
+                      isSpotMarket={isSpotMarket}
+                    />
+                  }
+                  className="w-full"
+                  type="number"
+                  step={priceStep}
+                  data-testid="order-price"
+                  onWheel={(e) => e.currentTarget.blur()}
+                  {...field}
+                />
+                {fieldState.error && (
+                  <InputError testId="deal-ticket-error-message-price">
+                    {fieldState.error.message}
+                  </InputError>
+                )}
+              </>
+            )}
+          />
+        </FormGroup>
+      )}
       <div className={isLimitType ? 'mb-4' : 'mb-2'}>
         {useNotional && (
           <Controller
@@ -636,8 +682,10 @@ export const DealTicket = ({
                 label={t('Notional')}
                 labelFor="order-notional"
                 compact
+                hideLabel
               >
                 <Input
+                  placeholder={t('Notional')}
                   id="order-notional"
                   className="w-full"
                   type="number"
@@ -687,8 +735,14 @@ export const DealTicket = ({
           render={({ field, fieldState }) => (
             <>
               {!useNotional && (
-                <FormGroup label={t('Size')} labelFor="order-size" compact>
+                <FormGroup
+                  label={t('Size')}
+                  labelFor="order-size"
+                  compact
+                  hideLabel
+                >
                   <Input
+                    placeholder={t('Size')}
                     id="order-size"
                     className="w-full"
                     type="number"
@@ -737,55 +791,6 @@ export const DealTicket = ({
           )}
         />
       </div>
-      {isLimitType && (
-        <Controller
-          name="price"
-          control={control}
-          rules={{
-            required: t('You need to provide a price'),
-            min: {
-              value: priceStep,
-              message: t('Price cannot be lower than {{priceStep}}', {
-                priceStep,
-              }),
-            },
-            validate: validateAmount(priceStep, 'Price'),
-          }}
-          render={({ field, fieldState }) => (
-            <div className="mb-2">
-              <FormGroup
-                labelFor="input-price-quote"
-                label={t('Price')}
-                compact
-              >
-                <Input
-                  id="input-price-quote"
-                  appendElement={
-                    <PricePill
-                      quoteAsset={quoteAsset}
-                      baseAsset={baseAsset}
-                      quoteName={quoteName}
-                      isNotional={useNotional}
-                      isSpotMarket={isSpotMarket}
-                    />
-                  }
-                  className="w-full"
-                  type="number"
-                  step={priceStep}
-                  data-testid="order-price"
-                  onWheel={(e) => e.currentTarget.blur()}
-                  {...field}
-                />
-              </FormGroup>
-              {fieldState.error && (
-                <InputError testId="deal-ticket-error-message-price">
-                  {fieldState.error.message}
-                </InputError>
-              )}
-            </div>
-          )}
-        />
-      )}
       <div className="mb-4 flex w-full flex-col gap-2">
         {useNotional ? (
           <KeyValue
