@@ -1,8 +1,7 @@
 import groupBy from 'lodash/groupBy';
 import uniq from 'lodash/uniq';
-import { useNavigate } from 'react-router-dom';
 import type { Account } from '@vegaprotocol/accounts';
-import { useAccounts } from '@vegaprotocol/accounts';
+import { normalizeTransfer, useAccounts } from '@vegaprotocol/accounts';
 import {
   NetworkParams,
   useNetworkParams,
@@ -23,12 +22,16 @@ import {
   useRewardsEpochQuery,
 } from '../../lib/hooks/__generated__/Rewards';
 import {
+  Tooltip,
   TradingButton,
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 import { formatPercentage } from '../fees-container/utils';
-import { addDecimalsFormatNumberQuantum } from '@vegaprotocol/utils';
+import {
+  addDecimal,
+  addDecimalsFormatNumberQuantum,
+} from '@vegaprotocol/utils';
 import { RewardsHistoryContainer } from './rewards-history';
 import { useT } from '../../lib/use-t';
 import { useAssetsMapProvider } from '@vegaprotocol/assets';
@@ -36,7 +39,7 @@ import { ActiveRewards } from './active-rewards';
 import { ActivityStreak } from './streaks/activity-streaks';
 import { RewardHoarderBonus } from './streaks/reward-hoarder-bonus';
 import classNames from 'classnames';
-import { Links } from '../../lib/links';
+import { useVegaTransactionStore } from '@vegaprotocol/web3';
 
 const ASSETS_WITH_INCORRECT_VESTING_REWARD_DATA = [
   'bf1e88d19db4b3ca0d1d5bdb73718a01686b18cf731ca26adedf3c8b83802bba', // USDT mainnet
@@ -325,7 +328,7 @@ export const RewardPot = ({
   vestingBalancesSummary,
 }: RewardPotProps) => {
   const t = useT();
-  const navigate = useNavigate();
+  const create = useVegaTransactionStore((store) => store.create);
 
   // All vested rewards accounts
   const availableRewardAssetAccounts = accounts
@@ -441,13 +444,31 @@ export const RewardPot = ({
             </CardTable>
             {totalVestedRewardsByRewardAsset.isGreaterThan(0) && (
               <div>
-                <TradingButton
-                  onClick={() => navigate(Links.TRANSFER())}
-                  size="small"
-                  data-testid="redeem-rewards-button"
+                <Tooltip
+                  description={t(
+                    'Click to move all vested rewards for this key into its general account'
+                  )}
                 >
-                  {t('Redeem rewards')}
-                </TradingButton>
+                  <TradingButton
+                    onClick={() => {
+                      const transfer = normalizeTransfer(
+                        pubKey,
+                        addDecimal(
+                          totalVestedRewardsByRewardAsset.toString(),
+                          rewardAsset.decimals
+                        ),
+                        AccountType.ACCOUNT_TYPE_VESTED_REWARDS,
+                        AccountType.ACCOUNT_TYPE_GENERAL,
+                        rewardAsset
+                      );
+                      create({ transfer });
+                    }}
+                    size="small"
+                    data-testid="redeem-rewards-button"
+                  >
+                    {t('Redeem rewards')}
+                  </TradingButton>
+                </Tooltip>
               </div>
             )}
           </div>

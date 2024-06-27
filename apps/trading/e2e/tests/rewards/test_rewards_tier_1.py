@@ -1,3 +1,4 @@
+import re
 import pytest
 from rewards_test_ids import *
 from typing import Tuple, Generator
@@ -11,7 +12,7 @@ from conftest import (
     cleanup_container,
 )
 from fixtures.market import setup_continuous_market
-from actions.utils import next_epoch, change_keys
+from actions.utils import next_epoch, change_keys, wait_for_toast_confirmation
 from wallet_config import MM_WALLET
 from vega_sim.null_service import VegaServiceNull
 
@@ -29,7 +30,7 @@ def setup_environment(request, browser) -> Generator[Tuple[Page, str, str], None
             auth_setup(vega_instance, page)
             page.goto(REWARDS_URL)
             change_keys(page, vega_instance, PARTY_B)
-            yield page, tDAI_market, tDAI_asset_id
+            yield page, tDAI_market, tDAI_asset_id, vega_instance
 
 
 def setup_market_with_reward_program(vega: VegaServiceNull):
@@ -233,21 +234,19 @@ def test_staking_reward(
 
 
 def test_redeem(
-    setup_environment: Tuple[Page, str, str],
+    setup_environment: Tuple[Page, str, str, VegaServiceNull],
 ) -> None:
-    page, tDAI_market, tDAI_asset_id = setup_environment
+    page, tDAI_market, tDAI_asset_id, vega = setup_environment
     available_to_withdraw = page.get_by_test_id(
         "available-to-withdraw-value"
     ).text_content()
     page.get_by_test_id("redeem-rewards-button").click()
-    option_value = page.locator(
-        '[data-testid="transfer-form"] [name="fromAccount"] option[value^="ACCOUNT_TYPE_VESTED_REWARDS"]'
-    ).first.get_attribute("value")
-
-    page.select_option(
-        '[data-testid="transfer-form"] [name="fromAccount"]', option_value
+    wait_for_toast_confirmation(page)
+    next_epoch(vega=vega)
+    expected_confirmation_text = re.compile(
+        r"Transfer completeYour transaction has been confirmed.View on explorerTransferTo .{6}….{6}122\.61185 tDAI"
     )
-
-    page.get_by_test_id("use-max-button").first.click()
-    expect(page.get_by_test_id(TRANSFER_AMOUNT)
-           ).to_have_text(available_to_withdraw)
+    actual_confirmation_text = page.get_by_test_id("toast-content").text_content()
+    assert expected_confirmation_text.search(
+        actual_confirmation_text
+    ), f"Expected pattern not found in {actual_confirmation_text}"
