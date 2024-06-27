@@ -55,11 +55,11 @@ export const TypeToggle = ({
   const toggles = useToggles();
   const selectedStopOption = stopOptions.find((t) => t.value === value);
   const showStopOrdersDropdown = featureFlags.STOP_ORDERS;
-  const toggleClasses = 'flex-1 px-2 -mb-px';
+  const toggleClasses = 'flex-1 -mb-px p-1.5 border-b-2 border-b-transparent';
 
   return (
     <ToggleGroup.Root
-      className="flex h-8 leading-8 font-alpha text-xs border-b border-default"
+      className="flex border-b border-default"
       type="single"
       value={value}
       onValueChange={onValueChange}
@@ -72,7 +72,7 @@ export const TypeToggle = ({
           data-testid={`order-type-${itemValue}`}
           className={classNames(
             toggleClasses,
-            'data-[state=on]:border-b-vega-clight-400 dark:data-[state=on]:border-b-vega-cdark-400 data-[state=on]:border-b-2'
+            'data-[state=on]:border-b-vega-clight-400 dark:data-[state=on]:border-b-vega-cdark-400'
           )}
         >
           {label}
@@ -89,7 +89,7 @@ export const TypeToggle = ({
                   toggleClasses,
                   'flex gap-1 justify-center items-center',
                   {
-                    'border-b-2 border-b-vega-clight-400 dark:border-b-vega-cdark-400':
+                    'border-b-vega-clight-400 dark:border-b-vega-cdark-400':
                       selectedStopOption,
                   }
                 )}
