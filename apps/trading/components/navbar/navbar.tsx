@@ -31,6 +31,7 @@ import { ProtocolUpgradeCountdown } from '@vegaprotocol/proposals';
 import { useT, useI18n } from '../../lib/use-t';
 import { supportedLngs } from '../../lib/i18n';
 import { SettingsPopover } from '../settings';
+import { NodeHealthContainer } from '../node-health';
 
 type MenuState = 'wallet' | 'nav' | null;
 type Theme = 'system' | 'yellow';
@@ -135,6 +136,9 @@ export const Navbar = ({ theme = 'system' }: { theme?: Theme }) => {
             </div>
             {menu === 'nav' && <NavbarMenu onClick={() => setMenu(null)} />}
             {menu === 'wallet' && <VegaWalletMenu setMenu={setMenu} />}
+            <div className="absolute bottom-2 right-2">
+              <NodeHealthContainer />
+            </div>
           </D.Content>
         </D.Root>
       )}
