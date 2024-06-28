@@ -65,6 +65,9 @@ export const ProposalsTable = ({ data }: ProposalsTableProps) => {
         hide: window.innerWidth <= BREAKPOINT_MD,
         headerName: t('Type'),
         field: 'terms.change.__typename',
+        valueGetter: ({ data }) => {
+          return data?.terms?.change?.__typename || t('Batch');
+        },
       },
       {
         maxWidth: 100,
@@ -81,27 +84,16 @@ export const ProposalsTable = ({ data }: ProposalsTableProps) => {
         maxWidth: 150,
         hide: window.innerWidth <= BREAKPOINT_MD,
         headerName: t('Closing date'),
-        field: 'terms.closingDatetime',
+        valueGetter: ({ data }) => {
+          return (
+            data?.terms?.closingDatetime || data.batchTerms.closingDatetime
+          );
+        },
         valueFormatter: ({
           value,
         }: VegaValueFormatterParams<
           ProposalListFieldsFragment,
           'terms.closingDatetime'
-        >) => {
-          return value ? getDateTimeFormat().format(new Date(value)) : '-';
-        },
-      },
-      {
-        colId: 'eDate',
-        maxWidth: 150,
-        hide: window.innerWidth <= BREAKPOINT_MD,
-        headerName: t('Enactment date'),
-        field: 'terms.enactmentDatetime',
-        valueFormatter: ({
-          value,
-        }: VegaValueFormatterParams<
-          ProposalListFieldsFragment,
-          'terms.enactmentDatetime'
         >) => {
           return value ? getDateTimeFormat().format(new Date(value)) : '-';
         },
