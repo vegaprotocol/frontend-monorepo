@@ -109,6 +109,10 @@ export const usePollForDelegations = () => {
                     isAssetTypeERC20(a.asset) &&
                     a.asset.source.contractAddress === vegaToken.address;
 
+                  const chainId = isAssetTypeERC20(a.asset)
+                    ? a.asset.source.chainId
+                    : undefined;
+
                   const isVesting =
                     a.type === Schema.AccountType.ACCOUNT_TYPE_VESTED_REWARDS ||
                     a.type === Schema.AccountType.ACCOUNT_TYPE_VESTING_REWARDS;
@@ -126,6 +130,7 @@ export const usePollForDelegations = () => {
                     symbol: a.asset.symbol,
                     decimals: a.asset.decimals,
                     assetId: a.asset.id,
+                    chainId: chainId,
                     balance: new BigNumber(
                       addDecimal(a.balance, a.asset.decimals)
                     ),
