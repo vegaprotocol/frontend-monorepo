@@ -30,7 +30,7 @@ export const Sidebar = ({ pinnedAssets }: { pinnedAssets?: string[] }) => {
   const { view, setView } = useSidebar();
 
   return (
-    <div className="grid grid-rows-[1fr_min-content] p-1 h-full">
+    <div className="grid grid-rows-[1fr_min-content] h-full">
       <SidebarAccordion
         type="single"
         value={view}
@@ -83,10 +83,13 @@ export const Sidebar = ({ pinnedAssets }: { pinnedAssets?: string[] }) => {
             <AccordionPrimitive.Header>
               <AccordionPrimitive.Trigger
                 data-testid="Assets"
-                className={classNames('grid w-full', {
-                  'grid-cols-2': pinnedAssets.length === 2,
-                  'grid-cols-1': pinnedAssets.length === 1,
-                })}
+                className={classNames(
+                  'grid w-full bg-vega-clight-700 dark:bg-vega-cdark-700',
+                  {
+                    'grid-cols-2': pinnedAssets.length === 2,
+                    'grid-cols-1': pinnedAssets.length === 1,
+                  }
+                )}
               >
                 {pinnedAssets.map((assetId) => (
                   <AssetCard

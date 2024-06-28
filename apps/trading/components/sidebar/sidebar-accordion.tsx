@@ -14,7 +14,7 @@ const SidebarAccordion = forwardRef<
   <AccordionPrimitive.Root
     ref={ref}
     {...props}
-    className={classNames('flex flex-col gap-1 overflow-hidden', className)}
+    className={classNames('flex flex-col gap-2 overflow-hidden', className)}
   />
 ));
 
@@ -27,7 +27,7 @@ const SidebarAccordionItem = forwardRef<
   <AccordionPrimitive.Item
     ref={ref}
     className={classNames(
-      'data-[state=open]:flex-[1] data-[state=closed]:flex-[0_1_auto] border border-default transition-[flex] flex flex-col min-h-[39px] rounded-sm',
+      'data-[state=open]:flex-[1] data-[state=closed]:flex-[0_1_auto] transition-[flex] flex flex-col min-h-[39px] rounded-sm',
       className
     )}
     {...props}
@@ -45,8 +45,8 @@ const SidebarAccordionTrigger = forwardRef<
     <AccordionPrimitive.Trigger
       ref={ref}
       className={classNames(
-        'flex flex-1 items-center justify-between text-sm p-2 border-b border-default',
-        'bg-vega-clight-800 dark:bg-vega-cdark-800',
+        'flex flex-1 items-center justify-between text-sm px-2 py-3 h-10',
+        'bg-vega-clight-700 dark:bg-vega-cdark-700',
         'hover:bg-vega-clight-600 dark:hover:bg-vega-cdark-600',
         'data-[state=open]:bg-vega-clight-600 dark:data-[state=open]:bg-vega-cdark-600',
         className
