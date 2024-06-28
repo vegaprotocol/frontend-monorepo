@@ -1,7 +1,6 @@
 import * as ToggleGroup from '@radix-ui/react-toggle-group';
 import { useMarginMode } from '@vegaprotocol/accounts';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
-import classNames from 'classnames';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useVegaTransactionStore } from '@vegaprotocol/web3';
@@ -74,9 +73,9 @@ const Toggle = ({
   onValueChange: (value: string) => void;
 }) => {
   const t = useT();
-  const itemClass = classNames('relative py-px px-2 text-xs', '');
+  const itemClass = 'relative py-px px-2 text-xs data-[state=on]:px-1';
   const indicator = (
-    <span className="absolute -top-0.5 -right-0.5 -bottom-0.5 -left-0.5 bg-vega-clight-500 dark:bg-vega-cdark-500 rounded" />
+    <span className="absolute -top-px right-0 -bottom-px left-0 bg-vega-clight-500 dark:bg-vega-cdark-500 rounded" />
   );
   const leverage = factor ? (1 / Number(factor)).toFixed(1) : DEFAULT_LEVERAGE;
 
