@@ -3,6 +3,7 @@ import {
   SidebarAccordion,
   SidebarAccordionContent,
   SidebarAccordionItem,
+  SidebarAccordionHeader,
   SidebarAccordionTrigger,
 } from './sidebar-accordion';
 import * as AccordionPrimitive from '@radix-ui/react-accordion';
@@ -16,6 +17,7 @@ import { Links } from '../../lib/links';
 import { useT } from '../../lib/use-t';
 import { SidebarAccountsContainer } from '../accounts-container/sidebar-accounts-container';
 import classNames from 'classnames';
+import { MarginModeToggle } from '../margin-mode';
 
 export enum ViewType {
   Trade = 'Trade',
@@ -44,9 +46,12 @@ export const Sidebar = ({ pinnedAssets }: { pinnedAssets?: string[] }) => {
         collapsible
       >
         <SidebarAccordionItem value={ViewType.Trade}>
-          <SidebarAccordionTrigger data-testid="Trade">
-            {t('Trade')}
-          </SidebarAccordionTrigger>
+          <SidebarAccordionHeader>
+            <SidebarAccordionTrigger data-testid="Trade" className="grow">
+              {t('Trade')}
+            </SidebarAccordionTrigger>
+            <MarginModeToggle />
+          </SidebarAccordionHeader>
           <SidebarAccordionContent>
             <div className="p-2">
               <ErrorBoundary feature="deal-ticket">
@@ -61,9 +66,11 @@ export const Sidebar = ({ pinnedAssets }: { pinnedAssets?: string[] }) => {
           </SidebarAccordionContent>
         </SidebarAccordionItem>
         <SidebarAccordionItem value={ViewType.Info}>
-          <SidebarAccordionTrigger data-testid="Info">
-            {t('Market info')}
-          </SidebarAccordionTrigger>
+          <SidebarAccordionHeader>
+            <SidebarAccordionTrigger data-testid="Info">
+              {t('Market info')}
+            </SidebarAccordionTrigger>
+          </SidebarAccordionHeader>
           <SidebarAccordionContent>
             <div className="p-2">
               <ErrorBoundary feature="market-info">
@@ -76,11 +83,13 @@ export const Sidebar = ({ pinnedAssets }: { pinnedAssets?: string[] }) => {
         </SidebarAccordionItem>
         <SidebarAccordionItem value={ViewType.Assets}>
           {!pinnedAssets?.length || view === ViewType.Assets ? (
-            <SidebarAccordionTrigger data-testid="Assets">
-              {t('Assets')}
-            </SidebarAccordionTrigger>
+            <SidebarAccordionHeader>
+              <SidebarAccordionTrigger data-testid="Assets">
+                {t('Assets')}
+              </SidebarAccordionTrigger>
+            </SidebarAccordionHeader>
           ) : (
-            <AccordionPrimitive.Header>
+            <SidebarAccordionHeader>
               <AccordionPrimitive.Trigger
                 data-testid="Assets"
                 className={classNames(
@@ -99,7 +108,7 @@ export const Sidebar = ({ pinnedAssets }: { pinnedAssets?: string[] }) => {
                   />
                 ))}
               </AccordionPrimitive.Trigger>
-            </AccordionPrimitive.Header>
+            </SidebarAccordionHeader>
           )}
           <SidebarAccordionContent>
             <SidebarAccountsContainer pinnedAssets={pinnedAssets} />

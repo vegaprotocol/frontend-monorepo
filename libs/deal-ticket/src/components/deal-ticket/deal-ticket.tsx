@@ -22,7 +22,6 @@ import {
   Intent,
   Notification,
   Tooltip,
-  TradingButton as Button,
   Pill,
   ExternalLink,
   PercentageSlider as Slider,
@@ -99,6 +98,7 @@ import {
   AssetSymbol,
   getAssetSymbol,
 } from '@vegaprotocol/assets';
+import classNames from 'classnames';
 
 export const REDUCE_ONLY_TOOLTIP =
   '"Reduce only" will ensure that this order will not increase the size of an open position. When the order is matched, it will only trade enough volume to bring your open volume towards 0 but never change the direction of your position. If applied to a limit order that is not instantly filled, the order will be stopped.';
@@ -593,6 +593,17 @@ export const DealTicket = ({
       noValidate
       data-testid="deal-ticket-form"
     >
+      <Controller
+        name="side"
+        control={control}
+        render={({ field }) => (
+          <SideSelector
+            isSpotMarket={isSpotMarket}
+            value={field.value}
+            onValueChange={field.onChange}
+          />
+        )}
+      />
       <TypeSelector
         value={dealTicketType}
         onValueChange={(dealTicketType) => {
@@ -610,17 +621,6 @@ export const DealTicket = ({
         marketData={marketData}
         errorMessage={errors.type?.message}
         showStopOrders={!isSpotMarket}
-      />
-      <Controller
-        name="side"
-        control={control}
-        render={({ field }) => (
-          <SideSelector
-            isSpotMarket={isSpotMarket}
-            value={field.value}
-            onValueChange={field.onChange}
-          />
-        )}
       />
       <div className={isLimitType ? 'mb-4' : 'mb-2'}>
         {useNotional && (
@@ -1332,14 +1332,26 @@ const PlaceOrderButton = ({
   const subLabel = `${baseText} @ ${quoteText}`;
 
   return (
-    <Button
+    <button
       data-testid="place-order"
       type="submit"
-      className="w-full"
-      intent={side === Schema.Side.SIDE_BUY ? Intent.Success : Intent.Danger}
-      subLabel={subLabel}
+      className={classNames(
+        'w-full flex flex-col justify-center items-center rounded text-vega-clight-800 p-2 transition-colors',
+        {
+          'bg-vega-red-500 enabled:hover:bg-vega-red-550 dark:bg-vega-red-600 dark:enabled:hover:bg-vega-red-650':
+            side === Schema.Side.SIDE_SELL,
+          'bg-vega-green-600 enabled:hover:bg-vega-green-650 dark:bg-vega-green-650 dark:enabled:hover:bg-vega-green-600':
+            side === Schema.Side.SIDE_BUY,
+        }
+      )}
     >
-      {text}
-    </Button>
+      <span>{text}</span>
+      <span
+        className="text-xs font-mono leading-4 text-vega-clight-800/60"
+        key="trading-button-sub-label"
+      >
+        {subLabel}
+      </span>
+    </button>
   );
 };

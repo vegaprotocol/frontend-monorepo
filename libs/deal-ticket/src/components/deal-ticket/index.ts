@@ -6,3 +6,4 @@ export * from './expiry-selector';
 export * from './side-selector';
 export * from './time-in-force-selector';
 export * from './type-selector';
+export * from './deal-ticket-margin-details';
