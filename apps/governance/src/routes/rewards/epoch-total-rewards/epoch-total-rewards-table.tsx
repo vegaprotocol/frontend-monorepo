@@ -5,6 +5,8 @@ import {
   RewardsTable,
 } from '../shared-rewards-table-assets/shared-rewards-table-assets';
 import type { EpochTotalSummary } from './generate-epoch-total-rewards-list';
+import { EmblemByAsset } from '@vegaprotocol/emblem';
+import { useWallet } from '@vegaprotocol/wallet-react';
 
 interface EpochTotalRewardsGridProps {
   data: EpochTotalSummary;
@@ -55,6 +57,7 @@ export const EpochTotalRewardsTable = ({
   data,
   marketCreationQuantumMultiple,
 }: EpochTotalRewardsGridProps) => {
+  const vegaChainId = useWallet((store) => store.chainId);
   return (
     <RewardsTable
       marketCreationQuantumMultiple={marketCreationQuantumMultiple}
@@ -62,10 +65,15 @@ export const EpochTotalRewardsTable = ({
       epoch={data.epoch}
     >
       {Array.from(data.assetRewards.values()).map(
-        ({ name, rewards, totalAmount, decimals }, i) => (
+        ({ assetId, name, rewards, totalAmount, decimals }, i) => (
           <div className="contents" key={i}>
-            <div data-testid="asset" className={`${rowGridItemStyles()} p-5`}>
-              {name}
+            <div className={`${rowGridItemStyles()} p-5`}>
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6">
+                  <EmblemByAsset asset={assetId} vegaChain={vegaChainId} />
+                </div>
+                <span data-testid="asset">{name}</span>
+              </div>
             </div>
             {Array.from(rewards.values()).map(({ rewardType, amount }, i) => (
               <RewardItem
