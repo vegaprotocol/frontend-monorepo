@@ -656,7 +656,7 @@
   "You must be connected to the Vega wallet.": "You must be connected to the Vega wallet.",
   "You need a <0>Vega wallet</0> to start trading in this market.": "You need a <0>Vega wallet</0> to start trading in this market.",
   "You need at least {{requiredStake}} VEGA staked to generate a referral code and participate in the referral program.": "You need at least {{requiredStake}} VEGA staked to generate a referral code and participate in the referral program.",
-  "You need to connect your own wallet to start trading on this market": "You need to connect your own wallet to start trading on this market",
+  "You need to connect your own wallet to start trading in this market": "You need to connect your own wallet to start trading in this market",
   "You pay": "You pay",
   "You receive": "You receive",
   "You will no longer be able to hold a position on this market when it closes in {{duration}}.": "You will no longer be able to hold a position on this market when it closes in {{duration}}.",
