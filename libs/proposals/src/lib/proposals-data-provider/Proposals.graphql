@@ -418,6 +418,7 @@ fragment CancelTransferFields on CancelTransfer {
 
 fragment BatchproposalListFields on BatchProposal {
   __typename
+  id
   datetime
   rationale {
     title
@@ -425,6 +426,15 @@ fragment BatchproposalListFields on BatchProposal {
   }
   batchTerms {
     closingDatetime
+  }
+  subProposals {
+    terms {
+      closingDatetime
+      enactmentDatetime
+      change {
+        ...ChangeFragment
+      }
+    }
   }
   reference
   state
@@ -492,26 +502,30 @@ fragment ProposalListFields on Proposal {
     closingDatetime
     enactmentDatetime
     change {
-      __typename
-      ... on NewMarket {
-        ...NewMarketFields
-      }
-      ... on UpdateMarket {
-        ...UpdateMarketFields
-      }
-      ... on NewAsset {
-        ...NewAssetFields
-      }
-      ... on UpdateAsset {
-        ...UpdateAssetFields
-      }
-      ... on UpdateNetworkParameter {
-        ...UpdateNetworkParameterFields
-      }
-      ... on UpdateMarketState {
-        ...UpdateMarketStateFields
-      }
+      ...ChangeFragment
     }
+  }
+}
+
+fragment ChangeFragment on ProposalChange {
+  __typename
+  ... on NewMarket {
+    ...NewMarketFields
+  }
+  ... on UpdateMarket {
+    ...UpdateMarketFields
+  }
+  ... on NewAsset {
+    ...NewAssetFields
+  }
+  ... on UpdateAsset {
+    ...UpdateAssetFields
+  }
+  ... on UpdateNetworkParameter {
+    ...UpdateNetworkParameterFields
+  }
+  ... on UpdateMarketState {
+    ...UpdateMarketStateFields
   }
 }
 

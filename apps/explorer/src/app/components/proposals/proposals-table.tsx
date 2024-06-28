@@ -1,4 +1,7 @@
-import { type ProposalListFieldsFragment } from '@vegaprotocol/proposals';
+import type {
+  BatchproposalListFieldsFragment,
+  ProposalListFieldsFragment,
+} from '@vegaprotocol/proposals';
 import { type AgGridReact } from 'ag-grid-react';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 import { AgGrid } from '@vegaprotocol/datagrid';
@@ -107,7 +110,9 @@ export const ProposalsTable = ({ data }: ProposalsTableProps) => {
         resizable: false,
         cellRenderer: ({
           data,
-        }: VegaICellRendererParams<ProposalListFieldsFragment>) => {
+        }: VegaICellRendererParams<
+          ProposalListFieldsFragment | BatchproposalListFieldsFragment
+        >) => {
           const proposalPage = tokenLink(
             TOKEN_PROPOSAL.replace(':id', data?.id || '')
           );
@@ -116,7 +121,7 @@ export const ProposalsTable = ({ data }: ProposalsTableProps) => {
             setDialog({
               open: true,
               title: data.rationale.title,
-              content: data.terms,
+              content: 'terms' in data ? data.terms : data.subProposals,
             });
           };
           return (
@@ -142,9 +147,11 @@ export const ProposalsTable = ({ data }: ProposalsTableProps) => {
       <AgGrid
         ref={gridRef}
         rowData={data}
-        getRowId={({ data }: { data: ProposalListFieldsFragment }) =>
-          data.id || data?.rationale?.title
-        }
+        getRowId={({
+          data,
+        }: {
+          data: ProposalListFieldsFragment | BatchproposalListFieldsFragment;
+        }) => data.id || data?.rationale?.title}
         overlayNoRowsTemplate={t('This chain has no markets')}
         domLayout="autoHeight"
         defaultColDef={{
