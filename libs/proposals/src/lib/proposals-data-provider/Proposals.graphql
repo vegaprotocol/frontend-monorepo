@@ -416,6 +416,47 @@ fragment CancelTransferFields on CancelTransfer {
   transferId
 }
 
+fragment BatchproposalListFields on BatchProposal {
+  __typename
+  datetime
+  rationale {
+    title
+    description
+  }
+  batchTerms {
+    closingDatetime
+  }
+  reference
+  state
+  datetime
+  rejectionReason
+  party {
+    id
+    __typename
+  }
+  votes {
+    yes {
+      totalTokens
+      totalNumber
+      totalWeight
+      __typename
+    }
+    no {
+      totalTokens
+      totalNumber
+      totalWeight
+      __typename
+    }
+    __typename
+  }
+  errorDetails
+  rejectionReason
+  requiredMajority
+  requiredParticipation
+  requiredLpMajority
+  requiredLpParticipation
+}
+
 fragment ProposalListFields on Proposal {
   id
   rationale {
@@ -478,7 +519,12 @@ query ProposalsList($proposalType: ProposalType, $inState: ProposalState) {
   proposalsConnection(proposalType: $proposalType, inState: $inState) {
     edges {
       proposalNode {
-        ...ProposalListFields
+        ... on Proposal {
+          ...ProposalListFields
+        }
+        ... on BatchProposal {
+          ...BatchproposalListFields
+        }
       }
     }
   }
@@ -546,6 +592,10 @@ query MarketViewProposals(
       proposalNode {
         ... on BatchProposal {
           id
+          rationale {
+            title
+            description
+          }
           subProposals {
             ...SubProposal
           }
