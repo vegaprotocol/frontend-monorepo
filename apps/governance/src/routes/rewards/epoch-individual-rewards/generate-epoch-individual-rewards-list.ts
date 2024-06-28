@@ -11,6 +11,7 @@ export interface EpochIndividualReward {
   epoch: number;
   rewards: {
     asset: string;
+    assetId?: string;
     totalAmount: string;
     decimals: number;
     rewardTypes: {
@@ -81,6 +82,7 @@ export const generateEpochIndividualRewardsList = ({
     if (!asset) {
       asset = {
         asset: assetName,
+        assetId: reward.asset.id,
         decimals: assetDecimals,
         totalAmount: '0',
         rewardTypes: Object.fromEntries(emptyRowAccountTypes),
