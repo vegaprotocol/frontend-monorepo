@@ -51,14 +51,12 @@ export const MarginModeToggle = () => {
         open={dialog === MarginMode.MARGIN_MODE_CROSS_MARGIN}
         onClose={onClose}
         marketId={market.id}
-        // @ts-ignore TODO: fix this type
         create={create}
       />
       <IsolatedDialog
         open={dialog === MarginMode.MARGIN_MODE_ISOLATED_MARGIN}
         onClose={onClose}
         marketId={market.id}
-        // @ts-ignore TODO: fix this type
         create={create}
         marginFactor={marginFactor || `${1 / DEFAULT_LEVERAGE}`}
       />
