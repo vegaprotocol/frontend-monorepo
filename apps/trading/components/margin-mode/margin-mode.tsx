@@ -94,7 +94,7 @@ const Toggle = ({
         className={itemClass}
       >
         {mode === MarginMode.MARGIN_MODE_CROSS_MARGIN && indicator}
-        <span className="relative">Cross</span>
+        <span className="relative">{t('Cross')}</span>
       </ToggleGroup.Item>
       <ToggleGroup.Item
         value={MarginMode.MARGIN_MODE_ISOLATED_MARGIN}
