@@ -18,7 +18,7 @@ from vega_sim.null_service import VegaServiceNull
 
 
 @pytest.fixture(scope="module")
-def setup_environment(request, browser) -> Generator[Tuple[Page, str, str], None, None]:
+def setup_environment(request, browser) -> Generator[Tuple[Page, str, str, VegaServiceNull], None, None]:
     with init_vega(request) as vega_instance:
         request.addfinalizer(lambda: cleanup_container(vega_instance))
 
