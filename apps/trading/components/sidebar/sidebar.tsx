@@ -106,7 +106,7 @@ export const Sidebar = ({ pinnedAssets }: { pinnedAssets?: string[] }) => {
           </SidebarAccordionContent>
         </SidebarAccordionItem>
       </SidebarAccordion>
-      <div className="py-1 flex justify-end">
+      <div className="mt-1 flex justify-end">
         <NodeHealthContainer />
       </div>
     </div>
