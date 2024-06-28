@@ -192,8 +192,9 @@ export const TypeSelector = ({
   return (
     <>
       <TypeToggle
-        onValueChange={(value) => {
-          onValueChange(value as DealTicketType);
+        onValueChange={(v) => {
+          if (v === ('' as DealTicketType)) return;
+          onValueChange(v);
         }}
         value={value}
       />
