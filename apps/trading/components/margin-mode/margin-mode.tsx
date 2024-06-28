@@ -17,7 +17,6 @@ export const MarginModeToggle = () => {
 
   const [dialog, setDialog] = useState<MarginMode>();
   const { pubKey: partyId } = useVegaWallet();
-
   const { data: market } = useMarket(params.marketId);
   const { data: margin } = useMarginMode({
     partyId,
@@ -31,6 +30,8 @@ export const MarginModeToggle = () => {
 
   const marginMode = margin?.marginMode || MarginMode.MARGIN_MODE_CROSS_MARGIN;
 
+  // Margin factor can be 0, we need to check for this to
+  // avoid dividing by 0
   const marginFactor =
     margin?.marginFactor && margin?.marginFactor !== '0'
       ? margin.marginFactor
