@@ -1403,6 +1403,17 @@ export const StopOrder = ({
       onSubmit={isReadOnly || !pubKey ? stopSubmit : handleSubmit(onSubmit)}
       noValidate
     >
+      <Controller
+        name="side"
+        control={control}
+        render={({ field }) => (
+          <SideSelector
+            value={field.value}
+            onValueChange={field.onChange}
+            isSpotMarket={isSpotMarket}
+          />
+        )}
+      />
       <TypeToggle
         value={dealTicketType}
         onValueChange={(dealTicketType) => {
@@ -1422,17 +1433,6 @@ export const StopOrder = ({
           {errors.type.message}
         </InputError>
       )}
-      <Controller
-        name="side"
-        control={control}
-        render={({ field }) => (
-          <SideSelector
-            value={field.value}
-            onValueChange={field.onChange}
-            isSpotMarket={isSpotMarket}
-          />
-        )}
-      />
       <Trigger
         control={control}
         watch={watch}

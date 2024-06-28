@@ -15,6 +15,11 @@ import { DealTicket } from './deal-ticket';
 import { useFeatureFlags } from '@vegaprotocol/environment';
 import { useT } from '../../use-t';
 import { useDataProvider } from '@vegaprotocol/data-provider';
+import type {
+  Market,
+  MarketInfo,
+  StaticMarketData,
+} from '@vegaprotocol/markets';
 
 interface DealTicketContainerProps {
   marketId: string;
@@ -23,13 +28,9 @@ interface DealTicketContainerProps {
 
 export const DealTicketContainer = ({
   marketId,
-  ...props
+  onDeposit,
 }: DealTicketContainerProps) => {
-  const featureFlags = useFeatureFlags((state) => state.flags);
   const t = useT();
-  const showStopOrder = useDealTicketFormValues((state) =>
-    isStopOrderType(state.formValues[marketId]?.type)
-  );
   const {
     data: market,
     error: marketError,
@@ -47,7 +48,6 @@ export const DealTicketContainer = ({
   } = useStaticMarketData(marketId);
   const { data: marketPrice } = useMarketPrice(marketId);
   const { data: markPrice } = useMarkPrice(marketId);
-  const create = useVegaTransactionStore((state) => state.create);
 
   return (
     <AsyncRendererInline
@@ -57,34 +57,54 @@ export const DealTicketContainer = ({
       reload={reload}
     >
       {market && marketData ? (
-        <>
-          {featureFlags.STOP_ORDERS && showStopOrder ? (
-            <StopOrder
-              market={market}
-              marketPrice={marketPrice}
-              submit={(stopOrdersSubmission) =>
-                create({ stopOrdersSubmission })
-              }
-              onDeposit={props.onDeposit}
-            />
-          ) : (
-            <DealTicket
-              {...props}
-              riskFactors={market.riskFactors}
-              scalingFactors={
-                market.tradableInstrument.marginCalculator?.scalingFactors
-              }
-              market={market}
-              marketPrice={marketPrice}
-              markPrice={markPrice}
-              marketData={marketData}
-              submit={(transaction) => create(transaction)}
-            />
-          )}
-        </>
+        <DealTicketSwitch
+          onDeposit={onDeposit}
+          riskFactors={market.riskFactors}
+          scalingFactors={
+            market.tradableInstrument.marginCalculator?.scalingFactors
+          }
+          market={market}
+          marketPrice={marketPrice}
+          markPrice={markPrice}
+          marketData={marketData}
+        />
       ) : (
         <p>{t('Could not load market')}</p>
       )}
     </AsyncRendererInline>
+  );
+};
+
+const DealTicketSwitch = (props: {
+  scalingFactors?: NonNullable<
+    MarketInfo['tradableInstrument']['marginCalculator']
+  >['scalingFactors'];
+  riskFactors: MarketInfo['riskFactors'];
+  market: Market;
+  marketData: StaticMarketData;
+  marketPrice?: string | null;
+  markPrice?: string | null;
+  onMarketClick?: (marketId: string, metaKey?: boolean) => void;
+  onDeposit: (assetId: string) => void;
+}) => {
+  const featureFlags = useFeatureFlags((state) => state.flags);
+
+  const showStopOrder = useDealTicketFormValues((state) =>
+    isStopOrderType(state.formValues[props.market.id]?.type)
+  );
+
+  const create = useVegaTransactionStore((state) => state.create);
+
+  if (featureFlags.STOP_ORDERS && showStopOrder) {
+    return (
+      <StopOrder
+        {...props}
+        submit={(stopOrdersSubmission) => create({ stopOrdersSubmission })}
+      />
+    );
+  }
+
+  return (
+    <DealTicket {...props} submit={(transaction) => create(transaction)} />
   );
 };
