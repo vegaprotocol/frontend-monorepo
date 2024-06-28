@@ -151,7 +151,7 @@ export const ProposalsTable = ({ data }: ProposalsTableProps) => {
         ref={gridRef}
         rowData={data}
         getRowId={({ data }: { data: ProposalListFieldsFragment }) =>
-          data.id || data.rationale.title
+          data.id || data?.rationale?.title
         }
         overlayNoRowsTemplate={t('This chain has no markets')}
         domLayout="autoHeight"

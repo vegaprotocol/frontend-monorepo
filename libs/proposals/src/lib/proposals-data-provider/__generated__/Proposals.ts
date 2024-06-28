@@ -589,7 +589,7 @@ export const ProposalsListDocument = gql`
     query ProposalsList($proposalType: ProposalType, $inState: ProposalState) {
   proposalsConnection(proposalType: $proposalType, inState: $inState) {
     edges {
-      node {
+      proposalNode {
         ...ProposalListFields
       }
     }
