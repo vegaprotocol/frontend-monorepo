@@ -18,6 +18,7 @@ import {
 import { Intent, Notification } from '@vegaprotocol/ui-toolkit';
 import { addDecimalsFormatNumberQuantum } from '@vegaprotocol/utils';
 import { useT } from '../../lib/use-t';
+import { type AssetFieldsFragment } from '@vegaprotocol/assets';
 
 export const MarginChange = ({
   partyId,
@@ -30,7 +31,6 @@ export const MarginChange = ({
   marginMode: MarginMode;
   marginFactor: string;
 }) => {
-  const t = useT();
   const { data: market } = useMarket(marketId);
   const asset = market && getAsset(market);
   const {
@@ -84,72 +84,15 @@ export const MarginChange = ({
     estimateMargin.estimatePosition.collateralIncreaseEstimate.bestCase
   );
 
-  let positionWarning = '';
-  let marginChangeWarning = '';
-  if (collateralIncreaseEstimate) {
-    if (orders?.length && openVolume !== '0') {
-      positionWarning = t(
-        'youHaveOpenPositionAndOrders',
-        'You have an existing position and open orders on this market.',
-        {
-          count: orders.length,
-        }
-      );
-    } else if (!orders?.length) {
-      positionWarning = t('You have an existing position on this market.');
-    } else {
-      positionWarning = t(
-        'youHaveOpenOrders',
-        'You have open orders on this market.',
-        {
-          count: orders.length,
-        }
-      );
-    }
-
-    const isCollateralIncreased = collateralIncreaseEstimate > BigInt(0);
-    const amount = addDecimalsFormatNumberQuantum(
-      collateralIncreaseEstimate.toString().replace('-', ''),
-      asset?.decimals,
-      asset?.quantum
-    );
-    const { symbol } = asset;
-    const interpolation = { amount, symbol };
-    if (marginMode === MarginMode.MARGIN_MODE_CROSS_MARGIN) {
-      marginChangeWarning = isCollateralIncreased
-        ? t(
-            'Changing the margin mode will move {{amount}} {{symbol}} from your general account to fund the position.',
-            interpolation
-          )
-        : t(
-            'Changing the margin mode will release {{amount}} {{symbol}} to your general account.',
-            interpolation
-          );
-    } else {
-      marginChangeWarning = isCollateralIncreased
-        ? t(
-            'Changing the margin mode and leverage will move {{amount}} {{symbol}} from your general account to fund the position.',
-            interpolation
-          )
-        : t(
-            'Changing the margin mode and leverage will release {{amount}} {{symbol}} to your general account.',
-            interpolation
-          );
-    }
-  }
   return (
     <div className="mb-2">
-      {positionWarning && marginChangeWarning && (
-        <Notification
-          intent={Intent.Warning}
-          message={
-            <>
-              <p>{positionWarning}</p>
-              <p>{marginChangeWarning}</p>
-            </>
-          }
-        />
-      )}
+      <Warning
+        mode={marginMode}
+        collateralIncreaseEstimate={collateralIncreaseEstimate}
+        ordersCount={orders?.length ?? 0}
+        openVolume={openVolume}
+        asset={asset}
+      />
       <DealTicketMarginDetails
         marginAccountBalance={marginAccountBalance}
         generalAccountBalance={generalAccountBalance}
@@ -161,4 +104,125 @@ export const MarginChange = ({
       />
     </div>
   );
+};
+
+const Warning = ({
+  mode,
+  collateralIncreaseEstimate,
+  ordersCount,
+  openVolume,
+  asset,
+}: {
+  mode: MarginMode;
+  collateralIncreaseEstimate: bigint;
+  ordersCount: number;
+  openVolume: string;
+  asset: AssetFieldsFragment;
+}) => {
+  const positionWarning = usePositionWarning({ ordersCount, openVolume });
+  const marginChangeWarning = useMarginChangeWarning({
+    mode,
+    asset,
+    collateralIncreaseEstimate,
+  });
+
+  if (!collateralIncreaseEstimate) return null;
+  if (!positionWarning && !marginChangeWarning) return null;
+
+  return (
+    <Notification
+      intent={Intent.Warning}
+      message={
+        <>
+          <p>{positionWarning}</p>
+          <p>{marginChangeWarning}</p>
+        </>
+      }
+    />
+  );
+};
+
+const usePositionWarning = ({
+  ordersCount,
+  openVolume,
+}: {
+  ordersCount: number;
+  openVolume: string;
+}) => {
+  const t = useT();
+
+  let positionWarning = '';
+
+  if (ordersCount && openVolume !== '0') {
+    positionWarning = t(
+      'youHaveOpenPositionAndOrders',
+      'You have an existing position and open orders on this market.',
+      {
+        count: ordersCount,
+      }
+    );
+  } else if (!ordersCount) {
+    positionWarning = t('You have an existing position on this market.');
+  } else {
+    positionWarning = t(
+      'youHaveOpenOrders',
+      'You have open orders on this market.',
+      {
+        count: ordersCount,
+      }
+    );
+  }
+
+  return positionWarning;
+};
+
+const useMarginChangeWarning = ({
+  mode,
+  collateralIncreaseEstimate,
+  asset,
+}: {
+  mode: MarginMode;
+  collateralIncreaseEstimate: bigint;
+  asset: AssetFieldsFragment;
+}) => {
+  const t = useT();
+
+  const isCollateralIncreased = collateralIncreaseEstimate > BigInt(0);
+
+  const amount = addDecimalsFormatNumberQuantum(
+    collateralIncreaseEstimate.toString().replace('-', ''),
+    asset?.decimals,
+    asset?.quantum
+  );
+
+  let marginChangeWarning = '';
+
+  const interpolation = {
+    amount,
+    symbol: asset.symbol,
+  };
+
+  if (mode === MarginMode.MARGIN_MODE_CROSS_MARGIN) {
+    marginChangeWarning = isCollateralIncreased
+      ? t(
+          'Changing the margin mode will move {{amount}} {{symbol}} from your general account to fund the position.',
+          interpolation
+        )
+      : t(
+          'Changing the margin mode will release {{amount}} {{symbol}} to your general account.',
+          interpolation
+        );
+  } else {
+    marginChangeWarning = isCollateralIncreased
+      ? t(
+          'Changing the margin mode and leverage will move {{amount}} {{symbol}} from your general account to fund the position.',
+          interpolation
+        )
+      : t(
+          'Changing the margin mode and leverage will release {{amount}} {{symbol}} to your general account.',
+          interpolation
+        );
+  }
+
+  return marginChangeWarning;
 };
