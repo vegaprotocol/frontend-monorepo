@@ -9,3 +9,4 @@ export * from './margin-data-provider';
 export * from './transfer-container';
 export * from './use-account-balance';
 export * from './use-margin-account-balance';
+export * from './utils';
