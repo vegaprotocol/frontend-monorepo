@@ -146,14 +146,14 @@ def setup_market_with_reward_program(vega: VegaServiceNull):
 def test_network_reward_pot(
     setup_environment: Tuple[Page, str, str],
 ) -> None:
-    page, tDAI_market, tDAI_asset_id = setup_environment
+    page, tDAI_market, tDAI_asset_id, vega = setup_environment
     expect(page.get_by_test_id(TOTAL_REWARDS)).to_have_text("183.33333 tDAI")
 
 
 def test_reward_multiplier(
     setup_environment: Tuple[Page, str, str],
 ) -> None:
-    page, tDAI_market, tDAI_asset_id = setup_environment
+    page, tDAI_market, tDAI_asset_id, vega = setup_environment
     expect(page.get_by_test_id(COMBINED_MULTIPLIERS)).to_have_text("4x")
     expect(page.get_by_test_id(STREAK_REWARD_MULTIPLIER_VALUE)).to_have_text("2x")
     expect(page.get_by_test_id(HOARDER_REWARD_MULTIPLIER_VALUE)).to_have_text("2x")
@@ -162,7 +162,7 @@ def test_reward_multiplier(
 def test_hoarder_bonus(
     setup_environment: Tuple[Page, str, str],
 ) -> None:
-    page, tDAI_market, tDAI_asset_id = setup_environment
+    page, tDAI_market, tDAI_asset_id, vega = setup_environment
     expect(page.get_by_test_id(HOARDER_BONUS_TOTAL_HOARDED)).to_contain_text(
         "18,333,333"
     )
@@ -171,7 +171,7 @@ def test_hoarder_bonus(
 def test_activity_streak(
     setup_environment: Tuple[Page, str, str],
 ) -> None:
-    page, tDAI_market, tDAI_asset_id = setup_environment
+    page, tDAI_market, tDAI_asset_id, vega = setup_environment
     expect(page.get_by_test_id(EPOCH_STREAK)).to_have_text(
         "Active trader: 7 epochs so far (Tier 1 as of last epoch)"
     )
@@ -180,7 +180,7 @@ def test_activity_streak(
 def test_reward_history(
     setup_environment: Tuple[Page, str, str],
 ) -> None:
-    page, tDAI_market, tDAI_asset_id = setup_environment
+    page, tDAI_market, tDAI_asset_id, vega = setup_environment
     page.locator('[name="fromEpoch"]').fill("1")
 
     expect((page.get_by_role(ROW).locator(PRICE_TAKING_COL_ID)).nth(1)).to_have_text(
@@ -198,14 +198,14 @@ def test_reward_history(
 def test_epoch_counter(
     setup_environment: Tuple[Page, str, str],
 ) -> None:
-    page, tDAI_market, tDAI_asset_id = setup_environment
+    page, tDAI_market, tDAI_asset_id, vega = setup_environment
     expect(page.get_by_test_id("epoch-countdown")).to_contain_text("Epoch 10")
 
 
 def test_staking_reward(
     setup_environment: Tuple[Page, str, str],
 ):
-    page, tDAI_market, tDAI_asset_id = setup_environment
+    page, tDAI_market, tDAI_asset_id, vega = setup_environment
     expect(page.get_by_test_id("active-rewards-card")).to_have_count(2)
     staking_reward_card = page.get_by_test_id("active-rewards-card").nth(1)
     expect(staking_reward_card).to_be_visible()
