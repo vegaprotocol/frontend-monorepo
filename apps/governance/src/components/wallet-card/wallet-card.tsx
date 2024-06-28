@@ -11,10 +11,14 @@ import {
   CONSOLE_TRANSFER_ASSET,
   DApp,
   DocsLinks,
+  getExternalChainShortLabel,
   useLinks,
 } from '@vegaprotocol/environment';
 import { useNetworkParam } from '@vegaprotocol/network-parameters';
 import { formatNumberPercentage } from '@vegaprotocol/utils';
+import noIcon from '../../images/token-no-icon.png';
+import { EmblemByAsset } from '@vegaprotocol/emblem';
+import { useWallet } from '@vegaprotocol/wallet-react';
 
 interface WalletCardProps {
   children: React.ReactNode;
@@ -112,6 +116,7 @@ export type WalletCardAssetProps = {
   balance: BigNumber;
   decimals: number;
   assetId?: string;
+  chainId?: string;
   border?: boolean;
   subheading?: string;
   type?: Schema.AccountType;
@@ -131,6 +136,7 @@ export const WalletCardAsset = ({
   symbol,
   decimals,
   assetId,
+  chainId,
   border,
   subheading,
   allowZeroBalance = false,
@@ -169,17 +175,30 @@ export const WalletCardAsset = ({
         />
       ));
 
+  const vegaChainId = useWallet((store) => store.chainId);
   if (!values || values.length === 0) return;
+
+  let img = (
+    <img
+      alt="Vega"
+      src={image}
+      className={`inline-block w-6 h-6 mt-2 rounded-full border ${
+        border ? 'border-white' : 'border-black'
+      }`}
+    />
+  );
+
+  if (image === noIcon && assetId) {
+    img = (
+      <div className="w-6 h-6">
+        <EmblemByAsset asset={assetId} vegaChain={vegaChainId} />
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-nowrap gap-2 mt-2 mb-4">
-      <img
-        alt="Vega"
-        src={image}
-        className={`inline-block w-6 h-6 mt-2 rounded-full border ${
-          border ? 'border-white' : 'border-black'
-        }`}
-      />
+      {img}
       <div>
         <div
           className="flex align-center items-baseline text-base gap-2"
@@ -187,7 +206,12 @@ export const WalletCardAsset = ({
         >
           <div className="mb-0 uppercase">{name}</div>
           <div className="mb-0 uppercase text-neutral-400">
-            {subheading || symbol}
+            {subheading || symbol}{' '}
+            {chainId && (
+              <span className="text-xs">
+                {getExternalChainShortLabel(chainId)}
+              </span>
+            )}
           </div>
         </div>
         {values}

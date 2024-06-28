@@ -35,6 +35,7 @@ query Delegations($partyId: ID!, $delegationsPagination: Pagination) {
               __typename
               ... on ERC20 {
                 contractAddress
+                chainId
               }
             }
           }
