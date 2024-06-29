@@ -42,7 +42,7 @@ export const SideSelector = ({
   return (
     <RadioGroup.Root
       name="order-side"
-      className="relative mb-4 flex h-10 leading-10 bg-vega-clight-700 dark:bg-vega-cdark-700 rounded"
+      className="relative flex h-10 leading-10 bg-vega-clight-700 dark:bg-vega-cdark-700 rounded"
       {...props}
     >
       <span

@@ -28,7 +28,6 @@ import {
   TradingInputError as InputError,
   TradingSelect as Select,
   Tooltip,
-  TradingButton as Button,
   Pill,
   Intent,
   Notification,
@@ -75,6 +74,7 @@ import { isNonPersistentOrder } from '../../utils/time-in-force-persistence';
 import { useAccountBalance } from '@vegaprotocol/accounts';
 import { ZeroBalanceError } from '../deal-ticket-validation/zero-balance-error';
 import { MarginWarning } from '../deal-ticket-validation';
+import { SubmitButton } from './submit-button';
 
 export interface StopOrderProps {
   market: Market;
@@ -1001,7 +1001,7 @@ const formatTrigger = (
         })
   }`;
 
-const SubmitButton = ({
+const PlaceOrderButton = ({
   assetUnit,
   market,
   oco,
@@ -1151,21 +1151,17 @@ const SubmitButton = ({
     </>
   );
   return (
-    <Button
-      intent={side === Schema.Side.SIDE_BUY ? Intent.Success : Intent.Danger}
-      data-testid="place-order"
-      type="submit"
-      className="w-full"
-      subLabel={subLabel}
-    >
-      {t(
+    <SubmitButton
+      text={t(
         oco
           ? 'Place OCO stop order'
           : type === Schema.OrderType.TYPE_MARKET
           ? 'Place market stop order'
           : 'Place limit stop order'
       )}
-    </Button>
+      subLabel={subLabel}
+      side={side}
+    />
   );
 };
 
@@ -1403,31 +1399,35 @@ export const StopOrder = ({
       onSubmit={isReadOnly || !pubKey ? stopSubmit : handleSubmit(onSubmit)}
       noValidate
     >
-      <Controller
-        name="side"
-        control={control}
-        render={({ field }) => (
-          <SideSelector
-            value={field.value}
-            onValueChange={field.onChange}
-            isSpotMarket={isSpotMarket}
-          />
-        )}
-      />
-      <TypeToggle
-        value={dealTicketType}
-        onValueChange={(dealTicketType) => {
-          setType(market.id, dealTicketType);
-          if (isStopOrderType(dealTicketType)) {
-            reset(
-              getDefaultValues(
-                dealTicketTypeToOrderType(dealTicketType),
-                storedFormValues?.[dealTicketType]
-              )
-            );
-          }
-        }}
-      />
+      <FormGroup label={t('Order side')} labelFor="side" hideLabel>
+        <Controller
+          name="side"
+          control={control}
+          render={({ field }) => (
+            <SideSelector
+              value={field.value}
+              onValueChange={field.onChange}
+              isSpotMarket={isSpotMarket}
+            />
+          )}
+        />
+      </FormGroup>
+      <FormGroup label={t('Order type')} labelFor="type" hideLabel>
+        <TypeToggle
+          value={dealTicketType}
+          onValueChange={(dealTicketType) => {
+            setType(market.id, dealTicketType);
+            if (isStopOrderType(dealTicketType)) {
+              reset(
+                getDefaultValues(
+                  dealTicketTypeToOrderType(dealTicketType),
+                  storedFormValues?.[dealTicketType]
+                )
+              );
+            }
+          }}
+        />
+      </FormGroup>
       {errors.type && (
         <InputError testId="stop-order-error-message-type">
           {errors.type.message}
@@ -1760,7 +1760,7 @@ export const StopOrder = ({
           marketId={market.id}
         />
       )}
-      <SubmitButton
+      <PlaceOrderButton
         assetUnit={assetUnit}
         market={market}
         oco={oco}

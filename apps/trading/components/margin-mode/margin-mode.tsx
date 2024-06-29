@@ -17,7 +17,6 @@ export const MarginModeToggle = () => {
 
   const [dialog, setDialog] = useState<MarginMode>();
   const { pubKey: partyId } = useVegaWallet();
-
   const { data: market } = useMarket(params.marketId);
   const { data: margin } = useMarginMode({
     partyId,
@@ -30,10 +29,14 @@ export const MarginModeToggle = () => {
   if (isSpot(market.tradableInstrument.instrument.product)) return null;
 
   const marginMode = margin?.marginMode || MarginMode.MARGIN_MODE_CROSS_MARGIN;
+
+  // Margin factor can be 0, we need to check for this to
+  // avoid dividing by 0
   const marginFactor =
     margin?.marginFactor && margin?.marginFactor !== '0'
-      ? margin?.marginFactor
+      ? margin.marginFactor
       : undefined;
+
   const onClose = () => setDialog(undefined);
 
   return (
@@ -77,7 +80,6 @@ const Toggle = ({
   const indicator = (
     <span className="absolute -top-px right-0 -bottom-px left-0 bg-vega-clight-500 dark:bg-vega-cdark-500 rounded" />
   );
-  const leverage = factor ? (1 / Number(factor)).toFixed(1) : DEFAULT_LEVERAGE;
 
   return (
     <ToggleGroup.Root
@@ -103,14 +105,26 @@ const Toggle = ({
         {mode === MarginMode.MARGIN_MODE_ISOLATED_MARGIN ? (
           <span className="relative flex items-center gap-1">
             {t('Isolated')}
-            <span className="py-px px-1 rounded text-2xs bg-vega-green-700 text-vega-green">
-              {leverage}x
-            </span>
+            <Leverage factor={factor} />
           </span>
         ) : (
           <span className="relative">{t('Isolated')}</span>
         )}
       </ToggleGroup.Item>
     </ToggleGroup.Root>
+  );
+};
+
+const Leverage = ({ factor }: { factor: string | undefined }) => {
+  let leverage = DEFAULT_LEVERAGE.toString();
+
+  if (factor && factor !== '0') {
+    leverage = (1 / Number(factor)).toFixed(1);
+  }
+
+  return (
+    <span className="py-px px-1 rounded text-2xs bg-vega-green-700 text-vega-green">
+      {leverage}x
+    </span>
   );
 };
