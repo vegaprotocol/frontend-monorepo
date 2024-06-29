@@ -56,6 +56,7 @@ import { ZeroBalanceError } from '../deal-ticket-validation/zero-balance-error';
 import { NotEnoughError } from '../deal-ticket-validation/not-enough-error';
 import {
   NOTIONAL_SIZE_TOOLTIP_TEXT,
+  REDUCE_ONLY_TOOLTIP,
   SummaryValidationType,
 } from '../../constants';
 import type {
@@ -98,9 +99,6 @@ import {
   getAssetSymbol,
 } from '@vegaprotocol/assets';
 import { SubmitButton } from './submit-button';
-
-export const REDUCE_ONLY_TOOLTIP =
-  '"Reduce only" will ensure that this order will not increase the size of an open position. When the order is matched, it will only trade enough volume to bring your open volume towards 0 but never change the direction of your position. If applied to a limit order that is not instantly filled, the order will be stopped.';
 
 export interface DealTicketProps {
   scalingFactors?: NonNullable<
