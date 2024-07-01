@@ -1024,7 +1024,7 @@ export const DealTicket = ({
         baseAsset={baseAsset}
         quoteAsset={quoteAsset}
       />
-      <div className="my-2 flex w-full flex-col gap-1.5">
+      <div className="mt-2 mb-1 flex w-full flex-col gap-1">
         {useNotional ? (
           <KeyValue
             label={t('Size')}

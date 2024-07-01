@@ -104,7 +104,7 @@ export const DealTicketMarginDetails = ({
   const quoteName = getQuoteName(market);
 
   return (
-    <div className="flex flex-col w-full gap-2 mt-2">
+    <div className="flex flex-col w-full gap-1 mt-1">
       <SlippageAndTradeInfo slippage={slippage} market={market} />
       {productType !== 'Spot' && (
         <KeyValue
