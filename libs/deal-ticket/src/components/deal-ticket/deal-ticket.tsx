@@ -588,7 +588,7 @@ export const DealTicket = ({
       noValidate
       data-testid="deal-ticket-form"
     >
-      <FormGroup label={t('Order side')} labelFor="side" hideLabel>
+      <FormGroup label={t('Order side')} labelFor="side" hideLabel compact>
         <Controller
           name="side"
           control={control}
@@ -666,7 +666,7 @@ export const DealTicket = ({
           />
         </FormGroup>
       )}
-      <div className={isLimitType ? 'mb-4' : 'mb-2'}>
+      <div className="mb-4">
         {useNotional && (
           <Controller
             key="notional"
