@@ -110,7 +110,7 @@ export const TimeInForceSelector = ({
       >
         {options.map(([key, value]) => (
           <MiniSelectOption key={key} value={value}>
-            {Schema.OrderTimeInForceCode[value]}
+            {Schema.OrderTimeInForceMapping[value]}{' '}
           </MiniSelectOption>
         ))}
       </MiniSelect>
