@@ -967,11 +967,13 @@ export const DealTicket = ({
               ),
             }}
             render={({ field }) => (
-              <ExpirySelector
-                value={field.value}
-                onSelect={(expiresAt) => field.onChange(expiresAt)}
-                errorMessage={errors.expiresAt?.message}
-              />
+              <FormGroup label={t('Expiry time/date')} labelFor="expiresAt">
+                <ExpirySelector
+                  value={field.value}
+                  onSelect={(expiresAt) => field.onChange(expiresAt)}
+                  errorMessage={errors.expiresAt?.message}
+                />
+              </FormGroup>
             )}
           />
         )}
