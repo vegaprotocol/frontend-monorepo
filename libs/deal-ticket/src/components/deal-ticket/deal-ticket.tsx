@@ -697,7 +697,7 @@ export const DealTicket = ({
                           ) : (
                             quoteAsset.symbol
                           )}{' '}
-                          <VegaIcon name={VegaIconNames.TRANSFER} size={16} />
+                          <VegaIcon name={VegaIconNames.TRANSFER} size={14} />
                         </Pill>
                       </button>
                     )
@@ -754,7 +754,7 @@ export const DealTicket = ({
                             ) : (
                               baseQuote
                             )}{' '}
-                            <VegaIcon name={VegaIconNames.TRANSFER} size={16} />
+                            <VegaIcon name={VegaIconNames.TRANSFER} size={14} />
                           </Pill>
                         </button>
                       )
