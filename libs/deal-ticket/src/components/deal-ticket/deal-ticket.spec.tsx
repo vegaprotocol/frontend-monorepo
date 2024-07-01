@@ -884,11 +884,10 @@ describe('DealTicket', () => {
       )
     ).toHaveLength(Object.keys(Schema.OrderTimeInForce).length);
 
-    // TODO: fix the below
     // expect GTC as LIMIT default
-    // expect(screen.getByTestId('order-tif').nextSibling).toHaveValue(
-    //   Schema.OrderTimeInForce.TIME_IN_FORCE_GTC
-    // );
+    expect(screen.getByTestId('order-tif').nextSibling).toHaveValue(
+      Schema.OrderTimeInForce.TIME_IN_FORCE_GTC
+    );
 
     // Select GTT -> GTT should be selected
     await selectTIF(/GTT/);
@@ -910,10 +909,9 @@ describe('DealTicket', () => {
 
     // Switch back type limit order -> GTT should be preserved
     await user.click(screen.getByTestId('order-type-Limit'));
-    // TODO: fix this
-    // expect(screen.getByTestId('order-tif').nextSibling).toHaveValue(
-    //   Schema.OrderTimeInForce.TIME_IN_FORCE_GTT
-    // );
+    expect(screen.getByTestId('order-tif').nextSibling).toHaveValue(
+      Schema.OrderTimeInForce.TIME_IN_FORCE_GTT
+    );
 
     // Select GFN -> GFN should be selected
     await selectTIF(/GFN/);
@@ -921,12 +919,11 @@ describe('DealTicket', () => {
       Schema.OrderTimeInForce.TIME_IN_FORCE_GFN
     );
 
-    // TODO: fix this
     // Switch to type market order -> IOC should be preserved
-    // await user.click(screen.getByTestId('order-type-Market'));
-    // expect(screen.getByTestId('order-tif')).toHaveValue(
-    //   Schema.OrderTimeInForce.TIME_IN_FORCE_IOC
-    // );
+    await user.click(screen.getByTestId('order-type-Market'));
+    expect(screen.getByTestId('order-tif').nextSibling).toHaveValue(
+      Schema.OrderTimeInForce.TIME_IN_FORCE_IOC
+    );
   });
 
   it('can edit deal ticket', async () => {
@@ -1055,7 +1052,6 @@ describe('DealTicket', () => {
     expect(screen.queryByTestId(sizeErrorMessage)).toBeNull();
   });
 
-  // TODO: this test reports an input going from controlled to uncontrolled needs fixing
   it('validates iceberg field', async () => {
     const user = userEvent.setup();
     const peakSizeErrorMessage = 'deal-ticket-peak-error-message';

@@ -452,9 +452,9 @@ export const DealTicket = ({
   ]);
 
   const nonPersistentOrder = isNonPersistentOrder(timeInForce);
-  const enablePostOnly = isLimitType && !nonPersistentOrder;
-  const enableReduceOnly = !isSpotMarket && nonPersistentOrder;
-  const enableIceberg = isLimitType && !nonPersistentOrder;
+  const enablePostOnly = !nonPersistentOrder;
+  const enableReduceOnly = nonPersistentOrder;
+  const enableIceberg = !nonPersistentOrder;
   const featureFlags = useFeatureFlags((state) => state.flags);
   const sizeStep = determineSizeStep(market);
   const notionalPrice = !price || price === '0' ? marketPrice : price;

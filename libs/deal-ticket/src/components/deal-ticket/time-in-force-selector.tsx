@@ -103,6 +103,7 @@ export const TimeInForceSelector = ({
         placeholder="Select"
         value={value}
         onValueChange={(value) => {
+          if (!value) return;
           onSelect(value as Schema.OrderTimeInForce);
         }}
         id="select-time-in-force"
