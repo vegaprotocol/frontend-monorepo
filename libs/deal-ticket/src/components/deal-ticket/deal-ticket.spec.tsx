@@ -148,6 +148,7 @@ describe('DealTicket', () => {
       within(screen.getByTestId('mini-select-content')).getByText(value)
     );
   };
+
   const marketDepthMock: MockedResponse<
     MarketDepthQuery,
     MarketDepthQueryVariables

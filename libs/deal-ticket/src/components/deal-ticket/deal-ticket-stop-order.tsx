@@ -154,6 +154,9 @@ const Trigger = ({
                 value={value}
                 onValueChange={onChange}
                 placeholder={t('Select')}
+                data-testid={
+                  oco ? 'trigger-direction-oco' : 'trigger-direction'
+                }
               >
                 <MiniSelectOption
                   value={
@@ -199,6 +202,7 @@ const Trigger = ({
                 value={value}
                 onValueChange={onChange}
                 placeholder={t('Select')}
+                data-testid={oco ? 'trigger-type-oco' : 'trigger-type'}
               >
                 <MiniSelectOption
                   value="price"
@@ -591,6 +595,7 @@ const SizeOverrideSetting = ({
             value={value}
             onValueChange={onChange}
             placeholder={t('Select')}
+            data-testid={oco ? 'size-override-oco' : 'size-override'}
           >
             <MiniSelectOption
               value={
@@ -609,30 +614,6 @@ const SizeOverrideSetting = ({
             </MiniSelectOption>
           </MiniSelect>
         );
-        // return (
-        //   <RadioGroup
-        //     onChange={onChange}
-        //     value={value}
-        //     orientation="horizontal"
-        //     className="mb-2"
-        //   >
-        //     <Radio
-        //       value={
-        //         Schema.StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_NONE
-        //       }
-        //       id={`sizeOverrideSetting-none${oco ? '-oco' : ''}`}
-        //       label={t('Amount')}
-        //     />
-        //     <Radio
-        //       value={
-        //         Schema.StopOrderSizeOverrideSetting
-        //           .SIZE_OVERRIDE_SETTING_POSITION
-        //       }
-        //       id={`sizeOverrideSetting-position${oco ? '-oco' : ''}`}
-        //       label={t('Percentage')}
-        //     />
-        //   </RadioGroup>
-        // );
       }}
     />
   );
@@ -1587,12 +1568,12 @@ export const StopOrder = ({
         timeInForce={timeInForce}
       />
       {expire && (
-        <>
-          {!oco && (
-            <div className="flex justify-between items-center gap-2 mb-2">
-              <label htmlFor="expiresAt" className="text-muted text-xs">
-                {t('Stop expiry time/date')}
-              </label>
+        <div>
+          <div className="flex justify-between items-center gap-2 mb-2">
+            <label htmlFor="expiresAt" className="text-muted text-xs">
+              {t('Stop expiry time/date')}
+            </label>
+            {!oco && (
               <Controller
                 name="expiryStrategy"
                 control={control}
@@ -1608,6 +1589,7 @@ export const StopOrder = ({
                           ? Schema.StopOrderExpirtyStrategyMapping[value]
                           : t('Strategy')
                       }
+                      data-testid="stop-expiry-strategy"
                     >
                       <MiniSelectOption
                         disabled={oco}
@@ -1630,9 +1612,8 @@ export const StopOrder = ({
                   );
                 }}
               />
-            </div>
-          )}
-
+            )}
+          </div>
           <div className="mb-4">
             <Controller
               name="expiresAt"
@@ -1657,7 +1638,7 @@ export const StopOrder = ({
               }}
             />
           </div>
-        </>
+        </div>
       )}
       {oco && (
         <>
@@ -1682,6 +1663,7 @@ export const StopOrder = ({
                     placeholder={t('Select')}
                     value={value}
                     onValueChange={onChange}
+                    data-testid="oco-type"
                   >
                     <MiniSelectOption
                       id="ocoTypeMarket"
