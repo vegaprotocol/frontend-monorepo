@@ -109,21 +109,27 @@ export type MiniSelectProps = React.ComponentProps<
   hasError?: boolean;
   id?: string;
   'data-testid'?: string;
+  trigger?: string;
 };
 
-export const MiniSelect = forwardRef<
-  React.ElementRef<typeof SelectPrimitive.Trigger>,
-  MiniSelectProps
->(({ id, children, placeholder, hasError, ...props }, forwardedRef) => {
+export const MiniSelect = ({
+  id,
+  children,
+  placeholder,
+  hasError,
+  trigger,
+  ...props
+}: MiniSelectProps) => {
   return (
     <SelectPrimitive.Root {...props} defaultOpen={false}>
       <SelectPrimitive.Trigger
         data-testid={props['data-testid'] || 'rich-select-trigger'}
         id={id}
-        ref={forwardedRef}
         className="inline-flex items-center gap-1.5 leading-3 text-xs"
       >
-        <SelectPrimitive.Value placeholder={placeholder} />
+        <SelectPrimitive.Value placeholder={placeholder}>
+          {trigger}
+        </SelectPrimitive.Value>
         <SelectPrimitive.Icon className="text-muted">
           <VegaIcon name={VegaIconNames.CHEVRON_DOWN} size={14} />
         </SelectPrimitive.Icon>
@@ -146,7 +152,7 @@ export const MiniSelect = forwardRef<
       </SelectPrimitive.Portal>
     </SelectPrimitive.Root>
   );
-});
+};
 
 export const MiniSelectOption = forwardRef<
   React.ElementRef<typeof SelectPrimitive.Item>,

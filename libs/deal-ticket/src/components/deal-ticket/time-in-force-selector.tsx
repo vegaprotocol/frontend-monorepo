@@ -107,6 +107,7 @@ export const TimeInForceSelector = ({
         }}
         id="select-time-in-force"
         data-testid="order-tif"
+        trigger={Schema.OrderTimeInForceCode[value]}
       >
         {options.map(([key, value]) => (
           <MiniSelectOption key={key} value={value}>
