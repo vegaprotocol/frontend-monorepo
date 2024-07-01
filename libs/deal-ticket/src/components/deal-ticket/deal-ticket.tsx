@@ -151,6 +151,8 @@ const getDefaultValues = (
   expiresAt: undefined,
   postOnly: false,
   reduceOnly: false,
+  peakSize: '',
+  minimumVisibleSize: '',
   ...storedValues,
 });
 

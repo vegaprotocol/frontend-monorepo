@@ -140,6 +140,7 @@ export const MiniSelect = ({
           position="popper"
           align="start"
           side="bottom"
+          data-testid="mini-select-content"
         >
           <SelectPrimitive.ScrollUpButton className="flex items-center justify-center w-full h-6 py-1 bg-gradient-to-t from-transparent to-neutral-50 dark:to-neutral-900">
             <VegaIcon name={VegaIconNames.CHEVRON_UP} />
