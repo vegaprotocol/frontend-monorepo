@@ -34,7 +34,7 @@ body,
 }
 
 .text-muted {
-  @apply text-vega-clight-200 dark:text-vega-cdark-200;
+  @apply text-vega-clight-100 dark:text-vega-cdark-100;
 }
 
 .border-default {
