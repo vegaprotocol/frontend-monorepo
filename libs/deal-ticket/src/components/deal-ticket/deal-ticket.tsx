@@ -787,7 +787,7 @@ export const DealTicket = ({
         />
       </div>
       <div className="flex gap-2 mb-4">
-        <div className="flex-1 flex flex-col items-start gap-1">
+        <div className="flex-1 flex flex-col items-start gap-1.5">
           {featureFlags.TAKE_PROFIT_STOP_LOSS && (
             <Controller
               name="tpSl"
@@ -797,6 +797,7 @@ export const DealTicket = ({
                   description={
                     <p>{t('TP_SL_TOOLTIP', 'Take profit / Stop loss')}</p>
                   }
+                  underline
                 >
                   <div>
                     <Checkbox
@@ -829,6 +830,7 @@ export const DealTicket = ({
                       </ExternalLink>
                     </>
                   }
+                  underline
                 >
                   <div>
                     <Checkbox
@@ -859,6 +861,7 @@ export const DealTicket = ({
                       </ExternalLink>
                     </>
                   }
+                  underline
                 >
                   <div>
                     <Checkbox
@@ -892,6 +895,7 @@ export const DealTicket = ({
                       </ExternalLink>{' '}
                     </p>
                   }
+                  underline
                 >
                   <div>
                     <Checkbox

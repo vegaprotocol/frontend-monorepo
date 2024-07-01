@@ -97,7 +97,7 @@ export const TimeInForceSelector = ({
   };
 
   return (
-    <div className="flex items-center gap-1 justify-end text-xs">
+    <div className="flex items-center gap-2 justify-end text-xs">
       <label className="text-secondary">{t('TIF')}</label>
       <MiniSelect
         placeholder="Select"
