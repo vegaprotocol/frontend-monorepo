@@ -157,6 +157,11 @@ export const NetworkTransfersTable = () => {
                   const isIncoming =
                     a?.toAccountType ===
                     AccountType.ACCOUNT_TYPE_NETWORK_TREASURY;
+                  const deliverOn =
+                    a?.kind.__typename === 'OneOffTransfer' ||
+                    a?.kind.__typename === 'OneOffGovernanceTransfer'
+                      ? a.kind.deliverOn
+                      : undefined;
                   return (
                     <tr key={a?.id}>
                       {a && a.amount && a.asset && (
@@ -235,7 +240,10 @@ export const NetworkTransfersTable = () => {
                         }`}
                       >
                         {a && a.status && (
-                          <TransferStatusIcon status={a.status} />
+                          <TransferStatusIcon
+                            status={a.status}
+                            deliverOn={deliverOn}
+                          />
                         )}
                       </td>
                       <td
