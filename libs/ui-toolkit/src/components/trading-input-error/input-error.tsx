@@ -18,7 +18,7 @@ export const TradingInputError = ({
 }: TradingInputErrorProps) => {
   const effectiveClassName = classNames(
     'text-xs flex items-center first-letter:uppercase',
-    'mt-2',
+    'mt-1',
     {
       'border-danger': intent === 'danger',
       'border-warning': intent === 'warning',

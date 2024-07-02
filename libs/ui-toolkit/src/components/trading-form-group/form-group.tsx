@@ -32,7 +32,7 @@ export const TradingFormGroup = ({
     },
     className
   );
-  const labelClasses = classNames('block mb-2 text-xs', {
+  const labelClasses = classNames('block mb-1 text-xs text-secondary', {
     'text-right': labelAlign === 'right',
     'sr-only': hideLabel,
     'text-muted': disabled,

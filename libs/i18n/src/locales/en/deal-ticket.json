@@ -1,7 +1,5 @@
 {
-  "\"Post only\" can not be used on \"Fill or Kill\" or \"Immediate or Cancel\" orders.": "\"Post only\" can not be used on \"Fill or Kill\" or \"Immediate or Cancel\" orders.",
   "\"Post only\" will ensure the order is not filled immediately but is placed on the order book as a passive order. When the order is processed it is either stopped (if it would not be filled immediately), or placed in the order book as a passive order until the price taker matches with it.": "\"Post only\" will ensure the order is not filled immediately but is placed on the order book as a passive order. When the order is processed it is either stopped (if it would not be filled immediately), or placed in the order book as a passive order until the price taker matches with it.",
-  "\"Reduce only\" can be used only with non-persistent orders, such as \"Fill or Kill\" or \"Immediate or Cancel\".": "\"Reduce only\" can be used only with non-persistent orders, such as \"Fill or Kill\" or \"Immediate or Cancel\".",
   "\"Reduce only\" will ensure that this order will not increase the size of an open position. When the order is matched, it will only trade enough volume to bring your open volume towards 0 but never change the direction of your position. If applied to a limit order that is not instantly filled, the order will be stopped.": "\"Reduce only\" will ensure that this order will not increase the size of an open position. When the order is matched, it will only trade enough volume to bring your open volume towards 0 but never change the direction of your position. If applied to a limit order that is not instantly filled, the order will be stopped.",
   "{{amount}} {{assetSymbol}} is currently required": "{{amount}} {{assetSymbol}} is currently required",
   "{{triggerTrailingPercentOffset}}% trailing": "{{triggerTrailingPercentOffset}}% trailing",
@@ -103,6 +101,7 @@
   "Amount that will trade at the average weighted price": "Amount that will trade at the average weighted price",
   "Stagnet": "Stagnet",
   "Stop": "Stop",
+  "Stop expiry time/date": "Stop expiry time/date",
   "Stop Limit": "Stop Limit",
   "Stop loss": "Stop loss",
   "Stop Market": "Stop Market",
@@ -146,6 +145,7 @@
   "Take profit": "Take profit",
   "The price for take profit.": "The price for take profit.",
   "The price for stop loss.": "The price for stop loss.",
+  "Trailing percent": "Trailing percent",
   "Trailing percent offset cannot be higher than 99.9": "Trailing percent offset cannot be higher than 99.9",
   "Trailing percent offset cannot be lower than {{trailingPercentOffsetStep}}": "Trailing percent offset cannot be lower than {{trailingPercentOffsetStep}}",
   "Trailing percentage offset": "Trailing percentage offset",

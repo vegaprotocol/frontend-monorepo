@@ -128,7 +128,7 @@ def test_limit_order_trade_open_position(continuous_market, page: Page):
         position["leverage"]
     )
 
-    # need to ne check why it is not visible
+    # TODO:  need to ne check why it is not visible
     # liquidation = table.locator("[col-id='liquidationPrice']")
     # expect(liquidation.get_by_test_id("liquidation-price")).to_have_text(
     #     position["liquidation"]
