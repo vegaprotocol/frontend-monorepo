@@ -1,19 +1,9 @@
-import { useMarketOracle } from '@vegaprotocol/markets';
-
-export const OracleBranding = ({ marketId }: { marketId: string }) => {
-  const { data } = useMarketOracle(marketId, 'dataSourceSpecForSettlementData');
-
-  if (!data) return null;
-
-  const Logo = LogoRecord[data.provider.type];
+export const OracleBranding = ({ type }: { type: string }) => {
+  const Logo = LogoRecord[type];
 
   if (!Logo) return null;
 
-  return (
-    <a href={data.provider.url} target="_blank" rel="noreferrer">
-      <Logo />
-    </a>
-  );
+  return <Logo />;
 };
 
 const PythLogo = () => {
