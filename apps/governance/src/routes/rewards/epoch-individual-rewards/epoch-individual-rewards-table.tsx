@@ -5,6 +5,8 @@ import {
   RewardsTable,
 } from '../shared-rewards-table-assets/shared-rewards-table-assets';
 import type { EpochIndividualReward } from './generate-epoch-individual-rewards-list';
+import { useWallet } from '@vegaprotocol/wallet-react';
+import { EmblemByAsset } from '@vegaprotocol/emblem';
 
 interface EpochIndividualRewardsGridProps {
   data: EpochIndividualReward;
@@ -72,39 +74,46 @@ export const EpochIndividualRewardsTable = ({
   data,
   marketCreationQuantumMultiple,
 }: EpochIndividualRewardsGridProps) => {
+  const vegaChainId = useWallet((store) => store.chainId);
   return (
     <RewardsTable
       marketCreationQuantumMultiple={marketCreationQuantumMultiple}
       dataTestId="epoch-individual-rewards-table"
       epoch={Number(data.epoch)}
     >
-      {data.rewards.map(({ asset, rewardTypes, totalAmount, decimals }, i) => (
-        <div className="contents" key={i}>
-          <div
-            data-testid="individual-rewards-asset"
-            className={`${rowGridItemStyles()} p-5`}
-          >
-            {asset}
+      {data.rewards.map(
+        ({ assetId, asset, rewardTypes, totalAmount, decimals }, i) => (
+          <div className="contents" key={i}>
+            <div className={`${rowGridItemStyles()} p-5`}>
+              <div className="flex items-center gap-2">
+                {assetId && (
+                  <div className="w-6 h-6">
+                    <EmblemByAsset asset={assetId} vegaChain={vegaChainId} />
+                  </div>
+                )}
+                <span data-testid="individual-rewards-asset">{asset}</span>
+              </div>
+            </div>
+            {Object.entries(rewardTypes).map(
+              ([key, { amount, percentageOfTotal }]) => (
+                <RewardItem
+                  key={key}
+                  amount={amount}
+                  decimals={decimals}
+                  percentageOfTotal={percentageOfTotal}
+                  dataTestId={key}
+                />
+              )
+            )}
+            <RewardItem
+              dataTestId="total"
+              amount={totalAmount}
+              decimals={decimals}
+              last={true}
+            />
           </div>
-          {Object.entries(rewardTypes).map(
-            ([key, { amount, percentageOfTotal }]) => (
-              <RewardItem
-                key={key}
-                amount={amount}
-                decimals={decimals}
-                percentageOfTotal={percentageOfTotal}
-                dataTestId={key}
-              />
-            )
-          )}
-          <RewardItem
-            dataTestId="total"
-            amount={totalAmount}
-            decimals={decimals}
-            last={true}
-          />
-        </div>
-      ))}
+        )
+      )}
     </RewardsTable>
   );
 };

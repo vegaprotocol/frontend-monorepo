@@ -1,6 +1,8 @@
 import { render } from '@testing-library/react';
 import { AppStateProvider } from '../../../contexts/app-state/app-state-provider';
 import { EpochIndividualRewardsTable } from './epoch-individual-rewards-table';
+import { useWallet } from '@vegaprotocol/wallet-react';
+jest.mock('@vegaprotocol/wallet-react');
 
 const mockData = {
   epoch: 4441,
@@ -40,6 +42,11 @@ const mockData = {
 };
 
 describe('EpochIndividualRewardsTable', () => {
+  beforeAll(() => {
+    (useWallet as jest.Mock).mockReturnValue(() => () => ({
+      chainId: 'vega-chain-id',
+    }));
+  });
   it('should render correctly', () => {
     const { getByTestId } = render(
       <AppStateProvider>
