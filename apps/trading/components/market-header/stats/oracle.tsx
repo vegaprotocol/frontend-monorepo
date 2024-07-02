@@ -16,9 +16,9 @@ export const Oracle = ({ marketId }: { marketId: string }) => {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="underline underline-offset-4"
+        className="underline underline-offset-4 capitalize"
       >
-        {data.provider.type}
+        {data.provider.type.toLowerCase()}
       </button>
       <OracleDialog open={open} onChange={setOpen} {...data} />
     </HeaderStat>
