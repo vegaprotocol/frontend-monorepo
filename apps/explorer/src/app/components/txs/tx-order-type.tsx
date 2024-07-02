@@ -52,6 +52,11 @@ const displayString: StringMap = {
   'Stop Orders Cancellation': 'Cancel stop',
   'Apply Referral Code': 'Referral',
   'Create Referral Set': 'Create referral',
+  'Update Party Profile': 'Update profile',
+  'Submit AMM': 'AMM',
+  'Amend AMM': 'Amend AMM',
+  'Cancel AMM': 'Cancel AMM',
+  'Delayed Transaction Wrapper': 'Delayed',
 };
 
 export function getLabelForStopOrderType(
