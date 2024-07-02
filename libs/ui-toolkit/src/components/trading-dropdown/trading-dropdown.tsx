@@ -174,9 +174,12 @@ TradingDropdownSeparator.displayName = 'DropdownMenuSeparator';
  * Portal to ensure menu portions are rendered outwith where they appear in the
  * DOM.
  */
-export const TradingDropdownPortal = (
-  portalProps: ComponentProps<typeof DropdownMenuPrimitive.Portal>
-) => <DropdownMenuPrimitive.Portal {...portalProps} />;
+export const TradingDropdownPortal = forwardRef<
+  React.ElementRef<typeof DropdownMenuPrimitive.Portal>,
+  React.ComponentProps<typeof DropdownMenuPrimitive.Portal>
+>((portalProps: ComponentProps<typeof DropdownMenuPrimitive.Portal>) => (
+  <DropdownMenuPrimitive.Portal {...portalProps} />
+));
 
 /**
  * Wraps a regular DropdownMenuItem with copy to clip board functionality

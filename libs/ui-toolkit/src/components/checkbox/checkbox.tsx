@@ -1,7 +1,7 @@
 import { Icon } from '../icon';
 import * as CheckboxPrimitive from '@radix-ui/react-checkbox';
 import classNames from 'classnames';
-import type { ReactNode } from 'react';
+import { ElementRef, forwardRef, type ReactNode } from 'react';
 
 type CheckedState = boolean | 'indeterminate';
 export const labelClasses =
@@ -14,13 +14,10 @@ export interface CheckboxProps {
   disabled?: boolean;
 }
 
-export const Checkbox = ({
-  checked,
-  label,
-  name,
-  onCheckedChange,
-  disabled = false,
-}: CheckboxProps) => {
+export const Checkbox = forwardRef<
+  ElementRef<typeof CheckboxPrimitive.Root>,
+  CheckboxProps
+>(({ checked, label, name, onCheckedChange, disabled = false }, ref) => {
   const rootClasses = classNames(
     'relative flex justify-center items-center w-[15px] h-[15px] mt-1',
     'border rounded-sm overflow-hidden',
@@ -34,6 +31,7 @@ export const Checkbox = ({
   return (
     <label className={`flex gap-1 ${labelClasses}`} htmlFor={name}>
       <CheckboxPrimitive.Root
+        ref={ref}
         name={name}
         id={name}
         className={rootClasses}
@@ -66,4 +64,4 @@ export const Checkbox = ({
       </span>
     </label>
   );
-};
+});

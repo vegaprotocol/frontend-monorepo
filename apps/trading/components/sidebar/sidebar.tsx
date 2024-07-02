@@ -7,18 +7,14 @@ import {
   SidebarAccordionTrigger,
 } from './sidebar-accordion';
 import * as AccordionPrimitive from '@radix-ui/react-accordion';
-import { DealTicketContainer } from '@vegaprotocol/deal-ticket';
 import { MarketInfoAccordionContainer } from '@vegaprotocol/markets';
 import { useParams } from 'react-router-dom';
 import { ErrorBoundary } from '../error-boundary';
 import { NodeHealthContainer } from '../node-health';
 import { AssetCard } from '../asset-card';
 import { useT } from '../../lib/use-t';
-import {
-  SidebarAccountsContainer,
-  SidebarAccountsViewType,
-  useSidebarAccountsInnerView,
-} from '../accounts-container/sidebar-accounts-container';
+import { SidebarAccountsContainer } from '../accounts-container/sidebar-accounts-container';
+import { TicketContainer } from '../ticket-container';
 import classNames from 'classnames';
 import { MarginModeToggle } from '../margin-mode';
 
@@ -32,7 +28,6 @@ export const Sidebar = ({ pinnedAssets }: { pinnedAssets?: string[] }) => {
   const t = useT();
   const params = useParams();
   const { view, setView } = useSidebar();
-  const setInnerView = useSidebarAccountsInnerView((state) => state.setView);
 
   return (
     <div className="grid grid-rows-[1fr_min-content] h-full">
@@ -56,19 +51,9 @@ export const Sidebar = ({ pinnedAssets }: { pinnedAssets?: string[] }) => {
             <MarginModeToggle />
           </SidebarAccordionHeader>
           <SidebarAccordionContent>
-            <div className="p-2">
-              <ErrorBoundary feature="deal-ticket">
-                {params.marketId && (
-                  <DealTicketContainer
-                    marketId={params.marketId}
-                    onDeposit={(assetId) => {
-                      setView(ViewType.Assets);
-                      setInnerView([SidebarAccountsViewType.Deposit, assetId]);
-                    }}
-                  />
-                )}
-              </ErrorBoundary>
-            </div>
+            <ErrorBoundary feature="deal-ticket">
+              <TicketContainer />
+            </ErrorBoundary>
           </SidebarAccordionContent>
         </SidebarAccordionItem>
         <SidebarAccordionItem value={ViewType.Info}>
