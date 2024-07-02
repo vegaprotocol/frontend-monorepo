@@ -26,7 +26,7 @@ export const TimeInForce = (props: { control: Control<any> }) => {
       name="timeInForce"
       render={({ field }) => {
         return (
-          <div className="flex items-center gap-2 justify-end text-xs">
+          <div className="flex items-center gap-2 text-xs">
             <label className="text-secondary">{t('TIF')}</label>
             <MiniSelect
               placeholder="Select"

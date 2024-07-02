@@ -1,16 +1,16 @@
 import {
-  MarketFieldsFragment,
   getProductType,
-  useMarket,
+  useMarketInfo,
+  type MarketInfo,
 } from '@vegaprotocol/markets';
 import { useParams } from 'react-router-dom';
 import { TicketFuture } from './ticket-future';
 import { TicketPerp } from './ticket-perp';
-import { TicketSpot } from './ticket.spot';
+import { TicketSpot } from './ticket-spot';
 
 export const TicketContainer = () => {
   const params = useParams();
-  const { data: market } = useMarket(params.marketId);
+  const { data: market } = useMarketInfo(params.marketId);
 
   if (!market) return null;
 
@@ -21,18 +21,22 @@ export const TicketContainer = () => {
   );
 };
 
-const TicketSwitch = ({ market }: { market: MarketFieldsFragment }) => {
+const TicketSwitch = ({ market }: { market: MarketInfo }) => {
   const productType = getProductType(market);
+
+  const props = { market };
 
   switch (productType) {
     case 'Future': {
-      return <TicketFuture />;
+      // @ts-ignore set up props
+      return <TicketFuture {...props} />;
     }
     case 'Perpetual': {
-      return <TicketPerp />;
+      return <TicketPerp {...props} />;
     }
     case 'Spot': {
-      return <TicketSpot />;
+      // @ts-ignore set up props
+      return <TicketSpot {...props} />;
     }
     default: {
       throw new Error('invalid product type');

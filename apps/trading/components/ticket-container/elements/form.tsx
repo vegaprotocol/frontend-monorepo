@@ -1,4 +1,4 @@
-import { HTMLAttributes } from 'react';
+import { type HTMLAttributes } from 'react';
 
 export const Form = (props: HTMLAttributes<HTMLFormElement>) => {
   return <form {...props} className="flex flex-col gap-4" />;
@@ -9,5 +9,10 @@ export const FormGrid = (props: HTMLAttributes<HTMLDivElement>) => {
 };
 
 export const FormGridCol = (props: HTMLAttributes<HTMLDivElement>) => {
-  return <div {...props} className="flex flex-col gap-1" />;
+  return (
+    <div
+      {...props}
+      className="flex flex-col first:items-start last:items-end gap-1"
+    />
+  );
 };

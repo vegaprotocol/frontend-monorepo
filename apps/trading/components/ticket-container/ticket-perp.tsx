@@ -2,14 +2,29 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import * as Fields from './fields';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { OrderTimeInForce, OrderType, Side } from '@vegaprotocol/types';
+import {
+  type MarginMode,
+  OrderTimeInForce,
+  OrderType,
+  Side,
+} from '@vegaprotocol/types';
 import { Intent, TradingButton } from '@vegaprotocol/ui-toolkit';
-import { TicketType } from './types';
+import { type TicketType } from './types';
 import { TicketTypeSelect } from './ticket-type-select';
-import { TicketTypeSwitch } from './ticket-type-switch';
 import { Form, FormGrid, FormGridCol } from './elements/form';
 import { SizeSlider } from './size-slider';
 import { NON_PERSISTENT_TIF_OPTIONS } from './constants';
+import { type MarketInfo, getAsset } from '@vegaprotocol/markets';
+import {
+  useAccountBalance,
+  useMarginAccountBalance,
+  useMarginMode,
+} from '@vegaprotocol/accounts';
+import { useState } from 'react';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
+import { type AssetFieldsFragment } from '@vegaprotocol/assets';
+import { useVegaTransactionStore } from '@vegaprotocol/web3';
+import { removeDecimal } from '@vegaprotocol/utils';
 
 const numericalString = z.string().refine(
   (v) => {
@@ -109,24 +124,66 @@ const schemaLimit = z
     }
   });
 
-export const TicketPerp = () => {
-  return (
-    <TicketTypeSwitch
-      Market={FormMarket}
-      Limit={FormLimit}
-      StopMarket={FormStopMarket}
-      StopLimit={FormStopLimit}
-    />
-  );
+export const TicketPerp = ({ market }: { market: MarketInfo }) => {
+  const [ticketType, setTicketType] = useState<TicketType>('market');
+  const { pubKey } = useVegaWallet();
+  const asset = getAsset(market);
+  const marginAccount = useMarginAccountBalance(market.id);
+  const generalAccount = useAccountBalance(asset.id);
+  const marginMode = useMarginMode({ marketId: market.id, partyId: pubKey });
+
+  const props: FormProps = {
+    market,
+    onTypeChange: (value: TicketType) => setTicketType(value),
+    asset,
+    balances: {
+      margin: marginAccount.marginAccountBalance,
+      general: generalAccount.accountBalance,
+    },
+    margin: {
+      mode: marginMode.data?.marginMode,
+      factor: marginMode.data?.marginFactor,
+    },
+  };
+
+  switch (ticketType) {
+    case 'market': {
+      return <FormMarket {...props} />;
+    }
+
+    case 'limit': {
+      return <FormLimit {...props} />;
+    }
+
+    case 'stopMarket': {
+      // @ts-ignore add props here
+      return <FormStopMarket {...props} />;
+    }
+
+    case 'stopLimit': {
+      // @ts-ignore add props here
+      return <FormStopLimit {...props} />;
+    }
+
+    default: {
+      throw new Error('invalid order type');
+    }
+  }
 };
 
 export type FormFieldsMarket = z.infer<typeof schemaMarket>;
 
-const FormMarket = ({
-  onTypeChange,
-}: {
+type FormProps = {
+  market: MarketInfo;
+  asset: AssetFieldsFragment;
+  balances: { margin: string; general: string };
+  margin: { mode?: MarginMode; factor?: string };
   onTypeChange: (value: TicketType) => void;
-}) => {
+};
+
+const FormMarket = (props: FormProps) => {
+  const create = useVegaTransactionStore((state) => state.create);
+
   const form = useForm<FormFieldsMarket>({
     resolver: zodResolver(schemaMarket),
     defaultValues: {
@@ -145,13 +202,28 @@ const FormMarket = ({
     <FormProvider {...form}>
       <Form
         onSubmit={form.handleSubmit((fields) => {
-          console.log(fields);
+          create({
+            orderSubmission: {
+              marketId: props.market.id,
+              type: fields.type,
+              side: fields.side,
+              timeInForce: fields.timeInForce,
+              size: removeDecimal(
+                fields.size,
+                props.market.positionDecimalPlaces
+              ),
+            },
+          });
         })}
       >
         <Fields.Side control={form.control} />
-        <TicketTypeSelect type="market" onTypeChange={onTypeChange} />
+        <TicketTypeSelect type="market" onTypeChange={props.onTypeChange} />
         <Fields.Size control={form.control} />
-        <SizeSlider />
+        <SizeSlider
+          market={props.market}
+          asset={props.asset}
+          balances={props.balances}
+        />
         <FormGrid>
           <FormGridCol>
             <Fields.TpSl control={form.control} />
@@ -187,11 +259,7 @@ const FormMarket = ({
 
 export type FormFieldsLimit = z.infer<typeof schemaLimit>;
 
-const FormLimit = ({
-  onTypeChange,
-}: {
-  onTypeChange: (value: TicketType) => void;
-}) => {
+const FormLimit = (props: FormProps) => {
   const form = useForm<FormFieldsLimit>({
     resolver: zodResolver(schemaLimit),
     defaultValues: {
@@ -220,7 +288,7 @@ const FormLimit = ({
         })}
       >
         <Fields.Side control={form.control} />
-        <TicketTypeSelect type="limit" onTypeChange={onTypeChange} />
+        <TicketTypeSelect type="limit" onTypeChange={props.onTypeChange} />
         <Fields.Size control={form.control} />
         <Fields.Price control={form.control} />
         <FormGrid>
