@@ -16,9 +16,6 @@ interface TimeInForceSelectorProps {
   value: Schema.OrderTimeInForce;
   orderType: Schema.OrderType;
   onSelect: (tif: Schema.OrderTimeInForce) => void;
-  market: Market;
-  marketData: StaticMarketData;
-  errorMessage?: string;
 }
 
 const typeLimitOptions = Object.entries(Schema.OrderTimeInForce);
@@ -32,15 +29,51 @@ export const TimeInForceSelector = ({
   value,
   orderType,
   onSelect,
-  market,
-  marketData,
-  errorMessage,
 }: TimeInForceSelectorProps) => {
   const t = useT();
   const options =
     orderType === Schema.OrderType.TYPE_LIMIT
       ? typeLimitOptions
       : typeMarketOptions;
+
+  return (
+    <div className="flex items-center gap-2 justify-end text-xs">
+      <label className="text-secondary">{t('TIF')}</label>
+      <MiniSelect
+        placeholder="Select"
+        value={value}
+        onValueChange={(value) => {
+          if (!value) return;
+          onSelect(value as Schema.OrderTimeInForce);
+        }}
+        id="select-time-in-force"
+        data-testid="order-tif"
+        trigger={Schema.OrderTimeInForceCode[value]}
+      >
+        {options.map(([key, value]) => (
+          <MiniSelectOption key={key} value={value}>
+            {Schema.OrderTimeInForceMapping[value]}
+          </MiniSelectOption>
+        ))}
+      </MiniSelect>
+    </div>
+  );
+};
+
+export const TimeInForceError = ({
+  market,
+  marketData,
+  errorMessage,
+}: {
+  market: Market;
+  marketData: StaticMarketData;
+  errorMessage?: string;
+}) => {
+  const t = useT();
+
+  if (!errorMessage) {
+    return null;
+  }
 
   const renderError = (errorType: string) => {
     if (errorType === MarketModeValidationType.Auction) {
@@ -97,30 +130,8 @@ export const TimeInForceSelector = ({
   };
 
   return (
-    <div className="flex items-center gap-2 justify-end text-xs">
-      <label className="text-secondary">{t('TIF')}</label>
-      <MiniSelect
-        placeholder="Select"
-        value={value}
-        onValueChange={(value) => {
-          if (!value) return;
-          onSelect(value as Schema.OrderTimeInForce);
-        }}
-        id="select-time-in-force"
-        data-testid="order-tif"
-        trigger={Schema.OrderTimeInForceCode[value]}
-      >
-        {options.map(([key, value]) => (
-          <MiniSelectOption key={key} value={value}>
-            {Schema.OrderTimeInForceMapping[value]}
-          </MiniSelectOption>
-        ))}
-      </MiniSelect>
-      {errorMessage && (
-        <TradingInputError testId="deal-ticket-error-message-tif">
-          {renderError(errorMessage)}
-        </TradingInputError>
-      )}
-    </div>
+    <TradingInputError className="mb-2" testId="deal-ticket-error-message-tif">
+      {renderError(errorMessage)}
+    </TradingInputError>
   );
 };

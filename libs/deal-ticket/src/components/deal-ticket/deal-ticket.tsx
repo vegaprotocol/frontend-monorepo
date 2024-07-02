@@ -6,7 +6,10 @@ import { DealTicketFeeDetails } from './deal-ticket-fee-details';
 import { DealTicketMarginDetails } from './deal-ticket-margin-details';
 import { ExpirySelector } from './expiry-selector';
 import { SideSelector } from './side-selector';
-import { TimeInForceSelector } from './time-in-force-selector';
+import {
+  TimeInForceError,
+  TimeInForceSelector,
+} from './time-in-force-selector';
 import { TypeSelector } from './type-selector';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { type OrderSubmission, type Transaction } from '@vegaprotocol/wallet';
@@ -946,14 +949,17 @@ export const DealTicket = ({
                   }
                   field.onChange(value);
                 }}
-                market={market}
-                marketData={marketData}
-                errorMessage={errors.timeInForce?.message}
               />
             )}
           />
         </div>
       </div>
+
+      <TimeInForceError
+        market={market}
+        marketData={marketData}
+        errorMessage={errors.timeInForce?.message}
+      />
 
       {isLimitType &&
         timeInForce === Schema.OrderTimeInForce.TIME_IN_FORCE_GTT && (
