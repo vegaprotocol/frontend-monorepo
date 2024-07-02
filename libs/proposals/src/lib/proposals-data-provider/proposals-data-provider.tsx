@@ -24,8 +24,8 @@ export type ProposalFragments = Array<ProposalFragment>;
 
 const getData = (responseData: ProposalsListQuery | null) =>
   responseData?.proposalsConnection?.edges
-    ?.filter((edge) => Boolean(edge?.node))
-    .map((edge) => edge?.node as ProposalListFieldsFragment) || null;
+    ?.filter((edge) => Boolean(edge?.proposalNode))
+    .map((edge) => edge?.proposalNode as ProposalListFieldsFragment) || null;
 
 export const proposalsDataProvider = makeDataProvider<
   ProposalsListQuery,
