@@ -15,19 +15,37 @@ export const getMatchingOracleProvider = (
   providers: Provider[]
 ) => {
   return providers.find((provider) => {
-    let oracleSignature: string;
+    let oracleSignature = '';
+
     const oracle = provider.oracle;
+
     if ('public_key' in oracle && oracle.public_key) {
       oracleSignature = oracle.public_key;
     } else if ('eth_address' in oracle && oracle.eth_address) {
       oracleSignature = oracle.eth_address;
     }
 
+    if (!oracleSignature) {
+      return false;
+    }
+
+    // Market does not have
     if (
-      dataSourceSpec.sourceType.__typename === 'DataSourceDefinitionExternal' &&
-      dataSourceSpec.sourceType.sourceType &&
-      'signers' in dataSourceSpec.sourceType.sourceType
+      dataSourceSpec.sourceType.__typename !== 'DataSourceDefinitionExternal' ||
+      !dataSourceSpec.sourceType.sourceType
     ) {
+      return false;
+    }
+
+    // EthCallSpec, just match the sourceType address
+    if (
+      dataSourceSpec.sourceType.sourceType.__typename === 'EthCallSpec' &&
+      dataSourceSpec.sourceType.sourceType.address === oracleSignature
+    ) {
+      return true;
+    }
+
+    if ('signers' in dataSourceSpec.sourceType.sourceType) {
       return dataSourceSpec.sourceType.sourceType.signers?.some(
         (signer) =>
           (signer.signer.__typename === 'ETHAddress' &&
@@ -36,6 +54,7 @@ export const getMatchingOracleProvider = (
             signer.signer.key === oracleSignature)
       );
     }
+
     return false;
   });
 };
@@ -54,9 +73,12 @@ export const useMarketOracle = (
   loading?: boolean;
 } => {
   const { ORACLE_PROOFS_URL } = useEnvironment();
+
   const { data: market, loading: marketLoading } = useMarket(marketId);
+
   const { data: providers, loading: providersLoading } =
     useOracleProofs(ORACLE_PROOFS_URL);
+
   return useMemo(() => {
     if (marketLoading || providersLoading) {
       return { loading: true };

@@ -17,10 +17,16 @@ export const isFuture = (product: Product): product is FutureFragment =>
 export const isPerpetual = (product: Product): product is PerpetualFragment =>
   product.__typename === 'Perpetual';
 
-export const getDataSourceSpecForSettlementData = (product: Product) =>
-  isFuture(product) || isPerpetual(product)
-    ? product.dataSourceSpecForSettlementData
-    : undefined;
+export const getDataSourceSpecForSettlementData = (product: Product) => {
+  if (isFuture(product)) {
+    return product.dataSourceSpecForSettlementData;
+  }
+  if (isPerpetual(product)) {
+    return product.dataSourceSpecForSettlementData;
+  }
+
+  return undefined;
+};
 
 export const getDataSourceSpecForSettlementSchedule = (product: Product) =>
   isPerpetual(product)
