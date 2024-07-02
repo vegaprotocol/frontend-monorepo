@@ -4,6 +4,7 @@ from vega_sim.null_service import VegaServiceNull
 from actions.vega import submit_order
 from datetime import datetime, timedelta
 from actions.utils import wait_for_toast_confirmation
+from actions.ticket import select_mini
 
 stop_order_btn = "order-type-Stop"
 stop_limit_order_btn = "order-type-StopLimit"
@@ -112,12 +113,11 @@ def test_submit_stop_market_order_triggered(
     expires_at = datetime.now() + timedelta(days=1)
     expires_at_input_value = expires_at.strftime("%Y-%m-%dT%H:%M:%S")
     page.get_by_test_id("date-picker-field").fill(expires_at_input_value)
-    page.get_by_test_id(expiry_strategy_cancel).type(" ")
     page.get_by_test_id(submit_stop_order).click()
     wait_for_toast_confirmation(page)
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
-    expect(page.get_by_role("row").nth(4)).to_contain_text("Mark > 103.00Cancels")
+    expect(page.get_by_role("row").nth(4)).to_contain_text("Mark > 103.00")
     expect(page.get_by_role("row").nth(4)).to_contain_text("-1MarketTriggered-FOK")
 
 
@@ -138,11 +138,11 @@ def test_submit_stop_limit_order_pending(
     page.get_by_test_id(stop_limit_order_btn).is_visible()
     page.get_by_test_id(stop_limit_order_btn).click()
     page.get_by_test_id(order_side_sell).click()
-    page.get_by_test_id(trigger_below).type(" ")
+    select_mini(page, 'trigger-direction', 'Falls below')
     page.get_by_test_id(trigger_price).fill("102")
     page.get_by_test_id(order_price).fill("99")
     page.get_by_test_id(order_size).fill("1")
-    page.get_by_test_id("order-tif").select_option("TIME_IN_FORCE_IOC")
+    select_mini(page, order_tif,  "Immediate or Cancel (IOC)")
     page.get_by_test_id(expire).click()
     expires_at = datetime.now() + timedelta(days=1)
     expires_at_input_value = expires_at.strftime("%Y-%m-%dT%H:%M:%S")
@@ -160,6 +160,7 @@ def test_submit_stop_limit_order_cancel(
     continuous_market, vega: VegaServiceNull, page: Page
 ):
     page.goto(f"/#/markets/{continuous_market}")
+
     page.get_by_test_id(stop_orders_tab).click()
     # create a position because stop order is reduce only type
     create_position(vega, continuous_market)
@@ -168,7 +169,7 @@ def test_submit_stop_limit_order_cancel(
     page.get_by_test_id(stop_limit_order_btn).is_visible()
     page.get_by_test_id(stop_limit_order_btn).click()
     page.get_by_test_id(order_side_sell).click()
-    page.get_by_test_id(trigger_below).type(" ")
+    select_mini(page, 'trigger-direction', 'Falls below')
     page.get_by_test_id(trigger_price).fill("102")
     page.get_by_test_id(order_price).fill("99")
     page.get_by_test_id(order_size).fill("1")
