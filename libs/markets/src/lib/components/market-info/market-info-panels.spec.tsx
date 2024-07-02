@@ -70,6 +70,7 @@ describe('MarketInfoPanels', () => {
             url: 'https://zombo.com',
             description_markdown:
               'Some markdown describing the oracle provider.\n\nTwitter: @FacesPics2\n',
+            type: 'type',
             oracle: {
               status: 'GOOD' as const,
               status_reason: '',

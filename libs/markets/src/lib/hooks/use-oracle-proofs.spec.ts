@@ -10,6 +10,7 @@ const createOracleData = (): Provider[] => {
     {
       name: 'Another oracle',
       url: 'https://zombo.com',
+      type: 'type',
       description_markdown:
         'Some markdown describing the oracle provider.\n\nTwitter: @FacesPics2\n',
       oracle: {
