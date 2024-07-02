@@ -88,17 +88,18 @@ let apolloClient: ApolloClient<NormalizedCacheObject>;
 let cachedUrl: string | undefined;
 
 export const getApolloClient = (url?: string) => {
-  if (!apolloClient && !url) {
-    throw new Error('no cached client and no url to create new client');
+  if (apolloClient && url === cachedUrl) {
+    return apolloClient;
   }
 
-  if (!apolloClient && url && url !== cachedUrl) {
-    apolloClient = createClient({
-      url,
-      cacheConfig: cache,
-    });
-    cachedUrl = url;
+  if (!url) {
+    throw new Error('no url to create apollo client');
   }
+
+  apolloClient = createClient({
+    url,
+    cacheConfig: cache,
+  });
 
   return apolloClient;
 };
