@@ -83,6 +83,7 @@ describe('generateEpochIndividualRewardsList', () => {
       rewards: [
         {
           asset: 'USD',
+          assetId: 'usd',
           decimals: 6,
           totalAmount: '100',
           rewardTypes: {
@@ -137,6 +138,7 @@ describe('generateEpochIndividualRewardsList', () => {
         rewards: [
           {
             asset: 'EUR',
+            assetId: 'eur',
             totalAmount: '50',
             decimals: 5,
             rewardTypes: {
@@ -157,6 +159,7 @@ describe('generateEpochIndividualRewardsList', () => {
         rewards: [
           {
             asset: 'USD',
+            assetId: 'usd',
             totalAmount: '100',
             decimals: 6,
             rewardTypes: {
@@ -195,6 +198,7 @@ describe('generateEpochIndividualRewardsList', () => {
         rewards: [
           {
             asset: 'EUR',
+            assetId: 'eur',
             totalAmount: '50',
             decimals: 5,
             rewardTypes: {
@@ -226,6 +230,7 @@ describe('generateEpochIndividualRewardsList', () => {
         rewards: [
           {
             asset: 'USD',
+            assetId: 'usd',
             totalAmount: '100',
             decimals: 6,
             rewardTypes: {

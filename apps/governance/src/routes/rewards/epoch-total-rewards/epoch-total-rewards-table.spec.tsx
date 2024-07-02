@@ -7,6 +7,8 @@ import type {
   RewardItem,
 } from './generate-epoch-total-rewards-list';
 import { AccountType } from '@vegaprotocol/types';
+import { useWallet } from '@vegaprotocol/wallet-react';
+jest.mock('@vegaprotocol/wallet-react');
 
 const assetId =
   'b340c130096819428a62e5df407fd6abe66e444b89ad64f670beb98621c9c663';
@@ -63,6 +65,11 @@ const mockData = {
 };
 
 describe('EpochTotalRewardsTable', () => {
+  beforeAll(() => {
+    (useWallet as jest.Mock).mockReturnValue(() => () => ({
+      chainId: 'vega-chain-id',
+    }));
+  });
   it('should render correctly', () => {
     const { getByTestId } = render(
       <AppStateProvider>
