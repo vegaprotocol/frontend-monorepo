@@ -27,6 +27,7 @@ export const useOracleMarkets = (
         return false;
       }
       const signers =
+        sourceType?.sourceType !== undefined &&
         'signers' in sourceType.sourceType
           ? sourceType?.sourceType.signers
           : undefined;

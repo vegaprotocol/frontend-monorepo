@@ -40,6 +40,7 @@ export const MarketHeaderFuture = ({ market }: MarketHeaderFutureProps) => {
         asset={asset}
         data-testid="market-settlement-asset"
       />
+      <Stats.Oracle marketId={market.id} />
       <Stats.LiquidityStat
         marketId={market.id}
         assetDecimals={asset?.decimals || 0}

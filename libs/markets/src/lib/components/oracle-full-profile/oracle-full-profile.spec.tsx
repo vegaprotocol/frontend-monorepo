@@ -6,6 +6,7 @@ describe('OracleFullProfile', () => {
   const testProvider = {
     name: 'Test oracle',
     url: 'https://zombo.com',
+    type: 'type',
     description_markdown:
       'Some markdown describing the oracle provider.\n\nTwitter: @FacesPics2\n',
     oracle: {
@@ -31,11 +32,7 @@ describe('OracleFullProfile', () => {
 
   it('should render successfully', () => {
     const component = (
-      <OracleFullProfile
-        provider={testProvider}
-        dataSourceSpecId={''}
-        markets={[]}
-      />
+      <OracleFullProfile provider={testProvider} dataSourceSpecId={''} />
     );
     expect(component).toBeTruthy();
   });
@@ -45,7 +42,6 @@ describe('OracleFullProfile', () => {
       <OracleFullProfile
         provider={testProvider}
         dataSourceSpecId={'oracle-id'}
-        markets={[]}
       />
     );
     expect(screen.getByTestId('github-link')).toHaveTextContent(

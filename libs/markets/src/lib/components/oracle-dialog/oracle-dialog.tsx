@@ -3,7 +3,6 @@ import {
   OracleProfileTitle,
   OracleFullProfile,
 } from '../../components/oracle-full-profile';
-import { useOracleMarkets } from '../../hooks';
 import type { Provider } from '../../oracle-schema';
 
 export const OracleDialog = ({
@@ -23,7 +22,6 @@ export const OracleDialog = ({
   // in if it differs from the current data. We'll pass this on to the title component
   // to show a change, but the full profile showing changes is unwieldy - it's enough
   // to know from the title that the oracle has changed.
-  const oracleMarkets = useOracleMarkets(provider);
   return (
     <Dialog
       title={
@@ -39,7 +37,6 @@ export const OracleDialog = ({
       <OracleFullProfile
         provider={provider}
         dataSourceSpecId={dataSourceSpecId}
-        markets={oracleMarkets}
       />
     </Dialog>
   );

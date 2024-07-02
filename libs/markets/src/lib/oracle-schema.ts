@@ -65,6 +65,7 @@ const oracleSchema = z.discriminatedUnion('type', [
 const providerSchema = z.object({
   name: z.string().min(1),
   url: z.string().url(),
+  type: z.string(),
   description_markdown: z.string(),
   oracle: oracleSchema,
   proofs: z.array(proofSchema),
