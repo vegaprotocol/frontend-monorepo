@@ -1,6 +1,6 @@
 # Vega front-end monorepo
 
-The front-end monorepo provides a toolkit for building apps that interact with Vega, as well as the apps themselves.
+The frontend monorepo provides a toolkit for building apps that interact with Vega, as well as the apps themselves.
 
 This repository is managed using [Nx](https://nx.dev).
 
