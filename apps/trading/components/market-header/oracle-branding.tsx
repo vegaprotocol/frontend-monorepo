@@ -10,11 +10,9 @@ export const OracleBranding = ({ marketId }: { marketId: string }) => {
   if (!Logo) return null;
 
   return (
-    <div className="ml-auto">
-      <a href={data.provider.url} target="_blank" rel="noreferrer">
-        <Logo />
-      </a>
-    </div>
+    <a href={data.provider.url} target="_blank" rel="noreferrer">
+      <Logo />
+    </a>
   );
 };
 
