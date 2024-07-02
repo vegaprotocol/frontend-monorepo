@@ -47,7 +47,7 @@ jobs:
       - name: Install vega & vegacapsule
         run: |
           sudo install-vega v0.76.8
-          sudo install-vegacapsule v0.76.0-preview.6
+          sudo install-vegacapsule v0.76.8
 
       # Checks if skip cache was requested
       - name: Set skip-nx-cache flag
