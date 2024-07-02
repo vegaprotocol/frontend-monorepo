@@ -3,59 +3,83 @@
  * Do not make direct changes to the file.
  */
 
-/** OneOf type helpers */
-type Without<T, U> = { [P in Exclude<keyof T, keyof U>]?: never };
-type XOR<T, U> = T | U extends object
-  ? (Without<T, U> & U) | (Without<U, T> & T)
-  : T | U;
-/* eslint-disable  @typescript-eslint/no-explicit-any */
-type OneOf<T extends any[]> = T extends [infer Only]
-  ? Only
-  : T extends [infer A, infer B, ...infer Rest]
-  ? OneOf<[XOR<A, B>, ...Rest]>
-  : never;
-/* eslint-enable  @typescript-eslint/no-explicit-any */
-
 export interface paths {
-  '/info': {
+  readonly '/info': {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
     /**
      * Info
      * @description Get information about the block explorer.
-     * Response contains a semver formatted version of the data node and the commit hash, from which the block explorer was built
+     *     Response contains a semver formatted version of the data node and the commit hash, from which the block explorer was built
      */
-    get: operations['BlockExplorer_Info'];
+    readonly get: operations['BlockExplorer_Info'];
+    readonly put?: never;
+    readonly post?: never;
+    readonly delete?: never;
+    readonly options?: never;
+    readonly head?: never;
+    readonly patch?: never;
+    readonly trace?: never;
   };
-  '/transactions': {
+  readonly '/transactions': {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
     /**
      * List transactions
      * @description List transactions from the Vega blockchain from the newest to the oldest transactions.
      */
-    get: operations['BlockExplorer_ListTransactions'];
+    readonly get: operations['BlockExplorer_ListTransactions'];
+    readonly put?: never;
+    readonly post?: never;
+    readonly delete?: never;
+    readonly options?: never;
+    readonly head?: never;
+    readonly patch?: never;
+    readonly trace?: never;
   };
-  '/transactions/{hash}': {
+  readonly '/transactions/{hash}': {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
     /**
      * Get transaction
      * @description Get a transaction from the Vega blockchain
      */
-    get: operations['BlockExplorer_GetTransaction'];
+    readonly get: operations['BlockExplorer_GetTransaction'];
+    readonly put?: never;
+    readonly post?: never;
+    readonly delete?: never;
+    readonly options?: never;
+    readonly head?: never;
+    readonly patch?: never;
+    readonly trace?: never;
   };
 }
-
 export type webhooks = Record<string, never>;
-
 export interface components {
   schemas: {
     /**
      * @description Operator describes the type of comparison.
      *
-     *  - OPERATOR_UNSPECIFIED: The default value
-     *  - OPERATOR_EQUALS: Verify if the property values are strictly equal or not.
-     *  - OPERATOR_GREATER_THAN: Verify if the data source data value is greater than the Condition value.
-     *  - OPERATOR_GREATER_THAN_OR_EQUAL: Verify if the data source data value is greater than or equal to the Condition
-     * value.
-     *  - OPERATOR_LESS_THAN: Verify if the data source data value is less than the Condition value.
-     *  - OPERATOR_LESS_THAN_OR_EQUAL: Verify if the data source data value is less or equal to than the Condition
-     * value.
+     *      - OPERATOR_UNSPECIFIED: The default value
+     *      - OPERATOR_EQUALS: Verify if the property values are strictly equal or not.
+     *      - OPERATOR_GREATER_THAN: Verify if the data source data value is greater than the Condition value.
+     *      - OPERATOR_GREATER_THAN_OR_EQUAL: Verify if the data source data value is greater than or equal to the Condition
+     *     value.
+     *      - OPERATOR_LESS_THAN: Verify if the data source data value is less than the Condition value.
+     *      - OPERATOR_LESS_THAN_OR_EQUAL: Verify if the data source data value is less or equal to than the Condition
+     *     value.
      * @default OPERATOR_UNSPECIFIED
      * @enum {string}
      */
@@ -69,9 +93,9 @@ export interface components {
     /**
      * Supported oracle sources
      * @description - ORACLE_SOURCE_UNSPECIFIED: Default value
-     *  - ORACLE_SOURCE_OPEN_ORACLE: Specifies that the payload will be base64 encoded JSON conforming to the Open Oracle standard.
-     *  - ORACLE_SOURCE_JSON: Specifies that the payload will be base64 encoded JSON, but does not specify the shape of the data.
-     *  - ORACLE_SOURCE_ETHEREUM: Specifies that the payload will be base64 encoded JSON conforming to the ETH standard.
+     *      - ORACLE_SOURCE_OPEN_ORACLE: Specifies that the payload will be base64 encoded JSON conforming to the Open Oracle standard.
+     *      - ORACLE_SOURCE_JSON: Specifies that the payload will be base64 encoded JSON, but does not specify the shape of the data.
+     *      - ORACLE_SOURCE_ETHEREUM: Specifies that the payload will be base64 encoded JSON conforming to the ETH standard.
      * @default ORACLE_SOURCE_UNSPECIFIED
      * @enum {string}
      */
@@ -83,17 +107,17 @@ export interface components {
     /**
      * Time In Force for an order
      * @description - TIME_IN_FORCE_UNSPECIFIED: Default value for TimeInForce, can be valid for an amend
-     *  - TIME_IN_FORCE_GTC: Good until cancelled, the order trades any amount and as much as possible
-     * and remains on the book until it either trades completely or is cancelled
-     *  - TIME_IN_FORCE_GTT: Good until specified time, this order type trades any amount and as much as possible
-     * and remains on the book until it either trades completely, is cancelled, or expires at a set time
-     * NOTE: this may in future be multiple types or have sub types for orders that provide different ways of specifying expiry
-     *  - TIME_IN_FORCE_IOC: Immediate or cancel, the order trades any amount and as much as possible
-     * but does not remain on the book (whether it trades or not)
-     *  - TIME_IN_FORCE_FOK: Fill or kill, the order either trades completely i.e. remainingSize == 0 after adding,
-     * or not at all, and does not remain on the book if it doesn't trade
-     *  - TIME_IN_FORCE_GFA: Good for auction, this order is only accepted during an auction period
-     *  - TIME_IN_FORCE_GFN: Good for normal, this order is only accepted during normal trading (that can be continuous trading or frequent batched auctions)
+     *      - TIME_IN_FORCE_GTC: Good until cancelled, the order trades any amount and as much as possible
+     *     and remains on the book until it either trades completely or is cancelled
+     *      - TIME_IN_FORCE_GTT: Good until specified time, this order type trades any amount and as much as possible
+     *     and remains on the book until it either trades completely, is cancelled, or expires at a set time
+     *     NOTE: this may in future be multiple types or have sub types for orders that provide different ways of specifying expiry
+     *      - TIME_IN_FORCE_IOC: Immediate or cancel, the order trades any amount and as much as possible
+     *     but does not remain on the book (whether it trades or not)
+     *      - TIME_IN_FORCE_FOK: Fill or kill, the order either trades completely i.e. remainingSize == 0 after adding,
+     *     or not at all, and does not remain on the book if it doesn't trade
+     *      - TIME_IN_FORCE_GFA: Good for auction, this order is only accepted during an auction period
+     *      - TIME_IN_FORCE_GFN: Good for normal, this order is only accepted during normal trading (that can be continuous trading or frequent batched auctions)
      * @default TIME_IN_FORCE_UNSPECIFIED
      * @enum {string}
      */
@@ -107,8 +131,8 @@ export interface components {
       | 'TIME_IN_FORCE_GFN';
     /**
      * @description  - EXPIRY_STRATEGY_UNSPECIFIED: Never valid
-     *  - EXPIRY_STRATEGY_CANCELS: Stop order should be cancelled if the expiry time is reached.
-     *  - EXPIRY_STRATEGY_SUBMIT: Order should be submitted if the expiry time is reached.
+     *      - EXPIRY_STRATEGY_CANCELS: Stop order should be cancelled if the expiry time is reached.
+     *      - EXPIRY_STRATEGY_SUBMIT: Order should be submitted if the expiry time is reached.
      * @default EXPIRY_STRATEGY_UNSPECIFIED
      * @enum {string}
      */
@@ -118,8 +142,8 @@ export interface components {
       | 'EXPIRY_STRATEGY_SUBMIT';
     /**
      * - SIZE_OVERRIDE_SETTING_UNSPECIFIED: Never valid
-     *  - SIZE_OVERRIDE_SETTING_NONE: No override, the size within the contained normal order submission will be used
-     *  - SIZE_OVERRIDE_SETTING_POSITION: Use the total position of the trader
+     *      - SIZE_OVERRIDE_SETTING_NONE: No override, the size within the contained normal order submission will be used
+     *      - SIZE_OVERRIDE_SETTING_POSITION: Use the total position of the trader
      * @default SIZE_OVERRIDE_SETTING_UNSPECIFIED
      * @enum {string}
      */
@@ -133,8 +157,8 @@ export interface components {
     };
     /**
      * - MODE_UNSPECIFIED: Never valid.
-     *  - MODE_CROSS_MARGIN: Cross margin mode - margin is dynamically acquired and released as a position is marked to market
-     *  - MODE_ISOLATED_MARGIN: Isolated margin mode - margin for any newly opened position volume is transferred to the margin account when the trade is executed
+     *      - MODE_CROSS_MARGIN: Cross margin mode - margin is dynamically acquired and released as a position is marked to market
+     *      - MODE_ISOLATED_MARGIN: Isolated margin mode - margin for any newly opened position volume is transferred to the margin account when the trade is executed
      * @default MODE_UNSPECIFIED
      * @enum {string}
      */
@@ -159,10 +183,8 @@ export interface components {
       readonly createdAt?: string;
       /** Cursor for this transaction. This is used for paginating results */
       readonly cursor?: string;
-      /**
-       * Optional error happening when processing / checking the transaction
-       * This should be set if error code is not 0
-       */
+      /** Optional error happening when processing / checking the transaction
+       *     This should be set if error code is not 0 */
       readonly error?: string;
       /** Hash of the transaction */
       readonly hash?: string;
@@ -204,10 +226,8 @@ export interface components {
        * @description Last epoch at which this transfer shall be executed.
        */
       readonly endEpoch?: string;
-      /**
-       * @description Factor that the initial transfer amount is multiplied by for each epoch that it is executed.
-       * For example if the initial transfer amount is 1000 and the factor is 0.5, then the amounts transferred per epoch will be 1000, 500, 250, 125, etc.
-       */
+      /** @description Factor that the initial transfer amount is multiplied by for each epoch that it is executed.
+       *     For example if the initial transfer amount is 1000 and the factor is 0.5, then the amounts transferred per epoch will be 1000, 500, 250, 125, etc. */
       readonly factor?: string;
       /**
        * Format: uint64
@@ -215,16 +235,19 @@ export interface components {
        */
       readonly startEpoch?: string;
     };
-    /**
-     * Command that allows a party to move assets from one account to another.
-     * A transfer can be set up as a single one-off transfer, or a recurring transfer that occurs once at the start of each epoch.
-     * Each transfer incurs a fee as specified by the network parameter `transfer.fee.factor`
-     */
+    /** Command that allows a party to move assets from one account to another.
+     *     A transfer can be set up as a single one-off transfer, or a recurring transfer that occurs once at the start of each epoch.
+     *     Each transfer incurs a fee as specified by the network parameter `transfer.fee.factor` */
     readonly commandsv1Transfer: {
       /** @description Amount to be taken from the source account, as an unsigned integer scaled to the asset's decimal places. */
       readonly amount?: string;
       /** @description Asset ID of the asset to be transferred. */
       readonly asset?: string;
+      /** @description AMM key from which assets are to be transferred, if applicable.
+       *     The submitter of the transaction must be the owner of this AMM key.
+       *     If provided, the 'from_account_type' must be REWARDS_VESTED, and the asset in this account
+       *     must match the asset specified in the transfer. */
+      readonly from?: string;
       /** @description Account type from which the funds of the party should be taken. */
       readonly fromAccountType?: components['schemas']['vegaAccountType'];
       /** @description Details of a one-off transfer that is executed once at a specified time. */
@@ -246,19 +269,45 @@ export interface components {
     };
     readonly protobufAny: {
       readonly '@type'?: string;
-      [key: string]: unknown;
+      readonly [key: string]: unknown;
     };
     /**
      * @description `NullValue` is a singleton enumeration to represent the null value for the
-     * `Value` type union.
+     *     `Value` type union.
      *
-     *  The JSON representation for `NullValue` is JSON `null`.
+     *      The JSON representation for `NullValue` is JSON `null`.
      *
-     *  - NULL_VALUE: Null value.
+     *      - NULL_VALUE: Null value.
      * @default NULL_VALUE
      * @enum {string}
      */
     readonly protobufNullValue: 'NULL_VALUE';
+    /** @description Command to amend an existing automated market maker on a market. */
+    readonly v1AmendAMM: {
+      /** @description Amount to be committed to the AMM. If not supplied the commitment will remain unchanged. */
+      readonly commitmentAmount?: string;
+      /** @description Concentrated liquidity parameters defining the shape of the AMM's volume curves. If not supplied the parameters will remain unchanged. */
+      readonly concentratedLiquidityParameters?: components['schemas']['v1AmendAMMConcentratedLiquidityParameters'];
+      /** @description Market ID for the AMM to be amended. */
+      readonly marketId?: string;
+      /** @description Nominated liquidity fee factor, which is an input to the calculation of taker fees on the market. If not supplied the proposed fee will remain unchanged. */
+      readonly proposedFee?: string;
+      /** @description Slippage tolerance for rebasing position when updating the AMM. */
+      readonly slippageTolerance?: string;
+    };
+    /** @description Liquidity parameters that define the size and range of the AMM's tradeable volume. */
+    readonly v1AmendAMMConcentratedLiquidityParameters: {
+      /** @description Price that the AMM will quote as its "fair price" when its position is zero. */
+      readonly base?: string;
+      /** @description Leverage at lower bound. If not set the markets risk-factors will be used to calculate leverage. */
+      readonly leverageAtLowerBound?: string;
+      /** @description Leverage at upper bound. If not set the markets risk-factors will be used to calculate leverage. */
+      readonly leverageAtUpperBound?: string;
+      /** @description Price at which the AMM will stop quoting buy volume. If not supplied the AMM will never hold a long position. */
+      readonly lowerBound?: string;
+      /** @description Price at which the AMM will stop quoting sell volume. If not supplied the AMM will never hold a short position. */
+      readonly upperBound?: string;
+    };
     /** @description A command that allows a new node operator to announce themselves to the network as a new validator. */
     readonly v1AnnounceNode: {
       /** @description URL to the node operator's avatar. */
@@ -294,24 +343,20 @@ export interface components {
       /** @description Signature from the node made using the Vega wallet. */
       readonly vegaSignature?: components['schemas']['v1Signature'];
     };
-    /**
-     * @description Command that allows the submitter to join a referral set and earn a collective reduction in fees based on the activity of all members of that set.
-     * A party that joins a referral set is called a referee. A referee can only be a member of one referral set and cannot themselves be or become a referrer.
-     * To switch to another referral set, a subsequent command can be sent and the switch will take effect at the end of the epoch.
-     */
+    /** @description Command that allows the submitter to join a referral set and earn a collective reduction in fees based on the activity of all members of that set.
+     *     A party that joins a referral set is called a referee. A referee can only be a member of one referral set and cannot themselves be or become a referrer.
+     *     To switch to another referral set, a subsequent command can be sent and the switch will take effect at the end of the epoch. */
     readonly v1ApplyReferralCode: {
       /** @description Referral code, normally the referral set ID, for the party to join. */
       readonly id?: string;
     };
-    /**
-     * @description A command that allows the submission of a batch market instruction which wraps up multiple market instructions into a single transaction.
-     * These instructions are then processed sequentially in the following order:
-     * - OrderCancellation
-     * - OrderAmendment
-     * - OrderSubmission
-     * - StopOrderSubmission
-     * where the maximum allow of instructions in a batch is controlled by the network parameter "spam.protection.max.batchSize".
-     */
+    /** @description A command that allows the submission of a batch market instruction which wraps up multiple market instructions into a single transaction.
+     *     These instructions are then processed sequentially in the following order:
+     *     - OrderCancellation
+     *     - OrderAmendment
+     *     - OrderSubmission
+     *     - StopOrderSubmission
+     *     where the maximum allow of instructions in a batch is controlled by the network parameter "spam.protection.max.batchSize". */
     readonly v1BatchMarketInstructions: {
       /** @description List of order amendments to be processed sequentially. */
       readonly amendments?: readonly components['schemas']['v1OrderAmendment'][];
@@ -326,10 +371,8 @@ export interface components {
       /** Update margin mode instruction */
       readonly updateMarginMode?: readonly components['schemas']['v1UpdateMarginMode'][];
     };
-    /**
-     * @description Command that allows a token holder to submit a batch governance proposal that can be voted on by any other token holders, and eventually enacted on the Vega network.
-     * For example this command can be used to propose a new market and a network parameter change with it.
-     */
+    /** @description Command that allows a token holder to submit a batch governance proposal that can be voted on by any other token holders, and eventually enacted on the Vega network.
+     *     For example this command can be used to propose a new market and a network parameter change with it. */
     readonly v1BatchProposalSubmission: {
       /** @description Rationale behind a proposal. */
       readonly rationale?: components['schemas']['vegaProposalRationale'];
@@ -348,6 +391,23 @@ export interface components {
        */
       readonly closingTimestamp?: string;
     };
+    /** @description Command to cancel an automated market maker for a given market. */
+    readonly v1CancelAMM: {
+      /** @description Market ID to cancel an AMM for. */
+      readonly marketId?: string;
+      /** @description Method to use to cancel the AMM. */
+      readonly method?: components['schemas']['v1CancelAMMMethod'];
+    };
+    /**
+     * @description  - METHOD_IMMEDIATE: Cancellation will be immediate and any open positions will be transferred to the network for liquidation.
+     *      - METHOD_REDUCE_ONLY: AMM will only trade to reduce its position, and will be cancelled once its position reaches zero.
+     * @default METHOD_UNSPECIFIED
+     * @enum {string}
+     */
+    readonly v1CancelAMMMethod:
+      | 'METHOD_UNSPECIFIED'
+      | 'METHOD_IMMEDIATE'
+      | 'METHOD_REDUCE_ONLY';
     /** @description A validator command sent automatically that provides information of events that have happened on foreign chains. */
     readonly v1ChainEvent: {
       /** @description Built-in asset event. */
@@ -375,11 +435,9 @@ export interface components {
       /** @description Value to be compared with by the operator. */
       readonly value?: string;
     };
-    /**
-     * @description Command that a party can use to instruct the network to create a new referral set on the network.
-     * The submitter of this command will become the referrer of the new set and cannot be the referrer or a referee of another set.
-     * A referrer can use the referral set ID as a referral code to attract others to the Vega network and have fees reduced for the referral set.
-     */
+    /** @description Command that a party can use to instruct the network to create a new referral set on the network.
+     *     The submitter of this command will become the referrer of the new set and cannot be the referrer or a referee of another set.
+     *     A referrer can use the referral set ID as a referral code to attract others to the Vega network and have fees reduced for the referral set. */
     readonly v1CreateReferralSet: {
       /** @description Whether or not the referral set should be considered a team that can participate in team games on the network. */
       readonly isTeam?: boolean;
@@ -387,11 +445,9 @@ export interface components {
       readonly team?: components['schemas']['v1CreateReferralSetTeam'];
     };
     readonly v1CreateReferralSetTeam: {
-      /**
-       * @description List of public keys that are allowed to join the team.
-       * Only applicable to closed teams. Removing a party from the allow list does not remove
-       * the party from the team.
-       */
+      /** @description List of public keys that are allowed to join the team.
+       *     Only applicable to closed teams. Removing a party from the allow list does not remove
+       *     the party from the team. */
       readonly allowList?: readonly string[];
       /** @description External link to an avatar for the team. */
       readonly avatarUrl?: string;
@@ -402,10 +458,14 @@ export interface components {
       /** @description External link to the team's homepage. */
       readonly teamUrl?: string;
     };
-    /**
-     * @description Command to allow a token holder to delegate their tokens to a validator to help secure the network.
-     * A token holder delegating to a validator will earn rewards based on the amount they have delegated, and the performance of the chosen validator.
-     */
+    /** @description Internal transactions used to convey delayed transactions to be included in the next block. */
+    readonly v1DelayedTransactionsWrapper: {
+      /** Format: uint64 */
+      readonly height?: string;
+      readonly transactions?: readonly string[];
+    };
+    /** @description Command to allow a token holder to delegate their tokens to a validator to help secure the network.
+     *     A token holder delegating to a validator will earn rewards based on the amount they have delegated, and the performance of the chosen validator. */
     readonly v1DelegateSubmission: {
       /** @description Amount of stake to delegate, as an unsigned integer scaled to the governance asset's decimal places. */
       readonly amount?: string;
@@ -431,15 +491,11 @@ export interface components {
        */
       readonly targetBlock?: string;
     };
-    /**
-     * @description Filter describes the conditions under which a data source data is considered of
-     * interest or not.
-     */
+    /** @description Filter describes the conditions under which a data source data is considered of
+     *     interest or not. */
     readonly v1Filter: {
-      /**
-       * @description Conditions that should be matched by the data to be
-       * considered of interest.
-       */
+      /** @description Conditions that should be matched by the data to be
+       *     considered of interest. */
       readonly conditions?: readonly components['schemas']['v1Condition'][];
       /** @description Data source's data property key targeted by the filter. */
       readonly key?: components['schemas']['v1PropertyKey'];
@@ -467,11 +523,11 @@ export interface components {
       /** Semver formatted version of the data node */
       readonly version?: string;
     };
-    /**
-     * @description Input data for a transaction containing a network command for the Vega network to execute.
-     * Once populated the protobuf message should be marshalled into a byte array and included in a transaction message.
-     */
+    /** @description Input data for a transaction containing a network command for the Vega network to execute.
+     *     Once populated the protobuf message should be marshalled into a byte array and included in a transaction message. */
     readonly v1InputData: {
+      /** Command to amend an AMM pool on a market */
+      readonly amendAmm?: components['schemas']['v1AmendAMM'];
       /** @description Command used by a node operator to announce its node as a pending validator. */
       readonly announceNode?: components['schemas']['v1AnnounceNode'];
       /** @description Command to apply a referral code. */
@@ -485,12 +541,16 @@ export interface components {
        * @description Block height which has been used to calculate the transaction proof-of-work.
        */
       readonly blockHeight?: string;
+      /** Command to cancel an AMM pool on a market */
+      readonly cancelAmm?: components['schemas']['v1CancelAMM'];
       /** @description Command to cancel a recurring transfer. */
       readonly cancelTransfer?: components['schemas']['commandsv1CancelTransfer'];
       /** @description Validator command sent automatically to notify the Vega chain of an off-chain event. */
       readonly chainEvent?: components['schemas']['v1ChainEvent'];
       /** @description Command to create a referral set. */
       readonly createReferralSet?: components['schemas']['v1CreateReferralSet'];
+      /** @description Internal transactions used to convey delayed transactions to be included in the next block. */
+      readonly delayedTransactionsWrapper?: components['schemas']['v1DelayedTransactionsWrapper'];
       /** @description Command to delegate tokens to a validator. */
       readonly delegateSubmission?: components['schemas']['v1DelegateSubmission'];
       /** @description Validator command sent manually by a node operator to rotate their node's Ethereum keys. */
@@ -514,7 +574,7 @@ export interface components {
       /**
        * Format: uint64
        * @description Arbitrary number used to provide uniqueness to the signature of two otherwise identical input data, preventing replay attacks.
-       * Must be set to a different value for all new transactions sent by a party. It is advised to generate this number randomly.
+       *     Must be set to a different value for all new transactions sent by a party. It is advised to generate this number randomly.
        */
       readonly nonce?: string;
       /** @description Command to submit external oracle data. */
@@ -535,6 +595,8 @@ export interface components {
       readonly stopOrdersCancellation?: components['schemas']['v1StopOrdersCancellation'];
       /** @description Command to submit a pair of stop orders. */
       readonly stopOrdersSubmission?: components['schemas']['v1StopOrdersSubmission'];
+      /** Command to submit an AMM pool to a market */
+      readonly submitAmm?: components['schemas']['v1SubmitAMM'];
       /** @description Command to submit a transfer. */
       readonly transfer?: components['schemas']['commandsv1Transfer'];
       /** @description Command to remove tokens delegated to a validator. */
@@ -557,7 +619,7 @@ export interface components {
       /**
        * Format: int64
        * @description Repeat the trigger every n seconds after the initial. If no time for
-       * initial was specified, begin repeating immediately.
+       *     initial was specified, begin repeating immediately.
        */
       readonly every?: string;
       /**
@@ -566,11 +628,9 @@ export interface components {
        */
       readonly initial?: string;
     };
-    /**
-     * @description Command that can be used by a validator to instruct the network to generate signatures to add or remove validators from the multisig-control contract.
-     * Signatures can only be generated for validator nodes that have been promoted or demoted from the consensus validator set, and any attempt to generate signatures for another node will be rejected.
-     * The generated signatures can only be submitted to the contract by the Ethereum addresses included in the command.
-     */
+    /** @description Command that can be used by a validator to instruct the network to generate signatures to add or remove validators from the multisig-control contract.
+     *     Signatures can only be generated for validator nodes that have been promoted or demoted from the consensus validator set, and any attempt to generate signatures for another node will be rejected.
+     *     The generated signatures can only be submitted to the contract by the Ethereum addresses included in the command. */
     readonly v1IssueSignatures: {
       /** @description Chain ID of the bridge to generate signatures for. */
       readonly chainId?: string;
@@ -603,10 +663,8 @@ export interface components {
        */
       readonly targetBlock?: string;
     };
-    /**
-     * @description Command that allows a liquidity provider to update the details of their existing liquidity commitment.
-     * Any field that is left unset or as a default value indicates that this field on the original submission will be left unchanged.
-     */
+    /** @description Command that allows a liquidity provider to update the details of their existing liquidity commitment.
+     *     Any field that is left unset or as a default value indicates that this field on the original submission will be left unchanged. */
     readonly v1LiquidityProvisionAmendment: {
       /** @description New commitment amount. */
       readonly commitmentAmount?: string;
@@ -622,15 +680,11 @@ export interface components {
       /** @description Market that the submitter will stop providing liquidity for. */
       readonly marketId?: string;
     };
-    /**
-     * @description A command that indicates to the network the party's intention to supply liquidity to the given market and become a liquidity provider.
-     * An active liquidity provider for a market will earn fees based on the trades that occur in the market.
-     */
+    /** @description A command that indicates to the network the party's intention to supply liquidity to the given market and become a liquidity provider.
+     *     An active liquidity provider for a market will earn fees based on the trades that occur in the market. */
     readonly v1LiquidityProvisionSubmission: {
-      /**
-       * @description Amount that the submitter will commit as liquidity to the market, specified as a unitless number in the settlement asset of the market.
-       * This field is an unsigned integer scaled using the asset's decimal places.
-       */
+      /** @description Amount that the submitter will commit as liquidity to the market, specified as a unitless number in the settlement asset of the market.
+       *     This field is an unsigned integer scaled using the asset's decimal places. */
       readonly commitmentAmount?: string;
       /** @description Nominated liquidity fee factor, which is an input to the calculation of taker fees on the market, as per setting fees and rewarding liquidity providers. */
       readonly fee?: string;
@@ -658,11 +712,11 @@ export interface components {
     /**
      * Kind of signature created by a node, for example, allow-listing a new asset, withdrawal etc
      * @description - NODE_SIGNATURE_KIND_UNSPECIFIED: Represents an unspecified or missing value from the input.
-     *  - NODE_SIGNATURE_KIND_ASSET_NEW: Represents a signature for a new asset allow-listing.
-     *  - NODE_SIGNATURE_KIND_ASSET_WITHDRAWAL: Represents a signature for an asset withdrawal.
-     *  - NODE_SIGNATURE_KIND_ERC20_MULTISIG_SIGNER_ADDED: Represents a signature for a new signer added to the erc20 multisig contract.
-     *  - NODE_SIGNATURE_KIND_ERC20_MULTISIG_SIGNER_REMOVED: Represents a signature for a signer removed from the erc20 multisig contract.
-     *  - NODE_SIGNATURE_KIND_ASSET_UPDATE: Represents a signature for an asset update allow-listing.
+     *      - NODE_SIGNATURE_KIND_ASSET_NEW: Represents a signature for a new asset allow-listing.
+     *      - NODE_SIGNATURE_KIND_ASSET_WITHDRAWAL: Represents a signature for an asset withdrawal.
+     *      - NODE_SIGNATURE_KIND_ERC20_MULTISIG_SIGNER_ADDED: Represents a signature for a new signer added to the erc20 multisig contract.
+     *      - NODE_SIGNATURE_KIND_ERC20_MULTISIG_SIGNER_REMOVED: Represents a signature for a signer removed from the erc20 multisig contract.
+     *      - NODE_SIGNATURE_KIND_ASSET_UPDATE: Represents a signature for an asset update allow-listing.
      * @default NODE_SIGNATURE_KIND_UNSPECIFIED
      * @enum {string}
      */
@@ -682,19 +736,19 @@ export interface components {
     };
     /**
      * - TYPE_UNSPECIFIED: Represents an unspecified or missing value from the input
-     *  - TYPE_STAKE_DEPOSITED: Node vote for a new stake deposit
-     *  - TYPE_STAKE_REMOVED: Node vote for a new stake removed event
-     *  - TYPE_FUNDS_DEPOSITED: Node vote for a new collateral deposit
-     *  - TYPE_SIGNER_ADDED: Node vote for a new signer added to the erc20 bridge
-     *  - TYPE_SIGNER_REMOVED: Node vote for a signer removed from the erc20 bridge
-     *  - TYPE_BRIDGE_STOPPED: Node vote for a bridge stopped event
-     *  - TYPE_BRIDGE_RESUMED: Node vote for a bridge resumed event
-     *  - TYPE_ASSET_LISTED: Node vote for a newly listed asset
-     *  - TYPE_LIMITS_UPDATED: Node vote for an asset limits update
-     *  - TYPE_STAKE_TOTAL_SUPPLY: Node vote to share the total supply of the staking token
-     *  - TYPE_SIGNER_THRESHOLD_SET: Node vote to update the threshold of the signer set for the multisig contract
-     *  - TYPE_GOVERNANCE_VALIDATE_ASSET: Node vote to validate a new assert governance proposal
-     *  - TYPE_ETHEREUM_CONTRACT_CALL_RESULT: Node vote for an Ethereum contract call result
+     *      - TYPE_STAKE_DEPOSITED: Node vote for a new stake deposit
+     *      - TYPE_STAKE_REMOVED: Node vote for a new stake removed event
+     *      - TYPE_FUNDS_DEPOSITED: Node vote for a new collateral deposit
+     *      - TYPE_SIGNER_ADDED: Node vote for a new signer added to the erc20 bridge
+     *      - TYPE_SIGNER_REMOVED: Node vote for a signer removed from the erc20 bridge
+     *      - TYPE_BRIDGE_STOPPED: Node vote for a bridge stopped event
+     *      - TYPE_BRIDGE_RESUMED: Node vote for a bridge resumed event
+     *      - TYPE_ASSET_LISTED: Node vote for a newly listed asset
+     *      - TYPE_LIMITS_UPDATED: Node vote for an asset limits update
+     *      - TYPE_STAKE_TOTAL_SUPPLY: Node vote to share the total supply of the staking token
+     *      - TYPE_SIGNER_THRESHOLD_SET: Node vote to update the threshold of the signer set for the multisig contract
+     *      - TYPE_GOVERNANCE_VALIDATE_ASSET: Node vote to validate a new assert governance proposal
+     *      - TYPE_ETHEREUM_CONTRACT_CALL_RESULT: Node vote for an Ethereum contract call result
      * @default TYPE_UNSPECIFIED
      * @enum {string}
      */
@@ -723,11 +777,9 @@ export interface components {
       /** @description Source from which the data is coming from. */
       readonly source?: components['schemas']['OracleDataSubmissionOracleSource'];
     };
-    /**
-     * @description A command that allows a party to update the details of an existing order.
-     * Any field that is left unset or as a default value indicates that this field on the original order will be left unchanged.
-     * It is not possible to change an order's type through this command.
-     */
+    /** @description A command that allows a party to update the details of an existing order.
+     *     Any field that is left unset or as a default value indicates that this field on the original order will be left unchanged.
+     *     It is not possible to change an order's type through this command. */
     readonly v1OrderAmendment: {
       /**
        * Format: int64
@@ -738,10 +790,8 @@ export interface components {
       readonly marketId?: string;
       /** @description ID of the order to amend. */
       readonly orderId?: string;
-      /**
-       * @description New pegged offset for the order.
-       * This field is an unsigned integer scaled to the market's decimal places.
-       */
+      /** @description New pegged offset for the order.
+       *     This field is an unsigned integer scaled to the market's decimal places. */
       readonly peggedOffset?: string;
       /** @description New pegged reference for the order. */
       readonly peggedReference?: components['schemas']['vegaPeggedReference'];
@@ -750,31 +800,29 @@ export interface components {
       /**
        * Format: uint64
        * @description New size for the order.
-       * Amending the size causes the size and remaining part of the order to be changed by the difference between the original and amended size.
-       * - Specifying a size smaller than the current size leaves the order at its current order book position.
-       * - Specifying a size larger than the current size removes and reinserts the order at the back of the price level.
-       * - Specifying a size that results in the remaining part of the order being reduced to zero cancels the order.
-       * This field is an unsigned integer scaled to the market's decimal places.
-       * If specified, size_delta must be set to 0.
+       *     Amending the size causes the size and remaining part of the order to be changed by the difference between the original and amended size.
+       *     - Specifying a size smaller than the current size leaves the order at its current order book position.
+       *     - Specifying a size larger than the current size removes and reinserts the order at the back of the price level.
+       *     - Specifying a size that results in the remaining part of the order being reduced to zero cancels the order.
+       *     This field is an unsigned integer scaled to the market's decimal places.
+       *     If specified, size_delta must be set to 0.
        */
       readonly size?: string;
       /**
        * Format: int64
        * @description Amend the size for the order by the delta specified:
-       * - To reduce the size from the current value set a negative integer value
-       * - To increase the size from the current value, set a positive integer value
-       * - To leave the size unchanged set a value of zero
-       * This field needs to be scaled using the market's position decimal places.
-       * If specified, size must not be set.
+       *     - To reduce the size from the current value set a negative integer value
+       *     - To increase the size from the current value, set a positive integer value
+       *     - To leave the size unchanged set a value of zero
+       *     This field needs to be scaled using the market's position decimal places.
+       *     If specified, size must not be set.
        */
       readonly sizeDelta?: string;
       /** @description New time in force for the order. */
       readonly timeInForce?: components['schemas']['OrderTimeInForce'];
     };
-    /**
-     * @description A command that instructs the network to cancel orders, active or partially filled, that were previously submitted by the sender of this transaction.
-     * It is not possible to cancel another party's order with this command.
-     */
+    /** @description A command that instructs the network to cancel orders, active or partially filled, that were previously submitted by the sender of this transaction.
+     *     It is not possible to cancel another party's order with this command. */
     readonly v1OrderCancellation: {
       /** @description Restrict cancellations to those submitted to the given market. If not set, all stop orders across all markets will be cancelled. */
       readonly marketId?: string;
@@ -796,17 +844,13 @@ export interface components {
       readonly peggedOrder?: components['schemas']['vegaPeggedOrder'];
       /** @description If set, the order will only be executed if it would not trade on entry to the order book. Only valid for limit orders. */
       readonly postOnly?: boolean;
-      /**
-       * @description Price for the order, the price is an integer, for example `123456` is a correctly
-       * formatted price of `1.23456` assuming market configured to 5 decimal places,
-       * required field for limit orders, however it is not required for market orders.
-       * This field is an unsigned integer scaled to the market's decimal places.
-       */
+      /** @description Price for the order, the price is an integer, for example `123456` is a correctly
+       *     formatted price of `1.23456` assuming market configured to 5 decimal places,
+       *     required field for limit orders, however it is not required for market orders.
+       *     This field is an unsigned integer scaled to the market's decimal places. */
       readonly price?: string;
-      /**
-       * @description If set, the order will only be executed if the outcome of the trade moves the trader's position closer to 0.
-       * Only valid for non-persistent orders.
-       */
+      /** @description If set, the order will only be executed if the outcome of the trade moves the trader's position closer to 0.
+       *     Only valid for non-persistent orders. */
       readonly reduceOnly?: boolean;
       /** @description Arbitrary optional reference for the order, to be used as a human-readable non-unique identifier for the order. */
       readonly reference?: string;
@@ -838,7 +882,7 @@ export interface components {
       readonly name?: string;
       /**
        * Optional decimal place to be be applied on the provided value
-       * valid only for PropertyType of type DECIMAL and INTEGER
+       *     valid only for PropertyType of type DECIMAL and INTEGER
        * Format: uint64
        */
       readonly numberDecimalPlaces?: string;
@@ -847,15 +891,15 @@ export interface components {
     };
     /**
      * @description Type describes the data type of properties that are supported by the data source
-     * engine.
+     *     engine.
      *
-     *  - TYPE_UNSPECIFIED: The default value.
-     *  - TYPE_EMPTY: Any type.
-     *  - TYPE_INTEGER: Integer type.
-     *  - TYPE_STRING: String type.
-     *  - TYPE_BOOLEAN: Boolean type.
-     *  - TYPE_DECIMAL: Any floating point decimal type.
-     *  - TYPE_TIMESTAMP: Timestamp date type.
+     *      - TYPE_UNSPECIFIED: The default value.
+     *      - TYPE_EMPTY: Any type.
+     *      - TYPE_INTEGER: Integer type.
+     *      - TYPE_STRING: String type.
+     *      - TYPE_BOOLEAN: Boolean type.
+     *      - TYPE_DECIMAL: Any floating point decimal type.
+     *      - TYPE_TIMESTAMP: Timestamp date type.
      * @default TYPE_UNSPECIFIED
      * @enum {string}
      */
@@ -867,10 +911,8 @@ export interface components {
       | 'TYPE_BOOLEAN'
       | 'TYPE_DECIMAL'
       | 'TYPE_TIMESTAMP';
-    /**
-     * @description Command that allows a token holder to submit a governance proposal that can be voted on by any other token holders, and eventually enacted on the Vega network.
-     * For example this command can be used to propose a new market.
-     */
+    /** @description Command that allows a token holder to submit a governance proposal that can be voted on by any other token holders, and eventually enacted on the Vega network.
+     *     For example this command can be used to propose a new market. */
     readonly v1ProposalSubmission: {
       /** @description Rationale behind a proposal. */
       readonly rationale?: components['schemas']['vegaProposalRationale'];
@@ -889,10 +931,8 @@ export interface components {
       /** @description Release tag for the Vega binary. */
       readonly vegaReleaseTag?: string;
     };
-    /**
-     * @description PubKey is the public key that signed this data.
-     * Different public keys coming from different sources will be further separated.
-     */
+    /** @description PubKey is the public key that signed this data.
+     *     Different public keys coming from different sources will be further separated. */
     readonly v1PubKey: {
       readonly key?: string;
     };
@@ -911,11 +951,9 @@ export interface components {
     readonly v1Signer: {
       /** @description In case of an open oracle - Ethereum address will be submitted. */
       readonly ethAddress?: components['schemas']['v1ETHAddress'];
-      /**
-       * @description List of authorized public keys that signed the data for this
-       * source. All the public keys in the data should be contained in these
-       * public keys.
-       */
+      /** @description List of authorized public keys that signed the data for this
+       *     source. All the public keys in the data should be contained in these
+       *     public keys. */
       readonly pubKey?: components['schemas']['v1PubKey'];
     };
     /** @description A validator command sent automatically to reach consensus on floating point values. */
@@ -943,34 +981,56 @@ export interface components {
       /** @description Order will be submitted if the last traded price has moved the given percent from the highest/lowest mark price since the stop order was submitted. */
       readonly trailingPercentOffset?: string;
     };
-    /**
-     * @description A command that instructs the network to cancel untriggered stop orders that were submitted by the sender of this transaction.
-     * If any cancelled stop order is part of an OCO, both stop orders will be cancelled.
-     * It is not possible to cancel another party's stop orders with this command.
-     */
+    /** @description A command that instructs the network to cancel untriggered stop orders that were submitted by the sender of this transaction.
+     *     If any cancelled stop order is part of an OCO, both stop orders will be cancelled.
+     *     It is not possible to cancel another party's stop orders with this command. */
     readonly v1StopOrdersCancellation: {
       /** @description Restrict cancellations to those submitted to the given market. If not set, all stop orders across all markets will be cancelled. */
       readonly marketId?: string;
       /** @description Restrict cancellations to a stop order with the given ID. If set, then a market ID must also be provided. */
       readonly stopOrderId?: string;
     };
-    /**
-     * @description A command that allows a party to submit a stop order for a given market.
-     * A stop order is a normal order that remains off the order book and is only submitted if a given trigger is breached from a particular direction.
-     * If both rises-above and falls-below are configured, then if one is triggered the other will be cancelled (OCO).
-     */
+    /** @description A command that allows a party to submit a stop order for a given market.
+     *     A stop order is a normal order that remains off the order book and is only submitted if a given trigger is breached from a particular direction.
+     *     If both rises-above and falls-below are configured, then if one is triggered the other will be cancelled (OCO). */
     readonly v1StopOrdersSubmission: {
       /** @description Stop order that will be triggered if the price falls below a given trigger price. */
       readonly fallsBelow?: components['schemas']['v1StopOrderSetup'];
       /** @description Stop order that will be triggered if the price rises above a given trigger price. */
       readonly risesAbove?: components['schemas']['v1StopOrderSetup'];
     };
+    /** @description Command to create an automated market maker for a given market. */
+    readonly v1SubmitAMM: {
+      /** @description Amount to be committed to the AMM. */
+      readonly commitmentAmount?: string;
+      /** @description Concentrated liquidity parameters defining the shape of the AMM's volume curves. */
+      readonly concentratedLiquidityParameters?: components['schemas']['v1SubmitAMMConcentratedLiquidityParameters'];
+      /** @description Market ID for which to create an AMM. */
+      readonly marketId?: string;
+      /** @description Nominated liquidity fee factor, which is an input to the calculation of taker fees on the market. */
+      readonly proposedFee?: string;
+      /** Slippage tolerance used for rebasing the AMM if its base price crosses with existing order */
+      readonly slippageTolerance?: string;
+    };
+    /** @description Liquidity parameters that define the size and range of the AMM's tradeable volume. */
+    readonly v1SubmitAMMConcentratedLiquidityParameters: {
+      /** @description Price that the AMM will quote as its "fair price" when its position is zero. */
+      readonly base?: string;
+      /** @description Leverage at lower bound. If not set the markets risk-factors will be used to calculate leverage. */
+      readonly leverageAtLowerBound?: string;
+      /** @description Leverage at upper bound. If not set the markets risk-factors will be used to calculate leverage. */
+      readonly leverageAtUpperBound?: string;
+      /** @description Price at which the AMM will stop quoting buy volume. If not supplied the AMM will never hold a long position. */
+      readonly lowerBound?: string;
+      /** @description Price at which the AMM will stop quoting sell volume. If not supplied the AMM will never hold a short position. */
+      readonly upperBound?: string;
+    };
     /**
      * @description Transaction versions to maintain backwards compatibility of transaction formats.
      *
-     *  - TX_VERSION_UNSPECIFIED: Transaction version is unspecified.
-     *  - TX_VERSION_V2: Transaction requires the addition of a proof-of-work calculation.
-     *  - TX_VERSION_V3: Transaction input data contains a prepended chain ID to prevent use of a single transaction across multiple networks.
+     *      - TX_VERSION_UNSPECIFIED: Transaction version is unspecified.
+     *      - TX_VERSION_V2: Transaction requires the addition of a proof-of-work calculation.
+     *      - TX_VERSION_V3: Transaction input data contains a prepended chain ID to prevent use of a single transaction across multiple networks.
      * @default TX_VERSION_UNSPECIFIED
      * @enum {string}
      */
@@ -980,10 +1040,8 @@ export interface components {
       | 'TX_VERSION_V3';
     /** @description Command to allow a token holder to instruct the network to remove their delegated stake from a given validator node. */
     readonly v1UndelegateSubmission: {
-      /**
-       * @description Amount to undelegate, as an unsigned integer scaled to the governance asset's decimal places.
-       * If not set, then all delegations to the given validator node will be removed.
-       */
+      /** @description Amount to undelegate, as an unsigned integer scaled to the governance asset's decimal places.
+       *     If not set, then all delegations to the given validator node will be removed. */
       readonly amount?: string;
       /** @description Method of delegation. */
       readonly method?: components['schemas']['v1UndelegateSubmissionMethod'];
@@ -992,7 +1050,7 @@ export interface components {
     };
     /**
      * @description  - METHOD_NOW: Undelegate straight away, losing all rewards for the current epoch.
-     *  - METHOD_AT_END_OF_EPOCH: Undelegate at the end of an epoch, retaining all rewards for the current epoch.
+     *      - METHOD_AT_END_OF_EPOCH: Undelegate at the end of an epoch, retaining all rewards for the current epoch.
      * @default METHOD_UNSPECIFIED
      * @enum {string}
      */
@@ -1008,24 +1066,18 @@ export interface components {
       /** @description Margin mode to use. */
       readonly mode?: components['schemas']['UpdateMarginModeMode'];
     };
-    /**
-     * @description Command to associate metadata to a public key, known as a party ID.
-     * Partial update is not supported, meaning previous values must be included in
-     * the update, otherwise they are removed.
-     */
+    /** @description Command to associate metadata to a public key, known as a party ID.
+     *     Partial update is not supported, meaning previous values must be included in
+     *     the update, otherwise they are removed. */
     readonly v1UpdatePartyProfile: {
       /** @description Alias given to the party. It must be unique network-wide. */
       readonly alias?: string;
-      /**
-       * @description Freeform data to associate to the party.
-       * Support a maximum of 10 entries.
-       */
+      /** @description Freeform data to associate to the party.
+       *     Support a maximum of 10 entries. */
       readonly metadata?: readonly components['schemas']['vegaMetadata'][];
     };
-    /**
-     * @description A command that allows the referrer of a referral set to update team details for a referral set.
-     * Any field that is left unset or has a default value indicates that this field on the original referral set will be left unchanged.
-     */
+    /** @description A command that allows the referrer of a referral set to update team details for a referral set.
+     *     Any field that is left unset or has a default value indicates that this field on the original referral set will be left unchanged. */
     readonly v1UpdateReferralSet: {
       /** @description ID of the referral set to update. */
       readonly id?: string;
@@ -1035,28 +1087,22 @@ export interface components {
       readonly team?: components['schemas']['v1UpdateReferralSetTeam'];
     };
     readonly v1UpdateReferralSetTeam: {
-      /**
-       * @description List of public keys that are allowed to join the team.
-       * Only applicable to closed teams. Removing a party from the allow list does not remove
-       * the party from the team.
-       */
+      /** @description List of public keys that are allowed to join the team.
+       *     Only applicable to closed teams. Removing a party from the allow list does not remove
+       *     the party from the team. */
       readonly allowList?: readonly string[];
       /** @description New link to an avatar for the team. */
       readonly avatarUrl?: string;
-      /**
-       * @description Whether or not the team is closed to new party members. When closed, only parties specified in the allow list can
-       * join the team.
-       */
+      /** @description Whether or not the team is closed to new party members. When closed, only parties specified in the allow list can
+       *     join the team. */
       readonly closed?: boolean;
       /** @description New name of the team. */
       readonly name?: string;
       /** @description New link to the team's homepage. */
       readonly teamUrl?: string;
     };
-    /**
-     * @description A validator command which is sent automatically at regular intervals by any validator participating in the network.
-     * It is used to allow the network to know whether a validator is active, or if they have shut down.
-     */
+    /** @description A validator command which is sent automatically at regular intervals by any validator participating in the network.
+     *     It is used to allow the network to know whether a validator is active, or if they have shut down. */
     readonly v1ValidatorHeartbeat: {
       /** @description Signature from the validator made using their Ethereum wallet. */
       readonly ethereumSignature?: components['schemas']['v1Signature'];
@@ -1074,11 +1120,9 @@ export interface components {
       /** @description Actual value of the vote. */
       readonly value?: components['schemas']['vegaVoteValue'];
     };
-    /**
-     * @description Command to instruct the network to process an asset withdrawal from the Vega network.
-     * The process is specific to the destination foreign chain, for example, a withdrawal to Ethereum will generate signatures
-     * that allow funds to be taken across the bridge.
-     */
+    /** @description Command to instruct the network to process an asset withdrawal from the Vega network.
+     *     The process is specific to the destination foreign chain, for example, a withdrawal to Ethereum will generate signatures
+     *     that allow funds to be taken across the bridge. */
     readonly v1WithdrawSubmission: {
       /** @description Amount to be withdrawn, as an unsigned integer scaled to the asset's decimal places. */
       readonly amount?: string;
@@ -1090,50 +1134,50 @@ export interface components {
     /**
      * Various collateral/account types as used by Vega
      * @description - ACCOUNT_TYPE_UNSPECIFIED: Default value
-     *  - ACCOUNT_TYPE_INSURANCE: Insurance pool accounts contain insurance pool funds for a market
-     *  - ACCOUNT_TYPE_SETTLEMENT: Settlement accounts exist only during settlement or mark-to-market
-     *  - ACCOUNT_TYPE_MARGIN: Margin accounts contain funds set aside for the margin needed to support a party's open positions.
-     * Each party will have a margin account for each market they have traded in.
-     * Required initial margin is allocated to each market from user's general account.
-     * Collateral in the margin account can't be withdrawn or used as margin on another market until
-     * it is released back to the general account.
-     * Vega protocol uses an internal accounting system to segregate funds held as
-     * margin from other funds to ensure they are never lost or 'double spent'
+     *      - ACCOUNT_TYPE_INSURANCE: Insurance pool accounts contain insurance pool funds for a market
+     *      - ACCOUNT_TYPE_SETTLEMENT: Settlement accounts exist only during settlement or mark-to-market
+     *      - ACCOUNT_TYPE_MARGIN: Margin accounts contain funds set aside for the margin needed to support a party's open positions.
+     *     Each party will have a margin account for each market they have traded in.
+     *     Required initial margin is allocated to each market from user's general account.
+     *     Collateral in the margin account can't be withdrawn or used as margin on another market until
+     *     it is released back to the general account.
+     *     Vega protocol uses an internal accounting system to segregate funds held as
+     *     margin from other funds to ensure they are never lost or 'double spent'
      *
-     * Margin account funds will vary as margin requirements on positions change
-     *  - ACCOUNT_TYPE_GENERAL: General accounts contain the collateral for a party that is not otherwise allocated. A party will
-     * have multiple general accounts, one for each asset they want
-     * to trade with
+     *     Margin account funds will vary as margin requirements on positions change
+     *      - ACCOUNT_TYPE_GENERAL: General accounts contain the collateral for a party that is not otherwise allocated. A party will
+     *     have multiple general accounts, one for each asset they want
+     *     to trade with
      *
-     * General accounts are where funds are initially deposited or withdrawn from,
-     * it is also the account where funds are taken to fulfil fees and initial margin requirements
-     *  - ACCOUNT_TYPE_FEES_INFRASTRUCTURE: Infrastructure accounts contain fees earned by providing infrastructure on Vega
-     *  - ACCOUNT_TYPE_FEES_LIQUIDITY: Liquidity accounts contain fees earned by providing liquidity on Vega markets
-     *  - ACCOUNT_TYPE_FEES_MAKER: This account is created to hold fees earned by placing orders that sit on the book
-     * and are then matched with an incoming order to create a trade - These fees reward parties
-     * who provide the best priced liquidity that actually allows trading to take place
-     *  - ACCOUNT_TYPE_BOND: This account is created to maintain liquidity providers funds commitments
-     *  - ACCOUNT_TYPE_EXTERNAL: External account represents an external source (deposit/withdrawal)
-     *  - ACCOUNT_TYPE_GLOBAL_INSURANCE: Global insurance account for the asset
-     *  - ACCOUNT_TYPE_GLOBAL_REWARD: Global reward account for the asset
-     *  - ACCOUNT_TYPE_PENDING_TRANSFERS: Per asset account used to store pending transfers (if any)
-     *  - ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES: Per asset reward account for fees paid to makers
-     *  - ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES: Per asset reward account for fees received by makers
-     *  - ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES: Per asset reward account for fees received by liquidity providers
-     *  - ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS: Per asset reward account for market proposers when the market goes above some trading threshold
-     *  - ACCOUNT_TYPE_HOLDING: Per asset account for holding in-flight unfilled orders' funds
-     *  - ACCOUNT_TYPE_LP_LIQUIDITY_FEES: Network controlled liquidity provider's account, per market, to hold accrued liquidity fees.
-     *  - ACCOUNT_TYPE_LIQUIDITY_FEES_BONUS_DISTRIBUTION: Network controlled liquidity fees bonus distribution account, per market.
-     *  - ACCOUNT_TYPE_NETWORK_TREASURY: Network controlled treasury
-     *  - ACCOUNT_TYPE_VESTING_REWARDS: Account holding user's rewards for the vesting period
-     *  - ACCOUNT_TYPE_VESTED_REWARDS: Account holding user's rewards after the vesting period
-     *  - ACCOUNT_TYPE_REWARD_AVERAGE_POSITION: Per asset market reward account given for average position
-     *  - ACCOUNT_TYPE_REWARD_RELATIVE_RETURN: Per asset market reward account given for relative return
-     *  - ACCOUNT_TYPE_REWARD_RETURN_VOLATILITY: Per asset market reward account given for return volatility
-     *  - ACCOUNT_TYPE_REWARD_VALIDATOR_RANKING: Per asset market reward account given to validators by their ranking
-     *  - ACCOUNT_TYPE_PENDING_FEE_REFERRAL_REWARD: Per asset account for pending fee referral reward payouts
-     *  - ACCOUNT_TYPE_ORDER_MARGIN: Per asset market account for party in isolated margin mode
-     *  - ACCOUNT_TYPE_REWARD_REALISED_RETURN: Per asset market reward account for realised return
+     *     General accounts are where funds are initially deposited or withdrawn from,
+     *     it is also the account where funds are taken to fulfil fees and initial margin requirements
+     *      - ACCOUNT_TYPE_FEES_INFRASTRUCTURE: Infrastructure accounts contain fees earned by providing infrastructure on Vega
+     *      - ACCOUNT_TYPE_FEES_LIQUIDITY: Liquidity accounts contain fees earned by providing liquidity on Vega markets
+     *      - ACCOUNT_TYPE_FEES_MAKER: This account is created to hold fees earned by placing orders that sit on the book
+     *     and are then matched with an incoming order to create a trade - These fees reward parties
+     *     who provide the best priced liquidity that actually allows trading to take place
+     *      - ACCOUNT_TYPE_BOND: This account is created to maintain liquidity providers funds commitments
+     *      - ACCOUNT_TYPE_EXTERNAL: External account represents an external source (deposit/withdrawal)
+     *      - ACCOUNT_TYPE_GLOBAL_INSURANCE: Global insurance account for the asset
+     *      - ACCOUNT_TYPE_GLOBAL_REWARD: Global reward account for the asset
+     *      - ACCOUNT_TYPE_PENDING_TRANSFERS: Per asset account used to store pending transfers (if any)
+     *      - ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES: Per asset reward account for fees paid to makers
+     *      - ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES: Per asset reward account for fees received by makers
+     *      - ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES: Per asset reward account for fees received by liquidity providers
+     *      - ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS: Per asset reward account for market proposers when the market goes above some trading threshold
+     *      - ACCOUNT_TYPE_HOLDING: Per asset account for holding in-flight unfilled orders' funds
+     *      - ACCOUNT_TYPE_LP_LIQUIDITY_FEES: Network controlled liquidity provider's account, per market, to hold accrued liquidity fees.
+     *      - ACCOUNT_TYPE_LIQUIDITY_FEES_BONUS_DISTRIBUTION: Network controlled liquidity fees bonus distribution account, per market.
+     *      - ACCOUNT_TYPE_NETWORK_TREASURY: Network controlled treasury
+     *      - ACCOUNT_TYPE_VESTING_REWARDS: Account holding user's rewards for the vesting period
+     *      - ACCOUNT_TYPE_VESTED_REWARDS: Account holding user's rewards after the vesting period
+     *      - ACCOUNT_TYPE_REWARD_AVERAGE_POSITION: Per asset market reward account given for average position
+     *      - ACCOUNT_TYPE_REWARD_RELATIVE_RETURN: Per asset market reward account given for relative return
+     *      - ACCOUNT_TYPE_REWARD_RETURN_VOLATILITY: Per asset market reward account given for return volatility
+     *      - ACCOUNT_TYPE_REWARD_VALIDATOR_RANKING: Per asset market reward account given to validators by their ranking
+     *      - ACCOUNT_TYPE_PENDING_FEE_REFERRAL_REWARD: Per asset account for pending fee referral reward payouts
+     *      - ACCOUNT_TYPE_ORDER_MARGIN: Per asset market account for party in isolated margin mode
+     *      - ACCOUNT_TYPE_REWARD_REALISED_RETURN: Per asset market reward account for realised return
      * @default ACCOUNT_TYPE_UNSPECIFIED
      * @enum {string}
      */
@@ -1200,15 +1244,13 @@ export interface components {
       /**
        * Format: int64
        * @description Timestamp as Unix time in seconds when proposal terms gets enacted if proposal passed the vote,
-       * constrained by `minEnact` and `maxEnact` network parameters.
+       *     constrained by `minEnact` and `maxEnact` network parameters.
        */
       readonly enactmentTimestamp?: string;
       /** @description Proposal change for adding a new asset. */
       readonly newAsset?: components['schemas']['vegaNewAsset'];
-      /**
-       * @description Proposal change for a freeform request, which can be voted on but does not change the behaviour of the system,
-       * and can be used to gauge community sentiment.
-       */
+      /** @description Proposal change for a freeform request, which can be voted on but does not change the behaviour of the system,
+       *     and can be used to gauge community sentiment. */
       readonly newFreeform?: components['schemas']['vegaNewFreeform'];
       /** @description Proposal change for creating new futures market. */
       readonly newMarket?: components['schemas']['vegaNewMarket'];
@@ -1237,15 +1279,11 @@ export interface components {
       readonly validationTimestamp?: string;
     };
     readonly vegaBenefitTier: {
-      /**
-       * @description Required number of epochs a party must have been in a referral set to
-       * access this tier.
-       */
+      /** @description Required number of epochs a party must have been in a referral set to
+       *     access this tier. */
       readonly minimumEpochs?: string;
-      /**
-       * @description Required running notional taker volume in quantum units for parties
-       * to access this tier.
-       */
+      /** @description Required running notional taker volume in quantum units for parties
+       *     to access this tier. */
       readonly minimumRunningNotionalTakerVolume?: string;
       /** @description Proportion of the referee's taker fees to be discounted. */
       readonly referralDiscountFactor?: string;
@@ -1307,19 +1345,17 @@ export interface components {
       readonly decayPower?: string;
       /** @description Decay weight used for calculation of mark price. */
       readonly decayWeight?: string;
-      /**
-       * @description For how long a price source is considered valid. One entry for each data source
-       * such that the first is for the trade based mark price, the second is for the book based price
-       * the third is for the first oracle, followed by more oracle data source staleness tolerance.
-       */
+      /** @description For how long a price source is considered valid. One entry for each data source
+       *     such that the first is for the trade based mark price, the second is for the book based price
+       *     the third is for the first oracle, followed by more oracle data source staleness tolerance. */
       readonly sourceStalenessTolerance?: readonly string[];
       /** @description Weights for each composite price data source. */
       readonly sourceWeights?: readonly string[];
     };
     /**
      * @description  - COMPOSITE_PRICE_TYPE_WEIGHTED: Composite price is calculated as a weighted average of the underlying mark prices.
-     *  - COMPOSITE_PRICE_TYPE_MEDIAN: Composite price is calculated as a median of the underlying mark prices.
-     *  - COMPOSITE_PRICE_TYPE_LAST_TRADE: Composite price is calculated as the last trade price.
+     *      - COMPOSITE_PRICE_TYPE_MEDIAN: Composite price is calculated as a median of the underlying mark prices.
+     *      - COMPOSITE_PRICE_TYPE_LAST_TRADE: Composite price is calculated as the last trade price.
      * @default COMPOSITE_PRICE_TYPE_UNSPECIFIED
      * @enum {string}
      */
@@ -1328,49 +1364,37 @@ export interface components {
       | 'COMPOSITE_PRICE_TYPE_WEIGHTED'
       | 'COMPOSITE_PRICE_TYPE_MEDIAN'
       | 'COMPOSITE_PRICE_TYPE_LAST_TRADE';
-    /**
-     * @description Represents the top level object that handles data sources.
-     * Data source definition can be external or internal, with whatever
-     * number of data sources are defined for each type in the child objects below.
-     */
+    /** @description Represents the top level object that handles data sources.
+     *     Data source definition can be external or internal, with whatever
+     *     number of data sources are defined for each type in the child objects below. */
     readonly vegaDataSourceDefinition: {
       readonly external?: components['schemas']['vegaDataSourceDefinitionExternal'];
       readonly internal?: components['schemas']['vegaDataSourceDefinitionInternal'];
     };
-    /**
-     * @description DataSourceDefinitionExternal is the top level object used for all external
-     * data sources. It contains one of any of the defined `SourceType` variants.
-     */
+    /** @description DataSourceDefinitionExternal is the top level object used for all external
+     *     data sources. It contains one of any of the defined `SourceType` variants. */
     readonly vegaDataSourceDefinitionExternal: {
       /** @description Contains the data specification that is received from Ethereum sources. */
       readonly ethOracle?: components['schemas']['vegaEthCallSpec'];
       readonly oracle?: components['schemas']['vegaDataSourceSpecConfiguration'];
     };
-    /**
-     * @description Top level object used for all internal data sources.
-     * It contains one of any of the defined source type variants.
-     */
+    /** @description Top level object used for all internal data sources.
+     *     It contains one of any of the defined source type variants. */
     readonly vegaDataSourceDefinitionInternal: {
       readonly time?: components['schemas']['vegaDataSourceSpecConfigurationTime'];
       readonly timeTrigger?: components['schemas']['vegaDataSourceSpecConfigurationTimeTrigger'];
     };
-    /**
-     * @description All types of external data sources use the same configuration set for meeting
-     * requirements in order for the data to be useful for Vega - valid signatures
-     * and matching filters.
-     */
+    /** @description All types of external data sources use the same configuration set for meeting
+     *     requirements in order for the data to be useful for Vega - valid signatures
+     *     and matching filters. */
     readonly vegaDataSourceSpecConfiguration: {
-      /**
-       * @description Filters describes which source data are considered of interest or not for
-       * the product (or the risk model).
-       */
+      /** @description Filters describes which source data are considered of interest or not for
+       *     the product (or the risk model). */
       readonly filters?: readonly components['schemas']['v1Filter'][];
-      /**
-       * @description Signers is the list of authorized signatures that signed the data for this
-       * source. All the signatures in the data source data should be contained in
-       * this external source. All the signatures in the data should be contained in
-       * this list.
-       */
+      /** @description Signers is the list of authorized signatures that signed the data for this
+       *     source. All the signatures in the data source data should be contained in
+       *     this external source. All the signatures in the data should be contained in
+       *     this list. */
       readonly signers?: readonly components['schemas']['v1Signer'][];
     };
     /** @description Internal data source used for emitting timestamps. */
@@ -1385,44 +1409,36 @@ export interface components {
       /** An internal time trigger */
       readonly triggers?: readonly components['schemas']['v1InternalTimeTrigger'][];
     };
-    /**
-     * DataSourceSpecToFutureBinding describes which property of the data source data is to be
-     * used as settlement data and which to use as the trading terminated trigger
-     */
+    /** DataSourceSpecToFutureBinding describes which property of the data source data is to be
+     *     used as settlement data and which to use as the trading terminated trigger */
     readonly vegaDataSourceSpecToFutureBinding: {
-      /**
-       * @description Name of the property in the source data that should be used as settlement data.
-       * If it is set to "prices.BTC.value", then the Future will use the value of
-       * this property as settlement data.
-       */
+      /** @description Name of the property in the source data that should be used as settlement data.
+       *     If it is set to "prices.BTC.value", then the Future will use the value of
+       *     this property as settlement data. */
       readonly settlementDataProperty?: string;
       /** @description Name of the property in the data source data that signals termination of trading. */
       readonly tradingTerminationProperty?: string;
     };
-    /**
-     * @description Describes which properties of the data source data is to be
-     * used for settlement.
-     */
+    /** @description Describes which properties of the data source data is to be
+     *     used for settlement. */
     readonly vegaDataSourceSpecToPerpetualBinding: {
-      /**
-       * @description Name of the property in the source data that should be used for settlement data.
-       * If it is set to "prices.BTC.value" for example, then the perpetual market will use the value of
-       * this property to get settlement data.
-       */
+      /** @description Name of the property in the source data that should be used for settlement data.
+       *     If it is set to "prices.BTC.value" for example, then the perpetual market will use the value of
+       *     this property to get settlement data. */
       readonly settlementDataProperty?: string;
       /** @description Name of the property in the source data that should be used to determine the perpetual's settlement schedule. */
       readonly settlementScheduleProperty?: string;
     };
     /**
      * - DISPATCH_METRIC_MAKER_FEES_PAID: Dispatch metric that uses the total maker fees paid in the market
-     *  - DISPATCH_METRIC_MAKER_FEES_RECEIVED: Dispatch metric that uses the total maker fees received in the market
-     *  - DISPATCH_METRIC_LP_FEES_RECEIVED: Dispatch metric that uses the total LP fees received in the market
-     *  - DISPATCH_METRIC_MARKET_VALUE: Dispatch metric that uses total value of the market if above the required threshold and not paid given proposer bonus yet
-     *  - DISPATCH_METRIC_AVERAGE_POSITION: Dispatch metric that uses the time weighted average position
-     *  - DISPATCH_METRIC_RELATIVE_RETURN: Dispatch metric that uses the relative PNL of the party in the market
-     *  - DISPATCH_METRIC_RETURN_VOLATILITY: Dispatch metric that uses return volatility of the party in the market
-     *  - DISPATCH_METRIC_VALIDATOR_RANKING: Dispatch metric that uses the validator ranking of the validator as metric
-     *  - DISPATCH_METRIC_REALISED_RETURN: Dispatch metric that uses the realised return of the party in a market
+     *      - DISPATCH_METRIC_MAKER_FEES_RECEIVED: Dispatch metric that uses the total maker fees received in the market
+     *      - DISPATCH_METRIC_LP_FEES_RECEIVED: Dispatch metric that uses the total LP fees received in the market
+     *      - DISPATCH_METRIC_MARKET_VALUE: Dispatch metric that uses total value of the market if above the required threshold and not paid given proposer bonus yet
+     *      - DISPATCH_METRIC_AVERAGE_POSITION: Dispatch metric that uses the time weighted average position
+     *      - DISPATCH_METRIC_RELATIVE_RETURN: Dispatch metric that uses the relative PNL of the party in the market
+     *      - DISPATCH_METRIC_RETURN_VOLATILITY: Dispatch metric that uses return volatility of the party in the market
+     *      - DISPATCH_METRIC_VALIDATOR_RANKING: Dispatch metric that uses the validator ranking of the validator as metric
+     *      - DISPATCH_METRIC_REALISED_RETURN: Dispatch metric that uses the realised return of the party in a market
      * @default DISPATCH_METRIC_UNSPECIFIED
      * @enum {string}
      */
@@ -1480,7 +1496,7 @@ export interface components {
     };
     /**
      * @description  - DISTRIBUTION_STRATEGY_PRO_RATA: Rewards funded using the pro-rata strategy should be distributed pro-rata by each entity's reward metric, scaled by any active multipliers that party has.
-     *  - DISTRIBUTION_STRATEGY_RANK: Rewards funded using the party rank.
+     *      - DISTRIBUTION_STRATEGY_RANK: Rewards funded using the party rank.
      * @default DISTRIBUTION_STRATEGY_UNSPECIFIED
      * @enum {string}
      */
@@ -1494,16 +1510,12 @@ export interface components {
       readonly chainId?: string;
       /** @description Address of the contract for the token, on the ethereum network. */
       readonly contractAddress?: string;
-      /**
-       * @description Lifetime limits deposit per address
-       * note: this is a temporary measure that can be changed by governance.
-       */
+      /** @description Lifetime limits deposit per address
+       *     note: this is a temporary measure that can be changed by governance. */
       readonly lifetimeLimit?: string;
-      /**
-       * @description Maximum you can withdraw instantly. All withdrawals over the threshold will be delayed by the withdrawal delay.
-       * There’s no limit on the size of a withdrawal
-       * note: this is a temporary measure that can be changed by governance.
-       */
+      /** @description Maximum you can withdraw instantly. All withdrawals over the threshold will be delayed by the withdrawal delay.
+       *     There’s no limit on the size of a withdrawal
+       *     note: this is a temporary measure that can be changed by governance. */
       readonly withdrawThreshold?: string;
     };
     /** Asset deny-listing for an ERC20 token */
@@ -1594,8 +1606,8 @@ export interface components {
       /**
        * Format: int64
        * @description Time at which the block was produced
-       * will be used to inform the core at what time
-       * the stake was made unavailable.
+       *     will be used to inform the core at what time
+       *     the stake was made unavailable.
        */
       readonly blockTime?: string;
       /** Ethereum address of the new signer */
@@ -1608,8 +1620,8 @@ export interface components {
       /**
        * Format: int64
        * @description Time at which the block was produced.
-       * Will be used to inform the core at what time
-       * the stake was made unavailable.
+       *     Will be used to inform the core at what time
+       *     the stake was made unavailable.
        */
       readonly blockTime?: string;
       /** Nonce created by the Vega network used for this old signer */
@@ -1622,8 +1634,8 @@ export interface components {
       /**
        * Format: int64
        * @description Time at which the block was produced.
-       * Will be used to inform the core at what time
-       * the stake was made unavailable.
+       *     Will be used to inform the core at what time
+       *     the stake was made unavailable.
        */
       readonly blockTime?: string;
       /**
@@ -1635,17 +1647,13 @@ export interface components {
       readonly nonce?: string;
     };
     readonly vegaERC20Update: {
-      /**
-       * @description Lifetime limits deposit per address.
-       * This will be interpreted against the asset decimals.
-       * note: this is a temporary measure that can be changed by governance.
-       */
+      /** @description Lifetime limits deposit per address.
+       *     This will be interpreted against the asset decimals.
+       *     note: this is a temporary measure that can be changed by governance. */
       readonly lifetimeLimit?: string;
-      /**
-       * @description Maximum you can withdraw instantly. All withdrawals over the threshold will be delayed by the withdrawal delay.
-       * There’s no limit on the size of a withdrawal
-       * note: this is a temporary measure that can be changed by governance.
-       */
+      /** @description Maximum you can withdraw instantly. All withdrawals over the threshold will be delayed by the withdrawal delay.
+       *     There’s no limit on the size of a withdrawal
+       *     note: this is a temporary measure that can be changed by governance. */
       readonly withdrawThreshold?: string;
     };
     /** Asset withdrawal for an ERC20 token */
@@ -1659,7 +1667,7 @@ export interface components {
     };
     /**
      * - ENTITY_SCOPE_INDIVIDUALS: Rewards must be distributed directly to eligible parties.
-     *  - ENTITY_SCOPE_TEAMS: Rewards must be distributed to directly eligible teams, and then amongst team members
+     *      - ENTITY_SCOPE_TEAMS: Rewards must be distributed to directly eligible teams, and then amongst team members
      * @default ENTITY_SCOPE_UNSPECIFIED
      * @enum {string}
      */
@@ -1672,35 +1680,29 @@ export interface components {
       /** @description Address into which the bridge will release the funds. */
       readonly receiverAddress?: string;
     };
-    /**
-     * @description Specifies a data source that derives its content from calling a read method
-     * on an Ethereum contract.
-     */
+    /** @description Specifies a data source that derives its content from calling a read method
+     *     on an Ethereum contract. */
     readonly vegaEthCallSpec: {
       /** @description The ABI of that contract. */
       readonly abi?: string;
       /** @description Ethereum address of the contract to call. */
       readonly address?: string;
-      /**
-       * @description List of arguments to pass to method call.
-       * Protobuf 'Value' wraps an arbitrary JSON type that is mapped to an Ethereum
-       * type according to the ABI.
-       */
+      /** @description List of arguments to pass to method call.
+       *     Protobuf 'Value' wraps an arbitrary JSON type that is mapped to an Ethereum
+       *     type according to the ABI. */
       readonly args?: readonly Record<string, never>[];
       /** Filters the data returned from the contract method */
       readonly filters?: readonly components['schemas']['v1Filter'][];
       /** @description Name of the method on the contract to call. */
       readonly method?: string;
-      /**
-       * @description Normalisers are used to convert the data returned from the contract method
-       * into a standard format. The key of the map is the name of the property,
-       * which identifies the specific piece of data to other parts of the data
-       * sourcing framework, for example filters. The value is a JSONPath expression
-       * for expressing where in the contract call result the required data is
-       * located, for example $[0] indicates the first result. $[1].price would look
-       * in the second result returned from the contract for a structure with a key
-       * called 'price' and use that if it exists.
-       */
+      /** @description Normalisers are used to convert the data returned from the contract method
+       *     into a standard format. The key of the map is the name of the property,
+       *     which identifies the specific piece of data to other parts of the data
+       *     sourcing framework, for example filters. The value is a JSONPath expression
+       *     for expressing where in the contract call result the required data is
+       *     located, for example $[0] indicates the first result. $[1].price would look
+       *     in the second result returned from the contract for a structure with a key
+       *     called 'price' and use that if it exists. */
       readonly normalisers?: readonly components['schemas']['vegaNormaliser'][];
       /**
        * Number of confirmations required before the query is considered verified
@@ -1748,32 +1750,40 @@ export interface components {
       /** @description ID of the data source spec that triggered this contract call. */
       readonly specId?: string;
     };
-    /**
-     * @description Trigger for an Ethereum call based on the Ethereum block timestamp. Can be
-     * one-off or repeating.
-     */
+    /** @description Trigger for an Ethereum call based on the Ethereum block timestamp. Can be
+     *     one-off or repeating. */
     readonly vegaEthTimeTrigger: {
       /**
        * Format: uint64
        * @description Repeat the call every n seconds after the initial call. If no time for
-       * initial call was specified, begin repeating immediately.
+       *     initial call was specified, begin repeating immediately.
        */
       readonly every?: string;
       /**
        * Format: uint64
        * @description Trigger when the Ethereum time is greater or equal to this time, in Unix
-       * seconds.
+       *     seconds.
        */
       readonly initial?: string;
       /**
        * Format: uint64
        * @description If repeating, stop once Ethereum time is greater than this time, in Unix
-       * seconds. If not set, then repeat indefinitely.
+       *     seconds. If not set, then repeat indefinitely.
        */
       readonly until?: string;
     };
+    readonly vegaFutureCap: {
+      /** @description If set to true, the settlement price must either be zero, or equal to the max price. */
+      readonly binarySettlement?: boolean;
+      /** @description If set to true, positions must be fully collateralised so there is no default risk for any party. */
+      readonly fullyCollateralised?: boolean;
+      /** @description Set the maximum price for orders, and settlement data in market decimals. */
+      readonly maxPrice?: string;
+    };
     /** Future product configuration */
     readonly vegaFutureProduct: {
+      /** @description If set, this product creates a capped future market. */
+      readonly cap?: components['schemas']['vegaFutureCap'];
       /** @description Binding between the data source spec and the settlement data. */
       readonly dataSourceSpecBinding?: components['schemas']['vegaDataSourceSpecToFutureBinding'];
       /** @description Data source spec describing the data source for settlement. */
@@ -1795,8 +1805,9 @@ export interface components {
       | 'GOVERNANCE_TRANSFER_TYPE_BEST_EFFORT';
     /**
      * @description  - INDIVIDUAL_SCOPE_ALL: All parties on the network are within the scope of this reward.
-     *  - INDIVIDUAL_SCOPE_IN_TEAM: All parties that are part of a team are within the scope of this reward.
-     *  - INDIVIDUAL_SCOPE_NOT_IN_TEAM: All parties that are not part of a team are within the scope of this reward.
+     *      - INDIVIDUAL_SCOPE_IN_TEAM: All parties that are part of a team are within the scope of this reward.
+     *      - INDIVIDUAL_SCOPE_NOT_IN_TEAM: All parties that are not part of a team are within the scope of this reward.
+     *      - INDIVIDUAL_SCOPE_AMM: All keys representing AMMs are within the scope of this reward.
      * @default INDIVIDUAL_SCOPE_UNSPECIFIED
      * @enum {string}
      */
@@ -1805,7 +1816,8 @@ export interface components {
       | 'INDIVIDUAL_SCOPE_ALL'
       | 'INDIVIDUAL_SCOPE_AMM'
       | 'INDIVIDUAL_SCOPE_IN_TEAM'
-      | 'INDIVIDUAL_SCOPE_NOT_IN_TEAM';
+      | 'INDIVIDUAL_SCOPE_NOT_IN_TEAM'
+      | 'INDIVIDUAL_SCOPE_AMM';
     /** Instrument configuration */
     readonly vegaInstrumentConfiguration: {
       /** @description Instrument code, human-readable shortcode used to describe the instrument. */
@@ -1828,10 +1840,8 @@ export interface components {
     readonly vegaLiquidationStrategy: {
       /** @description Fraction of the open position the market will try to close in a single attempt; range 0 through 1. */
       readonly disposalFraction?: string;
-      /**
-       * @description Decimal > 0 specifying the range range above and below the mid price within which the network will trade to dispose of its position.
-       * The value can be > 1. For example, if set to 1.5, the minimum price will be 0, ie max(0, mid_price * (1 - 1.5)), and the maximum price will be mid_price * (1 + 1.5).
-       */
+      /** @description Decimal > 0 specifying the range range above and below the mid price within which the network will trade to dispose of its position.
+       *     The value can be > 1. For example, if set to 1.5, the minimum price will be 0, ie max(0, mid_price * (1 - 1.5)), and the maximum price will be mid_price * (1 + 1.5). */
       readonly disposalSlippageRange?: string;
       /**
        * Format: int64
@@ -1855,8 +1865,8 @@ export interface components {
     };
     /**
      * @description  - METHOD_MARGINAL_COST: Fee is the smallest value of all bids, such that liquidity providers with nominated fees less than or equal to this value still have sufficient commitment to fulfil the market's target stake.
-     *  - METHOD_WEIGHTED_AVERAGE: Fee is the weighted average of all liquidity providers' nominated fees, weighted by their committment.
-     *  - METHOD_CONSTANT: Fee is set by the market to a constant value irrespective of any liquidity provider's nominated fee.
+     *      - METHOD_WEIGHTED_AVERAGE: Fee is the weighted average of all liquidity providers' nominated fees, weighted by their committment.
+     *      - METHOD_CONSTANT: Fee is set by the market to a constant value irrespective of any liquidity provider's nominated fee.
      * @default METHOD_UNSPECIFIED
      * @enum {string}
      */
@@ -1886,10 +1896,8 @@ export interface components {
        */
       readonly performanceHysteresisEpochs?: string;
       readonly priceRange?: string;
-      /**
-       * @description Specifies the maximum fraction of their accrued fees an LP that meets the SLA implied by market.liquidity.commitmentMinTimeFraction will lose to liquidity providers
-       * that achieved a higher SLA performance than them.
-       */
+      /** @description Specifies the maximum fraction of their accrued fees an LP that meets the SLA implied by market.liquidity.commitmentMinTimeFraction will lose to liquidity providers
+       *     that achieved a higher SLA performance than them. */
       readonly slaCompetitionFactor?: string;
     };
     /** Risk model parameters for log normal */
@@ -1919,18 +1927,20 @@ export interface components {
        * @description Risk Aversion Parameter.
        */
       readonly riskAversionParameter?: number;
+      /** @description And optional override for the risk factor calculated by the risk model. */
+      readonly riskFactorOverride?: components['schemas']['vegaRiskFactorOverride'];
       /**
        * Format: double
        * @description Tau parameter of the risk model, projection horizon measured as a year fraction used in the expected shortfall
-       * calculation to obtain the maintenance margin, must be a strictly non-negative real number.
+       *     calculation to obtain the maintenance margin, must be a strictly non-negative real number.
        */
       readonly tau?: number;
     };
     /**
      * - MARKET_STATE_UPDATE_TYPE_UNSPECIFIED: Default value, always invalid
-     *  - MARKET_STATE_UPDATE_TYPE_TERMINATE: Request to terminate a market via governance
-     *  - MARKET_STATE_UPDATE_TYPE_SUSPEND: Request to suspend a market via governance
-     *  - MARKET_STATE_UPDATE_TYPE_RESUME: Request to resume a market via governance
+     *      - MARKET_STATE_UPDATE_TYPE_TERMINATE: Request to terminate a market via governance
+     *      - MARKET_STATE_UPDATE_TYPE_SUSPEND: Request to suspend a market via governance
+     *      - MARKET_STATE_UPDATE_TYPE_RESUME: Request to resume a market via governance
      * @default MARKET_STATE_UPDATE_TYPE_UNSPECIFIED
      * @enum {string}
      */
@@ -1961,11 +1971,9 @@ export interface components {
       /** @description Configuration of the new asset. */
       readonly changes?: components['schemas']['vegaAssetDetails'];
     };
-    /**
-     * @description Freeform proposal
-     * This message is just used as a placeholder to sort out the nature of the
-     * proposal once parsed.
-     */
+    /** @description Freeform proposal
+     *     This message is just used as a placeholder to sort out the nature of the
+     *     proposal once parsed. */
     readonly vegaNewFreeform: Record<string, never>;
     /** New market on Vega */
     readonly vegaNewMarket: {
@@ -1979,6 +1987,8 @@ export interface components {
        * @description Decimal places used for the new futures market, sets the smallest price increment on the book.
        */
       readonly decimalPlaces?: string;
+      /** If enabled aggressive orders sent to the market will be delayed by the configured number of blocks */
+      readonly enableTransactionReordering?: boolean;
       /** @description New futures market instrument configuration. */
       readonly instrument?: components['schemas']['vegaInstrumentConfiguration'];
       /** @description Linear slippage factor is used to cap the slippage component of maintenance margin - it is applied to the slippage volume. */
@@ -1993,11 +2003,9 @@ export interface components {
       readonly liquiditySlaParameters?: components['schemas']['vegaLiquiditySLAParameters'];
       /** @description Log normal risk model parameters, valid only if MODEL_LOG_NORMAL is selected. */
       readonly logNormal?: components['schemas']['vegaLogNormalRiskModel'];
-      /**
-       * @description DEPRECATED: Use liquidity SLA parameters instead.
-       * Percentage move up and down from the mid price which specifies the range of
-       * price levels over which automated liquidity provisions will be deployed.
-       */
+      /** @description DEPRECATED: Use liquidity SLA parameters instead.
+       *     Percentage move up and down from the mid price which specifies the range of
+       *     price levels over which automated liquidity provisions will be deployed. */
       readonly lpPriceRange?: string;
       /** @description Mark price configuration. */
       readonly markPriceConfiguration?: components['schemas']['vegaCompositePriceConfiguration'];
@@ -2026,6 +2034,8 @@ export interface components {
     };
     /** Configuration for a new spot market on Vega */
     readonly vegaNewSpotMarketConfiguration: {
+      /** If enabled aggressive orders sent to the market will be delayed by the configured number of blocks */
+      readonly enableTransactionReordering?: boolean;
       /** @description New spot market instrument configuration. */
       readonly instrument?: components['schemas']['vegaInstrumentConfiguration'];
       /** @description Specifies how the liquidity fee for the market will be calculated. */
@@ -2065,12 +2075,10 @@ export interface components {
       readonly amount?: string;
       /** ID of asset to transfer */
       readonly asset?: string;
-      /**
-       * Specifies the account to transfer to, depending on the account type:
-       * Network treasury: leave empty
-       * Party: party's public key
-       * Market insurance pool: market ID
-       */
+      /** Specifies the account to transfer to, depending on the account type:
+       *     Network treasury: leave empty
+       *     Party: party's public key
+       *     Market insurance pool: market ID */
       readonly destination?: string;
       /** Specifies the account type to transfer to: reward pool, party, network insurance pool, market insurance pool */
       readonly destinationType?: components['schemas']['vegaAccountType'];
@@ -2082,11 +2090,9 @@ export interface components {
       readonly source?: string;
       /** Source account type, such as network treasury, market insurance pool */
       readonly sourceType?: components['schemas']['vegaAccountType'];
-      /**
-       * "All or nothing" or "best effort":
-       * All or nothing: Transfers the specified amount or does not transfer anything
-       * Best effort: Transfers the specified amount or the max allowable amount if this is less than the specified amount
-       */
+      /** "All or nothing" or "best effort":
+       *     All or nothing: Transfers the specified amount or does not transfer anything
+       *     Best effort: Transfers the specified amount or the max allowable amount if this is less than the specified amount */
       readonly transferType?: components['schemas']['vegaGovernanceTransferType'];
     };
     readonly vegaNormaliser: {
@@ -2104,9 +2110,9 @@ export interface components {
     /**
      * Type values for an order
      * @description - TYPE_UNSPECIFIED: Default value, always invalid
-     *  - TYPE_LIMIT: Used for Limit orders
-     *  - TYPE_MARKET: Used for Market orders
-     *  - TYPE_NETWORK: Used for orders where the initiating party is the network (with distressed parties)
+     *      - TYPE_LIMIT: Used for Limit orders
+     *      - TYPE_MARKET: Used for Market orders
+     *      - TYPE_NETWORK: Used for orders where the initiating party is the network (with distressed parties)
      * @default TYPE_UNSPECIFIED
      * @enum {string}
      */
@@ -2115,10 +2121,8 @@ export interface components {
       | 'TYPE_LIMIT'
       | 'TYPE_MARKET'
       | 'TYPE_NETWORK';
-    /**
-     * Pegged orders are limit orders where the price is specified in the form REFERENCE +/- OFFSET
-     * They can be used for any limit order that is valid during continuous trading
-     */
+    /** Pegged orders are limit orders where the price is specified in the form REFERENCE +/- OFFSET
+     *     They can be used for any limit order that is valid during continuous trading */
     readonly vegaPeggedOrder: {
       /** @description Offset from the price reference. */
       readonly offset?: string;
@@ -2127,11 +2131,11 @@ export interface components {
     };
     /**
      * Pegged reference defines which price point a pegged order is linked to - meaning
-     * the price for a pegged order is calculated from the value of the reference price point
+     *     the price for a pegged order is calculated from the value of the reference price point
      * @description - PEGGED_REFERENCE_UNSPECIFIED: Default value for PeggedReference, no reference given
-     *  - PEGGED_REFERENCE_MID: Mid price reference
-     *  - PEGGED_REFERENCE_BEST_BID: Best bid price reference
-     *  - PEGGED_REFERENCE_BEST_ASK: Best ask price reference
+     *      - PEGGED_REFERENCE_MID: Mid price reference
+     *      - PEGGED_REFERENCE_BEST_BID: Best bid price reference
+     *      - PEGGED_REFERENCE_BEST_ASK: Best ask price reference
      * @default PEGGED_REFERENCE_UNSPECIFIED
      * @enum {string}
      */
@@ -2178,8 +2182,8 @@ export interface components {
       /**
        * Format: int64
        * @description Price monitoring auction extension duration in seconds should the price
-       * breach its theoretical level over the specified horizon at the specified
-       * probability level.
+       *     breach its theoretical level over the specified horizon at the specified
+       *     probability level.
        */
       readonly auctionExtension?: string;
       /**
@@ -2192,17 +2196,13 @@ export interface components {
     };
     /** @description Rationale behind a proposal. */
     readonly vegaProposalRationale: {
-      /**
-       * @description Description to show a short title / something in case the link goes offline.
-       * This is to be between 0 and 20k unicode characters.
-       * This is mandatory for all proposals.
-       */
+      /** @description Description to show a short title / something in case the link goes offline.
+       *     This is to be between 0 and 20k unicode characters.
+       *     This is mandatory for all proposals. */
       readonly description?: string;
-      /**
-       * @description Title to be used to give a short description of the proposal in lists.
-       * This is to be between 0 and 100 unicode characters.
-       * This is mandatory for all proposals.
-       */
+      /** @description Title to be used to give a short description of the proposal in lists.
+       *     This is to be between 0 and 100 unicode characters.
+       *     This is mandatory for all proposals. */
       readonly title?: string;
     };
     /** Terms for a governance proposal on Vega */
@@ -2212,21 +2212,19 @@ export interface components {
       /**
        * Format: int64
        * @description Timestamp as Unix time in seconds when voting closes for this proposal,
-       * constrained by `minClose` and `maxClose` network parameters.
+       *     constrained by `minClose` and `maxClose` network parameters.
        */
       readonly closingTimestamp?: string;
       /**
        * Format: int64
        * @description Timestamp as Unix time in seconds when proposal gets enacted if passed,
-       * constrained by `minEnact` and `maxEnact` network parameters.
+       *     constrained by `minEnact` and `maxEnact` network parameters.
        */
       readonly enactmentTimestamp?: string;
       /** @description Proposal change for creating new assets on Vega. */
       readonly newAsset?: components['schemas']['vegaNewAsset'];
-      /**
-       * @description Proposal change for a freeform request, which can be voted on but does not change the behaviour of the system,
-       * and can be used to gauge community sentiment.
-       */
+      /** @description Proposal change for a freeform request, which can be voted on but does not change the behaviour of the system,
+       *     and can be used to gauge community sentiment. */
       readonly newFreeform?: components['schemas']['vegaNewFreeform'];
       /** @description Proposal change for creating new futures market on Vega. */
       readonly newMarket?: components['schemas']['vegaNewMarket'];
@@ -2269,27 +2267,26 @@ export interface components {
        * @description Last epoch at which this transfer shall be paid.
        */
       readonly endEpoch?: string;
+      /** @description Factor that the initial transfer amount is multiplied by for each epoch that it is executed.
+       *     For example if the initial transfer amount is 1000 and the factor is 0.5, then the amounts transferred per epoch will be 1000, 500, 250, 125, etc. */
+      readonly factor?: string;
       /** Format: uint64 */
       readonly startEpoch?: string;
     };
     readonly vegaReferralProgramChanges: {
-      /**
-       * @description Defined benefit tiers in increasing order. First element will give Tier 1,
-       * second element will give Tier 2, and so on. Determines the level of
-       * benefit a party can expect based on performance criteria.
-       */
+      /** @description Defined benefit tiers in increasing order. First element will give Tier 1,
+       *     second element will give Tier 2, and so on. Determines the level of
+       *     benefit a party can expect based on performance criteria. */
       readonly benefitTiers?: readonly components['schemas']['vegaBenefitTier'][];
       /**
        * Format: int64
        * @description Timestamp as Unix time in seconds, after which when the current epoch
-       * ends, the program will end and benefits will be disabled.
+       *     ends, the program will end and benefits will be disabled.
        */
       readonly endOfProgramTimestamp?: string;
-      /**
-       * @description Defined staking tiers in increasing order. First element will give Tier 1,
-       * second element will give Tier 2, and so on. Determines the level of
-       * benefit a party can expect based on their staking.
-       */
+      /** @description Defined staking tiers in increasing order. First element will give Tier 1,
+       *     second element will give Tier 2, and so on. Determines the level of
+       *     benefit a party can expect based on their staking. */
       readonly stakingTiers?: readonly components['schemas']['vegaStakingTier'][];
       /**
        * Format: uint64
@@ -2297,14 +2294,21 @@ export interface components {
        */
       readonly windowLength?: string;
     };
+    /** Risk factor override to control stable leverage */
+    readonly vegaRiskFactorOverride: {
+      /** @description Long Risk factor value. */
+      readonly long?: string;
+      /** @description Short Risk factor value. */
+      readonly short?: string;
+    };
     readonly vegaScalarValue: {
       readonly value?: string;
     };
     /**
      * Side relates to the direction of an order, to Buy, or Sell
      * @description - SIDE_UNSPECIFIED: Default value, always invalid
-     *  - SIDE_BUY: Buy order
-     *  - SIDE_SELL: Sell order
+     *      - SIDE_BUY: Buy order
+     *      - SIDE_SELL: Sell order
      * @default SIDE_UNSPECIFIED
      * @enum {string}
      */
@@ -2337,10 +2341,8 @@ export interface components {
        */
       readonly probabilityOfTrading?: number;
     };
-    /**
-     * @description Describes which property of the data source data is to be
-     * used for price source.
-     */
+    /** @description Describes which property of the data source data is to be
+     *     used for price source. */
     readonly vegaSpecBindingForCompositePrice: {
       /** @description The property name of price. */
       readonly priceSourceProperty?: string;
@@ -2358,8 +2360,8 @@ export interface components {
       /**
        * Format: int64
        * @description Time at which the block was produced.
-       * Will be used to inform the core at what time
-       * the stake started to be available.
+       *     Will be used to inform the core at what time
+       *     the stake started to be available.
        */
       readonly blockTime?: string;
       /** Ethereum Address of the user depositing stake (hex encode with 0x prefix) */
@@ -2373,8 +2375,8 @@ export interface components {
       /**
        * Format: int64
        * @description The time at which the block was produced
-       * will be used to inform the core at what time
-       * the stake was made unavailable.
+       *     will be used to inform the core at what time
+       *     the stake was made unavailable.
        */
       readonly blockTime?: string;
       /** @description Ethereum address of the user removing stake. This should be hex encoded with 0x prefix. */
@@ -2405,15 +2407,11 @@ export interface components {
       readonly totalSupply?: components['schemas']['vegaStakeTotalSupply'];
     };
     readonly vegaStakingTier: {
-      /**
-       * @description Required number of governance tokens ($VEGA) a referrer must have staked to
-       * receive the multiplier.
-       */
+      /** @description Required number of governance tokens ($VEGA) a referrer must have staked to
+       *     receive the multiplier. */
       readonly minimumStakedTokens?: string;
-      /**
-       * @description Multiplier applied to the referral reward factor when calculating referral
-       * rewards due to the referrer.
-       */
+      /** @description Multiplier applied to the referral reward factor when calculating referral
+       *     rewards due to the referrer. */
       readonly referralRewardMultiplier?: string;
     };
     readonly vegaStateValueProposal: {
@@ -2487,6 +2485,8 @@ export interface components {
     };
     /** Configuration to update a futures market on Vega */
     readonly vegaUpdateMarketConfiguration: {
+      /** If enabled aggressive orders sent to the market will be delayed by the configured number of blocks */
+      readonly enableTransactionReordering?: boolean;
       /** @description Updated futures market instrument configuration. */
       readonly instrument?: components['schemas']['vegaUpdateInstrumentConfiguration'];
       /** @description Linear slippage factor is used to cap the slippage component of maintenance margin - it is applied to the slippage volume. */
@@ -2501,11 +2501,9 @@ export interface components {
       readonly liquiditySlaParameters?: components['schemas']['vegaLiquiditySLAParameters'];
       /** @description Log normal risk model parameters, valid only if MODEL_LOG_NORMAL is selected. */
       readonly logNormal?: components['schemas']['vegaLogNormalRiskModel'];
-      /**
-       * @description DEPRECATED: Use liquidity SLA parameters instead.
-       * Percentage move up and down from the mid price which specifies the range of
-       * price levels over which automated liquidity provisions will be deployed.
-       */
+      /** @description DEPRECATED: Use liquidity SLA parameters instead.
+       *     Percentage move up and down from the mid price which specifies the range of
+       *     price levels over which automated liquidity provisions will be deployed. */
       readonly lpPriceRange?: string;
       /** @description Mark price configuration. */
       readonly markPriceConfiguration?: components['schemas']['vegaCompositePriceConfiguration'];
@@ -2583,6 +2581,8 @@ export interface components {
     };
     /** Configuration to update a spot market on Vega */
     readonly vegaUpdateSpotMarketConfiguration: {
+      /** If enabled aggressive orders sent to the market will be delayed by the configured number of blocks */
+      readonly enableTransactionReordering?: boolean;
       /** @description Specifies the name and code of the spot instrument. */
       readonly instrument?: components['schemas']['vegaUpdateSpotInstrumentConfiguration'];
       /** @description Specifies how the liquidity fee for the market will be calculated. */
@@ -2610,25 +2610,21 @@ export interface components {
       readonly value?: readonly string[];
     };
     readonly vegaVolumeBenefitTier: {
-      /**
-       * @description Required running notional taker volume in quantum units for parties
-       * to access this tier.
-       */
+      /** @description Required running notional taker volume in quantum units for parties
+       *     to access this tier. */
       readonly minimumRunningNotionalTakerVolume?: string;
       /** @description Proportion of the taker fees to be discounted. */
       readonly volumeDiscountFactor?: string;
     };
     readonly vegaVolumeDiscountProgramChanges: {
-      /**
-       * @description Defined benefit tiers in increasing order. First element will give Tier 1,
-       * second element will give Tier 2, and so on. Determines the level of
-       * benefit a party can expect based on performance criteria.
-       */
+      /** @description Defined benefit tiers in increasing order. First element will give Tier 1,
+       *     second element will give Tier 2, and so on. Determines the level of
+       *     benefit a party can expect based on performance criteria. */
       readonly benefitTiers?: readonly components['schemas']['vegaVolumeBenefitTier'][];
       /**
        * Format: int64
        * @description Timestamp as Unix time in seconds, after which when the current epoch
-       * ends, the program will end and benefits will be disabled.
+       *     ends, the program will end and benefits will be disabled.
        */
       readonly endOfProgramTimestamp?: string;
       /**
@@ -2640,8 +2636,8 @@ export interface components {
     /**
      * Vote value
      * @description - VALUE_UNSPECIFIED: Default value, always invalid
-     *  - VALUE_NO: Vote against the proposal
-     *  - VALUE_YES: Vote in favour of the proposal
+     *      - VALUE_NO: Vote against the proposal
+     *      - VALUE_YES: Vote in favour of the proposal
      * @default VALUE_UNSPECIFIED
      * @enum {string}
      */
@@ -2658,103 +2654,115 @@ export interface components {
   headers: never;
   pathItems: never;
 }
-
 export type $defs = Record<string, never>;
-
-export type external = Record<string, never>;
-
 export interface operations {
-  /**
-   * Info
-   * @description Get information about the block explorer.
-   * Response contains a semver formatted version of the data node and the commit hash, from which the block explorer was built
-   */
-  BlockExplorer_Info: {
-    responses: {
+  readonly BlockExplorer_Info: {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    readonly requestBody?: never;
+    readonly responses: {
       /** @description A successful response. */
-      200: {
+      readonly 200: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
         content: {
           readonly 'application/json': components['schemas']['v1InfoResponse'];
         };
       };
       /** @description An unexpected error response. */
-      default: {
+      readonly default: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
         content: {
           readonly 'application/json': components['schemas']['googlerpcStatus'];
         };
       };
     };
   };
-  /**
-   * List transactions
-   * @description List transactions from the Vega blockchain from the newest to the oldest transactions.
-   */
-  BlockExplorer_ListTransactions: {
-    parameters: {
-      query?: {
+  readonly BlockExplorer_ListTransactions: {
+    readonly parameters: {
+      readonly query?: {
         /** @description Cursor to paginate the request. It can be used in conjunction with the `after` cursor. */
-        before?: string;
+        readonly before?: string;
         /** @description Cursor to paginate the request. It can be used in conjunction with the `before` cursor. */
-        after?: string;
+        readonly after?: string;
         /** @description Transaction command types filter, for listing transactions with specified command types. */
-        cmdTypes?: readonly string[];
+        readonly cmdTypes?: readonly string[];
         /** @description Transaction command types exclusion filter, for listing all the transactions except the ones with specified command types. */
-        excludeCmdTypes?: readonly string[];
+        readonly excludeCmdTypes?: readonly string[];
         /** @description Party IDs filter, can be sender or receiver. */
-        parties?: readonly string[];
-        /**
-         * @description Number of transactions to be returned from the blockchain.
-         * Use in conjunction with the `after` cursor to paginate forwards. Paginating forwards means toward the most recent
-         * transactions.
-         * It cannot be used in conjunction with the `before` cursor.
-         * On its own, this will return the `first` most recent transactions.
-         */
-        first?: number;
-        /**
-         * @description Number of transactions to be returned from the blockchain.
-         * Use in conjunction with the `before` cursor to paginate backwards. Paginating forwards means toward the least recent
-         * transactions.
-         * It cannot be used in conjunction with the `after` cursor.
-         * On its own, this will return the `last` oldest transactions.
-         */
-        last?: number;
+        readonly parties?: readonly string[];
+        /** @description Number of transactions to be returned from the blockchain.
+         *     Use in conjunction with the `after` cursor to paginate forwards. Paginating forwards means toward the most recent
+         *     transactions.
+         *     It cannot be used in conjunction with the `before` cursor.
+         *     On its own, this will return the `first` most recent transactions. */
+        readonly first?: number;
+        /** @description Number of transactions to be returned from the blockchain.
+         *     Use in conjunction with the `before` cursor to paginate backwards. Paginating forwards means toward the least recent
+         *     transactions.
+         *     It cannot be used in conjunction with the `after` cursor.
+         *     On its own, this will return the `last` oldest transactions. */
+        readonly last?: number;
       };
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
     };
-    responses: {
+    readonly requestBody?: never;
+    readonly responses: {
       /** @description A successful response. */
-      200: {
+      readonly 200: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
         content: {
           readonly 'application/json': components['schemas']['v1ListTransactionsResponse'];
         };
       };
       /** @description An unexpected error response. */
-      default: {
+      readonly default: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
         content: {
           readonly 'application/json': components['schemas']['googlerpcStatus'];
         };
       };
     };
   };
-  /**
-   * Get transaction
-   * @description Get a transaction from the Vega blockchain
-   */
-  BlockExplorer_GetTransaction: {
-    parameters: {
-      path: {
+  readonly BlockExplorer_GetTransaction: {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path: {
         /** @description Hash of the transaction */
-        hash: string;
+        readonly hash: string;
       };
+      readonly cookie?: never;
     };
-    responses: {
+    readonly requestBody?: never;
+    readonly responses: {
       /** @description A successful response. */
-      200: {
+      readonly 200: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
         content: {
           readonly 'application/json': components['schemas']['v1GetTransactionResponse'];
         };
       };
       /** @description An unexpected error response. */
-      default: {
+      readonly default: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
         content: {
           readonly 'application/json': components['schemas']['googlerpcStatus'];
         };
