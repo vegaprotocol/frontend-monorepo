@@ -12,7 +12,7 @@ export const AssetOption = ({
   const vegaChainId = useWallet((store) => store.chainId);
 
   return (
-    <div className="w-full flex items-center gap-2">
+    <div className="w-full flex items-center gap-2 h-10">
       <EmblemByAsset asset={asset.id} vegaChain={vegaChainId} />
       <div className="text-sm text-left leading-4">
         <div>

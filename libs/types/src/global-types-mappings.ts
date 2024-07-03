@@ -13,6 +13,7 @@ import {
 import type {
   AccountType,
   DispatchStrategy,
+  StopOrderExpiryStrategy,
   StopOrderRejectionReason,
 } from './__generated__/types';
 import {
@@ -848,4 +849,12 @@ export const MarketUpdateTypeMapping = {
   [MarketUpdateType.MARKET_STATE_UPDATE_TYPE_SUSPEND]: 'Suspend',
   [MarketUpdateType.MARKET_STATE_UPDATE_TYPE_TERMINATE]: 'Terminate',
   [MarketUpdateType.MARKET_STATE_UPDATE_TYPE_UNSPECIFIED]: 'Unspecified',
+};
+
+export const StopOrderExpirtyStrategyMapping: {
+  [S in StopOrderExpiryStrategy]: string;
+} = {
+  EXPIRY_STRATEGY_CANCELS: 'Cancel',
+  EXPIRY_STRATEGY_SUBMIT: 'Submit',
+  EXPIRY_STRATEGY_UNSPECIFIED: 'Unspecified',
 };

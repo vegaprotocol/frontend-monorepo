@@ -700,7 +700,7 @@ const VegaTxPendingToastContent = ({ tx }: VegaTxToastContentProps) => {
   return (
     <>
       <ToastHeading>{t('Awaiting confirmation')}</ToastHeading>
-      <p>{t('Please wait for your transaction to be confirmed')}</p>
+      <p>{t('Please wait for your transaction to be confirmed.')}</p>
       {tx.txHash && (
         <p className="break-all">
           <ExternalLink

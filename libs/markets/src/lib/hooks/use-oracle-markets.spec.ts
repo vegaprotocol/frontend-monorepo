@@ -26,6 +26,7 @@ describe('useOracleMarkets', () => {
 const mockProvider: Provider = {
   name: 'Mock Oracle',
   url: 'https://Mock.com',
+  type: 'type',
   description_markdown: 'mock oracle description',
   oracle: {
     status: 'GOOD',

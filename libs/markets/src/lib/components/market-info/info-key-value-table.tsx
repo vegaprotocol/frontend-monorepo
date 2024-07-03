@@ -1,6 +1,7 @@
 import {
   addDecimalsFormatNumber,
   formatNumberPercentage,
+  fromCamelCase,
   getUserLocale,
 } from '@vegaprotocol/utils';
 import {
@@ -11,7 +12,6 @@ import {
   Tooltip,
 } from '@vegaprotocol/ui-toolkit';
 import BigNumber from 'bignumber.js';
-import startCase from 'lodash/startCase';
 
 import { useTooltipMapping } from './tooltip-mapping';
 
@@ -84,7 +84,7 @@ export const Row = ({
     >
       <div className="flex items-center gap-3">
         <Tooltip description={tooltipMapping[field]} align="start">
-          <div tabIndex={-1}>{startCase(t(field))}</div>
+          <div tabIndex={-1}>{fromCamelCase(t(field))}</div>
         </Tooltip>
 
         {valueDiffersFromParentMarket && (

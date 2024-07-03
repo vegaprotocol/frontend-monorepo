@@ -197,18 +197,6 @@ export const SwapForm = ({
       data-testid="swap-form"
       className="flex flex-col gap-4"
     >
-      <div className="flex justify-between gap-2 items-center">
-        <h3 className="text-lg">{t('Swap')}</h3>
-        {market?.id && (
-          <Link
-            to={Links.MARKET(market.id)}
-            className="flex items-center gap-2"
-          >
-            {t('Go to market')}{' '}
-            <VegaIcon name={VegaIconNames.ARROW_TOP_RIGHT} />
-          </Link>
-        )}
-      </div>
       <div className="flex flex-col gap-2">
         <AssetInput
           label={t('You pay')}
@@ -340,6 +328,18 @@ export const SwapForm = ({
           topAsset={topAsset}
           bottomAsset={bottomAsset}
         />
+        {market?.id && (
+          <div className="flex justify-end text-sm">
+            <Link
+              key="swap-link-to-market"
+              to={Links.MARKET(market.id)}
+              className="flex items-center gap-2"
+            >
+              {t('Go to market')}{' '}
+              <VegaIcon size={12} name={VegaIconNames.ARROW_TOP_RIGHT} />
+            </Link>
+          </div>
+        )}
       </div>
     </form>
   );

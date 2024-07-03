@@ -52,10 +52,10 @@ def test_market_info_current_fees(page: Page):
     page.get_by_test_id(market_title_test_id).get_by_text(
         "Current fees").click()
     fields = [
-        ["Maker Fee", "10%"],
-        ["Infrastructure Fee", "0.05%"],
-        ["Liquidity Fee", "0%"],
-        ["Total Fees", "10.05%"],
+        ["Maker fee", "10%"],
+        ["Infrastructure fee", "0.05%"],
+        ["Liquidity fee", "0%"],
+        ["Total fees", "10.05%"],
     ]
     validate_info_section(page, fields)
 
@@ -65,10 +65,10 @@ def test_market_info_market_price(page: Page):
     page.get_by_test_id(market_title_test_id).get_by_text(
         "Market price").click()
     fields = [
-        ["Mark Price", "107.50"],
-        ["Best Bid Price", "101.50"],
-        ["Best Offer Price", "103.50"],
-        ["Quote Unit", "BTC"],
+        ["Mark price", "107.50"],
+        ["Best bid price", "101.50"],
+        ["Best offer price", "103.50"],
+        ["Quote unit", "BTC"],
     ]
     validate_info_section(page, fields)
 
@@ -78,12 +78,12 @@ def test_market_info_market_volume(page: Page):
     page.get_by_test_id(market_title_test_id).get_by_text(
         "Market volume").click()
     fields = [
-        ["24 Hour Volume", "1(108 BTC)"],
-        ["Open Interest", "1"],
-        ["Best Bid Volume", "99"],
-        ["Best Offer Volume", "99"],
-        ["Best Static Bid Volume", "1"],
-        ["Best Static Offer Volume", "1"],
+        ["24 hour volume", "1(108 BTC)"],
+        ["Open interest", "1"],
+        ["Best bid volume", "99"],
+        ["Best offer volume", "99"],
+        ["Best static bid volume", "1"],
+        ["Best static offer volume", "1"],
     ]
     validate_info_section(page, fields)
 
@@ -93,10 +93,10 @@ def test_market_info_liquidation_strategy(page: Page):
         "Liquidation strategy"
     ).click()
     fields = [
-        ["Disposal Fraction", "1"],
-        ["Disposal Time Step", "1"],
-        ["Full Disposal Size", "1,000,000,000"],
-        ["Max Fraction Consumed", "0.5"],
+        ["Disposal fraction", "1"],
+        ["Disposal time step", "1"],
+        ["Full disposal size", "1,000,000,000"],
+        ["Max fraction consumed", "0.5"],
     ]
     validate_info_section(page, fields)
 
@@ -105,7 +105,7 @@ def test_market_info_liquidation(page: Page):
     # 6002-MDET-104
     page.get_by_test_id(market_title_test_id).get_by_text(
         "Liquidations").click()
-    fields = [["Insurance Pool Balance", "0.00 tDAI"]]
+    fields = [["Insurance pool balance", "0.00 tDAI"]]
     validate_info_section(page, fields)
 
 
@@ -119,10 +119,10 @@ def test_market_info_key_details(page: Page, vega: VegaServiceNull):
         ["Market ID", short_market_id],
         ["Name", "BTC:DAI_2023"],
         ["Status", "Active"],
-        ["Trading Mode", "Continuous"],
-        ["Market Decimal Places", "5"],
-        ["Position Decimal Places", "0"],
-        ["Settlement Asset Decimal Places", "5"],
+        ["Trading mode", "Continuous"],
+        ["Market decimal places", "5"],
+        ["Position decimal places", "0"],
+        ["Settlement asset decimal places", "5"],
     ]
     validate_info_section(page, fields)
 
@@ -131,10 +131,10 @@ def test_market_info_instrument(page: Page):
     # 6002-MDET-202
     page.get_by_test_id(market_title_test_id).get_by_text("Instrument").click()
     fields = [
-        ["Market Name", "BTC:DAI_2023"],
+        ["Market name", "BTC:DAI_2023"],
         ["Code", "BTC:DAI_2023"],
-        ["Product Type", "Future"],
-        ["Quote Name", "BTC"],
+        ["Product type", "Future"],
+        ["Quote name", "BTC"],
     ]
     validate_info_section(page, fields)
 
@@ -142,7 +142,7 @@ def test_market_info_instrument(page: Page):
 def test_market_info_mark_price(page: Page):
     page.get_by_test_id(market_title_test_id).get_by_text("Mark Price").click()
     fields = [
-        ["Composite Price Type", "Last Trade"],
+        ["Composite price type", "Last trade"],
         ["Staleness tolerance", "-"],
         ["Decay weight", "0"],
         ["Decay power", "0"],
@@ -169,7 +169,7 @@ def test_market_info_settlement_asset(page: Page, vega: VegaServiceNull):
         ["Status", "Enabled"],
         ["Max faucet amount", "10,000,000,000.00"],
         ["Global insurance account balance", "0.00"],
-        ["Network Treasury account balance", "0.00"],
+        ["Network treasury account balance", "0.00"],
     ]
     validate_info_section(page, fields)
 
@@ -188,7 +188,7 @@ def test_market_info_risk_model(page: Page):
     page.get_by_test_id(market_title_test_id).get_by_text("Risk model").click()
     fields = [
         ["Tau", "0.00011407711613050422"],
-        ["Risk Aversion Parameter", "0.000001"],
+        ["Risk aversion parameter", "0.000001"],
         ["Sigma", "1"],
     ]
     validate_info_section(page, fields)
@@ -200,10 +200,10 @@ def test_market_info_margin_scaling_factors(page: Page):
         "Margin scaling factors"
     ).click()
     fields = [
-        ["Linear Slippage Factor", "0.001"],
-        ["Search Level", "1.1"],
-        ["Initial Margin", "1.5"],
-        ["Collateral Release", "1.7"],
+        ["Linear slippage factor", "0.001"],
+        ["Search level", "1.1"],
+        ["Initial margin", "1.5"],
+        ["Collateral release", "1.7"],
     ]
     validate_info_section(page, fields)
 
@@ -215,10 +215,10 @@ def test_market_info_risk_factors(page: Page):
     fields = [
         ["Long", "0.05153"],
         ["Short", "0.05422"],
-        ["Max Leverage Long", "19.406"],
-        ["Max Leverage Short", "18.445"],
-        ["Max Initial Leverage Long", "12.937"],
-        ["Max Initial Leverage Short", "12.297"],
+        ["Max leverage long", "19.406"],
+        ["Max leverage short", "18.445"],
+        ["Max initial leverage long", "12.937"],
+        ["Max initial leverage short", "12.297"],
     ]
     validate_info_section(page, fields)
 
@@ -244,8 +244,8 @@ def test_market_info_liquidity_monitoring_parameters(page: Page):
         "Liquidity monitoring parameters"
     ).click()
     fields = [
-        ["Time Window", "3,600"],
-        ["Scaling Factor", "1"],
+        ["Time window", "3,600"],
+        ["Scaling factor", "1"],
     ]
     validate_info_section(page, fields)
 
@@ -257,8 +257,8 @@ def test_market_info_liquidity(page: Page):
         "Liquidity", exact=True
     ).click()
     fields = [
-        ["Target Stake", "5.82757 tDAI"],
-        ["Supplied Stake", "10,000.00 tDAI"],
+        ["Target stake", "5.82757 tDAI"],
+        ["Supplied stake", "10,000.00 tDAI"],
     ]
     validate_info_section(page, fields)
 
@@ -269,9 +269,9 @@ def test_market_info_liquidity_price_range(page: Page):
         "Liquidity price range"
     ).click()
     fields = [
-        ["Liquidity Price Range", "100% of mid price"],
-        ["Lowest Price", "0.00 BTC"],
-        ["Highest Price", "205.00 BTC"],
+        ["Liquidity price range", "100% of mid price"],
+        ["Lowest price", "0.00 BTC"],
+        ["Highest price", "205.00 BTC"],
     ]
     validate_info_section(page, fields)
 

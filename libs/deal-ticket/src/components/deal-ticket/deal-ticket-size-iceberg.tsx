@@ -32,33 +32,9 @@ export const DealTicketSizeIceberg = ({
   const validateAmount = useValidateAmount();
   const sizeStep = determineSizeStep(market);
 
-  const renderPeakSizeError = () => {
-    if (peakSizeError) {
-      return (
-        <TradingInputError testId="deal-ticket-peak-error-message">
-          {peakSizeError}
-        </TradingInputError>
-      );
-    }
-
-    return null;
-  };
-
-  const renderMinimumSizeError = () => {
-    if (minimumVisibleSizeError) {
-      return (
-        <TradingInputError testId="deal-ticket-minimum-error-message">
-          {minimumVisibleSizeError}
-        </TradingInputError>
-      );
-    }
-
-    return null;
-  };
-
   return (
     <div className="mb-2">
-      <div className="flex items-center gap-4">
+      <div className="flex gap-2">
         <div className="flex-1">
           <TradingFormGroup
             label={
@@ -112,10 +88,6 @@ export const DealTicketSizeIceberg = ({
               )}
             />
           </TradingFormGroup>
-        </div>
-        <div className="flex-0 items-center">
-          <div className="flex"></div>
-          <div className="flex"></div>
         </div>
         <div className="flex-1">
           <TradingFormGroup
@@ -173,8 +145,39 @@ export const DealTicketSizeIceberg = ({
           </TradingFormGroup>
         </div>
       </div>
-      {renderPeakSizeError()}
-      {renderMinimumSizeError()}
+      <Errors
+        peakSizeError={peakSizeError}
+        minimumVisibleSizeError={minimumVisibleSizeError}
+      />
     </div>
   );
+};
+
+/**
+ * Renders one error at a time preferring peak size if present
+ */
+const Errors = ({
+  peakSizeError,
+  minimumVisibleSizeError,
+}: {
+  peakSizeError?: string;
+  minimumVisibleSizeError?: string;
+}) => {
+  if (peakSizeError) {
+    return (
+      <TradingInputError testId="deal-ticket-peak-error-message">
+        {peakSizeError}
+      </TradingInputError>
+    );
+  }
+
+  if (minimumVisibleSizeError) {
+    return (
+      <TradingInputError testId="deal-ticket-minimum-error-message">
+        {minimumVisibleSizeError}
+      </TradingInputError>
+    );
+  }
+
+  return null;
 };

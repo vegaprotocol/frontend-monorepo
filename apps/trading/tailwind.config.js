@@ -11,6 +11,7 @@ module.exports = {
     join(__dirname, 'client-pages/**/*.{js,ts,jsx,tsx}'),
     join(__dirname, 'components/**/*.{js,ts,jsx,tsx}'),
     'libs/ui-toolkit/src/utils/shared.ts',
+    'libs/ui-toolkit/src/utils/trading-shared.ts',
     ...createGlobPatternsForDependencies(__dirname),
   ],
   darkMode: 'class',

@@ -5,6 +5,7 @@ from actions.vega import submit_order
 from fixtures.market import setup_simple_market
 from conftest import init_vega, cleanup_container
 from actions.utils import wait_for_toast_confirmation, change_keys
+from actions.ticket import select_mini
 from wallet_config import MM_WALLET, MM_WALLET2
 
 market_trading_mode = "market-trading-mode"
@@ -94,7 +95,7 @@ def test_market_monitoring_auction_price_volatility_limit_order(
     page.get_by_test_id("order-size").type("1")
     page.get_by_test_id("order-price").clear()
     page.get_by_test_id("order-price").type("110")
-    page.get_by_test_id("order-tif").select_option("Fill or Kill (FOK)")
+    select_mini(page,"order-tif", "Fill or Kill (FOK)")
     page.get_by_test_id("place-order").click()
     expect(page.get_by_test_id("deal-ticket-error-message-tif")).to_have_text(
         "This market is in auction due to high price volatility. Until the auction ends, you can only place GFA, GTT, or GTC limit orders."
@@ -106,7 +107,7 @@ def test_market_monitoring_auction_price_volatility_limit_order(
     )
     expect(page.get_by_test_id("deal-ticket-warning-auction")).to_be_visible()
 
-    page.get_by_test_id("order-tif").select_option("Good 'til Cancelled (GTC)")
+    select_mini(page,"order-tif", "Good 'til Cancelled (GTC)")
 
     expect(page.get_by_test_id("deal-ticket-error-message-tif")).not_to_be_visible()
 

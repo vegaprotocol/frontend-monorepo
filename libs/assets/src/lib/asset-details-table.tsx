@@ -47,9 +47,17 @@ export enum AssetDetail {
 
 type Mapping = { [key in string]: { value: string; tooltip: string } };
 
-const num = (asset: Asset, n: string | undefined | null) => {
+export const num = (asset: Asset, n: string | undefined | null) => {
   if (typeof n === 'undefined' || n == null) return '';
-  return addDecimalsFormatNumber(n, asset.decimals);
+
+  // Semi arbitrary, based on USDT's 78 characters (unformatted)
+  if (n.length >= 70) {
+    return 'Unlimited';
+  }
+
+  const formatted = addDecimalsFormatNumber(n, asset.decimals);
+
+  return formatted;
 };
 
 const Diff = ({
@@ -247,7 +255,7 @@ export const useRows = () => {
       },
       {
         key: AssetDetail.NETWORK_TREASURY_ACCOUNT_BALANCE,
-        label: t('Network Treasury account balance'),
+        label: t('Network treasury account balance'),
         tooltip: t('The network treasury account balance in this asset'),
         value: (asset) => num(asset, asset.networkTreasuryAccount?.balance),
       },

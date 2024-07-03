@@ -5,6 +5,7 @@ import type { IconName } from '@vegaprotocol/ui-toolkit';
 import type { ApolloError } from '@apollo/client';
 import { TransferStatus, TransferStatusMapping } from '@vegaprotocol/types';
 import { IconNames } from '@blueprintjs/icons';
+import isFuture from 'date-fns/isFuture';
 
 interface TransferStatusProps {
   status: TransferStatus | undefined;
@@ -46,17 +47,64 @@ export function TransferStatusView({ status, loading }: TransferStatusProps) {
 
 interface TransferStatusIconProps {
   status: TransferStatus;
+  deliverOn?: string;
 }
 
-export function TransferStatusIcon({ status }: TransferStatusIconProps) {
+export function TransferStatusIcon({
+  status,
+  deliverOn,
+}: TransferStatusIconProps) {
+  const s: TransferStatus = fixStatus(status, deliverOn);
+  const title = getDeliverOnTitle(status, deliverOn);
+
   return (
-    <span title={TransferStatusMapping[status]}>
-      <Icon
-        name={getIconForStatus(status)}
-        className={getColourForStatus(status)}
-      />
+    <span title={title}>
+      <Icon name={getIconForStatus(s)} className={getColourForStatus(s)} />
     </span>
   );
+}
+
+export function getDeliverOnTitle(
+  status: TransferStatus,
+  deliverOn?: string
+): string {
+  if (deliverOn) {
+    const d = new Date(deliverOn);
+
+    if (isFuture(d)) {
+      return t('Scheduled for ' + d.toLocaleDateString());
+    } else {
+      return t('Transferred on ' + d.toLocaleDateString());
+    }
+  }
+
+  // If deliverOn is not set, this is sufficient
+  return TransferStatusMapping[status];
+}
+
+/**
+ * One off transfers with a future delivery date have a 'status' of 'DONE'
+ * because they are scheduled, but not actually transferred until the date
+ *
+ * @param status TransferStatus API reported status for the transfer
+ * @param deliverOn String date for the transfer to be executed
+ * @returns TransferStatus
+ */
+export function fixStatus(
+  status: TransferStatus,
+  deliverOn?: string
+): TransferStatus {
+  if (deliverOn) {
+    try {
+      if (isFuture(new Date(deliverOn))) {
+        return TransferStatus.STATUS_PENDING;
+      }
+    } catch (e) {
+      /* continue as normal */
+    }
+  }
+
+  return status;
 }
 
 /**

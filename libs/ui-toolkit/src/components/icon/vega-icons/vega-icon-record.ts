@@ -49,6 +49,8 @@ import { IconHammer } from './svg-icons/icon-hammer';
 import { IconMonitor } from './svg-icons/icon-monitor';
 import { IconPause } from './svg-icons/icon-pause';
 import { IconClosed } from './svg-icons/icon-closed';
+import { IconLong } from './svg-icons/icon-long';
+import { IconShort } from './svg-icons/icon-short';
 
 export enum VegaIconNames {
   ARROW_DOWN = 'arrow-down',
@@ -76,6 +78,7 @@ export enum VegaIconNames {
   KEBAB = 'kebab',
   LINKEDIN = 'linkedin',
   LOCK = 'lock',
+  LONG = 'long',
   METAMASK = 'metamask',
   MINUS = 'minus',
   MOON = 'moon',
@@ -83,6 +86,7 @@ export enum VegaIconNames {
   PLUS = 'plus',
   QUESTION_MARK = 'question-mark',
   SEARCH = 'search',
+  SHORT = 'short',
   STAR = 'star',
   STREAK = 'streak',
   SUN = 'sun',
@@ -137,6 +141,7 @@ export const VegaIconNameMap: Record<
   kebab: IconKebab,
   linkedin: IconLinkedIn,
   lock: IconLock,
+  long: IconLong,
   metamask: IconMetaMask,
   minus: IconMinus,
   moon: IconMoon,
@@ -154,6 +159,7 @@ export const VegaIconNameMap: Record<
   warning: IconWarning,
   man: IconMan,
   team: IconTeam,
+  short: IconShort,
   streak: IconStreak,
   hammer: IconHammer,
   monitor: IconMonitor,

@@ -1,4 +1,7 @@
 export const theme = {
+  fontSize: {
+    '2xs': '0.625rem',
+  },
   screens: {
     xs: '500px',
     sm: '640px',
