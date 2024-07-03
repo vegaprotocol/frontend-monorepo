@@ -658,8 +658,6 @@ export const DealTicket = ({
                   id="input-price-quote"
                   onWheel={(e) => e.currentTarget.blur()}
                   {...field}
-                  value={field.value}
-                  onChange={field.onChange}
                 />
                 {fieldState.error && (
                   <InputError testId="deal-ticket-error-message-price">
@@ -697,9 +695,6 @@ export const DealTicket = ({
                   onWheel={(e) => e.currentTarget.blur()}
                   min={notionalStep}
                   step={notionalStep}
-                  {...field}
-                  value={field.value}
-                  onChange={field.onChange}
                   appendElement={
                     quoteName && (
                       <SizeSwapper
@@ -712,6 +707,7 @@ export const DealTicket = ({
                       />
                     )
                   }
+                  {...field}
                 />
               </FormGroup>
             )}
@@ -754,9 +750,6 @@ export const DealTicket = ({
                     data-testid="order-size"
                     id="order-size"
                     onWheel={(e) => e.currentTarget.blur()}
-                    {...field}
-                    value={field.value}
-                    onChange={field.onChange}
                     appendElement={
                       baseQuote && (
                         <SizeSwapper
@@ -770,6 +763,7 @@ export const DealTicket = ({
                         />
                       )
                     }
+                    {...field}
                   />
                 </FormGroup>
               )}
@@ -1293,8 +1287,14 @@ const PricePlaceholder = ({
     }
   }
 
-  // eslint-disable-next-line
-  return <>{quoteName}</>;
+  return (
+    <>
+      <span className="text-vega-clight-50 dark:text-vega-cdark-50">
+        {t('Price')}
+      </span>{' '}
+      {quoteName}
+    </>
+  );
 };
 
 const NotionalPlaceholder = ({
@@ -1317,7 +1317,14 @@ const NotionalPlaceholder = ({
     );
   }
 
-  return `${t('Notional')} ${quoteAsset.symbol}`;
+  return (
+    <>
+      <span className="text-vega-clight-50 dark:text-vega-cdark-50">
+        {t('Notional')}
+      </span>{' '}
+      {quoteAsset.symbol}
+    </>
+  );
 };
 
 const SizePlaceholder = ({
@@ -1340,7 +1347,14 @@ const SizePlaceholder = ({
     );
   }
 
-  return `${t('Size')} ${baseQuote}`;
+  return (
+    <>
+      <span className="text-vega-clight-50 dark:text-vega-cdark-50">
+        {t('Size')}
+      </span>{' '}
+      {baseQuote}
+    </>
+  );
 };
 
 const PlaceOrderButton = ({

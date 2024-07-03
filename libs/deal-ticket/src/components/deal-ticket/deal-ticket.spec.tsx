@@ -495,10 +495,8 @@ describe('DealTicket', () => {
     );
     // 7002-SORD-018
     const input = screen.getByTestId('order-price');
-    const inputWrapper = within(
-      input.closest('[data-testid="ticket-input"]') as HTMLElement
-    );
-    expect(inputWrapper.getByLabelText('BTC')).toBeInTheDocument();
+    const inputWrapper = within(input.parentNode as HTMLElement);
+    expect(inputWrapper.getByLabelText(/BTC/)).toBeInTheDocument();
   });
 
   it('market order should not display price', async () => {
