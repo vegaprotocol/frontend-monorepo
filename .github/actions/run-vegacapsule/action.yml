@@ -5,6 +5,12 @@ outputs:
 runs:
   using: 'composite'
   steps:
+    - name: Previous run cleanup
+      shell: bash
+      run: |
+        docker stop $(docker ps -a -q)
+        docker rm $(docker ps -a -q)
+
     - name: Vegacapsule version
       shell: bash
       run: vegacapsule version
