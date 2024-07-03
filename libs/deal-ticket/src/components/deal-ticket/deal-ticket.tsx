@@ -477,7 +477,7 @@ export const DealTicket = ({
       return;
     }
     if (useNotional && !sliderUsed.current) {
-      let size = '0';
+      let size = '';
       if (notional && notional !== '0') {
         const s = BigNumber(notional).dividedBy(
           toBigNum(notionalPrice, market.decimalPlaces)
@@ -496,7 +496,7 @@ export const DealTicket = ({
     } else {
       const notional =
         !rawSize || rawSize === '0'
-          ? '0'
+          ? ''
           : BigNumber(rawSize)
               .multipliedBy(toBigNum(notionalPrice, market.decimalPlaces))
               .toFixed(Math.max(notionalDecimals, 0));
@@ -704,7 +704,11 @@ export const DealTicket = ({
                     quoteName && (
                       <SizeSwapper
                         data-testid="useSize"
-                        onClick={() => setValue('useNotional', false)}
+                        // prevent focus causing label movement
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={() => {
+                          setValue('useNotional', false);
+                        }}
                       />
                     )
                   }
@@ -758,7 +762,11 @@ export const DealTicket = ({
                         <SizeSwapper
                           data-testid="useNotional"
                           type="button"
-                          onClick={() => setValue('useNotional', true)}
+                          // prevent focus causing label movement
+                          onMouseDown={(e) => e.preventDefault()}
+                          onClick={() => {
+                            setValue('useNotional', true);
+                          }}
                         />
                       )
                     }
@@ -1267,13 +1275,19 @@ const PricePlaceholder = ({
     if (isNotional) {
       return (
         <>
-          {t('Price')} | <AssetSymbol asset={baseAsset} />
+          <span className="text-vega-clight-50 dark:text-vega-cdark-50">
+            {t('Price')}
+          </span>{' '}
+          <AssetSymbol asset={baseAsset} />
         </>
       );
     } else {
       return (
         <>
-          {t('Price')} | <AssetSymbol asset={quoteAsset} />
+          <span className="text-vega-clight-50 dark:text-vega-cdark-50">
+            {t('Price')}
+          </span>{' '}
+          <AssetSymbol asset={quoteAsset} />
         </>
       );
     }
@@ -1295,7 +1309,10 @@ const NotionalPlaceholder = ({
   if (isSpotMarket) {
     return (
       <>
-        {t('Notional')} | <AssetSymbol asset={quoteAsset} />
+        <span className="text-vega-clight-50 dark:text-vega-cdark-50">
+          {t('Notional')}
+        </span>{' '}
+        <AssetSymbol asset={quoteAsset} />
       </>
     );
   }
@@ -1315,7 +1332,10 @@ const SizePlaceholder = ({
   if (baseAsset) {
     return (
       <>
-        {t('Size')} | <AssetSymbol asset={baseAsset} />
+        <span className="text-vega-clight-50 dark:text-vega-cdark-50">
+          {t('Size')}
+        </span>{' '}
+        <AssetSymbol asset={baseAsset} />
       </>
     );
   }
