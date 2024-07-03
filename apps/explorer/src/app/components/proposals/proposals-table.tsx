@@ -1,4 +1,7 @@
-import { type ProposalListFieldsFragment } from '@vegaprotocol/proposals';
+import type {
+  BatchproposalListFieldsFragment,
+  ProposalListFieldsFragment,
+} from '@vegaprotocol/proposals';
 import { type AgGridReact } from 'ag-grid-react';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 import { AgGrid } from '@vegaprotocol/datagrid';
@@ -65,6 +68,9 @@ export const ProposalsTable = ({ data }: ProposalsTableProps) => {
         hide: window.innerWidth <= BREAKPOINT_MD,
         headerName: t('Type'),
         field: 'terms.change.__typename',
+        valueGetter: ({ data }) => {
+          return data?.terms?.change?.__typename || t('Batch');
+        },
       },
       {
         maxWidth: 100,
@@ -81,27 +87,16 @@ export const ProposalsTable = ({ data }: ProposalsTableProps) => {
         maxWidth: 150,
         hide: window.innerWidth <= BREAKPOINT_MD,
         headerName: t('Closing date'),
-        field: 'terms.closingDatetime',
+        valueGetter: ({ data }) => {
+          return (
+            data?.terms?.closingDatetime || data.batchTerms.closingDatetime
+          );
+        },
         valueFormatter: ({
           value,
         }: VegaValueFormatterParams<
           ProposalListFieldsFragment,
           'terms.closingDatetime'
-        >) => {
-          return value ? getDateTimeFormat().format(new Date(value)) : '-';
-        },
-      },
-      {
-        colId: 'eDate',
-        maxWidth: 150,
-        hide: window.innerWidth <= BREAKPOINT_MD,
-        headerName: t('Enactment date'),
-        field: 'terms.enactmentDatetime',
-        valueFormatter: ({
-          value,
-        }: VegaValueFormatterParams<
-          ProposalListFieldsFragment,
-          'terms.enactmentDatetime'
         >) => {
           return value ? getDateTimeFormat().format(new Date(value)) : '-';
         },
@@ -115,7 +110,9 @@ export const ProposalsTable = ({ data }: ProposalsTableProps) => {
         resizable: false,
         cellRenderer: ({
           data,
-        }: VegaICellRendererParams<ProposalListFieldsFragment>) => {
+        }: VegaICellRendererParams<
+          ProposalListFieldsFragment | BatchproposalListFieldsFragment
+        >) => {
           const proposalPage = tokenLink(
             TOKEN_PROPOSAL.replace(':id', data?.id || '')
           );
@@ -124,7 +121,7 @@ export const ProposalsTable = ({ data }: ProposalsTableProps) => {
             setDialog({
               open: true,
               title: data.rationale.title,
-              content: data.terms,
+              content: 'terms' in data ? data.terms : data.subProposals,
             });
           };
           return (
@@ -150,9 +147,11 @@ export const ProposalsTable = ({ data }: ProposalsTableProps) => {
       <AgGrid
         ref={gridRef}
         rowData={data}
-        getRowId={({ data }: { data: ProposalListFieldsFragment }) =>
-          data.id || data.rationale.title
-        }
+        getRowId={({
+          data,
+        }: {
+          data: ProposalListFieldsFragment | BatchproposalListFieldsFragment;
+        }) => data.id || data?.rationale?.title}
         overlayNoRowsTemplate={t('This chain has no markets')}
         domLayout="autoHeight"
         defaultColDef={{
