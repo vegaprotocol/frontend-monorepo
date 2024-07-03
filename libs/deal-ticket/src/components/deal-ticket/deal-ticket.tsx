@@ -18,7 +18,6 @@ import {
   mapFormValuesToTakeProfitAndStopLoss,
 } from '../../utils/map-form-values-to-submission';
 import {
-  TradingInput as Input,
   TradingCheckbox as Checkbox,
   TradingFormGroup as FormGroup,
   TradingInputError as InputError,
@@ -28,6 +27,7 @@ import {
   Pill,
   ExternalLink,
   PercentageSlider as Slider,
+  TicketInput,
 } from '@vegaprotocol/ui-toolkit';
 
 import { useOpenVolume } from '@vegaprotocol/positions';
@@ -642,9 +642,16 @@ export const DealTicket = ({
             }}
             render={({ field, fieldState }) => (
               <>
-                <Input
+                <TicketInput
                   placeholder={t('Price')}
+                  step={priceStep}
+                  type="number"
+                  data-testid="order-price"
                   id="input-price-quote"
+                  onWheel={(e) => e.currentTarget.blur()}
+                  {...field}
+                  value={field.value}
+                  onChange={field.onChange}
                   appendElement={
                     <PricePill
                       quoteAsset={quoteAsset}
@@ -654,12 +661,6 @@ export const DealTicket = ({
                       isSpotMarket={isSpotMarket}
                     />
                   }
-                  className="w-full"
-                  type="number"
-                  step={priceStep}
-                  data-testid="order-price"
-                  onWheel={(e) => e.currentTarget.blur()}
-                  {...field}
                 />
                 {fieldState.error && (
                   <InputError testId="deal-ticket-error-message-price">
@@ -684,11 +685,17 @@ export const DealTicket = ({
                 compact
                 hideLabel
               >
-                <Input
+                <TicketInput
                   placeholder={t('Notional')}
-                  id="order-notional"
-                  className="w-full"
                   type="number"
+                  data-testid="order-notional"
+                  id="order-notional"
+                  onWheel={(e) => e.currentTarget.blur()}
+                  min={notionalStep}
+                  step={notionalStep}
+                  {...field}
+                  value={field.value}
+                  onChange={field.onChange}
                   appendElement={
                     quoteName && (
                       <button
@@ -707,11 +714,6 @@ export const DealTicket = ({
                       </button>
                     )
                   }
-                  step={notionalStep}
-                  min={notionalStep}
-                  data-testid="order-notional"
-                  onWheel={(e) => e.currentTarget.blur()}
-                  {...field}
                 />
               </FormGroup>
             )}
@@ -741,11 +743,17 @@ export const DealTicket = ({
                   compact
                   hideLabel
                 >
-                  <Input
+                  <TicketInput
                     placeholder={t('Size')}
-                    id="order-size"
-                    className="w-full"
+                    min={sizeStep}
+                    step={sizeStep}
                     type="number"
+                    data-testid="order-size"
+                    id="order-size"
+                    onWheel={(e) => e.currentTarget.blur()}
+                    {...field}
+                    value={field.value}
+                    onChange={field.onChange}
                     appendElement={
                       baseQuote && (
                         <button
@@ -764,11 +772,6 @@ export const DealTicket = ({
                         </button>
                       )
                     }
-                    step={sizeStep}
-                    min={sizeStep}
-                    data-testid="order-size"
-                    onWheel={(e) => e.currentTarget.blur()}
-                    {...field}
                   />
                 </FormGroup>
               )}
