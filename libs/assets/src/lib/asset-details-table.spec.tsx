@@ -6,8 +6,18 @@ import {
   AssetDetailsTable,
   useRows,
   testId,
+  num,
 } from './asset-details-table';
 import { generateBuiltinAsset, generateERC20Asset } from './test-helpers';
+
+describe('num formatting', () => {
+  it('show unlimited for large values', () => {
+    const usdLimit =
+      '115792089237316195423570985008687907853269984665640564039457584007913129639935';
+    const asset = { decimals: 10 } as unknown as Asset;
+    expect(num(asset, usdLimit)).toEqual('Unlimited');
+  });
+});
 
 describe('AssetDetailsTable', () => {
   const cases: [string, Asset, { key: AssetDetail; value: string }[]][] = [
