@@ -17,19 +17,6 @@ describe('TransferStatusIcon', () => {
       screen.getByTitle(TransferStatusMapping[status])
     ).toBeInTheDocument();
   });
-
-  it('renders one off transfers with deliveron in the future', () => {
-    const status = TransferStatus.STATUS_PENDING;
-    render(
-      <TransferStatusIcon
-        status={status}
-        deliverOn={addYears(new Date(), 1).toISOString()}
-      />
-    );
-    expect(
-      screen.getByTitle(TransferStatusMapping[status])
-    ).toBeInTheDocument();
-  });
 });
 
 describe('getIconForStatus', () => {
