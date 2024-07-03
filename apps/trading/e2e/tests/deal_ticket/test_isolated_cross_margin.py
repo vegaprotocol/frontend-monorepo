@@ -46,7 +46,7 @@ def test_switch_cross_isolated_margin(
     wait_for_toast_confirmation(page)
     next_epoch(vega=vega)
     expect(page.get_by_test_id("toast-content")).to_have_text(
-        "ConfirmedYour transaction has been confirmedView in block explorerUpdate margin modeBTC:DAI_2023Isolated margin mode, leverage: 1.0x"
+        "ConfirmedYour transaction has been confirmed.View on explorerUpdate margin modeBTC:DAI_2023Isolated margin mode, leverage: 1.0x"
     )
     expect(page.locator(margin_row).nth(1)).to_have_text("22,109.99996Isolated1.0x")
     # tbd - tooltip is not visible without this wait
@@ -98,7 +98,7 @@ def test_check_cross_isolated_margin_info(
     wait_for_toast_confirmation(page)
     next_epoch(vega=vega)
     expect(page.get_by_test_id("toast-content")).to_have_text(
-        "ConfirmedYour transaction has been confirmedView in block explorerUpdate margin modeBTC:DAI_2023Isolated margin mode, leverage: 6.0x"
+        "ConfirmedYour transaction has been confirmed.View on explorerUpdate margin modeBTC:DAI_2023Isolated margin mode, leverage: 6.0x"
     )
     page.get_by_test_id(cross_margin).click()
     expect(

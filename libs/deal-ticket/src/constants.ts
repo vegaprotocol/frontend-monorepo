@@ -28,6 +28,9 @@ export const EST_SLIPPAGE =
 export const ERROR_SIZE_DECIMAL =
   'The size field accepts up to X decimal places.';
 
+export const REDUCE_ONLY_TOOLTIP =
+  '"Reduce only" will ensure that this order will not increase the size of an open position. When the order is matched, it will only trade enough volume to bring your open volume towards 0 but never change the direction of your position. If applied to a limit order that is not instantly filled, the order will be stopped.';
+
 export enum MarketModeValidationType {
   PriceMonitoringAuction = 'PriceMonitoringAuction',
   LiquidityMonitoringAuction = 'LiquidityMonitoringAuction',

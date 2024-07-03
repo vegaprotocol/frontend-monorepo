@@ -96,11 +96,23 @@ type Store = {
   >;
 };
 
-export const dealTicketTypeToOrderType = (dealTicketType?: DealTicketType) =>
-  dealTicketType === DealTicketType.Limit ||
-  dealTicketType === DealTicketType.StopLimit
-    ? Schema.OrderType.TYPE_LIMIT
-    : Schema.OrderType.TYPE_MARKET;
+export const dealTicketTypeToOrderType = (dealTicketType?: DealTicketType) => {
+  if (
+    dealTicketType === DealTicketType.Limit ||
+    dealTicketType === DealTicketType.StopLimit
+  ) {
+    return Schema.OrderType.TYPE_LIMIT;
+  }
+
+  if (
+    dealTicketType === DealTicketType.Market ||
+    dealTicketType === DealTicketType.StopMarket
+  ) {
+    return Schema.OrderType.TYPE_MARKET;
+  }
+
+  throw new Error('invalid dealTicketType');
+};
 
 export const isStopOrderType = (dealTicketType?: DealTicketType) =>
   dealTicketType === DealTicketType.StopLimit ||

@@ -247,7 +247,7 @@ export const useRows = () => {
       },
       {
         key: AssetDetail.NETWORK_TREASURY_ACCOUNT_BALANCE,
-        label: t('Network Treasury account balance'),
+        label: t('Network treasury account balance'),
         tooltip: t('The network treasury account balance in this asset'),
         value: (asset) => num(asset, asset.networkTreasuryAccount?.balance),
       },

@@ -40,6 +40,7 @@ export const MarketHeader = () => {
     data.data.marketState,
     data.data.marketTradingMode
   );
+
   return (
     <Header
       title={
@@ -64,6 +65,7 @@ export const MarketHeader = () => {
             </HeaderTitle>
           }
           alignOffset={-10}
+          sideOffset={12}
         >
           <MarketSelector
             currentMarketId={marketId}

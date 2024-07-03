@@ -21,13 +21,13 @@ def test_iceberg_submit(continuous_market, vega: VegaServiceNull, page: Page):
     page.get_by_test_id("place-order").click()
 
     expect(page.get_by_test_id("toast-content")).to_have_text(
-        "Awaiting confirmationPlease wait for your transaction to be confirmedView in block explorer"
+        "Awaiting confirmationPlease wait for your transaction to be confirmed.View on explorer"
     )
 
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
     expect(page.get_by_test_id("toast-content")).to_have_text(
-        "Order filledYour transaction has been confirmedView in block explorerSubmit order - filledBTC:DAI_2023+3 @ 107.00 tDAI"
+        "Order filledYour transaction has been confirmed.View on explorerSubmit order - filledBTC:DAI_2023+3 @ 107.00 tDAI"
     )
     page.get_by_test_id("Order history").click()
     expect(

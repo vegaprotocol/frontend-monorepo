@@ -3,6 +3,7 @@ import { removePaginationWrapper } from '@vegaprotocol/utils';
 import {
   makeDataProvider,
   makeDerivedDataProvider,
+  useDataProvider,
 } from '@vegaprotocol/data-provider';
 import {
   MarginsSubscriptionDocument,
@@ -105,3 +106,20 @@ export const marginModeDataProvider = makeDerivedDataProvider<
     return draft ? Object.assign(draft, newData) : newData;
   })
 );
+
+export const useMarginMode = ({
+  partyId,
+  marketId,
+}: {
+  partyId?: string;
+  marketId?: string;
+}) => {
+  return useDataProvider({
+    dataProvider: marginModeDataProvider,
+    variables: {
+      partyId: partyId || '',
+      marketId: marketId || '',
+    },
+    skip: !partyId || !marketId,
+  });
+};

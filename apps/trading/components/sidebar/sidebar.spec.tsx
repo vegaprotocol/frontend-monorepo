@@ -25,8 +25,12 @@ jest.mock('../asset-card', () => ({
   ),
 }));
 
-jest.mock('../accounts-container', () => ({
-  AccountsContainer: () => <div data-testid="accounts-list"></div>,
+jest.mock('../accounts-container/sidebar-accounts-container.tsx', () => ({
+  SidebarAccountsContainer: () => <div data-testid="accounts-list"></div>,
+}));
+
+jest.mock('../margin-mode', () => ({
+  MarginModeToggle: () => <div data-testid="margin-mode" />,
 }));
 
 describe('Sidebar', () => {

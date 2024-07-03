@@ -1,7 +1,5 @@
 import { memo, type ReactNode } from 'react';
 import { LayoutPriority } from 'allotment';
-import classNames from 'classnames';
-import AutoSizer from 'react-virtualized-auto-sizer';
 import { useFeatureFlags } from '@vegaprotocol/environment';
 import { type Market } from '@vegaprotocol/markets';
 import { Tab, LocalStoragePersistTabs as Tabs } from '@vegaprotocol/ui-toolkit';
@@ -40,6 +38,11 @@ const MainGrid = memo(
       <ResizableGrid onChange={handleRowSizes}>
         <ResizableGridPanel preferredSize={rowSizes[0]}>
           <ResizableGrid vertical onChange={handleVerticalChange}>
+            <ResizableGridPanel minSize={49} maxSize={49}>
+              <TradeGridChild>
+                <MarketHeader />
+              </TradeGridChild>
+            </ResizableGridPanel>
             <ResizableGridPanel
               preferredSize={verticalSizes[0]}
               priority={LayoutPriority.High}
@@ -209,7 +212,9 @@ const MainGrid = memo(
           maxSize={600}
           preferredSize={rowSizes[1] || 340}
         >
-          <Sidebar pinnedAssets={pinnedAssets} />
+          <TradeGridChild>
+            <Sidebar pinnedAssets={pinnedAssets} />
+          </TradeGridChild>
         </ResizableGridPanel>
       </ResizableGrid>
     );
@@ -218,18 +223,12 @@ const MainGrid = memo(
 MainGrid.displayName = 'MainGrid';
 
 export const TradeGrid = ({ market, pinnedAssets }: TradeGridProps) => {
-  const wrapperClasses = classNames(
-    'h-full grid',
-    'grid-rows-[min-content_min-content_1fr]'
-  );
-
   return (
-    <div className={wrapperClasses}>
-      <MarketHeader />
+    <div className="h-full grid grid-rows-[min-content_1fr]">
       <div>
         <MarketBanner market={market} />
       </div>
-      <div className="min-h-0 p-0.5">
+      <div className="min-h-0 -mx-1 my-1">
         <MainGrid market={market} pinnedAssets={pinnedAssets} />
       </div>
     </div>
@@ -243,16 +242,9 @@ interface TradeGridChildProps {
 const TradeGridChild = ({ children }: TradeGridChildProps) => {
   return (
     <section className="h-full p-1">
-      <AutoSizer>
-        {({ width, height }) => (
-          <div
-            style={{ width, height }}
-            className="border rounded-sm border-default"
-          >
-            {children}
-          </div>
-        )}
-      </AutoSizer>
+      <div className="h-full bg-vega-clight-800 dark:bg-vega-cdark-800">
+        {children}
+      </div>
     </section>
   );
 };
