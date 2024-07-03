@@ -14,6 +14,7 @@ export const Size = (props: { control: Control<any> }) => {
           <TradingInput
             {...field}
             value={field.value}
+            onChange={field.onChange}
             placeholder={t('Size')}
           />
         );

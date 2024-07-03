@@ -1,5 +1,4 @@
-import { useT } from 'apps/trading/lib/use-t';
-import { TicketType } from './types';
+import { type TicketType } from './types';
 import {
   TradingDropdown,
   TradingDropdownContent,
@@ -13,6 +12,8 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import * as ToggleGroup from '@radix-ui/react-toggle-group';
 import classNames from 'classnames';
+
+import { useT } from '../../lib/use-t';
 
 export const TicketTypeSelect = ({
   type,
@@ -34,7 +35,10 @@ export const TicketTypeSelect = ({
       className="flex border-b border-default"
       type="single"
       value={type}
-      onValueChange={(type) => onTypeChange(type as TicketType)}
+      onValueChange={(type) => {
+        if (!type) return;
+        onTypeChange(type as TicketType);
+      }}
     >
       {toggles.map(({ label, value: itemValue }) => (
         <ToggleGroup.Item

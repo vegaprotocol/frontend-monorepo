@@ -1,5 +1,3 @@
-import * as SliderPrimitives from '@radix-ui/react-slider';
-import { useT } from '../../lib/use-t';
 import { useFormContext } from 'react-hook-form';
 import { type AssetFieldsFragment } from '@vegaprotocol/assets';
 import { type MarketInfo, useMarkPrice } from '@vegaprotocol/markets';
@@ -7,6 +5,7 @@ import { useActiveOrders } from '@vegaprotocol/orders';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useOpenVolume } from '@vegaprotocol/positions';
 import { calcSizeMarketOrder } from './helpers';
+import { Slider } from './slider';
 
 export const SizeSlider = ({
   market,
@@ -17,7 +16,6 @@ export const SizeSlider = ({
   balances: { margin: string; general: string };
   asset: AssetFieldsFragment;
 }) => {
-  const t = useT();
   const form = useFormContext();
   const { pubKey } = useVegaWallet();
   const { data: markPrice } = useMarkPrice(market.id);
@@ -38,7 +36,7 @@ export const SizeSlider = ({
   const riskFactors = market.riskFactors;
 
   return (
-    <SliderPrimitives.Root
+    <Slider
       min={0}
       max={100}
       defaultValue={[0]}
@@ -57,15 +55,8 @@ export const SizeSlider = ({
           riskFactors,
         });
 
-        form.setValue('size', size.toString(), { shouldValidate: true });
+        form.setValue('size', size, { shouldValidate: true });
       }}
-      className="relative flex items-center select-none touch-none w-full height-10"
-    >
-      <SliderPrimitives.Track className="relative h-1 bg-black flex-1 rounded" />
-      <SliderPrimitives.Thumb
-        className="block w-4 h-4 bg-vega-blue rounded-full"
-        aria-label={t('Size')}
-      />
-    </SliderPrimitives.Root>
+    />
   );
 };

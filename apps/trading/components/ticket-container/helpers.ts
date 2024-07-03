@@ -47,6 +47,10 @@ export const calcSizeMarketOrder = ({
     toBigNum(balances.margin, assetDecimals)
   );
 
+  if (availableMargin.isZero()) {
+    return '0';
+  }
+
   const _totalSizeRemaining = (orders || [])
     .filter((o) => o.side === side)
     .reduce((sum, o) => sum.plus(o.remaining), new BigNumber(0));
@@ -80,5 +84,5 @@ export const calcSizeMarketOrder = ({
 
   const size = new BigNumber(pct).div(100).times(max);
 
-  return size;
+  return size.toString();
 };
