@@ -148,7 +148,6 @@ describe('TransferRewards', () => {
     const recurring = {
       dispatchStrategy: {
         entityScope: EntityScope.ENTITY_SCOPE_INDIVIDUALS,
-        individualScope: IndividualScope.INDIVIDUAL_SCOPE_ALL,
         teamScope: ['team1', 'team2', 'team3'],
         distributionStrategy:
           DistributionStrategy.DISTRIBUTION_STRATEGY_PRO_RATA,
