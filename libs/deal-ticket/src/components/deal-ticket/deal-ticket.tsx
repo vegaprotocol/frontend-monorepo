@@ -1,5 +1,5 @@
 import * as Schema from '@vegaprotocol/types';
-import { type FormEventHandler } from 'react';
+import { type ButtonHTMLAttributes, type FormEventHandler } from 'react';
 import { memo, useCallback, useEffect, useRef, useMemo } from 'react';
 import { Controller, useController, useForm } from 'react-hook-form';
 import { DealTicketFeeDetails } from './deal-ticket-fee-details';
@@ -643,7 +643,15 @@ export const DealTicket = ({
             render={({ field, fieldState }) => (
               <>
                 <TicketInput
-                  placeholder={t('Price')}
+                  placeholder={
+                    <PricePlaceholder
+                      quoteAsset={quoteAsset}
+                      baseAsset={baseAsset}
+                      quoteName={quoteName}
+                      isNotional={useNotional}
+                      isSpotMarket={isSpotMarket}
+                    />
+                  }
                   step={priceStep}
                   type="number"
                   data-testid="order-price"
@@ -652,15 +660,6 @@ export const DealTicket = ({
                   {...field}
                   value={field.value}
                   onChange={field.onChange}
-                  appendElement={
-                    <PricePill
-                      quoteAsset={quoteAsset}
-                      baseAsset={baseAsset}
-                      quoteName={quoteName}
-                      isNotional={useNotional}
-                      isSpotMarket={isSpotMarket}
-                    />
-                  }
                 />
                 {fieldState.error && (
                   <InputError testId="deal-ticket-error-message-price">
@@ -686,7 +685,12 @@ export const DealTicket = ({
                 hideLabel
               >
                 <TicketInput
-                  placeholder={t('Notional')}
+                  placeholder={
+                    <NotionalPlaceholder
+                      quoteAsset={quoteAsset}
+                      isSpotMarket={isSpotMarket}
+                    />
+                  }
                   type="number"
                   data-testid="order-notional"
                   id="order-notional"
@@ -698,20 +702,10 @@ export const DealTicket = ({
                   onChange={field.onChange}
                   appendElement={
                     quoteName && (
-                      <button
+                      <SizeSwapper
                         data-testid="useSize"
-                        type="button"
                         onClick={() => setValue('useNotional', false)}
-                      >
-                        <Pill size="xs">
-                          {isSpotMarket ? (
-                            <AssetSymbol asset={quoteAsset} />
-                          ) : (
-                            quoteAsset.symbol
-                          )}{' '}
-                          <VegaIcon name={VegaIconNames.TRANSFER} size={14} />
-                        </Pill>
-                      </button>
+                      />
                     )
                   }
                 />
@@ -744,7 +738,12 @@ export const DealTicket = ({
                   hideLabel
                 >
                   <TicketInput
-                    placeholder={t('Size')}
+                    placeholder={
+                      <SizePlaceholder
+                        baseQuote={baseQuote}
+                        baseAsset={baseAsset}
+                      />
+                    }
                     min={sizeStep}
                     step={sizeStep}
                     type="number"
@@ -756,20 +755,11 @@ export const DealTicket = ({
                     onChange={field.onChange}
                     appendElement={
                       baseQuote && (
-                        <button
+                        <SizeSwapper
                           data-testid="useNotional"
                           type="button"
                           onClick={() => setValue('useNotional', true)}
-                        >
-                          <Pill size="xs">
-                            {baseAsset ? (
-                              <AssetSymbol asset={baseAsset} />
-                            ) : (
-                              baseQuote
-                            )}{' '}
-                            <VegaIcon name={VegaIconNames.TRANSFER} size={14} />
-                          </Pill>
-                        </button>
+                        />
                       )
                     }
                   />
@@ -1258,7 +1248,7 @@ const SummaryMessage = memo(
   }
 );
 
-const PricePill = ({
+const PricePlaceholder = ({
   quoteAsset,
   baseAsset,
   quoteName,
@@ -1271,23 +1261,66 @@ const PricePill = ({
   isNotional?: boolean;
   isSpotMarket: boolean;
 }) => {
+  const t = useT();
+
   if (isSpotMarket) {
     if (isNotional) {
       return (
-        <Pill size="xs">
-          <AssetSymbol asset={baseAsset} />
-        </Pill>
+        <>
+          {t('Price')} | <AssetSymbol asset={baseAsset} />
+        </>
       );
     } else {
       return (
-        <Pill size="xs">
-          <AssetSymbol asset={quoteAsset} />
-        </Pill>
+        <>
+          {t('Price')} | <AssetSymbol asset={quoteAsset} />
+        </>
       );
     }
   }
 
-  return <Pill size="xs">{quoteName}</Pill>;
+  // eslint-disable-next-line
+  return <>{quoteName}</>;
+};
+
+const NotionalPlaceholder = ({
+  quoteAsset,
+  isSpotMarket,
+}: {
+  quoteAsset: AssetFieldsFragment;
+  isSpotMarket: boolean;
+}) => {
+  const t = useT();
+
+  if (isSpotMarket) {
+    return (
+      <>
+        {t('Notional')} | <AssetSymbol asset={quoteAsset} />
+      </>
+    );
+  }
+
+  return `${t('Notional')} ${quoteAsset.symbol}`;
+};
+
+const SizePlaceholder = ({
+  baseQuote,
+  baseAsset,
+}: {
+  baseQuote: string | undefined;
+  baseAsset: AssetFieldsFragment | undefined;
+}) => {
+  const t = useT();
+
+  if (baseAsset) {
+    return (
+      <>
+        {t('Size')} | <AssetSymbol asset={baseAsset} />
+      </>
+    );
+  }
+
+  return `${t('Size')} ${baseQuote}`;
 };
 
 const PlaceOrderButton = ({
@@ -1337,4 +1370,14 @@ const PlaceOrderButton = ({
   const subLabel = `${baseText} @ ${quoteText}`;
 
   return <SubmitButton text={text} subLabel={subLabel} side={side} />;
+};
+
+const SizeSwapper = (props: ButtonHTMLAttributes<HTMLButtonElement>) => {
+  return (
+    <button type="button" {...props}>
+      <Pill className="flex items-center" size="lg">
+        <VegaIcon name={VegaIconNames.TRANSFER} size={18} />
+      </Pill>
+    </button>
+  );
 };
