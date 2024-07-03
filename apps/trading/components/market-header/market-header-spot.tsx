@@ -44,6 +44,7 @@ export const MarketHeaderSpot = ({ market }: MarketHeaderSpotProps) => {
         asset={baseAsset}
         data-testid="base-asset"
       />
+      <Stats.Oracle marketId={market.id} />
       <Stats.LiquidityStat
         marketId={market.id}
         assetDecimals={quoteAsset.decimals}
