@@ -14,23 +14,23 @@ import {
   TradingInput,
   TradingInputError,
   TradingRichSelect,
+  TradingRichSelectOption,
   TradingSelect,
   Tooltip,
   TradingButton,
+  truncateMiddle,
 } from '@vegaprotocol/ui-toolkit';
 import type { Key, Transfer } from '@vegaprotocol/wallet';
 import BigNumber from 'bignumber.js';
 import type { ReactNode } from 'react';
 import { useCallback, useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import {
-  type AssetFieldsFragment,
-  AssetOption,
-  Balance,
-} from '@vegaprotocol/assets';
+import { type AssetFieldsFragment } from '@vegaprotocol/assets';
 import { AccountType, AccountTypeMapping } from '@vegaprotocol/types';
 import { useTransferFeeQuery } from './__generated__/TransferFee';
 import { normalizeTransfer } from './utils';
+import { useWallet } from '@vegaprotocol/wallet-react';
+import { EmblemByAsset } from '@vegaprotocol/emblem';
 
 interface FormFields {
   toVegaKey: string;
@@ -194,36 +194,25 @@ export const TransferForm = ({
         <Controller
           control={control}
           name="asset"
-          render={({ field }) =>
-            assets.length > 0 ? (
-              <TradingRichSelect
-                data-testid="select-asset"
-                id={field.name}
-                name={field.name}
-                onValueChange={(value) => {
-                  field.onChange(value);
-                  setValue('fromAccount', '');
-                }}
-                placeholder={t('Please select an asset')}
-                value={field.value}
-              >
-                {assets.map((a) => (
-                  <AssetOption
-                    key={a.key}
-                    asset={a}
-                    balance={<Balance balance={a.balance} symbol={a.symbol} />}
-                  />
-                ))}
-              </TradingRichSelect>
-            ) : (
-              <span
-                data-testid="no-assets-available"
-                className="text-xs text-vega-clight-100 dark:text-vega-cdark-100"
-              >
-                {t('No assets available')}
-              </span>
-            )
-          }
+          render={({ field }) => (
+            <TradingRichSelect
+              data-testid="select-asset"
+              id={field.name}
+              name={field.name}
+              onValueChange={(value) => {
+                field.onChange(value);
+                setValue('fromAccount', '');
+              }}
+              placeholder={t('Please select an asset')}
+              value={field.value}
+            >
+              {assets.map((a) => (
+                <TradingRichSelectOption key={a.key} value={a.id}>
+                  <AssetOption asset={a} />
+                </TradingRichSelectOption>
+              ))}
+            </TradingRichSelect>
+          )}
         />
         {errors.asset?.message && (
           <TradingInputError forInput="asset">
@@ -569,4 +558,31 @@ export const AddressField = ({
 
 const parseFromAccount = (fromAccountStr: string) => {
   return fromAccountStr.split('-') as [AccountType, string];
+};
+
+const AssetOption = ({
+  asset,
+}: {
+  asset: AssetFieldsFragment & { balance: string };
+}) => {
+  const vegaChainId = useWallet((store) => store.chainId);
+
+  return (
+    <div className="w-full flex items-center gap-2 h-10">
+      <EmblemByAsset asset={asset.id} vegaChain={vegaChainId} />
+      <div className="text-sm text-left leading-4">
+        <div>
+          {asset.name} | {asset.symbol}
+        </div>
+        <div className="text-secondary text-xs">
+          {asset.source.__typename === 'ERC20'
+            ? truncateMiddle(asset.source.contractAddress)
+            : asset.source.__typename}
+        </div>
+      </div>
+      <div className="ml-auto text-sm">
+        {addDecimalsFormatNumber(asset.balance, asset.decimals)}
+      </div>
+    </div>
+  );
 };
