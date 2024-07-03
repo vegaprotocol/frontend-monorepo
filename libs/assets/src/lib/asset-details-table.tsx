@@ -47,9 +47,17 @@ export enum AssetDetail {
 
 type Mapping = { [key in string]: { value: string; tooltip: string } };
 
-const num = (asset: Asset, n: string | undefined | null) => {
+export const num = (asset: Asset, n: string | undefined | null) => {
   if (typeof n === 'undefined' || n == null) return '';
-  return addDecimalsFormatNumber(n, asset.decimals);
+
+  // Semi arbitrary, based on USDT's 78 characters (unformatted)
+  if (n.length >= 70) {
+    return 'Unlimited';
+  }
+
+  const formatted = addDecimalsFormatNumber(n, asset.decimals);
+
+  return formatted;
 };
 
 const Diff = ({
