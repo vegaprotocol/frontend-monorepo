@@ -16,9 +16,9 @@ export const TicketInput = ({
     props.value !== null &&
     String(props.value) !== '';
   return (
-    <div className="group relative">
+    <div className="group relative" data-testid="ticket-input">
       <label
-        htmlFor={props.name}
+        htmlFor={props.id}
         className={classNames(
           'block absolute left-2 text-muted transition-all pointer-events-none',
           'top-1/2 -translate-y-1/2 text-sm',
