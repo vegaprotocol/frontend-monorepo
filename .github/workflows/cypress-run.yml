@@ -76,7 +76,7 @@ jobs:
         with:
           path: |
             frontend-monorepo/node_modules
-            /home/runner/.cache/Cypress
+            /home/github-runner/.cache/Cypress
           key: node_modules_cypress-${{ hashFiles('frontend-monorepo/yarn.lock', 'frontend-monorepo/package.json') }}
 
       # Install frontend dependencies
@@ -120,17 +120,17 @@ jobs:
         run: |
           while read -r file; do
             mv "${file}" "$(echo ${file} | sed 's|:|-|g')"
-          done< <(find /home/runner/.vegacapsule/testnet/logs -type f)
+          done< <(find /home/github-runner/.vegacapsule/testnet/logs -type f)
 
       - name: Print logs files
         if: ${{ always() }}
-        run: ls -alsh /home/runner/.vegacapsule/testnet/logs/
+        run: ls -alsh /home/github-runner/.vegacapsule/testnet/logs/
 
       - uses: actions/upload-artifact@v4
         if: ${{ failure() }}
         with:
           name: logs-${{ matrix.project }}
-          path: /home/runner/.vegacapsule/testnet/logs
+          path: /home/github-runner/.vegacapsule/testnet/logs
 
       - uses: actions/upload-artifact@v4
         if: ${{ failure() }}
