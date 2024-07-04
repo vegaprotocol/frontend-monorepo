@@ -81,7 +81,7 @@ export const TradingRichSelect = forwardRef<
   );
 });
 
-export const TradingOption = forwardRef<
+export const TradingRichSelectOption = forwardRef<
   React.ElementRef<typeof SelectPrimitive.Item>,
   React.ComponentProps<typeof SelectPrimitive.Item>
 >(({ children, className, ...props }, forwardedRef) => (

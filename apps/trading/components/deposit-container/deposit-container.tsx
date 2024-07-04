@@ -16,7 +16,7 @@ import {
   TradingInputError,
   Intent,
   TradingRichSelect,
-  TradingOption,
+  TradingRichSelectOption,
 } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { Emblem } from '@vegaprotocol/emblem';
@@ -231,9 +231,9 @@ const DepositForm = ({
               >
                 {assets.map((a) => {
                   return (
-                    <TradingOption value={a.id} key={a.id}>
+                    <TradingRichSelectOption value={a.id} key={a.id}>
                       <AssetOption asset={a} />
-                    </TradingOption>
+                    </TradingRichSelectOption>
                   );
                 })}
               </TradingRichSelect>
@@ -273,14 +273,17 @@ const DepositForm = ({
                   >
                     {pubKeys.map((k) => {
                       return (
-                        <TradingOption value={k.publicKey} key={k.publicKey}>
+                        <TradingRichSelectOption
+                          value={k.publicKey}
+                          key={k.publicKey}
+                        >
                           <div className="leading-4">
                             <div>{k.name}</div>
                             <div className="text-xs text-secondary">
                               {truncateMiddle(k.publicKey)}
                             </div>
                           </div>
-                        </TradingOption>
+                        </TradingRichSelectOption>
                       );
                     })}
                   </TradingRichSelect>

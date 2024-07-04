@@ -1,5 +1,9 @@
 import { render } from '@testing-library/react';
-import { TradingRichSelect, TradingSelect, TradingOption } from './select';
+import {
+  TradingRichSelect,
+  TradingSelect,
+  TradingRichSelectOption,
+} from './select';
 
 describe('Select', () => {
   it('should render successfully', () => {
@@ -12,8 +16,8 @@ describe('RichSelect', () => {
   it('should render select element with placeholder when no value is pre-selected', async () => {
     const { findByTestId } = render(
       <TradingRichSelect placeholder={'Select'}>
-        <TradingOption value={'1'}>1</TradingOption>
-        <TradingOption value={'2'}>2</TradingOption>
+        <TradingRichSelectOption value={'1'}>1</TradingRichSelectOption>
+        <TradingRichSelectOption value={'2'}>2</TradingRichSelectOption>
       </TradingRichSelect>
     );
     const btn = (await findByTestId(
@@ -25,8 +29,8 @@ describe('RichSelect', () => {
   it('should render select element with pre-selected value', async () => {
     const { findByTestId } = render(
       <TradingRichSelect placeholder={'Select'} value={'1'}>
-        <TradingOption value={'1'}>1</TradingOption>
-        <TradingOption value={'2'}>2</TradingOption>
+        <TradingRichSelectOption value={'1'}>1</TradingRichSelectOption>
+        <TradingRichSelectOption value={'2'}>2</TradingRichSelectOption>
       </TradingRichSelect>
     );
     const btn = (await findByTestId(

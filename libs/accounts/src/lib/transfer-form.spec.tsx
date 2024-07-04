@@ -21,6 +21,7 @@ import {
 import { removeDecimal } from '@vegaprotocol/utils';
 import type { TransferFeeQuery } from './__generated__/TransferFee';
 import { type AssetFieldsFragment } from '@vegaprotocol/assets';
+import { MockedWalletProvider } from '@vegaprotocol/wallet-react/testing';
 
 const feeFactor = 0.001;
 
@@ -48,7 +49,11 @@ jest.mock('./__generated__/TransferFee', () => ({
 
 describe('TransferForm', () => {
   const renderComponent = (props: TransferFormProps) => {
-    return render(<TransferForm {...props} />);
+    return render(
+      <MockedWalletProvider>
+        <TransferForm {...props} />
+      </MockedWalletProvider>
+    );
   };
 
   const submit = async () => {
