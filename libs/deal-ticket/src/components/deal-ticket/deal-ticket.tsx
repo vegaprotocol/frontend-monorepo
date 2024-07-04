@@ -103,6 +103,7 @@ import {
   getAssetSymbol,
 } from '@vegaprotocol/assets';
 import { SubmitButton } from './submit-button';
+import { FutureCapInfo } from './future-cap-info';
 
 export interface DealTicketProps {
   scalingFactors?: NonNullable<
@@ -1114,6 +1115,7 @@ export const DealTicket = ({
         market={market}
         slippage={slippage}
       />
+      <FutureCapInfo market={market} priceCap={priceCap} size={rawSize} />
     </form>
   );
 };
