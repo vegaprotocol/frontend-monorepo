@@ -20,12 +20,10 @@ import {
 import { useForm, Controller, useController } from 'react-hook-form';
 import * as Schema from '@vegaprotocol/types';
 import {
-  TradingInput as Input,
   TradingCheckbox as Checkbox,
   TradingFormGroup as FormGroup,
   TradingInputError as InputError,
   Tooltip,
-  Pill,
   Intent,
   Notification,
   ExternalLink,
@@ -33,6 +31,7 @@ import {
   MiniSelect,
   MiniSelectOption,
   TradingFormGroup,
+  TicketInput,
 } from '@vegaprotocol/ui-toolkit';
 import {
   getAsset,
@@ -265,15 +264,20 @@ const Trigger = ({
               return (
                 <>
                   <div className="mb-2">
-                    <Input
-                      data-testid={`triggerPrice${oco ? '-oco' : ''}`}
-                      placeholder={t('Trigger')}
-                      type="number"
+                    <TicketInput
+                      label={
+                        <span className="text-default">
+                          {t('Trigger')}{' '}
+                          <span className="text-muted">{quoteName}</span>
+                        </span>
+                      }
                       step={priceStep}
-                      appendElement={<Pill size="xs">{quoteName}</Pill>}
-                      value={value || ''}
-                      hasError={!!fieldState.error}
+                      type="number"
+                      data-testid={`triggerPrice${oco ? '-oco' : ''}`}
+                      id="input-price-quote"
+                      onWheel={(e) => e.currentTarget.blur()}
                       {...props}
+                      value={value || ''}
                     />
                   </div>
                   {fieldState.error && (
@@ -335,17 +339,21 @@ const Trigger = ({
               return (
                 <>
                   <div className="mb-2">
-                    <Input
-                      placeholder={t('Trigger')}
-                      type="number"
+                    <TicketInput
+                      label={
+                        <span className="text-default">
+                          {t('Trigger')} <span className="text-muted">%</span>
+                        </span>
+                      }
                       step={trailingPercentOffsetStep}
-                      appendElement={<Pill size="xs">%</Pill>}
+                      type="number"
                       data-testid={`triggerTrailingPercentOffset${
                         oco ? '-oco' : ''
                       }`}
-                      value={value || ''}
-                      hasError={!!fieldState.error}
+                      id="input-price-quote"
+                      onWheel={(e) => e.currentTarget.blur()}
                       {...props}
+                      value={value || ''}
                     />
                   </div>
                   {fieldState.error && (
@@ -400,19 +408,20 @@ const Size = ({
         return (
           <div className={isLimitType ? 'mb-4' : 'mb-2'}>
             <FormGroup labelFor={id} label={t(`Size`)} hideLabel>
-              <Input
+              <TicketInput
                 id={id}
-                placeholder={t('Size')}
-                className="w-full"
-                type="number"
+                label={
+                  <span className="text-default">
+                    {t('Size')} <span className="text-muted">{assetUnit}</span>
+                  </span>
+                }
                 step={sizeStep}
                 min={sizeStep}
-                onWheel={(e) => e.currentTarget.blur()}
-                appendElement={assetUnit && <Pill size="xs">{assetUnit}</Pill>}
+                type="number"
                 data-testid={id}
-                value={value || ''}
-                hasError={!!fieldState.error}
+                onWheel={(e) => e.currentTarget.blur()}
                 {...props}
+                value={value || ''}
               />
             </FormGroup>
             {fieldState.error && (
@@ -470,17 +479,19 @@ const SizeOverrideValue = ({
         return (
           <>
             <FormGroup label={t('Quantity')} labelFor={id} hideLabel>
-              <Input
+              <TicketInput
                 id={id}
-                data-testid={id}
-                placeholder={t('Quantity')}
-                type="number"
-                className="w-full"
+                label={
+                  <span className="text-default">
+                    {t('Quantity')} <span className="text-muted">%</span>
+                  </span>
+                }
                 min={sizeStep}
                 max={maxSize}
                 step={sizeStep}
-                appendElement={<Pill size="xs">%</Pill>}
-                hasError={!!fieldState.error}
+                type="number"
+                data-testid={id}
+                onWheel={(e) => e.currentTarget.blur()}
                 {...field}
                 value={field.value || ''}
               />
@@ -547,18 +558,19 @@ const Price = ({
         return (
           <div className="mb-2">
             <FormGroup labelFor={id} label={t('Price')} hideLabel>
-              <Input
+              <TicketInput
                 id={id}
-                placeholder={t('Price')}
-                className="w-full"
-                type="number"
+                label={
+                  <span className="text-default">
+                    {t('Price')} <span className="text-muted">{quoteName}</span>
+                  </span>
+                }
                 step={priceStep}
+                type="number"
                 data-testid={id}
                 onWheel={(e) => e.currentTarget.blur()}
-                value={value || ''}
-                hasError={!!fieldState.error}
-                appendElement={<Pill size="xs">{quoteName}</Pill>}
                 {...props}
+                value={value || ''}
               />
             </FormGroup>
             {fieldState.error && (
