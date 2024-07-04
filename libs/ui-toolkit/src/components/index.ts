@@ -45,6 +45,7 @@ export * from './tabs';
 export * from './text-area';
 export * from './theme-switcher';
 export * from './thumbs';
+export * from './ticket-input';
 export * from './tiny-scroll';
 export * from './toast';
 export * from './toggle';

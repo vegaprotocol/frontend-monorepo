@@ -1,5 +1,5 @@
 import * as Schema from '@vegaprotocol/types';
-import { type FormEventHandler } from 'react';
+import { type ButtonHTMLAttributes, type FormEventHandler } from 'react';
 import { memo, useCallback, useEffect, useRef, useMemo } from 'react';
 import { Controller, useController, useForm } from 'react-hook-form';
 import { DealTicketFeeDetails } from './deal-ticket-fee-details';
@@ -18,7 +18,6 @@ import {
   mapFormValuesToTakeProfitAndStopLoss,
 } from '../../utils/map-form-values-to-submission';
 import {
-  TradingInput as Input,
   TradingCheckbox as Checkbox,
   TradingFormGroup as FormGroup,
   TradingInputError as InputError,
@@ -28,6 +27,7 @@ import {
   Pill,
   ExternalLink,
   PercentageSlider as Slider,
+  TicketInput,
 } from '@vegaprotocol/ui-toolkit';
 
 import { useOpenVolume } from '@vegaprotocol/positions';
@@ -477,7 +477,7 @@ export const DealTicket = ({
       return;
     }
     if (useNotional && !sliderUsed.current) {
-      let size = '0';
+      let size = '';
       if (notional && notional !== '0') {
         const s = BigNumber(notional).dividedBy(
           toBigNum(notionalPrice, market.decimalPlaces)
@@ -496,7 +496,7 @@ export const DealTicket = ({
     } else {
       const notional =
         !rawSize || rawSize === '0'
-          ? '0'
+          ? ''
           : BigNumber(rawSize)
               .multipliedBy(toBigNum(notionalPrice, market.decimalPlaces))
               .toFixed(Math.max(notionalDecimals, 0));
@@ -642,11 +642,9 @@ export const DealTicket = ({
             }}
             render={({ field, fieldState }) => (
               <>
-                <Input
-                  placeholder={t('Price')}
-                  id="input-price-quote"
-                  appendElement={
-                    <PricePill
+                <TicketInput
+                  label={
+                    <PricePlaceholder
                       quoteAsset={quoteAsset}
                       baseAsset={baseAsset}
                       quoteName={quoteName}
@@ -654,10 +652,10 @@ export const DealTicket = ({
                       isSpotMarket={isSpotMarket}
                     />
                   }
-                  className="w-full"
-                  type="number"
                   step={priceStep}
+                  type="number"
                   data-testid="order-price"
+                  id="input-price-quote"
                   onWheel={(e) => e.currentTarget.blur()}
                   {...field}
                 />
@@ -684,33 +682,31 @@ export const DealTicket = ({
                 compact
                 hideLabel
               >
-                <Input
-                  placeholder={t('Notional')}
-                  id="order-notional"
-                  className="w-full"
+                <TicketInput
+                  label={
+                    <NotionalPlaceholder
+                      quoteAsset={quoteAsset}
+                      isSpotMarket={isSpotMarket}
+                    />
+                  }
                   type="number"
+                  data-testid="order-notional"
+                  id="order-notional"
+                  onWheel={(e) => e.currentTarget.blur()}
+                  min={notionalStep}
+                  step={notionalStep}
                   appendElement={
                     quoteName && (
-                      <button
+                      <SizeSwapper
                         data-testid="useSize"
-                        type="button"
-                        onClick={() => setValue('useNotional', false)}
-                      >
-                        <Pill size="xs">
-                          {isSpotMarket ? (
-                            <AssetSymbol asset={quoteAsset} />
-                          ) : (
-                            quoteAsset.symbol
-                          )}{' '}
-                          <VegaIcon name={VegaIconNames.TRANSFER} size={14} />
-                        </Pill>
-                      </button>
+                        // prevent focus causing label movement
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={() => {
+                          setValue('useNotional', false);
+                        }}
+                      />
                     )
                   }
-                  step={notionalStep}
-                  min={notionalStep}
-                  data-testid="order-notional"
-                  onWheel={(e) => e.currentTarget.blur()}
                   {...field}
                 />
               </FormGroup>
@@ -741,33 +737,32 @@ export const DealTicket = ({
                   compact
                   hideLabel
                 >
-                  <Input
-                    placeholder={t('Size')}
-                    id="order-size"
-                    className="w-full"
+                  <TicketInput
+                    label={
+                      <SizePlaceholder
+                        baseQuote={baseQuote}
+                        baseAsset={baseAsset}
+                      />
+                    }
+                    min={sizeStep}
+                    step={sizeStep}
                     type="number"
+                    data-testid="order-size"
+                    id="order-size"
+                    onWheel={(e) => e.currentTarget.blur()}
                     appendElement={
                       baseQuote && (
-                        <button
+                        <SizeSwapper
                           data-testid="useNotional"
                           type="button"
-                          onClick={() => setValue('useNotional', true)}
-                        >
-                          <Pill size="xs">
-                            {baseAsset ? (
-                              <AssetSymbol asset={baseAsset} />
-                            ) : (
-                              baseQuote
-                            )}{' '}
-                            <VegaIcon name={VegaIconNames.TRANSFER} size={14} />
-                          </Pill>
-                        </button>
+                          // prevent focus causing label movement
+                          onMouseDown={(e) => e.preventDefault()}
+                          onClick={() => {
+                            setValue('useNotional', true);
+                          }}
+                        />
                       )
                     }
-                    step={sizeStep}
-                    min={sizeStep}
-                    data-testid="order-size"
-                    onWheel={(e) => e.currentTarget.blur()}
                     {...field}
                   />
                 </FormGroup>
@@ -1255,7 +1250,7 @@ const SummaryMessage = memo(
   }
 );
 
-const PricePill = ({
+const PricePlaceholder = ({
   quoteAsset,
   baseAsset,
   quoteName,
@@ -1268,23 +1263,98 @@ const PricePill = ({
   isNotional?: boolean;
   isSpotMarket: boolean;
 }) => {
+  const t = useT();
+
   if (isSpotMarket) {
     if (isNotional) {
       return (
-        <Pill size="xs">
+        <>
+          <span className="text-vega-clight-50 dark:text-vega-cdark-50">
+            {t('Price')}
+          </span>{' '}
           <AssetSymbol asset={baseAsset} />
-        </Pill>
+        </>
       );
     } else {
       return (
-        <Pill size="xs">
+        <>
+          <span className="text-vega-clight-50 dark:text-vega-cdark-50">
+            {t('Price')}
+          </span>{' '}
           <AssetSymbol asset={quoteAsset} />
-        </Pill>
+        </>
       );
     }
   }
 
-  return <Pill size="xs">{quoteName}</Pill>;
+  return (
+    <>
+      <span className="text-vega-clight-50 dark:text-vega-cdark-50">
+        {t('Price')}
+      </span>{' '}
+      {quoteName}
+    </>
+  );
+};
+
+const NotionalPlaceholder = ({
+  quoteAsset,
+  isSpotMarket,
+}: {
+  quoteAsset: AssetFieldsFragment;
+  isSpotMarket: boolean;
+}) => {
+  const t = useT();
+
+  if (isSpotMarket) {
+    return (
+      <>
+        <span className="text-vega-clight-50 dark:text-vega-cdark-50">
+          {t('Notional')}
+        </span>{' '}
+        <AssetSymbol asset={quoteAsset} />
+      </>
+    );
+  }
+
+  return (
+    <>
+      <span className="text-vega-clight-50 dark:text-vega-cdark-50">
+        {t('Notional')}
+      </span>{' '}
+      {quoteAsset.symbol}
+    </>
+  );
+};
+
+const SizePlaceholder = ({
+  baseQuote,
+  baseAsset,
+}: {
+  baseQuote: string | undefined;
+  baseAsset: AssetFieldsFragment | undefined;
+}) => {
+  const t = useT();
+
+  if (baseAsset) {
+    return (
+      <>
+        <span className="text-vega-clight-50 dark:text-vega-cdark-50">
+          {t('Size')}
+        </span>{' '}
+        <AssetSymbol asset={baseAsset} />
+      </>
+    );
+  }
+
+  return (
+    <>
+      <span className="text-vega-clight-50 dark:text-vega-cdark-50">
+        {t('Size')}
+      </span>{' '}
+      {baseQuote}
+    </>
+  );
 };
 
 const PlaceOrderButton = ({
@@ -1334,4 +1404,14 @@ const PlaceOrderButton = ({
   const subLabel = `${baseText} @ ${quoteText}`;
 
   return <SubmitButton text={text} subLabel={subLabel} side={side} />;
+};
+
+const SizeSwapper = (props: ButtonHTMLAttributes<HTMLButtonElement>) => {
+  return (
+    <button type="button" {...props}>
+      <Pill className="flex items-center" size="lg">
+        <VegaIcon name={VegaIconNames.TRANSFER} size={18} />
+      </Pill>
+    </button>
+  );
 };
