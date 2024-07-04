@@ -86,3 +86,11 @@ export const calcSizeMarketOrder = ({
 
   return size.toString();
 };
+
+export const toNotional = (size: BigNumber, price: BigNumber) => {
+  return size.times(price);
+};
+
+export const toSize = (notional: BigNumber, price: BigNumber) => {
+  return notional.div(price);
+};

@@ -12,7 +12,6 @@ export const TpSl = (props: { control: Control<any> }) => {
       render={({ field }) => {
         return (
           <Checkbox
-            {...field}
             checked={field.value}
             onCheckedChange={field.onChange}
             label={t('TP/SL')}

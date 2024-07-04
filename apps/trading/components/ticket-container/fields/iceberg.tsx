@@ -12,7 +12,6 @@ export const Iceberg = (props: { control: Control<any> }) => {
       render={({ field }) => {
         return (
           <Checkbox
-            {...field}
             checked={field.value}
             onCheckedChange={(value) => {
               field.onChange(value);

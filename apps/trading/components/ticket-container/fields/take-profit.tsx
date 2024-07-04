@@ -1,7 +1,7 @@
 import { type Control } from 'react-hook-form';
 import { FormField } from '../ticket-field';
 import { useT } from '../../../lib/use-t';
-import { TradingInput } from '@vegaprotocol/ui-toolkit';
+import { TicketInput } from '@vegaprotocol/ui-toolkit';
 
 export const TakeProfit = (props: { control: Control<any> }) => {
   const t = useT();
@@ -11,9 +11,14 @@ export const TakeProfit = (props: { control: Control<any> }) => {
       name="takeProfit"
       render={({ field }) => {
         return (
-          <TradingInput
+          <TicketInput
             {...field}
-            placeholder={t('Take profit')}
+            label={
+              <>
+                <span>{t('Take profit')}</span>
+                <span>quotename</span>
+              </>
+            }
             value={field.value}
             onChange={field.onChange}
           />

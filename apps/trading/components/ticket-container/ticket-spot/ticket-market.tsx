@@ -2,7 +2,12 @@ import BigNumber from 'bignumber.js';
 import { FormProvider, useForm, useFormContext } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import { Intent, TradingButton } from '@vegaprotocol/ui-toolkit';
+import {
+  Intent,
+  TradingButton,
+  VegaIcon,
+  VegaIconNames,
+} from '@vegaprotocol/ui-toolkit';
 import { type MarketInfo, useMarkPrice } from '@vegaprotocol/markets';
 import { type AssetFieldsFragment } from '@vegaprotocol/assets';
 import { Side } from '@vegaprotocol/types';
@@ -14,8 +19,10 @@ import * as Fields from '../fields';
 import { TicketTypeSelect } from '../ticket-type-select';
 import { type FormProps } from '../ticket-spot';
 import { Slider } from '../slider';
+import { useState } from 'react';
 
 export const TicketMarket = (props: FormProps) => {
+  const [mode, setMode] = useState<'size' | 'notional'>('size');
   const form = useForm<FormFieldsMarket>({
     resolver: zodResolver(schemaMarket),
     defaultValues: {
@@ -33,7 +40,33 @@ export const TicketMarket = (props: FormProps) => {
       >
         <Fields.Side control={form.control} />
         <TicketTypeSelect type="market" onTypeChange={props.onTypeChange} />
-        <Fields.Size control={form.control} />
+        {mode === 'size' ? (
+          <Fields.Size
+            control={form.control}
+            appendElement={
+              <button
+                className="flex justify-center items-center bg-vega-clight-400 dark:bg-vega-cdark-400 p-2 rounded"
+                type="button"
+                onClick={() => console.log('here')}
+              >
+                <VegaIcon name={VegaIconNames.TRANSFER} size={14} />
+              </button>
+            }
+          />
+        ) : (
+          <Fields.Size
+            control={form.control}
+            appendElement={
+              <button
+                className="flex justify-center items-center bg-vega-clight-400 dark:bg-vega-cdark-400 p-2 rounded"
+                type="button"
+                onClick={() => console.log('here')}
+              >
+                <VegaIcon name={VegaIconNames.TRANSFER} size={14} />
+              </button>
+            }
+          />
+        )}
         <SizeSlider
           market={props.market}
           balances={props.balances}
