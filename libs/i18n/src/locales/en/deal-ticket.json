@@ -88,6 +88,7 @@
   "Post only": "Post only",
   "Price": "Price",
   "Price cannot be lower than {{priceStep}}": "Price cannot be lower than {{priceStep}}",
+  "Price cannot be higher than {{maxPrice}}": "Price cannot be higher than {{maxPrice}}",
   "Projected margin": "Projected margin",
   "Propose a network parameter change": "Propose a network parameter change",
   "Public testnet run by the Vega team, often used for incentives": "Public testnet run by the Vega team, often used for incentives",

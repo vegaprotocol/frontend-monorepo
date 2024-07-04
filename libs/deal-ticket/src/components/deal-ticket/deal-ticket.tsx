@@ -583,6 +583,20 @@ export const DealTicket = ({
 
   const priceStep = determinePriceStep(market);
 
+  let maxPrice: string | undefined = undefined;
+  if (
+    market.tradableInstrument.instrument.product.__typename === 'Future' &&
+    market.tradableInstrument.instrument.product.cap
+  ) {
+    const capValue = toBigNum(
+      market.tradableInstrument.instrument.product.cap.maxPrice,
+      market.decimalPlaces
+    );
+    if (!capValue.isNaN()) {
+      maxPrice = capValue.toString();
+    }
+  }
+
   return (
     <form
       onSubmit={
@@ -636,6 +650,12 @@ export const DealTicket = ({
                 value: priceStep,
                 message: t('Price cannot be lower than {{priceStep}}', {
                   priceStep,
+                }),
+              },
+              max: {
+                value: maxPrice || Number.MAX_VALUE,
+                message: t('Price cannot be higher than {{maxPrice}}', {
+                  maxPrice: maxPrice || Number.MAX_VALUE,
                 }),
               },
               validate: validateAmount(priceStep, 'Price'),
