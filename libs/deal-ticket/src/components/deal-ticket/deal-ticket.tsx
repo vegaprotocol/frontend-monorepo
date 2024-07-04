@@ -46,6 +46,7 @@ import {
   getDerivedPrice,
   getQuoteAsset,
   getQuoteName,
+  isFuture,
   isMarketInAuction,
   isSpot,
 } from '@vegaprotocol/markets';
@@ -139,7 +140,7 @@ export const stopSubmit: FormEventHandler = (e) => e.preventDefault();
 
 const getDefaultValues = (
   type: Schema.OrderType,
-  storedValues?: Partial<OrderFormValues>
+  overrides?: Partial<OrderFormValues>
 ): OrderFormValues => ({
   type,
   side: Schema.Side.SIDE_BUY,
@@ -148,7 +149,7 @@ const getDefaultValues = (
       ? Schema.OrderTimeInForce.TIME_IN_FORCE_GTC
       : Schema.OrderTimeInForce.TIME_IN_FORCE_IOC,
   size: '',
-  notional: '0',
+  notional: '',
   useNotional: false,
   price: '',
   expiresAt: undefined,
@@ -156,7 +157,7 @@ const getDefaultValues = (
   reduceOnly: false,
   peakSize: '',
   minimumVisibleSize: '',
-  ...storedValues,
+  ...overrides,
 });
 
 export const getBaseQuoteUnit = (tags?: string[] | null) =>
@@ -189,6 +190,9 @@ export const DealTicket = ({
   const isSpotMarket = isSpot(market.tradableInstrument.instrument.product);
   const isLimitType = type === Schema.OrderType.TYPE_LIMIT;
 
+  const product = market.tradableInstrument.instrument.product;
+  const asset = getAsset(market);
+
   const {
     control,
     reset,
@@ -197,11 +201,14 @@ export const DealTicket = ({
     setValue,
     watch,
   } = useForm<OrderFormValues>({
-    defaultValues: getDefaultValues(type, storedFormValues?.[dealTicketType]),
+    defaultValues: getDefaultValues(type, {
+      ...storedFormValues?.[dealTicketType],
+      useNotional: isFuture(product) && Boolean(product.cap),
+    }),
   });
+
   const lastSubmitTime = useRef(0);
 
-  const asset = getAsset(market);
   const assetSymbol = asset.symbol;
   const baseAsset = isSpotMarket ? getBaseAsset(market) : undefined;
   const quoteName = getQuoteName(market);
@@ -471,17 +478,37 @@ export const DealTicket = ({
     minNotional && Math.floor(Math.log10(minNotional)) * -1;
   const notionalStep = notionalDecimals ? toDecimal(notionalDecimals) : '1';
 
+  const priceCap = useMemo(() => {
+    if (isFuture(product) && product.cap) {
+      return toBigNum(product.cap.maxPrice, market.decimalPlaces);
+    }
+    return undefined;
+  }, [market.decimalPlaces, product]);
+
+  let maxPrice: string | undefined;
+  if (priceCap && !priceCap.isNaN()) {
+    maxPrice = priceCap.toString();
+  }
+
   const sliderUsed = useRef(false);
+
   useEffect(() => {
-    if (!notionalPrice || typeof notionalDecimals !== 'number') {
+    let price = toBigNum(notionalPrice || '0', market.decimalPlaces);
+
+    if (priceCap && side === Schema.Side.SIDE_SELL) {
+      price = priceCap.minus(price);
+    }
+
+    if (price.isZero() || typeof notionalDecimals !== 'number') {
       return;
     }
+
     if (useNotional && !sliderUsed.current) {
       let size = '';
+
       if (notional && notional !== '0') {
-        const s = BigNumber(notional).dividedBy(
-          toBigNum(notionalPrice, market.decimalPlaces)
-        );
+        const s = BigNumber(notional).dividedBy(price);
+
         if (market.positionDecimalPlaces >= 0) {
           size = s.toFixed(market.positionDecimalPlaces);
         } else {
@@ -492,14 +519,16 @@ export const DealTicket = ({
           )}`;
         }
       }
+
       setValue('size', size);
     } else {
       const notional =
         !rawSize || rawSize === '0'
           ? ''
           : BigNumber(rawSize)
-              .multipliedBy(toBigNum(notionalPrice, market.decimalPlaces))
+              .multipliedBy(toBigNum(price, market.decimalPlaces))
               .toFixed(Math.max(notionalDecimals, 0));
+
       setValue('notional', notional);
     }
     sliderUsed.current = false;
@@ -512,6 +541,8 @@ export const DealTicket = ({
     setValue,
     useNotional,
     notionalDecimals,
+    priceCap,
+    side,
   ]);
 
   const marketIsInAuction = isMarketInAuction(marketData.marketTradingMode);
@@ -582,20 +613,6 @@ export const DealTicket = ({
   });
 
   const priceStep = determinePriceStep(market);
-
-  let maxPrice: string | undefined = undefined;
-  if (
-    market.tradableInstrument.instrument.product.__typename === 'Future' &&
-    market.tradableInstrument.instrument.product.cap
-  ) {
-    const capValue = toBigNum(
-      market.tradableInstrument.instrument.product.cap.maxPrice,
-      market.decimalPlaces
-    );
-    if (!capValue.isNaN()) {
-      maxPrice = capValue.toString();
-    }
-  }
 
   return (
     <form
