@@ -1,5 +1,9 @@
 import type { StoryFn, Meta } from '@storybook/react';
-import { TradingOption, TradingSelect, TradingRichSelect } from './select';
+import {
+  TradingRichSelectOption,
+  TradingSelect,
+  TradingRichSelect,
+} from './select';
 import { FormGroup } from '../form-group';
 
 export default {
@@ -51,42 +55,42 @@ RichDefaultSelect.args = {
   },
   children: (
     <>
-      <TradingOption value="1">
+      <TradingRichSelectOption value="1">
         <div className="flex flex-col justify-start items-start">
           <span>Option One</span>
           <span className="text-xs">First option</span>
         </div>
-      </TradingOption>
-      <TradingOption value="2">
+      </TradingRichSelectOption>
+      <TradingRichSelectOption value="2">
         <div className="flex flex-col justify-start items-start">
           <span>Option Two</span>
           <span className="text-xs">Second option</span>
         </div>
-      </TradingOption>
-      <TradingOption value="3">
+      </TradingRichSelectOption>
+      <TradingRichSelectOption value="3">
         <div className="flex flex-col justify-start items-start">
           <span>Option Three</span>
           <span className="text-xs">Third option</span>
         </div>
-      </TradingOption>
-      <TradingOption value="4">
+      </TradingRichSelectOption>
+      <TradingRichSelectOption value="4">
         <div className="flex flex-col justify-start items-start">
           <span>Option Four</span>
           <span className="text-xs">Fourth option</span>
         </div>
-      </TradingOption>
-      <TradingOption value="5">
+      </TradingRichSelectOption>
+      <TradingRichSelectOption value="5">
         <div className="flex flex-col justify-start items-start">
           <span>Option Five</span>
           <span className="text-xs">Fifth option</span>
         </div>
-      </TradingOption>
-      <TradingOption value="6">
+      </TradingRichSelectOption>
+      <TradingRichSelectOption value="6">
         <div className="flex flex-col justify-start items-start">
           <span>Option Six</span>
           <span className="text-xs">Sixth option</span>
         </div>
-      </TradingOption>
+      </TradingRichSelectOption>
     </>
   ),
 };

@@ -30,7 +30,7 @@ import {
   TradingInputError,
   Intent,
   TradingRichSelect,
-  TradingOption,
+  TradingRichSelectOption,
 } from '@vegaprotocol/ui-toolkit';
 import { ConnectKitButton } from 'connectkit';
 import { useEffect } from 'react';
@@ -287,9 +287,9 @@ const WithdrawForm = ({
                 {accounts.map((a) => {
                   const asset = a.asset as AssetERC20;
                   return (
-                    <TradingOption value={asset.id} key={asset.id}>
+                    <TradingRichSelectOption value={asset.id} key={asset.id}>
                       <AssetOption asset={{ ...asset, balance: a.balance }} />
-                    </TradingOption>
+                    </TradingRichSelectOption>
                   );
                 })}
               </TradingRichSelect>

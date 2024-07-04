@@ -494,9 +494,9 @@ describe('DealTicket', () => {
       Schema.OrderTimeInForce.TIME_IN_FORCE_GTC
     );
     // 7002-SORD-018
-    expect(screen.getByTestId('order-price').nextSibling).toHaveTextContent(
-      'BTC'
-    );
+    const input = screen.getByTestId('order-price');
+    const inputWrapper = within(input.parentNode as HTMLElement);
+    expect(inputWrapper.getByLabelText(/BTC/)).toBeInTheDocument();
   });
 
   it('market order should not display price', async () => {
