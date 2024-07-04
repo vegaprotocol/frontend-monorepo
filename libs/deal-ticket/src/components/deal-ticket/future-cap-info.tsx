@@ -1,6 +1,5 @@
 import { isFuture, type MarketFieldsFragment } from '@vegaprotocol/markets';
-import { toBigNum } from '@vegaprotocol/utils';
-import type BigNumber from 'bignumber.js';
+import BigNumber from 'bignumber.js';
 import { KeyValue } from './key-value';
 import { useT } from '../../use-t';
 
@@ -24,7 +23,7 @@ export const FutureCapInfo = (props: {
     return null;
   }
 
-  const potentialReturn = toBigNum(props.size, props.market.decimalPlaces)
+  const potentialReturn = BigNumber(props.size || '0')
     .times(props.priceCap)
     .toString();
 

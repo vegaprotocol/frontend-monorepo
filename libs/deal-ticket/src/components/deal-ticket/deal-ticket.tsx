@@ -494,21 +494,21 @@ export const DealTicket = ({
   const sliderUsed = useRef(false);
 
   useEffect(() => {
-    let price = toBigNum(notionalPrice || '0', market.decimalPlaces);
-
-    if (priceCap && side === Schema.Side.SIDE_SELL) {
-      price = priceCap.minus(price);
-    }
-
-    if (price.isZero() || typeof notionalDecimals !== 'number') {
+    if (!notionalPrice || typeof notionalDecimals !== 'number') {
       return;
     }
-
     if (useNotional && !sliderUsed.current) {
       let size = '';
-
       if (notional && notional !== '0') {
-        const s = BigNumber(notional).dividedBy(price);
+        let s = BigNumber(notional).dividedBy(
+          toBigNum(notionalPrice, market.decimalPlaces)
+        );
+
+        if (priceCap) {
+          s = toBigNum(notionalPrice, market.decimalPlaces).div(
+            priceCap.minus(toBigNum(notionalPrice, market.decimalPlaces))
+          );
+        }
 
         if (market.positionDecimalPlaces >= 0) {
           size = s.toFixed(market.positionDecimalPlaces);
@@ -520,16 +520,14 @@ export const DealTicket = ({
           )}`;
         }
       }
-
       setValue('size', size);
     } else {
       const notional =
         !rawSize || rawSize === '0'
           ? ''
           : BigNumber(rawSize)
-              .multipliedBy(toBigNum(price, market.decimalPlaces))
+              .multipliedBy(toBigNum(notionalPrice, market.decimalPlaces))
               .toFixed(Math.max(notionalDecimals, 0));
-
       setValue('notional', notional);
     }
     sliderUsed.current = false;
@@ -543,7 +541,6 @@ export const DealTicket = ({
     useNotional,
     notionalDecimals,
     priceCap,
-    side,
   ]);
 
   const marketIsInAuction = isMarketInAuction(marketData.marketTradingMode);
