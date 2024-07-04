@@ -643,7 +643,7 @@ export const DealTicket = ({
             render={({ field, fieldState }) => (
               <>
                 <TicketInput
-                  placeholder={
+                  label={
                     <PricePlaceholder
                       quoteAsset={quoteAsset}
                       baseAsset={baseAsset}
@@ -683,7 +683,7 @@ export const DealTicket = ({
                 hideLabel
               >
                 <TicketInput
-                  placeholder={
+                  label={
                     <NotionalPlaceholder
                       quoteAsset={quoteAsset}
                       isSpotMarket={isSpotMarket}
@@ -738,7 +738,7 @@ export const DealTicket = ({
                   hideLabel
                 >
                   <TicketInput
-                    placeholder={
+                    label={
                       <SizePlaceholder
                         baseQuote={baseQuote}
                         baseAsset={baseAsset}
