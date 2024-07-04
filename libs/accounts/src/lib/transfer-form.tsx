@@ -194,25 +194,38 @@ export const TransferForm = ({
         <Controller
           control={control}
           name="asset"
-          render={({ field }) => (
-            <TradingRichSelect
-              data-testid="select-asset"
-              id={field.name}
-              name={field.name}
-              onValueChange={(value) => {
-                field.onChange(value);
-                setValue('fromAccount', '');
-              }}
-              placeholder={t('Please select an asset')}
-              value={field.value}
-            >
-              {assets.map((a) => (
-                <TradingRichSelectOption key={a.key} value={a.id}>
-                  <AssetOption asset={a} />
-                </TradingRichSelectOption>
-              ))}
-            </TradingRichSelect>
-          )}
+          render={({ field }) => {
+            if (assets.length <= 0) {
+              return (
+                <span
+                  data-testid="no-assets-available"
+                  className="text-xs text-vega-clight-100 dark:text-vega-cdark-100"
+                >
+                  {t('No assets available')}
+                </span>
+              );
+            }
+
+            return (
+              <TradingRichSelect
+                data-testid="select-asset"
+                id={field.name}
+                name={field.name}
+                onValueChange={(value) => {
+                  field.onChange(value);
+                  setValue('fromAccount', '');
+                }}
+                placeholder={t('Please select an asset')}
+                value={field.value}
+              >
+                {assets.map((a) => (
+                  <TradingRichSelectOption key={a.key} value={a.id}>
+                    <AssetOption asset={a} />
+                  </TradingRichSelectOption>
+                ))}
+              </TradingRichSelect>
+            );
+          }}
         />
         {errors.asset?.message && (
           <TradingInputError forInput="asset">
