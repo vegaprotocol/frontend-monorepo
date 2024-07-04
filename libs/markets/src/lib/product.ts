@@ -14,9 +14,6 @@ export const isSpot = (product: Product): product is SpotFragment =>
 export const isFuture = (product: Product): product is FutureFragment =>
   product.__typename === 'Future';
 
-export const isCappedFuture = (product: Product): product is FutureFragment =>
-  product.__typename === 'Future' && product.cap !== null;
-
 export const isPerpetual = (product: Product): product is PerpetualFragment =>
   product.__typename === 'Perpetual';
 

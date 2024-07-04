@@ -8,7 +8,7 @@ import { IsolatedDialog } from './isolated-dialog';
 import { CrossDialog } from './cross-dialog';
 import { MarginMode } from '@vegaprotocol/types';
 import { useT } from '../../lib/use-t';
-import { isCappedFuture, isSpot, useMarket } from '@vegaprotocol/markets';
+import { isSpot, useMarket } from '@vegaprotocol/markets';
 
 const DEFAULT_LEVERAGE = 10;
 
@@ -28,7 +28,6 @@ export const MarginModeToggle = () => {
   if (!market) return null;
 
   if (isSpot(market.tradableInstrument.instrument.product)) return null;
-  if (isCappedFuture(market.tradableInstrument.instrument.product)) return null;
 
   const marginMode = margin?.marginMode || MarginMode.MARGIN_MODE_CROSS_MARGIN;
 

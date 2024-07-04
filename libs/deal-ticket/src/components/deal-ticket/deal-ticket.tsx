@@ -716,16 +716,14 @@ export const DealTicket = ({
                   min={notionalStep}
                   step={notionalStep}
                   appendElement={
-                    quoteName && (
-                      <SizeSwapper
-                        data-testid="useSize"
-                        // prevent focus causing label movement
-                        onMouseDown={(e) => e.preventDefault()}
-                        onClick={() => {
-                          setValue('useNotional', false);
-                        }}
-                      />
-                    )
+                    <SizeSwapper
+                      data-testid="useSize"
+                      // prevent focus causing label movement
+                      onMouseDown={(e) => e.preventDefault()}
+                      onClick={() => {
+                        setValue('useNotional', false);
+                      }}
+                    />
                   }
                   {...field}
                 />
@@ -771,17 +769,15 @@ export const DealTicket = ({
                     id="order-size"
                     onWheel={(e) => e.currentTarget.blur()}
                     appendElement={
-                      baseQuote && (
-                        <SizeSwapper
-                          data-testid="useNotional"
-                          type="button"
-                          // prevent focus causing label movement
-                          onMouseDown={(e) => e.preventDefault()}
-                          onClick={() => {
-                            setValue('useNotional', true);
-                          }}
-                        />
-                      )
+                      <SizeSwapper
+                        data-testid="useNotional"
+                        type="button"
+                        // prevent focus causing label movement
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={() => {
+                          setValue('useNotional', true);
+                        }}
+                      />
                     }
                     {...field}
                   />
