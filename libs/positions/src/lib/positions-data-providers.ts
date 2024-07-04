@@ -22,6 +22,7 @@ import {
   marketInfoProvider,
   type MarketInfo,
   getProductType,
+  isFuture,
 } from '@vegaprotocol/markets';
 import {
   PositionsDocument,
@@ -39,7 +40,7 @@ import {
   StopOrderSizeOverrideSetting,
   type MarketTradingMode,
   type PositionStatus,
-  type ProductTypeExtended,
+  type ProductType,
 } from '@vegaprotocol/types';
 import {
   type StopOrderFieldsFragment,
@@ -66,6 +67,7 @@ export interface Position {
   marketTradingMode?: MarketTradingMode;
   marketState?: MarketState;
   markPrice: string | undefined;
+  marketFullyCollateralised: boolean;
   notional: string | undefined;
   openVolume: string;
   partyId: string;
@@ -76,7 +78,7 @@ export interface Position {
   totalMarginAccountBalance: string;
   unrealisedPNL: string;
   updatedAt: string | null;
-  productType: ProductTypeExtended;
+  productType: ProductType;
   stopOrders?: StopOrderFieldsFragment[] | null;
 }
 
@@ -113,6 +115,9 @@ export const getMetrics = (
       );
     });
     const asset = getAsset(market);
+    const productType = getProductType(market);
+    const product = market.tradableInstrument.instrument.product;
+
     const generalAccount = accounts?.find(
       (account) =>
         account.asset.id === asset.id &&
@@ -178,6 +183,9 @@ export const getMetrics = (
       marketDecimalPlaces,
       marketId: market.id,
       marketCode: market.tradableInstrument.instrument.code,
+      marketFullyCollateralised: isFuture(product)
+        ? Boolean(product.cap?.fullyCollateralised)
+        : false,
       marketTradingMode: market.data?.marketTradingMode,
       marketState: market.data?.marketState,
       markPrice: marketData ? marketData.markPrice : undefined,
@@ -195,7 +203,7 @@ export const getMetrics = (
         .toFixed(),
       unrealisedPNL: position.unrealisedPNL,
       updatedAt: position.updatedAt || null,
-      productType: getProductType(market),
+      productType,
     });
   });
   return metrics;
