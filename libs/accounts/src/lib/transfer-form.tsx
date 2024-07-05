@@ -593,9 +593,7 @@ const AssetOption = ({
             : asset.source.__typename}
         </div>
       </div>
-      <div className="ml-auto text-sm">
-        {addDecimalsFormatNumber(asset.balance, asset.decimals)}
-      </div>
+      <div className="ml-auto text-sm">{asset.balance}</div>
     </div>
   );
 };
