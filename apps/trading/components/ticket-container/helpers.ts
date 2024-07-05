@@ -3,7 +3,7 @@ import { Side } from '@vegaprotocol/types';
 import { determineSizeStep, toBigNum } from '@vegaprotocol/utils';
 import BigNumber from 'bignumber.js';
 
-export const calcSizeMarketOrder = ({
+export const calcSizeByPct = ({
   pct,
   openVolume,
   markPrice,
@@ -48,7 +48,7 @@ export const calcSizeMarketOrder = ({
   );
 
   if (availableMargin.isZero()) {
-    return '0';
+    return BigNumber(0);
   }
 
   const _totalSizeRemaining = (orders || [])
@@ -84,7 +84,7 @@ export const calcSizeMarketOrder = ({
 
   const size = new BigNumber(pct).div(100).times(max);
 
-  return size.toString();
+  return size;
 };
 
 export const toNotional = (size: BigNumber, price: BigNumber) => {
