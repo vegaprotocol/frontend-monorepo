@@ -6,7 +6,7 @@ import { Intent, TradingButton } from '@vegaprotocol/ui-toolkit';
 
 import { Form, FormGrid, FormGridCol } from '../elements/form';
 import * as Fields from '../fields';
-import { FormFieldsLimit, schemaLimit } from '../schemas';
+import { type FormFieldsLimit, schemaLimit } from '../schemas';
 import { TicketTypeSelect } from '../ticket-type-select';
 import { type FormProps } from '../ticket-perp';
 import { NON_PERSISTENT_TIF_OPTIONS } from '../constants';

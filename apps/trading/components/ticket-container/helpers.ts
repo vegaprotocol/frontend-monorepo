@@ -11,7 +11,7 @@ export const calcSizeMarketOrder = ({
   assetDecimals,
   marketDecimals,
   positionDecimals,
-  balances,
+  accounts,
   orders,
   scalingFactors,
   riskFactors,
@@ -23,7 +23,7 @@ export const calcSizeMarketOrder = ({
   assetDecimals: number;
   marketDecimals: number;
   positionDecimals: number;
-  balances: {
+  accounts: {
     margin: string;
     general: string;
   };
@@ -43,8 +43,8 @@ export const calcSizeMarketOrder = ({
     (openVolume.startsWith('-') && side === Side.SIDE_BUY) ||
     (!openVolume.startsWith('-') && side === Side.SIDE_SELL);
 
-  const availableMargin = toBigNum(balances.general, assetDecimals).plus(
-    toBigNum(balances.margin, assetDecimals)
+  const availableMargin = toBigNum(accounts.general, assetDecimals).plus(
+    toBigNum(accounts.margin, assetDecimals)
   );
 
   if (availableMargin.isZero()) {

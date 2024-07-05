@@ -1,8 +1,15 @@
-import { MarketInfo } from '@vegaprotocol/markets';
+import { type AssetFieldsFragment } from '@vegaprotocol/assets';
+import { type MarketInfo } from '@vegaprotocol/markets';
 import { createContext, useContext } from 'react';
 
 type TicketContextValue = {
   market: MarketInfo;
+  settlementAsset: AssetFieldsFragment;
+  accounts: {
+    general: string;
+    margin: string;
+    orderMargin: string;
+  };
 };
 
 export const TicketContext = createContext<TicketContextValue>(

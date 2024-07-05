@@ -27,8 +27,8 @@ export const TicketMarket = (props: FormProps) => {
   const t = useT();
   const create = useVegaTransactionStore((state) => state.create);
 
-  const { market } = useTicketContext();
-  const instrument = market.tradableInstrument.instrument;
+  const ticket = useTicketContext();
+  const instrument = ticket.market.tradableInstrument.instrument;
   const baseQuote = getBaseQuoteUnit(instrument.metadata.tags);
 
   const form = useForm<FormFieldsMarket>({
@@ -44,11 +44,11 @@ export const TicketMarket = (props: FormProps) => {
     },
   });
 
-  const { data: marketPrice } = useMarketPrice(props.market.id);
+  const { data: marketPrice } = useMarketPrice(ticket.market.id);
 
   const tpSl = form.watch('tpSl');
   const price = marketPrice
-    ? toBigNum(marketPrice, props.market.decimalPlaces)
+    ? toBigNum(marketPrice, ticket.market.decimalPlaces)
     : undefined;
 
   return (
@@ -62,11 +62,11 @@ export const TicketMarket = (props: FormProps) => {
               : fields.size;
 
           console.log({
-            marketId: props.market.id,
+            marketId: ticket.market.id,
             type: fields.type,
             side: fields.side,
             timeInForce: fields.timeInForce,
-            size: removeDecimal(size, props.market.positionDecimalPlaces),
+            size: removeDecimal(size, ticket.market.positionDecimalPlaces),
           });
 
           return;
@@ -87,9 +87,9 @@ export const TicketMarket = (props: FormProps) => {
           }
         />
         <SizeSlider
-          market={props.market}
-          asset={props.asset}
-          balances={props.balances}
+          market={ticket.market}
+          asset={ticket.settlementAsset}
+          accounts={ticket.accounts}
         />
         <FormGrid>
           <FormGridCol>
@@ -111,7 +111,7 @@ export const TicketMarket = (props: FormProps) => {
           </FormGrid>
         )}
         <TradingButton intent={Intent.Secondary} size="large" type="submit">
-          Submit
+          {t('Submit')}
         </TradingButton>
         <Datagrid>
           <Data.Notional price={price} />

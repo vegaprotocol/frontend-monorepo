@@ -9,11 +9,11 @@ import { Slider } from './slider';
 
 export const SizeSlider = ({
   market,
-  balances,
+  accounts,
   asset,
 }: {
   market: MarketInfo;
-  balances: { margin: string; general: string };
+  accounts: { margin: string; general: string };
   asset: AssetFieldsFragment;
 }) => {
   const form = useFormContext();
@@ -49,7 +49,7 @@ export const SizeSlider = ({
           assetDecimals: asset.decimals,
           marketDecimals: market.decimalPlaces,
           positionDecimals: market.positionDecimalPlaces,
-          balances,
+          accounts,
           orders: orders || [],
           scalingFactors,
           riskFactors,
