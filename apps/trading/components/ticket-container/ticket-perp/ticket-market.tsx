@@ -101,6 +101,7 @@ export const TicketMarket = (props: FormProps) => {
         </TradingButton>
         <Datagrid>
           <Data.Notional price={price} />
+          <Data.Fees />
         </Datagrid>
         <pre className="block w-full text-2xs">
           {JSON.stringify(

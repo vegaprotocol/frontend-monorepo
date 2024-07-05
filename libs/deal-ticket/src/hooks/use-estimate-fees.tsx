@@ -33,6 +33,7 @@ export const useEstimateFees = (
     fetchPolicy: 'no-cache',
     skip: !pubKey || !order?.size || !order?.price || order.postOnly,
   });
+
   const data = loading ? currentData || previousData : currentData;
   const atEpoch = (Number(data?.epoch.id) || 0) - 1;
   const volumeDiscountFactor =

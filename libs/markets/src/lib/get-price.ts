@@ -10,7 +10,6 @@ export const getMarketPrice = (marketData: MarketData) => {
   if (isMarketInAuction(marketTradingMode)) {
     // 0 can never be a valid uncrossing price
     // as it would require there being orders on the book at that price.
-    console.log(indicativePrice);
     if (
       indicativePrice &&
       indicativePrice !== '0' &&
