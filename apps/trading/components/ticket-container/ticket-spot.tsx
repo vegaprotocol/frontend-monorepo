@@ -1,15 +1,15 @@
 import { type MarginMode } from '@vegaprotocol/types';
 import { type TicketType } from './types';
-import { type MarketInfo, getAsset, getBaseAsset } from '@vegaprotocol/markets';
+import { getAsset, getBaseAsset } from '@vegaprotocol/markets';
 import { useAccountBalance, useMarginMode } from '@vegaprotocol/accounts';
 import { useState } from 'react';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { type AssetFieldsFragment } from '@vegaprotocol/assets';
 
 import { TicketMarket } from './ticket-spot/ticket-market';
+import { useTicketContext } from './ticket-context';
 
 export type FormProps = {
-  market: MarketInfo;
   baseAsset: AssetFieldsFragment;
   quoteAsset: AssetFieldsFragment;
   balances: { base: string; quote: string };
@@ -17,7 +17,8 @@ export type FormProps = {
   onTypeChange: (value: TicketType) => void;
 };
 
-export const TicketSpot = ({ market }: { market: MarketInfo }) => {
+export const TicketSpot = () => {
+  const { market } = useTicketContext();
   const [ticketType, setTicketType] = useState<TicketType>('market');
   const { pubKey } = useVegaWallet();
 
@@ -30,7 +31,6 @@ export const TicketSpot = ({ market }: { market: MarketInfo }) => {
   const marginMode = useMarginMode({ marketId: market.id, partyId: pubKey });
 
   const props: FormProps = {
-    market,
     onTypeChange: (value: TicketType) => setTicketType(value),
     baseAsset,
     quoteAsset,
