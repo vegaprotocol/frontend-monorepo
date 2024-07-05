@@ -92,7 +92,7 @@ import type {
 import { formatDuration } from 'date-fns';
 import * as AccordionPrimitive from '@radix-ui/react-accordion';
 import { useT } from '../../use-t';
-import { isPerpetual, isSpot } from '../../product';
+import { isFuture, isPerpetual, isSpot } from '../../product';
 import omit from 'lodash/omit';
 import orderBy from 'lodash/orderBy';
 import groupBy from 'lodash/groupBy';
@@ -579,36 +579,32 @@ export const InstrumentInfoPanel = ({
   market,
   parentMarket,
 }: MarketInfoProps) => {
+  const t = useT();
   const productType = getProductType(market);
+  const instrument = market.tradableInstrument.instrument;
+  const product = instrument.product;
   return (
     <MarketInfoTable
       data={{
-        marketName: market.tradableInstrument.instrument.name,
-        code: market.tradableInstrument.instrument.code,
-        productType:
-          market.tradableInstrument.instrument.product.__typename ===
-            'Future' &&
-          market.tradableInstrument.instrument.product.cap?.binarySettlement
-            ? 'Binary Option'
-            : productType,
+        marketName: instrument.name,
+        code: instrument.code,
+        productType: productType,
         quoteName: getQuoteName(market),
         priceCap:
-          market.tradableInstrument.instrument.product.__typename ===
-            'Future' &&
-          market.tradableInstrument.instrument.product.cap?.maxPrice
+          isFuture(product) && product.cap?.maxPrice
             ? addDecimalsFormatNumber(
-                market.tradableInstrument.instrument.product.cap.maxPrice,
+                product.cap.maxPrice,
                 market.decimalPlaces
               )
-            : undefined,
+            : t('No'),
         binarySettlement:
-          market.tradableInstrument.instrument.product.__typename ===
-            'Future' &&
-          market.tradableInstrument.instrument.product.cap?.binarySettlement,
+          isFuture(product) && product.cap?.binarySettlement
+            ? t('Yes')
+            : t('No'),
         fullyCollateralised:
-          market.tradableInstrument.instrument.product.__typename ===
-            'Future' &&
-          market.tradableInstrument.instrument.product.cap?.fullyCollateralised,
+          isFuture(product) && product.cap?.fullyCollateralised
+            ? t('Yes')
+            : t('No'),
       }}
       parentData={
         parentMarket && {

@@ -751,20 +751,16 @@ export const PeggedReferenceMapping: { [R in PeggedReference]: string } = {
   PEGGED_REFERENCE_MID: 'Mid',
 };
 
-export type ProductTypeExtended = ProductType | 'CappedFuture';
-
-export const ProductTypeMapping: Record<ProductTypeExtended, string> = {
+export const ProductTypeMapping: Record<ProductType, string> = {
   Future: 'Future',
   Spot: 'Spot',
   Perpetual: 'Perpetual',
-  CappedFuture: 'CappedFuture',
 };
 
-export const ProductTypeShortName: Record<ProductTypeExtended, string> = {
+export const ProductTypeShortName: Record<ProductType, string> = {
   Future: 'Futr',
   Spot: 'Spot',
   Perpetual: 'Perp',
-  CappedFuture: 'Fcap',
 };
 
 export const ProposalProductTypeMapping: Record<ProposalProductType, string> = {

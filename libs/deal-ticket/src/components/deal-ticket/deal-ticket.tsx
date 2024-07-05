@@ -46,6 +46,7 @@ import {
   getDerivedPrice,
   getQuoteAsset,
   getQuoteName,
+  isFuture,
   isMarketInAuction,
   isSpot,
 } from '@vegaprotocol/markets';
@@ -102,6 +103,7 @@ import {
   getAssetSymbol,
 } from '@vegaprotocol/assets';
 import { SubmitButton } from './submit-button';
+import { FutureCapInfo } from './future-cap-info';
 
 export interface DealTicketProps {
   scalingFactors?: NonNullable<
@@ -139,7 +141,7 @@ export const stopSubmit: FormEventHandler = (e) => e.preventDefault();
 
 const getDefaultValues = (
   type: Schema.OrderType,
-  storedValues?: Partial<OrderFormValues>
+  overrides?: Partial<OrderFormValues>
 ): OrderFormValues => ({
   type,
   side: Schema.Side.SIDE_BUY,
@@ -148,7 +150,7 @@ const getDefaultValues = (
       ? Schema.OrderTimeInForce.TIME_IN_FORCE_GTC
       : Schema.OrderTimeInForce.TIME_IN_FORCE_IOC,
   size: '',
-  notional: '0',
+  notional: '',
   useNotional: false,
   price: '',
   expiresAt: undefined,
@@ -156,7 +158,7 @@ const getDefaultValues = (
   reduceOnly: false,
   peakSize: '',
   minimumVisibleSize: '',
-  ...storedValues,
+  ...overrides,
 });
 
 export const getBaseQuoteUnit = (tags?: string[] | null) =>
@@ -189,6 +191,9 @@ export const DealTicket = ({
   const isSpotMarket = isSpot(market.tradableInstrument.instrument.product);
   const isLimitType = type === Schema.OrderType.TYPE_LIMIT;
 
+  const product = market.tradableInstrument.instrument.product;
+  const asset = getAsset(market);
+
   const {
     control,
     reset,
@@ -197,11 +202,14 @@ export const DealTicket = ({
     setValue,
     watch,
   } = useForm<OrderFormValues>({
-    defaultValues: getDefaultValues(type, storedFormValues?.[dealTicketType]),
+    defaultValues: getDefaultValues(type, {
+      ...storedFormValues?.[dealTicketType],
+      useNotional: isFuture(product) && Boolean(product.cap),
+    }),
   });
+
   const lastSubmitTime = useRef(0);
 
-  const asset = getAsset(market);
   const assetSymbol = asset.symbol;
   const baseAsset = isSpotMarket ? getBaseAsset(market) : undefined;
   const quoteName = getQuoteName(market);
@@ -471,7 +479,20 @@ export const DealTicket = ({
     minNotional && Math.floor(Math.log10(minNotional)) * -1;
   const notionalStep = notionalDecimals ? toDecimal(notionalDecimals) : '1';
 
+  const priceCap = useMemo(() => {
+    if (isFuture(product) && product.cap) {
+      return toBigNum(product.cap.maxPrice, market.decimalPlaces);
+    }
+    return undefined;
+  }, [market.decimalPlaces, product]);
+
+  let maxPrice: string | undefined;
+  if (priceCap && !priceCap.isNaN()) {
+    maxPrice = priceCap.toString();
+  }
+
   const sliderUsed = useRef(false);
+
   useEffect(() => {
     if (!notionalPrice || typeof notionalDecimals !== 'number') {
       return;
@@ -479,9 +500,16 @@ export const DealTicket = ({
     if (useNotional && !sliderUsed.current) {
       let size = '';
       if (notional && notional !== '0') {
-        const s = BigNumber(notional).dividedBy(
+        let s = BigNumber(notional).dividedBy(
           toBigNum(notionalPrice, market.decimalPlaces)
         );
+
+        if (priceCap) {
+          s = toBigNum(notionalPrice, market.decimalPlaces).div(
+            priceCap.minus(toBigNum(notionalPrice, market.decimalPlaces))
+          );
+        }
+
         if (market.positionDecimalPlaces >= 0) {
           size = s.toFixed(market.positionDecimalPlaces);
         } else {
@@ -512,6 +540,7 @@ export const DealTicket = ({
     setValue,
     useNotional,
     notionalDecimals,
+    priceCap,
   ]);
 
   const marketIsInAuction = isMarketInAuction(marketData.marketTradingMode);
@@ -582,20 +611,6 @@ export const DealTicket = ({
   });
 
   const priceStep = determinePriceStep(market);
-
-  let maxPrice: string | undefined = undefined;
-  if (
-    market.tradableInstrument.instrument.product.__typename === 'Future' &&
-    market.tradableInstrument.instrument.product.cap
-  ) {
-    const capValue = toBigNum(
-      market.tradableInstrument.instrument.product.cap.maxPrice,
-      market.decimalPlaces
-    );
-    if (!capValue.isNaN()) {
-      maxPrice = capValue.toString();
-    }
-  }
 
   return (
     <form
@@ -716,16 +731,14 @@ export const DealTicket = ({
                   min={notionalStep}
                   step={notionalStep}
                   appendElement={
-                    quoteName && (
-                      <SizeSwapper
-                        data-testid="useSize"
-                        // prevent focus causing label movement
-                        onMouseDown={(e) => e.preventDefault()}
-                        onClick={() => {
-                          setValue('useNotional', false);
-                        }}
-                      />
-                    )
+                    <SizeSwapper
+                      data-testid="useSize"
+                      // prevent focus causing label movement
+                      onMouseDown={(e) => e.preventDefault()}
+                      onClick={() => {
+                        setValue('useNotional', false);
+                      }}
+                    />
                   }
                   {...field}
                 />
@@ -771,17 +784,15 @@ export const DealTicket = ({
                     id="order-size"
                     onWheel={(e) => e.currentTarget.blur()}
                     appendElement={
-                      baseQuote && (
-                        <SizeSwapper
-                          data-testid="useNotional"
-                          type="button"
-                          // prevent focus causing label movement
-                          onMouseDown={(e) => e.preventDefault()}
-                          onClick={() => {
-                            setValue('useNotional', true);
-                          }}
-                        />
-                      )
+                      <SizeSwapper
+                        data-testid="useNotional"
+                        type="button"
+                        // prevent focus causing label movement
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={() => {
+                          setValue('useNotional', true);
+                        }}
+                      />
                     }
                     {...field}
                   />
@@ -1101,6 +1112,7 @@ export const DealTicket = ({
         market={market}
         slippage={slippage}
       />
+      <FutureCapInfo market={market} priceCap={priceCap} size={rawSize} />
     </form>
   );
 };

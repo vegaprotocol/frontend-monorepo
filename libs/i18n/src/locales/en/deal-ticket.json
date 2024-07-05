@@ -86,6 +86,7 @@
   "Place market stop order": "Place market stop order",
   "Place OCO stop order": "Place OCO stop order",
   "Post only": "Post only",
+  "Potential return": "Potential return",
   "Price": "Price",
   "Price cannot be lower than {{priceStep}}": "Price cannot be lower than {{priceStep}}",
   "Price cannot be higher than {{maxPrice}}": "Price cannot be higher than {{maxPrice}}",

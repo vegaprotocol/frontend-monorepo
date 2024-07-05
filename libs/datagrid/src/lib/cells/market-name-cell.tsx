@@ -4,16 +4,15 @@ import get from 'lodash/get';
 import { Pill } from '@vegaprotocol/ui-toolkit';
 import {
   ProductTypeShortName,
+  ProductTypeMapping,
   type Market,
   type ProductType,
-  ProductTypeMapping,
-  type ProductTypeExtended,
 } from '@vegaprotocol/types';
 
 export const MarketProductPill = ({
   productType,
 }: {
-  productType?: ProductTypeExtended;
+  productType?: ProductType;
 }) => {
   if (!productType) {
     return null;
@@ -36,19 +35,15 @@ interface MarketNameCellProps {
     | Market;
   idPath?: string;
   onMarketClick?: (marketId: string, metaKey?: boolean) => void;
-  productType?: ProductTypeExtended;
+  productType?: ProductType;
 }
 
-const getProductType = (market: Market): ProductTypeExtended | undefined => {
+const getProductType = (market: Market): ProductType | undefined => {
   if (!market?.tradableInstrument?.instrument.product) {
     return undefined;
   }
 
   const { product } = market.tradableInstrument.instrument;
-
-  if (product.__typename === 'Future' && product.cap) {
-    return 'CappedFuture';
-  }
 
   return product.__typename;
 };

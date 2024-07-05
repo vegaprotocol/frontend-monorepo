@@ -410,9 +410,11 @@ export const PositionsTable = ({
           if (!data || data.openVolume === '0') {
             return '-';
           }
-          if (data.productType === 'CappedFuture') {
-            return '-';
+
+          if (data.marketFullyCollateralised) {
+            return 'N/A';
           }
+
           return (
             <div className="flex h-[45px] items-center">
               <LiquidationPrice

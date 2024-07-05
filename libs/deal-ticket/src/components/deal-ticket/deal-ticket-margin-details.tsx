@@ -1,5 +1,5 @@
-import { getProductType, getQuoteName } from '@vegaprotocol/markets';
-import type { Market } from '@vegaprotocol/markets';
+import { getProductType, getQuoteName, isFuture } from '@vegaprotocol/markets';
+import type { Market, MarketFieldsFragment } from '@vegaprotocol/markets';
 import type { EstimatePositionQuery } from '@vegaprotocol/positions';
 import * as Schema from '@vegaprotocol/types';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
@@ -154,15 +154,12 @@ export const DealTicketMarginDetails = ({
       {productType !== 'Spot' && (
         <KeyValue
           label={t('Liquidation estimate')}
-          value={
-            productType !== 'CappedFuture'
-              ? liquidationPriceEstimateRange
-              : undefined
-          }
-          formattedValue={
-            productType !== 'CappedFuture' ? liquidationPriceEstimate : '-'
-          }
-          symbol={quoteName}
+          value={getLiquidationEstimate(liquidationPriceEstimateRange, market)}
+          formattedValue={getLiquidationEstimateFormatted(
+            liquidationPriceEstimate,
+            market
+          )}
+          symbol={getLiquidationEstimateSymbol(quoteName, market)}
           labelDescription={
             <>
               <span>
@@ -232,4 +229,49 @@ const SlippageAndTradeInfo = ({
       />
     </>
   );
+};
+
+const getLiquidationEstimate = (
+  estimate: string,
+  market: MarketFieldsFragment
+) => {
+  const product = market.tradableInstrument.instrument.product;
+
+  if (isFuture(product)) {
+    if (product.cap?.fullyCollateralised) {
+      return null;
+    }
+  }
+
+  return estimate;
+};
+
+const getLiquidationEstimateFormatted = (
+  estimate: string,
+  market: MarketFieldsFragment
+) => {
+  const product = market.tradableInstrument.instrument.product;
+
+  if (isFuture(product)) {
+    if (product.cap?.fullyCollateralised) {
+      return 'N/A';
+    }
+  }
+
+  return estimate;
+};
+
+const getLiquidationEstimateSymbol = (
+  symbol: string,
+  market: MarketFieldsFragment
+) => {
+  const product = market.tradableInstrument.instrument.product;
+
+  if (isFuture(product)) {
+    if (product.cap?.fullyCollateralised) {
+      return '';
+    }
+  }
+
+  return symbol;
 };
