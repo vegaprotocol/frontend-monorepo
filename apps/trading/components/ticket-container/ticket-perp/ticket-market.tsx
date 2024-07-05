@@ -21,20 +21,17 @@ import { useMarketPrice } from '@vegaprotocol/markets';
 import { Datagrid } from '../elements/datagrid';
 
 import { useTicketContext } from '../ticket-context';
-import { getBaseQuoteUnit } from '@vegaprotocol/deal-ticket';
 
 export const TicketMarket = (props: FormProps) => {
   const t = useT();
   const create = useVegaTransactionStore((state) => state.create);
 
   const ticket = useTicketContext();
-  const instrument = ticket.market.tradableInstrument.instrument;
-  const baseQuote = getBaseQuoteUnit(instrument.metadata.tags);
 
   const form = useForm<FormFieldsMarket>({
     resolver: zodResolver(schemaMarket),
     defaultValues: {
-      mode: 'size',
+      sizeMode: 'contracts',
       type: OrderType.TYPE_MARKET,
       side: Side.SIDE_BUY,
       size: '', // or notional
@@ -47,9 +44,10 @@ export const TicketMarket = (props: FormProps) => {
   const { data: marketPrice } = useMarketPrice(ticket.market.id);
 
   const tpSl = form.watch('tpSl');
-  const price = marketPrice
-    ? toBigNum(marketPrice, ticket.market.decimalPlaces)
-    : undefined;
+  const price =
+    marketPrice !== undefined && marketPrice !== null
+      ? toBigNum(marketPrice, ticket.market.decimalPlaces)
+      : undefined;
 
   return (
     <FormProvider {...form}>
@@ -57,7 +55,7 @@ export const TicketMarket = (props: FormProps) => {
         onSubmit={form.handleSubmit((fields) => {
           // if in notional, convert back to normal size
           const size =
-            fields.mode === 'notional'
+            fields.sizeMode === 'notional'
               ? helpers.toSize(BigNumber(fields.size), price || BigNumber(0))
               : fields.size;
 
@@ -77,15 +75,7 @@ export const TicketMarket = (props: FormProps) => {
       >
         <Fields.Side control={form.control} />
         <TicketTypeSelect type="market" onTypeChange={props.onTypeChange} />
-        <Fields.Size
-          control={form.control}
-          price={price}
-          label={
-            <>
-              <span className="text-default">{t('Size')}</span> {baseQuote}
-            </>
-          }
-        />
+        <Fields.Size control={form.control} price={price} />
         <SizeSlider
           market={ticket.market}
           asset={ticket.settlementAsset}
@@ -118,7 +108,7 @@ export const TicketMarket = (props: FormProps) => {
         </Datagrid>
         <pre className="block w-full text-2xs">
           {JSON.stringify(
-            { marketPrice: marketPrice || '0', ...form.getValues() },
+            { marketPrice: price?.toString(), ...form.getValues() },
             null,
             2
           )}

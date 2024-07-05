@@ -4,6 +4,9 @@ import { createContext, useContext } from 'react';
 
 type TicketContextValue = {
   market: MarketInfo;
+  baseAsset?: AssetFieldsFragment;
+  baseSymbol?: string;
+  quoteAsset: AssetFieldsFragment;
   settlementAsset: AssetFieldsFragment;
   accounts: {
     general: string;

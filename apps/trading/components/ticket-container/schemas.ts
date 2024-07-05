@@ -16,7 +16,7 @@ export const numericalString = z.string().refine(
 
 export const schemaMarket = z
   .object({
-    mode: z.enum(['size', 'notional']),
+    sizeMode: z.enum(['contracts', 'notional']),
     type: z.literal(OrderType.TYPE_MARKET),
     side: z.nativeEnum(Side),
     size: numericalString,

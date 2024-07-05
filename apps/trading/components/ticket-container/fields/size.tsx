@@ -1,18 +1,16 @@
-import { type ReactNode } from 'react';
-import { type Control } from 'react-hook-form';
-import { FormField } from '../ticket-field';
-import { useT } from '../../../lib/use-t';
-import { TicketInput, VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
+import { useFormContext, type Control } from 'react-hook-form';
 import type BigNumber from 'bignumber.js';
-import { useNotionalSizeFlip } from '../use-notional-size-flip';
 
-export const Size = (props: {
-  control: Control<any>;
-  price?: BigNumber;
-  label?: ReactNode;
-}) => {
-  const t = useT();
+import { TicketInput, VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
+
+import { useT } from '../../../lib/use-t';
+import { useNotionalSizeFlip } from '../use-notional-size-flip';
+import { useTicketContext } from '../ticket-context';
+import { FormField } from '../ticket-field';
+
+export const Size = (props: { control: Control<any>; price?: BigNumber }) => {
   const flip = useNotionalSizeFlip();
+
   return (
     <FormField
       {...props}
@@ -21,7 +19,7 @@ export const Size = (props: {
         return (
           <TicketInput
             {...field}
-            label={props.label ? props.label : t('Size')}
+            label={<SizeLabel />}
             value={field.value}
             onChange={field.onChange}
             appendElement={
@@ -37,5 +35,28 @@ export const Size = (props: {
         );
       }}
     />
+  );
+};
+
+const SizeLabel = () => {
+  const t = useT();
+  const form = useFormContext();
+  const ticket = useTicketContext();
+  const sizeMode = form.watch('sizeMode');
+
+  // If we have a baseAsset object use that,
+  // otherwise fall back to using the value specified
+  // in metadata tags
+  const baseSymbol = ticket.baseAsset
+    ? ticket.baseAsset.symbol
+    : ticket.baseSymbol;
+
+  const symbol =
+    sizeMode === 'contracts' ? baseSymbol : ticket.quoteAsset.symbol;
+
+  return (
+    <>
+      <span className="text-default">{t('Size')}</span> {symbol}
+    </>
   );
 };

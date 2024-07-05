@@ -1,6 +1,13 @@
 import { useParams } from 'react-router-dom';
 
-import { getAsset, getProductType, useMarketInfo } from '@vegaprotocol/markets';
+import {
+  getAsset,
+  getBaseAsset,
+  getProductType,
+  getQuoteAsset,
+  isSpot,
+  useMarketInfo,
+} from '@vegaprotocol/markets';
 
 import { TicketFuture } from './ticket-future';
 import { TicketPerp } from './ticket-perp';
@@ -10,22 +17,34 @@ import {
   useAccountBalance,
   useMarginAccountBalance,
 } from '@vegaprotocol/accounts';
+import { getBaseQuoteUnit } from '@vegaprotocol/deal-ticket';
 
 export const TicketContainer = () => {
   const params = useParams();
 
   const { data: market } = useMarketInfo(params.marketId);
   const settlementAsset = market && getAsset(market);
+  const quoteAsset = market && getQuoteAsset(market);
   const marginAccount = useMarginAccountBalance(params.marketId);
   const generalAccount = useAccountBalance(settlementAsset?.id);
 
   if (!market) return null;
   if (!settlementAsset) return null;
+  if (!quoteAsset) return null;
+
+  const instrument = market.tradableInstrument.instrument;
+  const baseAsset = isSpot(instrument.product)
+    ? getBaseAsset(market)
+    : undefined;
+  const baseSymbol = getBaseQuoteUnit(instrument.metadata.tags);
 
   return (
     <TicketContext.Provider
       value={{
         market,
+        quoteAsset,
+        baseAsset: baseAsset || undefined,
+        baseSymbol,
         settlementAsset,
         accounts: {
           general: generalAccount.accountBalance,

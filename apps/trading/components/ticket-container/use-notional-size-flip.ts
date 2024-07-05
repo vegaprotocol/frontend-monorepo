@@ -12,14 +12,14 @@ export const useNotionalSizeFlip = () => {
 
     const values = form.getValues();
 
-    if (values.mode === 'size') {
+    if (values.sizeMode === 'contracts') {
       const val = helpers.toNotional(BigNumber(values.size || '0'), price);
       form.setValue('size', val.toString());
-      form.setValue('mode', 'notional');
-    } else if (values.mode === 'notional') {
+      form.setValue('sizeMode', 'notional');
+    } else if (values.sizeMode === 'notional') {
       const val = helpers.toSize(BigNumber(values.size || '0'), price);
       form.setValue('size', val.toString());
-      form.setValue('mode', 'size');
+      form.setValue('sizeMode', 'contracts');
     }
   };
 };

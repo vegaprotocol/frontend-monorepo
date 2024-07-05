@@ -6,7 +6,7 @@ import { useT } from '../../../lib/use-t';
 export const Notional = ({ price }: { price?: BigNumber }) => {
   const t = useT();
   const form = useFormContext();
-  const mode = form.watch('mode');
+  const sizeMode = form.watch('sizeMode');
   const size = form.watch('size');
 
   let value: string;
@@ -14,7 +14,7 @@ export const Notional = ({ price }: { price?: BigNumber }) => {
   if (!price) {
     value = 'N/A';
   } else {
-    if (mode === 'size') {
+    if (sizeMode === 'contracts') {
       value = BigNumber(size || '0')
         .times(price)
         .toString();
@@ -25,7 +25,7 @@ export const Notional = ({ price }: { price?: BigNumber }) => {
     }
   }
 
-  if (mode === 'size') {
+  if (sizeMode === 'contracts') {
     return <DatagridRow label={t('Notional')} value={value} />;
   } else {
     return <DatagridRow label={t('Size')} value={value} />;
