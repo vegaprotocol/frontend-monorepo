@@ -12,6 +12,7 @@ import { type AssetFieldsFragment } from '@vegaprotocol/assets';
 
 import { TicketMarket } from './ticket-perp/ticket-market';
 import { TicketLimit } from './ticket-perp/ticket-limit';
+import { useTicketContext } from './ticket-context';
 
 export type FormProps = {
   market: MarketInfo;
@@ -21,9 +22,10 @@ export type FormProps = {
   onTypeChange: (value: TicketType) => void;
 };
 
-export const TicketPerp = ({ market }: { market: MarketInfo }) => {
+export const TicketPerp = () => {
   const [ticketType, setTicketType] = useState<TicketType>('market');
   const { pubKey } = useVegaWallet();
+  const { market } = useTicketContext();
   const asset = getAsset(market);
   const marginAccount = useMarginAccountBalance(market.id);
   const generalAccount = useAccountBalance(asset.id);

@@ -7,6 +7,7 @@ import { removeDecimal, toBigNum } from '@vegaprotocol/utils';
 import { useVegaTransactionStore } from '@vegaprotocol/web3';
 import { Intent, TradingButton } from '@vegaprotocol/ui-toolkit';
 
+import { useT } from '../../../lib/use-t';
 import { Form, FormGrid, FormGridCol } from '../elements/form';
 import { type FormFieldsMarket, schemaMarket } from '../schemas';
 import { TicketTypeSelect } from '../ticket-type-select';
@@ -19,8 +20,16 @@ import * as Data from '../info';
 import { useMarketPrice } from '@vegaprotocol/markets';
 import { Datagrid } from '../elements/datagrid';
 
+import { useTicketContext } from '../ticket-context';
+import { getBaseQuoteUnit } from '@vegaprotocol/deal-ticket';
+
 export const TicketMarket = (props: FormProps) => {
+  const t = useT();
   const create = useVegaTransactionStore((state) => state.create);
+
+  const { market } = useTicketContext();
+  const instrument = market.tradableInstrument.instrument;
+  const baseQuote = getBaseQuoteUnit(instrument.metadata.tags);
 
   const form = useForm<FormFieldsMarket>({
     resolver: zodResolver(schemaMarket),
@@ -68,7 +77,15 @@ export const TicketMarket = (props: FormProps) => {
       >
         <Fields.Side control={form.control} />
         <TicketTypeSelect type="market" onTypeChange={props.onTypeChange} />
-        <Fields.Size control={form.control} price={price} />
+        <Fields.Size
+          control={form.control}
+          price={price}
+          label={
+            <>
+              <span className="text-default">{t('Size')}</span> {baseQuote}
+            </>
+          }
+        />
         <SizeSlider
           market={props.market}
           asset={props.asset}

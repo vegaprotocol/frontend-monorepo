@@ -1,14 +1,17 @@
-import { useFormContext, type Control } from 'react-hook-form';
+import { type ReactNode } from 'react';
+import { type Control } from 'react-hook-form';
 import { FormField } from '../ticket-field';
 import { useT } from '../../../lib/use-t';
 import { TicketInput, VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
-import BigNumber from 'bignumber.js';
+import type BigNumber from 'bignumber.js';
 import { useNotionalSizeFlip } from '../use-notional-size-flip';
 
-export const Size = (props: { control: Control<any>; price?: BigNumber }) => {
+export const Size = (props: {
+  control: Control<any>;
+  price?: BigNumber;
+  label?: ReactNode;
+}) => {
   const t = useT();
-  const form = useFormContext();
-  const mode = form.watch('mode');
   const flip = useNotionalSizeFlip();
   return (
     <FormField
@@ -18,7 +21,7 @@ export const Size = (props: { control: Control<any>; price?: BigNumber }) => {
         return (
           <TicketInput
             {...field}
-            label={mode === 'size' ? t('Size') : t('Notional')}
+            label={props.label ? props.label : t('Size')}
             value={field.value}
             onChange={field.onChange}
             appendElement={
