@@ -45,13 +45,13 @@ jobs:
         if: steps.cache.outputs.cache-hit != 'true'
         run: yarn install --pure-lockfile
 
-      - name: Select mainnet-mirror environment config for preview
-        if: github.base_ref == 'main'
-        run: echo "APP_ENV_FILE=.env.mainnet-mirror" >> "$GITHUB_ENV"
-
-      - name: Select stagnet1 environment config for preview
-        if: github.base_ref != 'main'
+      - name: Select stagnet environment config for preview
+        if: github.base_ref == 'next'
         run: echo "APP_ENV_FILE=.env.stagnet1" >> "$GITHUB_ENV"
+
+      - name: Select mainnet-mirror environment config for preview
+        if: github.base_ref != 'next'
+        run: echo "APP_ENV_FILE=.env.mainnet-mirror" >> "$GITHUB_ENV"
 
       - name: Build trading app
         if: ${{ matrix.app == 'trading' }} # Trading app requires a call to `nx export`
