@@ -26,7 +26,7 @@ export const TicketInput = forwardRef<HTMLInputElement, Props>(
         <label
           htmlFor={props.id}
           className={classNames(
-            'absolute transition-all text-muted transform text-sm left-2',
+            'absolute transition-all text-muted transform text-sm left-2 pointer-events-none',
             '-translate-y-2 text-xs top-3',
             'peer-focus:text-xs peer-focus:-translate-y-2',
             'peer-placeholder-shown:text-sm peer-placeholder-shown:translate-y-0'
