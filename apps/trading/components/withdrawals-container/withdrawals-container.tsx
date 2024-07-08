@@ -317,7 +317,7 @@ export const StatusCell = ({
   const isDelayed = delayed?.find((w) => w.data.id === data.id);
 
   const determineLabel = () => {
-    if (isPending) {
+    if (isPending && data.status !== Schema.WithdrawalStatus.STATUS_REJECTED) {
       if (isReady) {
         return READY_TO_COMPLETE;
       }
