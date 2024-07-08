@@ -5,7 +5,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { OrderType, OrderTimeInForce, Side } from '@vegaprotocol/types';
 import { removeDecimal, toBigNum } from '@vegaprotocol/utils';
 import { useVegaTransactionStore } from '@vegaprotocol/web3';
-import { Intent, TradingButton } from '@vegaprotocol/ui-toolkit';
 
 import { useT } from '../../../lib/use-t';
 import { Form, FormGrid, FormGridCol } from '../elements/form';
@@ -25,7 +24,7 @@ import { SubmitButton } from '../elements/submit-button';
 
 export const TicketMarket = (props: FormProps) => {
   const t = useT();
-  const create = useVegaTransactionStore((state) => state.create);
+  // const create = useVegaTransactionStore((state) => state.create);
 
   const ticket = useTicketContext();
 
@@ -63,6 +62,7 @@ export const TicketMarket = (props: FormProps) => {
               ? helpers.toSize(BigNumber(fields.size), price || BigNumber(0))
               : fields.size;
 
+          // eslint-disable-next-line no-console
           console.log({
             marketId: ticket.market.id,
             type: fields.type,
@@ -71,10 +71,9 @@ export const TicketMarket = (props: FormProps) => {
             size: removeDecimal(size, ticket.market.positionDecimalPlaces),
           });
 
-          return;
-          create({
-            orderSubmission: {},
-          });
+          // create({
+          //   orderSubmission: {},
+          // });
         })}
       >
         <Fields.Side control={form.control} />

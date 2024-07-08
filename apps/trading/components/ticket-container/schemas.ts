@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { OrderType, OrderTimeInForce, Side } from '@vegaprotocol/types';
+import { isBefore } from 'date-fns';
 
 export const numericalString = z.string().refine(
   (v) => {
@@ -61,6 +62,7 @@ export const schemaLimit = z
     price: numericalString,
     size: numericalString,
     timeInForce: z.nativeEnum(OrderTimeInForce),
+    expiresAt: z.date().optional(),
     tpSl: z.boolean(),
     reduceOnly: z.boolean(),
     postOnly: z.boolean(),
@@ -71,6 +73,25 @@ export const schemaLimit = z
     icebergMinVisibleSize: numericalString.optional(),
   })
   .superRefine((val, ctx) => {
+    if (val.timeInForce === OrderTimeInForce.TIME_IN_FORCE_GTT) {
+      if (!val.expiresAt) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.invalid_date,
+          message: 'GTT requires a expiry date',
+          fatal: true,
+        });
+
+        return z.NEVER;
+      }
+
+      if (isBefore(val.expiresAt, new Date())) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.invalid_date,
+          message: 'GTT requires a expiry date',
+        });
+      }
+    }
+
     if (val.tpSl && !val.takeProfit) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,

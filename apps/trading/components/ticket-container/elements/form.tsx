@@ -1,7 +1,7 @@
 import { type HTMLAttributes } from 'react';
 
 export const Form = (props: HTMLAttributes<HTMLFormElement>) => {
-  return <form {...props} className="flex flex-col gap-4" />;
+  return <form {...props} className="flex flex-col gap-4" noValidate />;
 };
 
 export const FormGrid = (props: HTMLAttributes<HTMLDivElement>) => {

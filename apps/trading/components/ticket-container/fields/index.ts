@@ -2,6 +2,7 @@ export { Side } from './side';
 export { Price } from './price';
 export { Size } from './size';
 export { TimeInForce } from './time-in-force';
+export { ExpiresAt } from './expires-at';
 export { TpSl } from './tp-sl';
 export { ReduceOnly } from './reduce-only';
 export { PostOnly } from './post-only';

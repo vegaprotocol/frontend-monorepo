@@ -9,7 +9,7 @@ export type FormProps = {
 };
 
 export const TicketPerp = () => {
-  const [ticketType, setTicketType] = useState<TicketType>('market');
+  const [ticketType, setTicketType] = useState<TicketType>('limit');
 
   const props: FormProps = {
     onTypeChange: (value: TicketType) => setTicketType(value),
