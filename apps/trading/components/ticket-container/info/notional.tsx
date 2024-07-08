@@ -24,7 +24,7 @@ export const Notional = () => {
     return (
       <DatagridRow
         label={sizeMode === 'contracts' ? t('Notional') : t('Size')}
-        value={t('N/A')}
+        value="-"
       />
     );
   }
@@ -33,7 +33,12 @@ export const Notional = () => {
     const value = BigNumber(size || '0')
       .times(price)
       .toString();
-    return <DatagridRow label={t('Notional')} value={value} />;
+    return (
+      <DatagridRow
+        label={t('Notional ({{symbol}})', { symbol: ticket.quoteAsset.symbol })}
+        value={value}
+      />
+    );
   } else {
     const value = BigNumber(size || '0')
       .div(price)

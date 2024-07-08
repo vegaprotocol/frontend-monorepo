@@ -21,53 +21,49 @@ export const Liquidation = () => {
   const side = form.watch('side');
   const { data } = useEstimatePosition();
 
+  const label = t('Liquidation estimate ({{symbol}})', {
+    symbol: ticket.quoteAsset.symbol,
+  });
   const liquidationEstimate = data?.estimatePosition?.liquidation;
 
-  let liquidationPriceEstimate = emptyValue;
-  let liquidationPriceEstimateRange = emptyValue;
+  if (!liquidationEstimate) {
+    return <DatagridRow label={label} value="-" />;
+  }
 
-  if (liquidationEstimate) {
-    const liquidationEstimateBestCaseIncludingBuyOrders = BigInt(
-      liquidationEstimate.bestCase.including_buy_orders.replace(/\..*/, '')
-    );
-    const liquidationEstimateBestCaseIncludingSellOrders = BigInt(
-      liquidationEstimate.bestCase.including_sell_orders.replace(/\..*/, '')
-    );
-    const liquidationEstimateBestCase =
-      side === Side.SIDE_BUY
-        ? liquidationEstimateBestCaseIncludingBuyOrders
-        : liquidationEstimateBestCaseIncludingSellOrders;
+  const bestCaseWithBuys = BigInt(
+    liquidationEstimate.bestCase.including_buy_orders.replace(/\..*/, '')
+  );
+  const bestCaseWithSells = BigInt(
+    liquidationEstimate.bestCase.including_sell_orders.replace(/\..*/, '')
+  );
+  const bestCase =
+    side === Side.SIDE_BUY ? bestCaseWithBuys : bestCaseWithSells;
 
-    const liquidationEstimateWorstCaseIncludingBuyOrders = BigInt(
-      liquidationEstimate.worstCase.including_buy_orders.replace(/\..*/, '')
-    );
-    const liquidationEstimateWorstCaseIncludingSellOrders = BigInt(
-      liquidationEstimate.worstCase.including_sell_orders.replace(/\..*/, '')
-    );
-    const liquidationEstimateWorstCase =
-      side === Side.SIDE_BUY
-        ? liquidationEstimateWorstCaseIncludingBuyOrders
-        : liquidationEstimateWorstCaseIncludingSellOrders;
+  const worstCaseWithBUys = BigInt(
+    liquidationEstimate.worstCase.including_buy_orders.replace(/\..*/, '')
+  );
+  const worstCaseWithSells = BigInt(
+    liquidationEstimate.worstCase.including_sell_orders.replace(/\..*/, '')
+  );
+  const worstCase =
+    side === Side.SIDE_BUY ? worstCaseWithBUys : worstCaseWithSells;
 
-    liquidationPriceEstimate = formatValue(
-      liquidationEstimateWorstCase.toString(),
-      ticket.market.decimalPlaces,
-      undefined,
-      ticket.market.decimalPlaces
-    );
-    liquidationPriceEstimateRange = formatRange(
-      (liquidationEstimateBestCase < liquidationEstimateWorstCase
-        ? liquidationEstimateBestCase
-        : liquidationEstimateWorstCase
-      ).toString(),
-      (liquidationEstimateBestCase > liquidationEstimateWorstCase
-        ? liquidationEstimateBestCase
-        : liquidationEstimateWorstCase
-      ).toString(),
-      ticket.market.decimalPlaces,
-      undefined,
-      ticket.market.decimalPlaces
-    );
+  const priceEstimate = formatValue(
+    worstCase.toString(),
+    ticket.market.decimalPlaces,
+    undefined,
+    ticket.market.decimalPlaces
+  );
+  const priceEstimateRange = formatRange(
+    (bestCase < worstCase ? bestCase : worstCase).toString(),
+    (bestCase > worstCase ? bestCase : worstCase).toString(),
+    ticket.market.decimalPlaces,
+    undefined,
+    ticket.market.decimalPlaces
+  );
+
+  if (bestCase === BigInt(0) && worstCase === BigInt(0)) {
+    return <DatagridRow label={label} value="-" />;
   }
 
   return (
@@ -100,12 +96,12 @@ export const Liquidation = () => {
             </>
           }
         >
-          <span>{t('Liquidation estimate')}</span>
+          <span>{label}</span>
         </Tooltip>
       }
       value={
-        <Tooltip description={liquidationPriceEstimateRange}>
-          <span>{liquidationPriceEstimate}</span>
+        <Tooltip description={priceEstimateRange}>
+          <span>{priceEstimate}</span>
         </Tooltip>
       }
     />

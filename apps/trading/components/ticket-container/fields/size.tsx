@@ -44,19 +44,21 @@ const SizeLabel = () => {
   const ticket = useTicketContext();
   const sizeMode = form.watch('sizeMode');
 
+  let label = t('Size');
+
   // If we have a baseAsset object use that,
   // otherwise fall back to using the value specified
   // in metadata tags
-  const baseSymbol = ticket.baseAsset
-    ? ticket.baseAsset.symbol
-    : ticket.baseSymbol;
+  let symbol = ticket.baseAsset ? ticket.baseAsset.symbol : ticket.baseSymbol;
 
-  const symbol =
-    sizeMode === 'contracts' ? baseSymbol : ticket.quoteAsset.symbol;
+  if (sizeMode === 'notional') {
+    label = t('Notional');
+    symbol = ticket.quoteAsset.symbol;
+  }
 
   return (
     <>
-      <span className="text-default">{t('Size')}</span> {symbol}
+      <span className="text-default">{label}</span> {symbol}
     </>
   );
 };

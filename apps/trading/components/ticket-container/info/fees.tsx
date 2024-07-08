@@ -61,7 +61,11 @@ export const Fees = () => {
           }
         >
           <span>
-            <span data-testid="fees-text">{t('Fees')}</span>
+            <span data-testid="fees-text">
+              {t('Fees ({{symbol}})', {
+                symbol: ticket.settlementAsset.symbol,
+              })}
+            </span>
             {totalDiscountFactor !== '0' && (
               <Pill
                 size="xxs"

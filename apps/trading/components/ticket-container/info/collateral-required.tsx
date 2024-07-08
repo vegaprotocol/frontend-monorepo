@@ -6,35 +6,41 @@ import { useEstimatePosition } from '../use-estimate-position';
 import { DatagridRow } from '../elements/datagrid';
 import { useTicketContext } from '../ticket-context';
 
-export const emptyValue = '-';
-
 export const CollateralRequired = () => {
   const t = useT();
   const ticket = useTicketContext();
 
   const { data } = useEstimatePosition();
 
-  const collateralIncreaseEstimateBestCase = BigInt(
+  const label = t('Collateral required ({{symbol}})', {
+    symbol: ticket.settlementAsset.symbol,
+  });
+
+  const bestCase = BigInt(
     data?.estimatePosition?.collateralIncreaseEstimate.bestCase ?? '0'
   );
-  const collateralIncreaseEstimateWorstCase = BigInt(
+  const worstCase = BigInt(
     data?.estimatePosition?.collateralIncreaseEstimate.worstCase ?? '0'
   );
 
+  if (bestCase === BigInt(0) && worstCase === BigInt(0)) {
+    return <DatagridRow label={label} value="-" />;
+  }
+
   return (
     <DatagridRow
-      label={t('Collateral required')}
+      label={label}
       value={
         <Tooltip
           description={formatRange(
-            collateralIncreaseEstimateBestCase.toString(),
-            collateralIncreaseEstimateWorstCase.toString(),
+            bestCase.toString(),
+            worstCase.toString(),
             ticket.settlementAsset.decimals
           )}
         >
           <span>
             {formatValue(
-              collateralIncreaseEstimateBestCase.toString(),
+              bestCase.toString(),
               ticket.settlementAsset.decimals,
               ticket.settlementAsset.quantum
             )}

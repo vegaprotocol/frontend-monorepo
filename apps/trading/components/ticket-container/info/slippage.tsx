@@ -40,10 +40,23 @@ export const Slippage = () => {
   );
   const slippagePct = formatNumber(slippage.slippagePct, 5);
 
+  if (slippage.slippage === '0') {
+    return (
+      <DatagridRow
+        label={t('Slippage ({{symbol}})', {
+          symbol: ticket.quoteAsset.symbol,
+        })}
+        value="-"
+      />
+    );
+  }
+
   return (
     <DatagridRow
-      label={t('Slippage')}
-      value={`${slippagePct}% (${slippageVal})`}
+      label={t('Slippage ({{symbol}})', {
+        symbol: ticket.quoteAsset.symbol,
+      })}
+      value={`${slippageVal} (${slippagePct}%)`}
     />
   );
 };
