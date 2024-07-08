@@ -21,6 +21,7 @@ import { useMarketPrice } from '@vegaprotocol/markets';
 import { Datagrid } from '../elements/datagrid';
 
 import { useTicketContext } from '../ticket-context';
+import { SubmitButton } from '../elements/submit-button';
 
 export const TicketMarket = (props: FormProps) => {
   const t = useT();
@@ -43,7 +44,10 @@ export const TicketMarket = (props: FormProps) => {
 
   const { data: marketPrice } = useMarketPrice(ticket.market.id);
 
+  const type = form.watch('type');
+  const size = form.watch('size');
   const tpSl = form.watch('tpSl');
+
   const price =
     marketPrice !== undefined && marketPrice !== null
       ? toBigNum(marketPrice, ticket.market.decimalPlaces)
@@ -96,15 +100,20 @@ export const TicketMarket = (props: FormProps) => {
             </FormGridCol>
           </FormGrid>
         )}
-        <TradingButton intent={Intent.Secondary} size="large" type="submit">
-          {t('Submit')}
-        </TradingButton>
+        <SubmitButton
+          text={t(
+            type === OrderType.TYPE_MARKET
+              ? 'Place market order'
+              : 'Place limit order'
+          )}
+          subLabel={`${size || 0} ${ticket.baseSymbol} @ market`}
+        />
         <Datagrid>
           <Data.Notional />
           <Data.Fees />
-          <Data.Liquidation />
-          <Data.CollateralRequired />
           <Data.Slippage />
+          <Data.CollateralRequired />
+          <Data.Liquidation />
         </Datagrid>
         <pre className="block w-full text-2xs">
           {JSON.stringify(

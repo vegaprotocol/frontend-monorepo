@@ -7,7 +7,7 @@ export const Datagrid = (props: HTMLAttributes<HTMLDListElement>) => {
 export const DatagridRow = (props: { label: ReactNode; value: ReactNode }) => {
   return (
     <>
-      <dt>{props.label}</dt>
+      <dt className="text-muted">{props.label}</dt>
       <dd className="text-right font-mono">{props.value}</dd>
     </>
   );
