@@ -48,23 +48,27 @@ const MarketLink = ({
   if (showMarketName) {
     return (
       <Link
-        className="underline"
+        className="underline flex leading-loose"
         {...props}
         to={`/${Routes.MARKETS}/${id}`}
         title={id}
       >
-        <span className="mr-1">
+        <div className="mr-1">
           <EmblemWithChain market={id} />
-        </span>
+        </div>
         {label}
       </Link>
     );
   } else {
     return (
-      <Link className="underline" {...props} to={`/${Routes.MARKETS}/${id}`}>
-        <span className="mr-1">
+      <Link
+        className="underline leading-loose flex"
+        {...props}
+        to={`/${Routes.MARKETS}/${id}`}
+      >
+        <div className="mr-1">
           <EmblemWithChain market={id} />
-        </span>
+        </div>
         <Hash text={id} />
       </Link>
     );
