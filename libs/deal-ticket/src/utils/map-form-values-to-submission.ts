@@ -19,51 +19,53 @@ export const mapFormValuesToOrderSubmission = (
   decimalPlaces: number,
   positionDecimalPlaces: number,
   reference?: string
-): OrderSubmission => ({
-  reference,
-  marketId: marketId,
-  type: order.type,
-  side: order.side,
-  timeInForce: order.timeInForce,
-  price:
-    order.type === Schema.OrderType.TYPE_LIMIT && order.price
-      ? removeDecimal(order.price, decimalPlaces)
-      : undefined,
-  size: removeDecimal(order.size, positionDecimalPlaces),
-  expiresAt:
-    order.expiresAt &&
-    order.timeInForce === Schema.OrderTimeInForce.TIME_IN_FORCE_GTT
-      ? toNanoSeconds(order.expiresAt)
-      : undefined,
-  postOnly:
-    order.type === Schema.OrderType.TYPE_MARKET ||
-    [
+): OrderSubmission => {
+  return {
+    reference,
+    marketId: marketId,
+    type: order.type,
+    side: order.side,
+    timeInForce: order.timeInForce,
+    price:
+      order.type === Schema.OrderType.TYPE_LIMIT && order.price
+        ? removeDecimal(order.price, decimalPlaces)
+        : undefined,
+    size: removeDecimal(order.size, positionDecimalPlaces),
+    expiresAt:
+      order.expiresAt &&
+      order.timeInForce === Schema.OrderTimeInForce.TIME_IN_FORCE_GTT
+        ? toNanoSeconds(order.expiresAt)
+        : undefined,
+    postOnly:
+      order.type === Schema.OrderType.TYPE_MARKET ||
+      [
+        Schema.OrderTimeInForce.TIME_IN_FORCE_FOK,
+        Schema.OrderTimeInForce.TIME_IN_FORCE_IOC,
+      ].includes(order.timeInForce)
+        ? false
+        : order.postOnly,
+    reduceOnly: ![
       Schema.OrderTimeInForce.TIME_IN_FORCE_FOK,
       Schema.OrderTimeInForce.TIME_IN_FORCE_IOC,
     ].includes(order.timeInForce)
       ? false
-      : order.postOnly,
-  reduceOnly: ![
-    Schema.OrderTimeInForce.TIME_IN_FORCE_FOK,
-    Schema.OrderTimeInForce.TIME_IN_FORCE_IOC,
-  ].includes(order.timeInForce)
-    ? false
-    : order.reduceOnly,
-  icebergOpts:
-    order.type === Schema.OrderType.TYPE_LIMIT &&
-    isPersistentOrder(order.timeInForce) &&
-    order.iceberg &&
-    order.peakSize &&
-    order.minimumVisibleSize
-      ? {
-          peakSize: removeDecimal(order.peakSize, positionDecimalPlaces),
-          minimumVisibleSize: removeDecimal(
-            order.minimumVisibleSize,
-            positionDecimalPlaces
-          ),
-        }
-      : undefined,
-});
+      : order.reduceOnly,
+    icebergOpts:
+      order.type === Schema.OrderType.TYPE_LIMIT &&
+      isPersistentOrder(order.timeInForce) &&
+      order.iceberg &&
+      order.peakSize &&
+      order.minimumVisibleSize
+        ? {
+            peakSize: removeDecimal(order.peakSize, positionDecimalPlaces),
+            minimumVisibleSize: removeDecimal(
+              order.minimumVisibleSize,
+              positionDecimalPlaces
+            ),
+          }
+        : undefined,
+  };
+};
 
 const setTrigger = (
   stopOrderSetup: StopOrderSetup,

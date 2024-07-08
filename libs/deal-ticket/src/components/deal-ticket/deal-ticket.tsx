@@ -38,6 +38,7 @@ import {
   formatForInput,
   formatValue,
   toDecimal,
+  formatNumber,
 } from '@vegaprotocol/utils';
 import { useActiveOrders } from '@vegaprotocol/orders';
 import {
@@ -120,21 +121,20 @@ export interface DealTicketProps {
 }
 
 export const getNotionalSize = (
-  price: string | null | undefined,
-  size: string | undefined,
+  _price: string | null | undefined,
+  _size: string | undefined,
   decimalPlaces: number,
   positionDecimalPlaces: number,
   decimals: number
 ) => {
-  if (price && size) {
-    return removeDecimal(
-      toBigNum(size, positionDecimalPlaces).multipliedBy(
-        toBigNum(price, decimalPlaces)
-      ),
-      decimals
-    );
+  if (!_price || !_size) {
+    return undefined;
   }
-  return undefined;
+
+  const price = toBigNum(_price, decimalPlaces);
+  const size = toBigNum(_size, positionDecimalPlaces);
+
+  return removeDecimal(size.multipliedBy(price), decimals);
 };
 
 export const stopSubmit: FormEventHandler = (e) => e.preventDefault();
@@ -270,6 +270,18 @@ export const DealTicket = ({
     });
     return () => subscription.unsubscribe();
   }, [watch, market.id, updateStoredFormValues]);
+
+  const priceCap = useMemo(() => {
+    if (isFuture(product) && product.cap) {
+      return toBigNum(product.cap.maxPrice, market.decimalPlaces);
+    }
+    return undefined;
+  }, [market.decimalPlaces, product]);
+
+  let maxPrice: string | undefined;
+  if (priceCap && !priceCap.isNaN()) {
+    maxPrice = priceCap.toString();
+  }
 
   const normalizedOrder = mapFormValuesToOrderSubmission(
     {
@@ -478,18 +490,6 @@ export const DealTicket = ({
   const notionalDecimals =
     minNotional && Math.floor(Math.log10(minNotional)) * -1;
   const notionalStep = notionalDecimals ? toDecimal(notionalDecimals) : '1';
-
-  const priceCap = useMemo(() => {
-    if (isFuture(product) && product.cap) {
-      return toBigNum(product.cap.maxPrice, market.decimalPlaces);
-    }
-    return undefined;
-  }, [market.decimalPlaces, product]);
-
-  let maxPrice: string | undefined;
-  if (priceCap && !priceCap.isNaN()) {
-    maxPrice = priceCap.toString();
-  }
 
   const sliderUsed = useRef(false);
 
@@ -1064,13 +1064,15 @@ export const DealTicket = ({
         {useNotional ? (
           <KeyValue
             label={t('Size')}
-            formattedValue={formatValue(
-              normalizedOrder?.size || '0',
-              market.positionDecimalPlaces
+            formattedValue={formatNumber(
+              BigNumber(notional || '0')
+                .div(toBigNum(price || '0', market.decimalPlaces))
+                .toString()
             )}
-            value={formatValue(
-              normalizedOrder?.size || '0',
-              market.positionDecimalPlaces
+            value={formatNumber(
+              BigNumber(notional || '0')
+                .div(toBigNum(price || '0', market.decimalPlaces))
+                .toString()
             )}
             symbol={
               isSpotMarket && baseAsset ? getAssetSymbol(baseAsset) : baseQuote
