@@ -16,7 +16,7 @@ import { SizeSlider } from '../size-slider';
 import * as helpers from '../helpers';
 import * as Fields from '../fields';
 import * as Data from '../info';
-import { useMarketPrice } from '@vegaprotocol/markets';
+import { useMarkPrice } from '@vegaprotocol/markets';
 import { Datagrid } from '../elements/datagrid';
 
 import { useTicketContext } from '../ticket-context';
@@ -24,7 +24,7 @@ import { SubmitButton } from '../elements/submit-button';
 
 export const TicketMarket = (props: FormProps) => {
   const t = useT();
-  // const create = useVegaTransactionStore((state) => state.create);
+  const create = useVegaTransactionStore((state) => state.create);
 
   const ticket = useTicketContext();
 
@@ -41,15 +41,13 @@ export const TicketMarket = (props: FormProps) => {
     },
   });
 
-  const { data: marketPrice } = useMarketPrice(ticket.market.id);
-
-  const type = form.watch('type');
   const size = form.watch('size');
   const tpSl = form.watch('tpSl');
 
+  const { data: markPrice } = useMarkPrice(ticket.market.id);
   const price =
-    marketPrice !== undefined && marketPrice !== null
-      ? toBigNum(marketPrice, ticket.market.decimalPlaces)
+    markPrice && markPrice !== null
+      ? toBigNum(markPrice, ticket.market.decimalPlaces)
       : undefined;
 
   return (
@@ -62,24 +60,23 @@ export const TicketMarket = (props: FormProps) => {
               ? helpers.toSize(BigNumber(fields.size), price || BigNumber(0))
               : fields.size;
 
-          // eslint-disable-next-line no-console
-          console.log({
+          const orderSubmission = {
             marketId: ticket.market.id,
             type: fields.type,
             side: fields.side,
             timeInForce: fields.timeInForce,
             size: removeDecimal(size, ticket.market.positionDecimalPlaces),
-          });
+          };
 
-          // create({
-          //   orderSubmission: {},
-          // });
+          create({
+            orderSubmission,
+          });
         })}
       >
         <Fields.Side control={form.control} />
         <TicketTypeSelect type="market" onTypeChange={props.onTypeChange} />
         <Fields.Size control={form.control} price={price} />
-        <SizeSlider />
+        <SizeSlider price={price} />
         <FormGrid>
           <FormGridCol>
             <Fields.TpSl control={form.control} />
@@ -100,15 +97,11 @@ export const TicketMarket = (props: FormProps) => {
           </FormGrid>
         )}
         <SubmitButton
-          text={t(
-            type === OrderType.TYPE_MARKET
-              ? 'Place market order'
-              : 'Place limit order'
-          )}
+          text={t('Place market order')}
           subLabel={`${size || 0} ${ticket.baseSymbol} @ market`}
         />
         <Datagrid>
-          <Data.Notional />
+          <Data.Notional price={price} />
           <Data.Fees />
           <Data.Slippage />
           <Data.CollateralRequired />

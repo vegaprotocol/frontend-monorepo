@@ -57,6 +57,7 @@ export const schemaMarket = z
 
 export const schemaLimit = z
   .object({
+    sizeMode: z.enum(['contracts', 'notional']),
     type: z.literal(OrderType.TYPE_LIMIT),
     side: z.nativeEnum(Side),
     price: numericalString,

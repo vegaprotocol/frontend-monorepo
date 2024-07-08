@@ -1,26 +1,18 @@
 import { useFormContext } from 'react-hook-form';
 import BigNumber from 'bignumber.js';
 import { DatagridRow } from '../elements/datagrid';
-import { toBigNum } from '@vegaprotocol/utils';
-import { useMarketPrice } from '@vegaprotocol/markets';
 
 import { useT } from '../../../lib/use-t';
 import { useTicketContext } from '../ticket-context';
 
-export const Notional = () => {
+export const Notional = ({ price }: { price: BigNumber | undefined }) => {
   const t = useT();
   const form = useFormContext();
   const ticket = useTicketContext();
   const sizeMode = form.watch('sizeMode');
   const size = form.watch('size');
 
-  const { data: marketPrice } = useMarketPrice(ticket.market.id);
-  const price =
-    marketPrice !== undefined && marketPrice !== null
-      ? toBigNum(marketPrice, ticket.market.decimalPlaces)
-      : undefined;
-
-  if (!price) {
+  if (!price || price.isNaN() || price.isZero()) {
     return (
       <DatagridRow
         label={sizeMode === 'contracts' ? t('Notional') : t('Size')}

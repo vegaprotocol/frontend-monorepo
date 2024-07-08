@@ -6,7 +6,7 @@ import BigNumber from 'bignumber.js';
 export const calcSizeByPct = ({
   pct,
   openVolume,
-  markPrice,
+  price,
   side,
   assetDecimals,
   marketDecimals,
@@ -18,7 +18,7 @@ export const calcSizeByPct = ({
 }: {
   pct: number;
   openVolume: string;
-  markPrice: string;
+  price: string;
   side: Side;
   assetDecimals: number;
   marketDecimals: number;
@@ -61,7 +61,7 @@ export const calcSizeByPct = ({
   max = availableMargin
     .div(side === Side.SIDE_BUY ? riskFactors.long : riskFactors.short)
     .div(scalingFactors.initialMargin)
-    .div(toBigNum(markPrice, marketDecimals))
+    .div(toBigNum(price, marketDecimals))
     .minus(totalSizeRemaining)
     .minus(
       // subtract open volume if increasing position

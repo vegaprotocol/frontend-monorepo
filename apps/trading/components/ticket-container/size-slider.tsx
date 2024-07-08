@@ -1,19 +1,20 @@
+import type BigNumber from 'bignumber.js';
 import { useFormContext } from 'react-hook-form';
-import { useMarkPrice } from '@vegaprotocol/markets';
+
 import { useActiveOrders } from '@vegaprotocol/orders';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useOpenVolume } from '@vegaprotocol/positions';
+import { removeDecimal } from '@vegaprotocol/utils';
+
 import { Slider } from './slider';
 import { useTicketContext } from './ticket-context';
 
 import * as helpers from './helpers';
-import { toBigNum } from '@vegaprotocol/utils';
 
-export const SizeSlider = () => {
+export const SizeSlider = ({ price }: { price: BigNumber | undefined }) => {
   const form = useFormContext();
   const ticket = useTicketContext();
   const { pubKey } = useVegaWallet();
-  const { data: markPrice } = useMarkPrice(ticket.market.id);
   const { data: orders } = useActiveOrders(pubKey, ticket.market.id);
   const { openVolume } = useOpenVolume(pubKey, ticket.market.id) || {
     openVolume: '0',
@@ -23,7 +24,7 @@ export const SizeSlider = () => {
   const side = form.watch('side');
   const sizeMode = form.watch('sizeMode');
 
-  if (!markPrice) return null;
+  if (!price) return null;
   if (!ticket.market.riskFactors) return null;
   if (!ticket.market.tradableInstrument.marginCalculator?.scalingFactors) {
     return null;
@@ -38,11 +39,12 @@ export const SizeSlider = () => {
       min={0}
       max={100}
       defaultValue={[0]}
+      disabled={!price || price.isZero() || price.isNaN()}
       onValueCommit={(value) => {
         const size = helpers.calcSizeByPct({
           pct: value[0],
           openVolume,
-          markPrice,
+          price: removeDecimal(price, ticket.market.decimalPlaces),
           side,
           assetDecimals: ticket.quoteAsset.decimals,
           marketDecimals: ticket.market.decimalPlaces,
@@ -56,10 +58,7 @@ export const SizeSlider = () => {
         if (sizeMode === 'contracts') {
           form.setValue('size', size.toString(), { shouldValidate: true });
         } else if (sizeMode === 'notional') {
-          const notional = helpers.toNotional(
-            size,
-            toBigNum(markPrice, ticket.market.decimalPlaces)
-          );
+          const notional = helpers.toNotional(size, price);
           form.setValue('size', notional.toString(), { shouldValidate: true });
         }
       }}

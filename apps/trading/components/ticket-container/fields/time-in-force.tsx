@@ -27,8 +27,12 @@ export const TimeInForce = (props: { control: Control<any> }) => {
       render={({ field }) => {
         return (
           <div className="flex items-center gap-2 text-xs">
-            <label className="text-secondary">{t('TIF')}</label>
+            <label className="text-secondary" htmlFor={field.name}>
+              {t('TIF')}
+            </label>
             <MiniSelect
+              id={field.name}
+              name={field.name}
               placeholder="Select"
               value={field.value}
               onValueChange={(value) => {

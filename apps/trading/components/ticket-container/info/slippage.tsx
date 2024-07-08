@@ -1,7 +1,7 @@
 import { useFormContext } from 'react-hook-form';
 
 import { formatNumber, removeDecimal } from '@vegaprotocol/utils';
-import { useMarketPrice } from '@vegaprotocol/markets';
+import { useMarkPrice } from '@vegaprotocol/markets';
 import { useSlippage } from '@vegaprotocol/deal-ticket';
 import { OrderType } from '@vegaprotocol/types';
 
@@ -14,7 +14,7 @@ export const Slippage = () => {
   const form = useFormContext();
   const ticket = useTicketContext();
 
-  const { data: marketPrice } = useMarketPrice(ticket.market.id);
+  const { data: markPrice } = useMarkPrice(ticket.market.id);
 
   const type = form.watch('type');
   const side = form.watch('side');
@@ -24,7 +24,7 @@ export const Slippage = () => {
   const price =
     type === OrderType.TYPE_LIMIT
       ? removeDecimal(limitPrice || '0', ticket.market.decimalPlaces)
-      : marketPrice || undefined;
+      : markPrice || undefined;
 
   const order = {
     type,

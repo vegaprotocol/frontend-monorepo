@@ -5,7 +5,7 @@ import { FeesBreakdown, useEstimateFeesQuery } from '@vegaprotocol/deal-ticket';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import {
   isMarketInAuction,
-  useMarketPrice,
+  useMarkPrice,
   useMarketTradingMode,
 } from '@vegaprotocol/markets';
 import { OrderType } from '@vegaprotocol/types';
@@ -107,7 +107,7 @@ const useEstimateFees = () => {
   const ticket = useTicketContext();
   const form = useFormContext();
   const { pubKey } = useVegaWallet();
-  const { data: marketPrice } = useMarketPrice(ticket.market.id);
+  const { data: markPrice } = useMarkPrice(ticket.market.id);
   const { data: marketTradingMode } = useMarketTradingMode(ticket.market.id);
   const isAuction = marketTradingMode
     ? isMarketInAuction(marketTradingMode)
@@ -117,7 +117,7 @@ const useEstimateFees = () => {
   const price =
     values.type === OrderType.TYPE_LIMIT
       ? removeDecimal(values.price || '0', ticket.market.decimalPlaces)
-      : removeDecimal(marketPrice || '0', ticket.market.decimalPlaces);
+      : removeDecimal(markPrice || '0', ticket.market.decimalPlaces);
   const variables = {
     marketId: ticket.market.id,
     partyId: pubKey || '',
