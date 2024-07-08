@@ -40,7 +40,7 @@ type Actions = {
 export type Env = Environment & EnvState;
 export type EnvStore = Env & Actions;
 
-const VERSION = 1;
+const VERSION = 2;
 export const STORAGE_KEY = `vega_url_${VERSION}`;
 
 const QUERY_TIMEOUT = 3000;
