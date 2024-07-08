@@ -16,6 +16,7 @@ import { TicketContext, useTicketContext } from './ticket-context';
 import {
   useAccountBalance,
   useMarginAccountBalance,
+  useMarginMode,
 } from '@vegaprotocol/accounts';
 import { getBaseQuoteUnit } from '@vegaprotocol/deal-ticket';
 
@@ -27,6 +28,7 @@ export const TicketContainer = () => {
   const quoteAsset = market && getQuoteAsset(market);
   const marginAccount = useMarginAccountBalance(params.marketId);
   const generalAccount = useAccountBalance(settlementAsset?.id);
+  const marginMode = useMarginMode(params.marketId);
 
   if (!market) return null;
   if (!settlementAsset) return null;
@@ -47,9 +49,13 @@ export const TicketContainer = () => {
         baseSymbol,
         settlementAsset,
         accounts: {
-          general: generalAccount.accountBalance,
-          margin: marginAccount.marginAccountBalance,
-          orderMargin: marginAccount.orderMarginAccountBalance,
+          general: generalAccount.accountBalance || '0',
+          margin: marginAccount.marginAccountBalance || '0',
+          orderMargin: marginAccount.orderMarginAccountBalance || '0',
+        },
+        marginMode: {
+          mode: marginMode.data.marginMode,
+          factor: marginMode.data.marginFactor,
         },
       }}
     >

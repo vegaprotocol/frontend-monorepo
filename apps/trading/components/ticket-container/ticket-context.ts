@@ -1,5 +1,6 @@
 import { type AssetFieldsFragment } from '@vegaprotocol/assets';
 import { type MarketInfo } from '@vegaprotocol/markets';
+import { type MarginMode } from '@vegaprotocol/types';
 import { createContext, useContext } from 'react';
 
 type TicketContextValue = {
@@ -12,6 +13,10 @@ type TicketContextValue = {
     general: string;
     margin: string;
     orderMargin: string;
+  };
+  marginMode: {
+    mode: MarginMode;
+    factor: string;
   };
 };
 
