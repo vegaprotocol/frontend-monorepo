@@ -5,36 +5,30 @@ import type { TendermintBlocksResponse } from '../../../routes/blocks/tendermint
 import { TxDetailsShared } from './shared/tx-details-shared';
 import { TableCell, TableRow, TableWithTbody } from '../../table';
 import type { components } from '../../../../types/explorer';
+import PriceInMarket from '../../price-in-market/price-in-market';
 
-interface TxDetailsAMMCancelProps {
+interface TxDetailsAMMSubmitProps {
   txData: BlockExplorerTransactionResult | undefined;
   pubKey: string | undefined;
   blockData: TendermintBlocksResponse | undefined;
 }
 
-export type Method = components['schemas']['v1CancelAMMMethod'];
-
-export const MethodLabels: Record<Method, string> = {
-  METHOD_UNSPECIFIED: 'Unspecified',
-  METHOD_IMMEDIATE: 'Immediate',
-  METHOD_REDUCE_ONLY: 'Reduce Only',
-};
+export type Submit = components['schemas']['v1SubmitAMM'];
 
 /**
- * Cancel an existing AMM
+ * Create an AMM account for a user
  */
-export const TxDetailsAMMCancel = ({
+export const TxDetailsAMMSubmit = ({
   txData,
   pubKey,
   blockData,
-}: TxDetailsAMMCancelProps) => {
-  if (!txData || !txData.command.cancelAmm) {
+}: TxDetailsAMMSubmitProps) => {
+  if (!txData || !txData.command.submitAmm) {
     return <>{t('Awaiting Block Explorer transaction details')}</>;
   }
 
-  const cmd: components['schemas']['v1CancelAMM'] = txData.command.cancelAmm;
-  const marketId: string | undefined = cmd.marketId;
-  const method: Method | undefined = cmd.method;
+  const cmd: Submit = txData.command.submitAmm;
+  const { marketId, commitmentAmount, proposedFee, slippageTolerance } = cmd;
 
   return (
     <TableWithTbody className="mb-8" allowWrap={true}>
@@ -47,11 +41,29 @@ export const TxDetailsAMMCancel = ({
           </TableCell>
         </TableRow>
       )}
-      {method && (
+      {commitmentAmount && marketId && (
         <TableRow modifier="bordered">
-          <TableCell>{t('Method')}</TableCell>
+          <TableCell>{t('Amount')}</TableCell>
           <TableCell>
-            <code>{MethodLabels[method]}</code>
+            <PriceInMarket marketId={marketId} price={commitmentAmount} />
+          </TableCell>
+        </TableRow>
+      )}
+
+      {proposedFee && marketId && (
+        <TableRow modifier="bordered">
+          <TableCell>{t('Proposed Fee')}</TableCell>
+          <TableCell>
+            <PriceInMarket marketId={marketId} price={proposedFee} />
+          </TableCell>
+        </TableRow>
+      )}
+
+      {slippageTolerance && marketId && (
+        <TableRow modifier="bordered">
+          <TableCell>{t('Slippage tolerance')}</TableCell>
+          <TableCell>
+            <PriceInMarket marketId={marketId} price={slippageTolerance} />
           </TableCell>
         </TableRow>
       )}

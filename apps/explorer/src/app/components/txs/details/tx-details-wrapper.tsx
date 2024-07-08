@@ -36,6 +36,7 @@ import { TxDetailsUpdateMarginMode } from './tx-update-margin-mode';
 import { TxBatchProposal } from './tx-batch-proposal';
 import { TxDetailsUpdatePartyProfile } from './proposal/tx-update-party-profile';
 import { TxDetailsAMMCancel } from './tx-amm-cancel';
+import { TxDetailsAMMSubmit } from './tx-amm-submit';
 
 interface TxDetailsWrapperProps {
   txData: BlockExplorerTransactionResult | undefined;
@@ -145,6 +146,8 @@ function getTransactionComponent(txData?: BlockExplorerTransactionResult) {
       return TxDetailsUpdatePartyProfile;
     case 'Cancel AMM':
       return TxDetailsAMMCancel;
+    case 'Submit AMM':
+      return TxDetailsAMMSubmit;
     default:
       return TxDetailsGeneric;
   }
