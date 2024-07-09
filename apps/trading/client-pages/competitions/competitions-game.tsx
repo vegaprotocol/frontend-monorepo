@@ -1,11 +1,7 @@
 import { ErrorBoundary } from '@sentry/react';
-import { CompetitionsHeader } from '../../components/competitions/competitions-header';
 import { Link, useParams } from 'react-router-dom';
 import { useT } from '../../lib/use-t';
-import {
-  ActiveRewardCard,
-  DispatchMetricInfo,
-} from '../../components/rewards-container/reward-card';
+import { ActiveRewardCard } from '../../components/rewards-container/reward-card';
 import { useReward } from '../../lib/hooks/use-rewards';
 import { useCurrentEpoch } from '../../lib/hooks/use-current-epoch';
 import { Loader } from '@vegaprotocol/ui-toolkit';
@@ -21,6 +17,12 @@ import { addDecimalsFormatNumberQuantum } from '@vegaprotocol/utils';
 import { TeamAvatar } from '../../components/competitions/team-avatar';
 import { useTeamsMap } from '../../lib/hooks/use-teams';
 import { Links } from '../../lib/links';
+import { LayoutWithGradient } from '../../components/layouts-inner';
+import {
+  DispatchMetricLabels,
+  DistributionStrategyMapping,
+  EntityScopeLabelMapping,
+} from '@vegaprotocol/types';
 
 export const CompetitionsGame = () => {
   const t = useT();
@@ -102,62 +104,143 @@ export const CompetitionsGame = () => {
   const showCard = !(cardLoading || currentEpochLoading) && cardData;
   const showTable = !gamesLoading;
 
+  if (!cardData) {
+    return null;
+  }
+
+  const asset = cardData.dispatchAsset;
+
+  if (!asset) {
+    return null;
+  }
+
+  const dispatchStrategy = cardData.transfer.kind.dispatchStrategy;
+  const dispatchMetric = dispatchStrategy.dispatchMetric;
+  const amount = cardData.transfer.amount;
+  const entityScope = dispatchStrategy.entityScope;
+  const feeCap = dispatchStrategy.capRewardFeeMultiple;
+  const strategy = dispatchStrategy.distributionStrategy;
+  const notional =
+    dispatchStrategy.notionalTimeWeightedAveragePositionRequirement;
+
   return (
     <ErrorBoundary>
-      <CompetitionsHeader title={t('Game results')}>
-        {cardData && (
-          <p className="text-lg">
-            <DispatchMetricInfo reward={cardData} />
-          </p>
-        )}
-      </CompetitionsHeader>
+      <LayoutWithGradient>
+        <header>
+          <h1
+            className="calt text-2xl lg:text-3xl xl:text-5xl"
+            data-testid="team-name"
+          >
+            {dispatchMetric
+              ? DispatchMetricLabels[dispatchMetric]
+              : t('Unknown')}
+          </h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-        <div>
-          {showCard ? (
+          <small className="text-xl lg:text-2xl xl:text-3xl text-muted">
+            {addDecimalsFormatNumberQuantum(
+              amount,
+              asset.decimals,
+              asset.quantum
+            )}{' '}
+            {asset.symbol}
+          </small>
+        </header>
+        <section className="relative flex flex-col gap-4 lg:gap-8 p-6 rounded-lg">
+          <div
+            style={{
+              // @ts-ignore mask not supported
+              mask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+              // @ts-ignore mask not supported
+              'mask-composite': 'exclude',
+            }}
+            className="absolute inset-0 p-px bg-gradient-to-br from-vega-blue to-vega-green rounded-lg"
+          />
+          <h2 className="calt">{t('Eligibility criteria')}</h2>
+          <dl className="grid grid-cols-2 md:flex gap-4 md:gap-6 lg:gap-8 whitespace-nowrap">
             <div>
-              <ActiveRewardCard
-                transferNode={cardData}
-                currentEpoch={currentEpoch || 0}
-              />
+              <dd className="text-3xl lg:text-4xl">
+                {EntityScopeLabelMapping[entityScope]}
+              </dd>
+              <dt className="text-sm text-muted">{t('Entity')}</dt>
             </div>
-          ) : (
-            <Loader size="small" />
-          )}
-        </div>
-
-        <div className="md:col-span-2">
-          {showTable ? (
-            gamesData ? (
-              <Table
-                columns={[
-                  {
-                    name: 'epoch',
-                    displayName: t('Epoch'),
-                  },
-                  { name: 'rank', displayName: t('Rank') },
-                  {
-                    name: 'teamAvatar',
-                    displayName: t('Team avatar'),
-                    className: 'md:w-20',
-                  },
-                  { name: 'teamName', displayName: t('Team name') },
-                  { name: 'amount', displayName: t('Rewards earned') },
-                ].map((c) => ({ ...c, headerClassName: 'text-left' }))}
-                data={orderBy(
-                  entries,
-                  ['epoch', 'rank', 'teamName'],
-                  ['desc', 'asc', 'asc']
-                )}
-              />
+            <div>
+              <dd
+                className="text-3xl lg:text-4xl"
+                data-testid="total-games-stat"
+              >
+                {dispatchStrategy.stakingRequirement || '0'}
+              </dd>
+              <dt className="text-sm text-muted">Staked VEGA</dt>
+            </div>
+            <div>
+              <dd className="text-3xl lg:text-4xl">{notional || '0'}</dd>
+              <dt className="text-sm text-muted">{t('Notional')}</dt>
+            </div>
+            <div>
+              <dd className="text-3xl lg:text-4xl">
+                {DistributionStrategyMapping[strategy]}
+              </dd>
+              <dt className="text-sm text-muted">{t('Method')}</dt>
+            </div>
+            {feeCap && (
+              <div>
+                <dd className="text-3xl lg:text-4xl">{feeCap}x</dd>
+                <dt className="text-sm text-muted">{t('Fee cap')}</dt>
+              </div>
+            )}
+            <div>
+              <dd className="text-3xl lg:text-4xl">TODO</dd>
+              <dt className="text-sm text-muted">{t('Your cap')}</dt>
+            </div>
+          </dl>
+        </section>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <div>
+            {showCard ? (
+              <div>
+                <ActiveRewardCard
+                  transferNode={cardData}
+                  currentEpoch={currentEpoch || 0}
+                />
+              </div>
             ) : (
-              <div className="text-base text-center">{t('No data')}</div>
-            )
-          ) : (
-            <Loader size="small" />
-          )}
+              <Loader size="small" />
+            )}
+          </div>
+
+          <div className="md:col-span-2">
+            {showTable ? (
+              gamesData ? (
+                <Table
+                  columns={[
+                    {
+                      name: 'epoch',
+                      displayName: t('Epoch'),
+                    },
+                    { name: 'rank', displayName: t('Rank') },
+                    {
+                      name: 'teamAvatar',
+                      displayName: t('Team avatar'),
+                      className: 'md:w-20',
+                    },
+                    { name: 'teamName', displayName: t('Team name') },
+                    { name: 'amount', displayName: t('Rewards earned') },
+                  ].map((c) => ({ ...c, headerClassName: 'text-left' }))}
+                  data={orderBy(
+                    entries,
+                    ['epoch', 'rank', 'teamName'],
+                    ['desc', 'asc', 'asc']
+                  )}
+                />
+              ) : (
+                <div className="text-base text-center">{t('No data')}</div>
+              )
+            ) : (
+              <Loader size="small" />
+            )}
+          </div>
         </div>
-      </div>
+      </LayoutWithGradient>
     </ErrorBoundary>
   );
 };
