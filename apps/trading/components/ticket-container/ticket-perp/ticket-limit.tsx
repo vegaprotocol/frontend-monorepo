@@ -22,7 +22,7 @@ import { SubmitButton } from '../elements/submit-button';
 import { useT } from '../../../lib/use-t';
 import { Datagrid } from '../elements/datagrid';
 
-import * as helpers from '../helpers';
+import * as utils from '../utils';
 import * as Fields from '../fields';
 import * as Data from '../info';
 import { SizeSlider } from '../size-slider';
@@ -72,7 +72,7 @@ export const TicketLimit = (props: FormProps) => {
           // if in notional, convert back to normal size
           const size =
             fields.sizeMode === 'notional'
-              ? helpers
+              ? utils
                   .toSize(BigNumber(fields.size), BigNumber(price || 0))
                   .toString()
               : fields.size;

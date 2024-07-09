@@ -9,7 +9,8 @@ import { removeDecimal } from '@vegaprotocol/utils';
 import { Slider } from './slider';
 import { useTicketContext } from './ticket-context';
 
-import * as helpers from './helpers';
+import * as perpsUtils from './ticket-perp/utils';
+import * as utils from './utils';
 
 export const SizeSlider = ({ price }: { price: BigNumber | undefined }) => {
   const form = useFormContext();
@@ -43,7 +44,7 @@ export const SizeSlider = ({ price }: { price: BigNumber | undefined }) => {
       defaultValue={[0]}
       disabled={!price || price.isZero() || price.isNaN()}
       onValueCommit={(value) => {
-        const size = helpers.calcSizeByPct({
+        const size = perpsUtils.calcSizeByPct({
           pct: value[0],
           openVolume,
           price: removeDecimal(price, ticket.market.decimalPlaces),
@@ -62,7 +63,7 @@ export const SizeSlider = ({ price }: { price: BigNumber | undefined }) => {
         if (sizeMode === 'contracts') {
           form.setValue('size', size.toString(), { shouldValidate: true });
         } else if (sizeMode === 'notional') {
-          const notional = helpers.toNotional(size, price);
+          const notional = utils.toNotional(size, price);
           form.setValue('size', notional.toString(), { shouldValidate: true });
         }
       }}

@@ -22,8 +22,8 @@ import { TicketTypeSelect } from '../ticket-type-select';
 import { type FormProps } from '../ticket-spot';
 import { useTicketContext } from '../ticket-context';
 
-import * as helpers from '../helpers';
-import * as spotHelpers from '../helpers-spot';
+import * as utils from '../utils';
+import * as spotUtils from './utils';
 import * as Fields from '../fields';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 
@@ -67,7 +67,7 @@ export const TicketMarket = (props: FormProps) => {
           // if in notional, convert back to normal size
           const size =
             fields.sizeMode === 'notional'
-              ? helpers
+              ? utils
                   .toSize(BigNumber(fields.size), price || BigNumber(0))
                   .toString()
               : fields.size;
@@ -174,7 +174,7 @@ export const SizeSlider = () => {
           return;
         }
 
-        const max = spotHelpers.calcMaxSize({
+        const max = spotUtils.calcMaxSize({
           side,
           price,
           feeFactors: ticket.market.fees.factors,
@@ -191,14 +191,14 @@ export const SizeSlider = () => {
           },
         });
 
-        const size = helpers.toPercentOf(value[0], max);
+        const size = utils.toPercentOf(value[0], max);
 
         // form.setValue('size', size.toString(), { shouldValidate: true });
 
         if (sizeMode === 'contracts') {
           form.setValue('size', size.toString(), { shouldValidate: true });
         } else if (sizeMode === 'notional') {
-          const notional = helpers.toNotional(size, price);
+          const notional = utils.toNotional(size, price);
           form.setValue('size', notional.toString(), { shouldValidate: true });
         }
       }}

@@ -1,6 +1,6 @@
 import { useFormContext } from 'react-hook-form';
 import BigNumber from 'bignumber.js';
-import * as helpers from './helpers';
+import * as utils from './utils';
 
 export const useNotionalSizeFlip = () => {
   const form = useFormContext();
@@ -13,11 +13,11 @@ export const useNotionalSizeFlip = () => {
     const values = form.getValues();
 
     if (values.sizeMode === 'contracts') {
-      const val = helpers.toNotional(BigNumber(values.size || '0'), price);
+      const val = utils.toNotional(BigNumber(values.size || '0'), price);
       form.setValue('size', val.toString());
       form.setValue('sizeMode', 'notional');
     } else if (values.sizeMode === 'notional') {
-      const val = helpers.toSize(BigNumber(values.size || '0'), price);
+      const val = utils.toSize(BigNumber(values.size || '0'), price);
       form.setValue('size', val.toString());
       form.setValue('sizeMode', 'contracts');
     }

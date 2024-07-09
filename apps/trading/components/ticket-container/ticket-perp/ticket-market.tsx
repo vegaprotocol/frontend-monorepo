@@ -19,7 +19,7 @@ import { TicketTypeSelect } from '../ticket-type-select';
 import { type FormProps } from '../ticket-perp';
 import { SizeSlider } from '../size-slider';
 
-import * as helpers from '../helpers';
+import * as utils from '../utils';
 import * as Fields from '../fields';
 import * as Data from '../info';
 import { useMarkPrice } from '@vegaprotocol/markets';
@@ -69,7 +69,7 @@ export const TicketMarket = (props: FormProps) => {
           // if in notional, convert back to normal size
           const size =
             fields.sizeMode === 'notional'
-              ? helpers
+              ? utils
                   .toSize(BigNumber(fields.size), price || BigNumber(0))
                   .toString()
               : fields.size;
