@@ -1,10 +1,16 @@
 import BigNumber from 'bignumber.js';
+import uniqueId from 'lodash/uniqueId';
 import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { OrderType, OrderTimeInForce, Side } from '@vegaprotocol/types';
-import { removeDecimal, toBigNum } from '@vegaprotocol/utils';
+import { toBigNum } from '@vegaprotocol/utils';
 import { useVegaTransactionStore } from '@vegaprotocol/web3';
+import {
+  mapFormValuesToOrderSubmission,
+  mapFormValuesToTakeProfitAndStopLoss,
+} from '@vegaprotocol/deal-ticket';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 
 import { useT } from '../../../lib/use-t';
 import { Form, FormGrid, FormGridCol } from '../elements/form';
@@ -25,6 +31,7 @@ import { SubmitButton } from '../elements/submit-button';
 export const TicketMarket = (props: FormProps) => {
   const t = useT();
   const create = useVegaTransactionStore((state) => state.create);
+  const { pubKey } = useVegaWallet();
 
   const ticket = useTicketContext();
 
@@ -54,23 +61,47 @@ export const TicketMarket = (props: FormProps) => {
     <FormProvider {...form}>
       <Form
         onSubmit={form.handleSubmit((fields) => {
+          const reference = `${pubKey}-${Date.now()}-${uniqueId()}`;
+
+          // TODO: handle this in the map function using sizeMode
           // if in notional, convert back to normal size
           const size =
             fields.sizeMode === 'notional'
-              ? helpers.toSize(BigNumber(fields.size), price || BigNumber(0))
+              ? helpers
+                  .toSize(BigNumber(fields.size), price || BigNumber(0))
+                  .toString()
               : fields.size;
 
-          const orderSubmission = {
-            marketId: ticket.market.id,
-            type: fields.type,
-            side: fields.side,
-            timeInForce: fields.timeInForce,
-            size: removeDecimal(size, ticket.market.positionDecimalPlaces),
-          };
+          if (fields.tpSl) {
+            const batchMarketInstructions =
+              mapFormValuesToTakeProfitAndStopLoss(
+                {
+                  ...fields,
+                  size,
+                },
+                ticket.market,
+                reference
+              );
 
-          create({
-            orderSubmission,
-          });
+            create({
+              batchMarketInstructions,
+            });
+          } else {
+            const orderSubmission = mapFormValuesToOrderSubmission(
+              {
+                ...fields,
+                size,
+              },
+              ticket.market.id,
+              ticket.market.decimalPlaces,
+              ticket.market.positionDecimalPlaces,
+              reference
+            );
+
+            create({
+              orderSubmission,
+            });
+          }
         })}
       >
         <Fields.Side control={form.control} />

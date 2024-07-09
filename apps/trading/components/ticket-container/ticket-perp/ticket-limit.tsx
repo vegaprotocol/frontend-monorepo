@@ -1,11 +1,16 @@
 import BigNumber from 'bignumber.js';
+import uniqueId from 'lodash/uniqueId';
 import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { addDays } from 'date-fns';
 
 import { OrderType, OrderTimeInForce, Side } from '@vegaprotocol/types';
-import { removeDecimal, toNanoSeconds } from '@vegaprotocol/utils';
 import { useVegaTransactionStore } from '@vegaprotocol/web3';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
+import {
+  mapFormValuesToOrderSubmission,
+  mapFormValuesToTakeProfitAndStopLoss,
+} from '@vegaprotocol/deal-ticket';
 
 import { Form, FormGrid, FormGridCol } from '../elements/form';
 import { type FormFieldsLimit, schemaLimit } from '../schemas';
@@ -17,6 +22,7 @@ import { SubmitButton } from '../elements/submit-button';
 import { useT } from '../../../lib/use-t';
 import { Datagrid } from '../elements/datagrid';
 
+import * as helpers from '../helpers';
 import * as Fields from '../fields';
 import * as Data from '../info';
 import { SizeSlider } from '../size-slider';
@@ -25,6 +31,8 @@ export const TicketLimit = (props: FormProps) => {
   const t = useT();
   const create = useVegaTransactionStore((state) => state.create);
   const ticket = useTicketContext();
+
+  const { pubKey } = useVegaWallet();
 
   const form = useForm<FormFieldsLimit>({
     resolver: zodResolver(schemaLimit),
@@ -54,37 +62,47 @@ export const TicketLimit = (props: FormProps) => {
     <FormProvider {...form}>
       <Form
         onSubmit={form.handleSubmit((fields) => {
-          const orderSubmission = {
-            marketId: ticket.market.id,
-            type: fields.type,
-            side: fields.side,
-            timeInForce: fields.timeInForce,
-            size: removeDecimal(
-              fields.size,
-              ticket.market.positionDecimalPlaces
-            ),
-            price: removeDecimal(fields.price, ticket.market.decimalPlaces),
-            expiresAt:
-              fields.expiresAt &&
-              fields.timeInForce === OrderTimeInForce.TIME_IN_FORCE_GTT
-                ? toNanoSeconds(fields.expiresAt)
-                : undefined,
-            postOnly: fields.postOnly,
-            reduceOnly: fields.reduceOnly,
-            icebergOpts: fields.iceberg
-              ? {
-                  peakSize: fields.icebergPeakSize,
-                  minimumVisibleSize: fields.icebergMinVisibleSize,
-                }
-              : undefined,
-          };
+          const reference = `${pubKey}-${Date.now()}-${uniqueId()}`;
 
-          // eslint-disable-next-line no-console
-          console.log(orderSubmission);
+          // TODO: handle this in the map function using sizeMode
+          // if in notional, convert back to normal size
+          const size =
+            fields.sizeMode === 'notional'
+              ? helpers
+                  .toSize(BigNumber(fields.size), BigNumber(price || 0))
+                  .toString()
+              : fields.size;
 
-          create({
-            orderSubmission,
-          });
+          if (fields.tpSl) {
+            const batchMarketInstructions =
+              mapFormValuesToTakeProfitAndStopLoss(
+                {
+                  ...fields,
+                  size,
+                },
+                ticket.market,
+                reference
+              );
+
+            create({
+              batchMarketInstructions,
+            });
+          } else {
+            const orderSubmission = mapFormValuesToOrderSubmission(
+              {
+                ...fields,
+                size,
+              },
+              ticket.market.id,
+              ticket.market.decimalPlaces,
+              ticket.market.positionDecimalPlaces,
+              reference
+            );
+
+            create({
+              orderSubmission,
+            });
+          }
         })}
       >
         <Fields.Side control={form.control} />

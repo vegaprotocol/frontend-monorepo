@@ -1,7 +1,12 @@
 import { type OrderFieldsFragment } from '@vegaprotocol/orders';
 import { Side } from '@vegaprotocol/types';
-import { determineSizeStep, toBigNum } from '@vegaprotocol/utils';
+import {
+  determineSizeStep,
+  removeDecimal,
+  toBigNum,
+} from '@vegaprotocol/utils';
 import BigNumber from 'bignumber.js';
+import { type FormFieldsMarket } from './schemas';
 
 export const calcSizeByPct = ({
   pct,
