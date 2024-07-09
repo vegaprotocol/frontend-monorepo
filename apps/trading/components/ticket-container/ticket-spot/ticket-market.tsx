@@ -1,11 +1,16 @@
 import BigNumber from 'bignumber.js';
+import uniqueId from 'lodash/uniqueId';
 import { FormProvider, useForm, useFormContext } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { useMarkPrice } from '@vegaprotocol/markets';
 import { OrderTimeInForce, OrderType, Side } from '@vegaprotocol/types';
-import { determineSizeStep, toBigNum } from '@vegaprotocol/utils';
-
+import { toBigNum } from '@vegaprotocol/utils';
+import {
+  mapFormValuesToOrderSubmission,
+  mapFormValuesToTakeProfitAndStopLoss,
+} from '@vegaprotocol/deal-ticket';
+import { useVegaTransactionStore } from '@vegaprotocol/web3';
 import { useAccountBalance } from '@vegaprotocol/accounts';
 
 import { useT } from '../../../lib/use-t';
@@ -17,10 +22,16 @@ import { TicketTypeSelect } from '../ticket-type-select';
 import { type FormProps } from '../ticket-spot';
 import { useTicketContext } from '../ticket-context';
 
+import * as helpers from '../helpers';
+import * as spotHelpers from '../helpers-spot';
 import * as Fields from '../fields';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 
 export const TicketMarket = (props: FormProps) => {
   const t = useT();
+  const create = useVegaTransactionStore((state) => state.create);
+  const { pubKey } = useVegaWallet();
+
   const ticket = useTicketContext();
   const form = useForm<FormFieldsMarket>({
     resolver: zodResolver(schemaMarket),
@@ -28,7 +39,7 @@ export const TicketMarket = (props: FormProps) => {
       sizeMode: 'contracts',
       type: OrderType.TYPE_MARKET,
       side: Side.SIDE_BUY,
-      size: '',
+      size: '', // or notional
       timeInForce: OrderTimeInForce.TIME_IN_FORCE_IOC,
       reduceOnly: false,
       tpSl: false,
@@ -50,8 +61,47 @@ export const TicketMarket = (props: FormProps) => {
     <FormProvider {...form}>
       <Form
         onSubmit={form.handleSubmit((fields) => {
-          // eslint-disable-next-line no-console
-          console.log(fields);
+          const reference = `${pubKey}-${Date.now()}-${uniqueId()}`;
+
+          // TODO: handle this in the map function using sizeMode
+          // if in notional, convert back to normal size
+          const size =
+            fields.sizeMode === 'notional'
+              ? helpers
+                  .toSize(BigNumber(fields.size), price || BigNumber(0))
+                  .toString()
+              : fields.size;
+
+          if (fields.tpSl) {
+            const batchMarketInstructions =
+              mapFormValuesToTakeProfitAndStopLoss(
+                {
+                  ...fields,
+                  size,
+                },
+                ticket.market,
+                reference
+              );
+
+            create({
+              batchMarketInstructions,
+            });
+          } else {
+            const orderSubmission = mapFormValuesToOrderSubmission(
+              {
+                ...fields,
+                size,
+              },
+              ticket.market.id,
+              ticket.market.decimalPlaces,
+              ticket.market.positionDecimalPlaces,
+              reference
+            );
+
+            create({
+              orderSubmission,
+            });
+          }
         })}
       >
         <Fields.Side control={form.control} />
@@ -100,19 +150,19 @@ export const SizeSlider = () => {
   const ticket = useTicketContext();
   const form = useFormContext();
   const baseAccount = useAccountBalance(ticket.baseAsset?.id);
-  const { data: markPrice } = useMarkPrice(ticket.market.id);
 
+  const { data: markPrice } = useMarkPrice(ticket.market.id);
+  const price =
+    markPrice && markPrice !== null
+      ? toBigNum(markPrice, ticket.market.decimalPlaces)
+      : undefined;
+
+  const sizeMode = form.watch('sizeMode');
   const side = form.watch('side');
 
-  if (!markPrice) return null;
+  if (!price) return null;
   if (!ticket.market.fees.factors) return null;
   if (!ticket.baseAsset) return null;
-
-  const feeFactors = ticket.market.fees.factors;
-  const balances = {
-    base: baseAccount.accountBalance,
-    quote: ticket.accounts.general,
-  };
 
   return (
     <Slider
@@ -124,35 +174,33 @@ export const SizeSlider = () => {
           return;
         }
 
-        let max = new BigNumber(0);
+        const max = spotHelpers.calcMaxSize({
+          side,
+          price,
+          feeFactors: ticket.market.fees.factors,
+          market: ticket.market,
+          accounts: {
+            base: {
+              balance: baseAccount.accountBalance,
+              decimals: ticket.baseAsset.decimals,
+            },
+            quote: {
+              balance: ticket.accounts.general,
+              decimals: ticket.quoteAsset.decimals,
+            },
+          },
+        });
 
-        if (side === Side.SIDE_BUY) {
-          max = toBigNum(balances.quote, ticket.quoteAsset.decimals).div(
-            toBigNum(markPrice, ticket.market.decimalPlaces)
-          );
-        } else if (side === Side.SIDE_SELL) {
-          max = toBigNum(balances.base, ticket.baseAsset.decimals);
+        const size = helpers.toPercentOf(value[0], max);
+
+        // form.setValue('size', size.toString(), { shouldValidate: true });
+
+        if (sizeMode === 'contracts') {
+          form.setValue('size', size.toString(), { shouldValidate: true });
+        } else if (sizeMode === 'notional') {
+          const notional = helpers.toNotional(size, price);
+          form.setValue('size', notional.toString(), { shouldValidate: true });
         }
-
-        max = max.multipliedBy(
-          1 -
-            Number(feeFactors.infrastructureFee) -
-            Number(feeFactors.liquidityFee) -
-            Number(feeFactors.makerFee)
-        );
-
-        // round to size step
-        max = max.minus(
-          max.mod(
-            determineSizeStep({
-              positionDecimalPlaces: ticket.market.positionDecimalPlaces,
-            })
-          )
-        );
-
-        const size = new BigNumber(value[0]).div(100).times(max);
-
-        form.setValue('size', size.toString(), { shouldValidate: true });
       }}
     />
   );

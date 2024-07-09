@@ -12,9 +12,8 @@ export const numericalString = z.string().refine(
   (v) => {
     const n = Number(v);
 
-    if (v?.length <= 0) return false;
     if (isNaN(n)) return false;
-    if (n <= 0) return false;
+    if (n < 0) return false;
 
     return true;
   },

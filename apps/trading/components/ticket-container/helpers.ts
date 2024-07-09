@@ -130,6 +130,10 @@ export const calcSizeByPct = ({
   return size;
 };
 
+export const toPercentOf = (pct: number, value: BigNumber) => {
+  return BigNumber(pct).div(100).times(value);
+};
+
 export const toNotional = (size: BigNumber, price: BigNumber) => {
   return size.times(price);
 };
