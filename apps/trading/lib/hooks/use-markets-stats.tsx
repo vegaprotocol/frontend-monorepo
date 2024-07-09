@@ -1,7 +1,12 @@
-import { getAsset, type MarketMaybeWithCandles } from '@vegaprotocol/markets';
+import {
+  filterAndSortMarkets,
+  getAsset,
+  type MarketMaybeWithCandles,
+} from '@vegaprotocol/markets';
 import { priceChangePercentage, toBigNum, toQUSD } from '@vegaprotocol/utils';
 import BigNumber from 'bignumber.js';
-import { orderBy } from 'lodash';
+import compact from 'lodash/compact';
+import orderBy from 'lodash/orderBy';
 
 /**
  * useTotalVolume24hCandles returns 24 hr candles with total volume
@@ -11,9 +16,10 @@ import { orderBy } from 'lodash';
  * @returns
  */
 export const useTotalVolume24hCandles = (
-  activeMarkets: MarketMaybeWithCandles[] | null
+  markets: MarketMaybeWithCandles[] | null
 ): number[] => {
   const candles = [];
+  const activeMarkets = filterAndSortMarkets(compact(markets));
   if (!activeMarkets || activeMarkets.length === 0) return [];
   for (let i = 0; i < 24; i++) {
     const totalVolume24hr = activeMarkets.reduce((acc, market) => {
@@ -34,12 +40,13 @@ export const useTotalVolume24hCandles = (
 /**
  * useTopGainers returns the top 3 markets with highest gains, i.e. sorted by biggest 24h change
  *
- * @param activeMarkets
+ * @param markets
  * @returns MarketMaybeWithCandles[]
  */
 export const useTopGainers = (
-  activeMarkets: MarketMaybeWithCandles[] | null
+  markets: MarketMaybeWithCandles[] | null
 ): MarketMaybeWithCandles[] => {
+  const activeMarkets = filterAndSortMarkets(compact(markets));
   return orderBy(
     activeMarkets,
     [
@@ -63,8 +70,9 @@ export const useTopGainers = (
  * @returns MarketMaybeWithCandles[]
  */
 export const useNewListings = (
-  activeMarkets: MarketMaybeWithCandles[] | null
+  markets: MarketMaybeWithCandles[] | null
 ): MarketMaybeWithCandles[] => {
+  const activeMarkets = filterAndSortMarkets(compact(markets));
   return orderBy(
     activeMarkets,
     [(m) => new Date(m.marketTimestamps.open).getTime()],

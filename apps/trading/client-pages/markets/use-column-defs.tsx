@@ -117,7 +117,7 @@ export const priceValueFormatter = (
   data: MarketMaybeWithData | undefined,
   formatDecimalPlaces?: number
 ): string => {
-  if (data?.tradableInstrument.instrument.product.__typename === 'Spot') {
+  if (isSpotMarket(data)) {
     const quoteAsset = data && getQuoteAsset(data);
     return data?.data?.lastTradedPrice === undefined
       ? '-'
@@ -126,7 +126,14 @@ export const priceValueFormatter = (
           data.decimalPlaces
         )} ${quoteAsset?.symbol}`;
   }
-  const quoteName = data && getQuoteName(data);
+  let quoteName: string | undefined = undefined;
+  if (data) {
+    try {
+      quoteName = data && getQuoteName(data);
+    } catch {
+      quoteName = '';
+    }
+  }
 
   return data?.data?.bestOfferPrice === undefined
     ? '-'
@@ -166,7 +173,7 @@ export const useMarketsColumnDefs = () => {
           const state = data?.data?.marketState;
           const tooltip = getMarketStateTooltip(state, tradingMode);
           const productType =
-            data?.tradableInstrument.instrument.product.__typename;
+            data?.tradableInstrument?.instrument.product.__typename;
           return (
             <Tooltip description={t(tooltip)}>
               <span className="flex items-center gap-2 cursor-pointer">
@@ -179,7 +186,7 @@ export const useMarketsColumnDefs = () => {
                       <MarketIcon data={data} />
                     </span>
                   }
-                  secondary={data?.tradableInstrument.instrument.name}
+                  secondary={data?.tradableInstrument?.instrument.name}
                 />
               </span>
             </Tooltip>
@@ -194,7 +201,7 @@ export const useMarketsColumnDefs = () => {
         maxWidth: 150,
         cellClass: 'text-sm text-right',
         valueGetter: ({ data }: VegaValueGetterParams<MarketMaybeWithData>) => {
-          if (data && isSpot(data.tradableInstrument.instrument.product)) {
+          if (isSpotMarket(data)) {
             return data?.data?.lastTradedPrice === undefined
               ? undefined
               : toBigNum(
@@ -264,7 +271,12 @@ export const useMarketsColumnDefs = () => {
           if (!data) return '-';
           const candles = data.candles;
           const vol = candles ? calcCandleVolume(candles) : '0';
-          const quoteName = getQuoteName(data);
+          let quoteName: string | undefined = undefined;
+          try {
+            quoteName = getQuoteName(data);
+          } catch {
+            quoteName = '';
+          }
           const volPrice = candles
             ? calcCandleVolumePrice(
                 candles,
@@ -312,7 +324,7 @@ export const useMarketsColumnDefs = () => {
           MarketMaybeWithData,
           'data.openInterest'
         >) => {
-          if (!data || isSpot(data.tradableInstrument.instrument.product)) {
+          if (!data || isSpotMarket(data) || !openInterestValues(data)) {
             return <span>-</span>;
           }
           return (
@@ -325,4 +337,11 @@ export const useMarketsColumnDefs = () => {
     ],
     [chainId, t]
   );
+};
+
+const isSpotMarket = (
+  market: Pick<MarketMaybeWithData, 'tradableInstrument'> | undefined | null
+) => {
+  const product = market?.tradableInstrument?.instrument?.product;
+  return product && isSpot(product);
 };

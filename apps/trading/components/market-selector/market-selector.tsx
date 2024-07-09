@@ -1,6 +1,7 @@
+import compact from 'lodash/compact';
 import uniqBy from 'lodash/uniqBy';
 import {
-  getAsset,
+  retrieveAssets,
   type MarketMaybeWithDataAndCandles,
 } from '@vegaprotocol/markets';
 import {
@@ -21,6 +22,7 @@ import { Sort, SortDropdown } from './sort-dropdown';
 import { MarketSelectorItem } from './market-selector-item';
 import classNames from 'classnames';
 import { useT } from '../../lib/use-t';
+import flatten from 'lodash/flatten';
 
 export type Filter = {
   searchTerm: string;
@@ -55,6 +57,23 @@ export const MarketSelector = ({
     reload();
   }, [reload]);
 
+  const marketAssets = uniqBy(
+    compact(
+      flatten(
+        data?.map((d) => {
+          const product = d.tradableInstrument?.instrument?.product;
+          if (product) return retrieveAssets(product);
+        })
+      )
+    ),
+    (a) => a.id
+  ).map((a) => ({
+    id: a.id,
+    symbol: a.symbol,
+    chainId:
+      a.source.__typename === 'ERC20' ? Number(a.source.chainId) : undefined,
+  }));
+
   return (
     <div data-testid="market-selector" className="md:w-[680px]">
       <div className="px-2 pt-2 mb-2">
@@ -79,10 +98,7 @@ export const MarketSelector = ({
             />
           </div>
           <AssetDropdown
-            assets={uniqBy(
-              data?.map((d) => getAsset(d)),
-              'id'
-            )}
+            assets={marketAssets}
             checkedAssets={filter.assets}
             onSelect={(id: string, checked) => {
               setFilter((curr) => {

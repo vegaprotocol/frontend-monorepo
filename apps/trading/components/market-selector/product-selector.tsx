@@ -7,9 +7,9 @@ import { useT } from '../../lib/use-t';
 // Make sure these match the available __typename properties on product
 export const Product = {
   All: 'All',
+  Perpetual: 'Perpetual',
   Future: 'Future',
   Spot: 'Spot',
-  Perpetual: 'Perpetual',
 } as const;
 
 export type ProductType = keyof typeof Product;
@@ -26,9 +26,9 @@ export const ProductSelector = ({
     [key in ProductType]: string;
   } = {
     [Product.All]: t('All'),
+    [Product.Perpetual]: t('Perpetuals'),
     [Product.Future]: t('Futures'),
     [Product.Spot]: t('Spot'),
-    [Product.Perpetual]: t('Perpetuals'),
   };
   return (
     <div className="flex mb-2">

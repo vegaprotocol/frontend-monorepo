@@ -164,7 +164,7 @@ describe('MarketSelector', () => {
   });
 
   it('Button "All" should be selected by default', () => {
-    const buttons = ['All', 'Futures', 'Spot', 'Perpetuals'];
+    const buttons = ['All', 'Perpetuals', 'Futures', 'Spot'];
     render(
       <MemoryRouter>
         <MarketSelector currentMarketId="market-0" onSelect={jest.fn()} />
