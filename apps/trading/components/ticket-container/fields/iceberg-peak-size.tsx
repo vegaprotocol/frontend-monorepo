@@ -3,6 +3,7 @@ import { FormField } from '../ticket-field';
 import { useT } from '../../../lib/use-t';
 import { TicketInput } from '@vegaprotocol/ui-toolkit';
 import { useTicketContext } from '../ticket-context';
+import { InputLabel } from '../elements/form';
 
 export const IcebergPeakSize = (props: { control: Control<any> }) => {
   const t = useT();
@@ -19,11 +20,7 @@ export const IcebergPeakSize = (props: { control: Control<any> }) => {
             {...field}
             value={field.value}
             onChange={field.onChange}
-            label={
-              <>
-                <span className="text-default">{t('Peak size')}</span> {symbol}
-              </>
-            }
+            label={<InputLabel label={t('Peak size')} symbol={symbol} />}
           />
         );
       }}

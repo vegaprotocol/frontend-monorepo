@@ -3,6 +3,7 @@ import { FormField } from '../ticket-field';
 import { useT } from '../../../lib/use-t';
 import { TicketInput } from '@vegaprotocol/ui-toolkit';
 import { useTicketContext } from '../ticket-context';
+import { InputLabel } from '../elements/form';
 
 export const TakeProfit = (props: { control: Control<any> }) => {
   const t = useT();
@@ -17,10 +18,10 @@ export const TakeProfit = (props: { control: Control<any> }) => {
           <TicketInput
             {...field}
             label={
-              <>
-                <span className="text-default">{t('Take profit')}</span>{' '}
-                {ticket.quoteAsset.symbol}
-              </>
+              <InputLabel
+                label={t('Take profit')}
+                symbol={ticket.quoteAsset.symbol}
+              />
             }
             value={field.value}
             onChange={field.onChange}

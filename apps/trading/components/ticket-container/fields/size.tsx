@@ -7,6 +7,7 @@ import { useT } from '../../../lib/use-t';
 import { useNotionalSizeFlip } from '../use-notional-size-flip';
 import { useTicketContext } from '../ticket-context';
 import { FormField } from '../ticket-field';
+import { InputLabel } from '../elements/form';
 
 export const Size = (props: { control: Control<any>; price?: BigNumber }) => {
   const flip = useNotionalSizeFlip();
@@ -56,9 +57,5 @@ const SizeLabel = () => {
     symbol = ticket.quoteAsset.symbol;
   }
 
-  return (
-    <>
-      <span className="text-default">{label}</span> {symbol}
-    </>
-  );
+  return <InputLabel label={label} symbol={symbol} />;
 };

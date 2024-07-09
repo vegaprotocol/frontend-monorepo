@@ -3,6 +3,7 @@ import { FormField } from '../ticket-field';
 import { useT } from '../../../lib/use-t';
 import { TicketInput } from '@vegaprotocol/ui-toolkit';
 import { useTicketContext } from '../ticket-context';
+import { InputLabel } from '../elements/form';
 
 export const StopLoss = (props: { control: Control<any> }) => {
   const t = useT();
@@ -19,10 +20,10 @@ export const StopLoss = (props: { control: Control<any> }) => {
             value={field.value}
             onChange={field.onChange}
             label={
-              <>
-                <span className="text-default">{t('Stop loss')}</span>{' '}
-                {ticket.quoteAsset.symbol}
-              </>
+              <InputLabel
+                label={t('Stop loss')}
+                symbol={ticket.quoteAsset.symbol}
+              />
             }
           />
         );

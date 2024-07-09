@@ -23,3 +23,17 @@ export const FormGridCol = (props: HTMLAttributes<HTMLDivElement>) => {
     />
   );
 };
+
+export const InputLabel = ({
+  label,
+  symbol,
+}: {
+  label: string;
+  symbol?: string;
+}) => {
+  return (
+    <>
+      <span className="text-default">{label}</span> {symbol}
+    </>
+  );
+};
