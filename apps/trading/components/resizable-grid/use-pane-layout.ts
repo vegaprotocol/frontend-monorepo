@@ -4,6 +4,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 
+const STORAGE_VERSION = 1;
 const STORAGE_KEY = 'vega_pane_store';
 const PANELS_SET_DEBOUNCE_TIME = 300;
 
@@ -20,7 +21,7 @@ export const usePaneLayoutStore = create<{
           return state;
         }),
     })),
-    { name: STORAGE_KEY }
+    { name: STORAGE_KEY, version: STORAGE_VERSION }
   )
 );
 
