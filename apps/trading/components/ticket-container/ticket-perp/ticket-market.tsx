@@ -43,8 +43,10 @@ export const TicketMarket = (props: FormProps) => {
       side: Side.SIDE_BUY,
       size: '', // or notional
       timeInForce: OrderTimeInForce.TIME_IN_FORCE_IOC,
-      tpSl: false,
       reduceOnly: false,
+      tpSl: false,
+      takeProfit: '',
+      stopLoss: '',
     },
   });
 

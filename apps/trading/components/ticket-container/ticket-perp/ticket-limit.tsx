@@ -44,10 +44,14 @@ export const TicketLimit = (props: FormProps) => {
       price: '',
       timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
       expiresAt: addDays(new Date(), 1),
-      tpSl: false,
       postOnly: false,
       reduceOnly: false,
       iceberg: false,
+      icebergPeakSize: '',
+      icebergMinVisibleSize: '',
+      tpSl: false,
+      takeProfit: '',
+      stopLoss: '',
     },
   });
 
