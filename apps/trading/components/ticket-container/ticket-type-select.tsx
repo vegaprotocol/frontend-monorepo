@@ -24,7 +24,7 @@ export const TicketTypeSelect = ({
 }) => {
   const t = useT();
   const toggleClasses =
-    'flex-1 -mb-px p-1.5 border-b-2 border-b-transparent text-secondary';
+    'flex-1 -mb-px px-0.5 py-1.5 border-b-2 border-b-transparent text-secondary';
 
   const stopOptions = useOptions();
   const toggles = useToggles();

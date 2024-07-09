@@ -1,5 +1,11 @@
 import { z } from 'zod';
-import { OrderType, OrderTimeInForce, Side } from '@vegaprotocol/types';
+import {
+  OrderType,
+  OrderTimeInForce,
+  Side,
+  StopOrderTriggerDirection,
+  StopOrderSizeOverrideSetting,
+} from '@vegaprotocol/types';
 import { isBefore } from 'date-fns';
 
 export const numericalString = z.string().refine(
@@ -122,5 +128,28 @@ export const schemaLimit = z
     }
   });
 
+export const schemaStopLimit = z.object({
+  type: z.literal(OrderType.TYPE_LIMIT),
+  side: z.nativeEnum(Side),
+  triggerDirection: z.nativeEnum(StopOrderTriggerDirection),
+  triggerType: z.enum(['price', 'trailingPercentOffset']),
+  trigger: numericalString,
+  price: numericalString,
+  sizeOverride: z.nativeEnum(StopOrderSizeOverrideSetting),
+  size: numericalString,
+  timeInForce: z.nativeEnum(OrderTimeInForce),
+  expiresAt: z.date().optional(),
+  reduceOnly: z.boolean(),
+  postOnly: z.boolean(),
+  oco: z.boolean(),
+  ocoTriggerDirection: z.nativeEnum(StopOrderTriggerDirection),
+  ocoTriggerType: z.enum(['price', 'trailingPercentOffset']),
+  ocoTrigger: numericalString,
+  ocoSizeOverride: z.nativeEnum(StopOrderSizeOverrideSetting),
+  ocoSize: numericalString,
+  ocoPrice: numericalString,
+});
+
 export type FormFieldsMarket = z.infer<typeof schemaMarket>;
 export type FormFieldsLimit = z.infer<typeof schemaLimit>;
+export type FormFieldsStopLimit = z.infer<typeof schemaStopLimit>;

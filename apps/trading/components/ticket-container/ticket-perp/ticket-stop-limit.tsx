@@ -1,130 +1,105 @@
-import BigNumber from 'bignumber.js';
-import uniqueId from 'lodash/uniqueId';
 import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { addDays } from 'date-fns';
 
-import { OrderType, OrderTimeInForce, Side } from '@vegaprotocol/types';
-import { useVegaTransactionStore } from '@vegaprotocol/web3';
-import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import {
-  mapFormValuesToOrderSubmission,
-  mapFormValuesToTakeProfitAndStopLoss,
-} from '@vegaprotocol/deal-ticket';
+  OrderType,
+  OrderTimeInForce,
+  Side,
+  StopOrderTriggerDirection,
+  StopOrderSizeOverrideSetting,
+} from '@vegaprotocol/types';
 
 import { Form, FormGrid, FormGridCol } from '../elements/form';
-import { type FormFieldsLimit, schemaLimit } from '../schemas';
+import { type FormFieldsStopLimit, schemaStopLimit } from '../schemas';
 import { TicketTypeSelect } from '../ticket-type-select';
 import { type FormProps } from '../ticket-perp';
 import { NON_PERSISTENT_TIF_OPTIONS } from '../constants';
 import { useTicketContext } from '../ticket-context';
 import { SubmitButton } from '../elements/submit-button';
 import { useT } from '../../../lib/use-t';
-import { Datagrid } from '../elements/datagrid';
 
-import * as helpers from '../helpers';
 import * as Fields from '../fields';
-import * as Data from '../info';
-import { SizeSlider } from '../size-slider';
+import { useVegaTransactionStore } from '@vegaprotocol/web3';
+import { mapFormValuesToStopOrdersSubmission } from '@vegaprotocol/deal-ticket';
 
 export const TicketStopLimit = (props: FormProps) => {
   const t = useT();
-  const create = useVegaTransactionStore((state) => state.create);
+  const create = useVegaTransactionStore((store) => store.create);
   const ticket = useTicketContext();
 
-  const { pubKey } = useVegaWallet();
-
-  const form = useForm<FormFieldsLimit>({
-    resolver: zodResolver(schemaLimit),
+  const form = useForm<FormFieldsStopLimit>({
+    resolver: zodResolver(schemaStopLimit),
     defaultValues: {
-      sizeMode: 'contracts',
       type: OrderType.TYPE_LIMIT,
       side: Side.SIDE_BUY,
-      size: '',
+      triggerDirection: StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE,
+      triggerType: 'price',
+      trigger: '',
       price: '',
+      sizeOverride: StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_NONE,
+      size: '',
       timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
       expiresAt: addDays(new Date(), 1),
       postOnly: false,
       reduceOnly: false,
-      iceberg: false,
-      icebergPeakSize: '',
-      icebergMinVisibleSize: '',
-      tpSl: false,
-      takeProfit: '',
-      stopLoss: '',
+      oco: false,
+      ocoTriggerDirection:
+        StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE,
+      ocoTriggerType: 'price',
+      ocoTrigger: '',
+      ocoSizeOverride: StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_NONE,
+      ocoSize: '',
+      ocoPrice: '',
     },
   });
 
   const size = form.watch('size');
   const price = form.watch('price');
-  const tpSl = form.watch('tpSl');
-  const iceberg = form.watch('iceberg');
   const tif = form.watch('timeInForce');
   const isPersistent = !NON_PERSISTENT_TIF_OPTIONS.includes(tif);
+  const oco = form.watch('oco');
 
   return (
     <FormProvider {...form}>
       <Form
         onSubmit={form.handleSubmit((fields) => {
-          const reference = `${pubKey}-${Date.now()}-${uniqueId()}`;
-
-          // TODO: handle this in the map function using sizeMode
-          // if in notional, convert back to normal size
-          const size =
-            fields.sizeMode === 'notional'
-              ? helpers
-                  .toSize(BigNumber(fields.size), BigNumber(price || 0))
-                  .toString()
-              : fields.size;
-
-          if (fields.tpSl) {
-            const batchMarketInstructions =
-              mapFormValuesToTakeProfitAndStopLoss(
-                {
-                  ...fields,
-                  size,
-                },
-                ticket.market,
-                reference
-              );
-
-            create({
-              batchMarketInstructions,
-            });
-          } else {
-            const orderSubmission = mapFormValuesToOrderSubmission(
-              {
-                ...fields,
-                size,
-              },
+          create({
+            // TODO: convert this func to take the schema values
+            stopOrdersSubmission: mapFormValuesToStopOrdersSubmission(
+              fields,
               ticket.market.id,
               ticket.market.decimalPlaces,
               ticket.market.positionDecimalPlaces,
-              reference
-            );
-
-            create({
-              orderSubmission,
-            });
-          }
+              false
+            ),
+          });
         })}
       >
         <Fields.Side control={form.control} />
         <TicketTypeSelect type="stopLimit" onTypeChange={props.onTypeChange} />
+        <div className="flex flex-col gap-1">
+          <div className="flex gap-4 justify-end">
+            <Fields.StopTriggerDirection control={form.control} />
+            <Fields.StopTriggerType control={form.control} />
+          </div>
+          <Fields.StopTrigger control={form.control} />
+        </div>
         <Fields.Price control={form.control} />
-        <Fields.Size control={form.control} price={BigNumber(price)} />
-        <SizeSlider price={BigNumber(price || '0')} />
+        <div className="flex flex-col gap-1">
+          <div className="flex gap-1 justify-end">
+            <Fields.StopSizeOverride control={form.control} />
+          </div>
+          <Fields.StopSize control={form.control} />
+        </div>
         <FormGrid>
           <FormGridCol>
             {isPersistent ? (
-              <>
-                <Fields.PostOnly control={form.control} />
-                <Fields.Iceberg control={form.control} />
-              </>
+              <Fields.PostOnly control={form.control} />
             ) : (
               <Fields.ReduceOnly control={form.control} />
             )}
-            <Fields.TpSl control={form.control} />
+            <Fields.OCO control={form.control} />
           </FormGridCol>
           <FormGridCol>
             <Fields.TimeInForce control={form.control} />
@@ -133,39 +108,40 @@ export const TicketStopLimit = (props: FormProps) => {
             )}
           </FormGridCol>
         </FormGrid>
-        {tpSl && (
-          <FormGrid>
-            <FormGridCol>
-              <Fields.TakeProfit control={form.control} />
-            </FormGridCol>
-            <FormGridCol>
-              <Fields.StopLoss control={form.control} />
-            </FormGridCol>
-          </FormGrid>
-        )}
-        {iceberg && (
-          <FormGrid>
-            <FormGridCol>
-              <Fields.IcebergPeakSize control={form.control} />
-            </FormGridCol>
-            <FormGridCol>
-              <Fields.IcebergMinVisibleSize control={form.control} />
-            </FormGridCol>
-          </FormGrid>
+        {oco && (
+          <>
+            <hr className="border-default my-4" />
+            <div className="flex flex-col gap-1">
+              <div className="flex gap-4 justify-end">
+                <Fields.StopTriggerDirection
+                  control={form.control}
+                  name="ocoTriggerDirection"
+                />
+                <Fields.StopTriggerType
+                  control={form.control}
+                  name="ocoTriggerType"
+                />
+              </div>
+              <Fields.StopTrigger control={form.control} name="ocoTrigger" />
+            </div>
+            <Fields.Price control={form.control} name="ocoPrice" />
+            <div className="flex flex-col gap-1">
+              <div className="flex gap-1 justify-end">
+                <Fields.StopSizeOverride
+                  control={form.control}
+                  name="ocoSizeOverride"
+                />
+              </div>
+              <Fields.StopSize control={form.control} name="ocoSize" />
+            </div>
+          </>
         )}
         <SubmitButton
-          text={t('Place limit order')}
+          text={t('Place limit stop order')}
           subLabel={`${size || 0} ${ticket.baseSymbol} @ ${price} ${
             ticket.quoteAsset.symbol
           }`}
         />
-        <Datagrid>
-          <Data.Notional price={BigNumber(price)} />
-          <Data.Fees />
-          <Data.Slippage />
-          <Data.CollateralRequired />
-          <Data.Liquidation />
-        </Datagrid>
 
         <pre className="block w-full text-2xs">
           {JSON.stringify(form.getValues(), null, 2)}

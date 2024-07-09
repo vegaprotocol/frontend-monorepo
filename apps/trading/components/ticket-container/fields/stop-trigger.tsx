@@ -1,19 +1,23 @@
-import { type Control } from 'react-hook-form';
+import { useFormContext, type Control } from 'react-hook-form';
 import { FormField } from '../ticket-field';
 import { useT } from '../../../lib/use-t';
 import { TicketInput } from '@vegaprotocol/ui-toolkit';
 import { useTicketContext } from '../ticket-context';
 import { InputLabel } from '../elements/form';
 
-export const Price = ({
+export const StopTrigger = ({
   control,
-  name = 'price',
+  name = 'trigger',
 }: {
   control: Control<any>;
   name?: string;
 }) => {
   const t = useT();
   const ticket = useTicketContext();
+  const form = useFormContext();
+
+  const triggerType = form.watch('triggerType');
+  const symbol = triggerType === 'price' ? ticket.quoteAsset.symbol : '%';
 
   return (
     <FormField
@@ -24,12 +28,7 @@ export const Price = ({
           <TicketInput
             {...field}
             value={field.value}
-            label={
-              <InputLabel
-                label={t('Price')}
-                symbol={ticket.quoteAsset.symbol}
-              />
-            }
+            label={<InputLabel label={t('Trigger')} symbol={symbol} />}
           />
         );
       }}
