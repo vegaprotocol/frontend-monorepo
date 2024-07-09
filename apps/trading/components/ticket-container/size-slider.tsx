@@ -22,6 +22,7 @@ export const SizeSlider = ({ price }: { price: BigNumber | undefined }) => {
   };
 
   const side = form.watch('side');
+  const type = form.watch('type');
   const sizeMode = form.watch('sizeMode');
 
   if (!price) return null;
@@ -30,6 +31,7 @@ export const SizeSlider = ({ price }: { price: BigNumber | undefined }) => {
     return null;
   }
 
+  const marginMode = ticket.marginMode;
   const scalingFactors =
     ticket.market.tradableInstrument.marginCalculator.scalingFactors;
   const riskFactors = ticket.market.riskFactors;
@@ -45,6 +47,7 @@ export const SizeSlider = ({ price }: { price: BigNumber | undefined }) => {
           pct: value[0],
           openVolume,
           price: removeDecimal(price, ticket.market.decimalPlaces),
+          type,
           side,
           assetDecimals: ticket.quoteAsset.decimals,
           marketDecimals: ticket.market.decimalPlaces,
@@ -53,6 +56,7 @@ export const SizeSlider = ({ price }: { price: BigNumber | undefined }) => {
           orders: orders || [],
           scalingFactors,
           riskFactors,
+          marginMode,
         });
 
         if (sizeMode === 'contracts') {

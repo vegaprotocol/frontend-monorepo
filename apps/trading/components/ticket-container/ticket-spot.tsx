@@ -1,52 +1,34 @@
-import { type MarginMode } from '@vegaprotocol/types';
 import { type TicketType } from './types';
-import { getAsset, getBaseAsset } from '@vegaprotocol/markets';
-import { useAccountBalance, useMarginMode } from '@vegaprotocol/accounts';
 import { useState } from 'react';
-import { useVegaWallet } from '@vegaprotocol/wallet-react';
-import { type AssetFieldsFragment } from '@vegaprotocol/assets';
 
 import { TicketMarket } from './ticket-spot/ticket-market';
-import { useTicketContext } from './ticket-context';
 
 export type FormProps = {
-  baseAsset: AssetFieldsFragment;
-  quoteAsset: AssetFieldsFragment;
-  balances: { base: string; quote: string };
-  margin: { mode?: MarginMode; factor?: string };
   onTypeChange: (value: TicketType) => void;
 };
 
 export const TicketSpot = () => {
-  const { market } = useTicketContext();
   const [ticketType, setTicketType] = useState<TicketType>('market');
-  const { pubKey } = useVegaWallet();
-
-  const baseAsset = getBaseAsset(market);
-  const quoteAsset = getAsset(market);
-
-  const baseAccount = useAccountBalance(baseAsset.id);
-  const quoteAccount = useAccountBalance(quoteAsset.id);
-
-  const marginMode = useMarginMode({ marketId: market.id, partyId: pubKey });
 
   const props: FormProps = {
     onTypeChange: (value: TicketType) => setTicketType(value),
-    baseAsset,
-    quoteAsset,
-    balances: {
-      base: baseAccount.accountBalance,
-      quote: quoteAccount.accountBalance,
-    },
-    margin: {
-      mode: marginMode.data?.marginMode,
-      factor: marginMode.data?.marginFactor,
-    },
   };
 
   switch (ticketType) {
     case 'market': {
       return <TicketMarket {...props} />;
+    }
+
+    case 'limit': {
+      throw new Error('spot limit ticket not implemented');
+    }
+
+    case 'stopMarket': {
+      throw new Error('spot stop market ticket not implemented');
+    }
+
+    case 'stopLimit': {
+      throw new Error('spot stop limit ticket not implemented');
     }
 
     default: {

@@ -26,7 +26,7 @@ export const TicketPerp = () => {
     }
 
     case 'stopMarket': {
-      return <FormStopMarket />;
+      throw new Error('stopMarket ticket not implenented');
     }
 
     case 'stopLimit': {
@@ -37,8 +37,4 @@ export const TicketPerp = () => {
       throw new Error('invalid order type');
     }
   }
-};
-
-const FormStopMarket = () => {
-  return <div>Form stop market</div>;
 };

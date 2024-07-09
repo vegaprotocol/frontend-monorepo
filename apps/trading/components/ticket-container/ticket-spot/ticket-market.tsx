@@ -2,30 +2,50 @@ import BigNumber from 'bignumber.js';
 import { FormProvider, useForm, useFormContext } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import { Intent, TradingButton } from '@vegaprotocol/ui-toolkit';
-import { type MarketInfo, useMarkPrice } from '@vegaprotocol/markets';
-import { type AssetFieldsFragment } from '@vegaprotocol/assets';
-import { Side } from '@vegaprotocol/types';
+import { useMarkPrice } from '@vegaprotocol/markets';
+import { OrderTimeInForce, OrderType, Side } from '@vegaprotocol/types';
 import { determineSizeStep, toBigNum } from '@vegaprotocol/utils';
 
+import { useAccountBalance } from '@vegaprotocol/accounts';
+
+import { useT } from '../../../lib/use-t';
+import { SubmitButton } from '../elements/submit-button';
+import { Form, FormGrid, FormGridCol } from '../elements/form';
+import { Slider } from '../slider';
 import { type FormFieldsMarket, schemaMarket } from '../schemas';
-import { Form } from '../elements/form';
-import * as Fields from '../fields';
 import { TicketTypeSelect } from '../ticket-type-select';
 import { type FormProps } from '../ticket-spot';
 import { useTicketContext } from '../ticket-context';
-import { Slider } from '../slider';
+
+import * as Fields from '../fields';
 
 export const TicketMarket = (props: FormProps) => {
-  const { market } = useTicketContext();
+  const t = useT();
+  const ticket = useTicketContext();
   const form = useForm<FormFieldsMarket>({
     resolver: zodResolver(schemaMarket),
     defaultValues: {
       sizeMode: 'contracts',
+      type: OrderType.TYPE_MARKET,
       side: Side.SIDE_BUY,
       size: '',
+      timeInForce: OrderTimeInForce.TIME_IN_FORCE_IOC,
+      reduceOnly: false,
+      tpSl: false,
+      takeProfit: '',
+      stopLoss: '',
     },
   });
+
+  const size = form.watch('size');
+  const tpSl = form.watch('tpSl');
+
+  const { data: markPrice } = useMarkPrice(ticket.market.id);
+  const price =
+    markPrice && markPrice !== null
+      ? toBigNum(markPrice, ticket.market.decimalPlaces)
+      : undefined;
+
   return (
     <FormProvider {...form}>
       <Form
@@ -36,16 +56,31 @@ export const TicketMarket = (props: FormProps) => {
       >
         <Fields.Side control={form.control} />
         <TicketTypeSelect type="market" onTypeChange={props.onTypeChange} />
-        <Fields.Size control={form.control} />
-        <SizeSlider
-          market={market}
-          balances={props.balances}
-          baseAsset={props.baseAsset}
-          quoteAsset={props.quoteAsset}
+        <Fields.Size control={form.control} price={price} />
+        <SizeSlider />
+        <FormGrid>
+          <FormGridCol>
+            <Fields.TpSl control={form.control} />
+            <Fields.ReduceOnly control={form.control} />
+          </FormGridCol>
+          <FormGridCol>
+            <Fields.TimeInForce control={form.control} />
+          </FormGridCol>
+        </FormGrid>
+        {tpSl && (
+          <FormGrid>
+            <FormGridCol>
+              <Fields.TakeProfit control={form.control} />
+            </FormGridCol>
+            <FormGridCol>
+              <Fields.StopLoss control={form.control} />
+            </FormGridCol>
+          </FormGrid>
+        )}
+        <SubmitButton
+          text={t('Place market order')}
+          subLabel={`${size || 0} ${ticket.baseSymbol} @ market`}
         />
-        <TradingButton intent={Intent.Secondary} size="large" type="submit">
-          Submit
-        </TradingButton>
         <pre className="block w-full text-2xs">
           {JSON.stringify(form.getValues(), null, 2)}
         </pre>
@@ -61,26 +96,23 @@ export const TicketMarket = (props: FormProps) => {
  * On change of the size slider calculate size
  * based on the sliders percentage value
  */
-export const SizeSlider = ({
-  market,
-  balances,
-  baseAsset,
-  quoteAsset,
-}: {
-  market: MarketInfo;
-  balances: { base: string; quote: string };
-  baseAsset: AssetFieldsFragment;
-  quoteAsset: AssetFieldsFragment;
-}) => {
+export const SizeSlider = () => {
+  const ticket = useTicketContext();
   const form = useFormContext();
-  const { data: markPrice } = useMarkPrice(market.id);
+  const baseAccount = useAccountBalance(ticket.baseAsset?.id);
+  const { data: markPrice } = useMarkPrice(ticket.market.id);
 
   const side = form.watch('side');
 
   if (!markPrice) return null;
-  if (!market.fees.factors) return null;
+  if (!ticket.market.fees.factors) return null;
+  if (!ticket.baseAsset) return null;
 
-  const feeFactors = market.fees.factors;
+  const feeFactors = ticket.market.fees.factors;
+  const balances = {
+    base: baseAccount.accountBalance,
+    quote: ticket.accounts.general,
+  };
 
   return (
     <Slider
@@ -88,14 +120,18 @@ export const SizeSlider = ({
       max={100}
       defaultValue={[0]}
       onValueCommit={(value) => {
+        if (!ticket.baseAsset || !ticket.quoteAsset) {
+          return;
+        }
+
         let max = new BigNumber(0);
 
         if (side === Side.SIDE_BUY) {
-          max = toBigNum(balances.quote, quoteAsset.decimals).div(
-            toBigNum(markPrice, market.decimalPlaces)
+          max = toBigNum(balances.quote, ticket.quoteAsset.decimals).div(
+            toBigNum(markPrice, ticket.market.decimalPlaces)
           );
         } else if (side === Side.SIDE_SELL) {
-          max = toBigNum(balances.base, baseAsset.decimals);
+          max = toBigNum(balances.base, ticket.baseAsset.decimals);
         }
 
         max = max.multipliedBy(
@@ -109,7 +145,7 @@ export const SizeSlider = ({
         max = max.minus(
           max.mod(
             determineSizeStep({
-              positionDecimalPlaces: market.positionDecimalPlaces,
+              positionDecimalPlaces: ticket.market.positionDecimalPlaces,
             })
           )
         );
