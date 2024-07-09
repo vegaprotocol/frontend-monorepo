@@ -3,6 +3,7 @@ import { useState } from 'react';
 
 import { TicketMarket } from './ticket-perp/ticket-market';
 import { TicketLimit } from './ticket-perp/ticket-limit';
+import { TicketStopLimit } from './ticket-perp/ticket-stop-limit';
 
 export type FormProps = {
   onTypeChange: (value: TicketType) => void;
@@ -29,7 +30,7 @@ export const TicketPerp = () => {
     }
 
     case 'stopLimit': {
-      return <FormStopLimit />;
+      return <TicketStopLimit {...props} />;
     }
 
     default: {
@@ -40,8 +41,4 @@ export const TicketPerp = () => {
 
 const FormStopMarket = () => {
   return <div>Form stop market</div>;
-};
-
-const FormStopLimit = () => {
-  return <div>Form stop limit</div>;
 };
