@@ -8,27 +8,28 @@ import type { components } from '../../../../types/explorer';
 import PriceInMarket from '../../price-in-market/price-in-market';
 import { ConcentratedLiquidityParametersDetails } from './amm/amm-liquidity-parameters';
 
-interface TxDetailsAMMSubmitProps {
+interface TxDetailsAMMAmendProps {
   txData: BlockExplorerTransactionResult | undefined;
   pubKey: string | undefined;
   blockData: TendermintBlocksResponse | undefined;
 }
 
-export type Submit = components['schemas']['v1SubmitAMM'];
+export type Amend = components['schemas']['v1AmendAMM'];
 
 /**
- * Create an AMM account for a user
+ * Amends an AMM config for a user. Basically the same as create,
+ * but more likely to have fields omitted.
  */
-export const TxDetailsAMMSubmit = ({
+export const TxDetailsAMMAmend = ({
   txData,
   pubKey,
   blockData,
-}: TxDetailsAMMSubmitProps) => {
-  if (!txData || !txData.command.submitAmm) {
+}: TxDetailsAMMAmendProps) => {
+  if (!txData || !txData.command.amendAmm) {
     return <>{t('Awaiting Block Explorer transaction details')}</>;
   }
 
-  const cmd: Submit = txData.command.submitAmm;
+  const cmd: Amend = txData.command.amendAmm;
   const {
     marketId,
     commitmentAmount,
