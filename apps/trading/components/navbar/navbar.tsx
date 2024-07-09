@@ -123,7 +123,7 @@ export const Navbar = ({ theme = 'system' }: { theme?: Theme }) => {
           <D.Content
             className={classNames(
               'lg:hidden',
-              'border-default bg-vega-clight-700 dark:bg-vega-cdark-700 fixed right-0 top-0 z-20 h-screen w-3/4 border-l',
+              'border-default bg-vega-clight-700 dark:bg-vega-cdark-700 fixed right-0 top-0 z-20 h-full w-3/4 border-l flex flex-col',
               navTextClasses
             )}
             data-testid="navbar-menu-content"
@@ -136,7 +136,7 @@ export const Navbar = ({ theme = 'system' }: { theme?: Theme }) => {
             </div>
             {menu === 'nav' && <NavbarMenu onClick={() => setMenu(null)} />}
             {menu === 'wallet' && <VegaWalletMenu setMenu={setMenu} />}
-            <div className="absolute bottom-2 right-2">
+            <div className="p-2 mt-auto flex justify-end">
               <NodeHealthContainer />
             </div>
           </D.Content>
