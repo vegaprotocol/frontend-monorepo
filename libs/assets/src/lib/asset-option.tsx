@@ -1,4 +1,7 @@
-import { TradingOption, truncateMiddle } from '@vegaprotocol/ui-toolkit';
+import {
+  TradingRichSelectOption,
+  truncateMiddle,
+} from '@vegaprotocol/ui-toolkit';
 import type { AssetFieldsFragment } from './__generated__/Asset';
 import classNames from 'classnames';
 import type { ReactNode } from 'react';
@@ -55,7 +58,7 @@ export const AssetOption = ({ asset, balance }: AssetOptionProps) => {
     asset.source.__typename === 'ERC20' && asset.source.contractAddress;
 
   return (
-    <TradingOption key={asset.id} value={asset.id}>
+    <TradingRichSelectOption key={asset.id} value={asset.id}>
       <div className="flex gap-2 items-center">
         <AssetLogo asset={asset} />
         <div className="flex flex-col items-start gap-1">
@@ -89,6 +92,6 @@ export const AssetOption = ({ asset, balance }: AssetOptionProps) => {
           </div>
         </div>
       </div>
-    </TradingOption>
+    </TradingRichSelectOption>
   );
 };

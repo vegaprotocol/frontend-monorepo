@@ -3,7 +3,7 @@ import { forwardRef } from 'react';
 import classNames from 'classnames';
 import type { IconName } from '../icon';
 import { Icon } from '../icon';
-import { defaultFormElement } from '../../utils/shared';
+import { defaultFormElement } from '../../utils/trading-shared';
 
 type InputRootProps = InputHTMLAttributes<HTMLInputElement> & {
   hasError?: boolean;
@@ -81,8 +81,8 @@ const getAffixElement = ({
   appendIconDescription,
 }: Pick<TradingInputProps, keyof AffixProps>) => {
   const className = classNames('absolute top-0 bottom-0 flex items-center', {
-    'left-3': prependIconName || prependElement,
-    'right-3': appendIconName || appendElement,
+    'left-2': prependIconName || prependElement,
+    'right-2': appendIconName || appendElement,
   });
 
   const element = prependElement || appendElement;

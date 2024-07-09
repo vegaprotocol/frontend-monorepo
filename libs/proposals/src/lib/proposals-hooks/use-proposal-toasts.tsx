@@ -6,11 +6,9 @@ import {
   ProposalStateMapping,
 } from '@vegaprotocol/types';
 import { ProposalState } from '@vegaprotocol/types';
-import type { Toast } from '@vegaprotocol/ui-toolkit';
 import { ToastHeading } from '@vegaprotocol/ui-toolkit';
 import { useToasts } from '@vegaprotocol/ui-toolkit';
 import { ExternalLink, Intent } from '@vegaprotocol/ui-toolkit';
-import { useCallback } from 'react';
 import {
   useOnProposalSubscription,
   type OnProposalFragmentFragment,
@@ -120,28 +118,21 @@ export const useProposalToasts = () => {
     remove: store.remove,
   }));
 
-  const fromProposal = useCallback(
-    (proposal: Proposal): Toast => {
-      const id = `proposal-toast-${proposal.id}`;
-      return {
-        id,
-        intent: Intent.Warning,
-        content: <ProposalToastContent proposal={proposal} />,
-        onClose: () => {
-          remove(id);
-        },
-        closeAfter: CLOSE_AFTER,
-      };
-    },
-    [remove]
-  );
-
   return useOnProposalSubscription({
     onData: ({ data }) => {
       const proposal = data.data?.proposals;
       if (!proposal || !proposal.terms.change.__typename) return;
       if (PROPOSAL_STATES_TO_TOAST.includes(proposal.state)) {
-        setToast(fromProposal(proposal));
+        const id = `proposal-toast-${proposal.id}`;
+        setToast({
+          id,
+          intent: Intent.Warning,
+          content: <ProposalToastContent proposal={proposal} />,
+          onClose: () => {
+            remove(id);
+          },
+          closeAfter: CLOSE_AFTER,
+        });
       }
     },
   });

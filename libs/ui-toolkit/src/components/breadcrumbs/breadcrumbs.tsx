@@ -14,8 +14,8 @@ export const Breadcrumbs = ({
     <li
       key={i}
       className={classNames(
-        'before:content-["/"] before:pr-2 before:text-vega-light-300 dark:before:text-vega-dark-300',
-        'overflow-hidden text-ellipsis'
+        'before:content-["/"] before:pr-2 before:text-vega-light-300 dark:before:text-vega-dark-300 before:float-left',
+        'overflow-hidden text-ellipsis leading-loose'
       )}
     >
       {crumb}

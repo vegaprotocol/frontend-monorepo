@@ -19,14 +19,14 @@ export const PercentageSlider = ({
       : undefined;
 
   return (
-    <div className="relative">
+    <div className="relative pb-4">
       <SliderPrimitive.Root
         disabled={disabled}
         {...props}
         min={disabled ? 0 : min}
         max={disabled ? 1 : max}
         value={disabled ? [0] : props.value}
-        className="relative flex items-center select-none touch-none h-10 pb-5 w-full"
+        className="relative flex items-center select-none touch-none h-4 w-full"
       >
         <SliderPrimitive.Track className=" relative grow h-[4px]">
           <span className="bg-vega-clight-700 dark:bg-vega-cdark-700 absolute left-2 right-2 top-0 bottom-0"></span>

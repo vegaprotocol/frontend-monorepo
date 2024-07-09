@@ -1,12 +1,15 @@
 import * as Schema from '@vegaprotocol/types';
-import { type FormEventHandler } from 'react';
+import { type ButtonHTMLAttributes, type FormEventHandler } from 'react';
 import { memo, useCallback, useEffect, useRef, useMemo } from 'react';
 import { Controller, useController, useForm } from 'react-hook-form';
 import { DealTicketFeeDetails } from './deal-ticket-fee-details';
 import { DealTicketMarginDetails } from './deal-ticket-margin-details';
 import { ExpirySelector } from './expiry-selector';
 import { SideSelector } from './side-selector';
-import { TimeInForceSelector } from './time-in-force-selector';
+import {
+  TimeInForceError,
+  TimeInForceSelector,
+} from './time-in-force-selector';
 import { TypeSelector } from './type-selector';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { type OrderSubmission, type Transaction } from '@vegaprotocol/wallet';
@@ -15,17 +18,16 @@ import {
   mapFormValuesToTakeProfitAndStopLoss,
 } from '../../utils/map-form-values-to-submission';
 import {
-  TradingInput as Input,
   TradingCheckbox as Checkbox,
   TradingFormGroup as FormGroup,
   TradingInputError as InputError,
   Intent,
   Notification,
   Tooltip,
-  TradingButton as Button,
   Pill,
   ExternalLink,
   PercentageSlider as Slider,
+  TicketInput,
 } from '@vegaprotocol/ui-toolkit';
 
 import { useOpenVolume } from '@vegaprotocol/positions';
@@ -42,7 +44,6 @@ import {
   getAsset,
   getBaseAsset,
   getDerivedPrice,
-  getProductType,
   getQuoteAsset,
   getQuoteName,
   isMarketInAuction,
@@ -58,6 +59,7 @@ import { ZeroBalanceError } from '../deal-ticket-validation/zero-balance-error';
 import { NotEnoughError } from '../deal-ticket-validation/not-enough-error';
 import {
   NOTIONAL_SIZE_TOOLTIP_TEXT,
+  REDUCE_ONLY_TOOLTIP,
   SummaryValidationType,
 } from '../../constants';
 import type {
@@ -99,9 +101,7 @@ import {
   AssetSymbol,
   getAssetSymbol,
 } from '@vegaprotocol/assets';
-
-export const REDUCE_ONLY_TOOLTIP =
-  '"Reduce only" will ensure that this order will not increase the size of an open position. When the order is matched, it will only trade enough volume to bring your open volume towards 0 but never change the direction of your position. If applied to a limit order that is not instantly filled, the order will be stopped.';
+import { SubmitButton } from './submit-button';
 
 export interface DealTicketProps {
   scalingFactors?: NonNullable<
@@ -147,13 +147,15 @@ const getDefaultValues = (
     type === Schema.OrderType.TYPE_LIMIT
       ? Schema.OrderTimeInForce.TIME_IN_FORCE_GTC
       : Schema.OrderTimeInForce.TIME_IN_FORCE_IOC,
-  size: '0',
+  size: '',
   notional: '0',
   useNotional: false,
-  price: '0',
+  price: '',
   expiresAt: undefined,
   postOnly: false,
   reduceOnly: false,
+  peakSize: '',
+  minimumVisibleSize: '',
   ...storedValues,
 });
 
@@ -184,8 +186,8 @@ export const DealTicket = ({
   );
   const dealTicketType = storedFormValues?.type ?? DealTicketType.Limit;
   const type = dealTicketTypeToOrderType(dealTicketType);
-  const productType = getProductType(market);
   const isSpotMarket = isSpot(market.tradableInstrument.instrument.product);
+  const isLimitType = type === Schema.OrderType.TYPE_LIMIT;
 
   const {
     control,
@@ -453,9 +455,9 @@ export const DealTicket = ({
   ]);
 
   const nonPersistentOrder = isNonPersistentOrder(timeInForce);
-  const disablePostOnlyCheckbox = nonPersistentOrder;
-  const disableReduceOnlyCheckbox = !nonPersistentOrder;
-  const disableIcebergCheckbox = nonPersistentOrder;
+  const enablePostOnly = !nonPersistentOrder;
+  const enableReduceOnly = nonPersistentOrder;
+  const enableIceberg = !nonPersistentOrder;
   const featureFlags = useFeatureFlags((state) => state.flags);
   const sizeStep = determineSizeStep(market);
   const notionalPrice = !price || price === '0' ? marketPrice : price;
@@ -475,7 +477,7 @@ export const DealTicket = ({
       return;
     }
     if (useNotional && !sliderUsed.current) {
-      let size = '0';
+      let size = '';
       if (notional && notional !== '0') {
         const s = BigNumber(notional).dividedBy(
           toBigNum(notionalPrice, market.decimalPlaces)
@@ -494,7 +496,7 @@ export const DealTicket = ({
     } else {
       const notional =
         !rawSize || rawSize === '0'
-          ? '0'
+          ? ''
           : BigNumber(rawSize)
               .multipliedBy(toBigNum(notionalPrice, market.decimalPlaces))
               .toFixed(Math.max(notionalDecimals, 0));
@@ -579,8 +581,6 @@ export const DealTicket = ({
     },
   });
 
-  const isLimitType = type === Schema.OrderType.TYPE_LIMIT;
-
   const priceStep = determinePriceStep(market);
 
   return (
@@ -593,36 +593,83 @@ export const DealTicket = ({
       noValidate
       data-testid="deal-ticket-form"
     >
-      <TypeSelector
-        value={dealTicketType}
-        onValueChange={(dealTicketType) => {
-          setType(market.id, dealTicketType);
-          if (!isStopOrderType(dealTicketType)) {
-            reset(
-              getDefaultValues(
-                dealTicketTypeToOrderType(dealTicketType),
-                storedFormValues?.[dealTicketType]
-              )
-            );
-          }
-        }}
-        market={market}
-        marketData={marketData}
-        errorMessage={errors.type?.message}
-        showStopOrders={!isSpotMarket}
-      />
-      <Controller
-        name="side"
-        control={control}
-        render={({ field }) => (
-          <SideSelector
-            isSpotMarket={isSpotMarket}
-            value={field.value}
-            onValueChange={field.onChange}
+      <FormGroup label={t('Order side')} labelFor="side" hideLabel compact>
+        <Controller
+          name="side"
+          control={control}
+          render={({ field }) => (
+            <SideSelector
+              isSpotMarket={isSpotMarket}
+              value={field.value}
+              onValueChange={field.onChange}
+            />
+          )}
+        />
+      </FormGroup>
+      <FormGroup label={t('Order type')} labelFor="type" hideLabel>
+        <TypeSelector
+          value={dealTicketType}
+          onValueChange={(dealTicketType) => {
+            setType(market.id, dealTicketType);
+            if (!isStopOrderType(dealTicketType)) {
+              reset(
+                getDefaultValues(
+                  dealTicketTypeToOrderType(dealTicketType),
+                  storedFormValues?.[dealTicketType]
+                )
+              );
+            }
+          }}
+          market={market}
+          marketData={marketData}
+          errorMessage={errors.type?.message}
+        />
+      </FormGroup>
+      {isLimitType && (
+        <FormGroup labelFor="input-price-quote" label={t('Price')} hideLabel>
+          <Controller
+            name="price"
+            control={control}
+            rules={{
+              required: t('You need to provide a price'),
+              min: {
+                value: priceStep,
+                message: t('Price cannot be lower than {{priceStep}}', {
+                  priceStep,
+                }),
+              },
+              validate: validateAmount(priceStep, 'Price'),
+            }}
+            render={({ field, fieldState }) => (
+              <>
+                <TicketInput
+                  label={
+                    <PricePlaceholder
+                      quoteAsset={quoteAsset}
+                      baseAsset={baseAsset}
+                      quoteName={quoteName}
+                      isNotional={useNotional}
+                      isSpotMarket={isSpotMarket}
+                    />
+                  }
+                  step={priceStep}
+                  type="number"
+                  data-testid="order-price"
+                  id="input-price-quote"
+                  onWheel={(e) => e.currentTarget.blur()}
+                  {...field}
+                />
+                {fieldState.error && (
+                  <InputError testId="deal-ticket-error-message-price">
+                    {fieldState.error.message}
+                  </InputError>
+                )}
+              </>
+            )}
           />
-        )}
-      />
-      <div className={isLimitType ? 'mb-4' : 'mb-2'}>
+        </FormGroup>
+      )}
+      <div className="mb-4">
         {useNotional && (
           <Controller
             key="notional"
@@ -633,33 +680,33 @@ export const DealTicket = ({
                 label={t('Notional')}
                 labelFor="order-notional"
                 compact
+                hideLabel
               >
-                <Input
-                  id="order-notional"
-                  className="w-full"
+                <TicketInput
+                  label={
+                    <NotionalPlaceholder
+                      quoteAsset={quoteAsset}
+                      isSpotMarket={isSpotMarket}
+                    />
+                  }
                   type="number"
+                  data-testid="order-notional"
+                  id="order-notional"
+                  onWheel={(e) => e.currentTarget.blur()}
+                  min={notionalStep}
+                  step={notionalStep}
                   appendElement={
                     quoteName && (
-                      <button
+                      <SizeSwapper
                         data-testid="useSize"
-                        type="button"
-                        onClick={() => setValue('useNotional', false)}
-                      >
-                        <Pill size="xs">
-                          {isSpotMarket ? (
-                            <AssetSymbol asset={quoteAsset} />
-                          ) : (
-                            quoteAsset.symbol
-                          )}{' '}
-                          <VegaIcon name={VegaIconNames.TRANSFER} size={16} />
-                        </Pill>
-                      </button>
+                        // prevent focus causing label movement
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={() => {
+                          setValue('useNotional', false);
+                        }}
+                      />
                     )
                   }
-                  step={notionalStep}
-                  min={notionalStep}
-                  data-testid="order-notional"
-                  onWheel={(e) => e.currentTarget.blur()}
                   {...field}
                 />
               </FormGroup>
@@ -684,33 +731,38 @@ export const DealTicket = ({
           render={({ field, fieldState }) => (
             <>
               {!useNotional && (
-                <FormGroup label={t('Size')} labelFor="order-size" compact>
-                  <Input
-                    id="order-size"
-                    className="w-full"
+                <FormGroup
+                  label={t('Size')}
+                  labelFor="order-size"
+                  compact
+                  hideLabel
+                >
+                  <TicketInput
+                    label={
+                      <SizePlaceholder
+                        baseQuote={baseQuote}
+                        baseAsset={baseAsset}
+                      />
+                    }
+                    min={sizeStep}
+                    step={sizeStep}
                     type="number"
+                    data-testid="order-size"
+                    id="order-size"
+                    onWheel={(e) => e.currentTarget.blur()}
                     appendElement={
                       baseQuote && (
-                        <button
+                        <SizeSwapper
                           data-testid="useNotional"
                           type="button"
-                          onClick={() => setValue('useNotional', true)}
-                        >
-                          <Pill size="xs">
-                            {baseAsset ? (
-                              <AssetSymbol asset={baseAsset} />
-                            ) : (
-                              baseQuote
-                            )}{' '}
-                            <VegaIcon name={VegaIconNames.TRANSFER} size={16} />
-                          </Pill>
-                        </button>
+                          // prevent focus causing label movement
+                          onMouseDown={(e) => e.preventDefault()}
+                          onClick={() => {
+                            setValue('useNotional', true);
+                          }}
+                        />
                       )
                     }
-                    step={sizeStep}
-                    min={sizeStep}
-                    data-testid="order-size"
-                    onWheel={(e) => e.currentTarget.blur()}
                     {...field}
                   />
                 </FormGroup>
@@ -734,56 +786,250 @@ export const DealTicket = ({
           )}
         />
       </div>
-      {isLimitType && (
-        <Controller
-          name="price"
-          control={control}
-          rules={{
-            required: t('You need to provide a price'),
-            min: {
-              value: priceStep,
-              message: t('Price cannot be lower than {{priceStep}}', {
-                priceStep,
-              }),
-            },
-            validate: validateAmount(priceStep, 'Price'),
-          }}
-          render={({ field, fieldState }) => (
-            <div className="mb-2">
-              <FormGroup
-                labelFor="input-price-quote"
-                label={t('Price')}
-                compact
-              >
-                <Input
-                  id="input-price-quote"
-                  appendElement={
-                    <PricePill
-                      quoteAsset={quoteAsset}
-                      baseAsset={baseAsset}
-                      quoteName={quoteName}
-                      isNotional={useNotional}
-                      isSpotMarket={isSpotMarket}
-                    />
+      <div className="flex gap-2 mb-4">
+        <div className="flex-1 flex flex-col items-start gap-1.5">
+          {featureFlags.TAKE_PROFIT_STOP_LOSS && (
+            <Controller
+              name="tpSl"
+              control={control}
+              render={({ field }) => (
+                <Tooltip
+                  description={
+                    <p>{t('TP_SL_TOOLTIP', 'Take profit / Stop loss')}</p>
                   }
-                  className="w-full"
-                  type="number"
-                  step={priceStep}
-                  data-testid="order-price"
-                  onWheel={(e) => e.currentTarget.blur()}
-                  {...field}
+                  underline
+                >
+                  <div>
+                    <Checkbox
+                      name="tpSl"
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                      disabled={false}
+                      label={t('TP / SL')}
+                    />
+                  </div>
+                </Tooltip>
+              )}
+            />
+          )}
+          {enablePostOnly && (
+            <Controller
+              name="postOnly"
+              control={control}
+              render={({ field }) => (
+                <Tooltip
+                  description={
+                    <>
+                      <span>
+                        {t(
+                          '"Post only" will ensure the order is not filled immediately but is placed on the order book as a passive order. When the order is processed it is either stopped (if it would not be filled immediately), or placed in the order book as a passive order until the price taker matches with it.'
+                        )}
+                      </span>{' '}
+                      <ExternalLink href={DocsLinks?.POST_REDUCE_ONLY}>
+                        {t('Find out more')}
+                      </ExternalLink>
+                    </>
+                  }
+                  underline
+                >
+                  <div>
+                    <Checkbox
+                      name="post-only"
+                      checked={field.value}
+                      onCheckedChange={(postOnly) => {
+                        field.onChange(postOnly);
+                        setValue('reduceOnly', false);
+                      }}
+                      label={t('Post only')}
+                    />
+                  </div>
+                </Tooltip>
+              )}
+            />
+          )}
+          {enableReduceOnly && (
+            <Controller
+              name="reduceOnly"
+              control={control}
+              render={({ field }) => (
+                <Tooltip
+                  description={
+                    <>
+                      <span>{t(REDUCE_ONLY_TOOLTIP)}</span>{' '}
+                      <ExternalLink href={DocsLinks?.POST_REDUCE_ONLY}>
+                        {t('Find out more')}
+                      </ExternalLink>
+                    </>
+                  }
+                  underline
+                >
+                  <div>
+                    <Checkbox
+                      name="reduce-only"
+                      checked={field.value}
+                      onCheckedChange={(reduceOnly) => {
+                        field.onChange(reduceOnly);
+                        setValue('postOnly', false);
+                      }}
+                      label={t('Reduce only')}
+                    />
+                  </div>
+                </Tooltip>
+              )}
+            />
+          )}
+          {enableIceberg && (
+            <Controller
+              name="iceberg"
+              control={control}
+              render={({ field }) => (
+                <Tooltip
+                  description={
+                    <p>
+                      {t(
+                        'ICEBERG_TOOLTIP',
+                        'Trade only a fraction of the order size at once. After the peak size of the order has traded, the size is reset. This is repeated until the order is cancelled, expires, or its full volume trades away. For example, an iceberg order with a size of 1000 and a peak size of 100 will effectively be split into 10 orders with a size of 100 each. Note that the full volume of the order is not hidden and is still reflected in the order book.'
+                      )}{' '}
+                      <ExternalLink href={DocsLinks?.ICEBERG_ORDERS}>
+                        {t('Find out more')}
+                      </ExternalLink>{' '}
+                    </p>
+                  }
+                  underline
+                >
+                  <div>
+                    <Checkbox
+                      name="iceberg"
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                      label={t('Iceberg')}
+                    />
+                  </div>
+                </Tooltip>
+              )}
+            />
+          )}
+        </div>
+        <div className="flex-1">
+          <Controller
+            name="timeInForce"
+            control={control}
+            rules={{
+              validate: validateTimeInForce(
+                marketData.marketTradingMode,
+                marketData.trigger
+              ),
+            }}
+            render={({ field }) => (
+              <TimeInForceSelector
+                value={field.value}
+                orderType={type}
+                onSelect={(value: Schema.OrderTimeInForce) => {
+                  // If GTT is selected and no expiresAt time is set, or its
+                  // behind current time then reset the value to current time
+                  const now = Date.now();
+                  if (
+                    value === Schema.OrderTimeInForce.TIME_IN_FORCE_GTT &&
+                    (!expiresAt || new Date(expiresAt).getTime() < now)
+                  ) {
+                    setValue('expiresAt', formatForInput(new Date(now)), {
+                      shouldValidate: true,
+                    });
+                  }
+
+                  // iceberg orders must be persistent orders, so if user
+                  // switches to a non persistent tif value, remove iceberg selection
+                  if (iceberg && isNonPersistentOrder(value)) {
+                    setValue('iceberg', false);
+                  }
+                  field.onChange(value);
+                }}
+              />
+            )}
+          />
+        </div>
+      </div>
+
+      <TimeInForceError
+        market={market}
+        marketData={marketData}
+        errorMessage={errors.timeInForce?.message}
+      />
+
+      {isLimitType &&
+        timeInForce === Schema.OrderTimeInForce.TIME_IN_FORCE_GTT && (
+          <Controller
+            name="expiresAt"
+            control={control}
+            rules={{
+              required: t('You need to provide a expiry time/date'),
+              validate: validateExpiration(
+                t(
+                  'The expiry date that you have entered appears to be in the past'
+                )
+              ),
+            }}
+            render={({ field }) => (
+              <FormGroup label={t('Expiry time/date')} labelFor="expiresAt">
+                <ExpirySelector
+                  value={field.value}
+                  onSelect={(expiresAt) => field.onChange(expiresAt)}
+                  errorMessage={errors.expiresAt?.message}
                 />
               </FormGroup>
-              {fieldState.error && (
-                <InputError testId="deal-ticket-error-message-price">
-                  {fieldState.error.message}
-                </InputError>
-              )}
-            </div>
-          )}
+            )}
+          />
+        )}
+
+      {featureFlags.TAKE_PROFIT_STOP_LOSS && tpSl && (
+        <DealTicketPriceTakeProfitStopLoss
+          market={market}
+          takeProfitError={errors.takeProfit?.message}
+          stopLossError={errors.stopLoss?.message}
+          control={control}
+          quoteName={quoteName}
         />
       )}
-      <div className="mb-4 flex w-full flex-col gap-2">
+
+      {isLimitType && iceberg && (
+        <DealTicketSizeIceberg
+          market={market}
+          peakSizeError={errors.peakSize?.message}
+          minimumVisibleSizeError={errors.minimumVisibleSize?.message}
+          control={control}
+          size={rawSize}
+          peakSize={peakSize}
+        />
+      )}
+
+      <SummaryMessage
+        error={summaryError}
+        asset={(useBaseAsset && baseAsset) || asset}
+        baseAsset={baseAsset}
+        marketTradingMode={marketData.marketTradingMode}
+        balance={useBaseAsset ? baseAssetAccountBalance : generalAccountBalance}
+        isSpotMarket={isSpotMarket}
+        margin={
+          positionEstimate?.estimatePosition?.collateralIncreaseEstimate
+            .bestCase || '0'
+        }
+        isReadOnly={isReadOnly}
+        pubKey={pubKey}
+        onDeposit={onDeposit}
+        type={type}
+      />
+      <PlaceOrderButton
+        isSpotMarket={isSpotMarket}
+        type={type}
+        side={side}
+        baseQuote={baseQuote}
+        quoteName={quoteName}
+        market={market}
+        normalizedOrder={normalizedOrder}
+        baseAsset={baseAsset}
+        quoteAsset={quoteAsset}
+      />
+      <div className="mt-2 mb-1 flex w-full flex-col gap-1">
         {useNotional ? (
           <KeyValue
             label={t('Size')}
@@ -825,255 +1071,6 @@ export const DealTicket = ({
           marketIsInAuction={marketIsInAuction}
         />
       </div>
-      <Controller
-        name="timeInForce"
-        control={control}
-        rules={{
-          validate: validateTimeInForce(
-            marketData.marketTradingMode,
-            marketData.trigger
-          ),
-        }}
-        render={({ field }) => (
-          <TimeInForceSelector
-            value={field.value}
-            orderType={type}
-            onSelect={(value: Schema.OrderTimeInForce) => {
-              // If GTT is selected and no expiresAt time is set, or its
-              // behind current time then reset the value to current time
-              const now = Date.now();
-              if (
-                value === Schema.OrderTimeInForce.TIME_IN_FORCE_GTT &&
-                (!expiresAt || new Date(expiresAt).getTime() < now)
-              ) {
-                setValue('expiresAt', formatForInput(new Date(now)), {
-                  shouldValidate: true,
-                });
-              }
-
-              // iceberg orders must be persistent orders, so if user
-              // switches to a non persistent tif value, remove iceberg selection
-              if (iceberg && isNonPersistentOrder(value)) {
-                setValue('iceberg', false);
-              }
-              field.onChange(value);
-            }}
-            market={market}
-            marketData={marketData}
-            errorMessage={errors.timeInForce?.message}
-          />
-        )}
-      />
-      {isLimitType &&
-        timeInForce === Schema.OrderTimeInForce.TIME_IN_FORCE_GTT && (
-          <Controller
-            name="expiresAt"
-            control={control}
-            rules={{
-              required: t('You need to provide a expiry time/date'),
-              validate: validateExpiration(
-                t(
-                  'The expiry date that you have entered appears to be in the past'
-                )
-              ),
-            }}
-            render={({ field }) => (
-              <ExpirySelector
-                value={field.value}
-                onSelect={(expiresAt) => field.onChange(expiresAt)}
-                errorMessage={errors.expiresAt?.message}
-              />
-            )}
-          />
-        )}
-
-      <div className="flex justify-between gap-2 mb-4">
-        <div className="flex flex-col gap-2">
-          {featureFlags.TAKE_PROFIT_STOP_LOSS && (
-            <Controller
-              name="tpSl"
-              control={control}
-              render={({ field }) => (
-                <Tooltip
-                  description={
-                    <p>{t('TP_SL_TOOLTIP', 'Take profit / Stop loss')}</p>
-                  }
-                >
-                  <div>
-                    <Checkbox
-                      name="tpSl"
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                      disabled={false}
-                      label={t('TP / SL')}
-                    />
-                  </div>
-                </Tooltip>
-              )}
-            />
-          )}
-
-          {isLimitType && (
-            <Controller
-              name="iceberg"
-              control={control}
-              render={({ field }) => (
-                <Tooltip
-                  description={
-                    <p>
-                      {t(
-                        'ICEBERG_TOOLTIP',
-                        'Trade only a fraction of the order size at once. After the peak size of the order has traded, the size is reset. This is repeated until the order is cancelled, expires, or its full volume trades away. For example, an iceberg order with a size of 1000 and a peak size of 100 will effectively be split into 10 orders with a size of 100 each. Note that the full volume of the order is not hidden and is still reflected in the order book.'
-                      )}{' '}
-                      <ExternalLink href={DocsLinks?.ICEBERG_ORDERS}>
-                        {t('Find out more')}
-                      </ExternalLink>{' '}
-                    </p>
-                  }
-                >
-                  <div>
-                    <Checkbox
-                      name="iceberg"
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                      disabled={disableIcebergCheckbox}
-                      label={t('Iceberg')}
-                    />
-                  </div>
-                </Tooltip>
-              )}
-            />
-          )}
-        </div>
-
-        <div className="flex flex-col gap-2">
-          {productType !== 'Spot' && (
-            <Controller
-              name="reduceOnly"
-              control={control}
-              render={({ field }) => (
-                <Tooltip
-                  description={
-                    <>
-                      <span>
-                        {disableReduceOnlyCheckbox
-                          ? t(
-                              '"Reduce only" can be used only with non-persistent orders, such as "Fill or Kill" or "Immediate or Cancel".'
-                            )
-                          : t(REDUCE_ONLY_TOOLTIP)}
-                      </span>{' '}
-                      <ExternalLink href={DocsLinks?.POST_REDUCE_ONLY}>
-                        {t('Find out more')}
-                      </ExternalLink>
-                    </>
-                  }
-                >
-                  <div>
-                    <Checkbox
-                      name="reduce-only"
-                      checked={!disableReduceOnlyCheckbox && field.value}
-                      disabled={disableReduceOnlyCheckbox}
-                      onCheckedChange={(reduceOnly) => {
-                        field.onChange(reduceOnly);
-                        setValue('postOnly', false);
-                      }}
-                      label={t('Reduce only')}
-                    />
-                  </div>
-                </Tooltip>
-              )}
-            />
-          )}
-          {isLimitType && (
-            <Controller
-              name="postOnly"
-              control={control}
-              render={({ field }) => (
-                <Tooltip
-                  description={
-                    <>
-                      <span>
-                        {disablePostOnlyCheckbox
-                          ? t(
-                              '"Post only" can not be used on "Fill or Kill" or "Immediate or Cancel" orders.'
-                            )
-                          : t(
-                              '"Post only" will ensure the order is not filled immediately but is placed on the order book as a passive order. When the order is processed it is either stopped (if it would not be filled immediately), or placed in the order book as a passive order until the price taker matches with it.'
-                            )}
-                      </span>{' '}
-                      <ExternalLink href={DocsLinks?.POST_REDUCE_ONLY}>
-                        {t('Find out more')}
-                      </ExternalLink>
-                    </>
-                  }
-                >
-                  <div>
-                    <Checkbox
-                      name="post-only"
-                      checked={!disablePostOnlyCheckbox && field.value}
-                      disabled={disablePostOnlyCheckbox}
-                      onCheckedChange={(postOnly) => {
-                        field.onChange(postOnly);
-                        setValue('reduceOnly', false);
-                      }}
-                      label={t('Post only')}
-                    />
-                  </div>
-                </Tooltip>
-              )}
-            />
-          )}
-        </div>
-      </div>
-
-      {isLimitType && iceberg && (
-        <DealTicketSizeIceberg
-          market={market}
-          peakSizeError={errors.peakSize?.message}
-          minimumVisibleSizeError={errors.minimumVisibleSize?.message}
-          control={control}
-          size={rawSize}
-          peakSize={peakSize}
-        />
-      )}
-
-      {featureFlags.TAKE_PROFIT_STOP_LOSS && tpSl && (
-        <DealTicketPriceTakeProfitStopLoss
-          market={market}
-          takeProfitError={errors.takeProfit?.message}
-          stopLossError={errors.stopLoss?.message}
-          control={control}
-          quoteName={quoteName}
-        />
-      )}
-
-      <SummaryMessage
-        error={summaryError}
-        asset={(useBaseAsset && baseAsset) || asset}
-        baseAsset={baseAsset}
-        marketTradingMode={marketData.marketTradingMode}
-        balance={useBaseAsset ? baseAssetAccountBalance : generalAccountBalance}
-        isSpotMarket={isSpotMarket}
-        margin={
-          positionEstimate?.estimatePosition?.collateralIncreaseEstimate
-            .bestCase || '0'
-        }
-        isReadOnly={isReadOnly}
-        pubKey={pubKey}
-        onDeposit={onDeposit}
-        type={type}
-      />
-      <PlaceOrderButton
-        isSpotMarket={isSpotMarket}
-        type={type}
-        side={side}
-        baseQuote={baseQuote}
-        quoteName={quoteName}
-        market={market}
-        normalizedOrder={normalizedOrder}
-        baseAsset={baseAsset}
-        quoteAsset={quoteAsset}
-      />
       <DealTicketMarginDetails
         side={normalizedOrder.side}
         asset={asset}
@@ -1253,7 +1250,7 @@ const SummaryMessage = memo(
   }
 );
 
-const PricePill = ({
+const PricePlaceholder = ({
   quoteAsset,
   baseAsset,
   quoteName,
@@ -1266,23 +1263,98 @@ const PricePill = ({
   isNotional?: boolean;
   isSpotMarket: boolean;
 }) => {
+  const t = useT();
+
   if (isSpotMarket) {
     if (isNotional) {
       return (
-        <Pill size="xs">
+        <>
+          <span className="text-vega-clight-50 dark:text-vega-cdark-50">
+            {t('Price')}
+          </span>{' '}
           <AssetSymbol asset={baseAsset} />
-        </Pill>
+        </>
       );
     } else {
       return (
-        <Pill size="xs">
+        <>
+          <span className="text-vega-clight-50 dark:text-vega-cdark-50">
+            {t('Price')}
+          </span>{' '}
           <AssetSymbol asset={quoteAsset} />
-        </Pill>
+        </>
       );
     }
   }
 
-  return <Pill size="xs">{quoteName}</Pill>;
+  return (
+    <>
+      <span className="text-vega-clight-50 dark:text-vega-cdark-50">
+        {t('Price')}
+      </span>{' '}
+      {quoteName}
+    </>
+  );
+};
+
+const NotionalPlaceholder = ({
+  quoteAsset,
+  isSpotMarket,
+}: {
+  quoteAsset: AssetFieldsFragment;
+  isSpotMarket: boolean;
+}) => {
+  const t = useT();
+
+  if (isSpotMarket) {
+    return (
+      <>
+        <span className="text-vega-clight-50 dark:text-vega-cdark-50">
+          {t('Notional')}
+        </span>{' '}
+        <AssetSymbol asset={quoteAsset} />
+      </>
+    );
+  }
+
+  return (
+    <>
+      <span className="text-vega-clight-50 dark:text-vega-cdark-50">
+        {t('Notional')}
+      </span>{' '}
+      {quoteAsset.symbol}
+    </>
+  );
+};
+
+const SizePlaceholder = ({
+  baseQuote,
+  baseAsset,
+}: {
+  baseQuote: string | undefined;
+  baseAsset: AssetFieldsFragment | undefined;
+}) => {
+  const t = useT();
+
+  if (baseAsset) {
+    return (
+      <>
+        <span className="text-vega-clight-50 dark:text-vega-cdark-50">
+          {t('Size')}
+        </span>{' '}
+        <AssetSymbol asset={baseAsset} />
+      </>
+    );
+  }
+
+  return (
+    <>
+      <span className="text-vega-clight-50 dark:text-vega-cdark-50">
+        {t('Size')}
+      </span>{' '}
+      {baseQuote}
+    </>
+  );
 };
 
 const PlaceOrderButton = ({
@@ -1331,15 +1403,15 @@ const PlaceOrderButton = ({
 
   const subLabel = `${baseText} @ ${quoteText}`;
 
+  return <SubmitButton text={text} subLabel={subLabel} side={side} />;
+};
+
+const SizeSwapper = (props: ButtonHTMLAttributes<HTMLButtonElement>) => {
   return (
-    <Button
-      data-testid="place-order"
-      type="submit"
-      className="w-full"
-      intent={side === Schema.Side.SIDE_BUY ? Intent.Success : Intent.Danger}
-      subLabel={subLabel}
-    >
-      {text}
-    </Button>
+    <button type="button" {...props}>
+      <Pill className="flex items-center" size="lg">
+        <VegaIcon name={VegaIconNames.TRANSFER} size={18} />
+      </Pill>
+    </button>
   );
 };

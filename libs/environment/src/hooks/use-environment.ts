@@ -40,7 +40,7 @@ type Actions = {
 export type Env = Environment & EnvState;
 export type EnvStore = Env & Actions;
 
-const VERSION = 1;
+const VERSION = 2;
 export const STORAGE_KEY = `vega_url_${VERSION}`;
 
 const QUERY_TIMEOUT = 3000;
@@ -224,8 +224,15 @@ const compileEnvVars = () => {
     process.env['NX_VEGA_ENV']
   ) as Networks;
 
+  let vegaUrl = LocalStorage.getItem(STORAGE_KEY);
+
+  if (!isValidUrl(vegaUrl)) {
+    vegaUrl = windowOrDefault('VEGA_URL', process.env['NX_VEGA_URL']) as string;
+    LocalStorage.removeItem(STORAGE_KEY);
+  }
+
   const env: Environment = {
-    VEGA_URL: windowOrDefault('VEGA_URL', process.env['NX_VEGA_URL']),
+    VEGA_URL: vegaUrl,
     VEGA_ENV,
     VEGA_CONFIG_URL: windowOrDefault(
       'VEGA_CONFIG_URL',
@@ -661,19 +668,18 @@ export const useEnvironment = create<EnvStore>()((set, get) => ({
 
     const state = get();
 
-    let storedUrl = LocalStorage.getItem(STORAGE_KEY);
-    if (!isValidUrl(storedUrl)) {
-      // remove invalid data from local storage
-      LocalStorage.removeItem(STORAGE_KEY);
-      storedUrl = null;
+    // Set the node url if available, but then continue with
+    // getting node config
+    if (state.VEGA_URL && isValidUrl(state.VEGA_URL)) {
+      state.setUrl(state.VEGA_URL);
     }
 
-    let nodes: string[] | undefined;
+    // Start fetching nodes in the background
+    let nodes: string[] = [];
+
     try {
       nodes = uniq(
         compact([
-          // url from local storage
-          storedUrl,
           // url from state (if set via env var)
           state.VEGA_URL,
           // urls from network configuration
@@ -685,15 +691,14 @@ export const useEnvironment = create<EnvStore>()((set, get) => ({
       console.warn(`Could not fetch node config from ${state.VEGA_CONFIG_URL}`);
     }
 
-    // skip picking up the best node if VEGA_URL env variable is set
-    if (state.VEGA_URL && isValidUrl(state.VEGA_URL)) {
-      state.setUrl(state.VEGA_URL);
+    // We have a node and nodes have been fetched for the network switcher
+    if (state.VEGA_URL) {
       return;
     }
 
     // No url found in env vars or localStorage, AND no nodes were found in
     // the config fetched from VEGA_CONFIG_URL, app initialization has failed
-    if (!nodes || !nodes.length) {
+    if (!nodes.length) {
       set({
         status: 'failed',
         error: `Failed to fetch node config from ${state.VEGA_CONFIG_URL}`,
@@ -701,30 +706,15 @@ export const useEnvironment = create<EnvStore>()((set, get) => ({
       return;
     }
 
+    // Not node set yet, determine the healthiest node
     const healthyNodes = await findHealthyNodes(nodes);
-
-    // A requested node is a node to which the app was previously connected
-    // or the one set via env variable.
-    const requestedNodeUrl = storedUrl || state.VEGA_URL;
-
     const bestNode = first(healthyNodes);
-    const requestedNode = healthyNodes.find(
-      (n) => requestedNodeUrl && n.url === requestedNodeUrl
-    );
-    if (!requestedNode) {
-      // remove unhealthy node url from local storage
-      LocalStorage.removeItem(STORAGE_KEY);
-    }
-    // A node's url (VEGA_URL) is either the requested node (previously
-    // connected or taken form env variable) or the currently best available
-    // node.
-    const url = requestedNode?.url || bestNode?.url;
-
-    if (url != null) {
-      state.setUrl(url);
+    if (bestNode) {
+      state.setUrl(bestNode.url);
       return;
     }
 
+    // Could not find a health node, all failed
     set({
       status: 'failed',
       error: 'No suitable node found',

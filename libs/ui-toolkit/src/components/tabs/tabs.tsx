@@ -50,10 +50,7 @@ export const Tabs = ({
       }}
       className="h-full grid grid-rows-[min-content_1fr] relative"
     >
-      <div
-        ref={wrapperRef}
-        className="flex flex-wrap justify-between border-b border-default min-w-0"
-      >
+      <div ref={wrapperRef} className="flex flex-wrap justify-between min-w-0">
         <TabsPrimitive.List
           className="flex flex-nowrap overflow-visible"
           role="tablist"
@@ -63,19 +60,14 @@ export const Tabs = ({
             if (!isValidElement(child) || child.props.hidden) return null;
             const isActive = child.props.id === (value || activeTab);
             const triggerClass = classNames(
-              'relative text-xs py-2 px-3 border-l border-r first:border-l-0',
+              'relative text-xs py-2 px-3',
               {
-                'cursor-default border-default bg-vega-clight-700 dark:bg-vega-cdark-700':
+                'cursor-default bg-vega-clight-700 dark:bg-vega-cdark-700':
                   isActive,
                 'text-default': isActive,
-                'text-muted border-transparent': !isActive,
+                'text-muted': !isActive,
               },
               'flex items-center gap-2'
-            );
-            const borderClass = classNames(
-              'absolute bottom-[-1px] left-0 w-full h-0 border-b',
-              'border-vega-clight-700 dark:border-vega-cdark-700',
-              { hidden: !isActive }
             );
             return (
               <TabsPrimitive.Trigger
@@ -85,7 +77,6 @@ export const Tabs = ({
               >
                 {child.props.indicator}
                 {child.props.name}
-                <span className={borderClass} />
               </TabsPrimitive.Trigger>
             );
           })}

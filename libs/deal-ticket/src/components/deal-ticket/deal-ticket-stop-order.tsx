@@ -20,20 +20,18 @@ import {
 import { useForm, Controller, useController } from 'react-hook-form';
 import * as Schema from '@vegaprotocol/types';
 import {
-  TradingRadio as Radio,
-  TradingRadioGroup as RadioGroup,
-  TradingInput as Input,
   TradingCheckbox as Checkbox,
   TradingFormGroup as FormGroup,
   TradingInputError as InputError,
-  TradingSelect as Select,
   Tooltip,
-  TradingButton as Button,
-  Pill,
   Intent,
   Notification,
   ExternalLink,
   PercentageSlider as Slider,
+  MiniSelect,
+  MiniSelectOption,
+  TradingFormGroup,
+  TicketInput,
 } from '@vegaprotocol/ui-toolkit';
 import {
   getAsset,
@@ -47,7 +45,6 @@ import { ExpirySelector } from './expiry-selector';
 import { SideSelector } from './side-selector';
 import {
   NoWalletWarning,
-  REDUCE_ONLY_TOOLTIP,
   stopSubmit,
   getNotionalSize,
   getBaseQuoteUnit,
@@ -63,7 +60,10 @@ import {
 import { mapFormValuesToStopOrdersSubmission } from '../../utils/map-form-values-to-submission';
 import { DealTicketFeeDetails } from './deal-ticket-fee-details';
 import { validateExpiration } from '../../utils';
-import { NOTIONAL_SIZE_TOOLTIP_TEXT } from '../../constants';
+import {
+  NOTIONAL_SIZE_TOOLTIP_TEXT,
+  REDUCE_ONLY_TOOLTIP,
+} from '../../constants';
 import { KeyValue } from './key-value';
 import { useActiveOrders, useActiveStopOrders } from '@vegaprotocol/orders';
 import { useT } from '../../use-t';
@@ -75,6 +75,7 @@ import { isNonPersistentOrder } from '../../utils/time-in-force-persistence';
 import { useAccountBalance } from '@vegaprotocol/accounts';
 import { ZeroBalanceError } from '../deal-ticket-validation/zero-balance-error';
 import { MarginWarning } from '../deal-ticket-validation';
+import { SubmitButton } from './submit-button';
 
 export interface StopOrderProps {
   market: Market;
@@ -140,46 +141,85 @@ const Trigger = ({
   const triggerDirection = watch('triggerDirection');
   const isPriceTrigger = triggerType === 'price';
   return (
-    <FormGroup label={t('Trigger')} labelFor="">
-      <Controller
-        name="triggerDirection"
-        control={control}
-        render={({ field }) => {
-          const { value, onChange } = field;
-          return (
-            <RadioGroup
-              name="triggerDirection"
-              onChange={onChange}
-              value={value}
-              orientation="horizontal"
-              className="mb-2"
-            >
-              <Radio
-                value={
-                  oco
-                    ? Schema.StopOrderTriggerDirection
-                        .TRIGGER_DIRECTION_FALLS_BELOW
-                    : Schema.StopOrderTriggerDirection
-                        .TRIGGER_DIRECTION_RISES_ABOVE
+    <FormGroup label={t('Trigger')} labelFor="triggerDirection" hideLabel>
+      <div className="flex gap-4 justify-end mb-2">
+        <Controller
+          name="triggerDirection"
+          control={control}
+          render={({ field }) => {
+            const { value, onChange } = field;
+            return (
+              <MiniSelect
+                value={value}
+                onValueChange={onChange}
+                placeholder={t('Select')}
+                data-testid={
+                  oco ? 'trigger-direction-oco' : 'trigger-direction'
                 }
-                id={`triggerDirection-risesAbove${oco ? '-oco' : ''}`}
-                label={'Rises above'}
-              />
-              <Radio
-                value={
-                  !oco
-                    ? Schema.StopOrderTriggerDirection
-                        .TRIGGER_DIRECTION_FALLS_BELOW
-                    : Schema.StopOrderTriggerDirection
-                        .TRIGGER_DIRECTION_RISES_ABOVE
-                }
-                id={`triggerDirection-fallsBelow${oco ? '-oco' : ''}`}
-                label={'Falls below'}
-              />
-            </RadioGroup>
-          );
-        }}
-      />
+              >
+                <MiniSelectOption
+                  value={
+                    oco
+                      ? Schema.StopOrderTriggerDirection
+                          .TRIGGER_DIRECTION_FALLS_BELOW
+                      : Schema.StopOrderTriggerDirection
+                          .TRIGGER_DIRECTION_RISES_ABOVE
+                  }
+                  id={`triggerDirection-risesAbove${oco ? '-oco' : ''}`}
+                >
+                  {t('Rises above')}
+                </MiniSelectOption>
+                <MiniSelectOption
+                  value={
+                    !oco
+                      ? Schema.StopOrderTriggerDirection
+                          .TRIGGER_DIRECTION_FALLS_BELOW
+                      : Schema.StopOrderTriggerDirection
+                          .TRIGGER_DIRECTION_RISES_ABOVE
+                  }
+                  id={`triggerDirection-fallsBelow${oco ? '-oco' : ''}`}
+                >
+                  {t('Falls below')}
+                </MiniSelectOption>
+              </MiniSelect>
+            );
+          }}
+        />
+        <Controller
+          name={oco ? 'ocoTriggerType' : 'triggerType'}
+          control={control}
+          rules={{
+            deps: oco
+              ? ['ocoTriggerTrailingPercentOffset', 'ocoTriggerPrice']
+              : ['triggerTrailingPercentOffset', 'triggerPrice'],
+          }}
+          render={({ field }) => {
+            const { onChange, value } = field;
+
+            return (
+              <MiniSelect
+                value={value}
+                onValueChange={onChange}
+                placeholder={t('Select')}
+                data-testid={oco ? 'trigger-type-oco' : 'trigger-type'}
+              >
+                <MiniSelectOption
+                  value="price"
+                  id={`triggerType-price${oco ? '-oco' : ''}`}
+                >
+                  {t('Price')}
+                </MiniSelectOption>
+                <MiniSelectOption
+                  value="trailingPercentOffset"
+                  id={`triggerType-trailingPercentOffset${oco ? '-oco' : ''}`}
+                >
+                  {t('Trailing Percent Offset')}
+                </MiniSelectOption>
+              </MiniSelect>
+            );
+          }}
+        />
+      </div>
       {isPriceTrigger && (
         <div className="mb-2">
           <Controller
@@ -224,14 +264,20 @@ const Trigger = ({
               return (
                 <>
                   <div className="mb-2">
-                    <Input
-                      data-testid={`triggerPrice${oco ? '-oco' : ''}`}
-                      type="number"
+                    <TicketInput
+                      label={
+                        <span className="text-default">
+                          {t('Trigger')}{' '}
+                          <span className="text-muted">{quoteName}</span>
+                        </span>
+                      }
                       step={priceStep}
-                      appendElement={<Pill size="xs">{quoteName}</Pill>}
-                      value={value || ''}
-                      hasError={!!fieldState.error}
+                      type="number"
+                      data-testid={`triggerPrice${oco ? '-oco' : ''}`}
+                      id="input-price-quote"
+                      onWheel={(e) => e.currentTarget.blur()}
                       {...props}
+                      value={value || ''}
                     />
                   </div>
                   {fieldState.error && (
@@ -293,16 +339,21 @@ const Trigger = ({
               return (
                 <>
                   <div className="mb-2">
-                    <Input
-                      type="number"
+                    <TicketInput
+                      label={
+                        <span className="text-default">
+                          {t('Trigger')} <span className="text-muted">%</span>
+                        </span>
+                      }
                       step={trailingPercentOffsetStep}
-                      appendElement={<Pill size="xs">%</Pill>}
+                      type="number"
                       data-testid={`triggerTrailingPercentOffset${
                         oco ? '-oco' : ''
                       }`}
-                      value={value || ''}
-                      hasError={!!fieldState.error}
+                      id="input-price-quote"
+                      onWheel={(e) => e.currentTarget.blur()}
                       {...props}
+                      value={value || ''}
                     />
                   </div>
                   {fieldState.error && (
@@ -320,36 +371,6 @@ const Trigger = ({
           />
         </div>
       )}
-      <Controller
-        name={oco ? 'ocoTriggerType' : 'triggerType'}
-        control={control}
-        rules={{
-          deps: oco
-            ? ['ocoTriggerTrailingPercentOffset', 'ocoTriggerPrice']
-            : ['triggerTrailingPercentOffset', 'triggerPrice'],
-        }}
-        render={({ field }) => {
-          const { onChange, value } = field;
-          return (
-            <RadioGroup
-              onChange={onChange}
-              value={value}
-              orientation="horizontal"
-            >
-              <Radio
-                value="price"
-                id={`triggerType-price${oco ? '-oco' : ''}`}
-                label={'Price'}
-              />
-              <Radio
-                value="trailingPercentOffset"
-                id={`triggerType-trailingPercentOffset${oco ? '-oco' : ''}`}
-                label={'Trailing Percent Offset'}
-              />
-            </RadioGroup>
-          );
-        }}
-      />
     </FormGroup>
   );
 };
@@ -386,19 +407,21 @@ const Size = ({
         const id = `order-size${oco ? '-oco' : ''}`;
         return (
           <div className={isLimitType ? 'mb-4' : 'mb-2'}>
-            <FormGroup labelFor={id} label={t(`Size`)} compact>
-              <Input
+            <FormGroup labelFor={id} label={t(`Size`)} hideLabel>
+              <TicketInput
                 id={id}
-                className="w-full"
-                type="number"
+                label={
+                  <span className="text-default">
+                    {t('Size')} <span className="text-muted">{assetUnit}</span>
+                  </span>
+                }
                 step={sizeStep}
                 min={sizeStep}
-                onWheel={(e) => e.currentTarget.blur()}
-                appendElement={assetUnit && <Pill size="xs">{assetUnit}</Pill>}
+                type="number"
                 data-testid={id}
-                value={value || ''}
-                hasError={!!fieldState.error}
+                onWheel={(e) => e.currentTarget.blur()}
                 {...props}
+                value={value || ''}
               />
             </FormGroup>
             {fieldState.error && (
@@ -455,27 +478,32 @@ const SizeOverrideValue = ({
         const id = `sizeOverrideValue${oco ? '-oco' : ''}`;
         return (
           <>
-            <FormGroup label={t('Quantity')} labelFor={id} compact>
-              <Input
+            <FormGroup label={t('Quantity')} labelFor={id} hideLabel>
+              <TicketInput
                 id={id}
-                data-testid={id}
-                type="number"
-                className="w-full"
+                label={
+                  <span className="text-default">
+                    {t('Quantity')} <span className="text-muted">%</span>
+                  </span>
+                }
                 min={sizeStep}
                 max={maxSize}
                 step={sizeStep}
-                appendElement={<Pill size="xs">%</Pill>}
-                hasError={!!fieldState.error}
+                type="number"
+                data-testid={id}
+                onWheel={(e) => e.currentTarget.blur()}
                 {...field}
                 value={field.value || ''}
               />
-              <Slider
-                min={0}
-                max={100}
-                step={1}
-                value={[Number(field.value)]}
-                onValueChange={([value]) => field.onChange(value)}
-              />
+              <div className="mt-2">
+                <Slider
+                  min={0}
+                  max={100}
+                  step={1}
+                  value={[Number(field.value)]}
+                  onValueChange={([value]) => field.onChange(value)}
+                />
+              </div>
             </FormGroup>
             {fieldState.error && (
               <InputError
@@ -529,18 +557,20 @@ const Price = ({
         const id = `order-price${oco ? '-oco' : ''}`;
         return (
           <div className="mb-2">
-            <FormGroup labelFor={id} label={t('Price')} compact={true}>
-              <Input
+            <FormGroup labelFor={id} label={t('Price')} hideLabel>
+              <TicketInput
                 id={id}
-                className="w-full"
-                type="number"
+                label={
+                  <span className="text-default">
+                    {t('Price')} <span className="text-muted">{quoteName}</span>
+                  </span>
+                }
                 step={priceStep}
+                type="number"
                 data-testid={id}
                 onWheel={(e) => e.currentTarget.blur()}
-                value={value || ''}
-                hasError={!!fieldState.error}
-                appendElement={<Pill size="xs">{quoteName}</Pill>}
                 {...props}
+                value={value || ''}
               />
             </FormGroup>
             {fieldState.error && (
@@ -571,29 +601,30 @@ const SizeOverrideSetting = ({
       control={control}
       render={({ field }) => {
         const { onChange, value } = field;
+
         return (
-          <RadioGroup
-            onChange={onChange}
+          <MiniSelect
             value={value}
-            orientation="horizontal"
-            className="mb-2"
+            onValueChange={onChange}
+            placeholder={t('Select')}
+            data-testid={oco ? 'size-override-oco' : 'size-override'}
           >
-            <Radio
+            <MiniSelectOption
               value={
                 Schema.StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_NONE
               }
-              id={`sizeOverrideSetting-none${oco ? '-oco' : ''}`}
-              label={t('Amount')}
-            />
-            <Radio
+            >
+              {t('Amount')}
+            </MiniSelectOption>
+            <MiniSelectOption
               value={
                 Schema.StopOrderSizeOverrideSetting
                   .SIZE_OVERRIDE_SETTING_POSITION
               }
-              id={`sizeOverrideSetting-position${oco ? '-oco' : ''}`}
-              label={t('Percentage')}
-            />
-          </RadioGroup>
+            >
+              {t('Percentage')}
+            </MiniSelectOption>
+          </MiniSelect>
         );
       }}
     />
@@ -696,11 +727,6 @@ export const NoOpenVolumeWarning = ({
   );
 };
 
-const TimeInForceOption = ({ value }: { value: Schema.OrderTimeInForce }) => {
-  const t = useT();
-  return <option value={value}>{t(value)}</option>;
-};
-
 const TimeInForce = ({
   control,
   oco,
@@ -718,49 +744,49 @@ const TimeInForce = ({
 }) => {
   const t = useT();
   const options =
-    orderType === Schema.OrderType.TYPE_LIMIT && isSpotMarket
+    orderType === Schema.OrderType.TYPE_LIMIT && !isSpotMarket
       ? typeLimitOptions
       : typeMarketOptions;
   return (
     <Controller
       name={oco ? 'ocoTimeInForce' : 'timeInForce'}
       control={control}
-      render={({ field: { onChange, ...field }, fieldState }) => {
+      render={({ field, fieldState }) => {
         const id = `order-tif${oco ? '-oco' : ''}`;
         return (
           <div className="mb-2">
-            <FormGroup label={t('Time in force')} labelFor={id} compact={true}>
-              <Select
-                id={id}
-                className="w-full"
-                data-testid={id}
-                hasError={!!fieldState.error}
-                {...field}
-                onChange={(e) => {
-                  const value = e.target.value as Schema.OrderTimeInForce;
-                  // If GTT is selected and no expiresAt time is set, or its
-                  // behind current time then reset the value to current time
-                  const now = Date.now();
-                  if (
-                    value === Schema.OrderTimeInForce.TIME_IN_FORCE_GTT &&
-                    (!expiresAt || new Date(expiresAt).getTime() < now)
-                  ) {
-                    setValue(
-                      oco ? 'ocoOrderExpiresAt' : 'orderExpiresAt',
-                      formatForInput(new Date(now)),
-                      {
-                        shouldValidate: true,
-                      }
-                    );
-                  }
-                  onChange(value);
-                }}
-              >
-                {options.map(([key, value]) => (
-                  <TimeInForceOption key={key} value={value} />
-                ))}
-              </Select>
-            </FormGroup>
+            <MiniSelect
+              id={id}
+              trigger={Schema.OrderTimeInForceCode[field.value]}
+              placeholder={t('Select')}
+              data-testid={id}
+              hasError={!!fieldState.error}
+              value={field.value}
+              onValueChange={(value) => {
+                // If GTT is selected and no expiresAt time is set, or its
+                // behind current time then reset the value to current time
+                const now = Date.now();
+                if (
+                  value === Schema.OrderTimeInForce.TIME_IN_FORCE_GTT &&
+                  (!expiresAt || new Date(expiresAt).getTime() < now)
+                ) {
+                  setValue(
+                    oco ? 'ocoOrderExpiresAt' : 'orderExpiresAt',
+                    formatForInput(new Date(now)),
+                    {
+                      shouldValidate: true,
+                    }
+                  );
+                }
+                field.onChange(value);
+              }}
+            >
+              {options.map(([key, value]) => (
+                <MiniSelectOption key={key} value={value}>
+                  {Schema.OrderTimeInForceMapping[value]}{' '}
+                </MiniSelectOption>
+              ))}
+            </MiniSelect>
             {fieldState.error && (
               <InputError testId={`stop-error-message-tif${oco ? '-oco' : ''}`}>
                 {fieldState.error.message}
@@ -788,23 +814,31 @@ const OrderExpiry = ({
   return (
     orderType === Schema.OrderType.TYPE_LIMIT &&
     timeInForce === Schema.OrderTimeInForce.TIME_IN_FORCE_GTT && (
-      <Controller
-        name={oco ? 'ocoOrderExpiresAt' : 'orderExpiresAt'}
-        control={control}
-        rules={{
-          required: t('You need to provide a expiry time/date'),
-          validate: validateExpiration(
-            t('The expiry date that you have entered appears to be in the past')
-          ),
-        }}
-        render={({ field, fieldState: { error } }) => (
-          <ExpirySelector
-            value={field.value}
-            onSelect={(expiresAt) => field.onChange(expiresAt)}
-            errorMessage={error?.message}
-          />
-        )}
-      />
+      <TradingFormGroup
+        label={t('Expiry time/date')}
+        labelFor="expiration"
+        compact
+      >
+        <Controller
+          name={oco ? 'ocoOrderExpiresAt' : 'orderExpiresAt'}
+          control={control}
+          rules={{
+            required: t('You need to provide a expiry time/date'),
+            validate: validateExpiration(
+              t(
+                'The expiry date that you have entered appears to be in the past'
+              )
+            ),
+          }}
+          render={({ field, fieldState: { error } }) => (
+            <ExpirySelector
+              value={field.value}
+              onSelect={(expiresAt) => field.onChange(expiresAt)}
+              errorMessage={error?.message}
+            />
+          )}
+        />
+      </TradingFormGroup>
     )
   );
 };
@@ -893,7 +927,7 @@ const NotionalAndFees = ({
   const quoteName = getQuoteName(market);
   const asset = getAsset(market);
   return (
-    <div className="mb-4 flex w-full flex-col gap-2">
+    <div className="my-2 flex w-full flex-col gap-1">
       <KeyValue
         label={t('Notional')}
         value={formatValue(notionalSize, asset.decimals)}
@@ -1001,7 +1035,7 @@ const formatTrigger = (
         })
   }`;
 
-const SubmitButton = ({
+const PlaceOrderButton = ({
   assetUnit,
   market,
   oco,
@@ -1151,21 +1185,17 @@ const SubmitButton = ({
     </>
   );
   return (
-    <Button
-      intent={side === Schema.Side.SIDE_BUY ? Intent.Success : Intent.Danger}
-      data-testid="place-order"
-      type="submit"
-      className="w-full"
-      subLabel={subLabel}
-    >
-      {t(
+    <SubmitButton
+      text={t(
         oco
           ? 'Place OCO stop order'
           : type === Schema.OrderType.TYPE_MARKET
           ? 'Place market stop order'
           : 'Place limit stop order'
       )}
-    </Button>
+      subLabel={subLabel}
+      side={side}
+    />
   );
 };
 
@@ -1336,7 +1366,7 @@ export const StopOrder = ({
   }, [storedFormValues, dealTicketType, price, setValue]);
 
   useEffect(() => {
-    const subscription = watch((value, { name, type }) => {
+    const subscription = watch((value) => {
       updateStoredFormValues(market.id, value);
     });
     return () => subscription.unsubscribe();
@@ -1403,36 +1433,40 @@ export const StopOrder = ({
       onSubmit={isReadOnly || !pubKey ? stopSubmit : handleSubmit(onSubmit)}
       noValidate
     >
-      <TypeToggle
-        value={dealTicketType}
-        onValueChange={(dealTicketType) => {
-          setType(market.id, dealTicketType);
-          if (isStopOrderType(dealTicketType)) {
-            reset(
-              getDefaultValues(
-                dealTicketTypeToOrderType(dealTicketType),
-                storedFormValues?.[dealTicketType]
-              )
-            );
-          }
-        }}
-      />
-      {errors.type && (
-        <InputError testId="stop-order-error-message-type">
-          {errors.type.message}
-        </InputError>
-      )}
-      <Controller
-        name="side"
-        control={control}
-        render={({ field }) => (
-          <SideSelector
-            value={field.value}
-            onValueChange={field.onChange}
-            isSpotMarket={isSpotMarket}
-          />
+      <FormGroup label={t('Order side')} labelFor="side" hideLabel compact>
+        <Controller
+          name="side"
+          control={control}
+          render={({ field }) => (
+            <SideSelector
+              value={field.value}
+              onValueChange={field.onChange}
+              isSpotMarket={isSpotMarket}
+            />
+          )}
+        />
+      </FormGroup>
+      <FormGroup label={t('Order type')} labelFor="type" hideLabel>
+        <TypeToggle
+          value={dealTicketType}
+          onValueChange={(dealTicketType) => {
+            setType(market.id, dealTicketType);
+            if (isStopOrderType(dealTicketType)) {
+              reset(
+                getDefaultValues(
+                  dealTicketTypeToOrderType(dealTicketType),
+                  storedFormValues?.[dealTicketType]
+                )
+              );
+            }
+          }}
+        />
+        {errors.type && (
+          <InputError testId="stop-order-error-message-type">
+            {errors.type.message}
+          </InputError>
         )}
-      />
+      </FormGroup>
       <Trigger
         control={control}
         watch={watch}
@@ -1441,7 +1475,17 @@ export const StopOrder = ({
         marketPrice={marketPrice}
         decimalPlaces={market.decimalPlaces}
       />
-      <hr className="border-vega-clight-500 dark:border-vega-cdark-500 mb-4" />
+      <Price
+        control={control}
+        watch={watch}
+        priceStep={priceStep}
+        quoteName={quoteName}
+      />
+      {!isSpotMarket && (
+        <div className="flex justify-end mb-2">
+          <SizeOverrideSetting control={control} />
+        </div>
+      )}
       {sizeOverrideSetting ===
       Schema.StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION ? (
         <SizeOverrideValue control={control} />
@@ -1453,241 +1497,135 @@ export const StopOrder = ({
           assetUnit={assetUnit}
         />
       )}
-      {!isSpotMarket && <SizeOverrideSetting control={control} />}
-      <Price
-        control={control}
-        watch={watch}
-        priceStep={priceStep}
-        quoteName={quoteName}
-      />
-      <NotionalAndFees
-        market={market}
-        marketPrice={marketPrice}
-        price={derivedPrice}
-        side={side}
-        size={normalizedSize}
-        timeInForce={timeInForce}
-        type={type}
-        notionalSize={notionalSize}
-      />
-      <TimeInForce
-        control={control}
-        orderType={type}
-        isSpotMarket={isSpotMarket}
-        setValue={setValue}
-        expiresAt={orderExpiresAt}
-      />
+
+      <div className="flex gap-2 mb-4">
+        <div className="flex-1 flex flex-col items-start gap-1.5">
+          {isSpotMarket ? (
+            type === Schema.OrderType.TYPE_LIMIT && (
+              <PostOnly
+                control={control}
+                disabled={isNonPersistentOrder(timeInForce)}
+              />
+            )
+          ) : (
+            <ReduceOnly />
+          )}
+          <Controller
+            name="oco"
+            control={control}
+            render={({ field }) => {
+              const { onChange, value } = field;
+              return (
+                <Checkbox
+                  onCheckedChange={(state) => {
+                    onChange(state);
+                    setValue(
+                      'expiryStrategy',
+                      Schema.StopOrderExpiryStrategy.EXPIRY_STRATEGY_CANCELS
+                    );
+                  }}
+                  checked={value}
+                  name="oco"
+                  label={
+                    <Tooltip
+                      description={<span>{t('One cancels the other')}</span>}
+                    >
+                      <>{t('OCO')}</>
+                    </Tooltip>
+                  }
+                />
+              );
+            }}
+          />
+          <Controller
+            name="expire"
+            control={control}
+            render={({ field }) => {
+              const { onChange: onCheckedChange, value } = field;
+              return (
+                <Checkbox
+                  onCheckedChange={(value) => {
+                    const now = Date.now();
+                    if (
+                      value &&
+                      (!expiresAt || new Date(expiresAt).getTime() < now)
+                    ) {
+                      setValue('expiresAt', formatForInput(new Date(now)), {
+                        shouldValidate: true,
+                      });
+                    }
+                    onCheckedChange(value);
+                  }}
+                  checked={value}
+                  name="expire"
+                  label={t('Expire')}
+                />
+              );
+            }}
+          />
+        </div>
+        <div className="flex-1 flex flex-col gap-1 items-end">
+          <TimeInForce
+            control={control}
+            orderType={type}
+            isSpotMarket={isSpotMarket}
+            setValue={setValue}
+            expiresAt={orderExpiresAt}
+          />
+        </div>
+      </div>
       <OrderExpiry
         control={control}
         orderType={type}
         timeInForce={timeInForce}
       />
-
-      <div className="flex justify-end gap-2 pb-3">
-        {isSpotMarket ? (
-          type === Schema.OrderType.TYPE_LIMIT && (
-            <PostOnly
-              control={control}
-              disabled={isNonPersistentOrder(timeInForce)}
-            />
-          )
-        ) : (
-          <ReduceOnly />
-        )}
-      </div>
-
-      <hr className="border-vega-clight-500 dark:border-vega-cdark-500 mb-4" />
-      <div className="flex justify-between gap-2 pb-2">
-        <Controller
-          name="oco"
-          control={control}
-          render={({ field }) => {
-            const { onChange, value } = field;
-            return (
-              <Checkbox
-                onCheckedChange={(state) => {
-                  onChange(state);
-                  setValue(
-                    'expiryStrategy',
-                    Schema.StopOrderExpiryStrategy.EXPIRY_STRATEGY_CANCELS
+      {expire && (
+        <div>
+          <div className="flex justify-between items-center gap-2 mb-2">
+            <label htmlFor="expiresAt" className="text-muted text-xs">
+              {t('Stop expiry time/date')}
+            </label>
+            {!oco && (
+              <Controller
+                name="expiryStrategy"
+                control={control}
+                render={({ field }) => {
+                  const { onChange, value } = field;
+                  return (
+                    <MiniSelect
+                      placeholder={t('Strategy')}
+                      onValueChange={onChange}
+                      value={value}
+                      trigger={
+                        value
+                          ? Schema.StopOrderExpirtyStrategyMapping[value]
+                          : t('Strategy')
+                      }
+                      data-testid="stop-expiry-strategy"
+                    >
+                      <MiniSelectOption
+                        disabled={oco}
+                        value={
+                          Schema.StopOrderExpiryStrategy.EXPIRY_STRATEGY_SUBMIT
+                        }
+                        id="expiryStrategy-submit"
+                      >
+                        {t('Submit')}
+                      </MiniSelectOption>
+                      <MiniSelectOption
+                        value={
+                          Schema.StopOrderExpiryStrategy.EXPIRY_STRATEGY_CANCELS
+                        }
+                        id="expiryStrategy-cancel"
+                      >
+                        {t('Cancel')}
+                      </MiniSelectOption>
+                    </MiniSelect>
                   );
                 }}
-                checked={value}
-                name="oco"
-                label={
-                  <Tooltip
-                    description={<span>{t('One cancels the other')}</span>}
-                  >
-                    <>{t('OCO')}</>
-                  </Tooltip>
-                }
               />
-            );
-          }}
-        />
-      </div>
-      {oco && (
-        <>
-          <FormGroup label={t('Type')} labelFor="">
-            <Controller
-              name={`ocoType`}
-              control={control}
-              render={({ field }) => {
-                const { onChange, value } = field;
-                return (
-                  <RadioGroup
-                    onChange={onChange}
-                    value={value}
-                    orientation="horizontal"
-                  >
-                    <Radio
-                      value={Schema.OrderType.TYPE_MARKET}
-                      id="ocoTypeMarket"
-                      label={'Market'}
-                    />
-                    <Radio
-                      value={Schema.OrderType.TYPE_LIMIT}
-                      id="ocoTypeLimit"
-                      label={'Limit'}
-                    />
-                  </RadioGroup>
-                );
-              }}
-            />
-          </FormGroup>
-          <Trigger
-            control={control}
-            watch={watch}
-            priceStep={priceStep}
-            quoteName={quoteName}
-            marketPrice={marketPrice}
-            decimalPlaces={market.decimalPlaces}
-            oco
-          />
-          <hr className="border-vega-clight-500 dark:border-vega-cdark-500 mb-2" />
-          {ocoSizeOverrideSetting ===
-          Schema.StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION ? (
-            <SizeOverrideValue control={control} oco />
-          ) : (
-            <Size
-              control={control}
-              sizeStep={sizeStep}
-              isLimitType={ocoType === Schema.OrderType.TYPE_LIMIT}
-              assetUnit={assetUnit}
-              oco
-            />
-          )}
-          {!isSpotMarket && <SizeOverrideSetting control={control} oco />}
-          <Price
-            control={control}
-            watch={watch}
-            priceStep={priceStep}
-            quoteName={quoteName}
-            oco
-          />
-          <NotionalAndFees
-            market={market}
-            marketPrice={marketPrice}
-            price={ocoDerivedPrice}
-            side={side}
-            size={ocoNormalizedSize}
-            timeInForce={ocoTimeInForce}
-            type={ocoType}
-            notionalSize={ocoNotionalSize}
-          />
-          <TimeInForce
-            control={control}
-            oco
-            orderType={ocoType}
-            isSpotMarket={isSpotMarket}
-            setValue={setValue}
-            expiresAt={ocoOrderExpiresAt}
-          />
-          <OrderExpiry
-            control={control}
-            oco
-            orderType={ocoType}
-            timeInForce={ocoTimeInForce}
-          />
-          {
-            <div className="mb-2 flex justify-end gap-2">
-              {isSpotMarket ? (
-                ocoType === Schema.OrderType.TYPE_LIMIT && (
-                  <PostOnly
-                    control={control}
-                    oco
-                    disabled={isNonPersistentOrder(ocoTimeInForce)}
-                  />
-                )
-              ) : (
-                <ReduceOnly />
-              )}
-            </div>
-          }
-        </>
-      )}
-      <div className="mb-2">
-        <Controller
-          name="expire"
-          control={control}
-          render={({ field }) => {
-            const { onChange: onCheckedChange, value } = field;
-            return (
-              <Checkbox
-                onCheckedChange={(value) => {
-                  const now = Date.now();
-                  if (
-                    value &&
-                    (!expiresAt || new Date(expiresAt).getTime() < now)
-                  ) {
-                    setValue('expiresAt', formatForInput(new Date(now)), {
-                      shouldValidate: true,
-                    });
-                  }
-                  onCheckedChange(value);
-                }}
-                checked={value}
-                name="expire"
-                label={t('Expire')}
-              />
-            );
-          }}
-        />
-      </div>
-      {expire && (
-        <>
-          <FormGroup label={t('Strategy')} labelFor="expiryStrategy">
-            <Controller
-              name="expiryStrategy"
-              control={control}
-              render={({ field }) => {
-                const { onChange, value } = field;
-                return (
-                  <RadioGroup
-                    onChange={onChange}
-                    value={value}
-                    orientation="horizontal"
-                  >
-                    <Radio
-                      disabled={oco}
-                      value={
-                        Schema.StopOrderExpiryStrategy.EXPIRY_STRATEGY_SUBMIT
-                      }
-                      id="expiryStrategy-submit"
-                      label={t('Submit')}
-                    />
-                    <Radio
-                      value={
-                        Schema.StopOrderExpiryStrategy.EXPIRY_STRATEGY_CANCELS
-                      }
-                      id="expiryStrategy-cancel"
-                      label={t('Cancel')}
-                    />
-                  </RadioGroup>
-                );
-              }}
-            />
-          </FormGroup>
+            )}
+          </div>
           <div className="mb-4">
             <Controller
               name="expiresAt"
@@ -1712,6 +1650,111 @@ export const StopOrder = ({
               }}
             />
           </div>
+        </div>
+      )}
+      {oco && (
+        <>
+          <hr className="border-vega-clight-500 dark:border-vega-cdark-500 my-4" />
+          <Trigger
+            control={control}
+            watch={watch}
+            priceStep={priceStep}
+            quoteName={quoteName}
+            marketPrice={marketPrice}
+            decimalPlaces={market.decimalPlaces}
+            oco
+          />
+          <div className="flex justify-between mb-2">
+            <Controller
+              name={`ocoType`}
+              control={control}
+              render={({ field }) => {
+                const { onChange, value } = field;
+                return (
+                  <MiniSelect
+                    placeholder={t('Select')}
+                    value={value}
+                    onValueChange={onChange}
+                    data-testid="oco-type"
+                  >
+                    <MiniSelectOption
+                      id="ocoTypeMarket"
+                      value={Schema.OrderType.TYPE_MARKET}
+                    >
+                      {t('Market')}
+                    </MiniSelectOption>
+                    <MiniSelectOption
+                      id="ocoTypeLimit"
+                      value={Schema.OrderType.TYPE_LIMIT}
+                    >
+                      {t('Limit')}
+                    </MiniSelectOption>
+                  </MiniSelect>
+                );
+              }}
+            />
+            {!isSpotMarket && <SizeOverrideSetting control={control} oco />}
+          </div>
+          {ocoSizeOverrideSetting ===
+          Schema.StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION ? (
+            <SizeOverrideValue control={control} oco />
+          ) : (
+            <Size
+              control={control}
+              sizeStep={sizeStep}
+              isLimitType={ocoType === Schema.OrderType.TYPE_LIMIT}
+              assetUnit={assetUnit}
+              oco
+            />
+          )}
+          <Price
+            control={control}
+            watch={watch}
+            priceStep={priceStep}
+            quoteName={quoteName}
+            oco
+          />
+          <div className="flex gap-2 mb-4">
+            <div className="flex-1 flex flex-col items-start gap-1.5">
+              {isSpotMarket ? (
+                ocoType === Schema.OrderType.TYPE_LIMIT && (
+                  <PostOnly
+                    control={control}
+                    oco
+                    disabled={isNonPersistentOrder(ocoTimeInForce)}
+                  />
+                )
+              ) : (
+                <ReduceOnly />
+              )}
+            </div>
+            <div className="flex-1 flex flex-col items-end gap-1.5">
+              <TimeInForce
+                control={control}
+                oco
+                orderType={ocoType}
+                isSpotMarket={isSpotMarket}
+                setValue={setValue}
+                expiresAt={ocoOrderExpiresAt}
+              />
+            </div>
+          </div>
+          <OrderExpiry
+            control={control}
+            oco
+            orderType={ocoType}
+            timeInForce={ocoTimeInForce}
+          />
+          <NotionalAndFees
+            market={market}
+            marketPrice={marketPrice}
+            price={ocoDerivedPrice}
+            side={side}
+            size={ocoNormalizedSize}
+            timeInForce={ocoTimeInForce}
+            type={ocoType}
+            notionalSize={ocoNotionalSize}
+          />
         </>
       )}
       <NoWalletWarning isReadOnly={isReadOnly} />
@@ -1760,7 +1803,7 @@ export const StopOrder = ({
           marketId={market.id}
         />
       )}
-      <SubmitButton
+      <PlaceOrderButton
         assetUnit={assetUnit}
         market={market}
         oco={oco}
@@ -1787,6 +1830,16 @@ export const StopOrder = ({
         triggerTrailingPercentOffset={triggerTrailingPercentOffset}
         triggerType={triggerType}
         type={type}
+      />
+      <NotionalAndFees
+        market={market}
+        marketPrice={marketPrice}
+        price={derivedPrice}
+        side={side}
+        size={normalizedSize}
+        timeInForce={timeInForce}
+        type={type}
+        notionalSize={notionalSize}
       />
     </form>
   );

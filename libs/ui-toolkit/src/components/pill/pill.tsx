@@ -20,7 +20,8 @@ const getClasses = (size: Size, intent: Intent, className?: string) => {
       'bg-vega-orange-350 dark:bg-vega-orange-650': intent === Intent.Warning,
       'bg-vega-red-350 dark:bg-vega-red-650': intent === Intent.Danger,
       'bg-vega-green-350 dark:bg-vega-green-650': intent === Intent.Success,
-      'text-vega-clight-50 dark:text-vega-cdark-50': intent !== Intent.Primary,
+      'text-vega-clight-100 dark:text-vega-cdark-100':
+        intent !== Intent.Primary,
       'text-vega-clight-900 dark:text-vega-cdark-900':
         intent === Intent.Primary,
     },

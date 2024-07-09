@@ -12,7 +12,7 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { DealTicketContainer } from '@vegaprotocol/deal-ticket';
 import { MarketInfoAccordionContainer } from '@vegaprotocol/markets';
-import { DepositContainer } from '@vegaprotocol/deposits';
+import { DepositContainer } from '../../components/deposit-container';
 import { TransferContainer } from '@vegaprotocol/accounts';
 import { WithdrawContainer } from '../../components/withdraw-container';
 import { useT } from '../../lib/use-t';

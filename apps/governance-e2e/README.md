@@ -32,6 +32,54 @@ vegacapsule network bootstrap --config-path=../frontend-monorepo/vegacapsule/con
 
 - You may need to run `vegacapsule nodes unsafe-reset-all` to get a clean network state
 
+### Troubleshooting on the remote server
+
+It is sometimes necessary to debug tests on the remote server(e.g: on the CI, etc...). It is very important to SSH into server with the `-X` flag to allow passing the X session(mandatory for the google chrome web UI for the cypress).
+
+Example ssh command is:
+
+```shell
+ssh -X <USER>@<IP-OF-THE-SERVER>
+```
+
+Steps are the following:
+
+```shell
+# cleanup artifacts from previous run
+rm -rf /home/<USER>/.vegacapsule/testnet/wallet;
+
+# start new instance of nomad(in new terminal)
+sudo pkill -9 nomad; GOBIN=/home/<USER>/go/bin/ vegacapsule nomad;
+
+# switch to node v20
+nvm install 20;
+nvm use 20;
+
+cd <WORKSPACE>/frontend-monorepo;
+
+# build artifacts
+yarn build;
+
+# bootstrap a new network
+vegacapsule network bootstrap --config-path ./vegacapsule/config.hcl --force --do-not-stop-on-failure;
+
+# setup vegawallet
+cd ./vegacapsule;
+chmod a+x setup-vegawallet.sh;
+./setup-vegawallet.sh;
+
+# run tests
+XDG_RUNTIME_DIR=$PATH:~/.cache/xdgr \
+    yarn nx run governance-e2e:e2e  \
+        --browser chrome \
+        --env.grepTags="@smoke" \
+        --verbose \
+        --runner-ui \
+        --headed \
+        --spec "./apps/governance-e2e/src/integration/view/home.cy.ts" \
+        --no-exit
+```
+
 ## Vega Wallet Setup
 
 You can then refer to (or run) `frontend-monorepo/vegacapsule/setup-vegawallet.sh`. This will initialise and configure your wallet to have the correct public keys and network config to run against capsule.

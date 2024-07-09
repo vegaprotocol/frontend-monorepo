@@ -16,7 +16,7 @@ import type { Market, StaticMarketData } from '@vegaprotocol/markets';
 import { compileGridData } from '../trading-mode-tooltip';
 import { MarketModeValidationType } from '../../constants';
 import { DealTicketType } from '@vegaprotocol/react-helpers';
-import * as RadioGroup from '@radix-ui/react-radio-group';
+import * as ToggleGroup from '@radix-ui/react-toggle-group';
 import classNames from 'classnames';
 import { useFeatureFlags } from '@vegaprotocol/environment';
 import { Trans } from 'react-i18next';
@@ -28,7 +28,6 @@ interface TypeSelectorProps {
   market: Market;
   marketData: StaticMarketData;
   errorMessage?: string;
-  showStopOrders: boolean;
 }
 
 const useToggles = () => {
@@ -52,53 +51,53 @@ export const TypeToggle = ({
 }: Pick<TypeSelectorProps, 'onValueChange' | 'value'>) => {
   const featureFlags = useFeatureFlags((state) => state.flags);
   const t = useT();
-  const options = useOptions();
+  const stopOptions = useOptions();
   const toggles = useToggles();
-  const selectedOption = options.find((t) => t.value === value);
+  const selectedStopOption = stopOptions.find((t) => t.value === value);
   const showStopOrdersDropdown = featureFlags.STOP_ORDERS;
+  const toggleClasses =
+    'flex-1 -mb-px p-1.5 border-b-2 border-b-transparent text-secondary';
+
   return (
-    <RadioGroup.Root
-      name="order-type"
-      className={classNames('mb-2 grid h-8 leading-8 font-alpha text-xs', {
-        'grid-cols-3': showStopOrdersDropdown,
-        'grid-cols-2': !showStopOrdersDropdown,
-      })}
+    <ToggleGroup.Root
+      className="flex border-b border-default"
+      type="single"
       value={value}
       onValueChange={onValueChange}
     >
       {toggles.map(({ label, value: itemValue }) => (
-        <RadioGroup.Item
+        <ToggleGroup.Item
           value={itemValue}
           key={itemValue}
           id={`order-type-${itemValue}`}
           data-testid={`order-type-${itemValue}`}
-          asChild
+          className={classNames(
+            toggleClasses,
+            'data-[state=on]:border-b-vega-clight-400 dark:data-[state=on]:border-b-vega-cdark-400 data-[state=on]:text-vega-clight-50 dark:data-[state=on]:text-vega-cdark-50'
+          )}
         >
-          <button
-            className={classNames('rounded', {
-              'bg-vega-clight-500 dark:bg-vega-cdark-500': value === itemValue,
-            })}
-          >
-            {label}
-          </button>
-        </RadioGroup.Item>
+          {label}
+        </ToggleGroup.Item>
       ))}
       {showStopOrdersDropdown && (
         <TradingDropdown
           trigger={
-            <TradingDropdownTrigger
-              data-testid="order-type-Stop"
-              className={classNames(
-                'rounded px-2 flex flex-nowrap items-center justify-center',
-                {
-                  'bg-vega-clight-500 dark:bg-vega-cdark-500': selectedOption,
-                }
-              )}
-            >
-              <button className="flex gap-1">
-                <span className="text-ellipsis whitespace-nowrap shrink overflow-hidden">
-                  {selectedOption ? selectedOption.label : t('Stop')}
-                </span>
+            <TradingDropdownTrigger>
+              <button
+                id="order-type-stop"
+                data-testid="order-type-Stop"
+                className={classNames(
+                  toggleClasses,
+                  'flex gap-1 justify-center items-center',
+                  {
+                    'border-b-vega-clight-400 dark:border-b-vega-cdark-400':
+                      selectedStopOption,
+                    'text-vega-clight-50 dark:text-vega-cdark-50':
+                      selectedStopOption,
+                  }
+                )}
+              >
+                {selectedStopOption ? selectedStopOption.label : t('Stop')}
                 <VegaIcon name={VegaIconNames.CHEVRON_DOWN} size={14} />
               </button>
             </TradingDropdownTrigger>
@@ -112,7 +111,7 @@ export const TypeToggle = ({
                 }
                 value={value}
               >
-                {options.map(({ label, value: itemValue }) => (
+                {stopOptions.map(({ label, value: itemValue }) => (
                   <TradingDropdownRadioItem
                     key={itemValue}
                     value={itemValue}
@@ -129,7 +128,7 @@ export const TypeToggle = ({
           </TradingDropdownPortal>
         </TradingDropdown>
       )}
-    </RadioGroup.Root>
+    </ToggleGroup.Root>
   );
 };
 
@@ -139,7 +138,6 @@ export const TypeSelector = ({
   market,
   marketData,
   errorMessage,
-  showStopOrders,
 }: TypeSelectorProps) => {
   const t = useT();
   const renderError = (errorType: MarketModeValidationType) => {
@@ -197,8 +195,9 @@ export const TypeSelector = ({
   return (
     <>
       <TypeToggle
-        onValueChange={(value) => {
-          onValueChange(value as DealTicketType);
+        onValueChange={(v) => {
+          if (v === ('' as DealTicketType)) return;
+          onValueChange(v);
         }}
         value={value}
       />

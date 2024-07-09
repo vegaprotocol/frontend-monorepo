@@ -1,12 +1,17 @@
 import * as PopoverPrimitive from '@radix-ui/react-popover';
+import { type ComponentPropsWithoutRef } from 'react';
 
 export interface PopoverProps extends PopoverPrimitive.PopoverProps {
   trigger: React.ReactNode | string;
   children: React.ReactNode;
   open?: boolean;
-  sideOffset?: PopoverPrimitive.PopperContentProps['sideOffset'];
-  alignOffset?: PopoverPrimitive.PopperContentProps['alignOffset'];
-  align?: PopoverPrimitive.PopperContentProps['align'];
+  sideOffset?: ComponentPropsWithoutRef<
+    typeof PopoverPrimitive.Content
+  >['sideOffset'];
+  alignOffset?: ComponentPropsWithoutRef<
+    typeof PopoverPrimitive.Content
+  >['alignOffset'];
+  align?: ComponentPropsWithoutRef<typeof PopoverPrimitive.Content>['align'];
 }
 
 export const Popover = ({

@@ -4,6 +4,7 @@ from playwright.sync_api import Page, expect
 from vega_sim.null_service import VegaServiceNull
 from actions.vega import submit_order
 from actions.utils import wait_for_toast_confirmation
+from actions.ticket import select_mini
 
 stop_order_btn = "order-type-Stop"
 stop_limit_order_btn = "order-type-StopLimit"
@@ -16,7 +17,6 @@ trigger_type_price = "triggerType-price"
 trigger_type_trailing_percent_offset = "triggerType-trailingPercentOffset"
 order_size = "order-size"
 order_price = "order-price"
-order_tif = "order-tif"
 expire = "expire"
 expiry_strategy = '[for="expiryStrategy"]'
 expiry_strategy_submit = "expiryStrategy-submit"
@@ -68,8 +68,6 @@ def test_submit_stop_order_market_oco_rejected(
 
     # 7002-SORD-082
     page.get_by_test_id(oco).click()
-    # 7002-SORD-085
-    expect(page.get_by_test_id(trigger_direction_fallsBelow_oco)).to_be_checked
     # 7002-SORD-086
     page.get_by_test_id(trigger_price_oco).fill("102")
     page.get_by_test_id(order_size_oco).fill("3")
@@ -134,7 +132,7 @@ def test_submit_stop_oco_market_order_triggered(
     create_position(vega, continuous_market)
     page.goto(f"/#/markets/{continuous_market}")
     page.get_by_test_id(stop_orders_tab).click()
-    
+
     page.get_by_test_id(stop_order_btn).click()
     page.get_by_test_id(stop_market_order_btn).is_visible()
     page.get_by_test_id(stop_market_order_btn).click()
@@ -146,7 +144,6 @@ def test_submit_stop_oco_market_order_triggered(
     ).to_have_text("Stop order will be triggered immediately")
 
     page.get_by_test_id(oco).click()
-    expect(page.get_by_test_id(trigger_direction_fallsBelow_oco)).to_be_checked
 
     page.get_by_test_id(trigger_price_oco).fill("102")
     page.get_by_test_id(order_size_oco).fill("3")
@@ -207,7 +204,7 @@ def test_submit_stop_oco_market_order_triggered(
 @pytest.mark.usefixtures("auth", "risk_accepted")
 def test_submit_stop_oco_market_order_pending(
     continuous_market, vega: VegaServiceNull, page: Page
-):  
+):
     create_position(vega, continuous_market)
     page.goto(f"/#/markets/{continuous_market}")
     page.get_by_test_id(stop_orders_tab).click()
@@ -215,11 +212,10 @@ def test_submit_stop_oco_market_order_pending(
     page.get_by_test_id(stop_market_order_btn).is_visible()
     page.get_by_test_id(stop_market_order_btn).click()
     page.get_by_test_id(order_side_sell).click()
-    page.locator("label").filter(has_text="Falls below").click()
+    select_mini(page, 'trigger-direction', 'Falls below')
     page.get_by_test_id(trigger_price).fill("99")
     page.get_by_test_id(order_size).fill("3")
     page.get_by_test_id(oco).click()
-    expect(page.get_by_test_id(trigger_direction_fallsAbove_oco)).to_be_checked
     page.get_by_test_id(trigger_price_oco).fill("120")
     page.get_by_test_id(order_size_oco).fill("2")
     page.get_by_test_id(submit_stop_order).click()
@@ -247,13 +243,11 @@ def test_submit_stop_oco_limit_order_pending(
     page.get_by_test_id(stop_limit_order_btn).is_visible()
     page.get_by_test_id(stop_limit_order_btn).click()
     page.get_by_test_id(order_side_sell).click()
-    page.locator("label").filter(has_text="Falls below").click()
+    select_mini(page, 'trigger-direction', 'Falls below')
     page.get_by_test_id(trigger_price).fill("102")
     page.get_by_test_id(order_size).fill("3")
     page.get_by_test_id(order_price).fill("103")
     page.get_by_test_id(oco).click()
-    # 7002-SORD-090
-    expect(page.get_by_test_id(trigger_direction_fallsAbove_oco)).to_be_checked
     page.get_by_test_id(trigger_price_oco).fill("120")
     page.get_by_test_id(order_size_oco).fill("2")
     # 7002-SORD-089
@@ -297,13 +291,11 @@ def test_submit_stop_oco_limit_order_cancel(
     page.get_by_test_id(stop_limit_order_btn).is_visible()
     page.get_by_test_id(stop_limit_order_btn).click()
     page.get_by_test_id(order_side_sell).click()
-    page.locator("label").filter(has_text="Falls below").click()
+    select_mini(page, 'trigger-direction', 'Falls below')
     page.get_by_test_id(trigger_price).fill("102")
     page.get_by_test_id(order_size).fill("3")
     page.get_by_test_id(order_price).fill("103")
     page.get_by_test_id(oco).click()
-    # 7002-SORD-092
-    expect(page.get_by_test_id(trigger_direction_fallsAbove_oco)).to_be_checked
     # 7002-SORD-094
     page.get_by_test_id(trigger_price_oco).fill("120")
     page.get_by_test_id(order_size_oco).fill("2")

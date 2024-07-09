@@ -3,6 +3,7 @@ query Symbol($marketId: ID!) {
     id
     decimalPlaces
     positionDecimalPlaces
+    state
     tradableInstrument {
       instrument {
         code

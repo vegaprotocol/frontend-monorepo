@@ -32,6 +32,10 @@ vegacapsule network bootstrap --config-path=../frontend-monorepo/vegacapsule/con
 
 - You may need to run `vegacapsule nodes unsafe-reset-all` to get a clean network state
 
+### Troubleshooting on the remove server
+
+See this guide at [apps/governance-e2e/README.md](../governance-e2e/README.md)
+
 ## Vega Wallet Setup
 
 You can then refer to (or run) `frontend-monorepo/vegacapsule/setup-vegawallet.sh`. This will initialise and configure your wallet to have the correct public keys and network config to run against capsule.

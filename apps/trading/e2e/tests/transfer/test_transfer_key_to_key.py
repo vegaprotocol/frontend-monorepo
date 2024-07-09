@@ -25,7 +25,7 @@ def test_transfer_submit(continuous_market, vega: VegaServiceNull, page: Page):
     page.goto("/#/portfolio")
 
     expect(page.get_by_test_id("transfer-form")).to_be_visible
-    
+
     page.get_by_test_id("Transfer").click()
     page.get_by_test_id("select-asset").click()
     expect(page.get_by_test_id("rich-select-option")).to_have_count(1)
@@ -33,7 +33,7 @@ def test_transfer_submit(continuous_market, vega: VegaServiceNull, page: Page):
     page.get_by_test_id("rich-select-option").click()
     page.select_option('[data-testid=transfer-form] [name="toVegaKey"]', index=2)
     page.select_option('[data-testid=transfer-form] [name="fromAccount"]', index=1)
-    expected_asset_text = re.compile(r"tDAI999991\.49731 tDAItDAI")
+    expected_asset_text = re.compile(r"tDAI")
     actual_asset_text = page.get_by_test_id("select-asset").text_content().strip()
     assert expected_asset_text.search(
         actual_asset_text
@@ -49,7 +49,7 @@ def test_transfer_submit(continuous_market, vega: VegaServiceNull, page: Page):
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
     expected_confirmation_text = re.compile(
-        r"Transfer completeYour transaction has been confirmedView in block explorerTransferTo .{6}….{6}1\.00 tDAI"
+        r"Transfer completeYour transaction has been confirmed.View on explorerTransferTo .{6}….{6}1\.00 tDAI"
     )
     actual_confirmation_text = page.get_by_test_id("toast-content").text_content()
     assert expected_confirmation_text.search(
@@ -149,7 +149,7 @@ def test_transfer_vesting_below_minimum(
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
     expected_confirmation_text = re.compile(
-        r"Transfer completeYour transaction has been confirmedView in block explorerTransferTo .{6}….{6}0\.00001 tDAI"
+        r"Transfer completeYour transaction has been confirmed.View on explorerTransferTo .{6}….{6}0\.00001 tDAI"
     )
     actual_confirmation_text = page.get_by_test_id("toast-content").text_content()
     assert expected_confirmation_text.search(

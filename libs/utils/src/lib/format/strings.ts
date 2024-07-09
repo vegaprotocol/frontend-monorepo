@@ -1,3 +1,6 @@
+import capitalize from 'lodash/capitalize';
+import startCase from 'lodash/startCase';
+
 export const ELLIPSIS = '\u2026';
 
 export function truncateByChars(input: string, start = 6, end = 6) {
@@ -38,4 +41,12 @@ export function ensureSuffix(input: string, suffix: string) {
   const maybeSuffix = input.substring(input.length - suffix.length);
   if (maybeSuffix === suffix) return input;
   return input + suffix;
+}
+
+/**
+ * Capitalizes and converts camel case string to "normal" space-separated
+ * string.
+ */
+export function fromCamelCase(input: string) {
+  return capitalize(startCase(input).toLowerCase());
 }

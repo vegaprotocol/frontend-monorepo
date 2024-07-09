@@ -90,7 +90,7 @@ export const AccountsActionsDropdown = ({
             target="_blank"
           >
             <span className="flex gap-2">
-              <VegaIcon name={VegaIconNames.OPEN_EXTERNAL} size={16} />
+              <VegaIcon name={VegaIconNames.OPEN_EXTERNAL} size={14} />
               {t('View on Etherscan')}
             </span>
           </Link>

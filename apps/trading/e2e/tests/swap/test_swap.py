@@ -21,11 +21,11 @@ def setup_environment(vega, browser, request) -> Generator[Tuple[Page, VegaServi
         auth_setup(vega, page)
         page.goto("#/portfolio")
         page.get_by_test_id("Swap").click()
-        yield page, vega 
+        yield page, vega
 
 
 def test_swap(setup_environment: Tuple[Page, VegaServiceNull]):
-    page, vega = setup_environment  
+    page, vega = setup_environment
     page.get_by_test_id("you-pay-dropdown-trigger").click()
     page.get_by_role("menuitem", name="USDT").click()
     #This is required to close the drop down
@@ -42,5 +42,5 @@ def test_swap(setup_environment: Tuple[Page, VegaServiceNull]):
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
     expect(page.get_by_test_id("toast-content")).to_contain_text(
-        "Order filledYour transaction has been confirmedView in block explorer"
+        "Order filledYour transaction has been confirmed.View on explorer"
     )

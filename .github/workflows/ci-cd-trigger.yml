@@ -106,6 +106,9 @@ jobs:
         with:
           main-branch-name: develop
 
+      - name: Setup nx
+        run: yarn global add nx@latest
+
       - name: Test affected
         run: yarn nx affected:test
 

@@ -1,11 +1,6 @@
-import {
-  TradingFormGroup,
-  TradingInput,
-  TradingInputError,
-} from '@vegaprotocol/ui-toolkit';
+import { TradingInput, TradingInputError } from '@vegaprotocol/ui-toolkit';
 import { formatForInput } from '@vegaprotocol/utils';
 import { useRef } from 'react';
-import { useT } from '../../use-t';
 
 interface ExpirySelectorProps {
   value?: string;
@@ -18,31 +13,24 @@ export const ExpirySelector = ({
   onSelect,
   errorMessage,
 }: ExpirySelectorProps) => {
-  const t = useT();
   const minDateRef = useRef(new Date());
 
   return (
-    <div className="mb-4">
-      <TradingFormGroup
-        label={t('Expiry time/date')}
-        labelFor="expiration"
-        compact
-      >
-        <TradingInput
-          data-testid="date-picker-field"
-          id="expiration"
-          type="datetime-local"
-          value={value && formatForInput(new Date(value))}
-          onChange={(e) => onSelect(e.target.value)}
-          min={formatForInput(minDateRef.current)}
-          hasError={!!errorMessage}
-        />
-        {errorMessage && (
-          <TradingInputError testId="deal-ticket-error-message-expiry">
-            {errorMessage}
-          </TradingInputError>
-        )}
-      </TradingFormGroup>
-    </div>
+    <>
+      <TradingInput
+        data-testid="date-picker-field"
+        id="expiration"
+        type="datetime-local"
+        value={value && formatForInput(new Date(value))}
+        onChange={(e) => onSelect(e.target.value)}
+        min={formatForInput(minDateRef.current)}
+        hasError={!!errorMessage}
+      />
+      {errorMessage && (
+        <TradingInputError testId="deal-ticket-error-message-expiry">
+          {errorMessage}
+        </TradingInputError>
+      )}
+    </>
   );
 };

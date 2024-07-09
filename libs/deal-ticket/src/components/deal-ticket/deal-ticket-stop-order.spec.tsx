@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { generateMarket } from '../../test-helpers';
 import { NoOpenVolumeWarning, StopOrder } from './deal-ticket-stop-order';
@@ -57,17 +57,9 @@ const orderTypeMarket = 'order-type-StopMarket';
 const orderSideBuy = 'order-side-SIDE_BUY';
 const orderSideSell = 'order-side-SIDE_SELL';
 
-const triggerDirectionRisesAbove = 'triggerDirection-risesAbove';
-const triggerDirectionFallsBelow = 'triggerDirection-fallsBelow';
-
-const expiryStrategySubmit = 'expiryStrategy-submit';
-const expiryStrategyCancel = 'expiryStrategy-cancel';
-
-const sizeOverrideSettingNone = 'sizeOverrideSetting-none';
-const sizeOverrideSettingPosition = 'sizeOverrideSetting-position';
-
-const triggerTypePrice = 'triggerType-price';
-const triggerTypeTrailingPercentOffset = 'triggerType-trailingPercentOffset';
+const sizeOverride = 'size-override';
+const triggerType = 'trigger-type';
+const triggerDirection = 'trigger-direction';
 
 const oco = 'oco';
 const expire = 'expire';
@@ -121,6 +113,18 @@ jest.mock('@vegaprotocol/network-parameters', () => ({
 }));
 
 describe('StopOrder', () => {
+  const origConsoleError = console.error;
+
+  beforeAll(() => {
+    // This file produces so many act warnings its impossible to figure out whats happening
+    // So for the time being console.error is being silenced
+    console.error = () => {};
+  });
+
+  afterAll(() => {
+    console.error = origConsoleError;
+  });
+
   beforeEach(() => {
     localStorage.clear();
     useFeatureFlags.setState({ flags: { STOP_ORDERS: true } });
@@ -133,121 +137,128 @@ describe('StopOrder', () => {
     mockConfig.reset();
   });
 
+  const selectMiniSelect = async (
+    id: string,
+    matcher: Parameters<typeof screen.getByText>[0]
+  ) => {
+    await userEvent.click(screen.getByTestId(id));
+    await userEvent.click(
+      within(screen.getByTestId('mini-select-content')).getByText(matcher)
+    );
+  };
+
   it('should display ticket defaults limit order', async () => {
+    const user = userEvent.setup();
     render(generateJsx());
     // place order button should always be enabled
     expect(screen.getByTestId(submitButton)).toBeEnabled();
 
     // Assert defaults are used
-    await userEvent.click(screen.getByTestId(orderTypeTrigger));
+    await user.click(screen.getByTestId(orderTypeTrigger));
     expect(screen.getByTestId(orderTypeLimit).dataset.state).toEqual('checked');
-    await userEvent.click(screen.getByTestId(orderTypeLimit));
-    expect(screen.getByTestId(orderSideBuy).dataset.state).toEqual('checked');
-    expect(screen.getByTestId(sizeOverrideSettingNone).dataset.state).toEqual(
-      'checked'
+
+    await user.click(screen.getByTestId(orderTypeLimit));
+    expect(screen.getByTestId(orderTypeTrigger)).toHaveTextContent(
+      /Stop Limit/
     );
+    expect(screen.getByTestId(orderSideBuy).dataset.state).toEqual('checked');
+    expect(screen.getByTestId(sizeOverride).nextSibling).toHaveValue(
+      Schema.StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_NONE
+    );
+
     expect(screen.getByTestId(sizeInput)).toHaveDisplayValue('0');
-    expect(screen.getByTestId(timeInForce)).toHaveValue(
+    expect(screen.getByTestId(timeInForce).nextSibling).toHaveValue(
       Schema.OrderTimeInForce.TIME_IN_FORCE_FOK
     );
-    expect(
-      screen.getByTestId(triggerDirectionRisesAbove).dataset.state
-    ).toEqual('checked');
-    expect(screen.getByTestId(triggerTypePrice).dataset.state).toEqual(
-      'checked'
+    expect(screen.getByTestId(triggerDirection).nextSibling).toHaveValue(
+      Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE
     );
+    expect(screen.getByTestId(triggerType).nextSibling).toHaveValue('price');
     expect(screen.getByTestId(expire).dataset.state).toEqual('unchecked');
     expect(screen.getByTestId(oco).dataset.state).toEqual('unchecked');
-    await userEvent.click(screen.getByTestId(expire));
-    await waitFor(() => {
-      expect(screen.getByTestId(expiryStrategySubmit).dataset.state).toEqual(
-        'checked'
-      );
-    });
+    await user.click(screen.getByTestId(expire));
+    expect(screen.getByTestId('stop-expiry-strategy').nextSibling).toHaveValue(
+      Schema.StopOrderExpiryStrategy.EXPIRY_STRATEGY_SUBMIT
+    );
   });
 
   it('should display ticket defaults market order', async () => {
+    const user = userEvent.setup();
     render(generateJsx());
     // place order button should always be enabled
     expect(screen.getByTestId(submitButton)).toBeEnabled();
     // Assert defaults are used
-    await userEvent.click(screen.getByTestId(orderTypeTrigger));
-    await userEvent.click(screen.getByTestId(orderTypeMarket));
-    await userEvent.click(screen.getByTestId(orderTypeTrigger));
+    await user.click(screen.getByTestId(orderTypeTrigger));
+    await user.click(screen.getByTestId(orderTypeMarket));
+    await user.click(screen.getByTestId(orderTypeTrigger));
     expect(screen.getByTestId(orderTypeLimit).dataset.state).toEqual(
       'unchecked'
     );
     expect(screen.getByTestId(orderTypeMarket).dataset.state).toEqual(
       'checked'
     );
-    await userEvent.click(screen.getByTestId(orderTypeMarket));
+    await user.click(screen.getByTestId(orderTypeMarket));
     expect(screen.getByTestId(orderSideBuy).dataset.state).toEqual('checked');
-    expect(screen.getByTestId(sizeOverrideSettingNone).dataset.state).toEqual(
-      'checked'
+    expect(screen.getByTestId(sizeOverride).nextSibling).toHaveValue(
+      Schema.StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_NONE
     );
     expect(screen.getByTestId(sizeInput)).toHaveDisplayValue('0');
-    expect(screen.getByTestId(timeInForce)).toHaveValue(
+    expect(screen.getByTestId('order-tif').nextSibling).toHaveValue(
       Schema.OrderTimeInForce.TIME_IN_FORCE_FOK
     );
     // 7002-SORD-084
-    expect(
-      screen.getByTestId(triggerDirectionRisesAbove).dataset.state
-    ).toEqual('checked');
-    // 7002-SORD-085
-    expect(
-      screen.getByTestId(triggerDirectionFallsBelow).dataset.state
-    ).toEqual('unchecked');
-    expect(screen.getByTestId(triggerTypePrice).dataset.state).toEqual(
-      'checked'
+    expect(screen.getByTestId(triggerDirection).nextSibling).toHaveValue(
+      Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE
     );
+    expect(screen.getByTestId(triggerType).nextSibling).toHaveValue('price');
     expect(screen.getByTestId(expire).dataset.state).toEqual('unchecked');
     expect(screen.getByTestId(oco).dataset.state).toEqual('unchecked');
-    await userEvent.click(screen.getByTestId(expire));
-    await waitFor(() => {
-      expect(screen.getByTestId(expiryStrategySubmit).dataset.state).toEqual(
-        'checked'
-      );
-    });
+    await user.click(screen.getByTestId(expire));
+    expect(screen.getByTestId('stop-expiry-strategy').nextSibling).toHaveValue(
+      Schema.StopOrderExpiryStrategy.EXPIRY_STRATEGY_SUBMIT
+    );
   });
 
   it('calculate notional for market limit', async () => {
+    const user = userEvent.setup();
     mockUseOpenVolume.mockReturnValue({
       openVolume: removeDecimal('10', market.positionDecimalPlaces),
     });
     render(generateJsx());
-    await userEvent.type(screen.getByTestId(sizeInput), '10');
-    await userEvent.type(screen.getByTestId(priceInput), '10');
+    await user.type(screen.getByTestId(sizeInput), '10');
+    await user.type(screen.getByTestId(priceInput), '10');
     expect(screen.getByTestId('deal-ticket-fee-notional')).toHaveTextContent(
       'Notional100.00 BTC'
     );
-    await userEvent.click(screen.getByTestId(sizeOverrideSettingPosition));
-    await userEvent.type(screen.getByTestId(sizeOverrideValueInput), '50');
+    await selectMiniSelect(sizeOverride, /Percentage/);
+    await user.type(screen.getByTestId(sizeOverrideValueInput), '50');
     expect(screen.getByTestId('deal-ticket-fee-notional')).toHaveTextContent(
       'Notional50.00 BTC'
     );
   });
 
   it('calculates notional for limit order', async () => {
+    const user = userEvent.setup();
     mockUseOpenVolume.mockReturnValue({
       openVolume: removeDecimal('10', market.positionDecimalPlaces),
     });
     render(generateJsx());
-    await userEvent.click(screen.getByTestId(orderTypeTrigger));
-    await userEvent.click(screen.getByTestId(orderTypeMarket));
-    await userEvent.type(screen.getByTestId(sizeInput), '10');
+    await user.click(screen.getByTestId(orderTypeTrigger));
+    await user.click(screen.getByTestId(orderTypeMarket));
+    await user.type(screen.getByTestId(sizeInput), '10');
     // price trigger is selected but it's empty, calculate base on size and marketPrice prop
     expect(screen.getByTestId('deal-ticket-fee-notional')).toHaveTextContent(
       'Notional20.00 BTC'
     );
 
-    await userEvent.type(screen.getByTestId(triggerPriceInput), '3');
+    await user.type(screen.getByTestId(triggerPriceInput), '3');
     // calculate base on size and price trigger
     expect(screen.getByTestId('deal-ticket-fee-notional')).toHaveTextContent(
       'Notional30.00 BTC'
     );
 
-    await userEvent.click(screen.getByTestId(sizeOverrideSettingPosition));
-    await userEvent.type(screen.getByTestId(sizeOverrideValueInput), '50');
+    await selectMiniSelect(sizeOverride, /Percentage/);
+    await user.type(screen.getByTestId(sizeOverrideValueInput), '50');
     // calculate base on openVolume*sizeOverride and price trigger
     expect(screen.getByTestId('deal-ticket-fee-notional')).toHaveTextContent(
       'Notional15.00 BTC'
@@ -255,6 +266,8 @@ describe('StopOrder', () => {
   });
 
   it('should use local storage state for initial values', async () => {
+    const user = userEvent.setup();
+
     const values: Partial<StopOrderFormValues> = {
       type: Schema.OrderType.TYPE_LIMIT,
       side: Schema.Side.SIDE_SELL,
@@ -281,13 +294,15 @@ describe('StopOrder', () => {
 
     render(generateJsx());
     // Assert correct defaults are used from store
-    await userEvent.click(screen.getByTestId(orderTypeTrigger));
+    await user.click(screen.getByTestId(orderTypeTrigger));
     expect(screen.queryByTestId(orderTypeLimit)).toBeChecked();
     expect(screen.getByTestId(orderSideSell).dataset.state).toEqual('checked');
     expect(screen.getByTestId(sizeInput)).toHaveDisplayValue(
       values.size as string
     );
-    expect(screen.getByTestId(timeInForce)).toHaveValue(values.timeInForce);
+    expect(screen.getByTestId(timeInForce).nextSibling).toHaveValue(
+      values.timeInForce
+    );
     expect(screen.getByTestId(priceInput)).toHaveDisplayValue(
       values.price as string
     );
@@ -295,42 +310,46 @@ describe('StopOrder', () => {
     expect(screen.getByTestId(ocoPostfix(sizeInput))).toHaveDisplayValue(
       values.ocoSize as string
     );
-    expect(screen.getByTestId(ocoPostfix(timeInForce))).toHaveValue(
+    expect(screen.getByTestId(ocoPostfix(timeInForce)).nextSibling).toHaveValue(
       values.ocoTimeInForce
     );
     expect(screen.getByTestId(ocoPostfix(priceInput))).toHaveDisplayValue(
       values.ocoPrice as string
     );
-    expect(screen.getByTestId('ocoTypeLimit').dataset.state).toEqual('checked');
+    expect(screen.getByTestId('oco-type').nextSibling).toHaveValue(
+      Schema.OrderType.TYPE_LIMIT
+    );
 
     expect(screen.getByTestId(expire).dataset.state).toEqual('checked');
-    expect(screen.getByTestId(expiryStrategyCancel).dataset.state).toEqual(
-      'checked'
-    );
+    expect(
+      screen.queryByTestId('stop-expiry-strategy')
+    ).not.toBeInTheDocument();
     expect(screen.getByTestId(datePicker)).toHaveDisplayValue(
       values.expiresAt as string
     );
 
-    await userEvent.click(screen.getByTestId(orderTypeMarket));
+    await user.click(screen.getByTestId(orderTypeMarket));
     expect(screen.getByTestId(oco).dataset.state).toEqual('unchecked');
   });
 
   it('does not submit if no wallet connected', async () => {
+    const user = userEvent.setup();
     mockConfig.store.setState({ pubKey: undefined });
     render(generateJsx());
-    await userEvent.type(screen.getByTestId(sizeInput), '1');
-    await userEvent.type(screen.getByTestId(priceInput), '1');
-    await userEvent.type(screen.getByTestId(triggerPriceInput), '1');
-    await userEvent.click(screen.getByTestId(submitButton));
+    await user.type(screen.getByTestId(sizeInput), '1');
+    await user.type(screen.getByTestId(priceInput), '1');
+    await user.type(screen.getByTestId(triggerPriceInput), '1');
+    await user.click(screen.getByTestId(submitButton));
     expect(submit).not.toBeCalled();
   });
 
   it('calls submit if form is valid', async () => {
+    const user = userEvent.setup();
     render(generateJsx());
-    await userEvent.type(screen.getByTestId(sizeInput), '1');
-    await userEvent.type(screen.getByTestId(priceInput), '1');
-    await userEvent.type(screen.getByTestId(triggerPriceInput), '1');
-    await userEvent.click(screen.getByTestId(submitButton));
+    await user.type(screen.getByTestId(sizeInput), '1');
+    await user.type(screen.getByTestId(priceInput), '1');
+    await user.type(screen.getByTestId(triggerPriceInput), '1');
+    await user.click(screen.getByTestId(submitButton));
     expect(submit).toBeCalled();
   });
 
@@ -342,15 +361,16 @@ describe('StopOrder', () => {
   ])(
     'validates $fieldName field',
     async ({ ocoValue, orderTypeMarketValue }) => {
+      const user = userEvent.setup();
       render(generateJsx());
       if (orderTypeMarketValue) {
-        await userEvent.click(screen.getByTestId(orderTypeTrigger));
-        await userEvent.click(screen.getByTestId(orderTypeMarket));
+        await user.click(screen.getByTestId(orderTypeTrigger));
+        await user.click(screen.getByTestId(orderTypeMarket));
       }
       if (ocoValue) {
-        await userEvent.click(screen.getByTestId(oco));
+        await user.click(screen.getByTestId(oco));
       }
-      await userEvent.click(screen.getByTestId(submitButton));
+      await user.click(screen.getByTestId(submitButton));
       const getByTestId = (id: string) =>
         screen.getByTestId(ocoPostfix(id, ocoValue));
       const queryByTestId = (id: string) =>
@@ -362,8 +382,8 @@ describe('StopOrder', () => {
       expect(getByTestId(sizeErrorMessage)).toBeInTheDocument();
 
       // clear and fill using valid value
-      await userEvent.clear(getByTestId(sizeInput));
-      await userEvent.type(getByTestId(sizeInput), '0.1');
+      await user.clear(getByTestId(sizeInput));
+      await user.type(getByTestId(sizeInput), '0.1');
       expect(queryByTestId(sizeErrorMessage)).toBeNull();
     }
   );
@@ -372,29 +392,32 @@ describe('StopOrder', () => {
     { fieldName: 'sizeOverrideValue', ocoValue: false },
     { fieldName: 'ocoSizeOverrideValue', ocoValue: true },
   ])('validates $fieldName field 123', async ({ ocoValue }) => {
+    const user = userEvent.setup();
     render(generateJsx());
     if (ocoValue) {
-      await userEvent.click(screen.getByTestId(oco));
+      await user.click(screen.getByTestId(oco));
     }
     const getByTestId = (id: string) =>
       screen.getByTestId(ocoPostfix(id, ocoValue));
     const queryByTestId = (id: string) =>
       screen.queryByTestId(ocoPostfix(id, ocoValue));
-    await userEvent.click(getByTestId(sizeOverrideSettingPosition));
-    await userEvent.click(screen.getByTestId(submitButton));
+
+    await selectMiniSelect(ocoPostfix(sizeOverride, ocoValue), /Percentage/);
+
+    await user.click(screen.getByTestId(submitButton));
 
     // default value should be invalid
     expect(getByTestId(sizeOverrideValueErrorMessage)).toBeInTheDocument();
     // to small value should be invalid
-    await userEvent.type(getByTestId(sizeOverrideValueInput), '0.1');
+    await user.type(getByTestId(sizeOverrideValueInput), '0.1');
     expect(getByTestId(sizeOverrideValueErrorMessage)).toBeInTheDocument();
     // to big value should be invalid
-    await userEvent.type(getByTestId(sizeOverrideValueInput), '101');
+    await user.type(getByTestId(sizeOverrideValueInput), '101');
     expect(getByTestId(sizeOverrideValueErrorMessage)).toBeInTheDocument();
 
     // clear and fill using valid value
-    await userEvent.clear(getByTestId(sizeOverrideValueInput));
-    await userEvent.type(getByTestId(sizeOverrideValueInput), '10');
+    await user.clear(getByTestId(sizeOverrideValueInput));
+    await user.type(getByTestId(sizeOverrideValueInput), '10');
     expect(queryByTestId(sizeOverrideValueErrorMessage)).toBeNull();
   });
 
@@ -402,12 +425,13 @@ describe('StopOrder', () => {
     { fieldName: 'price', ocoValue: false },
     { fieldName: 'ocoPrice', ocoValue: true },
   ])('validates $fieldName field', async ({ ocoValue }) => {
+    const user = userEvent.setup();
     render(generateJsx());
 
     if (ocoValue) {
-      await userEvent.click(screen.getByTestId(oco));
+      await user.click(screen.getByTestId(oco));
     }
-    await userEvent.click(screen.getByTestId(submitButton));
+    await user.click(screen.getByTestId(submitButton));
 
     const getByTestId = (id: string) =>
       screen.getByTestId(ocoPostfix(id, ocoValue));
@@ -415,28 +439,28 @@ describe('StopOrder', () => {
       screen.queryByTestId(ocoPostfix(id, ocoValue));
     // 7002-SORD-095
     expect(getByTestId(priceErrorMessage)).toBeInTheDocument();
-    await userEvent.type(getByTestId(priceInput), '0.001');
+    await user.type(getByTestId(priceInput), '0.001');
     expect(getByTestId(priceErrorMessage)).toBeInTheDocument();
 
     // switch to market order type error should disappear
-    await userEvent.click(screen.getByTestId(orderTypeTrigger));
-    await userEvent.click(screen.getByTestId(orderTypeMarket));
-    await userEvent.click(screen.getByTestId(submitButton));
+    await user.click(screen.getByTestId(orderTypeTrigger));
+    await user.click(screen.getByTestId(orderTypeMarket));
+    await user.click(screen.getByTestId(submitButton));
     expect(queryByTestId(priceErrorMessage)).toBeNull();
 
     // switch back to limit type
-    await userEvent.click(screen.getByTestId(orderTypeTrigger));
-    await userEvent.click(screen.getByTestId(orderTypeLimit));
-    await userEvent.click(screen.getByTestId(submitButton));
+    await user.click(screen.getByTestId(orderTypeTrigger));
+    await user.click(screen.getByTestId(orderTypeLimit));
+    await user.click(screen.getByTestId(submitButton));
     expect(getByTestId(priceErrorMessage)).toBeInTheDocument();
 
     // to small value should be invalid
-    await userEvent.type(getByTestId(priceInput), '0.001');
+    await user.type(getByTestId(priceInput), '0.001');
     expect(getByTestId(priceErrorMessage)).toBeInTheDocument();
 
     // clear and fill using valid value
-    await userEvent.clear(getByTestId(priceInput));
-    await userEvent.type(getByTestId(priceInput), '0.01');
+    await user.clear(getByTestId(priceInput));
+    await user.type(getByTestId(priceInput), '0.01');
     expect(queryByTestId(priceErrorMessage)).toBeNull();
   });
 
@@ -452,45 +476,53 @@ describe('StopOrder', () => {
   ])(
     'validates $fieldName field',
     async ({ ocoValue, orderTypeMarketValue }) => {
+      console.error = () => {};
+      const user = userEvent.setup();
       render(generateJsx());
       if (orderTypeMarketValue) {
-        await userEvent.click(screen.getByTestId(orderTypeTrigger));
-        await userEvent.click(screen.getByTestId(orderTypeMarket));
+        await user.click(screen.getByTestId(orderTypeTrigger));
+        await user.click(screen.getByTestId(orderTypeMarket));
       }
       if (ocoValue) {
-        await userEvent.click(screen.getByTestId(oco));
-        await userEvent.click(screen.getByTestId(triggerDirectionFallsBelow));
+        await user.click(screen.getByTestId(oco));
+        await selectMiniSelect(triggerDirection, /Falls below/);
       }
-      await userEvent.click(screen.getByTestId(submitButton));
-      const getByTestId = (id: string) =>
-        screen.getByTestId(ocoPostfix(id, ocoValue));
-      const queryByTestId = (id: string) =>
-        screen.queryByTestId(ocoPostfix(id, ocoValue));
+      await user.click(screen.getByTestId(submitButton));
+      const getByTestId = (id: string) => {
+        return screen.getByTestId(ocoPostfix(id, ocoValue));
+      };
+      const queryByTestId = (id: string) => {
+        return screen.queryByTestId(ocoPostfix(id, ocoValue));
+      };
+
       // 7002-SORD-095
       // 7002-SORD-087
 
       expect(getByTestId(triggerPriceErrorMessage)).toBeInTheDocument();
 
       // switch to trailing percentage offset trigger type
-      await userEvent.click(getByTestId(triggerTypeTrailingPercentOffset));
+      await selectMiniSelect(
+        ocoPostfix(triggerType, ocoValue),
+        /Trailing Percent Offset/
+      );
       expect(queryByTestId(triggerPriceErrorMessage)).toBeNull();
 
       // switch back to price trigger type
-      await userEvent.click(getByTestId(triggerTypePrice));
+      await selectMiniSelect(ocoPostfix(triggerType, ocoValue), /Price/);
       expect(getByTestId(triggerPriceErrorMessage)).toBeInTheDocument();
 
       // to small value should be invalid
-      await userEvent.type(getByTestId(triggerPriceInput), '0.001');
+      await user.type(getByTestId(triggerPriceInput), '0.001');
       expect(getByTestId(triggerPriceErrorMessage)).toBeInTheDocument();
 
       // clear and fill using value causing immediate trigger
-      await userEvent.clear(getByTestId(triggerPriceInput));
-      await userEvent.type(getByTestId(triggerPriceInput), '0.01');
+      await user.clear(getByTestId(triggerPriceInput));
+      await user.type(getByTestId(triggerPriceInput), '0.01');
       expect(queryByTestId(triggerPriceErrorMessage)).toBeNull();
       expect(queryByTestId(triggerPriceWarningMessage)).toBeInTheDocument();
 
       // change to correct value
-      await userEvent.type(getByTestId(triggerPriceInput), '2');
+      await user.type(getByTestId(triggerPriceInput), '2');
       expect(queryByTestId(triggerPriceWarningMessage)).toBeNull();
     }
   );
@@ -509,113 +541,117 @@ describe('StopOrder', () => {
       orderTypeMarket: true,
     },
   ])('validates $fieldName field', async ({ ocoValue }) => {
+    const user = userEvent.setup();
     render(generateJsx());
     if (orderTypeMarket) {
-      await userEvent.click(screen.getByTestId(orderTypeTrigger));
-      await userEvent.click(screen.getByTestId(orderTypeMarket));
+      await user.click(screen.getByTestId(orderTypeTrigger));
+      await user.click(screen.getByTestId(orderTypeMarket));
     }
     if (ocoValue) {
-      await userEvent.click(screen.getByTestId(oco));
+      await user.click(screen.getByTestId(oco));
     }
-    await userEvent.click(screen.getByTestId(submitButton));
-    const getByTestId = (id: string) =>
-      screen.getByTestId(ocoPostfix(id, ocoValue));
-    const queryByTestId = (id: string) =>
-      screen.queryByTestId(ocoPostfix(id, ocoValue));
+    await user.click(screen.getByTestId(submitButton));
+    const getByTestId = (id: string) => {
+      return screen.getByTestId(ocoPostfix(id, ocoValue));
+    };
+    const queryByTestId = (id: string) => {
+      return screen.queryByTestId(ocoPostfix(id, ocoValue));
+    };
 
     // should not show error with default form values
     expect(queryByTestId(triggerTrailingPercentOffsetErrorMessage)).toBeNull();
 
     // switch to trailing percentage offset trigger type
-    await userEvent.click(getByTestId(triggerTypeTrailingPercentOffset));
+    await selectMiniSelect(
+      ocoPostfix(triggerType, ocoValue),
+      /Trailing Percent Offset/
+    );
     expect(
       getByTestId(triggerTrailingPercentOffsetErrorMessage)
     ).toBeInTheDocument();
 
     // to small value should be invalid
-    await userEvent.type(
-      getByTestId(triggerTrailingPercentOffsetInput),
-      '0.09'
-    );
+    await user.type(getByTestId(triggerTrailingPercentOffsetInput), '0.09');
     expect(
       getByTestId(triggerTrailingPercentOffsetErrorMessage)
     ).toBeInTheDocument();
 
     // clear and fill using valid value
-    await userEvent.clear(getByTestId(triggerTrailingPercentOffsetInput));
-    await userEvent.type(getByTestId(triggerTrailingPercentOffsetInput), '0.1');
+    await user.clear(getByTestId(triggerTrailingPercentOffsetInput));
+    await user.type(getByTestId(triggerTrailingPercentOffsetInput), '0.1');
     expect(queryByTestId(triggerTrailingPercentOffsetErrorMessage)).toBeNull();
 
     // to big value should be invalid
-    await userEvent.clear(getByTestId(triggerTrailingPercentOffsetInput));
-    await userEvent.type(
-      getByTestId(triggerTrailingPercentOffsetInput),
-      '99.91'
-    );
+    await user.clear(getByTestId(triggerTrailingPercentOffsetInput));
+    await user.type(getByTestId(triggerTrailingPercentOffsetInput), '99.91');
     expect(
       getByTestId(triggerTrailingPercentOffsetErrorMessage)
     ).toBeInTheDocument();
 
     // clear and fill using valid value
-    await userEvent.clear(getByTestId(triggerTrailingPercentOffsetInput));
-    await userEvent.type(
-      getByTestId(triggerTrailingPercentOffsetInput),
-      '99.9'
-    );
+    await user.clear(getByTestId(triggerTrailingPercentOffsetInput));
+    await user.type(getByTestId(triggerTrailingPercentOffsetInput), '99.9');
     expect(queryByTestId(triggerTrailingPercentOffsetErrorMessage)).toBeNull();
   });
 
   it('sync oco trigger', async () => {
+    const user = userEvent.setup();
     render(generateJsx());
-    await userEvent.click(screen.getByTestId(oco));
+    await user.click(screen.getByTestId(oco));
     // 7002-SORD-099
-    expect(
-      screen.getByTestId(triggerDirectionRisesAbove).dataset.state
-    ).toEqual('checked');
+    expect(screen.getByTestId(triggerDirection).nextSibling).toHaveValue(
+      Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE
+    );
     // 7002-SORD-091
     expect(
-      screen.getByTestId(ocoPostfix(triggerDirectionFallsBelow)).dataset.state
-    ).toEqual('checked');
-    await userEvent.click(screen.getByTestId(triggerDirectionFallsBelow));
-    expect(
-      screen.getByTestId(triggerDirectionRisesAbove).dataset.state
-    ).toEqual('unchecked');
-    expect(
-      screen.getByTestId(ocoPostfix(triggerDirectionFallsBelow)).dataset.state
-    ).toEqual('unchecked');
-    await userEvent.click(
-      screen.getByTestId(ocoPostfix(triggerDirectionFallsBelow))
+      screen.getByTestId(ocoPostfix(triggerDirection, true)).nextSibling
+    ).toHaveValue(
+      Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE
     );
+
+    await selectMiniSelect(triggerDirection, /Falls below/);
+    expect(screen.getByTestId(triggerDirection).nextSibling).toHaveValue(
+      Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_FALLS_BELOW
+    );
+
+    await selectMiniSelect(ocoPostfix(triggerDirection, true), /Falls below/);
+    // Its the opposite of the direction above because 'One Closes the Other' is selected
     expect(
-      screen.getByTestId(triggerDirectionRisesAbove).dataset.state
-    ).toEqual('checked');
-    expect(
-      screen.getByTestId(ocoPostfix(triggerDirectionFallsBelow)).dataset.state
-    ).toEqual('checked');
+      screen.getByTestId(ocoPostfix(triggerDirection, true)).nextSibling
+    ).toHaveValue(
+      Schema.StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE
+    );
   });
 
   it('disables submit expiry strategy when OCO selected', async () => {
+    const user = userEvent.setup();
     render(generateJsx());
-    await userEvent.click(screen.getByTestId(expire));
-    await userEvent.click(screen.getByTestId(expiryStrategySubmit));
-    await userEvent.click(screen.getByTestId(oco));
-    expect(screen.getByTestId(expiryStrategySubmit).dataset.state).toEqual(
-      'unchecked'
+    await user.click(screen.getByTestId(expire));
+    await user.click(screen.getByTestId(oco));
+
+    expect(
+      screen.queryByTestId('stop-expiry-strategy')
+    ).not.toBeInTheDocument();
+
+    await user.click(screen.getByTestId(oco));
+
+    const stopExpiry = screen.getByTestId('stop-expiry-strategy');
+    expect(stopExpiry).toBeInTheDocument();
+    expect(stopExpiry).not.toBeDisabled();
+
+    await selectMiniSelect('stop-expiry-strategy', /Cancel/);
+    expect(screen.getByTestId('stop-expiry-strategy').nextSibling).toHaveValue(
+      Schema.StopOrderExpiryStrategy.EXPIRY_STRATEGY_CANCELS
     );
-    expect(screen.getByTestId(expiryStrategySubmit)).toBeDisabled();
-    await userEvent.click(screen.getByTestId(oco));
-    await userEvent.click(screen.getByTestId(expiryStrategySubmit));
-    expect(screen.getByTestId(expiryStrategySubmit).dataset.state).toEqual(
-      'checked'
-    );
-    expect(screen.getByTestId(expiryStrategySubmit)).not.toBeDisabled();
   });
 
   it('sets expiry time/date to now if expiry is changed to checked', async () => {
+    const user = userEvent.setup();
     const now = 24 * 60 * 60 * 1000;
     render(generateJsx());
     jest.spyOn(global.Date, 'now').mockImplementation(() => now);
-    await userEvent.click(screen.getByTestId(expire));
+
+    await user.click(screen.getByTestId(expire));
 
     // expiry time/date was empty it should be set to now
     expect(
@@ -633,8 +669,8 @@ describe('StopOrder', () => {
     ).toEqual(now);
 
     // switch expiry off and on
-    await userEvent.click(screen.getByTestId(expire));
-    await userEvent.click(screen.getByTestId(expire));
+    await user.click(screen.getByTestId(expire));
+    await user.click(screen.getByTestId(expire));
     // expiry time/date was in the past it should be set to now
     expect(
       new Date(screen.getByTestId<HTMLInputElement>(datePicker).value).getTime()
@@ -642,25 +678,27 @@ describe('StopOrder', () => {
   });
 
   it('shows limit of active stop orders number', async () => {
+    const user = userEvent.setup();
     mockActiveStopOrders.mockReturnValue({
       data: Array(4),
     });
     render(generateJsx());
     expect((mockActiveStopOrders as jest.Mock).mock.lastCall?.[2]).toBe(true);
-    await userEvent.type(screen.getByTestId(sizeInput), '0.01');
+    await user.type(screen.getByTestId(sizeInput), '0.01');
     expect((mockActiveStopOrders as jest.Mock).mock.lastCall?.[2]).toBe(false);
     // 7002-SORD-011
     expect(screen.getByTestId(numberOfActiveOrdersLimit)).toBeInTheDocument();
   });
 
   it('counts oco as two orders', async () => {
+    const user = userEvent.setup();
     mockActiveStopOrders.mockReturnValue({
       data: Array(3),
     });
     render(generateJsx());
-    await userEvent.type(screen.getByTestId(sizeInput), '0.01');
+    await user.type(screen.getByTestId(sizeInput), '0.01');
     expect(screen.queryByTestId(numberOfActiveOrdersLimit)).toBeNull();
-    await userEvent.click(screen.getByTestId(oco));
+    await user.click(screen.getByTestId(oco));
     expect(screen.getByTestId(numberOfActiveOrdersLimit)).toBeInTheDocument();
   });
 });

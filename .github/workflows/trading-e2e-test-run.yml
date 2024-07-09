@@ -215,6 +215,7 @@ jobs:
           if [ "$(ls -A $parent_dir)" ]; then
             echo "Zipping the parent directory..."
             zip -r market-sim-logs.zip "$parent_dir" && echo "Zip file created successfully."
+            rm -rf $parent_dir;
           else
             echo "$parent_dir is empty. No zip file created."
             exit 0
