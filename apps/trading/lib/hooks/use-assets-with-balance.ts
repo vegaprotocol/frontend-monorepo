@@ -42,21 +42,15 @@ export const useAssetsWithBalance = () => {
   });
 
   // Add the foreign wallet balance to our array of assets
-  const withBalance = assets
-    .map((a, i) => {
-      let balance = '';
+  const withBalance = assets.map((a, i) => {
+    let balance = '';
 
-      if (balanceData && balanceData[i].result) {
-        balance = (balanceData[i].result as bigint).toString();
-      }
+    if (balanceData && balanceData[i].result) {
+      balance = (balanceData[i].result as bigint).toString();
+    }
 
-      return { ...a, balance };
-    })
-    .filter((a) => {
-      if (a.balance === '') return false;
-      if (a.balance === '0') return false;
-      return true;
-    });
+    return { ...a, balance };
+  });
 
   return {
     ...queryResult,

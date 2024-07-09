@@ -8,8 +8,12 @@ runs:
     - name: Previous run cleanup
       shell: bash
       run: |
-        docker stop $(docker ps -a -q)
-        docker rm $(docker ps -a -q)
+        sudo pkill -9 nomad || echo;
+        sudo pkill -9 vega || echo;
+        sudo pkill -9 visor || echo;
+        rm -rf /home/github-runner/.vegacapsule || echo
+        docker stop $(docker ps -a -q) || echo
+        docker rm $(docker ps -a -q) || echo
 
     - name: Vegacapsule version
       shell: bash

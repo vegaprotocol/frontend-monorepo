@@ -45,6 +45,8 @@
       "executor": "@nx/webpack:dev-server",
       "options": {
         "port": 4210,
+        "host": "0.0.0.0",
+        "allowedHosts": "all",
         "buildTarget": "governance:build:development",
         "hmr": true
       },
