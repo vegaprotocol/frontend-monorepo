@@ -63,7 +63,12 @@ yarn build;
 # bootstrap a new network
 vegacapsule network bootstrap --config-path ./vegacapsule/config.hcl --force --do-not-stop-on-failure;
 
-# Run tests
+# setup vegawallet
+cd ./vegacapsule;
+chmod a+x setup-vegawallet.sh;
+./setup-vegawallet.sh;
+
+# run tests
 XDG_RUNTIME_DIR=$PATH:~/.cache/xdgr \
     yarn nx run governance-e2e:e2e  \
         --browser chrome \
@@ -71,7 +76,8 @@ XDG_RUNTIME_DIR=$PATH:~/.cache/xdgr \
         --verbose \
         --runner-ui \
         --headed \
-        --spec "./apps/governance-e2e/src/integration/view/home.cy.ts"
+        --spec "./apps/governance-e2e/src/integration/view/home.cy.ts" \
+        --no-exit
 ```
 
 ## Vega Wallet Setup
