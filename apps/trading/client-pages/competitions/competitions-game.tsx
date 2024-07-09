@@ -24,88 +24,31 @@ import {
   EntityScopeLabelMapping,
 } from '@vegaprotocol/types';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './tabs';
+import { useScoresQuery } from './__generated__/Scores';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 
 export const CompetitionsGame = () => {
   const t = useT();
+  const { pubKey } = useVegaWallet();
   const { gameId } = useParams();
 
   const { data: currentEpoch, loading: currentEpochLoading } =
     useCurrentEpoch();
   const { data: cardData, loading: cardLoading } = useReward(gameId);
-  const { data: assets, loading: assetsLoading } = useAssetsMapProvider();
+  // const { data: assets, loading: assetsLoading } = useAssetsMapProvider();
   const { data: teams, loading: teamsLoading } = useTeamsMap();
 
   const { data: gamesData, loading: gamesLoading } = useGames({ gameId });
 
-  const dependable = (value: string | JSX.Element | null) => {
-    if (assetsLoading || teamsLoading) return <Loader size="small" />;
-    return value;
-  };
-
-  const entries = flatten(
-    compact(
-      gamesData?.map((d) => {
-        const teamEntities = d.entities.filter(
-          (ent) => ent.__typename === 'TeamGameEntity' && ent.team
-        ) as TeamEntityFragment[];
-
-        const entities = teamEntities.map((ent) => ({
-          ...omit(ent, '__typename', 'rank', 'team'),
-          rank: determineRank(teamEntities, ent),
-          team: ent.team.teamId,
-        }));
-
-        if (!entities || entities.length === 0) return undefined;
-
-        return {
-          ...omit(d, '__typename', 'entities', 'team', 'rewardAssetId'),
-          asset: assets?.[d.rewardAssetId],
-          entities,
-        };
-      }) || []
-    ).map((ep) => {
-      return ep.entities.map((ent) => ({
-        epoch: ep.epoch,
-        rank: ent.rank,
-        amount: dependable(
-          ep.asset
-            ? addDecimalsFormatNumberQuantum(
-                ent.rewardEarned,
-                ep.asset.decimals,
-                ep.asset.quantum
-              )
-            : '-'
-        ),
-        volume: ent.volume,
-        teamAvatar: dependable(
-          teams[ent.team] ? (
-            <Link to={Links.COMPETITIONS_TEAM(ent.team)}>
-              <TeamAvatar
-                teamId={ent.team}
-                imgUrl={teams[ent.team].avatarUrl}
-                size="small"
-              />
-            </Link>
-          ) : null
-        ),
-        teamName: dependable(
-          teams[ent.team] ? (
-            <Link
-              to={Links.COMPETITIONS_TEAM(ent.team)}
-              className="hover:underline"
-            >
-              {teams[ent.team].name}
-            </Link>
-          ) : null
-        ),
-      }));
-    })
-  );
+  const { data: scoresData } = useScoresQuery({
+    variables: { gameId: gameId || '', partyId: pubKey || '' },
+    skip: !gameId,
+  });
 
   const showCard = !(cardLoading || currentEpochLoading) && cardData;
   const showTable = !gamesLoading;
 
-  if (!cardData) {
+  if (!cardData || !teams || !teams) {
     return null;
   }
 
@@ -124,6 +67,20 @@ export const CompetitionsGame = () => {
   const notional =
     dispatchStrategy.notionalTimeWeightedAveragePositionRequirement;
 
+  let scores = compact(scoresData?.gameTeamScores?.edges?.map((e) => e.node));
+  scores = orderBy(scores, [(d) => Number(d.score)], ['desc']);
+  // @ts-ignore purposefully overwriting the scores variables here
+  scores = scores.map((t, i) => {
+    const team = teams[t.teamId];
+    return {
+      rank: i + 1,
+      team: {
+        name: team.name,
+        avatar: team.avatarUrl,
+      },
+      score: t.score,
+    };
+  });
   return (
     <ErrorBoundary>
       <LayoutWithGradient>
@@ -195,7 +152,7 @@ export const CompetitionsGame = () => {
             </div>
           </dl>
         </section>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+        {/*<div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           <div>
             {showCard ? (
               <div>
@@ -240,14 +197,33 @@ export const CompetitionsGame = () => {
               <Loader size="small" />
             )}
           </div>
-        </div>
+        </div>*/}
         <section>
           <Tabs defaultValue="scores">
             <TabsList>
               <TabsTrigger value="scores">Live scores</TabsTrigger>
               <TabsTrigger value="history">Score history</TabsTrigger>
             </TabsList>
-            <TabsContent value="scores">Live scores</TabsContent>
+            <TabsContent value="scores">
+              <Table
+                columns={[
+                  {
+                    name: 'rank',
+                    displayName: t('Rank'),
+                  },
+                  {
+                    name: 'team',
+                    displayName: t('Team'),
+                    renderer: (d) => {
+                      // TODO: show avatar and name here
+                      return 'foo';
+                    },
+                  },
+                  { name: 'score', displayName: t('Live score') },
+                ]}
+                data={scores}
+              />
+            </TabsContent>
             <TabsContent value="history">Score history</TabsContent>
           </Tabs>
         </section>

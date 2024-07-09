@@ -1,0 +1,38 @@
+fragment TeamScoreFields on GameTeamScore {
+  gameId
+  teamId
+  epochId
+  time
+  score
+}
+
+fragment PartyScoreFields on GamePartyScore {
+  gameId
+  teamId
+  epochId
+  partyId
+  time
+  score
+  stakingBalance
+  openVolume
+  totalFeesPaid
+  isEligible
+  rank
+}
+
+query Scores($gameId: ID!, $partyId: ID!) {
+  gameTeamScores(filter: { gameIds: [$gameId] }) {
+    edges {
+      node {
+        ...TeamScoreFields
+      }
+    }
+  }
+  gamePartyScores(filter: { partyIds: [$partyId] }) {
+    edges {
+      node {
+        ...PartyScoreFields
+      }
+    }
+  }
+}

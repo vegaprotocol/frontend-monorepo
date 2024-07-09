@@ -9,6 +9,7 @@ export const GRADIENT =
 type TableColumnDefinition = {
   displayName?: ReactNode;
   name: string;
+  renderer?: (d: string | number | object) => ReactNode;
   tooltip?: string;
   className?: string;
   headerClassName?: string;
@@ -103,39 +104,43 @@ export const Table = forwardRef<
                 }
               }}
             >
-              {columns.map(({ name, displayName, className, testId }, j) => (
-                <td
-                  className={classNames(
-                    'px-5 py-3',
-                    {
-                      'max-md:flex max-md:flex-col max-md:justify-between':
-                        !noCollapse,
-                    },
-                    INNER_BORDER_STYLE,
-                    {
-                      'border-none': i === data.length - 1 && noCollapse,
-                      'md:border-none': i === data.length - 1,
-                      'max-md:border-none':
-                        i === data.length - 1 && j === columns.length - 1,
-                    },
-                    className
-                  )}
-                  key={`${i}-${name}`}
-                >
-                  {/** display column name in mobile view */}
-                  {!noCollapse && !noHeader && displayName && (
-                    <span
-                      aria-hidden
-                      className="px-0 font-mono text-xs md:hidden text-vega-clight-100 dark:text-vega-cdark-100"
-                    >
-                      {displayName}
+              {columns.map(
+                ({ name, displayName, className, testId, renderer }, j) => (
+                  <td
+                    className={classNames(
+                      'px-5 py-3',
+                      {
+                        'max-md:flex max-md:flex-col max-md:justify-between':
+                          !noCollapse,
+                      },
+                      INNER_BORDER_STYLE,
+                      {
+                        'border-none': i === data.length - 1 && noCollapse,
+                        'md:border-none': i === data.length - 1,
+                        'max-md:border-none':
+                          i === data.length - 1 && j === columns.length - 1,
+                      },
+                      className
+                    )}
+                    key={`${i}-${name}`}
+                  >
+                    {/** display column name in mobile view */}
+                    {!noCollapse && !noHeader && displayName && (
+                      <span
+                        aria-hidden
+                        className="px-0 font-mono text-xs md:hidden text-vega-clight-100 dark:text-vega-cdark-100"
+                      >
+                        {displayName}
+                      </span>
+                    )}
+                    <span data-testid={`${testId || name}-${i}`}>
+                      {typeof renderer === 'function'
+                        ? renderer(dataEntry[name])
+                        : dataEntry[name]}
                     </span>
-                  )}
-                  <span data-testid={`${testId || name}-${i}`}>
-                    {dataEntry[name]}
-                  </span>
-                </td>
-              ))}
+                  </td>
+                )
+              )}
             </tr>
           ))}
         </tbody>
