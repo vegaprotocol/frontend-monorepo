@@ -23,6 +23,7 @@ import {
   DistributionStrategyMapping,
   EntityScopeLabelMapping,
 } from '@vegaprotocol/types';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from './tabs';
 
 export const CompetitionsGame = () => {
   const t = useT();
@@ -240,6 +241,16 @@ export const CompetitionsGame = () => {
             )}
           </div>
         </div>
+        <section>
+          <Tabs defaultValue="scores">
+            <TabsList>
+              <TabsTrigger value="scores">Live scores</TabsTrigger>
+              <TabsTrigger value="history">Score history</TabsTrigger>
+            </TabsList>
+            <TabsContent value="scores">Live scores</TabsContent>
+            <TabsContent value="history">Score history</TabsContent>
+          </Tabs>
+        </section>
       </LayoutWithGradient>
     </ErrorBoundary>
   );
