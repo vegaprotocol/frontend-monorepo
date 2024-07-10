@@ -239,8 +239,11 @@ export const MultiSelectOption = forwardRef<
       'select-none',
       'whitespace-nowrap'
     )}
-    {...props}
+    onSelect={(e) => {
+      e.preventDefault();
+    }}
     ref={forwardedRef}
+    {...props}
   >
     <PseudoCheckbox checked={checked} />
     <div>{children}</div>

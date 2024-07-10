@@ -118,7 +118,7 @@ export const MarketsPage = () => {
   return (
     <ErrorBoundary feature="rewards">
       <TinyScroll>
-        <div className="xl:container mx-auto flex flex-col gap-4 p-4">
+        <div className="md:max-w-7xl mx-auto flex flex-col gap-4 p-4">
           <div className="grid auto-rows-min grid-cols-3 lg:grid-cols-5 xl:grid-cols-3 gap-3">
             <div className="flex flex-col gap-2 col-span-full lg:col-span-1">
               <Card key="24h-vol" className="flex grow">
@@ -422,9 +422,9 @@ export const MarketTables = ({
                 onClick={() => {
                   let types = marketTypes;
                   if (isMarketTypeSelected(marketType)) {
-                    types = types.filter((t) => t !== marketType);
+                    types = [];
                   } else {
-                    types = uniq([...marketTypes, marketType]);
+                    types = [marketType];
                   }
                   setMarketTypes(types);
                 }}
