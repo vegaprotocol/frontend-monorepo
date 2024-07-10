@@ -10,7 +10,7 @@ import {
   StopOrderSizeOverrideSetting,
 } from '@vegaprotocol/types';
 
-import { Form, FormGrid, FormGridCol } from '../elements/form';
+import { FieldControls, Form, FormGrid, FormGridCol } from '../elements/form';
 import { type FormFieldsStopLimit, schemaStopLimit } from '../schemas';
 import { TicketTypeSelect } from '../ticket-type-select';
 import { type FormProps } from '../ticket-perp';
@@ -79,17 +79,17 @@ export const TicketStopMarket = (props: FormProps) => {
         <Fields.Side control={form.control} />
         <TicketTypeSelect type="stopLimit" onTypeChange={props.onTypeChange} />
         <div className="flex flex-col gap-1">
-          <div className="flex gap-4 justify-end">
+          <FieldControls>
             <Fields.StopTriggerDirection control={form.control} />
             <Fields.StopTriggerType control={form.control} />
-          </div>
+          </FieldControls>
           <Fields.StopTrigger control={form.control} />
         </div>
         <Fields.Price control={form.control} />
         <div className="flex flex-col gap-1">
-          <div className="flex gap-1 justify-end">
+          <FieldControls>
             <Fields.StopSizeOverride control={form.control} />
-          </div>
+          </FieldControls>
           <Fields.StopSize control={form.control} />
         </div>
         <FormGrid>
@@ -112,7 +112,7 @@ export const TicketStopMarket = (props: FormProps) => {
           <>
             <hr className="border-default my-4" />
             <div className="flex flex-col gap-1">
-              <div className="flex gap-4 justify-end">
+              <FieldControls>
                 <Fields.StopTriggerDirection
                   control={form.control}
                   name="ocoTriggerDirection"
@@ -121,17 +121,17 @@ export const TicketStopMarket = (props: FormProps) => {
                   control={form.control}
                   name="ocoTriggerType"
                 />
-              </div>
+              </FieldControls>
               <Fields.StopTrigger control={form.control} name="ocoTrigger" />
             </div>
             <Fields.Price control={form.control} name="ocoPrice" />
             <div className="flex flex-col gap-1">
-              <div className="flex gap-1 justify-end">
+              <FieldControls>
                 <Fields.StopSizeOverride
                   control={form.control}
                   name="ocoSizeOverride"
                 />
-              </div>
+              </FieldControls>
               <Fields.StopSize control={form.control} name="ocoSize" />
             </div>
           </>

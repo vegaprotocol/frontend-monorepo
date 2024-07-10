@@ -24,6 +24,10 @@ export const FormGridCol = (props: HTMLAttributes<HTMLDivElement>) => {
   );
 };
 
+export const FieldControls = (props: HTMLAttributes<HTMLDivElement>) => {
+  return <div {...props} className="flex gap-4 justify-end" />;
+};
+
 export const InputLabel = ({
   label,
   symbol,
