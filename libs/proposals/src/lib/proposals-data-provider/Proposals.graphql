@@ -411,6 +411,57 @@ fragment CancelTransferFields on CancelTransfer {
   transferId
 }
 
+fragment BatchproposalListFields on BatchProposal {
+  __typename
+  id
+  datetime
+  rationale {
+    title
+    description
+  }
+  batchTerms {
+    closingDatetime
+  }
+  subProposals {
+    terms {
+      closingDatetime
+      enactmentDatetime
+      change {
+        ...ChangeFragment
+      }
+    }
+  }
+  reference
+  state
+  datetime
+  rejectionReason
+  party {
+    id
+    __typename
+  }
+  votes {
+    yes {
+      totalTokens
+      totalNumber
+      totalWeight
+      __typename
+    }
+    no {
+      totalTokens
+      totalNumber
+      totalWeight
+      __typename
+    }
+    __typename
+  }
+  errorDetails
+  rejectionReason
+  requiredMajority
+  requiredParticipation
+  requiredLpMajority
+  requiredLpParticipation
+}
+
 fragment ProposalListFields on Proposal {
   id
   rationale {
@@ -446,34 +497,43 @@ fragment ProposalListFields on Proposal {
     closingDatetime
     enactmentDatetime
     change {
-      __typename
-      ... on NewMarket {
-        ...NewMarketFields
-      }
-      ... on UpdateMarket {
-        ...UpdateMarketFields
-      }
-      ... on NewAsset {
-        ...NewAssetFields
-      }
-      ... on UpdateAsset {
-        ...UpdateAssetFields
-      }
-      ... on UpdateNetworkParameter {
-        ...UpdateNetworkParameterFields
-      }
-      ... on UpdateMarketState {
-        ...UpdateMarketStateFields
-      }
+      ...ChangeFragment
     }
+  }
+}
+
+fragment ChangeFragment on ProposalChange {
+  __typename
+  ... on NewMarket {
+    ...NewMarketFields
+  }
+  ... on UpdateMarket {
+    ...UpdateMarketFields
+  }
+  ... on NewAsset {
+    ...NewAssetFields
+  }
+  ... on UpdateAsset {
+    ...UpdateAssetFields
+  }
+  ... on UpdateNetworkParameter {
+    ...UpdateNetworkParameterFields
+  }
+  ... on UpdateMarketState {
+    ...UpdateMarketStateFields
   }
 }
 
 query ProposalsList($proposalType: ProposalType, $inState: ProposalState) {
   proposalsConnection(proposalType: $proposalType, inState: $inState) {
     edges {
-      node {
-        ...ProposalListFields
+      proposalNode {
+        ... on Proposal {
+          ...ProposalListFields
+        }
+        ... on BatchProposal {
+          ...BatchproposalListFields
+        }
       }
     }
   }
@@ -541,6 +601,10 @@ query MarketViewProposals(
       proposalNode {
         ... on BatchProposal {
           id
+          rationale {
+            title
+            description
+          }
           subProposals {
             ...SubProposal
           }

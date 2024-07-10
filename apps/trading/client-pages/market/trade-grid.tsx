@@ -25,13 +25,13 @@ const MainGrid = memo(
     const featureFlags = useFeatureFlags((state) => state.flags);
     const t = useT();
     const [rowSizes, handleRowSizes] = usePaneLayout({
-      id: 'row',
+      id: 'trade-row',
     });
     const [innerRowSizes, handleInnerRowChange] = usePaneLayout({
-      id: 'inner-row',
+      id: 'trade-inner-row',
     });
     const [verticalSizes, handleVerticalChange] = usePaneLayout({
-      id: 'col',
+      id: 'trade-col',
     });
 
     return (
@@ -44,7 +44,9 @@ const MainGrid = memo(
               </TradeGridChild>
             </ResizableGridPanel>
             <ResizableGridPanel
-              preferredSize={verticalSizes[0]}
+              // use verticalSizes[1] because the previous pane is for
+              // the market header which is always fixed size
+              preferredSize={verticalSizes[1]}
               priority={LayoutPriority.High}
               minSize={200}
             >
@@ -120,7 +122,9 @@ const MainGrid = memo(
               </ResizableGrid>
             </ResizableGridPanel>
             <ResizableGridPanel
-              preferredSize={verticalSizes[1] || '25%'}
+              // use verticalSizes[2] because the first pane is for
+              // the market header which is always fixed size
+              preferredSize={verticalSizes[2] || '25%'}
               minSize={50}
               priority={LayoutPriority.Low}
             >
