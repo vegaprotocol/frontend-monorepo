@@ -11,7 +11,7 @@ export type AssetMarketsQuery = { __typename?: 'Query', marketsConnection?: { __
 
 export const AssetMarketsDocument = gql`
     query AssetMarkets {
-  marketsConnection(includeSettled: false) {
+  marketsConnection(includeSettled: true) {
     edges {
       node {
         id

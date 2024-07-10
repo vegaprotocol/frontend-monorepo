@@ -1,5 +1,5 @@
 query AssetMarkets {
-  marketsConnection(includeSettled: false) {
+  marketsConnection(includeSettled: true) {
     edges {
       node {
         id
