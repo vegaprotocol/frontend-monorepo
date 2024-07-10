@@ -20,8 +20,8 @@ fragment PartyScoreFields on GamePartyScore {
   rank
 }
 
-query Scores($gameId: ID!, $partyId: ID!) {
-  gameTeamScores(filter: { gameIds: [$gameId] }) {
+query Scores($gameId: ID!, $partyId: ID!, $epochFrom: Int) {
+  gameTeamScores(filter: { gameIds: [$gameId], epochFrom: $epochFrom }) {
     edges {
       node {
         ...TeamScoreFields

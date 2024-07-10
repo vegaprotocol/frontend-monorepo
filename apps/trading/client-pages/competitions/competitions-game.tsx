@@ -10,10 +10,13 @@ import {
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
-import { determineRank, useGames } from '../../lib/hooks/use-games';
+import { Game, determineRank, useGames } from '../../lib/hooks/use-games';
 import { Table } from '../../components/table';
 import { type TeamEntityFragment } from '../../lib/hooks/__generated__/Games';
-import { useAssetsMapProvider } from '@vegaprotocol/assets';
+import {
+  AssetFieldsFragment,
+  useAssetsMapProvider,
+} from '@vegaprotocol/assets';
 import omit from 'lodash/omit';
 import orderBy from 'lodash/orderBy';
 import compact from 'lodash/compact';
@@ -35,9 +38,14 @@ import {
   RankTable,
 } from '@vegaprotocol/types';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './tabs';
-import { useScoresQuery } from './__generated__/Scores';
+import {
+  TeamScoreFieldsFragment,
+  useScoresQuery,
+} from './__generated__/Scores';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import BigNumber from 'bignumber.js';
+import { TEAMS_STATS_EPOCHS } from '../../lib/hooks/constants';
+import { TeamsFieldsFragment } from 'apps/trading/lib/hooks/__generated__/Teams';
 
 export const CompetitionsGame = () => {
   const t = useT();
@@ -53,12 +61,13 @@ export const CompetitionsGame = () => {
   const { data: gamesData, loading: gamesLoading } = useGames({ gameId });
 
   const { data: scoresData } = useScoresQuery({
-    variables: { gameId: gameId || '', partyId: pubKey || '' },
-    skip: !gameId,
+    variables: {
+      epochFrom: currentEpoch ? currentEpoch - TEAMS_STATS_EPOCHS : 0,
+      gameId: gameId || '',
+      partyId: pubKey || '',
+    },
+    skip: !currentEpoch || !gameId,
   });
-
-  const showCard = !(cardLoading || currentEpochLoading) && cardData;
-  const showTable = !gamesLoading;
 
   if (!cardData || !teams || !scoresData) {
     return null;
@@ -70,7 +79,9 @@ export const CompetitionsGame = () => {
     return null;
   }
 
-  console.log(gamesData);
+  if (!currentEpoch) {
+    return null;
+  }
 
   const dispatchStrategy = cardData.transfer.kind.dispatchStrategy;
   const dispatchMetric = dispatchStrategy.dispatchMetric;
@@ -93,71 +104,8 @@ export const CompetitionsGame = () => {
 
   if (!rankTable) return null;
 
-  const _scores = compact(
+  const allScores = compact(
     scoresData?.gameTeamScores?.edges?.map((e) => e.node)
-  );
-  const sumOfScores = _scores.reduce(
-    (sum, s) => sum.plus(s.score),
-    BigNumber(0)
-  );
-
-  // Get total of all ratios for each team
-  const total = _scores
-    .map((_, i) => {
-      const teamRank = i + 1;
-      const nextRankIndex = rankTable.findIndex((r) => {
-        return r.startRank > teamRank;
-      });
-      const payoutRank = rankTable[nextRankIndex - 1];
-      return payoutRank.shareRatio;
-    })
-    .reduce((sum, ratio) => sum + ratio, 0);
-
-  const scores = orderBy(_scores, [(d) => Number(d.score)], ['desc']).map(
-    (t, i) => {
-      const teamRank = i + 1;
-      const team = teams[t.teamId];
-
-      let reward: BigNumber;
-
-      if (
-        dispatchStrategy.distributionStrategy ===
-        DistributionStrategy.DISTRIBUTION_STRATEGY_RANK
-      ) {
-        const nextRankIndex = rankTable.findIndex((r) => {
-          return r.startRank > teamRank;
-        });
-        const payoutRank = rankTable[nextRankIndex - 1];
-        reward = toBigNum(amount, asset.decimals)
-          .times(payoutRank.shareRatio)
-          .div(total);
-      } else {
-        reward = toBigNum(amount, asset.decimals).times(
-          BigNumber(t.score).div(sumOfScores)
-        );
-      }
-
-      return {
-        rank: teamRank,
-        team: (
-          <Link
-            to={Links.COMPETITIONS_TEAM(team.teamId)}
-            className="flex gap-4 items-center"
-          >
-            <span>
-              <TeamAvatar
-                teamId={team.teamId}
-                imgUrl={team.avatarUrl}
-                size="small"
-              />
-            </span>
-            <span>{team.name}</span>
-          </Link>
-        ),
-        score: formatNumber(t.score, 2),
-        estimatedRewards: formatNumber(reward, 2),
-      };
-    }
   );
 
   return (
@@ -246,109 +194,238 @@ export const CompetitionsGame = () => {
             )}
           </dl>
         </section>
-        {/*<div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-          <div>
-            {showCard ? (
-              <div>
-                <ActiveRewardCard
-                  transferNode={cardData}
-                  currentEpoch={currentEpoch || 0}
-                />
-              </div>
-            ) : (
-              <Loader size="small" />
-            )}
-          </div>
-
-          <div className="md:col-span-2">
-            {showTable ? (
-              gamesData ? (
-                <Table
-                  columns={[
-                    {
-                      name: 'epoch',
-                      displayName: t('Epoch'),
-                    },
-                    { name: 'rank', displayName: t('Rank') },
-                    {
-                      name: 'teamAvatar',
-                      displayName: t('Team avatar'),
-                      className: 'md:w-20',
-                    },
-                    { name: 'teamName', displayName: t('Team name') },
-                    { name: 'amount', displayName: t('Rewards earned') },
-                  ].map((c) => ({ ...c, headerClassName: 'text-left' }))}
-                  data={orderBy(
-                    entries,
-                    ['epoch', 'rank', 'teamName'],
-                    ['desc', 'asc', 'asc']
-                  )}
-                />
-              ) : (
-                <div className="text-base text-center">{t('No data')}</div>
-              )
-            ) : (
-              <Loader size="small" />
-            )}
-          </div>
-        </div>*/}
         <section>
-          <Tabs defaultValue="scores">
+          <Tabs defaultValue="history">
             <TabsList>
               <TabsTrigger value="scores">Live scores</TabsTrigger>
               <TabsTrigger value="history">Score history</TabsTrigger>
             </TabsList>
             <TabsContent value="scores">
-              <Table
-                columns={[
-                  {
-                    name: 'rank',
-                    displayName: t('Rank'),
-                  },
-                  {
-                    name: 'team',
-                    displayName: t('Team'),
-                  },
-                  {
-                    name: 'score',
-                    displayName: t('Live score'),
-                  },
-                  {
-                    name: 'estimatedRewards',
-                    displayName: t('Estimated reward ({{symbol}})', {
-                      symbol: asset.symbol,
-                    }),
-                  },
-                ]}
-                data={scores}
+              <LiveScoresTable
+                currentEpoch={currentEpoch}
+                scores={allScores}
+                asset={asset}
+                rewardAmount={amount}
+                rankTable={rankTable}
+                teams={teams}
+                distributionStrategy={dispatchStrategy.distributionStrategy}
               />
             </TabsContent>
             <TabsContent value="history">
-              <Table
-                columns={[
-                  {
-                    name: 'rank',
-                    displayName: t('Rank'),
-                  },
-                  {
-                    name: 'team',
-                    displayName: t('Team'),
-                  },
-                  {
-                    name: 'Epoch',
-                    displayName: t('Epoch'),
-                  },
-                  {
-                    name: 'rewards',
-                    displayName: t('Rewards earned'),
-                  },
-                ]}
-                data={[]}
+              <HistoricScoresTable
+                currentEpoch={currentEpoch}
+                scores={allScores}
+                asset={asset}
+                rewardAmount={amount}
+                rankTable={rankTable}
+                teams={teams}
+                distributionStrategy={dispatchStrategy.distributionStrategy}
+                games={gamesData || []}
               />
             </TabsContent>
           </Tabs>
         </section>
       </LayoutWithGradient>
     </ErrorBoundary>
+  );
+};
+
+const LiveScoresTable = ({
+  currentEpoch,
+  scores,
+  asset,
+  distributionStrategy,
+  rankTable,
+  teams,
+  rewardAmount,
+}: {
+  currentEpoch: number;
+  scores: TeamScoreFieldsFragment[];
+  asset: AssetFieldsFragment;
+  distributionStrategy: DistributionStrategy;
+  rankTable: RankTable[];
+  teams: Record<string, TeamsFieldsFragment>;
+  rewardAmount: string;
+}) => {
+  const t = useT();
+  const _scores = scores.filter((s) => s.epochId === currentEpoch);
+
+  const sumOfScores = _scores.reduce(
+    (sum, s) => sum.plus(s.score),
+    BigNumber(0)
+  );
+
+  // Get total of all ratios for each team
+  const total = _scores
+    .map((_, i) => {
+      const teamRank = i + 1;
+      const nextRankIndex = rankTable.findIndex((r) => {
+        return r.startRank > teamRank;
+      });
+      const payoutRank = rankTable[nextRankIndex - 1];
+      return payoutRank.shareRatio;
+    })
+    .reduce((sum, ratio) => sum + ratio, 0);
+
+  const lastEpochScores = orderBy(
+    _scores,
+    [(d) => Number(d.score)],
+    ['desc']
+  ).map((t, i) => {
+    const teamRank = i + 1;
+    const team = teams[t.teamId];
+
+    let reward: BigNumber;
+    let ratio = 0;
+
+    if (
+      distributionStrategy === DistributionStrategy.DISTRIBUTION_STRATEGY_RANK
+    ) {
+      const nextRankIndex = rankTable.findIndex((r) => {
+        return r.startRank > teamRank;
+      });
+      const payoutRank = rankTable[nextRankIndex - 1];
+      ratio = payoutRank.shareRatio;
+      reward = toBigNum(rewardAmount, asset.decimals)
+        .times(payoutRank.shareRatio)
+        .div(total);
+    } else {
+      reward = toBigNum(rewardAmount, asset.decimals).times(
+        BigNumber(t.score).div(sumOfScores)
+      );
+    }
+
+    return {
+      rank: teamRank,
+      team: (
+        <Link
+          to={Links.COMPETITIONS_TEAM(team.teamId)}
+          className="flex gap-4 items-center"
+        >
+          <span>
+            <TeamAvatar
+              teamId={team.teamId}
+              imgUrl={team.avatarUrl}
+              size="small"
+            />
+          </span>
+          <span>{team.name}</span>
+        </Link>
+      ),
+      ratio: ratio,
+      score: formatNumber(t.score, 2),
+      estimatedRewards: formatNumber(reward, 2),
+    };
+  });
+
+  if (!lastEpochScores.length) {
+    return <p>No scores for current epoch</p>;
+  }
+
+  return (
+    <Table
+      columns={[
+        {
+          name: 'rank',
+          displayName: t('Rank'),
+        },
+        {
+          name: 'team',
+          displayName: t('Team'),
+        },
+        {
+          name: 'score',
+          displayName: t('Live score'),
+        },
+        {
+          name: 'ratio',
+        },
+        {
+          name: 'estimatedRewards',
+          displayName: t('Estimated reward ({{symbol}})', {
+            symbol: asset.symbol,
+          }),
+        },
+      ]}
+      data={lastEpochScores}
+    />
+  );
+};
+
+const HistoricScoresTable = ({
+  currentEpoch,
+  scores,
+  asset,
+  distributionStrategy,
+  rankTable,
+  teams,
+  rewardAmount,
+  games,
+}: {
+  currentEpoch: number;
+  scores: TeamScoreFieldsFragment[];
+  asset: AssetFieldsFragment;
+  distributionStrategy: DistributionStrategy;
+  rankTable: RankTable[];
+  teams: Record<string, TeamsFieldsFragment>;
+  rewardAmount: string;
+  games: Game[];
+}) => {
+  const t = useT();
+
+  const history = scores
+    .filter((s) => {
+      return s.epochId < currentEpoch;
+    })
+    .map((s, i) => {
+      const team = teams[s.teamId];
+      return {
+        rank: i + 1,
+        team: (
+          <Link
+            to={Links.COMPETITIONS_TEAM(team.teamId)}
+            className="flex gap-4 items-center"
+          >
+            <span>
+              <TeamAvatar
+                teamId={team.teamId}
+                imgUrl={team.avatarUrl}
+                size="small"
+              />
+            </span>
+            <span>{team.name}</span>
+          </Link>
+        ),
+        epoch: s.epochId,
+        rewardEarned: 'TODO: 100',
+      };
+    });
+
+  if (!history.length) {
+    return <p>No history</p>;
+  }
+
+  return (
+    <Table
+      columns={[
+        {
+          name: 'rank',
+          displayName: t('Rank'),
+        },
+        {
+          name: 'team',
+          displayName: t('Team'),
+        },
+        {
+          name: 'epoch',
+          displayName: t('Epoch'),
+        },
+        {
+          name: 'rewards',
+          displayName: t('Rewards earned'),
+        },
+      ]}
+      data={history}
+    />
   );
 };

@@ -10,6 +10,7 @@ export type PartyScoreFieldsFragment = { __typename?: 'GamePartyScore', gameId: 
 export type ScoresQueryVariables = Types.Exact<{
   gameId: Types.Scalars['ID'];
   partyId: Types.Scalars['ID'];
+  epochFrom?: Types.InputMaybe<Types.Scalars['Int']>;
 }>;
 
 
@@ -40,8 +41,8 @@ export const PartyScoreFieldsFragmentDoc = gql`
 }
     `;
 export const ScoresDocument = gql`
-    query Scores($gameId: ID!, $partyId: ID!) {
-  gameTeamScores(filter: {gameIds: [$gameId]}) {
+    query Scores($gameId: ID!, $partyId: ID!, $epochFrom: Int) {
+  gameTeamScores(filter: {gameIds: [$gameId], epochFrom: $epochFrom}) {
     edges {
       node {
         ...TeamScoreFields
@@ -73,6 +74,7 @@ ${PartyScoreFieldsFragmentDoc}`;
  *   variables: {
  *      gameId: // value for 'gameId'
  *      partyId: // value for 'partyId'
+ *      epochFrom: // value for 'epochFrom'
  *   },
  * });
  */
