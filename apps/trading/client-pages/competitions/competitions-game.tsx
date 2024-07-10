@@ -70,6 +70,8 @@ export const CompetitionsGame = () => {
     return null;
   }
 
+  console.log(gamesData);
+
   const dispatchStrategy = cardData.transfer.kind.dispatchStrategy;
   const dispatchMetric = dispatchStrategy.dispatchMetric;
   const amount = cardData.transfer.amount;
@@ -99,10 +101,17 @@ export const CompetitionsGame = () => {
     BigNumber(0)
   );
 
-  const ranks = rankTable.slice(0, _scores.length);
-  const total = ranks.length
-    ? ranks.map((r) => r.shareRatio).reduce((sum, x) => sum + x)
-    : 0;
+  // Get total of all ratios for each team
+  const total = _scores
+    .map((_, i) => {
+      const teamRank = i + 1;
+      const nextRankIndex = rankTable.findIndex((r) => {
+        return r.startRank > teamRank;
+      });
+      const payoutRank = rankTable[nextRankIndex - 1];
+      return payoutRank.shareRatio;
+    })
+    .reduce((sum, ratio) => sum + ratio, 0);
 
   const scores = orderBy(_scores, [(d) => Number(d.score)], ['desc']).map(
     (t, i) => {
@@ -119,10 +128,9 @@ export const CompetitionsGame = () => {
           return r.startRank > teamRank;
         });
         const payoutRank = rankTable[nextRankIndex - 1];
-        const pct = formatNumber((100 * payoutRank.shareRatio) / total, 2);
-        reward = toBigNum(amount, asset.decimals).times(
-          BigNumber(pct).div(100)
-        );
+        reward = toBigNum(amount, asset.decimals)
+          .times(payoutRank.shareRatio)
+          .div(total);
       } else {
         reward = toBigNum(amount, asset.decimals).times(
           BigNumber(t.score).div(sumOfScores)
@@ -315,7 +323,29 @@ export const CompetitionsGame = () => {
                 data={scores}
               />
             </TabsContent>
-            <TabsContent value="history">Score history</TabsContent>
+            <TabsContent value="history">
+              <Table
+                columns={[
+                  {
+                    name: 'rank',
+                    displayName: t('Rank'),
+                  },
+                  {
+                    name: 'team',
+                    displayName: t('Team'),
+                  },
+                  {
+                    name: 'Epoch',
+                    displayName: t('Epoch'),
+                  },
+                  {
+                    name: 'rewards',
+                    displayName: t('Rewards earned'),
+                  },
+                ]}
+                data={[]}
+              />
+            </TabsContent>
           </Tabs>
         </section>
       </LayoutWithGradient>
