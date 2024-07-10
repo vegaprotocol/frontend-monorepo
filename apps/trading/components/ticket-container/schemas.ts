@@ -149,6 +149,28 @@ export const schemaStopLimit = z.object({
   ocoPrice: numericalString,
 });
 
+export const schemaStopMarket = z.object({
+  type: z.literal(OrderType.TYPE_MARKET),
+  side: z.nativeEnum(Side),
+  triggerDirection: z.nativeEnum(StopOrderTriggerDirection),
+  triggerType: z.enum(['price', 'trailingPercentOffset']),
+  trigger: numericalString,
+  sizeOverride: z.nativeEnum(StopOrderSizeOverrideSetting),
+  size: numericalString,
+  timeInForce: z.nativeEnum(OrderTimeInForce),
+  expiresAt: z.date().optional(),
+  reduceOnly: z.boolean(),
+  postOnly: z.boolean(),
+  oco: z.boolean(),
+  ocoTriggerDirection: z.nativeEnum(StopOrderTriggerDirection),
+  ocoTriggerType: z.enum(['price', 'trailingPercentOffset']),
+  ocoTrigger: numericalString,
+  ocoSizeOverride: z.nativeEnum(StopOrderSizeOverrideSetting),
+  ocoSize: numericalString,
+  ocoPrice: numericalString,
+});
+
 export type FormFieldsMarket = z.infer<typeof schemaMarket>;
 export type FormFieldsLimit = z.infer<typeof schemaLimit>;
+export type FormFieldsStopMarket = z.infer<typeof schemaStopMarket>;
 export type FormFieldsStopLimit = z.infer<typeof schemaStopLimit>;

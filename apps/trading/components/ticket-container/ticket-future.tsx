@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { TicketMarket } from './ticket-future/ticket-market';
 import { TicketLimit } from './ticket-future/ticket-limit';
 import { TicketStopLimit } from './ticket-future/ticket-stop-limit';
+import { TicketStopMarket } from './ticket-future/ticket-stop-market';
 
 export type FormProps = {
   onTypeChange: (value: TicketType) => void;
@@ -26,7 +27,7 @@ export const TicketFuture = () => {
     }
 
     case 'stopMarket': {
-      throw new Error('stopMarket ticket not implemented');
+      return <TicketStopMarket {...props} />;
     }
 
     case 'stopLimit': {
