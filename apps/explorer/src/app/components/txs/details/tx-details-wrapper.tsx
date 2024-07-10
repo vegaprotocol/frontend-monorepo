@@ -149,7 +149,7 @@ function getTransactionComponent(txData?: BlockExplorerTransactionResult) {
       return TxDetailsAMMCancel;
     case 'Submit AMM':
       return TxDetailsAMMSubmit;
-    case 'Ammend AMM':
+    case 'Amend AMM':
       return TxDetailsAMMAmend;
     default:
       return TxDetailsGeneric;
