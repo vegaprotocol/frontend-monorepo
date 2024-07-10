@@ -48,7 +48,7 @@ export const ScoresDocument = gql`
       }
     }
   }
-  gamePartyScores(filter: {partyIds: [$partyId]}) {
+  gamePartyScores(filter: {gameIds: [$gameId], partyIds: [$partyId]}) {
     edges {
       node {
         ...PartyScoreFields

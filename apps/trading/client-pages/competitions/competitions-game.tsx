@@ -55,7 +55,7 @@ export const CompetitionsGame = () => {
   const showCard = !(cardLoading || currentEpochLoading) && cardData;
   const showTable = !gamesLoading;
 
-  if (!cardData || !teams || !teams) {
+  if (!cardData || !teams || !scoresData) {
     return null;
   }
 
@@ -75,9 +75,19 @@ export const CompetitionsGame = () => {
     dispatchStrategy.notionalTimeWeightedAveragePositionRequirement;
   const rankTable = dispatchStrategy.rankTable as unknown as RankTable[];
 
+  // Calc user fee cap
+  const partyScore = scoresData.gamePartyScores?.edges?.find(
+    (e) => e.node?.partyId === pubKey
+  );
+  const userCap =
+    partyScore?.node && feeCap
+      ? BigNumber(partyScore.node.totalFeesPaid).times(feeCap)
+      : null;
+
+  console.log(feeCap, userCap);
+
   if (!rankTable) return null;
 
-  console.log(cardData);
   const _scores = compact(
     scoresData?.gameTeamScores?.edges?.map((e) => e.node)
   );
@@ -115,7 +125,6 @@ export const CompetitionsGame = () => {
       }
 
       return {
-        // display rank
         rank: teamRank,
         team: (
           <Link
@@ -196,15 +205,19 @@ export const CompetitionsGame = () => {
               <dt className="text-sm text-muted">{t('Method')}</dt>
             </div>
             {feeCap && (
-              <div>
-                <dd className="text-3xl lg:text-4xl">{feeCap}x</dd>
-                <dt className="text-sm text-muted">{t('Fee cap')}</dt>
-              </div>
+              <>
+                <div>
+                  <dd className="text-3xl lg:text-4xl">{feeCap}x</dd>
+                  <dt className="text-sm text-muted">{t('Fee cap')}</dt>
+                </div>
+                <div>
+                  <dd className="text-3xl lg:text-4xl">
+                    {userCap ? userCap.toString() : t('No cap')}
+                  </dd>
+                  <dt className="text-sm text-muted">{t('Your cap')}</dt>
+                </div>
+              </>
             )}
-            <div>
-              <dd className="text-3xl lg:text-4xl">TODO</dd>
-              <dt className="text-sm text-muted">{t('Your cap')}</dt>
-            </div>
           </dl>
         </section>
         {/*<div className="grid grid-cols-1 md:grid-cols-3 gap-3">
