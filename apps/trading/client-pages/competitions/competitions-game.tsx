@@ -13,19 +13,26 @@ import omit from 'lodash/omit';
 import orderBy from 'lodash/orderBy';
 import compact from 'lodash/compact';
 import flatten from 'lodash/flatten';
-import { addDecimalsFormatNumberQuantum } from '@vegaprotocol/utils';
+import {
+  addDecimalsFormatNumberQuantum,
+  formatNumber,
+  toBigNum,
+} from '@vegaprotocol/utils';
 import { TeamAvatar } from '../../components/competitions/team-avatar';
 import { useTeamsMap } from '../../lib/hooks/use-teams';
 import { Links } from '../../lib/links';
 import { LayoutWithGradient } from '../../components/layouts-inner';
 import {
   DispatchMetricLabels,
+  DistributionStrategy,
   DistributionStrategyMapping,
   EntityScopeLabelMapping,
+  RankTable,
 } from '@vegaprotocol/types';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './tabs';
 import { useScoresQuery } from './__generated__/Scores';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
+import BigNumber from 'bignumber.js';
 
 export const CompetitionsGame = () => {
   const t = useT();
@@ -66,21 +73,71 @@ export const CompetitionsGame = () => {
   const strategy = dispatchStrategy.distributionStrategy;
   const notional =
     dispatchStrategy.notionalTimeWeightedAveragePositionRequirement;
+  const rankTable = dispatchStrategy.rankTable as unknown as RankTable[];
 
-  let scores = compact(scoresData?.gameTeamScores?.edges?.map((e) => e.node));
-  scores = orderBy(scores, [(d) => Number(d.score)], ['desc']);
-  // @ts-ignore purposefully overwriting the scores variables here
-  scores = scores.map((t, i) => {
-    const team = teams[t.teamId];
-    return {
-      rank: i + 1,
-      team: {
-        name: team.name,
-        avatar: team.avatarUrl,
-      },
-      score: t.score,
-    };
-  });
+  if (!rankTable) return null;
+
+  console.log(cardData);
+  const _scores = compact(
+    scoresData?.gameTeamScores?.edges?.map((e) => e.node)
+  );
+  const sumOfScores = _scores.reduce(
+    (sum, s) => sum.plus(s.score),
+    BigNumber(0)
+  );
+
+  const ranks = rankTable.slice(0, _scores.length);
+  const total = ranks.map((r) => r.shareRatio).reduce((sum, x) => sum + x);
+
+  const scores = orderBy(_scores, [(d) => Number(d.score)], ['desc']).map(
+    (t, i) => {
+      const teamRank = i + 1;
+      const team = teams[t.teamId];
+
+      let reward: BigNumber;
+
+      if (
+        dispatchStrategy.distributionStrategy ===
+        DistributionStrategy.DISTRIBUTION_STRATEGY_RANK
+      ) {
+        const nextRankIndex = rankTable.findIndex((r) => {
+          return r.startRank > teamRank;
+        });
+        const payoutRank = rankTable[nextRankIndex - 1];
+        const pct = formatNumber((100 * payoutRank.shareRatio) / total, 2);
+        reward = toBigNum(amount, asset.decimals).times(
+          BigNumber(pct).div(100)
+        );
+      } else {
+        reward = toBigNum(amount, asset.decimals).times(
+          BigNumber(t.score).div(sumOfScores)
+        );
+      }
+
+      return {
+        // display rank
+        rank: teamRank,
+        team: (
+          <Link
+            to={Links.COMPETITIONS_TEAM(team.teamId)}
+            className="flex gap-4 items-center"
+          >
+            <span>
+              <TeamAvatar
+                teamId={team.teamId}
+                imgUrl={team.avatarUrl}
+                size="small"
+              />
+            </span>
+            <span>{team.name}</span>
+          </Link>
+        ),
+        score: formatNumber(t.score, 2),
+        estimatedRewards: formatNumber(reward, 2),
+      };
+    }
+  );
+
   return (
     <ErrorBoundary>
       <LayoutWithGradient>
@@ -106,10 +163,8 @@ export const CompetitionsGame = () => {
         <section className="relative flex flex-col gap-4 lg:gap-8 p-6 rounded-lg">
           <div
             style={{
-              // @ts-ignore mask not supported
               mask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
-              // @ts-ignore mask not supported
-              'mask-composite': 'exclude',
+              maskComposite: 'exclude',
             }}
             className="absolute inset-0 p-px bg-gradient-to-br from-vega-blue to-vega-green rounded-lg"
           />
@@ -214,12 +269,17 @@ export const CompetitionsGame = () => {
                   {
                     name: 'team',
                     displayName: t('Team'),
-                    renderer: (d) => {
-                      // TODO: show avatar and name here
-                      return 'foo';
-                    },
                   },
-                  { name: 'score', displayName: t('Live score') },
+                  {
+                    name: 'score',
+                    displayName: t('Live score'),
+                  },
+                  {
+                    name: 'estimatedRewards',
+                    displayName: t('Estimated reward ({{symbol}})', {
+                      symbol: asset.symbol,
+                    }),
+                  },
                 ]}
                 data={scores}
               />
