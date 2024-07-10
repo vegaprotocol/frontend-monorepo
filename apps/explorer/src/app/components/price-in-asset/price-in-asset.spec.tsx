@@ -1,15 +1,12 @@
 import { MemoryRouter } from 'react-router-dom';
 import { render } from '@testing-library/react';
 import PriceInAsset from './price-in-asset';
-import { MockedProvider } from '@apollo/client/testing';
 
 function renderComponent(price: string, decimals: number, symbol: string) {
   return (
-    <MockedProvider mocks={[]} addTypename={false}>
-      <MemoryRouter>
-        <PriceInAsset price={price} decimals={decimals} symbol={symbol} />
-      </MemoryRouter>
-    </MockedProvider>
+    <MemoryRouter>
+      <PriceInAsset price={price} decimals={decimals} symbol={symbol} />
+    </MemoryRouter>
   );
 }
 describe('Price in Market component', () => {
