@@ -1,6 +1,5 @@
 import { t } from '@vegaprotocol/i18n';
 import type { components } from '../../../../../types/explorer';
-import { VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import PriceInMarket from '../../../price-in-market/price-in-market';
 
 interface ConcentratedLiquidityParametersProps {
@@ -26,41 +25,44 @@ export const ConcentratedLiquidityParametersDetails = ({
     <table>
       <thead>
         <tr className="bold">
-          <th></th>
-          <th>{t('Price')}</th>
-          <th>{t('Leverage at price')}</th>
+          <th align="left" className="pr-2">
+            {t('Bound')}
+          </th>
+          <th className="px-4">{t('Leverage at price')}</th>
+          <th className="px-2">{t('Price')}</th>
         </tr>
       </thead>
       {parameters.upperBound && (
         <tr>
-          <td title={t('Upper bound')}>
-            <VegaIcon name={VegaIconNames.CHEVRON_UP} />
+          <td className="pr-2" title={t('Upper bound')} align="center">
+            {t('Upper bound')}
           </td>
-          <td>
+          <td align="center">{parameters.leverageAtUpperBound}×</td>
+          <td className="px-4" align="right">
             <PriceInMarket marketId={marketId} price={parameters.upperBound} />
           </td>
-          <td>{parameters.leverageAtUpperBound}</td>
         </tr>
       )}
       {parameters.base && (
         <tr>
-          <td title={t('Base price')}>
-            <VegaIcon name={VegaIconNames.MINUS} />
+          <td className="pr-2" title={t('Base price')}>
+            {t('Base')}
           </td>
-          <td colSpan={2}>
+          <td></td>
+          <td className="px-4" align="right">
             <PriceInMarket marketId={marketId} price={parameters.base} />
           </td>
         </tr>
       )}
       {parameters.lowerBound && (
         <tr>
-          <td title={t('Lower bound')}>
-            <VegaIcon name={VegaIconNames.CHEVRON_DOWN} />
+          <td className="pr-2" title={t('Lower bound')} align="center">
+            {t('Lower bound')}
           </td>
-          <td>
+          <td align="center">{parameters.leverageAtLowerBound}×</td>
+          <td className="px-4" align="right">
             <PriceInMarket marketId={marketId} price={parameters.lowerBound} />
           </td>
-          <td>{parameters.leverageAtLowerBound}</td>
         </tr>
       )}
     </table>

@@ -78,7 +78,7 @@ export const TxDetailsAMMAmend = ({
 
       {concentratedLiquidityParameters && marketId && (
         <TableRow modifier="bordered">
-          <TableCell>{t('Slippage tolerance')}</TableCell>
+          <TableCell>{t('Liquidity parameters')}</TableCell>
           <TableCell>
             <ConcentratedLiquidityParametersDetails
               marketId={marketId}
