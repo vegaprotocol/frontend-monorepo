@@ -3,6 +3,7 @@ query AssetMarkets {
     edges {
       node {
         id
+        state
         tradableInstrument {
           instrument {
             name
@@ -14,6 +15,8 @@ query AssetMarkets {
               type
               asset {
                 id
+                decimals
+                symbol
               }
               balance
             }

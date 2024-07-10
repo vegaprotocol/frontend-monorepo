@@ -1,12 +1,15 @@
-import { KeyValueTable, KeyValueTableRow } from '@vegaprotocol/ui-toolkit';
 import { MarketLink } from '../../../components/links';
-import { PriceInMarket } from '../../../components/price-in-market/price-in-market';
+import PriceInAsset from '../../../components/price-in-asset/price-in-asset';
+import { Table, TableCell, TableRow } from '../../../components/table';
 import type { AssetMarketsQuery } from './__generated__/Asset-Markets';
 import { useAssetMarketsQuery } from './__generated__/Asset-Markets';
 import { t } from '@vegaprotocol/i18n';
+import { MarketState, MarketStateMapping } from '@vegaprotocol/types';
 
 type AssetMarketProps = {
   asset: string;
+  symbol: string;
+  decimals: number;
 };
 
 /**
@@ -16,7 +19,7 @@ type AssetMarketProps = {
  * @param param0
  * @returns
  */
-export const AssetMarkets = ({ asset }: AssetMarketProps) => {
+export const AssetMarkets = ({ asset, decimals, symbol }: AssetMarketProps) => {
   const { data } = useAssetMarketsQuery();
 
   const markets = transformAssetMarketsQuery(data, asset);
@@ -31,26 +34,30 @@ export const AssetMarkets = ({ asset }: AssetMarketProps) => {
           )}
         </p>
       ) : (
-        <KeyValueTable>
+        <Table>
           {markets.map((market) => {
             return (
               market.marketId &&
               market.balance !== '0' && (
-                <KeyValueTableRow>
-                  <div>
+                <TableRow className="py-1 border-b border-neutral-300 dark:border-neutral-700">
+                  <TableCell className="py-1">
                     <MarketLink id={market.marketId} />
-                  </div>
-                  <div>
-                    <PriceInMarket
-                      marketId={market.marketId}
+                  </TableCell>
+                  <TableCell className="py-1">
+                    {market.state ? MarketStateMapping[market.state] : ''}
+                  </TableCell>
+                  <TableCell align="right" className="py-1">
+                    <PriceInAsset
                       price={market.balance}
+                      symbol={symbol}
+                      decimals={decimals}
                     />
-                  </div>
-                </KeyValueTableRow>
+                  </TableCell>
+                </TableRow>
               )
             );
           })}
-        </KeyValueTable>
+        </Table>
       )}
     </div>
   );
@@ -59,6 +66,7 @@ export const AssetMarkets = ({ asset }: AssetMarketProps) => {
 export type AssetMarketInsuranceAccount = {
   marketId: string;
   balance: string;
+  state: MarketState;
 };
 
 /**
@@ -86,15 +94,19 @@ export function transformAssetMarketsQuery(
     : [];
 
   // Now reshape the data to only include the market ID and the balance of the insurance account
-  return marketsWithAsset.map((market) => {
-    const accountsWithAsset = market.node?.accountsConnection?.edges?.filter(
-      (e) =>
-        e?.node.type === 'ACCOUNT_TYPE_INSURANCE' && e?.node.asset?.id === asset
-    );
+  return marketsWithAsset
+    .map((market) => {
+      const accountsWithAsset = market.node?.accountsConnection?.edges?.filter(
+        (e) =>
+          e?.node.type === 'ACCOUNT_TYPE_INSURANCE' &&
+          e?.node.asset?.id === asset
+      );
 
-    return {
-      marketId: market.node?.id || '',
-      balance: accountsWithAsset?.[0]?.node?.balance || '0',
-    };
-  });
+      return {
+        marketId: market.node?.id || '',
+        balance: accountsWithAsset?.[0]?.node?.balance || '0',
+        state: market.node?.state || null,
+      };
+    })
+    .sort((a, b) => (a.state === MarketState.STATE_ACTIVE ? -1 : 1));
 }

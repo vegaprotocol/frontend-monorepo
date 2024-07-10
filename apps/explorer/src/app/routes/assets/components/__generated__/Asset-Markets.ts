@@ -6,7 +6,7 @@ const defaultOptions = {} as const;
 export type AssetMarketsQueryVariables = Types.Exact<{ [key: string]: never; }>;
 
 
-export type AssetMarketsQuery = { __typename?: 'Query', marketsConnection?: { __typename?: 'MarketConnection', edges: Array<{ __typename?: 'MarketEdge', node: { __typename?: 'Market', id: string, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', name: string } }, accountsConnection?: { __typename?: 'AccountsConnection', edges?: Array<{ __typename?: 'AccountEdge', node: { __typename?: 'AccountBalance', type: Types.AccountType, balance: string, asset: { __typename?: 'Asset', id: string } } } | null> | null } | null } }> } | null };
+export type AssetMarketsQuery = { __typename?: 'Query', marketsConnection?: { __typename?: 'MarketConnection', edges: Array<{ __typename?: 'MarketEdge', node: { __typename?: 'Market', id: string, state: Types.MarketState, tradableInstrument: { __typename?: 'TradableInstrument', instrument: { __typename?: 'Instrument', name: string } }, accountsConnection?: { __typename?: 'AccountsConnection', edges?: Array<{ __typename?: 'AccountEdge', node: { __typename?: 'AccountBalance', type: Types.AccountType, balance: string, asset: { __typename?: 'Asset', id: string, decimals: number, symbol: string } } } | null> | null } | null } }> } | null };
 
 
 export const AssetMarketsDocument = gql`
@@ -15,6 +15,7 @@ export const AssetMarketsDocument = gql`
     edges {
       node {
         id
+        state
         tradableInstrument {
           instrument {
             name
@@ -26,6 +27,8 @@ export const AssetMarketsDocument = gql`
               type
               asset {
                 id
+                decimals
+                symbol
               }
               balance
             }
