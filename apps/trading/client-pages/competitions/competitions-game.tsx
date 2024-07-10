@@ -4,7 +4,12 @@ import { useT } from '../../lib/use-t';
 import { ActiveRewardCard } from '../../components/rewards-container/reward-card';
 import { useReward } from '../../lib/hooks/use-rewards';
 import { useCurrentEpoch } from '../../lib/hooks/use-current-epoch';
-import { Loader } from '@vegaprotocol/ui-toolkit';
+import {
+  Loader,
+  Tooltip,
+  VegaIcon,
+  VegaIconNames,
+} from '@vegaprotocol/ui-toolkit';
 import { determineRank, useGames } from '../../lib/hooks/use-games';
 import { Table } from '../../components/table';
 import { type TeamEntityFragment } from '../../lib/hooks/__generated__/Games';
@@ -84,8 +89,6 @@ export const CompetitionsGame = () => {
       ? BigNumber(partyScore.node.totalFeesPaid).times(feeCap)
       : null;
 
-  console.log(feeCap, userCap);
-
   if (!rankTable) return null;
 
   const _scores = compact(
@@ -97,7 +100,9 @@ export const CompetitionsGame = () => {
   );
 
   const ranks = rankTable.slice(0, _scores.length);
-  const total = ranks.map((r) => r.shareRatio).reduce((sum, x) => sum + x);
+  const total = ranks.length
+    ? ranks.map((r) => r.shareRatio).reduce((sum, x) => sum + x)
+    : 0;
 
   const scores = orderBy(_scores, [(d) => Number(d.score)], ['desc']).map(
     (t, i) => {
@@ -214,7 +219,20 @@ export const CompetitionsGame = () => {
                   <dd className="text-3xl lg:text-4xl">
                     {userCap ? userCap.toString() : t('No cap')}
                   </dd>
-                  <dt className="text-sm text-muted">{t('Your cap')}</dt>
+                  <dt className="text-sm text-muted">
+                    {t('Your cap')}
+                    <Tooltip
+                      description={t(
+                        'Your fees paid for this epoch are currently {{paid}} so your rewards will be capped at {{cap}} times this amount',
+                        {
+                          paid: partyScore?.node?.totalFeesPaid || '0',
+                          cap: feeCap,
+                        }
+                      )}
+                    >
+                      <VegaIcon name={VegaIconNames.INFO} />
+                    </Tooltip>
+                  </dt>
                 </div>
               </>
             )}
