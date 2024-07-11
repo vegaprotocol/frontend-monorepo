@@ -26,7 +26,7 @@ export const TicketTypeSelect = ({
   const toggleClasses =
     'flex-1 -mb-px px-0.5 py-1.5 border-b-2 border-b-transparent text-secondary';
 
-  const stopOptions = useOptions();
+  const stopOptions = useStopOptions();
   const toggles = useToggles();
   const selectedStopOption = stopOptions.find((t) => t.value === type);
 
@@ -106,7 +106,7 @@ const useToggles = () => {
     { label: t('Market'), value: 'market' },
   ];
 };
-const useOptions = () => {
+const useStopOptions = () => {
   const t = useT();
   return [
     { label: t('Stop Limit'), value: 'stopLimit' },

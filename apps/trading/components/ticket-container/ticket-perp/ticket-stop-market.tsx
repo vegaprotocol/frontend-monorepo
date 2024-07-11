@@ -11,7 +11,7 @@ import {
 } from '@vegaprotocol/types';
 
 import { FieldControls, Form, FormGrid, FormGridCol } from '../elements/form';
-import { type FormFieldsStopLimit, schemaStopLimit } from '../schemas';
+import { type FormFieldsStopMarket, schemaStopMarket } from '../schemas';
 import { TicketTypeSelect } from '../ticket-type-select';
 import { type FormProps } from '../ticket-perp';
 import { NON_PERSISTENT_TIF_OPTIONS } from '../constants';
@@ -28,15 +28,14 @@ export const TicketStopMarket = (props: FormProps) => {
   const create = useVegaTransactionStore((store) => store.create);
   const ticket = useTicketContext();
 
-  const form = useForm<FormFieldsStopLimit>({
-    resolver: zodResolver(schemaStopLimit),
+  const form = useForm<FormFieldsStopMarket>({
+    resolver: zodResolver(schemaStopMarket),
     defaultValues: {
-      type: OrderType.TYPE_LIMIT,
+      type: OrderType.TYPE_MARKET,
       side: Side.SIDE_BUY,
       triggerDirection: StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE,
       triggerType: 'price',
       trigger: '',
-      price: '',
       sizeOverride: StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_NONE,
       size: '',
       timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
@@ -77,7 +76,7 @@ export const TicketStopMarket = (props: FormProps) => {
         })}
       >
         <Fields.Side control={form.control} />
-        <TicketTypeSelect type="stopLimit" onTypeChange={props.onTypeChange} />
+        <TicketTypeSelect type="stopMarket" onTypeChange={props.onTypeChange} />
         <div className="flex flex-col gap-1">
           <FieldControls>
             <Fields.StopTriggerDirection control={form.control} />
@@ -85,7 +84,6 @@ export const TicketStopMarket = (props: FormProps) => {
           </FieldControls>
           <Fields.StopTrigger control={form.control} />
         </div>
-        <Fields.Price control={form.control} />
         <div className="flex flex-col gap-1">
           <FieldControls>
             <Fields.StopSizeOverride control={form.control} />
