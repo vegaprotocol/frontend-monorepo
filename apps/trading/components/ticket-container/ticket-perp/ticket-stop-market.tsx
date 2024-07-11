@@ -22,6 +22,10 @@ import { useT } from '../../../lib/use-t';
 import * as Fields from '../fields';
 import { useVegaTransactionStore } from '@vegaprotocol/web3';
 import { mapFormValuesToStopOrdersSubmission } from '@vegaprotocol/deal-ticket';
+import { useMarkPrice } from '@vegaprotocol/markets';
+import { toBigNum } from '@vegaprotocol/utils';
+
+import { SizeSliderStop } from '../size-slider-stop';
 
 export const TicketStopMarket = (props: FormProps) => {
   const t = useT();
@@ -54,10 +58,15 @@ export const TicketStopMarket = (props: FormProps) => {
   });
 
   const size = form.watch('size');
-  const price = form.watch('price');
   const tif = form.watch('timeInForce');
   const isPersistent = !NON_PERSISTENT_TIF_OPTIONS.includes(tif);
   const oco = form.watch('oco');
+
+  const { data: markPrice } = useMarkPrice(ticket.market.id);
+  const price =
+    markPrice && markPrice !== null
+      ? toBigNum(markPrice, ticket.market.decimalPlaces)
+      : undefined;
 
   return (
     <FormProvider {...form}>
@@ -90,6 +99,7 @@ export const TicketStopMarket = (props: FormProps) => {
           </FieldControls>
           <Fields.StopSize control={form.control} />
         </div>
+        <SizeSliderStop price={price} />
         <FormGrid>
           <FormGridCol>
             {isPersistent ? (
@@ -136,9 +146,7 @@ export const TicketStopMarket = (props: FormProps) => {
         )}
         <SubmitButton
           text={t('Place limit stop order')}
-          subLabel={`${size || 0} ${ticket.baseSymbol} @ ${price} ${
-            ticket.quoteAsset.symbol
-          }`}
+          subLabel={`${size || 0} ${ticket.baseSymbol} @ market`}
         />
 
         <pre className="block w-full text-2xs">
