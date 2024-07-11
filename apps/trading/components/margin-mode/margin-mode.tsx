@@ -76,16 +76,17 @@ const Toggle = ({
   onValueChange: (value: string) => void;
 }) => {
   const t = useT();
-  const itemClass = 'relative py-px px-2 text-xs data-[state=on]:px-1';
+  const itemClass =
+    'relative py-0.5 px-2 text-xs  data-[state=on]:text-vega-clight-900 data-[state=on]:dark:text-vega-cdark-900';
   const indicator = (
-    <span className="absolute -top-px right-0 -bottom-px left-0 bg-vega-clight-500 dark:bg-vega-cdark-500 rounded" />
+    <span className="absolute top-0 right-0 bottom-0 left-0 bg-vega-cdark-500 dark:bg-vega-clight-500 rounded" />
   );
 
   return (
     <ToggleGroup.Root
       type="single"
       value={mode}
-      className="inline-flex rounded bg-vega-clight-800 dark:bg-vega-cdark-800"
+      className="inline-flex rounded bg-vega-clight-500 dark:bg-vega-cdark-500"
       onValueChange={onValueChange}
     >
       <ToggleGroup.Item
@@ -104,7 +105,7 @@ const Toggle = ({
         {mode === MarginMode.MARGIN_MODE_ISOLATED_MARGIN && indicator}
         {mode === MarginMode.MARGIN_MODE_ISOLATED_MARGIN ? (
           <span className="relative flex items-center gap-1">
-            {t('Isolated')}
+            {t('Isolated')}:
             <Leverage factor={factor} />
           </span>
         ) : (
@@ -122,9 +123,5 @@ const Leverage = ({ factor }: { factor: string | undefined }) => {
     leverage = (1 / Number(factor)).toFixed(1);
   }
 
-  return (
-    <span className="py-px px-1 rounded text-2xs bg-vega-green-700 text-vega-green">
-      {leverage}x
-    </span>
-  );
+  return <span>{leverage}x</span>;
 };
