@@ -3,7 +3,13 @@ import { Link, useParams } from 'react-router-dom';
 import { useT } from '../../lib/use-t';
 import { useReward } from '../../lib/hooks/use-rewards';
 import { useCurrentEpoch } from '../../lib/hooks/use-current-epoch';
-import { Tooltip, VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
+import {
+  Loader,
+  Splash,
+  Tooltip,
+  VegaIcon,
+  VegaIconNames,
+} from '@vegaprotocol/ui-toolkit';
 import { type Game, useGames } from '../../lib/hooks/use-games';
 import { Table } from '../../components/table';
 import { type AssetFieldsFragment } from '@vegaprotocol/assets';
@@ -42,13 +48,11 @@ export const CompetitionsGame = () => {
   const { pubKey } = useVegaWallet();
   const { gameId } = useParams();
 
-  const { data: currentEpoch } = useCurrentEpoch();
-  const { data: cardData } = useReward(gameId);
-  const { data: teams } = useTeamsMap();
-
-  const { data: gamesData } = useGames({ gameId });
-
-  const { data: scoresData } = useScoresQuery({
+  const { data: currentEpoch, loading: epochLoading } = useCurrentEpoch();
+  const { data: reward, loading: rewardLoading } = useReward(gameId);
+  const { data: teams, loading: teamsLoading } = useTeamsMap();
+  const { data: gamesData, loading: gameLoading } = useGames({ gameId });
+  const { data: scoresData, loading: scoresLoading } = useScoresQuery({
     variables: {
       epochFrom: currentEpoch ? currentEpoch - TEAMS_STATS_EPOCHS : 0,
       gameId: gameId || '',
@@ -57,24 +61,38 @@ export const CompetitionsGame = () => {
     skip: !currentEpoch || !gameId,
   });
 
-  if (!cardData || !teams || !scoresData) {
-    return null;
+  if (
+    epochLoading ||
+    rewardLoading ||
+    teamsLoading ||
+    gameLoading ||
+    scoresLoading
+  ) {
+    return (
+      <Splash>
+        <Loader />
+      </Splash>
+    );
   }
 
-  const asset = cardData.dispatchAsset;
+  if (!reward || !teams || !gamesData || !scoresData) {
+    return (
+      <Splash>
+        <p>{t('No data')}</p>
+      </Splash>
+    );
+  }
+
+  const asset = reward.dispatchAsset;
 
   if (!asset) {
     return null;
   }
 
-  if (!currentEpoch) {
-    return null;
-  }
-
-  const dispatchStrategy = cardData.transfer.kind.dispatchStrategy;
+  const dispatchStrategy = reward.transfer.kind.dispatchStrategy;
 
   const dispatchMetric = dispatchStrategy.dispatchMetric;
-  const amount = cardData.transfer.amount;
+  const amount = reward.transfer.amount;
   const rankTable = dispatchStrategy.rankTable as unknown as RankTable[];
 
   if (!rankTable) return null;
@@ -117,7 +135,7 @@ export const CompetitionsGame = () => {
             </TabsList>
             <TabsContent value="scores">
               <LiveScoresTable
-                currentEpoch={currentEpoch}
+                currentEpoch={currentEpoch || 0}
                 scores={allScores}
                 asset={asset}
                 rewardAmount={amount}
@@ -128,7 +146,7 @@ export const CompetitionsGame = () => {
             </TabsContent>
             <TabsContent value="history">
               <HistoricScoresTable
-                currentEpoch={currentEpoch}
+                currentEpoch={currentEpoch || 0}
                 scores={allScores}
                 teams={teams}
                 games={gamesData || []}
