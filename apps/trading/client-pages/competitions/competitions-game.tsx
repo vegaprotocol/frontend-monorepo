@@ -1,26 +1,14 @@
 import { ErrorBoundary } from '@sentry/react';
 import { Link, useParams } from 'react-router-dom';
 import { useT } from '../../lib/use-t';
-import { ActiveRewardCard } from '../../components/rewards-container/reward-card';
 import { useReward } from '../../lib/hooks/use-rewards';
 import { useCurrentEpoch } from '../../lib/hooks/use-current-epoch';
-import {
-  Loader,
-  Tooltip,
-  VegaIcon,
-  VegaIconNames,
-} from '@vegaprotocol/ui-toolkit';
-import { Game, determineRank, useGames } from '../../lib/hooks/use-games';
+import { Tooltip, VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
+import { type Game, useGames } from '../../lib/hooks/use-games';
 import { Table } from '../../components/table';
-import { type TeamEntityFragment } from '../../lib/hooks/__generated__/Games';
-import {
-  AssetFieldsFragment,
-  useAssetsMapProvider,
-} from '@vegaprotocol/assets';
-import omit from 'lodash/omit';
+import { type AssetFieldsFragment } from '@vegaprotocol/assets';
 import orderBy from 'lodash/orderBy';
 import compact from 'lodash/compact';
-import flatten from 'lodash/flatten';
 import {
   addDecimalsFormatNumberQuantum,
   formatNumber,
@@ -32,33 +20,33 @@ import { Links } from '../../lib/links';
 import { LayoutWithGradient } from '../../components/layouts-inner';
 import {
   DispatchMetricLabels,
+  type DispatchStrategy,
   DistributionStrategy,
   DistributionStrategyMapping,
   EntityScopeLabelMapping,
-  RankTable,
+  type RankTable,
 } from '@vegaprotocol/types';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './tabs';
 import {
-  TeamScoreFieldsFragment,
+  type ScoresQuery,
+  type TeamScoreFieldsFragment,
   useScoresQuery,
 } from './__generated__/Scores';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import BigNumber from 'bignumber.js';
 import { TEAMS_STATS_EPOCHS } from '../../lib/hooks/constants';
-import { TeamsFieldsFragment } from 'apps/trading/lib/hooks/__generated__/Teams';
+import { type TeamsFieldsFragment } from '../../lib/hooks/__generated__/Teams';
 
 export const CompetitionsGame = () => {
   const t = useT();
   const { pubKey } = useVegaWallet();
   const { gameId } = useParams();
 
-  const { data: currentEpoch, loading: currentEpochLoading } =
-    useCurrentEpoch();
-  const { data: cardData, loading: cardLoading } = useReward(gameId);
-  // const { data: assets, loading: assetsLoading } = useAssetsMapProvider();
-  const { data: teams, loading: teamsLoading } = useTeamsMap();
+  const { data: currentEpoch } = useCurrentEpoch();
+  const { data: cardData } = useReward(gameId);
+  const { data: teams } = useTeamsMap();
 
-  const { data: gamesData, loading: gamesLoading } = useGames({ gameId });
+  const { data: gamesData } = useGames({ gameId });
 
   const { data: scoresData } = useScoresQuery({
     variables: {
@@ -84,23 +72,10 @@ export const CompetitionsGame = () => {
   }
 
   const dispatchStrategy = cardData.transfer.kind.dispatchStrategy;
+
   const dispatchMetric = dispatchStrategy.dispatchMetric;
   const amount = cardData.transfer.amount;
-  const entityScope = dispatchStrategy.entityScope;
-  const feeCap = dispatchStrategy.capRewardFeeMultiple;
-  const strategy = dispatchStrategy.distributionStrategy;
-  const notional =
-    dispatchStrategy.notionalTimeWeightedAveragePositionRequirement;
   const rankTable = dispatchStrategy.rankTable as unknown as RankTable[];
-
-  // Calc user fee cap
-  const partyScore = scoresData.gamePartyScores?.edges?.find(
-    (e) => e.node?.partyId === pubKey
-  );
-  const userCap =
-    partyScore?.node && feeCap
-      ? BigNumber(partyScore.node.totalFeesPaid).times(feeCap)
-      : null;
 
   if (!rankTable) return null;
 
@@ -130,70 +105,10 @@ export const CompetitionsGame = () => {
             {asset.symbol}
           </small>
         </header>
-        <section className="relative flex flex-col gap-4 lg:gap-8 p-6 rounded-lg">
-          <div
-            style={{
-              mask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
-              maskComposite: 'exclude',
-            }}
-            className="absolute inset-0 p-px bg-gradient-to-br from-vega-blue to-vega-green rounded-lg"
-          />
-          <h2 className="calt">{t('Eligibility criteria')}</h2>
-          <dl className="grid grid-cols-2 md:flex gap-4 md:gap-6 lg:gap-8 whitespace-nowrap">
-            <div>
-              <dd className="text-3xl lg:text-4xl">
-                {EntityScopeLabelMapping[entityScope]}
-              </dd>
-              <dt className="text-sm text-muted">{t('Entity')}</dt>
-            </div>
-            <div>
-              <dd
-                className="text-3xl lg:text-4xl"
-                data-testid="total-games-stat"
-              >
-                {dispatchStrategy.stakingRequirement || '0'}
-              </dd>
-              <dt className="text-sm text-muted">Staked VEGA</dt>
-            </div>
-            <div>
-              <dd className="text-3xl lg:text-4xl">{notional || '0'}</dd>
-              <dt className="text-sm text-muted">{t('Notional')}</dt>
-            </div>
-            <div>
-              <dd className="text-3xl lg:text-4xl">
-                {DistributionStrategyMapping[strategy]}
-              </dd>
-              <dt className="text-sm text-muted">{t('Method')}</dt>
-            </div>
-            {feeCap && (
-              <>
-                <div>
-                  <dd className="text-3xl lg:text-4xl">{feeCap}x</dd>
-                  <dt className="text-sm text-muted">{t('Fee cap')}</dt>
-                </div>
-                <div>
-                  <dd className="text-3xl lg:text-4xl">
-                    {userCap ? userCap.toString() : t('No cap')}
-                  </dd>
-                  <dt className="text-sm text-muted">
-                    {t('Your cap')}
-                    <Tooltip
-                      description={t(
-                        'Your fees paid for this epoch are currently {{paid}} so your rewards will be capped at {{cap}} times this amount',
-                        {
-                          paid: partyScore?.node?.totalFeesPaid || '0',
-                          cap: feeCap,
-                        }
-                      )}
-                    >
-                      <VegaIcon name={VegaIconNames.INFO} />
-                    </Tooltip>
-                  </dt>
-                </div>
-              </>
-            )}
-          </dl>
-        </section>
+        <EligibilityCriteria
+          dispatchStrategy={dispatchStrategy as DispatchStrategy}
+          partyScores={scoresData.gamePartyScores}
+        />
         <section>
           <Tabs defaultValue="history">
             <TabsList>
@@ -216,10 +131,7 @@ export const CompetitionsGame = () => {
                 currentEpoch={currentEpoch}
                 scores={allScores}
                 asset={asset}
-                rewardAmount={amount}
-                rankTable={rankTable}
                 teams={teams}
-                distributionStrategy={dispatchStrategy.distributionStrategy}
                 games={gamesData || []}
               />
             </TabsContent>
@@ -227,6 +139,96 @@ export const CompetitionsGame = () => {
         </section>
       </LayoutWithGradient>
     </ErrorBoundary>
+  );
+};
+
+const EligibilityCriteria = ({
+  dispatchStrategy,
+  partyScores,
+}: {
+  dispatchStrategy: DispatchStrategy;
+  partyScores: ScoresQuery['gamePartyScores'];
+}) => {
+  const t = useT();
+  const { pubKey } = useVegaWallet();
+
+  const entityScope = dispatchStrategy.entityScope;
+  const feeCap = dispatchStrategy.capRewardFeeMultiple;
+  const strategy = dispatchStrategy.distributionStrategy;
+  const notional =
+    dispatchStrategy.notionalTimeWeightedAveragePositionRequirement;
+
+  // Calc user fee cap
+  const partyScore = partyScores?.edges?.find(
+    (e) => e.node?.partyId === pubKey
+  );
+  const userCap =
+    partyScore?.node && feeCap
+      ? BigNumber(partyScore.node.totalFeesPaid).times(feeCap)
+      : null;
+
+  return (
+    <section className="relative flex flex-col gap-2 lg:gap-4 p-6 rounded-lg">
+      <div
+        style={{
+          mask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+          maskComposite: 'exclude',
+        }}
+        className="absolute inset-0 p-px bg-gradient-to-br from-vega-blue to-vega-green rounded-lg"
+      />
+      <h2 className="calt">{t('Eligibility criteria')}</h2>
+      <dl className="grid grid-cols-2 md:flex gap-4 md:gap-6 lg:gap-8 whitespace-nowrap">
+        <div>
+          <dd className="text-3xl lg:text-4xl">
+            {EntityScopeLabelMapping[entityScope]}
+          </dd>
+          <dt className="text-sm text-muted">{t('Entity')}</dt>
+        </div>
+        <div>
+          <dd className="text-3xl lg:text-4xl" data-testid="total-games-stat">
+            {dispatchStrategy.stakingRequirement || '0'}
+          </dd>
+          <dt className="text-sm text-muted">Staked VEGA</dt>
+        </div>
+        <div>
+          <dd className="text-3xl lg:text-4xl">{notional || '0'}</dd>
+          <dt className="text-sm text-muted">{t('Notional')}</dt>
+        </div>
+        <div>
+          <dd className="text-3xl lg:text-4xl">
+            {DistributionStrategyMapping[strategy]}
+          </dd>
+          <dt className="text-sm text-muted">{t('Method')}</dt>
+        </div>
+        {feeCap && (
+          <>
+            <div>
+              <dd className="text-3xl lg:text-4xl">{feeCap}x</dd>
+              <dt className="text-sm text-muted">{t('Fee cap')}</dt>
+            </div>
+            <div>
+              <dd className="text-3xl lg:text-4xl">
+                {userCap ? userCap.toString() : t('No cap')}
+              </dd>
+              <dt className="text-sm text-muted">
+                {t('Your cap')}
+                <Tooltip
+                  description={t(
+                    'Your fees paid for this epoch are currently {{paid}} so your rewards will be capped at {{cap}} times this amount',
+                    {
+                      paid: partyScore?.node?.totalFeesPaid || '0',
+                      cap: feeCap,
+                    }
+                  )}
+                >
+                  <VegaIcon name={VegaIconNames.INFO} />
+                </Tooltip>
+              </dt>
+            </div>
+          </>
+        )}
+      </dl>
+    </section>
   );
 };
 
@@ -356,29 +358,38 @@ const HistoricScoresTable = ({
   currentEpoch,
   scores,
   asset,
-  distributionStrategy,
-  rankTable,
   teams,
-  rewardAmount,
   games,
 }: {
   currentEpoch: number;
   scores: TeamScoreFieldsFragment[];
   asset: AssetFieldsFragment;
-  distributionStrategy: DistributionStrategy;
-  rankTable: RankTable[];
   teams: Record<string, TeamsFieldsFragment>;
-  rewardAmount: string;
   games: Game[];
 }) => {
   const t = useT();
 
   const history = scores
     .filter((s) => {
-      return s.epochId < currentEpoch;
+      return s.epochId !== currentEpoch;
     })
     .map((s, i) => {
       const team = teams[s.teamId];
+      const game = games.find((g) => g.epoch === s.epochId);
+      const entity = game?.entities.find((e) => {
+        if (
+          e.__typename === 'TeamGameEntity' &&
+          e.team.teamId === team.teamId
+        ) {
+          return true;
+        }
+        return false;
+      });
+      const rewardEarned =
+        entity?.__typename === 'TeamGameEntity'
+          ? entity.totalRewardsEarned
+          : '0';
+
       return {
         rank: i + 1,
         team: (
@@ -397,7 +408,7 @@ const HistoricScoresTable = ({
           </Link>
         ),
         epoch: s.epochId,
-        rewardEarned: 'TODO: 100',
+        rewardEarned: formatNumber(toBigNum(rewardEarned, asset.decimals)),
       };
     });
 
