@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useT } from '../../lib/use-t';
 import { SwapContainer } from '../swap';
 import { WithdrawContainer } from '../withdraw-container';
@@ -10,21 +9,36 @@ import React from 'react';
 import { DepositContainer } from '../deposit-container';
 import { TransferContainer } from '@vegaprotocol/accounts';
 import { VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
+import { create } from 'zustand';
 
-enum View {
+export enum SidebarAccountsViewType {
   Deposit = 'Deposit',
   Swap = 'Swap',
   Transfer = 'Transfer',
   Withdraw = 'Withdraw',
 }
 
-type InnerView = [view: View, assetId: string];
+type InnerView = [view: SidebarAccountsViewType, assetId: string];
+
+type SidebarAccountsInnerViewStore = {
+  view: InnerView | undefined;
+  setView: (view: InnerView | undefined) => void;
+};
+export const useSidebarAccountsInnerView =
+  create<SidebarAccountsInnerViewStore>()((set) => ({
+    view: undefined,
+    setView: (view) => set({ view }),
+  }));
 
 export const SidebarAccountsContainer = ({
   pinnedAssets,
 }: Pick<AccountsContainerProps, 'pinnedAssets'>) => {
   const t = useT();
-  const [innerView, setInnerView] = useState<InnerView | undefined>(undefined);
+
+  const [innerView, setInnerView] = useSidebarAccountsInnerView((state) => [
+    state.view,
+    state.setView,
+  ]);
 
   return (
     <>
@@ -54,16 +68,16 @@ export const SidebarAccountsContainer = ({
           orderByBalance
           hideZeroBalance
           onClickDeposit={(assetId) => {
-            setInnerView([View.Deposit, assetId]);
+            setInnerView([SidebarAccountsViewType.Deposit, assetId]);
           }}
           onClickSwap={(assetId) => {
-            setInnerView([View.Swap, assetId]);
+            setInnerView([SidebarAccountsViewType.Swap, assetId]);
           }}
           onClickTransfer={(assetId) => {
-            setInnerView([View.Transfer, assetId]);
+            setInnerView([SidebarAccountsViewType.Transfer, assetId]);
           }}
           onClickWithdraw={(assetId) => {
-            setInnerView([View.Withdraw, assetId]);
+            setInnerView([SidebarAccountsViewType.Withdraw, assetId]);
           }}
         />
       </div>
@@ -80,24 +94,24 @@ const InnerContainer = ({
 }) => {
   const [view, assetId] = innerView;
   switch (view) {
-    case View.Deposit:
+    case SidebarAccountsViewType.Deposit:
       return <DepositContainer initialAssetId={assetId} />;
 
-    case View.Swap:
+    case SidebarAccountsViewType.Swap:
       return (
         <SwapContainer
           assetId={assetId}
           onDeposit={(assetId) => {
             if (!assetId) return;
-            setInnerView?.([View.Deposit, assetId]);
+            setInnerView?.([SidebarAccountsViewType.Deposit, assetId]);
           }}
         />
       );
 
-    case View.Transfer:
+    case SidebarAccountsViewType.Transfer:
       return <TransferContainer assetId={assetId} />;
 
-    case View.Withdraw:
+    case SidebarAccountsViewType.Withdraw:
       return <WithdrawContainer initialAssetId={assetId} />;
   }
 };

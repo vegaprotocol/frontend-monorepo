@@ -147,6 +147,7 @@ const DepositForm = ({
 
   return (
     <form
+      data-testid="deposit-form"
       onSubmit={form.handleSubmit((fields) => {
         const asset = assets?.find((a) => a.id === fields.assetId);
 
