@@ -4,32 +4,24 @@ import {
   Sparkline,
   TinyScroll,
   TradingInput,
+  VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
-import { OpenMarkets } from './open-markets';
 import { useT } from '../../lib/use-t';
 import { ErrorBoundary } from '../../components/error-boundary';
 import { usePageTitle } from '../../lib/hooks/use-page-title';
 import { Card } from '../../components/card';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import {
-  CLOSED_MARKETS_STATES,
-  OPEN_MARKETS_STATES,
-  PROPOSED_MARKETS_STATES,
+  type MarketMaybeWithData,
   calcCandleVolumePrice,
-  isFuture,
-  isPerpetual,
-  isSpot,
   marketsWithCandlesProvider,
   retrieveAssets,
   type MarketMaybeWithCandles,
 } from '@vegaprotocol/markets';
 import { useYesterday } from '@vegaprotocol/react-helpers';
 import { type ReactNode, useEffect } from 'react';
-import {
-  Interval,
-  type MarketState as MarketStateType,
-} from '@vegaprotocol/types';
+import { Interval } from '@vegaprotocol/types';
 import { formatNumber } from '@vegaprotocol/utils';
 import { TopMarketList } from './top-market-list';
 import classNames from 'classnames';
@@ -39,17 +31,26 @@ import {
   useTotalVolume24hCandles,
 } from '../../lib/hooks/use-markets-stats';
 import { useTotalValueLocked } from '../../lib/hooks/use-total-volume-locked';
-import { create } from 'zustand';
 import uniq from 'lodash/uniq';
 import trim from 'lodash/trim';
 import flatten from 'lodash/flatten';
 import compact from 'lodash/compact';
 import uniqBy from 'lodash/uniqBy';
 import orderBy from 'lodash/orderBy';
-import intersection from 'lodash/intersection';
 import { getChainName } from '@vegaprotocol/web3';
 import { type AssetFieldsFragment } from '@vegaprotocol/assets';
 import { Trans } from 'react-i18next';
+import {
+  DEFAULT_FILTERS,
+  type MarketState,
+  type MarketType,
+  filterMarkets,
+  useMarketFiltersStore,
+  filterMarket,
+} from '../../lib/hooks/use-market-filters';
+import { useMarketClickHandler } from '../../lib/hooks/use-market-click-handler';
+import MarketListTable from './market-list-table';
+import type { CellClickedEvent, IRowNode } from 'ag-grid-community';
 
 const POLLING_TIME = 2000;
 
@@ -166,7 +167,7 @@ export const MarketsPage = () => {
               </div>
             </Card>
           </div>
-          <MarketTables
+          <MarketTable
             markets={allMarkets}
             marketAssets={marketAssets}
             error={error}
@@ -177,102 +178,7 @@ export const MarketsPage = () => {
   );
 };
 
-type MarketType = 'FUTR' | 'PERP' | 'SPOT';
-type MarketState = 'OPEN' | 'PROPOSED' | 'CLOSED';
-
-type Filters = {
-  marketTypes: MarketType[];
-  marketStates: MarketState[];
-  assets: string[];
-  searchTerm: string | undefined;
-};
-type Actions = {
-  setMarketTypes: (marketTypes: MarketType[]) => void;
-  setMarketStates: (marketSates: MarketState[]) => void;
-  setAssets: (assets: string[]) => void;
-  setSearchTerm: (searchTerm: string) => void;
-  reset: () => void;
-};
-
-type MarketPageFiltersStore = Filters & Actions;
-
-const DEFAULT_FILTERS: Filters = {
-  marketTypes: [],
-  marketStates: ['OPEN'],
-  assets: [],
-  searchTerm: '',
-};
-
-const useMarketPageFilters = create<MarketPageFiltersStore>()((set) => ({
-  ...DEFAULT_FILTERS,
-  setMarketTypes: (marketTypes) => set({ marketTypes }),
-  setMarketStates: (marketStates) => set({ marketStates }),
-  setAssets: (assets) => set({ assets }),
-  setSearchTerm: (searchTerm) => set({ searchTerm }),
-  reset: () => set(DEFAULT_FILTERS),
-}));
-
-const filter = (
-  markets: MarketMaybeWithCandles[],
-  { marketTypes, marketStates, assets, searchTerm }: Filters
-) => {
-  let filteredMarkets = markets;
-  // filter by market type
-  if (marketTypes.length > 0) {
-    filteredMarkets = filteredMarkets.filter((m) => {
-      let marketType: MarketType | undefined = undefined;
-      const product = m?.tradableInstrument?.instrument?.product;
-      if (product) {
-        if (isFuture(product)) marketType = 'FUTR';
-        if (isPerpetual(product)) marketType = 'PERP';
-        if (isSpot(product)) marketType = 'SPOT';
-      }
-      return marketType && marketTypes.includes(marketType);
-    });
-  }
-
-  // filter by state
-  filteredMarkets = filteredMarkets.filter((m) => {
-    let states: MarketStateType[] = [];
-    if (marketStates.includes('OPEN')) {
-      states = [...states, ...OPEN_MARKETS_STATES];
-    }
-    if (marketStates.includes('CLOSED')) {
-      states = [...states, ...CLOSED_MARKETS_STATES];
-    }
-    if (marketStates.includes('PROPOSED')) {
-      states = [...states, ...PROPOSED_MARKETS_STATES];
-    }
-
-    const marketState = m.data?.marketState;
-    return marketState && states.includes(marketState);
-  });
-
-  // filter by asset
-  if (assets.length > 0) {
-    filteredMarkets = filteredMarkets.filter((m) => {
-      const product = m.tradableInstrument?.instrument?.product;
-      if (product) {
-        const marketAssets = retrieveAssets(product).map((a) => a.id);
-        return intersection(assets, marketAssets).length > 0;
-      }
-    });
-  }
-
-  // filter by name or code
-  if (searchTerm && searchTerm.length > 0) {
-    filteredMarkets = filteredMarkets.filter((m) => {
-      const name = m.tradableInstrument.instrument.name;
-      const code = m.tradableInstrument.instrument.code;
-      const re = new RegExp(searchTerm, 'ig');
-      return re.test(name) || re.test(code);
-    });
-  }
-
-  return filteredMarkets;
-};
-
-export const MarketTables = ({
+export const MarketTable = ({
   markets,
   marketAssets,
   error,
@@ -293,7 +199,7 @@ export const MarketTables = ({
     setAssets,
     setSearchTerm,
     reset,
-  } = useMarketPageFilters((state) => ({
+  } = useMarketFiltersStore((state) => ({
     marketTypes: state.marketTypes,
     setMarketTypes: state.setMarketTypes,
     marketStates: state.marketStates,
@@ -342,13 +248,13 @@ export const MarketTables = ({
     }
   }
 
-  const filteredMarkets = filter(markets || [], {
+  const filteredMarkets = filterMarkets(markets || [], {
     marketTypes,
     marketStates,
     assets,
     searchTerm,
   });
-  const defaultMarkets = filter(markets || [], DEFAULT_FILTERS);
+  const defaultMarkets = filterMarkets(markets || [], DEFAULT_FILTERS);
 
   let filterSummary: ReactNode = undefined;
   if (filteredMarkets.length != defaultMarkets.length) {
@@ -377,6 +283,22 @@ export const MarketTables = ({
       </div>
     );
   }
+
+  const handleOnSelect = useMarketClickHandler();
+
+  const isExternalFilterPresent = () => true;
+  const doesExternalFilterPass = (
+    rowData: IRowNode<MarketMaybeWithCandles>
+  ) => {
+    const market = rowData.data;
+    if (!market) return false;
+    return filterMarket(market, {
+      marketTypes,
+      marketStates,
+      assets,
+      searchTerm,
+    });
+  };
 
   return (
     <div>
@@ -492,8 +414,7 @@ export const MarketTables = ({
           {/** MARKET NAME FILTER */}
           <div className="w-2/3">
             <TradingInput
-              prependIconName={VegaIconNames.SEARCH}
-              prependIconDescription={t('Search by market')}
+              prependElement={<VegaIcon name={VegaIconNames.SEARCH} />}
               placeholder={t('Search by market')}
               className="text-sm border !placeholder:text-secondary"
               onChange={(ev) => {
@@ -509,10 +430,36 @@ export const MarketTables = ({
 
       <div className="h-full my-1 border rounded border-default">
         <ErrorBoundary feature="all-markets">
-          <OpenMarkets
-            data={filteredMarkets}
+          <MarketListTable
+            rowData={markets}
             filterSummary={filterSummary}
-            error={error}
+            onCellClicked={({
+              data,
+              column,
+              event,
+            }: CellClickedEvent<MarketMaybeWithData>) => {
+              if (!data) return;
+
+              // prevent navigating to the market page if any of the below cells are clicked
+              // event.preventDefault or event.stopPropagation do not seem to apply for ag-grid
+              const colId = column.getColId();
+
+              if (
+                [
+                  'tradableInstrument.instrument.product.settlementAsset.symbol',
+                  'market-actions',
+                ].includes(colId)
+              ) {
+                return;
+              }
+
+              // @ts-ignore metaKey exists
+              handleOnSelect(data.id, event ? event.metaKey : false);
+            }}
+            overlayNoRowsTemplate={error ? error.message : t('No markets')}
+            suppressNoRowsOverlay
+            isExternalFilterPresent={isExternalFilterPresent}
+            doesExternalFilterPass={doesExternalFilterPass}
           />
         </ErrorBoundary>
       </div>

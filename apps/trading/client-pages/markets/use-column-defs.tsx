@@ -127,12 +127,8 @@ export const priceValueFormatter = (
         )} ${quoteAsset?.symbol}`;
   }
   let quoteName: string | undefined = undefined;
-  if (data) {
-    try {
-      quoteName = data && getQuoteName(data);
-    } catch {
-      quoteName = '';
-    }
+  if (data?.tradableInstrument?.instrument?.product) {
+    quoteName = data && getQuoteName(data);
   }
 
   return data?.data?.bestOfferPrice === undefined

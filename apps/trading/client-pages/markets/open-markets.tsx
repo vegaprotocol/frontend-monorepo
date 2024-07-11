@@ -3,15 +3,12 @@ import type { CellClickedEvent } from 'ag-grid-community';
 import MarketListTable from './market-list-table';
 import { useMarketClickHandler } from '../../lib/hooks/use-market-click-handler';
 import { useT } from '../../lib/use-t';
-import { type ReactNode } from 'react';
 
 export const OpenMarkets = ({
   data,
-  filterSummary,
   error,
 }: {
   data: MarketMaybeWithData[] | null;
-  filterSummary?: ReactNode;
   error: Error | undefined;
 }) => {
   const t = useT();
@@ -20,7 +17,6 @@ export const OpenMarkets = ({
   return (
     <MarketListTable
       rowData={data}
-      filterSummary={filterSummary}
       onCellClicked={({
         data,
         column,

@@ -3,8 +3,6 @@ import {
   TradingRichSelectOption,
   TradingSelect,
   TradingRichSelect,
-  MultiSelect,
-  MultiSelectOption,
 } from './select';
 import { FormGroup } from '../form-group';
 
@@ -26,12 +24,6 @@ const Template: StoryFn = (args) => (
 const RichSelectTemplate: StoryFn = ({ placeholder, ...props }) => (
   <FormGroup label="Select an option" labelFor={props.id}>
     <TradingRichSelect placeholder={placeholder} {...props} />
-  </FormGroup>
-);
-
-const MultiSelectTemplate: StoryFn = (props) => (
-  <FormGroup label="Select an option" labelFor="multi-select">
-    <MultiSelect {...props}></MultiSelect>
   </FormGroup>
 );
 
@@ -99,19 +91,6 @@ RichDefaultSelect.args = {
           <span className="text-xs">Sixth option</span>
         </div>
       </TradingRichSelectOption>
-    </>
-  ),
-};
-
-export const DefaultMultiSelect = MultiSelectTemplate.bind({});
-DefaultMultiSelect.args = {
-  placeholder: 'Select an option',
-  children: (
-    <>
-      <MultiSelectOption>Option A</MultiSelectOption>
-      <MultiSelectOption checked>Option B</MultiSelectOption>
-      <MultiSelectOption checked>Option C</MultiSelectOption>
-      <MultiSelectOption>Option D</MultiSelectOption>
     </>
   ),
 };
