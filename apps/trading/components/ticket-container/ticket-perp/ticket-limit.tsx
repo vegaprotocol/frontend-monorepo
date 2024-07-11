@@ -28,9 +28,9 @@ import * as Data from '../info';
 import { SizeSlider } from '../size-slider';
 
 export const TicketLimit = (props: FormProps) => {
+  const ticket = useTicketContext('default');
   const t = useT();
   const create = useVegaTransactionStore((state) => state.create);
-  const ticket = useTicketContext();
 
   const { pubKey } = useVegaWallet();
 

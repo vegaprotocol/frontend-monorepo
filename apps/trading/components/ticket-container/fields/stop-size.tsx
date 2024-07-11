@@ -44,7 +44,8 @@ const SizeLabel = () => {
   // If we have a baseAsset object use that,
   // otherwise fall back to using the value specified
   // in metadata tags
-  let symbol = ticket.baseAsset ? ticket.baseAsset.symbol : ticket.baseSymbol;
+  let symbol =
+    ticket.type === 'spot' ? ticket.baseAsset.symbol : ticket.baseSymbol;
 
   if (
     sizeOverride === StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION

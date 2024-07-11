@@ -8,7 +8,8 @@ import { InputLabel } from '../elements/form';
 export const IcebergMinVisibleSize = (props: { control: Control<any> }) => {
   const t = useT();
   const ticket = useTicketContext();
-  const symbol = ticket.baseAsset ? ticket.baseAsset.symbol : ticket.baseSymbol;
+  const symbol =
+    ticket.type === 'spot' ? ticket.baseAsset.symbol : ticket.baseSymbol;
 
   return (
     <FormField

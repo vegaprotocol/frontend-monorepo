@@ -30,7 +30,7 @@ import { SizeSliderStop } from '../size-slider-stop';
 export const TicketStopMarket = (props: FormProps) => {
   const t = useT();
   const create = useVegaTransactionStore((store) => store.create);
-  const ticket = useTicketContext();
+  const ticket = useTicketContext('default');
 
   const form = useForm<FormFieldsStopMarket>({
     resolver: zodResolver(schemaStopMarket),

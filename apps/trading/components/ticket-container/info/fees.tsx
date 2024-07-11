@@ -28,7 +28,7 @@ export const Fees = () => {
   const t = useT();
   const feeEstimate = useEstimateFees();
   const ticket = useTicketContext();
-  const asset = ticket.settlementAsset;
+  const asset = ticket.quoteAsset;
 
   const totalDiscountFactor = getTotalDiscountFactor(feeEstimate);
   const totalDiscountedFeeAmount =
@@ -63,7 +63,7 @@ export const Fees = () => {
           <span>
             <span data-testid="fees-text">
               {t('Fees ({{symbol}})', {
-                symbol: ticket.settlementAsset.symbol,
+                symbol: asset.symbol,
               })}
             </span>
             {totalDiscountFactor !== '0' && (

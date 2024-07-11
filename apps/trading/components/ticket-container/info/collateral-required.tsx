@@ -13,7 +13,7 @@ export const CollateralRequired = () => {
   const { data } = useEstimatePosition();
 
   const label = t('Collateral required ({{symbol}})', {
-    symbol: ticket.settlementAsset.symbol,
+    symbol: ticket.quoteAsset.symbol,
   });
 
   const bestCase = BigInt(
@@ -35,14 +35,14 @@ export const CollateralRequired = () => {
           description={formatRange(
             bestCase.toString(),
             worstCase.toString(),
-            ticket.settlementAsset.decimals
+            ticket.quoteAsset.decimals
           )}
         >
           <span>
             {formatValue(
               bestCase.toString(),
-              ticket.settlementAsset.decimals,
-              ticket.settlementAsset.quantum
+              ticket.quoteAsset.decimals,
+              ticket.quoteAsset.quantum
             )}
           </span>
         </Tooltip>

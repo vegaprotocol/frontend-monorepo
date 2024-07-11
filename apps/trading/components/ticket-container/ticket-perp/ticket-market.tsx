@@ -33,7 +33,7 @@ export const TicketMarket = (props: FormProps) => {
   const create = useVegaTransactionStore((state) => state.create);
   const { pubKey } = useVegaWallet();
 
-  const ticket = useTicketContext();
+  const ticket = useTicketContext('default');
 
   const form = useForm<FormFieldsMarket>({
     resolver: zodResolver(schemaMarket),

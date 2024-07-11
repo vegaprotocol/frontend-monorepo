@@ -3,10 +3,11 @@ import { type MarketInfo } from '@vegaprotocol/markets';
 import { type MarginMode } from '@vegaprotocol/types';
 import { createContext, useContext } from 'react';
 
-type TicketContextValue = {
+// Perps and Futures can use the same context
+type DefaultContextValue = {
+  type: 'default';
   market: MarketInfo;
-  baseAsset?: AssetFieldsFragment;
-  baseSymbol?: string;
+  baseSymbol: string;
   quoteAsset: AssetFieldsFragment;
   settlementAsset: AssetFieldsFragment;
   accounts: {
@@ -20,11 +21,32 @@ type TicketContextValue = {
   };
 };
 
+type SpotContextValue = {
+  type: 'spot';
+  market: MarketInfo;
+  baseAsset: AssetFieldsFragment;
+  quoteAsset: AssetFieldsFragment;
+  accounts: {
+    general: string;
+    margin: string;
+    orderMargin: string;
+  };
+  marginMode: {
+    mode: MarginMode;
+    factor: string;
+  };
+};
+
+type TicketContextValue = DefaultContextValue | SpotContextValue;
+
 export const TicketContext = createContext<TicketContextValue>(
   {} as TicketContextValue
 );
 
-export const useTicketContext = () => {
+/**
+ * Retrieve ticket context which can be narrowed by using the context type value
+ */
+export function useTicketContext<T extends TicketContextValue['type']>(_?: T) {
   const ticketContext = useContext(TicketContext);
 
   if (!ticketContext) {
@@ -33,5 +55,5 @@ export const useTicketContext = () => {
     );
   }
 
-  return ticketContext;
-};
+  return ticketContext as Extract<TicketContextValue, { type: T }>;
+}

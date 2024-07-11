@@ -28,11 +28,11 @@ import * as Fields from '../fields';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 
 export const TicketMarket = (props: FormProps) => {
+  const ticket = useTicketContext('spot');
   const t = useT();
   const create = useVegaTransactionStore((state) => state.create);
   const { pubKey } = useVegaWallet();
 
-  const ticket = useTicketContext();
   const form = useForm<FormFieldsMarket>({
     resolver: zodResolver(schemaMarket),
     defaultValues: {
@@ -129,7 +129,7 @@ export const TicketMarket = (props: FormProps) => {
         )}
         <SubmitButton
           text={t('Place market order')}
-          subLabel={`${size || 0} ${ticket.baseSymbol} @ market`}
+          subLabel={`${size || 0} ${ticket.baseAsset.symbol} @ market`}
         />
         <pre className="block w-full text-2xs">
           {JSON.stringify(form.getValues(), null, 2)}
@@ -147,9 +147,9 @@ export const TicketMarket = (props: FormProps) => {
  * based on the sliders percentage value
  */
 export const SizeSlider = () => {
-  const ticket = useTicketContext();
+  const ticket = useTicketContext('spot');
   const form = useFormContext();
-  const baseAccount = useAccountBalance(ticket.baseAsset?.id);
+  const baseAccount = useAccountBalance(ticket.baseAsset.id);
 
   const { data: markPrice } = useMarkPrice(ticket.market.id);
   const price =
@@ -192,8 +192,6 @@ export const SizeSlider = () => {
         });
 
         const size = utils.toPercentOf(value[0], max);
-
-        // form.setValue('size', size.toString(), { shouldValidate: true });
 
         if (sizeMode === 'contracts') {
           form.setValue('size', size.toString(), { shouldValidate: true });

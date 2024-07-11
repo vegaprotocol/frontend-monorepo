@@ -26,7 +26,7 @@ import { mapFormValuesToStopOrdersSubmission } from '@vegaprotocol/deal-ticket';
 export const TicketStopLimit = (props: FormProps) => {
   const t = useT();
   const create = useVegaTransactionStore((store) => store.create);
-  const ticket = useTicketContext();
+  const ticket = useTicketContext('default');
 
   const form = useForm<FormFieldsStopLimit>({
     resolver: zodResolver(schemaStopLimit),
