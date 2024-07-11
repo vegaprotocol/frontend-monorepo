@@ -130,7 +130,6 @@ export const CompetitionsGame = () => {
               <HistoricScoresTable
                 currentEpoch={currentEpoch}
                 scores={allScores}
-                asset={asset}
                 teams={teams}
                 games={gamesData || []}
               />
@@ -357,13 +356,11 @@ const LiveScoresTable = ({
 const HistoricScoresTable = ({
   currentEpoch,
   scores,
-  asset,
   teams,
   games,
 }: {
   currentEpoch: number;
   scores: TeamScoreFieldsFragment[];
-  asset: AssetFieldsFragment;
   teams: Record<string, TeamsFieldsFragment>;
   games: Game[];
 }) => {
@@ -387,7 +384,7 @@ const HistoricScoresTable = ({
       });
       const rewardEarned =
         entity?.__typename === 'TeamGameEntity'
-          ? entity.totalRewardsEarned
+          ? entity.rewardEarnedQuantum
           : '0';
 
       return {
@@ -408,7 +405,7 @@ const HistoricScoresTable = ({
           </Link>
         ),
         epoch: s.epochId,
-        rewardEarned: formatNumber(toBigNum(rewardEarned, asset.decimals)),
+        rewardEarned: formatNumber(rewardEarned, 2),
       };
     });
 

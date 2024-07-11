@@ -4,6 +4,8 @@ fragment TeamEntity on TeamGameEntity {
   rewardMetric
   rewardEarned
   totalRewardsEarned
+  rewardEarnedQuantum
+  totalRewardsEarnedQuantum
   team {
     teamId
     membersParticipating {

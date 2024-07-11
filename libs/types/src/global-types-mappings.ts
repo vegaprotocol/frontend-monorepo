@@ -95,6 +95,7 @@ export const AuctionTriggerMapping: {
   [T in AuctionTrigger]: string;
 } = {
   AUCTION_TRIGGER_BATCH: 'batch',
+  AUCTION_TRIGGER_LONG_BLOCK: 'long block',
   AUCTION_TRIGGER_LIQUIDITY_TARGET_NOT_MET: 'liquidity (target not met)',
   AUCTION_TRIGGER_UNABLE_TO_DEPLOY_LP_ORDERS:
     'liquidity (unable to deploy liquidity provision orders)',
@@ -162,6 +163,7 @@ export const MarketTradingModeMapping: {
   [T in MarketTradingMode]: string;
 } = {
   TRADING_MODE_BATCH_AUCTION: 'Batch auction',
+  TRADING_MODE_LONG_BLOCK_AUCTION: 'Long block auction',
   TRADING_MODE_CONTINUOUS: 'Continuous',
   TRADING_MODE_MONITORING_AUCTION: 'Monitoring auction',
   TRADING_MODE_NO_TRADING: 'No trading',
