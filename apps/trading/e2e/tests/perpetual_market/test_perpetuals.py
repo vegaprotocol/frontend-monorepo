@@ -152,9 +152,6 @@ def test_perps_market_terminated(page: Page, vega: VegaServiceNull):
         "Trading modeNo trading"
     )
     expect(page.get_by_test_id("market-state")).to_have_text("StatusClosed")
-    expect(page.get_by_test_id("liquidity-supplied")).to_have_text(
-        "Liquidity supplied 0.00 (0.00%)"
-    )
     expect(page.get_by_test_id("market-funding")).to_contain_text(
         "Funding Rate / Countdown"
     )

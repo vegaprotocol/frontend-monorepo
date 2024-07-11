@@ -40,11 +40,6 @@ export const MarketHeaderPerp = ({ market }: MarketHeaderPerpProps) => {
         data-testid="market-settlement-asset"
       />
       <Stats.Oracle marketId={market.id} />
-      <Stats.LiquidityStat
-        marketId={market.id}
-        assetDecimals={asset.decimals}
-        quantum={asset.quantum}
-      />
       <Stats.FundingRateStat marketId={market.id} />
       <Stats.IndexPriceStat
         marketId={market.id}
