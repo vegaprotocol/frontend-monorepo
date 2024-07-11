@@ -1,7 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MarketSelector } from './market-selector';
-import { useMarketList } from '@vegaprotocol/markets';
 import {
   createMarketFragment,
   createMarketsDataFragment,
@@ -9,14 +8,19 @@ import {
 import { MarketState } from '@vegaprotocol/types';
 import { MemoryRouter } from 'react-router-dom';
 import type { ReactNode } from 'react';
-import type { SortType } from './sort-dropdown';
 import { SortTypeMapping } from './sort-dropdown';
-import { Sort } from './sort-dropdown';
 import { subDays } from 'date-fns';
 import { isMarketActive } from '../../lib/utils';
+import {
+  type ISortOption,
+  SortOption,
+  useMarketFiltersStore,
+  DEFAULT_FILTERS,
+} from '../../lib/hooks/use-market-filters';
+import { useDataProvider } from '@vegaprotocol/data-provider';
 
-jest.mock('@vegaprotocol/markets');
-const mockUseMarketList = useMarketList as jest.Mock;
+jest.mock('@vegaprotocol/data-provider');
+const mockUseMarketList = useDataProvider as jest.Mock;
 
 // mock market list items to avoid subscriptions starting
 jest.mock('./market-selector-item', () => ({
@@ -36,6 +40,9 @@ jest.mock('react-virtualized-auto-sizer', () => {
 });
 
 describe('MarketSelector', () => {
+  beforeEach(() => {
+    useMarketFiltersStore.setState(DEFAULT_FILTERS);
+  });
   const markets = [
     createMarketFragment({
       id: 'market-0',
@@ -171,7 +178,7 @@ describe('MarketSelector', () => {
       </MemoryRouter>
     );
     screen
-      .getAllByTestId(/^product-(All|Future|Spot|Perpetual)$/)
+      .getAllByTestId(/^product-(ALL|FUTURE|SPOT|PERPETUAL)$/)
       .forEach((elem, i) => {
         expect(elem.textContent).toEqual(buttons[i]);
       });
@@ -195,20 +202,20 @@ describe('MarketSelector', () => {
       </MemoryRouter>
     );
 
-    await userEvent.click(screen.getByTestId('product-Spot'));
+    await userEvent.click(screen.getByTestId('product-SPOT'));
     expect(screen.queryAllByTestId(/market-\d/)).toHaveLength(0);
     expect(screen.getByTestId('no-items')).toHaveTextContent(
       'No spot markets.'
     );
 
-    await userEvent.click(screen.getByTestId('product-Perpetual'));
+    await userEvent.click(screen.getByTestId('product-PERPETUAL'));
     expect(screen.queryAllByTestId(/market-\d/)).toHaveLength(1);
 
-    await userEvent.click(screen.getByTestId('product-Future'));
+    await userEvent.click(screen.getByTestId('product-FUTURE'));
     expect(screen.queryAllByTestId(/market-\d/)).toHaveLength(3);
     expect(screen.queryByTestId('no-items')).not.toBeInTheDocument();
 
-    await userEvent.click(screen.getByTestId('product-All'));
+    await userEvent.click(screen.getByTestId('product-ALL'));
     expect(screen.queryAllByTestId(/market-\d/)).toHaveLength(4);
     expect(screen.queryByTestId('no-items')).not.toBeInTheDocument();
   });
@@ -251,9 +258,11 @@ describe('MarketSelector', () => {
     await userEvent.click(screen.getByTestId('sort-trigger'));
     const options = screen.getAllByTestId(/sort-item/);
     expect(options.map((o) => o.textContent?.trim())).toEqual(
-      Object.entries(Sort).map(([key]) => SortTypeMapping[key as SortType])
+      Object.entries(SortOption).map(
+        ([key]) => SortTypeMapping[key as ISortOption]
+      )
     );
-    await userEvent.click(screen.getByTestId('sort-item-Gained'));
+    await userEvent.click(screen.getByTestId('sort-item-GAINED'));
     expect(
       screen
         .getAllByTestId(/market-\d/)
@@ -269,7 +278,7 @@ describe('MarketSelector', () => {
     );
 
     await userEvent.click(screen.getByTestId('sort-trigger'));
-    await userEvent.click(screen.getByTestId('sort-item-Lost'));
+    await userEvent.click(screen.getByTestId('sort-item-LOST'));
     expect(
       screen
         .getAllByTestId(/market-\d/)
@@ -285,7 +294,7 @@ describe('MarketSelector', () => {
     );
 
     await userEvent.click(screen.getByTestId('sort-trigger'));
-    await userEvent.click(screen.getByTestId('sort-item-New'));
+    await userEvent.click(screen.getByTestId('sort-item-NEW'));
     expect(
       screen
         .getAllByTestId(/market-\d/)

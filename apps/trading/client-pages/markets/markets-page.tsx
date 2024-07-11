@@ -39,11 +39,12 @@ import uniqBy from 'lodash/uniqBy';
 import orderBy from 'lodash/orderBy';
 import { getChainName } from '@vegaprotocol/web3';
 import { type AssetFieldsFragment } from '@vegaprotocol/assets';
-import { Trans } from 'react-i18next';
 import {
   DEFAULT_FILTERS,
-  type MarketState,
-  type MarketType,
+  type IMarketState,
+  type IMarketType,
+  MarketType,
+  MarketState,
   filterMarkets,
   useMarketFiltersStore,
   filterMarket,
@@ -51,6 +52,7 @@ import {
 import { useMarketClickHandler } from '../../lib/hooks/use-market-click-handler';
 import MarketListTable from './market-list-table';
 import type { CellClickedEvent, IRowNode } from 'ag-grid-community';
+import { FilterSummary } from '../../components/market-selector/filter-summary';
 
 const POLLING_TIME = 2000;
 
@@ -211,19 +213,19 @@ export const MarketTable = ({
     reset: state.reset,
   }));
 
-  const isMarketTypeSelected = (marketType: MarketType) =>
+  const isMarketTypeSelected = (marketType: IMarketType) =>
     marketTypes.includes(marketType);
 
-  const marketTypeFilterOptions: Record<MarketType, string> = {
-    PERP: t('Perpetuals'),
-    FUTR: t('Futures'),
-    SPOT: t('Spot'),
+  const marketTypeFilterOptions: Record<IMarketType, string> = {
+    [MarketType.PERPETUAL]: t('Perpetuals'),
+    [MarketType.FUTURE]: t('Futures'),
+    [MarketType.SPOT]: t('Spot'),
   };
 
-  const marketStateFilterOptions: Record<MarketState, string> = {
-    OPEN: t('Open'),
-    CLOSED: t('Closed'),
-    PROPOSED: t('Proposed'),
+  const marketStateFilterOptions: Record<IMarketState, string> = {
+    [MarketState.OPEN]: t('Open'),
+    [MarketState.CLOSED]: t('Closed'),
+    [MarketState.PROPOSED]: t('Proposed'),
   };
   let marketStateTrigger: string | undefined = undefined;
   if (marketStates.length > 0) {
@@ -259,29 +261,7 @@ export const MarketTable = ({
   let filterSummary: ReactNode = undefined;
   if (filteredMarkets.length != defaultMarkets.length) {
     const diff = defaultMarkets.length - filteredMarkets.length;
-    filterSummary = (
-      <div className="p-2 text-center">
-        <Trans
-          i18nKey={
-            diff > 0
-              ? '{{count}} results excluded due to the applied filters. <0>Remove filters</0>.'
-              : '{{count}} results included due to the applied filters. <0>Remove filters</0>.'
-          }
-          values={{ count: Math.abs(diff) }}
-          components={[
-            <button
-              key="reset-filters"
-              className="underline"
-              onClick={() => {
-                reset();
-              }}
-            >
-              Remove filters
-            </button>,
-          ]}
-        />
-      </div>
-    );
+    filterSummary = <FilterSummary diff={diff} resetFilters={reset} />;
   }
 
   const handleOnSelect = useMarketClickHandler();
@@ -328,7 +308,7 @@ export const MarketTable = ({
             {t('All')}
           </button>
           {Object.keys(marketTypeFilterOptions).map((key) => {
-            const marketType = key as MarketType;
+            const marketType = key as IMarketType;
             return (
               <button
                 key={marketType}
@@ -361,7 +341,7 @@ export const MarketTable = ({
           <div>
             <MultiSelect placeholder="Status" trigger={marketStateTrigger}>
               {Object.keys(marketStateFilterOptions).map((key) => {
-                const marketState = key as MarketState;
+                const marketState = key as IMarketState;
                 const isChecked = marketStates.includes(marketState);
                 return (
                   <MultiSelectOption

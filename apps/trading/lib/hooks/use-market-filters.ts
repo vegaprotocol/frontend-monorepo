@@ -8,25 +8,53 @@ import {
   CLOSED_MARKETS_STATES,
   PROPOSED_MARKETS_STATES,
   retrieveAssets,
+  calcTradedFactor,
 } from '@vegaprotocol/markets';
 import { create } from 'zustand';
 import intersection from 'lodash/intersection';
+import orderBy from 'lodash/orderBy';
+import { priceChangePercentage } from '@vegaprotocol/utils';
+import omit from 'lodash/omit';
 
-export type MarketType = 'FUTR' | 'PERP' | 'SPOT';
-export type MarketState = 'OPEN' | 'PROPOSED' | 'CLOSED';
+export const MarketType = {
+  FUTURE: 'FUTURE',
+  PERPETUAL: 'PERPETUAL',
+  SPOT: 'SPOT',
+} as const;
+
+export type IMarketType = keyof typeof MarketType;
+
+export const MarketState = {
+  OPEN: 'OPEN',
+  PROPOSED: 'PROPOSED',
+  CLOSED: 'CLOSED',
+} as const;
+
+export type IMarketState = keyof typeof MarketState;
+
+export const SortOption = {
+  GAINED: 'GAINED',
+  LOST: 'LOST',
+  NEW: 'NEW',
+  TOP_TRADED: 'TOP_TRADED',
+} as const;
+
+export type ISortOption = keyof typeof SortOption;
 
 export type Filters = {
-  marketTypes: MarketType[];
-  marketStates: MarketState[];
+  marketTypes: IMarketType[];
+  marketStates: IMarketState[];
   assets: string[];
   searchTerm: string | undefined;
+  sortOrder: ISortOption;
 };
 
 type Actions = {
-  setMarketTypes: (marketTypes: MarketType[]) => void;
-  setMarketStates: (marketSates: MarketState[]) => void;
+  setMarketTypes: (marketTypes: IMarketType[]) => void;
+  setMarketStates: (marketSates: IMarketState[]) => void;
   setAssets: (assets: string[]) => void;
   setSearchTerm: (searchTerm: string) => void;
+  setSortOrder: (sortOrder: ISortOption) => void;
   reset: () => void;
 };
 
@@ -35,6 +63,7 @@ export const DEFAULT_FILTERS: Filters = {
   marketStates: ['OPEN'],
   assets: [],
   searchTerm: '',
+  sortOrder: SortOption.TOP_TRADED,
 };
 
 export const useMarketFiltersStore = create<Filters & Actions>()((set) => ({
@@ -43,26 +72,27 @@ export const useMarketFiltersStore = create<Filters & Actions>()((set) => ({
   setMarketStates: (marketStates) => set({ marketStates }),
   setAssets: (assets) => set({ assets }),
   setSearchTerm: (searchTerm) => set({ searchTerm }),
-  reset: () => set(DEFAULT_FILTERS),
+  setSortOrder: (sortOrder) => set({ sortOrder }),
+  reset: () => set(omit(DEFAULT_FILTERS, 'sortOrder')),
 }));
 
 const isOfTypes = (
   market: MarketMaybeWithCandles,
-  marketTypes: MarketType[]
+  marketTypes: IMarketType[]
 ) => {
-  let marketType: MarketType | undefined = undefined;
+  let marketType: IMarketType | undefined = undefined;
   const product = market?.tradableInstrument?.instrument?.product;
   if (product) {
-    if (isFuture(product)) marketType = 'FUTR';
-    if (isPerpetual(product)) marketType = 'PERP';
-    if (isSpot(product)) marketType = 'SPOT';
+    if (isFuture(product)) marketType = MarketType.FUTURE;
+    if (isPerpetual(product)) marketType = MarketType.PERPETUAL;
+    if (isSpot(product)) marketType = MarketType.SPOT;
   }
   return marketType && marketTypes.includes(marketType);
 };
 
 const isOfStates = (
   market: MarketMaybeWithCandles,
-  marketStates: MarketState[]
+  marketStates: IMarketState[]
 ) => {
   let states: Types.MarketState[] = [];
   if (marketStates.includes('OPEN')) {
@@ -97,22 +127,31 @@ const nameOrCodeMatches = (market: MarketMaybeWithCandles, term: string) => {
 
 export const filterMarket = (
   market: MarketMaybeWithCandles,
-  { marketTypes, marketStates, assets, searchTerm }: Filters
+  filters: Partial<Filters>
 ) => {
   let passes = true;
+  const { marketTypes, marketStates, assets, searchTerm } = filters;
 
   // filter by market type
-  if (marketTypes.length > 0 && !isOfTypes(market, marketTypes)) {
+  if (
+    marketTypes &&
+    marketTypes.length > 0 &&
+    !isOfTypes(market, marketTypes)
+  ) {
     passes = false;
   }
 
   // filter by state
-  if (marketStates.length > 0 && !isOfStates(market, marketStates)) {
+  if (
+    marketStates &&
+    marketStates.length > 0 &&
+    !isOfStates(market, marketStates)
+  ) {
     passes = false;
   }
 
   // filter by asset
-  if (assets.length > 0 && !isOfAssets(market, assets)) {
+  if (assets && assets.length > 0 && !isOfAssets(market, assets)) {
     passes = false;
   }
 
@@ -130,5 +169,43 @@ export const filterMarket = (
 
 export const filterMarkets = (
   markets: MarketMaybeWithCandles[],
-  filters: Filters
+  filters: Partial<Filters>
 ) => markets.filter((m) => filterMarket(m, filters));
+
+export const orderMarkets = (
+  markets: MarketMaybeWithCandles[],
+  sortOrder?: ISortOption
+) => {
+  if (!sortOrder) return markets;
+
+  switch (sortOrder) {
+    case SortOption.GAINED:
+    case SortOption.LOST: {
+      const dir = sortOrder === SortOption.GAINED ? 'desc' : 'asc';
+      return orderBy(
+        markets,
+        [
+          (m) => {
+            if (!m.candles?.length) return 0;
+            return Number(
+              priceChangePercentage(
+                m.candles.filter((c) => c.close !== '').map((c) => c.close)
+              )
+            );
+          },
+        ],
+        [dir]
+      );
+    }
+    case SortOption.NEW: {
+      return orderBy(
+        markets,
+        [(m) => new Date(m.marketTimestamps.open).getTime()],
+        ['desc']
+      );
+    }
+    case SortOption.TOP_TRADED: {
+      return orderBy(markets, [(m) => calcTradedFactor(m)], ['desc']);
+    }
+  }
+};

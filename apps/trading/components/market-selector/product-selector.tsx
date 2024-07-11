@@ -3,54 +3,65 @@ import { Link } from 'react-router-dom';
 import { VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import { Links } from '../../lib/links';
 import { useT } from '../../lib/use-t';
-
-// Make sure these match the available __typename properties on product
-export const Product = {
-  All: 'All',
-  Perpetual: 'Perpetual',
-  Future: 'Future',
-  Spot: 'Spot',
-} as const;
-
-export type ProductType = keyof typeof Product;
+import {
+  type IMarketType,
+  MarketType,
+} from '../../lib/hooks/use-market-filters';
 
 export const ProductSelector = ({
-  product,
+  marketTypes,
   onSelect,
 }: {
-  product: ProductType;
-  onSelect: (product: ProductType) => void;
+  marketTypes: IMarketType[];
+  onSelect: (marketType?: IMarketType) => void;
 }) => {
   const t = useT();
+
   const ProductTypeMapping: {
-    [key in ProductType]: string;
+    [key in IMarketType]: string;
   } = {
-    [Product.All]: t('All'),
-    [Product.Perpetual]: t('Perpetuals'),
-    [Product.Future]: t('Futures'),
-    [Product.Spot]: t('Spot'),
+    [MarketType.PERPETUAL]: t('Perpetuals'),
+    [MarketType.FUTURE]: t('Futures'),
+    [MarketType.SPOT]: t('Spot'),
   };
+
+  const buttons = [MarketType.PERPETUAL, MarketType.FUTURE, MarketType.SPOT];
+
+  const getStyles = (selected: boolean) =>
+    classNames(
+      'text-sm px-3 py-1.5 rounded hover:text-vega-clight-50 dark:hover:text-vega-cdark-50',
+      {
+        'bg-vega-clight-500 dark:bg-vega-cdark-500 text-default': selected,
+        'text-secondary': !selected,
+      }
+    );
+
   return (
     <div className="flex mb-2">
-      {Object.keys(Product).map((t) => {
-        const classes = classNames(
-          'text-sm px-3 py-1.5 rounded hover:text-vega-clight-50 dark:hover:text-vega-cdark-50',
-          {
-            'bg-vega-clight-500 dark:bg-vega-cdark-500 text-default':
-              t === product,
-            'text-secondary': t !== product,
-          }
-        );
+      <button
+        key={'all-market-types'}
+        onClick={() => {
+          onSelect();
+        }}
+        className={getStyles(
+          marketTypes.length === 0 ||
+            marketTypes.length === Object.keys(MarketType).length
+        )}
+        data-testid={`product-ALL`}
+      >
+        {t('All')}
+      </button>
+      {buttons.map((t) => {
         return (
           <button
             key={t}
             onClick={() => {
-              onSelect(t as ProductType);
+              onSelect(t);
             }}
-            className={classes}
+            className={getStyles(marketTypes.includes(t))}
             data-testid={`product-${t}`}
           >
-            {ProductTypeMapping[t as ProductType]}
+            {ProductTypeMapping[t]}
           </button>
         );
       })}

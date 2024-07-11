@@ -1,6 +1,7 @@
 import compact from 'lodash/compact';
 import uniqBy from 'lodash/uniqBy';
 import {
+  marketsWithCandlesProvider,
   retrieveAssets,
   type MarketMaybeWithDataAndCandles,
 } from '@vegaprotocol/markets';
@@ -10,26 +11,28 @@ import {
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
-import type { CSSProperties } from 'react';
-import { useCallback, useState, useMemo, useRef, useEffect } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
+import { useCallback, useMemo, useRef, useEffect } from 'react';
 import { FixedSizeList } from 'react-window';
-import { useMarketSelectorList } from './use-market-selector-list';
-import type { ProductType } from './product-selector';
-import { Product, ProductSelector } from './product-selector';
+import { ProductSelector } from './product-selector';
 import { AssetDropdown } from './asset-dropdown';
-import type { SortType } from './sort-dropdown';
-import { Sort, SortDropdown } from './sort-dropdown';
+import { SortDropdown } from './sort-dropdown';
 import { MarketSelectorItem } from './market-selector-item';
 import classNames from 'classnames';
 import { useT } from '../../lib/use-t';
 import flatten from 'lodash/flatten';
-
-export type Filter = {
-  searchTerm: string;
-  product: ProductType;
-  sort: SortType;
-  assets: string[];
-};
+import {
+  MarketType,
+  useMarketFiltersStore,
+  filterMarkets,
+  orderMarkets,
+  DEFAULT_FILTERS,
+} from '../../lib/hooks/use-market-filters';
+import { useDataProvider } from '@vegaprotocol/data-provider';
+import { useYesterday } from '@vegaprotocol/react-helpers';
+import { Interval } from '@vegaprotocol/types';
+import uniq from 'lodash/uniq';
+import { FilterSummary } from './filter-summary';
 
 /**
  * Fetches market data and filters it given a set of filter properties
@@ -43,15 +46,54 @@ export const MarketSelector = ({
   onSelect: (marketId: string) => void;
 }) => {
   const t = useT();
-  const [filter, setFilter] = useState<Filter>({
-    searchTerm: '',
-    product: Product.All,
-    sort: Sort.TopTraded,
-    assets: [],
+
+  const {
+    marketTypes,
+    marketStates,
+    assets,
+    searchTerm,
+    sortOrder,
+    setMarketTypes,
+    setAssets,
+    setSearchTerm,
+    setSortOrder,
+    reset,
+  } = useMarketFiltersStore((state) => ({
+    marketTypes: state.marketTypes,
+    setMarketTypes: state.setMarketTypes,
+    marketStates: state.marketStates,
+    assets: state.assets,
+    setAssets: state.setAssets,
+    searchTerm: state.searchTerm,
+    sortOrder: state.sortOrder,
+    setSearchTerm: state.setSearchTerm,
+    setSortOrder: state.setSortOrder,
+    reset: state.reset,
+  }));
+
+  const yesterday = useYesterday();
+  const { data, loading, error, reload } = useDataProvider({
+    dataProvider: marketsWithCandlesProvider,
+    variables: {
+      since: new Date(yesterday).toISOString(),
+      interval: Interval.INTERVAL_I1H,
+    },
   });
-  const allProducts = filter.product === Product.All;
-  const { markets, data, loading, error, reload } =
-    useMarketSelectorList(filter);
+  const markets = orderMarkets(
+    filterMarkets(data || [], {
+      marketTypes,
+      marketStates,
+      assets,
+      searchTerm,
+    }),
+    sortOrder
+  );
+  const defaultMarkets = filterMarkets(data || [], DEFAULT_FILTERS);
+  let filterSummary: ReactNode = undefined;
+  if (markets.length != defaultMarkets.length) {
+    const diff = defaultMarkets.length - markets.length;
+    filterSummary = <FilterSummary diff={diff} resetFilters={reset} />;
+  }
 
   useEffect(() => {
     reload();
@@ -78,18 +120,20 @@ export const MarketSelector = ({
     <div data-testid="market-selector" className="md:w-[680px]">
       <div className="px-2 pt-2 mb-2">
         <ProductSelector
-          product={filter.product}
-          onSelect={(product) => {
-            setFilter((curr) => ({ ...curr, product }));
+          marketTypes={marketTypes}
+          onSelect={(marketType) => {
+            if (marketType) setMarketTypes([marketType]);
+            else setMarketTypes([]);
           }}
         />
         <div className="text-sm flex sm:grid grid-cols-[2fr_1fr_1fr] gap-1 ">
           <div className="flex-1">
             <TradingInput
-              onChange={(e) =>
-                setFilter((curr) => ({ ...curr, searchTerm: e.target.value }))
-              }
-              value={filter.searchTerm}
+              onChange={(e) => {
+                const searchTerm = e.target.value;
+                setSearchTerm(searchTerm);
+              }}
+              value={searchTerm}
               type="text"
               placeholder={t('Search')}
               data-testid="search-term"
@@ -99,36 +143,19 @@ export const MarketSelector = ({
           </div>
           <AssetDropdown
             assets={marketAssets}
-            checkedAssets={filter.assets}
+            checkedAssets={assets}
             onSelect={(id: string, checked) => {
-              setFilter((curr) => {
-                if (checked) {
-                  if (curr.assets.includes(id)) {
-                    return curr;
-                  } else {
-                    return { ...curr, assets: [...curr.assets, id] };
-                  }
-                } else {
-                  if (curr.assets.includes(id)) {
-                    return {
-                      ...curr,
-                      assets: curr.assets.filter((x) => x !== id),
-                    };
-                  }
-                }
-                return curr;
-              });
+              if (checked) {
+                setAssets(uniq([...assets, id]));
+              } else {
+                setAssets(assets.filter((a) => a !== id));
+              }
             }}
           />
           <SortDropdown
-            currentSort={filter.sort}
-            onSelect={(sort) => {
-              setFilter((curr) => {
-                return {
-                  ...curr,
-                  sort,
-                };
-              });
+            currentSort={sortOrder}
+            onSelect={(sortOrder) => {
+              setSortOrder(sortOrder);
             }}
           />
         </div>
@@ -138,19 +165,18 @@ export const MarketSelector = ({
           data={markets}
           loading={loading && !data}
           error={error}
-          searchTerm={filter.searchTerm}
           currentMarketId={currentMarketId}
           onSelect={onSelect}
           noItems={
-            filter.product === Product.Perpetual
+            marketTypes.includes(MarketType.PERPETUAL)
               ? t('No perpetual markets.')
-              : filter.product === Product.Spot
+              : marketTypes.includes(MarketType.SPOT)
               ? t('No spot markets.')
-              : filter.product === Product.Future
+              : marketTypes.includes(MarketType.FUTURE)
               ? t('No future markets.')
               : t('No markets.')
           }
-          allProducts={allProducts}
+          filterSummary={filterSummary}
         />
       </div>
     </div>
@@ -164,16 +190,15 @@ const MarketList = ({
   currentMarketId,
   onSelect,
   noItems,
-  allProducts,
+  filterSummary,
 }: {
   data: MarketMaybeWithDataAndCandles[];
   error: Error | undefined;
   loading: boolean;
-  searchTerm: string;
   currentMarketId?: string;
   onSelect: (marketId: string) => void;
   noItems: string;
-  allProducts: boolean;
+  filterSummary: ReactNode;
 }) => {
   const t = useT();
   const itemSize = 45;
@@ -215,6 +240,9 @@ const MarketList = ({
         </div>
         <div className="hidden sm:flex col-span-2" role="columnheader" />
       </div>
+      {filterSummary ? (
+        <div className="text-xs border-b border-default">{filterSummary}</div>
+      ) : null}
       <div ref={listRef}>
         <List
           data={data}
@@ -224,7 +252,6 @@ const MarketList = ({
           currentMarketId={currentMarketId}
           onSelect={onSelect}
           noItems={noItems}
-          allProducts={allProducts}
         />
       </div>
     </TinyScroll>
@@ -235,7 +262,6 @@ interface ListItemData {
   data: MarketMaybeWithDataAndCandles[];
   onSelect: (marketId: string) => void;
   currentMarketId?: string;
-  allProducts: boolean;
 }
 
 const ListItem = ({
@@ -252,7 +278,6 @@ const ListItem = ({
     currentMarketId={data.currentMarketId}
     style={style}
     onSelect={data.onSelect}
-    allProducts={data.allProducts}
   />
 );
 
@@ -264,21 +289,19 @@ const List = ({
   onSelect,
   noItems,
   currentMarketId,
-  allProducts,
 }: ListItemData & {
   loading: boolean;
   height: number;
   itemSize: number;
   noItems: string;
-  allProducts: boolean;
 }) => {
   const itemKey = useCallback(
     (index: number, data: ListItemData) => data.data[index].id,
     []
   );
   const itemData = useMemo(
-    () => ({ data, onSelect, currentMarketId, allProducts }),
-    [data, onSelect, currentMarketId, allProducts]
+    () => ({ data, onSelect, currentMarketId }),
+    [data, onSelect, currentMarketId]
   );
   if (!data || loading) {
     return (
