@@ -1,17 +1,15 @@
-import { type TicketType } from './types';
-import { useState } from 'react';
-
 import { TicketMarket } from './ticket-future/ticket-market';
 import { TicketLimit } from './ticket-future/ticket-limit';
 import { TicketStopLimit } from './ticket-future/ticket-stop-limit';
 import { TicketStopMarket } from './ticket-future/ticket-stop-market';
+import { type TicketType, useTicketType } from './use-ticket-type';
 
 export type FormProps = {
   onTypeChange: (value: TicketType) => void;
 };
 
 export const TicketFuture = () => {
-  const [ticketType, setTicketType] = useState<TicketType>('limit');
+  const [ticketType, setTicketType] = useTicketType();
 
   const props: FormProps = {
     onTypeChange: (value: TicketType) => setTicketType(value),

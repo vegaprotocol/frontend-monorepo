@@ -1,14 +1,12 @@
-import { type TicketType } from './types';
-import { useState } from 'react';
-
 import { TicketMarket } from './ticket-spot/ticket-market';
+import { type TicketType, useTicketType } from './use-ticket-type';
 
 export type FormProps = {
   onTypeChange: (value: TicketType) => void;
 };
 
 export const TicketSpot = () => {
-  const [ticketType, setTicketType] = useState<TicketType>('market');
+  const [ticketType, setTicketType] = useTicketType();
 
   const props: FormProps = {
     onTypeChange: (value: TicketType) => setTicketType(value),

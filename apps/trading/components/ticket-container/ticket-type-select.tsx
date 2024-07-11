@@ -1,4 +1,3 @@
-import { type TicketType } from './types';
 import {
   TradingDropdown,
   TradingDropdownContent,
@@ -14,6 +13,7 @@ import * as ToggleGroup from '@radix-ui/react-toggle-group';
 import classNames from 'classnames';
 
 import { useT } from '../../lib/use-t';
+import { type TicketType } from './use-ticket-type';
 
 export const TicketTypeSelect = ({
   type,
