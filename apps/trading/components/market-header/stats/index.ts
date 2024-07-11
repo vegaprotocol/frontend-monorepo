@@ -6,7 +6,6 @@ export { MarkPriceStat } from './mark-price';
 export { ExpiryStat } from './expiry';
 export { MarketStateStat } from './market-state';
 export { MarketTradingModeStat } from './market-trading-mode';
-export { LiquidityStat } from './liquidity';
 export { IndexPriceStat } from './index-price';
 export { FundingRateStat } from './funding-rate';
 export { PriceCapStat } from './price-cap';
