@@ -44,18 +44,6 @@ def test_market_lifecycle(proposed_market, vega: VegaServiceNull, page: Page):
     expect(page.get_by_test_id("market-settlement-asset")).to_have_text(
         "Settlement assettDAI"
     )
-    expect(page.get_by_test_id("liquidity-supplied")).to_have_text(
-        "Liquidity supplied 0.00 (0.00%)"
-    )
-    page.get_by_test_id("liquidity-supplied").hover()
-    expect(page.get_by_test_id("liquidity-supplied-tooltip").first).to_have_text(
-        "Supplied stake0.00Target stake0.00View liquidity provision tableLearn about providing liquidity"
-    )
-    expect(
-        page.get_by_test_id("liquidity-supplied-tooltip")
-        .first.get_by_test_id("link")
-        .first
-    ).to_have_text("View liquidity provision table")
     # check that market is in proposed state
     # 6002-MDET-006
     # 6002-MDET-007
