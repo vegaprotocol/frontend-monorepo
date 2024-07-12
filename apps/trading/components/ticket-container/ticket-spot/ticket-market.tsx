@@ -37,6 +37,7 @@ export const TicketMarket = (props: FormProps) => {
   const form = useForm<FormFieldsMarket>({
     resolver: zodResolver(schemaMarket),
     defaultValues: {
+      ticketType: 'market',
       sizeMode: 'contracts',
       type: OrderType.TYPE_MARKET,
       side: Side.SIDE_BUY,

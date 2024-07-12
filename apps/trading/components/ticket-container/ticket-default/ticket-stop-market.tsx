@@ -35,6 +35,7 @@ export const TicketStopMarket = (props: FormProps) => {
   const form = useForm<FormFieldsStopMarket>({
     resolver: zodResolver(schemaStopMarket),
     defaultValues: {
+      ticketType: 'stopMarket',
       type: OrderType.TYPE_MARKET,
       side: Side.SIDE_BUY,
       triggerDirection: StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE,

@@ -37,6 +37,7 @@ export const TicketLimit = (props: FormProps) => {
   const form = useForm<FormFieldsLimit>({
     resolver: zodResolver(schemaLimit),
     defaultValues: {
+      ticketType: 'limit',
       sizeMode: 'contracts',
       type: OrderType.TYPE_LIMIT,
       side: Side.SIDE_BUY,

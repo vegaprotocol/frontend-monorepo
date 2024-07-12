@@ -31,6 +31,7 @@ export const TicketStopLimit = (props: FormProps) => {
   const form = useForm<FormFieldsStopLimit>({
     resolver: zodResolver(schemaStopLimit),
     defaultValues: {
+      ticketType: 'stopLimit',
       type: OrderType.TYPE_LIMIT,
       side: Side.SIDE_BUY,
       triggerDirection: StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE,
