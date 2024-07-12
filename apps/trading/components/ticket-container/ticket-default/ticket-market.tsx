@@ -11,6 +11,7 @@ import {
   mapFormValuesToTakeProfitAndStopLoss,
 } from '@vegaprotocol/deal-ticket';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
+import { useMarkPrice } from '@vegaprotocol/markets';
 
 import { useT } from '../../../lib/use-t';
 import { Form, FormGrid, FormGridCol } from '../elements/form';
@@ -22,7 +23,7 @@ import { SizeSlider } from '../size-slider';
 import * as utils from '../utils';
 import * as Fields from '../fields';
 import * as Data from '../info';
-import { useMarkPrice } from '@vegaprotocol/markets';
+import { TicketEventUpdater } from '../ticket-events';
 import { Datagrid } from '../elements/datagrid';
 
 import { useTicketContext } from '../ticket-context';
@@ -62,6 +63,7 @@ export const TicketMarket = (props: FormProps) => {
 
   return (
     <FormProvider {...form}>
+      <TicketEventUpdater />
       <Form
         onSubmit={form.handleSubmit((fields) => {
           const reference = `${pubKey}-${Date.now()}-${uniqueId()}`;

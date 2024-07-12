@@ -6,6 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useMarkPrice } from '@vegaprotocol/markets';
 import { OrderTimeInForce, OrderType, Side } from '@vegaprotocol/types';
 import { toBigNum } from '@vegaprotocol/utils';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import {
   mapFormValuesToOrderSubmission,
   mapFormValuesToTakeProfitAndStopLoss,
@@ -21,12 +22,12 @@ import { type FormFieldsMarket, schemaMarket } from '../schemas';
 import { TicketTypeSelect } from '../ticket-type-select';
 import { type FormProps } from '../ticket-spot';
 import { useTicketContext } from '../ticket-context';
-
+import { TicketEventUpdater } from '../ticket-events';
 import { useForm as useFormCtx } from '../use-form';
+
 import * as utils from '../utils';
 import * as spotUtils from './utils';
 import * as Fields from '../fields';
-import { useVegaWallet } from '@vegaprotocol/wallet-react';
 
 export const TicketMarket = (props: FormProps) => {
   const ticket = useTicketContext('spot');
@@ -61,6 +62,7 @@ export const TicketMarket = (props: FormProps) => {
 
   return (
     <FormProvider {...form}>
+      <TicketEventUpdater />
       <Form
         onSubmit={form.handleSubmit((fields) => {
           const reference = `${pubKey}-${Date.now()}-${uniqueId()}`;

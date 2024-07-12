@@ -9,9 +9,12 @@ import {
   StopOrderTriggerDirection,
   StopOrderSizeOverrideSetting,
 } from '@vegaprotocol/types';
+import { useVegaTransactionStore } from '@vegaprotocol/web3';
+import { mapFormValuesToStopOrdersSubmission } from '@vegaprotocol/deal-ticket';
 
 import { FieldControls, Form, FormGrid, FormGridCol } from '../elements/form';
 import { type FormFieldsStopLimit, schemaStopLimit } from '../schemas';
+import { TicketEventUpdater } from '../ticket-events';
 import { TicketTypeSelect } from '../ticket-type-select';
 import { type FormProps } from '../ticket-default';
 import { NON_PERSISTENT_TIF_OPTIONS } from '../constants';
@@ -20,8 +23,6 @@ import { SubmitButton } from '../elements/submit-button';
 import { useT } from '../../../lib/use-t';
 
 import * as Fields from '../fields';
-import { useVegaTransactionStore } from '@vegaprotocol/web3';
-import { mapFormValuesToStopOrdersSubmission } from '@vegaprotocol/deal-ticket';
 
 export const TicketStopLimit = (props: FormProps) => {
   const t = useT();
@@ -63,6 +64,7 @@ export const TicketStopLimit = (props: FormProps) => {
 
   return (
     <FormProvider {...form}>
+      <TicketEventUpdater />
       <Form
         onSubmit={form.handleSubmit((fields) => {
           create({
