@@ -110,47 +110,45 @@ export const TicketLimit = (props: FormProps) => {
           }
         })}
       >
-        <Fields.Side control={form.control} />
+        <Fields.Side />
         <TicketTypeSelect type="limit" onTypeChange={props.onTypeChange} />
-        <Fields.Price control={form.control} />
-        <Fields.Size control={form.control} price={BigNumber(price)} />
+        <Fields.Price />
+        <Fields.Size price={BigNumber(price)} />
         <SizeSlider price={BigNumber(price || '0')} />
         <FormGrid>
           <FormGridCol>
             {isPersistent ? (
               <>
-                <Fields.PostOnly control={form.control} />
-                <Fields.Iceberg control={form.control} />
+                <Fields.PostOnly />
+                <Fields.Iceberg />
               </>
             ) : (
-              <Fields.ReduceOnly control={form.control} />
+              <Fields.ReduceOnly />
             )}
-            <Fields.TpSl control={form.control} />
+            <Fields.TpSl />
           </FormGridCol>
           <FormGridCol>
-            <Fields.TimeInForce control={form.control} />
-            {tif === OrderTimeInForce.TIME_IN_FORCE_GTT && (
-              <Fields.ExpiresAt control={form.control} />
-            )}
+            <Fields.TimeInForce />
+            {tif === OrderTimeInForce.TIME_IN_FORCE_GTT && <Fields.ExpiresAt />}
           </FormGridCol>
         </FormGrid>
         {tpSl && (
           <FormGrid>
             <FormGridCol>
-              <Fields.TakeProfit control={form.control} />
+              <Fields.TakeProfit />
             </FormGridCol>
             <FormGridCol>
-              <Fields.StopLoss control={form.control} />
+              <Fields.StopLoss />
             </FormGridCol>
           </FormGrid>
         )}
         {iceberg && (
           <FormGrid>
             <FormGridCol>
-              <Fields.IcebergPeakSize control={form.control} />
+              <Fields.IcebergPeakSize />
             </FormGridCol>
             <FormGridCol>
-              <Fields.IcebergMinVisibleSize control={form.control} />
+              <Fields.IcebergMinVisibleSize />
             </FormGridCol>
           </FormGrid>
         )}

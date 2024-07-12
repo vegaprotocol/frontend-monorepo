@@ -5,18 +5,13 @@ import { useTicketContext } from '../ticket-context';
 import { FormField } from '../ticket-field';
 import { InputLabel } from '../elements/form';
 import { StopOrderSizeOverrideSetting } from '@vegaprotocol/types';
-import { type FormControl, useForm } from '../use-form';
+import { useForm } from '../use-form';
 
-export const StopSize = ({
-  control,
-  name = 'size',
-}: {
-  control: FormControl;
-  name?: 'size' | 'ocoSize';
-}) => {
+export const StopSize = ({ name = 'size' }: { name?: 'size' | 'ocoSize' }) => {
+  const form = useForm();
   return (
     <FormField
-      control={control}
+      control={form.control}
       name={name}
       render={({ field }) => {
         return (

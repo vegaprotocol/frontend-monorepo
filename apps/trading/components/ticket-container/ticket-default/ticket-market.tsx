@@ -107,26 +107,26 @@ export const TicketMarket = (props: FormProps) => {
           }
         })}
       >
-        <Fields.Side<FormFieldsMarket> control={form.control} />
+        <Fields.Side />
         <TicketTypeSelect type="market" onTypeChange={props.onTypeChange} />
-        <Fields.Size control={form.control} price={price} />
+        <Fields.Size price={price} />
         <SizeSlider price={price} />
         <FormGrid>
           <FormGridCol>
-            <Fields.TpSl control={form.control} />
-            <Fields.ReduceOnly control={form.control} />
+            <Fields.TpSl />
+            <Fields.ReduceOnly />
           </FormGridCol>
           <FormGridCol>
-            <Fields.TimeInForce control={form.control} />
+            <Fields.TimeInForce />
           </FormGridCol>
         </FormGrid>
         {tpSl && (
           <FormGrid>
             <FormGridCol>
-              <Fields.TakeProfit control={form.control} />
+              <Fields.TakeProfit />
             </FormGridCol>
             <FormGridCol>
-              <Fields.StopLoss control={form.control} />
+              <Fields.StopLoss />
             </FormGridCol>
           </FormGrid>
         )}

@@ -3,13 +3,11 @@ import { MiniSelect, MiniSelectOption } from '@vegaprotocol/ui-toolkit';
 
 import { useT } from '../../../lib/use-t';
 import { FormField } from '../ticket-field';
-import { type FormControl, useForm } from '../use-form';
+import { useForm } from '../use-form';
 
 export const StopSizeOverride = ({
-  control,
   name = 'sizeOverride',
 }: {
-  control: FormControl;
   name?: 'sizeOverride' | 'ocoSizeOverride';
 }) => {
   const t = useT();
@@ -17,7 +15,7 @@ export const StopSizeOverride = ({
 
   return (
     <FormField
-      control={control}
+      control={form.control}
       name={name}
       render={({ field }) => {
         return (

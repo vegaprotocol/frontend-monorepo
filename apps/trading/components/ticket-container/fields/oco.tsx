@@ -1,13 +1,14 @@
 import { FormField } from '../ticket-field';
 import { TradingCheckbox as Checkbox } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../../lib/use-t';
-import { type FormControl } from '../use-form';
+import { useForm } from '../use-form';
 
-export const OCO = (props: { control: FormControl }) => {
+export const OCO = () => {
   const t = useT();
+  const form = useForm();
   return (
     <FormField
-      {...props}
+      control={form.control}
       name="oco"
       render={({ field }) => {
         return (

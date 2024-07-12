@@ -45,7 +45,6 @@ export const TicketStopMarket = (props: FormProps) => {
       size: '',
       timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
       expiresAt: addDays(new Date(), 1),
-      postOnly: false,
       reduceOnly: false,
       oco: false,
       ocoTriggerDirection:
@@ -85,36 +84,30 @@ export const TicketStopMarket = (props: FormProps) => {
           });
         })}
       >
-        <Fields.Side control={form.control} />
+        <Fields.Side />
         <TicketTypeSelect type="stopMarket" onTypeChange={props.onTypeChange} />
         <div className="flex flex-col gap-1">
           <FieldControls>
-            <Fields.StopTriggerDirection control={form.control} />
-            <Fields.StopTriggerType control={form.control} />
+            <Fields.StopTriggerDirection />
+            <Fields.StopTriggerType />
           </FieldControls>
-          <Fields.StopTrigger control={form.control} />
+          <Fields.StopTrigger />
         </div>
         <div className="flex flex-col gap-1">
           <FieldControls>
-            <Fields.StopSizeOverride control={form.control} />
+            <Fields.StopSizeOverride />
           </FieldControls>
-          <Fields.StopSize control={form.control} />
+          <Fields.StopSize />
         </div>
         <SizeSliderStop price={price} />
         <FormGrid>
           <FormGridCol>
-            {isPersistent ? (
-              <Fields.PostOnly control={form.control} />
-            ) : (
-              <Fields.ReduceOnly control={form.control} />
-            )}
-            <Fields.OCO control={form.control} />
+            {isPersistent ? <Fields.PostOnly /> : <Fields.ReduceOnly />}
+            <Fields.OCO />
           </FormGridCol>
           <FormGridCol>
-            <Fields.TimeInForce control={form.control} />
-            {tif === OrderTimeInForce.TIME_IN_FORCE_GTT && (
-              <Fields.ExpiresAt control={form.control} />
-            )}
+            <Fields.TimeInForce />
+            {tif === OrderTimeInForce.TIME_IN_FORCE_GTT && <Fields.ExpiresAt />}
           </FormGridCol>
         </FormGrid>
         {oco && (
@@ -122,26 +115,17 @@ export const TicketStopMarket = (props: FormProps) => {
             <hr className="border-default my-4" />
             <div className="flex flex-col gap-1">
               <FieldControls>
-                <Fields.StopTriggerDirection
-                  control={form.control}
-                  name="ocoTriggerDirection"
-                />
-                <Fields.StopTriggerType
-                  control={form.control}
-                  name="ocoTriggerType"
-                />
+                <Fields.StopTriggerDirection name="ocoTriggerDirection" />
+                <Fields.StopTriggerType name="ocoTriggerType" />
               </FieldControls>
-              <Fields.StopTrigger control={form.control} name="ocoTrigger" />
+              <Fields.StopTrigger name="ocoTrigger" />
             </div>
-            <Fields.Price control={form.control} name="ocoPrice" />
+            <Fields.Price name="ocoPrice" />
             <div className="flex flex-col gap-1">
               <FieldControls>
-                <Fields.StopSizeOverride
-                  control={form.control}
-                  name="ocoSizeOverride"
-                />
+                <Fields.StopSizeOverride name="ocoSizeOverride" />
               </FieldControls>
-              <Fields.StopSize control={form.control} name="ocoSize" />
+              <Fields.StopSize name="ocoSize" />
             </div>
           </>
         )}

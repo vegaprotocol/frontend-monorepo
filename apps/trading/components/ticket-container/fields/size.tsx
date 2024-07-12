@@ -7,14 +7,15 @@ import { useNotionalSizeFlip } from '../use-notional-size-flip';
 import { useTicketContext } from '../ticket-context';
 import { FormField } from '../ticket-field';
 import { InputLabel } from '../elements/form';
-import { type FormControl, useForm } from '../use-form';
+import { useForm } from '../use-form';
 
-export const Size = (props: { control: FormControl; price?: BigNumber }) => {
+export const Size = (props: { price?: BigNumber }) => {
+  const form = useForm();
   const flip = useNotionalSizeFlip();
 
   return (
     <FormField
-      {...props}
+      control={form.control}
       name="size"
       render={({ field }) => {
         return (

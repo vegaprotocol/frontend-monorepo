@@ -4,13 +4,11 @@ import { FormField } from '../ticket-field';
 import { useT } from '../../../lib/use-t';
 import { useTicketContext } from '../ticket-context';
 import { InputLabel } from '../elements/form';
-import { type FormControl, useForm } from '../use-form';
+import { useForm } from '../use-form';
 
 export const StopTrigger = ({
-  control,
   name = 'trigger',
 }: {
-  control: FormControl;
   name?: 'trigger' | 'ocoTrigger';
 }) => {
   const t = useT();
@@ -22,7 +20,7 @@ export const StopTrigger = ({
 
   return (
     <FormField
-      control={control}
+      control={form.control}
       name={name}
       render={({ field }) => {
         return (

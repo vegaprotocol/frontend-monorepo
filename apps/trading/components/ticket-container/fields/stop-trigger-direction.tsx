@@ -2,19 +2,18 @@ import { FormField } from '../ticket-field';
 import { StopOrderTriggerDirection } from '@vegaprotocol/types';
 import { MiniSelect, MiniSelectOption } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../../lib/use-t';
-import { type FormControl } from '../use-form';
+import { useForm } from '../use-form';
 
 export const StopTriggerDirection = ({
-  control,
   name = 'triggerDirection',
 }: {
-  control: FormControl;
   name?: 'triggerDirection' | 'ocoTriggerDirection';
 }) => {
   const t = useT();
+  const form = useForm();
   return (
     <FormField
-      control={control}
+      control={form.control}
       name={name}
       render={({ field }) => {
         return (

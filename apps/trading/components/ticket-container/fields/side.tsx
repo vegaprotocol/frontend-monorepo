@@ -7,13 +7,14 @@ import { VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../../lib/use-t';
 import { FormField } from '../ticket-field';
 import { useTicketContext } from '../ticket-context';
-import { type FormControl } from '../use-form';
+import { useForm } from '../use-form';
 
-export const Side = (props: { control: FormControl }) => {
+export const Side = () => {
   const toggles = useToggles();
+  const form = useForm();
   return (
     <FormField
-      {...props}
+      control={form.control}
       name="side"
       render={({ field }) => {
         return (

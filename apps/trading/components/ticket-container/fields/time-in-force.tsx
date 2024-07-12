@@ -9,9 +9,9 @@ import { useT } from '../../../lib/use-t';
 
 import { FormField } from '../ticket-field';
 import { NON_PERSISTENT_TIF_OPTIONS } from '../constants';
-import { type FormControl, useForm } from '../use-form';
+import { useForm } from '../use-form';
 
-export const TimeInForce = (props: { control: FormControl }) => {
+export const TimeInForce = () => {
   const t = useT();
   const form = useForm();
 
@@ -23,7 +23,7 @@ export const TimeInForce = (props: { control: FormControl }) => {
 
   return (
     <FormField
-      {...props}
+      control={form.control}
       name="timeInForce"
       render={({ field }) => {
         return (

@@ -4,15 +4,16 @@ import { FormField } from '../ticket-field';
 import { useT } from '../../../lib/use-t';
 import { useTicketContext } from '../ticket-context';
 import { InputLabel } from '../elements/form';
-import { type FormControl } from '../use-form';
+import { useForm } from '../use-form';
 
-export const StopLoss = (props: { control: FormControl }) => {
+export const StopLoss = () => {
   const t = useT();
   const ticket = useTicketContext();
+  const form = useForm();
 
   return (
     <FormField
-      {...props}
+      control={form.control}
       name="stopLoss"
       render={({ field }) => {
         return (

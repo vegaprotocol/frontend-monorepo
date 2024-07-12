@@ -3,13 +3,14 @@ import { formatForInput } from '@vegaprotocol/utils';
 
 import { FormField } from '../ticket-field';
 import { useT } from '../../../lib/use-t';
-import { type FormControl } from '../use-form';
+import { useForm } from '../use-form';
 
-export const ExpiresAt = (props: { control: FormControl }) => {
+export const ExpiresAt = () => {
   const t = useT();
+  const form = useForm();
   return (
     <FormField
-      {...props}
+      control={form.control}
       name="expiresAt"
       render={({ field }) => {
         return (
