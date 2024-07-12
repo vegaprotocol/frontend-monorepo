@@ -67,7 +67,8 @@ export const AssetCard = ({
                 asset.decimals,
                 asset.quantum
               )}
-              {allocatedRatio && ` (${formatNumber(allocatedRatio)}%)`}
+              {allocatedRatio &&
+                ` (${formatNumber(allocatedRatio.times(100))}%)`}
             </dd>
           </dl>
         )}
