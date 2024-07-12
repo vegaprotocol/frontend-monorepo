@@ -304,7 +304,6 @@ const LiveScoresTable = ({
     const team = teams[t.teamId];
 
     let reward: BigNumber;
-    let ratio = 0;
 
     if (
       distributionStrategy === DistributionStrategy.DISTRIBUTION_STRATEGY_RANK
@@ -313,7 +312,6 @@ const LiveScoresTable = ({
         return r.startRank > teamRank;
       });
       const payoutRank = rankTable[nextRankIndex - 1];
-      ratio = payoutRank.shareRatio;
       reward = toBigNum(rewardAmount, asset.decimals)
         .times(payoutRank.shareRatio)
         .div(total);
@@ -340,7 +338,6 @@ const LiveScoresTable = ({
           <span>{team.name}</span>
         </Link>
       ),
-      ratio: ratio,
       score: formatNumber(t.score, 2),
       estimatedRewards: formatNumber(reward, 2),
     };
@@ -364,9 +361,6 @@ const LiveScoresTable = ({
         {
           name: 'score',
           displayName: t('Live score'),
-        },
-        {
-          name: 'ratio',
         },
         {
           name: 'estimatedRewards',
