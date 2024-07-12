@@ -5,6 +5,7 @@ import * as RadioGroup from '@radix-ui/react-toggle-group';
 import classNames from 'classnames';
 import { VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../../lib/use-t';
+import { useTicketContext } from '../ticket-context';
 
 export const Side = (props: { control: Control<any> }) => {
   const toggles = useToggles();
@@ -55,6 +56,23 @@ export const Side = (props: { control: Control<any> }) => {
 
 const useToggles = () => {
   const t = useT();
+  const ticket = useTicketContext();
+
+  if (ticket.type === 'spot') {
+    return [
+      {
+        label: t('Buy'),
+        value: ESide.SIDE_BUY,
+        iconName: undefined,
+      },
+      {
+        label: t('Sell'),
+        value: ESide.SIDE_SELL,
+        iconName: undefined,
+      },
+    ];
+  }
+
   return [
     {
       label: t('Long'),
