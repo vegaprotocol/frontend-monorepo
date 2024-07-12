@@ -1,11 +1,11 @@
-import { type Control } from 'react-hook-form';
 import { FormField } from '../ticket-field';
 import { useT } from '../../../lib/use-t';
 import { TicketInput } from '@vegaprotocol/ui-toolkit';
 import { useTicketContext } from '../ticket-context';
 import { InputLabel } from '../elements/form';
+import { type FormControl } from '../use-form';
 
-export const IcebergMinVisibleSize = (props: { control: Control<any> }) => {
+export const IcebergMinVisibleSize = (props: { control: FormControl }) => {
   const t = useT();
   const ticket = useTicketContext();
   const symbol =

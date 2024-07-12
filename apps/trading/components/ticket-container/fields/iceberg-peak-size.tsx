@@ -1,11 +1,12 @@
-import { type Control } from 'react-hook-form';
-import { FormField } from '../ticket-field';
-import { useT } from '../../../lib/use-t';
 import { TicketInput } from '@vegaprotocol/ui-toolkit';
+
+import { useT } from '../../../lib/use-t';
+import { FormField } from '../ticket-field';
 import { useTicketContext } from '../ticket-context';
 import { InputLabel } from '../elements/form';
+import { type FormControl } from '../use-form';
 
-export const IcebergPeakSize = (props: { control: Control<any> }) => {
+export const IcebergPeakSize = (props: { control: FormControl }) => {
   const t = useT();
   const ticket = useTicketContext();
   const symbol =

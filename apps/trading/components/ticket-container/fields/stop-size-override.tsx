@@ -1,16 +1,16 @@
-import { type Control } from 'react-hook-form';
-import { FormField } from '../ticket-field';
 import { StopOrderSizeOverrideSetting } from '@vegaprotocol/types';
 import { MiniSelect, MiniSelectOption } from '@vegaprotocol/ui-toolkit';
+
 import { useT } from '../../../lib/use-t';
-import { useForm } from '../use-form';
+import { FormField } from '../ticket-field';
+import { type FormControl, useForm } from '../use-form';
 
 export const StopSizeOverride = ({
   control,
   name = 'sizeOverride',
 }: {
-  control: Control<any>;
-  name?: string;
+  control: FormControl;
+  name?: 'sizeOverride' | 'ocoSizeOverride';
 }) => {
   const t = useT();
   const form = useForm();

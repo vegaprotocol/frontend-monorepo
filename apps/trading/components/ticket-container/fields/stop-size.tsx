@@ -1,5 +1,3 @@
-import { type Control } from 'react-hook-form';
-
 import { TicketInput } from '@vegaprotocol/ui-toolkit';
 
 import { useT } from '../../../lib/use-t';
@@ -7,14 +5,14 @@ import { useTicketContext } from '../ticket-context';
 import { FormField } from '../ticket-field';
 import { InputLabel } from '../elements/form';
 import { StopOrderSizeOverrideSetting } from '@vegaprotocol/types';
-import { useForm } from '../use-form';
+import { type FormControl, useForm } from '../use-form';
 
 export const StopSize = ({
   control,
   name = 'size',
 }: {
-  control: Control<any>;
-  name?: string;
+  control: FormControl;
+  name?: 'size' | 'ocoSize';
 }) => {
   return (
     <FormField

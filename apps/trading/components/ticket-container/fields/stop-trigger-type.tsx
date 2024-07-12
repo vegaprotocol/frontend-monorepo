@@ -1,14 +1,15 @@
-import { type Control } from 'react-hook-form';
-import { FormField } from '../ticket-field';
 import { MiniSelect, MiniSelectOption } from '@vegaprotocol/ui-toolkit';
+
+import { FormField } from '../ticket-field';
 import { useT } from '../../../lib/use-t';
+import { type FormControl } from '../use-form';
 
 export const StopTriggerType = ({
   control,
   name = 'triggerType',
 }: {
-  control: Control<any>;
-  name?: string;
+  control: FormControl;
+  name?: 'triggerType' | 'ocoTriggerType';
 }) => {
   const t = useT();
   return (

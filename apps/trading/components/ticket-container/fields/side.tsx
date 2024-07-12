@@ -1,13 +1,15 @@
-import { type Control } from 'react-hook-form';
-import { Side as ESide } from '@vegaprotocol/types';
-import { FormField } from '../ticket-field';
-import * as RadioGroup from '@radix-ui/react-toggle-group';
 import classNames from 'classnames';
-import { VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
-import { useT } from '../../../lib/use-t';
-import { useTicketContext } from '../ticket-context';
+import * as RadioGroup from '@radix-ui/react-toggle-group';
 
-export const Side = (props: { control: Control<any> }) => {
+import { Side as ESide } from '@vegaprotocol/types';
+import { VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
+
+import { useT } from '../../../lib/use-t';
+import { FormField } from '../ticket-field';
+import { useTicketContext } from '../ticket-context';
+import { type FormControl } from '../use-form';
+
+export const Side = (props: { control: FormControl }) => {
   const toggles = useToggles();
   return (
     <FormField

@@ -1,10 +1,11 @@
-import { type Control } from 'react-hook-form';
-import { FormField } from '../ticket-field';
-import { useT } from '../../../lib/use-t';
 import { TicketInput } from '@vegaprotocol/ui-toolkit';
 import { formatForInput } from '@vegaprotocol/utils';
 
-export const ExpiresAt = (props: { control: Control<any> }) => {
+import { FormField } from '../ticket-field';
+import { useT } from '../../../lib/use-t';
+import { type FormControl } from '../use-form';
+
+export const ExpiresAt = (props: { control: FormControl }) => {
   const t = useT();
   return (
     <FormField
@@ -14,7 +15,7 @@ export const ExpiresAt = (props: { control: Control<any> }) => {
         return (
           <TicketInput
             {...field}
-            value={formatForInput(field.value)}
+            value={field.value ? formatForInput(field.value) : ''}
             onChange={(e) => {
               // zod schema is expecting a date
               field.onChange(new Date(e.target.value));

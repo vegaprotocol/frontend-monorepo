@@ -1,5 +1,3 @@
-import { type Control } from 'react-hook-form';
-import { FormField } from '../ticket-field';
 import {
   OrderTimeInForce,
   OrderTimeInForceCode,
@@ -8,10 +6,12 @@ import {
 } from '@vegaprotocol/types';
 import { MiniSelect, MiniSelectOption } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../../lib/use-t';
-import { NON_PERSISTENT_TIF_OPTIONS } from '../constants';
-import { useForm } from '../use-form';
 
-export const TimeInForce = (props: { control: Control<any> }) => {
+import { FormField } from '../ticket-field';
+import { NON_PERSISTENT_TIF_OPTIONS } from '../constants';
+import { type FormControl, useForm } from '../use-form';
+
+export const TimeInForce = (props: { control: FormControl }) => {
   const t = useT();
   const form = useForm();
 

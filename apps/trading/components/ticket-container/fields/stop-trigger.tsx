@@ -1,17 +1,17 @@
-import { type Control } from 'react-hook-form';
+import { TicketInput } from '@vegaprotocol/ui-toolkit';
+
 import { FormField } from '../ticket-field';
 import { useT } from '../../../lib/use-t';
-import { TicketInput } from '@vegaprotocol/ui-toolkit';
 import { useTicketContext } from '../ticket-context';
 import { InputLabel } from '../elements/form';
-import { useForm } from '../use-form';
+import { type FormControl, useForm } from '../use-form';
 
 export const StopTrigger = ({
   control,
   name = 'trigger',
 }: {
-  control: Control<any>;
-  name?: string;
+  control: FormControl;
+  name?: 'trigger' | 'ocoTrigger';
 }) => {
   const t = useT();
   const ticket = useTicketContext();
