@@ -11,8 +11,10 @@ import { useTicketContext } from './ticket-context';
 import * as defaultUtils from './ticket-default/utils';
 import * as utils from './utils';
 import { useForm } from './use-form';
+import { useState } from 'react';
 
 export const SizeSlider = ({ price }: { price: BigNumber | undefined }) => {
+  const [pct, setPct] = useState([0]);
   const form = useForm();
   const ticket = useTicketContext();
   const { pubKey } = useVegaWallet();
@@ -41,9 +43,12 @@ export const SizeSlider = ({ price }: { price: BigNumber | undefined }) => {
     <Slider
       min={0}
       max={100}
-      defaultValue={[0]}
+      step={0.1}
+      value={pct}
       disabled={!price || price.isZero() || price.isNaN()}
+      onValueChange={(value) => setPct(value)}
       onValueCommit={(value) => {
+        setPct(value);
         const size = defaultUtils.calcSizeByPct({
           pct: value[0],
           openVolume,
