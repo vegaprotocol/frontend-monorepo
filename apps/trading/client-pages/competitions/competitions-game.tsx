@@ -188,6 +188,9 @@ const EligibilityCriteria = ({
       ? BigNumber(partyScore.node.totalFeesPaid).times(feeCap)
       : null;
 
+  const labelClasses = 'text-sm text-muted';
+  const valueClasses = 'text-2xl lg:text-3xl';
+
   return (
     <section className="relative flex flex-col gap-2 lg:gap-4 p-6 rounded-lg">
       <div
@@ -198,30 +201,30 @@ const EligibilityCriteria = ({
         className="absolute inset-0 p-px bg-gradient-to-br from-vega-blue to-vega-green rounded-lg"
       />
       <h2 className="calt">{t('Eligibility criteria')}</h2>
-      <dl className="grid grid-cols-2 md:flex gap-4 md:gap-6 lg:gap-8 whitespace-nowrap">
+      <dl className="grid grid-cols-2 md:flex gap-2 md:gap-6 lg:gap-8 whitespace-nowrap">
         <div>
-          <dd className="text-3xl lg:text-4xl">
+          <dd className={valueClasses}>
             {EntityScopeLabelMapping[entityScope]}
           </dd>
-          <dt className="text-sm text-muted">{t('Entity')}</dt>
+          <dt className={labelClasses}>{t('Entity')}</dt>
         </div>
         <div>
-          <dd className="text-3xl lg:text-4xl" data-testid="total-games-stat">
+          <dd className={valueClasses}>
             {dispatchStrategy.stakingRequirement || '0'}
           </dd>
-          <dt className="text-sm text-muted">{t('Staked VEGA')}</dt>
+          <dt className={labelClasses}>{t('Staked VEGA')}</dt>
         </div>
         <div>
-          <dd className="text-3xl lg:text-4xl">
+          <dd className={valueClasses}>
             {addDecimalsFormatNumber(notional, asset.decimals) || '0'}
           </dd>
-          <dt className="text-sm text-muted">{t('Notional')}</dt>
+          <dt className={labelClasses}>{t('Notional')}</dt>
         </div>
         <div>
-          <dd className="text-3xl lg:text-4xl">
+          <dd className={valueClasses}>
             {DistributionStrategyMapping[strategy]}
           </dd>
-          <dt className="text-sm text-muted">{t('Method')}</dt>
+          <dt className={labelClasses}>{t('Method')}</dt>
         </div>
         {feeCap && (
           <>
