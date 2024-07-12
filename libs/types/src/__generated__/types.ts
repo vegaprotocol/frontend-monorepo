@@ -453,6 +453,8 @@ export enum AuctionTrigger {
   AUCTION_TRIGGER_GOVERNANCE_SUSPENSION = 'AUCTION_TRIGGER_GOVERNANCE_SUSPENSION',
   /** Liquidity monitoring due to unmet target stake */
   AUCTION_TRIGGER_LIQUIDITY_TARGET_NOT_MET = 'AUCTION_TRIGGER_LIQUIDITY_TARGET_NOT_MET',
+  /** Auction triggered following a long block, e.g. due to protocol upgrade */
+  AUCTION_TRIGGER_LONG_BLOCK = 'AUCTION_TRIGGER_LONG_BLOCK',
   /** Opening auction */
   AUCTION_TRIGGER_OPENING = 'AUCTION_TRIGGER_OPENING',
   /** Price monitoring */
@@ -2939,6 +2941,8 @@ export enum MarketTradingMode {
   TRADING_MODE_BATCH_AUCTION = 'TRADING_MODE_BATCH_AUCTION',
   /** Continuous trading where orders are processed and potentially matched on arrival */
   TRADING_MODE_CONTINUOUS = 'TRADING_MODE_CONTINUOUS',
+  /** Auction triggered by a long block */
+  TRADING_MODE_LONG_BLOCK_AUCTION = 'TRADING_MODE_LONG_BLOCK_AUCTION',
   /** Auction triggered by price/liquidity monitoring */
   TRADING_MODE_MONITORING_AUCTION = 'TRADING_MODE_MONITORING_AUCTION',
   /** No trading allowed */
