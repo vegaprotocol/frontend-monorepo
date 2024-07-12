@@ -9,41 +9,43 @@ import {
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 import { MarketSelectorButton } from './market-selector-button';
-
-export const Sort = {
-  Gained: 'Gained',
-  Lost: 'Lost',
-  New: 'New',
-  TopTraded: 'TopTraded',
-} as const;
-
-export type SortType = keyof typeof Sort;
+import {
+  type ISortOption,
+  SortOption,
+} from '../../lib/hooks/use-market-filters';
 
 export const SortTypeMapping: {
-  [key in SortType]: string;
+  [key in ISortOption]: string;
 } = {
-  [Sort.TopTraded]: 'Top traded',
-  [Sort.Gained]: 'Top gaining',
-  [Sort.Lost]: 'Top losing',
-  [Sort.New]: 'New markets',
+  [SortOption.TOP_TRADED]: 'Top traded',
+  [SortOption.GAINED]: 'Top gaining',
+  [SortOption.LOST]: 'Top losing',
+  [SortOption.NEW]: 'New markets',
 };
 
 const SortIconMapping: {
-  [key in SortType]: VegaIconNames;
+  [key in ISortOption]: VegaIconNames;
 } = {
-  [Sort.Gained]: VegaIconNames.TREND_UP,
-  [Sort.Lost]: VegaIconNames.TREND_DOWN,
-  [Sort.New]: VegaIconNames.STAR,
-  [Sort.TopTraded]: VegaIconNames.ARROW_UP,
+  [SortOption.TOP_TRADED]: VegaIconNames.TREND_UP,
+  [SortOption.GAINED]: VegaIconNames.TREND_DOWN,
+  [SortOption.LOST]: VegaIconNames.STAR,
+  [SortOption.NEW]: VegaIconNames.ARROW_UP,
 };
 
 export const SortDropdown = ({
   currentSort,
   onSelect,
 }: {
-  currentSort: SortType;
-  onSelect: (sort: SortType) => void;
+  currentSort: ISortOption;
+  onSelect: (sortOrder: ISortOption) => void;
 }) => {
+  const options = [
+    SortOption.GAINED,
+    SortOption.LOST,
+    SortOption.NEW,
+    SortOption.TOP_TRADED,
+  ];
+
   return (
     <TradingDropdown
       trigger={
@@ -57,19 +59,19 @@ export const SortDropdown = ({
       <TradingDropdownContent>
         <TradingDropdownRadioGroup
           value={currentSort}
-          onValueChange={(value) => onSelect(value as SortType)}
+          onValueChange={(value) => onSelect(value as ISortOption)}
         >
-          {Object.keys(Sort).map((key) => {
+          {options.map((option) => {
             return (
               <TradingDropdownRadioItem
                 inset
-                key={key}
-                value={key}
-                data-testid={`sort-item-${key}`}
+                key={option}
+                value={option}
+                data-testid={`sort-item-${option}`}
               >
                 <span className="flex gap-2">
-                  <VegaIcon name={SortIconMapping[key as SortType]} />{' '}
-                  {SortTypeMapping[key as SortType]}
+                  <VegaIcon name={SortIconMapping[option]} />{' '}
+                  {SortTypeMapping[option]}
                 </span>
                 <TradingDropdownItemIndicator />
               </TradingDropdownRadioItem>

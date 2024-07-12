@@ -118,7 +118,9 @@ export const totalFeesFactorsPercentage = (fees: Market['fees']['factors']) => {
     : undefined;
 };
 
-export const filterAndSortMarkets = (markets: MarketMaybeWithData[]) => {
+type MarketsFilter = <T extends MarketMaybeWithData>(markets: T[]) => T[];
+
+export const filterAndSortMarkets: MarketsFilter = (markets) => {
   const tradingModesOrdering = [
     MarketTradingMode.TRADING_MODE_CONTINUOUS,
     MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
@@ -148,39 +150,43 @@ export const filterAndSortMarkets = (markets: MarketMaybeWithData[]) => {
   );
 };
 
-export const filterActiveMarkets = (markets: MarketMaybeWithData[]) => {
+export const OPEN_MARKETS_STATES = [
+  MarketState.STATE_ACTIVE,
+  MarketState.STATE_SUSPENDED,
+  MarketState.STATE_SUSPENDED_VIA_GOVERNANCE,
+  MarketState.STATE_PENDING,
+];
+
+export const CLOSED_MARKETS_STATES = [
+  MarketState.STATE_SETTLED,
+  MarketState.STATE_TRADING_TERMINATED,
+  MarketState.STATE_CLOSED,
+  MarketState.STATE_CANCELLED,
+];
+
+export const PROPOSED_MARKETS_STATES = [MarketState.STATE_PROPOSED];
+
+export const filterActiveMarkets: MarketsFilter = (markets) => {
   return markets.filter((m) => {
     return (
-      m.data?.marketState &&
-      [
-        MarketState.STATE_ACTIVE,
-        MarketState.STATE_SUSPENDED,
-        MarketState.STATE_SUSPENDED_VIA_GOVERNANCE,
-        MarketState.STATE_PENDING,
-      ].includes(m.data.marketState)
+      m.data?.marketState && OPEN_MARKETS_STATES.includes(m.data.marketState)
     );
   });
 };
 
-export const filterClosedMarkets = (markets: MarketMaybeWithData[]) => {
+export const filterClosedMarkets: MarketsFilter = (markets) => {
   return markets.filter((m) => {
     return (
-      m.data?.marketState &&
-      [
-        MarketState.STATE_SETTLED,
-        MarketState.STATE_TRADING_TERMINATED,
-        MarketState.STATE_CLOSED,
-        MarketState.STATE_CANCELLED,
-      ].includes(m.data.marketState)
+      m.data?.marketState && CLOSED_MARKETS_STATES.includes(m.data.marketState)
     );
   });
 };
 
-export const filterProposedMarkets = (markets: MarketMaybeWithData[]) => {
+export const filterProposedMarkets: MarketsFilter = (markets) => {
   return markets.filter((m) => {
     return (
       m.data?.marketState &&
-      [MarketState.STATE_PROPOSED].includes(m.data?.marketState)
+      PROPOSED_MARKETS_STATES.includes(m.data?.marketState)
     );
   });
 };

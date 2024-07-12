@@ -41,6 +41,7 @@ export const OpenMarkets = ({
         handleOnSelect(data.id, event ? event.metaKey : false);
       }}
       overlayNoRowsTemplate={error ? error.message : t('No markets')}
+      suppressNoRowsOverlay
     />
   );
 };
