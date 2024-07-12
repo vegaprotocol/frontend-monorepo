@@ -17,6 +17,16 @@ export const isFuture = (product: Product): product is FutureFragment =>
 export const isPerpetual = (product: Product): product is PerpetualFragment =>
   product.__typename === 'Perpetual';
 
+export const retrieveAssets = (product: Product) => {
+  if (isSpot(product)) {
+    return [product.baseAsset, product.quoteAsset];
+  }
+  if (isPerpetual(product) || isFuture(product)) {
+    return [product.settlementAsset];
+  }
+  return [];
+};
+
 export const getDataSourceSpecForSettlementData = (product: Product) => {
   if (isFuture(product)) {
     return product.dataSourceSpecForSettlementData;

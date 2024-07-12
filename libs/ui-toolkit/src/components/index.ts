@@ -66,5 +66,6 @@ export * from './trading-dropdown';
 export * from './trading-form-group';
 export * from './trading-input-error';
 export * from './trading-input';
+export * from './trading-multi-select';
 export * from './trading-radio-group';
 export * from './trading-select';

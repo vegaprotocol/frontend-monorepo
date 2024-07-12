@@ -22,13 +22,11 @@ export const MarketSelectorItem = ({
   style,
   currentMarketId,
   onSelect,
-  allProducts,
 }: {
   market: MarketMaybeWithDataAndCandles;
   style: CSSProperties;
   currentMarketId?: string;
   onSelect: (marketId: string) => void;
-  allProducts: boolean;
 }) => {
   return (
     <div style={style} role="row">
@@ -45,19 +43,13 @@ export const MarketSelectorItem = ({
         )}
         onClick={() => onSelect(market.id)}
       >
-        <MarketData market={market} allProducts={allProducts} />
+        <MarketData market={market} />
       </Link>
     </div>
   );
 };
 
-const MarketData = ({
-  market,
-  allProducts,
-}: {
-  market: MarketMaybeWithDataAndCandles;
-  allProducts: boolean;
-}) => {
+const MarketData = ({ market }: { market: MarketMaybeWithDataAndCandles }) => {
   const t = useT();
   const { data } = useMarketDataUpdateSubscription({
     variables: {
