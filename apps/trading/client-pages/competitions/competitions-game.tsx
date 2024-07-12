@@ -16,6 +16,7 @@ import { type AssetFieldsFragment } from '@vegaprotocol/assets';
 import orderBy from 'lodash/orderBy';
 import compact from 'lodash/compact';
 import {
+  addDecimalsFormatNumber,
   addDecimalsFormatNumberQuantum,
   formatNumber,
   toBigNum,
@@ -124,6 +125,7 @@ export const CompetitionsGame = () => {
           </small>
         </header>
         <EligibilityCriteria
+          asset={asset}
           dispatchStrategy={dispatchStrategy as DispatchStrategy}
           partyScores={scoresData.gamePartyScores}
         />
@@ -160,9 +162,11 @@ export const CompetitionsGame = () => {
 };
 
 const EligibilityCriteria = ({
+  asset,
   dispatchStrategy,
   partyScores,
 }: {
+  asset: AssetFieldsFragment;
   dispatchStrategy: DispatchStrategy;
   partyScores: ScoresQuery['gamePartyScores'];
 }) => {
@@ -205,10 +209,12 @@ const EligibilityCriteria = ({
           <dd className="text-3xl lg:text-4xl" data-testid="total-games-stat">
             {dispatchStrategy.stakingRequirement || '0'}
           </dd>
-          <dt className="text-sm text-muted">Staked VEGA</dt>
+          <dt className="text-sm text-muted">{t('Staked VEGA')}</dt>
         </div>
         <div>
-          <dd className="text-3xl lg:text-4xl">{notional || '0'}</dd>
+          <dd className="text-3xl lg:text-4xl">
+            {addDecimalsFormatNumber(notional, asset.decimals) || '0'}
+          </dd>
           <dt className="text-sm text-muted">{t('Notional')}</dt>
         </div>
         <div>
