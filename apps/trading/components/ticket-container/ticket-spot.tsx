@@ -29,7 +29,7 @@ export const TicketSpot = ({ market }: { market: MarketInfo }) => {
   return (
     <TicketContext.Provider
       value={{
-        type: 'Spot',
+        type: 'spot',
         market,
         baseAsset,
         quoteAsset,

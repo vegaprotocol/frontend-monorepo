@@ -10,7 +10,7 @@ import { StopOrderSizeOverrideSetting } from '@vegaprotocol/types';
 import { Slider } from './slider';
 import { useTicketContext } from './ticket-context';
 
-import * as perpsUtils from './ticket-perp/utils';
+import * as defaultUtils from './ticket-default/utils';
 
 export const SizeSliderStop = ({ price }: { price: BigNumber | undefined }) => {
   const form = useFormContext();
@@ -48,7 +48,7 @@ export const SizeSliderStop = ({ price }: { price: BigNumber | undefined }) => {
           sizeOverride ===
           StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_NONE
         ) {
-          const size = perpsUtils.calcSizeByPct({
+          const size = defaultUtils.calcSizeByPct({
             pct: value[0],
             openVolume,
             price: removeDecimal(price, ticket.market.decimalPlaces),

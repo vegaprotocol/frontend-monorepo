@@ -1,7 +1,7 @@
-import { TicketMarket } from './ticket-perp/ticket-market';
-import { TicketLimit } from './ticket-perp/ticket-limit';
-import { TicketStopLimit } from './ticket-perp/ticket-stop-limit';
-import { TicketStopMarket } from './ticket-perp/ticket-stop-market';
+import { TicketMarket } from './ticket-default/ticket-market';
+import { TicketLimit } from './ticket-default/ticket-limit';
+import { TicketStopLimit } from './ticket-default/ticket-stop-limit';
+import { TicketStopMarket } from './ticket-default/ticket-stop-market';
 import { type TicketType, useTicketType } from './use-ticket-type';
 import {
   getAsset,
@@ -20,7 +20,7 @@ export type FormProps = {
   onTypeChange: (value: TicketType) => void;
 };
 
-export const TicketPerp = ({ market }: { market: MarketInfo }) => {
+export const TicketDefault = ({ market }: { market: MarketInfo }) => {
   const settlementAsset = market && getAsset(market);
   const quoteAsset = market && getQuoteAsset(market);
 
@@ -39,7 +39,7 @@ export const TicketPerp = ({ market }: { market: MarketInfo }) => {
   return (
     <TicketContext.Provider
       value={{
-        type: 'Perpetual',
+        type: 'default',
         market,
         quoteAsset,
         baseSymbol,
@@ -55,12 +55,12 @@ export const TicketPerp = ({ market }: { market: MarketInfo }) => {
         },
       }}
     >
-      <TicketPerpSwitch />
+      <TicketDefaultSwitch />
     </TicketContext.Provider>
   );
 };
 
-export const TicketPerpSwitch = () => {
+export const TicketDefaultSwitch = () => {
   const [ticketType, setTicketType] = useTicketType();
 
   const props: FormProps = {

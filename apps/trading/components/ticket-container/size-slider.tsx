@@ -9,7 +9,7 @@ import { removeDecimal } from '@vegaprotocol/utils';
 import { Slider } from './slider';
 import { useTicketContext } from './ticket-context';
 
-import * as perpsUtils from './ticket-perp/utils';
+import * as defaultUtils from './ticket-default/utils';
 import * as utils from './utils';
 
 export const SizeSlider = ({ price }: { price: BigNumber | undefined }) => {
@@ -44,7 +44,7 @@ export const SizeSlider = ({ price }: { price: BigNumber | undefined }) => {
       defaultValue={[0]}
       disabled={!price || price.isZero() || price.isNaN()}
       onValueCommit={(value) => {
-        const size = perpsUtils.calcSizeByPct({
+        const size = defaultUtils.calcSizeByPct({
           pct: value[0],
           openVolume,
           price: removeDecimal(price, ticket.market.decimalPlaces),

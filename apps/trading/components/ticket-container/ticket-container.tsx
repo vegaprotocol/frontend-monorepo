@@ -1,26 +1,34 @@
 import { useParams } from 'react-router-dom';
 
-import { getProductType, useMarketInfo } from '@vegaprotocol/markets';
+import {
+  type MarketInfo,
+  getProductType,
+  useMarketInfo,
+} from '@vegaprotocol/markets';
 
-import { TicketFuture } from './ticket-future';
-import { TicketPerp } from './ticket-perp';
+import { TicketDefault } from './ticket-default';
 import { TicketSpot } from './ticket-spot';
 
 export const TicketContainer = () => {
   const params = useParams();
-
   const { data: market } = useMarketInfo(params.marketId);
 
   if (!market) return null;
 
+  return (
+    <div className="p-2">
+      <TicketContainerSwitch market={market} />
+    </div>
+  );
+};
+
+const TicketContainerSwitch = ({ market }: { market: MarketInfo }) => {
   const productType = getProductType(market);
 
   switch (productType) {
-    case 'Future': {
-      return <TicketFuture market={market} />;
-    }
+    case 'Future':
     case 'Perpetual': {
-      return <TicketPerp market={market} />;
+      return <TicketDefault market={market} />;
     }
     case 'Spot': {
       return <TicketSpot market={market} />;

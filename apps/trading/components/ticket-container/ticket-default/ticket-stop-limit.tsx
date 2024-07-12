@@ -11,9 +11,9 @@ import {
 } from '@vegaprotocol/types';
 
 import { FieldControls, Form, FormGrid, FormGridCol } from '../elements/form';
-import { type FormFieldsStopMarket, schemaStopMarket } from '../schemas';
+import { type FormFieldsStopLimit, schemaStopLimit } from '../schemas';
 import { TicketTypeSelect } from '../ticket-type-select';
-import { type FormProps } from '../ticket-perp';
+import { type FormProps } from '../ticket-default';
 import { NON_PERSISTENT_TIF_OPTIONS } from '../constants';
 import { useTicketContext } from '../ticket-context';
 import { SubmitButton } from '../elements/submit-button';
@@ -22,24 +22,21 @@ import { useT } from '../../../lib/use-t';
 import * as Fields from '../fields';
 import { useVegaTransactionStore } from '@vegaprotocol/web3';
 import { mapFormValuesToStopOrdersSubmission } from '@vegaprotocol/deal-ticket';
-import { useMarkPrice } from '@vegaprotocol/markets';
-import { toBigNum } from '@vegaprotocol/utils';
 
-import { SizeSliderStop } from '../size-slider-stop';
-
-export const TicketStopMarket = (props: FormProps) => {
+export const TicketStopLimit = (props: FormProps) => {
   const t = useT();
   const create = useVegaTransactionStore((store) => store.create);
   const ticket = useTicketContext('default');
 
-  const form = useForm<FormFieldsStopMarket>({
-    resolver: zodResolver(schemaStopMarket),
+  const form = useForm<FormFieldsStopLimit>({
+    resolver: zodResolver(schemaStopLimit),
     defaultValues: {
-      type: OrderType.TYPE_MARKET,
+      type: OrderType.TYPE_LIMIT,
       side: Side.SIDE_BUY,
       triggerDirection: StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE,
       triggerType: 'price',
       trigger: '',
+      price: '',
       sizeOverride: StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_NONE,
       size: '',
       timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
@@ -58,15 +55,10 @@ export const TicketStopMarket = (props: FormProps) => {
   });
 
   const size = form.watch('size');
+  const price = form.watch('price');
   const tif = form.watch('timeInForce');
   const isPersistent = !NON_PERSISTENT_TIF_OPTIONS.includes(tif);
   const oco = form.watch('oco');
-
-  const { data: markPrice } = useMarkPrice(ticket.market.id);
-  const price =
-    markPrice && markPrice !== null
-      ? toBigNum(markPrice, ticket.market.decimalPlaces)
-      : undefined;
 
   return (
     <FormProvider {...form}>
@@ -85,7 +77,7 @@ export const TicketStopMarket = (props: FormProps) => {
         })}
       >
         <Fields.Side control={form.control} />
-        <TicketTypeSelect type="stopMarket" onTypeChange={props.onTypeChange} />
+        <TicketTypeSelect type="stopLimit" onTypeChange={props.onTypeChange} />
         <div className="flex flex-col gap-1">
           <FieldControls>
             <Fields.StopTriggerDirection control={form.control} />
@@ -93,13 +85,13 @@ export const TicketStopMarket = (props: FormProps) => {
           </FieldControls>
           <Fields.StopTrigger control={form.control} />
         </div>
+        <Fields.Price control={form.control} />
         <div className="flex flex-col gap-1">
           <FieldControls>
             <Fields.StopSizeOverride control={form.control} />
           </FieldControls>
           <Fields.StopSize control={form.control} />
         </div>
-        <SizeSliderStop price={price} />
         <FormGrid>
           <FormGridCol>
             {isPersistent ? (
@@ -146,7 +138,9 @@ export const TicketStopMarket = (props: FormProps) => {
         )}
         <SubmitButton
           text={t('Place limit stop order')}
-          subLabel={`${size || 0} ${ticket.baseSymbol} @ market`}
+          subLabel={`${size || 0} ${ticket.baseSymbol} @ ${price} ${
+            ticket.quoteAsset.symbol
+          }`}
         />
 
         <pre className="block w-full text-2xs">
