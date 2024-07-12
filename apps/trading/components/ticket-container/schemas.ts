@@ -22,6 +22,7 @@ export const numericalString = z.string().refine(
 
 export const schemaMarket = z
   .object({
+    ticketType: z.literal('market'),
     sizeMode: z.enum(['contracts', 'notional']),
     type: z.literal(OrderType.TYPE_MARKET),
     side: z.nativeEnum(Side),
@@ -62,6 +63,7 @@ export const schemaMarket = z
 
 export const schemaLimit = z
   .object({
+    ticketType: z.literal('limit'),
     sizeMode: z.enum(['contracts', 'notional']),
     type: z.literal(OrderType.TYPE_LIMIT),
     side: z.nativeEnum(Side),
@@ -128,6 +130,7 @@ export const schemaLimit = z
   });
 
 export const schemaStopLimit = z.object({
+  ticketType: z.literal('stopLimit'),
   type: z.literal(OrderType.TYPE_LIMIT),
   side: z.nativeEnum(Side),
   triggerDirection: z.nativeEnum(StopOrderTriggerDirection),
@@ -150,6 +153,7 @@ export const schemaStopLimit = z.object({
 });
 
 export const schemaStopMarket = z.object({
+  ticketType: z.literal('stopMarket'),
   type: z.literal(OrderType.TYPE_MARKET),
   side: z.nativeEnum(Side),
   triggerDirection: z.nativeEnum(StopOrderTriggerDirection),
@@ -160,7 +164,6 @@ export const schemaStopMarket = z.object({
   timeInForce: z.nativeEnum(OrderTimeInForce),
   expiresAt: z.date().optional(),
   reduceOnly: z.boolean(),
-  postOnly: z.boolean(),
   oco: z.boolean(),
   ocoTriggerDirection: z.nativeEnum(StopOrderTriggerDirection),
   ocoTriggerType: z.enum(['price', 'trailingPercentOffset']),
@@ -174,3 +177,9 @@ export type FormFieldsMarket = z.infer<typeof schemaMarket>;
 export type FormFieldsLimit = z.infer<typeof schemaLimit>;
 export type FormFieldsStopMarket = z.infer<typeof schemaStopMarket>;
 export type FormFieldsStopLimit = z.infer<typeof schemaStopLimit>;
+export type FormFields =
+  | FormFieldsMarket
+  | FormFieldsLimit
+  | FormFieldsStopMarket
+  | FormFieldsStopLimit;
+export type TicketType = FormFields['ticketType'];

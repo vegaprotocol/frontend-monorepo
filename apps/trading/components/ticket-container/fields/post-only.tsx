@@ -1,11 +1,12 @@
-import { useFormContext, type Control } from 'react-hook-form';
+import { type Control } from 'react-hook-form';
 import { TradingCheckbox as Checkbox } from '@vegaprotocol/ui-toolkit';
 import { FormField } from '../ticket-field';
 import { useT } from '../../../lib/use-t';
+import { useForm } from '../use-form';
 
 export const PostOnly = (props: { control: Control<any> }) => {
   const t = useT();
-  const form = useFormContext();
+  const form = useForm();
   return (
     <FormField
       {...props}

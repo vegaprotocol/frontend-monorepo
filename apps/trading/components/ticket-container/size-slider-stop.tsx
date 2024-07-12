@@ -1,5 +1,4 @@
 import type BigNumber from 'bignumber.js';
-import { useFormContext } from 'react-hook-form';
 
 import { useActiveOrders } from '@vegaprotocol/orders';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
@@ -11,9 +10,10 @@ import { Slider } from './slider';
 import { useTicketContext } from './ticket-context';
 
 import * as defaultUtils from './ticket-default/utils';
+import { useForm } from './use-form';
 
 export const SizeSliderStop = ({ price }: { price: BigNumber | undefined }) => {
-  const form = useFormContext();
+  const form = useForm();
   const ticket = useTicketContext();
   const { pubKey } = useVegaWallet();
   const { data: orders } = useActiveOrders(pubKey, ticket.market.id);
@@ -22,9 +22,14 @@ export const SizeSliderStop = ({ price }: { price: BigNumber | undefined }) => {
     averageEntryPrice: '0',
   };
 
+  const ticketType = form.watch('ticketType');
   const side = form.watch('side');
   const type = form.watch('type');
   const sizeOverride = form.watch('sizeOverride');
+
+  if (ticketType === 'market' || ticketType === 'limit') {
+    throw new Error('cannot use stop slider unless ticketType is stop');
+  }
 
   if (!price) return null;
   if (!ticket.market.riskFactors) return null;

@@ -1,13 +1,13 @@
-import { useFormContext } from 'react-hook-form';
 import BigNumber from 'bignumber.js';
 import { DatagridRow } from '../elements/datagrid';
 
 import { useT } from '../../../lib/use-t';
 import { useTicketContext } from '../ticket-context';
+import { useForm } from '../use-form';
 
 export const Notional = ({ price }: { price: BigNumber | undefined }) => {
   const t = useT();
-  const form = useFormContext();
+  const form = useForm();
   const ticket = useTicketContext();
   const sizeMode = form.watch('sizeMode');
   const size = form.watch('size');

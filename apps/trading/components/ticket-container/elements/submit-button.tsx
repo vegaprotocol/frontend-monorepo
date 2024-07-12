@@ -2,7 +2,7 @@ import { type ReactNode } from 'react';
 import classNames from 'classnames';
 
 import { Side } from '@vegaprotocol/types';
-import { useFormContext } from 'react-hook-form';
+import { useForm } from '../use-form';
 
 export const SubmitButton = ({
   text,
@@ -11,7 +11,7 @@ export const SubmitButton = ({
   text: string;
   subLabel: ReactNode;
 }) => {
-  const form = useFormContext();
+  const form = useForm();
   const side = form.watch('side');
   return (
     <button

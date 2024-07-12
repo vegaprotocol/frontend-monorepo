@@ -1,5 +1,3 @@
-import { useFormContext } from 'react-hook-form';
-
 import { formatNumber, removeDecimal } from '@vegaprotocol/utils';
 import { useMarkPrice } from '@vegaprotocol/markets';
 import { useSlippage } from '@vegaprotocol/deal-ticket';
@@ -8,10 +6,11 @@ import { OrderType } from '@vegaprotocol/types';
 import { useT } from '../../../lib/use-t';
 import { DatagridRow } from '../elements/datagrid';
 import { useTicketContext } from '../ticket-context';
+import { useForm } from '../use-form';
 
 export const Slippage = () => {
   const t = useT();
-  const form = useFormContext();
+  const form = useForm();
   const ticket = useTicketContext();
 
   const { data: markPrice } = useMarkPrice(ticket.market.id);

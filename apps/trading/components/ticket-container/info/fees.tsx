@@ -1,4 +1,3 @@
-import { useFormContext } from 'react-hook-form';
 import BigNumber from 'bignumber.js';
 
 import { FeesBreakdown, useEstimateFeesQuery } from '@vegaprotocol/deal-ticket';
@@ -23,6 +22,7 @@ import { Intent, Pill, Tooltip } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../../lib/use-t';
 import { useTicketContext } from '../ticket-context';
 import { DatagridRow } from '../elements/datagrid';
+import { useForm } from '../use-form';
 
 export const Fees = () => {
   const t = useT();
@@ -105,7 +105,7 @@ export const Fees = () => {
 
 const useEstimateFees = () => {
   const ticket = useTicketContext();
-  const form = useFormContext();
+  const form = useForm();
   const { pubKey } = useVegaWallet();
   const { data: markPrice } = useMarkPrice(ticket.market.id);
   const { data: marketTradingMode } = useMarketTradingMode(ticket.market.id);
@@ -130,7 +130,7 @@ const useEstimateFees = () => {
 
   const { data } = useEstimateFeesQuery({
     variables,
-    skip: !pubKey || !values.size || !values.price || values.postOnly,
+    skip: !pubKey || !values.size || !price,
     fetchPolicy: 'cache-and-network',
   });
 
@@ -146,7 +146,11 @@ const useEstimateFees = () => {
 
   if (!data?.estimateFees) return undefined;
 
-  if (values.postOnly) {
+  // Post only orders won't have fees as its the taker who pays
+  if (
+    (values.ticketType === 'stopLimit' || values.ticketType === 'limit') &&
+    values.postOnly
+  ) {
     return {
       volumeDiscountFactor,
       referralDiscountFactor,

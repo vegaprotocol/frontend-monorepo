@@ -1,4 +1,4 @@
-import { useFormContext, type Control } from 'react-hook-form';
+import { type Control } from 'react-hook-form';
 
 import { TicketInput } from '@vegaprotocol/ui-toolkit';
 
@@ -7,6 +7,7 @@ import { useTicketContext } from '../ticket-context';
 import { FormField } from '../ticket-field';
 import { InputLabel } from '../elements/form';
 import { StopOrderSizeOverrideSetting } from '@vegaprotocol/types';
+import { useForm } from '../use-form';
 
 export const StopSize = ({
   control,
@@ -35,7 +36,7 @@ export const StopSize = ({
 
 const SizeLabel = () => {
   const t = useT();
-  const form = useFormContext();
+  const form = useForm();
   const ticket = useTicketContext();
   const sizeOverride = form.watch('sizeOverride');
 

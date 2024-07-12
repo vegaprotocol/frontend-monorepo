@@ -1,5 +1,4 @@
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
-import { useFormContext } from 'react-hook-form';
 
 import { OrderType, type Side } from '@vegaprotocol/types';
 import {
@@ -10,11 +9,12 @@ import { useActiveOrders } from '@vegaprotocol/orders';
 import { removeDecimal } from '@vegaprotocol/utils';
 
 import { useTicketContext } from './ticket-context';
+import { useForm } from './use-form';
 
 export function useEstimatePosition() {
   const { pubKey } = useVegaWallet();
   const ticket = useTicketContext();
-  const form = useFormContext();
+  const form = useForm();
 
   const type = form.watch('type') as OrderType;
   const side = form.watch('side') as Side;

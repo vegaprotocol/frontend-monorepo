@@ -1,5 +1,4 @@
 import type BigNumber from 'bignumber.js';
-import { useFormContext } from 'react-hook-form';
 
 import { useActiveOrders } from '@vegaprotocol/orders';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
@@ -11,9 +10,10 @@ import { useTicketContext } from './ticket-context';
 
 import * as defaultUtils from './ticket-default/utils';
 import * as utils from './utils';
+import { useForm } from './use-form';
 
 export const SizeSlider = ({ price }: { price: BigNumber | undefined }) => {
-  const form = useFormContext();
+  const form = useForm();
   const ticket = useTicketContext();
   const { pubKey } = useVegaWallet();
   const { data: orders } = useActiveOrders(pubKey, ticket.market.id);

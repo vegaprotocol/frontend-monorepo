@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
 import uniqueId from 'lodash/uniqueId';
-import { FormProvider, useForm, useFormContext } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { useMarkPrice } from '@vegaprotocol/markets';
@@ -22,6 +22,7 @@ import { TicketTypeSelect } from '../ticket-type-select';
 import { type FormProps } from '../ticket-spot';
 import { useTicketContext } from '../ticket-context';
 
+import { useForm as useFormCtx } from '../use-form';
 import * as utils from '../utils';
 import * as spotUtils from './utils';
 import * as Fields from '../fields';
@@ -148,7 +149,8 @@ export const TicketMarket = (props: FormProps) => {
  */
 export const SizeSlider = () => {
   const ticket = useTicketContext('spot');
-  const form = useFormContext();
+  const form = useFormCtx();
+
   const baseAccount = useAccountBalance(ticket.baseAsset.id);
 
   const { data: markPrice } = useMarkPrice(ticket.market.id);

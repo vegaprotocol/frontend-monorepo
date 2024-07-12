@@ -1,4 +1,3 @@
-import { useFormContext } from 'react-hook-form';
 import { DatagridRow } from '../elements/datagrid';
 import { useTicketContext } from '../ticket-context';
 import { Side } from '@vegaprotocol/types';
@@ -10,13 +9,14 @@ import { LIQUIDATION_PRICE_ESTIMATE_TOOLTIP_TEXT } from '@vegaprotocol/deal-tick
 import { Trans } from 'react-i18next';
 
 import { useEstimatePosition } from '../use-estimate-position';
+import { useForm } from '../use-form';
 
 export const emptyValue = '-';
 
 export const Liquidation = () => {
   const t = useT();
   const ticket = useTicketContext();
-  const form = useFormContext();
+  const form = useForm();
 
   const side = form.watch('side');
   const { data } = useEstimatePosition();

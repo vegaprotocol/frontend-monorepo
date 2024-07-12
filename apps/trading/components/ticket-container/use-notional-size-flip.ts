@@ -1,9 +1,9 @@
-import { useFormContext } from 'react-hook-form';
 import BigNumber from 'bignumber.js';
 import * as utils from './utils';
+import { useForm } from './use-form';
 
 export const useNotionalSizeFlip = () => {
-  const form = useFormContext();
+  const form = useForm();
 
   return (price?: BigNumber) => {
     if (!price || price.isZero()) {
@@ -11,6 +11,15 @@ export const useNotionalSizeFlip = () => {
     }
 
     const values = form.getValues();
+
+    if (
+      values.ticketType === 'stopLimit' ||
+      values.ticketType === 'stopMarket'
+    ) {
+      throw new Error(
+        `cannot switch sizeMode for ticket type: ${values.ticketType}`
+      );
+    }
 
     if (values.sizeMode === 'contracts') {
       const val = utils.toNotional(BigNumber(values.size || '0'), price);

@@ -1,4 +1,4 @@
-import { useFormContext, type Control } from 'react-hook-form';
+import { type Control } from 'react-hook-form';
 import { FormField } from '../ticket-field';
 import {
   OrderTimeInForce,
@@ -9,10 +9,11 @@ import {
 import { MiniSelect, MiniSelectOption } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../../lib/use-t';
 import { NON_PERSISTENT_TIF_OPTIONS } from '../constants';
+import { useForm } from '../use-form';
 
 export const TimeInForce = (props: { control: Control<any> }) => {
   const t = useT();
-  const form = useFormContext();
+  const form = useForm();
 
   const type = form.watch('type');
   const options =
