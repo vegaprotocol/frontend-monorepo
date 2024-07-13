@@ -3,7 +3,6 @@ import type BigNumber from 'bignumber.js';
 import { useActiveOrders } from '@vegaprotocol/orders';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useOpenVolume } from '@vegaprotocol/positions';
-import { removeDecimal } from '@vegaprotocol/utils';
 
 import { Slider } from './slider';
 import { useTicketContext } from './ticket-context';
@@ -15,7 +14,7 @@ import { useState } from 'react';
 
 export const SizeSlider = ({ price }: { price: BigNumber | undefined }) => {
   const [pct, setPct] = useState([0]);
-  const form = useForm();
+  const form = useForm('limit');
   const ticket = useTicketContext('default');
   const { pubKey } = useVegaWallet();
   const { data: orders } = useActiveOrders(pubKey, ticket.market.id);
@@ -44,7 +43,7 @@ export const SizeSlider = ({ price }: { price: BigNumber | undefined }) => {
         const size = defaultUtils.calcSizeByPct({
           pct: value[0],
           openVolume,
-          price: removeDecimal(price, ticket.market.decimalPlaces),
+          price,
           ticket,
           fields,
           orders: orders || [],

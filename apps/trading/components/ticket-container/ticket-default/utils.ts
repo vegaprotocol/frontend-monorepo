@@ -89,7 +89,7 @@ const calcSizeForCross = (
     return BigNumber(0);
   }
 
-  const _totalSizeRemaining = (orders || [])
+  const _totalSizeRemaining = orders
     .filter((o) => o.side === fields.side)
     .reduce((sum, o) => sum.plus(o.remaining), BigNumber(0));
   const totalSizeRemaining = toBigNum(_totalSizeRemaining, positionDecimals);
@@ -140,14 +140,12 @@ export const calcSizeByPct = ({
   ticket: DefaultContextValue;
   fields: FormFields;
   openVolume: string;
-  price: string;
+  price: BigNumber;
   orders: OrderFieldsFragment[];
 }) => {
   const marginMode = ticket.marginMode;
-  const marketDecimals = ticket.market.decimalPlaces;
   const positionDecimals = ticket.market.positionDecimalPlaces;
 
-  const priceNum = toBigNum(price, marketDecimals);
   const volume = toBigNum(openVolume, positionDecimals);
 
   const isReducing =
@@ -155,14 +153,7 @@ export const calcSizeByPct = ({
     (volume.isPositive() && fields.side === Side.SIDE_SELL);
 
   if (marginMode.mode === MarginMode.MARGIN_MODE_ISOLATED_MARGIN) {
-    return calcSizeForIsolated(
-      pct,
-      fields,
-      ticket,
-      orders,
-      priceNum,
-      isReducing
-    );
+    return calcSizeForIsolated(pct, fields, ticket, orders, price, isReducing);
   }
 
   if (marginMode.mode === MarginMode.MARGIN_MODE_CROSS_MARGIN) {
@@ -171,7 +162,7 @@ export const calcSizeByPct = ({
       fields,
       ticket,
       orders,
-      priceNum,
+      price,
       volume,
       isReducing
     );

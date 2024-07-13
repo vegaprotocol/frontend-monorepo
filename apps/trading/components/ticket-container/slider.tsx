@@ -29,6 +29,7 @@ export const Slider = (props: ComponentProps<typeof SliderPrimitives.Root>) => {
                   'bg-vega-clight-500 dark:bg-vega-cdark-500':
                     props.value === undefined || props.value[0] < m,
                 })}
+                disabled={props.disabled}
                 onClick={() => {
                   props.onValueChange && props.onValueChange([m]);
                   props.onValueCommit && props.onValueCommit([m]);
@@ -57,6 +58,7 @@ export const Slider = (props: ComponentProps<typeof SliderPrimitives.Root>) => {
                   'left-0': i === 0,
                   'right-0': i === markers.length - 1,
                 })}
+                disabled={props.disabled}
                 onClick={() => {
                   props.onValueChange && props.onValueChange([m]);
                   props.onValueCommit && props.onValueCommit([m]);

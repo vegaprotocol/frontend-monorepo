@@ -3,7 +3,6 @@ import type BigNumber from 'bignumber.js';
 import { useActiveOrders } from '@vegaprotocol/orders';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useOpenVolume } from '@vegaprotocol/positions';
-import { removeDecimal } from '@vegaprotocol/utils';
 import { StopOrderSizeOverrideSetting } from '@vegaprotocol/types';
 
 import { Slider } from './slider';
@@ -11,10 +10,12 @@ import { useTicketContext } from './ticket-context';
 
 import * as defaultUtils from './ticket-default/utils';
 import { useForm } from './use-form';
+import { useState } from 'react';
 
 export const SizeSliderStop = ({ price }: { price: BigNumber | undefined }) => {
+  const [pct, setPct] = useState([0]);
   const form = useForm();
-  const ticket = useTicketContext();
+  const ticket = useTicketContext('default');
   const { pubKey } = useVegaWallet();
   const { data: orders } = useActiveOrders(pubKey, ticket.market.id);
   const { openVolume } = useOpenVolume(pubKey, ticket.market.id) || {
@@ -23,8 +24,6 @@ export const SizeSliderStop = ({ price }: { price: BigNumber | undefined }) => {
   };
 
   const ticketType = form.watch('ticketType');
-  const side = form.watch('side');
-  const type = form.watch('type');
   const sizeOverride = form.watch('sizeOverride');
 
   if (ticketType === 'market' || ticketType === 'limit') {
@@ -37,18 +36,17 @@ export const SizeSliderStop = ({ price }: { price: BigNumber | undefined }) => {
     return null;
   }
 
-  const marginMode = ticket.marginMode;
-  const scalingFactors =
-    ticket.market.tradableInstrument.marginCalculator.scalingFactors;
-  const riskFactors = ticket.market.riskFactors;
-
   return (
     <Slider
       min={0}
       max={100}
-      defaultValue={[0]}
+      value={pct}
       disabled={!price || price.isZero() || price.isNaN()}
+      onValueChange={(value) => setPct(value)}
       onValueCommit={(value) => {
+        setPct(value);
+        const fields = form.getValues();
+
         if (
           sizeOverride ===
           StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_NONE
@@ -56,17 +54,10 @@ export const SizeSliderStop = ({ price }: { price: BigNumber | undefined }) => {
           const size = defaultUtils.calcSizeByPct({
             pct: value[0],
             openVolume,
-            price: removeDecimal(price, ticket.market.decimalPlaces),
-            type,
-            side,
-            assetDecimals: ticket.quoteAsset.decimals,
-            marketDecimals: ticket.market.decimalPlaces,
-            positionDecimals: ticket.market.positionDecimalPlaces,
-            accounts: ticket.accounts,
+            price,
+            ticket,
+            fields,
             orders: orders || [],
-            scalingFactors,
-            riskFactors,
-            marginMode,
           });
 
           form.setValue('size', size.toString(), { shouldValidate: true });
