@@ -4,13 +4,10 @@ import {
   type MarketInfo,
 } from '@vegaprotocol/markets';
 import { TicketMarket } from './ticket-spot/ticket-market';
-import { type TicketType, useTicketType } from './use-ticket-type';
-import {
-  useAccountBalance,
-  useMarginAccountBalance,
-  useMarginMode,
-} from '@vegaprotocol/accounts';
+import { useTicketType } from './use-ticket-type';
+import { useAccountBalance, useMarginMode } from '@vegaprotocol/accounts';
 import { TicketContext } from './ticket-context';
+import { type TicketType } from './schemas';
 
 export type FormProps = {
   onTypeChange: (value: TicketType) => void;
@@ -19,8 +16,10 @@ export type FormProps = {
 export const TicketSpot = ({ market }: { market: MarketInfo }) => {
   const quoteAsset = getQuoteAsset(market);
   const baseAsset = getBaseAsset(market);
-  const marginAccount = useMarginAccountBalance(market.id);
-  const generalAccount = useAccountBalance(quoteAsset?.id);
+
+  const baseAccount = useAccountBalance(baseAsset?.id);
+  const quoteAccount = useAccountBalance(quoteAsset?.id);
+
   const marginMode = useMarginMode(market.id);
 
   if (!baseAsset) return null;
@@ -34,9 +33,8 @@ export const TicketSpot = ({ market }: { market: MarketInfo }) => {
         baseAsset,
         quoteAsset,
         accounts: {
-          general: generalAccount.accountBalance || '0',
-          margin: marginAccount.marginAccountBalance || '0',
-          orderMargin: marginAccount.orderMarginAccountBalance || '0',
+          base: baseAccount.accountBalance || '0',
+          quote: quoteAccount.accountBalance || '0',
         },
         marginMode: {
           mode: marginMode.data.marginMode,

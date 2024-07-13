@@ -16,7 +16,7 @@ import { useState } from 'react';
 export const SizeSlider = ({ price }: { price: BigNumber | undefined }) => {
   const [pct, setPct] = useState([0]);
   const form = useForm();
-  const ticket = useTicketContext();
+  const ticket = useTicketContext('default');
   const { pubKey } = useVegaWallet();
   const { data: orders } = useActiveOrders(pubKey, ticket.market.id);
   const { openVolume } = useOpenVolume(pubKey, ticket.market.id) || {
@@ -24,20 +24,11 @@ export const SizeSlider = ({ price }: { price: BigNumber | undefined }) => {
     averageEntryPrice: '0',
   };
 
-  const side = form.watch('side');
-  const type = form.watch('type');
-  const sizeMode = form.watch('sizeMode');
-
   if (!price) return null;
   if (!ticket.market.riskFactors) return null;
   if (!ticket.market.tradableInstrument.marginCalculator?.scalingFactors) {
     return null;
   }
-
-  const marginMode = ticket.marginMode;
-  const scalingFactors =
-    ticket.market.tradableInstrument.marginCalculator.scalingFactors;
-  const riskFactors = ticket.market.riskFactors;
 
   return (
     <Slider
@@ -49,25 +40,19 @@ export const SizeSlider = ({ price }: { price: BigNumber | undefined }) => {
       onValueChange={(value) => setPct(value)}
       onValueCommit={(value) => {
         setPct(value);
+        const fields = form.getValues();
         const size = defaultUtils.calcSizeByPct({
           pct: value[0],
           openVolume,
           price: removeDecimal(price, ticket.market.decimalPlaces),
-          type,
-          side,
-          assetDecimals: ticket.quoteAsset.decimals,
-          marketDecimals: ticket.market.decimalPlaces,
-          positionDecimals: ticket.market.positionDecimalPlaces,
-          accounts: ticket.accounts,
+          ticket,
+          fields,
           orders: orders || [],
-          scalingFactors,
-          riskFactors,
-          marginMode,
         });
 
-        if (sizeMode === 'contracts') {
+        if (fields.sizeMode === 'contracts') {
           form.setValue('size', size.toString(), { shouldValidate: true });
-        } else if (sizeMode === 'notional') {
+        } else if (fields.sizeMode === 'notional') {
           const notional = utils.toNotional(size, price);
           form.setValue('size', notional.toString(), { shouldValidate: true });
         }

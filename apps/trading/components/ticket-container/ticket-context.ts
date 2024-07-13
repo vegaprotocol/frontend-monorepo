@@ -4,7 +4,7 @@ import { type MarginMode } from '@vegaprotocol/types';
 import { createContext, useContext } from 'react';
 
 // Perps and Futures can use the same context
-type DefaultContextValue = {
+export type DefaultContextValue = {
   type: 'default';
   market: MarketInfo;
   baseSymbol: string;
@@ -21,15 +21,14 @@ type DefaultContextValue = {
   };
 };
 
-type SpotContextValue = {
+export type SpotContextValue = {
   type: 'spot';
   market: MarketInfo;
   baseAsset: AssetFieldsFragment;
   quoteAsset: AssetFieldsFragment;
   accounts: {
-    general: string;
-    margin: string;
-    orderMargin: string;
+    base: string;
+    quote: string;
   };
   marginMode: {
     mode: MarginMode;

@@ -12,7 +12,6 @@ import {
   mapFormValuesToTakeProfitAndStopLoss,
 } from '@vegaprotocol/deal-ticket';
 import { useVegaTransactionStore } from '@vegaprotocol/web3';
-import { useAccountBalance } from '@vegaprotocol/accounts';
 
 import { useT } from '../../../lib/use-t';
 import { SubmitButton } from '../elements/submit-button';
@@ -28,6 +27,7 @@ import { useForm as useFormCtx } from '../use-form';
 import * as utils from '../utils';
 import * as spotUtils from './utils';
 import * as Fields from '../fields';
+import { useState } from 'react';
 
 export const TicketMarket = (props: FormProps) => {
   const ticket = useTicketContext('spot');
@@ -151,10 +151,9 @@ export const TicketMarket = (props: FormProps) => {
  * based on the sliders percentage value
  */
 export const SizeSlider = () => {
+  const [pct, setPct] = useState([0]);
   const ticket = useTicketContext('spot');
-  const form = useFormCtx();
-
-  const baseAccount = useAccountBalance(ticket.baseAsset.id);
+  const form = useFormCtx('market');
 
   const { data: markPrice } = useMarkPrice(ticket.market.id);
   const price =
@@ -162,46 +161,38 @@ export const SizeSlider = () => {
       ? toBigNum(markPrice, ticket.market.decimalPlaces)
       : undefined;
 
-  const sizeMode = form.watch('sizeMode');
-  const side = form.watch('side');
-
   if (!price) return null;
-  if (!ticket.market.fees.factors) return null;
-  if (!ticket.baseAsset) return null;
 
   return (
     <Slider
       min={0}
       max={100}
-      defaultValue={[0]}
+      step={0.1}
+      value={pct}
+      onValueChange={(value) => setPct(value)}
       onValueCommit={(value) => {
-        if (!ticket.baseAsset || !ticket.quoteAsset) {
-          return;
-        }
-
+        setPct(value);
+        const fields = form.getValues();
         const max = spotUtils.calcMaxSize({
-          side,
+          side: fields.side,
           price,
-          feeFactors: ticket.market.fees.factors,
-          market: ticket.market,
-          accounts: {
-            base: {
-              balance: baseAccount.accountBalance,
-              decimals: ticket.baseAsset.decimals,
-            },
-            quote: {
-              balance: ticket.accounts.general,
-              decimals: ticket.quoteAsset.decimals,
-            },
-          },
+          ticket,
         });
 
         const size = utils.toPercentOf(value[0], max);
+        const sizeRounded = utils.roundToPositionDecimals(
+          size,
+          ticket.market.positionDecimalPlaces
+        );
 
-        if (sizeMode === 'contracts') {
-          form.setValue('size', size.toString(), { shouldValidate: true });
-        } else if (sizeMode === 'notional') {
-          const notional = utils.toNotional(size, price);
+        if (fields.sizeMode === 'contracts') {
+          form.setValue('size', sizeRounded.toString(), {
+            shouldValidate: true,
+          });
+        } else if (fields.sizeMode === 'notional') {
+          // if in notional mode convert the max size into a notional price
+          const notional = utils.toNotional(sizeRounded, price);
+
           form.setValue('size', notional.toString(), { shouldValidate: true });
         }
       }}

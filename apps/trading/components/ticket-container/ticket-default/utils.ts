@@ -1,89 +1,84 @@
-import { type OrderFieldsFragment } from '@vegaprotocol/orders';
-import { MarginMode, OrderType, Side } from '@vegaprotocol/types';
-import { determineSizeStep, toBigNum } from '@vegaprotocol/utils';
 import BigNumber from 'bignumber.js';
 
-export const calcSizeByPct = ({
-  pct,
-  openVolume,
-  price,
-  type,
-  side,
-  assetDecimals,
-  marketDecimals,
-  positionDecimals,
-  accounts,
-  orders,
-  scalingFactors,
-  riskFactors,
-  marginMode,
-}: {
-  pct: number;
-  openVolume: string;
-  price: string;
-  side: Side;
-  type: OrderType;
-  assetDecimals: number;
-  marketDecimals: number;
-  positionDecimals: number;
-  accounts: {
-    general: string;
-    margin: string;
-    orderMargin: string;
-  };
-  orders: OrderFieldsFragment[];
-  scalingFactors: {
-    initialMargin: number;
-    searchLevel: number;
-    collateralRelease: number;
-  };
-  riskFactors: {
-    long: string;
-    short: string;
-  };
-  marginMode: {
-    mode: MarginMode;
-    factor: string;
-  };
-}) => {
-  const volume = toBigNum(openVolume, positionDecimals);
-  const reducingPosition =
-    (openVolume.startsWith('-') && side === Side.SIDE_BUY) ||
-    (!openVolume.startsWith('-') && side === Side.SIDE_SELL);
+import { type OrderFieldsFragment } from '@vegaprotocol/orders';
+import { MarginMode, OrderType, Side } from '@vegaprotocol/types';
+import { toBigNum } from '@vegaprotocol/utils';
 
-  if (marginMode.mode === MarginMode.MARGIN_MODE_ISOLATED_MARGIN) {
-    let availableMargin = toBigNum(accounts.general, assetDecimals).plus(
-      reducingPosition && type === OrderType.TYPE_MARKET
-        ? toBigNum(accounts.margin, assetDecimals)
-        : 0
-    );
-    if (type === OrderType.TYPE_LIMIT) {
-      availableMargin = availableMargin.plus(
-        toBigNum(accounts.orderMargin, assetDecimals)
-      );
+import { type DefaultContextValue } from '../ticket-context';
+import { type FormFields } from '../schemas';
+import * as utils from '../utils';
 
-      orders.forEach((order) => {
-        if (order.side === side) {
-          availableMargin = availableMargin.minus(
-            toBigNum(order.remaining, positionDecimals)
-              .times(toBigNum(order.price, marketDecimals))
-              .times(marginMode.factor)
-          );
-        }
-      });
-    }
+const calcSizeForIsolated = (
+  pct: number,
+  fields: FormFields,
+  ticket: DefaultContextValue,
+  orders: OrderFieldsFragment[],
+  price: BigNumber,
+  isReducing: boolean
+) => {
+  const marginMode = ticket.marginMode;
+  const marketDecimals = ticket.market.decimalPlaces;
+  const positionDecimals = ticket.market.positionDecimalPlaces;
+  const assetDecimals = ticket.settlementAsset.decimals;
+  const accounts = ticket.accounts;
 
-    let max = availableMargin
-      .div(marginMode.factor)
-      .div(toBigNum(price, marketDecimals));
+  let availableMargin = toBigNum(accounts.general, assetDecimals).plus(
+    isReducing && fields.type === OrderType.TYPE_MARKET
+      ? toBigNum(accounts.margin, assetDecimals)
+      : 0
+  );
 
-    max = max.minus(
-      max.mod(determineSizeStep({ positionDecimalPlaces: positionDecimals }))
+  if (fields.type === OrderType.TYPE_LIMIT) {
+    availableMargin = availableMargin.plus(
+      toBigNum(accounts.orderMargin, assetDecimals)
     );
 
-    const size = new BigNumber(pct).div(100).times(max);
+    orders.forEach((order) => {
+      if (order.side === fields.side) {
+        availableMargin = availableMargin.minus(
+          toBigNum(order.remaining, positionDecimals)
+            .times(toBigNum(order.price, marketDecimals))
+            .times(marginMode.factor)
+        );
+      }
+    });
+  }
 
-    return size;
+  const max = availableMargin.div(marginMode.factor).div(price);
+
+  const size = BigNumber(pct).div(100).times(max);
+
+  const sizeRounded = utils.roundToPositionDecimals(
+    size,
+    ticket.market.positionDecimalPlaces
+  );
+
+  return sizeRounded;
+};
+
+const calcSizeForCross = (
+  pct: number,
+  fields: FormFields,
+  ticket: DefaultContextValue,
+  orders: OrderFieldsFragment[],
+  price: BigNumber,
+  volume: BigNumber,
+  isReducing: boolean
+) => {
+  const isBuy = fields.side === Side.SIDE_BUY;
+  const scalingFactors =
+    ticket.market.tradableInstrument.marginCalculator?.scalingFactors;
+  const riskFactors = ticket.market.riskFactors;
+  const positionDecimals = ticket.market.positionDecimalPlaces;
+  const assetDecimals = ticket.settlementAsset.decimals;
+  const accounts = ticket.accounts;
+
+  if (!riskFactors) {
+    throw new Error('no raskFactors');
+  }
+
+  if (!scalingFactors) {
+    throw new Error('no raskFactors');
   }
 
   const availableMargin = toBigNum(accounts.general, assetDecimals).plus(
@@ -95,37 +90,92 @@ export const calcSizeByPct = ({
   }
 
   const _totalSizeRemaining = (orders || [])
-    .filter((o) => o.side === side)
-    .reduce((sum, o) => sum.plus(o.remaining), new BigNumber(0));
+    .filter((o) => o.side === fields.side)
+    .reduce((sum, o) => sum.plus(o.remaining), BigNumber(0));
   const totalSizeRemaining = toBigNum(_totalSizeRemaining, positionDecimals);
 
-  let max = new BigNumber(0);
-
-  max = availableMargin
-    .div(side === Side.SIDE_BUY ? riskFactors.long : riskFactors.short)
+  let max = availableMargin
+    .div(isBuy ? riskFactors.long : riskFactors.short)
     .div(scalingFactors.initialMargin)
-    .div(toBigNum(price, marketDecimals))
-    .minus(totalSizeRemaining)
-    .minus(
-      // subtract open volume if increasing position
-      side === Side.SIDE_BUY
-        ? volume.isGreaterThan(0)
-          ? volume
-          : 0
-        : volume.isLessThan(0)
-        ? volume.abs()
-        : 0
-    );
+    .div(price)
+    .minus(totalSizeRemaining);
 
-  if (reducingPosition) {
+  let subtractValue = BigNumber(0);
+
+  if (isBuy) {
+    if (volume.isGreaterThan(0)) {
+      subtractValue = volume;
+    }
+  } else {
+    if (volume.isLessThan(0)) {
+      subtractValue = volume.abs();
+    }
+  }
+
+  max = max.minus(subtractValue);
+
+  if (isReducing) {
     max = max.plus(volume.abs());
   }
 
-  max = max.minus(
-    max.mod(determineSizeStep({ positionDecimalPlaces: positionDecimals }))
+  const size = BigNumber(pct).div(100).times(max);
+
+  const sizeRounded = utils.roundToPositionDecimals(
+    size,
+    ticket.market.positionDecimalPlaces
   );
 
-  const size = new BigNumber(pct).div(100).times(max);
+  return sizeRounded;
+};
 
-  return size;
+export const calcSizeByPct = ({
+  pct,
+  ticket,
+  fields,
+  openVolume,
+  price,
+  orders,
+}: {
+  pct: number;
+  ticket: DefaultContextValue;
+  fields: FormFields;
+  openVolume: string;
+  price: string;
+  orders: OrderFieldsFragment[];
+}) => {
+  const marginMode = ticket.marginMode;
+  const marketDecimals = ticket.market.decimalPlaces;
+  const positionDecimals = ticket.market.positionDecimalPlaces;
+
+  const priceNum = toBigNum(price, marketDecimals);
+  const volume = toBigNum(openVolume, positionDecimals);
+
+  const isReducing =
+    (volume.isNegative() && fields.side === Side.SIDE_BUY) ||
+    (volume.isPositive() && fields.side === Side.SIDE_SELL);
+
+  if (marginMode.mode === MarginMode.MARGIN_MODE_ISOLATED_MARGIN) {
+    return calcSizeForIsolated(
+      pct,
+      fields,
+      ticket,
+      orders,
+      priceNum,
+      isReducing
+    );
+  }
+
+  if (marginMode.mode === MarginMode.MARGIN_MODE_CROSS_MARGIN) {
+    return calcSizeForCross(
+      pct,
+      fields,
+      ticket,
+      orders,
+      priceNum,
+      volume,
+      isReducing
+    );
+  }
+
+  throw new Error('unspecified margin mode');
 };

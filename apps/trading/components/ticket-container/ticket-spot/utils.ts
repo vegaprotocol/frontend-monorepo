@@ -1,7 +1,14 @@
-import { Side } from '@vegaprotocol/types';
-import { determineSizeStep, toBigNum } from '@vegaprotocol/utils';
 import BigNumber from 'bignumber.js';
 
+import { Side } from '@vegaprotocol/types';
+import { toBigNum } from '@vegaprotocol/utils';
+
+import { type SpotContextValue } from '../ticket-context';
+
+/**
+ * Calculate the max amount you can buy (of the base asset) on spot market
+ * given your balance in quote asset
+ */
 const calcMaxBuy = (
   quoteBalance: string,
   quoteDecimals: number,
@@ -10,6 +17,10 @@ const calcMaxBuy = (
   return toBigNum(quoteBalance, quoteDecimals).div(price);
 };
 
+/**
+ * Calculate the max amount you can sell (therefore buying the quote asset)
+ * on a spot market given your balance of base asset
+ */
 const calcMaxSell = (baseBalance: string, baseDecimals: number) => {
   return toBigNum(baseBalance, baseDecimals);
 };
@@ -30,51 +41,32 @@ const calcFees = (
   );
 };
 
+/**
+ * Calculate the max possible size given base
+ * and quote account balances. For spot orders
+ * only
+ */
 export const calcMaxSize = (args: {
   side: Side;
   price: BigNumber;
-  feeFactors: {
-    infrastructureFee: string;
-    liquidityFee: string;
-    makerFee: string;
-  };
-  accounts: {
-    base: {
-      balance: string;
-      decimals: number;
-    };
-    quote: {
-      balance: string;
-      decimals: number;
-    };
-  };
-  market: {
-    decimalPlaces: number;
-    positionDecimalPlaces: number;
-  };
+  ticket: SpotContextValue;
 }) => {
   let max = new BigNumber(0);
 
   if (args.side === Side.SIDE_BUY) {
     max = calcMaxBuy(
-      args.accounts.quote.balance,
-      args.accounts.quote.decimals,
+      args.ticket.accounts.quote,
+      args.ticket.quoteAsset.decimals,
       args.price
     );
   } else if (args.side === Side.SIDE_SELL) {
-    max = calcMaxSell(args.accounts.base.balance, args.accounts.base.decimals);
+    max = calcMaxSell(
+      args.ticket.accounts.base,
+      args.ticket.baseAsset.decimals
+    );
   }
 
-  max = calcFees(max, args.feeFactors);
-
-  // round to size step
-  max = max.minus(
-    max.mod(
-      determineSizeStep({
-        positionDecimalPlaces: args.market.positionDecimalPlaces,
-      })
-    )
-  );
+  max = calcFees(max, args.ticket.market.fees.factors);
 
   return max;
 };
