@@ -4091,6 +4091,7 @@ export type PartyrewardsConnectionArgs = {
   fromEpoch?: InputMaybe<Scalars['Int']>;
   gameId?: InputMaybe<Scalars['ID']>;
   includeDerivedParties?: InputMaybe<Scalars['Boolean']>;
+  marketId?: InputMaybe<Scalars['ID']>;
   pagination?: InputMaybe<Pagination>;
   teamId?: InputMaybe<Scalars['ID']>;
   toEpoch?: InputMaybe<Scalars['Int']>;
@@ -5458,6 +5459,8 @@ export type QueryethereumKeyRotationsArgs = {
 export type QueryfeesStatsArgs = {
   assetId?: InputMaybe<Scalars['ID']>;
   epoch?: InputMaybe<Scalars['Int']>;
+  epochFrom?: InputMaybe<Scalars['Int']>;
+  epochTo?: InputMaybe<Scalars['Int']>;
   marketId?: InputMaybe<Scalars['ID']>;
   partyId?: InputMaybe<Scalars['ID']>;
 };
@@ -5649,6 +5652,9 @@ export type QueryorderVersionsConnectionArgs = {
 export type QuerypaidLiquidityFeesArgs = {
   assetId?: InputMaybe<Scalars['ID']>;
   epoch?: InputMaybe<Scalars['Int']>;
+  epochFrom?: InputMaybe<Scalars['Int']>;
+  epochTo?: InputMaybe<Scalars['Int']>;
+  includeDerivedParties?: InputMaybe<Scalars['Boolean']>;
   marketId?: InputMaybe<Scalars['ID']>;
   partyIDs?: InputMaybe<Array<Scalars['String']>>;
 };

@@ -20,16 +20,29 @@ fragment PartyScoreFields on GamePartyScore {
   rank
 }
 
-query Scores($gameId: ID!, $partyId: ID!, $epochFrom: Int) {
-  gameTeamScores(filter: { gameIds: [$gameId], epochFrom: $epochFrom }) {
+query Scores(
+  $gameId: ID!
+  $partyId: ID!
+  $epochFrom: Int
+  $pagination: Pagination
+) {
+  gameTeamScores(
+    filter: { gameIds: [$gameId], epochFrom: $epochFrom }
+    pagination: $pagination
+  ) {
     edges {
+      cursor
       node {
         ...TeamScoreFields
       }
     }
   }
-  gamePartyScores(filter: { gameIds: [$gameId], partyIds: [$partyId] }) {
+  gamePartyScores(
+    filter: { gameIds: [$gameId], partyIds: [$partyId] }
+    pagination: $pagination
+  ) {
     edges {
+      cursor
       node {
         ...PartyScoreFields
       }
