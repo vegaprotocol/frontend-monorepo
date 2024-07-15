@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js';
+import { useState } from 'react';
 import uniqueId from 'lodash/uniqueId';
 import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -16,7 +17,7 @@ import { useVegaTransactionStore } from '@vegaprotocol/web3';
 import { useT } from '../../../lib/use-t';
 import { SubmitButton } from '../elements/submit-button';
 import { Form, FormGrid, FormGridCol } from '../elements/form';
-import { type FormFieldsMarket, schemaMarket } from '../schemas';
+import { type FormFieldsMarket, createMarketSchema } from '../schemas';
 import { TicketTypeSelect } from '../ticket-type-select';
 import { type FormProps } from './ticket';
 import { useTicketContext } from '../ticket-context';
@@ -32,19 +33,17 @@ export const TicketMarket = (props: FormProps) => {
   const create = useVegaTransactionStore((state) => state.create);
   const { pubKey } = useVegaWallet();
 
+  const [schema] = useState(createMarketSchema(ticket.market));
   const form = useForm<FormFieldsMarket>({
-    resolver: zodResolver(schemaMarket),
+    resolver: zodResolver(schema),
     defaultValues: {
       ticketType: 'market',
       sizeMode: 'contracts',
       type: OrderType.TYPE_MARKET,
       side: Side.SIDE_BUY,
-      size: '', // or notional
       timeInForce: OrderTimeInForce.TIME_IN_FORCE_IOC,
       reduceOnly: false,
       tpSl: false,
-      takeProfit: '',
-      stopLoss: '',
     },
   });
 

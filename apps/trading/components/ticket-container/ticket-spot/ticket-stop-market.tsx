@@ -1,4 +1,5 @@
 import { FormProvider, useForm } from 'react-hook-form';
+import { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { addDays } from 'date-fns';
 
@@ -13,7 +14,7 @@ import { useVegaTransactionStore } from '@vegaprotocol/web3';
 import { mapFormValuesToStopOrdersSubmission } from '@vegaprotocol/deal-ticket';
 
 import { FieldControls, Form, FormGrid, FormGridCol } from '../elements/form';
-import { type FormFieldsStopMarket, schemaStopMarket } from '../schemas';
+import { type FormFieldsStopMarket, createStopMarketSchema } from '../schemas';
 import { TicketTypeSelect } from '../ticket-type-select';
 import { type FormProps } from './ticket';
 import { NON_PERSISTENT_TIF_OPTIONS } from '../constants';
@@ -29,17 +30,16 @@ export const TicketStopMarket = (props: FormProps) => {
   const create = useVegaTransactionStore((store) => store.create);
   const ticket = useTicketContext('spot');
 
+  const [schema] = useState(createStopMarketSchema(ticket.market));
   const form = useForm<FormFieldsStopMarket>({
-    resolver: zodResolver(schemaStopMarket),
+    resolver: zodResolver(schema),
     defaultValues: {
       ticketType: 'stopMarket',
       type: OrderType.TYPE_MARKET,
       side: Side.SIDE_BUY,
       triggerDirection: StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE,
       triggerType: 'price',
-      trigger: '',
       sizeOverride: StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_NONE,
-      size: '',
       timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
       expiresAt: addDays(new Date(), 1),
       reduceOnly: false,
@@ -47,10 +47,7 @@ export const TicketStopMarket = (props: FormProps) => {
       ocoTriggerDirection:
         StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE,
       ocoTriggerType: 'price',
-      ocoTrigger: '',
       ocoSizeOverride: StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_NONE,
-      ocoSize: '',
-      ocoPrice: '',
     },
   });
 

@@ -15,7 +15,7 @@ import { useMarkPrice } from '@vegaprotocol/markets';
 
 import { useT } from '../../../lib/use-t';
 import { Form, FormGrid, FormGridCol } from '../elements/form';
-import { type FormFieldsMarket, schemaMarket } from '../schemas';
+import { type FormFieldsMarket, createMarketSchema } from '../schemas';
 import { TicketTypeSelect } from '../ticket-type-select';
 import { type FormProps } from './ticket';
 import { SizeSlider } from './size-slider';
@@ -28,6 +28,7 @@ import { Datagrid } from '../elements/datagrid';
 
 import { useTicketContext } from '../ticket-context';
 import { SubmitButton } from '../elements/submit-button';
+import { useState } from 'react';
 
 export const TicketMarket = (props: FormProps) => {
   const t = useT();
@@ -36,19 +37,17 @@ export const TicketMarket = (props: FormProps) => {
 
   const ticket = useTicketContext('default');
 
+  const [schema] = useState(() => createMarketSchema(ticket.market));
   const form = useForm<FormFieldsMarket>({
-    resolver: zodResolver(schemaMarket),
+    resolver: zodResolver(schema),
     defaultValues: {
       ticketType: 'market',
       sizeMode: 'contracts',
       type: OrderType.TYPE_MARKET,
       side: Side.SIDE_BUY,
-      size: '', // or notional
       timeInForce: OrderTimeInForce.TIME_IN_FORCE_IOC,
       reduceOnly: false,
       tpSl: false,
-      takeProfit: '',
-      stopLoss: '',
     },
   });
 
