@@ -89,7 +89,7 @@ export const MarketsPage = () => {
   const totalVolumeSparkline = (
     <Sparkline width={80} height={20} data={totalVolume24hCandles} />
   );
-  const { data: tvl, loading: tvlLoading } = useTotalValueLocked();
+  const { data: tvl, isLoading: tvlLoading } = useTotalValueLocked();
 
   const totalVolume24h = allMarkets?.reduce((acc, market) => {
     return (

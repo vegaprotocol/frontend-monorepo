@@ -11,7 +11,7 @@ export * from './types';
 export * from './utils/__generated__/NodeCheck';
 
 // Chain info
-export { CHAIN_IDS } from './chains';
+export { CHAIN_IDS, ASSET_POOL_ADDRESSES } from './chains';
 
 // External chain environments
 export * from './external-chain';
