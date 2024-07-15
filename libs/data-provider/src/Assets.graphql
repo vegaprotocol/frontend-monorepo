@@ -1,0 +1,27 @@
+fragment AssetFieldsV2 on Asset {
+  id
+  name
+  symbol
+  decimals
+  quantum
+  status
+  source {
+    __typename
+    ... on ERC20 {
+      contractAddress
+      lifetimeLimit
+      withdrawThreshold
+      chainId
+    }
+  }
+}
+
+query AssetsV2 {
+  assetsConnection {
+    edges {
+      node {
+        ...AssetFieldsV2
+      }
+    }
+  }
+}

@@ -1,0 +1,252 @@
+fragment PriceConfigurationV2 on CompositePriceConfiguration {
+  decayWeight
+  decayPower
+  cashAmount
+  SourceWeights
+  SourceStalenessTolerance
+  CompositePriceType
+  dataSourcesSpec {
+    sourceType {
+      ...SourceType
+    }
+  }
+  dataSourcesSpecBinding {
+    priceSourceProperty
+  }
+}
+
+fragment Candle on Candle {
+  periodStart
+  high
+  low
+  open
+  close
+  volume
+  notional
+}
+
+fragment MarketDataStaticV2 on MarketData {
+  auctionEnd
+  auctionStart
+  bestBidPrice
+  bestBidVolume
+  bestOfferPrice
+  bestOfferVolume
+  bestStaticBidPrice
+  bestStaticBidVolume
+  bestStaticOfferPrice
+  bestStaticOfferVolume
+  productData {
+    ... on PerpetualData {
+      fundingRate
+      fundingPayment
+      externalTwap
+      internalTwap
+    }
+  }
+  indicativePrice
+  indicativeVolume
+  marketState
+  marketTradingMode
+  markPrice
+  lastTradedPrice
+  midPrice
+  openInterest
+  priceMonitoringBounds {
+    minValidPrice
+    maxValidPrice
+    trigger {
+      horizonSecs
+      probability
+      auctionExtensionSecs
+    }
+    referencePrice
+  }
+  staticMidPrice
+  suppliedStake
+  targetStake
+  trigger
+  lastTradedPrice
+}
+
+fragment FutureV2 on Future {
+  quoteName
+  settlementAsset {
+    id
+    symbol
+    name
+    decimals
+    quantum
+  }
+  dataSourceSpecForSettlementData {
+    id
+  }
+  dataSourceSpecForTradingTermination {
+    id
+  }
+  dataSourceSpecBinding {
+    settlementDataProperty
+    tradingTerminationProperty
+  }
+}
+
+fragment PerpetualV2 on Perpetual {
+  quoteName
+  fundingRateScalingFactor
+  fundingRateLowerBound
+  fundingRateUpperBound
+  settlementAsset {
+    id
+    symbol
+    name
+    decimals
+    quantum
+  }
+  dataSourceSpecForSettlementData {
+    id
+  }
+  dataSourceSpecForSettlementSchedule {
+    id
+  }
+  dataSourceSpecBinding {
+    settlementDataProperty
+    settlementScheduleProperty
+  }
+  internalCompositePriceConfig {
+    ...PriceConfiguration
+  }
+}
+
+fragment SpotV2 on Spot {
+  baseAsset {
+    ...AssetListFields
+  }
+  quoteAsset {
+    ...AssetListFields
+  }
+}
+
+fragment MarketFieldsV2 on Market {
+  id
+  decimalPlaces
+  positionDecimalPlaces
+  tickSize
+  parentMarketID
+  successorMarketID
+  fees {
+    factors {
+      makerFee
+      infrastructureFee
+      liquidityFee
+    }
+    liquidityFeeSettings {
+      feeConstant
+      method
+    }
+  }
+  tradableInstrument {
+    instrument {
+      id
+      name
+      code
+      metadata {
+        tags
+      }
+      product {
+        ... on Future {
+          ...FutureV2
+        }
+        ... on Perpetual {
+          ...PerpetualV2
+        }
+        ... on Spot {
+          ...SpotV2
+        }
+      }
+    }
+  }
+  marketTimestamps {
+    proposed
+    pending
+    open
+    close
+  }
+  markPriceConfiguration {
+    ...PriceConfiguration
+  }
+  data {
+    ...MarketDataStaticV2
+  }
+  candlesConnection(
+    since: $since
+    interval: INTERVAL_I1H
+    pagination: { last: 24 }
+  ) {
+    edges {
+      node {
+        ...Candle
+      }
+    }
+  }
+}
+
+query MarketsV2($since: String!) {
+  marketsConnection {
+    edges {
+      node {
+        ...MarketFieldsV2
+      }
+    }
+  }
+}
+
+fragment MarketDataV2 on ObservableMarketData {
+  marketId
+  auctionEnd
+  auctionStart
+  bestBidPrice
+  bestBidVolume
+  bestOfferPrice
+  bestOfferVolume
+  bestStaticBidPrice
+  bestStaticBidVolume
+  bestStaticOfferPrice
+  bestStaticOfferVolume
+  productData {
+    ... on PerpetualData {
+      fundingRate
+      fundingPayment
+      externalTwap
+      internalTwap
+    }
+  }
+  indicativePrice
+  indicativeVolume
+  marketState
+  marketTradingMode
+  markPrice
+  lastTradedPrice
+  midPrice
+  openInterest
+  priceMonitoringBounds {
+    minValidPrice
+    maxValidPrice
+    trigger {
+      horizonSecs
+      probability
+      auctionExtensionSecs
+    }
+    referencePrice
+  }
+  staticMidPrice
+  suppliedStake
+  targetStake
+  trigger
+  lastTradedPrice
+}
+
+subscription MarketDataV2($marketIds: [ID!]!) {
+  marketsData(marketIds: $marketIds) {
+    ...MarketDataUpdateFields
+  }
+}
