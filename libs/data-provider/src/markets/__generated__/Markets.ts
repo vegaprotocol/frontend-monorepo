@@ -1,8 +1,8 @@
 import * as Types from '@vegaprotocol/types';
 
 import { gql } from '@apollo/client';
-import { FutureFragmentDoc, PerpetualFragmentDoc, PriceConfigurationFragmentDoc, SpotFragmentDoc } from '../../../markets/src/lib/components/market-info/__generated__/MarketInfo';
-import { MarketDataUpdateFieldsFragmentDoc } from '../../../markets/src/lib/__generated__/market-data';
+import { FutureFragmentDoc, PerpetualFragmentDoc, PriceConfigurationFragmentDoc, SpotFragmentDoc } from '../../../../markets/src/lib/components/market-info/__generated__/MarketInfo';
+import { MarketDataUpdateFieldsFragmentDoc } from '../../../../markets/src/lib/__generated__/market-data';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
 export type CandleFragment = { __typename?: 'Candle', periodStart: any, high: string, low: string, open: string, close: string, volume: string, notional: string };

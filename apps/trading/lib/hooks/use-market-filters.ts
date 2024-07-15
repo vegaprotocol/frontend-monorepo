@@ -7,9 +7,8 @@ import {
   CLOSED_MARKETS_STATES,
   PROPOSED_MARKETS_STATES,
   retrieveAssets,
-  calcTradedFactor,
 } from '@vegaprotocol/markets';
-import { type Market } from '@vegaprotocol/data-provider';
+import { type Market, calcTradedFactor } from '@vegaprotocol/data-provider';
 import { create } from 'zustand';
 import intersection from 'lodash/intersection';
 import orderBy from 'lodash/orderBy';
@@ -176,7 +175,7 @@ export const orderMarkets = (markets: Market[], sortOrder?: ISortOption) => {
             return Number(
               priceChangePercentage(
                 m.candlesConnection.edges
-                  .filter((c) => c?.node.close !== '')
+                  .filter((e) => e?.node.close !== '')
                   .map((c) => c!.node.close)
               )
             );
@@ -193,9 +192,7 @@ export const orderMarkets = (markets: Market[], sortOrder?: ISortOption) => {
       );
     }
     case SortOption.TOP_TRADED: {
-      return markets;
-      // TODO: fix me
-      // return orderBy(markets, [(m) => calcTradedFactor(m)], ['desc']);
+      return orderBy(markets, [(m) => calcTradedFactor(m)], ['desc']);
     }
   }
 };
