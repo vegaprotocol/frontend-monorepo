@@ -46,7 +46,13 @@ export const AssetPage = () => {
         >
           <div className="relative h-full max-w-2xl">
             <AssetDetailsTable asset={data as AssetFieldsFragment} />
-            {assetId && <AssetMarkets asset={assetId} />}
+            {data && assetId && data.decimals && data.symbol && (
+              <AssetMarkets
+                asset={assetId}
+                decimals={data.decimals}
+                symbol={data.symbol}
+              />
+            )}
           </div>
         </AsyncRenderer>
       </section>
