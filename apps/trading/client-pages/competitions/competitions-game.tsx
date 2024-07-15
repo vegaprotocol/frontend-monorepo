@@ -10,7 +10,7 @@ import {
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
-import { type Game, useGames } from '../../lib/hooks/use-games';
+import { useGames } from '../../lib/hooks/use-games';
 import { Table } from '../../components/table';
 import { type AssetFieldsFragment } from '@vegaprotocol/assets';
 import orderBy from 'lodash/orderBy';
@@ -52,7 +52,6 @@ export const CompetitionsGame = () => {
   const { data: currentEpoch, loading: epochLoading } = useCurrentEpoch();
   const { data: reward, loading: rewardLoading } = useReward(gameId);
   const { data: teams, loading: teamsLoading } = useTeamsMap();
-  const { data: gamesData, loading: gameLoading } = useGames({ gameId });
 
   const { data: liveScoreData, loading: liveScoreLoading } = useScoresQuery({
     variables: {
@@ -65,13 +64,7 @@ export const CompetitionsGame = () => {
     skip: !currentEpoch || !gameId,
   });
 
-  if (
-    epochLoading ||
-    rewardLoading ||
-    teamsLoading ||
-    gameLoading ||
-    liveScoreLoading
-  ) {
+  if (epochLoading || rewardLoading || teamsLoading || liveScoreLoading) {
     return (
       <Splash>
         <Loader />
@@ -79,7 +72,7 @@ export const CompetitionsGame = () => {
     );
   }
 
-  if (!reward || !teams || !gamesData || !liveScoreData) {
+  if (!reward || !teams || !liveScoreData) {
     return (
       <Splash>
         <p>{t('No data')}</p>
@@ -154,7 +147,6 @@ export const CompetitionsGame = () => {
                   gameId={gameId}
                   currentEpoch={currentEpoch || 0}
                   teams={teams}
-                  games={gamesData || []}
                 />
               </TabsContent>
             </Tabs>
@@ -388,17 +380,17 @@ const HistoricScoresTable = ({
   gameId,
   currentEpoch,
   teams,
-  games,
 }: {
   gameId: string;
   currentEpoch: number;
   teams: Record<string, TeamsFieldsFragment>;
-  games: Game[];
 }) => {
   const t = useT();
   const { pubKey } = useVegaWallet();
 
-  const { data, loading } = useScoresQuery({
+  const { data: gamesData, loading: gameLoading } = useGames({ gameId });
+
+  const { data: scoreData, loading: scoreLoading } = useScoresQuery({
     variables: {
       epochFrom: currentEpoch ? currentEpoch - TEAMS_STATS_EPOCHS : 0,
       gameId: gameId || '',
@@ -407,15 +399,21 @@ const HistoricScoresTable = ({
     skip: !currentEpoch || !gameId,
   });
 
-  if (!data && loading) {
+  if (!gamesData && gameLoading) {
     return <p>{t('Loading')}</p>;
   }
 
-  if (!data) {
+  if (!scoreData && scoreLoading) {
+    return <p>{t('Loading')}</p>;
+  }
+
+  if (!scoreData || !gamesData) {
     return <p>{t('No data')}</p>;
   }
 
-  const scores = compact((data.gameTeamScores?.edges || []).map((e) => e.node));
+  const scores = compact(
+    (scoreData.gameTeamScores?.edges || []).map((e) => e.node)
+  );
 
   const history = scores
     .filter((s) => {
@@ -426,7 +424,7 @@ const HistoricScoresTable = ({
       const team = teams[s.teamId];
       // find the game and team for this epoch in order to retreive
       // rewards earned data for that team
-      const game = games.find((g) => g.epoch === s.epochId);
+      const game = gamesData.find((g) => g.epoch === s.epochId);
       const entity = game?.entities.find((e) => {
         if (
           e.__typename === 'TeamGameEntity' &&
