@@ -19,7 +19,6 @@ export const useTotalValueLocked = () => {
       functionName: 'balanceOf',
       args: ['0x8064d5F9A2ef89886b2d474B3F1Ad0edB8b62F3F'],
       chainId: Number(asset.source.chainId),
-      meta: 'foo',
     };
 
     return config;
