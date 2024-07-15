@@ -15,6 +15,8 @@ import { Table } from '../../components/table';
 import { type AssetFieldsFragment } from '@vegaprotocol/assets';
 import orderBy from 'lodash/orderBy';
 import compact from 'lodash/compact';
+import groupBy from 'lodash/groupBy';
+import flatten from 'lodash/flatten';
 import {
   addDecimalsFormatNumber,
   addDecimalsFormatNumberQuantum,
@@ -415,51 +417,64 @@ const HistoricScoresTable = ({
     (scoreData.gameTeamScores?.edges || []).map((e) => e.node)
   );
 
-  const history = scores
-    .filter((s) => {
-      return s.epochId !== currentEpoch;
-    })
-    .sort((a, b) => Number(b.epochId) - Number(a.epochId))
-    .map((s, i) => {
-      const team = teams[s.teamId];
-      // find the game and team for this epoch in order to retreive
-      // rewards earned data for that team
-      const game = gamesData.find((g) => g.epoch === s.epochId);
-      const entity = game?.entities.find((e) => {
-        if (
-          e.__typename === 'TeamGameEntity' &&
-          e.team.teamId === team.teamId
-        ) {
-          return true;
-        }
-        return false;
-      });
-      const rewardEarned =
-        entity?.__typename === 'TeamGameEntity'
-          ? entity.rewardEarnedQuantum
-          : '0';
+  const withoutCurrentEpoch = scores.filter((s) => s.epochId !== currentEpoch);
+  const scoresByEpoch = orderBy(
+    Object.entries(groupBy(withoutCurrentEpoch, 'epochId')),
+    (d) => Number(d[0]),
+    'desc'
+  );
+  const scoresByEpochOrdered = scoresByEpoch.map((group) => {
+    const results = group[1];
 
-      return {
-        rank: i + 1,
-        team: (
-          <Link
-            to={Links.COMPETITIONS_TEAM(team.teamId)}
-            className="flex gap-4 items-center"
-          >
-            <span>
-              <TeamAvatar
-                teamId={team.teamId}
-                imgUrl={team.avatarUrl}
-                size="small"
-              />
-            </span>
-            <span>{team.name}</span>
-          </Link>
-        ),
-        epoch: s.epochId,
-        rewardEarned: formatNumber(rewardEarned, 2),
-      };
-    });
+    // sort each result set by score
+    const orderedResults = orderBy(results, (d) => Number(d.score), 'desc').map(
+      (t, i) => {
+        const team = teams[t.teamId];
+        // find the game and team for this epoch in order to retreive
+        // rewards earned data for that team
+        const game = gamesData.find((g) => g.epoch === t.epochId);
+        const entity = game?.entities.find((e) => {
+          if (
+            e.__typename === 'TeamGameEntity' &&
+            e.team.teamId === team.teamId
+          ) {
+            return true;
+          }
+          return false;
+        });
+
+        const rewardEarned =
+          entity?.__typename === 'TeamGameEntity'
+            ? entity.rewardEarnedQuantum
+            : '0';
+        return {
+          rank: i + 1,
+          team: (
+            <Link
+              to={Links.COMPETITIONS_TEAM(team.teamId)}
+              className="flex gap-4 items-center"
+            >
+              <span>
+                <TeamAvatar
+                  teamId={team.teamId}
+                  imgUrl={team.avatarUrl}
+                  size="small"
+                />
+              </span>
+              <span>{team.name}</span>
+            </Link>
+          ),
+          epoch: t.epochId,
+          score: t.score,
+          rewardEarned: formatNumber(rewardEarned, 2),
+        };
+      }
+    );
+
+    return orderedResults;
+  });
+
+  const list = flatten(scoresByEpochOrdered);
 
   return (
     <Table
@@ -481,7 +496,7 @@ const HistoricScoresTable = ({
           displayName: t('Rewards earned'),
         },
       ]}
-      data={history}
+      data={list}
     />
   );
 };
