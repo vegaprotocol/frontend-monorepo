@@ -130,7 +130,7 @@ export const CompetitionsGame = () => {
           partyScores={scoresData.gamePartyScores}
         />
         <section>
-          <Tabs defaultValue="history">
+          <Tabs defaultValue="scores">
             <TabsList>
               <TabsTrigger value="scores">Live scores</TabsTrigger>
               <TabsTrigger value="history">Score history</TabsTrigger>
@@ -391,6 +391,7 @@ const HistoricScoresTable = ({
     .filter((s) => {
       return s.epochId !== currentEpoch;
     })
+    .sort((a, b) => Number(b.epochId) - Number(a.epochId))
     .map((s, i) => {
       const team = teams[s.teamId];
       const game = games.find((g) => g.epoch === s.epochId);
@@ -450,7 +451,7 @@ const HistoricScoresTable = ({
           displayName: t('Epoch'),
         },
         {
-          name: 'rewards',
+          name: 'rewardEarned',
           displayName: t('Rewards earned'),
         },
       ]}
