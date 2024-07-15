@@ -12,6 +12,7 @@ fragment ExplorerStopOrderFields on StopOrder {
   }
   createdAt
   ocoLinkId
+  rejectionReason
   triggerDirection
   order {
     id

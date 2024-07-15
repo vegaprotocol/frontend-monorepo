@@ -3,14 +3,14 @@ import * as Types from '@vegaprotocol/types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
-export type ExplorerStopOrderFieldsFragment = { __typename?: 'StopOrder', id: string, status: Types.StopOrderStatus, createdAt: any, ocoLinkId?: string | null, triggerDirection: Types.StopOrderTriggerDirection, trigger: { __typename?: 'StopOrderPrice', price: string } | { __typename?: 'StopOrderTrailingPercentOffset', trailingPercentOffset: string }, order?: { __typename?: 'Order', id: string } | null };
+export type ExplorerStopOrderFieldsFragment = { __typename?: 'StopOrder', id: string, status: Types.StopOrderStatus, createdAt: any, ocoLinkId?: string | null, rejectionReason?: Types.StopOrderRejectionReason | null, triggerDirection: Types.StopOrderTriggerDirection, trigger: { __typename?: 'StopOrderPrice', price: string } | { __typename?: 'StopOrderTrailingPercentOffset', trailingPercentOffset: string }, order?: { __typename?: 'Order', id: string } | null };
 
 export type ExplorerStopOrderQueryVariables = Types.Exact<{
   stopOrderId: Types.Scalars['ID'];
 }>;
 
 
-export type ExplorerStopOrderQuery = { __typename?: 'Query', stopOrder?: { __typename?: 'StopOrder', id: string, status: Types.StopOrderStatus, createdAt: any, ocoLinkId?: string | null, triggerDirection: Types.StopOrderTriggerDirection, trigger: { __typename?: 'StopOrderPrice', price: string } | { __typename?: 'StopOrderTrailingPercentOffset', trailingPercentOffset: string }, order?: { __typename?: 'Order', id: string } | null } | null };
+export type ExplorerStopOrderQuery = { __typename?: 'Query', stopOrder?: { __typename?: 'StopOrder', id: string, status: Types.StopOrderStatus, createdAt: any, ocoLinkId?: string | null, rejectionReason?: Types.StopOrderRejectionReason | null, triggerDirection: Types.StopOrderTriggerDirection, trigger: { __typename?: 'StopOrderPrice', price: string } | { __typename?: 'StopOrderTrailingPercentOffset', trailingPercentOffset: string }, order?: { __typename?: 'Order', id: string } | null } | null };
 
 export const ExplorerStopOrderFieldsFragmentDoc = gql`
     fragment ExplorerStopOrderFields on StopOrder {
@@ -27,6 +27,7 @@ export const ExplorerStopOrderFieldsFragmentDoc = gql`
   }
   createdAt
   ocoLinkId
+  rejectionReason
   triggerDirection
   order {
     id
