@@ -36,8 +36,8 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './tabs';
 import {
   type ScoresQuery,
-  type TeamScoreFieldsFragment,
   useScoresQuery,
+  type TeamScoreFieldsFragment,
 } from './__generated__/Scores';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import BigNumber from 'bignumber.js';
@@ -46,18 +46,21 @@ import { type TeamsFieldsFragment } from '../../lib/hooks/__generated__/Teams';
 
 export const CompetitionsGame = () => {
   const t = useT();
-  const { pubKey } = useVegaWallet();
   const { gameId } = useParams();
+  const { pubKey } = useVegaWallet();
 
   const { data: currentEpoch, loading: epochLoading } = useCurrentEpoch();
   const { data: reward, loading: rewardLoading } = useReward(gameId);
   const { data: teams, loading: teamsLoading } = useTeamsMap();
   const { data: gamesData, loading: gameLoading } = useGames({ gameId });
-  const { data: scoresData, loading: scoresLoading } = useScoresQuery({
+
+  const { data: liveScoreData, loading: liveScoreLoading } = useScoresQuery({
     variables: {
-      epochFrom: currentEpoch ? currentEpoch - TEAMS_STATS_EPOCHS : 0,
+      epochFrom: currentEpoch,
+      epochTo: currentEpoch,
       gameId: gameId || '',
       partyId: pubKey || '',
+      pagination: { last: 500 },
     },
     skip: !currentEpoch || !gameId,
   });
@@ -67,7 +70,7 @@ export const CompetitionsGame = () => {
     rewardLoading ||
     teamsLoading ||
     gameLoading ||
-    scoresLoading
+    liveScoreLoading
   ) {
     return (
       <Splash>
@@ -76,7 +79,7 @@ export const CompetitionsGame = () => {
     );
   }
 
-  if (!reward || !teams || !gamesData || !scoresData) {
+  if (!reward || !teams || !gamesData || !liveScoreData) {
     return (
       <Splash>
         <p>{t('No data')}</p>
@@ -98,8 +101,8 @@ export const CompetitionsGame = () => {
 
   if (!rankTable) return null;
 
-  const allScores = compact(
-    scoresData?.gameTeamScores?.edges?.map((e) => e.node)
+  const liveScores = compact(
+    (liveScoreData?.gameTeamScores?.edges || []).map((e) => e.node)
   );
 
   return (
@@ -127,35 +130,36 @@ export const CompetitionsGame = () => {
         <EligibilityCriteria
           asset={asset}
           dispatchStrategy={dispatchStrategy as DispatchStrategy}
-          partyScores={scoresData.gamePartyScores}
+          partyScores={liveScoreData.gamePartyScores}
         />
-        <section>
-          <Tabs defaultValue="scores">
-            <TabsList>
-              <TabsTrigger value="scores">Live scores</TabsTrigger>
-              <TabsTrigger value="history">Score history</TabsTrigger>
-            </TabsList>
-            <TabsContent value="scores">
-              <LiveScoresTable
-                currentEpoch={currentEpoch || 0}
-                scores={allScores}
-                asset={asset}
-                rewardAmount={amount}
-                rankTable={rankTable}
-                teams={teams}
-                distributionStrategy={dispatchStrategy.distributionStrategy}
-              />
-            </TabsContent>
-            <TabsContent value="history">
-              <HistoricScoresTable
-                currentEpoch={currentEpoch || 0}
-                scores={allScores}
-                teams={teams}
-                games={gamesData || []}
-              />
-            </TabsContent>
-          </Tabs>
-        </section>
+        {gameId && (
+          <section>
+            <Tabs defaultValue="scores">
+              <TabsList>
+                <TabsTrigger value="scores">Live scores</TabsTrigger>
+                <TabsTrigger value="history">Score history</TabsTrigger>
+              </TabsList>
+              <TabsContent value="scores">
+                <LiveScoresTable
+                  scores={liveScores}
+                  asset={asset}
+                  rewardAmount={amount}
+                  rankTable={rankTable}
+                  teams={teams}
+                  distributionStrategy={dispatchStrategy.distributionStrategy}
+                />
+              </TabsContent>
+              <TabsContent value="history">
+                <HistoricScoresTable
+                  gameId={gameId}
+                  currentEpoch={currentEpoch || 0}
+                  teams={teams}
+                  games={gamesData || []}
+                />
+              </TabsContent>
+            </Tabs>
+          </section>
+        )}
       </LayoutWithGradient>
     </ErrorBoundary>
   );
@@ -258,8 +262,11 @@ const EligibilityCriteria = ({
   );
 };
 
+/**
+ * Use latest score data to calculate payouts and render a table of the latest
+ * scores by team
+ */
 const LiveScoresTable = ({
-  currentEpoch,
   scores,
   asset,
   distributionStrategy,
@@ -267,7 +274,6 @@ const LiveScoresTable = ({
   teams,
   rewardAmount,
 }: {
-  currentEpoch: number;
   scores: TeamScoreFieldsFragment[];
   asset: AssetFieldsFragment;
   distributionStrategy: DistributionStrategy;
@@ -276,15 +282,14 @@ const LiveScoresTable = ({
   rewardAmount: string;
 }) => {
   const t = useT();
-  const _scores = scores.filter((s) => s.epochId === currentEpoch);
 
-  const sumOfScores = _scores.reduce(
+  const sumOfScores = scores.reduce(
     (sum, s) => sum.plus(s.score),
     BigNumber(0)
   );
 
   // Get total of all ratios for each team
-  const total = _scores
+  const total = scores
     .map((_, i) => {
       const teamRank = i + 1;
       const nextRankIndex = rankTable.findIndex((r) => {
@@ -296,7 +301,7 @@ const LiveScoresTable = ({
     .reduce((sum, ratio) => sum + ratio, 0);
 
   const lastEpochScores = orderBy(
-    _scores,
+    scores,
     [(d) => Number(d.score)],
     ['desc']
   ).map((t, i) => {
@@ -374,18 +379,43 @@ const LiveScoresTable = ({
   );
 };
 
+/**
+ * Fetch scores and use game data to display a list of teams and epochs.
+ * Game data is used to join on the reward earned for that team during
+ * that epoch
+ */
 const HistoricScoresTable = ({
+  gameId,
   currentEpoch,
-  scores,
   teams,
   games,
 }: {
+  gameId: string;
   currentEpoch: number;
-  scores: TeamScoreFieldsFragment[];
   teams: Record<string, TeamsFieldsFragment>;
   games: Game[];
 }) => {
   const t = useT();
+  const { pubKey } = useVegaWallet();
+
+  const { data, loading } = useScoresQuery({
+    variables: {
+      epochFrom: currentEpoch ? currentEpoch - TEAMS_STATS_EPOCHS : 0,
+      gameId: gameId || '',
+      partyId: pubKey || '',
+    },
+    skip: !currentEpoch || !gameId,
+  });
+
+  if (!data && loading) {
+    return <p>{t('Loading')}</p>;
+  }
+
+  if (!data) {
+    return <p>{t('No data')}</p>;
+  }
+
+  const scores = compact((data.gameTeamScores?.edges || []).map((e) => e.node));
 
   const history = scores
     .filter((s) => {
@@ -394,6 +424,8 @@ const HistoricScoresTable = ({
     .sort((a, b) => Number(b.epochId) - Number(a.epochId))
     .map((s, i) => {
       const team = teams[s.teamId];
+      // find the game and team for this epoch in order to retreive
+      // rewards earned data for that team
       const game = games.find((g) => g.epoch === s.epochId);
       const entity = game?.entities.find((e) => {
         if (
@@ -430,10 +462,6 @@ const HistoricScoresTable = ({
         rewardEarned: formatNumber(rewardEarned, 2),
       };
     });
-
-  if (!history.length) {
-    return <p>No history</p>;
-  }
 
   return (
     <Table

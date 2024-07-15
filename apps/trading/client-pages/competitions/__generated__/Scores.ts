@@ -11,6 +11,7 @@ export type ScoresQueryVariables = Types.Exact<{
   gameId: Types.Scalars['ID'];
   partyId: Types.Scalars['ID'];
   epochFrom?: Types.InputMaybe<Types.Scalars['Int']>;
+  epochTo?: Types.InputMaybe<Types.Scalars['Int']>;
   pagination?: Types.InputMaybe<Types.Pagination>;
 }>;
 
@@ -42,9 +43,9 @@ export const PartyScoreFieldsFragmentDoc = gql`
 }
     `;
 export const ScoresDocument = gql`
-    query Scores($gameId: ID!, $partyId: ID!, $epochFrom: Int, $pagination: Pagination) {
+    query Scores($gameId: ID!, $partyId: ID!, $epochFrom: Int, $epochTo: Int, $pagination: Pagination) {
   gameTeamScores(
-    filter: {gameIds: [$gameId], epochFrom: $epochFrom}
+    filter: {gameIds: [$gameId], epochFrom: $epochFrom, epochTo: $epochTo}
     pagination: $pagination
   ) {
     edges {
@@ -84,6 +85,7 @@ ${PartyScoreFieldsFragmentDoc}`;
  *      gameId: // value for 'gameId'
  *      partyId: // value for 'partyId'
  *      epochFrom: // value for 'epochFrom'
+ *      epochTo: // value for 'epochTo'
  *      pagination: // value for 'pagination'
  *   },
  * });

@@ -24,10 +24,11 @@ query Scores(
   $gameId: ID!
   $partyId: ID!
   $epochFrom: Int
+  $epochTo: Int
   $pagination: Pagination
 ) {
   gameTeamScores(
-    filter: { gameIds: [$gameId], epochFrom: $epochFrom }
+    filter: { gameIds: [$gameId], epochFrom: $epochFrom, epochTo: $epochTo }
     pagination: $pagination
   ) {
     edges {
@@ -38,7 +39,12 @@ query Scores(
     }
   }
   gamePartyScores(
-    filter: { gameIds: [$gameId], partyIds: [$partyId] }
+    filter: {
+      gameIds: [$gameId]
+      partyIds: [$partyId]
+      epochFrom: $epochFrom
+      epochTo: $epochTo
+    }
     pagination: $pagination
   ) {
     edges {
