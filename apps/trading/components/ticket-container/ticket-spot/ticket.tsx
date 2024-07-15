@@ -5,19 +5,19 @@ import {
 } from '@vegaprotocol/markets';
 import { useAccountBalance, useMarginMode } from '@vegaprotocol/accounts';
 
-import { TicketMarket } from './ticket-spot/ticket-market';
-import { TicketLimit } from './ticket-spot/ticket-limit';
-import { TicketStopMarket } from './ticket-spot/ticket-stop-market';
-import { TicketStopLimit } from './ticket-spot/ticket-stop-limit';
-import { useTicketType } from './use-ticket-type';
-import { TicketContext } from './ticket-context';
-import { type TicketType } from './schemas';
+import { useTicketType } from '../use-ticket-type';
+import { type TicketType } from '../schemas';
+import { TicketContext } from '../ticket-context';
+import { TicketMarket } from './ticket-market';
+import { TicketLimit } from './ticket-limit';
+import { TicketStopMarket } from './ticket-stop-market';
+import { TicketStopLimit } from './ticket-stop-limit';
 
 export type FormProps = {
   onTypeChange: (value: TicketType) => void;
 };
 
-export const TicketSpot = ({ market }: { market: MarketInfo }) => {
+export const Ticket = ({ market }: { market: MarketInfo }) => {
   const quoteAsset = getQuoteAsset(market);
   const baseAsset = getBaseAsset(market);
 

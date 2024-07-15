@@ -16,7 +16,7 @@ import { FieldControls, Form, FormGrid, FormGridCol } from '../elements/form';
 import { type FormFieldsStopLimit, schemaStopLimit } from '../schemas';
 import { TicketEventUpdater } from '../ticket-events';
 import { TicketTypeSelect } from '../ticket-type-select';
-import { type FormProps } from '../ticket-default';
+import { type FormProps } from './ticket';
 import { NON_PERSISTENT_TIF_OPTIONS } from '../constants';
 import { useTicketContext } from '../ticket-context';
 import { SubmitButton } from '../elements/submit-button';

@@ -3,7 +3,7 @@ import type BigNumber from 'bignumber.js';
 
 import { useTicketContext } from '../ticket-context';
 import { useForm } from '../use-form';
-import { Slider } from '../slider';
+import { Slider } from '../elements/slider';
 
 import * as utils from '../utils';
 import * as spotUtils from './utils';

@@ -17,8 +17,8 @@ import { useT } from '../../../lib/use-t';
 import { Form, FormGrid, FormGridCol } from '../elements/form';
 import { type FormFieldsMarket, schemaMarket } from '../schemas';
 import { TicketTypeSelect } from '../ticket-type-select';
-import { type FormProps } from '../ticket-default';
-import { SizeSlider } from '../size-slider';
+import { type FormProps } from './ticket';
+import { SizeSlider } from './size-slider';
 
 import * as utils from '../utils';
 import * as Fields from '../fields';

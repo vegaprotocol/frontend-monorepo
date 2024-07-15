@@ -6,8 +6,8 @@ import {
   useMarketInfo,
 } from '@vegaprotocol/markets';
 
-import { TicketDefault } from './ticket-default';
-import { TicketSpot } from './ticket-spot';
+import { Ticket as TicketDefault } from './ticket-default/ticket';
+import { Ticket as TicketSpot } from './ticket-spot/ticket';
 
 export const TicketContainer = () => {
   const params = useParams();

@@ -5,11 +5,11 @@ import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useOpenVolume } from '@vegaprotocol/positions';
 import { StopOrderSizeOverrideSetting } from '@vegaprotocol/types';
 
-import { Slider } from './slider';
-import { useTicketContext } from './ticket-context';
+import { Slider } from '../elements/slider';
+import { useTicketContext } from '../ticket-context';
 
-import * as defaultUtils from './ticket-default/utils';
-import { useForm } from './use-form';
+import * as defaultUtils from '../ticket-default/utils';
+import { useForm } from '../use-form';
 import { useState } from 'react';
 
 export const SizeSliderStop = ({ price }: { price: BigNumber | undefined }) => {

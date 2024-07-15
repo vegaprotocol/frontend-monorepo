@@ -18,7 +18,7 @@ import { SubmitButton } from '../elements/submit-button';
 import { Form, FormGrid, FormGridCol } from '../elements/form';
 import { type FormFieldsMarket, schemaMarket } from '../schemas';
 import { TicketTypeSelect } from '../ticket-type-select';
-import { type FormProps } from '../ticket-spot';
+import { type FormProps } from './ticket';
 import { useTicketContext } from '../ticket-context';
 import { TicketEventUpdater } from '../ticket-events';
 

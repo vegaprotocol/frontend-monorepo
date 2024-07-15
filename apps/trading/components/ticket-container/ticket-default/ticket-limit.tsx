@@ -15,7 +15,6 @@ import {
 import { Form, FormGrid, FormGridCol } from '../elements/form';
 import { type FormFieldsLimit, schemaLimit } from '../schemas';
 import { TicketTypeSelect } from '../ticket-type-select';
-import { type FormProps } from '../ticket-default';
 import { NON_PERSISTENT_TIF_OPTIONS } from '../constants';
 import { useTicketContext } from '../ticket-context';
 import { SubmitButton } from '../elements/submit-button';
@@ -26,7 +25,9 @@ import { TicketEventUpdater } from '../ticket-events';
 import * as utils from '../utils';
 import * as Fields from '../fields';
 import * as Data from '../info';
-import { SizeSlider } from '../size-slider';
+
+import { type FormProps } from './ticket';
+import { SizeSlider } from './size-slider';
 
 export const TicketLimit = (props: FormProps) => {
   const ticket = useTicketContext('default');

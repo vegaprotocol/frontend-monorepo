@@ -17,7 +17,7 @@ import { toBigNum } from '@vegaprotocol/utils';
 import { FieldControls, Form, FormGrid, FormGridCol } from '../elements/form';
 import { type FormFieldsStopMarket, schemaStopMarket } from '../schemas';
 import { TicketTypeSelect } from '../ticket-type-select';
-import { type FormProps } from '../ticket-default';
+import { type FormProps } from './ticket';
 import { NON_PERSISTENT_TIF_OPTIONS } from '../constants';
 import { TicketEventUpdater } from '../ticket-events';
 import { useTicketContext } from '../ticket-context';
@@ -26,7 +26,7 @@ import { useT } from '../../../lib/use-t';
 
 import * as Fields from '../fields';
 
-import { SizeSliderStop } from '../size-slider-stop';
+import { SizeSliderStop } from './size-slider-stop';
 
 export const TicketStopMarket = (props: FormProps) => {
   const t = useT();

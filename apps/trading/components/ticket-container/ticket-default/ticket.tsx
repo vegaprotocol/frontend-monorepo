@@ -1,8 +1,3 @@
-import { TicketMarket } from './ticket-default/ticket-market';
-import { TicketLimit } from './ticket-default/ticket-limit';
-import { TicketStopLimit } from './ticket-default/ticket-stop-limit';
-import { TicketStopMarket } from './ticket-default/ticket-stop-market';
-import { useTicketType } from './use-ticket-type';
 import {
   getAsset,
   getQuoteAsset,
@@ -15,14 +10,20 @@ import {
   useMarginMode,
 } from '@vegaprotocol/accounts';
 
-import { TicketContext } from './ticket-context';
-import { type TicketType } from './schemas';
+import { TicketContext } from '../ticket-context';
+import { type TicketType } from '../schemas';
+import { useTicketType } from '../use-ticket-type';
+
+import { TicketMarket } from './ticket-market';
+import { TicketLimit } from './ticket-limit';
+import { TicketStopLimit } from './ticket-stop-limit';
+import { TicketStopMarket } from './ticket-stop-market';
 
 export type FormProps = {
   onTypeChange: (value: TicketType) => void;
 };
 
-export const TicketDefault = ({ market }: { market: MarketInfo }) => {
+export const Ticket = ({ market }: { market: MarketInfo }) => {
   const settlementAsset = market && getAsset(market);
   const quoteAsset = market && getQuoteAsset(market);
 
