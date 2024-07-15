@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import compact from 'lodash/compact';
 import type { ColDef, ValueFormatterParams } from 'ag-grid-community';
 import type {
   VegaICellRendererParams,
@@ -13,10 +14,7 @@ import {
   toBigNum,
 } from '@vegaprotocol/utils';
 import { Sparkline, Tooltip } from '@vegaprotocol/ui-toolkit';
-import type {
-  MarketMaybeWithData,
-  MarketMaybeWithDataAndCandles,
-} from '@vegaprotocol/markets';
+import { type Market } from '@vegaprotocol/data-provider';
 import {
   Last24hPriceChange,
   calcCandleVolume,
@@ -30,7 +28,7 @@ import { EmblemByMarket } from '@vegaprotocol/emblem';
 import { useChainId } from '@vegaprotocol/wallet-react';
 import { MarketIcon, getMarketStateTooltip } from './market-icon';
 
-const openInterestValues = (data: MarketMaybeWithData) => {
+const openInterestValues = (data: Market) => {
   if (!data) return null;
   const { data: marketData, positionDecimalPlaces, decimalPlaces } = data;
   if (!marketData) return null;
@@ -51,11 +49,7 @@ const openInterestValues = (data: MarketMaybeWithData) => {
   };
 };
 
-const OpenInterestCell = ({
-  data,
-}: {
-  data: MarketMaybeWithData | undefined;
-}) => {
+const OpenInterestCell = ({ data }: { data: Market | undefined }) => {
   const openInterestData = data && openInterestValues(data);
   if (!openInterestData) return null;
   const { openInterest, openInterestNotional } = openInterestData;
@@ -72,15 +66,18 @@ const OpenInterestCell = ({
   );
 };
 
-export const priceChangeRenderer = (
-  data: MarketMaybeWithDataAndCandles | undefined,
-  showChangeValue = true
-) => {
-  if (!data) return null;
+export const PriceChange = ({
+  market,
+  showChangeValue = true,
+}: {
+  market: Market | undefined;
+  showChangeValue?: boolean;
+}) => {
+  if (!market) return null;
   return (
     <Last24hPriceChange
-      marketId={data.id}
-      decimalPlaces={data.decimalPlaces}
+      marketId={market.id}
+      decimalPlaces={market.decimalPlaces}
       orientation="vertical"
       showChangeValue={showChangeValue}
       fallback={
@@ -102,22 +99,28 @@ export const priceChangeRenderer = (
   );
 };
 
-export const priceChangeSparklineRenderer = (
-  data: MarketMaybeWithDataAndCandles | undefined
-) => {
-  if (!data) return null;
-  const candles = data.candles
-    ?.filter((c) => c.close)
-    .map((c) => Number(c.close));
+export const PriceChangeSparkline = (props: { market: Market | undefined }) => {
+  const edges = props.market?.candlesConnection?.edges;
+
+  if (!edges?.length) return null;
+
+  const candles = edges
+    .filter((c) => c?.node.close)
+    .map((c) => Number(c?.node.close));
   if (!candles?.length) return null;
   return <Sparkline width={80} height={20} data={candles || [0]} />;
 };
 
 export const priceValueFormatter = (
-  data: MarketMaybeWithData | undefined,
+  data: Market | undefined,
   formatDecimalPlaces?: number
 ): string => {
-  if (isSpotMarket(data)) {
+  if (!data) return '-';
+
+  const product = data.tradableInstrument.instrument.product;
+  const quoteName = getQuoteName(data);
+
+  if (isSpot(product)) {
     const quoteAsset = data && getQuoteAsset(data);
     return data?.data?.lastTradedPrice === undefined
       ? '-'
@@ -126,19 +129,9 @@ export const priceValueFormatter = (
           data.decimalPlaces
         )} ${quoteAsset?.symbol}`;
   }
-  let quoteName: string | undefined = undefined;
-  if (data?.tradableInstrument?.instrument?.product) {
-    quoteName = data && getQuoteName(data);
-  }
 
   return data?.data?.bestOfferPrice === undefined
     ? '-'
-    : quoteName === 'USDT'
-    ? `$${addDecimalsFormatNumber(
-        data.data.markPrice,
-        data.decimalPlaces,
-        formatDecimalPlaces
-      )}`
     : `${addDecimalsFormatNumber(
         data.data.markPrice,
         data.decimalPlaces,
@@ -162,7 +155,7 @@ export const useMarketsColumnDefs = () => {
           value,
           data,
         }: VegaICellRendererParams<
-          MarketMaybeWithData,
+          Market,
           'tradableInstrument.instrument.code'
         >) => {
           const tradingMode = data?.data?.marketTradingMode;
@@ -195,9 +188,13 @@ export const useMarketsColumnDefs = () => {
         cellRenderer: 'PriceFlashCell',
         filter: 'agNumberColumnFilter',
         maxWidth: 150,
-        cellClass: 'text-sm text-right',
-        valueGetter: ({ data }: VegaValueGetterParams<MarketMaybeWithData>) => {
-          if (isSpotMarket(data)) {
+        cellClass: 'text-sm text-right font-mono',
+        valueGetter: ({ data }: VegaValueGetterParams<Market>) => {
+          if (!data) return;
+
+          const product = data.tradableInstrument.instrument.product;
+
+          if (isSpot(product)) {
             return data?.data?.lastTradedPrice === undefined
               ? undefined
               : toBigNum(
@@ -205,36 +202,41 @@ export const useMarketsColumnDefs = () => {
                   data.decimalPlaces
                 ).toNumber();
           }
+
           return data?.data?.markPrice === undefined
             ? undefined
             : toBigNum(data?.data?.markPrice, data.decimalPlaces).toNumber();
         },
         valueFormatter: ({
           data,
-        }: VegaValueFormatterParams<MarketMaybeWithData, 'data.markPrice'>) => {
+        }: VegaValueFormatterParams<Market, 'data.markPrice'>) => {
           return priceValueFormatter(data);
         },
       },
       {
         headerName: '24h Change',
-        field: 'data.candles',
+        id: 'candlesConnection.edges',
         type: 'rightAligned',
         cellClass: 'text-sm text-right font-mono',
         cellRenderer: ({
           data,
-        }: ValueFormatterParams<MarketMaybeWithDataAndCandles, 'candles'>) => {
+        }: ValueFormatterParams<Market, 'candlesConnection.edges'>) => {
           return (
             <div className="flex gap-2 justify-end">
-              <span>{priceChangeSparklineRenderer(data)}</span>
-              <span>{priceChangeRenderer(data)}</span>
+              <span>
+                <PriceChangeSparkline market={data} />
+              </span>
+              <span>
+                <PriceChange market={data} />
+              </span>
             </div>
           );
         },
-        valueGetter: ({
-          data,
-        }: VegaValueGetterParams<MarketMaybeWithDataAndCandles>) => {
-          if (!data?.candles) return 0;
-          const candles = data.candles.map((c) => c.close);
+        valueGetter: ({ data }: VegaValueGetterParams<Market>) => {
+          if (!data?.candlesConnection?.edges?.length) return 0;
+          const candles = compact(
+            data.candlesConnection.edges.map((c) => c?.node.close)
+          );
           const change = priceChangePercentage(candles);
           if (!change) return 0;
           return change;
@@ -246,11 +248,11 @@ export const useMarketsColumnDefs = () => {
         field: 'data.candles',
         sort: 'desc',
         cellClass: 'text-sm text-right',
-        valueGetter: ({
-          data,
-        }: VegaValueGetterParams<MarketMaybeWithDataAndCandles>) => {
+        valueGetter: ({ data }: VegaValueGetterParams<Market>) => {
           if (!data) return 0;
-          const candles = data?.candles;
+          const candles = compact(
+            data?.candlesConnection?.edges?.map((e) => e?.node)
+          );
           const volPrice =
             candles &&
             calcCandleVolumePrice(
@@ -261,31 +263,19 @@ export const useMarketsColumnDefs = () => {
           if (!volPrice) return 0;
           return Number(volPrice);
         },
-        cellRenderer: ({
-          data,
-        }: ValueFormatterParams<MarketMaybeWithDataAndCandles, 'candles'>) => {
+        cellRenderer: ({ value, data }: { value: number; data: Market }) => {
           if (!data) return '-';
-          const candles = data.candles;
+          const candles = compact(
+            data.candlesConnection?.edges?.map((e) => e?.node)
+          );
           const vol = candles ? calcCandleVolume(candles) : '0';
-          let quoteName: string | undefined = undefined;
-          try {
-            quoteName = getQuoteName(data);
-          } catch {
-            quoteName = '';
-          }
-          const volPrice = candles
-            ? calcCandleVolumePrice(
-                candles,
-                data.decimalPlaces,
-                data.positionDecimalPlaces
-              )
-            : '0';
+          const quoteName = getQuoteName(data);
 
           const volume =
             data && vol && vol !== '0'
               ? addDecimalsFormatNumber(vol, data.positionDecimalPlaces, 2)
               : '0.00';
-          const volumePrice = volPrice && formatNumber(volPrice, 0);
+          const volumePrice = value && formatNumber(value, 0);
 
           return volumePrice ? (
             <span className="font-mono">
@@ -308,7 +298,7 @@ export const useMarketsColumnDefs = () => {
         field: 'data.openInterest',
         type: 'rightAligned',
         cellClass: 'text-sm text-right',
-        valueGetter: ({ data }: VegaValueGetterParams<MarketMaybeWithData>) => {
+        valueGetter: ({ data }: VegaValueGetterParams<Market>) => {
           const openInterestData = data && openInterestValues(data);
           if (!openInterestData) return 0;
           const { openInterestNotional } = openInterestData;
@@ -316,11 +306,8 @@ export const useMarketsColumnDefs = () => {
         },
         cellRenderer: ({
           data,
-        }: VegaValueFormatterParams<
-          MarketMaybeWithData,
-          'data.openInterest'
-        >) => {
-          if (!data || isSpotMarket(data) || !openInterestValues(data)) {
+        }: VegaValueFormatterParams<Market, 'data.openInterest'>) => {
+          if (!data || !openInterestValues(data)) {
             return <span>-</span>;
           }
           return (
@@ -331,13 +318,6 @@ export const useMarketsColumnDefs = () => {
         },
       },
     ],
-    [chainId, t]
+    [t, chainId]
   );
-};
-
-const isSpotMarket = (
-  market: Pick<MarketMaybeWithData, 'tradableInstrument'> | undefined | null
-) => {
-  const product = market?.tradableInstrument?.instrument?.product;
-  return product && isSpot(product);
 };

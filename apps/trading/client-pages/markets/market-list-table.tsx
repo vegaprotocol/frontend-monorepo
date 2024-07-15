@@ -1,6 +1,9 @@
-import type { TypedDataAgGrid } from '@vegaprotocol/datagrid';
-import { AgGrid, PriceFlashCell } from '@vegaprotocol/datagrid';
-import type { MarketMaybeWithData } from '@vegaprotocol/markets';
+import {
+  AgGrid,
+  PriceFlashCell,
+  type TypedDataAgGrid,
+} from '@vegaprotocol/datagrid';
+import { type Market } from '@vegaprotocol/data-provider';
 import { useMarketsColumnDefs } from './use-column-defs';
 import type { DataGridStore } from '../../stores/datagrid-store-slice';
 import { type StateCreator, create } from 'zustand';
@@ -22,7 +25,7 @@ const components = {
   PriceFlashCell,
 };
 
-type Props = TypedDataAgGrid<MarketMaybeWithData> & {
+type Props = TypedDataAgGrid<Market> & {
   filterSummary?: ReactNode;
 };
 
