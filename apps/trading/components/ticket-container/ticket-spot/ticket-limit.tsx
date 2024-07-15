@@ -165,7 +165,6 @@ export const TicketLimit = (props: FormProps) => {
           <Data.Fees />
           <Data.Slippage />
           <Data.CollateralRequired />
-          <Data.Liquidation />
         </Datagrid>
 
         <pre className="block w-full text-2xs">

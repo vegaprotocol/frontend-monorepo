@@ -13,7 +13,7 @@ import * as ToggleGroup from '@radix-ui/react-toggle-group';
 import classNames from 'classnames';
 
 import { useT } from '../../lib/use-t';
-import { type TicketType } from './use-ticket-type';
+import { type TicketType } from './schemas';
 
 export const TicketTypeSelect = ({
   type,

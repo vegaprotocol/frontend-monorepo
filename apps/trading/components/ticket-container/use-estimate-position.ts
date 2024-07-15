@@ -13,7 +13,7 @@ import { useForm } from './use-form';
 
 export function useEstimatePosition() {
   const { pubKey } = useVegaWallet();
-  const ticket = useTicketContext();
+  const ticket = useTicketContext('default');
   const form = useForm();
 
   const type = form.watch('type') as OrderType;
