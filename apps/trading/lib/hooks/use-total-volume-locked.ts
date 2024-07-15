@@ -13,18 +13,26 @@ export const useTotalValueLocked = () => {
   const { VEGA_ENV } = useEnvironment();
   const { data } = useEnabledAssets();
 
-  const assets = (data || []).filter(isAssetTypeERC20);
+  const assets = (data || [])
+    .filter(isAssetTypeERC20)
+    .filter((a) => a.symbol !== 'VEGA');
 
-  const address = ASSET_POOL_ADDRESSES[VEGA_ENV];
+  const addresses = ASSET_POOL_ADDRESSES[VEGA_ENV];
+
   const contracts = assets.map((asset) => {
     if (asset.source.__typename !== 'ERC20') return;
+
+    const chainId = Number(asset.source.chainId);
+    const assetPoolAddress = addresses[chainId];
+
+    if (!assetPoolAddress) return;
 
     const config = {
       abi: erc20Abi,
       address: asset.source.contractAddress as `0x${string}`,
       functionName: 'balanceOf',
-      args: [address],
-      chainId: Number(asset.source.chainId),
+      args: [assetPoolAddress],
+      chainId,
     };
 
     return config;
