@@ -11,10 +11,12 @@ export type ScoresQueryVariables = Types.Exact<{
   gameId: Types.Scalars['ID'];
   partyId: Types.Scalars['ID'];
   epochFrom?: Types.InputMaybe<Types.Scalars['Int']>;
+  epochTo?: Types.InputMaybe<Types.Scalars['Int']>;
+  pagination?: Types.InputMaybe<Types.Pagination>;
 }>;
 
 
-export type ScoresQuery = { __typename?: 'Query', gameTeamScores?: { __typename?: 'GameTeamScoreConnection', edges?: Array<{ __typename?: 'GameTeamScoreEdge', node?: { __typename?: 'GameTeamScore', gameId: string, teamId: string, epochId: number, time: any, score: string } | null }> | null } | null, gamePartyScores?: { __typename?: 'GamePartyScoreConnection', edges?: Array<{ __typename?: 'GamePartyScoreEdge', node?: { __typename?: 'GamePartyScore', gameId: string, teamId?: string | null, epochId: number, partyId: string, time: any, score: string, stakingBalance?: string | null, openVolume?: string | null, totalFeesPaid: string, isEligible: boolean, rank?: number | null } | null }> | null } | null };
+export type ScoresQuery = { __typename?: 'Query', gameTeamScores?: { __typename?: 'GameTeamScoreConnection', edges?: Array<{ __typename?: 'GameTeamScoreEdge', cursor?: string | null, node?: { __typename?: 'GameTeamScore', gameId: string, teamId: string, epochId: number, time: any, score: string } | null }> | null } | null, gamePartyScores?: { __typename?: 'GamePartyScoreConnection', edges?: Array<{ __typename?: 'GamePartyScoreEdge', cursor?: string | null, node?: { __typename?: 'GamePartyScore', gameId: string, teamId?: string | null, epochId: number, partyId: string, time: any, score: string, stakingBalance?: string | null, openVolume?: string | null, totalFeesPaid: string, isEligible: boolean, rank?: number | null } | null }> | null } | null };
 
 export const TeamScoreFieldsFragmentDoc = gql`
     fragment TeamScoreFields on GameTeamScore {
@@ -41,16 +43,24 @@ export const PartyScoreFieldsFragmentDoc = gql`
 }
     `;
 export const ScoresDocument = gql`
-    query Scores($gameId: ID!, $partyId: ID!, $epochFrom: Int) {
-  gameTeamScores(filter: {gameIds: [$gameId], epochFrom: $epochFrom}) {
+    query Scores($gameId: ID!, $partyId: ID!, $epochFrom: Int, $epochTo: Int, $pagination: Pagination) {
+  gameTeamScores(
+    filter: {gameIds: [$gameId], epochFrom: $epochFrom, epochTo: $epochTo}
+    pagination: $pagination
+  ) {
     edges {
+      cursor
       node {
         ...TeamScoreFields
       }
     }
   }
-  gamePartyScores(filter: {gameIds: [$gameId], partyIds: [$partyId]}) {
+  gamePartyScores(
+    filter: {gameIds: [$gameId], partyIds: [$partyId]}
+    pagination: $pagination
+  ) {
     edges {
+      cursor
       node {
         ...PartyScoreFields
       }
@@ -75,6 +85,8 @@ ${PartyScoreFieldsFragmentDoc}`;
  *      gameId: // value for 'gameId'
  *      partyId: // value for 'partyId'
  *      epochFrom: // value for 'epochFrom'
+ *      epochTo: // value for 'epochTo'
+ *      pagination: // value for 'pagination'
  *   },
  * });
  */
