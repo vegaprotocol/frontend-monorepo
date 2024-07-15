@@ -1,7 +1,7 @@
 import { OrderbookManager } from '@vegaprotocol/market-depth';
 import { ViewType, useSidebar } from '../sidebar';
 
-import { ticketEventEmitter } from '../../lib/hooks/use-ticket-events';
+import { ticketEventEmitter } from '../../lib/ticket-event-emitter';
 
 export const OrderbookContainer = ({ marketId }: { marketId: string }) => {
   const setView = useSidebar((store) => store.setView);

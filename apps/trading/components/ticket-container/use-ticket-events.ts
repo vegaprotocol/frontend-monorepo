@@ -1,11 +1,14 @@
-import { EventEmitter } from 'eventemitter3';
 import { useEffect } from 'react';
 
-import { type FormFields } from '../../components/ticket-container/schemas';
-import { useForm } from '../../components/ticket-container/use-form';
+import { type FormFields } from './schemas';
+import { useForm } from './use-form';
 
-export const ticketEventEmitter = new EventEmitter();
+import { ticketEventEmitter } from '../../lib/ticket-event-emitter';
 
+/**
+ * Listen for events from the ticketEventEmitter and update the
+ * corresponding field in the form
+ */
 export const useTicketEvents = () => {
   const form = useForm();
 
