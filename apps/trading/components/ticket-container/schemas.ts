@@ -13,7 +13,7 @@ export const numericalString = z.string().refine(
     const n = Number(v);
 
     if (isNaN(n)) return false;
-    if (n < 0) return false;
+    if (n <= 0) return false;
 
     return true;
   },
