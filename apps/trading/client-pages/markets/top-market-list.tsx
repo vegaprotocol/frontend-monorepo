@@ -1,20 +1,16 @@
 import { EmblemByMarket } from '@vegaprotocol/emblem';
-import type { MarketMaybeWithCandles } from '@vegaprotocol/markets';
 import { useChainId } from '@vegaprotocol/wallet-react';
 import { Link } from 'react-router-dom';
 import {
   priceValueFormatter,
-  priceChangeRenderer,
-  priceChangeSparklineRenderer,
+  PriceChange,
+  PriceChangeSparkline,
 } from './use-column-defs';
 import { Links } from '../../lib/links';
 import { Tooltip } from '@vegaprotocol/ui-toolkit';
+import { type Market } from '@vegaprotocol/data-provider';
 
-export const TopMarketList = ({
-  markets,
-}: {
-  markets?: MarketMaybeWithCandles[];
-}) => {
+export const TopMarketList = ({ markets }: { markets?: Market[] }) => {
   const { chainId } = useChainId();
   return (
     <div className="flex flex-col justify-between gap-5">
@@ -46,8 +42,8 @@ export const TopMarketList = ({
               {priceValueFormatter(market, 2)}
             </span>
             <span className="col-span-3 flex justify-end gap-1 text-xs">
-              {priceChangeRenderer(market, false)}
-              {priceChangeSparklineRenderer(market)}
+              <PriceChange market={market} showChangeValue={false} />
+              <PriceChangeSparkline market={market} />
             </span>
           </div>
         );

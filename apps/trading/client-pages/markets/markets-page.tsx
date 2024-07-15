@@ -11,17 +11,13 @@ import { useT } from '../../lib/use-t';
 import { ErrorBoundary } from '../../components/error-boundary';
 import { usePageTitle } from '../../lib/hooks/use-page-title';
 import { Card } from '../../components/card';
-import { useDataProvider } from '@vegaprotocol/data-provider';
 import {
   type MarketMaybeWithData,
   calcCandleVolumePrice,
-  marketsWithCandlesProvider,
   retrieveAssets,
   type MarketMaybeWithCandles,
 } from '@vegaprotocol/markets';
-import { useYesterday } from '@vegaprotocol/react-helpers';
-import { type ReactNode, useEffect } from 'react';
-import { Interval } from '@vegaprotocol/types';
+import { type ReactNode } from 'react';
 import { formatNumber } from '@vegaprotocol/utils';
 import { TopMarketList } from './top-market-list';
 import classNames from 'classnames';
@@ -30,7 +26,6 @@ import {
   useTopGainers,
   useTotalVolume24hCandles,
 } from '../../lib/hooks/use-markets-stats';
-import { useTotalValueLocked } from '../../lib/hooks/use-total-volume-locked';
 import uniq from 'lodash/uniq';
 import trim from 'lodash/trim';
 import flatten from 'lodash/flatten';
@@ -63,29 +58,27 @@ export const MarketsPage = () => {
   const { data } = useMarkets();
   const allMarkets = Array.from(data?.values() || []);
 
-  console.log(allMarkets);
+  const topGainers = useTopGainers(allMarkets);
+  const newListings = useNewListings(allMarkets);
+  const totalVolume24hCandles = useTotalVolume24hCandles(allMarkets);
 
-  // const topGainers = useTopGainers(allMarkets);
-  // const newListings = useNewListings(allMarkets);
-  // const totalVolume24hCandles = useTotalVolume24hCandles(allMarkets);
-
-  // const totalVolumeSparkline = (
-  //   <Sparkline width={80} height={20} data={totalVolume24hCandles} />
-  // );
+  const totalVolumeSparkline = (
+    <Sparkline width={80} height={20} data={totalVolume24hCandles} />
+  );
   // const { tvl, loading: tvlLoading, error: tvlError } = useTotalValueLocked();
-  //
-  // const totalVolume24h = allMarkets?.reduce((acc, market) => {
-  //   return (
-  //     acc +
-  //     Number(
-  //       calcCandleVolumePrice(
-  //         market.candles || [],
-  //         market.decimalPlaces,
-  //         market.positionDecimalPlaces
-  //       )
-  //     )
-  //   );
-  // }, 0);
+
+  const totalVolume24h = allMarkets?.reduce((acc, market) => {
+    return (
+      acc +
+      Number(
+        calcCandleVolumePrice(
+          compact(market.candlesConnection?.edges).map((e) => e.node) || [],
+          market.decimalPlaces,
+          market.positionDecimalPlaces
+        )
+      )
+    );
+  }, 0);
 
   const marketAssets = uniqBy(
     compact(
@@ -105,7 +98,7 @@ export const MarketsPage = () => {
     <ErrorBoundary feature="rewards">
       <TinyScroll>
         <div className="md:max-w-7xl my-4 mx-auto flex flex-col gap-4 p-4">
-          {/* <div className="grid auto-rows-min grid-cols-3 lg:grid-cols-5 xl:grid-cols-3 gap-3">
+          <div className="grid auto-rows-min grid-cols-3 lg:grid-cols-5 xl:grid-cols-3 gap-3">
             <div className="flex flex-col gap-2 col-span-full lg:col-span-1">
               <Card key="24h-vol" className="flex grow">
                 <div className="flex flex-col h-full">
@@ -118,18 +111,6 @@ export const MarketsPage = () => {
                     )}
                     <div>{totalVolumeSparkline}</div>
                   </div>
-                </div>
-              </Card>
-              <Card
-                key="tvl"
-                className="flex grow"
-                loading={!tvl && tvlLoading}
-                title={t('TVL')}
-              >
-                <div className="flex flex-col h-full">
-                  {tvl && (
-                    <span className="text-xl">${formatNumber(tvl, 2)}</span>
-                  )}
                 </div>
               </Card>
             </div>
@@ -151,7 +132,7 @@ export const MarketsPage = () => {
                 <TopMarketList markets={newListings} />
               </div>
             </Card>
-          </div> */}
+          </div>
           <MarketTable
             markets={allMarkets}
             marketAssets={marketAssets}
