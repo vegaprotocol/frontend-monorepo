@@ -9,7 +9,7 @@ export const OrderbookContainer = ({ marketId }: { marketId: string }) => {
     <OrderbookManager
       marketId={marketId}
       onClick={(values) => {
-        ticketEventEmitter.emit('update', values);
+        ticketEventEmitter.update(values);
         setView(ViewType.Trade);
       }}
     />

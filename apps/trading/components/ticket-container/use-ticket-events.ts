@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 
-import { type FormFields } from './schemas';
 import { useForm } from './use-form';
 
 import { ticketEventEmitter } from '../../lib/ticket-event-emitter';
@@ -13,15 +12,19 @@ export const useTicketEvents = () => {
   const form = useForm();
 
   useEffect(() => {
-    ticketEventEmitter.on('update', (update: FormFields) => {
-      for (const f in update) {
-        const field = f as keyof FormFields;
-        form.setValue(field, update[field], { shouldValidate: true });
+    ticketEventEmitter.listen((fields) => {
+      for (const f in fields) {
+        const field = f as keyof typeof fields;
+        const value = fields[field];
+
+        if (value) {
+          form.setValue(field, value, { shouldValidate: true });
+        }
       }
     });
 
     return () => {
-      ticketEventEmitter.off('update');
+      ticketEventEmitter.unlisten();
     };
   }, [form]);
 };

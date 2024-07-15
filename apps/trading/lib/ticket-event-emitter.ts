@@ -1,2 +1,25 @@
 import { EventEmitter } from 'eventemitter3';
-export const ticketEventEmitter = new EventEmitter();
+
+type SettableFields = Partial<{ size: string; price: string }>;
+
+class TicketEventEmitter extends EventEmitter {
+  event = 'update';
+
+  constructor() {
+    super();
+  }
+
+  update(values: SettableFields) {
+    this.emit(this.event, values);
+  }
+
+  listen(callback: (values: SettableFields) => void) {
+    this.on(this.event, callback);
+  }
+
+  unlisten() {
+    this.off(this.event);
+  }
+}
+
+export const ticketEventEmitter = new TicketEventEmitter();

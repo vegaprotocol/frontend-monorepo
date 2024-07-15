@@ -21,7 +21,7 @@ export const TradesContainer = ({ marketId }: TradesContainerProps) => {
       marketId={marketId}
       gridProps={gridStoreCallbacks}
       onPriceClick={(price) => {
-        ticketEventEmitter.emit('update', { price });
+        ticketEventEmitter.update({ price });
       }}
     />
   );
