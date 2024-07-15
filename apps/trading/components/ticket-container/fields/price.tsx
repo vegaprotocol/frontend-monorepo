@@ -18,7 +18,7 @@ export const Price = ({ name = 'price' }: { name?: 'price' | 'ocoPrice' }) => {
         return (
           <TicketInput
             {...field}
-            value={field.value}
+            value={field.value || ''}
             label={
               <InputLabel
                 label={t('Price')}

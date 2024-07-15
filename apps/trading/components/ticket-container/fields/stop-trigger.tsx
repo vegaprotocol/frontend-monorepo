@@ -26,7 +26,7 @@ export const StopTrigger = ({
         return (
           <TicketInput
             {...field}
-            value={field.value}
+            value={field.value || ''}
             label={<InputLabel label={t('Trigger')} symbol={symbol} />}
           />
         );

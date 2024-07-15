@@ -18,7 +18,7 @@ export const StopSize = ({ name = 'size' }: { name?: 'size' | 'ocoSize' }) => {
           <TicketInput
             {...field}
             label={<SizeLabel />}
-            value={field.value}
+            value={field.value || ''}
             onChange={field.onChange}
           />
         );

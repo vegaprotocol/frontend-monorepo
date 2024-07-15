@@ -21,7 +21,7 @@ export const IcebergPeakSize = () => {
         return (
           <TicketInput
             {...field}
-            value={field.value}
+            value={field.value || ''}
             onChange={field.onChange}
             label={<InputLabel label={t('Peak size')} symbol={symbol} />}
           />

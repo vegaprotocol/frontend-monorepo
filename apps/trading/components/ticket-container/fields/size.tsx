@@ -22,7 +22,7 @@ export const Size = (props: { price?: BigNumber }) => {
           <TicketInput
             {...field}
             label={<SizeLabel />}
-            value={field.value}
+            value={field.value || ''}
             onChange={field.onChange}
             appendElement={
               <button

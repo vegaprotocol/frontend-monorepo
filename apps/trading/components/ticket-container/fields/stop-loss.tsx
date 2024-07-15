@@ -19,7 +19,7 @@ export const StopLoss = () => {
         return (
           <TicketInput
             {...field}
-            value={field.value}
+            value={field.value || ''}
             onChange={field.onChange}
             label={
               <InputLabel

@@ -25,7 +25,7 @@ export const TakeProfit = () => {
                 symbol={ticket.quoteAsset.symbol}
               />
             }
-            value={field.value}
+            value={field.value || ''}
             onChange={field.onChange}
           />
         );
