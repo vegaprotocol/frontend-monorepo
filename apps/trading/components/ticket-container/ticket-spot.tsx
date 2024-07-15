@@ -3,9 +3,13 @@ import {
   getQuoteAsset,
   type MarketInfo,
 } from '@vegaprotocol/markets';
-import { TicketMarket } from './ticket-spot/ticket-market';
-import { useTicketType } from './use-ticket-type';
 import { useAccountBalance, useMarginMode } from '@vegaprotocol/accounts';
+
+import { TicketMarket } from './ticket-spot/ticket-market';
+import { TicketLimit } from './ticket-spot/ticket-limit';
+import { TicketStopMarket } from './ticket-spot/ticket-stop-market';
+import { TicketStopLimit } from './ticket-spot/ticket-stop-limit';
+import { useTicketType } from './use-ticket-type';
 import { TicketContext } from './ticket-context';
 import { type TicketType } from './schemas';
 
@@ -60,15 +64,15 @@ export const TicketSpotSwitch = () => {
     }
 
     case 'limit': {
-      throw new Error('spot limit ticket not implemented');
+      return <TicketLimit {...props} />;
     }
 
     case 'stopMarket': {
-      throw new Error('spot stop market ticket not implemented');
+      return <TicketStopMarket {...props} />;
     }
 
     case 'stopLimit': {
-      throw new Error('spot stop limit ticket not implemented');
+      return <TicketStopLimit {...props} />;
     }
 
     default: {
