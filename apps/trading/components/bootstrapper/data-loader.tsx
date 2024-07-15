@@ -1,5 +1,4 @@
-import { useAssetsMapProvider } from '@vegaprotocol/assets';
-import { useMarketsMapProvider } from '@vegaprotocol/markets';
+import { useMarkets, useAssets } from '@vegaprotocol/data-provider';
 import { useNetworkParams } from '@vegaprotocol/network-parameters';
 import type { ReactNode } from 'react';
 
@@ -17,28 +16,21 @@ export const DataLoader = ({
 }) => {
   // Query all network params, markets and assets, for quick
   // access throughout the app
-  const {
-    params,
-    error: errorParams,
-    loading: loadingParams,
-  } = useNetworkParams();
-  const { data: markets, error, loading } = useMarketsMapProvider();
-  const {
-    data: assets,
-    error: errorAssets,
-    loading: loadingAssets,
-  } = useAssetsMapProvider();
+  const { error: errorParams, loading: loadingParams } = useNetworkParams();
 
-  if (loading || loadingAssets || loadingParams) {
-    // eslint-disable-next-line
+  const { status: statusAssets } = useAssets();
+  const { status: statusMarkets } = useMarkets();
+
+  if (
+    loadingParams ||
+    [statusAssets, statusMarkets].some((s) => s === 'pending')
+  ) {
     return <>{skeleton}</>;
   }
 
-  if (error || errorAssets || errorParams || !markets || !assets || !params) {
-    // eslint-disable-next-line react/jsx-no-useless-fragment
+  if (errorParams || [statusAssets, statusMarkets].some((s) => s === 'error')) {
     return <>{failure}</>;
   }
 
-  // eslint-disable-next-line react/jsx-no-useless-fragment
   return <>{children}</>;
 };

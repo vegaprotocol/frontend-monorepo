@@ -1,20 +1,3 @@
-fragment PriceConfigurationV2 on CompositePriceConfiguration {
-  decayWeight
-  decayPower
-  cashAmount
-  SourceWeights
-  SourceStalenessTolerance
-  CompositePriceType
-  dataSourcesSpec {
-    sourceType {
-      ...SourceType
-    }
-  }
-  dataSourcesSpecBinding {
-    priceSourceProperty
-  }
-}
-
 fragment Candle on Candle {
   periodStart
   high
@@ -69,63 +52,6 @@ fragment MarketDataStaticV2 on MarketData {
   lastTradedPrice
 }
 
-fragment FutureV2 on Future {
-  quoteName
-  settlementAsset {
-    id
-    symbol
-    name
-    decimals
-    quantum
-  }
-  dataSourceSpecForSettlementData {
-    id
-  }
-  dataSourceSpecForTradingTermination {
-    id
-  }
-  dataSourceSpecBinding {
-    settlementDataProperty
-    tradingTerminationProperty
-  }
-}
-
-fragment PerpetualV2 on Perpetual {
-  quoteName
-  fundingRateScalingFactor
-  fundingRateLowerBound
-  fundingRateUpperBound
-  settlementAsset {
-    id
-    symbol
-    name
-    decimals
-    quantum
-  }
-  dataSourceSpecForSettlementData {
-    id
-  }
-  dataSourceSpecForSettlementSchedule {
-    id
-  }
-  dataSourceSpecBinding {
-    settlementDataProperty
-    settlementScheduleProperty
-  }
-  internalCompositePriceConfig {
-    ...PriceConfiguration
-  }
-}
-
-fragment SpotV2 on Spot {
-  baseAsset {
-    ...AssetListFields
-  }
-  quoteAsset {
-    ...AssetListFields
-  }
-}
-
 fragment MarketFieldsV2 on Market {
   id
   decimalPlaces
@@ -154,13 +80,13 @@ fragment MarketFieldsV2 on Market {
       }
       product {
         ... on Future {
-          ...FutureV2
+          ...Future
         }
         ... on Perpetual {
-          ...PerpetualV2
+          ...Perpetual
         }
         ... on Spot {
-          ...SpotV2
+          ...Spot
         }
       }
     }

@@ -1,6 +1,5 @@
 import type * as Types from '@vegaprotocol/types';
 import {
-  type MarketMaybeWithCandles,
   isFuture,
   isPerpetual,
   isSpot,
@@ -10,6 +9,7 @@ import {
   retrieveAssets,
   calcTradedFactor,
 } from '@vegaprotocol/markets';
+import { type Market } from '@vegaprotocol/data-provider';
 import { create } from 'zustand';
 import intersection from 'lodash/intersection';
 import orderBy from 'lodash/orderBy';
@@ -76,10 +76,7 @@ export const useMarketFiltersStore = create<Filters & Actions>()((set) => ({
   reset: () => set(omit(DEFAULT_FILTERS, 'sortOrder')),
 }));
 
-const isOfTypes = (
-  market: MarketMaybeWithCandles,
-  marketTypes: IMarketType[]
-) => {
+const isOfTypes = (market: Market, marketTypes: IMarketType[]) => {
   let marketType: IMarketType | undefined = undefined;
   const product = market?.tradableInstrument?.instrument?.product;
   if (product) {
@@ -90,10 +87,7 @@ const isOfTypes = (
   return marketType && marketTypes.includes(marketType);
 };
 
-const isOfStates = (
-  market: MarketMaybeWithCandles,
-  marketStates: IMarketState[]
-) => {
+const isOfStates = (market: Market, marketStates: IMarketState[]) => {
   let states: Types.MarketState[] = [];
   if (marketStates.includes('OPEN')) {
     states = [...states, ...OPEN_MARKETS_STATES];
@@ -109,7 +103,7 @@ const isOfStates = (
   return marketState && states.includes(marketState);
 };
 
-const isOfAssets = (market: MarketMaybeWithCandles, assets: string[]) => {
+const isOfAssets = (market: Market, assets: string[]) => {
   const product = market.tradableInstrument?.instrument?.product;
   if (product) {
     const marketAssets = retrieveAssets(product).map((a) => a.id);
@@ -118,17 +112,14 @@ const isOfAssets = (market: MarketMaybeWithCandles, assets: string[]) => {
   return false;
 };
 
-const nameOrCodeMatches = (market: MarketMaybeWithCandles, term: string) => {
+const nameOrCodeMatches = (market: Market, term: string) => {
   const name = market.tradableInstrument.instrument.name;
   const code = market.tradableInstrument.instrument.code;
   const re = new RegExp(term, 'ig');
   return re.test(name) || re.test(code);
 };
 
-export const filterMarket = (
-  market: MarketMaybeWithCandles,
-  filters: Partial<Filters>
-) => {
+export const filterMarket = (market: Market, filters: Partial<Filters>) => {
   let passes = true;
   const { marketTypes, marketStates, assets, searchTerm } = filters;
 
@@ -167,15 +158,10 @@ export const filterMarket = (
   return passes;
 };
 
-export const filterMarkets = (
-  markets: MarketMaybeWithCandles[],
-  filters: Partial<Filters>
-) => markets.filter((m) => filterMarket(m, filters));
+export const filterMarkets = (markets: Market[], filters: Partial<Filters>) =>
+  markets.filter((m) => filterMarket(m, filters));
 
-export const orderMarkets = (
-  markets: MarketMaybeWithCandles[],
-  sortOrder?: ISortOption
-) => {
+export const orderMarkets = (markets: Market[], sortOrder?: ISortOption) => {
   if (!sortOrder) return markets;
 
   switch (sortOrder) {
@@ -186,10 +172,12 @@ export const orderMarkets = (
         markets,
         [
           (m) => {
-            if (!m.candles?.length) return 0;
+            if (!m.candlesConnection?.edges?.length) return 0;
             return Number(
               priceChangePercentage(
-                m.candles.filter((c) => c.close !== '').map((c) => c.close)
+                m.candlesConnection.edges
+                  .filter((c) => c?.node.close !== '')
+                  .map((c) => c!.node.close)
               )
             );
           },
@@ -205,7 +193,9 @@ export const orderMarkets = (
       );
     }
     case SortOption.TOP_TRADED: {
-      return orderBy(markets, [(m) => calcTradedFactor(m)], ['desc']);
+      return markets;
+      // TODO: fix me
+      // return orderBy(markets, [(m) => calcTradedFactor(m)], ['desc']);
     }
   }
 };

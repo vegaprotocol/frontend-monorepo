@@ -2,7 +2,6 @@ import type { CSSProperties } from 'react';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
-import type { MarketMaybeWithDataAndCandles } from '@vegaprotocol/markets';
 import { calcCandleVolume, getAsset } from '@vegaprotocol/markets';
 import { useCandles } from '@vegaprotocol/markets';
 import { useMarketDataUpdateSubscription } from '@vegaprotocol/markets';
@@ -12,6 +11,7 @@ import { EmblemByMarket } from '@vegaprotocol/emblem';
 import { useChainId } from '@vegaprotocol/wallet-react';
 import { MarketIcon } from '../../client-pages/markets/market-icon';
 import { MarketProductPill } from '@vegaprotocol/datagrid';
+import { type Market } from '@vegaprotocol/data-provider';
 
 export const MarketSelectorItem = ({
   market,
@@ -19,7 +19,7 @@ export const MarketSelectorItem = ({
   currentMarketId,
   onSelect,
 }: {
-  market: MarketMaybeWithDataAndCandles;
+  market: Market;
   style: CSSProperties;
   currentMarketId?: string;
   onSelect: (marketId: string) => void;
@@ -45,7 +45,7 @@ export const MarketSelectorItem = ({
   );
 };
 
-const MarketData = ({ market }: { market: MarketMaybeWithDataAndCandles }) => {
+const MarketData = ({ market }: { market: Market }) => {
   const t = useT();
   const { data } = useMarketDataUpdateSubscription({
     variables: {

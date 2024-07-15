@@ -1,10 +1,6 @@
 import compact from 'lodash/compact';
 import uniqBy from 'lodash/uniqBy';
-import {
-  marketsWithCandlesProvider,
-  retrieveAssets,
-  type MarketMaybeWithDataAndCandles,
-} from '@vegaprotocol/markets';
+import { retrieveAssets } from '@vegaprotocol/markets';
 import {
   TradingInput,
   TinyScroll,
@@ -12,7 +8,7 @@ import {
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 import type { CSSProperties, ReactNode } from 'react';
-import { useCallback, useMemo, useRef, useEffect } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 import { FixedSizeList } from 'react-window';
 import { ProductSelector } from './product-selector';
 import { AssetDropdown } from './asset-dropdown';
@@ -28,9 +24,7 @@ import {
   orderMarkets,
   DEFAULT_FILTERS,
 } from '../../lib/hooks/use-market-filters';
-import { useDataProvider } from '@vegaprotocol/data-provider';
-import { useYesterday } from '@vegaprotocol/react-helpers';
-import { Interval } from '@vegaprotocol/types';
+import { type Market, useMarkets } from '@vegaprotocol/data-provider';
 import uniq from 'lodash/uniq';
 import { FilterSummary } from './filter-summary';
 
@@ -71,16 +65,11 @@ export const MarketSelector = ({
     reset: state.reset,
   }));
 
-  const yesterday = useYesterday();
-  const { data, loading, error, reload } = useDataProvider({
-    dataProvider: marketsWithCandlesProvider,
-    variables: {
-      since: new Date(yesterday).toISOString(),
-      interval: Interval.INTERVAL_I1H,
-    },
-  });
+  const { data, isLoading, error } = useMarkets();
+  const allMarkets = Array.from(data?.values() || []);
+
   const markets = orderMarkets(
-    filterMarkets(data || [], {
+    filterMarkets(allMarkets, {
       marketTypes,
       marketStates,
       assets,
@@ -88,21 +77,17 @@ export const MarketSelector = ({
     }),
     sortOrder
   );
-  const defaultMarkets = filterMarkets(data || [], DEFAULT_FILTERS);
+  const defaultMarkets = filterMarkets(allMarkets, DEFAULT_FILTERS);
   let filterSummary: ReactNode = undefined;
   if (markets.length != defaultMarkets.length) {
     const diff = defaultMarkets.length - markets.length;
     filterSummary = <FilterSummary diff={diff} resetFilters={reset} />;
   }
 
-  useEffect(() => {
-    reload();
-  }, [reload]);
-
   const marketAssets = uniqBy(
     compact(
       flatten(
-        data?.map((d) => {
+        allMarkets.map((d) => {
           const product = d.tradableInstrument?.instrument?.product;
           if (product) return retrieveAssets(product);
         })
@@ -163,7 +148,7 @@ export const MarketSelector = ({
       <div data-testid="market-selector-list">
         <MarketList
           data={markets}
-          loading={loading && !data}
+          loading={isLoading && !data}
           error={error}
           currentMarketId={currentMarketId}
           onSelect={onSelect}
@@ -192,8 +177,8 @@ const MarketList = ({
   noItems,
   filterSummary,
 }: {
-  data: MarketMaybeWithDataAndCandles[];
-  error: Error | undefined;
+  data: Market[];
+  error: Error | null;
   loading: boolean;
   currentMarketId?: string;
   onSelect: (marketId: string) => void;
@@ -259,7 +244,7 @@ const MarketList = ({
 };
 
 interface ListItemData {
-  data: MarketMaybeWithDataAndCandles[];
+  data: Market[];
   onSelect: (marketId: string) => void;
   currentMarketId?: string;
 }
