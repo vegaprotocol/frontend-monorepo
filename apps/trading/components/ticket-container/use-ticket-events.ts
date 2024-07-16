@@ -18,7 +18,7 @@ export const useTicketEvents = () => {
         const value = fields[field];
 
         if (value) {
-          form.setValue(field, value, { shouldValidate: true });
+          form.setValue(field, Number(value), { shouldValidate: true });
         }
       }
     });

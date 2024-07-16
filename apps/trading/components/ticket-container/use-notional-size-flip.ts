@@ -23,11 +23,11 @@ export const useNotionalSizeFlip = () => {
 
     if (values.sizeMode === 'contracts') {
       const val = utils.toNotional(BigNumber(values.size || '0'), price);
-      form.setValue('size', val.toString());
+      form.setValue('size', val.toNumber());
       form.setValue('sizeMode', 'notional');
     } else if (values.sizeMode === 'notional') {
       const val = utils.toSize(BigNumber(values.size || '0'), price);
-      form.setValue('size', val.toString());
+      form.setValue('size', val.toNumber());
       form.setValue('sizeMode', 'contracts');
     }
   };
