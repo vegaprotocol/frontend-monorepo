@@ -21,7 +21,6 @@ export const PriceInMarket = ({
   marketId,
   price,
   decimalSource = 'MARKET',
-  assetIcon = true,
 }: PriceInMarketProps) => {
   const { data } = useExplorerMarketQuery({
     variables: { id: marketId },

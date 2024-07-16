@@ -98,11 +98,11 @@ const Toggle = ({
       type="single"
       value={mode}
       className="inline-flex rounded bg-vega-clight-500 dark:bg-vega-cdark-500"
-      onValueChange={onValueChange}
     >
       <ToggleGroup.Item
         value={MarginMode.MARGIN_MODE_CROSS_MARGIN}
         className={itemClass}
+        onClick={() => onValueChange(MarginMode.MARGIN_MODE_CROSS_MARGIN)}
         data-testid="cross-margin"
       >
         {mode === MarginMode.MARGIN_MODE_CROSS_MARGIN && indicator}
@@ -111,6 +111,7 @@ const Toggle = ({
       <ToggleGroup.Item
         value={MarginMode.MARGIN_MODE_ISOLATED_MARGIN}
         className={itemClass}
+        onClick={() => onValueChange(MarginMode.MARGIN_MODE_ISOLATED_MARGIN)}
         data-testid="isolated-margin"
       >
         {mode === MarginMode.MARGIN_MODE_ISOLATED_MARGIN && indicator}

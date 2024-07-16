@@ -15,6 +15,7 @@ import {
   type MarketViewProposalsQueryVariables,
   type MarketViewLiveProposalsSubscriptionVariables,
   type SubProposalFragment,
+  type BatchproposalListFieldsFragment,
 } from './__generated__/Proposals';
 
 export type ProposalFragment =
@@ -25,11 +26,16 @@ export type ProposalFragments = Array<ProposalFragment>;
 const getData = (responseData: ProposalsListQuery | null) =>
   responseData?.proposalsConnection?.edges
     ?.filter((edge) => Boolean(edge?.proposalNode))
-    .map((edge) => edge?.proposalNode as ProposalListFieldsFragment) || null;
+    .map(
+      (edge) =>
+        edge?.proposalNode as
+          | ProposalListFieldsFragment
+          | BatchproposalListFieldsFragment
+    ) || null;
 
 export const proposalsDataProvider = makeDataProvider<
   ProposalsListQuery,
-  ProposalListFieldsFragment[],
+  Array<ProposalListFieldsFragment | BatchproposalListFieldsFragment>,
   never,
   never,
   ProposalsListQueryVariables

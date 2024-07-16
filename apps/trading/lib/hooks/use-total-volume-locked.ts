@@ -1,33 +1,59 @@
-import { removePaginationWrapper } from '@vegaprotocol/utils';
-import { useTotalValueLockedQuery } from './__generated__/TotalVolumeLocked';
-import flatten from 'lodash/flatten';
+import { useReadContracts } from 'wagmi';
+import compact from 'lodash/compact';
+import { erc20Abi } from 'viem';
+import { useEnabledAssets } from '@vegaprotocol/assets';
+import { isAssetTypeERC20 } from '@vegaprotocol/utils';
 import BigNumber from 'bignumber.js';
-import { useMemo } from 'react';
+import { useEnvironment } from '@vegaprotocol/environment';
+import { ASSET_POOL_ADDRESSES } from '@vegaprotocol/web3';
 
 export const useTotalValueLocked = () => {
-  const { data, loading, error } = useTotalValueLockedQuery({
-    context: {
-      isEnlargedTimeout: true,
-    },
-    fetchPolicy: 'cache-and-network',
-    errorPolicy: 'ignore',
-    pollInterval: 1000 * 60 * 60, // 1h - no need
+  const { VEGA_ENV } = useEnvironment();
+  const { data } = useEnabledAssets();
+
+  const assets = (data || [])
+    .filter(isAssetTypeERC20)
+    .filter((a) => a.symbol !== 'VEGA');
+
+  const addresses = ASSET_POOL_ADDRESSES[VEGA_ENV];
+
+  const contracts = assets.map((asset) => {
+    if (asset.source.__typename !== 'ERC20') return;
+
+    const chainId = Number(asset.source.chainId);
+    const assetPoolAddress = addresses[chainId];
+
+    if (!assetPoolAddress) return;
+
+    const config = {
+      abi: erc20Abi,
+      address: asset.source.contractAddress as `0x${string}`,
+      functionName: 'balanceOf',
+      args: [assetPoolAddress],
+      chainId,
+    };
+
+    return config;
   });
 
-  const value = useMemo(() => {
-    const parties = removePaginationWrapper(data?.partiesConnection?.edges);
-    const accounts = flatten(
-      parties.map((p) => removePaginationWrapper(p.accountsConnection?.edges))
-    );
-    const nonVegaAccounts = accounts.filter(
-      (a) => a.asset.symbol.toUpperCase() !== 'VEGA'
-    );
-    const balances = nonVegaAccounts.map((a) => {
-      const value = BigNumber(a.balance).dividedBy(BigNumber(a.asset.quantum));
-      return value;
-    });
-    return balances.reduce((all, v) => all.plus(v), BigNumber(0));
-  }, [data?.partiesConnection?.edges]);
+  const queryResult = useReadContracts({
+    contracts: compact(contracts),
+    query: {
+      enabled: Boolean(contracts.length),
+    },
+  });
 
-  return { tvl: value, loading, error };
+  const result = (queryResult.data || []).map((res, i) => {
+    const asset = assets[i];
+    const rawValue = res.result ? res.result.toString() : '0';
+    const val = BigNumber(rawValue).div(asset.quantum);
+    return val;
+  });
+
+  const tvl = BigNumber.sum.apply(null, result);
+
+  return {
+    ...queryResult,
+    data: tvl,
+  };
 };
