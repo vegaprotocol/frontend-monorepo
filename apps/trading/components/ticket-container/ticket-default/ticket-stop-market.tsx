@@ -60,6 +60,7 @@ export const TicketStopMarket = (props: FormProps) => {
   const tif = form.watch('timeInForce');
   const isPersistent = !NON_PERSISTENT_TIF_OPTIONS.includes(tif);
   const oco = form.watch('oco');
+  const stopExpiry = form.watch('stopExpiry');
 
   const { data: markPrice } = useMarkPrice(ticket.market.id);
   const price =
@@ -108,12 +109,21 @@ export const TicketStopMarket = (props: FormProps) => {
               <Fields.ReduceOnly disabled />
             )}
             <Fields.OCO />
+            <Fields.StopExpiry />
           </FormGridCol>
           <FormGridCol>
             <Fields.TimeInForce />
             {tif === OrderTimeInForce.TIME_IN_FORCE_GTT && <Fields.ExpiresAt />}
           </FormGridCol>
         </FormGrid>
+        {stopExpiry && (
+          <div className="flex flex-col gap-1">
+            <FieldControls>
+              <Fields.StopExpiryStrategy />
+            </FieldControls>
+            <Fields.StopExpiresAt />
+          </div>
+        )}
         {oco && (
           <>
             <hr className="border-default my-4" />

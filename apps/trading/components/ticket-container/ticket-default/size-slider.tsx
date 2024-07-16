@@ -50,10 +50,10 @@ export const SizeSlider = ({ price }: { price: BigNumber | undefined }) => {
         });
 
         if (fields.sizeMode === 'contracts') {
-          form.setValue('size', size.toString(), { shouldValidate: true });
+          form.setValue('size', size.toNumber(), { shouldValidate: true });
         } else if (fields.sizeMode === 'notional') {
           const notional = utils.toNotional(size, price);
-          form.setValue('size', notional.toString(), { shouldValidate: true });
+          form.setValue('size', notional.toNumber(), { shouldValidate: true });
         }
       }}
     />

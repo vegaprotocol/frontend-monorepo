@@ -18,13 +18,14 @@ import { type FormFieldsStopLimit, createStopLimitSchema } from '../schemas';
 import { TicketEventUpdater } from '../ticket-events';
 import { TicketTypeSelect } from '../ticket-type-select';
 import { type FormProps } from './ticket';
-import { NON_PERSISTENT_TIF_OPTIONS } from '../constants';
 import { useTicketContext } from '../ticket-context';
 import { SubmitButton } from '../elements/submit-button';
 import { useT } from '../../../lib/use-t';
 
 import * as Fields from '../fields';
 import { FeedbackStop } from './feedback-stop';
+import { SizeSliderStop } from './size-slider-stop';
+import BigNumber from 'bignumber.js';
 
 export const TicketStopLimit = (props: FormProps) => {
   const t = useT();
@@ -56,8 +57,8 @@ export const TicketStopLimit = (props: FormProps) => {
   const size = form.watch('size');
   const price = form.watch('price');
   const tif = form.watch('timeInForce');
-  const isPersistent = !NON_PERSISTENT_TIF_OPTIONS.includes(tif);
   const oco = form.watch('oco');
+  const stopExpiry = form.watch('stopExpiry');
 
   return (
     <FormProvider {...form}>
@@ -92,20 +93,26 @@ export const TicketStopLimit = (props: FormProps) => {
           </FieldControls>
           <Fields.StopSize />
         </div>
+        <SizeSliderStop price={BigNumber(price || '0')} />
         <FormGrid>
           <FormGridCol>
-            {isPersistent ? (
-              <Fields.PostOnly />
-            ) : (
-              <Fields.ReduceOnly disabled />
-            )}
+            <Fields.ReduceOnly disabled />
             <Fields.OCO />
+            <Fields.StopExpiry />
           </FormGridCol>
           <FormGridCol>
             <Fields.TimeInForce />
             {tif === OrderTimeInForce.TIME_IN_FORCE_GTT && <Fields.ExpiresAt />}
           </FormGridCol>
         </FormGrid>
+        {stopExpiry && (
+          <div className="flex flex-col gap-1">
+            <FieldControls>
+              <Fields.StopExpiryStrategy />
+            </FieldControls>
+            <Fields.StopExpiresAt />
+          </div>
+        )}
         {oco && (
           <>
             <hr className="border-default my-4" />

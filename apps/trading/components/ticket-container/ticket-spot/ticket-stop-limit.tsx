@@ -24,6 +24,8 @@ import { SubmitButton } from '../elements/submit-button';
 import { useT } from '../../../lib/use-t';
 
 import * as Fields from '../fields';
+import { SizeSliderStop } from './size-slider-stop';
+import BigNumber from 'bignumber.js';
 
 export const TicketStopLimit = (props: FormProps) => {
   const t = useT();
@@ -91,6 +93,7 @@ export const TicketStopLimit = (props: FormProps) => {
           </FieldControls>
           <Fields.StopSize />
         </div>
+        <SizeSliderStop price={BigNumber(price || '0')} />
         <FormGrid>
           <FormGridCol>
             {isPersistent ? <Fields.PostOnly /> : <Fields.ReduceOnly />}

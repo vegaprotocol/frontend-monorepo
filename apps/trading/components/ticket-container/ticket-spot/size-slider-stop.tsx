@@ -1,27 +1,20 @@
 import type BigNumber from 'bignumber.js';
+import { useState } from 'react';
 
-import { useActiveOrders } from '@vegaprotocol/orders';
-import { useVegaWallet } from '@vegaprotocol/wallet-react';
-import { useOpenVolume } from '@vegaprotocol/positions';
 import { StopOrderSizeOverrideSetting } from '@vegaprotocol/types';
 
 import { Slider } from '../elements/slider';
 import { useTicketContext } from '../ticket-context';
 
-import * as defaultUtils from '../ticket-default/utils';
+import * as spotUtils from './utils';
+import * as utils from '../utils';
+
 import { useForm } from '../use-form';
-import { useState } from 'react';
 
 export const SizeSliderStop = ({ price }: { price: BigNumber | undefined }) => {
   const [pct, setPct] = useState([0]);
   const form = useForm();
-  const ticket = useTicketContext('default');
-  const { pubKey } = useVegaWallet();
-  const { data: orders } = useActiveOrders(pubKey, ticket.market.id);
-  const { openVolume } = useOpenVolume(pubKey, ticket.market.id) || {
-    openVolume: '0',
-    averageEntryPrice: '0',
-  };
+  const ticket = useTicketContext('spot');
 
   const ticketType = form.watch('ticketType');
   const sizeOverride = form.watch('sizeOverride');
@@ -51,16 +44,21 @@ export const SizeSliderStop = ({ price }: { price: BigNumber | undefined }) => {
           sizeOverride ===
           StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_NONE
         ) {
-          const size = defaultUtils.calcSizeByPct({
-            pct: value[0],
-            openVolume,
+          const max = spotUtils.calcMaxSize({
+            side: fields.side,
             price,
             ticket,
-            fields,
-            orders: orders || [],
           });
 
-          form.setValue('size', size.toNumber(), { shouldValidate: true });
+          const size = utils.toPercentOf(value[0], max);
+          const sizeRounded = utils.roundToPositionDecimals(
+            size,
+            ticket.market.positionDecimalPlaces
+          );
+
+          form.setValue('size', sizeRounded.toNumber(), {
+            shouldValidate: true,
+          });
         }
 
         if (

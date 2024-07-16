@@ -24,6 +24,9 @@ import { SubmitButton } from '../elements/submit-button';
 import { useT } from '../../../lib/use-t';
 
 import * as Fields from '../fields';
+import { SizeSliderStop } from './size-slider-stop';
+import { useMarkPrice } from '@vegaprotocol/markets';
+import { toBigNum } from '@vegaprotocol/utils';
 
 export const TicketStopMarket = (props: FormProps) => {
   const t = useT();
@@ -55,6 +58,12 @@ export const TicketStopMarket = (props: FormProps) => {
   const tif = form.watch('timeInForce');
   const isPersistent = !NON_PERSISTENT_TIF_OPTIONS.includes(tif);
   const oco = form.watch('oco');
+
+  const { data: markPrice } = useMarkPrice(ticket.market.id);
+  const price =
+    markPrice && markPrice !== null
+      ? toBigNum(markPrice, ticket.market.decimalPlaces)
+      : undefined;
 
   return (
     <FormProvider {...form}>
@@ -88,6 +97,7 @@ export const TicketStopMarket = (props: FormProps) => {
           </FieldControls>
           <Fields.StopSize />
         </div>
+        <SizeSliderStop price={price} />
         <FormGrid>
           <FormGridCol>
             {isPersistent ? <Fields.PostOnly /> : <Fields.ReduceOnly />}

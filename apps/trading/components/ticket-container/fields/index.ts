@@ -18,4 +18,7 @@ export { StopTriggerType } from './stop-trigger-type';
 export { StopTriggerPrice } from './stop-trigger-price';
 export { StopSizeOverride } from './stop-size-override';
 export { StopSize } from './stop-size';
+export { StopExpiry } from './stop-expiry';
+export { StopExpiresAt } from './stop-expires-at';
+export { StopExpiryStrategy } from './stop-expiry-strategy';
 export { OCO } from './oco';

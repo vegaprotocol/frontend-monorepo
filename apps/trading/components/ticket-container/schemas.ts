@@ -5,9 +5,10 @@ import {
   Side,
   StopOrderTriggerDirection,
   StopOrderSizeOverrideSetting,
+  StopOrderExpiryStrategy,
 } from '@vegaprotocol/types';
 import { isBefore } from 'date-fns';
-import { type MarketInfo } from '@vegaprotocol/markets';
+import { getProductType, type MarketInfo } from '@vegaprotocol/markets';
 import { determinePriceStep, determineSizeStep } from '@vegaprotocol/utils';
 
 export const createMarketSchema = (market: MarketInfo) => {
@@ -36,6 +37,7 @@ export const createMarketSchema = (market: MarketInfo) => {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message: 'Only FOK and IOC orders permitted',
+          path: ['timeInForce'],
         });
       }
 
@@ -86,6 +88,7 @@ export const createLimitSchema = (market: MarketInfo) => {
           ctx.addIssue({
             code: z.ZodIssueCode.invalid_date,
             message: 'GTT requires a expiry date',
+            path: ['expiresAt'],
             fatal: true,
           });
 
@@ -95,7 +98,8 @@ export const createLimitSchema = (market: MarketInfo) => {
         if (isBefore(val.expiresAt, new Date())) {
           ctx.addIssue({
             code: z.ZodIssueCode.invalid_date,
-            message: 'GTT requires a expiry date',
+            message: 'GTT must be in the future',
+            path: ['expiresAt'],
           });
         }
       }
@@ -104,6 +108,7 @@ export const createLimitSchema = (market: MarketInfo) => {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message: 'Provide a take profit price',
+          path: ['takeProfit'],
         });
       }
 
@@ -111,6 +116,7 @@ export const createLimitSchema = (market: MarketInfo) => {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message: 'Provide a stop loss price',
+          path: ['stopLoss'],
         });
       }
 
@@ -118,6 +124,7 @@ export const createLimitSchema = (market: MarketInfo) => {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message: 'Provide a peak size',
+          path: ['icebergPeakSize'],
         });
       }
 
@@ -125,79 +132,152 @@ export const createLimitSchema = (market: MarketInfo) => {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message: 'Provide a min visible size',
+          path: ['icebergMinVisibleSize'],
         });
       }
     });
 };
 
 export const createStopLimitSchema = (market: MarketInfo) => {
+  const type = getProductType(market);
   const sizeStep = determineSizeStep(market);
   const priceStep = determinePriceStep(market);
 
-  return z.object({
-    ticketType: z.literal('stopLimit'),
-    type: z.literal(OrderType.TYPE_LIMIT),
-    side: z.nativeEnum(Side),
-    triggerDirection: z.nativeEnum(StopOrderTriggerDirection),
-    triggerType: z.enum(['price', 'trailingPercentOffset']),
-    triggerPrice: z.coerce.number(),
-    price: z.coerce.number().min(Number(priceStep)).step(Number(priceStep)),
-    sizeOverride: z.nativeEnum(StopOrderSizeOverrideSetting),
-    size: z.coerce.number().min(Number(sizeStep)).step(Number(sizeStep)),
-    timeInForce: z.nativeEnum(OrderTimeInForce),
-    expiresAt: z.date().optional(),
-    reduceOnly: z.boolean(),
-    postOnly: z.boolean(),
-    oco: z.boolean(),
-    ocoTriggerDirection: z.nativeEnum(StopOrderTriggerDirection),
-    ocoTriggerType: z.enum(['price', 'trailingPercentOffset']),
-    ocoTriggerPrice: z.coerce.number().optional(),
-    ocoSizeOverride: z.nativeEnum(StopOrderSizeOverrideSetting),
-    ocoSize: z.coerce
-      .number()
-      .min(Number(sizeStep))
-      .step(Number(sizeStep))
-      .optional(),
-    ocoPrice: z.coerce
-      .number()
-      .min(Number(priceStep))
-      .step(Number(priceStep))
-      .optional(),
-  });
+  return z
+    .object({
+      ticketType: z.literal('stopLimit'),
+      type: z.literal(OrderType.TYPE_LIMIT),
+      side: z.nativeEnum(Side),
+      triggerDirection: z.nativeEnum(StopOrderTriggerDirection),
+      triggerType: z.enum(['price', 'trailingPercentOffset']),
+      triggerPrice: z.coerce.number(),
+      price: z.coerce.number().min(Number(priceStep)).step(Number(priceStep)),
+      sizeOverride: z.nativeEnum(StopOrderSizeOverrideSetting),
+      size: z.coerce.number().min(Number(sizeStep)).step(Number(sizeStep)),
+      timeInForce: z.nativeEnum(OrderTimeInForce),
+      expiresAt: z.date().optional(),
+      stopExpiry: z.boolean(),
+      stopExpiryStrategy: z.nativeEnum(StopOrderExpiryStrategy),
+      stopExpiresAt: z.date().optional(),
+      reduceOnly: z.boolean(),
+      postOnly: z.boolean(),
+      oco: z.boolean(),
+      ocoTriggerDirection: z.nativeEnum(StopOrderTriggerDirection),
+      ocoTriggerType: z.enum(['price', 'trailingPercentOffset']),
+      ocoTriggerPrice: z.coerce.number().optional(),
+      ocoSizeOverride: z.nativeEnum(StopOrderSizeOverrideSetting),
+      ocoSize: z.coerce
+        .number()
+        .min(Number(sizeStep))
+        .step(Number(sizeStep))
+        .optional(),
+      ocoPrice: z.coerce
+        .number()
+        .min(Number(priceStep))
+        .step(Number(priceStep))
+        .optional(),
+    })
+    .superRefine((val, ctx) => {
+      if (val.oco && !val.ocoTriggerPrice) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Provide a OCO trigger price',
+          path: ['ocoTriggerPrice'],
+        });
+      }
+
+      if (val.oco && !val.ocoSize) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Provide a OCO size',
+          path: ['ocoSize'],
+        });
+      }
+
+      if (val.oco && !val.ocoPrice) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Provide a OCO price',
+          path: ['ocoPrice'],
+        });
+      }
+
+      if (type !== 'Spot') {
+        if (!val.reduceOnly) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: 'Stop orders on non spot markets must be reduce only',
+            path: ['reduceOnly'],
+          });
+        }
+      }
+    });
 };
 
 export const createStopMarketSchema = (market: MarketInfo) => {
+  const type = getProductType(market);
   const sizeStep = determineSizeStep(market);
   const priceStep = determinePriceStep(market);
 
-  return z.object({
-    ticketType: z.literal('stopMarket'),
-    type: z.literal(OrderType.TYPE_MARKET),
-    side: z.nativeEnum(Side),
-    triggerDirection: z.nativeEnum(StopOrderTriggerDirection),
-    triggerType: z.enum(['price', 'trailingPercentOffset']),
-    triggerPrice: z.coerce.number(),
-    sizeOverride: z.nativeEnum(StopOrderSizeOverrideSetting),
-    size: z.coerce.number().min(Number(sizeStep)).step(Number(sizeStep)),
-    timeInForce: z.nativeEnum(OrderTimeInForce),
-    expiresAt: z.date().optional(),
-    reduceOnly: z.boolean(),
-    oco: z.boolean(),
-    ocoTriggerDirection: z.nativeEnum(StopOrderTriggerDirection),
-    ocoTriggerType: z.enum(['price', 'trailingPercentOffset']),
-    ocoTriggerPrice: z.coerce.number().optional(),
-    ocoSizeOverride: z.nativeEnum(StopOrderSizeOverrideSetting),
-    ocoSize: z.coerce
-      .number()
-      .min(Number(sizeStep))
-      .step(Number(sizeStep))
-      .optional(),
-    ocoPrice: z.coerce
-      .number()
-      .min(Number(priceStep))
-      .step(Number(priceStep))
-      .optional(),
-  });
+  return z
+    .object({
+      ticketType: z.literal('stopMarket'),
+      type: z.literal(OrderType.TYPE_MARKET),
+      side: z.nativeEnum(Side),
+      triggerDirection: z.nativeEnum(StopOrderTriggerDirection),
+      triggerType: z.enum(['price', 'trailingPercentOffset']),
+      triggerPrice: z.coerce.number(),
+      sizeOverride: z.nativeEnum(StopOrderSizeOverrideSetting),
+      size: z.coerce.number().min(Number(sizeStep)).step(Number(sizeStep)),
+      timeInForce: z.nativeEnum(OrderTimeInForce),
+      expiresAt: z.date().optional(),
+      stopExpiry: z.boolean(),
+      stopExpiryStrategy: z.nativeEnum(StopOrderExpiryStrategy),
+      stopExpiresAt: z.date().optional(),
+      reduceOnly: z.boolean(),
+      oco: z.boolean(),
+      ocoTriggerDirection: z.nativeEnum(StopOrderTriggerDirection),
+      ocoTriggerType: z.enum(['price', 'trailingPercentOffset']),
+      ocoTriggerPrice: z.coerce.number().optional(),
+      ocoSizeOverride: z.nativeEnum(StopOrderSizeOverrideSetting),
+      ocoSize: z.coerce
+        .number()
+        .min(Number(sizeStep))
+        .step(Number(sizeStep))
+        .optional(),
+      ocoPrice: z.coerce
+        .number()
+        .min(Number(priceStep))
+        .step(Number(priceStep))
+        .optional(),
+    })
+    .superRefine((val, ctx) => {
+      if (val.oco && !val.ocoTriggerPrice) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Provide a OCO trigger price',
+          path: ['ocoTriggerPrice'],
+        });
+      }
+
+      if (val.oco && !val.ocoSize) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Provide a OCO size',
+          path: ['ocoSize'],
+        });
+      }
+
+      if (type !== 'Spot') {
+        if (!val.reduceOnly) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: 'Stop orders on non spot markets must be reduce only',
+            path: ['reduceOnly'],
+          });
+        }
+      }
+    });
 };
 
 export type FormFieldsMarket = z.infer<ReturnType<typeof createMarketSchema>>;

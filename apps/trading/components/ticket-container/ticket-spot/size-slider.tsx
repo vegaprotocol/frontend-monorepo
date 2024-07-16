@@ -42,14 +42,14 @@ export const SizeSlider = ({ price }: { price: BigNumber | undefined }) => {
         );
 
         if (fields.sizeMode === 'contracts') {
-          form.setValue('size', sizeRounded.toString(), {
+          form.setValue('size', sizeRounded.toNumber(), {
             shouldValidate: true,
           });
         } else if (fields.sizeMode === 'notional') {
           // if in notional mode convert the max size into a notional price
           const notional = utils.toNotional(sizeRounded, price);
 
-          form.setValue('size', notional.toString(), { shouldValidate: true });
+          form.setValue('size', notional.toNumber(), { shouldValidate: true });
         }
       }}
     />
