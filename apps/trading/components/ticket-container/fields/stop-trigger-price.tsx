@@ -6,10 +6,10 @@ import { useTicketContext } from '../ticket-context';
 import { InputLabel } from '../elements/form';
 import { useForm } from '../use-form';
 
-export const StopTrigger = ({
-  name = 'trigger',
+export const StopTriggerPrice = ({
+  name = 'triggerPrice',
 }: {
-  name?: 'trigger' | 'ocoTrigger';
+  name?: 'triggerPrice' | 'ocoTriggerPrice';
 }) => {
   const t = useT();
   const ticket = useTicketContext();

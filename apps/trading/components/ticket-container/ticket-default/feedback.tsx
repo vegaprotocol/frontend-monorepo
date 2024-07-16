@@ -3,11 +3,15 @@ import { useTicketContext } from '../ticket-context';
 import { useT } from '../../../lib/use-t';
 import { useEstimatePosition } from '../use-estimate-position';
 import { toBigNum } from '@vegaprotocol/utils';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 
 export const Feedback = () => {
+  const { pubKey } = useVegaWallet();
   const ticket = useTicketContext('default');
 
   const { data } = useEstimatePosition();
+
+  if (!pubKey) return null;
 
   const requiredCollateral = toBigNum(
     data?.estimatePosition?.collateralIncreaseEstimate.bestCase || '0',

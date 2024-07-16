@@ -28,6 +28,7 @@ import { useT } from '../../../lib/use-t';
 import * as Fields from '../fields';
 
 import { SizeSliderStop } from './size-slider-stop';
+import { FeedbackStop } from './feedback-stop';
 
 export const TicketStopMarket = (props: FormProps) => {
   const t = useT();
@@ -44,7 +45,7 @@ export const TicketStopMarket = (props: FormProps) => {
       triggerDirection: StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE,
       triggerType: 'price',
       sizeOverride: StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_NONE,
-      timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
+      timeInForce: OrderTimeInForce.TIME_IN_FORCE_IOC,
       expiresAt: addDays(new Date(), 1),
       reduceOnly: false,
       oco: false,
@@ -90,7 +91,7 @@ export const TicketStopMarket = (props: FormProps) => {
             <Fields.StopTriggerDirection />
             <Fields.StopTriggerType />
           </FieldControls>
-          <Fields.StopTrigger />
+          <Fields.StopTriggerPrice />
         </div>
         <div className="flex flex-col gap-1">
           <FieldControls>
@@ -117,7 +118,7 @@ export const TicketStopMarket = (props: FormProps) => {
                 <Fields.StopTriggerDirection name="ocoTriggerDirection" />
                 <Fields.StopTriggerType name="ocoTriggerType" />
               </FieldControls>
-              <Fields.StopTrigger name="ocoTrigger" />
+              <Fields.StopTriggerPrice name="ocoTriggerPrice" />
             </div>
             <Fields.Price name="ocoPrice" />
             <div className="flex flex-col gap-1">
@@ -128,6 +129,7 @@ export const TicketStopMarket = (props: FormProps) => {
             </div>
           </>
         )}
+        <FeedbackStop />
         <SubmitButton
           text={t('Place limit stop order')}
           subLabel={`${size || 0} ${ticket.baseSymbol} @ market`}

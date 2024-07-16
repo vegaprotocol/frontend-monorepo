@@ -7,8 +7,10 @@ import { useMarkPrice } from '@vegaprotocol/markets';
 import { useT } from '../../../lib/use-t';
 import { useTicketContext } from '../ticket-context';
 import { useForm } from '../use-form';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 
 export const Feedback = () => {
+  const { pubKey } = useVegaWallet();
   const ticket = useTicketContext('spot');
   const form = useForm('limit');
 
@@ -19,6 +21,8 @@ export const Feedback = () => {
   const limitPrice = form.watch('price');
 
   const { data: markPrice } = useMarkPrice(ticket.market.id);
+
+  if (!pubKey) return null;
 
   const price =
     type === OrderType.TYPE_LIMIT

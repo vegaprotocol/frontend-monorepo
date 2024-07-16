@@ -82,7 +82,7 @@ export const TicketStopLimit = (props: FormProps) => {
             <Fields.StopTriggerDirection />
             <Fields.StopTriggerType />
           </FieldControls>
-          <Fields.StopTrigger />
+          <Fields.StopTriggerPrice />
         </div>
         <Fields.Price />
         <div className="flex flex-col gap-1">
@@ -109,7 +109,7 @@ export const TicketStopLimit = (props: FormProps) => {
                 <Fields.StopTriggerDirection name="ocoTriggerDirection" />
                 <Fields.StopTriggerType name="ocoTriggerType" />
               </FieldControls>
-              <Fields.StopTrigger name="ocoTrigger" />
+              <Fields.StopTriggerPrice name="ocoTriggerPrice" />
             </div>
             <Fields.Price name="ocoPrice" />
             <div className="flex flex-col gap-1">

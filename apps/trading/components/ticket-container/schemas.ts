@@ -140,7 +140,7 @@ export const createStopLimitSchema = (market: MarketInfo) => {
     side: z.nativeEnum(Side),
     triggerDirection: z.nativeEnum(StopOrderTriggerDirection),
     triggerType: z.enum(['price', 'trailingPercentOffset']),
-    trigger: z.coerce.number(),
+    triggerPrice: z.coerce.number(),
     price: z.coerce.number().min(Number(priceStep)).step(Number(priceStep)),
     sizeOverride: z.nativeEnum(StopOrderSizeOverrideSetting),
     size: z.coerce.number().min(Number(sizeStep)).step(Number(sizeStep)),
@@ -151,7 +151,7 @@ export const createStopLimitSchema = (market: MarketInfo) => {
     oco: z.boolean(),
     ocoTriggerDirection: z.nativeEnum(StopOrderTriggerDirection),
     ocoTriggerType: z.enum(['price', 'trailingPercentOffset']),
-    ocoTrigger: z.coerce.number(),
+    ocoTriggerPrice: z.coerce.number(),
     ocoSizeOverride: z.nativeEnum(StopOrderSizeOverrideSetting),
     ocoSize: z.coerce.number().min(Number(sizeStep)).step(Number(sizeStep)),
     ocoPrice: z.coerce.number().min(Number(priceStep)).step(Number(priceStep)),
@@ -168,7 +168,7 @@ export const createStopMarketSchema = (market: MarketInfo) => {
     side: z.nativeEnum(Side),
     triggerDirection: z.nativeEnum(StopOrderTriggerDirection),
     triggerType: z.enum(['price', 'trailingPercentOffset']),
-    trigger: z.coerce.number(),
+    triggerPrice: z.coerce.number(),
     sizeOverride: z.nativeEnum(StopOrderSizeOverrideSetting),
     size: z.coerce.number().min(Number(sizeStep)).step(Number(sizeStep)),
     timeInForce: z.nativeEnum(OrderTimeInForce),
@@ -177,10 +177,18 @@ export const createStopMarketSchema = (market: MarketInfo) => {
     oco: z.boolean(),
     ocoTriggerDirection: z.nativeEnum(StopOrderTriggerDirection),
     ocoTriggerType: z.enum(['price', 'trailingPercentOffset']),
-    ocoTrigger: z.coerce.number(),
+    ocoTriggerPrice: z.coerce.number().optional(),
     ocoSizeOverride: z.nativeEnum(StopOrderSizeOverrideSetting),
-    ocoSize: z.coerce.number().min(Number(sizeStep)).step(Number(sizeStep)),
-    ocoPrice: z.coerce.number().min(Number(priceStep)).step(Number(priceStep)),
+    ocoSize: z.coerce
+      .number()
+      .min(Number(sizeStep))
+      .step(Number(sizeStep))
+      .optional(),
+    ocoPrice: z.coerce
+      .number()
+      .min(Number(priceStep))
+      .step(Number(priceStep))
+      .optional(),
   });
 };
 
