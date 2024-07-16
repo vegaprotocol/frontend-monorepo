@@ -25,7 +25,9 @@ type ProposalTermsDialog = {
   content: unknown;
 };
 type ProposalsTableProps = {
-  data: ProposalListFieldsFragment[] | null;
+  data: Array<
+    ProposalListFieldsFragment | BatchproposalListFieldsFragment
+  > | null;
 };
 export const ProposalsTable = ({ data }: ProposalsTableProps) => {
   const tokenLink = useLinks(DApp.Governance);
