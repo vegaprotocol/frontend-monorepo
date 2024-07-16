@@ -13,10 +13,6 @@ import { TicketLimit } from './ticket-limit';
 import { TicketStopMarket } from './ticket-stop-market';
 import { TicketStopLimit } from './ticket-stop-limit';
 
-export type FormProps = {
-  onTypeChange: (value: TicketType) => void;
-};
-
 export const Ticket = ({ market }: { market: MarketInfo }) => {
   const quoteAsset = getQuoteAsset(market);
   const baseAsset = getBaseAsset(market);
@@ -49,6 +45,10 @@ export const Ticket = ({ market }: { market: MarketInfo }) => {
       <TicketSpotSwitch />
     </TicketContext.Provider>
   );
+};
+
+export type FormProps = {
+  onTypeChange: (value: TicketType) => void;
 };
 
 export const TicketSpotSwitch = () => {

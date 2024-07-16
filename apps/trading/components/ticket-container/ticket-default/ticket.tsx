@@ -19,13 +19,9 @@ import { TicketLimit } from './ticket-limit';
 import { TicketStopLimit } from './ticket-stop-limit';
 import { TicketStopMarket } from './ticket-stop-market';
 
-export type FormProps = {
-  onTypeChange: (value: TicketType) => void;
-};
-
 export const Ticket = ({ market }: { market: MarketInfo }) => {
-  const settlementAsset = market && getAsset(market);
-  const quoteAsset = market && getQuoteAsset(market);
+  const settlementAsset = getAsset(market);
+  const quoteAsset = getQuoteAsset(market);
 
   const marginAccount = useMarginAccountBalance(market.id);
   const generalAccount = useAccountBalance(settlementAsset?.id);
@@ -61,6 +57,10 @@ export const Ticket = ({ market }: { market: MarketInfo }) => {
       <TicketDefaultSwitch />
     </TicketContext.Provider>
   );
+};
+
+export type FormProps = {
+  onTypeChange: (value: TicketType) => void;
 };
 
 export const TicketDefaultSwitch = () => {

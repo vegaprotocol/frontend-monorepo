@@ -49,5 +49,9 @@ export class ErrorBoundary extends Component<
 
 const DefaultFallback = () => {
   const t = useT();
-  return <p className="text-xs">{t('Something went wrong')}</p>;
+  return (
+    <div className="p-2">
+      <p className="text-xs">{t('Something went wrong')}</p>
+    </div>
+  );
 };

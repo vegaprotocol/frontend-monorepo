@@ -28,6 +28,7 @@ import * as utils from '../utils';
 import * as Fields from '../fields';
 import * as Data from '../info';
 import { SizeSlider } from './size-slider';
+import { Feedback } from './feedback';
 
 export const TicketLimit = (props: FormProps) => {
   const ticket = useTicketContext('spot');
@@ -150,6 +151,7 @@ export const TicketLimit = (props: FormProps) => {
             </FormGridCol>
           </FormGrid>
         )}
+        <Feedback />
         <SubmitButton
           text={t('Place limit order')}
           subLabel={`${size || 0} ${ticket.baseAsset.symbol} @ ${price} ${

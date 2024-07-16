@@ -1,6 +1,6 @@
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 
-import { OrderType, type Side } from '@vegaprotocol/types';
+import { OrderType } from '@vegaprotocol/types';
 import {
   useEstimatePositionQuery,
   useOpenVolume,
@@ -16,8 +16,8 @@ export function useEstimatePosition() {
   const ticket = useTicketContext('default');
   const form = useForm();
 
-  const type = form.watch('type') as OrderType;
-  const side = form.watch('side') as Side;
+  const type = form.watch('type');
+  const side = form.watch('side');
   const price = form.watch('price');
   const size = form.watch('size');
 
@@ -39,14 +39,19 @@ export function useEstimatePosition() {
       }))
     : [];
 
-  const armedTicketOrder = {
-    isMarketOrder: type === OrderType.TYPE_MARKET,
-    side,
-    price: price ? removeDecimal(price, ticket.market.decimalPlaces) : '0',
-    remaining: size
-      ? removeDecimal(size, ticket.market.positionDecimalPlaces)
-      : '0',
-  };
+  let armedTicketOrder;
+
+  if (price && size) {
+    armedTicketOrder = {
+      isMarketOrder: type === OrderType.TYPE_MARKET,
+      side,
+      price: removeDecimal(price.toString(), ticket.market.decimalPlaces),
+      remaining: removeDecimal(
+        size?.toString(),
+        ticket.market.positionDecimalPlaces
+      ),
+    };
+  }
 
   if (armedTicketOrder) {
     orders.push(armedTicketOrder);
@@ -68,5 +73,6 @@ export function useEstimatePosition() {
   return useEstimatePositionQuery({
     variables,
     fetchPolicy: 'cache-and-network',
+    skip: !armedTicketOrder,
   });
 }

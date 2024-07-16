@@ -114,27 +114,34 @@ const useEstimateFees = () => {
     : false;
 
   const values = form.watch();
+
   const price =
     values.type === OrderType.TYPE_LIMIT
-      ? removeDecimal(values.price || '0', ticket.market.decimalPlaces)
+      ? removeDecimal(
+          values.price?.toString() || '0',
+          ticket.market.decimalPlaces
+        )
       : removeDecimal(markPrice || '0', ticket.market.decimalPlaces);
-  const variables = {
-    marketId: ticket.market.id,
-    partyId: pubKey || '',
-    type: values.type,
-    price,
-    size: values.size,
-    side: values.side,
-    timeInForce: values.timeInForce,
-  };
 
   const { data } = useEstimateFeesQuery({
-    variables,
+    variables: {
+      marketId: ticket.market.id,
+      partyId: pubKey || '',
+      type: values.type,
+      price,
+      size: removeDecimal(
+        values.size?.toString() || '0',
+        ticket.market.positionDecimalPlaces
+      ),
+      side: values.side,
+      timeInForce: values.timeInForce,
+    },
     skip: !pubKey || !values.size || !price,
     fetchPolicy: 'cache-and-network',
   });
 
   const atEpoch = (Number(data?.epoch.id) || 0) - 1;
+
   const volumeDiscountFactor =
     (data?.volumeDiscountStats.edges[0]?.node.atEpoch === atEpoch &&
       data?.volumeDiscountStats.edges[0]?.node.discountFactor) ||

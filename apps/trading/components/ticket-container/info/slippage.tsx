@@ -22,13 +22,19 @@ export const Slippage = () => {
 
   const price =
     type === OrderType.TYPE_LIMIT
-      ? removeDecimal(limitPrice || '0', ticket.market.decimalPlaces)
+      ? removeDecimal(
+          limitPrice?.toString() || '0',
+          ticket.market.decimalPlaces
+        )
       : markPrice || undefined;
 
   const order = {
     type,
     side,
-    size: removeDecimal(size, ticket.market.positionDecimalPlaces),
+    size: removeDecimal(
+      size?.toString() || '0',
+      ticket.market.positionDecimalPlaces
+    ),
     price,
   };
   const slippage = useSlippage(order, ticket.market);
