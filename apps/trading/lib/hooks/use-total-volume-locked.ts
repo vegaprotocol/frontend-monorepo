@@ -4,10 +4,8 @@ import { erc20Abi } from 'viem';
 import { useEnabledAssets } from '@vegaprotocol/assets';
 import { isAssetTypeERC20 } from '@vegaprotocol/utils';
 import BigNumber from 'bignumber.js';
-import {
-  useEnvironment,
-  ASSET_POOL_ADDRESSES,
-} from '@vegaprotocol/environment';
+import { useEnvironment } from '@vegaprotocol/environment';
+import { ASSET_POOL_ADDRESSES } from '@vegaprotocol/web3';
 
 export const useTotalValueLocked = () => {
   const { VEGA_ENV } = useEnvironment();
