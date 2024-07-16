@@ -282,30 +282,31 @@ const LiveScoresTable = ({
     BigNumber(0)
   );
 
+  const getPayoutRank = (rank: number, rankTable: RankTable[]) => {
+    const nextRankIndex = rankTable.findIndex((r) => {
+      return r.startRank > rank;
+    });
+
+    const payoutRank =
+      nextRankIndex > -1
+        ? rankTable[nextRankIndex - 1]
+        : rankTable[rankTable.length - 1];
+
+    return payoutRank;
+  };
+
+  const orderedScores = orderBy(scores, [(d) => Number(d.score)], ['desc']);
+
   // Get total of all ratios for each team
-  const total = scores
-    .sort((a, b) => Number(b.score) - Number(a.score))
+  const total = orderedScores
     .map((_, i) => {
       const teamRank = i + 1;
-
-      const nextRankIndex = rankTable.findIndex((r) => {
-        return r.startRank > teamRank;
-      });
-
-      const payoutRank =
-        nextRankIndex > -1
-          ? rankTable[nextRankIndex - 1]
-          : rankTable[rankTable.length - 1];
-
+      const payoutRank = getPayoutRank(teamRank, rankTable);
       return payoutRank.shareRatio;
     })
     .reduce((sum, ratio) => sum + ratio, 0);
 
-  const lastEpochScores = orderBy(
-    scores,
-    [(d) => Number(d.score)],
-    ['desc']
-  ).map((t, i) => {
+  const lastEpochScores = orderedScores.map((t, i) => {
     const teamRank = i + 1;
     const team = teams[t.teamId];
 
@@ -314,10 +315,8 @@ const LiveScoresTable = ({
     if (
       distributionStrategy === DistributionStrategy.DISTRIBUTION_STRATEGY_RANK
     ) {
-      const nextRankIndex = rankTable.findIndex((r) => {
-        return r.startRank > teamRank;
-      });
-      const payoutRank = rankTable[nextRankIndex - 1];
+      const payoutRank = getPayoutRank(teamRank, rankTable);
+
       reward = toBigNum(rewardAmount, asset.decimals)
         .times(payoutRank.shareRatio)
         .div(total);
