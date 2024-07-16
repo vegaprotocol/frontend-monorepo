@@ -141,7 +141,7 @@ context(
           cy.get(vegaInVesting).within(() => {
             cy.get(currencyTitle)
               .should('be.visible')
-              .and('have.text', 'VEGAIn vesting contract');
+              .and('contain.text', 'VEGAIn vesting contract');
           });
         });
 
@@ -214,7 +214,7 @@ context(
           cy.get(vegaInWallet).within(() => {
             cy.get(currencyTitle)
               .should('be.visible')
-              .and('have.text', 'VEGAIn Wallet');
+              .and('contain.text', 'VEGAIn Wallet');
           });
         });
 

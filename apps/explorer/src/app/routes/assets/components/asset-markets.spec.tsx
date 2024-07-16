@@ -3,7 +3,7 @@ import { AssetMarkets, transformAssetMarketsQuery } from './asset-markets';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import type { AssetMarketsQuery } from './__generated__/Asset-Markets';
-import { AccountType } from '@vegaprotocol/types';
+import { AccountType, MarketState } from '@vegaprotocol/types';
 import { MockAssetMarkets } from '../../../mocks/links';
 
 jest.mock('../../../components/links');
@@ -34,6 +34,7 @@ describe('transformAssetMarketsQuery', () => {
                   name: 'instrument1',
                 },
               },
+              state: MarketState.STATE_ACTIVE,
               id: 'market1',
               accountsConnection: {
                 edges: [],
@@ -59,6 +60,7 @@ describe('transformAssetMarketsQuery', () => {
                   name: 'instrument1',
                 },
               },
+              state: MarketState.STATE_ACTIVE,
               accountsConnection: {
                 edges: [
                   {
@@ -66,6 +68,8 @@ describe('transformAssetMarketsQuery', () => {
                       type: AccountType.ACCOUNT_TYPE_INSURANCE,
                       asset: {
                         id: 'assetId',
+                        decimals: 8,
+                        symbol: 'ASSET',
                       },
                       balance: '100',
                     },
@@ -75,6 +79,8 @@ describe('transformAssetMarketsQuery', () => {
                       type: AccountType.ACCOUNT_TYPE_GLOBAL_INSURANCE,
                       asset: {
                         id: 'assetId',
+                        decimals: 8,
+                        symbol: 'ASSET',
                       },
                       balance: '200',
                     },
@@ -91,6 +97,7 @@ describe('transformAssetMarketsQuery', () => {
                   name: 'instrument1',
                 },
               },
+              state: MarketState.STATE_ACTIVE,
               accountsConnection: {
                 edges: [
                   {
@@ -98,6 +105,8 @@ describe('transformAssetMarketsQuery', () => {
                       type: AccountType.ACCOUNT_TYPE_INSURANCE,
                       asset: {
                         id: 'assetId',
+                        decimals: 8,
+                        symbol: 'ASSET',
                       },
                       balance: '300',
                     },
@@ -114,6 +123,7 @@ describe('transformAssetMarketsQuery', () => {
                   name: 'instrument1',
                 },
               },
+              state: MarketState.STATE_ACTIVE,
               accountsConnection: {
                 edges: [
                   {
@@ -121,6 +131,8 @@ describe('transformAssetMarketsQuery', () => {
                       type: AccountType.ACCOUNT_TYPE_FEES_INFRASTRUCTURE,
                       asset: {
                         id: 'any-other-asset-id',
+                        decimals: 8,
+                        symbol: 'ASSET',
                       },
                       balance: '300',
                     },
@@ -135,12 +147,14 @@ describe('transformAssetMarketsQuery', () => {
     const result = transformAssetMarketsQuery(data, 'assetId');
     expect(result).toEqual([
       {
-        marketId: 'market1',
-        balance: '100',
-      },
-      {
         marketId: 'market2',
         balance: '300',
+        state: MarketState.STATE_ACTIVE,
+      },
+      {
+        marketId: 'market1',
+        balance: '100',
+        state: MarketState.STATE_ACTIVE,
       },
     ]);
   });
@@ -151,7 +165,7 @@ describe('AssetMarkets', () => {
     render(
       <MockedProvider mocks={[MockAssetMarkets]}>
         <MemoryRouter>
-          <AssetMarkets asset="assetId" />
+          <AssetMarkets asset="assetId" symbol="ASSET" decimals={8} />
         </MemoryRouter>
       </MockedProvider>
     );
@@ -163,7 +177,7 @@ describe('AssetMarkets', () => {
     render(
       <MockedProvider mocks={[MockAssetMarkets]}>
         <MemoryRouter>
-          <AssetMarkets asset="assetId" />
+          <AssetMarkets asset="assetId" symbol="ASSET" decimals={8} />
         </MemoryRouter>
       </MockedProvider>
     );

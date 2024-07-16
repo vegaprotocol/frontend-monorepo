@@ -2,6 +2,7 @@ import type { Candle, MarketMaybeWithCandles } from '@vegaprotocol/markets';
 import { useNewListings } from './use-markets-stats';
 
 import { useTotalVolume24hCandles } from './use-markets-stats';
+import { MarketState } from '@vegaprotocol/types';
 
 describe('Hooks for market stats', () => {
   describe('useTotalVolume24hCandles', () => {
@@ -24,6 +25,9 @@ describe('Hooks for market stats', () => {
           ),
           decimalPlaces: 2,
           positionDecimalPlaces: 1,
+          data: {
+            marketState: MarketState.STATE_ACTIVE,
+          },
           tradableInstrument: {
             instrument: {
               product: {
@@ -53,9 +57,18 @@ describe('Hooks for market stats', () => {
 
     it('returns latest three markets by open time', () => {
       const markets = [
-        { marketTimestamps: { open: '2021-01-01T00:00:00Z' } },
-        { marketTimestamps: { open: '2022-01-01T00:00:00Z' } },
-        { marketTimestamps: { open: '2023-01-01T00:00:00Z' } },
+        {
+          marketTimestamps: { open: '2021-01-01T00:00:00Z' },
+          data: { marketState: MarketState.STATE_ACTIVE },
+        },
+        {
+          marketTimestamps: { open: '2022-01-01T00:00:00Z' },
+          data: { marketState: MarketState.STATE_ACTIVE },
+        },
+        {
+          marketTimestamps: { open: '2023-01-01T00:00:00Z' },
+          data: { marketState: MarketState.STATE_ACTIVE },
+        },
       ] as MarketMaybeWithCandles[];
       expect(useNewListings(markets)).toEqual([
         markets[2],

@@ -136,9 +136,10 @@ export const proposedMarketsProvider = makeDerivedDataProvider<
   never
 >([marketsWithDataProvider], ([markets]) => filterProposedMarkets(markets));
 
-export type MarketMaybeWithCandles = MarketFieldsWithAccountsFragment & {
-  candles?: Candle[];
-};
+export type MarketMaybeWithCandles = MarketFieldsWithAccountsFragment &
+  MarketMaybeWithData & {
+    candles?: Candle[];
+  };
 
 const addCandles = <T extends Market>(
   markets: T[],
@@ -157,6 +158,18 @@ export const activeMarketsWithCandlesProvider = makeDerivedDataProvider<
 >(
   [
     (callback, client) => activeMarketsProvider(callback, client, undefined),
+    marketsCandlesProvider,
+  ],
+  (parts) => addCandles(parts[0] as Market[], parts[1] as MarketCandles[])
+);
+
+export const marketsWithCandlesProvider = makeDerivedDataProvider<
+  MarketMaybeWithCandles[],
+  never,
+  MarketsCandlesQueryVariables
+>(
+  [
+    (callback, client) => marketsWithDataProvider(callback, client, undefined),
     marketsCandlesProvider,
   ],
   (parts) => addCandles(parts[0] as Market[], parts[1] as MarketCandles[])

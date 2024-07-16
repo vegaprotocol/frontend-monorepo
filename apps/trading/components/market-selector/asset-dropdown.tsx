@@ -1,14 +1,8 @@
-import {
-  TradingDropdown,
-  TradingDropdownCheckboxItem,
-  TradingDropdownContent,
-  TradingDropdownItemIndicator,
-  TradingDropdownTrigger,
-} from '@vegaprotocol/ui-toolkit';
-import { MarketSelectorButton } from './market-selector-button';
+import { MultiSelect, MultiSelectOption } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../lib/use-t';
+import { getChainName } from '@vegaprotocol/web3';
 
-type Assets = Array<{ id: string; symbol: string }>;
+type Assets = Array<{ id: string; symbol: string; chainId?: number }>;
 
 export const AssetDropdown = ({
   assets,
@@ -25,37 +19,25 @@ export const AssetDropdown = ({
   }
 
   return (
-    assets && (
-      <TradingDropdown
-        trigger={
-          <TradingDropdownTrigger data-testid="asset-trigger">
-            <MarketSelectorButton>
-              {triggerText({ assets, checkedAssets }, t)}
-            </MarketSelectorButton>
-          </TradingDropdownTrigger>
-        }
-      >
-        <TradingDropdownContent>
-          {assets.filter(Boolean).map((a) => {
-            return (
-              <TradingDropdownCheckboxItem
-                key={a.id}
-                checked={checkedAssets.includes(a.id)}
-                onCheckedChange={(checked) => {
-                  if (typeof checked === 'boolean') {
-                    onSelect(a.id, checked);
-                  }
-                }}
-                data-testid={`asset-id-${a.id}`}
-              >
-                {a.symbol}
-                <TradingDropdownItemIndicator />
-              </TradingDropdownCheckboxItem>
-            );
-          })}
-        </TradingDropdownContent>
-      </TradingDropdown>
-    )
+    <MultiSelect trigger={triggerText({ assets, checkedAssets }, t)}>
+      {assets.map((a) => {
+        return (
+          <MultiSelectOption
+            key={a.id}
+            checked={checkedAssets.includes(a.id)}
+            onCheckedChange={(checked) => {
+              if (typeof checked === 'boolean') {
+                onSelect(a.id, checked);
+              }
+            }}
+            data-testid={`asset-id-${a.id}`}
+          >
+            <span>{a.symbol}</span>{' '}
+            <span className="text-xs">({getChainName(a.chainId)})</span>
+          </MultiSelectOption>
+        );
+      })}
+    </MultiSelect>
   );
 };
 
@@ -74,10 +56,10 @@ const triggerText = (
   if (checkedAssets.length === 1) {
     const assetId = checkedAssets[0];
     const asset = assets.find((a) => a.id === assetId);
-    text = asset ? asset.symbol : t('Asset (1)');
+    text = asset ? asset.symbol : t('Assets (1)');
   } else if (checkedAssets.length > 1) {
-    text = t('{{checkedAssets}} Assets', {
-      checkedAssets: checkedAssets.length,
+    text = t('Assets ({{count}})', {
+      count: checkedAssets.length,
     });
   }
 
