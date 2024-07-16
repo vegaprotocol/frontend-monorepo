@@ -67,6 +67,8 @@ type Banner =
   | OracleBanner;
 
 export const MarketBanner = ({ market }: { market: Market }) => {
+  // TODO: fix this
+  return null;
   const { data: marketState } = useMarketState(market.id);
   const { data: marketTradingMode } = useMarketTradingMode(market.id);
 

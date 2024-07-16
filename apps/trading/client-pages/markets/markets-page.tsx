@@ -11,12 +11,7 @@ import { useT } from '../../lib/use-t';
 import { ErrorBoundary } from '../../components/error-boundary';
 import { usePageTitle } from '../../lib/hooks/use-page-title';
 import { Card } from '../../components/card';
-import {
-  type MarketMaybeWithData,
-  calcCandleVolumePrice,
-  retrieveAssets,
-  type MarketMaybeWithCandles,
-} from '@vegaprotocol/markets';
+import { calcCandleVolumePrice, retrieveAssets } from '@vegaprotocol/markets';
 import { type ReactNode } from 'react';
 import { formatNumber } from '@vegaprotocol/utils';
 import { TopMarketList } from './top-market-list';
@@ -231,9 +226,7 @@ export const MarketTable = ({
   const handleOnSelect = useMarketClickHandler();
 
   const isExternalFilterPresent = () => true;
-  const doesExternalFilterPass = (
-    rowData: IRowNode<MarketMaybeWithCandles>
-  ) => {
+  const doesExternalFilterPass = (rowData: IRowNode<Market>) => {
     const market = rowData.data;
     if (!market) return false;
     return filterMarket(market, {
@@ -381,7 +374,7 @@ export const MarketTable = ({
               data,
               column,
               event,
-            }: CellClickedEvent<MarketMaybeWithData>) => {
+            }: CellClickedEvent<Market>) => {
               if (!data) return;
 
               // prevent navigating to the market page if any of the below cells are clicked

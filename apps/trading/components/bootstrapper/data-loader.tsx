@@ -1,4 +1,8 @@
-import { useMarkets, useAssets } from '@vegaprotocol/data-provider';
+import {
+  useMarkets,
+  useMarketsSubscription,
+  useAssets,
+} from '@vegaprotocol/data-provider';
 import { useNetworkParams } from '@vegaprotocol/network-parameters';
 import type { ReactNode } from 'react';
 
@@ -20,6 +24,8 @@ export const DataLoader = ({
 
   const { status: statusAssets } = useAssets();
   const { status: statusMarkets } = useMarkets();
+
+  useMarketsSubscription();
 
   if (
     loadingParams ||

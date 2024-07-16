@@ -1,4 +1,9 @@
 import { type ReactNode } from 'react';
+import compact from 'lodash/compact';
+import BigNumber from 'bignumber.js';
+import classNames from 'classnames';
+
+import { useMarket } from '@vegaprotocol/data-provider';
 import {
   addDecimalsFormatNumber,
   formatNumberPercentage,
@@ -7,9 +12,6 @@ import {
 } from '@vegaprotocol/utils';
 import { signedNumberCssClass } from '@vegaprotocol/datagrid';
 import { VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
-import { useCandles } from '../../hooks/use-candles';
-import BigNumber from 'bignumber.js';
-import classNames from 'classnames';
 
 interface Props {
   marketId?: string;
@@ -26,18 +28,18 @@ export const Last24hPriceChange = ({
   orientation = 'horizontal',
   showChangeValue = true,
 }: Props) => {
-  const { oneDayCandles, fiveDaysCandles, error } = useCandles({
-    marketId,
-  });
+  const { data } = useMarket({ marketId });
+
+  const candles = compact(data?.candlesConnection?.edges?.map((e) => e?.node))
+    .map((c) => c.close)
+    .filter((c) => c !== '');
 
   const nonIdeal = fallback || <span>{'-'}</span>;
 
-  if (error || !oneDayCandles || !fiveDaysCandles) {
+  if (!candles) {
     return nonIdeal;
   }
 
-  const candles =
-    oneDayCandles.map((c) => c.close).filter((c) => c !== '') || [];
   const change = priceChange(candles);
   const changePercentage = priceChangePercentage(candles);
 

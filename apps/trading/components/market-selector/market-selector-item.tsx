@@ -4,7 +4,6 @@ import classNames from 'classnames';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { calcCandleVolume, getAsset } from '@vegaprotocol/markets';
 import { useCandles } from '@vegaprotocol/markets';
-import { useMarketDataUpdateSubscription } from '@vegaprotocol/markets';
 import { Sparkline } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../lib/use-t';
 import { EmblemByMarket } from '@vegaprotocol/emblem';
@@ -47,14 +46,8 @@ export const MarketSelectorItem = ({
 
 const MarketData = ({ market }: { market: Market }) => {
   const t = useT();
-  const { data } = useMarketDataUpdateSubscription({
-    variables: {
-      marketId: market.id,
-    },
-    fetchPolicy: 'no-cache',
-  });
 
-  const marketData = data?.marketsData[0];
+  const marketData = market?.data;
 
   // use market data price if available as this is comes from
   // the subscription

@@ -39,7 +39,9 @@ export const MarketHeaderPerp = ({ market }: MarketHeaderPerpProps) => {
         asset={asset}
         data-testid="market-settlement-asset"
       />
-      <Stats.Oracle marketId={market.id} />
+      {/*
+      TODO: fix this, oracle data removed from base query
+      <Stats.Oracle marketId={market.id} /> */}
       <Stats.FundingRateStat marketId={market.id} />
       <Stats.IndexPriceStat
         marketId={market.id}

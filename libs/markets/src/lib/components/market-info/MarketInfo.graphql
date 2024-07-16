@@ -116,10 +116,10 @@ fragment Future on Future {
     ...AssetFields
   }
   dataSourceSpecForSettlementData {
-    ...DataSource
+    id
   }
   dataSourceSpecForTradingTermination {
-    ...DataSource
+    id
   }
   dataSourceSpecBinding {
     settlementDataProperty
@@ -136,10 +136,10 @@ fragment Perpetual on Perpetual {
     ...AssetFields
   }
   dataSourceSpecForSettlementData {
-    ...DataSource
+    id
   }
   dataSourceSpecForSettlementSchedule {
-    ...DataSource
+    id
   }
   dataSourceSpecBinding {
     settlementDataProperty
