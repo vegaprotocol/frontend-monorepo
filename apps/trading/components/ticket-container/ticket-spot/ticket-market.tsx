@@ -26,6 +26,7 @@ import { TicketEventUpdater } from '../ticket-events';
 import * as utils from '../utils';
 import * as Fields from '../fields';
 import { SizeSlider } from './size-slider';
+import { Feedback } from './feedback';
 
 export const TicketMarket = (props: FormProps) => {
   const ticket = useTicketContext('spot');
@@ -127,6 +128,7 @@ export const TicketMarket = (props: FormProps) => {
             </FormGridCol>
           </FormGrid>
         )}
+        <Feedback />
         <SubmitButton
           text={t('Place market order')}
           subLabel={`${size || 0} ${ticket.baseAsset.symbol} @ market`}

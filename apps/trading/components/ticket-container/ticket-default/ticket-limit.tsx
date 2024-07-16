@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js';
+import { useState } from 'react';
 import uniqueId from 'lodash/uniqueId';
 import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -28,7 +29,6 @@ import * as Data from '../info';
 
 import { type FormProps } from './ticket';
 import { SizeSlider } from './size-slider';
-import { useState } from 'react';
 import { Feedback } from './feedback';
 
 export const TicketLimit = (props: FormProps) => {

@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js';
+import { useState } from 'react';
 import uniqueId from 'lodash/uniqueId';
 import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -28,7 +29,7 @@ import { Datagrid } from '../elements/datagrid';
 
 import { useTicketContext } from '../ticket-context';
 import { SubmitButton } from '../elements/submit-button';
-import { useState } from 'react';
+import { Feedback } from './feedback';
 
 export const TicketMarket = (props: FormProps) => {
   const t = useT();
@@ -131,6 +132,7 @@ export const TicketMarket = (props: FormProps) => {
             </FormGridCol>
           </FormGrid>
         )}
+        <Feedback />
         <SubmitButton
           text={t('Place market order')}
           subLabel={`${size || 0} ${ticket.baseSymbol} @ market`}
