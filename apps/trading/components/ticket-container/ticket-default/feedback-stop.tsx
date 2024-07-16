@@ -34,7 +34,7 @@ export const FeedbackStop = () => {
   // Check if current active stop orders + the new stop order (and oco) will go over
   // the limit set by spam protection
   if ((activeStopOrders?.length ?? 0) + (oco ? 2 : 1) > Number(maxStopOrders)) {
-    return <StopOrderLimit max={maxStopOrders} />;
+    return <MaxStopOrdersPerMarket max={maxStopOrders} />;
   }
 
   const volume = BigNumber(openVolume || '0');
@@ -51,18 +51,18 @@ export const FeedbackStop = () => {
     side === Side.SIDE_BUY &&
     volume.minus(remaining).isGreaterThanOrEqualTo(0)
   ) {
-    return <div>This will increase</div>;
+    return <OrderNotReducing />;
   }
 
   if (
     side === Side.SIDE_SELL &&
     volume.plus(remaining).isLessThanOrEqualTo(0)
   ) {
-    return <div>This will increase</div>;
+    return <OrderNotReducing />;
   }
 };
 
-const StopOrderLimit = ({ max }: { max: string }) => {
+const MaxStopOrdersPerMarket = ({ max }: { max: string }) => {
   const t = useT();
   return (
     <p>
@@ -71,6 +71,17 @@ const StopOrderLimit = ({ max }: { max: string }) => {
         {
           max,
         }
+      )}
+    </p>
+  );
+};
+
+const OrderNotReducing = () => {
+  const t = useT();
+  return (
+    <p data-testid="stop-order-warning-position">
+      {t(
+        'Stop orders are reduce only and this order would increase your position.'
       )}
     </p>
   );

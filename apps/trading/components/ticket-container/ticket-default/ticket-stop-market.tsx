@@ -47,7 +47,7 @@ export const TicketStopMarket = (props: FormProps) => {
       sizeOverride: StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_NONE,
       timeInForce: OrderTimeInForce.TIME_IN_FORCE_IOC,
       expiresAt: addDays(new Date(), 1),
-      reduceOnly: false,
+      reduceOnly: true, // must be reduce only for stop orders (unless spot market)
       oco: false,
       ocoTriggerDirection:
         StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE,
@@ -102,7 +102,11 @@ export const TicketStopMarket = (props: FormProps) => {
         <SizeSliderStop price={price} />
         <FormGrid>
           <FormGridCol>
-            {isPersistent ? <Fields.PostOnly /> : <Fields.ReduceOnly />}
+            {isPersistent ? (
+              <Fields.PostOnly />
+            ) : (
+              <Fields.ReduceOnly disabled />
+            )}
             <Fields.OCO />
           </FormGridCol>
           <FormGridCol>

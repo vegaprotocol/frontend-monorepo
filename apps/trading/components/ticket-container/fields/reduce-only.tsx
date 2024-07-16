@@ -4,7 +4,7 @@ import { FormField } from '../ticket-field';
 import { useT } from '../../../lib/use-t';
 import { useForm } from '../use-form';
 
-export const ReduceOnly = () => {
+export const ReduceOnly = ({ disabled = false }: { disabled?: boolean }) => {
   const t = useT();
   const form = useForm();
   return (
@@ -20,6 +20,7 @@ export const ReduceOnly = () => {
               form.setValue('postOnly', false, { shouldValidate: true });
             }}
             label={t('Reduce only')}
+            disabled={disabled}
           />
         );
       }}

@@ -24,6 +24,7 @@ import { SubmitButton } from '../elements/submit-button';
 import { useT } from '../../../lib/use-t';
 
 import * as Fields from '../fields';
+import { FeedbackStop } from './feedback-stop';
 
 export const TicketStopLimit = (props: FormProps) => {
   const t = useT();
@@ -43,7 +44,7 @@ export const TicketStopLimit = (props: FormProps) => {
       timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
       expiresAt: addDays(new Date(), 1),
       postOnly: false,
-      reduceOnly: false,
+      reduceOnly: true, // must be reduce only for stop orders (unless spot market)
       oco: false,
       ocoTriggerDirection:
         StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE,
@@ -93,7 +94,11 @@ export const TicketStopLimit = (props: FormProps) => {
         </div>
         <FormGrid>
           <FormGridCol>
-            {isPersistent ? <Fields.PostOnly /> : <Fields.ReduceOnly />}
+            {isPersistent ? (
+              <Fields.PostOnly />
+            ) : (
+              <Fields.ReduceOnly disabled />
+            )}
             <Fields.OCO />
           </FormGridCol>
           <FormGridCol>
@@ -120,13 +125,13 @@ export const TicketStopLimit = (props: FormProps) => {
             </div>
           </>
         )}
+        <FeedbackStop />
         <SubmitButton
           text={t('Place limit stop order')}
           subLabel={`${size || 0} ${ticket.baseSymbol} @ ${price} ${
             ticket.quoteAsset.symbol
           }`}
         />
-
         <pre className="block w-full text-2xs">
           {JSON.stringify(form.getValues(), null, 2)}
         </pre>

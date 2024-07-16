@@ -151,10 +151,18 @@ export const createStopLimitSchema = (market: MarketInfo) => {
     oco: z.boolean(),
     ocoTriggerDirection: z.nativeEnum(StopOrderTriggerDirection),
     ocoTriggerType: z.enum(['price', 'trailingPercentOffset']),
-    ocoTriggerPrice: z.coerce.number(),
+    ocoTriggerPrice: z.coerce.number().optional(),
     ocoSizeOverride: z.nativeEnum(StopOrderSizeOverrideSetting),
-    ocoSize: z.coerce.number().min(Number(sizeStep)).step(Number(sizeStep)),
-    ocoPrice: z.coerce.number().min(Number(priceStep)).step(Number(priceStep)),
+    ocoSize: z.coerce
+      .number()
+      .min(Number(sizeStep))
+      .step(Number(sizeStep))
+      .optional(),
+    ocoPrice: z.coerce
+      .number()
+      .min(Number(priceStep))
+      .step(Number(priceStep))
+      .optional(),
   });
 };
 
