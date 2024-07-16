@@ -1,4 +1,7 @@
-import { StopOrderStatus } from '@vegaprotocol/types';
+import {
+  StopOrderRejectionReasonMapping,
+  StopOrderStatus,
+} from '@vegaprotocol/types';
 import { useExplorerStopOrderQuery } from '../../../order-details/__generated__/StopOrder';
 import type { ExplorerStopOrderQuery } from '../../../order-details/__generated__/StopOrder';
 import { t } from '@vegaprotocol/i18n';
@@ -76,6 +79,9 @@ const StopOrderTriggerSummary = ({
   });
 
   const status = getStopOrderTriggerStatus(data, error);
+  const rejectionReasonLabel = data?.stopOrder?.rejectionReason
+    ? StopOrderRejectionReasonMapping[data.stopOrder.rejectionReason]
+    : '';
 
   return (
     <>
@@ -88,7 +94,17 @@ const StopOrderTriggerSummary = ({
             name={StatusIcon[status]}
             className="inline-block mr-2"
           />
-          <span className="align-top">{StatusLabel[status]}</span>
+          <span className="align-top">
+            {StatusLabel[status]}{' '}
+            {rejectionReasonLabel ? (
+              <>
+                <br />
+                <p className="text-sm">{rejectionReasonLabel}</p>
+              </>
+            ) : (
+              ''
+            )}
+          </span>
         </p>
       </div>
 
