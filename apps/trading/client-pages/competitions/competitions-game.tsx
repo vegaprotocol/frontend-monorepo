@@ -284,12 +284,19 @@ const LiveScoresTable = ({
 
   // Get total of all ratios for each team
   const total = scores
+    .sort((a, b) => Number(b.score) - Number(a.score))
     .map((_, i) => {
       const teamRank = i + 1;
+
       const nextRankIndex = rankTable.findIndex((r) => {
         return r.startRank > teamRank;
       });
-      const payoutRank = rankTable[nextRankIndex - 1];
+
+      const payoutRank =
+        nextRankIndex > -1
+          ? rankTable[nextRankIndex - 1]
+          : rankTable[rankTable.length - 1];
+
       return payoutRank.shareRatio;
     })
     .reduce((sum, ratio) => sum + ratio, 0);
