@@ -1,7 +1,9 @@
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import {
+  CopyWithTooltip,
   Intent,
   TradingAnchorButton,
+  TradingButton,
   TradingDialog,
   VegaIcon,
   VegaIconNames,
@@ -141,40 +143,6 @@ const CreateTeamFormContainer = ({
 
   const teamCode = (isUpgrade ? teamId : code) || '';
 
-  if (status === TxStatus.Confirmed) {
-    return (
-      <div
-        className="flex flex-col items-start gap-2"
-        data-testid="team-creation-success-message"
-      >
-        <p className="text-sm">{t('Team creation transaction successful')}</p>
-        {code && (
-          <>
-            <dl>
-              <dt className="text-sm">{t('Your team ID:')}</dt>
-              <dl>
-                <span
-                  className="font-mono break-all bg-rainbow bg-clip-text text-transparent text-2xl"
-                  data-testid="team-id-display"
-                >
-                  {teamCode}
-                </span>
-              </dl>
-            </dl>
-            <TradingAnchorButton
-              href={Links.COMPETITIONS_TEAM(teamCode)}
-              intent={Intent.Info}
-              size="small"
-              data-testid="view-team-button"
-            >
-              {t('View team')}
-            </TradingAnchorButton>
-          </>
-        )}
-      </div>
-    );
-  }
-
   if (!isEligible) {
     return (
       <div className="flex flex-col gap-4">
@@ -248,7 +216,28 @@ const CreateTeamFormContainer = ({
           resetLabel={
             status === TxStatus.Confirmed ? t('View team') : t('Back')
           }
-          confirmedLabel={t('Team creation transaction successful')}
+          confirmedLabel={
+            teamCode ? (
+              <div className="flex flex-col justify-start items-start gap-0 w-full">
+                <span>{t('Team creation transaction successful')}</span>
+
+                <div className="flex gap-1 max-w-full overflow-hidden">
+                  <span className="truncate">{teamCode}</span>
+
+                  <CopyWithTooltip text={teamCode}>
+                    <TradingButton
+                      size="extra-small"
+                      icon={<VegaIcon name={VegaIconNames.COPY} />}
+                    >
+                      <span>{t('Copy')}</span>
+                    </TradingButton>
+                  </CopyWithTooltip>
+                </div>
+              </div>
+            ) : (
+              t('Team creation transaction successful')
+            )
+          }
         />
       </TradingDialog>
     </>
