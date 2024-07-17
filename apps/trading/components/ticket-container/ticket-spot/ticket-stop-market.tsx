@@ -1,4 +1,5 @@
 import { FormProvider, useForm } from 'react-hook-form';
+import uniqueId from 'lodash/uniqueId';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { addDays } from 'date-fns';
 
@@ -19,17 +20,20 @@ import { TicketEventUpdater } from '../ticket-events';
 import { useTicketContext } from '../ticket-context';
 import { SubmitButton } from '../elements/submit-button';
 import { useT } from '../../../lib/use-t';
-
-import * as Fields from '../fields';
 import { SizeSliderStop } from './size-slider-stop';
 import { useMarkPrice } from '@vegaprotocol/markets';
 import { toBigNum } from '@vegaprotocol/utils';
-import { createStopOrdersSubmission } from '../map-form-values-to-submission';
+
+import * as Fields from '../fields';
+import * as utils from '../utils';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 
 export const TicketStopMarket = (props: FormProps) => {
   const t = useT();
   const create = useVegaTransactionStore((store) => store.create);
   const ticket = useTicketContext('spot');
+
+  const { pubKey } = useVegaWallet();
 
   const schema = useStopMarketSchema(ticket.market);
   const form = useForm<FormFieldsStopMarket>({
@@ -68,14 +72,13 @@ export const TicketStopMarket = (props: FormProps) => {
       <TicketEventUpdater />
       <Form
         onSubmit={form.handleSubmit((fields) => {
+          const reference = `${pubKey}-${Date.now()}-${uniqueId()}`;
+
           create({
-            // TODO: convert this func to take the schema values
-            stopOrdersSubmission: createStopOrdersSubmission(
+            stopOrdersSubmission: utils.createStopMarketOrder(
               fields,
-              ticket.market.id,
-              ticket.market.decimalPlaces,
-              ticket.market.positionDecimalPlaces,
-              false
+              ticket.market,
+              reference
             ),
           });
         })}

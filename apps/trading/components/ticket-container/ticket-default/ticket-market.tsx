@@ -15,18 +15,14 @@ import { TicketTypeSelect } from '../ticket-type-select';
 import { type FormProps } from './ticket';
 import { SizeSlider } from './size-slider';
 
-import * as Fields from '../fields';
-import * as Data from '../info';
 import { TicketEventUpdater } from '../ticket-events';
 import { Datagrid } from '../elements/datagrid';
-
 import { useTicketContext } from '../ticket-context';
 import { SubmitButton } from '../elements/submit-button';
 import { Feedback } from './feedback';
-import {
-  createOrderSubmission,
-  createTpSl,
-} from '../map-form-values-to-submission';
+import * as Fields from '../fields';
+import * as Data from '../info';
+import * as utils from '../utils';
 
 export const TicketMarket = (props: FormProps) => {
   const t = useT();
@@ -67,7 +63,7 @@ export const TicketMarket = (props: FormProps) => {
           const reference = `${pubKey}-${Date.now()}-${uniqueId()}`;
 
           if (fields.tpSl) {
-            const batchMarketInstructions = createTpSl(
+            const batchMarketInstructions = utils.createOrderWithTpSl(
               fields,
               ticket.market,
               reference
@@ -77,7 +73,7 @@ export const TicketMarket = (props: FormProps) => {
               batchMarketInstructions,
             });
           } else {
-            const orderSubmission = createOrderSubmission(
+            const orderSubmission = utils.createMarketOrder(
               fields,
               ticket.market,
               reference

@@ -20,10 +20,10 @@ import {
 } from '@vegaprotocol/wallet';
 
 import {
-  FormFieldsLimit,
-  FormFieldsMarket,
-  FormFieldsStopLimit,
-  FormFieldsStopMarket,
+  type FormFieldsLimit,
+  type FormFieldsMarket,
+  type FormFieldsStopLimit,
+  type FormFieldsStopMarket,
 } from './schemas';
 
 export const toPercentOf = (pct: number, value: BigNumber) => {
@@ -407,12 +407,16 @@ export const createStopLimitOrder = (
   return submission;
 };
 
-export const createMarketOrderWithTpSl = (
-  fields: FormFieldsMarket,
+export const createOrderWithTpSl = (
+  fields: FormFieldsMarket | FormFieldsLimit,
   market: MarketData,
   reference?: string
 ) => {
-  const orderSubmission = createMarketOrder(fields, market, reference);
+  const orderSubmission =
+    fields.ticketType === 'market'
+      ? createMarketOrder(fields, market, reference)
+      : createLimitOrder(fields, market, reference);
+
   const stopOrdersSubmission = [];
 
   const oppositeSide =

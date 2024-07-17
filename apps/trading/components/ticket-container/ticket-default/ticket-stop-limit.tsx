@@ -1,4 +1,5 @@
 import { FormProvider, useForm } from 'react-hook-form';
+import uniqueId from 'lodash/uniqueId';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { addDays } from 'date-fns';
 
@@ -9,6 +10,7 @@ import {
   StopOrderSizeOverrideSetting,
 } from '@vegaprotocol/types';
 import { useVegaTransactionStore } from '@vegaprotocol/web3';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 
 import { FieldControls, Form, FormGrid, FormGridCol } from '../elements/form';
 import { type FormFieldsStopLimit, useStopLimitSchema } from '../schemas';
@@ -19,16 +21,19 @@ import { useTicketContext } from '../ticket-context';
 import { SubmitButton } from '../elements/submit-button';
 import { useT } from '../../../lib/use-t';
 
-import * as Fields from '../fields';
 import { FeedbackStop } from './feedback-stop';
 import { SizeSliderStop } from './size-slider-stop';
 import BigNumber from 'bignumber.js';
-import { createStopOrdersSubmission } from '../map-form-values-to-submission';
+
+import * as Fields from '../fields';
+import * as utils from '../utils';
 
 export const TicketStopLimit = (props: FormProps) => {
   const t = useT();
   const create = useVegaTransactionStore((store) => store.create);
   const ticket = useTicketContext('default');
+
+  const { pubKey } = useVegaWallet();
 
   const schema = useStopLimitSchema(ticket.market);
   const form = useForm<FormFieldsStopLimit>({
@@ -66,12 +71,12 @@ export const TicketStopLimit = (props: FormProps) => {
       <TicketEventUpdater />
       <Form
         onSubmit={form.handleSubmit((fields) => {
+          const reference = `${pubKey}-${Date.now()}-${uniqueId()}`;
           create({
-            // TODO: convert this func to take the schema values
-            stopOrdersSubmission: createStopOrdersSubmission(
+            stopOrdersSubmission: utils.createStopLimitOrder(
               fields,
               ticket.market,
-              'my-ref'
+              reference
             ),
           });
         })}
