@@ -41,6 +41,7 @@ export const TimeInForce = () => {
                 field.onChange(value);
               }}
               trigger={OrderTimeInForceCode[field.value as OrderTimeInForce]}
+              data-testid="order-tif"
             >
               {options.map((tif) => (
                 <MiniSelectOption key={tif} value={tif}>

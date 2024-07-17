@@ -24,6 +24,7 @@ export const Size = (props: { price?: BigNumber }) => {
             {...field}
             label={<SizeLabel />}
             value={field.value || ''}
+            data-testid="order-size"
             onChange={(e) => {
               field.onChange(e);
 

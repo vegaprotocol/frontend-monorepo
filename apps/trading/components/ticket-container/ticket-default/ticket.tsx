@@ -3,6 +3,7 @@ import {
   getQuoteAsset,
   getBaseQuoteUnit,
   type MarketInfo,
+  getQuoteName,
 } from '@vegaprotocol/markets';
 import {
   useAccountBalance,
@@ -35,6 +36,7 @@ export const Ticket = ({ market }: { market: MarketInfo }) => {
 
   const instrument = market.tradableInstrument.instrument;
   const baseSymbol = getBaseQuoteUnit(instrument.metadata.tags);
+  const quoteName = getQuoteName(market);
 
   if (!baseSymbol) return null;
 
@@ -43,6 +45,7 @@ export const Ticket = ({ market }: { market: MarketInfo }) => {
       value={{
         type: 'default',
         market,
+        quoteName,
         quoteAsset,
         baseSymbol,
         settlementAsset,

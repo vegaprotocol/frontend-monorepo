@@ -145,7 +145,7 @@ export const TicketLimit = (props: FormProps) => {
         <SubmitButton
           text={t('Place limit order')}
           subLabel={`${size || 0} ${ticket.baseSymbol} @ ${price} ${
-            ticket.quoteAsset.symbol
+            ticket.quoteName
           }`}
         />
         <Datagrid>

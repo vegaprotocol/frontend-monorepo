@@ -8,6 +8,7 @@ export type DefaultContextValue = {
   type: 'default';
   market: MarketInfo;
   baseSymbol: string;
+  quoteName: string;
   quoteAsset: AssetFieldsFragment;
   settlementAsset: AssetFieldsFragment;
   accounts: {

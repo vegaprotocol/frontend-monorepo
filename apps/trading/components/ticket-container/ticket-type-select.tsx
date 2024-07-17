@@ -44,6 +44,7 @@ export const TicketTypeSelect = ({
         <ToggleGroup.Item
           value={itemValue}
           key={itemValue}
+          data-testid={`order-type-${itemValue}`}
           className={classNames(
             toggleClasses,
             'data-[state=on]:border-b-vega-clight-400 dark:data-[state=on]:border-b-vega-cdark-400 data-[state=on]:text-vega-clight-50 dark:data-[state=on]:text-vega-cdark-50'
@@ -57,7 +58,7 @@ export const TicketTypeSelect = ({
           <TradingDropdownTrigger>
             <button
               id="order-type-stop"
-              data-testid="order-type-Stop"
+              data-testid="order-type-stop"
               className={classNames(
                 toggleClasses,
                 'flex gap-1 justify-center items-center',
@@ -86,6 +87,7 @@ export const TicketTypeSelect = ({
                   key={itemValue}
                   value={itemValue}
                   textValue={itemValue}
+                  data-testid={`order-type-${itemValue}`}
                 >
                   {label}
                   <TradingDropdownItemIndicator />

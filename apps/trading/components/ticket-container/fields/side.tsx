@@ -45,6 +45,7 @@ export const Side = (props: {
               <RadioGroup.Item
                 value={value}
                 key={value}
+                data-testid={`order-side-${value}`}
                 className={classNames(
                   'flex gap-2 justify-center items-center flex-1 relative text-sm rounded transition-colors',
                   'data-[state=off]:hover:bg-vega-clight-500 dark:data-[state=off]:hover:bg-vega-cdark-500',
