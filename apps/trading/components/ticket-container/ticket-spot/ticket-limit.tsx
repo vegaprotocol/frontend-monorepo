@@ -98,9 +98,9 @@ export const TicketLimit = (props: FormProps) => {
         <TicketTypeSelect type="limit" onTypeChange={props.onTypeChange} />
         <Fields.Price />
         {sizeMode === 'contracts' ? (
-          <Fields.Size price={BigNumber(price)} />
+          <Fields.Size price={BigNumber(price || 0)} />
         ) : (
-          <Fields.Notional price={BigNumber(price)} />
+          <Fields.Notional price={BigNumber(price || 0)} />
         )}
         <SizeSlider price={BigNumber(price || '0')} />
         <FormGrid>

@@ -33,6 +33,7 @@ export const Ticket = ({ market }: { market: MarketInfo }) => {
         type: 'spot',
         market,
         baseAsset,
+        baseSymbol: baseAsset.symbol,
         quoteAsset,
         accounts: {
           base: baseAccount.accountBalance || '0',

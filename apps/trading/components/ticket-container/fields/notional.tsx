@@ -30,7 +30,7 @@ export const Notional = (props: { price?: BigNumber }) => {
 
               if (props.price) {
                 const size = utils.toSize(
-                  BigNumber(e.target.value),
+                  BigNumber(e.target.value || 0),
                   props.price,
                   ticket.market.positionDecimalPlaces
                 );

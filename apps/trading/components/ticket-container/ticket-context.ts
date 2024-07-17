@@ -25,6 +25,7 @@ export type SpotContextValue = {
   type: 'spot';
   market: MarketInfo;
   baseAsset: AssetFieldsFragment;
+  baseSymbol: string;
   quoteAsset: AssetFieldsFragment;
   accounts: {
     base: string;

@@ -29,7 +29,7 @@ export const Size = (props: { price?: BigNumber }) => {
 
               if (props.price) {
                 const notional = utils.toNotional(
-                  BigNumber(e.target.value),
+                  BigNumber(e.target.value || 0),
                   props.price
                 );
                 form.setValue('notional', notional.toNumber());

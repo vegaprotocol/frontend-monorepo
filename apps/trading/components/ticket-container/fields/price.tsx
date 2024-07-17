@@ -30,16 +30,19 @@ export const Price = ({ name = 'price' }: { name?: 'price' | 'ocoPrice' }) => {
             onChange={(e) => {
               field.onChange(e);
 
-              if (sizeMode === 'contracts') {
+              if (sizeMode === 'contracts' && size) {
                 const notional = utils.toNotional(
                   BigNumber(size),
-                  BigNumber(e.target.value)
+                  BigNumber(e.target.value || 0)
                 );
                 form.setValue('notional', notional.toNumber());
-              } else {
+                return;
+              }
+
+              if (sizeMode === 'notional' && notional) {
                 const size = utils.toSize(
                   BigNumber(notional),
-                  BigNumber(e.target.value),
+                  BigNumber(e.target.value || 0),
                   ticket.market.positionDecimalPlaces
                 );
                 form.setValue('size', size.toNumber());
