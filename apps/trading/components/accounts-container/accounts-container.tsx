@@ -8,6 +8,7 @@ export type AccountsContainerProps = Partial<AssetActions> & {
   pinnedAssets?: string[];
   orderByBalance?: boolean;
   hideZeroBalance?: boolean;
+  searchTerm?: string;
 };
 
 export const AccountsContainer = ({
@@ -16,9 +17,11 @@ export const AccountsContainer = ({
   hideZeroBalance,
   onClickAsset,
   onClickDeposit,
+  onClickCrossChainDeposit,
   onClickSwap,
   onClickTransfer,
   onClickWithdraw,
+  searchTerm,
 }: AccountsContainerProps) => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -41,6 +44,9 @@ export const AccountsContainer = ({
     onClickDeposit: (assetId) => {
       navigateToAssetAction(Links.DEPOSIT(), assetId);
     },
+    onClickCrossChainDeposit: (assetId) => {
+      navigateToAssetAction(Links.DEPOSIT_CROSS_CHAIN(), assetId);
+    },
     onClickSwap: (assetId) => {
       navigateToAssetAction(Links.SWAP(), assetId);
     },
@@ -58,12 +64,16 @@ export const AccountsContainer = ({
       onClickAsset={onClickAsset || defaultActions.onClickAsset}
       onClickWithdraw={onClickWithdraw || defaultActions.onClickWithdraw}
       onClickDeposit={onClickDeposit || defaultActions.onClickDeposit}
+      onClickCrossChainDeposit={
+        onClickCrossChainDeposit || defaultActions.onClickCrossChainDeposit
+      }
       onClickTransfer={onClickTransfer || defaultActions.onClickTransfer}
       onClickSwap={onClickSwap || defaultActions.onClickSwap}
       isReadOnly={isReadOnly}
       pinnedAssets={pinnedAssets}
       orderByBalance={orderByBalance}
       hideZeroBalance={hideZeroBalance}
+      searchTerm={searchTerm}
     />
   );
 };
