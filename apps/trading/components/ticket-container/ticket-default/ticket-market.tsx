@@ -1,10 +1,9 @@
-import BigNumber from 'bignumber.js';
 import { useState } from 'react';
 import uniqueId from 'lodash/uniqueId';
 import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import { OrderType, OrderTimeInForce, Side } from '@vegaprotocol/types';
+import { OrderType, OrderTimeInForce } from '@vegaprotocol/types';
 import { toBigNum } from '@vegaprotocol/utils';
 import { useVegaTransactionStore } from '@vegaprotocol/web3';
 import {
@@ -21,7 +20,6 @@ import { TicketTypeSelect } from '../ticket-type-select';
 import { type FormProps } from './ticket';
 import { SizeSlider } from './size-slider';
 
-import * as utils from '../utils';
 import * as Fields from '../fields';
 import * as Data from '../info';
 import { TicketEventUpdater } from '../ticket-events';
@@ -52,6 +50,7 @@ export const TicketMarket = (props: FormProps) => {
     },
   });
 
+  const sizeMode = form.watch('sizeMode');
   const size = form.watch('size');
   const tpSl = form.watch('tpSl');
 
@@ -68,22 +67,10 @@ export const TicketMarket = (props: FormProps) => {
         onSubmit={form.handleSubmit((fields) => {
           const reference = `${pubKey}-${Date.now()}-${uniqueId()}`;
 
-          // TODO: handle this in the map function using sizeMode
-          // if in notional, convert back to normal size
-          const size =
-            fields.sizeMode === 'notional'
-              ? utils
-                  .toSize(BigNumber(fields.size), price || BigNumber(0))
-                  .toString()
-              : fields.size;
-
           if (fields.tpSl) {
             const batchMarketInstructions =
               mapFormValuesToTakeProfitAndStopLoss(
-                {
-                  ...fields,
-                  size,
-                },
+                fields,
                 ticket.market,
                 reference
               );
@@ -93,10 +80,7 @@ export const TicketMarket = (props: FormProps) => {
             });
           } else {
             const orderSubmission = mapFormValuesToOrderSubmission(
-              {
-                ...fields,
-                size,
-              },
+              fields,
               ticket.market.id,
               ticket.market.decimalPlaces,
               ticket.market.positionDecimalPlaces,
@@ -111,7 +95,11 @@ export const TicketMarket = (props: FormProps) => {
       >
         <Fields.Side side={props.side} onSideChange={props.onSideChange} />
         <TicketTypeSelect type="market" onTypeChange={props.onTypeChange} />
-        <Fields.Size price={price} />
+        {sizeMode === 'contracts' ? (
+          <Fields.Size price={price} />
+        ) : (
+          <Fields.Notional price={price} />
+        )}
         <SizeSlider price={price} />
         <FormGrid>
           <FormGridCol>
@@ -138,7 +126,7 @@ export const TicketMarket = (props: FormProps) => {
           subLabel={`${size || 0} ${ticket.baseSymbol} @ market`}
         />
         <Datagrid>
-          <Data.Notional price={price} />
+          {sizeMode === 'contracts' ? <Data.Notional /> : <Data.Size />}
           <Data.Fees />
           <Data.Slippage />
           <Data.CollateralRequired />

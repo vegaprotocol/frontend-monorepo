@@ -48,13 +48,14 @@ export const SizeSlider = ({ price }: { price: BigNumber | undefined }) => {
           fields,
           orders: orders || [],
         });
+        const notional = utils.toNotional(size, price);
 
-        if (fields.sizeMode === 'contracts') {
-          form.setValue('size', size.toNumber(), { shouldValidate: true });
-        } else if (fields.sizeMode === 'notional') {
-          const notional = utils.toNotional(size, price);
-          form.setValue('size', notional.toNumber(), { shouldValidate: true });
-        }
+        form.setValue('size', size.toNumber(), {
+          shouldValidate: fields.sizeMode === 'contracts',
+        });
+        form.setValue('notional', notional.toNumber(), {
+          shouldValidate: fields.sizeMode === 'notional',
+        });
       }}
     />
   );

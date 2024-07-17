@@ -5,7 +5,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { addDays } from 'date-fns';
 
-import { OrderType, OrderTimeInForce, Side } from '@vegaprotocol/types';
+import { OrderType, OrderTimeInForce } from '@vegaprotocol/types';
 import { useVegaTransactionStore } from '@vegaprotocol/web3';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import {
@@ -24,7 +24,6 @@ import { useT } from '../../../lib/use-t';
 import { Datagrid } from '../elements/datagrid';
 import { TicketEventUpdater } from '../ticket-events';
 
-import * as utils from '../utils';
 import * as Fields from '../fields';
 import * as Data from '../info';
 import { SizeSlider } from './size-slider';
@@ -54,6 +53,7 @@ export const TicketLimit = (props: FormProps) => {
     },
   });
 
+  const sizeMode = form.watch('sizeMode');
   const size = form.watch('size');
   const price = form.watch('price');
   const tpSl = form.watch('tpSl');
@@ -68,22 +68,10 @@ export const TicketLimit = (props: FormProps) => {
         onSubmit={form.handleSubmit((fields) => {
           const reference = `${pubKey}-${Date.now()}-${uniqueId()}`;
 
-          // TODO: handle this in the map function using sizeMode
-          // if in notional, convert back to normal size
-          const size =
-            fields.sizeMode === 'notional'
-              ? utils
-                  .toSize(BigNumber(fields.size), BigNumber(price || 0))
-                  .toString()
-              : fields.size;
-
           if (fields.tpSl) {
             const batchMarketInstructions =
               mapFormValuesToTakeProfitAndStopLoss(
-                {
-                  ...fields,
-                  size,
-                },
+                fields,
                 ticket.market,
                 reference
               );
@@ -93,10 +81,7 @@ export const TicketLimit = (props: FormProps) => {
             });
           } else {
             const orderSubmission = mapFormValuesToOrderSubmission(
-              {
-                ...fields,
-                size,
-              },
+              fields,
               ticket.market.id,
               ticket.market.decimalPlaces,
               ticket.market.positionDecimalPlaces,
@@ -112,7 +97,11 @@ export const TicketLimit = (props: FormProps) => {
         <Fields.Side side={props.side} onSideChange={props.onSideChange} />
         <TicketTypeSelect type="limit" onTypeChange={props.onTypeChange} />
         <Fields.Price />
-        <Fields.Size price={BigNumber(price)} />
+        {sizeMode === 'contracts' ? (
+          <Fields.Size price={BigNumber(price)} />
+        ) : (
+          <Fields.Notional price={BigNumber(price)} />
+        )}
         <SizeSlider price={BigNumber(price || '0')} />
         <FormGrid>
           <FormGridCol>
@@ -159,7 +148,7 @@ export const TicketLimit = (props: FormProps) => {
           }`}
         />
         <Datagrid>
-          <Data.Notional price={BigNumber(price)} />
+          {sizeMode === 'contracts' ? <Data.Notional /> : <Data.Size />}
           <Data.Fees />
           <Data.Slippage />
           <Data.CollateralRequired />

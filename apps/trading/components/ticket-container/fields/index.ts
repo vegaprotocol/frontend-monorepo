@@ -1,6 +1,7 @@
 export { Side } from './side';
 export { Price } from './price';
 export { Size } from './size';
+export { Notional } from './notional';
 export { TimeInForce } from './time-in-force';
 export { ExpiresAt } from './expires-at';
 export { TpSl } from './tp-sl';

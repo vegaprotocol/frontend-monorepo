@@ -9,8 +9,13 @@ export const toNotional = (size: BigNumber, price: BigNumber) => {
   return size.times(price);
 };
 
-export const toSize = (notional: BigNumber, price: BigNumber) => {
-  return notional.div(price);
+export const toSize = (
+  notional: BigNumber,
+  price: BigNumber,
+  decimals: number
+) => {
+  const val = notional.div(price);
+  return roundToPositionDecimals(val, decimals);
 };
 
 export const roundToPositionDecimals = (size: BigNumber, decimals: number) => {

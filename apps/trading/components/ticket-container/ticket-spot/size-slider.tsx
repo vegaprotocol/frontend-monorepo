@@ -41,16 +41,14 @@ export const SizeSlider = ({ price }: { price: BigNumber | undefined }) => {
           ticket.market.positionDecimalPlaces
         );
 
-        if (fields.sizeMode === 'contracts') {
-          form.setValue('size', sizeRounded.toNumber(), {
-            shouldValidate: true,
-          });
-        } else if (fields.sizeMode === 'notional') {
-          // if in notional mode convert the max size into a notional price
-          const notional = utils.toNotional(sizeRounded, price);
+        const notional = utils.toNotional(sizeRounded, price);
 
-          form.setValue('size', notional.toNumber(), { shouldValidate: true });
-        }
+        form.setValue('size', sizeRounded.toNumber(), {
+          shouldValidate: fields.sizeMode === 'contracts',
+        });
+        form.setValue('notional', notional.toNumber(), {
+          shouldValidate: fields.sizeMode === 'notional',
+        });
       }}
     />
   );

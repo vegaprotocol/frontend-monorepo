@@ -11,28 +11,30 @@ import { useForm } from '../use-form';
 import * as utils from '../utils';
 import { SizeModeButton } from '../size-mode-button';
 
-export const Size = (props: { price?: BigNumber }) => {
+export const Notional = (props: { price?: BigNumber }) => {
+  const ticket = useTicketContext();
   const form = useForm();
 
   return (
     <FormField
       control={form.control}
-      name="size"
+      name="notional"
       render={({ field }) => {
         return (
           <TicketInput
             {...field}
-            label={<SizeLabel />}
+            label={<NotionalLabel />}
             value={field.value || ''}
             onChange={(e) => {
               field.onChange(e);
 
               if (props.price) {
-                const notional = utils.toNotional(
+                const size = utils.toSize(
                   BigNumber(e.target.value),
-                  props.price
+                  props.price,
+                  ticket.market.positionDecimalPlaces
                 );
-                form.setValue('notional', notional.toNumber());
+                form.setValue('size', size.toNumber());
               }
             }}
             appendElement={<SizeModeButton />}
@@ -43,12 +45,11 @@ export const Size = (props: { price?: BigNumber }) => {
   );
 };
 
-const SizeLabel = () => {
+const NotionalLabel = () => {
   const t = useT();
   const ticket = useTicketContext();
-  const label = t('Size');
-  const symbol =
-    ticket.type === 'spot' ? ticket.baseAsset.symbol : ticket.baseSymbol;
+  const label = t('Notional');
+  const symbol = ticket.quoteAsset.symbol;
 
   return <InputLabel label={label} symbol={symbol} />;
 };

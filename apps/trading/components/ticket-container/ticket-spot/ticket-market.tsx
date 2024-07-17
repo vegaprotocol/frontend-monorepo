@@ -1,11 +1,10 @@
-import BigNumber from 'bignumber.js';
 import { useState } from 'react';
 import uniqueId from 'lodash/uniqueId';
 import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { useMarkPrice } from '@vegaprotocol/markets';
-import { OrderTimeInForce, OrderType, Side } from '@vegaprotocol/types';
+import { OrderTimeInForce, OrderType } from '@vegaprotocol/types';
 import { toBigNum } from '@vegaprotocol/utils';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import {
@@ -23,10 +22,12 @@ import { type FormProps } from './ticket';
 import { useTicketContext } from '../ticket-context';
 import { TicketEventUpdater } from '../ticket-events';
 
-import * as utils from '../utils';
 import * as Fields from '../fields';
+import * as Data from '../info';
+
 import { SizeSlider } from './size-slider';
 import { Feedback } from './feedback';
+import { Datagrid } from '../elements/datagrid';
 
 export const TicketMarket = (props: FormProps) => {
   const ticket = useTicketContext('spot');
@@ -48,6 +49,7 @@ export const TicketMarket = (props: FormProps) => {
     },
   });
 
+  const sizeMode = form.watch('sizeMode');
   const size = form.watch('size');
   const tpSl = form.watch('tpSl');
 
@@ -64,22 +66,10 @@ export const TicketMarket = (props: FormProps) => {
         onSubmit={form.handleSubmit((fields) => {
           const reference = `${pubKey}-${Date.now()}-${uniqueId()}`;
 
-          // TODO: handle this in the map function using sizeMode
-          // if in notional, convert back to normal size
-          const size =
-            fields.sizeMode === 'notional'
-              ? utils
-                  .toSize(BigNumber(fields.size), price || BigNumber(0))
-                  .toString()
-              : fields.size;
-
           if (fields.tpSl) {
             const batchMarketInstructions =
               mapFormValuesToTakeProfitAndStopLoss(
-                {
-                  ...fields,
-                  size,
-                },
+                fields,
                 ticket.market,
                 reference
               );
@@ -89,10 +79,7 @@ export const TicketMarket = (props: FormProps) => {
             });
           } else {
             const orderSubmission = mapFormValuesToOrderSubmission(
-              {
-                ...fields,
-                size,
-              },
+              fields,
               ticket.market.id,
               ticket.market.decimalPlaces,
               ticket.market.positionDecimalPlaces,
@@ -107,7 +94,11 @@ export const TicketMarket = (props: FormProps) => {
       >
         <Fields.Side side={props.side} onSideChange={props.onSideChange} />
         <TicketTypeSelect type="market" onTypeChange={props.onTypeChange} />
-        <Fields.Size price={price} />
+        {sizeMode === 'contracts' ? (
+          <Fields.Size price={price} />
+        ) : (
+          <Fields.Notional price={price} />
+        )}
         <SizeSlider price={price} />
         <FormGrid>
           <FormGridCol>
@@ -133,6 +124,12 @@ export const TicketMarket = (props: FormProps) => {
           text={t('Place market order')}
           subLabel={`${size || 0} ${ticket.baseAsset.symbol} @ market`}
         />
+        <Datagrid>
+          {sizeMode === 'contracts' ? <Data.Notional /> : <Data.Size />}
+          <Data.Fees />
+          <Data.Slippage />
+          <Data.CollateralRequired />
+        </Datagrid>
         <pre className="block w-full text-2xs">
           {JSON.stringify(form.getValues(), null, 2)}
         </pre>
