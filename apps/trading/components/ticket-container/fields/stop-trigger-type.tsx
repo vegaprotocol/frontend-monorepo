@@ -21,7 +21,7 @@ export const StopTriggerType = ({
             value={field.value}
             onValueChange={field.onChange}
             placeholder={t('Select')}
-            data-testid="trigger-direction"
+            data-testid="trigger-type"
           >
             <MiniSelectOption value="price" data-testid="triggerType-price">
               {t('Price')}

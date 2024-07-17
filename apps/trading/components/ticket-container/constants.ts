@@ -1,5 +1,7 @@
 import { OrderTimeInForce } from '@vegaprotocol/types';
 
+export const TIF_OPTIONS = Object.values(OrderTimeInForce);
+
 export const PERSISTENT_TIF_OPTIONS = [
   OrderTimeInForce.TIME_IN_FORCE_GTC,
   OrderTimeInForce.TIME_IN_FORCE_GTT,

@@ -49,7 +49,7 @@ export const Price = ({ name = 'price' }: { name?: 'price' | 'ocoPrice' }) => {
                   form.setValue('size', size.toNumber());
                 }
               }}
-              data-testid="order-price"
+              data-testid={`field-${name}`}
               label={
                 <InputLabel
                   label={t('Price')}
@@ -58,7 +58,9 @@ export const Price = ({ name = 'price' }: { name?: 'price' | 'ocoPrice' }) => {
               }
             />
             {fieldState.error && (
-              <TradingInputError>{fieldState.error.message}</TradingInputError>
+              <TradingInputError testId={`error-${name}`}>
+                {fieldState.error.message}
+              </TradingInputError>
             )}
           </div>
         );

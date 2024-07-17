@@ -16,6 +16,7 @@ export const StopExpiry = () => {
             checked={field.value}
             onCheckedChange={field.onChange}
             label={t('Expiry')}
+            name="field-stopExpiry"
           />
         );
       }}

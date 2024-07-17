@@ -23,6 +23,7 @@ export const StopExpiryStrategy = ({
             value={field.value}
             onValueChange={field.onChange}
             placeholder={t('Expiry strategy')}
+            data-testid="field-stopExpiryStrategy"
           >
             <MiniSelectOption
               value={StopOrderExpiryStrategy.EXPIRY_STRATEGY_CANCELS}

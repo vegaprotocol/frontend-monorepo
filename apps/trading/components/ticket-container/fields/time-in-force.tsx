@@ -1,25 +1,20 @@
 import {
-  OrderTimeInForce,
+  type OrderTimeInForce,
   OrderTimeInForceCode,
   OrderTimeInForceMapping,
-  OrderType,
 } from '@vegaprotocol/types';
 import { MiniSelect, MiniSelectOption } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../../lib/use-t';
 
 import { FormField } from '../ticket-field';
-import { NON_PERSISTENT_TIF_OPTIONS } from '../constants';
+import { TIF_OPTIONS, NON_PERSISTENT_TIF_OPTIONS } from '../constants';
 import { useForm } from '../use-form';
+import { useTicketContext } from '../ticket-context';
 
 export const TimeInForce = () => {
   const t = useT();
   const form = useForm();
-
-  const type = form.watch('type');
-  const options =
-    type === OrderType.TYPE_MARKET
-      ? NON_PERSISTENT_TIF_OPTIONS
-      : Object.values(OrderTimeInForce);
+  const options = useOptions();
 
   return (
     <FormField
@@ -54,4 +49,26 @@ export const TimeInForce = () => {
       }}
     />
   );
+};
+
+const useOptions = () => {
+  const ticket = useTicketContext();
+  const form = useForm();
+  const ticketType = form.watch('ticketType');
+
+  if (ticket.type === 'default') {
+    if (ticketType === 'limit') {
+      return TIF_OPTIONS;
+    }
+
+    return NON_PERSISTENT_TIF_OPTIONS;
+  }
+
+  if (ticket.type === 'spot') {
+    if (ticketType === 'limit') {
+      return TIF_OPTIONS;
+    }
+  }
+
+  return TIF_OPTIONS;
 };

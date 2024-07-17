@@ -160,14 +160,20 @@ export const createStopLimitSchema = (market: MarketInfo) => {
       side: z.nativeEnum(Side),
       triggerDirection: z.nativeEnum(StopOrderTriggerDirection),
       triggerType: z.enum(['price', 'trailingPercentOffset']),
-      triggerPrice: z.coerce.number(),
-      price: z.coerce.number().min(Number(priceStep)).step(Number(priceStep)),
+      triggerPrice: z.coerce.number({ message: i18n.t('Required') }),
+      price: z.coerce
+        .number({ message: i18n.t('Required') })
+        .min(Number(priceStep))
+        .step(Number(priceStep)),
       sizeOverride: z.nativeEnum(StopOrderSizeOverrideSetting),
-      size: z.coerce.number().min(Number(sizeStep)).step(Number(sizeStep)),
+      size: z.coerce
+        .number({ message: i18n.t('Required') })
+        .min(Number(sizeStep))
+        .step(Number(sizeStep)),
       timeInForce: z.nativeEnum(OrderTimeInForce),
       expiresAt: z.date().optional(),
       stopExpiry: z.boolean(),
-      stopExpiryStrategy: z.nativeEnum(StopOrderExpiryStrategy),
+      stopExpiryStrategy: z.nativeEnum(StopOrderExpiryStrategy).optional(),
       stopExpiresAt: z.date().optional(),
       reduceOnly: z.boolean(),
       postOnly: z.boolean(),
@@ -242,7 +248,7 @@ export const createStopMarketSchema = (market: MarketInfo) => {
       timeInForce: z.nativeEnum(OrderTimeInForce),
       expiresAt: z.date().optional(),
       stopExpiry: z.boolean(),
-      stopExpiryStrategy: z.nativeEnum(StopOrderExpiryStrategy),
+      stopExpiryStrategy: z.nativeEnum(StopOrderExpiryStrategy).optional(),
       stopExpiresAt: z.date().optional(),
       reduceOnly: z.boolean(),
       oco: z.boolean(),
