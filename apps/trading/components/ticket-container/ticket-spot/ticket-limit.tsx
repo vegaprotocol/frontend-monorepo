@@ -44,7 +44,7 @@ export const TicketLimit = (props: FormProps) => {
       ticketType: 'limit',
       sizeMode: 'contracts',
       type: OrderType.TYPE_LIMIT,
-      side: Side.SIDE_BUY,
+      side: props.side,
       timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
       expiresAt: addDays(new Date(), 1),
       postOnly: false,
@@ -109,7 +109,7 @@ export const TicketLimit = (props: FormProps) => {
           }
         })}
       >
-        <Fields.Side />
+        <Fields.Side side={props.side} onSideChange={props.onSideChange} />
         <TicketTypeSelect type="limit" onTypeChange={props.onTypeChange} />
         <Fields.Price />
         <Fields.Size price={BigNumber(price)} />

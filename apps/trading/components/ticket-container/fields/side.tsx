@@ -9,7 +9,10 @@ import { FormField } from '../ticket-field';
 import { useTicketContext } from '../ticket-context';
 import { useForm } from '../use-form';
 
-export const Side = () => {
+export const Side = (props: {
+  side: ESide;
+  onSideChange: (side: ESide) => void;
+}) => {
   const toggles = useToggles();
   const form = useForm();
   return (
@@ -22,7 +25,10 @@ export const Side = () => {
             className="relative flex h-10 leading-10 bg-vega-clight-700 dark:bg-vega-cdark-700 rounded"
             type="single"
             {...field}
-            onValueChange={field.onChange}
+            onValueChange={(value) => {
+              field.onChange(value);
+              props.onSideChange(value as ESide);
+            }}
           >
             <span
               className={classNames(

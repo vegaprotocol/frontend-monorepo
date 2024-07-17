@@ -45,7 +45,7 @@ export const TicketMarket = (props: FormProps) => {
       ticketType: 'market',
       sizeMode: 'contracts',
       type: OrderType.TYPE_MARKET,
-      side: Side.SIDE_BUY,
+      side: props.side,
       timeInForce: OrderTimeInForce.TIME_IN_FORCE_IOC,
       reduceOnly: false,
       tpSl: false,
@@ -109,7 +109,7 @@ export const TicketMarket = (props: FormProps) => {
           }
         })}
       >
-        <Fields.Side />
+        <Fields.Side side={props.side} onSideChange={props.onSideChange} />
         <TicketTypeSelect type="market" onTypeChange={props.onTypeChange} />
         <Fields.Size price={price} />
         <SizeSlider price={price} />

@@ -38,7 +38,7 @@ export const TicketStopLimit = (props: FormProps) => {
     defaultValues: {
       ticketType: 'stopLimit',
       type: OrderType.TYPE_LIMIT,
-      side: Side.SIDE_BUY,
+      side: props.side,
       triggerDirection: StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE,
       triggerType: 'price',
       sizeOverride: StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_NONE,
@@ -77,7 +77,7 @@ export const TicketStopLimit = (props: FormProps) => {
           });
         })}
       >
-        <Fields.Side />
+        <Fields.Side side={props.side} onSideChange={props.onSideChange} />
         <TicketTypeSelect type="stopLimit" onTypeChange={props.onTypeChange} />
         <div className="flex flex-col gap-1">
           <FieldControls>

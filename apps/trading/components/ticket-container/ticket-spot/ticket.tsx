@@ -4,14 +4,16 @@ import {
   type MarketInfo,
 } from '@vegaprotocol/markets';
 import { useAccountBalance, useMarginMode } from '@vegaprotocol/accounts';
+import { type Side } from '@vegaprotocol/types';
 
-import { useTicketType } from '../use-ticket-type';
 import { type TicketType } from '../schemas';
 import { TicketContext } from '../ticket-context';
 import { TicketMarket } from './ticket-market';
 import { TicketLimit } from './ticket-limit';
 import { TicketStopMarket } from './ticket-stop-market';
 import { TicketStopLimit } from './ticket-stop-limit';
+import { useTicketType } from '../use-ticket-type';
+import { useTicketSide } from '../use-ticket-side';
 
 export const Ticket = ({ market }: { market: MarketInfo }) => {
   const quoteAsset = getQuoteAsset(market);
@@ -48,17 +50,22 @@ export const Ticket = ({ market }: { market: MarketInfo }) => {
 };
 
 export type FormProps = {
+  side: Side;
+  onSideChange: (value: Side) => void;
   onTypeChange: (value: TicketType) => void;
 };
 
 export const TicketSpotSwitch = () => {
-  const [ticketType, setTicketType] = useTicketType();
+  const [type, setType] = useTicketType();
+  const [side, setSide] = useTicketSide();
 
   const props: FormProps = {
-    onTypeChange: (value: TicketType) => setTicketType(value),
+    side,
+    onSideChange: (value: Side) => setSide(value),
+    onTypeChange: (value: TicketType) => setType(value),
   };
 
-  switch (ticketType) {
+  switch (type) {
     case 'market': {
       return <TicketMarket {...props} />;
     }
