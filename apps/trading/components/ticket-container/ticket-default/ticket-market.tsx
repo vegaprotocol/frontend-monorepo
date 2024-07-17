@@ -5,10 +5,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { OrderType, OrderTimeInForce } from '@vegaprotocol/types';
 import { toBigNum } from '@vegaprotocol/utils';
 import { useVegaTransactionStore } from '@vegaprotocol/web3';
-import {
-  mapFormValuesToOrderSubmission,
-  mapFormValuesToTakeProfitAndStopLoss,
-} from '@vegaprotocol/deal-ticket';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useMarkPrice } from '@vegaprotocol/markets';
 
@@ -27,6 +23,10 @@ import { Datagrid } from '../elements/datagrid';
 import { useTicketContext } from '../ticket-context';
 import { SubmitButton } from '../elements/submit-button';
 import { Feedback } from './feedback';
+import {
+  createOrderSubmission,
+  createTpSl,
+} from '../map-form-values-to-submission';
 
 export const TicketMarket = (props: FormProps) => {
   const t = useT();
@@ -67,18 +67,17 @@ export const TicketMarket = (props: FormProps) => {
           const reference = `${pubKey}-${Date.now()}-${uniqueId()}`;
 
           if (fields.tpSl) {
-            const batchMarketInstructions =
-              mapFormValuesToTakeProfitAndStopLoss(
-                fields,
-                ticket.market,
-                reference
-              );
+            const batchMarketInstructions = createTpSl(
+              fields,
+              ticket.market,
+              reference
+            );
 
             create({
               batchMarketInstructions,
             });
           } else {
-            const orderSubmission = mapFormValuesToOrderSubmission(
+            const orderSubmission = createOrderSubmission(
               fields,
               ticket.market.id,
               ticket.market.decimalPlaces,

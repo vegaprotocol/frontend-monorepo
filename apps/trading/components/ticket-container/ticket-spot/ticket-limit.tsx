@@ -7,10 +7,6 @@ import { addDays } from 'date-fns';
 import { OrderType, OrderTimeInForce } from '@vegaprotocol/types';
 import { useVegaTransactionStore } from '@vegaprotocol/web3';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
-import {
-  mapFormValuesToOrderSubmission,
-  mapFormValuesToTakeProfitAndStopLoss,
-} from '@vegaprotocol/deal-ticket';
 
 import { Form, FormGrid, FormGridCol } from '../elements/form';
 import { type FormFieldsLimit, useLimitSchema } from '../schemas';
@@ -27,6 +23,10 @@ import * as Fields from '../fields';
 import * as Data from '../info';
 import { SizeSlider } from './size-slider';
 import { Feedback } from './feedback';
+import {
+  createOrderSubmission,
+  createTpSl,
+} from '../map-form-values-to-submission';
 
 export const TicketLimit = (props: FormProps) => {
   const ticket = useTicketContext('spot');
@@ -68,18 +68,17 @@ export const TicketLimit = (props: FormProps) => {
           const reference = `${pubKey}-${Date.now()}-${uniqueId()}`;
 
           if (fields.tpSl) {
-            const batchMarketInstructions =
-              mapFormValuesToTakeProfitAndStopLoss(
-                fields,
-                ticket.market,
-                reference
-              );
+            const batchMarketInstructions = createTpSl(
+              fields,
+              ticket.market,
+              reference
+            );
 
             create({
               batchMarketInstructions,
             });
           } else {
-            const orderSubmission = mapFormValuesToOrderSubmission(
+            const orderSubmission = createOrderSubmission(
               fields,
               ticket.market.id,
               ticket.market.decimalPlaces,

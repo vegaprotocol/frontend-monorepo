@@ -9,7 +9,6 @@ import {
   StopOrderSizeOverrideSetting,
 } from '@vegaprotocol/types';
 import { useVegaTransactionStore } from '@vegaprotocol/web3';
-import { mapFormValuesToStopOrdersSubmission } from '@vegaprotocol/deal-ticket';
 
 import { FieldControls, Form, FormGrid, FormGridCol } from '../elements/form';
 import { type FormFieldsStopMarket, useStopMarketSchema } from '../schemas';
@@ -25,6 +24,7 @@ import * as Fields from '../fields';
 import { SizeSliderStop } from './size-slider-stop';
 import { useMarkPrice } from '@vegaprotocol/markets';
 import { toBigNum } from '@vegaprotocol/utils';
+import { createStopOrdersSubmission } from '../map-form-values-to-submission';
 
 export const TicketStopMarket = (props: FormProps) => {
   const t = useT();
@@ -70,7 +70,7 @@ export const TicketStopMarket = (props: FormProps) => {
         onSubmit={form.handleSubmit((fields) => {
           create({
             // TODO: convert this func to take the schema values
-            stopOrdersSubmission: mapFormValuesToStopOrdersSubmission(
+            stopOrdersSubmission: createStopOrdersSubmission(
               fields,
               ticket.market.id,
               ticket.market.decimalPlaces,
