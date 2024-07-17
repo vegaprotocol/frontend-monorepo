@@ -1,6 +1,6 @@
 import { formatNumber, removeDecimal } from '@vegaprotocol/utils';
 import { useMarkPrice } from '@vegaprotocol/markets';
-import { useSlippage } from '@vegaprotocol/deal-ticket';
+import { useSlippage } from '../use-slippage';
 import { OrderType } from '@vegaprotocol/types';
 
 import { useT } from '../../../lib/use-t';

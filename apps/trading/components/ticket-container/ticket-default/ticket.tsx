@@ -1,9 +1,9 @@
 import {
   getAsset,
   getQuoteAsset,
+  getBaseQuoteUnit,
   type MarketInfo,
 } from '@vegaprotocol/markets';
-import { getBaseQuoteUnit } from '@vegaprotocol/deal-ticket';
 import {
   useAccountBalance,
   useMarginAccountBalance,

@@ -1,0 +1,55 @@
+query EstimateFees(
+  $marketId: ID!
+  $partyId: ID!
+  $price: String
+  $size: String!
+  $side: Side!
+  $timeInForce: OrderTimeInForce!
+  $expiration: Timestamp
+  $type: OrderType!
+) {
+  estimateFees(
+    marketId: $marketId
+    partyId: $partyId
+    price: $price
+    size: $size
+    side: $side
+    timeInForce: $timeInForce
+    expiration: $expiration
+    type: $type
+  ) {
+    fees {
+      makerFee
+      infrastructureFee
+      liquidityFee
+      makerFeeReferralDiscount
+      makerFeeVolumeDiscount
+      infrastructureFeeReferralDiscount
+      infrastructureFeeVolumeDiscount
+      liquidityFeeReferralDiscount
+      liquidityFeeVolumeDiscount
+    }
+    totalFeeAmount
+  }
+  epoch {
+    id
+  }
+  volumeDiscountStats(partyId: $partyId, pagination: { last: 1 }) {
+    edges {
+      node {
+        atEpoch
+        discountFactor
+        runningVolume
+      }
+    }
+  }
+  referralSetStats(partyId: $partyId, pagination: { last: 1 }) {
+    edges {
+      node {
+        atEpoch
+        discountFactor
+        referralSetRunningNotionalTakerVolume
+      }
+    }
+  }
+}

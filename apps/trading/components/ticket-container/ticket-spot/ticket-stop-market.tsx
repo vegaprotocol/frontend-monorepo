@@ -6,7 +6,6 @@ import { addDays } from 'date-fns';
 import {
   OrderType,
   OrderTimeInForce,
-  Side,
   StopOrderTriggerDirection,
   StopOrderSizeOverrideSetting,
 } from '@vegaprotocol/types';

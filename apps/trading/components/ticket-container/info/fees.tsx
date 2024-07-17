@@ -1,6 +1,5 @@
 import BigNumber from 'bignumber.js';
 
-import { FeesBreakdown, useEstimateFeesQuery } from '@vegaprotocol/deal-ticket';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import {
   isMarketInAuction,
@@ -13,16 +12,16 @@ import {
   formatValue,
   removeDecimal,
 } from '@vegaprotocol/utils';
-import {
-  getTotalDiscountFactor,
-  getDiscountedFee,
-} from '@vegaprotocol/deal-ticket';
 import { Intent, Pill, Tooltip } from '@vegaprotocol/ui-toolkit';
 
 import { useT } from '../../../lib/use-t';
+import { useForm } from '../use-form';
 import { useTicketContext } from '../ticket-context';
 import { DatagridRow } from '../elements/datagrid';
-import { useForm } from '../use-form';
+
+import { FeesBreakdown } from './fees-breakdown';
+import { useEstimateFeesQuery } from '../__generated__/EstimateFees';
+import * as utils from '../utils';
 
 export const Fees = () => {
   const t = useT();
@@ -30,10 +29,10 @@ export const Fees = () => {
   const ticket = useTicketContext();
   const asset = ticket.quoteAsset;
 
-  const totalDiscountFactor = getTotalDiscountFactor(feeEstimate);
+  const totalDiscountFactor = utils.getTotalDiscountFactor(feeEstimate);
   const totalDiscountedFeeAmount =
     feeEstimate?.totalFeeAmount &&
-    getDiscountedFee(
+    utils.getDiscountedFee(
       feeEstimate.totalFeeAmount,
       feeEstimate.referralDiscountFactor,
       feeEstimate.volumeDiscountFactor
@@ -103,7 +102,7 @@ export const Fees = () => {
   );
 };
 
-const useEstimateFees = () => {
+export const useEstimateFees = () => {
   const ticket = useTicketContext();
   const form = useForm();
   const { pubKey } = useVegaWallet();

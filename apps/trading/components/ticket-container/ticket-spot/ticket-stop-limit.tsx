@@ -6,7 +6,6 @@ import { useState } from 'react';
 import {
   OrderType,
   OrderTimeInForce,
-  Side,
   StopOrderTriggerDirection,
   StopOrderSizeOverrideSetting,
 } from '@vegaprotocol/types';

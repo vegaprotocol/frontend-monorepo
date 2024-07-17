@@ -272,3 +272,11 @@ export const calcTradedFactor = (m: MarketMaybeWithDataAndCandles) => {
   const factor = fq.multipliedBy(fp).multipliedBy(volume);
   return factor.toNumber();
 };
+
+/**
+ * Gets the quote unit as specified in instrument tags
+ */
+export const getBaseQuoteUnit = (tags?: string[] | null) =>
+  tags
+    ?.find((tag) => tag.startsWith('base:') || tag.startsWith('ticker:'))
+    ?.replace(/^[^:]*:/, '');
