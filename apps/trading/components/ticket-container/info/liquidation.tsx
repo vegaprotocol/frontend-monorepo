@@ -5,7 +5,6 @@ import { formatRange, formatValue } from '@vegaprotocol/utils';
 
 import { useT } from '../../../lib/use-t';
 import { ExternalLink, Tooltip } from '@vegaprotocol/ui-toolkit';
-import { LIQUIDATION_PRICE_ESTIMATE_TOOLTIP_TEXT } from '@vegaprotocol/deal-ticket';
 import { Trans } from 'react-i18next';
 
 import { useEstimatePosition } from '../use-estimate-position';
@@ -24,10 +23,36 @@ export const Liquidation = () => {
   const label = t('Liquidation estimate ({{symbol}})', {
     symbol: ticket.quoteAsset.symbol,
   });
+  const labelWithTooltip = (
+    <Tooltip
+      description={
+        <>
+          <span>{t('ticketTooltipLiquidation')}</span>{' '}
+          <span>
+            <Trans
+              defaults="For full details please see <0>liquidation price estimate documentation</0>."
+              components={[
+                <ExternalLink
+                  key="link"
+                  href={
+                    'https://github.com/vegaprotocol/specs/blob/master/non-protocol-specs/0012-NP-LIPE-liquidation-price-estimate.md'
+                  }
+                >
+                  liquidation price estimate documentation
+                </ExternalLink>,
+              ]}
+            />
+          </span>
+        </>
+      }
+    >
+      <span>{label}</span>
+    </Tooltip>
+  );
   const liquidationEstimate = data?.estimatePosition?.liquidation;
 
   if (!liquidationEstimate) {
-    return <DatagridRow label={label} value="-" />;
+    return <DatagridRow label={labelWithTooltip} value="-" />;
   }
 
   const bestCaseWithBuys = BigInt(
@@ -63,42 +88,12 @@ export const Liquidation = () => {
   );
 
   if (bestCase === BigInt(0) && worstCase === BigInt(0)) {
-    return <DatagridRow label={label} value="-" />;
+    return <DatagridRow label={labelWithTooltip} value="-" />;
   }
 
   return (
     <DatagridRow
-      label={
-        <Tooltip
-          description={
-            <>
-              <span>
-                {t(
-                  'LIQUIDATION_PRICE_ESTIMATE_TOOLTIP_TEXT',
-                  LIQUIDATION_PRICE_ESTIMATE_TOOLTIP_TEXT
-                )}
-              </span>{' '}
-              <span>
-                <Trans
-                  defaults="For full details please see <0>liquidation price estimate documentation</0>."
-                  components={[
-                    <ExternalLink
-                      key="link"
-                      href={
-                        'https://github.com/vegaprotocol/specs/blob/master/non-protocol-specs/0012-NP-LIPE-liquidation-price-estimate.md'
-                      }
-                    >
-                      liquidation price estimate documentation
-                    </ExternalLink>,
-                  ]}
-                />
-              </span>
-            </>
-          }
-        >
-          <span>{label}</span>
-        </Tooltip>
-      }
+      label={labelWithTooltip}
       value={
         <Tooltip description={priceEstimateRange}>
           <span>{priceEstimate}</span>

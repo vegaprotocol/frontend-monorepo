@@ -3,6 +3,7 @@ import { DatagridRow } from '../elements/datagrid';
 import { useT } from '../../../lib/use-t';
 import { useForm } from '../use-form';
 import { useTicketContext } from '../ticket-context';
+import { Tooltip } from '@vegaprotocol/ui-toolkit';
 
 export const Notional = () => {
   const t = useT();
@@ -13,7 +14,11 @@ export const Notional = () => {
 
   return (
     <DatagridRow
-      label={t('Notional ({{symbol}})', { symbol })}
+      label={
+        <Tooltip description={t('ticketTooltipNotional')}>
+          <span>{t('Notional ({{symbol}})', { symbol })}</span>
+        </Tooltip>
+      }
       value={notional || '-'}
     />
   );
