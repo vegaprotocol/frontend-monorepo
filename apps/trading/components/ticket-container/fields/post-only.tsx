@@ -1,4 +1,9 @@
-import { TradingCheckbox as Checkbox } from '@vegaprotocol/ui-toolkit';
+import {
+  TradingCheckbox as Checkbox,
+  ExternalLink,
+  Tooltip,
+} from '@vegaprotocol/ui-toolkit';
+import { DocsLinks } from '@vegaprotocol/environment';
 
 import { FormField } from '../ticket-field';
 import { useT } from '../../../lib/use-t';
@@ -13,14 +18,28 @@ export const PostOnly = () => {
       name="postOnly"
       render={({ field }) => {
         return (
-          <Checkbox
-            checked={field.value}
-            onCheckedChange={(value) => {
-              field.onChange(value);
-              form.setValue('reduceOnly', false, { shouldValidate: true });
-            }}
-            label={t('Post only')}
-          />
+          <Tooltip
+            description={
+              <p>
+                <span>{t('ticketTooltipPostOnly')}</span>{' '}
+                <ExternalLink href={DocsLinks?.POST_REDUCE_ONLY}>
+                  {t('Find out more')}
+                </ExternalLink>
+              </p>
+            }
+            underline
+          >
+            <div>
+              <Checkbox
+                checked={field.value}
+                onCheckedChange={(value) => {
+                  field.onChange(value);
+                  form.setValue('reduceOnly', false, { shouldValidate: true });
+                }}
+                label={t('Post only')}
+              />
+            </div>
+          </Tooltip>
         );
       }}
     />

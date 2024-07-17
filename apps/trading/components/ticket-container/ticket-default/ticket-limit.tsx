@@ -106,6 +106,7 @@ export const TicketLimit = (props: FormProps) => {
         <SizeSlider price={BigNumber(price || 0)} />
         <FormGrid>
           <FormGridCol>
+            <Fields.TpSl />
             {isPersistent ? (
               <>
                 <Fields.PostOnly />
@@ -114,7 +115,6 @@ export const TicketLimit = (props: FormProps) => {
             ) : (
               <Fields.ReduceOnly />
             )}
-            <Fields.TpSl />
           </FormGridCol>
           <FormGridCol>
             <Fields.TimeInForce />

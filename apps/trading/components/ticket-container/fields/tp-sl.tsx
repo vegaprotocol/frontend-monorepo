@@ -1,4 +1,4 @@
-import { TradingCheckbox as Checkbox } from '@vegaprotocol/ui-toolkit';
+import { TradingCheckbox as Checkbox, Tooltip } from '@vegaprotocol/ui-toolkit';
 
 import { FormField } from '../ticket-field';
 import { useT } from '../../../lib/use-t';
@@ -13,11 +13,15 @@ export const TpSl = () => {
       name="tpSl"
       render={({ field }) => {
         return (
-          <Checkbox
-            checked={field.value}
-            onCheckedChange={field.onChange}
-            label={t('TP/SL')}
-          />
+          <Tooltip description={t('ticketTooltipTPSL')} underline>
+            <div>
+              <Checkbox
+                checked={field.value}
+                onCheckedChange={field.onChange}
+                label={t('TP/SL')}
+              />
+            </div>
+          </Tooltip>
         );
       }}
     />
