@@ -1,5 +1,5 @@
 import {
-  Dialog,
+  TradingDialog,
   FormGroup,
   Input,
   InputError,
@@ -12,13 +12,14 @@ import { useT } from '../../lib/use-t';
 import { useRequired } from '@vegaprotocol/utils';
 import {
   useSimpleTransaction,
-  type Status,
   useVegaWallet,
+  TxStatus,
 } from '@vegaprotocol/wallet-react';
 import {
   usePartyProfilesQuery,
   type PartyProfilesQuery,
 } from '../vega-wallet-connect-button/__generated__/PartyProfiles';
+import { TransactionSteps } from '../transaction-dialog/transaction-steps';
 
 export const ProfileDialog = () => {
   const t = useT();
@@ -36,9 +37,9 @@ export const ProfileDialog = () => {
   );
 
   return (
-    <Dialog
+    <TradingDialog
       open={open}
-      onChange={() => {
+      onOpenChange={() => {
         setOpen(undefined);
       }}
       title={t('Edit profile')}
@@ -47,13 +48,9 @@ export const ProfileDialog = () => {
         profile={profileEdge?.node}
         onSuccess={() => {
           refetch();
-
-          setTimeout(() => {
-            setOpen(undefined);
-          }, 1000);
         }}
       />
-    </Dialog>
+    </TradingDialog>
   );
 };
 
@@ -72,7 +69,10 @@ const ProfileFormContainer = ({
   profile: Profile | undefined;
   onSuccess: () => void;
 }) => {
-  const { send, status, error } = useSimpleTransaction({ onSuccess });
+  const t = useT();
+  const { send, result, status, error, reset } = useSimpleTransaction({
+    onSuccess,
+  });
   const sendTx = (field: FormFields) => {
     send({
       updatePartyProfile: {
@@ -81,25 +81,29 @@ const ProfileFormContainer = ({
       },
     });
   };
-  return (
-    <ProfileForm
-      profile={profile}
-      status={status}
-      error={error}
-      onSubmit={sendTx}
-    />
-  );
+
+  if (status !== TxStatus.Idle) {
+    return (
+      <TransactionSteps
+        status={status}
+        result={result}
+        error={error}
+        reset={reset}
+        confirmedLabel={t('Profile updated')}
+      />
+    );
+  }
+
+  return <ProfileForm profile={profile} error={error} onSubmit={sendTx} />;
 };
 
 const ProfileForm = ({
   profile,
   onSubmit,
-  status,
   error,
 }: {
   profile: Profile | undefined;
   onSubmit: (fields: FormFields) => void;
-  status: Status;
   error: string | undefined;
 }) => {
   const t = useT();
@@ -114,27 +118,7 @@ const ProfileForm = ({
     },
   });
 
-  const renderButtonText = () => {
-    if (status === 'requested') {
-      return t('Confirm in wallet...');
-    }
-
-    if (status === 'pending') {
-      return t('Confirming transaction...');
-    }
-
-    return t('Submit');
-  };
-
   const errorMessage = errors.alias?.message || error;
-
-  if (status === 'confirmed') {
-    return (
-      <p className="mt-2 mb-4 text-sm text-vega-green-600 dark:text-vega-green">
-        {t('Profile updated')}
-      </p>
-    );
-  }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="mt-3">
@@ -154,12 +138,8 @@ const ProfileForm = ({
           </InputError>
         )}
       </FormGroup>
-      <TradingButton
-        type="submit"
-        intent={Intent.Info}
-        disabled={status === 'requested' || status === 'pending'}
-      >
-        {renderButtonText()}
+      <TradingButton type="submit" intent={Intent.Info}>
+        {t('Submit')}
       </TradingButton>
     </form>
   );

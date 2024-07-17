@@ -1,11 +1,16 @@
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import {
   Intent,
   TradingAnchorButton,
+  TradingDialog,
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
-import { useVegaWallet, useDialogStore } from '@vegaprotocol/wallet-react';
+import {
+  useVegaWallet,
+  useDialogStore,
+  TxStatus,
+} from '@vegaprotocol/wallet-react';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { useT } from '../../lib/use-t';
 import { useReferralSetTransaction } from '../../lib/hooks/use-referral-set-transaction';
@@ -18,6 +23,12 @@ import { LayoutWithGradient } from '../../components/layouts-inner';
 import { Links } from '../../lib/links';
 import { TeamForm, TransactionType } from './team-form';
 import { Role, useMyTeam } from '../../lib/hooks/use-my-team';
+import { useState } from 'react';
+import type {
+  CreateReferralSet,
+  UpdateReferralSet,
+} from '@vegaprotocol/wallet';
+import { TransactionSteps } from '../../components/transaction-dialog/transaction-steps';
 
 export const CompetitionsCreateTeam = () => {
   const [searchParams] = useSearchParams();
@@ -105,21 +116,32 @@ const CreateTeamFormContainer = ({
 }) => {
   const t = useT();
   const createLink = useLinks(DApp.Governance);
+  const navigate = useNavigate();
 
-  const { err, status, code, isEligible, requiredStake, onSubmit } =
-    useReferralSetTransaction({
-      onSuccess: (code) => {
-        // For some reason team creation takes a long time, too long even to make
-        // polling viable, so its not feasible to navigate to the team page
-        // after creation
-        //
-        // navigate(Links.COMPETITIONS_TEAM(code));
-      },
-    });
+  const {
+    err,
+    status,
+    result,
+    reset,
+    code,
+    isEligible,
+    requiredStake,
+    onSubmit: submit,
+  } = useReferralSetTransaction({
+    onSuccess: () => {
+      // NOOP
+    },
+  });
+  const [dialogOpen, setDialogOpen] = useState(false);
+
+  const onSubmit = (tx: CreateReferralSet | UpdateReferralSet) => {
+    submit(tx);
+    setDialogOpen(true);
+  };
 
   const teamCode = (isUpgrade ? teamId : code) || '';
 
-  if (status === 'confirmed') {
+  if (status === TxStatus.Confirmed) {
     return (
       <div
         className="flex flex-col items-start gap-2"
@@ -181,28 +203,54 @@ const CreateTeamFormContainer = ({
   }
 
   return (
-    <TeamForm
-      type={
-        isUpgrade
-          ? TransactionType.UpgradeFromReferralSet
-          : TransactionType.CreateReferralSet
-      }
-      onSubmit={onSubmit}
-      status={status}
-      err={err}
-      isCreatingSoloTeam={isSolo}
-      defaultValues={
-        isUpgrade && teamId
-          ? {
-              allowList: '',
-              avatarUrl: '',
-              id: teamId,
-              name: '',
-              private: isSolo,
-              url: '',
+    <>
+      <TeamForm
+        type={
+          isUpgrade
+            ? TransactionType.UpgradeFromReferralSet
+            : TransactionType.CreateReferralSet
+        }
+        onSubmit={onSubmit}
+        status={status}
+        err={err}
+        isCreatingSoloTeam={isSolo}
+        defaultValues={
+          isUpgrade && teamId
+            ? {
+                allowList: '',
+                avatarUrl: '',
+                id: teamId,
+                name: '',
+                private: isSolo,
+                url: '',
+              }
+            : undefined
+        }
+      />
+      <TradingDialog
+        open={dialogOpen}
+        onOpenChange={(open) => {
+          setDialogOpen(open);
+        }}
+        title={t('Create a team')}
+      >
+        <TransactionSteps
+          status={status}
+          result={result}
+          error={err || undefined}
+          reset={() => {
+            reset();
+            setDialogOpen(false);
+            if (status === TxStatus.Confirmed) {
+              navigate(Links.COMPETITIONS_TEAM(teamCode));
             }
-          : undefined
-      }
-    />
+          }}
+          resetLabel={
+            status === TxStatus.Confirmed ? t('View team') : t('Back')
+          }
+          confirmedLabel={t('Team creation transaction successful')}
+        />
+      </TradingDialog>
+    </>
   );
 };
