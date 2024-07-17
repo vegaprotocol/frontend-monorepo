@@ -2,6 +2,7 @@ import {
   OrderTimeInForce,
   OrderType,
   StopOrderSizeOverrideSetting,
+  type StopOrderExpiryStrategy,
 } from '@vegaprotocol/types';
 import { toDecimal } from '@vegaprotocol/utils';
 import BigNumber from 'bignumber.js';
@@ -11,7 +12,7 @@ import {
 } from './constants';
 
 import { Side, StopOrderTriggerDirection } from '@vegaprotocol/types';
-import { addDecimal, removeDecimal, toNanoSeconds } from '@vegaprotocol/utils';
+import { removeDecimal, toNanoSeconds } from '@vegaprotocol/utils';
 import {
   SizeOverrideSetting,
   type OrderSubmission,
@@ -97,21 +98,25 @@ export const getTotalDiscountFactor = (feeEstimate?: {
     return '0';
   }
   const volumeFactor = new BigNumber(
-    feeEstimate?.volumeDiscountFactor || 0
+    feeEstimate.volumeDiscountFactor || 0
   ).minus(1);
+
   const referralFactor = new BigNumber(
-    feeEstimate?.referralDiscountFactor || 0
+    feeEstimate.referralDiscountFactor || 0
   ).minus(1);
+
   if (volumeFactor.isZero()) {
     return feeEstimate.referralDiscountFactor
       ? `-${feeEstimate.referralDiscountFactor}`
       : '0';
   }
+
   if (referralFactor.isZero()) {
     return feeEstimate.volumeDiscountFactor
       ? `-${feeEstimate.volumeDiscountFactor}`
       : '0';
   }
+
   return volumeFactor.multipliedBy(referralFactor).minus(1).toString();
 };
 
@@ -190,18 +195,9 @@ export const createStopMarketOrder = (
   market: MarketData,
   reference?: string
 ): StopOrdersSubmission => {
-  const submission: StopOrdersSubmission = {
-    risesAbove: undefined,
-    fallsBelow: undefined,
-  };
-
-  const isSizeOverridden =
-    fields.sizeOverride ===
-    StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION;
-
-  const size = isSizeOverridden
-    ? addDecimal('1', market.positionDecimalPlaces)
-    : fields.size.toString();
+  const trigger = createTrigger(fields, market.decimalPlaces);
+  const expiry = createStopExpiry(fields);
+  const sizeOverride = createSizeOverride(fields);
 
   const stopOrderSetup: StopOrderSetup = {
     orderSubmission: {
@@ -210,40 +206,47 @@ export const createStopMarketOrder = (
       type: fields.type,
       side: fields.side,
       timeInForce: fields.timeInForce,
-      price: undefined,
-      size: size,
-      expiresAt: undefined,
+      size: fields.size.toString(),
       reduceOnly: fields.reduceOnly,
     },
-    expiresAt:
-      fields.stopExpiry && fields.stopExpiresAt
-        ? toNanoSeconds(fields.stopExpiresAt)
-        : undefined,
-    expiryStrategy: fields.stopExpiryStrategy,
-    price:
-      fields.triggerType === 'price'
-        ? removeDecimal(fields.triggerPrice.toString(), market.decimalPlaces)
-        : undefined,
-    trailingPercentOffset:
-      fields.triggerType === 'trailingPercentOffset'
-        ? (fields.triggerPrice / 100).toFixed(3)
-        : undefined,
-    sizeOverrideSetting: sizeOverrideMap[fields.sizeOverride],
-    sizeOverrideValue: isSizeOverridden
-      ? { percentage: (fields.size / 100).toString() }
-      : undefined,
+    ...expiry,
+    ...trigger,
+    ...sizeOverride,
   };
 
   let oppositeStopOrderSetup: StopOrderSetup | undefined = undefined;
 
   if (fields.oco) {
+    if (!fields.ocoType) {
+      throw new Error('no ocoType specified');
+    }
     if (!fields.ocoSize) {
       throw new Error('no ocoSize specified');
     }
+    if (!fields.ocoTimeInForce) {
+      throw new Error('no ocoTimeInForce specified');
+    }
+    if (!fields.ocoSizeOverride) {
+      throw new Error('no ocoSizeOverride specified');
+    }
+    if (!fields.ocoTriggerType) {
+      throw new Error('no ocoSizeOverride specified');
+    }
+    if (!fields.ocoTriggerPrice) {
+      throw new Error('no ocoSizeOverride specified');
+    }
 
-    const ocoSizeOverridden =
-      fields.ocoSizeOverride ===
-      StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION;
+    const trigger = createTrigger(
+      {
+        triggerType: fields.ocoTriggerType,
+        triggerPrice: fields.ocoTriggerPrice,
+      },
+      market.decimalPlaces
+    );
+    const sizeOverride = createSizeOverride({
+      sizeOverride: fields.ocoSizeOverride,
+      size: fields.ocoSize,
+    });
 
     oppositeStopOrderSetup = {
       orderSubmission: {
@@ -253,45 +256,21 @@ export const createStopMarketOrder = (
         side: fields.side,
         timeInForce: fields.ocoTimeInForce,
         price: undefined,
-        size: ocoSizeOverridden
-          ? addDecimal('1', market.positionDecimalPlaces)
-          : fields.ocoSize.toString(),
+        size: fields.ocoSize.toString(),
         expiresAt: undefined,
         reduceOnly: fields.reduceOnly,
       },
-      sizeOverrideSetting: sizeOverrideMap[fields.ocoSizeOverride],
-      sizeOverrideValue: ocoSizeOverridden
-        ? { percentage: (fields.ocoSize / 100).toString() }
-        : undefined,
+      ...expiry,
+      ...trigger,
+      ...sizeOverride,
     };
   }
 
-  if (fields.stopExpiry && fields.stopExpiresAt) {
-    const expiresAt = toNanoSeconds(fields.stopExpiresAt);
-    stopOrderSetup.expiresAt = expiresAt;
-    stopOrderSetup.expiryStrategy = fields.stopExpiryStrategy;
-
-    if (oppositeStopOrderSetup) {
-      oppositeStopOrderSetup.expiresAt = expiresAt;
-      oppositeStopOrderSetup.expiryStrategy = fields.stopExpiryStrategy;
-    }
-  }
-
-  if (
-    fields.triggerDirection ===
-    StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE
-  ) {
-    submission.risesAbove = stopOrderSetup;
-    submission.fallsBelow = oppositeStopOrderSetup;
-  } else if (
-    fields.triggerDirection ===
-    StopOrderTriggerDirection.TRIGGER_DIRECTION_FALLS_BELOW
-  ) {
-    submission.risesAbove = oppositeStopOrderSetup;
-    submission.fallsBelow = stopOrderSetup;
-  }
-
-  return submission;
+  return createStopOrderSubmission(
+    fields,
+    stopOrderSetup,
+    oppositeStopOrderSetup
+  );
 };
 
 export const createStopLimitOrder = (
@@ -299,18 +278,9 @@ export const createStopLimitOrder = (
   market: MarketData,
   reference?: string
 ): StopOrdersSubmission => {
-  const submission: StopOrdersSubmission = {
-    risesAbove: undefined,
-    fallsBelow: undefined,
-  };
-
-  const isSizeOverridden =
-    fields.sizeOverride ===
-    StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION;
-
-  const size = isSizeOverridden
-    ? addDecimal('1', market.positionDecimalPlaces)
-    : fields.size.toString();
+  const trigger = createTrigger(fields, market.decimalPlaces);
+  const expiry = createStopExpiry(fields);
+  const sizeOverride = createSizeOverride(fields);
 
   const stopOrderSetup: StopOrderSetup = {
     orderSubmission: {
@@ -319,44 +289,52 @@ export const createStopLimitOrder = (
       type: fields.type,
       side: fields.side,
       timeInForce: fields.timeInForce,
-      price: fields.price.toString(),
-      size: size,
+      price: removeDecimal(fields.price.toString(), market.decimalPlaces),
+      size: removeDecimal(fields.size.toString(), market.positionDecimalPlaces),
       expiresAt: undefined,
       reduceOnly: fields.reduceOnly,
     },
-    expiresAt:
-      fields.stopExpiry && fields.stopExpiresAt
-        ? toNanoSeconds(fields.stopExpiresAt)
-        : undefined,
-    expiryStrategy: fields.stopExpiryStrategy,
-    price:
-      fields.triggerType === 'price'
-        ? removeDecimal(fields.triggerPrice.toString(), market.decimalPlaces)
-        : undefined,
-    trailingPercentOffset:
-      fields.triggerType === 'trailingPercentOffset'
-        ? (fields.triggerPrice / 100).toFixed(3)
-        : undefined,
-    sizeOverrideSetting: sizeOverrideMap[fields.sizeOverride],
-    sizeOverrideValue: isSizeOverridden
-      ? { percentage: (fields.size / 100).toString() }
-      : undefined,
+    ...trigger,
+    ...sizeOverride,
+    ...expiry,
   };
 
   let oppositeStopOrderSetup: StopOrderSetup | undefined = undefined;
 
   if (fields.oco) {
-    if (!fields.ocoSize) {
-      throw new Error('no ocoSize specified');
+    if (!fields.ocoType) {
+      throw new Error('no ocoType specified');
     }
-
     if (!fields.ocoPrice) {
       throw new Error('no ocoPrice specified');
     }
+    if (!fields.ocoSize) {
+      throw new Error('no ocoSize specified');
+    }
+    if (!fields.ocoTimeInForce) {
+      throw new Error('no ocoTimeInForce specified');
+    }
+    if (!fields.ocoSizeOverride) {
+      throw new Error('no ocoSizeOverride specified');
+    }
+    if (!fields.ocoTriggerType) {
+      throw new Error('no ocoTriggerType specified');
+    }
+    if (!fields.ocoTriggerPrice) {
+      throw new Error('no ocoTriggerPrice specified');
+    }
 
-    const ocoSizeOverridden =
-      fields.ocoSizeOverride ===
-      StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION;
+    const sizeOverride = createSizeOverride({
+      sizeOverride: fields.ocoSizeOverride,
+      size: fields.ocoSize,
+    });
+    const trigger = createTrigger(
+      {
+        triggerType: fields.ocoTriggerType,
+        triggerPrice: fields.ocoTriggerPrice,
+      },
+      market.decimalPlaces
+    );
 
     oppositeStopOrderSetup = {
       orderSubmission: {
@@ -365,46 +343,101 @@ export const createStopLimitOrder = (
         type: fields.ocoType,
         side: fields.side,
         timeInForce: fields.ocoTimeInForce,
-        price: fields.ocoPrice.toString(),
-        size: ocoSizeOverridden
-          ? addDecimal('1', market.positionDecimalPlaces)
-          : fields.ocoSize.toString(),
+        price: removeDecimal(fields.ocoPrice.toString(), market.decimalPlaces),
+        size: removeDecimal(
+          fields.ocoSize.toString(),
+          market.positionDecimalPlaces
+        ),
         expiresAt: undefined,
         reduceOnly: fields.reduceOnly,
       },
-      sizeOverrideSetting: sizeOverrideMap[fields.ocoSizeOverride],
-      sizeOverrideValue: ocoSizeOverridden
-        ? { percentage: (fields.ocoSize / 100).toString() }
-        : undefined,
+      ...trigger,
+      ...sizeOverride,
+      ...expiry,
     };
   }
 
-  if (fields.stopExpiry && fields.stopExpiresAt) {
-    const expiresAt = toNanoSeconds(fields.stopExpiresAt);
-    stopOrderSetup.expiresAt = expiresAt;
-    stopOrderSetup.expiryStrategy = fields.stopExpiryStrategy;
+  return createStopOrderSubmission(
+    fields,
+    stopOrderSetup,
+    oppositeStopOrderSetup
+  );
+};
 
-    if (oppositeStopOrderSetup) {
-      oppositeStopOrderSetup.expiresAt = expiresAt;
-      oppositeStopOrderSetup.expiryStrategy = fields.stopExpiryStrategy;
-    }
-  }
-
+const createStopOrderSubmission = (
+  fields: FormFieldsStopMarket | FormFieldsStopLimit,
+  stopOrderSetup: StopOrderSetup,
+  oppositeStopOrderSetup?: StopOrderSetup
+) => {
   if (
     fields.triggerDirection ===
     StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE
   ) {
-    submission.risesAbove = stopOrderSetup;
-    submission.fallsBelow = oppositeStopOrderSetup;
+    return {
+      risesAbove: stopOrderSetup,
+      fallsBelow: oppositeStopOrderSetup,
+    };
   } else if (
     fields.triggerDirection ===
     StopOrderTriggerDirection.TRIGGER_DIRECTION_FALLS_BELOW
   ) {
-    submission.risesAbove = oppositeStopOrderSetup;
-    submission.fallsBelow = stopOrderSetup;
+    return {
+      risesAbove: oppositeStopOrderSetup,
+      fallsBelow: stopOrderSetup,
+    };
   }
 
-  return submission;
+  throw new Error('could not create stop order');
+};
+
+const createTrigger = (
+  fields: {
+    triggerType: 'price' | 'trailingPercentOffset';
+    triggerPrice: number;
+  },
+  dps: number
+) => {
+  if (fields.triggerType === 'price') {
+    return {
+      price: removeDecimal(fields.triggerPrice.toString(), dps),
+    };
+  }
+  if (fields.triggerType === 'trailingPercentOffset') {
+    return {
+      trailingPercentOffset: (fields.triggerPrice / 100).toFixed(3),
+    };
+  }
+};
+
+const createSizeOverride = (fields: {
+  sizeOverride: StopOrderSizeOverrideSetting;
+  size: string | number;
+}) => {
+  const isSizeOverridden =
+    fields.sizeOverride ===
+    StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION;
+  return {
+    sizeOverrideSetting: sizeOverrideMap[fields.sizeOverride],
+    sizeOverrideValue: isSizeOverridden
+      ? { percentage: (Number(fields.size) / 100).toString() }
+      : undefined,
+  };
+};
+
+const createStopExpiry = (fields: {
+  stopExpiry?: boolean;
+  stopExpiresAt?: Date;
+  stopExpiryStrategy?: StopOrderExpiryStrategy;
+}) => {
+  if (fields.stopExpiry && fields.stopExpiresAt) {
+    const expiresAt = toNanoSeconds(fields.stopExpiresAt);
+    return {
+      expiresAt: expiresAt,
+      expiryStrategy: fields.stopExpiryStrategy,
+    };
+  }
+
+  return {};
 };
 
 export const createOrderWithTpSl = (
@@ -421,6 +454,7 @@ export const createOrderWithTpSl = (
 
   const oppositeSide =
     fields.side === Side.SIDE_BUY ? Side.SIDE_SELL : Side.SIDE_BUY;
+
   // For direction it needs to be implied
   //  If position is LONG (BUY)
   //  TP is SHORT and trigger is RISES ABOVE
@@ -430,6 +464,7 @@ export const createOrderWithTpSl = (
     fields.side === Side.SIDE_BUY
       ? StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE
       : StopOrderTriggerDirection.TRIGGER_DIRECTION_FALLS_BELOW;
+
   //  For direction it needs to be implied
   //  If position is LONG (BUY)
   //  SL is SHORT and trigger is FALLS BELOW
