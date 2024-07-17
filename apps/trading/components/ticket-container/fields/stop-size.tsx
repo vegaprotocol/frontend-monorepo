@@ -1,4 +1,4 @@
-import { TicketInput } from '@vegaprotocol/ui-toolkit';
+import { TicketInput, TradingInputError } from '@vegaprotocol/ui-toolkit';
 
 import { useT } from '../../../lib/use-t';
 import { useTicketContext } from '../ticket-context';
@@ -13,14 +13,19 @@ export const StopSize = ({ name = 'size' }: { name?: 'size' | 'ocoSize' }) => {
     <FormField
       control={form.control}
       name={name}
-      render={({ field }) => {
+      render={({ field, fieldState }) => {
         return (
-          <TicketInput
-            {...field}
-            label={<SizeLabel />}
-            value={field.value || ''}
-            onChange={field.onChange}
-          />
+          <div className="w-full">
+            <TicketInput
+              {...field}
+              label={<SizeLabel />}
+              value={field.value || ''}
+              onChange={field.onChange}
+            />
+            {fieldState.error && (
+              <TradingInputError>{fieldState.error.message}</TradingInputError>
+            )}
+          </div>
         );
       }}
     />

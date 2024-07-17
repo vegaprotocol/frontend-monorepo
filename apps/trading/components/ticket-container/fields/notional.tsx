@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
 
-import { TicketInput } from '@vegaprotocol/ui-toolkit';
+import { TicketInput, TradingInputError } from '@vegaprotocol/ui-toolkit';
 
 import { useT } from '../../../lib/use-t';
 import { useTicketContext } from '../ticket-context';
@@ -19,26 +19,31 @@ export const Notional = (props: { price?: BigNumber }) => {
     <FormField
       control={form.control}
       name="notional"
-      render={({ field }) => {
+      render={({ field, fieldState }) => {
         return (
-          <TicketInput
-            {...field}
-            label={<NotionalLabel />}
-            value={field.value || ''}
-            onChange={(e) => {
-              field.onChange(e);
+          <div className="w-full">
+            <TicketInput
+              {...field}
+              label={<NotionalLabel />}
+              value={field.value || ''}
+              onChange={(e) => {
+                field.onChange(e);
 
-              if (props.price) {
-                const size = utils.toSize(
-                  BigNumber(e.target.value || 0),
-                  props.price,
-                  ticket.market.positionDecimalPlaces
-                );
-                form.setValue('size', size.toNumber());
-              }
-            }}
-            appendElement={<SizeModeButton />}
-          />
+                if (props.price) {
+                  const size = utils.toSize(
+                    BigNumber(e.target.value || 0),
+                    props.price,
+                    ticket.market.positionDecimalPlaces
+                  );
+                  form.setValue('size', size.toNumber());
+                }
+              }}
+              appendElement={<SizeModeButton />}
+            />
+            {fieldState.error && (
+              <TradingInputError>{fieldState.error.message}</TradingInputError>
+            )}
+          </div>
         );
       }}
     />

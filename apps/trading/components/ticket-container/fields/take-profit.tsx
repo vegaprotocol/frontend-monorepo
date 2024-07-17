@@ -1,4 +1,4 @@
-import { TicketInput } from '@vegaprotocol/ui-toolkit';
+import { TicketInput, TradingInputError } from '@vegaprotocol/ui-toolkit';
 
 import { FormField } from '../ticket-field';
 import { useT } from '../../../lib/use-t';
@@ -15,19 +15,24 @@ export const TakeProfit = () => {
     <FormField
       control={form.control}
       name="takeProfit"
-      render={({ field }) => {
+      render={({ field, fieldState }) => {
         return (
-          <TicketInput
-            {...field}
-            label={
-              <InputLabel
-                label={t('Take profit')}
-                symbol={ticket.quoteAsset.symbol}
-              />
-            }
-            value={field.value || ''}
-            onChange={field.onChange}
-          />
+          <div className="w-full">
+            <TicketInput
+              {...field}
+              label={
+                <InputLabel
+                  label={t('Take profit')}
+                  symbol={ticket.quoteAsset.symbol}
+                />
+              }
+              value={field.value || ''}
+              onChange={field.onChange}
+            />
+            {fieldState.error && (
+              <TradingInputError>{fieldState.error.message}</TradingInputError>
+            )}
+          </div>
         );
       }}
     />

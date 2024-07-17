@@ -1,6 +1,6 @@
 import { FormField } from '../ticket-field';
 import { useT } from '../../../lib/use-t';
-import { TicketInput } from '@vegaprotocol/ui-toolkit';
+import { TicketInput, TradingInputError } from '@vegaprotocol/ui-toolkit';
 import { useTicketContext } from '../ticket-context';
 import { InputLabel } from '../elements/form';
 import { useForm } from '../use-form';
@@ -16,14 +16,21 @@ export const IcebergMinVisibleSize = () => {
     <FormField
       control={form.control}
       name="icebergMinVisibleSize"
-      render={({ field }) => {
+      render={({ field, fieldState }) => {
         return (
-          <TicketInput
-            {...field}
-            value={field.value || ''}
-            onChange={field.onChange}
-            label={<InputLabel label={t('Min visible size')} symbol={symbol} />}
-          />
+          <div className="w-full">
+            <TicketInput
+              {...field}
+              value={field.value || ''}
+              onChange={field.onChange}
+              label={
+                <InputLabel label={t('Min visible size')} symbol={symbol} />
+              }
+            />
+            {fieldState.error && (
+              <TradingInputError>{fieldState.error.message}</TradingInputError>
+            )}
+          </div>
         );
       }}
     />

@@ -1,4 +1,4 @@
-import { TicketInput } from '@vegaprotocol/ui-toolkit';
+import { TicketInput, TradingInputError } from '@vegaprotocol/ui-toolkit';
 
 import { useT } from '../../../lib/use-t';
 import { FormField } from '../ticket-field';
@@ -17,14 +17,19 @@ export const IcebergPeakSize = () => {
     <FormField
       control={form.control}
       name="icebergPeakSize"
-      render={({ field }) => {
+      render={({ field, fieldState }) => {
         return (
-          <TicketInput
-            {...field}
-            value={field.value || ''}
-            onChange={field.onChange}
-            label={<InputLabel label={t('Peak size')} symbol={symbol} />}
-          />
+          <div className="w-full">
+            <TicketInput
+              {...field}
+              value={field.value || ''}
+              onChange={field.onChange}
+              label={<InputLabel label={t('Peak size')} symbol={symbol} />}
+            />
+            {fieldState.error && (
+              <TradingInputError>{fieldState.error.message}</TradingInputError>
+            )}
+          </div>
         );
       }}
     />

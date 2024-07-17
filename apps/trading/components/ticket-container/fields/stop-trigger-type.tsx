@@ -23,12 +23,12 @@ export const StopTriggerType = ({
             placeholder={t('Select')}
             data-testid="trigger-direction"
           >
-            <MiniSelectOption value="price" id="triggerType-price">
+            <MiniSelectOption value="price" data-testid="triggerType-price">
               {t('Price')}
             </MiniSelectOption>
             <MiniSelectOption
               value="trailingPercentOffset"
-              id="triggerType-trailingPercentOffset"
+              data-testid="triggerType-trailingPercentOffset"
             >
               {t('Trailing Percent Offset')}
             </MiniSelectOption>

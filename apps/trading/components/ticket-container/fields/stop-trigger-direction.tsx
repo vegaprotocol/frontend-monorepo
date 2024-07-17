@@ -25,13 +25,13 @@ export const StopTriggerDirection = ({
           >
             <MiniSelectOption
               value={StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE}
-              id="triggerDirection-risesAbove"
+              data-testid="triggerDirection-risesAbove"
             >
               {t('Rises above')}
             </MiniSelectOption>
             <MiniSelectOption
               value={StopOrderTriggerDirection.TRIGGER_DIRECTION_FALLS_BELOW}
-              id="triggerDirection-fallsBelow"
+              data-testid="triggerDirection-fallsBelow"
             >
               {t('Falls below')}
             </MiniSelectOption>

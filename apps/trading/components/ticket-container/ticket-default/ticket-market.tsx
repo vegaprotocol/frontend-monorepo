@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import uniqueId from 'lodash/uniqueId';
 import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -15,7 +14,7 @@ import { useMarkPrice } from '@vegaprotocol/markets';
 
 import { useT } from '../../../lib/use-t';
 import { Form, FormGrid, FormGridCol } from '../elements/form';
-import { type FormFieldsMarket, createMarketSchema } from '../schemas';
+import { type FormFieldsMarket, useMarketSchema } from '../schemas';
 import { TicketTypeSelect } from '../ticket-type-select';
 import { type FormProps } from './ticket';
 import { SizeSlider } from './size-slider';
@@ -36,7 +35,7 @@ export const TicketMarket = (props: FormProps) => {
 
   const ticket = useTicketContext('default');
 
-  const [schema] = useState(() => createMarketSchema(ticket.market));
+  const schema = useMarketSchema(ticket.market);
   const form = useForm<FormFieldsMarket>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -112,10 +111,10 @@ export const TicketMarket = (props: FormProps) => {
         </FormGrid>
         {tpSl && (
           <FormGrid>
-            <FormGridCol>
+            <FormGridCol className="block">
               <Fields.TakeProfit />
             </FormGridCol>
-            <FormGridCol>
+            <FormGridCol className="block">
               <Fields.StopLoss />
             </FormGridCol>
           </FormGrid>

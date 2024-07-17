@@ -10,6 +10,8 @@ import {
 import { isBefore } from 'date-fns';
 import { getProductType, type MarketInfo } from '@vegaprotocol/markets';
 import { determinePriceStep, determineSizeStep } from '@vegaprotocol/utils';
+import { useMemo } from 'react';
+import i18n from '../../lib/i18n';
 
 export const createMarketSchema = (market: MarketInfo) => {
   const sizeStep = determineSizeStep(market);
@@ -60,7 +62,7 @@ export const createMarketSchema = (market: MarketInfo) => {
     });
 };
 
-export const createLimitSchema = (market: MarketInfo) => {
+const createLimitSchema = (market: MarketInfo) => {
   const sizeStep = determineSizeStep(market);
   const priceStep = determinePriceStep(market);
 
@@ -70,8 +72,14 @@ export const createLimitSchema = (market: MarketInfo) => {
       sizeMode: z.enum(['contracts', 'notional']),
       type: z.literal(OrderType.TYPE_LIMIT),
       side: z.nativeEnum(Side),
-      price: z.coerce.number().min(Number(priceStep)).step(Number(priceStep)),
-      size: z.coerce.number().min(Number(sizeStep)).step(Number(sizeStep)),
+      price: z.coerce
+        .number({ message: i18n.t('Required') })
+        .min(Number(priceStep))
+        .step(Number(priceStep)),
+      size: z.coerce
+        .number({ message: i18n.t('Required') })
+        .min(Number(sizeStep))
+        .step(Number(sizeStep)),
       notional: z.coerce.number(),
       timeInForce: z.nativeEnum(OrderTimeInForce),
       expiresAt: z.date().optional(),
@@ -280,6 +288,38 @@ export const createStopMarketSchema = (market: MarketInfo) => {
         }
       }
     });
+};
+
+export const useMarketSchema = (market: MarketInfo) => {
+  const schema = useMemo(() => {
+    return createMarketSchema(market);
+  }, [market]);
+
+  return schema;
+};
+
+export const useLimitSchema = (market: MarketInfo) => {
+  const schema = useMemo(() => {
+    return createLimitSchema(market);
+  }, [market]);
+
+  return schema;
+};
+
+export const useStopMarketSchema = (market: MarketInfo) => {
+  const schema = useMemo(() => {
+    return createStopMarketSchema(market);
+  }, [market]);
+
+  return schema;
+};
+
+export const useStopLimitSchema = (market: MarketInfo) => {
+  const schema = useMemo(() => {
+    return createStopLimitSchema(market);
+  }, [market]);
+
+  return schema;
 };
 
 export type FormFieldsMarket = z.infer<ReturnType<typeof createMarketSchema>>;

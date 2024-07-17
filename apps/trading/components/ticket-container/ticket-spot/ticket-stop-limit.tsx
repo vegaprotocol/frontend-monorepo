@@ -1,7 +1,6 @@
 import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { addDays } from 'date-fns';
-import { useState } from 'react';
 
 import {
   OrderType,
@@ -13,7 +12,7 @@ import { useVegaTransactionStore } from '@vegaprotocol/web3';
 import { mapFormValuesToStopOrdersSubmission } from '@vegaprotocol/deal-ticket';
 
 import { FieldControls, Form, FormGrid, FormGridCol } from '../elements/form';
-import { type FormFieldsStopLimit, createStopLimitSchema } from '../schemas';
+import { type FormFieldsStopLimit, useStopLimitSchema } from '../schemas';
 import { TicketEventUpdater } from '../ticket-events';
 import { TicketTypeSelect } from '../ticket-type-select';
 import { type FormProps } from './ticket';
@@ -31,7 +30,7 @@ export const TicketStopLimit = (props: FormProps) => {
   const create = useVegaTransactionStore((store) => store.create);
   const ticket = useTicketContext('spot');
 
-  const [schema] = useState(() => createStopLimitSchema(ticket.market));
+  const schema = useStopLimitSchema(ticket.market);
   const form = useForm<FormFieldsStopLimit>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -100,9 +99,9 @@ export const TicketStopLimit = (props: FormProps) => {
           </FormGridCol>
           <FormGridCol>
             <Fields.TimeInForce />
-            {tif === OrderTimeInForce.TIME_IN_FORCE_GTT && <Fields.ExpiresAt />}
           </FormGridCol>
         </FormGrid>
+        {tif === OrderTimeInForce.TIME_IN_FORCE_GTT && <Fields.ExpiresAt />}
         {oco && (
           <>
             <hr className="border-default my-4" />
