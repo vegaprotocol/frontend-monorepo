@@ -178,6 +178,7 @@ export const createStopLimitSchema = (market: MarketInfo) => {
       reduceOnly: z.boolean(),
       postOnly: z.boolean(),
       oco: z.boolean(),
+      ocoType: z.nativeEnum(OrderType),
       ocoTriggerDirection: z.nativeEnum(StopOrderTriggerDirection),
       ocoTriggerType: z.enum(['price', 'trailingPercentOffset']),
       ocoTriggerPrice: z.coerce.number().optional(),
@@ -192,6 +193,7 @@ export const createStopLimitSchema = (market: MarketInfo) => {
         .min(Number(priceStep))
         .step(Number(priceStep))
         .optional(),
+      ocoTimeInForce: z.nativeEnum(OrderTimeInForce),
     })
     .superRefine((val, ctx) => {
       if (val.oco && !val.ocoTriggerPrice) {
@@ -252,10 +254,11 @@ export const createStopMarketSchema = (market: MarketInfo) => {
       stopExpiresAt: z.date().optional(),
       reduceOnly: z.boolean(),
       oco: z.boolean(),
-      ocoTriggerDirection: z.nativeEnum(StopOrderTriggerDirection),
-      ocoTriggerType: z.enum(['price', 'trailingPercentOffset']),
-      ocoTriggerPrice: z.coerce.number().optional(),
-      ocoSizeOverride: z.nativeEnum(StopOrderSizeOverrideSetting),
+      ocoType: z.nativeEnum(OrderType).optional(),
+      ocoTriggerDirection: z.nativeEnum(StopOrderTriggerDirection).optional(),
+      ocoTriggerType: z.enum(['price', 'trailingPercentOffset']).optional(),
+      ocoTriggerPrice: z.coerce.number().optional().optional(),
+      ocoSizeOverride: z.nativeEnum(StopOrderSizeOverrideSetting).optional(),
       ocoSize: z.coerce
         .number()
         .min(Number(sizeStep))
@@ -266,6 +269,7 @@ export const createStopMarketSchema = (market: MarketInfo) => {
         .min(Number(priceStep))
         .step(Number(priceStep))
         .optional(),
+      ocoTimeInForce: z.nativeEnum(OrderTimeInForce).optional(),
     })
     .superRefine((val, ctx) => {
       if (val.oco && !val.ocoTriggerPrice) {

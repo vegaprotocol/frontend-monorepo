@@ -11,7 +11,11 @@ import { TIF_OPTIONS, NON_PERSISTENT_TIF_OPTIONS } from '../constants';
 import { useForm } from '../use-form';
 import { useTicketContext } from '../ticket-context';
 
-export const TimeInForce = () => {
+export const TimeInForce = ({
+  name = 'timeInForce',
+}: {
+  name?: 'timeInForce' | 'ocoTimeInForce';
+}) => {
   const t = useT();
   const form = useForm();
   const options = useOptions();
@@ -19,7 +23,7 @@ export const TimeInForce = () => {
   return (
     <FormField
       control={form.control}
-      name="timeInForce"
+      name={name}
       render={({ field }) => {
         return (
           <div className="flex items-center gap-2 text-xs">

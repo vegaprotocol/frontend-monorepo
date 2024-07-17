@@ -45,6 +45,7 @@ export const TicketStopLimit = (props: FormProps) => {
       postOnly: false,
       reduceOnly: false,
       oco: false,
+      ocoType: OrderType.TYPE_MARKET,
       ocoTriggerDirection:
         StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE,
       ocoTriggerType: 'price',
@@ -67,10 +68,8 @@ export const TicketStopLimit = (props: FormProps) => {
             // TODO: convert this func to take the schema values
             stopOrdersSubmission: createStopOrdersSubmission(
               fields,
-              ticket.market.id,
-              ticket.market.decimalPlaces,
-              ticket.market.positionDecimalPlaces,
-              false
+              ticket.market,
+              'my-ref'
             ),
           });
         })}

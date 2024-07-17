@@ -46,10 +46,12 @@ export const TicketStopLimit = (props: FormProps) => {
       reduceOnly: true, // must be reduce only for stop orders (unless spot market)
       stopExpiry: false,
       oco: false,
+      ocoType: OrderType.TYPE_MARKET,
       ocoTriggerDirection:
         StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE,
       ocoTriggerType: 'price',
       ocoSizeOverride: StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_NONE,
+      ocoTimeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK,
     },
   });
 
@@ -68,10 +70,8 @@ export const TicketStopLimit = (props: FormProps) => {
             // TODO: convert this func to take the schema values
             stopOrdersSubmission: createStopOrdersSubmission(
               fields,
-              ticket.market.id,
-              ticket.market.decimalPlaces,
-              ticket.market.positionDecimalPlaces,
-              false
+              ticket.market,
+              'my-ref'
             ),
           });
         })}
@@ -125,10 +125,17 @@ export const TicketStopLimit = (props: FormProps) => {
             <Fields.Price name="ocoPrice" />
             <div className="flex flex-col gap-1">
               <FieldControls>
+                <Fields.OCOType />
                 <Fields.StopSizeOverride name="ocoSizeOverride" />
               </FieldControls>
               <Fields.StopSize name="ocoSize" />
             </div>
+            <FormGrid>
+              <FormGridCol />
+              <FormGridCol>
+                <Fields.TimeInForce name="ocoTimeInForce" />
+              </FormGridCol>
+            </FormGrid>
           </>
         )}
         <FeedbackStop />

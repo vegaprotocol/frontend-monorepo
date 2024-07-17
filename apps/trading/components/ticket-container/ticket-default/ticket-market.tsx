@@ -79,9 +79,7 @@ export const TicketMarket = (props: FormProps) => {
           } else {
             const orderSubmission = createOrderSubmission(
               fields,
-              ticket.market.id,
-              ticket.market.decimalPlaces,
-              ticket.market.positionDecimalPlaces,
+              ticket.market,
               reference
             );
 
