@@ -39,7 +39,7 @@ export function OracleData({ data }: OracleDataTypeProps) {
             }
 
             return (
-              <tr key={d.node.externalData.data.broadcastAt}>
+              <tr key={d.node.externalData.data.broadcastAt + node.value}>
                 <td className={`${cellSpacing} font-mono`}>{node.value}</td>
                 <td className={`${cellSpacing} font-mono`}>{node.name}</td>
                 <td className={cellSpacing}>

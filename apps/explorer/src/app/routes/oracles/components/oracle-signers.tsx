@@ -57,18 +57,24 @@ export function getAddressLink(signer: Signer) {
   return <span>{address}</span>;
 }
 
+export function getAddressesOrNothing(sourceType: SourceType): string | null {
+  if (sourceType.__typename !== 'DataSourceDefinitionExternal') {
+    return null;
+  }
+
+  switch (sourceType.sourceType.__typename) {
+    case 'EthCallSpec':
+      return sourceType.sourceType.address;
+  }
+
+  return null;
+}
+
 interface OracleDetailsSignersProps {
   sourceType: SourceType;
 }
 
-/**
- * Given an Oracle, this component will render either a link to Ethereum
- * or the Vega party depending on which type is specified.
- *
- * Note that this won't be shown for external contract calls as they do not
- * have a signer in the same way.
- */
-export function OracleSigners({ sourceType }: OracleDetailsSignersProps) {
+export function getSignersOrNothing(sourceType: SourceType) {
   if (sourceType.__typename !== 'DataSourceDefinitionExternal') {
     return null;
   }
@@ -81,18 +87,37 @@ export function OracleSigners({ sourceType }: OracleDetailsSignersProps) {
     return null;
   }
 
+  return signers.map((s) => s.signer);
+}
+
+interface OracleDetailsSignersProps {
+  sourceType: SourceType;
+}
+
+/**
+ * Given an Oracle, this component will render either a link to Ethereum
+ * or the Vega party depending on which type is specified.
+ *
+ * Note that this won't be shown for external contract calls as they do not
+ * have a signer in the same way.
+ */
+export function OracleSigners({ sourceType }: OracleDetailsSignersProps) {
+  const signers = getSignersOrNothing(sourceType);
+
+  if (!signers) {
+    return null;
+  }
+
   return (
     <>
       {signers.map((s) => {
         return (
-          <TableRow modifier="bordered" key={getAddress(s.signer)}>
+          <TableRow modifier="bordered" key={getAddress(s)}>
             <TableHeader scope="row">Signer</TableHeader>
             <TableCell modifier="bordered">
               <div>
-                <span data-testid="keytype">
-                  {getAddressTypeLabel(s.signer)}
-                </span>
-                : {getAddressLink(s.signer)}
+                <span data-testid="keytype">{getAddressTypeLabel(s)}</span>:{' '}
+                {getAddressLink(s)}
               </div>
             </TableCell>
           </TableRow>
