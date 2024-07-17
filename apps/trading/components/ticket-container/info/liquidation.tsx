@@ -14,14 +14,14 @@ export const emptyValue = '-';
 
 export const Liquidation = () => {
   const t = useT();
-  const ticket = useTicketContext();
+  const ticket = useTicketContext('default');
   const form = useForm();
 
   const side = form.watch('side');
   const { data } = useEstimatePosition();
 
   const label = t('Liquidation estimate ({{symbol}})', {
-    symbol: ticket.quoteAsset.symbol,
+    symbol: ticket.quoteName,
   });
   const labelWithTooltip = (
     <Tooltip
@@ -52,7 +52,13 @@ export const Liquidation = () => {
   const liquidationEstimate = data?.estimatePosition?.liquidation;
 
   if (!liquidationEstimate) {
-    return <DatagridRow label={labelWithTooltip} value="-" />;
+    return (
+      <DatagridRow
+        label={labelWithTooltip}
+        value="-"
+        data-testid="liquidation-estimate"
+      />
+    );
   }
 
   const bestCaseWithBuys = BigInt(
@@ -88,12 +94,19 @@ export const Liquidation = () => {
   );
 
   if (bestCase === BigInt(0) && worstCase === BigInt(0)) {
-    return <DatagridRow label={labelWithTooltip} value="-" />;
+    return (
+      <DatagridRow
+        label={labelWithTooltip}
+        value="-"
+        data-testid="liquidation-estimate"
+      />
+    );
   }
 
   return (
     <DatagridRow
       label={labelWithTooltip}
+      data-testid="liquidation-estimate"
       value={
         <Tooltip description={priceEstimateRange}>
           <span>{priceEstimate}</span>

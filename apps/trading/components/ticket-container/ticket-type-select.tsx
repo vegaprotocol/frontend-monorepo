@@ -57,7 +57,6 @@ export const TicketTypeSelect = ({
         trigger={
           <TradingDropdownTrigger>
             <button
-              id="order-type-stop"
               data-testid="order-type-stop"
               className={classNames(
                 toggleClasses,

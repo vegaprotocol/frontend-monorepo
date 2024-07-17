@@ -93,6 +93,7 @@ export const MarginChange = ({
         openVolume={openVolume}
         asset={asset}
       />
+      {/* TODO: make this more generic */}
       <DealTicketMarginDetails
         marginAccountBalance={marginAccountBalance}
         generalAccountBalance={generalAccountBalance}

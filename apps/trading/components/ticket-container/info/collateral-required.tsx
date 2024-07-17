@@ -23,13 +23,18 @@ export const CollateralRequired = () => {
     data?.estimatePosition?.collateralIncreaseEstimate.worstCase ?? '0'
   );
 
+  const props = {
+    label,
+    'data-testid': 'collateral-required',
+  };
+
   if (bestCase === BigInt(0) && worstCase === BigInt(0)) {
-    return <DatagridRow label={label} value="-" />;
+    return <DatagridRow {...props} value="-" />;
   }
 
   return (
     <DatagridRow
-      label={label}
+      {...props}
       value={
         <Tooltip
           description={formatRange(
