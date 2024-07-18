@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import { type HTMLAttributes } from 'react';
 
 export const Form = (props: HTMLAttributes<HTMLFormElement>) => {
@@ -11,8 +12,16 @@ export const Form = (props: HTMLAttributes<HTMLFormElement>) => {
   );
 };
 
-export const FormGrid = (props: HTMLAttributes<HTMLDivElement>) => {
-  return <div className="grid grid-cols-2 gap-2" {...props} />;
+export const FormGrid = ({
+  className,
+  ...props
+}: HTMLAttributes<HTMLDivElement>) => {
+  return (
+    <div
+      className={classNames('grid grid-cols-2 gap-2', className)}
+      {...props}
+    />
+  );
 };
 
 export const FormGridCol = (props: HTMLAttributes<HTMLDivElement>) => {

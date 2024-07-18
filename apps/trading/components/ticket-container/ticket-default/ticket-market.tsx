@@ -111,7 +111,7 @@ export const TicketMarket = (props: FormProps) => {
           <div className="flex flex-col items-start gap-1">
             <Fields.TpSl />
             {tpSl && (
-              <FormGrid>
+              <FormGrid className="pl-4">
                 <FormGridCol>
                   <Fields.TakeProfit />
                 </FormGridCol>
