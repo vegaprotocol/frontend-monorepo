@@ -8,15 +8,23 @@ import {
   StopOrderTriggerDirection,
 } from '@vegaprotocol/types';
 import {
+  createLimitOrder,
+  createMarketOrder,
   createSizeOverride,
   createStopExpiry,
   createStopLimitOrder,
+  createStopMarketOrder,
   createStopOrderSubmission,
   createTrigger,
   getDiscountedFee,
   getTotalDiscountFactor,
 } from './utils';
-import { type FormFieldsStopLimit, type FormFieldsStopMarket } from './schemas';
+import {
+  type FormFieldsMarket,
+  type FormFieldsLimit,
+  type FormFieldsStopLimit,
+  type FormFieldsStopMarket,
+} from './schemas';
 import { type StopOrderSetup } from '@vegaprotocol/wallet';
 
 describe('getDiscountedFee', () => {
@@ -85,6 +93,111 @@ describe('getTotalDiscountFactor', () => {
         referralDiscountFactor: '0.1',
       })
     ).toBe('-0.28');
+  });
+});
+
+describe('createMarketOrder', () => {
+  const market = {
+    id: 'market-id',
+    decimalPlaces: 6,
+    positionDecimalPlaces: 3,
+  };
+  const reference = 'my-reference';
+  it('basic', () => {
+    const fields: FormFieldsMarket = {
+      ticketType: 'market',
+      sizeMode: 'contracts',
+      type: OrderType.TYPE_MARKET,
+      side: Side.SIDE_SELL,
+      size: 1000000,
+      notional: 100,
+      timeInForce: OrderTimeInForce.TIME_IN_FORCE_IOC,
+      tpSl: false,
+      reduceOnly: false,
+    };
+    expect(createMarketOrder(fields, market, reference)).toEqual({
+      reference,
+      marketId: market.id,
+      type: fields.type,
+      side: fields.side,
+      timeInForce: fields.timeInForce,
+      size: '1000000000',
+      price: undefined,
+      expiresAt: undefined,
+      reduceOnly: false,
+    });
+  });
+});
+
+describe('createLimitOrder', () => {
+  const market = {
+    id: 'market-id',
+    decimalPlaces: 6,
+    positionDecimalPlaces: 3,
+  };
+  const reference = 'my-reference';
+
+  const createFields = (): FormFieldsLimit => {
+    return {
+      ticketType: 'limit',
+      sizeMode: 'contracts',
+      type: OrderType.TYPE_LIMIT,
+      side: Side.SIDE_SELL,
+      size: 1000000,
+      price: 100,
+      notional: 100,
+      timeInForce: OrderTimeInForce.TIME_IN_FORCE_IOC,
+      tpSl: false,
+      reduceOnly: false,
+      postOnly: false,
+      iceberg: false,
+    };
+  };
+
+  it('basic', () => {
+    const fields: FormFieldsLimit = createFields();
+    expect(createLimitOrder(fields, market, reference)).toEqual({
+      reference,
+      marketId: market.id,
+      type: fields.type,
+      side: fields.side,
+      timeInForce: fields.timeInForce,
+      size: '1000000000',
+      price: '100000000',
+      expiresAt: undefined,
+      reduceOnly: false,
+      postOnly: false,
+    });
+  });
+
+  it('expires at', () => {
+    const ts = 1721257195557;
+    const fields = merge(createFields(), {
+      timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTT,
+      expiresAt: new Date(ts),
+    });
+    expect(createLimitOrder(fields, market, reference)).toEqual(
+      expect.objectContaining({
+        timeInForce: fields.timeInForce,
+        expiresAt: `${ts}000000`,
+      })
+    );
+  });
+
+  it('iceberg', () => {
+    const fields = merge(createFields(), {
+      iceberg: true,
+      icebergPeakSize: '200',
+      icebergMinVisibleSize: '30000',
+    });
+    expect(createLimitOrder(fields, market, reference)).toEqual(
+      expect.objectContaining({
+        icebergOpts: {
+          peakSize: '200000',
+          minimumVisibleSize: '30000000',
+        },
+      })
+    );
   });
 });
 
@@ -197,6 +310,228 @@ describe('createStopOrderSubmission', () => {
     ).toEqual({
       risesAbove: oppositeOrder,
       fallsBelow: stopOrderSetup,
+    });
+  });
+});
+
+describe('createStopMarketOrder', () => {
+  const market = {
+    id: 'market-id',
+    decimalPlaces: 2,
+    positionDecimalPlaces: 3,
+  };
+  const reference = 'my-ref';
+  const createFields = (): FormFieldsStopMarket => {
+    return {
+      ticketType: 'stopMarket',
+      type: OrderType.TYPE_MARKET,
+      side: Side.SIDE_BUY,
+      triggerDirection: StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE,
+      triggerType: 'price',
+      triggerPrice: 200,
+      size: 100,
+      sizeOverride: StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_NONE,
+      timeInForce: OrderTimeInForce.TIME_IN_FORCE_IOC,
+      reduceOnly: true,
+      stopExpiry: false,
+      oco: false,
+    };
+  };
+
+  it('basic', () => {
+    const fields = createFields();
+    const res = createStopMarketOrder(fields, market, reference);
+    expect(res).toEqual({
+      risesAbove: {
+        orderSubmission: {
+          reference,
+          marketId: market.id,
+          type: fields.type,
+          side: fields.side,
+          timeInForce: fields.timeInForce,
+          size: '100000',
+          expiresAt: undefined,
+          reduceOnly: true,
+        },
+        price: '20000',
+        sizeOverrideSetting: 1,
+        sizeOverrideValue: undefined,
+      },
+      fallsBelow: undefined,
+    });
+  });
+
+  it('trailing percent offset', () => {
+    const fields = merge(createFields(), {
+      triggerType: 'trailingPercentOffset',
+      triggerPrice: 25,
+    });
+    const res = createStopMarketOrder(fields, market, reference);
+    expect(res).toEqual({
+      risesAbove: {
+        orderSubmission: expect.any(Object),
+        trailingPercentOffset: '0.250',
+        sizeOverrideSetting: 1,
+        sizeOverrideValue: undefined,
+      },
+      fallsBelow: undefined,
+    });
+  });
+
+  it('expiry', () => {
+    const ts = 1721257195557;
+    const fields = merge(createFields(), {
+      stopExpiry: true,
+      stopExpiresAt: new Date(ts),
+      stopExpiryStrategy: StopOrderExpiryStrategy.EXPIRY_STRATEGY_CANCELS,
+    });
+    const res = createStopMarketOrder(fields, market, reference);
+    expect(res).toEqual({
+      risesAbove: {
+        orderSubmission: expect.any(Object),
+        price: '20000',
+        sizeOverrideSetting: 1,
+        sizeOverrideValue: undefined,
+        expiresAt: `${ts}000000`,
+        expiryStrategy: fields.stopExpiryStrategy,
+      },
+      fallsBelow: undefined,
+    });
+  });
+
+  it('size override', () => {
+    const fields = createFields();
+    const res = createStopMarketOrder(
+      merge(fields, {
+        sizeOverride:
+          StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION,
+        size: 10,
+      }),
+      market,
+      reference
+    );
+    expect(res).toEqual({
+      risesAbove: {
+        orderSubmission: expect.objectContaining({
+          size: '0.001',
+        }),
+        price: '20000',
+        sizeOverrideSetting: 2,
+        sizeOverrideValue: { percentage: '0.100' },
+      },
+      fallsBelow: undefined,
+    });
+  });
+
+  it('falls below', () => {
+    const fields = createFields();
+    const res = createStopMarketOrder(
+      merge(fields, {
+        triggerDirection:
+          StopOrderTriggerDirection.TRIGGER_DIRECTION_FALLS_BELOW,
+      }),
+      market,
+      reference
+    );
+    expect(res).toEqual({
+      risesAbove: undefined,
+      fallsBelow: {
+        orderSubmission: expect.any(Object),
+        price: '20000',
+        sizeOverrideSetting: 1,
+        sizeOverrideValue: undefined,
+      },
+    });
+  });
+
+  it('oco with missing fields should throw', () => {
+    const fields = createFields();
+    expect(() => {
+      createStopMarketOrder(
+        merge(fields, {
+          oco: true,
+        }),
+        market,
+        reference
+      );
+    }).toThrow();
+  });
+
+  it('oco', () => {
+    const fields = merge(createFields(), {
+      oco: true,
+      ocoType: OrderType.TYPE_MARKET,
+      ocoPrice: 100,
+      ocoSize: 200,
+      ocoTimeInForce: OrderTimeInForce.TIME_IN_FORCE_IOC,
+      ocoSizeOverride: StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_NONE,
+      ocoTriggerType: 'price',
+      ocoTriggerPrice: 50,
+    });
+    const res = createStopMarketOrder(fields, market, reference);
+
+    expect(res).toEqual({
+      risesAbove: {
+        orderSubmission: expect.any(Object),
+        price: '20000',
+        sizeOverrideSetting: 1,
+        sizeOverrideValue: undefined,
+      },
+      fallsBelow: {
+        orderSubmission: {
+          reference,
+          marketId: market.id,
+          type: fields.ocoType,
+          side: fields.side,
+          timeInForce: fields.ocoTimeInForce,
+          size: '200000',
+          expiresAt: undefined,
+          reduceOnly: true,
+        },
+        price: '5000',
+        sizeOverrideSetting: 1,
+        sizeOverrideValue: undefined,
+      },
+    });
+  });
+
+  it('oco sizeOverride', () => {
+    const fields = merge(createFields(), {
+      oco: true,
+      ocoType: OrderType.TYPE_MARKET,
+      ocoPrice: 100,
+      ocoSize: 85,
+      ocoTimeInForce: OrderTimeInForce.TIME_IN_FORCE_IOC,
+      ocoSizeOverride:
+        StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION,
+      ocoTriggerType: 'trailingPercentOffset',
+      ocoTriggerPrice: 50,
+    });
+    const res = createStopMarketOrder(fields, market, reference);
+
+    expect(res).toEqual({
+      risesAbove: {
+        orderSubmission: expect.any(Object),
+        price: '20000',
+        sizeOverrideSetting: 1,
+        sizeOverrideValue: undefined,
+      },
+      fallsBelow: {
+        orderSubmission: {
+          reference,
+          marketId: market.id,
+          type: fields.ocoType,
+          side: fields.side,
+          timeInForce: fields.ocoTimeInForce,
+          price: undefined,
+          size: '0.001',
+          expiresAt: undefined,
+          reduceOnly: true,
+        },
+        trailingPercentOffset: '0.500',
+        sizeOverrideSetting: 2,
+        sizeOverrideValue: { percentage: '0.850' },
+      },
     });
   });
 });
