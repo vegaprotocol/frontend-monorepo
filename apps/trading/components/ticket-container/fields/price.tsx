@@ -49,7 +49,7 @@ export const Price = ({ name = 'price' }: { name?: 'price' | 'ocoPrice' }) => {
                   form.setValue('size', size.toNumber());
                 }
               }}
-              data-testid={`field-${name}`}
+              data-testid={`order-${name}`}
               label={
                 <InputLabel
                   label={t('Price')}

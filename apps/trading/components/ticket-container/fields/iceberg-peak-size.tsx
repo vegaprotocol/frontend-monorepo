@@ -25,6 +25,7 @@ export const IcebergPeakSize = () => {
               value={field.value || ''}
               onChange={field.onChange}
               label={<InputLabel label={t('Peak size')} symbol={symbol} />}
+              data-testid="order-peak-size"
             />
             {fieldState.error && (
               <TradingInputError>{fieldState.error.message}</TradingInputError>

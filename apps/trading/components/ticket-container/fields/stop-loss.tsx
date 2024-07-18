@@ -28,6 +28,7 @@ export const StopLoss = () => {
                   symbol={ticket.quoteAsset.symbol}
                 />
               }
+              data-testid="order-price-stop-loss"
             />
             {fieldState.error && (
               <TradingInputError>{fieldState.error.message}</TradingInputError>

@@ -40,7 +40,9 @@ export const Size = (props: { price?: BigNumber }) => {
               appendElement={<SizeModeButton />}
             />
             {fieldState.error && (
-              <TradingInputError>{fieldState.error.message}</TradingInputError>
+              <TradingInputError testId="error-size">
+                {fieldState.error.message}
+              </TradingInputError>
             )}
           </div>
         );

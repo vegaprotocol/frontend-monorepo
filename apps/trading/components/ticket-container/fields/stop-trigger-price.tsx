@@ -29,7 +29,7 @@ export const StopTriggerPrice = ({
               {...field}
               value={field.value || ''}
               label={<InputLabel label={t('Trigger')} symbol={symbol} />}
-              data-testid={`field-${name}`}
+              data-testid={`order-${name}`}
             />
             {fieldState.error && (
               <TradingInputError testId={`error-${name}`}>

@@ -21,7 +21,7 @@ export const StopSize = ({ name = 'size' }: { name?: 'size' | 'ocoSize' }) => {
               label={<SizeLabel />}
               value={field.value || ''}
               onChange={field.onChange}
-              data-testid={`field-${name}`}
+              data-testid={`order-${name}`}
             />
             {fieldState.error && (
               <TradingInputError testId={`error-${name}`}>

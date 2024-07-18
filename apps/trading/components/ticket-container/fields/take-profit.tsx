@@ -28,6 +28,7 @@ export const TakeProfit = () => {
               }
               value={field.value || ''}
               onChange={field.onChange}
+              data-testid="order-price-take-profit"
             />
             {fieldState.error && (
               <TradingInputError>{fieldState.error.message}</TradingInputError>

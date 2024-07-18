@@ -26,6 +26,7 @@ export const IcebergMinVisibleSize = () => {
               label={
                 <InputLabel label={t('Min visible size')} symbol={symbol} />
               }
+              data-testid="order-minimum-size"
             />
             {fieldState.error && (
               <TradingInputError>{fieldState.error.message}</TradingInputError>

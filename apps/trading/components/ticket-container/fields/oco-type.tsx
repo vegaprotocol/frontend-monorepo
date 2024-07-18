@@ -19,7 +19,7 @@ export const OCOType = ({ name = 'ocoType' }: { name?: 'ocoType' }) => {
             value={field.value}
             onValueChange={field.onChange}
             placeholder={t('Select')}
-            data-testid={`field-${name}`}
+            data-testid={`order-${name}`}
           >
             <MiniSelectOption value={OrderType.TYPE_MARKET}>
               {OrderTypeMapping[OrderType.TYPE_MARKET]}

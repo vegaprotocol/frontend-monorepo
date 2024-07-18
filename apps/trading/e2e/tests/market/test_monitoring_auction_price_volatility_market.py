@@ -127,7 +127,7 @@ def test_market_monitoring_auction_price_volatility_market_order(
     page: Page, simple_market
 ):
     page.goto(f"/#/markets/{simple_market}")
-    page.get_by_test_id("order-type-Market").click()
+    page.get_by_test_id("order-type-market").click()
     page.get_by_test_id("order-size").clear()
     page.get_by_test_id("order-size").type("1")
     # 7002-SORD-060
