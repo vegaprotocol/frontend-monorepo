@@ -3,10 +3,8 @@ import userEvent from '@testing-library/user-event';
 import { Sidebar } from './sidebar';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 
-jest.mock('@vegaprotocol/deal-ticket', () => ({
-  DealTicketContainer: ({ marketId }: { marketId: string }) => (
-    <div data-testid="deal-ticket">{marketId}</div>
-  ),
+jest.mock('../ticket-container', () => ({
+  TicketContainer: () => <div data-testid="deal-ticket" />,
 }));
 
 jest.mock('@vegaprotocol/markets', () => ({
@@ -56,7 +54,7 @@ describe('Sidebar', () => {
 
   it('switches between accordion sections', async () => {
     const { user } = renderComponent();
-    expect(screen.getByTestId('deal-ticket')).toHaveTextContent(marketId);
+    expect(screen.getByTestId('deal-ticket')).toBeInTheDocument();
     expect(screen.getByText('NodeHealthContainer')).toBeInTheDocument();
 
     await user.click(screen.getByRole('button', { name: 'Market info' }));
