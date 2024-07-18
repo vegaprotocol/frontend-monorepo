@@ -105,6 +105,7 @@ def test_submit_stop_market_order_triggered(
     page.get_by_test_id(trigger_price).fill("103")
     page.get_by_test_id(order_size).fill("1")
     page.get_by_test_id(expire).click()
+    select_mini(page, 'order-stopExpiryStrategy', 'Cancel')
     expires_at = datetime.now() + timedelta(days=1)
     expires_at_input_value = expires_at.strftime("%Y-%m-%dT%H:%M:%S")
     page.get_by_test_id("date-picker-field").fill(expires_at_input_value)
@@ -116,43 +117,42 @@ def test_submit_stop_market_order_triggered(
     expect(container.get_by_role("row").nth(0)).to_contain_text("Mark > 103.00")
     expect(container.get_by_role("row").nth(0)).to_contain_text("-1MarketTriggered-FOK")
 
-# TODO: fix this test, the map order values function doesn't handle stopExpiryStrategy
 
-# @pytest.mark.usefixtures("auth", "risk_accepted")
-# def test_submit_stop_limit_order_pending(
-#     continuous_market, vega: VegaServiceNull, page: Page
-# ):
-#     # 7002-SORD-071
-#     # 7002-SORD-074
-#     # 7002-SORD-075
-#     # 7002-SORD-069
-#     page.goto(f"/#/markets/{continuous_market}")
-#     page.get_by_test_id(stop_orders_tab).click()
-#     # create a position because stop order is reduce only type
-#     create_position(vega, continuous_market)
-#
-#     page.get_by_test_id(stop_order_btn).click()
-#     page.get_by_test_id(stop_limit_order_btn).is_visible()
-#     page.get_by_test_id(stop_limit_order_btn).click()
-#     page.get_by_test_id(order_side_sell).click()
-#     select_mini(page, 'trigger-direction', 'Falls below')
-#     page.get_by_test_id(trigger_price).fill("102")
-#     page.get_by_test_id(order_price).fill("99")
-#     page.get_by_test_id(order_size).fill("1")
-#     select_mini(page, order_tif,  "Immediate or Cancel (IOC)")
-#     page.get_by_test_id(expire).click()
-#     select_mini(page, 'order-stopExpiryStrategy', 'Submit')
-#     expires_at = datetime.now() + timedelta(days=1)
-#     expires_at_input_value = expires_at.strftime("%Y-%m-%dT%H:%M:%S")
-#     page.get_by_test_id("date-picker-field").fill(expires_at_input_value)
-#     page.get_by_test_id(submit_stop_order).click()
-#     wait_for_toast_confirmation(page)
-#     vega.wait_fn(1)
-#     vega.wait_for_total_catchup()
-#
-#     container = page.locator('.ag-center-cols-container')
-#     expect(container.get_by_role("row").nth(0)).to_contain_text("Mark < 102.00Submit")
-#     expect(container.get_by_role("row").nth(0)).to_contain_text("-1LimitPending99.00IOC")
+@pytest.mark.usefixtures("auth", "risk_accepted")
+def test_submit_stop_limit_order_pending(
+    continuous_market, vega: VegaServiceNull, page: Page
+):
+    # 7002-SORD-071
+    # 7002-SORD-074
+    # 7002-SORD-075
+    # 7002-SORD-069
+    page.goto(f"/#/markets/{continuous_market}")
+    page.get_by_test_id(stop_orders_tab).click()
+    # create a position because stop order is reduce only type
+    create_position(vega, continuous_market)
+
+    page.get_by_test_id(stop_order_btn).click()
+    page.get_by_test_id(stop_limit_order_btn).is_visible()
+    page.get_by_test_id(stop_limit_order_btn).click()
+    page.get_by_test_id(order_side_sell).click()
+    select_mini(page, 'trigger-direction', 'Falls below')
+    page.get_by_test_id(trigger_price).fill("102")
+    page.get_by_test_id(order_price).fill("99")
+    page.get_by_test_id(order_size).fill("1")
+    select_mini(page, order_tif,  "Immediate or Cancel (IOC)")
+    page.get_by_test_id(expire).click()
+    select_mini(page, 'order-stopExpiryStrategy', 'Submit')
+    expires_at = datetime.now() + timedelta(days=1)
+    expires_at_input_value = expires_at.strftime("%Y-%m-%dT%H:%M:%S")
+    page.get_by_test_id("date-picker-field").fill(expires_at_input_value)
+    page.get_by_test_id(submit_stop_order).click()
+    wait_for_toast_confirmation(page)
+    vega.wait_fn(1)
+    vega.wait_for_total_catchup()
+
+    container = page.locator('.ag-center-cols-container')
+    expect(container.get_by_role("row").nth(0)).to_contain_text("Mark < 102.00Submit")
+    expect(container.get_by_role("row").nth(0)).to_contain_text("-1LimitPending99.00IOC")
 
 
 @pytest.mark.usefixtures("auth", "risk_accepted")
