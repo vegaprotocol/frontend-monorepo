@@ -35,8 +35,20 @@ export const mapFormValuesToOrderSubmission = (
     order.timeInForce === Schema.OrderTimeInForce.TIME_IN_FORCE_GTT
       ? toNanoSeconds(order.expiresAt)
       : undefined,
-  postOnly: order.postOnly,
-  reduceOnly: order.reduceOnly,
+  postOnly:
+    order.type === Schema.OrderType.TYPE_MARKET ||
+    [
+      Schema.OrderTimeInForce.TIME_IN_FORCE_FOK,
+      Schema.OrderTimeInForce.TIME_IN_FORCE_IOC,
+    ].includes(order.timeInForce)
+      ? false
+      : order.postOnly,
+  reduceOnly: ![
+    Schema.OrderTimeInForce.TIME_IN_FORCE_FOK,
+    Schema.OrderTimeInForce.TIME_IN_FORCE_IOC,
+  ].includes(order.timeInForce)
+    ? false
+    : order.reduceOnly,
   icebergOpts:
     order.type === Schema.OrderType.TYPE_LIMIT &&
     isPersistentOrder(order.timeInForce) &&
@@ -94,9 +106,8 @@ export const mapFormValuesToStopOrdersSubmission = (
           : data.size || '',
         timeInForce: data.timeInForce,
         price: data.price,
-        // @ts-ignore TODO: Fix me
-        reduceOnly: data.reduceOnly,
-        postOnly: data.postOnly,
+        reduceOnly: !isSpotMarket,
+        postOnly: isSpotMarket ? !!data.postOnly : false,
         expiresAt: data.orderExpiresAt,
       },
       marketId,
@@ -133,9 +144,8 @@ export const mapFormValuesToStopOrdersSubmission = (
             : data.ocoSize || '',
           timeInForce: data.ocoTimeInForce,
           price: data.ocoPrice,
-          // @ts-ignore TODO: Fix me
-          reduceOnly: data.reduceOnly,
-          postOnly: false,
+          reduceOnly: !isSpotMarket,
+          postOnly: isSpotMarket ? !!data.ocoPostOnly : false,
           expiresAt: data.ocoOrderExpiresAt,
         },
         marketId,
