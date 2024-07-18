@@ -64,6 +64,7 @@ export const TicketStopLimit = (props: FormProps) => {
   const price = form.watch('price');
   const tif = form.watch('timeInForce');
   const oco = form.watch('oco');
+  const ocoType = form.watch('ocoType');
   const stopExpiry = form.watch('stopExpiry');
 
   return (
@@ -90,13 +91,13 @@ export const TicketStopLimit = (props: FormProps) => {
           </FieldControls>
           <Fields.StopTriggerPrice />
         </div>
-        <Fields.Price />
         <div className="flex flex-col gap-1">
           <FieldControls>
             <Fields.StopSizeOverride />
           </FieldControls>
           <Fields.StopSize />
         </div>
+        <Fields.Price />
         <SizeSliderStop price={BigNumber(price || '0')} />
         <FormGrid>
           <FormGridCol>
@@ -127,7 +128,6 @@ export const TicketStopLimit = (props: FormProps) => {
               </FieldControls>
               <Fields.StopTriggerPrice name="ocoTriggerPrice" />
             </div>
-            <Fields.Price name="ocoPrice" />
             <div className="flex flex-col gap-1">
               <FieldControls>
                 <Fields.OCOType />
@@ -135,6 +135,9 @@ export const TicketStopLimit = (props: FormProps) => {
               </FieldControls>
               <Fields.StopSize name="ocoSize" />
             </div>
+            {ocoType === OrderType.TYPE_LIMIT && (
+              <Fields.Price name="ocoPrice" />
+            )}
             <FormGrid>
               <FormGridCol />
               <FormGridCol>

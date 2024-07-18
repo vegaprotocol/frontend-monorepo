@@ -63,6 +63,7 @@ export const TicketStopMarket = (props: FormProps) => {
   const tif = form.watch('timeInForce');
   const isPersistent = !NON_PERSISTENT_TIF_OPTIONS.includes(tif);
   const oco = form.watch('oco');
+  const ocoType = form.watch('ocoType');
   const stopExpiry = form.watch('stopExpiry');
 
   const { pubKey } = useVegaWallet();
@@ -145,6 +146,9 @@ export const TicketStopMarket = (props: FormProps) => {
               </FieldControls>
               <Fields.StopSize name="ocoSize" />
             </div>
+            {ocoType === OrderType.TYPE_LIMIT && (
+              <Fields.Price name="ocoPrice" />
+            )}
             <FormGrid>
               <FormGridCol />
               <FormGridCol>

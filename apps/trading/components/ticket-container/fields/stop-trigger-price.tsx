@@ -6,6 +6,7 @@ import { useTicketContext } from '../ticket-context';
 import { InputLabel } from '../elements/form';
 import { useForm } from '../use-form';
 
+// TODO: show warning about immediate trigger of order
 export const StopTriggerPrice = ({
   name = 'triggerPrice',
 }: {

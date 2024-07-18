@@ -10,7 +10,6 @@ import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { Form, FormGrid, FormGridCol } from '../elements/form';
 import { type FormFieldsLimit, useLimitSchema } from '../schemas';
 import { TicketTypeSelect } from '../ticket-type-select';
-import { NON_PERSISTENT_TIF_OPTIONS } from '../constants';
 import { useTicketContext } from '../ticket-context';
 import { SubmitButton } from '../elements/submit-button';
 import { useT } from '../../../lib/use-t';
@@ -53,7 +52,7 @@ export const TicketLimit = (props: FormProps) => {
   const tpSl = form.watch('tpSl');
   const iceberg = form.watch('iceberg');
   const tif = form.watch('timeInForce');
-  const isPersistent = !NON_PERSISTENT_TIF_OPTIONS.includes(tif);
+  const isPersistent = utils.isPersistentOrder(tif);
 
   return (
     <FormProvider {...form}>

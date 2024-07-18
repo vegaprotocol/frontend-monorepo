@@ -4,13 +4,13 @@ import { FormField } from '../ticket-field';
 import { useT } from '../../../lib/use-t';
 import { useForm } from '../use-form';
 
-export const TpSl = () => {
+export const TpSl = ({ name = 'tpSl' }: { name?: 'tpSl' }) => {
   const t = useT();
   const form = useForm();
   return (
     <FormField
       control={form.control}
-      name="tpSl"
+      name={name}
       render={({ field }) => {
         return (
           <Tooltip description={t('ticketTooltipTPSL')} underline>
@@ -19,6 +19,7 @@ export const TpSl = () => {
                 checked={field.value}
                 onCheckedChange={field.onChange}
                 label={t('TP/SL')}
+                name={name}
               />
             </div>
           </Tooltip>
