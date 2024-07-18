@@ -162,32 +162,46 @@ export const CLOSED_MARKETS_STATES = [
   MarketState.STATE_TRADING_TERMINATED,
   MarketState.STATE_CLOSED,
   MarketState.STATE_CANCELLED,
+  MarketState.STATE_REJECTED,
 ];
 
 export const PROPOSED_MARKETS_STATES = [MarketState.STATE_PROPOSED];
 
+export const isMarketOpen = (state: MarketState) => {
+  return OPEN_MARKETS_STATES.includes(state);
+};
+
+export const isMarketClosed = (state: MarketState) => {
+  return CLOSED_MARKETS_STATES.includes(state);
+};
+
+export const isMarketProposed = (state: MarketState) => {
+  return PROPOSED_MARKETS_STATES.includes(state);
+};
+
+export const isMarketInAuction = (tradingMode: MarketTradingMode) => {
+  return [
+    MarketTradingMode.TRADING_MODE_BATCH_AUCTION,
+    MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
+    MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
+  ].includes(tradingMode);
+};
+
 export const filterActiveMarkets: MarketsFilter = (markets) => {
   return markets.filter((m) => {
-    return (
-      m.data?.marketState && OPEN_MARKETS_STATES.includes(m.data.marketState)
-    );
+    return m.data?.marketState && isMarketOpen(m.data.marketState);
   });
 };
 
 export const filterClosedMarkets: MarketsFilter = (markets) => {
   return markets.filter((m) => {
-    return (
-      m.data?.marketState && CLOSED_MARKETS_STATES.includes(m.data.marketState)
-    );
+    return m.data?.marketState && isMarketClosed(m.data.marketState);
   });
 };
 
 export const filterProposedMarkets: MarketsFilter = (markets) => {
   return markets.filter((m) => {
-    return (
-      m.data?.marketState &&
-      PROPOSED_MARKETS_STATES.includes(m.data?.marketState)
-    );
+    return m.data?.marketState && isMarketProposed(m.data.marketState);
   });
 };
 

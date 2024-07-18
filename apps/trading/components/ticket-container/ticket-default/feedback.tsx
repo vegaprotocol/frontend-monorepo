@@ -1,4 +1,8 @@
-import { MarginMode } from '@vegaprotocol/types';
+import {
+  MarginMode,
+  MarketState,
+  MarketStateMapping,
+} from '@vegaprotocol/types';
 import { useTicketContext } from '../ticket-context';
 import { useT } from '../../../lib/use-t';
 import { useEstimatePosition } from '../use-estimate-position';
@@ -12,17 +16,24 @@ import {
   useSidebarAccountsInnerView,
 } from '../../accounts-container';
 import { ViewType, useSidebar } from '../../sidebar';
+import {
+  isMarketClosed,
+  isMarketInAuction,
+  useMarketState,
+  useMarketTradingMode,
+} from '@vegaprotocol/markets';
 
 export const Feedback = () => {
   const { pubKey } = useVegaWallet();
   const ticket = useTicketContext('default');
 
-  const { data } = useEstimatePosition();
-
-  if (!pubKey) return null;
+  const { data: positionEstimate } = useEstimatePosition();
+  const { data: marketState } = useMarketState(ticket.market.id);
+  const { data: marketTradingMode } = useMarketTradingMode(ticket.market.id);
 
   const requiredCollateral = toBigNum(
-    data?.estimatePosition?.collateralIncreaseEstimate.bestCase || '0',
+    positionEstimate?.estimatePosition?.collateralIncreaseEstimate.bestCase ||
+      '0',
     ticket.settlementAsset.decimals
   );
 
@@ -38,6 +49,15 @@ export const Feedback = () => {
     ticket.accounts.orderMargin,
     ticket.settlementAsset.decimals
   );
+
+  if (marketState && isMarketClosed(marketState)) {
+    return <MarketClosed marketState={marketState} />;
+  }
+
+  // Dont show any collateral/margin related warnings unless the user is connected
+  if (!pubKey) {
+    return null;
+  }
 
   if (ticket.marginMode.mode === MarginMode.MARGIN_MODE_CROSS_MARGIN) {
     if (
@@ -66,6 +86,12 @@ export const Feedback = () => {
       />
     );
   }
+
+  if (marketTradingMode && isMarketInAuction(marketTradingMode)) {
+    return <MarketInAuction />;
+  }
+
+  return null;
 };
 
 const textClasses = 'text-xs text-warning';
@@ -115,6 +141,29 @@ const NotEnoughCollateral = ({
         </span>
       </Tooltip>{' '}
       <DepositButton asset={asset} />
+    </p>
+  );
+};
+
+const MarketClosed = ({ marketState }: { marketState: MarketState }) => {
+  const t = useT();
+  return (
+    <p className="text-xs text-danger" data-testid="feedback-market-closed">
+      {t(`This market is {{marketState}} and not accepting orders`, {
+        marketState:
+          marketState === MarketState.STATE_TRADING_TERMINATED
+            ? t('terminated')
+            : t(MarketStateMapping[marketState]).toLowerCase(),
+      })}
+    </p>
+  );
+};
+
+const MarketInAuction = () => {
+  const t = useT();
+  return (
+    <p className="text-xs text-warning" data-testid="feedback-market-auction">
+      {t('Any orders placed now will not trade until the auction ends')}
     </p>
   );
 };

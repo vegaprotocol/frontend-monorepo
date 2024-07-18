@@ -156,6 +156,6 @@ def test_perps_market_terminated(page: Page, vega: VegaServiceNull):
         "Funding Rate / Countdown"
     )
     expect(page.get_by_test_id("index-price")).to_contain_text("Index Price")
-    expect(page.get_by_test_id("deal-ticket-error-message-summary")).to_have_text(
+    expect(page.get_by_test_id("feedback-market-closed")).to_have_text(
         "This market is closed and not accepting orders"
     )

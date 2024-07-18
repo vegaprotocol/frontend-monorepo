@@ -9,13 +9,13 @@ import { FormField } from '../ticket-field';
 import { useT } from '../../../lib/use-t';
 import { useForm } from '../use-form';
 
-export const Iceberg = () => {
+export const Iceberg = ({ name = 'iceberg' }: { name?: 'iceberg' }) => {
   const t = useT();
   const form = useForm();
   return (
     <FormField
       control={form.control}
-      name="iceberg"
+      name={name}
       render={({ field }) => {
         return (
           <Tooltip
@@ -36,6 +36,7 @@ export const Iceberg = () => {
                   field.onChange(value);
                 }}
                 label={t('Iceberg')}
+                name={name}
               />
             </div>
           </Tooltip>

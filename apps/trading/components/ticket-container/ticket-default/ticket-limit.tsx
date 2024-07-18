@@ -133,7 +133,7 @@ export const TicketLimit = (props: FormProps) => {
         <Feedback />
         <SubmitButton
           text={t('Place limit order')}
-          subLabel={`${size || 0} ${ticket.baseSymbol} @ ${price} ${
+          subLabel={`${size || 0} ${ticket.baseSymbol} @ ${price || 0} ${
             ticket.quoteName
           }`}
         />

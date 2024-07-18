@@ -1,5 +1,5 @@
 import * as Schema from '@vegaprotocol/types';
-import { isMarketInAuction } from './is-market-in-auction';
+import { isMarketInAuction } from './market-utils';
 import type { MarketData } from './market-data-provider';
 
 /**
