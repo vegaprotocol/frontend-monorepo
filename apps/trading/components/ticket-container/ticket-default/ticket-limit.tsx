@@ -52,7 +52,7 @@ export const TicketLimit = (props: FormProps) => {
   const tpSl = form.watch('tpSl');
   const iceberg = form.watch('iceberg');
   const tif = form.watch('timeInForce');
-  const isPersistent = utils.isPersistentOrder(tif);
+  const isPersistent = utils.isPersistentTif(tif);
 
   return (
     <FormProvider {...form}>

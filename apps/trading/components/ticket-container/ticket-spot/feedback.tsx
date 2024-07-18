@@ -2,12 +2,19 @@ import BigNumber from 'bignumber.js';
 
 import { toBigNum } from '@vegaprotocol/utils';
 import { OrderType, Side } from '@vegaprotocol/types';
-import { useMarkPrice } from '@vegaprotocol/markets';
+import {
+  isMarketClosed,
+  isMarketInAuction,
+  useMarkPrice,
+  useMarketState,
+  useMarketTradingMode,
+} from '@vegaprotocol/markets';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 
-import { useT } from '../../../lib/use-t';
 import { useTicketContext } from '../ticket-context';
 import { useForm } from '../use-form';
-import { useVegaWallet } from '@vegaprotocol/wallet-react';
+
+import * as Msg from '../feedback';
 
 export const Feedback = () => {
   const { pubKey } = useVegaWallet();
@@ -21,6 +28,8 @@ export const Feedback = () => {
   const limitPrice = form.watch('price');
 
   const { data: markPrice } = useMarkPrice(ticket.market.id);
+  const { data: marketState } = useMarketState(ticket.market.id);
+  const { data: marketTradingMode } = useMarketTradingMode(ticket.market.id);
 
   if (!pubKey) return null;
 
@@ -35,34 +44,37 @@ export const Feedback = () => {
   );
   const baseBalance = toBigNum(ticket.accounts.base, ticket.baseAsset.decimals);
 
+  if (marketState && isMarketClosed(marketState)) {
+    return <Msg.MarketClosed marketState={marketState} />;
+  }
+
   if (sizeMode === 'contracts') {
     if (side === Side.SIDE_BUY) {
       const notional = price.times(size);
       if (quoteBalance.isLessThan(notional)) {
-        return <NoCollateral />;
+        return <Msg.NoCollateral asset={ticket.quoteAsset} />;
       }
     } else if (side === Side.SIDE_SELL) {
       if (baseBalance.isLessThan(size)) {
-        return <NoCollateral />;
+        return <Msg.NoCollateral asset={ticket.baseAsset} />;
       }
     }
   } else if (sizeMode === 'notional') {
     if (side === Side.SIDE_BUY) {
       if (quoteBalance.isLessThan(size)) {
-        return <NoCollateral />;
+        return <Msg.NoCollateral asset={ticket.quoteAsset} />;
       }
     } else if (side == Side.SIDE_SELL) {
       const actualSize = BigNumber(size).div(price).toString();
       if (baseBalance.isLessThan(actualSize)) {
-        return <NoCollateral />;
+        return <Msg.NoCollateral asset={ticket.baseAsset} />;
       }
     }
   }
 
-  return null;
-};
+  if (marketTradingMode && isMarketInAuction(marketTradingMode)) {
+    return <Msg.MarketAuction marketTradingMode={marketTradingMode} />;
+  }
 
-const NoCollateral = () => {
-  const t = useT();
-  return <p>{t('Not enough collateral')}</p>;
+  return null;
 };

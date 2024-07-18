@@ -1,4 +1,4 @@
-import { MarginMode, Side } from '@vegaprotocol/types';
+import { OrderType, Side } from '@vegaprotocol/types';
 import { useTicketContext } from '../ticket-context';
 import { useT } from '../../../lib/use-t';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
@@ -10,24 +10,23 @@ import BigNumber from 'bignumber.js';
 import {
   isMarketClosed,
   isMarketInAuction,
+  useMarkPrice,
   useMarketState,
   useMarketTradingMode,
 } from '@vegaprotocol/markets';
 
 import * as Msg from '../feedback';
 import { toBigNum } from '@vegaprotocol/utils';
-import { useEstimatePosition } from '../use-estimate-position';
 
 export const FeedbackStop = () => {
   const { pubKey } = useVegaWallet();
-  const ticket = useTicketContext('default');
+  const ticket = useTicketContext('spot');
   const form = useForm('stopLimit');
 
   const { param: maxStopOrders } = useNetworkParam(
     'spam_protection_max_stopOrdersPerMarket'
   );
 
-  const { data: positionEstimate } = useEstimatePosition();
   const { data: marketState } = useMarketState(ticket.market.id);
   const { data: marketTradingMode } = useMarketTradingMode(ticket.market.id);
   const { data: activeStopOrders } = useActiveStopOrders(
@@ -38,27 +37,18 @@ export const FeedbackStop = () => {
   const { openVolume } = useOpenVolume(pubKey, ticket.market.id) || {};
   const { data: activeOrders } = useActiveOrders(pubKey, ticket.market.id);
 
+  const type = form.watch('type');
   const side = form.watch('side');
+  const size = form.watch('size');
   const oco = form.watch('oco');
+  const limitPrice = form.watch('price');
 
-  const requiredCollateral = toBigNum(
-    positionEstimate?.estimatePosition?.collateralIncreaseEstimate.bestCase ||
-      '0',
-    ticket.settlementAsset.decimals
-  );
+  const { data: markPrice } = useMarkPrice(ticket.market.id);
 
-  const generalAccount = toBigNum(
-    ticket.accounts.general,
-    ticket.settlementAsset.decimals
-  );
-  const marginAccount = toBigNum(
-    ticket.accounts.margin,
-    ticket.settlementAsset.decimals
-  );
-  const orderMarginAccount = toBigNum(
-    ticket.accounts.orderMargin,
-    ticket.settlementAsset.decimals
-  );
+  const price =
+    type === OrderType.TYPE_LIMIT
+      ? BigNumber(limitPrice)
+      : toBigNum(markPrice || '0', ticket.market.decimalPlaces);
 
   if (marketState && isMarketClosed(marketState)) {
     return <Msg.MarketClosed marketState={marketState} />;
@@ -67,32 +57,21 @@ export const FeedbackStop = () => {
   if (!pubKey) return null;
   if (!maxStopOrders) return null;
 
-  if (ticket.marginMode.mode === MarginMode.MARGIN_MODE_CROSS_MARGIN) {
-    if (
-      generalAccount.isLessThanOrEqualTo(0) &&
-      marginAccount.isLessThanOrEqualTo(0)
-    ) {
-      return <Msg.NoCollateral asset={ticket.settlementAsset} />;
-    }
-  } else if (
-    ticket.marginMode.mode === MarginMode.MARGIN_MODE_ISOLATED_MARGIN
-  ) {
-    if (
-      generalAccount.isLessThanOrEqualTo(0) &&
-      orderMarginAccount.isLessThanOrEqualTo(0)
-    ) {
-      return <Msg.NoCollateral asset={ticket.settlementAsset} />;
-    }
-  }
+  const quoteBalance = toBigNum(
+    ticket.accounts.quote,
+    ticket.quoteAsset.decimals
+  );
+  const baseBalance = toBigNum(ticket.accounts.base, ticket.baseAsset.decimals);
 
-  if (generalAccount.isLessThan(requiredCollateral)) {
-    return (
-      <Msg.NotEnoughCollateral
-        requiredCollateral={requiredCollateral}
-        availableCollateral={generalAccount}
-        asset={ticket.settlementAsset}
-      />
-    );
+  if (side === Side.SIDE_BUY) {
+    const notional = price.times(size);
+    if (quoteBalance.isLessThan(notional)) {
+      return <Msg.NoCollateral asset={ticket.quoteAsset} />;
+    }
+  } else if (side === Side.SIDE_SELL) {
+    if (baseBalance.isLessThan(size)) {
+      return <Msg.NoCollateral asset={ticket.baseAsset} />;
+    }
   }
 
   // Check if current active stop orders + the new stop order (and oco) will go over

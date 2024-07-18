@@ -124,7 +124,7 @@ export const isNonPersistentOrder = (timeInForce: OrderTimeInForce) => {
   return NON_PERSISTENT_TIF_OPTIONS.includes(timeInForce);
 };
 
-export const isPersistentOrder = (timeInForce: OrderTimeInForce) => {
+export const isPersistentTif = (timeInForce: OrderTimeInForce) => {
   return PERSISTENT_TIF_OPTIONS.includes(timeInForce);
 };
 
