@@ -4,7 +4,7 @@ import {
   StopOrderSizeOverrideSetting,
   type StopOrderExpiryStrategy,
 } from '@vegaprotocol/types';
-import { toDecimal } from '@vegaprotocol/utils';
+import { addDecimal, toDecimal } from '@vegaprotocol/utils';
 import BigNumber from 'bignumber.js';
 import {
   NON_PERSISTENT_TIF_OPTIONS,
@@ -198,6 +198,7 @@ export const createStopMarketOrder = (
   const trigger = createTrigger(fields, market.decimalPlaces);
   const expiry = createStopExpiry(fields);
   const sizeOverride = createSizeOverride(fields);
+  const isOverride = sizeOverride.sizeOverrideSetting === 2;
 
   const stopOrderSetup: StopOrderSetup = {
     orderSubmission: {
@@ -206,7 +207,9 @@ export const createStopMarketOrder = (
       type: fields.type,
       side: fields.side,
       timeInForce: fields.timeInForce,
-      size: fields.size.toString(),
+      size: isOverride
+        ? addDecimal('1', market.positionDecimalPlaces)
+        : removeDecimal(fields.size.toString(), market.positionDecimalPlaces),
       reduceOnly: fields.reduceOnly,
     },
     ...expiry,
@@ -247,6 +250,7 @@ export const createStopMarketOrder = (
       sizeOverride: fields.ocoSizeOverride,
       size: fields.ocoSize,
     });
+    const isOverride = sizeOverride.sizeOverrideSetting === 2;
 
     oppositeStopOrderSetup = {
       orderSubmission: {
@@ -256,7 +260,12 @@ export const createStopMarketOrder = (
         side: fields.side,
         timeInForce: fields.ocoTimeInForce,
         price: undefined,
-        size: fields.ocoSize.toString(),
+        size: isOverride
+          ? addDecimal('1', market.positionDecimalPlaces)
+          : removeDecimal(
+              fields.ocoSize.toString(),
+              market.positionDecimalPlaces
+            ),
         expiresAt: undefined,
         reduceOnly: fields.reduceOnly,
       },
@@ -281,6 +290,7 @@ export const createStopLimitOrder = (
   const trigger = createTrigger(fields, market.decimalPlaces);
   const expiry = createStopExpiry(fields);
   const sizeOverride = createSizeOverride(fields);
+  const isOverride = sizeOverride.sizeOverrideSetting === 2;
 
   const stopOrderSetup: StopOrderSetup = {
     orderSubmission: {
@@ -290,7 +300,9 @@ export const createStopLimitOrder = (
       side: fields.side,
       timeInForce: fields.timeInForce,
       price: removeDecimal(fields.price.toString(), market.decimalPlaces),
-      size: removeDecimal(fields.size.toString(), market.positionDecimalPlaces),
+      size: isOverride
+        ? addDecimal('1', market.positionDecimalPlaces)
+        : removeDecimal(fields.size.toString(), market.positionDecimalPlaces),
       expiresAt: undefined,
       reduceOnly: fields.reduceOnly,
     },
@@ -328,6 +340,7 @@ export const createStopLimitOrder = (
       sizeOverride: fields.ocoSizeOverride,
       size: fields.ocoSize,
     });
+    const isOverride = sizeOverride.sizeOverrideSetting === 2;
     const trigger = createTrigger(
       {
         triggerType: fields.ocoTriggerType,
@@ -344,10 +357,12 @@ export const createStopLimitOrder = (
         side: fields.side,
         timeInForce: fields.ocoTimeInForce,
         price: removeDecimal(fields.ocoPrice.toString(), market.decimalPlaces),
-        size: removeDecimal(
-          fields.ocoSize.toString(),
-          market.positionDecimalPlaces
-        ),
+        size: isOverride
+          ? addDecimal('1', market.positionDecimalPlaces)
+          : removeDecimal(
+              fields.ocoSize.toString(),
+              market.positionDecimalPlaces
+            ),
         expiresAt: undefined,
         reduceOnly: fields.reduceOnly,
       },
@@ -364,7 +379,7 @@ export const createStopLimitOrder = (
   );
 };
 
-const createStopOrderSubmission = (
+export const createStopOrderSubmission = (
   fields: FormFieldsStopMarket | FormFieldsStopLimit,
   stopOrderSetup: StopOrderSetup,
   oppositeStopOrderSetup?: StopOrderSetup
@@ -390,7 +405,7 @@ const createStopOrderSubmission = (
   throw new Error('could not create stop order');
 };
 
-const createTrigger = (
+export const createTrigger = (
   fields: {
     triggerType: 'price' | 'trailingPercentOffset';
     triggerPrice: number;
@@ -409,7 +424,7 @@ const createTrigger = (
   }
 };
 
-const createSizeOverride = (fields: {
+export const createSizeOverride = (fields: {
   sizeOverride: StopOrderSizeOverrideSetting;
   size: string | number;
 }) => {
@@ -419,25 +434,22 @@ const createSizeOverride = (fields: {
   return {
     sizeOverrideSetting: sizeOverrideMap[fields.sizeOverride],
     sizeOverrideValue: isSizeOverridden
-      ? { percentage: (Number(fields.size) / 100).toString() }
+      ? { percentage: (Number(fields.size) / 100).toFixed(3) }
       : undefined,
   };
 };
 
-const createStopExpiry = (fields: {
+export const createStopExpiry = (fields: {
   stopExpiry?: boolean;
   stopExpiresAt?: Date;
   stopExpiryStrategy?: StopOrderExpiryStrategy;
 }) => {
-  if (fields.stopExpiry && fields.stopExpiresAt) {
-    const expiresAt = toNanoSeconds(fields.stopExpiresAt);
-    return {
-      expiresAt: expiresAt,
-      expiryStrategy: fields.stopExpiryStrategy,
-    };
-  }
-
-  return {};
+  if (!fields.stopExpiry || !fields.stopExpiresAt) return;
+  const expiresAt = toNanoSeconds(fields.stopExpiresAt);
+  return {
+    expiresAt: expiresAt,
+    expiryStrategy: fields.stopExpiryStrategy,
+  };
 };
 
 export const createOrderWithTpSl = (
