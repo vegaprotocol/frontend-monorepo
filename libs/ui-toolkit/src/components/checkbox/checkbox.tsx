@@ -1,7 +1,7 @@
 import { Icon } from '../icon';
 import * as CheckboxPrimitive from '@radix-ui/react-checkbox';
 import classNames from 'classnames';
-import { ElementRef, forwardRef, type ReactNode } from 'react';
+import { type ElementRef, forwardRef, type ReactNode } from 'react';
 
 type CheckedState = boolean | 'indeterminate';
 export const labelClasses =
