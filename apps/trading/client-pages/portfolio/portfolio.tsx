@@ -151,44 +151,56 @@ const PortfolioAssets = () => {
   const [searchTerm, setSearchTerm] = useState('');
   return (
     <ErrorBoundary feature="portfolio-assets">
-      <div className="pointer-events-none">
-        <span
+      <div className="flex justify-between bg-vega-clight-700 dark:bg-vega-cdark-700">
+        <div className="pointer-events-none">
+          <span
+            className={classNames(
+              'inline-block',
+              'bg-vega-clight-700 dark:bg-vega-cdark-700',
+              'text-xs py-2 px-3'
+            )}
+          >
+            {t('Assets')}
+          </span>
+        </div>
+        <div
           className={classNames(
-            'inline-block',
-            'bg-vega-clight-700 dark:bg-vega-cdark-700',
-            'text-xs py-2 px-3'
+            'transition-all w-1/3 p-1 bg-vega-clight-700 dark:bg-vega-cdark-700 relative',
+            { '!w-1/2': searchTerm?.length > 10 }
           )}
         >
-          {t('Assets')}
-        </span>
-      </div>
-      <div className="p-1 bg-vega-clight-700 dark:bg-vega-cdark-700 relative">
-        <TradingInput
-          onChange={(e) => {
-            const searchTerm = e.target.value;
-            setSearchTerm(searchTerm);
-          }}
-          value={searchTerm}
-          type="text"
-          placeholder={t('Search')}
-          data-testid="search-term"
-          className="w-full pr-8"
-          prependElement={<VegaIcon name={VegaIconNames.SEARCH} />}
-        />
-        <button
-          title={t('Clear')}
-          className="absolute top-1/2 transform -translate-y-1/2 right-4 w-4 h-4"
-          onClick={() => {
-            setSearchTerm('');
-          }}
-          hidden={searchTerm.length === 0}
-        >
-          <VegaIcon
-            className="block p-0 m-0 !align-top"
-            name={VegaIconNames.CROSS}
-            size={16}
+          <TradingInput
+            onChange={(e) => {
+              const searchTerm = e.target.value;
+              setSearchTerm(searchTerm);
+            }}
+            value={searchTerm}
+            type="text"
+            placeholder={t('Search')}
+            data-testid="search-term"
+            className="w-full !py-0.5 text-xs !h-6 pl-8 pr-8 border rounded peer bg-vega-clight-800 dark:bg-vega-cdark-800"
+            prependElement={
+              <VegaIcon
+                className="fill-vega-clight-300 dark:fill-vega-cdark-300"
+                name={VegaIconNames.SEARCH}
+              />
+            }
           />
-        </button>
+          <button
+            title={t('Clear')}
+            className="absolute top-1/2 transform -translate-y-1/2 right-4 w-4 h-4"
+            onClick={() => {
+              setSearchTerm('');
+            }}
+            hidden={searchTerm.length === 0}
+          >
+            <VegaIcon
+              className="block p-0 m-0 !align-top fill-vega-clight-300 dark:fill-vega-cdark-300"
+              name={VegaIconNames.CROSS}
+              size={16}
+            />
+          </button>
+        </div>
       </div>
       <TinyScroll>
         <SidebarAccountsContainer
