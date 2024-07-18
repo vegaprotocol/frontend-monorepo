@@ -9,7 +9,6 @@ import { useT } from '../../../lib/use-t';
 import { FormField } from '../ticket-field';
 import { TIF_OPTIONS, NON_PERSISTENT_TIF_OPTIONS } from '../constants';
 import { useForm } from '../use-form';
-import { useTicketContext } from '../ticket-context';
 
 export const TimeInForce = ({
   name = 'timeInForce',
@@ -56,22 +55,15 @@ export const TimeInForce = ({
 };
 
 const useOptions = () => {
-  const ticket = useTicketContext();
   const form = useForm();
   const ticketType = form.watch('ticketType');
 
-  if (ticket.type === 'default') {
-    if (ticketType === 'limit') {
-      return TIF_OPTIONS;
-    }
-
+  if (ticketType === 'market') {
     return NON_PERSISTENT_TIF_OPTIONS;
   }
 
-  if (ticket.type === 'spot') {
-    if (ticketType === 'limit') {
-      return TIF_OPTIONS;
-    }
+  if (ticketType === 'stopMarket') {
+    return NON_PERSISTENT_TIF_OPTIONS;
   }
 
   return TIF_OPTIONS;

@@ -16,7 +16,7 @@ export const TicketContainer = () => {
   if (!market) return null;
 
   return (
-    <div className="p-2">
+    <div className="p-3">
       <TicketContainerSwitch market={market} />
     </div>
   );

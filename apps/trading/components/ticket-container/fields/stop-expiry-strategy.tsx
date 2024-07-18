@@ -19,23 +19,33 @@ export const StopExpiryStrategy = ({
       name={name}
       render={({ field }) => {
         return (
-          <MiniSelect
-            value={field.value}
-            onValueChange={field.onChange}
-            placeholder={t('Expiry strategy')}
-            data-testid="order-stopExpiryStrategy"
-          >
-            <MiniSelectOption
-              value={StopOrderExpiryStrategy.EXPIRY_STRATEGY_CANCELS}
+          <div className="flex items-center gap-2 text-xs">
+            <label className="text-secondary" htmlFor={field.name}>
+              {t('Stop expiry')}
+            </label>
+            <MiniSelect
+              value={field.value}
+              onValueChange={field.onChange}
+              placeholder={t('Select')}
+              data-testid="order-stopExpiryStrategy"
             >
-              {t('Cancel')}
-            </MiniSelectOption>
-            <MiniSelectOption
-              value={StopOrderExpiryStrategy.EXPIRY_STRATEGY_SUBMIT}
-            >
-              {t('Submit')}
-            </MiniSelectOption>
-          </MiniSelect>
+              <MiniSelectOption
+                value={StopOrderExpiryStrategy.EXPIRY_STRATEGY_UNSPECIFIED}
+              >
+                {t('None')}
+              </MiniSelectOption>
+              <MiniSelectOption
+                value={StopOrderExpiryStrategy.EXPIRY_STRATEGY_CANCELS}
+              >
+                {t('Cancels')}
+              </MiniSelectOption>
+              <MiniSelectOption
+                value={StopOrderExpiryStrategy.EXPIRY_STRATEGY_SUBMIT}
+              >
+                {t('Submit')}
+              </MiniSelectOption>
+            </MiniSelect>
+          </div>
         );
       }}
     />

@@ -2,7 +2,7 @@ import {
   OrderTimeInForce,
   OrderType,
   StopOrderSizeOverrideSetting,
-  type StopOrderExpiryStrategy,
+  StopOrderExpiryStrategy,
 } from '@vegaprotocol/types';
 import { addDecimal, toDecimal } from '@vegaprotocol/utils';
 import BigNumber from 'bignumber.js';
@@ -266,7 +266,6 @@ export const createStopMarketOrder = (
               fields.ocoSize.toString(),
               market.positionDecimalPlaces
             ),
-        expiresAt: undefined,
         reduceOnly: fields.reduceOnly,
       },
       ...expiry,
@@ -303,7 +302,11 @@ export const createStopLimitOrder = (
       size: isOverride
         ? addDecimal('1', market.positionDecimalPlaces)
         : removeDecimal(fields.size.toString(), market.positionDecimalPlaces),
-      expiresAt: undefined,
+      expiresAt:
+        fields.expiresAt &&
+        fields.timeInForce === OrderTimeInForce.TIME_IN_FORCE_GTT
+          ? toNanoSeconds(fields.expiresAt)
+          : undefined,
       reduceOnly: fields.reduceOnly,
     },
     ...trigger,
@@ -363,7 +366,11 @@ export const createStopLimitOrder = (
               fields.ocoSize.toString(),
               market.positionDecimalPlaces
             ),
-        expiresAt: undefined,
+        expiresAt:
+          fields.ocoExpiresAt &&
+          fields.ocoTimeInForce === OrderTimeInForce.TIME_IN_FORCE_GTT
+            ? toNanoSeconds(fields.ocoExpiresAt)
+            : undefined,
         reduceOnly: fields.reduceOnly,
       },
       ...trigger,
@@ -440,11 +447,16 @@ export const createSizeOverride = (fields: {
 };
 
 export const createStopExpiry = (fields: {
-  stopExpiry?: boolean;
   stopExpiresAt?: Date;
   stopExpiryStrategy?: StopOrderExpiryStrategy;
 }) => {
-  if (!fields.stopExpiry || !fields.stopExpiresAt) return;
+  if (
+    fields.stopExpiryStrategy ===
+      StopOrderExpiryStrategy.EXPIRY_STRATEGY_UNSPECIFIED ||
+    !fields.stopExpiresAt
+  ) {
+    return;
+  }
   const expiresAt = toNanoSeconds(fields.stopExpiresAt);
   return {
     expiresAt: expiresAt,
@@ -499,7 +511,6 @@ export const createOrderWithTpSl = (
         sizeOverride: StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_NONE,
         size: fields.size,
         timeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK,
-        stopExpiry: false,
         reduceOnly: true,
         oco: true,
         ocoType: OrderType.TYPE_MARKET,
@@ -531,7 +542,6 @@ export const createOrderWithTpSl = (
         sizeOverride: StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_NONE,
         size: fields.size,
         timeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK,
-        stopExpiry: false,
         reduceOnly: true,
         oco: false,
       },
@@ -551,7 +561,6 @@ export const createOrderWithTpSl = (
         sizeOverride: StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_NONE,
         size: fields.size,
         timeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK,
-        stopExpiry: false,
         reduceOnly: true,
         oco: false,
       },

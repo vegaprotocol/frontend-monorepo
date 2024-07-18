@@ -1,23 +1,28 @@
 import { FormProvider, useForm } from 'react-hook-form';
 import uniqueId from 'lodash/uniqueId';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { addDays } from 'date-fns';
 
 import {
   OrderType,
   OrderTimeInForce,
   StopOrderTriggerDirection,
   StopOrderSizeOverrideSetting,
+  StopOrderExpiryStrategy,
 } from '@vegaprotocol/types';
 import { useVegaTransactionStore } from '@vegaprotocol/web3';
 import { useMarkPrice } from '@vegaprotocol/markets';
 import { toBigNum } from '@vegaprotocol/utils';
 
-import { FieldControls, Form, FormGrid, FormGridCol } from '../elements/form';
+import {
+  AdvancedControls,
+  FieldControls,
+  Form,
+  FormGrid,
+  FormGridCol,
+} from '../elements/form';
 import { type FormFieldsStopMarket, useStopMarketSchema } from '../schemas';
 import { TicketTypeSelect } from '../ticket-type-select';
 import { type FormProps } from './ticket';
-import { NON_PERSISTENT_TIF_OPTIONS } from '../constants';
 import { TicketEventUpdater } from '../ticket-events';
 import { useTicketContext } from '../ticket-context';
 import { SubmitButton } from '../elements/submit-button';
@@ -29,6 +34,7 @@ import * as utils from '../utils';
 import { SizeSliderStop } from './size-slider-stop';
 import { FeedbackStop } from './feedback-stop';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
+import { TradingInputError } from '@vegaprotocol/ui-toolkit';
 
 export const TicketStopMarket = (props: FormProps) => {
   const t = useT();
@@ -46,13 +52,11 @@ export const TicketStopMarket = (props: FormProps) => {
       triggerType: 'price',
       sizeOverride: StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_NONE,
       timeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK,
-      expiresAt: addDays(new Date(), 1),
       reduceOnly: true, // must be reduce only for stop orders (unless spot market)
-      stopExpiry: false,
       oco: false,
       ocoType: OrderType.TYPE_MARKET,
       ocoTriggerDirection:
-        StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE,
+        StopOrderTriggerDirection.TRIGGER_DIRECTION_FALLS_BELOW,
       ocoTriggerType: 'price',
       ocoSizeOverride: StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_NONE,
       ocoTimeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK,
@@ -60,11 +64,9 @@ export const TicketStopMarket = (props: FormProps) => {
   });
 
   const size = form.watch('size');
-  const tif = form.watch('timeInForce');
-  const isPersistent = !NON_PERSISTENT_TIF_OPTIONS.includes(tif);
   const oco = form.watch('oco');
   const ocoType = form.watch('ocoType');
-  const stopExpiry = form.watch('stopExpiry');
+  const stopExpiryStrategy = form.watch('stopExpiryStrategy');
 
   const { pubKey } = useVegaWallet();
 
@@ -94,6 +96,9 @@ export const TicketStopMarket = (props: FormProps) => {
         <TicketTypeSelect type="stopMarket" onTypeChange={props.onTypeChange} />
         <div className="flex flex-col gap-1">
           <FieldControls>
+            <div className="mr-auto">
+              <Fields.OCO />
+            </div>
             <Fields.StopTriggerDirection />
             <Fields.StopTriggerType />
           </FieldControls>
@@ -106,32 +111,19 @@ export const TicketStopMarket = (props: FormProps) => {
           <Fields.StopSize />
         </div>
         <SizeSliderStop price={price} />
-        <FormGrid>
-          <FormGridCol>
-            {isPersistent ? (
-              <Fields.PostOnly />
-            ) : (
-              <Fields.ReduceOnly disabled />
-            )}
-            <Fields.OCO />
-            <Fields.StopExpiry />
-          </FormGridCol>
-          <FormGridCol>
-            <Fields.TimeInForce />
-          </FormGridCol>
-        </FormGrid>
-        {tif === OrderTimeInForce.TIME_IN_FORCE_GTT && <Fields.ExpiresAt />}
-        {stopExpiry && (
-          <div className="flex flex-col gap-1">
-            <FieldControls>
-              <Fields.StopExpiryStrategy />
-            </FieldControls>
-            <Fields.StopExpiresAt />
+        <AdvancedControls>
+          <FormGrid>
+            <FormGridCol>
+              <Fields.TimeInForce />
+            </FormGridCol>
+            <FormGridCol />
+          </FormGrid>
+          <div>
+            <Fields.ReduceOnly disabled />
           </div>
-        )}
+        </AdvancedControls>
         {oco && (
           <>
-            <hr className="border-default my-4" />
             <div className="flex flex-col gap-1">
               <FieldControls>
                 <Fields.StopTriggerDirection name="ocoTriggerDirection" />
@@ -149,14 +141,38 @@ export const TicketStopMarket = (props: FormProps) => {
             {ocoType === OrderType.TYPE_LIMIT && (
               <Fields.Price name="ocoPrice" />
             )}
-            <FormGrid>
-              <FormGridCol />
-              <FormGridCol>
-                <Fields.TimeInForce name="ocoTimeInForce" />
-              </FormGridCol>
-            </FormGrid>
+            <AdvancedControls>
+              <FormGrid>
+                <FormGridCol>
+                  <Fields.TimeInForce name="ocoTimeInForce" />
+                </FormGridCol>
+                <FormGridCol />
+              </FormGrid>
+              <div>
+                <Fields.ReduceOnly disabled />
+              </div>
+            </AdvancedControls>
           </>
         )}
+        <hr className="border-default" />
+        <div>
+          <FormGrid>
+            <FormGridCol>
+              <Fields.StopExpiryStrategy />
+            </FormGridCol>
+            <FormGridCol>
+              {stopExpiryStrategy !==
+                StopOrderExpiryStrategy.EXPIRY_STRATEGY_UNSPECIFIED && (
+                <Fields.StopExpiresAt />
+              )}
+            </FormGridCol>
+          </FormGrid>
+          {form.formState.errors.stopExpiresAt && (
+            <TradingInputError>
+              {form.formState.errors.stopExpiresAt.message}
+            </TradingInputError>
+          )}
+        </div>
         <FeedbackStop />
         <SubmitButton
           text={t('Place limit stop order')}

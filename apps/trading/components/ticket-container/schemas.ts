@@ -172,7 +172,6 @@ export const createStopLimitSchema = (market: MarketInfo) => {
         .step(Number(sizeStep)),
       timeInForce: z.nativeEnum(OrderTimeInForce),
       expiresAt: z.date().optional(),
-      stopExpiry: z.boolean(),
       stopExpiryStrategy: z.nativeEnum(StopOrderExpiryStrategy).optional(),
       stopExpiresAt: z.date().optional(),
       reduceOnly: z.boolean(),
@@ -194,6 +193,7 @@ export const createStopLimitSchema = (market: MarketInfo) => {
         .step(Number(priceStep))
         .optional(),
       ocoTimeInForce: z.nativeEnum(OrderTimeInForce).optional(),
+      ocoExpiresAt: z.date().optional(),
     })
     .superRefine((val, ctx) => {
       if (val.oco && !val.ocoTriggerPrice) {
@@ -249,7 +249,6 @@ export const createStopMarketSchema = (market: MarketInfo) => {
       size: z.coerce.number().min(Number(sizeStep)).step(Number(sizeStep)),
       timeInForce: z.nativeEnum(OrderTimeInForce),
       expiresAt: z.date().optional(),
-      stopExpiry: z.boolean(),
       stopExpiryStrategy: z.nativeEnum(StopOrderExpiryStrategy).optional(),
       stopExpiresAt: z.date().optional(),
       reduceOnly: z.boolean(),
@@ -270,6 +269,7 @@ export const createStopMarketSchema = (market: MarketInfo) => {
         .step(Number(priceStep))
         .optional(),
       ocoTimeInForce: z.nativeEnum(OrderTimeInForce).optional(),
+      ocoExpiresAt: z.date().optional(),
     })
     .superRefine((val, ctx) => {
       if (val.oco && !val.ocoTriggerPrice) {

@@ -13,12 +13,12 @@ export const TpSl = ({ name = 'tpSl' }: { name?: 'tpSl' }) => {
       name={name}
       render={({ field }) => {
         return (
-          <Tooltip description={t('ticketTooltipTPSL')} underline>
+          <Tooltip description={t('ticketTooltipTPSL')}>
             <div>
               <Checkbox
                 checked={field.value}
                 onCheckedChange={field.onChange}
-                label={t('TP/SL')}
+                label={t('Add TP/SL')}
                 name={name}
               />
             </div>

@@ -41,3 +41,7 @@ export const InputLabel = ({
     </>
   );
 };
+
+export const AdvancedControls = (props: HTMLAttributes<HTMLDivElement>) => {
+  return <div className="flex flex-col gap-1.5" {...props} />;
+};
