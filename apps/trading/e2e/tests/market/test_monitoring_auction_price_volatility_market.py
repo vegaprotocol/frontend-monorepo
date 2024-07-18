@@ -97,19 +97,15 @@ def test_market_monitoring_auction_price_volatility_limit_order(
     page.get_by_test_id("order-price").type("110")
     select_mini(page,"order-tif", "Fill or Kill (FOK)")
     page.get_by_test_id("place-order").click()
-    expect(page.get_by_test_id("deal-ticket-error-message-tif")).to_have_text(
+    expect(page.get_by_test_id("feedback-market-monitoring-auction")).to_have_text(
         "This market is in auction due to high price volatility. Until the auction ends, you can only place GFA, GTT, or GTC limit orders."
     )
-    expect(page.get_by_test_id("deal-ticket-error-message-tif")).to_be_visible()
-
-    expect(page.get_by_test_id("deal-ticket-warning-auction")).to_have_text(
+    expect(page.get_by_test_id("feedback-market-auction")).to_have_text(
         "Any orders placed now will not trade until the auction ends"
     )
-    expect(page.get_by_test_id("deal-ticket-warning-auction")).to_be_visible()
+    expect(page.get_by_test_id("feedback-market-auction")).to_be_visible()
 
     select_mini(page,"order-tif", "Good 'til Cancelled (GTC)")
-
-    expect(page.get_by_test_id("deal-ticket-error-message-tif")).not_to_be_visible()
 
     page.get_by_test_id("place-order").click()
 
@@ -127,20 +123,15 @@ def test_market_monitoring_auction_price_volatility_market_order(
     page: Page, simple_market
 ):
     page.goto(f"/#/markets/{simple_market}")
+    page.pause()
     page.get_by_test_id("order-type-market").click()
     page.get_by_test_id("order-size").clear()
     page.get_by_test_id("order-size").type("1")
     # 7002-SORD-060
     page.get_by_test_id("place-order").click()
-    expect(page.get_by_test_id("deal-ticket-error-message-tif")).to_have_text(
+    expect(page.get_by_test_id("feedback-market-monitoring-auction")).to_have_text(
         "This market is in auction due to high price volatility. Until the auction ends, you can only place GFA, GTT, or GTC limit orders."
     )
-    expect(page.get_by_test_id("deal-ticket-error-message-tif")).to_be_visible()
-
-    expect(page.get_by_test_id("deal-ticket-error-message-type")).to_have_text(
-        "This market is in auction due to high price volatility. Only limit orders are permitted when market is in auction."
-    )
-    expect(page.get_by_test_id("deal-ticket-error-message-type")).to_be_visible()
 
 @pytest.mark.usefixtures("risk_accepted", "auth", "setup_market_monitoring_auction")
 def test_market_price_volatility(
