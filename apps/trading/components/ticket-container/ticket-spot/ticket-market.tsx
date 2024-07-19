@@ -129,12 +129,6 @@ export const TicketMarket = (props: FormProps) => {
           <Data.Slippage />
           <Data.CollateralRequired />
         </Datagrid>
-        <pre className="block w-full text-2xs">
-          {JSON.stringify(form.getValues(), null, 2)}
-        </pre>
-        <pre className="block w-full text-2xs">
-          {JSON.stringify(form.formState.errors, null, 2)}
-        </pre>
       </Form>
     </FormProvider>
   );

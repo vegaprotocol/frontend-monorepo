@@ -131,16 +131,6 @@ export const TicketMarket = (props: FormProps) => {
           <Data.CollateralRequired />
           <Data.Liquidation />
         </Datagrid>
-        <pre className="block w-full text-2xs">
-          {JSON.stringify(
-            { marketPrice: price?.toString(), ...form.getValues() },
-            null,
-            2
-          )}
-        </pre>
-        <pre className="block w-full text-2xs">
-          {JSON.stringify(form.formState.errors, null, 2)}
-        </pre>
       </Form>
     </FormProvider>
   );
