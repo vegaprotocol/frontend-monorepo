@@ -57,7 +57,6 @@ export const TicketLimit = (props: FormProps) => {
   const tpSl = form.watch('tpSl');
   const iceberg = form.watch('iceberg');
   const tif = form.watch('timeInForce');
-  const isPersistent = utils.isPersistentTif(tif);
 
   return (
     <FormProvider {...form}>
@@ -110,7 +109,10 @@ export const TicketLimit = (props: FormProps) => {
             </FormGridCol>
           </FormGrid>
           <div>
-            {isPersistent ? <Fields.PostOnly /> : <Fields.ReduceOnly />}
+            <Fields.PostOnly />
+          </div>
+          <div>
+            <Fields.ReduceOnly />
           </div>
           <div className="flex flex-col items-start gap-1">
             <Fields.Iceberg />
