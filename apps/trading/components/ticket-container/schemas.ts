@@ -5,7 +5,6 @@ import {
   Side,
   StopOrderTriggerDirection,
   StopOrderSizeOverrideSetting,
-  StopOrderExpiryStrategy,
 } from '@vegaprotocol/types';
 import { isBefore } from 'date-fns';
 import { getProductType, type MarketInfo } from '@vegaprotocol/markets';
@@ -172,7 +171,7 @@ export const createStopLimitSchema = (market: MarketInfo) => {
         .step(Number(sizeStep)),
       timeInForce: z.nativeEnum(OrderTimeInForce),
       expiresAt: z.date().optional(),
-      stopExpiryStrategy: z.nativeEnum(StopOrderExpiryStrategy).optional(),
+      stopExpiryStrategy,
       stopExpiresAt: z.date().optional(),
       reduceOnly: z.boolean(),
       postOnly: z.boolean(),
@@ -193,8 +192,6 @@ export const createStopLimitSchema = (market: MarketInfo) => {
         .step(Number(priceStep))
         .optional(),
       ocoTimeInForce: z.nativeEnum(OrderTimeInForce).optional(),
-      ocoStopExpiryStrategy: z.nativeEnum(StopOrderExpiryStrategy).optional(),
-      ocoStopExpiresAt: z.date().optional(),
     })
     .superRefine((val, ctx) => {
       if (val.oco && !val.ocoTriggerPrice) {
@@ -221,6 +218,14 @@ export const createStopLimitSchema = (market: MarketInfo) => {
         });
       }
 
+      if (val.stopExpiryStrategy !== 'none' && !val.stopExpiresAt) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.invalid_date,
+          message: 'Provide expiry date',
+          path: ['stopExpiresAt'],
+        });
+      }
+
       if (type !== 'Spot') {
         if (!val.reduceOnly) {
           ctx.addIssue({
@@ -232,6 +237,14 @@ export const createStopLimitSchema = (market: MarketInfo) => {
       }
     });
 };
+
+const stopExpiryStrategy = z.enum([
+  'none',
+  'cancel',
+  'trigger',
+  'ocoTriggerAbove',
+  'ocoTriggerBelow',
+]);
 
 export const createStopMarketSchema = (market: MarketInfo) => {
   const type = getProductType(market);
@@ -250,7 +263,7 @@ export const createStopMarketSchema = (market: MarketInfo) => {
       size: z.coerce.number().min(Number(sizeStep)).step(Number(sizeStep)),
       timeInForce: z.nativeEnum(OrderTimeInForce),
       expiresAt: z.date().optional(),
-      stopExpiryStrategy: z.nativeEnum(StopOrderExpiryStrategy).optional(),
+      stopExpiryStrategy,
       stopExpiresAt: z.date().optional(),
       reduceOnly: z.boolean(),
       oco: z.boolean(),
@@ -270,8 +283,6 @@ export const createStopMarketSchema = (market: MarketInfo) => {
         .step(Number(priceStep))
         .optional(),
       ocoTimeInForce: z.nativeEnum(OrderTimeInForce).optional(),
-      ocoStopExpiryStrategy: z.nativeEnum(StopOrderExpiryStrategy).optional(),
-      ocoStopExpiresAt: z.date().optional(),
     })
     .superRefine((val, ctx) => {
       if (val.oco && !val.ocoTriggerPrice) {
@@ -287,6 +298,14 @@ export const createStopMarketSchema = (market: MarketInfo) => {
           code: z.ZodIssueCode.custom,
           message: 'Provide a OCO size',
           path: ['ocoSize'],
+        });
+      }
+
+      if (val.stopExpiryStrategy !== 'none' && !val.stopExpiresAt) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.invalid_date,
+          message: 'Provide expiry date',
+          path: ['stopExpiresAt'],
         });
       }
 

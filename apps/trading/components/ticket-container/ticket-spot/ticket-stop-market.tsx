@@ -7,7 +7,6 @@ import {
   OrderType,
   OrderTimeInForce,
   StopOrderTriggerDirection,
-  StopOrderExpiryStrategy,
 } from '@vegaprotocol/types';
 import { useVegaTransactionStore } from '@vegaprotocol/web3';
 
@@ -53,14 +52,12 @@ export const TicketStopMarket = (props: FormProps) => {
       timeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK,
       expiresAt: addDays(new Date(), 1),
       reduceOnly: false,
-      stopExpiryStrategy: StopOrderExpiryStrategy.EXPIRY_STRATEGY_UNSPECIFIED,
+      stopExpiryStrategy: 'none',
       oco: false,
       ocoTriggerDirection:
         StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE,
       ocoTriggerType: 'price',
       ocoTimeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK,
-      ocoStopExpiryStrategy:
-        StopOrderExpiryStrategy.EXPIRY_STRATEGY_UNSPECIFIED,
     },
   });
 

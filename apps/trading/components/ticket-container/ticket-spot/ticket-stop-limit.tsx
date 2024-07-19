@@ -7,7 +7,6 @@ import {
   OrderType,
   OrderTimeInForce,
   StopOrderTriggerDirection,
-  StopOrderExpiryStrategy,
 } from '@vegaprotocol/types';
 import { useVegaTransactionStore } from '@vegaprotocol/web3';
 
@@ -53,15 +52,13 @@ export const TicketStopLimit = (props: FormProps) => {
       expiresAt: addDays(new Date(), 1),
       postOnly: false,
       reduceOnly: false,
-      stopExpiryStrategy: StopOrderExpiryStrategy.EXPIRY_STRATEGY_UNSPECIFIED,
+      stopExpiryStrategy: 'none',
       oco: false,
       ocoType: OrderType.TYPE_MARKET,
       ocoTriggerDirection:
         StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE,
       ocoTriggerType: 'price',
       ocoTimeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK,
-      ocoStopExpiryStrategy:
-        StopOrderExpiryStrategy.EXPIRY_STRATEGY_UNSPECIFIED,
     },
   });
 
@@ -99,7 +96,6 @@ export const TicketStopLimit = (props: FormProps) => {
             <Fields.StopTriggerType />
           </FieldControls>
           <Fields.StopTriggerPrice />
-          <Fields.StopExpiry />
         </div>
         <Fields.Price />
         <Fields.StopSize />
@@ -127,7 +123,6 @@ export const TicketStopLimit = (props: FormProps) => {
                 <Fields.StopTriggerType name="ocoTriggerType" />
               </FieldControls>
               <Fields.StopTriggerPrice name="ocoTriggerPrice" />
-              <Fields.OCOStopExpiry />
             </div>
             <Fields.StopSize name="ocoSize" />
             <Fields.Price name="ocoPrice" />
@@ -145,6 +140,8 @@ export const TicketStopLimit = (props: FormProps) => {
             </AdvancedControls>
           </>
         )}
+        <hr className="border-default" />
+        <Fields.StopExpiry />
         <FeedbackStop />
         <SubmitButton
           text={t('Place limit stop order')}

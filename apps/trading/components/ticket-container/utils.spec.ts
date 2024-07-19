@@ -11,7 +11,7 @@ import {
   createLimitOrder,
   createMarketOrder,
   createSizeOverride,
-  createStopExpiry,
+  // createStopExpiry,
   createStopLimitOrder,
   createStopMarketOrder,
   createStopOrderSubmission,
@@ -201,27 +201,6 @@ describe('createLimitOrder', () => {
   });
 });
 
-describe('createStopExpiry', () => {
-  it('returns undefined if not values', () => {
-    expect(createStopExpiry({ stopExpiry: undefined })).toEqual(undefined);
-  });
-
-  it('returns expiry time in nanoseconds', () => {
-    const ts = 1721257195557;
-    const stopExpiryStrategy = StopOrderExpiryStrategy.EXPIRY_STRATEGY_CANCELS;
-    expect(
-      createStopExpiry({
-        stopExpiry: true,
-        stopExpiryStrategy,
-        stopExpiresAt: new Date(ts),
-      })
-    ).toEqual({
-      expiryStrategy: stopExpiryStrategy,
-      expiresAt: `${ts}000000`,
-    });
-  });
-});
-
 describe('createSizeOverride', () => {
   it('returns no override value if override is none', () => {
     expect(
@@ -333,7 +312,7 @@ describe('createStopMarketOrder', () => {
       sizeOverride: StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_NONE,
       timeInForce: OrderTimeInForce.TIME_IN_FORCE_IOC,
       reduceOnly: true,
-      stopExpiry: false,
+      stopExpiryStrategy: 'none',
       oco: false,
     };
   };
@@ -381,9 +360,8 @@ describe('createStopMarketOrder', () => {
   it('expiry', () => {
     const ts = 1721257195557;
     const fields = merge(createFields(), {
-      stopExpiry: true,
       stopExpiresAt: new Date(ts),
-      stopExpiryStrategy: StopOrderExpiryStrategy.EXPIRY_STRATEGY_CANCELS,
+      stopExpiryStrategy: 'trigger',
     });
     const res = createStopMarketOrder(fields, market, reference);
     expect(res).toEqual({
@@ -393,7 +371,7 @@ describe('createStopMarketOrder', () => {
         sizeOverrideSetting: 1,
         sizeOverrideValue: undefined,
         expiresAt: `${ts}000000`,
-        expiryStrategy: fields.stopExpiryStrategy,
+        expiryStrategy: StopOrderExpiryStrategy.EXPIRY_STRATEGY_SUBMIT,
       },
       fallsBelow: undefined,
     });
@@ -557,8 +535,8 @@ describe('createStopLimitOrder', () => {
       timeInForce: OrderTimeInForce.TIME_IN_FORCE_IOC,
       reduceOnly: true,
       postOnly: false,
-      stopExpiry: false,
       oco: false,
+      stopExpiryStrategy: 'none',
     };
   };
 
@@ -575,7 +553,6 @@ describe('createStopLimitOrder', () => {
           timeInForce: fields.timeInForce,
           price: '10000',
           size: '100000',
-          expiresAt: undefined,
           reduceOnly: true,
         },
         price: '20000',
@@ -606,9 +583,8 @@ describe('createStopLimitOrder', () => {
   it('expiry', () => {
     const ts = 1721257195557;
     const fields = merge(createFields(), {
-      stopExpiry: true,
       stopExpiresAt: new Date(ts),
-      stopExpiryStrategy: StopOrderExpiryStrategy.EXPIRY_STRATEGY_CANCELS,
+      stopExpiryStrategy: 'cancel',
     });
     const res = createStopLimitOrder(fields, market, reference);
     expect(res).toEqual({
@@ -618,7 +594,7 @@ describe('createStopLimitOrder', () => {
         sizeOverrideSetting: 1,
         sizeOverrideValue: undefined,
         expiresAt: `${ts}000000`,
-        expiryStrategy: fields.stopExpiryStrategy,
+        expiryStrategy: StopOrderExpiryStrategy.EXPIRY_STRATEGY_CANCELS,
       },
       fallsBelow: undefined,
     });
@@ -685,7 +661,6 @@ describe('createStopLimitOrder', () => {
   it('oco', () => {
     const fields = merge(createFields(), {
       oco: true,
-      ocoType: OrderType.TYPE_MARKET,
       ocoPrice: 100,
       ocoSize: 200,
       ocoTimeInForce: OrderTimeInForce.TIME_IN_FORCE_IOC,
@@ -706,7 +681,7 @@ describe('createStopLimitOrder', () => {
         orderSubmission: {
           reference,
           marketId: market.id,
-          type: fields.ocoType,
+          type: OrderType.TYPE_LIMIT,
           side: fields.side,
           timeInForce: fields.ocoTimeInForce,
           price: '10000',
@@ -724,7 +699,6 @@ describe('createStopLimitOrder', () => {
   it('oco sizeOverride', () => {
     const fields = merge(createFields(), {
       oco: true,
-      ocoType: OrderType.TYPE_MARKET,
       ocoPrice: 100,
       ocoSize: 85,
       ocoTimeInForce: OrderTimeInForce.TIME_IN_FORCE_IOC,
@@ -746,7 +720,7 @@ describe('createStopLimitOrder', () => {
         orderSubmission: {
           reference,
           marketId: market.id,
-          type: fields.ocoType,
+          type: OrderType.TYPE_LIMIT,
           side: fields.side,
           timeInForce: fields.ocoTimeInForce,
           price: '10000',
@@ -757,6 +731,180 @@ describe('createStopLimitOrder', () => {
         trailingPercentOffset: '0.500',
         sizeOverrideSetting: 2,
         sizeOverrideValue: { percentage: '0.850' },
+      },
+    });
+  });
+
+  it('oco expiry cancel', () => {
+    const ts = 1721257195557;
+    const fields = merge(createFields(), {
+      oco: true,
+      ocoPrice: 100,
+      ocoSize: 200,
+      ocoTimeInForce: OrderTimeInForce.TIME_IN_FORCE_IOC,
+      ocoSizeOverride: StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_NONE,
+      ocoTriggerDirection:
+        StopOrderTriggerDirection.TRIGGER_DIRECTION_FALLS_BELOW,
+      ocoTriggerType: 'price',
+      ocoTriggerPrice: 50,
+      stopExpiresAt: new Date(ts),
+      stopExpiryStrategy: 'cancel',
+    });
+    const res = createStopLimitOrder(fields, market, reference);
+    expect(res).toEqual({
+      risesAbove: {
+        orderSubmission: expect.any(Object),
+        price: '20000',
+        sizeOverrideSetting: 1,
+        sizeOverrideValue: undefined,
+        expiresAt: `${ts}000000`,
+        expiryStrategy: StopOrderExpiryStrategy.EXPIRY_STRATEGY_CANCELS,
+      },
+      fallsBelow: {
+        orderSubmission: expect.any(Object),
+        price: '5000',
+        sizeOverrideSetting: 1,
+        sizeOverrideValue: undefined,
+      },
+    });
+  });
+
+  it('expiry triggerAbove rises above', () => {
+    const ts = 1721257195557;
+    const fields = merge(createFields(), {
+      triggerDirection: StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE,
+      oco: true,
+      ocoTriggerDirection:
+        StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE,
+      ocoPrice: 100,
+      ocoSize: 200,
+      ocoTimeInForce: OrderTimeInForce.TIME_IN_FORCE_IOC,
+      ocoSizeOverride: StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_NONE,
+      ocoTriggerType: 'price',
+      ocoTriggerPrice: 50,
+      stopExpiresAt: new Date(ts),
+      stopExpiryStrategy: 'ocoTriggerAbove',
+    });
+    const res = createStopLimitOrder(fields, market, reference);
+    expect(res).toEqual({
+      risesAbove: {
+        orderSubmission: expect.any(Object),
+        price: '20000',
+        sizeOverrideSetting: 1,
+        sizeOverrideValue: undefined,
+        expiresAt: `${ts}000000`,
+        expiryStrategy: StopOrderExpiryStrategy.EXPIRY_STRATEGY_SUBMIT,
+      },
+      fallsBelow: {
+        orderSubmission: expect.any(Object),
+        price: '5000',
+        sizeOverrideSetting: 1,
+        sizeOverrideValue: undefined,
+      },
+    });
+  });
+
+  it('expiry triggerAbove oco rises above', () => {
+    const ts = 1721257195557;
+    const fields = merge(createFields(), {
+      triggerDirection: StopOrderTriggerDirection.TRIGGER_DIRECTION_FALLS_BELOW,
+      oco: true,
+      ocoTriggerDirection:
+        StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE,
+      ocoPrice: 100,
+      ocoSize: 200,
+      ocoTimeInForce: OrderTimeInForce.TIME_IN_FORCE_IOC,
+      ocoSizeOverride: StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_NONE,
+      ocoTriggerType: 'price',
+      ocoTriggerPrice: 50,
+      stopExpiresAt: new Date(ts),
+      stopExpiryStrategy: 'ocoTriggerAbove',
+    });
+    const res = createStopLimitOrder(fields, market, reference);
+    expect(res).toEqual({
+      risesAbove: {
+        orderSubmission: expect.any(Object),
+        price: '5000',
+        sizeOverrideSetting: 1,
+        sizeOverrideValue: undefined,
+        expiresAt: `${ts}000000`,
+        expiryStrategy: StopOrderExpiryStrategy.EXPIRY_STRATEGY_SUBMIT,
+      },
+      fallsBelow: {
+        orderSubmission: expect.any(Object),
+        price: '20000',
+        sizeOverrideSetting: 1,
+        sizeOverrideValue: undefined,
+      },
+    });
+  });
+
+  it('expiry triggerBelow oco rises above', () => {
+    const ts = 1721257195557;
+    const fields = merge(createFields(), {
+      triggerDirection: StopOrderTriggerDirection.TRIGGER_DIRECTION_FALLS_BELOW,
+      oco: true,
+      ocoTriggerDirection:
+        StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE,
+      ocoPrice: 100,
+      ocoSize: 200,
+      ocoTimeInForce: OrderTimeInForce.TIME_IN_FORCE_IOC,
+      ocoSizeOverride: StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_NONE,
+      ocoTriggerType: 'price',
+      ocoTriggerPrice: 50,
+      stopExpiresAt: new Date(ts),
+      stopExpiryStrategy: 'ocoTriggerBelow',
+    });
+    const res = createStopLimitOrder(fields, market, reference);
+    expect(res).toEqual({
+      risesAbove: {
+        orderSubmission: expect.any(Object),
+        price: '5000',
+        sizeOverrideSetting: 1,
+        sizeOverrideValue: undefined,
+      },
+      fallsBelow: {
+        orderSubmission: expect.any(Object),
+        price: '20000',
+        sizeOverrideSetting: 1,
+        sizeOverrideValue: undefined,
+        expiresAt: `${ts}000000`,
+        expiryStrategy: StopOrderExpiryStrategy.EXPIRY_STRATEGY_SUBMIT,
+      },
+    });
+  });
+
+  it('expiry triggerBelow rises above', () => {
+    const ts = 1721257195557;
+    const fields = merge(createFields(), {
+      triggerDirection: StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE,
+      oco: true,
+      ocoTriggerDirection:
+        StopOrderTriggerDirection.TRIGGER_DIRECTION_FALLS_BELOW,
+      ocoPrice: 100,
+      ocoSize: 200,
+      ocoTimeInForce: OrderTimeInForce.TIME_IN_FORCE_IOC,
+      ocoSizeOverride: StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_NONE,
+      ocoTriggerType: 'price',
+      ocoTriggerPrice: 50,
+      stopExpiresAt: new Date(ts),
+      stopExpiryStrategy: 'ocoTriggerBelow',
+    });
+    const res = createStopLimitOrder(fields, market, reference);
+    expect(res).toEqual({
+      risesAbove: {
+        orderSubmission: expect.any(Object),
+        price: '20000',
+        sizeOverrideSetting: 1,
+        sizeOverrideValue: undefined,
+      },
+      fallsBelow: {
+        orderSubmission: expect.any(Object),
+        price: '5000',
+        sizeOverrideSetting: 1,
+        sizeOverrideValue: undefined,
+        expiresAt: `${ts}000000`,
+        expiryStrategy: StopOrderExpiryStrategy.EXPIRY_STRATEGY_SUBMIT,
       },
     });
   });

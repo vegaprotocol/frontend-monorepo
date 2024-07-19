@@ -23,5 +23,3 @@ export { StopExpiry } from './stop-expiry';
 export { StopExpiresAt } from './stop-expires-at';
 export { StopExpiryStrategy } from './stop-expiry-strategy';
 export { OCO } from './oco';
-export { OCOType } from './oco-type';
-export { OCOStopExpiry } from './oco-stop-expiry';

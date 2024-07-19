@@ -7,7 +7,6 @@ import {
   OrderTimeInForce,
   StopOrderTriggerDirection,
   StopOrderSizeOverrideSetting,
-  StopOrderExpiryStrategy,
 } from '@vegaprotocol/types';
 import { useVegaTransactionStore } from '@vegaprotocol/web3';
 import { useMarkPrice } from '@vegaprotocol/markets';
@@ -52,7 +51,7 @@ export const TicketStopMarket = (props: FormProps) => {
       sizeOverride: StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_NONE,
       timeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK,
       reduceOnly: true, // must be reduce only for stop orders (unless spot market)
-      stopExpiryStrategy: StopOrderExpiryStrategy.EXPIRY_STRATEGY_UNSPECIFIED,
+      stopExpiryStrategy: 'none',
       oco: false,
       ocoType: OrderType.TYPE_MARKET,
       ocoTriggerDirection:
@@ -60,8 +59,6 @@ export const TicketStopMarket = (props: FormProps) => {
       ocoTriggerType: 'price',
       ocoSizeOverride: StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_NONE,
       ocoTimeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK,
-      ocoStopExpiryStrategy:
-        StopOrderExpiryStrategy.EXPIRY_STRATEGY_UNSPECIFIED,
     },
   });
 
@@ -103,7 +100,6 @@ export const TicketStopMarket = (props: FormProps) => {
             <Fields.StopTriggerType />
           </FieldControls>
           <Fields.StopTriggerPrice />
-          <Fields.StopExpiry />
         </div>
         <div className="flex flex-col gap-1">
           <FieldControls>
@@ -131,7 +127,6 @@ export const TicketStopMarket = (props: FormProps) => {
                 <Fields.StopTriggerType name="ocoTriggerType" />
               </FieldControls>
               <Fields.StopTriggerPrice name="ocoTriggerPrice" />
-              <Fields.OCOStopExpiry />
             </div>
             <div className="flex flex-col gap-1">
               <FieldControls>
@@ -152,6 +147,8 @@ export const TicketStopMarket = (props: FormProps) => {
             </AdvancedControls>
           </>
         )}
+        <hr className="border-default" />
+        <Fields.StopExpiry />
         <FeedbackStop />
         <SubmitButton
           text={t('Place limit stop order')}

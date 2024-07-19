@@ -3,12 +3,10 @@ import { useForm } from '../use-form';
 import { FormGrid, FormGridCol } from '../elements/form';
 
 import * as Fields from './index';
-import { StopOrderExpiryStrategy } from '@vegaprotocol/types';
 
 export const StopExpiry = () => {
   const form = useForm('stopLimit' as 'stopLimit' | 'stopMarket');
-
-  const stopExpiryStrategy = form.watch('stopExpiryStrategy');
+  const strategy = form.watch('stopExpiryStrategy');
 
   return (
     <div>
@@ -17,11 +15,7 @@ export const StopExpiry = () => {
           <Fields.StopExpiryStrategy />
         </FormGridCol>
         <FormGridCol>
-          {stopExpiryStrategy !== undefined &&
-            stopExpiryStrategy !==
-              StopOrderExpiryStrategy.EXPIRY_STRATEGY_UNSPECIFIED && (
-              <Fields.StopExpiresAt />
-            )}
+          {strategy !== 'none' && <Fields.StopExpiresAt />}
         </FormGridCol>
       </FormGrid>
       {form.formState.errors.stopExpiresAt && (

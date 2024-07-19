@@ -1,22 +1,37 @@
-import { StopOrderExpiryStrategy } from '@vegaprotocol/types';
 import { MiniSelect, MiniSelectOption } from '@vegaprotocol/ui-toolkit';
 
 import { useT } from '../../../lib/use-t';
 import { FormField } from '../ticket-field';
 import { useForm } from '../use-form';
 
-export const StopExpiryStrategy = ({
-  name = 'stopExpiryStrategy',
-}: {
-  name?: 'stopExpiryStrategy' | 'ocoStopExpiryStrategy';
-}) => {
+export const StopExpiryStrategy = () => {
   const t = useT();
   const form = useForm();
+  const oco = form.watch('oco');
+
+  const options = oco ? (
+    <>
+      <MiniSelectOption value="none">{t('None')}</MiniSelectOption>
+      <MiniSelectOption value="cancel">{t('Cancel')}</MiniSelectOption>
+      <MiniSelectOption value="ocoTriggerAbove">
+        {t('Trigger above')}
+      </MiniSelectOption>
+      <MiniSelectOption value={'ocoTriggerBelow'}>
+        {t('Trigger below')}
+      </MiniSelectOption>
+    </>
+  ) : (
+    <>
+      <MiniSelectOption value={'none'}>{t('None')}</MiniSelectOption>
+      <MiniSelectOption value={'cancel'}>{t('Cancel')}</MiniSelectOption>
+      <MiniSelectOption value={'trigger'}>{t('Trigger')}</MiniSelectOption>
+    </>
+  );
 
   return (
     <FormField
       control={form.control}
-      name={name}
+      name="stopExpiryStrategy"
       render={({ field }) => {
         return (
           <div className="flex items-center gap-2 text-xs">
@@ -25,38 +40,11 @@ export const StopExpiryStrategy = ({
             </label>
             <MiniSelect
               value={field.value}
-              onValueChange={(value) => {
-                field.onChange(value);
-
-                if (
-                  value === StopOrderExpiryStrategy.EXPIRY_STRATEGY_UNSPECIFIED
-                ) {
-                  if (name === 'stopExpiryStrategy') {
-                    form.setValue('stopExpiresAt', undefined);
-                  }
-                  if (name === 'ocoStopExpiryStrategy') {
-                    form.setValue('ocoStopExpiresAt', undefined);
-                  }
-                }
-              }}
+              onValueChange={field.onChange}
               placeholder={t('Select')}
               data-testid="order-stopExpiryStrategy"
             >
-              <MiniSelectOption
-                value={StopOrderExpiryStrategy.EXPIRY_STRATEGY_UNSPECIFIED}
-              >
-                {t('None')}
-              </MiniSelectOption>
-              <MiniSelectOption
-                value={StopOrderExpiryStrategy.EXPIRY_STRATEGY_CANCELS}
-              >
-                {t('Cancels')}
-              </MiniSelectOption>
-              <MiniSelectOption
-                value={StopOrderExpiryStrategy.EXPIRY_STRATEGY_SUBMIT}
-              >
-                {t('Submit')}
-              </MiniSelectOption>
+              {options}
             </MiniSelect>
           </div>
         );

@@ -196,7 +196,6 @@ export const createStopMarketOrder = (
   reference?: string
 ): StopOrdersSubmission => {
   const trigger = createTrigger(fields, market.decimalPlaces);
-  const expiry = createStopExpiry(fields);
   const sizeOverride = createSizeOverride(fields);
   const isOverride = sizeOverride.sizeOverrideSetting === 2;
 
@@ -212,7 +211,6 @@ export const createStopMarketOrder = (
         : removeDecimal(fields.size.toString(), market.positionDecimalPlaces),
       reduceOnly: fields.reduceOnly,
     },
-    ...expiry,
     ...trigger,
     ...sizeOverride,
   };
@@ -247,10 +245,6 @@ export const createStopMarketOrder = (
       sizeOverride: fields.ocoSizeOverride,
       size: fields.ocoSize,
     });
-    const expiry = createStopExpiry({
-      stopExpiryStrategy: fields.ocoStopExpiryStrategy,
-      stopExpiresAt: fields.ocoStopExpiresAt,
-    });
     const isOverride = sizeOverride.sizeOverrideSetting === 2;
 
     oppositeStopOrderSetup = {
@@ -269,7 +263,6 @@ export const createStopMarketOrder = (
             ),
         reduceOnly: fields.reduceOnly,
       },
-      ...expiry,
       ...trigger,
       ...sizeOverride,
     };
@@ -288,7 +281,6 @@ export const createStopLimitOrder = (
   reference?: string
 ): StopOrdersSubmission => {
   const trigger = createTrigger(fields, market.decimalPlaces);
-  const expiry = createStopExpiry(fields);
   const sizeOverride = createSizeOverride(fields);
   const isOverride = sizeOverride.sizeOverrideSetting === 2;
 
@@ -312,7 +304,6 @@ export const createStopLimitOrder = (
     },
     ...trigger,
     ...sizeOverride,
-    ...expiry,
   };
 
   let oppositeStopOrderSetup: StopOrderSetup | undefined = undefined;
@@ -337,10 +328,6 @@ export const createStopLimitOrder = (
       throw new Error('no ocoTriggerPrice specified');
     }
 
-    const expiry = createStopExpiry({
-      stopExpiryStrategy: fields.ocoStopExpiryStrategy,
-      stopExpiresAt: fields.ocoStopExpiresAt,
-    });
     const sizeOverride = createSizeOverride({
       sizeOverride: fields.ocoSizeOverride,
       size: fields.ocoSize,
@@ -370,7 +357,6 @@ export const createStopLimitOrder = (
             ),
         reduceOnly: fields.reduceOnly,
       },
-      ...expiry,
       ...trigger,
       ...sizeOverride,
     };
@@ -388,25 +374,67 @@ export const createStopOrderSubmission = (
   stopOrderSetup: StopOrderSetup,
   oppositeStopOrderSetup?: StopOrderSetup
 ) => {
+  const submission: StopOrdersSubmission = {
+    risesAbove: undefined,
+    fallsBelow: undefined,
+  };
+
   if (
     fields.triggerDirection ===
     StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE
   ) {
-    return {
-      risesAbove: stopOrderSetup,
-      fallsBelow: oppositeStopOrderSetup,
-    };
+    submission.risesAbove = stopOrderSetup;
+    submission.fallsBelow = oppositeStopOrderSetup;
   } else if (
     fields.triggerDirection ===
     StopOrderTriggerDirection.TRIGGER_DIRECTION_FALLS_BELOW
   ) {
-    return {
-      risesAbove: oppositeStopOrderSetup,
-      fallsBelow: stopOrderSetup,
-    };
+    submission.risesAbove = oppositeStopOrderSetup;
+    submission.fallsBelow = stopOrderSetup;
   }
 
-  throw new Error('could not create stop order');
+  if (!submission.risesAbove && !submission.fallsBelow) {
+    throw new Error('empty stop order submission');
+  }
+
+  // Attached the expiry fields to the relevant side of the oco
+  if (fields.stopExpiryStrategy !== 'none' && fields.stopExpiresAt) {
+    const obj = {
+      expiryStrategy: expiryStrategyMap[fields.stopExpiryStrategy],
+      expiresAt: toNanoSeconds(fields.stopExpiresAt),
+    };
+
+    if (
+      fields.stopExpiryStrategy === 'cancel' ||
+      fields.stopExpiryStrategy === 'trigger'
+    ) {
+      if (submission.risesAbove) {
+        submission.risesAbove.expiryStrategy = obj.expiryStrategy;
+        submission.risesAbove.expiresAt = obj.expiresAt;
+      } else if (submission.fallsBelow) {
+        submission.fallsBelow.expiryStrategy = obj.expiryStrategy;
+        submission.fallsBelow.expiresAt = obj.expiresAt;
+      }
+    }
+
+    if (
+      submission.risesAbove &&
+      fields.stopExpiryStrategy === 'ocoTriggerAbove'
+    ) {
+      submission.risesAbove.expiryStrategy = obj.expiryStrategy;
+      submission.risesAbove.expiresAt = obj.expiresAt;
+    }
+
+    if (
+      submission.fallsBelow &&
+      fields.stopExpiryStrategy === 'ocoTriggerBelow'
+    ) {
+      submission.fallsBelow.expiryStrategy = obj.expiryStrategy;
+      submission.fallsBelow.expiresAt = obj.expiresAt;
+    }
+  }
+
+  return submission;
 };
 
 export const createTrigger = (
@@ -440,24 +468,6 @@ export const createSizeOverride = (fields: {
     sizeOverrideValue: isSizeOverridden
       ? { percentage: (Number(fields.size) / 100).toFixed(3) }
       : undefined,
-  };
-};
-
-export const createStopExpiry = (fields: {
-  stopExpiresAt?: Date;
-  stopExpiryStrategy?: StopOrderExpiryStrategy;
-}) => {
-  if (
-    fields.stopExpiryStrategy ===
-      StopOrderExpiryStrategy.EXPIRY_STRATEGY_UNSPECIFIED ||
-    !fields.stopExpiresAt
-  ) {
-    return;
-  }
-  const expiresAt = toNanoSeconds(fields.stopExpiresAt);
-  return {
-    expiresAt: expiresAt,
-    expiryStrategy: fields.stopExpiryStrategy,
   };
 };
 
@@ -522,6 +532,7 @@ export const createOrderWithTpSl = (
         ocoSize: fields.size,
         ocoPrice: fields.takeProfit,
         ocoTimeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK,
+        stopExpiryStrategy: 'none',
       },
       market,
       reference
@@ -541,6 +552,7 @@ export const createOrderWithTpSl = (
         timeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK,
         reduceOnly: true,
         oco: false,
+        stopExpiryStrategy: 'none',
       },
       market,
       reference
@@ -560,6 +572,7 @@ export const createOrderWithTpSl = (
         timeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK,
         reduceOnly: true,
         oco: false,
+        stopExpiryStrategy: 'none',
       },
       market,
       reference
@@ -572,6 +585,14 @@ export const createOrderWithTpSl = (
     stopOrdersSubmission,
   };
 };
+
+const expiryStrategyMap = {
+  none: StopOrderExpiryStrategy.EXPIRY_STRATEGY_UNSPECIFIED,
+  cancel: StopOrderExpiryStrategy.EXPIRY_STRATEGY_CANCELS,
+  trigger: StopOrderExpiryStrategy.EXPIRY_STRATEGY_SUBMIT,
+  ocoTriggerAbove: StopOrderExpiryStrategy.EXPIRY_STRATEGY_SUBMIT,
+  ocoTriggerBelow: StopOrderExpiryStrategy.EXPIRY_STRATEGY_SUBMIT,
+} as const;
 
 const sizeOverrideMap: {
   [S in StopOrderSizeOverrideSetting]: SizeOverrideSetting;
