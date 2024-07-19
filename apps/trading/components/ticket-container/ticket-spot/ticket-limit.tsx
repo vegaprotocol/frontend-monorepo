@@ -7,7 +7,12 @@ import { OrderType, OrderTimeInForce } from '@vegaprotocol/types';
 import { useVegaTransactionStore } from '@vegaprotocol/web3';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 
-import { Form, FormGrid, FormGridCol } from '../elements/form';
+import {
+  AdvancedControls,
+  Form,
+  FormGrid,
+  FormGridCol,
+} from '../elements/form';
 import { type FormFieldsLimit, useLimitSchema } from '../schemas';
 import { TicketTypeSelect } from '../ticket-type-select';
 import { type FormProps } from './ticket';
@@ -53,7 +58,6 @@ export const TicketLimit = (props: FormProps) => {
   const tpSl = form.watch('tpSl');
   const iceberg = form.watch('iceberg');
   const tif = form.watch('timeInForce');
-  const isPersistent = utils.isPersistentTif(tif);
 
   return (
     <FormProvider {...form}>
@@ -94,43 +98,50 @@ export const TicketLimit = (props: FormProps) => {
           <Fields.Notional price={BigNumber(price || 0)} />
         )}
         <SizeSlider price={BigNumber(price || '0')} />
-        <FormGrid>
-          <FormGridCol>
-            <Fields.TpSl />
-            {isPersistent ? (
-              <>
-                <Fields.PostOnly />
-                <Fields.Iceberg />
-              </>
-            ) : (
-              <Fields.ReduceOnly />
+        <AdvancedControls>
+          <FormGrid>
+            <FormGridCol>
+              <Fields.TimeInForce />
+            </FormGridCol>
+            <FormGridCol>
+              {tif === OrderTimeInForce.TIME_IN_FORCE_GTT && (
+                <Fields.ExpiresAt />
+              )}
+            </FormGridCol>
+          </FormGrid>
+          <div>
+            <Fields.PostOnly />
+          </div>
+          <div>
+            <Fields.ReduceOnly />
+          </div>
+          <div className="flex flex-col items-start gap-1">
+            <Fields.Iceberg />
+            {iceberg && (
+              <FormGrid className="pl-4">
+                <FormGridCol>
+                  <Fields.IcebergPeakSize />
+                </FormGridCol>
+                <FormGridCol>
+                  <Fields.IcebergMinVisibleSize />
+                </FormGridCol>
+              </FormGrid>
             )}
-          </FormGridCol>
-          <FormGridCol>
-            <Fields.TimeInForce />
-          </FormGridCol>
-        </FormGrid>
-        {tif === OrderTimeInForce.TIME_IN_FORCE_GTT && <Fields.ExpiresAt />}
-        {tpSl && (
-          <FormGrid>
-            <FormGridCol className="block">
-              <Fields.TakeProfit />
-            </FormGridCol>
-            <FormGridCol className="block">
-              <Fields.StopLoss />
-            </FormGridCol>
-          </FormGrid>
-        )}
-        {iceberg && (
-          <FormGrid>
-            <FormGridCol className="block">
-              <Fields.IcebergPeakSize />
-            </FormGridCol>
-            <FormGridCol className="block">
-              <Fields.IcebergMinVisibleSize />
-            </FormGridCol>
-          </FormGrid>
-        )}
+          </div>
+          <div className="flex flex-col items-start gap-1">
+            <Fields.TpSl />
+            {tpSl && (
+              <FormGrid className="pl-4">
+                <FormGridCol>
+                  <Fields.TakeProfit />
+                </FormGridCol>
+                <FormGridCol>
+                  <Fields.StopLoss />
+                </FormGridCol>
+              </FormGrid>
+            )}
+          </div>
+        </AdvancedControls>
         <Feedback />
         <SubmitButton
           text={t('Place limit order')}

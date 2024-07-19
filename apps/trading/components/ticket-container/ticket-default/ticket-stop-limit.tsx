@@ -33,7 +33,6 @@ import BigNumber from 'bignumber.js';
 
 import * as Fields from '../fields';
 import * as utils from '../utils';
-import { TradingInputError } from '@vegaprotocol/ui-toolkit';
 
 export const TicketStopLimit = (props: FormProps) => {
   const t = useT();
@@ -72,7 +71,6 @@ export const TicketStopLimit = (props: FormProps) => {
   const oco = form.watch('oco');
   const ocoType = form.watch('ocoType');
   const ocoTif = form.watch('ocoTimeInForce');
-  const stopExpiryStrategy = form.watch('stopExpiryStrategy');
 
   return (
     <FormProvider {...form}>
@@ -150,7 +148,7 @@ export const TicketStopLimit = (props: FormProps) => {
                 </FormGridCol>
                 <FormGridCol>
                   {ocoTif === OrderTimeInForce.TIME_IN_FORCE_GTT && (
-                    <Fields.StopExpiresAt />
+                    <Fields.ExpiresAt name="ocoExpiresAt" />
                   )}
                 </FormGridCol>
               </FormGrid>
@@ -161,24 +159,7 @@ export const TicketStopLimit = (props: FormProps) => {
           </>
         )}
         <hr className="border-default" />
-        <div>
-          <FormGrid>
-            <FormGridCol>
-              <Fields.StopExpiryStrategy />
-            </FormGridCol>
-            <FormGridCol>
-              {stopExpiryStrategy !==
-                StopOrderExpiryStrategy.EXPIRY_STRATEGY_UNSPECIFIED && (
-                <Fields.StopExpiresAt />
-              )}
-            </FormGridCol>
-          </FormGrid>
-          {form.formState.errors.stopExpiresAt && (
-            <TradingInputError>
-              {form.formState.errors.stopExpiresAt.message}
-            </TradingInputError>
-          )}
-        </div>
+        <Fields.StopExpiry />
         <FeedbackStop />
         <SubmitButton
           text={t('Place limit stop order')}

@@ -34,7 +34,6 @@ import * as utils from '../utils';
 import { SizeSliderStop } from './size-slider-stop';
 import { FeedbackStop } from './feedback-stop';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
-import { TradingInputError } from '@vegaprotocol/ui-toolkit';
 
 export const TicketStopMarket = (props: FormProps) => {
   const t = useT();
@@ -53,6 +52,7 @@ export const TicketStopMarket = (props: FormProps) => {
       sizeOverride: StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_NONE,
       timeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK,
       reduceOnly: true, // must be reduce only for stop orders (unless spot market)
+      stopExpiryStrategy: StopOrderExpiryStrategy.EXPIRY_STRATEGY_UNSPECIFIED,
       oco: false,
       ocoType: OrderType.TYPE_MARKET,
       ocoTriggerDirection:
@@ -66,7 +66,6 @@ export const TicketStopMarket = (props: FormProps) => {
   const size = form.watch('size');
   const oco = form.watch('oco');
   const ocoType = form.watch('ocoType');
-  const stopExpiryStrategy = form.watch('stopExpiryStrategy');
 
   const { pubKey } = useVegaWallet();
 
@@ -155,24 +154,7 @@ export const TicketStopMarket = (props: FormProps) => {
           </>
         )}
         <hr className="border-default" />
-        <div>
-          <FormGrid>
-            <FormGridCol>
-              <Fields.StopExpiryStrategy />
-            </FormGridCol>
-            <FormGridCol>
-              {stopExpiryStrategy !==
-                StopOrderExpiryStrategy.EXPIRY_STRATEGY_UNSPECIFIED && (
-                <Fields.StopExpiresAt />
-              )}
-            </FormGridCol>
-          </FormGrid>
-          {form.formState.errors.stopExpiresAt && (
-            <TradingInputError>
-              {form.formState.errors.stopExpiresAt.message}
-            </TradingInputError>
-          )}
-        </div>
+        <Fields.StopExpiry />
         <FeedbackStop />
         <SubmitButton
           text={t('Place limit stop order')}
