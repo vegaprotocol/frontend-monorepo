@@ -192,6 +192,7 @@ export const createStopLimitSchema = (market: MarketInfo) => {
         .step(Number(priceStep))
         .optional(),
       ocoTimeInForce: z.nativeEnum(OrderTimeInForce).optional(),
+      ocoExpiresAt: z.date().optional(),
     })
     .superRefine((val, ctx) => {
       if (val.oco && !val.ocoTriggerPrice) {
