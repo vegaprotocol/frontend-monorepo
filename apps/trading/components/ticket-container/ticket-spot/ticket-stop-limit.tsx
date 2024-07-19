@@ -76,12 +76,13 @@ export const TicketStopLimit = (props: FormProps) => {
         onSubmit={form.handleSubmit((fields) => {
           const reference = `${pubKey}-${Date.now()}-${uniqueId()}`;
 
+          const stopOrdersSubmission = utils.createStopLimitOrder(
+            fields,
+            ticket.market,
+            reference
+          );
           create({
-            stopOrdersSubmission: utils.createStopLimitOrder(
-              fields,
-              ticket.market,
-              reference
-            ),
+            stopOrdersSubmission,
           });
         })}
       >

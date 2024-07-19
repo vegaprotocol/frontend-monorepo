@@ -78,13 +78,13 @@ export const TicketStopMarket = (props: FormProps) => {
       <Form
         onSubmit={form.handleSubmit((fields) => {
           const reference = `${pubKey}-${Date.now()}-${uniqueId()}`;
-
+          const stopOrdersSubmission = utils.createStopMarketOrder(
+            fields,
+            ticket.market,
+            reference
+          );
           create({
-            stopOrdersSubmission: utils.createStopMarketOrder(
-              fields,
-              ticket.market,
-              reference
-            ),
+            stopOrdersSubmission,
           });
         })}
       >
@@ -99,7 +99,6 @@ export const TicketStopMarket = (props: FormProps) => {
             <Fields.StopTriggerType />
           </FieldControls>
           <Fields.StopTriggerPrice />
-          <Fields.StopExpiry />
         </div>
         <Fields.StopSize />
         <SizeSliderStop price={price} />
@@ -122,7 +121,6 @@ export const TicketStopMarket = (props: FormProps) => {
                 <Fields.StopTriggerType name="ocoTriggerType" />
               </FieldControls>
               <Fields.StopTriggerPrice name="ocoTriggerPrice" />
-              <Fields.OCOStopExpiry />
             </div>
             <Fields.StopSize name="ocoSize" />
             <AdvancedControls>
@@ -135,6 +133,8 @@ export const TicketStopMarket = (props: FormProps) => {
             </AdvancedControls>
           </>
         )}
+        <hr className="border-default" />
+        <Fields.StopExpiry />
         <FeedbackStop />
         <SubmitButton
           text={t('Place limit stop order')}

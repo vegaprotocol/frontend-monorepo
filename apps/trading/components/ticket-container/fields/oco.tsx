@@ -14,7 +14,10 @@ export const OCO = ({ name = 'oco' }: { name?: 'oco' }) => {
         return (
           <Checkbox
             checked={field.value}
-            onCheckedChange={field.onChange}
+            onCheckedChange={(value) => {
+              field.onChange(value);
+              form.setValue('stopExpiryStrategy', 'none');
+            }}
             label={t('OCO')}
             name={name}
           />

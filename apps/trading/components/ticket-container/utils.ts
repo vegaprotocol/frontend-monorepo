@@ -197,7 +197,7 @@ export const createStopMarketOrder = (
 ): StopOrdersSubmission => {
   const trigger = createTrigger(fields, market.decimalPlaces);
   const sizeOverride = createSizeOverride(fields);
-  const isOverride = sizeOverride.sizeOverrideSetting === 2;
+  const isOverride = sizeOverride?.sizeOverrideSetting === 2;
 
   const stopOrderSetup: StopOrderSetup = {
     orderSubmission: {
@@ -224,9 +224,6 @@ export const createStopMarketOrder = (
     if (!fields.ocoTimeInForce) {
       throw new Error('no ocoTimeInForce specified');
     }
-    if (!fields.ocoSizeOverride) {
-      throw new Error('no ocoSizeOverride specified');
-    }
     if (!fields.ocoTriggerType) {
       throw new Error('no ocoSizeOverride specified');
     }
@@ -245,7 +242,7 @@ export const createStopMarketOrder = (
       sizeOverride: fields.ocoSizeOverride,
       size: fields.ocoSize,
     });
-    const isOverride = sizeOverride.sizeOverrideSetting === 2;
+    const isOverride = sizeOverride?.sizeOverrideSetting === 2;
 
     oppositeStopOrderSetup = {
       orderSubmission: {
@@ -282,7 +279,7 @@ export const createStopLimitOrder = (
 ): StopOrdersSubmission => {
   const trigger = createTrigger(fields, market.decimalPlaces);
   const sizeOverride = createSizeOverride(fields);
-  const isOverride = sizeOverride.sizeOverrideSetting === 2;
+  const isOverride = sizeOverride?.sizeOverrideSetting === 2;
 
   const stopOrderSetup: StopOrderSetup = {
     orderSubmission: {
@@ -318,9 +315,6 @@ export const createStopLimitOrder = (
     if (!fields.ocoTimeInForce) {
       throw new Error('no ocoTimeInForce specified');
     }
-    if (!fields.ocoSizeOverride) {
-      throw new Error('no ocoSizeOverride specified');
-    }
     if (!fields.ocoTriggerType) {
       throw new Error('no ocoTriggerType specified');
     }
@@ -332,7 +326,7 @@ export const createStopLimitOrder = (
       sizeOverride: fields.ocoSizeOverride,
       size: fields.ocoSize,
     });
-    const isOverride = sizeOverride.sizeOverrideSetting === 2;
+    const isOverride = sizeOverride?.sizeOverrideSetting === 2;
     const trigger = createTrigger(
       {
         triggerType: fields.ocoTriggerType,
@@ -457,9 +451,11 @@ export const createTrigger = (
 };
 
 export const createSizeOverride = (fields: {
-  sizeOverride: StopOrderSizeOverrideSetting;
+  sizeOverride?: StopOrderSizeOverrideSetting;
   size: string | number;
 }) => {
+  if (!fields.sizeOverride) return;
+
   const isSizeOverridden =
     fields.sizeOverride ===
     StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION;

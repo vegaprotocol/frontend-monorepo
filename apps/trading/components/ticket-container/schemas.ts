@@ -164,7 +164,7 @@ export const createStopLimitSchema = (market: MarketInfo) => {
         .number({ message: i18n.t('Required') })
         .min(Number(priceStep))
         .step(Number(priceStep)),
-      sizeOverride: z.nativeEnum(StopOrderSizeOverrideSetting),
+      sizeOverride: z.nativeEnum(StopOrderSizeOverrideSetting).optional(),
       size: z.coerce
         .number({ message: i18n.t('Required') })
         .min(Number(sizeStep))
@@ -259,7 +259,7 @@ export const createStopMarketSchema = (market: MarketInfo) => {
       triggerDirection: z.nativeEnum(StopOrderTriggerDirection),
       triggerType: z.enum(['price', 'trailingPercentOffset']),
       triggerPrice: z.coerce.number(),
-      sizeOverride: z.nativeEnum(StopOrderSizeOverrideSetting),
+      sizeOverride: z.nativeEnum(StopOrderSizeOverrideSetting).optional(),
       size: z.coerce.number().min(Number(sizeStep)).step(Number(sizeStep)),
       timeInForce: z.nativeEnum(OrderTimeInForce),
       expiresAt: z.date().optional(),
