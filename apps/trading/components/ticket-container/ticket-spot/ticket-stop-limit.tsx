@@ -61,6 +61,8 @@ export const TicketStopLimit = (props: FormProps) => {
         StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE,
       ocoTriggerType: 'price',
       ocoTimeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK,
+      ocoStopExpiryStrategy:
+        StopOrderExpiryStrategy.EXPIRY_STRATEGY_UNSPECIFIED,
     },
   });
 
@@ -98,9 +100,10 @@ export const TicketStopLimit = (props: FormProps) => {
             <Fields.StopTriggerType />
           </FieldControls>
           <Fields.StopTriggerPrice />
+          <Fields.StopExpiry />
         </div>
-        <Fields.StopSize />
         <Fields.Price />
+        <Fields.StopSize />
         <SizeSliderStop price={BigNumber(price || '0')} />
         <AdvancedControls>
           <FormGrid>
@@ -125,6 +128,7 @@ export const TicketStopLimit = (props: FormProps) => {
                 <Fields.StopTriggerType name="ocoTriggerType" />
               </FieldControls>
               <Fields.StopTriggerPrice name="ocoTriggerPrice" />
+              <Fields.OCOStopExpiry />
             </div>
             <Fields.StopSize name="ocoSize" />
             <Fields.Price name="ocoPrice" />
@@ -142,8 +146,6 @@ export const TicketStopLimit = (props: FormProps) => {
             </AdvancedControls>
           </>
         )}
-        <hr className="border-default" />
-        <Fields.StopExpiry />
         <FeedbackStop />
         <SubmitButton
           text={t('Place limit stop order')}

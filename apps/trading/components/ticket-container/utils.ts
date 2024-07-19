@@ -247,6 +247,10 @@ export const createStopMarketOrder = (
       sizeOverride: fields.ocoSizeOverride,
       size: fields.ocoSize,
     });
+    const expiry = createStopExpiry({
+      stopExpiryStrategy: fields.ocoStopExpiryStrategy,
+      stopExpiresAt: fields.ocoStopExpiresAt,
+    });
     const isOverride = sizeOverride.sizeOverrideSetting === 2;
 
     oppositeStopOrderSetup = {
@@ -333,6 +337,10 @@ export const createStopLimitOrder = (
       throw new Error('no ocoTriggerPrice specified');
     }
 
+    const expiry = createStopExpiry({
+      stopExpiryStrategy: fields.ocoStopExpiryStrategy,
+      stopExpiresAt: fields.ocoStopExpiresAt,
+    });
     const sizeOverride = createSizeOverride({
       sizeOverride: fields.ocoSizeOverride,
       size: fields.ocoSize,
@@ -360,16 +368,11 @@ export const createStopLimitOrder = (
               fields.ocoSize.toString(),
               market.positionDecimalPlaces
             ),
-        expiresAt:
-          fields.ocoExpiresAt &&
-          fields.ocoTimeInForce === OrderTimeInForce.TIME_IN_FORCE_GTT
-            ? toNanoSeconds(fields.ocoExpiresAt)
-            : undefined,
         reduceOnly: fields.reduceOnly,
       },
+      ...expiry,
       ...trigger,
       ...sizeOverride,
-      ...expiry,
     };
   }
 

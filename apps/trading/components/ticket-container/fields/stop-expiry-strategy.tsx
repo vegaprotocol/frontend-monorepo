@@ -8,7 +8,7 @@ import { useForm } from '../use-form';
 export const StopExpiryStrategy = ({
   name = 'stopExpiryStrategy',
 }: {
-  name?: 'stopExpiryStrategy';
+  name?: 'stopExpiryStrategy' | 'ocoStopExpiryStrategy';
 }) => {
   const t = useT();
   const form = useForm();
@@ -27,7 +27,17 @@ export const StopExpiryStrategy = ({
               value={field.value}
               onValueChange={(value) => {
                 field.onChange(value);
-                form.setValue('stopExpiresAt', undefined);
+
+                if (
+                  value === StopOrderExpiryStrategy.EXPIRY_STRATEGY_UNSPECIFIED
+                ) {
+                  if (name === 'stopExpiryStrategy') {
+                    form.setValue('stopExpiresAt', undefined);
+                  }
+                  if (name === 'ocoStopExpiryStrategy') {
+                    form.setValue('ocoStopExpiresAt', undefined);
+                  }
+                }
               }}
               placeholder={t('Select')}
               data-testid="order-stopExpiryStrategy"

@@ -3,12 +3,16 @@ import { formatForInput } from '@vegaprotocol/utils';
 import { FormField } from '../ticket-field';
 import { useForm } from '../use-form';
 
-export const StopExpiresAt = () => {
+export const StopExpiresAt = ({
+  name = 'stopExpiresAt',
+}: {
+  name?: 'stopExpiresAt' | 'ocoStopExpiresAt';
+}) => {
   const form = useForm();
   return (
     <FormField
       control={form.control}
-      name="stopExpiresAt"
+      name={name}
       render={({ field }) => {
         return (
           <input
