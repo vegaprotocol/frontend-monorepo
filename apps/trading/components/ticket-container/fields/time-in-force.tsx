@@ -66,5 +66,9 @@ const useOptions = () => {
     return NON_PERSISTENT_TIF_OPTIONS;
   }
 
+  if (ticketType === 'stopLimit') {
+    return NON_PERSISTENT_TIF_OPTIONS;
+  }
+
   return TIF_OPTIONS;
 };

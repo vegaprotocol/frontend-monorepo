@@ -18,7 +18,7 @@ export const StopSize = ({ name = 'size' }: { name?: 'size' | 'ocoSize' }) => {
           <div className="w-full">
             <TicketInput
               {...field}
-              label={<SizeLabel />}
+              label={<SizeLabel name={name} />}
               value={field.value || ''}
               onChange={field.onChange}
               data-testid={`order-${name}`}
@@ -35,11 +35,14 @@ export const StopSize = ({ name = 'size' }: { name?: 'size' | 'ocoSize' }) => {
   );
 };
 
-const SizeLabel = () => {
+const SizeLabel = (props: { name: 'size' | 'ocoSize' }) => {
   const t = useT();
   const form = useForm();
   const ticket = useTicketContext();
-  const sizeOverride = form.watch('sizeOverride');
+
+  const overrideFieldName =
+    props.name === 'size' ? 'sizeOverride' : 'ocoSizeOverride';
+  const sizeOverride = form.watch(overrideFieldName);
 
   let label = t('Size');
 

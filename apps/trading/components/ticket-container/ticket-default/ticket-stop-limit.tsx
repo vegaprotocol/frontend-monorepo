@@ -51,17 +51,17 @@ export const TicketStopLimit = (props: FormProps) => {
       triggerDirection: StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE,
       triggerType: 'price',
       sizeOverride: StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_NONE,
-      timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
+      timeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK,
       postOnly: false,
       reduceOnly: true, // must be reduce only for stop orders (unless spot market)
       stopExpiryStrategy: StopOrderExpiryStrategy.EXPIRY_STRATEGY_UNSPECIFIED,
       oco: false,
       ocoType: OrderType.TYPE_MARKET,
       ocoTriggerDirection:
-        StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE,
+        StopOrderTriggerDirection.TRIGGER_DIRECTION_FALLS_BELOW,
       ocoTriggerType: 'price',
       ocoSizeOverride: StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_NONE,
-      ocoTimeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
+      ocoTimeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK,
     },
   });
 

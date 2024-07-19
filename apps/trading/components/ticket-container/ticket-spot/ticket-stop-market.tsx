@@ -7,7 +7,6 @@ import {
   OrderType,
   OrderTimeInForce,
   StopOrderTriggerDirection,
-  StopOrderSizeOverrideSetting,
   StopOrderExpiryStrategy,
 } from '@vegaprotocol/types';
 import { useVegaTransactionStore } from '@vegaprotocol/web3';
@@ -51,7 +50,6 @@ export const TicketStopMarket = (props: FormProps) => {
       side: props.side,
       triggerDirection: StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE,
       triggerType: 'price',
-      sizeOverride: StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_NONE,
       timeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK,
       expiresAt: addDays(new Date(), 1),
       reduceOnly: false,
@@ -61,7 +59,6 @@ export const TicketStopMarket = (props: FormProps) => {
         StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE,
       ocoTriggerType: 'price',
       ocoTimeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK,
-      ocoSizeOverride: StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_NONE,
     },
   });
 
@@ -104,12 +101,7 @@ export const TicketStopMarket = (props: FormProps) => {
           </FieldControls>
           <Fields.StopTriggerPrice />
         </div>
-        <div className="flex flex-col gap-1">
-          <FieldControls>
-            <Fields.StopSizeOverride />
-          </FieldControls>
-          <Fields.StopSize />
-        </div>
+        <Fields.StopSize />
         <SizeSliderStop price={price} />
         <AdvancedControls>
           <FormGrid>
@@ -131,12 +123,7 @@ export const TicketStopMarket = (props: FormProps) => {
               </FieldControls>
               <Fields.StopTriggerPrice name="ocoTriggerPrice" />
             </div>
-            <div className="flex flex-col gap-1">
-              <FieldControls>
-                <Fields.StopSizeOverride name="ocoSizeOverride" />
-              </FieldControls>
-              <Fields.StopSize name="ocoSize" />
-            </div>
+            <Fields.StopSize name="ocoSize" />
             <AdvancedControls>
               <FormGrid>
                 <FormGridCol>

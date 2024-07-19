@@ -7,7 +7,6 @@ import {
   OrderType,
   OrderTimeInForce,
   StopOrderTriggerDirection,
-  StopOrderSizeOverrideSetting,
   StopOrderExpiryStrategy,
 } from '@vegaprotocol/types';
 import { useVegaTransactionStore } from '@vegaprotocol/web3';
@@ -51,8 +50,7 @@ export const TicketStopLimit = (props: FormProps) => {
       side: props.side,
       triggerDirection: StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE,
       triggerType: 'price',
-      sizeOverride: StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_NONE,
-      timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
+      timeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK,
       expiresAt: addDays(new Date(), 1),
       postOnly: false,
       reduceOnly: false,
@@ -62,8 +60,7 @@ export const TicketStopLimit = (props: FormProps) => {
       ocoTriggerDirection:
         StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE,
       ocoTriggerType: 'price',
-      ocoTimeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
-      ocoSizeOverride: StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_NONE,
+      ocoTimeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK,
     },
   });
 
@@ -102,12 +99,7 @@ export const TicketStopLimit = (props: FormProps) => {
           </FieldControls>
           <Fields.StopTriggerPrice />
         </div>
-        <div className="flex flex-col gap-1">
-          <FieldControls>
-            <Fields.StopSizeOverride />
-          </FieldControls>
-          <Fields.StopSize />
-        </div>
+        <Fields.StopSize />
         <Fields.Price />
         <SizeSliderStop price={BigNumber(price || '0')} />
         <AdvancedControls>
@@ -134,12 +126,7 @@ export const TicketStopLimit = (props: FormProps) => {
               </FieldControls>
               <Fields.StopTriggerPrice name="ocoTriggerPrice" />
             </div>
-            <div className="flex flex-col gap-1">
-              <FieldControls>
-                <Fields.StopSizeOverride name="ocoSizeOverride" />
-              </FieldControls>
-              <Fields.StopSize name="ocoSize" />
-            </div>
+            <Fields.StopSize name="ocoSize" />
             <Fields.Price name="ocoPrice" />
             <AdvancedControls>
               <FormGrid>
