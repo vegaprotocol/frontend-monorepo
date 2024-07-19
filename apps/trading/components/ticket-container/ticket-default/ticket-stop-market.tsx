@@ -79,13 +79,13 @@ export const TicketStopMarket = (props: FormProps) => {
       <Form
         onSubmit={form.handleSubmit((fields) => {
           const reference = `${pubKey}-${Date.now()}-${uniqueId()}`;
-
+          const stopOrdersSubmission = utils.createStopMarketOrder(
+            fields,
+            ticket.market,
+            reference
+          );
           create({
-            stopOrdersSubmission: utils.createStopMarketOrder(
-              fields,
-              ticket.market,
-              reference
-            ),
+            stopOrdersSubmission,
           });
         })}
       >

@@ -19,7 +19,22 @@ export const StopTriggerDirection = ({
         return (
           <MiniSelect
             value={field.value}
-            onValueChange={field.onChange}
+            onValueChange={(value) => {
+              field.onChange(value);
+
+              // Switch the opposite order direction
+              const fieldName =
+                name === 'triggerDirection'
+                  ? 'ocoTriggerDirection'
+                  : 'triggerDirection';
+
+              const fieldValue =
+                value ===
+                StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE
+                  ? StopOrderTriggerDirection.TRIGGER_DIRECTION_FALLS_BELOW
+                  : StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE;
+              form.setValue(fieldName, fieldValue);
+            }}
             placeholder={t('Select')}
             data-testid="trigger-direction"
           >
