@@ -51,7 +51,7 @@ export const TicketStopLimit = (props: FormProps) => {
       triggerDirection: StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE,
       triggerType: 'price',
       sizeOverride: StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_NONE,
-      timeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK,
+      timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
       postOnly: false,
       reduceOnly: true, // must be reduce only for stop orders (unless spot market)
       stopExpiryStrategy: StopOrderExpiryStrategy.EXPIRY_STRATEGY_UNSPECIFIED,
@@ -61,7 +61,7 @@ export const TicketStopLimit = (props: FormProps) => {
         StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE,
       ocoTriggerType: 'price',
       ocoSizeOverride: StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_NONE,
-      ocoTimeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK,
+      ocoTimeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
     },
   });
 
@@ -69,7 +69,6 @@ export const TicketStopLimit = (props: FormProps) => {
   const price = form.watch('price');
   const tif = form.watch('timeInForce');
   const oco = form.watch('oco');
-  const ocoType = form.watch('ocoType');
   const ocoTif = form.watch('ocoTimeInForce');
 
   return (
@@ -133,14 +132,11 @@ export const TicketStopLimit = (props: FormProps) => {
             </div>
             <div className="flex flex-col gap-1">
               <FieldControls>
-                <Fields.OCOType />
                 <Fields.StopSizeOverride name="ocoSizeOverride" />
               </FieldControls>
               <Fields.StopSize name="ocoSize" />
             </div>
-            {ocoType === OrderType.TYPE_LIMIT && (
-              <Fields.Price name="ocoPrice" />
-            )}
+            <Fields.Price name="ocoPrice" />
             <AdvancedControls>
               <FormGrid>
                 <FormGridCol>

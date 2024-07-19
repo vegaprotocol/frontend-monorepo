@@ -220,9 +220,6 @@ export const createStopMarketOrder = (
   let oppositeStopOrderSetup: StopOrderSetup | undefined = undefined;
 
   if (fields.oco) {
-    if (!fields.ocoType) {
-      throw new Error('no ocoType specified');
-    }
     if (!fields.ocoSize) {
       throw new Error('no ocoSize specified');
     }
@@ -256,7 +253,7 @@ export const createStopMarketOrder = (
       orderSubmission: {
         reference,
         marketId: market.id,
-        type: fields.ocoType,
+        type: OrderType.TYPE_MARKET,
         side: fields.side,
         timeInForce: fields.ocoTimeInForce,
         price: undefined,
@@ -317,9 +314,6 @@ export const createStopLimitOrder = (
   let oppositeStopOrderSetup: StopOrderSetup | undefined = undefined;
 
   if (fields.oco) {
-    if (!fields.ocoType) {
-      throw new Error('no ocoType specified');
-    }
     if (!fields.ocoPrice) {
       throw new Error('no ocoPrice specified');
     }
@@ -356,7 +350,7 @@ export const createStopLimitOrder = (
       orderSubmission: {
         reference,
         marketId: market.id,
-        type: fields.ocoType,
+        type: OrderType.TYPE_LIMIT,
         side: fields.side,
         timeInForce: fields.ocoTimeInForce,
         price: removeDecimal(fields.ocoPrice.toString(), market.decimalPlaces),

@@ -62,6 +62,7 @@ export const TicketStopLimit = (props: FormProps) => {
       ocoTriggerDirection:
         StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE,
       ocoTriggerType: 'price',
+      ocoTimeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
       ocoSizeOverride: StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_NONE,
     },
   });
@@ -71,7 +72,6 @@ export const TicketStopLimit = (props: FormProps) => {
   const tif = form.watch('timeInForce');
   const isPersistent = !NON_PERSISTENT_TIF_OPTIONS.includes(tif);
   const oco = form.watch('oco');
-  const ocoType = form.watch('ocoType');
   const ocoTif = form.watch('ocoTimeInForce');
 
   return (
@@ -136,14 +136,11 @@ export const TicketStopLimit = (props: FormProps) => {
             </div>
             <div className="flex flex-col gap-1">
               <FieldControls>
-                <Fields.OCOType />
                 <Fields.StopSizeOverride name="ocoSizeOverride" />
               </FieldControls>
               <Fields.StopSize name="ocoSize" />
             </div>
-            {ocoType === OrderType.TYPE_LIMIT && (
-              <Fields.Price name="ocoPrice" />
-            )}
+            <Fields.Price name="ocoPrice" />
             <AdvancedControls>
               <FormGrid>
                 <FormGridCol>

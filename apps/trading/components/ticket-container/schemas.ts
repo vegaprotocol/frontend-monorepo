@@ -212,7 +212,7 @@ export const createStopLimitSchema = (market: MarketInfo) => {
         });
       }
 
-      if (val.oco && !val.ocoPrice) {
+      if (val.oco && val.ocoType === OrderType.TYPE_LIMIT && !val.ocoPrice) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message: 'Provide a OCO price',

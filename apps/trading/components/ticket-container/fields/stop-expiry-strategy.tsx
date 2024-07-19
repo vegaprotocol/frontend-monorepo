@@ -25,7 +25,10 @@ export const StopExpiryStrategy = ({
             </label>
             <MiniSelect
               value={field.value}
-              onValueChange={field.onChange}
+              onValueChange={(value) => {
+                field.onChange(value);
+                form.setValue('stopExpiresAt', undefined);
+              }}
               placeholder={t('Select')}
               data-testid="order-stopExpiryStrategy"
             >

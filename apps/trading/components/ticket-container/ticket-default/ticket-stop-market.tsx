@@ -65,7 +65,6 @@ export const TicketStopMarket = (props: FormProps) => {
 
   const size = form.watch('size');
   const oco = form.watch('oco');
-  const ocoType = form.watch('ocoType');
 
   const { pubKey } = useVegaWallet();
 
@@ -132,14 +131,10 @@ export const TicketStopMarket = (props: FormProps) => {
             </div>
             <div className="flex flex-col gap-1">
               <FieldControls>
-                <Fields.OCOType />
                 <Fields.StopSizeOverride name="ocoSizeOverride" />
               </FieldControls>
               <Fields.StopSize name="ocoSize" />
             </div>
-            {ocoType === OrderType.TYPE_LIMIT && (
-              <Fields.Price name="ocoPrice" />
-            )}
             <AdvancedControls>
               <FormGrid>
                 <FormGridCol>

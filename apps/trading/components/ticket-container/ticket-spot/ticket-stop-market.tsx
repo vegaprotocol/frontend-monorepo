@@ -52,7 +52,7 @@ export const TicketStopMarket = (props: FormProps) => {
       triggerDirection: StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE,
       triggerType: 'price',
       sizeOverride: StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_NONE,
-      timeInForce: OrderTimeInForce.TIME_IN_FORCE_IOC,
+      timeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK,
       expiresAt: addDays(new Date(), 1),
       reduceOnly: false,
       stopExpiryStrategy: StopOrderExpiryStrategy.EXPIRY_STRATEGY_UNSPECIFIED,
@@ -60,6 +60,7 @@ export const TicketStopMarket = (props: FormProps) => {
       ocoTriggerDirection:
         StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE,
       ocoTriggerType: 'price',
+      ocoTimeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK,
       ocoSizeOverride: StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_NONE,
     },
   });
@@ -68,7 +69,6 @@ export const TicketStopMarket = (props: FormProps) => {
   const tif = form.watch('timeInForce');
   const isPersistent = utils.isPersistentTif(tif);
   const oco = form.watch('oco');
-  const ocoType = form.watch('ocoType');
 
   const { data: markPrice } = useMarkPrice(ticket.market.id);
   const price =
@@ -133,14 +133,10 @@ export const TicketStopMarket = (props: FormProps) => {
             </div>
             <div className="flex flex-col gap-1">
               <FieldControls>
-                <Fields.OCOType />
                 <Fields.StopSizeOverride name="ocoSizeOverride" />
               </FieldControls>
               <Fields.StopSize name="ocoSize" />
             </div>
-            {ocoType === OrderType.TYPE_LIMIT && (
-              <Fields.Price name="ocoPrice" />
-            )}
             <AdvancedControls>
               <FormGrid>
                 <FormGridCol>
