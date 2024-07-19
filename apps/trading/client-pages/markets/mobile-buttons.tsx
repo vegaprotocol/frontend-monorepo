@@ -10,15 +10,14 @@ import {
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
-import { DealTicketContainer } from '@vegaprotocol/deal-ticket';
+import { TicketContainer } from '../../components/ticket-container';
 import { MarketInfoAccordionContainer } from '@vegaprotocol/markets';
 import { DepositContainer } from '../../components/deposit-container';
 import { TransferContainer } from '@vegaprotocol/accounts';
 import { WithdrawContainer } from '../../components/withdraw-container';
 import { useT } from '../../lib/use-t';
 import { useVegaWallet, useDialogStore } from '@vegaprotocol/wallet-react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { Links } from '../../lib/links';
+import { useParams } from 'react-router-dom';
 import { useState } from 'react';
 
 enum DrawerView {
@@ -131,17 +130,11 @@ const TradeDrawer = ({
   setDrawer: (view: DrawerView) => void;
 }) => {
   const params = useParams();
-  const navigate = useNavigate();
 
   const renderContent = () => {
     if (drawer === DrawerView.Trade) {
       if (params.marketId) {
-        return (
-          <DealTicketContainer
-            marketId={params.marketId}
-            onDeposit={() => navigate(Links.DEPOSIT())}
-          />
-        );
+        return <TicketContainer />;
       }
     }
 
