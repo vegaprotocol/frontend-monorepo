@@ -9,6 +9,10 @@ import {
 import { Ticket as TicketDefault } from './ticket-default/ticket';
 import { Ticket as TicketSpot } from './ticket-spot/ticket';
 
+/**
+ * Renders the deal ticket after fetching for the current market
+ * by url params
+ */
 export const TicketContainer = () => {
   const params = useParams();
   const { data: market } = useMarketInfo(params.marketId);
@@ -22,6 +26,7 @@ export const TicketContainer = () => {
   );
 };
 
+/** Switch the ticket based on product type */
 const TicketContainerSwitch = ({ market }: { market: MarketInfo }) => {
   const productType = getProductType(market);
 

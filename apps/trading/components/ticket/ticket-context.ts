@@ -22,6 +22,7 @@ export type DefaultContextValue = {
   };
 };
 
+// Spot markets required base/quote accounts and assets
 export type SpotContextValue = {
   type: 'spot';
   market: MarketInfo;

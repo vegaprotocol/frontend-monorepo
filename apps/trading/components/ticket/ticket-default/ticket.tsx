@@ -23,6 +23,12 @@ import { StopMarket } from './stop-market';
 import { useTicketType } from '../use-ticket-type';
 import { useTicketSide } from '../use-ticket-side';
 
+/**
+ * Renders a default ticket (for future or perpetual markets), within a
+ * context provider, which provides all the information required for the
+ * ticket to function. The ticket type can be one of
+ * TicketType (market, limit, stopMarket, stopLimit)
+ */
 export const Ticket = ({ market }: { market: MarketInfo }) => {
   const settlementAsset = getAsset(market);
   const quoteAsset = getQuoteAsset(market);
