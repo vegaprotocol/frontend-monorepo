@@ -10,7 +10,7 @@ import BigNumber from 'bignumber.js';
 import {
   isMarketClosed,
   isMarketInAuction,
-  useMarkPrice,
+  useLastTradePrice,
   useMarketState,
   useMarketTradingMode,
 } from '@vegaprotocol/markets';
@@ -43,12 +43,12 @@ export const FeedbackStop = () => {
   const oco = form.watch('oco');
   const limitPrice = form.watch('price');
 
-  const { data: markPrice } = useMarkPrice(ticket.market.id);
+  const { data: lastTradePrice } = useLastTradePrice(ticket.market.id);
 
   const price =
     type === OrderType.TYPE_LIMIT
       ? BigNumber(limitPrice)
-      : toBigNum(markPrice || '0', ticket.market.decimalPlaces);
+      : toBigNum(lastTradePrice || '0', ticket.market.decimalPlaces);
 
   if (marketState && isMarketClosed(marketState)) {
     return <Msg.MarketClosed marketState={marketState} />;

@@ -2,7 +2,7 @@ import uniqueId from 'lodash/uniqueId';
 import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import { useMarkPrice } from '@vegaprotocol/markets';
+import { useLastTradePrice } from '@vegaprotocol/markets';
 import { OrderTimeInForce, OrderType } from '@vegaprotocol/types';
 import { toBigNum } from '@vegaprotocol/utils';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
@@ -53,10 +53,10 @@ export const TicketMarket = (props: FormProps) => {
   const size = form.watch('size');
   const tpSl = form.watch('tpSl');
 
-  const { data: markPrice } = useMarkPrice(ticket.market.id);
+  const { data: lastTradePrioce } = useLastTradePrice(ticket.market.id);
   const price =
-    markPrice && markPrice !== null
-      ? toBigNum(markPrice, ticket.market.decimalPlaces)
+    lastTradePrioce && lastTradePrioce !== null
+      ? toBigNum(lastTradePrioce, ticket.market.decimalPlaces)
       : undefined;
 
   return (

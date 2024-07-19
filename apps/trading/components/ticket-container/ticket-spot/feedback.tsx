@@ -5,7 +5,7 @@ import { OrderType, Side } from '@vegaprotocol/types';
 import {
   isMarketClosed,
   isMarketInAuction,
-  useMarkPrice,
+  useLastTradePrice,
   useMarketState,
   useMarketTradingMode,
 } from '@vegaprotocol/markets';
@@ -27,7 +27,7 @@ export const Feedback = () => {
   const side = form.watch('side');
   const limitPrice = form.watch('price');
 
-  const { data: markPrice } = useMarkPrice(ticket.market.id);
+  const { data: lastTradePrice } = useLastTradePrice(ticket.market.id);
   const { data: marketState } = useMarketState(ticket.market.id);
   const { data: marketTradingMode } = useMarketTradingMode(ticket.market.id);
 
@@ -36,7 +36,7 @@ export const Feedback = () => {
   const price =
     type === OrderType.TYPE_LIMIT
       ? BigNumber(limitPrice)
-      : toBigNum(markPrice || '0', ticket.market.decimalPlaces);
+      : toBigNum(lastTradePrice || '0', ticket.market.decimalPlaces);
 
   const quoteBalance = toBigNum(
     ticket.accounts.quote,

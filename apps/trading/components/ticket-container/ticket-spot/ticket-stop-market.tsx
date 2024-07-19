@@ -26,7 +26,7 @@ import { useTicketContext } from '../ticket-context';
 import { SubmitButton } from '../elements/submit-button';
 import { useT } from '../../../lib/use-t';
 import { SizeSliderStop } from './size-slider-stop';
-import { useMarkPrice } from '@vegaprotocol/markets';
+import { useLastTradePrice } from '@vegaprotocol/markets';
 import { toBigNum } from '@vegaprotocol/utils';
 
 import * as Fields from '../fields';
@@ -69,10 +69,10 @@ export const TicketStopMarket = (props: FormProps) => {
   const isPersistent = utils.isPersistentTif(tif);
   const oco = form.watch('oco');
 
-  const { data: markPrice } = useMarkPrice(ticket.market.id);
+  const { data: lastTradedPrice } = useLastTradePrice(ticket.market.id);
   const price =
-    markPrice && markPrice !== null
-      ? toBigNum(markPrice, ticket.market.decimalPlaces)
+    lastTradedPrice && lastTradedPrice !== null
+      ? toBigNum(lastTradedPrice, ticket.market.decimalPlaces)
       : undefined;
 
   return (

@@ -22,7 +22,6 @@ import { type FormFieldsStopLimit, useStopLimitSchema } from '../schemas';
 import { TicketEventUpdater } from '../ticket-events';
 import { TicketTypeSelect } from '../ticket-type-select';
 import { type FormProps } from './ticket';
-import { NON_PERSISTENT_TIF_OPTIONS } from '../constants';
 import { useTicketContext } from '../ticket-context';
 import { SubmitButton } from '../elements/submit-button';
 import { useT } from '../../../lib/use-t';
@@ -69,7 +68,7 @@ export const TicketStopLimit = (props: FormProps) => {
   const size = form.watch('size');
   const price = form.watch('price');
   const tif = form.watch('timeInForce');
-  const isPersistent = !NON_PERSISTENT_TIF_OPTIONS.includes(tif);
+  const isPersistent = utils.isPersistentTif(tif);
   const oco = form.watch('oco');
   const ocoTif = form.watch('ocoTimeInForce');
 
