@@ -34,7 +34,7 @@ import { SizeSliderStop } from './size-slider-stop';
 import { FeedbackStop } from './feedback-stop';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 
-export const TicketStopMarket = (props: FormProps) => {
+export const StopMarket = (props: FormProps) => {
   const t = useT();
   const create = useVegaTransactionStore((store) => store.create);
   const ticket = useTicketContext('default');

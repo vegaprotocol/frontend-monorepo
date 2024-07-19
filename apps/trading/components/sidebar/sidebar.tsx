@@ -14,7 +14,7 @@ import { NodeHealthContainer } from '../node-health';
 import { AssetCard } from '../asset-card';
 import { useT } from '../../lib/use-t';
 import { SidebarAccountsContainer } from '../accounts-container/sidebar-accounts-container';
-import { TicketContainer } from '../ticket-container';
+import { TicketContainer } from '../ticket';
 import classNames from 'classnames';
 import { MarginModeToggle } from '../margin-mode';
 

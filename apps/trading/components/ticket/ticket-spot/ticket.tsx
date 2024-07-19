@@ -8,10 +8,10 @@ import { type Side } from '@vegaprotocol/types';
 
 import { type TicketType } from '../schemas';
 import { TicketContext } from '../ticket-context';
-import { TicketMarket } from './ticket-market';
-import { TicketLimit } from './ticket-limit';
-import { TicketStopMarket } from './ticket-stop-market';
-import { TicketStopLimit } from './ticket-stop-limit';
+import { Market } from './market';
+import { Limit } from './limit';
+import { StopMarket } from './stop-market';
+import { StopLimit } from './stop-limit';
 import { useTicketType } from '../use-ticket-type';
 import { useTicketSide } from '../use-ticket-side';
 
@@ -68,19 +68,19 @@ export const TicketSpotSwitch = () => {
 
   switch (type) {
     case 'market': {
-      return <TicketMarket {...props} />;
+      return <Market {...props} />;
     }
 
     case 'limit': {
-      return <TicketLimit {...props} />;
+      return <Limit {...props} />;
     }
 
     case 'stopMarket': {
-      return <TicketStopMarket {...props} />;
+      return <StopMarket {...props} />;
     }
 
     case 'stopLimit': {
-      return <TicketStopLimit {...props} />;
+      return <StopLimit {...props} />;
     }
 
     default: {

@@ -28,7 +28,7 @@ import * as Fields from '../fields';
 import * as Data from '../info';
 import * as utils from '../utils';
 
-export const TicketLimit = (props: FormProps) => {
+export const Limit = (props: FormProps) => {
   const ticket = useTicketContext('spot');
   const t = useT();
   const create = useVegaTransactionStore((state) => state.create);

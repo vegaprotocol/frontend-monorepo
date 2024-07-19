@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { Sidebar } from './sidebar';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 
-jest.mock('../ticket-container', () => ({
+jest.mock('../ticket', () => ({
   TicketContainer: () => <div data-testid="deal-ticket" />,
 }));
 
