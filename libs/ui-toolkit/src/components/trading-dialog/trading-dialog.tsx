@@ -39,6 +39,7 @@ export const TradingDialog = ({
             )}
           >
             <div
+              data-testid="dialog-content"
               className={classNames(
                 'border rounded-md',
                 'p-8',

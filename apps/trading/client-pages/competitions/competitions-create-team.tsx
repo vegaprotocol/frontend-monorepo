@@ -219,7 +219,9 @@ const CreateTeamFormContainer = ({
           confirmedLabel={
             teamCode ? (
               <div className="flex flex-col justify-start items-start gap-0 w-full">
-                <span>{t('Team creation transaction successful')}</span>
+                <span data-testid="team-creation-success-message">
+                  {t('Team creation transaction successful')}
+                </span>
 
                 <div className="flex gap-1 max-w-full overflow-hidden">
                   <span className="truncate">{teamCode}</span>
@@ -235,7 +237,9 @@ const CreateTeamFormContainer = ({
                 </div>
               </div>
             ) : (
-              t('Team creation transaction successful')
+              <span data-testid="team-creation-success-message">
+                {t('Team creation transaction successful')}
+              </span>
             )
           }
         />

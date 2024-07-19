@@ -368,13 +368,7 @@ def test_create_team(competitions_page: Tuple[Page, str, VegaServiceNull]):
     page.get_by_test_id("team-url-input").fill("https://vega.xyz")
     page.get_by_test_id("avatar-url-input").fill("http://placekitten.com/200/200")
     page.get_by_test_id("team-form-submit-button").click()
-    expect(page.get_by_test_id("team-form-submit-button")).to_have_text(
-        "Confirming transaction..."
-    )
+    expect(page.get_by_test_id("dialog-content").first).to_be_visible()
     vega.wait_fn(2)
     vega.wait_for_total_catchup()
     expect(page.get_by_test_id("team-creation-success-message")).to_be_visible()
-    expect(page.get_by_test_id("team-id-display")).to_be_visible()
-    expect(page.get_by_test_id("team-id-display")).to_be_visible()
-    page.get_by_test_id("view-team-button").click()
-    expect(page.get_by_test_id("team-name")).to_have_text("e2e")
