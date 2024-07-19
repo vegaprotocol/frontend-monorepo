@@ -26,7 +26,7 @@ import {
   useState,
   type ComponentProps,
   forwardRef,
-  ButtonHTMLAttributes,
+  type ButtonHTMLAttributes,
 } from 'react';
 import classNames from 'classnames';
 import { useChainId } from '@vegaprotocol/wallet-react';
