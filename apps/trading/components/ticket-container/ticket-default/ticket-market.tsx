@@ -99,12 +99,9 @@ export const TicketMarket = (props: FormProps) => {
         )}
         <SizeSlider price={price} />
         <AdvancedControls>
-          <FormGrid>
-            <FormGridCol>
-              <Fields.TimeInForce />
-            </FormGridCol>
-            <FormGridCol />
-          </FormGrid>
+          <div>
+            <Fields.TimeInForce />
+          </div>
           <div>
             <Fields.ReduceOnly />
           </div>

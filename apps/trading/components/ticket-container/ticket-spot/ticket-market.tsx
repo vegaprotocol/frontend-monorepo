@@ -10,7 +10,12 @@ import { useVegaTransactionStore } from '@vegaprotocol/web3';
 
 import { useT } from '../../../lib/use-t';
 import { SubmitButton } from '../elements/submit-button';
-import { Form, FormGrid, FormGridCol } from '../elements/form';
+import {
+  AdvancedControls,
+  Form,
+  FormGrid,
+  FormGridCol,
+} from '../elements/form';
 import { type FormFieldsMarket, useMarketSchema } from '../schemas';
 import { TicketTypeSelect } from '../ticket-type-select';
 import { type FormProps } from './ticket';
@@ -92,25 +97,27 @@ export const TicketMarket = (props: FormProps) => {
           <Fields.Notional price={price} />
         )}
         <SizeSlider price={price} />
-        <FormGrid>
-          <FormGridCol>
-            <Fields.TpSl />
-            <Fields.ReduceOnly />
-          </FormGridCol>
-          <FormGridCol>
+        <AdvancedControls>
+          <div>
             <Fields.TimeInForce />
-          </FormGridCol>
-        </FormGrid>
-        {tpSl && (
-          <FormGrid>
-            <FormGridCol className="block">
-              <Fields.TakeProfit />
-            </FormGridCol>
-            <FormGridCol className="block">
-              <Fields.StopLoss />
-            </FormGridCol>
-          </FormGrid>
-        )}
+          </div>
+          <div>
+            <Fields.ReduceOnly />
+          </div>
+          <div className="flex flex-col items-start gap-1">
+            <Fields.TpSl />
+            {tpSl && (
+              <FormGrid className="pl-4">
+                <FormGridCol>
+                  <Fields.TakeProfit />
+                </FormGridCol>
+                <FormGridCol>
+                  <Fields.StopLoss />
+                </FormGridCol>
+              </FormGrid>
+            )}
+          </div>
+        </AdvancedControls>
         <Feedback />
         <SubmitButton
           text={t('Place market order')}
