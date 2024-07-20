@@ -438,7 +438,6 @@ describe('createStopMarketOrder', () => {
   it('oco', () => {
     const fields = merge(createFields(), {
       oco: true,
-      ocoType: OrderType.TYPE_MARKET,
       ocoPrice: 100,
       ocoSize: 200,
       ocoTimeInForce: OrderTimeInForce.TIME_IN_FORCE_IOC,
@@ -459,7 +458,7 @@ describe('createStopMarketOrder', () => {
         orderSubmission: {
           reference,
           marketId: market.id,
-          type: fields.ocoType,
+          type: OrderType.TYPE_MARKET,
           side: fields.side,
           timeInForce: fields.ocoTimeInForce,
           size: '200000',
@@ -476,7 +475,6 @@ describe('createStopMarketOrder', () => {
   it('oco sizeOverride', () => {
     const fields = merge(createFields(), {
       oco: true,
-      ocoType: OrderType.TYPE_MARKET,
       ocoPrice: 100,
       ocoSize: 85,
       ocoTimeInForce: OrderTimeInForce.TIME_IN_FORCE_IOC,
@@ -498,7 +496,7 @@ describe('createStopMarketOrder', () => {
         orderSubmission: {
           reference,
           marketId: market.id,
-          type: fields.ocoType,
+          type: OrderType.TYPE_MARKET,
           side: fields.side,
           timeInForce: fields.ocoTimeInForce,
           price: undefined,

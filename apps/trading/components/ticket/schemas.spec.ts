@@ -207,7 +207,7 @@ describe('ticket stop limit schema', () => {
     return merge(fields, override);
   };
 
-  it('oco requires ocoTriggerPrice and ocoSize', () => {
+  it('oco requires ocoTriggerPrice, ocoSize and ocoPrice', () => {
     const schema = createStopLimitSchema(marketInfo);
     const fields = createFields({
       oco: true,
@@ -216,6 +216,7 @@ describe('ticket stop limit schema', () => {
     expect(res.error?.issues.map((i) => i.path)).toEqual([
       ['ocoTriggerPrice'],
       ['ocoSize'],
+      ['ocoPrice'],
     ]);
   });
 

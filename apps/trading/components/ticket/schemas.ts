@@ -160,7 +160,6 @@ export const createStopLimitSchema = (market: MarketInfo) => {
       reduceOnly: z.boolean(),
       postOnly: z.boolean(),
       oco: z.boolean(),
-      ocoType: z.nativeEnum(OrderType).optional(),
       ocoTriggerDirection: z.nativeEnum(StopOrderTriggerDirection).optional(),
       ocoTriggerType: z.enum(['price', 'trailingPercentOffset']).optional(),
       ocoTriggerPrice: z.coerce.number().optional(),
@@ -195,7 +194,7 @@ export const createStopLimitSchema = (market: MarketInfo) => {
         });
       }
 
-      if (val.oco && val.ocoType === OrderType.TYPE_LIMIT && !val.ocoPrice) {
+      if (val.oco && !val.ocoPrice) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message: i18n.t('Provide an OCO price'),
@@ -254,7 +253,6 @@ export const createStopMarketSchema = (market: MarketInfo) => {
       stopExpiresAt: z.date().optional(),
       reduceOnly: z.boolean(),
       oco: z.boolean(),
-      ocoType: z.nativeEnum(OrderType).optional(),
       ocoTriggerDirection: z.nativeEnum(StopOrderTriggerDirection).optional(),
       ocoTriggerType: z.enum(['price', 'trailingPercentOffset']).optional(),
       ocoTriggerPrice: z.coerce.number().optional(),

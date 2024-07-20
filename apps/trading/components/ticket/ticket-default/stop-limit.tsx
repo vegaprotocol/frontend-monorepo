@@ -55,7 +55,6 @@ export const StopLimit = (props: FormProps) => {
       reduceOnly: true, // must be reduce only for stop orders (unless spot market)
       stopExpiryStrategy: 'none',
       oco: false,
-      ocoType: OrderType.TYPE_MARKET,
       ocoTriggerDirection:
         StopOrderTriggerDirection.TRIGGER_DIRECTION_FALLS_BELOW,
       ocoTriggerType: 'price',

@@ -516,7 +516,6 @@ export const createOrderWithTpSl = (
         timeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK,
         reduceOnly: true,
         oco: true,
-        ocoType: OrderType.TYPE_MARKET,
         ocoTriggerDirection:
           fields.side === Side.SIDE_BUY
             ? StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE

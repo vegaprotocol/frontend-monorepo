@@ -246,7 +246,6 @@ def test_submit_stop_oco_limit_order_pending(
     page.get_by_test_id(order_size).fill("3")
     page.get_by_test_id(order_price).fill("103")
     page.get_by_test_id(oco).click()
-    select_mini(page, 'order-ocoType', 'Limit')
     page.get_by_test_id(trigger_price_oco).fill("120")
     page.get_by_test_id(order_size_oco).fill("2")
     # 7002-SORD-089
@@ -299,7 +298,6 @@ def test_submit_stop_oco_limit_order_cancel(
     page.get_by_test_id(trigger_price_oco).fill("120")
     page.get_by_test_id(order_size_oco).fill("2")
     # 7002-SORD-093
-    select_mini(page, 'order-ocoType', 'Limit')
     page.get_by_test_id(order_limit_price_oco).fill("99")
     page.get_by_test_id(submit_stop_order).click()
     wait_for_toast_confirmation(page)
