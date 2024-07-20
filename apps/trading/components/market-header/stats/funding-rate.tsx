@@ -2,16 +2,23 @@ import { fromNanoSeconds } from '@vegaprotocol/utils';
 import {
   isMarketInAuction,
   useFundingPeriodsQuery,
-  useFundingRate,
-  useMarketTradingMode,
 } from '@vegaprotocol/markets';
 import { HeaderStat } from '../../../components/header';
 import { useEffect, useState } from 'react';
 import { useMarket, useOracle } from '@vegaprotocol/data-provider';
 import { useT } from '../../../lib/use-t';
+import { type MarketTradingMode } from '@vegaprotocol/types';
 
 export const FundingRateStat = ({ marketId }: { marketId: string }) => {
   const t = useT();
+  const { data: market } = useMarket({ marketId });
+  const fundingRate = market?.data?.productData?.fundingRate;
+
+  const product = market?.tradableInstrument.instrument.product;
+  const oracleSpecId =
+    product?.__typename === 'Perpetual'
+      ? product.dataSourceSpecForSettlementSchedule.id
+      : undefined;
 
   return (
     <HeaderStat
@@ -19,15 +26,22 @@ export const FundingRateStat = ({ marketId }: { marketId: string }) => {
       data-testid="market-funding"
     >
       <div className="flex gap-2">
-        <FundingRate marketId={marketId} />
-        <FundingCountdown marketId={marketId} />
+        <FundingRate fundingRate={fundingRate} />
+        <FundingCountdown
+          marketId={marketId}
+          oracleSpecId={oracleSpecId}
+          tradingMode={market?.data?.marketTradingMode}
+        />
       </div>
     </HeaderStat>
   );
 };
 
-const FundingRate = ({ marketId }: { marketId: string }) => {
-  const { data: fundingRate } = useFundingRate(marketId);
+const FundingRate = ({
+  fundingRate,
+}: {
+  fundingRate: string | null | undefined;
+}) => {
   return (
     <div data-testid="funding-rate">
       {fundingRate ? `${(Number(fundingRate) * 100).toFixed(4)}%` : '-'}
@@ -44,14 +58,9 @@ const useNow = () => {
   return now;
 };
 
-const useEvery = (marketId: string) => {
-  const { data: market } = useMarket({ marketId });
-  const product = market?.tradableInstrument.instrument.product;
-  const oracleSpecId =
-    product?.__typename === 'Perpetual'
-      ? product.dataSourceSpecForSettlementSchedule.id
-      : undefined;
+const useEvery = (oracleSpecId?: string) => {
   const { data } = useOracle({ oracleSpecId });
+
   let every: number | undefined = undefined;
   const sourceType = data?.data.sourceType.sourceType;
 
@@ -65,6 +74,7 @@ const useEvery = (marketId: string) => {
 };
 
 const useStartTime = (marketId: string, skip: boolean) => {
+  // TODO: switch to react-query
   const { data: fundingPeriods } = useFundingPeriodsQuery({
     pollInterval: 5000,
     skip,
@@ -99,12 +109,19 @@ const useFormatCountdown = (
   return t('Unknown');
 };
 
-export const FundingCountdown = ({ marketId }: { marketId: string }) => {
+export const FundingCountdown = ({
+  marketId,
+  oracleSpecId,
+  tradingMode,
+}: {
+  marketId: string;
+  oracleSpecId?: string;
+  tradingMode?: MarketTradingMode;
+}) => {
   const now = useNow();
-  const { data: marketTradingMode } = useMarketTradingMode(marketId);
-  const skip = !marketTradingMode || isMarketInAuction(marketTradingMode);
+  const skip = !tradingMode || isMarketInAuction(tradingMode);
   const startTime = useStartTime(marketId, skip);
-  const every = useEvery(marketId);
+  const every = useEvery(oracleSpecId);
 
   return (
     <div data-testid="funding-countdown">

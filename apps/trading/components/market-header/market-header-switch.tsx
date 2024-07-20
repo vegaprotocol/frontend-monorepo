@@ -1,12 +1,8 @@
-import {
-  type Market,
-  isSpot,
-  isFuture,
-  isPerpetual,
-} from '@vegaprotocol/markets';
+import { isSpot, isFuture, isPerpetual } from '@vegaprotocol/markets';
 import { MarketHeaderSpot } from './market-header-spot';
 import { MarketHeaderFuture } from './market-header-future';
 import { MarketHeaderPerp } from './market-header-perp';
+import { type Market } from '@vegaprotocol/data-provider';
 
 export const MarketHeaderSwitch = ({ market }: { market: Market }) => {
   const { product } = market.tradableInstrument.instrument;

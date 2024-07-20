@@ -1,9 +1,4 @@
-import {
-  type Market,
-  useMaliciousOracle,
-  useMarketState,
-  useMarketTradingMode,
-} from '@vegaprotocol/markets';
+import { useMaliciousOracle } from '@vegaprotocol/markets';
 import type { ProposalFragment } from '@vegaprotocol/proposals';
 import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
 import { Intent, NotificationBanner } from '@vegaprotocol/ui-toolkit';
@@ -21,6 +16,7 @@ import {
   useUpdateMarketStateProposals,
 } from './use-market-proposals';
 import { MarketAuctionBanner } from './market-monitoring-auction';
+import { type Market, useMarket } from '@vegaprotocol/data-provider';
 
 type UpdateMarketBanner = {
   kind: 'UpdateMarket';
@@ -66,26 +62,25 @@ type Banner =
   | MonitoringAuctionBanner
   | OracleBanner;
 
-export const MarketBanner = ({ market }: { market: Market }) => {
-  // TODO: fix this
-  return null;
-  const { data: marketState } = useMarketState(market.id);
-  const { data: marketTradingMode } = useMarketTradingMode(market.id);
+export const MarketBanner = ({ marketId }: { marketId: string }) => {
+  const { data: market } = useMarket({ marketId });
+
+  const marketState = market?.data?.marketState;
+  const marketTradingMode = market?.data?.marketTradingMode;
 
   const { proposals: successorProposals, loading: successorLoading } =
-    useSuccessorMarketProposals(market.id);
+    useSuccessorMarketProposals(marketId);
 
   const { proposals: updateMarketProposals, loading: updateMarketLoading } =
-    useUpdateMarketProposals(market.id);
+    useUpdateMarketProposals(marketId);
 
   const {
     proposals: updateMarketStateProposals,
     loading: updateMarketStateLoading,
-  } = useUpdateMarketStateProposals(market.id);
+  } = useUpdateMarketStateProposals(marketId);
 
-  const { data: maliciousOracle, loading: oracleLoading } = useMaliciousOracle(
-    market.id
-  );
+  const { data: maliciousOracle, loading: oracleLoading } =
+    useMaliciousOracle(marketId);
 
   const loading =
     successorLoading ||
@@ -94,6 +89,10 @@ export const MarketBanner = ({ market }: { market: Market }) => {
     oracleLoading;
 
   if (loading) {
+    return null;
+  }
+
+  if (!market) {
     return null;
   }
 
@@ -151,12 +150,13 @@ const BannerQueue = ({
   market,
 }: {
   banners: Banner[];
-  market: Market;
+  market?: Market;
 }) => {
   // for showing banner by index
   const [index, setIndex] = useState(0);
 
   const banner = banners[index];
+  if (!market) return null;
   if (!banner) return null;
 
   let content = null;

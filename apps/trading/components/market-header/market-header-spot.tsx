@@ -1,4 +1,4 @@
-import type { Market } from '@vegaprotocol/markets';
+import { type Market } from '@vegaprotocol/data-provider';
 import { useT } from '../../lib/use-t';
 import * as Stats from './stats';
 

@@ -1,10 +1,6 @@
 import { VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import { MarketSelector } from '../market-selector';
-import {
-  Last24hPriceChange,
-  useMarket,
-  useMarketList,
-} from '@vegaprotocol/markets';
+import { Last24hPriceChange } from '@vegaprotocol/markets';
 import { useParams } from 'react-router-dom';
 import * as PopoverPrimitive from '@radix-ui/react-popover';
 import { useState } from 'react';
@@ -15,20 +11,17 @@ import { MarketMarkPrice } from '../market-mark-price';
 import { MarketBanner } from '../market-banner';
 import { EmblemByMarket } from '@vegaprotocol/emblem';
 import { useChainId } from '@vegaprotocol/wallet-react';
+import { useMarket } from '@vegaprotocol/data-provider';
 /**
  * This is only rendered for the mobile navigation
  */
 export const MobileMarketHeader = () => {
   const t = useT();
   const { marketId } = useParams();
-  const { data } = useMarket(marketId);
+  const { data } = useMarket({ marketId });
   const [openMarket, setOpenMarket] = useState(false);
   const [openPrice, setOpenPrice] = useState(false);
   const { chainId } = useChainId();
-
-  // Ensure that markets are kept cached so opening the list
-  // shows all markets instantly
-  useMarketList();
 
   if (!marketId) return null;
 
@@ -118,7 +111,7 @@ export const MobileMarketHeader = () => {
       >
         {data && (
           <div>
-            <MarketBanner market={data} />
+            <MarketBanner marketId={marketId} />
             <div className="px-3 py-6 text-sm grid grid-cols-2 items-center gap-x-4 gap-y-6">
               <MarketHeaderSwitch market={data} />
             </div>

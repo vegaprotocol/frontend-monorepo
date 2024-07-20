@@ -1,7 +1,7 @@
-import type { Market } from '@vegaprotocol/markets';
 import { getAsset, getQuoteName } from '@vegaprotocol/markets';
 import { useT } from '../../lib/use-t';
 import * as Stats from './stats';
+import { type Market } from '@vegaprotocol/data-provider';
 
 interface MarketHeaderPerpProps {
   market: Market;
