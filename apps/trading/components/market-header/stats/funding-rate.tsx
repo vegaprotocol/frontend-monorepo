@@ -1,15 +1,13 @@
 import { fromNanoSeconds } from '@vegaprotocol/utils';
 import {
-  getDataSourceSpecForSettlementSchedule,
   isMarketInAuction,
-  marketInfoProvider,
   useFundingPeriodsQuery,
   useFundingRate,
   useMarketTradingMode,
 } from '@vegaprotocol/markets';
 import { HeaderStat } from '../../../components/header';
 import { useEffect, useState } from 'react';
-import { useDataProvider } from '@vegaprotocol/data-provider';
+import { useMarket, useOracle } from '@vegaprotocol/data-provider';
 import { useT } from '../../../lib/use-t';
 
 export const FundingRateStat = ({ marketId }: { marketId: string }) => {
@@ -46,18 +44,16 @@ const useNow = () => {
   return now;
 };
 
-const useEvery = (marketId: string, skip: boolean) => {
-  const { data: marketInfo } = useDataProvider({
-    dataProvider: marketInfoProvider,
-    variables: { marketId },
-    skip,
-  });
+const useEvery = (marketId: string) => {
+  const { data: market } = useMarket({ marketId });
+  const product = market?.tradableInstrument.instrument.product;
+  const oracleSpecId =
+    product?.__typename === 'Perpetual'
+      ? product.dataSourceSpecForSettlementSchedule.id
+      : undefined;
+  const { data } = useOracle({ oracleSpecId });
   let every: number | undefined = undefined;
-  const sourceType =
-    marketInfo &&
-    getDataSourceSpecForSettlementSchedule(
-      marketInfo.tradableInstrument.instrument.product
-    )?.data.sourceType.sourceType;
+  const sourceType = data?.data.sourceType.sourceType;
 
   if (sourceType?.__typename === 'DataSourceSpecConfigurationTimeTrigger') {
     every = sourceType.triggers?.[0]?.every ?? undefined;
@@ -108,7 +104,7 @@ export const FundingCountdown = ({ marketId }: { marketId: string }) => {
   const { data: marketTradingMode } = useMarketTradingMode(marketId);
   const skip = !marketTradingMode || isMarketInAuction(marketTradingMode);
   const startTime = useStartTime(marketId, skip);
-  const every = useEvery(marketId, skip);
+  const every = useEvery(marketId);
 
   return (
     <div data-testid="funding-countdown">

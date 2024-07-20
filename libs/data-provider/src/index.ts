@@ -12,4 +12,6 @@ export {
 } from './markets/use-markets';
 export * from './markets/utils';
 
-export { useAssets, type Asset } from './use-assets';
+export { useAssets, type Asset } from './assets/use-assets';
+
+export { useOracle } from './oracle/use-oracle';

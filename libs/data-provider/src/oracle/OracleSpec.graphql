@@ -1,0 +1,95 @@
+query OracleSpec($id: ID!) {
+  oracleSpec(oracleSpecId: $id) {
+    dataSourceSpec {
+      spec {
+        id
+        createdAt
+        updatedAt
+        status
+        data {
+          sourceType {
+            ... on DataSourceDefinitionExternal {
+              sourceType {
+                ... on DataSourceSpecConfiguration {
+                  signers {
+                    signer {
+                      ... on ETHAddress {
+                        address
+                      }
+                      ... on PubKey {
+                        key
+                      }
+                    }
+                  }
+                  filters {
+                    key {
+                      name
+                      type
+                      numberDecimalPlaces
+                    }
+                    conditions {
+                      operator
+                      value
+                    }
+                  }
+                }
+                ... on EthCallSpec {
+                  address
+                  abi
+                  method
+                  args
+                  trigger {
+                    trigger {
+                      ... on EthTimeTrigger {
+                        initial
+                        every
+                        until
+                      }
+                    }
+                  }
+                  requiredConfirmations
+                  normalisers {
+                    name
+                    expression
+                  }
+                  filters {
+                    key {
+                      name
+                      type
+                      numberDecimalPlaces
+                    }
+                    conditions {
+                      operator
+                      value
+                    }
+                  }
+                  sourceChainId
+                }
+              }
+            }
+            ... on DataSourceDefinitionInternal {
+              sourceType {
+                ... on DataSourceSpecConfigurationTime {
+                  conditions {
+                    operator
+                    value
+                  }
+                }
+                ... on DataSourceSpecConfigurationTimeTrigger {
+                  conditions {
+                    operator
+                    value
+                  }
+                  triggers {
+                    initial
+                    every
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
