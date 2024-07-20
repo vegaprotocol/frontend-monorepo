@@ -1,7 +1,6 @@
 import {
   type OrderTimeInForce,
   OrderTimeInForceCode,
-  OrderTimeInForceMapping,
 } from '@vegaprotocol/types';
 import { MiniSelect, MiniSelectOption } from '@vegaprotocol/ui-toolkit';
 import { useT } from '../../../lib/use-t';
@@ -43,7 +42,7 @@ export const TimeInForce = ({
             >
               {options.map((tif) => (
                 <MiniSelectOption key={tif} value={tif}>
-                  {OrderTimeInForceMapping[tif as OrderTimeInForce]}
+                  {t(tif)}
                 </MiniSelectOption>
               ))}
             </MiniSelect>

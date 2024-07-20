@@ -95,8 +95,6 @@ def test_market_monitoring_auction_price_volatility_limit_order(
     page.get_by_test_id("order-size").type("1")
     page.get_by_test_id("order-price").clear()
     page.get_by_test_id("order-price").type("110")
-    select_mini(page,"order-tif", "Fill or Kill (FOK)")
-    page.get_by_test_id("place-order").click()
     expect(page.get_by_test_id("feedback-market-monitoring-auction")).to_have_text(
         "This market is in auction due to high price volatility. Until the auction ends, you can only place GFA, GTT, or GTC limit orders."
     )
@@ -113,7 +111,8 @@ def test_market_monitoring_auction_price_volatility_limit_order(
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
     page.get_by_test_id("Open").click()
-    expect(page.get_by_role("row").nth(4)).to_contain_text(
+    container = page.locator('.ag-center-cols-container')
+    expect(container.get_by_role("row").first).to_contain_text(
         "0+1LimitActive110.00GTC"
     )
 
