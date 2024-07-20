@@ -14,6 +14,7 @@ import { StopMarket } from './stop-market';
 import { StopLimit } from './stop-limit';
 import { useTicketType } from '../use-ticket-type';
 import { useTicketSide } from '../use-ticket-side';
+
 /**
  * Renders a spot ticket, within a context provider, which provides
  * all the information required for the spot ticket to function.

@@ -2,7 +2,6 @@ import {
   TradingDropdown,
   TradingDropdownContent,
   TradingDropdownItemIndicator,
-  TradingDropdownPortal,
   TradingDropdownRadioGroup,
   TradingDropdownRadioItem,
   TradingDropdownTrigger,
@@ -75,26 +74,24 @@ export const TicketTypeSelect = ({
           </TradingDropdownTrigger>
         }
       >
-        <TradingDropdownPortal>
-          <TradingDropdownContent align="end">
-            <TradingDropdownRadioGroup
-              onValueChange={(value) => onTypeChange(value as TicketType)}
-              value={type}
-            >
-              {stopOptions.map(({ label, value: itemValue }) => (
-                <TradingDropdownRadioItem
-                  key={itemValue}
-                  value={itemValue}
-                  textValue={itemValue}
-                  data-testid={`order-type-${itemValue}`}
-                >
-                  {label}
-                  <TradingDropdownItemIndicator />
-                </TradingDropdownRadioItem>
-              ))}
-            </TradingDropdownRadioGroup>
-          </TradingDropdownContent>
-        </TradingDropdownPortal>
+        <TradingDropdownContent align="end">
+          <TradingDropdownRadioGroup
+            onValueChange={(value) => onTypeChange(value as TicketType)}
+            value={type}
+          >
+            {stopOptions.map(({ label, value: itemValue }) => (
+              <TradingDropdownRadioItem
+                key={itemValue}
+                value={itemValue}
+                textValue={itemValue}
+                data-testid={`order-type-${itemValue}`}
+              >
+                {label}
+                <TradingDropdownItemIndicator />
+              </TradingDropdownRadioItem>
+            ))}
+          </TradingDropdownRadioGroup>
+        </TradingDropdownContent>
       </TradingDropdown>
     </ToggleGroup.Root>
   );
