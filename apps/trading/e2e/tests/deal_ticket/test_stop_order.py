@@ -18,7 +18,6 @@ trigger_type_trailing_percent_offset = "triggerType-trailingPercentOffset"
 order_size = "order-size"
 order_price = "order-price"
 order_tif = "order-tif"
-expire = "order-stopExpiry"
 submit_stop_order = "place-order"
 stop_orders_tab = "Advanced orders"
 row_table = "row"
@@ -104,7 +103,6 @@ def test_submit_stop_market_order_triggered(
     page.get_by_test_id(order_side_sell).click()
     page.get_by_test_id(trigger_price).fill("103")
     page.get_by_test_id(order_size).fill("1")
-    page.get_by_test_id(expire).click()
     select_mini(page, 'order-stopExpiryStrategy', 'Cancel')
     expires_at = datetime.now() + timedelta(days=1)
     expires_at_input_value = expires_at.strftime("%Y-%m-%dT%H:%M:%S")
@@ -140,8 +138,7 @@ def test_submit_stop_limit_order_pending(
     page.get_by_test_id(order_price).fill("99")
     page.get_by_test_id(order_size).fill("1")
     select_mini(page, order_tif,  "Immediate or Cancel (IOC)")
-    page.get_by_test_id(expire).click()
-    select_mini(page, 'order-stopExpiryStrategy', 'Submit')
+    select_mini(page, 'order-stopExpiryStrategy', 'Trigger')
     expires_at = datetime.now() + timedelta(days=1)
     expires_at_input_value = expires_at.strftime("%Y-%m-%dT%H:%M:%S")
     page.get_by_test_id("date-picker-field").fill(expires_at_input_value)
