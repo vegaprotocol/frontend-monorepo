@@ -56,6 +56,6 @@ def test_should_show_an_error_if_your_balance_is_zero(
     expect(page.get_by_test_id(place_order)).to_be_enabled()
     # 7002-SORD-003
     expect(page.get_by_test_id("feedback-no-collateral")).to_have_text(
-        "You need tDAI in your wallet to trade in this market Deposit tDAI"
+        "You need tDAI in your wallet to trade in this market. Deposit tDAI"
     )
     expect(page.get_by_test_id(deposit_button)).to_be_visible()
