@@ -38,30 +38,22 @@ export const createMarketSchema = (market: MarketInfo) => {
       ) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: 'Only FOK and IOC orders permitted',
+          message: i18n.t('Only FOK and IOC orders permitted'),
           path: ['timeInForce'],
         });
       }
 
-      if (val.tpSl && !val.takeProfit) {
+      if (val.tpSl && !val.takeProfit && !val.stopLoss) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: 'Provide a take profit price',
+          message: i18n.t('Provide either a take profit or stop loos price'),
           path: ['takeProfit'],
-        });
-      }
-
-      if (val.tpSl && !val.stopLoss) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: 'Provide a stop loss price',
-          path: ['stopLoss'],
         });
       }
     });
 };
 
-const createLimitSchema = (market: MarketInfo) => {
+export const createLimitSchema = (market: MarketInfo) => {
   const sizeStep = determineSizeStep(market);
   const priceStep = determinePriceStep(market);
 
@@ -96,7 +88,7 @@ const createLimitSchema = (market: MarketInfo) => {
         if (!val.expiresAt) {
           ctx.addIssue({
             code: z.ZodIssueCode.invalid_date,
-            message: 'GTT requires a expiry date',
+            message: i18n.t('GTT requires a expiry date'),
             path: ['expiresAt'],
             fatal: true,
           });
@@ -104,35 +96,27 @@ const createLimitSchema = (market: MarketInfo) => {
           return z.NEVER;
         }
 
-        if (isBefore(val.expiresAt, new Date())) {
+        if (isBefore(val.expiresAt, Date.now())) {
           ctx.addIssue({
             code: z.ZodIssueCode.invalid_date,
-            message: 'GTT must be in the future',
+            message: i18n.t('Expiry must be in the future'),
             path: ['expiresAt'],
           });
         }
       }
 
-      if (val.tpSl && !val.takeProfit) {
+      if (val.tpSl && !val.takeProfit && !val.stopLoss) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: 'Provide a take profit price',
+          message: i18n.t('Provide either a take profit or stop loos price'),
           path: ['takeProfit'],
-        });
-      }
-
-      if (val.tpSl && !val.stopLoss) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: 'Provide a stop loss price',
-          path: ['stopLoss'],
         });
       }
 
       if (val.iceberg && !val.icebergPeakSize) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: 'Provide a peak size',
+          message: i18n.t('Provide a peak size'),
           path: ['icebergPeakSize'],
         });
       }
@@ -140,7 +124,7 @@ const createLimitSchema = (market: MarketInfo) => {
       if (val.iceberg && !val.icebergMinVisibleSize) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: 'Provide a min visible size',
+          message: i18n.t('Provide a minimum visible size'),
           path: ['icebergMinVisibleSize'],
         });
       }
@@ -198,7 +182,7 @@ export const createStopLimitSchema = (market: MarketInfo) => {
       if (val.oco && !val.ocoTriggerPrice) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: 'Provide a OCO trigger price',
+          message: i18n.t('Provide an OCO trigger'),
           path: ['ocoTriggerPrice'],
         });
       }
@@ -206,7 +190,7 @@ export const createStopLimitSchema = (market: MarketInfo) => {
       if (val.oco && !val.ocoSize) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: 'Provide a OCO size',
+          message: i18n.t('Provide an OCO size'),
           path: ['ocoSize'],
         });
       }
@@ -214,7 +198,7 @@ export const createStopLimitSchema = (market: MarketInfo) => {
       if (val.oco && val.ocoType === OrderType.TYPE_LIMIT && !val.ocoPrice) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: 'Provide a OCO price',
+          message: i18n.t('Provide an OCO price'),
           path: ['ocoPrice'],
         });
       }
@@ -222,7 +206,7 @@ export const createStopLimitSchema = (market: MarketInfo) => {
       if (val.stopExpiryStrategy !== 'none' && !val.stopExpiresAt) {
         ctx.addIssue({
           code: z.ZodIssueCode.invalid_date,
-          message: 'Provide expiry date',
+          message: i18n.t('Provide a expiry time/date'),
           path: ['stopExpiresAt'],
         });
       }
@@ -231,7 +215,9 @@ export const createStopLimitSchema = (market: MarketInfo) => {
         if (!val.reduceOnly) {
           ctx.addIssue({
             code: z.ZodIssueCode.custom,
-            message: 'Stop orders on non spot markets must be reduce only',
+            message: i18n.t(
+              'Stop orders on non spot markets must be reduce only'
+            ),
             path: ['reduceOnly'],
           });
         }
@@ -289,7 +275,7 @@ export const createStopMarketSchema = (market: MarketInfo) => {
       if (val.oco && !val.ocoTriggerPrice) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: 'Provide a OCO trigger price',
+          message: i18n.t('Provide an OCO trigger'),
           path: ['ocoTriggerPrice'],
         });
       }
@@ -297,7 +283,7 @@ export const createStopMarketSchema = (market: MarketInfo) => {
       if (val.oco && !val.ocoSize) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: 'Provide a OCO size',
+          message: i18n.t('Provide an OCO size'),
           path: ['ocoSize'],
         });
       }
@@ -305,7 +291,7 @@ export const createStopMarketSchema = (market: MarketInfo) => {
       if (val.stopExpiryStrategy !== 'none' && !val.stopExpiresAt) {
         ctx.addIssue({
           code: z.ZodIssueCode.invalid_date,
-          message: 'Provide expiry date',
+          message: i18n.t('Provide a expiry time/date'),
           path: ['stopExpiresAt'],
         });
       }
@@ -314,7 +300,9 @@ export const createStopMarketSchema = (market: MarketInfo) => {
         if (!val.reduceOnly) {
           ctx.addIssue({
             code: z.ZodIssueCode.custom,
-            message: 'Stop orders on non spot markets must be reduce only',
+            message: i18n.t(
+              'Stop orders on non spot markets must be reduce only'
+            ),
             path: ['reduceOnly'],
           });
         }
