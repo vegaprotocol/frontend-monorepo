@@ -16,6 +16,7 @@ import { subDays } from 'date-fns';
 import { isMarketActive } from './utils';
 
 export type Market = MarketFieldsV2Fragment;
+export type Product = Market['tradableInstrument']['instrument']['product'];
 export type MarketLookup = Map<string, Market>;
 
 const since = subDays(new Date(), 1).toISOString();

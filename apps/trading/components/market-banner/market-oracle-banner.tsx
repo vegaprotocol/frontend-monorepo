@@ -1,18 +1,13 @@
 import { useState } from 'react';
 import { Trans } from 'react-i18next';
-import {
-  OracleDialog,
-  useOracleStatuses,
-  type useMaliciousOracle,
-} from '@vegaprotocol/markets';
+import { OracleDialog, useOracleStatuses } from '@vegaprotocol/markets';
 import { ButtonLink } from '@vegaprotocol/ui-toolkit';
-
-export type Oracle = ReturnType<typeof useMaliciousOracle>['data'];
+import { type Provider } from '@vegaprotocol/data-provider';
 
 export const MarketOracleBanner = ({
   oracle,
 }: {
-  oracle: NonNullable<Oracle>;
+  oracle: { provider: Provider; dataSourceSpecId: string };
 }) => {
   const [open, setOpen] = useState(false);
   const oracleStatuses = useOracleStatuses();

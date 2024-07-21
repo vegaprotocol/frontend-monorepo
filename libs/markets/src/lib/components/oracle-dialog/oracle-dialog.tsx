@@ -3,7 +3,6 @@ import {
   OracleProfileTitle,
   OracleFullProfile,
 } from '../../components/oracle-full-profile';
-import type { Provider } from '../../oracle-schema';
 
 export const OracleDialog = ({
   provider,
@@ -13,10 +12,12 @@ export const OracleDialog = ({
   parentProvider,
 }: {
   dataSourceSpecId: string;
-  provider: Provider;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any TODO: fix me
+  provider: any;
   open: boolean;
   onChange?: (isOpen: boolean) => void;
-  parentProvider?: Provider;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any TODO: fix me
+  parentProvider?: any;
 }) => {
   // If this is a successor market, the parent market data will only have been passed
   // in if it differs from the current data. We'll pass this on to the title component

@@ -1,10 +1,9 @@
-import { useMaliciousOracle } from '@vegaprotocol/markets';
 import type { ProposalFragment } from '@vegaprotocol/proposals';
 import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
 import { Intent, NotificationBanner } from '@vegaprotocol/ui-toolkit';
 import compact from 'lodash/compact';
 import { useState } from 'react';
-import { MarketOracleBanner, type Oracle } from './market-oracle-banner';
+import { MarketOracleBanner } from './market-oracle-banner';
 import { MarketSettledBanner } from './market-settled-banner';
 import { MarketSuccessorProposalBanner } from './market-successor-proposal-banner';
 import { MarketSuspendedBanner } from './market-suspended-banner';
@@ -16,7 +15,12 @@ import {
   useUpdateMarketStateProposals,
 } from './use-market-proposals';
 import { MarketAuctionBanner } from './market-monitoring-auction';
-import { type Market, useMarket } from '@vegaprotocol/data-provider';
+import {
+  type Market,
+  useMarket,
+  useMaliciousOracleProvider,
+  type Provider,
+} from '@vegaprotocol/data-provider';
 
 type UpdateMarketBanner = {
   kind: 'UpdateMarket';
@@ -50,7 +54,7 @@ type MonitoringAuctionBanner = {
 
 type OracleBanner = {
   kind: 'Oracle';
-  oracle: Oracle;
+  oracle: { provider: Provider; dataSourceSpecId: string };
 };
 
 type Banner =
@@ -79,14 +83,10 @@ export const MarketBanner = ({ marketId }: { marketId: string }) => {
     loading: updateMarketStateLoading,
   } = useUpdateMarketStateProposals(marketId);
 
-  const { data: maliciousOracle, loading: oracleLoading } =
-    useMaliciousOracle(marketId);
+  const maliciousOracleProvider = useMaliciousOracleProvider({ marketId });
 
   const loading =
-    successorLoading ||
-    updateMarketLoading ||
-    updateMarketStateLoading ||
-    oracleLoading;
+    successorLoading || updateMarketLoading || updateMarketStateLoading;
 
   if (loading) {
     return null;
@@ -134,10 +134,10 @@ export const MarketBanner = ({ marketId }: { marketId: string }) => {
           market,
         }
       : undefined,
-    maliciousOracle !== undefined
+    maliciousOracleProvider
       ? {
           kind: 'Oracle' as const,
-          oracle: maliciousOracle,
+          oracle: maliciousOracleProvider,
         }
       : undefined,
   ]);

@@ -73,6 +73,26 @@ export const getAsset = (market: Market) => {
   throw new Error('Failed to retrieve asset. Invalid product type');
 };
 
+export const getProduct = (market?: Market) => {
+  return market?.tradableInstrument.instrument.product;
+};
+
+export const getProductType = (market: Market) => {
+  if (!market.tradableInstrument?.instrument.product) {
+    throw new Error(
+      'Failed to retrieve product type. Invalid tradable instrument'
+    );
+  }
+
+  const type = market.tradableInstrument.instrument.product.__typename;
+
+  if (!type) {
+    throw new Error('Failed to retrieve asset. Invalid product type');
+  }
+
+  return type;
+};
+
 export const calcCandleVolume = (
   candles: CandleFragment[]
 ): string | undefined =>
