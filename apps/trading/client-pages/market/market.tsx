@@ -1,15 +1,9 @@
 import { useEffect } from 'react';
 import { addDecimalsFormatNumber, titlefy } from '@vegaprotocol/utils';
 import { useScreenDimensions } from '@vegaprotocol/react-helpers';
-import { useThrottledDataProvider } from '@vegaprotocol/data-provider';
+import { useMarket } from '@vegaprotocol/data-provider';
 import { Link, Loader, Splash } from '@vegaprotocol/ui-toolkit';
-import {
-  getAsset,
-  getBaseAsset,
-  isSpot,
-  marketDataProvider,
-  useMarket,
-} from '@vegaprotocol/markets';
+import { getAsset, getBaseAsset, isSpot } from '@vegaprotocol/markets';
 import { useGlobalStore, usePageTitleStore } from '../../stores';
 import { TradeGrid } from './trade-grid';
 import { TradePanels } from './trade-panels';
@@ -25,39 +19,27 @@ const calculatePrice = (markPrice?: string, decimalPlaces?: number) => {
 };
 
 const TitleUpdater = ({
-  marketId,
+  markPrice,
   marketName,
   decimalPlaces,
 }: {
-  marketId?: string;
+  markPrice?: string;
   marketName?: string;
   decimalPlaces?: number;
 }) => {
   const pageTitle = usePageTitleStore((store) => store.pageTitle);
   const updateTitle = usePageTitleStore((store) => store.updateTitle);
-  const { data: marketData } = useThrottledDataProvider(
-    {
-      dataProvider: marketDataProvider,
-      variables: { marketId: marketId || '' },
-      skip: !marketId,
-    },
-    1000
-  );
+
   useEffect(() => {
-    const marketPrice = calculatePrice(marketData?.markPrice, decimalPlaces);
+    const marketPrice = calculatePrice(markPrice, decimalPlaces);
     if (marketName) {
       const newPageTitle = titlefy([marketName, marketPrice]);
       if (pageTitle !== newPageTitle) {
         updateTitle(newPageTitle);
       }
     }
-  }, [
-    decimalPlaces,
-    marketName,
-    marketData?.markPrice,
-    pageTitle,
-    updateTitle,
-  ]);
+  }, [decimalPlaces, marketName, markPrice, pageTitle, updateTitle]);
+
   return null;
 };
 
@@ -70,7 +52,7 @@ export const MarketPage = () => {
   const update = useGlobalStore((store) => store.update);
   const lastMarketId = useGlobalStore((store) => store.marketId);
 
-  const { data, loading } = useMarket(marketId);
+  const { data, isLoading } = useMarket({ marketId });
 
   useEffect(() => {
     if (data?.id && data.id !== lastMarketId) {
@@ -78,7 +60,7 @@ export const MarketPage = () => {
     }
   }, [update, lastMarketId, data?.id]);
 
-  if (loading) {
+  if (isLoading) {
     return (
       <Splash>
         <Loader />
@@ -121,7 +103,7 @@ export const MarketPage = () => {
   return (
     <>
       <TitleUpdater
-        marketId={data?.id}
+        markPrice={data?.data?.markPrice}
         marketName={data?.tradableInstrument.instrument.name}
         decimalPlaces={data?.decimalPlaces}
       />

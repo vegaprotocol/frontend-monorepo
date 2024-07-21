@@ -1,7 +1,6 @@
 import { memo, type ReactNode } from 'react';
 import { LayoutPriority } from 'allotment';
 import { useFeatureFlags } from '@vegaprotocol/environment';
-import { type Market } from '@vegaprotocol/markets';
 import { Tab, LocalStoragePersistTabs as Tabs } from '@vegaprotocol/ui-toolkit';
 import {
   ResizableGrid,
@@ -14,6 +13,7 @@ import { ErrorBoundary } from '../../components/error-boundary';
 import { MarketBanner } from '../../components/market-banner';
 import { MarketHeader } from '../../components/market-header';
 import { Sidebar } from '../../components/sidebar';
+import { type Market } from '@vegaprotocol/data-provider';
 
 interface TradeGridProps {
   market: Market;
@@ -230,7 +230,7 @@ export const TradeGrid = ({ market, pinnedAssets }: TradeGridProps) => {
   return (
     <div className="h-full grid grid-rows-[min-content_1fr]">
       <div>
-        <MarketBanner market={market} />
+        <MarketBanner marketId={market.id} />
       </div>
       <div className="min-h-0 -mx-1 my-1">
         <MainGrid market={market} pinnedAssets={pinnedAssets} />
