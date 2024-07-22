@@ -163,7 +163,7 @@ export const MarketTradingModeMapping: {
   [T in MarketTradingMode]: string;
 } = {
   TRADING_MODE_BATCH_AUCTION: 'Batch auction',
-  TRADING_MODE_LONG_BLOCK_AUCTION: 'Long block auction',
+  TRADING_MODE_LONG_BLOCK_AUCTION: 'Monitoring auction',
   TRADING_MODE_CONTINUOUS: 'Continuous',
   TRADING_MODE_MONITORING_AUCTION: 'Monitoring auction',
   TRADING_MODE_NO_TRADING: 'No trading',

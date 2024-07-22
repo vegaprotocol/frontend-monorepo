@@ -626,6 +626,8 @@
   "This market is in auction until it reaches sufficient liquidity.": "This market is in auction until it reaches sufficient liquidity.",
   "This market is in opening auction until it has reached enough liquidity to move into continuous trading.": "This market is in opening auction until it has reached enough liquidity to move into continuous trading.",
   "This market may have sufficient liquidity but there are not enough priced limit orders in the order book, which are required to deploy liquidity commitment pegged orders.": "This market may have sufficient liquidity but there are not enough priced limit orders in the order book, which are required to deploy liquidity commitment pegged orders.",
+  "This market is in auction due to slow block processing, but you can still place orders.": "This market is in auction due to slow block processing, but you can still place orders.",
+  "This market is in auction due to slow block processing, potentially due to an upgrade or network downtime.": "This market is in auction due to slow block processing, potentially due to an upgrade or network downtime.",
   "This reward is scoped to {{market}} market": "This reward is scoped to {{market}} market",
   "This reward is scoped to the following markets": "This reward is scoped to the following markets",
   "This reward is scoped to the markets settled in {{asset}}": "This reward is scoped to the markets settled in {{asset}}",
