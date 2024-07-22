@@ -15,6 +15,8 @@ export const TicketInput = forwardRef<HTMLInputElement, Props>(
       >
         <input
           ref={ref}
+          type="number"
+          onWheel={(e) => e.currentTarget.blur()} // prevent mousewheel changing the number
           {...props}
           // Always need a placeholder value present so that the placeholder-shown: class works
           placeholder={props.placeholder || 'hidden'}
