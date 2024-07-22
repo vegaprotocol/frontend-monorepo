@@ -4,6 +4,7 @@ import { useTransactionConfirmations } from 'wagmi';
 
 import { useT } from '../../lib/use-t';
 import { type RowDeposit } from './asset-activity';
+import { SEC } from '@vegaprotocol/utils';
 
 export const DepositStatusCell = ({ data }: { data: RowDeposit }) => {
   const t = useT();
@@ -13,6 +14,7 @@ export const DepositStatusCell = ({ data }: { data: RowDeposit }) => {
     hash: data.detail.txHash as `0x${string}`,
     query: {
       enabled: data.detail.status === DepositStatus.STATUS_OPEN,
+      refetchInterval: 12 * SEC,
     },
   });
 
