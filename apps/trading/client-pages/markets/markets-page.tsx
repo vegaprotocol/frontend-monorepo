@@ -30,6 +30,7 @@ import orderBy from 'lodash/orderBy';
 import { getChainName } from '@vegaprotocol/web3';
 import { useMarkets, type Market } from '@vegaprotocol/data-provider';
 import { type AssetFieldsFragment } from '@vegaprotocol/assets';
+import { useTotalValueLocked } from '../../lib/hooks/use-total-volume-locked';
 import {
   DEFAULT_FILTERS,
   type IMarketState,
@@ -60,7 +61,7 @@ export const MarketsPage = () => {
   const totalVolumeSparkline = (
     <Sparkline width={80} height={20} data={totalVolume24hCandles} />
   );
-  // const { tvl, loading: tvlLoading, error: tvlError } = useTotalValueLocked();
+  const { data: tvl, isLoading: tvlLoading } = useTotalValueLocked();
 
   const totalVolume24h = allMarkets?.reduce((acc, market) => {
     return (
@@ -106,6 +107,18 @@ export const MarketsPage = () => {
                     )}
                     <div>{totalVolumeSparkline}</div>
                   </div>
+                </div>
+              </Card>
+              <Card
+                key="tvl"
+                className="flex grow"
+                loading={!tvl && tvlLoading}
+                title={t('TVL')}
+              >
+                <div className="flex flex-col h-full">
+                  {tvl && (
+                    <span className="text-xl">${formatNumber(tvl, 2)}</span>
+                  )}
                 </div>
               </Card>
             </div>
