@@ -100,18 +100,35 @@ export const AssetActivity = () => {
     transfersPageInfo?.hasNextPage,
   ].some((hasNextPage) => hasNextPage);
 
-  const rowData = useMemo(() => {
-    return compact(
+  const rows = useMemo(() => {
+    const pinnedTopRows: RowWithdrawal[] = [];
+
+    const allRows = compact(
       [...(deposits || []), ...(withdrawals || []), ...(transfers || [])].map(
         normalizeItem
       )
     );
+
+    const rows = allRows.filter((r) => {
+      if (r.type === 'Withdrawal' && !r.detail.txHash) {
+        pinnedTopRows.push(r);
+        return false;
+      }
+
+      return true;
+    });
+
+    return {
+      rowData: rows,
+      pinnedTopRows,
+    };
   }, [deposits, withdrawals, transfers]);
 
   return (
     <AssetActivityDatagrid
       partyId={pubKey}
-      rowData={rowData}
+      rowData={rows.rowData}
+      pinnedTopRowData={rows.pinnedTopRows}
       pageInfo={{ hasNextPage }}
       load={() => {
         setFirst((curr) => curr + PAGE_SIZE);
@@ -123,11 +140,13 @@ export const AssetActivity = () => {
 export const AssetActivityDatagrid = ({
   partyId,
   rowData,
+  pinnedTopRowData,
   pageInfo,
   load,
 }: {
   partyId?: string;
   rowData: Row[];
+  pinnedTopRowData: Row[];
   pageInfo: { hasNextPage?: boolean };
   load: () => void;
 }) => {
@@ -300,6 +319,7 @@ export const AssetActivityDatagrid = ({
         columnDefs={columnDefs}
         defaultColDef={COL_DEFS.default}
         rowData={rowData}
+        pinnedTopRowData={pinnedTopRowData}
       />
       <Pagination
         count={rowData.length}
