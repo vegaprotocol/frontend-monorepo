@@ -21,8 +21,9 @@ export const DepositStatusCell = ({ data }: { data: RowDeposit }) => {
   if (data.detail.status === DepositStatus.STATUS_OPEN) {
     return (
       <>
-        {DepositStatusMapping[data.detail.status]} (
-        {confirmations ? confirmations.toString() : 0}){'/'}
+        {DepositStatusMapping[data.detail.status]}: (
+        {confirmations ? confirmations.toString() : 0}
+        {'/'}
         {config?.confirmations} {t('Confirmations')})
       </>
     );
