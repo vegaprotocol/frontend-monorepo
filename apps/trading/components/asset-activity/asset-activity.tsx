@@ -33,7 +33,7 @@ import { useWithdrawalApprovalDialog } from '@vegaprotocol/web3';
 export const StatusSet = {
   Pending: 'Pending',
   Failed: 'Failed',
-  Complete: 'Complete',
+  Finalized: 'Finalized',
   Cancelled: 'Cancelled',
   Stopped: 'Stopped',
 } as const;
@@ -164,7 +164,7 @@ export const AssetActivityDatagrid = ({
         valueGetter: ({ data }: { data: Row }) => {
           if (data.type === 'Deposit') {
             if (data.detail.status === DepositStatus.STATUS_FINALIZED) {
-              return StatusSet.Complete;
+              return StatusSet.Finalized;
             }
 
             if (data.detail.status === DepositStatus.STATUS_OPEN) {
@@ -180,7 +180,7 @@ export const AssetActivityDatagrid = ({
 
           if (data.type === 'Withdrawal') {
             if (data.detail.txHash) {
-              return StatusSet.Complete;
+              return StatusSet.Finalized;
             }
 
             // Finalized but no txHash, withdrawal is awaiting Ethereum transaction for completion
@@ -196,7 +196,7 @@ export const AssetActivityDatagrid = ({
 
           if (data.type === 'Transfer') {
             if (data.detail.status === TransferStatus.STATUS_DONE) {
-              return StatusSet.Complete;
+              return StatusSet.Finalized;
             }
 
             if (data.detail.status === TransferStatus.STATUS_PENDING) {
@@ -246,6 +246,7 @@ export const AssetActivityDatagrid = ({
         defaultColDef={COL_DEFS.default}
         rowData={rowData}
         pinnedTopRowData={pinnedTopRowData}
+        overlayNoRowsTemplate={t('No data')}
       />
       <Pagination
         count={rowData.length}
