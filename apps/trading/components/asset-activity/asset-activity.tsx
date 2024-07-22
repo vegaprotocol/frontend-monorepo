@@ -27,6 +27,7 @@ import { WithdrawalStatusCell } from './withdrawal-status-cell';
 import { DepositToFromCell } from './deposit-to-from-cell';
 import { WithdrawalToFromCell } from './withdrawal-to-from-cell';
 import { TransferToFromCell } from './transfer-to-from-cell';
+import { useWithdrawalApprovalDialog } from '@vegaprotocol/web3';
 
 /** Used for making all status between deposits/withdraws/transfers consistent */
 export const StatusSet = {
@@ -68,7 +69,10 @@ export const AssetActivityDatagrid = ({
   load: () => void;
 }) => {
   const t = useT();
-  const open = useAssetDetailsDialogStore((store) => store.open);
+  const openAssetDialog = useAssetDetailsDialogStore((store) => store.open);
+  const openWithdrawalDialog = useWithdrawalApprovalDialog(
+    (state) => state.open
+  );
   const columnDefs = useMemo<ColDef[]>(
     () => [
       {
@@ -107,7 +111,7 @@ export const AssetActivityDatagrid = ({
         },
         onCellClicked: ({ data }: { data: Row }) => {
           if (!data.asset) return;
-          open(data.asset.id);
+          openAssetDialog(data.asset.id);
         },
       },
 
@@ -216,7 +220,12 @@ export const AssetActivityDatagrid = ({
           }
 
           if (data.type === 'Withdrawal') {
-            return <WithdrawalStatusCell data={data} />;
+            return (
+              <WithdrawalStatusCell
+                data={data}
+                openDialog={openWithdrawalDialog}
+              />
+            );
           }
 
           if (data.type === 'Transfer') {
@@ -227,7 +236,7 @@ export const AssetActivityDatagrid = ({
         },
       },
     ],
-    [partyId, t, open]
+    [partyId, t, openAssetDialog, openWithdrawalDialog]
   );
 
   return (

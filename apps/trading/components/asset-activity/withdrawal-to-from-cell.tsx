@@ -1,7 +1,7 @@
 import { BlockExplorerLink } from '@vegaprotocol/environment';
 
 import { useT } from '../../lib/use-t';
-import { type RowWithdrawal } from './asset-activity';
+import { type RowWithdrawal } from './use-asset-activity';
 import { truncateMiddle } from '@vegaprotocol/ui-toolkit';
 
 export const WithdrawalToFromCell = ({ data }: { data: RowWithdrawal }) => {

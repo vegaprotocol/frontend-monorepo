@@ -1,7 +1,7 @@
 import { BlockExplorerLink } from '@vegaprotocol/environment';
 import { useTransactionReceipt } from 'wagmi';
 import { useT } from '../../lib/use-t';
-import { type RowDeposit } from './asset-activity';
+import { type RowDeposit } from './use-asset-activity';
 import { truncateMiddle } from '@vegaprotocol/ui-toolkit';
 
 export const DepositToFromCell = ({ data }: { data: RowDeposit }) => {

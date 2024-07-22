@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { DApp, EXPLORER_PARTIES, useLinks } from '@vegaprotocol/environment';
 
 import { useT } from '../../lib/use-t';
-import { type RowTransfer } from './asset-activity';
+import { type RowTransfer } from './use-asset-activity';
 import {
   VegaIcon,
   VegaIconNames,

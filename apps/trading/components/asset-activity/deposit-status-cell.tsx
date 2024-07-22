@@ -3,7 +3,7 @@ import { useEthereumConfig } from '@vegaprotocol/web3';
 import { useTransactionConfirmations } from 'wagmi';
 
 import { useT } from '../../lib/use-t';
-import { type RowDeposit } from './asset-activity';
+import { type RowDeposit } from './use-asset-activity';
 import { SEC } from '@vegaprotocol/utils';
 
 export const DepositStatusCell = ({ data }: { data: RowDeposit }) => {

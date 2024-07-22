@@ -7,21 +7,26 @@ import {
 } from '@vegaprotocol/web3';
 
 import { useT } from '../../lib/use-t';
-import type { RowWithdrawal } from './asset-activity';
+import type { RowWithdrawal } from './use-asset-activity';
 import { useEvmWithdraw } from '../../lib/hooks/use-evm-withdraw';
 import { useReadContract } from 'wagmi';
 import { BRIDGE_ABI } from '@vegaprotocol/smart-contracts';
 import { useEffect, useRef, useState } from 'react';
 
-export const WithdrawalStatusCell = ({ data }: { data: RowWithdrawal }) => {
+type Props = {
+  data: RowWithdrawal;
+  openDialog: (withdrawalId: string) => void;
+};
+
+export const WithdrawalStatusCell = ({ data, openDialog }: Props) => {
   if (!data.detail.txHash) {
-    return <WithdrawalStatusOpen data={data} />;
+    return <WithdrawalStatusOpen data={data} openDialog={openDialog} />;
   }
 
   return <>{WithdrawalStatusMapping[data.detail.status]}</>;
 };
 
-const WithdrawalStatusOpen = ({ data }: { data: RowWithdrawal }) => {
+const WithdrawalStatusOpen = ({ data, openDialog }: Props) => {
   const t = useT();
   const { config } = useEthereumConfig();
   const { configs } = useEVMBridgeConfigs();
@@ -96,7 +101,7 @@ const WithdrawalStatusOpen = ({ data }: { data: RowWithdrawal }) => {
 
   if (status === 'ready') {
     return (
-      <>
+      <span className="flex gap-1 items-center">
         {t('Pending')}:{' '}
         <button
           onClick={() => {
@@ -131,7 +136,13 @@ const WithdrawalStatusOpen = ({ data }: { data: RowWithdrawal }) => {
         >
           {t('Complete')}
         </button>
-      </>
+        <button
+          onClick={() => openDialog(data.detail.id)}
+          className="underline underline-offset-4"
+        >
+          {t('View')}
+        </button>
+      </span>
     );
   }
 
