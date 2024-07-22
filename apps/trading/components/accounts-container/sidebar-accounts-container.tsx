@@ -5,14 +5,20 @@ import {
   AccountsContainer,
   type AccountsContainerProps,
 } from '../accounts-container/accounts-container';
-import React from 'react';
 import { DepositContainer } from '../deposit-container';
 import { TransferContainer } from '@vegaprotocol/accounts';
-import { VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
+import {
+  VegaIcon,
+  VegaIconNames,
+  Notification,
+  Intent,
+} from '@vegaprotocol/ui-toolkit';
 import { create } from 'zustand';
+import { SquidContainer } from '../squid-container';
 
 export enum SidebarAccountsViewType {
   Deposit = 'Deposit',
+  CrossChainDeposit = 'Cross-chain deposit',
   Swap = 'Swap',
   Transfer = 'Transfer',
   Withdraw = 'Withdraw',
@@ -32,7 +38,10 @@ export const useSidebarAccountsInnerView =
 
 export const SidebarAccountsContainer = ({
   pinnedAssets,
-}: Pick<AccountsContainerProps, 'pinnedAssets'>) => {
+  orderByBalance = true,
+  hideZeroBalance = true,
+  searchTerm,
+}: AccountsContainerProps) => {
   const t = useT();
 
   const [innerView, setInnerView] = useSidebarAccountsInnerView((state) => [
@@ -65,10 +74,13 @@ export const SidebarAccountsContainer = ({
       <div className={innerView ? 'hidden' : 'block'}>
         <AccountsContainer
           pinnedAssets={pinnedAssets}
-          orderByBalance
-          hideZeroBalance
+          orderByBalance={orderByBalance}
+          hideZeroBalance={hideZeroBalance}
           onClickDeposit={(assetId) => {
             setInnerView([SidebarAccountsViewType.Deposit, assetId]);
+          }}
+          onClickCrossChainDeposit={(assetId) => {
+            setInnerView([SidebarAccountsViewType.CrossChainDeposit, assetId]);
           }}
           onClickSwap={(assetId) => {
             setInnerView([SidebarAccountsViewType.Swap, assetId]);
@@ -79,6 +91,7 @@ export const SidebarAccountsContainer = ({
           onClickWithdraw={(assetId) => {
             setInnerView([SidebarAccountsViewType.Withdraw, assetId]);
           }}
+          searchTerm={searchTerm}
         />
       </div>
     </>
@@ -92,10 +105,24 @@ const InnerContainer = ({
   innerView: InnerView;
   setInnerView?: (innerView: InnerView | undefined) => void;
 }) => {
+  const t = useT();
   const [view, assetId] = innerView;
   switch (view) {
     case SidebarAccountsViewType.Deposit:
       return <DepositContainer initialAssetId={assetId} />;
+
+    case SidebarAccountsViewType.CrossChainDeposit:
+      return (
+        <div className="flex flex-col gap-1">
+          <Notification
+            intent={Intent.Info}
+            message={t(
+              'Use this form to utilise Squid Router to make cross-chain deposits from any supported chain onto Vega. The amount you receive will be deposited directly to the network. To ensure users enjoy the cheapest fees possible this mode only supports deposits into Arbitrum assets'
+            )}
+          />
+          <SquidContainer />
+        </div>
+      );
 
     case SidebarAccountsViewType.Swap:
       return (
