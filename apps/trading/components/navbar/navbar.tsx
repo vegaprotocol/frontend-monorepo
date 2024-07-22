@@ -31,6 +31,7 @@ import { useT, useI18n } from '../../lib/use-t';
 import { supportedLngs } from '../../lib/i18n';
 import { SettingsPopover } from '../settings';
 import { NodeHealthContainer } from '../node-health';
+import { WithdrawalsIndicator } from '../withdrawals-indicator';
 
 type MenuState = 'wallet' | 'nav' | null;
 type Theme = 'system' | 'yellow';
@@ -194,6 +195,7 @@ const NavbarMenu = ({ onClick }: { onClick: () => void }) => {
         <NavbarItem>
           <NavbarLink to={Links.PORTFOLIO()} onClick={onClick}>
             {t('Portfolio')}
+            <WithdrawalsIndicator />
           </NavbarLink>
         </NavbarItem>
         <NavbarItem>
@@ -320,9 +322,13 @@ const NavbarLink = ({
           return (
             <>
               <span
-                className={classNames('lg:border-0', borderClasses, {
-                  'text-vega-clight-50 dark:text-vega-cdark-50': isActive,
-                })}
+                className={classNames(
+                  'inline-flex gap-1 items-center lg:border-0',
+                  borderClasses,
+                  {
+                    'text-vega-clight-50 dark:text-vega-cdark-50': isActive,
+                  }
+                )}
               >
                 {children}
               </span>

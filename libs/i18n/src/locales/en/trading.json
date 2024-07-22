@@ -741,6 +741,8 @@
   "Withdrawals": "Withdrawals",
   "Withdrawals over the <0>delay threshold</0> will be delayed for {{time}}": "Withdrawals over the <0>delay threshold</0> will be delayed for {{time}}",
   "Withdrawals ready": "Withdrawals ready",
+  "withdrawalsIncompleteTooltip_one": "You have {{count}} incomplete withdrawal",
+  "withdrawalsIncompleteTooltip_other": "You have {{count}} incomplete withdrawals",
   "You are setting this market to cross-margin mode.": "You are setting this market to cross-margin mode.",
   "You are setting this market to isolated margin mode.": "You are setting this market to isolated margin mode.",
   "You can <0>save your withdrawal details</0> for extra security.": "You can <0>save your withdrawal details</0> for extra security.",
