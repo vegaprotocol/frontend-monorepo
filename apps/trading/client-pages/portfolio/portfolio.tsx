@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { LayoutPriority } from 'allotment';
 import { useScreenDimensions } from '@vegaprotocol/react-helpers';
@@ -40,6 +40,7 @@ import { LedgerContainer } from '../../components/ledger-container';
 import {
   ResizableGrid,
   ResizableGridPanel,
+  ResizableGridPanelChild,
   usePaneLayout,
 } from '../../components/resizable-grid';
 import { DepositsMenu } from '../../components/deposits-menu';
@@ -79,18 +80,6 @@ export const Portfolio = () => {
   return largeScreen ? <PortfolioGrid /> : <PortfolioSmall />;
 };
 
-interface PortfolioGridChildProps {
-  children: ReactNode;
-}
-
-const PortfolioGridChild = ({ children }: PortfolioGridChildProps) => {
-  return (
-    <section className="h-full p-1">
-      <div className="h-full border rounded-sm border-default">{children}</div>
-    </section>
-  );
-};
-
 const PortfolioGrid = () => {
   const [sizes, handleOnLayoutChange] = usePaneLayout({ id: 'portfolio' });
   const [sizesHorizontal, handleOnHorizontalChange] = usePaneLayout({
@@ -103,25 +92,25 @@ const PortfolioGrid = () => {
           minSize={475}
           preferredSize={sizesHorizontal[0] || 460}
         >
-          <PortfolioGridChild>
+          <ResizableGridPanelChild>
             <PortfolioAssets />
-          </PortfolioGridChild>
+          </ResizableGridPanelChild>
         </ResizableGridPanel>
         <ResizableGridPanel>
           <ResizableGrid vertical onChange={handleOnLayoutChange}>
             <ResizableGridPanel minSize={75}>
-              <PortfolioGridChild>
+              <ResizableGridPanelChild>
                 <PortfolioTopTabs />
-              </PortfolioGridChild>
+              </ResizableGridPanelChild>
             </ResizableGridPanel>
             <ResizableGridPanel
               priority={LayoutPriority.Low}
               preferredSize={sizes[1] || 300}
               minSize={50}
             >
-              <PortfolioGridChild>
+              <ResizableGridPanelChild>
                 <PortfolioBottomTabs />
-              </PortfolioGridChild>
+              </ResizableGridPanelChild>
             </ResizableGridPanel>
           </ResizableGrid>
         </ResizableGridPanel>
@@ -152,22 +141,11 @@ const PortfolioAssets = () => {
   return (
     <ErrorBoundary feature="portfolio-assets">
       <div className="flex justify-between bg-vega-clight-700 dark:bg-vega-cdark-700">
-        <div className="pointer-events-none">
-          <span
-            className={classNames(
-              'inline-block',
-              'bg-vega-clight-700 dark:bg-vega-cdark-700',
-              'text-xs py-2 px-3'
-            )}
-          >
-            {t('Assets')}
-          </span>
-        </div>
+        <h3 className="px-2 py-3 text-sm leading-4">{t('Assets')}</h3>
         <div
-          className={classNames(
-            'transition-all w-1/3 p-1 bg-vega-clight-700 dark:bg-vega-cdark-700 relative',
-            { '!w-1/2': searchTerm?.length > 10 }
-          )}
+          className={classNames('transition-all w-1/3 p-1 relative', {
+            '!w-1/2': searchTerm?.length > 10,
+          })}
         >
           <TradingInput
             onChange={(e) => {
@@ -178,7 +156,7 @@ const PortfolioAssets = () => {
             type="text"
             placeholder={t('Search')}
             data-testid="search-term"
-            className="w-full !py-0.5 text-xs !h-6 pl-8 pr-8 border rounded peer bg-vega-clight-800 dark:bg-vega-cdark-800"
+            className="w-full !py-0.5 text-xs !h-8 pl-7 pr-8 border rounded peer bg-vega-clight-800 dark:bg-vega-cdark-800"
             prependElement={
               <VegaIcon
                 className="fill-vega-clight-300 dark:fill-vega-cdark-300"
@@ -188,7 +166,7 @@ const PortfolioAssets = () => {
           />
           <button
             title={t('Clear')}
-            className="absolute top-1/2 transform -translate-y-1/2 right-4 w-4 h-4"
+            className="absolute top-1/2 transform -translate-y-1/2 right-3 w-4 h-4"
             onClick={() => {
               setSearchTerm('');
             }}

@@ -1,4 +1,4 @@
-import { memo, type ReactNode } from 'react';
+import { memo } from 'react';
 import { LayoutPriority } from 'allotment';
 import { useFeatureFlags } from '@vegaprotocol/environment';
 import { type Market } from '@vegaprotocol/markets';
@@ -6,6 +6,7 @@ import { Tab, LocalStoragePersistTabs as Tabs } from '@vegaprotocol/ui-toolkit';
 import {
   ResizableGrid,
   ResizableGridPanel,
+  ResizableGridPanelChild,
   usePaneLayout,
 } from '../../components/resizable-grid';
 import { TradingViews } from './trade-views';
@@ -39,9 +40,9 @@ const MainGrid = memo(
         <ResizableGridPanel preferredSize={rowSizes[0]}>
           <ResizableGrid vertical onChange={handleVerticalChange}>
             <ResizableGridPanel minSize={49} maxSize={49}>
-              <TradeGridChild>
+              <ResizableGridPanelChild>
                 <MarketHeader />
-              </TradeGridChild>
+              </ResizableGridPanelChild>
             </ResizableGridPanel>
             <ResizableGridPanel
               // use verticalSizes[1] because the previous pane is for
@@ -56,7 +57,7 @@ const MainGrid = memo(
                   minSize={200}
                   preferredSize={innerRowSizes[0] || '75%'}
                 >
-                  <TradeGridChild>
+                  <ResizableGridPanelChild>
                     <Tabs storageKey="console-trade-grid-main-left">
                       <Tab
                         id="chart"
@@ -92,13 +93,13 @@ const MainGrid = memo(
                         </Tab>
                       ) : null}
                     </Tabs>
-                  </TradeGridChild>
+                  </ResizableGridPanelChild>
                 </ResizableGridPanel>
                 <ResizableGridPanel
                   minSize={200}
                   preferredSize={innerRowSizes[1] || 275}
                 >
-                  <TradeGridChild>
+                  <ResizableGridPanelChild>
                     <Tabs storageKey="console-trade-grid-main-right">
                       <Tab id="orderbook" name={t('Orderbook')}>
                         <ErrorBoundary feature="orderbook">
@@ -117,7 +118,7 @@ const MainGrid = memo(
                         </ErrorBoundary>
                       </Tab>
                     </Tabs>
-                  </TradeGridChild>
+                  </ResizableGridPanelChild>
                 </ResizableGridPanel>
               </ResizableGrid>
             </ResizableGridPanel>
@@ -128,7 +129,7 @@ const MainGrid = memo(
               minSize={50}
               priority={LayoutPriority.Low}
             >
-              <TradeGridChild>
+              <ResizableGridPanelChild>
                 <Tabs storageKey="console-trade-grid-bottom">
                   <Tab
                     id="positions"
@@ -207,7 +208,7 @@ const MainGrid = memo(
                     </Tab>
                   ) : null}
                 </Tabs>
-              </TradeGridChild>
+              </ResizableGridPanelChild>
             </ResizableGridPanel>
           </ResizableGrid>
         </ResizableGridPanel>
@@ -216,9 +217,9 @@ const MainGrid = memo(
           maxSize={600}
           preferredSize={rowSizes[1] || 340}
         >
-          <TradeGridChild>
+          <ResizableGridPanelChild>
             <Sidebar pinnedAssets={pinnedAssets} />
-          </TradeGridChild>
+          </ResizableGridPanelChild>
         </ResizableGridPanel>
       </ResizableGrid>
     );
@@ -236,19 +237,5 @@ export const TradeGrid = ({ market, pinnedAssets }: TradeGridProps) => {
         <MainGrid market={market} pinnedAssets={pinnedAssets} />
       </div>
     </div>
-  );
-};
-
-interface TradeGridChildProps {
-  children: ReactNode;
-}
-
-const TradeGridChild = ({ children }: TradeGridChildProps) => {
-  return (
-    <section className="h-full p-1">
-      <div className="h-full bg-vega-clight-800 dark:bg-vega-cdark-800">
-        {children}
-      </div>
-    </section>
   );
 };

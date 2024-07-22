@@ -117,10 +117,10 @@ export const AccountCard = ({
   return (
     <section
       data-testid="account-card"
-      className={classNames('m-1 rounded', 'border-b border-default', {
-        'bg-vega-clight-800 hover:bg-vega-clight-700 dark:bg-vega-cdark-800 dark:hover:bg-vega-cdark-700':
+      className={classNames('m-1 rounded border-default', {
+        'bg-vega-clight-700 hover:bg-vega-clight-600 dark:bg-vega-cdark-700 dark:hover:bg-vega-cdark-600':
           !(expandable && expanded),
-        'bg-vega-clight-700 dark:bg-vega-cdark-800': expandable && expanded,
+        'bg-vega-clight-600 dark:bg-vega-cdark-600': expandable && expanded,
       })}
     >
       <div className="relative p-3">
