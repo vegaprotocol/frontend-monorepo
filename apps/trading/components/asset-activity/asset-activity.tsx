@@ -1,31 +1,13 @@
 import type { ColDef } from 'ag-grid-community';
-import type BigNumber from 'bignumber.js';
-import { useMemo, useState } from 'react';
-import compact from 'lodash/compact';
-
+import { useMemo } from 'react';
 import { AgGrid, COL_DEFS, SetFilter } from '@vegaprotocol/datagrid';
 import {
-  type DepositFieldsFragment,
-  useDeposits,
-} from '@vegaprotocol/deposits';
-import {
-  type WithdrawalFieldsFragment,
-  useWithdrawals,
-} from '@vegaprotocol/withdraws';
-import { useVegaWallet } from '@vegaprotocol/wallet-react';
-import {
   useAssetDetailsDialogStore,
-  type AssetFieldsFragment,
   getAssetSymbol,
 } from '@vegaprotocol/assets';
 import {
-  type TransferFieldsFragment,
-  useTransfers,
-} from '@vegaprotocol/accounts';
-import {
   addDecimalsFormatNumber,
   getDateTimeFormat,
-  toBigNum,
 } from '@vegaprotocol/utils';
 import {
   DepositStatus,
@@ -34,39 +16,17 @@ import {
   WithdrawalStatus,
 } from '@vegaprotocol/types';
 
+import { Pagination } from '@vegaprotocol/datagrid';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
+
 import { useT } from '../../lib/use-t';
+import { PAGE_SIZE, type Row, useAssetActivity } from './use-asset-activity';
+
 import { DepositStatusCell } from './deposit-status-cell';
 import { WithdrawalStatusCell } from './withdrawal-status-cell';
 import { DepositToFromCell } from './deposit-to-from-cell';
 import { WithdrawalToFromCell } from './withdrawal-to-from-cell';
 import { TransferToFromCell } from './transfer-to-from-cell';
-import { Pagination } from '@vegaprotocol/datagrid';
-
-export interface RowBase {
-  asset: AssetFieldsFragment | undefined;
-  amount: string;
-  bAmount: BigNumber;
-  createdTimestamp: Date;
-}
-
-export interface RowDeposit extends RowBase {
-  type: 'Deposit';
-  detail: DepositFieldsFragment;
-}
-
-export interface RowWithdrawal extends RowBase {
-  type: 'Withdrawal';
-  detail: WithdrawalFieldsFragment;
-}
-
-export interface RowTransfer extends RowBase {
-  type: 'Transfer';
-  detail: TransferFieldsFragment;
-}
-
-export type Row = RowDeposit | RowWithdrawal | RowTransfer;
-
-const PAGE_SIZE = 1000;
 
 /** Used for making all status between deposits/withdraws/transfers consistent */
 export const StatusSet = {
@@ -79,56 +39,13 @@ export const StatusSet = {
 
 export const AssetActivity = () => {
   const { pubKey } = useVegaWallet();
-  const [first, setFirst] = useState(PAGE_SIZE);
-
-  const { data: deposits, pageInfo: depositsPageInfo } = useDeposits({
-    pubKey,
-    pagination: { first },
-  });
-  const { data: withdrawals, pageInfo: withdrawalsPageInfo } = useWithdrawals({
-    pubKey,
-    pagination: { first },
-  });
-  const { data: transfers, pageInfo: transfersPageInfo } = useTransfers({
-    pubKey,
-    pagination: { first },
-  });
-
-  const hasNextPage = [
-    depositsPageInfo?.hasNextPage,
-    withdrawalsPageInfo?.hasNextPage,
-    transfersPageInfo?.hasNextPage,
-  ].some((hasNextPage) => hasNextPage);
-
-  const rows = useMemo(() => {
-    const pinnedTopRows: RowWithdrawal[] = [];
-
-    const allRows = compact(
-      [...(deposits || []), ...(withdrawals || []), ...(transfers || [])].map(
-        normalizeItem
-      )
-    );
-
-    const rows = allRows.filter((r) => {
-      if (r.type === 'Withdrawal' && !r.detail.txHash) {
-        pinnedTopRows.push(r);
-        return false;
-      }
-
-      return true;
-    });
-
-    return {
-      rowData: rows,
-      pinnedTopRows,
-    };
-  }, [deposits, withdrawals, transfers]);
+  const { rowData, pinnedTopRows, setFirst, hasNextPage } = useAssetActivity();
 
   return (
     <AssetActivityDatagrid
       partyId={pubKey}
-      rowData={rows.rowData}
-      pinnedTopRowData={rows.pinnedTopRows}
+      rowData={rowData}
+      pinnedTopRowData={pinnedTopRows}
       pageInfo={{ hasNextPage }}
       load={() => {
         setFirst((curr) => curr + PAGE_SIZE);
@@ -330,50 +247,4 @@ export const AssetActivityDatagrid = ({
       />
     </div>
   );
-};
-
-const normalizeItem = (
-  item:
-    | DepositFieldsFragment
-    | WithdrawalFieldsFragment
-    | TransferFieldsFragment
-): Row | null => {
-  if (!item.asset) return null;
-
-  const bAmount = toBigNum(item.amount, item.asset.decimals);
-
-  if (item.__typename === 'Withdrawal') {
-    return {
-      asset: item.asset,
-      type: 'Withdrawal',
-      amount: item.amount,
-      bAmount,
-      createdTimestamp: new Date(item.createdTimestamp),
-      detail: item,
-    };
-  }
-
-  if (item.__typename === 'Deposit') {
-    return {
-      asset: item.asset,
-      type: 'Deposit',
-      amount: item.amount,
-      bAmount,
-      createdTimestamp: new Date(item.createdTimestamp),
-      detail: item,
-    };
-  }
-
-  if (item.__typename === 'Transfer') {
-    return {
-      asset: item.asset,
-      type: 'Transfer',
-      amount: item.amount,
-      bAmount,
-      createdTimestamp: new Date(item.timestamp),
-      detail: item,
-    };
-  }
-
-  return null;
 };
