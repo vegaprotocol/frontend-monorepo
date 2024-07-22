@@ -106,7 +106,7 @@ export const Market = (props: FormProps) => {
             <Fields.ReduceOnly />
           </div>
           <div className="flex flex-col items-start gap-1">
-            <Fields.TpSl />
+            <Fields.TakeProfitStopLoss />
             {tpSl && (
               <FormGrid className="pl-4">
                 <FormGridCol>

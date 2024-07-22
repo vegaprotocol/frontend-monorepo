@@ -4,7 +4,7 @@ import { FormField } from '../ticket-field';
 import { useT } from '../../../lib/use-t';
 import { useForm } from '../use-form';
 
-export const TpSl = ({ name = 'tpSl' }: { name?: 'tpSl' }) => {
+export const TakeProfitStopLoss = ({ name = 'tpSl' }: { name?: 'tpSl' }) => {
   const t = useT();
   const form = useForm();
   return (
