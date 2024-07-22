@@ -722,7 +722,7 @@ export const PositionStatusMapping: {
 export const TransferStatusMapping: {
   [T in TransferStatus]: string;
 } = {
-  STATUS_DONE: 'Done',
+  STATUS_DONE: 'Finalized',
   STATUS_PENDING: 'Pending',
   STATUS_REJECTED: 'Rejected',
   STATUS_CANCELLED: 'Cancelled',

@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { LayoutPriority } from 'allotment';
-import { useScreenDimensions } from '@vegaprotocol/react-helpers';
+import classNames from 'classnames';
 
+import { useScreenDimensions } from '@vegaprotocol/react-helpers';
 import { useFeatureFlags } from '@vegaprotocol/environment';
 import {
   Intent,
@@ -54,9 +55,9 @@ import { DepositContainer } from '../../components/deposit-container';
 import { WithdrawContainer } from '../../components/withdraw-container';
 import { SwapContainer } from '../../components/swap/swap-container';
 import { SquidContainer } from '../../components/squid-container';
+import { AssetActivity } from '../../components/asset-activity';
 
 import { useIncompleteWithdrawals } from '../../lib/hooks/use-incomplete-withdrawals';
-import classNames from 'classnames';
 import { useSquidSidebarMinWidth } from '../../lib/hooks/use-sidebar';
 
 const WithdrawalsIndicator = () => {
@@ -316,6 +317,11 @@ const PortfolioBottomTabs = () => {
   const t = useT();
   return (
     <Tabs storageKey="console-portfolio-bottom">
+      <Tab id="asset-activity" name={t('Asset activity')}>
+        <ErrorBoundary feature="portfolio-asset-activity">
+          <AssetActivity />
+        </ErrorBoundary>
+      </Tab>
       <Tab id="deposits" name={t('Deposits')} menu={<DepositsMenu />}>
         <ErrorBoundary feature="portfolio-deposit">
           <DepositsContainer />
