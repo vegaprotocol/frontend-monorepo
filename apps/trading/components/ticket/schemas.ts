@@ -22,6 +22,7 @@ export const createMarketSchema = (market: MarketInfo) => {
       type: z.literal(OrderType.TYPE_MARKET),
       side: z.nativeEnum(Side),
       size: z.coerce.number().min(Number(sizeStep)).step(Number(sizeStep)),
+      sizePct: z.number().optional(),
       notional: z.coerce.number(),
       timeInForce: z.nativeEnum(OrderTimeInForce),
       tpSl: z.boolean(),
@@ -71,6 +72,7 @@ export const createLimitSchema = (market: MarketInfo) => {
         .number({ message: i18n.t('Required') })
         .min(Number(sizeStep))
         .step(Number(sizeStep)),
+      sizePct: z.number().optional(),
       notional: z.coerce.number(),
       timeInForce: z.nativeEnum(OrderTimeInForce),
       expiresAt: z.date().optional(),
