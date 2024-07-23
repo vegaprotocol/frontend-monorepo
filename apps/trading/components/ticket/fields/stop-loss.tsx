@@ -17,7 +17,7 @@ export const StopLoss = () => {
       name="stopLoss"
       render={({ field, fieldState }) => {
         return (
-          <div className="w-full">
+          <>
             <TicketInput
               {...field}
               value={field.value || ''}
@@ -33,7 +33,7 @@ export const StopLoss = () => {
             {fieldState.error && (
               <TradingInputError>{fieldState.error.message}</TradingInputError>
             )}
-          </div>
+          </>
         );
       }}
     />

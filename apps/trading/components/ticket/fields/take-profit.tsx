@@ -17,7 +17,7 @@ export const TakeProfit = () => {
       name="takeProfit"
       render={({ field, fieldState }) => {
         return (
-          <div className="w-full">
+          <>
             <TicketInput
               {...field}
               label={
@@ -33,7 +33,7 @@ export const TakeProfit = () => {
             {fieldState.error && (
               <TradingInputError>{fieldState.error.message}</TradingInputError>
             )}
-          </div>
+          </>
         );
       }}
     />
