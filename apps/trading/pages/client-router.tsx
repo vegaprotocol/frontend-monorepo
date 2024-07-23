@@ -7,7 +7,6 @@ import {
 import { lazy, Suspense } from 'react';
 import { compact } from 'lodash';
 
-import { useFeatureFlags } from '@vegaprotocol/environment';
 import { Loader, Splash } from '@vegaprotocol/ui-toolkit';
 
 import { Home } from '../client-pages/home';
@@ -55,92 +54,83 @@ const NotFound = () => {
 };
 
 export const useRouterConfig = (): RouteObject[] => {
-  const featureFlags = useFeatureFlags((state) => state.flags);
-
   const routeConfig = compact([
     {
       index: true,
       element: <Home />,
-      id: AppRoutes.HOME,
     },
     {
-      path: 'disclaimer',
+      path: AppRoutes.DISCLAIMER,
       element: <LayoutCentered />,
-      id: AppRoutes.DISCLAIMER,
       children: [{ index: true, element: <Disclaimer /> }],
     },
-    // Referrals routing (the pages should be available if the feature flag is on)
-    featureFlags.REFERRALS
-      ? {
-          path: AppRoutes.REFERRALS,
-          element: <LayoutWithNodeHealth />,
-          children: [
-            {
-              element: (
-                <LayoutWithSky>
-                  <Referrals />
-                </LayoutWithSky>
-              ),
-              children: [
-                {
-                  index: true,
-                  element: <ReferralStatistics />,
-                },
-                {
-                  path: AppRoutes.REFERRALS_CREATE_CODE,
-                  element: <CreateCodeContainer />,
-                },
-                {
-                  path: AppRoutes.REFERRALS_APPLY_CODE,
-                  element: <ApplyCodeFormContainer />,
-                },
-              ],
-            },
-            {
-              path: '*',
-              element: <ReferralNotFound />,
-            },
-          ],
-        }
-      : undefined,
-    featureFlags.TEAM_COMPETITION
-      ? {
-          path: AppRoutes.COMPETITIONS,
-          element: <LayoutWithNodeHealth />,
-          children: [
-            // pages with planets and stars
-            {
-              element: <LayoutWithSky />,
-              children: [
-                { index: true, element: <CompetitionsHome /> },
-                {
-                  path: AppRoutes.COMPETITIONS_TEAMS,
-                  element: <CompetitionsTeams />,
-                },
-                {
-                  path: AppRoutes.COMPETITIONS_GAME,
-                  element: <CompetitionsGame />,
-                },
-              ],
-            },
-            // pages with blurred background
-            {
-              path: AppRoutes.COMPETITIONS_CREATE_TEAM,
-              element: <CompetitionsCreateTeam />,
-            },
-            {
-              path: AppRoutes.COMPETITIONS_UPDATE_TEAM,
-              element: <CompetitionsUpdateTeam />,
-            },
-            {
-              path: AppRoutes.COMPETITIONS_TEAM,
-              element: <CompetitionsTeam />,
-            },
-          ],
-        }
-      : undefined,
     {
-      path: 'fees/*',
+      path: AppRoutes.REFERRALS,
+      element: <LayoutWithNodeHealth />,
+      children: [
+        {
+          element: (
+            <LayoutWithSky>
+              <Referrals />
+            </LayoutWithSky>
+          ),
+          children: [
+            {
+              index: true,
+              element: <ReferralStatistics />,
+            },
+            {
+              path: AppRoutes.REFERRALS_CREATE_CODE,
+              element: <CreateCodeContainer />,
+            },
+            {
+              path: AppRoutes.REFERRALS_APPLY_CODE,
+              element: <ApplyCodeFormContainer />,
+            },
+          ],
+        },
+        {
+          path: '*',
+          element: <ReferralNotFound />,
+        },
+      ],
+    },
+    {
+      path: AppRoutes.COMPETITIONS,
+      element: <LayoutWithNodeHealth />,
+      children: [
+        // pages with planets and stars
+        {
+          element: <LayoutWithSky />,
+          children: [
+            { index: true, element: <CompetitionsHome /> },
+            {
+              path: AppRoutes.COMPETITIONS_TEAMS,
+              element: <CompetitionsTeams />,
+            },
+            {
+              path: AppRoutes.COMPETITIONS_GAME,
+              element: <CompetitionsGame />,
+            },
+          ],
+        },
+        // pages with blurred background
+        {
+          path: AppRoutes.COMPETITIONS_CREATE_TEAM,
+          element: <CompetitionsCreateTeam />,
+        },
+        {
+          path: AppRoutes.COMPETITIONS_UPDATE_TEAM,
+          element: <CompetitionsUpdateTeam />,
+        },
+        {
+          path: AppRoutes.COMPETITIONS_TEAM,
+          element: <CompetitionsTeam />,
+        },
+      ],
+    },
+    {
+      path: AppRoutes.FEES,
       element: <LayoutWithNodeHealth />,
       children: [
         {
@@ -150,7 +140,7 @@ export const useRouterConfig = (): RouteObject[] => {
       ],
     },
     {
-      path: 'rewards/*',
+      path: AppRoutes.REWARDS,
       element: <LayoutWithNodeHealth />,
       children: [
         {
@@ -160,59 +150,51 @@ export const useRouterConfig = (): RouteObject[] => {
       ],
     },
     {
-      path: 'markets/*',
+      path: AppRoutes.MARKETS,
       element: <Outlet />,
       children: [
         {
           element: <LayoutWithNodeHealth />,
-          children: [
-            { id: AppRoutes.MARKETS, index: true, element: <MarketsPage /> },
-          ],
+          children: [{ index: true, element: <MarketsPage /> }],
         },
         {
           path: 'all',
-          element: <Navigate to="/markets" />,
+          element: <Navigate to={AppRoutes.MARKETS} />,
         },
         {
           path: ':marketId',
           element: <MarketPage />,
-          id: AppRoutes.MARKET,
         },
       ],
     },
     {
-      path: 'portfolio/*',
+      path: AppRoutes.PORTFOLIO,
       element: <LayoutWithNodeHealth />,
       children: [
         {
           index: true,
           element: <Portfolio />,
-          id: AppRoutes.PORTFOLIO,
         },
         {
           path: 'assets',
           element: <Assets />,
-          id: AppRoutes.ASSETS,
           children: [
             { index: true, element: <Navigate to="deposit" /> },
-            { path: 'deposit', element: <Deposit />, id: AppRoutes.DEPOSIT },
-            { path: 'withdraw', element: <Withdraw />, id: AppRoutes.WITHDRAW },
-            { path: 'transfer', element: <Transfer />, id: AppRoutes.TRANSFER },
+            { path: 'deposit', element: <Deposit /> },
+            { path: 'withdraw', element: <Withdraw /> },
+            { path: 'transfer', element: <Transfer /> },
             {
               path: 'deposit-cross-chain',
               element: <DepositCrossChain />,
-              id: AppRoutes.DEPOSIT_CROSS_CHAIN,
             },
-            { path: 'swap', element: <Swap />, id: AppRoutes.SWAP },
+            { path: 'swap', element: <Swap /> },
           ],
         },
       ],
     },
-
     {
-      path: 'liquidity/*',
+      path: 'liquidity',
       element: <Outlet />,
-      id: AppRoutes.LIQUIDITY,
       children: [
         {
           path: ':marketId',
@@ -220,7 +202,6 @@ export const useRouterConfig = (): RouteObject[] => {
         },
       ],
     },
-
     {
       path: '*',
       element: <NotFound />,

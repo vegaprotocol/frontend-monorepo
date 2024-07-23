@@ -6,7 +6,6 @@ import {
   Networks,
   DApp,
   useLinks,
-  useFeatureFlags,
   useEnvNameMapping,
 } from '@vegaprotocol/environment';
 import { useGlobalStore } from '../../stores';
@@ -151,7 +150,6 @@ export const Navbar = ({ theme = 'system' }: { theme?: Theme }) => {
  * of the navigation
  */
 const NavbarMenu = ({ onClick }: { onClick: () => void }) => {
-  const featureFlags = useFeatureFlags((state) => state.flags);
   const t = useT();
   const envNameMapping = useEnvNameMapping();
   const { VEGA_ENV, VEGA_NETWORKS, GITHUB_FEEDBACK_URL } = useEnvironment();
@@ -198,20 +196,16 @@ const NavbarMenu = ({ onClick }: { onClick: () => void }) => {
             {t('Portfolio')}
           </NavbarLink>
         </NavbarItem>
-        {featureFlags.TEAM_COMPETITION && (
-          <NavbarItem>
-            <NavbarLink to={Links.COMPETITIONS()} onClick={onClick}>
-              {t('Competitions')}
-            </NavbarLink>
-          </NavbarItem>
-        )}
-        {featureFlags.REFERRALS && (
-          <NavbarItem>
-            <NavbarLink end={false} to={Links.REFERRALS()} onClick={onClick}>
-              {t('Referrals')}
-            </NavbarLink>
-          </NavbarItem>
-        )}
+        <NavbarItem>
+          <NavbarLink to={Links.COMPETITIONS()} onClick={onClick}>
+            {t('Competitions')}
+          </NavbarLink>
+        </NavbarItem>
+        <NavbarItem>
+          <NavbarLink end={false} to={Links.REFERRALS()} onClick={onClick}>
+            {t('Referrals')}
+          </NavbarLink>
+        </NavbarItem>
         <NavbarItem>
           <NavbarLink to={Links.FEES()} onClick={onClick}>
             {t('Fees')}

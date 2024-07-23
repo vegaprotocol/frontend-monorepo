@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import { Navbar } from './navbar';
 import { useGlobalStore } from '../../stores';
-import { ENV, useFeatureFlags } from '@vegaprotocol/environment';
+import { ENV } from '@vegaprotocol/environment';
 import {
   mockConfig,
   MockedWalletProvider,
@@ -75,7 +75,6 @@ describe('Navbar', () => {
 
   beforeAll(() => {
     useGlobalStore.setState({ marketId });
-    useFeatureFlags.setState({ flags: { REFERRALS: true } });
     const mockedENV = jest.mocked(ENV);
     mockedENV.VEGA_TOKEN_URL = 'governance';
   });
