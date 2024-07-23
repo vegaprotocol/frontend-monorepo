@@ -155,6 +155,7 @@ export const Limit = (props: FormProps) => {
           <Data.Slippage />
           <Data.CollateralRequired />
           <Data.Liquidation />
+          <Data.CappedFuturePotentialReturn />
         </Datagrid>
       </Form>
     </FormProvider>
