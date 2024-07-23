@@ -32,7 +32,7 @@ export function EmblemBase({ size = 30, ...p }: ImgProps) {
         width={size}
         height={size}
         className={className(
-          'rounded-full border-vega-light-600 dark:border-white',
+          'rounded-full bg-vega-light-600 border-vega-light-600 dark:bg-white dark:border-white',
           p.className
         )}
         onLoad={() => setLoading(false)}
