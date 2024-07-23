@@ -44,8 +44,6 @@ export const Ticket = ({ market }: { market: MarketInfo }) => {
   const baseSymbol = getBaseQuoteUnit(instrument.metadata.tags);
   const quoteName = getQuoteName(market);
 
-  if (!baseSymbol) return null;
-
   return (
     <TicketContext.Provider
       value={{
@@ -53,7 +51,7 @@ export const Ticket = ({ market }: { market: MarketInfo }) => {
         market,
         quoteName,
         quoteAsset,
-        baseSymbol,
+        baseSymbol: baseSymbol || '',
         settlementAsset,
         accounts: {
           general: generalAccount.accountBalance || '0',

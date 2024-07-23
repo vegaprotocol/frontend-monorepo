@@ -26,6 +26,7 @@ export const Side = (props: {
             type="single"
             {...field}
             onValueChange={(value) => {
+              if (!value) return;
               field.onChange(value);
               props.onSideChange(value as ESide);
             }}

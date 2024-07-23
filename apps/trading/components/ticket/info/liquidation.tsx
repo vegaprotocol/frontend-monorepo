@@ -2,6 +2,7 @@ import { DatagridRow } from '../elements/datagrid';
 import { useTicketContext } from '../ticket-context';
 import { Side } from '@vegaprotocol/types';
 import { formatRange, formatValue } from '@vegaprotocol/utils';
+import { isFuture } from '@vegaprotocol/markets';
 
 import { useT } from '../../../lib/use-t';
 import { ExternalLink, Tooltip } from '@vegaprotocol/ui-toolkit';
@@ -15,6 +16,7 @@ export const emptyValue = '-';
 export const Liquidation = () => {
   const t = useT();
   const ticket = useTicketContext('default');
+  const product = ticket.market.tradableInstrument.instrument.product;
   const form = useForm();
 
   const side = form.watch('side');
@@ -23,6 +25,7 @@ export const Liquidation = () => {
   const label = t('Liquidation estimate ({{symbol}})', {
     symbol: ticket.quoteName,
   });
+
   const labelWithTooltip = (
     <Tooltip
       description={
@@ -49,16 +52,22 @@ export const Liquidation = () => {
       <span>{label}</span>
     </Tooltip>
   );
+
   const liquidationEstimate = data?.estimatePosition?.liquidation;
+  const fallback = (
+    <DatagridRow
+      label={labelWithTooltip}
+      value="-"
+      data-testid="liquidation-estimate"
+    />
+  );
+
+  if (isFuture(product) && product.cap?.fullyCollateralised) {
+    return fallback;
+  }
 
   if (!liquidationEstimate) {
-    return (
-      <DatagridRow
-        label={labelWithTooltip}
-        value="-"
-        data-testid="liquidation-estimate"
-      />
-    );
+    return fallback;
   }
 
   const bestCaseWithBuys = BigInt(
@@ -94,13 +103,7 @@ export const Liquidation = () => {
   );
 
   if (bestCase === BigInt(0) && worstCase === BigInt(0)) {
-    return (
-      <DatagridRow
-        label={labelWithTooltip}
-        value="-"
-        data-testid="liquidation-estimate"
-      />
-    );
+    return fallback;
   }
 
   return (
