@@ -213,9 +213,9 @@ const MainGrid = memo(
           </ResizableGrid>
         </ResizableGridPanel>
         <ResizableGridPanel
-          minSize={350}
-          maxSize={600}
-          preferredSize={rowSizes[1] || 340}
+          minSize={460}
+          maxSize={700}
+          preferredSize={rowSizes[1] || 460}
         >
           <ResizableGridPanelChild>
             <Sidebar pinnedAssets={pinnedAssets} />

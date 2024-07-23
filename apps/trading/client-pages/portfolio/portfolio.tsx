@@ -89,7 +89,8 @@ const PortfolioGrid = () => {
     <div className="p-0.5 h-full max-h-full flex flex-col">
       <ResizableGrid onChange={handleOnHorizontalChange}>
         <ResizableGridPanel
-          minSize={475}
+          minSize={460}
+          maxSize={700}
           preferredSize={sizesHorizontal[0] || 460}
         >
           <ResizableGridPanelChild>
