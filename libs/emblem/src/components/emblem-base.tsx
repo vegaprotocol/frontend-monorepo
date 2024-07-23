@@ -1,8 +1,12 @@
-import type ImgHTMLAttributes from 'react';
 import { FALLBACK_URL } from '../config/index';
 import className from 'classnames';
 
-export type ImgProps = ImgHTMLAttributes<HTMLImageElement> & { size?: number };
+export type ImgProps = {
+  size?: number;
+  alt?: string;
+  src?: string;
+  className?: string;
+};
 
 /**
  * Renders an image tag with a known fallback if the emblem does not exist.
