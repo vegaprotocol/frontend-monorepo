@@ -67,10 +67,10 @@ export const Referrals = () => {
 
       <TiersContainer />
 
-      <div className="mt-10 mb-5 text-center">
-        <h2 className="text-2xl">{t('How it works')}</h2>
-      </div>
-      <div className="md:w-[60%] mx-auto">
+      <div className="md:w-[60%] mx-auto mb-32">
+        <div className="mt-10 mb-5 text-center">
+          <h2 className="text-2xl">{t('How it works')}</h2>
+        </div>
         <div className="mt-5">
           <TradingAnchorButton
             className="mx-auto w-max"

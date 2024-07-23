@@ -14,7 +14,6 @@ import { RainbowButton } from '../../components/rainbow-button';
 import { usePageTitle } from '../../lib/hooks/use-page-title';
 import { ErrorBoundary } from '../../components/error-boundary';
 import { Box } from '../../components/competitions/box';
-import { LayoutWithGradient } from '../../components/layouts-inner';
 import { Links } from '../../lib/links';
 import { TeamForm, TransactionType } from './team-form';
 import { Role, useMyTeam } from '../../lib/hooks/use-my-team';
@@ -45,51 +44,49 @@ export const CompetitionsCreateTeam = () => {
 
   return (
     <ErrorBoundary feature="create-team">
-      <LayoutWithGradient>
-        <div className="mx-auto md:w-2/3 max-w-xl">
-          <Box className="flex flex-col gap-4">
-            <Link
-              to={Links.COMPETITIONS()}
-              className="text-xs inline-flex items-center gap-1 group"
-            >
-              <VegaIcon
-                name={VegaIconNames.CHEVRON_LEFT}
-                size={12}
-                className="text-vega-clight-100 dark:text-vega-cdark-100"
-              />{' '}
-              <span className="group-hover:underline">
-                {t('Go back to the competitions')}
-              </span>
-            </Link>
-            <h1 className="calt text-2xl lg:text-3xl xl:text-4xl">{title}</h1>
-            {canShowForm ? (
-              <CreateTeamFormContainer
-                isSolo={isSolo}
-                isUpgrade={isUpgrade}
-                teamId={teamId}
-              />
-            ) : (
-              <>
-                <p>
-                  {t(
-                    'Create a team to participate in team based rewards as well as access the discount benefits of the current referral program.'
-                  )}
-                </p>
-                <RainbowButton variant="border" onClick={openWalletDialog}>
-                  {t('Connect wallet')}
-                </RainbowButton>
-              </>
-            )}
-            {isUpgrade && (
-              <p className="text-sm mt-1">
+      <div className="mx-auto md:w-2/3 max-w-xl">
+        <Box className="flex flex-col gap-4">
+          <Link
+            to={Links.COMPETITIONS()}
+            className="text-xs inline-flex items-center gap-1 group"
+          >
+            <VegaIcon
+              name={VegaIconNames.CHEVRON_LEFT}
+              size={12}
+              className="text-vega-clight-100 dark:text-vega-cdark-100"
+            />{' '}
+            <span className="group-hover:underline">
+              {t('Go back to the competitions')}
+            </span>
+          </Link>
+          <h1 className="calt text-2xl lg:text-3xl xl:text-4xl">{title}</h1>
+          {canShowForm ? (
+            <CreateTeamFormContainer
+              isSolo={isSolo}
+              isUpgrade={isUpgrade}
+              teamId={teamId}
+            />
+          ) : (
+            <>
+              <p>
                 {t(
-                  'Note that your existing referees will not be automatically added to your team. Share your team profile to have them join you in competitions. You will still earn commission from their trading even if they do not join.'
+                  'Create a team to participate in team based rewards as well as access the discount benefits of the current referral program.'
                 )}
               </p>
-            )}
-          </Box>
-        </div>
-      </LayoutWithGradient>
+              <RainbowButton variant="border" onClick={openWalletDialog}>
+                {t('Connect wallet')}
+              </RainbowButton>
+            </>
+          )}
+          {isUpgrade && (
+            <p className="text-sm mt-1">
+              {t(
+                'Note that your existing referees will not be automatically added to your team. Share your team profile to have them join you in competitions. You will still earn commission from their trading even if they do not join.'
+              )}
+            </p>
+          )}
+        </Box>
+      </div>
     </ErrorBoundary>
   );
 };

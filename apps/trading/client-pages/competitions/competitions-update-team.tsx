@@ -17,7 +17,6 @@ import { Links } from '../../lib/links';
 import { useReferralSetTransaction } from '../../lib/hooks/use-referral-set-transaction';
 import { type FormFields, TeamForm, TransactionType } from './team-form';
 import { useTeam } from '../../lib/hooks/use-team';
-import { LayoutWithGradient } from '../../components/layouts-inner';
 import { useEffect, useState } from 'react';
 
 export const CompetitionsUpdateTeam = () => {
@@ -32,38 +31,36 @@ export const CompetitionsUpdateTeam = () => {
 
   return (
     <ErrorBoundary feature="update-team">
-      <LayoutWithGradient>
-        <div className="mx-auto md:w-2/3 max-w-xl">
-          <Box className="flex flex-col gap-4">
-            <Link
-              to={Links.COMPETITIONS_TEAM(teamId)}
-              className="text-xs inline-flex items-center gap-1 group"
-            >
-              <VegaIcon
-                name={VegaIconNames.CHEVRON_LEFT}
-                size={12}
-                className="text-vega-clight-100 dark:text-vega-cdark-100"
-              />{' '}
-              <span className="group-hover:underline">
-                {t('Go back to the team profile')}
-              </span>
-            </Link>
-            <h1 className="calt text-2xl lg:text-3xl xl:text-5xl">
-              {t('Update a team')}
-            </h1>
-            {pubKey && !isReadOnly ? (
-              <UpdateTeamFormContainer teamId={teamId} pubKey={pubKey} />
-            ) : (
-              <>
-                <p>{t('Connect to update the details of your team.')}</p>
-                <RainbowButton variant="border" onClick={openWalletDialog}>
-                  {t('Connect wallet')}
-                </RainbowButton>
-              </>
-            )}
-          </Box>
-        </div>
-      </LayoutWithGradient>
+      <div className="mx-auto md:w-2/3 max-w-xl">
+        <Box className="flex flex-col gap-4">
+          <Link
+            to={Links.COMPETITIONS_TEAM(teamId)}
+            className="text-xs inline-flex items-center gap-1 group"
+          >
+            <VegaIcon
+              name={VegaIconNames.CHEVRON_LEFT}
+              size={12}
+              className="text-vega-clight-100 dark:text-vega-cdark-100"
+            />{' '}
+            <span className="group-hover:underline">
+              {t('Go back to the team profile')}
+            </span>
+          </Link>
+          <h1 className="calt text-2xl lg:text-3xl xl:text-5xl">
+            {t('Update a team')}
+          </h1>
+          {pubKey && !isReadOnly ? (
+            <UpdateTeamFormContainer teamId={teamId} pubKey={pubKey} />
+          ) : (
+            <>
+              <p>{t('Connect to update the details of your team.')}</p>
+              <RainbowButton variant="border" onClick={openWalletDialog}>
+                {t('Connect wallet')}
+              </RainbowButton>
+            </>
+          )}
+        </Box>
+      </div>
     </ErrorBoundary>
   );
 };

@@ -39,7 +39,6 @@ import { TeamAvatar } from '../../components/competitions/team-avatar';
 import { TeamStats } from '../../components/competitions/team-stats';
 import { usePageTitle } from '../../lib/hooks/use-page-title';
 import { ErrorBoundary } from '../../components/error-boundary';
-import { LayoutWithGradient } from '../../components/layouts-inner';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { JoinTeam } from './join-team';
 import { UpdateTeamButton } from './update-team-button';
@@ -174,7 +173,7 @@ const TeamPage = ({
   );
 
   return (
-    <LayoutWithGradient>
+    <>
       <header className="flex gap-3 lg:gap-4 pt-5 lg:pt-10">
         <TeamAvatar teamId={team.teamId} imgUrl={team.avatarUrl} />
         <div className="flex flex-col items-start gap-1 lg:gap-2">
@@ -270,7 +269,7 @@ const TeamPage = ({
         )}
         {tab === Tab.Members && <Members members={members} />}
       </section>
-    </LayoutWithGradient>
+    </>
   );
 };
 

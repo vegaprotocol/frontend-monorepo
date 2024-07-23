@@ -1,8 +1,8 @@
 import {
   type RouteObject,
   Navigate,
-  Outlet,
   useRoutes,
+  Outlet,
 } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
 import { compact } from 'lodash';
@@ -33,8 +33,8 @@ import { Swap } from '../client-pages/swap/swap';
 import { DepositCrossChain } from '../client-pages/deposit-cross-chain';
 import { NotFound } from '../client-pages/not-found';
 
-import { LayoutCentered, LayoutWithNodeHealth } from '../components/layouts';
-import { LayoutWithSky } from '../components/layouts-inner';
+import { LayoutCentered } from '../components/layouts';
+import { LayoutFull } from '../components/layouts/layout-full';
 
 import { Routes as AppRoutes } from '../lib/links';
 
@@ -56,14 +56,10 @@ export const useRouterConfig = (): RouteObject[] => {
     },
     {
       path: AppRoutes.REFERRALS,
-      element: <LayoutWithNodeHealth />,
+      element: <LayoutCentered variant="sky" />,
       children: [
         {
-          element: (
-            <LayoutWithSky>
-              <Referrals />
-            </LayoutWithSky>
-          ),
+          element: <Referrals />,
           children: [
             {
               index: true,
@@ -83,12 +79,12 @@ export const useRouterConfig = (): RouteObject[] => {
     },
     {
       path: AppRoutes.COMPETITIONS,
-      element: <LayoutWithNodeHealth />,
+      element: <Outlet />,
       children: [
-        // pages with planets and stars
         {
-          element: <LayoutWithSky />,
+          element: <LayoutCentered variant="sky" />,
           children: [
+            // with planet/stars
             { index: true, element: <CompetitionsHome /> },
             {
               path: AppRoutes.COMPETITIONS_TEAMS,
@@ -102,22 +98,27 @@ export const useRouterConfig = (): RouteObject[] => {
         },
         // pages with blurred background
         {
-          path: AppRoutes.COMPETITIONS_CREATE_TEAM,
-          element: <CompetitionsCreateTeam />,
-        },
-        {
-          path: AppRoutes.COMPETITIONS_UPDATE_TEAM,
-          element: <CompetitionsUpdateTeam />,
-        },
-        {
-          path: AppRoutes.COMPETITIONS_TEAM,
-          element: <CompetitionsTeam />,
+          element: <LayoutCentered variant="gradient" />,
+          children: [
+            {
+              path: AppRoutes.COMPETITIONS_CREATE_TEAM,
+              element: <CompetitionsCreateTeam />,
+            },
+            {
+              path: AppRoutes.COMPETITIONS_UPDATE_TEAM,
+              element: <CompetitionsUpdateTeam />,
+            },
+            {
+              path: AppRoutes.COMPETITIONS_TEAM,
+              element: <CompetitionsTeam />,
+            },
+          ],
         },
       ],
     },
     {
       path: AppRoutes.FEES,
-      element: <LayoutWithNodeHealth />,
+      element: <LayoutCentered />,
       children: [
         {
           index: true,
@@ -127,7 +128,7 @@ export const useRouterConfig = (): RouteObject[] => {
     },
     {
       path: AppRoutes.REWARDS,
-      element: <LayoutWithNodeHealth />,
+      element: <LayoutCentered />,
       children: [
         {
           index: true,
@@ -137,10 +138,10 @@ export const useRouterConfig = (): RouteObject[] => {
     },
     {
       path: AppRoutes.MARKETS,
-      element: <Outlet />,
+      element: <LayoutFull />,
       children: [
         {
-          element: <LayoutWithNodeHealth />,
+          element: <LayoutCentered />,
           children: [{ index: true, element: <MarketsPage /> }],
         },
         {
@@ -155,7 +156,7 @@ export const useRouterConfig = (): RouteObject[] => {
     },
     {
       path: AppRoutes.PORTFOLIO,
-      element: <LayoutWithNodeHealth />,
+      element: <LayoutFull />,
       children: [
         {
           index: true,
@@ -180,7 +181,7 @@ export const useRouterConfig = (): RouteObject[] => {
     },
     {
       path: 'liquidity',
-      element: <Outlet />,
+      element: <LayoutFull />,
       children: [
         {
           path: ':marketId',
