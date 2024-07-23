@@ -20,7 +20,8 @@ def setup_environment(vega, browser, request) -> Generator[Tuple[Page, VegaServi
         risk_accepted_setup(page)
         auth_setup(vega, page)
         page.goto("#/portfolio")
-        page.get_by_test_id("Swap").click()
+        page.get_by_test_id("expand-account-card").first.click()
+        page.get_by_test_id("account-action-swap").click()
         yield page, vega
 
 

@@ -18,6 +18,7 @@ export const AccountsActionsDropdown = ({
   assetId,
   assetContractAddress,
   onClickDeposit,
+  onClickCrossChainDeposit,
   onClickWithdraw,
   onClickTransfer,
   onClickSwap,
@@ -26,6 +27,7 @@ export const AccountsActionsDropdown = ({
   assetId: string;
   assetContractAddress?: string;
   onClickDeposit: () => void;
+  onClickCrossChainDeposit?: () => void;
   onClickWithdraw: () => void;
   onClickTransfer: () => void;
   onClickSwap: () => void;
@@ -45,6 +47,16 @@ export const AccountsActionsDropdown = ({
             <VegaIcon name={VegaIconNames.DEPOSIT} size={16} />
             {t('Deposit')}
           </TradingDropdownItem>
+          {onClickCrossChainDeposit && (
+            <TradingDropdownItem
+              key={'deposit'}
+              data-testid="deposit"
+              onClick={onClickCrossChainDeposit}
+            >
+              <VegaIcon name={VegaIconNames.DEPOSIT} size={16} />
+              {t('Cross-chain deposit')}
+            </TradingDropdownItem>
+          )}
           <TradingDropdownItem
             key={'withdraw'}
             data-testid="withdraw"
