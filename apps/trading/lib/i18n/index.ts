@@ -63,7 +63,6 @@ i18n
       'assets',
       'candles-chart',
       'datagrid',
-      'deal-ticket',
       'deposits',
       'environment',
       'fills',

@@ -24,9 +24,11 @@ def test_transfer_submit(continuous_market, vega: VegaServiceNull, page: Page):
     # 1003-TRAN-023
     page.goto("/#/portfolio")
 
+    page.get_by_test_id("expand-account-card").first.click()
+    page.get_by_test_id("account-action-transfer").click()
+
     expect(page.get_by_test_id("transfer-form")).to_be_visible
 
-    page.get_by_test_id("Transfer").click()
     page.get_by_test_id("select-asset").click()
     expect(page.get_by_test_id("rich-select-option")).to_have_count(1)
 
@@ -111,10 +113,14 @@ def test_transfer_vesting_below_minimum(
     next_epoch(vega=vega)
     next_epoch(vega=vega)
     page.goto("/#/portfolio")
-    page.get_by_test_id("Transfer").click()
-    expect(page.get_by_test_id("transfer-form")).to_be_visible
 
     change_keys(page, vega, "party_b")
+
+    page.get_by_test_id("expand-account-card").first.click()
+    page.get_by_test_id("account-action-transfer").click()
+
+    expect(page.get_by_test_id("transfer-form")).to_be_visible
+
     page.get_by_test_id("select-asset").click()
     page.get_by_test_id("rich-select-option").click()
 

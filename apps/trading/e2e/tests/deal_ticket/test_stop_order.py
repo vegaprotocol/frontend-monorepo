@@ -6,23 +6,18 @@ from datetime import datetime, timedelta
 from actions.utils import wait_for_toast_confirmation
 from actions.ticket import select_mini
 
-stop_order_btn = "order-type-Stop"
-stop_limit_order_btn = "order-type-StopLimit"
-stop_market_order_btn = "order-type-StopMarket"
+stop_order_btn = "order-type-stop"
+stop_limit_order_btn = "order-type-stopLimit"
+stop_market_order_btn = "order-type-stopMarket"
 order_side_sell = "order-side-SIDE_SELL"
 trigger_above = "triggerDirection-risesAbove"
 trigger_below = "triggerDirection-fallsBelow"
-trigger_price = "triggerPrice"
+trigger_price = "order-triggerPrice"
 trigger_type_price = "triggerType-price"
 trigger_type_trailing_percent_offset = "triggerType-trailingPercentOffset"
 order_size = "order-size"
 order_price = "order-price"
 order_tif = "order-tif"
-expire = "expire"
-expiry_strategy = '[for="expiryStrategy"]'
-expiry_strategy_submit = "expiryStrategy-submit"
-expiry_strategy_cancel = "expiryStrategy-cancel"
-date_picker_field = "date-picker-field"
 submit_stop_order = "place-order"
 stop_orders_tab = "Advanced orders"
 row_table = "row"
@@ -45,7 +40,6 @@ def create_position(vega: VegaServiceNull, market_id):
     vega.wait_fn(1)
     vega.wait_for_total_catchup
 
-
 @pytest.mark.usefixtures("auth", "risk_accepted")
 def test_stop_order_form_error_validation(continuous_market, page: Page):
     # 7002-SORD-032
@@ -55,19 +49,19 @@ def test_stop_order_form_error_validation(continuous_market, page: Page):
     page.get_by_test_id(stop_limit_order_btn).click()
     page.get_by_test_id(order_side_sell).click()
     page.get_by_test_id(submit_stop_order).click()
-    expect(page.get_by_test_id("stop-order-error-message-trigger-price")).to_have_text(
-        "You need to provide a price"
+
+    expect(page.get_by_test_id("error-triggerPrice")).to_have_text(
+        "Required"
     )
-    expect(page.get_by_test_id("stop-order-error-message-size")).to_have_text(
-        "Size cannot be lower than 1"
+    expect(page.get_by_test_id("error-size")).to_have_text(
+        "Required"
     )
 
     page.get_by_test_id(order_size).fill("1")
     page.get_by_test_id(order_price).fill("0.0000001")
-    expect(page.get_by_test_id("stop-order-error-message-price")).to_have_text(
-        "Price cannot be lower than 0.00001"
+    expect(page.get_by_test_id("error-price")).to_have_text(
+        "Number must be greater than or equal to 0.00001"
     )
-
 
 @pytest.mark.usefixtures("auth", "risk_accepted")
 def test_submit_stop_order_rejected(
@@ -84,10 +78,10 @@ def test_submit_stop_order_rejected(
     wait_for_toast_confirmation(page)
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
-    expect(page.get_by_role("row").nth(4)).to_contain_text(
+    container = page.locator('.ag-center-cols-container')
+    expect(container.get_by_role("row").nth(0)).to_contain_text(
         "Mark > 103.00+3MarketRejected-FOK"
     )
-
 
 @pytest.mark.usefixtures("auth", "risk_accepted")
 def test_submit_stop_market_order_triggered(
@@ -109,7 +103,7 @@ def test_submit_stop_market_order_triggered(
     page.get_by_test_id(order_side_sell).click()
     page.get_by_test_id(trigger_price).fill("103")
     page.get_by_test_id(order_size).fill("1")
-    page.get_by_test_id(expire).click()
+    select_mini(page, 'order-stopExpiryStrategy', 'Cancel')
     expires_at = datetime.now() + timedelta(days=1)
     expires_at_input_value = expires_at.strftime("%Y-%m-%dT%H:%M:%S")
     page.get_by_test_id("date-picker-field").fill(expires_at_input_value)
@@ -117,8 +111,9 @@ def test_submit_stop_market_order_triggered(
     wait_for_toast_confirmation(page)
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
-    expect(page.get_by_role("row").nth(4)).to_contain_text("Mark > 103.00")
-    expect(page.get_by_role("row").nth(4)).to_contain_text("-1MarketTriggered-FOK")
+    container = page.locator('.ag-center-cols-container')
+    expect(container.get_by_role("row").nth(0)).to_contain_text("Mark > 103.00")
+    expect(container.get_by_role("row").nth(0)).to_contain_text("-1MarketTriggered-FOK")
 
 
 @pytest.mark.usefixtures("auth", "risk_accepted")
@@ -143,7 +138,7 @@ def test_submit_stop_limit_order_pending(
     page.get_by_test_id(order_price).fill("99")
     page.get_by_test_id(order_size).fill("1")
     select_mini(page, order_tif,  "Immediate or Cancel (IOC)")
-    page.get_by_test_id(expire).click()
+    select_mini(page, 'order-stopExpiryStrategy', 'Trigger')
     expires_at = datetime.now() + timedelta(days=1)
     expires_at_input_value = expires_at.strftime("%Y-%m-%dT%H:%M:%S")
     page.get_by_test_id("date-picker-field").fill(expires_at_input_value)
@@ -151,8 +146,10 @@ def test_submit_stop_limit_order_pending(
     wait_for_toast_confirmation(page)
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
-    expect(page.get_by_role("row").nth(4)).to_contain_text("Mark < 102.00Submit")
-    expect(page.get_by_role("row").nth(4)).to_contain_text("-1LimitPending99.00IOC")
+
+    container = page.locator('.ag-center-cols-container')
+    expect(container.get_by_role("row").nth(0)).to_contain_text("Mark < 102.00Submit")
+    expect(container.get_by_role("row").nth(0)).to_contain_text("-1LimitPending99.00IOC")
 
 
 @pytest.mark.usefixtures("auth", "risk_accepted")
@@ -185,5 +182,5 @@ def test_submit_stop_limit_order_cancel(
     vega.wait_for_total_catchup()
     page.get_by_test_id(close_toast).first.click()
 
-    # TODO: This last assertion is flakely and often fails, need to fix this
-    # expect(page.get_by_role("row").nth(4)).to_contain_text("Cancelled")
+    container = page.locator('.ag-center-cols-container')
+    expect(container.get_by_role("row").nth(0)).to_contain_text("Cancelled")

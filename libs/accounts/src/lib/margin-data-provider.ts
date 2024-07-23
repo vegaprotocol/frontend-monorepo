@@ -13,6 +13,8 @@ import {
   type MarginsSubscriptionSubscription,
   type MarginsQueryVariables,
 } from './__generated__/Margins';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
+import { MarginMode } from '@vegaprotocol/types';
 
 const update = (
   data: MarginFieldsFragment[] | null,
@@ -107,19 +109,23 @@ export const marginModeDataProvider = makeDerivedDataProvider<
   })
 );
 
-export const useMarginMode = ({
-  partyId,
-  marketId,
-}: {
-  partyId?: string;
-  marketId?: string;
-}) => {
-  return useDataProvider({
+export const useMarginMode = (marketId?: string) => {
+  const { pubKey } = useVegaWallet();
+  const result = useDataProvider({
     dataProvider: marginModeDataProvider,
     variables: {
-      partyId: partyId || '',
+      partyId: pubKey || '',
       marketId: marketId || '',
     },
-    skip: !partyId || !marketId,
+    skip: !pubKey || !marketId,
   });
+
+  return {
+    ...result,
+    data: {
+      marginMode:
+        result.data?.marginMode || MarginMode.MARGIN_MODE_CROSS_MARGIN,
+      marginFactor: result.data?.marginFactor || '0',
+    },
+  };
 };

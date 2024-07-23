@@ -159,6 +159,7 @@ export const LocalStoragePersistTabs = ({
 }: Omit<TabsProps, 'value' | 'onValueChange'> & { storageKey: string }) => {
   const [value, setValue] = useLocalStorage(createActiveTabKey(storageKey));
   const onValueChange = (value: string) => setValue(value);
+
   return (
     <Tabs
       {...props}

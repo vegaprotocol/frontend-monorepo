@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import compact from 'lodash/compact';
 import { useDataProvider } from '@vegaprotocol/data-provider';
 import { proposalsDataProvider } from '@vegaprotocol/proposals';
 import take from 'lodash/take';
@@ -35,12 +36,29 @@ export const ProposedMarkets = () => {
       ].includes(proposal.state)
     ),
     3
-  ).map((proposal) => ({
-    id: proposal.id,
-    displayName:
-      proposal.terms.change.__typename === 'NewMarket' &&
-      proposal.terms.change.instrument.code,
-  }));
+  ).map((proposal) => {
+    if (proposal.__typename === 'Proposal') {
+      return {
+        id: proposal.id,
+        displayName:
+          proposal.terms.change.__typename === 'NewMarket' &&
+          proposal.terms.change.instrument.code,
+      };
+    }
+
+    if (proposal.__typename === 'BatchProposal') {
+      const subProposal = proposal.subProposals?.find(
+        (p) => p?.terms?.change.__typename === 'NewMarket'
+      );
+
+      if (subProposal?.terms?.change.__typename === 'NewMarket') {
+        return {
+          id: proposal.id,
+          displayName: subProposal.terms?.change.instrument.code,
+        };
+      }
+    }
+  });
 
   const tokenLink = useLinks(DApp.Governance);
   return useMemo(
@@ -52,7 +70,7 @@ export const ProposedMarkets = () => {
               {t('Proposed markets')}
             </h2>
             <dl data-testid="welcome-notice-proposed-markets" className="py-5">
-              {newMarkets.map(({ displayName, id }, i) => (
+              {compact(newMarkets).map(({ displayName, id }, i) => (
                 <div className="pt-1 flex justify-between" key={i}>
                   <dl>{displayName}</dl>
                   <dt>

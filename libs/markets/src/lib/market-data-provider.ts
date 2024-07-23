@@ -58,9 +58,25 @@ export const markPriceProvider = makeDerivedDataProvider<
   MarketDataQueryVariables
 >([marketDataProvider], ([marketData]) => (marketData as MarketData).markPrice);
 
+export const lastTradePriceProvider = makeDerivedDataProvider<
+  string,
+  never,
+  MarketDataQueryVariables
+>(
+  [marketDataProvider],
+  ([marketData]) => (marketData as MarketData).lastTradedPrice
+);
+
 export const useMarkPrice = (marketId?: string, skip?: boolean) =>
   useDataProvider({
     dataProvider: markPriceProvider,
+    variables: { marketId: marketId || '' },
+    skip: skip || !marketId,
+  });
+
+export const useLastTradePrice = (marketId?: string, skip?: boolean) =>
+  useDataProvider({
+    dataProvider: lastTradePriceProvider,
     variables: { marketId: marketId || '' },
     skip: skip || !marketId,
   });

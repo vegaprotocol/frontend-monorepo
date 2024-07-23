@@ -1,8 +1,9 @@
 query AssetMarkets {
-  marketsConnection(includeSettled: false) {
+  marketsConnection(includeSettled: true) {
     edges {
       node {
         id
+        state
         tradableInstrument {
           instrument {
             name
@@ -14,6 +15,8 @@ query AssetMarkets {
               type
               asset {
                 id
+                decimals
+                symbol
               }
               balance
             }

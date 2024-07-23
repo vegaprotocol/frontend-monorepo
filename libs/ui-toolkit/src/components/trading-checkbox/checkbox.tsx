@@ -30,10 +30,7 @@ export const TradingCheckbox = ({
   );
 
   return (
-    <label
-      htmlFor={name}
-      className={`flex gap-1.5 items-center ${labelClasses}`}
-    >
+    <label htmlFor={name} className={`flex gap-2 items-center ${labelClasses}`}>
       <CheckboxPrimitive.Root
         name={name}
         id={name}
