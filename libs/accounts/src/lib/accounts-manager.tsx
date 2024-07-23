@@ -12,6 +12,7 @@ interface AccountManagerProps extends AssetActions {
   pinnedAssets?: string[];
   orderByBalance?: boolean;
   hideZeroBalance?: boolean;
+  searchTerm?: string;
 }
 
 export const AccountManager = ({
@@ -62,6 +63,14 @@ export const AccountManager = ({
     });
   }
 
+  if (props.searchTerm && props.searchTerm.length > 0) {
+    rows = rows.filter((a) => {
+      if (!props.searchTerm) return true;
+      const re = new RegExp(props.searchTerm, 'gi');
+      return re.test(a.name) || re.test(a.symbol);
+    });
+  }
+
   // push pinned to top
   rows = sortBy(rows, (asset) => {
     if (!pinnedAssets) return 0;
@@ -82,6 +91,7 @@ export const AccountManager = ({
             onClickAsset={props.onClickAsset}
             onClickWithdraw={props.onClickWithdraw}
             onClickDeposit={props.onClickDeposit}
+            onClickCrossChainDeposit={props.onClickCrossChainDeposit}
             onClickTransfer={props.onClickTransfer}
             onClickSwap={props.onClickSwap}
           />

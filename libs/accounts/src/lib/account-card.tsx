@@ -6,6 +6,10 @@ import {
   VegaIcon,
   VegaIconNames,
   ProgressBar,
+  TradingDropdown,
+  TradingDropdownItem,
+  TradingDropdownContent,
+  TradingDropdownTrigger,
 } from '@vegaprotocol/ui-toolkit';
 
 import {
@@ -18,7 +22,12 @@ import { Emblem } from '@vegaprotocol/emblem';
 import { AccountsActionsDropdown } from './accounts-actions-dropdown';
 import { type AssetFieldsFragment } from '@vegaprotocol/assets';
 import { useDataProvider } from '@vegaprotocol/data-provider';
-import { useState } from 'react';
+import {
+  useState,
+  type ComponentProps,
+  forwardRef,
+  type ButtonHTMLAttributes,
+} from 'react';
 import classNames from 'classnames';
 import { useChainId } from '@vegaprotocol/wallet-react';
 import { getExternalChainShortLabel } from '@vegaprotocol/environment';
@@ -27,26 +36,34 @@ export interface AssetActions {
   onClickAsset: (assetId: string) => void;
   onClickWithdraw?: (assetId: string) => void;
   onClickDeposit?: (assetId: string) => void;
+  onClickCrossChainDeposit?: (assetId: string) => void;
   onClickSwap?: (assetId: string) => void;
   onClickTransfer?: (assetId: string) => void;
 }
 
-const Button = ({
-  onClick,
-  label,
-  icon,
-}: {
+type ButtonProps = {
   onClick?: () => void;
   label: string;
   icon: VegaIconNames;
-}) => (
-  <TradingButton size="custom" className="p-[6px]" onClick={onClick}>
+} & ComponentProps<typeof TradingButton>;
+
+const Button = forwardRef<
+  HTMLButtonElement,
+  ButtonHTMLAttributes<HTMLButtonElement> & ButtonProps
+>(({ onClick, label, icon, ...props }, ref) => (
+  <TradingButton
+    size="custom"
+    className="p-[6px]"
+    onClick={onClick}
+    {...props}
+    ref={ref}
+  >
     <div className="flex flex-col items-center p">
       <VegaIcon name={icon} size={16} className="mb-1" />
       <span className="text-xs">{label}</span>
     </div>
   </TradingButton>
-);
+));
 
 const BreakdownItem = ({ data }: { data: AccountFields }) => {
   const min = BigInt(data.used);
@@ -99,8 +116,11 @@ export const AccountCard = ({
   });
   return (
     <section
-      className={classNames('border-b border-default', {
-        'bg-vega-clight-800 dark:bg-vega-cdark-800': expandable && expanded,
+      data-testid="account-card"
+      className={classNames('m-1 rounded border-default', {
+        'bg-vega-clight-700 hover:bg-vega-clight-600 dark:bg-vega-cdark-700 dark:hover:bg-vega-cdark-600':
+          !(expandable && expanded),
+        'bg-vega-clight-600 dark:bg-vega-cdark-600': expandable && expanded,
       })}
     >
       <div className="relative p-3">
@@ -125,6 +145,9 @@ export const AccountCard = ({
               }
               onClickDeposit={() => {
                 actions.onClickDeposit?.(asset.id);
+              }}
+              onClickCrossChainDeposit={() => {
+                actions.onClickCrossChainDeposit?.(asset.id);
               }}
               onClickWithdraw={() => {
                 actions.onClickWithdraw?.(asset.id);
@@ -163,6 +186,7 @@ export const AccountCard = ({
             type="button"
             className="absolute inset-0 before:hidden before:content-[''] hover:before:block before:absolute before:inset-0 before:bg-vega-clight-800 before:dark:bg-vega-cdark-800 before:-z-10"
             onClick={() => setExpanded((expanded) => !expanded)}
+            data-testid="expand-account-card"
           >
             <span className="sr-only">{t('Show asset actions')}</span>
           </button>
@@ -170,22 +194,47 @@ export const AccountCard = ({
       </div>
       {expandable && expanded ? (
         <div className="grid gap-1 grid-cols-4 p-3 pt-0">
+          <TradingDropdown
+            trigger={
+              <TradingDropdownTrigger asChild>
+                <Button label={t('Deposit')} icon={VegaIconNames.DEPOSIT} />
+              </TradingDropdownTrigger>
+            }
+          >
+            <TradingDropdownContent side="bottom" align="start">
+              <TradingDropdownItem
+                data-testid="account-action-deposit"
+                onClick={() => {
+                  actions.onClickDeposit?.(asset.id);
+                }}
+              >
+                <VegaIcon name={VegaIconNames.DEPOSIT} /> {t('Deposit')}
+              </TradingDropdownItem>
+              <TradingDropdownItem
+                data-testid="account-action-cross-deposit"
+                onClick={() => {
+                  actions.onClickCrossChainDeposit?.(asset.id);
+                }}
+              >
+                <VegaIcon name={VegaIconNames.DEPOSIT} />{' '}
+                {t('Cross-chain deposit')}
+              </TradingDropdownItem>
+            </TradingDropdownContent>
+          </TradingDropdown>
           <Button
-            onClick={() => actions.onClickDeposit?.(asset.id)}
-            label={t('Deposit')}
-            icon={VegaIconNames.DEPOSIT}
-          />
-          <Button
+            data-testid="account-action-swap"
             onClick={() => actions.onClickSwap?.(asset.id)}
             label={t('Swap')}
             icon={VegaIconNames.SWAP}
           />
           <Button
+            data-testid="account-action-transfer"
             onClick={() => actions.onClickTransfer?.(asset.id)}
             label={t('Transfer')}
             icon={VegaIconNames.TRANSFER}
           />
           <Button
+            data-testid="account-action-withdraw"
             onClick={() => actions.onClickWithdraw?.(asset.id)}
             label={t('Withdraw')}
             icon={VegaIconNames.WITHDRAW}

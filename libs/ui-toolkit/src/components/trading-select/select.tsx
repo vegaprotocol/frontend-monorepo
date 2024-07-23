@@ -125,7 +125,7 @@ export const MiniSelect = ({
       <SelectPrimitive.Trigger
         data-testid={props['data-testid'] || 'rich-select-trigger'}
         id={id}
-        className="inline-flex items-center gap-1.5 leading-3 text-xs"
+        className="inline-flex items-center gap-1.5 text-xs py-px"
       >
         <SelectPrimitive.Value placeholder={placeholder}>
           {trigger}

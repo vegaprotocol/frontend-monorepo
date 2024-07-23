@@ -24,6 +24,7 @@ export const ToastsContainer = ({
   const t = useT();
   const ref = useRef<HTMLDivElement>();
   const closeAll = useToasts((store) => store.closeAll);
+  const remove = useToasts((store) => store.remove);
   const position = useToastsConfiguration((store) => store.position);
   // Scroll to top for desc, bottom for asc when a toast is added.
   const count = usePrevious(Object.keys(toasts).length) || 0;
@@ -83,7 +84,11 @@ export const ToastsContainer = ({
             .map((toast) => {
               return (
                 <li key={toast.id}>
-                  <Toast {...toast} />
+                  <Toast
+                    // by default remove the toast when closed
+                    onClose={() => remove(toast.id)}
+                    {...toast}
+                  />
                 </li>
               );
             })}

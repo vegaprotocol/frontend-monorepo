@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { LayoutPriority } from 'allotment';
 import { useScreenDimensions } from '@vegaprotocol/react-helpers';
@@ -10,10 +10,13 @@ import {
   Tab,
   LocalStoragePersistTabs as Tabs,
   TinyScroll,
+  TradingInput,
+  VegaIcon,
+  VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 import { TransferContainer } from '@vegaprotocol/accounts';
 
-import { AccountsContainer } from '../../components/accounts-container';
+import { SidebarAccountsContainer } from '../../components/accounts-container';
 import { DepositsContainer } from '../../components/deposits-container';
 import {
   FillsContainer,
@@ -37,6 +40,7 @@ import { LedgerContainer } from '../../components/ledger-container';
 import {
   ResizableGrid,
   ResizableGridPanel,
+  ResizableGridPanelChild,
   usePaneLayout,
 } from '../../components/resizable-grid';
 import { DepositsMenu } from '../../components/deposits-menu';
@@ -52,6 +56,7 @@ import { SwapContainer } from '../../components/swap/swap-container';
 import { SquidContainer } from '../../components/squid-container';
 
 import { useIncompleteWithdrawals } from '../../lib/hooks/use-incomplete-withdrawals';
+import classNames from 'classnames';
 
 const WithdrawalsIndicator = () => {
   const { ready } = useIncompleteWithdrawals();
@@ -75,18 +80,6 @@ export const Portfolio = () => {
   return largeScreen ? <PortfolioGrid /> : <PortfolioSmall />;
 };
 
-interface PortfolioGridChildProps {
-  children: ReactNode;
-}
-
-const PortfolioGridChild = ({ children }: PortfolioGridChildProps) => {
-  return (
-    <section className="h-full p-1">
-      <div className="h-full border rounded-sm border-default">{children}</div>
-    </section>
-  );
-};
-
 const PortfolioGrid = () => {
   const [sizes, handleOnLayoutChange] = usePaneLayout({ id: 'portfolio' });
   const [sizesHorizontal, handleOnHorizontalChange] = usePaneLayout({
@@ -99,25 +92,25 @@ const PortfolioGrid = () => {
           minSize={475}
           preferredSize={sizesHorizontal[0] || 460}
         >
-          <PortfolioGridChild>
-            <PortfolioActionTabs />
-          </PortfolioGridChild>
+          <ResizableGridPanelChild>
+            <PortfolioAssets />
+          </ResizableGridPanelChild>
         </ResizableGridPanel>
         <ResizableGridPanel>
           <ResizableGrid vertical onChange={handleOnLayoutChange}>
             <ResizableGridPanel minSize={75}>
-              <PortfolioGridChild>
+              <ResizableGridPanelChild>
                 <PortfolioTopTabs />
-              </PortfolioGridChild>
+              </ResizableGridPanelChild>
             </ResizableGridPanel>
             <ResizableGridPanel
               priority={LayoutPriority.Low}
               preferredSize={sizes[1] || 300}
               minSize={50}
             >
-              <PortfolioGridChild>
+              <ResizableGridPanelChild>
                 <PortfolioBottomTabs />
-              </PortfolioGridChild>
+              </ResizableGridPanelChild>
             </ResizableGridPanel>
           </ResizableGrid>
         </ResizableGridPanel>
@@ -142,13 +135,80 @@ const PortfolioSmall = () => {
   );
 };
 
+const PortfolioAssets = () => {
+  const t = useT();
+  const [searchTerm, setSearchTerm] = useState('');
+  return (
+    <ErrorBoundary feature="portfolio-assets">
+      <div className="flex justify-between bg-vega-clight-700 dark:bg-vega-cdark-700">
+        <h3 className="px-2 py-3 text-sm leading-4">{t('Assets')}</h3>
+        <div
+          className={classNames('transition-all w-1/3 p-1 relative', {
+            '!w-1/2': searchTerm?.length > 10,
+          })}
+        >
+          <TradingInput
+            onChange={(e) => {
+              const searchTerm = e.target.value;
+              setSearchTerm(searchTerm);
+            }}
+            value={searchTerm}
+            type="text"
+            placeholder={t('Search')}
+            data-testid="search-term"
+            className="w-full !py-0.5 text-xs !h-8 pl-7 pr-8 border rounded peer bg-vega-clight-800 dark:bg-vega-cdark-800"
+            prependElement={
+              <VegaIcon
+                className="fill-vega-clight-300 dark:fill-vega-cdark-300"
+                name={VegaIconNames.SEARCH}
+              />
+            }
+          />
+          <button
+            title={t('Clear')}
+            className="absolute top-1/2 transform -translate-y-1/2 right-3 w-4 h-4"
+            onClick={() => {
+              setSearchTerm('');
+            }}
+            hidden={searchTerm.length === 0}
+          >
+            <VegaIcon
+              className="block p-0 m-0 !align-top fill-vega-clight-300 dark:fill-vega-cdark-300"
+              name={VegaIconNames.CROSS}
+              size={16}
+            />
+          </button>
+        </div>
+      </div>
+      <TinyScroll>
+        <SidebarAccountsContainer
+          orderByBalance={true}
+          hideZeroBalance={false}
+          searchTerm={searchTerm}
+        />
+      </TinyScroll>
+    </ErrorBoundary>
+  );
+};
+
 const PortfolioActionTabs = () => {
   const t = useT();
   const flags = useFeatureFlags((state) => state.flags);
   const navigate = useNavigate();
   const onDeposit = () => navigate(Links.DEPOSIT());
+
   return (
     <Tabs storageKey="portfolio-sidebar">
+      <Tab id="assets" name={t('Assets')}>
+        <ErrorBoundary feature="portfolio-assets">
+          <TinyScroll>
+            <SidebarAccountsContainer
+              orderByBalance={true}
+              hideZeroBalance={false}
+            />
+          </TinyScroll>
+        </ErrorBoundary>
+      </Tab>
       <Tab id="deposit" name={t('Deposit (Basic)')}>
         <ErrorBoundary feature="portfolio-deposit">
           <div className="p-2 flex flex-col gap-4">
@@ -200,13 +260,6 @@ const PortfolioActionTabs = () => {
           </ErrorBoundary>
         </Tab>
       ) : null}
-      <Tab id="assets" name={t('Assets')}>
-        <ErrorBoundary feature="portfolio-assets">
-          <TinyScroll>
-            <AccountsContainer />
-          </TinyScroll>
-        </ErrorBoundary>
-      </Tab>
     </Tabs>
   );
 };

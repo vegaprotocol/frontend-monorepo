@@ -24,7 +24,6 @@
       "@vegaprotocol/cypress": ["libs/cypress/src/index.ts"],
       "@vegaprotocol/data-provider": ["libs/data-provider/src/index.ts"],
       "@vegaprotocol/datagrid": ["libs/datagrid/src/index.ts"],
-      "@vegaprotocol/deal-ticket": ["libs/deal-ticket/src/index.ts"],
       "@vegaprotocol/deposits": ["libs/deposits/src/index.ts"],
       "@vegaprotocol/emblem": ["libs/emblem/src/index.ts"],
       "@vegaprotocol/environment": ["libs/environment/src/index.ts"],

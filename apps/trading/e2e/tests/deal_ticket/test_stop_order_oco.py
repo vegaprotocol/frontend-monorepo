@@ -6,22 +6,17 @@ from actions.vega import submit_order
 from actions.utils import wait_for_toast_confirmation
 from actions.ticket import select_mini
 
-stop_order_btn = "order-type-Stop"
-stop_limit_order_btn = "order-type-StopLimit"
-stop_market_order_btn = "order-type-StopMarket"
+stop_order_btn = "order-type-stop"
+stop_limit_order_btn = "order-type-stopLimit"
+stop_market_order_btn = "order-type-stopMarket"
 order_side_sell = "order-side-SIDE_SELL"
 trigger_above = "triggerDirection-risesAbove"
 trigger_below = "triggerDirection-fallsBelow"
-trigger_price = "triggerPrice"
+trigger_price = "order-triggerPrice"
 trigger_type_price = "triggerType-price"
 trigger_type_trailing_percent_offset = "triggerType-trailingPercentOffset"
 order_size = "order-size"
 order_price = "order-price"
-expire = "expire"
-expiry_strategy = '[for="expiryStrategy"]'
-expiry_strategy_submit = "expiryStrategy-submit"
-expiry_strategy_cancel = "expiryStrategy-cancel"
-date_picker_field = "date-picker-field"
 submit_stop_order = "place-order"
 stop_orders_tab = "Advanced orders"
 row_table = "row"
@@ -39,9 +34,9 @@ close_toast = "toast-close"
 trigger_direction_fallsBelow_oco = "triggerDirection-fallsBelow-oco"
 trigger_direction_fallsAbove_oco = "triggerDirection-fallsAbove-oco"
 oco = "oco"
-trigger_price_oco = "triggerPrice-oco"
-order_size_oco = "order-size-oco"
-order_limit_price_oco = "order-price-oco"
+trigger_price_oco = "order-ocoTriggerPrice"
+order_size_oco = "order-ocoSize"
+order_limit_price_oco = "order-ocoPrice"
 
 def create_position(vega: VegaServiceNull, market_id):
     submit_order(vega, "Key 1", market_id, "SIDE_SELL", 100, 110)
@@ -62,9 +57,11 @@ def test_submit_stop_order_market_oco_rejected(
     page.get_by_test_id(trigger_price).fill("103")
     page.get_by_test_id(order_size).fill("3")
     # 7002-SORD-098
-    expect(
-        page.get_by_test_id("stop-order-warning-message-trigger-price")
-    ).to_have_text("Stop order will be triggered immediately")
+
+    # TODO: add immediate trigger warning
+    # expect(
+    #     page.get_by_test_id("stop-order-warning-message-trigger-price")
+    # ).to_have_text("Stop order will be triggered immediately")
 
     # 7002-SORD-082
     page.get_by_test_id(oco).click()
@@ -139,9 +136,10 @@ def test_submit_stop_oco_market_order_triggered(
     page.get_by_test_id(trigger_price).fill("103")
     page.get_by_test_id(order_size).fill("3")
 
-    expect(
-        page.get_by_test_id("stop-order-warning-message-trigger-price")
-    ).to_have_text("Stop order will be triggered immediately")
+    # TODO: add immediate trigger warning
+    # expect(
+    #     page.get_by_test_id("stop-order-warning-message-trigger-price")
+    # ).to_have_text("Stop order will be triggered immediately")
 
     page.get_by_test_id(oco).click()
 

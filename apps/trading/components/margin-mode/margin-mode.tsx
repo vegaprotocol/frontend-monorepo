@@ -1,6 +1,5 @@
 import * as ToggleGroup from '@radix-ui/react-toggle-group';
 import { useMarginMode } from '@vegaprotocol/accounts';
-import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useVegaTransactionStore } from '@vegaprotocol/web3';
@@ -18,12 +17,8 @@ export const MarginModeToggle = () => {
   const params = useParams<{ marketId: string }>();
 
   const [dialog, setDialog] = useState<MarginMode>();
-  const { pubKey: partyId } = useVegaWallet();
   const { data: market } = useMarket(params.marketId);
-  const { data: margin } = useMarginMode({
-    partyId,
-    marketId: params.marketId,
-  });
+  const { data: margin } = useMarginMode(params.marketId);
 
   const create = useVegaTransactionStore((state) => state.create);
 
