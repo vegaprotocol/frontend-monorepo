@@ -5,7 +5,6 @@ export * from '../assets/src/lib/assets.mock';
 export * from '../assets/src/lib/party-assets.mock';
 export * from '../candles-chart/src/lib/candles.mock';
 export * from '../candles-chart/src/lib/chart.mock';
-export * from '../deal-ticket/src/hooks/estimate-order.mock';
 export * from '../deposits/src/lib/deposit.mock';
 export * from '../environment/src/utils/node.mock';
 export * from '../environment/src/components/node-guard/node-guard.mock';

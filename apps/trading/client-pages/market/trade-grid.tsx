@@ -213,7 +213,7 @@ const MainGrid = memo(
           </ResizableGrid>
         </ResizableGridPanel>
         <ResizableGridPanel
-          minSize={340}
+          minSize={350}
           maxSize={600}
           preferredSize={rowSizes[1] || 340}
         >

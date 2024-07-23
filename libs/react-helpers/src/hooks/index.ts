@@ -15,4 +15,3 @@ export * from './use-previous';
 export { useScript } from './use-script';
 export { useUserAgent } from './use-user-agent';
 export * from './use-duration';
-export * from './use-form-values';

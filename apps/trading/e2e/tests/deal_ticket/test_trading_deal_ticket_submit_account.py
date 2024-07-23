@@ -8,8 +8,9 @@ from fixtures.market import setup_continuous_market
 order_size = "order-size"
 order_price = "order-price"
 place_order = "place-order"
-deal_ticket_warning_margin = "deal-ticket-warning-margin"
-deal_ticket_deposit_dialog_button = "deal-ticket-deposit-dialog-button"
+no_collateral_warning = "feedback-not-enough-collateral"
+not_enough_collateral_warning = "feedback-not-enough-collateral"
+deposit_button = "feedback-deposit-button"
 
 
 @pytest.fixture(scope="module")
@@ -27,19 +28,19 @@ def continuous_market(vega):
 @pytest.mark.usefixtures("auth", "risk_accepted")
 def test_should_display_info_and_button_for_deposit(continuous_market, page: Page):
     page.goto(f"/#/markets/{continuous_market}")
+    page.pause()
     page.get_by_test_id(order_size).fill("200000")
     page.get_by_test_id(order_price).fill("20")
     # 7002-SORD-060
-    expect(page.get_by_test_id(deal_ticket_warning_margin)).to_have_text(
+    expect(page.get_by_test_id(not_enough_collateral_warning)).to_have_text(
         "You may not have enough margin available to open this position."
     )
-    page.get_by_test_id(deal_ticket_warning_margin).hover()
+    page.get_by_test_id(not_enough_collateral_warning).hover()
     expect(page.get_by_test_id("tooltip-content").nth(0)).to_have_text(
-        "1,661,888.12901 tDAI is currently required.You have only 999,991.49731.Deposit tDAI"
+        "1661888.12901 tDAI is currently required.You have only 999991.49731."
     )
-    page.get_by_test_id(deal_ticket_deposit_dialog_button).nth(0).click()
-    expect(page.get_by_test_id("deposit-form")
-           ).to_be_visible()
+    page.get_by_test_id(deposit_button).click()
+    expect(page.get_by_test_id("deposit-form")).to_be_visible()
 
 
 @pytest.mark.usefixtures("auth", "risk_accepted")
@@ -54,7 +55,7 @@ def test_should_show_an_error_if_your_balance_is_zero(
     # 7002-SORD-060
     expect(page.get_by_test_id(place_order)).to_be_enabled()
     # 7002-SORD-003
-    expect(page.get_by_test_id("deal-ticket-error-message-zero-balance")).to_have_text(
-        "You need tDAI in your wallet to trade in this market.Make a deposit"
+    expect(page.get_by_test_id("feedback-no-collateral")).to_have_text(
+        "You need tDAI in your wallet to trade in this market. Deposit tDAI"
     )
-    expect(page.get_by_test_id(deal_ticket_deposit_dialog_button)).to_be_visible()
+    expect(page.get_by_test_id(deposit_button)).to_be_visible()
