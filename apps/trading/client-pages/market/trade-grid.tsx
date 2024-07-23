@@ -15,7 +15,7 @@ import { ErrorBoundary } from '../../components/error-boundary';
 import { MarketBanner } from '../../components/market-banner';
 import { MarketHeader } from '../../components/market-header';
 import { Sidebar } from '../../components/sidebar';
-import { useSquidSidebarMinWidth } from '../../lib/hooks/use-squid-sidebar-min-width';
+import { useSquidSidebarMinWidth } from '../../lib/hooks/use-sidebar';
 
 interface TradeGridProps {
   market: Market;

@@ -57,7 +57,7 @@ import { SquidContainer } from '../../components/squid-container';
 
 import { useIncompleteWithdrawals } from '../../lib/hooks/use-incomplete-withdrawals';
 import classNames from 'classnames';
-import { useSquidSidebarMinWidth } from '../../lib/hooks/use-squid-sidebar-min-width';
+import { useSquidSidebarMinWidth } from '../../lib/hooks/use-sidebar';
 
 const WithdrawalsIndicator = () => {
   const { ready } = useIncompleteWithdrawals();
