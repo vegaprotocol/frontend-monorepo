@@ -25,8 +25,6 @@ jest.mock('../asset-card', () => ({
 
 jest.mock('../accounts-container/sidebar-accounts-container.tsx', () => ({
   SidebarAccountsContainer: () => <div data-testid="accounts-list"></div>,
-  SidebarAccountsViewType: '',
-  useSidebarAccountsInnerView: () => () => ({}),
 }));
 
 jest.mock('../margin-mode', () => ({

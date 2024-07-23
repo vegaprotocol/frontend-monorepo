@@ -15,6 +15,7 @@ import { ErrorBoundary } from '../../components/error-boundary';
 import { MarketBanner } from '../../components/market-banner';
 import { MarketHeader } from '../../components/market-header';
 import { Sidebar } from '../../components/sidebar';
+import { useSquidSidebarMinWidth } from '../../lib/hooks/use-squid-sidebar-min-width';
 
 interface TradeGridProps {
   market: Market;
@@ -34,6 +35,8 @@ const MainGrid = memo(
     const [verticalSizes, handleVerticalChange] = usePaneLayout({
       id: 'trade-col',
     });
+
+    const squidMinWidth = useSquidSidebarMinWidth();
 
     return (
       <ResizableGrid onChange={handleRowSizes}>
@@ -213,9 +216,9 @@ const MainGrid = memo(
           </ResizableGrid>
         </ResizableGridPanel>
         <ResizableGridPanel
-          minSize={460}
-          maxSize={700}
-          preferredSize={rowSizes[1] || 460}
+          minSize={squidMinWidth}
+          maxSize={600}
+          preferredSize={rowSizes[1] || 340}
         >
           <ResizableGridPanelChild>
             <Sidebar pinnedAssets={pinnedAssets} />

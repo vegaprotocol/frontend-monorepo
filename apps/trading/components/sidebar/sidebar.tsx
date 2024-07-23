@@ -1,4 +1,3 @@
-import { create } from 'zustand';
 import {
   SidebarAccordion,
   SidebarAccordionContent,
@@ -9,6 +8,7 @@ import {
 import * as AccordionPrimitive from '@radix-ui/react-accordion';
 import { MarketInfoAccordionContainer } from '@vegaprotocol/markets';
 import { useParams } from 'react-router-dom';
+
 import { ErrorBoundary } from '../error-boundary';
 import { NodeHealthContainer } from '../node-health';
 import { AssetCard } from '../asset-card';
@@ -17,12 +17,7 @@ import { SidebarAccountsContainer } from '../accounts-container/sidebar-accounts
 import { TicketContainer } from '../ticket';
 import classNames from 'classnames';
 import { MarginModeToggle } from '../margin-mode';
-
-export enum ViewType {
-  Trade = 'Trade',
-  Info = 'Info',
-  Assets = 'Assets',
-}
+import { useSidebar, ViewType } from '../../lib/hooks/use-sidebar';
 
 export const Sidebar = ({ pinnedAssets }: { pinnedAssets?: string[] }) => {
   const t = useT();
@@ -109,11 +104,3 @@ export const Sidebar = ({ pinnedAssets }: { pinnedAssets?: string[] }) => {
     </div>
   );
 };
-
-export const useSidebar = create<{
-  view: ViewType;
-  setView: (view: ViewType) => void;
-}>()((set) => ({
-  view: ViewType.Trade,
-  setView: (view) => set({ view }),
-}));

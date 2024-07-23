@@ -57,6 +57,7 @@ import { SquidContainer } from '../../components/squid-container';
 
 import { useIncompleteWithdrawals } from '../../lib/hooks/use-incomplete-withdrawals';
 import classNames from 'classnames';
+import { useSquidSidebarMinWidth } from '../../lib/hooks/use-squid-sidebar-min-width';
 
 const WithdrawalsIndicator = () => {
   const { ready } = useIncompleteWithdrawals();
@@ -85,12 +86,13 @@ const PortfolioGrid = () => {
   const [sizesHorizontal, handleOnHorizontalChange] = usePaneLayout({
     id: 'portfolio-horizontal',
   });
+  const sidebarMinWidth = useSquidSidebarMinWidth();
+
   return (
     <div className="p-0.5 h-full max-h-full flex flex-col">
       <ResizableGrid onChange={handleOnHorizontalChange}>
         <ResizableGridPanel
-          minSize={460}
-          maxSize={700}
+          minSize={sidebarMinWidth}
           preferredSize={sizesHorizontal[0] || 460}
         >
           <ResizableGridPanelChild>
