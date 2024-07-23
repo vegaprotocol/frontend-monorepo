@@ -42,12 +42,10 @@ export const useSidebarAccountsInnerView =
  * is shown its increased to allow room for full display
  */
 export const useSquidSidebarMinWidth = () => {
-  const sidebar = useSidebar((store) => store.view);
   const sidebarInner = useSidebarAccountsInnerView((store) => store.view);
   const isSquidShowing =
-    sidebar === ViewType.Assets &&
     sidebarInner &&
     sidebarInner[0] === SidebarAccountsViewType.CrossChainDeposit;
 
-  return isSquidShowing ? 460 : 350;
+  return isSquidShowing ? 463 : 350;
 };
