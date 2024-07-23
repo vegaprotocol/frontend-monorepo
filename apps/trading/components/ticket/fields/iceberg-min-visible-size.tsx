@@ -18,7 +18,7 @@ export const IcebergMinVisibleSize = () => {
       name="icebergMinVisibleSize"
       render={({ field, fieldState }) => {
         return (
-          <div className="w-full">
+          <>
             <TicketInput
               {...field}
               value={field.value || ''}
@@ -31,7 +31,7 @@ export const IcebergMinVisibleSize = () => {
             {fieldState.error && (
               <TradingInputError>{fieldState.error.message}</TradingInputError>
             )}
-          </div>
+          </>
         );
       }}
     />

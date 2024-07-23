@@ -18,7 +18,7 @@ export const FormGrid = ({
 }: HTMLAttributes<HTMLDivElement>) => {
   return (
     <div
-      className={classNames('grid grid-cols-2 gap-2', className)}
+      className={classNames('flex items-start gap-2', className)}
       {...props}
     />
   );
@@ -27,7 +27,7 @@ export const FormGrid = ({
 export const FormGridCol = (props: HTMLAttributes<HTMLDivElement>) => {
   return (
     <div
-      className="flex flex-col first:items-start last:items-end gap-1"
+      className="flex-1 flex flex-col justify-start first:items-start last:items-end gap-1"
       {...props}
     />
   );
