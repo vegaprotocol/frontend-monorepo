@@ -1,0 +1,1 @@
+export { AnimatedDudeWithWire } from './dude';

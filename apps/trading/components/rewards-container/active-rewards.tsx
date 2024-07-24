@@ -124,11 +124,7 @@ export const ActiveRewards = ({ currentEpoch }: { currentEpoch: number }) => {
   const groupedCards = Object.values(groupBy(cards, determineCardGroup));
 
   return (
-    <Card
-      title={t('Active rewards')}
-      className="lg:col-span-full"
-      data-testid="active-rewards-card"
-    >
+    <Card title={t('Active rewards')} data-testid="active-rewards-card">
       {/** CARDS FILTER */}
       {data.length > 1 && (
         <TradingInput

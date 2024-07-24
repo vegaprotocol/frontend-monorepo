@@ -1,5 +1,4 @@
 import { ErrorBoundary } from '@sentry/react';
-import { CompetitionsHeader } from '../../components/competitions/competitions-header';
 import { Link, useParams } from 'react-router-dom';
 import { useT } from '../../lib/use-t';
 import {
@@ -21,6 +20,7 @@ import { addDecimalsFormatNumberQuantum } from '@vegaprotocol/utils';
 import { TeamAvatar } from '../../components/competitions/team-avatar';
 import { useTeamsMap } from '../../lib/hooks/use-teams';
 import { Links } from '../../lib/links';
+import { HeaderHero } from '../../components/header-hero';
 
 export const CompetitionsGame = () => {
   const t = useT();
@@ -104,13 +104,13 @@ export const CompetitionsGame = () => {
 
   return (
     <ErrorBoundary>
-      <CompetitionsHeader title={t('Game results')}>
+      <HeaderHero title={t('Game results')}>
         {cardData && (
-          <p className="text-lg">
+          <p>
             <DispatchMetricInfo reward={cardData} />
           </p>
         )}
-      </CompetitionsHeader>
+      </HeaderHero>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
         <div>

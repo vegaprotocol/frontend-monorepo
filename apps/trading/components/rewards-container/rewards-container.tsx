@@ -136,8 +136,8 @@ export const RewardsContainer = () => {
   ]);
 
   return (
-    <div className="flex flex-col w-full gap-3">
-      <div className="grid auto-rows-min grid-cols-6 gap-3">
+    <>
+      <section className="grid auto-rows-min grid-cols-6 gap-3">
         {/* Always show reward information for vega */}
         <Card
           key={params.reward_asset}
@@ -250,34 +250,30 @@ export const RewardsContainer = () => {
               </Card>
             );
           })}
-      </div>
-      <div className="grid auto-rows-min grid-cols-6 gap-3">
+      </section>
+      <section className="hidden md:block">
         <Card
           title={t('Rewards history')}
-          className="lg:col-span-full hidden md:block"
           loading={rewardsLoading}
           noBackgroundOnMobile={true}
           highlight={true}
         >
-          <div className="flex flex-col gap-4">
-            <RewardsHistoryContainer
-              epoch={Number(epochData?.epoch.id)}
-              pubKey={pubKey}
-              assets={assetMap}
-            />
-          </div>
+          <RewardsHistoryContainer
+            epoch={Number(epochData?.epoch.id)}
+            pubKey={pubKey}
+            assets={assetMap}
+          />
         </Card>
+      </section>
+      <section className="hidden md:grid auto-rows-min grid-cols-6 gap-3">
         {pubKey && activityStreakBenefitTiers.tiers?.length > 0 && (
           <Card
             title={t('Activity Streak')}
-            className={classNames(
-              {
-                'lg:col-span-6 xl:col-span-3':
-                  activityStreakBenefitTiers.tiers.length <= 4,
-                'xl:col-span-6': activityStreakBenefitTiers.tiers.length > 4,
-              },
-              'hidden md:block'
-            )}
+            className={classNames({
+              'lg:col-span-6 xl:col-span-3':
+                activityStreakBenefitTiers.tiers.length <= 4,
+              'xl:col-span-6': activityStreakBenefitTiers.tiers.length > 4,
+            })}
           >
             <span className="flex flex-col mr-8 pr-4">
               <ActivityStreak
@@ -290,14 +286,11 @@ export const RewardsContainer = () => {
         {pubKey && vestingBenefitTiers.tiers?.length > 0 && (
           <Card
             title={t('Reward Hoarder Bonus')}
-            className={classNames(
-              {
-                'lg:col-span-6 xl:col-span-3':
-                  vestingBenefitTiers.tiers.length <= 4,
-                'xl:col-span-6': vestingBenefitTiers.tiers.length > 4,
-              },
-              'hidden md:block'
-            )}
+            className={classNames({
+              'lg:col-span-6 xl:col-span-3':
+                vestingBenefitTiers.tiers.length <= 4,
+              'xl:col-span-6': vestingBenefitTiers.tiers.length > 4,
+            })}
           >
             <span className="flex flex-col mr-8 pr-4">
               <RewardHoarderBonus
@@ -307,9 +300,11 @@ export const RewardsContainer = () => {
             </span>
           </Card>
         )}
+      </section>
+      <section>
         <ActiveRewards currentEpoch={Number(epochData?.epoch.id)} />
-      </div>
-    </div>
+      </section>
+    </>
   );
 };
 

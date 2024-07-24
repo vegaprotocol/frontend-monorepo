@@ -13,10 +13,6 @@ jest.mock('@vegaprotocol/markets', () => ({
   ),
 }));
 
-jest.mock('../node-health', () => ({
-  NodeHealthContainer: () => <div>NodeHealthContainer</div>,
-}));
-
 jest.mock('../asset-card', () => ({
   AssetCard: ({ marketId }: { marketId: string }) => (
     <span data-testid="asset-card">Asset: {marketId}</span>
@@ -55,7 +51,6 @@ describe('Sidebar', () => {
   it('switches between accordion sections', async () => {
     const { user } = renderComponent();
     expect(screen.getByTestId('deal-ticket')).toBeInTheDocument();
-    expect(screen.getByText('NodeHealthContainer')).toBeInTheDocument();
 
     await user.click(screen.getByRole('button', { name: 'Market info' }));
 

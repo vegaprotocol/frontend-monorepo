@@ -30,6 +30,7 @@ import { PartyActiveOrdersHandler } from './party-active-orders-handler';
 import { MaybeConnectEagerly } from './maybe-connect-eagerly';
 import { TransactionHandlers } from './transaction-handlers';
 import { useT } from '../lib/use-t';
+import { NodeHealthContainer } from '../components/node-health';
 
 const Title = () => {
   const t = useT();
@@ -87,6 +88,9 @@ function AppBody({ Component }: AppProps) {
       <MaybeConnectEagerly />
       <PartyActiveOrdersHandler />
       <Telemetry />
+      <div className="hidden lg:block absolute bottom-3 right-3 z-10">
+        <NodeHealthContainer />
+      </div>
     </div>
   );
 }

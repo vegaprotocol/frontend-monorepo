@@ -136,7 +136,7 @@ export const Navbar = ({ theme = 'system' }: { theme?: Theme }) => {
             {menu === 'nav' && <NavbarMenu onClick={() => setMenu(null)} />}
             {menu === 'wallet' && <VegaWalletMenu setMenu={setMenu} />}
             <div className="p-2 mt-auto flex justify-end">
-              <NodeHealthContainer />
+              <NodeHealthContainer variant="normal" />
             </div>
           </D.Content>
         </D.Root>

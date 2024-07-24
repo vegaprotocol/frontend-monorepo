@@ -1,6 +1,5 @@
 import { useT } from '../../lib/use-t';
 import { ErrorBoundary } from '@sentry/react';
-import { CompetitionsHeader } from '../../components/competitions/competitions-header';
 import { ExternalLink, Intent, Loader } from '@vegaprotocol/ui-toolkit';
 import { useEpochInfoQuery } from '../../lib/hooks/__generated__/Epoch';
 import { Link, useNavigate } from 'react-router-dom';
@@ -21,6 +20,7 @@ import { useRewards } from '../../lib/hooks/use-rewards';
 import { Trans } from 'react-i18next';
 import { DocsLinks } from '@vegaprotocol/environment';
 import { type ComponentProps } from 'react';
+import { HeaderHero } from '../../components/header-hero';
 
 export const CompetitionsHome = () => {
   const t = useT();
@@ -134,8 +134,8 @@ export const CompetitionsHome = () => {
 
   return (
     <ErrorBoundary>
-      <CompetitionsHeader title={t('Competitions')}>
-        <p className="text-lg mb-3">
+      <HeaderHero title={t('Competitions')}>
+        <p>
           <Trans
             i18nKey={
               'Check the cards below to see what community-created, on-chain games are active and how to compete. Joining a team also lets you take part in the on-chain <0>referral program</0>.'
@@ -147,7 +147,7 @@ export const CompetitionsHome = () => {
             ]}
           />
         </p>
-        <p className="text-lg mb-1">
+        <p>
           <Trans
             i18nKey={
               'Got an idea for a competition? Anyone can define and fund one -- <0>propose an on-chain game</0> yourself.'
@@ -164,11 +164,11 @@ export const CompetitionsHome = () => {
           />
           {/** Docs: https://docs.vega.xyz/mainnet/tutorials/proposals/asset-transfer-proposal */}
         </p>
-      </CompetitionsHeader>
+      </HeaderHero>
 
       {/** Team card */}
       {myTeam ? (
-        <>
+        <section>
           <h2 className="text-2xl mb-6">{t('My team')}</h2>
           <div className="mb-12">
             <TeamCard
@@ -178,9 +178,9 @@ export const CompetitionsHome = () => {
               games={myTeamGames}
             />
           </div>
-        </>
+        </section>
       ) : (
-        <>
+        <section>
           {/** Get started */}
           <h2 className="text-2xl mb-6">{t('Get started')}</h2>
 
@@ -210,61 +210,65 @@ export const CompetitionsHome = () => {
               actionElement={<ActionButton {...chooseTeamBtnProps} />}
             />
           </CompetitionsActionsContainer>
-        </>
+        </section>
       )}
 
       {/** List of available games */}
-      <h2 className="text-2xl mb-1">{t('Games')}</h2>
-      <p className="mb-6 text-sm">
-        <Trans
-          i18nKey={
-            'See all the live games on the cards below. <0>Find out how to create one</0>.'
-          }
-          components={[
-            <ExternalLink
-              className="underline"
-              key="find-out"
-              href={DocsLinks?.ASSET_TRANSFER_PROPOSAL}
-            >
-              Find out how to create one
-            </ExternalLink>,
-          ]}
-        />
-        {/** Docs: https://docs.vega.xyz/mainnet/tutorials/proposals/asset-transfer-proposal */}
-      </p>
+      <section>
+        <h2 className="text-2xl mb-1">{t('Games')}</h2>
+        <p className="mb-6 text-sm">
+          <Trans
+            i18nKey={
+              'See all the live games on the cards below. <0>Find out how to create one</0>.'
+            }
+            components={[
+              <ExternalLink
+                className="underline"
+                key="find-out"
+                href={DocsLinks?.ASSET_TRANSFER_PROPOSAL}
+              >
+                Find out how to create one
+              </ExternalLink>,
+            ]}
+          />
+          {/** Docs: https://docs.vega.xyz/mainnet/tutorials/proposals/asset-transfer-proposal */}
+        </p>
 
-      <div className="mb-12 flex">
-        {gamesLoading ? (
-          <Loader size="small" />
-        ) : (
-          <GamesContainer data={gamesData} currentEpoch={currentEpoch} />
-        )}
-      </div>
+        <div className="mb-12 flex">
+          {gamesLoading ? (
+            <Loader size="small" />
+          ) : (
+            <GamesContainer data={gamesData} currentEpoch={currentEpoch} />
+          )}
+        </div>
+      </section>
 
       {/** The teams ranking */}
-      <div className="mb-1 flex flex-row items-baseline gap-3 justify-between">
-        <h2 className="text-2xl">
-          <Link to={Links.COMPETITIONS_TEAMS()} className=" underline">
-            {t('Leaderboard')}
+      <section>
+        <div className="mb-1 flex flex-row items-baseline gap-3 justify-between">
+          <h2 className="text-2xl">
+            <Link to={Links.COMPETITIONS_TEAMS()} className=" underline">
+              {t('Leaderboard')}
+            </Link>
+          </h2>
+          <Link to={Links.COMPETITIONS_TEAMS()} className="text-sm underline">
+            {t('View all teams')}
           </Link>
-        </h2>
-        <Link to={Links.COMPETITIONS_TEAMS()} className="text-sm underline">
-          {t('View all teams')}
-        </Link>
-      </div>
-      <p className="mb-6 text-sm">
-        {t(
-          'Teams can earn rewards if they meet the goals set in the on-chain trading competitions. Track your earned rewards here, and see which teams are top of the leaderboard this month.'
-        )}
-      </p>
+        </div>
+        <p className="mb-6 text-sm">
+          {t(
+            'Teams can earn rewards if they meet the goals set in the on-chain trading competitions. Track your earned rewards here, and see which teams are top of the leaderboard this month.'
+          )}
+        </p>
 
-      <div className="flex">
-        {teamsLoading ? (
-          <Loader size="small" />
-        ) : (
-          <CompetitionsLeaderboard data={take(teamsData, 10)} />
-        )}
-      </div>
+        <div className="flex">
+          {teamsLoading ? (
+            <Loader size="small" />
+          ) : (
+            <CompetitionsLeaderboard data={take(teamsData, 10)} />
+          )}
+        </div>
+      </section>
     </ErrorBoundary>
   );
 };

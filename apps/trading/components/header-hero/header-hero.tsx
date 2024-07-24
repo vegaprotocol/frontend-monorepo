@@ -1,27 +1,24 @@
-import { AnimatedDudeWithWire } from '../../client-pages/referrals/graphics/dude';
 import { type ReactNode } from 'react';
+import { AnimatedDudeWithWire } from '../graphics/dude';
 
-export const CompetitionsHeader = ({
-  title,
-  children,
-}: {
-  title: string;
-  children?: ReactNode;
+export const HeaderHero = (props: {
+  title: ReactNode;
+  children: ReactNode;
 }) => {
   return (
-    <div className="relative mb-4 lg:mb-20">
+    <header className="relative lg:py-10">
       <div
         aria-hidden
         className="absolute top-20 right-[220px] md:right-[240px] max-sm:hidden"
       >
         <AnimatedDudeWithWire />
       </div>
-      <div className="pt-6 lg:pt-20 sm:w-1/2">
+      <div className="sm:w-1/2">
         <h1 className="text-3xl lg:text-6xl leading-[1em] font-alpha calt mb-2 lg:mb-10">
-          {title}
+          {props.title}
         </h1>
-        {children}
+        <div className="flex flex-col gap-3 text-lg">{props.children}</div>
       </div>
-    </div>
+    </header>
   );
 };

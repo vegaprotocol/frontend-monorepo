@@ -96,126 +96,129 @@ export const FeesContainer = () => {
   );
 
   return (
-    <div
-      className="grid auto-rows-min grid-cols-4 gap-3"
-      data-testid="fees-container"
-    >
-      {isConnected && (
-        <>
-          <Card
-            title={t('My trading fees')}
-            className="sm:col-span-2"
-            loading={loading}
-          >
-            <TradingFees
-              params={params}
-              markets={markets}
-              referralDiscount={referralDiscount}
-              volumeDiscount={volumeDiscount}
-            />
-          </Card>
-          <Card
-            title={t('Total discount')}
-            className="sm:col-span-2"
-            loading={loading}
-          >
-            <TotalDiscount
-              referralDiscount={referralDiscount}
-              volumeDiscount={volumeDiscount}
-              isReferralProgramRunning={isReferralProgramRunning}
-              isVolumeDiscountProgramRunning={isVolumeDiscountProgramRunning}
-            />
-          </Card>
-          <Card
-            title={t('My current volume')}
-            className="sm:col-span-2"
-            loading={loading}
-          >
-            {isVolumeDiscountProgramRunning ? (
-              <CurrentVolume
-                tiers={volumeTiers}
-                tierIndex={volumeTierIndex}
-                windowLengthVolume={volumeInWindow}
-                windowLength={volumeDiscountWindowLength}
+    <>
+      <section
+        className="grid auto-rows-min grid-cols-4 gap-3"
+        data-testid="fees-container"
+      >
+        {isConnected && (
+          <>
+            <Card
+              title={t('My trading fees')}
+              className="sm:col-span-2"
+              loading={loading}
+            >
+              <TradingFees
+                params={params}
+                markets={markets}
+                referralDiscount={referralDiscount}
+                volumeDiscount={volumeDiscount}
               />
-            ) : (
-              <p
-                className="text-muted pt-3 text-sm"
-                data-testid="no-volume-discount"
-              >
-                {t('No volume discount program active')}
-              </p>
-            )}
-          </Card>
-          <Card
-            title={t('Referral benefits')}
-            className="sm:col-span-2"
-            loading={loading}
-            data-testid="referral-benefits-card"
-          >
-            {isReferrer ? (
-              <ReferrerInfo code={code} data-testid="referrer-info" />
-            ) : isReferralProgramRunning ? (
-              <ReferralBenefits
-                setRunningNotionalTakerVolume={referralVolumeInWindow}
-                epochsInSet={epochsInSet}
-                epochs={referralDiscountWindowLength}
-                data-testid="referral-benefits"
+            </Card>
+            <Card
+              title={t('Total discount')}
+              className="sm:col-span-2"
+              loading={loading}
+            >
+              <TotalDiscount
+                referralDiscount={referralDiscount}
+                volumeDiscount={volumeDiscount}
+                isReferralProgramRunning={isReferralProgramRunning}
+                isVolumeDiscountProgramRunning={isVolumeDiscountProgramRunning}
               />
-            ) : (
-              <p
-                className="text-muted pt-3 text-sm"
-                data-testid="no-referral-program"
-              >
-                {t('No referral program active')}
-              </p>
-            )}
-          </Card>
-        </>
-      )}
-      <Card
-        title={t('Volume discount')}
-        className="lg:col-span-full xl:col-span-2"
-        loading={loading}
-        data-testid="volume-discount-card"
-        noBackgroundOnMobile={true}
-      >
-        <VolumeTiers
-          tiers={volumeTiers}
-          tierIndex={volumeTierIndex}
-          lastEpochVolume={volumeInWindow}
-          windowLength={volumeDiscountWindowLength}
-        />
-      </Card>
-      <Card
-        title={t('Referral discount')}
-        className="lg:col-span-full xl:col-span-2"
-        loading={loading}
-        data-testid="referral-discount-card"
-        noBackgroundOnMobile={true}
-      >
-        <ReferralTiers
-          tiers={referralTiers}
-          tierIndex={referralTierIndex}
-          epochsInSet={epochsInSet}
-          referralVolumeInWindow={referralVolumeInWindow}
-          referralDiscountWindowLength={referralDiscountWindowLength}
-        />
-      </Card>
-      <Card
-        title={t('Fees by market')}
-        className="lg:col-span-full"
-        loading={marketsLoading}
-        data-testid="fees-by-market-card"
-        noBackgroundOnMobile={true}
-      >
-        <MarketFees
-          markets={markets}
-          referralDiscount={referralDiscount}
-          volumeDiscount={volumeDiscount}
-        />
-      </Card>
-    </div>
+            </Card>
+            <Card
+              title={t('My current volume')}
+              className="sm:col-span-2"
+              loading={loading}
+            >
+              {isVolumeDiscountProgramRunning ? (
+                <CurrentVolume
+                  tiers={volumeTiers}
+                  tierIndex={volumeTierIndex}
+                  windowLengthVolume={volumeInWindow}
+                  windowLength={volumeDiscountWindowLength}
+                />
+              ) : (
+                <p
+                  className="text-muted pt-3 text-sm"
+                  data-testid="no-volume-discount"
+                >
+                  {t('No volume discount program active')}
+                </p>
+              )}
+            </Card>
+            <Card
+              title={t('Referral benefits')}
+              className="sm:col-span-2"
+              loading={loading}
+              data-testid="referral-benefits-card"
+            >
+              {isReferrer ? (
+                <ReferrerInfo code={code} data-testid="referrer-info" />
+              ) : isReferralProgramRunning ? (
+                <ReferralBenefits
+                  setRunningNotionalTakerVolume={referralVolumeInWindow}
+                  epochsInSet={epochsInSet}
+                  epochs={referralDiscountWindowLength}
+                  data-testid="referral-benefits"
+                />
+              ) : (
+                <p
+                  className="text-muted pt-3 text-sm"
+                  data-testid="no-referral-program"
+                >
+                  {t('No referral program active')}
+                </p>
+              )}
+            </Card>
+          </>
+        )}
+        <Card
+          title={t('Volume discount')}
+          className="lg:col-span-full xl:col-span-2"
+          loading={loading}
+          data-testid="volume-discount-card"
+          noBackgroundOnMobile={true}
+        >
+          <VolumeTiers
+            tiers={volumeTiers}
+            tierIndex={volumeTierIndex}
+            lastEpochVolume={volumeInWindow}
+            windowLength={volumeDiscountWindowLength}
+          />
+        </Card>
+        <Card
+          title={t('Referral discount')}
+          className="lg:col-span-full xl:col-span-2"
+          loading={loading}
+          data-testid="referral-discount-card"
+          noBackgroundOnMobile={true}
+        >
+          <ReferralTiers
+            tiers={referralTiers}
+            tierIndex={referralTierIndex}
+            epochsInSet={epochsInSet}
+            referralVolumeInWindow={referralVolumeInWindow}
+            referralDiscountWindowLength={referralDiscountWindowLength}
+          />
+        </Card>
+      </section>
+      <section>
+        <Card
+          title={t('Fees by market')}
+          loading={marketsLoading}
+          data-testid="fees-by-market-card"
+          noBackgroundOnMobile={true}
+        >
+          <MarketFees
+            markets={markets}
+            referralDiscount={referralDiscount}
+            volumeDiscount={volumeDiscount}
+          />
+        </Card>
+      </section>
+    </>
   );
 };
 

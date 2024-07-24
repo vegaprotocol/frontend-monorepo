@@ -4,7 +4,6 @@ import {
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
-import { LandingBanner } from './landing-banner';
 import { TiersContainer } from './tiers';
 import { TabLink } from './buttons';
 import { Outlet, useMatch } from 'react-router-dom';
@@ -16,17 +15,18 @@ import { useT } from '../../lib/use-t';
 import { ErrorBoundary } from '../../components/error-boundary';
 import { usePageTitle } from '../../lib/hooks/use-page-title';
 import { useFindReferralSet } from './hooks/use-find-referral-set';
+import { HeaderHero } from '../../components/header-hero';
 
 const Nav = () => {
   const t = useT();
   const match = useMatch(Routes.REFERRALS_APPLY_CODE);
   return (
-    <div className="flex justify-center border-b border-vega-cdark-500">
+    <nav className="flex justify-center border-b border-vega-cdark-500">
       <TabLink end to={match ? Routes.REFERRALS_APPLY_CODE : Routes.REFERRALS}>
         {t('Apply code')}
       </TabLink>
       <TabLink to={Routes.REFERRALS_CREATE_CODE}>{t('Create code')}</TabLink>
-    </div>
+    </nav>
   );
 };
 
@@ -42,12 +42,24 @@ export const Referrals = () => {
 
   return (
     <ErrorBoundary feature="referrals">
-      <LandingBanner />
+      <HeaderHero title={t('Vega community referrals')}>
+        <p>
+          {t(
+            'Referral programs can be proposed and created via community governance.'
+          )}
+        </p>
+        <p>
+          {t(
+            'Once live, users can generate referral codes to share with their friends and earn commission on their trades, while referred traders can access fee discounts based on the running volume of the group.'
+          )}
+        </p>
+      </HeaderHero>
 
       {showNav && <Nav />}
-      <div
+
+      <section
         className={classNames({
-          'py-8 lg:py-16': showNav,
+          'py-4 lg:py-8': showNav,
           'h-[300px] relative': loading || error,
         })}
       >
@@ -63,24 +75,18 @@ export const Referrals = () => {
         ) : (
           <Outlet />
         )}
-      </div>
+      </section>
 
-      <TiersContainer />
+      <section>
+        <TiersContainer />
+      </section>
 
-      <div className="mt-10 mb-5 text-center">
+      <section className="py-14 flex flex-col justify-center items-center gap-4">
         <h2 className="text-2xl">{t('How it works')}</h2>
-      </div>
-      <div className="md:w-[60%] mx-auto">
-        <div className="mt-5">
-          <TradingAnchorButton
-            className="mx-auto w-max"
-            href={REFERRAL_DOCS_LINK}
-            target="_blank"
-          >
-            {t('Read the docs')} <VegaIcon name={VegaIconNames.OPEN_EXTERNAL} />
-          </TradingAnchorButton>
-        </div>
-      </div>
+        <TradingAnchorButton href={REFERRAL_DOCS_LINK} target="_blank">
+          {t('Read the docs')} <VegaIcon name={VegaIconNames.OPEN_EXTERNAL} />
+        </TradingAnchorButton>
+      </section>
     </ErrorBoundary>
   );
 };
