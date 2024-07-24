@@ -116,7 +116,7 @@ const GroupCard = ({
         <div
           className={classNames(
             CardColourStyles[colour].mainClassName,
-            'bg-gradient-to-b bg-vega-clight-800 dark:bg-vega-cdark-800 h-full w-full rounded-md p-4',
+            'bg-gradient-to-b bg-vega-clight-900 dark:bg-vega-cdark-900 h-full w-full rounded-md p-4',
             'flex flex-col gap-4 justify-items-start'
           )}
         >
@@ -259,7 +259,7 @@ const RewardCard = ({
         <div
           className={classNames(
             CardColourStyles[colour].mainClassName,
-            'bg-gradient-to-b bg-vega-clight-800 dark:bg-vega-cdark-800 h-full w-full rounded-md p-4 flex flex-col gap-4'
+            'bg-gradient-to-b bg-vega-clight-900 dark:bg-vega-cdark-900 h-full w-full rounded-md p-4 flex flex-col gap-4'
           )}
         >
           <div
