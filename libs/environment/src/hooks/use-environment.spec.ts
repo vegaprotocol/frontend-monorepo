@@ -517,7 +517,7 @@ describe('getUserEnabledFeatureFlags', () => {
   it('reads enabled flags from local storage', () => {
     localStorage.setItem(
       featureFlagsLocalStorageKey,
-      'STOP_ORDERS,STOP_ORDERS,REFERRALS,BLAH'
+      'STOP_ORDERS,STOP_ORDERS,BLAH'
     );
     const userEnabledFlags = getUserEnabledFeatureFlags(true, ['STOP_ORDERS']);
     expect(userEnabledFlags).toEqual(['STOP_ORDERS']);
