@@ -127,7 +127,8 @@ export const MarketBanner = ({ market }: { market: Market }) => {
         }
       : undefined,
     marketState === MarketState.STATE_SUSPENDED &&
-    marketTradingMode === MarketTradingMode.TRADING_MODE_MONITORING_AUCTION
+    (marketTradingMode === MarketTradingMode.TRADING_MODE_MONITORING_AUCTION ||
+      marketTradingMode === MarketTradingMode.TRADING_MODE_LONG_BLOCK_AUCTION)
       ? {
           kind: 'MonitoringAuction' as const,
           market,
