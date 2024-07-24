@@ -2,7 +2,6 @@ import {
   MultiSelect,
   MultiSelectOption,
   Sparkline,
-  TinyScroll,
   TradingInput,
   VegaIcon,
   VegaIconNames,
@@ -119,63 +118,57 @@ export const MarketsPage = () => {
   );
 
   return (
-    <ErrorBoundary feature="rewards">
-      <TinyScroll>
-        <div className="md:max-w-7xl my-4 mx-auto flex flex-col gap-4 p-4">
-          <div className="grid auto-rows-min grid-cols-3 lg:grid-cols-5 xl:grid-cols-3 gap-3">
-            <div className="flex flex-col gap-2 col-span-full lg:col-span-1">
-              <Card key="24h-vol" className="flex grow">
-                <div className="flex flex-col h-full">
-                  <h2 className="mb-3">{t('24h Volume')}</h2>
-                  <div className="flex items-center gap-2 justify-between flex-wrap grow">
-                    {totalVolume24h && (
-                      <span className="text-xl">
-                        ${formatNumber(totalVolume24h, 2)}
-                      </span>
-                    )}
-                    <div>{totalVolumeSparkline}</div>
-                  </div>
-                </div>
-              </Card>
-              <Card
-                key="tvl"
-                className="flex grow"
-                loading={!tvl && tvlLoading}
-                title={t('TVL')}
-              >
-                <div className="flex flex-col h-full">
-                  {tvl && (
-                    <span className="text-xl">${formatNumber(tvl, 2)}</span>
-                  )}
-                </div>
-              </Card>
+    <ErrorBoundary feature="markets">
+      <div className="grid auto-rows-min grid-cols-3 lg:grid-cols-5 xl:grid-cols-3 gap-3">
+        <div className="flex flex-col gap-2 col-span-full lg:col-span-1">
+          <Card key="24h-vol" className="flex grow">
+            <div className="flex flex-col h-full">
+              <h2 className="mb-3">{t('24h Volume')}</h2>
+              <div className="flex items-center gap-2 justify-between flex-wrap grow">
+                {totalVolume24h && (
+                  <span className="text-xl">
+                    ${formatNumber(totalVolume24h, 2)}
+                  </span>
+                )}
+                <div>{totalVolumeSparkline}</div>
+              </div>
             </div>
-            <Card
-              key="top-gainers"
-              className="col-span-full lg:col-span-2 xl:col-span-1"
-            >
-              <div className="flex flex-col h-full gap-3">
-                <h2 className="mb-3">Top gainers</h2>
-                <TopMarketList markets={topGainers} />
-              </div>
-            </Card>
-            <Card
-              key="new-listings"
-              className="col-span-full lg:col-span-2 xl:col-span-1"
-            >
-              <div className="flex flex-col h-full gap-3">
-                <h2 className="mb-3">New listings</h2>
-                <TopMarketList markets={newListings} />
-              </div>
-            </Card>
-          </div>
-          <MarketTable
-            markets={allMarkets}
-            marketAssets={marketAssets}
-            error={error}
-          />
+          </Card>
+          <Card
+            key="tvl"
+            className="flex grow"
+            loading={!tvl && tvlLoading}
+            title={t('TVL')}
+          >
+            <div className="flex flex-col h-full">
+              {tvl && <span className="text-xl">${formatNumber(tvl, 2)}</span>}
+            </div>
+          </Card>
         </div>
-      </TinyScroll>
+        <Card
+          key="top-gainers"
+          className="col-span-full lg:col-span-2 xl:col-span-1"
+        >
+          <div className="flex flex-col h-full gap-3">
+            <h2 className="mb-3">Top gainers</h2>
+            <TopMarketList markets={topGainers} />
+          </div>
+        </Card>
+        <Card
+          key="new-listings"
+          className="col-span-full lg:col-span-2 xl:col-span-1"
+        >
+          <div className="flex flex-col h-full gap-3">
+            <h2 className="mb-3">New listings</h2>
+            <TopMarketList markets={newListings} />
+          </div>
+        </Card>
+      </div>
+      <MarketTable
+        markets={allMarkets}
+        marketAssets={marketAssets}
+        error={error}
+      />
     </ErrorBoundary>
   );
 };
