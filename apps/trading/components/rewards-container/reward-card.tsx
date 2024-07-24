@@ -31,7 +31,7 @@ import {
   IndividualScopeMapping,
   type StakingRewardMetric,
   type StakingDispatchStrategy,
-  type DistributionStrategy,
+  DistributionStrategy,
 } from '@vegaprotocol/types';
 import { type ReactNode } from 'react';
 import {
@@ -891,6 +891,11 @@ const EntityScopeIconMap: Record<EntityScope, VegaIconNames> = {
   [EntityScope.ENTITY_SCOPE_INDIVIDUALS]: VegaIconNames.MAN,
 };
 
+const DistStrategyIconMap: Record<DistributionStrategy, VegaIconNames> = {
+  [DistributionStrategy.DISTRIBUTION_STRATEGY_RANK]: VegaIconNames.MEDAL,
+  [DistributionStrategy.DISTRIBUTION_STRATEGY_PRO_RATA]: VegaIconNames.CLOCK,
+};
+
 const EntityIcon = ({
   entityScope,
   size = 18,
@@ -932,7 +937,7 @@ const DistributionStrategyIcon = ({
       underline={true}
     >
       <span className="flex items-center p-2 rounded-full border border-gray-600">
-        <VegaIcon name={VegaIconNames.CLOCK} size={size} />
+        <VegaIcon name={DistStrategyIconMap[strategy]} size={size} />
       </span>
     </Tooltip>
   );

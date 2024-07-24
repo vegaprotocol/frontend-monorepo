@@ -26,6 +26,7 @@ import { IconKebab } from './svg-icons/icon-kebab';
 import { IconLinkedIn } from './svg-icons/icon-linkedin';
 import { IconLoading } from './svg-icons/icon-loading';
 import { IconLock } from './svg-icons/icon-lock';
+import { IconMedal } from './svg-icons/icon-medal';
 import { IconMetaMask } from './svg-icons/icon-metamask';
 import { IconMinus } from './svg-icons/icon-minus';
 import { IconMoon } from './svg-icons/icon-moon';
@@ -86,6 +87,7 @@ export enum VegaIconNames {
   LOADING = 'loading',
   LOCK = 'lock',
   LONG = 'long',
+  MEDAL = 'medal',
   METAMASK = 'metamask',
   MINUS = 'minus',
   MOON = 'moon',
@@ -153,6 +155,7 @@ export const VegaIconNameMap: Record<
   loading: IconLoading,
   lock: IconLock,
   long: IconLong,
+  medal: IconMedal,
   metamask: IconMetaMask,
   minus: IconMinus,
   moon: IconMoon,
