@@ -18,7 +18,7 @@ import { Deposit } from '../client-pages/deposit';
 import { Withdraw } from '../client-pages/withdraw';
 import { Transfer } from '../client-pages/transfer';
 import { Fees } from '../client-pages/fees';
-import { Rewards } from '../client-pages/rewards';
+import { Rewards, RewardsDetail } from '../client-pages/rewards';
 import { Referrals } from '../client-pages/referrals/referrals';
 import { ReferralStatistics } from '../client-pages/referrals/referral-statistics';
 import { ApplyCodeFormContainer } from '../client-pages/referrals/apply-code-form';
@@ -133,6 +133,16 @@ export const useRouterConfig = (): RouteObject[] => {
         {
           index: true,
           element: <Rewards />,
+        },
+      ],
+    },
+    {
+      path: AppRoutes.REWARDS_DETAIL,
+      element: <LayoutCentered variant="gradient" />,
+      children: [
+        {
+          index: true,
+          element: <RewardsDetail />,
         },
       ],
     },

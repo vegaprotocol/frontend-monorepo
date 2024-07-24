@@ -11,8 +11,7 @@ import {
   VegaIcon,
   VegaIconNames,
   truncateMiddle,
-  TradingButton,
-  Dialog,
+  TradingAnchorButton,
 } from '@vegaprotocol/ui-toolkit';
 import {
   DistributionStrategyDescriptionMapping,
@@ -34,7 +33,7 @@ import {
   type StakingDispatchStrategy,
   type DistributionStrategy,
 } from '@vegaprotocol/types';
-import { useState, type ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import {
   type AssetFieldsFragment,
   type BasicAssetDetails,
@@ -89,7 +88,6 @@ const GroupCard = ({
   distributionStrategy,
   distributionDelay,
   count,
-  onClick,
 }: {
   colour: CardColour;
   rewardAmount: string;
@@ -99,7 +97,6 @@ const GroupCard = ({
   distributionStrategy?: DistributionStrategy;
   distributionDelay?: string | number;
   count: number;
-  onClick: () => void;
 }) => {
   const t = useT();
 
@@ -195,15 +192,14 @@ const GroupCard = ({
               {t(DispatchMetricDescription[dispatchMetric])}
             </p>
           </div>
-
           <div>
-            <TradingButton
+            <TradingAnchorButton
               intent={null}
               className={classNames(CardColourStyles[colour].btn, 'w-full')}
-              onClick={onClick}
+              href={Links.REWARDS_DETAIL('TODO')}
             >
               {t('See details of {{count}} rewards', { count })}
-            </TradingButton>
+            </TradingAnchorButton>
           </div>
         </div>
       </div>
@@ -1045,55 +1041,18 @@ export const GroupRewardCard = ({
   const distributionDelay =
     minDelay === maxDelay ? minDelay : `${minDelay} - ${maxDelay}`;
 
-  const [open, setOpen] = useState(false);
-
   return (
-    <>
-      <GroupCard
-        colour={colour}
-        rewardAmount={rewardAmount}
-        // TODO: fix the types for the useRewards hook. It just the full type, and not the type created by Rewards.graphql
-        transferAsset={transferAsset as AssetFieldsFragment}
-        dispatchMetric={dispatchMetric}
-        entityScope={entityScope}
-        distributionStrategy={distributionStrategy}
-        distributionDelay={distributionDelay}
-        count={transferNodes.length}
-        onClick={() => {
-          setOpen(true);
-        }}
-      />
-      <Dialog
-        size="large"
-        open={open}
-        onChange={(isOpen) => {
-          setOpen(isOpen);
-        }}
-        title={
-          DispatchMetricLabels[
-            transferNodes[0].transfer.kind.dispatchStrategy.dispatchMetric
-          ]
-        }
-      >
-        <div
-          data-card-from-group
-          className={classNames(
-            'pt-4',
-
-            'grid gap-x-8 gap-y-10 h-fit grid-cols-[repeat(auto-fill,_minmax(230px,_1fr))] md:grid-cols-[repeat(auto-fill,_minmax(230px,_1fr))] lg:grid-cols-[repeat(auto-fill,_minmax(320px,_1fr))] xl:grid-cols-[repeat(auto-fill,_minmax(335px,_1fr))]'
-          )}
-        >
-          {transferNodes.map((n, i) => (
-            <ActiveRewardCard
-              key={i}
-              transferNode={n}
-              currentEpoch={currentEpoch}
-              requirements={requirements}
-            />
-          ))}
-        </div>
-      </Dialog>
-    </>
+    <GroupCard
+      colour={colour}
+      rewardAmount={rewardAmount}
+      // TODO: fix the types for the useRewards hook. It just the full type, and not the type created by Rewards.graphql
+      transferAsset={transferAsset as AssetFieldsFragment}
+      dispatchMetric={dispatchMetric}
+      entityScope={entityScope}
+      distributionStrategy={distributionStrategy}
+      distributionDelay={distributionDelay}
+      count={transferNodes.length}
+    />
   );
 };
 

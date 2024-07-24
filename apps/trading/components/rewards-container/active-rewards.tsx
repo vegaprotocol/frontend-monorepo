@@ -23,12 +23,7 @@ import {
 import { useMyTeam } from '../../lib/hooks/use-my-team';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useStakeAvailable } from '../../lib/hooks/use-stake-available';
-import {
-  ActiveRewardCard,
-  GroupRewardCard,
-  LinkToGame,
-  areAllMarketsSettled,
-} from './reward-card';
+import { GroupRewardCard, areAllMarketsSettled } from './reward-card';
 import { groupBy } from 'lodash';
 
 export type Filter = {
@@ -149,26 +144,15 @@ export const ActiveRewards = ({ currentEpoch }: { currentEpoch: number }) => {
       <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
         {groupedCards.map((group, i) => {
           if (group.length === 0) return;
-          if (group.length === 1) {
-            return (
-              <LinkToGame key={i} reward={group[0]}>
-                <ActiveRewardCard
-                  transferNode={group[0]}
-                  currentEpoch={currentEpoch}
-                  requirements={requirements}
-                />
-              </LinkToGame>
-            );
-          } else {
-            return (
-              <GroupRewardCard
-                key={i}
-                transferNodes={group}
-                currentEpoch={currentEpoch}
-                requirements={requirements}
-              />
-            );
-          }
+
+          return (
+            <GroupRewardCard
+              key={i}
+              transferNodes={group}
+              currentEpoch={currentEpoch}
+              requirements={requirements}
+            />
+          );
         })}
       </div>
     </div>

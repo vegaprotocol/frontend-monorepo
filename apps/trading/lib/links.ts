@@ -27,6 +27,7 @@ export const Routes = {
   COMPETITIONS_GAME: '/competitions/games/:gameId',
   FEES: '/fees',
   REWARDS: '/rewards',
+  REWARDS_DETAIL: '/rewards/:rewardId',
 } as const;
 
 type ConsoleLinks = {
@@ -63,4 +64,6 @@ export const Links: ConsoleLinks = {
     Routes.COMPETITIONS_GAME.replace(':gameId', gameId),
   FEES: () => Routes.FEES,
   REWARDS: () => Routes.REWARDS,
+  REWARDS_DETAIL: (rewardId: string) =>
+    Routes.REWARDS_DETAIL.replace(':rewardId', rewardId),
 };
