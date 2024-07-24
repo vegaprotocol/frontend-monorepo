@@ -9,6 +9,7 @@ import { IconChevronDown } from './svg-icons/icon-chevron-down';
 import { IconChevronLeft } from './svg-icons/icon-chevron-left';
 import { IconChevronRight } from './svg-icons/icon-chevron-right';
 import { IconChevronUp } from './svg-icons/icon-chevron-up';
+import { IconClock } from './svg-icons/icon-clock';
 import { IconCog } from './svg-icons/icon-cog';
 import { IconCopy } from './svg-icons/icon-copy';
 import { IconCross } from './svg-icons/icon-cross';
@@ -67,6 +68,7 @@ export enum VegaIconNames {
   CHEVRON_LEFT = 'chevron-left',
   CHEVRON_RIGHT = 'chevron-right',
   CHEVRON_UP = 'chevron-up',
+  CLOCK = 'clock',
   COG = 'cog',
   COPY = 'copy',
   CROSS = 'cross',
@@ -136,6 +138,7 @@ export const VegaIconNameMap: Record<
   'trend-up': IconTrendUp,
   breakdown: IconBreakdown,
   bullet: IconBullet,
+  clock: IconClock,
   cog: IconCog,
   copy: IconCopy,
   cross: IconCross,

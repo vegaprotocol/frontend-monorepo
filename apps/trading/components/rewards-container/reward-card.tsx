@@ -50,8 +50,6 @@ import { RankPayoutTable } from './rank-table';
 import { useFeatureFlags } from '@vegaprotocol/environment';
 import { Links } from '../../lib/links';
 import { Link } from 'react-router-dom';
-import max from 'lodash/max';
-import min from 'lodash/min';
 import flatten from 'lodash/flatten';
 import sum from 'lodash/sum';
 
@@ -86,7 +84,6 @@ const GroupCard = ({
   transferAsset,
   entityScope,
   distributionStrategy,
-  distributionDelay,
   count,
 }: {
   colour: CardColour;
@@ -95,7 +92,6 @@ const GroupCard = ({
   transferAsset?: AssetFieldsFragment | undefined;
   entityScope?: EntityScope;
   distributionStrategy?: DistributionStrategy;
-  distributionDelay?: string | number;
   count: number;
 }) => {
   const t = useT();
@@ -153,33 +149,21 @@ const GroupCard = ({
                   <AssetSymbol asset={transferAsset} />
                 </span>
               </h3>
-
-              {/** DISTRIBUTION STRATEGY */}
-              {distributionStrategy && (
-                <Tooltip
-                  description={
-                    <div className="flex flex-col gap-4">
-                      <p>
-                        {t(
-                          DistributionStrategyDescriptionMapping[
-                            distributionStrategy
-                          ]
-                        )}
-                        .
-                      </p>
-                    </div>
-                  }
-                  underline={true}
-                >
-                  <span className="text-xs" data-testid="distribution-strategy">
-                    {DistributionStrategyMapping[distributionStrategy]}
-                  </span>
-                </Tooltip>
-              )}
             </div>
 
-            {/** DISTRIBUTION DELAY */}
-            <DistributionDelay value={distributionDelay} />
+            <div className="flex flex-col gap-2 items-center text-center">
+              {distributionStrategy && (
+                <>
+                  <DistributionStrategyIcon strategy={distributionStrategy} />
+                  <span
+                    className="text-muted text-xs"
+                    data-testid="entity-scope"
+                  >
+                    {DistributionStrategyMapping[distributionStrategy]}
+                  </span>
+                </>
+              )}
+            </div>
           </div>
 
           <div className={classNames('flex flex-col gap-3 h-full')}>
@@ -930,6 +914,30 @@ const EntityIcon = ({
   );
 };
 
+const DistributionStrategyIcon = ({
+  strategy,
+  size = 18,
+}: {
+  strategy: DistributionStrategy;
+  size?: VegaIconSize;
+}) => {
+  const t = useT();
+  return (
+    <Tooltip
+      description={
+        <div className="flex flex-col gap-4">
+          <p>{t(DistributionStrategyDescriptionMapping[strategy])}.</p>
+        </div>
+      }
+      underline={true}
+    >
+      <span className="flex items-center p-2 rounded-full border border-gray-600">
+        <VegaIcon name={VegaIconNames.CLOCK} size={size} />
+      </span>
+    </Tooltip>
+  );
+};
+
 export const areAllMarketsSettled = (
   transferNode: Pick<
     EnrichedRewardTransfer<DispatchStrategy | StakingDispatchStrategy>,
@@ -1032,15 +1040,6 @@ export const GroupRewardCard = ({
   const distributionStrategy =
     transferNodes[0].transfer.kind.dispatchStrategy.distributionStrategy;
 
-  const delays = transferNodes.map(
-    (n) => n.transfer.kind.dispatchStrategy.lockPeriod
-  );
-  const minDelay = min(delays) || 0;
-  const maxDelay = max(delays) || 0;
-
-  const distributionDelay =
-    minDelay === maxDelay ? minDelay : `${minDelay} - ${maxDelay}`;
-
   return (
     <GroupCard
       colour={colour}
@@ -1050,7 +1049,6 @@ export const GroupRewardCard = ({
       dispatchMetric={dispatchMetric}
       entityScope={entityScope}
       distributionStrategy={distributionStrategy}
-      distributionDelay={distributionDelay}
       count={transferNodes.length}
     />
   );
