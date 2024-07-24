@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { EmblemBase } from './emblem-base';
+import { FALLBACK_URL } from '../config/';
 import React from 'react';
 
 describe('EmblemBase', () => {
@@ -7,10 +8,7 @@ describe('EmblemBase', () => {
     render(<EmblemBase />);
     const imageElement = screen.getByAltText('Emblem');
     expect(imageElement).toBeInTheDocument();
-    expect(imageElement).toHaveAttribute(
-      'src',
-      'https://icon.vega.xyz/missing.svg'
-    );
+    expect(imageElement).toHaveAttribute('src', FALLBACK_URL);
   });
 
   test('renders image with provided source', () => {
@@ -38,9 +36,6 @@ describe('EmblemBase', () => {
     const errorEvent = new Event('error');
     imageElement.dispatchEvent(errorEvent);
 
-    expect(imageElement).toHaveAttribute(
-      'src',
-      'https://icon.vega.xyz/missing.svg'
-    );
+    expect(imageElement).toHaveAttribute('src', FALLBACK_URL);
   });
 });
