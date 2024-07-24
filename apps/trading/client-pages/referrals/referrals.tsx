@@ -4,7 +4,6 @@ import {
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
-import { LandingBanner } from './landing-banner';
 import { TiersContainer } from './tiers';
 import { TabLink } from './buttons';
 import { Outlet, useMatch } from 'react-router-dom';
@@ -16,6 +15,7 @@ import { useT } from '../../lib/use-t';
 import { ErrorBoundary } from '../../components/error-boundary';
 import { usePageTitle } from '../../lib/hooks/use-page-title';
 import { useFindReferralSet } from './hooks/use-find-referral-set';
+import { HeaderHero } from '../../components/header-hero';
 
 const Nav = () => {
   const t = useT();
@@ -42,7 +42,18 @@ export const Referrals = () => {
 
   return (
     <ErrorBoundary feature="referrals">
-      <LandingBanner />
+      <HeaderHero title={t('Vega community referrals')}>
+        <p>
+          {t(
+            'Referral programs can be proposed and created via community governance.'
+          )}
+        </p>
+        <p>
+          {t(
+            'Once live, users can generate referral codes to share with their friends and earn commission on their trades, while referred traders can access fee discounts based on the running volume of the group.'
+          )}
+        </p>
+      </HeaderHero>
 
       {showNav && <Nav />}
       <div

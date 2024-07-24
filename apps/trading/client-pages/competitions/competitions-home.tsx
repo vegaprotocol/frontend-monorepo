@@ -1,6 +1,5 @@
 import { useT } from '../../lib/use-t';
 import { ErrorBoundary } from '@sentry/react';
-import { CompetitionsHeader } from '../../components/competitions/competitions-header';
 import { ExternalLink, Intent, Loader } from '@vegaprotocol/ui-toolkit';
 import { useEpochInfoQuery } from '../../lib/hooks/__generated__/Epoch';
 import { Link, useNavigate } from 'react-router-dom';
@@ -21,6 +20,7 @@ import { useRewards } from '../../lib/hooks/use-rewards';
 import { Trans } from 'react-i18next';
 import { DocsLinks } from '@vegaprotocol/environment';
 import { type ComponentProps } from 'react';
+import { HeaderHero } from '../../components/header-hero';
 
 export const CompetitionsHome = () => {
   const t = useT();
@@ -134,8 +134,8 @@ export const CompetitionsHome = () => {
 
   return (
     <ErrorBoundary>
-      <CompetitionsHeader title={t('Competitions')}>
-        <p className="text-lg mb-3">
+      <HeaderHero title={t('Competitions')}>
+        <p>
           <Trans
             i18nKey={
               'Check the cards below to see what community-created, on-chain games are active and how to compete. Joining a team also lets you take part in the on-chain <0>referral program</0>.'
@@ -147,7 +147,7 @@ export const CompetitionsHome = () => {
             ]}
           />
         </p>
-        <p className="text-lg mb-1">
+        <p>
           <Trans
             i18nKey={
               'Got an idea for a competition? Anyone can define and fund one -- <0>propose an on-chain game</0> yourself.'
@@ -164,7 +164,7 @@ export const CompetitionsHome = () => {
           />
           {/** Docs: https://docs.vega.xyz/mainnet/tutorials/proposals/asset-transfer-proposal */}
         </p>
-      </CompetitionsHeader>
+      </HeaderHero>
 
       {/** Team card */}
       {myTeam ? (

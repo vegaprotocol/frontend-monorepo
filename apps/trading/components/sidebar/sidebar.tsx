@@ -10,7 +10,6 @@ import * as AccordionPrimitive from '@radix-ui/react-accordion';
 import { MarketInfoAccordionContainer } from '@vegaprotocol/markets';
 import { useParams } from 'react-router-dom';
 import { ErrorBoundary } from '../error-boundary';
-import { NodeHealthContainer } from '../node-health';
 import { AssetCard } from '../asset-card';
 import { useT } from '../../lib/use-t';
 import { SidebarAccountsContainer } from '../accounts-container/sidebar-accounts-container';
@@ -103,8 +102,8 @@ export const Sidebar = ({ pinnedAssets }: { pinnedAssets?: string[] }) => {
           </SidebarAccordionContent>
         </SidebarAccordionItem>
       </SidebarAccordion>
-      <div className="mt-1 flex justify-end">
-        <NodeHealthContainer />
+      <div className="mt-1 h-5 flex justify-end">
+        {/* Element to provide space for the node health */}
       </div>
     </div>
   );

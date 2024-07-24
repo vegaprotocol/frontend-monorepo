@@ -3,8 +3,8 @@ import { useT } from '../../lib/use-t';
 export const Disclaimer = () => {
   const t = useT();
   return (
-    <>
-      <h1 className="text-4xl uppercase xl:text-5xl font-alpha calt">
+    <section className="max-w-prose">
+      <h1 className="text-3xl lg:text-6xl leading-[1em] font-alpha calt mb-2 lg:mb-10">
         {t('Disclaimer')}
       </h1>
       <p className="mt-10 mb-6">
@@ -49,6 +49,6 @@ export const Disclaimer = () => {
           'Additionally, just as you can access email protocols such as SMTP through multiple email clients, you can potentially access the Vega Protocol through many web or mobile interfaces. You are responsible for doing your own diligence on those interfaces to understand the associated risks and any fees.'
         )}
       </p>
-    </>
+    </section>
   );
 };
