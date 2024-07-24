@@ -198,7 +198,7 @@ const GroupCard = ({
               className={classNames(CardColourStyles[colour].btn, 'w-full')}
               href={Links.REWARDS_DETAIL('TODO')}
             >
-              {t('See details of {{count}} rewards', { count })}
+              {t('rewardsGroupCTA', { count })}
             </TradingAnchorButton>
           </div>
         </div>
