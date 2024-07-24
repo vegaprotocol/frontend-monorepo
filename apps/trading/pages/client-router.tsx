@@ -23,7 +23,6 @@ import { Referrals } from '../client-pages/referrals/referrals';
 import { ReferralStatistics } from '../client-pages/referrals/referral-statistics';
 import { ApplyCodeFormContainer } from '../client-pages/referrals/apply-code-form';
 import { CreateCodeContainer } from '../client-pages/referrals/create-code-form';
-import { NotFound as ReferralNotFound } from '../client-pages/referrals/error-boundary';
 import { CompetitionsHome } from '../client-pages/competitions/competitions-home';
 import { CompetitionsTeams } from '../client-pages/competitions/competitions-teams';
 import { CompetitionsTeam } from '../client-pages/competitions/competitions-team';
@@ -32,26 +31,17 @@ import { CompetitionsUpdateTeam } from '../client-pages/competitions/competition
 import { CompetitionsGame } from '../client-pages/competitions/competitions-game';
 import { Swap } from '../client-pages/swap/swap';
 import { DepositCrossChain } from '../client-pages/deposit-cross-chain';
+import { NotFound } from '../client-pages/not-found';
 
 import { LayoutCentered, LayoutWithNodeHealth } from '../components/layouts';
 import { LayoutWithSky } from '../components/layouts-inner';
 
 import { Routes as AppRoutes } from '../lib/links';
-import { useT } from '../lib/use-t';
 
 // These must remain dynamically imported as pennant cannot be compiled by Next.js due to ESM
 // Using dynamic imports is a workaround for this until pennant is published as ESM
 const MarketPage = lazy(() => import('../client-pages/market'));
 const Portfolio = lazy(() => import('../client-pages/portfolio'));
-
-const NotFound = () => {
-  const t = useT();
-  return (
-    <Splash>
-      <p>{t('Page not found')}</p>
-    </Splash>
-  );
-};
 
 export const useRouterConfig = (): RouteObject[] => {
   const routeConfig = compact([
@@ -88,10 +78,6 @@ export const useRouterConfig = (): RouteObject[] => {
               element: <ApplyCodeFormContainer />,
             },
           ],
-        },
-        {
-          path: '*',
-          element: <ReferralNotFound />,
         },
       ],
     },
