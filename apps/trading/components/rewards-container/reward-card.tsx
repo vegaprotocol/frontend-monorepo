@@ -78,29 +78,31 @@ export type Requirements = {
 };
 
 const GroupCard = ({
+  dispatchStrategy,
   colour,
   rewardAmount,
-  dispatchMetric,
   transferAsset,
-  entityScope,
-  distributionStrategy,
   count,
+  requirements,
 }: {
+  dispatchStrategy: DispatchStrategy | StakingDispatchStrategy;
   colour: CardColour;
   rewardAmount: string;
-  dispatchMetric: DispatchMetric | StakingDispatchStrategy['dispatchMetric'];
   transferAsset?: AssetFieldsFragment | undefined;
-  entityScope?: EntityScope;
-  distributionStrategy?: DistributionStrategy;
   count: number;
+  requirements?: Requirements;
 }) => {
   const t = useT();
 
+  const entityScope = dispatchStrategy.entityScope;
+  const distributionStrategy = dispatchStrategy.distributionStrategy;
+  const dispatchMetric = dispatchStrategy.dispatchMetric;
+
   return (
-    <div data-reward-card className="min-h-[366px] h-full">
+    <div data-reward-card>
       <div
         className={classNames(
-          'bg-gradient-to-r col-span-full p-0.5 lg:col-auto h-full',
+          'bg-gradient-to-r col-span-full p-px lg:col-auto h-full',
           'rounded-lg',
           CardColourStyles[colour].gradientClassName
         )}
@@ -168,13 +170,25 @@ const GroupCard = ({
 
           <div className={classNames('flex flex-col gap-3 h-full')}>
             {/** DISPATCH METRIC */}
-            <span data-testid="dispatch-metric-info">
+            <h4 data-testid="dispatch-metric-info" className="text-lg">
               {DispatchMetricLabels[dispatchMetric]}
-            </span>
+            </h4>
             {/** DISPATCH METRIC DESCRIPTION */}
-            <p className="text-muted text-sm">
+            <p className="text-muted">
               {t(DispatchMetricDescription[dispatchMetric])}
             </p>
+          </div>
+          <div>
+            {/** REQUIREMENTS */}
+            {dispatchStrategy && (
+              <div className="pt-4 border-t border-default">
+                <RewardRequirements
+                  dispatchStrategy={dispatchStrategy}
+                  dispatchAsset={transferAsset}
+                  requirements={requirements}
+                />
+              </div>
+            )}
           </div>
           <div>
             <TradingAnchorButton
@@ -1036,14 +1050,7 @@ export const GroupRewardCard = ({
 
   const transferAsset = transferNodes[0].transfer.asset || undefined;
 
-  const dispatchMetric =
-    transferNodes[0].transfer.kind.dispatchStrategy.dispatchMetric;
-
-  const entityScope =
-    transferNodes[0].transfer.kind.dispatchStrategy.entityScope;
-
-  const distributionStrategy =
-    transferNodes[0].transfer.kind.dispatchStrategy.distributionStrategy;
+  const dispatchStrategy = transferNodes[0].transfer.kind.dispatchStrategy;
 
   return (
     <GroupCard
@@ -1051,10 +1058,9 @@ export const GroupRewardCard = ({
       rewardAmount={rewardAmount}
       // TODO: fix the types for the useRewards hook. It just the full type, and not the type created by Rewards.graphql
       transferAsset={transferAsset as AssetFieldsFragment}
-      dispatchMetric={dispatchMetric}
-      entityScope={entityScope}
-      distributionStrategy={distributionStrategy}
       count={transferNodes.length}
+      requirements={requirements}
+      dispatchStrategy={dispatchStrategy}
     />
   );
 };

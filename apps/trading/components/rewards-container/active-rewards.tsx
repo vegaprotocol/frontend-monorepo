@@ -166,10 +166,18 @@ const determineCardGroup = (
     // groups by:
     // reward asset (usually VEGA)
     reward.transfer.asset?.symbol,
+
     // reward for (dispatch metric)
     reward.transfer.kind.dispatchStrategy.dispatchMetric,
+
     // reward scope (teams vs individuals)
     reward.transfer.kind.dispatchStrategy.entityScope,
+
     // reward distribution strategy
     reward.transfer.kind.dispatchStrategy.distributionStrategy,
+
+    // staking requirement
+    reward.transfer.kind.dispatchStrategy.__typename === 'DispatchStrategy'
+      ? reward.transfer.kind.dispatchStrategy.stakingRequirement
+      : '',
   ].join('-');
