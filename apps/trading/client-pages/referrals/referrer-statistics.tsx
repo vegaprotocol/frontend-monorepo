@@ -43,7 +43,7 @@ export const ReferrerStatistics = ({
     <div
       data-testid="referral-statistics"
       data-as="referrer"
-      className="relative mx-auto mb-20"
+      className="relative mx-auto"
     >
       <div className={classNames('grid grid-cols-1 grid-rows-1 gap-5')}>
         {/** TEAM TILE - referral set id is the same as team id */}

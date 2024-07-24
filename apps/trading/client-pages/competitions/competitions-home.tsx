@@ -168,7 +168,7 @@ export const CompetitionsHome = () => {
 
       {/** Team card */}
       {myTeam ? (
-        <>
+        <section>
           <h2 className="text-2xl mb-6">{t('My team')}</h2>
           <div className="mb-12">
             <TeamCard
@@ -178,9 +178,9 @@ export const CompetitionsHome = () => {
               games={myTeamGames}
             />
           </div>
-        </>
+        </section>
       ) : (
-        <>
+        <section>
           {/** Get started */}
           <h2 className="text-2xl mb-6">{t('Get started')}</h2>
 
@@ -210,61 +210,65 @@ export const CompetitionsHome = () => {
               actionElement={<ActionButton {...chooseTeamBtnProps} />}
             />
           </CompetitionsActionsContainer>
-        </>
+        </section>
       )}
 
       {/** List of available games */}
-      <h2 className="text-2xl mb-1">{t('Games')}</h2>
-      <p className="mb-6 text-sm">
-        <Trans
-          i18nKey={
-            'See all the live games on the cards below. <0>Find out how to create one</0>.'
-          }
-          components={[
-            <ExternalLink
-              className="underline"
-              key="find-out"
-              href={DocsLinks?.ASSET_TRANSFER_PROPOSAL}
-            >
-              Find out how to create one
-            </ExternalLink>,
-          ]}
-        />
-        {/** Docs: https://docs.vega.xyz/mainnet/tutorials/proposals/asset-transfer-proposal */}
-      </p>
+      <section>
+        <h2 className="text-2xl mb-1">{t('Games')}</h2>
+        <p className="mb-6 text-sm">
+          <Trans
+            i18nKey={
+              'See all the live games on the cards below. <0>Find out how to create one</0>.'
+            }
+            components={[
+              <ExternalLink
+                className="underline"
+                key="find-out"
+                href={DocsLinks?.ASSET_TRANSFER_PROPOSAL}
+              >
+                Find out how to create one
+              </ExternalLink>,
+            ]}
+          />
+          {/** Docs: https://docs.vega.xyz/mainnet/tutorials/proposals/asset-transfer-proposal */}
+        </p>
 
-      <div className="mb-12 flex">
-        {gamesLoading ? (
-          <Loader size="small" />
-        ) : (
-          <GamesContainer data={gamesData} currentEpoch={currentEpoch} />
-        )}
-      </div>
+        <div className="mb-12 flex">
+          {gamesLoading ? (
+            <Loader size="small" />
+          ) : (
+            <GamesContainer data={gamesData} currentEpoch={currentEpoch} />
+          )}
+        </div>
+      </section>
 
       {/** The teams ranking */}
-      <div className="mb-1 flex flex-row items-baseline gap-3 justify-between">
-        <h2 className="text-2xl">
-          <Link to={Links.COMPETITIONS_TEAMS()} className=" underline">
-            {t('Leaderboard')}
+      <section>
+        <div className="mb-1 flex flex-row items-baseline gap-3 justify-between">
+          <h2 className="text-2xl">
+            <Link to={Links.COMPETITIONS_TEAMS()} className=" underline">
+              {t('Leaderboard')}
+            </Link>
+          </h2>
+          <Link to={Links.COMPETITIONS_TEAMS()} className="text-sm underline">
+            {t('View all teams')}
           </Link>
-        </h2>
-        <Link to={Links.COMPETITIONS_TEAMS()} className="text-sm underline">
-          {t('View all teams')}
-        </Link>
-      </div>
-      <p className="mb-6 text-sm">
-        {t(
-          'Teams can earn rewards if they meet the goals set in the on-chain trading competitions. Track your earned rewards here, and see which teams are top of the leaderboard this month.'
-        )}
-      </p>
+        </div>
+        <p className="mb-6 text-sm">
+          {t(
+            'Teams can earn rewards if they meet the goals set in the on-chain trading competitions. Track your earned rewards here, and see which teams are top of the leaderboard this month.'
+          )}
+        </p>
 
-      <div className="flex">
-        {teamsLoading ? (
-          <Loader size="small" />
-        ) : (
-          <CompetitionsLeaderboard data={take(teamsData, 10)} />
-        )}
-      </div>
+        <div className="flex">
+          {teamsLoading ? (
+            <Loader size="small" />
+          ) : (
+            <CompetitionsLeaderboard data={take(teamsData, 10)} />
+          )}
+        </div>
+      </section>
     </ErrorBoundary>
   );
 };

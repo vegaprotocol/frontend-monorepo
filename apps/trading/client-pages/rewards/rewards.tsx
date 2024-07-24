@@ -5,6 +5,7 @@ import { ErrorBoundary } from '../../components/error-boundary';
 import { usePageTitle } from '../../lib/hooks/use-page-title';
 import { useRewardsEpochQuery } from '../../lib/hooks/__generated__/Rewards';
 import { Card } from '../../components/card';
+import { HeaderPage } from '../../components/header-page';
 
 export const Rewards = () => {
   const t = useT();
@@ -16,7 +17,7 @@ export const Rewards = () => {
   return (
     <ErrorBoundary feature="rewards">
       <header className="flex flex-col lg:flex-row justify-between gap-2">
-        <h1 className="text-2xl">{title}</h1>
+        <HeaderPage>{title}</HeaderPage>
         <Card loading={loading}>
           {epochData && (
             <EpochCountdown

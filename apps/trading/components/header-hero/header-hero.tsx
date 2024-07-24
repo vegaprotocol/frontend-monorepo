@@ -6,7 +6,7 @@ export const HeaderHero = (props: {
   children: ReactNode;
 }) => {
   return (
-    <div className="relative mb-4 lg:mb-20">
+    <header className="relative lg:py-10">
       <div
         aria-hidden
         className="absolute top-20 right-[220px] md:right-[240px] max-sm:hidden"
@@ -19,6 +19,6 @@ export const HeaderHero = (props: {
         </h1>
         <div className="flex flex-col gap-3 text-lg">{props.children}</div>
       </div>
-    </div>
+    </header>
   );
 };

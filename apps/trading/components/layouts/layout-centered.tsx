@@ -20,7 +20,7 @@ export const LayoutCentered = ({
           <div className="absolute top-o left-0 w-full h-full bg-gradient-to-t from-white dark:from-vega-cdark-900 to-transparent from-20% to-60%" />
         </div>
       )}
-      <div className="container max-w-screen-xl mx-auto py-20 px-4">
+      <div className="flex flex-col gap-6 container max-w-screen-xl mx-auto py-12 px-4">
         <Outlet />
       </div>
     </div>

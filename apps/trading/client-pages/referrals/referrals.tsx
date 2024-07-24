@@ -21,12 +21,12 @@ const Nav = () => {
   const t = useT();
   const match = useMatch(Routes.REFERRALS_APPLY_CODE);
   return (
-    <div className="flex justify-center border-b border-vega-cdark-500">
+    <nav className="flex justify-center border-b border-vega-cdark-500">
       <TabLink end to={match ? Routes.REFERRALS_APPLY_CODE : Routes.REFERRALS}>
         {t('Apply code')}
       </TabLink>
       <TabLink to={Routes.REFERRALS_CREATE_CODE}>{t('Create code')}</TabLink>
-    </div>
+    </nav>
   );
 };
 
@@ -56,9 +56,10 @@ export const Referrals = () => {
       </HeaderHero>
 
       {showNav && <Nav />}
-      <div
+
+      <section
         className={classNames({
-          'py-8 lg:py-16': showNav,
+          'py-4 lg:py-8': showNav,
           'h-[300px] relative': loading || error,
         })}
       >
@@ -74,24 +75,18 @@ export const Referrals = () => {
         ) : (
           <Outlet />
         )}
-      </div>
+      </section>
 
-      <TiersContainer />
+      <section>
+        <TiersContainer />
+      </section>
 
-      <div className="md:w-[60%] mx-auto mb-32">
-        <div className="mt-10 mb-5 text-center">
-          <h2 className="text-2xl">{t('How it works')}</h2>
-        </div>
-        <div className="mt-5">
-          <TradingAnchorButton
-            className="mx-auto w-max"
-            href={REFERRAL_DOCS_LINK}
-            target="_blank"
-          >
-            {t('Read the docs')} <VegaIcon name={VegaIconNames.OPEN_EXTERNAL} />
-          </TradingAnchorButton>
-        </div>
-      </div>
+      <section className="py-14 flex flex-col justify-center items-center gap-4">
+        <h2 className="text-2xl">{t('How it works')}</h2>
+        <TradingAnchorButton href={REFERRAL_DOCS_LINK} target="_blank">
+          {t('Read the docs')} <VegaIcon name={VegaIconNames.OPEN_EXTERNAL} />
+        </TradingAnchorButton>
+      </section>
     </ErrorBoundary>
   );
 };
