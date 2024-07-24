@@ -27,20 +27,19 @@ export const Routes = {
   COMPETITIONS_GAME: '/competitions/games/:gameId',
   FEES: '/fees',
   REWARDS: '/rewards',
-  REWARDS_DETAIL: '/rewards/:rewardId',
+  REWARDS_DETAIL: '/reward',
 } as const;
 
 type ConsoleLinks = {
-  [R in keyof typeof Routes]: (...args: string[]) => string;
+  [R in keyof typeof Routes]: (param: string) => string;
 };
 
 export const Links: ConsoleLinks = {
   HOME: () => Routes.HOME,
-  MARKET: (marketId: string) =>
-    trimEnd(Routes.MARKET.replace(':marketId', marketId)),
+  MARKET: (marketId) => trimEnd(Routes.MARKET.replace(':marketId', marketId)),
   MARKETS: () => Routes.MARKETS,
   PORTFOLIO: () => Routes.PORTFOLIO,
-  LIQUIDITY: (marketId: string) =>
+  LIQUIDITY: (marketId) =>
     trimEnd(Routes.LIQUIDITY.replace(':marketId', marketId)),
   DISCLAIMER: () => Routes.DISCLAIMER,
   ASSETS: () => Routes.ASSETS,
@@ -54,16 +53,17 @@ export const Links: ConsoleLinks = {
   REFERRALS_CREATE_CODE: () => Routes.REFERRALS_CREATE_CODE,
   COMPETITIONS: () => Routes.COMPETITIONS,
   COMPETITIONS_TEAMS: () => Routes.COMPETITIONS_TEAMS,
-  COMPETITIONS_TEAM: (teamId: string) =>
+  COMPETITIONS_TEAM: (teamId) =>
     Routes.COMPETITIONS_TEAM.replace(':teamId', teamId),
   COMPETITIONS_CREATE_TEAM: () => Routes.COMPETITIONS_CREATE_TEAM,
   COMPETITIONS_CREATE_TEAM_SOLO: () => Routes.COMPETITIONS_CREATE_TEAM_SOLO,
-  COMPETITIONS_UPDATE_TEAM: (teamId: string) =>
+  COMPETITIONS_UPDATE_TEAM: (teamId) =>
     Routes.COMPETITIONS_UPDATE_TEAM.replace(':teamId', teamId),
-  COMPETITIONS_GAME: (gameId: string) =>
+  COMPETITIONS_GAME: (gameId) =>
     Routes.COMPETITIONS_GAME.replace(':gameId', gameId),
   FEES: () => Routes.FEES,
   REWARDS: () => Routes.REWARDS,
-  REWARDS_DETAIL: (rewardId: string) =>
-    Routes.REWARDS_DETAIL.replace(':rewardId', rewardId),
+  REWARDS_DETAIL: (searchParams) => {
+    return `${Routes.REWARDS_DETAIL}?${searchParams}`;
+  },
 };

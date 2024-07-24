@@ -84,6 +84,7 @@ const GroupCard = ({
   transferAsset,
   count,
   requirements,
+  link,
 }: {
   dispatchStrategy: DispatchStrategy | StakingDispatchStrategy;
   colour: CardColour;
@@ -91,6 +92,7 @@ const GroupCard = ({
   transferAsset?: AssetFieldsFragment | undefined;
   count: number;
   requirements?: Requirements;
+  link: string;
 }) => {
   const t = useT();
 
@@ -194,7 +196,7 @@ const GroupCard = ({
             <TradingAnchorButton
               intent={null}
               className={classNames(CardColourStyles[colour].btn, 'w-full')}
-              href={Links.REWARDS_DETAIL('TODO')}
+              href={link}
             >
               {t('rewardsGroupCTA', { count })}
             </TradingAnchorButton>
@@ -1049,8 +1051,22 @@ export const GroupRewardCard = ({
   const rewardAmount = formatNumber(maxRewardAmount, 6);
 
   const transferAsset = transferNodes[0].transfer.asset || undefined;
-
   const dispatchStrategy = transferNodes[0].transfer.kind.dispatchStrategy;
+
+  if (!transferAsset) return null;
+
+  const params = new URLSearchParams({
+    asset: transferAsset.id,
+    metric: dispatchStrategy.dispatchMetric,
+    entityScope: dispatchStrategy.entityScope,
+    distributionStrategy: dispatchStrategy.distributionStrategy,
+    stakingRequirement:
+      dispatchStrategy.__typename === 'DispatchStrategy'
+        ? dispatchStrategy.stakingRequirement || '0'
+        : '0',
+  });
+
+  const link = Links.REWARDS_DETAIL(params.toString());
 
   return (
     <GroupCard
@@ -1061,6 +1077,7 @@ export const GroupRewardCard = ({
       count={transferNodes.length}
       requirements={requirements}
       dispatchStrategy={dispatchStrategy}
+      link={link}
     />
   );
 };
