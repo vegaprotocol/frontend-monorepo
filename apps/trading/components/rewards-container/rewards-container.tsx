@@ -301,7 +301,7 @@ export const RewardsContainer = () => {
           </Card>
         )}
       </section>
-      <section>
+      <section className="flex flex-col gap-2">
         <ActiveRewards currentEpoch={Number(epochData?.epoch.id)} />
       </section>
     </>
