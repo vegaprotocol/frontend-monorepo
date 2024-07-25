@@ -1,3 +1,4 @@
+import groupBy from 'lodash/groupBy';
 import {
   type AssetFieldsFragment,
   useAssetsMapProvider,
@@ -5,6 +6,7 @@ import {
 import { useActiveRewardsQuery } from './__generated__/Rewards';
 import {
   type MarketMaybeWithData,
+  type MarketFieldsFragment,
   getAsset,
   marketsWithDataProvider,
 } from '@vegaprotocol/markets';
@@ -20,6 +22,8 @@ import {
   type StakingDispatchStrategy,
   DistributionStrategy,
   IndividualScope,
+  DispatchMetricLabels,
+  EntityScopeLabelMapping,
 } from '@vegaprotocol/types';
 import { type ApolloError } from '@apollo/client';
 import compact from 'lodash/compact';
@@ -29,6 +33,7 @@ import { removePaginationWrapper } from '@vegaprotocol/utils';
 import first from 'lodash/first';
 import set from 'lodash/set';
 import omit from 'lodash/omit';
+import { useState } from 'react';
 
 type Strategy = DispatchStrategy | StakingDispatchStrategy;
 
@@ -199,15 +204,17 @@ const createTransferEnrichment =
     };
   };
 
+type RewardsArgs = {
+  onlyActive: boolean;
+  scopeToTeams?: boolean;
+};
+
 /** Retrieves rewards (transfers) */
 export const useRewards = ({
   // get active by default
   onlyActive = true,
   scopeToTeams = false,
-}: {
-  onlyActive: boolean;
-  scopeToTeams?: boolean;
-}): {
+}: RewardsArgs): {
   data: EnrichedRewardTransfer<Strategy>[];
   loading: boolean;
   error?: ApolloError | Error;
@@ -317,4 +324,152 @@ export const useReward = (gameId?: string) => {
     loading: loading || assetsLoading || marketsLoading,
     error: error || assetsError || marketsError,
   };
+};
+
+export const useRewardsGrouped = (args: RewardsArgs) => {
+  const [filter, setFilter] = useState<Filter>({
+    searchTerm: '',
+  });
+  const { data: allRewards } = useRewards(args);
+
+  // filter out the rewards that are scoped to teams on this page
+  // we display those on the `Competitions` page
+  const data = allRewards.filter((r) => !isScopedToTeams(r));
+
+  if (!data || !data.length) {
+    return {
+      data: undefined,
+      filter,
+      setFilter,
+    };
+  }
+
+  const cards = data
+    .filter((n) => applyFilter(n, filter))
+    // filter out the cards (rewards) for which all of the markets
+    // are settled
+    .filter((n) => !areAllMarketsSettled(n));
+
+  const groupedCards = groupBy(cards, (r) => {
+    if (!r.transfer.asset) return null;
+
+    return determineCardGroup({
+      assetId: r.transfer.asset.id,
+      metric: r.transfer.kind.dispatchStrategy.dispatchMetric,
+      entityScope: r.transfer.kind.dispatchStrategy.entityScope,
+      distributionStrategy:
+        r.transfer.kind.dispatchStrategy.distributionStrategy,
+      stakingRequirement:
+        r.transfer.kind.dispatchStrategy.stakingRequirement || '0',
+    });
+  });
+
+  return {
+    data: groupedCards,
+    filter,
+    setFilter,
+  };
+};
+
+export const determineCardGroup = (data: {
+  assetId: string;
+  metric: string;
+  entityScope: string;
+  distributionStrategy: string;
+  stakingRequirement: string;
+}) =>
+  [
+    // groups by:
+    // reward asset (usually VEGA)
+    data.assetId,
+
+    // reward for (dispatch metric)
+    data.metric,
+
+    // reward scope (teams vs individuals)
+    data.entityScope,
+
+    // reward distribution strategy
+    data.distributionStrategy,
+
+    // staking requirement
+    data.stakingRequirement,
+  ].join('-');
+
+export type Filter = {
+  searchTerm: string;
+};
+
+export const applyFilter = (
+  node: TransferNode & {
+    asset?: AssetFieldsFragment | null;
+    markets?: (MarketFieldsFragment | null)[];
+  },
+  filter: Filter
+) => {
+  const { transfer } = node;
+
+  // if the transfer is a staking reward then it should be displayed
+  if (transfer.toAccountType === AccountType.ACCOUNT_TYPE_GLOBAL_REWARD) {
+    return true;
+  }
+
+  if (
+    transfer.kind.__typename !== 'RecurringTransfer' &&
+    transfer.kind.__typename !== 'RecurringGovernanceTransfer'
+  ) {
+    return false;
+  }
+
+  if (
+    (transfer.kind.dispatchStrategy?.dispatchMetric &&
+      DispatchMetricLabels[transfer.kind.dispatchStrategy.dispatchMetric]
+        .toLowerCase()
+        .includes(filter.searchTerm.toLowerCase())) ||
+    transfer.asset?.symbol
+      .toLowerCase()
+      .includes(filter.searchTerm.toLowerCase()) ||
+    (
+      (transfer.kind.dispatchStrategy &&
+        EntityScopeLabelMapping[transfer.kind.dispatchStrategy.entityScope]) ||
+      'Unspecified'
+    )
+      .toLowerCase()
+      .includes(filter.searchTerm.toLowerCase()) ||
+    node.asset?.name
+      .toLocaleLowerCase()
+      .includes(filter.searchTerm.toLowerCase()) ||
+    node.markets?.some((m) =>
+      m?.tradableInstrument?.instrument?.name
+        .toLocaleLowerCase()
+        .includes(filter.searchTerm.toLowerCase())
+    )
+  ) {
+    return true;
+  }
+
+  return false;
+};
+
+export const areAllMarketsSettled = (
+  transferNode: Pick<
+    EnrichedRewardTransfer<DispatchStrategy | StakingDispatchStrategy>,
+    'markets'
+  >
+) => {
+  const settledMarkets = transferNode.markets?.filter(
+    (m) =>
+      m?.data?.marketState &&
+      [
+        MarketState.STATE_TRADING_TERMINATED,
+        MarketState.STATE_SETTLED,
+        MarketState.STATE_CANCELLED,
+        MarketState.STATE_CLOSED,
+      ].includes(m?.data?.marketState)
+  );
+
+  return (
+    settledMarkets?.length === transferNode.markets?.length &&
+    Boolean(transferNode.markets && transferNode.markets.length > 0)
+  );
 };

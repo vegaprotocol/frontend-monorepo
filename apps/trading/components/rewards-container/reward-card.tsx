@@ -42,6 +42,7 @@ import {
 import {
   isScopedToTeams,
   type EnrichedRewardTransfer,
+  areAllMarketsSettled,
 } from '../../lib/hooks/use-rewards';
 import compact from 'lodash/compact';
 import BigNumber from 'bignumber.js';
@@ -956,29 +957,6 @@ const DistributionStrategyIcon = ({
         <VegaIcon name={DistStrategyIconMap[strategy]} size={size} />
       </span>
     </Tooltip>
-  );
-};
-
-export const areAllMarketsSettled = (
-  transferNode: Pick<
-    EnrichedRewardTransfer<DispatchStrategy | StakingDispatchStrategy>,
-    'markets'
-  >
-) => {
-  const settledMarkets = transferNode.markets?.filter(
-    (m) =>
-      m?.data?.marketState &&
-      [
-        MarketState.STATE_TRADING_TERMINATED,
-        MarketState.STATE_SETTLED,
-        MarketState.STATE_CANCELLED,
-        MarketState.STATE_CLOSED,
-      ].includes(m?.data?.marketState)
-  );
-
-  return (
-    settledMarkets?.length === transferNode.markets?.length &&
-    Boolean(transferNode.markets && transferNode.markets.length > 0)
   );
 };
 
