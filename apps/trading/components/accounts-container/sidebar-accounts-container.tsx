@@ -13,28 +13,12 @@ import {
   Notification,
   Intent,
 } from '@vegaprotocol/ui-toolkit';
-import { create } from 'zustand';
 import { SquidContainer } from '../squid-container';
-
-export enum SidebarAccountsViewType {
-  Deposit = 'Deposit',
-  CrossChainDeposit = 'Cross-chain deposit',
-  Swap = 'Swap',
-  Transfer = 'Transfer',
-  Withdraw = 'Withdraw',
-}
-
-type InnerView = [view: SidebarAccountsViewType, assetId: string];
-
-type SidebarAccountsInnerViewStore = {
-  view: InnerView | undefined;
-  setView: (view: InnerView | undefined) => void;
-};
-export const useSidebarAccountsInnerView =
-  create<SidebarAccountsInnerViewStore>()((set) => ({
-    view: undefined,
-    setView: (view) => set({ view }),
-  }));
+import {
+  type InnerView,
+  useSidebarAccountsInnerView,
+  SidebarAccountsViewType,
+} from '../../lib/hooks/use-sidebar';
 
 export const SidebarAccountsContainer = ({
   pinnedAssets,
