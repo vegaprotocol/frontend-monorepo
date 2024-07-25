@@ -31,7 +31,7 @@ export const Routes = {
 } as const;
 
 type ConsoleLinks = {
-  [R in keyof typeof Routes]: (param: string) => string;
+  [R in keyof typeof Routes]: (...args: string[]) => string;
 };
 
 export const Links: ConsoleLinks = {
