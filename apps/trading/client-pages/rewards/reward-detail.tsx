@@ -45,7 +45,7 @@ export const RewardsDetail = () => {
   const stakingRequirement = params.get('stakingRequirement') as string;
 
   return (
-    <RewardContainer
+    <RewardDetailContainer
       assetId={assetId}
       metric={metric}
       entityScope={entityScope}
@@ -55,7 +55,7 @@ export const RewardsDetail = () => {
   );
 };
 
-export const RewardContainer = (props: {
+export const RewardDetailContainer = (props: {
   assetId: string;
   metric: DispatchMetric;
   entityScope: EntityScope;
@@ -166,7 +166,7 @@ export const RewardContainer = (props: {
               <dd className={classNames(valueClasses, 'calt')}>
                 {EntityScopeLabelMapping[entityScope]}
               </dd>
-              <dt className={labelClasses}>{t('Entity')}</dt>
+              <dt className={labelClasses}>{t('Entity scope')}</dt>
             </div>
             <div>
               <dd className={valueClasses}>
@@ -195,37 +195,37 @@ export const RewardContainer = (props: {
           columns={[
             {
               name: 'asset',
-              displayName: 'Settlement asset',
+              displayName: t('Settlement asset'),
             },
             {
               name: 'market',
-              displayName: 'Market',
+              displayName: t('Market'),
             },
             {
               name: 'startEpoch',
-              displayName: 'Start epoch',
+              displayName: t('Start epoch'),
             },
 
             {
               name: 'endEpoch',
-              displayName: 'End epoch',
+              displayName: t('End epoch'),
             },
             {
               name: 'rewardsPaid',
-              displayName: 'Rewards paid',
+              displayName: t('Rewards paid'),
             },
             {
               name: 'lockPeriod',
-              displayName: 'Lock period',
+              displayName: t('Lock period'),
             },
             {
               name: 'rewardAmount',
-              displayName: 'Reward amount',
+              displayName: t('Reward amount'),
             },
 
             {
               name: 'rewardCap',
-              displayName: 'Reward cap',
+              displayName: t('Reward cap'),
             },
           ]}
           data={tableData}
@@ -249,12 +249,15 @@ const MarketsCell = (props: { markets?: MarketFieldsFragment[] }) => {
           <ul className="flex flex-col gap-1.5 text-sm">
             {props.markets.map((m) => {
               return (
-                <span key={m.id}>
+                <li key={m.id} className="flex justify-between gap-4">
                   {m.tradableInstrument.instrument.code}
-                  <Link to={Links.MARKET(m.id)} className="underline">
+                  <Link
+                    to={Links.MARKET(m.id)}
+                    className="underline underline-offset-4"
+                  >
                     {t('View')}
                   </Link>
-                </span>
+                </li>
               );
             })}
           </ul>
