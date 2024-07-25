@@ -395,7 +395,6 @@ export const MarketTable = ({
                 setSearchTerm(value);
               }}
               value={searchTerm}
-              defaultValue={''}
             />
           </div>
         </div>
