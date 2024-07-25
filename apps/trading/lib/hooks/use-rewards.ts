@@ -330,19 +330,11 @@ export const useRewardsGrouped = (args: RewardsArgs) => {
   const [filter, setFilter] = useState<Filter>({
     searchTerm: '',
   });
-  const { data: allRewards } = useRewards(args);
+  const queryResult = useRewards(args);
 
   // filter out the rewards that are scoped to teams on this page
   // we display those on the `Competitions` page
-  const data = allRewards.filter((r) => !isScopedToTeams(r));
-
-  if (!data || !data.length) {
-    return {
-      data: undefined,
-      filter,
-      setFilter,
-    };
-  }
+  const data = queryResult.data.filter((r) => !isScopedToTeams(r));
 
   const cards = data
     .filter((n) => applyFilter(n, filter))
@@ -365,6 +357,7 @@ export const useRewardsGrouped = (args: RewardsArgs) => {
   });
 
   return {
+    ...queryResult,
     data: groupedCards,
     filter,
     setFilter,

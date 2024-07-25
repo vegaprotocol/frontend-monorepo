@@ -1,6 +1,8 @@
 import compact from 'lodash/compact';
+import BigNumber from 'bignumber.js';
 import { Link, useSearchParams } from 'react-router-dom';
-import { HeaderPage } from '../../components/header-page';
+import classNames from 'classnames';
+
 import {
   type DispatchMetric,
   type EntityScope,
@@ -9,26 +11,27 @@ import {
   EntityScopeLabelMapping,
   DistributionStrategyMapping,
 } from '@vegaprotocol/types';
+import { useNetworkParam } from '@vegaprotocol/network-parameters';
 import { type MarketFieldsFragment } from '@vegaprotocol/markets';
-import {
-  determineCardGroup,
-  useRewardsGrouped,
-} from '../../lib/hooks/use-rewards';
+import { useAssetsMapProvider } from '@vegaprotocol/assets';
+import { Loader, Splash, Tooltip } from '@vegaprotocol/ui-toolkit';
 import {
   addDecimalsFormatNumber,
   formatNumber,
   toBigNum,
 } from '@vegaprotocol/utils';
-import BigNumber from 'bignumber.js';
+
 import { NotFoundSplash } from '../../components/not-found-splash';
+import { HeaderPage } from '../../components/header-page';
 import { Card } from '../../components/card';
-import { useT } from '../../lib/use-t';
-import classNames from 'classnames';
 import { Table } from '../../components/table';
-import { Tooltip } from '@vegaprotocol/ui-toolkit';
+
 import { Links } from '../../lib/links';
-import { useNetworkParam } from '@vegaprotocol/network-parameters';
-import { useAssetsMapProvider } from '@vegaprotocol/assets';
+import { useT } from '../../lib/use-t';
+import {
+  determineCardGroup,
+  useRewardsGrouped,
+} from '../../lib/hooks/use-rewards';
 
 export const RewardsDetail = () => {
   const [params] = useSearchParams();
@@ -60,11 +63,21 @@ export const RewardContainer = (props: {
   stakingRequirement: string;
 }) => {
   const t = useT();
-  const { param } = useNetworkParam('reward_asset');
-  const { data: assets } = useAssetsMapProvider();
+  const { param, loading: paramLoading } = useNetworkParam('reward_asset');
+  const { data: assets, loading: assetsLoading } = useAssetsMapProvider();
 
-  const { data } = useRewardsGrouped({ onlyActive: true });
+  const { data, loading: rewardsLoading } = useRewardsGrouped({
+    onlyActive: true,
+  });
   const key = determineCardGroup(props);
+
+  if (paramLoading || assetsLoading || rewardsLoading) {
+    return (
+      <Splash>
+        <Loader />
+      </Splash>
+    );
+  }
 
   if (!param || !data || !assets) return null;
 
