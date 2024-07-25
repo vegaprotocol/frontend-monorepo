@@ -36,7 +36,7 @@ export const FeesContainer = () => {
     NetworkParams.market_fee_factors_infrastructureFee,
   ]);
 
-  const { data: markets, loading: marketsLoading } = useDataProvider({
+  const { data: markets } = useDataProvider({
     dataProvider: activeMarketsProvider,
     variables: undefined,
   });
@@ -98,7 +98,7 @@ export const FeesContainer = () => {
   return (
     <>
       <section
-        className="grid auto-rows-min grid-cols-4 gap-3"
+        className="grid auto-rows-min grid-cols-4 gap-3 lg:gap-x-4 lg:gap-y-8"
         data-testid="fees-container"
       >
         {isConnected && (
@@ -174,27 +174,23 @@ export const FeesContainer = () => {
             </Card>
           </>
         )}
-        <Card
-          title={t('Volume discount')}
-          className="lg:col-span-full xl:col-span-2"
-          loading={loading}
+        <div
+          className="flex flex-col gap-2 col-span-full lg:col-span-full xl:col-span-2"
           data-testid="volume-discount-card"
-          noBackgroundOnMobile={true}
         >
+          <h3>{t('Volume discount')}</h3>
           <VolumeTiers
             tiers={volumeTiers}
             tierIndex={volumeTierIndex}
             lastEpochVolume={volumeInWindow}
             windowLength={volumeDiscountWindowLength}
           />
-        </Card>
-        <Card
-          title={t('Referral discount')}
-          className="lg:col-span-full xl:col-span-2"
-          loading={loading}
+        </div>
+        <div
+          className="flex flex-col gap-2 col-span-full lg:col-span-full xl:col-span-2"
           data-testid="referral-discount-card"
-          noBackgroundOnMobile={true}
         >
+          <h3>{t('Referral discount')}</h3>
           <ReferralTiers
             tiers={referralTiers}
             tierIndex={referralTierIndex}
@@ -202,21 +198,18 @@ export const FeesContainer = () => {
             referralVolumeInWindow={referralVolumeInWindow}
             referralDiscountWindowLength={referralDiscountWindowLength}
           />
-        </Card>
+        </div>
       </section>
-      <section>
-        <Card
-          title={t('Fees by market')}
-          loading={marketsLoading}
-          data-testid="fees-by-market-card"
-          noBackgroundOnMobile={true}
-        >
-          <MarketFees
-            markets={markets}
-            referralDiscount={referralDiscount}
-            volumeDiscount={volumeDiscount}
-          />
-        </Card>
+      <section
+        className="flex flex-col gap-2"
+        data-testid="fees-by-market-card"
+      >
+        <h3>{t('Fees by market')}</h3>
+        <MarketFees
+          markets={markets}
+          referralDiscount={referralDiscount}
+          volumeDiscount={volumeDiscount}
+        />
       </section>
     </>
   );

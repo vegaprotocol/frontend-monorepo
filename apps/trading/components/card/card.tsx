@@ -7,46 +7,47 @@ export const Card = ({
   title,
   className,
   loading = false,
-  highlight = false,
   testId,
-  noBackgroundOnMobile = false,
+  variant = 'normal',
+  minimal = false,
 }: {
   children: ReactNode;
   title?: string;
   className?: string;
   loading?: boolean;
-  highlight?: boolean;
   testId?: string;
-  noBackgroundOnMobile?: boolean;
+  variant?: 'normal' | 'hot' | 'cool';
+  minimal?: boolean;
 }) => {
   return (
     <div
       data-testid={testId}
       className={classNames(
-        'col-span-full lg:col-auto',
+        'relative col-span-full lg:col-auto',
+        'rounded-lg bg-vega-clight-800 dark:bg-vega-cdark-800 p-4',
         {
-          'rounded-lg bg-vega-clight-800 dark:bg-vega-cdark-800 p-0.5':
-            !noBackgroundOnMobile,
-          'mt-3 md:mt-0 md:rounded-lg md:bg-vega-clight-800 md:dark:bg-vega-cdark-800 md:p-0.5':
-            noBackgroundOnMobile,
-        },
-        {
-          'bg-rainbow': highlight,
+          'bg-vega-clight-800 dark:bg-vega-cdark-800': !minimal,
         },
         className
       )}
     >
-      <div
-        className={classNames('h-full w-full', {
-          'bg-vega-clight-800 dark:bg-vega-cdark-800 rounded p-4':
-            !noBackgroundOnMobile,
-          'md:bg-vega-clight-800 md:dark:bg-vega-cdark-800 md:rounded md:p-4':
-            noBackgroundOnMobile,
-        })}
-      >
-        {title && <h2 className="mb-3">{title}</h2>}
-        {loading ? <CardLoader /> : children}
-      </div>
+      {variant !== 'normal' && (
+        <div
+          style={{
+            mask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+            maskComposite: 'exclude',
+          }}
+          className={classNames(
+            'absolute inset-0 p-px bg-gradient-to-br rounded-lg',
+            {
+              'from-vega-blue to-vega-green': variant === 'cool',
+              'from-vega-pink to-vega-blue': variant == 'hot',
+            }
+          )}
+        />
+      )}
+      {title && <h2 className="mb-3">{title}</h2>}
+      {loading ? <CardLoader /> : children}
     </div>
   );
 };
