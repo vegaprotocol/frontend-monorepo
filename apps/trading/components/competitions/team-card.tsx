@@ -86,7 +86,7 @@ export const TeamCard = ({
           )}
         >
           <Stat
-            className="flex flex-col-reverse"
+            className="flex flex-col-reverse justify-between"
             value={rankElement}
             label={t('Rank')}
             valueTestId="team-rank"
