@@ -338,7 +338,7 @@ const DepositForm = ({
         fill={true}
         intent={Intent.Secondary}
       >
-        {t('Submit')}
+        {t('Deposit')}
       </TradingButton>
     </form>
   );
