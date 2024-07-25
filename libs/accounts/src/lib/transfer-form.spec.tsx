@@ -57,9 +57,7 @@ describe('TransferForm', () => {
   };
 
   const submit = async () => {
-    await userEvent.click(
-      screen.getByRole('button', { name: 'Confirm transfer' })
-    );
+    await userEvent.click(screen.getByRole('button', { name: 'Transfer' }));
   };
 
   const selectAsset = async (asset: {
