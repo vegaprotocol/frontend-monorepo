@@ -9,6 +9,7 @@ export const Card = ({
   loading = false,
   testId,
   variant = 'normal',
+  size = 'md',
   minimal = false,
 }: {
   children: ReactNode;
@@ -17,6 +18,7 @@ export const Card = ({
   loading?: boolean;
   testId?: string;
   variant?: 'normal' | 'hot' | 'cool';
+  size?: 'md' | 'lg';
   minimal?: boolean;
 }) => {
   return (
@@ -24,8 +26,10 @@ export const Card = ({
       data-testid={testId}
       className={classNames(
         'relative col-span-full lg:col-auto',
-        'rounded-lg bg-vega-clight-800 dark:bg-vega-cdark-800 p-4',
+        'rounded-lg',
         {
+          'p-4': size === 'md',
+          'p-7': size === 'lg',
           'bg-vega-clight-800 dark:bg-vega-cdark-800': !minimal,
         },
         className

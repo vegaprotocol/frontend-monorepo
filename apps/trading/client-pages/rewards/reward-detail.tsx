@@ -1,17 +1,34 @@
-import { useSearchParams } from 'react-router-dom';
+import compact from 'lodash/compact';
+import { Link, useSearchParams } from 'react-router-dom';
 import { HeaderPage } from '../../components/header-page';
 import {
   type DispatchMetric,
   type EntityScope,
   type DistributionStrategy,
   DispatchMetricLabels,
+  EntityScopeLabelMapping,
+  DistributionStrategyMapping,
 } from '@vegaprotocol/types';
+import { type MarketFieldsFragment } from '@vegaprotocol/markets';
 import {
   determineCardGroup,
   useRewardsGrouped,
 } from '../../lib/hooks/use-rewards';
-import { toBigNum } from '@vegaprotocol/utils';
+import {
+  addDecimalsFormatNumber,
+  formatNumber,
+  toBigNum,
+} from '@vegaprotocol/utils';
 import BigNumber from 'bignumber.js';
+import { NotFoundSplash } from '../../components/not-found-splash';
+import { Card } from '../../components/card';
+import { useT } from '../../lib/use-t';
+import classNames from 'classnames';
+import { Table } from '../../components/table';
+import { Tooltip } from '@vegaprotocol/ui-toolkit';
+import { Links } from '../../lib/links';
+import { useNetworkParam } from '@vegaprotocol/network-parameters';
+import { useAssetsMapProvider } from '@vegaprotocol/assets';
 
 export const RewardsDetail = () => {
   const [params] = useSearchParams();
@@ -42,15 +59,20 @@ export const RewardContainer = (props: {
   distributionStrategy: DistributionStrategy;
   stakingRequirement: string;
 }) => {
+  const t = useT();
+  const { param } = useNetworkParam('reward_asset');
+  const { data: assets } = useAssetsMapProvider();
+
   const { data } = useRewardsGrouped({ onlyActive: true });
   const key = determineCardGroup(props);
 
-  if (!data) return null;
+  if (!param || !data || !assets) return null;
 
+  const rewardAsset = assets[param];
   const group = data[key];
 
-  if (!group.length) {
-    return <p>No rewards found in group</p>;
+  if (!group?.length) {
+    return <NotFoundSplash />;
   }
 
   const first = group[0];
@@ -61,9 +83,52 @@ export const RewardContainer = (props: {
   });
   const total = BigNumber.sum.apply(null, amounts);
 
+  const labelClasses = 'text-sm text-muted';
+  const valueClasses = 'text-2xl lg:text-3xl';
+
+  const asset = first.transfer.asset;
+  const dispatchStrategy = first.transfer.kind.dispatchStrategy;
+  const entityScope = dispatchStrategy.entityScope;
+  const strategy = dispatchStrategy.distributionStrategy;
+  const notional =
+    dispatchStrategy.notionalTimeWeightedAveragePositionRequirement;
+
+  if (!asset) return null;
+
+  const tableData = compact(
+    group.map((g) => {
+      if (!g.transfer.asset) return;
+      const dispatchStrategy = g.transfer.kind.dispatchStrategy;
+
+      let rewardsPaid = '-';
+      if (dispatchStrategy.transferInterval) {
+        if (dispatchStrategy.transferInterval > 1) {
+          rewardsPaid = t('daysCount', {
+            count: dispatchStrategy.transferInterval,
+          });
+        } else {
+          rewardsPaid = t('Daily');
+        }
+      }
+
+      return {
+        asset: g.transfer.asset?.symbol,
+        market: <MarketsCell markets={g.markets} />,
+        startEpoch: g.transfer.kind.startEpoch,
+        endEpoch: g.transfer.kind.endEpoch,
+        lockPeriod: dispatchStrategy.lockPeriod,
+        rewardsPaid,
+        rewardAmount: formatNumber(
+          toBigNum(g.transfer.amount, g.transfer.asset.decimals)
+        ),
+        rewardCap: dispatchStrategy.capRewardFeeMultiple || '-',
+      };
+    })
+  );
+
   return (
     <>
-      <header>
+      <header className="flex flex-col gap-2">
         <HeaderPage>
           {
             DispatchMetricLabels[
@@ -71,8 +136,128 @@ export const RewardContainer = (props: {
             ]
           }
         </HeaderPage>
-        <p className="text-muted text-4xl">{total.toString()}</p>
+        <p className="text-muted text-4xl">
+          {formatNumber(total)} <span className="calt">{asset.symbol}</span>
+        </p>
       </header>
+      <section className="py-6">
+        <Card
+          minimal={true}
+          size="lg"
+          variant="cool"
+          className="flex flex-col gap-4"
+        >
+          <h2>{t('Eligibility criteria')}</h2>
+          <dl className="grid grid-cols-2 md:flex gap-2 md:gap-6 lg:gap-8 whitespace-nowrap">
+            <div>
+              <dd className={classNames(valueClasses, 'calt')}>
+                {EntityScopeLabelMapping[entityScope]}
+              </dd>
+              <dt className={labelClasses}>{t('Entity')}</dt>
+            </div>
+            <div>
+              <dd className={valueClasses}>
+                {addDecimalsFormatNumber(
+                  dispatchStrategy.stakingRequirement || '0',
+                  rewardAsset.decimals
+                )}
+              </dd>
+              <dt className={labelClasses}>{t('Staked VEGA')}</dt>
+            </div>
+            <div>
+              <dd className={valueClasses}>{formatNumber(notional || 0, 2)}</dd>
+              <dt className={labelClasses}>{t('Notional')}</dt>
+            </div>
+            <div>
+              <dd className={classNames(valueClasses, 'calt')}>
+                {DistributionStrategyMapping[strategy]}
+              </dd>
+              <dt className={labelClasses}>{t('Method')}</dt>
+            </div>
+          </dl>
+        </Card>
+      </section>
+      <section>
+        <Table
+          columns={[
+            {
+              name: 'asset',
+              displayName: 'Settlement asset',
+            },
+            {
+              name: 'market',
+              displayName: 'Market',
+            },
+            {
+              name: 'startEpoch',
+              displayName: 'Start epoch',
+            },
+
+            {
+              name: 'endEpoch',
+              displayName: 'End epoch',
+            },
+            {
+              name: 'rewardsPaid',
+              displayName: 'Rewards paid',
+            },
+            {
+              name: 'lockPeriod',
+              displayName: 'Lock period',
+            },
+            {
+              name: 'rewardAmount',
+              displayName: 'Reward amount',
+            },
+
+            {
+              name: 'rewardCap',
+              displayName: 'Reward cap',
+            },
+          ]}
+          data={tableData}
+        />
+      </section>
     </>
+  );
+};
+
+const MarketsCell = (props: { markets?: MarketFieldsFragment[] }) => {
+  const t = useT();
+
+  if (!props.markets) {
+    return <span>{t('All')}</span>;
+  }
+
+  if (props.markets.length > 1) {
+    return (
+      <Tooltip
+        description={
+          <ul className="flex flex-col gap-1.5 text-sm">
+            {props.markets.map((m) => {
+              return (
+                <span key={m.id}>
+                  {m.tradableInstrument.instrument.code}
+                  <Link to={Links.MARKET(m.id)} className="underline">
+                    {t('View')}
+                  </Link>
+                </span>
+              );
+            })}
+          </ul>
+        }
+        underline
+      >
+        <span>{t('marketsCount', { count: props.markets.length })}</span>
+      </Tooltip>
+    );
+  }
+
+  const market = props.markets[0];
+
+  return (
+    <Link to={Links.MARKET(market.id)} className="underline underline-offset-4">
+      {market.tradableInstrument.instrument.code}
+    </Link>
   );
 };
