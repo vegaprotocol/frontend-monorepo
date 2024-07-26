@@ -18,7 +18,6 @@ import {
 import { type FormFieldsMarket, useMarketSchema } from '../schemas';
 import { TicketTypeSelect } from '../ticket-type-select';
 import { type FormProps } from './ticket';
-import { SizeSlider } from './size-slider';
 
 import { TicketEventUpdater } from '../ticket-events';
 import { Datagrid } from '../elements/datagrid';
@@ -97,7 +96,7 @@ export const Market = (props: FormProps) => {
         ) : (
           <Fields.Notional price={price} />
         )}
-        <SizeSlider price={price} />
+        <Fields.SizeSlider price={price} />
         <AdvancedControls>
           <div>
             <Fields.TimeInForce />

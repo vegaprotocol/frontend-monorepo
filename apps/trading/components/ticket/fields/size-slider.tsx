@@ -7,7 +7,7 @@ import { useOpenVolume } from '@vegaprotocol/positions';
 import { Slider } from '../elements/slider';
 import { useTicketContext } from '../ticket-context';
 
-import * as defaultUtils from './utils';
+import * as defaultUtils from '../ticket-default/utils';
 import * as utils from '../utils';
 import { useForm } from '../use-form';
 import { FormField } from '../ticket-field';

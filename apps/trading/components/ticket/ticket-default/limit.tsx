@@ -21,7 +21,6 @@ import { useT } from '../../../lib/use-t';
 import { Datagrid } from '../elements/datagrid';
 import { TicketEventUpdater } from '../ticket-events';
 import { type FormProps } from './ticket';
-import { SizeSlider } from './size-slider';
 import { Feedback } from './feedback';
 import * as Fields from '../fields';
 import * as Data from '../info';
@@ -97,7 +96,7 @@ export const Limit = (props: FormProps) => {
         ) : (
           <Fields.Notional price={BigNumber(price || 0)} />
         )}
-        <SizeSlider price={BigNumber(price || 0)} />
+        <Fields.SizeSlider price={BigNumber(price || 0)} />
         <AdvancedControls>
           <FormGrid>
             <FormGridCol>
