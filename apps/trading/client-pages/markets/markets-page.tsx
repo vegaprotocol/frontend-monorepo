@@ -274,15 +274,15 @@ export const MarketTable = ({
   };
 
   return (
-    <div>
-      <div className="flex justify-between items-baseline">
+    <section className="flex flex-col gap-2">
+      <div className="flex flex-wrap gap-2 justify-between items-baseline">
         {/** MARKET TYPE FILTER */}
         <div className="flex gap-2">
           <button
             key="all"
             id="all"
             className={classNames(
-              'border border-default rounded-lg px-3 py-1.5 my-1 text-sm h-8',
+              'border border-default rounded-lg px-3 py-1.5 text-sm h-8',
               {
                 'dark:bg-vega-cdark-800 bg-vega-clight-800':
                   marketTypes.length === 0 ||
@@ -306,7 +306,7 @@ export const MarketTable = ({
               <button
                 key={marketType}
                 className={classNames(
-                  'border border-default rounded-lg px-3 py-1.5 my-1 text-sm',
+                  'border border-default rounded-lg px-3 py-1.5 text-sm',
                   {
                     'dark:bg-vega-cdark-800 bg-vega-clight-800':
                       isMarketTypeSelected(marketType),
@@ -400,8 +400,7 @@ export const MarketTable = ({
           </div>
         </div>
       </div>
-
-      <div className="h-full my-1 border rounded border-default">
+      <div className="h-full border rounded border-default">
         <ErrorBoundary feature="all-markets">
           <MarketListTable
             rowData={markets}
@@ -436,6 +435,6 @@ export const MarketTable = ({
           />
         </ErrorBoundary>
       </div>
-    </div>
+    </section>
   );
 };
