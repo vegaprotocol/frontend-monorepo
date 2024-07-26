@@ -1,18 +1,21 @@
 import {
   TradingButton as Button,
-  Dialog,
+  TradingDialog,
   Intent,
   Tooltip,
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 import {
+  TxStatus,
   useSimpleTransaction,
   useVegaWallet,
 } from '@vegaprotocol/wallet-react';
 import { useT } from '../../lib/use-t';
 import { type Team } from '../../lib/hooks/use-team';
 import { useState } from 'react';
+import { t } from 'i18next';
+import { TransactionSteps } from '../../components/transaction-dialog/transaction-steps';
 
 type JoinType = 'switch' | 'join';
 
@@ -37,9 +40,10 @@ export const JoinTeam = ({
         isReadOnly={isReadOnly}
         onJoin={setConfirmDialog}
       />
-      <Dialog
+      <TradingDialog
+        title={confirmDialog === 'switch' ? t('Switch team') : t('Join team')}
         open={confirmDialog !== undefined}
-        onChange={() => setConfirmDialog(undefined)}
+        onOpenChange={() => setConfirmDialog(undefined)}
       >
         {confirmDialog !== undefined && (
           <DialogContent
@@ -50,7 +54,7 @@ export const JoinTeam = ({
             refetch={refetch}
           />
         )}
-      </Dialog>
+      </TradingDialog>
     </>
   );
 };
@@ -188,9 +192,14 @@ const DialogContent = ({
 }) => {
   const t = useT();
 
-  const { send, status, error } = useSimpleTransaction({
+  const { send, result, status, error, reset } = useSimpleTransaction({
     onSuccess: refetch,
   });
+
+  const closeDialog = () => {
+    reset();
+    onCancel();
+  };
 
   const joinTeam = () => {
     send({
@@ -200,71 +209,62 @@ const DialogContent = ({
     });
   };
 
-  if (error) {
-    return (
-      <p className="text-vega-red break-words first-letter:capitalize">
-        {error}
-      </p>
-    );
-  }
-
-  if (status === 'requested') {
-    return <p>{t('Confirm in wallet...')}</p>;
-  }
-
-  if (status === 'pending') {
-    return <p>{t('Confirming transaction...')}</p>;
-  }
-
-  if (status === 'confirmed') {
+  if (status !== TxStatus.Idle) {
+    let confirmedLabel = t('Team joined');
     if (type === 'switch') {
-      return (
-        <p>
-          {t(
-            'Team switch successful. You will switch team at the end of the epoch.'
-          )}
-        </p>
+      confirmedLabel = t(
+        'Team switch successful. You will switch team at the end of the epoch.'
       );
     }
 
-    return <p>{t('Team joined')}</p>;
+    return (
+      <TransactionSteps
+        status={status}
+        result={result}
+        error={error}
+        reset={closeDialog}
+        confirmedLabel={confirmedLabel}
+        resetLabel={t('Back to team')}
+      />
+    );
   }
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-6">
       {type === 'switch' && (
-        <>
-          <h2 className="font-alpha text-xl">{t('Switch team')}</h2>
-          <p>
-            {t(
-              "Switching team will move you from '{{fromTeam}}' to '{{toTeam}}' at the end of the epoch. Are you sure?",
-              {
-                fromTeam: partyTeam?.name,
-                toTeam: team.name,
-              }
-            )}
-          </p>
-        </>
+        <p>
+          {t(
+            "Switching team will move you from '{{fromTeam}}' to '{{toTeam}}' at the end of the epoch. Are you sure?",
+            {
+              fromTeam: partyTeam?.name,
+              toTeam: team.name,
+            }
+          )}
+        </p>
       )}
       {type === 'join' && (
-        <>
-          <h2 className="font-alpha text-xl">{t('Join team')}</h2>
-          <p>
-            {t('Are you sure you want to join team: {{team}}', {
-              team: team.name,
-            })}
-          </p>
-        </>
+        <p>
+          {t('Are you sure you want to join team: {{team}}', {
+            team: team.name,
+          })}
+        </p>
       )}
       <div className="flex justify-between gap-2">
         <Button
+          size="large"
+          className="w-1/2"
           onClick={joinTeam}
           intent={Intent.Success}
           data-testid="confirm-switch-button"
         >
           {t('Confirm')}
         </Button>
-        <Button onClick={onCancel} intent={Intent.Danger}>
+        <Button
+          size="large"
+          className="w-1/2"
+          onClick={onCancel}
+          intent={Intent.Danger}
+        >
           {t('Cancel')}
         </Button>
       </div>

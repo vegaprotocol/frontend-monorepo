@@ -18,7 +18,7 @@ import {
   type CreateReferralSet,
   type UpdateReferralSet,
 } from '@vegaprotocol/wallet';
-import { type Status } from '@vegaprotocol/wallet-react';
+import { TxStatus, type Status } from '@vegaprotocol/wallet-react';
 import classNames from 'classnames';
 import { useLayoutEffect, useState } from 'react';
 
@@ -261,7 +261,7 @@ const SubmitButton = ({
   status: Status;
 }) => {
   const t = useT();
-  const disabled = status === 'pending' || status === 'requested';
+  const disabled = status === TxStatus.Pending || status === TxStatus.Requested;
 
   let text = t('Create');
   if (type === TransactionType.UpdateReferralSet) {
@@ -279,16 +279,16 @@ const SubmitButton = ({
     confirmedText = t('Upgraded');
   }
 
-  if (status === 'requested') {
+  if (status === TxStatus.Requested) {
     text = t('Confirm in wallet...');
-  } else if (status === 'pending') {
+  } else if (status === TxStatus.Pending) {
     text = t('Confirming transaction...');
   }
 
   const [showConfirmed, setShowConfirmed] = useState<boolean>(false);
   useLayoutEffect(() => {
     let to: ReturnType<typeof setTimeout>;
-    if (status === 'confirmed' && !showConfirmed) {
+    if (status === TxStatus.Confirmed && !showConfirmed) {
       to = setTimeout(() => {
         setShowConfirmed(true);
       }, 100);
@@ -323,7 +323,7 @@ const SubmitButton = ({
       >
         {text}
       </TradingButton>
-      {status === 'confirmed' && confirmed}
+      {status === TxStatus.Confirmed && confirmed}
     </div>
   );
 };

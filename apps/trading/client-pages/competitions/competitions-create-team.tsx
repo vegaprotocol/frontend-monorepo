@@ -1,11 +1,18 @@
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import {
+  CopyWithTooltip,
   Intent,
   TradingAnchorButton,
+  TradingButton,
+  TradingDialog,
   VegaIcon,
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
-import { useVegaWallet, useDialogStore } from '@vegaprotocol/wallet-react';
+import {
+  useVegaWallet,
+  useDialogStore,
+  TxStatus,
+} from '@vegaprotocol/wallet-react';
 import { addDecimalsFormatNumber } from '@vegaprotocol/utils';
 import { useT } from '../../lib/use-t';
 import { useReferralSetTransaction } from '../../lib/hooks/use-referral-set-transaction';
@@ -17,6 +24,12 @@ import { Box } from '../../components/competitions/box';
 import { Links } from '../../lib/links';
 import { TeamForm, TransactionType } from './team-form';
 import { Role, useMyTeam } from '../../lib/hooks/use-my-team';
+import { useState } from 'react';
+import type {
+  CreateReferralSet,
+  UpdateReferralSet,
+} from '@vegaprotocol/wallet';
+import { TransactionSteps } from '../../components/transaction-dialog/transaction-steps';
 
 export const CompetitionsCreateTeam = () => {
   const [searchParams] = useSearchParams();
@@ -102,53 +115,30 @@ const CreateTeamFormContainer = ({
 }) => {
   const t = useT();
   const createLink = useLinks(DApp.Governance);
+  const navigate = useNavigate();
 
-  const { err, status, code, isEligible, requiredStake, onSubmit } =
-    useReferralSetTransaction({
-      onSuccess: (code) => {
-        // For some reason team creation takes a long time, too long even to make
-        // polling viable, so its not feasible to navigate to the team page
-        // after creation
-        //
-        // navigate(Links.COMPETITIONS_TEAM(code));
-      },
-    });
+  const {
+    err,
+    status,
+    result,
+    reset,
+    code,
+    isEligible,
+    requiredStake,
+    onSubmit: submit,
+  } = useReferralSetTransaction({
+    onSuccess: () => {
+      // NOOP
+    },
+  });
+  const [dialogOpen, setDialogOpen] = useState(false);
+
+  const onSubmit = (tx: CreateReferralSet | UpdateReferralSet) => {
+    submit(tx);
+    setDialogOpen(true);
+  };
 
   const teamCode = (isUpgrade ? teamId : code) || '';
-
-  if (status === 'confirmed') {
-    return (
-      <div
-        className="flex flex-col items-start gap-2"
-        data-testid="team-creation-success-message"
-      >
-        <p className="text-sm">{t('Team creation transaction successful')}</p>
-        {code && (
-          <>
-            <dl>
-              <dt className="text-sm">{t('Your team ID:')}</dt>
-              <dl>
-                <span
-                  className="font-mono break-all bg-rainbow bg-clip-text text-transparent text-2xl"
-                  data-testid="team-id-display"
-                >
-                  {teamCode}
-                </span>
-              </dl>
-            </dl>
-            <TradingAnchorButton
-              href={Links.COMPETITIONS_TEAM(teamCode)}
-              intent={Intent.Info}
-              size="small"
-              data-testid="view-team-button"
-            >
-              {t('View team')}
-            </TradingAnchorButton>
-          </>
-        )}
-      </div>
-    );
-  }
 
   if (!isEligible) {
     return (
@@ -178,28 +168,79 @@ const CreateTeamFormContainer = ({
   }
 
   return (
-    <TeamForm
-      type={
-        isUpgrade
-          ? TransactionType.UpgradeFromReferralSet
-          : TransactionType.CreateReferralSet
-      }
-      onSubmit={onSubmit}
-      status={status}
-      err={err}
-      isCreatingSoloTeam={isSolo}
-      defaultValues={
-        isUpgrade && teamId
-          ? {
-              allowList: '',
-              avatarUrl: '',
-              id: teamId,
-              name: '',
-              private: isSolo,
-              url: '',
+    <>
+      <TeamForm
+        type={
+          isUpgrade
+            ? TransactionType.UpgradeFromReferralSet
+            : TransactionType.CreateReferralSet
+        }
+        onSubmit={onSubmit}
+        status={status}
+        err={err}
+        isCreatingSoloTeam={isSolo}
+        defaultValues={
+          isUpgrade && teamId
+            ? {
+                allowList: '',
+                avatarUrl: '',
+                id: teamId,
+                name: '',
+                private: isSolo,
+                url: '',
+              }
+            : undefined
+        }
+      />
+      <TradingDialog
+        open={dialogOpen}
+        onOpenChange={(open) => {
+          setDialogOpen(open);
+        }}
+        title={t('Create a team')}
+      >
+        <TransactionSteps
+          status={status}
+          result={result}
+          error={err || undefined}
+          reset={() => {
+            reset();
+            setDialogOpen(false);
+            if (status === TxStatus.Confirmed) {
+              navigate(Links.COMPETITIONS_TEAM(teamCode));
             }
-          : undefined
-      }
-    />
+          }}
+          resetLabel={
+            status === TxStatus.Confirmed ? t('View team') : t('Back')
+          }
+          confirmedLabel={
+            teamCode ? (
+              <div className="flex flex-col justify-start items-start gap-0 w-full">
+                <span data-testid="team-creation-success-message">
+                  {t('Team creation transaction successful')}
+                </span>
+
+                <div className="flex gap-1 max-w-full overflow-hidden">
+                  <span className="truncate">{teamCode}</span>
+
+                  <CopyWithTooltip text={teamCode}>
+                    <TradingButton
+                      size="extra-small"
+                      icon={<VegaIcon name={VegaIconNames.COPY} />}
+                    >
+                      <span>{t('Copy')}</span>
+                    </TradingButton>
+                  </CopyWithTooltip>
+                </div>
+              </div>
+            ) : (
+              <span data-testid="team-creation-success-message">
+                {t('Team creation transaction successful')}
+              </span>
+            )
+          }
+        />
+      </TradingDialog>
+    </>
   );
 };
