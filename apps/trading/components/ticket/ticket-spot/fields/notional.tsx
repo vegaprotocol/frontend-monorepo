@@ -2,30 +2,20 @@ import BigNumber from 'bignumber.js';
 
 import { TicketInput, TradingInputError } from '@vegaprotocol/ui-toolkit';
 
-import { useT } from '../../../lib/use-t';
-import { useTicketContext } from '../ticket-context';
-import { FormField } from '../ticket-field';
-import { InputLabel } from '../elements/form';
-import { useForm } from '../use-form';
+import { useT } from '../../../../lib/use-t';
+import { useTicketContext } from '../../ticket-context';
+import { FormField } from '../../ticket-field';
+import { InputLabel } from '../../elements/form';
+import { useForm } from '../../use-form';
 
-import * as utils from '../utils';
-import * as defaultUtils from '../ticket-default/utils';
+import * as utils from '../../utils';
+import * as spotUtils from '../utils';
 
-import { SizeModeButton } from '../size-mode-button';
-import { useActiveOrders } from '@vegaprotocol/orders';
-import { useOpenVolume } from '@vegaprotocol/positions';
-import { useVegaWallet } from '@vegaprotocol/wallet-react';
+import { SizeModeButton } from '../../size-mode-button';
 
 export const Notional = (props: { price?: BigNumber }) => {
-  const { pubKey } = useVegaWallet();
-  const ticket = useTicketContext('default');
+  const ticket = useTicketContext('spot');
   const form = useForm();
-
-  const { data: orders } = useActiveOrders(pubKey, ticket.market.id);
-  const { openVolume } = useOpenVolume(pubKey, ticket.market.id) || {
-    openVolume: '0',
-    averageEntryPrice: '0',
-  };
 
   return (
     <FormField
@@ -50,13 +40,11 @@ export const Notional = (props: { price?: BigNumber }) => {
                     ticket.market.positionDecimalPlaces
                   );
 
-                  const pct = defaultUtils.calcPctBySize({
+                  const pct = spotUtils.calcPctBySize({
                     size,
-                    openVolume,
-                    price: props.price || BigNumber(0),
+                    side: fields.side,
+                    price: props.price,
                     ticket,
-                    fields,
-                    orders: orders || [],
                   });
 
                   form.setValue('size', size.toNumber());

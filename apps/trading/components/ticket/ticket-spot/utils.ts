@@ -70,3 +70,14 @@ export const calcMaxSize = (args: {
 
   return max;
 };
+
+export const calcPctBySize = (args: {
+  size: BigNumber;
+  side: Side;
+  price: BigNumber;
+  ticket: SpotContextValue;
+}) => {
+  const maxSize = calcMaxSize(args);
+  const pct = args.size.div(maxSize).times(100);
+  return pct.toFixed(1);
+};

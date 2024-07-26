@@ -21,11 +21,11 @@ import { TicketTypeSelect } from '../ticket-type-select';
 import { type FormProps } from './ticket';
 import { useTicketContext } from '../ticket-context';
 import { TicketEventUpdater } from '../ticket-events';
-import { SizeSlider } from './size-slider';
 import { Feedback } from './feedback';
 import { Datagrid } from '../elements/datagrid';
 
 import * as Fields from '../fields';
+import * as SpotFields from './fields';
 import * as Data from '../info';
 import * as utils from '../utils';
 
@@ -92,11 +92,11 @@ export const Market = (props: FormProps) => {
         <Fields.Side side={props.side} onSideChange={props.onSideChange} />
         <TicketTypeSelect type="market" onTypeChange={props.onTypeChange} />
         {sizeMode === 'contracts' ? (
-          <Fields.Size price={price} />
+          <SpotFields.Size price={price} />
         ) : (
-          <Fields.Notional price={price} />
+          <SpotFields.Notional price={price} />
         )}
-        <SizeSlider price={price} />
+        <SpotFields.SizeSlider price={price} />
         <AdvancedControls>
           <div>
             <Fields.TimeInForce />
