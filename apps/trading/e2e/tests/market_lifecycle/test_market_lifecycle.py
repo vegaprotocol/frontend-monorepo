@@ -206,7 +206,7 @@ def test_market_closing_banners(page: Page, continuous_market, vega: VegaService
     )
     vega.wait_fn(60)
     vega.wait_for_total_catchup()
-    will_close_pattern = r"TRADING ON MARKET BTC:DAI_2023 WILL CLOSE ON \d+ \w+\s+You will no longer be able to hold a position on this market when it terminates in \d+ days \d+ hours\. The final price will be 107\.00 BTC\."
+    will_close_pattern = r"TRADING ON MARKET BTC:DAI_2023 WILL CLOSE ON \d{2} [A-Za-z]+ \d{2}\:\d{2}\s*You will no longer be able to hold a position on this market when it terminates in \d+ days \d+ hours\. The final price will be 107\.00 BTC\."
     banner_locator = page.get_by_test_id(f"update-state-banner-{market_id}")
     actual_text = banner_locator.inner_text()
     match_result = re.fullmatch(will_close_pattern, actual_text)
