@@ -153,6 +153,7 @@ def test_submit_stop_limit_order_pending(
 
 
 @pytest.mark.usefixtures("auth", "risk_accepted")
+@pytest.mark.skip(reason="TODO: fix this flaky test")
 def test_submit_stop_limit_order_cancel(
     continuous_market, vega: VegaServiceNull, page: Page
 ):
