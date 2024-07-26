@@ -155,6 +155,7 @@ export const createStopLimitSchema = (market: MarketInfo) => {
         .number({ message: i18n.t('Required') })
         .min(Number(sizeStep))
         .step(Number(sizeStep)),
+      sizePct: z.number().optional(),
       timeInForce: z.nativeEnum(OrderTimeInForce),
       expiresAt: z.date().optional(),
       stopExpiryStrategy,
@@ -171,6 +172,7 @@ export const createStopLimitSchema = (market: MarketInfo) => {
         .min(Number(sizeStep))
         .step(Number(sizeStep))
         .optional(),
+      ocoSizePct: z.number().optional(),
       ocoPrice: z.coerce
         .number()
         .min(Number(priceStep))
@@ -202,6 +204,62 @@ export const createStopLimitSchema = (market: MarketInfo) => {
           message: i18n.t('Provide an OCO price'),
           path: ['ocoPrice'],
         });
+      }
+
+      if (
+        val.sizeOverride ===
+        StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION
+      ) {
+        if (val.size <= 0) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.too_small,
+            type: 'number',
+            minimum: Number(sizeStep),
+            inclusive: true,
+            exact: false,
+            path: ['size'],
+          });
+        }
+
+        if (val.size > 100) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.too_big,
+            type: 'number',
+            maximum: 100,
+            inclusive: true,
+            exact: false,
+            path: ['size'],
+          });
+        }
+      }
+
+      if (
+        val.oco &&
+        val.ocoSize !== undefined &&
+        val.ocoSizeOverride ===
+          StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION
+      ) {
+        if (val.ocoSize <= 0) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.too_small,
+            type: 'number',
+            minimum: Number(sizeStep),
+            inclusive: true,
+            exact: false,
+            path: ['ocoSize'],
+          });
+        }
+
+        if (val.ocoSize > 100) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.too_big,
+            type: 'number',
+            maximum: 100,
+            inclusive: true,
+            exact: false,
+            path: ['ocoSize'],
+          });
+        }
       }
 
       if (val.stopExpiryStrategy !== 'none' && !val.stopExpiresAt) {
@@ -249,6 +307,7 @@ export const createStopMarketSchema = (market: MarketInfo) => {
       triggerPrice: z.coerce.number(),
       sizeOverride: z.nativeEnum(StopOrderSizeOverrideSetting).optional(),
       size: z.coerce.number().min(Number(sizeStep)).step(Number(sizeStep)),
+      sizePct: z.number().optional(),
       timeInForce: z.nativeEnum(OrderTimeInForce),
       expiresAt: z.date().optional(),
       stopExpiryStrategy,
@@ -264,6 +323,7 @@ export const createStopMarketSchema = (market: MarketInfo) => {
         .min(Number(sizeStep))
         .step(Number(sizeStep))
         .optional(),
+      ocoSizePct: z.number().optional(),
       ocoPrice: z.coerce
         .number()
         .min(Number(priceStep))
@@ -286,6 +346,62 @@ export const createStopMarketSchema = (market: MarketInfo) => {
           message: i18n.t('Provide an OCO size'),
           path: ['ocoSize'],
         });
+      }
+
+      if (
+        val.sizeOverride ===
+        StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION
+      ) {
+        if (val.size <= 0) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.too_small,
+            type: 'number',
+            minimum: Number(sizeStep),
+            inclusive: true,
+            exact: false,
+            path: ['size'],
+          });
+        }
+
+        if (val.size > 100) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.too_big,
+            type: 'number',
+            maximum: 100,
+            inclusive: true,
+            exact: false,
+            path: ['size'],
+          });
+        }
+      }
+
+      if (
+        val.oco &&
+        val.ocoSize !== undefined &&
+        val.ocoSizeOverride ===
+          StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION
+      ) {
+        if (val.ocoSize <= 0) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.too_small,
+            type: 'number',
+            minimum: Number(sizeStep),
+            inclusive: true,
+            exact: false,
+            path: ['ocoSize'],
+          });
+        }
+
+        if (val.ocoSize > 100) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.too_big,
+            type: 'number',
+            maximum: 100,
+            inclusive: true,
+            exact: false,
+            path: ['ocoSize'],
+          });
+        }
       }
 
       if (val.stopExpiryStrategy !== 'none' && !val.stopExpiresAt) {

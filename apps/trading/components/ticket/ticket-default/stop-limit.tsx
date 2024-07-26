@@ -27,7 +27,6 @@ import { SubmitButton } from '../elements/submit-button';
 import { useT } from '../../../lib/use-t';
 
 import { FeedbackStop } from './feedback-stop';
-import { SizeSliderStop } from './size-slider-stop';
 import BigNumber from 'bignumber.js';
 
 import * as Fields from '../fields';
@@ -68,6 +67,7 @@ export const StopLimit = (props: FormProps) => {
   const tif = form.watch('timeInForce');
   const oco = form.watch('oco');
   const ocoTif = form.watch('ocoTimeInForce');
+  const ocoPrice = form.watch('ocoPrice');
 
   return (
     <FormProvider {...form}>
@@ -102,9 +102,9 @@ export const StopLimit = (props: FormProps) => {
           <FieldControls>
             <Fields.StopSizeOverride />
           </FieldControls>
-          <Fields.StopSize />
+          <Fields.StopSize price={BigNumber(price || 0)} />
         </div>
-        <SizeSliderStop price={BigNumber(price || '0')} />
+        <Fields.StopSizeSlider price={BigNumber(price || '0')} />
         <AdvancedControls>
           <FormGrid>
             <FormGridCol>
@@ -129,13 +129,20 @@ export const StopLimit = (props: FormProps) => {
               </FieldControls>
               <Fields.StopTriggerPrice name="ocoTriggerPrice" />
             </div>
+            <Fields.Price name="ocoPrice" />
             <div className="flex flex-col gap-1">
               <FieldControls>
                 <Fields.StopSizeOverride name="ocoSizeOverride" />
               </FieldControls>
-              <Fields.StopSize name="ocoSize" />
+              <Fields.StopSize
+                name="ocoSize"
+                price={BigNumber(ocoPrice || 0)}
+              />
             </div>
-            <Fields.Price name="ocoPrice" />
+            <Fields.StopSizeSlider
+              name="ocoSizePct"
+              price={BigNumber(price || '0')}
+            />
             <AdvancedControls>
               <FormGrid>
                 <FormGridCol>

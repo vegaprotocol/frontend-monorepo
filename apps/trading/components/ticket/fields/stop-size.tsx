@@ -1,4 +1,8 @@
+import BigNumber from 'bignumber.js';
+
 import { TicketInput, TradingInputError } from '@vegaprotocol/ui-toolkit';
+import { useActiveOrders } from '@vegaprotocol/orders';
+import { useOpenVolume } from '@vegaprotocol/positions';
 
 import { useT } from '../../../lib/use-t';
 import { useTicketContext } from '../ticket-context';
@@ -7,8 +11,31 @@ import { InputLabel } from '../elements/form';
 import { StopOrderSizeOverrideSetting } from '@vegaprotocol/types';
 import { useForm } from '../use-form';
 
-export const StopSize = ({ name = 'size' }: { name?: 'size' | 'ocoSize' }) => {
+import * as defaultUtils from '../ticket-default/utils';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
+
+export const StopSize = ({
+  name = 'size',
+  price,
+}: {
+  name?: 'size' | 'ocoSize';
+  price?: BigNumber;
+}) => {
+  const { pubKey } = useVegaWallet();
+  const ticket = useTicketContext('default');
   const form = useForm();
+
+  const { data: orders } = useActiveOrders(pubKey, ticket.market.id);
+  const { openVolume } = useOpenVolume(pubKey, ticket.market.id) || {
+    openVolume: '0',
+    averageEntryPrice: '0',
+  };
+
+  const overrideFieldName =
+    name === 'size' ? 'sizeOverride' : 'ocoSizeOverride';
+  const sizeOverride = form.watch(overrideFieldName);
+  const sizePctFieldName = name === 'size' ? 'sizePct' : 'ocoSizePct';
+
   return (
     <FormField
       control={form.control}
@@ -20,7 +47,35 @@ export const StopSize = ({ name = 'size' }: { name?: 'size' | 'ocoSize' }) => {
               {...field}
               label={<SizeLabel name={name} />}
               value={field.value || ''}
-              onChange={field.onChange}
+              onChange={(e) => {
+                field.onChange(e);
+
+                if (
+                  sizeOverride ===
+                  StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_NONE
+                ) {
+                  // calc max size
+                  const pct = defaultUtils.calcPctBySize({
+                    size: BigNumber(e.target.value),
+                    openVolume,
+                    price: price || BigNumber(0),
+                    ticket,
+                    fields: form.getValues(),
+                    orders: orders || [],
+                  });
+
+                  form.setValue(sizePctFieldName, Number(pct));
+                }
+
+                if (
+                  sizeOverride ===
+                  StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION
+                ) {
+                  form.setValue(sizePctFieldName, Number(e.target.value), {
+                    shouldValidate: true,
+                  });
+                }
+              }}
               data-testid={`order-${name}`}
             />
             {fieldState.error && (

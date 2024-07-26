@@ -30,7 +30,6 @@ import { useT } from '../../../lib/use-t';
 import * as Fields from '../fields';
 import * as utils from '../utils';
 
-import { SizeSliderStop } from './size-slider-stop';
 import { FeedbackStop } from './feedback-stop';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 
@@ -104,9 +103,9 @@ export const StopMarket = (props: FormProps) => {
           <FieldControls>
             <Fields.StopSizeOverride />
           </FieldControls>
-          <Fields.StopSize />
+          <Fields.StopSize price={price} />
         </div>
-        <SizeSliderStop price={price} />
+        <Fields.StopSizeSlider price={price} />
         <AdvancedControls>
           <FormGrid>
             <FormGridCol>
@@ -131,8 +130,9 @@ export const StopMarket = (props: FormProps) => {
               <FieldControls>
                 <Fields.StopSizeOverride name="ocoSizeOverride" />
               </FieldControls>
-              <Fields.StopSize name="ocoSize" />
+              <Fields.StopSize name="ocoSize" price={price} />
             </div>
+            <Fields.StopSizeSlider name="ocoSizePct" price={price} />
             <AdvancedControls>
               <FormGrid>
                 <FormGridCol>

@@ -28,7 +28,9 @@ export const StopSizeOverride = ({
               // Changing the size override for stop orders will switch from inputting
               // a value to a percentage. It would be better here to calc the size
               // based on the percentage but clearing the field is easier for now
-              form.setValue('size', 0, { shouldDirty: false });
+              const sizeFieldName =
+                name === 'ocoSizeOverride' ? 'ocoSize' : 'size';
+              form.setValue(sizeFieldName, 0, { shouldDirty: false });
             }}
             placeholder={t('Select')}
             data-testid="size-override"
