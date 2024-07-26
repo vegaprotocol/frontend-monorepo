@@ -280,7 +280,7 @@ export const SwapForm = ({
           !market || marketData?.marketState !== MarketState.STATE_ACTIVE
         }
       >
-        {t('Swap now')}
+        {t('Swap')}
       </TradingButton>
       <GetStarted lead={t('Connect wallet')} />
       {pubKey && !isReadOnly && topAsset && !topAssetBalance && (

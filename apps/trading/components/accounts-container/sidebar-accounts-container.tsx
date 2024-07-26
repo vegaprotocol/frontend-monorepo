@@ -37,7 +37,7 @@ export const SidebarAccountsContainer = ({
     <>
       {innerView && (
         <div className="p-2">
-          <header className="text-lg">
+          <header className="text-base">
             <button
               className="flex gap-1 items-center"
               onClick={() => {
@@ -45,7 +45,7 @@ export const SidebarAccountsContainer = ({
               }}
             >
               <span className="text-muted inline-flex items-center">
-                <VegaIcon name={VegaIconNames.CHEVRON_LEFT} size={20} />
+                <VegaIcon name={VegaIconNames.CHEVRON_LEFT} size={14} />
               </span>
               <span>{t(innerView[0])}</span>
             </button>

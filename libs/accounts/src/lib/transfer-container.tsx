@@ -1,6 +1,5 @@
 import sortBy from 'lodash/sortBy';
 import * as Schema from '@vegaprotocol/types';
-import { useT } from './use-t';
 import {
   NetworkParams,
   useNetworkParams,
@@ -19,7 +18,6 @@ export const ALLOWED_ACCOUNTS = [
 ];
 
 export const TransferContainer = ({ assetId }: { assetId?: string }) => {
-  const t = useT();
   const { pubKey, pubKeys, isReadOnly } = useVegaWallet();
   const { params } = useNetworkParams([
     NetworkParams.transfer_minTransferQuantumMultiple,
@@ -46,21 +44,14 @@ export const TransferContainer = ({ assetId }: { assetId?: string }) => {
   const sortedAccounts = sortBy(accounts, (a) => a.asset.symbol.toLowerCase());
 
   return (
-    <div>
-      <p className="mb-4 text-sm" data-testid="transfer-intro-text">
-        {t('TRANSFER_FUNDS_TO_ANOTHER_VEGA_KEY', {
-          defaultValue: 'Transfer funds to another Vega key.',
-        })}
-      </p>
-      <TransferForm
-        pubKey={pubKey}
-        pubKeys={pubKeys}
-        isReadOnly={isReadOnly}
-        assetId={assetId}
-        minQuantumMultiple={params.transfer_minTransferQuantumMultiple}
-        submitTransfer={transfer}
-        accounts={sortedAccounts}
-      />
-    </div>
+    <TransferForm
+      pubKey={pubKey}
+      pubKeys={pubKeys}
+      isReadOnly={isReadOnly}
+      assetId={assetId}
+      minQuantumMultiple={params.transfer_minTransferQuantumMultiple}
+      submitTransfer={transfer}
+      accounts={sortedAccounts}
+    />
   );
 };
