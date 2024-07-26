@@ -98,12 +98,12 @@ export const Market = (props: FormProps) => {
         )}
         <Fields.SizeSlider price={price} />
         <AdvancedControls>
-          <div>
+          <FormGrid>
             <Fields.TimeInForce />
-          </div>
-          <div>
+          </FormGrid>
+          <FormGrid>
             <Fields.ReduceOnly />
-          </div>
+          </FormGrid>
           <div className="flex flex-col items-start gap-1">
             <Fields.TakeProfitStopLoss />
             {tpSl && (

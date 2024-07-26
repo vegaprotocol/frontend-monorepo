@@ -51,7 +51,7 @@ export const StopMarket = (props: FormProps) => {
       triggerType: 'price',
       timeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK,
       expiresAt: addDays(new Date(), 1),
-      reduceOnly: false,
+      reduceOnly: true,
       stopExpiryStrategy: 'none',
       oco: false,
       ocoTriggerDirection:
@@ -62,8 +62,6 @@ export const StopMarket = (props: FormProps) => {
   });
 
   const size = form.watch('size');
-  const tif = form.watch('timeInForce');
-  const isPersistent = utils.isPersistentTif(tif);
   const oco = form.watch('oco');
 
   const { data: lastTradedPrice } = useLastTradePrice(ticket.market.id);
@@ -109,9 +107,9 @@ export const StopMarket = (props: FormProps) => {
             </FormGridCol>
             <FormGridCol />
           </FormGrid>
-          <div>
-            {isPersistent ? <Fields.PostOnly /> : <Fields.ReduceOnly />}
-          </div>
+          <FormGrid>
+            <Fields.ReduceOnly disabled />
+          </FormGrid>
         </AdvancedControls>
         {oco && (
           <>

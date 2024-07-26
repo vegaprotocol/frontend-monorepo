@@ -113,9 +113,9 @@ export const StopMarket = (props: FormProps) => {
             </FormGridCol>
             <FormGridCol />
           </FormGrid>
-          <div>
+          <FormGrid>
             <Fields.ReduceOnly disabled />
-          </div>
+          </FormGrid>
         </AdvancedControls>
         {oco && (
           <>
@@ -140,9 +140,9 @@ export const StopMarket = (props: FormProps) => {
                 </FormGridCol>
                 <FormGridCol />
               </FormGrid>
-              <div>
+              <FormGrid>
                 <Fields.ReduceOnly disabled />
-              </div>
+              </FormGrid>
             </AdvancedControls>
           </>
         )}

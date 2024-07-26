@@ -51,7 +51,7 @@ export const StopLimit = (props: FormProps) => {
       timeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK,
       expiresAt: addDays(new Date(), 1),
       postOnly: false,
-      reduceOnly: false,
+      reduceOnly: true,
       stopExpiryStrategy: 'none',
       oco: false,
       ocoTriggerDirection:
@@ -63,8 +63,6 @@ export const StopLimit = (props: FormProps) => {
 
   const size = form.watch('size');
   const price = form.watch('price');
-  const tif = form.watch('timeInForce');
-  const isPersistent = utils.isPersistentTif(tif);
   const oco = form.watch('oco');
   const ocoTif = form.watch('ocoTimeInForce');
 
@@ -102,18 +100,11 @@ export const StopLimit = (props: FormProps) => {
         <SizeSliderStop price={BigNumber(price || '0')} />
         <AdvancedControls>
           <FormGrid>
-            <FormGridCol>
-              <Fields.TimeInForce />
-            </FormGridCol>
-            <FormGridCol>
-              {tif === OrderTimeInForce.TIME_IN_FORCE_GTT && (
-                <Fields.ExpiresAt />
-              )}
-            </FormGridCol>
+            <Fields.TimeInForce />
           </FormGrid>
-          <div>
-            {isPersistent ? <Fields.PostOnly /> : <Fields.ReduceOnly />}
-          </div>
+          <FormGrid>
+            <Fields.ReduceOnly disabled />
+          </FormGrid>
         </AdvancedControls>
         {oco && (
           <>

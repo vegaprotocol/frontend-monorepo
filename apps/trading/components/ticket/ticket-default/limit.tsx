@@ -108,9 +108,9 @@ export const Limit = (props: FormProps) => {
               )}
             </FormGridCol>
           </FormGrid>
-          <div>
+          <FormGrid>
             {isPersistent ? <Fields.PostOnly /> : <Fields.ReduceOnly />}
-          </div>
+          </FormGrid>
           <div className="flex flex-col items-start gap-1">
             <Fields.Iceberg />
             {iceberg && (

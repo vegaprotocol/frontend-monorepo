@@ -64,7 +64,6 @@ export const StopLimit = (props: FormProps) => {
 
   const size = form.watch('size');
   const price = form.watch('price');
-  const tif = form.watch('timeInForce');
   const oco = form.watch('oco');
   const ocoTif = form.watch('ocoTimeInForce');
   const ocoPrice = form.watch('ocoPrice');
@@ -107,18 +106,11 @@ export const StopLimit = (props: FormProps) => {
         <Fields.StopSizeSlider price={BigNumber(price || '0')} />
         <AdvancedControls>
           <FormGrid>
-            <FormGridCol>
-              <Fields.TimeInForce />
-            </FormGridCol>
-            <FormGridCol>
-              {tif === OrderTimeInForce.TIME_IN_FORCE_GTT && (
-                <Fields.ExpiresAt />
-              )}
-            </FormGridCol>
+            <Fields.TimeInForce />
           </FormGrid>
-          <div>
+          <FormGrid>
             <Fields.ReduceOnly disabled />
-          </div>
+          </FormGrid>
         </AdvancedControls>
         {oco && (
           <>
@@ -154,9 +146,9 @@ export const StopLimit = (props: FormProps) => {
                   )}
                 </FormGridCol>
               </FormGrid>
-              <div>
+              <FormGrid>
                 <Fields.ReduceOnly disabled />
-              </div>
+              </FormGrid>
             </AdvancedControls>
           </>
         )}
