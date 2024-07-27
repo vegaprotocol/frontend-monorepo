@@ -9,13 +9,13 @@ import {
   StopOrderTriggerDirection,
 } from '@vegaprotocol/types';
 import { useVegaTransactionStore } from '@vegaprotocol/web3';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 
 import {
   AdvancedControls,
   FieldControls,
   Form,
   FormGrid,
-  FormGridCol,
 } from '../elements/form';
 import { type FormFieldsStopLimit, useStopLimitSchema } from '../schemas';
 import { TicketEventUpdater } from '../ticket-events';
@@ -24,13 +24,13 @@ import { type FormProps } from './ticket';
 import { useTicketContext } from '../ticket-context';
 import { SubmitButton } from '../elements/submit-button';
 import { useT } from '../../../lib/use-t';
-import { SizeSliderStop } from './size-slider-stop';
 import BigNumber from 'bignumber.js';
 
-import * as Fields from '../fields';
-import * as utils from '../utils';
-import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { FeedbackStop } from './feedback-stop';
+
+import * as Fields from '../fields';
+import * as SpotFields from './fields';
+import * as utils from '../utils';
 
 export const StopLimit = (props: FormProps) => {
   const t = useT();
@@ -64,7 +64,7 @@ export const StopLimit = (props: FormProps) => {
   const size = form.watch('size');
   const price = form.watch('price');
   const oco = form.watch('oco');
-  const ocoTif = form.watch('ocoTimeInForce');
+  const ocoPrice = form.watch('ocoPrice');
 
   return (
     <FormProvider {...form}>
@@ -96,8 +96,8 @@ export const StopLimit = (props: FormProps) => {
           <Fields.StopTriggerPrice />
         </div>
         <Fields.Price />
-        <Fields.StopSize />
-        <SizeSliderStop price={BigNumber(price || '0')} />
+        <SpotFields.StopSize price={BigNumber(price || 0)} />
+        <SpotFields.StopSizeSlider price={BigNumber(price || 0)} />
         <AdvancedControls>
           <FormGrid>
             <Fields.TimeInForce />
@@ -115,18 +115,18 @@ export const StopLimit = (props: FormProps) => {
               </FieldControls>
               <Fields.StopTriggerPrice name="ocoTriggerPrice" />
             </div>
-            <Fields.StopSize name="ocoSize" />
             <Fields.Price name="ocoPrice" />
+            <SpotFields.StopSize
+              name="ocoSize"
+              price={BigNumber(ocoPrice || 0)}
+            />
+            <SpotFields.StopSizeSlider
+              name="ocoSizePct"
+              price={BigNumber(price || 0)}
+            />
             <AdvancedControls>
               <FormGrid>
-                <FormGridCol>
-                  <Fields.TimeInForce name="ocoTimeInForce" />
-                </FormGridCol>
-                <FormGridCol>
-                  {ocoTif === OrderTimeInForce.TIME_IN_FORCE_GTT && (
-                    <Fields.ExpiresAt name="ocoExpiresAt" />
-                  )}
-                </FormGridCol>
+                <Fields.TimeInForce name="ocoTimeInForce" />
               </FormGrid>
             </AdvancedControls>
           </>

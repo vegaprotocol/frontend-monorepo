@@ -9,6 +9,8 @@ import {
   StopOrderTriggerDirection,
 } from '@vegaprotocol/types';
 import { useVegaTransactionStore } from '@vegaprotocol/web3';
+import { toBigNum } from '@vegaprotocol/utils';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 
 import {
   AdvancedControls,
@@ -24,14 +26,13 @@ import { TicketEventUpdater } from '../ticket-events';
 import { useTicketContext } from '../ticket-context';
 import { SubmitButton } from '../elements/submit-button';
 import { useT } from '../../../lib/use-t';
-import { SizeSliderStop } from './size-slider-stop';
 import { useLastTradePrice } from '@vegaprotocol/markets';
-import { toBigNum } from '@vegaprotocol/utils';
+
+import { FeedbackStop } from './feedback-stop';
 
 import * as Fields from '../fields';
+import * as SpotFields from './fields';
 import * as utils from '../utils';
-import { useVegaWallet } from '@vegaprotocol/wallet-react';
-import { FeedbackStop } from './feedback-stop';
 
 export const StopMarket = (props: FormProps) => {
   const t = useT();
@@ -98,8 +99,8 @@ export const StopMarket = (props: FormProps) => {
           </FieldControls>
           <Fields.StopTriggerPrice />
         </div>
-        <Fields.StopSize />
-        <SizeSliderStop price={price} />
+        <SpotFields.StopSize price={price} />
+        <SpotFields.StopSizeSlider price={price} />
         <AdvancedControls>
           <FormGrid>
             <FormGridCol>
@@ -120,7 +121,8 @@ export const StopMarket = (props: FormProps) => {
               </FieldControls>
               <Fields.StopTriggerPrice name="ocoTriggerPrice" />
             </div>
-            <Fields.StopSize name="ocoSize" />
+            <SpotFields.StopSize name="ocoSize" price={price} />
+            <SpotFields.StopSizeSlider name="ocoSizePct" price={price} />
             <AdvancedControls>
               <FormGrid>
                 <FormGridCol>
