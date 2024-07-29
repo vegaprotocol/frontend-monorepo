@@ -176,14 +176,14 @@ export const StopLimit = (props: FormProps) => {
             ticket.quoteAsset.symbol
           }`}
         />
-        <Datagrid>
+        <Datagrid heading={<Data.StopSummary />}>
           {sizeMode === 'contracts' ? <Data.Notional /> : <Data.Size />}
           <Data.Fees />
         </Datagrid>
         {oco && (
           <>
             <hr className="border-default" />
-            <Datagrid>
+            <Datagrid heading={<Data.StopSummary oco />}>
               {sizeMode === 'contracts' ? (
                 <Data.Notional name="ocoNotional" />
               ) : (

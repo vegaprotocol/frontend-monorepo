@@ -165,14 +165,14 @@ export const StopMarket = (props: FormProps) => {
           text={t('Place limit stop order')}
           subLabel={`${size || 0} ${ticket.baseSymbol} @ market`}
         />
-        <Datagrid>
+        <Datagrid heading={<Data.StopSummary />}>
           {sizeMode === 'contracts' ? <Data.Notional /> : <Data.Size />}
           <Data.Fees />
         </Datagrid>
         {oco && (
           <>
             <hr className="border-default" />
-            <Datagrid>
+            <Datagrid heading={<Data.StopSummary oco />}>
               {sizeMode === 'contracts' ? (
                 <Data.Notional name="ocoNotional" />
               ) : (

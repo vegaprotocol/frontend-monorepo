@@ -2,12 +2,12 @@ import { type HTMLAttributes, type ReactNode } from 'react';
 
 export const Datagrid = ({
   children,
-  title,
+  heading,
   ...props
-}: HTMLAttributes<HTMLDListElement> & { title?: ReactNode }) => {
+}: HTMLAttributes<HTMLDListElement> & { heading?: ReactNode }) => {
   return (
-    <section>
-      {title && <h3>{title}</h3>}
+    <section className="flex flex-col gap-1">
+      {heading && <h3 className="text-xs">{heading}</h3>}
       <dl {...props} className="flex flex-col gap-1 text-xs">
         {children}
       </dl>
