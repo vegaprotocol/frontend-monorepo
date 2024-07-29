@@ -12,7 +12,9 @@ import { StopOrderSizeOverrideSetting } from '@vegaprotocol/types';
 import { useForm } from '../use-form';
 
 import * as derivativeUtils from '../derivative/utils';
+import * as utils from '../utils';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
+import { SizeModeButton } from '../size-mode-button';
 
 export const StopSize = ({
   name = 'size',
@@ -35,6 +37,7 @@ export const StopSize = ({
     name === 'size' ? 'sizeOverride' : 'ocoSizeOverride';
   const sizeOverride = form.watch(overrideFieldName);
   const sizePctFieldName = name === 'size' ? 'sizePct' : 'ocoSizePct';
+  const notionalFieldName = name === 'size' ? 'notional' : 'ocoNotional';
 
   return (
     <FormField
@@ -49,6 +52,14 @@ export const StopSize = ({
               value={field.value || ''}
               onChange={(e) => {
                 field.onChange(e);
+
+                if (price) {
+                  const notional = utils.toNotional(
+                    BigNumber(e.target.value || 0),
+                    price
+                  );
+                  form.setValue(notionalFieldName, notional.toNumber());
+                }
 
                 if (
                   sizeOverride ===
@@ -77,6 +88,7 @@ export const StopSize = ({
                 }
               }}
               data-testid={`order-${name}`}
+              appendElement={<SizeModeButton />}
             />
             {fieldState.error && (
               <TradingInputError testId={`error-${name}`}>

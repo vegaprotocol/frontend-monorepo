@@ -12,13 +12,15 @@ import { determinePriceStep, determineSizeStep } from '@vegaprotocol/utils';
 import { useMemo } from 'react';
 import i18n from '../../lib/i18n';
 
+const sizeMode = z.enum(['contracts', 'notional']);
+
 export const createMarketSchema = (market: MarketInfo) => {
   const sizeStep = determineSizeStep(market);
 
   return z
     .object({
       ticketType: z.literal('market'),
-      sizeMode: z.enum(['contracts', 'notional']),
+      sizeMode,
       type: z.literal(OrderType.TYPE_MARKET),
       side: z.nativeEnum(Side),
       size: z.coerce.number().min(Number(sizeStep)).step(Number(sizeStep)),
@@ -61,7 +63,7 @@ export const createLimitSchema = (market: MarketInfo) => {
   return z
     .object({
       ticketType: z.literal('limit'),
-      sizeMode: z.enum(['contracts', 'notional']),
+      sizeMode,
       type: z.literal(OrderType.TYPE_LIMIT),
       side: z.nativeEnum(Side),
       price: z.coerce
@@ -142,6 +144,7 @@ export const createStopLimitSchema = (market: MarketInfo) => {
     .object({
       ticketType: z.literal('stopLimit'),
       type: z.literal(OrderType.TYPE_LIMIT),
+      sizeMode,
       side: z.nativeEnum(Side),
       triggerDirection: z.nativeEnum(StopOrderTriggerDirection),
       triggerType: z.enum(['price', 'trailingPercentOffset']),
@@ -155,6 +158,7 @@ export const createStopLimitSchema = (market: MarketInfo) => {
         .number({ message: i18n.t('Required') })
         .min(Number(sizeStep))
         .step(Number(sizeStep)),
+      notional: z.coerce.number(),
       sizePct: z.number().optional(),
       timeInForce: z.nativeEnum(OrderTimeInForce),
       expiresAt: z.date().optional(),
@@ -172,6 +176,7 @@ export const createStopLimitSchema = (market: MarketInfo) => {
         .min(Number(sizeStep))
         .step(Number(sizeStep))
         .optional(),
+      ocoNotional: z.coerce.number(),
       ocoSizePct: z.number().optional(),
       ocoPrice: z.coerce
         .number()
@@ -301,12 +306,14 @@ export const createStopMarketSchema = (market: MarketInfo) => {
     .object({
       ticketType: z.literal('stopMarket'),
       type: z.literal(OrderType.TYPE_MARKET),
+      sizeMode,
       side: z.nativeEnum(Side),
       triggerDirection: z.nativeEnum(StopOrderTriggerDirection),
       triggerType: z.enum(['price', 'trailingPercentOffset']),
       triggerPrice: z.coerce.number(),
       sizeOverride: z.nativeEnum(StopOrderSizeOverrideSetting).optional(),
       size: z.coerce.number().min(Number(sizeStep)).step(Number(sizeStep)),
+      notional: z.coerce.number(),
       sizePct: z.number().optional(),
       timeInForce: z.nativeEnum(OrderTimeInForce),
       expiresAt: z.date().optional(),
@@ -323,6 +330,7 @@ export const createStopMarketSchema = (market: MarketInfo) => {
         .min(Number(sizeStep))
         .step(Number(sizeStep))
         .optional(),
+      ocoNotional: z.coerce.number(),
       ocoSizePct: z.number().optional(),
       ocoPrice: z.coerce
         .number()

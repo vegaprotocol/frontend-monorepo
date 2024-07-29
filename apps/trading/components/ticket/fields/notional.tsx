@@ -16,7 +16,13 @@ import { useActiveOrders } from '@vegaprotocol/orders';
 import { useOpenVolume } from '@vegaprotocol/positions';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 
-export const Notional = (props: { price?: BigNumber }) => {
+export const Notional = ({
+  name = 'notional',
+  price,
+}: {
+  name?: 'notional' | 'ocoNotional';
+  price?: BigNumber;
+}) => {
   const { pubKey } = useVegaWallet();
   const ticket = useTicketContext('default');
   const form = useForm();
@@ -30,7 +36,7 @@ export const Notional = (props: { price?: BigNumber }) => {
   return (
     <FormField
       control={form.control}
-      name="notional"
+      name={name}
       render={({ field, fieldState }) => {
         return (
           <div className="w-full">
@@ -43,24 +49,29 @@ export const Notional = (props: { price?: BigNumber }) => {
 
                 const fields = form.getValues();
 
-                if (props.price) {
+                if (price) {
                   const size = utils.toSize(
                     BigNumber(e.target.value || 0),
-                    props.price,
+                    price,
                     ticket.market.positionDecimalPlaces
                   );
 
                   const pct = derivativeUtils.calcPctBySize({
                     size,
                     openVolume,
-                    price: props.price || BigNumber(0),
+                    price: price || BigNumber(0),
                     ticket,
                     fields,
                     orders: orders || [],
                   });
 
-                  form.setValue('size', size.toNumber());
-                  form.setValue('sizePct', Number(pct));
+                  if (name === 'notional') {
+                    form.setValue('size', size.toNumber());
+                    form.setValue('sizePct', Number(pct));
+                  } else {
+                    form.setValue('ocoSize', size.toNumber());
+                    form.setValue('ocoSizePct', Number(pct));
+                  }
                 }
               }}
               appendElement={<SizeModeButton />}

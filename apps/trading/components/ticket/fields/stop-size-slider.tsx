@@ -3,14 +3,16 @@ import type BigNumber from 'bignumber.js';
 import { useActiveOrders } from '@vegaprotocol/orders';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useOpenVolume } from '@vegaprotocol/positions';
+import { StopOrderSizeOverrideSetting } from '@vegaprotocol/types';
 
 import { Slider } from '../elements/slider';
 import { useTicketContext } from '../ticket-context';
 
-import * as derivativeUtils from '../derivative/utils';
 import { useForm } from '../use-form';
 import { FormField } from '../ticket-field';
-import { StopOrderSizeOverrideSetting } from '@vegaprotocol/types';
+
+import * as derivativeUtils from '../derivative/utils';
+import * as utils from '../utils';
 
 export const StopSizeSlider = ({
   name = 'sizePct',
@@ -51,7 +53,9 @@ export const StopSizeSlider = ({
               field.onChange(value[0]);
 
               const fields = form.getValues();
-              const sizeFieldName = name === 'ocoSizePct' ? 'ocoSize' : 'size';
+              const isOco = name === 'ocoSizePct';
+              const sizeFieldName = isOco ? 'ocoSize' : 'size';
+              const notionalFieldName = isOco ? 'ocoNotional' : 'notional';
 
               const sizeOverride =
                 name === 'ocoSizePct'
@@ -71,8 +75,14 @@ export const StopSizeSlider = ({
                   orders: orders || [],
                 });
 
+                const notional = utils.toNotional(size, price);
+
                 form.setValue(sizeFieldName, size.toNumber(), {
-                  shouldValidate: true,
+                  shouldValidate: fields.sizeMode === 'contracts',
+                });
+
+                form.setValue(notionalFieldName, notional.toNumber(), {
+                  shouldValidate: fields.sizeMode === 'notional',
                 });
               }
 
