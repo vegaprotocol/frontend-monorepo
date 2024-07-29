@@ -83,9 +83,7 @@ export const StopSize = ({
                   sizeOverride ===
                   StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION
                 ) {
-                  form.setValue(sizePctFieldName, Number(e.target.value), {
-                    shouldValidate: true,
-                  });
+                  form.setValue(sizePctFieldName, Number(e.target.value));
                 }
               }}
               data-testid={`order-${name}`}

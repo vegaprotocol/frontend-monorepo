@@ -56,6 +56,9 @@ export const StopSizeSlider = ({
               const isOco = name === 'ocoSizePct';
               const sizeFieldName = isOco ? 'ocoSize' : 'size';
               const notionalFieldName = isOco ? 'ocoNotional' : 'notional';
+              const sizePositionFieldName = isOco
+                ? 'ocoSizePosition'
+                : 'sizePosition';
 
               const sizeOverride =
                 name === 'ocoSizePct'
@@ -90,7 +93,7 @@ export const StopSizeSlider = ({
                 sizeOverride ===
                 StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION
               ) {
-                form.setValue(sizeFieldName, value[0], {
+                form.setValue(sizePositionFieldName, value[0], {
                   shouldValidate: true,
                 });
               }

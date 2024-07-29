@@ -11,7 +11,7 @@ export const StopSizeOverride = ({
   name?: 'sizeOverride' | 'ocoSizeOverride';
 }) => {
   const t = useT();
-  const form = useForm();
+  const form = useForm('stopLimit' as 'stopLimit' | 'stopMarket');
 
   return (
     <FormField
@@ -24,13 +24,28 @@ export const StopSizeOverride = ({
             onValueChange={(value) => {
               field.onChange(value);
 
-              // TODO: convert percentage/size on change of sizeOverride
-              // Changing the size override for stop orders will switch from inputting
-              // a value to a percentage. It would be better here to calc the size
-              // based on the percentage but clearing the field is easier for now
-              const sizeFieldName =
-                name === 'ocoSizeOverride' ? 'ocoSize' : 'size';
-              form.setValue(sizeFieldName, 0, { shouldDirty: false });
+              const values = form.getValues();
+              const isOco = name === 'ocoSizeOverride';
+              const sizeFieldName = isOco ? 'ocoSize' : 'size';
+              const notionalFieldName = isOco ? 'ocoNotional' : 'notional';
+              const sizePctFieldName = isOco ? 'ocoSizePct' : 'sizePct';
+              const sizePositionFieldName = isOco
+                ? 'ocoSizePosition'
+                : 'sizePosition';
+              const pctValue = isOco ? values.ocoSizePct : values.sizePct;
+
+              if (
+                value ===
+                StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION
+              ) {
+                form.setValue(sizePositionFieldName, pctValue);
+              } else {
+                // TODO: would be better here to calc the actual size/notional based
+                // on current slider position
+                form.setValue(sizeFieldName, 0);
+                form.setValue(notionalFieldName, 0);
+                form.setValue(sizePctFieldName, 0);
+              }
             }}
             placeholder={t('Select')}
             data-testid="size-override"

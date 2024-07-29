@@ -252,7 +252,7 @@ const useEstimateFeesQueryVariables = (
 
     return {
       ...commonVariables,
-      size: removeDecimal(values.size?.toString(), positionDp),
+      size: removeDecimal(values.size?.toString() || '0', positionDp),
       price,
     };
   }
@@ -274,7 +274,7 @@ const useEstimateFeesQueryVariables = (
 
     return {
       ...commonVariables,
-      size: removeDecimal(values.size?.toString(), positionDp),
+      size: removeDecimal(values.size?.toString() || '0', positionDp),
       price: removeDecimal(values.price?.toString(), marketDp),
     };
   }

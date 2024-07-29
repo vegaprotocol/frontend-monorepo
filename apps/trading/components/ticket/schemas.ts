@@ -23,7 +23,10 @@ export const createMarketSchema = (market: MarketInfo) => {
       sizeMode,
       type: z.literal(OrderType.TYPE_MARKET),
       side: z.nativeEnum(Side),
-      size: z.coerce.number().min(Number(sizeStep)).step(Number(sizeStep)),
+      size: z.coerce
+        .number({ message: i18n.t('Required') })
+        .min(Number(sizeStep))
+        .step(Number(sizeStep)),
       sizePct: z.number().optional(),
       notional: z.coerce.number(),
       timeInForce: z.nativeEnum(OrderTimeInForce),
@@ -157,9 +160,11 @@ export const createStopLimitSchema = (market: MarketInfo) => {
       size: z.coerce
         .number({ message: i18n.t('Required') })
         .min(Number(sizeStep))
-        .step(Number(sizeStep)),
-      notional: z.coerce.number(),
+        .step(Number(sizeStep))
+        .optional(),
+      sizePosition: z.coerce.number().min(0.0001).max(100).optional(),
       sizePct: z.number().optional(),
+      notional: z.coerce.number(),
       timeInForce: z.nativeEnum(OrderTimeInForce),
       expiresAt: z.date().optional(),
       stopExpiryStrategy,
@@ -176,6 +181,7 @@ export const createStopLimitSchema = (market: MarketInfo) => {
         .min(Number(sizeStep))
         .step(Number(sizeStep))
         .optional(),
+      ocoSizePosition: z.coerce.number().min(0.0001).max(100).optional(),
       ocoNotional: z.coerce.number().optional(),
       ocoSizePct: z.number().optional(),
       ocoPrice: z.coerce
@@ -215,25 +221,11 @@ export const createStopLimitSchema = (market: MarketInfo) => {
         val.sizeOverride ===
         StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION
       ) {
-        if (val.size <= 0) {
+        if (val.sizePosition === undefined) {
           ctx.addIssue({
-            code: z.ZodIssueCode.too_small,
-            type: 'number',
-            minimum: Number(sizeStep),
-            inclusive: true,
-            exact: false,
-            path: ['size'],
-          });
-        }
-
-        if (val.size > 100) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.too_big,
-            type: 'number',
-            maximum: 100,
-            inclusive: true,
-            exact: false,
-            path: ['size'],
+            code: z.ZodIssueCode.custom,
+            path: ['sizePosition'],
+            message: i18n.t('Provide a position size'),
           });
         }
       }
@@ -248,9 +240,8 @@ export const createStopLimitSchema = (market: MarketInfo) => {
           ctx.addIssue({
             code: z.ZodIssueCode.too_small,
             type: 'number',
-            minimum: Number(sizeStep),
+            minimum: 0.0001,
             inclusive: true,
-            exact: false,
             path: ['ocoSize'],
           });
         }
@@ -261,7 +252,6 @@ export const createStopLimitSchema = (market: MarketInfo) => {
             type: 'number',
             maximum: 100,
             inclusive: true,
-            exact: false,
             path: ['ocoSize'],
           });
         }
@@ -312,9 +302,14 @@ export const createStopMarketSchema = (market: MarketInfo) => {
       triggerType: z.enum(['price', 'trailingPercentOffset']),
       triggerPrice: z.coerce.number(),
       sizeOverride: z.nativeEnum(StopOrderSizeOverrideSetting).optional(),
-      size: z.coerce.number().min(Number(sizeStep)).step(Number(sizeStep)),
-      notional: z.coerce.number(),
+      size: z.coerce
+        .number({ message: i18n.t('Required') })
+        .min(Number(sizeStep))
+        .step(Number(sizeStep))
+        .optional(),
+      sizePosition: z.coerce.number().min(0.0001).max(100).optional(),
       sizePct: z.number().optional(),
+      notional: z.coerce.number(),
       timeInForce: z.nativeEnum(OrderTimeInForce),
       expiresAt: z.date().optional(),
       stopExpiryStrategy,
@@ -331,6 +326,7 @@ export const createStopMarketSchema = (market: MarketInfo) => {
         .step(Number(sizeStep))
         .optional(),
       ocoNotional: z.coerce.number().optional(),
+      ocoSizePosition: z.coerce.number().min(0.0001).max(100).optional(),
       ocoSizePct: z.number().optional(),
       ocoPrice: z.coerce
         .number()
@@ -360,25 +356,11 @@ export const createStopMarketSchema = (market: MarketInfo) => {
         val.sizeOverride ===
         StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION
       ) {
-        if (val.size <= 0) {
+        if (val.sizePosition === undefined) {
           ctx.addIssue({
-            code: z.ZodIssueCode.too_small,
-            type: 'number',
-            minimum: Number(sizeStep),
-            inclusive: true,
-            exact: false,
+            code: z.ZodIssueCode.custom,
             path: ['size'],
-          });
-        }
-
-        if (val.size > 100) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.too_big,
-            type: 'number',
-            maximum: 100,
-            inclusive: true,
-            exact: false,
-            path: ['size'],
+            message: i18n.t('Provide a position size'),
           });
         }
       }
@@ -393,9 +375,8 @@ export const createStopMarketSchema = (market: MarketInfo) => {
           ctx.addIssue({
             code: z.ZodIssueCode.too_small,
             type: 'number',
-            minimum: Number(sizeStep),
+            minimum: 0.0001,
             inclusive: true,
-            exact: false,
             path: ['ocoSize'],
           });
         }
@@ -406,7 +387,6 @@ export const createStopMarketSchema = (market: MarketInfo) => {
             type: 'number',
             maximum: 100,
             inclusive: true,
-            exact: false,
             path: ['ocoSize'],
           });
         }

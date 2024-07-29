@@ -71,6 +71,8 @@ export const StopLimit = (props: FormProps) => {
   const oco = form.watch('oco');
   const ocoTif = form.watch('ocoTimeInForce');
   const ocoPrice = form.watch('ocoPrice');
+  const sizeOverride = form.watch('sizeOverride');
+  const ocoSizeOverride = form.watch('ocoSizeOverride');
 
   return (
     <FormProvider {...form}>
@@ -105,10 +107,17 @@ export const StopLimit = (props: FormProps) => {
           <FieldControls>
             <Fields.StopSizeOverride />
           </FieldControls>
-          {sizeMode === 'contracts' ? (
-            <Fields.StopSize price={BigNumber(price || 0)} />
+          {sizeOverride ===
+          StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION ? (
+            <Fields.StopSizePosition />
           ) : (
-            <Fields.Notional price={BigNumber(price || 0)} />
+            <>
+              {sizeMode === 'contracts' ? (
+                <Fields.StopSize price={BigNumber(price || 0)} />
+              ) : (
+                <Fields.Notional price={BigNumber(price || 0)} />
+              )}
+            </>
           )}
         </div>
         <Fields.StopSizeSlider price={BigNumber(price || '0')} />
@@ -134,16 +143,23 @@ export const StopLimit = (props: FormProps) => {
               <FieldControls>
                 <Fields.StopSizeOverride name="ocoSizeOverride" />
               </FieldControls>
-              {sizeMode === 'contracts' ? (
-                <Fields.StopSize
-                  name="ocoSize"
-                  price={BigNumber(ocoPrice || 0)}
-                />
+              {ocoSizeOverride ===
+              StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION ? (
+                <Fields.StopSizePosition name="ocoSizePosition" />
               ) : (
-                <Fields.Notional
-                  name="ocoNotional"
-                  price={BigNumber(ocoPrice || 0)}
-                />
+                <>
+                  {sizeMode === 'contracts' ? (
+                    <Fields.StopSize
+                      name="ocoSize"
+                      price={BigNumber(ocoPrice || 0)}
+                    />
+                  ) : (
+                    <Fields.Notional
+                      name="ocoNotional"
+                      price={BigNumber(ocoPrice || 0)}
+                    />
+                  )}
+                </>
               )}
             </div>
             <Fields.StopSizeSlider

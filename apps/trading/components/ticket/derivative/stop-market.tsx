@@ -66,6 +66,8 @@ export const StopMarket = (props: FormProps) => {
   const sizeMode = form.watch('sizeMode');
   const size = form.watch('size');
   const oco = form.watch('oco');
+  const sizeOverride = form.watch('sizeOverride');
+  const ocoSizeOverride = form.watch('ocoSizeOverride');
 
   const { pubKey } = useVegaWallet();
 
@@ -107,10 +109,17 @@ export const StopMarket = (props: FormProps) => {
           <FieldControls>
             <Fields.StopSizeOverride />
           </FieldControls>
-          {sizeMode === 'contracts' ? (
-            <Fields.StopSize price={price} />
+          {sizeOverride ===
+          StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION ? (
+            <Fields.StopSizePosition />
           ) : (
-            <Fields.Notional price={price} />
+            <>
+              {sizeMode === 'contracts' ? (
+                <Fields.StopSize price={price} />
+              ) : (
+                <Fields.Notional price={price} />
+              )}
+            </>
           )}
         </div>
         <Fields.StopSizeSlider price={price} />
@@ -138,10 +147,17 @@ export const StopMarket = (props: FormProps) => {
               <FieldControls>
                 <Fields.StopSizeOverride name="ocoSizeOverride" />
               </FieldControls>
-              {sizeMode === 'contracts' ? (
-                <Fields.StopSize name="ocoSize" price={price} />
+              {ocoSizeOverride ===
+              StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION ? (
+                <Fields.StopSizePosition name="ocoSizePosition" />
               ) : (
-                <Fields.Notional name="ocoNotional" price={price} />
+                <>
+                  {sizeMode === 'contracts' ? (
+                    <Fields.StopSize name="ocoSize" price={price} />
+                  ) : (
+                    <Fields.Notional name="ocoNotional" price={price} />
+                  )}
+                </>
               )}
             </div>
             <Fields.StopSizeSlider name="ocoSizePct" price={price} />

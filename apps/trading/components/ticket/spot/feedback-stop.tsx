@@ -64,12 +64,12 @@ export const FeedbackStop = () => {
   const baseBalance = toBigNum(ticket.accounts.base, ticket.baseAsset.decimals);
 
   if (side === Side.SIDE_BUY) {
-    const notional = price.times(size);
+    const notional = price.times(size || 0);
     if (quoteBalance.isLessThan(notional)) {
       return <Msg.NoCollateral asset={ticket.quoteAsset} />;
     }
   } else if (side === Side.SIDE_SELL) {
-    if (baseBalance.isLessThan(size)) {
+    if (baseBalance.isLessThan(size || 0)) {
       return <Msg.NoCollateral asset={ticket.baseAsset} />;
     }
   }
