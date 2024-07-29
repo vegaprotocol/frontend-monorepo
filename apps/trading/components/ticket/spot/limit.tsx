@@ -104,9 +104,7 @@ export const Limit = (props: FormProps) => {
               <Fields.TimeInForce />
             </FormGridCol>
             <FormGridCol>
-              {tif === OrderTimeInForce.TIME_IN_FORCE_GTT && (
-                <Fields.ExpiresAt />
-              )}
+              {utils.isExpiryAvailable(tif) && <Fields.ExpiresAt />}
             </FormGridCol>
           </FormGrid>
           <FormGrid>

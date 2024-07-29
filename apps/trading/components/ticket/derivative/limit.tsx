@@ -56,7 +56,6 @@ export const Limit = (props: FormProps) => {
   const tpSl = form.watch('tpSl');
   const iceberg = form.watch('iceberg');
   const tif = form.watch('timeInForce');
-  const isPersistent = utils.isPersistentTif(tif);
 
   return (
     <FormProvider {...form}>
@@ -103,13 +102,15 @@ export const Limit = (props: FormProps) => {
               <Fields.TimeInForce />
             </FormGridCol>
             <FormGridCol>
-              {tif === OrderTimeInForce.TIME_IN_FORCE_GTT && (
-                <Fields.ExpiresAt />
-              )}
+              {utils.isExpiryAvailable(tif) && <Fields.ExpiresAt />}
             </FormGridCol>
           </FormGrid>
           <FormGrid>
-            {isPersistent ? <Fields.PostOnly /> : <Fields.ReduceOnly />}
+            {utils.isPersistentTif(tif) ? (
+              <Fields.PostOnly />
+            ) : (
+              <Fields.ReduceOnly />
+            )}
           </FormGrid>
           <div className="flex flex-col items-start gap-1">
             <Fields.Iceberg />

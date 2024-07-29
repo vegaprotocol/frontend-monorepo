@@ -7,6 +7,7 @@ import {
 import { addDecimal, toDecimal } from '@vegaprotocol/utils';
 import BigNumber from 'bignumber.js';
 import {
+  EXPIRY_TIF_OPTIONS,
   NON_PERSISTENT_TIF_OPTIONS,
   PERSISTENT_TIF_OPTIONS,
 } from './constants';
@@ -126,6 +127,10 @@ export const isNonPersistentOrder = (timeInForce: OrderTimeInForce) => {
 
 export const isPersistentTif = (timeInForce: OrderTimeInForce) => {
   return PERSISTENT_TIF_OPTIONS.includes(timeInForce);
+};
+
+export const isExpiryAvailable = (timeInForce: OrderTimeInForce) => {
+  return EXPIRY_TIF_OPTIONS.includes(timeInForce);
 };
 
 type MarketData = {

@@ -14,6 +14,11 @@ export const NON_PERSISTENT_TIF_OPTIONS = [
   OrderTimeInForce.TIME_IN_FORCE_FOK,
 ];
 
+export const EXPIRY_TIF_OPTIONS = [
+  OrderTimeInForce.TIME_IN_FORCE_GTT,
+  OrderTimeInForce.TIME_IN_FORCE_GFN,
+];
+
 export const tooltipProps = {
   align: 'start',
   side: 'left',
