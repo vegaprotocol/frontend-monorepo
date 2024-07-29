@@ -28,10 +28,12 @@ import { SubmitButton } from '../elements/submit-button';
 import { useT } from '../../../lib/use-t';
 
 import * as Fields from '../fields';
+import * as Data from '../info';
 import * as utils from '../utils';
 
 import { FeedbackStop } from './feedback-stop';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
+import { Datagrid } from '../elements/datagrid';
 
 export const StopMarket = (props: FormProps) => {
   const t = useT();
@@ -163,6 +165,23 @@ export const StopMarket = (props: FormProps) => {
           text={t('Place limit stop order')}
           subLabel={`${size || 0} ${ticket.baseSymbol} @ market`}
         />
+        <Datagrid>
+          {sizeMode === 'contracts' ? <Data.Notional /> : <Data.Size />}
+          <Data.Fees />
+        </Datagrid>
+        {oco && (
+          <>
+            <hr className="border-default" />
+            <Datagrid>
+              {sizeMode === 'contracts' ? (
+                <Data.Notional name="ocoNotional" />
+              ) : (
+                <Data.Size name="ocoSize" />
+              )}
+              <Data.Fees oco />
+            </Datagrid>
+          </>
+        )}
       </Form>
     </FormProvider>
   );

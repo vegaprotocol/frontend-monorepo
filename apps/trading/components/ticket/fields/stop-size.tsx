@@ -33,11 +33,12 @@ export const StopSize = ({
     averageEntryPrice: '0',
   };
 
-  const overrideFieldName =
-    name === 'size' ? 'sizeOverride' : 'ocoSizeOverride';
+  const isOco = name === 'ocoSize';
+  const overrideFieldName = isOco ? 'ocoSizeOverride' : 'sizeOverride';
+  const sizePctFieldName = isOco ? 'ocoSizePct' : 'sizePct';
+  const notionalFieldName = isOco ? 'ocoNotional' : 'notional';
+
   const sizeOverride = form.watch(overrideFieldName);
-  const sizePctFieldName = name === 'size' ? 'sizePct' : 'ocoSizePct';
-  const notionalFieldName = name === 'size' ? 'notional' : 'ocoNotional';
 
   return (
     <FormField
@@ -88,7 +89,12 @@ export const StopSize = ({
                 }
               }}
               data-testid={`order-${name}`}
-              appendElement={<SizeModeButton />}
+              appendElement={
+                sizeOverride !==
+                  StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION && (
+                  <SizeModeButton />
+                )
+              }
             />
             {fieldState.error && (
               <TradingInputError testId={`error-${name}`}>

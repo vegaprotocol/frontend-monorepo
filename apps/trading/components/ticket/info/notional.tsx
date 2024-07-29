@@ -5,11 +5,15 @@ import { useForm } from '../use-form';
 import { useTicketContext } from '../ticket-context';
 import { Tooltip } from '@vegaprotocol/ui-toolkit';
 
-export const Notional = () => {
+export const Notional = ({
+  name = 'notional',
+}: {
+  name?: 'notional' | 'ocoNotional';
+}) => {
   const t = useT();
   const form = useForm();
   const ticket = useTicketContext();
-  const notional = form.watch('notional');
+  const notional = form.watch(name);
   const symbol = ticket.quoteAsset.symbol;
 
   return (

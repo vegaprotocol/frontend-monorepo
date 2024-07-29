@@ -29,8 +29,11 @@ import BigNumber from 'bignumber.js';
 import { FeedbackStop } from './feedback-stop';
 
 import * as Fields from '../fields';
+import * as Data from '../info';
+
 import * as SpotFields from './fields';
 import * as utils from '../utils';
+import { Datagrid } from '../elements/datagrid';
 
 export const StopLimit = (props: FormProps) => {
   const t = useT();
@@ -154,6 +157,23 @@ export const StopLimit = (props: FormProps) => {
             ticket.quoteAsset.symbol
           }`}
         />
+        <Datagrid>
+          {sizeMode === 'contracts' ? <Data.Notional /> : <Data.Size />}
+          <Data.Fees />
+        </Datagrid>
+        {oco && (
+          <>
+            <hr className="border-default" />
+            <Datagrid>
+              {sizeMode === 'contracts' ? (
+                <Data.Notional name="ocoNotional" />
+              ) : (
+                <Data.Size name="ocoSize" />
+              )}
+              <Data.Fees oco />
+            </Datagrid>
+          </>
+        )}
       </Form>
     </FormProvider>
   );

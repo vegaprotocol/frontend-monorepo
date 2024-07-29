@@ -25,12 +25,14 @@ import { type FormProps } from './ticket';
 import { TicketEventUpdater } from '../ticket-events';
 import { useTicketContext } from '../ticket-context';
 import { SubmitButton } from '../elements/submit-button';
+import { Datagrid } from '../elements/datagrid';
 import { useT } from '../../../lib/use-t';
 import { useLastTradePrice } from '@vegaprotocol/markets';
 
 import { FeedbackStop } from './feedback-stop';
 
 import * as Fields from '../fields';
+import * as Data from '../info';
 import * as SpotFields from './fields';
 import * as utils from '../utils';
 
@@ -150,6 +152,23 @@ export const StopMarket = (props: FormProps) => {
           text={t('Place limit stop order')}
           subLabel={`${size || 0} ${ticket.baseAsset.symbol} @ market`}
         />
+        <Datagrid>
+          {sizeMode === 'contracts' ? <Data.Notional /> : <Data.Size />}
+          <Data.Fees />
+        </Datagrid>
+        {oco && (
+          <>
+            <hr className="border-default" />
+            <Datagrid>
+              {sizeMode === 'contracts' ? (
+                <Data.Notional name="ocoNotional" />
+              ) : (
+                <Data.Size name="ocoSize" />
+              )}
+              <Data.Fees oco />
+            </Datagrid>
+          </>
+        )}
       </Form>
     </FormProvider>
   );
