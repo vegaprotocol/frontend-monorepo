@@ -9,7 +9,7 @@ import { InputLabel } from '../elements/form';
 import { useForm } from '../use-form';
 
 import * as utils from '../utils';
-import * as defaultUtils from '../ticket-default/utils';
+import * as derivativeUtils from '../derivative/utils';
 
 import { SizeModeButton } from '../size-mode-button';
 import { useActiveOrders } from '@vegaprotocol/orders';
@@ -52,7 +52,7 @@ export const Size = (props: { price?: BigNumber }) => {
 
                 const fields = form.getValues();
 
-                const pct = defaultUtils.calcPctBySize({
+                const pct = derivativeUtils.calcPctBySize({
                   size: BigNumber(e.target.value),
                   openVolume,
                   price: props.price || BigNumber(0),

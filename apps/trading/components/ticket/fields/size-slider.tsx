@@ -7,7 +7,7 @@ import { useOpenVolume } from '@vegaprotocol/positions';
 import { Slider } from '../elements/slider';
 import { useTicketContext } from '../ticket-context';
 
-import * as defaultUtils from '../ticket-default/utils';
+import * as derivativeUtils from '../derivative/utils';
 import * as utils from '../utils';
 import { useForm } from '../use-form';
 import { FormField } from '../ticket-field';
@@ -44,7 +44,7 @@ export const SizeSlider = ({ price }: { price: BigNumber | undefined }) => {
             onValueCommit={(value) => {
               field.onChange(value[0]);
               const fields = form.getValues();
-              const size = defaultUtils.calcSizeByPct({
+              const size = derivativeUtils.calcSizeByPct({
                 pct: value[0],
                 openVolume,
                 price,

@@ -7,7 +7,7 @@ import { useOpenVolume } from '@vegaprotocol/positions';
 import { Slider } from '../elements/slider';
 import { useTicketContext } from '../ticket-context';
 
-import * as defaultUtils from '../ticket-default/utils';
+import * as derivativeUtils from '../derivative/utils';
 import { useForm } from '../use-form';
 import { FormField } from '../ticket-field';
 import { StopOrderSizeOverrideSetting } from '@vegaprotocol/types';
@@ -62,7 +62,7 @@ export const StopSizeSlider = ({
                 sizeOverride ===
                 StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_NONE
               ) {
-                const size = defaultUtils.calcSizeByPct({
+                const size = derivativeUtils.calcSizeByPct({
                   pct: value[0],
                   openVolume,
                   price,

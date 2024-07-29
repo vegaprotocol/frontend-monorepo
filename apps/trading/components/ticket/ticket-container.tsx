@@ -6,8 +6,8 @@ import {
   useMarketInfo,
 } from '@vegaprotocol/markets';
 
-import { Ticket as TicketDefault } from './ticket-default/ticket';
-import { Ticket as TicketSpot } from './ticket-spot/ticket';
+import { Ticket as DerivativeTicket } from './derivative/ticket';
+import { Ticket as SpotTicket } from './spot/ticket';
 
 /**
  * Renders the deal ticket after fetching for the current market
@@ -33,10 +33,10 @@ const TicketContainerSwitch = ({ market }: { market: MarketInfo }) => {
   switch (productType) {
     case 'Future':
     case 'Perpetual': {
-      return <TicketDefault market={market} />;
+      return <DerivativeTicket market={market} />;
     }
     case 'Spot': {
-      return <TicketSpot market={market} />;
+      return <SpotTicket market={market} />;
     }
     default: {
       throw new Error('invalid product type');

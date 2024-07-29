@@ -11,7 +11,7 @@ import { InputLabel } from '../elements/form';
 import { StopOrderSizeOverrideSetting } from '@vegaprotocol/types';
 import { useForm } from '../use-form';
 
-import * as defaultUtils from '../ticket-default/utils';
+import * as derivativeUtils from '../derivative/utils';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 
 export const StopSize = ({
@@ -55,7 +55,7 @@ export const StopSize = ({
                   StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_NONE
                 ) {
                   // calc max size
-                  const pct = defaultUtils.calcPctBySize({
+                  const pct = derivativeUtils.calcPctBySize({
                     size: BigNumber(e.target.value),
                     openVolume,
                     price: price || BigNumber(0),

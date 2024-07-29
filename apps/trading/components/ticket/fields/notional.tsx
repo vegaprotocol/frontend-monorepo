@@ -9,7 +9,7 @@ import { InputLabel } from '../elements/form';
 import { useForm } from '../use-form';
 
 import * as utils from '../utils';
-import * as defaultUtils from '../ticket-default/utils';
+import * as derivativeUtils from '../derivative/utils';
 
 import { SizeModeButton } from '../size-mode-button';
 import { useActiveOrders } from '@vegaprotocol/orders';
@@ -50,7 +50,7 @@ export const Notional = (props: { price?: BigNumber }) => {
                     ticket.market.positionDecimalPlaces
                   );
 
-                  const pct = defaultUtils.calcPctBySize({
+                  const pct = derivativeUtils.calcPctBySize({
                     size,
                     openVolume,
                     price: props.price || BigNumber(0),
