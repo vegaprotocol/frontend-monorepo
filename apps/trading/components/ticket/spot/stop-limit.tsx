@@ -45,6 +45,7 @@ export const StopLimit = (props: FormProps) => {
     defaultValues: {
       ticketType: 'stopLimit',
       type: OrderType.TYPE_LIMIT,
+      sizeMode: 'contracts',
       side: props.side,
       triggerDirection: StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE,
       triggerType: 'price',
@@ -61,6 +62,7 @@ export const StopLimit = (props: FormProps) => {
     },
   });
 
+  const sizeMode = form.watch('sizeMode');
   const size = form.watch('size');
   const price = form.watch('price');
   const oco = form.watch('oco');
@@ -96,7 +98,11 @@ export const StopLimit = (props: FormProps) => {
           <Fields.StopTriggerPrice />
         </div>
         <Fields.Price />
-        <SpotFields.StopSize price={BigNumber(price || 0)} />
+        {sizeMode === 'contracts' ? (
+          <SpotFields.StopSize price={BigNumber(price || 0)} />
+        ) : (
+          <SpotFields.Notional price={BigNumber(price || 0)} />
+        )}
         <SpotFields.StopSizeSlider price={BigNumber(price || 0)} />
         <AdvancedControls>
           <FormGrid>
@@ -116,13 +122,21 @@ export const StopLimit = (props: FormProps) => {
               <Fields.StopTriggerPrice name="ocoTriggerPrice" />
             </div>
             <Fields.Price name="ocoPrice" />
-            <SpotFields.StopSize
-              name="ocoSize"
-              price={BigNumber(ocoPrice || 0)}
-            />
+
+            {sizeMode === 'contracts' ? (
+              <SpotFields.StopSize
+                name="ocoSize"
+                price={BigNumber(ocoPrice || 0)}
+              />
+            ) : (
+              <SpotFields.Notional
+                name="ocoNotional"
+                price={BigNumber(ocoPrice || 0)}
+              />
+            )}
             <SpotFields.StopSizeSlider
               name="ocoSizePct"
-              price={BigNumber(price || 0)}
+              price={BigNumber(ocoPrice || 0)}
             />
             <AdvancedControls>
               <FormGrid>

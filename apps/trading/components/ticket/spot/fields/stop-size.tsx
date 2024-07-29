@@ -8,7 +8,10 @@ import { FormField } from '../../ticket-field';
 import { InputLabel } from '../../elements/form';
 import { useForm } from '../../use-form';
 
+import { SizeModeButton } from '../../size-mode-button';
+
 import * as spotUtils from '../utils';
+import * as utils from '../../utils';
 
 export const StopSize = ({
   name = 'size',
@@ -24,7 +27,9 @@ export const StopSize = ({
   const label = t('Size');
   const symbol = ticket.baseAsset.symbol;
 
-  const sizePctFieldName = name === 'size' ? 'sizePct' : 'ocoSizePct';
+  const isOco = name === 'ocoSize';
+  const sizePctFieldName = isOco ? 'ocoSizePct' : 'sizePct';
+  const notionalFieldName = isOco ? 'ocoNotional' : 'notional';
   const side = form.watch('side');
 
   return (
@@ -41,6 +46,14 @@ export const StopSize = ({
               onChange={(e) => {
                 field.onChange(e);
 
+                if (price) {
+                  const notional = utils.toNotional(
+                    BigNumber(e.target.value || 0),
+                    price
+                  );
+                  form.setValue(notionalFieldName, notional.toNumber());
+                }
+
                 const pct = spotUtils.calcPctBySize({
                   size: BigNumber(e.target.value),
                   side,
@@ -51,6 +64,7 @@ export const StopSize = ({
                 form.setValue(sizePctFieldName, Number(pct));
               }}
               data-testid={`order-${name}`}
+              appendElement={<SizeModeButton />}
             />
             {fieldState.error && (
               <TradingInputError testId={`error-${name}`}>

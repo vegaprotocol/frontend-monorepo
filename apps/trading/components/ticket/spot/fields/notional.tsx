@@ -13,14 +13,20 @@ import * as spotUtils from '../utils';
 
 import { SizeModeButton } from '../../size-mode-button';
 
-export const Notional = (props: { price?: BigNumber }) => {
+export const Notional = ({
+  name = 'notional',
+  price,
+}: {
+  name?: 'notional' | 'ocoNotional';
+  price?: BigNumber;
+}) => {
   const ticket = useTicketContext('spot');
   const form = useForm();
 
   return (
     <FormField
       control={form.control}
-      name="notional"
+      name={name}
       render={({ field, fieldState }) => {
         return (
           <div className="w-full">
@@ -32,23 +38,29 @@ export const Notional = (props: { price?: BigNumber }) => {
                 field.onChange(e);
 
                 const fields = form.getValues();
+                const isOco = name === 'ocoNotional';
 
-                if (props.price) {
+                if (price) {
                   const size = utils.toSize(
                     BigNumber(e.target.value || 0),
-                    props.price,
+                    price,
                     ticket.market.positionDecimalPlaces
                   );
 
                   const pct = spotUtils.calcPctBySize({
                     size,
                     side: fields.side,
-                    price: props.price,
+                    price,
                     ticket,
                   });
 
-                  form.setValue('size', size.toNumber());
-                  form.setValue('sizePct', Number(pct));
+                  if (isOco) {
+                    form.setValue('ocoSize', size.toNumber());
+                    form.setValue('ocoSizePct', Number(pct));
+                  } else {
+                    form.setValue('size', size.toNumber());
+                    form.setValue('sizePct', Number(pct));
+                  }
                 }
               }}
               appendElement={<SizeModeButton />}

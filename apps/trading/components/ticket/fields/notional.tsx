@@ -48,6 +48,7 @@ export const Notional = ({
                 field.onChange(e);
 
                 const fields = form.getValues();
+                const isOco = name === 'ocoNotional';
 
                 if (price) {
                   const size = utils.toSize(
@@ -65,12 +66,12 @@ export const Notional = ({
                     orders: orders || [],
                   });
 
-                  if (name === 'notional') {
-                    form.setValue('size', size.toNumber());
-                    form.setValue('sizePct', Number(pct));
-                  } else {
+                  if (isOco) {
                     form.setValue('ocoSize', size.toNumber());
                     form.setValue('ocoSizePct', Number(pct));
+                  } else {
+                    form.setValue('size', size.toNumber());
+                    form.setValue('sizePct', Number(pct));
                   }
                 }
               }}

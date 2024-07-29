@@ -38,7 +38,9 @@ export const StopSizeSlider = ({
               field.onChange(value[0]);
 
               const fields = form.getValues();
-              const sizeFieldName = name === 'ocoSizePct' ? 'ocoSize' : 'size';
+              const isOco = name === 'ocoSizePct';
+              const sizeFieldName = isOco ? 'ocoSize' : 'size';
+              const notionalFieldName = isOco ? 'ocoNotional' : 'notional';
 
               const max = spotUtils.calcMaxSize({
                 side: fields.side,
@@ -46,13 +48,18 @@ export const StopSizeSlider = ({
                 ticket,
               });
               const size = utils.toPercentOf(value[0], max);
+              const notional = utils.toNotional(size, price);
               const sizeRounded = utils.roundToPositionDecimals(
                 size,
                 ticket.market.positionDecimalPlaces
               );
 
               form.setValue(sizeFieldName, sizeRounded.toNumber(), {
-                shouldValidate: true,
+                shouldValidate: fields.sizeMode === 'contracts',
+              });
+
+              form.setValue(notionalFieldName, notional.toNumber(), {
+                shouldValidate: fields.sizeMode === 'notional',
               });
             }}
           />

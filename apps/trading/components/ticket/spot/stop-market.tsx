@@ -47,6 +47,7 @@ export const StopMarket = (props: FormProps) => {
     defaultValues: {
       ticketType: 'stopMarket',
       type: OrderType.TYPE_MARKET,
+      sizeMode: 'contracts',
       side: props.side,
       triggerDirection: StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE,
       triggerType: 'price',
@@ -62,6 +63,7 @@ export const StopMarket = (props: FormProps) => {
     },
   });
 
+  const sizeMode = form.watch('sizeMode');
   const size = form.watch('size');
   const oco = form.watch('oco');
 
@@ -99,7 +101,11 @@ export const StopMarket = (props: FormProps) => {
           </FieldControls>
           <Fields.StopTriggerPrice />
         </div>
-        <SpotFields.StopSize price={price} />
+        {sizeMode === 'contracts' ? (
+          <SpotFields.StopSize price={price} />
+        ) : (
+          <SpotFields.Notional price={price} />
+        )}
         <SpotFields.StopSizeSlider price={price} />
         <AdvancedControls>
           <FormGrid>
@@ -121,7 +127,11 @@ export const StopMarket = (props: FormProps) => {
               </FieldControls>
               <Fields.StopTriggerPrice name="ocoTriggerPrice" />
             </div>
-            <SpotFields.StopSize name="ocoSize" price={price} />
+            {sizeMode === 'contracts' ? (
+              <SpotFields.StopSize name="ocoSize" price={price} />
+            ) : (
+              <SpotFields.Notional name="ocoNotional" price={price} />
+            )}
             <SpotFields.StopSizeSlider name="ocoSizePct" price={price} />
             <AdvancedControls>
               <FormGrid>
