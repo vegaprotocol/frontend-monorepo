@@ -176,7 +176,7 @@ export const createStopLimitSchema = (market: MarketInfo) => {
         .min(Number(sizeStep))
         .step(Number(sizeStep))
         .optional(),
-      ocoNotional: z.coerce.number(),
+      ocoNotional: z.coerce.number().optional(),
       ocoSizePct: z.number().optional(),
       ocoPrice: z.coerce
         .number()
@@ -330,7 +330,7 @@ export const createStopMarketSchema = (market: MarketInfo) => {
         .min(Number(sizeStep))
         .step(Number(sizeStep))
         .optional(),
-      ocoNotional: z.coerce.number(),
+      ocoNotional: z.coerce.number().optional(),
       ocoSizePct: z.number().optional(),
       ocoPrice: z.coerce
         .number()

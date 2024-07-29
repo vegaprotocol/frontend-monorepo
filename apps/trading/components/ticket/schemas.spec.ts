@@ -130,12 +130,14 @@ describe('ticket stop market schema', () => {
   const createFields = (override?: Partial<FormFieldsStopMarket>) => {
     const fields: FormFieldsStopMarket = {
       ticketType: 'stopMarket',
+      sizeMode: 'contracts',
       type: OrderType.TYPE_MARKET,
       side: Side.SIDE_BUY,
       triggerType: 'price',
       triggerDirection: StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE,
       triggerPrice: 100,
       size: 100,
+      notional: 0,
       timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
       reduceOnly: true,
       oco: false,
@@ -191,12 +193,14 @@ describe('ticket stop limit schema', () => {
   const createFields = (override?: Partial<FormFieldsStopLimit>) => {
     const fields: FormFieldsStopLimit = {
       ticketType: 'stopLimit',
+      sizeMode: 'contracts',
       type: OrderType.TYPE_LIMIT,
       side: Side.SIDE_BUY,
       triggerType: 'price',
       triggerDirection: StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE,
       triggerPrice: 100,
       size: 100,
+      notional: 0,
       price: 100,
       timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
       reduceOnly: true,
