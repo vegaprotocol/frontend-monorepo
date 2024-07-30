@@ -43,7 +43,7 @@ export const TransferToFromCell = ({
           target="_blank"
           className="inline-flex items-center gap-1 underline underline-offset-4"
         >
-          {truncateMiddle(data.detail.from)}
+          {truncateMiddle(data.detail.to)}
           <VegaIcon name={VegaIconNames.OPEN_EXTERNAL} size={13} />
         </Link>
       </>
