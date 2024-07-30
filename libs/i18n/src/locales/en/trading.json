@@ -36,7 +36,7 @@
   "Amount earned": "Amount earned",
   "An estimate of the most you would be expected to pay in fees, in the market's settlement asset {{assetSymbol}}. Fees estimated are \"taker\" fees and will only be payable if the order trades aggressively. Rebate equal to the maker portion will be paid to the trader if the order trades passively.": "An estimate of the most you would be expected to pay in fees, in the market's settlement asset {{assetSymbol}}. Fees estimated are \"taker\" fees and will only be payable if the order trades aggressively. Rebate equal to the maker portion will be paid to the trader if the order trades passively.",
   "Anonymous": "Anonymous",
-  "Any orders placed now will not trade until the auction ends": "Any orders placed now will not trade until the auction ends",
+  "Any orders placed now will not trade until the auction ends.": "Any orders placed now will not trade until the auction ends.",
   "Anyone with the referral link can apply it to their key(s) of choice via an on chain transaction": "Anyone with the referral link can apply it to their key(s) of choice via an on chain transaction",
   "Approve again to deposit more than {{allowance}}": "Approve again to deposit more than {{allowance}}",
   "Approve pending": "Approve pending",
