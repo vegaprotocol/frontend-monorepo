@@ -51,7 +51,6 @@ export const Limit = (props: FormProps) => {
   });
 
   const sizeMode = form.watch('sizeMode');
-  const size = form.watch('size');
   const tpSl = form.watch('tpSl');
   const iceberg = form.watch('iceberg');
   const tif = form.watch('timeInForce');
@@ -142,12 +141,7 @@ export const Limit = (props: FormProps) => {
           </div>
         </AdvancedControls>
         <Feedback />
-        <SubmitButton
-          text={t('Place limit order')}
-          subLabel={`${size || 0} ${ticket.baseSymbol} @ ${price || 0} ${
-            ticket.quoteName
-          }`}
-        />
+        <SubmitButton text={t('Place limit order')} />
         <Datagrid>
           {sizeMode === 'contracts' ? <Data.Notional /> : <Data.Size />}
           <Data.Fees />

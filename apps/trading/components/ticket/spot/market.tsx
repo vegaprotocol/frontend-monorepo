@@ -50,7 +50,6 @@ export const Market = (props: FormProps) => {
   });
 
   const sizeMode = form.watch('sizeMode');
-  const size = form.watch('size');
   const tpSl = form.watch('tpSl');
 
   const { data: _lastTradePrice } = useLastTradePrice(ticket.market.id);
@@ -115,10 +114,7 @@ export const Market = (props: FormProps) => {
           </div>
         </AdvancedControls>
         <Feedback />
-        <SubmitButton
-          text={t('Place market order')}
-          subLabel={`${size || 0} ${ticket.baseAsset.symbol} @ market`}
-        />
+        <SubmitButton text={t('Place market order')} />
         <Datagrid>
           {sizeMode === 'contracts' ? <Data.Notional /> : <Data.Size />}
           <Data.Fees />

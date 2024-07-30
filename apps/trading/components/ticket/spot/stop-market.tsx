@@ -65,7 +65,6 @@ export const StopMarket = (props: FormProps) => {
   });
 
   const sizeMode = form.watch('sizeMode');
-  const size = form.watch('size');
   const oco = form.watch('oco');
 
   const triggerType = form.watch('triggerType');
@@ -149,10 +148,7 @@ export const StopMarket = (props: FormProps) => {
         <hr className="border-default" />
         <Fields.StopExpiry />
         <FeedbackStop />
-        <SubmitButton
-          text={t('Place limit stop order')}
-          subLabel={`${size || 0} ${ticket.baseAsset.symbol} @ market`}
-        />
+        <SubmitButton text={t('Place limit stop order')} />
         <Datagrid heading={<Data.StopSummary />}>
           {sizeMode === 'contracts' ? <Data.Notional /> : <Data.Size />}
           <Data.Fees />

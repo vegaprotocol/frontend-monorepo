@@ -65,11 +65,12 @@ export const StopMarket = (props: FormProps) => {
   });
 
   const sizeMode = form.watch('sizeMode');
-  const size = form.watch('size');
   const oco = form.watch('oco');
   const sizeOverride = form.watch('sizeOverride');
   const ocoSizeOverride = form.watch('ocoSizeOverride');
 
+  // For stop  market the most accurate price to use would be the trigger price as
+  // the order will execute when the trigger price is reached
   const triggerType = form.watch('triggerType');
   const ocoTriggerType = form.watch('ocoTriggerType');
   const _price = form.watch('triggerPrice');
@@ -181,10 +182,7 @@ export const StopMarket = (props: FormProps) => {
         <hr className="border-default" />
         <Fields.StopExpiry />
         <FeedbackStop />
-        <SubmitButton
-          text={t('Place limit stop order')}
-          subLabel={`${size || 0} ${ticket.baseSymbol} @ market`}
-        />
+        <SubmitButton text={t('Place limit stop order')} />
         <Datagrid heading={<Data.StopSummary />}>
           {sizeMode === 'contracts' ? <Data.Notional /> : <Data.Size />}
           <Data.Fees />

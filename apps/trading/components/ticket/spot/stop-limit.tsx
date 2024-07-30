@@ -66,7 +66,6 @@ export const StopLimit = (props: FormProps) => {
   });
 
   const sizeMode = form.watch('sizeMode');
-  const size = form.watch('size');
   const oco = form.watch('oco');
 
   const _price = form.watch('price');
@@ -145,12 +144,7 @@ export const StopLimit = (props: FormProps) => {
         <hr className="border-default" />
         <Fields.StopExpiry />
         <FeedbackStop />
-        <SubmitButton
-          text={t('Place limit stop order')}
-          subLabel={`${size || 0} ${ticket.baseAsset.symbol} @ ${price} ${
-            ticket.quoteAsset.symbol
-          }`}
-        />
+        <SubmitButton text={t('Place limit stop order')} />
         <Datagrid heading={<Data.StopSummary />}>
           {sizeMode === 'contracts' ? <Data.Notional /> : <Data.Size />}
           <Data.Fees />
