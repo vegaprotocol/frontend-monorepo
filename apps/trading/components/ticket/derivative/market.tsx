@@ -3,10 +3,10 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { OrderType, OrderTimeInForce } from '@vegaprotocol/types';
-import { toBigNum } from '@vegaprotocol/utils';
 import { useVegaTransactionStore } from '@vegaprotocol/web3';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useMarkPrice } from '@vegaprotocol/markets';
+import { toBigNum } from '@vegaprotocol/utils';
 
 import { useT } from '../../../lib/use-t';
 import {
@@ -53,11 +53,10 @@ export const Market = (props: FormProps) => {
   const size = form.watch('size');
   const tpSl = form.watch('tpSl');
 
-  const { data: markPrice } = useMarkPrice(ticket.market.id);
-  const price =
-    markPrice && markPrice !== null
-      ? toBigNum(markPrice, ticket.market.decimalPlaces)
-      : undefined;
+  const { data: _markPrice } = useMarkPrice(ticket.market.id);
+  const price = _markPrice
+    ? toBigNum(_markPrice, ticket.market.decimalPlaces)
+    : undefined;
 
   return (
     <FormProvider {...form}>

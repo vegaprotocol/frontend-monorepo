@@ -39,6 +39,9 @@ export const StopSize = ({
   const notionalFieldName = isOco ? 'ocoNotional' : 'notional';
 
   const sizeOverride = form.watch(overrideFieldName);
+  const showSizeModeButton =
+    sizeOverride !==
+      StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION && price;
 
   return (
     <FormField
@@ -87,12 +90,7 @@ export const StopSize = ({
                 }
               }}
               data-testid={`order-${name}`}
-              appendElement={
-                sizeOverride !==
-                  StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION && (
-                  <SizeModeButton />
-                )
-              }
+              appendElement={showSizeModeButton && <SizeModeButton />}
             />
             {fieldState.error && (
               <TradingInputError testId={`error-${name}`}>

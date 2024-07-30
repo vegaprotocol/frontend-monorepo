@@ -67,9 +67,12 @@ export const StopLimit = (props: FormProps) => {
 
   const sizeMode = form.watch('sizeMode');
   const size = form.watch('size');
-  const price = form.watch('price');
   const oco = form.watch('oco');
-  const ocoPrice = form.watch('ocoPrice');
+
+  const _price = form.watch('price');
+  const _ocoPrice = form.watch('ocoPrice');
+  const price = BigNumber(_price || 0);
+  const ocoPrice = BigNumber(_ocoPrice || 0);
 
   return (
     <FormProvider {...form}>
@@ -102,11 +105,11 @@ export const StopLimit = (props: FormProps) => {
         </div>
         <Fields.Price />
         {sizeMode === 'contracts' ? (
-          <SpotFields.StopSize price={BigNumber(price || 0)} />
+          <SpotFields.StopSize price={price} />
         ) : (
-          <SpotFields.Notional price={BigNumber(price || 0)} />
+          <SpotFields.Notional price={price} />
         )}
-        <SpotFields.StopSizeSlider price={BigNumber(price || 0)} />
+        <SpotFields.StopSizeSlider price={price} />
         <AdvancedControls>
           <FormGrid>
             <Fields.TimeInForce />
@@ -127,20 +130,11 @@ export const StopLimit = (props: FormProps) => {
             <Fields.Price name="ocoPrice" />
 
             {sizeMode === 'contracts' ? (
-              <SpotFields.StopSize
-                name="ocoSize"
-                price={BigNumber(ocoPrice || 0)}
-              />
+              <SpotFields.StopSize name="ocoSize" price={ocoPrice} />
             ) : (
-              <SpotFields.Notional
-                name="ocoNotional"
-                price={BigNumber(ocoPrice || 0)}
-              />
+              <SpotFields.Notional name="ocoNotional" price={ocoPrice} />
             )}
-            <SpotFields.StopSizeSlider
-              name="ocoSizePct"
-              price={BigNumber(ocoPrice || 0)}
-            />
+            <SpotFields.StopSizeSlider name="ocoSizePct" price={ocoPrice} />
             <AdvancedControls>
               <FormGrid>
                 <Fields.TimeInForce name="ocoTimeInForce" />

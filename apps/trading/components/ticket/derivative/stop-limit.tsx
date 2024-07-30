@@ -67,12 +67,15 @@ export const StopLimit = (props: FormProps) => {
 
   const sizeMode = form.watch('sizeMode');
   const size = form.watch('size');
-  const price = form.watch('price');
   const oco = form.watch('oco');
   const ocoTif = form.watch('ocoTimeInForce');
-  const ocoPrice = form.watch('ocoPrice');
   const sizeOverride = form.watch('sizeOverride');
   const ocoSizeOverride = form.watch('ocoSizeOverride');
+
+  const _price = form.watch('price');
+  const _ocoPrice = form.watch('ocoPrice');
+  const price = BigNumber(_price || 0);
+  const ocoPrice = BigNumber(_ocoPrice || 0);
 
   return (
     <FormProvider {...form}>
@@ -105,7 +108,7 @@ export const StopLimit = (props: FormProps) => {
         <Fields.Price />
         <div className="flex flex-col gap-1">
           <FieldControls>
-            <Fields.StopSizeOverride />
+            <Fields.StopSizeOverride price={price} />
           </FieldControls>
           {sizeOverride ===
           StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION ? (
@@ -113,14 +116,14 @@ export const StopLimit = (props: FormProps) => {
           ) : (
             <>
               {sizeMode === 'contracts' ? (
-                <Fields.StopSize price={BigNumber(price || 0)} />
+                <Fields.StopSize price={price} />
               ) : (
-                <Fields.Notional price={BigNumber(price || 0)} />
+                <Fields.Notional price={price} />
               )}
             </>
           )}
         </div>
-        <Fields.StopSizeSlider price={BigNumber(price || '0')} />
+        <Fields.StopSizeSlider price={price} />
         <AdvancedControls>
           <FormGrid>
             <Fields.TimeInForce />
@@ -141,7 +144,10 @@ export const StopLimit = (props: FormProps) => {
             <Fields.Price name="ocoPrice" />
             <div className="flex flex-col gap-1">
               <FieldControls>
-                <Fields.StopSizeOverride name="ocoSizeOverride" />
+                <Fields.StopSizeOverride
+                  name="ocoSizeOverride"
+                  price={ocoPrice}
+                />
               </FieldControls>
               {ocoSizeOverride ===
               StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION ? (
@@ -149,23 +155,14 @@ export const StopLimit = (props: FormProps) => {
               ) : (
                 <>
                   {sizeMode === 'contracts' ? (
-                    <Fields.StopSize
-                      name="ocoSize"
-                      price={BigNumber(ocoPrice || 0)}
-                    />
+                    <Fields.StopSize name="ocoSize" price={ocoPrice} />
                   ) : (
-                    <Fields.Notional
-                      name="ocoNotional"
-                      price={BigNumber(ocoPrice || 0)}
-                    />
+                    <Fields.Notional name="ocoNotional" price={ocoPrice} />
                   )}
                 </>
               )}
             </div>
-            <Fields.StopSizeSlider
-              name="ocoSizePct"
-              price={BigNumber(price || '0')}
-            />
+            <Fields.StopSizeSlider name="ocoSizePct" price={ocoPrice} />
             <AdvancedControls>
               <FormGrid>
                 <FormGridCol>

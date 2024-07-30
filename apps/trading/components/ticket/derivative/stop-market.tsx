@@ -9,8 +9,6 @@ import {
   StopOrderSizeOverrideSetting,
 } from '@vegaprotocol/types';
 import { useVegaTransactionStore } from '@vegaprotocol/web3';
-import { useMarkPrice } from '@vegaprotocol/markets';
-import { toBigNum } from '@vegaprotocol/utils';
 
 import {
   AdvancedControls,
@@ -34,9 +32,12 @@ import * as utils from '../utils';
 import { FeedbackStop } from './feedback-stop';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { Datagrid } from '../elements/datagrid';
+import BigNumber from 'bignumber.js';
 
 export const StopMarket = (props: FormProps) => {
   const t = useT();
+  const { pubKey } = useVegaWallet();
+
   const create = useVegaTransactionStore((store) => store.create);
   const ticket = useTicketContext('default');
 
@@ -69,13 +70,13 @@ export const StopMarket = (props: FormProps) => {
   const sizeOverride = form.watch('sizeOverride');
   const ocoSizeOverride = form.watch('ocoSizeOverride');
 
-  const { pubKey } = useVegaWallet();
-
-  const { data: markPrice } = useMarkPrice(ticket.market.id);
-  const price =
-    markPrice && markPrice !== null
-      ? toBigNum(markPrice, ticket.market.decimalPlaces)
-      : undefined;
+  const triggerType = form.watch('triggerType');
+  const ocoTriggerType = form.watch('ocoTriggerType');
+  const _price = form.watch('triggerPrice');
+  const _ocoPrice = form.watch('ocoTriggerPrice');
+  const price = triggerType === 'price' ? BigNumber(_price || 0) : undefined;
+  const ocoPrice =
+    ocoTriggerType === 'price' ? BigNumber(_ocoPrice || 0) : undefined;
 
   return (
     <FormProvider {...form}>
@@ -107,7 +108,7 @@ export const StopMarket = (props: FormProps) => {
         </div>
         <div className="flex flex-col gap-1">
           <FieldControls>
-            <Fields.StopSizeOverride />
+            <Fields.StopSizeOverride price={price} />
           </FieldControls>
           {sizeOverride ===
           StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION ? (
@@ -145,7 +146,10 @@ export const StopMarket = (props: FormProps) => {
             </div>
             <div className="flex flex-col gap-1">
               <FieldControls>
-                <Fields.StopSizeOverride name="ocoSizeOverride" />
+                <Fields.StopSizeOverride
+                  name="ocoSizeOverride"
+                  price={ocoPrice}
+                />
               </FieldControls>
               {ocoSizeOverride ===
               StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION ? (
@@ -153,14 +157,14 @@ export const StopMarket = (props: FormProps) => {
               ) : (
                 <>
                   {sizeMode === 'contracts' ? (
-                    <Fields.StopSize name="ocoSize" price={price} />
+                    <Fields.StopSize name="ocoSize" price={ocoPrice} />
                   ) : (
-                    <Fields.Notional name="ocoNotional" price={price} />
+                    <Fields.Notional name="ocoNotional" price={ocoPrice} />
                   )}
                 </>
               )}
             </div>
-            <Fields.StopSizeSlider name="ocoSizePct" price={price} />
+            <Fields.StopSizeSlider name="ocoSizePct" price={ocoPrice} />
             <AdvancedControls>
               <FormGrid>
                 <FormGridCol>

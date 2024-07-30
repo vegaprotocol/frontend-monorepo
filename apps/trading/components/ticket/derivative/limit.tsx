@@ -52,10 +52,12 @@ export const Limit = (props: FormProps) => {
 
   const sizeMode = form.watch('sizeMode');
   const size = form.watch('size');
-  const price = form.watch('price');
   const tpSl = form.watch('tpSl');
   const iceberg = form.watch('iceberg');
   const tif = form.watch('timeInForce');
+
+  const _price = form.watch('price');
+  const price = BigNumber(_price);
 
   return (
     <FormProvider {...form}>
@@ -91,11 +93,11 @@ export const Limit = (props: FormProps) => {
         <TicketTypeSelect type="limit" onTypeChange={props.onTypeChange} />
         <Fields.Price />
         {sizeMode === 'contracts' ? (
-          <Fields.Size price={BigNumber(price || 0)} />
+          <Fields.Size price={price} />
         ) : (
-          <Fields.Notional price={BigNumber(price || 0)} />
+          <Fields.Notional price={price} />
         )}
-        <Fields.SizeSlider price={BigNumber(price || 0)} />
+        <Fields.SizeSlider price={price} />
         <AdvancedControls>
           <FormGrid>
             <FormGridCol>

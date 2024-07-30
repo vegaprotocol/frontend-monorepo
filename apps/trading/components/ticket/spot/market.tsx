@@ -53,11 +53,10 @@ export const Market = (props: FormProps) => {
   const size = form.watch('size');
   const tpSl = form.watch('tpSl');
 
-  const { data: lastTradePrioce } = useLastTradePrice(ticket.market.id);
-  const price =
-    lastTradePrioce && lastTradePrioce !== null
-      ? toBigNum(lastTradePrioce, ticket.market.decimalPlaces)
-      : undefined;
+  const { data: _lastTradePrice } = useLastTradePrice(ticket.market.id);
+  const price = _lastTradePrice
+    ? toBigNum(_lastTradePrice, ticket.market.decimalPlaces)
+    : undefined;
 
   return (
     <FormProvider {...form}>

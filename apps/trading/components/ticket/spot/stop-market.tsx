@@ -9,7 +9,6 @@ import {
   StopOrderTriggerDirection,
 } from '@vegaprotocol/types';
 import { useVegaTransactionStore } from '@vegaprotocol/web3';
-import { toBigNum } from '@vegaprotocol/utils';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 
 import {
@@ -27,7 +26,6 @@ import { useTicketContext } from '../ticket-context';
 import { SubmitButton } from '../elements/submit-button';
 import { Datagrid } from '../elements/datagrid';
 import { useT } from '../../../lib/use-t';
-import { useLastTradePrice } from '@vegaprotocol/markets';
 
 import { FeedbackStop } from './feedback-stop';
 
@@ -35,6 +33,7 @@ import * as Fields from '../fields';
 import * as Data from '../info';
 import * as SpotFields from './fields';
 import * as utils from '../utils';
+import BigNumber from 'bignumber.js';
 
 export const StopMarket = (props: FormProps) => {
   const t = useT();
@@ -69,11 +68,13 @@ export const StopMarket = (props: FormProps) => {
   const size = form.watch('size');
   const oco = form.watch('oco');
 
-  const { data: lastTradedPrice } = useLastTradePrice(ticket.market.id);
-  const price =
-    lastTradedPrice && lastTradedPrice !== null
-      ? toBigNum(lastTradedPrice, ticket.market.decimalPlaces)
-      : undefined;
+  const triggerType = form.watch('triggerType');
+  const ocoTriggerType = form.watch('ocoTriggerType');
+  const _price = form.watch('triggerPrice');
+  const _ocoPrice = form.watch('ocoTriggerPrice');
+  const price = triggerType === 'price' ? BigNumber(_price || 0) : undefined;
+  const ocoPrice =
+    ocoTriggerType === 'price' ? BigNumber(_ocoPrice || 0) : undefined;
 
   return (
     <FormProvider {...form}>
@@ -130,11 +131,11 @@ export const StopMarket = (props: FormProps) => {
               <Fields.StopTriggerPrice name="ocoTriggerPrice" />
             </div>
             {sizeMode === 'contracts' ? (
-              <SpotFields.StopSize name="ocoSize" price={price} />
+              <SpotFields.StopSize name="ocoSize" price={ocoPrice} />
             ) : (
-              <SpotFields.Notional name="ocoNotional" price={price} />
+              <SpotFields.Notional name="ocoNotional" price={ocoPrice} />
             )}
-            <SpotFields.StopSizeSlider name="ocoSizePct" price={price} />
+            <SpotFields.StopSizeSlider name="ocoSizePct" price={ocoPrice} />
             <AdvancedControls>
               <FormGrid>
                 <FormGridCol>
