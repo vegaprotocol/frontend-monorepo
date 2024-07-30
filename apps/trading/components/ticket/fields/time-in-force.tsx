@@ -1,4 +1,4 @@
-import { OrderTimeInForce, OrderTimeInForceCode } from '@vegaprotocol/types';
+import { type OrderTimeInForce, OrderTimeInForceCode } from '@vegaprotocol/types';
 import {
   MiniSelect,
   MiniSelectOption,
@@ -30,7 +30,10 @@ export const TimeInForce = ({
       render={({ field }) => {
         return (
           <div className="flex items-center gap-2 text-xs">
-            <Tooltip {...tooltipProps} description={<TooltipContent />}>
+            <Tooltip
+              {...tooltipProps}
+              description={<TooltipContent options={options} />}
+            >
               <label className="text-secondary" htmlFor={field.name}>
                 {t('TIF')}
               </label>
@@ -79,24 +82,18 @@ const useOptions = () => {
   return TIF_OPTIONS;
 };
 
-const TooltipContent = () => {
+const TooltipContent = (props: { options: OrderTimeInForce[] }) => {
   const t = useT();
   return (
     <div className="flex flex-col gap-3">
       <p>{t('Set the time in force (TIF) of the order')}</p>
       <dl className="grid grid-cols-2 gap-1.5">
-        <dt>{t(OrderTimeInForce.TIME_IN_FORCE_GTC)}</dt>
-        <dd>{t(`${OrderTimeInForce.TIME_IN_FORCE_GTC}_tooltip`)}</dd>
-        <dt>{t(OrderTimeInForce.TIME_IN_FORCE_GTT)}</dt>
-        <dd>{t(`${OrderTimeInForce.TIME_IN_FORCE_GTT}_tooltip`)}</dd>
-        <dt>{t(OrderTimeInForce.TIME_IN_FORCE_IOC)}</dt>
-        <dd>{t(`${OrderTimeInForce.TIME_IN_FORCE_IOC}_tooltip`)}</dd>
-        <dt>{t(OrderTimeInForce.TIME_IN_FORCE_FOK)}</dt>
-        <dd>{t(`${OrderTimeInForce.TIME_IN_FORCE_FOK}_tooltip`)}</dd>
-        <dt>{t(OrderTimeInForce.TIME_IN_FORCE_GFA)}</dt>
-        <dd>{t(`${OrderTimeInForce.TIME_IN_FORCE_GFA}_tooltip`)}</dd>
-        <dt>{t(OrderTimeInForce.TIME_IN_FORCE_GFN)}</dt>
-        <dd>{t(`${OrderTimeInForce.TIME_IN_FORCE_GFN}_tooltip`)}</dd>
+        {props.options.map((o) => (
+          <>
+            <dt>{t(o)}</dt>
+            <dd>{t(`${o}_tooltip`)}</dd>
+          </>
+        ))}
       </dl>
     </div>
   );
