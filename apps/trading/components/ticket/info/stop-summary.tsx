@@ -108,7 +108,7 @@ const Summary = (props: {
     trigger,
   });
 
-  return <span>{text}</span>;
+  return <span data-testid="stop-order-summary">{text}</span>;
 };
 
 /** Return translated text with fallbacks for the order */

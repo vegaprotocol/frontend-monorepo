@@ -300,7 +300,7 @@ export const createStopMarketSchema = (market: MarketInfo) => {
       side: z.nativeEnum(Side),
       triggerDirection: z.nativeEnum(StopOrderTriggerDirection),
       triggerType: z.enum(['price', 'trailingPercentOffset']),
-      triggerPrice: z.coerce.number(),
+      triggerPrice: z.coerce.number({ message: i18n.t('Required') }),
       sizeOverride: z.nativeEnum(StopOrderSizeOverrideSetting).optional(),
       size: z.coerce
         .number({ message: i18n.t('Required') })

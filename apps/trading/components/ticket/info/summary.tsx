@@ -15,7 +15,7 @@ export const Summary = () => {
     price: type === OrderType.TYPE_LIMIT ? price : 'market',
   });
 
-  return <span>{text}</span>;
+  return <span data-testid="order-summary">{text}</span>;
 };
 
 /** Return translated text with fallbacks for the order */
