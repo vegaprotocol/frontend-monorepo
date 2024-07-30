@@ -99,7 +99,7 @@ def test_market_monitoring_auction_price_volatility_limit_order(
         "This market is in auction due to high price volatility. Until the auction ends, you can only place GFA, GTT, or GTC limit orders."
     )
     expect(page.get_by_test_id("feedback-market-auction")).to_have_text(
-        "Any orders placed now will not trade until the auction ends"
+        "Any orders placed now will not trade until the auction ends."
     )
     expect(page.get_by_test_id("feedback-market-auction")).to_be_visible()
 

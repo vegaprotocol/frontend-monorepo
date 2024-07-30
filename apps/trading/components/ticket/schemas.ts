@@ -158,13 +158,13 @@ export const createStopLimitSchema = (market: MarketInfo) => {
         .step(Number(priceStep)),
       sizeOverride: z.nativeEnum(StopOrderSizeOverrideSetting).optional(),
       size: z.coerce
-        .number({ message: i18n.t('Required') })
+        .number()
         .min(Number(sizeStep))
         .step(Number(sizeStep))
         .optional(),
       sizePosition: z.coerce.number().min(0.0001).max(100).optional(),
       sizePct: z.number().optional(),
-      notional: z.coerce.number(),
+      notional: z.coerce.number().optional(),
       timeInForce: z.nativeEnum(OrderTimeInForce),
       expiresAt: z.date().optional(),
       stopExpiryStrategy,
@@ -225,7 +225,15 @@ export const createStopLimitSchema = (market: MarketInfo) => {
           ctx.addIssue({
             code: z.ZodIssueCode.custom,
             path: ['sizePosition'],
-            message: i18n.t('Provide a position size'),
+            message: i18n.t('Required'),
+          });
+        }
+      } else {
+        if (val.size === undefined) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ['size'],
+            message: i18n.t('Required'),
           });
         }
       }
@@ -253,6 +261,14 @@ export const createStopLimitSchema = (market: MarketInfo) => {
             maximum: 100,
             inclusive: true,
             path: ['ocoSize'],
+          });
+        }
+      } else {
+        if (val.ocoSize === undefined) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ['ocoSize'],
+            message: i18n.t('Required'),
           });
         }
       }
@@ -309,7 +325,7 @@ export const createStopMarketSchema = (market: MarketInfo) => {
         .optional(),
       sizePosition: z.coerce.number().min(0.0001).max(100).optional(),
       sizePct: z.number().optional(),
-      notional: z.coerce.number(),
+      notional: z.coerce.number().optional(),
       timeInForce: z.nativeEnum(OrderTimeInForce),
       expiresAt: z.date().optional(),
       stopExpiryStrategy,
@@ -363,6 +379,14 @@ export const createStopMarketSchema = (market: MarketInfo) => {
             message: i18n.t('Provide a position size'),
           });
         }
+      } else {
+        if (val.size === undefined) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ['size'],
+            message: i18n.t('Required'),
+          });
+        }
       }
 
       if (
@@ -388,6 +412,14 @@ export const createStopMarketSchema = (market: MarketInfo) => {
             maximum: 100,
             inclusive: true,
             path: ['ocoSize'],
+          });
+        }
+      } else {
+        if (val.ocoSize === undefined) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ['ocoSize'],
+            message: i18n.t('Required'),
           });
         }
       }
