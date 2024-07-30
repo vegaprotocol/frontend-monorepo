@@ -104,7 +104,7 @@ export const Market = (props: FormProps) => {
           <div className="flex flex-col items-start gap-1">
             <Fields.TakeProfitStopLoss />
             {tpSl && (
-              <FormGrid className="pl-4">
+              <FormGrid>
                 <FormGridCol>
                   <Fields.TakeProfit />
                 </FormGridCol>

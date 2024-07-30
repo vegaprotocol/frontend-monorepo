@@ -116,7 +116,7 @@ export const Limit = (props: FormProps) => {
           <div className="flex flex-col items-start gap-1">
             <Fields.Iceberg />
             {iceberg && (
-              <FormGrid className="pl-4">
+              <FormGrid>
                 <FormGridCol>
                   <Fields.IcebergPeakSize />
                 </FormGridCol>
@@ -129,7 +129,7 @@ export const Limit = (props: FormProps) => {
           <div className="flex flex-col items-start gap-1">
             <Fields.TakeProfitStopLoss />
             {tpSl && (
-              <FormGrid className="pl-4">
+              <FormGrid>
                 <FormGridCol>
                   <Fields.TakeProfit />
                 </FormGridCol>
