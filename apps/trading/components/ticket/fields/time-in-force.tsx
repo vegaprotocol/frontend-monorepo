@@ -1,4 +1,7 @@
-import { type OrderTimeInForce, OrderTimeInForceCode } from '@vegaprotocol/types';
+import {
+  type OrderTimeInForce,
+  OrderTimeInForceCode,
+} from '@vegaprotocol/types';
 import {
   MiniSelect,
   MiniSelectOption,
