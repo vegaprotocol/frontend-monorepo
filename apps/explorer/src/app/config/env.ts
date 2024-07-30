@@ -12,6 +12,7 @@ export const ENV = {
   dsn: windowOrDefault('NX_EXPLORER_SENTRY_DSN'),
   dataSources: {
     blockExplorerUrl: windowOrDefault('NX_BLOCK_EXPLORER'),
+    oracleProofsUrl: windowOrDefault('NX_ORACLE_PROOFS_URL'),
     tendermintUrl: windowOrDefault('NX_TENDERMINT_URL'),
     tendermintWebsocketUrl: windowOrDefault('NX_TENDERMINT_WEBSOCKET_URL'),
     governanceUrl: windowOrDefault('NX_VEGA_GOVERNANCE_URL'),
