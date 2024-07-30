@@ -92,9 +92,9 @@ export const AssetActivityDatagrid = ({
           // show direction of transfer
           if (data.type === 'Transfer') {
             if (data.detail.to === partyId) {
-              postfix = ' from';
+              postfix = ' received';
             } else if (data.detail.from === partyId) {
-              postfix = ' to';
+              postfix = ' sent';
             }
           }
 
