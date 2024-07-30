@@ -142,7 +142,7 @@ export const Limit = (props: FormProps) => {
         </AdvancedControls>
         <Feedback />
         <SubmitButton text={t('Place limit order')} />
-        <Datagrid>
+        <Datagrid heading={<Data.Summary />}>
           {sizeMode === 'contracts' ? <Data.Notional /> : <Data.Size />}
           <Data.Fees />
           <Data.Slippage />

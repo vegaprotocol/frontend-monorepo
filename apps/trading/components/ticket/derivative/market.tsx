@@ -118,7 +118,7 @@ export const Market = (props: FormProps) => {
         </AdvancedControls>
         <Feedback />
         <SubmitButton text={t('Place market order')} />
-        <Datagrid>
+        <Datagrid heading={<Data.Summary />}>
           {sizeMode === 'contracts' ? <Data.Notional /> : <Data.Size />}
           <Data.Fees />
           <Data.Slippage />

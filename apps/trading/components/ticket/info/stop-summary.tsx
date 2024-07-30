@@ -127,5 +127,5 @@ const useSummaryText = (values: {
     trigger: values.trigger || '[trigger]',
   };
 
-  return t('ticketSummary', replacements);
+  return t('ticketStopSummary', replacements);
 };
