@@ -56,7 +56,7 @@ export const Limit = (props: FormProps) => {
   const tif = form.watch('timeInForce');
 
   const _price = form.watch('price');
-  const price = BigNumber(_price);
+  const price = BigNumber(_price || 0);
 
   return (
     <FormProvider {...form}>
