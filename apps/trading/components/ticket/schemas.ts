@@ -263,14 +263,6 @@ export const createStopLimitSchema = (market: MarketInfo) => {
             path: ['ocoSize'],
           });
         }
-      } else {
-        if (val.ocoSize === undefined) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            path: ['ocoSize'],
-            message: i18n.t('Required'),
-          });
-        }
       }
 
       if (val.stopExpiryStrategy !== 'none' && !val.stopExpiresAt) {
@@ -412,14 +404,6 @@ export const createStopMarketSchema = (market: MarketInfo) => {
             maximum: 100,
             inclusive: true,
             path: ['ocoSize'],
-          });
-        }
-      } else {
-        if (val.ocoSize === undefined) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            path: ['ocoSize'],
-            message: i18n.t('Required'),
           });
         }
       }
