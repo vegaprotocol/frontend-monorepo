@@ -30,7 +30,7 @@ export const MarketAuction = ({
   }
 
   return (
-    <div className="flex flex-col gap-1 text-xs text-vega-blue-600">
+    <div className="flex flex-col gap-1 text-xs">
       {msg}
       <p data-testid="feedback-market-auction">
         {t('Any orders placed now will not trade until the auction ends')}
