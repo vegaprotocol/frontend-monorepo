@@ -206,5 +206,5 @@ export const calcPctBySize = ({
 
   const pct = size.div(maxSize).times(100);
 
-  return pct.toFixed(1);
+  return pct;
 };

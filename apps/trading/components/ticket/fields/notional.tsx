@@ -68,10 +68,10 @@ export const Notional = ({
 
                   if (isOco) {
                     form.setValue('ocoSize', size.toNumber());
-                    form.setValue('ocoSizePct', Number(pct));
+                    form.setValue('ocoSizePct', pct.toNumber());
                   } else {
                     form.setValue('size', size.toNumber());
-                    form.setValue('sizePct', Number(pct));
+                    form.setValue('sizePct', pct.toNumber());
                   }
                 }
               }}

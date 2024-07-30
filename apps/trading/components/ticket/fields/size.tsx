@@ -40,7 +40,8 @@ export const Size = (props: { price?: BigNumber }) => {
               value={field.value || ''}
               data-testid="order-size"
               onChange={(e) => {
-                field.onChange(e);
+                const size = BigNumber(e.target.value || 0);
+                field.onChange(size.toNumber());
 
                 if (props.price) {
                   const notional = utils.toNotional(
@@ -51,9 +52,8 @@ export const Size = (props: { price?: BigNumber }) => {
                 }
 
                 const fields = form.getValues();
-
                 const pct = derivativeUtils.calcPctBySize({
-                  size: BigNumber(e.target.value),
+                  size,
                   openVolume,
                   price: props.price || BigNumber(0),
                   ticket,
@@ -61,7 +61,9 @@ export const Size = (props: { price?: BigNumber }) => {
                   orders: orders || [],
                 });
 
-                form.setValue('sizePct', Number(pct));
+                form.setValue('sizePct', pct.toNumber(), {
+                  shouldValidate: true,
+                });
               }}
               appendElement={<SizeModeButton />}
             />

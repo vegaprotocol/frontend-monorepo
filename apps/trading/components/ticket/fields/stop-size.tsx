@@ -79,7 +79,7 @@ export const StopSize = ({
                     orders: orders || [],
                   });
 
-                  form.setValue(sizePctFieldName, Number(pct));
+                  form.setValue(sizePctFieldName, pct.toNumber());
                 }
 
                 if (
