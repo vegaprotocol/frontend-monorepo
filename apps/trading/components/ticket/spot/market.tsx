@@ -1,63 +1,61 @@
-import BigNumber from 'bignumber.js';
 import uniqueId from 'lodash/uniqueId';
 import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import { OrderType, OrderTimeInForce } from '@vegaprotocol/types';
-import { useVegaTransactionStore } from '@vegaprotocol/web3';
+import { useLastTradePrice } from '@vegaprotocol/markets';
+import { OrderTimeInForce, OrderType } from '@vegaprotocol/types';
+import { toBigNum } from '@vegaprotocol/utils';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
+import { useVegaTransactionStore } from '@vegaprotocol/web3';
 
+import { useT } from '../../../lib/use-t';
+import { SubmitButton } from '../elements/submit-button';
 import {
   AdvancedControls,
   Form,
   FormGrid,
   FormGridCol,
 } from '../elements/form';
-import { type FormFieldsLimit, useLimitSchema } from '../schemas';
+import { type FormFieldsMarket, useMarketSchema } from '../schemas';
 import { TicketTypeSelect } from '../ticket-type-select';
 import { type FormProps } from './ticket';
 import { useTicketContext } from '../ticket-context';
-import { SubmitButton } from '../elements/submit-button';
-import { useT } from '../../../lib/use-t';
-import { Datagrid } from '../elements/datagrid';
 import { TicketEventUpdater } from '../ticket-events';
-import { SizeSlider } from './size-slider';
 import { Feedback } from './feedback';
+import { Datagrid } from '../elements/datagrid';
 
 import * as Fields from '../fields';
+import * as SpotFields from './fields';
 import * as Data from '../info';
 import * as utils from '../utils';
 
-export const Limit = (props: FormProps) => {
+export const Market = (props: FormProps) => {
   const ticket = useTicketContext('spot');
   const t = useT();
   const create = useVegaTransactionStore((state) => state.create);
-
   const { pubKey } = useVegaWallet();
 
-  const schema = useLimitSchema(ticket.market);
-  const form = useForm<FormFieldsLimit>({
+  const schema = useMarketSchema(ticket.market);
+  const form = useForm<FormFieldsMarket>({
     resolver: zodResolver(schema),
     defaultValues: {
-      ticketType: 'limit',
+      ticketType: 'market',
       sizeMode: 'contracts',
-      type: OrderType.TYPE_LIMIT,
+      type: OrderType.TYPE_MARKET,
       side: props.side,
-      timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
-      expiresAt: undefined,
-      postOnly: false,
+      timeInForce: OrderTimeInForce.TIME_IN_FORCE_IOC,
       reduceOnly: false,
-      iceberg: false,
       tpSl: false,
     },
   });
 
   const sizeMode = form.watch('sizeMode');
-  const size = form.watch('size');
-  const price = form.watch('price');
   const tpSl = form.watch('tpSl');
-  const iceberg = form.watch('iceberg');
-  const tif = form.watch('timeInForce');
+
+  const { data: _lastTradePrice } = useLastTradePrice(ticket.market.id);
+  const price = _lastTradePrice
+    ? toBigNum(_lastTradePrice, ticket.market.decimalPlaces)
+    : undefined;
 
   return (
     <FormProvider {...form}>
@@ -77,7 +75,7 @@ export const Limit = (props: FormProps) => {
               batchMarketInstructions,
             });
           } else {
-            const orderSubmission = utils.createLimitOrder(
+            const orderSubmission = utils.createMarketOrder(
               fields,
               ticket.market,
               reference
@@ -90,48 +88,21 @@ export const Limit = (props: FormProps) => {
         })}
       >
         <Fields.Side side={props.side} onSideChange={props.onSideChange} />
-        <TicketTypeSelect type="limit" onTypeChange={props.onTypeChange} />
-        <Fields.Price />
+        <TicketTypeSelect type="market" onTypeChange={props.onTypeChange} />
         {sizeMode === 'contracts' ? (
-          <Fields.Size price={BigNumber(price || 0)} />
+          <SpotFields.Size price={price} />
         ) : (
-          <Fields.Notional price={BigNumber(price || 0)} />
+          <SpotFields.Notional price={price} />
         )}
-        <SizeSlider price={BigNumber(price || '0')} />
+        <SpotFields.SizeSlider price={price} />
         <AdvancedControls>
           <FormGrid>
-            <FormGridCol>
-              <Fields.TimeInForce />
-            </FormGridCol>
-            <FormGridCol>
-              {tif === OrderTimeInForce.TIME_IN_FORCE_GTT && (
-                <Fields.ExpiresAt />
-              )}
-            </FormGridCol>
+            <Fields.TimeInForce />
           </FormGrid>
-          <div>
-            <Fields.PostOnly />
-          </div>
-          <div>
-            <Fields.ReduceOnly />
-          </div>
-          <div className="flex flex-col items-start gap-1">
-            <Fields.Iceberg />
-            {iceberg && (
-              <FormGrid className="pl-4">
-                <FormGridCol>
-                  <Fields.IcebergPeakSize />
-                </FormGridCol>
-                <FormGridCol>
-                  <Fields.IcebergMinVisibleSize />
-                </FormGridCol>
-              </FormGrid>
-            )}
-          </div>
           <div className="flex flex-col items-start gap-1">
             <Fields.TakeProfitStopLoss />
             {tpSl && (
-              <FormGrid className="pl-4">
+              <FormGrid>
                 <FormGridCol>
                   <Fields.TakeProfit />
                 </FormGridCol>
@@ -143,13 +114,8 @@ export const Limit = (props: FormProps) => {
           </div>
         </AdvancedControls>
         <Feedback />
-        <SubmitButton
-          text={t('Place limit order')}
-          subLabel={`${size || 0} ${ticket.baseAsset.symbol} @ ${price} ${
-            ticket.quoteAsset.symbol
-          }`}
-        />
-        <Datagrid>
+        <SubmitButton text={t('Place market order')} />
+        <Datagrid heading={<Data.Summary />}>
           {sizeMode === 'contracts' ? <Data.Notional /> : <Data.Size />}
           <Data.Fees />
           <Data.Slippage />

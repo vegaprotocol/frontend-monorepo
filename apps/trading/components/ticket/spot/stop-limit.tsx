@@ -9,13 +9,13 @@ import {
   StopOrderTriggerDirection,
 } from '@vegaprotocol/types';
 import { useVegaTransactionStore } from '@vegaprotocol/web3';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 
 import {
   AdvancedControls,
   FieldControls,
   Form,
   FormGrid,
-  FormGridCol,
 } from '../elements/form';
 import { type FormFieldsStopLimit, useStopLimitSchema } from '../schemas';
 import { TicketEventUpdater } from '../ticket-events';
@@ -24,13 +24,16 @@ import { type FormProps } from './ticket';
 import { useTicketContext } from '../ticket-context';
 import { SubmitButton } from '../elements/submit-button';
 import { useT } from '../../../lib/use-t';
-import { SizeSliderStop } from './size-slider-stop';
 import BigNumber from 'bignumber.js';
 
-import * as Fields from '../fields';
-import * as utils from '../utils';
-import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { FeedbackStop } from './feedback-stop';
+
+import * as Fields from '../fields';
+import * as Data from '../info';
+
+import * as SpotFields from './fields';
+import * as utils from '../utils';
+import { Datagrid } from '../elements/datagrid';
 
 export const StopLimit = (props: FormProps) => {
   const t = useT();
@@ -45,13 +48,14 @@ export const StopLimit = (props: FormProps) => {
     defaultValues: {
       ticketType: 'stopLimit',
       type: OrderType.TYPE_LIMIT,
+      sizeMode: 'contracts',
       side: props.side,
       triggerDirection: StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE,
       triggerType: 'price',
       timeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK,
       expiresAt: addDays(new Date(), 1),
       postOnly: false,
-      reduceOnly: false,
+      reduceOnly: true,
       stopExpiryStrategy: 'none',
       oco: false,
       ocoTriggerDirection:
@@ -61,12 +65,13 @@ export const StopLimit = (props: FormProps) => {
     },
   });
 
-  const size = form.watch('size');
-  const price = form.watch('price');
-  const tif = form.watch('timeInForce');
-  const isPersistent = utils.isPersistentTif(tif);
+  const sizeMode = form.watch('sizeMode');
   const oco = form.watch('oco');
-  const ocoTif = form.watch('ocoTimeInForce');
+
+  const _price = form.watch('price');
+  const _ocoPrice = form.watch('ocoPrice');
+  const price = BigNumber(_price || 0);
+  const ocoPrice = BigNumber(_ocoPrice || 0);
 
   return (
     <FormProvider {...form}>
@@ -98,22 +103,19 @@ export const StopLimit = (props: FormProps) => {
           <Fields.StopTriggerPrice />
         </div>
         <Fields.Price />
-        <Fields.StopSize />
-        <SizeSliderStop price={BigNumber(price || '0')} />
+        {sizeMode === 'contracts' ? (
+          <SpotFields.StopSize price={price} />
+        ) : (
+          <SpotFields.Notional price={price} />
+        )}
+        <SpotFields.StopSizeSlider price={price} />
         <AdvancedControls>
           <FormGrid>
-            <FormGridCol>
-              <Fields.TimeInForce />
-            </FormGridCol>
-            <FormGridCol>
-              {tif === OrderTimeInForce.TIME_IN_FORCE_GTT && (
-                <Fields.ExpiresAt />
-              )}
-            </FormGridCol>
+            <Fields.TimeInForce />
           </FormGrid>
-          <div>
-            {isPersistent ? <Fields.PostOnly /> : <Fields.ReduceOnly />}
-          </div>
+          <FormGrid>
+            <Fields.ReduceOnly disabled />
+          </FormGrid>
         </AdvancedControls>
         {oco && (
           <>
@@ -124,18 +126,17 @@ export const StopLimit = (props: FormProps) => {
               </FieldControls>
               <Fields.StopTriggerPrice name="ocoTriggerPrice" />
             </div>
-            <Fields.StopSize name="ocoSize" />
             <Fields.Price name="ocoPrice" />
+
+            {sizeMode === 'contracts' ? (
+              <SpotFields.StopSize name="ocoSize" price={ocoPrice} />
+            ) : (
+              <SpotFields.Notional name="ocoNotional" price={ocoPrice} />
+            )}
+            <SpotFields.StopSizeSlider name="ocoSizePct" price={ocoPrice} />
             <AdvancedControls>
               <FormGrid>
-                <FormGridCol>
-                  <Fields.TimeInForce name="ocoTimeInForce" />
-                </FormGridCol>
-                <FormGridCol>
-                  {ocoTif === OrderTimeInForce.TIME_IN_FORCE_GTT && (
-                    <Fields.ExpiresAt name="ocoExpiresAt" />
-                  )}
-                </FormGridCol>
+                <Fields.TimeInForce name="ocoTimeInForce" />
               </FormGrid>
             </AdvancedControls>
           </>
@@ -143,12 +144,24 @@ export const StopLimit = (props: FormProps) => {
         <hr className="border-default" />
         <Fields.StopExpiry />
         <FeedbackStop />
-        <SubmitButton
-          text={t('Place limit stop order')}
-          subLabel={`${size || 0} ${ticket.baseAsset.symbol} @ ${price} ${
-            ticket.quoteAsset.symbol
-          }`}
-        />
+        <SubmitButton text={t('Place limit stop order')} />
+        <Datagrid heading={<Data.StopSummary />}>
+          {sizeMode === 'contracts' ? <Data.Notional /> : <Data.Size />}
+          <Data.Fees />
+        </Datagrid>
+        {oco && (
+          <>
+            <hr className="border-default" />
+            <Datagrid heading={<Data.StopSummary oco />}>
+              {sizeMode === 'contracts' ? (
+                <Data.Notional name="ocoNotional" />
+              ) : (
+                <Data.Size name="ocoSize" />
+              )}
+              <Data.Fees oco />
+            </Datagrid>
+          </>
+        )}
       </Form>
     </FormProvider>
   );

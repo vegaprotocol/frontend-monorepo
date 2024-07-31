@@ -1,7 +1,18 @@
 import { type HTMLAttributes, type ReactNode } from 'react';
 
-export const Datagrid = (props: HTMLAttributes<HTMLDListElement>) => {
-  return <dl {...props} className="flex flex-col gap-1 text-xs" />;
+export const Datagrid = ({
+  children,
+  heading,
+  ...props
+}: HTMLAttributes<HTMLDListElement> & { heading?: ReactNode }) => {
+  return (
+    <section className="flex flex-col gap-1">
+      {heading && <h3 className="text-xs">{heading}</h3>}
+      <dl {...props} className="flex flex-col gap-1 text-xs">
+        {children}
+      </dl>
+    </section>
+  );
 };
 
 export const DatagridRow = ({

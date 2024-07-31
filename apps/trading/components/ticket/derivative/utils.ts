@@ -9,7 +9,6 @@ import { type FormFields } from '../schemas';
 import * as utils from '../utils';
 
 const calcSizeForIsolated = (
-  pct: number,
   fields: FormFields,
   ticket: DefaultContextValue,
   orders: OrderFieldsFragment[],
@@ -46,18 +45,10 @@ const calcSizeForIsolated = (
 
   const max = availableMargin.div(marginMode.factor).div(price);
 
-  const size = BigNumber(pct).div(100).times(max);
-
-  const sizeRounded = utils.roundToPositionDecimals(
-    size,
-    ticket.market.positionDecimalPlaces
-  );
-
-  return sizeRounded;
+  return max;
 };
 
 const calcSizeForCross = (
-  pct: number,
   fields: FormFields,
   ticket: DefaultContextValue,
   orders: OrderFieldsFragment[],
@@ -118,14 +109,7 @@ const calcSizeForCross = (
     max = max.plus(volume.abs());
   }
 
-  const size = BigNumber(pct).div(100).times(max);
-
-  const sizeRounded = utils.roundToPositionDecimals(
-    size,
-    ticket.market.positionDecimalPlaces
-  );
-
-  return sizeRounded;
+  return max;
 };
 
 export const calcSizeByPct = ({
@@ -152,13 +136,14 @@ export const calcSizeByPct = ({
     (volume.isNegative() && fields.side === Side.SIDE_BUY) ||
     (volume.isPositive() && fields.side === Side.SIDE_SELL);
 
+  let maxSize = BigNumber(0);
+
   if (marginMode.mode === MarginMode.MARGIN_MODE_ISOLATED_MARGIN) {
-    return calcSizeForIsolated(pct, fields, ticket, orders, price, isReducing);
+    maxSize = calcSizeForIsolated(fields, ticket, orders, price, isReducing);
   }
 
   if (marginMode.mode === MarginMode.MARGIN_MODE_CROSS_MARGIN) {
-    return calcSizeForCross(
-      pct,
+    maxSize = calcSizeForCross(
       fields,
       ticket,
       orders,
@@ -168,5 +153,58 @@ export const calcSizeByPct = ({
     );
   }
 
-  throw new Error('unspecified margin mode');
+  const size = BigNumber(pct).div(100).times(maxSize);
+
+  const sizeRounded = utils.roundToPositionDecimals(
+    size,
+    ticket.market.positionDecimalPlaces
+  );
+
+  return sizeRounded;
+};
+
+export const calcPctBySize = ({
+  size,
+  ticket,
+  fields,
+  openVolume,
+  price,
+  orders,
+}: {
+  size: BigNumber;
+  ticket: DefaultContextValue;
+  fields: FormFields;
+  openVolume: string;
+  price: BigNumber;
+  orders: OrderFieldsFragment[];
+}) => {
+  const marginMode = ticket.marginMode;
+  const positionDecimals = ticket.market.positionDecimalPlaces;
+
+  const volume = toBigNum(openVolume, positionDecimals);
+
+  const isReducing =
+    (volume.isNegative() && fields.side === Side.SIDE_BUY) ||
+    (volume.isPositive() && fields.side === Side.SIDE_SELL);
+
+  let maxSize = BigNumber(0);
+
+  if (marginMode.mode === MarginMode.MARGIN_MODE_ISOLATED_MARGIN) {
+    maxSize = calcSizeForIsolated(fields, ticket, orders, price, isReducing);
+  }
+
+  if (marginMode.mode === MarginMode.MARGIN_MODE_CROSS_MARGIN) {
+    maxSize = calcSizeForCross(
+      fields,
+      ticket,
+      orders,
+      price,
+      volume,
+      isReducing
+    );
+  }
+
+  const pct = size.div(maxSize).times(100);
+
+  return pct;
 };

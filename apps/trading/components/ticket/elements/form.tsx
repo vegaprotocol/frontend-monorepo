@@ -18,7 +18,7 @@ export const FormGrid = ({
 }: HTMLAttributes<HTMLDivElement>) => {
   return (
     <div
-      className={classNames('flex items-start gap-2', className)}
+      className={classNames('w-full flex items-start gap-2', className)}
       {...props}
     />
   );

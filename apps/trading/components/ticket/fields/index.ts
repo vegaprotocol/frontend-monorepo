@@ -1,6 +1,7 @@
 export { Side } from './side';
 export { Price } from './price';
 export { Size } from './size';
+export { SizeSlider } from './size-slider';
 export { Notional } from './notional';
 export { TimeInForce } from './time-in-force';
 export { ExpiresAt } from './expires-at';
@@ -19,6 +20,8 @@ export { StopTriggerType } from './stop-trigger-type';
 export { StopTriggerPrice } from './stop-trigger-price';
 export { StopSizeOverride } from './stop-size-override';
 export { StopSize } from './stop-size';
+export { StopSizePosition } from './stop-size-position';
+export { StopSizeSlider } from './stop-size-slider';
 export { StopExpiry } from './stop-expiry';
 export { StopExpiresAt } from './stop-expires-at';
 export { StopExpiryStrategy } from './stop-expiry-strategy';

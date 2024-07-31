@@ -22,7 +22,7 @@ export const TicketInput = forwardRef<HTMLInputElement, Props>(
           placeholder={props.placeholder || 'hidden'}
           value={props.value}
           onChange={props.onChange}
-          className="peer flex-1 appearance-none dark:color-scheme-dark outline-none bg-transparent pt-5 pb-1 px-2 placeholder-transparent"
+          className="peer flex-1 w-full appearance-none dark:color-scheme-dark outline-none bg-transparent pt-5 pb-1 px-2 placeholder-transparent"
         />
         {appendElement && appendElement}
         <label

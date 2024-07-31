@@ -8,6 +8,7 @@ import { DocsLinks } from '@vegaprotocol/environment';
 import { FormField } from '../ticket-field';
 import { useT } from '../../../lib/use-t';
 import { useForm } from '../use-form';
+import { tooltipProps } from '../constants';
 
 export const Iceberg = ({ name = 'iceberg' }: { name?: 'iceberg' }) => {
   const t = useT();
@@ -19,6 +20,7 @@ export const Iceberg = ({ name = 'iceberg' }: { name?: 'iceberg' }) => {
       render={({ field }) => {
         return (
           <Tooltip
+            {...tooltipProps}
             description={
               <p>
                 <span>{t('ticketTooltipIceberg')}</span>{' '}

@@ -9,8 +9,7 @@ import {
   StopOrderSizeOverrideSetting,
 } from '@vegaprotocol/types';
 import { useVegaTransactionStore } from '@vegaprotocol/web3';
-import { useMarkPrice } from '@vegaprotocol/markets';
-import { toBigNum } from '@vegaprotocol/utils';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
 
 import {
   AdvancedControls,
@@ -19,37 +18,42 @@ import {
   FormGrid,
   FormGridCol,
 } from '../elements/form';
-import { type FormFieldsStopMarket, useStopMarketSchema } from '../schemas';
+import { type FormFieldsStopLimit, useStopLimitSchema } from '../schemas';
+import { TicketEventUpdater } from '../ticket-events';
 import { TicketTypeSelect } from '../ticket-type-select';
 import { type FormProps } from './ticket';
-import { TicketEventUpdater } from '../ticket-events';
 import { useTicketContext } from '../ticket-context';
 import { SubmitButton } from '../elements/submit-button';
 import { useT } from '../../../lib/use-t';
 
-import * as Fields from '../fields';
-import * as utils from '../utils';
-
-import { SizeSliderStop } from './size-slider-stop';
 import { FeedbackStop } from './feedback-stop';
-import { useVegaWallet } from '@vegaprotocol/wallet-react';
+import BigNumber from 'bignumber.js';
 
-export const StopMarket = (props: FormProps) => {
+import * as Fields from '../fields';
+import * as Data from '../info';
+import * as utils from '../utils';
+import { Datagrid } from '../elements/datagrid';
+
+export const StopLimit = (props: FormProps) => {
   const t = useT();
   const create = useVegaTransactionStore((store) => store.create);
   const ticket = useTicketContext('default');
 
-  const schema = useStopMarketSchema(ticket.market);
-  const form = useForm<FormFieldsStopMarket>({
+  const { pubKey } = useVegaWallet();
+
+  const schema = useStopLimitSchema(ticket.market);
+  const form = useForm<FormFieldsStopLimit>({
     resolver: zodResolver(schema),
     defaultValues: {
-      ticketType: 'stopMarket',
-      type: OrderType.TYPE_MARKET,
+      ticketType: 'stopLimit',
+      type: OrderType.TYPE_LIMIT,
+      sizeMode: 'contracts',
       side: props.side,
       triggerDirection: StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE,
       triggerType: 'price',
       sizeOverride: StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_NONE,
       timeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK,
+      postOnly: false,
       reduceOnly: true, // must be reduce only for stop orders (unless spot market)
       stopExpiryStrategy: 'none',
       oco: false,
@@ -61,16 +65,16 @@ export const StopMarket = (props: FormProps) => {
     },
   });
 
-  const size = form.watch('size');
+  const sizeMode = form.watch('sizeMode');
   const oco = form.watch('oco');
+  const ocoTif = form.watch('ocoTimeInForce');
+  const sizeOverride = form.watch('sizeOverride');
+  const ocoSizeOverride = form.watch('ocoSizeOverride');
 
-  const { pubKey } = useVegaWallet();
-
-  const { data: markPrice } = useMarkPrice(ticket.market.id);
-  const price =
-    markPrice && markPrice !== null
-      ? toBigNum(markPrice, ticket.market.decimalPlaces)
-      : undefined;
+  const _price = form.watch('price');
+  const _ocoPrice = form.watch('ocoPrice');
+  const price = BigNumber(_price || 0);
+  const ocoPrice = BigNumber(_ocoPrice || 0);
 
   return (
     <FormProvider {...form}>
@@ -78,7 +82,7 @@ export const StopMarket = (props: FormProps) => {
       <Form
         onSubmit={form.handleSubmit((fields) => {
           const reference = `${pubKey}-${Date.now()}-${uniqueId()}`;
-          const stopOrdersSubmission = utils.createStopMarketOrder(
+          const stopOrdersSubmission = utils.createStopLimitOrder(
             fields,
             ticket.market,
             reference
@@ -89,7 +93,7 @@ export const StopMarket = (props: FormProps) => {
         })}
       >
         <Fields.Side side={props.side} onSideChange={props.onSideChange} />
-        <TicketTypeSelect type="stopMarket" onTypeChange={props.onTypeChange} />
+        <TicketTypeSelect type="stopLimit" onTypeChange={props.onTypeChange} />
         <div className="flex flex-col gap-1">
           <FieldControls>
             <div className="mr-auto">
@@ -100,23 +104,32 @@ export const StopMarket = (props: FormProps) => {
           </FieldControls>
           <Fields.StopTriggerPrice />
         </div>
+        <Fields.Price />
         <div className="flex flex-col gap-1">
           <FieldControls>
-            <Fields.StopSizeOverride />
+            <Fields.StopSizeOverride price={price} />
           </FieldControls>
-          <Fields.StopSize />
+          {sizeOverride ===
+          StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION ? (
+            <Fields.StopSizePosition />
+          ) : (
+            <>
+              {sizeMode === 'contracts' ? (
+                <Fields.StopSize price={price} />
+              ) : (
+                <Fields.Notional price={price} />
+              )}
+            </>
+          )}
         </div>
-        <SizeSliderStop price={price} />
+        <Fields.StopSizeSlider price={price} />
         <AdvancedControls>
           <FormGrid>
-            <FormGridCol>
-              <Fields.TimeInForce />
-            </FormGridCol>
-            <FormGridCol />
+            <Fields.TimeInForce />
           </FormGrid>
-          <div>
+          <FormGrid>
             <Fields.ReduceOnly disabled />
-          </div>
+          </FormGrid>
         </AdvancedControls>
         {oco && (
           <>
@@ -127,32 +140,66 @@ export const StopMarket = (props: FormProps) => {
               </FieldControls>
               <Fields.StopTriggerPrice name="ocoTriggerPrice" />
             </div>
+            <Fields.Price name="ocoPrice" />
             <div className="flex flex-col gap-1">
               <FieldControls>
-                <Fields.StopSizeOverride name="ocoSizeOverride" />
+                <Fields.StopSizeOverride
+                  name="ocoSizeOverride"
+                  price={ocoPrice}
+                />
               </FieldControls>
-              <Fields.StopSize name="ocoSize" />
+              {ocoSizeOverride ===
+              StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION ? (
+                <Fields.StopSizePosition name="ocoSizePosition" />
+              ) : (
+                <>
+                  {sizeMode === 'contracts' ? (
+                    <Fields.StopSize name="ocoSize" price={ocoPrice} />
+                  ) : (
+                    <Fields.Notional name="ocoNotional" price={ocoPrice} />
+                  )}
+                </>
+              )}
             </div>
+            <Fields.StopSizeSlider name="ocoSizePct" price={ocoPrice} />
             <AdvancedControls>
               <FormGrid>
                 <FormGridCol>
                   <Fields.TimeInForce name="ocoTimeInForce" />
                 </FormGridCol>
-                <FormGridCol />
+                <FormGridCol>
+                  {ocoTif === OrderTimeInForce.TIME_IN_FORCE_GTT && (
+                    <Fields.ExpiresAt name="ocoExpiresAt" />
+                  )}
+                </FormGridCol>
               </FormGrid>
-              <div>
+              <FormGrid>
                 <Fields.ReduceOnly disabled />
-              </div>
+              </FormGrid>
             </AdvancedControls>
           </>
         )}
         <hr className="border-default" />
         <Fields.StopExpiry />
         <FeedbackStop />
-        <SubmitButton
-          text={t('Place limit stop order')}
-          subLabel={`${size || 0} ${ticket.baseSymbol} @ market`}
-        />
+        <SubmitButton text={t('Place limit stop order')} />
+        <Datagrid heading={<Data.StopSummary />}>
+          {sizeMode === 'contracts' ? <Data.Notional /> : <Data.Size />}
+          <Data.Fees />
+        </Datagrid>
+        {oco && (
+          <>
+            <hr className="border-default" />
+            <Datagrid heading={<Data.StopSummary oco />}>
+              {sizeMode === 'contracts' ? (
+                <Data.Notional name="ocoNotional" />
+              ) : (
+                <Data.Size name="ocoSize" />
+              )}
+              <Data.Fees oco />
+            </Datagrid>
+          </>
+        )}
       </Form>
     </FormProvider>
   );

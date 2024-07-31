@@ -14,6 +14,7 @@ import {
   OrderTimeInForce,
   OrderType,
   Side,
+  StopOrderSizeOverrideSetting,
   StopOrderTriggerDirection,
 } from '@vegaprotocol/types';
 import { subDays } from 'date-fns';
@@ -130,12 +131,14 @@ describe('ticket stop market schema', () => {
   const createFields = (override?: Partial<FormFieldsStopMarket>) => {
     const fields: FormFieldsStopMarket = {
       ticketType: 'stopMarket',
+      sizeMode: 'contracts',
       type: OrderType.TYPE_MARKET,
       side: Side.SIDE_BUY,
       triggerType: 'price',
       triggerDirection: StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE,
       triggerPrice: 100,
       size: 100,
+      notional: 0,
       timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
       reduceOnly: true,
       oco: false,
@@ -143,6 +146,47 @@ describe('ticket stop market schema', () => {
     };
     return merge(fields, override);
   };
+
+  it('validates size step', () => {
+    const schema = createStopMarketSchema({
+      ...marketInfo,
+      positionDecimalPlaces: 2,
+    });
+    const fields = createFields({
+      size: 0.001,
+    });
+    const res = schema.safeParse(fields);
+    expect(res.error?.issues.length).toBe(2);
+    expect(res.error?.issues[0].code).toEqual('too_small');
+    expect(res.error?.issues[1].code).toEqual('not_multiple_of');
+
+    const fields2 = createFields({
+      size: 0.011,
+    });
+    const res2 = schema.safeParse(fields2);
+    expect(res2.error?.issues.length).toBe(1);
+    expect(res2.error?.issues[0].code).toEqual('not_multiple_of');
+  });
+
+  it('sizePosition must be percentage less than 100', () => {
+    const schema = createStopMarketSchema(marketInfo);
+    const fields = createFields({
+      sizeOverride: StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION,
+      sizePosition: 101,
+    });
+    const res = schema.safeParse(fields);
+    expect(res.error?.issues.map((i) => i.path)).toEqual([['sizePosition']]);
+  });
+
+  it('sizeOverride must be percentage greater than 0', () => {
+    const schema = createStopMarketSchema(marketInfo);
+    const fields = createFields({
+      sizeOverride: StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION,
+      sizePosition: 0,
+    });
+    const res = schema.safeParse(fields);
+    expect(res.error?.issues.map((i) => i.path)).toEqual([['sizePosition']]);
+  });
 
   it('oco requires ocoTriggerPrice and ocoSize', () => {
     const schema = createStopMarketSchema(marketInfo);
@@ -191,12 +235,14 @@ describe('ticket stop limit schema', () => {
   const createFields = (override?: Partial<FormFieldsStopLimit>) => {
     const fields: FormFieldsStopLimit = {
       ticketType: 'stopLimit',
+      sizeMode: 'contracts',
       type: OrderType.TYPE_LIMIT,
       side: Side.SIDE_BUY,
       triggerType: 'price',
       triggerDirection: StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE,
       triggerPrice: 100,
       size: 100,
+      notional: 0,
       price: 100,
       timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
       reduceOnly: true,
@@ -227,6 +273,47 @@ describe('ticket stop limit schema', () => {
     });
     const res = schema.safeParse(fields);
     expect(res.error?.issues.map((i) => i.path)).toEqual([['stopExpiresAt']]);
+  });
+
+  it('validates size step', () => {
+    const schema = createStopLimitSchema({
+      ...marketInfo,
+      positionDecimalPlaces: 2,
+    });
+    const fields = createFields({
+      size: 0.001,
+    });
+    const res = schema.safeParse(fields);
+    expect(res.error?.issues.length).toBe(2);
+    expect(res.error?.issues[0].code).toEqual('too_small');
+    expect(res.error?.issues[1].code).toEqual('not_multiple_of');
+
+    const fields2 = createFields({
+      size: 0.011,
+    });
+    const res2 = schema.safeParse(fields2);
+    expect(res2.error?.issues.length).toBe(1);
+    expect(res2.error?.issues[0].code).toEqual('not_multiple_of');
+  });
+
+  it('sizePosition must be percentage less than 100', () => {
+    const schema = createStopLimitSchema(marketInfo);
+    const fields = createFields({
+      sizeOverride: StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION,
+      sizePosition: 101,
+    });
+    const res = schema.safeParse(fields);
+    expect(res.error?.issues.map((i) => i.path)).toEqual([['sizePosition']]);
+  });
+
+  it('sizePosition must be percentage greater than 0', () => {
+    const schema = createStopLimitSchema(marketInfo);
+    const fields = createFields({
+      sizeOverride: StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION,
+      sizePosition: 0,
+    });
+    const res = schema.safeParse(fields);
+    expect(res.error?.issues.map((i) => i.path)).toEqual([['sizePosition']]);
   });
 
   it('stop orders must be reduce only unless spot market', () => {

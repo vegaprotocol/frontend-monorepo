@@ -2,19 +2,16 @@ import BigNumber from 'bignumber.js';
 
 import { TicketInput, TradingInputError } from '@vegaprotocol/ui-toolkit';
 
-import { useT } from '../../../lib/use-t';
-import { useTicketContext } from '../ticket-context';
-import { FormField } from '../ticket-field';
-import { InputLabel } from '../elements/form';
-import { useForm } from '../use-form';
+import { useT } from '../../../../lib/use-t';
+import { useTicketContext } from '../../ticket-context';
+import { FormField } from '../../ticket-field';
+import { InputLabel } from '../../elements/form';
+import { useForm } from '../../use-form';
 
-import * as utils from '../utils';
-import * as derivativeUtils from '../derivative/utils';
+import * as utils from '../../utils';
+import * as spotUtils from '../utils';
 
-import { SizeModeButton } from '../size-mode-button';
-import { useActiveOrders } from '@vegaprotocol/orders';
-import { useOpenVolume } from '@vegaprotocol/positions';
-import { useVegaWallet } from '@vegaprotocol/wallet-react';
+import { SizeModeButton } from '../../size-mode-button';
 
 export const Notional = ({
   name = 'notional',
@@ -23,15 +20,8 @@ export const Notional = ({
   name?: 'notional' | 'ocoNotional';
   price?: BigNumber;
 }) => {
-  const { pubKey } = useVegaWallet();
-  const ticket = useTicketContext('default');
+  const ticket = useTicketContext('spot');
   const form = useForm();
-
-  const { data: orders } = useActiveOrders(pubKey, ticket.market.id);
-  const { openVolume } = useOpenVolume(pubKey, ticket.market.id) || {
-    openVolume: '0',
-    averageEntryPrice: '0',
-  };
 
   return (
     <FormField
@@ -57,21 +47,19 @@ export const Notional = ({
                     ticket.market.positionDecimalPlaces
                   );
 
-                  const pct = derivativeUtils.calcPctBySize({
+                  const pct = spotUtils.calcPctBySize({
                     size,
-                    openVolume,
-                    price: price || BigNumber(0),
+                    side: fields.side,
+                    price,
                     ticket,
-                    fields,
-                    orders: orders || [],
                   });
 
                   if (isOco) {
                     form.setValue('ocoSize', size.toNumber());
-                    form.setValue('ocoSizePct', pct.toNumber());
+                    form.setValue('ocoSizePct', Number(pct));
                   } else {
                     form.setValue('size', size.toNumber());
-                    form.setValue('sizePct', pct.toNumber());
+                    form.setValue('sizePct', Number(pct));
                   }
                 }
               }}
