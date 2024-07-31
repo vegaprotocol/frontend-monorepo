@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { LayoutPriority } from 'allotment';
-import { useScreenDimensions } from '@vegaprotocol/react-helpers';
+import classNames from 'classnames';
 
+import { useScreenDimensions } from '@vegaprotocol/react-helpers';
 import { useFeatureFlags } from '@vegaprotocol/environment';
 import {
   Intent,
@@ -17,7 +18,6 @@ import {
 import { TransferContainer } from '@vegaprotocol/accounts';
 
 import { SidebarAccountsContainer } from '../../components/accounts-container';
-import { DepositsContainer } from '../../components/deposits-container';
 import {
   FillsContainer,
   FillsSettings,
@@ -31,7 +31,6 @@ import {
   PositionsSettings,
 } from '../../components/positions-container';
 import { PositionsMenu } from '../../components/positions-menu';
-import { WithdrawalsContainer } from '../../components/withdrawals-container';
 import {
   OrdersContainer,
   OrdersSettings,
@@ -43,33 +42,18 @@ import {
   ResizableGridPanelChild,
   usePaneLayout,
 } from '../../components/resizable-grid';
-import { DepositsMenu } from '../../components/deposits-menu';
-import { WithdrawalsMenu } from '../../components/withdrawals-menu';
-import { useT } from '../../lib/use-t';
-import { ErrorBoundary } from '../../components/error-boundary';
-import { usePageTitle } from '../../lib/hooks/use-page-title';
-import { Links } from '../../lib/links';
 
+import { useT } from '../../lib/use-t';
+import { Links } from '../../lib/links';
+import { usePageTitle } from '../../lib/hooks/use-page-title';
+import { useSquidSidebarMinWidth } from '../../lib/hooks/use-sidebar';
+
+import { ErrorBoundary } from '../../components/error-boundary';
 import { DepositContainer } from '../../components/deposit-container';
 import { WithdrawContainer } from '../../components/withdraw-container';
 import { SwapContainer } from '../../components/swap/swap-container';
 import { SquidContainer } from '../../components/squid-container';
-
-import { useIncompleteWithdrawals } from '../../lib/hooks/use-incomplete-withdrawals';
-import classNames from 'classnames';
-import { useSquidSidebarMinWidth } from '../../lib/hooks/use-sidebar';
-
-const WithdrawalsIndicator = () => {
-  const { ready } = useIncompleteWithdrawals();
-  if (!ready || ready.length === 0) {
-    return null;
-  }
-  return (
-    <span className="p-1 leading-none rounded bg-vega-clight-500 dark:bg-vega-cdark-500 text-default">
-      {ready.length}
-    </span>
-  );
-};
+import { AssetActivity } from '../../components/asset-activity';
 
 export const Portfolio = () => {
   const t = useT();
@@ -316,21 +300,17 @@ const PortfolioBottomTabs = () => {
   const t = useT();
   return (
     <Tabs storageKey="console-portfolio-bottom">
-      <Tab id="deposits" name={t('Deposits')} menu={<DepositsMenu />}>
-        <ErrorBoundary feature="portfolio-deposit">
-          <DepositsContainer />
-        </ErrorBoundary>
-      </Tab>
-      <Tab
-        id="withdrawals"
-        name={t('Withdrawals')}
-        indicator={<WithdrawalsIndicator />}
-        menu={<WithdrawalsMenu />}
-      >
-        <ErrorBoundary feature="portfolio-deposit">
-          <WithdrawalsContainer />
-        </ErrorBoundary>
-      </Tab>
+      {[
+        <Tab
+          id="asset-activity"
+          name={t('Asset activity')}
+          key="asset-activity"
+        >
+          <ErrorBoundary feature="portfolio-asset-activity">
+            <AssetActivity />
+          </ErrorBoundary>
+        </Tab>,
+      ]}
     </Tabs>
   );
 };

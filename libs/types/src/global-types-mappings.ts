@@ -113,7 +113,7 @@ export const DepositStatusMapping: {
   STATUS_CANCELLED: 'Cancelled',
   STATUS_FINALIZED: 'Finalized',
   STATUS_DUPLICATE_REJECTED: 'Duplicate rejected',
-  STATUS_OPEN: 'Open',
+  STATUS_OPEN: 'Pending',
 };
 
 /**
@@ -722,7 +722,7 @@ export const PositionStatusMapping: {
 export const TransferStatusMapping: {
   [T in TransferStatus]: string;
 } = {
-  STATUS_DONE: 'Done',
+  STATUS_DONE: 'Finalized',
   STATUS_PENDING: 'Pending',
   STATUS_REJECTED: 'Rejected',
   STATUS_CANCELLED: 'Cancelled',

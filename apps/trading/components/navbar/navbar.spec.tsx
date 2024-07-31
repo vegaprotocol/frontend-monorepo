@@ -19,6 +19,10 @@ jest.mock('@vegaprotocol/proposals', () => ({
   ProtocolUpgradeCountdown: () => null,
 }));
 
+jest.mock('../withdrawals-indicator', () => ({
+  WithdrawalsIndicator: () => null,
+}));
+
 describe('Navbar', () => {
   const mockKeys = [
     {

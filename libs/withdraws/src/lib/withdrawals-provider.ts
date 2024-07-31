@@ -1,6 +1,6 @@
 import uniqBy from 'lodash/uniqBy';
 import { removePaginationWrapper, getEvents } from '@vegaprotocol/utils';
-import { makeDataProvider } from '@vegaprotocol/data-provider';
+import { makeDataProvider, useDataProvider } from '@vegaprotocol/data-provider';
 import * as Schema from '@vegaprotocol/types';
 import {
   WithdrawalsDocument,
@@ -49,3 +49,19 @@ export const withdrawalProvider = makeDataProvider<
     return uniqBy([...incoming, ...(data || [])], 'id');
   },
 });
+
+export const useWithdrawals = ({
+  pubKey,
+  dateRange,
+  pagination,
+}: {
+  pubKey?: string;
+  dateRange?: Schema.DateRange;
+  pagination?: Schema.Pagination;
+}) => {
+  return useDataProvider({
+    dataProvider: withdrawalProvider,
+    variables: { partyId: pubKey || '', dateRange, pagination },
+    skip: !pubKey,
+  });
+};
