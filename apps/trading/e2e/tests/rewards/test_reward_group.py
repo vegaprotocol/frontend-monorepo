@@ -194,5 +194,5 @@ def test_reward_group_card(
         "Price maker fees paid"
     )
     expect(reward_group_card.locator("a")).to_have_text(
-        "View rewards on 2 markets"
+        "View reward details"
     )

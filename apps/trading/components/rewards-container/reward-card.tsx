@@ -83,7 +83,6 @@ const GroupCard = ({
   colour,
   rewardAmount,
   transferAsset,
-  count,
   requirements,
   link,
 }: {
@@ -91,7 +90,6 @@ const GroupCard = ({
   colour: CardColour;
   rewardAmount: string;
   transferAsset?: AssetFieldsFragment | undefined;
-  count: number;
   requirements?: Requirements;
   link: string;
 }) => {
@@ -199,7 +197,7 @@ const GroupCard = ({
               className={classNames(CardColourStyles[colour].btn, 'w-full')}
               href={link}
             >
-              {t('rewardsGroupCTA', { count })}
+              {t('View reward details')}
             </TradingAnchorButton>
           </div>
         </div>
@@ -1052,7 +1050,6 @@ export const GroupRewardCard = ({
       rewardAmount={rewardAmount}
       // TODO: fix the types for the useRewards hook. It just the full type, and not the type created by Rewards.graphql
       transferAsset={transferAsset as AssetFieldsFragment}
-      count={transferNodes.length}
       requirements={requirements}
       dispatchStrategy={dispatchStrategy}
       link={link}
