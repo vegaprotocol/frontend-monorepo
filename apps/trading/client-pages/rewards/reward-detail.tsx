@@ -134,7 +134,11 @@ export const RewardDetailContainer = (props: {
         rewardAmount: formatNumber(
           toBigNum(g.transfer.amount, g.transfer.asset.decimals)
         ),
-        rewardCap: dispatchStrategy.capRewardFeeMultiple || '-',
+        rewardCap: dispatchStrategy.capRewardFeeMultiple
+          ? t('{{amount}}x fees paid', {
+              amount: dispatchStrategy.capRewardFeeMultiple,
+            })
+          : '-',
       };
     })
   );
@@ -216,7 +220,7 @@ export const RewardDetailContainer = (props: {
             },
             {
               name: 'lockPeriod',
-              displayName: t('Lock period'),
+              displayName: t('Days locked'),
             },
             {
               name: 'rewardAmount',
@@ -225,7 +229,7 @@ export const RewardDetailContainer = (props: {
 
             {
               name: 'rewardCap',
-              displayName: t('Reward cap'),
+              displayName: t('Capped at'),
             },
           ]}
           data={tableData}
