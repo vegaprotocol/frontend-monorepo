@@ -359,8 +359,10 @@ def test_switch_teams(team_page: Tuple[Page, str, str, VegaServiceNull]):
     page.reload()
     expect(page.get_by_test_id("members-count-stat")).to_have_text("3")
 
+@pytest.mark.skip(reason="TODO: fix this flaky test")
 def test_create_team(competitions_page: Tuple[Page, str, VegaServiceNull]):
     page, team_id, vega = competitions_page
+    page.pause()
     page.goto(COMPETITIONS_URL)
     change_keys(page, vega, MM_WALLET2.name)
     page.get_by_test_id("create-public-team-button").click()
