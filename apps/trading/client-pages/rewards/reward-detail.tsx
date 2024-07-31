@@ -113,15 +113,16 @@ export const RewardDetailContainer = (props: {
       if (!g.transfer.asset) return;
       const dispatchStrategy = g.transfer.kind.dispatchStrategy;
 
-      let rewardsPaid = '-';
-      if (dispatchStrategy.transferInterval) {
-        if (dispatchStrategy.transferInterval > 1) {
-          rewardsPaid = t('daysCount', {
-            count: dispatchStrategy.transferInterval,
-          });
-        } else {
-          rewardsPaid = t('Daily');
-        }
+      // Daily is the default if transferInternval is null
+      let rewardsPaid = t('Daily');
+
+      if (
+        dispatchStrategy.transferInterval &&
+        dispatchStrategy.transferInterval > 1
+      ) {
+        rewardsPaid = t('daysCount', {
+          count: dispatchStrategy.transferInterval,
+        });
       }
 
       return {

@@ -1036,10 +1036,7 @@ export const GroupRewardCard = ({
     metric: dispatchStrategy.dispatchMetric,
     entityScope: dispatchStrategy.entityScope,
     distributionStrategy: dispatchStrategy.distributionStrategy,
-    stakingRequirement:
-      dispatchStrategy.__typename === 'DispatchStrategy'
-        ? dispatchStrategy.stakingRequirement || '0'
-        : '0',
+    stakingRequirement: dispatchStrategy.stakingRequirement || '0',
   });
 
   const link = Links.REWARDS_DETAIL(params.toString());
