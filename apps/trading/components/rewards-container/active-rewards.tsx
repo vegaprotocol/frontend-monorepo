@@ -35,7 +35,7 @@ export const ActiveRewards = ({ currentEpoch }: { currentEpoch: number }) => {
   if (!groupedCards || !groupedCards.length) return null;
 
   return (
-    <div className="flex flex-col gap-2" data-testid="active-rewards-card">
+    <div className="flex flex-col gap-2">
       <header className="flex justify-between items-center gap-4">
         <h2 className="text-xl">{t('Active rewards')}</h2>
 

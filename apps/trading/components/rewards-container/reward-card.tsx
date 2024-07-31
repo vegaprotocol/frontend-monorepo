@@ -162,7 +162,7 @@ const GroupCard = ({
                   <DistributionStrategyIcon strategy={distributionStrategy} />
                   <span
                     className="text-muted text-xs"
-                    data-testid="entity-scope"
+                    data-testid="distribution-strategy"
                   >
                     {DistributionStrategyMapping[distributionStrategy]}
                   </span>
