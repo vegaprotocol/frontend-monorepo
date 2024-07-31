@@ -42,7 +42,7 @@ export const Card = ({
             maskComposite: 'exclude',
           }}
           className={classNames(
-            'absolute inset-0 p-px bg-gradient-to-br rounded-lg',
+            'absolute inset-0 p-px bg-gradient-to-br rounded-lg pointer-events-none',
             {
               'from-vega-blue to-vega-green': variant === 'cool',
               'from-vega-pink to-vega-blue': variant == 'hot',
