@@ -17,6 +17,7 @@ import {
   Intent,
   TradingRichSelect,
   TradingRichSelectOption,
+  Notification,
 } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { Emblem } from '@vegaprotocol/emblem';
@@ -45,6 +46,7 @@ import { AssetOption } from '../asset-option';
 import { Approval } from './approval';
 import { useAssetReadContracts } from './use-asset-read-contracts';
 import { Faucet } from './faucet';
+import { isAssetUSDTArb } from '../../lib/utils/is-asset-usdt-arb';
 
 type Configs = Array<EthereumConfig | EVMBridgeConfig>;
 
@@ -220,32 +222,43 @@ const DepositForm = ({
         )}
       </FormGroup>
       <FormGroup label="Asset" labelFor="asset">
-        <Controller
-          name="assetId"
-          control={form.control}
-          render={({ field }) => {
-            return (
-              <TradingRichSelect
-                placeholder="Select asset"
-                value={field.value}
-                onValueChange={field.onChange}
-              >
-                {assets.map((a) => {
-                  return (
-                    <TradingRichSelectOption value={a.id} key={a.id}>
-                      <AssetOption asset={a} />
-                    </TradingRichSelectOption>
-                  );
-                })}
-              </TradingRichSelect>
-            );
-          }}
-        />
-        {form.formState.errors.assetId?.message && (
-          <TradingInputError>
-            {form.formState.errors.assetId.message}
-          </TradingInputError>
-        )}
+        <div className="flex flex-col gap-1">
+          <Controller
+            name="assetId"
+            control={form.control}
+            render={({ field }) => {
+              return (
+                <TradingRichSelect
+                  placeholder="Select asset"
+                  value={field.value}
+                  onValueChange={field.onChange}
+                >
+                  {assets.map((a) => {
+                    return (
+                      <TradingRichSelectOption value={a.id} key={a.id}>
+                        <AssetOption asset={a} />
+                      </TradingRichSelectOption>
+                    );
+                  })}
+                </TradingRichSelect>
+              );
+            }}
+          />
+          {asset && !isAssetUSDTArb(asset) && (
+            <Notification
+              size="small"
+              intent={Intent.Info}
+              message={t(
+                'The majority of markets on the network settle in USDT Arb. Are you sure you wish to deposit the selected asset?'
+              )}
+            />
+          )}
+          {form.formState.errors.assetId?.message && (
+            <TradingInputError>
+              {form.formState.errors.assetId.message}
+            </TradingInputError>
+          )}
+        </div>
         {asset && (
           <FormSecondaryActionWrapper>
             <FormSecondaryActionButton
