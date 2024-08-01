@@ -53,14 +53,14 @@ const useFeesTableColumnDefs = (): ColDef[] => {
           minWidth: 300,
         },
         {
-          field: 'totalFee',
-          headerName: t('Taker fee before discount'),
-          valueFormatter: ({ value }: { value: number }) => value + '%',
-        },
-        {
           field: 'feeAfterDiscount',
           headerName: t('Taker fee after discount'),
           cellClass: 'font-bold',
+          valueFormatter: ({ value }: { value: number }) => value + '%',
+        },
+        {
+          field: 'totalFee',
+          headerName: t('Taker fee before discount'),
           valueFormatter: ({ value }: { value: number }) => value + '%',
         },
         {
