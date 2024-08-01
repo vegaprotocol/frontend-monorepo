@@ -95,6 +95,10 @@ export const CompetitionsGame = () => {
     );
   }
 
+  if (!currentEpoch) {
+    return null;
+  }
+
   if (!reward || !teams || !liveScoreData) {
     return (
       <Splash>
@@ -121,7 +125,9 @@ export const CompetitionsGame = () => {
     (liveScoreData?.gameTeamScores?.edges || []).map((e) => e.node)
   );
 
-  const latestScore = liveScores[liveScores.length - 1];
+  const currentScores = liveScores.filter((s) => s.epochId === currentEpoch);
+  const prevScores = liveScores.filter((s) => s.epochId === currentEpoch - 1);
+  const latestScore = currentScores[0];
 
   return (
     <ErrorBoundary feature="game">
@@ -162,7 +168,8 @@ export const CompetitionsGame = () => {
             </div>
             <TabsContent value="scores">
               <LiveScoresTable
-                scores={liveScores}
+                currentScores={currentScores}
+                prevScores={prevScores}
                 asset={asset}
                 rewardAmount={amount}
                 rankTable={rankTable}
@@ -279,14 +286,16 @@ const EligibilityCriteria = ({
  * scores by team
  */
 const LiveScoresTable = ({
-  scores,
+  currentScores,
+  prevScores,
   asset,
   distributionStrategy,
   rankTable,
   teams,
   rewardAmount,
 }: {
-  scores: TeamScoreFieldsFragment[];
+  currentScores: TeamScoreFieldsFragment[];
+  prevScores: TeamScoreFieldsFragment[];
   asset: AssetFieldsFragment;
   distributionStrategy: DistributionStrategy;
   rankTable: RankTable[];
@@ -294,6 +303,8 @@ const LiveScoresTable = ({
   rewardAmount: string;
 }) => {
   const t = useT();
+
+  const scores = currentScores.length ? currentScores : prevScores;
 
   const sumOfScores = scores.reduce(
     (sum, s) => sum.plus(s.score),
