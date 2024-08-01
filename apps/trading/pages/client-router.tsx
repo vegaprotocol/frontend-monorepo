@@ -90,10 +90,6 @@ export const useRouterConfig = (): RouteObject[] => {
               path: AppRoutes.COMPETITIONS_TEAMS,
               element: <CompetitionsTeams />,
             },
-            {
-              path: AppRoutes.COMPETITIONS_GAME,
-              element: <CompetitionsGame />,
-            },
           ],
         },
         // pages with blurred background

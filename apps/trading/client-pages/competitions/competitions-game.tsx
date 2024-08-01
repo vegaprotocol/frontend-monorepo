@@ -44,7 +44,7 @@ import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import BigNumber from 'bignumber.js';
 import { TEAMS_STATS_EPOCHS } from '../../lib/hooks/constants';
 import { type TeamsFieldsFragment } from '../../lib/hooks/__generated__/Teams';
-import { HeaderHero } from '../../components/header-hero';
+import { HeaderPage } from '../../components/header-page';
 
 export const CompetitionsGame = () => {
   const t = useT();
@@ -102,17 +102,19 @@ export const CompetitionsGame = () => {
 
   return (
     <ErrorBoundary>
-      <HeaderHero title={t('Game results')}>
-        {dispatchMetric ? DispatchMetricLabels[dispatchMetric] : t('Unknown')}
-        <small className="text-xl lg:text-2xl xl:text-3xl text-muted">
+      <header className="flex flex-col gap-2">
+        <HeaderPage>
+          {dispatchMetric ? DispatchMetricLabels[dispatchMetric] : t('Unknown')}
+        </HeaderPage>
+        <p className="text-muted text-4xl">
           {addDecimalsFormatNumberQuantum(
             amount,
             asset.decimals,
             asset.quantum
           )}{' '}
-          {asset.symbol}
-        </small>
-      </HeaderHero>
+          <span className="calt">{asset.symbol}</span>
+        </p>
+      </header>
       <EligibilityCriteria
         asset={asset}
         dispatchStrategy={dispatchStrategy as DispatchStrategy}
