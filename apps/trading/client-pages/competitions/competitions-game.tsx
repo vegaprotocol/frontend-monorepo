@@ -45,6 +45,7 @@ import BigNumber from 'bignumber.js';
 import { TEAMS_STATS_EPOCHS } from '../../lib/hooks/constants';
 import { type TeamsFieldsFragment } from '../../lib/hooks/__generated__/Teams';
 import { HeaderPage } from '../../components/header-page';
+import { Card } from '../../components/card';
 
 export const CompetitionsGame = () => {
   const t = useT();
@@ -182,14 +183,7 @@ const EligibilityCriteria = ({
   const valueClasses = 'text-2xl lg:text-3xl';
 
   return (
-    <section className="relative flex flex-col gap-2 lg:gap-4 p-6 rounded-lg">
-      <div
-        style={{
-          mask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
-          maskComposite: 'exclude',
-        }}
-        className="absolute inset-0 p-px bg-gradient-to-br from-vega-blue to-vega-green rounded-lg"
-      />
+    <Card variant="cool" size="lg" className="flex flex-col gap-4" minimal>
       <h2 className="calt">{t('Eligibility criteria')}</h2>
       <dl className="grid grid-cols-2 md:flex gap-2 md:gap-6 lg:gap-8 whitespace-nowrap">
         <div>
@@ -244,7 +238,7 @@ const EligibilityCriteria = ({
           </>
         )}
       </dl>
-    </section>
+    </Card>
   );
 };
 
