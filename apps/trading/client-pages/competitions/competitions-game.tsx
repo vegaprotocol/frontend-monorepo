@@ -64,9 +64,15 @@ export const CompetitionsGame = () => {
   const { data: reward, loading: rewardLoading } = useReward(gameId);
   const { data: teams, loading: teamsLoading } = useTeamsMap();
 
+  const windowLength = reward?.transfer.kind.dispatchStrategy.windowLength;
+  const epochFrom =
+    currentEpoch !== undefined && windowLength !== undefined
+      ? currentEpoch - windowLength
+      : undefined;
+
   const { data: liveScoreData, loading: liveScoreLoading } = useScoresQuery({
     variables: {
-      epochFrom: currentEpoch,
+      epochFrom,
       epochTo: currentEpoch,
       gameId: gameId || '',
       partyId: pubKey || '',
@@ -115,7 +121,7 @@ export const CompetitionsGame = () => {
     (liveScoreData?.gameTeamScores?.edges || []).map((e) => e.node)
   );
 
-  const latestScore = liveScores[0];
+  const latestScore = liveScores[liveScores.length - 1];
 
   return (
     <ErrorBoundary feature="game">
