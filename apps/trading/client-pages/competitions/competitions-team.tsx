@@ -61,6 +61,7 @@ import {
   DispatchMetricInfo,
 } from '../../components/rewards-container/reward-card';
 import { usePartyProfilesQuery } from '../../components/vega-wallet-connect-button/__generated__/PartyProfiles';
+import { NotFoundSplash } from '../../components/not-found-splash';
 
 const formatDate = (date: Date) => format(date, 'yyyy/MM/dd hh:mm:ss');
 
@@ -76,7 +77,6 @@ export const CompetitionsTeam = () => {
 };
 
 const TeamPageContainer = ({ teamId }: { teamId: string | undefined }) => {
-  const t = useT();
   const { pubKey } = useVegaWallet();
   const { data, team, partyTeam, stats, members, loading, refetch } = useTeam(
     teamId,
@@ -102,11 +102,7 @@ const TeamPageContainer = ({ teamId }: { teamId: string | undefined }) => {
   }
 
   if (!team) {
-    return (
-      <Splash>
-        <p>{t('Page not found')}</p>
-      </Splash>
-    );
+    return <NotFoundSplash />;
   }
 
   return (

@@ -9,6 +9,7 @@ import { IconChevronDown } from './svg-icons/icon-chevron-down';
 import { IconChevronLeft } from './svg-icons/icon-chevron-left';
 import { IconChevronRight } from './svg-icons/icon-chevron-right';
 import { IconChevronUp } from './svg-icons/icon-chevron-up';
+import { IconClock } from './svg-icons/icon-clock';
 import { IconCog } from './svg-icons/icon-cog';
 import { IconCopy } from './svg-icons/icon-copy';
 import { IconCross } from './svg-icons/icon-cross';
@@ -25,6 +26,7 @@ import { IconKebab } from './svg-icons/icon-kebab';
 import { IconLinkedIn } from './svg-icons/icon-linkedin';
 import { IconLoading } from './svg-icons/icon-loading';
 import { IconLock } from './svg-icons/icon-lock';
+import { IconMedal } from './svg-icons/icon-medal';
 import { IconMetaMask } from './svg-icons/icon-metamask';
 import { IconMinus } from './svg-icons/icon-minus';
 import { IconMoon } from './svg-icons/icon-moon';
@@ -67,6 +69,7 @@ export enum VegaIconNames {
   CHEVRON_LEFT = 'chevron-left',
   CHEVRON_RIGHT = 'chevron-right',
   CHEVRON_UP = 'chevron-up',
+  CLOCK = 'clock',
   COG = 'cog',
   COPY = 'copy',
   CROSS = 'cross',
@@ -84,6 +87,7 @@ export enum VegaIconNames {
   LOADING = 'loading',
   LOCK = 'lock',
   LONG = 'long',
+  MEDAL = 'medal',
   METAMASK = 'metamask',
   MINUS = 'minus',
   MOON = 'moon',
@@ -136,6 +140,7 @@ export const VegaIconNameMap: Record<
   'trend-up': IconTrendUp,
   breakdown: IconBreakdown,
   bullet: IconBullet,
+  clock: IconClock,
   cog: IconCog,
   copy: IconCopy,
   cross: IconCross,
@@ -150,6 +155,7 @@ export const VegaIconNameMap: Record<
   loading: IconLoading,
   lock: IconLock,
   long: IconLong,
+  medal: IconMedal,
   metamask: IconMetaMask,
   minus: IconMinus,
   moon: IconMoon,

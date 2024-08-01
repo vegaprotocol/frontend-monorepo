@@ -144,7 +144,7 @@ export const RewardsContainer = () => {
           title={t('Vega Reward pot')}
           className="lg:col-span-3 xl:col-span-2"
           loading={loading}
-          highlight={true}
+          variant="hot"
         >
           <RewardPot
             pubKey={pubKey}
@@ -170,7 +170,7 @@ export const RewardsContainer = () => {
           title={t('Rewards multipliers')}
           className="lg:col-span-3 xl:col-span-2"
           loading={loading}
-          highlight={true}
+          variant="hot"
         >
           <Multipliers
             pubKey={pubKey}
@@ -251,19 +251,13 @@ export const RewardsContainer = () => {
             );
           })}
       </section>
-      <section className="hidden md:block">
-        <Card
-          title={t('Rewards history')}
-          loading={rewardsLoading}
-          noBackgroundOnMobile={true}
-          highlight={true}
-        >
-          <RewardsHistoryContainer
-            epoch={Number(epochData?.epoch.id)}
-            pubKey={pubKey}
-            assets={assetMap}
-          />
-        </Card>
+      <section className="hidden md:flex flex-col gap-2">
+        <h3>{t('Rewards history')}</h3>
+        <RewardsHistoryContainer
+          epoch={Number(epochData?.epoch.id)}
+          pubKey={pubKey}
+          assets={assetMap}
+        />
       </section>
       <section className="hidden md:grid auto-rows-min grid-cols-6 gap-3">
         {pubKey && activityStreakBenefitTiers.tiers?.length > 0 && (
@@ -301,7 +295,7 @@ export const RewardsContainer = () => {
           </Card>
         )}
       </section>
-      <section>
+      <section className="flex flex-col gap-2">
         <ActiveRewards currentEpoch={Number(epochData?.epoch.id)} />
       </section>
     </>
