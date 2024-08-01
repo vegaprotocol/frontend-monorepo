@@ -1,31 +1,11 @@
-import { ErrorBoundary } from '@sentry/react';
+// @ts-ignore No types available for duration-js
+import Duration from 'duration-js';
 import { Link, useParams } from 'react-router-dom';
-import { useT } from '../../lib/use-t';
-import { useReward } from '../../lib/hooks/use-rewards';
-import { useCurrentEpoch } from '../../lib/hooks/use-current-epoch';
-import {
-  Loader,
-  Splash,
-  Tooltip,
-  VegaIcon,
-  VegaIconNames,
-} from '@vegaprotocol/ui-toolkit';
-import { useGames } from '../../lib/hooks/use-games';
-import { Table } from '../../components/table';
-import { type AssetFieldsFragment } from '@vegaprotocol/assets';
 import orderBy from 'lodash/orderBy';
 import compact from 'lodash/compact';
 import groupBy from 'lodash/groupBy';
 import flatten from 'lodash/flatten';
-import {
-  addDecimalsFormatNumber,
-  addDecimalsFormatNumberQuantum,
-  formatNumber,
-  toBigNum,
-} from '@vegaprotocol/utils';
-import { TeamAvatar } from '../../components/competitions/team-avatar';
-import { useTeamsMap } from '../../lib/hooks/use-teams';
-import { Links } from '../../lib/links';
+
 import {
   DispatchMetricLabels,
   type DispatchStrategy,
@@ -34,24 +14,52 @@ import {
   EntityScopeLabelMapping,
   type RankTable,
 } from '@vegaprotocol/types';
+import { useNetworkParam } from '@vegaprotocol/network-parameters';
+import {
+  Loader,
+  Splash,
+  Tooltip,
+  VegaIcon,
+  VegaIconNames,
+} from '@vegaprotocol/ui-toolkit';
+import { type AssetFieldsFragment } from '@vegaprotocol/assets';
+import {
+  addDecimalsFormatNumber,
+  addDecimalsFormatNumberQuantum,
+  formatNumber,
+  getDateTimeFormat,
+  toBigNum,
+} from '@vegaprotocol/utils';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
+
+import { useT } from '../../lib/use-t';
+import { useReward } from '../../lib/hooks/use-rewards';
+import { useCurrentEpoch } from '../../lib/hooks/use-current-epoch';
+import { useGames } from '../../lib/hooks/use-games';
+import { Table } from '../../components/table';
+import { TeamAvatar } from '../../components/competitions/team-avatar';
+import { useTeamsMap } from '../../lib/hooks/use-teams';
+import { Links } from '../../lib/links';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './tabs';
 import {
   type ScoresQuery,
   useScoresQuery,
   type TeamScoreFieldsFragment,
 } from './__generated__/Scores';
-import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import BigNumber from 'bignumber.js';
 import { TEAMS_STATS_EPOCHS } from '../../lib/hooks/constants';
 import { type TeamsFieldsFragment } from '../../lib/hooks/__generated__/Teams';
 import { HeaderPage } from '../../components/header-page';
 import { Card } from '../../components/card';
+import { ErrorBoundary } from '../../components/error-boundary';
+import { addMinutes, formatDistanceToNowStrict } from 'date-fns';
 
 export const CompetitionsGame = () => {
   const t = useT();
   const { gameId } = useParams();
   const { pubKey } = useVegaWallet();
 
+  const { param } = useNetworkParam('rewards_updateFrequency');
   const { data: currentEpoch, loading: epochLoading } = useCurrentEpoch();
   const { data: reward, loading: rewardLoading } = useReward(gameId);
   const { data: teams, loading: teamsLoading } = useTeamsMap();
@@ -67,7 +75,13 @@ export const CompetitionsGame = () => {
     skip: !currentEpoch || !gameId,
   });
 
-  if (epochLoading || rewardLoading || teamsLoading || liveScoreLoading) {
+  if (
+    epochLoading ||
+    rewardLoading ||
+    teamsLoading ||
+    liveScoreLoading ||
+    !param
+  ) {
     return (
       <Splash>
         <Loader />
@@ -101,8 +115,10 @@ export const CompetitionsGame = () => {
     (liveScoreData?.gameTeamScores?.edges || []).map((e) => e.node)
   );
 
+  const latestScore = liveScores[0];
+
   return (
-    <ErrorBoundary>
+    <ErrorBoundary feature="game">
       <header className="flex flex-col gap-2">
         <HeaderPage>
           {dispatchMetric ? DispatchMetricLabels[dispatchMetric] : t('Unknown')}
@@ -124,10 +140,20 @@ export const CompetitionsGame = () => {
       {gameId && (
         <section>
           <Tabs defaultValue="scores">
-            <TabsList>
-              <TabsTrigger value="scores">Live scores</TabsTrigger>
-              <TabsTrigger value="history">Score history</TabsTrigger>
-            </TabsList>
+            <div className="flex justify-between items-center border-b border-default">
+              <TabsList>
+                <TabsTrigger value="scores">{t('Live scores')}</TabsTrigger>
+                <TabsTrigger value="history">{t('Score history')}</TabsTrigger>
+              </TabsList>
+              <TabsContent value="scores">
+                {latestScore && (
+                  <UpdateTime
+                    lastUpdate={latestScore.time}
+                    updateFrequency={param}
+                  />
+                )}
+              </TabsContent>
+            </div>
             <TabsContent value="scores">
               <LiveScoresTable
                 scores={liveScores}
@@ -490,5 +516,29 @@ const HistoricScoresTable = ({
       ]}
       data={list}
     />
+  );
+};
+
+const UpdateTime = (props: { lastUpdate: string; updateFrequency: string }) => {
+  const t = useT();
+
+  const lastUpdate = new Date(props.lastUpdate);
+  const d = new Duration(props.updateFrequency);
+  const nextUpdate = addMinutes(lastUpdate, d.minutes());
+
+  return (
+    <>
+      <p className="text-muted">
+        {t('Last updated: {{datetime}}', {
+          datetime: getDateTimeFormat().format(lastUpdate),
+        })}
+      </p>
+      <p>
+        Next update in{' '}
+        <time dateTime={getDateTimeFormat().format(nextUpdate)}>
+          {formatDistanceToNowStrict(nextUpdate)}
+        </time>
+      </p>
+    </>
   );
 };
