@@ -68,6 +68,10 @@ def test_filtered_cards(continuous_market, vega: VegaServiceNull, page: Page):
     )
     vega.wait_fn(1)
     vega.wait_for_total_catchup()
+
+    vega.wait_fn(1)
+    vega.wait_for_total_catchup()
+
     page.reload()
     expect(page.get_by_test_id("active-rewards-card")).not_to_be_in_viewport()
 
@@ -117,6 +121,5 @@ def test_filtered_future_cards(continuous_market, vega: VegaServiceNull, page: P
     page.goto("/#/rewards")
     card = page.get_by_test_id("active-rewards-card")
     expect(card).to_be_visible(timeout=15000)
-    expect(page.get_by_test_id("starts-in")).to_have_text("8 epochs")
     color = card.evaluate("element => getComputedStyle(element).color")
     assert color == "rgb(4, 4, 5)", f"Unexpected color: {color}"

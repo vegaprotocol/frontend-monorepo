@@ -12,6 +12,7 @@ interface DialogProps {
   onChange?: (isOpen: boolean) => void;
   onCloseAutoFocus?: (e: Event) => void;
   onInteractOutside?: (e: Event) => void;
+  description?: string;
   title?: string | ReactNode;
   icon?: ReactNode;
   intent?: Intent;
@@ -30,6 +31,7 @@ export function Dialog({
   intent,
   size = 'small',
   dataTestId = 'dialog-content',
+  description,
 }: DialogProps) {
   const contentClasses = classNames(
     'fixed top-0 left-0 z-20 flex justify-center items-start overflow-auto',
@@ -60,7 +62,13 @@ export function Dialog({
           onCloseAutoFocus={onCloseAutoFocus}
           onInteractOutside={onInteractOutside}
           data-testid={dataTestId}
+          aria-describedby={description}
         >
+          {description && (
+            <DialogPrimitives.Description className="sr-only">
+              {description}
+            </DialogPrimitives.Description>
+          )}
           <div
             className={classNames(
               // Positions the modal in the center of screen
@@ -81,14 +89,17 @@ export function Dialog({
                 className="flex flex-col gap-2 flex-1 max-w-full"
               >
                 {title && (
-                  <h3 className="text-xl flex gap-4" data-testid="dialog-title">
-                    {icon && (
-                      <span className="fill-current flex items-center">
-                        {icon}
-                      </span>
-                    )}
+                  <DialogTitle
+                    icon={
+                      icon && (
+                        <span className="fill-current flex items-center">
+                          {icon}
+                        </span>
+                      )
+                    }
+                  >
                     {title}
-                  </h3>
+                  </DialogTitle>
                 )}
                 <div>{children}</div>
               </div>
@@ -99,3 +110,20 @@ export function Dialog({
     </DialogPrimitives.Root>
   );
 }
+
+export const DialogTitle = (props: {
+  icon?: ReactNode;
+  children: ReactNode;
+}) => {
+  return (
+    <DialogPrimitives.Title
+      className="text-xl flex gap-4"
+      data-testid="dialog-title"
+    >
+      {props.icon && (
+        <span className="fill-current flex items-center">{props.icon}</span>
+      )}
+      {props.children}
+    </DialogPrimitives.Title>
+  );
+};

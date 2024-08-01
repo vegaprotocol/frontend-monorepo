@@ -1,8 +1,9 @@
 import {
+  ViewType,
   SidebarAccountsViewType,
+  useSidebar,
   useSidebarAccountsInnerView,
-} from '../../accounts-container';
-import { ViewType, useSidebar } from '../../sidebar';
+} from '../../../lib/hooks/use-sidebar';
 
 import { useT } from '../../../lib/use-t';
 

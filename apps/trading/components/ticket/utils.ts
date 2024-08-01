@@ -7,6 +7,7 @@ import {
 import { addDecimal, toDecimal } from '@vegaprotocol/utils';
 import BigNumber from 'bignumber.js';
 import {
+  EXPIRY_TIF_OPTIONS,
   NON_PERSISTENT_TIF_OPTIONS,
   PERSISTENT_TIF_OPTIONS,
 } from './constants';
@@ -128,6 +129,10 @@ export const isPersistentTif = (timeInForce: OrderTimeInForce) => {
   return PERSISTENT_TIF_OPTIONS.includes(timeInForce);
 };
 
+export const isExpiryAvailable = (timeInForce: OrderTimeInForce) => {
+  return EXPIRY_TIF_OPTIONS.includes(timeInForce);
+};
+
 type MarketData = {
   id: string;
   decimalPlaces: number;
@@ -208,7 +213,10 @@ export const createStopMarketOrder = (
       timeInForce: fields.timeInForce,
       size: isOverride
         ? addDecimal('1', market.positionDecimalPlaces)
-        : removeDecimal(fields.size.toString(), market.positionDecimalPlaces),
+        : removeDecimal(
+            fields.size?.toString() || '0',
+            market.positionDecimalPlaces
+          ),
       reduceOnly: fields.reduceOnly,
     },
     ...trigger,
@@ -240,7 +248,7 @@ export const createStopMarketOrder = (
     );
     const sizeOverride = createSizeOverride({
       sizeOverride: fields.ocoSizeOverride,
-      size: fields.ocoSize,
+      sizePosition: fields.ocoSizePosition,
     });
     const isOverride = sizeOverride?.sizeOverrideSetting === 2;
 
@@ -291,7 +299,10 @@ export const createStopLimitOrder = (
       price: removeDecimal(fields.price.toString(), market.decimalPlaces),
       size: isOverride
         ? addDecimal('1', market.positionDecimalPlaces)
-        : removeDecimal(fields.size.toString(), market.positionDecimalPlaces),
+        : removeDecimal(
+            fields.size?.toString() || '0',
+            market.positionDecimalPlaces
+          ),
       expiresAt:
         fields.expiresAt &&
         fields.timeInForce === OrderTimeInForce.TIME_IN_FORCE_GTT
@@ -324,7 +335,7 @@ export const createStopLimitOrder = (
 
     const sizeOverride = createSizeOverride({
       sizeOverride: fields.ocoSizeOverride,
-      size: fields.ocoSize,
+      sizePosition: fields.ocoSizePosition,
     });
     const isOverride = sizeOverride?.sizeOverrideSetting === 2;
     const trigger = createTrigger(
@@ -452,7 +463,7 @@ export const createTrigger = (
 
 export const createSizeOverride = (fields: {
   sizeOverride?: StopOrderSizeOverrideSetting;
-  size: string | number;
+  sizePosition?: number;
 }) => {
   if (!fields.sizeOverride) return;
 
@@ -462,7 +473,7 @@ export const createSizeOverride = (fields: {
   return {
     sizeOverrideSetting: sizeOverrideMap[fields.sizeOverride],
     sizeOverrideValue: isSizeOverridden
-      ? { percentage: (Number(fields.size) / 100).toFixed(3) }
+      ? { percentage: (Number(fields.sizePosition || 0) / 100).toFixed(3) }
       : undefined,
   };
 };
@@ -506,6 +517,7 @@ export const createOrderWithTpSl = (
     const ocoStopOrderSubmission = createStopMarketOrder(
       {
         ticketType: 'stopMarket',
+        sizeMode: fields.sizeMode,
         type: OrderType.TYPE_MARKET,
         side: oppositeSide,
         triggerDirection: stopLossTriggerDirection,
@@ -513,6 +525,7 @@ export const createOrderWithTpSl = (
         triggerPrice: fields.stopLoss,
         sizeOverride: StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_NONE,
         size: fields.size,
+        notional: fields.notional,
         timeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK,
         reduceOnly: true,
         oco: true,
@@ -537,6 +550,7 @@ export const createOrderWithTpSl = (
     const ocoStopOrderSubmission = createStopMarketOrder(
       {
         ticketType: 'stopMarket',
+        sizeMode: fields.sizeMode,
         type: OrderType.TYPE_MARKET,
         side: oppositeSide,
         triggerDirection: takeProfitTriggerDirection,
@@ -544,6 +558,7 @@ export const createOrderWithTpSl = (
         triggerPrice: fields.takeProfit,
         sizeOverride: StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_NONE,
         size: fields.size,
+        notional: fields.notional,
         timeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK,
         reduceOnly: true,
         oco: false,
@@ -557,6 +572,7 @@ export const createOrderWithTpSl = (
     const ocoStopOrderSubmission = createStopMarketOrder(
       {
         ticketType: 'stopMarket',
+        sizeMode: 'contracts',
         type: OrderType.TYPE_MARKET,
         side: oppositeSide,
         triggerDirection: stopLossTriggerDirection,
@@ -564,6 +580,7 @@ export const createOrderWithTpSl = (
         triggerPrice: fields.stopLoss,
         sizeOverride: StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_NONE,
         size: fields.size,
+        notional: fields.notional,
         timeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK,
         reduceOnly: true,
         oco: false,

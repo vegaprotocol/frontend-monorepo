@@ -1,5 +1,4 @@
 import { ErrorBoundary } from '@sentry/react';
-import { CompetitionsHeader } from '../../components/competitions/competitions-header';
 import { useRef, useState } from 'react';
 import { useT } from '../../lib/use-t';
 import { useTeams } from '../../lib/hooks/use-teams';
@@ -11,6 +10,7 @@ import {
   VegaIconNames,
 } from '@vegaprotocol/ui-toolkit';
 import { usePageTitle } from '../../lib/hooks/use-page-title';
+import { HeaderHero } from '../../components/header-hero';
 
 export const CompetitionsTeams = () => {
   const t = useT();
@@ -24,9 +24,9 @@ export const CompetitionsTeams = () => {
 
   return (
     <ErrorBoundary>
-      <CompetitionsHeader title={t('Join a team')}>
-        <p className="text-lg mb-1">{t('Choose a team to get involved')}</p>
-      </CompetitionsHeader>
+      <HeaderHero title={t('Join a team')}>
+        <p>{t('Choose a team to get involved')}</p>
+      </HeaderHero>
 
       <div className="mb-6 flex justify-end">
         <div className="w-full md:w-60 h-10 relative">

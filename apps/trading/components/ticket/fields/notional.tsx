@@ -9,16 +9,34 @@ import { InputLabel } from '../elements/form';
 import { useForm } from '../use-form';
 
 import * as utils from '../utils';
-import { SizeModeButton } from '../size-mode-button';
+import * as derivativeUtils from '../derivative/utils';
 
-export const Notional = (props: { price?: BigNumber }) => {
-  const ticket = useTicketContext();
+import { SizeModeButton } from '../size-mode-button';
+import { useActiveOrders } from '@vegaprotocol/orders';
+import { useOpenVolume } from '@vegaprotocol/positions';
+import { useVegaWallet } from '@vegaprotocol/wallet-react';
+
+export const Notional = ({
+  name = 'notional',
+  price,
+}: {
+  name?: 'notional' | 'ocoNotional';
+  price?: BigNumber;
+}) => {
+  const { pubKey } = useVegaWallet();
+  const ticket = useTicketContext('default');
   const form = useForm();
+
+  const { data: orders } = useActiveOrders(pubKey, ticket.market.id);
+  const { openVolume } = useOpenVolume(pubKey, ticket.market.id) || {
+    openVolume: '0',
+    averageEntryPrice: '0',
+  };
 
   return (
     <FormField
       control={form.control}
-      name="notional"
+      name={name}
       render={({ field, fieldState }) => {
         return (
           <div className="w-full">
@@ -29,13 +47,32 @@ export const Notional = (props: { price?: BigNumber }) => {
               onChange={(e) => {
                 field.onChange(e);
 
-                if (props.price) {
+                const fields = form.getValues();
+                const isOco = name === 'ocoNotional';
+
+                if (price) {
                   const size = utils.toSize(
                     BigNumber(e.target.value || 0),
-                    props.price,
+                    price,
                     ticket.market.positionDecimalPlaces
                   );
-                  form.setValue('size', size.toNumber());
+
+                  const pct = derivativeUtils.calcPctBySize({
+                    size,
+                    openVolume,
+                    price: price || BigNumber(0),
+                    ticket,
+                    fields,
+                    orders: orders || [],
+                  });
+
+                  if (isOco) {
+                    form.setValue('ocoSize', size.toNumber());
+                    form.setValue('ocoSizePct', pct.toNumber());
+                  } else {
+                    form.setValue('size', size.toNumber());
+                    form.setValue('sizePct', pct.toNumber());
+                  }
                 }
               }}
               appendElement={<SizeModeButton />}

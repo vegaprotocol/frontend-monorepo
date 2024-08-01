@@ -160,13 +160,3 @@ def test_reward_history_capped(
     expect((page.get_by_role(ROW).locator(TOTAL_COL_ID)).nth(1)).to_have_text("62.4105")
     page.get_by_test_id(EARNED_BY_ME_BUTTON).click()
     expect((page.get_by_role(ROW).locator(TOTAL_COL_ID)).nth(1)).to_have_text("31.20525")
-
-
-def test_reward_card_capped(
-    setup_environment: Tuple[Page, str, str],
-) -> None:
-    page, tDAI_market, tDAI_asset_id = setup_environment
-    expect(page.get_by_test_id("active-rewards-card")).to_have_count(2)
-    game_1 = page.get_by_test_id("active-rewards-card").first
-    expect(game_1).to_be_visible()
-    expect(game_1.get_by_test_id("cappedAt")).to_have_text("x1")

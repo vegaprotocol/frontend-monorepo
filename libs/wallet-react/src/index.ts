@@ -7,7 +7,9 @@ export { useDialogStore } from './hooks/use-dialog-store';
 export { useEagerConnect } from './hooks/use-eager-connect';
 export {
   useSimpleTransaction,
+  TxStatus,
   type Options,
+  type Result,
   type Status,
 } from './hooks/use-simple-transaction';
 export { useVegaWallet } from './hooks/use-vega-wallet';

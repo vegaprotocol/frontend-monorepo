@@ -2,19 +2,19 @@ import {
   Input,
   InputError,
   Loader,
-  VegaIcon,
-  VegaIconNames,
+  TradingDialog,
 } from '@vegaprotocol/ui-toolkit';
 import { useForm } from 'react-hook-form';
 import classNames from 'classnames';
 import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import type { ButtonHTMLAttributes, MouseEventHandler } from 'react';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { RainbowButton } from '../../components/rainbow-button';
 import {
   useSimpleTransaction,
   useVegaWallet,
   useDialogStore,
+  TxStatus,
 } from '@vegaprotocol/wallet-react';
 import { Links, Routes } from '../../lib/links';
 import { useReferralProgram } from './hooks/use-referral-program';
@@ -28,6 +28,7 @@ import {
   useIsInReferralSet,
 } from './hooks/use-find-referral-set';
 import minBy from 'lodash/minBy';
+import { TransactionSteps } from '../../components/transaction-dialog/transaction-steps';
 
 const RELOAD_DELAY = 3000;
 
@@ -111,7 +112,7 @@ export const ApplyCodeForm = ({ onSuccess }: { onSuccess?: () => void }) => {
     isEligible: isPreviewEligible,
   } = useReferralSet(validateCode(codeField, t) ? codeField : undefined);
 
-  const { send, status } = useSimpleTransaction({
+  const { send, result, error, status, reset } = useSimpleTransaction({
     onSuccess: () => {
       // go to main page when successfully applied
       setTimeout(() => {
@@ -126,6 +127,8 @@ export const ApplyCodeForm = ({ onSuccess }: { onSuccess?: () => void }) => {
       });
     },
   });
+
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   /**
    * Validates if a connected party can apply a code (min funds span protection)
@@ -158,57 +161,13 @@ export const ApplyCodeForm = ({ onSuccess }: { onSuccess?: () => void }) => {
       return;
     }
 
+    setDialogOpen(true);
     send({
       applyReferralCode: {
         id: code as string,
       },
     });
-
-    // sendTx(pubKey, {
-    //   applyReferralCode: {
-    //     id: code as string,
-    //   },
-    // })
-    //   .then((res) => {
-    //     if (!res) {
-    //       setError('code', {
-    //         type: 'required',
-    //         message: t('The transaction could not be sent'),
-    //       });
-    //     }
-    //     if (res) {
-    //       txHash.current = res.transactionHash.toLowerCase();
-    //     }
-    //   })
-    //   .catch((err) => {
-    //     if (err.message.includes('user rejected')) {
-    //       setStatus(null);
-    //     } else {
-    //       setStatus(null);
-    //       setError('code', {
-    //         type: 'required',
-    //         message:
-    //           err instanceof Error
-    //             ? err.message
-    //             : t('Your code has been rejected'),
-    //       });
-    //     }
-    //   });
   };
-
-  // show "code applied" message when successfully applied
-  if (status === 'confirmed') {
-    return (
-      <div className="mx-auto w-1/2">
-        <h3 className="calt mb-5 flex flex-row items-center justify-center gap-2 text-center text-xl uppercase">
-          <span className="text-vega-green-500">
-            <VegaIcon name={VegaIconNames.TICK} size={20} />
-          </span>{' '}
-          <span className="pt-1">{t('Code applied')}</span>
-        </h3>
-      </div>
-    );
-  }
 
   const getButtonProps = () => {
     if (!pubKey) {
@@ -243,7 +202,7 @@ export const ApplyCodeForm = ({ onSuccess }: { onSuccess?: () => void }) => {
       };
     }
 
-    if (status === 'requested') {
+    if (status === TxStatus.Requested) {
       return {
         disabled: true,
         children: t('Confirm in wallet...'),
@@ -272,6 +231,7 @@ export const ApplyCodeForm = ({ onSuccess }: { onSuccess?: () => void }) => {
         <h3 className="calt mb-4 text-center text-2xl">
           {t('Apply a referral code')}
         </h3>
+
         <p className="mb-4 text-center text-base">
           {t(
             'Apply a referral code to access the discount benefits of the current program.'
@@ -343,6 +303,26 @@ export const ApplyCodeForm = ({ onSuccess }: { onSuccess?: () => void }) => {
           <PreviewRefereeStatistics setId={codeField} />
         </div>
       ) : null}
+
+      <TradingDialog
+        title={t('Apply a referral code')}
+        open={dialogOpen}
+        onOpenChange={(open) => {
+          setDialogOpen(open);
+        }}
+      >
+        <TransactionSteps
+          status={status}
+          result={result}
+          error={error}
+          confirmedLabel={t('Code applied')}
+          reset={() => {
+            reset();
+            setDialogOpen(false);
+          }}
+          resetLabel={t('Back to referrals')}
+        />
+      </TradingDialog>
     </>
   );
 };

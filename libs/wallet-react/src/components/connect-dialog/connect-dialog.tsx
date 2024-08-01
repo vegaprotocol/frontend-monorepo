@@ -1,11 +1,13 @@
+import { type ReactNode } from 'react';
+
 import { Dialog } from '@vegaprotocol/ui-toolkit';
 import { type ConnectorType, type Status } from '@vegaprotocol/wallet';
+
 import { useWallet } from '../../hooks/use-wallet';
 import { useConnect } from '../../hooks/use-connect';
 import { RiskAck } from '../risk-ack';
 import { ConnectionStatus } from './connection-status';
 import { ConnectionOptions } from './connection-options';
-import { type ReactNode } from 'react';
 
 export const DIALOG_CLOSE_DELAY = 1000;
 

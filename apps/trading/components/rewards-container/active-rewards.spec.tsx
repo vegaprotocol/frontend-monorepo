@@ -1,18 +1,20 @@
 import { render, screen } from '@testing-library/react';
-import { applyFilter } from './active-rewards';
 import {
   AccountType,
   AssetStatus,
   DispatchMetric,
-  type DispatchStrategy,
   DistributionStrategy,
   EntityScope,
   IndividualScope,
-  type StakingDispatchStrategy,
   TransferStatus,
+  type StakingDispatchStrategy,
   type Transfer,
+  type DispatchStrategy,
 } from '@vegaprotocol/types';
-import { type EnrichedRewardTransfer } from '../../lib/hooks/use-rewards';
+import {
+  applyFilter,
+  type EnrichedRewardTransfer,
+} from '../../lib/hooks/use-rewards';
 import { ActiveRewardCard } from './reward-card';
 
 jest.mock('../../lib/hooks/__generated__/Rewards', () => ({

@@ -183,7 +183,7 @@ const useMessageVariables = (proposal: ProposalFragment) => {
   const t = useT();
   const enactmentDatetime =
     proposal.terms && new Date(proposal.terms.enactmentDatetime);
-  const date = enactmentDatetime && format(enactmentDatetime, 'dd MMMM');
+  const date = enactmentDatetime && format(enactmentDatetime, 'dd MMMM HH:mm');
   const duration =
     enactmentDatetime &&
     formatDuration(

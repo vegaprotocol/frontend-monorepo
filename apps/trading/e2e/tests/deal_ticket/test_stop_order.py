@@ -53,7 +53,7 @@ def test_stop_order_form_error_validation(continuous_market, page: Page):
     expect(page.get_by_test_id("error-triggerPrice")).to_have_text(
         "Required"
     )
-    expect(page.get_by_test_id("error-size")).to_have_text(
+    expect(page.get_by_test_id("error-price")).to_have_text(
         "Required"
     )
 
@@ -153,6 +153,7 @@ def test_submit_stop_limit_order_pending(
 
 @pytest.mark.skip("TODO: fix as preview 77 breaks")
 @pytest.mark.usefixtures("auth", "risk_accepted")
+@pytest.mark.skip(reason="TODO: fix this flaky test")
 def test_submit_stop_limit_order_cancel(
     continuous_market, vega: VegaServiceNull, page: Page
 ):

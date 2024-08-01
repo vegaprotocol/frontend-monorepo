@@ -1,5 +1,5 @@
 import { OrderbookManager } from '@vegaprotocol/market-depth';
-import { ViewType, useSidebar } from '../sidebar';
+import { ViewType, useSidebar } from '../../lib/hooks/use-sidebar';
 
 import { ticketEventEmitter } from '../../lib/ticket-event-emitter';
 

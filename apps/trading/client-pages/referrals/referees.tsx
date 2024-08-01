@@ -55,7 +55,7 @@ export const RefereesTable = ({
     <>
       {/* Referees (only for referrer view) */}
       {referees.length > 0 && (
-        <div className="mt-20 mb-20">
+        <div>
           <h2 className="mb-5 text-2xl">{t('Referees')}</h2>
           <div
             className={classNames(

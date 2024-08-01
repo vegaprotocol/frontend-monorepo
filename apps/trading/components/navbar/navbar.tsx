@@ -6,7 +6,6 @@ import {
   Networks,
   DApp,
   useLinks,
-  useFeatureFlags,
   useEnvNameMapping,
 } from '@vegaprotocol/environment';
 import { useGlobalStore } from '../../stores';
@@ -32,6 +31,7 @@ import { useT, useI18n } from '../../lib/use-t';
 import { supportedLngs } from '../../lib/i18n';
 import { SettingsPopover } from '../settings';
 import { NodeHealthContainer } from '../node-health';
+import { WithdrawalsIndicator } from '../withdrawals-indicator';
 
 type MenuState = 'wallet' | 'nav' | null;
 type Theme = 'system' | 'yellow';
@@ -137,7 +137,7 @@ export const Navbar = ({ theme = 'system' }: { theme?: Theme }) => {
             {menu === 'nav' && <NavbarMenu onClick={() => setMenu(null)} />}
             {menu === 'wallet' && <VegaWalletMenu setMenu={setMenu} />}
             <div className="p-2 mt-auto flex justify-end">
-              <NodeHealthContainer />
+              <NodeHealthContainer variant="normal" />
             </div>
           </D.Content>
         </D.Root>
@@ -151,7 +151,6 @@ export const Navbar = ({ theme = 'system' }: { theme?: Theme }) => {
  * of the navigation
  */
 const NavbarMenu = ({ onClick }: { onClick: () => void }) => {
-  const featureFlags = useFeatureFlags((state) => state.flags);
   const t = useT();
   const envNameMapping = useEnvNameMapping();
   const { VEGA_ENV, VEGA_NETWORKS, GITHUB_FEEDBACK_URL } = useEnvironment();
@@ -196,22 +195,19 @@ const NavbarMenu = ({ onClick }: { onClick: () => void }) => {
         <NavbarItem>
           <NavbarLink to={Links.PORTFOLIO()} onClick={onClick}>
             {t('Portfolio')}
+            <WithdrawalsIndicator />
           </NavbarLink>
         </NavbarItem>
-        {featureFlags.TEAM_COMPETITION && (
-          <NavbarItem>
-            <NavbarLink to={Links.COMPETITIONS()} onClick={onClick}>
-              {t('Competitions')}
-            </NavbarLink>
-          </NavbarItem>
-        )}
-        {featureFlags.REFERRALS && (
-          <NavbarItem>
-            <NavbarLink end={false} to={Links.REFERRALS()} onClick={onClick}>
-              {t('Referrals')}
-            </NavbarLink>
-          </NavbarItem>
-        )}
+        <NavbarItem>
+          <NavbarLink to={Links.COMPETITIONS()} onClick={onClick}>
+            {t('Competitions')}
+          </NavbarLink>
+        </NavbarItem>
+        <NavbarItem>
+          <NavbarLink end={false} to={Links.REFERRALS()} onClick={onClick}>
+            {t('Referrals')}
+          </NavbarLink>
+        </NavbarItem>
         <NavbarItem>
           <NavbarLink to={Links.FEES()} onClick={onClick}>
             {t('Fees')}
@@ -326,9 +322,13 @@ const NavbarLink = ({
           return (
             <>
               <span
-                className={classNames('lg:border-0', borderClasses, {
-                  'text-vega-clight-50 dark:text-vega-cdark-50': isActive,
-                })}
+                className={classNames(
+                  'inline-flex gap-1 items-center lg:border-0',
+                  borderClasses,
+                  {
+                    'text-vega-clight-50 dark:text-vega-cdark-50': isActive,
+                  }
+                )}
               >
                 {children}
               </span>

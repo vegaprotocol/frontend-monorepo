@@ -26,7 +26,6 @@ import {
 import { TeamAvatar } from '../../components/competitions/team-avatar';
 import { useTeamsMap } from '../../lib/hooks/use-teams';
 import { Links } from '../../lib/links';
-import { LayoutWithGradient } from '../../components/layouts-inner';
 import {
   DispatchMetricLabels,
   type DispatchStrategy,
@@ -45,6 +44,7 @@ import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import BigNumber from 'bignumber.js';
 import { TEAMS_STATS_EPOCHS } from '../../lib/hooks/constants';
 import { type TeamsFieldsFragment } from '../../lib/hooks/__generated__/Teams';
+import { HeaderHero } from '../../components/header-hero';
 
 export const CompetitionsGame = () => {
   const t = useT();
@@ -102,59 +102,49 @@ export const CompetitionsGame = () => {
 
   return (
     <ErrorBoundary>
-      <LayoutWithGradient>
-        <header>
-          <h1
-            className="calt text-2xl lg:text-3xl xl:text-5xl"
-            data-testid="team-name"
-          >
-            {dispatchMetric
-              ? DispatchMetricLabels[dispatchMetric]
-              : t('Unknown')}
-          </h1>
-
-          <small className="text-xl lg:text-2xl xl:text-3xl text-muted">
-            {addDecimalsFormatNumberQuantum(
-              amount,
-              asset.decimals,
-              asset.quantum
-            )}{' '}
-            {asset.symbol}
-          </small>
-        </header>
-        <EligibilityCriteria
-          asset={asset}
-          dispatchStrategy={dispatchStrategy as DispatchStrategy}
-          partyScores={liveScoreData.gamePartyScores}
-        />
-        {gameId && (
-          <section>
-            <Tabs defaultValue="scores">
-              <TabsList>
-                <TabsTrigger value="scores">Live scores</TabsTrigger>
-                <TabsTrigger value="history">Score history</TabsTrigger>
-              </TabsList>
-              <TabsContent value="scores">
-                <LiveScoresTable
-                  scores={liveScores}
-                  asset={asset}
-                  rewardAmount={amount}
-                  rankTable={rankTable}
-                  teams={teams}
-                  distributionStrategy={dispatchStrategy.distributionStrategy}
-                />
-              </TabsContent>
-              <TabsContent value="history">
-                <HistoricScoresTable
-                  gameId={gameId}
-                  currentEpoch={currentEpoch || 0}
-                  teams={teams}
-                />
-              </TabsContent>
-            </Tabs>
-          </section>
-        )}
-      </LayoutWithGradient>
+      <HeaderHero title={t('Game results')}>
+        {dispatchMetric ? DispatchMetricLabels[dispatchMetric] : t('Unknown')}
+        <small className="text-xl lg:text-2xl xl:text-3xl text-muted">
+          {addDecimalsFormatNumberQuantum(
+            amount,
+            asset.decimals,
+            asset.quantum
+          )}{' '}
+          {asset.symbol}
+        </small>
+      </HeaderHero>
+      <EligibilityCriteria
+        asset={asset}
+        dispatchStrategy={dispatchStrategy as DispatchStrategy}
+        partyScores={liveScoreData.gamePartyScores}
+      />
+      {gameId && (
+        <section>
+          <Tabs defaultValue="scores">
+            <TabsList>
+              <TabsTrigger value="scores">Live scores</TabsTrigger>
+              <TabsTrigger value="history">Score history</TabsTrigger>
+            </TabsList>
+            <TabsContent value="scores">
+              <LiveScoresTable
+                scores={liveScores}
+                asset={asset}
+                rewardAmount={amount}
+                rankTable={rankTable}
+                teams={teams}
+                distributionStrategy={dispatchStrategy.distributionStrategy}
+              />
+            </TabsContent>
+            <TabsContent value="history">
+              <HistoricScoresTable
+                gameId={gameId}
+                currentEpoch={currentEpoch || 0}
+                teams={teams}
+              />
+            </TabsContent>
+          </Tabs>
+        </section>
+      )}
     </ErrorBoundary>
   );
 };

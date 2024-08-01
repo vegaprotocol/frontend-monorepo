@@ -11,8 +11,7 @@ import {
   VegaIcon,
   VegaIconNames,
   truncateMiddle,
-  TradingButton,
-  Dialog,
+  TradingAnchorButton,
 } from '@vegaprotocol/ui-toolkit';
 import {
   DistributionStrategyDescriptionMapping,
@@ -32,9 +31,9 @@ import {
   IndividualScopeMapping,
   type StakingRewardMetric,
   type StakingDispatchStrategy,
-  type DistributionStrategy,
+  DistributionStrategy,
 } from '@vegaprotocol/types';
-import { useState, type ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import {
   type AssetFieldsFragment,
   type BasicAssetDetails,
@@ -43,6 +42,7 @@ import {
 import {
   isScopedToTeams,
   type EnrichedRewardTransfer,
+  areAllMarketsSettled,
 } from '../../lib/hooks/use-rewards';
 import compact from 'lodash/compact';
 import BigNumber from 'bignumber.js';
@@ -51,8 +51,6 @@ import { RankPayoutTable } from './rank-table';
 import { useFeatureFlags } from '@vegaprotocol/environment';
 import { Links } from '../../lib/links';
 import { Link } from 'react-router-dom';
-import max from 'lodash/max';
-import min from 'lodash/min';
 import flatten from 'lodash/flatten';
 import sum from 'lodash/sum';
 
@@ -81,33 +79,31 @@ export type Requirements = {
 };
 
 const GroupCard = ({
+  dispatchStrategy,
   colour,
   rewardAmount,
-  dispatchMetric,
   transferAsset,
-  entityScope,
-  distributionStrategy,
-  distributionDelay,
-  count,
-  onClick,
+  requirements,
+  link,
 }: {
+  dispatchStrategy: DispatchStrategy | StakingDispatchStrategy;
   colour: CardColour;
   rewardAmount: string;
-  dispatchMetric: DispatchMetric | StakingDispatchStrategy['dispatchMetric'];
   transferAsset?: AssetFieldsFragment | undefined;
-  entityScope?: EntityScope;
-  distributionStrategy?: DistributionStrategy;
-  distributionDelay?: string | number;
-  count: number;
-  onClick: () => void;
+  requirements?: Requirements;
+  link: string;
 }) => {
   const t = useT();
 
+  const entityScope = dispatchStrategy.entityScope;
+  const distributionStrategy = dispatchStrategy.distributionStrategy;
+  const dispatchMetric = dispatchStrategy.dispatchMetric;
+
   return (
-    <div data-reward-card className="min-h-[366px] h-full">
+    <div data-reward-card>
       <div
         className={classNames(
-          'bg-gradient-to-r col-span-full p-0.5 lg:col-auto h-full',
+          'bg-gradient-to-r col-span-full p-px lg:col-auto h-full',
           'rounded-lg',
           CardColourStyles[colour].gradientClassName
         )}
@@ -116,7 +112,7 @@ const GroupCard = ({
         <div
           className={classNames(
             CardColourStyles[colour].mainClassName,
-            'bg-gradient-to-b bg-vega-clight-800 dark:bg-vega-cdark-800 h-full w-full rounded-md p-4',
+            'bg-gradient-to-b bg-vega-clight-900 dark:bg-vega-cdark-900 h-full w-full rounded-md p-4',
             'flex flex-col gap-4 justify-items-start'
           )}
         >
@@ -156,54 +152,53 @@ const GroupCard = ({
                   <AssetSymbol asset={transferAsset} />
                 </span>
               </h3>
-
-              {/** DISTRIBUTION STRATEGY */}
-              {distributionStrategy && (
-                <Tooltip
-                  description={
-                    <div className="flex flex-col gap-4">
-                      <p>
-                        {t(
-                          DistributionStrategyDescriptionMapping[
-                            distributionStrategy
-                          ]
-                        )}
-                        .
-                      </p>
-                    </div>
-                  }
-                  underline={true}
-                >
-                  <span className="text-xs" data-testid="distribution-strategy">
-                    {DistributionStrategyMapping[distributionStrategy]}
-                  </span>
-                </Tooltip>
-              )}
             </div>
 
-            {/** DISTRIBUTION DELAY */}
-            <DistributionDelay value={distributionDelay} />
+            <div className="flex flex-col gap-2 items-center text-center">
+              {distributionStrategy && (
+                <>
+                  <DistributionStrategyIcon strategy={distributionStrategy} />
+                  <span
+                    className="text-muted text-xs"
+                    data-testid="distribution-strategy"
+                  >
+                    {DistributionStrategyMapping[distributionStrategy]}
+                  </span>
+                </>
+              )}
+            </div>
           </div>
 
           <div className={classNames('flex flex-col gap-3 h-full')}>
             {/** DISPATCH METRIC */}
-            <span data-testid="dispatch-metric-info">
+            <h4 data-testid="dispatch-metric-info" className="text-lg">
               {DispatchMetricLabels[dispatchMetric]}
-            </span>
+            </h4>
             {/** DISPATCH METRIC DESCRIPTION */}
-            <p className="text-muted text-sm">
+            <p className="text-muted">
               {t(DispatchMetricDescription[dispatchMetric])}
             </p>
           </div>
-
           <div>
-            <TradingButton
+            {/** REQUIREMENTS */}
+            {dispatchStrategy && (
+              <div className="pt-4 border-t border-default">
+                <RewardRequirements
+                  dispatchStrategy={dispatchStrategy}
+                  dispatchAsset={transferAsset}
+                  requirements={requirements}
+                />
+              </div>
+            )}
+          </div>
+          <div>
+            <TradingAnchorButton
               intent={null}
               className={classNames(CardColourStyles[colour].btn, 'w-full')}
-              onClick={onClick}
+              href={link}
             >
-              {t('See details of {{count}} rewards', { count })}
-            </TradingButton>
+              {t('View reward details')}
+            </TradingAnchorButton>
           </div>
         </div>
       </div>
@@ -259,7 +254,7 @@ const RewardCard = ({
         <div
           className={classNames(
             CardColourStyles[colour].mainClassName,
-            'bg-gradient-to-b bg-vega-clight-800 dark:bg-vega-cdark-800 h-full w-full rounded-md p-4 flex flex-col gap-4'
+            'bg-gradient-to-b bg-vega-clight-900 dark:bg-vega-cdark-900 h-full w-full rounded-md p-4 flex flex-col gap-4'
           )}
         >
           <div
@@ -911,6 +906,11 @@ const EntityScopeIconMap: Record<EntityScope, VegaIconNames> = {
   [EntityScope.ENTITY_SCOPE_INDIVIDUALS]: VegaIconNames.MAN,
 };
 
+const DistStrategyIconMap: Record<DistributionStrategy, VegaIconNames> = {
+  [DistributionStrategy.DISTRIBUTION_STRATEGY_RANK]: VegaIconNames.MEDAL,
+  [DistributionStrategy.DISTRIBUTION_STRATEGY_PRO_RATA]: VegaIconNames.CLOCK,
+};
+
 const EntityIcon = ({
   entityScope,
   size = 18,
@@ -934,26 +934,27 @@ const EntityIcon = ({
   );
 };
 
-export const areAllMarketsSettled = (
-  transferNode: Pick<
-    EnrichedRewardTransfer<DispatchStrategy | StakingDispatchStrategy>,
-    'markets'
-  >
-) => {
-  const settledMarkets = transferNode.markets?.filter(
-    (m) =>
-      m?.data?.marketState &&
-      [
-        MarketState.STATE_TRADING_TERMINATED,
-        MarketState.STATE_SETTLED,
-        MarketState.STATE_CANCELLED,
-        MarketState.STATE_CLOSED,
-      ].includes(m?.data?.marketState)
-  );
-
+const DistributionStrategyIcon = ({
+  strategy,
+  size = 18,
+}: {
+  strategy: DistributionStrategy;
+  size?: VegaIconSize;
+}) => {
+  const t = useT();
   return (
-    settledMarkets?.length === transferNode.markets?.length &&
-    Boolean(transferNode.markets && transferNode.markets.length > 0)
+    <Tooltip
+      description={
+        <div className="flex flex-col gap-4">
+          <p>{t(DistributionStrategyDescriptionMapping[strategy])}.</p>
+        </div>
+      }
+      underline={true}
+    >
+      <span className="flex items-center p-2 rounded-full border border-gray-600">
+        <VegaIcon name={DistStrategyIconMap[strategy]} size={size} />
+      </span>
+    </Tooltip>
   );
 };
 
@@ -1026,74 +1027,30 @@ export const GroupRewardCard = ({
   const rewardAmount = formatNumber(maxRewardAmount, 6);
 
   const transferAsset = transferNodes[0].transfer.asset || undefined;
+  const dispatchStrategy = transferNodes[0].transfer.kind.dispatchStrategy;
 
-  const dispatchMetric =
-    transferNodes[0].transfer.kind.dispatchStrategy.dispatchMetric;
+  if (!transferAsset) return null;
 
-  const entityScope =
-    transferNodes[0].transfer.kind.dispatchStrategy.entityScope;
+  const params = new URLSearchParams({
+    asset: transferAsset.id,
+    metric: dispatchStrategy.dispatchMetric,
+    entityScope: dispatchStrategy.entityScope,
+    distributionStrategy: dispatchStrategy.distributionStrategy,
+    stakingRequirement: dispatchStrategy.stakingRequirement || '0',
+  });
 
-  const distributionStrategy =
-    transferNodes[0].transfer.kind.dispatchStrategy.distributionStrategy;
-
-  const delays = transferNodes.map(
-    (n) => n.transfer.kind.dispatchStrategy.lockPeriod
-  );
-  const minDelay = min(delays) || 0;
-  const maxDelay = max(delays) || 0;
-
-  const distributionDelay =
-    minDelay === maxDelay ? minDelay : `${minDelay} - ${maxDelay}`;
-
-  const [open, setOpen] = useState(false);
+  const link = Links.REWARDS_DETAIL(params.toString());
 
   return (
-    <>
-      <GroupCard
-        colour={colour}
-        rewardAmount={rewardAmount}
-        // TODO: fix the types for the useRewards hook. It just the full type, and not the type created by Rewards.graphql
-        transferAsset={transferAsset as AssetFieldsFragment}
-        dispatchMetric={dispatchMetric}
-        entityScope={entityScope}
-        distributionStrategy={distributionStrategy}
-        distributionDelay={distributionDelay}
-        count={transferNodes.length}
-        onClick={() => {
-          setOpen(true);
-        }}
-      />
-      <Dialog
-        size="large"
-        open={open}
-        onChange={(isOpen) => {
-          setOpen(isOpen);
-        }}
-        title={
-          DispatchMetricLabels[
-            transferNodes[0].transfer.kind.dispatchStrategy.dispatchMetric
-          ]
-        }
-      >
-        <div
-          data-card-from-group
-          className={classNames(
-            'pt-4',
-
-            'grid gap-x-8 gap-y-10 h-fit grid-cols-[repeat(auto-fill,_minmax(230px,_1fr))] md:grid-cols-[repeat(auto-fill,_minmax(230px,_1fr))] lg:grid-cols-[repeat(auto-fill,_minmax(320px,_1fr))] xl:grid-cols-[repeat(auto-fill,_minmax(335px,_1fr))]'
-          )}
-        >
-          {transferNodes.map((n, i) => (
-            <ActiveRewardCard
-              key={i}
-              transferNode={n}
-              currentEpoch={currentEpoch}
-              requirements={requirements}
-            />
-          ))}
-        </div>
-      </Dialog>
-    </>
+    <GroupCard
+      colour={colour}
+      rewardAmount={rewardAmount}
+      // TODO: fix the types for the useRewards hook. It just the full type, and not the type created by Rewards.graphql
+      transferAsset={transferAsset as AssetFieldsFragment}
+      requirements={requirements}
+      dispatchStrategy={dispatchStrategy}
+      link={link}
+    />
   );
 };
 

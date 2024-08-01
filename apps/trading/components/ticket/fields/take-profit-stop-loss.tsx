@@ -3,6 +3,7 @@ import { TradingCheckbox as Checkbox, Tooltip } from '@vegaprotocol/ui-toolkit';
 import { FormField } from '../ticket-field';
 import { useT } from '../../../lib/use-t';
 import { useForm } from '../use-form';
+import { tooltipProps } from '../constants';
 
 export const TakeProfitStopLoss = ({ name = 'tpSl' }: { name?: 'tpSl' }) => {
   const t = useT();
@@ -13,7 +14,11 @@ export const TakeProfitStopLoss = ({ name = 'tpSl' }: { name?: 'tpSl' }) => {
       name={name}
       render={({ field }) => {
         return (
-          <Tooltip description={t('ticketTooltipTPSL')}>
+          <Tooltip
+            {...tooltipProps}
+            description={t('ticketTooltipTPSL')}
+            underline
+          >
             <div>
               <Checkbox
                 checked={field.value}

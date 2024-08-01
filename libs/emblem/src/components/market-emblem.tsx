@@ -1,4 +1,4 @@
-import { URL_BASE } from '../config';
+import { URL_BASE, LOADING } from '../config';
 import { EmblemBase } from './emblem-base';
 import { useMarketInfo } from './hooks/use-market-info';
 import { getVegaChain } from './lib/get-chain';
@@ -114,11 +114,9 @@ export function getLogoPaths(
   quoteChainLogo?: string,
   settlementChainLogo?: string
 ): LogoPaths {
-  const missing = `${URL_BASE}/missing.svg`;
-
   return {
-    base: baseLogo ? `${URL_BASE}${baseLogo}` : missing,
-    quote: quoteLogo ? `${URL_BASE}${quoteLogo}` : missing,
+    base: baseLogo ? `${URL_BASE}${baseLogo}` : LOADING,
+    quote: quoteLogo ? `${URL_BASE}${quoteLogo}` : LOADING,
     quoteChain: quoteChainLogo ? `${URL_BASE}${quoteChainLogo}` : undefined,
     baseChain: baseChainLogo ? `${URL_BASE}${baseChainLogo}` : undefined,
     settlementChain: settlementChainLogo

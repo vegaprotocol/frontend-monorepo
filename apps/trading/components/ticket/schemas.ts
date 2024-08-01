@@ -20,16 +20,22 @@ import {
 import { useMemo } from 'react';
 import i18n from '../../lib/i18n';
 
+const sizeMode = z.enum(['contracts', 'notional']);
+
 export const createMarketSchema = (market: MarketInfo) => {
   const sizeStep = determineSizeStep(market);
 
   return z
     .object({
       ticketType: z.literal('market'),
-      sizeMode: z.enum(['contracts', 'notional']),
+      sizeMode,
       type: z.literal(OrderType.TYPE_MARKET),
       side: z.nativeEnum(Side),
-      size: z.coerce.number().min(Number(sizeStep)).step(Number(sizeStep)),
+      size: z.coerce
+        .number({ message: i18n.t('Required') })
+        .min(Number(sizeStep))
+        .step(Number(sizeStep)),
+      sizePct: z.number().optional(),
       notional: z.coerce.number(),
       timeInForce: z.nativeEnum(OrderTimeInForce),
       tpSl: z.boolean(),
@@ -74,7 +80,7 @@ export const createLimitSchema = (market: MarketInfo) => {
   return z
     .object({
       ticketType: z.literal('limit'),
-      sizeMode: z.enum(['contracts', 'notional']),
+      sizeMode,
       type: z.literal(OrderType.TYPE_LIMIT),
       side: z.nativeEnum(Side),
       price: z.coerce
@@ -86,6 +92,7 @@ export const createLimitSchema = (market: MarketInfo) => {
         .number({ message: i18n.t('Required') })
         .min(Number(sizeStep))
         .step(Number(sizeStep)),
+      sizePct: z.number().optional(),
       notional: z.coerce.number(),
       timeInForce: z.nativeEnum(OrderTimeInForce),
       expiresAt: z.date().optional(),
@@ -161,6 +168,7 @@ export const createStopLimitSchema = (market: MarketInfo) => {
     .object({
       ticketType: z.literal('stopLimit'),
       type: z.literal(OrderType.TYPE_LIMIT),
+      sizeMode,
       side: z.nativeEnum(Side),
       triggerDirection: z.nativeEnum(StopOrderTriggerDirection),
       triggerType: z.enum(['price', 'trailingPercentOffset']),
@@ -172,9 +180,13 @@ export const createStopLimitSchema = (market: MarketInfo) => {
         .step(Number(priceStep)),
       sizeOverride: z.nativeEnum(StopOrderSizeOverrideSetting).optional(),
       size: z.coerce
-        .number({ message: i18n.t('Required') })
+        .number()
         .min(Number(sizeStep))
-        .step(Number(sizeStep)),
+        .step(Number(sizeStep))
+        .optional(),
+      sizePosition: z.coerce.number().min(0.0001).max(100).optional(),
+      sizePct: z.number().optional(),
+      notional: z.coerce.number().optional(),
       timeInForce: z.nativeEnum(OrderTimeInForce),
       expiresAt: z.date().optional(),
       stopExpiryStrategy,
@@ -191,6 +203,9 @@ export const createStopLimitSchema = (market: MarketInfo) => {
         .min(Number(sizeStep))
         .step(Number(sizeStep))
         .optional(),
+      ocoSizePosition: z.coerce.number().min(0.0001).max(100).optional(),
+      ocoNotional: z.coerce.number().optional(),
+      ocoSizePct: z.number().optional(),
       ocoPrice: z.coerce
         .number()
         .min(Number(priceStep))
@@ -223,6 +238,54 @@ export const createStopLimitSchema = (market: MarketInfo) => {
           message: i18n.t('Provide an OCO price'),
           path: ['ocoPrice'],
         });
+      }
+
+      if (
+        val.sizeOverride ===
+        StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION
+      ) {
+        if (val.sizePosition === undefined) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ['sizePosition'],
+            message: i18n.t('Required'),
+          });
+        }
+      } else {
+        if (val.size === undefined) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ['size'],
+            message: i18n.t('Required'),
+          });
+        }
+      }
+
+      if (
+        val.oco &&
+        val.ocoSize !== undefined &&
+        val.ocoSizeOverride ===
+          StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION
+      ) {
+        if (val.ocoSize <= 0) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.too_small,
+            type: 'number',
+            minimum: 0.0001,
+            inclusive: true,
+            path: ['ocoSize'],
+          });
+        }
+
+        if (val.ocoSize > 100) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.too_big,
+            type: 'number',
+            maximum: 100,
+            inclusive: true,
+            path: ['ocoSize'],
+          });
+        }
       }
 
       if (val.stopExpiryStrategy !== 'none' && !val.stopExpiresAt) {
@@ -264,12 +327,20 @@ export const createStopMarketSchema = (market: MarketInfo) => {
     .object({
       ticketType: z.literal('stopMarket'),
       type: z.literal(OrderType.TYPE_MARKET),
+      sizeMode,
       side: z.nativeEnum(Side),
       triggerDirection: z.nativeEnum(StopOrderTriggerDirection),
       triggerType: z.enum(['price', 'trailingPercentOffset']),
-      triggerPrice: z.coerce.number(),
+      triggerPrice: z.coerce.number({ message: i18n.t('Required') }),
       sizeOverride: z.nativeEnum(StopOrderSizeOverrideSetting).optional(),
-      size: z.coerce.number().min(Number(sizeStep)).step(Number(sizeStep)),
+      size: z.coerce
+        .number({ message: i18n.t('Required') })
+        .min(Number(sizeStep))
+        .step(Number(sizeStep))
+        .optional(),
+      sizePosition: z.coerce.number().min(0.0001).max(100).optional(),
+      sizePct: z.number().optional(),
+      notional: z.coerce.number().optional(),
       timeInForce: z.nativeEnum(OrderTimeInForce),
       expiresAt: z.date().optional(),
       stopExpiryStrategy,
@@ -285,6 +356,9 @@ export const createStopMarketSchema = (market: MarketInfo) => {
         .min(Number(sizeStep))
         .step(Number(sizeStep))
         .optional(),
+      ocoNotional: z.coerce.number().optional(),
+      ocoSizePosition: z.coerce.number().min(0.0001).max(100).optional(),
+      ocoSizePct: z.number().optional(),
       ocoPrice: z.coerce
         .number()
         .min(Number(priceStep))
@@ -307,6 +381,54 @@ export const createStopMarketSchema = (market: MarketInfo) => {
           message: i18n.t('Provide an OCO size'),
           path: ['ocoSize'],
         });
+      }
+
+      if (
+        val.sizeOverride ===
+        StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION
+      ) {
+        if (val.sizePosition === undefined) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ['size'],
+            message: i18n.t('Provide a position size'),
+          });
+        }
+      } else {
+        if (val.size === undefined) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ['size'],
+            message: i18n.t('Required'),
+          });
+        }
+      }
+
+      if (
+        val.oco &&
+        val.ocoSize !== undefined &&
+        val.ocoSizeOverride ===
+          StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION
+      ) {
+        if (val.ocoSize <= 0) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.too_small,
+            type: 'number',
+            minimum: 0.0001,
+            inclusive: true,
+            path: ['ocoSize'],
+          });
+        }
+
+        if (val.ocoSize > 100) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.too_big,
+            type: 'number',
+            maximum: 100,
+            inclusive: true,
+            path: ['ocoSize'],
+          });
+        }
       }
 
       if (val.stopExpiryStrategy !== 'none' && !val.stopExpiresAt) {

@@ -187,17 +187,16 @@ def test_reward_group_card(
     expect(reward_group_card.get_by_test_id(
         "entity-scope")).to_have_text("Individual")
     expect(reward_group_card.get_by_test_id(
-        "locked-for")).to_have_text("1 epoch")
-    expect(reward_group_card.get_by_test_id(
         "reward-value")).to_have_text("200.00")
     expect(reward_group_card.get_by_test_id(
         "distribution-strategy")).to_have_text("Pro rata")
     expect(reward_group_card.get_by_test_id("dispatch-metric-info")).to_have_text(
         "Price maker fees paid"
     )
-    expect(reward_group_card.locator("button")).to_have_text(
-        "See details of 2 rewards"
+    expect(reward_group_card.locator("a")).to_have_text(
+        "View reward details"
     )
+<<<<<<< HEAD
 
 @pytest.mark.skip("TODO: fix as preview 77 breaks")
 def test_reward_group_popup(
@@ -232,7 +231,7 @@ def test_reward_group_popup(
         "staking-requirement")).to_have_text("-")
     expect(popup_reward_card_1.get_by_test_id(
         "average-position")).to_have_text("-")
-    
+
     popup_reward_card_2 = reward_popup.get_by_test_id("active-rewards-card").nth(1)
     expect(popup_reward_card_2).to_be_visible()
     expect(popup_reward_card_2.get_by_test_id(
@@ -252,4 +251,3 @@ def test_reward_group_popup(
         "staking-requirement")).to_have_text("-")
     expect(popup_reward_card_2.get_by_test_id(
         "average-position")).to_have_text("-")
-

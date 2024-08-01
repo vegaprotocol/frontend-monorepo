@@ -206,7 +206,7 @@ describe('createSizeOverride', () => {
     expect(
       createSizeOverride({
         sizeOverride: StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_NONE,
-        size: '2',
+        sizePosition: 2,
       })
     ).toEqual({
       sizeOverrideSetting: 1,
@@ -219,7 +219,7 @@ describe('createSizeOverride', () => {
       createSizeOverride({
         sizeOverride:
           StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION,
-        size: '2',
+        sizePosition: 2,
       })
     ).toEqual({
       sizeOverrideSetting: 2,
@@ -303,12 +303,14 @@ describe('createStopMarketOrder', () => {
   const createFields = (): FormFieldsStopMarket => {
     return {
       ticketType: 'stopMarket',
+      sizeMode: 'contracts',
       type: OrderType.TYPE_MARKET,
       side: Side.SIDE_BUY,
       triggerDirection: StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE,
       triggerType: 'price',
       triggerPrice: 200,
       size: 100,
+      notional: 100,
       sizeOverride: StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_NONE,
       timeInForce: OrderTimeInForce.TIME_IN_FORCE_IOC,
       reduceOnly: true,
@@ -383,7 +385,7 @@ describe('createStopMarketOrder', () => {
       merge(fields, {
         sizeOverride:
           StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION,
-        size: 10,
+        sizePosition: 10,
       }),
       market,
       reference
@@ -476,7 +478,8 @@ describe('createStopMarketOrder', () => {
     const fields = merge(createFields(), {
       oco: true,
       ocoPrice: 100,
-      ocoSize: 85,
+      ocoSize: 10,
+      ocoSizePosition: 85,
       ocoTimeInForce: OrderTimeInForce.TIME_IN_FORCE_IOC,
       ocoSizeOverride:
         StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION,
@@ -522,12 +525,14 @@ describe('createStopLimitOrder', () => {
   const createFields = (): FormFieldsStopLimit => {
     return {
       ticketType: 'stopLimit',
+      sizeMode: 'contracts',
       type: OrderType.TYPE_LIMIT,
       side: Side.SIDE_BUY,
       triggerDirection: StopOrderTriggerDirection.TRIGGER_DIRECTION_RISES_ABOVE,
       triggerType: 'price',
       triggerPrice: 200,
       size: 100,
+      notional: 10000,
       price: 100,
       sizeOverride: StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_NONE,
       timeInForce: OrderTimeInForce.TIME_IN_FORCE_IOC,
@@ -604,7 +609,7 @@ describe('createStopLimitOrder', () => {
       merge(fields, {
         sizeOverride:
           StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION,
-        size: 10,
+        sizePosition: 10,
       }),
       market,
       reference
@@ -698,7 +703,8 @@ describe('createStopLimitOrder', () => {
     const fields = merge(createFields(), {
       oco: true,
       ocoPrice: 100,
-      ocoSize: 85,
+      ocoSize: 100,
+      ocoSizePosition: 85,
       ocoTimeInForce: OrderTimeInForce.TIME_IN_FORCE_IOC,
       ocoSizeOverride:
         StopOrderSizeOverrideSetting.SIZE_OVERRIDE_SETTING_POSITION,

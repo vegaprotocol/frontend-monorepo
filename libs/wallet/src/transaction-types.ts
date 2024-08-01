@@ -552,27 +552,87 @@ export interface UpdatePartyProfile {
   };
 }
 
+/** Liquidity parameters that define the size and range of the AMM's tradeable volume. */
+export type ConcentratedLiquidityParameters = {
+  /** Price at which the AMM will stop quoting sell volume. If not supplied the AMM will never hold a short position. */
+  upperBound?: string;
+  /** Price at which the AMM will stop quoting buy volume. If not supplied the AMM will never hold a long position. */
+  lowerBound?: string;
+  /** Price that the AMM will quote as its "fair price" when its position is zero. */
+  base: string;
+  /** Leverage at upper bound. If not set the markets risk-factors will be used to calculate leverage. */
+  leverageAtUpperBound?: string;
+  /** Leverage at lower bound. If not set the markets risk-factors will be used to calculate leverage. */
+  leverageAtLowerBound?: string;
+};
+
+/** Command to create an automated market maker for a given market. */
+export type SubmitAMM = {
+  /** Market ID for which to create an AMM. */
+  marketId: string;
+  /** Amount to be committed to the AMM. */
+  commitmentAmount: string;
+  /** Slippage tolerance used for rebasing the AMM if its base price crosses with existing order */
+  slippageTolerance: string;
+  /** Concentrated liquidity parameters defining the shape of the AMM's volume curves. */
+  concentratedLiquidityParameters: ConcentratedLiquidityParameters;
+  /** Nominated liquidity fee factor, which is an input to the calculation of taker fees on the market. */
+  proposedFee: string;
+};
+
+/** Command to amend an existing automated market maker on a market. */
+export type AmendAMM = {
+  /** Market ID for the AMM to be amended. */
+  marketId: string;
+  /** Amount to be committed to the AMM. If not supplied the commitment will remain unchanged. */
+  commitmentAmount?: string;
+  /** Slippage tolerance for rebasing position when updating the AMM. */
+  slippageTolerance: string;
+  /** Concentrated liquidity parameters defining the shape of the AMM's volume curves. If not supplied the parameters will remain unchanged. */
+  concentratedLiquidityParameters?: ConcentratedLiquidityParameters;
+  /** Concentrated liquidity parameters defining the shape of the AMM's volume curves. If not supplied the parameters will remain unchanged. */
+  proposedFee?: string;
+};
+
+export enum CancelAMMMethod {
+  METHOD_UNSPECIFIED = 0,
+  /** Cancellation will be immediate and any open positions will be transferred to the network for liquidation. */
+  METHOD_IMMEDIATE = 1,
+  /** AMM will only trade to reduce its position, and will be cancelled once its position reaches zero. */
+  METHOD_REDUCE_ONLY = 2,
+}
+
+/** Command to cancel an automated market maker for a given market. */
+export type CancelAMM = {
+  /** Market ID to cancel an AMM for. */
+  marketId: string;
+  /** Method to use to cancel the AMM. */
+  method: CancelAMMMethod;
+};
 export type Transaction =
-  | UpdateMarginModeBody
-  | StopOrdersSubmissionBody
-  | StopOrdersCancellationBody
-  | OrderSubmissionBody
-  | OrderCancellationBody
-  | WithdrawSubmissionBody
-  | VoteSubmissionBody
-  | DelegateSubmissionBody
-  | UndelegateSubmissionBody
-  | OrderAmendmentBody
-  | ProposalSubmissionBody
-  | BatchProposalSubmissionBody
-  | BatchMarketInstructionSubmissionBody
-  | TransferBody
-  | LiquidityProvisionSubmission
+  | AmendAMM
   | ApplyReferralCode
-  | JoinTeam
+  | BatchMarketInstructionSubmissionBody
+  | BatchProposalSubmissionBody
+  | CancelAMM
   | CreateReferralSet
+  | DelegateSubmissionBody
+  | JoinTeam
+  | LiquidityProvisionSubmission
+  | OrderAmendmentBody
+  | OrderCancellationBody
+  | OrderSubmissionBody
+  | ProposalSubmissionBody
+  | StopOrdersCancellationBody
+  | StopOrdersSubmissionBody
+  | SubmitAMM
+  | TransferBody
+  | UndelegateSubmissionBody
+  | UpdateMarginModeBody
+  | UpdatePartyProfile
   | UpdateReferralSet
-  | UpdatePartyProfile;
+  | VoteSubmissionBody
+  | WithdrawSubmissionBody;
 
 export interface TransactionResponse {
   transactionHash: string;
@@ -580,14 +640,3 @@ export interface TransactionResponse {
   receivedAt: string;
   sentAt: string;
 }
-
-// TODO: use this?
-//
-// export class WalletError extends WalletClientError {
-//   data: string;
-//
-//   constructor(message: string, code: number, data = 'Wallet error') {
-//     super({ code, message, data });
-//     this.data = data;
-//   }
-// }
