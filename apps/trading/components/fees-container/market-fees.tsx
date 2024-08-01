@@ -53,34 +53,29 @@ const useFeesTableColumnDefs = (): ColDef[] => {
           minWidth: 300,
         },
         {
+          field: 'totalFee',
+          headerName: t('Taker fee before discount'),
+          valueFormatter: ({ value }: { value: number }) => value + '%',
+        },
+        {
           field: 'feeAfterDiscount',
           headerName: t('Taker fee after discount'),
+          cellClass: 'font-bold',
           valueFormatter: ({ value }: { value: number }) => value + '%',
         },
         {
           field: 'liquidityFee',
+          cellClass: 'text-vega-light-300 dark:text-vega-dark-300',
           valueFormatter: ({ value }: { value: number }) => value + '%',
         },
         {
           field: 'infraFee',
-          cellRenderer: ({ value }: { value: string }) => (
-            <span className="text-muted">{value}</span>
-          ),
+          cellClass: 'text-vega-light-300 dark:text-vega-dark-300',
           valueFormatter: ({ value }: { value: number }) => value + '%',
         },
         {
           field: 'makerFee',
-          cellRenderer: ({ value }: { value: string }) => (
-            <span className="text-muted">{value}</span>
-          ),
-          valueFormatter: ({ value }: { value: number }) => value + '%',
-        },
-        {
-          field: 'totalFee',
-          headerName: t('Taker fee before discount'),
-          cellRenderer: ({ value }: { value: string }) => (
-            <span className="text-muted">{value}</span>
-          ),
+          cellClass: 'text-vega-light-300 dark:text-vega-dark-300',
           valueFormatter: ({ value }: { value: number }) => value + '%',
         },
       ] as ColDef[],
