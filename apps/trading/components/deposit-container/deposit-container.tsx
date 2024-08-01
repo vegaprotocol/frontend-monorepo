@@ -17,7 +17,6 @@ import {
   Intent,
   TradingRichSelect,
   TradingRichSelectOption,
-  Notification,
 } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { Emblem } from '@vegaprotocol/emblem';
@@ -245,13 +244,11 @@ const DepositForm = ({
             }}
           />
           {asset && !isAssetUSDTArb(asset) && (
-            <Notification
-              size="small"
-              intent={Intent.Info}
-              message={t(
+            <TradingInputError intent="warning">
+              {t(
                 'The majority of markets on the network settle in USDT Arb. Are you sure you wish to deposit the selected asset?'
               )}
-            />
+            </TradingInputError>
           )}
           {form.formState.errors.assetId?.message && (
             <TradingInputError>
