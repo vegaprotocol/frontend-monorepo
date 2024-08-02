@@ -13,6 +13,7 @@ import {
   DistributionStrategyMapping,
   EntityScopeLabelMapping,
   type RankTable,
+  DispatchMetric,
 } from '@vegaprotocol/types';
 import { useNetworkParam } from '@vegaprotocol/network-parameters';
 import {
@@ -53,6 +54,8 @@ import { HeaderPage } from '../../components/header-page';
 import { Card } from '../../components/card';
 import { ErrorBoundary } from '../../components/error-boundary';
 import { addMinutes, formatDistanceToNowStrict } from 'date-fns';
+
+type Metric = DispatchMetric | 'STAKING_REWARD_METRIC';
 
 export const CompetitionsGame = () => {
   const t = useT();
@@ -152,7 +155,7 @@ export const CompetitionsGame = () => {
       {gameId && (
         <section>
           <Tabs defaultValue="scores">
-            <div className="flex justify-between items-center border-b border-default">
+            <div className="flex justify-between border-b border-default">
               <TabsList>
                 <TabsTrigger value="scores">{t('Live scores')}</TabsTrigger>
                 <TabsTrigger value="history">{t('Score history')}</TabsTrigger>
@@ -170,6 +173,7 @@ export const CompetitionsGame = () => {
               <LiveScoresTable
                 currentScores={currentScores}
                 prevScores={prevScores}
+                metric={dispatchMetric}
                 asset={asset}
                 rewardAmount={amount}
                 rankTable={rankTable}
@@ -288,6 +292,7 @@ const EligibilityCriteria = ({
 const LiveScoresTable = ({
   currentScores,
   prevScores,
+  metric,
   asset,
   distributionStrategy,
   rankTable,
@@ -296,6 +301,7 @@ const LiveScoresTable = ({
 }: {
   currentScores: TeamScoreFieldsFragment[];
   prevScores: TeamScoreFieldsFragment[];
+  metric: Metric;
   asset: AssetFieldsFragment;
   distributionStrategy: DistributionStrategy;
   rankTable: RankTable[];
@@ -303,6 +309,8 @@ const LiveScoresTable = ({
   rewardAmount: string;
 }) => {
   const t = useT();
+
+  const scoreUnit = useScoreUnit(metric, asset);
 
   const scores = currentScores.length ? currentScores : prevScores;
 
@@ -372,7 +380,7 @@ const LiveScoresTable = ({
           <span>{team.name}</span>
         </Link>
       ),
-      score: formatNumber(t.score, 2),
+      score: formatNumber(t.score, 4),
       estimatedRewards: formatNumber(reward, 2),
     };
   });
@@ -394,7 +402,9 @@ const LiveScoresTable = ({
         },
         {
           name: 'score',
-          displayName: t('Live score'),
+          displayName: t('Live score {{unit}}', {
+            unit: scoreUnit ? `(${scoreUnit})` : '',
+          }),
         },
         {
           name: 'estimatedRewards',
@@ -550,6 +560,7 @@ const UpdateTime = (props: { lastUpdate: string; updateFrequency: string }) => {
           datetime: getDateTimeFormat().format(lastUpdate),
         })}
       </p>
+      <p>Next update: {getDateTimeFormat().format(nextUpdate)}</p>
       <p>
         Next update in{' '}
         <time dateTime={getDateTimeFormat().format(nextUpdate)}>
@@ -558,4 +569,30 @@ const UpdateTime = (props: { lastUpdate: string; updateFrequency: string }) => {
       </p>
     </>
   );
+};
+
+const useScoreUnit = (metric: Metric, asset: AssetFieldsFragment) => {
+  const t = useT();
+
+  if (metric === DispatchMetric.DISPATCH_METRIC_MAKER_FEES_RECEIVED) {
+    return asset.symbol;
+  }
+
+  if (metric === DispatchMetric.DISPATCH_METRIC_MAKER_FEES_PAID) {
+    return asset.symbol;
+  }
+
+  if (metric === DispatchMetric.DISPATCH_METRIC_LP_FEES_RECEIVED) {
+    return asset.symbol;
+  }
+
+  if (metric === DispatchMetric.DISPATCH_METRIC_AVERAGE_POSITION) {
+    return t('Contracts');
+  }
+
+  if (metric === DispatchMetric.DISPATCH_METRIC_RETURN_VOLATILITY) {
+    return 'σ2';
+  }
+
+  return null;
 };
