@@ -241,6 +241,7 @@
   "Funds unlocked": "Funds unlocked",
   "Futures": "Futures",
   "Game details": "Game details",
+  "Game not started": "Game not started",
   "gameCount_one": "Last game result",
   "gameCount_other": "Last {{count}} game results",
   "Games ({{count}})": "Games ({{count}})",

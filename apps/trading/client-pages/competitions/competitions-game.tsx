@@ -53,7 +53,11 @@ import { type TeamsFieldsFragment } from '../../lib/hooks/__generated__/Teams';
 import { HeaderPage } from '../../components/header-page';
 import { Card } from '../../components/card';
 import { ErrorBoundary } from '../../components/error-boundary';
-import { addMinutes, formatDistanceToNowStrict } from 'date-fns';
+import {
+  addMinutes,
+  formatDistanceToNow,
+  formatDistanceToNowStrict,
+} from 'date-fns';
 
 type Metric = DispatchMetric | 'STAKING_REWARD_METRIC';
 
@@ -63,25 +67,26 @@ export const CompetitionsGame = () => {
   const { pubKey } = useVegaWallet();
 
   const { param } = useNetworkParam('rewards_updateFrequency');
-  const { data: currentEpoch, loading: epochLoading } = useCurrentEpoch();
+  const { data: epoch, loading: epochLoading } = useCurrentEpoch();
+
   const { data: reward, loading: rewardLoading } = useReward(gameId);
   const { data: teams, loading: teamsLoading } = useTeamsMap();
 
   const windowLength = reward?.transfer.kind.dispatchStrategy.windowLength;
   const epochFrom =
-    currentEpoch !== undefined && windowLength !== undefined
-      ? currentEpoch - windowLength
+    epoch.id !== undefined && windowLength !== undefined
+      ? epoch.id - windowLength
       : undefined;
 
   const { data: liveScoreData, loading: liveScoreLoading } = useScoresQuery({
     variables: {
       epochFrom,
-      epochTo: currentEpoch,
+      epochTo: epoch.id,
       gameId: gameId || '',
       partyId: pubKey || '',
       pagination: { last: 500 },
     },
-    skip: !currentEpoch || !gameId,
+    skip: !epoch.id || !gameId,
   });
 
   if (
@@ -98,7 +103,7 @@ export const CompetitionsGame = () => {
     );
   }
 
-  if (!currentEpoch) {
+  if (!epoch.id) {
     return null;
   }
 
@@ -128,9 +133,15 @@ export const CompetitionsGame = () => {
     (liveScoreData?.gameTeamScores?.edges || []).map((e) => e.node)
   );
 
-  const currentScores = liveScores.filter((s) => s.epochId === currentEpoch);
-  const prevScores = liveScores.filter((s) => s.epochId === currentEpoch - 1);
-  const latestScore = currentScores[0];
+  const currentScores = liveScores.filter((s) => s.epochId === epoch.id);
+  const scoresByEpoch = groupBy(liveScores, (s) => s.epochId);
+  const orderedByEpoch = orderBy(
+    Object.values(scoresByEpoch),
+    (s) => s[0].epochId,
+    'desc'
+  );
+  const latestScores = orderedByEpoch.length ? orderedByEpoch[0] : undefined;
+  const latestScore = latestScores?.length ? latestScores[0] : undefined;
 
   return (
     <ErrorBoundary feature="game">
@@ -170,23 +181,32 @@ export const CompetitionsGame = () => {
               </TabsContent>
             </div>
             <TabsContent value="scores">
-              <LiveScoresTable
-                currentScores={currentScores}
-                prevScores={prevScores}
-                metric={dispatchMetric}
-                asset={asset}
-                rewardAmount={amount}
-                rankTable={rankTable}
-                teams={teams}
-                distributionStrategy={dispatchStrategy.distributionStrategy}
-              />
+              {epoch.id < Number(reward.transfer.kind.startEpoch) ? (
+                <p>{t('Game not started')}</p>
+              ) : (
+                <LiveScoresTable
+                  currentScores={currentScores}
+                  metric={dispatchMetric}
+                  asset={asset}
+                  rewardAmount={amount}
+                  rankTable={rankTable}
+                  teams={teams}
+                  distributionStrategy={dispatchStrategy.distributionStrategy}
+                  epochStart={epoch.timestamps.start}
+                  updateFrequency={param}
+                />
+              )}
             </TabsContent>
             <TabsContent value="history">
-              <HistoricScoresTable
-                gameId={gameId}
-                currentEpoch={currentEpoch || 0}
-                teams={teams}
-              />
+              {epoch.id < Number(reward.transfer.kind.startEpoch) ? (
+                <p>{t('Game not started')}</p>
+              ) : (
+                <HistoricScoresTable
+                  gameId={gameId}
+                  currentEpoch={epoch.id || 0}
+                  teams={teams}
+                />
+              )}
             </TabsContent>
           </Tabs>
         </section>
@@ -291,30 +311,29 @@ const EligibilityCriteria = ({
  */
 const LiveScoresTable = ({
   currentScores,
-  prevScores,
   metric,
   asset,
   distributionStrategy,
   rankTable,
   teams,
   rewardAmount,
+  epochStart,
+  updateFrequency,
 }: {
   currentScores: TeamScoreFieldsFragment[];
-  prevScores: TeamScoreFieldsFragment[];
   metric: Metric;
   asset: AssetFieldsFragment;
   distributionStrategy: DistributionStrategy;
   rankTable: RankTable[];
   teams: Record<string, TeamsFieldsFragment>;
   rewardAmount: string;
+  epochStart: Date | undefined;
+  updateFrequency: string;
 }) => {
   const t = useT();
 
   const scoreUnit = useScoreUnit(metric, asset);
-
-  const scores = currentScores.length ? currentScores : prevScores;
-
-  const sumOfScores = scores.reduce(
+  const sumOfScores = currentScores.reduce(
     (sum, s) => sum.plus(s.score),
     BigNumber(0)
   );
@@ -332,7 +351,11 @@ const LiveScoresTable = ({
     return payoutRank;
   };
 
-  const orderedScores = orderBy(scores, [(d) => Number(d.score)], ['desc']);
+  const orderedScores = orderBy(
+    currentScores,
+    [(d) => Number(d.score)],
+    ['desc']
+  );
 
   // Get total of all ratios for each team
   const total = orderedScores
@@ -380,12 +403,20 @@ const LiveScoresTable = ({
           <span>{team.name}</span>
         </Link>
       ),
-      score: formatNumber(t.score, 4),
+      score: formatNumber(t.score, 2),
       estimatedRewards: formatNumber(reward, 2),
     };
   });
 
   if (!lastEpochScores.length) {
+    // Inside this component the game has already started (epochStart > currentEpoch)
+    // so if there are no scores we are waiting for the first update of scores which should
+    // arrive after 'rewards.updateFrequency' duration has passed
+    if (epochStart) {
+      const firstEverUpdate = getNextUpdate(updateFrequency, epochStart);
+      return <p>Updates in: {formatDistanceToNow(firstEverUpdate)}</p>;
+    }
+
     return <p>No scores for current epoch</p>;
   }
 
@@ -550,8 +581,7 @@ const UpdateTime = (props: { lastUpdate: string; updateFrequency: string }) => {
   const t = useT();
 
   const lastUpdate = new Date(props.lastUpdate);
-  const d = new Duration(props.updateFrequency);
-  const nextUpdate = addMinutes(lastUpdate, d.minutes());
+  const nextUpdate = getNextUpdate(props.updateFrequency, lastUpdate);
 
   return (
     <>
@@ -595,4 +625,10 @@ const useScoreUnit = (metric: Metric, asset: AssetFieldsFragment) => {
   }
 
   return null;
+};
+
+const getNextUpdate = (updateFrequency: string, lastUpdate: Date) => {
+  const d = new Duration(updateFrequency);
+  const nextUpdate = addMinutes(lastUpdate, d.minutes());
+  return nextUpdate;
 };
