@@ -14,8 +14,8 @@ import {
   EntityScopeLabelMapping,
   type RankTable,
   DispatchMetric,
-  DistributionStrategyDescriptionMapping,
   type StakingDispatchStrategy,
+  DispatchMetricDescription,
 } from '@vegaprotocol/types';
 import { useNetworkParam } from '@vegaprotocol/network-parameters';
 import {
@@ -30,7 +30,6 @@ import {
   addDecimalsFormatNumber,
   addDecimalsFormatNumberQuantum,
   formatNumber,
-  getDateTimeFormat,
   toBigNum,
 } from '@vegaprotocol/utils';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
@@ -55,11 +54,7 @@ import { type TeamsFieldsFragment } from '../../lib/hooks/__generated__/Teams';
 import { HeaderPage } from '../../components/header-page';
 import { Card } from '../../components/card';
 import { ErrorBoundary } from '../../components/error-boundary';
-import {
-  addMinutes,
-  formatDistanceToNow,
-  formatDistanceToNowStrict,
-} from 'date-fns';
+import { addMinutes, formatDistanceToNowStrict } from 'date-fns';
 import { RankPayoutTable } from '../../components/rewards-container/rank-table';
 
 type Metric = DispatchMetric | 'STAKING_REWARD_METRIC';
@@ -132,19 +127,35 @@ export const CompetitionsGame = () => {
 
   if (!rankTable) return null;
 
+  const { lastPayout, nextPayout } = getPayouts(
+    epoch.id,
+    reward.transfer.kind.startEpoch,
+    dispatchStrategy.transferInterval || 1
+  );
+
+  // The following code gets the last live scores for a given game. A single game is considered
+  // as the time between two payouts. So if a game starts at epoch 1 and has a transfer interval of
+  // 3 the 'game' runs between epochs 1 and 3. Even if the recurring transfer has a window length of
+  // more than that. After epoch 3 the game resets and runs from epoch 3 until epoch 6.
+  //
+  // The following code gets all live scores since the last payout and shows the latest one by epoch
+  // so we always have the latest scores for the given games start epoch, window length and transfer interval
   const liveScores = compact(
     (liveScoreData?.gameTeamScores?.edges || []).map((e) => e.node)
   );
-
-  const currentScores = liveScores.filter((s) => s.epochId === epoch.id);
   const scoresByEpoch = groupBy(liveScores, (s) => s.epochId);
   const orderedByEpoch = orderBy(
     Object.values(scoresByEpoch),
     (s) => s[0].epochId,
     'desc'
-  );
-  const latestScores = orderedByEpoch.length ? orderedByEpoch[0] : undefined;
+  ).filter((s) => {
+    if (s[0].epochId >= lastPayout) return true;
+    return false;
+  });
+  const latestScores = orderedByEpoch.length ? orderedByEpoch[0] : [];
   const latestScore = latestScores?.length ? latestScores[0] : undefined;
+
+  // If its a rank table we want to show an extra tab showing the payout structure
   const isRankPayout = Boolean(dispatchStrategy.rankTable);
 
   return (
@@ -161,16 +172,24 @@ export const CompetitionsGame = () => {
           )}{' '}
           <span className="calt">{asset.symbol}</span>
         </p>
+        <p>{DispatchMetricDescription[dispatchMetric]}</p>
       </header>
-      <EligibilityCriteria
-        asset={asset}
-        dispatchStrategy={dispatchStrategy as DispatchStrategy}
-        partyScores={liveScoreData.gamePartyScores}
-      />
+      <section className="flex flex-col lg:flex-row gap-4">
+        <EntryConditions
+          asset={asset}
+          dispatchStrategy={dispatchStrategy as DispatchStrategy}
+        />
+        <GameDetails
+          dispatchStrategy={dispatchStrategy as DispatchStrategy}
+          partyScores={liveScoreData.gamePartyScores}
+          asset={asset}
+          nextPayout={nextPayout}
+        />
+      </section>
       {gameId && (
         <section>
           <Tabs defaultValue="scores">
-            <div className="flex justify-between border-b border-default">
+            <div className="flex justify-between items-center border-b border-default">
               <TabsList>
                 <TabsTrigger value="scores">{t('Live scores')}</TabsTrigger>
                 <TabsTrigger value="history">{t('Score history')}</TabsTrigger>
@@ -194,15 +213,13 @@ export const CompetitionsGame = () => {
                 <p>{t('Game not started')}</p>
               ) : (
                 <LiveScoresTable
-                  currentScores={currentScores}
+                  currentScores={latestScores}
                   metric={dispatchMetric}
                   asset={asset}
                   rewardAmount={amount}
                   rankTable={rankTable}
                   teams={teams}
                   distributionStrategy={dispatchStrategy.distributionStrategy}
-                  epochStart={epoch.timestamps.start}
-                  updateFrequency={param}
                 />
               )}
             </TabsContent>
@@ -214,6 +231,7 @@ export const CompetitionsGame = () => {
                   gameId={gameId}
                   currentEpoch={epoch.id || 0}
                   teams={teams}
+                  lastPayoutEpoch={lastPayout}
                 />
               )}
             </TabsContent>
@@ -229,39 +247,30 @@ export const CompetitionsGame = () => {
   );
 };
 
-const EligibilityCriteria = ({
+const EntryConditions = ({
   asset,
   dispatchStrategy,
-  partyScores,
 }: {
   asset: AssetFieldsFragment;
   dispatchStrategy: DispatchStrategy;
-  partyScores: ScoresQuery['gamePartyScores'];
 }) => {
   const t = useT();
-  const { pubKey } = useVegaWallet();
 
   const entityScope = dispatchStrategy.entityScope;
-  const feeCap = dispatchStrategy.capRewardFeeMultiple;
-  const strategy = dispatchStrategy.distributionStrategy;
   const notional =
     dispatchStrategy.notionalTimeWeightedAveragePositionRequirement;
-
-  // Calc user fee cap
-  const partyScore = partyScores?.edges?.find(
-    (e) => e.node?.partyId === pubKey
-  );
-  const userCap =
-    partyScore?.node && feeCap
-      ? BigNumber(partyScore.node.totalFeesPaid).times(feeCap)
-      : null;
 
   const labelClasses = 'text-sm text-muted';
   const valueClasses = 'text-2xl lg:text-3xl';
 
   return (
-    <Card variant="cool" size="lg" className="flex flex-col gap-4" minimal>
-      <h2 className="calt">{t('Eligibility criteria')}</h2>
+    <Card
+      variant="cool"
+      size="lg"
+      className="flex-1 flex flex-col gap-4"
+      minimal
+    >
+      <h2 className="calt">{t('Entry conditions')}</h2>
       <dl className="grid grid-cols-2 md:flex gap-2 md:gap-6 lg:gap-8 whitespace-nowrap">
         <div>
           <dd className={valueClasses}>
@@ -281,17 +290,65 @@ const EligibilityCriteria = ({
           </dd>
           <dt className={labelClasses}>{t('Notional')}</dt>
         </div>
+      </dl>
+    </Card>
+  );
+};
+
+const GameDetails = ({
+  dispatchStrategy,
+  partyScores,
+  asset,
+  nextPayout,
+}: {
+  dispatchStrategy: DispatchStrategy;
+  partyScores: ScoresQuery['gamePartyScores'];
+  asset: AssetFieldsFragment;
+  nextPayout: number;
+}) => {
+  const t = useT();
+  const { pubKey } = useVegaWallet();
+
+  const scoreUnit = useScoreUnit(dispatchStrategy.dispatchMetric, asset);
+
+  const feeCap = dispatchStrategy.capRewardFeeMultiple;
+  const strategy = dispatchStrategy.distributionStrategy;
+
+  // Calc user fee cap
+  const partyScore = partyScores?.edges?.find(
+    (e) => e.node?.partyId === pubKey
+  );
+  const userCap =
+    partyScore?.node && feeCap
+      ? BigNumber(partyScore.node.totalFeesPaid).times(feeCap)
+      : null;
+  const labelClasses = 'text-sm text-muted';
+  const valueClasses = 'text-2xl lg:text-3xl';
+
+  return (
+    <Card
+      variant="cool"
+      size="lg"
+      className="flex-1 flex flex-col gap-4"
+      minimal
+    >
+      <h2 className="calt">{t('Game details')}</h2>
+      <dl className="grid grid-cols-2 md:flex gap-2 md:gap-6 lg:gap-8 whitespace-nowrap">
         <div>
           <dd className={valueClasses}>
             {DistributionStrategyMapping[strategy]}
           </dd>
           <dt className={labelClasses}>{t('Method')}</dt>
         </div>
+        <div>
+          <dd className={valueClasses}>{nextPayout}</dd>
+          <dt className={labelClasses}>{t('Next payout at')}</dt>
+        </div>
         {feeCap && (
           <>
             <div>
-              <dd className="text-3xl lg:text-4xl">{feeCap}x</dd>
-              <dt className="text-sm text-muted">{t('Fee cap')}</dt>
+              <dd className={valueClasses}>{feeCap}x</dd>
+              <dt className={labelClasses}>{t('Fee cap')}</dt>
             </div>
             <div>
               <dd className="text-3xl lg:text-4xl">
@@ -314,6 +371,10 @@ const EligibilityCriteria = ({
             </div>
           </>
         )}
+        <div>
+          <dd className={valueClasses}>{scoreUnit}</dd>
+          <dt className={labelClasses}>{t('Scored in')}</dt>
+        </div>
       </dl>
     </Card>
   );
@@ -331,8 +392,6 @@ const LiveScoresTable = ({
   rankTable,
   teams,
   rewardAmount,
-  epochStart,
-  updateFrequency,
 }: {
   currentScores: TeamScoreFieldsFragment[];
   metric: Metric;
@@ -341,8 +400,6 @@ const LiveScoresTable = ({
   rankTable: RankTable[];
   teams: Record<string, TeamsFieldsFragment>;
   rewardAmount: string;
-  epochStart: Date | undefined;
-  updateFrequency: string;
 }) => {
   const t = useT();
 
@@ -423,15 +480,7 @@ const LiveScoresTable = ({
   });
 
   if (!lastEpochScores.length) {
-    // Inside this component the game has already started (epochStart > currentEpoch)
-    // so if there are no scores we are waiting for the first update of scores which should
-    // arrive after 'rewards.updateFrequency' duration has passed
-    if (epochStart) {
-      const firstEverUpdate = getNextUpdate(updateFrequency, epochStart);
-      return <p>Updates in: {formatDistanceToNow(firstEverUpdate)}</p>;
-    }
-
-    return <p>No scores for current epoch</p>;
+    return <p>{t('No data')}</p>;
   }
 
   return (
@@ -472,10 +521,12 @@ const HistoricScoresTable = ({
   gameId,
   currentEpoch,
   teams,
+  lastPayoutEpoch,
 }: {
   gameId: string;
   currentEpoch: number;
   teams: Record<string, TeamsFieldsFragment>;
+  lastPayoutEpoch: number;
 }) => {
   const t = useT();
   const { pubKey } = useVegaWallet();
@@ -507,12 +558,19 @@ const HistoricScoresTable = ({
     (scoreData.gameTeamScores?.edges || []).map((e) => e.node)
   );
 
-  const withoutCurrentEpoch = scores.filter((s) => s.epochId !== currentEpoch);
+  // Get all scores that occurred outside of the current payout window
+  const withoutCurrentPayoutWindow = scores.filter((s) => {
+    if (s.epochId < lastPayoutEpoch) return true;
+    return false;
+  });
   const scoresByEpoch = orderBy(
-    Object.entries(groupBy(withoutCurrentEpoch, 'epochId')),
+    Object.entries(groupBy(withoutCurrentPayoutWindow, 'epochId')),
     (d) => Number(d[0]),
     'desc'
   );
+
+  // Enrich the scores with the actual reward earned value from
+  // the games API
   const scoresByEpochOrdered = scoresByEpoch.map((group) => {
     const results = group[1];
 
@@ -598,20 +656,11 @@ const UpdateTime = (props: { lastUpdate: string; updateFrequency: string }) => {
   const nextUpdate = getNextUpdate(props.updateFrequency, lastUpdate);
 
   return (
-    <>
-      <p className="text-muted">
-        {t('Last updated: {{datetime}}', {
-          datetime: getDateTimeFormat().format(lastUpdate),
-        })}
-      </p>
-      <p>Next update: {getDateTimeFormat().format(nextUpdate)}</p>
-      <p>
-        Next update in{' '}
-        <time dateTime={getDateTimeFormat().format(nextUpdate)}>
-          {formatDistanceToNowStrict(nextUpdate)}
-        </time>
-      </p>
-    </>
+    <p>
+      {t('Next update in {{time}}', {
+        time: formatDistanceToNowStrict(nextUpdate),
+      })}
+    </p>
   );
 };
 
@@ -620,20 +669,15 @@ const PayoutStructure = (props: {
 }) => {
   const t = useT();
   return (
-    <div className="flex flex-col gap-2">
-      <p>
-        {t(
-          DistributionStrategyDescriptionMapping[
-            props.dispatchStrategy.distributionStrategy
-          ]
-        )}
-      </p>
-      <p>
-        {props.dispatchStrategy.rankTable &&
-          t(
-            'Payout percentages are base estimates assuming no individual reward multipliers are active. If users in teams have active multipliers, the reward amounts may vary.'
-          )}
-      </p>
+    <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-2">
+        <p>
+          {props.dispatchStrategy.rankTable &&
+            t(
+              'Payout percentages are base estimates assuming no individual reward multipliers are active. If users in teams have active multipliers, the reward amounts may vary.'
+            )}
+        </p>
+      </div>
       {props.dispatchStrategy.rankTable && (
         <RankPayoutTable rankTable={props.dispatchStrategy.rankTable} />
       )}
@@ -641,6 +685,9 @@ const PayoutStructure = (props: {
   );
 };
 
+/**
+ * Returns a score unit based on the transfes dispatch metric
+ */
 const useScoreUnit = (metric: Metric, asset: AssetFieldsFragment) => {
   const t = useT();
 
@@ -667,8 +714,31 @@ const useScoreUnit = (metric: Metric, asset: AssetFieldsFragment) => {
   return null;
 };
 
+/**
+ * Calculate when the next live score update is expected given the last
+ * known update time and the updateFrequency network param.
+ */
 const getNextUpdate = (updateFrequency: string, lastUpdate: Date) => {
   const d = new Duration(updateFrequency);
   const nextUpdate = addMinutes(lastUpdate, d.minutes());
   return nextUpdate;
+};
+
+/**
+ * Some maths to calculate the last and next payout epoch
+ * given the start epoch and transferInterval
+ */
+export const getPayouts = (
+  currentEpoch: number,
+  startEpoch: number,
+  interval: number
+) => {
+  const passedIntervals = (currentEpoch - startEpoch) / interval;
+  const lastPayout = startEpoch + passedIntervals * interval;
+  const nextPayout = startEpoch + (passedIntervals + 1) * interval;
+
+  return {
+    lastPayout,
+    nextPayout,
+  };
 };

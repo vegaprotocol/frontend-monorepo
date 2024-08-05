@@ -807,7 +807,7 @@ export enum DistributionStrategyMapping {
   /** Rewards funded using the pro-rata strategy should be distributed pro-rata by each entity's reward metric scaled by any active multipliers that party has */
   DISTRIBUTION_STRATEGY_PRO_RATA = 'Pro rata',
   /** Rewards funded using the rank strategy */
-  DISTRIBUTION_STRATEGY_RANK = 'Strategy rank',
+  DISTRIBUTION_STRATEGY_RANK = 'Rank',
 }
 
 export enum DistributionStrategyDescriptionMapping {
