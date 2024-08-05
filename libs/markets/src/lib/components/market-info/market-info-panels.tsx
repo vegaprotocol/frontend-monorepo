@@ -1653,7 +1653,7 @@ export const OracleInfoPanel = ({
           parentDataSourceSpec &&
           parentDataSourceSpecId &&
           parentProduct && (
-            <div className="text-vega-dark-300 flex flex-col gap-2 line-through">
+            <div className="text-gs-300 flex flex-col gap-2 line-through">
               <DataSourceProof
                 data-testid="oracle-proof-links"
                 data={parentDataSourceSpec}

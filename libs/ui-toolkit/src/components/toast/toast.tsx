@@ -250,7 +250,7 @@ export const Toast = ({
         'font-alpha text-[14px] leading-[19px]',
         // background
         {
-          'bg-vega-light-100 dark:bg-vega-dark-100 ': intent === Intent.None,
+          'bg-gs-100 ': intent === Intent.None,
           'bg-vega-blue-300 dark:bg-vega-blue-700': intent === Intent.Primary,
           'bg-vega-green-300 dark:bg-vega-green-700': intent === Intent.Success,
           'bg-vega-orange-300 dark:bg-vega-orange-700':
@@ -259,8 +259,7 @@ export const Toast = ({
         },
         // panel's colours
         {
-          '[&_[data-panel]]:bg-vega-light-150 [&_[data-panel]]:dark:bg-vega-dark-150':
-            intent === Intent.None,
+          '[&_[data-panel]]:bg-gs-200': intent === Intent.None,
           '[&_[data-panel]]:bg-vega-blue-350 [&_[data-panel]]:dark:bg-vega-blue-650':
             intent === Intent.Primary,
           '[&_[data-panel]]:bg-vega-green-350 [&_[data-panel]]:dark:bg-vega-green-650':
@@ -271,8 +270,7 @@ export const Toast = ({
             intent === Intent.Danger,
         },
         {
-          '[&_[data-panel]]:to-vega-light-150 [&_[data-panel]]:dark:to-vega-dark-150':
-            intent === Intent.None,
+          '[&_[data-panel]]:to-gs-200': intent === Intent.None,
           '[&_[data-panel]]:to-vega-blue-350 [&_[data-panel]]:dark:to-vega-blue-650':
             intent === Intent.Primary,
           '[&_[data-panel]]:to-vega-green-350 [&_[data-panel]]:dark:to-vega-green-650':
@@ -284,8 +282,7 @@ export const Toast = ({
         },
         // panel's actions
         {
-          '[&_[data-panel-actions]]:bg-vega-light-200 [&_[data-panel-actions]]:dark:bg-vega-dark-100 ':
-            intent === Intent.None,
+          '[&_[data-panel-actions]]:bg-gs-200': intent === Intent.None,
           '[&_[data-panel-actions]]:bg-vega-blue-400 [&_[data-panel-actions]]:dark:bg-vega-blue-600':
             intent === Intent.Primary,
           '[&_[data-panel-actions]]:bg-vega-green-400 [&_[data-panel-actions]]:dark:bg-vega-green-600':
@@ -298,8 +295,7 @@ export const Toast = ({
         // panels's progress bar colours
         '[&_[data-progress-bar]]:mb-[4px] [&_[data-progress-bar]]:mt-[10px]',
         {
-          '[&_[data-progress-bar]]:bg-vega-light-200 [&_[data-progress-bar]]:dark:bg-vega-dark-200 ':
-            intent === Intent.None,
+          '[&_[data-progress-bar]]:bg-gs-200': intent === Intent.None,
           '[&_[data-progress-bar]]:bg-vega-blue-400 [&_[data-progress-bar]]:dark:bg-vega-blue-600':
             intent === Intent.Primary,
           '[&_[data-progress-bar-value]]:bg-vega-blue-500 [&_[data-progress-bar-value]]:dark:bg-vega-blue-500':
@@ -338,8 +334,7 @@ export const Toast = ({
           className={classNames(
             {
               // gray
-              'bg-vega-light-200 dark:bg-vega-dark-200 text-vega-light-400 dark:text-vega-dark-100':
-                intent === Intent.None,
+              'bg-gs-200 text-gs-400': intent === Intent.None,
               // blue
               'bg-vega-blue-500 text-vega-blue-600': intent === Intent.Primary,
               // green
@@ -381,8 +376,7 @@ export const Toast = ({
               data-testid="toast-progress-bar"
               className={classNames(
                 {
-                  'bg-vega-light-200 dark:bg-vega-dark-200 ':
-                    intent === Intent.None,
+                  'bg-gs-200': intent === Intent.None,
                   'bg-vega-blue-400 dark:bg-vega-blue-600':
                     intent === Intent.Primary,
                   'bg-vega-green-400 dark:bg-vega-green-600':

@@ -48,12 +48,12 @@ export const OracleLink = ({
 }: OracleLinkProps) => {
   const bgColour =
     status === 'STATUS_ACTIVE'
-      ? 'bg-yellow-100 hover:bg-yellow-200 border-yellow-200 dark:bg-yellow-200 dark:border-yellow-200 dark:text-gray-900 dark:border-yellow-300'
-      : 'bg-gray-100 hover:bg-gray-200 border-gray-200';
+      ? 'bg-yellow-100 hover:bg-yellow-200 border-yellow-200 dark:bg-yellow-200'
+      : 'bg-gs-700 hover:bg-gs-800 border-gs-900';
   const indicatorColour =
     status === 'STATUS_ACTIVE'
       ? 'bg-yellow-300 hover:bg-yellow-500 dark:bg-yellow-500'
-      : 'bg-gray-300 hover:bg-gray-500';
+      : 'bg-gs-300 hover:bg-gs-500';
 
   const description = (
     <div>

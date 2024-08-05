@@ -106,8 +106,8 @@ export function TransferParticipants({
         <br />
 
         {/* This block of divs is used to render the inset arrow containing the transfer amount */}
-        <div className="bg-vega-light-200 dark:vega-dark-200 flex items-center justify-center my-4 relative">
-          <div className="bg-vega-light-200 dark:bg-vega-dark-200 border w-full pt-5 pb-3 px-3 border-vega-light-200 dark:border-vega-dark-150 relative">
+        <div className="bg-gs-200 dark:vega-dark-200 flex items-center justify-center my-4 relative">
+          <div className="bg-gs-200 border w-full pt-5 pb-3 px-3 border-gs-200  relative">
             <div className="text-xs z-20 relative leading-none">
               {transfer.asset ? (
                 <SizeInAsset assetId={transfer.asset} size={transfer.amount} />
@@ -131,7 +131,7 @@ export function TransferParticipants({
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 16 9"
-                className="fill-vega-light-200 dark:fill-vega-dark-200"
+                className="fill-gs-200"
               >
                 <path d="M0,0L8,9l8,-9Z" />
               </svg>

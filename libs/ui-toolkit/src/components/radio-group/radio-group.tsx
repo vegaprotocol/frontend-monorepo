@@ -68,8 +68,8 @@ export const Radio = ({ id, value, label, disabled }: RadioProps) => {
   );
   const indicatorClasses = classNames(
     'block w-[13px] h-[13px] border-4 rounded-full',
-    'bg-white dark:bg-black',
-    'border-black dark:border-white'
+    'bg-gs-900',
+    'border-gs-0'
   );
   return (
     <label className={wrapperClasses} htmlFor={id}>

@@ -19,8 +19,7 @@ export const colours = {
   OUTGOING: '!fill-vega-pink-600 text-vega-pink-600 mr-2',
 };
 
-export const theadClasses =
-  'py-2 border text-center bg-vega-light-150 dark:bg-vega-dark-150';
+export const theadClasses = 'py-2 border text-center bg-gs-200';
 
 export function getToAccountTypeLabel(type?: AccountType): string {
   switch (type) {

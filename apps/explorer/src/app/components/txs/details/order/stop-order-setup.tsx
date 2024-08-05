@@ -8,7 +8,7 @@ import { Tooltip } from '@vegaprotocol/ui-toolkit';
 import fromUnixTime from 'date-fns/fromUnixTime';
 
 const wrapperClasses =
-  'flex-1 max-w-xs items-center border border-vega-light-200 dark:border-vega-dark-150 rounded-md pv-2 ph-5 mb-5';
+  'flex-1 max-w-xs items-center border border-gs-200  rounded-md pv-2 ph-5 mb-5';
 
 export type StopOrderType = 'RisesAbove' | 'FallsBelow' | 'OCO';
 type V1OrderSetup = components['schemas']['v1StopOrderSetup'];

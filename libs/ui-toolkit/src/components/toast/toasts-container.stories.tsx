@@ -174,10 +174,7 @@ const Template: ComponentStory<typeof ToastsContainer> = (args) => {
 
   return (
     <div>
-      <button
-        className="bg-gray-200 dark:bg-gray-800 p-2 mr-2"
-        onClick={() => addRandomToast()}
-      >
+      <button className="bg-gs-200 p-2 mr-2" onClick={() => addRandomToast()}>
         🥪
       </button>
       <button

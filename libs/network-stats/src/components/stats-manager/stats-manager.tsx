@@ -52,13 +52,12 @@ export const StatsManager = ({ className }: StatsManagerProps) => {
         <div
           key={i}
           className={classNames(
-            'border rounded p-2 relative border-vega-light-200 dark:border-vega-dark-200',
+            'border rounded p-2 relative border-gs-200',
             {
               'col-span-2': field === 'chainId',
             },
             {
-              'bg-transparent border-vega-light-200 dark:border-vega-dark-200':
-                good === undefined,
+              'bg-transparent border-gs-200': good === undefined,
               'bg-vega-pink-300 dark:bg-vega-pink-700 border-vega-pink-500 dark:border-vega-pink-500':
                 good !== undefined && !good,
               'bg-vega-green-300 dark:bg-vega-green-700 border-vega-green-500 dark:border-vega-green-500':
@@ -69,7 +68,7 @@ export const StatsManager = ({ className }: StatsManagerProps) => {
           <div className="uppercase flex items-center gap-2 text-xs font-alpha calt">
             <div
               className={classNames('w-2 h-2 rounded-full', {
-                'bg-vega-light-150 dark:bg-vega-dark-150': good === undefined,
+                'bg-gs-200': good === undefined,
                 'bg-vega-pink dark:bg-vega-pink': good !== undefined && !good,
                 'bg-vega-green dark:bg-vega-green': good !== undefined && good,
               })}
@@ -77,7 +76,7 @@ export const StatsManager = ({ className }: StatsManagerProps) => {
             <div data-testid="stats-title">{title}</div>
             {description && (
               <Tooltip description={description} align="center">
-                <div className="absolute top-1 right-2 text-vega-light-200 dark:text-vega-dark-200 cursor-help">
+                <div className="absolute top-1 right-2 text-gs-200 cursor-help">
                   <Icon name="info-sign" size={3} />
                 </div>
               </Tooltip>

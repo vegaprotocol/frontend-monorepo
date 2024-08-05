@@ -13,7 +13,7 @@ export type Strategy = components['schemas']['vegaDispatchStrategy'];
 
 export const wrapperClasses = 'border pv-2 w-full flex-auto basis-full';
 export const headerClasses =
-  'bg-solid bg-vega-light-150 dark:bg-vega-dark-150 text-center text-xl py-2 font-alpha calt';
+  'bg-solid bg-gs-200 text-center text-xl py-2 font-alpha calt';
 
 const metricLabels: Record<Metric, string> = {
   DISPATCH_METRIC_UNSPECIFIED: 'Unknown metric',

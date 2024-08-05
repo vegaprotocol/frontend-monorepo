@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react';
-import { createContext } from 'react';
 
 export type NavigationProps = {
   /**
@@ -10,11 +9,6 @@ export type NavigationProps = {
    * URL pointing to the home page.
    */
   homeLink?: string;
-  /**
-   * The theme of the navigation.
-   * @default "system"
-   */
-  theme: 'system' | 'light' | 'dark' | 'yellow';
   /**
    * The navigation items (links, buttons, dropdowns, etc.)
    */
@@ -53,10 +47,6 @@ export type NavigationElementProps = {
   hide?: NavigationBreakpoint[] | true;
   hideInDrawer?: boolean;
 };
-
-export const NavigationContext = createContext<{
-  theme: NavigationProps['theme'];
-}>({ theme: 'system' });
 
 export const setSizeVariantClasses = (
   breakpoints: [number, number],

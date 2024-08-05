@@ -44,7 +44,7 @@ export const Checkbox = forwardRef<
           {checked === 'indeterminate' ? (
             <span
               data-testid="indeterminate-icon"
-              className="absolute w-[8px] h-[2px] bg-white dark:bg-black"
+              className="absolute w-[8px] h-[2px] bg-gs-900"
             />
           ) : (
             <Icon

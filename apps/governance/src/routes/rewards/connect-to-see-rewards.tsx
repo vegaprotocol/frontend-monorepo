@@ -10,7 +10,7 @@ export const ConnectToSeeRewards = () => {
 
   const classes = classNames(
     'flex flex-col items-center justify-center h-[300px] w-full',
-    'border border-vega-dark-200'
+    'border border-gs-200'
   );
 
   return (

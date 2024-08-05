@@ -78,7 +78,7 @@ const ConnectButton = ({
     <button
       className={classNames(
         'flex items-center gap-2 p-2 rounded ',
-        'hover:bg-vega-light-100 hover:dark:bg-vega-dark-100',
+        'hover:bg-gs-100',
         {
           '!bg-vega-yellow text-black hover:active:!bg-vega-yellow':
             isActivating,

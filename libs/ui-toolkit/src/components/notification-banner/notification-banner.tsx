@@ -24,7 +24,7 @@ export const NotificationBanner = ({
         'flex items-center border-b pl-3 pr-2',
         'text-xs leading-tight font-normal',
         {
-          'bg-vega-light-100 dark:bg-vega-dark-100 ': intent === Intent.None,
+          'bg-gs-100 ': intent === Intent.None,
           'bg-vega-blue-300 dark:bg-vega-blue-700': intent === Intent.Primary,
           'bg-vega-green-300 dark:bg-vega-green-700': intent === Intent.Success,
           'bg-vega-orange-300 dark:bg-vega-orange-700':
@@ -32,8 +32,7 @@ export const NotificationBanner = ({
           'bg-vega-red-300 dark:bg-vega-red-700': intent === Intent.Danger,
         },
         {
-          'border-b-vega-light-200 dark:border-b-vega-dark-200 ':
-            intent === Intent.None,
+          'border-b-gs-200': intent === Intent.None,
 
           'border-b-vega-blue-500 dark:border-b-vega-blue-500':
             intent === Intent.Primary,

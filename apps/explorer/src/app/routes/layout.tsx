@@ -56,7 +56,7 @@ export const Layout = () => {
           'min-h-screen',
           'mx-auto my-0',
           'grid grid-rows-[auto_1fr_auto] grid-cols-1',
-          'border-vega-light-200 dark:border-vega-dark-200',
+          'border-gs-200 ',
           'antialiased text-black dark:text-white',
           'relative'
         )}

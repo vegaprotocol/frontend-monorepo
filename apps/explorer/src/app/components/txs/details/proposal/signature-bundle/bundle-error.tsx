@@ -23,7 +23,7 @@ export const BundleError = ({ status, error }: BundleErrorProps) => {
     return null;
   }
   return (
-    <div className="w-auto max-w-lg border-2 border-solid border-vega-light-100 dark:border-vega-dark-200 p-5 mt-5">
+    <div className="w-auto max-w-lg border-2 border-solid border-gs-100  p-5 mt-5">
       <IconForBundleStatus status={status} />
       <h1 className="text-xl pb-1">{t('No signature bundle')}</h1>
 

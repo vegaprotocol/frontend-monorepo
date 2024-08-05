@@ -27,20 +27,18 @@ interface ColumnHeaderProps {
 }
 
 const headerGridItemStyles = (last = false) =>
-  classNames('border-r border-b border-b-vega-dark-200', 'py-3 px-5', {
-    'border-r-vega-dark-150': !last,
+  classNames('border-r border-b border-default', 'py-3 px-5', {
     'border-r-0': last,
   });
 
 export const rowGridItemStyles = (last = false) =>
-  classNames('relative', 'border-r border-b border-b-vega-dark-150', {
-    'border-r-vega-dark-150': !last,
+  classNames('relative', 'border-r border-b border-default', {
     'border-r-0': last,
   });
 
 const gridStyles = classNames(
   'grid grid-cols-[repeat(4,minmax(100px,auto))] max-w-full overflow-auto',
-  `border-t border-vega-dark-200`,
+  `border-t border-default`,
   'text-sm'
 );
 
@@ -50,11 +48,11 @@ const ColumnHeader = ({
   className,
 }: ColumnHeaderProps) => (
   <div className={className}>
-    <h2 className="mb-1 text-sm text-vega-dark-300">{title}</h2>
+    <h2 className="mb-1 text-sm text-gs-100">{title}</h2>
     {tooltipContent && (
       <Tooltip description={tooltipContent}>
         <button>
-          <Icon name={'info-sign'} className="text-vega-dark-200" />
+          <Icon name={'info-sign'} className="text-gs-100" />
         </button>
       </Tooltip>
     )}

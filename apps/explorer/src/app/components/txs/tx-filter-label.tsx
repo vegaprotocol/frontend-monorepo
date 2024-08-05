@@ -20,7 +20,7 @@ export function FilterLabel({ filters }: FilterLabelProps) {
   return (
     <div data-testid="filter-selected">
       <span className="uppercase">{t('Filters')}:</span>&nbsp;
-      <code className="bg-vega-light-150 dark:bg-vega-light-300 px-2 rounded-md capitalize dark:text-black">
+      <code className="bg-gs-200 px-2 rounded-md capitalize dark:text-black">
         {Array.from(filters)[0]}
       </code>
     </div>

@@ -1,7 +1,6 @@
 import { NetworkSwitcher } from '@vegaprotocol/environment';
 import { TOKEN_DROPDOWN_ROUTES, TOP_LEVEL_ROUTES } from '../../routes/routes';
 import { useTranslation } from 'react-i18next';
-import type { NavigationProps } from '@vegaprotocol/ui-toolkit';
 import { useNavigationDrawer } from '@vegaprotocol/ui-toolkit';
 import {
   Navigation,
@@ -33,7 +32,7 @@ export const SettingsLink = () => {
   );
 };
 
-export const Nav = ({ theme }: Pick<NavigationProps, 'theme'>) => {
+export const Nav = () => {
   const { t } = useTranslation();
   const setDrawerOpen = useNavigationDrawer((state) => state.setDrawerOpen);
 
@@ -60,7 +59,6 @@ export const Nav = ({ theme }: Pick<NavigationProps, 'theme'>) => {
   return (
     <Navigation
       appName="Governance"
-      theme={theme}
       breakpoints={[458, 959]}
       actions={
         <>
@@ -70,7 +68,7 @@ export const Nav = ({ theme }: Pick<NavigationProps, 'theme'>) => {
       }
     >
       <NavigationList
-        className="[.drawer-content_&]:border-b [.drawer-content_&]:border-b-vega-light-200 dark:[.drawer-content_&]:border-b-vega-dark-200 [.drawer-content_&]:pb-8 [.drawer-content_&]:mb-2"
+        className="[.drawer-content_&]:border-b [.drawer-content_&]:pb-8 [.drawer-content_&]:mb-2"
         hide={[NavigationBreakpoint.Small]}
       >
         <NavigationItem className="[.drawer-content_&]:w-full">
@@ -97,7 +95,7 @@ export const Nav = ({ theme }: Pick<NavigationProps, 'theme'>) => {
       </NavigationList>
       <NavigationList
         hide={true}
-        className="[.drawer-content_&]:border-t [.drawer-content_&]:border-t-vega-light-200 dark:[.drawer-content_&]:border-t-vega-dark-200 [.drawer-content_&]:pt-8 [.drawer-content_&]:mt-4"
+        className="[.drawer-content_&]:border-t [.drawer-content_&]:pt-8 [.drawer-content_&]:mt-4"
       >
         <NavigationItem className="[.drawer-content_&]:w-full">
           <EthWallet />

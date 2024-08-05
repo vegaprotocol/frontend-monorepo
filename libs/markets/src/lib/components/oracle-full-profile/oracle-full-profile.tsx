@@ -135,10 +135,7 @@ export const OracleFullProfile = ({
       </div>
       <div className="grid grid-cols-2 gap-6">
         <div className="col-span-1">
-          <h4
-            className="dark:text-vega-light-300 text-vega-dark-300 uppercase"
-            data-testid="verified-accounts"
-          >
+          <h4 className="text-gs-300 uppercase" data-testid="verified-accounts">
             {t('proofsOfOwnership', '{{count}} proofs of ownership', {
               count: provider.proofs.length,
             })}
@@ -183,15 +180,13 @@ export const OracleFullProfile = ({
               )}
             </div>
           ) : (
-            <p className="dark:text-vega-light-300 text-vega-dark-300">
+            <p className="text-gs-300">
               {t('This oracle has not proven ownership of any accounts.')}
             </p>
           )}
         </div>
         <div className="col-span-1">
-          <h4 className="dark:text-vega-light-300 text-vega-dark-300 uppercase">
-            {t('Details')}
-          </h4>
+          <h4 className="text-gs-300 uppercase">{t('Details')}</h4>
           <div className="flex flex-col gap-1">
             {dataSourceSpecId && (
               <ExternalLink

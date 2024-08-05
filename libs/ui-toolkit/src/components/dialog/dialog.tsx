@@ -41,7 +41,7 @@ export function Dialog({
     // Dimensions
     'max-w-[95vw] sm:max-w-[90vw] p-4 md:p-8 rounded-lg',
     // Need to apply background and text colors again as content is rendered in a portal
-    'dark:bg-black bg-white dark:text-white',
+    'bg-gs-900 text-gs-50',
     getIntentBorder(intent),
     {
       'w-[520px]': size === 'small',
@@ -54,7 +54,7 @@ export function Dialog({
     <DialogPrimitives.Root open={open} onOpenChange={(x) => onChange?.(x)}>
       <DialogPrimitives.Portal>
         <DialogPrimitives.Overlay
-          className="fixed inset-0 dark:bg-black/80 bg-black/50 z-20"
+          className="fixed inset-0 bg-gs-0/80 z-20"
           data-testid="dialog-overlay"
         />
         <DialogPrimitives.Content

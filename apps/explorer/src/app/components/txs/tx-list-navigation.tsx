@@ -53,7 +53,7 @@ export const TxsListNavigation = ({
         </div>
         <div className="float-right mr-2">
           {loading ? (
-            <span className="text-vega-light-300">{t('Loading...')}</span>
+            <span className="text-gs-300">{t('Loading...')}</span>
           ) : null}
         </div>
       </menu>

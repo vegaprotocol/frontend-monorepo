@@ -140,7 +140,7 @@ export const RewardHoarderBonus = ({
               >
                 <div
                   className={classNames(
-                    'relative w-full rounded-[100px] bg-gray-200 dark:bg-gray-800',
+                    'relative w-full rounded-[100px] bg-gs-200',
                     progressBarHeight
                   )}
                 >

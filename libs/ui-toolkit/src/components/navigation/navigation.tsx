@@ -13,7 +13,7 @@ import type {
   NavigationProps,
 } from './navigation-utils';
 import { setSizeVariantClasses } from './navigation-utils';
-import { NavigationBreakpoint, NavigationContext } from './navigation-utils';
+import { NavigationBreakpoint } from './navigation-utils';
 import {
   NavigationDrawerTrigger,
   NavigationDrawerContext,
@@ -24,8 +24,7 @@ import {
 const Logo = ({
   appName,
   homeLink,
-}: Pick<NavigationProps, 'theme' | 'appName' | 'homeLink'>) => {
-  const { theme } = useContext(NavigationContext);
+}: Pick<NavigationProps, 'appName' | 'homeLink'>) => {
   return (
     <div className="flex h-full gap-4 items-center">
       {homeLink ? (
@@ -42,13 +41,7 @@ const Logo = ({
           className={classNames(
             'group-[.nav-size-small]:text-sm',
             'font-alpha calt lowercase text-xl tracking-[1px] whitespace-nowrap leading-1',
-            'border-l pl-4',
-            {
-              'border-l-vega-light-200 dark:border-l-vega-dark-200':
-                theme === 'system',
-              'border-l-vega-light-200': theme === 'light',
-              'border-l-vega-dark-200': theme === 'dark' || theme === 'yellow',
-            }
+            'border-l border-l-gs-200 pl-4'
           )}
         >
           {appName}
@@ -130,18 +123,13 @@ export const NavigationTrigger = ({
 }: ComponentProps<typeof NavigationMenu.Trigger> & {
   isActive?: boolean;
 } & NavigationElementProps) => {
-  const { theme } = useContext(NavigationContext);
   const insideDrawer = useContext(NavigationDrawerContext);
   return (
     <NavigationMenu.Trigger
       className={classNames(
         'h-12 [.drawer-content_&]:h-min flex items-center relative gap-2',
         {
-          'text-black dark:text-white': isActive && theme === 'system',
-          'text-black': isActive && theme === 'light',
-          'text-white': isActive && theme === 'dark',
-          'text-black dark:[.drawer-content_&]:text-white':
-            isActive && theme === 'yellow',
+          'text-gs-50': isActive,
         },
         determineIfHidden({ hide, hideInDrawer }),
         className
@@ -159,13 +147,8 @@ export const NavigationTrigger = ({
         aria-hidden="true"
         className={classNames(
           'absolute bottom-0 left-0 w-full h-[2px] [.navigation-content_&]:hidden [.drawer-content_&]:hidden',
-          { hidden: !isActive },
-          {
-            'bg-vega-yellow-550 dark:bg-vega-yellow-500': theme === 'system',
-            'bg-vega-yellow-550': theme === 'light',
-            'bg-vega-yellow-500': theme === 'dark',
-            'bg-black': theme === 'yellow',
-          }
+          'bg-vega-yellow-550 dark:bg-vega-yellow-500',
+          { hidden: !isActive }
         )}
       ></div>
     </NavigationMenu.Trigger>
@@ -176,7 +159,6 @@ export const NavigationContent = ({
   className,
   ...props
 }: ComponentProps<typeof NavigationMenu.Content>) => {
-  const { theme } = useContext(NavigationContext);
   const insideDrawer = useContext(NavigationDrawerContext);
 
   const content = (
@@ -190,15 +172,9 @@ export const NavigationContent = ({
           'navigation-content',
           'absolute z-20 top-12 w-max',
           'p-6 mt-1 min-w-[290px]',
-          'text-vega-light-300 dark:text-vega-dark-300',
-          'border rounded border-vega-light-200 dark:border-vega-dark-200',
-          'text-vega-light-300 dark:text-vega-light-300',
-          {
-            'bg-vega-light-100 dark:bg-vega-dark-100':
-              theme === 'system' || theme === 'yellow',
-            'bg-vega-light-100': theme === 'light',
-            'bg-vega-dark-100': theme === 'dark',
-          }
+          'text-gs-0',
+          'border rounded border-gs-400',
+          'bg-gs-800'
         )}
       >
         {children}
@@ -220,7 +196,6 @@ export const NavigationLink = ({
   to,
   ...props
 }: ComponentProps<typeof NavLink>) => {
-  const { theme } = useContext(NavigationContext);
   const setDrawerOpen = useNavigationDrawer((state) => state.setDrawerOpen);
   return (
     <NavigationMenu.Link
@@ -240,11 +215,7 @@ export const NavigationLink = ({
           <>
             <span
               className={classNames({
-                'text-black dark:text-white': isActive && theme === 'system',
-                'text-black': isActive && theme === 'light',
-                'text-white': isActive && theme === 'dark',
-                'text-black dark:[.navigation-content_&]:text-white dark:[.drawer-content_&]:text-white':
-                  isActive && theme === 'yellow',
+                'text-gs-50': isActive,
               })}
             >
               {children as ReactNode}
@@ -253,14 +224,8 @@ export const NavigationLink = ({
               aria-hidden="true"
               className={classNames(
                 'absolute bottom-0 left-0 w-full h-[2px] [.navigation-content_&]:hidden [.drawer-content_&]:hidden',
-                { hidden: !isActive },
-                {
-                  'bg-vega-yellow-550 dark:bg-vega-yellow-500':
-                    theme === 'system',
-                  'bg-vega-yellow-550': theme === 'light',
-                  'bg-vega-yellow-500': theme === 'dark',
-                  'bg-black': theme === 'yellow',
-                }
+                'bg-vega-yellow-550 dark:bg-vega-yellow-500',
+                { hidden: !isActive }
               )}
             ></div>
           </>
@@ -275,7 +240,6 @@ export const Navigation = ({
   homeLink = '/',
   children,
   actions,
-  theme = 'system',
   breakpoints = [478, 1000],
   onResize,
 }: NavigationProps) => {
@@ -312,77 +276,47 @@ export const Navigation = ({
   }));
 
   return (
-    <NavigationContext.Provider value={{ theme }}>
-      <NavigationMenu.Root
-        ref={navigationRef}
-        id="navigation"
+    <NavigationMenu.Root
+      ref={navigationRef}
+      id="navigation"
+      className={classNames(
+        'h-12',
+        'group flex gap-4 items-center',
+        'border-b px-3 relative border-b-gs-200'
+      )}
+      data-testid="navigation"
+    >
+      <Logo appName={appName} homeLink={homeLink} />
+      <div
         className={classNames(
-          'h-12',
-          'group flex gap-4 items-center',
-          'border-b px-3 relative',
-          // text
-          {
-            'text-black dark:text-white': theme === 'system',
-            'text-black': theme === 'light' || theme === 'yellow',
-            'text-white': theme === 'dark',
-          },
-          // border
-          {
-            'border-b-vega-light-200 dark:border-b-vega-dark-200':
-              theme === 'system',
-            'border-b-vega-light-200': theme === 'light',
-            'border-b-vega-dark-200': theme === 'dark',
-            'border-b-black': theme === 'yellow',
-          },
-          // background
-          {
-            'bg-white dark:bg-black': theme === 'system',
-            'bg-white': theme === 'light',
-            'bg-black': theme === 'dark',
-            'bg-vega-yellow-500': theme === 'yellow',
-          }
+          'navbar',
+          'flex gap-4 h-12 items-center font-alpha text-lg text-gs-300'
         )}
-        data-testid="navigation"
       >
-        <Logo appName={appName} theme={theme} homeLink={homeLink} />
-        <div
-          className={classNames(
-            'navbar',
-            'flex gap-4 h-12 items-center font-alpha text-lg',
-            {
-              'text-vega-light-300 dark:text-vega-dark-300': theme === 'system',
-              'text-vega-light-300': theme === 'light',
-              'text-vega-dark-300': theme === 'dark',
-              'text-vega-dark-200': theme === 'yellow',
-            }
-          )}
-        >
-          {children}
-        </div>
-        <Spacer />
-        {(actions || children) && (
-          <div ref={actionsRef} className="flex gap-2 items-center">
-            {actions}
-            <Drawer
-              open={drawerOpen}
-              onChange={(isOpen) => setDrawerOpen(isOpen)}
-              trigger={<NavigationDrawerTrigger theme={theme} />}
-              container={actionsRef.current}
+        {children}
+      </div>
+      <Spacer />
+      {(actions || children) && (
+        <div ref={actionsRef} className="flex gap-2 items-center">
+          {actions}
+          <Drawer
+            open={drawerOpen}
+            onChange={(isOpen) => setDrawerOpen(isOpen)}
+            trigger={<NavigationDrawerTrigger />}
+            container={actionsRef.current}
+          >
+            <NavigationDrawerContent
+              style={{
+                paddingTop: `${
+                  navigationRef?.current?.getBoundingClientRect().bottom || 0
+                }px`,
+              }}
             >
-              <NavigationDrawerContent
-                theme={theme}
-                style={{
-                  paddingTop: `${
-                    navigationRef?.current?.getBoundingClientRect().bottom || 0
-                  }px`,
-                }}
-              >
-                {children}
-              </NavigationDrawerContent>
-            </Drawer>
-          </div>
-        )}
-      </NavigationMenu.Root>
-    </NavigationContext.Provider>
+              {children}
+            </NavigationDrawerContent>
+          </Drawer>
+        </div>
+      )}
+    </NavigationMenu.Root>
   );
 };

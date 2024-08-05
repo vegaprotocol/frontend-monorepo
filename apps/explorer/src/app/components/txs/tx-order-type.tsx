@@ -163,20 +163,17 @@ export function getLabelForTransfer(
   if (transfer.toAccountType === 'ACCOUNT_TYPE_NETWORK_TREASURY') {
     return {
       type,
-      colours:
-        'text-vega-green dark:text-green bg-vega-dark-150 dark:bg-vega-dark-250',
+      colours: 'text-vega-green dark:text-green bg-gs-200',
     };
   } else if (transfer.recurring) {
     return {
       type,
-      colours:
-        'text-vega-yellow dark:text-yellow bg-vega-dark-150 dark:bg-vega-dark-250',
+      colours: 'text-vega-yellow dark:text-yellow bg-gs-200',
     };
   }
   return {
     type,
-    colours:
-      'text-white dark:text-white bg-vega-dark-150 dark:bg-vega-dark-250',
+    colours: 'text-white bg-gs-200',
   };
 }
 
@@ -255,8 +252,7 @@ export function getLabelForChainEvent(
 export const TxOrderType = ({ orderType, command }: TxOrderTypeProps) => {
   let type = displayString[orderType] || orderType;
 
-  let colours =
-    'text-white dark:text-white bg-vega-dark-150 dark:bg-vega-dark-250';
+  let colours = 'text-gs-50 bg-gs-500';
 
   // This will get unwieldy and should probably produce a different colour of tag
   // Note that colours are currently arbitrary

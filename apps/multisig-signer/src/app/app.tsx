@@ -29,8 +29,8 @@ import type { InMemoryCacheConfig } from '@apollo/client';
 const pageWrapperClasses = classnames(
   'min-h-screen w-screen',
   'grid grid-rows-[auto,1fr]',
-  'bg-white dark:bg-black',
-  'text-neutral-900 dark:text-neutral-100'
+  'bg-gs-900',
+  'text-gs-50'
 );
 
 const ConnectedApp = ({ config }: { config: EthereumConfig | null }) => {

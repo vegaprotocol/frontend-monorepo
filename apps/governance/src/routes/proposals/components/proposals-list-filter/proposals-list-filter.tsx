@@ -523,7 +523,7 @@ export const Filters = ({ count }: { count?: number }) => {
                     <VegaIcon
                       name={VegaIconNames.CROSS}
                       size={12}
-                      className="text-vega-light-200 absolute top-0 right-0"
+                      className="text-gs-100 absolute top-0 right-0"
                     />
                   </button>
                 )}

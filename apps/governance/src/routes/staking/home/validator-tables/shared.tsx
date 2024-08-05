@@ -221,7 +221,7 @@ export const PendingStakeRenderer = ({ data }: PendingStakeRendererProps) => {
           </div>
           {data.pendingUserStake && (
             <div
-              className="text-vega-green border-t border-t-vega-dark-200 mt-1.5 pt-1"
+              className="text-vega-green border-t border-t-gs-800 mt-1.5 pt-1"
               data-testid="pending-user-stake-tooltip"
             >
               {t('myPendingStake')}:{' '}
@@ -280,7 +280,7 @@ export const TotalStakeRenderer = ({ data }: TotalStakeRendererProps) => {
           </div>
           {data.stakedByUser && (
             <div
-              className="text-vega-green border-t border-t-vega-dark-200 mt-1.5 pt-1"
+              className="text-vega-green border-t border-t-gs-800 mt-1.5 pt-1"
               data-testid="staked-by-user-tooltip"
             >
               {t('stakedByMe')}: {data.stakedByUser}

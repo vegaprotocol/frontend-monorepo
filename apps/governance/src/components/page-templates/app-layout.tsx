@@ -3,7 +3,7 @@ import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import type { ReactNode } from 'react';
 import { AnnouncementBanner } from '@vegaprotocol/announcements';
 import { Nav } from '../nav';
-import { Networks, useEnvironment } from '@vegaprotocol/environment';
+import { useEnvironment } from '@vegaprotocol/environment';
 import {
   ProtocolUpgradeCountdownMode,
   ProtocolUpgradeInProgressNotification,
@@ -16,7 +16,7 @@ interface AppLayoutProps {
   children: ReactNode;
 }
 export const AppLayout = ({ children }: AppLayoutProps) => {
-  const { VEGA_ENV, ANNOUNCEMENTS_CONFIG_URL } = useEnvironment();
+  const { ANNOUNCEMENTS_CONFIG_URL } = useEnvironment();
   const { isReadOnly } = useVegaWallet();
   const AppLayoutClasses = classNames(
     'app w-full max-w-[1500px] mx-auto grid',
@@ -36,7 +36,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
             configUrl={ANNOUNCEMENTS_CONFIG_URL}
           />
         )}
-        <Nav theme={VEGA_ENV === Networks.TESTNET ? 'yellow' : 'dark'} />
+        <Nav />
         <NotificationsContainer />
       </div>
       <div className={AppLayoutClasses}>{children}</div>

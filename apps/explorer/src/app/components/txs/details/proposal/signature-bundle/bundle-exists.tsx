@@ -30,7 +30,7 @@ export const BundleExists = ({
   // Note if this is wrong, the wrong decoder will be used which will give incorrect data
 
   return (
-    <div className="w-auto h-10 max-w-lg border-2 border-solid border-vega-light-100 dark:border-vega-dark-200 p-5 mt-5">
+    <div className="w-auto h-10 max-w-lg border-2 border-solid border-gs-100  p-5 mt-5">
       <IconForBundleStatus status={status} />
       <h1 className="text-xl pb-1">
         {status === 'STATUS_ENABLED'

@@ -6,6 +6,20 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --gs-0: #fff;
+    --gs-50: #dcdee3;
+    --gs-100: #94969b;
+    --gs-200: #7c7e83;
+    --gs-300: #626469;
+    --gs-400: #44464b;
+    --gs-500: #323339;
+    --gs-600: #292b30;
+    --gs-700: #202227;
+    --gs-800: #17191e;
+    --gs-900: #05060c;
+  }
+
   *,
   *::before,
   *::after {
@@ -25,7 +39,7 @@
 
 @layer components {
   .border-default {
-    @apply border-vega-dark-200;
+    @apply border-gs-400;
   }
 }
 
@@ -52,13 +66,13 @@
 
 /* Dark variables */
 .ag-theme-balham-dark {
-  --ag-background-color: theme(colors.black);
-  --ag-border-color: theme(colors.neutral[700]);
-  --ag-header-background-color: theme(colors.black);
-  --ag-odd-row-background-color: theme(colors.black);
-  --ag-header-column-separator-color: theme(colors.neutral[600]);
-  --ag-row-border-color: theme(colors.black);
-  --ag-row-hover-color: theme(colors.neutral[800]);
+  --ag-background-color: theme(colors.gs.900);
+  --ag-border-color: theme(colors.gs.400);
+  --ag-header-background-color: theme(colors.gs.900);
+  --ag-odd-row-background-color: theme(colors.gs.900);
+  --ag-header-column-separator-color: theme(colors.gs.400);
+  --ag-row-border-color: theme(colors.gs.900);
+  --ag-row-hover-color: theme(colors.gs.700);
 }
 
 .validators-table .ag-theme-balham-dark .ag-body-horizontal-scroll {

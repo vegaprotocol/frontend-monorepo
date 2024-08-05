@@ -54,8 +54,8 @@ export const BurgerIcon = ({
 
 export const NavigationDrawerTrigger = forwardRef<
   HTMLButtonElement,
-  Pick<NavigationProps, 'theme'>
->(({ theme }, ref) => {
+  HTMLAttributes<HTMLButtonElement>
+>((_, ref) => {
   const { drawerOpen, setDrawerOpen } = useNavigationDrawer((state) => ({
     drawerOpen: state.drawerOpen,
     setDrawerOpen: state.setDrawerOpen,
@@ -77,12 +77,7 @@ export const NavigationDrawerTrigger = forwardRef<
       }}
     >
       <BurgerIcon
-        className={classNames({
-          'stroke-black dark:stroke-white': theme === 'system',
-          'stroke-black': theme === 'light' || theme === 'yellow',
-          'stroke-white': theme === 'dark',
-          'dark:stroke-white': drawerOpen && theme === 'yellow',
-        })}
+        className="stroke-black dark:stroke-white"
         variant={drawerOpen ? 'close' : 'burger'}
       />
     </button>
@@ -90,10 +85,9 @@ export const NavigationDrawerTrigger = forwardRef<
 });
 
 export const NavigationDrawerContent = ({
-  theme,
   children,
   style,
-}: { style?: CSSProperties } & Pick<NavigationProps, 'theme' | 'children'>) => {
+}: { style?: CSSProperties } & Pick<NavigationProps, 'children'>) => {
   return (
     <NavigationDrawerContext.Provider value={true}>
       <div
@@ -102,25 +96,11 @@ export const NavigationDrawerContent = ({
           'relative h-full overflow-auto border-l',
           'font-alpha px-4 pb-8',
           // text
-          {
-            'text-vega-light-300 dark:text-vega-dark-300':
-              theme === 'system' || theme === 'yellow',
-            'text-vega-light-300': theme === 'light',
-            'text-vega-dark-300': theme === 'dark',
-          },
+          'text-gs-300',
           // border
-          {
-            'border-l-vega-light-200 dark:border-l-vega-dark-200':
-              theme === 'system' || theme === 'yellow',
-            'border-l-vega-light-200': theme === 'light',
-            'border-l-vega-dark-200': theme === 'dark',
-          },
+          'border-l-gs-200',
           // background
-          {
-            'bg-white dark:bg-black': theme === 'system' || theme === 'yellow',
-            'bg-white': theme === 'light',
-            'bg-black': theme === 'dark',
-          }
+          'bg-gs-900'
         )}
         style={style}
       >

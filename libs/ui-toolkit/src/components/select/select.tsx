@@ -75,7 +75,7 @@ export const RichSelect = forwardRef<
             className={classNames(
               'relative',
               'z-20',
-              'bg-white dark:bg-black',
+              'bg-gs-900',
               'border border-neutral-500 focus:border-black dark:focus:border-white rounded',
               'overflow-hidden',
               'shadow-lg'

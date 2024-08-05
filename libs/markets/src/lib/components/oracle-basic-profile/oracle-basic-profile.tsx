@@ -91,10 +91,7 @@ export const OracleBasicProfile = ({
             >
               {provider.name}
             </ButtonLink>
-            <span
-              className="dark:text-vega-light-300 text-vega-dark-300"
-              data-testid="verified-proofs"
-            >
+            <span className="text-gs-300" data-testid="verified-proofs">
               ({verifiedProofs.length})
             </span>
           </span>
@@ -102,7 +99,7 @@ export const OracleBasicProfile = ({
         <span
           className={classNames(
             {
-              'text-gray-700 dark:text-gray-300': intent === Intent.None,
+              'text-gs-700': intent === Intent.None,
               'text-vega-blue': intent === Intent.Primary,
               'text-vega-green dark:text-vega-green': intent === Intent.Success,
               'text-yellow-600 dark:text-yellow': intent === Intent.Warning,
@@ -114,14 +111,9 @@ export const OracleBasicProfile = ({
           <Icon size={3} name={icon as IconName} />
         </span>
       </span>
-      <p className="mb-2 text-sm dark:text-vega-light-300 text-vega-dark-300">
-        {message}
-      </p>
+      <p className="mb-2 text-sm text-gs-300">{message}</p>
       {oracleMarkets && (
-        <p
-          data-testid="signed-proofs"
-          className="mb-2 text-sm dark:text-vega-light-300 text-vega-dark-300"
-        >
+        <p data-testid="signed-proofs" className="mb-2 text-sm text-gs-300">
           {t('involvedInMarkets', 'Involved in {{count}} markets', {
             count: oracleMarkets.length,
           })}

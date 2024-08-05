@@ -82,7 +82,7 @@ const NetworkLabel = ({
   isCurrent = false,
   isAvailable = false,
 }: NetworkLabelProps) => (
-  <span className="text-vega-dark-300 dark:text-vega-light-300">
+  <span className="text-gs-300">
     {useLabelText({ isCurrent, isAvailable })}
   </span>
 );
@@ -127,7 +127,7 @@ export const NetworkSwitcher = ({
         <DropdownMenuTrigger
           data-testid="network-switcher"
           className={classNames(
-            'flex justify-between items-center text-sm text-vega-dark-600 dark:text-vega-light-600 py-1 px-2 rounded border border-vega-dark-200 whitespace-nowrap dark:hover:bg-vega-dark-500 hover:bg-vega-light-500',
+            'flex justify-between items-center text-sm py-1 px-2 rounded border border-gs-100 whitespace-nowrap',
             className
           )}
         >

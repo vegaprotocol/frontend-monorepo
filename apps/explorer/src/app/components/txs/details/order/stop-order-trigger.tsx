@@ -112,7 +112,7 @@ const StopOrderTriggerSummary = ({
         className={`${StatusBottomColor[status]} px-3 py-2 md:px-6 flex space-x-4`}
       >
         {orderSubmission && (
-          <p className="text-vega-grey-400 strike">
+          <p className="text-gs-400 strike">
             <OrderTxSummary order={orderSubmission} />
           </p>
         )}

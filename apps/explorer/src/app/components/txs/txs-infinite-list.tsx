@@ -70,7 +70,7 @@ export const TxsInfiniteList = ({
     <div>
       <table className={className} data-testid="transactions-list">
         <thead>
-          <tr className="w-full mb-3 text-vega-dark-300 uppercase text-left">
+          <tr className="w-full mb-3 text-gs-300 uppercase text-left">
             <th>
               <span className="hidden xl:inline">{t('Txn')} &nbsp;</span>
               <span>ID</span>

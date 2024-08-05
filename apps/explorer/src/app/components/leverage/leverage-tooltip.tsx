@@ -1,7 +1,6 @@
 import { t } from '@vegaprotocol/i18n';
 
-const borderClass =
-  'border-solid border-2 border-vega-dark-200 border-collapse p-2';
+const borderClass = 'border-solid border-2 border-gs-200 border-collapse p-2';
 
 export type LeverageTooltipProps = {
   marginFactor: string;

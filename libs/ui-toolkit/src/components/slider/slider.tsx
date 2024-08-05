@@ -62,7 +62,7 @@ export const SliderRange = ({ className, ...props }: SliderRangeProps) => {
 };
 
 const tooltipClasses =
-  'before:content-[attr(data-tooltip)] before:hidden hover:before:block before:absolute before:top-[-30px] before:left-[50%] before:-translate-x-1/2 before:bg-vega-light-100 before:dark:bg-vega-dark-100 before:border before:border-vega-light-200 before:dark:border-vega-dark-200 before:px-2 before:py-1 before:z-20 before:rounded before:text-xs before:text-black before:dark:text-white';
+  'before:content-[attr(data-tooltip)] before:hidden hover:before:block before:absolute before:top-[-30px] before:left-[50%] before:-translate-x-1/2 before:bg-gs-100 before:border before:border-gs-200 before:px-2 before:py-1 before:z-20 before:rounded before:text-xs before:text-gs-0';
 
 export const SliderThumb = ({
   className,
