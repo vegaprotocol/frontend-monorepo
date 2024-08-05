@@ -7,6 +7,7 @@ import {
   generateNoVotes,
 } from '../test-helpers/generate-proposals';
 import type { AppState } from '../../../contexts/app-state/app-state-context';
+import { type ProposalNode } from '../components/proposal/proposal-utils';
 
 const mockTotalSupply = new BigNumber(100);
 
@@ -26,29 +27,14 @@ jest.mock('../../../contexts/app-state/app-state-context', () => ({
   }),
 }));
 
-jest.mock('@vegaprotocol/network-parameters', () => ({
-  ...jest.requireActual('@vegaprotocol/network-parameters'),
-  useNetworkParams: jest.fn(() => ({
-    params: {
-      governance_proposal_updateMarket_requiredMajority: '0.5',
-      governance_proposal_updateMarket_requiredMajorityLP: '0.5',
-      governance_proposal_updateMarket_requiredParticipation: '0.5',
-      governance_proposal_updateMarket_requiredParticipationLP: '0.5',
-      governance_proposal_market_requiredMajority: '0.5',
-      governance_proposal_market_requiredParticipation: '0.5',
-      governance_proposal_asset_requiredMajority: '0.5',
-      governance_proposal_asset_requiredParticipation: '0.5',
-      governance_proposal_updateAsset_requiredMajority: '0.5',
-      governance_proposal_updateAsset_requiredParticipation: '0.5',
-      governance_proposal_updateNetParam_requiredMajority: '0.5',
-      governance_proposal_updateNetParam_requiredParticipation: '0.5',
-      governance_proposal_freeform_requiredMajority: '0.5',
-      governance_proposal_freeform_requiredParticipation: '0.5',
-    },
-    loading: false,
-    error: null,
-  })),
-}));
+const MOCK_REST_DATA = {
+  proposal: {
+    requiredLiquidityProviderMajority: '0.5',
+    requiredMajority: '0.5',
+    requiredParticipation: '0.5',
+    requiredLiquidityProviderParticipation: '0.5',
+  },
+} as unknown as ProposalNode;
 
 describe('use-vote-information', () => {
   it('returns all required vote information', () => {
@@ -80,7 +66,11 @@ describe('use-vote-information', () => {
     const {
       result: { current },
     } = renderHook(() =>
-      useVoteInformation({ terms: proposal.terms, votes: proposal.votes })
+      useVoteInformation({
+        terms: proposal.terms,
+        votes: proposal.votes,
+        restData: MOCK_REST_DATA,
+      })
     );
 
     expect(current?.requiredMajorityLPPercentage).toEqual(new BigNumber(50));
@@ -126,7 +116,11 @@ describe('use-vote-information', () => {
     const {
       result: { current },
     } = renderHook(() =>
-      useVoteInformation({ terms: proposal.terms, votes: proposal.votes })
+      useVoteInformation({
+        terms: proposal.terms,
+        votes: proposal.votes,
+        restData: MOCK_REST_DATA,
+      })
     );
 
     expect(current?.participationMet).toEqual(false);
@@ -150,7 +144,11 @@ describe('use-vote-information', () => {
     const {
       result: { current },
     } = renderHook(() =>
-      useVoteInformation({ terms: proposal.terms, votes: proposal.votes })
+      useVoteInformation({
+        terms: proposal.terms,
+        votes: proposal.votes,
+        restData: MOCK_REST_DATA,
+      })
     );
 
     expect(current?.participationMet).toEqual(false);
@@ -172,7 +170,11 @@ describe('use-vote-information', () => {
     const {
       result: { current },
     } = renderHook(() =>
-      useVoteInformation({ terms: proposal.terms, votes: proposal.votes })
+      useVoteInformation({
+        terms: proposal.terms,
+        votes: proposal.votes,
+        restData: MOCK_REST_DATA,
+      })
     );
 
     expect(current?.participationMet).toEqual(true);
@@ -196,7 +198,11 @@ describe('use-vote-information', () => {
     const {
       result: { current },
     } = renderHook(() =>
-      useVoteInformation({ terms: proposal.terms, votes: proposal.votes })
+      useVoteInformation({
+        terms: proposal.terms,
+        votes: proposal.votes,
+        restData: MOCK_REST_DATA,
+      })
     );
 
     expect(current?.participationMet).toEqual(true);
@@ -232,7 +238,11 @@ describe('use-vote-information', () => {
     const {
       result: { current },
     } = renderHook(() =>
-      useVoteInformation({ terms: proposal.terms, votes: proposal.votes })
+      useVoteInformation({
+        terms: proposal.terms,
+        votes: proposal.votes,
+        restData: MOCK_REST_DATA,
+      })
     );
 
     expect(current?.willPassByTokenVote).toEqual(false);
@@ -267,7 +277,11 @@ describe('use-vote-information', () => {
     const {
       result: { current },
     } = renderHook(() =>
-      useVoteInformation({ terms: proposal.terms, votes: proposal.votes })
+      useVoteInformation({
+        terms: proposal.terms,
+        votes: proposal.votes,
+        restData: MOCK_REST_DATA,
+      })
     );
 
     expect(current?.willPassByTokenVote).toEqual(false);
@@ -302,7 +316,11 @@ describe('use-vote-information', () => {
     const {
       result: { current },
     } = renderHook(() =>
-      useVoteInformation({ terms: proposal.terms, votes: proposal.votes })
+      useVoteInformation({
+        terms: proposal.terms,
+        votes: proposal.votes,
+        restData: MOCK_REST_DATA,
+      })
     );
 
     expect(current?.willPassByTokenVote).toEqual(false);
@@ -337,7 +355,11 @@ describe('use-vote-information', () => {
     const {
       result: { current },
     } = renderHook(() =>
-      useVoteInformation({ terms: proposal.terms, votes: proposal.votes })
+      useVoteInformation({
+        terms: proposal.terms,
+        votes: proposal.votes,
+        restData: MOCK_REST_DATA,
+      })
     );
 
     expect(current?.willPassByTokenVote).toEqual(false);

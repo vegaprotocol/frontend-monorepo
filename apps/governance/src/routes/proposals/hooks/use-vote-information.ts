@@ -1,6 +1,5 @@
 import { useAppState } from '../../../contexts/app-state/app-state-context';
 import { BigNumber } from '../../../lib/bignumber';
-import { useProposalNetworkParams } from './use-proposal-network-params';
 import { addDecimal } from '@vegaprotocol/utils';
 import {
   type ProposalTermsFieldsFragment,
@@ -9,33 +8,31 @@ import {
 } from '../__generated__/Proposals';
 import { type ProposalChangeType } from '../types';
 import sum from 'lodash/sum';
+import { type ProposalNode } from '../../../routes/proposals/components/proposal/proposal-utils';
 
 export const useVoteInformation = ({
   votes,
   terms,
   yesELS,
   noELS,
+  restData,
 }: {
   votes: VoteFieldsFragment;
   terms: ProposalTermsFieldsFragment;
   yesELS?: number[];
   noELS?: number[];
+  restData?: ProposalNode | null;
 }) => {
   const {
     appState: { totalSupply, decimals },
   } = useAppState();
-
-  const params = useProposalNetworkParams();
-
-  if (!params) return;
-
-  const paramsForChange = params[terms.change.__typename];
+  if (!restData) return;
 
   return getVoteData(
     terms.change.__typename,
-    paramsForChange,
     votes,
     totalSupply,
+    restData,
     decimals,
     yesELS,
     noELS
@@ -45,25 +42,24 @@ export const useVoteInformation = ({
 export const useBatchVoteInformation = ({
   votes,
   terms,
+  restData,
 }: {
   votes: VoteFieldsFragment;
   terms: ProposalTermsFieldsFragment[];
+  restData?: ProposalNode | null;
 }) => {
   const {
     appState: { totalSupply, decimals },
   } = useAppState();
 
-  const params = useProposalNetworkParams();
-
-  if (!params) return;
+  if (!restData) return;
 
   return terms.map((t) => {
-    const paramsForChange = params[t.change.__typename];
     return getVoteData(
       t.change.__typename,
-      paramsForChange,
       votes,
       totalSupply,
+      restData,
       decimals
     );
   });
@@ -71,26 +67,23 @@ export const useBatchVoteInformation = ({
 
 const getVoteData = (
   changeType: ProposalChangeType,
-  params: {
-    requiredMajority: BigNumber;
-    requiredMajorityLP: BigNumber;
-    requiredParticipation: BigNumber;
-    requiredParticipationLP: BigNumber;
-  },
   votes: ProposalFieldsFragment['votes'],
   totalSupply: BigNumber,
+  restData: ProposalNode,
   decimals: number,
   /** A list of ELS yes votes */
   yesELS?: number[],
   /** A list if ELS no votes */
   noELS?: number[]
 ) => {
-  const requiredMajorityPercentage = params.requiredMajority
-    ? new BigNumber(params.requiredMajority).times(100)
+  const requiredMajority = restData.proposal.requiredMajority;
+  const requiredMajorityPercentage = requiredMajority
+    ? new BigNumber(requiredMajority).times(100)
     : new BigNumber(100);
 
-  const requiredMajorityLPPercentage = params.requiredMajorityLP
-    ? new BigNumber(params.requiredMajorityLP).times(100)
+  const requiredParticipation = restData.proposal.requiredParticipation;
+  const requiredMajorityLPPercentage = requiredParticipation
+    ? new BigNumber(requiredParticipation).times(100)
     : new BigNumber(100);
 
   const noTokens = new BigNumber(
@@ -145,15 +138,17 @@ const getVoteData = (
         .dividedBy(totalEquityLikeShareWeight);
 
   const participationMet = totalTokensVoted.isGreaterThan(
-    totalSupply.multipliedBy(params.requiredParticipation)
+    totalSupply.multipliedBy(requiredParticipation)
   );
 
   const lpVoteWeight = yesEquityLikeShareWeight
     .dividedBy(totalEquityLikeShareWeight)
     .multipliedBy(100);
 
-  const participationLPMet = params.requiredParticipationLP
-    ? lpVoteWeight.isGreaterThan(params.requiredParticipationLP)
+  const requiredParticipationLP =
+    restData.proposal.requiredLiquidityProviderParticipation;
+  const participationLPMet = requiredParticipationLP
+    ? lpVoteWeight.isGreaterThan(requiredParticipationLP)
     : false;
 
   const majorityMet = yesPercentage.isGreaterThanOrEqualTo(
@@ -215,12 +210,8 @@ const getVoteData = (
     totalVotes: new BigNumber(votes.yes.totalNumber ?? 0).plus(
       votes.no.totalNumber ?? 0
     ),
-    requiredParticipation: new BigNumber(params.requiredParticipation).times(
-      100
-    ),
-    requiredParticipationLP: new BigNumber(
-      params.requiredParticipationLP
-    ).times(100),
+    requiredParticipation: new BigNumber(requiredParticipation).times(100),
+    requiredParticipationLP: new BigNumber(requiredParticipationLP).times(100),
     willPass,
   };
 };
