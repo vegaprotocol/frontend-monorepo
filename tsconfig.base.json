@@ -20,6 +20,7 @@
       "@vegaprotocol/announcements": ["libs/announcements/src/index.ts"],
       "@vegaprotocol/apollo-client": ["libs/apollo-client/src/index.ts"],
       "@vegaprotocol/assets": ["libs/assets/src/index.ts"],
+      "@vegaprotocol/browser-wallet": ["libs/browser-wallet/src/index.ts"],
       "@vegaprotocol/candles-chart": ["libs/candles-chart/src/index.ts"],
       "@vegaprotocol/cypress": ["libs/cypress/src/index.ts"],
       "@vegaprotocol/data-provider": ["libs/data-provider/src/index.ts"],
@@ -61,8 +62,7 @@
         "libs/wallet-react/src/testing.ts"
       ],
       "@vegaprotocol/web3": ["libs/web3/src/index.ts"],
-      "@vegaprotocol/withdraws": ["libs/withdraws/src/index.ts"],
-      "browser-wallet": ["libs/browser-wallet/src/index.ts"]
+      "@vegaprotocol/withdraws": ["libs/withdraws/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"],
