@@ -61,7 +61,8 @@
         "libs/wallet-react/src/testing.ts"
       ],
       "@vegaprotocol/web3": ["libs/web3/src/index.ts"],
-      "@vegaprotocol/withdraws": ["libs/withdraws/src/index.ts"]
+      "@vegaprotocol/withdraws": ["libs/withdraws/src/index.ts"],
+      "browser-wallet": ["libs/browser-wallet/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"],
