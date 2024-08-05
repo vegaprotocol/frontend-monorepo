@@ -58,6 +58,7 @@ import {
   formatDistanceToNow,
   formatDistanceToNowStrict,
 } from 'date-fns';
+import { RankPayoutTable } from '../../components/rewards-container/rank-table';
 
 type Metric = DispatchMetric | 'STAKING_REWARD_METRIC';
 
@@ -142,6 +143,7 @@ export const CompetitionsGame = () => {
   );
   const latestScores = orderedByEpoch.length ? orderedByEpoch[0] : undefined;
   const latestScore = latestScores?.length ? latestScores[0] : undefined;
+  const isRankPayout = Boolean(dispatchStrategy.rankTable);
 
   return (
     <ErrorBoundary feature="game">
@@ -170,6 +172,11 @@ export const CompetitionsGame = () => {
               <TabsList>
                 <TabsTrigger value="scores">{t('Live scores')}</TabsTrigger>
                 <TabsTrigger value="history">{t('Score history')}</TabsTrigger>
+                {isRankPayout && (
+                  <TabsTrigger value="payout-structure">
+                    {t('Payout structure')}
+                  </TabsTrigger>
+                )}
               </TabsList>
               <TabsContent value="scores">
                 {latestScore && (
@@ -208,6 +215,11 @@ export const CompetitionsGame = () => {
                 />
               )}
             </TabsContent>
+            {isRankPayout && (
+              <TabsContent value="payout-structure">
+                <PayoutStructure rankTable={dispatchStrategy.rankTable} />
+              </TabsContent>
+            )}
           </Tabs>
         </section>
       )}
@@ -599,6 +611,10 @@ const UpdateTime = (props: { lastUpdate: string; updateFrequency: string }) => {
       </p>
     </>
   );
+};
+
+const PayoutStructure = (props: { rankTable: RankTable[] }) => {
+  return <RankPayoutTable rankTable={props.rankTable} />;
 };
 
 const useScoreUnit = (metric: Metric, asset: AssetFieldsFragment) => {

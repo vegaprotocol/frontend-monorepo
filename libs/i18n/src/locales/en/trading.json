@@ -427,6 +427,7 @@
   "Parent market": "Parent market",
   "Parent of a market": "Parent of a market",
   "Payout": "Payout",
+  "Payout structure": "Payout structure",
   "Peak size": "Peak size",
   "Peak size cannot be greater than the size ({{size}})": "Peak size cannot be greater than the size ({{size}})",
   "Peak size cannot be lower than {{stepSize}}": "Peak size cannot be lower than {{stepSize}}",
