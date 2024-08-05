@@ -98,7 +98,7 @@ export const AssetInput = ({
 export const SwapButton = ({ onClick }: { onClick: () => void }) => (
   <button
     type="button"
-    className="flex justify-center p-2 w-fit rounded-full bg-gs-700 dark:bg-black self-center -my-5 z-10 hover:bg-gs-800 hover: border-gray-400 border"
+    className="flex justify-center p-2 w-fit rounded-full bg-gs-700 self-center -my-5 z-10 hover:bg-gs-800 hover: border-gray-400 border"
     onClick={onClick}
     data-testid="swap-button"
   >

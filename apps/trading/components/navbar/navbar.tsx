@@ -117,7 +117,7 @@ export const Navbar = ({ theme = 'system' }: { theme?: Theme }) => {
           onOpenChange={(open) => setMenu((x) => (open ? x : null))}
         >
           <D.Overlay
-            className="fixed inset-0 z-20 bg-black/50 dark:bg-black/80 lg:hidden"
+            className="fixed inset-0 z-20 bg-gs-900/50 lg:hidden"
             data-testid="navbar-menu-overlay"
           />
           <D.Content

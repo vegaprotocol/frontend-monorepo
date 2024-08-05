@@ -82,16 +82,16 @@ const getClassName = (
     },
     // text
     {
-      'text-gs-50 ':
+      'text-gs-50':
         (intent !== Intent.Primary && intent !== Intent.Secondary) || minimal,
 
       // If its primary the text must always be dark enough for a yellow background
-      'text-gs-50': intent === Intent.Primary && !minimal,
+      'text-black': intent === Intent.Primary && !minimal,
       // If its secondary the text must always be light enough for a blue background
-      'text-gs-900': intent === Intent.Secondary && !minimal,
+      'text-white': intent === Intent.Secondary && !minimal,
 
-      'enabled:hover:text-gs-50': intent === Intent.Primary && minimal,
-      'enabled:hover:text-gs-900': intent === Intent.Secondary && minimal,
+      'enabled:hover:text-black': intent === Intent.Primary && minimal,
+      'enabled:hover:text-white': intent === Intent.Secondary && minimal,
 
       '[&_[data-sub-label]]:text-gs-100': intent === Intent.Primary,
     },

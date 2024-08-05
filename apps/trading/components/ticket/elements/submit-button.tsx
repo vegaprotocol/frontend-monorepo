@@ -23,7 +23,7 @@ export const SubmitButton = ({ text }: { text: string }) => {
         data-testid="place-order"
         type="submit"
         className={classNames(
-          'w-full h-12 flex flex-col justify-center items-center rounded-lg text-gs-800 p-2 transition-colors',
+          'w-full h-12 flex flex-col justify-center items-center rounded-lg text-white p-2 transition-colors',
           {
             'bg-vega-red-500 enabled:hover:bg-vega-red-550 dark:bg-vega-red-600 dark:enabled:hover:bg-vega-red-650':
               side === Side.SIDE_SELL,

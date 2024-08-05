@@ -8,7 +8,7 @@ export const RiskAckContent = () => {
   const t = useT();
   return (
     <>
-      <div className="p-6 bg-vega-light-100 dark:bg-vega-dark-100">
+      <div className="p-6 bg-gs-100">
         <ul className="list-[square] ml-4">
           <li className="mb-1">
             {t(

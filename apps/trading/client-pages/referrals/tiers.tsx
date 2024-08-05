@@ -67,7 +67,7 @@ const StakingTier = ({
         'overflow-hidden',
         'border rounded-md w-full',
         'flex flex-row',
-        'bg-white ',
+        'bg-gs-0',
         GRADIENT,
         BORDER_COLOR
       )}
@@ -312,7 +312,7 @@ const TiersTable = ({
           ),
         },
       ]}
-      className="bg-white "
+      className="bg-gs-0"
       data={data.map((d) => ({
         ...d,
         className: classNames(getTierGradient(d.tier, data.length)),
