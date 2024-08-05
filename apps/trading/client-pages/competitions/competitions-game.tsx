@@ -15,6 +15,7 @@ import {
   type RankTable,
   DispatchMetric,
   DistributionStrategyDescriptionMapping,
+  type StakingDispatchStrategy,
 } from '@vegaprotocol/types';
 import { useNetworkParam } from '@vegaprotocol/network-parameters';
 import {
@@ -218,7 +219,7 @@ export const CompetitionsGame = () => {
             </TabsContent>
             {isRankPayout && (
               <TabsContent value="payout-structure">
-                <PayoutStructure rankTable={dispatchStrategy.rankTable} />
+                <PayoutStructure dispatchStrategy={dispatchStrategy} />
               </TabsContent>
             )}
           </Tabs>
@@ -615,29 +616,27 @@ const UpdateTime = (props: { lastUpdate: string; updateFrequency: string }) => {
 };
 
 const PayoutStructure = (props: {
-  dispatchStrategy: DispatchStrategy;
-  rankTable: RankTable[];
+  dispatchStrategy: DispatchStrategy | StakingDispatchStrategy;
 }) => {
   const t = useT();
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-2">
       <p>
         {t(
           DistributionStrategyDescriptionMapping[
             props.dispatchStrategy.distributionStrategy
           ]
         )}
-        .
       </p>
-
       <p>
         {props.dispatchStrategy.rankTable &&
           t(
             'Payout percentages are base estimates assuming no individual reward multipliers are active. If users in teams have active multipliers, the reward amounts may vary.'
           )}
       </p>
-
-      <RankPayoutTable rankTable={props.rankTable} />
+      {props.dispatchStrategy.rankTable && (
+        <RankPayoutTable rankTable={props.dispatchStrategy.rankTable} />
+      )}
     </div>
   );
 };

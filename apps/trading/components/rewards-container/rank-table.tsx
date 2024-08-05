@@ -1,6 +1,8 @@
+import compact from 'lodash/compact';
 import type { RankTable } from '@vegaprotocol/types';
 import { formatNumber } from '@vegaprotocol/utils';
 import { useT } from '../../lib/use-t';
+import { Table } from '../table';
 
 export const RankPayoutTable = ({
   rankTable,
@@ -16,38 +18,31 @@ export const RankPayoutTable = ({
     rankTable &&
     rankTable.length > 0 && (
       <>
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="">
-            <tr className="text-right text-xs divide-x">
-              <th scope="col">
-                <span className="flex p-1 w-full justify-end">
-                  {t('Rank tier')}
-                </span>
-              </th>
-              <th scope="col">
-                <span className="flex p-1 w-full justify-end">
-                  {t('Start rank')}
-                </span>
-              </th>
-              <th scope="col">
-                <span className="flex p-1 w-full justify-end">
-                  {t('End rank')}
-                </span>
-              </th>
-              <th scope="col">
-                <span className="flex p-1 w-full justify-end">
-                  {t('Places paid')}
-                </span>
-              </th>
-              <th scope="col">
-                <span className="flex p-1 w-full justify-end">
-                  {t('Payout')}
-                </span>
-              </th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-500 text-xs">
-            {rankTable?.map((rank: RankTable | null, tier: number) => {
+        <Table
+          columns={[
+            {
+              name: 'rankTier',
+              displayName: t('Rank tier'),
+            },
+            {
+              name: 'startRank',
+              displayName: t('Start rank'),
+            },
+            {
+              name: 'endRank',
+              displayName: t('End rank'),
+            },
+            {
+              name: 'placesPaid',
+              displayName: t('Places paid'),
+            },
+            {
+              name: 'payout',
+              displayName: t('Payout'),
+            },
+          ]}
+          data={compact(
+            rankTable?.map((rank: RankTable | null, tier: number) => {
               const endRank = endRanks?.[tier];
               const placesPaid = numPayouts?.[tier];
               const isFinalTier = tier === rankTable.length - 1;
@@ -57,46 +52,21 @@ export const RankPayoutTable = ({
               if (isFinalTier && rank?.shareRatio === 0) {
                 return null;
               }
-              return (
-                rank && (
-                  <tr
-                    key={`rank-table-row-${tier}`}
-                    className="whitespace-nowrap text-right divide-x p-4"
-                  >
-                    <td>
-                      <span className="flex p-1 justify-end">{tier + 1}</span>
-                    </td>
-                    <td>
-                      <span className="flex p-1 justify-end">
-                        {rank.startRank}
-                      </span>
-                    </td>
-                    <td>
-                      <span className="flex p-1 justify-end">
-                        {endRank || 'TBC*'}
-                      </span>
-                    </td>
-                    <td>
-                      <span className="flex p-1 justify-end">
-                        {placesPaid || 'TBC*'}
-                      </span>
-                    </td>
-                    <td>
-                      <span className="flex p-1 justify-end">
-                        {payoutsPerWinnerAsPercentage?.[tier]
-                          ? `${formatNumber(
-                              payoutsPerWinnerAsPercentage[tier],
-                              2
-                            )} %`
-                          : 'TBC*'}
-                      </span>
-                    </td>
-                  </tr>
-                )
-              );
-            })}
-          </tbody>
-        </table>
+
+              if (!rank) return null;
+
+              return {
+                rankTier: tier + 1,
+                startRank: rank?.startRank,
+                endRank: endRank || 'TBC*',
+                placesPaid: placesPaid || 'TBC*',
+                payout: payoutsPerWinnerAsPercentage?.[tier]
+                  ? `${formatNumber(payoutsPerWinnerAsPercentage[tier], 2)} %`
+                  : 'TBC*',
+              };
+            })
+          )}
+        />
         <p>
           {isOpenFinalTier &&
             t(
