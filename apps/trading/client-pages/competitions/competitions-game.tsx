@@ -14,6 +14,7 @@ import {
   EntityScopeLabelMapping,
   type RankTable,
   DispatchMetric,
+  DistributionStrategyDescriptionMapping,
 } from '@vegaprotocol/types';
 import { useNetworkParam } from '@vegaprotocol/network-parameters';
 import {
@@ -613,8 +614,32 @@ const UpdateTime = (props: { lastUpdate: string; updateFrequency: string }) => {
   );
 };
 
-const PayoutStructure = (props: { rankTable: RankTable[] }) => {
-  return <RankPayoutTable rankTable={props.rankTable} />;
+const PayoutStructure = (props: {
+  dispatchStrategy: DispatchStrategy;
+  rankTable: RankTable[];
+}) => {
+  const t = useT();
+  return (
+    <div className="flex flex-col gap-4">
+      <p>
+        {t(
+          DistributionStrategyDescriptionMapping[
+            props.dispatchStrategy.distributionStrategy
+          ]
+        )}
+        .
+      </p>
+
+      <p>
+        {props.dispatchStrategy.rankTable &&
+          t(
+            'Payout percentages are base estimates assuming no individual reward multipliers are active. If users in teams have active multipliers, the reward amounts may vary.'
+          )}
+      </p>
+
+      <RankPayoutTable rankTable={props.rankTable} />
+    </div>
+  );
 };
 
 const useScoreUnit = (metric: Metric, asset: AssetFieldsFragment) => {
