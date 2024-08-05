@@ -4,6 +4,31 @@
   "sourceRoot": "libs/emblem/src",
   "projectType": "library",
   "targets": {
+    "build": {
+      "executor": "@nx/rollup:rollup",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/emblem",
+        "tsConfig": "libs/emblem/tsconfig.lib.json",
+        "project": "libs/emblem/package.json",
+        "entryFile": "libs/emblem/src/index.ts",
+        "external": ["react", "react-dom"],
+        "rollupConfig": "@nx/react/plugins/bundle-rollup",
+        "compiler": "swc",
+        "format": ["esm", "cjs"],
+        "assets": [
+          {
+            "glob": "libs/emblem/README.md",
+            "input": ".",
+            "output": "."
+          }
+        ]
+      }
+    },
+    "publish": {
+      "command": "node tools/scripts/publish.mjs emblem {args.ver} {args.tag}",
+      "dependsOn": ["build"]
+    },
     "lint": {
       "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"],
