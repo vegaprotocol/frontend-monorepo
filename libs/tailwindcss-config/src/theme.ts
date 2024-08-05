@@ -12,35 +12,18 @@ export const theme = {
     xxxl: '1800px',
   },
   colors: {
-    v50: {
-      DEFAULT: 'var(--v50)',
-    },
-    v100: {
-      DEFAULT: 'var(--v100)',
-    },
-    v200: {
-      DEFAULT: 'var(--v200)',
-    },
-    v300: {
-      DEFAULT: 'var(--v300)',
-    },
-    v400: {
-      DEFAULT: 'var(--v400)',
-    },
-    v500: {
-      DEFAULT: 'var(--v500)',
-    },
-    v600: {
-      DEFAULT: 'var(--v600)',
-    },
-    v700: {
-      DEFAULT: 'var(--v700)',
-    },
-    v800: {
-      DEFAULT: 'var(--v800)',
-    },
-    v900: {
-      DEFAULT: 'var(--v900)',
+    gs: {
+      '50': 'var(--gs-50)',
+      '100': 'var(--gs-100)',
+      '200': 'var(--gs-200)',
+      '300': 'var(--gs-300)',
+      '400': 'var(--gs-400)',
+      '500': 'var(--gs-500)',
+      DEFAULT: 'var(--gs-500)',
+      '600': 'var(--gs-600)',
+      '700': 'var(--gs-700)',
+      '800': 'var(--gs-800)',
+      '900': 'var(--gs-900)',
     },
     transparent: 'transparent',
     current: 'currentColor',

@@ -2,9 +2,8 @@ import { Tooltip, VegaIcon, VegaIconNames } from '@vegaprotocol/ui-toolkit';
 import classNames from 'classnames';
 import { forwardRef, type ReactNode, type HTMLAttributes } from 'react';
 
-export const BORDER_COLOR = 'border-vega-clight-500 dark:border-vega-cdark-500';
-export const GRADIENT =
-  'bg-gradient-to-b from-vega-clight-800 dark:from-vega-cdark-800 to-transparent';
+export const BORDER_COLOR = 'border-gs-500 ';
+export const GRADIENT = 'bg-gradient-to-b from-gs-800 to-transparent';
 
 type TableColumnDefinition = {
   displayName?: ReactNode;
@@ -54,7 +53,7 @@ export const Table = forwardRef<
               key={name}
               col-id={name}
               className={classNames(
-                'px-5 py-3 text-xs  text-vega-clight-100 dark:text-vega-cdark-100 font-normal',
+                'px-5 py-3 text-xs  text-gs-100  font-normal',
                 INNER_BORDER_STYLE,
                 headerClassName
               )}
@@ -63,7 +62,7 @@ export const Table = forwardRef<
                 <span>{displayName}</span>
                 {tooltip ? (
                   <Tooltip description={tooltip}>
-                    <button className="text-vega-clight-400 dark:text-vega-cdark-400 no-underline decoration-transparent w-[12px] h-[12px] inline-flex">
+                    <button className="text-gs-400  no-underline decoration-transparent w-[12px] h-[12px] inline-flex">
                       <VegaIcon size={12} name={VegaIconNames.INFO} />
                     </button>
                   </Tooltip>
@@ -94,7 +93,7 @@ export const Table = forwardRef<
               className={classNames(dataEntry['className'] as string, {
                 'max-md:flex flex-col w-full': !noCollapse,
                 // collapsed (mobile) row divider
-                'first:border-t-0 max-md:border-t border-vega-clight-500 dark:border-vega-cdark-500 first:mt-0 mt-1':
+                'first:border-t-0 max-md:border-t border-gs-500  first:mt-0 mt-1':
                   !noCollapse,
               })}
               onClick={() => {
@@ -126,7 +125,7 @@ export const Table = forwardRef<
                   {!noCollapse && !noHeader && displayName && (
                     <span
                       aria-hidden
-                      className="px-0 font-mono text-xs md:hidden text-vega-clight-100 dark:text-vega-cdark-100"
+                      className="px-0 font-mono text-xs md:hidden text-gs-100 "
                     >
                       {displayName}
                     </span>

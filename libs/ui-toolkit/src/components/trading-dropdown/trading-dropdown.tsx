@@ -9,8 +9,8 @@ import { useT } from '../../use-t';
 const itemClass = classNames(
   'relative flex gap-2 items-center rounded-sm p-2 text-sm',
   'cursor-default hover:cursor-pointer',
-  'hover:bg-vega-clight-400 dark:hover:bg-vega-cdark-400',
-  'focus:bg-vega-clight-400 dark:focus:bg-vega-cdark-400',
+  'hover:bg-gs-400',
+  'focus:bg-gs-400',
   'select-none',
   'whitespace-nowrap'
 );
@@ -74,8 +74,8 @@ export const TradingDropdownContent = forwardRef<
     <DropdownMenuPrimitive.Content
       ref={forwardedRef}
       className={classNames(
-        'bg-vega-clight-700 dark:bg-vega-cdark-700',
-        'border-vega-clight-500 dark:border-vega-cdark-500 border',
+        'bg-gs-700 ',
+        'border-gs-500  border',
         'text-default z-20 rounded p-2'
       )}
       align={align}
@@ -162,10 +162,7 @@ export const TradingDropdownSeparator = forwardRef<
   <DropdownMenuPrimitive.Separator
     {...separatorProps}
     ref={forwardedRef}
-    className={classNames(
-      'bg-vega-clight-500 dark:bg-vega-cdark-500 mx-2 my-1 h-px',
-      className
-    )}
+    className={classNames('bg-gs-500  mx-2 my-1 h-px', className)}
   />
 ));
 TradingDropdownSeparator.displayName = 'DropdownMenuSeparator';

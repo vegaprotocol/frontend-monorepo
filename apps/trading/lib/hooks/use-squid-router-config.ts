@@ -1,5 +1,4 @@
 import { useEnvironment, useFeatureFlags } from '@vegaprotocol/environment';
-import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
 import { useVegaWallet } from '@vegaprotocol/wallet-react';
 import { useMemo } from 'react';
 import {
@@ -266,7 +265,6 @@ export const useSquidRouterConfig = (): {
 } => {
   const { SQUID_INTEGRATOR_ID, SQUID_API_URL } = useEnvironment();
   const { pubKey, chainId, status } = useVegaWallet();
-  const { theme } = useThemeSwitcher();
 
   const {
     assets,
@@ -311,7 +309,7 @@ export const useSquidRouterConfig = (): {
       },
       // @ts-expect-error theme declarations don't appease
       // `#${string}${string}${string}${string}${string}${string}` type
-      style: theme === 'light' ? lightStyle : darkStyle,
+      style,
     };
 
     return [config, undefined];
@@ -322,14 +320,13 @@ export const useSquidRouterConfig = (): {
     SQUID_INTEGRATOR_ID,
     SQUID_API_URL,
     assetError,
-    theme,
     chainId,
   ]);
 
   return { config, loading, error };
 };
 
-const common = {
+const style = {
   error: theme.colors.danger,
   warning: theme.colors.warning,
   success: theme.colors.success,
@@ -341,30 +338,14 @@ const common = {
   advanced: {
     transparentWidget: true,
   },
-} as const;
-
-const lightStyle = {
-  neutralContent: theme.colors.vega.clight['100'], // de-emphasized text, like balances below asset
-  baseContent: theme.colors.vega.clight['50'],
-  base100: theme.colors.vega.clight['500'], // wallet address bg
-  base200: theme.colors.vega.clight['700'], // bg of asset on vega chain
-  base300: theme.colors.vega.clight['600'], // border color around asset
-  secondary: theme.colors.vega.clight['400'], // spinner
-  secondaryContent: theme.colors.vega.clight['100'],
-  neutral: theme.colors.vega.clight['900'],
-  ...common,
-} as const;
-
-const darkStyle = {
-  ...common,
-  neutralContent: theme.colors.vega.cdark['100'], // de-emphasized text, like balances below asset
-  baseContent: theme.colors.vega.cdark['50'],
-  base100: theme.colors.vega.cdark['500'], // wallet address bg
-  base200: theme.colors.vega.cdark['700'], // bg of asset on vega chain
-  base300: theme.colors.vega.cdark['600'], // border color around asset
-  secondary: theme.colors.vega.cdark['400'], // spinner
-  secondaryContent: theme.colors.vega.cdark['100'],
-  neutral: theme.colors.vega.cdark['900'],
+  neutralContent: theme.colors.gs['100'], // de-emphasized text, like balances below asset
+  baseContent: theme.colors.gs['50'],
+  base100: theme.colors.gs['500'], // wallet address bg
+  base200: theme.colors.gs['700'], // bg of asset on vega chain
+  base300: theme.colors.gs['600'], // border color around asset
+  secondary: theme.colors.gs['400'], // spinner
+  secondaryContent: theme.colors.gs['100'],
+  neutral: theme.colors.gs['900'],
 } as const;
 
 const mapAssetToDestinationTokenConfig = (

@@ -82,17 +82,16 @@ const Toggle = ({
   onValueChange: (value: string) => void;
 }) => {
   const t = useT();
-  const itemClass =
-    'relative py-0.5 px-2 text-xs  data-[state=on]:text-vega-clight-900 data-[state=on]:dark:text-vega-cdark-900';
+  const itemClass = 'relative py-0.5 px-2 text-xs  data-[state=on]:text-gs-900';
   const indicator = (
-    <span className="absolute top-0 right-0 bottom-0 left-0 bg-vega-cdark-500 dark:bg-vega-clight-500 rounded" />
+    <span className="absolute top-0 right-0 bottom-0 left-0 bg-gs-500 rounded" />
   );
 
   return (
     <ToggleGroup.Root
       type="single"
       value={mode}
-      className="inline-flex rounded bg-vega-clight-500 dark:bg-vega-cdark-500"
+      className="inline-flex rounded bg-gs-500 "
     >
       <ToggleGroup.Item
         value={MarginMode.MARGIN_MODE_CROSS_MARGIN}

@@ -111,14 +111,14 @@ const GroupCard = ({
         <div
           className={classNames(
             CardColourStyles[colour].mainClassName,
-            'bg-gradient-to-b bg-vega-clight-900 dark:bg-vega-cdark-900 h-full w-full rounded-md p-4',
+            'bg-gradient-to-b bg-gs-900  h-full w-full rounded-md p-4',
             'flex flex-col gap-4 justify-items-start'
           )}
         >
           <div
             className={classNames(
               'flex justify-between gap-2',
-              'pb-3 border-b-[0.5px] dark:border-vega-cdark-500 border-vega-clight-500'
+              'pb-3 border-b-[0.5px]  border-gs-500'
             )}
           >
             {/** ENTITY SCOPE */}
@@ -253,13 +253,13 @@ const RewardCard = ({
         <div
           className={classNames(
             CardColourStyles[colour].mainClassName,
-            'bg-gradient-to-b bg-vega-clight-900 dark:bg-vega-cdark-900 h-full w-full rounded-md p-4 flex flex-col gap-4'
+            'bg-gradient-to-b bg-gs-900  h-full w-full rounded-md p-4 flex flex-col gap-4'
           )}
         >
           <div
             className={classNames(
               'flex justify-between gap-4',
-              'pb-4 border-b-[0.5px] dark:border-vega-cdark-500 border-vega-clight-500'
+              'pb-4 border-b-[0.5px]  border-gs-500'
             )}
           >
             {/** ENTITY SCOPE */}
@@ -386,7 +386,7 @@ const RewardCard = ({
 
           {/** REQUIREMENTS */}
           {dispatchStrategy && (
-            <div className="pt-4 border-t-[0.5px] dark:border-vega-cdark-500 border-vega-clight-500">
+            <div className="pt-4 border-t-[0.5px]  border-gs-500">
               <RewardRequirements
                 dispatchStrategy={dispatchStrategy}
                 dispatchAsset={dispatchAsset}
@@ -798,9 +798,9 @@ const CardColourStyles: Record<
     btn: '!bg-gradient-to-br from-vega-green-500 from-50% to-vega-yellow-400 !text-black',
   },
   [CardColour.GREY]: {
-    gradientClassName: 'from-vega-cdark-500 to-vega-clight-200',
-    mainClassName: 'from-vega-cdark-400 dark:from-vega-cdark-600 to-20%',
-    btn: '!bg-gradient-to-br from-vega-cdark-500 from-50% to-vega-clight-200 !text-white',
+    gradientClassName: 'from-gs-500 to-gs-200',
+    mainClassName: 'from-gs-400 to-20%',
+    btn: '!bg-gradient-to-br from-50% to-gs-200 !text-white',
   },
   [CardColour.ORANGE]: {
     gradientClassName: 'from-vega-orange-500 to-vega-pink-400',
@@ -819,8 +819,8 @@ const CardColourStyles: Record<
   },
   [CardColour.WHITE]: {
     gradientClassName:
-      'from-vega-clight-600 dark:from-vega-clight-900 to-vega-yellow-500 dark:to-vega-yellow-400',
-    mainClassName: 'from-white dark:from-vega-clight-100 to-20%',
+      'from-gs-600 dark:from-gs-900 to-vega-yellow-500 dark:to-vega-yellow-400',
+    mainClassName: 'from-white dark:from-gs-100 to-20%',
     btn: '!bg-gradient-to-br from-white from-50% to-vega-yellow-500 !text-black',
   },
   [CardColour.YELLOW]: {

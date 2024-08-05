@@ -263,7 +263,7 @@ const CurrencyValue = ({
 
   const accountType = type && (
     <Tooltip description={accountTypeTooltip}>
-      <span className="px-2 py-1 leading-none text-xs bg-vega-cdark-700 rounded">
+      <span className="px-2 py-1 leading-none text-xs bg-gs-700 rounded">
         {Schema.AccountTypeMapping[type]}{' '}
         {DocsLinks && (
           <ExternalLink

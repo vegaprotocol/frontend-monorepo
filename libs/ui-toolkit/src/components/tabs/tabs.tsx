@@ -62,8 +62,7 @@ export const Tabs = ({
             const triggerClass = classNames(
               'relative text-xs py-2 px-3',
               {
-                'cursor-default bg-vega-clight-700 dark:bg-vega-cdark-700':
-                  isActive,
+                'cursor-default bg-gs-700 ': isActive,
                 'text-default': isActive,
                 'text-muted': !isActive,
               },
@@ -84,7 +83,7 @@ export const Tabs = ({
         <div
           ref={menuRef}
           className={classNames('flex justify-end flex-1 p-1', {
-            'bg-vega-clight-700 dark:bg-vega-cdark-700': wrapped,
+            'bg-gs-700 ': wrapped,
           })}
         >
           {Children.map(children, (child) => {

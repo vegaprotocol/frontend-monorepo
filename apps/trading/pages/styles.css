@@ -13,29 +13,29 @@
 
 @layer base {
   :root {
-    --v50: #dcdee3;
-    --v100: #94969b;
-    --v200: #7c7e83;
-    --v300: #626469;
-    --v400: #44464b;
-    --v500: #323339;
-    --v600: #292b30;
-    --v700: #202227;
-    --v800: #17191e;
-    --v900: #05060c;
+    --gs-50: #dcdee3;
+    --gs-100: #94969b;
+    --gs-200: #7c7e83;
+    --gs-300: #626469;
+    --gs-400: #44464b;
+    --gs-500: #323339;
+    --gs-600: #292b30;
+    --gs-700: #202227;
+    --gs-800: #17191e;
+    --gs-900: #05060c;
   }
 
   .dark {
-    --v50: #040405;
-    --v100: #4c4e51;
-    --v200: #65676b;
-    --v300: #818388;
-    --v400: #aaabae;
-    --v500: #d1d2d3;
-    --v600: #e9e9ea;
-    --v700: #eeeeef;
-    --v800: #f4f4f4;
-    --v900: #f9fafa;
+    --gs-50: #040405;
+    --gs-100: #4c4e51;
+    --gs-200: #65676b;
+    --gs-300: #818388;
+    --gs-400: #aaabae;
+    --gs-500: #d1d2d3;
+    --gs-600: #e9e9ea;
+    --gs-700: #eeeeef;
+    --gs-800: #f4f4f4;
+    --gs-900: #f9fafa;
   }
 }
 
@@ -54,19 +54,19 @@ body,
 }
 
 .text-default {
-  @apply text-vega-clight-50 dark:text-vega-cdark-50;
+  @apply text-gs-50;
 }
 
 .text-secondary {
-  @apply text-vega-clight-100 dark:text-vega-cdark-100;
+  @apply text-gs-100;
 }
 
 .text-muted {
-  @apply text-vega-clight-100 dark:text-vega-cdark-100;
+  @apply text-gs-100;
 }
 
 .border-default {
-  @apply border-vega-clight-600 dark:border-vega-cdark-600;
+  @apply border-gs-600;
 }
 
 /**
@@ -121,14 +121,14 @@ html [data-theme='light'] {
 }
 
 html [data-theme='light'] {
-  --separator-border: theme(colors.vega.clight.400);
-  --pennant-background-surface-color: theme(colors.vega.clight.800);
+  --separator-border: theme(colors.gs.400);
+  --pennant-background-surface-color: theme(colors.gs.800);
   --pennant-hover-overlay: rgba(
     244,
     244,
     244,
     0.5
-  ); /* theme(colors.vega.clight.800) in rgba with opacity */
+  ); /* theme(colors.gs.800) in rgba with opacity */
 
   /* candles */
   --pennant-color-buy-fill: theme(colors.market.green.DEFAULT);
@@ -146,18 +146,18 @@ html [data-theme='light'] {
   --pennant-color-volume-buy: theme(colors.market.green.DEFAULT);
   --pennant-color-volume-sell: theme(colors.market.red.DEFAULT);
 
-  --pennant-background-label-color: theme(colors.vega.clight.600);
+  --pennant-background-label-color: theme(colors.gs.600);
 }
 
 html [data-theme='dark'] {
-  --separator-border: theme(colors.vega.cdark.400);
-  --pennant-background-surface-color: theme(colors.vega.cdark.800);
+  --separator-border: theme(colors.gs.400);
+  --pennant-background-surface-color: theme(colors.gs.800);
   --pennant-hover-overlay: rgba(
     23,
     25,
     30,
     0.5
-  ); /* theme(colors.vega.cdark.800) in rgba with opacity */
+  ); /* theme(colors.gs.800) in rgba with opacity */
 
   /* candles */
   --pennant-color-buy-fill: theme(colors.market.green.600);
@@ -174,7 +174,7 @@ html [data-theme='dark'] {
 
   --pennant-color-volume-buy: theme(colors.market.green.600);
   --pennant-color-volume-sell: theme(colors.market.red.DEFAULT);
-  --pennant-background-label-color: theme(colors.vega.cdark.600);
+  --pennant-background-label-color: theme(colors.gs.600);
 }
 
 /**
@@ -226,25 +226,25 @@ html [data-theme='dark'] {
 
 /* Light variables */
 .ag-theme-balham {
-  --ag-background-color: theme(colors.vega.clight.900);
-  --ag-border-color: theme(colors.vega.clight.600);
-  --ag-header-background-color: theme(colors.vega.clight.700);
+  --ag-background-color: theme(colors.gs.900);
+  --ag-border-color: theme(colors.gs.600);
+  --ag-header-background-color: theme(colors.gs.700);
   --ag-odd-row-background-color: transparent;
-  --ag-header-column-separator-color: theme(colors.vega.clight.500);
-  --ag-row-border-color: theme(colors.vega.clight.600);
-  --ag-row-hover-color: theme(colors.vega.clight.800);
+  --ag-header-column-separator-color: theme(colors.gs.500);
+  --ag-row-border-color: theme(colors.gs.600);
+  --ag-row-hover-color: theme(colors.gs.800);
   --ag-modal-overlay-background-color: rgb(244 244 244 / 50%);
 }
 
 /* Dark variables */
 .ag-theme-balham-dark {
-  --ag-background-color: theme(colors.vega.cdark.900);
-  --ag-border-color: theme(colors.vega.cdark.600);
-  --ag-header-background-color: theme(colors.vega.cdark.700);
+  --ag-background-color: theme(colors.gs.900);
+  --ag-border-color: theme(colors.gs.600);
+  --ag-header-background-color: theme(colors.gs.700);
   --ag-odd-row-background-color: transparent;
-  --ag-header-column-separator-color: theme(colors.vega.cdark.500);
-  --ag-row-border-color: theme(colors.vega.cdark.600);
-  --ag-row-hover-color: theme(colors.vega.cdark.800);
+  --ag-header-column-separator-color: theme(colors.gs.500);
+  --ag-row-border-color: theme(colors.gs.600);
+  --ag-row-hover-color: theme(colors.gs.800);
   --ag-modal-overlay-background-color: rgb(9 11 16 / 50%);
 }
 

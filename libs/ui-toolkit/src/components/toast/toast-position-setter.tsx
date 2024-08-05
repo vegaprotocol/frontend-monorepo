@@ -25,8 +25,8 @@ export const ToastPositionSetter = () => {
     [setToast, setPosition, t]
   );
   const buttonCssClasses =
-    'flex items-center px-1 py-1 relative rounded bg-vega-clight-400 dark:bg-vega-cdark-400';
-  const activeIcon = 'fill-vega-clight-900 dark:fill-vega-cdark-900';
+    'flex items-center px-1 py-1 relative rounded bg-gs-400 ';
+  const activeIcon = 'fill-gs-900';
 
   const { screenSize } = useScreenDimensions();
 

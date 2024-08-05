@@ -11,7 +11,7 @@ import {
 import type { ITooltipParams } from 'ag-grid-community';
 
 const tooltipContentClasses =
-  'max-w-sm bg-vega-clight-500 dark:bg-vega-cdark-500 px-2 py-1 z-20 rounded text-default break-word';
+  'max-w-sm bg-gs-500  px-2 py-1 z-20 rounded text-default break-word';
 export interface TooltipProps {
   children: React.ReactElement;
   description?: string | ReactNode;
@@ -55,13 +55,7 @@ export const Tooltip = ({
               <div className="relative z-0" data-testid="tooltip-content">
                 {description}
               </div>
-              {arrow && (
-                <Arrow
-                  width={16}
-                  height={8}
-                  className="fill-vega-clight-500 dark:fill-vega-cdark-500"
-                />
-              )}
+              {arrow && <Arrow width={16} height={8} className="fill-gs-500" />}
             </Content>
           </Portal>
         )}

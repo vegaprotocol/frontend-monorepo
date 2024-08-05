@@ -70,7 +70,7 @@ export const ProposalFormTransactionDialog = ({
             <span className="font-bold">
               {sub.terms?.change.__typename}{' '}
               <span
-                className="font-normal text-xs text-vega-cdark-400"
+                className="font-normal text-xs text-gs-400"
                 title={sub.id || ''}
               >
                 {truncateMiddle(sub.id || '')}

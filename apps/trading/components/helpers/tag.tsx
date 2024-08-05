@@ -30,8 +30,7 @@ export const Tag = ({
         'border-vega-purple-500  text-vega-purple-500': color === 'purple',
         'border-vega-pink-500  text-vega-pink-500': color === 'pink',
         'border-vega-orange-500  text-vega-orange-500': color === 'orange',
-        'border-vega-clight-100  text-vega-clight-100 dark:border-vega-cdark-100  dark:text-vega-cdark-100':
-          color === 'none',
+        'border-gs-100  text-gs-100   ': color === 'none',
       },
       className
     )}

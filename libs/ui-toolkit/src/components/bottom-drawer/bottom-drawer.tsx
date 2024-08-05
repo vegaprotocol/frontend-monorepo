@@ -50,7 +50,7 @@ const BottomDrawerContent = forwardRef<
       )}
       {...props}
     >
-      <div className="mx-auto my-2 h-2 w-[100px] rounded-full bg-vega-clight-200 dark:bg-vega-cdark:200" />
+      <div className="mx-auto my-2 h-2 w-[100px] rounded-full bg-gs-200" />
       <div className="max-h-[85vh] overflow-y-auto">{children}</div>
     </DrawerPrimitive.Content>
   </BottomDrawerPortal>

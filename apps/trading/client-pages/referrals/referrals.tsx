@@ -21,7 +21,7 @@ const Nav = () => {
   const t = useT();
   const match = useMatch(Routes.REFERRALS_APPLY_CODE);
   return (
-    <nav className="flex justify-center border-b border-vega-cdark-500">
+    <nav className="flex justify-center border-b border-gs-500">
       <TabLink end to={match ? Routes.REFERRALS_APPLY_CODE : Routes.REFERRALS}>
         {t('Apply code')}
       </TabLink>

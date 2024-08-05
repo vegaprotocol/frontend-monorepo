@@ -81,7 +81,7 @@ export const TradesTable = ({ onClick, ...props }: Props) => {
                 onClick &&
                 onClick(addDecimal(value, data.market?.decimalPlaces || 0))
               }
-              className="hover:dark:bg-vega-cdark-800 hover:bg-vega-clight-800"
+              className="hover:bg-gs-800"
             >
               {addDecimalsFormatNumber(value, data.market.decimalPlaces)}
             </button>

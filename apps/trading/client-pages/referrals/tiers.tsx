@@ -22,12 +22,9 @@ import { Trans } from 'react-i18next';
 
 const Loading = ({ variant }: { variant: 'large' | 'inline' }) => (
   <div
-    className={classNames(
-      'bg-vega-clight-800 dark:bg-vega-cdark-800 rounded-lg animate-pulse',
-      {
-        'w-full h-20': variant === 'large',
-      }
-    )}
+    className={classNames('bg-gs-800  rounded-lg animate-pulse', {
+      'w-full h-20': variant === 'large',
+    })}
   ></div>
 );
 
@@ -70,7 +67,7 @@ const StakingTier = ({
         'overflow-hidden',
         'border rounded-md w-full',
         'flex flex-row',
-        'bg-white dark:bg-vega-cdark-900',
+        'bg-white ',
         GRADIENT,
         BORDER_COLOR
       )}
@@ -84,7 +81,7 @@ const StakingTier = ({
           <Tag color={getTierColor(tier, max)}>
             {t('Multiplier')} {referralRewardMultiplier}x
           </Tag>
-          <p className="mt-1 text-sm text-vega-clight-100 dark:text-vega-cdark-100">
+          <p className="mt-1 text-sm text-gs-100 ">
             <Trans
               defaults="Stake a minimum of <0>{{minimum}}</0> $VEGA tokens"
               values={{ minimum }}
@@ -110,7 +107,7 @@ export const TiersContainer = () => {
 
   if ((!loading && !details) || error) {
     return (
-      <div className="bg-vega-clight-800 dark:bg-vega-cdark-800 text-black dark:text-white rounded-lg p-6 mt-1 mb-20 text-sm text-center">
+      <div className="bg-gs-800  text-black dark:text-white rounded-lg p-6 mt-1 mb-20 text-sm text-center">
         <Trans
           defaults="There are currently no active referral programs. Check the <0>Governance App</0> to see if there are any proposals in progress and vote."
           components={[
@@ -165,7 +162,7 @@ export const TiersContainer = () => {
       )}
 
       {/* Meta */}
-      <div className="mb-2 flex flex-row items-baseline justify-between text-xs text-vega-clight-100 dark:text-vega-cdark-100 font-alpha calt">
+      <div className="mb-2 flex flex-row items-baseline justify-between text-xs text-gs-100  font-alpha calt">
         {details?.id && (
           <span>
             {t('Proposal ID:')}{' '}
@@ -186,8 +183,8 @@ export const TiersContainer = () => {
       {/* Container */}
       <div
         className={classNames(
-          'md:bg-vega-clight-800',
-          'md:dark:bg-vega-cdark-800',
+          'md:bg-gs-800',
+          'md:',
           'md:text-black',
           'md:dark:text-white',
           'md:rounded-lg',
@@ -197,7 +194,7 @@ export const TiersContainer = () => {
         {/* Benefit tiers */}
         <div className="flex flex-col mb-5">
           <h3 className="text-2xl calt">{t('Benefit tiers')}</h3>
-          <p className="text-sm text-vega-clight-200 dark:text-vega-cdark-200">
+          <p className="text-sm text-gs-200 ">
             {t(
               'Members of a referral group can access the increasing commission and discount benefits defined in the program based on their combined running volume.'
             )}
@@ -212,7 +209,7 @@ export const TiersContainer = () => {
               data={benefitTiers.map((bt) => ({
                 ...bt,
                 tierElement: (
-                  <div className="rounded-full bg-vega-clight-900 dark:bg-vega-cdark-900 p-1 w-8 h-8 text-center">
+                  <div className="rounded-full bg-gs-900  p-1 w-8 h-8 text-center">
                     {bt.tier}
                   </div>
                 ),
@@ -224,7 +221,7 @@ export const TiersContainer = () => {
         {/* Staking tiers */}
         <div className="flex flex-col mb-5">
           <h3 className="text-2xl calt">{t('Staking multipliers')}</h3>
-          <p className="text-sm text-vega-clight-200 dark:text-vega-cdark-200">
+          <p className="text-sm text-gs-200 ">
             {t(
               'Referrers can access the commission multipliers defined in the program by staking VEGA tokens in the amounts shown.'
             )}
@@ -315,7 +312,7 @@ const TiersTable = ({
           ),
         },
       ]}
-      className="bg-white dark:bg-vega-cdark-900"
+      className="bg-white "
       data={data.map((d) => ({
         ...d,
         className: classNames(getTierGradient(d.tier, data.length)),

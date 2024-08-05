@@ -46,7 +46,7 @@ export const TicketTypeSelect = ({
           data-testid={`order-type-${itemValue}`}
           className={classNames(
             toggleClasses,
-            'data-[state=on]:border-b-vega-clight-400 dark:data-[state=on]:border-b-vega-cdark-400 data-[state=on]:text-vega-clight-50 dark:data-[state=on]:text-vega-cdark-50'
+            'data-[state=on]:border-b-gs-400 data-[state=on]:text-gs-50'
           )}
         >
           {label}
@@ -61,10 +61,8 @@ export const TicketTypeSelect = ({
                 toggleClasses,
                 'flex gap-1 justify-center items-center',
                 {
-                  'border-b-vega-clight-400 dark:border-b-vega-cdark-400':
-                    selectedStopOption,
-                  'text-vega-clight-50 dark:text-vega-cdark-50':
-                    selectedStopOption,
+                  'border-b-gs-400': selectedStopOption,
+                  'text-gs-50 ': selectedStopOption,
                 }
               )}
             >

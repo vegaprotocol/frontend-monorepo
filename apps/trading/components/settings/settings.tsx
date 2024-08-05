@@ -18,7 +18,7 @@ export const SettingsPopover = () => {
   return (
     <Popover
       trigger={
-        <span className="flex items-center justify-center w-7 h-7 hover:bg-vega-clight-500 dark:hover:bg-vega-cdark-500 rounded-full">
+        <span className="flex items-center justify-center w-7 h-7 hover:bg-gs-500  rounded-full">
           <VegaIcon name={VegaIconNames.COG} size={18} />
         </span>
       }

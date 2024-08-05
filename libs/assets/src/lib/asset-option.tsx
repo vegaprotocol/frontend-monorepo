@@ -71,7 +71,7 @@ export const AssetOption = ({ asset, balance }: AssetOptionProps) => {
           {/* Chain and asset source pill */}
           <div
             className={classNames(
-              'bg-vega-clight-500 dark:bg-vega-cdark-500',
+              'bg-gs-500 ',
               'text-black dark:text-white',
               'p-0.5 rounded',
               'flex gap-[2px] items-start text-xs'
@@ -79,7 +79,7 @@ export const AssetOption = ({ asset, balance }: AssetOptionProps) => {
           >
             <span
               className={classNames(
-                'bg-vega-clight-900 dark:bg-vega-cdark-900',
+                'bg-gs-900 ',
                 'text-black dark:text-white text-xs',
                 'py-px px-0.5 rounded-sm'
               )}

@@ -28,13 +28,10 @@ export const ProductSelector = ({
   const buttons = [MarketType.PERPETUAL, MarketType.FUTURE, MarketType.SPOT];
 
   const getStyles = (selected: boolean) =>
-    classNames(
-      'text-sm px-3 py-1.5 rounded hover:text-vega-clight-50 dark:hover:text-vega-cdark-50',
-      {
-        'bg-vega-clight-500 dark:bg-vega-cdark-500 text-default': selected,
-        'text-secondary': !selected,
-      }
-    );
+    classNames('text-sm px-3 py-1.5 rounded hover:text-gs-50 ', {
+      'bg-gs-500  text-default': selected,
+      'text-secondary': !selected,
+    });
 
   return (
     <div className="flex mb-2">

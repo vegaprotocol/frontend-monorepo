@@ -52,8 +52,7 @@ export const Notification = ({
       data-testid={testId || 'notification'}
       className={classNames(
         {
-          'border-vega-clight-500 dark:border-vega-cdark-500':
-            intent === Intent.None,
+          'border-gs-500 ': intent === Intent.None,
           'border-vega-blue-350 dark:border-vega-blue-650':
             intent === Intent.Info,
           'border-vega-green-350 dark:border-vega-green-650':
@@ -64,7 +63,7 @@ export const Notification = ({
             intent === Intent.Danger,
         },
         {
-          'bg-vega-clight-700 dark:bg-vega-cdark-700 ': intent === Intent.None,
+          'bg-gs-700  ': intent === Intent.None,
           'bg-vega-blue-300 dark:bg-vega-blue-700': intent === Intent.Info,
           'bg-vega-green-300 dark:bg-vega-green-700': intent === Intent.Success,
           'bg-vega-orange-300 dark:bg-vega-orange-700':
@@ -79,8 +78,7 @@ export const Notification = ({
       <div
         className={classNames(
           {
-            'text-vega-clight-50 dark:text-vega-cdark-50':
-              intent === Intent.None,
+            'text-gs-50 ': intent === Intent.None,
             'text-vega-blue-500': intent === Intent.Info,
             'text-vega-green-500': intent === Intent.Success,
             'text-yellow-500': intent === Intent.Warning,
@@ -96,7 +94,7 @@ export const Notification = ({
       <div
         className={classNames(
           'flex flex-col items-start overflow-hidden gap-0',
-          'text-vega-clight-50 dark:text-vega-cdark-50',
+          'text-gs-50 ',
           'font-alpha',
           { 'text-sm': size === 'small', 'text-base': size === 'medium' }
         )}

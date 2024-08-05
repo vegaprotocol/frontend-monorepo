@@ -43,7 +43,7 @@ export const OrderbookRow = memo(
     return (
       <div
         className={classNames('relative px-1', {
-          'bg-vega-clight-800 dark:bg-vega-cdark-800': crossed,
+          'bg-gs-800 ': crossed,
         })}
       >
         <CumulationBar

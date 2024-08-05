@@ -284,7 +284,7 @@ export const MarketTable = ({
             className={classNames(
               'border border-default rounded-lg px-3 py-1.5 text-sm h-8',
               {
-                'dark:bg-vega-cdark-800 bg-vega-clight-800':
+                ' bg-gs-800':
                   marketTypes.length === 0 ||
                   marketTypes.length ===
                     Object.keys(marketTypeFilterOptions).length,
@@ -308,8 +308,7 @@ export const MarketTable = ({
                 className={classNames(
                   'border border-default rounded-lg px-3 py-1.5 text-sm',
                   {
-                    'dark:bg-vega-cdark-800 bg-vega-clight-800':
-                      isMarketTypeSelected(marketType),
+                    ' bg-gs-800': isMarketTypeSelected(marketType),
                     'text-muted': !isMarketTypeSelected(marketType),
                   }
                 )}

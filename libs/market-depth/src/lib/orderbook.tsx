@@ -123,7 +123,7 @@ export const OrderbookMid = ({
         className={classNames(
           'flex grow items-center justify-center text-base gap-2',
           {
-            'bg-vega-clight-800 dark:bg-vega-cdark-800':
+            'bg-gs-800 ':
               isMarketInAuction &&
               bestAskPrice &&
               bestBidPrice &&

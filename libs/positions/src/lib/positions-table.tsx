@@ -106,16 +106,13 @@ const MarginChart = ({
       ) : null}
       <div
         className={classnames('flex relative h-2', {
-          'dark:bg-vega-clight-800 bg-vega-cdark-800': other,
+          'bg-gs-800': other,
         })}
       >
-        <div
-          style={{ width: `${width || 100}%` }}
-          className="dark:bg-vega-clight-400 bg-vega-cdark-400"
-        ></div>
+        <div style={{ width: `${width || 100}%` }} className="bg-gs-400"></div>
         {marker ? (
           <div
-            className="absolute dark:border-t-vega-clight-400 border-t-vega-cdark-400 border-l-transparent border-r-transparent"
+            className="absolute border-t-gs-400 border-l-transparent border-r-transparent"
             style={{
               top: '-5px',
               left: `${marker}%`,

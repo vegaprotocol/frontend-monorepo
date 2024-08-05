@@ -23,7 +23,7 @@ export const ProtocolUpgradeProposalsListItem = ({
 
   const timestamp =
     'timestamp' in proposal ? (
-      <span className="text-vega-cdark-300">
+      <span className="text-gs-300">
         ({formatDateWithLocalTimezone(new Date(proposal.timestamp as string))})
       </span>
     ) : null;

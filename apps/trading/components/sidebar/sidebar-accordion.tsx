@@ -46,8 +46,8 @@ const SidebarAccordionHeader = forwardRef<
     ref={ref}
     {...props}
     className={classNames(
-      'flex items-center w-full pr-2 bg-vega-clight-700 dark:bg-vega-cdark-700',
-      'hover:bg-vega-clight-600 dark:hover:bg-vega-cdark-600',
+      'flex items-center w-full pr-2 bg-gs-700 ',
+      'hover:bg-gs-600 ',
       className
     )}
   >

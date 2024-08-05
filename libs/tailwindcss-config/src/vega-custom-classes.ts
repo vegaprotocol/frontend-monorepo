@@ -30,7 +30,7 @@ export const vegaCustomClasses = plugin(function ({ addUtilities }) {
       lineHeight: '1rem',
     },
     '.dark .syntax-highlighter-wrapper .hljs': {
-      background: theme.colors.vega.cdark[900],
+      background: theme.colors.gs[900],
       color: theme.colors.vega.green.DEFAULT,
       border: '0',
     },

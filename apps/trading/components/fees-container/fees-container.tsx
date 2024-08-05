@@ -490,7 +490,7 @@ const VolumeTiers = ({
   return (
     <div>
       <SimpleTable
-        className="bg-white dark:bg-vega-cdark-900"
+        className="bg-white "
         columns={[
           { name: 'tier', displayName: t('Tier'), testId: 'col-tier-value' },
           {
@@ -580,7 +580,7 @@ const ReferralTiers = ({
   return (
     <div>
       <SimpleTable
-        className="bg-white dark:bg-vega-cdark-900"
+        className="bg-white "
         columns={[
           { name: 'tier', displayName: t('Tier'), testId: 'col-tier-value' },
           {
@@ -679,7 +679,7 @@ const ReferrerInfo = ({ code }: { code?: string }) => {
   const t = useT();
 
   return (
-    <div className="text-vega-clight-200 dark:vega-cdark-200 pt-3 text-sm">
+    <div className="text-gs-200 pt-3 text-sm">
       <p className="mb-1">
         {t('Connected key is owner of the referral set')}
         {code && (

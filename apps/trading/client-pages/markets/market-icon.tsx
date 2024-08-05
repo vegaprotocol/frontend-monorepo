@@ -75,7 +75,7 @@ export const MarketIcon = ({ data }: { data?: MarketMaybeWithData | null }) => {
   if (!icon) return null;
   return (
     <Tooltip description={t(tooltip)}>
-      <span className="rounded-full bg-vega-clight-500 dark:bg-vega-cdark-500 p-1 flex items-center">
+      <span className="rounded-full bg-gs-500  p-1 flex items-center">
         <VegaIcon name={icon} size={12} className="flex" />
       </span>
     </Tooltip>

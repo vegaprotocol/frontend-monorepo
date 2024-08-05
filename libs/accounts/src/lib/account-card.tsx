@@ -75,7 +75,7 @@ const BreakdownItem = ({ data }: { data: AccountFields }) => {
   return (
     <div className="mb-2">
       <dl className="flex items-center">
-        <dt className="text-xs text-vega-clight-200 dark:text-vega-cdark-200">
+        <dt className="text-xs text-gs-200 ">
           {AccountTypeMapping[data.type]}
           {data.market &&
             ` (${data.market.tradableInstrument.instrument.code})`}
@@ -118,9 +118,8 @@ export const AccountCard = ({
     <section
       data-testid="account-card"
       className={classNames('m-1 rounded border-default', {
-        'bg-vega-clight-700 hover:bg-vega-clight-600 dark:bg-vega-cdark-700 dark:hover:bg-vega-cdark-600':
-          !(expandable && expanded),
-        'bg-vega-clight-600 dark:bg-vega-cdark-600': expandable && expanded,
+        'bg-gs-700 hover:bg-gs-600': !(expandable && expanded),
+        'bg-gs-600 ': expandable && expanded,
       })}
     >
       <div className="relative p-3">
@@ -184,7 +183,7 @@ export const AccountCard = ({
         {expandable && (
           <button
             type="button"
-            className="absolute inset-0 before:hidden before:content-[''] hover:before:block before:absolute before:inset-0 before:bg-vega-clight-800 before:dark:bg-vega-cdark-800 before:-z-10"
+            className="absolute inset-0 before:hidden before:content-[''] hover:before:block before:absolute before:inset-0 before:bg-gs-800 before:-z-10"
             onClick={() => setExpanded((expanded) => !expanded)}
             data-testid="expand-account-card"
           >

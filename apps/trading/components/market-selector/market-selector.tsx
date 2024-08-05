@@ -219,7 +219,7 @@ const MarketList = ({
       <div
         className={classNames(
           'grid grid-cols-6 sm:grid-cols-12 gap-2',
-          'bg-vega-clight-700 dark:bg-vega-cdark-700',
+          'bg-gs-700 ',
           'p-2 mx-2 border-b border-default text-xs text-secondary'
         )}
       >

@@ -18,9 +18,9 @@ export const LeverageSlider = (
         className="relative flex items-center select-none touch-none h-10 pb-5 w-full"
       >
         <SliderPrimitive.Track className="relative grow h-[4px]">
-          <span className="bg-vega-clight-700 dark:bg-vega-cdark-700 absolute left-2 right-2 top-0 bottom-0"></span>
+          <span className="bg-gs-700  absolute left-2 right-2 top-0 bottom-0"></span>
           <SliderPrimitive.Range className="absolute h-full">
-            <span className="absolute left-2 right-0 h-full bg-vega-clight-100 dark:bg-vega-cdark-100"></span>
+            <span className="absolute left-2 right-0 h-full bg-gs-100 "></span>
           </SliderPrimitive.Range>
           <span className="absolute top-[-3px] left-[8px] right-[8px]">
             {step &&
@@ -41,10 +41,8 @@ export const LeverageSlider = (
                       className={classNames(
                         'absolute translate-x-[-50%] block w-[10px] h-[10px] rounded-full',
                         {
-                          'bg-vega-clight-500 dark:bg-vega-cdark-500':
-                            !lowerThanValue,
-                          'bg-vega-clight-50 dark:bg-vega-cdark-50':
-                            !!lowerThanValue,
+                          'bg-gs-500 ': !lowerThanValue,
+                          'bg-gs-50': !!lowerThanValue,
                         }
                       )}
                       style={{
@@ -74,7 +72,7 @@ export const LeverageSlider = (
                   props.onValueChange && props.onValueChange([labelValue])
                 }
                 key={labelValue}
-                className="absolute translate-x-[-50%] text-xs font-alpha mt-1 text-vega-clight-100 dark:text-vega-cdark-100"
+                className="absolute translate-x-[-50%] text-xs font-alpha mt-1 text-gs-100 "
                 style={{
                   left,
                 }}

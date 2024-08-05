@@ -8,11 +8,10 @@ export const defaultFormElement = (hasError?: boolean, disabled?: boolean) =>
     'flex items-center w-full text-sm',
     'p-2 rounded whitespace-nowrap text-ellipsis overflow-hidden',
     {
-      'bg-vega-clight-700 dark:bg-vega-cdark-700': !disabled && !hasError,
+      'bg-gs-700 ': !disabled && !hasError,
       'bg-transparent': disabled || hasError,
-      'border-vega-clight-600 dark:border-vega-cdark-600': disabled,
+      'border-gs-600 ': disabled,
       'border-vega-red-500': !disabled && hasError,
-      'border-vega-clight-500 dark:border-vega-cdark-500':
-        !disabled && !hasError,
+      'border-gs-500 ': !disabled && !hasError,
     }
   );

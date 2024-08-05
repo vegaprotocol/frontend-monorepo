@@ -53,8 +53,7 @@ const getClassName = (
     {
       'bg-vega-yellow enabled:hover:bg-vega-yellow-550 dark:bg-vega-yellow dark:enabled:hover:bg-vega-yellow-450':
         intent === Intent.Primary && !minimal,
-      'bg-vega-clight-500 enabled:hover:bg-vega-clight-400 dark:bg-vega-cdark-500 dark:enabled:hover:bg-vega-cdark-400':
-        intent === Intent.None && !minimal,
+      'bg-gs-500 enabled:hover:bg-gs-400': intent === Intent.None && !minimal,
       'bg-vega-blue-350 enabled:hover:bg-vega-blue-400 dark:bg-vega-blue-650 dark:enabled:hover:bg-vega-blue-600':
         intent === Intent.Info && !minimal,
       'bg-vega-orange-350 enabled:hover:bg-vega-orange-400 dark:bg-vega-orange-650 dark:enabled:hover:bg-vega-orange-600':
@@ -68,7 +67,7 @@ const getClassName = (
       // Minimal button
       'bg-transparent enabled:hover:bg-vega-yellow-550 dark:enabled:hover:bg-vega-yellow-450':
         intent === Intent.Primary && minimal,
-      'bg-transparent enabled:hover:bg-vega-clight-400 dark:enabled:hover:bg-vega-cdark-400':
+      'bg-transparent enabled:hover:bg-gs-400':
         intent === Intent.None && minimal,
       'bg-transparent enabled:hover:bg-vega-blue-400 dark:enabled:hover:bg-vega-blue-600':
         intent === Intent.Info && minimal,
@@ -83,19 +82,18 @@ const getClassName = (
     },
     // text
     {
-      'text-vega-clight-50 dark:text-vega-cdark-50':
+      'text-gs-50 ':
         (intent !== Intent.Primary && intent !== Intent.Secondary) || minimal,
 
       // If its primary the text must always be dark enough for a yellow background
-      'text-vega-clight-50': intent === Intent.Primary && !minimal,
+      'text-gs-50': intent === Intent.Primary && !minimal,
       // If its secondary the text must always be light enough for a blue background
-      'text-vega-clight-900': intent === Intent.Secondary && !minimal,
+      'text-gs-900': intent === Intent.Secondary && !minimal,
 
-      'enabled:hover:text-vega-clight-50': intent === Intent.Primary && minimal,
-      'enabled:hover:text-vega-clight-900':
-        intent === Intent.Secondary && minimal,
+      'enabled:hover:text-gs-50': intent === Intent.Primary && minimal,
+      'enabled:hover:text-gs-900': intent === Intent.Secondary && minimal,
 
-      '[&_[data-sub-label]]:text-vega-clight-100': intent === Intent.Primary,
+      '[&_[data-sub-label]]:text-gs-100': intent === Intent.Primary,
     },
     { 'w-full': fill },
     className

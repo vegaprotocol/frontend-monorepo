@@ -62,7 +62,7 @@ const ProposalTypeTags = ({
       <div data-testid="proposal-type">
         <ProposalInfoLabel variant="secondary">
           <span>{t('Batch Proposal')}</span>
-          <span className="bg-vega-cdark-600 rounded-full px-1 text-center font-glitch">
+          <span className="bg-gs-600 rounded-full px-1 text-center font-glitch">
             {proposal.subProposals?.length || 0}
           </span>
         </ProposalInfoLabel>

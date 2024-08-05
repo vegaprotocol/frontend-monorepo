@@ -13,7 +13,7 @@ export const getIntentBorder = (intent = Intent.None) => {
     border: true,
     'border-danger': intent === Intent.Danger,
     'border-warning': intent === Intent.Warning,
-    'border-vega-clight-500 dark:border-vega-cdark-500': intent === Intent.None,
+    'border-gs-500 ': intent === Intent.None,
     'border-vega-blue-300': intent === Intent.Primary,
     'border-vega-green': intent === Intent.Success,
   };

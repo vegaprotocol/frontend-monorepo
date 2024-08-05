@@ -23,10 +23,10 @@ export const TradingCheckbox = ({
   const rootClasses = classNames(
     'relative flex justify-center items-center w-3 h-3',
     'border rounded-sm overflow-hidden',
-    'border-vega-clight-500 dark:border-vega-cdark-500',
-    'aria-checked:border-vega-clight-400 dark:aria-checked:border-vega-cdark-400',
-    'disabled:border-vega-clight-600 dark:disabled:border-vega-cdark-600',
-    'bg-vega-clight-700 dark:bg-vega-cdark-700'
+    'border-gs-500 ',
+    'aria-checked:border-gs-400',
+    'disabled:border-gs-600',
+    'bg-gs-700 '
   );
 
   return (
@@ -44,7 +44,7 @@ export const TradingCheckbox = ({
           {checked === 'indeterminate' ? (
             <span
               data-testid="indeterminate-icon"
-              className="absolute w-[8px] h-[2px] bg-vega-clight-50 dark:bg-vega-cdark-50"
+              className="absolute w-[8px] h-[2px] bg-gs-50"
             />
           ) : (
             <VegaIcon name={VegaIconNames.TICK} size={10} />
@@ -53,7 +53,7 @@ export const TradingCheckbox = ({
       </CheckboxPrimitive.Root>
       <span
         className={classNames('text-xs flex-1', {
-          'text-vega-clight-200 dark:text-vega-cdark-200': disabled,
+          'text-gs-200 ': disabled,
         })}
       >
         {label}

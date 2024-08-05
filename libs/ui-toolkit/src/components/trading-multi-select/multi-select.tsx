@@ -21,8 +21,8 @@ export const MultiSelect = ({
           'relative',
           'text-sm px-3 py-1.5 pr-6 h-8',
           'flex items-center justify-between border rounded gap-1',
-          'border-vega-clight-600 dark:border-vega-cdark-600 bg-vega-clight-700 dark:bg-vega-cdark-700',
-          'text-secondary data-[state=open]:text-vega-clight-50 dark:data-[state=open]:text-vega-cdark-50'
+          'border-gs-600  bg-gs-700 ',
+          'text-secondary data-[state=open]:text-gs-50'
         )}
       >
         <span className="whitespace-nowrap">{trigger || placeholder}</span>
@@ -39,8 +39,8 @@ export const MultiSelect = ({
         align="start"
         sideOffset={5}
         className={classNames(
-          'bg-vega-clight-700 dark:bg-vega-cdark-700',
-          'border-vega-clight-500 dark:border-vega-cdark-500 border',
+          'bg-gs-700 ',
+          'border-gs-500  border',
           'relative text-default z-20 rounded p-2'
         )}
       >
@@ -59,7 +59,7 @@ export const MultiSelectOption = forwardRef<
     className={classNames(
       'relative flex gap-2 items-center rounded-sm p-1 text-sm',
       'cursor-default hover:cursor-pointer',
-      'text-secondary hover:text-vega-clight-50 dark:hover:text-vega-cdark-50',
+      'text-secondary hover:text-gs-50',
       'select-none',
       'whitespace-nowrap'
     )}
@@ -83,12 +83,12 @@ export const PseudoCheckbox = ({
     className={classNames(
       'w-4 h-4',
       'relative',
-      'rounded-sm border-vega-clight-500 dark:border-vega-cdark-500 border'
+      'rounded-sm border-gs-500  border'
     )}
   >
     {checked && (
       <VegaIcon
-        className="text-vega-cdark-900 dark:text-vega-clight-900 absolute top-0 left-0"
+        className="text-gs-900 absolute top-0 left-0"
         name={VegaIconNames.TICK}
         size={14}
       />

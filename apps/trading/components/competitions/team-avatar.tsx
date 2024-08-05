@@ -28,13 +28,10 @@ export const TeamAvatar = ({
     <img
       src={imgUrl || getFallbackAvatar(teamId)}
       alt={alt || 'Team avatar'}
-      className={classNames(
-        'rounded-full bg-vega-clight-700 dark:bg-vega-cdark-700 shrink-0',
-        {
-          'w-20 h-20 lg:w-[112px] lg:h-[112px]': size === 'large',
-          'w-10 h-10': size === 'small',
-        }
-      )}
+      className={classNames('rounded-full bg-gs-700  shrink-0', {
+        'w-20 h-20 lg:w-[112px] lg:h-[112px]': size === 'large',
+        'w-10 h-10': size === 'small',
+      })}
       referrerPolicy="no-referrer"
       onError={(e) => {
         e.currentTarget.src = getFallbackAvatar(teamId);
