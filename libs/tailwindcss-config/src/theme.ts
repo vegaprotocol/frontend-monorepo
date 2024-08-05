@@ -12,6 +12,36 @@ export const theme = {
     xxxl: '1800px',
   },
   colors: {
+    v50: {
+      DEFAULT: 'var(--v50)',
+    },
+    v100: {
+      DEFAULT: 'var(--v100)',
+    },
+    v200: {
+      DEFAULT: 'var(--v200)',
+    },
+    v300: {
+      DEFAULT: 'var(--v300)',
+    },
+    v400: {
+      DEFAULT: 'var(--v400)',
+    },
+    v500: {
+      DEFAULT: 'var(--v500)',
+    },
+    v600: {
+      DEFAULT: 'var(--v600)',
+    },
+    v700: {
+      DEFAULT: 'var(--v700)',
+    },
+    v800: {
+      DEFAULT: 'var(--v800)',
+    },
+    v900: {
+      DEFAULT: 'var(--v900)',
+    },
     transparent: 'transparent',
     current: 'currentColor',
     black: '#000000',
@@ -147,32 +177,6 @@ export const theme = {
         200: '#D2D2D2',
         300: '#939393',
         400: '#626262',
-      },
-
-      cdark: {
-        50: '#DCDEE3', // text-primary-light
-        100: '#94969B', // text-secondary
-        200: '#7C7E83',
-        300: '#626469',
-        400: '#44464B',
-        500: '#323339', // surface-container-highest, outline-surface-default
-        600: '#292B30',
-        700: '#202227',
-        800: '#17191E', // surface-container
-        900: '#05060C',
-      },
-
-      clight: {
-        50: '#040405',
-        100: '#4C4E51',
-        200: '#65676B',
-        300: '#818388',
-        400: '#AAABAE',
-        500: '#D1D2D3',
-        600: '#E9E9EA',
-        700: '#EEEEEF',
-        800: '#F4F4F4',
-        900: '#F9FAFA',
       },
     },
     danger: '#EC003C',

@@ -11,6 +11,34 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  :root {
+    --v50: #dcdee3;
+    --v100: #94969b;
+    --v200: #7c7e83;
+    --v300: #626469;
+    --v400: #44464b;
+    --v500: #323339;
+    --v600: #292b30;
+    --v700: #202227;
+    --v800: #17191e;
+    --v900: #05060c;
+  }
+
+  .dark {
+    --v50: #040405;
+    --v100: #4c4e51;
+    --v200: #65676b;
+    --v300: #818388;
+    --v400: #aaabae;
+    --v500: #d1d2d3;
+    --v600: #e9e9ea;
+    --v700: #eeeeef;
+    --v800: #f4f4f4;
+    --v900: #f9fafa;
+  }
+}
+
 /**
  * TAILWIND HELPERS
  */
