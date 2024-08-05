@@ -106,7 +106,7 @@ export const AccountCard = ({
   partyId?: string;
 } & AssetActions) => {
   const t = useT();
-  const expandable = !!partyId && !isReadOnly;
+  const expandable = !!partyId;
   const [expanded, setExpanded] = useState(initialExpanded && expandable);
   const { chainId } = useChainId();
   const { data } = useDataProvider({
@@ -192,7 +192,7 @@ export const AccountCard = ({
           </button>
         )}
       </div>
-      {expandable && expanded ? (
+      {!isReadOnly && expandable && expanded ? (
         <div className="grid gap-1 grid-cols-4 p-3 pt-0">
           <TradingDropdown
             trigger={
