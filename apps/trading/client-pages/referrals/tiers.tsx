@@ -67,7 +67,7 @@ const StakingTier = ({
         'overflow-hidden',
         'border rounded-md w-full',
         'flex flex-row',
-        'bg-gs-0',
+        'bg-gs-900',
         GRADIENT,
         BORDER_COLOR
       )}

@@ -58,7 +58,7 @@ export const Navbar = ({ theme = 'system' }: { theme?: Theme }) => {
       <NavLink
         to="/"
         className={classNames('flex items-center px-3', {
-          'bg-vega-yellow text-gs-50': theme === 'yellow',
+          'bg-vega-yellow text-black': theme === 'yellow',
           'text-default': theme === 'system',
         })}
         style={{

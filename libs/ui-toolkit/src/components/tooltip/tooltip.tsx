@@ -11,7 +11,7 @@ import type { ITooltipParams } from 'ag-grid-community';
 import classNames from 'classnames';
 
 const tooltipContentClasses =
-  'max-w-sm bg-gs-100 border border-gs-200 px-2 py-1 z-20 rounded text-xs text-gs-0 break-word';
+  'max-w-sm bg-gs-800 border border-gs-700 px-2 py-1 z-20 rounded text-xs text-gs-0 break-word';
 export interface TooltipProps {
   children: React.ReactElement;
   description?: string | ReactNode;
