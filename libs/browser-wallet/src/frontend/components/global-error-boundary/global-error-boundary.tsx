@@ -33,7 +33,7 @@ class GlobalErrorBoundary extends Component<Properties, State> {
     console.error(error);
   }
 
-  public render() {
+  public override render() {
     // This error is caught by the boundary
     const { error } = this.state;
     // This error is reported from backend interactions, which are async

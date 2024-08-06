@@ -83,6 +83,7 @@ export const ImportWallet = () => {
                     )
                   )
                     return 'Recovery phrase must be 12, 15, 18, 21 or 24 words';
+                  return true;
                 },
               })}
             />

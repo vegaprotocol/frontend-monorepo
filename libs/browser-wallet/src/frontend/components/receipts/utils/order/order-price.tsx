@@ -1,11 +1,11 @@
 import { OrderType as vegaOrderType } from '@vegaprotocol/enums';
 import get from 'lodash/get';
 
-import { useFormatMarketPrice } from '@/hooks/format-market-price/format-market-price.tsx';
-import { useMarketPriceAsset } from '@/hooks/market-settlement-asset/market-settlement-asset.tsx';
+import { useFormatMarketPrice } from '@/hooks/format-market-price/format-market-price';
+import { useMarketPriceAsset } from '@/hooks/market-settlement-asset/market-settlement-asset';
 
-import { AmountWithSymbol } from '../string-amounts/amount-with-symbol.tsx';
-import { PriceWithTooltip } from '../string-amounts/price-with-tooltip.tsx';
+import { AmountWithSymbol } from '../string-amounts/amount-with-symbol';
+import { PriceWithTooltip } from '../string-amounts/price-with-tooltip';
 
 export const locators = {
   orderDetailsMarketPrice: 'order-details-market-price',
