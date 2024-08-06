@@ -7,8 +7,8 @@ import type {
   ConnectionReply,
 } from '@/stores/interaction-store';
 
-import JSONRPCServer from '../../../../lib/json-rpc-server';
-import { PortServer } from '../../../../lib/port-server';
+import JSONRPCServer from '../../../lib/json-rpc-server';
+import { PortServer } from '../../../lib/port-server';
 
 const maybeCloseWindow = () => {
   const url = new URL(window.location.href);

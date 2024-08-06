@@ -1,7 +1,7 @@
 import { createContext, useContext } from 'react';
 
-import type JSONRPCClient from '../../../lib/json-rpc-client';
-import type JSONRPCServer from '../../../lib/json-rpc-server';
+import type JSONRPCClient from '../../lib/json-rpc-client';
+import type JSONRPCServer from '../../lib/json-rpc-server';
 import type { SendMessage } from './json-rpc-provider';
 
 export interface JsonRpcContextShape {

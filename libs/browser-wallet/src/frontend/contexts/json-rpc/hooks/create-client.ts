@@ -6,7 +6,7 @@ import { useConnectionStore } from '@/stores/connections';
 import { useErrorStore } from '@/stores/error';
 import type { Connection } from '@/types/backend';
 
-import JSONRPCClient from '../../../../lib/json-rpc-client';
+import JSONRPCClient from '../../../lib/json-rpc-client';
 import { RpcMethods } from '../../../lib/client-rpc-methods';
 import type { JsonRpcNotification } from '../json-rpc-provider';
 
