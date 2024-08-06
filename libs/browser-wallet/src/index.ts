@@ -1,1 +1,3 @@
-export * from './frontend/app';
+import BrowserWallet from './frontend/app';
+
+export default BrowserWallet;

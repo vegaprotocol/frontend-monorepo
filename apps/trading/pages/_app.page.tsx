@@ -31,7 +31,7 @@ import { SSRLoader } from './ssr-loader';
 // import { TransactionHandlers } from './transaction-handlers';
 // import { useT } from '../lib/use-t';
 // import { NodeHealthContainer } from '../components/node-health';
-import { BrowserWallet } from '@vegaprotocol/browser-wallet';
+import BrowserWallet from '@vegaprotocol/browser-wallet';
 
 // const Title = () => {
 //   const t = useT();
