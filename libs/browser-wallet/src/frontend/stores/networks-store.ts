@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 
-import type { SendMessage } from '@/contexts/json-rpc/json-rpc-provider.tsx';
-import { RpcMethods } from '@/lib/client-rpc-methods.ts';
+import type { SendMessage } from '@/contexts/json-rpc/json-rpc-provider';
+import { RpcMethods } from '@/lib/client-rpc-methods';
 import type { Network } from '@/types/backend';
 
 interface NetworksResponse {
