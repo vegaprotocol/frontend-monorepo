@@ -31,7 +31,7 @@ export class ReceiptViewErrorBoundary extends Component<Properties, State> {
     // captureException(error)
   }
 
-  public render() {
+  public override render() {
     // This error is caught by the boundary
     const { error } = this.state;
 
