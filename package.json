@@ -192,6 +192,7 @@
     "@types/react-window-infinite-loader": "^1.0.6",
     "@types/semver": "^7.5.0",
     "@types/uuid": "^8.3.4",
+    "@types/zxcvbn": "^4.4.4",
     "@typescript-eslint/eslint-plugin": "6.11.0",
     "@typescript-eslint/parser": "6.11.0",
     "autoprefixer": "10.4.13",
