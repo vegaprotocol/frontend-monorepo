@@ -84,7 +84,7 @@ const Toggle = ({
   const t = useT();
   const itemClass = 'relative py-0.5 px-2 text-xs  data-[state=on]:text-gs-900';
   const indicator = (
-    <span className="absolute top-0 right-0 bottom-0 left-0 bg-gs-500 rounded" />
+    <span className="absolute top-0 right-0 bottom-0 left-0 bg-gs-50 rounded" />
   );
 
   return (
