@@ -1,1 +1,1 @@
-export * from './lib/browser-wallet';
+export * from './frontend/app';
