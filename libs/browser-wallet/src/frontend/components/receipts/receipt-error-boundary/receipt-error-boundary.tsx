@@ -26,7 +26,7 @@ export class ReceiptViewErrorBoundary extends Component<Properties, State> {
     return { error };
   }
 
-  public componentDidCatch(error: Error) {
+  public override componentDidCatch(error: Error) {
     console.error(error);
     // captureException(error)
   }

@@ -28,7 +28,7 @@ class GlobalErrorBoundary extends Component<Properties, State> {
     return { error };
   }
 
-  public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+  public override componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     // captureException(error)
     console.error(error);
   }
