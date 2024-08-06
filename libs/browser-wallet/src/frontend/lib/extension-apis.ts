@@ -1,3 +1,5 @@
+import { connect } from 'http2';
+
 export const getExtensionApi = () => {
   // // @ts-ignore
   // const result = globalThis.browser ?? globalThis.chrome;
@@ -8,6 +10,27 @@ export const getExtensionApi = () => {
   return {
     storage: {
       session: localStorage,
+    },
+    runtime: {
+      connect: ({ name }: { name: string }) => {
+        console.log('Port connected to background');
+        return {
+          onDisconnect: {
+            addListener: (callback: () => void) => {
+              console.log('Port disconnected from background');
+            },
+          },
+          postMessage: (message: any) => {
+            console.log('Port received message from background', message);
+          },
+          onMessage: {
+            addListener: (callback: (message: any) => void) => {
+              console.log('Port received message from background');
+              callback({ method: 'ping' });
+            },
+          },
+        };
+      },
     },
   };
 };
