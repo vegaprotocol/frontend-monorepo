@@ -84,6 +84,7 @@
     "immer": "^9.0.12",
     "is-mobile": "^4.0.0",
     "iso8601-duration": "^2.1.1",
+    "javascript-time-ago": "^2.5.10",
     "js-sha3": "^0.8.0",
     "jsondiffpatch": "^0.4.1",
     "lodash": "^4.17.21",
