@@ -52,7 +52,7 @@ export const StatsManager = ({ className }: StatsManagerProps) => {
         <div
           key={i}
           className={classNames(
-            'border rounded p-2 relative border-gs-200',
+            'border rounded p-2 relative border-gs-600',
             {
               'col-span-2': field === 'chainId',
             },

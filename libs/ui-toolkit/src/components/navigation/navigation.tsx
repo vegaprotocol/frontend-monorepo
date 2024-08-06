@@ -172,7 +172,6 @@ export const NavigationContent = ({
           'navigation-content',
           'absolute z-20 top-12 w-max',
           'p-6 mt-1 min-w-[290px]',
-          'text-gs-0',
           'border rounded border-gs-400',
           'bg-gs-800'
         )}
@@ -282,7 +281,7 @@ export const Navigation = ({
       className={classNames(
         'h-12',
         'group flex gap-4 items-center',
-        'border-b px-3 relative border-b-gs-200'
+        'border-b px-3 relative border-b-gs-600'
       )}
       data-testid="navigation"
     >
@@ -290,7 +289,7 @@ export const Navigation = ({
       <div
         className={classNames(
           'navbar',
-          'flex gap-4 h-12 items-center font-alpha text-lg text-gs-300'
+          'flex gap-4 h-12 items-center font-alpha text-lg text-gs-200'
         )}
       >
         {children}

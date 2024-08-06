@@ -23,7 +23,7 @@ export const Footer = () => {
   );
 
   return (
-    <footer className="grid grid-cols-[1fr_auto] items-center text-xs md:text-md lg:flex md:col-span-2 px-4 pt-2 pb-3 gap-4 border-t border-gs-200 ">
+    <footer className="grid grid-cols-[1fr_auto] items-center text-xs md:text-md lg:flex md:col-span-2 px-4 pt-2 pb-3 gap-4 border-t border-gs-600 ">
       <div className="flex justify-between gap-2 align-middle">
         {GIT_COMMIT_HASH && (
           <div className="content-center flex border-r border-neutral-700 dark:border-neutral-300 pr-4">
