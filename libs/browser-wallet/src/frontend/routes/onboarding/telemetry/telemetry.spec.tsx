@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 
-import config from '!/config';
+// import config from '!/config';
 import { useGlobalsStore } from '@/stores/globals';
 import { mockClient } from '@/test-helpers/mock-client';
 import { mockStore } from '@/test-helpers/mock-store';

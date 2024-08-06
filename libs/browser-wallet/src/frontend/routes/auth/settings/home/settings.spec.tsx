@@ -26,10 +26,10 @@ jest.mock('./sections/export-recovery-phrase-section', () => ({
     <div data-testid="export-recovery-phrase-section" />
   ),
 }));
-jest.mock('!/config', () => ({
-  ...jest.requireActual('../../../../../config/test').default,
-  closeWindowOnPopupOpen: true,
-}));
+// jest.mock('!/config', () => ({
+//   ...jest.requireActual('../../../../../config/test').default,
+//   closeWindowOnPopupOpen: true,
+// }));
 
 const renderComponent = () =>
   render(

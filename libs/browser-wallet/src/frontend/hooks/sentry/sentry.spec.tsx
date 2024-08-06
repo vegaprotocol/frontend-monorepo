@@ -12,10 +12,10 @@ import { sanitizeEvent } from '../../../lib/sanitize-event';
 jest.mock('@/stores/globals');
 jest.mock('@/stores/wallets');
 // jest.mock('@sentry/react')
-jest.mock('!/config', () => ({
-  ...jest.requireActual('../../../config/test').default,
-  sentryDsn: 'dsn',
-}));
+// jest.mock('!/config', () => ({
+//   ...jest.requireActual('../../../config/test').default,
+//   sentryDsn: 'dsn',
+// }));
 
 describe.skip('useSentry', () => {
   let initMock: jest.Mock;
