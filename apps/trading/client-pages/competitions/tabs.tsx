@@ -3,16 +3,11 @@ import { type ComponentProps } from 'react';
 import * as TabsPrimitive from '@radix-ui/react-tabs';
 
 export const Tabs = (props: ComponentProps<typeof TabsPrimitive.Root>) => (
-  <TabsPrimitive.Root {...props} />
+  <TabsPrimitive.Root {...props} className="flex flex-col gap-4" />
 );
 
 export const TabsList = (props: ComponentProps<typeof TabsPrimitive.List>) => {
-  return (
-    <TabsPrimitive.List
-      {...props}
-      className="flex gap-4 lg:gap-8 mb-4 border-b border-default"
-    />
-  );
+  return <TabsPrimitive.List {...props} className="flex gap-4 lg:gap-8" />;
 };
 
 export const TabsContent = (
