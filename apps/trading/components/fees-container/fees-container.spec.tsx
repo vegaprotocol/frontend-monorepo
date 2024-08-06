@@ -44,7 +44,7 @@ describe('TradingFees', () => {
     );
 
     expect(
-      screen.getByText('Total fee before discount').nextElementSibling
+      screen.getByText('Taker fee before discount').nextElementSibling
     ).toHaveTextContent(`${minFee}%-${maxFee}%`);
     expect(
       screen.getByText('Infrastructure').nextElementSibling

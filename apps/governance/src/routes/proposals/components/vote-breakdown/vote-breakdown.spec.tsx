@@ -1,13 +1,11 @@
 import { render, screen } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
-import { MockedProvider } from '@apollo/client/testing';
 import {
   lastWeek,
   networkParamsQueryMock,
   nextWeek,
 } from '../../test-helpers/mocks';
 import { CompactVotes, VoteBreakdown } from './vote-breakdown';
-import { type MockedResponse } from '@apollo/client/testing';
 import {
   generateNoVotes,
   generateProposal,
@@ -17,6 +15,8 @@ import { ProposalState } from '@vegaprotocol/types';
 import { BigNumber } from '../../../../lib/bignumber';
 import { type AppState } from '../../../../contexts/app-state/app-state-context';
 import { type Proposal } from '../../types';
+import { type ProposalNode } from '../proposal/proposal-utils';
+import { MockedProvider, type MockedResponse } from '@apollo/react-testing';
 
 const mockTotalSupply = new BigNumber(100);
 // Note - giving a fixedTokenValue of 1 means a ratio of 1:1 votes to tokens, making sums easier :)
@@ -38,6 +38,15 @@ jest.mock('../../../../contexts/app-state/app-state-context', () => ({
   }),
 }));
 
+const mockProposal = {
+  proposal: {
+    requiredLiquidityProviderMajority: '0.66',
+    requiredLiquidityProviderParticipation: '0.66',
+    requiredMajority: '0.5',
+    requiredParticipation: '1',
+  },
+} as unknown as ProposalNode;
+
 const renderComponent = (
   proposal: Proposal,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -46,7 +55,7 @@ const renderComponent = (
   render(
     <Router>
       <MockedProvider mocks={mocks}>
-        <VoteBreakdown proposal={proposal} />
+        <VoteBreakdown proposal={proposal} restData={mockProposal} />
       </MockedProvider>
     </Router>
   );

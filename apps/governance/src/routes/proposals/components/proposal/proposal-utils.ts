@@ -41,6 +41,10 @@ type ProposalData = {
   };
   state: ProposalState;
   timestamp: string;
+  requiredMajority: string;
+  requiredParticipation: string;
+  requiredLiquidityProviderMajority: string;
+  requiredLiquidityProviderParticipation: string;
 };
 
 type Terms = {

@@ -120,7 +120,7 @@ export const VoteBreakdown = ({
   restData?: ProposalNode | null;
 }) => {
   if (proposal.__typename === 'Proposal') {
-    return <VoteBreakdownNormal proposal={proposal} />;
+    return <VoteBreakdownNormal proposal={proposal} restData={restData} />;
   }
 
   if (proposal.__typename === 'BatchProposal') {
@@ -177,6 +177,7 @@ const VoteBreakdownBatch = ({
       proposal.subProposals ? proposal.subProposals.map((p) => p?.terms) : []
     ),
     votes: proposal.votes,
+    restData,
   });
 
   if (!voteInfo) return null;
@@ -343,6 +344,7 @@ const VoteBreakdownBatchSubProposal = ({
   indicator,
   yesELS,
   noELS,
+  restData,
 }: {
   proposal: BatchProposal;
   votes: VoteFieldsFragment;
@@ -350,6 +352,7 @@ const VoteBreakdownBatchSubProposal = ({
   indicator?: number;
   yesELS: Record<string, number[]>;
   noELS: Record<string, number[]>;
+  restData?: ProposalNode | null;
 }) => {
   const { t } = useTranslation();
 
@@ -385,6 +388,7 @@ const VoteBreakdownBatchSubProposal = ({
     yesELS: marketId ? yesELS[marketId] : undefined,
     // no votes ELS for this specific proposal (market)
     noELS: marketId ? noELS[marketId] : undefined,
+    restData,
   });
 
   const marketName = marketId ? (
@@ -429,10 +433,17 @@ const VoteBreakdownBatchSubProposal = ({
   );
 };
 
-const VoteBreakdownNormal = ({ proposal }: { proposal: Proposal }) => {
+const VoteBreakdownNormal = ({
+  proposal,
+  restData,
+}: {
+  proposal: Proposal;
+  restData?: ProposalNode | null;
+}) => {
   const voteInfo = useVoteInformation({
     votes: proposal.votes,
     terms: proposal.terms,
+    restData: restData,
   });
 
   const isProposalOpen = proposal?.state === ProposalState.STATE_OPEN;
