@@ -8787,6 +8787,11 @@
     "@typescript-eslint/types" "6.21.0"
     eslint-visitor-keys "^3.4.1"
 
+"@vegaprotocol/enums@^0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@vegaprotocol/enums/-/enums-0.0.2.tgz#8382e0b0e359f3e5045f26e22a607910cfb06684"
+  integrity sha512-XRS82UW0tVeVlvjD39uPp9MoFPuo+DYoxtpVjlif0mQNn74vfuhQus8UniGRCCCj7CyvXQx3hnM3xyzGwxqPaw==
+
 "@vegaprotocol/rest-clients@^0.77.0":
   version "0.77.0"
   resolved "https://registry.yarnpkg.com/@vegaprotocol/rest-clients/-/rest-clients-0.77.0.tgz#b2f2c6ce7ee39b41f7e5939eba0b9bc783469ec7"
