@@ -216,7 +216,7 @@ const PortfolioActionTabs = () => {
               <Notification
                 intent={Intent.Info}
                 message={t(
-                  'Use this form to utilise Squid Router to make cross-chain deposits from any supported chain onto Vega. The amount you receive will be deposited directly to the network. To ensure users enjoy the cheapest fees possible this mode only supports deposits into Arbitrum assets'
+                  'This form only supports deposits in Arbitrum USDT since the majority of markets on Vega settle in this asset. If you wish to deposit a different asset please use the normal deposit flow.'
                 )}
               />
               <SquidContainer />
