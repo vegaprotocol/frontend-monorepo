@@ -1,4 +1,4 @@
-import assert from 'nanoassert'
+import assert from 'nanoassert';
 
 export class PortServer {
   /**
@@ -14,17 +14,17 @@ export class PortServer {
    * @param {function} opts.onerror - global error handler
    * @param {JSONRPCServer} opts.server - JSONRPCServer instance
    */
-  constructor ({ onconnect = () => {}, onerror = (_) => {}, server }) {
-    this.onerror = onerror
-    this.onconnect = onconnect
-    this.server = server
+  constructor({ onconnect = () => {}, onerror = (_) => {}, server }) {
+    this.onerror = onerror;
+    this.onconnect = onconnect;
+    this.server = server;
 
     this.server.listenNotifications((msg) => {
-      this.ports.forEach((_, port) => port.postMessage(msg))
-    })
+      this.ports.forEach((_, port) => port.postMessage(msg));
+    });
 
     // Map<Port, context>
-    this.ports = new Map()
+    this.ports = new Map();
   }
 
   /**
@@ -32,10 +32,10 @@ export class PortServer {
    * @param {string} origin
    * @returns {void}
    */
-  disconnect (origin) {
+  disconnect(origin) {
     for (const [port, context] of this.ports.entries()) {
       if (origin === '*' || context.origin === origin) {
-        port.disconnect()
+        port.disconnect();
       }
     }
   }
@@ -46,10 +46,10 @@ export class PortServer {
    * @param {object} message
    * @returns {void}
    */
-  broadcast (origin, message) {
+  broadcast(origin, message) {
     for (const [port, context] of this.ports.entries()) {
       if (origin === '*' || context.origin === origin) {
-        port.postMessage(message)
+        port.postMessage(message);
       }
     }
   }
@@ -59,63 +59,65 @@ export class PortServer {
    * @param {Port} port
    * @returns {void}
    */
-  listen (port) {
-    const self = this
+  listen(port) {
+    const self = this;
 
-    const origin = port.sender && (port.sender.url ? new URL(port.sender.url).origin : port.sender.id)
-    const messageQueue = []
-    let busy = false
+    const origin =
+      port.sender &&
+      (port.sender.url ? new URL(port.sender.url).origin : port.sender.id);
+    const messageQueue = [];
+    let busy = false;
 
-    const context = { port, origin }
+    const context = { port, origin };
 
-    this.ports.set(port, context)
+    this.ports.set(port, context);
 
-    const onconnect = this.onconnect(context)
+    const onconnect = this.onconnect(context);
 
-    port.onMessage.addListener(_onmessage)
-    port.onDisconnect.addListener(_ondisconnect)
+    port.onMessage.addListener(_onmessage);
+    port.onDisconnect.addListener(_ondisconnect);
 
-    async function _onmessage (message) {
-      await onconnect
+    async function _onmessage(message) {
+      await onconnect;
 
       // Ensure the port is still connected
-      if (self.ports.has(port) === false) return
+      if (self.ports.has(port) === false) return;
 
       // Append a message to the queue and
       // kick off the processing loop if idle
-      messageQueue.push(message)
+      messageQueue.push(message);
 
-      if (busy === false) _process()
+      if (busy === false) _process();
     }
 
-    function _process () {
-      const req = messageQueue.shift()
-      if (req == null) return
-      busy = true
+    function _process() {
+      const req = messageQueue.shift();
+      if (req == null) return;
+      busy = true;
 
       self.server
         .onrequest(req, context)
         .then((res) => {
           // notification
-          if (res == null) return
+          if (res == null) return;
 
           // Client disconnected
-          if (self.ports.has(port) === false) return
+          if (self.ports.has(port) === false) return;
 
-          port.postMessage(res)
+          port.postMessage(res);
         })
         .catch(self.onerror)
         .finally(() => {
-          busy = false
-          _process()
-        })
+          busy = false;
+          _process();
+        });
     }
 
-    function _ondisconnect (port) {
-      port.onMessage.removeListener(_onmessage)
-      port.onDisconnect.removeListener(_ondisconnect)
+    function _ondisconnect(port) {
+      port.onMessage.removeListener(_onmessage);
+      port.onDisconnect.removeListener(_ondisconnect);
 
-      assert(self.ports.delete(port), 'Removed unknown port. Possible leak')
+      assert(self.ports.delete(port), 'Removed unknown port. Possible leak');
     }
   }
 }
