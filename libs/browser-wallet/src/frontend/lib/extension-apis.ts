@@ -1,5 +1,3 @@
-import { connect } from 'http2';
-
 export const getExtensionApi = () => {
   // // @ts-ignore
   // const result = globalThis.browser ?? globalThis.chrome;

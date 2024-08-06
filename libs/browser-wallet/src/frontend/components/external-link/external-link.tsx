@@ -67,5 +67,5 @@ export const ExternalLink = ({
     >
       {children ?? properties.href}
     </ExLink>
-  )
+  );
 };

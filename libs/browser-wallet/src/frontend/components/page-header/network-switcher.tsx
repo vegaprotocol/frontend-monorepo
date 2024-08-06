@@ -12,7 +12,7 @@ export const NetworkSwitcher = () => {
 
   return (
     <div className="flex flex-row">
-`      {/* <div className="flex flex-col justify-center">
+      {/* <div className="flex flex-col justify-center">
         <NetworkIndicator />
       </div>` */}
       <div
