@@ -9,7 +9,7 @@ import { useJsonRpcClient } from '@/contexts/json-rpc/json-rpc-context';
 import { importWallet } from '@/lib/create-wallet';
 import { Validation } from '@/lib/form-validation';
 
-import { PERMITTED_RECOVERY_PHRASE_LENGTH } from '../../../../lib/constants';
+import { PERMITTED_RECOVERY_PHRASE_LENGTH } from '../../../lib/constants';
 import { FULL_ROUTES } from '../../route-names';
 import { WalletImported } from './wallet-imported';
 
