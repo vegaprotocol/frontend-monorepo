@@ -6,7 +6,7 @@ import { ExternalLink } from '@/components/external-link';
 import { VegaSection } from '@/components/vega-section';
 import { useJsonRpcClient } from '@/contexts/json-rpc/json-rpc-context';
 import { RpcMethods } from '@/lib/client-rpc-methods';
-import config from '@/lib/config';
+// import config from '@/lib/config';
 
 import { FULL_ROUTES } from '../../../../../route-names';
 
@@ -39,13 +39,13 @@ export const LockSection = () => {
       <div data-testid={locators.settingsFeedbackDescription}>
         Spotted any issues or bugs?
       </div>
-      <ExternalLink
+      {/* <ExternalLink
         data-testid={locators.settingsFeedbackLink}
         className="text-white mt-1 underline"
         href={config.feedbackLink}
       >
         Provide feedback
-      </ExternalLink>
+      </ExternalLink> */}
     </VegaSection>
   );
 };
