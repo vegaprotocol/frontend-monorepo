@@ -2,7 +2,7 @@ import { Button } from '@vegaprotocol/ui-toolkit';
 import { useForm } from 'react-hook-form';
 import { Navigate, useNavigate } from 'react-router-dom';
 
-import config from '!/config';
+// import config from '!/config';
 import { ExternalLink } from '@/components/external-link';
 import { Frame } from '@/components/frame';
 import { Tick } from '@/components/icons/tick';
@@ -73,13 +73,13 @@ export const Telemetry = () => {
             </li>
           </ul>
         </Frame>
-        <ExternalLink
+        {/* <ExternalLink
           data-testid={locators.userDataPolicy}
           className="text-white"
           href={config.userDataPolicy}
         >
           Read Vega Wallet's user data policy
-        </ExternalLink>
+        </ExternalLink> */}
         <form onSubmit={handleSubmit(() => submit(true))} className="mt-8">
           <Button
             autoFocus

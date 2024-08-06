@@ -1,7 +1,7 @@
 import { Button } from '@vegaprotocol/ui-toolkit';
 import { useNavigate } from 'react-router-dom';
 
-import config from '!/config';
+// import config from '!/config';
 import { ExternalLink } from '@/components/external-link';
 import { Frame } from '@/components/frame';
 import { Tick } from '@/components/icons/tick';
@@ -51,12 +51,12 @@ export const GetStarted = () => {
       >
         I understand
       </Button>
-      <ExternalLink
+      {/* <ExternalLink
         className="text-xs text-white mt-4"
         href={config.userDataPolicy}
       >
         User data policy
-      </ExternalLink>
+      </ExternalLink> */}
     </StarsWrapper>
   );
 };

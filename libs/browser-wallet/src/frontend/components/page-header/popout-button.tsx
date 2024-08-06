@@ -1,4 +1,4 @@
-import config from '!/config';
+// import config from '!/config';
 import { useJsonRpcClient } from '@/contexts/json-rpc/json-rpc-context';
 import { useNetwork } from '@/contexts/network/network-context';
 import { RpcMethods } from '@/lib/client-rpc-methods';
@@ -17,9 +17,9 @@ const useOpenInNewWindow = () => {
 
   return async () => {
     await request(RpcMethods.OpenPopout, null);
-    if (config.closeWindowOnPopupOpen) {
-      window.close();
-    }
+    // if (config.closeWindowOnPopupOpen) {
+    //   window.close();
+    // }
   };
 };
 
@@ -34,7 +34,7 @@ export const PopoutButton = () => {
   const open = useOpenInNewWindow();
   const { network } = useNetwork();
 
-  if (!config.features?.popoutHeader || isMobile) return null;
+  // if (!config.features?.popoutHeader || isMobile) return null;
   return (
     <button
       data-testid={locators.openPopoutButton}

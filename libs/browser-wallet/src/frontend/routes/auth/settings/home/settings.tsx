@@ -1,4 +1,4 @@
-import config from '!/config';
+// import config from '!/config';
 import { ExternalLink } from '@/components/external-link';
 import { BasePage } from '@/components/pages/page';
 import { useGlobalsStore } from '@/stores/globals';
@@ -26,13 +26,13 @@ export const Settings = () => {
         sectionHeader="Telemetry"
         setting="telemetry"
       >
-        <ExternalLink
+        {/* <ExternalLink
           data-testid={locators.settingsDataPolicy}
           className="text-white mt-4"
           href={config.userDataPolicy}
         >
           Read Vega Wallet's user data policy
-        </ExternalLink>
+        </ExternalLink> */}
       </SettingsRadio>
 
       <SettingsRadio
