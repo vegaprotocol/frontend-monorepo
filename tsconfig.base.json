@@ -16,6 +16,7 @@
     "baseUrl": ".",
     "resolveJsonModule": true,
     "paths": {
+      "@/*": ["libs/browser-wallet/src/frontend/*"],
       "@vegaprotocol/accounts": ["libs/accounts/src/index.ts"],
       "@vegaprotocol/announcements": ["libs/announcements/src/index.ts"],
       "@vegaprotocol/apollo-client": ["libs/apollo-client/src/index.ts"],

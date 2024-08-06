@@ -4,10 +4,7 @@
     "allowJs": false,
     "esModuleInterop": false,
     "allowSyntheticDefaultImports": true,
-    "strict": true,
-    "paths": {
-      "@/*": ["libs/browser-wallet/src/frontend/*"]
-    }
+    "strict": true
   },
   "files": [],
   "include": [],
