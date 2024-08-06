@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 
 import { locators as headerLocators } from '@/components/sub-header';
 
-import packageJson from '../../../../../../../package.json';
+import packageJson from '../../../../../../package.json';
 import { locators, VersionSection } from './version-section';
 
 describe('VersionSection', () => {
