@@ -1,6 +1,6 @@
 import { useNetwork } from '@/contexts/network/network-context';
 
-import { CONSTANTS } from '../../../../../lib/constants';
+import { CONSTANTS } from '../../../../lib/constants';
 import { ExternalLink } from '../../../external-link';
 
 export const locators = {

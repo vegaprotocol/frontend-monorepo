@@ -6,7 +6,7 @@ import { useConnectionStore } from '@/stores/connections';
 import { useNetworksStore } from '@/stores/networks-store';
 import { useTabStore } from '@/stores/tab-store';
 
-import { CONSTANTS } from '../../../lib/constants';
+import { CONSTANTS } from '../../constants';
 
 export const locators = {
   indicator: 'indicator',

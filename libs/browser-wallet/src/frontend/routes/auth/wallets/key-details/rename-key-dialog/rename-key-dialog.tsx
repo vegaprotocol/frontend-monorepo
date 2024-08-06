@@ -6,7 +6,7 @@ import { useJsonRpcClient } from '@/contexts/json-rpc/json-rpc-context';
 import { useWalletStore } from '@/stores/wallets';
 import type { Key } from '@/types/backend';
 
-import { CONSTANTS } from '../../../../../../lib/constants';
+import { CONSTANTS } from '../../../../../lib/constants';
 import { RenameKeyForm } from './rename-key-form';
 
 export const locators = {

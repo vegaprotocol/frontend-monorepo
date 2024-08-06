@@ -1,6 +1,6 @@
 import { useLayoutEffect, useMemo } from 'react';
 
-import { CONSTANTS } from '../../../lib/constants';
+import { CONSTANTS } from '../../lib/constants';
 
 export const usePreventWindowResize = () => {
   const frameHeight = useMemo(

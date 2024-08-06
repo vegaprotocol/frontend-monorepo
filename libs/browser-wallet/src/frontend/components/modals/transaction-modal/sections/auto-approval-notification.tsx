@@ -6,7 +6,7 @@ import {
 } from '@/lib/transactions';
 import { useConnectionStore } from '@/stores/connections';
 
-import { AUTO_CONSENT_TRANSACTION_TYPES } from '../../../../../lib/constants';
+import { AUTO_CONSENT_TRANSACTION_TYPES } from '../../../../constants';
 
 export const locators = {
   autoApprovalMessage: 'auto-approval-message',
