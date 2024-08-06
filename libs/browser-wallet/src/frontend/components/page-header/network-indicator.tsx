@@ -51,54 +51,54 @@ const IndicatorWithTooltip = ({
   );
 };
 
-export const NetworkIndicator = () => {
-  const { network } = useNetwork();
-  const { networks } = useNetworksStore((state) => ({
-    networks: state.networks,
-  }));
-  const { currentTab } = useTabStore((state) => ({
-    currentTab: state.currentTab,
-  }));
-  const { connections, loading } = useConnectionStore((state) => ({
-    connections: state.connections,
-    loading: state.loading,
-  }));
-  if (loading) return null;
-  if (currentTab?.url && connections.length > 0) {
-    const origin = new URL(currentTab.url).origin;
-    const connection = connections.find((c) => c.origin === origin);
-    if (connection) {
-      const { chainId, networkId } = connection;
-      const connectionNetwork = networks.find((n) => n.id === networkId);
-      if (!connectionNetwork) {
-        throw new Error(
-          `Could not find network with id ${networkId} in the networks store.`
-        );
-      }
-      return network.chainId === chainId ? (
-        <IndicatorWithTooltip
-          intent={Intent.Success}
-          description={`You are currently connected to ${origin}.`}
-        />
-      ) : (
-        <IndicatorWithTooltip
-          intent={Intent.Warning}
-          description={`
-          The dApp ${origin} is connected to the ${connectionNetwork.name} network, but your wallet is displaying ${network.name} data. To change the network for your wallet, click on the network dropdown.`}
-        />
-      );
-    }
-    return (
-      <IndicatorWithTooltip
-        intent={Intent.None}
-        description={`You are not currently connected to ${origin}.`}
-      />
-    );
-  }
-  return (
-    <IndicatorWithTooltip
-      intent={Intent.None}
-      description={`You are not currently connected to any sites.`}
-    />
-  );
-};
+// export const NetworkIndicator = () => {
+//   const { network } = useNetwork();
+//   const { networks } = useNetworksStore((state) => ({
+//     networks: state.networks,
+//   }));
+//   const { currentTab } = useTabStore((state) => ({
+//     currentTab: state.currentTab,
+//   }));
+//   const { connections, loading } = useConnectionStore((state) => ({
+//     connections: state.connections,
+//     loading: state.loading,
+//   }));
+//   if (loading) return null;
+//   if (currentTab?.url && connections.length > 0) {
+//     const origin = new URL(currentTab.url).origin;
+//     const connection = connections.find((c) => c.origin === origin);
+//     if (connection) {
+//       const { chainId, networkId } = connection;
+//       const connectionNetwork = networks.find((n) => n.id === networkId);
+//       if (!connectionNetwork) {
+//         throw new Error(
+//           `Could not find network with id ${networkId} in the networks store.`
+//         );
+//       }
+//       return network.chainId === chainId ? (
+//         <IndicatorWithTooltip
+//           intent={Intent.Success}
+//           description={`You are currently connected to ${origin}.`}
+//         />
+//       ) : (
+//         <IndicatorWithTooltip
+//           intent={Intent.Warning}
+//           description={`
+//           The dApp ${origin} is connected to the ${connectionNetwork.name} network, but your wallet is displaying ${network.name} data. To change the network for your wallet, click on the network dropdown.`}
+//         />
+//       );
+//     }
+//     return (
+//       <IndicatorWithTooltip
+//         intent={Intent.None}
+//         description={`You are not currently connected to ${origin}.`}
+//       />
+//     );
+//   }
+//   return (
+//     <IndicatorWithTooltip
+//       intent={Intent.None}
+//       description={`You are not currently connected to any sites.`}
+//     />
+//   );
+// };

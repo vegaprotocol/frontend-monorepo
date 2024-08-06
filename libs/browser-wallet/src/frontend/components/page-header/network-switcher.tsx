@@ -1,7 +1,7 @@
 import { useNetwork } from '@/contexts/network/network-context';
 
 import { NetworkDropdown } from './network-dropdown';
-import { NetworkIndicator } from './network-indicator';
+// import { NetworkIndicator } from './network-indicator';
 
 export const locators = {
   networkSwitcher: 'network-switcher',
@@ -12,9 +12,9 @@ export const NetworkSwitcher = () => {
 
   return (
     <div className="flex flex-row">
-      <div className="flex flex-col justify-center">
+`      {/* <div className="flex flex-col justify-center">
         <NetworkIndicator />
-      </div>
+      </div>` */}
       <div
         data-testid={locators.networkSwitcher}
         className="flex flex-col justify-center border rounded-md text-sm px-2 h-6"

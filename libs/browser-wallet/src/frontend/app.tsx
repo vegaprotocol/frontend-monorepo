@@ -4,9 +4,9 @@ import { MemoryRouter as Router } from 'react-router-dom';
 import { GlobalErrorBoundary } from '@/components/global-error-boundary';
 import { JsonRPCProvider } from '@/contexts/json-rpc/json-rpc-provider';
 import { NetworkProvider } from '@/contexts/network/network-provider';
-import { useListenForActiveTab } from '@/hooks/listen-for-active-tab';
-import { useListenForPopups } from '@/hooks/listen-for-popups';
-import { usePing } from '@/hooks/ping';
+// import { useListenForActiveTab } from '@/hooks/listen-for-active-tab';
+// import { useListenForPopups } from '@/hooks/listen-for-popups';
+// import { usePing } from '@/hooks/ping';
 import { usePreventWindowResize } from '@/hooks/prevent-window-resize';
 import { useGlobalsStore } from '@/stores/globals';
 
@@ -18,10 +18,10 @@ export const locators = {
 };
 
 function App() {
-  useListenForActiveTab();
-  useListenForPopups();
+  // useListenForActiveTab();
+  // useListenForPopups();
+  // usePing();
   usePreventWindowResize();
-  usePing();
   const isDesktop = useGlobalsStore((state) => !state.isMobile);
   // Firefox android, firefox and chrome all have different ways of handling the viewport height.
   // this allows us to set the min-height of the body to the correct value for desktop

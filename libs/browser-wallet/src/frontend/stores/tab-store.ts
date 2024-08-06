@@ -1,34 +1,34 @@
 import { create } from 'zustand';
 
 // @ts-ignore
-const getTabs = () => globalThis.browser?.tabs ?? globalThis.chrome?.tabs;
+// const getTabs = () => globalThis.browser?.tabs ?? globalThis.chrome?.tabs;
 
 export type TabStore = {
-  onTabUpdated: any;
-  currentTab: chrome.tabs.Tab | null;
-  setup: () => Promise<void>;
-  teardown: () => void;
+  // onTabUpdated: any;
+  // currentTab: chrome.tabs.Tab | null;
+  // setup: () => Promise<void>;
+  // teardown: () => void;
 };
 
 // This is needed because in order to mock the tabs functions in tests
 // if the file is immediately evaluated the mock is not present
 export const createStore = () =>
   create<TabStore>()((set, get) => {
-    const tabs = getTabs();
+    // const tabs = getTabs();
     return {
-      onTabUpdated: async () => {
-        const [activeTab] = await tabs.query({ active: true });
-        set({ currentTab: activeTab });
-      },
-      currentTab: null,
-      async setup() {
-        tabs.onActivated.addListener(get().onTabUpdated);
-        const [activeTab] = await tabs.query({ active: true });
-        set({ currentTab: activeTab });
-      },
-      teardown() {
-        tabs.onActivated.removeListener(get().onTabUpdated);
-      },
+      // onTabUpdated: async () => {
+      //   const [activeTab] = await tabs.query({ active: true });
+      //   set({ currentTab: activeTab });
+      // },
+      // currentTab: null,
+      // async setup() {
+      //   tabs.onActivated.addListener(get().onTabUpdated);
+      //   const [activeTab] = await tabs.query({ active: true });
+      //   set({ currentTab: activeTab });
+      // },
+      // teardown() {
+      //   tabs.onActivated.removeListener(get().onTabUpdated);
+      // },
     };
   });
 

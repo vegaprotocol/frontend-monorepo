@@ -23,7 +23,7 @@ const createClient = (notificationHandler: Function) => {
       backgroundPort.postMessage(message);
     },
   });
-  window.client = client;
+  // window.client = client;
   backgroundPort.onMessage.addListener((message: any) => {
     log('info', 'Received message from background', message);
     client.onmessage(message);
@@ -80,7 +80,7 @@ export const useCreateClient = () => {
     },
     [client, setError]
   );
-  window.request = request;
+  // window.request = request;
 
   return {
     client,
