@@ -9,9 +9,10 @@ import {
 import { useT } from '../../lib/use-t';
 import type { RowWithdrawal } from './use-asset-activity';
 import { useEvmWithdraw } from '../../lib/hooks/use-evm-withdraw';
-import { useReadContract } from 'wagmi';
+import { useAccount, useReadContract } from 'wagmi';
 import { BRIDGE_ABI } from '@vegaprotocol/smart-contracts';
 import { useEffect, useRef, useState } from 'react';
+import { ConnectKitButton } from 'connectkit';
 
 type Props = {
   data: RowWithdrawal;
@@ -28,6 +29,7 @@ export const WithdrawalStatusCell = ({ data, openDialog }: Props) => {
 
 const WithdrawalStatusOpen = ({ data, openDialog }: Props) => {
   const t = useT();
+  const { status: ethWalletStatus } = useAccount();
   const { config } = useEthereumConfig();
   const { configs } = useEVMBridgeConfigs();
   const { submitWithdraw } = useEvmWithdraw();
@@ -100,42 +102,72 @@ const WithdrawalStatusOpen = ({ data, openDialog }: Props) => {
   }
 
   if (status === 'ready') {
+    if (ethWalletStatus === 'connected') {
+      return (
+        <span className="flex gap-1 items-center">
+          {t('Pending')}:{' '}
+          <button
+            onClick={() => {
+              const asset = data.asset;
+
+              if (!config || !configs) {
+                throw new Error('could not fetch ethereum configs');
+              }
+
+              if (!approval?.erc20WithdrawalApproval) {
+                throw new Error('no withdrawal approval');
+              }
+
+              if (asset?.source.__typename !== 'ERC20') {
+                throw new Error(
+                  `invalid asset type ${asset?.source.__typename}`
+                );
+              }
+
+              if (!cfg) {
+                throw new Error(
+                  `could not find evm config for asset ${asset.id}`
+                );
+              }
+
+              submitWithdraw({
+                bridgeAddress: cfg.collateral_bridge_contract
+                  .address as `0x${string}`,
+                approval: approval.erc20WithdrawalApproval,
+                asset,
+              });
+            }}
+            className="underline underline-offset-4"
+          >
+            {t('Complete')}
+          </button>
+          <button
+            onClick={() => openDialog(data.detail.id)}
+            className="underline underline-offset-4"
+          >
+            {t('View')}
+          </button>
+        </span>
+      );
+    }
+
     return (
       <span className="flex gap-1 items-center">
         {t('Pending')}:{' '}
-        <button
-          onClick={() => {
-            const asset = data.asset;
-
-            if (!config || !configs) {
-              throw new Error('could not fetch ethereum configs');
-            }
-
-            if (!approval?.erc20WithdrawalApproval) {
-              throw new Error('no withdrawal approval');
-            }
-
-            if (asset?.source.__typename !== 'ERC20') {
-              throw new Error(`invalid asset type ${asset?.source.__typename}`);
-            }
-
-            if (!cfg) {
-              throw new Error(
-                `could not find evm config for asset ${asset.id}`
-              );
-            }
-
-            submitWithdraw({
-              bridgeAddress: cfg.collateral_bridge_contract
-                .address as `0x${string}`,
-              approval: approval.erc20WithdrawalApproval,
-              asset,
-            });
+        <ConnectKitButton.Custom>
+          {({ show }) => {
+            return (
+              <button
+                className="underline underline-offset-4"
+                onClick={() => {
+                  if (show) show();
+                }}
+              >
+                {t('Connect')}
+              </button>
+            );
           }}
-          className="underline underline-offset-4"
-        >
-          {t('Complete')}
-        </button>
+        </ConnectKitButton.Custom>
         <button
           onClick={() => openDialog(data.detail.id)}
           className="underline underline-offset-4"
